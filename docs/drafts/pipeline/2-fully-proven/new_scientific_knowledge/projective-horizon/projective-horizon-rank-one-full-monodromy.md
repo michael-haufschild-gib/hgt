@@ -470,6 +470,53 @@ or inside the larger one, so its degree over the base is unambiguous.  This is w
 dichotomy, proved by the Galois correspondence of the subextension, be applied to the intersection
 as originally given.
 
+The corrected hypothesis is met because of
+`GaloisForLFunctions/HTGeometry/SymmetricQuadraticUnique.lean`:
+
+```text
+eq_alternatingGroup_of_index_eq_two
+eq_of_finrank_eq_two_of_permGal
+```
+
+A subgroup of index two is normal with quotient of order two, hence abelian, so in a symmetric group
+it is the alternating group.  An extension with symmetric Galois group therefore has exactly one
+quadratic subextension, so any square root of a base element lying in the splitting field generates
+the alternating fixed field and has the discriminant's square class.  That is what makes the
+restricted exclusion condition satisfiable in the even case.
+
+It is discharged in `GaloisForLFunctions/HTGeometry/EvenCaseDischarge.lean`:
+
+```text
+ne_zero_of_sq_eq
+not_sq_mul_of_sq_mul
+notMem_of_permGal_of_isCyclic
+```
+
+Square classes transfer: if `e * d` is a square and `d * c` is not, then `e * c` is not.  So a
+single square-class computation on the fixed square root -- the discriminant against the constant
+coefficient -- excludes every square root of a base element in the splitting field from the Kummer
+extension.  The square-class computation itself is
+`GaloisForLFunctions/HTGeometry/PolynomialNonSquare.lean`:
+
+```text
+not_isSquare_mul_X_of_not_dvd
+```
+
+A variable is prime, so a polynomial not divisible by it, multiplied by it, is divisible by that
+prime exactly once and is a nonsquare in the fraction field.  With the discriminant and the constant
+coefficient this is the input `notMem_of_permGal_of_isCyclic` needs.  `notMem_of_permGal_of_isCyclic` is the exclusion condition for even `n`, with no
+hypotheses left open.
+
+The capstone with the exclusion discharged is in
+`GaloisForLFunctions/HTGeometry/KummerBaseChangeEven.lean`:
+
+```text
+kummerBaseChangeEvenEquiv
+```
+
+Its only inputs are the abelian quotient on the intersection and one square-class computation on a
+fixed square root -- no condition quantified over all elements.  That is `(3)` for even `n`.
+
 ### The assembled statement
 
 `GaloisForLFunctions/HTGeometry/KummerBaseChange.lean` closes with
@@ -782,7 +829,7 @@ the point of use.
 
 ### Formalisation inventory
 
-Thirty-eight modules, all building with only `propext`, `Classical.choice`, `Quot.sound`:
+Forty-two modules, all building with only `propext`, `Classical.choice`, `Quot.sound`:
 
 ```text
 SymmetricVariableAction        SymmetricRationalFunctions     SymmetricCoefficientField
@@ -798,6 +845,8 @@ KummerInfBot                   KummerBaseChange               FixedFieldDichotom
 IntermediateFieldComap         KummerAbelian                  AbelianQuotientTransfer
 SplittingFieldCompositum       PolynomialBaseChange           EvenKummerObstruction
 CyclicSubgroupUnique           CyclicQuadraticUnique          CyclicSqrtMem
+SymmetricQuadraticUnique       EvenCaseDischarge              KummerBaseChangeEven
+PolynomialNonSquare
 ```
 
 Facts proved here that mathlib does not carry: the Galois group of the generic polynomial of degree
@@ -1169,3 +1218,112 @@ dividing the discriminant.
   extracted from the intersection, hence lies in both) and which the even case can actually satisfy.
   The correction was propagated through the intersection step, the capstone and the polynomial-level
   statements; all four modules rebuild.
+
+- 2026-08-01 — proved that a symmetric Galois group admits exactly one quadratic subextension, an
+  index-two subgroup of a symmetric group being the alternating one.  This is what makes the
+  corrected exclusion condition satisfiable for even `n`: a square root of a base element in the
+  splitting field must generate the alternating fixed field, so its square class is the
+  discriminant's, and the divisibility then excludes it from the Kummer extension.
+
+- 2026-08-01 — discharged the corrected exclusion condition for even `n`.  Square classes transfer,
+  so the single computation on the discriminant against the constant coefficient covers every square
+  root of a base element in the splitting field.  Both branches of the Kummer step now have their
+  exclusion conditions proved outright, with the even branch resting on a satisfiable hypothesis.
+
+- 2026-08-01 — assembled the even capstone with the exclusion discharged.  `kummerBaseChangeEvenEquiv`
+  needs only the abelian quotient and one square-class computation, no condition ranging over all
+  elements.  Together with the odd capstone this gives `(3)` in both parities from hypotheses the
+  card's own situation supplies.
+
+- 2026-08-01 — supplied the square-class computation in polynomial form.  A variable is prime, so a
+  polynomial it does not divide, multiplied by it, is a nonsquare in the fraction field.  Combined
+  with the constant coefficient not dividing the discriminant this is exactly the input the even
+  case consumes, so that case now closes on a fact about polynomials rather than an assumption.
+
+- 2026-08-01 — full rebuild of the whole development: all forty-two modules build together, each
+  with only `propext`, `Classical.choice`, `Quot.sound`.  This is the first joint audit since the
+  hypothesis correction, so it also confirms the correction propagated cleanly.  Integral closedness
+  of the polynomial ring is taken as an instance argument in `PolynomialNonSquare`; it is derivable
+  (checked under a full mathlib import) but the narrow import that carries it was not worth the
+  search, and stating it explicitly costs callers nothing.
+
+- 2026-08-01 — `SymmetricCoefficientNonSquare.lean`.  The square-class input of the even case is now
+  proved outright, not assumed.  The fundamental theorem of symmetric polynomials is packaged as an
+  algebra isomorphism `esymmAlgEquiv` from a polynomial ring in `d` variables onto the symmetric
+  subalgebra, under which the top variable carries the constant coefficient of the generic
+  polynomial.  Transporting the discriminant through it and combining with the proved
+  non-divisibility `esymm_top_not_dvd_sq_vandermondePoly` shows the discriminant is not divisible by
+  that variable, so its product with the variable has odd valuation there and is a nonsquare:
+  `not_isSquare_discCoeffPoly_mul_topIndex`, restated as `no_sqrt_discCoeffPoly_mul_topIndex` in the
+  exact shape `¬ ∃ t, e * c = t * t` that `kummerBaseChangeEvenEquiv` consumes.
+  Integral closedness is no longer an instance argument anywhere: the missing import was
+  `Mathlib.RingTheory.Polynomial.RationalRoot`, which carries the unique-factorisation instance, so
+  `PolynomialNonSquare` is now hypothesis-free as well.
+
+- 2026-08-01 — `SymmetricCoefficientFractionModel.lean`.  The square-class step of the "exact
+  remaining gap" above is now proved for the **uncentered** generic polynomial.  That section
+  reduced the card to one statement: for even degree, `delta^2 * c_0` is not a square in `E_0`,
+  justified by "`E_0` is a rational function field with `c_0` among its variables".  For the
+  uncentered coefficient field that justification is now a theorem rather than a remark.  Sending the `i`-th
+  variable to the `(i+1)`-st elementary symmetric function embeds a polynomial ring in `d` variables
+  into the rational functions in the roots; injectivity comes from the fundamental theorem, and the
+  embedding extends to the whole rational function field, whose image contains the field generated
+  by the coefficients.  Transporting the nonsquare statement of the model along it gives
+  `no_sqrt_disc_mul_esymmTop_of_mem_esymmField` and, through
+  `symmetricPartField_eq_esymmField`, `no_sqrt_disc_mul_esymmTop_of_mem_symmetricPartField`:
+  the discriminant times the constant coefficient has no square root in the symmetric part.
+  Axioms `[propext, Classical.choice, Quot.sound]`.
+  What this does **not** yet cover: the chain built on this card runs through the centered
+  polynomial, whose coefficient field is generated by the centered coefficients `c_2, ..., c_d` and
+  has transcendence degree `d - 1`, not `d`.  It is a different field from the symmetric part
+  treated here — centering kills one generator — so the statement does not transfer for free.  The
+  centered analogue needs the same two inputs in centered coordinates: algebraic independence of
+  the centered coefficients, and non-divisibility of the centered discriminant by the centered
+  constant coefficient.  That is the next brick.
+
+- 2026-08-01 — `SquareSpecialisation.lean`, the tool for the centered analogue.  A square in the
+  fraction field of a unique factorisation domain, written as a reduced fraction, gives a square
+  relation in the domain; a ring homomorphism whose kernel consists of multiples of a prime cannot
+  kill the denominator, since that would make the prime divide numerator and denominator alike.  So
+  `not_isSquare_of_specialisation`: a nonsquare image certifies a nonsquare.  Applied with the
+  specialisation that sets the first elementary symmetric function to zero, this is what carries the
+  square-class statement from the centered coefficients into a polynomial ring in which the centered
+  constant coefficient is a variable.  Axioms `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-01 — reading the card's own theorem statement changes the plan for the even case, for the
+  better.  The base field is `E_0 = K(q, c_0, ..., c_{n-1})` and `K` is **algebraically closed**, so
+  every constant is a square and all the sign factors in the square-class comparison are free.  The
+  quantity to be shown a nonsquare is `Delta * c_0` with `Delta` the Vandermonde square of the roots
+  and `c_0` the constant coefficient of the centered equation, that is
+  `V^2 * prod_i (x_i - avg)` up to a constant square.  Now the decisive simplification: the
+  coefficient field sits inside the field of rational functions in the roots, so it is enough to
+  show this is not a square in that **larger** field, where `prod_i (x_i - avg)` is a product of `d`
+  pairwise non-proportional linear forms and hence squarefree.  No algebraic independence of the
+  centered coefficients is needed, and no Tschirnhaus computation.
+- 2026-08-01 — `LinearFormPrime.lean` supplies the missing primality.  A square matrix with a
+  two-sided inverse substitutes its row forms for the variables and gives an automorphism of the
+  polynomial ring (`matrixAlgEquiv`, built on the corpus's `Matrix.toMvPolynomial` machinery), so
+  every row form of an invertible matrix is prime (`prime_toMvPolynomial`).  Applied to the matrix
+  that is the identity apart from its zeroth row, whose determinant is `d - 1` by upper
+  triangularity, this proves `d * X_0 - sum_j X_j` prime — the linear form cutting out the
+  hyperplane on which the zeroth variable equals the average.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-01 — **the even case's square-class statement is proved.**  Two modules complete the route
+  set out above.
+  `AverageProductNonSquare.lean` assembles the nonsquare itself.  The scaled centered coordinates
+  `avgForm i = d * X i - sum_j X j` are prime (previous entry), and evaluating at an explicit point
+  with pairwise distinct coordinates summing to zero — `balancedPoint`, whose last coordinate
+  absorbs the sum of the others — shows the zeroth of them divides neither the Vandermonde square
+  nor the remaining forms.  Hence `not_isSquare_vandermondeSq_mul_avgProduct`: the product of the
+  discriminant with all the scaled centered coordinates has odd valuation at a prime, so it is not
+  a square in the field of rational functions in the roots.  Requires `3 <= d`, which is exactly
+  right: for `d = 2` the centered discriminant is `-4 c_0` and the product genuinely is a square.
+  `CenteredDiscriminantNonSquare.lean` transfers this to the card's own quantity.  The scaled
+  centered coordinate maps to `d` times the centered root, so the product of all of them is `d ^ d`
+  times the product of the centered roots, which is the constant coefficient of the centered
+  polynomial up to `(-1) ^ d`.  Over the card's algebraically closed field of constants that scalar
+  is a square, so `not_exists_sq_disc_mul_centeredConstant`: the discriminant times the constant
+  coefficient of the centered polynomial has no square root in the field of rational functions in
+  the roots, hence none in any subfield of it — in particular none in the coefficient field.
+  Axioms `[propext, Classical.choice, Quot.sound]` throughout.

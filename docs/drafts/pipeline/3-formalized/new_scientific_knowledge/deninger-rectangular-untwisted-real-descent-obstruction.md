@@ -1,7 +1,7 @@
 # Rectangular untwisted real-descent obstruction
 
 - **ID:** `deninger-rectangular-untwisted-real-descent-obstruction`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** NO-GO THEOREM WITH POSITIVE SURVIVOR
 - **Parent:** `deninger-kahler-riemann-arithmetic-leaf-realization`
 - **Source:** `deninger-rectangular-quaternionic-hodge`
@@ -72,10 +72,44 @@ bar--residue/central-extension data.  Full
 
 ## Lean status
 
-The four local identities are stated without axioms in
-`DeningerArithmeticRectangularQuaternionicHodge.lean`.  Direct Lean
-verification is deferred until concurrent external Lean saturation
-clears.
+The four local identities are formalized in
+`DeningerArithmeticRectangularQuaternionicHodge.lean` and verified:
+
+- `κ² = 1` is `deningerRectangularConjugation_sq`;
+- `J² = -1` is `deningerRectangularQuaternionicHodge_sq`, with the
+  complex-linear form `deningerRectangularComplexJ_sq`;
+- `U_q κ = κ U_q` is
+  `deningerRectangularCenteredScale_intertwines_conjugation`;
+- `U_q J_r = J_{qr} U_q` is
+  `deningerRectangularCenteredScale_intertwines_hodge`.
+
+The card's `U_q(z,w) = q^{-1/2}(qz,w)` appears as
+`deningerRectangularCenteredScale a q`, the real rescaling by `a`
+composed with the dilation by `q`; the unitary normalization is
+`a² q = 1`.  The two intertwining identities are proved for every real
+`a`, so they are slightly more general than the card.  The positive
+local metric survives as `deningerRectangularComplexEnergy_pos` and its
+weight-one law, which is the card's "strongest positive survivor".
+
+### Verification
+
+- Direct command: `lake env lean` on the module — passes with no
+  errors and no warnings.
+- Cached module build: completes.
+- Scratch `#print axioms` on the four identities and the positivity
+  theorem: only `propext`, `Classical.choice`, `Quot.sound`.
+- Imported by the `GaloisForLFunctions.RHTower` umbrella.
+
+## Gates
+
+- [x] 0 → 1 in-progress: obstruction isolated
+- [x] 1 → 2 fully-proven: the four identities and the descent verdict
+- [x] 2 → 3 formalized: all four identities, with cached build and
+      axiom audit
+- [ ] 3 → 4 publication-ready: the genuinely quaternionic transition
+      data that would replace the real cocycle is a separate
+      functorial-extension gate, which this card identifies rather
+      than constructs
 
 ## Verdict
 
@@ -89,3 +123,7 @@ groupoid twist is a separate functorial-extension gate.
 - 2026-07-27 — Extracted the real involution preserved by every
   real-centered rectangular power map and isolated the exact global
   twist obligation.
+- 2026-08-01 — Closed the stage-3 gate: verified the four Lean
+  identities against the card, then ran the direct check, the cached
+  build and the declaration-axiom audit.  The deferred verification
+  note is superseded.  No new Lean was needed.

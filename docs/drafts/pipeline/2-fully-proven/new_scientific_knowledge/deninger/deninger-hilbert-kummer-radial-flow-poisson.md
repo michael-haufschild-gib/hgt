@@ -11,9 +11,15 @@
   Frobenius-stable refinement on whose suspension the norm of the
   logarithmic Kummer character is a global radial coordinate; discrete
   flow pullbacks are exactly Meyer's dilations.
-- **Lean status:** the elementary power, suspension, and flow identities
-  are drafted in `DeningerArithmeticPoissonTransfer.lean`; direct check
-  is deferred while unrelated Lean processes saturate the shared machine.
+- **Lean modules:**
+  `GaloisForLFunctions.RHTower.DeningerArithmeticPoissonTransfer`
+  (`(11)`--`(14)`),
+  `GaloisForLFunctions.RHTower.DeningerArithmeticHilbertKummerRadius`
+  (`(6)`, `(8)`, `(9)` in operator-norm form),
+  `GaloisForLFunctions.RHTower.DeningerFiniteExtension`,
+  `GaloisForLFunctions.RHTower.DeningerHilbertKummerCharacter`
+  (the density proof of `(7)`, the exponent form of `(8)`, and the
+  descent and positivity of `(9)`)
 
 ## Source Hilbert space
 
@@ -264,3 +270,104 @@ true-to-approximate map for which Deninger proposed a relevant complex
 - 2026-07-27 — Constructed the canonical dense Hilbert--Kummer
   refinement and proved that Deninger's discrete flow pullbacks are
   exactly the Poisson dilation semigroup.
+
+### The exact Poisson-flow theorem is formalized
+
+`formal/GaloisForLFunctions/RHTower/DeningerArithmeticPoissonTransfer.lean`, verified and
+extended.  Axiom audit: `propext, Classical.choice, Quot.sound`; two of the identities need only
+`propext` (and `Quot.sound`).
+
+- `deningerSuspensionLogRadius_flow` — **`(11)`**: the flow scales the descended radius.
+- `deningerRawDeckMap_flow_eq_frobenius_fixedHeight` — **`(12)`**: applying the `n`-deck map after
+  the raw time-`n` flow is Frobenius at fixed height, so `[F_nP, u]` and `φ^{log n}[P,u]` have the
+  same image in the suspension quotient.
+- `deningerDiscreteFlowPullback_eq_dilation` — **`(13)`**: discrete flow pullback on a radial
+  section is Meyer's dilation `f(x) ↦ f(nx)`.
+- `deningerMeyerSum` and `deningerPoissonSum_eq_meyerSum` — **`(14)`**: summing the discrete flow
+  pullbacks over positive times gives the radial section of Meyer's summation operator.  The
+  identity is termwise, each summand being `(13)`, so no convergence hypothesis is needed to state
+  it: both sides are the same series.
+- `deningerSuspensionLogRadius_deck_invariant` and, in operator-norm form,
+  `deningerHilbertKummerRadius_smul` and `deningerHilbertKummerSuspensionRadius_deck_invariant` —
+  the radius scaling `(8)` and the descent of `x` to the quotient `(9)`.
+
+The earlier "direct check deferred" note is superseded: both modules pass `lake env lean` with no
+errors and no warnings, their cached builds complete, and they are imported by the
+`GaloisForLFunctions.RHTower` umbrella.
+
+### Remaining
+
+The analytic inputs of the refinement theorem: injectivity and dense span of `(2)`, which rest on
+the height-zero theorem and Allcock--Vaaler, and the Hilbert--Kummer boundedness `(4)` that
+produces the functional `(5)`.  Those are quoted results about the place space, not identities of
+the flow.
+
+### The refinement theorem's proof mechanism is formalized
+
+`formal/GaloisForLFunctions/RHTower/DeningerFiniteExtension.lean` and
+`formal/GaloisForLFunctions/RHTower/DeningerHilbertKummerCharacter.lean`.  Axiom audit on all
+seventeen declarations: `propext, Classical.choice, Quot.sound`.
+
+**Bounded extension off a finite-dimensional subspace.**
+
+- `deningerFiniteDimExtend` — every linear functional on a finite-dimensional subspace `W` of an
+  inner-product space is the restriction of a *continuous* functional on the whole space.  A
+  finite-dimensional subspace is complete, hence has an orthogonal projection, and a linear map on
+  a finite-dimensional space is automatically continuous; the extension is
+  `l ∘ proj_W`.  This is the card's "finite-dimensional Riesz representation and orthogonal
+  extension".
+- `deningerFiniteFamilyExtend` — the finite-family form, on the span of `f_{α_1},…,f_{α_m}`.
+
+**Characters, their logarithmic modulus, and the Frobenius scaling law.**
+
+- `deningerChar_ne_zero`, `deningerChar_norm_pos` — a `ℂ`-valued character of a *group* never
+  vanishes, so `L_P(a) = log ‖P a‖` is everywhere defined.  This is what makes the whole
+  logarithmic-modulus calculus unconditional: no nonvanishing hypothesis is needed.
+- `deningerLogModulus_mul` — `L_P` is additive.
+- `deningerLogModulus_zpow` — `L_P(a^n) = n L_P(a)` for every `n ∈ ℤ`.
+- `deningerLogModulus_ratPow` — **the exponent form of `(8)`**: if `b^m = a^k` with `m ≠ 0`, so
+  that `b` is the rational power `a^{k/m}`, then `L_P(b) = (k/m) L_P(a)`.  This is
+  `r(F_q P) = q r(P)` for positive rational `q`, proved from the integer power law alone.
+- `deningerLogModulus_torsion`, `deningerChar_norm_torsion` — a character has modulus one on
+  roots of unity, so `L_P` vanishes on the torsion kernel.
+
+**Modulus replacement.**
+
+- `deningerUnitPart`, `deningerUnitPart_norm` — the unitary part `P/|P|`, a character of modulus
+  one.
+- `deningerModulusReplace`, `deningerModulusReplace_mul` — keeping the unitary part and installing
+  a new *additive* logarithmic modulus again produces a character.
+- `deningerModulusReplace_norm` — the replacement has exactly the prescribed modulus.
+- `deningerModulusReplace_eq_self` — it agrees with `P` wherever the new modulus was prescribed to
+  be the old one.
+- `deningerAdditive_torsion` — an additive real-valued function kills torsion (`ℝ` is
+  torsion-free).
+- `deningerModulusReplace_torsion` — **the admissibility check**: the replacement is *equal* to
+  `P` on every root of unity, so it preserves Deninger's condition on the torsion kernel.  The
+  card asserted this; it is now proved.
+
+**The density step `(7)`.**
+
+- `deningerHilbertKummer_pointwise` — given a character `P` whose logarithmic modulus is computed
+  by an a priori *unbounded* linear functional `φ` along the Kummer class map `f`, and any finite
+  family `α_1,…,α_m`, there is a genuinely *bounded* `L ∈ H_Kum'` such that `L ∘ f` is additive
+  and the modulus replacement built from `L` is a character agreeing with `P` at every `α_i`.
+  Proof: restrict `φ` to the span of the `f_{α_i}`, extend boundedly by
+  `deningerFiniteDimExtend`, and replace the modulus.  Together with
+  `deningerModulusReplace_torsion` this is the card's pointwise density argument in full.
+
+**The suspension value function `(9)`.**
+
+- `deningerSuspensionValue_descent` — if the radius scales by `q` under Frobenius, then
+  `u · r(P)` is invariant under the deck relation `(P,u) ↦ (F_q P, q^{-1} u)`, so `x([P,u])` is
+  well defined.  This is `(8)` + `(10)` ⟹ descent, isolated from the model.
+- `deningerSuspensionValue_pos` — `u · r(P) > 0` exactly off the unitary locus `r(P) = 0`.
+
+### Remaining
+
+Only the two quoted analytic inputs about the place space: injectivity and dense span of `(2)`
+(height-zero theorem, Allcock--Vaaler at `p = 2`), and Hilbert--Kummer boundedness `(4)` producing
+the functional `(5)`.  Every step of the refinement theorem that is an identity or a
+functional-analytic construction — the extension, the replacement, the torsion invariance, the
+Frobenius scaling, the descent and positivity of `(9)`, and the Poisson-flow identities
+`(11)`--`(14)` — is now formalized unconditionally.

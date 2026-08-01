@@ -1001,6 +1001,17 @@ rests on:
 7. A shortfall of any fixed amount kills the floor —
    `not_bddBelow_soninCompletedPacketValueVar_of_shortfall`.
 
+**The rate, now reduced to one one-variable estimate.**  Cut the aperture window `(b,c)` into `N`
+sub-annuli, so each has half-width `delta = (c-b)/(2N)`, and carry them on the clock's frequency
+`kappa = r q`.  Every band quantity of such a packet depends on the annulus only through `delta*t`
+and `delta*kappa` (`norm_sq_evenFourierCutoff_soninScaledPacketEven_fraction`), and the band radii
+that the two-branch estimate uses are the *fixed* apertures of the flag.  So all `N` band conditions
+are the single condition `delta*kappa = (c-b) r q / (2N)` large — that is, `r` at least a constant
+times `N`.  A threshold linear in `N` gives `N` of order `r` usable packets at scale `r`, hence
+`hsNormSq Z_r` of order `r`, which beats the logarithmic cap of 6 decisively.  What is still needed
+is the reference packet's spectral tail as a function of `delta*kappa` alone: a single one-variable
+decay estimate, no longer one per annulus.
+
 **Open.**  By 6 and 7 the gate is one rate comparison: does `hsNormSq Z_r` exceed
 `log(outer radius)` by a fixed amount at all large scales?  The divergence in 3 carries no rate — it
 gives `hsNormSq Z_r > N - 1` for each `N` eventually, each `N` with its own threshold.  A rate needs
@@ -1181,6 +1192,17 @@ family is abstract, so two widths have unrelated profiles.
 | packets on disjoint annuli are exactly orthogonal | `inner_soninPacketEven_eq_zero_of_disjoint` |
 | **`N` disjoint annuli force coupling energy above `N - 1`**, the uniform subdivision that supplies them, and hence **the coupling energy tends to infinity** | `eventually_sub_one_le_hsNormSq_of_disjointAnnuli`, `soninUniformAnnulusFloor`, `exists_disjoint_annulus_family`, `tendsto_hsNormSq_soninApertureCoupling_atTop` |
 | **no completion bounded above restores the floor**, at any strict flag | `not_bddBelow_soninCompletedPacketValueVar_of_bddAbove` |
+| the packet's two lobes: profile and packet split as a lobe plus its reflection, the **reflection rule** `𝓕(f∘neg)(ξ) = 𝓕f(-ξ)`, the lobe's integrability, and hence the packet's transform and its magnitude in terms of one lobe at `±ξ` | `soninOneSidedBump`, `soninScaledAnnulusBump_eq_oneSided_add`, `soninOneSidedPacket`, `soninScaledPacket_eq_oneSided_add`, `fourier_comp_neg`, `integrable_soninOneSidedPacket`, `fourier_soninScaledPacket_eq_oneSided`, `norm_fourier_soninScaledPacket_le_oneSided` |
+| **band energy at the operator level**: the Fourier cutoff's energy is the density over the band, scales by `δ` at radius `δt`, so the captured *fraction* is the same for every annulus | `norm_sq_evenFourierCutoff_soninScaledPacketEven`, `norm_sq_evenFourierCutoff_soninScaledPacketEven_eq_density`, `norm_sq_evenFourierCutoff_soninScaledPacketEven_scaling`, `norm_sq_evenFourierCutoff_soninScaledPacketEven_fraction` |
+| the bridge to the carrier: the rescaled packet is integrable, its `L²` transform is the classical one, and the density computes that transform's modulus | `integrable_soninScaledPacket`, `fourierUnitary_soninScaledPacketL2_coeFn`, `soninScaledPacketSpectralDensity_eq_norm_sq` |
+| the rescaled packet's spectral **density** and **band mass**: density scales by `δ²` at rescaled argument, band mass of radius `t` is `δ` times the reference band mass of radius `δt` | `soninScaledPacketSpectralDensity`, `soninScaledPacketSpectralDensity_scaling`, `indicator_soninScaledPacketSpectralDensity_scaling`, `integral_indicator_soninScaledPacketSpectralDensity_scaling` |
+| the rescaled packet's **spectrum**: the transform is the reference transform at `δξ` scaled by `δ`, so a band of radius `t` for the family is a band of radius `δt` for the reference | `fourier_soninScaledPacket_scaling`, `norm_fourier_soninScaledPacket_scaling`, `norm_fourier_soninScaledPacket_of_abs_le` |
+| **dilation, additivity and translation rules for the Fourier integral** (absent from mathlib in real-line form) | `GaloisForLFunctions.HTGeometry.fourierIntegral_comp_div`, `GaloisForLFunctions.HTGeometry.fourierIntegral_add`, `GaloisForLFunctions.HTGeometry.fourierIntegral_comp_add_right` |
+| **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
+| the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
+| the rescaled packet as a vector of the even Sonin carrier, with its squared norm and the energy scaling | `memLp_soninScaledPacket`, `soninScaledPacketL2`, `soninScaledPacketL2_mem_evenSubspace`, `soninScaledPacketEven`, `norm_sq_soninScaledPacketEven`, `norm_sq_soninScaledPacketEven_scaling` |
+| **the packet is a rescaling**: profile and mean both scale, so the packet at half-width `δ` and frequency `κ` is the reference packet at `δκ` precomposed with the dilation; hence evenness, support, continuity, compact support, and energy scaling | `soninScaledPacket_scaling`, `soninScaledPacket_even`, `soninScaledPacket_support_subset`, `continuous_soninScaledPacket`, `hasCompactSupport_soninScaledPacket`, `integral_soninScaledPacket_sq_scaling` |
+| the modulated packet on the rescaled profile: cosine-weighted mass scaling, the mean depending **only on the product of width and frequency**, and the second Meyer condition | `integrable_soninScaledAnnulusBump_mul_cos`, `integral_soninScaledAnnulusBump_mul_cos_scaling`, `soninScaledPacketMean`, `soninScaledPacketMean_scaling`, `soninScaledPacket`, `integral_soninScaledPacket` |
 | the rescaled profile's mass: compact support, integrability, mass **exactly proportional to the half-width**, and positivity | `hasCompactSupport_soninScaledAnnulusBump`, `integrable_soninScaledAnnulusBump`, `integral_soninScaledAnnulusBump_scaling`, `integral_soninScaledAnnulusBump_pos` |
 | an annulus profile that is **one fixed profile rescaled**, with the exact scaling law, support, evenness, smoothness and a lower bound at the centre | `soninUnitBumpData`, `soninScaledAnnulusBump`, `soninScaledAnnulusBump_scaling`, `soninScaledAnnulusBump_support_subset`, `one_le_soninScaledAnnulusBump_center`, `contDiff_soninScaledAnnulusBump` |
 | the shell cells' geometry: exact width `(b-a)/((n+2)(n+3))`, shrinking like `1/n²`, accumulating at the inner radius | `shellRight_sub_shellLeft`, `shellRight_sub_shellLeft_le`, `tendsto_shellLeft_atTop` |
@@ -1266,7 +1288,18 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -1277,11 +1310,181 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — centre freedom proved.  A lobe of the profile is the reference bump dilated by the
+  half-width and translated to the lobe's centre; translation contributes only a unimodular phase,
+  so `||F(lobe profile)(xi)|| = delta * ||F(reference)(delta*xi)||`, with the centre gone.  This
+  needed a third missing real-line rule, `fourierIntegral_comp_add_right`, proved like the others by
+  substitution.  Every spectral quantity of the family is now the *fixed* reference profile's,
+  evaluated at `delta*xi` — the tail estimate has exactly one function to bound.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
+- 2026-08-01 — the lobe decomposition is complete on the spectral side:
+  `F(packet)(xi) = F(lobe)(xi) + F(lobe)(-xi)`, hence
+  `||F(packet)(xi)|| <= ||F(lobe)(xi)|| + ||F(lobe)(-xi)||`.  The interference between the two lobes,
+  which is the only place the annulus *centre* enters, is now confined to the sum: a tail bound for
+  the single lobe transfers to the packet with a factor two and no centre dependence.  The remaining
+  analytic input is that lobe tail as a function of `delta*kappa`.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
+- 2026-08-01 — supplied the additivity rule the lobe decomposition needs.  Mathlib has additivity of
+  the Fourier integral only in the abstract bilinear form with continuity side conditions; the
+  real-line specialisation is now `fourierIntegral_add`, proved from `fourier_real_eq` and the
+  convergence criterion (with one wrinkle: the criterion is stated with `inner R v xi`, which needs
+  `Real.inner_apply` to match the `v * xi` of the integral formula).  With this and
+  `fourier_comp_neg` the packet's transform can be assembled from one lobe's at `±xi`.
+  Lean: `formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`.
+- 2026-08-01 — split the packet into its two lobes, which is where the remaining centre dependence
+  sits.  Profile and packet are each a lobe plus its reflection, and the reflection rule
+  `F(f o neg)(xi) = F f (-xi)` follows from mathlib's inverse-transform identities.  A lobe is a
+  single translate of the reference bump, so its spectral magnitude carries no interference term —
+  the tail estimate should be run on the lobe, not the packet.  Assembling the packet's transform as
+  the sum of the lobe's at `±xi` needs additivity of the Fourier integral on the real line, which
+  mathlib provides only in the abstract bilinear form (`VectorFourier.fourierIntegral_add`, with
+  continuity side conditions); specialising it is the next step.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
+- 2026-08-01 — the scaling work pays off as a *linear* threshold.  With all band quantities depending
+  on the annulus only through `delta*t` and `delta*kappa`, cutting `(b,c)` into `N` annuli of
+  half-width `(c-b)/(2N)` and carrying them at frequency `r q` turns the `N` band conditions into the
+  single condition `(c-b) r q / (2N)` large, i.e. `r` at least a constant times `N`.  So `N` of order
+  `r` packets are usable at scale `r`, giving `hsNormSq Z_r` of order `r` against a logarithmic
+  contribution cap.  Earlier I worried that exact self-similarity would force the annuli to be
+  geometrically spread and so bounded in number inside a fixed window; that worry was misplaced —
+  the argument needs uniform *dependence* on `delta*kappa`, not a single fixed reference annulus.
+  The one remaining input is the reference spectral tail as a function of `delta*kappa`.
+- 2026-08-01 — the scale-free band fraction is now a statement about the Sonin Fourier cutoff itself:
+  `||R_t w||^2 = delta * ||R_{delta t} w_ref||^2`, and since the total energy carries the same factor,
+  `norm_sq_evenFourierCutoff_soninScaledPacketEven_fraction` says the captured fraction is identical
+  for every annulus of the family.  This is the operator-level form of the property the `N`-packet
+  threshold needs: hold `delta*kappa` fixed and every packet of the family loses and keeps exactly
+  the same proportion of its energy to any proportionally scaled band.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
+- 2026-08-01 — the classical scaling identities are now attached to the carrier's own Fourier
+  transform: the rescaled packet is integrable, so its `L²` transform agrees a.e. with the classical
+  integral, and its spectral density is the modulus squared of that transform.  Everything proved
+  about the family's spectrum by substitution therefore applies to `evenFourierCutoff` band masses,
+  which is what the two-branch estimate reads.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
+- 2026-08-01 — band masses now scale like the total mass, so band *fractions* are scale free.  The
+  density picks up `delta^2` with its argument rescaled, and the substitution in the band integral
+  gives back one factor of `delta`, so the mass inside radius `t` is `delta` times the reference mass
+  inside `delta*t` — exactly how the total energy scales.  The fraction of spectral mass in a band is
+  therefore a function of `delta*t` and `delta*kappa` alone, identical for every annulus of the
+  family.  That is the statement the `N`-packet threshold needed: hold `delta*kappa` fixed and one
+  band estimate serves all `N`.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
+- 2026-08-01 — the spectrum of the whole family is now one spectrum.  Applying the dilation rule to
+  the packet scaling gives
+  `F(packet m delta kappa)(xi) = delta * F(packet (m/delta) 1 (delta*kappa))(delta*xi)`, so a
+  frequency band of radius `t` for the family is a band of radius `delta*t` for the reference.  Every
+  band mass, tail and density for a narrow annulus at a high carrier is therefore the reference
+  quantity at a rescaled radius — the per-annulus constants that made the `N`-packet threshold
+  `N`-dependent are gone from the spectral side as well as the spatial one.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
+- 2026-08-01 — the spectral side of the scaling now has its tool.  Mathlib carries the translation and
+  isometry rules for the Fourier integral but no dilation rule, so
+  `fourierIntegral_comp_div` is proved here by substituting the dilation in the defining integral:
+  the transform of `x -> f(x/delta)` at `xi` is `delta` times the transform of `f` at `delta*xi`.
+  Applied to the rescaled packet this turns its whole spectral profile — density, band masses, tails
+  — into the reference profile read at `delta*xi`, which is the last step needed before the band
+  limits can be stated once for the entire family instead of once per annulus.
+  Lean: `formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
+- 2026-08-01 — the rescaled family now satisfies the two support hypotheses of the two-branch
+  estimate: a physical cutoff at or below `m - delta` annihilates it, one at or above `m + delta`
+  fixes it.  The outer statement needs `0 <= m` — without it a packet centred at a negative `m` has
+  its two lobes on the wrong sides and the cutoff argument fails, which the proof search found
+  before I did.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
+- 2026-08-01 — the rescaled family now lives in the even Sonin carrier:
+  `soninScaledPacketEven`, with squared norm the integral of the square and, by the scaling law,
+  `delta` times the reference energy at `delta*kappa`.  The coupling estimates can therefore be run
+  against this family with the constants uniform in the annulus, which is what the earlier
+  sub-annulus family could not offer.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
+- 2026-08-01 — the packet itself is now an exact rescaling:
+  `soninScaledPacket m delta kappa x = soninScaledPacket (m/delta) 1 (delta*kappa) (x/delta)`.
+  Every integral attached to it therefore reduces to a reference one — the energy is `delta` times
+  the reference energy at `delta*kappa` — so the per-annulus constants that made the `N`-packet
+  threshold `N`-dependent are all instances of a single reference constant evaluated at the rescaled
+  frequency.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
+- 2026-08-01 — the width and the frequency now enter only through their product.  The same dilation
+  substitution scales the cosine-weighted mass, so the two factors of the half-width cancel in the
+  mean: `soninScaledPacketMean m delta kappa = soninScaledPacketMean (m/delta) 1 (delta*kappa)`.  The
+  modulated packet on the rescaled profile is defined and satisfies the second Meyer condition
+  (`integral_soninScaledPacket = 0`).  So a narrower annulus at a proportionally higher carrier is
+  *the same packet rescaled* — which is what will let one threshold serve a growing family, instead
+  of a fresh threshold per annulus.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — first quantitative consequence of the rescaled profile: its total mass is exactly the
   half-width times the reference mass (`integral_soninScaledAnnulusBump_scaling`, by substituting the
   dilation), and it is positive.  That is the normalisation a mean-zero modulation divides by, so the
   width now enters the packet's mean explicitly rather than being hidden in an abstract bump.
-  Lean: `formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — started the missing estimate at its root.  Width dependence cannot be extracted from
   the corpus's annulus bump: its `ContDiffBump` radii depend on the annulus, and mathlib's bump family
   is abstract, so the profiles of two different widths are unrelated — no scaling law exists to
@@ -1290,7 +1493,18 @@ cyclicity, and the single-corner formula `(8)`.
   smoothness, the support in the two intervals of half-width `delta` around `±m`, and a lower bound
   at the centre.  That identity is what will carry the width through a Fourier estimate.
   Lean: `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — **the cell family cannot serve, and the reason is the second Meyer condition.**  The
   layer term needs the dilated test vector to have *no* mass below the inner aperture:
   `Q_a v = v` requires `R_a v = 0`.  A cell vector is a nonnegative indicator, so its Fourier
@@ -1313,7 +1527,18 @@ cyclicity, and the single-corner formula `(8)`.
   claiming a linear count assumed an oscillatory family and was wrong.
   Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — the geometric half of the layer term, exactly.  The cutoff/dilation intertwining is an
   identity, so the inverse dilate of a shell mode sits in the dilated shell with no error: apertures
   below `r*s` annihilate it, apertures above `r*u` fix it, and its norm is unchanged.  For the
@@ -1324,7 +1549,18 @@ cyclicity, and the single-corner formula `(8)`.
   Lean: `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — the band term came free as well.  A shell mode is fixed by the physical cutoff at the
   shell's outer radius, so a frequency cutoff reaches it only through the physical-then-Fourier
   block — which is one of the relative ideal's own generators, a finite time--frequency rectangle,
@@ -1335,7 +1571,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — first input of the mode estimate discharged.  The two-branch estimate carries three
   error terms; the compact one is now free for *any* orthonormal sequence, by Bessel plus
   Fréchet--Riesz plus the corpus's compact/weakly-null lemma, so on the shell modes the exact
@@ -1347,7 +1594,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — built the instrument a rate needs.  The energy lower bound so far came from cutting
   the window into `N` annuli, which forces a fresh scale threshold for each `N` and so yields no
   speed.  A fixed shell already carries an orthonormal family indexed by the *mode number*
@@ -1361,7 +1619,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — the comparison itself is now a corpus theorem rather than a remark: a completion whose
   per-scale contribution eventually falls short of the coupling energy by any fixed positive amount
   leaves the channel unbounded below, whatever the completion is built from.  With the logarithmic
@@ -1375,7 +1644,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — the frequency-side contribution is now pinned from both sides: the same orthogonal
   decomposition that gives the lower bound gives `||channel_n u|| <= (largest layer logarithm) ||u||`,
   since the layer masses total at most the vector's.  So the completion this channel can supply
@@ -1392,7 +1672,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — the schedule is no longer a hypothesis.  Reading the carrier along the tower itself —
   carrier at height `2i`, inner radius at height `i`, outer at height `3i` — makes the bracketing
   automatic: geometric growth separates all three by `a(r^i - 1)`, and the inner radius climbs.  So
@@ -1409,7 +1700,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — **the blow-up condition is met on the frequency side.**  Along a height schedule whose
   inner tower radius is outrun by the carrier, whose outer radius outruns it, and whose inner radius
   climbs the tower, the reflected channel satisfies `||T_i w_i|| -> infinity` on the source packets.
@@ -1429,7 +1731,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — the mass the frequency-side bound consumes is now known not to erode: between a band
   the carrier outruns and a band that outruns the carrier, the packet holds frequency energy above a
   fixed positive level, uniformly along the clock.  Both corpus band limits in gap form feed this
@@ -1446,7 +1759,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — the estimate moved to the frequency side, which is where the packets actually travel.
   Reflecting the tower channel through the Fourier involution turns it into a step multiplier in
   frequency; the reflection is isometric, so the energy is the position channel's energy on the
@@ -1467,7 +1791,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — the lower bound restated without support hypotheses, which is the form the Fourier
   side needs: `L^2 (||layer(rho_0, rho_n) u||^2 - ||layer(rho_0, rho_m) u||^2) <= ||channel_n u||^2`.
   A packet's Fourier transform never vanishes exactly on a band, so the earlier version — which
@@ -1486,7 +1821,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — the step multiplier now has an exact energy, not just an upper bound:
   `||channel u||^2 = sum over layers of (layer logarithm)^2 times (layer mass)^2`, from finite
   Pythagoras on the orthogonal layer decomposition.  The lower bound follows —
@@ -1507,7 +1853,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — built the orthogonal decomposition the tower estimates were doing by hand: the
   difference of two nested cutoffs is the shell projection between them, disjoint shells annihilate
   in both orders, their images are orthogonal, and the layers of a tower telescope to the difference
@@ -1529,7 +1886,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — the constraint stated once, for completions of arbitrary shape: the contribution at a
   scale is at most the packet norm times the norm of the operator *applied to that packet*, and the
   packet norms are uniformly bounded, so a completion restoring the floor must satisfy
@@ -1552,7 +1920,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — and the inhabitant does not in fact help.  The channel norms diverge only because the
   tower reaches far out in position; the source packets never leave a fixed annulus, and on that
   annulus all but finitely many layers cancel between their two cutoffs, so the channel's pairing
@@ -1575,7 +1954,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — checked that the elimination has not emptied the space.  The channel acts on the
   `k`-th layer unit by `log(r^k a)`, so its norm is at least that for every layer below the tower
   height, and the norms therefore diverge with the height.  So the one surviving class — channel
@@ -1599,7 +1989,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — extended from scalars to operators: pairing the source packets against any *fixed*
   bounded operator is bounded above, because the packet energy is uniform in the frequency, so no
   fixed channel restores the floor — the concrete Burnol conductor at one aperture and one tower
@@ -1623,7 +2024,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — applied to the actual Burnol term: it is `log(b/a)`, one constant per scale, so the
   completed channel is unbounded below at every strict flag.  Any completion that restores the
   floor must tend to infinity along the scales.  The scalar-counterterm form of the weld is closed;
@@ -1647,7 +2059,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — **the coupling energy is unbounded, and that closes the bounded completion class.**
   Cutting the aperture window into `N` disjoint annuli gives `N` exactly orthogonal packets; the
   coupling carries each to its own dilate without losing norm, so after normalisation the coupling
@@ -1679,7 +2102,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — both ingredients of the growth argument are now in place.  The transition chain never
   used the packet annulus as such, only two support facts — vanishing inside the inner aperture and
   support inside the outer one — so it restates verbatim for a packet on any sub-annulus of `(b,c)`;
@@ -1710,7 +2144,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — set up the growth question, which is what the summability criterion now turns on.
   `sum_norm_sq_apply_le_hsNormSq` generalises the corpus's one-vector domination to a finite
   orthonormal family, so `N` orthonormal vectors that the coupling does not contract force
@@ -1743,7 +2188,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — the last gate is now an exact summability criterion, for completions of arbitrary
   shape: the completed packet channel is bounded below **iff** the sequence
   `min(contribution - coupling energy, 0)` is summable.  Consequently any completion that restores
@@ -1773,7 +2229,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — the last gate, for extensive completions, is now a single inequality: contribution
   per scale versus coupling energy per scale.  Above every scale's energy the completed channel is
   bounded below by zero; below the uniform floor `1/4` it is unbounded below.  The aperture
@@ -1803,7 +2270,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — the last gate is now a property of the archimedean side alone.  Since the packet
   channel is unbounded below, any counterterm bounded above on the packet family — packet-dependent
   or not — leaves it unbounded below, so a completion with a lower floor must be unbounded above
@@ -1834,7 +2312,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — Theorem G items 1--2 upgraded from *properties* of the glued functional to a
   *characterization* of it.  Directness said the presentation is unique and the restrictions said
   what the value is on each part, but nothing said the extended trace is the only assignment with
@@ -1871,7 +2360,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — `(38)`, the card's own terminus, is now a theorem *and* is false.  The explicit
   carrier equation `Q_b D_r (Q_a - Q_b) D_r (Q_b - Q_c) = 0` had never been stated in Lean — only
   its predecessors `(35)`--`(37)` had — so it is now `..._eq_zero_iff_tripleProduct`, derived from
@@ -1906,7 +2406,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninDilatedShellModeSupport.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninShellCellGeometry.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninScaledAnnulusProfile.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninScaledProfileMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketScaling.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketSupport.lean`,
+`formal/GaloisForLFunctions/HTGeometry/FourierIntegralDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourier.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketDensity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandMass.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOneSidedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLobeBumpFourier.lean`.
 - 2026-08-01 — added a worked numerical instance of the whole chain at `1 < 3/2 < 2 < 3`.  Every
   no-go here is stated over a hypothesis class, and a no-go over an empty class asserts nothing;
   the instance module makes non-vacuity checkable at a glance rather than by inspection.

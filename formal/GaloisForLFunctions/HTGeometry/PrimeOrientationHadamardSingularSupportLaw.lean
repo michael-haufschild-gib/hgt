@@ -46,8 +46,8 @@ theorem primeOrientationHadamardTail_positive_iff_hyperbolic_regular
   · intro hpositive
     have heq :=
       (primeOrientationHadamardTail_positive_iff_eq_one epsilon).mp hpositive
-    rw [heq]
-    simpa using isRegular_two_tailHadamardReducedProduct P
+    rw [heq, one_add_one_eq_two]
+    exact isRegular_two_tailHadamardReducedProduct P
   · intro hregular
     apply (primeOrientationHadamardTail_positive_iff_eq_one epsilon).mpr
     exact
@@ -65,8 +65,8 @@ theorem primeOrientationHadamardTail_positive_iff_hyperbolic_isUnit
   · intro hpositive
     have heq :=
       (primeOrientationHadamardTail_positive_iff_eq_one epsilon).mp hpositive
-    rw [heq]
-    simpa using isUnit_two_tailHadamardReducedProduct P
+    rw [heq, one_add_one_eq_two]
+    exact isUnit_two_tailHadamardReducedProduct P
   · intro hunit
     exact
       (primeOrientationHadamardTail_positive_iff_hyperbolic_regular epsilon).mpr

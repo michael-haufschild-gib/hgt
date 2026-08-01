@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HTGeometry.MonotoneLikelihoodRatio
 import GaloisForLFunctions.RHTower.SuzukiCarlemanStieltjesFlux
+import GaloisForLFunctions.RHTower.SuzukiAntiPickIdentity
+import Mathlib.Analysis.Calculus.ParametricIntegral
 
 /-!
 # Monotone spectral-ratio criterion for Suzuki's shift-variable source jet
@@ -93,6 +95,82 @@ theorem suzukiShiftSpectralMonotoneRatio_derivativeNumerator_nonpos
       suzukiShiftSpectralMonotoneRatio_crossWronskian_nonpos
         hres hresSq hresponseRes hresponseResSq hpair
   · exact sq_nonneg _
+
+/-! ## The displayed expression is the derivative
+
+The cross-Wronskian law signs an expression built from four integrals.  That it is the *derivative*
+of the quotient is a separate fact, and it is what turns the sign into monotonicity: the kernel's
+derivative in the shift variable is its own square, so differentiating under the integral turns each
+matrix element into its squared-kernel counterpart, and the quotient rule assembles them. -/
+
+omit [MeasurableSpace α] in
+/-- The kernel's derivative in the shift variable is its own square. -/
+theorem hasDerivAt_suzukiShiftResolventKernel {node : α → ℝ} {lam : ℝ} {x : α}
+    (h : node x - lam ≠ 0) :
+    HasDerivAt (fun l => suzukiShiftResolventKernel node l x)
+      (suzukiShiftResolventKernel node lam x ^ 2) lam := by
+  simpa [suzukiShiftResolventKernel, div_pow] using hasDerivAt_cauchyTermReal 1 (node x) lam h
+
+/-- **Differentiation under the integral.**  Under the standard domination hypotheses a weighted
+matrix element is differentiable in the shift variable, with the squared kernel as derivative. -/
+theorem hasDerivAt_integral_weighted_suzukiShiftResolventKernel
+    {node g : α → ℝ} {lam : ℝ} {s : Set ℝ} {bound : α → ℝ}
+    (hs : s ∈ nhds lam)
+    (hF_meas : ∀ᶠ l in nhds lam,
+      AEStronglyMeasurable (fun x => g x * suzukiShiftResolventKernel node l x) μ)
+    (hF_int : Integrable (fun x => g x * suzukiShiftResolventKernel node lam x) μ)
+    (hF'_meas : AEStronglyMeasurable
+      (fun x => g x * suzukiShiftResolventKernel node lam x ^ 2) μ)
+    (h_bound : ∀ᵐ x ∂μ, ∀ l ∈ s,
+      ‖g x * suzukiShiftResolventKernel node l x ^ 2‖ ≤ bound x)
+    (bound_int : Integrable bound μ)
+    (h_ne : ∀ᵐ x ∂μ, ∀ l ∈ s, node x - l ≠ 0) :
+    HasDerivAt (fun l => ∫ x, g x * suzukiShiftResolventKernel node l x ∂μ)
+      (∫ x, g x * suzukiShiftResolventKernel node lam x ^ 2 ∂μ) lam :=
+  (hasDerivAt_integral_of_dominated_loc_of_deriv_le hs hF_meas hF_int hF'_meas h_bound bound_int
+    (h_ne.mono fun x hx l hl =>
+      HasDerivAt.const_mul (g x) (hasDerivAt_suzukiShiftResolventKernel (hx l hl)))).2
+
+/-- **`(4)` is the derivative of the quotient.**  With both matrix elements differentiable in the
+shift variable, the quotient rule produces exactly the expression the cross-Wronskian law signs. -/
+theorem hasDerivAt_suzukiShiftRatio {node response : α → ℝ} {lam : ℝ}
+    (hD : HasDerivAt (fun l => ∫ x, suzukiShiftResolventKernel node l x ∂μ)
+      (∫ x, suzukiShiftResolventKernel node lam x ^ 2 ∂μ) lam)
+    (hN : HasDerivAt (fun l => ∫ x, response x * suzukiShiftResolventKernel node l x ∂μ)
+      (∫ x, response x * suzukiShiftResolventKernel node lam x ^ 2 ∂μ) lam)
+    (hD0 : (∫ x, suzukiShiftResolventKernel node lam x ∂μ) ≠ 0) :
+    HasDerivAt (fun l => (∫ x, response x * suzukiShiftResolventKernel node l x ∂μ) /
+        (∫ x, suzukiShiftResolventKernel node l x ∂μ))
+      (((∫ x, response x * suzukiShiftResolventKernel node lam x ^ 2 ∂μ) *
+            (∫ x, suzukiShiftResolventKernel node lam x ∂μ) -
+          (∫ x, response x * suzukiShiftResolventKernel node lam x ∂μ) *
+            (∫ x, suzukiShiftResolventKernel node lam x ^ 2 ∂μ)) /
+        (∫ x, suzukiShiftResolventKernel node lam x ∂μ) ^ 2) lam :=
+  hN.div hD hD0
+
+/-- **Theorem B.**  Monotone likelihood makes the source quotient nonincreasing in the shift
+variable: its derivative is the cross-Wronskian expression, which the two-sample identity signs. -/
+theorem deriv_suzukiShiftRatio_nonpos
+    [SFinite μ] {node response : α → ℝ} {lam : ℝ}
+    (hD : HasDerivAt (fun l => ∫ x, suzukiShiftResolventKernel node l x ∂μ)
+      (∫ x, suzukiShiftResolventKernel node lam x ^ 2 ∂μ) lam)
+    (hN : HasDerivAt (fun l => ∫ x, response x * suzukiShiftResolventKernel node l x ∂μ)
+      (∫ x, response x * suzukiShiftResolventKernel node lam x ^ 2 ∂μ) lam)
+    (hD0 : (∫ x, suzukiShiftResolventKernel node lam x ∂μ) ≠ 0)
+    (hres : Integrable (suzukiShiftResolventKernel node lam) μ)
+    (hresSq : Integrable (fun x => suzukiShiftResolventKernel node lam x ^ 2) μ)
+    (hresponseRes : Integrable
+      (fun x => response x * suzukiShiftResolventKernel node lam x) μ)
+    (hresponseResSq : Integrable
+      (fun x => response x * suzukiShiftResolventKernel node lam x ^ 2) μ)
+    (hpair : ∀ᵐ z : α × α ∂μ.prod μ,
+      lam < node z.1 ∧ lam < node z.2 ∧
+        0 ≤ (response z.2 - response z.1) * (node z.2 - node z.1)) :
+    deriv (fun l => (∫ x, response x * suzukiShiftResolventKernel node l x ∂μ) /
+      (∫ x, suzukiShiftResolventKernel node l x ∂μ)) lam ≤ 0 := by
+  rw [(hasDerivAt_suzukiShiftRatio hD hN hD0).deriv]
+  exact suzukiShiftSpectralMonotoneRatio_derivativeNumerator_nonpos
+    hres hresSq hresponseRes hresponseResSq hpair
 
 end
 

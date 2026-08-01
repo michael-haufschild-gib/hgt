@@ -32,6 +32,13 @@ noncomputable def gammaRatioLimit (P Q : Fin n → Polynomial ℂ) (u v : Fin n 
     (P α).eval 0 * (Q β).eval 0 / ((Q α).eval 0 * (P β).eval 0)
   else 0
 
+
+/-- The normalization of the limit vector at the valuation-minimal index. -/
+theorem gammaRatioLimit_self (P Q : Fin n → Polynomial ℂ) (u v : Fin n → ℕ) (β : Fin n)
+    (hP : (P β).eval 0 ≠ 0) (hQ : (Q β).eval 0 ≠ 0) : gammaRatioLimit P Q u v β β = 1 := by
+  rw [gammaRatioLimit, if_pos rfl]
+  field_simp
+
 /-- **Eq. (27) → (29) for Gamma-rational coefficients, with the limit vector named.**  A finite
 differential relation whose coefficients are Gamma-rational, normalized by a valuation-minimal
 member, collapses along the Bohr return times to the autonomous relation with coefficient vector

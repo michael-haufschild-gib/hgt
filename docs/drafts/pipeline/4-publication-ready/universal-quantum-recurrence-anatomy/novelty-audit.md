@@ -1,109 +1,127 @@
 # Novelty audit
 
-Manuscript candidate: **A universal singularity law for quantum recurrence**  
+Manuscript candidate: **An arbitrarily weak interaction can reorganize a
+quantum system's infinite future**  
 Cutoff: 1 August 2026
 
 ## Candidate contribution
 
-Novelty is assigned only to the joined **singular recurrence-completion law**:
+Novelty is assigned only to one joined **protected-relation/coupling-ray
+law**, not to its classical ingredients.
 
-1. For every finite spectrum and every positive admissible projective temporal
-   dimension, spectra of exactly that dimension occur arbitrarily close.
-2. For every observation horizon and tolerance, the nearby target-dimension
-   Hamiltonian can be chosen so that every normalized Heisenberg probe remains
-   within tolerance throughout the horizon.
-3. Every finite-time recurrence-character reporter is continuous in controls,
-   but its completed-time limit is the exact recurrence-wall indicator and is
-   discontinuous at every transverse wall.
-4. The complete boundary layer has an exact sinc profile and inverse-time
-   width; the wall first appears at its positive-character replica height.
-5. A finite `(2n+1)` phase grid per coordinate exactly isolates every
-   order-`n` character, with worst-case sharp one-coordinate threshold.
-6. Robust characters are exactly the base relation lattice intersected with
-   the annihilator of the allowed perturbation family.
-7. For countably infinite pure-point Hamiltonians, one arbitrarily weak,
-   self-adjoint, trace-class, domain-preserving perturbation produces every
-   finite temporal rank, dense full projective future tails, and no nonzero
-   exact global return.
+1. For arbitrary countable spectral profiles `E,W`, all accidental exact
+   projective relations of the affine ray `E+gW` lie in one countable set of
+   coupling strengths. Outside it,
+   \[
+     \operatorname{Rel}(E+gW)
+       =\operatorname{Rel}(E)\cap\operatorname{Rel}(W).
+   \]
+   Hence almost every strength on every ray has the same protected relation
+   lattice and the same compact future hull.
+2. For arbitrary finite factor spectra, almost every separable diagonal
+   interaction removes every balanced integer relation, changes additive
+   temporal capacity into full product capacity, and creates at least `mn`
+   temporal directions. The exceptional factor set is meagre and Lebesgue
+   null, including locally inside every parameter region.
+3. For arbitrary countable factor spectra, including unbounded ones, one
+   arbitrarily weak separable self-adjoint Schatten-1 direction makes the
+   protected lattice zero. The same direction works at every coupling
+   strength outside one countable set.
+4. Every nonexceptional strength on that infinite ray preserves the maximal
+   Hamiltonian domain, realizes every finite temporal rank, has full future
+   phase hull after every starting time, has no nonzero exact global return,
+   and forces every positive summable probe to traverse its complete allowed
+   interval with bounded waiting gaps.
+5. On every finite window, all normalized Heisenberg probes differ from the
+   uncoupled dynamics by at most `2 |t| |g| δ`. Thus completed future remains
+   saturated along arbitrarily small nonexceptional couplings while every
+   bounded-time dynamics converges uniformly to the uncoupled one.
+6. On a finite carrier the law has the exact conservation shadow
+   `τ+ρ=D-1`, and the complete finite-time crossover is the sinc
+   regularization of the relation indicator.
 
-Each statement is unconditionally proved in the internal proof corpus. The
-priority claim remains provisional.
+All mathematical statements are unconditionally proved in the internal
+formal corpus. Priority remains provisional until independent specialist
+review.
 
 ## Parent results that receive no novelty credit
 
-| Parent | What it already supplies | What it does not visibly supply |
+| Parent | What it already supplies | Residue not found in that source |
 |---|---|---|
-| [Bocchieri--Loinger recurrence](https://doi.org/10.1103/PhysRev.107.337) | qualitative finite closed recurrence | perturbative singularity, dense dimension strata, operational no-go |
-| [Campos Venuti 2015](https://arxiv.org/abs/1509.04352) | generic recurrence-time estimates and effective dimension | exact all-rank indistinguishability and wall completion |
-| [Kotowski--Oszmaniec 2026](https://arxiv.org/abs/2601.10409) | tight closed-system return-time bounds and generic saturation | classification of completed temporal dimension under arbitrary weak perturbation |
-| [Gupta--Short 2026](https://arxiv.org/abs/2604.14995) | simultaneous all-state finite recurrence bounds | discontinuous completed order parameter and exact wall spectroscopy |
-| [Anand et al. 2026](https://doi.org/10.22331/q-2026-04-20-2074) | arithmetic exact Floquet recurrence | arbitrary control-space wall trichotomy, dense rank phases, finite-horizon indistinguishability |
-| [Baroni 2026](https://arxiv.org/abs/2604.02213) | infinite-torus Kronecker flow, minimality and orbit-closure classification | trace-class/domain-preserving saturation joined to finite-time quantum stability |
-| [Amato--Facchi--Konderak 2023](https://arxiv.org/abs/2210.17513) | peripheral/attractor asymptotics of finite quantum channels | recurrence-corona extinction plus arithmetic wall mechanism |
-| [Bain 1984](https://doi.org/10.1016/0022-2364(84)90305-6) | phase cycling and coherence-pathway selection | minimum recurrence height and wall-resolved finite-grid resource law |
-| Kronecker--Weyl/Pontryagin duality | relation lattices and compact orbit closures | joined quantum perturbation, finite-horizon no-go and singular reporter law |
-| rank-nullity over `Q` | temporal-rank/relation-rank conservation | density of all physical recurrence phases with bounded-time indistinguishability |
-| Wiener/Eberlein/JdLG theory | persistent/atomic asymptotic selection | joined recurrence completion and detector hierarchy |
+| [Bocchieri--Loinger recurrence](https://doi.org/10.1103/PhysRev.107.337) | qualitative recurrence for finite closed quantum systems | coupling-ray relation classification and operational singularity |
+| [Campos Venuti 2015](https://arxiv.org/abs/1509.04352) | generic recurrence-time estimates and effective dimension | exact protected lattice for every coupling ray |
+| [Kotowski--Oszmaniec 2026](https://arxiv.org/abs/2601.10409) | tight recurrence-time bounds | arbitrarily weak separable complete conversion at finite and countable infinity |
+| [Gupta--Short 2026](https://arxiv.org/abs/2604.14995) | simultaneous finite-system recurrence bounds | countable resonance set and full-hull weak-coupling ray |
+| [Anand et al. 2026](https://doi.org/10.22331/q-2026-04-20-2074) | arithmetic classification of exact Floquet recurrence | protected-intersection law for arbitrary pure-point affine couplings |
+| [Huang 2021](https://arxiv.org/abs/2104.02053) | nondegenerate gaps almost everywhere in geometrically local Hamiltonian space | elimination of every balanced integer relation by one separable interaction |
+| [Riddell--Bertini 2024](https://doi.org/10.1103/PhysRevE.110.064101) | explicit rationally independent finite free-fermion spectra with local hopping | arbitrary input spectra, weak coupling ray, and countable trace-class completion |
+| [Baroni 2026](https://arxiv.org/abs/2604.02213) | infinite-torus Kronecker flow and orbit-closure theory | separable domain-preserving quantum realization plus complete probe recurrence |
+| Kronecker--Weyl/Pontryagin duality | relation lattices determine torus orbit closures | interaction construction and bounded-time/completed-time noncommutation |
+| rank-nullity over `Q` | finite dimension conservation | countable protected lattice and one-ray saturation |
+| Duhamel perturbation bound | finite-time stability | coexistence with complete infinite-time topological change on the same ray |
 
-## Current black-hole relevance boundary
+## Current physics relevance boundary
 
-Late-time spectral-form-factor work already treats discreteness and
-nonperturbative completion as central. [Choi--Kim--Song](https://arxiv.org/abs/2206.15357)
-state that late-time spectral form factors encode discreteness; recent work on
-[AdS black-hole saddles](https://arxiv.org/abs/2607.21704) finds that the
-semiclassical black-hole saddle loses dominance or disconnects from the
-integration cycle at late time. These sources motivate the inference problem.
+The theorem applies exactly to diagonal pure-point Hamiltonians and to
+spectral interactions that are operator-Schmidt rank one across the two
+factors. “Separable” does not mean a rank-one operator and does not imply
+geometric locality within either factor.
 
-The candidate paper proves only the model-independent boundary: bounded-time
-agreement with a Hamiltonian or effective description cannot certify its
-exact completed recurrence phase or temporal dimension. It does not derive a
-black-hole spectrum, solve information loss, or predict gravitational data.
+Late-time spectral-form-factor work motivates the inference problem in
+holography. The paper proves only a model-independent boundary: agreement of
+all normalized observables on every prescribed bounded interval cannot select
+the exact recurrence hull of a global spectral completion. It does not derive
+a black-hole spectrum, solve information loss, establish a gravitational
+interaction, or predict an experimental signal for a particular device.
 
-## Search families
+## Searches performed
 
-- quantum recurrence + stability/perturbation + infinite-time limit;
-- exact recurrence + arithmetic + Floquet spectrum;
-- rational independence + dense rank strata/nowhere continuity;
-- Kronecker flow + infinite torus + Hamiltonian lattice;
-- peripheral spectrum + open quantum asymptotics;
-- phase cycling + Fourier pathway selection + aliasing;
-- spectral form factor + discreteness + black-hole plateau;
-- noncommuting time/large-system or weak-coupling limits.
+- quantum recurrence under weak perturbations and exact energy relations;
+- coupling-strength dependence of rational independence and spectral
+  resonances;
+- exact Floquet recurrence and arithmetic spectra;
+- generic nondegenerate gaps in local Hamiltonians;
+- rationally independent free fermions with local hopping;
+- countable Kronecker flows and infinite-torus orbit closures;
+- trace-class/rank-one perturbations of pure-point Hamiltonians;
+- late-time spectral-form-factor and black-hole recurrence inference.
 
-No source was found stating the joined theorem. Search absence is not proof of
-priority.
+No located source states the joined theorem: arbitrary input spectra, exact
+generic intersection of relation lattices along every affine coupling ray,
+one weak separable direction with countable exceptional strengths, complete
+countable future-hull saturation, and uniform bounded-time indistinguishability.
+Search absence is not proof of priority.
 
 ## Kill tests
 
 Priority is killed if a prior source proves, as one theorem or an immediate
-specialization, all of the following:
+specialization, the following package:
 
-1. every positive admissible completed temporal rank is dense in finite
-   Hamiltonian space;
-2. any target rank is compatible with all normalized bounded-time probes to
-   arbitrary tolerance;
-3. completed recurrence is a discontinuous wall indicator obtained as the
-   pointwise limit of continuous reporters with exact sinc scaling;
-4. the same wall has an exact minimum replica order and finite-setting
-   coefficient recovery;
-5. robust exceptions are classified by the perturbation annihilator;
-6. the countable version has one trace-class, domain-preserving saturating
-   direction.
+1. outside a countable set of strengths,
+   `Rel(E+gW)=Rel(E)∩Rel(W)` for arbitrary countable pure-point profiles;
+2. for arbitrary product spectra, a separable trace-class `W` can be chosen
+   arbitrarily small with `Rel(W)={0}`;
+3. the same `W` gives full countable projective future, every finite temporal
+   rank, no nonzero exact return and syndetic full-interval probe recurrence
+   at every nonexceptional strength;
+4. the same coupling ray converges uniformly to the uncoupled Heisenberg
+   dynamics on every bounded time interval.
 
-A source proving one parent component removes novelty from that component but
-does not alone kill the joined mechanism.
+A source proving one elementary parent removes novelty from that component;
+it does not alone establish the joined physical conclusion.
 
 ## Hostile priority verdict
 
-`[PROMISING BUT NOT CLEARED]`
+`[STRONG CANDIDATE, NOT INDEPENDENTLY CLEARED]`
 
-Strongest objection: the law may be judged an insightful packaging of
-elementary Diophantine topology, Fourier windows and standard perturbation
-bounds. The paper earns novelty only if it shows that their exact conjunction
-changes a physical conclusion: validation on every bounded horizon cannot
-validate the exact dimension or arithmetic structure of quantum eternity,
-and the failure has a complete, measurable crossover and protection law.
+Improvement over the prior manuscript is structural, not cosmetic. One exact
+law now controls generic coupling, symmetry protection, finite rank
+conversion, countable infinite hulls, exact-return loss, approximate-return
+abundance and bounded-time indistinguishability.
 
-Independent specialists in quantum recurrence, Diophantine dynamics,
-Hamiltonian perturbation theory and multidimensional spectroscopy must audit
-priority before submission.
+Strongest objection remains serious: the protected-intersection identity is
+elementary once affine detuning is written down, and the separable witness is
+a Baire-avoidance construction in the energy basis. A hostile referee may
+judge the work mathematically elegant but physically underconstrained. Nature
+priority requires independent experts to confirm both absence of the joined
+ray theorem and importance of its infinite-time/zero-coupling conclusion.

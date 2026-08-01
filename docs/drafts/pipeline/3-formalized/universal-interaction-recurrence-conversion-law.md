@@ -310,3 +310,51 @@ metric or summable probe turns that carrier into quantitative recurrence.
 The Riemann-specific crease, meromorphic-continuation, and divisor-recovery
 claims remain in their own paper and should not be collaged into the
 interaction theorem.
+
+## [BRIDGE] Coupling-ray completion — 2026-08-01
+
+Corpus audit exposes a stronger organizing statement already latent in the
+wall and infinite-interaction theorems.  For arbitrary countable energy and
+interaction profiles, every projective character is either a relation of both
+profiles and hence protected for the whole affine coupling ray, or it can be
+a relation at at most one coupling strength.  Therefore, away from one
+countable accidental-resonance set, the complete relation lattice of
+
+\[
+  E_g=E_0+gW
+\]
+
+is exactly the intersection of the relation lattices of `E₀` and `W`.
+Equivalently, almost every coupling strength has one common completed future
+hull: the annihilator of the relations shared by the uncoupled Hamiltonian
+and its interaction direction.
+
+This is a derived bridge, not the primary conjecture: its proof route is
+visible from affine detuning and countability.  The missing formal capstone is
+the separable product realization.  For every pair of countable spectra, one
+arbitrarily weak separable trace-class direction should make the protected
+lattice zero, so every coupling strength outside a countable set has full
+projective hull, every finite temporal rank, no nonzero exact global return,
+and syndetic traversal of the complete interval of every positive summable
+probe.  The same direction must retain the dimension-free bounded-time
+Heisenberg estimate for every coupling strength.
+
+Bridge closed.  The arbitrary-profile law is formalized in
+`AffineCouplingProtectedRelationLaw.lean`:
+
+\[
+  \operatorname{Rel}(E_0+gW)
+  =\operatorname{Rel}(E_0)\cap\operatorname{Rel}(W)
+\]
+
+outside an explicit countable crossing set, and every nondegenerate interval
+contains a nonexceptional strength.  The separable product capstone is
+formalized in `SeparableInteractionRecurrenceRayLaw.lean`.  One arbitrarily
+small separable Schatten-1 direction now supplies, for every nonexceptional
+strength on the same ray, unchanged maximal domain, self-adjointness, every
+finite temporal rank, full future hull, absence of nonzero exact global
+returns, and the complete syndetic summable-probe recurrence interval.
+
+Both modules compile directly in foreground.  Batched axiom audit of the six
+load-bearing declarations reports only `propext`, `Classical.choice`, and
+`Quot.sound`.

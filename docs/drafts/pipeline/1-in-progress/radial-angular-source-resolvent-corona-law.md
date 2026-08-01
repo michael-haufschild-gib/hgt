@@ -267,3 +267,40 @@ downstream repairs.
 The paper must use this single kernel-pair theorem as architecture.  It must not present the
 instances as additional main theorems or claim that category-specific analytic estimates follow
 from the set-level identity without their verified hypotheses.
+
+## 2026-08-01 strengthening: orientation is singular support
+
+Audit of six modules previously outside umbrella reachability exposes the algebraic core that the
+kernel-pair statement alone did not identify.  For an involutive orientation class `epsilon` in a
+commutative ring,
+
+```text
+(1 - epsilon) * (1 + epsilon) = 0.
+```
+
+Thus the anti-invariant orientation is supported on singularity of the symmetric completion.  If
+`2` is regular, `epsilon != 1` is equivalent to nonregularity of `1 + epsilon`; on a module, every
+anti-invariant vector is annihilated by the symmetric channel.  The Boolean prime-tail Hadamard
+realization is exact: positivity is equivalent both to regularity and to invertibility of the
+symmetric channel, and every nonpositive orientation supplies its explicit nonzero annihilator.
+
+This strengthens the candidate law to one sentence:
+
+> A target distinction must be acquired before completion; after invariant completion it can
+> survive only on singular support, and any regular recovery is impossible, discontinuous, or
+> singular beyond every finite filtration order.
+
+The Riemann orientation charge is `c(rho)=Re(rho)-1/2`, odd under
+`rho -> 1-conj(rho)`.  Its centered character `exp(z(rho-1/2))` recovers `c(rho)` from every
+nonzero real ray.  Hedenmalm divisor transgression proves that every positive aperture has an
+infinite multiplicity-jump singular carrier.  Gamma--Stokes transgression gives the positive
+source-pointed channel before completion: the causal/anti-causal jump is a nonzero homogeneous
+Gamma character, ordinary Euler multiplication kills it exactly at Xi zeros, and the character
+does not change multiplicity.  Reflected valuation sectors then give the quantitative boundary:
+finite-Rees sewing is impossible and exact sewing cost exceeds every inverse order.
+
+These are not extra “main theorems.”  They are algebraic, analytic, and filtered realizations of
+the same support principle.  Hedenmalm dense radicals, Wold--Poisson transport, Sonin--Calkin
+seams, and Ward positivity remain respectively topological realizations or downstream consumers;
+the paper must label them accordingly.  Arithmetic sign, cancellation, and zero exclusion remain
+upstream acquisition walls and are not consequences of the universal law.

@@ -17,7 +17,7 @@ open Filter Topology MvPolynomial
 
 namespace GaloisForLFunctions
 
-variable {M : ℕ}
+variable {N M : ℕ}
 
 /-- The Fréchet derivative of the evaluation of a multivariate polynomial: the sum of its partial
 derivatives against the coordinate projections. -/
@@ -135,5 +135,42 @@ theorem jetPoly_eq_mvEval {N : ℕ} (d : Fin N → ℂ) (e : Fin N → Fin M →
     jetPoly d e y
       = MvPolynomial.eval y (∑ α : Fin N, C (d α) * ∏ j : Fin M, (X j) ^ (e α j)) := by
   simp [jetPoly, map_sum]
+
+/-- **A sum of distinct monomials with a nonzero coefficient is a nonzero polynomial.** -/
+theorem monomialSum_ne_zero (d : Fin N → ℂ) (e : Fin N → Fin M → ℕ)
+    (he : Function.Injective e) (β : Fin N) (hβ : d β ≠ 0) :
+    (∑ α : Fin N, C (d α) * ∏ j : Fin M, (X j : MvPolynomial (Fin M) ℂ) ^ (e α j)) ≠ 0 := by
+  classical
+  set s : Fin N → (Fin M →₀ ℕ) := fun α => Finsupp.equivFunOnFinite.symm (e α) with hs
+  have hmono : ∀ α : Fin N,
+      C (d α) * ∏ j : Fin M, (X j : MvPolynomial (Fin M) ℂ) ^ (e α j)
+        = MvPolynomial.monomial (s α) (d α) := by
+    intro α
+    rw [MvPolynomial.monomial_eq]
+    congr 1
+    rw [Finsupp.prod]
+    refine (Finset.prod_subset (Finset.subset_univ _) ?_).symm
+    intro j _ hj
+    have hzero : (s α) j = 0 := by
+      by_contra hne
+      exact hj (Finsupp.mem_support_iff.mpr hne)
+    rw [show e α j = (s α) j from rfl, hzero, pow_zero]
+  intro hzero
+  have hcoeff : MvPolynomial.coeff (s β)
+      (∑ α : Fin N, C (d α) * ∏ j : Fin M, (X j : MvPolynomial (Fin M) ℂ) ^ (e α j)) = d β := by
+    rw [Finset.sum_congr rfl fun α _ => hmono α, MvPolynomial.coeff_sum]
+    rw [Finset.sum_eq_single β]
+    · simp
+    · intro α _ hα
+      rw [MvPolynomial.coeff_monomial, if_neg]
+      intro hcon
+      exact hα (he (by
+        have := congrArg Finsupp.equivFunOnFinite hcon
+        simpa [hs] using this))
+    · intro h
+      exact absurd (Finset.mem_univ β) h
+  rw [hzero] at hcoeff
+  simp at hcoeff
+  exact hβ hcoeff.symm
 
 end GaloisForLFunctions

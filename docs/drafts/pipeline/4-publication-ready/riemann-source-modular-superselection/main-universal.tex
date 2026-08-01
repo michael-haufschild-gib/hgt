@@ -1,0 +1,812 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=28mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,mathrsfs}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,
+  urlcolor=blue!55!black]{hyperref}
+\setlength{\emergencystretch}{2em}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem*{maintheorem}{Orientation-before-completion theorem}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\Res}{\operatorname*{Res}}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\Rea}{\operatorname{Re}}
+\newcommand{\singsupp}{\operatorname{sing\,supp}}
+\newcommand{\dd}{\,\mathrm d}
+
+\title{\textbf{Orientation must precede completion}\\
+\large A universal singular-support law and the source-modular geometry of the Riemann divisor}
+\author{Michael Haufschild}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Every completion map defines a kernel pair: the pairs of source states it makes
+indistinguishable.  We prove the exact recovery law for an arbitrary family of heterogeneous
+channels.  A target factors through their attained joint range if and only if the intersection
+of their kernel pairs is contained in the target kernel.  Hence postprocessing can never
+recreate a distinction erased by completion.  For an involution this has a sharper algebraic
+form.  If an orientation class satisfies $\varepsilon^2=1$, then
+\[
+ (1-\varepsilon)(1+\varepsilon)=0.
+\]
+Thus nontrivial orientation is supported on singularity of the reflection-symmetric channel;
+when $2$ is regular, this statement is an equivalence.  Dense completion fibres force every
+separated continuous reporter to be constant, while an exact linear sewing from an
+all-orders-flat source germ to a finite-grade target has norm larger than every finite inverse
+filtration order.
+
+For the completed Riemann divisor, reflection is
+$\rho\mapsto1-\overline\rho$ and the missing orientation is the centered charge
+$c_\rho=\Rea\rho-\tfrac12$.  Its canonical source channel is the entire character
+\[
+ M_\rho(z)=\exp\!\left(z(\rho-\tfrac12)\right),\qquad
+ \frac{\log|M_\rho(t)|}{t}=c_\rho\quad(t\in\R\setminus\{0\}).
+\]
+The same charge is recovered from a cofinal shell-transfer modulus, principal Hurwitz
+monodromy, and the residue of the centered logarithmic divisor current.  A literal theta atom
+provides a source-pointed Gamma--Stokes factor: its causal--anti-causal jump is nonzero
+throughout the critical strip, ordinary Euler multiplication kills it exactly at zeros of
+$\xi$, and the character preserves multiplicity.  Every positive horizontal translation of
+the Xi current has infinitely many multiplicity jumps; the associated Hedenmalm orientation
+multiplier therefore has infinite, multiplicity-exact singular support.
+
+The necessity of this singular carrier is sharp.  Explicit functional-equation-preserving
+quartets retain fixed nonzero $c_\rho$ while escaping every compact holomorphic jet, every
+bounded Ward window, reciprocal-square energy, and the complete real-aperture differential
+matroid.  In the prime-valuation realization, the two reflected sectors have incompatible
+asymptotic types; no finite-order Rees operator sews them, and every exact sewing norm exceeds
+every inverse order.  These results do not prove the Riemann hypothesis.  They prove a
+classification: reflection-odd zero orientation cannot be manufactured by any regular
+post-completion construction; it must enter through a singular, source-pointed transverse
+channel before invariant completion.
+\end{abstract}
+
+\medskip
+\noindent\textbf{2020 Mathematics Subject Classification.}
+Primary 11M26, 11M41; Secondary 46B99, 60E15, 12H05.
+
+\noindent\textbf{Keywords.}
+Riemann hypothesis; Riemann xi function; kernel pair; reflection orientation; singular support;
+Gamma factor; Hedenmalm; Hellinger affinity; Rees filtration.
+
+\section{Introduction}
+
+The functional equation of the completed zeta function preserves the divisor but reverses its
+horizontal orientation.  This elementary distinction is repeatedly lost in spectral approaches
+to the Riemann hypothesis.  A positive form may retain a divisor while forgetting side; a
+squared normal coordinate retains location while forgetting direction; a compact observer may
+see every fixed jet while a divisor packet escapes to infinite height.  Hilbert--P\'olya,
+trace-formula, and theta-spectral programs therefore face the same prior question: at what stage
+must the sign of $\Rea\rho-\tfrac12$ enter?  See
+\cite{Connes1999,Meyer2005,ConnesConsani2021,Hedenmalm2026} for representative spectral and
+operator frameworks.
+
+Answer is categorical before it is analytic.  Every observation $f:X\to Y$ erases its kernel
+pair
+\[
+ K_f=\{(x,y)\in X^2:f(x)=f(y)\}.
+\]
+A downstream operation can only enlarge $K_f$.  A collection of source channels repairs an
+erased target exactly when their joint kernel separates every target-relevant collision.  This
+is the universal non-resurrection law proved in Section~\ref{sec:universal}.
+
+Reflection turns this law into a support theorem.  Write $H=1+\varepsilon$ for the symmetric
+channel and $A=1-\varepsilon$ for orientation.  The identity $AH=0$ says more than ``symmetry
+loses sign'': orientation can survive only in torsion of the symmetric completion.  A regular
+$H$ has no orientation sector.  Topological completion converts the same fact into dense-fibre
+collapse; asymptotic completion converts it into a beyond-all-orders sewing cost.  These are
+enriched consequences of one law, not independent obstructions.
+
+For a Riemann zero $\rho$, the odd target is
+\[
+ c_\rho=\Rea\rho-\frac12,
+ \qquad c_{1-\overline\rho}=-c_\rho.
+\]
+The centered character $M_\rho$ is the minimal scalar source channel retaining this charge.
+Its modulus on any nonzero real ray recovers $c_\rho$ exactly.  This character is not a decorative
+reparametrization.  It is simultaneously the cofinal shell rate, the principal Hurwitz phase,
+and the transverse factor multiplying the local divisor residue.  Section~\ref{sec:riemann}
+proves these identities.
+
+Two exact source theorems then locate the carrier.  First, the normalized theta seed has Mellin
+transform equal to the archimedean factor.  Its causal and anti-causal Green modes differ by a
+nonvanishing homogeneous Gamma character; multiplying by the Euler factor annihilates this jump
+exactly on the Xi divisor and does not alter multiplicity.  Second, the translated logarithmic
+Xi current has a removable residue germ whose value is the finite difference of translated
+multiplicities.  Every positive translation has infinitely many such jumps.  Thus the
+orientation multiplier is necessarily singular on an infinite carrier, not merely at an
+exceptional point.
+
+Finally, two sharp no-go results show that regularization cannot recover what completion erased.
+Explicit off-line quartets can escape every compact jet and bounded Ward window without changing
+their modular charge.  Prime-valuation reflection produces an all-orders-flat sector paired with
+a finite-grade sector; every exact sewing has essential norm growth.  Together these results
+explain the dense radicals, Wold--Poisson transport, Sonin--Calkin seams, Ward charges, and
+finite-reporter failures that otherwise look route-specific.  The law does not create the
+one-sided arithmetic inequality needed for zero exclusion.  It proves where such orientation
+must live and which broad classes of post-completion repair cannot contain it.
+
+The kernel-pair factorization theorem and the algebraic identity $AH=0$ are elementary; no
+novelty is claimed for them in isolation.  Contribution is the exact singular/topological/
+filtered classification and its Riemann realization by one centered source charge.  We do not
+assert that every modular character is unitary: that assertion is exactly the Riemann hypothesis.
+
+\subsection*{Main theorem}
+
+\begin{maintheorem}\label{thm:main}
+The following statements hold unconditionally.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item Let $\pi:X\to Q$, let $\tau_j:X\to T_j$ be an arbitrary family of channels, and let
+$\chi:X\to C$.  Then $\chi$ factors uniquely on the attained joint range of
+$(\pi,(\tau_j)_j)$ if and only if
+\[
+ K_\pi\cap\bigcap_jK_{\tau_j}\subseteq K_\chi.
+\]
+Every downstream function of $\pi$ has kernel containing $K_\pi$.
+
+If $\sigma$ is an involution, $\pi\sigma=\pi$, and
+$\chi\sigma=-\chi$ with $\chi$ real-valued, then $\chi$ cannot factor through $\pi$ unless
+$\chi=0$.  Every sufficient transverse channel separates $x$ from $\sigma x$ wherever
+$\chi(x)\ne0$.  In a commutative ring, $\varepsilon^2=1$ implies
+$(1-\varepsilon)(1+\varepsilon)=0$; if $2$ is regular, then
+\[
+ \varepsilon\ne1\quad\Longleftrightarrow\quad1+\varepsilon
+ \text{ is not regular}.
+\]
+
+If the fibres of $\pi$ are dense, a $T_1$-valued downstream reporter whose pullback is
+continuous at one point is constant.  If one collapsed source germ is flat to every order of a
+scale $a\to0$ while the target has a nonzero finite grade, every exact linear sewing norm
+dominates $a^{-K}$ for every $K$.
+
+\item Let $\rho$ lie in the open critical strip and put
+$M_\rho(z)=e^{z(\rho-1/2)}$.  Critical-line reflection replaces $c_\rho$ by $-c_\rho$ and
+replaces real-ray character norms by their reciprocals.  Any nonzero real ray recovers
+$c_\rho$ exactly.  At a zero of $\xi$ of multiplicity $m$, the centered outer current
+\[
+ \mathcal J_\xi(s)=-\left(s-\frac12\right)\frac{\xi'(s)}{\xi(s)}
+\]
+has residue $-m(\rho-\tfrac12)$.  The cofinal shell modulus and principal Hurwitz phase recover
+the same horizontal charge.
+
+The Gamma--Stokes jump of the literal theta seed is nonzero throughout the strip, is killed by
+Euler multiplication exactly at Xi zeros, and preserves analytic multiplicity.  Every positive
+translation of the Xi logarithmic current has infinitely many multiplicity jumps, each lying in
+the singular support of the canonical orientation multiplier.
+
+\item For every $0<c<1/2$ there are functional-equation-preserving hypertranscendental quartet
+perturbations with fixed charge $c$ which converge with every holomorphic jet on compact sets,
+whose Ward density converges uniformly to zero on every bounded window, whose reciprocal-square
+energy tends to zero, and whose complete real-aperture differential matroid is unchanged.  The
+modular character still recovers $c$, and total Ward mass remains $8\pi$ per quartet.
+
+In the reflected prime-valuation realization, the positive-charge squared affinity is flat beyond
+every power of the Wold boundary volume while the negative-charge squared affinity has finite
+Wold grade (and its unsquared affinity has half-normal grade).  No finite-Rees-moderate operator
+sews the pair.  Every exact sewing operator $R_N$
+satisfies
+\[
+ a_N^{-K}=o(\|R_N\|)\qquad(K\in\N),
+ \quad a_N=\prod_{p<N}(1-p^{-1}).
+\]
+\end{enumerate}
+\end{maintheorem}
+
+\section{The universal law}\label{sec:universal}
+
+\subsection{Kernel pairs and exact recovery}
+
+For a map $f:X\to Y$, write $K_f(x,y)$ for $f(x)=f(y)$.  For a heterogeneous family
+$\tau_j:X\to T_j$, define its record
+\[
+ \tau(x)=(\tau_j(x))_j\in\prod_jT_j.
+\]
+
+\begin{theorem}[Kernel-pair recovery law]\label{thm:kernel}
+Let $f:X\to Y$ and $\chi:X\to C$.  There is a function
+$d:f(X)\to C$ such that $\chi=d\circ f$ if and only if
+\[
+ K_f\subseteq K_\chi.
+\tag{2.1}\label{eq:kernel-refinement}
+\]
+Consequently, $\chi$ is recoverable from the record $(\pi,\tau)$ if and only if
+\[
+ K_\pi\cap\bigcap_jK_{\tau_j}\subseteq K_\chi.
+\tag{2.2}\label{eq:joint-kernel}
+\]
+If $\chi=d\circ\pi$ on all of $Q$, then $K_\pi\subseteq K_\chi$.
+\end{theorem}
+
+\begin{proof}
+If $\chi=d\circ f$, equality of $f$-values implies equality of $\chi$-values.  Conversely,
+define $d(f(x))=\chi(x)$.  Condition \eqref{eq:kernel-refinement} makes this independent of the
+chosen preimage.  Apply the result to the joint record; its kernel is exactly the intersection
+in \eqref{eq:joint-kernel}.  Last assertion is the forward implication.
+\end{proof}
+
+The theorem makes no topological, algebraic, metric, probabilistic, boundedness, or finiteness
+assumption.  It also separates necessity from construction: a new channel repairs completion
+only by splitting every completion collision on which the target differs.
+
+\begin{corollary}[Reflection orientation must be transverse]\label{cor:odd}
+Let $\sigma:X\to X$ be an involution, let $\pi\sigma=\pi$, and let
+$\chi:X\to\R$ satisfy $\chi(\sigma x)=-\chi(x)$.  If $\chi$ factors through $\pi$, then
+$\chi=0$.  If $(\pi,\tau)$ recovers $\chi$ and $\chi(x)\ne0$, then
+$\tau(\sigma x)\ne\tau(x)$.  For scalar $\tau$, its odd part
+\[
+ \tau^-(x)=\frac{\tau(x)-\tau(\sigma x)}2
+\]
+is nonzero at every such $x$.
+\end{corollary}
+
+\begin{proof}
+Invariance gives $\pi(\sigma x)=\pi(x)$.  Factorization would give
+$\chi(\sigma x)=\chi(x)$, while oddness gives $\chi(\sigma x)=-\chi(x)$; hence
+$\chi(x)=0$.  For joint recovery, equality of the $\tau$-values would place the reflected pair
+in both kernels in \eqref{eq:joint-kernel}, again forcing $\chi(x)=0$.  The scalar assertion is
+equivalent to separation.
+\end{proof}
+
+\subsection{Orientation is singular support}
+
+\begin{theorem}[Orientation--singularity law]\label{thm:singular-support}
+Let $A$ be a commutative ring and let $\varepsilon\in A$ satisfy $\varepsilon^2=1$.  Then
+\[
+ (1-\varepsilon)(1+\varepsilon)=0.
+\tag{2.3}\label{eq:orientation-annihilator}
+\]
+If $1+\varepsilon$ is regular, then $\varepsilon=1$.  If $2$ is regular, then
+\[
+ \varepsilon\ne1\quad\Longleftrightarrow\quad
+ 1+\varepsilon\text{ is not regular}.
+\tag{2.4}\label{eq:regular-equivalence}
+\]
+For an $A$-module $V$, every anti-invariant vector $v$ satisfying
+$\varepsilon v=-v$ obeys $(1+\varepsilon)v=0$.
+\end{theorem}
+
+\begin{proof}
+Identity \eqref{eq:orientation-annihilator} is $1-\varepsilon^2=0$.  Regularity cancels
+$1+\varepsilon$ and gives $1-\varepsilon=0$.  Conversely, if $\varepsilon=1$, then
+$1+\varepsilon=2$, regular by hypothesis.  Module statement is
+$v+\varepsilon v=v-v=0$.
+\end{proof}
+
+This identifies the missing object.  Reflection-odd data are not another regular coordinate of
+the symmetric completion; they are torsion supported where that completion fails to be regular.
+
+\subsection{Topological and filtered forms}
+
+\begin{proposition}[Dense-fibre collapse]\label{prop:dense}
+Let $\pi:X\to Q$ be a surjection from a topological space, suppose every fibre is dense, and let
+$Y$ be $T_1$.  If $F:Q\to Y$ has $F\circ\pi$ continuous at one point, then $F$ is constant.
+\end{proposition}
+
+\begin{proof}
+Suppose $F(q_1)\ne F(q_2)$ and choose $x$ over $q_1$.  A $T_1$ neighbourhood of $F(q_1)$
+excluding $F(q_2)$ pulls back to a neighbourhood of $x$.  Density of the fibre over $q_2$
+forces that neighbourhood to contain a point mapped to $F(q_2)$, contradiction.
+\end{proof}
+
+Let $\ell$ be a filter, let $a$ be nonzero eventually, and write
+$f=o_\ell(a^m)$ in the usual asymptotic sense.
+
+\begin{theorem}[Beyond-all-orders sewing]\label{thm:rees}
+Let $f$ be eventually nonzero and satisfy $f=o_\ell(a^m)$ for every $m\in\N$.  Let
+$g=\Theta_\ell(a^d)$ for some finite $d$.  Then for every $K$,
+\[
+ a^{-K}=o_\ell(g/f).
+\tag{2.5}\label{eq:scalar-sewing}
+\]
+More generally, if $f(x)$ and $g(x)$ take values in real normed spaces and bounded linear maps
+$R_x$ satisfy $R_xf(x)=g(x)$, then
+\[
+ a^{-K}=o_\ell(\|R_x\|)\qquad(K\in\N).
+\tag{2.6}\label{eq:operator-sewing}
+\]
+\end{theorem}
+
+\begin{proof}
+Use flatness at order $K+d$: $f=o(a^{K+d})$.  Taking reciprocals reverses the little-$o$
+relation, and multiplication by $g=\Theta(a^d)$ gives \eqref{eq:scalar-sewing}.  For the operator
+form,
+$\|g\|\le\|R_x\|\,\|f\|$, so $\|g\|/\|f\|=O(\|R_x\|)$; compose with the scalar estimate.
+\end{proof}
+
+Theorems~\ref{thm:kernel}, \ref{thm:singular-support}, and \ref{thm:rees} express one order of
+information in three enriched categories.  Kernel inclusion gives algebraic recoverability;
+fibre closure gives regularity; asymptotic grade quantifies the unavoidable singularity.
+
+\section{The Riemann orientation charge}\label{sec:riemann}
+
+Write
+\[
+ \xi(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s),
+ \qquad \xi(s)=\xi(1-s),
+\tag{3.1}\label{eq:xi}
+\]
+and let $\rho$ lie in the open critical strip.  Schwarz reflection and the functional equation
+pair $\rho$ with
+\[
+ \sigma\rho=1-\overline\rho.
+\]
+
+\subsection{The centered modular character}
+
+\begin{proposition}[Exact character recovery]\label{prop:character}
+Define
+\[
+ M_\rho(z)=\exp\!\left(z(\rho-\tfrac12)\right).
+\tag{3.2}\label{eq:character}
+\]
+Then $M_\rho(z+w)=M_\rho(z)M_\rho(w)$ and, for $t\in\R$,
+\[
+ |M_\rho(t)|=e^{t c_\rho},
+ \qquad
+ c_\rho=\frac{\log|M_\rho(t)|}{t}\quad(t\ne0).
+\tag{3.3}\label{eq:real-ray-recovery}
+\]
+Moreover,
+\[
+ c_{\sigma\rho}=-c_\rho,
+ \qquad |M_{\sigma\rho}(t)|\,|M_\rho(t)|=1.
+\tag{3.4}\label{eq:character-reflection}
+\]
+For $0<\Rea\rho<1$, the principal phase on the Hurwitz period satisfies
+\[
+ \frac{\left|\arg M_\rho(-2\pi i)\right|}{2\pi}=|c_\rho|.
+\tag{3.5}\label{eq:hurwitz-phase}
+\]
+\end{proposition}
+
+\begin{proof}
+All identities follow from the exponential law and
+$\Rea(t(\rho-1/2))=tc_\rho$.  Reflection negates $c_\rho$.  Finally
+$M_\rho(-2\pi i)=-e^{-2\pi i\rho}$; the open-strip bound
+$|c_\rho|<1/2$ places its centered argument in the principal branch and gives
+\eqref{eq:hurwitz-phase}.
+\end{proof}
+
+Thus RH is equivalent to unitarity of every divisor character on the real ray.  Proposition
+\ref{prop:character} does not prove that unitarity; it identifies the exact transverse datum a
+source argument must control.
+
+For any scale $q>1$, the cofinal shell character
+\[
+ T_q(\rho)=q^{1/2-\rho}
+\]
+has
+\[
+ \frac{\log|T_q(\rho)|}{\log q}=-c_\rho.
+\tag{3.6}\label{eq:shell-rate}
+\]
+The modular, Hurwitz, and shell charts therefore carry the same charge.
+
+\subsection{The centered outer current}
+
+\begin{proposition}[Multiplicity-weighted outer charge]\label{prop:outer-current}
+The meromorphic current
+\[
+ \mathcal J_\xi(s)=-\left(s-\frac12\right)\frac{\xi'(s)}{\xi(s)}
+\tag{3.7}\label{eq:outer-current}
+\]
+is invariant under $s\mapsto1-s$.  If $\rho$ is a zero of multiplicity $m$, then
+\[
+ \Res_{s=\rho}\mathcal J_\xi(s)=-m(\rho-\tfrac12).
+\tag{3.8}\label{eq:outer-residue}
+\]
+Its real part is $-mc_\rho$.
+\end{proposition}
+
+\begin{proof}
+Differentiating $\xi(1-s)=\xi(s)$ shows that $\xi'/\xi$ is reflection-odd; the affine factor is
+also odd, so their product is invariant.  Locally
+$\xi(s)=(s-\rho)^m u(s)$ with $u(\rho)\ne0$, hence
+$\xi'/\xi=m/(s-\rho)+u'/u$.  Equation \eqref{eq:outer-residue} follows.
+\end{proof}
+
+This residue is the outer connection of the centered character: multiplicity is longitudinal,
+while $\rho-1/2$ is the transverse source charge.  Squaring that coordinate preserves the
+zero set but destroys its reflection orientation.
+
+\section{The singular source carrier}\label{sec:source}
+
+\subsection{A literal Gamma--Stokes factor}
+
+Let
+\[
+ k(t)=2\pi(2\pi t^4-3t^2)e^{-\pi t^2},\qquad t>0,
+\tag{4.1}\label{eq:theta-seed}
+\]
+and put
+\[
+ A(s)=\frac{s(s-1)}2\pi^{-s/2}\Gamma(s/2).
+\tag{4.2}\label{eq:arch-factor}
+\]
+Direct Mellin integration gives
+\[
+ \int_0^\infty t^{s-1}k(t)\,\dd t=A(s),\qquad \Rea s>0.
+\tag{4.3}\label{eq:mellin-seed}
+\]
+Define causal and anti-causal modes
+\[
+ C_s(t)=t^{-s}\int_0^t u^{s-1}k(u)\,\dd u,
+ \qquad
+ A_s(t)=-t^{-s}\int_t^\infty u^{s-1}k(u)\,\dd u.
+\tag{4.4}\label{eq:stokes-modes}
+\]
+
+\begin{theorem}[Gamma--Stokes divisor factorization]\label{thm:gamma-stokes}
+For $\Rea s>0$ and $t>0$,
+\[
+ C_s(t)-A_s(t)=t^{-s}A(s).
+\tag{4.5}\label{eq:stokes-jump}
+\]
+In the open critical strip this jump is nonzero and
+\[
+ \zeta(s)\bigl(C_s(t)-A_s(t)\bigr)=0
+ \quad\Longleftrightarrow\quad \xi(s)=0.
+\tag{4.6}\label{eq:euler-kills}
+\]
+Multiplication by the nonvanishing character $e^{-s\log t}$ does not change the analytic
+multiplicity of a zero of $\xi$.
+\end{theorem}
+
+\begin{proof}
+Splitting the Mellin integral at $t$ gives \eqref{eq:stokes-jump}.  In the strip, $t^{-s}$ and
+$A(s)$ are nonzero.  Since $\xi(s)=A(s)\zeta(s)$ there, \eqref{eq:euler-kills} follows.
+The last assertion follows because a nonvanishing analytic factor has order zero.
+\end{proof}
+
+The theorem supplies the source-pointed object missing from a regular completed
+observer.  The homogeneous character exists before the Euler factor selects the divisor; Euler
+annihilation then records the divisor without changing its multiplicity.
+
+\subsection{Multiplicity transgression and infinite singular support}
+
+Let $m_\xi(z)$ denote analytic zero multiplicity, with value zero away from the divisor, and let
+\[
+ G_h(s)=\frac{\xi'(s)}{\xi(s)}-\frac{\xi'(s-h)}{\xi(s-h)}.
+\tag{4.7}\label{eq:shift-current}
+\]
+For $a>0$, define the Hedenmalm frequency coordinate and horizontal orientation multiplier
+\[
+ b_a(z)=-i\bigl(z-(\tfrac12+a)\bigr),\qquad
+ \mathcal Q_a(b)=
+ \frac{\xi'}{\xi}(\tfrac12+a+ib)+
+ \frac{\xi'}{\xi}(\tfrac12+a-ib).
+\tag{4.8}\label{eq:hedenmalm-multiplier}
+\]
+The functional equation gives
+$G_{2a}(z)=\mathcal Q_a(b_a(z))$.
+
+\begin{theorem}[Infinite divisor transgression]\label{thm:transgression}
+For every $h>0$, the jump set
+\[
+ \mathcal D_h=\{\rho\in\C:m_\xi(\rho-h)\ne m_\xi(\rho)\}
+\tag{4.9}\label{eq:jump-set}
+\]
+is infinite.  At each $\rho\in\mathcal D_h$, $G_h$ is nonanalytic, and the removable residue
+germ
+\[
+ x\longmapsto xG_h(\rho+x)
+\]
+has center value
+\[
+ m_\xi(\rho)-m_\xi(\rho-h)
+\tag{4.10}\label{eq:multiplicity-jump}
+\].
+Under the affine coordinate $b_a$ with $h=2a$, these points give an infinite singular subset of
+$\mathcal Q_a$ at every $a>0$.
+\end{theorem}
+
+\begin{proof}
+Local logarithmic-derivative expansions give \eqref{eq:multiplicity-jump}; a nonzero residue
+prevents analyticity.  It remains to prove infinitude.  Translation by $h$ partitions the Xi
+divisor into horizontal $h\Z$-orbits.  Each orbit contains only finitely many zeros because all
+nontrivial zeros lie in $0<\Rea s<1$.  If only finitely many orbits had a left boundary, the
+divisor would be finite, contradicting the classical infinitude of Xi zeros.  Hence infinitely
+many orbit-boundary points satisfy $m_\xi(\rho)>0=m_\xi(\rho-h)$ and lie in $\mathcal D_h$.
+Affine frequency change is injective and preserves infinitude and nonanalyticity.
+\end{proof}
+
+Theorem~\ref{thm:transgression} turns the abstract statement ``orientation lives on singular
+support'' into a multiplicity-exact Riemann theorem.  The carrier is infinite at every positive
+aperture; no simplicity hypothesis is used.
+
+\section{Sharp failure of regular recovery}\label{sec:nogo}
+
+\subsection{Compact and differential blindness}
+
+We first record why the completed function itself has maximal differential complexity.
+Put $L=\xi'/\xi$.  Gamma recurrence and the Euler series give, on $\Rea s>1$,
+\[
+ L(s+2)-L(s)-\left(\frac1{s+2}+\frac1{s+1}-\frac1{s-1}\right)
+ =\sum_{n\ge1}\frac{\Lambda(n)(1-n^{-2})}{n^s}.
+\tag{5.1}\label{eq:xi-shift-defect}
+\]
+The coefficient at every prime is nonzero.  Ostrowski's prime-support criterion therefore makes
+the right side hypertranscendental over $\C(s)$ \cite{Ostrowski1920,Nagoshi2016}.  If $\xi$ were
+differentially algebraic, then so would be $L$, its translate, and the left side, a contradiction.
+Hence $\xi$ is hypertranscendental over $\C(s)$.
+
+Fix $0<c<1/2$, put $z=s-1/2$, and for $B>0$ define
+\[
+ Q_{c,B}(s)=\left(1+\frac{(z-c)^2}{B^2}\right)
+             \left(1+\frac{(z+c)^2}{B^2}\right).
+\tag{5.2}\label{eq:quartet}
+\]
+Its zeros are $1/2\pm c\pm iB$, it satisfies the functional equation and Schwarz symmetry, and
+$Q_{c,B}\to1$ with every derivative on compact sets as $B\to\infty$.  Put
+$F_{N,B}=Q_{c,B}^N\xi$.
+
+For a nonzero meromorphic function $F$ and real aperture $h$, write
+\[
+ D_h^F(s)=\frac{F'(s+h)}{F(s+h)}-\frac{F'(s)}{F(s)}.
+\tag{5.3}\label{eq:aperture-family}
+\]
+For a family in a differential extension of $\C(s)$, its represented differential matroid records
+which finite subfamilies are differentially algebraically independent over $\C(s)$.
+
+\begin{theorem}[Escaping orientation charge]\label{thm:escape}
+For every $N\ge1$, $F_{N,B}$ is hypertranscendental, has an inserted
+off-critical quartet of multiplicity $N$, and converges to $\xi$ with all holomorphic jets on
+compact sets as $B\to\infty$.  The complete real-aperture differential matroid
+$\operatorname{Mat}(D_h^{F_{N,B}})_{h\in\R}$ equals
+$\operatorname{Mat}(D_h^\xi)_{h\in\R}$.  Its reciprocal-square orientation energy
+\[
+ E_{c,B}=\frac{\sin^2(2\pi c)}{c^2+B^2}
+\tag{5.4}\label{eq:trace-energy}
+\]
+tends to zero.  The associated nonnegative Ward density is
+\[
+ W_{c,B}^{(N)}(t)=2N\left(
+ \frac{2(c+1/2)}{(c+1/2)^2+(t+B)^2}
+ +\frac{2(c+1/2)}{(c+1/2)^2+(t-B)^2}
+ \right),
+\tag{5.5}\label{eq:ward-density}
+\]
+and satisfies
+\[
+ \int_\R W_{c,B}^{(N)}(t)\,\dd t=8\pi N,
+ \qquad
+ W_{c,B}^{(N)}\longrightarrow0
+ \text{ uniformly on bounded windows}.
+\tag{5.6}\label{eq:ward-escape}
+\]
+The centered modular character of every inserted point still recovers the fixed charge $c$.
+\end{theorem}
+
+\begin{proof}
+All divisor symmetries follow from \eqref{eq:quartet}.  Its expansion is
+$1+2(z^2+c^2)B^{-2}+(z^2-c^2)^2B^{-4}$, proving all-jet compact convergence; multiplication by a
+nonzero polynomial preserves hypertranscendence.  If $q_{c,B}=Q'_{c,B}/Q_{c,B}$, then
+\[
+ D_h^{F_{N,B}}=D_h^\xi+N\bigl(q_{c,B}(s+h)-q_{c,B}(s)\bigr).
+\]
+The correction is rational, so translation by it does not change differential dependence over
+$\C(s)$.  Formula \eqref{eq:trace-energy} gives reciprocal-square decay.  Each term in
+\eqref{eq:ward-density} is a
+positive translated Lorentzian.  The identity
+$\int_\R 2a/(a^2+t^2)\,\dd t=2\pi$ gives the mass.  On $|t|\le R<B$, both denominators are at
+least $(B-R)^2$, giving uniform decay.  Character recovery is
+\eqref{eq:real-ray-recovery}.
+\end{proof}
+
+The theorem proves simultaneous blindness of compact analysis, differential algebra, bounded
+Ward observation, and trace-class decay.  It also identifies the positive survivor: a
+height-uniform source character.  The total Ward index counts off-line defects; it does not make
+their number vanish.
+
+\subsection{Prime-valuation type fracture}
+
+For a prime $p$ and $|c|<1/2$, let
+\[
+ q_p=p^{-1},\qquad r_{p,c}=p^{-(1-2c)},\qquad u_{p,c}=p^{-(1-c)}
+\]
+and define the squared Hellinger factor
+\[
+ h_{p,c}=\frac{(1-q_p)(1-r_{p,c})}{(1-u_{p,c})^2}.
+\tag{5.7}\label{eq:hellinger-factor}
+\]
+Put
+\[
+ H_N(c)=\prod_{p<N}h_{p,c},
+ \qquad a_N=\prod_{p<N}(1-p^{-1}).
+\tag{5.8}\label{eq:hellinger-product}
+\]
+Call $R_N$ finite-Rees-moderate when $\|R_N\|=O(a_N^{-K})$ for some fixed $K$.
+
+\begin{theorem}[Reflected asymptotic-type fracture]\label{thm:fracture}
+For $0<c<1/2$,
+\[
+ H_N(c)=o(a_N^K)\quad\text{for every }K,
+ \qquad
+ H_N(-c)=\Theta(a_N).
+\tag{5.9}\label{eq:type-fracture}
+\]
+Consequently no operator family of fixed finite Rees order sends $H_N(c)$ exactly to
+$H_N(-c)$.  Every exact bounded linear sewing $R_NH_N(c)=H_N(-c)$ satisfies
+\[
+ a_N^{-K}=o(\|R_N\|)\qquad(K\in\N).
+\tag{5.10}\label{eq:essential-cost}
+\]
+\end{theorem}
+
+\begin{proof}
+For $c<0$, Euler-product algebra gives
+\[
+ \frac{H_N(c)}{a_N}
+ \longrightarrow
+ \frac{\zeta(1-c)^2}{\zeta(1-2c)}>0,
+\]
+which is the second relation in \eqref{eq:type-fracture}.  For $c>0$, the local ratio
+$r_{p,c}/q_p=p^{2c}$ is unbounded, while $u_{p,c}/r_{p,c}=p^{-c}\to0$.
+Fix $L$.  All sufficiently large primes therefore satisfy
+$8u_{p,c}\le3r_{p,c}$ and $4Lq_p\le r_{p,c}$.  Using
+$u_{p,c}^2=q_pr_{p,c}$, direct expansion gives
+\[
+ h_{p,c}\le1-\frac{r_{p,c}}4
+ \le1-Lq_p\le(1-q_p)^L,
+\]
+where the last step is Bernoulli's inequality.  Taking $L=K+1$, a finite prefix contributes only a
+constant, and Mertens divergence of $\sum_p1/p$ yields
+$H_N(c)=O(a_N^{K+1})=o(a_N^K)$.  Apply Theorem~\ref{thm:rees} with $d=1$ to obtain
+\eqref{eq:essential-cost}; finite-Rees maps preserve all-orders flatness and therefore cannot
+reach the negative sector.
+\end{proof}
+
+Reflection has therefore produced more than two different finite grades.  One side is finite
+and half-normal after taking the unsquared affinity; the other is flat beyond every Rees order.
+No bounded graded completion can sew the reflected pair.
+
+\section{Consequences and scope}\label{sec:scope}
+
+Finite reporters, tail quotients, and recurrence coronas are direct kernel-pair instances whenever
+their defining equivalence erases the reported coordinates.  Reflection-even Weil forms,
+positive Grams, and squared Julia coordinates are involutive instances whenever they identify
+$\rho$ with $1-\overline\rho$: by Corollary~\ref{cor:odd}, none can itself carry the odd charge
+$c_\rho$.  These conclusions need no spectral estimate beyond identification of the relevant
+kernel.
+
+Dense Hedenmalm radicals are the topological realization.  Once positivity and translation
+covariance place a cyclic theta orbit in a form radical, ordinary-$L^2$ density makes that radical
+dense.  A nonzero form then has a proper nonclosed radical and cannot be repaired by a regular
+Hilbert completion.  This uses the cyclicity and positivity hypotheses of the theta problem; it is
+not a set-theoretic corollary with those analytic inputs removed.
+
+Wold--Poisson transport, Sonin--Calkin seams, and Ward energies occupy the other side of the law:
+they are downstream consumers of a surviving transverse character.  Their transport and
+positivity estimates do not manufacture orientation.  Theorem~\ref{thm:gamma-stokes} and
+Theorem~\ref{thm:transgression} identify the upstream source and singular carrier that such
+consumers require.  Theorem~\ref{thm:fracture} quantifies the price of trying to replace that
+carrier by finite-grade sewing.
+
+The remaining RH wall is now exact.  Every off-line divisor character is nonunitary on the real
+source ray.  Theorems~\ref{thm:gamma-stokes} and \ref{thm:transgression} show where that character
+enters and where its multiplicity lives.  Theorems~\ref{thm:escape} and \ref{thm:fracture} prove
+that compact, invariant, finite-grade repair cannot remove it.  Zero exclusion therefore requires
+a source-derived one-sided law that forces $c_\rho=0$ before reflection-even completion.  No such
+inequality is asserted here, and no equivalence is presented as its proof.
+
+This is a closed classification, not an open-question list:
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item regular invariant postprocessing cannot recover Riemann orientation;
+\item every sufficient repair has a nonzero odd source component off the critical line;
+\item the canonical analytic carrier is necessarily singular on an infinite multiplicity-jump
+set;
+\item finite-grade sewing of reflected valuation sectors is impossible and exact sewing is
+beyond all orders;
+\item local compact and differential-algebraic agreement does not control the modular charge.
+\end{enumerate}
+
+\section{Conclusion}
+
+Completion has a universal information order.  Its kernel pair records every distinction it has
+destroyed, and no downstream operation can shrink that kernel.  Under reflection, the statement
+becomes an algebraic support law: orientation is annihilated by the symmetric channel and can
+survive only where that channel is singular.  Dense fibres and all-orders-flat germs are the
+topological and quantitative forms of the same phenomenon.
+
+For the Riemann divisor, the lost distinction is exactly
+$c_\rho=\Rea\rho-1/2$.  The centered modular character recovers it on any nonzero real source ray;
+shell transport, Hurwitz phase, and the centered divisor residue carry the same charge.  The
+literal Gamma--Stokes jump supplies a nonvanishing source-pointed factor before Euler
+annihilation, while translated Xi currents place multiplicity on an infinite singular carrier.
+Escaping quartets and reflected valuation sectors prove that neither compact agreement nor
+finite-grade operator repair can replace that carrier.
+
+The resulting principle is simple: orient before completing.  This does not prove RH, because it
+does not supply the upstream arithmetic sign forcing every centered charge to vanish.  It does
+identify the mathematical object such a proof must control and closes the broad class of regular
+post-completion mechanisms that attempt to recover orientation after it has already been erased.
+
+\begin{thebibliography}{99}
+
+\bibitem{Connes1999}
+A.~Connes,
+\newblock Trace formula in noncommutative geometry and the zeros of the Riemann zeta function,
+\newblock \emph{Selecta Math. (N.S.)} \textbf{5} (1999), 29--106.
+
+\bibitem{ConnesConsani2021}
+A.~Connes and C.~Consani,
+\newblock The scaling Hamiltonian,
+\newblock \emph{J. Operator Theory} \textbf{85} (2021), 257--276.
+
+\bibitem{GauthierXarles2009}
+P.~M. Gauthier and X.~Xarles,
+\newblock Perturbations of $L$-functions with or without non-trivial zeros off the critical line,
+\newblock arXiv:0911.5135 (2009).
+
+\bibitem{Hedenmalm2026}
+H.~Hedenmalm,
+\newblock Spectral interpretation of Riemann zeta zeros,
+\newblock arXiv:2606.17494 (2026).
+
+\bibitem{Hellinger1909}
+E.~Hellinger,
+\newblock Neue Begr\"undung der Theorie quadratischer Formen von unendlichvielen Ver\"anderlichen,
+\newblock \emph{J. Reine Angew. Math.} \textbf{136} (1909), 210--271.
+
+\bibitem{Kakutani1948}
+S.~Kakutani,
+\newblock On equivalence of infinite product measures,
+\newblock \emph{Ann. of Math. (2)} \textbf{49} (1948), 214--224.
+
+\bibitem{Meyer2005}
+R.~Meyer,
+\newblock A spectral interpretation for the zeros of the Riemann zeta function,
+\newblock arXiv:math/0412277 (2005).
+
+\bibitem{Nagoshi2016}
+H.~Nagoshi,
+\newblock The hypertranscendence of $L$-functions for
+$\mathrm{GL}_m(\mathbb A_{\mathbb Q})$,
+\newblock \emph{Bull. Aust. Math. Soc.} \textbf{93} (2016), 388--399.
+
+\bibitem{Ostrowski1920}
+A.~Ostrowski,
+\newblock \"Uber Dirichletsche Reihen und algebraische Differentialgleichungen,
+\newblock \emph{Math. Z.} \textbf{8} (1920), 241--298.
+
+\bibitem{Pong2016}
+W.-Y.~Pong,
+\newblock Applications of differential algebra to algebraic independence of arithmetic
+functions,
+\newblock \emph{Acta Arith.} \textbf{172} (2016), 149--173.
+
+\bibitem{Schwartz1966}
+L.~Schwartz,
+\newblock \emph{Th\'eorie des distributions},
+\newblock Hermann, Paris, 1966.
+
+\bibitem{Titchmarsh1986}
+E.~C.~Titchmarsh,
+\newblock \emph{The Theory of the Riemann Zeta-Function}, 2nd ed.,
+\newblock revised by D.~R.~Heath-Brown, Oxford University Press, 1986.
+
+\end{thebibliography}
+
+\end{document}

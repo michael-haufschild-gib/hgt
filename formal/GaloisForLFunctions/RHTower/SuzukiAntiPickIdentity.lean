@@ -2,6 +2,10 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Analysis.Calculus.Deriv.Inv
+import Mathlib.Algebra.Polynomial.AlgebraMap
+import Mathlib.Algebra.Polynomial.Degree.Lemmas
+import Mathlib.Algebra.Polynomial.BigOperators
+import GaloisForLFunctions.HTGeometry.LinearPartialFractions
 
 /-!
 # The diagonal anti-Pick identity
@@ -189,17 +193,22 @@ theorem deriv_cauchySumReal_pos {ι : Type*} (s : Finset ι) (w t : ι → ℝ) 
 /-- **Uniqueness of the zero on a node-free interval.**  Strict monotonicity forces at most one
 zero, which is the "one" of `(3)`'s interlacing claim; existence is the sign change at the two
 node endpoints. -/
-theorem injOn_cauchySumReal {ι : Type*} (s : Finset ι) (w t : ι → ℝ) {S : Set ℝ}
+theorem strictMonoOn_cauchySumReal {ι : Type*} (s : Finset ι) (w t : ι → ℝ) {S : Set ℝ}
     (hS : Convex ℝ S) (hnode : ∀ x ∈ S, ∀ j ∈ s, t j - x ≠ 0)
     (hw : ∀ j ∈ s, 0 < w j) (hne : s.Nonempty) :
-    Set.InjOn (fun y : ℝ => ∑ j ∈ s, w j / (t j - y)) S := by
+    StrictMonoOn (fun y : ℝ => ∑ j ∈ s, w j / (t j - y)) S := by
   have hcont : ContinuousOn (fun y : ℝ => ∑ j ∈ s, w j / (t j - y)) S := fun x hx =>
     ((hasDerivAt_cauchySumReal s w t x (hnode x hx)).continuousAt).continuousWithinAt
-  refine (StrictMonoOn.injOn ?_)
   refine strictMonoOn_of_deriv_pos hS hcont fun x hx => ?_
   have hxS : x ∈ S := interior_subset hx
   rw [(hasDerivAt_cauchySumReal s w t x (hnode x hxS)).deriv]
   exact deriv_cauchySumReal_pos s w t x (hnode x hxS) hw hne
+
+theorem injOn_cauchySumReal {ι : Type*} (s : Finset ι) (w t : ι → ℝ) {S : Set ℝ}
+    (hS : Convex ℝ S) (hnode : ∀ x ∈ S, ∀ j ∈ s, t j - x ≠ 0)
+    (hw : ∀ j ∈ s, 0 < w j) (hne : s.Nonempty) :
+    Set.InjOn (fun y : ℝ => ∑ j ∈ s, w j / (t j - y)) S :=
+  (strictMonoOn_cauchySumReal s w t hS hnode hw hne).injOn
 
 /-- Continuity on a node-free set. -/
 theorem continuousOn_cauchySumReal {ι : Type*} (s : Finset ι) (w t : ι → ℝ) {S : Set ℝ}
@@ -270,6 +279,107 @@ theorem tendsto_cauchyTerm_atTop {w t : ℝ} (hw : 0 < w) :
   have hinv := tendsto_inv_nhdsGT_zero.comp hsub
   have := hinv.const_mul_atTop hw
   simpa [div_eq_mul_inv] using this
+
+/-! ## The gap zero
+
+Between two consecutive nodes the combination blows down at the left node, blows up at the right
+node, and is strictly increasing in between.  So it has exactly one zero there.  This is what turns
+the node list into a root list: one root per gap, each in its own interval, hence all distinct. -/
+
+open Filter Set in
+/-- **The combination blows down at a node from the right.**  Its own term runs to `-infinity` and
+every other term stays continuous there, so the sum inherits the blow-up. -/
+theorem tendsto_cauchySumReal_atBot {ι : Type*} [DecidableEq ι] (s : Finset ι) (w t : ι → ℝ)
+    {i : ι} (hi : i ∈ s) (hw : 0 < w i) (hnode : ∀ j ∈ s.erase i, t j ≠ t i) :
+    Tendsto (fun x : ℝ => ∑ j ∈ s, w j / (t j - x)) (nhdsWithin (t i) (Ioi (t i))) atBot := by
+  have hsplit : (fun x : ℝ => ∑ j ∈ s, w j / (t j - x))
+      = fun x : ℝ => w i / (t i - x) + ∑ j ∈ s.erase i, w j / (t j - x) := by
+    funext x
+    exact (Finset.add_sum_erase s (fun j => w j / (t j - x)) hi).symm
+  rw [hsplit]
+  have hrest : Tendsto (fun x : ℝ => ∑ j ∈ s.erase i, w j / (t j - x))
+      (nhdsWithin (t i) (Ioi (t i))) (nhds (∑ j ∈ s.erase i, w j / (t j - t i))) := by
+    refine tendsto_finsetSum _ fun j hj => ?_
+    have hne : t j - t i ≠ 0 := sub_ne_zero_of_ne (hnode j hj)
+    exact (tendsto_const_nhds.div (tendsto_const_nhds.sub tendsto_id) hne).mono_left
+      nhdsWithin_le_nhds
+  exact Tendsto.atBot_add (tendsto_cauchyTerm_atBot hw) hrest
+
+open Filter Set in
+/-- **The combination blows up at a node from the left.** -/
+theorem tendsto_cauchySumReal_atTop {ι : Type*} [DecidableEq ι] (s : Finset ι) (w t : ι → ℝ)
+    {i : ι} (hi : i ∈ s) (hw : 0 < w i) (hnode : ∀ j ∈ s.erase i, t j ≠ t i) :
+    Tendsto (fun x : ℝ => ∑ j ∈ s, w j / (t j - x)) (nhdsWithin (t i) (Iio (t i))) atTop := by
+  have hsplit : (fun x : ℝ => ∑ j ∈ s, w j / (t j - x))
+      = fun x : ℝ => w i / (t i - x) + ∑ j ∈ s.erase i, w j / (t j - x) := by
+    funext x
+    exact (Finset.add_sum_erase s (fun j => w j / (t j - x)) hi).symm
+  rw [hsplit]
+  have hrest : Tendsto (fun x : ℝ => ∑ j ∈ s.erase i, w j / (t j - x))
+      (nhdsWithin (t i) (Iio (t i))) (nhds (∑ j ∈ s.erase i, w j / (t j - t i))) := by
+    refine tendsto_finsetSum _ fun j hj => ?_
+    have hne : t j - t i ≠ 0 := sub_ne_zero_of_ne (hnode j hj)
+    exact (tendsto_const_nhds.div (tendsto_const_nhds.sub tendsto_id) hne).mono_left
+      nhdsWithin_le_nhds
+  exact Tendsto.atTop_add (tendsto_cauchyTerm_atTop hw) hrest
+
+open Filter Set in
+/-- Just to the right of a node the combination is negative. -/
+theorem exists_mem_Ioo_cauchySumReal_neg {ι : Type*} [DecidableEq ι] (s : Finset ι) (w t : ι → ℝ)
+    {i : ι} {b : ℝ} (hi : i ∈ s) (hw : 0 < w i) (hnode : ∀ j ∈ s.erase i, t j ≠ t i)
+    (hb : t i < b) :
+    ∃ a ∈ Ioo (t i) b, (∑ j ∈ s, w j / (t j - a)) < 0 := by
+  have h1 : ∀ᶠ x in nhdsWithin (t i) (Ioi (t i)), (∑ j ∈ s, w j / (t j - x)) < 0 :=
+    (tendsto_cauchySumReal_atBot s w t hi hw hnode).eventually (eventually_lt_atBot 0)
+  have h2 : ∀ᶠ x in nhdsWithin (t i) (Ioi (t i)), x ∈ Ioo (t i) b :=
+    eventually_mem_set.mpr (Ioo_mem_nhdsGT hb)
+  obtain ⟨a, ha1, ha2⟩ := (h1.and h2).exists
+  exact ⟨a, ha2, ha1⟩
+
+open Filter Set in
+/-- Just to the left of a node the combination is positive. -/
+theorem exists_mem_Ioo_cauchySumReal_pos {ι : Type*} [DecidableEq ι] (s : Finset ι) (w t : ι → ℝ)
+    {i : ι} {a : ℝ} (hi : i ∈ s) (hw : 0 < w i) (hnode : ∀ j ∈ s.erase i, t j ≠ t i)
+    (ha : a < t i) :
+    ∃ b ∈ Ioo a (t i), 0 < ∑ j ∈ s, w j / (t j - b) := by
+  have h1 : ∀ᶠ x in nhdsWithin (t i) (Iio (t i)), 0 < ∑ j ∈ s, w j / (t j - x) :=
+    (tendsto_cauchySumReal_atTop s w t hi hw hnode).eventually (eventually_gt_atTop 0)
+  have h2 : ∀ᶠ x in nhdsWithin (t i) (Iio (t i)), x ∈ Ioo a (t i) :=
+    eventually_mem_set.mpr (Ioo_mem_nhdsLT ha)
+  obtain ⟨b, hb1, hb2⟩ := (h1.and h2).exists
+  exact ⟨b, hb2, hb1⟩
+
+open Set in
+/-- **Exactly one zero in each node gap.**  If no node lies strictly between `t i` and `t k`, the
+combination has a unique zero there: the blow-ups at the two ends give the sign change, and strict
+monotonicity gives uniqueness. -/
+theorem existsUnique_zero_in_gap {ι : Type*} [DecidableEq ι] (s : Finset ι) (w t : ι → ℝ)
+    {i k : ι} (hi : i ∈ s) (hk : k ∈ s) (hw : ∀ j ∈ s, 0 < w j) (hti : Set.InjOn t ↑s)
+    (hlt : t i < t k) (hgap : ∀ j ∈ s, t j ∉ Ioo (t i) (t k)) :
+    ∃! c : ℝ, c ∈ Ioo (t i) (t k) ∧ (∑ j ∈ s, w j / (t j - c)) = 0 := by
+  have hne : s.Nonempty := ⟨i, hi⟩
+  have hfree : ∀ x ∈ Ioo (t i) (t k), ∀ j ∈ s, t j - x ≠ 0 := by
+    intro x hx j hj hc
+    exact hgap j hj (sub_eq_zero.mp hc ▸ hx)
+  have hmono := strictMonoOn_cauchySumReal s w t (convex_Ioo (t i) (t k)) hfree hw hne
+  have hnodei : ∀ j ∈ s.erase i, t j ≠ t i := fun j hj heq =>
+    Finset.ne_of_mem_erase hj (hti (Finset.mem_of_mem_erase hj) hi heq)
+  have hnodek : ∀ j ∈ s.erase k, t j ≠ t k := fun j hj heq =>
+    Finset.ne_of_mem_erase hj (hti (Finset.mem_of_mem_erase hj) hk heq)
+  obtain ⟨a, hamem, haneg⟩ :=
+    exists_mem_Ioo_cauchySumReal_neg s w t hi (hw i hi) hnodei hlt
+  obtain ⟨b, hbmem, hbpos⟩ :=
+    exists_mem_Ioo_cauchySumReal_pos s w t hk (hw k hk) hnodek hlt
+  have hab : a < b := by
+    rcases lt_trichotomy a b with h | h | h
+    · exact h
+    · rw [h] at haneg; linarith
+    · have := hmono hbmem hamem h; simp only at this; linarith
+  have hsub : Icc a b ⊆ Ioo (t i) (t k) := Icc_subset_Ioo hamem.1 hbmem.2
+  obtain ⟨c, hcmem, hczero⟩ :=
+    exists_zero_of_sign_change s w t hab.le (fun x hx => hfree x (hsub hx)) haneg hbpos
+  refine ⟨c, ⟨Ioo_subset_Ioo hamem.1.le hbmem.2.le hcmem, hczero⟩, fun d hd => ?_⟩
+  exact hmono.injOn hd.1 (Ioo_subset_Ioo hamem.1.le hbmem.2.le hcmem) (hd.2.trans hczero.symm)
 
 /-! ## The constant term of `(3)`
 
@@ -376,6 +486,82 @@ theorem poleCoeff_eq_residue {D N rest : ℂ → ℂ} {σ D' ν : ℂ}
   have := tendsto_nhds_unique hcongr hres
   simpa using this
 
+/-! ## Clearing the denominators
+
+Multiplying a Cauchy combination by the node product turns it into a polynomial expression: each
+term loses its own factor and keeps the rest.  Doing this to numerator and denominator alike
+exhibits the shift ratio as a ratio of polynomial values, which is what connects it to the
+partial-fraction theorem over linear factors. -/
+
+/-- **The clearing identity.**  The node product times a Cauchy combination is the sum of the
+weights against the complementary products. -/
+theorem prod_mul_cauchySum {ι : Type*} [DecidableEq ι] (s : Finset ι) (w t : ι → ℝ) (z : ℂ)
+    (h : ∀ j ∈ s, ((t j : ℂ) - z) ≠ 0) :
+    (∏ j ∈ s, ((t j : ℂ) - z)) * (∑ j ∈ s, (w j : ℂ) / ((t j : ℂ) - z))
+      = ∑ j ∈ s, (w j : ℂ) * ∏ k ∈ s.erase j, ((t k : ℂ) - z) := by
+  rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl fun j hj => ?_
+  have hne := h j hj
+  rw [← Finset.mul_prod_erase s (fun k => ((t k : ℂ) - z)) hj]
+  field_simp
+
+theorem prod_node_ne_zero {ι : Type*} (s : Finset ι) (t : ι → ℝ) (z : ℂ)
+    (h : ∀ j ∈ s, ((t j : ℂ) - z) ≠ 0) : (∏ j ∈ s, ((t j : ℂ) - z)) ≠ 0 :=
+  Finset.prod_ne_zero_iff.mpr h
+
+/-- **The shift ratio is a ratio of polynomial values.**  Clearing the node product from numerator
+and denominator leaves two polynomial expressions of one lower degree. -/
+theorem cauchyRatio_eq_polyRatio {ι : Type*} [DecidableEq ι] (s : Finset ι) (w r t : ι → ℝ)
+    (z : ℂ) (h : ∀ j ∈ s, ((t j : ℂ) - z) ≠ 0) :
+    (∑ j ∈ s, ((w j * r j : ℝ) : ℂ) / ((t j : ℂ) - z))
+        / (∑ j ∈ s, ((w j : ℝ) : ℂ) / ((t j : ℂ) - z))
+      = (∑ j ∈ s, ((w j * r j : ℝ) : ℂ) * ∏ k ∈ s.erase j, ((t k : ℂ) - z))
+        / (∑ j ∈ s, ((w j : ℝ) : ℂ) * ∏ k ∈ s.erase j, ((t k : ℂ) - z)) := by
+  have hP := prod_node_ne_zero s t z h
+  rw [← prod_mul_cauchySum s (fun j => w j * r j) t z h, ← prod_mul_cauchySum s w t z h,
+    mul_div_mul_left _ _ hP]
+
+/-! ## The cleared denominator is a polynomial of one lower degree
+
+The clearing identity's right-hand side is the evaluation of an honest polynomial — the weights
+against the complementary node products.  Its degree is at most one below the node count, which is
+the input the factorization bridge needs: a polynomial of that degree with that many distinct real
+roots is exactly a constant times the product of the corresponding linear factors. -/
+
+open Polynomial in
+/-- The cleared Cauchy combination, as a polynomial. -/
+noncomputable def cauchyClearedPoly {ι : Type*} [DecidableEq ι] (s : Finset ι) (w t : ι → ℝ) :
+    ℝ[X] :=
+  ∑ j ∈ s, C (w j) * ∏ k ∈ s.erase j, (C (t k) - X)
+
+open Polynomial in
+/-- Its complex values are the cleared combination. -/
+theorem aeval_cauchyClearedPoly {ι : Type*} [DecidableEq ι] (s : Finset ι) (w t : ι → ℝ) (z : ℂ) :
+    aeval z (cauchyClearedPoly s w t)
+      = ∑ j ∈ s, (w j : ℂ) * ∏ k ∈ s.erase j, ((t k : ℂ) - z) := by
+  simp [cauchyClearedPoly]
+
+open Polynomial in
+/-- Its degree is at most one below the node count. -/
+theorem natDegree_cauchyClearedPoly_le {ι : Type*} [DecidableEq ι] (s : Finset ι) (w t : ι → ℝ) :
+    (cauchyClearedPoly s w t).natDegree ≤ s.card - 1 := by
+  refine Polynomial.natDegree_sum_le_of_forall_le _ _ fun j hj => ?_
+  refine le_trans (Polynomial.natDegree_C_mul_le _ _) ?_
+  refine le_trans (Polynomial.natDegree_prod_le _ _) ?_
+  have hterm : ∀ k ∈ s.erase j, (C (t k) - X : ℝ[X]).natDegree = 1 := fun k _ => by
+    rw [show (C (t k) - X : ℝ[X]) = -(X - C (t k)) by ring, natDegree_neg, natDegree_X_sub_C]
+  rw [Finset.sum_congr rfl hterm]
+  simp [Finset.card_erase_of_mem hj]
+
+open Polynomial in
+/-- **The clearing identity in polynomial form.**  The node product times a Cauchy combination is
+the value of a polynomial of degree at most one below the node count. -/
+theorem prod_mul_cauchySum_eq_aeval {ι : Type*} [DecidableEq ι] (s : Finset ι) (w t : ι → ℝ)
+    (z : ℂ) (h : ∀ j ∈ s, ((t j : ℂ) - z) ≠ 0) :
+    (∏ j ∈ s, ((t j : ℂ) - z)) * (∑ j ∈ s, (w j : ℂ) / ((t j : ℂ) - z))
+      = aeval z (cauchyClearedPoly s w t) := by
+  rw [aeval_cauchyClearedPoly, prod_mul_cauchySum s w t z h]
+
 /-! ## From the identity to the sign
 
 Monotone likelihood is exactly nonnegativity of every product `(r_j - r_k)(t_j - t_k)`.  With
@@ -423,6 +609,68 @@ theorem im_ratio_nonpos_of_im_mul_conj_nonpos {N D : ℂ}
   rw [im_div_eq_im_mul_conj]
   exact div_nonpos_of_nonpos_of_nonneg h (Complex.normSq_nonneg _)
 
+/-! ## Theorem A
+
+The double sum of `(1)` is not a formal device: it *is* the imaginary part of the numerator against
+the conjugate denominator.  With that identity the two halves compose — monotone likelihood makes
+the double sum nonpositive, and a ratio whose numerator against the conjugate denominator has
+nonpositive imaginary part is anti-Herglotz. -/
+
+/-- **The double sum is the numerator against the conjugate denominator.**  Expanding the product of
+the two Cauchy sums and taking imaginary parts termwise gives exactly the symmetrized sum of `(1)`.
+This is the identity that joins `(1)` to the ratio. -/
+theorem im_numerator_mul_conj_denominator {ι : Type*} (s : Finset ι) (w r t : ι → ℝ) {z : ℂ}
+    (hz : z.im ≠ 0) :
+    ((∑ j ∈ s, ((w j * r j : ℝ) : ℂ) / ((t j : ℂ) - z)) *
+        (starRingEnd ℂ) (∑ k ∈ s, ((w k : ℝ) : ℂ) / ((t k : ℂ) - z))).im
+      = ∑ j ∈ s, ∑ k ∈ s,
+          w j * r j * w k *
+            (z.im * (t k - t j) /
+              (Complex.normSq ((t j : ℂ) - z) * Complex.normSq ((t k : ℂ) - z))) := by
+  rw [map_sum, Finset.sum_mul_sum, Complex.im_sum]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [Complex.im_sum]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  have hj : ((t j : ℂ) - z) ≠ 0 := sub_ofReal_ne_zero_of_im_ne_zero hz
+  have hk : ((t k : ℂ) - z) ≠ 0 := sub_ofReal_ne_zero_of_im_ne_zero hz
+  have hrw : ((w j * r j : ℝ) : ℂ) / ((t j : ℂ) - z) *
+        (starRingEnd ℂ) (((w k : ℝ) : ℂ) / ((t k : ℂ) - z))
+      = ((w j * r j * w k : ℝ) : ℂ) *
+          ((1 / ((t j : ℂ) - z)) * (starRingEnd ℂ) (1 / ((t k : ℂ) - z))) := by
+    rw [map_div₀, map_div₀, Complex.conj_ofReal, map_one]
+    push_cast
+    ring
+  rw [hrw, Complex.im_ofReal_mul, im_cauchy_mul_conj hj hk]
+
+/-- **Theorem A.**  A ratio of Cauchy transforms with nonnegative weights and monotone responses is
+anti-Herglotz above the real axis.  The whole content is `(1)`: the symmetrized double sum carries
+`(r_j - r_k)(t_j - t_k)` behind a minus sign, so monotone likelihood makes it nonpositive, and it is
+the imaginary part of the numerator against the conjugate denominator. -/
+theorem im_shiftRatio_nonpos {ι : Type*} (s : Finset ι) (w r t : ι → ℝ) {z : ℂ} (hz : 0 < z.im)
+    (hw : ∀ j ∈ s, 0 ≤ w j)
+    (hmono : ∀ j ∈ s, ∀ k ∈ s, 0 ≤ (r j - r k) * (t j - t k)) :
+    ((∑ j ∈ s, ((w j * r j : ℝ) : ℂ) / ((t j : ℂ) - z)) /
+        (∑ j ∈ s, ((w j : ℝ) : ℂ) / ((t j : ℂ) - z))).im ≤ 0 := by
+  refine im_ratio_nonpos_of_im_mul_conj_nonpos ?_
+  rw [im_numerator_mul_conj_denominator s w r t (ne_of_gt hz)]
+  exact im_antiPick_nonpos s w r t hz hw hmono
+
+/-- **Constant responses give the constant ratio.**  If every response is the same, the numerator is
+that constant times the denominator, so the ratio is constant and its Stieltjes measure vanishes. -/
+theorem shiftRatio_eq_const_of_response_const {ι : Type*} (s : Finset ι) (w t : ι → ℝ) {r : ι → ℝ}
+    {c : ℝ} (hr : ∀ j ∈ s, r j = c) (z : ℂ)
+    (hD : (∑ j ∈ s, ((w j : ℝ) : ℂ) / ((t j : ℂ) - z)) ≠ 0) :
+    (∑ j ∈ s, ((w j * r j : ℝ) : ℂ) / ((t j : ℂ) - z)) /
+        (∑ j ∈ s, ((w j : ℝ) : ℂ) / ((t j : ℂ) - z)) = (c : ℂ) := by
+  have hnum : (∑ j ∈ s, ((w j * r j : ℝ) : ℂ) / ((t j : ℂ) - z))
+      = (c : ℂ) * ∑ j ∈ s, ((w j : ℝ) : ℂ) / ((t j : ℂ) - z) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun j hj => ?_
+    rw [hr j hj]
+    push_cast
+    ring
+  rw [hnum, mul_div_assoc, div_self hD, mul_one]
+
 /-! ## The residue sign of `(3)`
 
 The partial-fraction form `q = ell - sum nu_k/(sigma_k - z)` carries one piece of content beyond its
@@ -455,5 +703,133 @@ theorem poleCoeff_nonneg_iff_im_nonpos {ν σ : ℝ} :
   · intro hν y hy
     rw [im_poleTerm]
     exact div_nonpos_of_nonpos_of_nonneg (by linarith) hy.le
+
+/-! ## The root list and the factorization
+
+A zero of the combination is a root of the cleared polynomial, since the node product does not
+vanish there.  With the nodes in increasing order there is one such zero in each of the `n` gaps, and
+they are distinct because they lie in disjoint intervals.  That is exactly `n` distinct roots of a
+polynomial of degree at most `n`, so the factorization bridge applies and the shift ratio decomposes
+with one simple pole per gap. -/
+
+open Polynomial in
+/-- The cleared polynomial's real values. -/
+theorem eval_cauchyClearedPoly {ι : Type*} [DecidableEq ι] (s : Finset ι) (w t : ι → ℝ) (x : ℝ) :
+    (cauchyClearedPoly s w t).eval x = ∑ j ∈ s, w j * ∏ k ∈ s.erase j, (t k - x) := by
+  simp [cauchyClearedPoly, Polynomial.eval_finsetSum, Polynomial.eval_prod]
+
+open Polynomial in
+/-- The real clearing identity. -/
+theorem prod_mul_cauchySumReal_eq_eval {ι : Type*} [DecidableEq ι] (s : Finset ι) (w t : ι → ℝ)
+    (x : ℝ) (h : ∀ j ∈ s, t j - x ≠ 0) :
+    (∏ j ∈ s, (t j - x)) * (∑ j ∈ s, w j / (t j - x)) = (cauchyClearedPoly s w t).eval x := by
+  rw [eval_cauchyClearedPoly, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun j hj => ?_
+  have hne := h j hj
+  rw [← Finset.mul_prod_erase s (fun k => t k - x) hj]
+  field_simp
+
+open Polynomial in
+/-- **A zero of the combination is a root of the cleared polynomial**, since the node product does
+not vanish off the nodes. -/
+theorem isRoot_cauchyClearedPoly {ι : Type*} [DecidableEq ι] (s : Finset ι) (w t : ι → ℝ)
+    {x : ℝ} (h : ∀ j ∈ s, t j - x ≠ 0) (hx : (∑ j ∈ s, w j / (t j - x)) = 0) :
+    (cauchyClearedPoly s w t).IsRoot x := by
+  rw [Polynomial.IsRoot, ← prod_mul_cauchySumReal_eq_eval s w t x h, hx, mul_zero]
+
+open Polynomial in
+/-- The cleared polynomial is nonzero: below every node all its terms are positive. -/
+theorem cauchyClearedPoly_ne_zero {ι : Type*} [DecidableEq ι] (s : Finset ι) (w t : ι → ℝ)
+    (hw : ∀ j ∈ s, 0 < w j) (hne : s.Nonempty) : cauchyClearedPoly s w t ≠ 0 := by
+  set m := s.inf' hne t with hm
+  have hpos : ∀ j ∈ s, 0 < t j - (m - 1) := fun j hj => by
+    have hle : m ≤ t j := Finset.inf'_le t hj
+    linarith
+  intro hzero
+  have hev : (cauchyClearedPoly s w t).eval (m - 1) = 0 := by rw [hzero]; simp
+  rw [← prod_mul_cauchySumReal_eq_eval s w t _ fun j hj => ne_of_gt (hpos j hj)] at hev
+  have h1 : 0 < ∏ j ∈ s, (t j - (m - 1)) := Finset.prod_pos fun j hj => hpos j hj
+  have h2 : 0 < ∑ j ∈ s, w j / (t j - (m - 1)) :=
+    Finset.sum_pos (fun j hj => div_pos (hw j hj) (hpos j hj)) hne
+  exact absurd hev (ne_of_gt (mul_pos h1 h2))
+
+open Polynomial Set in
+/-- **The root list.**  For strictly increasing nodes with positive weights there is one zero of the
+combination in each of the `n` gaps; being in disjoint intervals they are distinct, and each is a
+root of the cleared polynomial. -/
+theorem exists_injective_gapRoots {n : ℕ} (w t : Fin (n + 1) → ℝ)
+    (hw : ∀ j, 0 < w j) (ht : StrictMono t) :
+    ∃ σ : Fin n → ℝ, (∀ i, σ i ∈ Ioo (t i.castSucc) (t i.succ)) ∧ Function.Injective σ ∧
+      ∀ i, (cauchyClearedPoly Finset.univ w t).IsRoot (σ i) := by
+  have hnone : ∀ (i : Fin n) (j : Fin (n + 1)), t j ∉ Ioo (t i.castSucc) (t i.succ) := by
+    intro i j hj
+    have h1 : i.castSucc < j := ht.lt_iff_lt.mp hj.1
+    have h2 : j < i.succ := ht.lt_iff_lt.mp hj.2
+    rw [Fin.lt_def] at h1 h2
+    simp only [Fin.val_castSucc, Fin.val_succ] at h1 h2
+    omega
+  have hgap : ∀ i : Fin n, ∃ c ∈ Ioo (t i.castSucc) (t i.succ),
+      (∑ j : Fin (n + 1), w j / (t j - c)) = 0 := by
+    intro i
+    obtain ⟨c, hc, -⟩ := existsUnique_zero_in_gap Finset.univ w t (Finset.mem_univ i.castSucc)
+      (Finset.mem_univ i.succ) (fun j _ => hw j) (fun a _ b _ h => ht.injective h)
+      (ht (Fin.castSucc_lt_succ (i := i))) fun j _ => hnone i j
+    exact ⟨c, hc.1, hc.2⟩
+  choose σ hmem hzero using hgap
+  have hstrict : ∀ i j : Fin n, i < j → σ i < σ j := by
+    intro i j hij
+    have h3 : t i.succ ≤ t j.castSucc := by
+      refine ht.monotone ?_
+      rw [Fin.le_def]
+      simp only [Fin.val_castSucc, Fin.val_succ]
+      omega
+    have h1 := (hmem i).2
+    have h2 := (hmem j).1
+    linarith
+  refine ⟨σ, hmem, ?_, fun i => ?_⟩
+  · intro i j hij
+    rcases lt_trichotomy i j with h | h | h
+    · exact absurd hij (ne_of_lt (hstrict i j h))
+    · exact h
+    · exact absurd hij (ne_of_gt (hstrict j i h))
+  · refine isRoot_cauchyClearedPoly _ w t (fun j _ hc => ?_) (hzero i)
+    exact hnone i j (by rw [sub_eq_zero.mp hc]; exact hmem i)
+
+open Polynomial Set in
+/-- **`(3)`'s factorization.**  The cleared denominator is a constant times the product of the linear
+factors at its `n` interlacing zeros, one in each node gap. -/
+theorem exists_factorization_cauchyClearedPoly {n : ℕ} (w t : Fin (n + 1) → ℝ)
+    (hw : ∀ j, 0 < w j) (ht : StrictMono t) :
+    ∃ (c : ℝ) (σ : Fin n → ℝ), Function.Injective σ ∧
+      (∀ i, σ i ∈ Ioo (t i.castSucc) (t i.succ)) ∧
+      cauchyClearedPoly Finset.univ w t = C c * ∏ i, (X - C (σ i)) := by
+  obtain ⟨σ, hmem, hinj, hroot⟩ := exists_injective_gapRoots w t hw ht
+  have hdeg : (cauchyClearedPoly (Finset.univ : Finset (Fin (n + 1))) w t).natDegree
+      ≤ (Finset.univ : Finset (Fin n)).card := by
+    simpa using natDegree_cauchyClearedPoly_le (Finset.univ : Finset (Fin (n + 1))) w t
+  obtain ⟨c, hc⟩ :=
+    GaloisForLFunctions.HTGeometry.eq_C_mul_prod_X_sub_C hinj (fun i _ => hroot i) hdeg
+  exact ⟨c, σ, hinj, hmem, hc⟩
+
+open Polynomial Set in
+/-- **`(3)`, existence.**  The cleared shift ratio decomposes as a polynomial part plus one simple
+pole in each node gap, with scalar residues. -/
+theorem exists_partialFractions_shiftRatio {n : ℕ} (w r t : Fin (n + 1) → ℝ)
+    (hw : ∀ j, 0 < w j) (ht : StrictMono t) :
+    ∃ (σ : Fin n → ℝ) (q : ℝ[X]) (ν : Fin n → ℝ), Function.Injective σ ∧
+      (∀ i, σ i ∈ Ioo (t i.castSucc) (t i.succ)) ∧
+      ((cauchyClearedPoly Finset.univ (fun j => w j * r j) t : ℝ[X]) : RatFunc ℝ)
+            / ((cauchyClearedPoly Finset.univ w t : ℝ[X]) : RatFunc ℝ)
+          = ((q : ℝ[X]) : RatFunc ℝ)
+            + ∑ i, ((C (ν i) : ℝ[X]) : RatFunc ℝ) / ((X - C (σ i) : ℝ[X]) : RatFunc ℝ) := by
+  obtain ⟨σ, hmem, hinj, hroot⟩ := exists_injective_gapRoots w t hw ht
+  have hdeg : (cauchyClearedPoly (Finset.univ : Finset (Fin (n + 1))) w t).natDegree
+      ≤ (Finset.univ : Finset (Fin n)).card := by
+    simpa using natDegree_cauchyClearedPoly_le (Finset.univ : Finset (Fin (n + 1))) w t
+  obtain ⟨q, ν, hq⟩ :=
+    GaloisForLFunctions.HTGeometry.div_eq_add_sum_const_of_isRoot
+      (cauchyClearedPoly Finset.univ (fun j => w j * r j) t) hinj (fun i _ => hroot i) hdeg
+      (cauchyClearedPoly_ne_zero Finset.univ w t (fun j _ => hw j) Finset.univ_nonempty)
+  exact ⟨σ, q, ν, hinj, hmem, hq⟩
 
 end RHTower

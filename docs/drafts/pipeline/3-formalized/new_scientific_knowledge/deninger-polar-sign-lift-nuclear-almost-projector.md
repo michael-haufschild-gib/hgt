@@ -1,7 +1,7 @@
 # Polar-sign lift of a nuclear almost-projector
 
 - **ID:** `deninger-polar-sign-lift-nuclear-almost-projector`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Label:** `DAC_POLAR_SIGN_LIFT_NUCLEAR_ALMOST_PROJECTOR`
 - **Parent:** `deninger-arithmetic-calderon-paugam-hardy-comparison`
@@ -155,9 +155,9 @@ idempotence, complementarity, mutual annihilation, self-adjointness,
 and recovery of chirality by \(\Pi_+-\Pi_-\).  Required direct-file
 check passes.
 
-The continuous-functional-calculus construction
-\(C=S|S|^{-1}\), preservation of the nuclear ideal, and the
-Fredholm kernel-zero reduction remain to be formalized.
+The continuous-functional-calculus construction \(C=S|S|^{-1}\),
+preservation of the nuclear ideal, and the Fredholm kernel-zero
+reduction are formalized; see the sections below.
 
 ## Gates
 
@@ -269,3 +269,34 @@ functional calculus and all its properties are proved.
 Only the Fredholm reduction of the invertibility hypothesis `(1)` to `ker S = 0` under `(1a)`,
 which needs Atkinson's theorem and the bounded inverse theorem.  It weakens a hypothesis; it is
 not needed for clauses 1--5.
+
+### The Fredholm reduction landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerPolarSignFredholm.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerIsUnit_of_ker_eq_bot` — **if `S² - 1` is compact and `S` is injective, then `S` is
+  invertible**.  This is the card's reduction of `(1)` to `(1a)`.
+
+The proof does not need Atkinson's theorem: mathlib's Fredholm alternative for compact operators
+(`IsCompactOperator.hasEigenvalue_or_mem_resolventSet`) applied to `K = S² - 1` at `-1` gives the
+dichotomy directly.  If `-1` were an eigenvalue of `K` there would be a nonzero `x` with
+`S(Sx) = 0`, and injectivity applied twice gives `x = 0`.  Otherwise `-1` is in the resolvent set,
+which says exactly that `S² = 1 + K` is invertible, and `Commute.isUnit_mul_iff` at
+`Commute.refl S` turns invertibility of `S²` into invertibility of `S`.
+
+### Status
+
+All five clauses, the continuous functional calculus that constructs `|S|`, and the reduction of
+the invertibility hypothesis to `ker S = 0` are formalized.  Nothing in the theorem's statement
+is left on paper.
+
+### Gates
+
+- [x] 0 → 1 in-progress: canonical ideal-stable lift
+- [x] 1 → 2 fully-proven: complete proof
+- [x] 2 → 3 formalized: clauses 1--5 for `C = S|S|⁻¹`, the CFC construction of `|S|`, and the
+      Fredholm reduction of `(1)` to `(1a)`
+- [ ] 3 → 4 publication-ready: the arithmetic specialization needs `(8)` and `(9)` — the
+      completed nuclear estimate and the vanishing middle-degree kernel — which this card
+      identifies as the open input and does not prove

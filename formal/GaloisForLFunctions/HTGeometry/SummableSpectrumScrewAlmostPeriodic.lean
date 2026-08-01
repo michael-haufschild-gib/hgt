@@ -48,7 +48,8 @@ private theorem screwSeriesTerm_isBohrAlmostPeriodic (i : I) :
       dsimp only
       have harg : omega i * (t + -(2 * Real.pi / omega i)) =
           omega i * t - 2 * Real.pi := by
-        field_simp [hwne] <;> ring
+        field_simp [hwne]
+        ring
       rw [harg, Real.cos_periodic.sub_eq]
     have hpneg : 2 * Real.pi / omega i < 0 :=
       div_neg_of_pos_of_neg (mul_pos (by norm_num) Real.pi_pos) hw

@@ -207,9 +207,7 @@ is in `formal/GaloisForLFunctions/HTGeometry/LinearPartialFractions.lean`:
 
 Every ingredient of `(3)` is therefore formal: the constant term, the zero structure, the residue
 formula, the uniqueness of the coefficients, their sign, and the general decomposition over linear
-factors.  What remains is the bridge tying them together for this particular denominator — that
-clearing the Cauchy sum gives a polynomial whose roots are exactly the `sigma_k`, simple, and
-counted by its degree.
+factors.
 
 **Complex anti-Pick identity `(1)`** is now formal, in
 `formal/GaloisForLFunctions/RHTower/SuzukiAntiPickIdentity.lean`.  The identity is algebra, not
@@ -243,11 +241,115 @@ forced pointwise:
   exactly when its coefficient is nonnegative.  No global partial-fraction theory is needed to see
   the sign; evaluating one term on one vertical line suffices, in both directions.
 
-What remains of `(3)` is the algebraic decomposition itself — that `q` *has* this form with poles at
-the uncancelled zeros of `D` — which needs the zero structure of `D` between consecutive nodes.
-Concrete eigenvector instantiation `(7)--(8)` also remains paper-level; note that `(8)` is exactly
-the monotone-likelihood hypothesis consumed by `antiPick_sum_nonneg`, so the abstract side of it is
-already discharged.
+## Theorem A itself, and the instantiation (formal)
+
+Two named theorems sat on either side of an *unstated* identity: `im_antiPick_nonpos` gave the
+symmetrized double sum its sign, and `im_ratio_nonpos_of_im_mul_conj_nonpos` consumed
+`Im(N conj D) <= 0`, but nothing said the double sum **is** `Im(N conj D)`.  Theorem A was therefore
+not proved as a statement about `q = N/D`, though every piece of it was.  The join is in
+`SuzukiAntiPickIdentity.lean`:
+
+- `im_numerator_mul_conj_denominator`: expanding the product of the two Cauchy sums and taking
+  imaginary parts termwise gives exactly the symmetrized double sum of `(1)`.
+- `im_shiftRatio_nonpos`: **Theorem A** — with nonnegative weights and monotone responses the ratio
+  of Cauchy transforms is anti-Herglotz above the real axis.
+- `shiftRatio_eq_const_of_response_const`: **constant responses give the constant ratio**, so the
+  Stieltjes measure vanishes — the card's "as required".
+
+The instantiation `(6)--(7)` is formal too, in
+`formal/GaloisForLFunctions/RHTower/SuzukiCrossResolventInstantiation.lean`.  A finite orthonormal
+eigenbasis makes the resolvent explicit, and its matrix elements are then Cauchy combinations:
+
+- `spectralOperator`, `spectralResolvent`, `spectralOperator_basis`,
+  `spectralOperator_spectralResolvent`: the construction is genuinely the resolvent — off the
+  spectrum it inverts `A - lambda`.
+- `inner_spectralResolvent`: **the matrix element is a Cauchy combination**, its weight at each node
+  the product of the two vectors' spectral coefficients.
+- `crossWeight`, `crossResponse`, `inner_spectralResolvent_denominator`,
+  `inner_spectralResolvent_numerator`: **`(6)` has the form of Theorem A exactly**, with
+  `w_j = <e,phi_j><d,phi_j>` and `r_j = <h,phi_j>/<d,phi_j>` — this is `(7)`.
+- `crossWeight_self_nonneg`: a diagonal cross weight is a square, so the weight half of `(8)` is
+  automatic when `e = d`.
+- `im_crossResolventRatio_nonpos`: **the card's "Therefore"** — given the two source-pure spectral
+  statements `(8)`, the cross-resolvent quotient is anti-Herglotz.  Nothing else about the operator
+  is used.
+
+So `(8)` really is the whole remaining source debt: the abstract implication it feeds is now formal
+end to end, and the concrete eigenvector data is all that is outstanding.
+
+## Theorem B's derivative identification (formal)
+
+The same joint appeared in Theorem B.  `suzukiShiftSpectralMonotoneRatio_derivativeNumerator_nonpos`
+signs an expression built from four integrals, and its docstring asserted that this expression "is
+exactly `(N' D - N D') / D^2`" — but nothing proved it, so the sign was not yet monotonicity of
+anything.  Closed in `SuzukiShiftSpectralMonotoneRatio.lean`:
+
+- `hasDerivAt_suzukiShiftResolventKernel`: **the kernel's shift derivative is its own square**.  This
+  is why squared resolvents appear at all — they are not a reweighting chosen for convenience but
+  what differentiation produces.
+- `hasDerivAt_integral_weighted_suzukiShiftResolventKernel`: under the standard domination
+  hypotheses, differentiating under the integral turns each matrix element into its squared-kernel
+  counterpart.
+- `hasDerivAt_suzukiShiftRatio`: **`(4)` is the derivative** — the quotient rule assembles the four
+  integrals into exactly the displayed expression.
+- `deriv_suzukiShiftRatio_nonpos`: **Theorem B** — hence the source quotient is nonincreasing in the
+  shift variable.
+
+## The measure-level anti-Pick property (formal)
+
+Theorem B's second claim — "same symmetrization as `(1)` gives anti-Pick property under standard
+integrability" — is formal in `formal/GaloisForLFunctions/RHTower/SuzukiMeasureAntiPick.lean`, and it
+needs no complex integration theory.  Splitting the kernel as `1/(t - z) = u + i v` with
+`u = (t - Re z)/|t - z|^2` and `v = Im z/|t - z|^2` reduces the whole statement to the corpus's own
+integrated monotone-likelihood theorem:
+
+- `cauchyKernel_cross_eq`: **the two-sample kernel collapses.**  In `v(x) u(y) - v(y) u(x)` the real
+  part of the spectral parameter cancels, leaving `Im z (t y - t x)` over the two squared
+  denominators — exactly the antisymmetric node increment of `(1)`.
+- `monotoneLikelihood_cauchyKernel`: so above the real axis, monotone likelihood *is* the sign
+  hypothesis `integral_mul_integral_le_of_monotoneLikelihoodKernel` consumes.
+- `integral_cauchyKernel_crossWronskian_le`: hence the cross-multiplied expectation order.
+- `im_measureNumerator_mul_conj_denominator`: the imaginary part of the numerator against the
+  conjugate denominator is those same four real integrals.
+- `im_measureShiftRatio_nonpos`: **Theorem B's anti-Pick property** — the ratio of the two Cauchy
+  transforms is anti-Herglotz above the real axis.
+
+That `Re z` cancels in the two-sample kernel is why the finite and measure symmetrizations are the
+same computation: the anti-Pick sign never depended on the real part of the spectral parameter.
+
+## Toward the Herglotz representation
+
+Theorem B's last sentence cites the Herglotz representation as a classical input.  **mathlib has no
+Herglotz representation theorem**, but it does carry the Poisson integral formula for harmonic
+functions on discs (`InnerProductSpace.HarmonicContOnCl.circleAverage_poissonKernel_smul`) and the
+mean value property.  The layer that turns those into representation input is in
+`formal/GaloisForLFunctions/HTGeometry/PoissonBoundaryPositivity.lean`:
+
+- `poissonKernel_pos`: the Poisson kernel is strictly positive at every interior point.
+- `nonneg_of_nonneg_on_sphere`: hence **positivity propagates inward** — a harmonic function
+  nonnegative on the bounding circle is nonnegative on the whole disc.
+- `poissonBoundaryData`: on every disc a nonnegative harmonic function has boundary data that
+  (i) reproduces it against the Poisson kernel, (ii) is nonnegative, and (iii) has total mass exactly
+  the centre value.  These three are precisely what a Herglotz representation consumes: a family of
+  positive boundary measures with mass pinned independently of the radius, hence uniformly bounded.
+- `harmonicAt_neg_im`, `nonneg_neg_im_on_sphere`,
+  `nonneg_neg_im_of_antiHerglotz_on_sphere`: an anti-Herglotz function supplies exactly that data,
+  and the sign propagates inward from a circle in the upper half-plane without assuming the disc
+  lies there.
+
+The boundary data is packaged as an actual measure in the same module, which is the object a weak-*
+limit acts on:
+
+- `poissonBoundaryMeasure`: the boundary values as a density in the angle.
+- `integral_poissonBoundaryMeasure`: integrating against it is the angular average weighted by the
+  boundary values.
+- `integral_one_poissonBoundaryMeasure`: **its total mass is the centre value, for every radius** —
+  the bound is uniform because it does not depend on the radius at all.
+- `integral_poissonKernel_poissonBoundaryMeasure`: testing it with the Poisson kernel returns the
+  value of the function.
+
+What remains for the representation is the weak-* limit of that bounded family as the discs exhaust
+the domain, and the transfer to the half-plane with support on the ray.
 
 ## Novelty audit
 
@@ -350,3 +452,128 @@ External priority remains unverified.
   the `sigma_k`, simple, and counted by its degree.  Checking mathlib before planning the step
   replaced a projected complex-analysis build with one lemma application.  Targeted build green,
   axiom audit `[propext, Classical.choice, Quot.sound]`.
+
+## The factorization bridge (formal)
+
+Clearing the denominators turns the shift ratio into a ratio of polynomial values, and a degree
+count turns the analytic zero structure into an actual factorization.
+
+In `formal/GaloisForLFunctions/RHTower/SuzukiAntiPickIdentity.lean`:
+
+- `prod_mul_cauchySum`: the node product times a Cauchy combination is the sum of the weights
+  against the complementary products — each term loses its own factor and keeps the rest.
+- `prod_node_ne_zero`, `cauchyRatio_eq_polyRatio`: hence `q = N/D` is a ratio of two polynomial
+  values, both of degree at most one below the node count.
+- `cauchyClearedPoly`, `aeval_cauchyClearedPoly`, `natDegree_cauchyClearedPoly_le`,
+  `prod_mul_cauchySum_eq_aeval`: the cleared combination is the value of an honest polynomial of
+  degree at most `n - 1`.
+
+In `formal/GaloisForLFunctions/HTGeometry/LinearPartialFractions.lean`:
+
+- `prod_X_sub_C_dvd_of_isRoot`: distinct roots contribute a product of linear factors as a divisor
+  (pairwise coprimality plus `Finset.prod_dvd_of_coprime`).
+- `eq_C_mul_prod_X_sub_C`: **the factorization bridge** — a polynomial of degree at most `card s`
+  vanishing at `card s` distinct points is a constant times the product of the linear factors, the
+  degrees leaving only a constant cofactor.
+- `div_eq_add_sum_const_of_isRoot`: **partial fractions from a root list** — a rational function
+  whose denominator has degree at most `card s` and vanishes at `card s` distinct points decomposes
+  as a polynomial part plus one simple pole at each point, with scalar residues.
+
+This closes the gap between the analytic zero structure and the algebraic decomposition: the
+zero-counting theorems produce a root list, and `div_eq_add_sum_const_of_isRoot` consumes a root
+list.
+
+## The root list and `(3)`'s existence (formal)
+
+The indexing step is formal too, so `(3)` holds unconditionally in the ordered-node setting.  In
+`SuzukiAntiPickIdentity.lean`:
+
+- `tendsto_cauchySumReal_atBot` / `_atTop`: the whole combination inherits the one-sided blow-up at
+  a node — its own term diverges and every other term stays continuous there.
+- `exists_mem_Ioo_cauchySumReal_neg` / `_pos`: hence it is negative just right of a node and
+  positive just left of one, which is the sign change.
+- `existsUnique_zero_in_gap`: exactly one zero between consecutive nodes — sign change for
+  existence, `strictMonoOn_cauchySumReal` for uniqueness.
+- `eval_cauchyClearedPoly`, `prod_mul_cauchySumReal_eq_eval`, `isRoot_cauchyClearedPoly`: a zero of
+  the combination is a root of the cleared polynomial, the node product not vanishing there.
+- `cauchyClearedPoly_ne_zero`: below every node all terms are positive, so the polynomial is nonzero.
+- `exists_injective_gapRoots`: with the nodes strictly increasing, the `n` gap zeros are distinct —
+  they lie in disjoint intervals — and each is a root.
+- `exists_factorization_cauchyClearedPoly`: `n` distinct roots of a polynomial of degree at most `n`,
+  so the factorization bridge gives `c * prod (X - sigma_i)` with `sigma_i` in the `i`-th gap.
+- `exists_partialFractions_shiftRatio`: **`(3)`, existence** — the cleared shift ratio is a
+  polynomial part plus one simple pole per node gap, with scalar residues.
+
+The interlacing is not an extra hypothesis: it is where the roots come from, and its disjointness is
+what makes them distinct.  Degree `n` and `n` roots then leave no freedom.
+
+- 2026-08-01 — the bridge from the analytic zero structure to the algebraic factorization is formal.
+  The clearing identity (`prod_mul_cauchySum`) makes the denominator a polynomial of degree at most
+  `n - 1`; the factorization bridge (`eq_C_mul_prod_X_sub_C`) turns `n - 1` distinct roots plus that
+  degree bound into `c * prod (X - sigma_k)`; and `div_eq_add_sum_const_of_isRoot` chains it with the
+  linear-factor partial fractions to give the decomposition shape `(3)` displays, directly from a
+  root list.  The general form needs no ordering — only the final indexing of the interlacing zeros
+  does.  All ten new declarations built green with axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(3)`'s existence is closed unconditionally.  The chain runs: blow-up at each node
+  gives a sign change; sign change plus strict monotonicity gives exactly one zero per gap
+  (`existsUnique_zero_in_gap`); the clearing identity makes each zero a root of a polynomial of
+  degree at most `n`; disjointness of the gaps makes the `n` roots distinct; and the factorization
+  bridge then forces `c * prod (X - sigma_i)`, so the partial-fraction decomposition follows with one
+  simple pole per gap (`exists_partialFractions_shiftRatio`).  The interlacing is not an added
+  assumption — it is the source of the roots, and the count is exactly tight.  Thirteen new
+  declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]` throughout.
+- 2026-08-01 — **Theorem A itself was not proved**, though every named piece of it was.
+  `im_antiPick_nonpos` signed the symmetrized double sum and `im_ratio_nonpos_of_im_mul_conj_nonpos`
+  consumed `Im(N conj D) <= 0`, but no declaration said the two were the same quantity.  The missing
+  link is `im_numerator_mul_conj_denominator` — expand the product of the Cauchy sums, take imaginary
+  parts termwise, and `(1)`'s double sum appears — after which `im_shiftRatio_nonpos` is Theorem A
+  for the ratio `q = N/D`.  Also formal: constant responses give a constant ratio and hence zero
+  measure (`shiftRatio_eq_const_of_response_const`), the card's "as required".
+- 2026-08-01 — the instantiation `(6)--(7)` formalized in `SuzukiCrossResolventInstantiation.lean`.
+  A finite orthonormal eigenbasis makes the resolvent explicit and verifiable
+  (`spectralOperator_spectralResolvent` shows it inverts `A - lambda`), and its matrix elements are
+  Cauchy combinations with weights `<e,phi_j><d,phi_j>` — which is `(7)` verbatim.  Hence
+  `im_crossResolventRatio_nonpos`: the two source-pure statements `(8)` give the anti-Herglotz sign
+  with nothing else about the operator used.  The card's "Therefore ... is discharged by two
+  source-pure spectral statements" is now a theorem rather than a connective, and `(8)`'s concrete
+  eigenvector data is the entire remaining source debt.  Eleven new declarations, targeted builds
+  green, axioms `[propext, Classical.choice, Quot.sound]` throughout.
+- 2026-08-01 — Theorem B had the same joint gap as Theorem A: the cross-Wronskian law signed an
+  expression whose docstring *claimed* it was `(N' D - N D')/D^2`, with nothing proving it.  Closed by
+  `hasDerivAt_suzukiShiftResolventKernel` (the kernel's shift derivative is its own square — which is
+  why squared resolvents appear at all, they are what differentiation produces rather than a chosen
+  reweighting), `hasDerivAt_integral_weighted_suzukiShiftResolventKernel` (differentiation under the
+  integral, standard domination), `hasDerivAt_suzukiShiftRatio` (the quotient rule assembling the
+  four integrals into the displayed expression), and `deriv_suzukiShiftRatio_nonpos` (**Theorem B**:
+  the quotient is nonincreasing in the shift variable).  A docstring asserting an identity is the
+  same failure mode as a card sentence asserting one.  Targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — Theorem B's measure-level anti-Pick property formalized
+  (`SuzukiMeasureAntiPick.lean`), and it needs no complex integration theory.  Splitting the kernel
+  into `u + i v` reduces the claim to the corpus's own `integral_mul_integral_le_of_monotoneLikelihoodKernel`:
+  the two-sample kernel `v(x) u(y) - v(y) u(x)` collapses to `Im z (t y - t x)` over the two squared
+  denominators (`cauchyKernel_cross_eq`), because **`Re z` cancels**.  That cancellation is why the
+  finite and measure symmetrizations are the same computation — the anti-Pick sign never depended on
+  the real part of the spectral parameter.  Chain: kernel sign → cross-multiplied expectation order →
+  `Im(N conj D)` in four real integrals → `im_measureShiftRatio_nonpos`.  Eight new declarations,
+  targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — first installment on Theorem B's Herglotz representation step.  **mathlib has no
+  Herglotz representation theorem**, but it does have the Poisson integral formula for harmonic
+  functions on discs and the mean value property, so the missing layer is the positivity/mass
+  packaging: `poissonKernel_pos` (strict interior positivity), `nonneg_of_nonneg_on_sphere`
+  (positivity propagates inward), and `poissonBoundaryData` — on every disc the boundary data
+  reproduces the function, is nonnegative, and has total mass exactly the centre value.  That third
+  component is the uniform bound the weak-* limit needs, and it comes free from the mean value
+  property rather than from any estimate.  An anti-Herglotz function supplies this data on every
+  circle in the upper half-plane (`nonneg_neg_im_of_antiHerglotz_on_sphere`), and the sign then
+  propagates inward without assuming the disc lies in the half-plane.  Remaining: the weak-* limit as
+  the discs exhaust the domain, and the half-plane transfer with support on the ray.  Six new
+  declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the boundary data packaged as a measure (`poissonBoundaryMeasure`), with the three
+  properties stated as integrals against it: the angular-average formula
+  (`integral_poissonBoundaryMeasure`), the representation
+  (`integral_poissonKernel_poissonBoundaryMeasure`), and the total mass
+  (`integral_one_poissonBoundaryMeasure`).  The mass identity is the point: it equals the centre
+  value for **every** radius, so the family is uniformly bounded with no estimate involved — the
+  mean value property supplies the compactness input directly.  Four new declarations, targeted build
+  green, axioms `[propext, Classical.choice, Quot.sound]`.

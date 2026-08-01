@@ -2000,6 +2000,127 @@ central line holds on the whole strip (`jetPoly_eqOn_zero_of_line`).  A relation
 jet at every point of the line therefore yields the derived relation, of strictly smaller degree in
 that jet: the descent that will eliminate the last hypothesis.
 
+### Eq. (9) is now a theorem over the Gamma field
+
+The nondegeneracy hypothesis is gone.  The relation is carried as a multivariate polynomial in the
+jets, whose analytic data is computed by `pderiv`:
+
+- `HTGeometry/MvPolynomialJetDerivative.lean` — `hasFDerivAt_mvEval`: the evaluation of a
+  multivariate polynomial is Fréchet differentiable with derivative `∑_k (∂_k p)(y) · proj_k`, proved
+  by the monomial induction; `partialCoeff_mvJetDeriv` reads off the partial derivatives, and
+  `monomialSum_ne_zero` shows a sum of distinct monomials with a nonzero coefficient is a nonzero
+  polynomial.
+- `HTGeometry/MvPolynomialPDerivDegree.lean` — differentiating strictly drops the degree in that
+  variable (`degreeOf_pderiv_lt`), and in characteristic zero a variable with vanishing partial
+  derivative does not occur (`degreeOf_eq_zero_of_pderiv_eq_zero`).
+- `HTGeometry/MvPolynomialDropLast.lean` — a relation that no longer involves its top jet is a
+  relation in one variable fewer, still nonzero (`dropLastPoly_ne_zero`).
+- `HTGeometry/ConstantSolutionPhaseRank.lean` — a holomorphic function satisfying a nonzero algebraic
+  equation takes values in a finite set, hence is constant on the connected strip; a constant function
+  has identically zero translation distance, so its frequency group is trivial and its rank is zero.
+
+The descent (`HTGeometry/PolynomialRelationPhaseRank.lean`) puts these together.  Given any nonzero
+polynomial relation satisfied on the strip: if it is nondegenerate in the top jet at some point of the
+line, the phase-rank bound applies; otherwise its derivative in the top jet is again a relation, of
+strictly smaller degree there; when that derivative vanishes identically the relation drops in order;
+and the order-zero case is the constant case.  Hence
+
+> **`rank_finite_of_polynomial_relation`**: a strip almost periodic holomorphic function satisfying
+> *any* nonzero polynomial relation in its jets has `rank_ℤ Γ_B(f) < ∞`.
+
+Combined with the collapse (`HTGeometry/GammaRationalFinitePhaseRank.lean`), and with
+`gammaRatioLimit_self` giving coefficient `1` at the valuation-minimal index:
+
+> **`rank_finite_of_gamma_rational_relation`** — *eq. (9) over the Gamma field*: a strip almost
+> periodic holomorphic solution of a differential relation with Gamma-rational coefficients and
+> distinct monomials has finite rational Bohr frequency rank.  Hypotheses: the strip almost
+> periodicity of the solution, the Gamma-rational form of the coefficients, valuation minimality of
+> the normalizing index, and distinctness of the monomials.  No analytic input is left open.
+
+### The law is not vacuous, and the witness has nonzero rank
+
+`HTGeometry/GammaRationalWitness.lean` inhabits the whole hypothesis class.  For a nonzero real
+frequency `μ` the exponential `Φ(z) = e^{μ z}`:
+
+- is entire and almost periodic on every vertical strip (`isStripAlmostPeriodic_expLine`);
+- has jets `Φ^{(k)} = μ^k Φ` (`iteratedDeriv_expLine`), so it solves `Φ' − μ Φ = 0`, a relation whose
+  coefficients `1` and `−μ` are Gamma-rational (constant) and whose two monomials are distinct;
+- restricts on the line to a bounded continuous function with totally bounded orbit
+  (`expLineBC`), so every carrier hypothesis holds.
+
+Hence `rank_finite_expLine`: the law applies and gives a finite bound.  Moreover the frequency `μ` is
+a frequency of the hull (`isBohrHullFrequency_expLineBC`: the character is Lipschitz for the
+translation distance), so
+
+> **`rank_expLine_pos_and_finite`**: `1 ≤ rank_ℤ Γ_B(f) ≤ K`.
+
+The conclusion is therefore a statement about a nonempty class containing objects of nonzero phase
+rank — not an empty or trivial one.
+
+### The divisor clause
+
+`HTGeometry/ObservableFrequencyRank.lean` proves the second half of the finite-phase theorem: the
+same conclusion for every continuous translation-equivariant observable.  Call `g` *dominated* by `f`
+when the translates of `g` are uniformly close whenever those of `f` are — the precise sense in which
+an observable is a continuous equivariant reading of `f`, and exactly the comparison the carrier maps
+already use.  Then
+
+- every frequency character of `g` is uniformly continuous for the translation distance of `f`
+  (`isBohrHullFrequency_of_dominated`), so `Γ_B(g) ≤ Γ_B(f)` as subgroups of `ℝ`;
+- hence `rank_le_of_dominated`: `rank_ℤ Γ_B(g) ≤ rank_ℤ Γ_B(f)`;
+- hence **`rank_finite_of_dominated_gamma_rational`**: every observable dominated by a strip almost
+  periodic solution of a Gamma-rational differential relation has finite rational Bohr frequency rank.
+
+Lipschitz functions of the values are dominated observables (`isDominatedObservable_comp`), so the
+clause is not vacuous either.
+
+### Next formalization target
+
+What is Lean-complete is the law over the Gamma-rational subfield `ℂ(Γ)`: coefficients of the form
+`Γ^u p(Γ) / (Γ^v q(Γ))`.  The remaining formal target is eq. (3) for the *full* differential field
+`ℂ(s)⟨Γ⟩`, whose elements involve `s` and the digamma tower `ψ, ψ', …`.  That needs the vertical
+asymptotics of `ψ` and its derivatives (Stirling on vertical lines) and the monomial valuation
+`F = c Γ^k s^a (log s)^b (1 + o(1))` built from them — the "analytic Poincaré transfer" named below.
+
+### Eq. (14): the shift equation has no rational solution
+
+`HTGeometry/RationalShiftNoSolution.lean` proves the elementary pole-orbit step of §2 in a
+junk-value-free algebraic form.  Writing a candidate solution as `p/q` and clearing denominators,
+`IsShiftInvSqSolution p q` is the polynomial identity `X²(p(X+1)q − p·q(X+1)) = −q·q(X+1)`.  Then:
+
+- the value at `0` forces `q(0) = 0` or `q(1) = 0`, so `q` is nonconstant;
+- for coprime `p, q`: every nonzero root of `q` is followed by a root one step up, and every root
+  other than `1` is preceded by a root one step down, so the root of largest real part is `0` and the
+  root of smallest real part is `1` — impossible;
+- the general case descends on a common root, cancelling the factor `(X − a)(X + 1 − a)`.
+
+> **`no_rational_shift_inv_sq`**: no pair `(p, q)` with `q ≠ 0` solves the cleared-denominator shift
+> equation — i.e. `y(s+1) − y(s) = −1/s²` has no solution in `ℂ(s)`.
+
+This complements the corpus's meromorphic version
+(`GammaProjectiveBoundary.no_finitePole_solution_digammaShiftDerivative`), which assumes the shift
+identity at *every* point of `ℂ` — a hypothesis a rational function cannot satisfy at its own poles
+under Lean's junk-value convention.  The polynomial form has no such gap.
+
+### Survey of the digamma layer already in the corpus
+
+Before building the analytic transfer, the existing assets are:
+
+- `RHTower/DigammaImaginaryVerticalAsymptotic.digamma_vertical_sub_log_I_tendsto_zero` —
+  `ψ(σ+it) − (log t + iπ/2) → 0` on every vertical line with `σ ≥ 0`: eq. (19)'s leading term for
+  `ψ` itself;
+- `HTGeometry/DigammaSectorBounds.exists_norm_iteratedDeriv_succ_digamma_halfShift_le` — every
+  positive-order polygamma is uniformly bounded on the Watson sector (its series representation is
+  present but `private`);
+- `HTGeometry/DigammaHypertranscendental` — Hölder's theorem for `ψ`;
+- `HTGeometry/DigammaGammaFirstOrder`, `GammaLogDeriv` — the shift and reflection identities.
+
+The missing analytic input for eq. (19) with nonconstant digamma-field data is the *vertical decay*
+`ψ^{(m+1)}(σ+it) → 0` for `m ≥ 0`, which follows from the polygamma series
+`ψ^{(m+1)}(z) = (−1)^m (m+1)! ∑_n (z+n)^{−(m+2)}` by dominated convergence.  With `ψ ~ log` and the
+derivatives vanishing, a jet polynomial in the digamma tower has leading term the pure `ψ^d`
+monomial, which is eq. (19) with `b = d`.  That is the next construction.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

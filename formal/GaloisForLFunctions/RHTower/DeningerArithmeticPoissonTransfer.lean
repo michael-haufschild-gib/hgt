@@ -182,6 +182,21 @@ theorem deningerRawDeckMap_flow_eq_frobenius_fixedHeight
       (F q xu.1, xu.2) := by
   simp [deningerRawDeckMap, deningerRawSuspensionFlow, hq]
 
+/-- Meyer's summation operator `Zf(x) = ∑_{n ≥ 1} f(n x)`. -/
+noncomputable def deningerMeyerSum (f : ℝ → ℂ) (x : ℝ) : ℂ :=
+  ∑' n : ℕ, f (((n : ℝ) + 1) * x)
+
+/--
+**The Poisson summand identity.**  Summing the discrete flow pullbacks of a radial section over
+positive times `log n` gives the radial section of Meyer's summation operator.  Each summand is
+an ordinary dilation, so the identity is termwise.
+-/
+theorem deningerPoissonSum_eq_meyerSum (f : ℝ → ℂ) (u : ℝ) (z : ℂ) :
+    ∑' n : ℕ, f (deningerSuspensionLogRadius (u * ((n : ℝ) + 1)) z)
+      = deningerMeyerSum f (deningerSuspensionLogRadius u z) := by
+  refine tsum_congr fun n => ?_
+  rw [deningerSuspensionLogRadius_flow]
+
 end SuspensionFlow
 
 end

@@ -1,34 +1,38 @@
 # Popular summary
 
-## Will your quantum past ever return?
+## The tiniest interaction can change a quantum system’s eternity
 
-Quantum mechanics allows a system to revisit its past, but “it comes back”
-turns out to hide four different questions.
+Imagine two quantum systems connected by a knob. At zero, each system’s
+energy rhythms impose exact restrictions on how the pair can return. Turn the
+knob by an amount too small for any fixed-duration experiment to resolve.
+Their short-term behaviour barely changes. Their infinite future can change
+completely.
 
-The new law says:
+The new law says every exact repeating rhythm has only two possibilities:
 
-- **How much of the past can return?** Exactly the part stored in spectral
-  modes that do not decay.
-- **When must it return?** The waiting time is controlled by how much
-  weighted phase information must be synchronized, not merely by the number
-  of quantum states.
-- **What counts as a return?** Different observers can see different temporal
-  dimensions because they access different networks of energy coherences.
-- **What decides the complete long-time pattern?** Collisions between energy
-  gaps determine every continuous statistic of the return signal.
+- it is shared by both the original system and the interaction, so it survives
+  at every knob setting; or
+- it is an accidental resonance, so it can occur at only one precisely tuned
+  setting.
 
-The surprising limit is that even perfect knowledge of a system’s polynomial
-local energy rule at every depth need not reveal whether its history keeps
-returning or almost always escapes. Two globally different quantum histories
-can look identical to that entire local hierarchy.
+There are only countably many accidental settings, even for countably
+infinite spectra. For any two such spectra, one arbitrarily weak separable
+interaction direction can be chosen so that every other setting has the
+largest possible phase future. Good settings occur arbitrarily close to zero.
 
-This matters for black-hole spectral form factors. An all-orders perturbative
-calculation, even one known as a function of time, cannot universally certify
-the exact late-time recurrence plateau. That requires global nonperturbative
-spectral information.
+The result sounds paradoxical but is exact. As coupling tends to zero, every
+bounded-time observable converges to the uncoupled answer. Yet after time is
+allowed to run without bound, exact global returns disappear except at time
+zero and the system explores its full allowed phase space. Approximate
+returns do not disappear: every allowed recurrence level comes back forever,
+with a bounded maximum wait for each requested accuracy or interior level.
 
-The result does not claim that real black holes realize the constructed
-examples or that the information paradox is solved. Its worldview shift is
-more precise: **quantum recurrence is not one property of a Hamiltonian. It
-has an amount, an information clock, an observer-dependent content and a
-global completion.**
+The worldview shift is simple: **weakness is a finite-time idea. An
+interaction can be negligible throughout every bounded experiment and still
+decide the geometry of eternity.**
+
+For black-hole and holographic calculations, this gives a strict warning, not
+a solution of the information paradox. Agreement with a semiclassical model
+for every tested finite time cannot by itself determine the exact recurrence
+structure of the completed quantum spectrum. Global spectral input is still
+required.

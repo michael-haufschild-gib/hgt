@@ -1,14 +1,16 @@
 # Hilbert--Kummer radius canonically produces complex Kähler orbit leaves
 
 - **ID:** `deninger-hilbert-kummer-kahler-orbit-trivialization`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Labels:** `DAC_EQUIVARIANT_RADIUS_ORBIT_TRIVIALIZATION`,
   `DAC_DENINGER_HILBERT_KUMMER_KAHLER_ORBIT_COLLAR`
 - **Parent:** `deninger-hilbert-kummer-radial-flow-poisson`
-- **Lean status:** elementary algebraic identities are to be batched with
-  `DeningerArithmeticHilbertKummerRadius.lean`; no Lean process was started
-  while the shared machine was saturated.
+- **Lean modules:**
+  `GaloisForLFunctions.RHTower.DeningerRadiusTrivialization` (the abstract
+  equivariant-radius theorem `(2)`--`(4)` and freeness),
+  `GaloisForLFunctions.RHTower.DeningerArithmeticHilbertKummerRadius`
+  (the Hilbert--Kummer radius and flow identities)
 
 ## Abstract equivariant-radius theorem
 
@@ -228,3 +230,151 @@ positive local Hodge star, contain the RH-bearing content.
   upgrades it to a complex Kähler orbit collar with the exact critical
   radial measure.  Separated this collar from the still-conjectural
   dense arithmetic leaf complex.
+
+### The abstract equivariant-radius theorem landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerRadiusTrivialization.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `DeningerRadiusFlow X` bundles the data: a jointly continuous real action, a continuous
+  positive radius, and the scaling law `(1)`, `radius (φ^t p) = e^t · radius p`.
+- `deningerRadiusSlice` is `Σ = x^{-1}(1)`, and `deningerRadius_normalize_mem` is the
+  computation that `φ^{-log x(p)} p` lands in it.
+- `deningerRadiusChart` — **the chart `(2)` as an equivalence**, with inverse `(4)`
+  `(q, r) ↦ φ^{log r} q`.  Both round trips are the flow law plus `log(e^t r) = t + log r`.
+- `deningerRadiusChart_equivariant` — **`(3)`**: the action becomes scaling of the radius
+  coordinate, the slice coordinate being unchanged.
+- `deningerRadiusFlow_free` — **the action is free**: a period fixes the radius, so `e^t = 1`.
+- `continuous_deningerRadiusChart`, `continuous_deningerRadiusChart_symm` and
+  `deningerRadiusHomeomorph` — **the chart is a homeomorphism**, the continuity of `log ∘ radius`
+  coming from positivity of the radius.
+
+The card's abstract theorem is therefore formalized in full, not only its algebraic identities.
+The existing `DeningerArithmeticHilbertKummerRadius` module supplies the Hilbert--Kummer radius
+with its scaling, deck-invariance and flow laws, which are exactly the fields of
+`DeningerRadiusFlow` in that model.
+
+### Remaining
+
+Properness of the action when `X` is Hausdorff, and the identification of the Hilbert--Kummer
+slice with the stated Kähler orbit space.
+
+### Properness landed
+
+Added to `DeningerRadiusTrivialization.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `deningerRadiusFlow_isCompact_preimage` — **the action is proper on a Hausdorff space**: the
+  preimage of a compact `K ⊆ X × X` under `(t, p) ↦ (φ^t p, p)` is compact.
+
+The proof is the card's, made precise: on the preimage the time is *exactly* the logarithmic
+radius difference, `t = log x(φ^t p) - log x(p)`, so the preimage sits inside
+`(image of K under the log-radius difference) × (second projection of K)`.  Both factors are
+continuous images of a compact set, hence compact, and the preimage is closed because `K` is
+closed in a Hausdorff space and the action map is continuous.  A closed subset of a compact set
+is compact.
+
+Note that no interval bounding is needed: the log-radius difference is not merely a bound on the
+time, it is the time.
+
+### Status
+
+The card's abstract equivariant-radius theorem is formalized in full: the chart `(2)`, its
+inverse `(4)`, equivariance `(3)`, the homeomorphism, freeness, and properness.
+
+### Remaining
+
+Identification of the Hilbert--Kummer slice with the stated Kähler orbit space — the geometric
+input this abstract theorem is applied to.
+
+### The half-density circle refinement landed
+
+Added to `DeningerRadiusTrivialization.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `deningerHalfDensity F` — the bundle `(5)`, `{(p, z) : |z|² = x(p)}`, with
+  `deningerHalfDensity_ne_zero`: the fibre coordinate never vanishes, because the radius is
+  positive.  So the constraint already forces `z ∈ ℂ^×`; no separate puncturing is needed.
+- `deningerHalfDensityFlow`, `deningerHalfDensityRotate` — the two actions `(6)`, with
+  `_mem` lemmas showing each preserves `(5)`: the flow because `|e^{t/2}z|² = e^t|z|²` matches the
+  radius scaling `(1)`, the rotation because `|e^{iθ}| = 1`.
+- `deningerHalfDensity_flow_rotate_comm` — **the two actions commute**.
+- `deningerHalfDensityChart` — **the canonical homeomorphism `(7)`** as an equivalence
+  `L_x^× ≃ Σ × ℂ^×`, with inverse `(8)`.  On the bundle `|z|² = x(p)`, so the normalizing time
+  `-log|z|²` is the same as `-log x(p)` and the slice component is the earlier normalization.
+- `deningerHalfDensityChart_flow`, `deningerHalfDensityChart_rotate` — **under the chart both
+  actions fix the slice coordinate**, which is the card's statement that the joint orbits are the
+  complex leaves `{q} × ℂ^×` of `(9)`.
+
+### Status
+
+Both theorems of the card are now formalized: the abstract equivariant-radius trivialization
+`(2)`--`(4)` with freeness and properness, and the half-density circle refinement `(5)`--`(9)`.
+
+### Remaining
+
+The leafwise Kähler and Hodge structure of the final section, and the identification of the
+Hilbert--Kummer model with this abstract data.
+
+### The leafwise Kähler structure landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerLeafwiseKahler.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+Real leafwise one-forms are coefficient pairs `a du + b dv`, and the Kähler form `(10)` is the
+wedge coefficient.
+
+- `deningerLeafStar` with `deningerLeafStar_du`, `deningerLeafStar_dv` and
+  `deningerLeafStar_star` — **`(12)`**: `*du = dv`, `*dv = -du`, `*² = -1`.
+- `deningerLeafWedge_star` and `deningerLeafWedge_star_pos` — **`(13)`**:
+  `α ∧ *α = a² + b²`, strictly positive for `α ≠ 0`.
+- `deningerLeafWedge_smul` and `deningerLeafFlow_wedge` — **`(11)`**: scaling the leaf coordinate
+  by `s` scales the Kähler coefficient by `s²`, so the half-density flow, which scales by
+  `e^{t/2}`, scales the form by `e^t`.
+- `deningerRadialFlowPullback` — **`(15)`**: a radial function `F(z) = f(|z|²)` pulls back along
+  the flow at time `log n` to `f(n|z|²)`.
+
+The complexified statement — `J = *c` anti-linear with `J² = -1` and positive cup-then-`J` — is
+already in the corpus: `deningerRectangularQuaternionicHodge` at `r = 1` is exactly `(a, b) ↦
+(-conj b, conj a)`, and `deningerRectangularQuaternionicHodge_sq` is its `J² = -1`.  It is cited
+rather than duplicated.
+
+### Status
+
+Everything in the card except one analytic identity is formalized: the equivariant-radius
+trivialization with freeness and properness, the half-density circle refinement, and the leafwise
+Kähler package `(10)`--`(13)` and `(15)`.
+
+### Remaining
+
+The polar-coordinate integral `(14)`, `∫_{ℂ^×} |F|² ω = π ∫_0^∞ |f(r)|² dr`, which identifies the
+radial Hilbert measure with Meyer's `L²(ℝ_{>0}, dr)`; and the identification of the
+Hilbert--Kummer model with this abstract data.
+
+### The radial integral `(14)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerRadialIntegral.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerComplex_volume_real_unitBall` — the unit ball of the complex line has area `π`.
+- `deningerComplex_integral_norm` — the polar-coordinate form:
+  `∫_ℂ g(|z|) = 2π ∫_0^∞ y·g(y) dy`, from mathlib's `integral_fun_norm_addHaar` with
+  `finrank ℝ ℂ = 2` and the ball area.
+- `deningerRadial_sq_substitution` — the substitution `s = r²`:
+  `∫_0^∞ y·g(y²) dy = ½ ∫_0^∞ g(s) ds`, from `integral_comp_rpow_Ioi` at `p = 2`.
+- `deningerRadial_integral_eq` — **`(14)`**: `∫_ℂ g(|z|²) = π ∫_0^∞ g(s) ds`.
+
+The two factors combine exactly as on the card: `2π · ½ = π`.  This identifies the radial Hilbert
+measure of the half-density leaf with `L²(ℝ_{>0}, ds)` up to that single factor.
+
+### Status
+
+Every theorem of the card is formalized: the abstract equivariant-radius trivialization
+`(2)`--`(4)` with freeness and properness, the half-density circle refinement `(5)`--`(9)`, the
+leafwise Kähler package `(10)`--`(13)` and `(15)`, and the radial integral `(14)`.
+
+### Gates
+
+- [x] 0 → 1 in-progress: abstract equivariant-radius statement isolated
+- [x] 1 → 2 fully-proven: trivialization, refinement, leafwise structure
+- [x] 2 → 3 formalized: all of the above, with cached builds and axiom audits
+- [ ] 3 → 4 publication-ready: the Deninger specialization, which instantiates this abstract data
+      at the Hilbert--Kummer suspension, is a separate card

@@ -1,137 +1,115 @@
 # Internal proof audit
 
-Manuscript: **A universal law of quantum recurrence**  
-Date: 29 July 2026
+Manuscript: **An arbitrarily weak interaction can reorganize a quantum
+system's infinite future**  
+Date: 1 August 2026
 
 Rule: every mathematical claim in `main.tex` must be an unconditional theorem
 in the local proof corpus. Formal verification is an internal correctness
 control and is not presented as scientific novelty in the manuscript.
 
-## Master capstone
+## Universal coupling law
 
 | Paper claim | Declaration | Source |
 |---|---|---|
-| Complete whether--when--observer--global-data anatomy | `universalQuantumRecurrenceAnatomyLaw` | `formal/GaloisForLFunctions/RHTower/UniversalQuantumRecurrenceAnatomyLaw.lean` |
-| Universal finite-contraction threshold schema | `UniversalFiniteContractionThresholdLaw` | same |
-| Coupled contraction/peripheral-packet deadline schema | `UniversalFiniteContractionDeadlineLaw` | same |
-| Finite packet rate--distortion clock schema | `UniversalFinitePacketClockLaw` | same |
-| Exact finite observer schema | `UniversalFiniteObserverLaw` | same |
-| Observer graph deadline schema | `UniversalFiniteObserverClockLaw` | same |
-| Arbitrary-spectrum long-time schema | `UniversalLongTimeRecurrenceLaw` | same |
-| Pure-point/exact/atomless phase classification | `UniversalSpectralPhaseClassificationLaw` | same |
-| Local and perturbative non-identifiability | `UniversalRecurrenceNonidentifiabilityLaw` | same |
-| Compact exact-moment determinacy | `UniversalCompactMomentDeterminacyLaw` | same |
+| Affine character detuning | `projectiveCharacterDetuning_affine` | `CountableRecurrenceWallRayLaw.lean` |
+| A transverse character crosses at one explicit strength | `projectiveCharacter_on_affineWall_iff` | same |
+| Accidental crossing set is countable | `projectiveAffineCrossingSet_countable` | `AffineCouplingProtectedRelationLaw.lean` |
+| Every coupling interval contains a nonexceptional strength | `exists_not_mem_projectiveAffineCrossingSet_in_interval` | same |
+| Generic coupled relation iff relation of both inputs | `projectiveCharacter_affineRelation_iff_common_of_not_mem` | same |
+| Complete coupled relation set equals exact intersection | `projectiveRelationSet_affine_eq_common_of_not_mem` | same |
+| Finite-time coupling reporter is exact sinc profile | `recurrenceWallReporter_eq_sinc` | `CountableRecurrenceWallRayLaw.lean` |
+| Exact inverse-time wall profile | `recurrenceWallReporter_scaled_profile` | same |
 
-## Whether and how much
+## Finite conservation and complete interaction conversion
 
 | Paper claim | Declaration | Source |
 |---|---|---|
-| Peripheral mass is exact amplitude ceiling | `finiteContraction_returnAmplitude_exactAsymptoticCeiling` | `DissipativeQuantumReturnInformationTransition.lean` |
-| Every lower threshold returns after every delay; every higher one is eventually excluded | `finiteContraction_returnThreshold_dichotomy` | same |
-| Squared persistent mass is exact fidelity ceiling | `finiteContraction_returnFidelity_exactAsymptoticCeiling` | same |
-| Exact persistent/transient spectral decomposition | `finiteContraction_returnAmplitude_eq_persistent_sum_add_transient` | same |
-| Transient powers tend to zero | `tendsto_pow_finiteContractionTransientRestriction_zero` | same |
-| Finite convex mixtures remain contractive | `norm_finiteMixedEvolution_le_one` | same |
+| `τ+ρ=D-1` | `projectiveTemporalRank_add_relationRank` | `UniversalProjectiveRecurrenceCapstoneLaw.lean` |
+| `Δτ=-Δρ` on a fixed carrier | `projectiveTemporalRank_sub_eq_relationRank_sub` | `UniversalInteractionRecurrenceConversionLaw.lean` |
+| Completed phase law equals relation-lattice indicator | `finiteProjectiveRecurrence_universalLaw` | `UniversalProjectiveRecurrenceCapstoneLaw.lean` |
+| Replica character first appears at exact positive height | `spectralCharacterPositiveMass_eq_minimumReplica` and `fidelityReplicaCharacterCoefficient_pos_iff_positiveMass_le` | `SpectralCharacterReplicaHeightLaw.lean` and `FidelityReplicaCharacterCoefficientLaw.lean` |
+| Generic separable interaction set is dense, residual and full measure | `separableInteractionProjectiveGenericSet_dense_residual_fullMeasure` | `SeparableInteractionProjectiveGenericityLaw.lean` |
+| Exceptional set remains null in every parameter region | `separableInteractionProjectiveGenericSet_local_fullMeasure` | same |
+| Every generic interaction has full product temporal rank, gain at least `mn`, zero relation rank and all-order collision floor | `mem_separableInteractionProjectiveGenericSet_fullConversion` | same |
+| One full-conversion interaction exists inside every positive norm budget, with all-probe Duhamel bound | `exists_smallSeparableInteraction_fullConstraintConversion` | `UniversalInteractionRecurrenceConversionLaw.lean` |
+| Deterministic return-frequency Haar sandwich for every generic interaction | `mem_separableInteractionProjectiveGenericSet_recurrenceFrequency` | `GenericInteractionRecurrenceFrequencyLaw.lean` |
+| Uniform target has exact half-dimensional volume exponent | `uniformProjectiveCoherenceTarget_volume_bounds` | `UniformProjectiveTargetVolumeExponentLaw.lean` |
 
-## When
-
-| Paper claim | Declaration | Source |
-|---|---|---|
-| Least universal Floquet deadline exists | `universalWeightedFloquetFidelityRecurrenceTime_isDeadline` | `ProjectiveWeightedFloquetRecurrence.lean` |
-| Return after every prescribed delay by `(M+1)T` | `exists_weightedFloquetFidelity_recurrence_after` | same |
-| Reverse-water deadline sandwich | `universalWeightedFloquetFidelityRecurrenceTime_entropySandwich` | same |
-| Gaussian rate--distortion form | `universalWeightedFloquetFidelityRecurrenceTime_rateDistortionSandwich` | `ProjectiveGaussianRateDistortion.lean` |
-| Reverse-water allocation is globally optimal | `projectiveCanonicalWaterEntropy_isGaussianRateDistortionMinimum` | same |
-| Coupled finite-contraction water deadline | `finiteContraction_exists_return_at_target_before_waterDeadline` | `DissipativeQuantumReturnInformationTransition.lean` |
-| Positive target-volume inner bound | `canonicalEntropyFactor_le_volumeReal_coherenceTarget` | `ProjectiveWeightedTargetVolumeLower.lean` |
-| Target-volume upper bound | `volumeReal_coherenceTarget_le_canonicalEntropyFactor` | same |
-| Two-sided target-information law | `canonicalWaterEntropy_targetInformation_sandwich` | same |
-| Constant-free high-information normalization | `universalWeightedFloquetFidelityRecurrenceTime_rateDistortionNormalized` | `ProjectiveGaussianRateDistortion.lean` |
-
-## What an observer sees
+## Singular walls and bounded-horizon non-identifiability
 
 | Paper claim | Declaration | Source |
 |---|---|---|
-| Observer displacement equals phase energy | `finiteQuantumObserverDistanceSq_eq_phaseEnergy` | `FiniteQuantumObserverCoherenceLaw.lean` |
-| Exact return iff every coherence edge locks | `finiteQuantumObserverPhaseEnergy_eq_zero_iff` | same |
-| Visible phase dimension equals sectors minus components | `finiteObserverCoherenceGraph_phaseCapacity` | same |
-| Joined observer law | `finite_quantum_observer_coherence_law` | same |
-| Graph-rank recurrence deadline and displacement bound | `exists_finiteQuantumObserver_graphRank_distance_recurrence` | `FiniteQuantumObserverGraphRecurrenceBound.lean` |
-| Deterministic worst-spectrum graph-rank witnesses | `exists_rankSharp_uniformPureObserver_avoiding_return_until` | `FiniteQuantumObserverGraphSharpness.lean` |
-| Hilbert--Schmidt normalized probe control | `finiteQuantumObserver_operational_norm_le` | `FiniteQuantumObserverOperationalRecurrence.lean` |
-| Operator-normalized probe control with dimension factor | `finiteQuantumObserver_operator_operational_norm_le` | same |
-| Dimension factor is attained | `finiteMatrix_operatorContraction_dimension_factor_attained` | same |
-| Device coherent-window certificate | `exists_finiteQuantumObserver_graphRank_recurrence_within_window` | `FiniteQuantumObserverDeviceFeasibility.lean` |
+| Wall trichotomy, discontinuous completed indicator and exact sinc boundary layer | `recurrenceWall_singularCompletionLaw` | `RecurrenceWallSingularCompletionLaw.lean` |
+| Every positive temporal rank is dense | `dense_exactProjectiveTemporalRank` | `ProjectiveRecurrenceDenseStratificationLaw.lean` |
+| Temporal-rank map is nowhere continuous | `projectiveTemporalRank_nowhereContinuous` | same |
+| Every target rank is indistinguishable by all normalized probes on any bounded horizon | `exists_finiteHorizonIndistinguishable_exactProjectiveTemporalRank` | `FiniteHorizonTemporalDimensionIndistinguishabilityLaw.lean` |
+| A different temporal dimension is always bounded-horizon indistinguishable when dimension permits | `exists_finiteHorizonIndistinguishable_differentTemporalDimension` | same |
+| Robust recurrence equals base relation intersect perturbation annihilator | `robustProjectiveRelation_iff` | `ProjectiveRecurrenceProtectionLaw.lean` |
 
-## Infinite and arbitrary spectra
+## Countable relation hull and separable recurrence ray
 
 | Paper claim | Declaration | Source |
 |---|---|---|
-| Countable head--tail recurrence bound | `exists_summablePhaseEnergy_recurrence_quantitative` | `SummablePurePointPhaseRecurrence.lean` |
-| Every nonnegative summable packet recurs at every resolution | `exists_summablePhaseEnergy_recurrence` | same |
-| Exact return iff visible gap group is cyclic | `exists_positive_unitFidelity_iff_cyclic` | `ObserverTemporalUniversalityLaw.lean` |
-| Atomless spectra have continuum temporal dimension and zero-density positive-threshold return | `atomlessProjectiveObserverTemporalPhaseLaw` | same |
-| `n`th mean fidelity moment equals `n`-fold zero-gap collision mass | `spectralReturnMomentMeanReal_tendsto_collisionHierarchy` | `ObserverRecurrenceDistributionLaw.lean` |
-| Every continuous fidelity statistic has a long-time mean | `exists_tendsto_spectralReturnStatisticMeanReal` | same |
-| Atomless positive collision moments vanish | `spectralCollisionHierarchy_eq_zero_of_noAtoms` | same |
+| Relation lattice equals compact phase-hull annihilator | `countableRelationHullRecurrenceLaw` | `CountableRelationHullRecurrenceLaw.lean` |
+| Every future phase tail has same hull | same | same |
+| Every positive summable probe has exact closed recurrent interval, endpoint limits, bounded-window approximation and exact interior hits | same | same |
+| Absolute endpoint iff every finite relation has even total coefficient | same | same |
+| One arbitrarily weak separable Schatten-1 direction works outside one countable coupling set | `exists_arbitrarilyWeak_separable_completeProjectiveRecurrenceRayLaw` | `SeparableInteractionRecurrenceRayLaw.lean` |
+| Same ray preserves maximal domain and self-adjointness | same | same |
+| Every nonexceptional strength has every finite temporal rank, full future tails and no nonzero exact global return | same | same |
+| Every nonexceptional strength has complete syndetic positive-probe recurrence | same | same |
+| Finite-window all-probe bound `2|t||g|δ||O||` | `finiteWindowHeisenberg_affineDirection_norm_sub_le` plus pointwise field returned by ray capstone | `CountableRecurrenceWallRayLaw.lean` and `SeparableInteractionRecurrenceRayLaw.lean` |
 
-## Local/global boundary
+## Persistent carrier, finite recovery and earlier clock
 
 | Paper claim | Declaration | Source |
 |---|---|---|
-| Complete polynomial Gram and energy tensors | `completePolynomialLocalData` | `JacobiBoundaryQuantumRecurrenceLaw.lean` |
-| Moment-equivalent spectra have identical complete local data | `completePolynomialLocalData_eq_of_hasHamburgerMoments` | same |
-| Every indeterminate moment class has pure-point/atomless opposite recurrence completions | `exists_completeLocalJacobiRecurrenceSeparation` | same |
-| Strictly-positive-energy explicit separation | `positiveEnergy_completeLocalJacobiRecurrenceSeparation` | same |
-| No universal complete-local classifier | `no_universal_positiveEnergy_completePolynomialLocalData_recurrenceClassifier` | same |
-| Compact flat families have identical bounded-observable jets | `perturbativeBoundedSpectralObservableJet_compactFamilies_eq` | `NonperturbativeQuantumRecurrenceSeparationLaw.lean` via global capstone |
-| Compact flat families have identical full SFF jets | `perturbativeSpectralFormFactorJet_compactFamilies_eq` | same |
-| Their exact plateaux are `exp(-2/g)` and `0` | fields of `quantumRecurrenceGlobalCompletionWitness` | `QuantumRecurrenceGlobalCompletionLaw.lean` |
-| No all-orders bounded-observable classifier | `globalCompletion_no_completePerturbativeTheory_recurrenceClassifier` | same |
-| No all-orders SFF classifier | `globalCompletion_no_completePerturbativeSFF_recurrenceClassifier` | same |
-| One compact representative plus all exact moments determines the spectrum | `compactExactMoments_determine_spectrum` | same |
+| Arbitrary probability spectrum's stationary fidelity law is scaled point-spectrum law | `stationarySpectralReturnProbabilityMeasure_eq_scaledPointSpectrum` | `StationaryRecurrencePointSpectrumScalingLaw.lean` |
+| Every stationary fidelity moment is zero-gap collision mass | `spectralReturnMomentMeanReal_tendsto_collisionHierarchy` | `ObserverRecurrenceDistributionLaw.lean` |
+| Finite contraction equals semisimple peripheral carrier plus vanishing transient | `finiteContraction_returnAmplitude_eq_persistent_sum_add_transient` | `DissipativeQuantumReturnInformationTransition.lean` |
+| Peripheral mass gives exact asymptotic return threshold dichotomy | `finiteContraction_returnThreshold_dichotomy` | same |
+| Replica wall coefficient vanishes below height and is positive at height | `resolvedReplicaWallSignal_eq_zero_of_lt_height`, `resolvedReplicaWallCoefficient_pos_at_height` | `ResolvedReplicaRecurrenceWallLaw.lean` |
+| `(2n+1)` phase grid exactly recovers every order-`n` coefficient | `finiteGridReplicaCharacterReadout_eq_coefficient_of_bandlimited` | `FiniteGridRecurrenceWallSpectroscopyLaw.lean` |
+| Smaller one-coordinate grids fail in worst case | `phaseGridNyquistSharp` | same |
+| Phase-cycled coupling scan equals positive coefficient times exact sinc profile at height | `finiteGridControlledWallReadout_eq_resolvedSignal`, `finiteGridControlledWallReadout_scaled_profile`, `resolvedReplicaWallCoefficient_pos_at_height` | same and `ResolvedReplicaRecurrenceWallLaw.lean` |
+| Reverse-water recurrence deadline sandwich | `universalWeightedFloquetFidelityRecurrenceTime_entropySandwich` | `ProjectiveWeightedFloquetRecurrence.lean` |
+| Same convex program controls Haar target information | `canonicalWaterEntropy_targetInformation_sandwich` | `ProjectiveWeightedTargetVolumeLower.lean` |
+| Observer graph projective capacity equals vertices minus components | `finiteObserverCoherenceGraph_phaseCapacity` | `FiniteQuantumObserverCoherenceLaw.lean` |
 
 ## Scope audit
 
-- “Universal” refers to the joined classification with exact domain at each
-  layer. It does not claim one finite deadline for arbitrary continuous
-  spectra.
-- Rate--distortion means equality of finite convex programs, not an
-  operational source code.
-- The observer deadline is a worst-spectrum class guarantee, not the first
-  return time of every fixed Hamiltonian.
-- Atomless zero-density return does not forbid exceptional high-fidelity
-  spikes.
-- The black-hole result is a certification no-go for perturbative SFF input.
-  It does not establish a black-hole spectrum, information recovery or a
-  gravitational completion.
-- The local onsite-field realization is engineered, not a generic interacting
-  ensemble.
+- “Universal” refers to the exact relation law for every countable affine
+  spectral coupling ray, plus its finite and countable realizations. It does
+  not claim coverage of arbitrary continuous-spectrum interacting QFTs.
+- “Separable” means operator-Schmidt rank one across spectral factors. It does
+  not mean geometric locality or a rank-one operator on product Hilbert space.
+- “Temporal dimension” means rational dimension of completed projective phase
+  motion, not spacetime dimension.
+- Countable exceptional set may be dense; the theorem asserts countability and
+  a nonexceptional point in every interval, not an exclusion-free punctured
+  neighbourhood.
+- No nonzero exact global return coexists with syndetic approximate and exact
+  interior-level recurrence; these are different statements.
+- Rate--distortion is equality of finite convex programs, not an operational
+  communication code.
+- Black-hole discussion is a bounded-time inference boundary, not a black-hole
+  spectrum, information-loss solution or gravitational prediction.
 
-## Axiom and syntax audit
+## Current axiom and syntax audit
 
-Foreground verification:
+Foreground checks passed for:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/UniversalQuantumRecurrenceAnatomyLaw.lean
+lake env lean GaloisForLFunctions/HTGeometry/AffineCouplingProtectedRelationLaw.lean
+lake env lean GaloisForLFunctions/HTGeometry/SeparableInteractionRecurrenceRayLaw.lean
 ```
 
-passed. Scratch `#print axioms` for
-`universalQuantumRecurrenceAnatomyLaw` reports only:
+Scratch `#print axioms` for the six new load-bearing declarations reports only:
 
 ```text
 propext, Classical.choice, Quot.sound
 ```
 
-Final repository audit:
-
-```text
-scripts/formal_tools.py lint
-formal lint passed
-
-lake build GaloisForLFunctions.RHTower.UniversalQuantumRecurrenceAnatomyLaw
-Build completed successfully (9127 jobs).
-```
-
-All build warnings came from pre-existing dependencies; the new capstone
-emitted no warning or error.
+Final repository lint and final module build are intentionally pending until
+the manuscript freezes.
