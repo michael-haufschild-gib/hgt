@@ -3127,3 +3127,4 @@ import GaloisForLFunctions.HTGeometry.DigammaFieldRatio
 import GaloisForLFunctions.HTGeometry.CompactClusterLimit
 import GaloisForLFunctions.HTGeometry.TailScalingAction
 import GaloisForLFunctions.HTGeometry.DigammaFieldLexRatio
+import GaloisForLFunctions.HTGeometry.TailFixedField

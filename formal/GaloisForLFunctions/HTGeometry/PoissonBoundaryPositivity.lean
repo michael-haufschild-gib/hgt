@@ -2,6 +2,8 @@ import Mathlib.Analysis.Complex.Harmonic.Poisson
 import Mathlib.Analysis.Complex.Harmonic.MeanValue
 import Mathlib.Analysis.InnerProductSpace.Harmonic.Constructions
 import Mathlib.MeasureTheory.Measure.Tight
+import Mathlib.MeasureTheory.Measure.Prokhorov
+import GaloisForLFunctions.HTGeometry.CompactClusterLimit
 
 /-!
 # Boundary positivity of the Poisson representation
@@ -383,5 +385,108 @@ theorem eq_zero_of_center_eq_zero_ball {u : ℂ → ℝ} (hu : HarmonicOnNhd u (
     linarith
   exact eq_zero_of_center_eq_zero hr (harmonicContOnCl_of_lt_one hu hr hr1)
     (fun z hz => hnn z (closedBall_subset_ball_one hr1 (sphere_subset_closedBall hz))) h0 hwr
+
+/-! ## The normalized family and the radial limit
+
+The two ingredients the cluster-point argument pairs: the value of the fixed test function against
+the normalized measure of radius `r`, and the fact that this value converges as `r` approaches the
+boundary — because it is the dilated value of `u`, and `u` is continuous. -/
+
+/-- The fixed test function against the normalized boundary measure. -/
+theorem integral_unitPoissonKernel_normalized {u : ℂ → ℝ} (hu : HarmonicOnNhd u (ball 0 1))
+    (hnn : ∀ z ∈ ball (0 : ℂ) 1, 0 ≤ u z) (hc : 0 < u 0)
+    {r : ℝ} (hr : 0 < r) (hr1 : r < 1) {w : ℂ} (hw : w ∈ ball (0 : ℂ) 1) :
+    ∫ θ, poissonKernel 0 w (circleMap 0 1 θ)
+        ∂((ENNReal.ofReal (u 0))⁻¹ • poissonBoundaryMeasure u 0 r)
+      = (u 0)⁻¹ * u ((r : ℂ) * w) := by
+  rw [integral_smul_measure, integral_unitPoissonKernel_poissonBoundaryMeasure hu hnn hr hr1 hw,
+    ENNReal.toReal_inv, ENNReal.toReal_ofReal hc.le, smul_eq_mul]
+
+/-- Dilating an interior point is continuous at the boundary radius. -/
+theorem continuousAt_dilate {u : ℂ → ℝ} (hu : HarmonicOnNhd u (ball 0 1)) {w : ℂ}
+    (hw : w ∈ ball (0 : ℂ) 1) : ContinuousAt (fun r : ℝ => u ((r : ℂ) * w)) 1 := by
+  have hmap : ContinuousAt (fun r : ℝ => (r : ℂ) * w) 1 := by fun_prop
+  have hcont : ContinuousAt u (((1 : ℝ) : ℂ) * w) := by
+    rw [Complex.ofReal_one, one_mul]
+    exact (hu w hw).1.continuousAt
+  exact ContinuousAt.comp (f := fun r : ℝ => (r : ℂ) * w) hcont hmap
+
+/-- **The radial limit.**  The dilated values converge to the value at the point as the radius
+approaches one. -/
+theorem tendsto_dilate {u : ℂ → ℝ} (hu : HarmonicOnNhd u (ball 0 1)) {w : ℂ}
+    (hw : w ∈ ball (0 : ℂ) 1) :
+    Filter.Tendsto (fun r : ℝ => u ((r : ℂ) * w)) (nhdsWithin 1 (Set.Iio 1)) (nhds (u w)) := by
+  have h : Filter.Tendsto (fun r : ℝ => u ((r : ℂ) * w)) (nhdsWithin 1 (Set.Iio 1))
+      (nhds (u (((1 : ℝ) : ℂ) * w))) := (continuousAt_dilate hu hw).mono_left nhdsWithin_le_nhds
+  rwa [Complex.ofReal_one, one_mul] at h
+
+/-! ## The Herglotz representation on the disc
+
+Everything assembles.  The normalized boundary measures form a tight family of probability measures,
+so they have a cluster point; the fixed kernel is a continuous functional of the measure; and the
+values it takes along the family converge because they are the dilated values of `u`.  The cluster
+point therefore represents `u` at every interior point at once. -/
+
+/-- **The Herglotz representation on the disc.**  A nonnegative harmonic function on the unit disc is
+the Poisson integral of a finite positive measure on the circle of angles.
+
+The measure is a cluster point of the normalized boundary measures.  Nothing here is an estimate:
+tightness comes from the angles living in a fixed compact interval, the uniform mass bound from the
+mean value property, and the limit from continuity of `u` along radii. -/
+theorem exists_poissonRepresentation {u : ℂ → ℝ} (hu : HarmonicOnNhd u (ball 0 1))
+    (hnn : ∀ z ∈ ball (0 : ℂ) 1, 0 ≤ u z) :
+    ∃ ν : Measure ℝ, IsFiniteMeasure ν ∧
+      ∀ w ∈ ball (0 : ℂ) 1, ∫ θ, poissonKernel 0 w (circleMap 0 1 θ) ∂ν = u w := by
+  classical
+  have hzero : (0 : ℂ) ∈ ball (0 : ℂ) 1 := by simp
+  rcases (hnn 0 hzero).eq_or_lt with hc | hc
+  · exact ⟨0, inferInstance, fun w hw => by
+      rw [integral_zero_measure]
+      exact (eq_zero_of_center_eq_zero_ball hu hnn hc.symm hw).symm⟩
+  -- the normalized family
+  set P : ℝ → ProbabilityMeasure ℝ := fun r =>
+    if h : 0 < r ∧ r < 1 then
+      ⟨(ENNReal.ofReal (u 0))⁻¹ • poissonBoundaryMeasure u 0 r,
+        isProbabilityMeasure_poissonBoundaryMeasure_smul h.1
+          (harmonicContOnCl_of_lt_one hu h.1 h.2)
+          (fun z hz => hnn z (closedBall_subset_ball_one h.2 (sphere_subset_closedBall hz))) hc⟩
+    else ⟨Measure.dirac 0, inferInstance⟩ with hPdef
+  set S : Set (ProbabilityMeasure ℝ) := P '' Set.Ioo 0 1 with hSdef
+  have hcarrier : ∀ m ∈ S, (m : Measure ℝ) (Set.Icc 0 (2 * π))ᶜ = 0 := by
+    rintro m ⟨r, hr, rfl⟩
+    have hd : (0 : ℝ) < r ∧ r < 1 := ⟨hr.1, hr.2⟩
+    simp only [hPdef, dif_pos hd]
+    show ((ENNReal.ofReal (u 0))⁻¹ • poissonBoundaryMeasure u 0 r) (Set.Icc 0 (2 * π))ᶜ = 0
+    rw [Measure.smul_apply, smul_eq_mul, poissonBoundaryMeasure_compl_Icc_eq_zero, mul_zero]
+  have htight : IsTightMeasureSet {((m : ProbabilityMeasure ℝ) : Measure ℝ) | m ∈ S} := by
+    refine isTightMeasureSet_of_forall_compl_eq_zero (Set.Icc 0 (2 * π)) isCompact_Icc ?_
+    rintro μ ⟨m, hm, rfl⟩
+    exact hcarrier m hm
+  have hcompact : IsCompact (closure S) := isCompact_closure_of_isTightMeasureSet htight
+  have hmem : ∀ᶠ r in nhdsWithin (1 : ℝ) (Set.Iio 1), P r ∈ S := by
+    filter_upwards [Filter.eventually_mem_set.mpr (Ioo_mem_nhdsLT (by norm_num : (0 : ℝ) < 1))]
+      with r hr using ⟨r, hr, rfl⟩
+  obtain ⟨μ, -, hcl⟩ := exists_clusterPt_closure_of_isCompact hcompact hmem
+  refine ⟨ENNReal.ofReal (u 0) • (μ : Measure ℝ), ?_, fun w hw => ?_⟩
+  · exact ⟨by
+      rw [Measure.smul_apply, smul_eq_mul, measure_univ, mul_one]
+      exact ENNReal.ofReal_lt_top⟩
+  · have hwn : ‖w‖ < 1 := by rwa [mem_ball_zero_iff] at hw
+    have hΦ : Continuous fun m : ProbabilityMeasure ℝ =>
+        ∫ θ, (unitPoissonTest hwn) θ ∂(m : Measure ℝ) :=
+      MeasureTheory.ProbabilityMeasure.continuous_integral_boundedContinuousFunction _
+    have hy : Filter.Tendsto
+        (fun r : ℝ => ∫ θ, (unitPoissonTest hwn) θ ∂((P r : ProbabilityMeasure ℝ) : Measure ℝ))
+        (nhdsWithin 1 (Set.Iio 1)) (nhds ((u 0)⁻¹ * u w)) := by
+      refine Filter.Tendsto.congr' ?_ (((tendsto_dilate hu hw)).const_mul ((u 0)⁻¹))
+      filter_upwards [Filter.eventually_mem_set.mpr
+        (Ioo_mem_nhdsLT (by norm_num : (0 : ℝ) < 1))] with r hr
+      have hd : (0 : ℝ) < r ∧ r < 1 := ⟨hr.1, hr.2⟩
+      simp only [hPdef, dif_pos hd, unitPoissonTest_apply]
+      exact (integral_unitPoissonKernel_normalized hu hnn hc hr.1 hr.2 hw).symm
+    have hkey := eq_of_clusterPt_of_tendsto hcl hΦ hy
+    simp only [unitPoissonTest_apply] at hkey
+    rw [integral_smul_measure, ENNReal.toReal_ofReal hc.le, smul_eq_mul, hkey,
+      mul_inv_cancel_left₀ hc.ne']
 
 end GaloisForLFunctions.HTGeometry

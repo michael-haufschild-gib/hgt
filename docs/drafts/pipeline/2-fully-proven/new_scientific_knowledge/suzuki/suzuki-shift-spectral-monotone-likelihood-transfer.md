@@ -421,8 +421,29 @@ sequences — only compactness where the family lives and a Hausdorff target.  T
 refines both the neighbourhood filter of the cluster point and the image of the index filter, so the
 two limits computed along it must agree.
 
-What remains is applying this to the boundary family and the transfer to the half-plane with support
-on the ray.
+The lemma is stated so a **single** cluster point serves every evaluation point:
+`eq_of_clusterPt_of_tendsto` takes the cluster point as a hypothesis rather than producing it, and
+`exists_clusterPt_closure_of_isCompact` produces it once.  That separation is what a representation
+theorem needs — a functional-by-functional existence statement would give a different measure for
+each `w`.
+
+The two ingredients it pairs are formal:
+
+- `integral_unitPoissonKernel_normalized`: the fixed test function against the normalized measure of
+  radius `r` is `u(rw)/u(0)`.
+- `continuousAt_dilate`, `tendsto_dilate`: **the radial limit** — those values converge to
+  `u(w)/u(0)` as the radius approaches one, because `u` is continuous.
+
+**The disc representation is proved**: `exists_poissonRepresentation` — a nonnegative harmonic
+function on the unit disc is the Poisson integral of a finite positive measure on the circle of
+angles.  The measure is a cluster point of the normalized boundary family.
+
+No step is an estimate.  Tightness comes from the angles living in a fixed compact interval, the
+uniform mass bound from the mean value property, the comparability across radii from scale
+invariance of the kernel, and the limit from continuity of `u` along radii.  The degenerate case
+`u(0) = 0` is the zero measure.
+
+What remains is the transfer to the half-plane with support on the ray.
 
 What remains for the representation is the limit itself and the transfer to the half-plane with
 support on the ray.
@@ -706,3 +727,23 @@ what makes them distinct.  Degree `n` and `n` roots then leave no freedom.
   compactness where the family lives and a Hausdorff target are used, so it applies to
   `ProbabilityMeasure` with its weak topology without needing Lévy–Prokhorov metrizability.  Two new
   declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — cluster lemma restated so **one** cluster point serves every evaluation point:
+  `eq_of_clusterPt_of_tendsto` takes the cluster point as a hypothesis and
+  `exists_clusterPt_closure_of_isCompact` produces it once.  The earlier form, which produced a point
+  from a functional, would have yielded a different measure for each `w` — useless for a
+  representation theorem, where one measure must work for all of them.  Both ingredients the assembly
+  pairs are now formal: `integral_unitPoissonKernel_normalized` (the fixed test function against the
+  normalized measure of radius `r` is `u(rw)/u(0)`) and `tendsto_dilate` (those values converge to
+  `u(w)/u(0)` as the radius approaches one).  Six new declarations, targeted builds green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — **the Herglotz representation on the disc is proved**
+  (`exists_poissonRepresentation`): a nonnegative harmonic function on the unit disc is the Poisson
+  integral of a finite positive measure, obtained as a cluster point of the normalized boundary
+  family.  mathlib has no such theorem; what it supplied was the Poisson formula, Prokhorov, and the
+  continuity of integration against a bounded continuous function.  Everything between them was the
+  corpus layer built over the preceding turns, and none of it is an estimate: tightness from the
+  angles occupying a fixed compact interval, the uniform mass bound from the mean value property,
+  comparability across radii from scale invariance of the kernel, the limit from continuity of `u`
+  along radii, and the degenerate case from a positive measure of zero mass being zero.  Targeted
+  build green, axioms `[propext, Classical.choice, Quot.sound]`.  Remaining for Theorem B's last
+  sentence: the half-plane transfer with support on the ray.

@@ -2192,6 +2192,26 @@ has a constant projective limit.  Together with `tendsto_ratCoeff_jetPoly_vertic
 digamma layer of §3 is unconditional; what is left is only the passage from a componentwise to a
 lexicographic dominance order, which needs the comparison `L(t)^k / s → 0` and no new analytic input.
 
+### Lexicographic dominance closes eq. (5) for the digamma field
+
+`HTGeometry/DigammaFieldLexRatio.lean` supplies the last comparison and packages the result.
+
+- `tendsto_pow_log_div_self` — a power of the logarithm is negligible against the identity;
+- **`tendsto_digamma_pow_div_vertical_pow`** — hence any power of `ψ` divided by a positive power of
+  the argument vanishes on a vertical line: `‖ψ‖ ≤ 2 log t` eventually, while `‖s‖ ≥ t`;
+- `tendsto_ratio_digammaField_of_degree_lt` — so a ratio whose rational datum has strictly smaller
+  degree vanishes *whatever* the digamma exponents are;
+- **`tendsto_ratio_digammaField_lex`** — combining with the componentwise case:
+
+  > for elements `R(s)·ψ^D` of `ℂ(s)⟨ψ⟩` with the numerator dominated lexicographically in
+  > `(deg, D)`, the normalized ratio converges, with limit
+  > `lead(p_α q_β)/lead(q_α p_β)` when both data agree and `0` otherwise.
+
+That is eq. (5) for the digamma field in final form: a finite family normalized by a
+lexicographically minimal member has a constant projective limit, nonzero exactly at the members
+sharing the minimal datum.  §3's digamma layer — eq. (19) and eq. (5) — is now unconditional in Lean
+for elements of the form `R(s)·P(ψ, ψ′, …)`.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

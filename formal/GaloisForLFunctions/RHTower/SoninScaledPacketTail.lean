@@ -51,7 +51,7 @@ theorem norm_fourier_soninScaledPacket_le (m δ w₀ ξ : ℝ) (hδ : 0 < δ) :
   set B : ℝ → ℂ := fun x : ℝ => ((soninScaledAnnulusBump m δ x : ℝ) : ℂ) with hB
   have hBint : Integrable B := integrable_soninScaledAnnulusBumpC m δ hδ
   have hcosint : Integrable fun x : ℝ => B x * ((Real.cos (2 * Real.pi * w₀ * x) : ℝ) : ℂ) := by
-    refine hBint.mul_bdd ?_ ?_
+    refine hBint.mul_bdd (c := 1) ?_ ?_
     · exact (Complex.continuous_ofReal.comp
         (Real.continuous_cos.comp (continuous_const.mul continuous_id))).aestronglyMeasurable
     · filter_upwards with x

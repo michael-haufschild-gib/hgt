@@ -1028,10 +1028,14 @@ left:
 - three real-line Fourier rules missing from mathlib — dilation, additivity, translation
   (`HTGeometry/FourierIntegralDilation`).
 
-What is left on this line is the packet's own spectral tail.  The modulation identity is now in
-place (`fourierIntegral_mul_cos`), so the remaining step is arithmetic: apply it to the profile,
-bound each shifted transform by `norm_fourier_soninScaledAnnulusBump_le`, and add the mean term
-bounded by `abs_soninScaledPacketMean_le`.  Then feed that through the two-branch estimate to get `N` of
+The packet's own spectral tail is now proved, and in the uniform form the band estimate needs:
+`norm_fourier_soninScaledPacket_le_tailSup` bounds the packet's spectrum at *every* frequency in a
+band of radius `t < w` by `2 delta` times the reference majorant at the gap `delta*(w - t)`, plus
+the mean times the global majorant.  Both factors are governed by `tendsto_soninRefTailSup_atTop`
+and `abs_soninScaledPacketMean_le`, so both are small once `delta*(w - t)` and `delta*w` are large.
+What is left is to integrate this pointwise bound over the band — band energy at most `2t` times the
+square of the majorant bound — and compare it with the packet's total energy, which the fraction
+lemma `norm_sq_evenFourierCutoff_soninScaledPacketEven_fraction` already knows is annulus free.  Then feed that through the two-branch estimate to get `N` of
 order `r` packets at scale `r`.
 
 **Open.**  By 6 and 7 the gate is one rate comparison: does `hsNormSq Z_r` exceed
@@ -1222,6 +1226,9 @@ family is abstract, so two widths have unrelated profiles.
 | **real-line Fourier rules absent from mathlib**: dilation, additivity, translation, homogeneity, modulation, and the **cosine modulation rule** `𝓕(f·cos(2πw₀·))(ξ) = ½𝓕f(ξ-w₀) + ½𝓕f(ξ+w₀)` | `GaloisForLFunctions.HTGeometry.fourierIntegral_comp_div`, `..._add`, `..._comp_add_right`, `..._const_mul`, `..._exp_mul`, `integrable_exp_mul`, `fourierIntegral_mul_cos` |
 | **the packet mean is a reference tail**: the profile's mass is exactly `2δ` times the reference mass (centre free), so the half-width cancels and the mean is bounded by reference tails at `±δw` alone | `integrable_soninUnitBumpData`, `integral_soninUnitBumpData_pos`, `integral_soninOneSidedBump`, `integral_soninScaledAnnulusBump_eq`, `abs_soninScaledPacketMean_le` |
 | the profile's spectrum and its **cosine mass** bounded by reference tails at `±δw` — the numerator of the packet mean | `integrable_soninOneSidedBump`, `fourier_soninScaledAnnulusBump_eq_oneSided`, `norm_fourier_soninScaledAnnulusBump_le`, `abs_integral_soninScaledAnnulusBump_mul_cos_le` |
+| **the packet's spectral tail**: the packet is the profile times a cosine minus the profile times its mean, so its transform is two shifted profile transforms and a multiple of one — three reference tails | `soninScaledBumpTailBound`, `integrable_soninScaledAnnulusBumpC`, `norm_fourier_soninScaledPacket_le` |
+| **a uniform tail majorant**: the supremum of the reference transform outside a symmetric band is finite (bounded by the profile's mass) and vanishes as the band grows (rapid decay in both directions) | `soninRefTailSup`, `norm_fourier_soninUnitBumpC_le`, `bddAbove_soninRefTail`, `norm_fourier_soninUnitBumpC_le_tailSup`, `soninRefTailSup_nonneg`, `soninRefTailSup_le`, `tendsto_soninRefTailSup_atTop` |
+| **uniform in-band bound**: below the carrier, every in-band frequency is separated from both shifted spectra by the gap, so the whole in-band spectrum is bounded by the majorant at the gap plus the mean times the global majorant | `soninScaledBumpTailBound_le`, `norm_fourier_soninScaledPacket_le_tailSup` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1338,6 +1345,18 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the packet's spectral tail is proved, and then upgraded to the uniform form the band
+  estimate actually needs.  The pointwise bound (`norm_fourier_soninScaledPacket_le`) is a direct
+  assembly: cosine modulation splits the packet's transform into two shifted profile transforms, the
+  mean term is a scalar multiple of a third, and each is a reference tail.  But a band estimate needs
+  one number controlling all in-band frequencies at once, and rapid decay is a statement about a
+  single frequency going to infinity.  The fix is `soninRefTailSup`, the supremum of the reference
+  transform outside a symmetric band: finite because the transform is bounded by the profile's mass,
+  vanishing as the band grows because the profile decays in *both* directions — the corpus already
+  had both one-sided decay statements, which is what makes the two-sided supremum reachable.  With
+  it, `norm_fourier_soninScaledPacket_le_tailSup` holds uniformly on `|xi| <= t` whenever `t < w`.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninScaledPacketTail.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninReferenceTailSup.lean`.
 - 2026-08-01 — the cosine modulation rule is built, completing the real-line Fourier toolkit this
   construction needed: dilation, additivity, translation, homogeneity, character modulation, and now
   `F(f cos(2 pi w0 x))(xi) = (F f(xi - w0) + F f(xi + w0))/2`.  Mathlib has all of these only in the

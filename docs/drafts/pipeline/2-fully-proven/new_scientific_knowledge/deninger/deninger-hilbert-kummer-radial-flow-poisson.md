@@ -26,7 +26,9 @@
   (the place isometry `‖f_α‖₁ = 2h(α)` behind `(1)`--`(2)`),
   `GaloisForLFunctions.RHTower.DeningerArchimedeanBaseChange`,
   `GaloisForLFunctions.RHTower.DeningerFinitePlaceBaseChange`,
-  `GaloisForLFunctions.RHTower.DeningerFinitePlaceSumBaseChange`
+  `GaloisForLFunctions.RHTower.DeningerFinitePlaceSumBaseChange`,
+  `GaloisForLFunctions.RHTower.DeningerPlaceRestriction`,
+  `GaloisForLFunctions.RHTower.DeningerHeightBaseChange`
   (the gluing of the place tower)
 
 ## Source Hilbert space
@@ -513,11 +515,53 @@ four declarations: `propext, Classical.choice, Quot.sound`.
 This is the exact non-archimedean counterpart of `deningerArchPlaceSum_baseChange`.  Both halves
 of the base-change law are now proved.
 
+### The base-change law is complete
+
+`formal/GaloisForLFunctions/RHTower/DeningerPlaceRestriction.lean` and
+`formal/GaloisForLFunctions/RHTower/DeningerHeightBaseChange.lean`.  Axiom audit on all
+declarations: `propext, Classical.choice, Quot.sound`.
+
+**Restriction of finite places.**
+
+- `deningerUnderSpectrum`, `deningerRestrictPlace` — a finite place of `L` restricts to one of `K`
+  by taking the prime under its maximal ideal; nonvanishing of the ideal below is
+  `Ideal.under_ne_bot`, which applies because `𝓞 L` is integral over `𝓞 K`.
+- `deningerFinitePlace_apply` — the value law `‖x‖_w = ‖x‖_{w|K} ^ (e·f)` at the level of places,
+  obtained from `deningerAdicAbv_liesOver` through
+  `FinitePlace.norm_embedding`.
+- `deningerPlacesOver`, `deningerMem_placesOver` — the fibre of the restriction over `v`, as a
+  finite set of places, and the proof that it is *exactly* the set of places restricting to `v`.
+  The fibre condition matches `primesOverFinset` because `LiesOver p P` unfolds to
+  `p = P.under A`.
+- `deningerLocalDegree_ne_zero` — the local degree `e·f` is nonzero
+  (`ramificationIdx'_ne_zero_of_liesOver`, `inertiaDeg'_ne_zero`).  This is what makes the fibre
+  over a place in the support consist *entirely* of places in the support: `‖x‖_v ≠ 1` forces
+  `‖x‖_v^{ef} ≠ 1`.
+- `deningerPlacesOver_sum`, `deningerFinitePlaceFinsum_baseChange` — the fibre sum law transported
+  to places, and then the full `finsum` over `FinitePlace L`, obtained by cutting both sides down
+  to the finite multiplicative supports and applying `Finset.sum_fiberwise_of_maps_to`.
+
+**The capstone.**
+
+- `deningerLogHeight_baseChange` — **`h_L(x) = [L : K] · h_K(x)`** for every `x ∈ K`.  The
+  archimedean part scales by `deningerArchPlaceSum_baseChange`, the finite part by
+  `deningerFinitePlaceFinsum_baseChange`, both with `F = log⁺`.
+- `deningerKummerL1Norm_baseChange` — the same for the Kummer norm, immediately from the place
+  isometry `‖f_α‖₁ = 2h(α)`.
+- `deningerNormalizedHeight_baseChange` — **the normalized height `h_K(x)/[K : ℚ]` does not depend
+  on the field of definition**, by the tower law `[L : ℚ] = [K : ℚ]·[L : K]`.
+
+This is precisely the compatibility the card's place tower needs: the function `f_α`, normalized by
+the absolute degree, is the same at every level, so the level-wise place models are compatible and
+the Kummer norm of `α` is an invariant of `α` alone.  Note that mathlib has no absolute height on
+`Q̄` and no base-change law for `Height.logHeight₁`; both are built here.
+
 ### Remaining
 
-Only the assembly: `logHeight₁` is the archimedean place sum plus a `finsum` over `FinitePlace L`,
-so combining the two halves into `h_L(x) = [L : K] · h_K(x)` needs the fibration
-`FinitePlace L → FinitePlace K` (through `equivHeightOneSpectrum` and `Ideal.under`) together with
-the finiteness of the multiplicative support, to rewrite that `finsum` as a double sum over the
-base places and their fibres.  The fibre condition matches `primesOverFinset` on the nose, since
-`LiesOver p P` is by definition `p = P.under A`.
+Only the construction of the single global object: the absolute Weil height on `Q̄`, defined by
+`h(α) = h_K(α)/[K : ℚ]` for any number field `K` containing `α` — well defined by
+`deningerNormalizedHeight_baseChange` — and the Hilbert--Kummer space as the completion of
+`𝒢 ⊗ ℚ` for the associated norm.  With that completion as the definition of `H_Kum`, the dense
+span of `(2)` is true by construction (`deningerClosedSpan_eqOn`) and its injectivity is the
+height-zero theorem, both already proved; what is left is to *build* the colimit, not to prove a
+new mathematical statement about it.

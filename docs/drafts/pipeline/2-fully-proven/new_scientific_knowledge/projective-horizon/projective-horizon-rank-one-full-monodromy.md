@@ -1398,3 +1398,17 @@ dividing the discriminant.
   rather than as an action instance — which is also the form the fixed-field theorem consumes.
   Next: the fixed field of the image subgroup, Artin's `FixedPoints.finrank_eq_card` for the degree
   `n`, and the sandwich `E_0 <= fixed field <= top` with `[top : E_0] <= n` from `p_1^n in E_0`.
+
+- 2026-08-01 — `TailFixedField.lean`.  The deck transformations act on the rational function field
+  in the parameters (`deckGroup`, its image in the automorphism group, with the action extended to
+  the fraction field by mathlib's `IsFractionRing.mulSemiringAction` and faithfulness by
+  `IsFractionRing.faithfulSMul`), and Artin's theorem gives the degree over the fixed field as the
+  order of the group (`finrank_fixedField_deckGroup`).  The tail coefficients lie in that fixed
+  field (`algebraMap_tailCoeff_mem_fixedField`; the compatibility `g • algebraMap p =
+  algebraMap (g • p)` comes from `smul_distrib_smul` applied at `1`), and the group has order `n`
+  once the constants contain a primitive `n`-th root of unity (`card_deckGroup`, via
+  `deckGroupEquiv` and `IsPrimitiveRoot.card_rootsOfUnity`) — which the card's algebraically closed
+  `K` supplies.  Axioms `[propext, Classical.choice, Quot.sound]`.
+  So `E_0` sits inside a subfield of index exactly `n`.  What closes the degree is the reverse
+  bound `[top : E_0] <= n`, which is `p_1^n = c_0 in E_0` plus `top = E_0(p_1)` — both already
+  proved (`tailCoeff_zero`, `tailParamField_eq_top`).
