@@ -18,7 +18,8 @@ variable {F L : Type*} [Field F] [Field L] [Algebra F L]
 theorem aeval_taylor (r : F) (p : Polynomial F) (x : L) :
     Polynomial.aeval x (Polynomial.taylor r p) =
       Polynomial.aeval (x + algebraMap F L r) p := by
-  rw [Polynomial.taylor_apply, map_comp]
+  rw [Polynomial.taylor_apply, Polynomial.aeval_comp]
+  congr 1
   simp
 
 /-- **A point is a root of the shift exactly when its translate is a root.** -/
@@ -53,5 +54,23 @@ theorem rootSet_taylor (r : F) (p : Polynomial F) (hp : p ≠ 0) :
     refine ⟨hmapne _ (taylor_ne_zero hp), ?_⟩
     rw [aeval_taylor_eq_zero_iff, sub_add_cancel]
     exact hy.2
+
+/-- **The shift does not change the field the roots generate.**  Translating by a base-field element
+stays inside the field. -/
+theorem adjoin_rootSet_taylor (r : F) (p : Polynomial F) (hp : p ≠ 0) :
+    IntermediateField.adjoin F ((Polynomial.taylor r p).rootSet L) =
+      IntermediateField.adjoin F (p.rootSet L) := by
+  rw [rootSet_taylor r p hp]
+  refine le_antisymm ?_ ?_
+  · rw [IntermediateField.adjoin_le_iff]
+    rintro _ ⟨y, hy, rfl⟩
+    exact sub_mem (IntermediateField.subset_adjoin _ _ hy)
+      ((IntermediateField.adjoin F (p.rootSet L)).algebraMap_mem r)
+  · rw [IntermediateField.adjoin_le_iff]
+    intro y hy
+    have h : y = (y - algebraMap F L r) + algebraMap F L r := by ring
+    rw [h]
+    refine add_mem (IntermediateField.subset_adjoin _ _ ⟨y, hy, rfl⟩) ?_
+    exact IntermediateField.algebraMap_mem _ r
 
 end GaloisForLFunctions.HTGeometry

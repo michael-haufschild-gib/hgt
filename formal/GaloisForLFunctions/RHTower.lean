@@ -3887,3 +3887,4 @@ import GaloisForLFunctions.RHTower.SoninCouplingEnergyFromFamily
 import GaloisForLFunctions.RHTower.DeningerL2CauchySchwarz
 import GaloisForLFunctions.RHTower.DeningerL2Norm2
 import GaloisForLFunctions.RHTower.SoninShellCutCouplingEnergy
+import GaloisForLFunctions.RHTower.DeningerL2Space

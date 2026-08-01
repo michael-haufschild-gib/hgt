@@ -1,5 +1,6 @@
 import Mathlib.Analysis.InnerProductSpace.Symmetric
 import Mathlib.Algebra.QuadraticDiscriminant
+import Mathlib.LinearAlgebra.Matrix.PosDef
 
 /-!
 # The inner product induced by a positive symmetric operator
@@ -180,5 +181,77 @@ theorem imbalance_eq_neg_one_of_evenPart_eq_zero {vp vm : E} (heven : evenPart v
   rw [heven, norm_zero]
   norm_num
   rw [neg_div, div_self (ne_of_gt hop)]
+
+/-! ## The parity weights
+
+Shifting and halving the imbalance turns it into the pair of parity weights, and they sum to one.
+So the imbalance is not an arbitrary derivative but the signed polarization of a two-state
+probability: each weight is one component's share of the total defect energy. -/
+
+/-- **`(12)`, the parity weights.**  The shifted imbalance is each part's share of the total, and the
+two shares sum to one. -/
+theorem parity_weights (e o : ℝ) (h : 0 < e + o) :
+    (1 + (e - o) / (e + o)) / 2 = e / (e + o) ∧
+      (1 - (e - o) / (e + o)) / 2 = o / (e + o) ∧
+      e / (e + o) + o / (e + o) = 1 := by
+  refine ⟨?_, ?_, ?_⟩
+  · field_simp
+    ring
+  · field_simp
+    ring
+  · field_simp
+
+/-- The parity weights of a defect pair: each component's share of the total defect energy. -/
+theorem parity_weights_of_defect {vp vm : E}
+    (h : 0 < ‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2) :
+    (1 + (‖evenPart vp vm‖ ^ 2 - ‖oddPart vp vm‖ ^ 2)
+        / (‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2)) / 2
+      = ‖evenPart vp vm‖ ^ 2 / (‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2) :=
+  (parity_weights _ _ h).1
+
+/-- Both weights are nonnegative, so the polarization really is a two-state probability. -/
+theorem parity_weight_nonneg {vp vm : E}
+    (h : 0 < ‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2) :
+    0 ≤ ‖evenPart vp vm‖ ^ 2 / (‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2) ∧
+      0 ≤ ‖oddPart vp vm‖ ^ 2 / (‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2) :=
+  ⟨div_nonneg (sq_nonneg _) h.le, div_nonneg (sq_nonneg _) h.le⟩
+
+/-! ## The two-defect Gram state
+
+The normalized Gram of a defect pair is a two-by-two state whose off-diagonal is the pairing.  Its
+parity vectors diagonalize it, with the parity weights as eigenvalues — so the polarization reading
+is not an analogy but the spectral decomposition of an explicit matrix. -/
+
+open Matrix in
+/-- The normalized two-defect Gram state. -/
+noncomputable def defectGramState (N C : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
+  (2 * N)⁻¹ • !![N, C; C, N]
+
+open Matrix in
+/-- **The even parity vector is an eigenvector**, with the even parity weight. -/
+theorem defectGramState_mulVec_even {N : ℝ} (C : ℝ) (hN : N ≠ 0) :
+    (defectGramState N C) *ᵥ ![1, 1] = ((1 + C / N) / 2) • ![1, 1] := by
+  funext i
+  fin_cases i <;>
+    (simp [defectGramState, Matrix.mulVec, dotProduct, Fin.sum_univ_two]
+     field_simp
+     try ring)
+
+open Matrix in
+/-- **The odd parity vector is an eigenvector**, with the odd parity weight. -/
+theorem defectGramState_mulVec_odd {N : ℝ} (C : ℝ) (hN : N ≠ 0) :
+    (defectGramState N C) *ᵥ ![1, -1] = ((1 - C / N) / 2) • ![1, -1] := by
+  funext i
+  fin_cases i <;>
+    (simp [defectGramState, Matrix.mulVec, dotProduct, Fin.sum_univ_two]
+     field_simp
+     try ring)
+
+open Matrix in
+/-- The state is symmetric, so its parity decomposition is orthogonal. -/
+theorem defectGramState_isHermitian (N C : ℝ) : (defectGramState N C).IsHermitian := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [defectGramState, Matrix.conjTranspose_apply]
 
 end GaloisForLFunctions.HTGeometry

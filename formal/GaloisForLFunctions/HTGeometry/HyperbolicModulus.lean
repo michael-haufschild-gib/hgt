@@ -261,4 +261,53 @@ theorem freeMeasure_singleton {a : ℝ} (ha : 0 < a) (k : ℤ) :
       = ENNReal.ofReal (Real.cosh a / (a * Real.sinh a)) :=
   labelledMeasure_singleton (freeEvenSpectrum_injective ha) k
 
+/-! ## The free defect angle
+
+The free even/odd pairing is the aperture length and the free energy is a hyperbolic sine, so their
+quotient is `2a/sinh(2a)`.  It collapses as the aperture grows, because the hyperbolic sine
+eventually dominates any multiple of its argument. -/
+
+/-- **The free defect angle.**  The pairing over the energy is `2a/sinh(2a)`. -/
+theorem freeDefectAngle_eq (a : ℝ) :
+    (∫ _s in (-a)..a, (1 : ℝ)) / (∫ s in (-a)..a, Real.exp (2 * s))
+      = 2 * a / Real.sinh (2 * a) := by
+  rw [integral_one_symm, integral_exp_two_mul]
+
+/-- The hyperbolic sine dominates a quarter of the exponential beyond one. -/
+theorem exp_div_four_le_sinh {y : ℝ} (hy : 1 ≤ y) : Real.exp y / 4 ≤ Real.sinh y := by
+  rw [Real.sinh_eq]
+  have h1 : Real.exp (-y) ≤ 1 := by
+    rw [Real.exp_le_one_iff]
+    linarith
+  have h2 : (2 : ℝ) ≤ Real.exp y := by
+    calc (2 : ℝ) ≤ Real.exp 1 := by
+          have := Real.add_one_le_exp (1 : ℝ)
+          linarith
+      _ ≤ Real.exp y := Real.exp_le_exp.mpr hy
+  linarith
+
+/-- **`(9)`, the free collapse.**  The free defect angle tends to zero as the aperture grows. -/
+theorem tendsto_freeDefectAngle_atTop :
+    Filter.Tendsto (fun y : ℝ => y / Real.sinh y) Filter.atTop (nhds 0) := by
+  have hbound : ∀ᶠ y : ℝ in Filter.atTop, y / Real.sinh y ≤ 4 * (y * Real.exp (-y)) := by
+    filter_upwards [Filter.eventually_ge_atTop (1 : ℝ)] with y hy
+    have hs : Real.exp y / 4 ≤ Real.sinh y := exp_div_four_le_sinh hy
+    have hspos : 0 < Real.sinh y := lt_of_lt_of_le (by positivity) hs
+    rw [div_le_iff₀ hspos, Real.exp_neg]
+    have hpos : (0 : ℝ) ≤ 4 * (y * (Real.exp y)⁻¹) := by positivity
+    have hstep := mul_le_mul_of_nonneg_left hs hpos
+    have hkey : 4 * (y * (Real.exp y)⁻¹) * (Real.exp y / 4) = y := by
+      field_simp
+    linarith [hstep, hkey]
+  have hnn : ∀ᶠ y : ℝ in Filter.atTop, 0 ≤ y / Real.sinh y := by
+    filter_upwards [Filter.eventually_ge_atTop (1 : ℝ)] with y hy
+    have hs : Real.exp y / 4 ≤ Real.sinh y := exp_div_four_le_sinh hy
+    have hspos : 0 < Real.sinh y := lt_of_lt_of_le (by positivity) hs
+    positivity
+  have hlim : Filter.Tendsto (fun y : ℝ => 4 * (y * Real.exp (-y))) Filter.atTop (nhds 0) := by
+    have := Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero 1
+    simp only [pow_one] at this
+    simpa using this.const_mul (4 : ℝ)
+  exact squeeze_zero' hnn hbound hlim
+
 end GaloisForLFunctions.HTGeometry

@@ -53,7 +53,8 @@
   `GaloisForLFunctions.RHTower.DeningerRealSmul`,
   `GaloisForLFunctions.RHTower.DeningerRealSmulModule`,
   `GaloisForLFunctions.RHTower.DeningerL2CauchySchwarz`,
-  `GaloisForLFunctions.RHTower.DeningerL2Norm2`
+  `GaloisForLFunctions.RHTower.DeningerL2Norm2`,
+  `GaloisForLFunctions.RHTower.DeningerL2Space`
   (the gluing of the place tower, the absolute height on `Q̄`, the
   normed Kummer group `𝒢`, the normed `ℚ`-vector space `𝒢 ⊗ ℚ`, its
   completion, and the local-degree normalization of the place space)
@@ -1098,10 +1099,29 @@ a real space.
 So `𝒢 ⊗ ℚ` carries the `L²` Kummer norm as an `AddGroupNorm`, alongside the height norm built
 earlier.
 
+### The Hilbert--Kummer space landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerL2Space.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `DeningerL2Space F` — the Kummer space `𝒢 ⊗ ℚ` carrying the `L²` norm.  It has to be a *type
+  synonym*: the same underlying space already carries the height norm from the `L¹` construction,
+  and a type can hold only one `NormedAddCommGroup` instance.  This is the `WithLp` situation, and
+  it is the formal shadow of the `L¹`/`L²` distinction the card turns on.
+- `deningerL2Norm_qsmul` and the `NormedSpace ℚ` instance — `‖q • x‖₂ = |q|·‖x‖₂`, so the synonym
+  is a normed `ℚ`-vector space.
+- `DeningerL2Completion F` — **the Hilbert--Kummer space** `H_Kum`, the completion of `𝒢 ⊗ ℚ` for
+  the `L²` norm; complete, and a normed `ℚ`-space.
+- `deningerL2Completion_realModule` — **its real structure**, from the scalar extension, with
+  `deningerL2Completion_realSmul_norm` giving `‖r • x‖ = |r|·‖x‖`.
+
+So the card's `(1)` is now realized: `H_Kum` exists as a real normed complete space obtained from
+the `L²` Kummer form, and `(2)` is `deningerKummerClass` with its injectivity and dense span.
+
 ### Remaining
 
-The last assembly: install `deningerL2AddGroupNorm` as the `NormedAddCommGroup` structure on
-`𝒢 ⊗ ℚ` with `‖q • x‖₂ = |q|·‖x‖₂` (from `deningerSpaceL2Inner_qsmul_left`), take the completion,
-install `deningerRealModule` there, and read off `InnerProductSpace ℝ`.  Every mathematical
-ingredient is proved; this is instance plumbing over the two normed structures now available on
-the same underlying space.
+Recording the inner product on the completion: extend `deningerSpaceL2Inner` by continuity to
+`DeningerL2Completion` and note that its diagonal is `‖·‖²`, i.e. package the completion as an
+`InnerProductSpace ℝ`.  Both ingredients are proved — the form is bounded by Cauchy--Schwarz so it
+extends, and the real structure is in place; what remains is the extension of a *bilinear* map by
+continuity, the two-variable analogue of the scalar extension already built.

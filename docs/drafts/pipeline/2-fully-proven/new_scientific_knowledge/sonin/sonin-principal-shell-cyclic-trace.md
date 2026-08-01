@@ -1154,8 +1154,15 @@ is unitary, so they serve as the near-isometry targets with no further work.  Th
 listed twice in a three-element family, which is how the budget's factor of two enters a sum of
 equally weighted terms.
 
-What remains is to choose constants: the order `N`, the threshold `ε`, and the schedule constant `K`,
-and read off the linear-in-`r` energy.  With `N` about `r/K` this gives coupling
+Instantiated at the cut, the bound now reads
+`(N - discount)(1 - eta)^2 <= hsNormSq Z` with `N` the number of annuli — the only quantity on the
+right that grows.  Everything subtracted from it is fixed once the schedule's constants are chosen.
+
+What remains is a single hypothesis: the band bound `β`, uniform over the `N` packets.  Its three
+terms are the physical shell on the dilate (zero once `r b` clears the aperture), the dilate's two
+band terms, and the packet's own band content — all four estimates already proved, but stated for the
+packets rather than for their normalizations, so the last step is to divide each by the packet norm
+and choose `N`, `ε` and the schedule constant `K` to satisfy `3 ε + β <= eta`.  With `N` about `r/K` this gives coupling
 energy of order `r`, against the `log r` cap, closing the shortfall test.  Then feed that through the two-branch estimate to get `N` of
 order `r` packets at scale `r`.
 
@@ -1370,6 +1377,7 @@ family is abstract, so two widths have unrelated profiles.
 | **the energy above a band**: substituting the polynomial rate turns that density into a genuine power tail of order `2N`, integrable at every positive order, so the packet keeps at most `2K δ^{2-2N} t^{1-2N}/(2N-1)` above a band at twice its carrier | `exists_soninScaledPacketSpectralDensity_le_powerTail`, `exists_norm_sq_sub_evenFourierCutoff_soninScaledPacketEven_le` |
 | **the full error budget in five named terms**, with the correction difference written as an ideal operator applied to the vector itself — the ideal absorbs the dilation by right multiplication, which is what lets the mode count see it | `norm_evenSoninApertureLayer_sub_le`, `isSoninPrincipalRelativeIdeal_correctionDiff_comp_dilation`, `norm_soninApertureCoupling_sub_dilate_le_budget` |
 | **coupling energy from a shell family**: an orthonormal family vanishing inside the inner aperture and fixed by the outer one, with band terms below `β`, forces `hsNormSq Z >= (N - discount)(1-η)²` — the coupling is itself an ideal element, hence Hilbert--Schmidt, and its dilates are unit vectors | `soninCouplingIdealErrors`, `isSoninPrincipalRelativeIdeal_soninCouplingIdealErrors`, `card_sub_le_hsNormSq_soninApertureCoupling` |
+| **the same with the cut's packets**: normalizing changes nothing the estimate sees, since the cutoffs are linear, so the bound reads with the number of annuli `N` in place of the family's cardinality | `soninShellCutUnit`, `orthonormal_soninShellCutUnit`, `evenIndicatorCutoff_soninShellCutUnit_eq_zero`, `evenIndicatorCutoff_soninShellCutUnit_eq_self`, `card_sub_le_hsNormSq_soninApertureCoupling_shellCut` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1486,6 +1494,14 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the cut is plugged into the assembly, and the plumbing was free: the cutoffs are
+  linear, so a normalized packet vanishes under the inner cutoff and is fixed by the outer one for
+  exactly the same reason the packet does, with `map_smul` doing all the work.  The bound now reads
+  with `N`, the number of annuli, and every other quantity in it is fixed by the schedule.  What is
+  left is not a new mechanism but a normalization: the four band estimates are stated for the packets
+  and are needed for the unit vectors, so each must be divided by the packet norm — which is exactly
+  what the energy floor bounds from below.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutCouplingEnergy.lean`.
 - 2026-08-01 — the general assembly closes: family in, energy bound out.  Two things had to be true
   and both already were.  The coupling is a relative-ideal element
   (`evenSoninApertureSuccessiveLayerTransition_mem_principalRelativeIdeal`), hence Hilbert--Schmidt

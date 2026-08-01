@@ -112,11 +112,29 @@ kappa_(a,lambda)
 ```
 
 Thus the first obstruction to collapse is a normalized even--odd defect-energy imbalance, not the
-restricted Weil floor itself.  For the free carrier,
+restricted Weil floor itself.
+
+`(8)` is formal in `formal/GaloisForLFunctions/HTGeometry/PositiveOperatorInner.lean`:
+`inner_eq_evenPart_sq_sub_oddPart_sq` (the pairing is the energy *difference*),
+`norm_sq_eq_evenPart_sq_add_oddPart_sq` (equal norms — the parity input — make the *sum* the common
+energy), and `inner_div_norm_sq_eq_imbalance` for the quotient.
+
+**Correction to the displayed bound.**  `|kappa|<1` needs *both* defect components nonzero, not only
+the odd one: `abs_imbalance_lt_one` carries both hypotheses, and
+`imbalance_eq_one_of_oddPart_eq_zero` / `imbalance_eq_neg_one_of_evenPart_eq_zero` show the bound is
+attained at each degenerate end.  So the strict inequality is exactly the statement that both
+components survive, which is what makes it a noncollapse certificate.  For the free carrier,
 
 ```text
 kappa_a^free=2a/sinh(2a) -> 0.                           (9)
 ```
+
+`(9)` is formal in `formal/GaloisForLFunctions/HTGeometry/HyperbolicModulus.lean`:
+`freeDefectAngle_eq` computes the free quotient as `2a/sinh(2a)` from the two free integrals — the
+pairing is the aperture length and the energy is a hyperbolic sine — and
+`tendsto_freeDefectAngle_atTop` gives the collapse, via `exp_div_four_le_sinh` (the hyperbolic sine
+dominates a quarter of the exponential beyond one).  Both integrals were already proved for
+`suzuki-donoghue-defect-spectral-measure-law`; `(9)` needed only their quotient.
 
 A nonzero lower bound for `|kappa|` is a sufficient source-side noncollapse certificate.  It is not
 necessary: a nonzero Schur limit may have a higher-order zero at `i`.  The full necessary-and-
@@ -150,7 +168,12 @@ p_odd =(1-kappa)/2=||v_o||_T^2/(||v_e||_T^2+||v_o||_T^2). (12)
 ```
 
 Hence `kappa` is not an arbitrary derivative: it is the signed polarization of a canonical
-two-state defect density matrix.  The far-negative projective endpoint is the universal free
+two-state defect density matrix.
+
+`(12)` is formal in `PositiveOperatorInner.lean`: `parity_weights` shows the shifted imbalance is
+each component's share of the total defect energy and that the two shares sum to one, and
+`parity_weight_nonneg` that both are nonnegative.  So the polarization really is a two-state
+probability, which is what makes the density-matrix reading exact rather than suggestive.  The far-negative projective endpoint is the universal free
 state, whose polarization is `(9)` and tends to zero cofinally.  The no-go therefore identifies an
 actual boundary stratum in the moduli of Suzuki carriers.
 
@@ -301,3 +324,26 @@ Axiom audit of every declaration above: `[propext, Classical.choice, Quot.sound]
 - 2026-07-31 — negative-shift escape theorem formalized unconditionally in Lean: strong resolvent
   law, aperture Fourier pairing, free-carrier identification, uniform quotient passage, and the
   cofinal diagonal, together with a non-vacuity witness.
+- 2026-08-01 — `(8)` formalized, with a correction.  The even/odd decomposition is pure inner-product
+  geometry and needs no operator: the pairing is the energy difference, and equal norms — the parity
+  input — make the sum the common energy.  But the displayed `|kappa| < 1` requires **both**
+  components nonzero, not just the odd one; a vanishing even part gives `kappa = -1` exactly.
+  `abs_imbalance_lt_one` now carries both hypotheses and the two boundary lemmas record when equality
+  holds.  This sharpens rather than weakens the card's point: the strict bound *is* the assertion
+  that both defect components survive.  Six new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(9)` formalized: `freeDefectAngle_eq` gives the free defect angle as `2a/sinh(2a)`
+  and `tendsto_freeDefectAngle_atTop` its collapse.  Both defining integrals — the pairing
+  `int 1 = 2a` and the energy `int e^{2s} = sinh 2a` — were already proved for the Donoghue card, so
+  `(9)` reduced to taking their quotient plus an exponential-domination bound.  With `(8)` from the
+  previous entry, the defect-angle survivor section is formal apart from the source-side lower bound
+  it leaves open.  Three new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(12)` formalized.  `parity_weights` turns the imbalance into the pair of parity
+  weights and proves they sum to one; `parity_weight_nonneg` gives nonnegativity.  Together these
+  make the card's "signed polarization of a canonical two-state defect density matrix" exact: the
+  weights are a genuine probability pair, each being one component's share of the total defect
+  energy.  Combined with `(8)` and `(9)` from the previous entries, the defect-angle and
+  projective-compactification content of this card is formal apart from the source-side lower bound
+  it leaves open.  Three new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.

@@ -2041,3 +2041,53 @@ dividing the discriminant.
   which is the Tschirnhaus centering.  It is the first step of the change of variables that would
   identify the card's `E_0` with the centered coefficient field and so carry
   `genericFullMonodromy` to the card's own equation.
+
+- 2026-08-01 — `TaylorRoots.lean` is the second step of the bridge.  The Taylor shift is composition
+  with a translation, so `aeval_taylor`: evaluating the shifted polynomial at a point is evaluating
+  the original at the translated point; `taylor_ne_zero`: shifting back recovers the polynomial, so
+  the shift of a nonzero polynomial is nonzero; and `rootSet_taylor`: the roots of the shift are the
+  roots of the original translated back.  Axioms `[propext, Classical.choice, Quot.sound]`.
+  With `taylor_coeff_pred` this gives both halves of the Tschirnhaus change of variables: the shift
+  that centers a monic polynomial, and the fact that it moves the roots by a base-field translation
+  — so the field the roots generate, and hence the splitting field and the Galois group, are
+  unchanged.
+
+- 2026-08-01 — `adjoin_rootSet_taylor` completes the geometric half of the Tschirnhaus bridge: the
+  shift does not change the field the roots generate, because translating by a base-field element
+  stays inside any intermediate field.  So the centered and uncentered polynomials have the **same**
+  root field over the same base, and therefore the same automorphism group.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  The pieces of the bridge now in place: `taylor_coeff_pred` (the shift that centers),
+  `rootSet_taylor` (roots translate), `adjoin_rootSet_taylor` (root field unchanged).  What is left
+  is to identify the corpus's `centeredMonicF` with the Taylor shift of `genericMonicF`, after which
+  `genericFullMonodromy` transfers to the centered polynomial and the card's `(7)` is in reach.
+
+- 2026-08-01 — `CenteredIsTaylorShift.lean`: `taylor_genericMonicF` identifies the corpus's centered
+  polynomial as the Taylor shift of the generic one by the average of the roots.  Both are products
+  of linear factors, so the identity is one `prod_comp` and a rearrangement of each factor.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  The Tschirnhaus bridge is now complete as a chain of facts: the centered polynomial **is** a shift
+  of the generic one; a shift translates the roots by a base-field element
+  (`rootSet_taylor`); and that leaves the field they generate unchanged
+  (`adjoin_rootSet_taylor`).  Hence the centered and generic polynomials share a root field and an
+  automorphism group, which is what carries the symmetric-monodromy statement between them.
+
+- 2026-08-01 — `GenericAverageSymmetric.lean` moves the shift down to the coefficient field.
+  `genericAverage_mem_symmetricPart`: permuting the roots does not change their average, so the
+  average is symmetric — the corpus's `smul_genericAverage` is exactly the membership condition.
+  `map_taylor`: a ring homomorphism carries a shift to the shift by the image of the amount.  Hence
+  `centeredMonicPart`, the centered polynomial written **over the coefficient field**, with
+  `map_centeredMonicPart` identifying its image in the rational function field as `centeredMonicF`.
+  Axioms `[propext, Classical.choice, Quot.sound]`.
+  This removes the base mismatch flagged in the previous entry: the centering can now be performed
+  over `symmetricPart`, the same base `genericFullMonodromy` is stated over.
+
+- 2026-08-01 — `CenteredPartSplittingField.lean`: the rational function field is a splitting field of
+  the **centered** polynomial over the coefficient field.  `splits_centeredMonicPart` from the
+  linear factorisation; `adjoin_rootSet_centeredMonicPart` is `adjoin_rootSet_taylor` applied to the
+  identification of the centered polynomial as a shift; and the subalgebra form comes from the
+  intermediate-field one through `adjoin_toSubalgebra_of_isAlgebraic` and
+  `algebra_adjoin_le_adjoin`.  Axioms `[propext, Classical.choice, Quot.sound]`.
+  So the centered polynomial over `symmetricPart` has the same splitting field as the generic one,
+  and therefore the same Galois group — the symmetric group.  The Tschirnhaus transfer is complete
+  at the level of the model.
