@@ -65,8 +65,8 @@ Xi conormal are precisely the existing limiting-absorption/common-domain core.  
 then makes a nonzero transpose eigenfunctional possible only at a real quadratic parameter; proving
 that all source conormals land is already the RH-bearing step.
 
-**Verdict:** `CIRCULAR AS AN INDEPENDENT RH PRODUCER`; survives only as an explicit successor
-source-landing problem outside the retired regular-completion route.
+**Verdict:** `CIRCULAR AS AN INDEPENDENT RH PRODUCER`; its singular Hedenmalm source-landing form
+maps exactly to Route C1, outside the retired regular-completion subroute.
 
 ### K3 — finite-rank or finite-channel source coupling
 
@@ -90,9 +90,10 @@ domain.
 plus an exact Xi determinant would itself force all Xi zeros onto the real spectral axis.  No
 independent source identity currently constructs the correction or proves determinant convergence.
 
-**Verdict:** `SURVIVES OUTSIDE ROUTE K`, as the already isolated trace-class
-determinant/conservativity core.  It must remain an explicit hard problem and new route, not be
-relabeled as an achieved Clifford operator proof.
+**Verdict:** `ACTIVE ROUTE K PIVOT`.  No other numbered route owns a source-built trace-class
+relocation of the prime-indexed Riemann--von Mangoldt skeleton.  It remains an explicit hard
+problem and must not be relabeled as an achieved Clifford operator proof.  Active card:
+`../../1-in-progress/route-k-prime-cycle-trace-class-relocation.md`.
 
 ## Boundary-carrier collapse theorem `[PROVED HERE]`
 
@@ -122,10 +123,11 @@ linearity step with no analytic approximation hidden in the Lean statement.
   ordinary `L²` and then through every dense completion.
 - **Strongest positive survivor:** the three-way architecture law above; nonzero boundary data must
   be singular/partial, live beyond a dense `L²` completion, or retain a non-null source channel.
-- **New insight:** the open Route K object cannot be a conventional Hausdorff completion plus
+- **New insight:** the regular Clifford/full-source Route K subroute cannot be a conventional
+  Hausdorff completion plus
   continuous boundary quotient.  It must be an essential-boundary relation or a prime-marked
-  infinite-rank determinant, and the all-zero landing/conservativity clause remains the RH-bearing
-  core.
+  infinite-rank determinant.  The former maps to Route C1; the unmatched latter is the active
+  Route K pivot, and its source determinant incidence remains the RH-bearing core.
 - **Status:** `[PROVED HERE] [FORMALIZED]`; generic and theta-source statements are unconditional.
 
 ## Lean certificate
@@ -145,7 +147,8 @@ only `propext`, `Classical.choice`, and `Quot.sound`.  Repository-wide source li
 but, during the shared-workspace audit, is red only on unrelated concurrently added unwired modules.
 
 This theorem is deliberately classified as a guardrail, not new mathematical science.  The stronger
-source-specific new consequence used in Route K retirement is the independently formalized
+source-specific new consequence used to retire Route K's regular-completion subroute is the
+independently formalized
 arbitrary-Hilbert-target closed-graph theorem
 `hilbertGram_l2PartialOperator_not_closable`.
 
@@ -158,3 +161,5 @@ arbitrary-Hilbert-target closed-graph theorem
   to `2-fully-proven` before Lean work.
 - 2026-08-01 — generic and theta-source theorems formalized, umbrella wired, target build and axiom
   audit passed; promoted to `3-formalized/not_new_scientific_knowledge`.
+- 2026-08-01 — scope corrected: K2 maps to Route C1, while K4 has no other route owner and is the
+  active Route K prime-cycle trace-class relocation pivot.

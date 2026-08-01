@@ -146,3 +146,129 @@ positivity map or zero-location mechanism is known.
 - [x] deformation retraction and Solomon--Tits homology deduced
 - [ ] formal order-complex topology
 - [ ] independent specialist audit
+
+## Log
+
+- 2026-08-01 — **The classification theorem is formalized as a partial order.**
+  `formal/GaloisForLFunctions/HTGeometry/CuspedHorizonPoset.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `CuspedVertex` is a vertex of `P_infinity(V)`: a nonzero proper subspace with a derivative depth,
+  where any depth beyond the first is carried by a **line**.  The order is
+
+  ```text
+  v ≤ w  ↔  w.depth ≤ v.depth  ∧  (v at depth one → w.space ≤ v.space)
+                                ∧  (v deeper     → w.space = v.space),
+  ```
+
+  reverse inclusion at depth one, and depth alone within a cusp.  That this is a partial order is the
+  content: transitivity is where the classification enters, since a depth-one vertex below a line
+  must be that line, which is `eq_of_le_line` — a nonzero subspace of a line is the line.  Without
+  the line condition on deeper vertices the relation is not transitive.
+
+  `space_eq_of_le_of_depth_ne_zero`, `not_le_of_space_ne`, `eq_space_of_le_depthOne` — a deeper
+  vertex is comparable only to vertices carried by its own line; two deeper vertices on different
+  lines are incomparable; a deeper vertex sits below a depth-one vertex only when that vertex is its
+  own line.  Those are `(3)` and the statement around it: distinct cusps meet nowhere.
+
+  `le_total_of_space_eq`, `isChain_cusp` — the vertices carried by one line are totally ordered, so
+  each cusp is a chain: the "contractible infinite jet-tail cusp" in its order-theoretic form.
+
+  So `P_infinity(V)` is proved to be the depth-one poset with one disjoint chain attached below each
+  line, which is the card's classification theorem.  The gate `formal order-complex topology` stays
+  open: the deformation retraction to the building and the persistence of the Steinberg class are
+  homotopy statements, and the local toolchain has no order-complex homotopy theory.  A chain is
+  contractible, but that sentence is not available here — what is available is that it is a chain.
+
+- 2026-08-01 — **The simplices of `P_infinity(V)` decompose.**
+  `formal/GaloisForLFunctions/HTGeometry/CuspedHorizonPoset.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `space_eq_of_chain_of_depth_ne_zero` — any two deeper vertices of a chain lie on the **same** line,
+  so a simplex of the all-depth poset meets at most one cusp.  A simplex is therefore a simplex of the
+  depth-one building with at most one cusp segment attached, which is the shape the retraction of the
+  statement acts on.
+
+  `card_image_depthOne_le` and `card_filter_depthOne_le` — the depth-one vertices of a chain form a
+  flag, so there are at most `N - 1` of them, however deep the cusp segment runs
+  (`eq_of_depthOne_of_space_eq` gives that a depth-one vertex is determined by its subspace, so the
+  count of vertices and of their subspaces agree).
+
+  That is the card's sentence "topological information is concentrated in the depth-one incidence
+  skeleton" in the form available without homotopy: the cusps can be arbitrarily long, but they
+  contribute no width — the number of depth-one vertices of any simplex is bounded by the building's
+  dimension, and the cusp direction of a simplex is unique.
+
+  The homotopy gate is unchanged: the retraction itself, and the persistence of the Steinberg class,
+  need order-complex homotopy theory that the toolchain does not have.
+
+- 2026-08-01 — **The retraction is constructed, as a closure operator.**
+  `formal/GaloisForLFunctions/HTGeometry/CuspedHorizonPoset.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `cuspClosure : ClosureOperator (CuspedVertex K V)` — forgetting the depth of a vertex is monotone,
+  increases every vertex, and is idempotent.  `range_cuspClosure` — its closed elements are exactly
+  the depth-one vertices, so it retracts `P_infinity(V)` onto the building poset.
+
+  This is more than the previous entries.  A closure operator is precisely the hypothesis of the
+  standard poset-homotopy lemma: if a monotone map satisfies `x ≤ f x` and is idempotent, the order
+  complex of the poset deformation-retracts onto the order complex of its image.  So the card's
+  deformation retraction is no longer only asserted — its **whole combinatorial input** is now a
+  Lean object, and the missing step is exactly one named topological lemma applied to it, rather
+  than a construction that has to be found.
+
+  The three properties are one-liners once the order is right: `le_retract` because depth only
+  decreases downwards and the subspace is unchanged; `retract_monotone` because a depth-one vertex
+  compares by reverse inclusion and a deeper one has its subspace fixed, so both cases give
+  `w.space ≤ v.space`; `retract_idem` definitionally.
+
+  Gate status.  `formal order-complex topology` stays open, but its content is now narrow: the poset,
+  its classification, its simplex decomposition, and the retracting closure operator are all
+  formalized; what is missing is the homotopy lemma that converts a closure operator into a
+  deformation retraction, and the Steinberg identification that rides on it.
+
+- 2026-08-01 — **The retract is identified as the building poset.**
+  `formal/GaloisForLFunctions/HTGeometry/CuspedHorizonPoset.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `depthOneOrderIso` — an **order isomorphism**
+
+  ```text
+  {depth-one vertices of P_infinity(V)}  ≃o  {nonzero proper subspaces}ᵒᵈ,
+  ```
+
+  the depth-one skeleton with its field order being the subspace poset under reverse inclusion.  So
+  the closed part of `cuspClosure` is not merely a set in bijection with the building's vertices: it
+  is the depth-one building poset, with its order.
+
+  Combined with the previous entry, the card's first sentence is now formalized except for its
+  homotopy content: `P_infinity(V)` is the depth-one poset with one chain attached below each line
+  (classification), a closure operator retracts it onto the depth-one part (retraction), and that
+  part is order-isomorphic to the building poset (identification of the retract).  What the
+  statement adds beyond this is that the retraction is a deformation retraction of order complexes
+  and that the Steinberg top homology survives — the two homotopy claims, which remain outside the
+  toolchain.
+
+- 2026-08-01 — **The deformation retraction is constructed at the level of poset maps.**
+  `formal/GaloisForLFunctions/HTGeometry/CuspedHorizonPoset.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `cuspHomotopy : (CuspedVertex K V × Bool) →o CuspedVertex K V` — a **monotone** map
+
+  ```text
+  P_infinity(V) × [1] → P_infinity(V),
+  ```
+
+  equal to the identity at one end of the interval (`cuspHomotopy_false`) and to the retraction at the
+  other (`cuspHomotopy_true`).  This is an elementary homotopy in the combinatorial sense, and it is
+  what the deformation retraction of the statement is, before any topology is applied.
+
+  Monotonicity in the time coordinate is exactly `x ≤ retract x`; in the vertex coordinate it is
+  exactly that the retraction is monotone; the mixed case is the composite of the two.  The
+  order-reversed pair of times is excluded by the interval's own order.
+
+  What this leaves is genuinely general rather than specific to this poset: the nerve of a monotone
+  map `P × [1] → P` realises to a homotopy of `|P|`, so the card's deformation retraction follows
+  from `cuspHomotopy` by a fact about geometric realisation, not by anything further about horizons.
+  The Steinberg identification of `(6)` on the parent card is a separate homotopy input and is
+  untouched by this.

@@ -120,10 +120,19 @@ Therefore every surviving Route-I pivot must be coefficient-nonlocal, matrix/ind
 explicitly dependent on the spectral parameter.  The source-pure positive-excess energy pivot is
 not killed by this theorem.
 
+## Lean formalization
+
+Generic module:
+`GaloisForLFunctions.HTGeometry.DirichletAnalyticPostcompositionSignRigidity`.
+Route-I specialization:
+`GaloisForLFunctions.RHTower.CCMSharpPrimeWindowAnalyticPostcompositionNoGo`.
+Formalization card:
+`../../3-formalized/not_new_scientific_knowledge/dirichlet-real-analytic-postcomposition-high-line-sign-rigidity.md`.
+
 ## Gates
 
 - [x] exact theorem and quantifiers fixed
 - [x] complete dependency-closed paper proof
 - [x] hostile falsity and circularity audit
 - [x] parent-theory literature audit
-- [ ] exact unconditional Lean formalization
+- [x] exact unconditional Lean formalization

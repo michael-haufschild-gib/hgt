@@ -147,3 +147,96 @@ from that boundary to Weil positivity, the critical line, or zero exclusion is k
 
 - 2026-07-15 — identified the horizon building with the Tits boundary of
   `SL_N(C)/SU(N)` and separated observer-metric degeneration from source time evolution.
+
+- 2026-08-01 — **The apartment dimension bullet of `(3)` is formalized.**
+  `formal/GaloisForLFunctions/HTGeometry/ProjectiveFlagDimension.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `card_le_finrank_sub_one` — a chain of proper nonzero subspaces of an `N`-dimensional space has at
+  most `N - 1` members, so the simplex it spans has dimension at most `N - 2`.  That is the card's
+  clause "the apartment sphere has dimension `N-2`", on the flag-complex side of `(3)`.
+
+  The proof is the dimension function.  `finrank_injOn_of_chain` — along a chain the dimension
+  determines the member, since a strict inclusion strictly increases dimension in finite dimension.
+  The dimensions of proper nonzero subspaces lie in `[1, N-1]`, a set of `N - 1` elements, so the
+  chain injects into it.
+
+  This is the combinatorial half of `(3)` and needs no building theory: an elementary horizon is a
+  vertex, a strict chain of horizons is a simplex, and the bound above is what makes a complete frame
+  give a top-dimensional simplex.  What `(3)` still needs is the other half — the identification of
+  the Tits boundary of `SL_N(C)/SU(N)` with the building of parabolic subgroups — for which the local
+  toolchain has no symmetric-space library, as the Lean boundary section already records.
+
+- 2026-08-01 — **The apartment dimension is exact, not just bounded.**
+  `formal/GaloisForLFunctions/HTGeometry/ProjectiveFlagDimension.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `exists_chain_card_eq_finrank_sub_one` — a complete frame gives a chain of **exactly** `N - 1`
+  proper nonzero subspaces, and `isGreatest_chain_card` combines it with the previous entry's bound:
+
+  ```text
+  IsGreatest {card of a chain of proper nonzero subspaces} (N - 1).
+  ```
+
+  So the top simplices of the horizon complex have dimension exactly `N - 2`, which is the card's
+  clause in full rather than as an inequality.
+
+  The construction is mathlib's `Module.Basis.flag`, the flag of a basis, with its two trivial ends
+  removed.  `flag_strictMono` gives distinctness of the members and, against `flag_zero = ⊥` and
+  `flag_last = ⊤`, gives that each is a proper nonzero subspace; `flag_mono` gives comparability.  No
+  dimension computation is needed for the construction — only for the matching upper bound, which is
+  the previous entry.
+
+  `(3)` still needs the symmetric-space side.  What is now formalized is that the flag complex it is
+  to be identified with has the asserted top dimension.
+
+- 2026-08-01 — **The type of a vertex, and the equivariance of `(3)` on the flag-complex side.**
+  `formal/GaloisForLFunctions/HTGeometry/ProjectiveFlagDimension.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `exists_equiv_map_eq` — **vertices of the same type form a single orbit**: two subspaces of the
+  same dimension are carried to one another by a linear automorphism.  So the dimension is a complete
+  invariant of a vertex under the projective action, which is the card's clause that an elementary
+  hyperplane horizon is a vertex of one maximal parabolic type — the type being the codimension.
+
+  The construction is a complement on each side (`Submodule.exists_isCompl`), an isomorphism of the
+  two subspaces and of the two complements (`LinearEquiv.ofFinrankEq`, using that the complements
+  have equal dimension because each pair sums to the ambient dimension), and the two splittings
+  glued by `Submodule.prodEquivOfIsCompl`.  Only the inclusion `W.map e ≤ W'` has to be checked by
+  hand; equality then follows from `Submodule.eq_of_le_of_finrank_eq` since an automorphism preserves
+  dimension.
+
+  `finrank_map_of_equiv`, `map_equiv_injective`, `card_image_map_equiv` — the action preserves the
+  type, is injective on vertices, and carries chains to chains of the same size.  So it acts
+  simplicially on the horizon complex and preserves the type function: the "equivariant" in
+  "equivariant isomorphism of spherical buildings", on the side of `(3)` that is available.
+
+  Together with the two previous entries, the flag-complex side of `(3)` now has its vertices typed,
+  its type-orbits identified, its simplices bounded and attained at dimension `N - 2`, and the action
+  shown simplicial and type-preserving.  What is still missing is only the symmetric-space side.
+
+- 2026-08-01 — **The apartment of a frame is the Coxeter complex of its orderings.**
+  `formal/GaloisForLFunctions/HTGeometry/ProjectiveFlagDimension.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `card_flags_of_frame` — a complete projective observer frame carries exactly `N!` complete flags:
+
+  ```text
+  Nat.card {(b.reindex σ).flag : σ a permutation of the frame} = N!.
+  ```
+
+  That is the card's clause "a complete projective observer frame gives an apartment", with the
+  apartment's top-dimensional simplices identified as the orderings of the frame — the Coxeter
+  complex of the symmetric group, which is what an apartment of a type `A` building is.
+
+  `mem_flag_reindex_iff` is the mechanism: a frame vector lies in the flag of the reordered frame
+  exactly below the position the ordering assigns it, which is mathlib's `self_mem_flag_iff` read
+  through the reindexing.  `flag_reindex_injective` then recovers the ordering from the flag by
+  testing membership at one index at a time, so distinct orderings give distinct flags.
+
+  With the three previous entries the flag-complex side of `(3)` is now formalized in all four of the
+  card's bullets that do not mention the symmetric space: vertices are typed by codimension, the types
+  are single orbits, chains are simplices of dimension at most `N-2` with the bound attained, and a
+  frame gives an apartment with `N!` chambers.  The remaining content of `(3)` is the identification
+  of the Tits boundary of `SL_N(C)/SU(N)` with the building of parabolic subgroups, for which the
+  toolchain still has no symmetric-space library.

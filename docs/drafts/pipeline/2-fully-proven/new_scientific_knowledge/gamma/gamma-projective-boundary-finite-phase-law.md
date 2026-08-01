@@ -3462,6 +3462,38 @@ the recurrence hypothesis of the law is not decorative.  `#print axioms` clean.
 Differential algebraicity over `ℂ(s)` — with finite order and whatever zero density — therefore does
 not give recurrence.  `#print axioms` clean.
 
+### The generality gap is closed: nonvanishing alone gives the datum
+
+The route described below is now a Lean theorem.  Three modules do it.
+
+`StdRatLineRigidity.lean` proves the rigidity that makes line data half-plane data.
+`isStdRat_of_line_decay`: a standard rational function whose values on **one** vertical line decay
+faster than its recorded defect has the larger defect — if the defect were smaller, the datum limit
+`s^p·P/∏(s+j) → lead P ≠ 0` of `tendsto_stdRat_datum` would contradict the bound.  Hence
+`isVertFlat_of_isLineBigO_all`: a function carrying standard rational approximations of every depth
+that is `O(s^{-n})` for every `n` on one line is flat on **every** line.  The point is that the
+approximating rational function does not depend on the line, so the line that supplies the decay
+and the line that consumes it need not be the same.
+
+`JetPolyLineDatum.lean` couples that to Hölder.  A jet polynomial with complex constant coefficients
+is `jetPolyMv N M a e`, an element of `MvPolynomial (Fin (N+1)) (ℂ(s))`; `jetPolyMv_ne_zero` shows it
+is nonzero as soon as one coefficient is (the exponent vectors `jetExp` of distinct monomials are
+distinct), and `digammaJetEval_jetPolyMv` identifies its value at the digamma jets with the germ of
+the function on the line.  Then **`exists_not_isLineBigO_jetPoly`**: for a nonzero jet polynomial and
+any `σ > 0` there is an `n` with `¬ IsLineBigO σ n` — because flatness on that one line would, by the
+rigidity above, be flatness on the half-plane, which `not_isVertFlatGerm_digammaJetEval` forbids.
+
+Feeding that into the residue chain gives **`exists_jetPoly_datum_of_ne_zero`**:
+
+> for every `σ > 0` and every jet polynomial `A = ∑_α a_α ∏_i (ψ^{(i+1)})^{e_{α i}}` with complex
+> constant coefficients that is nonzero as a differential polynomial, there are `p ∈ ℕ` and `c ≠ 0`
+> with `s^p·A(s) → c` along the line `Re s = σ`.
+
+No presentation is supplied and no datum is assumed: nonvanishing alone produces the residue.  That
+is the existential half of eq. (19) for the positive-order layer, `#print axioms` clean.
+
+### The one remaining generality gap, and the route to it
+
 ### The one remaining generality gap, and the route to it
 
 With §8 closed, every numbered claim of §1–§8 has Lean except one *quantifier*: eq. (3) and eq. (19)
@@ -3801,6 +3833,13 @@ jet polynomial with `ℂ(s)` coefficients, *given only that it is not flat*, pro
 coefficient is chosen by hand — non-flatness is the only input, and for a nonzero polynomial the
 corpus's `not_isVertFlatGerm_digammaJetEval` provides it.
 
+**The transport, instantiated.**  `upperEndAnalyticDeriv_iterate_repr` (a germ's `n`-th jet is
+represented by `iteratedDeriv n` of any representative) and **`digammaJetMero_eq_algebraMap`** (the
+carrier's digamma jets are the images of the iterated analytic derivatives) put the abstract jets of
+`differentialAdjoin` presentations on the analytic footing the residue chain uses.  With
+`exists_fin_jetPoly_quotient` on the algebraic side, an element of `L` or `K_Γ` is a quotient of
+`Fin`-indexed polynomials in `iteratedDeriv n digammaFun`.
+
 ### Map of the unquantified-residue chain
 
 For navigation, the modules built for the general form of eq. (19)/(3), in dependency order:
@@ -3849,7 +3888,16 @@ of `differentialAdjoin F s` is exactly a quotient of two polynomial expressions 
 generators (`IntermediateField.mem_adjoin_iff` applied to `differentialJetSet`), with
 `exists_jetPoly_presentation` as the usable form.  That is §4's `(23)` in formal dress.
 
-`aeval_eq_sum_monomials` puts a presentation in the monomial-sum shape
+**`exists_fin_jetPoly_quotient`** is the capstone: every element of a differential adjoin is a
+quotient of two `Fin`-indexed jet polynomials whose variables are jets of the generators — §4's
+`(23)` in exactly the form the residue theorems accept.  Underneath,
+**`exists_fin_monomial_sum`** completes the bookkeeping: numerator and denominator of a presentation
+are `∑_{α : Fin M} a_α ∏_{i : Fin N} h_i^{e_{α i}}` — literally the shape the residue theorems
+consume.  Its ingredient **`aeval_eq_sum_monomials_vars`** writes a presentation as a sum of
+monomials over the *single*
+index set `r.vars` (padding each monomial by `prod_pow_eq_prod_pow_of_subset`, whose hypothesis is
+`monomial_support_subset_vars`) — the exponent-family shape the residue machinery requires.
+Underneath, `aeval_eq_sum_monomials` puts a presentation in the monomial-sum shape
 `∑_d coeff_d · ∏_i x_i^{d i}`, and `exists_fin_sum_eq` / `exists_fin_prod_eq` reindex any finite sum
 or product over `Fin N` — the bookkeeping steps between a presentation and the `Fin N` families the
 residue theorems take.

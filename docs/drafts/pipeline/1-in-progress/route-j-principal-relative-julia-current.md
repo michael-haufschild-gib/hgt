@@ -1,21 +1,18 @@
 # Route J principal-relative Julia current
 
 - **ID:** `route-j-principal-relative-julia-current`
-- **Stage:** 1-in-progress
-- **Type:** `[CONJECTURE]` / SOURCE CONSTRUCTION / NO-GO CLASSIFICATION
-- **Scientific status:** `[OPEN] [ROUTE J OWNER] [NO RH INPUT] [NO COMPUTATION]`
+- **Stage:** 3-formalized / pending pipeline move
+- **Type:** TERMINAL CLASSIFICATION / SOURCE NO-GO / ROUTE TRANSFER
+- **Scientific status:** `[ROUTE J RETIRED] [ROUTE A/R TRANSFER] [NO RH INPUT] [NO COMPUTATION]`
 - **Parent no-go:** `../5-failed/route-j-julia-unrenormalized-coherent-energy-budget.md`
 - **Endpoint:** Route A's literal first-clock source is eventually bounded below
 
 ## Mission
 
-Determine whether Julia coherence can still orient the literal completed first clock after the
-unrenormalized bad-energy budget is removed.  The only surviving category inserts a
-principal-relative counterterm before good/bad positive projection and before scalarization.  It
-must be source-defined and must produce a uniform lower floor, not rename that floor as a current.
-
-This card owns that survivor.  No other frontier route currently constructs a Julia-specific
-pre-projection relative current.
+Classify every Julia-coherent implementation of a principal-relative completed first-clock
+capacity, separate genuine source mechanisms from target-equivalent capacity witnesses, and
+transfer any positive survivor to its load-bearing route.  Route J is retired only after both the
+concrete no-go closure and this ownership audit.
 
 ## 1. Exact endpoint
 
@@ -170,7 +167,47 @@ fixed nonzero source cell.  The Schur complement is positive precisely because i
 rank-one component containing the desired excursion.  It is a variance certificate, not a
 relative orientation provider.
 
-## 5. Candidate audit
+## 5. Diagonal-null off-diagonal Julia candidate `[CLOSED]`
+
+The first genuine Krein repair is not a fake singleton loophole.  Delete every bad diagonal but
+retain the positive Julia cross-prime couplings:
+
+```text
+E_off(x,m)=sum_(p!=q in P_m) b_p K(x(log q-log p)) b_q,   (13)
+P_m={p prime: 2m^4<p<=5m^4}.
+```
+
+Because `b_p>=0` and `K>0`, `(13)` is nonnegative on the literal bad cone even though every
+nonzero two-node compression has one positive and one negative ambient eigenvalue.  It is exactly
+the ambient-indefinite/copositive escape left by Theorem C.
+
+That escape still fails source-uniform boundedness.  Symbolic block estimates give
+
+```text
+B_m=sum_(p in P_m) b_p >= m^2/24,
+D_m=sum_(p in P_m) b_p^2 <= 65(log m)^2,                 (14)
+B_m^2-D_m >= m^4/576-65(log m)^2.                        (15)
+```
+
+No prime-gap estimate is used: the first bound comes from Chebyshev theta mass and the one-mode
+sine chamber; the second uses only `p>2m^4`, `p<=5m^4`, and the trivial block-cardinality ceiling.
+Every two block primes also satisfy
+
+```text
+|log q-log p|<=2.                                        (16)
+```
+
+Therefore any cofinal source-faithful scale `x_m->0` makes `K(x_m(log q-log p))>=1/2` uniformly on
+the moving block, eventually.  The exact off-diagonal kernel-floor identity then yields
+
+```text
+E_off(x_m,m) >= (1/2)(m^4/576-65(log m)^2) -> infinity.
+```
+
+Thus deleting only the diagonal does not rescue Julia coherence, even after accepting ambient
+indefiniteness and restricting positivity to the actual nonnegative source cone.
+
+## 6. Candidate audit
 
 1. **Post-projection diagonal subtraction:** fails on one unit node.
 2. **Channel-linear pre-projection subtraction:** Theorems A--B force either retained bad
@@ -195,76 +232,129 @@ relative orientation provider.
 9. **Globally positive cross-block kernel:** Theorem C annihilates the entire row and column of
    every cancelled bad diagonal.  Adding all primes and the Gamma node cannot restore orientation
    inside an ambient positive-semidefinite quadratic current.
+10. **Copositive diagonal-null Julia kernel:** `(13)` is a genuine ambient-indefinite current, but
+    `(14)--(16)` force its off-diagonal energy to diverge along every zero-scale cofinal law.
+11. **Existing calibrated Julia--Euler exterior current:** its kernel is exactly antisymmetric.
+    It retains source orientation as a two-form, but every finite-packet scalar quadratic energy
+    `sum_(i!=j) H_(ij)m_i m_j` is identically zero.  Thus it is not a nonzero relative capacity.
 
-## 6. Exact surviving class
+## 7. The unrestricted residual endpoint is exactly Route A `[PAPER-PROVED]`
 
-Any remaining Route-J provider must satisfy all of the following:
+Let `S(L)` be the literal published first-clock source.  Strip away all unformalized words such as
+“Krein”, “nonlinear”, and “source-defined”, and retain the widest possible residual capacity claim:
 
-1. **Source-constrained:** it may be defined only on the complete prime--archimedean packet;
-   arbitrary coordinate packets cannot all remain admissible source inputs.
-2. **Ambient-indefinite or nonlinear:** it cannot extend to a pairwise-positive quadratic kernel
-   while both cancelling bad self-currents and retaining their cross-block couplings.  A quadratic
-   survivor must be Krein-type and prove nonnegativity only on the literal arithmetic source locus;
-   the other possibility is a genuinely nonlinear source functional with no quadratic extension.
-3. **Non-positive-channel-linear:** it cannot be a fixed positive linear scalarization of the
-   existing two-channel Julia Gram.
-4. **Non-Schur:** it cannot be the canonical anchored covariance or any rank-one subtraction whose
-   residual is asked to dominate the removed correlation universally.
-5. **Arithmetic counterterm:** cancellation must follow from an exact prime--Gamma or co-Poisson
-   identity before positive projection, not from an assigned diagonal subtraction.
-6. **Source-uniform:** the same construction must prove the upper half of `(2)` without Xi zeros,
-   eventual first-clock boundedness, or an RH-equivalent positivity premise.
-7. **Source-faithful:** its scale choice must retain the zero-scale literal-source limit.
-8. **Ordinary-prime-specific:** it must use a coupling falsified by the positive generalized-prime
-   off-line quartet; positive Euler density, reflection, completion, and unsquared Cauchy
-   orientation are insufficient even jointly.
+```text
+CAP_J := there exist R : R -> R and M,A >= 0 with A >= pi/2 such that,
+         for every L >= A,
+         0 <= R(L) <= M,
+         S(L)<0 -> S(L)^2 <= R(L).                      (17)
+```
 
-This is a narrow but nonempty conjectural category.  The corpus contains phase-faithful Julia
-dressings and joint finite prime--Gamma Grams, but none supplies an ambient-indefinite or nonlinear
-source current, its arithmetic-locus positivity, negative-excursion orientation, and source-uniform
-bound in `(2)`.  It also contains no theorem excluding every such source-constrained current.
-Route J therefore remains open.
+### Theorem D — endpoint completeness
 
-## 7. Strongest live conjecture
+```text
+CAP_J
+  <-> S is bounded below on some physical aperture tail
+  <-> RiemannHypothesis.                                (18)
+```
 
-> **`JULIA-KREIN-PRINCIPAL-RELATIVE-COFINAL-ORIENTATION`.**  There is a completed
-> prime--Gamma/co-Poisson current `T_(x,L)`, defined before good/bad projection, an arithmetic
-> signature `J_(x,L)`, and a fixed source functional `tau_rel` such that
-> `R_x(L)=tau_rel(T_(x,L)^* J_(x,L) T_(x,L))` obeys `(2)` on the literal source locus.  Its
-> principal subtraction is an exact source identity, each cancelled bad diagonal has a nonzero
-> source coupling, and the resulting ambient form is necessarily indefinite rather than a
-> posteriori removal of positive diagonal mass.
+**Forward proof.**  If `(17)` holds and `S(L)<0`, then `S(L)^2<=M`; hence
+`-(M+1)<=S(L)`.  The same lower bound is immediate when `S(L)>=0`.  This is exactly Route A's
+eventual lower-bound property.
 
-Required construction witness: on the sixth-power pure-bad block, exhibit the exact cross-block or
-archimedean term that cancels `(4)`, the ambient negative direction forced by Theorem C, and the
-arithmetic identity keeping the literal full-source value nonnegative while retaining
-negative-excursion orientation.  A signature symbol with no such identities is not a candidate.
+**Reverse proof.**  If `-C<=S(L)` on a tail, with `C>=0`, put
 
-## 8. Novelty and theatre audit
+```text
+R_-(L) = if S(L)<0 then S(L)^2 else 0,
+M = C^2.                                                (19)
+```
 
-- Theorem A is elementary positive-cone algebra; no standalone novelty claim.
+Then `(17)` holds.  Formula `(19)` is deliberately recorded as the canonical *theatrical*
+witness: it proves the reverse logical implication but supplies no source mechanism.  Thus an
+unrestricted “some nonlinear capacity exists” placeholder is not independent Route-J content; it
+is exactly Route A's endpoint under a new existential wrapper.
+
+## 8. Ownership of the nontrivial completed survivor
+
+The corpus now contains the exact non-diagonal completed construction previously described only
+schematically:
+
+```text
+actual Möbius four-unit Fisher tangent
+  -> singular division by its own squarefree source overlap
+  -> completed squarefree prime--Gamma current
+  -> centered strict-right correction
+  -> continued Xi trace column
+  -> anchored two-point Julia cross-cell tangent.        (20)
+```
+
+`mobiusGammaFourUnitTangent_to_continuedXiTraceColumn` proves `(20)` before positive projection.
+Its source tangent has squared norm tending to four.  The required nonzero Hermitian scalar
+capacity is the augmented Ward Gram
+
+```text
+W_P = [[G_P, r_P], [r_P^*, 4]],                         (21)
+```
+
+and the existing endpoint classification proves
+
+```text
+W_P is positive semidefinite for every finite packet
+  <-> ContinuedXiWardFourUnitBoundaryLiftLaw
+  <-> RiemannHypothesis.                                (22)
+```
+
+This is the strongest positive survivor exposed by Route J's no-go.  It clearly belongs to Route
+R: its load-bearing operation is the singular Möbius--Gamma/co-Poisson graph continuation and its
+missing theorem is precisely Route R's four-unit Ward boundary sign.  Julia supplies the
+non-diagonal cross-cell transport, but no independent Julia energy estimate remains.
+
+The earlier “genuinely nonlinear source functional” placeholder was overbroad.  Without an
+explicit source identity it is only `CAP_J` and therefore Route A by `(18)`; with the singular
+completed identity `(20)` it is Route R by `(21)--(22)`.  A hypothetical mechanism with a different
+load-bearing source operation would be a new route, not an unfinished compound-Poisson coherent
+energy estimate.  There is no unowned Route-J survivor.
+
+## 9. Route disposition
+
+Route J is retired as an independent route.
+
+- Every concrete Julia coherent-energy, diagonal-null, Schur, positive-kernel, endpoint-dressing,
+  and existing exterior-current implementation is closed unconditionally.
+- The unrestricted residual capacity existential is exactly terminal Route A.
+- The one explicit nontrivial completed preprojection survivor is exactly live Route R.
+- Neither transfer proves RH; Route R's Ward sign remains open and is already known equivalent to
+  RH.
+
+## 10. Novelty and theatre audit
+
+- Theorems A and C are standard positive-kernel algebra; no standalone novelty claim.
 - Theorem B is elementary but closes the semantic loophole that moving diagonal subtraction
   “before projection” automatically preserves capacity.
-- Theorem C is standard null-vector rigidity for positive-semidefinite kernels; no standalone
-  novelty claim.  Its value is closing the proposed global prime--Gamma cross-block escape.
 - New source-specific content is the weld of Theorems A--B to the exact infinite family of
   pure-bad sixth-power prime cells.
-- The survivor is not counted as progress until a literal `T_(x,L)` and source identity are given.
-  Current value is a falsifier and an exact route boundary.
+- The off-diagonal identity is standard.  Candidate new content is the unconditional moving-block
+  weld `(14)--(16)`, which kills the copositive diagonal-null Julia current for every scale tending
+  to zero.  External novelty remains unverified.
+- Antisymmetric quadratic cancellation is standard.  Its exact weld to the existing calibrated
+  Julia--Euler source seam closes that named seam as a scalar capacity while preserving its valid
+  exterior-orientation interpretation.
+- Theorem D is elementary endpoint logic, not new mathematics.  Its research value is preventing
+  the negative-part witness `(19)` from masquerading as an independent Julia construction.
+- Transfer to Route R uses exact source transport and exact endpoint ownership already present in
+  the corpus; no new RH claim is made.
 
-## 9. Lean plan and gates
+## 11. Lean plan and gates
 
 - [x] unrenormalized bad-energy route refuted unconditionally
-- [x] exact route-level survivor ownership restored
-- [x] channel-linear positivity classification proved on paper
-- [x] negative-excursion diagonal-retention theorem proved on paper
-- [x] actual pure-bad sixth-power source cells identified on paper
-- [x] anchored Schur-complement candidate audited
-- [x] formalize generic two-channel relative-capacity no-go
-- [x] formalize actual pure-bad block specialization
-- [x] formalize anchored one-node Schur tradeoff and source-faithful Julia failure
-- [x] exclude existing Gamma--Julia endpoint Hilbert--Schmidt dressing as an excursion provider
-- [x] prove positive global cross-block kernels cannot rescue a cancelled bad diagonal
-- [ ] construct an ambient-indefinite/nonlinear source current or prove its source constraints
-      inconsistent
-- [ ] close Route J only when no unowned survivor remains
+- [x] channel-linear positivity classification formalized
+- [x] negative-excursion diagonal-retention theorem formalized
+- [x] actual pure-bad sixth-power source cells formalized
+- [x] anchored Schur-complement failure formalized
+- [x] existing Gamma--Julia endpoint Hilbert--Schmidt dressing excluded
+- [x] positive global cross-block rescue excluded
+- [x] canonical copositive diagonal-null Julia off-diagonal current refuted
+- [x] existing calibrated Julia--Euler exterior current proved scalar-zero
+- [ ] formalize Theorem D and its Route-R endpoint equivalence
+- [x] identify positive survivor `(20)--(22)` with Route R
+- [ ] move card to failed/retired pipeline and reconcile frontier status

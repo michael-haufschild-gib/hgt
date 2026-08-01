@@ -317,6 +317,88 @@ This is not the killed one-prime local tent.  The summand `A_z(px)` retains ever
 parity interaction and the outer sum ranges over the full moving prime tail.  Nor is `(G20)`
 claimed proved: it is the sharpened source target exposed by the exact two-large-prime remainder.
 
+### Theorem E2 — exact prime-renewal defect and unique transition `[PROVED HERE]`
+
+The zero/one comparison has a second exact factorization.  Define, for `t>0`,
+
+```text
+K_z(t)=exp(-t)-sum_(p>z)exp(-pt)
+      =exp(-t)(1-R_z(t)),                                 (G20a)
+
+R_z(t)=sum_(p>z)exp(-(p-1)t).
+```
+
+Absolute convergence permits swapping the finite `z`-smooth squarefree sum with the prime tail:
+
+```text
+A_z(x)-sum_(p>z)A_z(px)
+ =sum_(m: p|m => p<=z) mu(m) K_z(mx).                    (G20b)
+```
+
+The kernel has exactly one transition.  The function `R_z` is continuous and strictly decreasing
+on `(0,infinity)`.  It tends to zero at infinity by comparison with the full geometric tail.  It
+tends to infinity at zero: for every `J`, choose `J` primes beyond `z`, then their partial sum tends
+to `J`.  Therefore there is a unique `tau_z>0` such that
+
+```text
+R_z(tau_z)=1,
+K_z(t)<0 for 0<t<tau_z,
+K_z(t)>0 for t>tau_z.                                    (G20c)
+```
+
+This identifies the transition, not the missing estimate.  Equation `(G20b)` says the hard source
+is a Möbius sample of a one-sign-change renewal defect.  Taking absolute values still discards
+exactly the required correlation between the `z`-smooth Möbius parity and the entire negative and
+positive parts of the kernel.  The finite version of `(G20a)`--`(G20b)` is formalized
+unconditionally.  Lean also packages the literal moving-aperture zero/one estimate as
+`MobiusLargePrimeBoundaryAllStrictHalf` and proves it implies every strict-half
+Möbius--Laplace bound and RH after absorbing `(G18)`.  The infinite transition proof is
+dependency-closed on paper.
+
+### Theorem E3 — critical aperture is transition-self-dual but not transition-local
+`[PAPER-PROVED HERE]`
+
+The prime number theorem plus partial summation determines the transition scale.  Uniformly for
+`y=log z+O(log log z)`,
+
+```text
+R_z(y/z)
+ =(1+o(1)) z exp(-y)/(y log z).                           (G20d)
+```
+
+Bracketing first with `y=log z-3 log log z` and
+`y=log z-log log z`, then solving `R_z(y/z)=1`, gives
+
+```text
+z tau_z=log z-2 log log z+o(1).                           (G20e)
+```
+
+Hence any minimal critical schedule satisfying
+
+```text
+z^2 x / log z -> 1
+```
+
+has
+
+```text
+(tau_z/x)/z -> 1.                                        (G20f)
+```
+
+So the kernel changes sign at the same multiplicative scale as the small/large-prime aperture.
+That self-duality is genuine.  It does **not** mean the required cancellation is local to a narrow
+window around `m=z`.  On the same schedule, `zx->0`, and a second PNT partial-summation estimate
+gives
+
+```text
+K_z(x)=-(1+o(1))/(x log(1/x)).                            (G20g)
+```
+
+Thus the single `m=1` summand in `(G20b)` already exceeds
+`x^(-1/2-epsilon)` for every fixed `epsilon<1/2`.  A proof must cancel a macroscopic negative bulk
+against many signed `z`-smooth terms before it can exploit the transition.  Any conjecture claiming
+only transition-window cancellation is false as a source mechanism.
+
 ## Competing normalization: additive-circle lattice evaluation
 
 Put
@@ -514,6 +596,10 @@ gap does not provide an independent source.
    source-exact aperture available without signed tail cancellation.
 8. **The one-large-prime formula is a reduction, not a bound.** Estimating the prime sum in `(G20)`
    term by term loses the parity cancellation in `A_z` and returns only PNT-scale information.
+8a. **One kernel sign change is geometry, not cancellation.** `(G20c)` identifies the unique
+    transition, but `(G20g)` shows that even the `m=1` negative-bulk term is supercritical.  A norm
+    bound or a transition-window argument forgets the global Möbius cancellation required by
+    `(G20b)`.
 9. **Parseval is normalization, not cancellation.** `(G22)` fixes the RMS scale, but the flat
    polynomial countermodel shows that generic point evaluation loses another square root.
 10. **Fixed-index dilation Gram asymptotics are too weak.** `(G26)`--`(G30)` retain the correct
@@ -547,6 +633,9 @@ multiscale inequality for `(G3)` which:
 The conjectured inequality must compare the zero-large-prime sector `A_z(x)` with the entire
 one-large-prime sector `sum_(p>z)A_z(px)` *before* either is normed.  A bound on the two sectors
 separately is disallowed: each sector can be much larger than the required square-root remainder.
+Equivalently, using `(G20b)`, it must prove global cancellation of the `z`-smooth Möbius signs
+against both sides of the single-transition kernel `K_z(mx)` without replacing either factor by
+its absolute value.  Restriction to a window around `m=tau_z/x` is disallowed by `(G20g)`.
 
 Generic strong-Rayleigh theory, pairwise covariance, fixed-prime induction, positive diagonal
 energy, and independent-prime approximation are excluded by the hostile audit. A proof must use a
@@ -564,6 +653,167 @@ boundary gain is precisely a bound for the divisor--Möbius incidence coefficien
 the sole orthogonal residual after all proper dilates is the elementary mode `E_(1,x)`.  The
 positive survivor is the exact diagonalization itself.  `LATTICE-EVALUATION-DELOCALIZATION`
 remains a valid source normalization, but requires a new integer-specific cancellation input.
+
+### Bold surviving producer: multitype boundary transport
+
+Let `beta_z(n)` be the coefficient of `exp(-nx)` in the combined zero-plus-one-large-prime
+boundary.  Thus `beta_z(n)` is in `{-1,0,1}`.  At the minimal aperture take `T=z^2`; the absolute
+tail beyond `T` is already `O(x^(-1/2))` by the same geometric estimate as `(G18)`.  Split the
+remaining nonzero atoms into `P={n<=T:beta_z(n)=1}` and `N={n<=T:beta_z(n)=-1}`.
+
+For a partial opposite-sign matching `M` between `P` and `N`, define its damped transport defect by
+
+```text
+D_x(M)=sum_(unmatched n) exp(-nx)
+       +x sum_((m,n) in M) |m-n| exp(-min(m,n)x).          (G39)
+```
+
+The elementary mean-value estimate
+
+```text
+|exp(-mx)-exp(-nx)|
+ <= x|m-n|exp(-min(m,n)x)                                 (G40)
+```
+
+immediately gives
+
+```text
+|sum_(n<=T) beta_z(n)exp(-nx)| <= D_x(M).                 (G41)
+```
+
+`[CONJECTURE: MULTITYPE-BOUNDARY-TRANSPORT]` For every `epsilon>0`, at a critical aperture there is
+such a matching with `D_x(M)<=C_epsilon x^(-1/2-epsilon)`, generated from two local edge types.
+
+1. A one-large-prime atom `n=ap`, `p>z`, may be paired across sectors with a zero-large-prime atom
+
+```text
+m=a q_1 q_2 q_3 q_4,
+```
+
+   where the `q_i<=z` are distinct primes and avoid `a`.  Removing one large prime and adding four
+   small primes toggles five prime coordinates, hence flips Möbius sign.
+2. Residual atoms in the same sector may be paired by replacing one small prime `q` with two
+   distinct small primes `r,s`, all avoiding the spectator.  This toggles three prime coordinates,
+   again flips sign, and is required because cross-sector atom counts are not balanced.
+
+The union of both edge families must be injective and obey the aggregate cost `(G39)`.  Equations
+`(G18)` and `(G41)` then give `(G20)`, and the formal consumer gives RH.
+
+This is stronger than the desired cancellation but is not a renaming of it: it requires an
+integer-local, bounded-congestion coupling with explicit parity-flipping factor replacements.
+It also passes two immediate falsification gates.
+
+1. Replacing the large prime by only two small primes cannot work even on the spectator slice
+   `a=1`: there are only `O(z^2/log^2 z)` products `qr` with `q,r<=z`, versus
+   `asymp z^2/log z` primes through `z^2`.  Even if those products are assigned to the smallest
+   available large primes, the unmatched primes begin at scale `z^2/log z`, which is comparable
+   to `1/x`; PNT then leaves damped mass `asymp 1/(x log(1/x))`, still supercritical.
+2. Four-prime products pass the cardinality gate, but prime-counting alone does not prove the
+   conjecture.  One still needs short-interval supply after excluding prime factors of every
+   spectator, an injective Hall-type assignment, and the global damped displacement bound.  These
+   are the hard problems; none is claimed here.
+3. Four-prime cross-sector edges alone fail: at the `u=2` smoothness boundary, zero-large and
+   one-large sectors have different densities.  Same-sector residual matching is mandatory, which
+   is why the second `one-small <-> two-small` edge type is part of the conjecture rather than an
+   optional repair.
+
+There is also an exact anti-theatre warning.  Since two distinct primes greater than `z` have
+product greater than `T=z^2`, every squarefree `n<=T` lies in the zero-or-one boundary and
+
+```text
+beta_z(n)=mu(n)  for every n<=T.                           (G42)
+```
+
+Consequently the unmatched mass of *any* partial matching is at least the absolute signed Gibbs
+mass it is meant to bound.  Merely asserting a low-defect matching, without deriving it from the
+factor-replacement incidence structure, is a strengthening of the source rather than an
+explanation of it.
+
+#### Theorem F — symmetric fractional boundary flow `[PROVED HERE]`
+
+Injectivity is stronger than needed.  Let `V={n<=T:beta_z(n)!=0}`, put
+`sigma(n)=beta_z(n)` and `w_x(n)=exp(-nx)`, and let `c(m,n)>=0` be a finite conductance satisfying
+
+```text
+c(m,n)=c(n,m),
+c(m,n)>0  =>  sigma(m)=-sigma(n),
+q(n):=sum_m c(n,m) <= w_x(n).                              (G43)
+```
+
+Symmetry and parity reversal give exact cancellation after swapping the two finite sums:
+
+```text
+sum_n sigma(n)q(n)
+ = (1/2)sum_(m,n)(sigma(m)+sigma(n))c(m,n)=0.
+```
+
+Therefore
+
+```text
+|sum_(n in V)sigma(n)w_x(n)|
+ <= sum_(n in V)(w_x(n)-q(n)).                             (G44)
+```
+
+This removes the global injective-Hall requirement while preserving the literal source.  It does
+not permit arbitrary flow: `c` must be constructed on the two explicit factor-replacement edge
+families above, independently of the value of the signed sum.
+
+There is a canonical positive specialization.  Write `m~n` for adjacency in the undirected
+replacement graph, let `d(n)` be its simple degree, and for non-isolated vertices set
+
+```text
+a_x(n)=w_x(n)/d(n),
+c_x(m,n)=1_(m~n) min(a_x(m),a_x(n)).                       (G45)
+```
+
+Then `(G43)` is automatic.  Pairing the two directed contributions of each undirected edge gives
+the exact capacity-defect identity
+
+```text
+sum_n(w_x(n)-q_x(n))
+ = sum_(n isolated)w_x(n)
+   +sum_({m,n} edge)|a_x(m)-a_x(n)|.                       (G46)
+```
+
+`[CONJECTURE: LOCAL-FRACTIONAL-BOUNDARY-FLOW]` For every `epsilon>0`, at a critical aperture the
+two replacement edge families can be pruned or positively reweighted, using only their local
+factor data, so that the right side of `(G44)` is
+`O_epsilon(x^(-1/2-epsilon))`.  For the canonical flow `(G45)`, it is enough to prove the same
+bound for `(G46)`.
+
+This is a strictly more concrete producer than an existential matching: `(G46)` is a positive,
+unsigned incidence-regularity estimate with no cancellation left inside it.  It also exposes its
+own likely failure modes.  Cross-sector prime-to-four-prime degrees have different raw densities,
+so the unweighted graph need not have small normalized-degree variation; same-sector edges or
+nonuniform conductances must absorb that density mismatch.  Vertices in the small smooth core may
+be isolated, but their entire mass is admissible only while it is `O(z^{1+o(1)})` on the critical
+schedule.  Neither `(G44)` nor `(G46)` may be justified by first assuming a Mertens bound.
+
+The conjecture is deliberately incompatible with Beurling fake-prime systems lacking dense
+integer four-almost-prime replacements.  Unlike positive Gram, generic negative dependence, and
+`U^2` proposals, it names a specific arithmetic operation which would create the missing sign
+cancellation.
+
+#### Transport literature collision audit
+
+Existing short-interval almost-prime theorems supply part of the local-density input, not the
+transport.  Teräväinen proves that almost all intervals of length `log^(1+epsilon) X` contain an
+integer with exactly three prime factors and gives general fixed-`k` variants whose interval length
+approaches `log X` as `k` grows
+([paper](https://arxiv.org/abs/1510.06005)).  Matomäki proves almost-all supply of integers with at
+most two prime factors in intervals `h(X)log X`, for arbitrary `h(X)->infinity`; that `P_2` theorem
+explicitly avoids the exact-factor-count parity barrier
+([paper](https://arxiv.org/abs/2012.11565)).  Matomäki--Teräväinen obtain exact two-prime products
+in almost all intervals of length `log^2.1 X` using a new Type II estimate, while their all-interval
+exact-three-prime result has length `sqrt(X)log^1.55 X`
+([paper](https://arxiv.org/abs/2207.05038)).
+
+None of these results supplies the conjecture as stated.  They do not simultaneously enforce four
+distinct factors below the moving aperture, exclude every spectator prime, choose opposite-sign
+partners injectively, and bound one global damped Hall displacement.  The almost-all theorems are
+nevertheless relevant: `(G39)` is an aggregate cost, so a controlled exceptional set could be
+absorbed.  The concrete next lemma is therefore a spectator-uniform weighted incidence estimate,
+not a new pointwise short-interval theorem.
 
 ## Rejected producer: all-orders additive restriction
 
@@ -664,7 +914,8 @@ in this audit states `(G37)` or the hierarchy `(G33)`.
 - **Status:** dependency-closed paper proofs for all stated reductions and no-go survivors. Lean
   formalization now covers Gibbs normalization/source consumption, finite aperture and sector
   decomposition, finite additive Parseval plus its hostile flat model, two-prime Rayleigh,
-  cardinality coalescence/tangent identities, and finite divisor-incidence diagonalization.
+  cardinality coalescence/tangent identities, finite divisor-incidence diagonalization, Hall
+  selection with damped displacement, and symmetric fractional-flow capacity consumption.
   The all-prime estimate `(G20)` remains unproved, so Route E remains open.
 
 Lean modules:
@@ -673,6 +924,8 @@ Lean modules:
 - `MobiusAdditiveCircleBoundary.lean`
 - `MobiusGibbsCardinalityBoundary.lean`
 - `MobiusAdditiveDilationDiagonalization.lean`
+- `MobiusPrimeRenewalDefectBoundary.lean`
+- `MobiusBoundaryOppositeSignTransport.lean`
 
 ## Log
 
@@ -710,3 +963,25 @@ Lean modules:
 - 2026-08-01 — upgraded conditional two-prime Rayleigh to the global Gibbs negative lattice law
   `(G5a)`.  Sparse log-modular Bernoulli laws have parity tending to one, so hostile audit rejects
   log-submodularity alone as an all-prime source while retaining the exact lattice inequality.
+- 2026-08-01 — factored the exact zero/one-large-prime source through the scalar renewal defect
+  `(G20a)`--`(G20b)` and proved that its full prime-tail kernel has one unique sign transition.
+  PNT scaling places that transition at `m~z` for the minimal critical aperture, but the individual
+  `m=1` term is already of order `1/(x log(1/x))`; hostile audit therefore rejects any
+  transition-window-only mechanism.
+- 2026-08-01 — isolated `MULTITYPE-BOUNDARY-TRANSPORT`.  Its exact matching-cost implication to
+  `(G20)` is elementary.  Large-prime-to-two-small-prime transport fails by a logarithmic
+  cardinality deficit; four-small-prime cross-sector transport passes that gate but cannot cover
+  the sector-density imbalance alone.  The surviving conjecture adds same-sector
+  one-small-to-two-small edges; short-interval, coprimality, global Hall, and aggregate displacement
+  remain the explicit construction gates.
+- 2026-08-01 — primary-literature audit found almost-all polylogarithmic short-interval supply for
+  exact almost-primes and Type II technology, but no spectator-uniform injective opposite-sign
+  transport or damped Hall bound.  Existing theorems may feed the aggregate incidence estimate;
+  they do not close it.
+- 2026-08-01 — hostile audit observed that the `T=z^2` boundary coefficients are literally
+  `mu(n)` through the whole truncation, so an existential low-defect matching without local
+  incidence estimates is source repackaging.  Replaced injectivity as the primary target by the
+  exact symmetric fractional-flow law `(G43)`--`(G46)`: canonical unused capacity equals isolated
+  Gibbs mass plus normalized-degree edge variation.  Lean formalizes both the general symmetric
+  cancellation consumer and the minimum-endpoint conductance defect reduction.  The unsigned
+  arithmetic incidence bound remains open.

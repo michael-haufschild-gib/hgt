@@ -8,10 +8,9 @@
 - **Statement:** Meyer's zeta operator cannot descend from ordinary
   deck pullback on Deninger's scalar leafwise sheaf; its summands are
   instead ordinary pullbacks by the discrete positive-time flow.
-- **Lean status:** algebraic deck-sum collapse and normalized
-  suspension-flow identities drafted in
-  `DeningerArithmeticPoissonTransfer.lean`; direct check deferred
-  while unrelated Lean builds saturate the shared machine.
+- **Lean status:** fully formalized in
+  `DeningerArithmeticPoissonTransfer.lean` (see the Lean status section
+  at the end of this card).
 
 ## Source setup
 
@@ -181,3 +180,44 @@ obligations:
 - 2026-07-27 — Corrected the positive survivor after separating deck
   action from flow: fixed-height Frobenius is discrete positive-time
   flow and realizes each Poisson dilation on scalar radial sections.
+
+## Lean status
+
+### The no-go and the positive survivor landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerArithmeticPoissonTransfer.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerScalarDeckPullback`, `deningerScalarDeckSum_eq_nsmul` — **`(4)`–`(5)`**: a descended
+  scalar section is fixed by every deck pullback, so its finite deck sum over any index set is the
+  cardinality times the section.
+- `deningerNsmul_not_tendsto` — **the divergence**: in a Hausdorff topological abelian group the
+  multiples `N • a` of a nonzero vector never converge, because the difference of consecutive terms
+  would tend to zero while being the constant `a`.  This is stronger than the card's argument: no
+  local convexity and no separating functional are needed, so the no-go holds in every Hausdorff
+  topological vector space, not only in locally convex ones.
+- `deningerScalarDeckSum_not_tendsto` — **`DAC_SCALAR_SUSPENSION_POISSON_TRANSFER_NO_GO`**: for a
+  nonzero descended scalar section the finite deck sums diverge in the function topology, so
+  ordinary scalar deck pullback cannot produce the continuous operator `Z : H_∩ → H_-`.
+- `deningerRawDeckMap`, `deningerRawSuspensionFlow`,
+  `deningerRawDeckMap_flow_eq_frobenius_fixedHeight` — **`(6)`**: the `q`-deck map after the raw
+  time-`q` flow is Frobenius at fixed height, so `[F_nP, u] = [P, nu] = φ^{log n}[P,u]`.
+- `deningerSuspensionLogRadius`, `_deck_invariant`, `_flow`,
+  `deningerDiscreteFlowPullback_eq_dilation` — **`(7)`**: the descended radial coordinate is
+  deck invariant and scales under the flow, and at time `log n` its pullback is Meyer's dilation.
+- `deningerMeyerSum`, `deningerPoissonSum_eq_meyerSum` — **`(8)`**: the flow sum over the discrete
+  times `log n` is Meyer's operator read on the radial coordinate, termwise.
+- `deningerLogRadius`, `deningerLogRadius_pow`, `deningerRadialPowerPullback`,
+  `deningerLogRadialSum_eq_meyerSum` — **`(10)`–`(12)`, `DAC_VERSCHIEBUNG_LOG_RADIAL_DILATION`**:
+  on a punctured-disk collar `ℓ(z) = -log|z|` satisfies `ℓ(zⁿ) = n ℓ(z)`, so the power
+  correspondences realize Meyer's dilations exactly and their sum is `(Zf) ∘ ℓ`.
+- `deningerVerschiebung_eq_smul_frobenius_symm`,
+  `deninger_inv_smul_verschiebung_eq_frobenius_symm` — the push–pull normalization recorded by the
+  card as an independent remark.
+
+### Remaining
+
+Nothing in this card.  The convergence of the flow sum `(8)` and `(12)` on Meyer's domain is his
+theorem, cited, and enters only as the summability of the displayed series; the identities
+formalized here are termwise and unconditional.  The four source obligations listed under the
+survivor belong to `DAC_DENINGER_POISSON_RELEVANT_COMPLEX_COMPARISON`, not to this card.

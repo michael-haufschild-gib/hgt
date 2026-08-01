@@ -68,21 +68,23 @@ theorem criticalLowProduct_comm {K : Type*} [CommRing K] (U V A B : K[X]) :
   simp only [criticalLowProduct]
   ring
 
-/-- The fibre of an observation. -/
-def criticalFibre (K : Type*) [CommRing K] (L : ℕ) (U V : K[X]) : Type _ :=
-  {p : K[X] × K[X] // (X : K[X]) ^ L ∣ (criticalLowProduct U V p.1 p.2 - 1)}
+/-- The fibre of an observation: the unknown low parts of the jet and of its reciprocal, each below
+its own depth, satisfying the truncated compatibility equation. -/
+def criticalFibre (K : Type*) [CommRing K] (m n : ℕ) (U V : K[X]) : Type _ :=
+  {p : K[X] × K[X] // p.1.degree < (m : ℕ) ∧ p.2.degree < (n : ℕ) ∧
+    (X : K[X]) ^ (m + n) ∣ (criticalLowProduct U V p.1 p.2 - 1)}
 
 /-- **The fibre is the same for the two depths.**  Exchanging the jet with its reciprocal is a
-bijection between the fibre of an observation and the fibre of the observation with its two tails
-exchanged, so the count is symmetric in the two depths. -/
-def criticalFibreSwap {K : Type*} [CommRing K] (L : ℕ) (U V : K[X]) :
-    criticalFibre K L U V ≃ criticalFibre K L V U where
-  toFun p := ⟨(p.1.2, p.1.1), by
-    rw [criticalLowProduct_comm]
-    exact p.2⟩
-  invFun p := ⟨(p.1.2, p.1.1), by
-    rw [criticalLowProduct_comm]
-    exact p.2⟩
+bijection between the fibre of an observation and the fibre of the observation with its two depths
+and two tails exchanged, so the count is symmetric in the two depths. -/
+def criticalFibreSwap {K : Type*} [CommRing K] (m n : ℕ) (U V : K[X]) :
+    criticalFibre K m n U V ≃ criticalFibre K n m V U where
+  toFun p := ⟨(p.1.2, p.1.1), p.2.2.1, p.2.1, by
+    rw [criticalLowProduct_comm, Nat.add_comm]
+    exact p.2.2.2⟩
+  invFun p := ⟨(p.1.2, p.1.1), p.2.2.1, p.2.1, by
+    rw [criticalLowProduct_comm, Nat.add_comm]
+    exact p.2.2.2⟩
   left_inv p := rfl
   right_inv p := rfl
 
@@ -145,5 +147,23 @@ theorem criticalLowProduct_right_unique {L : ℕ} {U V A B B' : K[X]}
     (hdeg : (B - B').degree < (L : ℕ)) :
     B = B' :=
   sub_eq_zero.1 (eq_zero_of_dvd_of_degree_lt (dvd_sub_of_criticalLowProduct hA h h') hdeg)
+
+/-- **A point of the fibre is determined by the jet's low part**, for every observation.  The
+reciprocal low part is carried along, so the fibre embeds in the `m` free jet coefficients against
+the `m` conditions the observed reciprocal tail imposes. -/
+theorem criticalFibre_fst_injective {m n : ℕ} (hm : 0 < m) (hn : 0 < n) {U V : K[X]}
+    (hU : U.coeff 0 = 0) (hV : V.coeff 0 = 0) :
+    Function.Injective (fun p : criticalFibre K m n U V => p.1.1) := by
+  rintro ⟨⟨A, B⟩, hA, hB, hdvd⟩ ⟨⟨A', B'⟩, hA', hB', hdvd'⟩ heq
+  have hAA : A = A' := heq
+  subst hAA
+  have hA0 := coeff_zero_add_ne_zero_of_dvd (by omega : 0 < m + n) hU hV hdvd
+  have hBB : B = B' := by
+    refine criticalLowProduct_right_unique hA0 hdvd hdvd' ?_
+    refine lt_of_le_of_lt (Polynomial.degree_sub_le _ _) (max_lt ?_ ?_)
+    · exact lt_of_lt_of_le hB (by exact_mod_cast (by omega : n ≤ m + n))
+    · exact lt_of_lt_of_le hB' (by exact_mod_cast (by omega : n ≤ m + n))
+  subst hBB
+  rfl
 
 end GaloisForLFunctions.HTGeometry

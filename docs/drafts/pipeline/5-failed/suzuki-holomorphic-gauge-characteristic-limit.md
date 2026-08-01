@@ -1,15 +1,15 @@
 # Suzuki holomorphic-gauge characteristic limit no-go
 
 - **ID:** `suzuki-holomorphic-gauge-characteristic-limit`
-- **Stage:** 5-failed / Route G terminal result
-- **Type:** SOURCE-COMPLETE NO-GO / POSITIVE MEROMORPHIC SURVIVOR
-- **Scientific status:** `[THEOREM] [PAPER-PROVED] [LEAN TARGET IDENTIFIED]`
-  `[ROUTE G RETIRED] [NOT AN RH PROOF] [NO COMPUTATION]`
+- **Stage:** 5-failed / Route G one-angle failed subclass
+- **Type:** CLASS-COMPLETE ONE-ANGLE NO-GO / POSITIVE MEROMORPHIC SURVIVOR
+- **Scientific status:** `[THEOREM] [PAPER-PROVED] [LEAN-PROVED]`
+  `[ONE-ANGLE SUBROUTE RETIRED] [ROUTE G OPEN] [NOT AN RH PROOF] [NO COMPUTATION]`
 - **Primary source under audit:** Masatoshi Suzuki, *Weil's quadratic form via the screw
   function*, arXiv:2606.09096v1 (2026), Theorem 1.5, Corollary 1.6, and Sections 7--8
 - **Prior formal core:** `SuzukiCharacteristicEntireLimitNoGo.lean`
 
-## Terminal verdict
+## One-angle terminal verdict
 
 `[THEOREM] [SUZUKI-HOLOMORPHIC-GAUGE-CHARACTERISTIC-LIMIT-NO-GO]`
 
@@ -21,9 +21,9 @@ extension angle, and normalization:
 > real-zero characteristic functions can converge to
 > `z^2 XiC(z) / XiC'(z)`.
 
-This closes Route G when Route G means Suzuki's published source-to-characteristic limit.  The
-finite-aperture self-adjoint and all-angle theorems remain valid.  They do not rescue the displayed
-limit: they expose a different, meromorphic two-angle problem recorded below as positive survivor.
+This closes Suzuki's published one-angle source-to-characteristic limit, not Route G as the full
+Suzuki source-to-Hermite--Biehler program. The finite-aperture self-adjoint and all-angle theorems
+remain valid and expose the live meromorphic two-angle Route-G core recorded below.
 
 ## [CORPUS]
 
@@ -157,17 +157,18 @@ Any successor must name:
 - exact identification of the resulting Livšic/Donoghue carrier with a global Xi/de Branges
   carrier.
 
-Those requirements constitute a new repaired route.  They are not missing lemmas inside retired
-Route G.
+Those requirements constitute the repaired live core of Route G. They are not missing lemmas that
+can rescue the retired one-angle subclass.
 
 ## Anti-theatre audit
 
 - New knowledge is the gauge-complete quantifier: the obstruction covers every finite holomorphic
   exponential normalization, not merely the ungauged legacy predicate.
 - Proof attacks target type, the hard invariant no source manipulation changes.
-- Finite Suzuki theorems are preserved exactly; only impossible global conclusion is retired.
+- Finite Suzuki theorems are preserved exactly; only impossible one-angle conclusion is retired.
 - Meromorphic survivor is retained and sharply delimited rather than declared dead.
-- No RH claim follows.  Result says Suzuki's displayed strategy cannot prove RH as written.
+- No RH claim follows. Result says Suzuki's displayed one-angle strategy cannot prove RH as written;
+  it does not close the two-angle Suzuki route.
 
 ## Formalization target
 
@@ -191,8 +192,7 @@ permitted.
 - [x] source/operator/angle independence audited
 - [x] nonholomorphic and spherical readings separated
 - [x] strongest pole-compatible survivor extracted
-- [ ] exact unconditional Lean theorem
-- [ ] umbrella wiring audit
-- [ ] targeted module build
-- [ ] route/frontier ledgers retired consistently
-
+- [x] exact unconditional Lean theorem
+- [x] umbrella wiring audit
+- [x] targeted module build
+- [x] one-angle subclass failed and full Route G kept open consistently

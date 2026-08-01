@@ -174,6 +174,42 @@ theorem exponentialSourceCombination_pairing (a : ℝ) {phi phi' : ℝ → ℝ}
   have hc := exponentialEdge_atomCoefficients a phi
   linarith [hc]
 
+/-- **The normalized edge quotient converges.**  If the numerator and denominator of the physical
+edge quotient converge to the central-jet values, the Weyl-normalized quotient converges to the
+aperture average `H (2a) / (2a)`.  This is the passage from the two central-jet limits to the
+normalized limit, with the `-i` normalization algebra supplied by `normalizedEdgeRatio`. -/
+theorem tendsto_normalizedEdgeQuotient {α : Type*} {l : Filter α} {T W : α → ℂ} {a : ℝ}
+    {c H2a : ℂ}
+    (ha : (a : ℂ) ≠ 0) (hc : c ≠ 0)
+    (hnum : Filter.Tendsto T l (nhds (I * (2 * c) * H2a)))
+    (hden : Filter.Tendsto W l (nhds (4 * (a : ℂ) * c))) :
+    Filter.Tendsto (fun lam => -I * (T lam / W lam)) l
+      (nhds (H2a / (2 * (a : ℂ)))) := by
+  have hne : (4 * (a : ℂ) * c) ≠ 0 :=
+    mul_ne_zero (mul_ne_zero (by norm_num) ha) hc
+  have hquot := hnum.div hden hne
+  have hmul := (tendsto_const_nhds (x := -I) (f := l)).mul hquot
+  rwa [normalizedEdgeRatio ha hc] at hmul
+
+/-- **The numerator value equation `(7)`, in integral form.**  Pairing the exponential source
+combination against the reflected primitive `y => H (a - y)` gives `2 cosh a * H (2a)`: the interior
+terms cancel, the endpoint atoms at `-a` and `a` contribute `H (2a)` and `H 0`, and `H 0 = 0`
+removes the second.
+
+This is the numerator companion of `integral_edgeDenominatorSum`, and together with it supplies
+both value equations of the normalized edge quotient. -/
+theorem exponentialSourceCombination_primitive_pairing (a : ℝ) {H H' : ℝ → ℝ}
+    (hH : ∀ x ∈ Set.uIcc (-a) a, HasDerivAt (fun y => H (a - y)) (-(H' (a - x))) x)
+    (hint : IntervalIntegrable (fun x => -(H' (a - x))) volume (-a) a)
+    (hH0 : H 0 = 0) :
+    (-(∫ x in (-a)..a, Real.exp x * -(H' (a - x))) - ∫ x in (-a)..a, Real.exp x * H (a - x))
+        + (-(∫ x in (-a)..a, Real.exp (-x) * -(H' (a - x)))
+            + ∫ x in (-a)..a, Real.exp (-x) * H (a - x))
+      = 2 * Real.cosh a * H (2 * a) := by
+  have h := exponentialSourceCombination_pairing a (phi := fun y => H (a - y))
+    (phi' := fun x => -(H' (a - x))) hH hint
+  rw [h, show a - -a = 2 * a by ring, sub_self, hH0, sub_zero]
+
 end
 
 end GaloisForLFunctions.HTGeometry

@@ -140,6 +140,56 @@ Write a review paper whose route claims are traceable to exact Lean declarations
   results and are umbrella-wired; targeted builds and standard-axiom audit pass. The analytic
   Rademacher Gram supplement remains honestly paper-only and is not used by closure. Universal
   Gamma--Gaussian property-S envelope repairs arbitrary moderate data, including off-line models,
-  so completion existence is nonselective. Remaining source-generated causal-dagger positivity
-  is exact RH-bearing endpoint. Route G itself remains open; this is a provider no-go, not an RH
-  proof or a class-complete Suzuki obstruction.
+  so completion existence is nonselective. At this historical checkpoint remaining source-generated
+  causal-dagger positivity was the exact RH-bearing endpoint and Route G was still open; this entry
+  proved only a provider no-go. Later holomorphic-gauge closure entry below supersedes route status.
+- 2026-08-01 — Route K blanket retirement corrected after exact survivor-ownership audit.  The
+  regular Clifford/full-source Hilbert completion remains a formally closed failed subroute.
+  Singular Hedenmalm boundary landing maps to C1; prime-normal, prolate, cohomological, and positive
+  moment survivors map to N, O, L, and P.  No numbered route owns a source-built trace-class
+  relocation of the marked-prime RVM skeleton, so K reopens there.  Diagonal and forest repairs are
+  falsified as determinant-orientation producers; a new unconditional three-prime law proves closed
+  cycle holonomy is first visible and survives centered reflection pairing.  Infinite cofinal
+  prime--Gamma cycle construction, trace-norm convergence, and Xi determinant identity remain open.
+- 2026-08-01 — Route G scope corrected: user identifies it with Suzuki's published one-angle
+  source-to-Hermite--Biehler program, not the narrower BV/co-Poisson provider. Primary-source audit
+  of Corollary 1.6 fixes its analytic interface as ordinary compact-open convergence on all of `C`
+  of a finite holomorphic-exponential normalization of an entire real-zero characteristic to
+  `z^2 XiC/XiC'`. New gauge-complete theorem quantifies over every source family, aperture, shift,
+  extension angle, and entire exponent gauge. Exponential nonvanishing preserves real zeros;
+  Weierstrass forces an entire limit; unconditional consecutive positive Xi zeros plus Rolle force
+  a genuine nonzero real target pole. Paper proof and Lean theorem
+  `not_suzukiHolomorphicGaugeCharacteristicLimitWall` are closed, umbrella-reachable, targeted-build
+  verified, and standard-axiom-only. This entry then incorrectly retired Route G by moving its
+  strongest positive survivor—the two-angle meromorphic Livšic quotient—to a new route. The later
+  scope-correction entry rescinds that claim: the theorem closes only the one-angle subclass.
+- 2026-08-01 — Final static formal lint ran without a build and found no Route G defect. Global gate
+  remained nonzero solely for three unrelated concurrently added unreachable modules:
+  `RHTower.DeningerPrimeBlockGreenSummability`, `HTGeometry.DigammaFieldJetPresentation`, and
+  `HTGeometry.SyndeticDenseOrbitLaw`. Route G module itself is umbrella-reachable and its targeted
+  module build had already passed; no full build was run.
+- 2026-08-01 — Scope correction after hostile survivor audit: previous entry improperly retired
+  Route G by defining it as Suzuki's one-angle Corollary 1.6 program and moving the surviving
+  two-angle meromorphic Livšic/Hermite--Biehler producer to a new route. User's scope is the whole
+  Suzuki source-to-Hermite--Biehler program. Therefore the goal was not met and retirement is
+  rescinded. `not_suzukiHolomorphicGaugeCharacteristicLimitWall` remains a class-complete failed
+  subclass. Route G is open at source-selected two-angle meromorphic convergence, nondegeneration,
+  uniqueness, and global Xi/de Branges identification; closure requires proving that producer or a
+  class-complete no-go for it.
+- 2026-08-01 — Route K pivot sharpened beyond the initial triangle law.  Every symmetric
+  closed-walk-flat sign field on an arbitrary finite connected support graph is now formally a
+  diagonal determinant gauge, including centered reflection pairing.  Exact trace-cumulant audit
+  proves quadratic orientation blindness, cubic triangle detection followed by reflection
+  cancellation, and first surviving paired quartic signal
+  `32(q_0+q_1+q_2)x_01x_12x_20`.  Existing all-order centered reciprocal-Laurent source
+  universality supplies scalar even trace targets from the completed prime--Gamma germ.  Abstract
+  moment realization maps to P; K's open core is the operatorial marked-prime closed-walk lift,
+  trace-norm convergence, and global det₂ identity.
+- 2026-08-01 — Route K source-matrix search selected the completed unit--double prime-ratio
+  response: its physical pair dressing is source-defined, symmetric, packet-independent off
+  diagonal, and supplies literal triangle holonomies.  Determinant and paired-quartic cycle laws
+  were instantiated unconditionally.  Exact hostile result: forced finite row balancing is not
+  compression-compatible; inserting a prime changes each old diagonal by the negative new pair
+  response, with absolute shell cost equal to the response column's finite `ell1` mass.  Pivot now
+  demands source shell renormalization/nuclear control, cofinal holonomy nonvanishing, and
+  all-source-moment incidence.  New module is umbrella-wired, target-built, and standard-axiom-only.

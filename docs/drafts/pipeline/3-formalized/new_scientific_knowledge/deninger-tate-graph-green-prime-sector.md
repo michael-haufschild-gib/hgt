@@ -231,6 +231,45 @@ prove that Milnor attaching, residue/corestriction, or cup-product cross terms p
 orthogonal decomposition. Claiming full Route L summability from this coordinate theorem would
 still be theatre.
 
+The scalar target is now replaced by the correct full-packet target. In
+`GaloisForLFunctions.RHTower.DeningerPrimeBlockGreenSummability`, each prime carries an arbitrary
+complete real Hilbert fibre \(K_p\), and the target is \(\ell^2(\mathbb P;K_p)\). The same finite
+maximum-tail estimate holds for identity-on-\(K_p\) block operators. Hence the full-block local
+forms are unordered operator-norm summable, their global energy is nonnegative, and its radical is
+zero. This retains all packet mean-zero/Fourier/transverse modes; it does not collapse them to one
+average.
+
+`GaloisForLFunctions.RHTower.DeningerPrimeBlockRestrictionAssembly` gives the exact source-facing
+criterion. For local restrictions \(r_p:E\to K_p\), the two analytic inputs
+
+\[
+ \sum_p\|r_p x\|^2<\infty,
+ \qquad
+ \sum_p\|r_p x\|^2\le C^2\|x\|^2
+\]
+
+assemble a bounded comparison \(U:E\to\ell^2(\mathbb P;K_p)\). Its kernel is exactly
+\(\bigcap_p\ker r_p\). Pulling back the full-block Green family gives the exact energy
+
+\[
+ G_E(x,x)=\sum_p(\log p)^{-2}\|r_p x\|^2,
+\]
+
+with radical \(\bigcap_p\ker r_p\). Therefore the prime-sector source theorem is no longer an
+unspecified comparison: it is precisely the Bessel estimate plus classification of simultaneous
+local kernels as closed middle boundaries. Both statements remain arithmetic and unproved.
+
+The arbitrary fibres also have a canonical concrete instantiation. The compact quotient packet at
+each prime carries normalized Haar probability measure, so
+`DeningerPrimePacketHaarL2Green` takes
+\[
+ K_p=L^2\!\left(U_p/\overline{\langle p\rangle},\mathbb R\right).
+\]
+The resulting all-prime Green form is operator-norm summable, has the exact weighted Haar-\(L^2\)
+energy above, and has zero radical on the full direct sum. Every nonzero mean-zero packet mode is
+therefore retained. Remaining source theorem must map arithmetic cocycles into these Haar fibres;
+the target is no longer an unspecified Hilbert space.
+
 ## Log
 
 - 2026-08-01 — Repaired positive-time topology escape by canonical
@@ -239,3 +278,8 @@ still be theatre.
 - 2026-08-01 — Proved unit-Green graph-disk escape and instantiated the all-prime maximum-tail
   survivor on the orthogonal prime Hilbert direct sum, including exact local norms and unordered
   operator-norm convergence.
+- 2026-08-01 — Upgraded scalar coordinates to arbitrary complete Hilbert packet blocks and
+  formalized Bessel assembly of all local restrictions, exact weighted Parseval energy, and
+  simultaneous-kernel radical classification.
+- 2026-08-01 — Instantiated the blocks canonically as normalized Haar-\(L^2\) of the concrete
+  Frobenius-quotient packets, retaining every square-integrable mean-zero mode.

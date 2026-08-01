@@ -533,9 +533,11 @@ What remains is not another completion theorem. It is source-generated causal-da
 on the completed principal conormal. Contractivity of that source-selected dagger, combined with
 the already proved conormal dilation character, is precisely the RH-bearing implication. Treating
 it as routine functional analysis would assume desired orientation. This provider family is
-therefore terminalized. Route G remains open: Suzuki's actual source-coefficient, chord-mass, and
-global Pick/Ward mechanism has not been refuted. A new discriminating source theorem must attack
-that mechanism, not add a fourth topology or graph completion.
+therefore terminalized. At this card's historical checkpoint Route G remained open at Suzuki's
+source-coefficient, chord-mass, and global Pick/Ward mechanism. The later gauge-complete
+target-category theorem in `suzuki-holomorphic-gauge-characteristic-limit.md` retires Suzuki's
+published one-angle limit without changing this provider proof or closing Route G. Its two-angle
+meromorphic survivor remains the route's live core, not a fourth topology or graph completion.
 
 Theorem D records a genuine analytic positive survivor—an exact Rademacher logarithmic Gram and
 Stein defect—but its conormal is unbounded. Its remaining Lean formalization cannot change the

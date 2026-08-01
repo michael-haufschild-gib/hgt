@@ -4,16 +4,34 @@
 - **Status:** active research control file; read before any Suzuki work
 - **Terminal objective:** prove RH, disprove RH, or prove a source-complete no-go for Suzuki's
   operator mechanism.
-- **Current terminal result:** none.
+- **Current terminal result:** none. One-angle holomorphic-gauge and BV/co-Poisson subclasses are
+  closed; two-angle meromorphic Livšic/Hermite--Biehler producer remains live.
 - **Knowledge control:** `suzuki-source-realization-knowledge-ledger.md` classifies every attempted
   mechanism as parent theory, corpus-known, formal closure, failed class, or live source theorem.
   Read it before changing this file.
 
 ## Rule
 
-No new Suzuki card or Lean module is allowed unless it advances the single live edge below or
-falsifies it. Coordinate changes, equivalent RH criteria, generic Grams, scalar capacity laws,
-and finite-support coefficient reconstructions do not count as progress.
+No new card may reopen the one-angle subclass by changing source, aperture, shift, extension angle,
+or finite holomorphic exponential normalization: `SR-51` quantifies over all of them. Coordinate
+changes, equivalent RH criteria, generic Grams, scalar capacity laws, and finite-support coefficient
+reconstructions do not count as progress. Advance must construct or class-completely refute the
+source-selected two-angle meromorphic producer.
+
+## Closed one-angle classification
+
+`SuzukiHolomorphicGaugeCharacteristicLimitWall` formalizes the full analytic category displayed in
+Suzuki's Corollary 1.6: eventually entire real-zero characteristics `W_n`, eventually entire
+exponents `Phi_n`, and compact-open convergence on all of `C` of `exp(Phi_n) W_n` to
+`z^2 XiC/XiC'`. The exponential is entire and nowhere zero, so it preserves real zeros; Weierstrass
+forces the target to be entire. The existing unconditional consecutive-zero/Rolle theorem instead
+produces a genuine nonzero real pole of that target. Lean proves
+`not_suzukiHolomorphicGaugeCharacteristicLimitWall` with standard axioms only.
+
+This is source-complete only for Suzuki's stated one-angle interface: no source-coefficient,
+chord-mass, Pick/Ward, aperture, or normalization choice can alter that target type. Fixed-aperture
+Hermite--Biehler structure survives. Its sharp positive survivor is the two-angle meromorphic
+quotient, in which common gauges cancel and poles remain; that survivor is the live Route-G core.
 
 ## Already closed — do not reopen
 
@@ -189,14 +207,14 @@ and finite-support coefficient reconstructions do not count as progress.
     connector must use a singular, weighted/renormalized, non-trace-preserving cyclic reader that
     carries the explicit positive opening flux.
 
-## Single live edge
+## Provider/source-sign edge — live but not the whole Route-G terminal class
 
 `SUZUKI-COPOISSON-FIBRE-ORIENTATION`
 
-Items 23--25 and source-ledger `SR-41`--`SR-43` are active producer subproblem for this terminal
-edge, not a
-second endpoint: completed cofinal weld must feed the fibre-pointed Berezin orientation below.
-Finite Hankel positivity alone does not imply that orientation.
+Items 23--25 and source-ledger `SR-41`--`SR-43` are producer subproblems for this edge, not a second
+endpoint: completed cofinal weld must feed the fibre-pointed Berezin orientation below. Finite
+Hankel positivity alone does not imply that orientation. `SR-51` does not close this source problem
+or the two-angle meromorphic producer.
 
 Let `E_b` be orthogonal projection onto Burnol's source-defined co-Poisson quotient and let
 `k_w^b` be continuous completed-Mellin evaluation kernel. For bilateral aperture holonomy
@@ -225,7 +243,7 @@ annihilator character and proves RH. This is now sole RH-bearing Suzuki arrow. A
 trace cannot provide it by item 18; reader must remain fibre-pointed, with Fourier reflection
 exchanging `w` and `1-conj(w)` rather than averaging them.
 
-## Current falsifiable conjecture — source form
+## Historical falsifiable conjecture — source form
 
 Generic `SUZUKI-COPOISSON-KREIN-CONTRACTION` is retired as a research description. Douglas
 factorization, Schur realization, quotient Berezin diagonal, and the fixed critical half-weight
@@ -435,3 +453,11 @@ Before each new action, answer in this file's log:
   marginal is fixed. Thus even an arbitrary infinite-index mixed Krein block cannot realize both
   via ordinary partial trace. Live `SR-41` is narrowed to a singular or non-trace-preserving cyclic
   reader carrying that source flux before completed Euler trace and fibre orientation.
+- **2026-08-01 holomorphic-gauge one-angle closure.** Scope audit isolates Suzuki's published
+  one-angle characteristic-limit program from the narrower BV/co-Poisson provider.
+  Primary-source statement allows a finite holomorphic exponential normalization but still asks
+  ordinary compact-open convergence on all of `C` to `z^2 XiC/XiC'`. The gauge-complete no-go
+  quantifies over every entire real-zero family and entire exponent gauge; Weierstrass closure and
+  the unconditional target-pole theorem refute the whole class. Paper and Lean are dependency
+  closed. Route G is not retired: two-angle meromorphic Livšic/Hermite--Biehler reconstruction is
+  exact positive survivor and remains its live core.

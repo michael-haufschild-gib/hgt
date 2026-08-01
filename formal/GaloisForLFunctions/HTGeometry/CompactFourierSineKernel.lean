@@ -301,6 +301,52 @@ theorem hasDerivAt_compactFourier_of_amplitude {u w : ℝ → ℝ → ℂ} {a r�
     (fun _ ht => abs_le_of_mem_uIoc_symm ha ht) hbound
     (fun t ht r hr => hasDerivAt_mul_fourierKernel z t (hderiv t ht r hr))
 
+/-! ## The central jet of the edge denominator, in integral form
+
+Differentiating the edge-pair transform at the origin produces, on the limiting exponentials, the
+pairing `∫ (e^y + e^{-y}) + ∫ y (e^y - e^{-y})` over `[-a,a]`.  Its value is the central jet
+`4 a cosh a`, which is the denominator input of the normalized edge quotient.  Both integrals are
+evaluated from explicit primitives: `e^y - e^{-y}` for the first, and `(y-1)e^y + (y+1)e^{-y}` for
+the second. -/
+
+theorem integral_edgeDenominatorSum (a : ℝ) :
+    (∫ y in (-a : ℝ)..a, (Real.exp y + Real.exp (-y)))
+      + (∫ y in (-a : ℝ)..a, y * (Real.exp y - Real.exp (-y)))
+      = 4 * a * Real.cosh a := by
+  have hexp : ∀ y : ℝ, HasDerivAt (fun u : ℝ => Real.exp (-u)) (-Real.exp (-y)) y := by
+    intro y
+    have hd := (hasDerivAt_neg y).exp
+    have hval : Real.exp (-y) * -1 = -Real.exp (-y) := by ring
+    rw [hval] at hd
+    exact hd
+  have h1 : ∀ y : ℝ, HasDerivAt (fun u : ℝ => Real.exp u - Real.exp (-u))
+      (Real.exp y + Real.exp (-y)) y := by
+    intro y
+    have hd := (Real.hasDerivAt_exp y).sub (hexp y)
+    have hval : Real.exp y - -Real.exp (-y) = Real.exp y + Real.exp (-y) := by ring
+    rw [hval] at hd
+    exact hd
+  have h2 : ∀ y : ℝ, HasDerivAt
+      (fun u : ℝ => (u - 1) * Real.exp u + (u + 1) * Real.exp (-u))
+      (y * (Real.exp y - Real.exp (-y))) y := by
+    intro y
+    have ha := ((hasDerivAt_id y).sub_const 1).mul (Real.hasDerivAt_exp y)
+    have hb := ((hasDerivAt_id y).add_const 1).mul (hexp y)
+    have hd := ha.add hb
+    simp only [id_eq] at hd
+    have hval : (1 * Real.exp y + (y - 1) * Real.exp y)
+        + (1 * Real.exp (-y) + (y + 1) * -Real.exp (-y))
+        = y * (Real.exp y - Real.exp (-y)) := by ring
+    rw [hval] at hd
+    exact hd
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun y _ => h1 y)
+      (Continuous.intervalIntegrable (by fun_prop) _ _),
+    intervalIntegral.integral_eq_sub_of_hasDerivAt (fun y _ => h2 y)
+      (Continuous.intervalIntegrable (by fun_prop) _ _)]
+  rw [Real.cosh_eq]
+  simp only [neg_neg]
+  ring
+
 end
 
 end GaloisForLFunctions.HTGeometry

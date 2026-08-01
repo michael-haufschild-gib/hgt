@@ -97,6 +97,32 @@ theorem circuitWordSeparated_autonomous_backward_cone
   · exact hincrement
   · exact herror
 
+/-- **Syndetic cone propagation.** If `P`-hard autonomous endpoints occur in
+every interval of one fixed length `L`, then for every lag `τ` the
+corresponding `(P-r)` backward-cone section also occurs in every interval of
+the same length.  The cone operation does not enlarge recurrence gaps. -/
+theorem circuitWordSeparated_syndetic_backward_cones
+    {gate G : Type*} [Group G] [PseudoMetricSpace G]
+    (generator : gate → G) (flow : ℝ → G)
+    (hmul : ∀ a₁ a₂ b₁ b₂ : G,
+      dist (a₁ * a₂) (b₁ * b₂) ≤ dist a₁ b₁ + dist a₂ b₂)
+    {L τ εearly εincrement εlate : ℝ} {P r : ℕ}
+    (hr : r ≤ P)
+    (hflow : ∀ T : ℝ, flow (T - τ) * flow τ = flow T)
+    (hlate : ∀ a : ℝ, ∃ T ∈ Set.Icc a (a + L),
+      CircuitWordSeparated generator εlate P (flow T))
+    (hincrement :
+      HasCircuitWordApproximation generator εincrement r (flow τ))
+    (herror : εearly + εincrement ≤ εlate) :
+    ∀ a : ℝ, ∃ t ∈ Set.Icc a (a + L),
+      CircuitWordSeparated generator εearly (P - r) (flow t) := by
+  intro a
+  obtain ⟨T, hT, hhard⟩ := hlate (a + τ)
+  obtain ⟨hTlower, hTupper⟩ := hT
+  refine ⟨T - τ, ⟨by linarith, by linarith⟩, ?_⟩
+  exact circuitWordSeparated_autonomous_backward_cone
+    generator flow hmul hr (hflow T) hhard hincrement herror
+
 /-! ## Operator-norm unitary specialization -/
 
 /-- Multiplication of unitary operators is jointly one-Lipschitz in each
@@ -138,6 +164,24 @@ theorem unitaryCircuitWordSeparated_autonomous_backward_cone
     (herror : εearly + εincrement ≤ εlate) :
     CircuitWordSeparated generator εearly (P - r) (flow (T - τ)) := by
   exact circuitWordSeparated_autonomous_backward_cone
+    generator flow unitary_dist_mul_mul_le hr hflow hlate hincrement herror
+
+/-- Operator-norm specialization of syndetic cone propagation in arbitrary
+unital C⋆-algebras. -/
+theorem unitaryCircuitWordSeparated_syndetic_backward_cones
+    {gate A : Type*} [CStarAlgebra A]
+    (generator : gate → unitary A) (flow : ℝ → unitary A)
+    {L τ εearly εincrement εlate : ℝ} {P r : ℕ}
+    (hr : r ≤ P)
+    (hflow : ∀ T : ℝ, flow (T - τ) * flow τ = flow T)
+    (hlate : ∀ a : ℝ, ∃ T ∈ Set.Icc a (a + L),
+      CircuitWordSeparated generator εlate P (flow T))
+    (hincrement :
+      HasCircuitWordApproximation generator εincrement r (flow τ))
+    (herror : εearly + εincrement ≤ εlate) :
+    ∀ a : ℝ, ∃ t ∈ Set.Icc a (a + L),
+      CircuitWordSeparated generator εearly (P - r) (flow t) := by
+  exact circuitWordSeparated_syndetic_backward_cones
     generator flow unitary_dist_mul_mul_le hr hflow hlate hincrement herror
 
 end GaloisForLFunctions.HTGeometry

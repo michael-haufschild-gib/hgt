@@ -28,16 +28,29 @@ both imaginary signs arbitrarily high in the upper half-plane.
 `[FALSIFIED]` Every nondegenerate real boundary-preserving Möbius postcomposition preserves that
 two-sided sign defect.
 
-`[PAPER-PROVED]` More strongly, every nonconstant real-analytic scalar germ at the far-right real
+`[FORMALIZED]` More strongly, every nonconstant real-analytic scalar germ at the far-right real
 source limit preserves a conjugate high-line sign pair.  Its finite analytic vanishing order only
 multiplies the first logarithmic Dirichlet frequency.  Paper certificate:
 `../2-fully-proven/not_new_scientific_knowledge/dirichlet-real-analytic-postcomposition-high-line-sign-rigidity.md`.
+Lean modules: `HTGeometry/DirichletAnalyticPostcompositionSignRigidity.lean` and
+`RHTower/CCMSharpPrimeWindowAnalyticPostcompositionNoGo.lean`.
 
 `[BRIDGE]` Canonical noncensored Mellin normalization and archimedean completion equal
 `logDeriv XiC(-z)` exactly.  This collides with Route C2's Sondow--Dumitrescu/Planat horizontal-Xi
 coordinate.  Route C2 is already retired as a saturated RH-equivalent divisor detector, so the
 collision closes only this transformed-response branch.  It does not receive Route I's source
 obligation.
+
+`[OPEN CORE]` Surviving coefficient-nonlocal pivot is square-aperture centered correlation energy.
+Its exact finite von-Mangoldt pair-kernel expansion and implication to RH are formalized; open
+estimate is
+
+```text
+for every delta>0,
+sum_{m<=M} (W(m^2)-2(1-1/sqrt(2))m)^2 = O_delta(M^(1+delta)).
+```
+
+Active card: `route-i-square-aperture-von-mangoldt-correlation-bound.md`.
 
 ## Hard problem
 
@@ -46,9 +59,9 @@ assuming an Xi zero-width bound, horizontal Xi positivity, or an equivalent anal
 premise.  Current zero-free-region PNT errors become `n^(1/2-o(1))` after square-root weighting and
 miss the all-epsilon subpower scale.
 
-The strongest existing alternate gate asks only for Dirichlet summability of positive window
-excess at every abscissa `1+epsilon`.  That may permit sparse large violations, but it remains an
-unproved source theorem and is not evidence for the pointwise conjecture.
+Strongest concrete pivot now asks for a sparse square-trace variance bound on literal von-Mangoldt
+window.  It implies weighted `L²` Dirichlet energy of positive excess but is not known. Continuous
+PNT mean square does not control these sparse square samples without a trace theorem.
 
 ## Anti-theatre boundary
 
@@ -69,7 +82,10 @@ von-Mangoldt mass or positive excess with quantifiers strong enough to enter an 
 - [x] conditional implication to RH formalized
 - [x] raw passive and real-Möbius producers terminally falsified
 - [x] all nonconstant local real-analytic scalar postcompositions paper-proved impossible
+- [x] all nonconstant local real-analytic scalar postcompositions formalized impossible
 - [x] completed-response collision with retired Route C2 classified
+- [x] exact square-aperture von-Mangoldt correlation kernel formalized
+- [x] correlation-subpower implication to RH formalized
 - [ ] unconditional arithmetic source estimate
 - [ ] dependency-closed paper proof
 - [ ] exact unconditional Lean proof of new source theorem
@@ -77,3 +93,5 @@ von-Mangoldt mass or positive excess with quantifiers strong enough to enter an 
 ## Log
 
 - 2026-08-01 — reopened after correcting invalid survivor handoff to already-retired Route C2.
+- 2026-08-01 — scalar analytic branch closed; square-aperture correlation energy promoted as live
+  coefficient-nonlocal pivot.

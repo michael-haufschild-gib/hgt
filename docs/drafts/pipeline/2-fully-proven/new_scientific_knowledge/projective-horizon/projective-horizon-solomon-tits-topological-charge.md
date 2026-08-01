@@ -143,3 +143,56 @@ class to positivity, a Weil criterion, or zero location.
 
 - 2026-07-15 — derived the horizon context complex and its Steinberg topological charge from the
   projective horizon building theorem.
+
+## Log
+
+- 2026-08-01 — **The passage `(1)` → `(2)` and the dimension of `Δ_HT(V)` are formalized.**
+  `formal/GaloisForLFunctions/HTGeometry/ProjectiveFlagDimension.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  The card's own reduction is that `S ↦ I_S` is injective and order-reversing, so a strict chain of
+  common-horizon fields `(1)` is the same thing as a flag of subspaces `(2)`.  That step is now a
+  theorem, in the generality it is used in:
+
+  `card_image_eq_and_chain` — an order-reversing injection carries a chain of subspaces to a chain of
+  the same size, so the two complexes have the same simplices;
+  `card_image_le_finrank_sub_one` — hence the simplices of `Δ_HT(V)` have at most `N - 1` vertices;
+  `exists_image_chain_card_eq` — and that is attained, by transporting the flag of a frame.
+
+  So `Δ_HT(V)` has top simplices of dimension exactly `N - 2`, which is the dimension appearing in
+  `(4)`, `(5)` and `(6)`, established on the card's own object rather than through the building.
+
+  The supporting flag-complex results are those recorded on
+  `projective-ht-horizon-symmetric-space-boundary`: the dimension bound and its attainment, vertices
+  typed by codimension with each type a single orbit, the simplicial and type-preserving action, and
+  the apartment of a frame with its `N!` chambers.
+
+  What stays out of reach is the homotopy content: `(4)`, `(5)` and `(6)` assert a homotopy
+  equivalence to a wedge of `(N-2)`-spheres and the identification of the top reduced homology with
+  the Steinberg module.  The local toolchain has no order-complex homotopy theory, so the Solomon--Tits
+  theorem itself is not encoded, by an axiom or otherwise.  What is formalized is the combinatorial
+  input it consumes.
+
+- 2026-08-01 — **The horizon assignment `S ↦ I_S` is proved to be an order-reversing injection.**
+  `formal/GaloisForLFunctions/HTGeometry/HorizonGaloisAssignment.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  The card asserts that `S ↦ I_S = F^(G_S)` is injective and order-reversing, and reads `(1)` as
+  `(2)` on that basis.  Over a finite extension this follows from mathlib's Galois correspondence and
+  is now proved:
+
+  `fixedField_injective` — the fixed-field map on subgroups is injective, because the fixing subgroup
+  recovers it (`IntermediateField.fixingSubgroup_fixedField`, which needs only finite
+  dimensionality);
+  `fixedField_antitone` — and order-reversing, directly from the membership criterion;
+  `fixedField_comp_injective_antitone` — so if the stabiliser `S ↦ G_S` is itself injective and
+  monotone, the horizon field `S ↦ I_S` is injective and antitone.  That is the card's claim, with
+  its two inputs separated: what the parent horizon theorem has to supply is exactly injectivity and
+  monotonicity of the **stabiliser**, and nothing about fields.
+
+  `card_image_fixedField_le` and `exists_image_fixedField_card_eq` — chaining with the transport of
+  the previous entry, a strict chain of common-horizon fields has at most `N - 1` members and that is
+  attained.  So the dimension of `Δ_HT(V)` is established on the fields themselves, not on the
+  subspaces they come from.
+
+  Unchanged: `(4)`, `(5)`, `(6)` are homotopy statements and Solomon--Tits itself is not encoded.

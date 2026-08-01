@@ -214,6 +214,30 @@ the full-torus Choi bound.  Thus traceless local Hamiltonians are included.
 The result proves the plateau occupation law; it does
 not imply O4's pointwise linear growth or O5's first hitting time.
 
+The plateau now also has an unconditional infinite-time strengthening.
+`StaticChoiSyndeticComplexityLaw.lean` proves that whenever the explicit
+finite-circuit entropy bound is below one, the complement of the low-circuit
+target is nonempty and open; maximal projective rank makes the physical phase
+flow dense, and compactness upgrades density to syndetic return.  Hence one
+finite target-dependent gap `L` exists such that **every** interval of length
+`L`, at every positive or negative epoch, contains a Choi endpoint farther
+than `delta` from every word in the stated circuit dictionary.  This is
+strictly stronger than completed-time density: high-complexity endpoints
+cannot disappear for arbitrarily long intervals.  The theorem is
+nonquantitative in `L`, so it does not yet place the first hard endpoint near
+the direct-simulation saturation time.
+
+The target semantics are now full-state rather than a spectral-subspace
+surrogate.  `StaticChoiFullStateProjectionLaw.lean` defines the full
+`D^2`-dimensional Choi density, proves that restriction to the
+diagonal--diagonal spectral block is Hilbert--Schmidt contractive, and proves
+that the evolved full density restricts exactly to `uniformPhaseDensity`.
+Consequently `maximallyProjective_fullChoiCircuitTargets_syndetic` separates
+the true full Choi state from every arbitrary full circuit-target density with
+no radius or dimension loss.  Only the conversion from this full-state
+Hilbert--Schmidt metric to the paper's preferred trace/operator normalization
+remains.
+
 ### O4. Linear no-shortcuts theorem
 
 Prove a robust lower bound matching direct Hamiltonian-simulation complexity
@@ -275,11 +299,31 @@ endpoint casts a robust linear no-shortcut cone backward through time after
 inserting a direct-simulation upper bound for `r(tau)`.  Unlike power
 amplification, error is paid once, not divided by elapsed time.
 
+The multiplication premise is now discharged for the physical norm model.
+`unitaryCircuitWordSeparated_autonomous_backward_cone` proves the statement in
+the operator-norm unitary group of every unital C-star algebra, with no matrix,
+dimension, or finite-spectrum premise.  The exact norm identity under left
+and right unitary multiplication supplies the joint product Lipschitz bound.
+
+The cone and the new syndetic endpoint law also compose without loss of the
+gap.  `unitaryCircuitWordSeparated_syndetic_backward_cones` proves that if
+`P`-hard endpoints occur in every interval of length `L`, then for every fixed
+lag `tau` the `(P-r(tau))` backward section occurs in every interval of the
+same length `L`.  Thus hard endpoints generate infinitely many robust ramps
+forever; cone propagation neither divides resolution nor enlarges recurrence
+gaps.  A remaining semantic bridge must identify the Choi density dictionary
+with the corresponding projective-unitary word targets before this composed
+statement can be claimed for physical circuits in the paper.
+
 This does not yet prove Brown--Susskind growth from the initial simple state:
 O3 supplies a completed-time density of hard terminal points but no bound
 placing the first such point at the direct-simulation saturation time.  The
 remaining O4 content is now precisely that first-terminal-time/cut-time bound,
-not robustness of the backward ramp once a hard endpoint is known.
+not robustness or infinite recurrence of the backward ramps once hard
+endpoints are known.  The new syndetic theorem supplies a finite first hard
+time and bounded gaps, but its compactness-produced `L` is not quantitatively
+controlled.  O4 therefore requires `L` at the direct-simulation saturation
+scale, uniformly with high probability in the local-Hamiltonian ensemble.
 
 #### Failed circuitwise entropy route and surviving aggregate word escape
 
@@ -631,3 +675,21 @@ receive a new title and an independent significance audit.
   This gives a full backward linear cone below every hard plateau endpoint;
   the first plateau hitting/cut-time bound remains the exact unresolved O4
   core.
+- 2026-08-01 -- Strengthened the cone to the operator-norm unitary group of
+  every unital C-star algebra and proved syndetic cone propagation: recurring
+  hard endpoints generate recurring backward ramps with the same gap bound.
+  No Hilbert--Schmidt normalization or `1/N` error collapse remains in this
+  transfer layer.
+- 2026-08-01 -- Proved `StaticChoiSyndeticComplexityLaw.lean`.  For every
+  maximally projective finite spectrum and every finite circuit dictionary
+  whose explicit target-volume bound is below one, every interval of one
+  finite length contains a hard Choi endpoint.  This upgrades an asymptotic
+  plateau fraction to infinite, uniformly recurrent hard endpoints.  The gap
+  is nonquantitative; controlling it at exponential saturation scale is the
+  remaining first-cut problem.
+- 2026-08-01 -- Closed the spectral-subspace target objection in
+  `StaticChoiFullStateProjectionLaw.lean`.  Diagonal density restriction from
+  the full Choi tensor-square space is contractive, and the true evolved full
+  density restricts exactly to the phase density.  The syndetic theorem now
+  holds against arbitrary full circuit-target densities without dimension or
+  radius loss.

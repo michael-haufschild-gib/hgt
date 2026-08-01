@@ -116,4 +116,116 @@ theorem exists_fin_prod_eq {M ι : Type*} [CommMonoid M] (s : Finset ι) (f : ι
   intro a
   simp
 
+/-- Padding a monomial to a larger index set: exponents outside the support contribute `1`, so a
+family of monomials with varying supports can be written over one common finite index set. -/
+theorem prod_pow_eq_prod_pow_of_subset {M ι : Type*} [CommMonoid M] [DecidableEq ι]
+    {s t : Finset ι} (hst : s ⊆ t) (g : ι → M) (d : ι →₀ ℕ) (hd : d.support ⊆ s) :
+    ∏ i ∈ s, g i ^ d i = ∏ i ∈ t, g i ^ d i := by
+  refine Finset.prod_subset hst fun i _ hi => ?_
+  have hzero : d i = 0 := by
+    by_contra hne
+    exact hi (hd (Finsupp.mem_support_iff.mpr hne))
+  rw [hzero, pow_zero]
+
+/-- Every monomial of a polynomial is supported in its variable set: `vars` is the common finite
+index set the padding lemma needs. -/
+theorem monomial_support_subset_vars {F T : Type*} [CommSemiring F] [DecidableEq T]
+    (r : MvPolynomial T F) {d : T →₀ ℕ} (hd : d ∈ r.support) : d.support ⊆ r.vars := by
+  intro i hi
+  exact (MvPolynomial.mem_vars_iff_mem_support i).mpr ⟨d, hd, hi⟩
+
+/-- **The presentation over a common index set.**  Every monomial of the numerator or denominator is
+written over the single finite index set `r.vars`, which is the shape the residue machinery's
+exponent family requires. -/
+theorem aeval_eq_sum_monomials_vars {F K T : Type*} [CommSemiring F] [CommSemiring K] [Algebra F K]
+    [DecidableEq T] (g : T → K) (r : MvPolynomial T F) :
+    MvPolynomial.aeval g r
+      = ∑ d ∈ r.support, algebraMap F K (r.coeff d) * ∏ i ∈ r.vars, g i ^ d i := by
+  rw [aeval_eq_sum_monomials]
+  refine Finset.sum_congr rfl fun d hd => ?_
+  rw [prod_pow_eq_prod_pow_of_subset (monomial_support_subset_vars r hd) g d (le_refl _)]
+
+/-- **The presentation as a `Fin`-indexed jet polynomial.**  Numerator and denominator become
+`∑_{α : Fin M} a_α ∏_{i : Fin N} h_i^{e_{α i}}`, which is literally the shape the residue theorems
+consume. -/
+theorem exists_fin_monomial_sum {F K T : Type*} [CommSemiring F] [CommSemiring K] [Algebra F K]
+    [DecidableEq T] (g : T → K) (r : MvPolynomial T F) :
+    ∃ (M N : ℕ) (a : Fin M → K) (e : Fin M → Fin N → ℕ) (h : Fin N → K),
+      MvPolynomial.aeval g r = ∑ α : Fin M, a α * ∏ i : Fin N, h i ^ e α i := by
+  classical
+  refine ⟨r.support.card, r.vars.card,
+    fun α => algebraMap F K (r.coeff ((r.support.equivFin.symm α : {x // x ∈ r.support}) : T →₀ ℕ)),
+    fun α i => ((r.support.equivFin.symm α : {x // x ∈ r.support}) : T →₀ ℕ)
+      ((r.vars.equivFin.symm i : {x // x ∈ r.vars}) : T),
+    fun i => g ((r.vars.equivFin.symm i : {x // x ∈ r.vars}) : T), ?_⟩
+  rw [aeval_eq_sum_monomials_vars, ← Finset.sum_attach r.support]
+  refine Fintype.sum_equiv r.support.equivFin _ _ fun d => ?_
+  simp only [Equiv.symm_apply_apply]
+  congr 1
+  rw [← Finset.prod_attach r.vars]
+  refine Fintype.prod_equiv r.vars.equivFin _ _ fun i => ?_
+  simp
+
+/-- **The capstone of the packaging.**  Every element of a differential adjoin is a quotient of two
+`Fin`-indexed jet polynomials whose variables are jets of the generators. -/
+theorem exists_fin_jetPoly_quotient (F : Type*) {K : Type*} [Field F] [Field K]
+    [Algebra F K] [Differential K] {s : Set K} {x : K} (hx : x ∈ differentialAdjoin F s) :
+    ∃ (T : Finset K) (M₁ N₁ M₂ N₂ : ℕ) (a₁ : Fin M₁ → K) (e₁ : Fin M₁ → Fin N₁ → ℕ)
+      (h₁ : Fin N₁ → K) (a₂ : Fin M₂ → K) (e₂ : Fin M₂ → Fin N₂ → ℕ) (h₂ : Fin N₂ → K),
+      (↑T : Set K) ⊆ differentialJetSet s ∧
+        x = (∑ α : Fin M₁, a₁ α * ∏ i : Fin N₁, h₁ i ^ e₁ α i)
+          / (∑ α : Fin M₂, a₂ α * ∏ i : Fin N₂, h₂ i ^ e₂ α i) := by
+  classical
+  obtain ⟨T, hT, r, q, hx'⟩ := exists_finite_jetPoly_presentation F hx
+  obtain ⟨M₁, N₁, a₁, e₁, h₁, hr⟩ := exists_fin_monomial_sum (Subtype.val : (↑T : Set K) → K) r
+  obtain ⟨M₂, N₂, a₂, e₂, h₂, hq⟩ := exists_fin_monomial_sum (Subtype.val : (↑T : Set K) → K) q
+  exact ⟨T, M₁, N₁, M₂, N₂, a₁, e₁, h₁, a₂, e₂, h₂, hT, by rw [hx', hr, hq]⟩
+
+/-- **The `Fin`-indexed presentation, with the origin of its data recorded.**  Beyond the shape, the
+coefficients are constants from the base field and the variables are values of `g`. -/
+theorem exists_fin_monomial_sum_mem {F K T : Type*} [CommSemiring F] [CommSemiring K] [Algebra F K]
+    [DecidableEq T] (g : T → K) (r : MvPolynomial T F) :
+    ∃ (M N : ℕ) (a : Fin M → K) (e : Fin M → Fin N → ℕ) (h : Fin N → K),
+      (∀ α, a α ∈ Set.range (algebraMap F K)) ∧ (∀ i, h i ∈ Set.range g) ∧
+        MvPolynomial.aeval g r = ∑ α : Fin M, a α * ∏ i : Fin N, h i ^ e α i := by
+  classical
+  refine ⟨r.support.card, r.vars.card,
+    fun α => algebraMap F K (r.coeff ((r.support.equivFin.symm α : {x // x ∈ r.support}) : T →₀ ℕ)),
+    fun α i => ((r.support.equivFin.symm α : {x // x ∈ r.support}) : T →₀ ℕ)
+      ((r.vars.equivFin.symm i : {x // x ∈ r.vars}) : T),
+    fun i => g ((r.vars.equivFin.symm i : {x // x ∈ r.vars}) : T),
+    fun α => ⟨_, rfl⟩, fun i => ⟨_, rfl⟩, ?_⟩
+  rw [aeval_eq_sum_monomials_vars, ← Finset.sum_attach r.support]
+  refine Fintype.sum_equiv r.support.equivFin _ _ fun d => ?_
+  simp only [Equiv.symm_apply_apply]
+  congr 1
+  rw [← Finset.prod_attach r.vars]
+  refine Fintype.prod_equiv r.vars.equivFin _ _ fun i => ?_
+  simp
+
+/-- **The capstone, with the origin of its data recorded.**  Every element of a differential adjoin
+is a quotient of two `Fin`-indexed jet polynomials whose coefficients are constants of the base field
+and whose variables are jets of the generators. -/
+theorem exists_fin_jetPoly_quotient_mem (F : Type*) {K : Type*} [Field F] [Field K]
+    [Algebra F K] [Differential K] {s : Set K} {x : K} (hx : x ∈ differentialAdjoin F s) :
+    ∃ (M₁ N₁ M₂ N₂ : ℕ) (a₁ : Fin M₁ → K) (e₁ : Fin M₁ → Fin N₁ → ℕ)
+      (h₁ : Fin N₁ → K) (a₂ : Fin M₂ → K) (e₂ : Fin M₂ → Fin N₂ → ℕ) (h₂ : Fin N₂ → K),
+      (∀ α, a₁ α ∈ Set.range (algebraMap F K)) ∧ (∀ i, h₁ i ∈ differentialJetSet s) ∧
+        (∀ α, a₂ α ∈ Set.range (algebraMap F K)) ∧ (∀ i, h₂ i ∈ differentialJetSet s) ∧
+        x = (∑ α : Fin M₁, a₁ α * ∏ i : Fin N₁, h₁ i ^ e₁ α i)
+          / (∑ α : Fin M₂, a₂ α * ∏ i : Fin N₂, h₂ i ^ e₂ α i) := by
+  classical
+  obtain ⟨T, hT, r, q, hx'⟩ := exists_finite_jetPoly_presentation F hx
+  obtain ⟨M₁, N₁, a₁, e₁, h₁, ha₁, hh₁, hr⟩ :=
+    exists_fin_monomial_sum_mem (Subtype.val : (↑T : Set K) → K) r
+  obtain ⟨M₂, N₂, a₂, e₂, h₂, ha₂, hh₂, hq⟩ :=
+    exists_fin_monomial_sum_mem (Subtype.val : (↑T : Set K) → K) q
+  refine ⟨M₁, N₁, M₂, N₂, a₁, e₁, h₁, a₂, e₂, h₂, ha₁, ?_, ha₂, ?_, by rw [hx', hr, hq]⟩
+  · intro i
+    obtain ⟨y, hy⟩ := hh₁ i
+    exact hy ▸ hT y.2
+  · intro i
+    obtain ⟨y, hy⟩ := hh₂ i
+    exact hy ▸ hT y.2
+
 end GaloisForLFunctions

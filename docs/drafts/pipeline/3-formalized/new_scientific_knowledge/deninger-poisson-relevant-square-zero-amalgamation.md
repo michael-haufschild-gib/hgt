@@ -242,3 +242,50 @@ coefficient, not missing definitions of arithmetic cohomology.
 - 2026-07-27 — Replaced the raw phase--radial tensor by the
   source-level augmented homotopy pullback, eliminating unsupported
   mixed positive terms and producing the strict PZ totalization.
+
+## Lean status
+
+### The amalgamation and its totalization landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerSquareZeroAmalgamation.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+The split square-zero augmented objects are mathlib's `TrivSqZeroExt k I` with its augmentation
+`TrivSqZeroExt.fstHom`, and the amalgamation `(6)` is the strict fibre product over the common
+augmentation, `AlgHom.equalizer`.
+
+- `deningerSplitAugmentation_surjective` — the augmentation of a split square-zero extension is
+  surjective, split by the unit inclusion.  This is why the strict fibre product already computes
+  the homotopy fibre product of `(6)`; no further cofibrancy input is used.
+- `deningerAmalgam`, `deningerMem_amalgam` — the amalgamation and its membership criterion
+  (equality of the two augmentations).
+- `deningerAmalgamEquiv` — **the proof step of `(6)`→`(7)`**: the amalgamation *identifies the two
+  units and takes the direct sum of the two positive ideals*, i.e. it is the split square-zero
+  extension of `I ⊕ J`, as `k`-algebras.
+- `deningerZeroIdealEquiv`, `deningerAmalgamDegreeZero` — the degree-zero instance, where the
+  Kummer ideal vanishes and the amalgamated algebra is the square-zero extension by the radial
+  ideal `H_∩` alone.  Applying `deningerAmalgamEquiv` degreewise to `(3)` and `(4)` is exactly
+  `A⁰ = ℂ ⊕ H_∩`, `A¹ = H_- ⊕ P_ℚ` of `(7)`.
+- `deningerTotalD0`, `deningerTotalD1` — the totalized differentials `d⁰(a,f) = (Zf,0)` and
+  `d¹(g,u) = pr(u)` of `(9)`, with `deningerTotalD0_apply`, `deningerTotalD1_apply`.
+- `deningerTotal_comp` — **`(8)`–`(9)`**: `d¹ ∘ d⁰ = 0`, because the arithmetic residue is zero on
+  the radial summand and the radial differential lands there.  So the totalization is a complex.
+- `deningerTotal_ker_d0`, `deningerTotal_H0` — **`H⁰ = ℂ`**: the degree-zero cocycles are exactly
+  the unit line, once the radial differential `Z` is injective (Meyer strictness, cited).
+- `deningerTotal_ker_d1`, `deningerTotal_range_d0` — the middle cocycles and coboundaries.
+- `deningerCocycleOneEquiv`, `deningerTotalH1`, `deningerTotal_H1Equiv` — **`H¹ = M_ζ`**: when the
+  arithmetic residue is injective on the Milnor summand (Arakelov trace kernel, cited), the middle
+  cohomology of the totalization is canonically the cokernel of `Z`, which is `M_ζ`.
+- `deningerTotal_range_d1` — **`H² = ℂ(-1)`**: the degree-two coboundaries are exactly the image of
+  the arithmetic residue, so `H²` is its cokernel; the identification of that cokernel with `ℂ(-1)`
+  is the cited completed-Arakelov-trace-kernel computation.
+
+### Remaining
+
+Nothing in this card's own proof.  What is formalized is exactly what the card proves here: the
+amalgamation formula for split augmented square-zero objects, the resulting degreewise shape `(7)`,
+the totalized three-term complex `(8)`–`(9)`, and the cohomology `(10)` in terms of the two
+strictness inputs.  Those inputs — computation of the two sectors `(3)`, `(4)`, injectivity of `Z`
+and of the residue, and the identification of the residue cokernel with `ℂ(-1)` — are the cited
+theorems of the parent cards, and appear as explicit hypotheses, not as assumptions of this card.
+The three items of §6 remain open by the card's own statement.

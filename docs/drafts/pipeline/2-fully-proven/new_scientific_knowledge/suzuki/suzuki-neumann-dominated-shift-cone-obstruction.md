@@ -685,3 +685,210 @@ that is not everywhere defined, i.e. unbounded.  So the instantiation realises a
 restricted resolvent: `B` is the bounded inverse of an unbounded densely defined operator, built
 without ever forming that operator, in line with the coordinate strategy the card records.  All
 three audit to exactly `[propext, Classical.choice, Quot.sound]`.
+
+### `(11)`'s hypotheses are corpus theorems, not external citations
+
+The card records step `(11)` as resting on *"Suzuki's explicit screw function is continuous and
+satisfies `g(0)=0`"*, cited as external mathematics, and the status paragraph calls the
+identification with `g` "the only genuinely open item ... external mathematics cited by the card".
+That is not accurate for the corpus's own object.  `RHTower/SuzukiScrewCompactHullParityLaw.lean`
+already defines the screw function explicitly as
+
+`suzukiScrewFunction mult gamma t = ∑' γ, 2 * mult γ / γ ^ 2 * (1 - cos (γ t))`,
+
+and both properties follow from that definition.  `RHTower/SuzukiScrewKernelRegularity.lean`:
+
+- `suzukiScrewFunction_zero` — vanishing at the origin, termwise from `1 - cos 0 = 0`.
+- `continuous_suzukiScrewFunction` — continuity whenever the weights are summable, via the corpus's
+  own `screwSeries_continuous` (uniform bound `|1 - cos| ≤ 2` against summable weights).
+- `tendsto_suzukiScrewAperture_average_zero` — **`(11)` for the corpus's own screw function**, with
+  both hypotheses discharged rather than assumed.
+- `integral_integral_sq_suzukiScrewKernel_le` — the convolution kernel `g (t - s)` is square
+  integrable on a square of finite side, the Hilbert–Schmidt input for the operator it defines.
+
+All four audit to exactly `[propext, Classical.choice, Quot.sound]`.
+
+What genuinely remains external is narrower than the card states: not the screw function's
+regularity, but the identification of `mult` and `gamma` with the multiplicities and ordinates of
+the actual zero family.
+
+### `(11)` is unconditional for the actual critical ordinates
+
+The narrowed claim in the previous entry — that what stays external is the identification of `mult`
+and `gamma` with the real zero family — is also wrong.  The corpus already carries that family:
+`RHTower/CCMUnitaryPolarSourceAtlas.lean` defines `xiLineScrewWeight q = 1 / γ ^ 2` over
+`xiCriticalOrdinate`, the screw series `xiLineScrewSeries` built from them, and proves
+`summable_xiLineScrewWeight` and `xiLineScrewSeries_continuous` **unconditionally**.
+
+So the specialisation carries no hypotheses at all
+(`RHTower/SuzukiScrewKernelRegularity.lean`):
+
+- `xiLineScrewSeries_zero` — vanishing at the origin.
+- `tendsto_xiLineScrewAperture_average_zero` — **`(11)` for the screw function of the actual
+  critical ordinates**, no hypotheses.
+- `integral_integral_sq_xiLineScrewKernel_le` — its convolution kernel is square integrable on a
+  finite square, again with no hypotheses.
+
+All three audit to exactly `[propext, Classical.choice, Quot.sound]`.
+
+Consequence for the card's status: `(11)` is not a step awaiting an external source at all.  Both
+the general form and the critical-ordinate form are corpus theorems, and the Hilbert–Schmidt
+finiteness of the associated kernel comes with them.
+
+### Theorem C's conclusion, assembled for the actual critical ordinates
+
+The card's "choose `a>0` small enough that `H_g(2a)/(2a) > c_Xi`" was the one step of the
+`(10)`--`(12)` passage with no Lean counterpart.  It is now formal
+(`RHTower/SuzukiScrewKernelRegularity.lean`):
+
+- `exists_aperture_XiC_curvature_lt_xiLineScrewAverage` — since the Xi curvature threshold is
+  strictly negative (`XiC_secondDeriv_div_center_re_neg`) and the screw aperture average tends to
+  zero, some positive aperture has its average strictly above the threshold.  No hypotheses.
+- `exists_aperture_eventually_XiC_curvature_lt_intercept` — **Theorem C's conclusion**: at some
+  positive aperture, every sufficiently negative dyadic shift pair puts the normalized intercept
+  strictly above the Xi curvature threshold, i.e. on the side forbidden by the Herglotz sign.
+
+Both audit to exactly `[propext, Classical.choice, Quot.sound]`.
+
+The single remaining hypothesis of the second theorem is the card's own step `(10)`: that the edge
+jet's limit at `-infinity` is the screw aperture average.  That is the genuine source dependence —
+it relates Suzuki's deficiency vectors to the screw function — and it is carried as a hypothesis in
+the corpus idiom, exactly as `IsResolventFamilyOn` and
+`cofinally_exists_eventually_suzukiDyadicNegativeShiftIntercept_lt` carry theirs.  Every other step
+of Theorem C is now discharged.
+
+### Stated in the corpus's Cesàro vocabulary
+
+The aperture average used above is *definitionally* the corpus's own
+`suzukiScrewCesaroMean` at aperture `2A` — `xiLineScrewAperture_eq_cesaroMean` is `rfl`.  Written
+only in the raw integral form, the new theorems would have been a parallel notion that the existing
+Cesàro and crossing machinery could not see, which is the recurring hazard on these cards.  The
+statements are therefore also recorded in the named vocabulary:
+
+- `tendsto_cesaroMean_xiLineScrewSeries_zero`
+- `exists_aperture_XiC_curvature_lt_cesaroMean`
+- `exists_aperture_eventually_XiC_curvature_lt_intercept_cesaro` — Theorem C's conclusion, with the
+  source hypothesis phrased exactly as in
+  `xiSuzukiScrewCesaroCrossing_selects_dyadicCentralFlux`.
+
+All audit to exactly `[propext, Classical.choice, Quot.sound]`.  The two forms are the same theorem;
+the point is that the Cesàro form composes with
+`suzukiScrewCesaroMean_lt_iff_centeredPrimitive_neg` and
+`cofinallyCrosses_suzukiScrewCesaroMean_iff_centeredPrimitive` without a translation step.
+
+### `(10)` is now a theorem, and the source dependence is atomic
+
+`(8)` was formal only as the `-i` normalization *algebra* (`normalizedEdgeRatio`); the passage
+`(6),(7) => (8) => (10)` — limit of a quotient, then that algebra — was still done by hand on paper.
+It is now a theorem (`HTGeometry/SignedCharFunCentralJet.lean`):
+
+- `tendsto_normalizedEdgeQuotient` — if the physical numerator converges to `i * 2c * H(2a)` and
+  the denominator to `4ac` (the central-jet values of `(7)` and `(6)`), then the Weyl-normalized
+  quotient converges to `H(2a) / (2a)`.  Nonvanishing of `4ac` comes from `a != 0`, `c != 0`.
+
+Axiom audit exactly `[propext, Classical.choice, Quot.sound]`.
+
+Effect on the card's dependency structure: the hypothesis of
+`exists_aperture_eventually_XiC_curvature_lt_intercept_cesaro` was the compound statement `(10)`
+("the edge jet's limit is the screw aperture average").  It now reduces to the two **atomic**
+convergence statements `(6)` and `(7)` — that the normalized resolvent numerator and denominator
+converge to their central-jet values, whose values are already formal
+(`integral_endpointAtomPair`, `deriv_edgePairKernel_zero`).  Those two limits are the whole
+remaining source input for Theorem C; nothing compound is left.
+
+### The card's "bounded `L^2` functional" sentence is now a theorem
+
+The card justifies passing from `(2)` to `(7)` in prose: *"pairing `(3)` with a `C^1` compact test
+integrates the distribution derivative by parts and is a bounded `L^2` functional, so strong
+convergence in `(2)` suffices."*  That step is now formal
+(`RHTower/SuzukiStrongResolventLimit.lean`):
+
+- `tendsto_inner_resolventFamily` — every pairing of the resolvent family against a fixed vector
+  converges to the pairing of the limit.
+- `tendsto_inner_neumannShiftFamily` — the same for the Neumann shift family.
+
+Both audit to exactly `[propext, Classical.choice, Quot.sound]`.
+
+This is the general form of the card's sentence: a bounded functional on a Hilbert space is an inner
+product against a fixed vector, and inner products are jointly continuous, so **no** differentiability
+upgrade of the resolvent family and no norm convergence is needed — strong convergence alone gives
+every pairing.
+
+Status of `(5)` and `(7)`.  Both are formal as identities about the **limiting** object
+(`exponentialEdgePair_transform`, `integral_endpointAtomPair`, `deriv_edgePairKernel_zero`), and the
+transport of convergence to pairings is now formal too.  What is still not formal is the single
+identification that the physical numerator and denominator *are* the pairings of the resolvent
+family against the relevant fixed vectors — i.e. that Suzuki's `W_lambda` and `T_{g,R,lambda}` are
+those inner products.  That is source data about his construction, not analysis: every analytic step
+around it is discharged.
+
+### The whole passage `(2) => (10)` is one theorem
+
+`tendsto_normalizedEdgeQuotient` is now stated over an arbitrary filter, and
+`RHTower/SuzukiStrongResolventLimit.lean` carries the assembly:
+
+- `tendsto_normalizedEdgeQuotient_of_resolventFamily` — if the pairings of the limit vector against
+  the numerator and denominator vectors are the central-jet values `i * 2c * H(2a)` and `4ac`, then
+  the Weyl-normalized quotient of the resolvent family converges to `H(2a) / (2a)`.
+
+Axiom audit exactly `[propext, Classical.choice, Quot.sound]`.
+
+This is the card's passage `(2) => (7),(6) => (8) => (10)` as a single unconditional theorem.  Its
+two remaining hypotheses are **equations between values**, not limits and not analysis:
+
+```text
+inner gnum v = i * 2c * H(2a),      inner gden v = 4ac.
+```
+
+Everything else — the strong resolvent convergence, the transport to pairings, the quotient of
+limits, the `-i` normalization — is discharged.  The only input still owed by the source is that
+Suzuki's physical numerator and denominator are the pairings against `gnum`, `gden`; once those two
+vectors are named, `(10)` follows, and with the earlier entry so does Theorem C.
+
+### The denominator value equation, supplied in integral form
+
+Of the two value equations left by `tendsto_normalizedEdgeQuotient_of_resolventFamily`, the
+denominator one is now discharged as an explicit integral identity
+(`HTGeometry/CompactFourierSineKernel.lean`):
+
+```text
+int_(-a)^a (e^y + e^(-y)) dy + int_(-a)^a y (e^y - e^(-y)) dy = 4 a cosh a.        (6)
+```
+
+`integral_edgeDenominatorSum`, axiom audit exactly `[propext, Classical.choice, Quot.sound]`.
+
+This is `(6)` computed directly on the limiting exponentials, rather than as the derivative of the
+limit transform (`deriv_edgePairKernel_zero`), and the two agree — an independent confirmation of
+the central jet through `(5)`.  Differentiating the edge-pair transform at the origin produces
+exactly this pairing: the `(z-i)` and `(z+i)` prefactors contribute the `∫(e^y + e^(-y))` term and
+the `e^(izy)` factor the `∫ y (e^y - e^(-y))` term.  Both integrals are evaluated from explicit
+primitives, `e^y - e^(-y)` and `(y-1)e^y + (y+1)e^(-y)`.
+
+Remaining: the numerator value equation `inner gnum v = i * 2 cosh a * H(2a)`, which is `(7)` — the
+endpoint-atom pairing, whose value `integral_endpointAtomPair` already carries.  What is owed is
+only the statement that the physical numerator is that pairing.
+
+### The numerator value equation, supplied in integral form
+
+`exponentialSourceCombination_primitive_pairing` (`HTGeometry/SignedCharFunCentralJet.lean`)
+completes the pair.  Pairing the exponential source combination against the reflected primitive
+`y => H (a - y)` gives
+
+```text
+... = 2 cosh a * H (2a),                                                          (7)
+```
+
+the interior terms cancelling and the endpoint atoms at `-a` and `a` contributing `H (2a)` and
+`H 0`, with `H 0 = 0` removing the second.  Axiom audit exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+The two halves existed separately — `exponentialSourceCombination_pairing` for the cancellation and
+`integral_endpointAtomPair` for the atom values — but were never composed with the substitution
+`phi = H (a - .)`, which is what turns them into the numerator value.
+
+**Both value equations of the normalized edge quotient are now integral identities in the corpus**:
+`integral_edgeDenominatorSum` for `4 a cosh a` and this one for `2 cosh a * H (2a)`.  With
+`tendsto_normalizedEdgeQuotient_of_resolventFamily`, the passage `(2) => (10)` is complete except
+for one definitional statement: that Suzuki's physical numerator and denominator are the inner
+products whose values these identities compute.  No analysis, no limit, and no value computation is
+left anywhere in Theorem A's chain.

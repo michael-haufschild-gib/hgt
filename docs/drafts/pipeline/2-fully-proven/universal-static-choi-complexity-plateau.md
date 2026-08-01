@@ -87,6 +87,20 @@ projective-gap premise holds almost surely by
 unconditional almost-sure static-local plateau law once that spectral theorem
 is formally closed.
 
+There is also an infinite-time topological strengthening.  Whenever the
+right-hand side of (3) is strictly below one, there exists a finite
+target-dependent `L` such that
+
+\[
+  \forall a\in\mathbb R\quad\exists t\in[a,a+L]\quad
+  C_\delta(\Phi_H(t))>s.                                \tag{5}
+\]
+
+Thus hard endpoints are syndetic: no interval longer than `L` can consist
+entirely of low-complexity endpoints.  Equation (5) holds for every maximally
+projective spectrum, for all time, without a mixing-rate or randomness
+premise.  It does not quantify `L`.
+
 ## Proof
 
 ### 1. A target ball is contained in one translated coherence target
@@ -157,6 +171,19 @@ circuit balls are global-phase invariant, so their projective Haar mass equals
 their full-torus Haar mass.  A finite union of closed trace-distance balls is
 closed.  The closed-set half of Portmanteau therefore turns (3) into (4).
 
+### 5. Syndetic hard endpoints
+
+If the bound in (3) is below one, the closed low-circuit target cannot fill
+the projective torus, so its complement is nonempty and open.  Projective
+rational independence makes the physical one-parameter phase subgroup dense.
+The translates of any nonempty open target by a dense subgroup cover the
+compact torus; compactness selects finitely many translates.  The diameter of
+their time parameters supplies one finite inclusion length `L`, proving (5).
+
+This is stronger than an average-frequency argument.  A set may have positive
+or even near-unit asymptotic density while retaining arbitrarily long gaps;
+compact minimal rotation forbids those gaps for every nonempty open target.
+
 ## What this closes and what it does not
 
 This theorem closes a robust maximal-complexity **occupation plateau** for the
@@ -166,8 +193,9 @@ It is compatible with an efficient all-time non-Haar locality witness.
 
 It does **not** prove pointwise linear growth from time zero, an exponentially
 late first cut, or a doubly exponential first low-complexity recurrence.
-Those remain O4 and O5 of the master card.  Long-time density alone cannot be
-silently promoted to a first-hitting theorem.
+Equation (5) gives a finite first hard time and bounded gaps, but no useful
+upper bound on `L`; `L` can depend on fine Diophantine properties of the
+spectrum.  Quantitative first hitting remains O4/O5 of the master card.
 
 ## Initial collision audit
 
@@ -181,7 +209,7 @@ silently promoted to a first-hitting theorem.
   randomness.  Novelty here is the eigenbasis-free spectral-torus bound and
   its deterministic static-local completed-time consequence, not that slogan.
 
-Exact-title and mechanism searches found no theorem giving (1)--(4) for every
+Exact-title and mechanism searches found no theorem giving (1)--(5) for every
 eigenbasis and static Hamiltonian with full projective spectral rank.  This is
 an initial clean audit, not the final citation-graph/expert audit.
 
@@ -211,6 +239,19 @@ Completed and compiled in the foreground:
    overlaps, and derives physical relative-frequency independence from maximal
    projective rank.  Its completed-time theorem therefore applies to traceless
    Hamiltonians.
+6. `SyndeticDenseOrbitLaw.lean` proves that every dense real subgroup of every
+   compact topological group hits every nonempty open target in all intervals
+   of one finite length.  `StaticChoiSyndeticComplexityLaw.lean` combines that
+   result with the explicit circuit entropy bound and maximal projective rank
+   to prove (5).  Its headline theorem and the operator-norm cone theorems have
+   been audited with `#print axioms`; they use only `propext`,
+   `Classical.choice`, and `Quot.sound`.
+7. `StaticChoiFullStateProjectionLaw.lean` removes the spectral-subspace target
+   surrogate.  It proves that diagonal--diagonal restriction from the actual
+   `D^2`-dimensional Choi density space is Hilbert--Schmidt contractive and
+   that the evolved full density restricts exactly to `uniformPhaseDensity`.
+   Its headline theorem therefore establishes (5) against arbitrary full
+   circuit-target density matrices, with no dimension or radius loss.
 
 Remaining before stage 3:
 

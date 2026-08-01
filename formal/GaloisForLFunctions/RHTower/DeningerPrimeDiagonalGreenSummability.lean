@@ -226,7 +226,7 @@ theorem norm_deningerCoordinateGreenForm [DecidableEq ι]
     have hinner := (deningerCoordinateGreenForm a ha i e).le_opNorm e
     have houter := (deningerCoordinateGreenForm a ha i).le_opNorm e
     rw [show deningerCoordinateGreenForm a ha i e e = a i by
-      simp [e, deningerCoordinateGreenForm_unit_energy],
+      simp [e],
       Real.norm_eq_abs, abs_of_nonneg (ha i), he, mul_one] at hinner
     rw [he, mul_one] at houter
     exact hinner.trans houter

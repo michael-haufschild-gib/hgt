@@ -5,8 +5,10 @@
 - **Type:** RESEARCH CONTROL / ANTI-REDISCOVERY LEDGER
 - **Terminal objective:** prove RH, disprove RH, or prove a class-complete no-go for Suzuki's
   source-to-operator mechanism.
-- **Current terminal verdict:** Route G is open and narrowed; BV/co-Poisson provider is terminalized.
-  Future advance must prove a new pre-divisor source theorem, not choose another completion.
+- **Current terminal verdict:** Route G is open and narrowed. `SR-51` kills Suzuki's one-angle
+  holomorphic-gauge characteristic-limit subclass, and `SR-50` kills the BV/co-Poisson provider.
+  The pole-compatible two-angle meromorphic Livšic/Hermite--Biehler producer remains Suzuki and is
+  the exact live Route-G core.
 - **Read first:** this file, `suzuki-terminal-frontier-ledger.md`, and every cited failed card.
 
 ## Admission rule
@@ -88,6 +90,7 @@ they are not novel scientific knowledge.
 | `SR-49` | `FORMAL-CLOSURE` / `FAILED-CLASS` | Every finite injective prime packet has simple Euler clock and full-support `SR-47` loss, hence their generated algebra is the full matrix algebra. The actual Toeplitz counterreader is noncyclic on two jet coordinates. Its first symbol coefficient is `-m₄/m₃` and aggregates as a third-moment-weighted barycentre, not as the sum produced by edge-symbol multiplication; literal edges `2→3` and `3→4` witness failure. | Closes Route M's proper cyclic-algebra, infinite-index cyclic, and scalar inner/outer loopholes. Strongest survivor is edge/fibre-marked barycentric aggregation with a noncyclic pointed reader; completed `SR-41` constructs and terminalizes that survivor. | `5-failed/gamma-jacobi-euler-tail-cyclic-reader-no-go.md`; `SimpleClockRankOneAlgebraSaturation.lean`; `GammaJacobiEulerTailCyclicReaderNoGo.lean`; `VonMangoldtCounterreaderBarycentricAggregation.lean`; `GammaJacobiSingularReaderRouteClosure.lean` |
 | `SR-45` | `FORMAL-CLOSURE` | For every contractive geometric phase orbit, both completed light energies have exact sharp interval `R/(1-R^2) <= E_± <= (R+2)/(1-R^2)` and sum `2/(1-R)`. Suzuki's actual Gamma/innovation valuation rays realize this law with `R=p^(-1/2)r_p^4`; both actual light channels are strictly positive at every height and the floor is attained. | Closes local valuation-phase holes only. It does not change `SR-41`, construct restricted-Weil/Robin transfer, reduce critical half-weight, or prove RH. Do not repeat phase-hole or depthwise light-coercivity analysis as terminal research. | `suzuki-valuation-depth-light-coercivity-law.md`; `GeometricPhaseLightCoercivity.lean`; `SuzukiValuationDepthLightCoercivity.lean` |
 | `SR-50` | `ADVANCE` / `FAILED-CLASS` / `FORMAL-CLOSURE` | Canonical sharp compact BV seed is in ordinary co-Poisson `L2` but has exact critical flux `(1/4) log T+o(log T)` and leaves critical carrier. Its logarithmic ideal quotient is zero by dense span; its eta transform fails both property-S parity lattices; every compact multiplicative pole-lattice repair is zero by even/odd moment rigidity. All load-bearing claims are formalized. | Does not rule out arbitrary noncompact completion or prove source sign. Gamma--Gaussian envelope supplies such completion for arbitrary moderate data, proving completion is nonselective. Remaining source-causal dagger positivity is RH-bearing endpoint, not a generic completion debt. | `2-fully-proven/new_scientific_knowledge/suzuki/bv-copoisson-sharp-critical-half-weight-log-flux.md`; `3-formalized/new_scientific_knowledge/bv-copoisson-critical-provider-terminal-closure.md`; five `BVCoPoisson*` Lean modules |
+| `SR-51` | `ADVANCE` / `FAILED-CLASS` / `FORMAL-CLOSURE` | Suzuki's published one-angle limit is impossible after every finite holomorphic exponential normalization: gauged characteristics remain entire with the same real zeros, while compact-open convergence on all of `C` forces an entire target; `z^2 XiC/XiC'` instead has an unconditional genuine nonzero real pole. The theorem quantifies over every source family, aperture, shift, extension angle, and entire exponent gauge. | Does not refute fixed-aperture real-zero characteristics or the two-angle meromorphic quotient. That pole-compatible Livšic/Hermite--Biehler carrier remains Suzuki's live Route-G core. | `5-failed/suzuki-holomorphic-gauge-characteristic-limit.md`; `3-formalized/new_scientific_knowledge/suzuki-holomorphic-gauge-characteristic-limit-no-go.md`; `SuzukiCharacteristicEntireLimitNoGo.lean` |
 
 ## Level lift forced by `SR-35`--`SR-49`: cyclic mechanism retired, `SR-41` terminalized
 
@@ -286,14 +289,14 @@ source summation at safe weight
   -> RH.
 ```
 
-## Current specialization `[TERMINALIZED AS ROUTE-G PROVIDER]`
+## Current provider specialization `[TERMINALIZED SUBCLASS; ROUTE G OPEN]`
 
-`SR-50` supersedes proposed direct compact-provider experiment below. Standard source norm,
+`SR-50` superseded proposed direct compact-provider experiment below. Standard source norm,
 logarithmic quotient, extended-property-S lift of critical eta seed, and every compact
 multiplicative resonance repair are now closed failure classes. Universal noncompact completion is
 also closed as a nonselective mechanism. Historical conjecture is retained for falsifier provenance;
-it is not a live Route-G experiment. Broad `SR-17` survives as source-causal dagger positivity
-inside open Route G; a genuinely new pre-divisor arithmetic theorem may attack it.
+it is not a live Route-G experiment. `SR-51` subsequently retires only Suzuki's one-angle target
+category. Broad `SR-17` and the pole-compatible two-angle producer remain inside open Route G.
 
 `CRITICAL-HALF-WEIGHT-COPOISSON-UNITARIZATION` is a concrete specialization of `SR-17`, not new
 scientific knowledge:
@@ -545,5 +548,14 @@ Before claiming progress, record all answers:
   eta resonance, and compact-seed moment rigidity are proved and formalized. Primary-literature and
   corpus audits found no prior exact combined statement; novelty remains provisional. Universal
   Gamma--Gaussian property-S envelope supplies noncompact repair for arbitrary moderate data, so
-  completion existence cannot select RH. Provider family is terminalized; Route G remains open at
-  source-generated coefficient/chord/Pick-Ward positivity, explicitly not claimed proved.
+  completion existence cannot select RH. At this historical checkpoint provider family was
+  terminalized while Route G remained open at source-generated coefficient/chord/Pick-Ward
+  positivity. `SR-51` later closes the one-angle subclass without changing this open route status.
+- **2026-08-01 — holomorphic-gauge target-category closure (`SR-51`).** Primary-source audit fixes
+  Suzuki's Corollary 1.6 as ordinary compact-open convergence on `C` of one holomorphically
+  exponential-gauged entire real-zero characteristic to `z^2 XiC/XiC'`. Weierstrass closure and
+  gauge nonvanishing reduce every such normalization to the already impossible entire-limit wall;
+  consecutive positive Xi zeros and Rolle force a genuine nonzero real target pole. Paper proof and
+  unconditional Lean theorem `not_suzukiHolomorphicGaugeCharacteristicLimitWall` close the entire
+  published one-angle analytic class without RH or computation. Route G remains open because its
+  strongest positive survivor is the two-angle meromorphic Livšic/Hermite--Biehler producer.

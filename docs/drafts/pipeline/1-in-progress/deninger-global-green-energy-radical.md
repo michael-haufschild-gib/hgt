@@ -132,6 +132,44 @@ problem; the summed coordinate energy is nonnegative and has zero radical. They 
 the actual mixed restricted arithmetic source decomposes as this
 orthogonal model or that cross-prime Milnor/cup incidence preserves its maximum-tail estimate.
 
+`DeningerGreenFormPullbackTransport` sharpens that remaining comparison. Any bounded linear map
+\(U:E\to\ell^2(\mathbb P)\) pulls the already-summable local family back to an operator-norm
+summable family on \(E\); pullback commutes with the unordered sum. The transported energy is
+nonnegative and its radical is exactly \(\ker U\). Therefore cross-prime incidence need not satisfy
+a second termwise maximum-tail proof. The exact arithmetic target is now a bounded comparison map
+whose kernel is the closed middle-boundary subspace. Constructing such a map remains the
+conservative full-Cauchy boundary-classification problem, not functional-analysis bookkeeping.
+
+There is also a formal obstruction to using only this scalar comparison. Packet averaging is a
+bounded functional, and its pulled-back positive Green energy is exactly `Av_p(f)^2`; its radical
+is the entire mean-zero packet subspace. A clopen packet piece of intermediate mass gives an
+explicit nonzero zero-energy vector. Since the one-prime coefficient calculation retains these
+mean-zero modes in middle degree, one scalar coordinate per prime is not a faithful Route L source
+map. The comparison must include packet Fourier/transverse coordinates, or the arithmetic boundary
+classification must prove those modes exact.
+
+The full-fibre repair is now formalized. Give each prime an arbitrary complete real Hilbert packet
+fibre \(K_p\). Identity-on-fibre block Green forms weighted by \((\log p)^{-2}\) retain every
+mean-zero/Fourier mode, satisfy the same finite maximum-tail estimate, and sum in operator norm on
+\(\ell^2(\mathbb P;K_p)\); the summed energy has zero radical. A source family
+\(r_p:E\to K_p\) assembles to a bounded comparison exactly under a global Bessel estimate. The
+pulled-back energy then obeys
+\[
+ G_E(x,x)=\sum_p(\log p)^{-2}\|r_p x\|^2,
+ \qquad
+ \operatorname{rad}G_E=\bigcap_p\ker r_p.
+\]
+Thus prime-sector `(4)` is reduced to two source statements with no hidden functional analysis:
+the Bessel estimate and \(\bigcap_p\ker r_p=B^1_{\mathrm{arith}}\). Generic and real packets must
+either be added as further Hilbert blocks with their own Bessel estimates or handled by a separate
+summable finite-sector form.
+
+For the already constructed quotient packet, the fibre is now fixed canonically as normalized
+Haar \(L^2(U_p/\overline{\langle p\rangle},\mathbb R)\). The full-block summability and
+zero-radical theorems specialize unconditionally to these fibres. This removes freedom to choose a
+divisor-adapted target metric. It still does not construct arithmetic full-Cauchy restriction maps
+into Haar \(L^2\), prove their Bessel estimate, or classify their simultaneous kernel.
+
 Cauchy restriction descent is also abstractly complete.  If each
 full Cauchy restriction carries global boundaries to local
 boundaries, it descends to quotient cohomology.  The single remaining
@@ -184,10 +222,10 @@ energy.
 1. Prove `(4)` on every defining Banach disk of the actual mixed restricted
    \(L^1/L^2\) nuclear topology. Quantitative graph-disk escape and the full
    maximum-tail estimate with exact \((\log p)^{-2}\) local norms are proved on the orthogonal
-   prime coordinate model. Remaining work is arithmetic: identify the relevant source disk with
-   that model or prove a comparison carrying all residue, corestriction, Milnor, and cup cross
-   terms into a decomposition with the same maximum-tail bound. Then extend the estimate across
-   generic and real sectors.
+   full-packet block model. Bessel assembly proves it is enough to construct the local full-packet
+   restrictions and establish their square-sum bound on each relevant source disk. The comparison
+   kernel is automatically their simultaneous kernel. Remaining work is the arithmetic Bessel
+   estimate and compatibility with residue, corestriction, Milnor, cup, generic, and real sectors.
 2. Prove the full Cauchy restriction maps commute with every
    Rost--Schmid differential, Milnor attaching map,
    residue/corestriction, and real orientation descent.  This gives
@@ -273,3 +311,13 @@ energy.
   \((\log p)^{-2}\), finite maximum-tail control, unordered operator-norm convergence, and a
   continuous faithful summed form with zero radical. Also proved the complementary unit-Green graph cost lower bound
   \((\log p)^2\to\infty\). Actual source-disk and cross-sector comparison remain open.
+- 2026-08-01 — Formalized bounded pullback transport. Any source-to-prime comparison inherits
+  unordered form summability, and transported global Green radical is exactly comparison kernel.
+  This reduces prime-sector radical classification to constructing the arithmetic comparison with
+  kernel equal to closed middle boundaries.
+- 2026-08-01 — Formalized scalar-residue insufficiency: bounded packet-average Green energy has
+  radical exactly the mean-zero packet subspace, with an explicit nonzero witness. Therefore a
+  faithful source comparison must retain nonconstant packet modes or prove them boundaries.
+- 2026-08-01 — Formalized the full-Hilbert-packet repair and Bessel restriction assembly. Prime
+  Green summability and radical classification now reduce exactly to a source Bessel inequality
+  and simultaneous-local-kernel boundary theorem.

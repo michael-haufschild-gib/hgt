@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.UpperEndDifferentialField
 import GaloisForLFunctions.HTGeometry.DifferentialIndependence
+import GaloisForLFunctions.HTGeometry.UpperEndDigammaShift
 
 /-!
 # Jets of a germ are germs of jets
@@ -70,5 +71,52 @@ theorem upperEndAnalyticDeriv_iterate_repr (n : ℕ) (a : upperEndAnalyticSubrin
     ((upperEndAnalyticDeriv^[n] a : upperEndAnalyticSubring) : Germ upperEndFilter ℂ)
       = (iteratedDeriv n f : Germ upperEndFilter ℂ) := by
   rw [upperEndAnalyticDeriv_iterate_coe, hf, upperEndGermDeriv_iterate_coe]
+
+/-- **The digamma jets of the carrier are the analytic digamma jets.**  The `n`-th jet of the
+digamma element is the image of the `n`-th iterated analytic derivative. -/
+theorem digammaJetMero_eq_algebraMap (n : ℕ) :
+    letI := isDomain_upperEndAnalyticSubring
+    letI := upperEndMeroFieldDifferential
+    digammaJetMero n = algebraMap upperEndAnalyticSubring upperEndMeroField
+      (upperEndAnalyticDeriv^[n] digammaAnalytic) := by
+  letI := isDomain_upperEndAnalyticSubring
+  letI := upperEndMeroFieldDifferential
+  rw [digammaJetMero, digammaMero, differentialJet_algebraMap]
+
+/-- The carrier's digamma representative is the logarithmic derivative of `Γ`, i.e. mathlib's
+`Complex.digamma`. -/
+theorem digammaFun_eq : digammaFun = Complex.digamma := by
+  funext z
+  rw [Complex.digamma_def, logDeriv_apply]
+  rfl
+
+/-- The digamma element of the analytic subring is the germ of `Complex.digamma`. -/
+theorem digammaAnalytic_coe :
+    ((digammaAnalytic : upperEndAnalyticSubring) : Germ upperEndFilter ℂ)
+      = (Complex.digamma : Germ upperEndFilter ℂ) := by
+  rw [← digammaFun_eq]
+  rfl
+
+/-- The analytic jets of the digamma element are the germs of the polygammas. -/
+theorem digammaJet_analytic_coe (n : ℕ) :
+    ((upperEndAnalyticDeriv^[n] digammaAnalytic : upperEndAnalyticSubring) : Germ upperEndFilter ℂ)
+      = (iteratedDeriv n Complex.digamma : Germ upperEndFilter ℂ) :=
+  upperEndAnalyticDeriv_iterate_repr n digammaAnalytic Complex.digamma digammaAnalytic_coe
+
+/-- **Every jet of the field's digamma element is a germ of a polygamma.**  The `n`-th abstract jet
+`Differential.deriv^[n] ψ` is the image of an analytic germ represented by `iteratedDeriv n` of
+`Complex.digamma`: the differential-algebraic generators of the digamma field are exactly the
+analytic objects the residue estimates are stated for. -/
+theorem digammaJetMero_germ (n : ℕ) :
+    letI := isDomain_upperEndAnalyticSubring
+    letI := upperEndMeroFieldDifferential
+    ∃ a : upperEndAnalyticSubring,
+      digammaJetMero n = algebraMap upperEndAnalyticSubring upperEndMeroField a
+        ∧ ((a : upperEndAnalyticSubring) : Germ upperEndFilter ℂ)
+            = (iteratedDeriv n Complex.digamma : Germ upperEndFilter ℂ) := by
+  letI := isDomain_upperEndAnalyticSubring
+  letI := upperEndMeroFieldDifferential
+  exact ⟨upperEndAnalyticDeriv^[n] digammaAnalytic, digammaJetMero_eq_algebraMap n,
+    digammaJet_analytic_coe n⟩
 
 end GaloisForLFunctions.HTGeometry

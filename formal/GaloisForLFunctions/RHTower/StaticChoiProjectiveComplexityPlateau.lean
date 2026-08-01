@@ -229,7 +229,14 @@ theorem maximallyProjectiveEnergy_zeroProjectiveFrequency_independent
       (energy 0 - energy i.succ)) = 0 at hdetuning
     simp_rw [mul_sub] at hdetuning
     rw [Finset.sum_sub_distrib, ← Finset.sum_mul] at hdetuning
-    linarith
+    calc
+      (∑ i, (n i : ℝ)) * energy 0 +
+          ∑ i, -(n i : ℝ) * energy i.succ =
+          (∑ i, (n i : ℝ)) * energy 0 -
+            ∑ i, (n i : ℝ) * energy i.succ := by
+              simp only [neg_mul, Finset.sum_neg_distrib]
+              rfl
+      _ = 0 := hdetuning
   have hk := hmax k hbalanced henergy
   funext i
   have hi := congrFun hk i.succ
@@ -306,17 +313,25 @@ theorem volume_zeroAnchoredPaddedCircuitTarget_eq_full
         _ = _ := uniformPhaseDensity_add_common _ _ _
     constructor
     · intro hx
-      rw [B, zeroAnchoredPaddedCircuitTarget, Set.mem_iUnion] at hx
+      change (zeroRelativePhaseEquiv d x).2 ∈
+        zeroAnchoredPaddedCircuitTarget d s target δ at hx
+      rw [zeroAnchoredPaddedCircuitTarget, Set.mem_iUnion] at hx
       obtain ⟨w, hw⟩ := hx
-      rw [A, Set.mem_iUnion]
+      change x ∈ ⋃ w, torusMetricBallTarget
+        (uniformPhaseDensity (d + 1)) (target w) δ
+      rw [Set.mem_iUnion]
       refine ⟨w, ?_⟩
       change dist (uniformPhaseDensity (d + 1) x) (target w) ≤ δ
       rw [hdensity]
       exact hw
     · intro hx
-      rw [A, Set.mem_iUnion] at hx
+      change x ∈ ⋃ w, torusMetricBallTarget
+        (uniformPhaseDensity (d + 1)) (target w) δ at hx
+      rw [Set.mem_iUnion] at hx
       obtain ⟨w, hw⟩ := hx
-      rw [B, zeroAnchoredPaddedCircuitTarget, Set.mem_iUnion]
+      change (zeroRelativePhaseEquiv d x).2 ∈
+        zeroAnchoredPaddedCircuitTarget d s target δ
+      rw [zeroAnchoredPaddedCircuitTarget, Set.mem_iUnion]
       refine ⟨w, ?_⟩
       change dist
         (uniformPhaseDensity (d + 1)

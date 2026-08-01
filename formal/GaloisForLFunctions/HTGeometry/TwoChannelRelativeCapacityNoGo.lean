@@ -18,6 +18,8 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+open scoped BigOperators
+
 /-- A scalarization of a symmetric two-channel Gram on aggregate good and bad masses. -/
 def twoChannelLinearCurrent
     (goodWeight mixedWeight badWeight good bad : ℝ) : ℝ :=
@@ -166,6 +168,145 @@ theorem pairwiseNonnegativeKernel_cross_eq_zero_of_symmetric_of_diagonal_eq_zero
   intro j hj
   exact pairwiseNonnegativeKernel_row_eq_zero_of_symmetric_of_diagonal_eq_zero
     hnonneg hsymmetric (hdiag j hj)
+
+/-! ## Diagonal-null off-diagonal current -/
+
+/-- Quadratic kernel energy with every self-current deleted.  This form need not be positive on the
+ambient vector space, but it is nonnegative on the nonnegative cone when the off-diagonal kernel is
+pointwise nonnegative. -/
+def finsetOffDiagonalKernelEnergy {ι : Type*} [DecidableEq ι]
+    (s : Finset ι) (kernel : ι → ι → ℝ) (mass : ι → ℝ) : ℝ :=
+  ∑ i ∈ s, ∑ j ∈ s,
+    if i = j then 0 else mass i * kernel i j * mass j
+
+/-- With unit off-diagonal coupling, the diagonal-null current is exactly total mass squared minus
+the diagonal square mass. -/
+theorem finsetOffDiagonalKernelEnergy_one {ι : Type*} [DecidableEq ι]
+    (s : Finset ι) (mass : ι → ℝ) :
+    finsetOffDiagonalKernelEnergy s (fun _ _ => 1) mass =
+      (∑ i ∈ s, mass i) ^ 2 - ∑ i ∈ s, mass i ^ 2 := by
+  classical
+  rw [finsetOffDiagonalKernelEnergy]
+  calc
+    (∑ i ∈ s, ∑ j ∈ s, if i = j then 0 else mass i * 1 * mass j) =
+        ∑ i ∈ s, ((∑ j ∈ s, mass i * mass j) - mass i ^ 2) := by
+      apply Finset.sum_congr rfl
+      intro i hi
+      calc
+        (∑ j ∈ s, if i = j then 0 else mass i * 1 * mass j) =
+            ∑ j ∈ s,
+              (mass i * mass j - if i = j then mass i * mass j else 0) := by
+          apply Finset.sum_congr rfl
+          intro j _hj
+          split_ifs
+          · ring
+          · ring
+        _ = (∑ j ∈ s, mass i * mass j) -
+            ∑ j ∈ s, (if i = j then mass i * mass j else 0) := by
+          rw [Finset.sum_sub_distrib]
+        _ = (∑ j ∈ s, mass i * mass j) - mass i ^ 2 := by
+          rw [Finset.sum_ite_eq]
+          simp only [hi, if_true]
+          ring
+    _ = (∑ i ∈ s, mass i) ^ 2 - ∑ i ∈ s, mass i ^ 2 := by
+      rw [Finset.sum_sub_distrib, ← Finset.sum_mul_sum]
+      ring
+
+/-- Constant off-diagonal coupling scales the exact pair-mass identity. -/
+theorem finsetOffDiagonalKernelEnergy_const {ι : Type*} [DecidableEq ι]
+    (s : Finset ι) (kappa : ℝ) (mass : ι → ℝ) :
+    finsetOffDiagonalKernelEnergy s (fun _ _ => kappa) mass =
+      kappa * ((∑ i ∈ s, mass i) ^ 2 - ∑ i ∈ s, mass i ^ 2) := by
+  classical
+  calc
+    finsetOffDiagonalKernelEnergy s (fun _ _ => kappa) mass =
+        kappa * finsetOffDiagonalKernelEnergy s (fun _ _ => 1) mass := by
+      rw [finsetOffDiagonalKernelEnergy, finsetOffDiagonalKernelEnergy, Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro i _hi
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro j _hj
+      split_ifs
+      · ring
+      · ring
+    _ = kappa * ((∑ i ∈ s, mass i) ^ 2 - ∑ i ∈ s, mass i ^ 2) := by
+      rw [finsetOffDiagonalKernelEnergy_one]
+
+/-- A pointwise off-diagonal kernel floor controls the whole diagonal-null current by the exact
+ordered pair mass. -/
+theorem kappa_mul_pairMass_le_finsetOffDiagonalKernelEnergy
+    {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    (kernel : ι → ι → ℝ) (mass : ι → ℝ) {kappa : ℝ}
+    (hmass : ∀ i ∈ s, 0 ≤ mass i)
+    (hkernel : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → kappa ≤ kernel i j) :
+    kappa * ((∑ i ∈ s, mass i) ^ 2 - ∑ i ∈ s, mass i ^ 2) ≤
+      finsetOffDiagonalKernelEnergy s kernel mass := by
+  rw [← finsetOffDiagonalKernelEnergy_const]
+  apply Finset.sum_le_sum
+  intro i hi
+  apply Finset.sum_le_sum
+  intro j hj
+  split_ifs with hij
+  · exact le_rfl
+  · calc
+      mass i * kappa * mass j = mass i * (kappa * mass j) := by ring
+      _ ≤ mass i * (kernel i j * mass j) :=
+        mul_le_mul_of_nonneg_left
+          (mul_le_mul_of_nonneg_right (hkernel i hi j hj hij) (hmass j hj))
+          (hmass i hi)
+      _ = mass i * kernel i j * mass j := by ring
+
+/-- Pointwise nonnegative off-diagonal coupling is copositive: its diagonal-null energy is
+nonnegative on every nonnegative mass packet, even though a nonzero cross term makes the ambient
+quadratic form indefinite. -/
+theorem finsetOffDiagonalKernelEnergy_nonneg
+    {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    (kernel : ι → ι → ℝ) (mass : ι → ℝ)
+    (hmass : ∀ i ∈ s, 0 ≤ mass i)
+    (hkernel : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → 0 ≤ kernel i j) :
+    0 ≤ finsetOffDiagonalKernelEnergy s kernel mass := by
+  simpa using
+    (kappa_mul_pairMass_le_finsetOffDiagonalKernelEnergy
+      s kernel mass hmass hkernel :
+        0 * ((∑ i ∈ s, mass i) ^ 2 - ∑ i ∈ s, mass i ^ 2) ≤
+          finsetOffDiagonalKernelEnergy s kernel mass)
+
+/-- An antisymmetric exterior current has identically zero scalar quadratic energy.  It can retain
+orientation as a two-form, but symmetric mass scalarization cannot turn it into capacity. -/
+theorem finsetOffDiagonalKernelEnergy_eq_zero_of_antisymmetric
+    {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    (kernel : ι → ι → ℝ) (mass : ι → ℝ)
+    (hantisymmetric : ∀ i j, kernel j i = -kernel i j) :
+    finsetOffDiagonalKernelEnergy s kernel mass = 0 := by
+  classical
+  let term := fun i j : ι =>
+    if i = j then 0 else mass i * kernel i j * mass j
+  have hswap : ∀ i j, term j i = -term i j := by
+    intro i j
+    dsimp only [term]
+    by_cases hij : i = j
+    · subst j
+      simp
+    · have hji : j ≠ i := Ne.symm hij
+      rw [if_neg hji, if_neg hij, hantisymmetric]
+      ring
+  rw [finsetOffDiagonalKernelEnergy]
+  change ∑ i ∈ s, ∑ j ∈ s, term i j = 0
+  have hneg : (∑ i ∈ s, ∑ j ∈ s, term i j) =
+      -(∑ i ∈ s, ∑ j ∈ s, term i j) := by
+    calc
+      (∑ i ∈ s, ∑ j ∈ s, term i j) =
+          ∑ j ∈ s, ∑ i ∈ s, term i j := Finset.sum_comm
+      _ = ∑ j ∈ s, ∑ i ∈ s, -term j i := by
+        apply Finset.sum_congr rfl
+        intro j _hj
+        apply Finset.sum_congr rfl
+        intro i _hi
+        rw [← hswap]
+      _ = -(∑ j ∈ s, ∑ i ∈ s, term j i) := by simp
+      _ = -(∑ i ∈ s, ∑ j ∈ s, term i j) := by rw [Finset.sum_comm]
+  linarith
 
 /-- Squared correlation carried by one normalized-kernel anchor coefficient. -/
 def oneNodeAnchorSquare (anchorCoefficient mass : ℝ) : ℝ :=

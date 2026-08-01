@@ -401,7 +401,7 @@ source-defined principal-relative current with counterterm and orientation befor
 good/bad projection survives; located literature supplies no such construction. Because no other
 named route owns it, Route J remains open at that hard source theorem.
 
-### Route K — quadratic spectral realization `[RETIRED]`
+### Route K — quadratic spectral realization `[OPEN — PRIME-CYCLE TRACE-CLASS RELOCATION]`
 
 **Local contribution beyond located literature.** The exact quadratic-parameter RH connector and
 its strip/real-zero reduction are typed.  The weight-one Clifford bulk closes to the free square,
@@ -417,9 +417,28 @@ operators or reviews, not a closed self-adjoint realization with Xi spectrum inc
 **Completed Lean action.** `HedenmalmSourceHilbertGramClosedGraphNoGo` formalizes the nonclosable
 partial-operator theorem and its singular real-divisor survivor.
 `XiThetaBoundaryCarrierNoGo` formalizes the dense-completion reporter collapse and its nonzero
-escape trichotomy.  The full-source regular mechanism is retired.  Finite divisor-span or singular
-boundary relations survive only with a source-selection/conservativity theorem that is already
-RH-bearing; no external source supplies it.
+escape trichotomy.  The full-source regular Clifford mechanism is retired, not Route K as a whole.
+The singular Hedenmalm relation maps to Route C1.  The unmatched pivot is the source-defined
+trace-class relocation of the marked-prime Riemann--von Mangoldt skeleton.  Diagonal and forest
+corrections are determinant-blind up to switching gauge; the new unconditional finite-graph theorem
+proves every closed-walk-flat sign field is a determinant gauge.  Three-prime laws then show cycle
+holonomy survives centered reflection first at quartic trace order, with exact coefficient
+`32(q_0+q_1+q_2)x_01x_12x_20`.  `XiPrimeMarkedCycleRelocation` and
+`XiPrimeMarkedCycleGauge` formalize the determinant, switching, and cumulant laws.  Existing
+centered reciprocal-Laurent parity/source universality already supplies all scalar even trace
+targets from the completed prime--Gamma germ; missing step is their operatorial finite-packet lift,
+not coefficient discovery.  The completed unit--double prime-ratio response now supplies a literal
+packet-independent symmetric edge kernel and source triangle holonomies.  Exact Lean shell laws
+show its forced finite balanced diagonal drifts by the new response column under packet insertion,
+so naive balancing is not a cofinal compression system.  `XiPrimeMarkedUnitDoubleCycleCandidate`
+formalizes source-cycle instantiation and this trace-ideal obstruction.
+
+**External boundary after pivot audit.** Hedenmalm's theta pair-form framework, Suzuki's canonical
+systems and screw-function criteria, and Connes--Consani--Moscovici's prolate construction do not
+construct this marked-prime trace-class relocation.  General perturbation-determinant theory gives
+language, not source entries, trace-norm convergence, or the Xi identity.  Route K therefore stays
+open at source renormalization/nuclear control of the selected prime-ratio kernel, cofinal cycle
+nonvanishing, and its all-moment/Xi incidence; no located external source supplies these theorems.
 
 ### Route L — Deninger/Hodge/cohomological realization
 
@@ -455,9 +474,11 @@ partition-of-unity average splits every real-valued continuous Čech one-cocycle
 cover. Pointwise real-valued cochains now have an explicit contracting homotopy in every positive
 degree, but preservation of coverwise continuity and an actual arithmetic sheaf is not proved.
 Every locally constant function on the profinite factor is constant on a finite clopen partition;
-module-valued functions consequently have an exact finite clopen-indicator expansion. No filtered
-topological limit or arithmetic finite quotient is identified. Missing are the identification with prime-to-`p` root-of-unity
-automorphisms, quotient by the closure of `p`, Frobenius-triviality, period `log p`, and the
+module-valued functions consequently have an exact finite clopen-indicator expansion. The
+root-of-unity comparison is now exact at every finite cyclotomic stage:
+`Aut(μ_n) ≅ (ZMod n)ˣ`, Frobenius is the `p`-power automorphism, and the constructed diagonal
+`ℓ`-adic unit reduces to `p mod ℓ^k` at every level. Missing is the coherent profinite inverse-limit
+homeomorphism with the pointwise automorphism group of all prime-to-`p` roots of unity and its
 comparison with Deninger's actual prime fibre. Abstract torsion-symbol realification also does not
 instantiate Milnor K-theory. No theorem identifies these models with the separately defined affine
 leaf or arithmetic relevant complex.

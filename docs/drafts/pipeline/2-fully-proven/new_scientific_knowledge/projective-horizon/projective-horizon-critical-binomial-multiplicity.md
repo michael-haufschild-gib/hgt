@@ -455,3 +455,95 @@ show how an Euler marking resolves or orients the binomial critical fiber.
   not merely equinumerous, they are the same set read in the other order.
 
   What remains for `(2)` at a general observation is the count itself.
+
+- 2026-08-01 — **The fibre definition is corrected, and a fibre point is shown to be a
+  factorization.**  `formal/GaloisForLFunctions/HTGeometry/TruncatedCompatibilityFibre.lean` and
+  `MonomialTailFibreEquiv.lean`, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  The `criticalFibre` introduced in the previous entry omitted the degree conditions on the two
+  unknown low parts, so it was not the fibre: without `deg A < m` and `deg B < n` the unknowns are
+  not the `m + n` coefficients the observation leaves free.  It now carries them, and
+  `criticalFibreSwap` is restated as a bijection
+
+  ```text
+  criticalFibre K m n U V  ≃  criticalFibre K n m V U,
+  ```
+
+  exchanging the two depths together with the two tails.  The depth symmetry is unaffected — the
+  compatibility equation is still literally the same one — but the objects it relates are now the
+  right ones.
+
+  `criticalFibre_mul_eq` — at a monomial-tail observation a point of the fibre satisfies the **exact**
+  factorization
+
+  ```text
+  (A + c X^m) (B + d X^n) = 1 + c d X^(m+n),
+  ```
+
+  assembling the degree bound, the vanishing of the truncation, and the factorization identity.  So a
+  fibre point *is* a factorization of the target into factors of the two depths, which is the
+  statement the divisor count of the earlier entries was waiting for.
+
+  What remains to identify the fibre with the divisor set is the converse — that every monic divisor
+  of degree `m` arises from exactly one fibre point — which is a degree and leading-coefficient
+  computation on the cofactor, and then `(2)` for the monomial-tail family is a statement about the
+  fibre itself rather than about divisors.
+
+- 2026-08-01 — **`(2)` proved for the monomial-tail family, at the level of the fibre.**
+  `formal/GaloisForLFunctions/HTGeometry/MonomialTailFibreEquiv.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  Nat.card (criticalFibre K m n (c X^m) (d X^n)) = criticalHorizonMultiplicity m n
+  ```
+
+  `nat_card_criticalFibre_monomialTail`, for all nonzero `c` and `d` and all positive depths.  This
+  is the card's degree statement itself for this family — not a count of divisors with the
+  identification asserted, but a count of the solution set of the observation's compatibility
+  equation.
+
+  `fibreToDivisor` sends a fibre point to `c⁻¹ (A + c X^m)`, monic of degree `m` and dividing the
+  target, and `fibreToDivisor_bijective` proves it a bijection onto the monic divisors of degree `m`.
+  Injectivity is where the earlier work pays: the jet parts agree by cancelling the unit constant,
+  and the reciprocal parts then agree by `criticalLowProduct_right_unique`, whose hypothesis
+  `A(0) ≠ 0` comes free from `coeff_zero_add_ne_zero_of_dvd`.  Surjectivity is the cofactor
+  computation: from `M ∣ P` the cofactor has degree `L - m = n` and leading coefficient `c d`, so
+  `c⁻¹` times it has leading coefficient `d`, and subtracting the two monomials leaves parts of the
+  required degrees.
+
+  Combined with `nat_card_monic_divisors_monomialTail` the count is `choose(m+n, m)`.  So for
+  monomial tails the whole chain — observation, truncated compatibility, exact factorization, divisor
+  set, subset count — is Lean, with no intersection theory at any step.
+
+  Unchanged: an observation with a longer tail, where the truncation is not vacuous.
+
+- 2026-08-01 — **Squareness for every observation, and the chain audited.**
+  `formal/GaloisForLFunctions/HTGeometry/TruncatedCompatibilityFibre.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `criticalFibre_fst_injective` — for **every** observation whose tails vanish at the origin, the map
+  sending a fibre point to the jet's low part is injective.  So the fibre embeds in the `m` free jet
+  coefficients, against the `m` conditions the observed reciprocal tail imposes, with no restriction
+  on the tail lengths.  The two ingredients are the ones proved earlier: compatibility forces the jet
+  to be invertible at the origin, and the reciprocal low part is then determined.
+
+  Audit.  `lake build GaloisForLFunctions.HTGeometry` completes, `12778` jobs, with every module of
+  this chain wired into the umbrella:
+
+  ```text
+  SplitFactorizationSubsets, SeparableSplitDivisorCount, GenericSplitFibreCount,
+  PureCriticalFactorizationCount, MonomialTailFibreCount, TruncatedCompatibilityFibre,
+  MonomialTailFibreEquiv.
+  ```
+
+  All depend only on `propext`, `Classical.choice`, `Quot.sound`.  The remaining lint errors name
+  modules owned by other work (`RHTower.DeningerPrimeBlockGreenSummability`,
+  `HTGeometry.SyndeticDenseOrbitLaw`) and the generated indexes, which go stale under concurrent
+  edits.
+
+  State of `(2)` on this card.  Proved in Lean: the count for the pure critical target, for every
+  separable split target, for the generic target with genericity realised as independent
+  indeterminate roots, and — as a statement about the fibre of the observation map itself — for every
+  monomial-tail observation.  Proved for every observation: the compatibility equation's exact
+  factorization form modulo the horizon, the depth symmetry, and squareness.  Not proved: the count
+  for an observation with a longer tail, where the truncation is not vacuous.

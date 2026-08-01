@@ -1,562 +1,138 @@
 # Antagonist referee report
 
-Manuscript: **The source-completion law for the Riemann divisor:
-Bifiltered pointing, singular common-test reconstruction, and
-ramified-character descent**
+Manuscript: **The Euler primitive--fibre law: A singular source boundary for Riemann's explicit formula**
 
-Standard: hostile referee at a renowned broad mathematics or mathematical
-physics journal. Nature/Science-level significance is assessed separately
-because it is a substantially higher editorial threshold.
+Standard: hostile reviewer at a renowned general mathematics/science journal.
 
 Date: 2026-08-01.
 
 ## Recommendation
 
-**Mathematical verdict:** provisional pass after one publication-critical
-notation defect was corrected. Manuscript had written
-\(\Re(1/[\rho(1-\bar\rho)])\), which is negative at high critical-line zeros;
-proof and exact source theorem require \(\Re(1/[\rho(1-\rho)])\). This confirms
-independent line-by-line checking remains necessary.
-
-**Broad-journal verdict:** major revision, not acceptance. Manuscript now
-contains a genuine organizing theorem rather than chain of RH equivalents,
-but 55-page omnibus form obscures strongest contribution. External specialist
-must decide priority and whether universal conjunction is deep enough when
-several separating witnesses are elementary.
-
-**Nature/Science verdict:** fail. Manuscript neither proves RH, produces
-competitive zero-free region, nor closes Hilbert--Pólya or Connes--Consani.
-Calling it flagship resolution would be false.
-
-## Strongest defensible theorem
-
-Manuscript proves one strict positive-observability hierarchy.
-
-1. Positive source marking is genuine lift data: signed prime-shift
-   differential field identifies dense projective-tail fibres, while positive
-   definiteness selects literal all-positive Euler source.
-2. Every finite Xi source metric in audited construction realizes same rooted
-   collision matroid; adjoining complete scalar valuation field adds no
-   incidence information. Stronger: actual completed (+2) Xi logarithmic
-   current remains hypertranscendental over that entire valuation field.
-   Positive carrier faithfulness still need not see logarithmic current. More generally, a bounded response on any finite
-   source-sign cube has at most \(B^2/\eta^2\) Walsh modes visible at
-   resolution \(\eta\), independent of cube dimension.
-3. Critical clock is divisor-blind in strongest explicit sense. For every
-   \(1/2<\vartheta<1\), \(a>0\), one-atom nonnegative Mellin source has unit
-   simple pole and same exponential clock but zeros at
-   \(\vartheta\pm ia\), with Schwarz-pair Cauchy energy \(>8\).
-4. Actual Xi endpoint source nevertheless gives unconditional global law
-   \[
-   0\le\mathcal E_\perp
-   \le4\left(\frac{C_\perp}{4-C_\perp}\right)^3
-   <\frac1{150000},
-   \]
-   with \(C_\perp=0\iff\mathcal E_\perp=0\iff\mathrm{RH}\).
-5. Every hypothetical off-line atom admits real affine polynomial with zero
-   diagonal Hilbert response and positive transverse charge. Thus no finite
-   atomwise domination constant exists, even atom-dependent; orbitwise
-   diagonal domination is equivalent to RH.
-6. Physical-line reflection positivity need not possess finite positive
-   separated-cylinder lift.
-7. One shared rank-one resolvent test does detect every off-axis zero through
-   negative diagonal Weil value.
-8. Every finite Deninger prime--Gamma source cup is exactly a Xi--Weil
-   polarization. Every square-summable Weil test is a Hilbert limit of finite
-   separated continued-source packets whose explicit source energies converge
-   to its quadratic value. One target-selected packet sequence converges to
-   canonical orientation vector with energy limit \(-\mathcal E_H\).
-9. The complete source moment tower admits a positive representing measure
-   if and only if RH holds. In the compact Thorin-type subclass, any witness
-   is unique and equals the canonical multiplicity-exact Xi atomic carrier.
-   Thus the positive branch is neither an unspecified ambient space nor a
-   tunable producer.
-10. Hedenmalm reflection folds into one nonzero two-component source system
-   with sole affine defect \(i\Xi\). Exact Gamma/co-Poisson interval reflection
-   has negative two-point determinant, while canonical critical rooted
-   coordinate has nonzero scalar cofinal norm divergence.
-11. Before these quotients, Gamma--Julia lift restores odd prime-log jet and
-   Fisher--Ward trace remains odd. Squaring preserves logarithmic-current
-   differential field and hypertranscendence while erasing orientation. The
-   full projective loop-current atlas is jointly faithful modulo constants,
-   locating blindness at finite reporting rather than current formation. The
-   actual-prime clock and CCM block--Fock graph closures are the full product,
-   so no closed single-valued extension exists, even nonlinear.
-12. Singular acquisition packages remaining divisor data as
-   \[
-     (m_\rho,\chi_\rho),\qquad
-     \chi_\rho(z)=e^{z(\rho-\tfrac12)},
-   \]
-   whose continuous rate and dyadic ramification explain Wold, Sonin/Calkin,
-   Ward, Rees, thermal/deck, and mass consumers.
-13. Consumer size is not the missing resource. All prime-seam Sonin/Calkin
-    coefficients compress into one absolutely norm-summable operator without
-    cancellation modulo compacts. Zero-free margins thicken every Ward
-    failure, and signed prime logarithms plus one finite grid give a fixed,
-    locally finite arithmetic sampling set complete for the four-unit law.
-14. Local activation is not hidden in a more careful factorwise divisor
-    ledger. Every positive prime-rate reflection weld is congruent to every
-    other, while all individual Euler-factor orders and the Gamma-factor
-    order vanish throughout \(\Re s>0\). At a completed zero, no
-    zero-preserving function of this entire profile recovers Xi multiplicity.
-
-This theorem says positive information is ordered but not scalar:
-
-\[
-\text{source pointing}\to\text{collision geometry}
-\to\text{global magnitude budget}
-\not\to\text{atomwise orientation},
-\]
-
-while global common-test coupling sees missing direction. This, not terminal
-RH equivalence, is manuscript's candidate new object.
-
-## Fatal attacks attempted
-
-### A. “Strict hierarchy is assembled from easy counterexamples”
+**Reject at a general scientific journal.** Consider only as a short specialist structural note
+after a serious external priority audit and stronger placement against probabilistic number theory,
+explicit-formula, and operator-algebra literature.
 
-**Attack.** One positive atom changes Mellin zeros; one affine polynomial
-separates two real coordinates; one exponential polynomial fails on cylinder;
-one local pole makes resolvent value negative. Packaging them in one diagram
-does not create deep mathematics.
-
-**Finding.** Attack lands partly. Each witness is elementary. What is not
-elementary is exact placement around same completed Xi source:
-
-- arbitrary same-clock right-strip zeros show clock and four/eight-unit profile
-  contain no divisor bound;
-- actual endpoint source still gives cubic global defect budget;
-- every local diagonal comparison fails at hypothetical off-line atom;
-- shared global test detects every such atom;
-- odd source lift identifies information destroyed between these levels.
-
-This is a coherent obstruction/positive-survivor theorem. Referee can still
-judge conjunction insufficiently deep for broad journal. Manuscript must not
-market individual witnesses as breakthroughs.
-
-### B. “Cubic bound is just tiny decorative RH energy”
-
-**Attack.** Bound \(<1/150000\) sounds impressive but does not exclude one
-off-line zero. Height floor \(\gamma^2>7907/93\) is negligible beside rigorous
-verification through height \(3\cdot10^{12}\).
-
-**Finding.** Correct. Numerical comparison is devastating if paper sells
-height record. Defensible result is self-localized source law:
-\(\mathcal E_\perp\) is controlled by cube of charge carried by off-line sector
-itself, and both have exact RH zero locus. It proves global transverse defect
-is third-order in endpoint charge. This is structural progress, not
-competitive zero exclusion.
-
-**Verdict:** positive theorem; modest arithmetic consequence.
-
-### C. “Atomwise no-go is two-dimensional linear algebra”
-
-**Attack.** If two quadratic forms have different kernels, no domination
-constant exists. Calling this universal orientation obstruction exaggerates
-elementary fact.
-
-**Finding.** Algebra is elementary. Strength is quantifier: every off-line Xi
-copy fails even its own finite constant over all real affine tests, while
-all-copy bounded control holds exactly on RH fibre. It sharply rules out
-closing source budget by local diagonal comparison. It does not rule out
-global coupled operators.
-
-**Verdict:** exact aperture boundary, not famous-route death theorem.
-
-### D. “Cylinder witness excludes only one lift”
-
-**Attack.** Negative value of natural separated cylinder lift proves no
-sum-of-squared-moduli representation for that lift, not impossibility of every
-semidefinite or noncommutative completion.
-
-**Finding.** Correct. Manuscript scopes claim to finite separated-cylinder
-sum-of-squares lifts. Any language suggesting all positivity machinery fails
-would be false.
-
-### E. “Rank-one resolvent is classical Weil positivity in local clothes”
-
-**Attack.** Weil criterion already says global positivity detects RH. Local
-pole argument producing negative test near off-axis zero may be standard or
-routine.
-
-**Finding.** Priority risk is substantial. Manuscript excludes classical Weil
-criterion itself from novelty. Claimed contribution is its position as
-strictly higher observable than clock, finite Grams, global scalar magnitude,
-and atomwise diagonal control. External expert must determine whether exact
-rank-one resolvent test is already known.
-
-### F. “Paper still does not build surviving arrow”
-
-**Attack.** Diagram ends with recommendation: preserve source pointing and
-couple divisor globally before scalarization. It does not construct source-to-
-resolvent correspondence whose unconditional positivity forces
-\(\mathcal E_\perp=0\).
-
-**Finding.** Attack now lands only at sign. Paper constructs source-to-Weil
-correspondence exactly: finite source cups equal Weil polarization, separated
-finite source packets complete every square-summable Weil test, and one
-packet sequence converges to canonical orientation sector. It does not select
-that sequence by source data alone or prove eventual nonnegativity; latter is
-equivalent to RH. Surviving arrow exists as representation, not as positive
-selection theorem.
-
-**Verdict:** material strengthening; zero-exclusion/sign remains hard ceiling.
-
-### H. “All-prime compression and prime-log sampling are engineered RH equivalents”
-
-**Attack.** The Calkin aggregate damps coefficients using their own norms and
-the divisor seam differences. The Ward response is itself built from the
-strict-right divisor. Compressing all pair tests into one operator and sampling
-the response on prime logs may therefore be cosmetic.
-
-**Finding.** Attack lands against any claim of a new positivity producer. The
-Calkin damping is deliberately engineered for norm convergence and supplies no
-compactness theorem. Its nontrivial content is cancellation-free infinite
-Calkin injectivity: weakly escaping Sonin packets recover every coefficient
-from one convergent operator. Prime-log sampling is stronger. Its sample set is
-fixed by primes, independent of zeros, locally finite, and reaches every
-hypothetical failure through an unconditional zero-free margin and shrinking
-prime-log windows. It removes continuous or target-adapted observation as a
-possible missing ingredient. It still does not derive the sampled four-unit
-sign from arithmetic source data.
-
-**Verdict:** genuine formation-to-consumer bridge and exact route localization;
-not zero exclusion and not standalone flagship novelty.
-
-### I. “Factorwise activation obstruction is trivial local-factor bookkeeping”
-
-**Attack.** In the critical strip every individual Euler factor is a
-holomorphic unit, as is the archimedean Gamma factor. Their orders therefore
-vanish. The new assembler no-go may be a verbose restatement of that
-elementary fact.
-
-**Finding.** Attack succeeds against standalone novelty and against any claim
-that global Euler products are impossible. The theorem is useful only in the
-larger separation law. It combines two exact blindness statements: local
-reflection welds forget numerical prime rate up to congruence, and even the
-complete local order profile forgets activation. This sits opposite the
-proved positive result that the full completed current remains
-hypertranscendental over every scalar valuation layer. Together they identify
-completed divisor order as non-factorwise extension data. The paper states
-this scope explicitly and does not advertise local-unit bookkeeping as a
-flagship theorem.
-
-**Verdict:** valid universal boundary and useful synthesis; elementary by
-itself, no zero exclusion, no Euler-product no-go.
-
-### G. “Positive-carrier rigidity is another decorative RH equivalence”
-
-**Attack.** Positive moment representation is equivalent to Hankel
-nonnegativity; compact moment determinacy is classical; Polson already put Xi
-in the Thorin/GGC framework. The new theorem therefore repackages known
-machinery around an RH criterion.
-
-**Finding.** The attack succeeds against standalone novelty. The manuscript
-now disclaims novelty of the Thorin/GGC reformulation, the bare RH
-equivalence, and compact moment determinacy. Its defensible contribution is
-the exact placement of this branch inside the source-completion law:
-
-- singular prime--Gamma common-test density exists unconditionally but gives
-  no sign;
-- any positive measure carrying all source moments already contains the full
-  RH obstruction;
-- within the compact logarithmic class the source fixes the carrier uniquely;
-- regular actionwise reflected repair is Krein-indefinite or non-Hilbert.
-
-This removes a genuine route ambiguity: neither “choose a better positive
-measure” nor “complete in another compact space” supplies missing source
-positivity. It does not make the moment criterion itself new.
-
-**Verdict:** useful closure theorem and stronger universal synthesis; weak
-standalone novelty. It cannot carry the paper without singular source
-completion and the orientation hierarchy.
-
-### 1. “This is a 55-page collage”
-
-**Attack.** Hypertranscendental shells, Julia operators, theta riggings,
-Hellinger products, Wold shifts, Sonin spaces, Ward traces, and ramified roots
-belong to different theories. Sharing \(\rho-\tfrac12\) does not make a law.
-
-**Finding.** The manuscript now supplies exact connecting arrows:
-
-- squarefree activation disintegrates primewise into occupancy and a
-  conditional geometric valuation fibre;
-- Möbius shell differences are the fibre atoms, Fisher variance is occupancy
-  variance, and Gamma coordinates are their rare-event whitening;
-- the Julia normal lift recovers the first prime-log jet lost by scalar
-  contraction;
-- Walsh Parseval bounds fixed-resolution visibility of finite source breadth,
-  while the complete loop-current atlas remains faithful modulo constants;
-- pointed Ward trace is an odd functional of that jet;
-- the source graph reconstructs the Xi logarithmic current;
-- the complete source moment tower has a positive carrier exactly on the RH
-  fibre, and any compact Thorin carrier is canonical;
-- singular acquisition turns its residue into the character
-  \(\chi_\rho\), while local analytic order produces the deck tower;
-- Wold, Calkin, Ward, Rees, energy, and mass aperture are proved consumers of
-  those two coordinates.
-
-The attack no longer defeats the mathematics. It remains a serious editorial
-criticism: the manuscript should probably lose secondary examples and retain
-the arrows.
-
-### 2. “Bifiltered scalarization is elementary”
-
-**Attack.** No injective additive map \(\mathbb N^2\to\mathbb N\) is not a
-deep theorem.
-
-**Finding.** Correct. The manuscript does not sell that lemma alone. Its role
-is diagnostic: depth-only source models necessarily erase prime-normal
-breadth, while two paired transverse views recover the joint incidence. The
-significance comes only from following that lost coordinate into the
-prime-log orientation jet and later consumer failures. Likewise, the Walsh
-capacity bound is Parseval plus threshold counting, and highest-jet loop
-descent is elementary chain-rule algebra. Their role is the exact positive
-counterpart: bounded scalar visibility is dimension-free while the infinite
-vector-current family is faithful.
-
-**Verdict:** elementary component; nontrivial use.
-
-### 3. “The Julia lift is just a \(2\times2\) rotation”
-
-**Attack.** A positive plane lift of a scalar contraction is standard and
-cannot carry RH significance.
-
-**Finding.** Locally, the construction is elementary. The nontrivial content
-is the exact arithmetic normalization:
-\[
- \ell_x(p)\longrightarrow\log p,
-\]
-followed by the dense graph of the all-prime clock and the quantitative
-divergence of every bounded packet recovery. The lift identifies where the
-orientation jet exists before divisor scalarization and why it has no bounded
-global inverse.
-
-**Verdict:** local novelty weak; global arithmetic theorem substantive.
-
-### 4. “Even-current/odd-orientation is dressed-up calculus”
-
-**Attack.** \((\log f^2)'=2f'/f\) and the vanishing of an even first derivative
-are trivial.
-
-**Finding.** Those identities are classical and excluded from novelty. The
-paper's stronger conjunction is that squaring the completed carrier preserves
-both hypertranscendence and its entire logarithmic-current differential field,
-while the source-selected Cayley lift changes sign under reflection. Hence
-divisor reconstruction can remain complete even though every even
-first-order orientation reader is blind. This resolves the apparent
-contradiction in earlier constructions.
-
-**Verdict:** useful parity classification, not a standalone breakthrough.
-
-### 5. “The thermal law \(2qm=1\) is local asymptotics”
-
-**Attack.** Matching one power of a boundary variable is elementary and says
-nothing about RH.
+Manuscript is now coherent and no longer collage-prone. It has one named local law, exact scope,
+and an honest statement that RH and zero exclusion remain open. Its mathematical assertions have
+clear proofs and internal claim trace. That is a substantial quality improvement, not enough
+significance for requested venue.
 
-**Finding.** The equality itself is short. Its consequence is sharper:
-finite ramification plus positive first-order density forces sign monodromy,
-whereas full deck descent requires trivial monodromy. This explains the
-finite-ramified and nontorsion-deck CCM no-go theorems by one
-representation-theoretic incompatibility and includes four-unit normalization
-without special pleading.
+## What manuscript genuinely proves
 
-**Verdict:** a genuine universal local law; not zero exclusion.
-
-### 6. “Xi--Hurwitz energy is a decorative RH equivalence”
-
-**Attack.** A nonnegative expression vanishing exactly on the critical line
-can be manufactured from the zeros and has no source-side force.
+At each geometric valuation fibre it distinguishes three exact source levels:
 
-**Finding.** Correct as a warning. The manuscript uses this energy only as the
-canonical finite quadratic compression of character unitarity. It explicitly
-proves that the compression is reflection-even and therefore cannot select a
-side or supply the missing source orientation. Large terminal certificate
-packages add consumers of its zero locus, not evidence that the energy
-vanishes.
+1. positive activation mass;
+2. Fisher-damped/whitened Gamma valuation coordinate;
+3. logarithmically primitive von-Mangoldt half-density.
 
-**Verdict:** legitimate compression theorem; no RH progress by itself.
+The second-to-third transition has an exact exponentially growing depth gauge. Functional-equation
+reflection adds another exact depth gauge, with fixed geometric mean and unique balance at the
+half-density. This gives sharp no-go statements for uniformly bounded source-label-preserving
+depth-diagonal recovery and sewing.
 
-### 7. “Hedenmalm, Sonin/Calkin, Wold, and Ward remain name-dropping”
-
-**Attack.** Stating that several criteria vanish at the same rate is merely
-equivalence inflation.
-
-**Finding.** The continuous character is inserted into each consumer with a
-different exact mechanism:
-
-- Wold depth and Poisson time give a two-clock quadrant law;
-- the Sonin prime seam becomes a Calkin compactness equalizer;
-- fixed-edge Ward positivity has a one-node witness when the rate is positive;
-- Rees reflection distinguishes finite/half-normal behavior from
-  all-orders-flat behavior;
-- Hedenmalm's theta-null form supplies singular divisor acquisition and a
-  dense nonclosed radical rather than an ordinary Hilbert completion; its
-  reflected quotient pair also folds into one exact affine Dirac source
-  system, so reflection identification itself is not missing.
-
-These results become shadows of one character only after their maps are
-proved. They are no longer presented as independent evidence for RH.
-
-**Verdict:** attack fails for stated consumer classes.
-
-### 8. “Finite reporters and local spectral frames may simply be bad models”
-
-**Attack.** Kernel witnesses for finite derivative packets do not exclude an
-infinite or nonlocal recovery.
-
-**Finding.** Correct, and manuscript says so. It proves blindness of every
-fixed finite reporter, persistence under finite Gibbs dressing, and failure of
-positive-aperture finite local polynomial frames. The dense graph and recovery
-blow-up then identify the needed replacement as singular/infinite, not
-impossible.
-
-**Verdict:** sharp finite/local boundary, not death of spectral programs.
-
-### 9. “Mass deformation contradicts information loss”
-
-**Attack.** If another consumer can recover width, the superselection story is
-incoherent.
-
-**Finding.** It instead forces a taxonomy. Exact conservative transport
-excludes nonunitary characters; even/quadratic transport loses side; full deck
-transport conflicts with sign monodromy; mass transport remains faithful but
-nonisometric, with returned width enlarged by
-\(\sqrt{(9+a^2)/9}\). The manuscript no longer calls all four effects
-“positivity loss.”
-
-**Verdict:** quantitative data-processing distinction is a strength.
-
-### 10. “The paper still has no zero exclusion”
-
-**Attack.** None of these laws proves \(\Re\rho=\tfrac12\).
-
-**Finding.** Correct and fatal to any RH-proof or flagship claim. The theorem
-classifies the information that a zero would carry and proves exact
-restrictions on its transport. It does not construct a faithful nonzero
-conservative source intertwiner, prove the Xi--Hurwitz energy vanishes, or
-bound the \(8\pi\) defect index by zero.
-
-**Verdict:** no correctness defect because manuscript excludes these claims;
-major significance ceiling.
-
-### 11. “The paper kills CCM or Hilbert--Pólya”
-
-**Attack.** The no-go language could be read too broadly.
-
-**Finding.** The manuscript excludes finite-local frames, finite-Rees-moderate
-reflection sewing, and deck-invariant positive-density realizations. A
-spectral program may use a singular infinite correspondence or a different
-source category. No general death theorem is claimed.
-
-**Verdict:** scope adequate; famous routes remain open.
-
-### 12. “Priority has not been demonstrated”
-
-**Attack.** Each ingredient has classical parents, and exact-string searches
-cannot establish novelty.
-
-**Finding.** Correct. The paper distinguishes Connes trace/scaling work,
-Meyer spectral realization, Burnol Sonine/co-Poisson theory, Kakutani product
-measures, classical differential transcendence, and Hedenmalm's theta pencil.
-Targeted searches found no collision for the exact parity-resolved
-pointed-observability conjunction, self-localized cubic defect law, or
-atomwise-separator/common-test hierarchy. Searches did find classical
-Li/Weil positivity and current resolvent approaches. This is non-collision
-evidence only.
-
-**Verdict:** provisional novelty; specialist priority review mandatory.
-
-## Correctness audit
-
-The declaration-level claim trace covers:
-
-- same-clock positive Mellin witness with prescribed right-strip zero pair;
-- projective-tail positive source pointing and dense fibres;
-- finite collision matroid and carrier/current separation;
-- self-localized Xi endpoint charge, cubic transverse-energy budget, exact RH
-  zero locus, and analytic height floor;
-- off-line affine diagonal separator and orbitwise exact boundary;
-- physical-line positive mixed cone and failed finite separated SOS lift;
-- vertical divergence of scalarized source Ward majorant;
-- rank-one global Weil detection;
-- exact finite Deninger source-cup/Weil polarization identity;
-- universal separated prime--Gamma source completion of every square-summable
-  Weil test and one target-selected orientation sequence;
-- equivalence between any positive source-moment representation and RH,
-  plus uniqueness and canonical classification of the compact Thorin carrier;
-- reflection-folded Hedenmalm source system;
-- Gamma/co-Poisson negative interval determinant and scalar critical
-  completion trilemma;
-- source bifiltration and paired recovery;
-- dimension-free Walsh source-observation capacity;
-- full projective loop-current faithfulness modulo constants;
-- completed Xi (+2) log-current hypertranscendence over every scalar
-  valuation layer;
-- positive shell and relative hypertranscendence;
-- Julia normal lift, prime-log limit, dense graph, recovery blow-up, and
-  impossibility of any closed single-valued clock/codiagonal extension;
-- pointed Fisher--Ward oddness and curvature pairing;
-- squared-Xi hypertranscendence, current-field equality, odd Cayley lift, and
-  even-reader zero jet;
-- finite reporter and finite local-frame obstructions;
-- theta singular acquisition and analytic heat-node obstruction;
-- divisor character, ramification tower, and inner--outer charge match;
-- Xi--Hurwitz energy and its exact zero locus;
-- Wold, Sonin/Calkin, Ward, Hellinger--Rees, dyadic, thermal/deck, aperture,
-  and mass-consumer laws;
-- finite and infinite Calkin Gram injectivity, one all-prime compactness
-  equalizer, Ward zero-free detection windows, and locally finite prime-log
-  sampling completeness;
-- conservative character descent;
-- positive-rate weld congruence, vanishing of the complete factorwise
-  Euler--Gamma order profile, and impossibility of a zero-preserving local
-  order assembler for completed Xi multiplicity;
-- compact-jet, bounded-window, and reciprocal-energy blindness.
-
-No paper theorem assumes RH, simplicity, a zero-free region, a rightmost zero,
-or existence of an off-line zero. Conditional clauses are stated as
-conditionals. The manuscript contains no claim about its verification method.
-
-## General-journal criteria
-
-| Criterion | Verdict | Hostile reason |
-|---|---|---|
-| Unconditional correctness | Provisional pass | One notation error and one exceptional-branch proof defect were caught and corrected; the new capstone module builds, and the key new theorem surfaces use only standard foundational axioms, but independent proof reading remains necessary |
-| Genuine mathematical object | Pass | Singular source completion of full Weil form, positive-completion separation with compact rigidity, reflected source-defect normal form, strict hierarchy, ramified character, and odd source lift |
-| High-interest progress toward RH | Borderline | Gives unconditional global defect budget and exact obstruction to local positivity closure, but no zero exclusion |
-| Novel route | Provisional pass | Global common-test transgression is now constructed as singular prime--Gamma source completion; source-only selector and sign inequality remain absent |
-| Famous-route death theorem | Fail and not claimed | Excluded classes are narrower than CCM/Hilbert--Pólya |
-| Universality | Pass within stated corridor | Laws are carrier-, dimension-, or consumer-independent where claimed; not a law for all 1,000-plus corpus modules |
-| Internal closure | Pass | Every question posed by paper is answered; RH is explicitly outside theorem |
-| Exposition | Major revision | Fifty-five-page theorem catalogue dilutes central hierarchy; main theorem and abstract are too long |
-
-## Final judgment
-
-Paper is substantially stronger than earlier source-character/Rees
-manuscript. Its “wow” claim is:
-
-> positive Riemann-source information is strictly stratified: clock and finite
-> Gram positivity can be completely divisor-blind; completed source still
-> forces cubic global defect smallness; every atomwise positive comparison
-> fails off line; finite prime--Gamma packets nevertheless complete the full
-> common-test Weil form; one target-selected sequence reaches canonical
-> orientation sector; positive moment completion is exactly RH and its compact
-> carrier is forced; regular scalar reflection is either Krein or divergent;
-> odd source pointing is the exact datum erased between lower levels. Source
-> formation is faithful, singular transport cannot be functionalized, and
-> final Calkin/Ward judgment is losslessly compressible to one operator and one
-> locally finite arithmetic jury. What remains is sign, not coordinates,
-> transport regularization, or observer size.
-
-This is materially closer to credible broad-journal mathematics, but still
-not an honest accept recommendation. Central theorem remains buried in a
-long synthesis and several separators are elementary. External priority and
-proof review could still reduce novelty score. It is not RH
-proof, competitive zero-free result, general CCM/Hilbert--Pólya no-go, or
-Nature/Science-level result.
-
-**Recommendation:** major revision. Compress around strict hierarchy and cubic
-positive survivor; move consumer atlas to companion/supplement; obtain
-specialist priority review; do not advertise source height floor as numerical
-advance.
+The same von-Mangoldt current already occurs in four independently established realizations:
+Wold normal differentiation, Julia--KMS positive resolution, pole-scale exponential clock, and
+reflected Schatten duality. Manuscript correctly does not claim those parent theories separately.
+
+## Strongest favorable reading
+
+Headline insight is elegant:
+
+> Prime powers are composite in valuation geometry but primitive in Euler differential geometry.
+
+This corrects a real conceptual conflation. Fisher whitening does not create the explicit-formula
+current; a second singular primitive promotion is unavoidable. It also gives a precise meaning to
+off-critical nonunitarity: reflected source profiles agree only at half-density and otherwise one
+depth-diagonal sewing direction grows exponentially.
+
+As a research map, this is useful. It localizes surviving RH program at a singular,
+source-pointed, breadth/depth continuation performed before sign and orientation are erased.
+
+## Fatal attacks
+
+### 1. Main theorem is elementary algebra
+
+Equations defining the advertised law are substitutions among geometric sequences. Divergence is
+the observation that `r^{-1}>1`; reflection is cancellation of opposite exponential rates. A broad
+journal will ask what difficult theorem follows that was not already visible from
+`Lambda(p^k)=log p`.
+
+**Attack succeeds.** Cross-factorization may be new as a conjunction, but current manuscript has
+not extracted a nontrivial analytic or arithmetic consequence commensurate with its framing.
+
+### 2. Global section is an atlas, not a consequence of local theorem
+
+Wold, Julia--KMS, exponential-clock, and Schatten results share the von-Mangoldt current, but none
+is derived from the primitive--fibre identities. Calling them “four geometries of the same current”
+is correct; calling their collection one universal theorem would be too strong.
+
+**Attack lands partly.** Paper is focused rather than a collage, but universality is explanatory,
+not a new theorem with one hypothesis and several deep corollaries.
+
+### 3. No zero exclusion or new quantitative RH consequence
+
+Positive Julia layers preserve a negative external phase. Reflection balance is an identity true
+for every prime power regardless of Xi zeros. No defect index is shown to vanish, no one-sided
+Ward/Weil sign is proved, and no zero-free region improves.
+
+**Attack succeeds completely.** Paper identifies missing conversion but does not execute it.
+
+### 4. No-go scope is narrow
+
+Unbounded diagonal multiplier excludes only source-label-preserving depth-diagonal recovery. It
+does not exclude non-diagonal transforms, reindexing, singular correspondences, unbounded closed
+operators, or arbitrary Hilbert-space models. Broader statements would be false.
+
+**Manuscript now scopes this correctly.** Result is sharp but much narrower than death of
+Hilbert--Polya, Connes--Consani, or completely positive approaches.
+
+### 5. Novelty remains unestablished
+
+Geometric prime valuations, Bernoulli squarefree occupancy, von Mangoldt logarithmic
+differentiation, half-density, detailed balance, and Holder/Schatten reflection are established.
+Targeted searches did not locate exact cross-factorization, but absence from a small search is not
+priority evidence.
+
+**Attack remains open.** Specialist literature review is mandatory. Manuscript's restrained
+priority paragraph is appropriate.
+
+### 6. “Universal” is too broad without category in title/theorem
+
+Law is universal over one geometric fibre parameter `0<r<1`, one positive primitive weight, and
+depth-diagonal reflection. It is not universal over Euler products, L-functions, source operators,
+or divisor theories.
+
+**Attack succeeds against broad marketing.** “Euler primitive--fibre law” is acceptable;
+“universal source law for RH” would not be.
+
+## Original acceptance criteria
+
+| Criterion | Verdict |
+|---|---|
+| Only unconditional mathematical claims | **Pass**, subject to final axiom/build audit |
+| Proves RH or high-interest progress / opens unprecedented route / kills classic route | **Partial at best**: sharp source-program localization, no RH consequence or classic-route death |
+| Renowned general scientific journal quality | **Fail on significance**, pass on basic coherence and honesty |
+| Answers rather than leaves decisive questions open | **Fail**: singular common-test continuation and Ward/Weil orientation remain open |
+
+## What a renowned-journal reviewer would demand
+
+At least one of:
+
+1. construct singular source-pointed common-test continuation and prove its one-sided Ward/Weil
+   sign;
+2. derive a genuinely nontrivial theorem about Xi zeros, not another equivalent criterion;
+3. prove broad source-category theorem from which finite-Rees superselection, Hedenmalm dense
+   radicals, Wold normal selection, Julia sign preservation, Sonin/Calkin compression, and Ward
+   failure follow as actual corollaries;
+4. prove an impossibility theorem covering a famous route under assumptions recognized as
+   intrinsic by that route's literature;
+5. establish external priority and explain why exact primitive promotion changes current research
+   practice.
+
+## Final honest verdict
+
+Current paper is strongest clean source theorem extracted from this frontier pass, but it does not
+meet user's flagship acceptance bar. Its value is that it replaces vague “missing source” language
+with an exact singular conversion problem and prevents further work on bounded diagonal
+normalizations. It should be treated as a theorem/card anchoring Route R, not yet as final
+general-journal submission.

@@ -4,7 +4,7 @@
 - **Stage:** 3 — formalized
 - **Type:** DEPENDENCY-CLOSED SOURCE NO-GO + EXACT POSITIVE SURVIVOR
 - **Scientific status:** `[FORMALIZED] [CANDIDATE NEW NO-GO]`
-  `[ROUTE G PROVIDER TERMINALIZED] [ROUTE G OPEN] [NOT RH]`
+  `[ROUTE G PROVIDER TERMINALIZED] [HISTORICAL SUB-NO-GO] [NOT RH]`
 - **Paper proof:**
   `../../2-fully-proven/new_scientific_knowledge/suzuki/bv-copoisson-sharp-critical-half-weight-log-flux.md`
 - **RH used:** no
@@ -29,9 +29,12 @@ vanishing forces that seed to vanish almost everywhere.
 These failures are not evidence that no completion exists. The separately paper-proved universal
 Gamma--Gaussian property-S envelope supplies a noncompact completion for every moderate Mellin
 datum, including off-line models. Completion existence is therefore nonselective. This
-BV/co-Poisson completion/provider program is closed. Route G itself remains open because Suzuki's
-actual source-coefficient, chord-mass, and global Pick/Ward mechanism has neither been constructed
-nor class-completely refuted.
+BV/co-Poisson completion/provider program is closed. At this card's historical checkpoint Route G
+itself remained open because Suzuki's actual source-coefficient, chord-mass, and global Pick/Ward
+mechanism had neither been constructed nor class-completely refuted. The later unconditional
+gauge-complete target-category theorem
+`not_suzukiHolomorphicGaugeCharacteristicLimitWall` later retires only Suzuki's published one-angle
+compact-limit program. Route G remains open at its two-angle meromorphic/Hermite--Biehler producer.
 
 ## Formal theorem map
 
@@ -58,7 +61,7 @@ The paper's Rademacher Gram/Stein supplement is not part of this formal card. It
 prove any no-go above, and its candidate graph has an unbounded conormal, so it cannot reopen the
 provider. No abstract `ell2` replacement is counted as formalization of that analytic limit.
 
-This card proves neither Hermite--Biehler positivity nor a no-go for Suzuki itself. It prevents
+This card proves neither Hermite--Biehler positivity nor, by itself, a no-go for Suzuki. It prevents
 following research theatre: renaming open source sign as a graph norm, assuming a divisor-selected metric,
 claiming that generic property-S existence selects the critical line, or presenting a compact
 archimedean correction after all-moments rigidity has forced it to zero.

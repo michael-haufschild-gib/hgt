@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SuzukiFiniteMorseResolventJetCompletion
 import GaloisForLFunctions.HTGeometry.CfcNormBound
+import GaloisForLFunctions.HTGeometry.SignedCharFunCentralJet
 import GaloisForLFunctions.HTGeometry.CompactOperatorDiscreteSpectrum
 
 /-!
@@ -137,5 +138,61 @@ theorem tendsto_neumannShiftFamily_id {H : Type*} [NormedAddCommGroup H] [InnerP
       rw [Real.norm_eq_abs, abs_neg]
       exact hsm x (hspec hx)
   exact tendsto_id_of_norm_comp_tendsto_zero hsa hinj (by norm_num) hbound hnorm v
+
+/-! ## Pairings against the strong limit
+
+Strong convergence is exactly what a pairing needs: the inner product against a fixed vector is
+continuous, so every pairing of the resolvent family converges to the pairing of the limit.  No
+differentiability upgrade of the family is required, and no norm convergence.
+-/
+
+/-- **Every pairing of the resolvent family converges.**  The inner product against a fixed vector
+is continuous, so the strong limit `(-λ)(A-λ)⁻¹ → I` transports to it. -/
+theorem tendsto_inner_resolventFamily {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    [CompleteSpace H] [Nontrivial H] {B : H →L[ℂ] H}
+    (hsa : IsSelfAdjoint B) (hinj : Function.Injective B)
+    {M rho : ℝ} (hspec : spectrum ℝ B ⊆ Set.Icc 0 M) (g v : H) :
+    Tendsto
+      (fun s : ℝ => inner ℂ g (cfc (fun x : ℝ => (s - rho) * x / (1 + s * x)) B v))
+      atTop (𝓝 (inner ℂ g v)) :=
+  Filter.Tendsto.inner tendsto_const_nhds
+    (tendsto_resolventFamily_id hsa hinj hspec v)
+
+/-- Every pairing of the Neumann shift family converges. -/
+theorem tendsto_inner_neumannShiftFamily {H : Type*} [NormedAddCommGroup H]
+    [InnerProductSpace ℂ H] [CompleteSpace H] [Nontrivial H] {B : H →L[ℂ] H}
+    (hsa : IsSelfAdjoint B) (hinj : Function.Injective B)
+    {M rho : ℝ} (hspec : spectrum ℝ B ⊆ Set.Icc 0 M) (g v : H) :
+    Tendsto
+      (fun eps : ℝ => inner ℂ g (cfc (fun x : ℝ => x / (eps + (1 + eps * rho) * x)) B v))
+      (nhdsWithin 0 (Set.Ioi 0)) (𝓝 (inner ℂ g v)) :=
+  Filter.Tendsto.inner tendsto_const_nhds
+    (tendsto_neumannShiftFamily_id hsa hinj hspec v)
+
+/-- **From the strong resolvent limit to the normalized edge quotient.**  If the pairings of the
+limit vector against the numerator and denominator vectors are the central-jet values, then the
+Weyl-normalized quotient of the resolvent family converges to the aperture average.
+
+This is the whole passage `(2) => (7),(6) => (8) => (10)` as one theorem.  Its two hypotheses are
+equations between *values*: the only thing left to supply is that the physical numerator and
+denominator are these pairings. -/
+theorem tendsto_normalizedEdgeQuotient_of_resolventFamily {H : Type*} [NormedAddCommGroup H]
+    [InnerProductSpace ℂ H] [CompleteSpace H] [Nontrivial H] {B : H →L[ℂ] H}
+    (hsa : IsSelfAdjoint B) (hinj : Function.Injective B)
+    {M rho : ℝ} (hspec : spectrum ℝ B ⊆ Set.Icc 0 M)
+    (gnum gden v : H) {a : ℝ} {c H2a : ℂ}
+    (ha : (a : ℂ) ≠ 0) (hc : c ≠ 0)
+    (hnum : inner ℂ gnum v = Complex.I * (2 * c) * H2a)
+    (hden : inner ℂ gden v = 4 * (a : ℂ) * c) :
+    Tendsto
+      (fun s : ℝ => -Complex.I *
+        (inner ℂ gnum (cfc (fun x : ℝ => (s - rho) * x / (1 + s * x)) B v) /
+          inner ℂ gden (cfc (fun x : ℝ => (s - rho) * x / (1 + s * x)) B v)))
+      atTop (𝓝 (H2a / (2 * (a : ℂ)))) := by
+  refine tendsto_normalizedEdgeQuotient ha hc ?_ ?_
+  · rw [← hnum]
+    exact tendsto_inner_resolventFamily hsa hinj hspec gnum v
+  · rw [← hden]
+    exact tendsto_inner_resolventFamily hsa hinj hspec gden v
 
 end GaloisForLFunctions.RHTower

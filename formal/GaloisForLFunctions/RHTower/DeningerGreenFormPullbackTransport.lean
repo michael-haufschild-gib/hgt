@@ -56,8 +56,8 @@ theorem deningerSummedPullbackGreenForm_eq
     {ι : Type*} (U : E →L[ℝ] H)
     (localForm : ι → H →L[ℝ] H →L[ℝ] ℝ)
     (hforms : Summable localForm) :
-    deningerSummedGreenForm (fun i => deningerPullbackGreenForm U (localForm i)) =
-      deningerPullbackGreenForm U (deningerSummedGreenForm localForm) := by
+    (∑' i, deningerPullbackGreenForm U (localForm i)) =
+      deningerPullbackGreenForm U (∑' i, localForm i) := by
   exact (hforms.hasSum.mapL (deningerPullbackGreenFormL U)).tsum_eq
 
 /-- Nonnegativity of a Green energy survives pullback. -/
@@ -86,7 +86,14 @@ theorem deningerPullbackGreenForm_self_eq_zero_iff
     (hU : Function.Injective U) (x : E) :
     deningerPullbackGreenForm U G x x = 0 ↔ x = 0 := by
   rw [deningerPullbackGreenForm_self_eq_zero_iff_mem_ker U G hG]
-  exact LinearMap.ker_eq_bot.mpr hU
+  constructor
+  · intro hx
+    apply hU
+    rw [map_zero]
+    change U x = 0 at hx
+    exact hx
+  · rintro rfl
+    simp
 
 /-! ## Orthogonal prime target -/
 
@@ -107,7 +114,7 @@ theorem summable_deningerPrimeComparisonLocalGreenForm
 def deningerPrimeComparisonSummedGreenForm
     (U : E →L[ℝ] DeningerRealEllTwo Nat.Primes) :
     E →L[ℝ] E →L[ℝ] ℝ :=
-  deningerSummedGreenForm (deningerPrimeComparisonLocalGreenForm U)
+  ∑' p, deningerPrimeComparisonLocalGreenForm U p
 
 /-- The transported global form is the pullback of the prime-diagonal global form. -/
 theorem deningerPrimeComparisonSummedGreenForm_eq

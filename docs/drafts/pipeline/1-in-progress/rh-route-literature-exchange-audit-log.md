@@ -47,3 +47,21 @@
 - 2026-08-01 — Committed-history reconciliation terminalizes Route A in the literature exchange: finite Euler-product torus coverage and recurrence guardrails are local infrastructure, while fixed natural and arbitrary positive Markov transports are identity-rigid or target-equivalent. CCM finite operator formalization remains relevant only to Route O/background.
 - 2026-08-01 — Route D comparison now includes forced positive-measure and positive-Lebesgue-measure thermal fibres, closing countable/injective theta reporters. Route G comparison includes generic strong-resolvent convergence and the literal Schur presentation ingredients without claiming the missing source operator or final induction.
 - 2026-08-01 — Route L comparison now records character/cylinder, Čech-gluing, Poisson-boundary, and diagonal-semigroup infrastructure together with the positive-time heat-topology escape no-go. Deninger's concrete prime-fibre, inverse-limit topology, generator/domain, arithmetic sheaf, polarization, and Xi-spectrum comparison remain the external/open debts.
+- 2026-08-01 — Route K literature status corrected after survivor ownership audit.  Hedenmalm's
+  singular boundary relation maps to C1; CCM prolate convergence maps to O; Suzuki positivity
+  criteria and general perturbation-determinant theory do not construct a marked-prime RVM
+  relocation.  No primary source located the required source-built trace-class prime--Gamma cycle
+  net or Xi determinant identity.  Route K therefore reopens at that unmatched pivot.  Local new
+  progress is the unconditional three-prime theorem isolating closed-cycle holonomy as the first
+  determinant-visible orientation and proving centered reflection pairing does not erase it.
+- 2026-08-01 — Route K internal comparison sharpened: `CoherenceFlatness` plus the new matrix-gauge
+  connector closes every flat finite sign repair, while exact trace expansions put the first
+  reflection-surviving triangle signal at quartic order.  The already formalized completed
+  prime--Gamma analytic moment tower supplies every scalar even det₂ coefficient, so external
+  perturbation-determinant theory contributes no missing coefficient.  Literature gap is now the
+  source-local finite matrix entries and cofinal operator lift of those known coefficients.
+- 2026-08-01 — Internal candidate search closes part of that gap: completed unit--double response
+  gives literal source-local prime-ratio edges and cycle holonomies.  Its finite marginal-balanced
+  diagonal has an exact packet-insertion `ell1` shell obstruction, so no generic perturbation-
+  determinant reference supplies the missing cofinal trace ideal.  External gap is narrowed to a
+  nuclear/source-renormalization theorem for this kernel and its all-moment Xi incidence.

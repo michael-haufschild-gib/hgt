@@ -460,6 +460,13 @@ product.  That is a theorem about any space, and it is proved here in that gener
   function of vanishing average, so `ker(Av_p)` is not trivial and the packet coefficient retains
   genuine nonconstant modes.
 
+`formal/GaloisForLFunctions/RHTower/DeningerPrimeScalarGreenMeanZeroNoGo.lean` upgrades this to the
+Green-form obstruction needed by Route L. `deningerPacketAvContinuous` proves packet average is a
+bounded functional for the compact-open supremum norm. Pulling the positive scalar inner product
+back along it gives energy exactly `Av_p(f)^2`, whose radical is exactly `ker(Av_p)`. The same
+clopen witness is therefore a nonzero zero-energy packet mode. A one-scalar-per-prime Green model
+cannot replace the full packet coefficient.
+
 ### Fineness kills the first Čech cohomology
 
 `formal/GaloisForLFunctions/RHTower/DeningerExtendByZero.lean`,
