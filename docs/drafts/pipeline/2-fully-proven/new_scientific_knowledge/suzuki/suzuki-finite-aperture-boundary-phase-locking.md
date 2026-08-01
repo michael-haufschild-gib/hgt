@@ -533,7 +533,23 @@ spectral pollution away from the target spectrum, exactly as the paper states.
 All modules wired into the area umbrellas, targeted builds green, axiom audit
 `[propext, Classical.choice, Quot.sound]` for every declaration listed.
 
-**Remaining Lean work: none.**  The whole universal law of Sections 2-5 is formalized —
+**`(3.2)` in operator norm — now formalized.**  An equation-level recheck showed that Theorem 3.1
+asserts `(3.2)` in *operator norm*, while only the strong convergence and the norm convergence of
+the restriction to the limit deficiency space had been proved.  The gap is closed:
+
+- `norm_sub_le_blocks_of_idempotent`: `‖P - Q‖ <= ‖P(1-Q)‖ + ‖(P-Q)Q‖`, splitting a difference of
+  projections into the block off the range and the compression to it.
+- `tendsto_opNorm_comp_of_frame`: the compression block converges in norm, because pointwise
+  convergence at a finite spanning frame already controls the operator norm there.
+- `tendsto_opNorm_selfComp_sub`: writing a projection as `J J*` for an isometry `J` onto its range,
+  `‖E_a - E‖ <= 2 ‖J_a - iota‖`, so the projections converge in norm as soon as the isometries do.
+  The equal-rank hypothesis of the paper enters exactly here, as the existence of `J_a`, which
+  `polarTransport` supplies together with `tendsto_polarTransport`.
+
+This replaces the principal-angle route (proving `‖(1-E)E_a‖ = ‖(1-E_a)E‖`) by three lines of
+algebra.
+
+**Otherwise complete.**  The whole universal law of Sections 2-5 is formalized —
 Theorem 3.1 including the general-`k` polar transport, Theorem 4.1, Theorem 4.2 in both directions,
 the Cayley resolvent transfer, and Theorem 5.1.  Every module is wired into its area umbrella, its
 targeted build is green, and every declaration audits to
@@ -573,3 +589,8 @@ universal law of Sections 2-5.
 - 2026-08-01 — general-`k` polar transport unitary formalized, closing Module 2 and with it the
   whole unconditional universal law of Sections 2-5.  The Lean gate is closed; Section 6 stays out
   of scope because it is `[PROVED FROM RH]`.
+- 2026-08-01 — equation-level recheck: `(3.2)`'s operator-norm claim is stronger than what was
+  formalized.  The restriction to the limit deficiency space converges in norm; the projections
+  themselves are not yet shown to.
+- 2026-08-01 — `(3.2)`'s operator-norm claim formalized through the isometry route, closing the gap
+  found by the recheck earlier the same day.

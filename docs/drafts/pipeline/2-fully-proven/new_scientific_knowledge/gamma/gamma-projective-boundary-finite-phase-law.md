@@ -999,6 +999,12 @@ torus (`exists_bohrHull_charPacket_eq`, and `…_of_norm_one` with the target gi
 numbers).  So `r` rationally independent frequencies force the phase carrier to cover `𝕋^r` — the
 positive direction of eq. (9) and of the §7 prime-torus statement.
 
+`formal/GaloisForLFunctions/HTGeometry/BohrTorusQuotientHom.lean` packages the torus quotient as a
+homomorphism: `bohrHull_torus_surjective_hom` states, for a `ℚ`-independent packet of hull
+frequencies, that the joint character map is coordinatewise multiplicative, has unit modulus in each
+coordinate, and hits every point of the torus.  This is exactly the object the dimension step
+consumes — a continuous surjective homomorphism `BohrHull f ↠ 𝕋^r`.
+
 `formal/GaloisForLFunctions/HTGeometry/BohrHullPullback.lean` identifies the hull with the space of
 uniform translation limits and makes it a source of almost-periodic observables.  A hull point `x` is
 described by the function `t ↦ ev (x + ι t)`; for `x = ι s` this is the translate `f(· + s)`, and the
@@ -1062,6 +1068,197 @@ convolution integral).  Hence every eigenspace of a convolution operator is tran
 finite-dimensional by compactness, and carrying a commuting family of unitaries, which is the exact
 situation in which simultaneous diagonalization produces characters.
 
+`formal/GaloisForLFunctions/HTGeometry/CompactAbelianCharVector.lean` performs that diagonalization
+without any spectral theory, by a minimality argument: among the nonzero translation-invariant
+subspaces of a nonzero finite-dimensional invariant `W`, take one of least dimension.  For each `a`
+the translation has an eigenvalue on it (`ℂ` is algebraically closed), and the eigenspace is again
+invariant because translations commute, so minimality forces the translation to be a *scalar*.
+Hence `exists_char_vector`: `W` contains a nonzero `w` with `T a w = χ(a)·w` for every `a`.
+
+`formal/GaloisForLFunctions/HTGeometry/CompactAbelianCharacter.lean` upgrades that scalar function
+to a **continuous character**.  An eigenvector of a convolution operator with nonzero eigenvalue
+satisfies `w = λ⁻¹(k * w)`, so it has a continuous representative
+(`exists_continuous_representative`); the relation `w(x + a) = χ(a)w(x)` then holds *pointwise*
+(a.e. equality of continuous functions is equality, Haar having full support), so
+`χ(a) = w(x₀ + a)/w(x₀)` at any non-vanishing point — continuous in `a`.  Multiplicativity comes
+from composing translations and unit modulus from their being isometries
+(`continuous_character_of_char_vector`).
+
+`formal/GaloisForLFunctions/HTGeometry/CompactAbelianCharSpan.lean`,
+`…/CompactAbelianInvariantSplit.lean` and `…/CompactAbelianPeterWeyl.lean` close the argument.
+The Hermitian kernels ℂ-span the continuous functions (`f = f₁ + i f₂` with `f₁ = (f + f⋆)/2`,
+`f₂ = (f − f⋆)/(2i)`, `f⋆ z = conj (f (−z))`), and continuous functions are dense in `L²`, so a
+vector annihilated by every Hermitian convolution is zero (`eq_zero_of_inner_hermitian`,
+`inner_toLp_eq_zero_of_convOp_eq_zero`).  Translation is unitary (`inner_transOp`), so the
+orthogonal complement of a character line inside an invariant subspace is invariant; peeling off
+character lines one at a time shows that if every continuous character is trivial at `g` then
+translation by `g` is the identity on every finite-dimensional invariant subspace of an eigenspace
+(`transOp_eq_self_of_finite_invariant`).  A vector orthogonal to the fixed space of `T g` is then
+orthogonal to every eigenspace of every Hermitian convolution operator, so its image is orthogonal
+to *all* eigenspaces and vanishes by the spectral theorem; hence the fixed space is everything and
+`T g = 1`, which Urysohn's lemma contradicts unless `g = 0`.  This proves
+
+**`exists_character_ne_one`: the continuous characters of a compact abelian group separate its
+points** — Peter–Weyl in the form the phase carrier needs, absent from mathlib and now
+unconditional in the tree.
+
+`formal/GaloisForLFunctions/HTGeometry/CompactAbelianStoneWeierstrass.lean` converts that into
+density.  The characters are closed under multiplication and conjugation and contain `1`, so their
+linear span is a star-subalgebra of `C(G, ℂ)` (`charSubalgebra`); it separates points by Peter–Weyl,
+hence is dense by mathlib's Stone–Weierstrass
+(`charSubalgebra_topologicalClosure_eq_top`), and every continuous function on a compact abelian
+group is uniformly approximated by a finite linear combination of characters
+(`exists_char_combination_approx`).
+
+`formal/GaloisForLFunctions/HTGeometry/RealCharacterExp.lean` supplies the last identification,
+also absent from mathlib: **a continuous multiplicative `ψ : ℝ → ℂ` of modulus one is `t ↦ e^{iλt}`**
+(`exists_exp_of_continuous_character`).  The proof is the classical smoothing argument — for small
+`a` the integral `A = ∫₀^a ψ` is nonzero and `ψ(t)·A = ∫_t^{t+a} ψ`, so `ψ` is a difference of
+primitives, hence differentiable with `ψ' = cψ` for `c = (ψ(a) − 1)/A`; therefore `ψ(t) = e^{ct}`,
+and modulus one forces `c` to be purely imaginary.  Together with the previous paragraph this
+reduces the Bohr approximation theorem to the transfer along `ι : ℝ → BohrHull f`.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrApproximation.lean` performs that transfer and thereby
+proves **the fundamental theorem of almost-periodic function theory, unconditionally**:
+
+`exists_trig_approx` — for every Bohr almost-periodic `f` and every `ε > 0` there are finitely many
+frequencies `λ_j` and coefficients `c_j` with `sup_t |f(t) − ∑_j c_j e^{iλ_j t}| ≤ ε`.
+
+The hull is compact (Bochner) so its characters separate points (Peter–Weyl) and span densely
+(Stone–Weierstrass); approximating `bohrEval` and pulling back along `ι` gives the polynomial, and
+each character composed with `ι` is an exponential by `exists_exp_of_continuous_character`.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrHullDual.lean` completes the identification of the dual.
+Every continuous character of the hull restricts along `ι` to an exponential, whose frequency is a
+hull frequency and whose character is the one already attached to it
+(`exists_frequency_of_hull_character`); and distinct frequencies give distinct characters
+(`bohrHullChar_injective`).  So
+
+`dual(BohrHull f) = bohrHullFrequencies f`
+
+exactly — eq. (21) of the companion card, now a theorem rather than a citation of Pontryagin
+duality.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrUniqueErgodicity.lean` proves the hull **uniquely
+ergodic**: `bohrMean_comp_bohrIota_eq_integral` — for every continuous observable `F` of the hull,
+
+`M_t(F(ι t)) = ∫_X F dHaar`.
+
+A nontrivial character integrates to zero by translation invariance of Haar measure
+(`integral_char_eq_zero`), and its pullback `e^{iλt}` has Bohr mean zero for the same reason, so the
+two functionals agree on characters (`bohrMean_char_comp_bohrIota`); both are `1`-Lipschitz for the
+sup norm, so they agree on the dense span and hence everywhere.  This identifies the Bohr mean —
+defined by a limit of window averages on the line — with an honest integral over the compact carrier,
+which is what turns positivity statements about `M` into measure-theoretic ones.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrUniqueness.lean` closes the classical circle.  A
+nonnegative almost-periodic function with vanishing mean is identically zero
+(`eq_zero_of_bohrMean_eq_zero_of_nonneg`): unique ergodicity turns its mean into a Haar integral,
+where a nonnegative continuous integrand of zero integral vanishes almost everywhere — hence
+everywhere, Haar measure having full support.  Consequently
+
+**`eq_zero_of_bohrCoefficient_eq_zero`: an almost-periodic function all of whose Bohr coefficients
+vanish is zero.**
+
+The proof is the classical one, now available: approximate `f` by a trigonometric polynomial `P`
+within `ε`; then `M(f·conj P)` is a finite combination of Bohr coefficients, hence `0`, while
+`|M(f·conj f) − M(f·conj P)| ≤ ‖f‖ε`, so `M(|f|²) = 0` and the positivity lemma applies.  With the
+approximation theorem this is the uniqueness half of the Bohr–Fourier correspondence.  Two
+immediate corollaries are recorded: an almost-periodic function is determined by its Bohr
+coefficients (`eq_of_bohrCoefficient_eq`), and a nonzero one has a nonzero coefficient
+(`exists_bohrCoefficient_ne_zero`) — i.e. the Bohr spectrum of a nonzero almost-periodic function is
+nonempty.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrTrigPolynomial.lean` isolates the bookkeeping both
+Parseval and the product rule need: `bohrCoefficient_trigPoly` computes the Bohr coefficient of
+`∑ a_i e^{iμ_i t}` at `λ` as the sum of the `a_i` over the indices with `μ_i = λ` (orthonormality of
+the characters for the Bohr mean), with the distinct-frequency form
+`bohrCoefficient_trigPoly_of_injective` reading off `a_j` at `μ_j`.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrTrigMeans.lean` supplies the three mixed means for a
+polynomial indexed by a `Finset` of frequencies — so the frequencies are distinct by construction and
+no injectivity hypothesis is needed: `bohrMean_mul_conj_trigPoly` pairs the coefficients of `p` with
+the Bohr coefficients of `f`, `bohrMean_trigPoly_mul_conj_self` gives `M(|p|²) = ∑|a_λ|²`, and
+`bohrMean_sub_trigPoly_mul_conj` assembles them into the expansion of the approximation error
+
+`M(|f − p|²) = M(|f|²) − ∑_λ (conj(a_λ)c_λ(f) + a_λ conj(c_λ(f)) − |a_λ|²)`,
+
+which is the identity Bessel and Parseval both come from — the corpus's `bohr_bessel` proves the
+same expansion but hard-wires `a = c_λ(f)`.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrParsevalUpper.lean` completes **Parseval**, with no
+Hilbert-basis machinery.  `exists_trigPoly_approx` restates the approximation theorem with the
+polynomial indexed by a finite set of *distinct* frequencies (regrouping the output of
+`exists_trig_approx` fibrewise over the image of its frequency map), and
+`exists_finset_bohrMean_normSq_le` completes the square in the error expansion:
+
+`M(|f|²) ≤ ∑_{λ∈S} |c_λ(f)|² + ε`  for a suitable finite `S`,
+
+since `M(|f − p|²) ≤ δ²` and `Re(conj(a)c + a conj(c) − |a|²) = |c|² − |a − c|² ≤ |c|²`.  With the
+corpus's `bohr_bessel` (`∑_{λ∈S}|c_λ(f)|² ≤ M(|f|²)` for every finite `S`) this is Parseval: the
+mean square is the supremum of the finite partial sums of squared Bohr coefficients.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrCauchySchwarz.lean` adds the last analytic tool:
+`bohrMean_sub_smul_mul_conj` expands `M(|h − z k|²)` in `z`, and optimizing the resulting quadratic
+gives **Cauchy–Schwarz for the Bohr mean** (`norm_bohrMean_mul_conj_sq_le`),
+
+`‖M(h · conj k)‖² ≤ M(|h|²) · M(|k|²)`.
+
+Taking `z = s·C` with `C = M(h · conj k)` and `s` real keeps every coefficient real, so the
+degenerate case is handled by choosing `s` large rather than by a separate argument.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrSpectralApprox.lean` supplies the other half:
+`exists_spectral_mean_square_approx` — for every `δ > 0` there is a finite `S` with
+
+`M(|f − ∑_{λ∈S} c_λ(f) e^{iλt}|²) ≤ δ`.
+
+Replacing the coefficients of a uniform approximant by the true Bohr coefficients can only decrease
+the mean-square error (the two expansions differ by `∑_λ |a_λ − c_λ|² ≥ 0`), and the resulting
+polynomial is automatically supported on the spectrum, since off-spectrum coefficients vanish by
+definition.  This is exactly the form the product rule needs — the approximating frequencies must be
+known to lie in the spectrum, which `exists_trig_approx` alone does not give.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrTrigProduct.lean` supplies the algebraic half:
+`trigPoly_mul` expands a product of trigonometric polynomials over the product index set with
+frequencies `μ + ν` (via `bohrExp μ · bohrExp ν = bohrExp (μ+ν)`), so
+`bohrCoefficient_trigPoly_mul` reads its `λ`-coefficient as `∑_{μ+ν=λ} a_μ b_ν`, and
+`bohrCoefficient_trigPoly_mul_eq_zero` records the consequence: the product has no `λ`-mode as soon
+as every pair of frequencies summing to `λ` has a vanishing factor.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrCoefficientBound.lean` turns Cauchy–Schwarz into the
+estimate the comparison needs: `norm_bohrCoefficient_mul_sq_le`,
+
+`‖c_λ(u v)‖² ≤ M(|u|²) · M(|v|²)`,
+
+by pairing `u` against `k = conj v · e^{iλt}` — twisting by the character costs nothing since
+`M(|k|²) = M(|v|²)`.  Applied to `u = f − p` and to `v = g − q`, a mean-square approximation of the
+factors therefore controls every Bohr coefficient of the product.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrMeanSquareBound.lean` records the two size bounds the
+comparison consumes: `bohrMean_mul_conj_re_le_norm_sq` (`M(|f|²) ≤ ‖f‖²`) and
+`bohrMean_trigPoly_mul_conj_self_re_le` (`M(|p|²) ≤ M(|f|²)` for the spectral partial sum `p`, i.e.
+Bessel's inequality read through the mean square of a trigonometric polynomial).
+
+`formal/GaloisForLFunctions/HTGeometry/BohrProductRule.lean` assembles these into the **spectral
+product rule**, `bohrCoefficient_mul_eq_zero`:
+
+> if every pair `μ + ν = λ` has `c_μ(f) = 0` or `c_ν(g) = 0`, then `c_λ(fg) = 0`.
+
+Splitting `fg − pq = (f − p)g + p(g − q)` for the spectral partial sums `p, q`, each error
+coefficient is bounded by `√δ‖g‖` and `‖f‖√δ` through `norm_bohrCoefficient_mul_sq_le`, while
+`c_λ(pq) = 0` identically; choosing `δ = (d/2(‖f‖+‖g‖+1))²` with `d = ‖c_λ(fg)‖` contradicts
+`d > 0`.  Note the route through the *mean-square* spectral approximation is essential: the uniform
+approximant of `exists_trig_approx` has no control on where its frequencies sit, and pruning the
+off-spectrum ones costs a factor of the (ε-dependent) number of terms.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrSpectrumProduct.lean` states the consequence in the form
+the differential-algebraic analysis uses: `exists_add_eq_of_mem_bohrSpectrum_mul`
+(`spec(fg) ⊆ spec f + spec g`) and `bohrSpectrum_mul_subset_closure` (`spec(fg)` lies in the
+additive subgroup generated by the two spectra).  Combined with `BohrDerivativeSpectrum`
+(differentiation does not enlarge the spectrum), every polynomial expression in `f` and its
+derivatives has all of its frequencies in the group generated by `Γ(f)` — which is the step from
+the autonomous relation (8) to the frequency statement (9).
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.
@@ -1084,18 +1281,207 @@ field (with the finite-phase conclusion as the explicit interface).
 The remaining formalization gap has now been isolated to two named classical theorems, neither of
 them in mathlib.
 
-1. **Peter–Weyl for compact abelian groups** (characters separate points).  Everything in the
-   approximation circle — the Bochner–Fejér approximation theorem, the uniqueness theorem, Parseval,
-   and the product rule `spec(fg) ⊆ spec f + spec g` — is *equivalent* to it, and each attempt to
-   route around it closes back on itself: the Fejér mass estimate needs a Bohr set inside the
-   almost periods, which is the statement that the characters generate the hull topology; the
-   autocorrelation route needs `φ(0) = ∑ c_λ(φ)`, which is Parseval.  The operator-theoretic proof
-   is available: mathlib has the spectral theorem for compact self-adjoint operators
-   (`ContinuousLinearMap.orthogonalComplement_iSup_eigenspaces_eq_bot`,
-   `finite_dimensional_eigenspace`) and simultaneous diagonalization of commuting symmetric
-   operators (`JointEigenspace.iSup_iInf_eq_top_of_commute`); the missing links are compactness of
-   the convolution operator on `L²` (Arzelà–Ascoli, whose modulus estimate is now proved) and the
-   identification of a common eigenvector of the translations with a character.
+1. ~~**Peter–Weyl for compact abelian groups**~~ — **proved** (`exists_character_ne_one`).  It was
+   the pivot of the whole approximation circle: the Bochner–Fejér approximation theorem, the
+   uniqueness theorem, Parseval, and the product rule `spec(fg) ⊆ spec f + spec g` are all
+   *equivalent* to it, and every attempt to route around it closed back on itself (the Fejér mass
+   estimate needs a Bohr set inside the almost periods, which is exactly the statement that the
+   characters generate the hull topology; the autocorrelation route needs `φ(0) = ∑ c_λ(φ)`, which
+   is Parseval).  What remains on this side is the *transfer*: apply it to `BohrHull f`, whose
+   compact-group instances are already available, and conclude by Stone–Weierstrass that `f` is a
+   uniform limit of trigonometric polynomials with frequencies in `bohrHullFrequencies f`.
+`formal/GaloisForLFunctions/HTGeometry/CoveringDimensionEmbedding.lean` takes the first step on the
+topological side, building on the corpus's existing `CoveringDimension` file (`HasCoverDimLE`):
+`hasCoverDimLE_of_continuous_injective` — a continuous injection of a *compact* space into a
+Hausdorff space is a homeomorphism onto its image, so the covering dimension of the image bounds
+that of the source.  This is exactly the jet step: the phase carrier is compact and the jet map is a
+continuous injection into `ℂ^N`, so any dimension bound for subsets of `ℂ^N` transfers to the
+carrier.
+
+`formal/GaloisForLFunctions/HTGeometry/BohrHullDimension.lean` states that step directly for the
+carrier: `hasCoverDimLE_bohrHull_of_injection` — for an almost-periodic `f`, any continuous
+injection of `BohrHull f` into a Hausdorff space transports the covering dimension of the image back
+to the carrier, the hull being compact.  This is the interface a jet embedding plugs into.
+
+Two reductions of the remaining topological input are now visible, and both are worth recording
+because each isolates the geometry from the topology.
+
+*(a) Peter–Weyl supplies the hypothesis of the corpus's inverse-limit bound.*  `CoveringDimension`
+already proves `HasCoverDimLE.of_refinedByStages`: if every finite open cover of `X` refines through
+one of a family of stages `Y i` of dimension `≤ n`, then `dim X ≤ n`.  For a compact abelian group
+the stages are the finite-character quotients `X/⋂_j ker χ_j ≅ 𝕋^r`, and the refinement hypothesis is
+exactly the statement that the characters generate the topology — which is what
+`exists_character_ne_one` gives: the sets `⋂_j {x : |χ_j(x) − 1| < δ}` form a neighbourhood basis of
+`0`, by compactness applied to the closed sets `⋂_j ker χ_j = {0}`.  So the group side of the
+dimension identity reduces to `dim 𝕋^r ≤ r`, with no further group theory.
+
+That reduction is now half executed:
+`formal/GaloisForLFunctions/HTGeometry/CompactAbelianCharNbhd.lean` proves
+`exists_finite_char_nbhd` — **every neighbourhood of the origin of a compact abelian group contains
+a set cut out by finitely many characters**, `{x : ∀ χ ∈ t, ‖χ x − 1‖ ≤ δ}`.  The closed sets
+`{x : χ x = 1}` intersect in `{0}` by Peter–Weyl, so compactness extracts a finite subfamily whose
+intersection already lies in the neighbourhood, and a second compactness argument (over the
+tolerances `1/(m+1)`) replaces the exact equalities by a `δ`.  This is precisely the refinement
+property `HasCoverDimLE.of_refinedByStages` asks for.
+
+The same file now also carries the point-translated form (`exists_finite_char_nbhd_at`) and the
+uniform statement **`exists_uniform_char_refinement`**: every finite open cover of a compact abelian
+group is refined by the boxes of a *single* finite character packet,
+
+`∀ x, ∃ k, {y : ∀ χ ∈ t, ‖χ y − χ x‖ ≤ δ} ⊆ U k`.
+
+Each point gets its own packet from the neighbourhood basis; the half-size open boxes cover the
+group; compactness takes a finite subcover; the union of the packets and the minimum of the
+half-tolerances work for every point at once, by the triangle inequality.  Since those boxes are
+exactly the preimages of boxes under the character-packet map `x ↦ (χ x)_{χ∈t}`, this is the
+refinement-through-a-stage hypothesis of `HasCoverDimLE.of_refinedByStages`, with the stage being
+the image of `G` in `ℂ^t`.
+
+### The dimension step is now Lean-native: Brouwer built from scratch
+
+The rank-to-dimension half of eq. (9) — `rank_Q dual(K) <= dim K` — was the last classical input
+with no mathlib support (mathlib has no covering dimension, no Brouwer fixed point theorem, no
+Sperner lemma).  It is now proved in the corpus in a form that bypasses Pontryagin's dimension
+theory for compact groups entirely.
+
+`HTGeometry/DeterminantPolynomialIntegral.lean` expands `det (1 + t • N)` into monomials in `t`
+(`det_one_add_smul_expand`) and integrates: for a continuous family of matrices on a compact set,
+`t ↦ ∫ det (1 + t • N x)` is the evaluation of a single polynomial
+(`exists_polynomial_setIntegral_det_one_add_smul`).
+
+`HTGeometry/SmoothNoRetraction.lean` proves **`no_contDiff_retraction_closedBall`**: no map that is
+`C¹` on an open neighbourhood of the closed unit ball, sends that ball into the unit sphere, and
+fixes the sphere pointwise, can exist.  The proof is Milnor's volume argument: the affine homotopy
+`H t x = x + t (ρ x − x)` is injective with positive Jacobian for small `t` (a Lipschitz bound from
+the mean value theorem, plus an intermediate-value argument on the determinant), and its image is
+the whole ball (inverse function theorem plus connectedness of the open ball, the sphere carrying
+zero Haar measure).  So the Jacobian integral equals the volume of the ball for all small `t`,
+hence — being a polynomial — at `t = 1`, where the map is the retraction and its differential is
+singular everywhere (`det_fderiv_eq_zero_of_mapsTo_sphere`: differentiating `‖ρ‖² = 1` puts the
+range of the differential in a hyperplane).  A ball of positive volume would have volume zero.
+
+`HTGeometry/BrouwerFixedPoint.lean` derives **Brouwer's fixed point theorem**.  The differentiable
+case builds the ray retraction `ρ x = x + τ(x) u(x)`, `u = (x − f x)/‖x − f x‖`, with `τ` the
+positive root of `τ² + 2τ⟨x,u⟩ + ‖x‖² − 1 = 0`; the discriminant is positive on the ball precisely
+because `f` maps the ball into itself, and `τ` vanishes on the sphere by Cauchy–Schwarz.  The
+continuous case follows by smooth approximation (a partition-of-unity approximation, rescaled back
+into the ball) against the displacement lower bound on the compact ball.  `exists_fixedPoint_of_retraction`
+transports the fixed point property to any bounded retract, which is how a box gets it.
+
+`HTGeometry/PoincareMiranda.lean` proves **`poincare_miranda`** from Brouwer by clamping the
+displacement `x ↦ clamp (x − g x)` to the cube.
+
+`HTGeometry/LipschitzImageNonvalue.lean` supplies the opposite bound: `r` uniformly Lipschitz real
+functions on a subset of an `M`-dimensional normed space omit values arbitrarily close to the origin
+whenever `M < r`, because a Lipschitz map does not raise Hausdorff dimension
+(`exists_norm_lt_notMem_lipschitz_pi_image`).
+
+`HTGeometry/CubeFaceDimensionBound.lean` combines the two into the theorem the finite-phase law
+needs, **`le_finrank_of_cube_faces`**: if a compact set `S` in a finite-dimensional normed space
+carries `r` pairs of disjoint compact subsets `(A_j, B_j)` and a continuous map of the `r`-cube into
+`S` sends the face `x_j = 0` into `A_j` and the face `x_j = 1` into `B_j`, then `r ≤ dim`.  Signed
+distance functions to the pairs realise a small omitted value; the face conditions are exactly the
+sign hypotheses of Poincaré–Miranda, which forces that value to be attained.
+
+This is the whole content of `rank ≤ dim` for the carrier, and it avoids the two classical detours
+the literature route needs — the Eilenberg–Otto separator characterisation of covering dimension,
+and Pontryagin's additivity of dimension in a compact group extension.  What replaces them is a
+single geometric input on the carrier side: **a continuous `r`-parameter map of the cube into the
+carrier whose `j`-th pair of opposite faces lands in `{χ_j = 1}` and `{χ_j = −1}`**.  For the Bohr
+hull of a function with `r` rationally independent frequencies that map exists for a structural
+reason: the hull is the dual of its (discrete) frequency group `Γ`, a homomorphism `Γ → ℝ^r`
+extending `λ_j ↦ e_j` exists because `ℝ^r` is a divisible, hence injective, abelian group, and
+dualising it gives a continuous homomorphism `ℝ^r → hull` with `χ_{λ_j}(φ(t)) = e^{i t_j}`.  Note
+this does *not* need a continuous section of the carrier over the torus — none exists for a
+solenoidal carrier — only the one-parameter subgroups the hull already carries.
+
+### The carrier side is closed too: the phase rank is bounded by any embedding dimension
+
+The geometric input the dimension step needs — a continuous `r`-parameter map of the cube into the
+carrier — is now built, and with it the dimension step of eq. (9) is complete and unconditional in
+Lean.
+
+`HTGeometry/RealSubgroupIntBasis.lean` (`exists_rat_independent_intSpanning`): every finite set of
+reals lies in the integer span of finitely many rationally independent reals drawn from the group it
+generates.  A finitely generated subgroup of `ℝ` is torsion free, hence free over `ℤ`, and a
+`ℤ`-basis is automatically `ℚ`-independent.
+
+`HTGeometry/BohrHullCharCombination.lean`: a unimodular multiplicative function on `ℝ` sends an
+integer combination to the corresponding product of powers; transported to the hull by density,
+`bohrHullChar` of an integer combination of frequencies is the product of powers of the individual
+characters (`bohrHullChar_intCombination`).
+
+`HTGeometry/BohrHullKroneckerHom.lean` (`exists_bohrHull_char_eq_finset`): Kronecker's theorem for
+an *arbitrary* finite set of frequencies.  Relations are allowed: pass to the free basis, realise the
+prescription there, and the relations propagate.
+
+`HTGeometry/BohrHullSeparation.lean` (`bohrHullChar_separates`): Peter–Weyl plus
+`exists_frequency_of_hull_character` — two points of the hull agreeing on every frequency character
+are equal.
+
+`HTGeometry/BohrHullCharRealization.lean` (`exists_bohrHull_char_eq`): **the carrier exhausts the
+character group of `Γ`**.  The sets of points realising a finite prescription are closed, nonempty
+and directed under union, so compactness of the hull gives one point realising the prescription on
+all of `Γ`.
+
+`HTGeometry/BohrHullParameterSubgroup.lean` (`exists_continuous_hullParameter`): for a rationally
+independent packet `λ_1, …, λ_r` of hull frequencies there is a **continuous** map
+`φ : ℝ^r → hull` with `χ_{λ_j}(φ t) = e^{i t_j}`.  The `ℚ`-linear functional `v : ℝ → ℝ^r` with
+`v(λ_j) = e_j` exists by extension of a linear map on a subspace; `γ ↦ e^{i⟨v γ, t⟩}` is a character
+of `Γ` for each `t`, realised by the previous theorem; and continuity in `t` is free, because the
+evaluation map of the compact hull into the product of circles is injective (separation), hence a
+homeomorphism onto its image, while the parameter family is visibly continuous there.
+
+`HTGeometry/PhaseRankDimensionBound.lean` — the capstone:
+
+> **`rank_le_finrank_of_hull_embedding`** and **`card_le_finrank_of_hull_embedding`**.  If the phase
+> carrier of an almost periodic `f` admits a continuous injection into a finite-dimensional real
+> normed space `E`, then any rationally independent family of hull frequencies has at most
+> `dim_ℝ E` members.
+
+The `j`-th pair of opposite faces of the cube maps into `{χ_j = 1}` and `{χ_j = −1}` — disjoint
+compact sets, because the embedding is injective — and `le_finrank_of_cube_faces` converts that into
+`r ≤ dim`.  So the finite rational rank of `Γ_B(f)` follows from *any* finite-dimensional embedding
+of the carrier; for eq. (9) the embedding is the jet map supplied by the autonomous ADE.
+
+Everything above is `#print axioms`-clean (`propext`, `Classical.choice`, `Quot.sound`) and wired
+into the `HTGeometry` umbrella.
+
+### The finite-rank statement, and the return times, are now theorems
+
+`HTGeometry/PhaseRankDimensionBound.lean` also carries the cardinal form.  With
+`card_le_finrank_of_hull_embedding_family` (arbitrary finite index type) and mathlib's `rank_le`,
+using that a `ℤ`-independent family in `ℝ` is `ℚ`-independent:
+
+> **`rank_bohrHullFrequencies_le`**: `Module.rank ℤ Γ_B(f) ≤ dim_ℝ E` for any continuous injection of
+> the carrier into a finite-dimensional `E`.
+
+`HTGeometry/HullJetPhaseRank.lean` specialises this to the jet coordinates:
+**`rank_bohrHullFrequencies_le_two_mul`** — a continuous injective jet-sample map into `ℂ^N` bounds
+the rational rank of the frequency group by `2N` — and the closed-embedding form.  This is exactly
+`rank_Q Γ_B(f) ≤ 2m(n+1)`, eq. (7)/(9), with the only remaining input being injectivity of the jet
+sample (the analytic implicit-function step, eq. 19).
+
+`HTGeometry/BohrReturnSequence.lean` discharges the diagonal choice of return times used at eq. (28).
+`isBohrAlmostPeriodic_fin` says a finite family of almost periodic functions is almost periodic as a
+tuple (induction on the family through the existing pair law), and
+**`exists_bohr_return_sequence`** produces one sequence `T_l → +∞` along which *every* member of the
+family converges to itself uniformly on the line, with `exists_bohr_return_sequence_tendsto` as the
+pointwise form.
+
+`HTGeometry/RecurrenceCollapseAlmostPeriodic.lean` then removes the return-time hypothesis from the
+collapse: **`recurrence_collapse_of_bohr_return`** takes only the relation, continuity and almost
+periodicity of the monomials along the vertical line, eventual nonvanishing of the dominant
+coefficient, and the coefficient projective boundary — the last being a limit as `Im s → +∞`, hence
+valid along the return sequence — and concludes the autonomous relation `∑ d_α M_α(s₀) = 0` with
+`d_β = 1`.  Eq. (27) → (29), with the Bohr return step proved rather than assumed.
+
+*(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
+Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
+every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`
+that is the classical brick decomposition into `M + 1` families of disjoint boxes.  This is the only
+genuinely geometric input left on the Euclidean side.
+
 2. **The dimension identity** `dim X = rank_ℚ X̂` for compact abelian groups, in the direction
    needed here: an embedding `X ↪ ℂ^N` forbids a surjection onto `𝕋^r` for `r > 2N`.  The surjection
    itself is now a theorem (`exists_bohrHull_charPacket_eq`), and the character injection

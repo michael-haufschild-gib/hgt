@@ -126,10 +126,10 @@ The two current umbrella misses are `HTGeometry.NormalResolventDistance` and
 `RHTower.StationaryRecurrenceQuotientLaw`.  This is an index/reachability fact,
 not a mathematical gap in the paper.
 
-## Live post-census fourteen-module audit
+## Live post-census twenty-module audit
 
-Fourteen modules appeared after the 6,885-module census. Frozen review tree
-therefore contains 6,899 RHTower/HTGeometry modules. All fourteen are
+Twenty modules appeared after the 6,885-module census. Frozen review tree
+therefore contains 6,905 RHTower/HTGeometry modules. All twenty are
 classified here.
 
 | New module | Strongest exact content | Disposition |
@@ -138,6 +138,8 @@ classified here.
 | HTGeometry.CompactAbelianConvCompact | Gives finite-rank operator-norm approximants and proves continuous-kernel convolution compact | Standard compact-group operator theorem; supports Sonin infrastructure but adds no Xi-specific claim |
 | HTGeometry.CompactAbelianConvSymmetric | Hermitian continuous kernels give symmetric compact-group convolution operators | Standard spectral infrastructure; no Xi specialization |
 | HTGeometry.CompactAbelianTranslation | Haar-preserving translations act isometrically on \(L^2\) and commute with continuous-kernel convolution | Standard compact-group representation infrastructure; no Xi specialization or new source-sign theorem |
+| HTGeometry.CompactAbelianCharVector | Every nonzero finite-dimensional translation-invariant \(L^2\) subspace contains a simultaneous translation eigenvector | Positive compact-group character theorem; generic consumer infrastructure with no Xi source selector |
+| HTGeometry.CompactAbelianCharacter | A nonzero convolution eigenvector that is a joint translation eigenvector produces a continuous multiplicative unit-modulus character | Completes generic compact-group character extraction; no Xi specialization or arithmetic orientation theorem |
 | HTGeometry.FiniteWalshObservationCapacityLaw | Exact normalized Walsh Parseval law and dimension-free threshold bound \(\eta^2N_\eta\le B^2\) | Direct strengthening: quantitative bounded-observer side of source observability |
 | HTGeometry.LBitBoundaryOperationalCapacityLaw | Boundary-time response satisfies \(\eta^2N_\eta D^2\le4t^2K^2\); full visibility costs \(\eta^2D^3\le4t^2K^2\) | Exact physical realization of Walsh capacity; structural analogue, not an Xi specialization |
 | HTGeometry.PolarTransportUnitary | Nearby finite-dimensional subspaces have canonical norm-continuous polar isometric transport | Positive operator survivor: transport existence is routine once phase/source selection is supplied; no Xi specialization |
@@ -148,6 +150,10 @@ classified here.
 | RHTower.SoninAnnulusPacketAsymptotics | Sonin annular packet mean vanishes and its squared norm tends to half the positive profile energy | Nondegenerate cofinal packet normalization; direct input to Calkin injectivity |
 | RHTower.SoninPacketWeakEscape | Annular packets pair to zero against every fixed profile-integrable weight | Direct input to finite Calkin Gram injectivity and the new all-prime aggregate theorem; absorbed there |
 | RHTower.SoninPacketL2 | Realizes annular packets in the even Sonin (L^2) carrier and proves weak escape against every fixed (L^2) vector | Hilbert-space form of same Calkin injectivity input; absorbed in all-prime compression proof |
+| RHTower.SoninPacketCompactVanishing | Every fixed compact operator, including exact Sonin projection correction and every principal-relative-ideal element, vanishes on the weakly escaping packet family | Direct support for cancellation-free Calkin coefficient recovery; absorbed in all-prime compression proof |
+| RHTower.SoninFourierUniformDecay | Cocompact Fourier decay becomes a uniform outside-one-radius estimate | Riemann--Lebesgue infrastructure for packet escape; no new Xi sign or compactness producer |
+| RHTower.SuzukiNegativeProjectorCoherentCompletion | Continuous functional calculus gives canonical positive/negative parts of the inverse-coordinate affine Krein defect; adding its negative part is the canonical positive repair | Positive operator survivor once target spectral defect is already known; target-side Jordan decomposition, not arithmetic source positivity or zero exclusion |
+| RHTower.StationaryRecurrencePointSpectrumScalingLaw | Complete stationary return law is normalized point-spectrum law contracted by square of total atomic mass; continuous spectral sectors disappear exactly | Maximal generic recurrence consumer quotient; reinforces that consumer completion cannot recover source data and has no Xi specialization |
 
 The height floor is not sold as competitive numerical zero verification.
 Its value is conceptual: the same analytic endpoint charge which bounds total

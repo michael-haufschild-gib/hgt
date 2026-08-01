@@ -162,7 +162,18 @@ weld.  This theorem itself does neither.
       finite weighted family of prime scales the real curvature trace is minus the weighted total
       coupling energy, and `re_opTrace_soninAperturePacketCurvature_nonpos` shows no nonnegative
       reweighting can make it positive
-- [ ] prove Burnol cancellation or construct an exact unbounded-below source sequence
+- [x] **exact unbounded-below source sequence constructed** —
+      `exists_soninAperturePacketCurvature_re_opTrace_lt` in `SoninUnboundedSourcePacket.lean`:
+      for every level `M` there is a finite **unit-weight** source packet, over explicit scales of
+      the crossing clock, whose aperture curvature trace lies below `-M`.  The chain is
+      `norm_sq_apply_le_hsNormSq` (HS energy dominates the action on a unit vector) plus the
+      cofinal nonannihilation, giving the uniform floor
+      `eventually_le_hsNormSq_soninApertureCoupling` (energy eventually at least `1/4`), summed
+      over enough scales.  Unit weights matter: rescaling a single weight would make unboundedness
+      vacuous.
+      This settles the first branch of the disjunction below; Burnol cancellation is now the
+      remaining question, and it must contend with an unbounded-below channel.
+- [ ] prove Burnol cancellation, against a channel now known to be unbounded below
 - [ ] prove RH or terminally retire surviving Suzuki--Burnol weld
 
 ## Log

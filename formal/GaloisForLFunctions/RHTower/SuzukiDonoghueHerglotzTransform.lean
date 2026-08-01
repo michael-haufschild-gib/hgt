@@ -1,0 +1,145 @@
+import GaloisForLFunctions.RHTower.SuzukiEndpointNevanlinnaMass
+
+/-!
+# The Donoghue transform is a Herglotz function, and its Cayley transform is Schur
+
+The rigidity chain of a Suzuki carrier runs
+
+`jets -> Donoghue probability -> m -> Theta -> phi`.
+
+This module builds the two middle objects and proves the properties that make them what they are.
+
+The Donoghue kernel is a *probability* kernel because its imaginary part above the real axis is
+
+`Im K_z (t) = Im z * (t² + 1) / |t - z|²`,
+
+strictly positive for every real `t`.  Integrating against a compactified spectral probability
+therefore lands strictly inside the upper half plane, so the Donoghue transform is a Herglotz
+function.  Its Cayley transform then lands strictly inside the unit disc, so it is a Schur function.
+
+Both facts are unconditional and use nothing about the carrier beyond the measure being a
+probability measure on the compact projective interval.
+-/
+
+namespace GaloisForLFunctions.RHTower
+
+open MeasureTheory Filter Topology
+
+/-! ## The Donoghue kernel is a probability kernel -/
+
+/-- **Exact imaginary part of the Donoghue kernel.**  Read through the Möbius form, the imaginary
+part is the height times `t² + 1` over the squared distance to the spectral parameter. -/
+theorem im_suzukiDonoghueKernel {z : ℂ} (hz : 0 < z.im) (t : ℝ) :
+    (suzukiDonoghueKernel t z).im
+      = z.im * (t ^ 2 + 1) / Complex.normSq ((t : ℂ) - z) := by
+  have hd : ((t : ℂ) - z) ≠ 0 := suzukiDonoghueDenom_ne_zero hz t
+  have hns : Complex.normSq ((t : ℂ) - z) ≠ 0 := ne_of_gt (Complex.normSq_pos.mpr hd)
+  rw [suzukiDonoghueKernel_eq_mobius hd, Complex.div_im]
+  simp only [Complex.add_im, Complex.add_re, Complex.mul_im, Complex.mul_re,
+    Complex.ofReal_re, Complex.ofReal_im, Complex.one_re, Complex.one_im,
+    Complex.sub_re, Complex.sub_im, Complex.normSq_apply]
+  field_simp
+  ring
+
+/-- The Donoghue kernel maps the upper half plane into itself, for every real spectral point. -/
+theorem im_suzukiDonoghueKernel_pos {z : ℂ} (hz : 0 < z.im) (t : ℝ) :
+    0 < (suzukiDonoghueKernel t z).im := by
+  have hd : ((t : ℂ) - z) ≠ 0 := suzukiDonoghueDenom_ne_zero hz t
+  have hns : 0 < Complex.normSq ((t : ℂ) - z) := Complex.normSq_pos.mpr hd
+  rw [im_suzukiDonoghueKernel hz t]
+  refine div_pos ?_ hns
+  nlinarith [sq_nonneg t]
+
+theorem im_projectiveDonoghueKernel_pos {z : ℂ} (hz : 0 < z.im) (t : ℝ) :
+    0 < (projectiveDonoghueKernel t z).im :=
+  im_suzukiDonoghueKernel_pos hz _
+
+/-- The extended kernel is in the open upper half plane at every point of the closed projective
+interval, including the two endpoints, where it equals the spectral parameter itself. -/
+theorem im_extendedProjectiveKernel_pos {z : ℂ} (hz : 0 < z.im) (t : ℝ) :
+    0 < (extendedProjectiveKernel t z).im := by
+  rw [extendedProjectiveKernel]
+  split_ifs with h
+  · exact im_projectiveDonoghueKernel_pos hz t
+  · exact hz
+
+/-! ## The Donoghue transform -/
+
+instance : Nonempty ↥projectiveInterval := ⟨projectiveLeft⟩
+
+/-- The Donoghue transform of a compactified spectral probability. -/
+noncomputable def donoghueTransform (nu : Measure ↥projectiveInterval) (z : ℂ) : ℂ :=
+  ∫ t, extendedProjectiveKernel (t : ℝ) z ∂nu
+
+/-- **The Donoghue transform is a Herglotz function.**  The kernel is strictly in the upper half
+plane at every point of the compact projective interval, so a continuous positive minimum exists
+and the integral against a probability measure inherits it. -/
+theorem im_donoghueTransform_pos (nu : Measure ↥projectiveInterval) [IsProbabilityMeasure nu]
+    {z : ℂ} (hz : 0 < z.im) : 0 < (donoghueTransform nu z).im := by
+  have hint := integrable_extendedProjectiveKernel nu hz
+  have hcont : Continuous (fun t : ↥projectiveInterval =>
+      (extendedProjectiveKernel (t : ℝ) z).im) :=
+    Complex.continuous_im.comp ((continuousOn_extendedProjectiveKernel hz).restrict)
+  obtain ⟨t0, -, hmin⟩ :=
+    isCompact_univ.exists_isMinOn Set.univ_nonempty hcont.continuousOn
+  have hcpos : 0 < (extendedProjectiveKernel (t0 : ℝ) z).im :=
+    im_extendedProjectiveKernel_pos hz _
+  have hle : ∀ t : ↥projectiveInterval,
+      (extendedProjectiveKernel (t0 : ℝ) z).im ≤ (extendedProjectiveKernel (t : ℝ) z).im :=
+    fun t => hmin (Set.mem_univ t)
+  have hIm : (donoghueTransform nu z).im
+      = ∫ t, (extendedProjectiveKernel (t : ℝ) z).im ∂nu := (integral_im hint).symm
+  have hconst : ∫ (_ : ↥projectiveInterval), (extendedProjectiveKernel (t0 : ℝ) z).im ∂nu
+      = (extendedProjectiveKernel (t0 : ℝ) z).im := by simp
+  have hge : (extendedProjectiveKernel (t0 : ℝ) z).im
+      ≤ ∫ t, (extendedProjectiveKernel (t : ℝ) z).im ∂nu := by
+    rw [← hconst]
+    exact integral_mono (integrable_const _) hint.im hle
+  rw [hIm]
+  linarith
+
+/-! ## The Cayley transform is Schur -/
+
+/-- The Cayley transform carrying the upper half plane to the unit disc. -/
+noncomputable def cayleyOfHerglotz (m : ℂ) : ℂ := (m - Complex.I) / (m + Complex.I)
+
+theorem cayleyOfHerglotz_denom_ne_zero {m : ℂ} (hm : 0 < m.im) : m + Complex.I ≠ 0 := by
+  intro h
+  have him : (m + Complex.I).im = 0 := by rw [h]; simp
+  simp only [Complex.add_im, Complex.I_im] at him
+  linarith
+
+/-- **The Cayley transform of a Herglotz value is Schur.**  A point strictly above the real axis is
+strictly closer to `i` than to `-i`. -/
+theorem normSq_cayleyOfHerglotz_lt_one {m : ℂ} (hm : 0 < m.im) :
+    Complex.normSq (cayleyOfHerglotz m) < 1 := by
+  have hne := cayleyOfHerglotz_denom_ne_zero hm
+  have hpos : 0 < Complex.normSq (m + Complex.I) := Complex.normSq_pos.mpr hne
+  rw [cayleyOfHerglotz, Complex.normSq_div, div_lt_one hpos]
+  simp only [Complex.normSq_apply, Complex.sub_re, Complex.sub_im, Complex.add_re,
+    Complex.add_im, Complex.I_re, Complex.I_im]
+  nlinarith [hm]
+
+/-- **The Cayley transform of the Donoghue transform is Schur.**  This is the inner function `Theta`
+of the rigidity chain, built from the spectral probability alone. -/
+theorem normSq_cayleyOfHerglotz_donoghueTransform_lt_one
+    (nu : Measure ↥projectiveInterval) [IsProbabilityMeasure nu] {z : ℂ} (hz : 0 < z.im) :
+    Complex.normSq (cayleyOfHerglotz (donoghueTransform nu z)) < 1 :=
+  normSq_cayleyOfHerglotz_lt_one (im_donoghueTransform_pos nu hz)
+
+/-! ## The middle links of the rigidity chain -/
+
+/-- Equal spectral probabilities give equal Herglotz transforms: the `sigma -> m` link. -/
+theorem donoghueTransform_congr {nu1 nu2 : Measure ↥projectiveInterval}
+    (h : nu1 = nu2) (z : ℂ) : donoghueTransform nu1 z = donoghueTransform nu2 z := by
+  rw [h]
+
+/-- Equal spectral probabilities give equal inner functions: the `sigma -> m -> Theta` links
+composed.  These are the two links the rigidity chain calls function applications; with the
+Herglotz and Schur properties above they are now genuine objects rather than notation. -/
+theorem cayleyOfHerglotz_donoghueTransform_congr {nu1 nu2 : Measure ↥projectiveInterval}
+    (h : nu1 = nu2) (z : ℂ) :
+    cayleyOfHerglotz (donoghueTransform nu1 z) = cayleyOfHerglotz (donoghueTransform nu2 z) := by
+  rw [h]
+
+end GaloisForLFunctions.RHTower

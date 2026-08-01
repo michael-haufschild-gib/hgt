@@ -609,8 +609,8 @@ the exact target is
 (exists C>=0 and A>=pi/2, forall L>=A, -C <= B1(L)) <-> RH.
 ```
 
-Paper proof is dependency-closed in
-`../2-fully-proven/ccm-first-clock-tail-lower-bound-completeness.md`.  Its decisive carrier is
+Paper proof is dependency-closed and Lean-formalized in
+`../3-formalized/needs-audit/ccm-first-clock-tail-lower-bound-completeness.md`.  Its decisive carrier is
 
 ```text
 R(L) = Re Q(L) + (C/2)L
@@ -627,5 +627,299 @@ Lean implementation is in
 `RHTower/CCMFirstClockTailLowerBoundCompleteness.lean`.  Current file contains exact predicate,
 source-to-affine divisor law, compact carrier and integrability, analytic continuation, corrected
 Landau measure, halving/dyadic descent, correction removal, full Xi-moment reconstruction, RH
-equivalence, and false-RH unboundedness capstone.  Status at this checkpoint:
-`[PAPER-PROVED] [LEAN WRITTEN; COMPILER CLOSURE IN PROGRESS] [NO SORRY/AXIOM]`.
+equivalence, and false-RH unboundedness capstone. Targeted `lake env lean` and final `lake build`
+are green. `#print axioms` on both RH equivalence and every-tail unboundedness capstone reports
+exactly `[propext, Classical.choice, Quot.sound]`. Status:
+`[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`.
+
+Exact remaining open core is source-side and irreducible under this equivalence:
+
+```text
+exists C A : R, 0 <= C and pi/2 <= A and
+  forall L >= A, -C <= B1(L).
+```
+
+Next whole-corpus pass must ask which general HTGeometry structures can force a lower floor for one
+real boundary observable without already assuming zero location. Import/use history is irrelevant;
+candidate mechanisms must be extracted from complete normalized HT theorem and object reservoir,
+then tested against this exact premise.
+
+## Whole-HT transfer: asymptotic Bohr completeness of first clock
+
+Complete semantic audit of HTGeometry—not import-neighbor tracing—identified
+`SummableSpectrumScrewRecurrence` as unused Xi-side structure. Its compact relation-hull theorem
+applies to arbitrary positive summable weights and arbitrary integral frequency relations. RHTower
+had an abstract Suzuki wrapper, but no multiplicity-exact Xi instantiation and no comparison with
+literal moving-denominator CCM first clock.
+
+New generic HT theorem:
+
+```text
+nonnegative a + Summable a
+  -> IsBohrAlmostPeriodic (screwSeries a omega)
+```
+
+proved by uniform finite-frequency approximation, with no countability, nonzero-frequency, or
+independence premise.
+
+For scaled literal source
+
+```text
+F(L)=L*ccmPublishedSourceSineCoefficient(L/2,2*pi/L),
+```
+
+new exact formal theorem is
+
+```text
+(exists continuous Bohr-almost-periodic P, F-P -> 0 at +infinity) <-> RH.
+```
+
+Under RH explicit witness is twice multiplicity-exact Xi screw series. Per zero, for `L>=2*pi`,
+moving-denominator error is nonnegative and at most
+
+```text
+(2/15)*(2*pi/L)^2/gamma_q^2.
+```
+
+Summability gives full `O(L^-2)` error. Conversely boundedness of arbitrary Bohr witness plus
+vanishing perturbation gives literal first-clock tail lower floor, so prior completeness theorem
+returns RH.
+
+Relation-hull transfer also yields: every value in full asymptotic interval is approximated by
+scaled literal source with bounded gaps after one threshold; absolute endpoint occurs exactly when
+every finite integral ordinate relation has even total coefficient. No simplicity or rational
+independence premise.
+
+Formalized card:
+`../3-formalized/needs-audit/ccm-first-clock-asymptotic-bohr-completeness.md`.
+Lean modules:
+`HTGeometry/SummableSpectrumScrewAlmostPeriodic.lean` and
+`RHTower/CCMFirstClockAsymptoticBohrLaw.lean`. Both umbrellas wired. Targeted Lean checks and final
+module build green. Five capstone axiom audits report exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+Exact new primitive source wall:
+
+```text
+CCMFirstClockScaledSourceAsymptoticallyBohrAlmostPeriodic.
+```
+
+This strictly sharpens the earlier tail-floor wall: asymptotic Bohr behavior supplies tail floor,
+but relation-hull theorem additionally exposes complete conditional recurrence and parity geometry.
+Novelty remains unverified; result is not RH.
+
+## Frozen conjecture ABT-1: asymptotic Bohr Torelli law
+
+`[FROZEN BEFORE PROOF — 2026-08-01]`
+
+Let
+
+```text
+F(L)=L*ccmPublishedSourceSineCoefficient(L/2,2*pi/L).
+```
+
+Assume only the source-side statement that there exists a continuous real Bohr almost-periodic
+`P` with `F(L)-P(L)->0` as `L->+infinity`. Then:
+
+1. `P` is unique among all such asymptotes;
+2. the source assumption forces RH;
+3. for every nonzero real `lambda`, the complex Bohr coefficient of `P` is
+
+```text
+- sum_{q : |Re xiSpectralPoint(q)|=|lambda|} 1/(Re xiSpectralPoint(q))^2;
+```
+
+4. consequently `-lambda^2` times that coefficient is the exact cardinality of the
+   multiplicity-copy fibre at absolute ordinate `|lambda|`; and
+5. the support and these integral masses reconstruct the full real Xi divisor, hence the
+   normalized even canonical product `XiC`.
+
+Ontological reversal: the Xi ordinate multiset is not supplied to the source-side hypothesis. It
+is recovered as the quantized negative Bohr spectrum of the unique asymptotic translation germ of
+the literal prime--Gamma first clock.
+
+Hostile tests fixed with the conjecture:
+
+- uniqueness of `AP+C_0` is classical and is not the novelty claim;
+- the generic coefficient formula is classical harmonic analysis and is supporting infrastructure;
+- zero-frequency atoms must be excluded using the proved Xi spectral gap;
+- collisions and divisor multiplicity must be retained by fibre sums, with no simplicity or
+  rational-independence assumption;
+- the theorem is not an RH proof because existence of the asymptote is already RH-equivalent;
+- candidate new content is the source-specific multiplicity-exact Torelli/quantization statement;
+  external priority remains open.
+
+## ABT-1 resolution: proved and formalized
+
+`[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
+
+ABT-1 survives. Exact source-side theorem:
+
+```text
+F-P -> 0, P continuous and Bohr AP
+  => P is unique
+  => RH
+  => P = 2 * xiCriticalScrewSeries
+  => a_P(lambda) = -N(|lambda|)/lambda^2  for lambda != 0
+  => -lambda^2*a_P(lambda) = N(|lambda|).
+```
+
+`N(|lambda|)` is cardinality of exact `XiZeroCopy` fibre at absolute real ordinate, hence retains
+analytic multiplicity and every frequency collision. Functional-equation reflection makes
+absolute divisor sufficient to recover full real centered divisor. No simplicity or rational
+independence appears.
+
+New HT generic theorem proves termwise Bohr coefficient extraction for arbitrary nonnegative
+summable screw spectrum. Proof uses uniform finite-subset convergence plus 1-Lipschitz continuity
+of Bohr coefficient; no frequency separation is assumed. New HT rigidity theorem proves directly
+that a Bohr almost-periodic function tending to zero at positive infinity vanishes identically.
+
+Formal modules:
+
+```text
+formal/GaloisForLFunctions/HTGeometry/SummableSpectrumScrewBohrCoefficients.lean
+formal/GaloisForLFunctions/RHTower/CCMFirstClockAsymptoticBohrTorelli.lean
+```
+
+Formalized card:
+`../3-formalized/needs-audit/ccm-first-clock-asymptotic-bohr-torelli.md`.
+
+Remaining source-producing frontier is not uniqueness or spectral recovery. It is direct
+construction of the asymptotic Bohr model—or direct proof of its quantized coefficient law—from
+the prime/Gamma side without importing RH.
+
+Final audit: targeted Lean checks green; module build `9334/9334`; six capstones have axiom set
+exactly `[propext, Classical.choice, Quot.sound]`. Formal lint finds no forbidden declaration and
+fails only on six unrelated pre-existing HTGeometry umbrella-reachability gaps. No Lean/lake
+process remains running.
+
+## Producer restart: whole-HT verdict and frozen FCES-1
+
+Whole-HT mechanism audit against literal first-clock source sign closes generic Herglotz/KMS/Pick,
+finite-jet/hypertranscendence, and positivity-preserving regularization as direct producers. Exact
+reasons are already formalized in the corpus: critical transport divergence at every finite
+cancellation order, sign-changing raw delays, basiswise common-aperture Pick rigidity, cofinally
+unbounded critical Pick index, arbitrary finite-jet controllability, and arithmetic blindness of
+convergent multiplicative regularization.
+
+Positive survivor is HT crease tomography. Frozen conjecture `FCES-1` in
+`ccm-first-clock-prime-entry-slope-tomography.md`: at aperture `L=log k`, literal active atom has
+value zero and slope
+
+```text
+-2*pi*criticalMellinAtomWeight(k)/log k.
+```
+
+For `k=p^e` this is `-2*pi/(e*sqrt(p^e))`; for non-prime-powers it vanishes. Full derivative-jump
+current should therefore recover exact von Mangoldt source. This does not prove sign; it forces any
+future lower-floor producer to preserve discrete negative slope current and create compensation in
+continuous inter-entry drift.
+
+## FCES-1 resolution: finite-packet source tomography
+
+`[PAPER-PROVED] [LEAN-PROVED] [CORPUS-NEW BRIDGE] [NOT RH]`
+
+FCES-1 is formalized in exact finite-packet form. At `L = log k`, active atom vanishes and has slope
+
+```text
+-2*pi*criticalMellinAtomWeight(k)/log(k).
+```
+
+Hard-entered atom therefore has zero left slope and displayed right slope. The normalized slope
+recovers exact atom weight; at `k=p^e` it is `-2*pi*p^(-e/2)/e < 0`; outside prime powers it is zero.
+Log injectivity makes every other finite-packet atom smooth at distinguished aperture, yielding an
+exact decomposition of whole packet into smooth background plus unique kink atom.
+
+Formal module:
+`formal/GaloisForLFunctions/RHTower/CCMFirstClockPrimeEntrySlopeTomography.lean`.
+RHTower umbrella wired; direct `lake env lean` check green. Card moved to
+`../3-formalized/needs-audit/ccm-first-clock-prime-entry-slope-tomography.md`.
+
+Hostile audit found analogous high-clock result `SuzukiPrimeTangentTomography.lean`; novelty claim is
+therefore limited to corpus-new moving-first-clock bridge and finite-packet decomposition. Full
+published-source derivative current remains unclaimed until Gamma--polar summand is matched and
+proved smooth in exactly same normalization.
+
+Producer consequence: negative atomic crease current is arithmetic-complete. Any successful lower-
+floor mechanism must preserve it and explain compensation through smooth inter-entry drift; smoothing
+or radial collapse discards decisive source data rather than producing sign.
+
+Final FCES-1 audit: direct Lean check and final module build green (`9262/9262`). Four capstone
+`#print axioms` reports exactly `[propext, Classical.choice, Quot.sound]`. Formal lint finds no
+forbidden declaration in new module and remains nonzero only on nine unrelated pre-existing
+HTGeometry umbrella-reachability gaps. No claim of RH proof: remaining open core is still a direct
+unconditional producer for first-clock lower floor/asymptotic Bohr existence.
+
+## Whole-HT producer restart: canonical Julia prime-order attenuation
+
+The first mechanism surviving the scalar/Pick/convolution/tilt no-gos is the existing canonical
+Gamma-sewn Julia normal coordinate.  At critical damping its squared hard mass factors as the
+literal `Lambda(p^e)/sqrt(p^e)` mass times one universal profile `R(x log p)`, independent of the
+power `e`.  Frozen conjecture `JPOA-1` is recorded in
+`ccm-julia-prime-order-attenuation-law.md` before proof.
+
+Paper reduction: with `t=tanh(y/2)` and `P=1+6t^2+t^4`, the compression square is `1/sqrt(P)`.
+The derivative sign of `R(y)=4(1-1/sqrt(P))/(3y^2)` reduces to the strict elementary inequality
+
+```text
+artanh(t) * t(1-t^2)(t^2+3)/P < sqrt(P)-1.
+```
+
+It follows from `artanh(t)<t/(1-t^2)`, itself the strict `z<sinh z` inequality at
+`z=2 artanh(t)`, and the polynomial residue
+`3P-(t^2+3)=17t^2+3t^4>0`.  Thus the candidate profile is strictly decreasing on paper.
+
+Scientific consequence if the dependency audit closes: every power in one prime tower keeps the
+same sign, but every larger prime is attenuated more.  Since first-clock multi-mode towers lie at
+`log p<=L/2` and irreducible one-mode counter towers lie at `log p>L/2`, this is a canonical
+non-diagonal mechanism that improves the exact unresolved outer/aligned odds; exponential tilts in
+the corpus provably move them the other way.  The `p=2,3` two-mode exceptions remain explicit.
+
+Hostile no-go: source-faithful schedules have `x(L)L->0`, which collapses the useful order gap.
+Fixed positive `x(L)L` preserves a gap but not uniform recovery of the critical source.  Therefore
+Julia dilation alone does not prove positivity; its positive survivor is a sharp regularization
+boundary-layer invariant and favorable prime-order transport law.
+
+## JPOA-1 resolution: first favorable whole-HT source transport
+
+`[PAPER-PROVED] [LEAN-PROVED] [NOVELTY SEARCH NONCOLLISION] [NOT RH]`
+
+The whole-HT audit produced a non-scalar survivor. The canonical Gamma-sewn Julia environment has
+exact critical mass ratio
+
+```text
+R(y) = 4/(3y^2) * (1 - cosh(y/2)^2/sqrt(cosh(2y))),  y=x log p.
+```
+
+`R` is strictly decreasing on `y>0`. Lean now identifies this universal HT profile with the
+literal RHTower source multiplier and proves, without numerical computation:
+
+```text
+hard_x(u,p^e)^2 = R(x log p) * boundary(u,p^e)^2,
+p<q  =>  R(x log q)<R(x log p),
+multi-mode p, one-mode q  =>  p<q,
+R_q(G-B) < R_p G-R_q B  when G>0.
+```
+
+This is first audited corpus mechanism that moves exact reduced first-clock odds in favorable
+direction: all one-mode outer primes are suppressed more strongly than every multi-mode tower
+prime. Existing exponential tilts move this comparison in opposite direction.
+
+Sharp no-go is equally exact. Same positive scalar multiplies every exponent in one tower, so
+tower sign is unchanged; negative outer towers and negative `p=2,3` two-mode towers are not locally
+repaired. Coefficientwise `R(x log p)->1` at lossless boundary. Therefore current open core is not
+finding another sign-preserving scalar regularizer. It is an aggregate theorem coupling this
+strict cross-prime order gain to continuous/Gamma budget strongly enough to dominate complete bad
+residual under a boundary-layer schedule.
+
+Formal modules and card:
+
+```text
+formal/GaloisForLFunctions/HTGeometry/JuliaDefectAttenuation.lean
+formal/GaloisForLFunctions/RHTower/GammaSewnMobiusJuliaPrimeOrderAttenuation.lean
+docs/drafts/pipeline/3-formalized/needs-audit/ccm-julia-prime-order-attenuation-law.md
+```
+
+Both theorem-area umbrellas are wired. Final module builds pass; capstone axiom sets are exactly
+`[propext, Classical.choice, Quot.sound]`. Repository lint reports only five unrelated pre-existing
+umbrella-reachability gaps.

@@ -165,6 +165,7 @@ theorem negPart_le_of_add_nonneg {d c : ℝ} (hc : 0 ≤ c) (hdc : 0 ≤ d + c) 
 
 /-! ## `(10)`-`(12)`: the coherent finite-node Gram kernel -/
 
+omit [CompleteSpace H] in
 /-- **Positive operators have positive semidefinite Gram kernels.**  Applied to the positive part
 and to the negative part of the affine defect this is the coherent assembly law: the off-diagonal
 entries are not free, they are the Gram entries of the operator. -/
@@ -201,6 +202,213 @@ theorem gram_negPart_nonneg (alpha beta : ℝ) (B : H →L[ℂ] H)
     0 ≤ RCLike.re (∑ i ∈ s, ∑ j ∈ s, (starRingEnd ℂ) (c i) * c j
       * inner ℂ ((suzukiInverseDefectOperator alpha beta B)⁻ (Gamma i)) (Gamma j)) :=
   gram_re_nonneg_of_nonneg (suzukiInverseDefect_negPart_nonneg alpha beta B) s Gamma c
+
+/-- **`(11)`, the square-root factorization.**  The Gram kernel of a positive operator is the Gram
+kernel of its square root: the off-diagonal entries are genuine inner products of one family of
+vectors, not merely a positive form. -/
+theorem inner_eq_inner_sqrt {D : H →L[ℂ] H} (hD : 0 ≤ D) (v w : H) :
+    inner ℂ (D w) v = inner ℂ (CFC.sqrt D w) (CFC.sqrt D v) := by
+  have hsa : IsSelfAdjoint (CFC.sqrt D) := (CFC.sqrt_nonneg D).isSelfAdjoint
+  have hsq : CFC.sqrt D * CFC.sqrt D = D := CFC.sqrt_mul_sqrt_self D hD
+  have happ : D w = CFC.sqrt D (CFC.sqrt D w) := by
+    conv_lhs => rw [← hsq]
+    rfl
+  rw [happ]
+  have h := ContinuousLinearMap.adjoint_inner_left (CFC.sqrt D) (CFC.sqrt D w) v
+  rw [hsa.adjoint_eq] at h
+  simpa [inner_conj_symm] using congrArg (starRingEnd ℂ) h.symm
+
+/-- **`(11)` for the negative part.**  The coherent completion kernel is the Gram kernel of the
+square root of the negative part of the affine defect. -/
+theorem inner_negPart_eq_inner_sqrt (alpha beta : ℝ) (B : H →L[ℂ] H) (v w : H) :
+    inner ℂ ((suzukiInverseDefectOperator alpha beta B)⁻ w) v
+      = inner ℂ (CFC.sqrt ((suzukiInverseDefectOperator alpha beta B)⁻) w)
+          (CFC.sqrt ((suzukiInverseDefectOperator alpha beta B)⁻) v) :=
+  inner_eq_inner_sqrt (suzukiInverseDefect_negPart_nonneg alpha beta B) v w
+
+/-- The negative part of a continuous function of a self-adjoint operator is the functional
+calculus of the negative part of the function. -/
+theorem negPart_cfc {f : ℝ → ℝ} {B : H →L[ℂ] H} (hB : IsSelfAdjoint B)
+    (hf : ContinuousOn f (spectrum ℝ B)) :
+    (cfc f B)⁻ = cfc (fun x => (f x)⁻) B := by
+  have hcomp : cfc (fun x => (f x)⁻) B = cfc (fun y : ℝ => y⁻) (cfc f B) :=
+    cfc_comp (fun y : ℝ => y⁻) f B
+  rw [hcomp, CFC.negPart_def, cfcₙ_eq_cfc]
+
+/-- **`(9)`, operator minimality.**  A commuting positive correction that completes the defect
+dominates the negative part of the defect, which is therefore the Loewner-minimal such
+correction. -/
+theorem negPart_le_of_cfc_add_nonneg {alpha beta : ℝ} {B : H →L[ℂ] H} (hB : IsSelfAdjoint B)
+    {c : ℝ → ℝ} (hc : ContinuousOn c (spectrum ℝ B))
+    (hden : ∀ x ∈ spectrum ℝ B, (1 - alpha * x) * (1 - beta * x) ≠ 0)
+    (hcnn : ∀ x ∈ spectrum ℝ B, 0 ≤ c x)
+    (hdom : ∀ x ∈ spectrum ℝ B, 0 ≤ suzukiInverseKreinDefect alpha beta x + c x) :
+    (suzukiInverseDefectOperator alpha beta B)⁻ ≤ cfc c B := by
+  have hd : ContinuousOn (suzukiInverseKreinDefect alpha beta) (spectrum ℝ B) :=
+    continuousOn_suzukiInverseKreinDefect alpha beta hden
+  have hdneg : ContinuousOn (fun x => (suzukiInverseKreinDefect alpha beta x)⁻)
+      (spectrum ℝ B) := hd.neg.sup continuousOn_const
+  have hneg : (suzukiInverseDefectOperator alpha beta B)⁻
+      = cfc (fun x => (suzukiInverseKreinDefect alpha beta x)⁻) B := by
+    rw [suzukiInverseDefectOperator]
+    exact negPart_cfc hB hd
+  rw [hneg, ← sub_nonneg, ← cfc_sub c (fun x => (suzukiInverseKreinDefect alpha beta x)⁻) B hc hdneg]
+  refine (cfc_nonneg_iff _ B (hc.sub hdneg) hB).mpr ?_
+  intro x hx
+  exact sub_nonneg.mpr (negPart_le_of_add_nonneg (hcnn x hx) (hdom x hx))
+
+/-- The absolute value of a continuous function of a self-adjoint operator is the functional
+calculus of the absolute value of the function. -/
+theorem abs_cfc {f : ℝ → ℝ} {B : H →L[ℂ] H} (hB : IsSelfAdjoint B)
+    (hf : ContinuousOn f (spectrum ℝ B)) :
+    CFC.abs (cfc f B) = cfc (fun x => |f x|) B := by
+  have hcomp : cfc (fun x => |f x|) B = cfc (fun y : ℝ => |y|) (cfc f B) :=
+    cfc_comp (fun y : ℝ => |y|) f B
+  have hsa : IsSelfAdjoint (cfc f B) := cfc_predicate f B
+  rw [hcomp, CFC.abs_eq_cfcₙ_norm (cfc f B) hsa, cfcₙ_eq_cfc]
+  exact cfc_congr fun y _ => Real.norm_eq_abs y
+
+/-- **`(4)`, the modulus identity.**  The absolute value of the affine defect operator is the
+weight operator: `|D| = W`. -/
+theorem abs_suzukiInverseDefect_eq_weight {alpha beta : ℝ} {B : H →L[ℂ] H}
+    (hB : IsSelfAdjoint B) (hab : 0 < alpha * beta)
+    (hden : ∀ x ∈ spectrum ℝ B, 0 < (1 - alpha * x) * (1 - beta * x)) :
+    CFC.abs (suzukiInverseDefectOperator alpha beta B)
+      = cfc (suzukiInverseKreinWeight alpha beta) B := by
+  have hd : ContinuousOn (suzukiInverseKreinDefect alpha beta) (spectrum ℝ B) :=
+    continuousOn_suzukiInverseKreinDefect alpha beta fun x hx => ne_of_gt (hden x hx)
+  rw [suzukiInverseDefectOperator, abs_cfc hB hd]
+  exact cfc_congr fun x hx => (suzukiInverseKreinWeight_eq_abs hab (hden x hx)).symm
+
+/-- The positive part of a continuous function of a self-adjoint operator is the functional
+calculus of the positive part of the function. -/
+theorem posPart_cfc {f : ℝ → ℝ} {B : H →L[ℂ] H} (hB : IsSelfAdjoint B)
+    (hf : ContinuousOn f (spectrum ℝ B)) :
+    (cfc f B)⁺ = cfc (fun x => (f x)⁺) B := by
+  have hcomp : cfc (fun x => (f x)⁺) B = cfc (fun y : ℝ => y⁺) (cfc f B) :=
+    cfc_comp (fun y : ℝ => y⁺) f B
+  rw [hcomp, CFC.posPart_def, cfcₙ_eq_cfc]
+
+/-- **`(5)` at the level of the functional calculus.**  The two spectral halves of the affine
+defect are the functional calculus of the two halves of its symbol. -/
+theorem posPart_suzukiInverseDefect {alpha beta : ℝ} {B : H →L[ℂ] H} (hB : IsSelfAdjoint B)
+    (hden : ∀ x ∈ spectrum ℝ B, (1 - alpha * x) * (1 - beta * x) ≠ 0) :
+    (suzukiInverseDefectOperator alpha beta B)⁺
+      = cfc (fun x => (suzukiInverseKreinDefect alpha beta x)⁺) B := by
+  rw [suzukiInverseDefectOperator]
+  exact posPart_cfc hB (continuousOn_suzukiInverseKreinDefect alpha beta hden)
+
+/-- The same for the negative half. -/
+theorem negPart_suzukiInverseDefect {alpha beta : ℝ} {B : H →L[ℂ] H} (hB : IsSelfAdjoint B)
+    (hden : ∀ x ∈ spectrum ℝ B, (1 - alpha * x) * (1 - beta * x) ≠ 0) :
+    (suzukiInverseDefectOperator alpha beta B)⁻
+      = cfc (fun x => (suzukiInverseKreinDefect alpha beta x)⁻) B := by
+  rw [suzukiInverseDefectOperator]
+  exact negPart_cfc hB (continuousOn_suzukiInverseKreinDefect alpha beta hden)
+
+/-! ## `(4)`, the resolvent product form -/
+
+/-- The shifted resolvent factor in the inverse coordinate: `x / (1 - alpha x)` corresponds to
+`(A - alpha)⁻¹`. -/
+def suzukiInverseShiftFactor (alpha x : ℝ) : ℝ := x / (1 - alpha * x)
+
+theorem continuousOn_suzukiInverseShiftFactor (alpha : ℝ) {s : Set ℝ}
+    (hs : ∀ x ∈ s, 1 - alpha * x ≠ 0) :
+    ContinuousOn (suzukiInverseShiftFactor alpha) s := by
+  unfold suzukiInverseShiftFactor
+  exact ContinuousOn.div (by fun_prop) (by fun_prop) hs
+
+/-- Scalar form of `(4)`: the defect is the product of the three resolvent factors, scaled. -/
+theorem suzukiInverseKreinDefect_eq_product {alpha beta x : ℝ}
+    (ha : 1 - alpha * x ≠ 0) (hb : 1 - beta * x ≠ 0) :
+    suzukiInverseKreinDefect alpha beta x
+      = alpha * beta * (x * (suzukiInverseShiftFactor alpha x
+          * suzukiInverseShiftFactor beta x)) := by
+  rw [suzukiInverseKreinDefect, suzukiInverseShiftFactor, suzukiInverseShiftFactor]
+  field_simp
+
+/-- **`(4)`, operator product form.**  The affine defect operator is the scaled product of the
+three below-spectrum resolvents, realized in the inverse coordinate. -/
+theorem suzukiInverseDefectOperator_eq_product {alpha beta : ℝ} {B : H →L[ℂ] H}
+    (hB : IsSelfAdjoint B)
+    (ha : ∀ x ∈ spectrum ℝ B, 1 - alpha * x ≠ 0)
+    (hb : ∀ x ∈ spectrum ℝ B, 1 - beta * x ≠ 0) :
+    suzukiInverseDefectOperator alpha beta B
+      = (alpha * beta) • (B * (cfc (suzukiInverseShiftFactor alpha) B
+          * cfc (suzukiInverseShiftFactor beta) B)) := by
+  have hca : ContinuousOn (suzukiInverseShiftFactor alpha) (spectrum ℝ B) :=
+    continuousOn_suzukiInverseShiftFactor alpha ha
+  have hcb : ContinuousOn (suzukiInverseShiftFactor beta) (spectrum ℝ B) :=
+    continuousOn_suzukiInverseShiftFactor beta hb
+  have hid : ContinuousOn (fun x : ℝ => x) (spectrum ℝ B) := continuousOn_id
+  have hprod : cfc (fun x => suzukiInverseShiftFactor alpha x
+      * suzukiInverseShiftFactor beta x) B
+      = cfc (suzukiInverseShiftFactor alpha) B * cfc (suzukiInverseShiftFactor beta) B :=
+    cfc_mul _ _ B hca hcb
+  have hprod2 : cfc (fun x => x * (suzukiInverseShiftFactor alpha x
+      * suzukiInverseShiftFactor beta x)) B
+      = cfc (fun x : ℝ => x) B * cfc (fun x => suzukiInverseShiftFactor alpha x
+        * suzukiInverseShiftFactor beta x) B :=
+    cfc_mul _ _ B hid (hca.mul hcb)
+  have hcongr : suzukiInverseDefectOperator alpha beta B
+      = cfc (fun x => alpha * beta * (x * (suzukiInverseShiftFactor alpha x
+        * suzukiInverseShiftFactor beta x))) B := by
+    rw [suzukiInverseDefectOperator]
+    exact cfc_congr fun x hx =>
+      suzukiInverseKreinDefect_eq_product (ha x hx) (hb x hx)
+  have hconst : cfc (fun x => alpha * beta * (x * (suzukiInverseShiftFactor alpha x
+      * suzukiInverseShiftFactor beta x))) B
+      = (alpha * beta) • cfc (fun x => x * (suzukiInverseShiftFactor alpha x
+        * suzukiInverseShiftFactor beta x)) B :=
+    cfc_const_mul (alpha * beta) _ B (hid.mul (hca.mul hcb))
+  have hidB : cfc (fun x : ℝ => x) B = B := cfc_id ℝ B
+  rw [hcongr, hconst, hprod2, hprod, hidB]
+
+/-- **`(12)`, the kernel identity.**  The Gram kernel of the defect plus the Gram kernel of its
+negative part is the Gram kernel of its positive part.  Positivity of the sum is then automatic
+from positivity of `D_+`. -/
+theorem gram_add_negPart_eq_posPart (alpha beta : ℝ) (B : H →L[ℂ] H) (v w : H) :
+    inner ℂ (suzukiInverseDefectOperator alpha beta B w) v
+        + inner ℂ ((suzukiInverseDefectOperator alpha beta B)⁻ w) v
+      = inner ℂ ((suzukiInverseDefectOperator alpha beta B)⁺ w) v := by
+  rw [← inner_add_left]
+  congr 1
+  have h := suzukiInverseDefect_add_negPart alpha beta B
+  rw [← h]
+  rfl
+
+/-! ## `(T1)` of the finite-Morse card: the jet square dominates the negative part -/
+
+/-- **Finite-Morse `(T1)`, second half.**  A resolvent-jet square that completes the affine Krein
+defect to a positive operator dominates the negative part of that defect.  Together with
+`suzukiFiniteMorse_operatorCompletion_nonneg` this is the full statement
+`C = D_- + P_+ C >= D_-`. -/
+theorem negPart_operatorKreinDefect_le_jetSquare {alpha beta rho : ℝ} {R : H →L[ℂ] H}
+    (hR : IsSelfAdjoint R) (q : ℝ[X])
+    (hden : ∀ x ∈ spectrum ℝ R,
+      (rho * x + 1) * ((rho - alpha) * x + 1) * ((rho - beta) * x + 1) ≠ 0)
+    (hdom : ∀ x ∈ spectrum ℝ R,
+      0 ≤ suzukiKreinResolventWeight alpha beta rho x + (q.eval x) ^ 2) :
+    (suzukiOperatorKreinDefect alpha beta rho R)⁻ ≤ suzukiResolventJetSquare q R := by
+  have hw : ContinuousOn (suzukiKreinResolventWeight alpha beta rho) (spectrum ℝ R) :=
+    continuousOn_suzukiKreinResolventWeight alpha beta rho hden
+  have hpoly : ContinuousOn (fun x : ℝ => q.eval x) (spectrum ℝ R) :=
+    (Polynomial.continuous_aeval q).continuousOn
+  have hwneg : ContinuousOn (fun x => (suzukiKreinResolventWeight alpha beta rho x)⁻)
+      (spectrum ℝ R) := hw.neg.sup continuousOn_const
+  have hsq : ContinuousOn (fun x : ℝ => (q.eval x) ^ 2) (spectrum ℝ R) := hpoly.pow 2
+  have hneg : (suzukiOperatorKreinDefect alpha beta rho R)⁻
+      = cfc (fun x => (suzukiKreinResolventWeight alpha beta rho x)⁻) R := by
+    rw [suzukiOperatorKreinDefect]
+    exact negPart_cfc hR hw
+  have hC : suzukiResolventJetSquare q R = cfc (fun x : ℝ => (q.eval x) ^ 2) R := by
+    rw [cfc_pow (fun x : ℝ => q.eval x) 2 R hpoly, suzukiResolventJetSquare, cfc_polynomial q R]
+  rw [hneg, hC, ← sub_nonneg,
+    ← cfc_sub (fun x : ℝ => (q.eval x) ^ 2)
+      (fun x => (suzukiKreinResolventWeight alpha beta rho x)⁻) R hsq hwneg]
+  refine (cfc_nonneg_iff _ R (hsq.sub hwneg) hR).mpr ?_
+  intro x hx
+  exact sub_nonneg.mpr (negPart_le_of_add_nonneg (sq_nonneg _) (hdom x hx))
 
 end
 

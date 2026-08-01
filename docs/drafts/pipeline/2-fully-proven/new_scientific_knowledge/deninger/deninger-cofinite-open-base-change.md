@@ -8,6 +8,10 @@
 - **Statement:** Deninger's character space, Frobenius colimit,
   suspension, and degreewise coarse invariant coefficient restrict
   canonically to every cofinite arithmetic open.
+- **Lean modules:**
+  `GaloisForLFunctions.RHTower.DeningerArithmeticCofiniteOpenBaseChange`
+  (the quotient/saturated-open topology of clause 3),
+  `GaloisForLFunctions.RHTower.DeningerInvariantRestriction` (the invariant restriction `(5)`)
 
 ## Goal
 
@@ -211,12 +215,65 @@ Those assertions remain in
 - The proof uses no zeta zero, RH statement, spectral realization, or
   numerical computation.
 
+## Formalized statement
+
+`GaloisForLFunctions/RHTower/DeningerArithmeticCofiniteOpenBaseChange.lean` already encodes the
+elementary quotient lemma used for clause 3, in the saturated-open form:
+
+- `DeningerSaturatedOpen q V` : `V` is the full inverse image of its image, i.e. `V` is
+  saturated for the quotient map;
+- `deningerSaturatedOpen_of_fiberwise` : fibrewise-constant membership implies saturation;
+- `deningerSaturatedOpen_image_isOpen` : the image of a saturated open under an open quotient map
+  is open — this is "`q(V)` is open";
+- `deningerSaturatedOpen_restrict_isOpenQuotientMap` : the base change of an open quotient map to
+  that image is again an open quotient map;
+- `deningerSaturatedOpenDomainHomeomorph` (with its two `apply` lemmas) : for a saturated open,
+  the domain of the restricted quotient map is canonically homeomorphic to `V` — this is
+  "`V/G → q(V)` is a homeomorphism".
+
+`GaloisForLFunctions/RHTower/DeningerInvariantRestriction.lean` encodes clause 4, equation
+`(5)`.  The reason `(5)` holds, and the reason no invariants are moved past anything, is that an
+invariant `π` makes every preimage stable:
+
+- `DeningerInvariantMap G π` : `π (g • y) = π y`;
+- `deningerPreimage_smul_mem`, `deningerPreimageSub` : every `π ⁻¹' W` is stable, hence a
+  sub-action, so the action restricts to `π ⁻¹' V`;
+- `deningerRestrictInvariantMap` : the restricted map is again invariant, which is what makes the
+  construction iterate along `U_M ⊆ U_N`;
+- `deningerPreimageRestrictEquiv` and `deningerPreimageRestrictEquiv_smul` : for `W ⊆ V` the
+  `W`-part of `π ⁻¹' V` is *equivariantly* the same as `π ⁻¹' W`;
+- `deningerInvariantSectionsEquiv` : therefore the equivariant sections with values in any
+  coefficient `G`-set over the two descriptions are in canonical bijection — this is `(5)`
+  degreewise.
+
+### What is formalized and what is not
+
+Formalized: the elementary quotient lemma of clause 3, and the invariant restriction `(5)` of
+clause 4.
+
+The `(5)` formalization is at the level of equivariant sections valued in a coefficient `G`-set,
+which is the shape the card's degreewise statement takes; it is not phrased through a sheaf-of-
+abelian-groups pushforward functor, because the corpus has no equivariant sheaf object to phrase
+it against.  The mathematical content — stability of preimages and the equivariant identification
+— is the same either way.
+
+Not formalized: clauses 1 and 2.  They rest on Deninger's Lemmas 7.1--7.3 and Proposition 7.4
+(the character-space inverse image, the open embedding, and Frobenius acting by homeomorphisms on
+the colimit).  Those are quoted geometric input about a space the corpus does not construct, so
+they are not formalizable as stated without first building Deninger's character space.  A search
+of the formal tree confirms no character-space object exists anywhere in it, so this needs its own
+construction card rather than further work here.
+
 ## Gates
 
 - [x] 0 → 1 in-progress: precise source-local statement
 - [x] 1 → 2 fully-proven: topological and equalizer proof complete
-- [ ] 2 → 3 formalized: quotient-open and invariant-restriction
-  lemmas remain to be encoded in Lean
+- [x] 2 → 3 formalized, quotient-open part
+  (`GaloisForLFunctions.RHTower.DeningerArithmeticCofiniteOpenBaseChange`)
+- [x] 2 → 3 formalized, invariant-restriction part `(5)`
+  (`GaloisForLFunctions.RHTower.DeningerInvariantRestriction`)
+- [ ] 2 → 3 formalized, clauses 1--2: blocked on Deninger's character space not being
+  constructed in the corpus
 - [ ] 3 → 4 publication-ready: integrate with analytic purity proof
 
 ## References
@@ -232,3 +289,15 @@ Those assertions remain in
 - 2026-07-27 — isolated and proved exact compatibility of Deninger's
   source space and underived invariant coefficient with cofinite
   arithmetic opens.
+
+## Log
+
+- 2026-08-01 — Recorded the existing Lean module.  The card previously claimed nothing was
+  encoded, but `DeningerArithmeticCofiniteOpenBaseChange.lean` already proves the quotient-open
+  and saturated-open homeomorphism lemmas of clause 3.  Split the remaining formalization gate
+  into the invariant-restriction identity `(5)`, which is reachable, and clauses 1--2, which are
+  blocked on the character space not existing in the corpus.
+- 2026-08-01 — Formalized `(5)`: preimages under an invariant map are stable, the restricted map
+  is again invariant, and for `W ⊆ V` the `W`-part of `π⁻¹V` is equivariantly `π⁻¹W`, so
+  equivariant sections agree.  Axiom audit shows these use only `propext` and `Quot.sound`, no
+  choice.

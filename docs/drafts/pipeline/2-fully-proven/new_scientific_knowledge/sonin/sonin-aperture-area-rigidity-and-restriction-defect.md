@@ -337,9 +337,29 @@ trace-class restriction compatibility unconditionally in the chamber relevant to
       aperture ratio alone, contains no prime and no dilation scale, and removes the entire
       principal term of the aperture step at every prime at once, leaving a real trace-class
       quantity
+- [x] the anomaly is real, not a bookkeeping artefact —
+      `exists_scale_evenSoninApertureRestrictionCurvature_ne_zero` and
+      `exists_scale_evenSoninApertureRestrictionDefect_ne_add` in
+      `SoninApertureDefectNonadditive.lean`: for every strict flag there is an actual dilation
+      scale at which the curvature operator `(21)` is nonzero, so the restriction defect is *not*
+      additive.  This upgrades the definite sign of `Tr Kappa` to strict negativity at a witness
+      scale, using the cofinal nonannihilation of the successive-layer coupling.
 - [ ] cancellation of the remaining trace-class residual — note that by
       `not_isCompactOperator_conductorDilationDefect` no trace-class counterterm can do it, so this
-      has to be the regularized extended-trace pairing rather than a subtraction
+      has to be the regularized extended-trace pairing rather than a subtraction.  Sharpened:
+      `soninBurnolApertureCounterterm_curvature_eq_zero` in
+      `SoninBurnolCountertermCoboundary.lean` shows the Burnol counterterm is an aperture
+      *coboundary* — `log(c/a) - log(b/a) - log(c/b) = 0` — so it drops out of the curvature
+      combination identically, and
+      `not_exists_lower_bound_soninAperturePacketCurvature_sub_counterterm` shows the
+      counterterm-subtracted packet channel is still unbounded below.  The subtraction route is
+      therefore not merely insufficient, it is inert on this channel.
+      Generalised in `SoninCountertermCoboundaryNoGo.lean`: a counterterm is inert on the curvature
+      combination **iff** it is a coboundary `K a b = f b - f a`
+      (`apertureCocycle_eq_coboundary`), and no coboundary restores a lower floor
+      (`not_exists_lower_bound_soninAperturePacketCurvature_add_inert`).  So the repair cannot be
+      any additive aperture assignment whatsoever — the Burnol counterterm is only the leading
+      instance of an entire inert class.
 - [ ] prove completed coercivity or terminally retire the source class
 
 ## Log

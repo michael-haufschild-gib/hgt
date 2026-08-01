@@ -359,3 +359,13 @@ results.
   stronger arbitrary-spectrum spine, but Nature-level novelty remains open:
   a hostile referee may view it as an all-moment Wiener corollary unless it
   yields a new local or open-system physical law.
+- 2026-08-01 — rejected further local sharpening as a novelty strategy and
+  froze `persistent-phase-conservation-conversion-law.md`.  The new primitive
+  is persistent observer-visible phase capacity.  Exact relations, observer
+  blindness and temporal directions are complementary kernels/quotients;
+  continuous or transient evolution changes the persistent capacity itself.
+  The finite one-for-one interaction conversion is already Lean-proved.  New
+  open cores are simultaneous saturation for every countable pure-point pair,
+  the weakly-almost-periodic open-system factorization, and a replica-two
+  operational discriminator.  Point-spectrum scaling is now one shadow, not
+  the headline.

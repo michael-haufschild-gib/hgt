@@ -416,7 +416,7 @@ External novelty remains provisional pending a broader bibliography and citation
 
 - [x] 0 → 1 in-progress: exact source-pure statement and attack identified
 - [x] 1 → 2 fully-proven: complete unconditional paper proof, `[PROVED HERE]`
-- [ ] 2 → 3 formalized: explicit smooth compact-annulus wavepacket and all five limit lemmas in Lean
+- [x] 2 → 3 formalized: explicit smooth compact-annulus wavepacket and all five limit lemmas in Lean
 - [ ] 3 → 4 publication-ready: standalone paper, external novelty audit, Lean certificate
 
 ## Lean plan
@@ -470,22 +470,248 @@ Formalized so far (all unconditional, `#print axioms` clean, wired into `GaloisF
 | 3 | **weak escape in `L²`**: `< g , w_kappa > -> 0` for every fixed `L²` weight | `tendsto_inner_soninPacketL2_atTop` |
 | 3 | uniform `L²` bound, from `|mu| <= 1` and `|u| <= 2 phi` | `abs_soninPacketMean_le_one`, `abs_soninPacket_le`, `norm_soninPacketL2_le` |
 
+| 3 | **`(8)`**: every compact operator, and in particular the exact Sonin projection correction and every element of the relative ideal, dies along the family | `tendsto_norm_compactOperator_apply_soninPacketEven`, `tendsto_norm_evenSoninProjectionCorrection_apply_soninPacketEven`, `tendsto_norm_isSoninPrincipalRelativeIdeal_apply_soninPacketEven` |
+| 4 | vanishing at infinity is uniform outside a radius — the form of Riemann--Lebesgue the frequency escape `(10)` needs | `exists_forall_norm_le_of_tendsto_cocompact` |
+
+| 4 | the packet's Fourier transform as an explicit pairing, its pointwise vanishing, and a frequency-independent sup bound | `fourier_soninPacket_eq`, `tendsto_fourier_soninPacket_atTop`, `norm_fourier_soninPacket_le` |
+
+| 4 | the `L²` Fourier transform of the packet is the classical Fourier integral | `fourierUnitary_soninPacketL2_coeFn` |
+| 4 | the Fourier-band energy as an explicit integral | `norm_sq_evenFourierCutoff_soninPacketEven` |
+| 4 | **Fourier escape `(10)`**: the packet eventually carries no energy in any fixed central Fourier band | `tendsto_norm_evenFourierCutoff_soninPacketEven` |
+
+| 4 | the two hypotheses of the corpus two-branch estimate: `A_b w = 0` and `A_c w = w`, and their monotone forms | `evenIndicatorCutoff_soninPacketEven_eq_zero`, `evenIndicatorCutoff_soninPacketEven_eq_self`, `..._eq_zero_of_le`, `..._eq_self_of_le` |
+| 4 | **`(11)`**: the inverse-dilated packet misses every aperture below `r b` and is fixed above `r c` | `evenIndicatorCutoff_evenDilationCLM_inv_soninPacketEven_eq_zero`, `evenIndicatorCutoff_evenDilationCLM_inv_soninPacketEven_eq_self` |
+
+| 4 | `L²` tails vanish outside a growing central interval | `tendsto_norm_sub_indicatorCutoff_atTop` |
+| 4 | **`(14)`**: a bounded family annihilated by physical cutoffs of growing aperture is weakly null | `tendsto_inner_of_evenIndicatorCutoff_apply_eq_zero` |
+
+| 4 | the dilated packet `v = U_{1/r} w` as a named family, isometric to the packet | `soninDilatedPacket`, `norm_soninDilatedPacket`, `norm_soninDilatedPacket_le` |
+| 4 | **`(15)`**: every compact operator, and in particular the projection correction, dies on the dilated family | `tendsto_norm_compactOperator_apply_of_evenIndicatorCutoff_apply_eq_zero`, `tendsto_norm_compactOperator_apply_soninDilatedPacket`, `tendsto_norm_evenSoninProjectionCorrection_apply_soninDilatedPacket` |
+
+| 4 | **modulation identity** `(9)`: multiplying by `exp(2 pi i a x)` translates the transform | `fourier_exp_mul` |
+| 4 | **`(12)`**: the packet's transform is the average of two translates of `phihat`, minus the mean multiple | `fourier_soninPacket_eq_shift` |
+
+| 4 | Fourier cutoffs conjugated through a dilation: `||R_s U_{1/r} v|| = ||R_{rs} v||`, and the same for the complement | `evenFourierCutoff_evenDilationCLM_inv_apply`, `norm_evenFourierCutoff_evenDilationCLM_inv`, `norm_sub_evenFourierCutoff_evenDilationCLM_inv` |
+| 4 | outer tails of an integrable energy density vanish at a growing radius | `tendsto_integral_indicator_outer_atTop` |
+
+| 4 | shifting an energy density past a band: inside a central band, and outside a band | `integral_indicator_centralInterval_comp_add_le`, `integral_indicator_outer_comp_add_le` |
+
+| 4 | the profile's spectral energy density `|phihat|^2`: integrable (Plancherel for the profile), nonnegative, with vanishing outer tails | `soninBumpSpectralDensity`, `integrable_soninBumpSpectralDensity`, `tendsto_integral_indicator_outer_soninBumpSpectralDensity` |
+
+| 4 | the packet's own spectral density, and the band energy as its band integral | `soninPacketSpectralDensity`, `integrable_soninPacketSpectralDensity`, `norm_sq_evenFourierCutoff_soninPacketEven_eq_density` |
+| 4 | **band energy bound**, the quantitative half of `(13)`: with carrier `a`, the energy inside the band of radius `t` is at most `3(T(|a|-t)/2 + mu^2 E)` where `T` is the profile's spectral tail and `E` its total spectral energy | `norm_sq_evenFourierCutoff_soninPacketEven_le` |
+
+| 4 | **`(13)`, low horn**: with aperture and carrier on one clock and the aperture rate strictly smaller, the packet keeps no energy below the aperture; equivalently the *dilated* packet leaves every fixed band below the carrier ratio | `tendsto_norm_evenFourierCutoff_soninPacketEven_scaled`, `tendsto_norm_evenFourierCutoff_soninDilatedPacket` |
+
+| 4 | the energy the packet leaves *outside* a central band, bounded by the outer band integral of its spectral density | `norm_sq_sub_evenFourierCutoff_soninPacketEven_le_outer` |
+| 4 | the three-term spectral bound over an *arbitrary* measurable band, so the low and high horns share one lemma | `integral_indicator_soninPacketSpectralDensity_le` |
+
+| 4 | **`(13)`, high horn**: the packet loses no energy above an aperture growing faster than the carrier; equivalently the dilated packet loses none above a fixed aperture | `norm_sq_sub_evenFourierCutoff_soninPacketEven_le`, `tendsto_norm_sub_evenFourierCutoff_soninPacketEven_scaled`, `tendsto_norm_sub_evenFourierCutoff_soninDilatedPacket` |
+
+| 5 | exact splitting of the aperture layer into physical shell + Fourier shell + correction difference | `evenSoninApertureLayer_eq_shell_add_correctionDiff` |
+| 5 | **`(16)`**: the aperture layer fixes the dilated wavepacket in the limit | `tendsto_norm_evenSoninApertureLayer_soninDilatedPacket_sub` |
+
+| 5 | **`(3)`**: along any clock past the crossing threshold, the coupling carries the wavepacket to its inverse dilate | `tendsto_norm_soninApertureCoupling_soninPacketEven_sub` |
+
+| 5 | **`(4)`**: the coupling's action on the packet family has the packet's own limiting norm, which is positive | `norm_sq_soninPacketEven`, `tendsto_norm_soninPacketEven`, `sqrt_half_energy_pos`, `tendsto_norm_soninApertureCoupling_apply_soninPacketEven` |
+| 5 | **the coupling is nonzero for every large clock** | `eventually_soninApertureCoupling_ne_zero` |
+
+| 5 | **`(5)`**: strict negativity of the successive-aperture curvature along a large clock | `eventually_re_opTrace_evenSoninApertureRestrictionCurvature_neg` |
+| 5 | a concrete clock past the crossing threshold, so nothing is vacuous | `soninCrossingClock`, `one_lt_soninCrossingClock`, `lt_soninCrossingClock_mul`, `tendsto_soninCrossingClock` |
+| 5 | **scale-free statements**: an actual dilation scale at which the coupling is nonzero and the curvature strictly negative | `exists_scale_soninApertureCoupling_ne_zero`, `exists_scale_re_opTrace_evenSoninApertureRestrictionCurvature_neg` |
+
+| 6 | **`(19a)`** the adjoint coupling is the reversed product; **`(19b)`** the dilation sum on an inverse dilate; **`(19c)`** the outer layer fixes the packet in the limit | `adjoint_evenSoninApertureSuccessiveLayerTransition`, `evenDilationSum_evenDilationCLM_inv_apply`, `tendsto_norm_evenSoninApertureLayer_soninPacketEven_sub` |
+
+| 6 | both concentration limits in **gap form**: aperture and carrier arbitrary sequences, only their difference matters | `tendsto_norm_evenFourierCutoff_soninPacketEven_gap`, `tendsto_norm_sub_evenFourierCutoff_soninPacketEven_gap` |
+
+| 6 | **`(19d)`**: the outer aperture layer annihilates the doubly contracted packet | `tendsto_sq_mul_atTop`, `tendsto_sq_gap_atTop`, `tendsto_norm_evenSoninApertureLayer_doublyContracted` |
+
+| 6 | **`(4a)`**: the adjoint coupling carries the dilated wavepacket back to the wavepacket | `tendsto_norm_adjoint_soninApertureCoupling_soninDilatedPacket_sub` |
+
+| 6 | the coupling and its adjoint are contractions up to a factor two | `norm_evenSoninApertureSuccessiveLayerTransition_apply_le`, `norm_adjoint_evenSoninApertureSuccessiveLayerTransition_apply_le` |
+| 6 | **`(4b)`**: the coupling and its Hilbert adjoint are mutually inverse on the two packet classes | `tendsto_norm_adjoint_mul_soninApertureCoupling_soninPacketEven_sub`, `tendsto_norm_soninApertureCoupling_adjoint_soninDilatedPacket_sub` |
+
+| 7 | **rapid decay**: the Fourier transform of a smooth compactly supported function beats every polynomial rate — the analytic core of `(4c)` | `tendsto_pow_mul_norm_fourier_atTop` |
+
+| 7 | the Mellin weight `phi(x) x^{-s}` on the annulus: smooth, compactly supported, and equal to the profile times `x^{-s}` on the positive axis | `soninPositiveBump`, `soninMellinWeight`, `soninMellinWeight_eq_cpow`, `contDiff_soninMellinWeight`, `hasCompactSupport_soninMellinWeight` |
+| 7 | rapid decay of the Mellin-weighted oscillatory integral | `tendsto_pow_mul_norm_fourier_soninMellinWeight` |
+
+| 7 | rapid decay in the negative direction as well | `tendsto_pow_mul_norm_fourier_neg_atTop` |
+| 7 | the packet's Mellin transform, its split into an oscillatory integral plus a constant multiple, and that integral as the average of two transform values | `soninPacketMellin`, `soninPacketMellin_eq`, `integral_soninMellinWeight_mul_cos_eq` |
+
+| 7 | the cosine-modulated integral of any continuous compactly supported weight as an average of two transform values, and its rapid decay | `integral_mul_cos_eq_fourier_avg`, `tendsto_pow_mul_norm_integral_mul_cos` |
+
+| 7 | **`(4c)`**: every fixed Mellin exponent is blind to the wavepacket to all orders in the carrier | `tendsto_pow_mul_abs_soninPacketMean`, `tendsto_pow_mul_norm_soninPacketMellin` |
+
+| 8 | **`(4)` in operator-norm form**: `liminf ||Z_r|| >= 1`, stated as an eventual bound below every level under one | `eventually_one_sub_le_norm_soninApertureCoupling` |
+| 8 | uniform energy floor and its consequences: no lower floor for the packet channel | `eventually_le_hsNormSq_soninApertureCoupling`, `exists_soninAperturePacketCurvature_re_opTrace_lt`, `not_exists_lower_bound_soninAperturePacketCurvature_re_opTrace` |
+
 Files: `formal/GaloisForLFunctions/RHTower/SoninAnnulusBump.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninAnnulusPacket.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninCosineRiemannLebesgue.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninAnnulusPacketAsymptotics.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPacketWeakEscape.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninPacketL2.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninPacketL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierUniformDecay.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketFourierPointwise.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketFourierEscape.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketSupportCutoffs.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPhysicalTailVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninDilatedPacketCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketFourierModulation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierCutoffDilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOuterTailIntegral.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShiftedTailBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninBumpFourierL2.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandEnergyBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketLowBandEscape.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketHighBandCapture.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketFourierConcentration.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninDilatedPacketLayerLimit.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingPacketLimit.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingNonannihilation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninStrictApertureCurvature.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingAdjointSetup.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapLimits.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninDoublyContractedPacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingAdjointLimit.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingPartialUnitary.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninRapidFourierDecay.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninMellinWeight.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninMellinBlindness.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyLowerBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingOperatorNormFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninUnboundedSourcePacket.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninNoAperturePacketFloor.lean`.
 
-Still to formalize: `(8)` itself — both inputs of
-`IsCompactOperator.norm_apply_tendsto_zero_of_bounded_weakly_null` are now in place (weak escape and
-the uniform bound), so what remains is Fréchet--Riesz to turn an arbitrary continuous functional
-into an inner product, and reading the family along a sequence.  Then Fourier escape `(10)`, the scaled packet estimates
+Note the family is read along a sequence `kappa : N -> R` tending to infinity, matching the card's
+own integer-clock phrasing; that is also what the corpus's compact-operator lemma expects.
+
+The modulation identity of the paper proof was not needed: `F(u_kappa)(xi)` is literally the
+pairing of the packet against the unimodular weight `exp(-2 pi i x xi)`, so `(7)` gives pointwise
+vanishing directly, and `|u| <= 2 phi` gives a frequency-independent sup bound; dominated
+convergence on the bounded band finishes `(10)`.
+
+Still to formalize: the scaled packet estimates
 `(11)`--`(15)`, and the combination with
 `norm_evenSoninApertureSuccessiveLayerTransition_sub_branches_le` (already in the corpus).
 
 ## Log
 
+- 2026-08-01 — the `liminf ||Z_r|| >= 1` half of `(4)` is now Lean in operator-norm form, closing
+  the last statement of the card that had only been formalized in packet-norm form.
+- 2026-08-01 — **`(4c)` proved.  Every theorem on this card is now formalized unconditionally.**
+  The three results of the card — the cofinal nonannihilation `(3)`-`(5)`, the adjoint/partial-unitary
+  theorem `(4a)`-`(4b)`, and Mellin blindness `(4c)` — are all Lean, with no hypothesis beyond the
+  strict flag `0 < a < q < b < c` and a clock past the crossing threshold.
+- 2026-08-01 — the oscillatory-integral decay is now stated for an arbitrary smooth compactly
+  supported weight, so the same lemma serves the Mellin weight and the profile itself.  `(4c)` is
+  the sum of those two applications.
+- 2026-08-01 — the Mellin transform of the packet is now a corpus object, split into the
+  oscillatory integral against the fixed weight and the mean correction, with the oscillatory part
+  written as the average of the weight's transform at `+w` and `-w`.  Both directions of rapid
+  decay are available, so `(4c)` is now the limit assembly plus the rapid decay of the mean.
+- 2026-08-01 — the Mellin weight is now a corpus object with the two properties the decay lemma
+  needs.  Smoothness is by cases: away from the origin the kernel is smooth, near the origin the
+  profile vanishes on a whole neighbourhood, so the product is locally constant zero there.  The
+  kernel is carried as `exp(-s log x)` rather than `cpow`, with the identification on the positive
+  axis recorded separately — that keeps the branch cut out of the smoothness argument entirely.
+- 2026-08-01 — started `(4c)`.  The paper proof does repeated integration by parts; in Lean the
+  same content is one step, because mathlib already has "smooth compactly supported implies
+  Schwartz" and "Schwartz transforms decay faster than every power".  What is left for `(4c)` is
+  to see the Mellin weight `x^{-s}` cut to the annulus as a smooth compactly supported function —
+  which it is, since the annulus avoids the origin.
+- 2026-08-01 — **the adjoint theorem is complete**: `(4a)` and both halves of `(4b)`.  The
+  cofinal boundary transition is a genuine partial unitary on the two packet classes, with the
+  Hilbert adjoint as its inverse there — unconditionally in Lean.  Only the Mellin-blindness
+  theorem `(4c)` remains unformalized on this card.
+- 2026-08-01 — **`(4a)` proved**: `|| Z_r^* v_r - w_r || -> 0`.  With `(3)` this is the adjoint
+  theorem's first half — the coupling and its Hilbert adjoint carry the two packet classes to each
+  other.  `(4b)`, the partial-unitary statement, is now pure triangle inequality on `(3)` and
+  `(4a)` with the uniform bound `||Z_r|| <= 2`.
+- 2026-08-01 — **`(19d)` proved**: the outer layer kills the doubly contracted packet.  Note the
+  asymmetry with `(16)`: there the Fourier shell converged to the *identity*, here it converges to
+  *zero*, because both apertures now capture the packet rather than straddling its carrier.  All
+  four ingredients `(19a)`-`(19d)` of the adjoint theorem are now in Lean.
+- 2026-08-01 — the two concentration limits restated in gap form, with the aperture and carrier
+  free sequences.  The band-energy bounds only ever saw the difference, so tying them to a common
+  clock was an artefact of the first packaging; `(19d)` needs carrier `~ r` against aperture
+  `~ r^2`, which the gap form covers directly.
+- 2026-08-01 — started the *adjoint* theorem `(4a)`--`(4b)`, which the gate line did not name but
+  which is proved on this card and therefore in scope: `(19a)`, `(19b)`, `(19c)` are now Lean.
+  Remaining for `(4a)`: `(19d)`, the vanishing of the outer layer on the doubly contracted packet,
+  whose spectrum sits at `q/r^2` and whose support escapes at radius `r^2 b`.
+- 2026-08-01 — **2 → 3 gate closed.**  `(5)` proved, and the two scale-free capstones: for every
+  strict aperture flag `0 < a < q < b < c` there is an actual dilation scale `r` with `c < r a` at
+  which the successive-layer coupling is nonzero and the aperture curvature is strictly negative.
+  Stated with an explicit clock so the hypotheses are demonstrably inhabited — the result is not a
+  statement about an empty family.
+- 2026-08-01 — **`(4)` proved, and with it the headline nonannihilation**: the coupling is nonzero
+  for every sufficiently large clock, unconditionally in Lean.  The packet is not normalised in the
+  formalisation, so `(4)` reads as convergence to the packet's own limiting norm
+  `sqrt(||phi||^2 / 2) > 0` rather than to `1`; dividing by the packet norm recovers the card's
+  statement.  Only `(5)`, the strict-curvature restatement, is left.
+- 2026-08-01 — **`(3)` proved**, the theorem of the card: `|| Z_r w_r - U_{1/r} w_r || -> 0` along
+  any clock with `1 < r_n`, `c <= r_n a`, `r_n -> infinity`.  The corpus two-branch estimate does
+  the algebra and the three limits `(8)`, `(10)`, `(16)` kill the three error terms.  What is left
+  is bookkeeping: `(4)` and `(5)` follow from `(3)` plus the already-proved normalisation `(6)`.
+- 2026-08-01 — **`(16)` proved**: `||L_{a,b} v_r - v_r|| -> 0`.  The three summands of the exact
+  layer splitting behave differently and each needs its own mechanism — the physical shell
+  vanishes *eventually and exactly* (escaped support), the Fourier shell converges (concentration),
+  the corrections converge (compactness).  Paper steps `(6)`-`(16)` are now all in Lean; only the
+  final assembly with the corpus branch estimate remains.
+- 2026-08-01 — **`(13)` is complete**: both horns, in the packet form and in the fixed-aperture
+  dilated form.  With `0 < a < q < b` the dilated packet has `||R_a v_r|| -> 0` and
+  `||v_r - R_b v_r|| -> 0`, so its spectrum is asymptotically trapped between the two apertures of
+  the flag.  Paper steps `(6)`-`(15)` are now all formalized; what is left is `(16)` and the
+  combination with the corpus branch estimate.
+- 2026-08-01 — the outer-band energy bound and the band-independent three-term spectral bound.
+  The second is the band-energy estimate stated over an arbitrary measurable set rather than a
+  central interval, so the remaining high horn is the same two shift applications as the low one.
+- 2026-08-01 — the low horn of `(13)` is proved, in both the packet form and the fixed-aperture
+  dilated form `||R_{a0} v_r|| -> 0`.  The dilation conjugation makes the two statements the same
+  fact, so the fixed-aperture version costs one `congr`.
+- 2026-08-01 — the quantitative half of `(13)` is proved: an explicit bound on the packet's energy
+  inside a central Fourier band, in terms of the profile's spectral tail beyond the gap between the
+  carrier and the band edge, plus the squared mean.  Taking `t = r a` and carrier `r q` with
+  `a < q` makes the gap `r(q-a)`, so both terms vanish and the low horn of `(13)` follows.
+- 2026-08-01 — the profile's spectral energy density is now a named corpus object with all three
+  properties the estimate consumes.  Every remaining piece of `(13)` is an application of lemmas
+  already proved; the step left is the arithmetic assembly.
+- 2026-08-01 — the two shift-past-a-band bounds added, both with the gap written as the distance
+  between the shift and the band edge.  With `phihat` as the density and the carrier as the shift,
+  the gaps are exactly `r(q-a)` and `r(b-q)`, so the outer-tail estimate applies to both horns of
+  `(13)` with one lemma each.
+- 2026-08-01 — both remaining ingredients of `(13)` built: the dilation conjugation that turns a
+  Fourier band of the dilate into a band of the packet at the rescaled aperture, and the outer-tail
+  integral estimate.  `(13)` is now the assembly `(12)` + translation of the integration variable +
+  outer tail, with the two apertures `ra < rq < rb` separating at rate `r`.
+- 2026-08-01 — `(9)` and `(12)` proved: the modulation identity, and the packet's transform as
+  `(phihat(xi-a) + phihat(xi+a))/2 - mu phihat(xi)`.  The carrier *translates* the profile's
+  transform without deforming it, which is what makes the leftover mass near the origin an `L^2`
+  tail of a fixed function at radius growing with the carrier.
+- 2026-08-01 — `(15)` proved.  Steps `(6)`, `(7)`, `(8)`, `(10)`, `(11)`, `(14)`, `(15)` of the
+  paper proof are now Lean.  What is left is the Fourier concentration `(13)`, and the route is
+  now clear: conjugating the dilation through the Fourier transform turns `||R_a v_r||` into
+  `||R_{ra} w_r||`, and the modulation identity makes that an `L^2` tail of `phihat` at radius
+  `r(q-a) -> infinity`, which the tail lemma of the previous step already covers.
+- 2026-08-01 — `(14)` proved, in the reusable form "support escaping to infinity implies weakly
+  null".  Worth distinguishing from `(7)`: the packet escapes weakly because it *oscillates*, the
+  dilated packet because its *support leaves every bounded set* — two different mechanisms, and
+  only the second one survives the dilation.
+- 2026-08-01 — `(11)` proved, together with the two physical-cutoff hypotheses the corpus
+  two-branch estimate consumes.  The dilation covariance of the physical cutoff does all the work,
+  so no support computation on the dilated function is needed.
+- 2026-08-01 — `(10)` proved: the packet leaves every fixed central Fourier band, by dominated
+  convergence on the band against the corpus bridge from the `L^2` Fourier transform to the
+  classical integral.  Steps `(6)`, `(7)`, `(8)`, `(10)` of the paper proof are now all in Lean.
+- 2026-08-01 — pointwise Fourier escape plus a uniform sup bound.  Note the modulation identity in
+  the paper proof is not needed in Lean: the transform at a fixed frequency *is* a weak pairing, so
+  `(7)` covers it directly.  `(10)` now reduces to dominated convergence on a bounded band.
+- 2026-08-01 — `(8)` proved: compact corrections vanish along the family, via Fréchet--Riesz and
+  the corpus's compact-operator/weakly-null lemma.  Stated for arbitrary compact operators, so it
+  covers the projection correction and every element of the relative ideal at once.
 - 2026-08-01 — the packet now lives in the corpus as an actual vector of the even Sonin space,
   with weak escape against every `L²` weight and a frequency-independent norm bound.  Both
   hypotheses of the corpus's compact-operator/weakly-null lemma are therefore available.

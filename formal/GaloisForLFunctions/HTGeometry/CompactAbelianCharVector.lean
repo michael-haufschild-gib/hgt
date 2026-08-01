@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.CompactAbelianTranslation
 import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
+import Mathlib.Analysis.Complex.Polynomial.Basic
 
 /-!
 # A finite-dimensional invariant subspace contains a character vector
@@ -25,19 +26,17 @@ noncomputable section
 variable {G : Type*} [TopologicalSpace G] [AddCommGroup G] [IsTopologicalAddGroup G]
   [CompactSpace G] [T2Space G] [MeasurableSpace G] [BorelSpace G]
 
-set_option maxHeartbeats 1000000 in
 omit [T2Space G] in
 /-- Translations compose. -/
 theorem transOp_transOp (a b : G) (u : Lp ℂ 2 (haarProb G)) :
     transOp a (transOp b u) = transOp (a + b) u := by
   refine Lp.ext ?_
   have h1 := transOp_coeFn a (transOp b u)
-  have h2 : (fun x : G => (transOp b u) (x + a))
-      =ᵐ[haarProb G] fun x : G => u (x + a + b) :=
-    (measurePreserving_translate (G := G) a).quasiMeasurePreserving.ae_eq_comp
+  have h2 := (measurePreserving_translate (G := G) a).quasiMeasurePreserving.ae_eq_comp
       (transOp_coeFn b u)
   have h3 := transOp_coeFn (a + b) u
   filter_upwards [h1, h2, h3] with x hx1 hx2 hx3
+  simp only [Function.comp_apply] at hx2
   rw [hx1, hx2, hx3]
   congr 1
   abel
@@ -66,6 +65,7 @@ theorem exists_char_vector {W : Submodule ℂ (Lp ℂ 2 (haarProb G))}
   have hNne : N.Nonempty := ⟨Module.finrank ℂ W, W, hWS, rfl⟩
   have hmem : sInf N ∈ N := Nat.sInf_mem hNne
   obtain ⟨V, hVS, hVrank⟩ := hmem
+  have hVrank' : Module.finrank ℂ V = sInf N := hVrank
   haveI : FiniteDimensional ℂ V := hfin V hVS
   obtain ⟨hVW, hVne, hVinv⟩ := hVS
   haveI : Nontrivial V := by
@@ -92,34 +92,35 @@ theorem exists_char_vector {W : Submodule ℂ (Lp ℂ 2 (haarProb G))}
         rw [hbot, Submodule.mem_bot] at this
         rw [Submodule.mem_bot]
         exact Subtype.ext this
-      exact hc (by rw [Module.End.hasEigenvalue_iff, hzero])
+      exact hc hzero
     have hEinv : ∀ b : G, ∀ u ∈ E, transOp b u ∈ E := by
       rintro b x ⟨y, hy, rfl⟩
+      have hy' : y ∈ Module.End.eigenspace R c := hy
+      have hyeig : R y = c • y := Module.End.mem_eigenspace_iff.mp hy'
       have hyV : transOp b (y : Lp ℂ 2 (haarProb G)) ∈ V := hVinv b y y.2
-      refine ⟨⟨transOp b (y : Lp ℂ 2 (haarProb G)), hyV⟩, ?_, rfl⟩
-      have hyeig : R y = c • y := by
-        rw [Module.End.mem_eigenspace_iff] at hy
-        exact hy
-      rw [Module.End.mem_eigenspace_iff]
-      apply Subtype.ext
-      have hRb : (R ⟨transOp b (y : Lp ℂ 2 (haarProb G)), hyV⟩ : Lp ℂ 2 (haarProb G))
-          = transOp a (transOp b (y : Lp ℂ 2 (haarProb G))) := rfl
-      have hRy : (R y : Lp ℂ 2 (haarProb G)) = transOp a (y : Lp ℂ 2 (haarProb G)) := rfl
-      rw [hRb, transOp_comm, ← hRy, hyeig]
-      simp
+      have hmem : (⟨transOp b (y : Lp ℂ 2 (haarProb G)), hyV⟩ : V)
+          ∈ Module.End.eigenspace R c := by
+        rw [Module.End.mem_eigenspace_iff]
+        apply Subtype.ext
+        have hRb : ((R ⟨transOp b (y : Lp ℂ 2 (haarProb G)), hyV⟩ : V) : Lp ℂ 2 (haarProb G))
+            = transOp a (transOp b (y : Lp ℂ 2 (haarProb G))) := rfl
+        have hRy : ((R y : V) : Lp ℂ 2 (haarProb G)) = transOp a (y : Lp ℂ 2 (haarProb G)) := rfl
+        rw [hRb, transOp_comm, ← hRy, hyeig]
+        simp
+      exact ⟨_, hmem, rfl⟩
     have hES : E ∈ S := ⟨le_trans hEle hVW, hEne, hEinv⟩
     have hrank : Module.finrank ℂ V ≤ Module.finrank ℂ E := by
-      rw [hVrank]
+      rw [hVrank']
       exact Nat.sInf_le ⟨E, hES, rfl⟩
     have hEV : E = V := Submodule.eq_of_le_of_finrank_le hEle hrank
     intro u hu
     have huE : u ∈ E := by rw [hEV]; exact hu
     obtain ⟨y, hy, rfl⟩ := huE
-    have hyeig : R y = c • y := by
-      rw [Module.End.mem_eigenspace_iff] at hy
-      exact hy
-    have : (R y : Lp ℂ 2 (haarProb G)) = transOp a (y : Lp ℂ 2 (haarProb G)) := rfl
-    rw [← this, hyeig]
+    have hy' : y ∈ Module.End.eigenspace R c := hy
+    have hyeig : R y = c • y := Module.End.mem_eigenspace_iff.mp hy'
+    show transOp a (y : Lp ℂ 2 (haarProb G)) = c • (y : Lp ℂ 2 (haarProb G))
+    have hRy : ((R y : V) : Lp ℂ 2 (haarProb G)) = transOp a (y : Lp ℂ 2 (haarProb G)) := rfl
+    rw [← hRy, hyeig]
     rfl
   choose χ hχ using hscalar
   obtain ⟨w, hwV, hw0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hVne

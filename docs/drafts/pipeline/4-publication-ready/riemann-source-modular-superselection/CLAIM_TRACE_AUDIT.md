@@ -370,11 +370,15 @@ Final targeted audit after manuscript freeze:
   fourteen promoted declarations;
 - every promoted declaration depends only on `propext`, `Classical.choice`,
   and `Quot.sound`;
-- `scripts/formal_tools.py lint` reported no forbidden declaration;
+- `scripts/formal_tools.py lint` reported no forbidden declaration; its first
+  passes exposed concurrent umbrella-reachability misses, which were added to
+  the RHTower and HTGeometry area indexes; final pass returned zero with
+  `formal lint passed`;
 - manuscript static audit found no verification-method references, duplicate
   labels/tags, undefined references/citations, control characters, stale
   conjugated coefficient, or whitespace error;
-- Tectonic completed both TeX passes but PDF generation could not be refreshed
-  because the sandboxed engine lacked `rsfs10.pfb` and font download approval
-  was not granted.  The existing PDF therefore predates this revision and is
-  not claimed as the final rendered artifact.
+- Tectonic fetched the official `rsfs10.pfb` bundle resource, completed both
+  TeX passes and PDF generation without TeX/layout warnings, and refreshed
+  the 65-page artifact. Title/abstract, main theorem, new factorwise theorem,
+  synthesis table, architecture, conclusion, and references were rendered to
+  images and checked for clipping, overlap, missing glyphs, and legibility.

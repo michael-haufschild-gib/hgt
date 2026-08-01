@@ -408,6 +408,16 @@ PRIMITIVE_RH_OBSTRUCTIONS: tuple[
     tuple[str, str, tuple[str, ...]], ...
 ] = (
     (
+        "ccm-first-clock-eventual-lower-bound",
+        "concrete-source-wall",
+        ("CCMFirstClockPublishedSourceEventuallyBoundedBelow",),
+    ),
+    (
+        "ccm-first-clock-asymptotic-bohr",
+        "concrete-source-wall",
+        ("CCMFirstClockScaledSourceAsymptoticallyBohrAlmostPeriodic",),
+    ),
+    (
         "completed-prime-gamma-sign",
         "source-wall",
         (

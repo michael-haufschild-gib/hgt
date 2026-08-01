@@ -17,7 +17,7 @@
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{corollary}[theorem]{Corollary}
-\newtheorem*{maintheorem}{Source-modular superselection theorem}
+\newtheorem*{maintheorem}{Complementary source--divisor tomography theorem}
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
 \theoremstyle{remark}
@@ -38,9 +38,8 @@
 \newcommand{\cS}{\mathcal S}
 \newcommand{\dd}{\,\mathrm d}
 
-\title{\textbf{The source-completion law for the Riemann divisor}\\
-\large Bifiltered pointing, singular common-test reconstruction,
-and ramified-character descent}
+\title{\textbf{Crease--pole--frequency tomography of the Riemann divisor}\\
+\large One arithmetic clock, three spectral strata, and a Stone-universal inverse fibre}
 \author{Michael Haufschild}
 \date{}
 
@@ -48,6 +47,39 @@ and ramified-character descent}
 
 \maketitle
 
+\begin{abstract}
+We prove an unconditional three-stratum tomography theorem for the Riemann divisor from one
+literal arithmetic clock.  Let $S(L)$ be the first Connes--Consani--Moscovici sine coordinate at
+aperture $L/2$ and frequency $2\pi/L$.  After subtracting its explicit continuous background,
+the resulting trace $T(L)$ has a derivative crease at every $L=\log k$ and
+\[
+ D_+T(\log k)-D_-T(\log k)
+   =-\frac{2\pi}{\log k}\,k^{-1/2}\Lambda(k).
+\]
+Thus the finite-aperture crease current recovers every von Mangoldt atom.  Those atoms determine
+a fixed-width prime--Gamma coefficient sequence whose canonical Dirichlet continuation has
+simple poles precisely at the shifted zeros with $\Rea\rho>1/2$; normalized residues recover
+analytic multiplicity.  Functional-equation reflection supplies the left off-critical sector.
+Subtracting this pole-reconstructed sector from the scaled clock $L S(L)$ leaves exactly the
+critical-line rational divisor.  Its unique continuous Bohr-almost-periodic asymptote has
+nonzero-frequency coefficients
+\[
+ \widehat P_0(\lambda)=-\frac{N_0(|\lambda|)}{\lambda^2},
+\]
+where $N_0(|\lambda|)$ is the exact critical-line multiplicity at unsigned ordinate
+$|\lambda|$.  Creases, poles, and frequencies therefore reconstruct, respectively, the complete
+prime-power source, off-critical divisor, and critical divisor, with no simplicity or
+frequency-independence assumption.  RH is exactly the degeneration in which the polar chart is
+empty; no emptiness theorem is claimed.
+
+The inverse direction is maximally non-identifiable: every pointed compact metrizable Stone
+space occurs as recurrent prime-tail geometry inside one Euler-source fibre with the complete
+zeta divisor fixed.  The combined law is an irreversible source--divisor information principle:
+arithmetic is read at births, nonunitary spectrum through growth, and unitary spectrum through
+recurrence, whereas the divisor alone admits no continuous source reconstruction.
+\end{abstract}
+
+\iffalse
 \begin{abstract}
 We prove a pointed-observability law for the Riemann divisor: positive arithmetic information
 does not form one cone, but a strict hierarchy of quotients.  The source is bifiltered by
@@ -129,15 +161,15 @@ scalar.  Thus the remaining proof architecture is exact: a source-only selection
 must act through singular cross-source coupling before critical clock, diagonal Hilbert response,
 separated cylinder, or even character erases orientation.
 \end{abstract}
+\fi
 
 \medskip
 \noindent\textbf{2020 Mathematics Subject Classification.}
 Primary 11M26, 11M41; Secondary 12H05, 46B99, 60E15.
 
 \noindent\textbf{Keywords.}
-Riemann hypothesis; Riemann xi function; hypertranscendence; prime valuations;
-ramified character; bifiltration; conservative descent; normal cone; Rees filtration;
-Hurwitz monodromy.
+Riemann hypothesis; Riemann xi function; explicit formula; von Mangoldt function;
+meromorphic continuation; Bohr almost periodicity; divisor tomography; Stone duality.
 
 \section{Introduction}\label{sec:intro}
 
@@ -159,15 +191,38 @@ source-to-spectrum problem precise \cite{Connes1999,Meyer2005}; the scaling Hami
 particularly explicit arithmetic dilation picture \cite{ConnesConsani2021}.  Hedenmalm's recent
 theta differential pencil isolates a related missing sesquilinear structure
 \cite{Hedenmalm2026}, while Connes's recent survey emphasizes finite-to-infinite Euler
-information and the Weil quadratic form \cite{Connes2026}.  The present work addresses a prior
-information question:
+information and the Weil quadratic form \cite{Connes2026}.  The present work asks an earlier
+reconstruction question:
 
 \begin{quote}
-\emph{Which source quantity still knows the transverse orientation after the completed divisor
-has been formed, and which classes of transport can or cannot carry it?}
+\emph{Can one literal arithmetic source signal recover both its prime-power input and the whole
+Riemann divisor, without first assuming where the zeros lie?}
 \end{quote}
 
-The answer is not one scalar but a ramified character.  A zero of order \(m_\rho\) carries
+The answer is yes, but only after separating three inequivalent information types.  A single
+moving-aperture CCM sine clock has finite creases at the logarithms of integers; their slope
+defects recover the complete von Mangoldt function.  The recovered atoms generate a fixed-width
+Dirichlet sequence whose continuation records off-critical zeros as poles.  Removing that polar
+sector from the same scaled clock leaves a recurrent signal whose Bohr spectrum records exactly
+the critical-line zeros.  In schematic form,
+\begin{quote}
+\emph{birth recovers arithmetic, growth recovers nonunitary spectrum, and recurrence recovers
+unitary spectrum.}
+\end{quote}
+This is an unconditional complete atlas, not an RH equivalence: RH is the special case in which
+the growth/polar chart is empty.
+
+The inverse map is maximally asymmetric.  The complete signed zeta divisor does not determine
+even the topological type of recurrent prime-source data: every pointed compact metrizable Stone
+space occurs inside one exponent-zero Euler-gauge fibre anchored at zeta.  The inverse quotient
+has dense leaves and no continuous section.  Independently, zeta admits a complete positive
+coefficient resolution whose normalized channels are free over the full zeta differential field
+at every finite stage but sum to one after countable locally normal completion.  These results
+explain why the forward atlas must remain source-pointed, singular, and infinitary.  The later
+ramified-character, Hedenmalm, Wold--Poisson, Sonin--Calkin, Rees, and Ward results are shadows of
+the same separation: each regular observer retains one stratum and erases another.
+
+That datum is not one scalar but a ramified character.  A zero of order \(m_\rho\) carries
 \[
  \left(m_\rho,\chi_\rho\right),\qquad
  \chi_\rho(z)=e^{z(\rho-1/2)}.
@@ -343,6 +398,145 @@ conservatively reflect this object.
 
 The paper proves the following closed theorem package.
 
+\begin{maintheorem}\label{thm:main}
+Let
+\[
+ \mathbb H_+=\{s\in\C:\Rea s>0\},\qquad
+ K_\zeta=\C(s)\bigl(\zeta,\zeta',\zeta'',\ldots\bigr).
+\]
+The following statements hold unconditionally.
+
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item \textbf{Crease--pole--frequency atlas.}
+For $L>0$, let
+\[
+ S(L)=b_{L/2}(2\pi/L),\qquad
+ T(L)=\pi S(L)-\int_0^L\sin(2\pi h/L)\,\mathcal C(h)\,\dd h,
+ \tag{1.A1}\label{eq:main-clock-trace}
+\]
+where $b_a$ is the literal first CCM source coordinate and $\mathcal C$ is its explicit
+continuous density.  For every integer $k\ge2$, both one-sided derivatives of $T$ at $\log k$
+exist and
+\[
+ D_+T(\log k)-D_-T(\log k)
+   =-\frac{2\pi}{\log k}\,k^{-1/2}\Lambda(k).
+ \tag{1.A2}\label{eq:main-crease}
+\]
+Hence $S|_{(0,\infty)}$ recovers every von Mangoldt atom.
+
+For any fixed width $A>0$, these recovered atoms determine the complete rectangular
+prime--Gamma coefficient sequence and its canonical continuation $D_A$ to $\Rea s>1$.  Its
+simple poles are exactly
+\[
+ p_\rho=1+(\rho-\tfrac12),\qquad \Rea\rho>\tfrac12,
+ \tag{1.A3}\label{eq:main-polar-support}
+\]
+and the residue divided by its explicit nonzero window factor is the analytic multiplicity of
+$\rho$.  Reflection recovers the strict-left divisor.
+
+Put $z_\rho=-i(\rho-\tfrac12)$ and
+\[
+ K_L(z)=\frac{1-\cos(Lz)}{z^2-(2\pi/L)^2}.
+ \tag{1.A4}\label{eq:main-clock-kernel}
+\]
+If $Q_+$ is the multiplicity-indexed strict-right divisor read from
+\eqref{eq:main-polar-support}, then the source-defined residual
+\[
+ F_0(L)=L S(L)-4\Rea\sum_{q\in Q_+}K_L(z_q)
+ \tag{1.A5}\label{eq:main-polar-residual}
+\]
+equals $2\Rea\sum_{q\in Q_0}K_L(z_q)$, where $Q_0$ is the critical-line divisor.  It has a
+unique continuous Bohr-almost-periodic asymptote
+\[
+ P_0(L)=2\sum_{q\in Q_0}\frac{1-\cos(\gamma_qL)}{\gamma_q^2},
+ \qquad F_0(L)-P_0(L)\longrightarrow0,
+ \tag{1.A6}\label{eq:main-critical-asymptote}
+\]
+and, for every $\lambda\ne0$,
+\[
+ \widehat P_0(\lambda)=-\frac{N_0(|\lambda|)}{\lambda^2}.
+ \tag{1.A7}\label{eq:main-bohr-multiplicity}
+\]
+Thus one scalar source clock reconstructs the complete prime-power source and the complete Xi
+divisor, including multiplicity.  RH holds exactly when the polar chart $Q_+$ is empty.
+
+\item \textbf{Stone universality in one zeta-divisor fibre.}
+For every pointed compact metrizable totally disconnected space $(S,s_0)$, there are a
+countable set $J$, a distinguished element $0\in J$, prime phases
+$\varepsilon_j:\mathcal P\to\{\pm1\}$, and meromorphic functions $Z_j$ on
+$\mathbb H_+$ such that
+\[
+ Z_0=\zeta,\qquad
+ \ord_a Z_j=\ord_a\zeta
+ \quad(a\in\mathbb H_+,\ j\in J).
+ \tag{1.S}\label{eq:main-stone-divisor}
+\]
+After any enumeration of the primes, the chamber of patterns recurring along prime tails in
+$(\varepsilon_j)_{j\in J}$ is homeomorphic to $S$, with $s_0$ corresponding to the
+all-positive pattern.  Consequently every observable depending only on the complete signed
+divisor on $\mathbb H_+$ is constant on $(Z_j)_{j\in J}$.
+
+The containing exponent-zero Euler-gauge foliation has dense leaves and indiscrete quotient.
+Every nonconstant leaf-invariant map into a $T_1$ space is nowhere continuous, and there is no
+continuous global selector choosing one prime phase from each leaf.
+
+\item \textbf{Complete positive Kolchin-free zeta resolution.}
+For every $K\ge12$, define
+\[
+ B_{K,0}(n)=\mathbf1_{\{\max_pv_p(n)<K\}},\qquad
+ B_{K,j+1}(n)=\mathbf1_{\{\max_pv_p(n)=K+j\}}.
+ \tag{1.K1}\label{eq:main-complete-indicators}
+\]
+The $B_{K,j}$ are pairwise disjoint, $0/1$-valued, and
+\[
+ \sum_{j\ge0}B_{K,j}(n)=1\qquad(n\ge1).
+ \tag{1.K2}\label{eq:main-complete-partition}
+\]
+On $\Rea s>1$, their Dirichlet series satisfy
+\[
+ F_{K,j}(s)=\sum_{n\ge1}\frac{B_{K,j}(n)}{n^s}
+            =\zeta(s)M_{K,j}(s),
+ \tag{1.K3}\label{eq:main-channel-factorization}
+\]
+where
+\[
+ M_{K,0}(s)=\frac1{\zeta(Ks)},\qquad
+ M_{K,j+1}(s)=\frac1{\zeta((K+j+1)s)}-\frac1{\zeta((K+j)s)}.
+ \tag{1.K4}\label{eq:main-channel-multipliers}
+\]
+Every $M_{K,j}$ is holomorphic and nowhere zero on $\Rea s>1/2$; hence all channels have
+the same zero divisor as $\zeta$ there, including multiplicity.  The family
+$(M_{K,j})_{j\ge0}$ is jointly differentially algebraically independent over $K_\zeta$, but
+its ordered analytic completion satisfies
+\[
+ \sum_{j=0}^{N}M_{K,j}(s)=\frac1{\zeta((K+N)s)}\longrightarrow1
+\tag{1.K5}\label{eq:main-normal-completion}
+\]
+uniformly on every closed half-plane $\Rea s\ge\delta>0$.
+More sharply, for every $\Rea s>0$,
+\[
+ \sum_{j\ge0}|M_{K,j}(s)|<\infty,\qquad
+ \sum_{j\ge0}M_{K,j}(s)=1,
+ \tag{1.K6}\label{eq:main-l1-completion}
+\]
+and at least one channel is nonzero.  Thus the countable resolution lands pointwise in
+$\ell^1(\N)$ before any divisor point is selected.
+
+\item \textbf{Irreversible source--divisor information law.}
+The forward map in \textup{(i)} is complete because it retains its source point and uses three
+different singular readouts.  In the reverse direction, no divisor-only rule separates all
+source coordinates in \textup{(ii)}, no continuous rule selects one source on every gauge leaf,
+and no finite differential-polynomial relation detects the completion identity in
+\textup{(iii)}.  Exact source reconstruction must therefore add transverse pointing data, cross
+the gauge quotient singularly, and retain a genuinely countable pointwise-$\ell^1$ operation.  If
+$\rho$ is an off-critical zero of $\zeta$, then every channel in every resolution
+\textup{(iii)} carries $\rho$ with the same multiplicity.  Thus positive coefficient
+disjointness and maximal finite differential rank do not exclude such a zero; the polar chart in
+\textup{(i)} locates it instead.
+\end{enumerate}
+\end{maintheorem}
+
+\iffalse
 \begin{maintheorem}\label{thm:main}
 Let \(\rho\) be a right-half nontrivial zero of \(\xi\), of multiplicity \(m_\rho\), and put
 \[
@@ -549,7 +743,55 @@ The source graph, character families, activation law, and residue-refined valuat
 the initial source clauses are defined before the zero set is read; \(\rho\) enters only when
 their boundary characters are evaluated on the divisor.
 \end{maintheorem}
+\fi
 
+Theorem~\ref{thm:main} separates four statements that are often conflated.  Part~(i) is a
+positive completeness theorem: one pointed scalar source trace recovers both arithmetic and the
+entire divisor, but it does so through three different regularity classes.  Part~(ii) is an
+inverse information theorem: even the complete signed divisor leaves arbitrary compact
+zero-dimensional source dynamics undetermined.  Part~(iii) is an algebraic completion theorem:
+an arithmetically exhaustive positive decomposition may have maximal finite differential rank
+while satisfying one exact relation only after ordered normal completion.  Part~(iv) is the
+irreversibility law joining them.  ``Singular'' refers to meromorphic continuation, Bohr means,
+and the impossibility of continuous gauge selection; ``infinitary'' refers to both the
+large-aperture mean and the impossibility of witnessing source fusion in finite differential
+coordinates.
+
+Modified Euler products with the same zeros as zeta are classical
+\cite{GrosswaldSchnitzer1978}; Helson zeta functions exhibit still broader freedom in prescribed
+zeros, poles, and continuation domains
+\cite{Seip2020,BochkovRomanov2021,Andersson2024}.  Those results vary analytic divisors or Euler
+frequencies.  The new inverse statement here keeps the complete zeta divisor fixed and realizes
+an arbitrary pointed Stone recurrence chamber inside that single fibre.  On the forward side,
+jumps of arithmetic counting functions, pole extraction, and Bohr coefficients are individually
+classical mechanisms.  The claim is their exact source-specific composition: one literal moving
+CCM clock has an arithmetic crease current; that current constructs a continuation whose polar
+support is exactly the off-critical divisor; and subtraction of that support exposes an
+unconditional critical Bohr spectrum.  No zero location, simplicity hypothesis, or
+rational-independence hypothesis enters as reconstruction input.
+
+Guinand's concordance theory already placed prime powers and zeros in an almost-periodic
+harmonic-analysis framework \cite{Guinand1959}.  Suzuki's screw function turns the Weil form
+into a continuous spectral signal and gives RH criteria and unconditional screw identities
+\cite{Suzuki2023,Suzuki2026}.  Connes--Consani--Moscovici construct the finite arithmetic clock
+that supplies the literal source coordinate \cite{ConnesConsaniMoscovici2025}, while the finite
+Guinand--Weil dictionary gives an exact source quotient for truncated quadratic forms
+\cite{Groskin2026}.  Groskin also recovers von Mangoldt weights from derivative jumps at
+prime-power thresholds in a finite Weil-matrix path \cite{GroskinMangoldt2026}; the crease
+mechanism by itself is therefore not a novelty claim here.  The distinction is the exact
+source-specific composition: the crease current of one literal moving clock supplies the
+arithmetic input to a continuation whose polar support is the complete off-critical divisor,
+and subtraction of that recovered polar sector exposes the unconditional critical Bohr chart.
+No recurrence hypothesis is imposed.
+
+The theorem does not assert that the polar chart is empty.  Subsequent sections explain why
+bounded, finite, or reflection-even observers fail to replace any of the three singular
+readouts.  Hedenmalm dense radicals concern acquisition; Wold--Poisson and Sonin--Calkin laws
+consume the continuous character; finite-Rees results obstruct bounded reflection; and the
+four-unit Ward law is a final positivity consumer.  They are used as consequences and stress
+tests of the source--divisor information law, not as independent proposed proofs of RH.
+
+\iffalse
 Theorem~\ref{thm:main} is not an RH equivalence padded with auxiliary notation.  It constructs
 the missing oriented object and proves its conservation across independent source charts.  It
 also proves a sharp negative result: after passage to the flat radical, neither a larger finite
@@ -644,6 +886,7 @@ complete classification of the information present before this final global sign
 bidegree and pointing, odd orientation jet, divisor multiplicity, complex reflection character,
 global aperture spectrum, and the precise regular descents that preserve, erase, or fail on that
 object.
+\fi
 
 \section{A universal normal-cone residue law}\label{sec:normal}
 
@@ -1170,6 +1413,96 @@ Dirichlet-series leading-echelon argument in the Ostrowski--Shapiro--Sparer trad
 \cite{Ostrowski1920,ShapiroSparer1986}.
 \end{proof}
 
+\subsection{Complete positive resolution and the finite--infinite boundary}
+
+The shells above omit the low-exponent head.  Restoring it produces a complete positive object
+and reveals an exact separation between finite differential algebra and countable analytic
+completion.
+
+For $K\ge12$, define $B_{K,j}$, $F_{K,j}$, and $M_{K,j}$ by
+\eqref{eq:main-complete-indicators}--\eqref{eq:main-channel-multipliers}.
+
+\begin{theorem}[Complete positive Kolchin-free resolution]
+\label{thm:complete-positive-resolution}
+For every integer $K\ge12$:
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item the coefficient supports of $B_{K,0},B_{K,1},\ldots$ are pairwise disjoint and
+\[
+ \sum_{j\ge0}B_{K,j}(n)=1\qquad(n\ge1);
+ \tag{4.K1}\label{eq:complete-coefficient-sum}
+\]
+\item on $\Rea s>1$, $F_{K,j}=\zeta M_{K,j}$, and every $M_{K,j}$ extends to a
+holomorphic unit on $\Rea s>1/2$; in particular every $F_{K,j}$ has exactly the zeta zero
+divisor there, including multiplicity;
+\item $(M_{K,j})_{j\ge0}$ is jointly differentially algebraically independent over
+$K_\zeta$;
+\item for every $N\ge0$,
+\[
+ \sum_{j=0}^{N}M_{K,j}(s)=\frac1{\zeta((K+N)s)},
+ \tag{4.K2}\label{eq:complete-telescope}
+\]
+and the left side converges to $1$, uniformly on every closed half-plane
+$\Rea s\ge\delta>0$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+An integer lies in the head precisely when every prime valuation is less than $K$.  Otherwise
+its largest prime valuation has one unique value $K+j$.  This proves disjointness and
+\eqref{eq:complete-coefficient-sum}; the infinite sum is coefficientwise locally finite.
+
+The standard $K$-free Euler identity and Proposition~\ref{prop:shell-factor} give
+\[
+ F_{K,0}(s)=\frac{\zeta(s)}{\zeta(Ks)},\qquad
+ F_{K,j+1}(s)=\zeta(s)
+ \left(\frac1{\zeta((K+j+1)s)}-\frac1{\zeta((K+j)s)}\right).
+ \tag{4.K3}\label{eq:complete-factor-proof}
+\]
+If $\Rea s>1/2$, then $\Rea(Ks)>1$, so $1/\zeta(Ks)$ is holomorphic and nonzero.
+Proposition~\ref{prop:shell-factor} gives the same conclusion for every difference multiplier,
+since $K+j\ge12$.  Multiplication by a holomorphic unit preserves zero order.
+
+Put $R_m(s)=1/\zeta(ms)$.  Its Dirichlet coefficients are the $m$-dilated M\"obius
+coefficients: $R_m(s)=\sum_d\mu(d)d^{-ms}$.  The lowest nonzero $\Omega$-layer after one
+prime derivation is $m-1$, supported on the pure ray $q^{m-1}$.  The
+prime-log Vandermonde argument of Theorem~\ref{thm:omega}, with zeta placed at level one, proves
+that $(R_{K+n})_{n\ge0}$ is differentially independent even after adjoining zeta and all of
+its derivatives.  The locally finite coordinate change
+\[
+ (R_K,R_{K+1},R_{K+2},\ldots)
+ \longmapsto(R_K,R_{K+1}-R_K,R_{K+2}-R_{K+1},\ldots)
+ \tag{4.K4}\label{eq:successive-difference-map}
+\]
+has inverse given by finite prefix summation at every coordinate and every jet order.  It is
+therefore an automorphism of the countable differential-polynomial algebra.  Its image is
+exactly $(M_{K,j})_{j\ge0}$, proving (c).
+
+Equation \eqref{eq:complete-telescope} is finite telescoping.  If $\Rea s\ge\delta>0$, then
+$\Rea((K+N)s)\to\infty$ uniformly.  For $\Rea w\ge3$, the elementary zeta-tail estimate and
+$|\zeta(w)|\ge1/2$ give
+\[
+ \left|\frac1{\zeta(w)}-1\right|
+ \le\frac{2}{\Rea w-1}.
+ \tag{4.K5}\label{eq:inverse-zeta-uniform-tail}
+\]
+The right side tends uniformly to zero for $w=(K+N)s$, proving (d).
+\end{proof}
+
+\begin{corollary}[Finite freedom, infinite closure]
+\label{cor:finite-infinite-boundary}
+No nonzero differential polynomial over $K_\zeta$ vanishes on any finite collection of the
+normalized channels.  Nevertheless their ordered locally normal sum is exactly $1$.  Hence
+the completion identity is invisible at every finite differential-algebraic stage.
+\end{corollary}
+
+\begin{corollary}[Off-line zero synchrony]
+\label{cor:off-line-synchrony}
+If $\rho$ is a zeta zero with $\Rea\rho>1/2$, then for every $K\ge12$ and every
+$j\ge0$, the continuation of $F_{K,j}$ vanishes at $\rho$ with exactly the zeta
+multiplicity.  Thus pairwise-disjoint positive coefficient support, even together with maximal
+relative differential rank, cannot exclude an off-line zero.
+\end{corollary}
+
 \subsection{The source is bifiltered, not deeply filtered}
 
 The shell index records valuation depth, but it is not the only source grade.  Fix finitely many
@@ -1284,6 +1617,106 @@ is an absolutely convergent atomic Fourier transform with distinct frequencies
 positive-definite transform.  Since every weight has magnitude \(p^{-\sigma}>0\), this occurs
 exactly for the all-positive orientation.
 \end{proof}
+
+\subsection{The isodivisorial Stone fibre}
+
+The projective-tail quotient above already shows nonseparation.  The next theorem is stronger:
+arbitrary compact zero-dimensional recurrence geometry occurs inside one fixed zeta-divisor
+fibre.
+
+Let \(\Omega=\mathbb T^{\mathcal P}\) be the prime-phase torus and define its exponent-zero
+Euler-gauge subgroup by
+\[
+ \mathcal G_0=
+ \left\{\omega\in\Omega:
+   \sum_{p\in\mathcal P}|1-\omega(p)|p^{-\sigma}<\infty
+   \text{ for every }\sigma>0\right\}.
+ \tag{4.S1}\label{eq:exponent-zero-gauge}
+\]
+For \(\eta\in\Omega\) and \(\omega\in\mathcal G_0\), put
+\[
+ U_{\eta,\omega}(s)
+ =\prod_p\frac{1-\eta(p)p^{-s}}
+                  {1-\eta(p)\omega(p)p^{-s}}.
+ \tag{4.S2}\label{eq:euler-gauge-unit}
+\]
+
+\begin{theorem}[Zeta--Stone isodivisorial saturation]
+\label{thm:zeta-stone}
+Let \((S,s_0)\) be a pointed compact metrizable totally disconnected space.  There are a
+countable coordinate set \(J\), a distinguished coordinate \(0\in J\), and sign phases
+\(\varepsilon_j:\mathcal P\to\{\pm1\}\), \(j\in J\), with the following properties.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item Every \(\varepsilon_j\) belongs to \(\mathcal G_0\).  Hence
+\[
+ Z_j(s)=U_{1,\varepsilon_j}(s)\zeta(s)
+ \tag{4.S3}\label{eq:zeta-stone-source}
+\]
+is meromorphic on \(\Rea s>0\), and
+\[
+ \ord_a Z_j=\ord_a\zeta
+ \qquad(\Rea a>0).
+ \tag{4.S4}\label{eq:zeta-stone-orders}
+\]
+\item \(\varepsilon_0=1\), so \(Z_0=\zeta\) on \(\Rea s>0\).
+\item For every enumeration of the primes, the closed chamber of \(J\)-patterns recurring along
+prime tails is homeomorphic to \(S\); under this homeomorphism \(s_0\) is the all-positive
+pattern.
+\item If \(\mathcal O\) is any observable whose value depends only on the complete signed
+meromorphic-order function on \(\Rea s>0\), then
+\[
+ \mathcal O(Z_j)=\mathcal O(Z_k)\qquad(j,k\in J).
+ \tag{4.S5}\label{eq:divisor-profile-constant}
+\]
+\end{enumerate}
+Moreover, every coset of \(\mathcal G_0\) is dense in \(\Omega\), the quotient
+\(\Omega/\mathcal G_0\) is indiscrete, no continuous global coset selector exists, and every
+nonconstant \(T_1\)-valued coset invariant is nowhere continuous.
+\end{theorem}
+
+\begin{proof}
+Use all clopen subsets of \(S\) as Boolean coordinates, together with one frozen anchor
+coordinate.  The map
+\[
+ x\longmapsto
+ \bigl(0,(\mathbf1_C(x)\mathbin{\mathrm{xor}}\mathbf1_C(s_0))_{C\in\operatorname{Clop}(S)}\bigr)
+ \tag{4.S6}\label{eq:pointed-stone-coordinate}
+\]
+is a closed embedding into a countable Boolean cube; compact metrizability makes the clopen
+algebra countable.  Its image \(K\) is closed, is homeomorphic to \(S\), and sends \(s_0\) to the
+all-positive pattern.
+
+Choose an exponentially sparse sequence of primes.  Along disjoint successive blocks, repeat
+finite prefixes of a countable dense subset of \(K\), with every required prefix repeated
+infinitely often.  Closedness gives both inclusions: every recurring tail pattern lies in \(K\),
+and every point of \(K\) is a limit of recurring prefixes.  This proves the exact recurrence
+claim.  Let \(\varepsilon_j(p)\) be the sign in coordinate \(j\) on the sparse reservoir and
+\(+1\) elsewhere.  Sparsity gives
+\[
+ \sum_p|1-\varepsilon_j(p)|p^{-\sigma}<\infty
+ \qquad(\sigma>0).
+\]
+
+On each compact subset of \(\Rea s>0\), the logarithmic tails of
+\eqref{eq:euler-gauge-unit} have a common summable majorant.  The product therefore converges
+locally normally to a holomorphic nowhere-zero function.  Multiplication by this unit preserves
+every signed meromorphic order, proving \eqref{eq:zeta-stone-orders}; the frozen coordinate gives
+the anchor.  Equation \eqref{eq:divisor-profile-constant} follows immediately.
+
+Finally, every finite phase modification lies in \(\mathcal G_0\), so each coset meets every
+cylinder and is dense.  A quotient whose fibres are all dense is indiscrete.  A continuous
+selector would be a continuous coset-invariant map back to the Hausdorff phase torus and hence
+constant, contradicting that its selected point must remain in each distinct coset.  The same
+dense-fibre argument at one point proves nowhere continuity of any nonconstant separated
+invariant.
+\end{proof}
+
+\begin{remark}[What Stone universality means]
+The theorem does not identify \(S\) with a family of zeros, nor does it vary the zeta divisor.
+It identifies \(S\) with recurrent prime-source patterns among functions whose complete signed
+divisor is fixed.  Thus divisor equality forgets not one binary sign but every compact
+metrizable Stone system.
+\end{remark}
 
 \begin{corollary}[Dimension-free source-observation capacity]
 \label{cor:walsh-capacity}
@@ -4220,6 +4653,246 @@ Theorems~\ref{thm:hyperbolic-uniqueness}, \ref{thm:charge-conversion},
 
 \section{Interpretation for RH}\label{sec:interpretation}
 
+\subsection{The complete one-clock atlas}
+
+The singular--infinitary law is also constructive.  At the first published CCM clock, one
+source coordinate separates into a finite-aperture arithmetic chart, a meromorphic polar chart,
+and an asymptotic recurrent chart.
+
+Let $b_a(\xi)$ be the off-diagonal sine coordinate of the restricted Weil distribution in the
+CCM normalization \cite{ConnesConsaniMoscovici2025}.  Explicitly,
+\[
+ b_a(\xi)=\frac1\pi\int_{(0,2a]}
+ \sin(\xi h)\frac{e^{h/2}}{e^h-e^{-h}}\,\dd h
+ -\frac1\pi\Rea\langle D_{\rm pp},\sin(\xi\,\cdot)\rangle_{(0,2a]},
+ \tag{10.C1}\label{eq:ccm-source-coordinate}
+\]
+where $D_{\rm pp}$ is the prime--polar part of that distribution.  Define the scaled literal
+first clock
+\[
+ F(L)=L\,b_{L/2}(2\pi/L),\qquad L\ge\pi/2.
+ \tag{10.C2}\label{eq:scaled-first-clock}
+\]
+
+Write
+\[
+ \mathcal C(h)=\mathcal A(h)-2\cosh(h/2),\qquad
+ T(L)=\pi b_{L/2}(2\pi/L)-
+   \int_0^L\sin(2\pi h/L)\mathcal C(h)\,\dd h,
+ \tag{10.T1}\label{eq:arithmetic-first-clock}
+\]
+where $\mathcal A$ is the explicit archimedean density in
+\eqref{eq:ccm-source-coordinate}.  The subtraction is performed at the level of the exact
+source identity; no differentiability of $\mathcal A$ is required.
+
+\begin{theorem}[Complete crease--pole--frequency tomography]
+\label{thm:complete-clock-atlas}
+The following statements hold unconditionally.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item For every integer $k\ge2$, the one-sided derivatives of $T$ at $\log k$ exist and
+\[
+ J_k:=D_+T(\log k)-D_-T(\log k)
+   =-\frac{2\pi}{\log k}\,k^{-1/2}\Lambda(k).
+ \tag{10.T2}\label{eq:crease-current}
+\]
+Consequently
+\[
+ \Lambda(k)=-\frac{\log k}{2\pi}e^{\log k/2}J_k.
+ \tag{10.T3}\label{eq:crease-inversion}
+\]
+\item Fix $A>0$.  The rectangular prime--Gamma coefficient sequence constructed from the
+recovered values \eqref{eq:crease-inversion} has a canonical meromorphic continuation $D_A$ on
+$\Rea s>1$.  There,
+\[
+ \ord_p D_A=-1
+ \quad\Longleftrightarrow\quad
+ p=1+(\rho-\tfrac12),\quad \xi(\rho)=0,\quad \Rea\rho>\tfrac12.
+ \tag{10.T4}\label{eq:polar-chart}
+\]
+At such a pole, the trailing coefficient divided by the explicit nonzero rectangular window
+factor equals the analytic multiplicity of $\rho$.
+\item Let $Q_+$ be the resulting multiplicity-indexed strict-right divisor, put
+$z_q=-i(\rho_q-\tfrac12)$, and define
+\[
+ K_L(z)=\frac{1-\cos(Lz)}{z^2-(2\pi/L)^2},\qquad
+ F_0(L)=F(L)-4\Rea\sum_{q\in Q_+}K_L(z_q).
+ \tag{10.T5}\label{eq:polar-subtracted-clock}
+\]
+Then, for every $L\ge\pi/2$,
+\[
+ F_0(L)=2\Rea\sum_{q\in Q_0}K_L(z_q),
+ \tag{10.T6}\label{eq:critical-rational-residual}
+\]
+where $Q_0$ is the multiplicity-indexed critical-line divisor.
+\item Writing $z_q=\gamma_q\in\R$ on $Q_0$, the series
+\[
+ P_0(L)=2\sum_{q\in Q_0}
+       \frac{1-\cos(\gamma_qL)}{\gamma_q^2}
+ \tag{10.T7}\label{eq:critical-bohr-model}
+\]
+is continuous and Bohr almost periodic, satisfies $F_0(L)-P_0(L)\to0$, and is the unique
+continuous Bohr-almost-periodic asymptote of $F_0$.  For every $\lambda\ne0$,
+\[
+ \widehat P_0(\lambda)=-\frac{N_0(|\lambda|)}{\lambda^2},
+ \tag{10.T8}\label{eq:critical-bohr-count}
+\]
+where $N_0(|\lambda|)$ is the number of divisor copies at unsigned critical ordinate
+$|\lambda|$.
+\item The crease, polar, and Bohr charts reconstruct, respectively, the complete von Mangoldt
+source, the complete off-critical divisor, and the complete critical divisor.  RH holds exactly
+when $Q_+$ is empty.  Conversely, the complete divisor does not determine the source
+continuously: its Euler-source fibre contains arbitrary pointed compact metrizable Stone
+dynamics.
+\end{enumerate}
+No assertion that $Q_+$ is empty is made.
+\end{theorem}
+
+\begin{proof}
+The exact half-wave source identity turns \eqref{eq:arithmetic-first-clock} into the locally
+finite expansion
+\[
+ T(L)=\sum_{2\le j\le e^L}j^{-1/2}\Lambda(j)
+       \sin\!\left(\frac{2\pi\log j}{L}\right).
+ \tag{10.T9}\label{eq:local-prime-packet}
+\]
+Fix $k\ge2$.  In a neighbourhood of $\log k$, all atoms with $j<k$ form one fixed finite smooth
+background, all atoms with $j>k$ are absent, and only the $k$-th atom changes branch.  Its value
+at entry is zero, its left derivative is zero, and its right derivative is
+$-2\pi k^{-1/2}\Lambda(k)/\log k$.  Subtracting the common smooth drift proves
+\eqref{eq:crease-current} and \eqref{eq:crease-inversion}.
+
+For fixed $A$, every sufficiently late rectangular coefficient is a finite expression in the
+recovered von Mangoldt atoms plus an explicit Gamma term.  Changing the finite head adds an
+entire Dirichlet polynomial.  The full coefficient series agrees on its initial half-plane with
+the canonical rectangular continuation.  That continuation has order $-1$ exactly at the
+shifted strict-right Xi zeros and is analytic elsewhere on $\Rea s>1$.  Its trailing coefficient
+is twice the analytic multiplicity times the nonvanishing rectangular window coefficient.
+This proves (b), including multiplicity; functional-equation reflection supplies the strict-left
+copies.
+
+The literal source/Xi identity gives
+\[
+ F(L)=2\Rea\sum_q K_L(z_q).
+ \tag{10.T10}\label{eq:full-clock-divisor}
+\]
+The kernel is even.  Functional-equation reflection is a multiplicity-preserving equivalence
+from the strict-right copies to the strict-left copies and sends $z$ to $-z$.  Absolute
+reciprocal-square summability therefore gives
+\[
+ \sum_qK_L(z_q)=2\sum_{q\in Q_+}K_L(z_q)+\sum_{q\in Q_0}K_L(z_q),
+\]
+which proves \eqref{eq:critical-rational-residual}.
+
+For $q\in Q_0$, the centered coordinate is real, nonzero, satisfies $|\gamma_q|>4$, and
+$\sum_{q\in Q_0}\gamma_q^{-2}<\infty$.  Hence \eqref{eq:critical-bohr-model} converges uniformly
+and is Bohr almost periodic.  If $L\ge2\pi$ and $u=2\pi/L$, then termwise
+\[
+ 0\le
+ \frac{1-\cos(\gamma_qL)}{\gamma_q^2-u^2}
+ -\frac{1-\cos(\gamma_qL)}{\gamma_q^2}
+ \le \frac{2}{15}u^2\gamma_q^{-2}.
+\]
+Summation proves $F_0-P_0\to0$.  A Bohr almost-periodic function tending to zero at positive
+infinity vanishes identically, so the asymptote is unique.  Termwise Bohr means are justified by
+uniform summability.  Equal and opposite frequencies contribute with the same sign, giving
+\eqref{eq:critical-bohr-count} without simplicity or independence assumptions.
+
+Every divisor copy lies in exactly one of the strict-right, critical, or strict-left sectors;
+the preceding charts recover all three with multiplicity.  The RH boundary statement follows
+from this partition.  The inverse assertion is the Stone-fibre theorem of
+Section~\ref{sec:depth}.  This proves (e).
+\end{proof}
+
+The theorem gives a literal birth--growth--recurrence trichotomy.  Finite aperture sees when a
+source atom enters; meromorphic growth sees every nonunitary character; asymptotic recurrence
+sees every unitary character.  None of the three charts can replace another.
+
+\subsection{The RH degeneration and compact recurrence}
+
+The complete atlas shows that the unsubtracted clock is recurrent exactly when its polar sector
+is absent.  The resulting degeneration retains a stronger compact recurrence statement.  Call
+$F$ \emph{asymptotically Bohr almost periodic} if there is a continuous Bohr
+almost-periodic $P:\R\to\R$ such that $F(L)-P(L)\to0$ as $L\to\infty$.
+
+\begin{theorem}[First-clock asymptotic Bohr criterion]
+\label{thm:first-clock-bohr}
+The following source-only statement is equivalent to RH:
+\[
+ F\text{ is asymptotically Bohr almost periodic}.
+ \tag{10.C3}\label{eq:bohr-rh-criterion}
+\]
+Under RH, if $\omega_q$ denotes the real spectral ordinate attached to the multiplicity copy
+$q$ of a Xi zero, then one may take
+\[
+ P(L)=2S(L),\qquad
+ S(L)=\sum_q\frac{1-\cos(\omega_qL)}{\omega_q^2},
+ \tag{10.C4}\label{eq:explicit-screw-asymptote}
+\]
+and, for $L\ge2\pi$,
+\[
+ 0\le F(L)-2S(L)
+ \le\frac4{15}\left(\frac{2\pi}{L}\right)^2
+       \sum_q\frac1{\omega_q^2}.
+ \tag{10.C5}\label{eq:first-clock-error}
+\]
+Let $\mathcal H$ be the compact relation hull of
+$(e^{i\omega_qL})_q$, and put
+\[
+ M=2\max_{z\in\mathcal H}
+ \sum_q\frac{1-\Rea z_q}{\omega_q^2}.
+ \tag{10.C6}\label{eq:relation-hull-maximum}
+\]
+For every $y\in[0,M]$ and $\varepsilon>0$, there is a finite window length $T$ such that
+every sufficiently late interval of length $T$ contains a $t$ with
+$|F(t)-y|<\varepsilon$.  Moreover,
+\[
+ M=4\sum_q\omega_q^{-2}
+ \tag{10.C7}\label{eq:absolute-hull-endpoint}
+\]
+if and only if every finite integral relation among the $\omega_q$ has even total coefficient.
+No simplicity or rational-independence hypothesis is used.
+\end{theorem}
+
+\begin{proof}
+Assume RH.  The Xi spectral coordinates are real, $|\omega_q|>4$, and
+$\sum_q\omega_q^{-2}<\infty$.  The series in \eqref{eq:explicit-screw-asymptote} is therefore a
+uniform limit of trigonometric polynomials and is Bohr almost periodic.  The exact first-clock
+identity gives $F(L)=2\Rea Q(L)$, where $Q$ is the multiplicity-exact moving rational Xi
+divisor.  For $w_L=2\pi/L$, one summand satisfies
+\[
+ 0\le Q_q(L)-\frac{1-\cos(\omega_qL)}{\omega_q^2}
+ \le\frac2{15}\frac{w_L^2}{\omega_q^2}.
+\]
+Summation proves \eqref{eq:first-clock-error} and the forward implication.
+
+Conversely, an almost-periodic $P$ is bounded.  If $F-P\to0$, then $F$ is bounded on a
+tail, so $b_{L/2}(2\pi/L)=F(L)/L$ has a fixed lower bound there.  This weak floor already
+forces RH.  For completeness, multiply the exact identity by $L/2$, add the corresponding
+affine term $dL$, and repair the finite bad head by a compactly supported nonnegative
+correction.  The repaired carrier is nonnegative, its compact correction has entire Laplace
+transform, and its affine correction is analytic on $\Rea s>0$.  Landau transfer across one
+positive-axis continuation disk halves the known exponential-moment abscissa.  Iterating the
+halving gives every positive exponential moment of the literal Xi rational divisor; the
+first-clock Volterra reflection then forces every Xi spectral coordinate to be real.  This is
+RH and proves the reverse implication without selecting a rightmost zero.
+
+Finally, translation on the compact relation hull is minimal on the orbit closure.  Applied to
+the continuous nonnegative functional
+$z\mapsto2\sum_q\omega_q^{-2}(1-\Rea z_q)$, compact recurrence gives the bounded-window
+approximation statement.  The absolute endpoint is present precisely when the all-negative
+phase belongs to the relation hull, which is equivalent to the parity condition on every finite
+integral relation.  The vanishing error \eqref{eq:first-clock-error} transfers both conclusions
+from $2S$ to $F$.
+\end{proof}
+
+This criterion is stronger than boundedness of a divisor-defined screw function in one specific
+way: its left side names only the literal first CCM source clock and asks for compact translation
+dynamics, not a zero-location condition.  Suzuki's screw-function criteria provide the closest
+published comparison \cite{Suzuki2023,Suzuki2026}; the relation-hull formulation removes the
+simplicity and rational-independence assumptions from the recurrence conclusion.
+
+\subsection{Reconstruction implications}
+
 Theorems~\ref{thm:inner-outer}, \ref{thm:duality-fracture},
 \ref{thm:source-weil-completion}, \ref{thm:compact-carrier-rigidity},
 \ref{thm:critical-resolution},
@@ -4503,6 +5176,42 @@ class: no bounded finite-Rees completion can perform the reflection step.
 
 \section{Conclusion}
 
+One literal arithmetic clock contains three complete but inequivalent data sets.  Its
+finite-aperture derivative creases recover every von Mangoldt atom.  The Dirichlet continuation
+built from those atoms recovers every off-critical zero as a pole with its analytic
+multiplicity.  After that polar sector is subtracted from the same scaled clock, the unique Bohr
+asymptote recovers every critical-line zero through quantized coefficients.  This is a complete
+unconditional reconstruction of both the prime-power source and the Riemann divisor.
+
+The organizing law is therefore not ``positivity versus negativity'' but
+birth--growth--recurrence.  Arithmetic atoms are birth events at $L=\log k$.  Nonunitary modular
+characters are exponential-growth data and appear in the polar chart.  Unitary characters are
+recurrent data and appear in the Bohr chart.  RH is exactly the degeneration in which the growth
+chart is empty and the literal clock needs no polar subtraction.  The theorem does not assert
+that degeneration.
+
+The direction of information flow is irreversible.  Every pointed compact metrizable Stone
+space occurs as recurrent prime-tail geometry among Euler sources with the complete zeta
+divisor fixed.  Dense gauge leaves and the absence of a continuous source section show that the
+divisor cannot reconstruct the clock's source point.  Conversely, retaining that point makes
+the forward three-chart atlas complete.  Source pointing is therefore mathematical data, not a
+choice of presentation.
+
+The remaining results become projections of this law.  The Gamma--Julia normal lift retains the
+odd prime-log entry direction before even scalarization.  Hedenmalm dense radicals show that
+divisor acquisition is singular.  Wold--Poisson and Sonin--Calkin constructions transport the
+continuous character but do not select its unitary sector.  Finite-Rees theorems exclude bounded
+graded sewing of reflected off-line sectors.  Four-unit Ward positivity is a final sign consumer,
+not a source generator.  The complete positive shell resolution supplies the same lesson in
+differential algebra: every finite observer sees a free family, while exact fusion occurs only
+after a pointwise absolutely summable countable completion.
+
+No RH proof is claimed.  What is proved is the complete information law immediately before zero
+exclusion: where arithmetic, off-critical spectrum, critical spectrum, multiplicity, and source
+non-identifiability live; how each is reconstructed; and why no bounded finitary observer can
+substitute for the singular readout that carries it.
+
+\iffalse
 One source law now explains the previously separate bulk, divisor, monodromy, shell, window, and
 transport observations.  Positive bounded-exponent Euler sources have three distinct scales:
 their fixed-scale limit is \(\zeta\), their inverse-depth limit is reciprocal zeta, and their
@@ -4681,7 +5390,15 @@ the correct object is not one Hilbert completion but a bifiltered singular sourc
 normal jet, and its ramified character module, together with countably free
 hypertranscendental, infinite-Rees, and global source-tail resolutions.
 
+\fi
+
 \begin{thebibliography}{99}
+
+\bibitem{Andersson2024}
+J.~Andersson,
+\newblock Mittag--Leffler type theorems for Helson zeta-functions,
+\newblock arXiv:2408.15713 (2024).
+\newblock \url{https://arxiv.org/abs/2408.15713}.
 
 \bibitem{ArratiaBarbourTavare2003}
 R.~Arratia, A.~D.~Barbour, and S.~Tavar\'e,
@@ -4694,6 +5411,12 @@ J.-F.~Burnol,
 \newblock \emph{J. Th\'eor. Nombres Bordeaux} \textbf{16} (2004), 65--94.
 \newblock \url{https://doi.org/10.5802/jtnb.434}.
 
+\bibitem{BochkovRomanov2021}
+I.~Bochkov and R.~Romanov,
+\newblock On zeroes and poles of Helson zeta functions,
+\newblock arXiv:2106.15949 (2021).
+\newblock \url{https://arxiv.org/abs/2106.15949}.
+
 \bibitem{Connes1999}
 A.~Connes,
 \newblock Trace formula in noncommutative geometry and the zeros of the Riemann zeta function,
@@ -4705,6 +5428,12 @@ A.~Connes and C.~Consani,
 \newblock The scaling Hamiltonian,
 \newblock \emph{J. Operator Theory} \textbf{85} (2021), 257--276.
 \newblock \url{https://arxiv.org/abs/1910.14368}.
+
+\bibitem{ConnesConsaniMoscovici2025}
+A.~Connes, C.~Consani, and H.~Moscovici,
+\newblock Zeta spectral triples,
+\newblock arXiv:2511.22755 (2025).
+\newblock \url{https://arxiv.org/abs/2511.22755}.
 
 \bibitem{ConnesConsaniQuasiInner2021}
 A.~Connes and C.~Consani,
@@ -4724,6 +5453,31 @@ P.~M. Gauthier and X.~Xarles,
 line,
 \newblock arXiv:0911.5135 (2009).
 \newblock \url{https://arxiv.org/abs/0911.5135}.
+
+\bibitem{GrosswaldSchnitzer1978}
+E.~Grosswald and F.~J.~Schnitzer,
+\newblock A class of modified \(\zeta\) and \(L\)-functions,
+\newblock \emph{Pacific J. Math.} \textbf{74} (1978), 357--364.
+\newblock \url{https://msp.org/pjm/1978/74-2/pjm-v74-n2-p09-s.pdf}.
+
+\bibitem{Groskin2026}
+A.~Groskin,
+\newblock A finite Guinand--Weil dictionary and archimedean tail order for the truncated Weil
+quadratic form,
+\newblock arXiv:2607.02828 (2026).
+\newblock \url{https://arxiv.org/abs/2607.02828}.
+
+\bibitem{GroskinMangoldt2026}
+A.~Groskin,
+\newblock A matrix-valued von Mangoldt measure in the finite Connes--van Suijlekom path,
+\newblock Zenodo (2026).
+\newblock \url{https://doi.org/10.5281/zenodo.21242028}.
+
+\bibitem{Guinand1959}
+A.~P.~Guinand,
+\newblock Concordance and the harmonic analysis of sequences,
+\newblock \emph{Acta Math.} \textbf{101} (1959), 235--271.
+\newblock \url{https://doi.org/10.1007/BF02559556}.
 
 \bibitem{Hedenmalm2026}
 H.~Hedenmalm,
@@ -4788,10 +5542,28 @@ H.~N.~Shapiro and G.~H.~Sparer,
 \newblock \emph{Comm. Pure Appl. Math.} \textbf{39} (1986), 695--745.
 \newblock \url{https://doi.org/10.1002/cpa.3160390602}.
 
+\bibitem{Seip2020}
+K.~Seip,
+\newblock Universality and distribution of zeros and poles of some zeta functions,
+\newblock \emph{J. Anal. Math.} \textbf{141} (2020), 331--381.
+\newblock \url{https://doi.org/10.1007/s11854-020-0126-3}.
+
 \bibitem{Schwartz1966}
 L.~Schwartz,
 \newblock \emph{Th\'eorie des distributions},
 \newblock Hermann, Paris, 1966.
+
+\bibitem{Suzuki2023}
+M.~Suzuki,
+\newblock Aspects of the screw function corresponding to the Riemann zeta function,
+\newblock arXiv:2206.03682 (2022; revised 2023).
+\newblock \url{https://arxiv.org/abs/2206.03682}.
+
+\bibitem{Suzuki2026}
+M.~Suzuki,
+\newblock Weil's quadratic form via the screw function,
+\newblock arXiv:2606.09096 (2026).
+\newblock \url{https://arxiv.org/abs/2606.09096}.
 
 \bibitem{Titchmarsh1986}
 E.~C.~Titchmarsh,

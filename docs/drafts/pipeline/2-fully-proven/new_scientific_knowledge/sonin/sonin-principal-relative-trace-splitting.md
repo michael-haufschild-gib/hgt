@@ -210,7 +210,11 @@ attach Burnol's conductor and address one-sided coercivity.
       evaluates it as the logarithmic length of the intersection, hence commutative
       (`..._comm`), not merely cyclic.  The full principal-relative system carries the same reader
       by `SoninPrincipalRelativeOperator.extendedTrace_compose_comm`.
-- [ ] Burnol-completed coercivity or terminal no-go
+- [ ] Burnol-completed coercivity or terminal no-go — the bare aperture channel is now known to be
+      unbounded below (`not_exists_lower_bound_soninAperturePacketCurvature_re_opTrace`), so any
+      coercivity must come entirely from the Burnol conductor, not from the aperture side.  This
+      constrains the remaining question but does not settle it: the completed functional is the
+      sum, and its coercivity is still open.
 
 ## Log
 

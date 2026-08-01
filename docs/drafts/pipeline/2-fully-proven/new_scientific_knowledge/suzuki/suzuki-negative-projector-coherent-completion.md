@@ -182,10 +182,58 @@ arbitrary factor `B` remains.
 
 ## 9. Formal status
 
-Scalar identity, sign, exact debt, local Xi-real/FE completion, and Schur tax are formalized in
-current Lean modules.  Unbounded self-adjoint functional calculus and concrete Suzuki source
-operator are not yet represented, so `(4)--(13)` remain dependency-closed paper proofs/conjecture
-at analytic source boundary.
+`formal/GaloisForLFunctions/RHTower/SuzukiNegativeProjectorCoherentCompletion.lean` formalizes
+Sections 3--5 unconditionally.  The device that removes the unbounded-operator obstruction is the
+card's own hypothesis `0 in rho(A)`: the inverse `B = A^(-1)` is a *bounded* self-adjoint operator,
+and in the inverse coordinate `x = 1/t` the affine defect is the rational function
+
+`d(x) = alpha*beta*x^3 / ((1 - alpha*x)*(1 - beta*x))`,
+
+regular and vanishing at the spectral accumulation point `x = 0`.  So the whole signed
+functional-calculus theorem is continuous functional calculus of one bounded operator.  No spectral
+projection and no Borel calculus are needed, because the two spectral halves of the defect are
+exactly its positive and negative parts.
+
+- `suzukiInverseKreinDefect_inv`: spectral bridge, `d(1/t)` is the affine Krein defect at `t`.
+- `suzukiInverseKreinWeight_eq_abs`: the weight `omega` of `(3)` is exactly `|d|`, so the paper's
+  `|D| = W` is an identity of continuous functions.  The hypotheses `alpha*beta > 0` and positivity
+  of the two shift factors are exactly the below-spectrum condition `(1)`.
+- `(5)`: `suzukiInverseDefect_posPart_sub_negPart`, `suzukiInverseDefect_posPart_nonneg`,
+  `suzukiInverseDefect_negPart_nonneg` — the canonical Jordan decomposition `D = D_+ - D_-` with
+  both parts positive operators, obtained as the positive/negative parts of `D`.
+- `(6)`: `suzukiInverseDefect_add_negPart`, `suzukiInverseDefect_add_negPart_nonneg` —
+  `D + D_- = D_+ >= 0`.
+- `(7)`: `suzukiInverseDefect_add_two_negPart` — `D + 2 D_- = |D|`.
+- `(8)`: `suzukiInverseDefect_add_nonneg_iff` — a commuting correction completes `D` to a positive
+  operator exactly when it dominates `d` pointwise on the spectrum, proved through `cfc_nonneg_iff`.
+- `(4)` product form: `suzukiInverseShiftFactor`, `suzukiInverseKreinDefect_eq_product` and
+  `suzukiInverseDefectOperator_eq_product` — read in the inverse coordinate the shifted resolvent
+  `(A - alpha)^(-1)` is the symbol `x/(1 - alpha x)`, so `D = alpha*beta * A^(-1)(A-alpha)^(-1)(A-beta)^(-1)`
+  becomes a functional-calculus factorization of the defect symbol.
+- `(5)` at symbol level: `posPart_cfc`, `posPart_suzukiInverseDefect`,
+  `negPart_suzukiInverseDefect` — each spectral half of `D` is the functional calculus of the
+  corresponding half of its symbol, not merely an abstract order-theoretic part.
+- `(12)` kernel identity: `gram_add_negPart_eq_posPart` — `K_D + K_- = K_(D_+)` as an identity, with
+  positivity then automatic.
+- `(4)` modulus identity: `abs_cfc` and `abs_suzukiInverseDefect_eq_weight` — the absolute value of
+  a continuous function of a self-adjoint operator is the functional calculus of the absolute value
+  of the function, hence `|D| = W` at operator level.
+- `(9)`: `negPart_le_of_add_nonneg` is the scalar core, and `negPart_cfc` together with
+  `negPart_le_of_cfc_add_nonneg` give the operator statement — a commuting positive correction that
+  completes the defect dominates `D_-`, which is therefore the Loewner-minimal such correction.
+- `(11)` square-root factorization: `inner_eq_inner_sqrt` and `inner_negPart_eq_inner_sqrt` — the
+  completion kernel is the Gram kernel of `sqrt(D_-)`, so the off-diagonal entries are genuine inner
+  products of one family of vectors, not merely a positive form.
+- `(10)`--`(12)`: `gram_re_nonneg_of_nonneg`, `gram_defect_add_negPart_nonneg`,
+  `gram_negPart_nonneg` — every positive operator has a positive semidefinite Gram kernel on
+  arbitrary finite node families, applied to `D + D_-` and to `D_-`.  This is the coherent assembly
+  law: the off-diagonal entries are not free, they are Gram entries of the operator.
+
+Targeted build green; axiom audit `[propext, Classical.choice, Quot.sound]` for every declaration
+above.
+
+Not formalized, and explicitly not proved here: the concrete Suzuki restricted-Weil source operator,
+and the conjecture `(13)`, which Section 10 retires as a forced source identity in any case.
 
 ## 10. Projective/physical-source correction (2026-07-22)
 
@@ -209,3 +257,13 @@ Therefore conjecture `(13)` is retired as an identity forced by source.  It rema
 in conditional form: if concrete relative-phase Plucker kernel dominates `(11)`, then projector
 completion proves positivity.  Exact live source theorem is
 `SUZUKI-RELATIVE-VOLTERRA-PHASE-CD-WELD`.
+
+## Log
+
+- 2026-08-01 — Sections 3-5 formalized unconditionally.  The unbounded-operator obstruction recorded
+  in the old Section 9 is removed by working in the inverse coordinate on the bounded operator
+  `A^(-1)`, which the card's own hypothesis `0 in rho(A)` supplies; the two spectral halves are the
+  positive and negative parts, so no Borel calculus is needed.
+- 2026-08-01 — equation-level sweep of Sections 3-5 found three displayed equations that the earlier
+  card-level check had missed; `(4)`, `(9)` and `(11)` are now formal at operator level, so those
+  sections are complete rather than merely represented.

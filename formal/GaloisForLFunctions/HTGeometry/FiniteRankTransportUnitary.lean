@@ -179,4 +179,77 @@ theorem tendsto_opNorm_deficiency_rankOneTransport
     (fun i => lineTransport ((HS i ⊓ (M i)ᗮ).starProjection) e) e hu
   rwa [rankOneTransport_self_eq_starProjection he] at hop
 
+/-! ## Toward norm convergence of the projections themselves -/
+
+/-- The off-diagonal block splitting of a difference of two operators.  Applied to orthogonal
+projections it separates the compression to the range of the limit — which converges in norm on a
+finite-dimensional range — from the complementary block. -/
+theorem sub_eq_block_sub_block (P Q : E →L[𝕜] E) :
+    P - Q = P * (1 - Q) - (1 - P) * Q := by
+  have h : P * (1 - Q) - (1 - P) * Q = (P - P * Q) - (Q - P * Q) := by
+    rw [mul_sub, sub_mul, mul_one, one_mul]
+  rw [h]
+  abel
+
+/-- Norm bound for a difference of operators through the two off-diagonal blocks. -/
+theorem norm_sub_le_blocks (P Q : E →L[𝕜] E) :
+    ‖P - Q‖ ≤ ‖P * (1 - Q)‖ + ‖(1 - P) * Q‖ := by
+  rw [sub_eq_block_sub_block P Q]
+  exact norm_sub_le _ _
+
+/-- For an idempotent `Q`, the complementary block is the compression of the difference to the
+range of `Q`. -/
+theorem block_eq_comp_of_idempotent {P Q : E →L[𝕜] E} (hQ : Q * Q = Q) :
+    (1 - P) * Q = -((P - Q) * Q) := by
+  have h : (P - Q) * Q = P * Q - Q := by
+    rw [sub_mul, hQ]
+  rw [h, sub_mul, one_mul]
+  abel
+
+/-- Sharpened block bound: the difference of two operators is controlled by the block off the range
+of the idempotent one together with the compression of the difference to that range. -/
+theorem norm_sub_le_blocks_of_idempotent {P Q : E →L[𝕜] E} (hQ : Q * Q = Q) :
+    ‖P - Q‖ ≤ ‖P * (1 - Q)‖ + ‖(P - Q) * Q‖ := by
+  refine le_trans (norm_sub_le_blocks P Q) ?_
+  rw [block_eq_comp_of_idempotent hQ, norm_neg]
+
+/-- **The compression to a finite-rank range converges in operator norm.**  If the range of `Q` is
+spanned by a finite family of unit-bounded vectors through the projection formula, then pointwise
+convergence at those finitely many vectors already gives norm convergence of the compressions. -/
+theorem tendsto_opNorm_comp_of_frame {ι' : Type*} {l : Filter ι'} {n : ℕ} {b : Fin n → E}
+    {Q : E →L[𝕜] E} (hQ : ∀ x, Q x = ∑ j, (inner 𝕜 (b j) x : 𝕜) • b j)
+    (hb : ∀ j, ‖b j‖ ≤ 1) {F : ι' → E →L[𝕜] E} {F₀ : E →L[𝕜] E}
+    (h : ∀ j, Tendsto (fun i => F i (b j)) l (𝓝 (F₀ (b j)))) :
+    Tendsto (fun i => ‖(F i - F₀) ∘L Q‖) l (𝓝 0) := by
+  have hbound : ∀ i, ‖(F i - F₀) ∘L Q‖ ≤ ∑ j, ‖(F i - F₀) (b j)‖ := by
+    intro i
+    refine ContinuousLinearMap.opNorm_le_bound _
+      (Finset.sum_nonneg fun j _ => norm_nonneg _) fun x => ?_
+    have hval : ((F i - F₀) ∘L Q) x
+        = ∑ j, (inner 𝕜 (b j) x : 𝕜) • ((F i - F₀) (b j)) := by
+      show (F i - F₀) (Q x) = _
+      rw [hQ x, map_sum]
+      exact Finset.sum_congr rfl fun j _ => by rw [ContinuousLinearMap.map_smul]
+    rw [hval]
+    calc ‖∑ j, (inner 𝕜 (b j) x : 𝕜) • ((F i - F₀) (b j))‖
+        ≤ ∑ j, ‖(inner 𝕜 (b j) x : 𝕜) • ((F i - F₀) (b j))‖ := norm_sum_le _ _
+      _ = ∑ j, ‖(inner 𝕜 (b j) x : 𝕜)‖ * ‖(F i - F₀) (b j)‖ :=
+          Finset.sum_congr rfl fun j _ => norm_smul _ _
+      _ ≤ ∑ j, ‖x‖ * ‖(F i - F₀) (b j)‖ := by
+          refine Finset.sum_le_sum fun j _ => ?_
+          refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
+          refine le_trans (norm_inner_le_norm (𝕜 := 𝕜) (b j) x) ?_
+          exact mul_le_of_le_one_left (norm_nonneg x) (hb j)
+      _ = (∑ j, ‖(F i - F₀) (b j)‖) * ‖x‖ := by
+          rw [Finset.sum_mul]
+          exact Finset.sum_congr rfl fun j _ => mul_comm _ _
+  have hzero : Tendsto (fun i => ∑ j, ‖(F i - F₀) (b j)‖) l (𝓝 0) := by
+    have hz : ((0 : ℝ)) = ∑ _j : Fin n, (0 : ℝ) := by simp
+    rw [hz]
+    refine tendsto_finsetSum _ fun j _ => ?_
+    have hj : Tendsto (fun i => F i (b j) - F₀ (b j)) l (𝓝 0) := by
+      simpa using (h j).sub (tendsto_const_nhds (x := F₀ (b j)))
+    simpa using hj.norm
+  exact squeeze_zero (fun i => norm_nonneg _) hbound hzero
+
 end GaloisForLFunctions.HTGeometry

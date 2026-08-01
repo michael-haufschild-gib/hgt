@@ -873,7 +873,15 @@ Z = (Q_a - Q_b) . C . (Q_b - Q_c),   C = Q_{b/r} D_r Q_{b/r}  self-adjoint. (63)
 
 So the coupling never sees the dilation sum itself, only its Sonin compression `C`, and `Z = 0` says
 `C` has no matrix element between `K_a ⊖ K_b` and `K_b ⊖ K_c` — a block-diagonality of `C` against
-the aperture tower.
+the aperture tower.  That block-diagonality is now *disproved*:
+`exists_scale_soninCompressedDilation_layer_block_ne_zero` exhibits a scale at which the block is
+nonzero, so the compressed dilation cannot be brought to block-diagonal form by the tower.
+
+**`(61)` is now answered in Lean, in the negative.**
+`exists_scale_soninApertureLayers_not_orthogonal` exhibits, at an actual dilation scale, layer
+vectors `u` and `v` with `< (Q_a - Q_b) u , D_r (Q_b - Q_c) v >` nonzero.  So the dilation group
+does not carry one Sonin layer into the orthogonal complement of the other, and the rigidity that
+`(61)` would have required does not hold.
 
 **Already answered on paper, at large scale.**  The sibling card
 `cofinal-essential-phase-sonin-coupling-nonannihilation.md` proves unconditionally that for every
@@ -962,7 +970,10 @@ provisional pending expert/literature review.
 - [x] unconditional Lean formalization of `(1)`--`(4)` and Theorem G
 - [x] one-sided aperture flag law for the extended trace (Theorem H)
 - [x] reality of the aperture finite part
-- [x] proof that the aperture tower alone cannot supply the lower floor
+- [x] proof that the aperture tower alone cannot supply the lower floor — now quantitative:
+      `not_exists_lower_bound_soninAperturePacketCurvature_re_opTrace` in
+      `SoninNoAperturePacketFloor.lean` shows the unit-weight source-packet curvature trace admits
+      *no* lower bound at all.  Subadditivity alone left a floor possible; unboundedness does not.
 - [x] concrete Burnol conductor: a nonzero self-adjoint channel commuting with the whole cutoff
       family, discharging the abstract position hypothesis at every aperture at once (Theorem J)
 - [x] exact dilation commutator of the conductor channel: `log r` on the interior band, with the
@@ -1087,13 +1098,18 @@ provisional pending expert/literature review.
 | `(59)` blocks do not cancel | `soninApertureCouplingMixedTerms_ne_zero` |
 | `(60)` ideal criterion (vacuous) | `evenSoninApertureSuccessiveLayerTransition_ne_zero_of_polarizedBlocks_notMem_ideal` |
 | `(61)` orthogonality criterion | `evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_layers_orthogonal` |
+| strict flag law | `exists_strict_soninApertureResidualTrace_chain` |
+| strict flag law with an explicit gap | `exists_soninApertureResidualTrace_chain_gap` |
 | `(61)` on the projections | `evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_projection_orthogonal` |
+| `(61)` answered: the layers are **not** dilation-orthogonal | `exists_scale_soninApertureLayers_not_orthogonal` |
 | `(62)` tower absorption | `evenCentralSoninProjection_mul_evenDilationSum_mul_evenCentralSoninProjection` |
 | `(62)` on a whole layer | `evenCentralSoninProjection_mul_evenDilationSum_mul_evenSoninApertureLayer` |
 | `(63)` compressed dilation | `evenSoninCompressedDilation` |
 | `(63)` self-adjoint | `adjoint_evenSoninCompressedDilation` |
 | `(63)` compression form | `evenSoninApertureSuccessiveLayerTransition_eq_compression` |
 | `(63)` as a vanishing test | `evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_compression_orthogonal` |
+| `(63)` answered: the compressed dilation has a nonzero off-diagonal block | `exists_scale_soninCompressedDilation_layer_block_ne_zero` |
+| worked instance at the flag `1 < 3/2 < 2 < 3`, so the hypothesis class is visibly inhabited | `soninApertureCoupling_ne_zero_instance`, `evenSoninApertureRestrictionDefect_ne_add_instance`, `not_exists_lower_bound_instance` |
 | energy strictly monotone | `hsNormSq_fullTimeBandFourier_lt_of_lt` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
@@ -1142,6 +1158,18 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — added a worked numerical instance of the whole chain at `1 < 3/2 < 2 < 3`.  Every
+  no-go here is stated over a hypothesis class, and a no-go over an empty class asserts nothing;
+  the instance module makes non-vacuity checkable at a glance rather than by inspection.
+- 2026-08-01 — the strict flag law now comes with an explicit gap: at a suitable clock scale
+  refining costs at least `1/4`, since the coupling energy has a uniform floor there.  Strictness
+  alone left the loss possibly infinitesimal.
+- 2026-08-01 — **the chain law is strictly subadditive.**  The sharpness criterion recorded earlier
+  ("equality holds exactly when every coupling of the chain vanishes") is now settled in the
+  negative direction: the sibling nonannihilation card supplies an actual flag and scale with a
+  nonzero coupling, so `exists_strict_soninApertureResidualTrace_chain` gives a strict `<` in the
+  flag law.  Refinement genuinely destroys residual trace; it does not merely redistribute it.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninFlagChainStrict.lean`.
 - 2026-08-01 — compression form `(63)`: the coupling is the Sonin-compressed dilation cut between
   two layers of one Sonin space, via the tower absorption `(62)`.  Recorded the dilation-covariance
   trap that would otherwise "prove" `Z = 0`: `U_r K_s` is asymmetric, so only an inclusion holds.

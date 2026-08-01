@@ -240,15 +240,47 @@ regular and vanishing at the spectral accumulation point `x = 0`
 (`suzukiKreinResolventWeight_resolventNode`, `suzukiKreinResolventWeight_zero`).  Hence `d(A)` is a
 genuine continuous function of `R` even though `A` is unbounded.
 
+- statement `(1)`: `suzukiFiniteMorseInterpolant_unique` and its affine-Krein specialization
+  `suzukiFiniteMorseKreinInterpolant_unique`, in
+  `formal/GaloisForLFunctions/RHTower/SuzukiFiniteMorseInterpolantUniqueness.lean` — the
+  zero-constant Lagrange interpolant is the only real polynomial of degree at most the node count
+  with `p(0) = 0` and `p(r_j) = sqrt(w_j)`.  The degree bound is
+  `suzukiFiniteMorseInterpolant_natDegree_le`, and the root count runs over the `k + 1` distinct
+  points `0, r_1, ..., r_k` through `Polynomial.eq_zero_of_natDegree_lt_card_of_eval_eq_zero`
+  indexed by `Option ι`; the compactification point is distinct from every node exactly because a
+  below-spectrum resolvent node never vanishes;
 - statement `(2)`: `suzukiResolventJet_isSelfAdjoint`, `suzukiResolventJetSquare_nonneg`,
   `isCompactOperator_suzukiResolventJet`, `isCompactOperator_suzukiFiniteMorseInterpolant` —
   the jet is self-adjoint, its square is a positive operator, and zero constant term is exactly
   what makes the jet compact when the resolvent is;
 - statement `(3)`: `suzukiFiniteMorse_completedWeight_eq_zero` (the completed weight vanishes
   identically at every negative level) and `suzukiFiniteMorse_kreinResolventWeight_pos` (the bare
-  weight is already strictly positive at every positive level);
+  weight is already strictly positive at every positive level).  The block claim "on every negative
+  eigenspace `C = -D`" is the operator identity
+  `suzukiFiniteMorse_jetSquare_eq_neg_kreinDefect_on_negativeEigenvector`, with the annihilation
+  form `suzukiFiniteMorse_completion_apply_negativeEigenvector_eq_zero`, both in
+  `formal/GaloisForLFunctions/RHTower/SuzukiFiniteMorseEigenspaceBlock.lean`.  The lift from the
+  scalar identity is `cfc_apply_eigenvector` in
+  `formal/GaloisForLFunctions/HTGeometry/CfcEigenvector.lean`: the continuous functional calculus
+  scales an eigenvector of `R` by the value of the symbol at the eigenvalue, so both blocks act by
+  their scalar symbols and the cancellation transports verbatim.  That law is not in mathlib; it is
+  proved here by Stone–Weierstrass, the identity holding on a closed set of test functions that
+  contains the polynomial functions;
 - statement `(T1)`: `suzukiFiniteMorse_operatorCompletion_nonneg` and its energy form
-  `suzukiFiniteMorse_operatorCompletion_re_inner_nonneg`;
+  `suzukiFiniteMorse_operatorCompletion_re_inner_nonneg` give `D + C >= 0`.  The chain
+  `C = D_- + P_+ C >= D_-` is two separate claims.  The *inequality* `D_- <= C` is
+  `negPart_operatorKreinDefect_le_jetSquare`, in `SuzukiNegativeProjectorCoherentCompletion.lean`
+  (which imports this module and carries the `negPart_cfc` composition the domination needs).  The
+  *equation* is `suzukiFiniteMorse_jetSquare_eq_negPart_on_negativeEigenvector`: on every negative
+  eigenvector the jet square already equals `D_-`, so the excess `C - D_-` annihilates the whole
+  negative spectral part and is carried entirely by the positive part.  This is the content of
+  `C = D_- + P_+ C` stated without needing the discontinuous spectral projector `P_+` to exist as
+  an operator, which is what removing `P_+` was the point of;
+- the Gram form of `(T1)`: the displayed factorization
+  `K_C(z,w) = <p(R)Gamma(w), p(R)Gamma(z)>` is `suzukiResolventJetSquare_inner_eq`, and positive
+  semidefiniteness of `K_C` on every finite evaluation family is
+  `suzukiResolventJetSquare_gram_nonneg`, obtained from the existing `gram_re_nonneg_of_nonneg`
+  applied to the positive operator `C`;
 - statement `(T2)`: `suzukiOperatorCompletion_nonneg_iff` — `D + q(R)^2 >= 0` holds exactly when
   `w + q^2 >= 0` pointwise on `spectrum R`, proved through `cfc_nonneg_iff`;
 - statement `(5)`: `suzukiOperatorResolventJetSquare_exactProjector_impossible`, the operator form
@@ -329,3 +361,28 @@ of the finite-Morse theorem is now formal.
 - 2026-07-31 — operator lift formalized: continuous-functional-calculus realization of the Krein
   defect in the resolvent coordinate, compactness and positivity of the jet square, `(T1)`, `(T2)`,
   the operator form of the no-go, and the resolvent-jet derivative law `(T3)`.  Gate `2 → 3` closed.
+- 2026-08-01 — equation-level recheck found that `(T1)`'s second conjunct `C >= D_-` had not been
+  formalized, only `D + C >= 0`.  It is now proved, via the `(cfc f R)^- = cfc (f^-) R` composition
+  built for the negative-projector card.
+- 2026-08-01 — statement `(3)` raised from its scalar form to the operator identity on the negative
+  eigenspaces (`suzukiFiniteMorse_jetSquare_eq_neg_kreinDefect_on_negativeEigenvector`).  The
+  enabling law is the eigenvector law for the continuous functional calculus,
+  `HTGeometry.cfc_apply_eigenvector`, which is absent from mathlib and is proved here by
+  Stone–Weierstrass: the test functions obeying the identity form a closed set containing the
+  polynomial functions, which are dense in `C(spectrum R, ℝ)`.  Targeted build green, axiom audit
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — statement `(1)`, the uniqueness half, formalized
+  (`suzukiFiniteMorseInterpolant_unique`).  It had no Lean declaration at all: the existing
+  `suzukiFiniteMorseInterpolant_eval` / `_eval_sq` prove only that the interpolant *has* the
+  prescribed values, never that it is the sole such polynomial.  The positive-block half of
+  statement `(3)` is likewise now at operator level
+  (`suzukiFiniteMorse_kreinDefect_apply_positiveEigenvector`).  Targeted builds green, axiom audits
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the `(T1)` chain `C = D_- + P_+ C >= D_-` was carrying two claims behind one
+  declaration: only the inequality `D_- <= C` was formalized.  The equation is now
+  `suzukiFiniteMorse_jetSquare_eq_negPart_on_negativeEigenvector`, proved through
+  `negPart_cfc_apply_of_eigenvector` (negative part of a functional calculus acts on an eigenvector
+  by the negative part of the symbol).  The displayed Gram factorization
+  `K_C(z,w) = <p(R)Gamma(w), p(R)Gamma(z)>` is `suzukiResolventJetSquare_inner_eq`.  Every numbered
+  statement `1`–`6` and `(T1)`–`(T3)` of this card now has a named Lean declaration.  Targeted
+  builds green, axiom audits `[propext, Classical.choice, Quot.sound]`.

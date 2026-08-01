@@ -284,4 +284,41 @@ theorem range_polarTransport {T : N →L[ℂ] E}
     show T (S (A (S x))) = T x
     rw [hx]
 
+/-! ## Norm convergence of the projections themselves -/
+
+omit [Nontrivial N] in
+open ContinuousLinearMap in
+/-- **Projections built from converging isometries converge in operator norm.**  Writing an
+orthogonal projection as `J J*` for an isometry `J` onto its range, the difference of two such
+projections splits as `(J - J₀)J* + J₀(J - J₀)*`, so the projections converge in norm as soon as
+the isometries do.  This is what upgrades strong convergence of finite-rank deficiency projections
+to norm convergence: the equal rank enters through the existence of the isometries. -/
+theorem tendsto_opNorm_selfComp_sub {ι : Type*} {l : Filter ι} {J : ι → N →L[ℂ] E}
+    {J₀ : N →L[ℂ] E} (hJ : ∀ i, ‖J i‖ ≤ 1) (hJ₀ : ‖J₀‖ ≤ 1)
+    (h : Tendsto (fun i => ‖J i - J₀‖) l (𝓝 0)) :
+    Tendsto (fun i => ‖J i ∘L adjoint (J i) - J₀ ∘L adjoint J₀‖) l (𝓝 0) := by
+  have hsplit : ∀ i, J i ∘L adjoint (J i) - J₀ ∘L adjoint J₀
+      = (J i - J₀) ∘L adjoint (J i) + J₀ ∘L adjoint (J i - J₀) := by
+    intro i
+    rw [map_sub, sub_comp, comp_sub]
+    abel
+  have hbound : ∀ i, ‖J i ∘L adjoint (J i) - J₀ ∘L adjoint J₀‖ ≤ 2 * ‖J i - J₀‖ := by
+    intro i
+    rw [hsplit i]
+    refine le_trans (norm_add_le _ _) ?_
+    have h1 : ‖(J i - J₀) ∘L adjoint (J i)‖ ≤ ‖J i - J₀‖ := by
+      refine le_trans (opNorm_comp_le _ _) ?_
+      rw [LinearIsometryEquiv.norm_map]
+      have := mul_le_mul_of_nonneg_left (hJ i) (norm_nonneg (J i - J₀))
+      simpa using this
+    have h2 : ‖J₀ ∘L adjoint (J i - J₀)‖ ≤ ‖J i - J₀‖ := by
+      refine le_trans (opNorm_comp_le _ _) ?_
+      rw [LinearIsometryEquiv.norm_map]
+      have := mul_le_mul_of_nonneg_right hJ₀ (norm_nonneg (J i - J₀))
+      simpa using this
+    linarith
+  have hzero : Tendsto (fun i => 2 * ‖J i - J₀‖) l (𝓝 0) := by
+    simpa using h.const_mul 2
+  exact squeeze_zero (fun i => norm_nonneg _) hbound hzero
+
 end GaloisForLFunctions.HTGeometry

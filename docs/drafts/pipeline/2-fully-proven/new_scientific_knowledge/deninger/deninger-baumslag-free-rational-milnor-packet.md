@@ -5,6 +5,8 @@
 - **Type:** SOURCE FINITE-STAGE TOPOLOGICAL THEOREM
 - **Label:** `DAC_BAUMSLAG_FREE_RATIONAL_MILNOR_PACKET`
 - **Parent:** `deninger-baumslag-milnor-pro-realization`
+- **Lean module:**
+  `GaloisForLFunctions.RHTower.DeningerUniquelyDivisibleKernel` (clauses 1 and 2)
 
 ## Statement
 
@@ -71,6 +73,60 @@ spaces is \(BK_U\), hence connected with fundamental group \(K_U\).
 Homotopy pullback preserves that fiber.  Clause 5 follows from the
 divisible-fiber theorem.
 
+## Formalized statement
+
+`GaloisForLFunctions/RHTower/DeningerUniquelyDivisibleKernel.lean` proves clauses 1 and 2 in the
+generality in which the card's own proof argues them — nothing about Baumslag rationalization is
+used, only unique divisibility of `R_U` and torsion-freeness of `A`:
+
+- `DeningerUniquelyDivisible R` : every element has a unique `n`-th root for every `n ≥ 1`;
+- `deningerPowerDivisible_of_uniquelyDivisible` : unique divisibility implies divisibility;
+- `deningerKer_uniquelyDivisible` : for `f : R →* A` with `R` uniquely divisible and `A`
+  torsion-free, `ker f` is uniquely divisible.  This is clause 1, and the proof is the card's:
+  the `n`-th root `x` of `k ∈ ker f` satisfies `f(x)ⁿ = 1`, so `f(x) = 1` by torsion-freeness,
+  and uniqueness in `R` gives uniqueness in `ker f`;
+- `deningerKer_noFiniteQuotient` : that kernel admits no nontrivial homomorphism to a finite
+  group.  This is clause 2, obtained from
+  `DAC_DIVISIBLE_FIBER_FINITE_COVER_INVARIANCE` as already formalized in
+  `GaloisForLFunctions.RHTower.DeningerDivisibleFiberFiniteCoverInvariance`, exactly as the card
+  cites it.
+
+### What is formalized and what is not
+
+Formalized: clauses 1 and 2, unconditionally.  `DeningerUniquelyDivisible` and
+`deningerPowerDivisible_of_uniquelyDivisible` use no axioms at all;
+`deningerKer_uniquelyDivisible` uses only `propext`.
+
+Not formalized, and none of it is a mathlib gap of the ordinary kind:
+
+- the construction of `R_U = Bau(F_m)` itself and the surjection `(1)`.  Baumslag rationalization
+  does not exist in mathlib, and building it is a separate construction card;
+- clauses 3 and 4, which quote Casacuberta--Peschke via Ivanov for
+  `H_*(R_U;ℚ) ≅ H_*(F_m;ℚ)`, plus `DAC_TWO_TERM_CDGA_FORMALITY`.  These need rational homology of
+  classifying spaces and a CDGA category, neither of which the corpus has;
+- clause 5, the homotopy fibre statement, for the same reason.
+
+### Verification
+
+- Direct command:
+  `lake env lean GaloisForLFunctions/RHTower/DeningerUniquelyDivisibleKernel.lean`
+  — passes with no errors and no warnings.
+- Cached module build:
+  `lake build GaloisForLFunctions.RHTower.DeningerUniquelyDivisibleKernel` completes.
+- Scratch `#print axioms` on all four declarations: no axioms, `propext`, or the standard
+  `propext, Classical.choice, Quot.sound`.
+- Imported by the `GaloisForLFunctions.RHTower` umbrella.
+
+## Gates
+
+- [x] 0 → 1 in-progress: packet statement isolated
+- [x] 1 → 2 fully-proven: complete paper proof
+- [x] 2 → 3 formalized, clauses 1 and 2
+  (`GaloisForLFunctions.RHTower.DeningerUniquelyDivisibleKernel`)
+- [ ] 2 → 3 formalized, clause 3--5: blocked on Baumslag rationalization, rational homology of
+  classifying spaces, and a CDGA category, none of which exist in mathlib or the corpus
+- [ ] 3 → 4 publication-ready: `GL(U)`, Galois and power-map functoriality of the packet
+
 ## Hostile audit
 
 - The packet depends on a basis.  It does not yet carry coherent
@@ -94,3 +150,9 @@ divisible-fiber theorem.
 - Sergei O. Ivanov, *An overview of rationalization theories of
   non-simply connected spaces and non-nilpotent groups*, Equation (5.3):
   https://arxiv.org/abs/2111.10694
+
+## Log
+
+- 2026-08-01 — Formalized clauses 1 and 2 unconditionally, reusing the already formalized
+  divisible-fiber theorem for clause 2.  Clauses 3--5 are recorded as blocked on objects that do
+  not exist yet, not on missing proofs.
