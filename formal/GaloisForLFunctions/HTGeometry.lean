@@ -3165,3 +3165,4 @@ import GaloisForLFunctions.HTGeometry.RadicalRootExists
 import GaloisForLFunctions.HTGeometry.HyperbolicModulus
 import GaloisForLFunctions.HTGeometry.GammaFieldDominantIndex
 import GaloisForLFunctions.HTGeometry.RadicalBaseChangeFromRoots
+import GaloisForLFunctions.HTGeometry.AutPermutesRoots

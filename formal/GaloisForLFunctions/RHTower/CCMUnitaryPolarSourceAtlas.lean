@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.SummableSpectrumScrewBohrCoefficients
 import GaloisForLFunctions.RHTower.CCMRectangularFullObservableDivisorTomography
 import GaloisForLFunctions.RHTower.CCMFirstClockAsymptoticBohrLaw
 import GaloisForLFunctions.RHTower.CCMFirstClockCreaseCurrent
+import GaloisForLFunctions.RHTower.XiHadamardFactorization
 
 /-!
 # Unitary--polar source atlas
@@ -602,7 +603,78 @@ theorem ccmFirstClockCreasePolarFrequencyAtlas
   · intro lam hlam
     exact two_mul_xiLineScrewSeries_recovers_multiplicity hlam
 
+/-- Multiplicity copies reconstructed by the two source charts: strict-right poles,
+critical Bohr frequencies, and reflected strict-left copies. -/
+abbrev XiUnitaryPolarAtlasCopy :=
+  XiRightZeroCopy ⊕ (XiCriticalZeroCopy ⊕ XiRightZeroCopy)
+
+/-- Forget the source-chart label and recover the corresponding complete Xi-divisor copy. -/
+def xiUnitaryPolarAtlasToZeroCopy : XiUnitaryPolarAtlasCopy → XiZeroCopy
+  | Sum.inl q => q.1
+  | Sum.inr (Sum.inl q) => q.1
+  | Sum.inr (Sum.inr q) => (xiRightLeftReflectEquiv q).1
+
+/-- Classify each complete Xi-divisor copy into the polar-right, unitary-critical, or
+polar-reflected-left source chart. -/
+def xiZeroCopyToUnitaryPolarAtlas (q : XiZeroCopy) : XiUnitaryPolarAtlasCopy :=
+  if hright : 0 < (I * xiSpectralPoint q).re then
+    Sum.inl ⟨q, hright⟩
+  else if hcritical : (I * xiSpectralPoint q).re = 0 then
+    Sum.inr (Sum.inl ⟨q, hcritical⟩)
+  else
+    Sum.inr (Sum.inr (xiRightLeftReflectEquiv.symm
+      ⟨q, lt_of_le_of_ne (le_of_not_gt hright) hcritical⟩))
+
+/-- Source atlas is an exact multiplicity-preserving parametrization of complete centered Xi
+divisor. -/
+def xiUnitaryPolarAtlasEquiv : XiUnitaryPolarAtlasCopy ≃ XiZeroCopy where
+  toFun := xiUnitaryPolarAtlasToZeroCopy
+  invFun := xiZeroCopyToUnitaryPolarAtlas
+  left_inv := by
+    intro a
+    rcases a with q | q
+    · simp [xiUnitaryPolarAtlasToZeroCopy, xiZeroCopyToUnitaryPolarAtlas, q.2]
+    · rcases q with q | q
+      · have hnotright : ¬ 0 < (I * xiSpectralPoint q.1).re := by
+          rw [q.2]
+        simp [xiUnitaryPolarAtlasToZeroCopy, xiZeroCopyToUnitaryPolarAtlas,
+          hnotright, q.2]
+      · have hleft :
+            (I * xiSpectralPoint (xiRightLeftReflectEquiv q).1).re < 0 :=
+          (xiRightLeftReflectEquiv q).2
+        have hnotright :
+            ¬ 0 < (I * xiSpectralPoint (xiRightLeftReflectEquiv q).1).re :=
+          not_lt.mpr hleft.le
+        have hnotcritical :
+            (I * xiSpectralPoint (xiRightLeftReflectEquiv q).1).re ≠ 0 :=
+          hleft.ne
+        simp [xiUnitaryPolarAtlasToZeroCopy, xiZeroCopyToUnitaryPolarAtlas,
+          hnotright, hnotcritical]
+  right_inv := by
+    intro q
+    unfold xiZeroCopyToUnitaryPolarAtlas
+    split_ifs with hright hcritical
+    · rfl
+    · rfl
+    · exact congrArg Subtype.val
+        (xiRightLeftReflectEquiv.apply_symm_apply
+          ⟨q, lt_of_le_of_ne (le_of_not_gt hright) hcritical⟩)
+
+/-- Centered spectral coordinate read from unitary--polar atlas. -/
+def xiUnitaryPolarAtlasSpectralPoint (a : XiUnitaryPolarAtlasCopy) : ℂ :=
+  xiSpectralPoint (xiUnitaryPolarAtlasEquiv a)
+
+/-- Divisor reconstructed by polar support/residues and critical Bohr masses determines exact
+normalized genus-one centered Xi canonical product. -/
+theorem xiUnitaryPolarAtlasCanonicalProduct_eq (z : ℂ) :
+    canonicalProductE1Indexed xiUnitaryPolarAtlasSpectralPoint z =
+      xiCanonicalProduct z := by
+  change (∏' a : XiUnitaryPolarAtlasCopy,
+      weierstrassE1 (z / xiSpectralPoint (xiUnitaryPolarAtlasEquiv a))) =
+    ∏' q : XiZeroCopy, weierstrassE1 (z / xiSpectralPoint q)
+  exact xiUnitaryPolarAtlasEquiv.tprod_eq
+    (fun q : XiZeroCopy => weierstrassE1 (z / xiSpectralPoint q))
+
 end
 
 end RHTower
-

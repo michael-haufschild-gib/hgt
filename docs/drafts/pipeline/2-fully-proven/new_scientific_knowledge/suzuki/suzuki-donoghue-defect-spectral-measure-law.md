@@ -211,6 +211,17 @@ That is the mechanism behind flat free-clock weights, and it is what `(15)` uses
 `1+x^2`: the constancy is not a coincidence of the aperture but the identity `|1-ix|^2 = 1+x^2`
 meeting a vanishing cosine.
 
+The two normalizations and the final value are formal in the same module:
+
+- `integral_exp_two_mul`: the deficiency normalization is `N = sinh(2a)`.
+- `integral_one_symm`: the eigenvector normalization is the aperture length `2a`.
+- `freeClockWeight_eq_coth`: **`(15)`'s value** — `4 cosh^2 a / (2a sinh 2a) = coth(a)/a`, by the
+  double-angle identity.
+
+So `(15)`'s constant is formal end to end: constant modulus, two elementary integrals, one
+double-angle identity.  Only the identification of the free model's `v_+` and `v_x` with the explicit
+exponentials remains, and that is the same operator identification the rest of the card waits on.
+
 ## 6. Consequences for the live RH route
 
 The cofinal Suzuki state is no longer an unspecified Clark measure.  It is the probability
@@ -447,3 +458,11 @@ Section 4's identification of the two divisors is algebra on the two-angle quoti
   the card cites as "fixes the factor `1+x^2` in `(11)`" — the constancy is an identity, not an
   accident of the aperture.  Four new declarations, targeted build green, axioms
   `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(15)`'s value formalized: `integral_exp_two_mul` (`N = sinh 2a`),
+  `integral_one_symm` (eigenvector norm `2a`) and `freeClockWeight_eq_coth`
+  (`4 cosh^2 a/(2a sinh 2a) = coth(a)/a` by the double-angle identity).  With the constant modulus
+  from the previous entry, `(15)` is now formal end to end apart from identifying the free model's
+  `v_+` and `v_x` with the explicit exponentials — the same operator identification the rest of the
+  card waits on.  The card calls `(15)` a symbolic specialization that fixes all signs and the factor
+  `1+x^2`; that role is now discharged by proof rather than by inspection.  Three new declarations,
+  targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.

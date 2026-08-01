@@ -18,8 +18,10 @@ variable {F E : Type*} [Field F] [Field E] [Algebra F E]
 /-- **An automorphism carries a root to a root.** -/
 theorem aeval_algEquiv_eq_zero (σ : E ≃ₐ[F] E) {p : Polynomial F} {x : E}
     (hx : Polynomial.aeval x p = 0) : Polynomial.aeval (σ x) p = 0 := by
-  rw [Polynomial.aeval_algHom_apply σ.toAlgHom x, hx]
-  exact map_zero _
+  have h : Polynomial.aeval (σ.toAlgHom x) p = σ.toAlgHom (Polynomial.aeval x p) :=
+    Polynomial.aeval_algHom_apply _ _ _
+  rw [hx, map_zero] at h
+  exact h
 
 /-- **An automorphism maps the root set into itself.** -/
 theorem mem_rootSet_algEquiv (σ : E ≃ₐ[F] E) {p : Polynomial F} {x : E}
@@ -39,8 +41,8 @@ theorem exists_perm_of_root_enumeration {d : ℕ} {p : Polynomial F} (v : Fin d 
   choose f hf using hmem
   have hfinj : Function.Injective f := by
     intro i j hij
-    have h := (hf i).trans (hij ▸ (hf j)).symm
-    exact hv (σ.injective h)
+    have h1 : σ (v i) = σ (v j) := by rw [← hf i, ← hf j, hij]
+    exact hv (σ.injective h1)
   refine ⟨Equiv.ofBijective f ⟨hfinj, Finite.injective_iff_surjective.1 hfinj⟩, fun i => ?_⟩
   exact (hf i).symm
 

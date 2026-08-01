@@ -190,3 +190,109 @@ Candidate B survives only if it yields a new necessary-and-sufficient theorem
 whose content is not ordinary commutant projection or maximum entropy in new
 language, and if it forces a new physical prediction distinguishing observer
 access models.
+
+### Candidate B collision result
+
+Status: **KILLED AS PRIMARY LAW.**
+
+Kaneko--Iyoda--Sagawa,
+[arXiv:1911.10755](https://arxiv.org/abs/1911.10755), already define partial
+unitary designs relative to an arbitrary accessible observable set and obtain
+necessary and sufficient conditions; random-time Hamiltonian dynamics and
+$k$-ETH are included as special cases. Together with the maximum-entropy
+temporal ensembles, symmetry-resolved designs, and $k$-freeness results listed
+above, an observer/source quotient is occupied unless it supplies structure
+beyond conditional expectation onto a commutant. No such additional structure
+has survived the collision audit. Renaming the conserved commutant a source
+algebra would not be a discovery.
+
+## Frozen ambitious target: static-local complexity law
+
+Status: **MASTER RESEARCH TARGET; OPEN; NOT A PAPER CLAIM.**
+
+The programme will not search for an unoccupied recurrence exponent. It will
+attempt the full problem that current papers explicitly leave open:
+
+> **Static-local complexity law (target).** For a natural, fixed-locality
+> ensemble of time-independent interacting Hamiltonians on growing many-body
+> systems, prove unconditional high-probability bounds establishing the whole
+> approximate circuit-complexity history: linear growth until exponential
+> time, saturation at essentially maximal complexity, an overwhelming
+> complexity plateau, and first return to low complexity only at doubly
+> exponential time. Prove simultaneously that these same autonomous
+> evolutions remain efficiently distinguishable from Haar-random unitaries.
+
+The quantifiers, norm, gate model, ensemble, error regime, and state-versus-
+unitary versions must be fixed before paper proof. “Chaotic” may not occur as
+an undefined hypothesis. The final theorem must state a concrete Hamiltonian
+class and an explicit probability measure.
+
+### Why this is not niche novelty
+
+- Brown--Susskind conjectured the complete growth--plateau--recurrence history
+  for chaotic time-independent local evolution; this is the central late-time
+  complexity law, not a missing constant or exponent.
+- Oszmaniec--Kotowski--Horodecki--Hunter-Jones,
+  [Phys. Rev. X 14, 041068 (2024)](https://arxiv.org/abs/2205.09734), prove
+  saturation and recurrence only when fresh randomness is continually injected
+  by random circuits or stochastic Hamiltonians. Their open-problems section
+  says energy-conserving time-independent Hamiltonians demand a different proof
+  technique.
+- Bohdanowicz--Brandao,
+  [arXiv:1710.02625](https://arxiv.org/abs/1710.02625), construct a
+  time-independent, one-dimensional, translation-invariant local Hamiltonian
+  with exponentially long universal simulation, but their complexity-growth
+  consequence assumes an unproved complexity-class separation.
+- Baiguera et al.,
+  [Phys. Rep. 1159 (2026)](https://arxiv.org/abs/2503.10753), state that even
+  proving one local Hamiltonian remains superpolynomially complex after
+  polynomial time appears to require a major theoretical-computer-science
+  advance; the general statement is tied to
+  $\mathsf{PSPACE}\not\subseteq\mathsf{BQP/poly}$.
+- Cui--Schuster--Mao--Huang--Brandao,
+  [arXiv:2510.08434](https://arxiv.org/abs/2510.08434), prove every
+  constant-local Hamiltonian ensemble is efficiently distinguishable from Haar
+  with two queries. Thus a proof of the target would establish a sharp physical
+  separation: maximal autonomous complexity does not require, and does not
+  produce, Haar randomness.
+
+### Exact novelty boundary
+
+The slogan “complexity is not randomness” is occupied by
+Guo--Sasieta--Swingle,
+[arXiv:2405.17546](https://arxiv.org/abs/2405.17546), for Brownian,
+time-dependent systems, and static random-matrix Hamiltonians already exhibit
+extremal complexity jumps in Kotowski--Oszmaniec--Horodecki,
+[JHEP 01 (2025) 116](https://arxiv.org/abs/2303.17538). Novelty can come only
+from an unconditional solution of the static fixed-locality problem, not from
+the separation slogan or another non-local ensemble.
+
+### Required new mechanism
+
+Static evolution does not equidistribute on the full unitary group. For every
+fixed Hamiltonian it remains on the compact abelian closure of its one-parameter
+orbit. The missing theorem must therefore replace full-unitary designs by a
+quantitative statement that the spectral orbit of a typical local Hamiltonian
+has exponentially small occupation of every low-circuit-complexity
+neighbourhood. Call this provisional property **local spectral complexity
+transversality**. The name has no novelty value; only a theorem deriving it
+from a concrete static local ensemble would count.
+
+If proved at sufficient strength, transversality would make the earlier
+recurrence results shadows of one mechanism:
+
+1. avoidance of low-complexity sets gives complexity growth and plateau;
+2. unique ergodicity on the spectral-orbit closure converts geometric measure
+   into long-time occupation;
+3. quantitative return theory gives doubly exponential recurrence;
+4. the Cui et al. obstruction shows the entire history occurs without Haar
+   randomization.
+
+### Hostile feasibility warning
+
+This target is intentionally beyond the current frontier. A proof cannot be
+claimed from phase recurrence, spectral nonresonance, ETH language, numerical
+evidence, an exact-complexity gate artifact, or an assumed complexity-class
+separation. Failure to overcome the unconditional circuit lower-bound barrier
+kills the Nature paper; it does not authorize retreat to a narrower theorem
+under the same headline.
