@@ -257,7 +257,7 @@ theorem tendsto_blaschkeDepthWaterEntropy_sqrtShift_normalized
       blaschkeDepthWaterEntropy_shifted_quadratic_bounds
         a ha0 ha1 hStail hSzero
     have hdiv := div_le_div_of_nonneg_right hb.2 (sq_nonneg (k : ℝ))
-    convert hdiv using 1 <;> ring
+    convert hdiv using 1 ; ring
 
 theorem tendsto_blaschkeActiveTailRadius_sqrtShift_normalized
     (a : ℝ) (ha0 : 0 < a) (ha1 : a < 1)
@@ -457,7 +457,7 @@ theorem tendsto_blaschkeSubentropyCarrier_normalized
     filter_upwards [eventually_ge_atTop 1] with k hk
     have hk0 : (k : ℝ) ≠ 0 := by positivity
     field_simp
-  convert ht using 1 <;> ring
+  convert ht using 1 ; ring
 
 /-- Nat-valued first return along the logarithmic Blaschke target scale.
 The default branch is irrelevant once the deterministic upper clock is

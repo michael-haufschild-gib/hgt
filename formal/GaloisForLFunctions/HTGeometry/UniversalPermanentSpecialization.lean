@@ -1,11 +1,11 @@
 import GaloisForLFunctions.HTGeometry.FiberPermanentIdentity
-import Permanent
+import GaloisForLFunctions.HTGeometry.UniversalPermanent
 
 /-!
 # Universal permanent specialization
 
 The falling-factorial permanent governing an injective antidiagonal fiber is an exact
-specialization of the universal matrix permanent from the imported `Permanent` certificate.
+specialization of the universal matrix permanent.
 -/
 
 open Finset PowerSeries

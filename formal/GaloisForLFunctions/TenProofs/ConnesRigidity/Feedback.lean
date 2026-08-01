@@ -1,7 +1,0 @@
-
-import ConnesRigidity.FeedbackReduction
-import ConnesRigidity.FeedbackKazhdan
-import ConnesRigidity.FeedbackCounting
-import ConnesRigidity.FeedbackBooleanQuadratic
-import ConnesRigidity.FeedbackBooleanPolynomial
-

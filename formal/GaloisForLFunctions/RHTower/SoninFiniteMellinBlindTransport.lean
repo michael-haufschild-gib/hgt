@@ -86,7 +86,7 @@ theorem eventually_finiteMellinBlind_and_soninTransportFull
           ‖evenSoninApertureSuccessiveLayerTransition a b c (r n) (hrgt n)
               (soninPacketEven b c hb hbc (2 * Real.pi * (r n * q)))‖ /
             ‖soninPacketEven b c hb hbc (2 * Real.pi * (r n * q))‖ :=
-    hratio.eventually (gt_mem_nhds (by linarith : 1 - ε < 1))
+    hratio.eventually (Ioi_mem_nhds (by linarith : 1 - ε < 1))
   exact hblind.and hfull
 
 end RHTower

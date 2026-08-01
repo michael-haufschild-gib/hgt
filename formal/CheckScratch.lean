@@ -28,7 +28,9 @@ example (t : ℝ) :
   have hchar : 0 ≤ semilocalArchimedeanCharacteristic (2 * t) :=
     (Real.rpow_pos_of_pos (Real.cosh_pos (2 * t)) (-(1 : ℝ) / 2)).le
   rw [sub_self]
-  simp only [semilocalArchimedeanCharacteristic, Real.cosh_zero, Real.one_rpow, mul_one]
+  have hzero : semilocalArchimedeanCharacteristic 0 = 1 := by
+    simp [semilocalArchimedeanCharacteristic]
+  rw [hzero, mul_one]
   simpa [pow_two] using Real.sq_sqrt hchar
 
 example {t : ℝ} :
