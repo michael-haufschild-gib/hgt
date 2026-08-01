@@ -6,6 +6,10 @@ Internal audit only. Manuscript must not mention formalization.
 
 | Manuscript claim | Declaration(s) | Module |
 |---|---|---|
+| partial completion globally recovers exactly under admission plus kernel refinement | `partialCompletion_globallyRecovers_iff_admission_and_kernelRefines` | `HTGeometry/PartialCompletionAdmissionSeparationLaw.lean` |
+| postprocessing preserves admission and enlarges the kernel pair | `partialCompletion_postprocess_admitted`, `partialCompletion_kernelPair_mono_postprocess` | same |
+| invariant partial completion kills odd charge on its admitted domain | `oddTarget_eq_zero_on_admitted_of_invariantPartialCompletion` | same |
+| every recovering partial completion separates admitted reflected pairs of nonzero charge | `partialCompletion_separates_reflection_of_oddCharge_ne_zero` | same |
 | factorization on attained range iff kernel refinement | `factorsThroughRange_iff_kernelRefines` | `HTGeometry/CompletionKernelPairTransversalityLaw.lean` |
 | arbitrary heterogeneous family recovery | `observationFamilyRecovers_iff_factorsThroughRecordRange` | same |
 | downstream postprocessing enlarges kernel | `mapKernelPair_mono_of_factorsThrough` | same |
@@ -16,7 +20,18 @@ Internal audit only. Manuscript must not mention formalization.
 | regular symmetric channel forces trivial orientation | `reflectionOrientation_eq_one_of_hyperbolic_regular` | same |
 | with regular `2`, nontrivial orientation iff symmetric channel is nonregular | `reflectionOrientation_ne_one_iff_hyperbolic_not_regular` | same |
 | anti-invariant module vectors lie in symmetric-channel kernel | `hyperbolic_smul_antiInvariant_eq_zero`, `antiInvariant_eq_zero_of_hyperbolic_smul_injective` | same |
+| invariant and anti-invariant sectors are complementary when `2` is invertible | `deningerReflectionModuleDecomposition`, `deningerFaithfulOrientationDescent` | `RHTower/DeningerOrientationDescent.lean` |
 | scalar and operator sewing cost beyond every finite order | `reesEssentialSewingCost_beyondEveryFiniteOrder`, `reesExactSewingOperatorNorm_beyondEveryFiniteOrder` | `RHTower/AsymptoticTypeSuperselection.lean` |
+
+## Exact Hedenmalm admission domain
+
+| Manuscript claim | Declaration(s) | Module |
+|---|---|---|
+| source-normal prime-row energy is vertical plus radial energy | `hedenmalmPrimeNormalEnergy_eq_vertical_add_radial` | `RHTower/HedenmalmPrimeNormalWickBoundaryEnergy.lean` |
+| radial displacement forces prime-susceptibility cost | `im_sq_mul_primeClockSusceptibility_le_hedenmalmPrimeNormalEnergy` | same |
+| vertical energy is bounded by four harmonic numbers | `primeClockVerticalEnergy_le_four_mul_harmonic` | `RHTower/HedenmalmPrimeNormalSubLogSquareClassification.lean` |
+| sub-`log²` completion domain is exactly the centered real axis | `hedenmalmPrimeNormalSubLogSquare_iff_im_eq_zero` | same |
+| universal admission of Xi root blocks implies RH, but is not supplied | `riemannHypothesis_of_xiCZeroHedenmalmPrimeNormalSubLogSquare` | `RHTower/HedenmalmPrimeNormalWickBoundaryEnergy.lean` |
 
 ## Riemann centered character
 

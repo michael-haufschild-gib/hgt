@@ -148,4 +148,138 @@ theorem integral_poissonKernel_poissonBoundaryMeasure {u : ℂ → ℝ} {c : ℂ
   congr 1
   exact intervalIntegral.integral_congr fun θ _ => mul_comm _ _
 
+/-! ## Scale invariance and the fixed-kernel family
+
+To compare the boundary measures of different radii one needs them tested against the *same*
+function.  The Poisson kernel makes this possible: it is invariant under scaling the evaluation point
+and the boundary point together, because numerator and denominator are both quadratic.  So the
+family of boundary measures indexed by the radius represents the dilated values of `u` against one
+fixed kernel on the unit circle — a bounded family of measures paired with a fixed continuous test
+function, which is what a weak-* limit consumes. -/
+
+/-- **The Poisson kernel is scale invariant.**  Numerator and denominator are both quadratic, so a
+common real dilation cancels. -/
+theorem poissonKernel_mul_ofReal {a : ℝ} (ha : a ≠ 0) (w z : ℂ) :
+    poissonKernel 0 ((a : ℂ) * w) ((a : ℂ) * z) = poissonKernel 0 w z := by
+  have hnorm : ∀ v : ℂ, ‖(a : ℂ) * v‖ = |a| * ‖v‖ := by
+    intro v
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
+  have hsq : |a| ^ 2 = a ^ 2 := sq_abs a
+  simp only [poissonKernel_def, sub_zero]
+  rw [show (a : ℂ) * z - (a : ℂ) * w = (a : ℂ) * (z - w) by ring]
+  rw [hnorm, hnorm, hnorm, mul_pow, mul_pow, mul_pow, hsq, ← mul_sub]
+  exact mul_div_mul_left _ _ (pow_ne_zero 2 ha)
+
+/-- The circle of radius `r` is the dilate of the unit circle. -/
+theorem circleMap_zero_eq_mul (r θ : ℝ) :
+    circleMap 0 r θ = (r : ℂ) * circleMap 0 1 θ := by
+  simp [circleMap]
+
+/-- **The fixed-kernel family.**  For a nonnegative harmonic function on the unit disc, the boundary
+measures of every radius represent the dilated values of the function against one and the same
+kernel on the unit circle.  With `integral_one_poissonBoundaryMeasure` pinning every total mass to
+`u 0`, this is a bounded family tested by a fixed continuous function. -/
+theorem integral_unitPoissonKernel_poissonBoundaryMeasure {u : ℂ → ℝ}
+    (hu : HarmonicOnNhd u (ball 0 1)) (hnn : ∀ z ∈ ball (0 : ℂ) 1, 0 ≤ u z)
+    {r : ℝ} (hr : 0 < r) (hr1 : r < 1) {w : ℂ} (hw : w ∈ ball (0 : ℂ) 1) :
+    ∫ θ, poissonKernel 0 w (circleMap 0 1 θ) ∂(poissonBoundaryMeasure u 0 r)
+      = u ((r : ℂ) * w) := by
+  have hsub : closedBall (0 : ℂ) r ⊆ ball (0 : ℂ) 1 := fun x hx => by
+    rw [mem_closedBall_zero_iff] at hx
+    rw [mem_ball_zero_iff]
+    linarith
+  have hur : HarmonicContOnCl u (ball (0 : ℂ) r) := by
+    refine HarmonicOnNhd.harmonicContOnCl ?_
+    rw [closure_ball (0 : ℂ) hr.ne']
+    exact hu.mono hsub
+  have hnnr : ∀ z ∈ sphere (0 : ℂ) r, 0 ≤ u z := fun z hz =>
+    hnn z (hsub (sphere_subset_closedBall hz))
+  have hwr : (r : ℂ) * w ∈ ball (0 : ℂ) r := by
+    rw [mem_ball_zero_iff, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hr]
+    have : ‖w‖ < 1 := by rwa [mem_ball_zero_iff] at hw
+    nlinarith
+  rw [← integral_poissonKernel_poissonBoundaryMeasure hr hur hnnr hwr]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun θ => ?_)
+  show poissonKernel 0 w (circleMap 0 1 θ) = poissonKernel 0 ((r : ℂ) * w) (circleMap 0 r θ)
+  rw [circleMap_zero_eq_mul r θ, poissonKernel_mul_ofReal hr.ne']
+
+/-! ## Finiteness and compact support
+
+The boundary measures are finite because their density is a continuous function on a compact
+circle, and they vanish outside a fixed compact interval of angles.  The second fact makes any
+family of them tight without further argument, which is the hypothesis of Prokhorov's theorem. -/
+
+/-- The boundary measure is finite: its density is continuous on a compact circle. -/
+theorem isFiniteMeasure_poissonBoundaryMeasure {u : ℂ → ℝ} {c : ℂ} {R : ℝ} (hR : 0 < R)
+    (hu : HarmonicContOnCl u (ball c R)) : IsFiniteMeasure (poissonBoundaryMeasure u c R) := by
+  obtain ⟨z₀, -, hmax⟩ := (isCompact_sphere c R).exists_isMaxOn
+    (NormedSpace.sphere_nonempty.mpr hR.le)
+    (hu.continuousOn_ball.mono sphere_subset_closedBall)
+  refine ⟨?_⟩
+  rw [poissonBoundaryMeasure, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+  have hbound : ∫⁻ θ in Set.Ioc 0 (2 * π), ENNReal.ofReal ((2 * π)⁻¹ * u (circleMap c R θ))
+      ≤ ∫⁻ _θ in Set.Ioc 0 (2 * π), ENNReal.ofReal ((2 * π)⁻¹ * u z₀) :=
+    lintegral_mono fun θ => ENNReal.ofReal_le_ofReal
+      (mul_le_mul_of_nonneg_left (hmax (circleMap_mem_sphere c hR.le θ)) (by positivity))
+  refine lt_of_le_of_lt hbound ?_
+  rw [lintegral_const, Measure.restrict_apply_univ, Real.volume_Ioc]
+  exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top ENNReal.ofReal_lt_top
+
+/-- **The boundary measure is carried by a fixed compact interval of angles.**  Hence any family of
+them is tight, with no estimate: the carrier does not move with the radius. -/
+theorem poissonBoundaryMeasure_compl_eq_zero {u : ℂ → ℝ} {c : ℂ} {R : ℝ} :
+    poissonBoundaryMeasure u c R (Set.Ioc 0 (2 * π))ᶜ = 0 := by
+  rw [poissonBoundaryMeasure, withDensity_apply _ measurableSet_Ioc.compl,
+    Measure.restrict_restrict measurableSet_Ioc.compl]
+  simp
+
+/-- The boundary measure lives on the compact interval of angles. -/
+theorem poissonBoundaryMeasure_compl_Icc_eq_zero {u : ℂ → ℝ} {c : ℂ} {R : ℝ} :
+    poissonBoundaryMeasure u c R (Set.Icc 0 (2 * π))ᶜ = 0 := by
+  refine measure_mono_null (Set.compl_subset_compl.mpr Set.Ioc_subset_Icc_self) ?_
+  exact poissonBoundaryMeasure_compl_eq_zero
+
+/-! ## Total mass, the degenerate case, and normalization
+
+Stating the total mass as a measure of the whole space rather than as an integral makes the
+degenerate case immediate: a positive measure of total mass zero *is* the zero measure, so the
+representation returns zero at every interior point.  That is the minimum principle, obtained
+without any almost-everywhere argument.  Away from that case the measures normalize to probability
+measures, which is the form Prokhorov's theorem takes. -/
+
+/-- The total mass of the boundary measure is the centre value. -/
+theorem poissonBoundaryMeasure_univ {u : ℂ → ℝ} {c : ℂ} {R : ℝ} (hR : 0 < R)
+    (hu : HarmonicContOnCl u (ball c R)) (hnn : ∀ z ∈ sphere c R, 0 ≤ u z) :
+    poissonBoundaryMeasure u c R Set.univ = ENNReal.ofReal (u c) := by
+  haveI := isFiniteMeasure_poissonBoundaryMeasure hR hu
+  have h1 := integral_one_poissonBoundaryMeasure hR hu hnn
+  rw [integral_const, smul_eq_mul, mul_one] at h1
+  rw [← h1, measureReal_def, ENNReal.ofReal_toReal (measure_ne_top _ _)]
+
+/-- A boundary measure with vanishing centre value is the zero measure. -/
+theorem poissonBoundaryMeasure_eq_zero {u : ℂ → ℝ} {c : ℂ} {R : ℝ} (hR : 0 < R)
+    (hu : HarmonicContOnCl u (ball c R)) (hnn : ∀ z ∈ sphere c R, 0 ≤ u z) (h0 : u c = 0) :
+    poissonBoundaryMeasure u c R = 0 := by
+  rw [← Measure.measure_univ_eq_zero, poissonBoundaryMeasure_univ hR hu hnn, h0,
+    ENNReal.ofReal_zero]
+
+/-- **The minimum principle.**  A harmonic function nonnegative on the bounding circle and vanishing
+at the centre vanishes on the whole disc: its boundary measure has total mass zero, so it is the
+zero measure, and the representation returns zero everywhere inside. -/
+theorem eq_zero_of_center_eq_zero {u : ℂ → ℝ} {c : ℂ} {R : ℝ} (hR : 0 < R)
+    (hu : HarmonicContOnCl u (ball c R)) (hnn : ∀ z ∈ sphere c R, 0 ≤ u z) (h0 : u c = 0)
+    {w : ℂ} (hw : w ∈ ball c R) : u w = 0 := by
+  rw [← integral_poissonKernel_poissonBoundaryMeasure hR hu hnn hw,
+    poissonBoundaryMeasure_eq_zero hR hu hnn h0, integral_zero_measure]
+
+/-- **Normalization.**  Away from the degenerate case the boundary measures are probability measures
+after dividing by the centre value — the form Prokhorov's theorem consumes, and the divisor is the
+same for every radius. -/
+theorem isProbabilityMeasure_poissonBoundaryMeasure_smul {u : ℂ → ℝ} {c : ℂ} {R : ℝ} (hR : 0 < R)
+    (hu : HarmonicContOnCl u (ball c R)) (hnn : ∀ z ∈ sphere c R, 0 ≤ u z) (h0 : 0 < u c) :
+    IsProbabilityMeasure ((ENNReal.ofReal (u c))⁻¹ • poissonBoundaryMeasure u c R) := by
+  refine ⟨?_⟩
+  rw [Measure.smul_apply, smul_eq_mul, poissonBoundaryMeasure_univ hR hu hnn]
+  exact ENNReal.inv_mul_cancel (by simpa using h0) ENNReal.ofReal_ne_top
+
 end GaloisForLFunctions.HTGeometry

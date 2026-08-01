@@ -12,14 +12,17 @@ converse is the power law for the height.
 Consequently a Kummer class map whose Hilbert norm is a positive multiple of the logarithmic
 height annihilates exactly the roots of unity, which is the injectivity of the Kummer embedding.
 
-A functional prescribed on a dense subspace and bounded by the Hilbert norm extends uniquely to a
-bounded functional on the whole space: existence is Hahn--Banach, uniqueness is density.
+A functional prescribed on a subspace and bounded by the Hilbert norm extends to a bounded
+functional on the whole space by Hahn--Banach, and the extension is determined on the closed span
+of that subspace, because the equalizer of two continuous functionals is a closed submodule.
 
 * `deningerMulHeightOne_iff_isOfFinOrder`, `deningerLogHeightZero_iff_isOfFinOrder` : the
   height-zero theorem.
 * `deningerKummerClass_eq_zero_iff` : injectivity of the Kummer class map.
 * `deningerHilbertKummerBounded_extend` : the unique bounded functional attached to a bounded
-  logarithmic modulus.
+  logarithmic modulus on a dense span.
+* `deningerClosedSpan_eqOn`, `deningerHilbertKummerBounded_extend_closedSpan` : the same without a
+  density hypothesis, on the closed span.
 -/
 
 namespace RHTower
@@ -113,6 +116,39 @@ theorem deningerHilbertKummerBounded_extend {s : Set H}
   have h1 : L' y = φ ⟨y, hymem⟩ := hL' ⟨y, hymem⟩
   have h2 : L y = φ ⟨y, hymem⟩ := hL ⟨y, hymem⟩
   rw [h1, h2]
+
+/-- **Two bounded functionals agreeing on a set agree on its closed span.**  The equalizer is a
+closed submodule containing the set, hence contains the closure of the span.  No density
+hypothesis is needed: the closed span is exactly the space on which the extension is determined. -/
+theorem deningerClosedSpan_eqOn {s : Set H} {L₁ L₂ : H →L[ℝ] ℝ} (h : Set.EqOn L₁ L₂ s) :
+    Set.EqOn L₁ L₂ ((Submodule.span ℝ s).topologicalClosure : Set H) := by
+  have hspan : Submodule.span ℝ s ≤ LinearMap.eqLocus (L₁ : H →ₗ[ℝ] ℝ) (L₂ : H →ₗ[ℝ] ℝ) :=
+    Submodule.span_le.mpr h
+  have hclosed : IsClosed ((LinearMap.eqLocus (L₁ : H →ₗ[ℝ] ℝ) (L₂ : H →ₗ[ℝ] ℝ) : Set H)) :=
+    isClosed_eq L₁.continuous L₂.continuous
+  intro y hy
+  exact Submodule.topologicalClosure_minimal _ hspan hclosed hy
+
+/-- **The bounded Kummer functional, without a density hypothesis.**  A logarithmic modulus
+bounded by the Hilbert norm on the Kummer classes extends to a bounded functional on the ambient
+space, and any two such extensions agree on the *closed* span of the classes — which is the
+Hilbert--Kummer space itself. -/
+theorem deningerHilbertKummerBounded_extend_closedSpan {s : Set H}
+    (φ : (Submodule.span ℝ s) →ₗ[ℝ] ℝ) (C : ℝ)
+    (hφ : ∀ w : Submodule.span ℝ s, |φ w| ≤ C * ‖(w : H)‖) :
+    ∃ L : H →L[ℝ] ℝ, (∀ w : Submodule.span ℝ s, L (w : H) = φ w) ∧
+      ∀ L' : H →L[ℝ] ℝ, (∀ w : Submodule.span ℝ s, L' (w : H) = φ w) →
+        Set.EqOn L L' ((Submodule.span ℝ s).topologicalClosure : Set H) := by
+  have hbound : ∀ w : Submodule.span ℝ s, ‖φ w‖ ≤ C * ‖w‖ := by
+    intro w
+    simpa [Real.norm_eq_abs] using hφ w
+  obtain ⟨L, hL, -⟩ := exists_extension_norm_eq (𝕜 := ℝ) (Submodule.span ℝ s)
+    (φ.mkContinuous C hbound)
+  refine ⟨L, fun w => hL w, fun L' hL' => deningerClosedSpan_eqOn ?_⟩
+  intro y hy
+  have hymem : y ∈ Submodule.span ℝ s := Submodule.subset_span hy
+  rw [hL ⟨y, hymem⟩, hL' ⟨y, hymem⟩]
+  rfl
 
 end BoundedFunctional
 

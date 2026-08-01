@@ -1,12 +1,20 @@
-# CCM first-clock Julia equilibrium coherent capacity
+# CCM first-clock Julia equilibrium coherent capacity — not new knowledge
 
 - **ID:** `ccm-first-clock-julia-equilibrium-coherent-capacity`
-- **Stage:** 2-fully-proven
-- **Type:** SOURCE-ACTION THEOREM / COHERENT CAPACITY LAW / OPERATOR-PLACEMENT FRONTIER
+- **Stage:** 3-formalized / not new scientific knowledge
+- **Type:** BOOKKEEPING REPACKAGING / RETIRED AS FRONTIER CLAIM
 - **RH used:** no
 - **Computation used:** no
 
-## Whole-corpus selection
+## Novelty verdict
+
+`[NOT NEW SCIENTIFIC KNOWLEDGE]` The inequality proved here is the standard anchored Gram
+inequality (equivalently Cauchy--Schwarz/Schur complement) after substituting corpus-specific
+names.  Its application to the first-clock source is exact, but exact renaming is not a new
+mathematical mechanism and does not advance the RH dependency graph.  It must not be cited as a
+frontier result or used to motivate another rank-one/kernel-capacity iteration.
+
+## Historical collision context
 
 This route was not selected because one new HTGeometry card looked compatible with RHTower.
 Whole declaration census and collision audit first consumed all relevant existing endpoints:
@@ -101,28 +109,22 @@ A_x(L)^2 <= E_B(x,L).                                    (JCC2)
 This is sharp at the normalized origin face. It converts every negative deformed first-clock
 excursion into compulsory coherent outer-prime energy.
 
-## Scientific meaning and boundary
+## Bookkeeping meaning and boundary
 
-`(JCC2)` is the positive replacement demanded by the independent-prime capacity no-go. Julia
-attenuation values are origin-column shadows of one cross-prime covariance kernel; treating them
-as unrelated scalar weights discards exactly the energy a counterexample must carry.
+`(JCC2)` records, in the first-clock notation, that Julia attenuation values are origin-column
+entries of a positive-definite kernel.  This is useful bookkeeping only.  It neither supplies a
+new source mechanism nor narrows the load-bearing RH obstruction.
 
 It does **not** prove sign of `A_x`, and `A_x` at positive `x` is a deformed source rather than the
 published `x=0` endpoint. PSD bounds a correlation by energy; it does not orient that correlation.
 No RH conclusion is claimed.
 
-## Next falsifiable operator gate
+## Retirement rule
 
-Need a source-native placement inequality for this exact `E_B`, not another diagonal damping law.
-Two corpus mechanisms can potentially supply it:
-
-1. identify Julia equilibrium feature measure with a restriction/Schur image of the coherent
-   Gamma odd-Jacobi or Suzuki causal-depth carrier;
-2. prove a completed continuous-Gamma upper budget for the resulting bad feature norm strong
-   enough to contradict `(JCC2)` whenever `A_x<0`.
-
-Failure must retain `(JCC1)`--`(JCC2)` and state exact kernel mismatch. A generic RKHS or
-independent-channel estimate is already excluded.
+Do not pursue an operator-placement, rank-one, RKHS, Schur-complement, or independent-channel
+follow-up from this card.  Any future use must enter a genuinely new load-bearing construction
+obtained independently from the global corpus audit; this inequality alone provides no frontier
+leverage.
 
 ## Lean status
 
@@ -154,6 +156,6 @@ compound-Poisson/equilibrium-clock identity `(JSE11)`.
 - [x] exact source action formalized
 - [x] generic anchored capacity and conditional Julia specialization formalized
 - [ ] `JuliaDefectEquilibriumGramLaw` proved in Lean from `(JSE11)`
-- [ ] operator placement / completed bad-energy upper budget
+- [x] novelty rejected: generic Gram/Schur consequence
+- [x] frontier follow-up retired
 - [ ] RH
-

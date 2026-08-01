@@ -1327,3 +1327,34 @@ dividing the discriminant.
   coefficient of the centered polynomial has no square root in the field of rational functions in
   the roots, hence none in any subfield of it — in particular none in the coefficient field.
   Axioms `[propext, Classical.choice, Quot.sound]` throughout.
+
+- 2026-08-01 — `EvenKummerSqrt.lean` and `KummerBaseChangeEvenGenerator.lean` remove the last
+  *assumed* input of the even branch.  The square root the even case needs is not extra data: it is
+  the half power of the Kummer generator.  `pow_notMem_bot_of_finrank_le` is the reason it stays out
+  of the base — a power below the degree landing in the base would be a root of a polynomial of that
+  degree, bounding the degree of the extension — and `sq_pow_half` is why it squares into it.  So
+  `kummerBaseChangeEvenGenEquiv` states the base change step with the generator, its degree and one
+  square-class computation as its only concrete inputs, which is exactly the shape of the card's
+  data `(10)`: `M = E_0(p_1)` with `p_1^n = (-1)^n c_0`.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  Next: the instantiation needs the ambient field containing both the splitting field of `(7)` and
+  the Kummer extension, and the identification of the card's `E_0 = K(q, c_0, ..., c_{n-1})` with
+  the coefficient field of the universal centered polynomial — that identification is the card's
+  step `(6)`--`(10)` and is where algebraic independence of the `c_j` is actually needed.
+
+- 2026-08-01 — correction to the previous entry, in the card's favour: **algebraic independence of
+  the `c_j` was already proved** — `algebraicIndependent_tailCoeff` in
+  `TailCoefficientIndependence.lean`, via the triangular Jacobian rather than the hand computation
+  `(9)`.  So step `(a)` of the instantiation is done and the card's `E_0` is already known to be a
+  rational function field.
+- 2026-08-01 — `TailCoefficientLinearSolve.lean` supplies the *algebraic* triangularity that the
+  Jacobian alone does not give, and it comes for free from the same two derivative facts.  The
+  derivative of the `i`-th tail coefficient in the `i`-th parameter is `tailLead i`, a multiple of a
+  power of the **first** parameter, which no longer involves the `i`-th one; so
+  `tailRemainder i := tailCoeff i - tailLead i * X i` has vanishing derivative in the `i`-th
+  parameter and in every later one, and in characteristic zero that means those parameters do not
+  occur in it (`degreeOf_tailRemainder_eq_zero`, using the corpus's own
+  `degreeOf_eq_zero_of_pderiv_eq_zero`).  Hence `tailCoeff_eq`: each tail coefficient is linear in
+  the parameter it introduces, with everything else in the earlier parameters — the form that lets
+  the parameters be solved for one at a time.  `tailCoeff_zero` is the card's `(8)`:
+  `c_0 = p_1^n` up to sign.  Axioms `[propext, Classical.choice, Quot.sound]`.

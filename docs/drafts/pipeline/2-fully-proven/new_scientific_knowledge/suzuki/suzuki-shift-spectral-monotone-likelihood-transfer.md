@@ -348,8 +348,45 @@ limit acts on:
 - `integral_poissonKernel_poissonBoundaryMeasure`: testing it with the Poisson kernel returns the
   value of the function.
 
-What remains for the representation is the weak-* limit of that bounded family as the discs exhaust
-the domain, and the transfer to the half-plane with support on the ray.
+To compare boundary measures of different radii they must be tested against the *same* function, and
+the Poisson kernel supplies that:
+
+- `poissonKernel_mul_ofReal`: **the Poisson kernel is scale invariant** — numerator and denominator
+  are both quadratic, so a common real dilation cancels.
+- `circleMap_zero_eq_mul`: the circle of radius `r` is the dilate of the unit circle.
+- `integral_unitPoissonKernel_poissonBoundaryMeasure`: hence for a nonnegative harmonic function on
+  the unit disc, the boundary measures of **every** radius represent the dilated values of the
+  function against one and the same kernel on the unit circle.
+
+Together with the mass identity this is a bounded family of measures paired with a fixed continuous
+test function — the exact input of a weak-* limit.  The two remaining measure-theoretic
+prerequisites are formal in the same module:
+
+- `isFiniteMeasure_poissonBoundaryMeasure`: the measures are finite, their density being continuous
+  on a compact circle.
+- `poissonBoundaryMeasure_compl_eq_zero`, `poissonBoundaryMeasure_compl_Icc_eq_zero`: **they are all
+  carried by one fixed compact interval of angles.**  The carrier does not move with the radius, so
+  any family of them is tight with no estimate at all.
+
+mathlib carries Prokhorov's theorem (`isCompact_closure_of_isTightMeasureSet`), stated for
+probability measures.  The normalization, and the degenerate case it needs excluded, are formal:
+
+- `poissonBoundaryMeasure_univ`: total mass is the centre value, stated as a measure of the whole
+  space rather than as an integral.
+- `poissonBoundaryMeasure_eq_zero`: hence a vanishing centre value gives the **zero measure** — a
+  positive measure of total mass zero is zero, with nothing to prove.
+- `eq_zero_of_center_eq_zero`: **the minimum principle** falls out — the representation against the
+  zero measure returns zero at every interior point.  No almost-everywhere argument is involved.
+- `isProbabilityMeasure_poissonBoundaryMeasure_smul`: away from that case, dividing by the centre
+  value gives probability measures, and the divisor is the same for every radius.
+
+Stating the mass at the measure level rather than as an integral is what makes the degenerate case
+free; as an integral identity it would have needed a separate vanishing argument.
+
+What remains is the limit itself and the transfer to the half-plane with support on the ray.
+
+What remains for the representation is the limit itself and the transfer to the half-plane with
+support on the ray.
 
 ## Novelty audit
 
@@ -577,3 +614,30 @@ what makes them distinct.  Degree `n` and `n` roots then leave no freedom.
   value for **every** radius, so the family is uniformly bounded with no estimate involved — the
   mean value property supplies the compactness input directly.  Four new declarations, targeted build
   green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the fixed-kernel family built.  Comparing boundary measures across radii requires one
+  test function, and the Poisson kernel provides it: `poissonKernel_mul_ofReal` shows it is **scale
+  invariant**, since numerator and denominator are both quadratic and a common real dilation cancels.
+  So `integral_unitPoissonKernel_poissonBoundaryMeasure` represents the dilated values of `u` against
+  a single kernel on the unit circle, for every radius.  With the mass pinned to `u 0` this is a
+  bounded family tested by a fixed continuous function.  mathlib does carry Prokhorov
+  (`isCompact_closure_of_isTightMeasureSet`), and these measures live in a compact interval so
+  tightness is free — the remaining work is the limit and the half-plane transfer, not the
+  compactness theory.  Three new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the measure-theoretic prerequisites for the weak-* limit are formal:
+  `isFiniteMeasure_poissonBoundaryMeasure` (finite, density continuous on a compact circle) and
+  `poissonBoundaryMeasure_compl_eq_zero` (**all carried by one fixed compact interval of angles**).
+  The second is the tightness input and it costs nothing: the carrier is the angle interval, which
+  does not move with the radius, so no estimate is involved.  mathlib's Prokhorov is stated for
+  probability measures, so what remains is the normalization by the centre value, the limit itself,
+  and the half-plane transfer.  Three new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — mass, degenerate case and normalization formal.  Stating the total mass as
+  `poissonBoundaryMeasure_univ` (a measure of the whole space) rather than as an integral makes the
+  degenerate case free: a **positive** measure of total mass zero is the zero measure, so
+  `eq_zero_of_center_eq_zero` — the minimum principle — follows by representing against it, with no
+  almost-everywhere argument anywhere.  As an integral identity the same case would have needed a
+  separate "continuous nonnegative with zero integral vanishes" step.  With the degenerate case
+  isolated, `isProbabilityMeasure_poissonBoundaryMeasure_smul` normalizes the rest to probability
+  measures by a divisor independent of the radius, which is the exact form Prokhorov consumes.  Four
+  new declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.

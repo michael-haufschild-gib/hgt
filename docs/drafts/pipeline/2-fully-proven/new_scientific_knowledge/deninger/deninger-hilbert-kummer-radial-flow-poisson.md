@@ -19,7 +19,11 @@
   `GaloisForLFunctions.RHTower.DeningerFiniteExtension`,
   `GaloisForLFunctions.RHTower.DeningerHilbertKummerCharacter`
   (the density proof of `(7)`, the exponent form of `(8)`, and the
-  descent and positivity of `(9)`)
+  descent and positivity of `(9)`),
+  `GaloisForLFunctions.RHTower.DeningerHeightZeroKummer`
+  (the height-zero theorem, the injectivity of `(2)`, and `(4)` ⟹ `(5)`),
+  `GaloisForLFunctions.RHTower.DeningerKummerPlaceIsometry`
+  (the place isometry `‖f_α‖₁ = 2h(α)` behind `(1)`--`(2)`)
 
 ## Source Hilbert space
 
@@ -363,11 +367,77 @@ seventeen declarations: `propext, Classical.choice, Quot.sound`.
   well defined.  This is `(8)` + `(10)` ⟹ descent, isolated from the model.
 - `deningerSuspensionValue_pos` — `u · r(P) > 0` exactly off the unitary locus `r(P) = 0`.
 
+### The height-zero theorem and `(4)` ⟹ `(5)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerHeightZeroKummer.lean`.  Axiom audit on all four
+declarations: `propext, Classical.choice, Quot.sound`.
+
+- `deningerMulHeightOne_iff_isOfFinOrder` — **the height-zero theorem** (Kronecker's theorem in
+  height form): a nonzero element of a number field has multiplicative height `1` exactly when it
+  is a root of unity.  Forward direction: by the power law `H(x^n) = H(x)^n` all powers of a
+  height-one element lie in the Northcott set `{y | H(y) ≤ 1}`, which is finite, so two powers
+  coincide and cancellation in the field gives `x^{q-p} = 1`.  Backward direction: `H(x)^n = 1`
+  with `H(x) > 0` forces `H(x) = 1`.  This was the card's quoted input; it is now proved from
+  mathlib's Northcott property alone.
+- `deningerLogHeightZero_iff_isOfFinOrder` — the logarithmic form, `h(α) = 0 ⟺ α ∈ μ_∞`.
+- `deningerKummerClass_eq_zero_iff` — **injectivity of `(2)`**: if `‖f_α‖ = c·h(α)` with `c > 0`,
+  then `f_α = 0` exactly for roots of unity, so `ι` is injective on `𝒢 = Q̄ˣ/μ_∞`.  This is the
+  card's "injectivity follows from the height-zero theorem", now a proof rather than a citation.
+- `deningerHilbertKummerBounded_extend` — **`(4)` ⟹ `(5)`**: a linear functional on the span of a
+  total set which is bounded by the ambient norm extends to a bounded functional on the whole
+  Hilbert space, and — because the span is dense — the extension is *unique*.  Existence is
+  Hahn--Banach (`exists_extension_norm_eq`); uniqueness is that two continuous maps agreeing on a
+  dense set are equal.  The `∃!` matches the card's "unique bounded functional `ℓ_P`".
+
+### The place isometry and the density-free extension landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerKummerPlaceIsometry.lean`, plus two additions to
+`DeningerHeightZeroKummer.lean`.  Axiom audit on all seven declarations:
+`propext, Classical.choice, Quot.sound`.
+
+**The place model of `(1)`--`(2)`.**  For any field with mathlib's `AdmissibleAbsValues` — in
+particular every number field — the place space carries the archimedean absolute values as a
+multiset and the nonarchimedean ones as a set with finite multiplicative support, together with
+the product formula.  That is exactly the data `(Y, λ)` needs at one level of the tower.
+
+- `deningerAbsLog_eq` — the pointwise identity `|log t| = 2 log⁺ t - log t` for `t ≥ 0`.  This is
+  the whole mechanism: the absolute value splits into twice the positive part minus the signed
+  value.
+- `deningerLogProductFormula` — **the product formula in logarithmic form**: for `α ≠ 0`,
+  `∑_v log‖α‖_v = 0`, with the archimedean places counted with multiplicity.  Obtained from
+  `AdmissibleAbsValues.product_formula` by `Real.log_multiset_prod` and `Real.log_finprod`, both
+  applicable because every absolute value of a nonzero element is strictly positive.
+- `deningerKummerL1Norm`, `deningerKummerL1Norm_eq_two_mul_logHeight` — **the Kummer place
+  isometry**
+
+  `∑_v |log‖α‖_v| = 2 h(α)`.
+
+  Summing the pointwise identity over all places, the signed part dies by the logarithmic product
+  formula and the positive part is `logHeight₁` on the nose (mathlib's `logHeight₁_eq`).  This is
+  the `p = 1` Allcock--Vaaler isometry, now proved rather than quoted.
+- `deningerKummerL1Norm_eq_zero_iff` — **injectivity of `(2)` in the place model**: `f_α` has
+  vanishing total variation exactly when `α` is a root of unity.  Isometry plus the height-zero
+  theorem.
+- `deningerAllPlaces_one_isOfFinOrder` — the pointwise form used by the `p = 2` norm: an element
+  with `‖α‖_v = 1` at *every* place is a root of unity.  This is what makes `ι` injective for any
+  `L^p` norm on the place space, not just `p = 1`.
+
+**The extension without a density citation.**
+
+- `deningerClosedSpan_eqOn` — two bounded functionals agreeing on a set agree on the *closed span*
+  of that set, unconditionally: their equalizer is a closed submodule containing the set, so it
+  contains the closure of the span (`Submodule.topologicalClosure_minimal`).
+- `deningerHilbertKummerBounded_extend_closedSpan` — **`(4)` ⟹ `(5)` with no density
+  hypothesis**: a logarithmic modulus bounded by the Hilbert norm extends by Hahn--Banach, and any
+  two extensions agree on the closed span of the Kummer classes.  Taking `H_Kum` to be that
+  closed span — which is the only part of `L²(Y, λ)` the theorem ever uses — makes the card's
+  "dense real span" true by construction rather than by citation, and `ℓ_P` is then genuinely
+  unique on `H_Kum`.
+
 ### Remaining
 
-Only the two quoted analytic inputs about the place space: injectivity and dense span of `(2)`
-(height-zero theorem, Allcock--Vaaler at `p = 2`), and Hilbert--Kummer boundedness `(4)` producing
-the functional `(5)`.  Every step of the refinement theorem that is an identity or a
-functional-analytic construction — the extension, the replacement, the torsion invariance, the
-Frobenius scaling, the descent and positivity of `(9)`, and the Poisson-flow identities
-`(11)`--`(14)` — is now formalized unconditionally.
+The only input still quoted is the *global* Allcock--Vaaler construction: that the level-wise
+place models glue, compatibly with field extension, into one measure space `(Y, λ)` over all of
+`Q̄` carrying every `f_α` at once.  Each level of that tower is now fully proved — the isometry,
+the injectivity, and the extension — and every statement the card derives is formalized
+unconditionally.

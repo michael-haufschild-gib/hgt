@@ -1122,16 +1122,16 @@ Final direct Lean and module build are green (`9377/9377`). Eleven capstone axio
 exactly `[propext, Classical.choice, Quot.sound]`. Lint finds no issue in new module; nonzero status
 comes only from three unrelated pre-existing umbrella gaps recorded on card.
 
-## Whole-HT non-diagonal pivot: Julia equilibrium coherent capacity
+## Retired non-novel detour: Julia equilibrium coherent capacity
 
-`[PAPER-PROVED] [LEAN SOURCE ACTION] [LEAN GENERIC CAPACITY] [NOT RH]`
+`[FORMAL BOOKKEEPING] [NOT NEW SCIENTIFIC KNOWLEDGE] [RETIRED]`
 
 Hostile collision audit killed two tempting rediscoveries. Scalar thermal susceptibility is
 already strictly stronger in `SoninSemilocalWeylGenerator` and
 `SoninSemilocalCyclicWeylDescent`. Independent positive Julia prime layers are excluded as an RH
 architecture by the corpus's harmonic Gamma-conductor and semilocal one-prime deficit no-gos.
 
-Positive survivor restores Julia structure before scalarization. The corrected equilibrium kernel
+The exact substitution restores Julia structure before scalarization. The corrected equilibrium kernel
 
 ```text
 R(0)=1,  R(y)=(4/3)(1-kappa(y))/y^2
@@ -1158,20 +1158,18 @@ Adding the origin to the Gram with optimizing coefficient `-B_x` proves
 A_x^2 <= E_B.
 ```
 
-Thus a counterexample cannot live in independent one-prime defects; it must carry coherent
-cross-prime energy. This is exact source action on literal RHT terms, not a proxy KMS carrier.
+This is only the generic anchored Gram inequality/Cauchy--Schwarz in corpus notation.  Exact source
+action does not make the mechanism novel.  It does not change the global RH dependency graph and
+must not be presented as frontier movement.
 
 Formal modules and card:
 
 ```text
 formal/GaloisForLFunctions/HTGeometry/JuliaDefectSpectralEquilibrium.lean
 formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaEquilibriumGram.lean
-docs/drafts/pipeline/2-fully-proven/needs-audit/ccm-first-clock-julia-equilibrium-coherent-capacity.md
+docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm-first-clock-julia-equilibrium-coherent-capacity.md
 ```
 
-Lean closure is deliberately dependency-honest: generic anchored capacity and exact RHT source
-action are unconditional; Julia specialization takes the named `JuliaDefectEquilibriumGramLaw`
-until paper-proved compound-Poisson/equilibrium identity `(JSE11)` is closed in Lean. No RH claim.
-Next operator gate is source-native placement of `E_B` inside coherent Gamma odd-Jacobi or Suzuki
-causal-depth carrier plus a completed continuous-Gamma energy budget. Generic RKHS positivity or
-another diagonal damping law is insufficient and will be rejected as collision.
+Lean closure is dependency-honest, but scientific novelty is rejected.  No rank-one, RKHS,
+operator-placement, or diagonal-damping sequel is authorized from this detour.  Work returns to
+global load-bearing open cores only.

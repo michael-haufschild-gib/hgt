@@ -128,6 +128,111 @@ theorem microcanonicalWeight_pos
   unfold microcanonicalWeight
   positivity
 
+/-- Full-Haar completion of a finite phase flow is equivalent to rational
+independence of its frequency vector. -/
+theorem finiteTorusPhaseProbabilityMeasure_tendsto_haar_iff
+    {d : Type*} [Fintype d]
+    (omega : d → ℝ) :
+    Tendsto
+        (finiteTorusPhaseProbabilityMeasure omega)
+        atTop
+        (𝓝 (finiteTorusHaarProbabilityMeasure d)) ↔
+      RationallyIndependentFrequency omega := by
+  constructor
+  · intro hconv n hdetuning
+    by_contra hn
+    have hIntegral :=
+      (continuous_integral_complex_continuousMap
+        (UnitAddTorus.mFourier n)).continuousAt.tendsto.comp hconv
+    change
+      Tendsto
+        (fun A =>
+          ∫ x, UnitAddTorus.mFourier n x
+            ∂(finiteTorusPhaseProbabilityMeasure omega A :
+              Measure (UnitAddTorus d)))
+        atTop
+        (𝓝
+          (∫ x, UnitAddTorus.mFourier n x
+            ∂(finiteTorusHaarProbabilityMeasure d :
+              Measure (UnitAddTorus d)))) at hIntegral
+    have hzero :
+        Tendsto
+          (fun A =>
+            ∫ x, UnitAddTorus.mFourier n x
+              ∂(finiteTorusPhaseProbabilityMeasure omega A :
+                Measure (UnitAddTorus d)))
+          atTop
+          (𝓝 (0 : ℂ)) := by
+      rw [finiteTorusHaarProbabilityMeasure_mFourier_integral] at hIntegral
+      simpa [hn] using hIntegral
+    have hone :
+        Tendsto
+          (fun A =>
+            ∫ x, UnitAddTorus.mFourier n x
+              ∂(finiteTorusPhaseProbabilityMeasure omega A :
+                Measure (UnitAddTorus d)))
+          atTop
+          (𝓝 (1 : ℂ)) := by
+      apply tendsto_const_nhds.congr'
+      filter_upwards [] with A
+      rw [finiteTorusPhaseProbabilityMeasure_mFourier_integral,
+        hdetuning]
+      simp
+    have : (0 : ℂ) = 1 := tendsto_nhds_unique hzero hone
+    norm_num at this
+  · exact finiteTorusPhaseProbabilityMeasure_tendsto_haar omega
+
+/-- Projective spectral independence is exactly rational independence of
+the relative frequency packet anchored at any chosen level. -/
+theorem maximallyProjectiveEnergy_iff_projectiveFrequency_independent
+    {I : Type*} [Fintype I] [DecidableEq I]
+    (energy : I → ℝ) (reference : I) :
+    MaximallyProjectiveEnergy energy ↔
+      RationallyIndependentFrequency
+        (projectiveFrequency energy reference) := by
+  constructor
+  · intro hmax
+    exact maximallyProjectiveEnergy_projectiveFrequency_independent
+      energy hmax reference
+  · intro hindependent k hbalanced henergy
+    let n : {i : I // i ≠ reference} → ℤ := fun i => k i.1
+    have hbalancedSplit :
+        k reference + ∑ i : {i : I // i ≠ reference}, k i.1 = 0 := by
+      rw [← Fintype.sum_eq_add_sum_subtype_ne k reference]
+      exact hbalanced
+    have hbalancedReal :
+        (k reference : ℝ) +
+            ∑ i : {i : I // i ≠ reference}, (k i.1 : ℝ) = 0 := by
+      exact_mod_cast hbalancedSplit
+    have henergySplit :
+        (k reference : ℝ) * energy reference +
+            ∑ i : {i : I // i ≠ reference},
+              (k i.1 : ℝ) * energy i.1 = 0 := by
+      rw [← Fintype.sum_eq_add_sum_subtype_ne
+        (fun i => (k i : ℝ) * energy i) reference]
+      exact henergy
+    have hdetuning :
+        finiteTorusCharacterDetuning n
+          (projectiveFrequency energy reference) = 0 := by
+      unfold finiteTorusCharacterDetuning projectiveFrequency n
+      simp_rw [mul_sub]
+      rw [Finset.sum_sub_distrib, ← Finset.sum_mul]
+      linear_combination henergySplit - energy reference * hbalancedReal
+    have hn : n = 0 := hindependent n hdetuning
+    funext i
+    by_cases hi : i = reference
+    · subst i
+      have hrest :
+          ∑ j : {j : I // j ≠ reference}, k j.1 = 0 := by
+        apply Finset.sum_eq_zero
+        intro j hj
+        have hjzero := congrFun hn j
+        simpa [n] using hjzero
+      simpa [hrest] using hbalancedSplit
+    · let j : {j : I // j ≠ reference} := ⟨i, hi⟩
+      have hjzero := congrFun hn j
+      simpa [n, j] using hjzero
+
 /-- **Finite-entropy plateau floor.** Every finite microcanonical spectrum
 has completed-time order-one survival-fidelity mass at least the inverse
 state-space dimension. -/
@@ -186,6 +291,55 @@ theorem maximallyProjective_microcanonicalSFFMean_tendsto_entropyFloor
     (microcanonicalWeight I) energy 1
   simpa [maximallyProjective_microcanonical_plateau_eq_entropyFloor hmax]
     using h
+
+/-- **Plateau hierarchy completeness law.** Every microcanonical spectral
+form-factor moment attains its permutation floor exactly when the completed
+relative phase flow equidistributes on the full projective torus. -/
+theorem all_microcanonicalSFFMoments_floor_iff_projectivePhase_tendsto_haar
+    {I : Type*} [Fintype I] [DecidableEq I] [Nonempty I]
+    (energy : I → ℝ) (reference : I) :
+    (∀ n : ℕ,
+        Tendsto
+          (finiteSpectralSurvivalFidelityMean
+            (microcanonicalWeight I) energy n)
+          atTop
+          (𝓝
+            (fidelityReplicaPermutationFloor
+              (microcanonicalWeight I) n : ℂ))) ↔
+      Tendsto
+        (finiteTorusPhaseProbabilityMeasure
+          (projectiveFrequency energy reference))
+        atTop
+        (𝓝
+          (finiteTorusHaarProbabilityMeasure
+            {i : I // i ≠ reference})) := by
+  rw [all_finiteSpectralSurvivalFidelityMean_tendsto_floor_iff
+    (microcanonicalWeight_pos I) energy]
+  rw [finiteTorusPhaseProbabilityMeasure_tendsto_haar_iff]
+  exact maximallyProjectiveEnergy_iff_projectiveFrequency_independent
+    energy reference
+
+/-- Static collision-mass form of plateau hierarchy completeness. -/
+theorem all_microcanonicalCollisionMass_floor_iff_projectivePhase_tendsto_haar
+    {I : Type*} [Fintype I] [DecidableEq I] [Nonempty I]
+    (energy : I → ℝ) (reference : I) :
+    (∀ n : ℕ,
+        fidelityReplicaCollisionMass
+          (microcanonicalWeight I) energy n =
+        fidelityReplicaPermutationFloor
+          (microcanonicalWeight I) n) ↔
+      Tendsto
+        (finiteTorusPhaseProbabilityMeasure
+          (projectiveFrequency energy reference))
+        atTop
+        (𝓝
+          (finiteTorusHaarProbabilityMeasure
+            {i : I // i ≠ reference})) := by
+  rw [all_fidelityReplicaCollisionMass_eq_floor_iff
+    (microcanonicalWeight_pos I) energy]
+  rw [finiteTorusPhaseProbabilityMeasure_tendsto_haar_iff]
+  exact maximallyProjectiveEnergy_iff_projectiveFrequency_independent
+    energy reference
 
 /-- **Finite-entropy plateau--future law.** Minimal microcanonical plateau,
 all replica permutation floors, and full-Haar projective recurrence are

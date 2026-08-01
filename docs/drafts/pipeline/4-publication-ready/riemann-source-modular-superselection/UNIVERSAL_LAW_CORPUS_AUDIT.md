@@ -2,7 +2,23 @@
 
 Status: working internal audit. Not manuscript prose.
 
-## Candidate law: orientation before completion
+## Candidate law: acquisition--completion duality
+
+A singular, unbounded, rigged, or asymptotic completion is not adequately
+modelled by a total map.  Its universal datum is a partial quotient
+
+`D subset X --pi--> Q`,
+
+where `D` is the source-admission domain and `pi` is the observation on that
+domain.  Exact global recovery of a target `chi : X -> C` has two independent
+gates:
+
+1. **admission:** every relevant source point belongs to `D`;
+2. **separation:** `K_pi subset K_(chi|D)`.
+
+This is the admission--separation law.  Postprocessing preserves `D` and can
+only enlarge `K_pi`; it can solve neither a missing source-domain estimate nor
+an erased target distinction.
 
 For an observation `f : X -> Y`, let
 
@@ -14,7 +30,7 @@ target `chi : X -> C` is exactly recoverable on the attained joint range of
 
 `K_pi intersect (intersect_j K_tau_j) subset K_chi`.
 
-Equivalently, a target factors through an observation exactly when every
+On an admitted domain, a target factors through an observation exactly when every
 collision of the observation is a collision of the target. Postprocessing can
 only enlarge a kernel pair. It can never recreate a distinction already
 collapsed by completion.
@@ -25,14 +41,28 @@ Reflection supplies the RH-specific orientation form. If `sigma^2 = 1`,
 separate `x` from `sigma x` wherever `chi(x) != 0` and, for a real scalar
 channel, must have nonzero reflection-odd part there.
 
-In a commutative ring the same law has the sharper support identity
+In a commutative ring the separation obstruction has the sharper identity
 
 `(1-epsilon)(1+epsilon)=0`, `epsilon^2=1`.
 
-Thus nontrivial orientation `1-epsilon` lives on singular support of the
-reflection-symmetric channel `1+epsilon`. If `2` is regular, nontrivial
-orientation is equivalent to nonregularity of that channel. For a module,
-every anti-invariant vector is annihilated by the symmetric channel.
+Thus the anti-invariant sector is killed by the reflection-symmetric channel.
+If `2` is regular, nontrivial orientation is equivalent to nonregularity of
+that symmetric channel.  This does **not** mean orientation is intrinsically
+singular.  Before symmetric completion, an involution on a module with
+invertible `2` has the canonical faithful decomposition
+
+`v = (v + C v)/2 + (v - C v)/2`.
+
+The invariant and anti-invariant summands are complementary.  Singularity is
+the price of reconstructing the second summand *from the first after it has
+been discarded*, not a property of the source orientation coordinate itself.
+
+Reflection therefore gives an exact trilemma at every nonzero odd charge:
+
+1. admit both reflected source points and retain an anti-invariant channel;
+2. admit both but identify them, making orientation unrecoverable;
+3. use an invariant recovering completion only by excluding at least one
+   member of the reflected pair from its regular domain.
 
 Topology and asymptotic filtration enrich, rather than replace, this law:
 
@@ -42,9 +72,9 @@ Topology and asymptotic filtration enrich, rather than replace, this law:
   finite-grade target has operator norm larger than every finite inverse Rees
   order.
 
-One sentence: **a target distinction must be acquired before completion; if
-completion collapses it, later recovery is impossible, discontinuous, or
-singular beyond every finite order.**
+One sentence: **completion has two irreversible gates--source admission and
+fibre separation; a target must pass both before postprocessing, or recovery
+is impossible, discontinuous, or singular beyond every finite order.**
 
 ### Maximal quotient and positive dual
 
@@ -70,12 +100,12 @@ the bare and interaction relation lattices.  Its compact annihilator is the
 completed future hull.  In finite rank, loss of one independent relation is
 therefore gain of one independent completed phase direction.
 
-This suggests the more universal name **acquisition--completion duality**:
-the primal quotient classifies exactly what completion can still report; the
-dual protected-relation lattice classifies exactly what remains constrained.
-Reflection orientation is the distinguished anti-invariant coordinate, and
-singular support is what remains when that coordinate is forced through a
-regular symmetric completion.
+The primal partial quotient classifies exactly what completion admits and can
+still report; the dual protected-relation lattice classifies exactly what
+remains constrained.  Reflection orientation is the distinguished
+anti-invariant source coordinate.  Singular support, divergent energy, or
+beyond-all-orders sewing is the defect created when that coordinate is forced
+through a completion which does not regularly retain it.
 
 ## Exact formal theorem surface
 
@@ -89,6 +119,11 @@ Abstract set/family law:
   - `transverseChannel_separates_reflection_of_oddCharge_ne_zero`
   - `reflectionOddPart_ne_zero_of_jointlyRecovers`
   - `downstreamReporter_constant_of_dense_completionFibers`
+- `HTGeometry/PartialCompletionAdmissionSeparationLaw.lean`
+  - `partialCompletion_globallyRecovers_iff_admission_and_kernelRefines`
+  - `partialCompletion_kernelPair_mono_postprocess`
+  - `oddTarget_eq_zero_on_admitted_of_invariantPartialCompletion`
+  - `partialCompletion_separates_reflection_of_oddCharge_ne_zero`
 
 Maximal-quotient and protected-relation realization:
 
@@ -113,6 +148,9 @@ Algebraic singular-support law:
 - `HTGeometry/PrimeOrientationHadamardSingularSupportLaw.lean`
   - `primeOrientationHadamardTail_positive_iff_hyperbolic_regular`
   - `primeOrientationHadamardTail_nontrivial_has_hyperbolic_annihilator`
+- `RHTower/DeningerOrientationDescent.lean`
+  - `deningerOrientation_isCompl`
+  - `deningerOrientation_eq_zero_of_parts`
 
 Topological and filtered consequences:
 
@@ -121,6 +159,9 @@ Topological and filtered consequences:
 - `RHTower/AsymptoticTypeSuperselection.lean`
   - `reesEssentialSewingCost_beyondEveryFiniteOrder`
   - `reesExactSewingOperatorNorm_beyondEveryFiniteOrder`
+- `RHTower/HedenmalmPrimeNormalSubLogSquareClassification.lean`
+  - `primeClockVerticalEnergy_le_four_mul_harmonic`
+  - `hedenmalmPrimeNormalSubLogSquare_iff_im_eq_zero`
 
 ## Riemann realization of the one target charge
 

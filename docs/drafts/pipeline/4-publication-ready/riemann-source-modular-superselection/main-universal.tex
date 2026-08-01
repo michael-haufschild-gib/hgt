@@ -33,8 +33,8 @@
 \newcommand{\singsupp}{\operatorname{sing\,supp}}
 \newcommand{\dd}{\,\mathrm d}
 
-\title{\textbf{Orientation must precede completion}\\
-\large A universal singular-support law and the source-modular geometry of the Riemann divisor}
+\title{\textbf{The admission--separation law}\\
+\large Source orientation and the completion geometry of the Riemann divisor}
 \author{Michael Haufschild}
 \date{}
 
@@ -42,45 +42,46 @@
 \maketitle
 
 \begin{abstract}
-Every completion map defines a kernel pair: the pairs of source states it makes
-indistinguishable.  We prove the exact recovery law for an arbitrary family of heterogeneous
-channels.  A target factors through their attained joint range if and only if the intersection
-of their kernel pairs is contained in the target kernel.  Hence postprocessing can never
-recreate a distinction erased by completion.  For an involution this has a sharper algebraic
-form.  If an orientation class satisfies $\varepsilon^2=1$, then
+A singular, unbounded, or asymptotic completion is a partial quotient: it first selects an
+admissible source domain and then identifies source states through an observation map.  We prove
+the admission--separation law.  A target is globally recoverable precisely when every relevant
+source state is admitted and the observation kernel on that domain is contained in the target
+kernel.  Postprocessing changes neither gate.  For an involution, an admitted reflection pair
+with nonzero odd charge must either remain separated or lose that charge.  Before completion the
+two sectors are regular and complementary:
 \[
- (1-\varepsilon)(1+\varepsilon)=0.
+ v=\frac{v+Cv}{2}+\frac{v-Cv}{2};
 \]
-Thus nontrivial orientation is supported on singularity of the reflection-symmetric channel;
-when $2$ is regular, this statement is an equivalence.  Dense completion fibres force every
-separated continuous reporter to be constant, while an exact linear sewing from an
-all-orders-flat source germ to a finite-grade target has norm larger than every finite inverse
-filtration order.
+singularity appears only when the discarded anti-invariant summand is reconstructed from the
+invariant one.  Dense fibres and all-orders-flat filtrations give the corresponding continuous
+and asymptotic impossibility theorems.
 
 For the completed Riemann divisor, reflection is
-$\rho\mapsto1-\overline\rho$ and the missing orientation is the centered charge
-$c_\rho=\Rea\rho-\tfrac12$.  Its canonical source channel is the entire character
+$\rho\mapsto1-\overline\rho$ and the odd coordinate is
+$c_\rho=\Rea\rho-\tfrac12$.  We identify both gates by source-defined objects.  The entire
+character $M_\rho(z)=\exp(z(\rho-\tfrac12))$ separates every noncritical reflected pair and
+recovers $c_\rho$ from one real-ray modulus.  Independently, the source-normal Hedenmalm prime row
+has the exact Wick decomposition
 \[
- M_\rho(z)=\exp\!\left(z(\rho-\tfrac12)\right),\qquad
- \frac{\log|M_\rho(t)|}{t}=c_\rho\quad(t\in\R\setminus\{0\}).
+ E_N(z)=V_N(\Rea z)+R_N(\Ima z),
 \]
-The same charge is recovered from a cofinal shell-transfer modulus, principal Hurwitz
-monodromy, and the residue of the centered logarithmic divisor current.  A literal theta atom
-provides a source-pointed Gamma--Stokes factor: its causal--anti-causal jump is nonzero
-throughout the critical strip, ordinary Euler multiplication kills it exactly at zeros of
-$\xi$, and the character preserves multiplicity.  Every positive horizontal translation of
-the Xi current has infinitely many multiplicity jumps; the associated Hedenmalm orientation
-multiplier therefore has infinite, multiplicity-exact singular support.
+and its fixed sub-$\log^2$ domain is classified exactly:
+\[
+ E_N(z)=o((\log N)^2)\quad\Longleftrightarrow\quad\Ima z=0.
+\]
+Thus the completion domain itself is precisely the centered critical axis.  A literal theta atom
+provides a nonvanishing Gamma--Stokes source factor; Euler multiplication kills it exactly on the
+Xi divisor and preserves multiplicity.  Translated Xi currents give an infinite,
+multiplicity-exact singular carrier.
 
-The necessity of this singular carrier is sharp.  Explicit functional-equation-preserving
-quartets retain fixed nonzero $c_\rho$ while escaping every compact holomorphic jet, every
-bounded Ward window, reciprocal-square energy, and the complete real-aperture differential
-matroid.  In the prime-valuation realization, the two reflected sectors have incompatible
-asymptotic types; no finite-order Rees operator sews them, and every exact sewing norm exceeds
-every inverse order.  These results do not prove the Riemann hypothesis.  They prove a
-classification: reflection-odd zero orientation cannot be manufactured by any regular
-post-completion construction; it must enter through a singular, source-pointed transverse
-channel before invariant completion.
+Explicit functional-equation-preserving quartets retain fixed nonzero charge while escaping every
+compact jet, bounded Ward window, reciprocal-square energy, and real-aperture differential
+matroid.  Reflected prime-valuation sectors cannot be sewn by any finite-order Rees operator.
+Consequently no regular post-completion construction can supply a missing admission estimate or
+recreate erased orientation.  These results do not prove the Riemann hypothesis: the remaining
+statement is the source-domain theorem that every Xi root block is admitted to the fixed
+prime-normal completion.  The law proves why this source theorem, rather than another downstream
+positivity or spectral model, is the indispensable missing input.
 \end{abstract}
 
 \medskip
@@ -88,8 +89,8 @@ channel before invariant completion.
 Primary 11M26, 11M41; Secondary 46B99, 60E15, 12H05.
 
 \noindent\textbf{Keywords.}
-Riemann hypothesis; Riemann xi function; kernel pair; reflection orientation; singular support;
-Gamma factor; Hedenmalm; Hellinger affinity; Rees filtration.
+Riemann hypothesis; Riemann xi function; partial completion; reflection orientation; Hedenmalm;
+Gamma factor; singular support; Rees filtration.
 
 \section{Introduction}
 
@@ -103,21 +104,27 @@ must the sign of $\Rea\rho-\tfrac12$ enter?  See
 \cite{Connes1999,Meyer2005,ConnesConsani2021,Hedenmalm2026} for representative spectral and
 operator frameworks.
 
-Answer is categorical before it is analytic.  Every observation $f:X\to Y$ erases its kernel
-pair
+Answer has two logically prior parts.  A completion may fail to admit a source state at all, as
+for an unbounded graph norm or a divergent all-prime energy.  Among admitted states, every
+observation $f:D\to Y$ erases its kernel pair
 \[
- K_f=\{(x,y)\in X^2:f(x)=f(y)\}.
+ K_f=\{(x,y)\in D^2:f(x)=f(y)\}.
 \]
-A downstream operation can only enlarge $K_f$.  A collection of source channels repairs an
-erased target exactly when their joint kernel separates every target-relevant collision.  This
-is the universal non-resurrection law proved in Section~\ref{sec:universal}.
+A downstream operation cannot enlarge $D$ and can only enlarge $K_f$.  Exact global recovery
+therefore requires universal source admission and target separation on the admitted domain.
+A collection of source channels repairs the second gate exactly when their joint kernel separates
+every target-relevant collision.  This is the admission--separation law proved in
+Section~\ref{sec:universal}.
 
-Reflection turns this law into a support theorem.  Write $H=1+\varepsilon$ for the symmetric
-channel and $A=1-\varepsilon$ for orientation.  The identity $AH=0$ says more than ``symmetry
-loses sign'': orientation can survive only in torsion of the symmetric completion.  A regular
-$H$ has no orientation sector.  Topological completion converts the same fact into dense-fibre
-collapse; asymptotic completion converts it into a beyond-all-orders sewing cost.  These are
-enriched consequences of one law, not independent obstructions.
+Reflection turns the second gate into an exact trilemma.  Write $H=1+\varepsilon$ for the
+symmetric channel and $A=1-\varepsilon$ for orientation.  The identity $AH=0$ says that the
+symmetric channel kills the anti-invariant summand.  It does not make source orientation
+intrinsically singular: when $2$ is invertible, the invariant and anti-invariant summands are
+complementary and reconstruct the source.  For nonzero odd charge, a completion must retain that
+second summand, identify the reflected pair and lose the charge, or exclude a member of the pair
+from its regular domain.  Topological completion converts failed separation into dense-fibre
+collapse; asymptotic completion converts failed admission or sewing into a beyond-all-orders
+cost.
 
 For a Riemann zero $\rho$, the odd target is
 \[
@@ -130,10 +137,14 @@ reparametrization.  It is simultaneously the cofinal shell rate, the principal H
 and the transverse factor multiplying the local divisor residue.  Section~\ref{sec:riemann}
 proves these identities.
 
-Two exact source theorems then locate the carrier.  First, the normalized theta seed has Mellin
+Three exact source theorems then locate the two gates.  First, the normal multiplier of the
+Hedenmalm theta-interval row decomposes termwise into vertical trigonometric and radial hyperbolic
+prime energies.  The vertical term is at most harmonic while every radial displacement pays the
+quadratic prime susceptibility.  The resulting sub-$\log^2$ domain is exactly the centered real
+axis.  Second, the normalized theta seed has Mellin
 transform equal to the archimedean factor.  Its causal and anti-causal Green modes differ by a
 nonvanishing homogeneous Gamma character; multiplying by the Euler factor annihilates this jump
-exactly on the Xi divisor and does not alter multiplicity.  Second, the translated logarithmic
+exactly on the Xi divisor and does not alter multiplicity.  Third, the translated logarithmic
 Xi current has a removable residue germ whose value is the finite difference of translated
 multiplicities.  Every positive translation has infinitely many such jumps.  Thus the
 orientation multiplier is necessarily singular on an infinite carrier, not merely at an
@@ -148,32 +159,43 @@ finite-reporter failures that otherwise look route-specific.  The law does not c
 one-sided arithmetic inequality needed for zero exclusion.  It proves where such orientation
 must live and which broad classes of post-completion repair cannot contain it.
 
-The kernel-pair factorization theorem and the algebraic identity $AH=0$ are elementary; no
-novelty is claimed for them in isolation.  Contribution is the exact singular/topological/
-filtered classification and its Riemann realization by one centered source charge.  We do not
-assert that every modular character is unitary: that assertion is exactly the Riemann hypothesis.
+The admission--separation factorization and algebraic splitting are elementary; no novelty is
+claimed for them in isolation.  Contribution is their exact Riemann realization: one fixed
+source-normal completion whose regular domain is precisely the centered critical axis, one
+canonical character which separates reflected orientation, and sharp proofs that downstream
+compact or finite-grade repairs cannot replace either gate.  We do not assert that every Xi root
+block enters the fixed domain.  That source-admission assertion, not universal unitarity of all
+characters, is the remaining RH-bearing theorem.
 
 \subsection*{Main theorem}
 
 \begin{maintheorem}\label{thm:main}
 The following statements hold unconditionally.
 \begin{enumerate}[label=\textup{(\roman*)}]
-\item Let $\pi:X\to Q$, let $\tau_j:X\to T_j$ be an arbitrary family of channels, and let
-$\chi:X\to C$.  Then $\chi$ factors uniquely on the attained joint range of
-$(\pi,(\tau_j)_j)$ if and only if
+\item Let a partial completion be a pair $(D,\pi)$ with $D\subseteq X$ and
+$\pi:D\to Q$.  It recovers $\chi:X\to C$ globally exactly when
 \[
- K_\pi\cap\bigcap_jK_{\tau_j}\subseteq K_\chi.
+ D=X\qquad\hbox{and}\qquad K_\pi\subseteq K_{\chi|D}.
 \]
-Every downstream function of $\pi$ has kernel containing $K_\pi$.
+Postprocessing preserves $D$ and enlarges $K_\pi$.  More generally, for any heterogeneous
+family $\tau_j:D\to T_j$, the target factors uniquely on the attained joint range exactly when
+\[
+ K_\pi\cap\bigcap_jK_{\tau_j}\subseteq K_{\chi|D}.
+\]
 
-If $\sigma$ is an involution, $\pi\sigma=\pi$, and
+If $D$ is stable under an involution $\sigma$, $\pi\sigma=\pi$, and
 $\chi\sigma=-\chi$ with $\chi$ real-valued, then $\chi$ cannot factor through $\pi$ unless
-$\chi=0$.  Every sufficient transverse channel separates $x$ from $\sigma x$ wherever
+$\chi=0$ on $D$.  Every sufficient transverse channel separates $x$ from $\sigma x$ wherever
 $\chi(x)\ne0$.  In a commutative ring, $\varepsilon^2=1$ implies
 $(1-\varepsilon)(1+\varepsilon)=0$; if $2$ is regular, then
 \[
  \varepsilon\ne1\quad\Longleftrightarrow\quad1+\varepsilon
  \text{ is not regular}.
+\]
+If $C$ is a linear involution and $2$ is invertible, its invariant and anti-invariant modules are
+complementary and every vector is recovered by
+\[
+ v=\frac{v+Cv}{2}+\frac{v-Cv}{2}.
 \]
 
 If the fibres of $\pi$ are dense, a $T_1$-valued downstream reporter whose pullback is
@@ -181,7 +203,23 @@ continuous at one point is constant.  If one collapsed source germ is flat to ev
 scale $a\to0$ while the target has a nonzero finite grade, every exact linear sewing norm
 dominates $a^{-K}$ for every $K$.
 
-\item Let $\rho$ lie in the open critical strip and put
+\item Define the source-normal prime energy
+\[
+ E_N(z)=\sum_{p\le N}\frac{4}{p}
+   \left|\sin\!\left(\frac{z\log p}{2}\right)\right|^2.
+\]
+Writing $z=x+iy$, it decomposes exactly as
+\[
+ E_N(z)=4\sum_{p\le N}\frac{\sin^2(x\log p/2)}p
+       +4\sum_{p\le N}\frac{\sinh^2(y\log p/2)}p.
+\]
+Its sub-$\log^2$ domain is precisely the centered real axis:
+\[
+ \frac{E_N(z)}{(\log N)^2}\longrightarrow0
+ \quad\Longleftrightarrow\quad \Ima z=0.
+\]
+
+Let $\rho$ lie in the open critical strip and put
 $M_\rho(z)=e^{z(\rho-1/2)}$.  Critical-line reflection replaces $c_\rho$ by $-c_\rho$ and
 replaces real-ray character norms by their reciprocals.  Any nonzero real ray recovers
 $c_\rho$ exactly.  At a zero of $\xi$ of multiplicity $m$, the centered outer current
@@ -216,6 +254,33 @@ satisfies
 
 \section{The universal law}\label{sec:universal}
 
+\subsection{Completion is a partial quotient}
+
+A partial completion of a source set $X$ is a pair $(D,\pi)$ consisting of an admission domain
+$D\subseteq X$ and an observation $\pi:D\to Q$.  A target $\chi:X\to C$ is globally recovered
+when $D=X$ and there is a function on the attained range $\pi(D)$ whose pullback is $\chi$.
+
+\begin{theorem}[Admission--separation law]\label{thm:admission}
+The partial completion $(D,\pi)$ globally recovers $\chi$ if and only if
+\[
+ D=X\quad\hbox{and}\quad K_\pi\subseteq K_{\chi|D}.
+\tag{2.1}\label{eq:admission-separation}
+\]
+For every postprocessing map $g:Q\to Y$, the partial completion $(D,g\circ\pi)$ has the same
+admission domain and $K_\pi\subseteq K_{g\circ\pi}$.
+\end{theorem}
+
+\begin{proof}
+Global recovery includes $D=X$ by definition.  On $D$, factorization through the attained range
+is equivalent to constancy of $\chi$ on every $\pi$-fibre, which is the kernel inclusion.
+Postprocessing neither changes $D$ nor separates two equal $\pi$-values.
+\end{proof}
+
+The theorem separates two failures which a total-map model conflates.  A source point outside
+$D$ has no completed value; two points inside $D$ may nevertheless have the same value.  No
+downstream operation repairs either failure.  Domain estimates and transverse reporters are
+therefore complementary obligations, not alternative proof strategies.
+
 \subsection{Kernel pairs and exact recovery}
 
 For a map $f:X\to Y$, write $K_f(x,y)$ for $f(x)=f(y)$.  For a heterogeneous family
@@ -229,12 +294,12 @@ Let $f:X\to Y$ and $\chi:X\to C$.  There is a function
 $d:f(X)\to C$ such that $\chi=d\circ f$ if and only if
 \[
  K_f\subseteq K_\chi.
-\tag{2.1}\label{eq:kernel-refinement}
+\tag{2.2}\label{eq:kernel-refinement}
 \]
 Consequently, $\chi$ is recoverable from the record $(\pi,\tau)$ if and only if
 \[
  K_\pi\cap\bigcap_jK_{\tau_j}\subseteq K_\chi.
-\tag{2.2}\label{eq:joint-kernel}
+\tag{2.3}\label{eq:joint-kernel}
 \]
 If $\chi=d\circ\pi$ on all of $Q$, then $K_\pi\subseteq K_\chi$.
 \end{theorem}
@@ -269,19 +334,19 @@ in both kernels in \eqref{eq:joint-kernel}, again forcing $\chi(x)=0$.  The scal
 equivalent to separation.
 \end{proof}
 
-\subsection{Orientation is singular support}
+\subsection{Symmetric completion kills a complementary sector}
 
-\begin{theorem}[Orientation--singularity law]\label{thm:singular-support}
+\begin{theorem}[Orientation annihilator law]\label{thm:singular-support}
 Let $A$ be a commutative ring and let $\varepsilon\in A$ satisfy $\varepsilon^2=1$.  Then
 \[
  (1-\varepsilon)(1+\varepsilon)=0.
-\tag{2.3}\label{eq:orientation-annihilator}
+\tag{2.4}\label{eq:orientation-annihilator}
 \]
 If $1+\varepsilon$ is regular, then $\varepsilon=1$.  If $2$ is regular, then
 \[
  \varepsilon\ne1\quad\Longleftrightarrow\quad
  1+\varepsilon\text{ is not regular}.
-\tag{2.4}\label{eq:regular-equivalence}
+\tag{2.5}\label{eq:regular-equivalence}
 \]
 For an $A$-module $V$, every anti-invariant vector $v$ satisfying
 $\varepsilon v=-v$ obeys $(1+\varepsilon)v=0$.
@@ -294,8 +359,31 @@ $1+\varepsilon=2$, regular by hypothesis.  Module statement is
 $v+\varepsilon v=v-v=0$.
 \end{proof}
 
-This identifies the missing object.  Reflection-odd data are not another regular coordinate of
-the symmetric completion; they are torsion supported where that completion fails to be regular.
+The annihilator concerns recovery from the symmetric channel; it does not make source orientation
+singular.  There is a canonical positive counterpart.
+
+\begin{proposition}[Faithful orientation descent]\label{prop:orientation-split}
+Let $V$ be a module over a commutative ring in which $2$ is invertible, and let $C:V\to V$ be a
+linear involution.  The invariant and anti-invariant modules
+\[
+ V^+=\ker(C-1),\qquad V^-=\ker(C+1)
+\]
+are complementary.  Explicitly,
+\[
+ v=v^++v^-,\qquad
+ v^+=\frac{v+Cv}{2},\qquad v^-=\frac{v-Cv}{2}.
+\tag{2.6}\label{eq:orientation-split}
+\]
+In particular, the joint invariant--anti-invariant record is faithful.
+\end{proposition}
+
+\begin{proof}
+The displayed terms are respectively fixed and negated by $C$, and their sum is $v$.  A vector
+in both submodules satisfies $v=-v$, hence $2v=0$ and therefore $v=0$.
+\end{proof}
+
+Thus orientation is a regular complementary source coordinate.  It becomes torsion or singular
+only when one asks the symmetric completion alone to reconstruct the summand it annihilated.
 
 \subsection{Topological and filtered forms}
 
@@ -318,13 +406,13 @@ Let $f$ be eventually nonzero and satisfy $f=o_\ell(a^m)$ for every $m\in\N$.  L
 $g=\Theta_\ell(a^d)$ for some finite $d$.  Then for every $K$,
 \[
  a^{-K}=o_\ell(g/f).
-\tag{2.5}\label{eq:scalar-sewing}
+\tag{2.7}\label{eq:scalar-sewing}
 \]
 More generally, if $f(x)$ and $g(x)$ take values in real normed spaces and bounded linear maps
 $R_x$ satisfy $R_xf(x)=g(x)$, then
 \[
  a^{-K}=o_\ell(\|R_x\|)\qquad(K\in\N).
-\tag{2.6}\label{eq:operator-sewing}
+\tag{2.8}\label{eq:operator-sewing}
 \]
 \end{theorem}
 
@@ -335,9 +423,10 @@ form,
 $\|g\|\le\|R_x\|\,\|f\|$, so $\|g\|/\|f\|=O(\|R_x\|)$; compose with the scalar estimate.
 \end{proof}
 
-Theorems~\ref{thm:kernel}, \ref{thm:singular-support}, and \ref{thm:rees} express one order of
-information in three enriched categories.  Kernel inclusion gives algebraic recoverability;
-fibre closure gives regularity; asymptotic grade quantifies the unavoidable singularity.
+Theorems~\ref{thm:admission}, \ref{thm:kernel}, \ref{thm:singular-support}, and \ref{thm:rees}
+express one irreversible order of information.  Admission specifies where completion exists;
+kernel inclusion gives algebraic recoverability; fibre closure gives continuous regularity; and
+asymptotic grade quantifies the unavoidable cost of sewing incompatible domains.
 
 \section{The Riemann orientation charge}\label{sec:riemann}
 
@@ -353,31 +442,85 @@ pair $\rho$ with
  \sigma\rho=1-\overline\rho.
 \]
 
+\subsection{The exact source-normal admission domain}
+
+Remove the common root coordinate from the normal multiplier of the Hedenmalm theta-interval
+row.  Its prime component is
+\[
+ b_p(z)=2p^{-1/2}\sin\!\left(\frac{z\log p}{2}\right),
+\]
+so the squared energy of the first $N$ prime components is
+\[
+ E_N(z)=\sum_{p\le N}|b_p(z)|^2
+ =\sum_{p\le N}\frac4p
+   \left|\sin\!\left(\frac{z\log p}{2}\right)\right|^2.
+\tag{3.2}\label{eq:prime-normal-energy}
+\]
+
+\begin{theorem}[Exact prime-normal domain]\label{thm:prime-normal-domain}
+For $z=x+iy$,
+\[
+ E_N(z)=
+ 4\sum_{p\le N}\frac{\sin^2(x\log p/2)}p+
+ 4\sum_{p\le N}\frac{\sinh^2(y\log p/2)}p.
+\tag{3.3}\label{eq:wick-split}
+\]
+Consequently the fixed sub-$\log^2$ completion has the exact domain
+\[
+ \frac{E_N(z)}{(\log N)^2}\longrightarrow0
+ \quad\Longleftrightarrow\quad y=0.
+\tag{3.4}\label{eq:prime-normal-domain}
+\]
+\end{theorem}
+
+\begin{proof}
+Identity \eqref{eq:wick-split} is the termwise formula
+$|\sin(u+iv)|^2=\sin^2u+\sinh^2v$.  If $y=0$, then
+\[
+ 0\le E_N(x)\le4\sum_{p\le N}\frac1p
+ \le4\sum_{n\le N}\frac1n=O(\log N),
+\]
+which proves the forward domain estimate.  If $y\ne0$, the inequality
+$\sinh^2v\ge v^2$ gives
+\[
+ E_N(x+iy)\ge
+ y^2\sum_{p\le N}\frac{(\log p)^2}{p}.
+\]
+The prime number theorem and partial summation give
+$\sum_{p\le N}(\log p)^2/p\sim\tfrac12(\log N)^2$; hence the normalized
+energy cannot tend to zero.  This proves the converse.
+\end{proof}
+
+The centered spectral coordinate is $z=-i(\rho-\tfrac12)$, for which
+$\Ima z=\tfrac12-\Rea\rho=-c_\rho$.  The theorem therefore classifies the regular domain itself;
+it does not assert that a Xi root block belongs to it.  Universal admission of those root blocks
+is exactly the still-missing RH-bearing source estimate.
+
 \subsection{The centered modular character}
 
 \begin{proposition}[Exact character recovery]\label{prop:character}
 Define
 \[
  M_\rho(z)=\exp\!\left(z(\rho-\tfrac12)\right).
-\tag{3.2}\label{eq:character}
+\tag{3.5}\label{eq:character}
 \]
 Then $M_\rho(z+w)=M_\rho(z)M_\rho(w)$ and, for $t\in\R$,
 \[
  |M_\rho(t)|=e^{t c_\rho},
  \qquad
  c_\rho=\frac{\log|M_\rho(t)|}{t}\quad(t\ne0).
-\tag{3.3}\label{eq:real-ray-recovery}
+\tag{3.6}\label{eq:real-ray-recovery}
 \]
 Moreover,
 \[
  c_{\sigma\rho}=-c_\rho,
  \qquad |M_{\sigma\rho}(t)|\,|M_\rho(t)|=1.
-\tag{3.4}\label{eq:character-reflection}
+\tag{3.7}\label{eq:character-reflection}
 \]
 For $0<\Rea\rho<1$, the principal phase on the Hurwitz period satisfies
 \[
  \frac{\left|\arg M_\rho(-2\pi i)\right|}{2\pi}=|c_\rho|.
-\tag{3.5}\label{eq:hurwitz-phase}
+\tag{3.8}\label{eq:hurwitz-phase}
 \]
 \end{proposition}
 
@@ -400,7 +543,7 @@ For any scale $q>1$, the cofinal shell character
 has
 \[
  \frac{\log|T_q(\rho)|}{\log q}=-c_\rho.
-\tag{3.6}\label{eq:shell-rate}
+\tag{3.9}\label{eq:shell-rate}
 \]
 The modular, Hurwitz, and shell charts therefore carry the same charge.
 
@@ -410,12 +553,12 @@ The modular, Hurwitz, and shell charts therefore carry the same charge.
 The meromorphic current
 \[
  \mathcal J_\xi(s)=-\left(s-\frac12\right)\frac{\xi'(s)}{\xi(s)}
-\tag{3.7}\label{eq:outer-current}
+\tag{3.10}\label{eq:outer-current}
 \]
 is invariant under $s\mapsto1-s$.  If $\rho$ is a zero of multiplicity $m$, then
 \[
  \Res_{s=\rho}\mathcal J_\xi(s)=-m(\rho-\tfrac12).
-\tag{3.8}\label{eq:outer-residue}
+\tag{3.11}\label{eq:outer-residue}
 \]
 Its real part is $-mc_\rho$.
 \end{proposition}
