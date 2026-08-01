@@ -443,7 +443,23 @@ uniform mass bound from the mean value property, the comparability across radii 
 invariance of the kernel, and the limit from continuity of `u` along radii.  The degenerate case
 `u(0) = 0` is the zero measure.
 
-What remains is the transfer to the half-plane with support on the ray.
+**The half-plane transfer is proved**, in
+`formal/GaloisForLFunctions/RHTower/SuzukiHalfPlaneHerglotz.lean`:
+
+- `analyticAt_herglotzOfCayley`: the inverse Cayley map (already in the corpus, with its positivity)
+  is analytic off its pole.
+- `harmonicOnNhd_neg_im_comp`: the pulled-back function is harmonic — **no conformal invariance of
+  harmonicity is needed**, which is fortunate since mathlib has none.  The function to be represented
+  is the imaginary part of an analytic function, and composing with an analytic map produces the
+  imaginary part of an analytic function again, so harmonicity of the composite is the same one-line
+  fact as harmonicity of the original.
+- `exists_poissonRepresentation_antiHerglotz`,
+  `exists_poissonRepresentation_upperHalfPlane`: **the Herglotz representation on the half plane** —
+  one finite positive measure represents the negated imaginary part at every point of the upper half
+  plane.
+
+What remains of Theorem B's last sentence is only the *support* claim: that under the stated decay
+and analyticity off `[lambda_a, infinity)` the measure is carried by that ray.
 
 What remains for the representation is the limit itself and the transfer to the half-plane with
 support on the ray.
@@ -747,3 +763,14 @@ what makes them distinct.  Degree `n` and `n` roots then leave no freedom.
   along radii, and the degenerate case from a positive measure of zero mass being zero.  Targeted
   build green, axioms `[propext, Classical.choice, Quot.sound]`.  Remaining for Theorem B's last
   sentence: the half-plane transfer with support on the ray.
+- 2026-08-01 — **the half-plane Herglotz representation is proved**
+  (`exists_poissonRepresentation_upperHalfPlane`): one finite positive measure represents the negated
+  imaginary part of an analytic anti-Herglotz function at every point of the upper half plane.
+  mathlib has no conformal invariance of harmonicity and none is needed: the object being represented
+  is `Im` of an analytic function, so composing with the analytic inverse Cayley map gives `Im` of an
+  analytic function again — harmonicity of the composite is the same one-line fact, not a transfer
+  theorem.  The disc-to-half-plane map and its positivity were already in the corpus
+  (`herglotzOfCayley`, `im_herglotzOfCayley_pos`) and were reused rather than rebuilt.  What remains
+  of Theorem B's last sentence is only the support claim — that the measure is carried by
+  `[lambda_a, infinity)` under the stated decay and analyticity.  Four new declarations, targeted
+  build green, axioms `[propext, Classical.choice, Quot.sound]`.

@@ -3128,3 +3128,6 @@ import GaloisForLFunctions.HTGeometry.CompactClusterLimit
 import GaloisForLFunctions.HTGeometry.TailScalingAction
 import GaloisForLFunctions.HTGeometry.DigammaFieldLexRatio
 import GaloisForLFunctions.HTGeometry.TailFixedField
+import GaloisForLFunctions.HTGeometry.TailCoefficientFixedField
+import GaloisForLFunctions.HTGeometry.KummerDegreeBound
+import GaloisForLFunctions.HTGeometry.GammaVerticalSuperPolynomialDecay

@@ -1,11 +1,10 @@
-## formalize
-/goal
+## formalize claude
 
 /loop 1m (use the croncreate tool)
 
 your task:
 if you are already working on a card, keep going.
-else: pick a card from docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/projective-horizon
+else: pick a card from docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/deninger
 
 do: formalize UNCONDITIONALLY in lean any proven theorem in the chosen card. add missing infrastructure, lean proofs, everything needed to mark the card as fully done - no simplifications.
 
@@ -31,6 +30,23 @@ LEAN PROOFS MUST BE UNCONDTIONAL!!! ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WH
 
 where mathematical knowledge is missing use the /hgtl7 skill to create it.
 
+## formalize gpt
+
+/goal
+
+formalize UNCONDITIONALLY in lean any proven theorem for all cards in. add missing infrastructure, lean proofs, everything needed to mark a card as fully done - no simplifications.
+
+Lean rules:
+1. Proofs must be unconditional in lean.
+2. Always build in the foreground, 1 process per single agent.
+3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
+4. No computations.
+5. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
+6. make sure you don't leave stale lean processes running - clean up after yourself.
+
+ALWAYS CHECK BEFORE WRITING NEW LEAN CODE WHAT THE PROJECT LEAN CODE ALREADY CONTAINS AS PROOF OR BUILDING BLOCK YOU SO YOU DO NOT DUPLICATE WORK.
+
+where mathematical knowledge is missing, use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to find and create it.
 
 ## research loop
 /loop 1m (use the croncreate tool)

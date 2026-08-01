@@ -131,4 +131,24 @@ theorem fourierIntegral_mul_cos {f : ℝ → ℂ} (hf : Integrable f) (w₀ ξ :
     fourierIntegral_const_mul _ (2 : ℂ)⁻¹ ξ, fourierIntegral_const_mul _ (2 : ℂ)⁻¹ ξ,
     fourierIntegral_exp_mul f w₀ ξ, fourierIntegral_exp_mul f (-w₀) ξ, sub_neg_eq_add]
 
+/-- **Transform of a translated dilate.**  A phase, the dilation factor, and the transform at the
+rescaled frequency. -/
+theorem fourierIntegral_comp_div_sub (f : ℝ → E) (m δ : ℝ) (hδ : 0 < δ) (ξ : ℝ) :
+    𝓕 (fun x : ℝ => f ((x - m) / δ)) ξ =
+      Complex.exp ((↑(2 * π * -m * ξ) : ℂ) * Complex.I) • (δ • 𝓕 f (δ * ξ)) := by
+  have hcomp : (fun x : ℝ => f ((x - m) / δ)) =
+      fun x : ℝ => (fun y : ℝ => f (y / δ)) (x + -m) := by
+    funext x
+    rw [sub_eq_add_neg]
+  rw [hcomp, fourierIntegral_comp_add_right (fun y : ℝ => f (y / δ)) (-m) ξ,
+    fourierIntegral_comp_div f δ hδ ξ]
+
+/-- **The magnitude of a translated dilate's transform does not see the translation.** -/
+theorem norm_fourierIntegral_comp_div_sub (f : ℝ → E) (m δ : ℝ) (hδ : 0 < δ) (ξ : ℝ) :
+    ‖𝓕 (fun x : ℝ => f ((x - m) / δ)) ξ‖ = δ * ‖𝓕 f (δ * ξ)‖ := by
+  rw [fourierIntegral_comp_div_sub f m δ hδ ξ, norm_smul, norm_smul, Real.norm_eq_abs,
+    abs_of_pos hδ, Complex.norm_exp]
+  have harg : ((↑(2 * π * -m * ξ) : ℂ) * Complex.I).re = 0 := by simp
+  rw [harg, Real.exp_zero, one_mul]
+
 end GaloisForLFunctions.HTGeometry
