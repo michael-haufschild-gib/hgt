@@ -79,13 +79,7 @@ private theorem thetaGammaComplexSeed_eq_thetaCuspSeed (t : ℝ) :
   have ht4 : (t : ℂ) ^ (4 : ℂ) = ((t ^ 4 : ℝ) : ℂ) := by norm_num
   rw [ht2, ht4]
   push_cast
-  have hexp :
-      Complex.exp (-((Real.pi : ℂ) * ((t ^ 2 : ℝ) : ℂ))) =
-        Complex.exp (-((t : ℂ) ^ 2 * (Real.pi : ℂ))) := by
-    congr 1
-    rw [ht2]
-    ring
-  simp only [hexp]
+  rw [show (((t ^ 2 : ℝ) : ℂ)) = (t : ℂ) ^ (2 : ℕ) by norm_num]
   ring
 
 private theorem mellin_thetaGammaComplexSeed {s : ℂ} (hs : 0 < s.re) :
@@ -182,34 +176,39 @@ private theorem mellinConvergent_thetaGammaComplexSeed
   unfold MellinConvergent
   change IntegrableOn
     (fun t : ℝ => (t : ℂ) ^ (s - 1) * thetaGammaComplexSeed t) (Ioi 0)
-  apply (hi4.mul_const (4 * Real.pi ^ 2 : ℂ)).sub
-    (hi2.mul_const (6 * Real.pi : ℂ)) |>.congr_fun
+  refine MeasureTheory.IntegrableOn.congr_fun
+    ((hi4.mul_const (4 * Real.pi ^ 2 : ℂ)).sub
+      (hi2.mul_const (6 * Real.pi : ℂ))) ?_ measurableSet_Ioi
   · intro t _ht
     unfold thetaGammaComplexSeed
-    rw [mul_sub]
-    simp only [mul_assoc]
-  · exact measurableSet_Ioi
+    simp only [Pi.sub_apply]
+    ring
 
 /-- The literal first theta atom is Mellin-integrable throughout the open right half-plane. -/
 theorem mellinConvergent_thetaCuspSeed {s : ℂ} (hs : 0 < s.re) :
     MellinConvergent (fun t : ℝ => (thetaCuspSeed t : ℂ)) s := by
-  apply (mellinConvergent_thetaGammaComplexSeed hs).congr_fun
-  · intro t _ht
-    rw [thetaGammaComplexSeed_eq_thetaCuspSeed]
-  · exact measurableSet_Ioi
+  unfold MellinConvergent
+  refine (mellinConvergent_thetaGammaComplexSeed hs).congr_fun ?_ measurableSet_Ioi
+  intro t _ht
+  simp only [smul_eq_mul]
+  rw [thetaGammaComplexSeed_eq_thetaCuspSeed]
 
 /-- **First-atom Gamma transform.**  The Mellin transform of the literal first theta atom is
 exactly the archimedean factor of the completed Xi carrier. -/
 theorem mellin_thetaCuspSeed_eq_archFactor {s : ℂ} (hs : 0 < s.re) :
     mellin (fun t : ℝ => (thetaCuspSeed t : ℂ)) s = archFactor s := by
-  rw [← show mellin thetaGammaComplexSeed s = archFactor s by
-    rw [mellin_thetaGammaComplexSeed hs]
-    simp only [archFactor, Gammaℝ]
-    ring]
-  unfold mellin
-  apply setIntegral_congr_fun measurableSet_Ioi
-  intro t _ht
-  rw [thetaGammaComplexSeed_eq_thetaCuspSeed]
+  calc
+    mellin (fun t : ℝ => (thetaCuspSeed t : ℂ)) s =
+        mellin thetaGammaComplexSeed s := by
+      unfold mellin
+      apply setIntegral_congr_fun measurableSet_Ioi
+      intro t _ht
+      simp only [smul_eq_mul]
+      rw [thetaGammaComplexSeed_eq_thetaCuspSeed]
+    _ = archFactor s := by
+      rw [mellin_thetaGammaComplexSeed hs]
+      simp only [archFactor, Gammaℝ]
+      ring
 
 /-- Mellin integrand of the literal first theta atom. -/
 def thetaGammaMellinIntegrand (s : ℂ) (t : ℝ) : ℂ :=
@@ -230,15 +229,20 @@ theorem thetaGamma_causal_sub_anti_eq_archFactor_character
     thetaGammaCausalStokesMode s t - thetaGammaAntiCausalStokesMode s t =
       (t : ℂ) ^ (-s) * archFactor s := by
   have hint : IntegrableOn (thetaGammaMellinIntegrand s) (Ioi 0) := by
-    simpa only [thetaGammaMellinIntegrand] using
+    change IntegrableOn
+      (fun t : ℝ => (t : ℂ) ^ (s - 1) * (thetaCuspSeed t : ℂ)) (Ioi 0)
+    simpa [MellinConvergent, smul_eq_mul] using
       mellinConvergent_thetaCuspSeed hs
   have htail : IntegrableOn (thetaGammaMellinIntegrand s) (Ioi t) :=
-    hint.mono_set (Ioi_subset_Ioi ht)
+    hint.mono_set (Ioi_subset_Ioi ht.le)
   have hsplit := intervalIntegral.integral_interval_add_Ioi hint htail
   rw [thetaGammaCausalStokesMode, thetaGammaAntiCausalStokesMode]
-  rw [sub_neg_eq_add, ← mul_add, hsplit]
-  unfold thetaGammaMellinIntegrand
-  rw [← mellin, mellin_thetaCuspSeed_eq_archFactor hs]
+  rw [neg_mul, sub_neg_eq_add, ← mul_add, hsplit]
+  have hMellin :
+      (∫ u : ℝ in Ioi 0, thetaGammaMellinIntegrand s u) = archFactor s := by
+    change mellin (fun t : ℝ => (thetaCuspSeed t : ℂ)) s = archFactor s
+    exact mellin_thetaCuspSeed_eq_archFactor hs
+  rw [hMellin]
 
 /-- The first-atom Stokes jump is nonzero throughout the open critical strip. -/
 theorem thetaGamma_stokes_jump_ne_zero
@@ -246,7 +250,8 @@ theorem thetaGamma_stokes_jump_ne_zero
     thetaGammaCausalStokesMode s t - thetaGammaAntiCausalStokesMode s t ≠ 0 := by
   rw [thetaGamma_causal_sub_anti_eq_archFactor_character hstrip.1 ht]
   exact mul_ne_zero
-    (Complex.cpow_ne_zero (Complex.ofReal_ne_zero.mpr ht.ne') _)
+    (Complex.cpow_ne_zero_iff.mpr
+      (Or.inl (Complex.ofReal_ne_zero.mpr ht.ne')))
     (archFactor_ne_zero_strip hstrip)
 
 /-- **Completed Euler annihilation law.**  The analytically completed ordinary Euler multiplier
@@ -261,20 +266,31 @@ theorem thetaGamma_completedEuler_kills_stokes_iff_xi_zero
   have h1 : s ≠ 1 := by intro h; simpa [h] using hstrip.2
   have hG : Gammaℝ s ≠ 0 := Gammaℝ_ne_zero_of_re_pos hstrip.1
   rw [xi_eq_archFactor_mul_zeta h0 h1 hG]
-  constructor <;> intro h
-  · rw [mul_assoc, mul_comm (riemannZeta s), ← mul_assoc] at h
-    exact (mul_eq_zero.mp h).resolve_left
-      (Complex.cpow_ne_zero (Complex.ofReal_ne_zero.mpr ht.ne') _)
-  · rw [mul_eq_zero] at h ⊢
-    exact Or.inl (h.resolve_left (archFactor_ne_zero_strip hstrip))
+  have htchar : (t : ℂ) ^ (-s) ≠ 0 :=
+    Complex.cpow_ne_zero_iff.mpr
+      (Or.inl (Complex.ofReal_ne_zero.mpr ht.ne'))
+  constructor
+  · intro h
+    have h' : (t : ℂ) ^ (-s) * (archFactor s * riemannZeta s) = 0 := by
+      calc
+        (t : ℂ) ^ (-s) * (archFactor s * riemannZeta s) =
+            riemannZeta s * ((t : ℂ) ^ (-s) * archFactor s) := by ring
+        _ = 0 := h
+    exact (mul_eq_zero.mp h').resolve_left htchar
+  · intro h
+    calc
+      riemannZeta s * ((t : ℂ) ^ (-s) * archFactor s) =
+          (t : ℂ) ^ (-s) * (archFactor s * riemannZeta s) := by ring
+      _ = 0 := by rw [h, mul_zero]
 
 /-- Literal integer-dilation character of the Gamma Stokes jump. -/
 theorem thetaGammaStokesCharacter_mul
-    (s : ℂ) {n : ℕ} (hn : 0 < n) {t : ℝ} (ht : 0 < t) :
+    (s : ℂ) {n : ℕ} (_hn : 0 < n) {t : ℝ} (ht : 0 < t) :
     (((n : ℝ) * t : ℝ) : ℂ) ^ (-s) =
       (n : ℂ) ^ (-s) * (t : ℂ) ^ (-s) := by
   rw [Complex.ofReal_mul]
-  exact Complex.mul_cpow_ofReal_nonneg (by positivity) ht.le
+  simpa using Complex.mul_cpow_ofReal_nonneg
+    (a := (n : ℝ)) (b := t) (Nat.cast_nonneg n) ht.le (-s)
 
 /-- Analytic completed-Euler Stokes output family. -/
 def thetaGammaCompletedEulerOutput (t : ℝ) (s : ℂ) : ℂ :=
@@ -282,14 +298,18 @@ def thetaGammaCompletedEulerOutput (t : ℝ) (s : ℂ) : ℂ :=
 
 /-- The nonvanishing homogeneous character does not change Xi multiplicity. -/
 theorem analyticOrderAt_thetaGammaCompletedEulerOutput
-    {t : ℝ} (ht : 0 < t) (rho : ℂ) :
+    {t : ℝ} (_ht : 0 < t) (rho : ℂ) :
     analyticOrderAt (thetaGammaCompletedEulerOutput t) rho =
       analyticOrderAt xi rho := by
   have hchar : AnalyticAt ℂ
       (fun s : ℂ => Complex.exp (-s * (Real.log t : ℂ))) rho := by fun_prop
-  have hxi : AnalyticAt ℂ xi rho := xi_analytic rho (Set.mem_univ rho)
-  rw [thetaGammaCompletedEulerOutput, analyticOrderAt_mul hchar hxi,
-    hchar.analyticOrderAt_eq_zero.mpr (Or.inr (Complex.exp_ne_zero _)), zero_add]
+  have hxi : AnalyticAt ℂ xi rho :=
+    xi_analyticOnNhd_univ rho (Set.mem_univ rho)
+  change analyticOrderAt
+      ((fun s : ℂ => Complex.exp (-s * (Real.log t : ℂ))) * xi) rho =
+    analyticOrderAt xi rho
+  rw [analyticOrderAt_mul hchar hxi,
+    hchar.analyticOrderAt_eq_zero.mpr (Complex.exp_ne_zero _), zero_add]
 
 /-- Centering at `s = 1/2 + i alpha` gives Hedenmalm's homogeneous logarithmic mode. -/
 theorem thetaGamma_centered_log_character (alpha : ℂ) (x : ℝ) :

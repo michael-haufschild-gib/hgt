@@ -170,7 +170,21 @@ vanishes there — is formal in the same module.  It is what makes `q = N / D` w
   `existsUnique_zero_of_sign_change`: **`(3)`'s interlacing** — on a node-free interval whose
   endpoints carry opposite signs there is *exactly one* zero, existence by the intermediate value
   theorem and uniqueness by the strict monotonicity above.  The remaining analytic input is the sign
-  change itself, which comes from the one-sided blow-up of the two bounding node terms.
+  change itself, which comes from the one-sided blow-up of the two bounding node terms — and that is
+  formal too:
+- `tendsto_cauchyTerm_atBot`, `tendsto_cauchyTerm_atTop`: a Cauchy term runs to `-infinity`
+  approaching its node from the right and to `+infinity` from the left.  Since every other term stays
+  continuous there, the combination inherits the blow-up, which is exactly the sign change the
+  interlacing consumes.
+
+**The constant term of `(3)`** — same module.  `ell = (sum w_j r_j)/(sum w_j)` is singled out by one
+property: subtracting it makes the numerator a Cauchy transform of *zero total weight*, so `q - ell`
+decays one order faster and no further constant survives.
+
+- `suzukiShiftEll`, `sum_weight_sub_ell_eq_zero`: `ell` is exactly the value that zeroes the total
+  weight of `w_j (r_j - ell)`.
+- `numerator_sub_ell_mul`, `ratio_sub_ell_eq`: hence above the real axis `q - ell` is that
+  zero-total-weight transform divided by `D`.
 
 **Complex anti-Pick identity `(1)`** is now formal, in
 `formal/GaloisForLFunctions/RHTower/SuzukiAntiPickIdentity.lean`.  The identity is algebra, not
@@ -275,4 +289,18 @@ External priority remains unverified.
   and uniqueness by the derivative sign.  What is left of the zero structure is only the sign change
   itself — the one-sided blow-up of the two bounding node terms — which is where the node ordering
   and the limits actually enter.  Targeted build green, axiom audit
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the one-sided blow-up formalized (`tendsto_cauchyTerm_atBot`,
+  `tendsto_cauchyTerm_atTop`): a Cauchy term runs to `-infinity` approaching its node from the right
+  and `+infinity` from the left.  With the interlacing lemmas this makes the whole zero-structure
+  claim behind `(3)` formal — no nonreal zeros, exactly one real zero per node-free interval with a
+  sign change, and the blow-up that produces the sign change.  What remains of `(3)` is only the
+  assembly into the partial-fraction form.  Targeted build green, axiom audit
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the constant term of `(3)` formalized (`suzukiShiftEll`,
+  `sum_weight_sub_ell_eq_zero`, `ratio_sub_ell_eq`).  The card names `ell` as the weighted mean
+  without saying what singles it out; the answer is that subtracting it zeroes the numerator's total
+  weight, so `q - ell` is a zero-total-weight Cauchy transform over `D` and decays one order faster.
+  With this and the zero structure, what remains of `(3)` is the residue extraction assembling the
+  pieces into the displayed form.  Targeted build green, axiom audit
   `[propext, Classical.choice, Quot.sound]`.

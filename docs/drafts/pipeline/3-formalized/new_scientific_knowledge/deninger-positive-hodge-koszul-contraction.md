@@ -1,7 +1,7 @@
 # Positive Hodge--Koszul contraction
 
 - **ID:** `deninger-positive-hodge-koszul-contraction`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** FINITE-STAGE DERIVED HODGE THEOREM
 - **Label:** `DAC_POSITIVE_HODGE_KOSZUL_CONTRACTION`
 - **Parent:** `deninger-unit-amalgamation-derived-lagrangian-enhancement`
@@ -155,8 +155,8 @@ abstract implication
  \Longrightarrow
  \ker d\subseteq\operatorname{im}d.
 \]
-The explicit symmetric/exterior Euler identity `(7)` remains to be
-formalized.
+The explicit symmetric/exterior Euler identity `(7)` is formalized as
+`koszul_euler_tmul`; see the section below.
 
 ## References
 
@@ -197,3 +197,58 @@ differential and homotopy have to be assembled by hand.
 Recorded for the next session: `CliffordAlgebra.contractLeft` is the contraction operator (the
 exterior algebra is the Clifford algebra of the zero form), and `Module.Basis` — not `Basis` — is
 the current mathlib name.
+
+### The exterior half upgraded to the exterior power
+
+Added to `ExteriorEulerIdentity.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `contractLeft_ι_mul_add` — the creation--annihilation relation in the form the Koszul
+  computation uses: `ι_d(a ∧ y) + a ∧ ι_d y = d(a)·y`.
+- `sum_ι_mul_contractLeft_of_mem_exteriorPower` — **the exterior Euler identity on `⋀^p M`**:
+  for every `x` in the `p`-th exterior power,
+
+  `∑ᵢ eᵢ ∧ ι_{eᵢ*} x = p · x`.
+
+  The list version is transported to the whole exterior power by `Submodule.span_induction` over
+  `ExteriorAlgebra.ιMulti_span_fixedDegree`, using that both sides are additive and homogeneous
+  in `x`.
+
+The exterior half of `(7)` is therefore complete as a statement about `⋀^p M`, not just about
+products of generators.  What remains is the tensor bookkeeping: with
+`d = ∑ᵢ (Xᵢ·) ⊗ ι_{eᵢ*}` and `h = ∑ᵢ ∂ᵢ ⊗ (eᵢ ∧ ·)` on `Sym(L*) ⊗ Λ L`, expanding `dh + hd`
+with `∂ⱼXᵢ = Xᵢ∂ⱼ + δᵢⱼ` and `contractLeft_ι_mul_add` collapses the double sum to
+`(∑ᵢ Xᵢ∂ᵢ) ⊗ id + id ⊗ (∑ᵢ eᵢ∧ι_{eᵢ*})`, which is `r + p` by
+`MvPolynomial.IsHomogeneous.sum_X_mul_pderiv` and the identity above.
+
+### Identity `(7)` landed
+
+`formal/GaloisForLFunctions/HTGeometry/KoszulEulerIdentity.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `coord_basis_apply` — the dual-basis pairing is the Kronecker delta.
+- `koszul_euler_tmul` — **the Koszul Euler identity `(7)`** on a pure tensor of a homogeneous
+  polynomial and a homogeneous exterior element:
+
+  `∑ᵢ ∑ⱼ [ (Xᵢ ∂ⱼf) ⊗ ι_{eᵢ*}(eⱼ ∧ x) + (∂ⱼ(Xᵢ f)) ⊗ (eⱼ ∧ ι_{eᵢ*} x) ] = (r + p)·(f ⊗ x)`
+
+  for `f` homogeneous of degree `r` and `x ∈ ⋀^p L`.  This is `dh + hd = (r+p)·id` evaluated on
+  a bidegree-`(r,p)` pure tensor.  The proof is the card's: the Leibniz rule
+  `∂ⱼ(Xᵢ f) = Xᵢ∂ⱼf + δⱼᵢ f` and the creation--annihilation relation `contractLeft_ι_mul_add`
+  turn the inner term into `(Xᵢ∂ⱼf) ⊗ (δᵢⱼ·x) + (δⱼᵢ f) ⊗ (eⱼ ∧ ι_{eᵢ*}x)`; both Kronecker
+  deltas collapse the `j`-sum to `j = i`; and the two Euler identities —
+  `MvPolynomial.IsHomogeneous.sum_X_mul_pderiv` for the symmetric factor and
+  `sum_ι_mul_contractLeft_of_mem_exteriorPower` for the exterior factor — give `r + p`.
+
+The card's remaining item is therefore proved.  With
+`RHTower.deninger_exact_of_scaled_chainContraction` already supplying
+`dh + hd = a·id, a ≠ 0 ⟹ ker d ⊆ im d`, the contraction `s = (r+p)⁻¹h` of `(4)` is available in
+every positive total degree.
+
+### Gates
+
+- [x] 0 → 1 in-progress: Koszul contraction statement isolated
+- [x] 1 → 2 fully-proven: `(4)` proved via `(7)`
+- [x] 2 → 3 formalized: the abstract contraction implication and the explicit
+      symmetric/exterior Euler identity `(7)`
+- [ ] 3 → 4 publication-ready: the arithmetic specialization needs the positive graph and
+      Milnor conormal of the parent cards, which this one does not construct

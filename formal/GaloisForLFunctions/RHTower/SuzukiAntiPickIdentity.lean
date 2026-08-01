@@ -235,6 +235,111 @@ theorem existsUnique_zero_of_sign_change {ι : Type*} (s : Finset ι) (w t : ι 
     (fun x hx => hnode x (hsub hx)) hw hne
   exact hinj hd.1 hc (hd.2.trans hcv.symm)
 
+/-! ## The one-sided blow-up
+
+Approaching a node from the right, its own term runs to `-infinity`; from the left, to `+infinity`.
+Everything else stays continuous there, so the combination inherits the blow-up.  This is the
+analytic input that produces the sign change the interlacing consumes. -/
+
+/-- A Cauchy term runs to `-infinity` approaching its node from the right. -/
+theorem tendsto_cauchyTerm_atBot {w t : ℝ} (hw : 0 < w) :
+    Filter.Tendsto (fun x : ℝ => w / (t - x)) (nhdsWithin t (Set.Ioi t)) Filter.atBot := by
+  have hsub : Filter.Tendsto (fun x : ℝ => t - x) (nhdsWithin t (Set.Ioi t))
+      (nhdsWithin 0 (Set.Iio 0)) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have : Filter.Tendsto (fun x : ℝ => t - x) (nhds t) (nhds (t - t)) :=
+        (continuous_const.sub continuous_id).tendsto t
+      simpa using this.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with x hx
+      simpa using hx
+  have hinv := tendsto_inv_nhdsLT_zero.comp hsub
+  have := hinv.const_mul_atBot hw
+  simpa [div_eq_mul_inv] using this
+
+/-- A Cauchy term runs to `+infinity` approaching its node from the left. -/
+theorem tendsto_cauchyTerm_atTop {w t : ℝ} (hw : 0 < w) :
+    Filter.Tendsto (fun x : ℝ => w / (t - x)) (nhdsWithin t (Set.Iio t)) Filter.atTop := by
+  have hsub : Filter.Tendsto (fun x : ℝ => t - x) (nhdsWithin t (Set.Iio t))
+      (nhdsWithin 0 (Set.Ioi 0)) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · have : Filter.Tendsto (fun x : ℝ => t - x) (nhds t) (nhds (t - t)) :=
+        (continuous_const.sub continuous_id).tendsto t
+      simpa using this.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with x hx
+      simpa using hx
+  have hinv := tendsto_inv_nhdsGT_zero.comp hsub
+  have := hinv.const_mul_atTop hw
+  simpa [div_eq_mul_inv] using this
+
+/-! ## The constant term of `(3)`
+
+The partial-fraction form `q = ell - sum nu_k/(sigma_k - z)` names `ell` as the weighted mean of the
+ratios.  What singles that value out is that subtracting it makes the numerator a Cauchy transform
+of **zero total weight** — so `q - ell` decays one order faster and no further constant survives. -/
+
+/-- The weighted mean of the ratios, the constant term of `(3)`. -/
+noncomputable def suzukiShiftEll {ι : Type*} (s : Finset ι) (w r : ι → ℝ) : ℝ :=
+  (∑ j ∈ s, w j * r j) / (∑ j ∈ s, w j)
+
+/-- **`ell` is exactly the value that zeroes the total weight.** -/
+theorem sum_weight_sub_ell_eq_zero {ι : Type*} (s : Finset ι) (w r : ι → ℝ)
+    (hmass : (∑ j ∈ s, w j) ≠ 0) :
+    ∑ j ∈ s, w j * (r j - suzukiShiftEll s w r) = 0 := by
+  have hexp : ∑ j ∈ s, w j * (r j - suzukiShiftEll s w r)
+      = (∑ j ∈ s, w j * r j) - suzukiShiftEll s w r * ∑ j ∈ s, w j := by
+    rw [Finset.mul_sum]
+    rw [← Finset.sum_sub_distrib]
+    exact Finset.sum_congr rfl fun j _ => by ring
+  rw [hexp, suzukiShiftEll, div_mul_cancel₀ _ hmass, sub_self]
+
+/-- Subtracting the constant term combines the two Cauchy transforms into one. -/
+theorem numerator_sub_ell_mul {ι : Type*} (s : Finset ι) (w r t : ι → ℝ) (ell : ℝ) (z : ℂ) :
+    (∑ j ∈ s, ((w j * r j : ℝ) : ℂ) / ((t j : ℂ) - z))
+        - (ell : ℂ) * ∑ j ∈ s, ((w j : ℝ) : ℂ) / ((t j : ℂ) - z)
+      = ∑ j ∈ s, ((w j * (r j - ell) : ℝ) : ℂ) / ((t j : ℂ) - z) := by
+  rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  push_cast
+  ring
+
+/-- **The constant term is the value at infinity.**  Above the real axis, `q - ell` is the Cauchy
+transform of the zero-total-weight family `w_j (r_j - ell)`, divided by `D`.  That the numerator's
+weights sum to zero is what makes `ell` the right constant. -/
+theorem ratio_sub_ell_eq {ι : Type*} (s : Finset ι) (w r t : ι → ℝ) {z : ℂ} (hz : 0 < z.im)
+    (hw : ∀ j ∈ s, 0 < w j) (hne : s.Nonempty) (ell : ℝ) :
+    (∑ j ∈ s, ((w j * r j : ℝ) : ℂ) / ((t j : ℂ) - z))
+          / (∑ j ∈ s, ((w j : ℝ) : ℂ) / ((t j : ℂ) - z)) - (ell : ℂ)
+      = (∑ j ∈ s, ((w j * (r j - ell) : ℝ) : ℂ) / ((t j : ℂ) - z))
+          / (∑ j ∈ s, ((w j : ℝ) : ℂ) / ((t j : ℂ) - z)) := by
+  have hD := cauchySum_ne_zero s w t hz hw hne
+  rw [div_sub' hD, ← numerator_sub_ell_mul s w r t ell z]
+  ring
+
+/-! ## Residue extraction
+
+At a simple zero of the denominator the ratio has a simple pole, and its residue is
+`N(sigma)/D'(sigma)`.  No contour is needed to see this: the residue is the limit of
+`(z - sigma) q(z)`, and dividing by `z - sigma` turns the denominator into its own difference
+quotient at `sigma`, which converges to `D'(sigma)` because `D(sigma) = 0`. -/
+
+/-- **The residue at a simple zero of the denominator.**  `lim (z - sigma) N(z)/D(z)` is
+`N(sigma)/D'(sigma)`.  This is the extraction step of `(3)`: it names the coefficient `nu_k` of the
+pole at `sigma_k`. -/
+theorem tendsto_residue_of_simple_zero {D N : ℂ → ℂ} {σ D' : ℂ}
+    (hD : HasDerivAt D D' σ) (hD0 : D σ = 0) (hD'ne : D' ≠ 0) (hN : ContinuousAt N σ) :
+    Filter.Tendsto (fun z => (z - σ) * (N z / D z)) (nhdsWithin σ {σ}ᶜ)
+      (nhds (N σ / D')) := by
+  have hslope : Filter.Tendsto (slope D σ) (nhdsWithin σ ({σ}ᶜ)) (nhds D') :=
+    hasDerivAt_iff_tendsto_slope.mp hD
+  have hNlim : Filter.Tendsto N (nhdsWithin σ ({σ}ᶜ)) (nhds (N σ)) :=
+    Filter.Tendsto.mono_left hN nhdsWithin_le_nhds
+  have hdiv := hNlim.div hslope hD'ne
+  refine hdiv.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with z hz
+  have hzne : z - σ ≠ 0 := sub_ne_zero.mpr hz
+  rw [slope_def_field, hD0, sub_zero, div_div_eq_mul_div, div_div_eq_mul_div]
+  ring
+
 /-! ## From the identity to the sign
 
 Monotone likelihood is exactly nonnegativity of every product `(r_j - r_k)(t_j - t_k)`.  With

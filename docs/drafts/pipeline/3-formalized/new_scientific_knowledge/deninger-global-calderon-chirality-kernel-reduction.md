@@ -1,7 +1,7 @@
 # Global Calderón chirality-kernel reduction
 
 - **ID:** `deninger-global-calderon-chirality-kernel-reduction`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM
 - **Label:** `DAC_GLOBAL_CALDERON_CHIRALITY_KERNEL_REDUCTION`
 - **Parent:** `deninger-arithmetic-calderon-global-chirality-kernel`
@@ -161,15 +161,37 @@ as:
 - `deningerGlobalChirality_kernel_eq_bot_of_tsumEnergy`;
 - `deningerRelativeCauchyUnique_of_localRestrictions`.
 
-Required direct-file check passes.  Final cached module build and
-axiom audit remain reserved for final audit.
+Checked against the card: `deningerGlobalChirality_kernel_eq_bot`
+takes exactly assumptions 1--4 — strict positivity of the Green form,
+the identification of the chirality-zero boundary equation with the
+Calderón-graph/conormal intersection, and relative Cauchy uniqueness —
+and concludes `ker S = ⊥`, by the card's argument: the intersection is
+trivial, so the trace vanishes, and assumption 4 then kills the class.
+`deningerStrictPositive_of_greenEnergy_detects_zero` derives the
+strict positivity `(1)` from assumption 1 in the card's form
+(nonnegative energy that detects zero, with no uniform gap), and
+`_of_greenEnergy` and `_of_tsumEnergy` are the resulting packaged
+theorems for a single energy and for the restricted all-place sum
+`(2)`.
+
+### Verification
+
+- Direct command: `lake env lean` on the module — passes with no
+  errors and no warnings.
+- Cached module build: completes.
+- Scratch `#print axioms` on all eight declarations: only `propext`,
+  `Classical.choice`, `Quot.sound`.
+- Imported by the `GaloisForLFunctions.RHTower` umbrella.
 
 ## Gates
 
 - [x] 0 → 1 in-progress: exact kernel reduction identified
 - [x] 1 → 2 fully-proven: complete proof
-- [ ] 2 → 3 formalized: code complete; final axiom/build audit pending
-- [ ] 3 → 4 publication-ready
+- [x] 2 → 3 formalized: the kernel theorem, the energy criteria and the
+      relative Cauchy uniqueness lemma, with cached build and axiom audit
+- [ ] 3 → 4 publication-ready: assumptions 1--4 are the open arithmetic
+      inputs — this card reduces the kernel question to them, it does not
+      construct them
 
 ## References
 
@@ -183,3 +205,6 @@ axiom audit remain reserved for final audit.
 - 2026-07-27 — Replaced limit-stability and uniform-gap formulations
   by exact global Green-energy transversality and relative Cauchy
   uniqueness.
+- 2026-08-01 — Closed the stage-3 gate: verified the module states the
+  card's theorem under exactly assumptions 1--4, then ran the cached
+  build and the declaration-axiom audit.  No new Lean was needed.
