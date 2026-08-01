@@ -27,17 +27,17 @@ noncomputable def kummerBaseChangeEquiv [CharZero F] {E M : IntermediateField F 
     (hEM : E ⊔ M = ⊤)
     (hdeg : Module.finrank F (E ⊓ M : IntermediateField F L) = 1 ∨
       Module.finrank F (E ⊓ M : IntermediateField F L) = 2)
-    (hobs : ∀ (δ : L) (c : F), δ * δ = algebraMap F L c →
+    (hobs : ∀ (δ : L) (c : F), δ ∈ E → δ * δ = algebraMap F L c →
       δ ∉ (⊥ : IntermediateField F L) → δ ∉ M) :
     (L ≃ₐ[M] L) ≃* (E ≃ₐ[F] E) :=
   compositumRestrictEquiv hEM (inf_eq_bot_of_no_sqrt hdeg hobs)
 
 /-- Over an odd-degree second factor no square root of a base element survives. -/
-theorem no_sqrt_of_not_two_dvd_finrank {M : IntermediateField F L} [FiniteDimensional F M]
+theorem no_sqrt_of_not_two_dvd_finrank {E M : IntermediateField F L} [FiniteDimensional F M]
     (hodd : ¬ 2 ∣ Module.finrank F M) :
-    ∀ (δ : L) (c : F), δ * δ = algebraMap F L c →
+    ∀ (δ : L) (c : F), δ ∈ E → δ * δ = algebraMap F L c →
       δ ∉ (⊥ : IntermediateField F L) → δ ∉ M :=
-  fun _ _ hsq hbot => notMem_of_not_two_dvd_finrank hodd hsq hbot
+  fun _ _ _ hsq hbot => notMem_of_not_two_dvd_finrank hodd hsq hbot
 
 /-- **Base change along an odd-degree extension preserves the Galois group.** -/
 noncomputable def oddBaseChangeEquiv [CharZero F] {E M : IntermediateField F L} [Normal F E]
@@ -58,7 +58,7 @@ noncomputable def kummerBaseChangePermEquiv [CharZero F] {E M : IntermediateFiel
     (hEM : E ⊔ M = ⊤)
     (hdeg : Module.finrank F (E ⊓ M : IntermediateField F L) = 1 ∨
       Module.finrank F (E ⊓ M : IntermediateField F L) = 2)
-    (hobs : ∀ (δ : L) (c : F), δ * δ = algebraMap F L c →
+    (hobs : ∀ (δ : L) (c : F), δ ∈ E → δ * δ = algebraMap F L c →
       δ ∉ (⊥ : IntermediateField F L) → δ ∉ M)
     (hiso : (E ≃ₐ[F] E) ≃* Equiv.Perm (Fin m)) :
     (L ≃ₐ[M] L) ≃* Equiv.Perm (Fin m) :=
@@ -72,7 +72,7 @@ noncomputable def kummerBaseChangeEquivOfRoot {E M : IntermediateField F L} [Nor
     (hdich : (E ⊓ M : IntermediateField F L) = ⊥ ∨
       ∃ (δ : L) (c : F), δ ∈ (E ⊓ M : IntermediateField F L) ∧
         δ * δ = algebraMap F L c ∧ δ ∉ (⊥ : IntermediateField F L))
-    (hobs : ∀ (δ : L) (c : F), δ * δ = algebraMap F L c →
+    (hobs : ∀ (δ : L) (c : F), δ ∈ E → δ * δ = algebraMap F L c →
       δ ∉ (⊥ : IntermediateField F L) → δ ∉ M) :
     (L ≃ₐ[M] L) ≃* (E ≃ₐ[F] E) :=
   compositumRestrictEquiv hEM (inf_eq_bot_of_no_sqrt_of_root hdich hobs)
@@ -84,7 +84,7 @@ noncomputable def kummerBaseChangePermEquivOfRoot {E M : IntermediateField F L} 
     (hdich : (E ⊓ M : IntermediateField F L) = ⊥ ∨
       ∃ (δ : L) (c : F), δ ∈ (E ⊓ M : IntermediateField F L) ∧
         δ * δ = algebraMap F L c ∧ δ ∉ (⊥ : IntermediateField F L))
-    (hobs : ∀ (δ : L) (c : F), δ * δ = algebraMap F L c →
+    (hobs : ∀ (δ : L) (c : F), δ ∈ E → δ * δ = algebraMap F L c →
       δ ∉ (⊥ : IntermediateField F L) → δ ∉ M)
     (hiso : (E ≃ₐ[F] E) ≃* Equiv.Perm (Fin m)) :
     (L ≃ₐ[M] L) ≃* Equiv.Perm (Fin m) :=
@@ -103,7 +103,7 @@ noncomputable def kummerBaseChangeOfAbelian [CharZero F] {E M : IntermediateFiel
     (hnorm : (IntermediateField.comap E.val (E ⊓ M)).fixingSubgroup.Normal)
     (habel : ∀ x y : (E ≃ₐ[F] E) ⧸
       (IntermediateField.comap E.val (E ⊓ M)).fixingSubgroup, x * y = y * x)
-    (hobs : ∀ (δ : L) (c : F), δ * δ = algebraMap F L c →
+    (hobs : ∀ (δ : L) (c : F), δ ∈ E → δ * δ = algebraMap F L c →
       δ ∉ (⊥ : IntermediateField F L) → δ ∉ M) :
     (L ≃ₐ[M] L) ≃* (E ≃ₐ[F] E) := by
   haveI := hnorm
@@ -121,7 +121,7 @@ noncomputable def kummerBaseChangePermOfAbelian [CharZero F] {E M : Intermediate
     (hnorm : (IntermediateField.comap E.val (E ⊓ M)).fixingSubgroup.Normal)
     (habel : ∀ x y : (E ≃ₐ[F] E) ⧸
       (IntermediateField.comap E.val (E ⊓ M)).fixingSubgroup, x * y = y * x)
-    (hobs : ∀ (δ : L) (c : F), δ * δ = algebraMap F L c →
+    (hobs : ∀ (δ : L) (c : F), δ ∈ E → δ * δ = algebraMap F L c →
       δ ∉ (⊥ : IntermediateField F L) → δ ∉ M) :
     (L ≃ₐ[M] L) ≃* Equiv.Perm α :=
   (kummerBaseChangeOfAbelian φ hEM hnorm habel hobs).trans φ

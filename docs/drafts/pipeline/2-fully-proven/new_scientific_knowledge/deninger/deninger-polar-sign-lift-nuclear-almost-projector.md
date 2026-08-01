@@ -181,3 +181,91 @@ Fredholm kernel-zero reduction remain to be formalized.
 - 2026-07-27 — Formalized all exact Hardy-projector identities after
   the polar sign; functional-calculus and nuclear-ideal transport
   remain.
+
+### The polar-sign lift landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerPolarSignLift.lean`.  Axiom audit: only `propext`
+and `Quot.sound` — no choice.
+
+The construction is stated algebraically over a ring with involution and a two-sided ideal.  The
+positive part enters through exactly the properties continuous functional calculus supplies for
+`|S|`: it is self-adjoint, commutes with `S`, squares to `S²`, and is invertible.
+
+- `deningerPolarInv_isSelfAdjoint`, `deningerPolar_commute_inv` — the inverse of the positive
+  part is self-adjoint and commutes with `S`.
+- `deningerPolarSign S Tinv = S · |S|⁻¹` with `deningerPolarSign_isSelfAdjoint` (clause 1) and
+  `deningerPolarSign_sq` (clause 2): the sign is a self-adjoint involution.  Clause 2 uses only
+  `T² = S²` and invertibility, exactly as on the card.
+- `deningerPolarPositive_sub_one_mem` — clause 3's first step: the factorization
+  `|S| - 1 = (S² - 1)(|S| + 1)⁻¹` of `(5)`, taken as a hypothesis since `(|S|+1)⁻¹` is what
+  positivity of `|S|` supplies, plus right-ideal stability.
+- `deningerPolarInv_sub_one_mem`, `deningerPolarSign_sub_mem` — `(6)`: `|S|⁻¹ - 1 ∈ N` and hence
+  `C - S ∈ N`, clause 3.
+- `deningerHardyProjector` and `deningerPolarProjector_sub_mem` — `(4)`: the exact Hardy
+  projectors differ from the almost-projectors by ideal elements, clause 5.
+
+Together with `DeningerArithmeticExactHardyProjectors`, which already had clause 4, all five
+clauses of the theorem are formalized.
+
+### Remaining
+
+Two items, both analytic rather than algebraic:
+
+1. the continuous functional calculus that produces `|S| = (S²)^{1/2}` with the four properties
+   above, and the invertibility of `|S| + 1` from positivity;
+2. the Fredholm reduction of the invertibility hypothesis `(1)` to `ker S = 0` under `(1a)`,
+   which needs Atkinson's theorem and the bounded inverse theorem.
+
+Neither is needed for clauses 1--5 as stated; they are what instantiate the hypotheses at
+`T = |S|`.
+
+### The continuous functional calculus construction landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerPolarSignCFC.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+This discharges the first remaining item: the hypotheses of the algebraic theorem are now
+*produced* at `T = |S|`, not assumed.
+
+- `deningerAbs S = (S²)^{1/2}` via mathlib's `CFC.sqrt`, with `deningerAbs_nonneg`.
+- `deningerAbs_isSelfAdjoint` — self-adjointness, from nonnegativity.
+- `deningerAbs_commute` — **`S` commutes with `|S|`**.  `|S|` is a continuous functional calculus
+  of `S²`, and `S` commutes with `S²`, so `Commute.cfc_nnreal` applies after rewriting
+  `CFC.sqrt` as a `cfc`.
+- `deningerAbs_mul_self` — `|S|² = S²`, from `CFC.sqrt_mul_sqrt_self` and `IsSelfAdjoint.sq_nonneg`.
+- `deningerAbsInv S = |S| · (S²)⁻¹` with `deningerAbs_mul_absInv` and `deningerAbsInv_mul_abs`:
+  **for invertible `S` the positive part is invertible**, the second law using that `|S|`
+  commutes with `S²` and hence with its inverse.
+- `deningerAbs_polarSign_isSelfAdjoint`, `deningerAbs_polarSign_sq` — **clauses 1 and 2 for the
+  actual polar sign** `C = S|S|⁻¹` of an invertible self-adjoint element, with no hypotheses left
+  standing beyond `IsSelfAdjoint S` and `Invertible S`.
+
+### Remaining
+
+- the invertibility of `|S| + 1` needed to instantiate the factorization `(5)`, which is
+  positivity of `|S|` plus the spectral mapping that `-1` is not in its spectrum;
+- the Fredholm reduction of `(1)` to `(1a)`, needing Atkinson's theorem and the bounded inverse
+  theorem.
+
+### Clauses 3 and 5 instantiated at the actual positive part
+
+Added to `DeningerPolarSignCFC.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `isUnit_one_add_of_nonneg` — **a nonnegative element has invertible `1 + ·`**.  Its spectrum
+  misses `-1` (`spectrum_nonneg_of_nonneg`), so `spectrum.mem_iff` gives invertibility of
+  `-1 - T`, hence of `1 + T`.  This is the input the factorization `(5)` needed.
+- `deningerAbs_sub_one_mem` — **`|S| - 1 ∈ N`**, by the card's `(5)`:
+  `(|S| - 1)(1 + |S|) = |S|² - 1 = S² - 1`, so `|S| - 1 = (S² - 1)(1 + |S|)⁻¹` and right-ideal
+  stability finishes.
+- `deningerAbs_polarSign_sub_mem` — **clause 3** for the actual polar sign `C = S|S|⁻¹`.
+- `deningerAbs_polarProjector_sub_mem` — **clause 5** for the actual Hardy projectors.
+
+Clauses 1--5 now hold for the concrete construction `C = S|S|⁻¹` of an invertible self-adjoint
+`S` with `S² - 1 ∈ N`, with no hypothesis about `|S|` left standing: it is built by continuous
+functional calculus and all its properties are proved.
+
+### Remaining
+
+Only the Fredholm reduction of the invertibility hypothesis `(1)` to `ker S = 0` under `(1a)`,
+which needs Atkinson's theorem and the bounded inverse theorem.  It weakens a hypothesis; it is
+not needed for clauses 1--5.

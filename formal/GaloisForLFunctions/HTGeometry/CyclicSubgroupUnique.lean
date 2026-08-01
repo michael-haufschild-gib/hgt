@@ -23,7 +23,7 @@ theorem subgroup_toFinset_eq_filter (H : Subgroup G) :
       Finset.univ.filter (fun a : G => a ^ Fintype.card H = 1) := by
     intro x hx
     rw [Set.mem_toFinset, SetLike.mem_coe] at hx
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq]
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
     have hpow : (⟨x, hx⟩ : H) ^ Fintype.card H = 1 := pow_card_eq_one
     exact congrArg Subtype.val hpow
   refine Finset.eq_of_subset_of_card_le hle ?_

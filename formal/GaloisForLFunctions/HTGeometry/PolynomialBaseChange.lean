@@ -34,7 +34,7 @@ noncomputable def polyBaseChangeEquiv {p q : Polynomial F} (hp : p ≠ 0) (hq : 
     (habel : ∀ x y : (rootField F (L := L) p ≃ₐ[F] rootField F (L := L) p) ⧸
       (IntermediateField.comap (rootField F (L := L) p).val
         (rootField F (L := L) p ⊓ rootField F (L := L) q)).fixingSubgroup, x * y = y * x)
-    (hobs : ∀ (δ : L) (c : F), δ * δ = algebraMap F L c →
+    (hobs : ∀ (δ : L) (c : F), δ ∈ rootField F (L := L) p → δ * δ = algebraMap F L c →
       δ ∉ (⊥ : IntermediateField F L) → δ ∉ rootField F (L := L) q) :
     (L ≃ₐ[rootField F (L := L) q] L) ≃* Equiv.Perm α :=
   kummerBaseChangePermOfAbelian φ (sup_adjoin_rootSet_eq_top hp hq) hnorm habel hobs

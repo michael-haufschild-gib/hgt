@@ -231,3 +231,82 @@ Formal sources:
 
 Both targeted foreground checks pass in about four seconds.  The capstone
 axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Sharp uniform return exponent — 2026-08-01
+
+For an equal-weight packet of (d\ge2) phases, both unconditional Haar
+target-volume bounds have the same high-fidelity logarithmic exponent
+
+\[
+  \frac{d-1}{2}.
+\]
+
+Thus the recurrence-volume exponent is exactly one half of projective
+temporal dimension.  The earlier dimension-linear exponent remainder was
+an artefact of unequal-weight generality, not an unavoidable feature of
+the uniform physical packet.
+
+Formal source:
+`formal/GaloisForLFunctions/RHTower/UniformProjectiveTargetVolumeExponentLaw.lean`.
+Targeted foreground compilation and axiom audit pass; dependencies are only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+## Countably infinite separable law — 2026-08-01
+
+Finite interaction conversion extends to arbitrary countable pure-point
+input spectra, including unbounded Hamiltonians.  For every positive
+operator-norm budget there is one separable diagonal interaction
+
+\[
+  V_{ij}=u_i v_j
+\]
+
+whose factors and product profile are absolutely summable, whose bounded
+operator is self-adjoint and Schatten-1, whose norm is below the budget,
+and whose addition preserves the original maximal Hamiltonian domain.
+The same interaction simultaneously removes every nonzero finitely
+supported projective relation.
+
+If the product carrier is infinite, that one witness has all of the
+following consequences at once:
+
+1. every finite temporal rank occurs on a finite spectral window;
+2. relative to every anchor, the compact relation hull is the full
+   countable projective torus;
+3. every future phase tail is dense in that torus;
+4. time zero is the only exact global projective return;
+5. every strictly positive summable phase-defect probe has lower limit
+   zero and upper limit its absolute maximum;
+6. every interior probe value is reached exactly within a uniformly
+   bounded waiting window from every starting time, and both endpoints are
+   approached with the same syndetic recurrence property.
+
+This is the infinite form of constraint-to-time conversion: an arbitrarily
+weak rank-one interaction can erase all finite recurrence constraints at
+once, create unbounded finite-resolution temporal dimension, prohibit every
+nonzero exact global return, and still force uniformly recurrent approximate
+returns throughout the complete allowed observable range.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/HTGeometry/CountableSeparableInteractionSaturationLaw.lean`;
+- `formal/GaloisForLFunctions/HTGeometry/CountableSeparableInteractionOperatorLaw.lean`;
+- `formal/GaloisForLFunctions/HTGeometry/CountableProjectiveFutureUniversalityLaw.lean`;
+- `formal/GaloisForLFunctions/HTGeometry/SeparableInfiniteProjectiveRecurrenceLaw.lean`.
+
+The new separable infinite capstone compiles directly and from a cached
+object.  Batched axiom audit of every load-bearing infinite declaration
+reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Updated Riemann-clock stress test — 2026-08-01
+
+The revised Riemann source-clock paper contributes one relevant infinite
+stress test, not a second headline law.  Its compact relation hull proves
+bounded-window recurrence of every attainable screw value without assuming
+simple or rationally independent frequencies; its endpoint is controlled
+exactly by parity of finite integral relations.  This confirms the correct
+universal object: relations determine the compact phase carrier, while a
+metric or summable probe turns that carrier into quantitative recurrence.
+The Riemann-specific crease, meromorphic-continuation, and divisor-recovery
+claims remain in their own paper and should not be collaged into the
+interaction theorem.

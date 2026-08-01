@@ -337,8 +337,44 @@ theorem tendsto_residue_of_simple_zero {D N : ℂ → ℂ} {σ D' : ℂ}
   refine hdiv.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with z hz
   have hzne : z - σ ≠ 0 := sub_ne_zero.mpr hz
-  rw [slope_def_field, hD0, sub_zero, div_div_eq_mul_div, div_div_eq_mul_div]
+  show N z / slope D σ z = (z - σ) * (N z / D z)
+  rw [slope_def_field, hD0, sub_zero, div_div_eq_mul_div]
   ring
+
+/-- A pole term's own residue is its coefficient, exactly and without a limit. -/
+theorem residue_poleTerm (ν σ : ℂ) {z : ℂ} (hz : z ≠ σ) :
+    (z - σ) * (-ν / (σ - z)) = ν := by
+  have hzne : z - σ ≠ 0 := sub_ne_zero.mpr hz
+  field_simp
+  ring
+
+/-- **The coefficients of `(3)` are forced.**  If the ratio decomposes as a pole term at `sigma`
+plus something continuous there, then that pole's coefficient must be the residue
+`N(sigma)/D'(sigma)`.  So the decomposition, if it exists, has exactly the coefficients the
+extraction names — and by `poleCoeff_nonneg_iff_im_nonpos` they are nonnegative. -/
+theorem poleCoeff_eq_residue {D N rest : ℂ → ℂ} {σ D' ν : ℂ}
+    (hD : HasDerivAt D D' σ) (hD0 : D σ = 0) (hD'ne : D' ≠ 0) (hN : ContinuousAt N σ)
+    (hrest : ContinuousAt rest σ)
+    (hdecomp : ∀ z, z ≠ σ → N z / D z = -ν / (σ - z) + rest z) :
+    ν = N σ / D' := by
+  have hres := tendsto_residue_of_simple_zero hD hD0 hD'ne hN
+  have hsub : Filter.Tendsto (fun z : ℂ => z - σ) (nhdsWithin σ ({σ}ᶜ)) (nhds 0) := by
+    have h : Filter.Tendsto (fun z : ℂ => z - σ) (nhds σ) (nhds (σ - σ)) :=
+      (continuous_id.sub continuous_const).tendsto σ
+    rw [sub_self] at h
+    exact h.mono_left nhdsWithin_le_nhds
+  have hrestlim : Filter.Tendsto rest (nhdsWithin σ ({σ}ᶜ)) (nhds (rest σ)) :=
+    Filter.Tendsto.mono_left hrest nhdsWithin_le_nhds
+  have hprod : Filter.Tendsto (fun z : ℂ => ν + (z - σ) * rest z)
+      (nhdsWithin σ ({σ}ᶜ)) (nhds (ν + 0 * rest σ)) :=
+    tendsto_const_nhds.add (hsub.mul hrestlim)
+  have hcongr : Filter.Tendsto (fun z : ℂ => (z - σ) * (N z / D z))
+      (nhdsWithin σ ({σ}ᶜ)) (nhds (ν + 0 * rest σ)) := by
+    refine hprod.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with z hz
+    rw [hdecomp z hz, mul_add, residue_poleTerm ν σ hz]
+  have := tendsto_nhds_unique hcongr hres
+  simpa using this
 
 /-! ## From the identity to the sign
 

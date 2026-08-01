@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.SquareRootObstruction
 import GaloisForLFunctions.HTGeometry.CompleteTheSquare
+import GaloisForLFunctions.HTGeometry.CyclicSqrtMem
 
 /-!
 # The even case of the Kummer obstruction
@@ -35,5 +36,21 @@ theorem no_sqrt_of_square_class_ne {M : IntermediateField F L} {α : L} {c : F}
   rcases hclass e with hns | hall
   · exact hns (sq_mul_eq_sq_of_mem_adjoin_sqrt hsq hα hmem hδsq hδbot)
   · exact hδbot (hall δ hδsq)
+
+/-- **The even case, assembled.**  Inside a cyclic extension containing a square root of `c`, a
+square root of `e` outside the base cannot occur once `e * c` is not a square: it would have to lie
+in the one quadratic subextension, forcing the two radicands into the same square class. -/
+theorem notMem_of_isCyclic_of_square_class {M : IntermediateField F L}
+    [FiniteDimensional F M] [IsGalois F M] (hcyc : IsCyclic (M ≃ₐ[F] M))
+    {α : L} {c : F} (hsq : α * α = algebraMap F L c) (hαM : α ∈ M)
+    (hα : α ∉ (⊥ : IntermediateField F L))
+    {δ : L} {e : F} (hδsq : δ * δ = algebraMap F L e)
+    (hδbot : δ ∉ (⊥ : IntermediateField F L))
+    (hclass : ¬ ∃ t : F, e * c = t * t) : δ ∉ M := by
+  intro hδM
+  refine hclass ?_
+  have hmem : δ ∈ F⟮α⟯ :=
+    mem_adjoin_of_sq_mem_of_isCyclic hcyc hsq hαM hα hδM hδsq hδbot
+  exact sq_mul_eq_sq_of_mem_adjoin_sqrt hsq hα hmem hδsq hδbot
 
 end GaloisForLFunctions.HTGeometry

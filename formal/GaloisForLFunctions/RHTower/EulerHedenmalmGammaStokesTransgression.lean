@@ -75,11 +75,8 @@ private def thetaGammaComplexSeed (t : ℝ) : ℂ :=
 private theorem thetaGammaComplexSeed_eq_thetaCuspSeed (t : ℝ) :
     thetaGammaComplexSeed t = (thetaCuspSeed t : ℂ) := by
   unfold thetaGammaComplexSeed thetaGammaSquaredGaussian thetaGammaLinearGaussian thetaCuspSeed
-  have ht2 : (t : ℂ) ^ (2 : ℂ) = ((t ^ 2 : ℝ) : ℂ) := by norm_num
-  have ht4 : (t : ℂ) ^ (4 : ℂ) = ((t ^ 4 : ℝ) : ℂ) := by norm_num
-  rw [ht2, ht4]
-  push_cast
-  rw [show (((t ^ 2 : ℝ) : ℂ)) = (t : ℂ) ^ (2 : ℕ) by norm_num]
+  rw [Real.rpow_two]
+  norm_num
   ring
 
 private theorem mellin_thetaGammaComplexSeed {s : ℂ} (hs : 0 < s.re) :

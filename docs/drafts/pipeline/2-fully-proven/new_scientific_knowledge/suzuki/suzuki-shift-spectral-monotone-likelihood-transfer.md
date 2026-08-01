@@ -185,6 +185,31 @@ decays one order faster and no further constant survives.
   weight of `w_j (r_j - ell)`.
 - `numerator_sub_ell_mul`, `ratio_sub_ell_eq`: hence above the real axis `q - ell` is that
   zero-total-weight transform divided by `D`.
+- `tendsto_residue_of_simple_zero`: **the residue extraction** — at a simple zero of `D` the residue
+  of `N/D` is `N(sigma)/D'(sigma)`, obtained as the limit of `(z - sigma) q(z)`.  No contour is
+  needed: dividing by `z - sigma` turns the denominator into its own difference quotient at `sigma`,
+  which converges to `D'(sigma)` precisely because `D(sigma) = 0`.  This names the coefficient
+  `nu_k` of each pole.
+- `residue_poleTerm`, `poleCoeff_eq_residue`: **the coefficients are forced.**  If the ratio
+  decomposes as a pole term at `sigma` plus something continuous there, that pole's coefficient
+  *must* be `N(sigma)/D'(sigma)`.  So a decomposition of the displayed shape is unique, with exactly
+  the coefficients the extraction names — and by `poleCoeff_nonneg_iff_im_nonpos` they are
+  nonnegative, which is `nu_k >= 0`.
+
+**The existence step needs no Liouville argument** — mathlib already carries partial fractions, in
+`Mathlib/Algebra/Polynomial/PartialFractions.lean`.  Its specialization to distinct linear factors
+is in `formal/GaloisForLFunctions/HTGeometry/LinearPartialFractions.lean`:
+
+- `eq_C_of_degree_lt_one`: a polynomial of degree below one is a constant.
+- `div_linear_prod_eq_add_sum_const`: hence over a product of distinct monic linear factors the
+  remainders are constants, so the decomposition is `q + sum nu_i/(X - sigma_i)` with **scalar**
+  coefficients — exactly the shape `(3)` displays.
+
+Every ingredient of `(3)` is therefore formal: the constant term, the zero structure, the residue
+formula, the uniqueness of the coefficients, their sign, and the general decomposition over linear
+factors.  What remains is the bridge tying them together for this particular denominator — that
+clearing the Cauchy sum gives a polynomial whose roots are exactly the `sigma_k`, simple, and
+counted by its degree.
 
 **Complex anti-Pick identity `(1)`** is now formal, in
 `formal/GaloisForLFunctions/RHTower/SuzukiAntiPickIdentity.lean`.  The identity is algebra, not
@@ -304,3 +329,24 @@ External priority remains unverified.
   With this and the zero structure, what remains of `(3)` is the residue extraction assembling the
   pieces into the displayed form.  Targeted build green, axiom audit
   `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the residue extraction of `(3)` formalized (`tendsto_residue_of_simple_zero`): at a
+  simple zero of `D` the residue of `N/D` is `N(sigma)/D'(sigma)`, as the limit of
+  `(z - sigma) q(z)`.  The proof needs no contour integration — dividing by `z - sigma` turns `D`
+  into its own difference quotient at `sigma`, which converges to `D'(sigma)` because `D(sigma) = 0`.
+  Every structural ingredient of `(3)` is now formal: the constant term, the zero structure, the
+  residue formula naming each `nu_k`, and the sign forcing `nu_k >= 0`.  Targeted build green, axiom
+  audit `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the coefficient identification of `(3)` formalized (`poleCoeff_eq_residue`): a pole
+  term's coefficient in any such decomposition must equal the residue, so the decomposition is
+  unique with exactly the coefficients already named, and their nonnegativity is the residue-sign
+  lemma.  What is left of `(3)` is only *existence* of the decomposition — the Liouville-type step
+  that `q` has this shape — everything about its constant, poles, coefficients and signs being
+  proved.  Targeted build green, axiom audit `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the existence step of `(3)` does not need a Liouville argument: mathlib carries
+  partial fractions (`div_prod_eq_quo_add_sum_rem_div`).  Specialized to distinct linear factors
+  (`div_linear_prod_eq_add_sum_const`), the remainders have degree below one and are therefore
+  constants, giving exactly the scalar-coefficient shape `(3)` displays.  What remains of `(3)` is
+  the bridge for this denominator — clearing the Cauchy sum to a polynomial whose roots are exactly
+  the `sigma_k`, simple, and counted by its degree.  Checking mathlib before planning the step
+  replaced a projected complex-analysis build with one lemma application.  Targeted build green,
+  axiom audit `[propext, Classical.choice, Quot.sound]`.

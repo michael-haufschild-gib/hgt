@@ -1968,6 +1968,38 @@ What remains on this branch is the nondegeneracy itself: an order-`n` relation t
 its top jet on the whole carrier is one whose solutions satisfy a lower-order relation, so the
 expected route is a minimal-order argument rather than new analysis.
 
+### One nondegenerate point suffices
+
+The nondegeneracy hypothesis has been reduced to a single point of the line.
+
+`HTGeometry/CarrierTranslationEquivariance.lean` supplies the transfer.  The carrier is a topological
+group in which the line is dense, so the translates of any one carrier point by the line are dense
+(`denseRange_bohrIota_add`), and a continuous function constant along them is constant
+(`eq_of_eqOn_translates`).  The representative of a translated carrier point agrees with the
+translated representative on the central line, hence on the strip, so the jets of the representatives
+are translation equivariant (`iteratedDeriv_rep_translate`), and the representative of the origin has
+the jets of the function itself (`iteratedDeriv_rep_zero`).
+
+Degeneracy of the relation at the centre jet is a continuous condition on the carrier.  A carrier
+point whose representative were degenerate at *every* time would force degeneracy along a dense set,
+hence everywhere — in particular at the function itself.  So
+(`HTGeometry/PointNondegeneracyPhaseRank.lean`):
+
+> **`rank_finite_of_nondegenerate_at_point`**: if the top partial derivative of the relation is
+> nonzero at a *single* jet of the function, then `rank_ℤ Γ_B(f) < ∞`.
+
+and over the Gamma field, `rank_finite_of_gamma_rational_at_point`: a strip almost periodic
+holomorphic solution of a Gamma-rational differential relation whose collapsed relation is
+nondegenerate at one point of the line has finite rational Bohr frequency rank.
+
+`HTGeometry/JetPolynomialDescent.lean` starts the removal of even that hypothesis.  The `k`-th
+partial derivative of a jet polynomial is again a jet polynomial
+(`partialCoeff_jetPolyDeriv_eq`, with coefficients `d α · e α k` and exponent `e α k − 1`), and a jet
+polynomial of a holomorphic function is holomorphic, so a jet polynomial relation holding on the
+central line holds on the whole strip (`jetPoly_eqOn_zero_of_line`).  A relation degenerate in its top
+jet at every point of the line therefore yields the derived relation, of strictly smaller degree in
+that jet: the descent that will eliminate the last hypothesis.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

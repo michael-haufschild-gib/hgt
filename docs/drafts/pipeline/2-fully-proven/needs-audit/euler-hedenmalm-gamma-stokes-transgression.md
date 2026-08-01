@@ -1,9 +1,9 @@
 # Euler--Hedenmalm Gamma Stokes transgression
 
 - **ID:** `euler-hedenmalm-gamma-stokes-transgression`
-- **Stage:** 2-fully-proven / needs literature and Lean audit
+- **Stage:** 2-fully-proven / Mellin--Stokes core formalized, full Euler--Mobius theorem open
 - **Type:** THEOREM / ROOT-LEVEL EULER--MOBIUS--GAMMA BOUNDARY WELD
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Scientific status:** `[PROVED HERE] [LEAN CORE VERIFIED] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parents:**
   `hedenmalm-theta-source-compressed-inverse-determinant.md`;
   `prime-tail-hedenmalm-wiener-hopf-transgression.md`;
@@ -314,6 +314,28 @@ prime incidence in the larger exponential Stokes boundary.  It does **not** prov
 change from exponential Stokes class to tempered self-adjoint boundary.  That category change is
 now the sole RH-bearing clause in this weld.
 
+## Collision with the first-clock and all-prime recurrence criteria
+
+The current active revision of
+`../../4-publication-ready/riemann-source-modular-superselection/main.tex` proves that the literal
+first CCM clock is asymptotically Bohr almost periodic exactly on the RH fibre.  Independently,
+`BilateralAllPrimeIndLimit.lean` proves that the unique strict all-prime sewing conormal is
+moderate exactly when `Re(s)=1/2`.  These are global-clock and prime-orbit readings of the same
+remaining condition:
+
+```text
+Bohr recurrence of the completed source clock
+  = bilateral moderation of the all-prime conormal
+  = temperedness of the Gamma Stokes character.          (24)
+```
+
+Equation `(24)` is a consumer identification, not a source proof.  The first-clock theorem
+explicitly does not assert existence of its Bohr asymptote, and the all-prime theorem does not
+assert moderation of Xi-kernel fibres.  Countable channel summability cannot bridge the gap:
+pointwise `ell^1` completion can retain an arbitrary exponential character while its bilateral
+orbit grows exponentially.  The required new theorem must control the complete two-sided orbit,
+not merely construct infinitely many summable source channels.
+
 ## Hostile audit
 
 1. **Not RH.**  A hypothetical off-line zero gives a perfectly nonzero but non-tempered Stokes
@@ -346,13 +368,30 @@ Novelty remains unverified pending a focused co-Poisson and Wiener--Hopf audit.
 
 ## Lean status
 
-Paper proof is dependency-closed.  A faithful formalization must include:
+`formal/GaloisForLFunctions/RHTower/EulerHedenmalmGammaStokesTransgression.lean` now proves
+unconditionally:
+
+- Mellin convergence of the literal first theta atom on `Re(s)>0`;
+- its exact Mellin transform `archFactor(s)`;
+- the causal/anti-causal complementary-integral Stokes jump;
+- nonvanishing of that jump in the open strip;
+- annihilation by the completed Euler multiplier exactly at Xi zeros;
+- the literal integer-dilation character;
+- preservation of analytic multiplicity; and
+- the centered Hedenmalm logarithmic character.
+
+Targeted `lake env lean`, target-only `lake build`, and `#print axioms` audits pass.  The audited
+public theorems use only `propext`, `Classical.choice`, and `Quot.sound`.  Full-project lint is
+currently blocked by shared umbrella reachability for several concurrently added modules; no
+forbidden declaration occurs in this module.
+
+This is a dependency-closed formalization of the Mellin--Stokes core, not yet of the full paper
+theorem.  A faithful completion must still include:
 
 1. the literal atom scaling `(3)`;
 2. the actual anti-causal integral and Gaussian interchange `(8)`;
 3. the absolutely convergent double-series Mobius inverse `(9)`;
-4. the seed Gamma transform `(4)` and nonvanishing;
-5. the analytic Stokes jet order law `(16)`--`(17)`.
+4. the full analytic Stokes jet independence law `(16)`--`(17)`.
 
 Formalizing only the scalar identity `XiC=H*zeta`, or an abstract structure with `(8)` assumed as a
 field, would not formalize the new result.
@@ -367,6 +406,7 @@ field, would not formalize the new result.
 - [x] nonzero Stokes class and exact Xi annihilator
 - [x] multiplicity and prime-incidence jets
 - [x] RH-bearing temperedness clause separated
+- [x] Mellin--Stokes core formalized and axiom-audited
 - [ ] focused literature audit
 - [ ] literal Lean formalization
 - [ ] source proof of common tempered boundary

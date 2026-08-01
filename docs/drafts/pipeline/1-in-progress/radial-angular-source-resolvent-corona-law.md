@@ -230,3 +230,40 @@ final audit remains pending.
   chart is empty and therefore does not prove RH.
 - Paper inclusion is conditional on concise presentation.  If it reads as analogy rather than a
   theorem-driven interpretation of the atlas, omit it rather than create another collage.
+
+## 2026-08-01 strengthening: kernel-pair transversality and orientation before completion
+
+Finite support is only one collision mechanism.  Whole-corpus census now covers 7,223 modules
+and 79,162 declarations; the RH obstruction audit exposes 689 clusters.  Their dominant mechanisms
+are literal divisor reading, even/positive scalarization, finite-window loss, reflection-phase
+folding, and regular analytic or spectral completion.  These suggest one stronger law.
+
+For maps
+
+```text
+X --pi--> Q,       X --tau--> T,       X --chi--> C,
+```
+
+write `K_f={(x,y):f(x)=f(y)}`.  Then:
+
+1. every downstream observer of `pi` has kernel containing `K_pi`;
+2. `chi` is recoverable from `(pi,tau)` exactly when
+   `K_pi intersect K_tau` is contained in `K_chi`;
+3. if `pi` is invariant under an involution and `chi` is reflection-odd, then `chi` cannot descend
+   through `pi` away from its zero locus; every sufficient `tau` must separate each reflected pair;
+4. if the `pi`-fibres are dense, every separated continuous downstream reporter is constant;
+5. if the collision is all-orders-flat versus finite Rees grade, every exact bounded sewing
+   channel has norm beyond every finite inverse order.
+
+This is the candidate **orientation-before-completion law**.  The generic support theorem is its
+local-cylinder instance.  Hedenmalm dense radicals and full-product graph closures are dense-kernel
+instances.  Reflection-even Weil energies and positive Grams are involutive-kernel instances.
+Finite-Rees sewing is the quantitative radical instance.  Wold--Poisson, Sonin--Calkin, and Ward
+are downstream consumers of the surviving transverse character.  Julia/Fisher odd jets, source
+loop currents, prime-window residues, and the crease--pole--Bohr atlas are positive transverse
+channels.  Arithmetic cancellation and sign production remain genuine upstream walls rather than
+downstream repairs.
+
+The paper must use this single kernel-pair theorem as architecture.  It must not present the
+instances as additional main theorems or claim that category-specific analytic estimates follow
+from the set-level identity without their verified hypotheses.

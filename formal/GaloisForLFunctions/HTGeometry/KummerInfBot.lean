@@ -20,7 +20,7 @@ variable {F L : Type*} [Field F] [Field L] [Algebra F L]
 theorem inf_eq_bot_of_no_sqrt [CharZero F] {E M : IntermediateField F L}
     (hdeg : Module.finrank F (E ⊓ M : IntermediateField F L) = 1 ∨
       Module.finrank F (E ⊓ M : IntermediateField F L) = 2)
-    (hobs : ∀ (δ : L) (c : F), δ * δ = algebraMap F L c →
+    (hobs : ∀ (δ : L) (c : F), δ ∈ E → δ * δ = algebraMap F L c →
       δ ∉ (⊥ : IntermediateField F L) → δ ∉ M) :
     E ⊓ M = ⊥ := by
   rcases hdeg with h1 | h2
@@ -68,10 +68,10 @@ theorem inf_eq_bot_of_no_sqrt [CharZero F] {E M : IntermediateField F L}
       rw [← hrank]
       omega
     obtain ⟨δ, c, hδsq, hδadj, hδbot⟩ := exists_sqrt_adjoin_eq hxint hdeg2
-    refine hobs δ c hδsq hδbot ?_
     have hδmem : δ ∈ F⟮x⟯ := by
       rw [← hδadj]
       exact IntermediateField.mem_adjoin_simple_self F δ
+    refine hobs δ c ((le_trans hle inf_le_left) hδmem) hδsq hδbot ?_
     exact (le_trans hle inf_le_right) hδmem
 
 /-- **The dichotomy in root form.**  If the intersection is either the base or contains a square
@@ -82,12 +82,12 @@ theorem inf_eq_bot_of_no_sqrt_of_root {E M : IntermediateField F L}
     (hdich : (E ⊓ M : IntermediateField F L) = ⊥ ∨
       ∃ (δ : L) (c : F), δ ∈ (E ⊓ M : IntermediateField F L) ∧
         δ * δ = algebraMap F L c ∧ δ ∉ (⊥ : IntermediateField F L))
-    (hobs : ∀ (δ : L) (c : F), δ * δ = algebraMap F L c →
+    (hobs : ∀ (δ : L) (c : F), δ ∈ E → δ * δ = algebraMap F L c →
       δ ∉ (⊥ : IntermediateField F L) → δ ∉ M) :
     E ⊓ M = ⊥ := by
   rcases hdich with h | ⟨δ, c, hmem, hsq, hbot⟩
   · exact h
-  · refine absurd ?_ (hobs δ c hsq hbot)
+  · refine absurd ?_ (hobs δ c ((inf_le_left : (E ⊓ M : IntermediateField F L) ≤ E) hmem) hsq hbot)
     exact (inf_le_right : (E ⊓ M : IntermediateField F L) ≤ M) hmem
 
 end GaloisForLFunctions.HTGeometry
