@@ -8,7 +8,9 @@
 - **Lean modules:**
   `GaloisForLFunctions.RHTower.DeningerCharacterPolar` (`(1)`, `(2)`, `(4)`),
   `GaloisForLFunctions.RHTower.DeningerSphereContraction` (the two deformations of `(8)`, `(9)`),
-  `GaloisForLFunctions.RHTower.DeningerSphereSlideHomotopy` (`(9)` as a homotopy)
+  `GaloisForLFunctions.RHTower.DeningerSphereSlideHomotopy` (`(9)` as a homotopy),
+  `GaloisForLFunctions.RHTower.DeningerSphereLineHomotopy` (`(8)` as a homotopy),
+  `GaloisForLFunctions.RHTower.DeningerSphereContractible` (`(6)`)
 - **Statement:** the Hilbert--Kummer bounded generic character locus
   splits into unitary phase and Hilbert logarithmic modulus; the
   nonzero modulus has contractible infinite-dimensional angular factor,
@@ -233,12 +235,28 @@ isometry with the stated properties, so no model of `H` has to be fixed yet.
 
 So the second half of the contraction is complete as a homotopy.
 
+### The angular contraction `(6)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerSphereLineHomotopy.lean` and
+`formal/GaloisForLFunctions/RHTower/DeningerSphereContractible.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerSegment`, `deningerSegment_ne_zero`, `deningerSphereLineHomotopy` — **`(8)` as a
+  homotopy** from the identity of the unit sphere to the isometry, along segments normalized to
+  unit length.  Well-definedness is the eigenvector-free hypothesis; continuity is continuity of
+  the segment together with `Continuous.inv₀` applied to its norm, which is nonvanishing exactly by
+  that hypothesis.
+- `deningerSphere_nullhomotopic`, `deningerSphere_contractible` — **`(6)`**: concatenating the two
+  homotopies (`ContinuousMap.Homotopy.trans`) makes the identity of the sphere nullhomotopic, hence
+  `ContractibleSpace (Metric.sphere 0 1)` by `contractible_iff_id_nullhomotopic`.
+
+The statement is proved for any real inner product space carrying an eigenvector-free linear
+isometry whose range misses a unit vector.  Such an isometry exists precisely in infinite
+dimensions, so this is the infinite-dimensional sphere contractibility that mathlib lacks, in the
+form the card's `(6)` needs.
+
 ### Remaining
 
-The first half: `(8)` as a homotopy from the identity of the sphere to the isometry, which is the
-normalized straight line and so needs the nonvanishing already proved
-(`deningerSphereLine_ne_zero`) plus continuity of the normalization.  Concatenating the two gives
-`ContractibleSpace` for the sphere and hence `(6)`; `(7)` is then Haar averaging.  Separately, the
-model in which the hypotheses hold — the unilateral shift on `ℓ²(ℕ, ℝ)`, eigenvector-free with
-`e₀` orthogonal to its range — still has to be built, since mathlib has neither it nor the
-contractibility of an infinite-dimensional sphere.
+The model — the unilateral shift on `ℓ²(ℕ, ℝ)`, eigenvector-free with `e₀` orthogonal to its
+range — which instantiates the hypotheses; and `(7)`, exactness of compact-group invariants by Haar
+averaging.  The polar homeomorphism `(5)` is mathlib's `homeomorphUnitSphereProd`.

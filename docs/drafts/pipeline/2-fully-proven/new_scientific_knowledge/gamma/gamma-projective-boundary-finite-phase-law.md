@@ -2716,6 +2716,37 @@ identity `eval (jetTranslate G) (s) = eval G (s+1)`, available abstractly as
 With it, eq. (17) and the unrestricted eq. (19) become unconditional without the formal Stirling
 field and without importing Adamczewski–Dreyfus–Hardouin.
 
+### The coefficient side of the flat-cancellation route: germs on the half-plane
+
+`HTGeometry/HalfPlaneFlatFilter.lean` moves flatness onto a single filter, which is what makes it an
+algebraic notion:
+
+- `halfPlaneUpper σ₀` — the filter of the sets `{s | σ₀ ≤ Re s, T ≤ Im s}`, with `‖s‖ → ∞` along it
+  (`tendsto_norm_halfPlaneUpper`) and `NeBot`;
+- `IsFlatOn σ₀ A` — `‖s‖^N ‖A s‖ → 0` along that filter, for every `N`;
+- `eventually_norm_eval_le_filter` / `eventually_norm_eval_ge_filter` — a polynomial is squeezed
+  between two multiples of `‖s‖^{deg}`, both directions from the same corpus limit
+  `tendsto_eval_div_pow_natDegree_of_norm_atTop`;
+- **`IsFlatOn.sub`, `IsFlatOn.mul_poly`, `IsFlatOn.div_poly`, `IsFlatOn.shift`** — the four closure
+  properties, the last because `s ↦ s + 1` maps the filter into itself
+  (`tendsto_add_one_halfPlaneUpper`);
+- **`not_isFlatOn_polynomial`** — a nonzero polynomial is not flat.
+
+`HTGeometry/HalfPlaneGermRing.lean` turns this into a ring statement.  Flatness depends only on the
+germ (`IsFlatOn.congr_eventually`, `IsFlatGerm`), a nonzero polynomial is eventually nonzero on the
+filter, so its germ is a unit (`isUnit_polyGerm`) — hence the polynomial germ map extends to
+
+> **`ratGerm σ₀ : ℂ(s) →+* HalfPlaneGerm σ₀`**,
+
+the coefficient action the elimination needs, with `ratGerm_eq_div` identifying it with the germ of
+`num/denom`.  On top of it: `IsFlatGerm.sub`, **`IsFlatGerm.mul_ratGerm`** (flat germs absorb every
+rational coefficient) and **`not_isFlatGerm_ratGerm`** (no nonzero rational germ is flat).
+
+That is three of the four hypotheses of `no_shift_stable_annihilatorWith` — differences, `ℂ(s)`
+multiples, no nonzero constants — for the set of jet polynomials with flat value.  What remains is
+the jet substitution clause: evaluating the digamma jets in this germ ring and matching
+`X_j ↦ X_j + polePart j` with the unit translation.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

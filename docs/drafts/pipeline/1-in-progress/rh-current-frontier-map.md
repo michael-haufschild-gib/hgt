@@ -94,7 +94,10 @@ continuous asymptotic Bohr model
 
 HTGeometry proves summable-spectrum screw almost periodicity, exact Bohr coefficients,
 uniqueness, recurrence, full tail closure, and Torelli recovery once an asymptotic model
-exists. RHTower proves complete single-clock source/divisor tomography.
+exists. For finite rationally independent phase packets it also proves a separated-tolerance
+Haar recurrence-frequency sandwich. That finite theorem supplies neither the literal CCM
+identification nor dimension-uniform control for an infinite prime packet. RHTower proves
+complete single-clock source/divisor tomography.
 
 **Open core.** Prove directly from the literal source either:
 
@@ -425,7 +428,12 @@ The equilibrium kernel is now an actual characteristic function, not only an abs
 positive-definite kernel: source gives an explicit compound-Poisson law with zero atom
 `1/(2√2)`, a square-biased law with density `(2/3)x²`, and an independent centered
 triangular-clock realization. `CharacteristicDefectGramCapacity` packages the universal
-finite-second-moment anchor-correlation bound used directly by RHTower.
+finite-second-moment anchor-correlation bound used directly by RHTower. It also proves
+`0 ≤ K ≤ 1` and the finite two-packet Cauchy inequality. The raw totalized Julia
+profile is not positive definite because its value at zero is wrong; the corrected spectral
+extension is essential. Its Lévy density is strictly positive, and the critical Dirichlet
+density has an exact finite scale-four decomposition into positive Julia innovations plus
+one unresolved tail.
 
 **Proved finite hierarchy.** `bad correlation² ≤ coherent energy ≤ total bad mass²`.
 
@@ -623,7 +631,7 @@ The following families reduce to Routes A–S or remain bare equivalences:
 - hyperbolic/adelic scattering;
 - multivariate stable-section models;
 - radial Jensen/Schur norm gaps;
-- Böttcher, QECC, observer, and universality atlases.
+- Böttcher, QECC, static-Choi/observer, and universality atlases.
 
 They remain useful coordinates. None adds an independent source producer.
 
@@ -1263,7 +1271,10 @@ Therefore the honest current conclusion is:
 - `HTGeometry/SummableSpectrumScrewAlmostPeriodic.lean`
 - `HTGeometry/SummableSpectrumScrewBohrCoefficients.lean`
 - `HTGeometry/SummableSpectrumScrewRecurrence.lean`
+- `HTGeometry/FiniteSpectralRecurrenceFrequencyLaw.lean`
 - `HTGeometry/CarriedConclusion.lean`
+- `HTGeometry/PositiveDefinitePacketCauchy.lean`
+- `HTGeometry/JuliaDefectSpectralEquilibrium.lean`
 - `HTGeometry/JuliaDefectEquilibriumPositiveDefinite.lean`
 - `HTGeometry/CharacteristicDefectGramCapacity.lean`
 - `HTGeometry/ZetaGammaFieldHypertranscendence.lean`

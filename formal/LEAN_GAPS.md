@@ -16,7 +16,7 @@ No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations found.
 | 5057 | `formal/GaloisForLFunctions/FullyProvenNewTargets.lean` |
 | 4763 | `formal/GaloisForLFunctions/HTGeometry/GaussianTorsionLanguageTailLock.lean` |
 | 3980 | `formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean` |
-| 3906 | `formal/GaloisForLFunctions/RHTower.lean` |
+| 3907 | `formal/GaloisForLFunctions/RHTower.lean` |
 | 3722 | `formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean` |
 | 3711 | `formal/GaloisForLFunctions/HTGeometry/GammaDifferentialFE.lean` |
 | 3644 | `formal/GaloisForLFunctions/U0/U0SliceViableB.lean` |

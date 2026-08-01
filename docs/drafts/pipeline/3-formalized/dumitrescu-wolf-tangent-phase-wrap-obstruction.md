@@ -1,7 +1,7 @@
 # Dumitrescu--Wolf tangent phases wrap infinitely often
 
 - **ID:** dumitrescu-wolf-tangent-phase-wrap-obstruction
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean 4, fully unconditional)
 - **Source:** C. Dumitrescu and M. Wolf, *The Disproof of the Riemann Hypothesis*, arXiv:2102.08313v3, Lemma 2 and Appendix
 - **Statement:** Under the paper's RH setup, the two Riccati sequences used to quantize the vertical zero contribution cannot converge to `+infinity` and `-infinity`; whenever their recurrences stay defined, each is a tangent of a divergent phase with vanishing increments and therefore has a subsequence tending to zero.
@@ -126,14 +126,15 @@ cannot repair the false phase limits above.
 
 ## Status
 
-The recurrence obstruction is complete.  Bibliographic provenance and the
-precise current-version comparison remain subject to the repository's
-external audit, so this card remains in `needs-audit`.
+Fully formalized, unconditional, and audited.  The abstract recurrence obstruction, harmonic
+divergence layer, Xi reciprocal-zero divergence, actual Xi-ordinate enumeration, and both physical
+endpoint obstructions are imported through the project umbrellas.  Direct source checks, a batched
+capstone axiom audit, the final leaf build, and the `RHTower` umbrella build pass.
 
 
 ## Lean status
 
-Two modules, both with `#print axioms` equal to `[propext, Classical.choice, Quot.sound]`.
+Five modules, with audited capstones using only `[propext, Classical.choice, Quot.sound]`.
 
 ### `GaloisForLFunctions/HTGeometry/TangentPhaseWrapObstruction.lean`
 
@@ -192,17 +193,21 @@ already forbids both asserted endpoints.**  For a monotone ordinate sequence tha
 equivalent to the counting lower bound `N(T) >> T`, which is far weaker than the full
 Riemann--von Mangoldt asymptotic `N(T) ~ (T/2pi) log(T/2pi)` used in the paper proof.
 
-### Remaining input
+### Arithmetic discharge
 
-What is still outside Lean is exactly one classical statement: the nontrivial zeta ordinates grow
-at most linearly, `gamma_k = O(k)`, equivalently `N(T) >> T`.  That is exactly the Riemann--von Mangoldt consequence
-`sum_gamma 1/gamma = infinity` used in the paper proof.  The corpus currently has
-`RHTower.xiZeroSet_infinite` and `finite_xiDivisorSupport_centered_norm_le` (the divisor is
-infinite and locally finite) but no zero-counting rate, so `N(T) ~ (T/2pi) log(T/2pi)` -- and hence
-the unconditional discharge of this hypothesis for the zeta ordinates -- is the one piece still
-outside Lean.  Everything else in the card is formalized without hypotheses.
+`GaloisForLFunctions/RHTower/XiZeroSumDivergence.lean` proves
+`not_summable_inv_norm_xiSpectralPoint` unconditionally from the completed Xi Hadamard
+factorization and real-axis growth, avoiding an assumed Riemann--von Mangoldt counting law.
+`GaloisForLFunctions/RHTower/XiOrdinateEndpointObstruction.lean` enumerates the actual Xi divisor,
+proves `tendsto_sum_inv_xiOrdinate_atTop`, and feeds that theorem into both vertical channels.
+Consequently no arithmetic, RH, zero-counting, or packaged analytic hypothesis remains in the Lean
+capstones.
 
 ## Log
+
+- 2026-08-01 -- Promoted to Stage 3 after all five transitive source checks passed, thirteen
+  load-bearing capstones reported only `[propext, Classical.choice, Quot.sound]`, the final
+  `XiOrdinateEndpointObstruction` module built, and the complete `RHTower` umbrella built.
 
 - 2026-07-26 -- Formalized. The abstract obstruction was proved in a strictly stronger form than the
   card states: positivity of the increments is not needed anywhere, since at a first crossing of

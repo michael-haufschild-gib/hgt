@@ -205,9 +205,9 @@ paper once combined with O2.  Lean now certifies translated-cap measure
 invariance, controlled-target and finite-dictionary union bounds, the exact
 Hilbert--Schmidt geometry of equal-weight Choi phase densities, and the
 metric-displacement-to-coherence implication.  Circuit-word counting and the
-completed-time Portmanteau specialization remain.  The result proves the
-plateau occupation law; it does not imply O4's pointwise linear growth or O5's
-first hitting time.
+metric-ball capstone are also compiled; only the completed-time Portmanteau
+specialization remains.  The result proves the plateau occupation law; it does
+not imply O4's pointwise linear growth or O5's first hitting time.
 
 ### O4. Linear no-shortcuts theorem
 
@@ -224,6 +224,60 @@ bound, then transfer that geometric distance bound to robust finite-gate state
 complexity with only the permitted polynomial losses.  Proving only absence of
 conjugate points is insufficient: that excludes local variations but not a
 globally shorter path.
+
+#### Candidate new mechanism: ballistic projective min-entropy
+
+For the Hamiltonian ensemble define the worst-target concentration
+
+\[
+ Q_\varepsilon(t)=\sup_\psi
+   \Pr_H\{\Delta(\Phi_H(t),\psi)\leq\varepsilon\},
+ \qquad I_\varepsilon(t)=-\log Q_\varepsilon(t).
+\]
+
+The sharp sufficient theorem for O4 is a **ballistic projective min-entropy
+law**
+
+\[
+ I_\varepsilon(t)\geq
+   a\min\{t\log M,D\}-\operatorname{polylog}(n)
+\]
+
+through the exponential saturation scale, with a tail strong enough to
+discretize time on one common high-probability Hamiltonian event.  A union
+bound over the at most `M^(s+1)` circuit outputs then gives
+
+\[
+ \Pr_H\{C_\varepsilon(\Phi_H(t))\leq s\}
+ \leq M^{s+1}Q_\varepsilon(t),
+\]
+
+and hence linear robust complexity growth.  This is strictly weaker than a
+state or unitary design and is compatible with O6's permanent two-query
+non-Haar witness.  It supplies a precise meaning to "complexity without
+randomness": the relevant produced resource is worst-target small-ball
+entropy, not ambient Haar moments.
+
+The new analytic core is therefore a circuit-uniform small-ball theorem for
+the Gaussian-chaos process
+
+\[
+ X_C(H,t)=\langle C\Phi_0,\Phi_H(t)\rangle,
+\]
+
+indexed by all circuits shorter than physical time.  Recent Gaussian-process
+methods for quantum spin glasses uniformly exclude shallow circuits from
+near-ground-state energy, but they do not apply directly here: the dynamical
+endpoint depends nonlinearly on the same Gaussian Hamiltonian and remains at
+the initial state's typical conserved energy.  A valid proof must control this
+matrix-exponential Gaussian chaos rather than reuse the ground-state energy
+argument.
+
+Kotowski--Oszmaniec--Horodecki prove an extremal concentration jump for GUE
+and Haar-conjugated diagonal generators.  Unitary invariance is load-bearing
+there and produces immediate maximal complexity, not the local ballistic law.
+No audited result proves the displayed small-ball entropy production for a
+fixed-locality static ensemble.
 
 ### O5. Quantitative first hitting
 

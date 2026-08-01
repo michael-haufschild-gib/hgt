@@ -185,15 +185,28 @@ Exact-title and mechanism searches found no theorem giving (1)--(4) for every
 eigenbasis and static Hamiltonian with full projective spectral rank.  This is
 an initial clean audit, not the final citation-graph/expert audit.
 
-## Formalization plan
+## Formalization status
 
-1. Define the finite equal-weight phase-state embedding and prove its inner
-   product identity.
-2. Formalize pure-state trace distance and its triangle inequality, or reuse an
-   existing projective metric with the identical fidelity formula.
-3. Prove target-ball domination by a translated `torusCoherenceTarget`.
-4. Reuse `measureReal_torusCoherenceTarget_le_optimized` for (1).
-5. Formalize finite dictionary and word-count union bounds for (2)--(3).
-6. Combine with `FiniteSpectralHaarRecurrenceLaw` and Portmanteau for (4).
-7. Audit axioms and wire all modules into their umbrellas before stage 3.
+Completed and compiled in the foreground:
 
+1. `StaticChoiPhaseDensity.lean` defines the equal-weight phase density,
+   proves its exact Hilbert--Schmidt/fidelity identity, and proves that a
+   Hilbert--Schmidt displacement bound forces membership in a translated
+   coherence cap.
+2. `StaticChoiPhaseTargetEntropy.lean` proves translation invariance,
+   arbitrary metric-ball domination, controlled-target entropy, finite-union
+   entropy, and the exact padded circuit-word factor `|gate|^(s+1)`.
+3. `StaticChoiComplexityPlateau.lean` combines those layers into explicit
+   finite-dictionary and padded-circuit Choi plateau bounds; its error defect
+   is exactly `2 * delta^2` for Hilbert--Schmidt radius `delta`.
+4. `FiniteSpectralRecurrenceFrequencyLaw.lean` now contains the generic
+   closed-target Portmanteau upper-frequency theorem.
+
+Remaining before stage 3:
+
+1. Connect the Hilbert--Schmidt formal theorem to the sharper trace-distance
+   constant used in (1), or weaken the displayed paper constant to the exact
+   Hilbert--Schmidt consequence and propagate it through (2)--(4).
+2. Instantiate the completed-time theorem in one final capstone declaration.
+3. Close the O2 local-Hamiltonian spectral premise, audit axioms, and run the
+   final umbrella build.

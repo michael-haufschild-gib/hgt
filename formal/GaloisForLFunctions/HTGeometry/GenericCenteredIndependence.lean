@@ -38,8 +38,8 @@ theorem coeffSub_centeredFamily (hd : 0 < d) (j : Fin d) :
 /-- **The centering coefficients of the generic polynomial are algebraically independent.** -/
 theorem algebraicIndependent_centeredCoeffFamily (hd : 0 < d) :
     AlgebraicIndependent K (centeredCoeffFamily K d) := by
-  have h := (algebraicIndependent_centeredFamily (K := K) hd).map
-    (f := coeffSub K d) (coeffSub_injective.injOn)
+  have h := (algebraicIndependent_centeredFamily (K := K) hd).map'
+    (f := coeffSub K d) coeffSub_injective
   have hfun : (⇑(coeffSub K d) ∘ centeredFamily K d hd) = centeredCoeffFamily K d :=
     funext fun j => coeffSub_centeredFamily hd j
   rwa [hfun] at h
@@ -55,7 +55,7 @@ def centeredIndex (d : ℕ) (k : Fin (d - 1)) : Fin d :=
 
 theorem centeredIndex_injective : Function.Injective (centeredIndex d) := by
   intro a b h
-  have hval : (a : ℕ) = (b : ℕ) := congrArg Fin.val h
+  have hval := congrArg Fin.val h
   exact Fin.ext hval
 
 omit [CharZero K] in
