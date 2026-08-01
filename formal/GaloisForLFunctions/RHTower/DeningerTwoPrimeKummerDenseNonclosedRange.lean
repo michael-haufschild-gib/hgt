@@ -13,8 +13,13 @@ The bounded transform of the signed Kummer generator on the two-prime frequency 
 with dense, nonclosed range on `ℓ²`.  Every finite nonzero truncation remains bijective.  Therefore
 its algebraic cokernel is closure-only while its reduced Hilbert cokernel vanishes.
 
+On the same signed arithmetic frequency group, the Calderón relative boundary norm is complete
+and nonzero, and its coefficient model carries an isometric odd Hodge operator.  Thus changing the
+domain, rather than completing the raw cokernel, is an exact local repair.
+
 These are the unconditional statements behind
-`DAC_TWO_PRIME_KUMMER_DENSE_NONCLOSED_RANGE`.
+`DAC_TWO_PRIME_KUMMER_DENSE_NONCLOSED_RANGE` and
+`DAC_TWO_PRIME_KUMMER_RELATIVE_DOMAIN_DICHOTOMY`.
 -/
 
 open Filter
@@ -191,13 +196,19 @@ theorem exists_primeLog_closureOnly_mode :
 /-- Every two-prime Kummer period lies on the real axis. -/
 theorem deningerPrimeLogPeriodGroup_im_eq_zero
     (z : deningerPrimeLogPeriodGroup) : (z : ℂ).im = 0 := by
-  apply Submodule.span_induction (p := fun w : ℂ => w.im = 0) z.2
+  refine Submodule.span_induction (R := ℤ)
+    (s := Set.range deningerPrimeLogPeriodPair)
+    (p := fun w : ℂ => fun _ => w.im = 0) ?_ ?_ ?_ ?_ z.2
   · rintro w ⟨i, rfl⟩
-    fin_cases i <;> simp [deningerPrimeLogPeriodPair]
+    fin_cases i
+    · change (((Real.log 2 : ℝ) : ℂ).im = 0)
+      rfl
+    · change (((Real.log 3 : ℝ) : ℂ).im = 0)
+      rfl
   · simp
-  · intro x y hx hy
+  · intro x y _ _ hx hy
     simp [hx, hy]
-  · intro n x hx
+  · intro n x _ hx
     simp [hx]
 
 /-- Signed real frequency of a nonzero two-prime Kummer mode. -/
@@ -209,13 +220,12 @@ theorem deningerPrimeLogFrequency_coe (q : DeningerPrimeLogMode) :
   apply Complex.ext
   · rfl
   · simpa [deningerPrimeLogFrequency] using
-      (deningerPrimeLogPeriodGroup_im_eq_zero q.1)
+      (deningerPrimeLogPeriodGroup_im_eq_zero q.1).symm
 
 theorem deningerPrimeLogFrequency_ne_zero (q : DeningerPrimeLogMode) :
     deningerPrimeLogFrequency q ≠ 0 := by
   intro h
   apply q.2
-  apply Subtype.ext
   have hc := deningerPrimeLogFrequency_coe q
   rw [h, Complex.ofReal_zero] at hc
   exact hc.symm
@@ -227,16 +237,17 @@ def deningerLogTwoMode : DeningerPrimeLogMode := by
       simp [deningerPrimeLogPeriodPair]⟩⟩
   exact ⟨z, by
     intro h
-    have hc : ((Real.log 2 : ℝ) : ℂ) = 0 := congrArg Subtype.val h
     exact (show ((Real.log 2 : ℝ) : ℂ) ≠ 0 by
-      exact_mod_cast (Real.log_pos (by norm_num : (1 : ℝ) < 2)).ne') hc⟩
+      exact_mod_cast (Real.log_pos (by norm_num : (1 : ℝ) < 2)).ne') h⟩
 
 /-- Unit coefficient at the `log 2` relative boundary mode. -/
-def deningerPrimeLogBoundaryUnit : lp (fun _ : DeningerPrimeLogMode => ℂ) 2 :=
-  lp.single 2 deningerLogTwoMode 1
+def deningerPrimeLogBoundaryUnit : lp (fun _ : DeningerPrimeLogMode => ℂ) 2 := by
+  classical
+  exact lp.single 2 deningerLogTwoMode 1
 
 theorem norm_deningerPrimeLogBoundaryUnit :
     ‖deningerPrimeLogBoundaryUnit‖ = 1 := by
+  classical
   rw [deningerPrimeLogBoundaryUnit, lp.norm_single (by norm_num : (0 : ℝ≥0∞) < 2)]
   norm_num
 

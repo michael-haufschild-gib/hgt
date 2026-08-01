@@ -25,6 +25,9 @@ Dirichlet series.  No continuation or zero hypothesis occurs.
 
 `GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPassiveNoGo` provides:
 
+- `dyadicWeightedPrimeWindow_two` and `dyadicSharpPrimeSourceCoefficient_two`, proving the exact
+  formulas `W(2) = log(2) / sqrt(2)` and
+  `S(2) = 4 * (sqrt(2) - 1) - sqrt(2) * log(2)`;
 - `dyadicSharpPrimeSourceComplexCoeff_two_pos`;
 - `two_cpow_I_im_pos` and `two_cpow_neg_I_im_neg`;
 - exact peeled/source overlap identities on `x-I` and `x+I`;
@@ -51,4 +54,3 @@ This formalizes the terminal kill condition on Route I's passive-impedance produ
 sharp-window RH criteria and divisor tomography remain valid, but no passive scalar response can
 equal the literal source on its initial overlap.  Route I is retired; a transformed passive source
 would require a new card and an unconditional inverse handoff.
-

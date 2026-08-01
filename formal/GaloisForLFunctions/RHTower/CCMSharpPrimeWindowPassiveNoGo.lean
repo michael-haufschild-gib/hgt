@@ -37,23 +37,48 @@ theorem dyadicSharpPrimeSourceComplexCoeff_abscissa_lt_top :
     dyadicSharpPrimeSourceCoefficient_LSeriesSummable (by norm_num)
   exact hs.abscissaOfAbsConv_le.trans_lt (EReal.coe_lt_top _)
 
+/-- The dyadic window at `2` contains exactly the prime-power node `2`. -/
+theorem dyadicWeightedPrimeWindow_two :
+    dyadicWeightedPrimeWindow 2 = Real.log 2 / Real.sqrt 2 := by
+  rw [dyadicWeightedPrimeWindow]
+  norm_num [ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
+
+/-- Exact first oscillatory source coefficient. -/
+theorem dyadicSharpPrimeSourceCoefficient_two :
+    dyadicSharpPrimeSourceCoefficient 2 =
+      4 * (Real.sqrt 2 - 1) - Real.sqrt 2 * Real.log 2 := by
+  have hsqrtne : Real.sqrt 2 ≠ 0 := (Real.sqrt_pos.2 (by norm_num)).ne'
+  have hsqrt2 : (Real.sqrt 2) ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have htwoDiv : 2 / Real.sqrt 2 = Real.sqrt 2 := by
+    apply (div_eq_iff hsqrtne).2
+    nlinarith
+  have hmain : 4 * (1 - (Real.sqrt 2)⁻¹) * Real.sqrt 2 =
+      4 * (Real.sqrt 2 - 1) := by
+    field_simp
+  have hprime : 2 * (Real.log 2 / Real.sqrt 2) =
+      Real.sqrt 2 * Real.log 2 := by
+    calc
+      2 * (Real.log 2 / Real.sqrt 2) = (2 / Real.sqrt 2) * Real.log 2 := by ring
+      _ = Real.sqrt 2 * Real.log 2 := by rw [htwoDiv]
+  rw [dyadicSharpPrimeSourceCoefficient, dyadicWeightedPrimeWindow_two]
+  norm_num only [Nat.cast_ofNat]
+  rw [hmain, hprime]
+
 /-- The first nonconstant sharp source coefficient is strictly positive.  Explicitly,
 `S(2) = 4 * (sqrt 2 - 1) - sqrt 2 * log 2 > 0`. -/
 theorem dyadicSharpPrimeSourceComplexCoeff_two_pos :
     0 < (dyadicSharpPrimeSourceComplexCoeff 2).re := by
-  simp only [dyadicSharpPrimeSourceComplexCoeff, ofReal_re]
-  exact (by
-    have hlog : Real.log 2 < 1 := by
-      have h := Real.log_lt_sub_one_of_pos (x := (2 : ℝ)) (by norm_num) (by norm_num)
-      linarith
-    have hsqrt0 : 0 ≤ Real.sqrt 2 := Real.sqrt_nonneg 2
-    have hsqrt2 : (Real.sqrt 2) ^ 2 = 2 := Real.sq_sqrt (by norm_num)
-    have hfour : 4 < 3 * Real.sqrt 2 := by nlinarith
-    have hsqrtne : Real.sqrt 2 ≠ 0 := (Real.sqrt_pos.2 (by norm_num)).ne'
-    rw [dyadicSharpPrimeSourceCoefficient, dyadicWeightedPrimeWindow]
-    norm_num [ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
-    field_simp
-    nlinarith)
+  simp only [dyadicSharpPrimeSourceComplexCoeff, ofReal_re,
+    dyadicSharpPrimeSourceCoefficient_two]
+  have hlog : Real.log 2 < 1 := by
+    have h := Real.log_lt_sub_one_of_pos (x := (2 : ℝ)) (by norm_num) (by norm_num)
+    linarith
+  have hsqrtpos : 0 < Real.sqrt 2 := Real.sqrt_pos.2 (by norm_num)
+  have hsqrt2 : (Real.sqrt 2) ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have hfour : 4 < 3 * Real.sqrt 2 := by nlinarith
+  have hmul : Real.sqrt 2 * Real.log 2 < Real.sqrt 2 :=
+    mul_lt_mul_of_pos_left hlog hsqrtpos
+  linarith
 
 /-- The positive unit-frequency phase of the first oscillatory coefficient. -/
 theorem two_cpow_I_im_pos : 0 < ((2 : ℂ) ^ Complex.I).im := by

@@ -94,6 +94,33 @@ theorem continuousLinearFunctional_eq_zero_of_isCyclicFamily
   rintro _ ⟨i, rfl⟩
   exact hL i
 
+/-- A continuous reporter on a dense completion vanishes if its pullback
+annihilates a cyclic source family.  This is the two-stage density mechanism:
+first through the cyclic span in the source, then through the completion map. -/
+theorem continuousBoundaryReporter_eq_zero_of_cyclic_denseRange
+    {H B Y ι : Type*}
+    [NormedAddCommGroup H] [NormedSpace ℂ H]
+    [NormedAddCommGroup B] [NormedSpace ℂ B]
+    [NormedAddCommGroup Y] [NormedSpace ℂ Y]
+    (v : ι → H) (hcyclic : IsCyclicFamily (𝕜 := ℂ) v)
+    (j : H →L[ℂ] B) (hj : DenseRange j)
+    (q : B →L[ℂ] Y) (hkill : ∀ i, q (j (v i)) = 0) :
+    q = 0 := by
+  have hqj : q.comp j = 0 := by
+    refine ContinuousLinearMap.ext_on hcyclic ?_
+    rintro _ ⟨i, rfl⟩
+    simpa using hkill i
+  have hcomp :
+      (q : B → Y) ∘ (j : H → B) =
+        ((0 : B →L[ℂ] Y) : B → Y) ∘ (j : H → B) := by
+    funext x
+    have hx := DFunLike.congr_fun hqj x
+    simpa using hx
+  have hfun := hj.equalizer q.continuous
+    (0 : B →L[ℂ] Y).continuous hcomp
+  ext b
+  exact congrFun hfun b
+
 end
 
 end RHTower

@@ -537,3 +537,17 @@ statements about the *amplitude family alone*: that `partial_r u_r` exists point
 uniformly bounded on the interval near the base shift. For a resolvent family both come from
 `HTGeometry/ResolventFamilyJet.lean` (`hasDerivAt` and `norm_pow_le_of_small`, with
 `eventually_small_of_nhds` discharging the smallness side condition).
+
+### Lean progress — `(11)` in usable form
+
+- `hasDerivAt_compactFourier_of_amplitude` : **the statement a caller actually wants.**
+  `d/dr ∫_{-a}^{a} u_r(t) e^{izt} dt = ∫_{-a}^{a} (∂_r u_r)(t) e^{izt} dt`, with hypotheses
+  mentioning *only the amplitude family* — continuity, pointwise parameter derivative, and a uniform
+  bound on that derivative near the base shift. All kernel and interval bookkeeping is discharged
+  inside. [PROVED HERE], standard axioms `[propext, Classical.choice, Quot.sound]`, builds clean.
+
+This is `(11)`'s `partial_r F_r = -G_r` in the form the card needs: instantiate `u_r = R_r e` and
+`w_r = -R_r^2 e`, and the three hypotheses are exactly what
+`HTGeometry/ResolventFamilyJet.lean` supplies (`hasDerivAt`, `norm_pow_le_of_small`,
+`eventually_small_of_nhds`). The only step left on this card is naming the family — identifying the
+abstract `S` with Suzuki's `R_r = (A + rI)^{-1}`.

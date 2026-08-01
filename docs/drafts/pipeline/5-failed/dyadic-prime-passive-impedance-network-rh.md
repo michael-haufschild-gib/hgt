@@ -309,8 +309,10 @@ Unconditional Lean formalization is complete:
 - `GaloisForLFunctions.HTGeometry.DirichletHalfPlaneSignRigidity` proves finite-abscissa stability
   under power twists, normalized first-mode imaginary limits, peeled/raw imaginary equality for
   real coefficients, and both eventual sign orientations for an arbitrary first surviving mode.
-- `GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPassiveNoGo` proves `S(2)>0`, the two exact dyadic
-  high-line signs, witnesses above every height, and
+- `GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPassiveNoGo` proves the literal window identity
+  `dyadicWeightedPrimeWindow_two`, exact coefficient identity
+  `dyadicSharpPrimeSourceCoefficient_two`, its strict positivity, the two exact dyadic high-line
+  signs, witnesses above every height, and
   `dyadicSharpPrimeImpedance_not_upperHalfPlaneValued_above` plus
   `dyadicSharpPrimeImpedance_not_lowerHalfPlaneValued_above`.
 - `lake env lean` passed for both files; targeted

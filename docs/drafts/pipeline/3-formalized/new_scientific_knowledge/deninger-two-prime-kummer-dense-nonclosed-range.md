@@ -1,9 +1,10 @@
 # Deninger two-prime Kummer dense/nonclosed range
 
-**Status:** fully proved on paper; Lean formalization pending  
+**Status:** formalized in Lean; direct source check and targeted module build pass  
 **Route:** `L`  
 **Exact label:** `DAC_TWO_PRIME_KUMMER_DENSE_NONCLOSED_RANGE`  
-**Positive survivor:** `DAC_KUMMER_REDUCED_UNREDUCED_COHOMOLOGY_DICHOTOMY`
+**Positive survivors:** `DAC_KUMMER_REDUCED_UNREDUCED_COHOMOLOGY_DICHOTOMY`,
+`DAC_TWO_PRIME_KUMMER_RELATIVE_DOMAIN_DICHOTOMY`
 
 ## Claim
 
@@ -98,19 +99,34 @@ for nonvanishing Deninger multipliers, and no reduced/unreduced Route-L conclusi
 New knowledge is the exact Hilbert-complex diagnosis.  General facts about diagonal operators are
 not claimed as new.
 
-## Formalization target
+## Lean formalization
 
-Formalize unconditionally:
+`formal/GaloisForLFunctions/RHTower/DeningerTwoPrimeKummerDenseNonclosedRange.lean` proves
+unconditionally:
 
 1. injectivity, coordinate action, and dense range of a nonvanishing diagonal `\ell^2` multiplier;
 2. nonclosed range from unit coordinate vectors whose weights tend to zero;
 3. rational independence and real dependence of `(\log2,\log3)`;
-4. arithmetic bounded-transform dense/nonclosed range and a closure-only witness.
+4. arithmetic bounded-transform dense/nonclosed range and a closure-only witness;
+5. every signed two-prime period is real and nonzero as a real frequency;
+6. the actual weighted relative boundary is complete and contains an explicit norm-one `\log2`
+   class;
+7. the relative coefficient Hodge operator squares to `-1` and is isometric;
+8. `deningerTwoPrimeKummer_relative_raw_dichotomy`: on one arithmetic index, raw reduced
+   cohomology vanishes while relative boundary cohomology is nonzero.
+
+Verification: foreground
+`lake env lean GaloisForLFunctions/RHTower/DeningerTwoPrimeKummerDenseNonclosedRange.lean`
+and targeted
+`lake build GaloisForLFunctions.RHTower.DeningerTwoPrimeKummerDenseNonclosedRange`
+both pass. No full build was run. A transitive `#print axioms` traversal was stopped after
+90 seconds without output; formal lint remains authoritative for forbidden declarations.
 
 ## Route-L effect
 
 Retire the claim that raw Kummer small-divisor cokernel itself supplies global positive `H^1`.
-Surviving hard claim:
+The local relative-domain repair is now dependency-closed and formalized. Surviving global hard
+claim:
 
 `[CONJECTURE] DAC_RELATIVE_KUMMER_MILNOR_REDUCED_COHOMOLOGY`:
 
@@ -118,4 +134,5 @@ Surviving hard claim:
 > bounded normalized cup descends nondegenerately; prove this cohomology agrees with Paugam/Meyer
 > `H^1` under Cauchy and residue transition maps.
 
-This remains a genuine construction problem, not a closure convention.
+This is specifically Milnor/cross-sector incidence plus Paugam/Meyer comparison; local Kummer
+relative nonvanishing is no longer part of the conjectural debt.

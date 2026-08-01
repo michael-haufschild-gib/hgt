@@ -35,13 +35,12 @@ theorem isLineBigO_of_bound {f : ℝ → ℂ} (hσ : 0 < σ) (B : ℝ) (k : ℕ)
     _ = B * (1 + σ) ^ k := by
         rw [mul_pow, div_pow, one_pow]
         field_simp
-        ring
 
 /-- The powers of `1/t` tend to zero. -/
 theorem tendsto_one_div_pow (j : ℕ) (hj : 1 ≤ j) :
     Tendsto (fun t : ℝ => (1 / t) ^ j) atTop (nhds 0) := by
-  have hinv : Tendsto (fun t : ℝ => 1 / t) atTop (nhds 0) := tendsto_one_div_atTop_nhds_zero_nat
-    |>.comp tendsto_natCast_atTop_atTop |>.congr (fun _ => rfl) |>.mono_left le_rfl
+  have hinv : Tendsto (fun t : ℝ => 1 / t) atTop (nhds 0) := by
+    simpa [one_div] using tendsto_inv_atTop_zero
   have := hinv.pow j
   rwa [zero_pow (by omega)] at this
 
@@ -75,9 +74,11 @@ theorem exists_datum_of_not_flat {f : ℝ → ℂ} (hσ : 0 < σ) (W : ℕ)
           * (f t - P.eval ((σ : ℂ) + (t : ℂ) * Complex.I)
             / shiftProd l ((σ : ℂ) + (t : ℂ) * Complex.I))) atTop (nhds 0) := by
         rw [tendsto_zero_iff_norm_tendsto_zero]
-        refine squeeze_zero' (Eventually.of_forall fun t => norm_nonneg _) ?_
-          (((tendsto_one_div_pow (j + 1) (by omega)).const_mul (A * (1 + σ) ^ p)).congr
-            (fun t => rfl) |>.mono_left le_rfl)
+        have hlim : Tendsto (fun t : ℝ => (A * (1 + σ) ^ p) * (1 / t) ^ (j + 1))
+            atTop (nhds 0) := by
+          have h := (tendsto_one_div_pow (j + 1) (by omega)).const_mul (A * (1 + σ) ^ p)
+          rwa [mul_zero] at h
+        refine squeeze_zero' (Eventually.of_forall fun t => norm_nonneg _) ?_ hlim
         filter_upwards [eventually_ge_atTop (2 : ℝ), eventually_norm_vertical_le hσ.le]
           with t ht hv
         have htpos : (0 : ℝ) < t := by linarith
@@ -93,7 +94,6 @@ theorem exists_datum_of_not_flat {f : ℝ → ℂ} (hσ : 0 < σ) (W : ℕ)
           _ = (A * (1 + σ) ^ p) * (1 / t) ^ (j + 1) := by
               rw [hj, mul_pow, div_pow, one_pow, pow_add, div_pow, one_pow]
               field_simp
-              ring
       have hsum := hdatum.add herr
       rw [add_zero] at hsum
       refine hsum.congr fun t => ?_

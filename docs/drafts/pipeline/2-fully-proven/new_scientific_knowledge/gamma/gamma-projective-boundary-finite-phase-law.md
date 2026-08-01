@@ -3653,9 +3653,28 @@ each factor in exactly the shape the weighted product estimate consumes:
 
   So a nonzero standard rational function *has* a datum, read off its numerator.
 
-`#print axioms` clean.  What remains for the unquantified eq. (19) is the last logical step — for a
-nonzero jet polynomial some depth must give a nonzero approximant, since otherwise the polynomial
-would be flat, contradicting `not_isVertFlatGerm_digammaJetEval` — which exists because a standard rational function whose
+`#print axioms` clean.
+
+**The dichotomy, and eq. (19) for constant coefficients.**  `HTGeometry/JetDatumFromNonFlat.lean`
+proves the step that turns approximation into a residue.  `isLineBigO_of_bound` converts a bound in
+powers of `1/t` into the line scale (through the corpus's `eventually_norm_vertical_le`), and then
+**`exists_datum_of_not_flat`**: if `f` is approximated to *every* depth by standard rational
+functions of a fixed defect `W`, and `f` is not flat (`¬ IsLineBigO σ n f` for some `n`), then
+
+`∃ p c, c ≠ 0 ∧ s^p·f(s) → c`.
+
+The proof runs the dichotomy at the single depth `K = n`.  If that approximant's numerator is zero
+then `f` is `O(u^{W+n})`, hence `IsLineBigO σ n f`, contradiction.  Otherwise the numerator is
+nonzero, its own datum is `tendsto_stdRat_datum`, and either the datum order `p` is below `W+n` — in
+which case the error is of strictly higher order and passes to `f` — or `p ≥ W+n`, which again makes
+`f` small enough to contradict non-flatness.
+
+`HTGeometry/JetPolynomialDatum.lean` then reads this on the object of interest:
+**`exists_jetPoly_datum`** — a polynomial in the positive-order digamma jets with *constant*
+coefficients, if it is not flat on the line, satisfies `s^p·P(ψ′,ψ″,…)(s) → c ≠ 0`.  That is eq. (19)
+for the constant-coefficient case with **no presentation supplied**: only the polynomial and its
+non-flatness go in, and the corpus's `not_isVertFlatGerm_digammaJetEval` is exactly what supplies
+non-flatness for a nonzero polynomial — which exists because a standard rational function whose
 every coefficient vanished to every depth would make the jet polynomial flat, contradicting
 `not_isVertFlatGerm_digammaJetEval`.  After that, the `log s` level for `ψ` itself (integrating the
 `ψ′` expansion) and the `ℂ(s)`-coefficient case (multiplying by a rational function, whose own

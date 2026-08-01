@@ -320,9 +320,82 @@ harmonic Poisson extension makes their energy cross term zero".  That is now a t
   boundary value is zero, and the Poisson profile's first-order equation `p' = -m p` makes the
   radial and transverse contributions to the energy pairing cancel.
 
+### The energy form is definite
+
+`formal/GaloisForLFunctions/RHTower/DeningerEnergyDefinite.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerEnergy_nonneg` — the radial energy `(2)` is nonnegative.
+- `deningerEnergy_eq_zero` — **a filling of zero energy vanishes**: the integrand is nonnegative, so
+  it vanishes almost everywhere, and a continuous function vanishing almost everywhere on the open
+  half line vanishes there, because its nonvanishing locus would be a neighbourhood of positive
+  measure inside a null set.  Definiteness is what makes `(2)` an inner product on the filling core.
+
+### The boundary space `(1)` is a Hilbert space
+
+`formal/GaloisForLFunctions/RHTower/DeningerBoundaryComplete.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerBoundarySubmodule` — the boundary data of finite boundary norm form a submodule: the
+  weight is nonnegative and the squared norm obeys the parallelogram bound.
+- `deningerBoundaryEquiv` — **the parametrization is a linear bijection** from `ℓ²(ι)` onto that
+  submodule, dividing by the square root of the weight; its inverse multiplies back.
+- `deningerBoundaryEquiv_normSq` — and it carries the `ℓ²` norm to the boundary norm `(1)`.
+- `deningerBoundary_complete` — **`ℬ_ℓ` is complete**: a boundary-norm Cauchy sequence transports to
+  an `ℓ²`-Cauchy sequence, and the transported limit is approached in boundary norm.
+
+### The trace quotient isometry `(3)`, the decomposition `(5)`, and the defect `(8)`
+
+`formal/GaloisForLFunctions/RHTower/DeningerTraceQuotient.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerProjection_minimal` — the orthogonal projection minimizes the distance to a subspace.
+- `deningerQuotientNorm_eq` — **the quotient norm is the norm of the orthogonal component**, the
+  step that turns the Dirichlet principle into an isometry statement.
+- `deningerZeroTrace_isCompl` — **`(5)`**: the zero-trace subspace and its orthogonal complement are
+  complementary, so the energy space splits as the zero-trace part plus the minimal-energy part.
+- `deningerTraceIsometry` — **`(4)`**: the trace is an isometric isomorphism from the orthogonal
+  complement of the zero-trace subspace onto the boundary space; that inverse is the minimal-energy
+  right inverse.
+- `deningerTraceQuotientIsometry` — **`(3)`**: the trace descends to an isometric isomorphism
+  `Ė_ℓ / Ė_{ℓ,0} ≅ ℬ_ℓ`.
+- `deningerQuotientTransport` — a surjective linear isometry descends to the quotients.
+- `deningerGradientDefectIsometry` — **`(8)`**: applying the leafwise gradient, the quotient of the
+  full energy space by the image of the zero-trace subspace is isometric to `ℬ_ℓ`, so
+  `d_F Pφ` is a nonzero relative class exactly when its boundary value is nonzero.
+
+### The cup form `(10)` and the positive Hodge operator `(11)`
+
+`formal/GaloisForLFunctions/RHTower/DeningerPacketHodge.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerGradMode_cup` — the radial wedge integral of the gradients of two opposite Poisson modes
+  is `i μ`; the gradient scales the mode by `|μ|`.
+- `deningerPacketCup_eq` — **`(10)` on a finite packet**: the cup form is `i ∑ ℓ(a) φ_a ψ_{-a}`.
+- `deningerPacketCup_nondegenerate` — and it is nondegenerate when every frequency in the packet is
+  nonzero.
+- `deningerHodgeW_sq` — **the odd operator `W = i sgn(D)` squares to `-1`**.
+- `deningerPacketCup_hodge` — **`(11)`**: pairing a packet against the `W`-image of its conjugate
+  reversal returns `∑ |ℓ(a)| |φ_a|²`, the boundary norm `(1)`.
+- `deningerPacketCup_hodge_pos` — which is strictly positive on a nonzero packet.  So `(8)` carries
+  a source-positive odd Hodge operator with square `-1`.
+
+### Power naturality
+
+`formal/GaloisForLFunctions/RHTower/DeningerPowerNaturality.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerPowerPull_absOp` — the power pullback intertwines `A_ℓ` with weight one.
+- `deningerPowerPull_hodgeW` — and commutes with `W_ℓ`, because a positive factor preserves signs.
+- `deningerPowerPull_boundaryNormSq` — `(1)` scales by `q`.
+- `deningerPowerPull_unitary` — so `q^{-1/2} F_q^*` is unitary for the boundary norm.
+- `deningerPowerPull_packetCup` — `(10)` scales by `q`.
+
 ### Remaining
 
-Only the packaging of `(2)` as a Hilbert space: the energy completion `Ė_ℓ` and its zero-trace
-subspace `Ė_{ℓ,0}`.  Every computation the card performs is formalized — `(6)` with its equality
-case, the trace bound, the Dirichlet principle `(4)`, the core energy identity `(7)`, the
-orthogonality behind `(5)`, the isometric model of `ℬ_ℓ` `(1)`, and the Lagrangian graph theorem.
+Nothing.  Every theorem the card states is formalized unconditionally: the boundary space `(1)`
+with its completeness, the energy `(2)` with its definiteness, the trace quotient isometry `(3)`,
+the Poisson right inverse `(4)`, the Dirichlet decomposition `(5)`, the completing-the-square
+identity `(6)` with its equality case, the energy identity `(7)`, the relative boundary defect
+`(8)`, the Green symplectic form `(9)` with the Lagrangian graph, the cup form `(10)`, the positive
+Hodge identity `(11)`, and the power naturality of all four.

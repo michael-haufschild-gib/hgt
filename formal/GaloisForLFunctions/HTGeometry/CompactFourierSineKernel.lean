@@ -281,6 +281,26 @@ theorem hasDerivAt_compactFourier {u w : ℝ → ℝ → ℂ} {a r₀ M : ℝ} {
     intro ht r hr
     exact hdiff t ht r hr
 
+/-- **Differentiation under a compact Fourier transform, amplitude form.**  The usable statement:
+its hypotheses mention only the amplitude family, all kernel and interval bookkeeping having been
+discharged internally.
+
+A caller supplies exactly the two content facts — that the parameter derivative exists pointwise and
+is uniformly bounded near the base shift — plus continuity of the amplitude. -/
+theorem hasDerivAt_compactFourier_of_amplitude {u w : ℝ → ℝ → ℂ} {a r₀ M : ℝ} {z : ℂ}
+    (ha : 0 ≤ a)
+    (hcont : ∀ᶠ r in nhds r₀, Continuous (u r)) (hcont₀ : Continuous (u r₀))
+    (hcontw : Continuous (w r₀))
+    (hbound : ∀ t ∈ Set.uIoc (-a) a, ∀ r ∈ Metric.ball r₀ 1, ‖w r t‖ ≤ M)
+    (hderiv : ∀ t ∈ Set.uIoc (-a) a, ∀ r ∈ Metric.ball r₀ 1,
+      HasDerivAt (fun s => u s t) (w r t) r) :
+    HasDerivAt (fun r => ∫ t in (-a)..a, u r t * Complex.exp (I * z * (t : ℝ)))
+      (∫ t in (-a)..a, w r₀ t * Complex.exp (I * z * (t : ℝ))) r₀ :=
+  hasDerivAt_compactFourier hcont
+    (intervalIntegrable_mul_fourierKernel hcont₀ z _ _) hcontw
+    (fun _ ht => abs_le_of_mem_uIoc_symm ha ht) hbound
+    (fun t ht r hr => hasDerivAt_mul_fourierKernel z t (hderiv t ht r hr))
+
 end
 
 end GaloisForLFunctions.HTGeometry
