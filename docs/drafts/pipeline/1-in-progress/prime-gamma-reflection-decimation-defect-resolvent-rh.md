@@ -460,10 +460,24 @@ sum_p (Lambda(p)/p)*(log p)^(2r)
 
 This uses only `Lambda(p)=log p`, `log p>=log 2`, and Euler's divergence of the prime harmonic
 series.  Therefore the infinite-rank repair cannot remain diagonal in the resolved prime basis,
-even if arbitrary phases are attached to individual channels.  A surviving positive incidence
-must mix prime channels, with Gamma/polar boundary data participating before the Hilbert norm is
-formed.  Calling the required map merely "channel-resolved" is insufficient unless this
-off-diagonal coupling is explicit.
+even if arbitrary phases are attached to individual channels.
+
+The stronger Euler-subset lift classification is now formalized.  Let `b` be an arbitrary fixed
+Gamma/polar boundary vector and `v_p` arbitrary off-diagonal prime outputs.  If every finite Euler
+subproduct has the exact positive source energy
+
+```text
+||b + sum_(p in F) v_p||^2
+  = B + sum_(p in F) (log p)^(2r+1)/p,                   (22j2a)
+```
+
+then the four-subset mixed difference forces `Re <v_p,v_q>=0` for distinct primes, while finite
+packet norms are unbounded.  Hence arbitrary off-diagonal mixing is only a real-orthogonal
+re-embedding whenever finite Euler subproducts remain source-functorial.  Gamma/polar data already
+present before the norm do not help.  A survivor must instead break subsetwise Euler norm
+additivity, make the boundary depend nonlocally on the whole Euler product, or postpone positivity
+until after signed global completion.  Calling the required map merely "off-diagonal" is no
+longer a live mechanism.
 
 There is now one unconditional positive off-diagonal completion surviving this obstruction.
 Place the source conductance `Lambda(n)/n` on the integral successor edge `n -> n+1` and take the
@@ -649,11 +663,12 @@ source packet to produce the mixed value `m_1` as well as both diagonal values.
 
 ## Ranked research targets
 
-1. **Infinite-rank off-diagonal Hermite unbalancing incidence.**  Starting from the formalized
-   cofinal positive prime kernel, construct a transform which genuinely mixes prime channels and
-   converts the inverse-log Cauchy law `(22j1)` into the positive-log Mellin jets `(22j0)` without
-   passing through a finite-rank correction or assuming target positivity.  Couple the Gamma
-   spectral clock and polar boundary modes before the positive norm is formed, then prove `(22j)`.
+1. **Global nonlocal completed quotient.**  Fixed prime packets satisfying finite-subproduct Euler
+   norm law are now excluded even under arbitrary off-diagonal mixing and a fixed completed
+   boundary.  Construct instead a global signed prime–Gamma object whose positive quotient is
+   formed only after all Euler, Gamma, and polar modes have been combined.  Prove its positivity
+   without target moments or zero locations, then prove `(22j)`.  A cutoff-dependent fitted
+   counterterm or chosen conditionally convergent prime order is not source-functorial evidence.
 2. **Two-vector completed comparison.**  For `N=2`, identify three entries of that one source
    packet with `m_0,m_1,m_2` through the inverse-tilted central source relation.  This subsumes
    `(23)` without defining its square root from the determinant.
@@ -718,7 +733,10 @@ source packet to produce the mixed value `m_1` as well as both diagonal values.
 - [x] integral successor Dirichlet completion of every logarithmic jet formalized
 - [x] mixed absolute summability and all-order positive successor Gram formalized
 - [x] direct successor-Gram identification with the target Hankel section excluded in Lean
-- [ ] construct an infinite-rank off-diagonal channel-mixing unbalancing/incidence transform
+- [x] Euler-subset-natural off-diagonal channel-mixing unbalancing excluded in Lean, even with an
+      arbitrary fixed Gamma/polar boundary vector
+- [ ] construct a genuinely global nonlocal signed prime–Gamma quotient whose positivity appears
+      only after completion and is proved without target moments or zero locations
 - [ ] formalize the positive mixed center-jet Gram of the infinite kernel
 - [ ] couple the Gamma spectral clock and polar boundary modes with the prime anomaly kernel
 - [ ] prove Euler-boundary causal/polar cancellation, including common-charge cancellation
@@ -754,3 +772,10 @@ source packet to produce the mixed value `m_1` as well as both diagonal values.
   theorems.  The open producer is therefore an infinite-rank channel-resolved unbalancing incidence
   which remains positive after completed Gamma/polar transport.  The bare comparison `(22j)` is not
   itself a source theorem.
+- 2026-08-01 -- Closed the proposed off-diagonal escape under its finite-Euler source-functoriality
+  requirement.  Exact subset energy forces zero real covariance between distinct prime outputs and
+  divergent completed packet norms, even with an arbitrary fixed Gamma/polar boundary.  Also proved
+  unrestricted positive carrier rigidity: every all-moment witness is the canonical compact atomic
+  Xi-divisor measure, so moment indeterminacy supplies no alternative carrier.  The only survivor is
+  a global signed boundary/domain defect formed before positivity; its resolvent-flux identification
+  is the irreducible Weil/RH clause.

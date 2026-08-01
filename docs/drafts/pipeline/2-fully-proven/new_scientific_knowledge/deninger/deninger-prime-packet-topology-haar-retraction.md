@@ -392,21 +392,83 @@ formalized.
   surviving sides do cover `S`, because a point of the piece together with any `t` lies in some box
   and the piece is an atom of the side family, so the whole piece lies in that side.
 
+### The smooth fineness of `(6)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerPacketFineSmooth.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerPacketFineSmooth` — **the packet is smoothly fine**: for a compact profinite factor
+  times a compact manifold, every open cover admits a subordinate partition of unity whose members
+  are continuous, locally constant along the profinite factor, and `C^∞` along the manifold factor.
+  The smoothness is free from the assembly: over each piece of the clopen partition the assembled
+  function *is* the transverse function chosen there (`deningerTransverseSum_eq_of_mem`), so it
+  inherits whatever regularity that has.  The transverse functions come from mathlib's
+  `SmoothPartitionOfUnity.exists_isSubordinate`.
+- `deningerPacketFineSmooth_circle` — the instance the card needs, with the transverse factor the
+  circle: mathlib supplies `IsManifold (𝓡 1) ω Circle`.  This is exactly `ℛ_p^∞`: locally constant
+  in `B_p`, smooth in `S_p`.
+
+### The mapping-torus identity `(4)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerMappingTorus.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+The card's `(4)` is the statement that, Frobenius acting trivially, the suspension collapses to a
+product.  That is a theorem about any space, and it is proved here in that generality.
+
+- `deningerTorusSetoid` — the deck relation `(x, t) ∼ (x, t + n T)` on `X × ℝ`, and
+  `DeningerMappingTorus X T` its quotient with the quotient topology.
+- `deningerTorusCompare_isQuotientMap` — the comparison map `(x, t) ↦ (x, t mod T)` is an open
+  continuous surjection, hence a quotient map (`QuotientAddGroup.isOpenMap_coe` on the second
+  factor).
+- `deningerTorusCompare_eq_iff` — it identifies exactly the deck-equivalent points.
+- `deningerMappingTorusHomeomorph` — **`(4)`**: `X ×_{T ℤ} ℝ ≃ₜ X × ℝ/Tℤ`.  With `X = B_p` and
+  `T = log p` this is the card's `B_p ×_{p^ℤ} ℝ_{>0} ≅ B_p × S_p`, and it is what makes the packet a
+  product once the Frobenius action has been divided out of `(1)`.
+
+### The profinite factor `(1)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerPacketUnits.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerTotallyDisconnected_of_injective` — **total disconnectedness passes along a continuous
+  injection**: a preconnected set maps to a preconnected set, which is a subsingleton, and
+  injectivity pulls that back.
+- `deningerMulOppositeTotallyDisconnected`, `deningerUnitsTotallyDisconnected` — hence **the unit
+  group of a totally disconnected monoid is totally disconnected**, via the embedding
+  `Units.embedProduct` into `M × Mᵐᵒᵖ`.  mathlib has neither instance; it does have
+  `IsUltrametricDist ℤ_[p]` and `TotallySeparatedSpace` for ultrametric spaces, which gives
+  `TotallyDisconnectedSpace ℤ_[p]` and therefore, with the above, `TotallyDisconnectedSpace ℤ_[p]ˣ`.
+- `DeningerPacketUnits p = ∏_{ℓ ≠ p} ℤ_ℓ^×` — the unit group of `(1)`, with its compactness,
+  Hausdorffness, total disconnectedness and group structure.
+- `deningerPacketUnitsFineSmooth` — **the packet over it is smoothly fine**: the general fineness
+  theorem applied to the actual profinite factor of `(1)` and the circle.  This is the card's
+  `ℛ_p^∞` on the concrete packet, not on hypothesised data.
+
+### The no-go closure and `(13)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerPacketNonlocal.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerPacketAv_indicator` — the average of a clopen indicator is its mass.
+- `deningerPacketAv_not_local` — **the average is not a local operation**: two continuous functions
+  agreeing on a clopen piece of mass `< 1` can have different averages.  This is the card's
+  statement that `Av_p` "is not an ordinary local sheaf endomorphism": a sheaf endomorphism's value
+  on a piece of a disjoint clopen decomposition is determined by the restriction to that piece, and
+  this one is not.
+- `deningerPacketAv_ker_ne_bot` — **`(13)`**: a clopen piece of intermediate mass gives a nonzero
+  function of vanishing average, so `ker(Av_p)` is not trivial and the packet coefficient retains
+  genuine nonconstant modes.
+
 ### Remaining
 
-1. **The packet model `(1)`--`(4)`** as a construction rather than a hypothesis:
-   `U_p = ∏_{ℓ≠p} ℤ_ℓ^×`, the closed subgroup `p^Ẑ`, and the identification of the quotient with the
-   automorphism group of `μ_{p'}` in the topology of pointwise convergence.  This needs Deninger's
-   Theorem 7.10 and Corollary 7.9 as inputs; what is formalized here is the topological argument
-   (`deningerPacketHomeomorph`) that turns them into `(3)`.
-2. **The smooth refinement of the transverse factor.**  `deningerPacketFine` produces a *continuous*
-   partition of unity, via mathlib's `PartitionOfUnity.exists_isSubordinate` on the compact
-   Hausdorff factor.  The card asks for smoothness in `S_p`, which needs a smooth manifold structure
-   on `AddCircle` — mathlib has smooth partitions of unity on a manifold
-   (`SmoothPartitionOfUnity.exists_isSubordinate`) but no charted-space instance for `AddCircle`.
-   The assembly `deningerTransverseSum` is stated for an arbitrary transverse family, so it will
-   accept smooth data unchanged once that instance exists.
-3. **The sheaf-theoretic conclusion** of `(6)`: that a fine sheaf is acyclic and that
-   `RΓ(Γ_p, ℛ_p^∞) ≃ C_lc(B_p, C^∞(S_p, ℝ))[0]`.  The construction the card performs by hand is
+1. **Deninger's identification** of `U_p` with the automorphism group of `μ_{p'}` in the topology of
+   pointwise convergence, and of the packet `Γ_p` with the mapping torus — his Theorem 7.10 and
+   Corollary 7.9.  Everything the card derives *from* those inputs is formalized: the mapping-torus
+   collapse `(4)` (`deningerMappingTorusHomeomorph`), the compact-to-Hausdorff upgrade to `(3)`
+   (`deningerPacketHomeomorph`), and the profinite structure of `(1)` (`DeningerPacketUnits`).
+2. **The sheaf-theoretic conclusion** of `(6)`: that a fine sheaf is acyclic and that
+   `RΓ(Γ_p, ℛ_p^∞) ≃ C_lc(B_p, C^∞(S_p, ℝ))[0]`.  The construction the card performs by hand — the
+   partition of unity, locally constant along the profinite factor and smooth along the circle — is
    formalized; packaging it as sheaf acyclicity needs the fine-implies-soft-implies-acyclic chain,
    which mathlib does not have.

@@ -993,9 +993,11 @@ rests on:
    (`..._fixedChannel`), and the position-side conductor channel under **any** height schedule
    (`..._logShellChannelFamily`), because the packets' support is fixed and on a fixed annulus the
    channel is bounded independently of the height (`exists_bound_norm_evenLogShellChannel_of_annulus`).
-5. Not excluded: the **frequency-side** channel.  It blows up on the packets along an explicit
-   carrier and height schedule (`exists_schedule_tendsto_norm_evenFourierLogShellChannel_atTop`),
-   because the packets' frequency runs even though their support does not.
+5. The **frequency-side** channel blows up on the packets along an explicit carrier and height
+   schedule (`exists_schedule_tendsto_norm_evenFourierLogShellChannel_atTop`), because the packets'
+   frequency runs even though their support does not — but it is *also* excluded now
+   (`not_bddBelow_soninCompletedPacketValueVar_fourierLogShellChannelFamily`), at every height
+   schedule, because on the packets it grows only logarithmically in the scale.
 6. Its size is capped: `norm_evenFourierLogShellChannel_apply_le` bounds the contribution by the
    largest layer logarithm, i.e. by `log` of the outer tower radius.
 7. A shortfall of any fixed amount kills the floor —
@@ -1491,13 +1493,66 @@ height at all**, only to the cut index `K` and the bound `M` on the layer logari
 `re_inner_evenFourierLogShellChannel_le` states the number a completion built from it actually
 contributes.
 
-So a tall tower buys nothing: the contribution is the logarithm at the cut and no more.  Placing the
-cut just past the packet's carrier makes `M` the logarithm of the carrier — logarithmic in the scale
-— and the outer term a constant of the schedule.  What remains to supply is the packet's own spectral
-power tail above the cut, which is the same estimate the shell-cut budget already uses on the high
-side (`exists_soninRefTailSup_le_div`, `setIntegral_le_of_le_powerTail`), read at radii past the
-carrier rather than at the carrier itself.  With that in hand the frequency-side channel joins the
-excluded list by the logarithmic cap, and item 5 closes.
+So a tall tower buys nothing: the contribution is the logarithm at the cut and no more.
+
+The packet's own spectral tail is what makes that hypothesis true of the packets, and the corpus
+already had it — `exists_norm_sq_sub_evenFourierCutoff_soninScaledPacketEven_le`, built for the
+shell-cut budget's high side, says exactly that above twice the carrier the mass outside a ball is a
+power tail at every order.  It needed only to be read with a natural exponent
+(`..._le_div`, at order `2N-1`) and transported across the transform
+(`norm_sub_evenIndicatorCutoff_evenFourierTransform`, since the physical cutoff's defect after the
+transform is the frequency cutoff's defect before it).  So
+`exists_norm_evenFourierLogShellChannel_soninScaledPacketEven_le` holds: on a rescaled packet with
+the cut past twice the carrier, the channel is bounded with the height nowhere in the statement.
+
+Written out, that bound's outer term carries the half-width to the power `-(2N-2)` and the cut radius
+to the same power, so they combine — `soninChannelOuterTerm_eq` — and the whole term is a shell
+constant over `(delta * cut radius)^(2N-2)`.  This is the third time this line has met the same
+phenomenon, and it is worth naming: *every* quantity of a rescaled packet that looks like it depends
+separately on the refinement and on the scale in fact depends on their product alone.  Here it means
+the outer term is fixed under the tied scale, since `delta` times anything proportional to the
+carrier is a fixed multiple of the schedule constant.
+
+The choice of cut index is now made, and it is forced.  The tower's radii are geometric, so the least
+index whose radius reaches a target overshoots by at most one factor of the ratio
+(`exists_soninChannelCutIndex`); taking the cut there brackets the cut radius between twice the
+carrier and `max(a0, 2 r0 w)`.  Both halves of the bound want exactly that bracket — the upper end
+bounds the layer logarithms below the cut (`abs_log_logShellRadius_le_max`, since the radii increase
+and the logarithm is monotone, so every interior logarithm lies between the base's and the cut's),
+and the lower end bounds the half-width times the cut radius from below.
+
+`exists_norm_evenFourierLogShellChannel_soninScaledPacketEven_le_carrier` is the result: the channel's
+norm on a rescaled packet is at most
+
+  `sqrt( max(|log a0|, |log max(a0, 2 r0 w)|)^2 ‖psi‖^2 + shell constant / (2 delta w)^(2N-2) )`,
+
+with **no cut index and no tower height** — only the packet's carrier and half-width and the tower's
+base and ratio.
+
+**Item 5 is now closed.**  Two steps finish it.  First, the sublinear failure is restated in the form
+the estimate actually produces: a *dominated* one.  Isolating the schedule's eventual shortfall
+(`exists_schedule_eventually_sublinear_add_le_hsNormSq`) shows the argument never used equality with
+the cap, only domination, so `..._of_sublinear_dominated` holds; and at the operator level
+`..._of_sublinear_channel` closes every family whose *images* on vectors of bounded norm grow more
+slowly than the scale.  That is strictly wider than the bounded-family exclusion — the operator norms
+may grow without limit.
+
+Second, the bound above is checked to be sublinear.  Along a schedule whose carriers stay proportional
+to the scale and whose half-width times carrier stays bounded below, the constant term is genuinely
+constant and the logarithmic term is `O(log scale)`: `tendsto_log_max_div_atTop` handles the maximum
+with a fixed base, and `tendsto_sqrt_sq_mul_add_div_atTop` carries it through the square root, since
+the root of a sum is below the sum of the roots.
+
+`not_bddBelow_soninCompletedPacketValueVar_fourierLogShellChannelFamily` is the conclusion: **no
+completion built from the frequency-side channel restores the floor, at any height schedule.**  The
+hypotheses are exactly the three the schedule supplies — carriers proportional to the scale,
+half-width times carrier bounded below, packet norms bounded — and the heights are arbitrary.
+
+With that, every channel the corpus knows is excluded: prime-independent scalars, the Burnol
+counterterm, any fixed bounded operator, any uniformly bounded family, the position-side conductor at
+any height, and now the frequency-side conductor at any height.  Together with the threshold theorem,
+a completion that could still work must grow at least a definite positive multiple of the scale
+infinitely often — and none of the corpus's channels does.
 
 What remains on this line is the comparison against the logarithmic cap: the cap bounds the
 completed contribution by `log` of the outer radius, while the schedule's scale grows linearly in
@@ -1762,6 +1817,12 @@ family is abstract, so two widths have unrelated profiles.
 | **a logarithmic weight against a geometric tail**: partial geometric sums, and `(log t)^2 <= 4t` | `geom_sum_range_le`, `sum_Ico_geom_le`, `sq_log_le_four_mul`, `sq_abs_log_le_four_mul` |
 | **the outer shells against a power tail** — a shell sees only the mass above its inner radius, and the weighted outer sum is one geometric term | `norm_evenIndicatorLayer_apply_le_high`, `logShellRadius_pow`, `sum_Ico_logShellRadius_weight_le` |
 | **the channel on a vector with a power tail is bounded uniformly in the tower height**, in position and in frequency, with the pairing bound it supplies | `norm_evenLogShellChannel_apply_le_of_powerTail`, `norm_sq_evenIndicatorLayer_le_of_highTail`, `norm_evenLogShellChannel_apply_le_of_highTail`, `norm_evenFourierLogShellChannel_apply_le_of_highTail`, `re_inner_evenFourierLogShellChannel_le` |
+| **the rescaled packet meets that hypothesis**, so the frequency-side channel on a packet is bounded uniformly in the tower height | `norm_sub_evenIndicatorCutoff_evenFourierTransform`, `exists_norm_sq_sub_evenFourierCutoff_soninScaledPacketEven_le_div`, `exists_norm_evenFourierLogShellChannel_soninScaledPacketEven_le` |
+| **the outer term is a shell constant over `(delta * cut radius)^(2N-2)`** — half-width and radius enter to the same negative order and combine | `soninChannelOuterTerm_eq`, `exists_norm_evenFourierLogShellChannel_soninScaledPacketEven_le_combined` |
+| **the cut index chosen at the carrier**, giving the channel bound in the packet's own data — no cut index, no tower height | `exists_soninChannelCutIndex`, `abs_log_logShellRadius_le_max`, `exists_norm_evenFourierLogShellChannel_soninScaledPacketEven_le_carrier` |
+| **a channel family of sublinear size is excluded** — the dominated form of the sublinear failure, and its operator-level reading | `exists_schedule_eventually_sublinear_add_le_hsNormSq`, `not_bddBelow_soninCompletedPacketValueVar_of_sublinear_dominated`, `not_bddBelow_soninCompletedPacketValueVar_of_sublinear_channel` |
+| **logarithms of a growing maximum are sublinear**, and stay so through a square root against a fixed quadratic | `tendsto_log_div_atTop`, `tendsto_log_max_div_atTop`, `tendsto_max_abs_log_div_atTop`, `tendsto_sqrt_sq_mul_add_div_atTop` |
+| **the frequency-side channel is closed as a completion**, at every height schedule | `not_bddBelow_soninCompletedPacketValueVar_fourierLogShellChannelFamily` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1878,6 +1939,33 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — **the frequency-side channel is closed**, and with it every channel the corpus has.
+  Two steps: the sublinear failure only ever used *domination* by a sublinear cap, not equality, so
+  restating it that way makes it consume an estimate rather than a definition — and at the operator
+  level it closes every family whose images grow more slowly than the scale, operator norms
+  unbounded or not.  Then the packet bound is checked sublinear: constant term constant, logarithmic
+  term `O(log scale)`, both surviving the square root.  The remaining question is unchanged in form
+  but now has no candidate: a surviving completion must beat a definite slope infinitely often, and
+  no channel in the corpus grows that fast.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninSublinearChannelFamily.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/LogMaxSublinear.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninFourierChannelFamilyClosed.lean`.
+- 2026-08-01 — the cut index is chosen, and the frequency-side channel's bound on a packet is now
+  stated in the packet's own data alone.  Both halves of the bound turn out to want the same bracket
+  on the cut radius — the upper end for the layer logarithms, the lower end for the half-width
+  product — and the least index past twice the carrier supplies both at once, because a geometric
+  tower overshoots by at most one ratio.  The bound reads `O(log carrier)` plus a constant in the
+  half-width-times-carrier product, which along the schedule is `O(log scale)` plus a constant.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninChannelCutIndex.lean`.
+- 2026-08-01 — the height-uniform bound is instantiated on the packets, and the input it needed turned
+  out to be already in the corpus: the packet's spectral power tail, built for the shell-cut budget's
+  high side, is exactly the hypothesis, needing only a natural exponent and transport across the
+  transform.  Writing the resulting outer term out exposes the same combination this line has now met
+  three times — half-width and radius entering to the same negative order, so that only their product
+  matters.  Recording it as a pattern rather than an accident: a rescaled packet has no quantity that
+  depends on refinement and scale separately.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninPacketChannelHeightBound.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninPacketChannelCombinedForm.lean`.
 - 2026-08-01 — the last unexcluded channel's freedom is measured, and it is smaller than it looked.
   A completion using the frequency-side channel may choose the tower's height at each step, and the
   crude bound grows with it; but against a vector with a rapidly decaying spectrum the height is

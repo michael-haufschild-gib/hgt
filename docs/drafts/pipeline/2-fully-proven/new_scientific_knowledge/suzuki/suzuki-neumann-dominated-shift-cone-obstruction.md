@@ -307,3 +307,94 @@ umbrella, standard axioms `[propext, Classical.choice, Quot.sound]`, builds clea
 
 This is the general-purpose half of `(4)`; what remains is the construction of `A_a` itself and the
 identification of the dense set (the range of the resolvent), both of which need the operator.
+
+### Lean progress — the dense set of `(4)` identified
+
+The second reusable half of `(4)`. Applying `tendsto_of_dense_of_uniform_bound` needs a dense set on
+which the resolvent family converges in norm; in the resolvent coordinate that set is the **range of
+the bounded resolvent** `B = (A - rho)^{-1}`, because the factor `x` in the symbol
+`(f_lambda(x) - 1) x` kills the spectral accumulation point at `0` where the pointwise convergence
+fails. Density of that range is what makes the argument close.
+
+Added to `HTGeometry/CompactOperatorDiscreteSpectrum.lean` [PROVED HERE], standard axioms
+`[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `denseRange_of_isSelfAdjoint_of_injective` : an injective self-adjoint bounded operator on a
+  Hilbert space has dense range. Mechanism: the orthogonal complement of the range of a star-normal
+  operator is its kernel (`ContinuousLinearMap.IsStarNormal.orthogonal_range`), so injectivity makes
+  that complement trivial, which on a complete space is exactly density.
+
+A below-spectrum resolvent is injective and self-adjoint, so this supplies the dense set directly.
+With the `eps/3` bridge of the previous entry, both general-purpose halves of `(4)` are now formal;
+what is left is the construction of `A_a` and the pointwise symbol estimate on its spectrum.
+
+### Lean progress — `(4)` reduced to the operator construction alone
+
+The two halves are now assembled into the abstract statement `(2)`/`(4)` actually needs, in
+`HTGeometry/CompactOperatorDiscreteSpectrum.lean` [PROVED HERE], standard axioms
+`[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `tendsto_id_of_norm_comp_tendsto_zero` : if `T_i` are uniformly bounded by `C >= 1` and
+  `‖(T_i - 1) ∘L B‖ -> 0` for an injective self-adjoint `B`, then `T_i v -> v` **strongly**, for
+  every `v`.
+
+That is exactly the shape of `(2)`: in the resolvent coordinate `B = (A - rho)^{-1}`, the family
+`T_lambda = (-lambda)(A - lambda)^{-1}` is uniformly bounded, and the composition with `B` carries
+the factor that kills the spectral accumulation point at `0`, where the symbols do **not** converge
+pointwise. The strongness of the limit in `(2)` is therefore not an accident of the statement but a
+consequence of that single bad point, and the theorem above is the general reason.
+
+What remains for `(4)` on this card is no longer analytic infrastructure: it is the construction of
+`A_a` (needing a Friedrichs extension, absent from mathlib) plus the symbol estimate
+`‖(T_lambda - 1) ∘L B‖ -> 0` on its spectrum. Recorded here so the next session does not rebuild
+the abstract half.
+
+### Route correction for `(4)` — the operator infrastructure already exists in the corpus
+
+An earlier note here said mathlib has no Friedrichs extension and no unbounded spectral theorem, so
+the construction of `A_a` was open. That is true of mathlib but **misleading about this corpus**,
+and it should not send anyone to build a kernel-operator library.
+
+The corpus already owns the whole kernel → operator → compact chain:
+
+- `HTGeometry/HilbertSchmidtOperator.lean` : `IsHilbertSchmidt`, `hsNorm`, `hsInner`,
+  basis-independence (`hsNormSq_eq`, `isHilbertSchmidt_iff` against *any* Hilbert basis), adjoint,
+  and the two-sided ideal property `comp_left`/`comp_right` — which already transports the class
+  along an isometry conjugation, i.e. along any choice of basis for `L^2(-a,a)`.
+- `HTGeometry/HilbertSchmidtMatrix.lean` : the discrete kernel/operator correspondence on
+  `lp (fun _ : ι => ℂ) 2` with **both** round trips, `matrixOf_toOperator` and
+  `toOperator_matrixOf`, plus the norm identities.
+- `HTGeometry/HilbertSchmidtCompact.lean` : `opNorm_le_hsNorm` and
+  `IsHilbertSchmidt.isCompactOperator`.
+
+So `A_a` need never be formed as an unbounded operator. The route is: write Suzuki's resolvent as a
+**matrix in a Hilbert basis of `L^2(-a,a)`**, obtain the bounded operator from `toOperator`, get
+compactness free, then the discrete spectrum from
+`HTGeometry/CompactOperatorDiscreteSpectrum.lean` and the strong limit `(2)` from
+`tendsto_id_of_norm_comp_tendsto_zero` with `denseRange_of_isSelfAdjoint_of_injective`.
+
+**The single remaining input is Suzuki's explicit kernel in that basis** — card mathematics, not
+Lean infrastructure. Everything downstream of it is already formal.
+
+### Lean progress — the symbol-estimate half of `(2)` FORMALIZED
+
+`(2)` needs no concrete kernel. It is an abstract statement about *any* self-adjoint operator
+bounded below, and in resolvent coordinates it factors into two pieces, both now formal:
+
+1. the strong-limit bridge, `tendsto_id_of_norm_comp_tendsto_zero` (recorded above), and
+2. the **symbol estimate** `‖(T_lambda - 1) ∘L B‖ -> 0`, which in the coordinate `B = (A - rho)^{-1}`
+   is a statement about explicit rational symbols on `spectrum B`.
+
+Piece 2's general form is now proved in `HTGeometry/CfcNormBound.lean` [PROVED HERE], wired into the
+`HTGeometry` umbrella, standard axioms `[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `norm_cfc_le_of_forall_le` : a pointwise bound for the symbol on the spectrum bounds
+  `‖cfc f a‖`. The isometric continuous functional calculus makes that norm the supremum of `‖f‖`
+  over the spectrum, and mathlib's `IsGreatest.norm_cfc` says it is **attained**, so the bound is
+  immediate at the attaining spectral point.
+- `tendsto_norm_cfc_zero` : symbols that become uniformly small on the spectrum give operators
+  converging to zero in norm — exactly the input `tendsto_id_of_norm_comp_tendsto_zero` consumes.
+
+Chaining the two, `(2)` reduces to a purely scalar statement: that the rational symbols
+`g_lambda(x) = ((-lambda x)/(1 + (rho - lambda) x) - 1) * x` tend to `0` uniformly on a compact
+spectrum. No operator construction, no kernel, and no Friedrichs extension enters.

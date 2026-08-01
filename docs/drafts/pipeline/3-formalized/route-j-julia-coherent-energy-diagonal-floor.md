@@ -1,8 +1,8 @@
 # Route J Julia coherent-energy diagonal floor
 
 - **ID:** `route-j-julia-coherent-energy-diagonal-floor`
-- **Stage:** 2-fully-proven
-- **Type:** `[PAPER-PROVED]` / ROUTE-LEVEL NO-GO WITH POSITIVE SURVIVOR
+- **Stage:** 3-formalized
+- **Type:** `[FORMALIZED]` / ROUTE-LEVEL NO-GO WITH POSITIVE SURVIVOR
 - **Route:** J in `rh-current-frontier-map.md`
 - **RH used:** no
 - **Computation used:** no
@@ -281,6 +281,32 @@ source fidelity   -> restores rank-one coherence.
 Any surviving Julia descendant must subtract/relativize the diagonal before the good/bad positive
 projection and then re-prove orientation. That is a new route, not completion of current Route J.
 
+## Lean realization
+
+Generic kernel infrastructure is in
+`formal/GaloisForLFunctions/HTGeometry/NonnegativeKernelDiagonalCapacity.lean`:
+
+- `realKernelPacketDiagonal_le_energy_of_nonneg` proves diagonal persistence;
+- `realKernelPacketEnergy_scale_tendsto_mass_sq` proves the rank-one zero-scale law;
+- `normalizedKernel_anchor_sq_not_le_energy_sub_diagonal` kills post hoc subtraction.
+
+Exact arithmetic specialization is in
+`formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaCoherentEnergyDiagonalFloor.lean`:
+
+- `ccmFirstClockJuliaSixthPower_cutoff` proves `(JDF1)`;
+- `ccmFirstClockJuliaSixthPower_block_primePowerLength_eq_one` proves the one-mode seam;
+- `ccmFirstClockJuliaSixthPower_block_phase` and
+  `ccmFirstClockJuliaSixthPower_block_badTerm_sq_lower` prove `(JDF2)`--`(JDF5)`;
+- `ccmFirstClockJuliaSixthPower_block_diagonal_lower` proves the Chebyshev block floor;
+- `ccmFirstClockJuliaFullBadCoherentEnergy_sixthPower_lower` proves `(JDF)`;
+- `ccmFirstClockJuliaFullBadCoherentEnergy_unbounded_uniformly_in_scale` proves its uniform
+  unboundedness corollary;
+- `tendsto_ccmFirstClockJuliaFullBadCoherentEnergy_zero` proves `(JDF9)`.
+
+`#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound` for all load-bearing
+declarations. No computation, `sorry`, `admit`, added axiom, `opaque`, or `unsafe` declaration is
+used.
+
 ## Gates
 
 - [x] internal route and failed-mechanism audit
@@ -289,5 +315,6 @@ projection and then re-prove orientation. That is a new route, not completion of
 - [x] hostile falsity/rediscovery audit of `(JDF)`
 - [x] dependency-closed paper proof
 - [x] strongest positive survivor and representation lesson
-- [ ] exact unconditional Lean theorem
-- [ ] umbrella, lint, and axiom audits
+- [x] exact unconditional Lean theorem
+- [x] umbrella and axiom audits
+- [x] final lint and module-build audit

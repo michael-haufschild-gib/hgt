@@ -126,7 +126,13 @@ would leave the infinite high-frequency sign open in any case.
 
 **Local contribution beyond located literature.** The exact fixed-node/all-degree source Hankel
 reconstruction equivalence, HilbertMetric unisolvent handoff, finite-degree tail obstruction, and
-source-specific moment cones have no located external match as one package.
+source-specific moment cones have no located external match as one package. The corpus additionally
+proves unrestricted-carrier rigidity: every positive measure representing all normalized
+prime–archimedean moments equals the canonical compact Xi-divisor pushforward, and unique witness
+existence is exactly RH. It also classifies subset-natural positive Euler lifts: polarization kills
+all real cross-prime covariance while divergent local energy remains. These close alternative
+carrier and naive off-diagonal-mixing freedom; they do not construct the global signed source
+boundary defect.
 
 **External contribution.** Classical Hamburger/Stieltjes moment theory and Hankel positivity give
 generic machinery, while Weil/Barner explicit formulae identify the arithmetic source. They do not
@@ -165,14 +171,21 @@ located external collision.
 **External contribution.** Liflandsky's
 [discrete Möbius–Laplace criterion](https://arxiv.org/abs/2607.09797) proves unconditionally that a
 half-power decay bound implies RH; its explicit zero formula assumes simple zeros and its converse
-needs extra hypotheses. Classical Mertens, Nyman–Beurling, and Báez–Duarte criteria provide related
-equivalences. Mangerel's 2024 strict bound for Liouville reflection correlations is the closest
-growing antidiagonal theorem located, but it gives only a strict trivial saving and uses the wrong
-arithmetic weight for the one-sided Möbius Gamma–Hankel covariance.
+needs extra hypotheses. Verjovsky's
+[shrinking-arc theorem](https://arxiv.org/abs/2607.25002) proves RH equivalent to subpolynomial local
+moments of normalized Möbius Fourier polynomials for every finite `q`, or for an unbounded admissible
+set of `q`, and proves the unconditional inequality
+`|S_N(0)| ≤ max(2 B_q, C_q (N²r)^(1/(q+1)) B_q^(q/(q+1)))`. It supplies no local-moment estimate.
+Classical Mertens, Nyman–Beurling, and Báez–Duarte criteria provide related equivalences. Mangerel's
+2024 strict bound for Liouville reflection correlations is the closest growing antidiagonal theorem
+located, but it gives only a strict trivial saving and uses the wrong arithmetic weight for the
+one-sided Möbius Gamma–Hankel covariance.
 
 **Lean action.** Liflandsky's transform, convergence, tail, Mellin identity, and unconditional
 decay-to-RH implication are already formalized without importing the simple-zero hypothesis.
-No external result continues the proved Plücker diagonal from `Re(s)>1` to critical Möbius data.
+Verjovsky's theorem is an exact connector/equivalence and does not narrow the first source premise,
+so no frontier-leverage import is selected. No external result continues the proved Plücker diagonal
+from `Re(s)>1` to critical Möbius data.
 
 ### Route F — all-prime Sonin transfer
 
@@ -183,12 +196,26 @@ the exact two-stage product/cut schedule satisfying every analytic tail and slac
 located external counterpart. The scale-free relative-ideal discount and target-by-target
 unboundedness of the scheduled coupling energy are additional local results; the latter is now
 strengthened to a positive linear lower rate along one admissible scale sequence. The actual
-frequency-side logarithmic shell channel is already excluded by a uniform fixed-annulus bound.
+frequency-side logarithmic shell channel is excluded for arbitrary tower heights under the exact
+packet schedule hypotheses stated below.
 Along the linear schedule, the corpus now excludes every typed scalar additive term `f(scale)` in the
 typed `soninCompletedPacketValueVar` model with `f(r)/r → 0`, including unbounded logarithmic and
 other sublinear contributions. It does not reduce arbitrary semilocal operators to that model.
-Conversely, a typed additive term restoring the floor for every admissible schedule is proved not to satisfy
-`f(r)/r → 0`; this is a necessary condition, not a constructed positive linear asymptotic.
+The newer threshold theorem is stronger: it constructs `s>0` so every contribution eventually at
+most `s r` fails on one admissible schedule, while a contribution restoring every admissible
+schedule must exceed `s r` frequently. A uniformly bounded family of continuous linear operators
+paired against a uniformly bounded vector sequence is reduced to a bounded scalar contribution and
+therefore fails. The exclusion now covers unbounded channel families as well whenever their images
+on bounded packet vectors have a sublinear-in-scale norm envelope. The canonical unscaled packet
+also has a uniform twelfth-order pointwise spectral tail and eleventh-order cutoff-energy tail.
+Exact shell splitting proves height-independent frequency-channel bounds from
+power tails. Choosing the least cut past twice the carrier then removes both height and cut index
+from the rescaled-packet bound; its remaining data are base, ratio, carrier, half-width, packet norm,
+and an outer inverse power of `δ(2w)`. These results do not reduce an arbitrary semilocal arithmetic
+operator to the typed model. They do, however, close the actual Fourier logarithmic-shell family
+for arbitrary tower heights under the exact packet conditions: carrier proportional to scale,
+positive lower bound on half-width times twice carrier, bounded packet norms, and the stated
+positivity/mean hypotheses.
 
 **External contribution.** Burnol's
 [complete/minimal systems paper](https://doi.org/10.5802/jtnb.434), Theorems 3.1–3.3, proves sharp qualitative
@@ -196,7 +223,7 @@ completeness/minimality laws for evaluator systems, Sonine evaluators including 
 `a=1` case, and the functions `ζ(s)/(s-ρ)^l`; Theorem 6.3 identifies exact critical dual systems.
 Connes–Consani's semilocal/scaling analyses provide a related finite-prime Sonin carrier. These
 results can settle qualitative carrier closure but provide no quantitative convergence rate,
-all-prime shell schedule, ideal-error energy control, or normalized-nonsublinear floor-restoring
+all-prime shell schedule, ideal-error energy control, or positive-linear-rate floor-restoring
 completion; those quantitative
 layers are supplied locally, not by the cited papers.
 
@@ -204,11 +231,11 @@ layers are supplied locally, not by the cited papers.
 then identify its carrier with the local `evenSonin`/shell-cut carrier. This removes a qualitative
 literature debt. The route's analytic tail/slack schedule is already constructed; decisive work is
 the construction of a source-faithful typed completion restoring the floor for every admissible
-schedule. Only for that universal premise does local Lean force its normalized contribution not to
-tend to zero. The alternatives are proving that the arithmetic completion lies outside the typed
-scalar-additive model or reducing a semilocal operator to that model, followed by the literal
-all-prime source handoff. Burnol's qualitative theorem does not by itself cross the typed sublinear
-additive obstruction.
+schedule. Only for that universal premise does local Lean force frequent excursions above one
+explicit positive linear rate. The alternatives are proving that the arithmetic completion lies
+outside the typed scalar-additive model or reducing a semilocal operator to that model, followed by
+the literal all-prime source handoff. Burnol's qualitative theorem does not by itself cross the
+typed positive-slope obstruction.
 
 ### Route G — Suzuki Hermite–Biehler, anti-Pick, and Ward realization
 
@@ -283,17 +310,22 @@ Dirichlet-polynomial estimates have the same quantifier mismatch.
 
 **Local contribution beyond located literature.** No external collision was found for the exact
 Gamma-sewn arithmetic Julia contraction with prime-log normal derivative, finite-packet source
-bridge, coherent completed/prime energy decomposition, and its first-clock handoff. Abstract Julia
-operators are classical; this arithmetic assembly is the plausible local contribution.
+bridge, coherent completed/prime energy decomposition, and its exact failure classification.
+Abstract Julia operators are classical; this arithmetic assembly and no-go are plausible local
+contributions.
 
 **External contribution.** Sz.-Nagy–Foiaş dilation theory supplies the generic Julia operator;
 explicit-formula and differential-algebra literature supplies separate arithmetic ingredients.
-No external theorem controls the literal cross-prime completed energy.
+No external theorem cancels the literal cross-prime completed energy or revives its proposed
+first-clock handoff.
 
-**Lean action.** None. The generic operator theory is already represented; missing input is prime
-exhaustion, unattenuation, and a uniform/subgrowth arithmetic energy budget. The exact local
-singular-boundary law also shows that the literal/good/bad coherent Gram has source null vector
-`(1,-1,1)`, so adding all three channels creates no independent capacity.
+**Lean action.** None. Route J's unrenormalized handoff is formally closed as false. At
+`L_m=6 log m`, an explicit prime block forces full bad coherent energy at least `log m/20`, uniformly
+in Julia scale, hence unbounded along these apertures. At zero scale each fixed packet instead tends
+to rank-one energy, the square of total bad mass. The literal/good/bad coherent Gram also has source
+null vector `(1,-1,1)`, so adding all three channels creates no independent capacity. Only a new
+source-defined principal-relative current with counterterm and orientation before positive
+good/bad projection could reopen the mechanism; located literature supplies no such construction.
 
 ### Route K — quadratic spectral realization
 
@@ -322,9 +354,21 @@ tensored with `UnitAddTorus` Fourier characters in a concrete analytic cylinder 
 orthogonality, reciprocal-frequency norms, vanishing away from opposite-character cup pairs,
 the exact opposite-pair cup, and normalized orthonormality are proved. Continuous torus functions
 are also determined by all character coefficients. This is continuous-function completeness, not
-a theorem about arbitrary square-integrable cylinder data. Its frequency uses the Kronecker
-direction, but no theorem identifies this cylinder with the separately defined affine leaf or the
-arithmetic relevant complex.
+a theorem about arbitrary square-integrable cylinder data. Haar transposition now sends the
+Kronecker derivative to exact character frequency. Under the stated joint-continuity and derivative
+hypotheses, every nonzero-frequency coefficient of a square-integrable solution is a scalar multiple
+of the explicit radial mode, and vanishing coefficients kill each continuous torus slice. This is
+coefficientwise descent, not a global `L²` Fourier expansion. The corpus also proves generic packet
+averaging/splitting and a finite subordinate family locally constant along a profinite factor and
+smooth along a compact manifold factor, with an explicit circle specialization. The fineness
+conclusion does not state nonnegativity. A generic suspension with trivial monodromy is proved
+homeomorphic to the product with `AddCircle T`. The concrete unit product
+`U_p=∏_{ℓ≠p}ℤ_ℓˣ` is now defined, proved compact Hausdorff and totally disconnected, and its circle
+packet is smoothly fine. Missing are the identification with prime-to-`p` root-of-unity
+automorphisms, quotient by the closure of `p`, Frobenius-triviality, period `log p`, and the
+comparison with Deninger's actual prime fibre. Abstract torsion-symbol realification also does not
+instantiate Milnor K-theory. No theorem identifies these models with the separately defined affine
+leaf or arithmetic relevant complex.
 
 **External contribution.** Deninger's
 [dynamical systems paper](https://arxiv.org/abs/1807.06400) gives the Hausdorff suspension
@@ -473,6 +517,17 @@ fractional-part generators, Mellin transforms, the global closure equivalence, o
 the local module nor Yang's theorem supplies the decisive approximation estimate; no beyond-SOTA
 source theorem is claimed here.
 
+Michalowski's July 2026
+[uniform cubic wedge](https://arxiv.org/abs/2607.16795) proves consecutive Xi-coefficient Toeplitz
+minor positivity `D_{r,k}>0` for every `r≥2` and `k≥10^18 r^3`. It explicitly leaves
+`k<10^18 r^3`, especially the RH-critical regime `k=O(r)`, open. Local Lean does not contain the
+literal Xi-minor statement: `PolyaFrequencyIsTheHypothesis` transports only an assumed generic
+`PF ↔ Reality`, while `HankelToeplitzWindow` proves a factorial window and generic order-two
+log-convexity. The external theorem therefore supplies a precise secondary frontier boundary, not
+a live-route source estimate. Its proof depends on directed-rounding Arb certificates; no import is
+permitted under the no-computation rule. Formalizing only its exact q-Pascal identities would not
+narrow the complementary critical cone.
+
 The 2026 Salem improper-integral criterion and Liflandsky one-way Möbius implication are already
 formalized. Hedenmalm's normalized boundary problem and generic Hardy evaluation obstruction are
 formalized. Exact absent literature packages are:
@@ -500,10 +555,21 @@ the corpus. External work supports several of the same boundaries:
 - Suzuki's conjectural entire limit is not established, and the literal `z²ξ/ξ′` target has real
   poles independently of RH;
 - CCM and Suzuki numerical convergence is not an analytic finite-to-infinite theorem;
+- generic Julia/Gram capacity cannot overcome the literal first-clock bad diagonal, whose coherent
+  energy is locally proved unbounded uniformly in scale;
 - zero-density, critical-line proportions, gap statistics, and large-value estimates do not
   eliminate every off-line zero;
 - criteria assuming RH, simple zeros, localization, independence, or arbitrary-length moment
   bounds cannot supply those hypotheses.
+
+Gaber's July preprint
+[Euler's ℓ-totients and Riemann hypothesis](https://arxiv.org/abs/2607.26114) is rejected as a
+source. Its Theorem 4.3 claims under RH an `O(x)` error for every fixed `ℓ`; at `ℓ=1` this is the
+ordinary summatory Euler totient error and contradicts Montgomery's unconditional
+`Ω±(x sqrt(log log x))` theorem
+([Fluctuations in the mean of Euler's phi function](https://doi.org/10.1007/BF02837826)). The
+preprint's stronger converse hypothesis is not a matching equivalence and cannot repair the false
+forward implication. No theorem from it is a formalization candidate.
 
 The growing-order reverse-Bessel finite-prime mechanism is also retired. Classical Bessel
 polynomial theory begins with Krall and Frink's
@@ -551,7 +617,7 @@ External results that genuinely strengthen a live route, in dependency order, ar
    positive/total positivity, improper tail, and Corollary 3.3's cutoff budget (Route B).
 4. Burnol Theorems 3.1--3.3: qualitative Sonin/evaluator completeness and co-Poisson complement,
    followed by CCM's semilocal Sonin isomorphism and Fourier–Mellin factor law. These identify the
-   carrier but do not by themselves overcome the typed sublinear scalar-additive obstruction;
+   carrier but do not by themselves overcome the typed positive-linear-rate obstruction;
    applicability to their semilocal operator requires a separate reduction (Route F and prime seam).
 5. Deninger Theorem 7.10, Theorem 10.2, and Proposition 11.7: concrete prime-fibre topology and
    divisor support (Route L).
@@ -564,7 +630,9 @@ Suzuki's screw-moment Hankel criterion, full Li, Hardy, theta-at-infinity, and R
 asymptotic are corpus-completeness imports, not first-order route advances. Bellotti, Mangerel, fixed
 Jensen degrees, numerical Suzuki/CCM convergence, and conditional critical Thorin statements do not
 meet a current route premise and should not be formalized for frontier leverage. Platt--Trudgian
-certificate replay is also excluded from this task by the no-computation rule.
+certificate replay and Michalowski's directed-rounding wedge certificates are excluded by the
+no-computation rule. Verjovsky adds an exact Route E coordinate but no moment estimate; Gaber's
+contradicted theorem is rejected rather than imported.
 
 ## 7. Present conclusion
 

@@ -1,7 +1,7 @@
 # Route D Euler-subset positive-lift no-go
 
 - **ID:** `route-d-euler-subset-positive-lift-no-go`
-- **Status:** fully proven on paper — Stage 2, awaiting Lean formalization
+- **Status:** formalized in Lean 4 — Stage 3
 - **Route:** D — prime–archimedean Hankel sign and reconstruction
 - **Opened:** 2026-08-01
 - **Computation policy:** no numerical computation; symbolic proof only
@@ -147,24 +147,24 @@ source construction is supplied.
 
 ## Paper-proof obligations
 
-- [ ] Prove general four-subset mixed-difference orthogonality lemma with arbitrary baseline vector.
-- [ ] Prove nonnegative finite-sum boundedness would imply summability of local energies.
-- [ ] Specialize to `primeMellinJetDiagonalEnergy r` and use its unconditional nonsummability.
-- [ ] State exact survivor boundary: viable lift must break Euler-subset norm additivity before
+- [x] Prove general four-subset mixed-difference orthogonality lemma with arbitrary baseline vector.
+- [x] Prove nonnegative finite-sum boundedness would imply summability of local energies.
+- [x] Specialize to `primeMellinJetDiagonalEnergy r` and use its unconditional nonsummability.
+- [x] State exact survivor boundary: viable lift must break Euler-subset norm additivity before
       positivity, use non-fixed boundary depending nonlocally on whole Euler product, or leave
       Hilbert positivity until after global completion.
-- [ ] Run hostile edge-case audit: complex phases, duplicate primes, empty/singleton sets,
+- [x] Run hostile edge-case audit: complex phases, duplicate primes, empty/singleton sets,
       cutoff-dependent boundary, conditionally convergent vector sums, and nonlinear channel maps.
 
-## Formal target
+## Formalization
 
-Planned module:
+Module:
 
 ```text
 GaloisForLFunctions.RHTower.PrimeMellinJetEulerSubsetLiftNoGo
 ```
 
-Planned public results:
+Public capstones:
 
 ```text
 eulerSubsetNormSqExact_pairwise_re_inner_zero
@@ -275,4 +275,29 @@ global nonlocal reflection positivity remains the RH-level open core.
 - [x] Complex, boundary, convergence, nonlinear, and index edge cases attacked.
 - [x] Positive survivor recorded.
 - [x] Paper proof dependency-closed.
-- [ ] Lean formalization.
+- [x] Lean formalization.
+
+## Stage 3 proof map and audit
+
+File: `formal/GaloisForLFunctions/RHTower/PrimeMellinJetEulerSubsetLiftNoGo.lean`.
+
+```text
+EulerSubsetNormSqExact / EulerSubsetNormSqLower
+  -> eulerSubsetNormSqExact_pairwise_re_inner_zero
+  -> not_exists_bounded_eulerSubsetNormSqLower_of_not_summable
+  -> not_exists_bounded_eulerSubsetNormSqExact_of_not_summable
+  -> no_bounded_primeMellinJet_eulerSubsetPositiveLift
+  -> primeMellinJet_eulerSubsetPositiveLift_classification.
+```
+
+Verification on 2026-08-01:
+
+- `lake env lean GaloisForLFunctions/RHTower/PrimeMellinJetEulerSubsetLiftNoGo.lean` — passed.
+- `lake build GaloisForLFunctions.RHTower.PrimeMellinJetEulerSubsetLiftNoGo` — passed,
+  `8746/8746` jobs.
+- `scripts/formal_tools.py lint --check-generated` — passed.
+- Generated `LEAN_API.md`, `LEAN_GAPS.md`, and `LEAN_OVERVIEW.md` refreshed.
+- Umbrella `formal/GaloisForLFunctions/RHTower.lean` imports new module.
+- Public capstone axiom audit: `[propext, Classical.choice, Quot.sound]` only.
+- No `sorry`, `admit`, `axiom`, `opaque`, `unsafe`, numerical computation, or target-moment
+  positivity premise introduced.

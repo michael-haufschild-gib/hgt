@@ -222,3 +222,57 @@ The global primitive-field step `(7)--(9)` and the etale rational-descent argume
 explicit fiber witness into `v notin H(u)` remain paper-level, so the card remains in stage 2.  A
 targeted leaf check and axiom audit pass; the new endpoint uses only `propext`, `Classical.choice`,
 and `Quot.sound`.  No full or module build was run.
+
+## Log
+
+- 2026-08-01 — **Step 1's field-primitivity `(7)` is formalized.**
+  `formal/GaloisForLFunctions/HTGeometry/CoatomFixedField.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `isCoatom_stabilizer_perm` — a point stabilizer in a symmetric group is a maximal subgroup, through
+  mathlib's primitivity of the natural action;
+  `eq_bot_or_eq_of_isCoatom_fixingSubgroup` — if the fixing subgroup of an intermediate field is
+  maximal, then **no field lies strictly between the base and it**: any field below is the base or the
+  field itself.  Together these are `(7)`: `K` is the fixed field of a point stabilizer `S_(D-1)`,
+  which is maximal in `S_D`, so `H ⊆ M ⊆ K` forces `M = H` or `M = K`.
+
+  The base-extension clause of step 1 — "base extension preserves `(7)`" for the transcendental
+  `u = x_L` — is the free-parameter theorem proved for the rank-one card,
+  `freeParameterBaseChange` in `FreeParameterBaseChange.lean`: adjoining an independent
+  transcendental leaves the Galois group unchanged, hence leaves the lattice of intermediate fields
+  unchanged.
+
+  What remains paper-level on this card is `(8)`, `v = y_L ∈ K(u)`, and the etale rational-descent
+  step converting the explicit pure-fiber witness into `v ∉ H(u)`.
+
+- 2026-08-01 — **Step `(8)` is formalized: the reciprocal coefficients add no field elements.**
+  `formal/GaloisForLFunctions/HTGeometry/ReciprocalCoefficientField.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `constantCoeff_mul_coeff_inverse` — the coefficient equation of an inverse pair,
+  `x_0 y_n = -∑_(i=1)^n x_i y_(n-i)`, obtained by reading `X Y = 1` in degree `n`;
+  `coeff_inverse_mem_subfield` — hence **every** coefficient of the inverse lies in any subfield
+  containing the coefficients of the jet, by strong induction on `n`: the constant term of the
+  inverse is the inverse of the constant term, and each later one is that inverse times a
+  combination of earlier ones.
+
+  With `v = y_L` and the subfield `K(u) = F(x_0, …, x_L)`, this is `(8)`.
+
+  So of step 1 only the descent `v ∉ H(u)` is left: `(7)` is `CoatomFixedField.lean`, its
+  base-extension clause is `freeParameterBaseChange`, and `(8)` is here.
+
+- 2026-08-01 — **The fiber witness now separates the postcritical value.**
+  `formal/GaloisForLFunctions/HTGeometry/PostcriticalFiberSeparation.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `exists_pureCriticalRootFactorPairs_neg_inv_ne` — two states of the pure critical fiber factor the
+  same `1 + t^L` and receive **different** values of `-(A(0))⁻¹`, which by
+  `pureCriticalPost_rightTop_eq_neg_inv` is the first postcritical reciprocal coefficient at
+  vanishing new raw coefficient.  The step from the existing witness is that inversion is injective,
+  so distinct constant terms give distinct postcritical values.
+
+  This is the witness in the form the descent consumes: over one critical observation the
+  postcritical reciprocal coefficient takes two values, so it is not a function of the critical data.
+  Turning that into `v ∉ H(u)` still needs the rational-descent argument, which is where the
+  observation "same critical data" has to be converted into an equality of specialisations — the one
+  paper-level step of this card.

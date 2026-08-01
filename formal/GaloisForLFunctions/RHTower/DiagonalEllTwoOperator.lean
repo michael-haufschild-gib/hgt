@@ -241,6 +241,185 @@ theorem le_norm_diagonalOperator_of_support
   have hs := Real.sqrt_le_sqrt hpow
   rwa [Real.sqrt_sq hlhs, Real.sqrt_sq hrhs] at hs
 
+/-! ## Exact approximation numbers -/
+
+/-- Subspace spanned by the first `n` coordinate vectors. -/
+def lowCoordinateSubspace (n : ℕ) : Submodule ℂ EllTwo :=
+  Submodule.span ℂ (Set.range fun k : Fin n => (lp.single 2 (k : ℕ) (1 : ℂ) : EllTwo))
+
+/-- Coordinate vectors with distinct indices are linearly independent. -/
+theorem lowCoordinateSingles_linearIndependent (n : ℕ) :
+    LinearIndependent ℂ
+      (fun k : Fin n => (lp.single 2 (k : ℕ) (1 : ℂ) : EllTwo)) := by
+  rw [Fintype.linearIndependent_iff]
+  intro c hc i
+  have hi := congrArg (fun w : EllTwo => w (i : ℕ)) hc
+  rw [lp.coeFn_sum, Finset.sum_apply] at hi
+  simp only [lp.coeFn_smul, Pi.smul_apply, lp.single_apply, Pi.single_apply,
+    smul_eq_mul] at hi
+  simpa [Fin.val_inj] using hi
+
+/-- The first `n` coordinate vectors span an exactly `n`-dimensional subspace. -/
+theorem finrank_lowCoordinateSubspace (n : ℕ) :
+    Module.finrank ℂ (lowCoordinateSubspace n) = n := by
+  rw [lowCoordinateSubspace, finrank_span_eq_card (lowCoordinateSingles_linearIndependent n),
+    Fintype.card_fin]
+
+/-- A vector in the first `n + 1` coordinate span vanishes above coordinate `n`. -/
+theorem lowCoordinateSubspace_support {n k : ℕ} {w : EllTwo}
+    (hw : w ∈ lowCoordinateSubspace (n + 1)) (hk : n < k) : w k = 0 := by
+  rw [lowCoordinateSubspace] at hw
+  refine Submodule.span_induction (p := fun w _ => w k = 0) ?_ rfl ?_ ?_ hw
+  · intro x hx
+    rcases hx with ⟨i, rfl⟩
+    simp [lp.single_apply, show k ≠ (i : ℕ) by omega]
+  · intro x y _ _ hx hy
+    simp [hx, hy]
+  · intro c x _ hx
+    simp [hx]
+
+/-- Tail left after truncating the first `n` coordinates. -/
+def tailMultiplier (r : ℕ → ℝ) (n : ℕ) (k : ℕ) : ℂ :=
+  if n ≤ k then (r k : ℂ) else 0
+
+theorem norm_tailMultiplier_le {r : ℕ → ℝ} (hr : ∀ k, 0 ≤ r k)
+    (hanti : ∀ {i j : ℕ}, i ≤ j → r j ≤ r i) (n k : ℕ) :
+    ‖tailMultiplier r n k‖ ≤ r n := by
+  rw [tailMultiplier]
+  split_ifs with h
+  · simpa [Real.norm_eq_abs, abs_of_nonneg (hr k)] using hanti h
+  · simpa using hr n
+
+/-- Subtracting the first-`n` coordinate truncation leaves exactly the tail multiplier. -/
+theorem diagonalOperator_sub_trunc_eq_tail
+    {r : ℕ → ℝ} (hr : ∀ k, 0 ≤ r k)
+    (hanti : ∀ {i j : ℕ}, i ≤ j → r j ≤ r i) (n : ℕ) :
+    diagonalOperator (fun k => ((r k : ℝ) : ℂ))
+        (fun k => by simpa [Real.norm_eq_abs, abs_of_nonneg (hr k)] using hanti (Nat.zero_le k)) -
+      diagonalOperator (truncMultiplier (fun k => ((r k : ℝ) : ℂ)) n)
+        (norm_truncMultiplier_le
+          (fun k => by simpa [Real.norm_eq_abs, abs_of_nonneg (hr k)] using hanti (Nat.zero_le k)) n) =
+      diagonalOperator (tailMultiplier r n) (norm_tailMultiplier_le hr hanti n) := by
+  apply ContinuousLinearMap.ext
+  intro f
+  ext k
+  simp only [sub_apply, diagonalOperator_apply]
+  by_cases hk : k < n
+  · simp [truncMultiplier, tailMultiplier, hk, Nat.not_le.mpr hk]
+  · have hnk : n ≤ k := Nat.le_of_not_gt hk
+    simp [truncMultiplier, tailMultiplier, hk, hnk]
+
+/-- The distance from a nonnegative antitone diagonal to its first-`n` truncation is `r n`. -/
+theorem norm_diagonalOperator_sub_trunc
+    {r : ℕ → ℝ} (hr : ∀ k, 0 ≤ r k)
+    (hanti : ∀ {i j : ℕ}, i ≤ j → r j ≤ r i) (n : ℕ) :
+    ‖diagonalOperator (fun k => ((r k : ℝ) : ℂ))
+        (fun k => by simpa [Real.norm_eq_abs, abs_of_nonneg (hr k)] using hanti (Nat.zero_le k)) -
+      diagonalOperator (truncMultiplier (fun k => ((r k : ℝ) : ℂ)) n)
+        (norm_truncMultiplier_le
+          (fun k => by simpa [Real.norm_eq_abs, abs_of_nonneg (hr k)] using hanti (Nat.zero_le k)) n)‖ =
+      r n := by
+  rw [diagonalOperator_sub_trunc_eq_tail hr hanti n]
+  apply norm_diagonalOperator_eq (m := n)
+  simp [tailMultiplier, hr n, Real.norm_eq_abs]
+
+/-- **Exact diagonal approximation-number law.**  For a nonnegative antitone diagonal multiplier,
+the `n`-th approximation number is exactly its `n`-th diagonal value. -/
+theorem approxNumber_diagonalOperator_eq
+    {r : ℕ → ℝ} (hr : ∀ k, 0 ≤ r k)
+    (hanti : ∀ {i j : ℕ}, i ≤ j → r j ≤ r i) (n : ℕ) :
+    approxNumber
+      (diagonalOperator (fun k => ((r k : ℝ) : ℂ))
+        (fun k => by simpa [Real.norm_eq_abs, abs_of_nonneg (hr k)] using hanti (Nat.zero_le k))) n =
+      r n := by
+  let W := lowCoordinateSubspace (n + 1)
+  letI : FiniteDimensional ℂ W :=
+    FiniteDimensional.span_of_finite ℂ (Set.finite_range _)
+  let hC : ∀ k, ‖(((r k : ℝ) : ℂ))‖ ≤ r 0 := fun k => by
+    simpa [Real.norm_eq_abs, abs_of_nonneg (hr k)] using hanti (Nat.zero_le k)
+  let F := diagonalOperator (truncMultiplier (fun k => ((r k : ℝ) : ℂ)) n)
+    (norm_truncMultiplier_le hC n)
+  refine approxNumber_eq_of_subspace_of_hasRankLE W ?_ ?_ F ?_ ?_
+  · rw [show Module.finrank ℂ W = n + 1 by
+      simpa [W] using finrank_lowCoordinateSubspace (n + 1)]
+  · intro w hw
+    exact le_norm_diagonalOperator_of_support hr hanti _ n w
+      (fun k hk => lowCoordinateSubspace_support hw hk)
+  · simpa [F] using
+      (hasRankLE_diagonalOperator_trunc (fun k => ((r k : ℝ) : ℂ)) hC n)
+  · simpa [F] using norm_diagonalOperator_sub_trunc hr hanti n
+
+/-- Canonical diagonal operator attached to a nonnegative antitone real sequence. -/
+def antitoneDiagonalOperator (r : ℕ → ℝ) (hr : ∀ k, 0 ≤ r k)
+    (hanti : ∀ {i j : ℕ}, i ≤ j → r j ≤ r i) : EllTwo →L[ℂ] EllTwo :=
+  diagonalOperator (fun k => ((r k : ℝ) : ℂ))
+    (fun k => by simpa [Real.norm_eq_abs, abs_of_nonneg (hr k)] using hanti (Nat.zero_le k))
+
+theorem approxNumber_antitoneDiagonalOperator_eq
+    (r : ℕ → ℝ) (hr : ∀ k, 0 ≤ r k)
+    (hanti : ∀ {i j : ℕ}, i ≤ j → r j ≤ r i) (n : ℕ) :
+    approxNumber (antitoneDiagonalOperator r hr hanti) n = r n := by
+  simpa [antitoneDiagonalOperator] using approxNumber_diagonalOperator_eq hr hanti n
+
+/-! ## Canonical critical-residue model -/
+
+/-- Critical diagonal scale with exponent `p` and prescribed positive residue `c`. -/
+def criticalDiagonalMultiplier (p c : ℝ) (n : ℕ) : ℝ :=
+  (c / ((n : ℝ) + 1)) ^ (1 / p)
+
+theorem criticalDiagonalMultiplier_nonneg (p c : ℝ) (hc : 0 ≤ c) (n : ℕ) :
+    0 ≤ criticalDiagonalMultiplier p c n :=
+  Real.rpow_nonneg (div_nonneg hc (by positivity)) _
+
+theorem criticalDiagonalMultiplier_antitone {p c : ℝ} (hp : 0 < p) (hc : 0 ≤ c) :
+    ∀ {i j : ℕ}, i ≤ j →
+      criticalDiagonalMultiplier p c j ≤ criticalDiagonalMultiplier p c i := by
+  intro i j hij
+  apply Real.rpow_le_rpow
+  · positivity
+  · apply div_le_div_of_nonneg_left hc
+    · positivity
+    · exact_mod_cast Nat.add_le_add_right hij 1
+  · positivity
+
+theorem criticalDiagonalMultiplier_rpow_mul_succ {p c : ℝ} (hp : 0 < p) (hc : 0 < c)
+    (n : ℕ) :
+    criticalDiagonalMultiplier p c n ^ p * ((n : ℝ) + 1) = c := by
+  have hnpos : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+  have hbase : 0 ≤ c / ((n : ℝ) + 1) := div_nonneg hc.le hnpos.le
+  rw [criticalDiagonalMultiplier, ← Real.rpow_mul hbase]
+  have hexp : 1 / p * p = 1 := by field_simp
+  rw [hexp, Real.rpow_one, div_mul_cancel₀ c hnpos.ne']
+
+/-- Canonical operator with approximation numbers `(c/(n+1))^(1/p)`. -/
+def criticalDiagonalOperator (p c : ℝ) (hp : 0 < p) (hc : 0 < c) : EllTwo →L[ℂ] EllTwo :=
+  antitoneDiagonalOperator (criticalDiagonalMultiplier p c)
+    (criticalDiagonalMultiplier_nonneg p c hc.le)
+    (criticalDiagonalMultiplier_antitone hp hc.le)
+
+theorem approxNumber_criticalDiagonalOperator_eq (p c : ℝ) (hp : 0 < p) (hc : 0 < c)
+    (n : ℕ) :
+    approxNumber (criticalDiagonalOperator p c hp hc) n = criticalDiagonalMultiplier p c n := by
+  simpa [criticalDiagonalOperator] using
+    approxNumber_antitoneDiagonalOperator_eq (criticalDiagonalMultiplier p c)
+      (criticalDiagonalMultiplier_nonneg p c hc.le)
+      (criticalDiagonalMultiplier_antitone hp hc.le) n
+
+/-- **Universal positive-residue realization.**  Every positive exponent and positive constant are
+realized exactly by approximation numbers of one diagonal `ℓ²` operator. -/
+theorem tendsto_criticalDiagonalOperator_approxNumber_rpow_mul_succ
+    (p c : ℝ) (hp : 0 < p) (hc : 0 < c) :
+    Filter.Tendsto
+      (fun n : ℕ => approxNumber (criticalDiagonalOperator p c hp hc) n ^ p * ((n : ℝ) + 1))
+      Filter.atTop (nhds c) := by
+  have hfun :
+      (fun n : ℕ => approxNumber (criticalDiagonalOperator p c hp hc) n ^ p * ((n : ℝ) + 1)) =
+        fun _ : ℕ => c := by
+    funext n
+    rw [approxNumber_criticalDiagonalOperator_eq, criticalDiagonalMultiplier_rpow_mul_succ hp hc]
+  rw [hfun]
+  exact tendsto_const_nhds
+
 end RHTower
 
 end

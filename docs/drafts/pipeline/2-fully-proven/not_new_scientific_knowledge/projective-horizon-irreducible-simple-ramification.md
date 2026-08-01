@@ -95,3 +95,27 @@ The exact determinant and its Q-system engine are formalized in the adjacent Lea
 general Schur irreducibility theorem is not present in this mathlib snapshot and is used at paper
 level.  No new Lean claim is attached to this bridge card.
 
+
+## Log
+
+- 2026-08-01 — **Step `(2)` is formalized: the coefficients of the squared jet are free coordinates.**
+  `formal/GaloisForLFunctions/HTGeometry/SquaredJetCoefficientIndependence.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `jetZero_pderiv_sqJetCoeff` — at the origin the derivative of `h_m = [t^m](Z^2)` in the `j`-th jet
+  coefficient is `2` when `m = j+1` and `0` otherwise, which is `h_k = 2 z_k + polynomial(z_1,…,z_(k-1))`
+  in the form the Jacobian criterion consumes;
+  `det_sqJetJacobian_ne_zero` — the Jacobian specialises at the origin to `2` times the identity, so
+  its determinant is `2^N`, nonzero in characteristic zero;
+  `algebraicIndependent_sqJetFamily` — hence `h_1, …, h_N` are algebraically independent over the
+  constants, so the passage from the jet coefficients to the coefficients of the square is a
+  triangular polynomial automorphism.
+
+  This is the input the Schur irreducibility argument needs before specialising the `h_k` to complete
+  homogeneous functions.  What stays paper-level on this card is the Dvornicich--Zannier
+  irreducibility theorem for Schur polynomials itself, which has no mathlib counterpart.
+
+  One cost note: the corpus Jacobian criterion reads its matrix as `D i (g j) = M i j` — derivative
+  in direction `i` of the `j`-th family member.  Supplying the transpose makes the final application
+  spin at `whnf` until the heartbeat limit rather than fail; with the indices in the criterion's
+  order the file checks in seven seconds.

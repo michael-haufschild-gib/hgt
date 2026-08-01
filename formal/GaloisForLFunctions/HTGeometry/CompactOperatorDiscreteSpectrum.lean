@@ -1,6 +1,8 @@
 import Mathlib.Analysis.InnerProductSpace.Spectrum
+import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Analysis.Normed.Operator.Compact.Basic
 import Mathlib.Analysis.Normed.Operator.Compact.FredholmAlternative
+import GaloisForLFunctions.HTGeometry.StrongConvergenceDense
 
 /-!
 # Discreteness of the nonzero spectrum of a compact symmetric operator
@@ -140,5 +142,66 @@ theorem countable_spectrum_of_isCompactOperator {T : E →L[𝕜] E}
     (finite_setOf_mem_spectrum_norm_ge hT hsymm (by positivity)).countable
 
 end Spectrum
+
+/-! ## Dense range of an injective self-adjoint operator -/
+
+section DenseRange
+
+variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace 𝕜 H] [CompleteSpace H]
+
+/-- **Injective self-adjoint operators have dense range.**  The orthogonal complement of the range
+of a star-normal operator is its kernel, so an injective one has trivial range complement, which on
+a complete space is exactly density of the range. -/
+theorem denseRange_of_isSelfAdjoint_of_injective {T : H →L[𝕜] H}
+    (hsa : IsSelfAdjoint T) (hinj : Function.Injective T) : DenseRange T := by
+  have hker : LinearMap.ker (T : H →ₗ[𝕜] H) = ⊥ := LinearMap.ker_eq_bot.mpr hinj
+  have horth : (LinearMap.range (T : H →ₗ[𝕜] H))ᗮ = ⊥ := by
+    rw [ContinuousLinearMap.IsStarNormal.orthogonal_range hsa.isStarNormal, hker]
+  have htop := Submodule.topologicalClosure_eq_top_iff.mpr horth
+  have hclosure : closure (LinearMap.range (T : H →ₗ[𝕜] H) : Set H) = Set.univ := by
+    have := congrArg (fun K : Submodule 𝕜 H => (K : Set H)) htop
+    simpa [Submodule.topologicalClosure_coe] using this
+  have hcoe : ((LinearMap.range (T : H →ₗ[𝕜] H) : Submodule 𝕜 H) : Set H) = Set.range (⇑T) := by
+    ext y
+    simp [LinearMap.mem_range]
+  rw [denseRange_iff_closure_range, ← hcoe]
+  exact hclosure
+
+/-- **Strong convergence in resolvent coordinates.**  A uniformly bounded family whose difference
+from the identity vanishes in norm after composition with an injective self-adjoint operator
+converges strongly to the identity.
+
+This is the abstract form of a strong resolvent limit: the composition with `B` supplies norm
+convergence on the range of `B`, which is dense, and the uniform bound carries it to every vector.
+Pointwise convergence of the symbols may fail at the spectral accumulation point — that is exactly
+why the limit is strong and not in norm — and the factor `B` is what removes that point. -/
+theorem tendsto_id_of_norm_comp_tendsto_zero
+    {ι : Type*} {l : Filter ι} {T : ι → H →L[𝕜] H} {B : H →L[𝕜] H} {C : ℝ}
+    (hsa : IsSelfAdjoint B) (hinj : Function.Injective B)
+    (hC1 : 1 ≤ C) (hC : ∀ i, ‖T i‖ ≤ C)
+    (hnorm : Tendsto (fun i => ‖(T i - ContinuousLinearMap.id 𝕜 H) ∘L B‖) l (nhds 0))
+    (v : H) :
+    Tendsto (fun i => T i v) l (nhds v) := by
+  have hdense : Dense (Set.range (⇑B)) :=
+    denseRange_of_isSelfAdjoint_of_injective hsa hinj
+  have hid : ‖(ContinuousLinearMap.id 𝕜 H)‖ ≤ C :=
+    le_trans ContinuousLinearMap.norm_id_le hC1
+  have hconv : ∀ w ∈ Set.range (⇑B),
+      Tendsto (fun i => T i w) l (nhds ((ContinuousLinearMap.id 𝕜 H) w)) := by
+    rintro _ ⟨u, rfl⟩
+    rw [tendsto_iff_norm_sub_tendsto_zero]
+    have hle : ∀ i, ‖T i (B u) - (ContinuousLinearMap.id 𝕜 H) (B u)‖
+        ≤ ‖(T i - ContinuousLinearMap.id 𝕜 H) ∘L B‖ * ‖u‖ := by
+      intro i
+      have hrw : T i (B u) - (ContinuousLinearMap.id 𝕜 H) (B u)
+          = ((T i - ContinuousLinearMap.id 𝕜 H) ∘L B) u := by simp
+      rw [hrw]
+      exact ContinuousLinearMap.le_opNorm _ _
+    refine squeeze_zero (fun i => norm_nonneg _) hle ?_
+    simpa using hnorm.mul_const ‖u‖
+  simpa using
+    tendsto_of_dense_of_uniform_bound (le_trans zero_le_one hC1) hC hid hdense hconv v
+
+end DenseRange
 
 end GaloisForLFunctions.HTGeometry

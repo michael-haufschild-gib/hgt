@@ -865,8 +865,8 @@ factor.  `bohrCoefficient_mul_expChar` shows modulation translates the coefficie
 `bohrFrequencyModule_mul_trigPoly_le`: multiplying by a trigonometric polynomial enlarges the
 frequency module by **at most finitely many generators**, the module of the product lying in
 `Γ_B(f) ⊔ span_ℚ{μ_i}`.  This is the multiplicative half of the mechanism behind the finite-rank
-conclusion; the general product rule needs the Bochner–Fejér approximation theorem, which is what
-remains open on this branch.
+conclusion.  The general product rule is now proved outright in
+`BohrFrequencyModuleProduct.lean` (see below), so nothing remains open on this branch.
 
 `formal/GaloisForLFunctions/HTGeometry/BohrMeanInvariance.lean` records the two structural
 properties of the mean that any approximation argument runs on.  It is a **contraction** for the
@@ -3261,6 +3261,68 @@ genuine Gamma-field coefficient.
 
 `#print axioms` clean.  The card remains at stage 2 until the two non-Lean gates — the literature
 comparison and the independent audit — are closed.
+
+`HTGeometry/BohrProductUniformLimit.lean` and `HTGeometry/BohrFrequencyModuleProduct.lean` close
+the last branch that the multiplicative half of eq. (9) was recorded as still needing.
+
+- `bohrFrequencyModule_mul_le_of_uniform_approx` — the transfer principle: if `g` is uniformly
+  approximable by trigonometric polynomials whose frequencies stay in a set `S`, then
+  `Γ_B(f·g) ≤ Γ_B(f) ⊔ span_ℚ S` for every bounded almost-periodic `f`.  The proof is the
+  trigonometric-polynomial case `bohrFrequencyModule_mul_trigPoly_le` plus the `1`-Lipschitz bound
+  `norm_bohrCoefficient_sub_le`: an off-module frequency has coefficient `0` for every approximant,
+  hence norm `≤ Cε` for every `ε`, hence `0`.
+- `bohrSpectrum_mul_subset` and **`bohrFrequencyModule_mul_le`** — the general product rule with no
+  approximation hypothesis at all:
+
+  `Γ_B(f·g) ≤ Γ_B(f) ⊔ Γ_B(g)`  for continuous almost-periodic `f, g`.
+
+  This does *not* need Bochner–Fejér.  The corpus's own `bohrCoefficient_mul_eq_zero`
+  (`BohrProductRule.lean`) already routes around it through the *mean-square* spectral approximation
+  `exists_spectral_mean_square_approx`, whose frequencies are known to lie in the spectrum by
+  construction; contraposing it gives `spec(f·g) ⊆ spec f + spec g` and spanning gives the module
+  statement.  The earlier note on this branch — that the general rule waits on the Bochner–Fejér
+  approximation theorem — was therefore stale: the mean-square route is strictly cheaper and is
+  already complete.
+
+`#print axioms` clean for all three.
+
+`HTGeometry/GammaJetDatumUniqueness.lean` supplies the clause of eq. (3) and eq. (19) that the
+existence theorems left open: *uniqueness* of the datum and of the residue.  §4 argues it by
+"the exponential separation of distinct Gamma powers, the power separation of distinct `s`
+exponents, and the logarithmic separation of distinct `log s` exponents"; that is exactly the
+three-level dominance already proved, read in the contrapositive.
+
+- `gammaJetShape_ratio_mul_symm` — the two shape ratios multiply to `1` on the line, so neither can
+  tend to `0` while the other has a nonzero limit;
+- **`gammaJetShape_datum_unique`** — if the ratio of two Gamma-jet shapes has a *nonzero* limit `c`,
+  then `u₁ = u₂`, `a₁ = a₂`, `dP₁ − b₁ = dP₂ − b₂` and `c = 1`.  Each of the six strict cases is
+  killed by one of the dominance limits (`..._of_gamma_lt`, `..._ratio_zero_of_deg`,
+  `..._ratio_zero_of_log`), and the diagonal case is `tendsto_polyJetShape_ratio_one`;
+- **`gammaJet_datum_residue_unique`** — the element-level form: if `F` converges against two
+  Gamma-jet shapes with nonzero residues `c₁, c₂`, the two data agree and `c₁ = c₂`.  So the
+  triple `(k, a, b)` and the constant `c(F)` of eq. (3) are functions of `F`, not of the
+  presentation;
+- **`polyJetShape_datum_unique`** and **`polyJet_datum_residue_unique`** — the same at Gamma
+  exponent `0`, i.e. the uniqueness clause of eq. (19) inside the digamma field `L`
+  (`gammaJetShape_gamma_zero` identifies the two shapes).
+
+`#print axioms` clean.  With `tendsto_gammaField_projective` (existence) this closes eq. (3) in the
+form §1 states it — *unique* integers and a *unique* nonzero constant.
+
+`HTGeometry/GammaLineBoundaryCases.lean` formalizes the two boundary cases of §8 that are
+statements about the vertical Gamma law itself rather than about the almost-periodicity hypothesis.
+
+- `tendsto_gammaLine_zero`, `gammaLine_shift_one` — Gamma decays on every vertical line
+  `Re s = σ > 0`, and the one-step shift multiplies it by the argument;
+- **`tendsto_norm_gammaLine_shift_ratio_atTop`** (§8.1) — `‖Γ(s+1)/Γ(s)‖ = ‖s‖ → ∞` on a vertical
+  line.  So point normalization really is false: dividing by the value at one base point leaves a
+  factor that diverges, and the law's normalization by a *component of the tuple, as a function*, is
+  not a convenience;
+- **`tendsto_one_div_gammaLine_sub`** and `tendsto_one_div_gammaLine_sub_one` (§8.3) — for `c ≠ 0`
+  the `c`-point function `1/(Γ − c)` converges to `−1/c` on every vertical line, and in particular
+  `1/(Γ − 1) → −1`.  A nontrivial global pole set is no obstruction: the law is vertical.
+
+`#print axioms` clean.
 
 ## Gates
 
