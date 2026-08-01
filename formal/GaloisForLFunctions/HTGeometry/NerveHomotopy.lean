@@ -114,6 +114,102 @@ noncomputable def nerveHomotopy (H : CategoryTheory.Functor (C × catInterval.{u
       Category.id_comp, ← CategoryTheory.Functor.map_comp]
     rfl
 
+/-! ## Homotopies from inequalities of monotone maps -/
+
+/-- The cylinder attached to an inequality of monotone maps: the deformation that moves each value
+of the smaller map to the corresponding value of the larger one. -/
+def leCylinder {P Q : Type u} [Preorder P] [Preorder Q] (f g : P →o Q) (h : ∀ x, f x ≤ g x) :
+    P × catInterval.{u} →o Q where
+  toFun p := if p.2.down = 0 then f p.1 else g p.1
+  monotone' p q hpq := by
+    have hx : p.1 ≤ q.1 := hpq.1
+    have hi : (p.2.down : ℕ) ≤ (q.2.down : ℕ) := hpq.2
+    by_cases h0 : p.2.down = 0
+    · by_cases h1 : q.2.down = 0
+      · simp only [h0, h1]
+        exact f.monotone hx
+      · simp only [h0, if_neg h1]
+        exact le_trans (f.monotone hx) (h q.1)
+    · have h1 : q.2.down ≠ 0 := by
+        intro hc
+        refine h0 (Fin.ext ?_)
+        have hlt := p.2.down.isLt
+        have h2 : (q.2.down : ℕ) = 0 := by rw [hc]; rfl
+        have h3 : ((0 : Fin 2) : ℕ) = 0 := rfl
+        omega
+      simp only [if_neg h0, if_neg h1]
+      exact g.monotone hx
+
+/-- At time zero the cylinder is the smaller map. -/
+theorem cylinderIncl_leCylinder_zero {P Q : Type u} [Preorder P] [Preorder Q] (f g : P →o Q)
+    (h : ∀ x, f x ≤ g x) :
+    (cylinderIncl P (ULift.up 0)).comp (prodPreorderFunctor (leCylinder f g h))
+      = Monotone.functor f.monotone :=
+  CategoryTheory.Functor.ext (fun _ => by simp [leCylinder, prodPreorderFunctor, cylinderIncl])
+    (fun _ _ _ => Subsingleton.elim _ _)
+
+/-- At time one it is the larger map. -/
+theorem cylinderIncl_leCylinder_one {P Q : Type u} [Preorder P] [Preorder Q] (f g : P →o Q)
+    (h : ∀ x, f x ≤ g x) :
+    (cylinderIncl P (ULift.up 1)).comp (prodPreorderFunctor (leCylinder f g h))
+      = Monotone.functor g.monotone :=
+  CategoryTheory.Functor.ext (fun _ => by simp [leCylinder, prodPreorderFunctor, cylinderIncl])
+    (fun _ _ _ => Subsingleton.elim _ _)
+
+/-- **Monotone maps in the order relation have homotopic nerves.**  This is the poset case of the
+statement that a natural transformation of functors induces a simplicial homotopy of nerves, and it
+is the engine behind every contractibility statement below. -/
+noncomputable def nerveHomotopyOfLE {P Q : Type u} [Preorder P] [Preorder Q] (f g : P →o Q)
+    (h : ∀ x, f x ≤ g x) :
+    SSet.Homotopy (nerveFunctor.map (Monotone.functor f.monotone).toCatHom)
+      (nerveFunctor.map (Monotone.functor g.monotone).toCatHom) := by
+  have H := nerveHomotopy (prodPreorderFunctor (leCylinder f g h))
+  rwa [cylinderIncl_leCylinder_zero, cylinderIncl_leCylinder_one] at H
+
+/-! ## Contractibility -/
+
+/-- The constant monotone map. -/
+def constOrderHom (P : Type u) [Preorder P] {Q : Type u} [Preorder Q] (q : Q) : P →o Q :=
+  ⟨fun _ => q, fun _ _ _ => le_rfl⟩
+
+/-- The nerve of the constant monotone map is the constant simplicial map. -/
+theorem nerveFunctor_map_constOrderHom {P Q : Type u} [Preorder P] [Preorder Q] (q : Q) :
+    nerveFunctor.map (Monotone.functor (constOrderHom P q).monotone).toCatHom
+      = SSet.const (X := nerveFunctor.obj (Cat.of P)) (Y := nerveFunctor.obj (Cat.of Q))
+        (ComposableArrows.mk₀ q) := by
+  rw [show Monotone.functor (constOrderHom P q).monotone
+      = (CategoryTheory.Functor.const P).obj q from
+    CategoryTheory.Functor.ext (fun _ => rfl) (fun _ _ _ => Subsingleton.elim _ _)]
+  exact nerveFunctor_map_const q
+
+/-- **A poset that is conically contractible has contractible nerve.**  If a monotone map dominates
+both the identity and a constant, the identity of the nerve is homotopic to that constant map. -/
+noncomputable def nerveHomotopyConst_of_conical {P : Type u} [Preorder P] (p₀ : P) (F : P →o P)
+    (hid : ∀ x, x ≤ F x) (hpt : ∀ x, p₀ ≤ F x) :
+    SSet.Homotopy (𝟙 (nerveFunctor.obj (Cat.of P)))
+      (SSet.const (X := nerveFunctor.obj (Cat.of P)) (ComposableArrows.mk₀ p₀)) := by
+  have h₁ := nerveHomotopyOfLE (OrderHom.id (α := P)) F hid
+  have h₂ := nerveHomotopyOfLE (constOrderHom P p₀) F hpt
+  rw [show Monotone.functor (OrderHom.id (α := P)).monotone
+      = CategoryTheory.Functor.id P from
+        CategoryTheory.Functor.ext (fun _ => rfl) (fun _ _ _ => Subsingleton.elim _ _),
+    show (CategoryTheory.Functor.id P).toCatHom = 𝟙 (Cat.of P) from rfl,
+    nerveFunctor.map_id] at h₁
+  rw [nerveFunctor_map_constOrderHom] at h₂
+  exact h₁.trans h₂.symm
+
+/-- **A poset with a greatest element has contractible nerve.** -/
+noncomputable def nerveHomotopyConst_of_orderTop {P : Type u} [Preorder P] [OrderTop P] :
+    SSet.Homotopy (𝟙 (nerveFunctor.obj (Cat.of P)))
+      (SSet.const (X := nerveFunctor.obj (Cat.of P)) (ComposableArrows.mk₀ (⊤ : P))) :=
+  nerveHomotopyConst_of_conical ⊤ (constOrderHom P (⊤ : P)) (fun _ => le_top) (fun _ => le_rfl)
+
+/-- **A poset with a least element has contractible nerve.** -/
+noncomputable def nerveHomotopyConst_of_orderBot {P : Type u} [Preorder P] [OrderBot P] :
+    SSet.Homotopy (𝟙 (nerveFunctor.obj (Cat.of P)))
+      (SSet.const (X := nerveFunctor.obj (Cat.of P)) (ComposableArrows.mk₀ (⊥ : P))) :=
+  nerveHomotopyConst_of_conical ⊥ (OrderHom.id (α := P)) (fun _ => le_rfl) (fun _ => bot_le)
+
 /-! ## Deformation retracts -/
 
 /-- **A strong deformation retraction of simplicial sets**: a retraction that is a section on the

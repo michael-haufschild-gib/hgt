@@ -48,7 +48,9 @@ theorem fourier_finiteHamiltonianAddCirclePhase
   have hcircle :=
     (AddCircle.homeomorphCircle one_ne_zero).apply_symm_apply
       (⟨finiteObserverHamiltonianVertexPhase t energy i,
-        finiteObserverHamiltonianVertexPhase_norm t energy i⟩ : Circle)
+        by
+          simpa [Submonoid.unitSphere] using
+            finiteObserverHamiltonianVertexPhase_norm t energy i⟩ : Circle)
   exact congrArg Subtype.val
     ((AddCircle.homeomorphCircle_apply one_ne_zero _).symm.trans hcircle)
 
@@ -115,8 +117,6 @@ theorem inner_staticSpectralChoiVector_zero
   simp_rw [hzero]
   simp only [map_one, mul_one]
   simp only [ite_mul, zero_mul]
-  simp_rw [Finset.sum_ite_irrel, Finset.sum_const_zero,
-    add_zero]
   simp only [Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
   rw [finiteSpectralSurvivalAmplitude]
   simp only [uniformSurvivalWeight]

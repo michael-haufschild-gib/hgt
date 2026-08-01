@@ -18,8 +18,8 @@ For restricted sums the passage is quantitative: a stagewise bound with a consta
 the stage gives the same bound for the weighted sum seminorm, so the coordinatewise projector is
 continuous for it.  Orthogonal projections give the constant `1`.
 
-* `deningerCoordinateOperator` : the coordinatewise operator on the limit.
-* `deningerCoordinateOperator_unique`, `_idem`, `_range_eq`, `_range_isClosed`.
+* `deningerLimitCoordinateOperator` : the coordinatewise operator on the limit.
+* `deningerLimitCoordinateOperator_unique`, `_idem`, `_range_eq`, `_range_isClosed`.
 * `deningerLimitGreen` : the Green identity passes.
 * `deningerWeightedSum_summable`, `deningerWeightedSum_le` : the weighted estimate.
 * `deningerEnergyProjection_weightedSum_le` : the orthogonal case, with constant `1`.
@@ -55,7 +55,7 @@ theorem deningerMem_projectiveLimit {r : ∀ i j, i ≤ j → (E j →L[R] E i)}
 
 /-- **The coordinatewise operator of a compatible family.**  Compatibility makes it preserve
 compatible families, and the initial topology of the limit makes it continuous. -/
-def deningerCoordinateOperator (r : ∀ i j, i ≤ j → (E j →L[R] E i)) (T : ∀ i, E i →L[R] E i)
+def deningerLimitCoordinateOperator (r : ∀ i j, i ≤ j → (E j →L[R] E i)) (T : ∀ i, E i →L[R] E i)
     (hT : ∀ i j (h : i ≤ j) (y : E j), r i j h (T j y) = T i (r i j h y)) :
     deningerProjectiveLimit r →L[R] deningerProjectiveLimit r :=
   ContinuousLinearMap.codRestrict
@@ -66,21 +66,21 @@ def deningerCoordinateOperator (r : ∀ i j, i ≤ j → (E j →L[R] E i)) (T :
       rw [hT, x.2 i j h])
 
 @[simp]
-theorem deningerCoordinateOperator_apply {r : ∀ i j, i ≤ j → (E j →L[R] E i)}
+theorem deningerLimitCoordinateOperator_apply {r : ∀ i j, i ≤ j → (E j →L[R] E i)}
     {T : ∀ i, E i →L[R] E i}
     (hT : ∀ i j (h : i ≤ j) (y : E j), r i j h (T j y) = T i (r i j h y))
     (x : deningerProjectiveLimit r) (i : ι) :
-    ((deningerCoordinateOperator r T hT x : deningerProjectiveLimit r) : ∀ i, E i) i
+    ((deningerLimitCoordinateOperator r T hT x : deningerProjectiveLimit r) : ∀ i, E i) i
       = T i ((x : ∀ i, E i) i) := rfl
 
 /-- **Uniqueness.**  A continuous linear map on the limit is determined by its coordinates. -/
-theorem deningerCoordinateOperator_unique {r : ∀ i j, i ≤ j → (E j →L[R] E i)}
+theorem deningerLimitCoordinateOperator_unique {r : ∀ i j, i ≤ j → (E j →L[R] E i)}
     {T : ∀ i, E i →L[R] E i}
     (hT : ∀ i j (h : i ≤ j) (y : E j), r i j h (T j y) = T i (r i j h y))
     (S : deningerProjectiveLimit r →L[R] deningerProjectiveLimit r)
     (hS : ∀ (x : deningerProjectiveLimit r) (i : ι),
       ((S x : deningerProjectiveLimit r) : ∀ i, E i) i = T i ((x : ∀ i, E i) i)) :
-    S = deningerCoordinateOperator r T hT := by
+    S = deningerLimitCoordinateOperator r T hT := by
   refine ContinuousLinearMap.ext fun x => ?_
   refine Subtype.ext ?_
   funext i
@@ -88,23 +88,23 @@ theorem deningerCoordinateOperator_unique {r : ∀ i j, i ≤ j → (E j →L[R]
   rfl
 
 /-- **Idempotence passes to the limit.** -/
-theorem deningerCoordinateOperator_idem {r : ∀ i j, i ≤ j → (E j →L[R] E i)}
+theorem deningerLimitCoordinateOperator_idem {r : ∀ i j, i ≤ j → (E j →L[R] E i)}
     {T : ∀ i, E i →L[R] E i}
     (hT : ∀ i j (h : i ≤ j) (y : E j), r i j h (T j y) = T i (r i j h y))
     (hidem : ∀ i (y : E i), T i (T i y) = T i y) (x : deningerProjectiveLimit r) :
-    deningerCoordinateOperator r T hT (deningerCoordinateOperator r T hT x)
-      = deningerCoordinateOperator r T hT x := by
+    deningerLimitCoordinateOperator r T hT (deningerLimitCoordinateOperator r T hT x)
+      = deningerLimitCoordinateOperator r T hT x := by
   refine Subtype.ext ?_
   funext i
   exact hidem i ((x : ∀ i, E i) i)
 
 /-- **The range of the limit projector is the limit of the ranges.**  A compatible family is in the
 image exactly when each of its coordinates is. -/
-theorem deningerCoordinateOperator_mem_range_iff {r : ∀ i j, i ≤ j → (E j →L[R] E i)}
+theorem deningerLimitCoordinateOperator_mem_range_iff {r : ∀ i j, i ≤ j → (E j →L[R] E i)}
     {T : ∀ i, E i →L[R] E i}
     (hT : ∀ i j (h : i ≤ j) (y : E j), r i j h (T j y) = T i (r i j h y))
     (hidem : ∀ i (y : E i), T i (T i y) = T i y) (x : deningerProjectiveLimit r) :
-    x ∈ LinearMap.range (deningerCoordinateOperator r T hT).toLinearMap
+    x ∈ LinearMap.range (deningerLimitCoordinateOperator r T hT).toLinearMap
       ↔ ∀ i, ((x : ∀ i, E i) i) ∈ LinearMap.range (T i).toLinearMap := by
   constructor
   · rintro ⟨y, rfl⟩ i
@@ -119,27 +119,27 @@ theorem deningerCoordinateOperator_mem_range_iff {r : ∀ i j, i ≤ j → (E j 
     exact hidem i y
 
 /-- **The range of the limit projector is closed**, being the kernel of `1 - P`. -/
-theorem deningerCoordinateOperator_range_isClosed [∀ i, T1Space (E i)]
+theorem deningerLimitCoordinateOperator_range_isClosed [∀ i, T1Space (E i)]
     [∀ i, IsTopologicalAddGroup (E i)]
     {r : ∀ i j, i ≤ j → (E j →L[R] E i)} {T : ∀ i, E i →L[R] E i}
     (hT : ∀ i j (h : i ≤ j) (y : E j), r i j h (T j y) = T i (r i j h y))
     (hidem : ∀ i (y : E i), T i (T i y) = T i y) :
-    IsClosed (Set.range (deningerCoordinateOperator r T hT)) := by
-  have hker : Set.range (deningerCoordinateOperator r T hT)
+    IsClosed (Set.range (deningerLimitCoordinateOperator r T hT)) := by
+  have hker : Set.range (deningerLimitCoordinateOperator r T hT)
       = (LinearMap.ker (ContinuousLinearMap.id R (deningerProjectiveLimit r)
-        - deningerCoordinateOperator r T hT).toLinearMap :
+        - deningerLimitCoordinateOperator r T hT).toLinearMap :
           Set (deningerProjectiveLimit r)) := by
     ext x
     constructor
     · rintro ⟨y, rfl⟩
       show (ContinuousLinearMap.id R (deningerProjectiveLimit r)
-        - deningerCoordinateOperator r T hT) (deningerCoordinateOperator r T hT y) = 0
+        - deningerLimitCoordinateOperator r T hT) (deningerLimitCoordinateOperator r T hT y) = 0
       rw [sub_apply, ContinuousLinearMap.id_apply,
-        deningerCoordinateOperator_idem hT hidem y, sub_self]
+        deningerLimitCoordinateOperator_idem hT hidem y, sub_self]
     · intro hx
       refine ⟨x, ?_⟩
       have hx' : (ContinuousLinearMap.id R (deningerProjectiveLimit r)
-        - deningerCoordinateOperator r T hT) x = 0 := hx
+        - deningerLimitCoordinateOperator r T hT) x = 0 := hx
       rw [sub_apply, ContinuousLinearMap.id_apply, sub_eq_zero] at hx'
       exact hx'.symm
   rw [hker]
@@ -155,11 +155,11 @@ theorem deningerLimitGreen {r : ∀ i j, i ≤ j → (E j →L[R] E i)}
     (hG : ∀ i j (h : i ≤ j) (y : E j), r i j h (G j y) = G i (r i j h y))
     (hgreen : ∀ i (y : E i), y - Pr i y = Q i (Qd i (G i y)) + Qd i (Q i (G i y)))
     (x : deningerProjectiveLimit r) :
-    x - deningerCoordinateOperator r Pr hP x
-      = deningerCoordinateOperator r Q hQ
-          (deningerCoordinateOperator r Qd hQd (deningerCoordinateOperator r G hG x))
-        + deningerCoordinateOperator r Qd hQd
-          (deningerCoordinateOperator r Q hQ (deningerCoordinateOperator r G hG x)) := by
+    x - deningerLimitCoordinateOperator r Pr hP x
+      = deningerLimitCoordinateOperator r Q hQ
+          (deningerLimitCoordinateOperator r Qd hQd (deningerLimitCoordinateOperator r G hG x))
+        + deningerLimitCoordinateOperator r Qd hQd
+          (deningerLimitCoordinateOperator r Q hQ (deningerLimitCoordinateOperator r G hG x)) := by
   refine Subtype.ext ?_
   funext i
   exact hgreen i ((x : ∀ i, E i) i)

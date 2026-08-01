@@ -159,16 +159,15 @@ theorem exists_lipschitz_implicit (P : MvPolynomial (Fin (n + 1)) ℂ)
       _ = (K : ENNReal) * edist w₁ w₂ := by
           rw [Prod.edist_eq]
           simp
-  · rw [hinvbase]
+  · show (inv (w₀, 0)).2 = u₀
+    rw [hinvbase]
   · have hev := hHL.eventually_right_inverse
     rw [hbaseimg] at hev
     have hpull := hcontslice.tendsto.eventually hev
     filter_upwards [hpull] with w hw
     have h1 : (inv (w, 0)).1 = w := congrArg Prod.fst hw
     have h2 : splitEval P (inv (w, 0)) = 0 := congrArg Prod.snd hw
-    have h3 : MvPolynomial.eval (Fin.snoc w ((inv (w, 0)).2)) P = 0 := by
-      rw [← h1]
-      exact h2
-    exact h3
+    have h2' : MvPolynomial.eval (Fin.snoc ((inv (w, 0)).1) ((inv (w, 0)).2)) P = 0 := h2
+    rwa [h1] at h2'
 
 end GaloisForLFunctions
