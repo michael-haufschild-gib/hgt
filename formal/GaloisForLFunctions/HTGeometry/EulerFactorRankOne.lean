@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.BohrProductUniformLimit
+import GaloisForLFunctions.HTGeometry.BohrFejerConcentration
 
 /-!
 # Infinite spectrum, rank-one frequency module
@@ -127,11 +128,11 @@ theorem tendsto_dirichlet_error (hσ : 0 < σ) :
   simpa using hlim.mul_const ((1 - (2 : ℝ) ^ (-σ))⁻¹)
 
 theorem continuous_twoPowerLine (σ : ℝ) : Continuous (twoPowerLine σ) := by
-  rw [twoPowerLine.eq_def]
+  unfold twoPowerLine
   fun_prop
 
 theorem continuous_eulerFactorLine (hσ : 0 < σ) : Continuous (eulerFactorLine σ) := by
-  rw [eulerFactorLine.eq_def]
+  unfold eulerFactorLine
   exact (continuous_const.sub (continuous_twoPowerLine σ)).inv₀
     (one_sub_twoPowerLine_ne_zero hσ)
 
@@ -234,5 +235,67 @@ theorem rank_bohrFrequencyModule_eulerFactorLine_le_one (hσ : 0 < σ) :
   refine le_trans (Submodule.rank_mono (bohrFrequencyModule_eulerFactorLine_le hσ)) ?_
   refine le_trans (rank_span_le _) ?_
   rw [Cardinal.mk_singleton]
+
+/-- `2^{-s}` as a function of the complex variable. -/
+noncomputable def twoPower (s : ℂ) : ℂ := Complex.exp (-(s * (Real.log 2 : ℂ)))
+
+/-- The Euler factor at `2` as a function of the complex variable. -/
+noncomputable def eulerFactorTwo (s : ℂ) : ℂ := (1 - twoPower s)⁻¹
+
+theorem twoPowerLine_eq_twoPower (σ t : ℝ) :
+    twoPowerLine σ t = twoPower ((σ : ℂ) + (t : ℂ) * Complex.I) := rfl
+
+theorem eulerFactorLine_eq_eulerFactorTwo (σ t : ℝ) :
+    eulerFactorLine σ t = eulerFactorTwo ((σ : ℂ) + (t : ℂ) * Complex.I) := rfl
+
+theorem norm_twoPower (s : ℂ) : ‖twoPower s‖ = Real.exp (-(s.re * Real.log 2)) := by
+  rw [twoPower, Complex.norm_exp]
+  congr 1
+  rw [Complex.neg_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im]
+  ring
+
+theorem one_sub_twoPower_ne_zero {s : ℂ} (hs : 0 < s.re) : (1 : ℂ) - twoPower s ≠ 0 := by
+  intro h
+  have hone : twoPower s = 1 := (sub_eq_zero.mp h).symm
+  have hnorm : ‖twoPower s‖ = 1 := by rw [hone, norm_one]
+  rw [norm_twoPower] at hnorm
+  have hneg : -(s.re * Real.log 2) < 0 := by
+    have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
+    nlinarith
+  have := Real.exp_lt_one_iff.mpr hneg
+  rw [hnorm] at this
+  exact absurd this (lt_irrefl 1)
+
+theorem hasDerivAt_twoPower (s : ℂ) :
+    HasDerivAt twoPower (twoPower s * (-(Real.log 2 : ℂ))) s := by
+  have hbase : HasDerivAt (fun z : ℂ => z * (Real.log 2 : ℂ)) (1 * (Real.log 2 : ℂ)) s :=
+    (hasDerivAt_id s).mul_const ((Real.log 2 : ℂ))
+  refine (hbase.neg).cexp.congr_deriv ?_
+  simp only [Pi.neg_apply]
+  rw [twoPower]
+  ring
+
+/-- **The Euler factor satisfies a constant-coefficient first-order algebraic differential
+equation.**  It is differentially algebraic over `ℂ` — the relation carries no coefficient in `s`
+at all. -/
+theorem hasDerivAt_eulerFactorTwo {s : ℂ} (hs : 0 < s.re) :
+    HasDerivAt eulerFactorTwo
+      (-(Real.log 2 : ℂ) * (eulerFactorTwo s ^ 2 - eulerFactorTwo s)) s := by
+  have hne : (1 : ℂ) - twoPower s ≠ 0 := one_sub_twoPower_ne_zero hs
+  have hden : HasDerivAt (fun z : ℂ => 1 - twoPower z) (twoPower s * (Real.log 2 : ℂ)) s := by
+    refine ((hasDerivAt_twoPower s).const_sub (1 : ℂ)).congr_deriv ?_
+    ring
+  have hinv := hden.inv hne
+  refine hinv.congr_deriv ?_
+  rw [eulerFactorTwo]
+  field_simp
+  ring
+
+/-- The autonomous relation in the form of eq. (8): a nonzero polynomial in the jet, with constant
+coefficients, vanishes identically on the half-plane. -/
+theorem eulerFactorTwo_autonomous {s : ℂ} (hs : 0 < s.re) :
+    deriv eulerFactorTwo s + (Real.log 2 : ℂ) * (eulerFactorTwo s ^ 2 - eulerFactorTwo s) = 0 := by
+  rw [(hasDerivAt_eulerFactorTwo hs).deriv]
+  ring
 
 end GaloisForLFunctions

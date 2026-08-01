@@ -21,9 +21,9 @@ quotienting that atlas by shared unresolved premises, the live proof frontier co
 smaller set of genuinely different source routes. The nearest are: the literal CCM
 first-clock tail/Bohr route; fixed-width rectangular Weil lower floors; all-node
 Xi-Weil form positivity; theta-cusp center-mixed positivity; critical Möbius cancellation;
-all-prime Sonin closure;
 Suzuki full-frequency Hermite–Biehler/Ward realization; and Xi Taylor core-current control.
-The Julia compound-Poisson route is retired by an exact diagonal-energy obstruction.
+The all-prime Sonin/Burnol route and Julia compound-Poisson route are retired by exact
+order-growth and diagonal-energy obstructions, respectively.
 Operator, Deninger, Gamma–Jacobi,
 Connes/prolate, and source-domain Hedenmalm routes remain structurally meaningful but
 farther upstream.
@@ -43,8 +43,8 @@ its strongest positive survivor remains part of frontier.
 Project has solved most connector problems and has not solved source-acquisition problem.
 Nearest routes require one global source theorem: first-clock lower control, fixed-width
 Weil floor, completed Hedenmalm positivity, critical Möbius cancellation,
-positive-linear-excursion Sonin floor restoration and source handoff, Suzuki full-frequency
-source realization, or Xi-current control. No route currently supplies that theorem.
+Suzuki full-frequency source realization, or Xi-current control. No route currently supplies
+that theorem.
 
 ## 2. What the foundational tower actually proves
 
@@ -360,7 +360,13 @@ nonlocal all-prime law.
 **Positive survivor.** Difficulty localizes to the supercritical LCM boundary; bounded
 returns suffice, not uniform all-aperture control.
 
-### Route F — all-prime Sonin transfer
+### Route F — all-prime Sonin transfer [RETIRED]
+
+**Terminal status.** Current Route F mechanism is closed negatively. For every geometric Burnol
+log-shell conductor and every arbitrary schedule of finite tower heights, its literal quadratic
+pairing on the canonical source packets has only affine-logarithmic order and fails the typed lower
+floor along the source's explicit positive-linear coupling-energy schedule. No concrete
+source-faithful producer remains in this route.
 
 **Endpoints.** Per-test, finite-moment, cofinal-block, and valuation-cone Sonin-to-prime
 coupling interfaces, each with an RH conclusion.
@@ -437,27 +443,36 @@ positive Sonin finite/block/moment values
   frequency-side logarithmic-channel family for arbitrary tower heights whenever carrier is at
   most proportional to schedule scale, half-width times twice the carrier has a fixed positive
   lower bound, packet norms are uniformly bounded, and the stated positivity/mean hypotheses hold;
+- on the canonical source packets, the complete geometric Burnol log-shell conductor—position
+  plus reflected-frequency halves—has real quadratic form at most `C₀ + C₁ log A`, with
+  nonnegative constants independent of carrier `A ≥ 1` and every finite tower height. Composing
+  this exact affine-logarithmic order with the source's positive-linear schedule proves that, for
+  every height function, the corresponding completed packet values are not bounded below;
+- the same schedule gives an ideal-size classification: Hilbert–Schmidt channel families acting
+  on unit-bounded packets fail under every sublinear Hilbert–Schmidt norm envelope, and one explicit
+  positive slope `s` is small enough that an eventual bound `hsNorm(Cᵢ) ≤ s rᵢ` still fails. Hence
+  any Hilbert–Schmidt family that restores that scheduled floor must satisfy
+  `s rᵢ < hsNorm(Cᵢ)` frequently;
 
-**Open core.** Construct a literal all-prime typed additive completion whose lower floor exists for
-every `κ`, every starting index, and every admissibility proof in the schedule theorem. Only under
-that universal premise is frequent domination of one explicit positive linear rate proved
-necessary; no such necessity is proved for one selected schedule or for an unreduced semilocal
-operator.
-Alternatively prove that the arithmetic completion is not governed by the typed model, then
-establish the source handoff. Schedule existence,
-scale-free ideal discount, one-sequence linear coupling growth, the actual logarithmic-shell
-channel's arbitrary-height family under its exact packet hypotheses, uniformly bounded
-operator-family quadratic
-contributions, sublinear-image channel families, and every scalar contribution eventually below
-the proved positive slope inside
-that typed model are closed. No corpus theorem constructs a source-faithful positive-linear-
-excursion compensation satisfying the floor or reduces a semilocal operator completion to this
-scalar model.
+**Terminal verdict.** Bounded, sublinear, logarithmic, fixed-height, arbitrary-height, position,
+frequency-reflected, and full finite Burnol-conductor completions are closed. A merely hypothetical
+typed term with positive-linear excursions is not a surviving proof mechanism: no arithmetic source
+constructs one, and defining it from coupling energy is circular. Reopening requires a genuinely
+new source theorem, not another Route F completion estimate.
+
+**Positive survivor, outside retired Route F.** Any universal restorer must have packet-diagonal
+microlocal order at least one along the explicit source schedule. In the Hilbert–Schmidt class this
+is quantitative: its norm must exceed one fixed positive multiple of scale infinitely often. A
+future program must either build an arithmetic order-one operator from source or renormalize away
+the Sonin Weyl-volume term before attaching the Gamma conductor. Either choice starts a new pipeline
+card and must prove its own source handoff; it is not an unresolved sublemma of this route.
 
 **Dead mechanisms.** Bounded scalar, uniformly bounded operator-family quadratic, sublinear-image
 channel-family, fixed-operator,
 Burnol counterterm, position-side,
-aperture-refinement-only and actual logarithmic-shell completions fail; every sublinear scalar
+aperture-refinement-only, frequency-side logarithmic-shell, and full geometric Burnol log-shell
+conductor completions fail; sublinear and sufficiently small slope-capped Hilbert–Schmidt channel
+families fail as well; every sublinear scalar
 additive term, and more generally every term eventually below the proved positive linear slope,
 inside the typed completed-packet model also fails. Mere unboundedness or merely nonzero normalized
 limsup below that slope is insufficient within that model.
@@ -524,7 +539,9 @@ actual monotone source eigen-coefficient law
 5. control of homogeneous channel and passage from finite spectral sums to global carrier;
 6. identify the actual division-free Robin/Gamma/holonomy or Gamma-projected rectangular
    trace with, or dominate it by, the forced negative-light Gram channel while retaining
-   marked half-gap and holonomy Schur debts;
+   marked half-gap and holonomy Schur debts. Generic top-variable determinant expansion and
+   linear-polynomial irreducibility from coprime coefficients are proved; the actual rectangular
+   cofactor/remainder coprimality and source identification are not;
 7. prove the resulting rectangular Ward residual uniformly lower-semibounded.
 
 **Dead predecessor.** The legacy entire compact-limit target is impossible because the
@@ -742,7 +759,12 @@ used as an endomorphism of an ordinary sheaf; any arithmetic comparison must kee
 retraction separate from local sheaf maps. Every open cover of a compact totally disconnected factor times a
 compact manifold admits a finite subordinate continuous family summing to one, locally constant
 along the first factor, and smooth along the manifold factor; the circle case is explicit. The
-exported fineness theorem does not assert nonnegativity. A separately defined suspension with
+exported fineness theorem does not assert nonnegativity. A support-contained continuous bump times
+a section continuous on its open set extends continuously by zero. For a finite open cover equipped
+with continuous subordinate bumps summing to one, the resulting explicit averaged cochain splits
+every real-valued continuous Čech one-cocycle. This proves the typed first-cohomology split, not
+higher Čech acyclicity, arbitrary sheaf coefficients, or the arithmetic relevant complex. A
+separately defined suspension with
 trivial monodromy is homeomorphic to the product with `AddCircle T`. The concrete candidate unit
 group `U_p = ∏_{ℓ ≠ p} ℤ_ℓˣ` is now defined, proved compact Hausdorff and totally disconnected, and
 `U_p × Circle` is smoothly fine. No theorem identifies `U_p` with the automorphism group of the
@@ -759,7 +781,8 @@ trivial-monodromy mapping torus, packet, symbol, and
 coefficientwise cylinder constructions with
 the literal arithmetic Meyer/Deninger relevant complex; establish radial Schwartz and global
 square-integrable domains, a valid local/global interface for the nonlocal packet average, nuclear
-topology and closed range, nonradial acyclicity, arithmetic
+topology and closed range, higher-degree and arithmetic-sheaf acyclicity beyond the generic
+real-valued Čech one-cocycle split, arithmetic
 cup/trace/flow/Hodge transport, nuclear almost-idempotence, middle-kernel vanishing, and
 source-to-Xi spectrum inclusion.
 
@@ -1040,6 +1063,11 @@ source.
   series coefficients remain in every subfield containing the original coefficients;
 - continuous-functional-calculus norm bounds converting uniform spectral-symbol smallness into
   operator-norm convergence;
+- uniqueness of the top entry index in a rectangular Toeplitz section, generic determinant degree
+  at most one when one variable occurs in one entry, exact expansion into that variable times the
+  complementary minor plus a variable-free remainder, and irreducibility of a linear polynomial
+  with coprime coefficients. No theorem proves the needed cofactor/remainder coprimality for the
+  literal rectangular Schur determinant or supplies an RH source handoff;
 - Lindelöf exponent campaign.
 
 These are not counted as current RH proof chains because no exact source-to-RH handoff is
@@ -1089,6 +1117,7 @@ rational module, and excludes nonzero rational flat germs.
 12. literal source-specific centered-jet instantiation and an RH-facing handoff from the
     now-proved generic compact-patch transversality;
 13. Lindelöf second-spacing plus across-class cancellation.
+14. Literal rectangular Schur cofactor/remainder coprimality and its source-facing Ward handoff.
 
 ## 6. Dead routes: exhaustive mechanism map
 
@@ -1195,6 +1224,8 @@ completed integral.
 - bounded scalar, uniformly bounded operator-family quadratic, fixed-operator, and position-side
   Sonin completions, together with every scalar-additive term eventually below the proved positive
   slope in the typed completed-packet model;
+- frequency-reflected and full geometric Burnol log-shell conductors at arbitrary finite-height
+  schedules on the canonical source packets;
 - second-order Koplienko subtraction that deletes required linear terms;
 - legacy Suzuki entire compact limit;
 - scalar jump/Herglotz identifications with mismatched coordinates;
@@ -1307,14 +1338,15 @@ HTGeometry adds:
 - multiplicity-only bosonic horizon;
 - polarized infinite-pair orbit-lift failure;
 - Sonin second-order regularization;
-- capacity growth from hypertranscendence.
+- capacity growth from hypertranscendence;
 - postcritical reciprocal reading of a pure critical horizon: two states with the same critical
   polynomial have different negative inverse constant-term values, so that postcritical coordinate
   is not determined by critical data alone.
 
 Their positive survivors are, respectively: divisor-sensitive gauge classification;
 source-specific sign necessity; sharp flat inverse; multiplicity classification; weighted
-invariants; exact residual correction; and clock-dilation norm rigidity.
+invariants; exact residual correction; clock-dilation norm rigidity; and explicit two-valued
+postcritical fibre separation, showing that extra postcritical data are required.
 
 Fifteen additional adjacent physics/algebra mechanisms have no exact RH endpoint:
 
@@ -1450,9 +1482,10 @@ literature. They are stated at source level, before specialization to Xi zeros.
 
 ### Tier 2 — source-to-operator or source-to-form construction
 
-8. A source-faithful Sonin completion satisfying the floor and exceeding the proved positive
-   linear rate frequently, or a proof that the arithmetic completion lies outside the typed
-   scalar-additive model, followed by the literal all-prime source handoff.
+8. **New-route order-one Sonin source theorem.** Build an arithmetic packet-diagonal operator of
+   microlocal order at least one, or renormalize away the Sonin Weyl-volume term before Gamma
+   attachment, then establish a new literal all-prime source handoff. This is the positive survivor
+   of retired Route F, not an open completion estimate within it.
 9. Suzuki source coefficient monotonicity, chord-mass gap, full jump Pick kernel, or a
     source identification of the forced negative-light Gram channel with the rectangular
     Ward residual.
@@ -1569,9 +1602,7 @@ The cited primary sources close no Tier-1 or Tier-2 open core above.
 3. Möbius Gamma–Hankel bounded returns;
 4. fixed-width rectangular Weil floor;
 5. any finite prime–arch high-frequency ceiling;
-6. Sonin source-faithful floor restoration with the proved positive-linear excursions and literal
-   all-prime handoff;
-7. Suzuki source-selected full jump kernel or relative-Volterra source-germ weld.
+6. Suzuki source-selected full jump kernel or relative-Volterra source-germ weld.
 
 These routes begin with literal source and have short, formally closed tails to RH.
 
@@ -1590,8 +1621,8 @@ These routes begin with literal source and have short, formally closed tails to 
 - shellwise or finite-prefix positivity as completed positivity;
 - abstract zero-fed spectral models;
 - generic HT, positivity, log-concavity, or moment arguments without literal source;
-- legacy Suzuki entire-limit, Sonin scalar/position-side completion, or moving-polynomial
-  even factorization;
+- legacy Suzuki entire-limit, any finite-height geometric Sonin/Burnol completion, or
+  moving-polynomial even factorization;
 - lexical HT/RH crossmatches without exact imports and identifier use.
 
 ## 11. Final frontier statement
@@ -1614,12 +1645,15 @@ The routes differ in the missing theorem:
 - fixed-width lower floor for rectangular Weil;
 - all-order completed positivity for Hedenmalm/prime–arch;
 - critical cancellation for Möbius;
-- positive-linear-excursion floor restoration and literal all-prime handoff for Sonin;
 - source-selected full-frequency Pick/Hermite–Biehler structure for Suzuki;
 - relative-Volterra phase source-germ weld;
 - off-diagonal core-current control for Xi Taylor;
-- source-defined principal-relative Julia current and pre-projection orientation;
 - source-built operator and spectrum inclusion for spectral/Deninger programs.
+
+Retired Routes F and J do not contribute missing sublemmas to that live list. Their positive
+survivors instead specify requirements for new routes: an arithmetic order-one operator or
+pre-Gamma renormalization after the Sonin Weyl-volume obstruction, and a source-defined
+principal-relative current oriented before Julia good/bad projection.
 
 The disproof side is equally exact: one certified off-line zero or equivalent negative
 finite witness would suffice, but the corpus produces none.
@@ -1685,6 +1719,9 @@ Therefore the honest current conclusion is:
 - `RHTower/SoninSublinearChannelFamily.lean`
 - `RHTower/SoninChannelMovingThreshold.lean`
 - `RHTower/SoninFourierChannelFamilyClosed.lean`
+- `RHTower/SoninBurnolFrequencyLogOrder.lean`
+- `RHTower/SoninBurnolFrequencyLogarithmicOrderNoGo.lean`
+- `RHTower/SoninHilbertSchmidtCompletionFloor.lean`
 - `RHTower/QuantitativeNymanBeurling.lean`
 - `RHTower/GroskinArchimedeanTailOrder.lean`
 - `RHTower/SuzukiFiniteApertureHermiteBiehler.lean`
@@ -1729,6 +1766,9 @@ Therefore the honest current conclusion is:
 - `RHTower/DeningerPacketFineSmooth.lean`
 - `RHTower/DeningerMappingTorus.lean`
 - `RHTower/DeningerPacketUnits.lean`
+- `RHTower/DeningerPacketNonlocal.lean`
+- `RHTower/DeningerExtendByZero.lean`
+- `RHTower/DeningerCechSplit.lean`
 - `RHTower/HedenmalmPrimeNormalWickBoundaryEnergy.lean`
 - `RHTower/ThetaCuspCalibratedPowerReciprocalMomentLaw.lean`
 - `RHTower/CCMFirstClockJuliaEquilibriumGram.lean`
@@ -1769,6 +1809,11 @@ Therefore the honest current conclusion is:
 - `HTGeometry/CoatomFixedField.lean`
 - `HTGeometry/LogMaxSublinear.lean`
 - `HTGeometry/ReciprocalCoefficientField.lean`
+- `HTGeometry/CfcNormBound.lean`
+- `HTGeometry/PostcriticalFiberSeparation.lean`
+- `HTGeometry/RectangularSchurTopEntry.lean`
+- `HTGeometry/DeterminantDegreeOne.lean`
+- `HTGeometry/LinearIrreducibleCriterion.lean`
 - `HTGeometry/CenteredCoeffFieldRational.lean`
 - `HTGeometry/CenteredFullMonodromy.lean`
 - `HTGeometry/CenteredFullMonodromyOdd.lean`

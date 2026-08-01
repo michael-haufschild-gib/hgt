@@ -398,3 +398,53 @@ Piece 2's general form is now proved in `HTGeometry/CfcNormBound.lean` [PROVED H
 Chaining the two, `(2)` reduces to a purely scalar statement: that the rational symbols
 `g_lambda(x) = ((-lambda x)/(1 + (rho - lambda) x) - 1) * x` tend to `0` uniformly on a compact
 spectrum. No operator construction, no kernel, and no Friedrichs extension enters.
+
+### Lean progress — the scalar half of `(2)` FORMALIZED; `(2)` is now assembled
+
+The symbol computation, done explicitly. With `B = (A - rho)^{-1}` and `s = rho - lambda > 0`,
+
+```text
+(A - lambda)^{-1} = B (1 + s B)^{-1},   so   f_lambda(x) = -lambda x / (1 + s x),
+f_lambda(x) - 1 = -(1 + rho x) / (1 + s x),
+g_lambda(x) = (f_lambda(x) - 1) * x = -x (1 + rho x) / (1 + s x).
+```
+
+Added to `HTGeometry/CfcNormBound.lean` [PROVED HERE], standard axioms
+`[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `abs_resolventSymbol_le` : on `[0, M]`, `|g_lambda(x)| <= (1 + |rho| M) / s`. The mechanism is
+  `x / (1 + s x) <= 1 / s`, valid for **every** `x >= 0` including `x = 0` — which is exactly why
+  the estimate is uniform across the spectral accumulation point where the unscaled symbols do not
+  converge.
+- `tendsto_resolventSymbolBound_atTop`, `eventually_forall_abs_resolventSymbol_le` : the bound is
+  eventually below any `eps`, uniformly in `x` on the window.
+
+**`(2)` is therefore assembled from corpus-owned pieces alone**: the uniform symbol smallness above
+feeds `tendsto_norm_cfc_zero`, which gives `‖(T_lambda - 1) ∘L B‖ -> 0`, which feeds
+`tendsto_id_of_norm_comp_tendsto_zero` together with
+`denseRange_of_isSelfAdjoint_of_injective`, yielding `(-lambda)(A - lambda)^{-1} -> I` strongly.
+No unbounded-operator theory, no kernel, and no Friedrichs extension is used anywhere in the chain.
+
+What `(4)` still needs beyond `(2)` is only its *limit value* — the endpoint atom pair — which is
+where Suzuki's concrete source enters, and which `integral_endpointAtomPair` already evaluates once
+that source is available.
+
+### Lean progress — the scalar layer of `(2)` is complete
+
+Two further pieces close the scalar side, in `HTGeometry/CfcNormBound.lean` [PROVED HERE], standard
+axioms `[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `abs_resolventFamilySymbol_le` : the **uniform operator bound**. The family symbol
+  `(s - rho) x / (1 + s x)` is bounded by `1 + |rho|` on `[0, M]` once `s >= 1`, uniformly in both
+  `x` and `s`. This is the `‖T_lambda‖ <= C` hypothesis of the strong-limit bridge, and it too rests
+  on `x/(1 + s x) <= 1/s`.
+- `resolventSymbol_sub_one_mul` : the **link identity**
+  `((s - rho) x/(1 + s x) - 1) * x = -(x (1 + rho x)/(1 + s x))`, the scalar shadow of
+  `(T_lambda - 1) ∘L B`. It is where `-lambda x` cancels against `-s x`, leaving the `rho`-only
+  numerator that the estimate controls; an error here would silently break the chain, so it is
+  stated rather than inlined.
+
+With this the scalar layer of `(2)` is complete: uniform bound, link identity, uniform smallness.
+Every remaining step is CFC bookkeeping over corpus theorems (`tendsto_norm_cfc_zero`,
+`tendsto_id_of_norm_comp_tendsto_zero`, `denseRange_of_isSelfAdjoint_of_injective`) with no new
+mathematics.

@@ -1,8 +1,8 @@
 # Sonin--Burnol frequency logarithmic-order no-go
 
 - **ID:** `sonin-burnol-frequency-logarithmic-order-no-go`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / TERMINAL ROUTE-F NO-GO WITH POSITIVE SURVIVOR
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper + Lean) / TERMINAL ROUTE-F NO-GO WITH POSITIVE SURVIVOR
 - **Parent:** `sonin-principal-shell-cyclic-trace.md`
 - **Statement:** Uniformly over every finite tower height, the frequency-reflected Burnol log-shell
   channel has only logarithmic-order diagonal response on the canonical modulated Sonin packets;
@@ -27,7 +27,7 @@ packets `w_A=soninPacketEven(b,c,2πA)`. Let
 F_n = Fourier * evenLogShellChannel(a₀,r₀,n) * Fourier.
 ```
 
-There are constants `C₀,C₁>=0`, independent of `A` and `n`, such that for every `A>=2`,
+There are constants `C₀,C₁>=0`, independent of `A` and `n`, such that for every `A>=1`,
 
 ```text
 Re <w_A, F_n w_A> <= C₀ + C₁ log A.                    (1)
@@ -129,6 +129,24 @@ premise, numerical estimate, target-fitted scalar, or selected tower height ente
 - Result is new only if it closes frequency-reflected channel uniformly in height. Instantiating
   generic sublinear no-go with an assumed cap is theorem theatre.
 
+## External novelty audit
+
+Primary-source audit found no collision with the uniform order theorem or its terminal source
+handoff. Burnol's co-Poisson and Sonine-space work proves qualitative transform, completeness, and
+minimality structure, not a canonical-packet conductor bound uniform in truncation height
+([co-Poisson intertwining](https://arxiv.org/abs/math/0407443),
+[complete/minimal zeta systems](https://arxiv.org/abs/math/0203120)). Connes--Consani--Moscovici
+construct semilocal Sonin isomorphisms and prolate operators but do not prove a lower-floor producer
+or an order-one packet response
+([Zeta zeros and prolate wave operators](https://alainconnes.org/wp-content/uploads/Zeta-zeros-and-prolateproofs-final-2024.pdf)).
+Archimedean Weil positivity and quasi-inner local-factor results supply operator structure, not the
+missing cofinal semilocal floor
+([Weil positivity](https://arxiv.org/abs/2006.13771),
+[quasi-inner local factors](https://arxiv.org/abs/2008.10974)). The 2025 spectral-triple proposal
+reports numerical spectral agreement and states rigorous convergence remains sufficient for RH;
+it does not close this source estimate
+([Zeta Spectral Triples](https://arxiv.org/abs/2511.22755)).
+
 ## No-go closure
 
 - **Exact killing theorem/mechanism:** uniform logarithmic packet-diagonal bound `(1)` plus existing
@@ -139,14 +157,30 @@ premise, numerical estimate, target-fitted scalar, or selected tower height ente
 - **New insight:** Route F's missing object is not another finite part or better logarithmic
   regularization. It requires a new order-one arithmetic source operator, or a renormalization that
   removes the Sonin Weyl-volume term before the Gamma conductor is attached.
-- **Status:** dependency-closed paper proof; internal no-go corpus and primary Burnol/CCM literature
-  audited; exact Lean theorem open.
+- **Status:** dependency-closed paper proof and exact unconditional Lean theorem complete. The final
+  theorem quantifies over every tower-height schedule, uses the canonical source packets, pairs
+  them with the full concrete Burnol conductor, and produces the source schedule witnessing failure
+  of the lower floor.
+
+## Lean formalization
+
+- `SoninPacketHighTailPolynomial.lean` proves the uniform twelfth-order pointwise density tail and
+  integrated eleventh-order cutoff-energy tail for the canonical packet.
+- `SoninChannelMovingThreshold.lean` proves the missing height-uniform shell estimate with a real
+  moving threshold, avoiding any carrier-to-shell rounding assumption.
+- `SoninBurnolFrequencyLogOrder.lean` proves the full conductor quadratic form is bounded by
+  `C₀ + C₁ log A`, uniformly in carrier and height.
+- `SoninBurnolFrequencyLogarithmicOrderNoGo.lean` composes that exact bound with the explicit
+  linear-energy Sonin schedule and proves
+  `not_bddBelow_soninCompletedPacketValueVar_soninBurnolLogShellConductorFamily`.
+- Axiom audit for all four load-bearing theorems: `propext`, `Classical.choice`, `Quot.sound` only.
+- No `sorry`, `admit`, project `axiom`, `opaque`, or `unsafe` declaration occurs in these modules.
 
 ## Gates
 
 - [x] 0 -> 1 in-progress: source-pure statement, exact falsifier, anti-theatre boundary
 - [x] 1 -> 2 fully-proven: dependency-closed proof of uniform logarithmic diagonal bound
-- [ ] 2 -> 3 formalized: unconditional Lean theorem, umbrella wiring, lint and axiom audit
+- [x] 2 -> 3 formalized: unconditional Lean theorem, umbrella wiring, source-level lint and axiom audit
 - [ ] 3 -> 4 publication-ready
 
 ## Log
@@ -154,3 +188,5 @@ premise, numerical estimate, target-fitted scalar, or selected tower height ente
 - 2026-08-01 — Route F audit reduced last concrete survivor to uniform frequency-channel order.
 - 2026-08-01 — paper proof closed by positive/middle/tail shell split and a uniform Schwartz tail;
   tower height disappears before the growth comparison.
+- 2026-08-01 — exact canonical-packet tail, moving-threshold shell bound, full-conductor logarithmic
+  order, and arbitrary-height source no-go formalized in Lean.

@@ -119,3 +119,90 @@ level.  No new Lean claim is attached to this bridge card.
   in direction `i` of the `j`-th family member.  Supplying the transpose makes the final application
   spin at `whnf` until the heartbeat limit rather than fail; with the indices in the criterion's
   order the file checks in seven seconds.
+
+- 2026-08-01 — **First step toward the Schur irreducibility: the top variable occurs once.**
+  `formal/GaloisForLFunctions/HTGeometry/RectangularSchurTopEntry.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `rectangularSchurToeplitz_corner` — the bottom-left entry of the rectangular Jacobi--Trudi matrix
+  is `h_(n+m-1)`; `rectangularSchurToeplitz_index_eq_top` and
+  `rectangularSchurToeplitz_index_lt_top` — that index is attained **only** there, every other entry
+  carrying a strictly smaller one.
+
+  Consequence, and the reason to record it: `tau_(m,n)` is of degree one in `h_(n+m-1)`, with the
+  complementary minor as its leading coefficient.  So irreducibility reduces to that minor being
+  coprime to the remainder, which is the shape any proof must take — including the one through the
+  Dvornicich--Zannier theorem the card currently cites, which has no mathlib counterpart.
+
+  Together with `algebraicIndependent_sqJetFamily` this leaves the card's irreducibility step with a
+  precise formal target rather than an external citation: the coprimality of the corner minor with
+  the rest of the expansion.
+
+- 2026-08-01 — **The degree-one bound is proved in general.**
+  `formal/GaloisForLFunctions/HTGeometry/DeterminantDegreeOne.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `degreeOf_det_le_one_of_unique_entry` — if a variable occurs to degree at most one in a single
+  entry of a matrix over a polynomial ring and not at all in the others, the determinant has degree
+  at most one in it.  The proof is the permutation expansion: each term takes one entry from each
+  column, so at most one factor of each term can carry the variable.
+
+  With `rectangularSchurToeplitz_index_lt_top` — the corner is the only entry carrying `h_(n+m-1)` —
+  this makes `tau_(m,n)` a polynomial of degree at most one in that variable, over any coefficient
+  ring.  Combined with `algebraicIndependent_sqJetFamily`, the irreducibility statement of this card
+  is now reduced to a single self-contained algebraic target: that the coefficient of `h_(n+m-1)`,
+  the complementary minor, is coprime to the remaining term.
+
+- 2026-08-01 — **The corner expansion is proved: `det = ± X_s · minor + B` with `B` free of `X_s`.**
+  `formal/GaloisForLFunctions/HTGeometry/DeterminantDegreeOne.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `degreeOf_det_eq_zero` — a determinant whose entries are free of a variable is free of it;
+  `det_eq_corner_mul_minor_add` — if a variable occupies the entry `(r_0, 0)` and no other, then
+  expanding along the first column gives
+
+  ```text
+  det M = (-1)^r_0 * X_s * det (minor at r_0) + B,     B free of X_s.
+  ```
+
+  The minors are free of the variable because they omit column zero, which is where it sits; the
+  other first-column entries are free of it by hypothesis.
+
+  Applied to the rectangular Jacobi--Trudi matrix through `rectangularSchurToeplitz_corner`, this is
+  the exact statement `tau_(m,n) = ± h_(n+m-1) * tau_(m-1,n) + B`.  Irreducibility of `tau_(m,n)` is
+  therefore equivalent to `tau_(m-1,n)` and `B` having no common factor — a statement about two
+  explicit determinants in free variables, with no external citation left in it.
+
+- 2026-08-01 — **The irreducibility criterion is proved.**
+  `formal/GaloisForLFunctions/HTGeometry/LinearIrreducibleCriterion.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `isPrimitive_linear_of_isCoprime` — a linear polynomial whose two coefficients are coprime is
+  primitive: a constant dividing it divides both coefficients, read off in degrees one and zero;
+  `irreducible_linear_of_isCoprime` — over a unique factorisation domain such a polynomial with
+  nonzero leading coefficient is **irreducible**, through Gauss's lemma
+  (`IsPrimitive.irreducible_iff_irreducible_map_fraction_map`) and the fact that degree one already
+  gives irreducibility over the fraction field.
+
+  With `det_eq_corner_mul_minor_add`, the irreducibility of `tau_(m,n)` now follows from exactly one
+  input: `tau_(m-1,n)` and the remainder `B` are coprime.  Everything else in the argument — the
+  freeness of the coordinates, the location of the top variable, the degree bound, the expansion, and
+  the passage from coprimality to irreducibility — is proved.
+
+  The remaining coprimality is where the Dvornicich--Zannier theorem was doing its work; stated this
+  way it is a question about two explicit determinants in independent variables, and it is the single
+  open target of this card.
+
+- 2026-08-01 — **The Jacobi--Trudi determinant does not vanish identically.**
+  `rectangularSchurToeplitz_unit_tail` in
+  `formal/GaloisForLFunctions/HTGeometry/RectangularSchurTopEntry.lean`, axioms `[propext, Quot.sound]`:
+  setting the `n`-th complete homogeneous coefficient to one and all others to zero turns the
+  rectangular Toeplitz section into the **identity matrix**, since `n + r - i = n` holds exactly when
+  `i = r` in the admissible range.
+
+  So `tau_(m,n)` takes the value one at that point and is therefore a nonzero polynomial in the free
+  coordinates — which is the `A ≠ 0` hypothesis of `irreducible_linear_of_isCoprime`, and equally the
+  nonvanishing of every corner cofactor, since those are again rectangular sections.
+
+  The irreducibility of `tau_(m,n)` is now reduced to the coprimality of the corner cofactor with the
+  remainder, with every other hypothesis of the criterion discharged.

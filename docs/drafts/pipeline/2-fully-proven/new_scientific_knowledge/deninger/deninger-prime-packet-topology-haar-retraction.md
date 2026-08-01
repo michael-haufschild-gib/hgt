@@ -460,15 +460,33 @@ product.  That is a theorem about any space, and it is proved here in that gener
   function of vanishing average, so `ker(Av_p)` is not trivial and the packet coefficient retains
   genuine nonconstant modes.
 
+### Fineness kills the first Čech cohomology
+
+`formal/GaloisForLFunctions/RHTower/DeningerExtendByZero.lean`,
+`DeningerCechSplit.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+The acyclicity half of `(6)` rests on one construction — multiplying a section by a member of the
+partition of unity and extending by zero — and that construction is now formalized, together with
+the first cohomological consequence.
+
+- `deningerExtendByZero U ρ f` — the extension by zero of `ρ · f` off an open set.
+- `deningerExtendByZero_continuous`, `deningerExtendByZero_continuousOn` — **it is continuous**, on
+  the whole space and relative to any open region: on the part inside `U` it is the product, off the
+  closed support of `ρ` it vanishes, and those two opens cover.  mathlib has no such lemma.
+- `deningerCechSplitCochain U ρ c i = ∑_k ext(U_k, ρ_k, c_{k i})` — the average of a cocycle against
+  the partition of unity, and `deningerCechSplitCochain_continuousOn` its regularity.
+- `deningerCechSplit` — **every one-cocycle splits**: `c_{ij} = b_j - b_i`.  The cocycle relation
+  turns the difference of two averages into `c_{ij} · ∑_k ρ_k = c_{ij}`; the terms where `x ∉ U_k`
+  vanish because `ρ_k` does.  This is `H¹ = 0` for the leafwise coefficient sheaf, the decisive
+  instance of "a fine sheaf is acyclic".
+
 ### Remaining
 
 1. **Deninger's identification** of `U_p` with the automorphism group of `μ_{p'}` in the topology of
    pointwise convergence, and of the packet `Γ_p` with the mapping torus — his Theorem 7.10 and
    Corollary 7.9.  Everything the card derives *from* those inputs is formalized: the mapping-torus
-   collapse `(4)` (`deningerMappingTorusHomeomorph`), the compact-to-Hausdorff upgrade to `(3)`
-   (`deningerPacketHomeomorph`), and the profinite structure of `(1)` (`DeningerPacketUnits`).
-2. **The sheaf-theoretic conclusion** of `(6)`: that a fine sheaf is acyclic and that
-   `RΓ(Γ_p, ℛ_p^∞) ≃ C_lc(B_p, C^∞(S_p, ℝ))[0]`.  The construction the card performs by hand — the
-   partition of unity, locally constant along the profinite factor and smooth along the circle — is
-   formalized; packaging it as sheaf acyclicity needs the fine-implies-soft-implies-acyclic chain,
-   which mathlib does not have.
+   collapse `(4)`, the compact-to-Hausdorff upgrade to `(3)`, and the profinite structure of `(1)`.
+2. **Higher-degree acyclicity and the `RΓ` statement.**  The construction is complete and degree one
+   is proved (`deningerCechSplit`); what is not formalized is the same homotopy in every degree and
+   its packaging as `RΓ(Γ_p, ℛ_p^∞) ≃ C_lc(B_p, C^∞(S_p, ℝ))[0]`, which needs a Čech complex indexed
+   by simplices and the comparison with derived-functor cohomology — neither is in mathlib.

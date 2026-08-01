@@ -524,6 +524,7 @@ import GaloisForLFunctions.HTGeometry.GammaLinearStripDerivative
 import GaloisForLFunctions.HTGeometry.BohrProductSpectrum
 import GaloisForLFunctions.HTGeometry.BohrProductUniformLimit
 import GaloisForLFunctions.HTGeometry.BohrFrequencyModuleProduct
+import GaloisForLFunctions.HTGeometry.EulerFactorRankOne
 import GaloisForLFunctions.HTGeometry.BohrMeanInvariance
 import GaloisForLFunctions.HTGeometry.BohrConvolution
 import GaloisForLFunctions.HTGeometry.BohrFejerKernel
@@ -3335,3 +3336,6 @@ import GaloisForLFunctions.HTGeometry.LogMaxSublinear
 import GaloisForLFunctions.HTGeometry.ReciprocalCoefficientField
 import GaloisForLFunctions.HTGeometry.CfcNormBound
 import GaloisForLFunctions.HTGeometry.PostcriticalFiberSeparation
+import GaloisForLFunctions.HTGeometry.RectangularSchurTopEntry
+import GaloisForLFunctions.HTGeometry.DeterminantDegreeOne
+import GaloisForLFunctions.HTGeometry.LinearIrreducibleCriterion

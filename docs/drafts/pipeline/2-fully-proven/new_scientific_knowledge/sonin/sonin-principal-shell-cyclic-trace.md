@@ -1554,6 +1554,40 @@ any height, and now the frequency-side conductor at any height.  Together with t
 a completion that could still work must grow at least a definite positive multiple of the scale
 infinitely often — and none of the corpus's channels does.
 
+**The requirement, stated in the ideal's own norm.**  The channel-by-channel exclusions leave open
+what a working completion would have to look like, and the answer is now quantitative rather than
+qualitative.  A Hilbert--Schmidt operator's image is bounded by its Hilbert--Schmidt norm
+(`norm_apply_le_hsNorm_mul`), so on vectors of norm at most one the contribution is at most that norm.
+Hence `not_bddBelow_soninCompletedPacketValueVar_of_sublinear_hsNorm`: a completion whose channels'
+Hilbert--Schmidt energies grow more slowly than the scale fails, however they are built.
+
+Sharpening that from sublinear to a definite slope gives the size requirement:
+`frequently_slope_lt_hsNorm_of_bddBelow` says a completion restoring the floor must satisfy
+`s * scale < hsNorm(channel)` at arbitrarily late steps, with `s` half the energy slope and fixed in
+advance by the aperture.  Since every element of the principal-relative ideal is Schatten-1 and
+therefore Hilbert--Schmidt (`IsSoninPrincipalRelativeIdeal.memSchattenClass_one`), this is exactly the
+size an ideal-valued completion would have to reach.
+
+The gate is therefore no longer a search for a construction but a statement about magnitudes: the
+coupling's own energy is `hsNormSq Z_r >= slope * r`, so its Hilbert--Schmidt norm grows like the
+square root of the scale, while a completion correcting it must have Hilbert--Schmidt norm growing
+like the scale itself.  Whether the ideal contains such a sequence is what remains open; nothing
+above rules it out, and nothing in the corpus exhibits one.
+
+**The obvious way to build one does not work.**  Faced with a size requirement that grows, the natural
+move is to let the channel move with the scale — carry one fixed conductor along the tower by the
+dilation that takes one layer to the next.  That cannot help, and for a reason with no analysis in it:
+dilation is an isometry, so the transported channel's image is no larger than the original's
+(`norm_transported_apply_le` covers transport by any contractions on either side), and the
+contribution stays bounded.  `..._of_dilation_transported` is the statement for the dilations
+themselves.
+
+So the growth the size requirement demands cannot come from *moving* a fixed operator; it has to come
+from a genuinely unbounded sequence of distinct operators.  That narrows the open question further:
+not "is there an admissible completion?" but "does the principal-relative ideal contain a sequence of
+elements whose Hilbert--Schmidt norms grow at least linearly in the scale, and which cancels the
+coupling on the packets?".
+
 What remains on this line is the comparison against the logarithmic cap: the cap bounds the
 completed contribution by `log` of the outer radius, while the schedule's scale grows linearly in
 `N`, so the energy `N - const` outruns `log r` and the shortfall test applies.  With `N` about `r/K` this gives coupling
@@ -1823,6 +1857,8 @@ family is abstract, so two widths have unrelated profiles.
 | **a channel family of sublinear size is excluded** — the dominated form of the sublinear failure, and its operator-level reading | `exists_schedule_eventually_sublinear_add_le_hsNormSq`, `not_bddBelow_soninCompletedPacketValueVar_of_sublinear_dominated`, `not_bddBelow_soninCompletedPacketValueVar_of_sublinear_channel` |
 | **logarithms of a growing maximum are sublinear**, and stay so through a square root against a fixed quadratic | `tendsto_log_div_atTop`, `tendsto_log_max_div_atTop`, `tendsto_max_abs_log_div_atTop`, `tendsto_sqrt_sq_mul_add_div_atTop` |
 | **the frequency-side channel is closed as a completion**, at every height schedule | `not_bddBelow_soninCompletedPacketValueVar_fourierLogShellChannelFamily` |
+| **how large a completion's channels must be**: sublinear Hilbert--Schmidt energies fail, and a surviving completion's Hilbert--Schmidt norm exceeds a definite multiple of the scale infinitely often | `norm_apply_le_hsNorm_mul`, `not_bddBelow_soninCompletedPacketValueVar_of_sublinear_hsNorm`, `exists_slope_schedule_eventually_add_le_hsNormSq`, `not_bddBelow_soninCompletedPacketValueVar_of_slope_hsNorm`, `frequently_slope_lt_hsNorm_of_bddBelow` |
+| **transporting a fixed channel along the tower buys nothing** — by any contractions, in particular by the dilations | `norm_transported_apply_le`, `not_bddBelow_soninCompletedPacketValueVar_of_transported_channel`, `not_bddBelow_soninCompletedPacketValueVar_of_dilation_transported` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1939,6 +1975,20 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the first construction one would try against the size requirement is ruled out, and
+  cheaply: carrying a fixed conductor along the tower by the dilations cannot grow it, because
+  dilation is an isometry.  Stated for transport by arbitrary contractions, so it covers every
+  conjugation scheme at once.  The value is negative but sharp — the required growth cannot come from
+  moving one operator, only from a genuinely unbounded sequence of distinct ones.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninTransportedChannelClosed.lean`.
+- 2026-08-01 — the gate is converted from a search into a size requirement.  Bounding an operator's
+  image by its Hilbert--Schmidt norm turns the slope threshold into a statement about the ideal's own
+  norm: a surviving completion's channels must have Hilbert--Schmidt norm exceeding a fixed multiple
+  of the scale infinitely often.  Worth recording because it makes the remaining question checkable
+  against a magnitude rather than against a construction — and because the comparison is stark, the
+  coupling's Hilbert--Schmidt norm growing like the square root of the scale while its corrector's
+  must grow like the scale.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninHilbertSchmidtCompletionFloor.lean`.
 - 2026-08-01 — **the frequency-side channel is closed**, and with it every channel the corpus has.
   Two steps: the sublinear failure only ever used *domination* by a sublinear cap, not equality, so
   restating it that way makes it consume an estimate rather than a definition — and at the operator

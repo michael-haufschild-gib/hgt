@@ -3324,6 +3324,36 @@ statements about the vertical Gamma law itself rather than about the almost-peri
 
 `#print axioms` clean.
 
+`HTGeometry/EulerFactorRankOne.lean` builds the witness for §8.6 — *finite support is not claimed*.
+The card's example is `exp(2^{-s})`; the formalized witness is the Euler factor at `2`,
+`E(s) = (1 − 2^{-s})^{-1}`, which has the same three features and a geometric rather than an
+exponential tail, and which is the `N = 2` case of the finite aperture `(34)` of §7.
+
+- `twoPowerLine_eq`, `twoPowerLine_pow` — on the line `Re s = σ` the Dirichlet term `2^{-ns}` is the
+  constant `2^{-σn}` times the character of frequency `−n log 2`;
+- `norm_eulerFactorLine_sub_dirichletSum_le`, `tendsto_dirichlet_error` — the partial sums converge
+  to `E` *uniformly on the line*, with geometric error `(2^{-σ})^N/(1 − 2^{-σ})`.  Hence
+  `isBohrAlmostPeriodic_eulerFactorLine`;
+- **`bohrCoefficient_eulerFactorLine`** — the Bohr coefficient at `−m log 2` is exactly the
+  Dirichlet coefficient `2^{-σm}`, by the `1`-Lipschitz bound against the partial sums;
+- **`infinite_bohrSpectrum_eulerFactorLine`** — the spectrum is therefore infinite;
+- **`rank_bohrFrequencyModule_eulerFactorLine_le_one`** — yet every frequency is an integer multiple
+  of `log 2`, so `rank_ℚ Γ_B(E) ≤ 1`, through the new
+  `bohrFrequencyModule_le_of_uniform_approx_nat`;
+- **`eulerFactorTwo_autonomous`** — and `E` is autonomous differentially algebraic: on the
+  half-plane `Re s > 0`,
+
+  `E′ + (log 2)(E² − E) = 0`,
+
+  a first-order polynomial relation with *constant* coefficients (`hasDerivAt_eulerFactorTwo`).
+
+So infinite Dirichlet support coexists with rank-one frequency module: the law's finite-rank
+conclusion is sharp, and cannot be strengthened to finite support.  `#print axioms` clean.
+
+`bohrFrequencyModule_le_of_uniform_approx_nat` (in `BohrProductUniformLimit.lean`) is the general
+tool behind that: a function uniformly approximated by the partial sums of an exponential series has
+its frequency module inside the `ℚ`-span of the series' frequencies.
+
 ## Gates
 
 - [x] one-point projective Gamma boundary stated

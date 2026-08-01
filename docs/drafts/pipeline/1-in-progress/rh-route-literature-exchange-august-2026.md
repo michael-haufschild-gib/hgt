@@ -187,7 +187,7 @@ Verjovsky's theorem is an exact connector/equivalence and does not narrow the fi
 so no frontier-leverage import is selected. No external result continues the proved Plücker diagonal
 from `Re(s)>1` to critical Möbius data.
 
-### Route F — all-prime Sonin transfer
+### Route F — all-prime Sonin transfer [RETIRED]
 
 **Local contribution beyond located literature.** The shell-cut completion classification,
 positive divergent lost-layer energy, exact physical-band vanishing, explicit packet norm floor,
@@ -215,7 +215,13 @@ and an outer inverse power of `δ(2w)`. These results do not reduce an arbitrary
 operator to the typed model. They do, however, close the actual Fourier logarithmic-shell family
 for arbitrary tower heights under the exact packet conditions: carrier proportional to scale,
 positive lower bound on half-width times twice carrier, bounded packet norms, and the stated
-positivity/mean hypotheses.
+positivity/mean hypotheses. The full concrete Burnol conductor is now closed more directly: on
+canonical packets its position-plus-reflected-frequency quadratic form is bounded by
+`C₀ + C₁ log A`, uniformly over every finite tower height, and therefore fails to restore a lower
+floor along the corpus's positive-linear source schedule for every height function.
+Within Hilbert–Schmidt completions the local boundary is sharper: every sublinear norm envelope
+fails, one explicit positive linear norm cap still fails, and any family restoring the scheduled
+floor must exceed that cap infinitely often. This is a necessary size law, not a construction.
 
 **External contribution.** Burnol's
 [complete/minimal systems paper](https://doi.org/10.5802/jtnb.434), Theorems 3.1–3.3, proves sharp qualitative
@@ -227,15 +233,11 @@ all-prime shell schedule, ideal-error energy control, or positive-linear-rate fl
 completion; those quantitative
 layers are supplied locally, not by the cited papers.
 
-**Lean action.** Formalize Burnol's qualitative completeness/minimality and co-Poisson complement,
-then identify its carrier with the local `evenSonin`/shell-cut carrier. This removes a qualitative
-literature debt. The route's analytic tail/slack schedule is already constructed; decisive work is
-the construction of a source-faithful typed completion restoring the floor for every admissible
-schedule. Only for that universal premise does local Lean force frequent excursions above one
-explicit positive linear rate. The alternatives are proving that the arithmetic completion lies
-outside the typed scalar-additive model or reducing a semilocal operator to that model, followed by
-the literal all-prime source handoff. Burnol's qualitative theorem does not by itself cross the
-typed positive-slope obstruction.
+**Lean action.** None for Route F. Burnol's qualitative completeness/minimality and co-Poisson
+complement would improve carrier completeness but cannot cross the formal affine-logarithmic
+order obstruction for the full finite-height geometric conductor. Formalize them only if a new
+pipeline route first supplies either a source-built order-one operator or a renormalization that
+removes the Sonin Weyl-volume term before Gamma attachment; that successor is not Route F.
 
 ### Route G — Suzuki Hermite–Biehler, anti-Pick, and Ward realization
 
@@ -245,6 +247,10 @@ tomography, flat shift holonomy, phase compactification, one-sided Carleman pari
 source-specific wall/light-cone Gram completions, sharp depth floors, unique least negative-part
 completion, and exact Ward/source obstructions. No exact external collision was located for these
 source-specific refinements.
+Generic rectangular algebra now isolates the remaining Schur debt: a variable confined to one
+matrix entry gives an exact degree-one determinant expansion, and coprime linear coefficients give
+irreducibility. The corpus does not prove cofactor/remainder coprimality for the literal rectangular
+source determinant, so no source or Ward premise closes.
 
 **External contribution.** Suzuki's
 [Weil quadratic form via the screw function](https://arxiv.org/abs/2606.09096) proves the concrete
@@ -322,8 +328,11 @@ first-clock handoff.
 **Lean action.** None. Route J's unrenormalized handoff is formally closed as false. At
 `L_m=6 log m`, an explicit prime block forces full bad coherent energy at least `log m/20`, uniformly
 in Julia scale, hence unbounded along these apertures. At zero scale each fixed packet instead tends
-to rank-one energy, the square of total bad mass. The literal/good/bad coherent Gram also has source
-null vector `(1,-1,1)`, so adding all three channels creates no independent capacity. Only a new
+to rank-one energy, the square of total bad mass. Positive unit-diagonal mass cannot be removed by
+off-diagonal cancellation, while subtracting the diagonal after forming coherent energy destroys
+the normalized anchor capacity law already for a one-node unit packet, forcing `1 ≤ 0`. The
+literal/good/bad coherent Gram also has source null vector `(1,-1,1)`, so adding all three channels
+creates no independent capacity. Only a new
 source-defined principal-relative current with counterterm and orientation before positive
 good/bad projection could reopen the mechanism; located literature supplies no such construction.
 
@@ -364,7 +373,12 @@ smooth along a compact manifold factor, with an explicit circle specialization. 
 conclusion does not state nonnegativity. A generic suspension with trivial monodromy is proved
 homeomorphic to the product with `AddCircle T`. The concrete unit product
 `U_p=∏_{ℓ≠p}ℤ_ℓˣ` is now defined, proved compact Hausdorff and totally disconnected, and its circle
-packet is smoothly fine. Missing are the identification with prime-to-`p` root-of-unity
+packet is smoothly fine. The packet average is provably nonlocal on every proper clopen restriction,
+and a clopen set of intermediate mass gives a nonzero zero-average mode. Thus it cannot be an
+ordinary sheaf endomorphism; an arithmetic local/global comparison must treat the global retraction
+separately. A support-contained bump-times-section now extends continuously by zero, and an explicit
+partition-of-unity average splits every real-valued continuous Čech one-cocycle on a finite open
+cover. This is not higher-degree or arithmetic-sheaf acyclicity. Missing are the identification with prime-to-`p` root-of-unity
 automorphisms, quotient by the closure of `p`, Frobenius-triviality, period `log p`, and the
 comparison with Deninger's actual prime fibre. Abstract torsion-symbol realification also does not
 instantiate Milnor K-theory. No theorem identifies these models with the separately defined affine
@@ -557,6 +571,8 @@ the corpus. External work supports several of the same boundaries:
 - CCM and Suzuki numerical convergence is not an analytic finite-to-infinite theorem;
 - generic Julia/Gram capacity cannot overcome the literal first-clock bad diagonal, whose coherent
   energy is locally proved unbounded uniformly in scale;
+- Burnol's qualitative completeness cannot change the full finite-height Sonin conductor's proved
+  affine-logarithmic order against a positive-linear source schedule;
 - zero-density, critical-line proportions, gap statistics, and large-value estimates do not
   eliminate every off-line zero;
 - criteria assuming RH, simple zeros, localization, independence, or arbitrary-length moment
@@ -615,15 +631,11 @@ External results that genuinely strengthen a live route, in dependency order, ar
    already-formalized finite real-zero transfer (Routes A/O).
 3. Complete the Groskin import after the now-formalized semidefinite compact-window core: strict
    positive/total positivity, improper tail, and Corollary 3.3's cutoff budget (Route B).
-4. Burnol Theorems 3.1--3.3: qualitative Sonin/evaluator completeness and co-Poisson complement,
-   followed by CCM's semilocal Sonin isomorphism and Fourier–Mellin factor law. These identify the
-   carrier but do not by themselves overcome the typed positive-linear-rate obstruction;
-   applicability to their semilocal operator requires a separate reduction (Route F and prime seam).
-5. Deninger Theorem 7.10, Theorem 10.2, and Proposition 11.7: concrete prime-fibre topology and
+4. Deninger Theorem 7.10, Theorem 10.2, and Proposition 11.7: concrete prime-fibre topology and
    divisor support (Route L).
-6. Inoue Theorem 2.3 and Proposition 4.1: compact-normal Jacobi expansion and zero convergence
+5. Inoue Theorem 2.3 and Proposition 4.1: compact-normal Jacobi expansion and zero convergence
    (Route M).
-7. Suzuki 2022 Theorem 1.5: trace-class localized screw carrier and its Weil-polarization handoff
+6. Suzuki 2022 Theorem 1.5: trace-class localized screw carrier and its Weil-polarization handoff
    (Route C1).
 
 Suzuki's screw-moment Hankel criterion, full Li, Hardy, theta-at-infinity, and Romik's coefficient
