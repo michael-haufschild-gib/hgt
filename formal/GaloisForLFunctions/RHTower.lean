@@ -3882,3 +3882,4 @@ import GaloisForLFunctions.RHTower.DeningerKummerL2Bilinear
 import GaloisForLFunctions.RHTower.SoninScaledPacketHighTailBound
 import GaloisForLFunctions.RHTower.DeningerRealSmul
 import GaloisForLFunctions.RHTower.SoninCouplingErrorBudget
+import GaloisForLFunctions.RHTower.DeningerRealSmulModule

@@ -50,7 +50,8 @@
   `GaloisForLFunctions.RHTower.DeningerL2Definite`,
   `GaloisForLFunctions.RHTower.DeningerKummerL2Definite`,
   `GaloisForLFunctions.RHTower.DeningerKummerL2Bilinear`,
-  `GaloisForLFunctions.RHTower.DeningerRealSmul`
+  `GaloisForLFunctions.RHTower.DeningerRealSmul`,
+  `GaloisForLFunctions.RHTower.DeningerRealSmulModule`
   (the gluing of the place tower, the absolute height on `Q̄`, the
   normed Kummer group `𝒢`, the normed `ℚ`-vector space `𝒢 ⊗ ℚ`, its
   completion, and the local-degree normalization of the place space)
@@ -1041,10 +1042,33 @@ and only proves that continuous additive maps are then `ℝ`-linear.  So the ext
   `deningerRealSmul_norm` — **`‖r • x‖ = |r|·‖x‖`**, proved by density: both sides are continuous
   in `r` and agree on `ℚ`.
 
+### The real module structure landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerRealSmulModule.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+Every module axiom for the extended action is a density argument against the corresponding
+rational identity, both sides being continuous in the real scalars.
+
+- `deningerRealSmul_one`, `deningerRealSmul_zero`, `deningerRealSmul_zero_vec` — the unit, zero
+  scalar and zero vector.
+- `deningerRealSmul_add_right` — distributivity over vector addition, one density argument.
+- `deningerRealSmul_ratAdd` then `deningerRealSmul_add_left` — additivity in the scalar needs *two*
+  successive density arguments, one variable at a time: first with the left scalar rational and the
+  right one arbitrary, then in the left scalar.  Same for `deningerRealSmul_ratMul` and
+  `deningerRealSmul_mul`.
+- `deningerRealModule` — **the bundled `ℝ`-module structure** on a complete normed `ℚ`-space,
+  supplied as a `@[reducible]` definition rather than an instance so that it never competes with an
+  ambient real structure.
+
+So a complete normed `ℚ`-space is a real normed space, with `‖r • x‖ = |r|·‖x‖` from the previous
+module.  This is the piece mathlib lacks, and it is what turns the `L²` completion of `𝒢 ⊗ ℚ` into
+a real space.
+
 ### Remaining
 
-The module axioms for `deningerRealSmul` — `one_smul`, `mul_smul`, `smul_add`, `add_smul`,
-`zero_smul` — each of which is a density argument in one or two real variables against the
-corresponding rational identity, exactly like the norm law just proved.  With those the completion
-of `𝒢 ⊗ ℚ` for the `L²` norm is a real normed space, hence (being complete, with a form satisfying
-the parallelogram law) the Hilbert space `H_Kum` of the card's `(1)`.
+Assembling `H_Kum`: equip `𝒢 ⊗ ℚ` with the `L²` norm `‖x‖₂ = √⟨x, x⟩` (a norm by
+`deningerSpaceL2Inner_self_nonneg`, `_self_eq_zero` and the Cauchy--Schwarz inequality for the
+bundled form `deningerSpaceL2Form`), take its completion, install `deningerRealModule` there, and
+read off the `InnerProductSpace ℝ` structure.  The arithmetic is all proved; what is left is this
+assembly and the standard Cauchy--Schwarz argument for a positive semidefinite symmetric form.
