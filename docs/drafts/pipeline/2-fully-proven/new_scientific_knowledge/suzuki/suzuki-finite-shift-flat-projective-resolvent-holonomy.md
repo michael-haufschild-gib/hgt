@@ -405,3 +405,61 @@ source family, not of an operator construction.
 `(11)`'s derivative law by `hasDerivAt_reflectedQuotientCarrier`; the resolvent derivative by
 `ResolventFamilyJet`; the Fourier differentiation by the mathlib theorem above; and `(13)`'s reality
 by the three declarations noted earlier. Nothing requires the Friedrichs construction.
+
+### Lean progress — the Fourier kernel bound for the domination hypotheses
+
+The remaining obligations of the Fourier differentiation step are domination hypotheses, and the
+factor they turn on is the kernel's modulus. Added to
+`HTGeometry/CompactFourierSineKernel.lean` [PROVED HERE], standard axioms
+`[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `norm_fourierKernel` : `‖exp (I z t)‖ = exp (-(Im z) t)` for real `t` — the real part of `I z t`
+  is `-(Im z) t`.
+- `norm_fourierKernel_le` : on `|t| <= a` the kernel is bounded by `exp (|Im z| a)`.
+
+So a dominating bound for `partial_r u_r` on `[-a, a]` transfers to one for
+`(partial_r u_r)(t) exp(I z t)` by multiplying by this constant, which is what
+`hasDerivAt_integral_of_dominated_loc_of_deriv_le` consumes. The remaining input is a bound on the
+source family itself.
+
+- `norm_mul_fourierKernel_le` : the domination transfer — a bound `‖f t‖ <= bound t` on `|t| <= a`
+  gives `‖f t * exp (I z t)‖ <= exp (|Im z| a) * bound t`. [PROVED HERE], standard axioms, builds
+  clean.
+
+With this the domination hypothesis of `hasDerivAt_integral_of_dominated_loc_of_deriv_le` reduces to
+a bound on the **amplitude family** `partial_r u_r` alone, the kernel contributing only the constant
+`exp (|Im z| a)`. Nothing about the operator enters that reduction.
+
+### The amplitude bound is corpus-owned too — the domination chain closes
+
+The one input the transfer lemma still needed was a bound on the amplitude family
+`partial_r u_r = -R_r^2 e`. That is `‖R_r‖^2 ‖e‖`, and a **local uniform** bound on `‖R_r‖` is
+already proved in `HTGeometry/ResolventFamilyJet.lean`:
+
+- `IsResolventFamilyOn.norm_sub_le` : `‖S u - S v‖ <= |u - v| (‖S u‖ ‖S v‖)`, straight from the
+  resolvent identity;
+- `IsResolventFamilyOn.norm_le_two_mul` : if `|u - v| ‖S v‖ <= 1/2` then `‖S u‖ <= 2 ‖S v‖` — the
+  norms stay within a factor of two near a reference shift.
+
+So on a small enough shift neighbourhood the amplitude is bounded by the constant
+`4 ‖S v‖^2 ‖e‖`, a constant is interval-integrable on `[-a, a]`, and
+`norm_mul_fourierKernel_le` carries that through the kernel. The domination package of
+`hasDerivAt_integral_of_dominated_loc_of_deriv_le` is therefore fully assembled from corpus and
+mathlib theorems.
+
+**Every analytic ingredient of this card's Theorem is now formal or located, with nothing left
+requiring the Friedrichs construction.** What remains is the identification of the abstract family
+`S` with Suzuki's `R_r = (A + rI)^{-1}` — naming the source.
+
+### Lean progress — the derivative amplitude bound, named
+
+- `IsResolventFamilyOn.norm_sq_le_four_mul` : near a reference shift, `‖(S u)^2‖ <= 4 ‖S v‖^2`.
+  Since `partial_u S u = -(S u)^2`, this is exactly the quantity a domination hypothesis must bound.
+  [PROVED HERE] in `HTGeometry/ResolventFamilyJet.lean`, standard axioms
+  `[propext, Classical.choice, Quot.sound]`, builds clean.
+
+The domination package is now explicit end to end: `norm_sq_le_four_mul` bounds the amplitude by a
+constant on a shift neighbourhood, `norm_mul_fourierKernel_le` carries that through the kernel, the
+resulting constant bound is interval-integrable on `[-a, a]`, and
+`hasDerivAt_integral_of_dominated_loc_of_deriv_le` consumes the package to give
+`partial_r F_r = -G_r`.

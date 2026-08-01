@@ -27,7 +27,7 @@ Xi-Weil form positivity; theta-cusp center-mixed positivity; critical Möbius ca
 Suzuki full-frequency Hermite–Biehler/Ward realization; and Xi Taylor core-current control.
 The all-prime Sonin/Burnol route and Julia compound-Poisson route are retired by exact
 order-growth and diagonal-energy obstructions, respectively.
-Operator, Deninger, Connes/prolate, and source-domain Hedenmalm routes remain structurally meaningful but
+Operator, Deninger, Gamma--Jacobi, Connes/prolate, and source-domain Hedenmalm routes remain structurally meaningful but
 farther upstream.
 
 On the disproof side, the most source-explicit current route is a negative growing-order
@@ -171,6 +171,11 @@ barycentric certificate after source sign is known.
 
 ### Route B — fixed-width rectangular Weil floor
 
+**Status: RETIRED AS AN INDEPENDENT SCALAR ROUTE / FORMALLY CLOSED NO-GO.**  Fixed-width lower
+boundedness remains an exact RH endpoint.  Route B no longer contributes a distinct source
+mechanism: its scalar transport class is exhausted, while its only source-sensitive escape is the
+signed/cofinal Suzuki operator floor already tracked by Route G.
+
 **Endpoints.** For one fixed width `L > 0`, the rectangular logarithmic Weil samples are
 eventually bounded below. Lean proves this equivalent to RH. An exact positive-quadrature
 chart is also closed: RH is equivalent to eventual domination of the positive prime-wall
@@ -209,16 +214,31 @@ apex atom has no positive-volume pointwise dominating cell, even along a cofinal
 powers-of-two family, and that bicausal splicing creates only duplicated seam mass rather
 than new capacity.
 
-**Open core.** Construct source-specific grouped apex/flank transport across turning seams
-at capacity one, paying the fixed boundary charge and proving tail quadrature domination.
-Equivalently, prove one fixed-width lower floor from prime–Gamma or theta source without
-invoking global Weil positivity.
+**Terminal scalar classification.** Pointwise apex transport is impossible on a cofinal actual
+Mangoldt family.  Common-displacement bicausal splicing, after duplicate seam capacity is removed,
+is identically the original quadrature deficit.  Stronger block information does not repair this:
+for every prescribed aperture threshold, an explicit integrable atomless source satisfies the
+sharp width-two cumulative band, agrees exactly with capacity one on both exterior flanks, and
+still violates completed-lag domination.  Lean packages the corresponding eventual information
+class as `SuzukiCriticalCapacityFlankTailProducer` and proves its negation.
 
-**Obstacle.** Finite-cutoff positivity has a tail budget. Recent finite Guinand–Weil
-theorems quantify certification but do not produce the required cutoff-free floor.
-Pointwise apex transport and free bicausal splicing are formally dead.
+The former `SUZUKI-SOURCE-COMMUTATOR-GRAM` escape is not an unfinished Route-B connector.  Finite
+source identification, logarithmic commutator carrier, and compact-support cyclic descent are
+already present.  Their remaining signed principal-relative Burnol/Robin/Gamma lower floor is the
+Route-G source-realization problem.  Keeping it here would duplicate the same hard arrow under a
+scalar-transport name.
 
-The literal Groskin rank-two archimedean tail kernel is now present in Lean without a
+**No-go closure and positive survivor.** Every advertised scalar producer is either false on a
+cofinal source class or target-equivalent.  Strongest survivor is the cofinal apex-vacuum
+amplification law: bounded cumulative displacement can create unbounded quadrature excess at the
+moving exponential apex while both exterior flanks remain exact.  This forces any future proof to
+retain a non-scalar source-orientation invariant before trace.  The positive-lag identity remains a
+sharp RH detector, not a proof.
+
+Finite Guinand–Weil/Groskin tail positivity still quantifies finite certification but neither pays
+the rectangular boundary charge nor reopens the retired scalar class.
+
+The literal Groskin rank-two archimedean tail kernel is present in Lean without a
 computed cutoff. The digamma density is proved to tend to `+∞`, an analytic eventual
 positivity threshold is selected, and every compact tail-window increment beyond that
 threshold is positive semidefinite. This imports the Loewner-monotonicity core of Groskin's
@@ -1003,9 +1023,9 @@ identifies this model with the arithmetic Deninger completion or transports its 
 flow, cup product, or spectrum, so this closes generic angular topology, not arithmetic
 comparison or spectral realization.
 
-### Route M — Gamma–Jacobi singular reader [RETIRED]
+### Route M — Gamma–Jacobi singular reader [OPEN — NARROWED]
 
-**Status: RETIRED / FORMALLY CLOSED NO-GO.** Route M's own completed Euler clock and exact
+**Closed predecessor: cyclic scalar reader.** Route M's own completed Euler clock and exact
 Gamma--Jacobi Szegő aperture loss generate the full matrix algebra on every injectively labelled
 finite prime packet. Lagrange functional calculus isolates each diagonal unit and sandwiching the
 full-support rank-one loss isolates every matrix unit. This conclusion is independent of Hilbert
@@ -1037,10 +1057,17 @@ an unconditional counterexample. Thus Inoue/Romik convergence for partial sums o
 cannot supply the missing identification: Route M's changing accumulated source reader is not the
 product of its isolated edge readers.
 
-**Positive survivor.** Preserve edge and fibre marks before contraction. The exact surviving law is
+**Live positive survivor.** Preserve edge and fibre marks before contraction. The exact surviving law is
 barycentric, nonmultiplicative source aggregation; any terminal reader must be pointed,
-noncyclic, and non-invariant at one fibre. This feeds the existing co-Poisson fibre-orientation
-program as a different route class. It does not reopen Route M.
+noncyclic, and non-invariant at one fibre. No named route or theorem currently supplies that
+construction or its orientation handoff; it remains Route M's surviving class.
+
+**Open core.** Construct an inclusion-compatible edge/fibre-marked family of noncyclic pointed
+readers whose finite values obey the proved barycentric source law, represent completed Euler
+multiplication before Xi or zero data are read, and retain a same-fibre orientation under
+reflection. Then prove an exact source-to-RH connector or class-completely refute this surviving
+reader class. The existing algebra-saturation, multiplicative-anomaly, and global-parity no-gos do
+not decide this pointed noncyclic problem.
 
 Paper proof and hostile audit:
 `docs/drafts/pipeline/5-failed/gamma-jacobi-euler-tail-cyclic-reader-no-go.md`. Lean capstone:
@@ -1742,9 +1769,11 @@ literature. They are stated at source level, before specialization to Xi zeros.
 11. Deninger relevant-complex comparison, nuclear estimate, Hodge transport, and kernel
     vanishing.
 12. Uniform source-domain Hedenmalm prime-normal sub-log-square estimate.
-13. Restricted-Weil/prolate ground-state comparison and rigorous finite-to-Xi convergence.
-14. Literal compact Thorin/Markov carrier for the completed seam.
-15. A continuation mechanism carrying the proved finite-prime/Euler-boundary Plücker
+13. Edge/fibre-marked barycentric noncyclic Gamma--Jacobi reader with completed-Euler compatibility
+    and a same-fibre orientation handoff (Route M).
+14. Restricted-Weil/prolate ground-state comparison and rigorous finite-to-Xi convergence.
+15. Literal compact Thorin/Markov carrier for the completed seam.
+16. A continuation mechanism carrying the proved finite-prime/Euler-boundary Plücker
     normal-cone diagonal from `Re(s) > 1` to critical Möbius data.
 
 ### Tier 3 — new structure that could unlock Tier 1 or 2
@@ -1856,6 +1885,7 @@ These routes begin with literal source and have short, formally closed tails to 
 
 - Deninger/Hodge;
 - quadratic spectral realization;
+- Gamma--Jacobi pointed noncyclic reader;
 - Connes/prolate convergence;
 - compact Thorin/Markov carrier.
 
@@ -1897,12 +1927,12 @@ classification.
 - off-diagonal core-current control for Xi Taylor;
 - source-built operator and spectrum inclusion for spectral/Deninger programs.
 
-Retired Routes F, G2, J, and M do not contribute missing sublemmas to that live list. Their positive
+Retired Routes F, G2, and J do not contribute missing sublemmas to that live list. Their positive
 survivors instead specify requirements for new routes: an arithmetic order-one operator or
 pre-Gamma renormalization after the Sonin Weyl-volume obstruction, a new Suzuki source mechanism
 that does not assume the RH-equivalent analytic germ, and a source-defined principal-relative
-current oriented before Julia good/bad projection. Route M additionally forces any replacement to
-retain edge/fibre marks and the barycentric source law before noncyclic pointed contraction.
+current oriented before Julia good/bad projection. Route M remains live but narrowed: it must retain
+edge/fibre marks and the barycentric source law before noncyclic pointed contraction.
 
 The disproof side is equally exact: one certified off-line zero or equivalent negative
 finite witness would suffice, but the corpus produces none.
@@ -1911,9 +1941,10 @@ Therefore the honest current conclusion is:
 
 > **RH is neither proved nor disproved. The formal frontier is a finite quotient of
 > source-level open cores, led by completed positivity, critical Möbius,
-> Suzuki and Xi-current problems. Retired Routes F, G2, J, and M leave only new-route requirements:
-> an order-one/renormalized Sonin source, a principal-relative Julia representation change, and an
-> edge/fibre-marked noncyclic pointed reader obeying Route M's barycentric aggregation law.
+> Suzuki and Xi-current problems. Retired Routes F, G2, and J leave only new-route requirements:
+> an order-one/renormalized Sonin source and a principal-relative Julia representation change.
+> Route M remains open at an edge/fibre-marked noncyclic pointed reader obeying its proved
+> barycentric aggregation law.
 > G2's analytic source germ is already exactly RH-equivalent and supplies no lower-cost bypass.
 > Terminalized Route A leaves an explicit signed phase-connection defect as a new-route
 > requirement; positive transport is already exactly target-equivalent. These are not

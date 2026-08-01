@@ -1,8 +1,8 @@
 # Dyadic-prime passive impedance network to RH
 
 - **ID:** `dyadic-prime-passive-impedance-network-rh`
-- **Status:** `1-in-progress`
-- **Type:** `[LARGE OUTLANDISH DETOUR] [CONJECTURE] [PROVED SOURCE TOMOGRAPHY END]`
+- **Status:** `1-in-progress — PAPER CLOSED; LEAN CLOSURE IN PROGRESS`
+- **Type:** `[LARGE OUTLANDISH DETOUR] [FALSIFIED] [PROVED SOURCE TOMOGRAPHY END]`
 - **Inputs:** `../3-formalized/dyadic-prime-source-divisor-tomography.md`,
   `CCMSharpPrimeWindowDivisorTomography.lean`, `CCMSharpPrimeWindowExcessEnergyGate.lean`,
   `CCMComplexMellinColligation.lean`, `PrimeDelayHerglotzNoGo.lean`,
@@ -189,3 +189,121 @@ overlap.
 - [ ] passive response exhaustion proved
 - [ ] source overlap identity proved
 - [ ] holomorphy capstone composed with divisor tomography to obtain RH
+
+## Terminal hostile audit: source-level high-line sign rigidity (2026-08-01)
+
+### Conjecture escalation, not retreat
+
+The original raw-delay objection attacked only independent prime atoms.  The next conjectures were
+strictly stronger:
+
+1. `[FALSIFIED]` a distinguished coupled Fock/Schur response is passive and equals `Z` on the
+   initial overlap;
+2. `[FALSIFIED]` some source-first passive distributed network, with arbitrary internal coupling,
+   has scalar port response equal to `Z` on the initial overlap;
+3. `[FALSIFIED]` any holomorphic Herglotz or anti-Herglotz response can equal `Z` on a nonempty
+   high-half-plane overlap.
+
+All three fail for the same value-level reason.  Internal coupling, Schur complementation, aperture
+order, and normal-family convergence cannot change the values of a response after equality with the
+source has been imposed.
+
+### `[BRIDGE]` Dirichlet high-line sign-rigidity theorem
+
+Let
+
+```text
+D(s) = sum_(n>=1) a_n n^(-s)
+```
+
+be an ordinary Dirichlet series with real coefficients and finite absolute-convergence abscissa.
+Assume that `m >= 2` is the first index after the constant coefficient with `a_m != 0`.  For any
+real `t` with `sin(t log m) != 0`, first-coefficient extraction gives
+
+```text
+m^sigma (D(sigma-i t) - a_1) -> a_m exp(i t log m),
+m^sigma (D(sigma+i t) - a_1) -> a_m exp(-i t log m).
+```
+
+Hence the two imaginary parts have opposite strict signs for all sufficiently large `sigma`.
+In the impedance coordinate `s=1-i z`, the corresponding points
+
+```text
+z_+(sigma) =  t + i(sigma-1),
+z_-(sigma) = -t + i(sigma-1)
+```
+
+lie arbitrarily high in the same upper half-plane.  Therefore `D(1-i z)` is neither Herglotz nor
+anti-Herglotz on any upper tail `{Im z > Y}`.  This is a classification statement: among real
+ordinary Dirichlet series, a scalar raw-coordinate Herglotz/anti-Herglotz response on an upper tail
+must have no nonconstant coefficient.
+
+Proof is coefficient-level, not divisor-level.  Twist coefficients by `n^(i t)`, delete the real
+constant term, and apply the first-nonzero-coefficient asymptotic.  The conjugate twist supplies the
+opposite sign.  No assumption about Xi zeros or RH enters.
+
+### Exact dyadic source specialization
+
+For the present coefficient `S`, the first oscillatory index is `m=2`.  Directly from the literal
+window,
+
+```text
+W(2) = Lambda(2)/sqrt(2) = log(2)/sqrt(2),
+S(2) = 4(sqrt(2)-1) - sqrt(2) log(2).
+```
+
+This is strictly positive.  Indeed `log 2 < 1` and `3 sqrt(2) > 4`, so
+
+```text
+S(2) > 4(sqrt(2)-1) - sqrt(2) = 3 sqrt(2)-4 > 0.
+```
+
+Take `t=1`.  Since `0 < log 2 < pi`, `sin(log 2)>0`; therefore
+
+```text
+Im F(sigma-i) > 0,
+Im F(sigma+i) < 0
+```
+
+for every sufficiently large `sigma`.  On the source overlap these are exactly
+
+```text
+Im Z( 1+i(sigma-1)) > 0,
+Im Z(-1+i(sigma-1)) < 0.
+```
+
+Thus the claimed passive response already violates either Nevanlinna orientation inside
+`Im z>1/2`, before continuation or exhaustion is considered.  This triggers the route's explicit
+kill condition "the limit loses the Nevanlinna kernel sign" and also makes open cores A--D
+irrelevant: no response satisfying C can satisfy passivity.
+
+### External and novelty audit
+
+- N. Samaris, *Dirichlet series with positive real part*, Bull. Aust. Math. Soc. 46 (1992),
+  159--166, DOI `10.1017/S000497270001176X`, develops the parent positive-real generalized
+  Dirichlet-series class.  The generic rigidity above is therefore recorded as `[BRIDGE]`, not new
+  publication-level science.
+- Positive-realness/passivity equivalence is standard network-synthesis parent theory; it cannot
+  rescue a response which already has both signs on its defining overlap.
+- Bellotti, arXiv:`2508.02041` (2025), proves the current optimal zero-free-region PNT error of
+  Korobov--Vinogradov type.  After the square-root window weighting it remains of size
+  `n^(1/2-o(1))`, not the all-epsilon `n^epsilon` endpoint required here.  Current prime-number
+  theory does not independently discharge Route I.
+
+Anti-theatre verdict: this does **not** prove a new estimate toward RH.  It creates exact project
+knowledge by killing the entire raw-coordinate passive-realization producer, including arbitrary
+nonlinear internal coupling, and by extracting its strongest positive classification theorem.
+
+### Positive survivor and route disposition
+
+`[PROVED ON PAPER]` The high-line sign law is the positive survivor.  It says exactly what a future
+network route must change: it must apply a nontrivial Cayley/renormalizing transformation before
+passive realization.  Such a transform cannot be advertised as a realization of `F`; it must also
+prove a zero-free, source-only inverse handoff back to `F`.  That is a materially new route and does
+not keep Route I open.
+
+After unconditional Lean formalization of the generic sign theorem, the exact value `S(2)>0`, the
+two dyadic source signs, and the Herglotz/anti-Herglotz no-go, move this card to `5-failed` and mark
+Route I retired on the frontier map.  Existing divisor tomography, energy spectra, square sampling,
+and prime-only reduction remain valid positive infrastructure; the sharp subpower endpoint remains
+an RH criterion, not an independently proved source estimate.

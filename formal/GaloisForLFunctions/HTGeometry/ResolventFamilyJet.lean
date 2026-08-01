@@ -54,6 +54,24 @@ theorem norm_le_two_mul (hS : IsResolventFamilyOn S s) {u : ℝ} (hu : u ∈ s) 
   rw [h2] at hbound
   linarith
 
+
+/-- **Local uniform bound on the derivative amplitude.**  Since `partial_u S u = -(S u)^2`, the
+square is what a domination hypothesis must bound; near a reference shift it stays below four times
+the reference square. -/
+theorem norm_sq_le_four_mul (hS : IsResolventFamilyOn S s) {u : ℝ} (hu : u ∈ s) (hv : v ∈ s)
+    (hsmall : |u - v| * ‖S v‖ ≤ 1 / 2) :
+    ‖S u ^ 2‖ ≤ 4 * ‖S v‖ ^ 2 := by
+  have h := hS.norm_le_two_mul hu hv hsmall
+  have hsq : ‖S u ^ 2‖ ≤ ‖S u‖ ^ 2 := by
+    rw [sq, sq]
+    exact norm_mul_le _ _
+  have hmono : ‖S u‖ ^ 2 ≤ (2 * ‖S v‖) ^ 2 := by
+    have h0 : 0 ≤ ‖S u‖ := norm_nonneg _
+    nlinarith
+  calc ‖S u ^ 2‖ ≤ ‖S u‖ ^ 2 := hsq
+    _ ≤ (2 * ‖S v‖) ^ 2 := hmono
+    _ = 4 * ‖S v‖ ^ 2 := by ring
+
 /-- **Continuity of a resolvent family.**  The identity alone forces it. -/
 theorem continuousAt (hS : IsResolventFamilyOn S s) (hs : IsOpen s) (hv : v ∈ s) :
     ContinuousAt S v := by

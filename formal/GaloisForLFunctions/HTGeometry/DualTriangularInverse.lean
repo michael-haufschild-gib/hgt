@@ -166,6 +166,6 @@ theorem inv_schurTri {L N : ℕ} : (schurTri K L N)⁻¹ = dualTri K L N :=
 /-- **And conversely.** -/
 theorem dualTri_mul_schurTri {L N : ℕ} :
     dualTri K L N * schurTri K L N = 1 :=
-  Matrix.mul_eq_one_comm.1 schurTri_mul_dualTri
+  _root_.mul_eq_one_comm.1 schurTri_mul_dualTri
 
 end GaloisForLFunctions.HTGeometry

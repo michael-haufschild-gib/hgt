@@ -289,9 +289,40 @@ case is formalized.
   vanishes identically.  This is `(4)`: the Poisson operator is the minimal-energy right inverse of
   the trace.
 
+### The boundary space `(1)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerBoundarySpace.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerBoundaryNormSq ℓ φ = ∑_a |ℓ a| ‖φ_a‖²` — the boundary norm `(1)`.
+- `deningerBoundaryDatum ℓ ψ a = ψ_a / √|ℓ a|` — the boundary datum of a coefficient sequence.
+- `deningerBoundary_term`, `deningerBoundary_normSq_datum` — **the parametrization is isometric**:
+  the boundary norm of the datum is the norm of the coefficient sequence, term by term.
+- `deningerBoundaryDatum_leftInverse` — multiplying back by the weight recovers the sequence, so the
+  parametrization is a bijection onto the finite-boundary-norm data.
+
+So `ℬ_ℓ` is the square-summable coefficient space read through the weight `√|ℓ|`, and inherits its
+completeness: the completion in `(1)` is realized concretely rather than abstractly.
+
+### The Dirichlet orthogonality of `(5)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerDirichletOrthogonal.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+The card's proof of `(5)` is one sentence: "if `u₀` has zero trace, integration by parts against the
+harmonic Poisson extension makes their energy cross term zero".  That is now a theorem.
+
+- `deningerConjPairing_hasDerivAt` — the derivative of the real pairing `Re(w̄ p)` of two
+  differentiable paths, via the conjugation and real-part projections.
+- `deningerPairing_integral_eq` — integrating that derivative over the half line recovers minus its
+  boundary value.
+- `deningerDirichlet_orthogonal` — **the energy cross term vanishes**: for a zero-trace filling the
+  boundary value is zero, and the Poisson profile's first-order equation `p' = -m p` makes the
+  radial and transverse contributions to the energy pairing cancel.
+
 ### Remaining
 
-The completions as Hilbert spaces: `ℬ_ℓ` from `(1)`, `Ė_ℓ` from `(2)`, and the zero-trace subspace
-`Ė_{ℓ,0}`.  Everything the card computes is formalized — `(6)` with its equality case, the trace
-bound, the Dirichlet principle, and the energy identity `(7)` on the trigonometric core — so `(3)`,
-`(5)` and `(8)` are exactly the passage to those completions.
+Only the packaging of `(2)` as a Hilbert space: the energy completion `Ė_ℓ` and its zero-trace
+subspace `Ė_{ℓ,0}`.  Every computation the card performs is formalized — `(6)` with its equality
+case, the trace bound, the Dirichlet principle `(4)`, the core energy identity `(7)`, the
+orthogonality behind `(5)`, the isometric model of `ℬ_ℓ` `(1)`, and the Lagrangian graph theorem.

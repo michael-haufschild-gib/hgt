@@ -3556,9 +3556,62 @@ end to end:
   a *quantitative* leading asymptotic: the jet equals an explicit rational function up to an error
   one full order smaller than the jet itself.  The corpus previously had only the qualitative limit.
 
-`#print axioms` clean.  What remains is steps 3–6: iterating this step against itself to arbitrary
-depth (the remainder at each stage is again an explicit rational function summed over the orbit), the
-`log s` level for `ψ` itself, and the assembly.
+`#print axioms` clean.
+
+**The depth induction now has its two engines.**  Iterating the step needs the remainder to be
+carried *algebraically*, since only its degree controls the next order.  Two modules do that:
+
+- `HTGeometry/RationalOrderBound.lean` — `exists_norm_polynomial_le` (a polynomial is bounded by its
+  degree power outside the unit disc) and **`exists_norm_div_risingProd_le`**: a numerator of degree
+  `d` over `x^a·x(x+1)⋯(x+b−1)` decays at order `a+b−d`.  This converts an algebraic degree count
+  into an analytic decay order with no further estimates — the workhorse of the induction.
+- `HTGeometry/RisingFactorialPolynomial.lean` — the rising factorial as a monic polynomial
+  (`risingPoly`, `risingPoly_monic`, `risingPoly_natDegree`) and the crux,
+  **`expansion_step`**: for `P` of degree `≤ d` and `a + b = d + p`,
+
+  `P(x)/(x^a·x(x+1)⋯(x+b−1)) − P_d·(x(x+1)⋯(x+p−1))^{-1} = Q(x)/(x^a·x(x+1)⋯(x+b−1)·x(x+1)⋯(x+p−1))`
+
+  with an *explicit* `Q` of degree `< a+b`, i.e. one order better.  The degree drop is proved by
+  splitting `Q` into `(P − P_d X^d)·risingPoly p`, whose degree is below `d+p` because the `d`-th
+  coefficient cancels, and `P_d·(X^d·risingPoly p − X^a·risingPoly b)`, a difference of two *monic*
+  polynomials of the same degree `a+b`.
+
+So each expansion step is now a closed loop: subtract the leading reciprocal rising factorial (whose
+orbit sum is exact by `hasSum_inv_risingProd`), and the remainder is again a rational function of the
+same shape with one more order — which `exists_norm_div_risingProd_le` converts into the next
+estimate.  `#print axioms` clean.
+
+**Step 3 is complete: the jets now expand to arbitrary depth.**  Two more modules run the loop.
+
+`HTGeometry/StandardRationalExpansion.lean` gives the loop a shape it is closed under.  A *standard*
+rational function is `P(x)/∏_j(x+j)` — denominator a product of factors shifted by naturals
+(`shiftProd`, `shiftPoly`, monic of the multiset's cardinality) — with degree defect at least `p`;
+subtracting a reciprocal rising factorial appends `p` more factors, so the shape is preserved.
+
+- `IsStdRat.exists_norm_le` — the defect *is* the decay order;
+- `shift_expansion_step`, **`IsStdRat.step`** — one step: split off the leading reciprocal rising
+  factorial, the remainder is standard with defect `p+1`;
+- **`IsStdRat.expansion`** — iterating: for every depth `K`,
+  `f(x) = ∑_{i<K} c_i·(x(x+1)⋯(x+p+i−1))^{-1} + g(x)` with `g` standard of defect `p+K`;
+- `isStdRat_inv_pow` — a reciprocal power `x^{-k}` is standard of defect `k`, which is the input.
+
+`HTGeometry/PolygammaDepthExpansion.lean` sums that over the shift orbit.  Each reciprocal rising
+factorial sums in closed form (`hasSum_inv_risingProd`), the remainder is standard of defect
+`m+K+3` and the orbit bound converts it into `4C/t^{m+K+2}`, and the corpus's polygamma series turns
+the total into the jet.  The result is **`exists_jet_expansion`**: for every `m` and every depth `K`,
+
+`‖ψ^{(m+1)}(σ+it) − ∑_{i≤K} b_i·(s(s+1)⋯(s+m+i))^{-1}‖ ≤ C/t^{m+2+K}`
+
+for all `σ > 0` and `t ≥ 2`, with explicit coefficients `b_i`.  The error is smaller than every term
+kept, so the expansion is genuinely asymptotic — and it is available to *arbitrary* depth, which is
+exactly what deciding the datum of a jet polynomial with leading-order cancellation needs.  mathlib
+has neither Euler–Maclaurin nor any asymptotic expansion of the polygamma functions; this is built
+from the corpus's own series and the elementary orbit and degree estimates.  `#print axioms` clean.
+
+What remains is the `log s` level for `ψ` itself (integrating the `ψ′` expansion), and the assembly:
+expanding a jet monomial by multiplying expansions, and reading off the first nonzero coefficient —
+which exists because a fully cancelling expansion would make the function flat, contradicting
+`not_isVertFlatGerm_digammaJetEval`.
 
 ## Gates
 

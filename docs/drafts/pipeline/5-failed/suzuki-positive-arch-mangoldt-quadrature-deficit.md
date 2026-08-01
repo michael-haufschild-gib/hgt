@@ -1,12 +1,52 @@
 # Suzuki positive-arch Mangoldt quadrature deficit
 
 - **ID:** `suzuki-positive-arch-mangoldt-quadrature-deficit`
-- **Stage:** 1 — in progress
-- **Type:** RH-BEARING CONJECTURE / POSITIVE TRANSPORT / RESTRICTED QUADRATURE
-- **Scientific status:** `[OPEN] [SOURCE-SPECIFIC] [DIRECT RH CONNECTOR FORMALIZED]`
+- **Stage:** 5 — failed/retired as an independent scalar route
+- **Type:** TERMINAL SCALAR-TRANSPORT NO-GO / POSITIVE SURVIVOR CLASSIFICATION
+- **Scientific status:** `[SCALAR CLASS CLOSED] [UNCONDITIONAL LEAN NO-GO]`
+  `[RH ENDPOINT RETAINED] [OPERATOR SURVIVOR MERGED INTO ROUTE G]`
 - **Parent:** `suzuki-rectangular-positive-arch-lag-completion.md`
 - **RH used in target proof:** forbidden
 - **Computation used:** no
+
+## Terminal closure — Route B retired as an independent route
+
+Route B's exact fixed-width lower-floor endpoint remains Lean-equivalent to RH.  What is retired is
+its advertised independent acquisition mechanism.
+
+The scalar alternatives are exhausted at their stated information boundary:
+
+1. universal integer-log quadrature is false;
+2. pointwise apex cells are impossible on a cofinal actual Mangoldt family;
+3. common-displacement bicausal splicing is identically the original capacity-one deficit after
+   duplicate seam mass is removed;
+4. capacity, atomlessness, exact exterior-flank capacity, and arbitrarily large flank surplus do
+   not imply domination, even after an arbitrary tail threshold.  The cofinal atomless
+   countermodel and universal-class negation are formalized in
+   `SuzukiCriticalApexVacuumCapacityNoGo.lean`.
+
+The former label `SUZUKI-SOURCE-COMMUTATOR-GRAM` is not a remaining Route-B step: finite source
+identification, logarithmic commutator carrier, and compact-support cyclic descent already exist.
+What remains after them is the signed/cofinal completed Burnol--Robin--Gamma Ward floor.  That is
+the operator source-realization problem tracked by Route G and
+`suzuki-terminal-frontier-ledger.md`; calling it block transport would duplicate that route.
+
+**Exact killing mechanism.** Every scalar producer proposed on this card is either false on a
+cofinal source class or algebraically equivalent to the RH-bearing target deficit.  The sole
+source-specific escape leaves the scalar transport category and lands in Route G.
+
+**Strongest positive survivor.** The completed-lag/positive-prime-wall identity remains a sharp
+fixed-width RH detector.  More importantly, apex-vacuum amplification is a cofinal extremal law:
+bounded cumulative displacement can cause unbounded quadrature excess at the moving exponential
+apex while both exterior flanks stay exactly capacity one.  Any future source proof must therefore
+carry a non-scalar, source-sensitive orientation invariant before taking a trace.
+
+**Status.** Scalar no-go and survivor have dependency-closed paper proofs and unconditional Lean
+certificates.  RH is neither proved nor disproved.  Route B is closed only as an independent
+positive-transport route; its operator survivor is not discarded or relabelled as solved.
+
+All later “open core” labels below are retained as research history and superseded by this terminal
+closure.
 
 ## Exact frontier
 
@@ -160,11 +200,11 @@ another pointwise cell assignment and do not return to global prime estimates.
 - [x] pointwise capacity-one future/past seam splice falsified cofinally
 - [x] exact Mangoldt/Suzuki apex-lock rigidity formalized
 - [x] unconditional source-canonical prime block with sharp contraction and `sqrt(n)` surplus
-- [ ] capacity-one apex/flank block transport
-- [ ] source-derived restricted-Weil/Robin transport identity
-- [ ] positive residual after prime assembly
-- [ ] `(Q)`
-- [ ] RH
+- [x] capacity-one apex/flank scalar block transport class closed negatively
+- [x] source commutator/Gram label audited as already closed infrastructure
+- [x] surviving signed/cofinal operator floor transferred to Route G without duplication
+- [x] exact positive survivor and no-go formalized unconditionally
+- [ ] `(Q)` / RH — retained only as terminal endpoint, not claimed
 
 ## Hypothesis-free paper gate (2026-07-22)
 

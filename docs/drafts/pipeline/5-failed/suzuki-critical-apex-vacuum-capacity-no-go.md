@@ -1,15 +1,21 @@
 # Suzuki critical apex-vacuum capacity no-go
 
 - **ID:** `suzuki-critical-apex-vacuum-capacity-no-go`
-- **Stage:** 1 — in progress
+- **Stage:** 5 — failed capacity/flank producer; positive survivor formalized
 - **Type:** UNIVERSAL EXTREMAL LAW / SOURCE-CLASS NO-GO
-- **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL] [NOT RH]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [UNCONDITIONAL] [NOT RH]`
 - **Parents:** `suzuki-mangoldt-log-haar-bicausal-transport.md`,
   `suzuki-bicausal-no-free-splice-classification.md`
 - **Failed producer:** `suzuki-mangoldt-macroscopic-prime-block-surplus.md` when its
   apex-relative flank surplus is treated as unused target capacity
 - **RH used:** no
 - **Computation used:** no
+
+**Terminal note.** This historical attack is closed.  Its cofinal tail strengthening and exact
+universal-class negation are formalized in
+`formal/GaloisForLFunctions/RHTower/SuzukiCriticalApexVacuumCapacityNoGo.lean`.  The former
+`SUZUKI-SOURCE-COMMUTATOR-GRAM` successor was later retired as a stale label: commutator/Gram
+infrastructure already exists, and remaining signed/cofinal operator floor belongs to Route G.
 
 ## Exact frontier attacked
 
@@ -215,5 +221,6 @@ unverified.
 - [x] exact falsifiable statement
 - [x] hostile paper proof closes with all measure and integral boundaries checked
 - [x] Stage 2 theorem status earned; archival copy pending exact Lean statement lock
-- [ ] exact Lean formalization
-- [ ] source-specific operator discriminator or RH
+- [x] exact Lean formalization, including every-threshold countermodels
+- [x] capacity/flank scalar class retired
+- [ ] source-specific operator floor / RH — tracked only under Route G

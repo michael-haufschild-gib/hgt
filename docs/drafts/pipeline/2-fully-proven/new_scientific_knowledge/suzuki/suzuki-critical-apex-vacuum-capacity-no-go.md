@@ -6,7 +6,7 @@
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL] [NOT RH]`
   `[APPLICATION NOVELTY UNVERIFIED]`
 - **Stage-1 audit:**
-  `../../1-in-progress/suzuki-critical-apex-vacuum-capacity-no-go.md`
+  `../../../5-failed/suzuki-critical-apex-vacuum-capacity-no-go.md`
 - **RH used:** no
 - **Computation used:** no
 
@@ -148,23 +148,56 @@ for every `a>=3`.
 
 ### 4. Cofinal violation
 
-Since `H_a/128=exp(a-1)/64` tends to infinity, choose `a>=3` with `H_a/128>B_*`.  Equations
-`(8),(12)` then give
+The quantifier is genuinely cofinal, not merely existential.  Given an arbitrary prescribed
+threshold `A`, put
 
 ```text
-integral A_a dmu_(c_a)+(gamma+log pi)4
- >integral_0^infinity K_a(t)dt.                             (13)
+a_A=64B_*+max(A,3).
 ```
 
-The source `mu_(c_a)` is atomless, satisfies `(1)`, and equals Lebesgue measure on
-`(c_a,c_a+4)`.  Its decreasing-flank apex deficit is positive and proportional to `H_a`, so even
-an unbounded untouched right-flank surplus coexists with `(13)`.  This proves the claim.  QED.
+The reserve bound is nonnegative, so `a_A>=A` and `a_A>=3`.  Convexity gives
+
+```text
+exp(a_A-1)>=1+(a_A-1)=a_A>64B_*,
+```
+
+and hence `H_(a_A)/128=exp(a_A-1)/64>B_*`.  Equations `(8),(12)` therefore give, beyond every
+prescribed threshold,
+
+```text
+integral A_(a_A) dmu_(c_(a_A))+(gamma+log pi)4
+ >integral_0^infinity K_(a_A)(t)dt.                         (13)
+```
+
+The cumulative formula is exactly `t` both for `t<=c_(a_A)-2` and for `c_(a_A)<=t`; thus the source
+is not merely atomless and band-admissible but agrees with capacity one on both complete exterior
+flanks.  Its decreasing-flank apex deficit is positive and proportional to `H_(a_A)`, so even an
+unbounded untouched right-flank surplus coexists with `(13)`.  This proves the cofinal claim.  QED.
+
+## Theorem D: eventual capacity/flank producers do not exist `[PAPER-PROVED]`
+
+Call an eventual capacity/flank producer any rule asserting that there is one threshold `A` such
+that, for every `a>=max(A,3)` and every positive source measure `mu`, the following source data
+force completed-lag domination:
+
+1. `A_a` is `mu`-integrable;
+2. `mu` is atomless;
+3. `t-2<=mu((0,t])<=t` for every `t>=0`;
+4. `mu((0,t])=t` outside the sole turning gap `(c_a-2,c_a)`.
+
+No such rule exists.  Given its alleged threshold `A`, use `mu_(c_(a_A))` above.  Items 1--4 hold:
+integrability follows by restricting the already integrable `A_a` to the three finite-density
+pieces of `mu`; atomlessness is inherited from Lebesgue measure; `(1)` is the exact cumulative
+band; and the piecewise formula gives exterior-flank equality.  But `(13)` is the strict negation
+of the asserted domination.  This is a class-complete no-go for every scalar argument whose actual
+source input factors only through those four data, including every tail-restricted version.
 
 ## Hostile verdict and exact scope
 
 - The result is not a counterexample to RH and does not model the full von Mangoldt source.
 - It applies to every proposed proof whose arithmetic information factors only through cumulative
-  band `(1)`, even if atomlessness or unbounded opposite-flank surplus is added.
+  band `(1)` and exterior-flank capacity, even if atomlessness, integrability, an arbitrary tail
+  threshold, or unbounded opposite-flank surplus is added.
 - It does not exclude a genuinely source-specific restricted-Weil/Robin identity that distinguishes
   actual Mangoldt mass from the explicit extremizers.
 - It kills interpreting S69 apex-relative block surplus as unused capacity.  Target multiplicity
@@ -184,6 +217,8 @@ did not expose.
 - [x] reflected-polar, Gamma, and fixed-charge reserve included
 - [x] scope limited to capacity/flank-surplus information class
 - [x] exact Lean theorem `exists_atomless_capacityBand_suzukiCompletedLag_violation`
+- [x] dependency-closed cofinal tail and universal-class no-go proved on paper
+- [x] cofinal tail and universal-class no-go formalized in Lean
 - [ ] actual-Mangoldt source discriminator or RH
 
 ## Formalization
@@ -193,3 +228,10 @@ atomless measure, its cumulative band and quadrature identity, the `H_a/128` ape
 the sharper reflected-channel bound `<=16`, the completed-reserve bound, and the symbolic
 completed-lag violation.  Direct source check passes.  Axiom audit of six capstones reports only
 `propext`, `Classical.choice`, and `Quot.sound`.  Final target build remains pending.
+
+The cofinal strengthening is formalized by
+`exists_integrable_atomless_capacityBand_flankExact_suzukiCompletedLag_violation_ge`: for every
+real aperture threshold it supplies an integrable atomless countermodel beyond that threshold,
+with exact capacity-one cumulative mass on both exterior flanks.  The proposition
+`SuzukiCriticalCapacityFlankTailProducer` packages precisely the scalar information class, and
+`not_suzukiCriticalCapacityFlankTailProducer` proves its negation unconditionally.

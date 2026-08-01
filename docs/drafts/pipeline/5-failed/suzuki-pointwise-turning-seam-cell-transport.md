@@ -3,7 +3,7 @@
 - **Stage:** 5 — failed/retired
 - **Type:** `[FALSIFIED]` pointwise per-atom transport
 - **Parent:**
-  `../1-in-progress/suzuki-positive-arch-mangoldt-quadrature-deficit.md`
+  `suzuki-positive-arch-mangoldt-quadrature-deficit.md`
 - **Positive survivor:**
   `../2-fully-proven/new_scientific_knowledge/suzuki-mangoldt-apex-lock-rigidity.md`
 

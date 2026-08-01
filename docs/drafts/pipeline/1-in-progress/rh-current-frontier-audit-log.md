@@ -106,3 +106,9 @@ Write a review paper whose route claims are traceable to exact Lean declarations
   multiplication on literal von Mangoldt edges `2→3`, `3→4`. Paper proof, four Lean modules,
   umbrellas, targeted capstone build, and standard-axiom audit are complete. Positive survivor is
   edge/fibre-marked noncyclic pointed aggregation, redirected to co-Poisson fibre orientation.
+- 2026-08-01 — Route M disposition corrected after scope challenge. `SR-49` proves only failure of
+  cyclic scalar contraction, proper cyclic-algebra escape, and multiplicative edge-reader assembly.
+  It does not exclude the formalized barycentric survivor: an edge/fibre-marked noncyclic pointed
+  reader. No existing numbered co-Poisson route supplies that object or its orientation handoff.
+  Route M is therefore `OPEN — NARROWED`; prior retirement entry is retained as audit history of the
+  overclaim, not current status.

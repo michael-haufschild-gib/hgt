@@ -29,8 +29,10 @@ and finite-support coefficient reconstructions do not count as progress.
    absolutely summable, and any fixed nonzero Hilbert--Schmidt central cyclic probe preserves that
    failure in trace norm (`not_summable_traceNorm_soninSemilocalCyclicPrimeTangentCarrier`).
 5. **Scalar transport/capacity lane is dead.** Common-displacement splicing pays exactly its own
-   seam, and atomless width-two capacity plus untouched decreasing-flank surplus still permits a
-   completed-lag violation (`SuzukiBicausalNoFreeSplice.lean`,
+   seam.  Beyond every prescribed aperture threshold, atomless width-two capacity with exact
+   capacity-one exterior flanks still permits a completed-lag violation.  Lean formalizes the
+   whole eventual information class as `SuzukiCriticalCapacityFlankTailProducer` and proves its
+   negation (`SuzukiBicausalNoFreeSplice.lean`,
    `SuzukiCriticalApexVacuumCapacityNoGo.lean`).
 6. **Endpoint weakening is exhausted.** A finite lower floor for the completed prime--Gamma flux
    on Gaussian-rational left-half-strip points is already Lean-equivalent to RH

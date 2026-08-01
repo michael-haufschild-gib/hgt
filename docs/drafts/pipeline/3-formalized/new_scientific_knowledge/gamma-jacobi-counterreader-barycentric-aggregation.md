@@ -2,7 +2,7 @@
 
 - **ID:** `gamma-jacobi-counterreader-barycentric-aggregation`
 - **Stage:** 3 — formalized
-- **Type:** SOURCE-SPECIFIC AGGREGATION LAW / POSITIVE SURVIVOR OF RETIRED ROUTE M
+- **Type:** SOURCE-SPECIFIC AGGREGATION LAW / POSITIVE SURVIVOR IN LIVE NARROWED ROUTE M
 - **Scientific status:** `[PAPER-PROVED] [FORMALIZED] [NOVELTY PROVISIONAL] [NOT RH]`
 - **Parent no-go:** `../../5-failed/gamma-jacobi-euler-tail-cyclic-reader-no-go.md`
 - **RH used:** no
@@ -32,9 +32,9 @@ those hypotheses, providing literal source witness.
 ## Route consequence
 
 `SR-48` Blaschke nodes may remain useful as marked edge data, but product of isolated edge readers
-cannot be identified with accumulated nonlinear counterreader. A viable successor must retain edge
-and fibre marks before contraction and use a noncyclic pointed reader. This is positive survivor of
-Route M retirement, not an RH proof and not an invitation to reopen scalar inner--outer route.
+cannot be identified with accumulated nonlinear counterreader. A viable continuation must retain
+edge and fibre marks before contraction and use a noncyclic pointed reader. This is Route M's live
+positive survivor, not an RH proof and not a reopening of its dead scalar inner--outer predecessor.
 
 ## Lean
 

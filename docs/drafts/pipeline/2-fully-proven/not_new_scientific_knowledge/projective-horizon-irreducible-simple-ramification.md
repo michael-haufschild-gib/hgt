@@ -771,3 +771,67 @@ level.  No new Lean claim is attached to this bridge card.
   Jacobi's complementary-minor formula, which is what would exchange an `m × m` minor of one matrix
   for an `n × n` minor of the other and so give the dual Jacobi--Trudi identity.  That formula is
   absent from mathlib and is the one remaining piece of the route.
+
+- 2026-08-01 — **Complementary blocks of inverse matrices.**
+  `formal/GaloisForLFunctions/HTGeometry/BlockComplementaryMinor.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  Jacobi's complementary-minor formula is absent from mathlib.  What the dual route needs is its
+  block form, and that admits a short self-contained proof.  For `H` of row type `α ⊕ β` and column
+  type `β ⊕ α`, and `E` of the opposite shape, with `H * E = 1`,
+
+  ```text
+  det(H_21) = det(H with its two column blocks exchanged) * det(E_21).
+  ```
+
+  `det_toBlocks₂₁_eq`.  The mechanism is one auxiliary matrix `G = fromBlocks 1 A' 0 C'`, built from
+  `E` by replacing its first column block by the identity.  Its determinant is `det(E_21)` because it
+  is block triangular.  Multiplying `H` by it kills the two blocks that the inverse relation
+  annihilates, leaving `fromBlocks A 1 C 0`, whose determinant after exchanging the column blocks is
+  `det(H_21)`.  `submatrix_mul_equiv` splits the determinant of the product; the two block triangular
+  determinants are `det_fromBlocks_zero₂₁`.
+
+  `irreducible_det_toBlocks₂₁_iff` — when the exchanged matrix has unit determinant, irreducibility
+  passes between the two complementary blocks; `isUnit_det_submatrix_of_det_eq_one` — a matrix of
+  determinant one reindexed by two bijections has unit determinant, the factor being the sign of the
+  permutation comparing the two reindexings, so that hypothesis is automatic here.
+
+- 2026-08-01 — **The two parameters of a rectangular section can be exchanged, and the restriction
+  `m ≤ n` disappears.**  `formal/GaloisForLFunctions/HTGeometry/DualRectangularSection.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  Irreducible (det (rectangularSchurToeplitz (schurVar K (n+m-1)) n m))   for all n,m ≥ 1.
+  ```
+
+  `irreducible_det_rectangularSchurToeplitz`.  This is `(1)` of the theorem above — the rectangular
+  Schur determinant `tau_(m,n) = s_((n^m))[h]` in the algebraically independent coefficients
+  `h_1,...,h_(m+n-1)` — and it is now proved in the corpus at **every** pair of parameters.  The
+  appeal to Dvornicich--Zannier is no longer a citation: the whole chain from the corner expansion to
+  the full statement is Lean.
+
+  The construction.  Cut the ambient index of the `(n+m)`-square triangular matrix at the shift in
+  the rows (`schurRowSplit`) and at the height in the columns (`schurColSplit`).  Then
+  `toBlocks₂₁_schurBlock`: the lower left block of `schurTri` is exactly the section
+  `rectangularSchurToeplitz (schurVar K L) n m`.  Cutting the inverse matrix the opposite way,
+  `dualBlock_toBlocks₂₁_apply`: its lower left block is the section of the **dual** family with the
+  two parameters exchanged, `rectangularSchurToeplitz (dualVar K L) m n`, up to one sign per row and
+  one per column.  Those signs are units, so `irreducible_det_toBlocks₂₁_dualBlock_iff` discards them
+  (`det_mul_row`, `det_mul_column`, and `Finset.prod_pow_eq_pow_sum` to see the two products as a
+  single power of `-1`).  `schurBlock_mul_dualBlock` is `schurTri_mul_dualTri` reindexed, and
+  `isUnit_det_schurBlock_swap` is the reindexing lemma applied to `det_schurTri = 1`.  The block
+  relation then gives
+
+  ```text
+  Irreducible (det (rect (schurVar K L) n m)) ↔ Irreducible (det (rect (dualVar K L) m n))
+  ```
+
+  (`irreducible_det_rect_swap_iff`), and `dualSub_det_rect` — the exchange of the two families
+  applied entrywise, through `AlgHom.map_det` — identifies the right-hand determinant with the image
+  of `det (rect (schurVar K L) m n)` under the automorphism `dualSub`, which by
+  `irreducible_dualSub_iff` does not change irreducibility.
+
+  So for `m ≤ n` the statement is `irreducible_det_schur_of_le` directly, and for `n < m` it is that
+  same theorem with the parameters exchanged, transported across the complementary block relation and
+  the exchange of the two coefficient families.  This closes the dual route and the last gap in the
+  Schur irreducibility chain of this card.

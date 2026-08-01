@@ -454,9 +454,9 @@ arithmetic relevant complex, positive Hodge transport, or Xi spectrum inclusion.
 and the corpus's pro-log divisor exact sequence. This advances the geometric carrier from generic
 topology to the actual Deninger model; the arithmetic comparison and polarization remain open.
 
-### Route M — Gamma–Jacobi singular reader [RETIRED]
+### Route M — Gamma–Jacobi singular reader [OPEN — NARROWED]
 
-**Disposition: RETIRED.** Inoue's
+**Closed predecessor.** Inoue's
 [Meixner–Pollaczek theorem](https://arxiv.org/abs/1412.1220) controls partial sums of one fixed
 meromorphic target under its stated hypotheses; it does not identify Route M's changing finite
 source counterreaders as those partial sums. Romik's
@@ -466,17 +466,20 @@ Xi-specific. Finite-negative-index generalized Nevanlinna/Jacobi theory, as in
 index. Classical rank-one perturbation/cyclic-vector mechanisms already contain the generic
 simple-spectrum ancestry (for example [this rank-one perturbation treatment](https://arxiv.org/abs/1111.3095)); generic algebra saturation is not a novelty claim.
 
-**Local closure beyond located literature.** On every finite prime packet the literal completed
+**Local no-go beyond located literature.** On every finite prime packet the literal completed
 Euler clock and one full-support Gamma--Jacobi Szegő aperture loss generate every matrix unit.
 Therefore no infinite-index Krein metric can preserve a proper finite cyclic anomaly algebra.
 Independently, the accumulated von Mangoldt counterreader has first symbol coefficient
 `-m₄/m₃`, a third-moment-weighted barycentre under source addition; multiplication of isolated edge
 symbols instead adds their coefficients and already fails on the first two literal edges. Thus
-finite inner convergence and a scalar outer factor do not repair the route.
+finite inner convergence and a scalar outer factor do not repair the cyclic/multiplicative
+predecessor.
 
-**Retained action.** Do not formalize Inoue/Romik as a Route M bridge. The formalized positive
+**Live action.** Do not formalize Inoue/Romik as a Route M bridge. The formalized positive
 survivor is an edge/fibre-marked, nonmultiplicative barycentric bundle with a noncyclic pointed
-reader. It belongs to the co-Poisson fibre-orientation program, not a reopened Route M.
+reader. No existing numbered route or external theorem supplies this object. Route M remains open
+at construction or class-complete refutation of that pointed reader, completed-Euler compatibility,
+and its same-fibre orientation handoff.
 
 ### Route N — Hedenmalm prime-normal estimate
 

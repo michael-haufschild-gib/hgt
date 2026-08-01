@@ -181,6 +181,42 @@ theorem deriv_edgePairKernel_zero (a : ℝ) :
   simp
   ring
 
+/-- **Modulus of the Fourier kernel.**  `‖exp (I z t)‖ = exp (-(Im z) t)` for real `t`: the real
+part of `I z t` is `-(Im z) t`.  This is the factor every domination argument for a compact Fourier
+transform needs, since on a bounded interval it is bounded by `exp (|Im z| * A)`. -/
+theorem norm_fourierKernel (z : ℂ) (t : ℝ) :
+    ‖Complex.exp (I * z * (t : ℝ))‖ = Real.exp (-z.im * t) := by
+  rw [Complex.norm_exp]
+  congr 1
+  simp [Complex.mul_re, Complex.mul_im]
+
+/-- On a symmetric interval the Fourier kernel is bounded by `exp (|Im z| * a)`. -/
+theorem norm_fourierKernel_le (z : ℂ) {a t : ℝ} (ht : |t| ≤ a) :
+    ‖Complex.exp (I * z * (t : ℝ))‖ ≤ Real.exp (|z.im| * a) := by
+  rw [norm_fourierKernel]
+  apply Real.exp_le_exp.mpr
+  have h1 : -z.im * t ≤ |(-z.im) * t| := le_abs_self _
+  have h2 : |(-z.im) * t| = |z.im| * |t| := by
+    rw [abs_mul, abs_neg]
+  nlinarith [abs_nonneg z.im, abs_nonneg t, le_trans (abs_nonneg t) ht]
+
+/-- **Domination transfer through the Fourier kernel.**  A dominating bound for the amplitude on a
+symmetric interval transfers to one for the amplitude times the kernel, at the cost of the constant
+`exp (|Im z| a)`.
+
+This is the step that reduces the domination hypothesis of parametric differentiation under a
+compact Fourier transform to a bound on the amplitude family alone. -/
+theorem norm_mul_fourierKernel_le {f : ℝ → ℂ} {bound : ℝ → ℝ} {z : ℂ} {a t : ℝ}
+    (ht : |t| ≤ a) (hf : ‖f t‖ ≤ bound t) :
+    ‖f t * Complex.exp (I * z * (t : ℝ))‖ ≤ Real.exp (|z.im| * a) * bound t := by
+  rw [norm_mul]
+  have hk := norm_fourierKernel_le z ht
+  have hb : 0 ≤ bound t := le_trans (norm_nonneg _) hf
+  calc ‖f t‖ * ‖Complex.exp (I * z * (t : ℝ))‖
+      ≤ bound t * Real.exp (|z.im| * a) :=
+        mul_le_mul hf hk (norm_nonneg _) hb
+    _ = Real.exp (|z.im| * a) * bound t := by ring
+
 end
 
 end GaloisForLFunctions.HTGeometry

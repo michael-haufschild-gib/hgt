@@ -37,6 +37,15 @@ theorem suzukiCriticalApexVacuumCumulative_band
   simp only [suzukiCriticalApexVacuumCumulative]
   split_ifs <;> constructor <;> linarith
 
+/-- Outside the evacuated turning gap, the apex-vacuum cumulative source is exactly capacity one. -/
+theorem suzukiCriticalApexVacuumCumulative_eq_self_of_outside_gap
+    {c t : ℝ} (hout : t ≤ c - 2 ∨ c ≤ t) :
+    suzukiCriticalApexVacuumCumulative c t = t := by
+  rcases hout with hleft | hright
+  · simp [suzukiCriticalApexVacuumCumulative, hleft]
+  · simp only [suzukiCriticalApexVacuumCumulative]
+    split_ifs <;> linarith
+
 /-- Atomless source obtained by evacuating `(c-2,c)` and placing its mass with density eight on
 the final quarter-unit before `c`. -/
 def suzukiCriticalApexVacuumMeasure (c : ℝ) : Measure ℝ :=
@@ -102,6 +111,14 @@ theorem suzukiCriticalApexVacuumMeasure_Ioc
       ENNReal.toReal_add (by finiteness) (by finiteness), ENNReal.toReal_mul]
     simp [ENNReal.toReal_ofReal hc2, ENNReal.toReal_ofReal hright0]
     ring
+
+/-- The measure agrees with capacity one on both exterior flanks of its sole turning gap. -/
+theorem suzukiCriticalApexVacuumMeasure_Ioc_eq_self_of_outside_gap
+    {c t : ℝ} (hc : 2 ≤ c) (ht : 0 ≤ t)
+    (hout : t ≤ c - 2 ∨ c ≤ t) :
+    (suzukiCriticalApexVacuumMeasure c (Ioc 0 t)).toReal = t := by
+  rw [suzukiCriticalApexVacuumMeasure_Ioc hc ht,
+    suzukiCriticalApexVacuumCumulative_eq_self_of_outside_gap hout]
 
 def suzukiCriticalApexVacuumQuadrature
     (Phi : ℝ → ℝ) (c : ℝ) : ℝ :=
@@ -245,6 +262,23 @@ private theorem integrable_suzukiCriticalPositiveArchChannel (a : ℝ) :
         ring]
   simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero]
   ring
+
+/-- The positive Suzuki sample channel remains integrable against every apex-vacuum source. -/
+theorem integrable_suzukiCriticalPositiveArchChannel_apexVacuumMeasure
+    (a c : ℝ) :
+    Integrable (suzukiRectangularPositiveArchSampleChannel 2 a)
+      (suzukiCriticalApexVacuumMeasure c) := by
+  have hPhi := integrable_suzukiCriticalPositiveArchChannel a
+  have hleft : Integrable (suzukiRectangularPositiveArchSampleChannel 2 a)
+      (volume.restrict (Ioc 0 (c - 2))) := hPhi.restrict
+  have hcluster0 : Integrable (suzukiRectangularPositiveArchSampleChannel 2 a)
+      (volume.restrict (Ioc (c - 1 / 4) c)) := hPhi.restrict
+  have hcluster : Integrable (suzukiRectangularPositiveArchSampleChannel 2 a)
+      ((8 : ENNReal) • volume.restrict (Ioc (c - 1 / 4) c)) :=
+    hcluster0.smul_measure (by norm_num)
+  have hright : Integrable (suzukiRectangularPositiveArchSampleChannel 2 a)
+      (volume.restrict (Ioi c)) := hPhi.restrict
+  exact (hleft.add_measure hcluster).add_measure hright
 
 private theorem suzukiCriticalApexVacuum_gap_integral
     {a : ℝ} (ha : 3 ≤ a) :
@@ -429,6 +463,38 @@ private theorem suzukiCriticalCompletedLagMass_eq_sample_add_charge_add_reserve
     rectangularGammaPolarCorrection]
   ring
 
+theorem exists_suzukiCriticalApexVacuum_completedLag_violation_ge
+    (A : ℝ) :
+    ∃ a : ℝ, A ≤ a ∧ 3 ≤ a ∧
+      (∫ t : ℝ in Ioi 0, suzukiRectangularCompletedArchLagKernel 2 a t) <
+        suzukiCriticalApexVacuumQuadrature
+            (suzukiRectangularPositiveArchSampleChannel 2 a)
+            (suzukiCriticalMovingApexLag a) +
+          (Real.eulerMascheroniConstant + Real.log Real.pi) * 4 := by
+  let B := suzukiCriticalCompletedReserveBound
+  let a := 64 * B + max A 3
+  have hB : 0 ≤ B := by
+    dsimp [B, suzukiCriticalCompletedReserveBound]
+    have hgamma := rectangularGammaPolarUniformBound_nonneg (L := (2 : ℝ)) (by norm_num)
+    linarith
+  have haA : A ≤ a := by
+    dsimp [a]
+    nlinarith [le_max_left A 3]
+  have ha : 3 ≤ a := by
+    dsimp [a]
+    nlinarith [le_max_right A 3]
+  have hheight : B < suzukiCriticalMovingApexHeight a / 128 := by
+    rw [suzukiCriticalMovingApexHeight]
+    have hexp := Real.add_one_le_exp (a - 1)
+    dsimp [a]
+    nlinarith [le_max_right A 3]
+  have hexcess := suzukiCriticalApexVacuumQuadrature_excess_ge ha
+  have hreserve := suzukiCriticalCompletedReserve_le ha
+  have hmass := suzukiCriticalCompletedLagMass_eq_sample_add_charge_add_reserve ha
+  refine ⟨a, haA, ha, ?_⟩
+  rw [hmass]
+  nlinarith
+
 theorem exists_suzukiCriticalApexVacuum_completedLag_violation :
     ∃ a : ℝ, 3 ≤ a ∧
       (∫ t : ℝ in Ioi 0, suzukiRectangularCompletedArchLagKernel 2 a t) <
@@ -436,24 +502,53 @@ theorem exists_suzukiCriticalApexVacuum_completedLag_violation :
             (suzukiRectangularPositiveArchSampleChannel 2 a)
             (suzukiCriticalMovingApexLag a) +
           (Real.eulerMascheroniConstant + Real.log Real.pi) * 4 := by
-  let B := suzukiCriticalCompletedReserveBound
-  let a := 64 * B + 3
-  have hB : 0 ≤ B := by
-    dsimp [B, suzukiCriticalCompletedReserveBound]
-    have hgamma := rectangularGammaPolarUniformBound_nonneg (L := (2 : ℝ)) (by norm_num)
+  rcases exists_suzukiCriticalApexVacuum_completedLag_violation_ge 3 with
+    ⟨a, _haLower, ha, hviol⟩
+  exact ⟨a, ha, hviol⟩
+
+/-- **Cofinal capacity/flank no-go.**  Beyond every prescribed aperture threshold there is an
+integrable atomless source satisfying the sharp width-two cumulative band, agreeing exactly with
+capacity one on both exterior flanks, and violating completed-lag domination. -/
+theorem
+    exists_integrable_atomless_capacityBand_flankExact_suzukiCompletedLag_violation_ge
+    (A : ℝ) :
+    ∃ a : ℝ, A ≤ a ∧ 3 ≤ a ∧
+      Integrable (suzukiRectangularPositiveArchSampleChannel 2 a)
+        (suzukiCriticalApexVacuumMeasure (suzukiCriticalMovingApexLag a)) ∧
+      (∀ x : ℝ,
+        suzukiCriticalApexVacuumMeasure (suzukiCriticalMovingApexLag a) {x} = 0) ∧
+      (∀ t : ℝ, 0 ≤ t →
+        t - 2 ≤ (suzukiCriticalApexVacuumMeasure
+          (suzukiCriticalMovingApexLag a) (Ioc 0 t)).toReal ∧
+        (suzukiCriticalApexVacuumMeasure
+          (suzukiCriticalMovingApexLag a) (Ioc 0 t)).toReal ≤ t) ∧
+      (∀ t : ℝ, 0 ≤ t →
+        (t ≤ suzukiCriticalMovingApexLag a - 2 ∨
+          suzukiCriticalMovingApexLag a ≤ t) →
+        (suzukiCriticalApexVacuumMeasure
+          (suzukiCriticalMovingApexLag a) (Ioc 0 t)).toReal = t) ∧
+      (∫ t : ℝ in Ioi 0, suzukiRectangularCompletedArchLagKernel 2 a t) <
+        (∫ t : ℝ, suzukiRectangularPositiveArchSampleChannel 2 a t
+          ∂suzukiCriticalApexVacuumMeasure (suzukiCriticalMovingApexLag a)) +
+          (Real.eulerMascheroniConstant + Real.log Real.pi) * 4 := by
+  rcases exists_suzukiCriticalApexVacuum_completedLag_violation_ge A with
+    ⟨a, haA, ha, hviol⟩
+  have hc : 2 ≤ suzukiCriticalMovingApexLag a := by
+    rw [suzukiCriticalMovingApexLag]
     linarith
-  have ha : 3 ≤ a := by dsimp [a]; nlinarith
-  have hheight : B < suzukiCriticalMovingApexHeight a / 128 := by
-    rw [suzukiCriticalMovingApexHeight]
-    have hexp := Real.add_one_le_exp (a - 1)
-    dsimp [a]
-    nlinarith
-  have hexcess := suzukiCriticalApexVacuumQuadrature_excess_ge ha
-  have hreserve := suzukiCriticalCompletedReserve_le ha
-  have hmass := suzukiCriticalCompletedLagMass_eq_sample_add_charge_add_reserve ha
-  refine ⟨a, ha, ?_⟩
-  rw [hmass]
-  nlinarith
+  have hquad := integral_suzukiCriticalApexVacuumMeasure_eq_quadrature
+    (integrable_suzukiCriticalPositiveArchChannel a) hc
+  refine ⟨a, haA, ha,
+    integrable_suzukiCriticalPositiveArchChannel_apexVacuumMeasure _ _, ?_, ?_, ?_, ?_⟩
+  · intro x
+    exact measure_singleton x
+  · intro t ht
+    rw [suzukiCriticalApexVacuumMeasure_Ioc hc ht]
+    exact suzukiCriticalApexVacuumCumulative_band
+  · intro t ht hout
+    exact suzukiCriticalApexVacuumMeasure_Ioc_eq_self_of_outside_gap hc ht hout
+  · rw [hquad]
+    exact hviol
 
 /-- **Capacity-only Suzuki no-go.**  An explicit atomless source satisfies the sharp width-two
 cumulative band at every positive lag, agrees with capacity one outside one rising-flank gap, yet
@@ -469,17 +564,39 @@ theorem exists_atomless_capacityBand_suzukiCompletedLag_violation :
         (∫ t : ℝ, suzukiRectangularPositiveArchSampleChannel 2 a t
           ∂suzukiCriticalApexVacuumMeasure (suzukiCriticalMovingApexLag a)) +
           (Real.eulerMascheroniConstant + Real.log Real.pi) * 4 := by
-  rcases exists_suzukiCriticalApexVacuum_completedLag_violation with ⟨a, ha, hviol⟩
-  have hc : 2 ≤ suzukiCriticalMovingApexLag a := by
-    rw [suzukiCriticalMovingApexLag]
-    linarith
-  have hquad := integral_suzukiCriticalApexVacuumMeasure_eq_quadrature
-    (integrable_suzukiCriticalPositiveArchChannel a) hc
-  refine ⟨a, ha, ?_, ?_⟩
-  · intro t ht
-    rw [suzukiCriticalApexVacuumMeasure_Ioc hc ht]
-    exact suzukiCriticalApexVacuumCumulative_band
-  · rw [hquad]
-    exact hviol
+  rcases
+      exists_integrable_atomless_capacityBand_flankExact_suzukiCompletedLag_violation_ge 3 with
+    ⟨a, _haLower, ha, _hint, _hatomless, hband, _hflank, hviol⟩
+  exact ⟨a, ha, hband, hviol⟩
+
+/-- An eventual scalar producer based only on integrability, atomlessness, the width-two
+cumulative band, and exact exterior-flank capacity. -/
+def SuzukiCriticalCapacityFlankTailProducer : Prop :=
+  ∃ A : ℝ, ∀ a : ℝ, A ≤ a → 3 ≤ a → ∀ mu : Measure ℝ,
+    Integrable (suzukiRectangularPositiveArchSampleChannel 2 a) mu →
+    (∀ x : ℝ, mu {x} = 0) →
+    (∀ t : ℝ, 0 ≤ t →
+      t - 2 ≤ (mu (Ioc 0 t)).toReal ∧ (mu (Ioc 0 t)).toReal ≤ t) →
+    (∀ t : ℝ, 0 ≤ t →
+      (t ≤ suzukiCriticalMovingApexLag a - 2 ∨
+        suzukiCriticalMovingApexLag a ≤ t) →
+      (mu (Ioc 0 t)).toReal = t) →
+    (∫ t : ℝ, suzukiRectangularPositiveArchSampleChannel 2 a t ∂mu) +
+        (Real.eulerMascheroniConstant + Real.log Real.pi) * 4 ≤
+      ∫ t : ℝ in Ioi 0, suzukiRectangularCompletedArchLagKernel 2 a t
+
+/-- **Class-complete scalar Route-B no-go.**  No tail-restricted completed-lag domination theorem
+can factor only through atomlessness, integrability, the sharp cumulative band, and exact exterior
+flank capacity. -/
+theorem not_suzukiCriticalCapacityFlankTailProducer :
+    ¬ SuzukiCriticalCapacityFlankTailProducer := by
+  rintro ⟨A, hproducer⟩
+  rcases
+      exists_integrable_atomless_capacityBand_flankExact_suzukiCompletedLag_violation_ge A with
+    ⟨a, haA, ha, hint, hatomless, hband, hflank, hviol⟩
+  have hdom := hproducer a haA ha
+    (suzukiCriticalApexVacuumMeasure (suzukiCriticalMovingApexLag a))
+    hint hatomless hband hflank
+  exact (not_lt_of_ge hdom) hviol
 
 end RHTower
