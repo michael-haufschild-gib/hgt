@@ -2292,6 +2292,7 @@ import GaloisForLFunctions.HTGeometry.ShiftPartialSummation
 import GaloisForLFunctions.HTGeometry.SpikeSobolev
 import GaloisForLFunctions.HTGeometry.ConvolutionKernelSquareBound
 import GaloisForLFunctions.HTGeometry.CompactIntervalL2Pairing
+import GaloisForLFunctions.HTGeometry.IntervalL2Density
 import GaloisForLFunctions.HTGeometry.JensenZeroGeometry
 import GaloisForLFunctions.HTGeometry.AveragedDivisorInput
 import GaloisForLFunctions.HTGeometry.TernaryVoronoiAntisymmetry

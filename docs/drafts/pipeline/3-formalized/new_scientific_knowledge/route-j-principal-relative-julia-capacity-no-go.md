@@ -3,19 +3,18 @@
 - **ID:** `route-j-principal-relative-julia-capacity-no-go`
 - **Stage:** 3-formalized
 - **Type:** THEOREM / ROUTE-BOUNDARY CLASSIFICATION
-- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [ROUTE J RETIRED] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [ROUTE J OPEN] [NOVELTY UNVERIFIED]`
 - **RH used:** no
 - **Computation used:** no
-- **Retired route card:** `../../5-failed/route-j-principal-relative-julia-current.md`
-- **Positive survivor:** Route R singular primitive-current/Ward boundary continuation
+- **Live successor:** `../../1-in-progress/route-j-principal-relative-julia-current.md`
 
 ## Result
 
 The unrenormalized Route-J no-go left a semantic escape: insert a principal-relative counterterm
 before good/bad projection and ask the resulting current to orient negative completed-source
-excursions.  The natural structural classes are closed, and the widest residual endpoint is
-classified exactly as Route A/RH.  The only explicit nontrivial completed survivor is Route R's
-singular Möbius--Gamma/Ward construction.
+excursions.  Natural structural classes are closed and the widest representation-free endpoint is
+classified exactly as Route A/RH.  A source-defined symmetric completed or nonlinear current is
+still neither constructed nor excluded, so Route J remains open.
 
 ### 1. Positive channel-linear currents
 
@@ -198,7 +197,7 @@ The following are closed:
 7. the existing Gamma--Julia endpoint Hilbert--Schmidt diagonal dressing;
 8. scalar quadratic capacity from the existing calibrated Julia--Euler exterior current.
 
-## Unrestricted endpoint completeness and route ownership
+## Unrestricted endpoint completeness and the surviving mechanism
 
 Let `S(L)` be the literal published first-clock source and let
 `CCMFirstClockPrincipalRelativeCapacityOnTail` assert existence of `R,M,A` such that, for every
@@ -232,10 +231,16 @@ is the four-unit Ward boundary Gram.  The exact endpoint theorem is
 ContinuedXiWardFourUnitBoundaryLiftLaw <-> RiemannHypothesis.  (19)
 ```
 
-That construction and missing sign are precisely Route R's stated source object and open core.
-Thus the strongest positive survivor is owned by Route R, while the representation-free residual
-is Route A.  A merely hypothetical nonlinear formula with no source identity is not a construction
-survivor.  No independent Route-J obligation remains, so Route J is retired without claiming RH.
+This construction overlaps Route R, but endpoint overlap does not close Route J.  No theorem
+identifies its Ward Schur defect with a relative first-clock capacity, cancels the quartic
+positive-Julia moving-block floor, or proves the two bounds required by Route J without assuming an
+RH-equivalent sign.  The endpoint equivalence is therefore a bridge and hostile falsifier, not a
+source construction.
+
+The surviving Route-J class is an exact source-constrained symmetric sign-changing completed
+prime--Gamma/co-Poisson current, or a genuinely nonlinear Julia source functional, with nonzero
+scalarization, arithmetic-locus nonnegativity, negative-excursion dominance, and a source-uniform
+upper bound.  It is researchable and no class-complete no-go excludes it.  Route J remains open.
 
 ## Lean realization
 
@@ -317,5 +322,5 @@ purpose is anti-theatre and route ownership.
 - [x] copositive diagonal-null Julia cross-prime survivor refuted formally
 - [x] existing calibrated Julia--Euler exterior current excluded as scalar capacity formally
 - [x] unrestricted residual capacity classified exactly as Route A/RH
-- [x] nontrivial completed preprojection survivor assigned to Route R's exact Ward endpoint
-- [x] Route J retired with no unowned survivor
+- [x] completed Ward overlap classified as target-equivalent but not a Route-J construction
+- [ ] construct or class-completely refute the surviving symmetric completed/nonlinear current

@@ -1061,3 +1061,31 @@ lookup.  The alternative is a concrete basis: mathlib has `AddCircle.fourierBasi
 
 Everything downstream of that basis is now in place: the multiplier operator, its compactness,
 self-adjointness, reindexing from any countable index, and — with this entry — its spectrum.
+
+### Toward a countable Hilbert basis of `L^2[-a,a]` — step 1
+
+The blocked step is being built rather than worked around.  `HTGeometry/IntervalL2Density.lean`:
+
+- `intervalL2_measure_ne_top` — the restricted measure is finite.
+- `denseRange_boundedContinuousToIntervalL2` — **the bounded continuous functions are dense in
+  `L^2[-a,a]`**.  mathlib's `BoundedContinuousFunction.toLp_denseRange` needs only weak regularity
+  and finiteness of the measure, *not* compactness of the ambient space, so it applies to the
+  restriction of Lebesgue measure on `ℝ` directly.
+- `exists_boundedContinuous_close` — the usable epsilon form.
+
+Both audit to exactly `[propext, Classical.choice, Quot.sound]`.
+
+Remaining steps of this construction, with the mathlib inputs identified:
+
+1. Uniform approximation of a continuous function on `Icc` by polynomials —
+   `polynomialFunctions_closure_eq_top` (Stone–Weierstrass) **exists**; the complex-valued form
+   needs the star-subalgebra version.
+2. Sup-norm control of the `L^2` norm on a finite measure, giving: the span of monomials is dense.
+3. Linear independence of monomials in `L^2` (a nonzero polynomial vanishes on a finite set, which
+   is null), then `gramSchmidtNormed` and `gramSchmidt_orthonormal` — **both exist** — to convert the
+   total family into an orthonormal one with the same closed span.
+4. `HilbertBasis.mk` from orthonormality plus dense span, giving a basis indexed by `ℕ`.
+
+With that basis, `basisMultiplierOperator` supplies a compact, self-adjoint coordinate on
+`L^2[-a,a]`, its spectrum transported by `spectrum_conjugateOperator`, and the identity coordinate
+in `nonempty_intervalEdgeData` can be replaced by a genuine resolvent coordinate.

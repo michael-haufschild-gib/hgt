@@ -853,3 +853,44 @@ show how an Euler marking resolves or orients the binomial critical fiber.
   `Nat.choose_symm` — `(1+m).choose m = (1+m).choose 1`.
 
   Open on this card: `m, n ≥ 2` with a non-monomial tail.
+
+- 2026-08-01 — **The fibre equations at arbitrary depths.**
+  `formal/GaloisForLFunctions/HTGeometry/OneDeepFibreBound.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `fibre_eval_invNumerator` — for **any** pair of depths and any observation whose tails vanish to
+  their own orders,
+
+  ```text
+  (A + U)(0)^(k+1) · (B + V)_k = (invNumerator (A+U)· k).eval ((A + U)(0))      for k < m + n.
+  ```
+
+  Every coefficient of the reciprocal jet, cleared of its denominator, is the corresponding numerator
+  evaluated at the jet's constant term.  The depth-one results were the case where the jet's constant
+  term is its only unknown; here the numerators' coefficients themselves involve the remaining `m - 1`
+  unknowns, so the equations of index `n` and above — where the observed reciprocal tail fixes the
+  left-hand side — are the fibre's defining polynomial system, in explicit form.
+
+  This is the launching point for `m ≥ 2`: the system is now written down in Lean rather than
+  described.  What it does not yet supply is the elimination, which for `m ≥ 2` is multivariate; with
+  mathlib's `Polynomial.resultant` available the `m = 2` case is a resultant computation, and the
+  count would come from that resultant's degree.
+
+- 2026-08-01 — **The defining system in terms of the observation alone.**
+  `formal/GaloisForLFunctions/HTGeometry/OneDeepFibreBound.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `fibre_system` — for any depths, and for each index `n ≤ k < m + n`,
+
+  ```text
+  (A + U)(0)^(k+1) · V_k = (invNumerator (A+U)· k).eval ((A + U)(0)),
+  ```
+
+  where `V_k` is **observed**.  Above the reciprocal depth the unknown low part contributes nothing to
+  the coefficient, so the `m` equations of index `n` and above read entirely in the observation and the
+  `m` unknown jet coefficients.
+
+  That is the fibre's defining system as a square polynomial system, with no auxiliary unknowns left
+  in it.  Together with the injectivity of a fibre point into its jet — proved earlier for arbitrary
+  observations — the fibre embeds in the solution set of this system.  The remaining content of `(2)`
+  for `m, n ≥ 2` is exactly the count of that solution set.

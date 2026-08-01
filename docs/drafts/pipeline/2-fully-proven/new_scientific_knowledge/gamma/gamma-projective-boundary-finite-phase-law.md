@@ -3578,6 +3578,36 @@ the structural statement that turns an element of `ℂ(s)⟨Γ⟩` into a polyno
 coefficients are jet polynomials in the polygammas — the form the `Γ`-power dominance of
 `GammaJetDominantExists`/`GammaJetRatioFamily` consumes.
 
+### Eq. (3) for the full field `ℂ(s)⟨Γ⟩`
+
+The card's stated remaining target is now a Lean theorem.
+
+`GammaShapeDominantResidue.lean` supplies the analytic half.
+`tendsto_div_gammaJetShape_of_polyDatum`: a term `Γ^u·g` whose digamma part has a residue against
+`polyJetShape σ a dP b` has the same residue against `gammaJetShape σ u a dP b`.
+`exists_dominant_gammaShape_residue` (and its `Function.Injective u` corollary): a finite family of
+such terms with pairwise distinct data has a dominant member — on a vertical line the *smallest*
+power of `Γ` wins, since `Γ` decays faster than any power of `s` — and the sum inherits its residue.
+
+`GammaFieldRatDatum.lean` assembles the field.  `exists_gammaAlgebra_clearing` turns an element of
+the `Γ` jet algebra over `ℂ(s)`, after multiplication by one nonzero polynomial, into an analytic
+germ `∑_j Γ^{u_j}·C_j` with distinct `u_j` and each `C_j` a jet polynomial with polynomial
+coefficients (via `exists_gamma_expansion` and the per-coefficient clearing).
+`exists_gammaAlgebra_datum` gives that germ's residue: coefficients whose germ vanishes are
+eventually zero on the line (`eventually_line_of_upperEnd`), the survivors each have a digamma datum,
+and the `Γ`-dominance selects one.  Finally **`exists_gammaField_datum`**:
+
+> for every `σ > 0` and every nonzero `x` in the differential field generated over `ℂ(s)` by `Γ`,
+> there are nonzero polynomials `q₁, q₂`, analytic germs `U, V` represented by functions `G, H`, and
+> exponents with
+> `x = (q₂·U)/(q₁·V)` and
+> `(G/gammaJetShape σ u₁ a₁ d₁ b₁) / (H/gammaJetShape σ u₂ a₂ d₂ b₂) → r ≠ 0` along the line.
+
+That is eq. (3)/(19) in existential form for `ℂ(s)⟨Γ⟩`: no presentation supplied, no datum assumed —
+nonvanishing alone produces the residue.  `#print axioms` clean.
+
+### The one remaining generality gap, and the route to it
+
 ### The one remaining generality gap, and the route to it
 
 ### The one remaining generality gap, and the route to it

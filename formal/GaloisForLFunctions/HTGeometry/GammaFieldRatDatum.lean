@@ -244,6 +244,24 @@ theorem exists_gammaField_datum {σ : ℝ} (hσ : 0 < σ) {x : upperEndMeroField
   exact ⟨q₁, q₂, U, V, G, H, u₁, a₁, d₁, b₁, u₂, a₂, d₂, b₂, r₁ / r₂,
     hq₁, hq₂, div_ne_zero hr₁ hr₂, hxeq, hGgerm, hHgerm, hquot⟩
 
+/-- **The element's own residue.**  Dividing the cleared germ by the clearing polynomial gives a
+single-shape residue for the element itself — the shape the finite phase law consumes. -/
+theorem exists_gammaAlgebra_line_datum {σ : ℝ} (hσ : 0 < σ) {y : upperEndMeroField}
+    (hy : y ∈ differentialJetAlgebra (RatFunc ℂ) ({gammaUpperMero} : Set upperEndMeroField))
+    (hy0 : y ≠ 0) :
+    ∃ (q : Polynomial ℂ) (W : upperEndAnalyticSubring) (G : ℂ → ℂ) (u a d b : ℕ) (r : ℂ),
+      q ≠ 0 ∧ r ≠ 0
+        ∧ upperEndPolyToMero q * y = algebraMap upperEndAnalyticSubring upperEndMeroField W
+        ∧ upperEndAnalyticSubring.subtype W = Germ.coeRingHom upperEndFilter G
+        ∧ Tendsto (fun t : ℝ =>
+            (G ((σ : ℂ) + (t : ℂ) * Complex.I) / q.eval ((σ : ℂ) + (t : ℂ) * Complex.I))
+              / gammaJetShape σ u a d b t) atTop (nhds r) := by
+  obtain ⟨q, W, G, u, a, d, b, r, hq, hr, hW, hGgerm, hGlim⟩ :=
+    exists_gammaAlgebra_datum hσ hy hy0
+  refine ⟨q, W, G, u, a, d, b + q.natDegree, r / q.leadingCoeff, hq,
+    div_ne_zero hr (Polynomial.leadingCoeff_ne_zero.mpr hq), hW, hGgerm, ?_⟩
+  exact tendsto_div_poly_gammaJetShape hσ hGlim hq
+
 end
 
 end GaloisForLFunctions.HTGeometry

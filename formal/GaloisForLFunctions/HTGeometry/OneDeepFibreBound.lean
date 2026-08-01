@@ -383,4 +383,37 @@ theorem nat_card_criticalFibre_snd_one_eq_multiplicity [IsAlgClosed K] {m : ℕ}
   rw [h1, Nat.choose_one_right] at h2
   omega
 
+/-! ## The fibre equations at arbitrary depths -/
+
+/-- **The fibre equations of an arbitrary observation.**  Every coefficient of the reciprocal jet,
+cleared of its denominator, is the corresponding numerator evaluated at the jet's constant term — for
+**any** pair of depths, not only depth one.  The observed reciprocal tail then turns the equations of
+index `n` and above into the fibre's defining system. -/
+theorem fibre_eval_invNumerator {m n : ℕ} (hm : 0 < m) {U V : K[X]}
+    (hU : (X : K[X]) ^ m ∣ U) (hV : (X : K[X]) ^ n ∣ V)
+    (p : criticalFibre K m n U V) {k : ℕ} (hk : k < m + n) :
+    (p.1.1 + U).coeff 0 ^ (k + 1) * (p.1.2 + V).coeff k
+      = (invNumerator (fun i => (p.1.1 + U).coeff i) k).eval ((p.1.1 + U).coeff 0) := by
+  obtain ⟨⟨A, B⟩, hA, hB, hdvd⟩ := p
+  rw [dvd_criticalLowProduct_sub_one_iff_mul_sub_one hU hV] at hdvd
+  obtain ⟨h0, hrec⟩ := coeff_recursion_of_dvd hdvd
+  exact pow_mul_eq_invNumerator_eval_of_lt (fun i => (A + U).coeff i)
+    (fun j => (B + V).coeff j) ((A + U).coeff 0) (h0 (by omega)) hrec k hk
+
+/-- **The fibre's defining system, in terms of the observation alone.**  Above the reciprocal depth
+the unknown low part contributes nothing, so the `m` equations of index `n` and above read entirely
+in the observed data. -/
+theorem fibre_system {m n : ℕ} (hm : 0 < m) {U V : K[X]}
+    (hU : (X : K[X]) ^ m ∣ U) (hV : (X : K[X]) ^ n ∣ V)
+    (p : criticalFibre K m n U V) {k : ℕ} (hk1 : n ≤ k) (hk2 : k < m + n) :
+    (p.1.1 + U).coeff 0 ^ (k + 1) * V.coeff k
+      = (invNumerator (fun i => (p.1.1 + U).coeff i) k).eval ((p.1.1 + U).coeff 0) := by
+  have hBk : p.1.2.coeff k = 0 := by
+    refine Polynomial.coeff_eq_zero_of_degree_lt (lt_of_lt_of_le p.2.2.1 ?_)
+    exact_mod_cast hk1
+  have hcoeff : (p.1.2 + V).coeff k = V.coeff k := by
+    rw [Polynomial.coeff_add, hBk, zero_add]
+  have h := fibre_eval_invNumerator hm hU hV p hk2
+  rwa [hcoeff] at h
+
 end GaloisForLFunctions.HTGeometry

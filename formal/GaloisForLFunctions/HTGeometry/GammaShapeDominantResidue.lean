@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.GammaJetRatioFamily
 import GaloisForLFunctions.HTGeometry.DominantSumDatum
+import GaloisForLFunctions.HTGeometry.StdRatDatum
 
 /-!
 # The residue of a sum of Gamma-jet terms
@@ -61,5 +62,39 @@ theorem exists_dominant_gammaShape_residue_of_injective (hσ : 0 < σ) {N : ℕ}
       (∑ α : Fin N, F α t) / gammaJetShape σ (u β) (a β) (dP β) (b β) t) atTop (nhds (c β)) :=
   exists_dominant_gammaShape_residue hσ hN F u a dP b c
     (fun _ _ hαβ hcase => hαβ (hu hcase.1)) hres
+
+/-- Increasing the denominator slot of a shape divides it by a power of the coordinate. -/
+theorem gammaJetShape_denom_add (σ : ℝ) (u a d b k : ℕ) (t : ℝ) :
+    gammaJetShape σ u a d (b + k) t
+      = gammaJetShape σ u a d b t * (((σ : ℂ) + (t : ℂ) * Complex.I)⁻¹) ^ k := by
+  rw [gammaJetShape, gammaJetShape, polyJetShape, polyJetShape, pow_add]
+  field_simp
+  ring
+
+/-- **Dividing a residue by a polynomial.**  The shape's denominator slot absorbs the degree and the
+limit is divided by the leading coefficient. -/
+theorem tendsto_div_poly_gammaJetShape (hσ : 0 < σ) {G : ℝ → ℂ} {u a d b : ℕ} {r : ℂ}
+    (h : Tendsto (fun t : ℝ => G t / gammaJetShape σ u a d b t) atTop (nhds r))
+    {q : Polynomial ℂ} (hq : q ≠ 0) :
+    Tendsto (fun t : ℝ => (G t / q.eval ((σ : ℂ) + (t : ℂ) * Complex.I))
+        / gammaJetShape σ u a d (b + q.natDegree) t)
+      atTop (nhds (r / q.leadingCoeff)) := by
+  have hlead : q.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hq
+  have hpoly := tendsto_polynomial_mul_inv_pow σ q
+  have hlim : Tendsto (fun t : ℝ => (G t / gammaJetShape σ u a d b t)
+      / (q.eval ((σ : ℂ) + (t : ℂ) * Complex.I)
+        * (((σ : ℂ) + (t : ℂ) * Complex.I)⁻¹) ^ q.natDegree))
+      atTop (nhds (r / q.leadingCoeff)) := h.div hpoly hlead
+  refine hlim.congr' ?_
+  filter_upwards [eventually_vertical_ne_zero σ,
+    eventually_gammaJetShape_ne_zero hσ u a d b, hpoly.eventually_ne hlead] with t hs hshape hne
+  have hq0 : q.eval ((σ : ℂ) + (t : ℂ) * Complex.I) ≠ 0 := by
+    intro h0
+    rw [h0, zero_mul] at hne
+    exact hne rfl
+  have hinv : (((σ : ℂ) + (t : ℂ) * Complex.I)⁻¹) ^ q.natDegree ≠ 0 :=
+    pow_ne_zero _ (inv_ne_zero hs)
+  rw [gammaJetShape_denom_add]
+  field_simp
 
 end GaloisForLFunctions
