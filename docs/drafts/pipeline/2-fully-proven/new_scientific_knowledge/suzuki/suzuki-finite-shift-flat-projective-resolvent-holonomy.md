@@ -463,3 +463,9 @@ constant on a shift neighbourhood, `norm_mul_fourierKernel_le` carries that thro
 resulting constant bound is interval-integrable on `[-a, a]`, and
 `hasDerivAt_integral_of_dominated_loc_of_deriv_le` consumes the package to give
 `partial_r F_r = -G_r`.
+
+- `IsResolventFamilyOn.norm_pow_le_of_small` : the same bound at **every** jet order,
+  `‖(S u)^(n+1)‖ <= (2 ‖S v‖)^(n+1)` near a reference shift. Since
+  `partial_u^n S u = n! (S u)^(n+1)` (`hasDerivAt_jet`), this is what higher-order domination needs,
+  so the differentiation-under-the-integral argument extends to every jet, not just the first.
+  [PROVED HERE], standard axioms, builds clean.

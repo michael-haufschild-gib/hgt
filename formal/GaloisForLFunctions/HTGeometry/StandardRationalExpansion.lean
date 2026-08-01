@@ -270,7 +270,8 @@ theorem IsStdRat.mul {f g : ℂ → ℂ} {p q : ℕ} (hf : IsStdRat f p) (hg : I
         omega
       · rw [Polynomial.natDegree_mul hP hR, Multiset.card_add]
         omega
-  · rw [hvalP x hx, hvalR x hx, Polynomial.eval_mul, shiftProd_add, div_mul_div_comm]
+  · show f x * g x = Polynomial.eval x (P * R) / shiftProd (l + m) x
+    rw [hvalP x hx, hvalR x hx, Polynomial.eval_mul, shiftProd_add, div_mul_div_comm]
 
 /-- Standard rational functions of the same defect are closed under addition. -/
 theorem IsStdRat.add {f g : ℂ → ℂ} {p : ℕ} (hf : IsStdRat f p) (hg : IsStdRat g p) :
@@ -287,21 +288,25 @@ theorem IsStdRat.add {f g : ℂ → ℂ} {p : ℕ} (hf : IsStdRat f p) (hg : IsS
     have h3 := Polynomial.natDegree_add_le (P * shiftPoly m) (R * shiftPoly l)
     rw [Multiset.card_add]
     omega
-  · have hL : shiftProd l x ≠ 0 := shiftProd_ne_zero hx l
+  · show f x + g x
+        = Polynomial.eval x (P * shiftPoly m + R * shiftPoly l) / shiftProd (l + m) x
+    have hL : shiftProd l x ≠ 0 := shiftProd_ne_zero hx l
     have hM : shiftProd m x ≠ 0 := shiftProd_ne_zero hx m
     rw [hvalP x hx, hvalR x hx, shiftProd_add, Polynomial.eval_add, Polynomial.eval_mul,
       Polynomial.eval_mul, shiftPoly_eval, shiftPoly_eval]
     field_simp
-    ring
 
 /-- Scaling preserves the defect. -/
 theorem IsStdRat.const_mul {f : ℂ → ℂ} {p : ℕ} (c : ℂ) (hf : IsStdRat f p) :
     IsStdRat (fun x => c * f x) p := by
   obtain ⟨P, l, hdeg, hval⟩ := hf
   refine ⟨Polynomial.C c * P, l, ?_, fun x hx => ?_⟩
-  · refine le_trans (add_le_add_right (Polynomial.natDegree_mul_le) p) ?_
-    simpa using hdeg
-  · rw [hval x hx, Polynomial.eval_mul, Polynomial.eval_C, mul_div_assoc]
+  · have hCP : (Polynomial.C c * P).natDegree ≤ P.natDegree := by
+      refine le_trans Polynomial.natDegree_mul_le ?_
+      simp
+    omega
+  · show c * f x = Polynomial.eval x (Polynomial.C c * P) / shiftProd l x
+    rw [hval x hx, Polynomial.eval_mul, Polynomial.eval_C, mul_div_assoc]
 
 /-- Powers multiply the defect. -/
 theorem IsStdRat.pow {f : ℂ → ℂ} {p : ℕ} (hf : IsStdRat f p) (n : ℕ) :
@@ -309,6 +314,7 @@ theorem IsStdRat.pow {f : ℂ → ℂ} {p : ℕ} (hf : IsStdRat f p) (n : ℕ) :
   induction n with
   | zero =>
     refine ⟨1, 0, by simp, fun x _ => ?_⟩
+    show f x ^ 0 = Polynomial.eval x 1 / shiftProd 0 x
     simp [shiftProd]
   | succ n ih =>
     have hmul := ih.mul hf
@@ -318,5 +324,39 @@ theorem IsStdRat.pow {f : ℂ → ℂ} {p : ℕ} (hf : IsStdRat f p) (n : ℕ) :
     rw [hfun] at hmul
     have hidx : p * n + p = p * (n + 1) := by ring
     rwa [hidx] at hmul
+
+/-- The zero function is standard of every defect. -/
+theorem isStdRat_zero (p : ℕ) : IsStdRat (fun _ : ℂ => (0 : ℂ)) p := by
+  refine ⟨0, Multiset.replicate p 0, ?_, fun x hx => ?_⟩
+  · simp
+  · rw [Polynomial.eval_zero, zero_div]
+
+/-- Finite sums of standard rational functions of a common defect are standard. -/
+theorem IsStdRat.sum {ι : Type*} {p : ℕ} (s : Finset ι) (f : ι → ℂ → ℂ)
+    (hf : ∀ i ∈ s, IsStdRat (f i) p) :
+    IsStdRat (fun x => ∑ i ∈ s, f i x) p := by
+  classical
+  induction s using Finset.induction with
+  | empty =>
+    have := isStdRat_zero (p := p)
+    refine ⟨0, Multiset.replicate p 0, by simp, fun x hx => ?_⟩
+    simp
+  | insert x s hx ih =>
+    have hrest := ih (fun i hi => hf i (Finset.mem_insert_of_mem hi))
+    have hhead := hf x (Finset.mem_insert_self x s)
+    have hadd := hhead.add hrest
+    have hfun : (fun y : ℂ => f x y + ∑ i ∈ s, f i y)
+        = fun y : ℂ => ∑ i ∈ insert x s, f i y := by
+      funext y
+      rw [Finset.sum_insert hx]
+    rwa [hfun] at hadd
+
+/-- A reciprocal rising factorial is standard of its own length. -/
+theorem isStdRat_inv_risingProd (q : ℕ) : IsStdRat (fun x : ℂ => (risingProd x q)⁻¹) q := by
+  refine ⟨1, Multiset.range q, ?_, fun x hx => ?_⟩
+  · simp
+  · show (risingProd x q)⁻¹ = Polynomial.eval x 1 / shiftProd (Multiset.range q) x
+    rw [risingProd_eq_shiftProd]
+    simp
 
 end GaloisForLFunctions

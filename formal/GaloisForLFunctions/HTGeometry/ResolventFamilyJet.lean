@@ -55,6 +55,32 @@ theorem norm_le_two_mul (hS : IsResolventFamilyOn S s) {u : ℝ} (hu : u ∈ s) 
   linarith
 
 
+omit [NormedAlgebra ℝ A] in
+/-- The smallness hypothesis of the local bounds holds **eventually** near any reference shift, so
+in a `filter_upwards` it never has to be supplied by hand. -/
+theorem eventually_small_of_nhds (S : ℝ → A) (v : ℝ) :
+    ∀ᶠ u in nhds v, |u - v| * ‖S v‖ ≤ 1 / 2 := by
+  rcases eq_or_lt_of_le (norm_nonneg (S v)) with h | h
+  · filter_upwards with u
+    rw [← h, mul_zero]
+    norm_num
+  · filter_upwards [eventually_abs_sub_lt v
+      (show (0 : ℝ) < 1 / (2 * ‖S v‖) by positivity)] with u hu
+    calc |u - v| * ‖S v‖ ≤ (1 / (2 * ‖S v‖)) * ‖S v‖ :=
+          mul_le_mul_of_nonneg_right hu.le (norm_nonneg _)
+      _ = 1 / 2 := by field_simp
+
+/-- **Local uniform bound at every jet order.**  Since `partial_u^n S u = n! (S u)^(n+1)`, the
+higher jets need the same bound at every power; near a reference shift each stays below the
+corresponding power of twice the reference norm. -/
+theorem norm_pow_le_of_small (hS : IsResolventFamilyOn S s) {u : ℝ} (hu : u ∈ s) (hv : v ∈ s)
+    (hsmall : |u - v| * ‖S v‖ ≤ 1 / 2) (n : ℕ) :
+    ‖S u ^ (n + 1)‖ ≤ (2 * ‖S v‖) ^ (n + 1) := by
+  have h := hS.norm_le_two_mul hu hv hsmall
+  calc ‖S u ^ (n + 1)‖ ≤ ‖S u‖ ^ (n + 1) := norm_pow_le' _ (Nat.succ_pos n)
+    _ ≤ (2 * ‖S v‖) ^ (n + 1) := by
+        exact pow_le_pow_left₀ (norm_nonneg _) h _
+
 /-- **Local uniform bound on the derivative amplitude.**  Since `partial_u S u = -(S u)^2`, the
 square is what a domination hypothesis must bound; near a reference shift it stays below four times
 the reference square. -/

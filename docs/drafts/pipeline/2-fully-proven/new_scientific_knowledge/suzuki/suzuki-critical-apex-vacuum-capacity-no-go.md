@@ -227,7 +227,8 @@ did not expose.
 atomless measure, its cumulative band and quadrature identity, the `H_a/128` apex amplification,
 the sharper reflected-channel bound `<=16`, the completed-reserve bound, and the symbolic
 completed-lag violation.  Direct source check passes.  Axiom audit of six capstones reports only
-`propext`, `Classical.choice`, and `Quot.sound`.  Final target build remains pending.
+`propext`, `Classical.choice`, and `Quot.sound`.  Final targeted leaf build passed:
+`lake build GaloisForLFunctions.RHTower.SuzukiCriticalApexVacuumCapacityNoGo`.
 
 The cofinal strengthening is formalized by
 `exists_integrable_atomless_capacityBand_flankExact_suzukiCompletedLag_violation_ge`: for every

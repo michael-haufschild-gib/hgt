@@ -146,4 +146,81 @@ theorem exists_jet_expansion (m K : ℕ) :
         mul_le_mul_of_nonneg_left htail hfacnn
     _ = (((m + 1).factorial : ℕ) : ℝ) * (4 * Cg) / t ^ (m + 2 + K) := by ring
 
+/-- The depth-`K` approximation of a jet is a standard rational function of the jet's own defect. -/
+theorem exists_jet_stdRat_approx (m K : ℕ) :
+    ∃ (F : ℂ → ℂ) (C : ℝ), IsStdRat F (m + 1) ∧ 0 ≤ C ∧ ∀ σ t : ℝ, 0 < σ → 2 ≤ t →
+      ‖iteratedDeriv (m + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)
+          - F ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤ C / t ^ (m + 2 + K) := by
+  obtain ⟨b, C, hC, hbound⟩ := exists_jet_expansion m K
+  refine ⟨fun x => ∑ i ∈ Finset.range (K + 1), b i * (risingProd x (m + 1 + i))⁻¹, C, ?_, hC,
+    fun σ t hσ ht => hbound σ t hσ ht⟩
+  refine IsStdRat.sum (Finset.range (K + 1)) _ fun i _ => ?_
+  exact ((isStdRat_inv_risingProd (m + 1 + i)).const_mul (b i)).mono (by omega)
+
+/-- **The jet package.**  Each jet, its depth-`K` standard approximation, and the error, all measured
+against the powers of `1/t` that the weighted product estimate consumes. -/
+theorem exists_jet_package (m K : ℕ) :
+    ∃ (F : ℂ → ℂ) (A : ℝ), IsStdRat F (m + 1) ∧ 1 ≤ A ∧ ∀ σ t : ℝ, 0 < σ → 2 ≤ t →
+      ‖iteratedDeriv (m + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖
+          ≤ A * (1 / t) ^ (m + 1)
+        ∧ ‖F ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤ A * (1 / t) ^ (m + 1)
+        ∧ ‖iteratedDeriv (m + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)
+            - F ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤ A * (1 / t) ^ (m + 1 + K) := by
+  obtain ⟨F, C, hFstd, hC, hFbound⟩ := exists_jet_stdRat_approx m K
+  obtain ⟨CF, hCF, hFsize⟩ := hFstd.exists_norm_le
+  refine ⟨F, C + CF + 1, hFstd, by linarith, fun σ t hσ ht => ?_⟩
+  have htpos : (0 : ℝ) < t := by linarith
+  have hu0 : (0 : ℝ) ≤ 1 / t := by positivity
+  have hu1 : (1 : ℝ) / t ≤ 1 := by
+    rw [div_le_one htpos]
+    linarith
+  have hsre : (0 : ℝ) < ((σ : ℂ) + (t : ℂ) * Complex.I).re := by simpa using hσ
+  have hnormge : t ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ := by
+    have him : ((σ : ℂ) + (t : ℂ) * Complex.I).im = t := by simp
+    calc t = |((σ : ℂ) + (t : ℂ) * Complex.I).im| := by rw [him, abs_of_nonneg htpos.le]
+      _ ≤ _ := Complex.abs_im_le_norm _
+  have hone : (1 : ℝ) ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ := by linarith
+  have hinv : ‖(σ : ℂ) + (t : ℂ) * Complex.I‖⁻¹ ≤ 1 / t := by
+    rw [inv_eq_one_div]
+    exact one_div_le_one_div_of_le htpos hnormge
+  have hinvpow : ∀ k : ℕ, ‖(σ : ℂ) + (t : ℂ) * Complex.I‖⁻¹ ^ k ≤ (1 / t) ^ k :=
+    fun k => pow_le_pow_left₀ (by positivity) hinv k
+  -- the approximant
+  have hFsz : ‖F ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤ CF * (1 / t) ^ (m + 1) := by
+    refine le_trans (hFsize _ hsre hone) ?_
+    exact mul_le_mul_of_nonneg_left (hinvpow (m + 1)) hCF
+  -- the error
+  have herr : ‖iteratedDeriv (m + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)
+      - F ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤ C * (1 / t) ^ (m + 1 + K) := by
+    refine le_trans (hFbound σ t hσ ht) ?_
+    have hpow : (1 / t) ^ (m + 2 + K) ≤ (1 / t) ^ (m + 1 + K) :=
+      pow_le_pow_of_le_one hu0 hu1 (by omega)
+    have hdiv : C / t ^ (m + 2 + K) = C * (1 / t) ^ (m + 2 + K) := by
+      rw [div_pow, one_pow]
+      ring
+    rw [hdiv]
+    exact mul_le_mul_of_nonneg_left hpow hC
+  have hpow0 : (0 : ℝ) ≤ (1 / t) ^ (m + 1) := by positivity
+  have herr' : ‖iteratedDeriv (m + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)
+      - F ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤ C * (1 / t) ^ (m + 1) := by
+    refine le_trans herr ?_
+    have hpow : (1 / t) ^ (m + 1 + K) ≤ (1 / t) ^ (m + 1) :=
+      pow_le_pow_of_le_one hu0 hu1 (by omega)
+    exact mul_le_mul_of_nonneg_left hpow hC
+  refine ⟨?_, ?_, ?_⟩
+  · have hsplit : iteratedDeriv (m + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)
+        = (iteratedDeriv (m + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)
+          - F ((σ : ℂ) + (t : ℂ) * Complex.I)) + F ((σ : ℂ) + (t : ℂ) * Complex.I) := by ring
+    rw [hsplit]
+    refine le_trans (norm_add_le _ _) ?_
+    have : C * (1 / t) ^ (m + 1) + CF * (1 / t) ^ (m + 1)
+        ≤ (C + CF + 1) * (1 / t) ^ (m + 1) := by nlinarith
+    linarith [herr', hFsz]
+  · refine le_trans hFsz ?_
+    have hle : CF ≤ C + CF + 1 := by linarith
+    exact mul_le_mul_of_nonneg_right hle hpow0
+  · refine le_trans herr ?_
+    have hle : C ≤ C + CF + 1 := by linarith
+    exact mul_le_mul_of_nonneg_right hle (by positivity)
+
 end GaloisForLFunctions

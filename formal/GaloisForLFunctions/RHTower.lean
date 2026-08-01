@@ -4032,3 +4032,4 @@ import GaloisForLFunctions.RHTower.DeningerTraceBound
 import GaloisForLFunctions.RHTower.DeningerBoundarySpace
 import GaloisForLFunctions.RHTower.DeningerDirichletOrthogonal
 import GaloisForLFunctions.RHTower.DeningerEnergyDefinite
+import GaloisForLFunctions.RHTower.DeningerBoundaryComplete

@@ -3608,10 +3608,29 @@ exactly what deciding the datum of a jet polynomial with leading-order cancellat
 has neither Euler–Maclaurin nor any asymptotic expansion of the polygamma functions; this is built
 from the corpus's own series and the elementary orbit and degree estimates.  `#print axioms` clean.
 
-What remains is the `log s` level for `ψ` itself (integrating the `ψ′` expansion), and the assembly:
-expanding a jet monomial by multiplying expansions, and reading off the first nonzero coefficient —
-which exists because a fully cancelling expansion would make the function flat, contradicting
-`not_isVertFlatGerm_digammaJetEval`.
+**The algebra of the assembly is in place too.**  `StandardRationalExpansion.lean` now closes the
+class under the operations a jet polynomial performs: `IsStdRat.mul` (defects add), `IsStdRat.add`
+(common denominator), `IsStdRat.const_mul`, `IsStdRat.pow`, `IsStdRat.mono`.  So *any* polynomial in
+the jets, with the jets replaced by their depth-`K` rising-factorial approximations, is again a
+single standard rational function whose defect is the monomial weight.
+
+`HTGeometry/WeightedProductBound.lean` supplies the matching error estimate, which a uniform product
+bound would lose: with `u = 1/t`, if each factor has size `A·u^{w_i}` and is approximated to depth
+`K` with error `A·u^{w_i+K}`, then **`norm_prod_sub_prod_mul_pow_le`** gives
+
+`‖∏ a_i − ∏ b_i‖ ≤ (|s|·A^{|s|})·u^{(∑ w_i) + K}`,
+
+i.e. the product is approximated to the *total weight plus the depth* — each factor's error is
+multiplied by the others, which are themselves small.  `norm_prod_le_mul_pow` is the companion size
+bound.  `#print axioms` clean.
+
+So the remaining chain is: assemble a jet monomial (weighted product of the depth-`K` expansions,
+`IsStdRat` on the nose), sum monomials (`IsStdRat.add`), and read off the first nonzero coefficient
+of the resulting standard rational function — which exists because a standard rational function whose
+every coefficient vanished to every depth would make the jet polynomial flat, contradicting
+`not_isVertFlatGerm_digammaJetEval`.  After that, the `log s` level for `ψ` itself (integrating the
+`ψ′` expansion) and the `ℂ(s)`-coefficient case (multiplying by a rational function, whose own
+inverse-power expansion is classical).
 
 ## Gates
 

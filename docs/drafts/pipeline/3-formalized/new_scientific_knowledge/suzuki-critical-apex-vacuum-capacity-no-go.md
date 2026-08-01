@@ -49,5 +49,8 @@ can create unbounded error at an exponentially moving apex while leaving opposit
 
 - direct `lake env lean GaloisForLFunctions/RHTower/SuzukiCriticalApexVacuumCapacityNoGo.lean`:
   pass;
-- capstone axioms: only `propext`, `Classical.choice`, `Quot.sound`;
-- final cached module build and repository lint: pending final audit.
+- six new capstone axiom audits: only `propext`, `Classical.choice`, `Quot.sound`;
+- targeted leaf build passed:
+  `lake build GaloisForLFunctions.RHTower.SuzukiCriticalApexVacuumCapacityNoGo`;
+- repository lint reaches the module but remains red only on three unrelated, concurrently
+  untracked BV co-Poisson modules missing from the RHTower umbrella.
