@@ -1033,9 +1033,24 @@ The packet's own spectral tail is now proved, and in the uniform form the band e
 band of radius `t < w` by `2 delta` times the reference majorant at the gap `delta*(w - t)`, plus
 the mean times the global majorant.  Both factors are governed by `tendsto_soninRefTailSup_atTop`
 and `abs_soninScaledPacketMean_le`, so both are small once `delta*(w - t)` and `delta*w` are large.
-What is left is to integrate this pointwise bound over the band — band energy at most `2t` times the
-square of the majorant bound — and compare it with the packet's total energy, which the fraction
-lemma `norm_sq_evenFourierCutoff_soninScaledPacketEven_fraction` already knows is annulus free.  Then feed that through the two-branch estimate to get `N` of
+Both sides of the comparison are now combined into a single uniform statement.  The band energy is at most `2t` times the square of
+the uniform bound (`norm_sq_evenFourierCutoff_soninScaledPacketEven_le_uniform`), and the total
+energy is at least `delta` times the reference square's mass, minus reference-square tails
+(`norm_sq_soninScaledPacketEven_ge`).  Since the band bound carries a factor `delta^2` and the floor
+carries `delta`, the captured *fraction* is at most a constant times `t * delta`, and
+`exists_uniform_soninScaledPacket_band_escape` turns this into two annulus-free constants: whenever
+`delta*|w| >= u0` and `t*delta <= rho`, the packet keeps more than half its energy outside the band.
+
+This is the form the counting argument needs, and it is worth being precise about why.  With `N`
+annuli of half-width `delta = (c-b)/(2N)` in the shell and carrier `w = r q`, the product
+`delta*w = (c-b) q r / (2N)` is a *constant* if `N` grows like `r` — so the tails do not vanish and
+the threshold `u0` is not met automatically.  The fix is to take `N` about `r/K` for a fixed large
+`K`: then `delta*w` is about `K (c-b) q / 2`, which clears `u0` once `K` is large, while
+`t*delta` (with `t = b` fixed) is about `2 b K / r`, which clears `rho` for large `r`.  The count is
+still linear in `r`, so the energy still beats the logarithmic cap.
+
+What remains is the other two error terms of the two-branch estimate — the projection correction and
+the layer defect on the dilated packet — in the same annulus-free form, and then the count itself.  Then feed that through the two-branch estimate to get `N` of
 order `r` packets at scale `r`.
 
 **Open.**  By 6 and 7 the gate is one rate comparison: does `hsNormSq Z_r` exceed
@@ -1230,6 +1245,11 @@ family is abstract, so two widths have unrelated profiles.
 | **a uniform tail majorant**: the supremum of the reference transform outside a symmetric band is finite (bounded by the profile's mass) and vanishes as the band grows (rapid decay in both directions) | `soninRefTailSup`, `norm_fourier_soninUnitBumpC_le`, `bddAbove_soninRefTail`, `norm_fourier_soninUnitBumpC_le_tailSup`, `soninRefTailSup_nonneg`, `soninRefTailSup_le`, `tendsto_soninRefTailSup_atTop` |
 | **uniform in-band bound**: below the carrier, every in-band frequency is separated from both shifted spectra by the gap, so the whole in-band spectrum is bounded by the majorant at the gap plus the mean times the global majorant | `soninScaledBumpTailBound_le`, `norm_fourier_soninScaledPacket_le_tailSup` |
 | **band energy below the carrier**: the band energy is the density integrated over the band, and the uniform bound majorizes the density throughout, so the energy is at most the band's length times the squared bound | `integrable_soninScaledPacketSpectralDensity`, `centralBand_eq_Icc`, `measurableSet_centralBand`, `volume_centralBand_toReal`, `norm_sq_evenFourierCutoff_soninScaledPacketEven_le_uniform` |
+| the tail supremum as **general infrastructure**, with the translated-dilate transform rule: any profile's tail majorant is finite (bounded by its mass), and vanishes as the band grows exactly when the profile is smooth with compact support | `GaloisForLFunctions.HTGeometry.fourierTailSup`, `..._nonneg`, `..._le`, `le_fourierTailSup`, `bddAbove_fourierTail`, `norm_fourierIntegral_le_mass`, `fourierIntegral_comp_div_sub`, `norm_fourierIntegral_comp_div_sub`, `tendsto_fourierTailSup_atTop` |
+| **the squared profile**: below the annulus radius the lobes are disjoint, so the squared profile is two translated dilates of the reference square, whose mass is positive and centre free | `soninUnitBumpSq`, `soninUnitBumpSqC`, `contDiff_soninUnitBumpSqC`, `hasCompactSupport_soninUnitBumpSqC`, `integral_soninUnitBumpSq_pos`, `soninOneSidedBump_mul_neg_eq_zero`, `soninScaledAnnulusBump_sq`, `integral_soninOneSidedBump_sq`, `integral_soninScaledAnnulusBump_sq_eq` |
+| **the squared profile's oscillation bound**: its cosine mass against frequency `w` is at most four half-widths times the reference-square majorant at `δ\|w\|` | `norm_fourier_soninOneSidedBump_sq`, `fourier_soninScaledAnnulusBump_sq_eq_oneSided`, `norm_fourier_soninScaledAnnulusBump_sq_le`, `soninRefSqTailSup`, `tendsto_soninRefSqTailSup_atTop`, `abs_integral_soninScaledAnnulusBump_sq_mul_cos_le`, `abs_integral_soninScaledAnnulusBump_sq_mul_cos_le_tailSup` |
+| **the packet's energy floor**: squaring turns the carrier into a constant plus a doubled carrier, so the energy is half the squared profile's mass plus two oscillatory corrections and a nonnegative mean term — hence at least `δ` times a positive constant, minus reference-square tails | `norm_sq_soninScaledPacketEven_eq_expansion`, `norm_sq_soninScaledPacketEven_ge` |
+| **uniform band escape**: two constants, naming no annulus, force every packet of the family to keep more than half its energy outside the band — the carrier far from the origin on the scale of the half-width, and the product of band radius and half-width small | `soninRefTailSup_le_mass`, `abs_soninScaledPacketMean_le_tailSup`, `exists_uniform_soninScaledPacket_band_escape` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1346,6 +1366,33 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the two halves are combined, and the combination exposed the real constraint on the
+  schedule.  `exists_uniform_soninScaledPacket_band_escape` produces two constants that mention no
+  annulus: a carrier threshold `u0` and a shortness threshold `rho`.  Producing them needs the mean
+  bounded by one (from the reference majorant, `abs_soninScaledPacketMean_le_tailSup`) and the
+  reference-square tail below a twentieth of the reference square's mass; both come from the two
+  vanishing theorems already proved.  The lesson is in the arithmetic: `delta*w` is *constant* if the
+  number of annuli grows like the scale, so the naive schedule never clears `u0`.  Taking about `r/K`
+  annuli for a fixed large `K` clears it while keeping the count linear in `r` — still far above the
+  logarithmic cap.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandEscape.lean`.
+- 2026-08-01 — the two halves of the energy comparison are now both proved, and the tail-supremum
+  construction was generalized so the second half could reuse the first.  The band half is short:
+  integrate the uniform in-band bound over the band.  The energy half needed a new object.  Squaring
+  the packet produces integrals against the *squared* profile, and the corpus's estimates were all
+  hard-wired to the profile itself.  What makes the repetition unnecessary is a geometric fact: once
+  the half-width drops below the annulus radius the two lobes are disjoint, so the squared profile is
+  again two translated dilates of a single fixed reference — the square of the reference bump, which
+  is again smooth, compactly supported and of positive mass.  With `fourierTailSup` and
+  `norm_fourierIntegral_comp_div_sub` stated for an arbitrary profile, the whole chain then applies
+  to the square verbatim, and `cos^2 = (1 + cos 2x)/2` turns the packet's energy into the squared
+  profile's mass plus two of its cosine masses.  Energy floor: `delta` times a positive constant,
+  minus tails that vanish with `delta*w`.
+  Lean: `formal/GaloisForLFunctions/HTGeometry/FourierTailSup.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandEnergy.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninScaledProfileSquare.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninScaledProfileSquareTail.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninScaledPacketEnergyLower.lean`.
 - 2026-08-01 — the packet's spectral tail is proved, and then upgraded to the uniform form the band
   estimate actually needs.  The pointwise bound (`norm_fourier_soninScaledPacket_le`) is a direct
   assembly: cosine modulation splits the packet's transform into two shifted profile transforms, the

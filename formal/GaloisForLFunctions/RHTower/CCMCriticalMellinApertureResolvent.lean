@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.CCMCriticalMellinVolterraHaarMode
+import Mathlib.NumberTheory.Chebyshev
 
-open Complex Set MeasureTheory
+open Complex Set MeasureTheory Filter
 
 namespace RHTower
 
@@ -329,6 +330,185 @@ theorem criticalMellinApertureAveragedModeResponseTail_eq
     ← criticalMellinApertureAveragedMultiplierTail,
     criticalMellinApertureAveragedMultiplierTail_eq c hw]
   ring
+
+theorem criticalMellinApertureAdmissibleModeResponseTail_eq
+    (x : ℝ) {w : ℂ} (hw : 0 < w.re) :
+    criticalMellinApertureAveragedModeResponseTail (x / 2) x w =
+      (-(2 * w + 1) / (2 * w ^ 2)) *
+        (Complex.exp ((w - 1 / 2) * x) -
+          2 * Complex.exp ((w / 2 - 1 / 2) * x) / ((1 : ℂ) + w) +
+          Complex.exp (-(x : ℂ) / 2) / ((1 : ℂ) + 2 * w)) := by
+  rw [criticalMellinApertureAveragedModeResponseTail_eq (x / 2) x hw]
+  have hfirst :
+      Complex.exp (w * x) * Complex.exp (-((x / 2 : ℝ) : ℂ)) =
+        Complex.exp ((w - 1 / 2) * x) := by
+    rw [← Complex.exp_add]
+    congr 1
+    push_cast
+    ring
+  have hsecond :
+      Complex.exp (w * x) *
+          Complex.exp (-(((1 : ℂ) + w) * ((x / 2 : ℝ) : ℂ))) =
+        Complex.exp ((w / 2 - 1 / 2) * x) := by
+    rw [← Complex.exp_add]
+    congr 1
+    push_cast
+    ring
+  have hthird :
+      Complex.exp (w * x) *
+          Complex.exp (-(((1 : ℂ) + 2 * w) * ((x / 2 : ℝ) : ℂ))) =
+        Complex.exp (-(x : ℂ) / 2) := by
+    rw [← Complex.exp_add]
+    congr 1
+    push_cast
+    ring
+  calc
+    Complex.exp (w * x) * (-(2 * w + 1) / (2 * w ^ 2)) *
+        (Complex.exp (-((x / 2 : ℝ) : ℂ)) -
+          2 * Complex.exp (-(((1 : ℂ) + w) * ((x / 2 : ℝ) : ℂ))) /
+            ((1 : ℂ) + w) +
+          Complex.exp (-(((1 : ℂ) + 2 * w) * ((x / 2 : ℝ) : ℂ))) /
+            ((1 : ℂ) + 2 * w)) =
+      (-(2 * w + 1) / (2 * w ^ 2)) *
+        (Complex.exp (w * x) * Complex.exp (-((x / 2 : ℝ) : ℂ)) -
+          2 * (Complex.exp (w * x) *
+            Complex.exp (-(((1 : ℂ) + w) * ((x / 2 : ℝ) : ℂ)))) /
+              ((1 : ℂ) + w) +
+          (Complex.exp (w * x) *
+            Complex.exp (-(((1 : ℂ) + 2 * w) * ((x / 2 : ℝ) : ℂ)))) /
+              ((1 : ℂ) + 2 * w)) := by ring
+    _ = _ := by rw [hfirst, hsecond, hthird]
+
+private theorem tendsto_complex_exp_mul_atTop_zero
+    {q : ℂ} (hq : q.re < 0) :
+    Tendsto (fun x : ℝ => Complex.exp (q * x)) atTop (nhds 0) := by
+  simpa [Complex.tendsto_exp_nhds_zero_iff] using
+    tendsto_const_nhds.neg_mul_atTop hq tendsto_id
+
+theorem criticalMellinApertureAdmissibleModeResponseTail_tendsto_zero
+    {w : ℂ} (hw0 : 0 < w.re) (hwHalf : w.re < 1 / 2) :
+    Tendsto
+      (fun x : ℝ =>
+        criticalMellinApertureAveragedModeResponseTail (x / 2) x w)
+      atTop (nhds 0) := by
+  have hq0 : (w - 1 / 2).re < 0 := by
+    norm_num
+    linarith
+  have hq1 : (w / 2 - 1 / 2).re < 0 := by
+    norm_num
+    linarith
+  have h0 := tendsto_complex_exp_mul_atTop_zero hq0
+  have h1 := tendsto_complex_exp_mul_atTop_zero hq1
+  have h2 : Tendsto (fun x : ℝ => Complex.exp (-(x : ℂ) / 2)) atTop (nhds 0) := by
+    convert tendsto_complex_exp_mul_atTop_zero (q := -(1 / 2 : ℂ)) (by norm_num) using 1
+    funext x
+    congr 1
+    ring
+  have hsum :
+      Tendsto
+        (fun x : ℝ =>
+          Complex.exp ((w - 1 / 2) * x) -
+            2 * Complex.exp ((w / 2 - 1 / 2) * x) / ((1 : ℂ) + w) +
+            Complex.exp (-(x : ℂ) / 2) / ((1 : ℂ) + 2 * w))
+        atTop (nhds 0) := by
+    simpa using
+      (h0.sub ((h1.const_mul 2).div_const ((1 : ℂ) + w))).add
+        (h2.div_const ((1 : ℂ) + 2 * w))
+  rw [show (fun x : ℝ =>
+      criticalMellinApertureAveragedModeResponseTail (x / 2) x w) =
+      fun x : ℝ => (-(2 * w + 1) / (2 * w ^ 2)) *
+        (Complex.exp ((w - 1 / 2) * x) -
+          2 * Complex.exp ((w / 2 - 1 / 2) * x) / ((1 : ℂ) + w) +
+          Complex.exp (-(x : ℂ) / 2) / ((1 : ℂ) + 2 * w)) by
+    funext x
+    exact criticalMellinApertureAdmissibleModeResponseTail_eq x hw0]
+  simpa only [mul_zero] using
+    hsum.const_mul (-(2 * w + 1) / (2 * w ^ 2))
+
+/-- Normalized Chebyshev error on logarithmic scale. -/
+def criticalMellinChebyshevError (x : ℝ) : ℝ :=
+  (Chebyshev.psi (Real.exp x) - Real.exp x) *
+    (Real.exp x) ^ (-(1 / 2 : ℝ))
+
+theorem criticalMellinChebyshevError_eq_exp
+    (x : ℝ) :
+    criticalMellinChebyshevError x =
+      (Chebyshev.psi (Real.exp x) - Real.exp x) * Real.exp (-x / 2) := by
+  rw [criticalMellinChebyshevError, Real.rpow_def_of_pos (Real.exp_pos x), Real.log_exp]
+  congr 1
+  ring
+
+/-- Unit-rate positive causal resolvent of the normalized Chebyshev error. -/
+def criticalMellinChebyshevResolventSource (x : ℝ) : ℝ :=
+  ∫ t : ℝ in Ioi 0,
+    Real.exp (-t) * criticalMellinChebyshevError (x - t)
+
+/-- Exact prime-source form of the unit CCM aperture resolvent. -/
+theorem criticalMellinChebyshevResolventSource_log_eq
+    {X : ℝ} (hX : 0 < X) :
+    criticalMellinChebyshevResolventSource (Real.log X) =
+      X⁻¹ * ∫ y : ℝ in 0..X,
+        (Chebyshev.psi y - y) * y ^ (-(1 / 2 : ℝ)) := by
+  let f : ℝ → ℝ := fun t => X * Real.exp (-t)
+  let g : ℝ → ℝ := fun y => X⁻¹ *
+    ((Chebyshev.psi y - y) * y ^ (-(1 / 2 : ℝ)))
+  have hfderiv : ∀ t ∈ Ioi (0 : ℝ),
+      HasDerivWithinAt f (-f t) (Ioi 0) t := by
+    intro t _ht
+    have h := ((Real.hasDerivAt_exp (-t)).comp t (hasDerivAt_neg t)).const_mul X
+    simpa only [f, Function.comp_apply, mul_neg, mul_one] using h.hasDerivWithinAt
+  have hinj : Set.InjOn f (Ioi (0 : ℝ)) := by
+    intro a _ha b _hb hab
+    apply neg_injective
+    apply Real.exp_injective
+    exact mul_left_cancel₀ hX.ne' hab
+  have himage : f '' Ioi (0 : ℝ) = Ioo 0 X := by
+    ext y
+    constructor
+    · rintro ⟨t, ht, rfl⟩
+      refine ⟨mul_pos hX (Real.exp_pos _), ?_⟩
+      calc
+        X * Real.exp (-t) < X * 1 :=
+          mul_lt_mul_of_pos_left (Real.exp_lt_one_iff.mpr (neg_neg_of_pos ht)) hX
+        _ = X := mul_one X
+    · intro hy
+      refine ⟨Real.log (X / y), ?_, ?_⟩
+      · exact Real.log_pos ((one_lt_div hy.1).2 hy.2)
+      · dsimp only [f]
+        rw [Real.exp_neg, Real.exp_log (div_pos hX hy.1)]
+        field_simp
+  have hchange := integral_image_eq_integral_abs_deriv_smul
+    measurableSet_Ioi hfderiv hinj g
+  rw [himage] at hchange
+  have hexp (t : ℝ) : Real.exp (Real.log X - t) = f t := by
+    dsimp only [f]
+    rw [Real.exp_sub, Real.exp_log hX, Real.exp_neg]
+    ring
+  have hfun :
+      (fun t : ℝ => |(-f t)| • g (f t)) =
+        fun t : ℝ =>
+          Real.exp (-t) *
+            criticalMellinChebyshevError (Real.log X - t) := by
+    funext t
+    rw [criticalMellinChebyshevError, hexp]
+    dsimp only [f, g]
+    rw [abs_neg, abs_of_pos (mul_pos hX (Real.exp_pos _))]
+    simp only [smul_eq_mul]
+    field_simp [hX.ne']
+  rw [hfun] at hchange
+  calc
+    criticalMellinChebyshevResolventSource (Real.log X) =
+        ∫ t : ℝ in Ioi 0,
+          Real.exp (-t) * criticalMellinChebyshevError (Real.log X - t) := rfl
+    _ = ∫ y : ℝ in Ioo 0 X, g y := hchange.symm
+    _ = X⁻¹ * ∫ y : ℝ in Ioo 0 X,
+        (Chebyshev.psi y - y) * y ^ (-(1 / 2 : ℝ)) := by
+      rw [show g = fun y : ℝ => X⁻¹ *
+          ((Chebyshev.psi y - y) * y ^ (-(1 / 2 : ℝ))) from rfl,
+        integral_const_mul]
+    _ = X⁻¹ * ∫ y : ℝ in 0..X,
+        (Chebyshev.psi y - y) * y ^ (-(1 / 2 : ℝ)) := by
+      rw [intervalIntegral.integral_of_le hX.le, integral_Ioc_eq_integral_Ioo]
 
 
 /-!

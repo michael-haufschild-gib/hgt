@@ -373,6 +373,197 @@ theorem exists_eventual_window_ccmFirstClockScaledPublishedSource_near_of_rh
     _ < ε / 2 + ε / 2 := add_lt_add hpert hseries2
     _ = ε := by ring
 
+private def firstClockAsymptoticError (L : ℝ) : ℝ :=
+  ccmFirstClockScaledPublishedSource L - 2 * xiCriticalScrewSeries L
+
+private def twiceXiCriticalScrewSeries (L : ℝ) : ℝ :=
+  2 * xiCriticalScrewSeries L
+
+private theorem firstClockAsymptoticError_tendsto_zero (hRH : RiemannHypothesis) :
+    Tendsto firstClockAsymptoticError atTop (𝓝 0) := by
+  exact ccmFirstClockScaledSource_sub_explicitScrew_tendsto_zero_of_rh hRH
+
+private theorem twiceXiCriticalScrewSeries_nonneg (L : ℝ) :
+    0 ≤ twiceXiCriticalScrewSeries L := by
+  exact mul_nonneg (by norm_num) (screwSeries_nonneg xiCriticalScrewWeight_nonneg L)
+
+private theorem twiceXiCriticalScrewSeries_le_hullMax
+    (hRH : RiemannHypothesis) (L : ℝ) :
+    twiceXiCriticalScrewSeries L ≤ ccmFirstClockAsymptoticHullMax := by
+  rw [twiceXiCriticalScrewSeries, ccmFirstClockAsymptoticHullMax]
+  exact mul_le_mul_of_nonneg_left
+    (screwSeries_le_screwHullMax xiCriticalScrewWeight_nonneg
+      (summable_xiCriticalScrewWeight_of_rh hRH) L) (by norm_num)
+
+private theorem firstClock_frequently_near_of_rh
+    (hRH : RiemannHypothesis) {y : ℝ}
+    (hy : y ∈ Set.Icc 0 ccmFirstClockAsymptoticHullMax)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ᶠ t in atTop, |ccmFirstClockScaledPublishedSource t - y| < ε := by
+  rw [Filter.frequently_atTop]
+  intro T
+  obtain ⟨W, hW, A, hwindow⟩ :=
+    exists_eventual_window_ccmFirstClockScaledPublishedSource_near_of_rh hRH hy hε
+  obtain ⟨t, ht, hnear⟩ := hwindow (max T A) (le_max_right T A)
+  exact ⟨t, le_trans (le_max_left T A) ht.1, hnear⟩
+
+private theorem firstClock_isBoundedUnder_ge (hRH : RiemannHypothesis) :
+    IsBoundedUnder (· ≥ ·) atTop ccmFirstClockScaledPublishedSource := by
+  refine ⟨-1, ?_⟩
+  rw [Filter.eventually_map]
+  obtain ⟨T, hT⟩ :=
+    (Metric.tendsto_atTop.mp (firstClockAsymptoticError_tendsto_zero hRH)) 1 one_pos
+  filter_upwards [eventually_ge_atTop T] with L hLT
+  have herr := hT L hLT
+  rw [Real.dist_eq, sub_zero, abs_lt] at herr
+  have hg := twiceXiCriticalScrewSeries_nonneg L
+  dsimp only [firstClockAsymptoticError, twiceXiCriticalScrewSeries] at herr hg
+  linarith
+
+private theorem firstClock_isBoundedUnder_le (hRH : RiemannHypothesis) :
+    IsBoundedUnder (· ≤ ·) atTop ccmFirstClockScaledPublishedSource := by
+  refine ⟨ccmFirstClockAsymptoticHullMax + 1, ?_⟩
+  rw [Filter.eventually_map]
+  obtain ⟨T, hT⟩ :=
+    (Metric.tendsto_atTop.mp (firstClockAsymptoticError_tendsto_zero hRH)) 1 one_pos
+  filter_upwards [eventually_ge_atTop T] with L hLT
+  have herr := hT L hLT
+  rw [Real.dist_eq, sub_zero, abs_lt] at herr
+  have hg := twiceXiCriticalScrewSeries_le_hullMax hRH L
+  dsimp only [firstClockAsymptoticError, twiceXiCriticalScrewSeries] at herr hg
+  linarith
+
+/-- Under RH, the literal aperture-scaled first-clock source has exact lower asymptotic value
+zero.  This transfers the relation-hull recurrence law through the vanishing moving-denominator
+error. -/
+theorem ccmFirstClockScaledPublishedSource_liminf_eq_zero_of_rh
+    (hRH : RiemannHypothesis) :
+    liminf ccmFirstClockScaledPublishedSource atTop = 0 := by
+  apply le_antisymm
+  · refine le_of_forall_gt_imp_ge_of_dense fun ε hε => ?_
+    refine Filter.liminf_le_of_frequently_le ?_ (firstClock_isBoundedUnder_ge hRH)
+    have hfreq := firstClock_frequently_near_of_rh hRH
+      (show (0 : ℝ) ∈ Set.Icc 0 ccmFirstClockAsymptoticHullMax from
+        ⟨le_rfl, by
+          rw [ccmFirstClockAsymptoticHullMax]
+          exact mul_nonneg (by norm_num)
+            (screwHullMax_nonneg xiCriticalScrewWeight_nonneg
+              (summable_xiCriticalScrewWeight_of_rh hRH))⟩) hε
+    exact hfreq.mono fun L hL => by
+      simpa using (abs_lt.mp hL).2.le
+  · refine le_of_forall_lt_imp_le_of_dense fun c hc => ?_
+    refine Filter.le_liminf_of_le
+      (firstClock_isBoundedUnder_le hRH).isCoboundedUnder_ge ?_
+    obtain ⟨T, hT⟩ :=
+      (Metric.tendsto_atTop.mp (firstClockAsymptoticError_tendsto_zero hRH)) (-c) (by linarith)
+    filter_upwards [eventually_ge_atTop T] with L hLT
+    have herr := hT L hLT
+    rw [Real.dist_eq, sub_zero, abs_lt] at herr
+    have hg := twiceXiCriticalScrewSeries_nonneg L
+    dsimp only [firstClockAsymptoticError, twiceXiCriticalScrewSeries] at herr hg
+    linarith
+
+/-- Under RH, the literal aperture-scaled first-clock source has exact upper asymptotic value equal
+to the compact relation-hull maximum. -/
+theorem ccmFirstClockScaledPublishedSource_limsup_eq_asymptoticHullMax_of_rh
+    (hRH : RiemannHypothesis) :
+    limsup ccmFirstClockScaledPublishedSource atTop =
+      ccmFirstClockAsymptoticHullMax := by
+  apply le_antisymm
+  · refine le_of_forall_gt_imp_ge_of_dense fun c hc => ?_
+    refine Filter.limsup_le_of_le
+      (firstClock_isBoundedUnder_ge hRH).isCoboundedUnder_le ?_
+    obtain ⟨T, hT⟩ :=
+      (Metric.tendsto_atTop.mp (firstClockAsymptoticError_tendsto_zero hRH))
+        (c - ccmFirstClockAsymptoticHullMax) (by linarith)
+    filter_upwards [eventually_ge_atTop T] with L hLT
+    have herr := hT L hLT
+    rw [Real.dist_eq, sub_zero, abs_lt] at herr
+    have hg := twiceXiCriticalScrewSeries_le_hullMax hRH L
+    dsimp only [firstClockAsymptoticError, twiceXiCriticalScrewSeries] at herr hg
+    linarith
+  · refine le_of_forall_lt_imp_le_of_dense fun c hc => ?_
+    refine Filter.le_limsup_of_frequently_le ?_ (firstClock_isBoundedUnder_le hRH)
+    have hfreq := firstClock_frequently_near_of_rh hRH
+      (show ccmFirstClockAsymptoticHullMax ∈
+          Set.Icc 0 ccmFirstClockAsymptoticHullMax from
+        ⟨by
+          rw [ccmFirstClockAsymptoticHullMax]
+          exact mul_nonneg (by norm_num)
+            (screwHullMax_nonneg xiCriticalScrewWeight_nonneg
+              (summable_xiCriticalScrewWeight_of_rh hRH)), le_rfl⟩)
+      (show 0 < ccmFirstClockAsymptoticHullMax - c by linarith)
+    exact hfreq.mono fun L hL => by
+      have := (abs_lt.mp hL).1
+      linarith
+
+/-- Under RH, the asymptotic tail-cluster set of the literal aperture-scaled source is exactly the
+full compact relation-hull interval.  Fixed tails may contain extra transient values, so the
+statement takes the intersection of all closed tail images. -/
+theorem iInter_closure_ccmFirstClockScaledPublishedSource_image_Ici_eq_of_rh
+    (hRH : RiemannHypothesis) :
+    (⋂ T : ℝ, closure
+      (ccmFirstClockScaledPublishedSource '' Set.Ici T)) =
+        Set.Icc 0 ccmFirstClockAsymptoticHullMax := by
+  ext y
+  constructor
+  · intro hy
+    have hyTail : ∀ T : ℝ,
+        y ∈ closure (ccmFirstClockScaledPublishedSource '' Set.Ici T) := by
+      simpa only [Set.mem_iInter] using hy
+    constructor
+    · by_contra hy0
+      have hyneg : y < 0 := lt_of_not_ge hy0
+      let ε : ℝ := -y / 2
+      have hε : 0 < ε := by dsimp only [ε]; linarith
+      obtain ⟨T, hT⟩ :=
+        (Metric.tendsto_atTop.mp (firstClockAsymptoticError_tendsto_zero hRH)) ε hε
+      have hsubset :
+          ccmFirstClockScaledPublishedSource '' Set.Ici T ⊆ Set.Ici (-ε) := by
+        rintro _ ⟨L, hLT, rfl⟩
+        have herr := hT L hLT
+        rw [Real.dist_eq, sub_zero, abs_lt] at herr
+        have hg := twiceXiCriticalScrewSeries_nonneg L
+        change -ε ≤ ccmFirstClockScaledPublishedSource L
+        dsimp only [firstClockAsymptoticError, twiceXiCriticalScrewSeries] at herr hg
+        linarith
+      have hyLower : -ε ≤ y :=
+        (closure_minimal hsubset isClosed_Ici) (hyTail T)
+      dsimp only [ε] at hyLower
+      linarith
+    · by_contra hyMax
+      have hygt : ccmFirstClockAsymptoticHullMax < y := lt_of_not_ge hyMax
+      let ε : ℝ := (y - ccmFirstClockAsymptoticHullMax) / 2
+      have hε : 0 < ε := by dsimp only [ε]; linarith
+      obtain ⟨T, hT⟩ :=
+        (Metric.tendsto_atTop.mp (firstClockAsymptoticError_tendsto_zero hRH)) ε hε
+      have hsubset :
+          ccmFirstClockScaledPublishedSource '' Set.Ici T ⊆
+            Set.Iic (ccmFirstClockAsymptoticHullMax + ε) := by
+        rintro _ ⟨L, hLT, rfl⟩
+        have herr := hT L hLT
+        rw [Real.dist_eq, sub_zero, abs_lt] at herr
+        have hg := twiceXiCriticalScrewSeries_le_hullMax hRH L
+        change ccmFirstClockScaledPublishedSource L ≤
+          ccmFirstClockAsymptoticHullMax + ε
+        dsimp only [firstClockAsymptoticError, twiceXiCriticalScrewSeries] at herr hg
+        linarith
+      have hyUpper : y ≤ ccmFirstClockAsymptoticHullMax + ε :=
+        (closure_minimal hsubset isClosed_Iic) (hyTail T)
+      dsimp only [ε] at hyUpper
+      linarith
+  · intro hy
+    rw [Set.mem_iInter]
+    intro T
+    rw [Metric.mem_closure_iff]
+    intro ε hε
+    obtain ⟨W, hW, A, hwindow⟩ :=
+      exists_eventual_window_ccmFirstClockScaledPublishedSource_near_of_rh hRH hy hε
+    obtain ⟨t, ht, hnear⟩ := hwindow (max T A) (le_max_right T A)
+    refine ⟨ccmFirstClockScaledPublishedSource t, ?_, ?_⟩
+    · exact ⟨t, le_trans (le_max_left T A) ht.1, rfl⟩
+    · simpa only [Real.dist_eq, abs_sub_comm] using hnear
+
 /-- Exact replacement for rational independence: the asymptotic absolute endpoint is reached by
 the relation hull exactly when every finite integral frequency relation has even coefficient sum. -/
 theorem ccmFirstClockAsymptoticHullMax_eq_absoluteBound_iff_parity_of_rh

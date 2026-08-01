@@ -1,121 +1,177 @@
-# Gamma--Jacobi artanh positive-log incidence
+# Gamma--Jacobi artanh transport coupling
 
-- **ID:** `gamma-jacobi-artanh-positive-log-incidence`
-- **Stage:** 1 — in progress
-- **Parent:** `SR-33`, `SR-38`, `SR-41`
-- **Type:** explicit source incidence / hostile proof audit
-- **Scientific status:** `[CONJECTURE UNDER PROOF] [NOVELTY UNVERIFIED] [NOT RH]`
+- **ID:** `gamma-jacobi-artanh-transport-coupling`
+- **Stage:** 1 — proof complete; formal/novelty audit in progress
+- **Parents:** `SR-38`, `SR-40`, `SR-41`, `SR-43`
+- **Type:** source-specific common-coordinate connector / singular reader
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [ADVANCE]`
+  `[EXTERNAL NOVELTY PROVISIONAL] [NOT RH]`
 - **RH used:** no
 - **Computation used:** no
 
-## Frontier test
+## Collision that killed the first formulation
 
-Current source ledger asks for an infinite-rank, off-diagonal incidence from the common
-Gamma--Jacobi coordinate to positive prime-log jets.  Corpus already proves separately:
+The initial odd-only claim tried to recover every positive-log power by a linear Jacobi row.  That
+is false: odd Gamma modes are odd functions of `t` and cannot linearly recover even powers.  The
+edge-integral/Dirac--Krein reformulation was then found already formalized and explicitly classified
+as non-new in `VonMangoldtSuccessorDiracKreinEdge.lean`.  Both routes are retired.
 
-1. the Gamma--Jacobi Fourier feature
+The positive survivor is nonlinear in one reconstructed coordinate and couples data that the
+existing corpus proves only separately.
 
-   ```text
-   a_k(t)=(-1)^k c_(2k+1) phi(t) tanh(t)^(2k+1),
-   c_n^2=binom(2n,n)/4^n,
-   phi(t)=cosh(t)^(-1/2);
-   ```
+## Source theorem
 
-2. the odd artanh series
-
-   ```text
-   artanh(y)=sum_(k>=0) y^(2k+1)/(2k+1),  |y|<1;
-   ```
-
-3. `artanh(tanh t)=t`;
-4. the successor principal-relative positive-log current.
-
-No corpus theorem composes these data.  Define the first incidence row
+Write
 
 ```text
-B_1(k)=(-1)^k / ((2k+1)c_(2k+1)).                       (1)
+a_k(t)=(-1)^k c_(2k+1) phi(t) tanh(t)^(2k+1)
 ```
 
-Then the candidate exact source law is
+for the actual odd Gamma--Jacobi coefficient.  Define one fixed incidence row and its `K`-mode
+head by
 
 ```text
-sum_(k>=0) B_1(k)a_k(t)=phi(t)t.                         (2)
+B(k)=(-1)^k/((2k+1)c_(2k+1)),
+T_K(t)=sum_(k<K) B(k) a_k(t)/phi(t).
 ```
 
-The non-formal content is boundedness of this row:
+Phase, normalization, and Gamma characteristic cancel exactly:
 
 ```text
-sum_(k>=0) |B_1(k)|^2 < infinity.                        (3)
+T_K(t)=sum_(k<K) tanh(t)^(2k+1)/(2k+1).                 (1)
 ```
 
-Since `sqrt(n)c_n^2 -> 1/sqrt(pi)`, `(1)` has squared size `O(k^(-3/2))`, so `(3)` should follow
-without numerical estimates.  Thus the first positive-log jet is a bounded functional on the
-actual common odd Gamma--Jacobi mode Hilbert space, not a fitted finite transform.
-
-At a prime `p`, exact normalization
+Hence the finite-capacity connection defect has the closed form
 
 ```text
-phi(log p)^2=2p/(p^2+1),
-d_p=sqrt((p^2+1)/(2p^2)),
-d_p phi(log p)=p^(-1/2)                                 (4)
+T_K'(t)=1-tanh(t)^(2K),                                 (2)
+T_K(t) -> t.                                            (3)
 ```
 
-turns `(2)` into `p^(-1/2) log p`; `d_p` is uniformly bounded above and below.  This is the first
-row of the source-defined Jacobi-to-positive-log incidence required by `SR-33`.
-
-## Stronger paper target
-
-For every `m>=0`, let `d_(m,n)` be the Taylor coefficient of `artanh(y)^m`.  Same mechanism predicts
+The error bound used in Lean is explicit:
 
 ```text
-B_m(n)=phase(n)^(-1) d_(m,n)/c_n,
-sum_n |B_m(n)|^2 < infinity,
-sum_n B_m(n) A_n(t)=phi(t)t^m.                           (5)
+|t-T_K(t)| <= |tanh t|^(2K+1)/(1-tanh(t)^2).            (4)
 ```
 
-Parity forces `d_(m,n)=0` unless `m=n mod 2`.  A convolution estimate
+No target moment, Xi zero, or fitted finite transform enters `(1)`--`(4)`.
+
+## Exact finite-mode current
+
+Define the two-channel transport column
 
 ```text
-|d_(m,n)| <= C_m log(n+1)^(m-1)/(n+1)
+Phi_(K,i)(t)=((i+1)T_K(t)^i T_K'(t), T_K(t)^(i+1))
 ```
 
-combined with `c_n^2 asymp n^(-1/2)` gives square summability.  Prove `(1)`--`(4)` first; extend to
-`(5)` only after direct Lean closure and another collision audit.
+with exchange form `[(a,b),(c,d)]_J=ad+bc`.  Product rule and `(2)` give
 
-## Why this is not yet RH
+```text
+integral_[x,y] [Phi_(K,i)(t),Phi_(K,j)(t)]_J dt
+  =T_K(y)^(i+j+2)-T_K(x)^(i+j+2).                       (5)
+```
 
-The full Jacobi row recovers uncensored positive-log jets, whose all-prime norm diverges.  A route
-advance requires composing `(5)` with source principal subtraction so head-minus-tail at
-`log(n+1),log n` becomes the already proved `SR-40` current in the same Jacobi coordinates, and
-then retaining the adaptive odd residual and completed Euler reader.  Equation `(2)` alone closes
-one source-incidence row; it does not produce a positive cofinal completion or fibre orientation.
+For arbitrary source-dependent base capacity `C(n)`, common cofinal increment `L`, source aperture
+`M`, and jet aperture `N`, sum `(5)` on the actual edges
+`[log n,log(n+1)]` with weight `Lambda(n)/n` and cutoff `L+C(n)`.  Lean proves
 
-## Collision boundary
+```text
+GammaJacobiCurrent_(C,L,M,N) -> SR40_(M,N)              (6)
+```
 
-- Artanh series, central-binomial asymptotic, Gamma--Jacobi Fourier formula, generic bounded
-  `ell2` functional, and positive-log jets are parent/corpus-known.
-- Targeted corpus search found no `artanh`/Jacobi/log-jet composition.
-- DLMF Meixner--Pollaczek generating functions and standard coefficient asymptotics contain parent
-  ingredients, not the source-specific prime-log incidence or `SR-40` head-minus-tail use.
-- Novelty claim remains withheld pending proof and broader expert audit.
+in the full finite-dimensional matrix topology.  Thus arbitrary adaptive absolute-mode cutoffs
+recover the proved principal-relative successor current, not merely one scalar moment.
 
-## Falsifiers
+## Exact coupling to `SR-38`
 
-1. row `(1)` is not square summable;
-2. Gamma--Jacobi phase or normalization leaves a nonconstant factor in `(2)`;
-3. prime correction `(4)` is unbounded;
-4. same-source head-minus-tail cannot be expressed before reading target moments;
-5. construction merely recovers an existing named incidence after synonym search.
+At a prime `p`, define the head feature to retain precisely modes
+`k<gammaOddJacobiPrimeCapacity(p)`.  The existing coherent residual retains precisely the
+complementary modes.  Coordinatewise Lean proves
+
+```text
+headFeature(p,k)+SR38ResidualFeature(p,k)=a_k(log p).    (7)
+```
+
+The log head at that same source-selected capacity is exactly the `B`-incidence of the head in
+`(7)`.  This removes the object-type mismatch “prime kernel after Jacobi contraction versus jet
+kernel after prime contraction”: both now arise from one absolute odd-Jacobi label, with the head
+feeding the edge current and the tail feeding the coherent residual.
+
+## Required singularity is exposed, not assumed away
+
+Recovering `T_K` from the actual coefficient divides by `phi(log p)`.  Lean proves
+
+```text
+phi(log p)^(-2)=(p^2+1)/(2p) >= p/2,                    (8)
+```
+
+and therefore for every real `B` some prime has normalization square exceeding `B`.  So the
+connector is canonically unbounded across prime labels.  This is positive information forced by
+the previous bounded/normal-reader no-gos: the surviving common-coordinate map is singular, while
+every bounded diagonal version is impossible.
+
+## Novelty boundary
+
+Parent-known ingredients:
+
+- odd artanh partial sums and their derivative/error bound;
+- Meixner--Pollaczek/Gamma Fourier coefficients;
+- first-order Dirac--Stokes factorization;
+- adaptive Mercer head/tail projections.
+
+New source composition claimed provisionally:
+
+- one fixed Jacobi incidence whose finite heads generate exact successor edge currents;
+- arbitrary adaptive cutoff convergence of the full finite `SR-40` matrix;
+- exact complementarity with the already source-selected `SR-38` residual;
+- exact prime growth law proving the common connector lies in the singular, not bounded, class.
+
+Targeted corpus search found no prior composition.  Literature calibration found classical
+Meixner--Pollaczek/tanh generating functions and Xi expansions, but no von-Mangoldt successor
+current built from complementary Gamma--Jacobi heads and tails.  External expert audit remains
+necessary before publication-level novelty is asserted.
+
+## What remains
+
+This closes common absolute-coordinate incidence, not all of `SR-41`.  Still open:
+
+1. package head current and tail residual as one joint infinite-index Krein object rather than two
+   complementary contractions of one coordinate family;
+2. construct completed Euler cyclic reader on that object;
+3. prove reader carries exact positive jet-opening flux from `SR-43`;
+4. derive fibre-pointed Berezin orientation and the RH criterion.
+
+## Lean certificate
+
+Module:
+
+```text
+formal/GaloisForLFunctions/RHTower/GammaJacobiArtanhTransportCoupling.lean
+```
+
+Capstone declarations:
+
+- `gammaOddJacobiLogIncidence_mul_normalizedCoefficient`;
+- `hasDerivAt_gammaOddJacobiLogHead`;
+- `tendsto_gammaOddJacobiLogHead`;
+- `intervalIntegral_exchangePair_gammaOddJacobiHeadTransportJet`;
+- `tendsto_finiteVonMangoldtGammaJacobiHeadKreinGram`;
+- `gammaOddJacobiPrimeCoherentHeadFeature_add_residual`;
+- `gammaOddJacobiLogHead_primeCapacity_eq`;
+- `gammaOddJacobiLogPrimeNormalization_sq_eq`;
+- `exists_prime_gammaOddJacobiLogPrimeNormalization_sq_gt`;
+- `tendsto_finiteVonMangoldtGammaJacobiAdaptiveHeadKreinGram`.
 
 ## Gates
 
-- [x] exact formulas selected before divisor or target moment
-- [x] whole-corpus synonym collision search
-- [x] primary parent-literature calibration
-- [ ] paper proof of `(2)`
-- [ ] paper proof of `(3)`
-- [ ] paper proof of `(4)`
-- [ ] unconditional Lean formalization and umbrella wiring
-- [ ] source principal-relative composition
-- [ ] arbitrary-order extension `(5)`
-
+- [x] initial parity error killed
+- [x] edge-integral rediscovery killed
+- [x] exact paper proof `(1)`--`(8)`
+- [x] whole-corpus collision search
+- [x] targeted primary-literature calibration
+- [x] unconditional Lean proof
+- [ ] umbrella wiring
+- [ ] axiom and lint audit
+- [ ] external expert novelty audit
+- [ ] completed Euler cyclic reader
+- [ ] fibre orientation / RH

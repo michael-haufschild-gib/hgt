@@ -81,9 +81,10 @@ they are not novel scientific knowledge.
 | `SR-41` | `LIVE-SOURCE` | Construct or class-completely refute an inclusion-compatible bivariate prime--jet completion whose jet compression is `SR-40` principal-relative Hankel current, whose prime/Jacobi compression is `SR-38` coherent odd Gamma residual, and whose cyclic source reader gives completed Euler multiplication/trace before Xi character or target moment is read. | By `SR-42`, positive and every fixed-index Pontryagin completion are impossible. By `SR-43`, ordinary coordinate partial trace is impossible at every index. Abstract finite matrix completion, separate direct sum, target-fitted cross block, generic Krein spectral decomposition, or trace-preserving marginalization does not count. | Exact post-`SR-40` operator-realization core below |
 | `SR-42` | `ADVANCE` / `FAILED-CLASS` | Every full `SR-40` aperture section is a square Vandermonde congruence of explicit endpoint-divergence masses, so its positive, negative, and null indices are exact sign counts. Left endpoint is always negative. Primes `p>3`, `p=3 mod 4`, force distinct negative masses; negative index is unbounded. | No positive or fixed-index Pontryagin bivariate completion can realize all jet compressions. Surviving `SR-41` object must be genuinely infinite-index Krein, source-canonical, restriction-compatible, and still realize `SR-38` marginal plus completed Euler trace. | `von-mangoldt-successor-transport-inertia-law.md`; `SignedAtomicMomentInertia.lean`; `VonMangoldtSuccessorTransportInertia.lean` |
 | `SR-43` | `ADVANCE` / `FAILED-CLASS` | Every finite bivariate coordinate-partial-trace realization has equal total traces on its jet and source marginals. Actual `SR-40` trace obeys exact opening law `tr R_(M,N+1)=tr R_(M,N)+rho_M(2N+2)` with strictly positive source flux at every nonempty aperture. Hence no fixed source marginal—specifically no finite `SR-38` coherent odd Gamma--Jacobi marginal—can coexist with two consecutive `SR-40` jet marginals, for arbitrary real kernels, arbitrary mixed block, and arbitrary Krein index. | Ordinary normal partial trace is class-completely dead. Surviving `SR-41` connector must vary source marginal with jet cutoff or use a singular, weighted/renormalized, non-trace-preserving cyclic reader carrying the explicit positive flux. | `von-mangoldt-bivariate-marginal-trace-lock-no-go.md`; `BivariateMarginalTraceLock.lean`; `VonMangoldtBivariateMarginalTraceLock.lean` |
+| `SR-46` | `ADVANCE` | One fixed incidence row on the actual absolute odd Gamma--Jacobi modes gives the truncated artanh coordinate `T_K`; its exact connection defect is `T_K'=1-tanh^(2K)`. The induced finite-mode exchange current converges, for arbitrary source-dependent starting cutoffs and every fixed source/jet aperture, to the full `SR-40` matrix. At the existing `SR-38` prime capacities, the incidence head and coherent residual tail are coordinatewise complementary. The required normalization is provably singular: `phi(log p)^(-2)=(p^2+1)/(2p)>=p/2` and is unbounded on primes. | Common absolute-coordinate incidence is closed, but no single joint infinite-index Krein object or completed Euler cyclic reader has yet been constructed. `SR-41` narrows from “find any bivariate connector” to packaging this forced head/tail connection with the positive jet-opening flux and proving Euler compatibility. | `gamma-jacobi-artanh-positive-log-incidence.md`; `GammaJacobiArtanhTransportCoupling.lean` |
 | `SR-45` | `FORMAL-CLOSURE` | For every contractive geometric phase orbit, both completed light energies have exact sharp interval `R/(1-R^2) <= E_± <= (R+2)/(1-R^2)` and sum `2/(1-R)`. Suzuki's actual Gamma/innovation valuation rays realize this law with `R=p^(-1/2)r_p^4`; both actual light channels are strictly positive at every height and the floor is attained. | Closes local valuation-phase holes only. It does not change `SR-41`, construct restricted-Weil/Robin transfer, reduce critical half-weight, or prove RH. Do not repeat phase-hole or depthwise light-coercivity analysis as terminal research. | `suzuki-valuation-depth-light-coercivity-law.md`; `GeometricPhaseLightCoercivity.lean`; `SuzukiValuationDepthLightCoercivity.lean` |
 
-## Level lift forced by `SR-35`--`SR-43`: bivariate prime--jet source completion
+## Level lift forced by `SR-35`--`SR-46`: singular prime--jet cyclic completion
 
 Current source problem belongs to more general problem of **source-renormalized covariant
 Dirichlet forms relative to a resolved abelian channel algebra**.
@@ -107,19 +108,20 @@ fixed-index Pontryagin realization. `SR-43` then excludes coordinate partial tra
 index: the two marginal traces must agree, but every new `SR-40` jet opens a strictly positive
 source flux while the `SR-38` marginal is fixed. Capacity, packet coherence, finite cross-term
 placement, matrix-entry cofinal renormalization, finite-index completion, and ordinary normal
-partial trace are no longer open. Remaining issue is object-level coupling: `SR-40` is a jet
-kernel after prime contraction,
-whereas `SR-38` is a prime kernel after Jacobi contraction. Adding them is ill-typed. One bivariate
-prime--jet source object must realize both marginals and Euler trace in infinite-index Krein
-geometry through a singular or non-trace-preserving reader that exposes the exact jet-opening
-flux.
+partial trace are no longer open. `SR-46` supplies the missing common absolute coordinate:
+finite odd-Jacobi heads generate exact successor edge currents and converge to `SR-40`, while their
+coordinate complements are the `SR-38` coherent residual tails.  Its prime normalization is
+provably unbounded, so this does not evade the bounded-reader no-go. Remaining issue is packaging
+this forced head/tail connection as one joint infinite-index Krein object and constructing a
+source-fixed singular cyclic reader whose non-normal flux is exactly the jet-opening flux and whose
+multiplication law is completed Euler multiplication.
 
 Scientific-method question is now:
 
-> Does there exist a source-fixed, inclusion-compatible bivariate prime--jet completion whose jet
-> marginal is the proved principal-relative Hankel current and whose prime marginal is the proved
-> coherent odd Gamma--Jacobi residual, with completed Euler multiplication encoded by one cyclic
-> reader before completed moments or Xi characters are read?
+> Can the proved Gamma--Jacobi head/tail connection be completed to one source-fixed,
+> inclusion-compatible infinite-index Krein object whose singular cyclic reader carries the exact
+> jet-opening flux and implements completed Euler multiplication before completed moments or Xi
+> characters are read?
 
 Required data and conjectural identity are
 
@@ -458,3 +460,15 @@ Before claiming progress, record all answers:
   `FORMAL-CLOSURE`; Xi divisor repair and removability equivalence `ADVANCE`, external novelty
   provisional. This does not reduce critical half-weight or prove compound Bezoutian positivity.
   New live core remains `SUZUKI-COMPOUND-BEZOUTIAN-GRAM` using genuine factors only.
+- **2026-08-01 — Gamma--Jacobi artanh transport coupling (`SR-46`).** Two rediscoveries were killed
+  before promotion: odd linear modes cannot recover even log powers, and the source-edge
+  Dirac--Krein integral is already formalized as non-new. Positive survivor uses one nonlinear
+  coordinate reconstructed by finite odd-Jacobi heads. Exact laws are
+  `T_K=sum_(k<K)tanh^(2k+1)/(2k+1)`, `T_K'=1-tanh^(2K)`, and the exchange current of
+  `T_K^(i+1),T_K^(j+1)` is its endpoint power difference. For arbitrary source-dependent base
+  capacities, common cofinal head growth converges to every fixed `SR-40` matrix. At existing
+  `SR-38` prime capacities, head and coherent residual are exact complementary absolute modes.
+  Connector is necessarily singular: `phi(log p)^(-2)=(p^2+1)/(2p)>=p/2`, unbounded on primes.
+  Status: parent series/Dirac/Mercer layers `FORMAL-CLOSURE`; actual head/tail successor-current
+  composition `ADVANCE`, external novelty provisional. New open core is joint infinite-index
+  packaging plus completed Euler cyclic reader carrying the `SR-43` positive opening flux.

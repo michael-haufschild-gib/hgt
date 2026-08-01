@@ -1449,3 +1449,61 @@ dividing the discriminant.
   is `E_0(p_1)`, `p_1^n` is `c_0`, the degree is exactly `n`, and `E_0` is intrinsically
   characterised as the fixed field of the `n`-th roots of unity acting by
   `p_i |-> zeta^i p_i`.
+
+- 2026-08-01 — `TailParameterChange.lean` packages step `(10)` as one theorem,
+  `tailParameterChange`, whose only hypotheses are `0 < n` and a primitive `n`-th root of unity in
+  the constants — both supplied by the card's algebraically closed `K`.  It asserts, in one
+  conjunction: the tail coefficients are algebraically independent; the parameter field is generated
+  over them by the first parameter; that parameter is an `n`-th root of the first tail coefficient;
+  and the degree is exactly `n`.  The finiteness of the deck group no longer has to be assumed —
+  `finite_deckGroup` derives it from `Nat.card` being `n`, which is nonzero.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  Remaining for the card: the ambient field holding the splitting field of `(7)` together with the
+  Kummer extension, and the application of `kummerBaseChangeEvenGenEquiv` — the mathematics of both
+  branches is proved, what is left is construction.
+
+- 2026-08-01 — `PolynomialBaseChangeEven.lean` supplies `polyBaseChangeEvenEquiv`, the missing
+  sibling of `polyBaseChangeOddEquiv` and the card's `(3)` in the shape the card names: inside the
+  splitting field of the product of the centered polynomial with `X^n - c_0`, the Galois group of
+  the centered polynomial survives enlarging the base by the roots of the second factor.  Where the
+  odd case argues that a field of odd degree contains no square root of a base element, the even
+  case supplies instead the generator of the second factor's root field, its degree, and the square
+  class of the product of the two radicands — the square root being the generator's half power, not
+  extra data.  Axioms `[propext, Classical.choice, Quot.sound]`.
+  Both branches of `(3)` are now available at the polynomial level with no assumed inputs beyond
+  the situation's own data.
+
+- 2026-08-01 — `CenteredPolynomialOverCoefficients.lean`.  The base change step takes a polynomial
+  over the **base** field, whereas the corpus's centered polynomial `centeredMonicL` lives over the
+  field its roots generate.  `centeredMonicE` is the same polynomial over its own coefficient field:
+  the leading power plus the sum of its lower coefficients, each of which is by definition a
+  generator of that field.  `map_centeredMonicE` identifies its image with `centeredMonicL` (via the
+  monic decomposition `Monic.as_sum` and `coeff_centeredMonicL_lt`), and monicity and degree
+  transfer back along the injective algebra map.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  This is the first of the two inputs `polyBaseChangeEvenEquiv` needs from the model; the second is
+  the identification of `rootField` of this polynomial with the whole centered field, for which
+  `adjoin_centeredRootIn_over_coeff_eq_top` and `exists_centeredRootIn_eq` are already proved.
+
+- 2026-08-01 — `CenteredRootFieldTop.lean` supplies the `phi` argument of the base change step.
+  `rootSet_centeredMonicE`: the roots of the centered polynomial in the centered field are exactly
+  the centered roots — one direction from `eval_centeredMonicL_root`, the other by factoring the
+  evaluation.  With `adjoin_centeredRootIn_over_coeff_eq_top` this gives
+  `rootField_centeredMonicE_eq_top`, and transporting `centeredGaloisEquiv` along it gives
+  `centeredRootFieldPermEquiv`: the automorphism group of the root field of the centered polynomial
+  over its coefficient field is the symmetric group on `Fin d`.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  A note for whoever extends this: building the identification as
+  `equivOfEq |>.trans topEquiv` in term mode does not elaborate — it exhausts two million
+  heartbeats at `whnf`.  Rewriting the *type* with `rw [rootField_centeredMonicE_eq_top]` and
+  closing with `exact IntermediateField.topEquiv` costs nothing.
+
+- 2026-08-01 — `IntersectionNormal.lean` starts the group-side hypothesis `hnorm`.  An automorphism
+  of the ambient field carries each of two normal subextensions to itself, hence carries their
+  intersection to itself (`map_inf_of_algEquiv`), so `normal_inf`: the intersection of two normal
+  subextensions is normal.  Axioms `[propext, Classical.choice, Quot.sound]`.
+  The route to `hnorm` from here is mathlib's instance
+  `fixingSubgroup_normal_of_isGalois`, which needs the intersection **read inside the first factor**
+  to be Galois.  That is the remaining step: an `F`-algebra equivalence
+  `comap E.val (E ⊓ M) ≃ₐ[F] (E ⊓ M)`, which is subtype bookkeeping — mathlib has no
+  `comapAlgEquiv` for intermediate fields, so it has to be written out.

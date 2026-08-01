@@ -1173,3 +1173,52 @@ docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm-first-clock-j
 Lean closure is dependency-honest, but scientific novelty is rejected.  No rank-one, RKHS,
 operator-placement, or diagonal-damping sequel is authorized from this detour.  Work returns to
 global load-bearing open cores only.
+
+## Whole-corpus source coupling: Gamma--Jacobi artanh transport
+
+`[PAPER-PROVED] [LEAN-PROVED] [ADVANCE] [EXTERNAL NOVELTY PROVISIONAL] [NOT RH]`
+
+Two near-rediscoveries were explicitly killed. Odd Jacobi modes cannot linearly recover even log
+powers, and the proposed edge-integral realization already exists as
+`VonMangoldtSuccessorDiracKreinEdge.lean`, classified non-new. The surviving result instead uses
+the odd ladder to reconstruct one nonlinear coordinate before forming all jet powers.
+
+For actual coefficient
+
+```text
+a_k(t)=(-1)^k c_(2k+1) phi(t)tanh(t)^(2k+1)
+```
+
+the fixed incidence `B(k)=(-1)^k/((2k+1)c_(2k+1))` gives
+
+```text
+T_K(t)=sum_(k<K) B(k)a_k(t)/phi(t)
+      =sum_(k<K)tanh(t)^(2k+1)/(2k+1),
+T_K'(t)=1-tanh(t)^(2K),
+T_K(t)->t.
+```
+
+The two-channel derivative/value lift of `T_K^(i+1)` has exact exchange integral equal to the
+endpoint difference of `T_K^(i+j+2)`. Summed with actual `Lambda(n)/n` edge weights, arbitrary
+source-dependent starting capacities plus common cofinal growth converge to the full fixed-aperture
+`SR-40` matrix. At existing `SR-38` prime capacities, the new incidence head and old zero-padded
+coherent residual are coordinatewise complementary. This is first proved common absolute-mode
+connector between those two formerly ill-typed marginals.
+
+Lean also exposes required singularity rather than assuming boundedness:
+
+```text
+phi(log p)^(-2)=(p^2+1)/(2p)>=p/2,
+```
+
+so normalization is unbounded on primes. Positive survivor is canonical unbounded connector in the
+only class not excluded by resolved-channel and normal-partial-trace no-gos. Remaining open core is
+one joint infinite-index Krein packaging and completed Euler cyclic reader carrying exact `SR-43`
+jet-opening flux; fibre orientation and RH remain open.
+
+Formal module and card:
+
+```text
+formal/GaloisForLFunctions/RHTower/GammaJacobiArtanhTransportCoupling.lean
+docs/drafts/pipeline/1-in-progress/gamma-jacobi-artanh-positive-log-incidence.md
+```

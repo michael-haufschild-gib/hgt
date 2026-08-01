@@ -2253,6 +2253,33 @@ This is eq. (5) for `K_Γ = ℂ(s)⟨Γ⟩` in monomial form: every finite famil
 lexicographically minimal member, has a constant projective limit — the one-point projective boundary
 of §1, proved unconditionally along vertical lines `Re s = 1/2 + m`.
 
+### Eq. (8) and eq. (9) over the full Gamma field
+
+Two modules carry the boundary law into the finite-phase theorem with coefficients from `ℂ(s)⟨Γ⟩`
+itself, not just its rational subfield `ℂ(Γ)`.
+
+`HTGeometry/GammaFieldRecurrenceCollapse.lean` — the projective boundary supplies the coefficient
+limits, a Gamma-field monomial is eventually nonvanishing on the line, and the jet monomials return
+along the Bohr return times, so
+
+> **`recurrence_collapse_gammaField`**: a relation whose coefficients are `Γ^j·(p/q)·ψ^D`, normalized
+> by a lexicographically minimal member, collapses to `∑ d_α M_α = 0` with `d_β = 1`, where `d` is the
+> explicit limit datum `gammaFieldLimit`.
+
+`HTGeometry/GammaFieldFinitePhaseRank.lean` — the collapse runs from *every* height on the line (the
+ratio limits are unchanged by a shift of the base point, and almost periodicity is
+translation-invariant), so the collapsed relation holds along the whole line and hence, both sides
+being holomorphic, on the whole strip:
+
+> **`gammaField_autonomous_relation`** (eq. 8) and, feeding it to the descent,
+> **`rank_finite_of_gammaField_relation`** (eq. 9): a strip almost periodic holomorphic solution of a
+> differential relation with Gamma-field coefficients and distinct monomials has finite rational Bohr
+> frequency rank.
+
+Hypotheses left: strip almost periodicity of the solution, the monomial form of the coefficients with
+lexicographically minimal normalizing index, and distinctness of the monomials.  Nothing analytic is
+open, and the line is `Re s = 1/2 + m` — including the critical line itself.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

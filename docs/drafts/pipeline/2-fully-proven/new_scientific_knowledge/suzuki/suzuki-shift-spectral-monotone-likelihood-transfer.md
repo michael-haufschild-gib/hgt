@@ -471,8 +471,54 @@ Both bounds are the same computation as the boundedness of the test function: th
 constant on the circle, so only the denominator varies, and the triangle inequality pins it between
 `(1-‖w‖)²` and `(1+‖w‖)²`.
 
-What remains of Theorem B's last sentence is only the *support* claim: that under the stated decay
-and analyticity off `[lambda_a, infinity)` the measure is carried by that ray.
+The first half of the support claim is formal — where the function stays bounded, the measure puts
+no point mass:
+
+- `poissonKernel_radial`: on the radius through a boundary angle the kernel is exactly
+  `(1+r)/(1-r)` at that angle, so it blows up as the radius approaches one.
+- `measureReal_singleton_mul_le`: **an atom forces radial growth** — the mass at an angle, amplified
+  by `(1+r)/(1-r)`, is a lower bound for the function on that radius.
+- `measureReal_singleton_eq_zero_of_bddAbove`: **bounded on a radius means no atom.**
+
+The mechanism is that a single angle's mass already dominates the whole integral from below, because
+the kernel is nonnegative everywhere else — so no covering or regularity argument is needed to detect
+an atom, only the kernel's value at one point.
+
+The bound is not restricted to atoms.  The same comparison against an indicator gives a **local**
+mass bound for arbitrary measurable sets of angles:
+
+- `norm_circleMap_sub_smul`: the distance from a boundary point to the radius point beneath it is
+  exactly `1 - r`.
+- `le_poissonKernel_of_close`: for angles within `1 - r` of `θ₀` the kernel at the radius point is at
+  least `(1+r)/(4(1-r))` — the numerator is fixed, and the triangle inequality caps the denominator
+  at twice the radial distance.
+- `measureReal_le_of_close`: hence **the mass carried by angles within `1 - r` of `θ₀` is controlled
+  by the value of the function at the radius point.**
+
+So a function bounded along a radius forces the mass of the shrinking chordal balls around its
+endpoint to decay linearly in `1 - r`, not merely to have no atom there.
+
+The geometric hypothesis converts to one about angles, since the circle map is `1`-Lipschitz:
+
+- `norm_circleMap_sub_circleMap_le`: **chord is at most arc** (mathlib's `lipschitzWith_circleMap`).
+- `measureReal_Icc_le`: so the mass of the angle interval of half-width `1 - r` around `θ₀` is
+  controlled by the value at the radius point.
+- `measureReal_Icc_le_of_bddAbove`: **linear decay of local mass** — bounded on the radius through
+  `θ₀` forces `nu(Icc) <= 4 M (1 - r)`.
+
+The arc bound is formal:
+
+- `measureReal_Icc_le_radial`: **the sharp local bound**, stated at each radius separately rather
+  than against a uniform bound — the mass of the interval of half-width `1 - r` is at most `4(1-r)`
+  times the value at that one radius point.
+- `Icc_subset_biUnion_Icc`: an arc is covered by `N` intervals of half-width `δ` once `N` steps of
+  length `2δ` overshoot it.
+- `measureReal_Icc_le_of_radial_bound`: **the arc bound** — bounded by `M` on the radius of level
+  `1 - δ` through every angle gives `nu(arc) <= 4 δ M N`.
+
+Choosing `N` of order `(β-α)/δ` makes the right-hand side proportional to `M` times the length of the
+arc, with no dependence on `δ`.  So the remaining step for Theorem B's last sentence is the choice of
+`N` and the passage `M -> 0`, which the analyticity off `[lambda_a, infinity)` supplies.
 
 What remains for the representation is the limit itself and the transfer to the half-plane with
 support on the ray.
@@ -795,3 +841,38 @@ what makes them distinct.  Degree `n` and `n` roots then leave no freedom.
   the centre, which is why the total mass equals the centre value rather than merely being bounded by
   it.  Harnack is the standard tool for the remaining support localization.  Four new declarations,
   targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — first half of the support claim formal: where the function stays bounded, the measure
+  puts no point mass.  `poissonKernel_radial` computes the kernel on the radius through a boundary
+  angle as exactly `(1+r)/(1-r)` there, so `measureReal_singleton_mul_le` makes an atom force radial
+  blow-up and `measureReal_singleton_eq_zero_of_bddAbove` inverts it.  The mechanism is worth
+  recording: a single angle's mass already dominates the whole integral from below, because the
+  kernel is nonnegative at every other angle — detecting an atom needs the kernel's value at one
+  point, not a covering or regularity argument.  Three new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the support bound extended from atoms to arbitrary measurable sets of angles.
+  `le_poissonKernel_of_close` shows the kernel stays at least `(1+r)/(4(1-r))` on the chordal ball of
+  radius `1 - r` — the numerator is fixed on the circle and the triangle inequality caps the
+  denominator at twice the radial distance — so `measureReal_le_of_close` bounds the mass of that
+  ball by the function's value at the radius point.  A function bounded along a radius therefore
+  forces the mass of shrinking chordal balls to decay linearly in `1 - r`, which is strictly stronger
+  than having no atom.  The proof is the same indicator comparison as the atom case, with the
+  singleton replaced by the set; extracting `norm_circleMap_sub_smul` removed the duplicated radial
+  distance computation.  Three new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the local bound restated on angle intervals.  mathlib's `lipschitzWith_circleMap`
+  gives chord-at-most-arc (`norm_circleMap_sub_circleMap_le`), which converts the chordal hypothesis
+  of `measureReal_le_of_close` into an interval of angles: `measureReal_Icc_le`.  Combined with a
+  radial bound this yields `measureReal_Icc_le_of_bddAbove` — the mass of the interval of half-width
+  `1 - r` decays **linearly** in `1 - r`.  That linear rate is what a covering argument needs: summing
+  it over an arc gives `nu(arc) <= C M |arc|`, so once analyticity off the ray makes `M` arbitrarily
+  small the measure vanishes there.  Three new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the arc bound formal (`measureReal_Icc_le_of_radial_bound`): covering an arc by
+  intervals of half-width `δ` and summing the local bound gives `nu(arc) <= 4 δ M N`.  Two things made
+  the assembly work: restating the local bound at each radius separately
+  (`measureReal_Icc_le_radial`) rather than against a uniform bound, which removes the spurious
+  dependence on behaviour at small radii; and taking the covering hypothesis *strict*
+  (`β - α < 2 δ N`) in `Icc_subset_biUnion_Icc`, which avoids the endpoint case where the floor index
+  reaches `N`.  With `N` of order `(β-α)/δ` the bound is proportional to `M` times the arc length and
+  independent of `δ`.  Three new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.

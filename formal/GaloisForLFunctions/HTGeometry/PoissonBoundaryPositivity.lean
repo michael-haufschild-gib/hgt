@@ -558,18 +558,21 @@ So an atom of the representing measure forces the function to blow up along that
 conversely a function bounded along a radius has no atom at its endpoint.  This is the first half of
 localizing the measure: where the function stays bounded, the measure puts no point mass. -/
 
+/-- The distance from a boundary point to the radius point beneath it. -/
+theorem norm_circleMap_sub_smul {r : ℝ} (hr1 : r < 1) (θ₀ : ℝ) :
+    ‖circleMap 0 1 θ₀ - (r : ℂ) * circleMap 0 1 θ₀‖ = 1 - r := by
+  have hsub : circleMap 0 1 θ₀ - (r : ℂ) * circleMap 0 1 θ₀
+      = ((1 - r : ℝ) : ℂ) * circleMap 0 1 θ₀ := by push_cast; ring
+  rw [hsub, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by linarith),
+    norm_circleMap_zero, abs_one, mul_one]
+
 /-- **The kernel on the radius.**  At the endpoint angle its value is exactly `(1+r)/(1-r)`. -/
 theorem poissonKernel_radial {r : ℝ} (hr : 0 ≤ r) (hr1 : r < 1) (θ₀ : ℝ) :
     poissonKernel 0 ((r : ℂ) * circleMap 0 1 θ₀) (circleMap 0 1 θ₀) = (1 + r) / (1 - r) := by
   have hnw : ‖(r : ℂ) * circleMap 0 1 θ₀‖ = r := by
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hr, norm_circleMap_zero,
       abs_one, mul_one]
-  have hsub : circleMap 0 1 θ₀ - (r : ℂ) * circleMap 0 1 θ₀
-      = ((1 - r : ℝ) : ℂ) * circleMap 0 1 θ₀ := by push_cast; ring
-  have hd : ‖circleMap 0 1 θ₀ - (r : ℂ) * circleMap 0 1 θ₀‖ = 1 - r := by
-    rw [hsub, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by linarith),
-      norm_circleMap_zero, abs_one, mul_one]
-  rw [poissonKernel_circleMap_one, hnw, hd]
+  rw [poissonKernel_circleMap_one, hnw, norm_circleMap_sub_smul hr1 θ₀]
   have h1 : (1 : ℝ) - r ≠ 0 := by intro hc; nlinarith
   field_simp
   ring
@@ -635,5 +638,275 @@ theorem measureReal_singleton_eq_zero_of_bddAbove {ν : Measure ℝ} [IsFiniteMe
     field_simp
   rw [hprod] at hkey
   nlinarith [hkey, hr0, hMpos]
+
+/-- **The kernel stays large on a chordal ball.**  For boundary angles within `1 - r` of `θ₀`, the
+kernel at the radius point is at least `(1+r)/(4(1-r))`: the numerator is fixed and the denominator
+is at most twice the radial distance. -/
+theorem le_poissonKernel_of_close {r : ℝ} (hr : 0 ≤ r) (hr1 : r < 1) (θ θ₀ : ℝ)
+    (h : ‖circleMap 0 1 θ - circleMap 0 1 θ₀‖ ≤ 1 - r) :
+    (1 + r) / (4 * (1 - r))
+      ≤ poissonKernel 0 ((r : ℂ) * circleMap 0 1 θ₀) (circleMap 0 1 θ) := by
+  have h1 : (0 : ℝ) < 1 - r := by linarith
+  have hnw : ‖(r : ℂ) * circleMap 0 1 θ₀‖ = r := by
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hr,
+      norm_circleMap_zero, abs_one, mul_one]
+  have hlow : 1 - r ≤ ‖circleMap 0 1 θ - (r : ℂ) * circleMap 0 1 θ₀‖ := by
+    have := one_sub_norm_le_norm_circleMap_sub ((r : ℂ) * circleMap 0 1 θ₀) θ
+    rwa [hnw] at this
+  have hup : ‖circleMap 0 1 θ - (r : ℂ) * circleMap 0 1 θ₀‖ ≤ 2 * (1 - r) := by
+    have htri : ‖circleMap 0 1 θ - (r : ℂ) * circleMap 0 1 θ₀‖
+        ≤ ‖circleMap 0 1 θ - circleMap 0 1 θ₀‖
+          + ‖circleMap 0 1 θ₀ - (r : ℂ) * circleMap 0 1 θ₀‖ := by
+      have := norm_add_le (circleMap 0 1 θ - circleMap 0 1 θ₀)
+        (circleMap 0 1 θ₀ - (r : ℂ) * circleMap 0 1 θ₀)
+      rwa [sub_add_sub_cancel] at this
+    rw [norm_circleMap_sub_smul hr1 θ₀] at htri
+    linarith
+  rw [poissonKernel_circleMap_one, hnw]
+  have hnum : (0 : ℝ) ≤ 1 - r ^ 2 := by nlinarith
+  have hden : ‖circleMap 0 1 θ - (r : ℂ) * circleMap 0 1 θ₀‖ ^ 2 ≤ (2 * (1 - r)) ^ 2 :=
+    pow_le_pow_left₀ (by linarith) hup 2
+  have hstep : (1 - r ^ 2) / (2 * (1 - r)) ^ 2
+      ≤ (1 - r ^ 2) / ‖circleMap 0 1 θ - (r : ℂ) * circleMap 0 1 θ₀‖ ^ 2 :=
+    div_le_div_of_nonneg_left hnum (pow_pos (by linarith) 2) hden
+  refine le_trans (le_of_eq ?_) hstep
+  have h1' : (1 : ℝ) - r ≠ 0 := ne_of_gt h1
+  field_simp
+  ring
+
+/-- **The local mass bound.**  The mass carried by boundary angles within `1 - r` of `θ₀` is
+controlled by the value of the function at the radius point. -/
+theorem measureReal_le_of_close {ν : Measure ℝ} [IsFiniteMeasure ν] {u : ℂ → ℝ}
+    (hrep : ∀ w ∈ ball (0 : ℂ) 1, ∫ θ, poissonKernel 0 w (circleMap 0 1 θ) ∂ν = u w)
+    (θ₀ : ℝ) {r : ℝ} (hr : 0 ≤ r) (hr1 : r < 1) {A : Set ℝ} (hA : MeasurableSet A)
+    (hclose : ∀ θ ∈ A, ‖circleMap 0 1 θ - circleMap 0 1 θ₀‖ ≤ 1 - r) :
+    ν.real A * ((1 + r) / (4 * (1 - r))) ≤ u ((r : ℂ) * circleMap 0 1 θ₀) := by
+  have hnw : ‖(r : ℂ) * circleMap 0 1 θ₀‖ = r := by
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hr,
+      norm_circleMap_zero, abs_one, mul_one]
+  have hwmem : (r : ℂ) * circleMap 0 1 θ₀ ∈ ball (0 : ℂ) 1 := by
+    rw [mem_ball_zero_iff, hnw]; exact hr1
+  have hwn : ‖(r : ℂ) * circleMap 0 1 θ₀‖ < 1 := by rw [hnw]; exact hr1
+  have hint : Integrable
+      (fun θ : ℝ => poissonKernel 0 ((r : ℂ) * circleMap 0 1 θ₀) (circleMap 0 1 θ)) ν :=
+    (unitPoissonTest hwn).integrable ν
+  have hind : Integrable (Set.indicator A fun _ : ℝ => (1 + r) / (4 * (1 - r))) ν :=
+    (integrable_const _).indicator hA
+  have hle : ∀ θ : ℝ,
+      Set.indicator A (fun _ : ℝ => (1 + r) / (4 * (1 - r))) θ
+        ≤ poissonKernel 0 ((r : ℂ) * circleMap 0 1 θ₀) (circleMap 0 1 θ) := by
+    intro θ
+    by_cases h : θ ∈ A
+    · rw [Set.indicator_of_mem h]
+      exact le_poissonKernel_of_close hr hr1 θ θ₀ (hclose θ h)
+    · rw [Set.indicator_of_notMem h]
+      exact poissonKernel_circleMap_one_nonneg hwn θ
+  have hmono := integral_mono hind hint hle
+  rw [integral_indicator_const _ hA, hrep _ hwmem, smul_eq_mul] at hmono
+  exact hmono
+
+/-! ## From chords to angles
+
+The geometric hypothesis of the local mass bound is a chordal distance.  The circle map is
+`1`-Lipschitz, so it is implied by the corresponding bound on angles, and the mass bound becomes a
+statement about intervals of angles: the measure of an interval of half-width `1 - r` around `θ₀` is
+controlled by the value of the function at the radius point. -/
+
+/-- **Chord is at most arc.**  The unit circle map is `1`-Lipschitz. -/
+theorem norm_circleMap_sub_circleMap_le (θ θ₀ : ℝ) :
+    ‖circleMap 0 1 θ - circleMap 0 1 θ₀‖ ≤ |θ - θ₀| := by
+  have h := (lipschitzWith_circleMap (0 : ℂ) 1).dist_le_mul θ θ₀
+  rw [Complex.dist_eq, Real.dist_eq] at h
+  simpa using h
+
+/-- **The interval mass bound.**  The measure of the angle interval of half-width `1 - r` centred at
+`θ₀` is controlled by the value of the function at the radius point. -/
+theorem measureReal_Icc_le {ν : Measure ℝ} [IsFiniteMeasure ν] {u : ℂ → ℝ}
+    (hrep : ∀ w ∈ ball (0 : ℂ) 1, ∫ θ, poissonKernel 0 w (circleMap 0 1 θ) ∂ν = u w)
+    (θ₀ : ℝ) {r : ℝ} (hr : 0 ≤ r) (hr1 : r < 1) :
+    ν.real (Set.Icc (θ₀ - (1 - r)) (θ₀ + (1 - r))) * ((1 + r) / (4 * (1 - r)))
+      ≤ u ((r : ℂ) * circleMap 0 1 θ₀) := by
+  refine measureReal_le_of_close hrep θ₀ hr hr1 measurableSet_Icc fun θ hθ => ?_
+  refine (norm_circleMap_sub_circleMap_le θ θ₀).trans ?_
+  rw [abs_le]
+  constructor
+  · linarith [hθ.1]
+  · linarith [hθ.2]
+
+/-- **Linear decay of local mass.**  If the function is bounded on the radius through `θ₀`, the
+measure of the shrinking interval of half-width `1 - r` decays linearly in `1 - r`.  This is
+strictly stronger than the absence of an atom at `θ₀`. -/
+theorem measureReal_Icc_le_of_bddAbove {ν : Measure ℝ} [IsFiniteMeasure ν] {u : ℂ → ℝ}
+    (hrep : ∀ w ∈ ball (0 : ℂ) 1, ∫ θ, poissonKernel 0 w (circleMap 0 1 θ) ∂ν = u w)
+    (θ₀ : ℝ) {M : ℝ} (hM : ∀ r : ℝ, 0 ≤ r → r < 1 → u ((r : ℂ) * circleMap 0 1 θ₀) ≤ M)
+    {r : ℝ} (hr : 0 ≤ r) (hr1 : r < 1) :
+    ν.real (Set.Icc (θ₀ - (1 - r)) (θ₀ + (1 - r))) ≤ 4 * M * (1 - r) := by
+  have h1 : (0 : ℝ) < 1 - r := by linarith
+  have hnn0 : 0 ≤ ν.real (Set.Icc (θ₀ - (1 - r)) (θ₀ + (1 - r))) := measureReal_nonneg
+  have hkey := (measureReal_Icc_le hrep θ₀ hr hr1).trans (hM r hr hr1)
+  have hM0 : 0 ≤ M := by
+    have hnn1 : 0 ≤ ν.real (Set.Icc (θ₀ - 1) (θ₀ + 1)) := measureReal_nonneg
+    have h0 := (measureReal_Icc_le hrep θ₀ le_rfl (by norm_num : (0 : ℝ) < 1)).trans
+      (hM 0 le_rfl (by norm_num))
+    norm_num at h0
+    linarith
+  have hkey' : ν.real (Set.Icc (θ₀ - (1 - r)) (θ₀ + (1 - r))) * (1 + r) ≤ M * (4 * (1 - r)) := by
+    rw [mul_div_assoc'] at hkey
+    rwa [div_le_iff₀ (by positivity)] at hkey
+  nlinarith [hkey', hnn0, hr, h1, hM0]
+
+/-! ## Toward the arc: the sharp local bound and a covering
+
+The bound is sharper stated at each radius separately rather than against a uniform bound: the mass
+of the interval of half-width `1 - r` is at most `4(1-r)` times the value of the function at that
+one radius point.  Covering an arc by such intervals then converts the linear rate into a bound
+proportional to the length of the arc. -/
+
+/-- **The sharp local bound.**  At each radius separately, the mass of the interval of half-width
+`1 - r` around `θ₀` is at most `4(1-r)` times the value at the radius point. -/
+theorem measureReal_Icc_le_radial {ν : Measure ℝ} [IsFiniteMeasure ν] {u : ℂ → ℝ}
+    (hrep : ∀ w ∈ ball (0 : ℂ) 1, ∫ θ, poissonKernel 0 w (circleMap 0 1 θ) ∂ν = u w)
+    (θ₀ : ℝ) {r : ℝ} (hr : 0 ≤ r) (hr1 : r < 1) :
+    ν.real (Set.Icc (θ₀ - (1 - r)) (θ₀ + (1 - r)))
+      ≤ 4 * (1 - r) * u ((r : ℂ) * circleMap 0 1 θ₀) := by
+  have h1 : (0 : ℝ) < 1 - r := by linarith
+  have hnn0 : 0 ≤ ν.real (Set.Icc (θ₀ - (1 - r)) (θ₀ + (1 - r))) := measureReal_nonneg
+  have hkey := measureReal_Icc_le hrep θ₀ hr hr1
+  have hkey' : ν.real (Set.Icc (θ₀ - (1 - r)) (θ₀ + (1 - r))) * (1 + r)
+      ≤ u ((r : ℂ) * circleMap 0 1 θ₀) * (4 * (1 - r)) := by
+    rw [mul_div_assoc'] at hkey
+    rwa [div_le_iff₀ (by positivity)] at hkey
+  nlinarith [hkey', hnn0, hr, h1]
+
+/-- **A covering of an arc by intervals of half-width `δ`.**  If `N` steps of length `2δ` overshoot
+the arc, the `N` intervals centred at the step midpoints cover it. -/
+theorem Icc_subset_biUnion_Icc {α β δ : ℝ} (hδ : 0 < δ) {N : ℕ} (hN : β - α < 2 * δ * N) :
+    Set.Icc α β ⊆ ⋃ k ∈ Finset.range N,
+      Set.Icc (α + 2 * k * δ) (α + 2 * (k + 1) * δ) := by
+  intro θ hθ
+  obtain ⟨hα, hβ⟩ := hθ
+  have hq : 0 ≤ (θ - α) / (2 * δ) := by
+    apply div_nonneg (by linarith)
+    linarith
+  have hklt : ((θ - α) / (2 * δ)) < N := by
+    rw [div_lt_iff₀ (by linarith)]
+    have : θ - α ≤ β - α := by linarith
+    calc θ - α ≤ β - α := this
+      _ < 2 * δ * N := hN
+      _ = (N : ℝ) * (2 * δ) := by ring
+  refine Set.mem_biUnion (Finset.mem_range.mpr ((Nat.floor_lt hq).mpr hklt)) ?_
+  constructor
+  · have hfl : (⌊(θ - α) / (2 * δ)⌋₊ : ℝ) ≤ (θ - α) / (2 * δ) := Nat.floor_le hq
+    rw [le_div_iff₀ (by linarith)] at hfl
+    linarith
+  · have hfl : (θ - α) / (2 * δ) < (⌊(θ - α) / (2 * δ)⌋₊ : ℝ) + 1 := Nat.lt_floor_add_one _
+    rw [div_lt_iff₀ (by linarith)] at hfl
+    linarith
+
+/-- **The arc bound.**  If the function is bounded by `M` on the radius of level `1 - δ` through
+every angle, the mass of an arc is at most `4 δ M N`, where `N` steps of length `2δ` overshoot the
+arc.  Choosing `N` of order `(β-α)/δ` makes the right-hand side proportional to `M` times the length
+of the arc, with no dependence on `δ`. -/
+theorem measureReal_Icc_le_of_radial_bound {ν : Measure ℝ} [IsFiniteMeasure ν] {u : ℂ → ℝ}
+    (hrep : ∀ w ∈ ball (0 : ℂ) 1, ∫ θ, poissonKernel 0 w (circleMap 0 1 θ) ∂ν = u w)
+    {α β M δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1)
+    (hM : ∀ θ₀ : ℝ, u (((1 - δ : ℝ) : ℂ) * circleMap 0 1 θ₀) ≤ M)
+    {N : ℕ} (hN : β - α < 2 * δ * N) :
+    ν.real (Set.Icc α β) ≤ 4 * δ * M * N := by
+  have hr : (0 : ℝ) ≤ 1 - δ := by linarith
+  have hr1 : (1 : ℝ) - δ < 1 := by linarith
+  have hone : (1 : ℝ) - (1 - δ) = δ := by ring
+  have hcover := Icc_subset_biUnion_Icc (α := α) (β := β) hδ hN
+  have hmono : ν.real (Set.Icc α β)
+      ≤ ν.real (⋃ k ∈ Finset.range N, Set.Icc (α + 2 * k * δ) (α + 2 * (k + 1) * δ)) :=
+    measureReal_mono hcover (measure_ne_top ν _)
+  refine hmono.trans (((measureReal_biUnion_finset_le _ _).trans ?_))
+  have hterm : ∀ k ∈ Finset.range N,
+      ν.real (Set.Icc (α + 2 * k * δ) (α + 2 * (k + 1) * δ)) ≤ 4 * δ * M := by
+    intro k _
+    have hcentre : Set.Icc (α + 2 * k * δ) (α + 2 * (k + 1) * δ)
+        = Set.Icc ((α + (2 * k + 1) * δ) - (1 - (1 - δ)))
+            ((α + (2 * k + 1) * δ) + (1 - (1 - δ))) := by
+      rw [hone]; congr 1 <;> ring
+    rw [hcentre]
+    refine (measureReal_Icc_le_radial hrep (α + (2 * k + 1) * δ) hr hr1).trans ?_
+    rw [hone]
+    have := hM (α + (2 * k + 1) * δ)
+    nlinarith [hδ]
+  calc ∑ _k ∈ Finset.range N, ν.real (Set.Icc (α + 2 * _k * δ) (α + 2 * (_k + 1) * δ))
+      ≤ ∑ _k ∈ Finset.range N, 4 * δ * M := Finset.sum_le_sum hterm
+    _ = 4 * δ * M * N := by rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]; ring
+
+/-- **The arc bound, free of the covering scale.**  Choosing the number of covering intervals of
+order `(β-α)/δ` and letting `δ` shrink removes it: a uniform radial bound `M` gives
+`nu(arc) <= 2 M |arc|`. -/
+theorem measureReal_Icc_le_of_uniform_radial_bound {ν : Measure ℝ} [IsFiniteMeasure ν] {u : ℂ → ℝ}
+    (hrep : ∀ w ∈ ball (0 : ℂ) 1, ∫ θ, poissonKernel 0 w (circleMap 0 1 θ) ∂ν = u w)
+    {α β M : ℝ} (hαβ : α ≤ β) (hM0 : 0 ≤ M)
+    (hM : ∀ δ : ℝ, 0 < δ → δ < 1 → ∀ θ₀ : ℝ,
+      u (((1 - δ : ℝ) : ℂ) * circleMap 0 1 θ₀) ≤ M) :
+    ν.real (Set.Icc α β) ≤ 2 * M * (β - α) := by
+  refine le_of_forall_pos_le_add fun ε hε => ?_
+  set δ : ℝ := min (ε / (8 * M + 1)) (1 / 2) with hδdef
+  have hδ : 0 < δ := lt_min (div_pos hε (by linarith)) (by norm_num)
+  have hδ1 : δ < 1 := lt_of_le_of_lt (min_le_right _ _) (by norm_num)
+  have hq : 0 ≤ (β - α) / (2 * δ) := div_nonneg (by linarith) (by linarith)
+  set N : ℕ := ⌈(β - α) / (2 * δ)⌉₊ + 1 with hNdef
+  have hqN : (β - α) / (2 * δ) < N := by
+    rw [hNdef]
+    push_cast
+    linarith [Nat.le_ceil ((β - α) / (2 * δ))]
+  have hN : β - α < 2 * δ * N := by
+    rw [div_lt_iff₀ (by linarith)] at hqN
+    linarith
+  have hbound := measureReal_Icc_le_of_radial_bound hrep hδ hδ1 (hM δ hδ hδ1) hN
+  have hNlt : (N : ℝ) < (β - α) / (2 * δ) + 2 := by
+    rw [hNdef]
+    push_cast
+    linarith [Nat.ceil_lt_add_one hq]
+  have hstep : 4 * δ * M * N ≤ 2 * M * (β - α) + 8 * δ * M := by
+    have hmul : 4 * δ * M * (N : ℝ) ≤ 4 * δ * M * ((β - α) / (2 * δ) + 2) :=
+      mul_le_mul_of_nonneg_left hNlt.le (by positivity)
+    have hcalc : 4 * δ * M * ((β - α) / (2 * δ) + 2) = 2 * M * (β - α) + 8 * δ * M := by
+      field_simp
+      ring
+    linarith [hmul, hcalc.le, hcalc.ge]
+  have hsmall : 8 * δ * M ≤ ε := by
+    have hle : δ ≤ ε / (8 * M + 1) := min_le_left _ _
+    have h8 : 8 * δ * M ≤ 8 * (ε / (8 * M + 1)) * M :=
+      mul_le_mul_of_nonneg_right (by linarith) hM0
+    have hd : (0 : ℝ) < 8 * M + 1 := by linarith
+    have hfrac : 8 * (ε / (8 * M + 1)) * M ≤ ε := by
+      rw [show 8 * (ε / (8 * M + 1)) * M = 8 * ε * M / (8 * M + 1) by field_simp,
+        div_le_iff₀ hd]
+      nlinarith [hε.le, hM0]
+    linarith
+  linarith [hbound, hstep, hsmall]
+
+/-- **Vanishing on an arc.**  If the function admits arbitrarily small uniform radial bounds, the
+measure of every arc vanishes.  This is the form the support statement takes: where the function
+tends to zero at the boundary, the representing measure puts no mass. -/
+theorem measureReal_Icc_eq_zero_of_radial_tendsto_zero {ν : Measure ℝ} [IsFiniteMeasure ν]
+    {u : ℂ → ℝ}
+    (hrep : ∀ w ∈ ball (0 : ℂ) 1, ∫ θ, poissonKernel 0 w (circleMap 0 1 θ) ∂ν = u w)
+    {α β : ℝ} (hαβ : α ≤ β)
+    (hsmall : ∀ M : ℝ, 0 < M → ∀ δ : ℝ, 0 < δ → δ < 1 → ∀ θ₀ : ℝ,
+      u (((1 - δ : ℝ) : ℂ) * circleMap 0 1 θ₀) ≤ M) :
+    ν.real (Set.Icc α β) = 0 := by
+  refine le_antisymm ?_ measureReal_nonneg
+  rcases eq_or_lt_of_le hαβ with rfl | hlt
+  · simpa using measureReal_Icc_le_of_uniform_radial_bound hrep hαβ zero_le_one
+      (hsmall 1 one_pos)
+  · refine le_of_forall_pos_le_add fun ε hε => ?_
+    have hM : 0 < ε / (2 * (β - α) + 1) := div_pos hε (by linarith)
+    have hb := measureReal_Icc_le_of_uniform_radial_bound hrep hαβ hM.le
+      (hsmall _ hM)
+    have hd : (0 : ℝ) < 2 * (β - α) + 1 := by linarith
+    have : 2 * (ε / (2 * (β - α) + 1)) * (β - α) ≤ ε := by
+      rw [show 2 * (ε / (2 * (β - α) + 1)) * (β - α)
+          = 2 * ε * (β - α) / (2 * (β - α) + 1) by field_simp,
+        div_le_iff₀ hd]
+      nlinarith [hε.le, hlt]
+    linarith
 
 end GaloisForLFunctions.HTGeometry

@@ -31,9 +31,10 @@
   `GaloisForLFunctions.RHTower.DeningerHeightBaseChange`,
   `GaloisForLFunctions.RHTower.DeningerAbsoluteHeight`,
   `GaloisForLFunctions.RHTower.DeningerAbsoluteHeightSeminorm`,
-  `GaloisForLFunctions.RHTower.DeningerKummerGroupNorm`
-  (the gluing of the place tower, the absolute height on `Q̄`, and the
-  normed Kummer group `𝒢`)
+  `GaloisForLFunctions.RHTower.DeningerKummerGroupNorm`,
+  `GaloisForLFunctions.RHTower.DeningerKummerSpace`
+  (the gluing of the place tower, the absolute height on `Q̄`, the
+  normed Kummer group `𝒢`, and the normed `ℚ`-vector space `𝒢 ⊗ ℚ`)
 
 ## Source Hilbert space
 
@@ -625,12 +626,34 @@ declarations: `propext, Classical.choice, Quot.sound` (the units/finite-order tr
 So `𝒢` and its Weil-height norm now exist as Lean objects, and the injectivity of the card's `(2)`
 is the positive-definiteness of that norm rather than a citation.
 
+### The Kummer space `𝒢 ⊗ ℚ` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerKummerSpace.lean`.  Axiom audit on all declarations:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerKummerGroup_eq_one_of_isOfFinOrder`, `deningerKummerGroup_isMulTorsionFree` — **the
+  Kummer group is torsion-free**: a class of finite order is represented by a unit whose power is
+  torsion, hence which is itself torsion, hence trivial in `𝒢`.  Torsion-freeness for a commutative
+  group is exactly injectivity of `x ↦ x^n`, obtained from this by applying it to `a·b⁻¹`.
+- `deningerKummerNorm_pow`, `deningerKummerNorm_zpow` and their additive forms — the Kummer norm is
+  homogeneous, `‖x^k‖ = |k|·‖x‖` for `k ∈ ℤ`.
+- `deningerKummerSpace F = DivisibleHull (Additive 𝒢)` — **the `ℚ`-vector space `𝒢 ⊗ ℚ`** of the
+  card's `(2)`.  Torsion-freeness is exactly the hypothesis mathlib's `DivisibleHull` needs for
+  `mk m s = mk m' s' ↔ s'•m = s•m'`, which is what makes the extended height well defined.
+- `deningerKummerSpaceNormFun` and `deningerKummerSpaceNorm` — **the height extends to `𝒢 ⊗ ℚ` as
+  a genuine `AddGroupNorm`**, by `‖m/s‖ = ‖m‖/s`.  Well-definedness is the homogeneity law;
+  subadditivity comes from `mk m s + mk m' s' = mk (s'•m + s•m') (s·s')` and the group inequality;
+  definiteness because `‖m‖/s = 0` forces `‖m‖ = 0` forces `m = 0`.
+- `deningerKummerSpaceNorm_qsmul` — **rational homogeneity** `‖q·x‖ = |q|·‖x‖`, from
+  `q · (m/s) = (q.num · m)/(q.den · s)` and the integer homogeneity.
+
+So the card's `𝒢 ⊗ ℚ` is now an actual normed `ℚ`-vector space in Lean, with the Weil height as
+its norm.
+
 ### Remaining
 
-Two structural steps to `H_Kum` itself: the `ℚ`-vector space `𝒢 ⊗ ℚ` — `𝒢` is written
-multiplicatively and torsion-free, so the tensor is its divisible hull, on which the height norm
-extends by `deningerAbsHeight_zpow` — and its metric completion.  Both are constructions on top of
-`deningerKummerNorm`, with no unproved mathematical input.  The remaining genuinely analytic point
-is that the card's `H_Kum` is an `L²` space rather than the `L¹`-type height completion; the `L²`
-structure is carried by the place space `(Y, λ)` and is what the `p = 2` Allcock--Vaaler theorem
-supplies.
+The metric completion of `𝒢 ⊗ ℚ` — a `UniformSpace.Completion` of the normed space just built,
+which needs no new mathematics — and the one genuinely analytic point: the card's `H_Kum` is an
+`L²` space, whereas the height norm is of `L¹` type.  The `L²` structure is carried by the place
+space `(Y, λ)` and is what the `p = 2` Allcock--Vaaler theorem supplies; every *consequence* the
+card draws from it is already formalized.
