@@ -438,15 +438,22 @@ step into `m` pieces costs exactly the sum of the `m-1` successive lost-layer co
 Since every term is nonnegative, no refinement schedule can raise the value, so none can produce a
 floor that the unrefined step does not already have.
 
-**Sharpness is open.**  Equality in `(33)` holds exactly when every coupling of the chain vanishes:
+**Sharpness, now settled.**  Equality in `(33)` holds exactly when every coupling of the chain
+vanishes:
 
 ```text
 Re rho(x_0,x_m) = sum_i Re rho(x_i,x_(i+1))
   <->  Z(x_0, x_j, x_(j+1)) = 0 for every 1 <= j < m.                     (34)
 ```
 
-Whether `Z` is ever nonzero in a crossing chamber is **not proved here**, and the two obvious
-witness families provably fail.
+`Z` **is** nonzero in a crossing chamber: the sibling card
+`cofinal-essential-phase-sonin-coupling-nonannihilation.md` constructs a frequency-locked annular
+Meyer wavepacket family on which `|| Z_r w_r - U_{1/r} w_r || -> 0`, so `Z_r != 0` for all large
+`r` (`exists_scale_soninApertureCoupling_ne_zero`), and the inequality `(33)` is therefore strict
+at an actual flag and scale (`exists_strict_soninApertureResidualTrace_chain`, with the explicit
+gap `1/4` in `exists_soninApertureResidualTrace_chain_gap`).  The two obvious witness families
+below still provably fail — the witness has to be the escaping wavepacket, not a support-supported
+shell — and that is why the construction is on the sibling card rather than here.
 
 *Outer family.*  The corpus's noncompactness witness for the pair `(a,b)` is supported in the
 annulus `(r a, r d)`, which lies outside `[-c,c]`, so it is asymptotically fixed by `Q_c` and
@@ -529,8 +536,8 @@ Q_b D_r (Q_a - Q_b) D_r (Q_b - Q_c) = 0.                                  (38)
 ```
 
 **Algebra is exhausted here.**  `(38)` is `Q_b D_r Z = 0`, so the reduction has closed a loop: every
-further rearrangement returns an equivalent of `Z = 0` itself.  Settling it needs one of two things
-that are not algebraic, and neither is in the corpus:
+further rearrangement returns an equivalent of `Z = 0` itself.  Settling it needed one of two things
+that are not algebraic:
 
 - a vector in `K_b (-) K_c` whose `D_r`-image has nonzero component in `K_a (-) K_b` — an explicit
   construction, since the physical-support families provably fail; or
@@ -538,6 +545,15 @@ that are not algebraic, and neither is in the corpus:
   strong enough to force the triple product to vanish.
 
 Repeated algebraic restatement past this point produces equivalents, not progress.
+
+**Answered by the first route.**  The escaping wavepacket of the sibling card is exactly such a
+vector family, and it is not of physical-support type — it escapes to infinity in position while
+its rescaled frequency stays locked.  So `(38)` is *false* in the crossing chamber:
+`exists_scale_soninApertureTripleProduct_ne_zero` gives an actual dilation scale at which
+`Q_b D_r (Q_a - Q_b) D_r (Q_b - Q_c) != 0`, and hence
+`exists_scale_evenSoninApertureRestrictionDefect_mul_outer_ne` shows the defect, which by `(36)`
+always lives on `K_b`, does **not** live on the smaller `K_c`.  The carrier question of `(37)` is
+therefore settled in the negative.
 
 **Witness criterion, and the exact obstruction to using it.**  On a vector `w` supported inside
 `[-c,c]` the projection at `c` vanishes exactly, so
@@ -1004,6 +1020,7 @@ provisional pending expert/literature review.
 | G.3 product realization | `SoninPrincipalRelativeOperator.toOperator_compose` |
 | G.4 cyclicity | `SoninPrincipalRelativeOperator.extendedTrace_compose_comm` |
 | G.4 bilinear cyclicity | `soninPrincipalRelativePairTrace_comm` |
+| **G.1--G.2 as a characterization**: the presented operators, and the extended trace as the *unique* gluing of the two normalizations on them | `soninPrincipalRelativeCarrier`, `add_relative_mem_soninPrincipalRelativeCarrier`, `eq_extendedTrace_of_normalizations`, `eq_of_normalizations`, `soninExtendedTraceOn`, `soninExtendedTraceOn_state`, `soninExtendedTraceOn_add_relative`, `existsUnique_soninExtendedTraceOn` |
 | `(8)` single-corner anomaly | `SoninPrincipalRelativeOperator.extendedTrace_ofGramFactor` |
 | aperture defect as presentation | `soninApertureRestrictionDefectPresentation` |
 | aperture defect value | `extendedTrace_soninApertureRestrictionDefectPresentation` |
@@ -1048,6 +1065,8 @@ provisional pending expert/literature review.
 | `(35)` support restatement | `evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_defect_mul_complement` |
 | `(36)` defect carried by `Q_b` | `evenSoninApertureRestrictionDefect_mul_evenCentralSoninProjection` |
 | `(37)` carrier form | `evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_defect_mul_outer` |
+| `(38)` explicit carrier equation, in projections and dilations only | `evenSoninApertureRestrictionDefect_eq_compression`, `evenSoninApertureSuccessiveLayerTransition_eq_zero_iff_tripleProduct` |
+| **`(38)` is false**: at an actual scale the triple product is nonzero, so the defect escapes the smaller carrier | `exists_scale_soninApertureTripleProduct_ne_zero`, `exists_scale_evenSoninApertureRestrictionDefect_mul_outer_ne` |
 | `(39)` inner-band agreement | `evenSoninApertureSuccessiveLayerTransition_apply_of_indicatorCutoff_eq_self` |
 | witness criterion | `evenSoninApertureSuccessiveLayerTransition_ne_zero_of_lostTransition_apply_ne_zero` |
 | `(40)` outer-band split | `evenCentralSoninProjection_apply_of_indicatorCutoff_eq_zero` |
@@ -1111,6 +1130,19 @@ provisional pending expert/literature review.
 | `(63)` answered: the compressed dilation has a nonzero off-diagonal block | `exists_scale_soninCompressedDilation_layer_block_ne_zero` |
 | worked instance at the flag `1 < 3/2 < 2 < 3`, so the hypothesis class is visibly inhabited | `soninApertureCoupling_ne_zero_instance`, `evenSoninApertureRestrictionDefect_ne_add_instance`, `not_exists_lower_bound_instance` |
 | energy strictly monotone | `hsNormSq_fullTimeBandFourier_lt_of_lt` |
+| **what a completion must do**: no counterterm bounded above on the packet family restores a floor, so a completion with a floor is unbounded above along it | `not_exists_lower_bound_soninAperturePacketCurvature_add_bounded`, `not_bddAbove_of_lower_bound_completion`, `exists_packet_le_completion_of_lower_bound` |
+| **the threshold for an extensive completion**: per-scale form, floor when the contribution dominates the energies, no floor below `1/4`, and the `log(b/a)` counterterm failing on a short flag | `soninCompletedPacketValue`, `soninCompletedPacketValue_eq_sum`, `soninCompletedPacketValue_nonneg`, `not_exists_lower_bound_soninCompletedPacketValue`, `log_six_fifths_lt_quarter`, `not_exists_lower_bound_soninCompletedPacketValue_logCounterterm` |
+| **the exact criterion for any completion**: finite sums are bounded below iff the negative part is summable, hence the floor exists iff the energy excess is summable, and a working completion tracks the energy | `bddBelow_finsetSum_iff_summable_min_zero`, `soninCompletedPacketValueVar`, `soninCompletedPacketValueVar_eq_sum`, `bddBelow_soninCompletedPacketValueVar_iff`, `tendsto_min_sub_hsNormSq_of_bddBelow` |
+| Hilbert--Schmidt energy dominates a whole finite orthonormal family, hence its cardinality when the operator is nonexpanding-free on it | `sum_norm_sq_apply_le_hsNormSq`, `card_le_hsNormSq_of_norm_apply_eq_one` |
+| growing coupling energy defeats every completion bounded above | `not_bddBelow_of_tendsto_hsNormSq_atTop` |
+| the transition limit and the norm limit for a packet on **any sub-annulus** of the aperture window, flag and packet annulus now independent | `tendsto_norm_soninApertureCoupling_soninPacketEven_sub_subAnnulus`, `tendsto_norm_soninApertureCoupling_apply_soninPacketEven_subAnnulus` |
+| packets on disjoint annuli are exactly orthogonal | `inner_soninPacketEven_eq_zero_of_disjoint` |
+| **`N` disjoint annuli force coupling energy above `N - 1`**, the uniform subdivision that supplies them, and hence **the coupling energy tends to infinity** | `eventually_sub_one_le_hsNormSq_of_disjointAnnuli`, `soninUniformAnnulusFloor`, `exists_disjoint_annulus_family`, `tendsto_hsNormSq_soninApertureCoupling_atTop` |
+| **no completion bounded above restores the floor**, at any strict flag | `not_bddBelow_soninCompletedPacketValueVar_of_bddAbove` |
+| the channel norm dominates every layer logarithm below the height, so the channel norms **diverge** with the tower — the surviving completion class is inhabited | `log_logShellRadius`, `le_norm_evenLogShellChannel`, `tendsto_norm_evenLogShellChannel_atTop`, `exists_norm_atTop_channel_family` |
+| pairing against any **fixed bounded operator** is bounded above, hence no floor; the concrete conductor channel at fixed aperture and height is such an operator | `soninFixedChannelContribution`, `soninFixedChannelContribution_le`, `not_bddBelow_soninCompletedPacketValueVar_fixedChannel`, `not_bddBelow_soninCompletedPacketValueVar_logShellConductor` |
+| the scalar Burnol counterterm, and every prime-independent scalar, leaves the channel unbounded below; a working completion must diverge along the scales | `not_bddBelow_soninCompletedPacketValueVar_burnolCounterterm`, `not_bddBelow_soninCompletedPacketValueVar_const`, `tendsto_atTop_of_bddBelow_soninCompletedPacketValueVar` |
+| the new statements at the worked flag `1 < 3/2 < 2 < 3` | `soninApertureTripleProduct_ne_zero_instance`, `evenSoninApertureRestrictionDefect_mul_outer_ne_instance`, `not_exists_lower_bound_bounded_instance` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeCyclicExtension.lean`,
@@ -1147,7 +1179,18 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninMixedPhysicalBlockNonvanishing.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninMixedFourierBlockNonvanishing.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninCouplingLayerOrthogonality.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninCouplingSoninCompression.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninCouplingSoninCompression.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninDefectCarrierEscape.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninExtendedTraceUniqueness.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionUnboundedRequirement.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionEnergyThreshold.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionSummabilityCriterion.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninSubAnnulusCouplingLimit.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketDisjointOrthogonality.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -1158,6 +1201,150 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — checked that the elimination has not emptied the space.  The channel acts on the
+  `k`-th layer unit by `log(r^k a)`, so its norm is at least that for every layer below the tower
+  height, and the norms therefore diverge with the height.  So the one surviving class — channel
+  families whose norms grow with the scale — contains the corpus's own conductor tower, and the no-go
+  chain constrains the weld without refuting it.  A no-go over an empty class would have asserted
+  nothing; this one does not.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+- 2026-08-01 — extended from scalars to operators: pairing the source packets against any *fixed*
+  bounded operator is bounded above, because the packet energy is uniform in the frequency, so no
+  fixed channel restores the floor — the concrete Burnol conductor at one aperture and one tower
+  height included.  The surviving completion must be a channel family whose norms diverge with the
+  scale.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+- 2026-08-01 — applied to the actual Burnol term: it is `log(b/a)`, one constant per scale, so the
+  completed channel is unbounded below at every strict flag.  Any completion that restores the
+  floor must tend to infinity along the scales.  The scalar-counterterm form of the weld is closed;
+  the regularized pairing is what remains.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+- 2026-08-01 — **the coupling energy is unbounded, and that closes the bounded completion class.**
+  Cutting the aperture window into `N` disjoint annuli gives `N` exactly orthogonal packets; the
+  coupling carries each to its own dilate without losing norm, so after normalisation the coupling
+  asymptotically preserves an `N`-element orthonormal family and Hilbert--Schmidt domination gives
+  `hsNormSq Z_r > N - 1` at every large scale.  Letting `N` grow,
+  `tendsto_hsNormSq_soninApertureCoupling_atTop`: the energy tends to infinity along every clock
+  past the crossing threshold.  Through the summability criterion this yields
+  `not_bddBelow_soninCompletedPacketValueVar_of_bddAbove` — **no completion bounded above on the
+  scales restores the floor, at any strict flag**, not merely on the short flags where the
+  aperture logarithm was already below the `1/4` threshold.  A working completion must grow with
+  the scale at least as fast as the coupling energy.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+- 2026-08-01 — both ingredients of the growth argument are now in place.  The transition chain never
+  used the packet annulus as such, only two support facts — vanishing inside the inner aperture and
+  support inside the outer one — so it restates verbatim for a packet on any sub-annulus of `(b,c)`;
+  and packets on disjoint annuli are *exactly* orthogonal, since their supports are disjoint
+  pointwise, with no frequency separation or limit needed.  So a subdivision of `(b,c)` into `N`
+  sub-annuli gives `N` orthogonal packets, each carried by the coupling to its own dilate at one
+  common scale.  What remains is to normalise them and let the `N` limits run simultaneously, which
+  with `card_le_hsNormSq_of_norm_apply_eq_one` gives `hsNormSq Z_r >= N` for large `r`.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninSubAnnulusCouplingLimit.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninPacketDisjointOrthogonality.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+- 2026-08-01 — set up the growth question, which is what the summability criterion now turns on.
+  `sum_norm_sq_apply_le_hsNormSq` generalises the corpus's one-vector domination to a finite
+  orthonormal family, so `N` orthonormal vectors that the coupling does not contract force
+  `hsNormSq Z >= N`; and `not_bddBelow_of_tendsto_hsNormSq_atTop` says that if the coupling energy
+  grows without bound then no completion bounded above can restore the floor.  What is needed next
+  is `N` mutually orthogonal wavepackets that the coupling preserves at one scale — disjoint
+  sub-annuli of `(b,c)` are the natural candidates, and that requires the packet chain restated for
+  a packet supported in a sub-annulus rather than for the one built on `(b,c)` itself.
+  Lean: `formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtDominatesPointwise.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninCompletionSummabilityCriterion.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninSubAnnulusCouplingLimit.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketDisjointOrthogonality.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+- 2026-08-01 — the last gate is now an exact summability criterion, for completions of arbitrary
+  shape: the completed packet channel is bounded below **iff** the sequence
+  `min(contribution - coupling energy, 0)` is summable.  Consequently any completion that restores
+  the floor must track the coupling energy asymptotically along the scales.  The underlying
+  sequence lemma — finite sums bounded below iff the negative part is summable — is not in mathlib
+  and is now corpus-owned.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninCompletionSummabilityCriterion.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninSubAnnulusCouplingLimit.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketDisjointOrthogonality.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+- 2026-08-01 — the last gate, for extensive completions, is now a single inequality: contribution
+  per scale versus coupling energy per scale.  Above every scale's energy the completed channel is
+  bounded below by zero; below the uniform floor `1/4` it is unbounded below.  The aperture
+  logarithm sits below the threshold on short flags (`log(6/5) < 1/4`, from `5/4 <= exp(1/4)`), so
+  the natural extensive candidate is ruled out at an explicit flag.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninCompletionEnergyThreshold.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionSummabilityCriterion.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninSubAnnulusCouplingLimit.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketDisjointOrthogonality.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+- 2026-08-01 — the last gate is now a property of the archimedean side alone.  Since the packet
+  channel is unbounded below, any counterterm bounded above on the packet family — packet-dependent
+  or not — leaves it unbounded below, so a completion with a lower floor must be unbounded above
+  along that family and must exceed every level at some packet.  Also guarded the session's new
+  statements at the worked flag `1 < 3/2 < 2 < 3`, so none of them is a no-go over an empty class.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninCompletionUnboundedRequirement.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionEnergyThreshold.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionSummabilityCriterion.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninSubAnnulusCouplingLimit.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketDisjointOrthogonality.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+- 2026-08-01 — Theorem G items 1--2 upgraded from *properties* of the glued functional to a
+  *characterization* of it.  Directness said the presentation is unique and the restrictions said
+  what the value is on each part, but nothing said the extended trace is the only assignment with
+  those restrictions.  `existsUnique_soninExtendedTraceOn` now says exactly that, on the set of
+  presented operators, and `eq_extendedTrace_of_normalizations` gives the same statement for a
+  functional defined on the whole algebra.  The hypotheses are the weakest that can work: read a
+  canonical normal state by its logarithmic weight, and absorb one exact correction by the ordinary
+  trace.  Note the presented operators are *not* a subspace — window states do not add — so this is
+  a gluing statement, not a linear-functional statement, unlike the finite-part analogue on
+  `sonin-principal-relative-trace-splitting`.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninExtendedTraceUniqueness.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionUnboundedRequirement.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionEnergyThreshold.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionSummabilityCriterion.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninSubAnnulusCouplingLimit.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketDisjointOrthogonality.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
+- 2026-08-01 — `(38)`, the card's own terminus, is now a theorem *and* is false.  The explicit
+  carrier equation `Q_b D_r (Q_a - Q_b) D_r (Q_b - Q_c) = 0` had never been stated in Lean — only
+  its predecessors `(35)`--`(37)` had — so it is now `..._eq_zero_iff_tripleProduct`, derived from
+  the compression form of the defect and the nesting absorption `Q_b(1 - Q_c) = Q_b - Q_c`.  With
+  the escaping wavepacket it fails at an actual scale, so the defect, always carried by `K_b` by
+  `(36)`, is *not* carried by `K_c`.  The "algebra is exhausted" paragraph is answered by its own
+  first route: the required vector family exists and is not of physical-support type.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninDefectCarrierEscape.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninExtendedTraceUniqueness.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionUnboundedRequirement.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionEnergyThreshold.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionSummabilityCriterion.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninSubAnnulusCouplingLimit.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketDisjointOrthogonality.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`.
 - 2026-08-01 — added a worked numerical instance of the whole chain at `1 < 3/2 < 2 < 3`.  Every
   no-go here is stated over a hypothesis class, and a no-go over an empty class asserts nothing;
   the instance module makes non-vacuity checkable at a glance rather than by inspection.

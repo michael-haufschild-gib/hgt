@@ -173,11 +173,99 @@ weld.  This theorem itself does neither.
       vacuous.
       This settles the first branch of the disjunction below; Burnol cancellation is now the
       remaining question, and it must contend with an unbounded-below channel.
-- [ ] prove Burnol cancellation, against a channel now known to be unbounded below
+- [x] **the scalar Burnol counterterm is settled, negatively** —
+      `not_bddBelow_soninCompletedPacketValueVar_burnolCounterterm` in
+      `SoninBurnolCompletionNoFloor.lean`: the corpus counterterm is `log(b/a)`, one fixed real
+      number per scale, hence a bounded completion, and the coupling energy is unbounded, so the
+      completed packet channel has no lower floor at any strict flag.  The same holds for every
+      prime-independent scalar (`..._const`).  This is the second branch of `(13)`: an
+      unconditional unbounded-below sequence on the exact normalized source family, now also after
+      the Burnol subtraction.  What survives is only a completion that grows with the scale —
+      `tendsto_atTop_of_bddBelow_soninCompletedPacketValueVar` shows any working completion must
+      tend to infinity along the scales — i.e. the regularized extended-trace pairing, not a
+      counterterm
+- [ ] prove Burnol cancellation in the regularized-pairing form, whose contribution must diverge —
+      narrowed again by `not_bddBelow_soninCompletedPacketValueVar_fixedChannel` in
+      `SoninFixedChannelNoFloor.lean`: pairing the source packets against **any fixed bounded
+      operator** gives a contribution bounded by `||T||` times the (uniformly bounded) packet
+      energy, so it cannot restore the floor either.  The concrete conductor channel at one
+      aperture and one tower height is such an operator
+      (`not_bddBelow_soninCompletedPacketValueVar_logShellConductor`).  Only a channel *family*
+      whose norms grow with the scale remains — and that class is inhabited:
+      `tendsto_norm_evenLogShellChannel_atTop` in `SoninLogShellChannelGrowth.lean` shows the
+      conductor channel's norms diverge with the tower height, since it acts on the `k`-th layer
+      unit by `log(r^k a)`.  So the remaining question is quantitative — whether the tower can be
+      tied to the clock so that the contribution tracks the coupling energy with summable excess —
+      not whether any candidate survives — sharpened:
+      `not_exists_lower_bound_soninAperturePacketCurvature_add_bounded` in
+      `SoninCompletionUnboundedRequirement.lean` shows no counterterm that is bounded above on the
+      packet family can restore a floor, even one depending on the packet.  So by
+      `not_bddAbove_of_lower_bound_completion` the Burnol contribution must be *unbounded above*
+      along the unit-weight packet family, and by `exists_packet_le_completion_of_lower_bound` it
+      must exceed every level at some packet.  The remaining question is whether the conductor
+      actually does that; boundedness of its contribution would now settle the disjunction
+      negatively.  Sharper still, for an *extensive* completion contributing a fixed `kappa` per
+      scale of the packet: `soninCompletedPacketValue_eq_sum` writes the completed value as
+      `sum over the packet of (kappa - coupling energy at that scale)`, so the floor exists when
+      `kappa` dominates every scale's energy (`soninCompletedPacketValue_nonneg`) and fails
+      whenever `kappa < 1/4` (`not_exists_lower_bound_soninCompletedPacketValue`), the uniform
+      energy floor.  In particular the aperture logarithm itself is below the threshold on short
+      flags — `log(6/5) < 1/4` — so
+      `not_exists_lower_bound_soninCompletedPacketValue_logCounterterm` rules out a `log(b/a)`
+      per-scale completion at the flag `1 < 11/10 < 6/5 < 5/4`.  The threshold is the coupling
+      energy, and it is now an explicit inequality rather than an open disjunction.  For a
+      *scale-dependent* completion the criterion is exact:
+      `bddBelow_soninCompletedPacketValueVar_iff` — the floor exists **iff** the excess of the
+      coupling energy over the contribution is summable over the scales, so by
+      `tendsto_min_sub_hsNormSq_of_bddBelow` any working completion must track the energy
+      asymptotically.  What remains of `(13)` is a single summability question about one explicit
+      sequence — and that sequence is now known to diverge: by
+      `tendsto_hsNormSq_soninApertureCoupling_atTop` the coupling energy is unbounded along the
+      crossing clock, so `not_bddBelow_soninCompletedPacketValueVar_of_bddAbove` rules out **every**
+      completion bounded above on the scales, at every strict flag.  A surviving Burnol completion
+      must therefore grow with the scale at least as fast as the coupling energy; a bounded
+      archimedean contribution is now formally excluded.
 - [ ] prove RH or terminally retire surviving Suzuki--Burnol weld
 
 ## Log
 
+- 2026-08-01 — the fixed-channel form is dead too.  A completion given by pairing the packets
+  against one bounded operator is bounded above by `||T||` times the packet energy, which is
+  uniform in the frequency, so the divergent coupling energy beats it.  The Burnol conductor read
+  at fixed aperture and tower height is exactly such an operator.  What is left is a channel family
+  with diverging norms.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`.
+- 2026-08-01 — the scalar form of the Suzuki--Burnol weld is dead.  The corpus's Burnol counterterm
+  is a constant per scale, the coupling energy diverges, and a bounded completion cannot compensate
+  a divergent one — so the completed channel is unbounded below at every strict flag.  Only a
+  completion diverging along the scales can survive, which is the regularized pairing rather than
+  any subtraction.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninBurnolCompletionNoFloor.lean`.
+- 2026-08-01 — the summability question is settled on the energy side: the coupling energy tends to
+  infinity (many disjoint annuli give many orthogonal packets the coupling preserves), so no
+  completion bounded above on the scales can restore the floor at any strict flag.  The disjunction
+  in `(13)` now demands an archimedean term growing with the scale.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyGrowth.lean`.
+- 2026-08-01 — `(13)` is now a summability criterion, with no restriction on the shape of the
+  completion.  Finite sums of a real sequence are bounded below exactly when the sequence's negative
+  part is summable, so the completed channel has a floor exactly when the coupling energy exceeds
+  the per-scale contribution by a summable amount — and any completion with a floor must track the
+  energy asymptotically.  The general sequence lemma was missing from mathlib and is now in the
+  corpus.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninCompletionSummabilityCriterion.lean`.
+- 2026-08-01 — the terminal test `(13)` reduced to one inequality for extensive completions.  If the
+  archimedean side contributes a fixed amount per scale, the completed packet value is literally the
+  sum of `contribution - coupling energy` over the packet, so a floor exists exactly when the
+  contribution dominates the energies and fails as soon as it drops below the uniform floor `1/4`.
+  The aperture logarithm is below that threshold on short flags, which kills the most natural
+  extensive candidate outright.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninCompletionEnergyThreshold.lean`.
+- 2026-08-01 — the terminal test `(13)` is now one-sided in a usable way.  Earlier no-gos only ruled
+  out counterterms depending on the aperture flag; the channel's unboundedness in fact defeats every
+  counterterm bounded above on the packet family, including packet-dependent ones.  Equivalently,
+  any completion with a lower floor is unbounded above along that family — a checkable property of
+  the archimedean side rather than an open disjunction about the sum.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninCompletionUnboundedRequirement.lean`.
 - 2026-07-31 — packet curvature trace computed.  The relative ideal is closed under finite sums, so
   the ordinary trace is additive over a weighted family of prime scales and the real trace is minus
   the weighted total coupling energy.  Nonnegative weights therefore cannot make the aperture

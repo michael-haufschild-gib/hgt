@@ -402,9 +402,49 @@ character `-k` returns exactly the collected coefficient of `k`. Multiplying
 that scalar readout by the centred-time reporter equals the resolved wall
 signal. Consequently the phase-cycled readout is identically zero below
 `h(k)`, is strictly positive at `h(k)`, and has the exact coefficient-weighted
-sinc normal profile there. This closes scalar aggregate isolation in the
-ideal phase-cycling model; replacement of Haar cycling by a resource-counted
-finite grid remains the device-feasibility gate.
+sinc normal profile there. Haar cycling has now been replaced by an exact
+finite grid. At replica order `n`, a grid with `2n+1` phases per spectral
+coordinate removes every alias and returns the selected coefficient exactly;
+the setting count is `(2n+1)^d`. Every smaller one-coordinate grid aliases two
+frequencies in the worst-case replica band, so the per-coordinate threshold
+is sharp. This closes the finite-setting resource law; hardware-specific
+noise, pulse and calibration studies remain outside the theorem.
+
+## Proved singular-completion and dense-stratification law
+
+The wall mechanism is now a genuine singular-limit law. For every nonzero
+finite observation time, every controlled recurrence-wall reporter is a
+continuous function of all control parameters. Pointwise completion in time
+is exactly the Boolean wall indicator. At every transverse wall point that
+indicator is discontinuous. Together with the exact normal profile,
+
+\[
+  \mathcal R_k\!\left(T,x_0+\frac{\xi}{T}v\right)
+  =\operatorname{sinc}\!\left(\xi\,D_k(v)\right),
+\]
+
+this proves that weak-control and infinite-time limits do not commute and
+that the complete boundary layer has inverse-time width. This is stronger
+than generic nonresonance: it identifies the order parameter, its finite-time
+regularization, its discontinuity set and its exact scaling function.
+
+Finite completed recurrence has a dense arithmetic stratification. For every
+`d+1`-level spectrum and every `1 <= k <= d`, spectra of exact projective
+temporal rank `k` occur arbitrarily close. From three levels onward, both
+projective temporal rank and completed recurrence-ensemble temporal dimension
+are nowhere continuous. Rank conservation transfers density to the dual
+relation strata: maximally free spectra and spectra of positive relation rank
+both occur arbitrarily close to every spectrum. No open neighborhood fixes
+the completed dimension of quantum time unless the allowed perturbations are
+restricted by a protection law.
+
+For finite contractions, complete return histories have also been placed in
+the asymptotic recurrence quotient `history / c0`: the raw return-amplitude
+class equals its peripheral carrier class, and it is the zero class exactly
+when peripheral mass vanishes. At unrestricted history-space level, every
+finite observation cylinder surjects onto every quotient class. This latter
+statement is deliberately not promoted to physical realizability; the
+trace-class Hamiltonian no-go supplies the separate physical witness.
 
 The same finite-horizon obstruction now has a local finite-volume witness:
 for every fixed finite Hermitian hopping matrix, an arbitrarily small change
@@ -507,13 +547,33 @@ corollary of the persistent factor, the master-law claim fails.
 10. **Open-system extension.** Every weakly almost-periodic quantum dynamical
    representation must have one return law on its reversible factor, with
    stable directions null in completed return statistics.
-11. **Operational crossover.** Haar phase cycling of the actual
+11. **Operational crossover.** Finite-grid phase cycling of the actual
    survival-fidelity replica polynomial isolates every selected character
    coefficient as one scalar readout. At its exact minimum replica height,
    lower layers vanish, the first layer has positive coefficient, and its
    coupling scan has the exact sinc profile while fixed-time operator probes
-   remain stable. `[LEAN-PROVED AND AXIOM-AUDITED; FINITE-GRID RESOURCE AND
-   DEVICE STUDY OPEN]`
+   remain stable. At order `n`, `2n+1` settings per phase coordinate suffice
+   exactly and are worst-case sharp against aliasing. `[LEAN-PROVED AND
+   AXIOM-AUDITED; HARDWARE-SPECIFIC DEVICE STUDY OPEN]`
+12. **Singular recurrence completion.** Every finite-time controlled wall
+   reporter is continuous, its completed-time limit is the exact wall
+   indicator, and that indicator is discontinuous at every transverse wall.
+   The boundary layer has the exact sinc scaling and inverse-time width.
+   `[LEAN-PROVED AND AXIOM-AUDITED]`
+13. **Dense dimension strata.** Every positive admissible projective temporal
+   dimension and its dual relation rank occur densely; from three levels
+   onward, completed recurrence temporal dimension is nowhere continuous.
+   `[LEAN-PROVED AND AXIOM-AUDITED]`
+14. **Asymptotic recurrence quotient.** Every finite contraction equals its
+   peripheral carrier modulo late-time-vanishing histories, with zero class
+   exactly at zero peripheral mass. `[LEAN-PROVED AND AXIOM-AUDITED]`
+15. **All-rank finite-horizon indistinguishability.** For every finite
+   spectrum, observation horizon, tolerance and positive admissible target
+   temporal rank, a nearby diagonal Hamiltonian has exactly that rank while
+   every normalized Heisenberg probe stays within tolerance throughout the
+   horizon. From three levels onward a different completed temporal dimension
+   is always compatible with the bounded record. `[LEAN-PROVED AND
+   AXIOM-AUDITED]`
 
 At least one of items 1--6, 9--11 must survive external priority
 as a genuinely new theorem. Items 7--8 alone are too close to Wiener/Eberlein
@@ -535,13 +595,16 @@ theory for a general-journal headline.
 
 Therefore persistent-factor existence, compactification, rank-nullity and
 full infinite-torus density are not novelty. The unoccupied candidate is the
-joined arithmetic wall law: exact protection as wall containment, a single
+joined **singular recurrence-completion law**: exact protection as wall
+containment, a single
 trace-class ray with only countably many exceptional strengths, completed
 full-future dynamics off those walls, and dimension-independent finite-time
-continuity across them. Every wall now has an exact minimum resolved detector
-depth and coefficient-weighted sinc line in the actual survival-fidelity
-replica expansion. The finite fixed-hopping onsite theorem supplies a local
-physical shadow. External priority remains open for this exact joined object.
+continuity across them; every positive dimension stratum is dense and the
+completed temporal dimension is nowhere continuous. Every wall has an exact
+minimum resolved detector depth, a finite-grid coefficient readout and a
+coefficient-weighted sinc line in the actual survival-fidelity replica
+expansion. The finite fixed-hopping onsite theorem supplies a local physical
+shadow. External priority remains open for this exact joined object.
 
 ## Hard falsifiers
 
@@ -707,3 +770,15 @@ temporal dimension, and finite-resolution recurrence cost.
   flags generic nonresonance and Baire controllability as prior art; novelty
   must rest on the joined wall classification, operator realization, exact
   detector height and protocol, not on genericity alone.
+- 2026-08-01 — closed finite-setting wall tomography: an exact
+  `(2n+1)`-point phase grid per coordinate isolates every order-`n` character,
+  with setting count `(2n+1)^d`; every smaller one-coordinate grid has a
+  worst-case alias inside the replica band. Proved raw finite-contraction
+  return histories equal their peripheral carriers in the recurrence corona,
+  with exact zero-class/extinction equivalence. Proved singular recurrence
+  completion: every finite-time wall reporter is continuous, its completed
+  indicator is discontinuous at every transverse wall, and the existing sinc
+  law supplies the exact `1/T` boundary layer. Lifted dense rational-rank
+  instability to projective recurrence: every positive completed temporal
+  dimension and dual relation rank is dense, and completed recurrence
+  temporal dimension is nowhere continuous from three levels onward.

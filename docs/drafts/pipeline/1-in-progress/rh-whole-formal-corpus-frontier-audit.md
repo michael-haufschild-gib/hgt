@@ -923,3 +923,255 @@ docs/drafts/pipeline/3-formalized/needs-audit/ccm-julia-prime-order-attenuation-
 Both theorem-area umbrellas are wired. Final module builds pass; capstone axiom sets are exactly
 `[propext, Classical.choice, Quot.sound]`. Repository lint reports only five unrelated pre-existing
 umbrella-reachability gaps.
+
+## Whole-HT spectral synthesis: Julia equilibrium clock
+
+`[PAPER-PROVED] [LEAN CORE] [NOT RH]`
+
+Independent audit of HTGeometry's transform, probability, and observer mechanisms found a stronger
+interpretation of the same Julia profile. `CoshFourierTransform`, `CoshFourierInversion`,
+`GammaCyclicSpectralMeasure`, compound-Poisson infrastructure, finite-matrix Bochner positivity,
+and universal clock sampling had not been assembled with `JuliaDefectAttenuation`.
+
+For
+
+```text
+kappa(y)=cosh(y/2)^2/sqrt(cosh(2y)),
+```
+
+the exact logarithmic Lévy density is
+
+```text
+rho(t)=1/(2t sinh(pi t/4))-2/(t sinh(pi t)).
+```
+
+It is strictly positive because, with `v=pi t/4`,
+
+```text
+sinh(4v)=4sinh(v)cosh(v)cosh(2v)>4sinh(v).
+```
+
+The singularities cancel, total intensity is `(3/2)log 2`, and `kappa` is the characteristic
+function of a symmetric boundary compound-Poisson law with atom `1/(2sqrt(2))` at zero and variance
+`3/2`. Square-biasing that law and multiplying by the difference of two centered uniform clocks
+shows the continuously extended attenuation is itself a characteristic function:
+
+```text
+R(0)=1,
+R(y)=4(1-kappa(y))/(3y^2)
+    = E exp(i y Xhat(U-V)).
+```
+
+Hostile test exposed a load-bearing Lean totalization issue: existing
+`juliaDefectAttenuationProfile` equals `0` at zero, so it is not positive definite. An explicit
+two-point negative Gram witness is now formalized. Positive survivor is canonical extension
+`juliaDefectAttenuationKernel`, together with strict positivity of exact Lévy density. Complete
+monotonicity in `y` is also false; characteristic-kernel positivity is correct replacement.
+
+Formal core:
+`formal/GaloisForLFunctions/HTGeometry/JuliaDefectSpectralEquilibrium.lean`.
+Paper card:
+`../2-fully-proven/needs-audit/julia-defect-equilibrium-clock-law.md`.
+
+RH boundary: diagonal values `R(x log p)` are only origin correlations. New information is full
+PSD kernel `R(x(log q-log p))` across prime logarithms. Next risky test is whether this off-diagonal
+Julia Gram has an exact action on reduced first-clock good-minus-bad functional; diagonal scalar
+gating alone remains insufficient.
+
+## Whole-HT scale-four synthesis: Dirichlet–Julia–CCM innovation tower
+
+`[PAPER-PROVED] [LEAN-PROVED] [AXIOM-CLEAN] [NOT RH]`
+
+The whole-reservoir pass found that three independently developed structures are exact coordinates
+of one object:
+
+1. critical centered successor/log-Beta density `D(x)=1/(2sinh x)`;
+2. Gamma–Julia compression Lévy density `rho`;
+3. CCM `1 mod 4` odd block-Fock archimedean density `A`.
+
+Define `J(x)=D(x)-4D(4x)`. Then, unconditionally,
+
+```text
+J(pi t/4)=t rho(t)>0,
+D(x)=sum_(j<n)4^j J(4^j x)+4^n D(4^n x),
+D(x)=(1+exp(-2x))A(2x).
+```
+
+Thus Julia equilibrium is canonical positive innovation left by fourfold subdivision of complete
+odd critical Gamma ladder. Factor `1+exp(-2x)` adds CCM's missing `3 mod 4` sector to its existing
+`1 mod 4` block-Fock sector. Exact first-clock continuous reflection gap is now written as
+difference of two normalized `D` values plus explicit polar reflection, so finite Julia telescope
+resolves whole continuous budget at arbitrary scale with exact tail.
+
+Hostile test prevents overclaim: positive innovation values do not sign translated differences,
+and theorem does not alter von Mangoldt sine phases. It therefore cannot termwise dominate
+counter-phased prime mass. Strongest survivor is exact positive multiscale resolution of complete
+CCM Gamma budget. New open core is a source-specific cross-term/comparison coupling this resolved
+continuous tower to signed prime-power functional.
+
+Formal modules:
+
+```text
+formal/GaloisForLFunctions/HTGeometry/JuliaDefectSpectralEquilibrium.lean
+formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaScaleFourTransfer.lean
+```
+
+Card:
+`../3-formalized/needs-audit/ccm-julia-scale-four-innovation-tower.md`.
+
+Final module build is green at `9285/9285`; eight capstones depend only on
+`[propext, Classical.choice, Quot.sound]`. Global lint fails on unrelated missing HT umbrella import
+`ProjectiveHorizonActualSchwarzianDiamond`, not on either new module.
+
+## Whole-HT source coupling: Julia–KMS prime innovation tower
+
+`[PAPER-PROVED] [LEAN-PROVED] [NOT RH]`
+
+Pure Gamma positivity exhausted at CJS4-1 because it did not touch arithmetic carrier mass. Whole
+HT audit then exposed exact missing coupling. For positive finite KMS gap
+
+```text
+x=beta(E_a-E_b)/2,
+C_ab=2sinh(x)W_ab,
+D(x)=1/(2sinh x),
+```
+
+so `D(x)C_ab=W_ab`. Combining this inverse fluctuation--dissipation identity with the existing
+scale-four telescope gives
+
+```text
+W_ab=sum_(j<n)4^j J(4^j x)C_ab+4^nD(4^n x)C_ab.
+```
+
+Every generic layer is nonnegative. Existing Hermitian prime-log KMS realization has
+`W_p=primeDyadicWeight(u,p)>0` and `C_p=2sinh(beta log(p)/2)W_p>0`; therefore each prime carrier
+weight has an exact finite decomposition into strictly positive Julia response layers plus a
+strictly positive tail.
+
+Hostile test closes overclaim exactly. HT prime-dyadic weight is not literal von Mangoldt
+prime-power critical Mellin weight, and innovation acts diagonally before external first-clock sine
+phase. Lean proves every negative phase stays strictly negative on every positive Julia layer.
+Thus source coupling is real, but it does not sign RH functional.
+
+Strong survivor: Julia equilibrium is canonical multiscale inverse-FDT resolution of finite KMS
+fluctuation mass, instantiated exactly by arithmetic prime-log carriers. New open core is
+non-diagonal, phase-sensitive realization of literal prime-power Mellin source or cross-frequency
+quadratic inequality before sine evaluation.
+
+Formal module and card:
+
+```text
+formal/GaloisForLFunctions/HTGeometry/JuliaKMSScaleFourInnovation.lean
+docs/drafts/pipeline/3-formalized/needs-audit/julia-kms-prime-innovation-tower.md
+```
+
+Final direct Lean and module build are green (`8768/8768`). Eight capstone axiom reports are exactly
+`[propext, Classical.choice, Quot.sound]`. Lint finds no issue in new module; nonzero status comes
+only from three unrelated pre-existing umbrella gaps recorded on card.
+
+## Whole-HT literal-source closure: Julia–KMS prime-power resolution
+
+`[PAPER-PROVED] [LEAN-PROVED] [NOT RH]`
+
+JKPIT-1 reached an arithmetic prime-log carrier but not literal RHT critical Mellin prime powers.
+Whole-corpus collision audit found existing results that must be consumed: depth-one von Mangoldt–
+Gamma anomaly/Julia factorization, common-prime Julia–Bianchi Gram, and block-Fock identity
+`criticalMellinAtomWeight=Lambda·degreeOneDefect`.
+
+New exact weld is
+
+```text
+D(h/2)(1-exp(-h))=exp(-h/2),
+criticalMellinAtomWeight(q)
+ =Lambda(q)(1-q^-1)D(log(q)/2).
+```
+
+Thus inverse finite-KMS density renormalizes literal depth-one Gamma displacement into critical
+half-weight. Applying scale-four telescope gives exact finite positive Julia resolution of every
+literal atom and whole first-clock prime sine sum:
+
+```text
+w(q)=sum_(j<n)L_j(q)+T_n(q).
+```
+
+On prime powers all layers and tails are strict. First captured fraction and residual fraction are
+
+```text
+F(x)=1-1/(cosh x cosh 2x),
+R(x)=1/(cosh x cosh 2x).
+```
+
+`F` strictly increases and `R` strictly decreases with full integer `q`; this separates valuation
+exponents inside one prime tower, unlike previous prime-base Julia attenuation.
+
+Hostile test: each layer remains diagonal in `q`; counter-phased sine atoms remain strictly
+negative at every scale. Monotone scale filters also cannot isolate two alternating negative
+first-clock bands without affecting intervening positive band. Positive survivor is first exact
+common scale-four resolution of literal arithmetic and continuous CCM sectors, with canonical
+exponent-sensitive tail. Remaining wall is non-diagonal cross-frequency/inter-scale inequality
+before sine evaluation.
+
+Formal module and card:
+
+```text
+formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaKMSPrimePowerResolution.lean
+docs/drafts/pipeline/3-formalized/needs-audit/ccm-julia-kms-prime-power-resolution.md
+```
+
+Final direct Lean and module build are green (`9377/9377`). Eleven capstone axiom reports are
+exactly `[propext, Classical.choice, Quot.sound]`. Lint finds no issue in new module; nonzero status
+comes only from three unrelated pre-existing umbrella gaps recorded on card.
+
+## Whole-HT non-diagonal pivot: Julia equilibrium coherent capacity
+
+`[PAPER-PROVED] [LEAN SOURCE ACTION] [LEAN GENERIC CAPACITY] [NOT RH]`
+
+Hostile collision audit killed two tempting rediscoveries. Scalar thermal susceptibility is
+already strictly stronger in `SoninSemilocalWeylGenerator` and
+`SoninSemilocalCyclicWeylDescent`. Independent positive Julia prime layers are excluded as an RH
+architecture by the corpus's harmonic Gamma-conductor and semilocal one-prime deficit no-gos.
+
+Positive survivor restores Julia structure before scalarization. The corrected equilibrium kernel
+
+```text
+R(0)=1,  R(y)=(4/3)(1-kappa(y))/y^2
+```
+
+is paper-proved characteristic. Existing arithmetic attenuation is exactly `R(x log p)`. For
+literal reduced first-clock cells `T_p=G_p-B_p`, continuous budget `C_L`, and finite admitted prime
+packet, the deformed completed source is exactly
+
+```text
+A_x=C_L+sum_p R(x log p)(G_p-B_p).
+```
+
+The full bad covariance energy is
+
+```text
+E_B=sum_(p,q) B_p B_q R(x log q-x log p).
+```
+
+Adding the origin to the Gram with optimizing coefficient `-B_x` proves
+`B_x^2<=E_B`. Since completed good origin correlation is positive, every negative excursion obeys
+
+```text
+A_x^2 <= E_B.
+```
+
+Thus a counterexample cannot live in independent one-prime defects; it must carry coherent
+cross-prime energy. This is exact source action on literal RHT terms, not a proxy KMS carrier.
+
+Formal modules and card:
+
+```text
+formal/GaloisForLFunctions/HTGeometry/JuliaDefectSpectralEquilibrium.lean
+formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaEquilibriumGram.lean
+docs/drafts/pipeline/2-fully-proven/needs-audit/ccm-first-clock-julia-equilibrium-coherent-capacity.md
+```
+
+Lean closure is deliberately dependency-honest: generic anchored capacity and exact RHT source
+action are unconditional; Julia specialization takes the named `JuliaDefectEquilibriumGramLaw`
+until paper-proved compound-Poisson/equilibrium identity `(JSE11)` is closed in Lean. No RH claim.
+Next operator gate is source-native placement of `E_B` inside coherent Gamma odd-Jacobi or Suzuki
+causal-depth carrier plus a completed continuous-Gamma energy budget. Generic RKHS positivity or
+another diagonal damping law is insufficient and will be rejected as collision.

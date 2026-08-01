@@ -1476,6 +1476,340 @@ coefficient, and the coefficient projective boundary — the last being a limit 
 valid along the return sequence — and concludes the autonomous relation `∑ d_α M_α(s₀) = 0` with
 `d_β = 1`.  Eq. (27) → (29), with the Bohr return step proved rather than assumed.
 
+### Cauchy transports the return times to every derivative
+
+`HTGeometry/VerticalAlmostPeriodicDerivative.lean` proves the derivative step of eq. (28) in the
+strip setting the theorem actually needs.  `IsStripAlmostPeriodicOn F σ r` is uniform almost
+periodicity on the closed substrip of half-width `r`; `IsStripAlmostPeriodic F σ R` asks it on every
+closed substrip of the open strip of half-width `R` — exactly the topology of eq. (7).  For `F`
+holomorphic on that strip, an almost period on the substrip of half-width `r + ρ` is an almost period
+of `deriv F` on half-width `r`, with tolerance divided by `ρ`: the translated difference is
+holomorphic and bounded on discs of radius `ρ` centred in the narrower strip, so Cauchy's estimate
+applies (`norm_deriv_sub_deriv_le_of_ball`, `isStripAlmostPeriodicOn_deriv`).  Rescaling the
+tolerance gives **`isStripAlmostPeriodic_deriv`**, and induction gives
+**`isStripAlmostPeriodic_iteratedDeriv`** together with holomorphy of every iterate.
+`isBohrAlmostPeriodic_line` restricts to the central line, and **`exists_return_sequence_jets`**
+produces a *single* sequence of return times along which the function and all its derivatives up to
+any fixed order converge to themselves — the "Cauchy's theorem gives the same convergence for every
+derivative" step.
+
+The strip is essential, and this is worth recording as a boundary of the statement: if one asks for
+almost periodicity uniformly on the whole plane, the translated difference is a bounded entire
+function, hence constant by Liouville, and the class collapses to functions with a genuine imaginary
+period.  `HTGeometry/StripAlmostPeriodicExpSum.lean` shows the strip class is the intended rich one:
+**`isStripAlmostPeriodic_expSum`** proves every finite exponential sum `∑ a_k e^{λ_k z}` with real
+frequencies is almost periodic on every strip, so the hypothesis class contains nonconstant functions
+with an arbitrary prescribed finite frequency set, of arbitrarily large rational rank.
+
+`HTGeometry/VerticalPhaseRank.lean` packages the restriction (`verticalRestriction`) as a bounded
+continuous function and states the finite-phase conclusion in the analytic setting:
+
+> **`rank_frequencies_le_of_vertical`**: for an entire vertically almost periodic `F` whose carrier
+> on the line `Re s = σ` admits an injective continuous jet sample into `ℂ^N`, the frequency group
+> has rational rank at most `2N`.
+
+### The separation step of the jet embedding
+
+`HTGeometry/ODEJetSeparation.lean` formalizes eq. (16) of the companion card — the step that turns
+finitely many observations into an injective map.  `companionField Φ` is the first-order system
+attached to an explicit scalar equation `y⁽ⁿ⁾ = Φ(y, …, y⁽ⁿ⁻¹⁾)`; it is Lipschitz whenever `Φ` is,
+since every component is either a coordinate projection or `Φ` itself
+(`lipschitzWith_companionField`).  The jet vector of a solution solves that system
+(`hasDerivAt_jetVec`), so mathlib's uniqueness theorem for Lipschitz ODEs gives
+
+> **`jetVec_eq_of_eq_at`** / **`eq_of_jetVec_eq_at`**: two solutions of the same explicit equation
+> whose jets of order `n − 1` agree at a single time have equal jets everywhere, hence are equal.
+
+What remains between this and the injectivity of eq. (15)/(18) is the analytic implicit-function
+step — solving the defining relation for the top derivative near a regular jet, where the separant
+does not vanish — and the transfer of the strip topology to the hull, so that every hull element is
+again a holomorphic solution of the same relation.
+
+### The analytic transfer of eq. (19): the carrier is a family of holomorphic functions
+
+`HTGeometry/StripAlmostPeriodicBounds.lean` supplies the estimates.  A continuous strip almost
+periodic function is bounded on each closed substrip — an almost period carries any point into a
+compact window where continuity gives the bound (`exists_bound_of_isStripAlmostPeriodicOn`).  For a
+holomorphic function this passes to the derivative by Cauchy's estimate on discs inside a slightly
+wider substrip (`exists_deriv_bound`), and the mean value inequality on the convex substrip makes the
+function Lipschitz there (`exists_lipschitzOnWith_closedStrip`); in particular vertical translation
+moves it Lipschitz-continuously in the parameter, uniformly on the substrip
+(`norm_translate_sub_le`).
+
+`HTGeometry/StripTranslateCurve.lean` turns those estimates into the carrier construction:
+**`exists_strip_curve`** shows the translates `τ ↦ F(· + iτ)` form a *bounded, continuous, Bohr
+almost periodic curve* in the Banach space of bounded continuous functions on the substrip.  So the
+phase-carrier construction — which the corpus builds for any such curve in a normed space — applies
+verbatim in the strip topology of eq. (7), not merely on a line.
+
+`HTGeometry/StripHullHolomorphic.lean` identifies the points of that carrier.  A uniform limit of
+translates is holomorphic inside the substrip (`differentiableOn_of_tendstoUniformlyOn`), and each
+carrier point is such a limit — the carrier is a completion of the line under the substrip
+sup-distance, so its points are limits of sequences of translates and evaluation is continuous.
+Hence
+
+> **`exists_holomorphic_of_hull`**: every point of the strip carrier *is* a holomorphic function on
+> the open substrip, agreeing with the carrier point's evaluation.
+
+This is the analytic Poincaré transfer the card records as open: the carrier is a compact family of
+holomorphic functions on the strip, which is what makes the jet sample of eq. (15) meaningful on it.
+What remains for the injectivity of eq. (18) is the identity-theorem step (two carrier points with
+equal restriction to the central line coincide) and the propagation of the defining relation to
+carrier points.
+
+### Three lines: the line carrier and the strip carrier are the same object
+
+`HTGeometry/StripThreeLinesTransfer.lean` supplies the quantitative half of the transfer, using
+mathlib's Hadamard three-line theorem.  Apply it to the difference of two vertical translates on the
+half-strip between the central line and an outer line: the difference is bounded by `2M` on the outer
+line and by the *line* tolerance `ε` on the central line, so on the line at relative depth `θ`
+
+`‖F(z+is) − F(z+it)‖ ≤ ε^{1−θ} (2M)^{θ}`.
+
+Taking the worse of the two half-strips and the largest depth gives
+
+> **`norm_sub_le_of_line_bound`**: a bound `ε` on the central line plus a bound `M` on the substrip
+> of half-width `r'` forces `ε · (2M/ε)^{r/r'}` on the substrip of half-width `r < r'`.
+
+Since `r/r' < 1`, that bound tends to `0` with `ε`, which is
+
+> **`exists_delta_strip_of_line`**: for every strip tolerance there is a line tolerance forcing it.
+
+So the line pseudometric and the substrip pseudometric induce the *same* uniform structure on the
+translation parameter, and the phase carrier of the line restriction and the carrier of the strip
+translate curve are the same compact group.  This is exactly what the card's §8 attack (5) says
+compact-open convergence fails to give and what the Bohr strip topology does give: a jet embedding of
+the strip carrier — where jets make sense, the carrier points being holomorphic — is a statement
+about the frequency group of the line restriction, where the rank bound lives.
+
+### The carrier solves the equation, and finite jets separate its points
+
+`HTGeometry/StripRelationPropagation.lean` propagates the defining relation.  Locally uniform
+convergence of holomorphic functions passes to every iterated derivative
+(`tendstoLocallyUniformlyOn_iteratedDeriv`), so a continuous relation among derivatives survives
+locally uniform limits (`relation_of_tendstoLocallyUniformlyOn`).  Vertical translates of a solution
+of an *autonomous* relation are again solutions, whence **`relation_of_translate_limit`** and, on the
+carrier, **`exists_solution_of_hull`**: every carrier point is a holomorphic function on the substrip
+satisfying the same relation as `F`.  The carrier is a compact family of solutions of one equation.
+
+`HTGeometry/LineJetTransfer.lean` moves jets between the strip and the line: the `k`-th derivative of
+`t ↦ g(σ + it)` is `iᵏ` times the `k`-th complex derivative (`iteratedDeriv_line_restriction`), and —
+the strip being convex, hence connected — two holomorphic functions agreeing on the central line agree
+on the strip (**`eqOn_of_eqOn_line`**, the identity theorem in the form eq. (16) uses).
+
+`HTGeometry/StripJetSeparation.lean` completes the separation step:
+
+> **`eqOn_of_line_jet_eq`**: if two functions holomorphic on the strip both satisfy
+> `y⁽ⁿ⁾ = Φ(y, …, y⁽ⁿ⁻¹⁾)` with `Φ` Lipschitz, and their order-`n` jets agree at a single point of
+> the central line, then they agree on the whole strip.
+
+The line restriction solves the same equation with the right-hand side twisted by powers of `i`
+(`twistField`), the twist being an isometry so the twisted field stays Lipschitz
+(`lipschitzWith_twistField`); Lipschitz ODE uniqueness then equates the restrictions, and the identity
+theorem equates the functions.
+
+So eq. (15)–(18) is complete except for one step: solving the defining relation for the top
+derivative near a regular jet, i.e. the analytic implicit function theorem where the separant does
+not vanish.  Everything else in the chain — the carrier construction in the strip topology, the
+holomorphy of carrier points, the equality of the line and strip carriers, the propagation of the
+relation, the jet separation, the dimension bound and the rank bound — is proved unconditionally.
+
+### The implicit step, quantitatively
+
+The separation theorems now work on a *region*, which is what a local implicit solution can supply.
+`ODEJetSeparation` gained `jetVec_eq_of_eq_at_on` / `eq_of_jetVec_eq_at_on`: uniqueness holds when the
+right-hand side is Lipschitz merely on a set through which both jet trajectories run, and
+`StripJetSeparation` gained **`eqOn_of_line_jet_eq_on`**, the corresponding statement for holomorphic
+solutions on a strip, the twist between complex and line jets being an isometry
+(`twistMap`, `dist_twistMap`, `lipschitzOnWith_twistField`).
+
+`HTGeometry/ImplicitLipschitzGraph.lean` supplies the implicit solution in quantitative form, without
+invoking an abstract implicit function theorem.  Let `P` be holomorphic on a convex region whose
+derivative stays within `C` of a fixed functional `L`.  The mean value inequality against `L` bounds
+the increment of `P` minus `L` applied to the increment by `C` times its size; on solutions of `P = 0`
+the left side is just `L` applied to the increment, and `L` decomposes into partial derivatives
+(`apply_eq_sum_partial`).  Hence
+
+> **`implicit_lipschitz_estimate`**: if `‖∂P/∂y_{j₀}(L)‖ > C`, then for two solutions in the region
+> `(‖∂_{j₀}‖ − C) ‖y_{j₀} − z_{j₀}‖ ≤ (C + ∑_{k ≠ j₀} ‖∂_k‖) ∑_{k ≠ j₀} ‖y_k − z_k‖`,
+
+and in particular **`eq_of_erase_eq`**: solutions agreeing in all other coordinates agree in the
+distinguished one.  This is exactly the separant condition of eq. (13): near a jet where the separant
+does not vanish, the top derivative of a solution is a Lipschitz function of the lower ones.  The
+region hypothesis is the honest one — the implicit solution is local, and the separation theorems now
+accept exactly that.
+
+### The implicit relation now feeds the separation directly
+
+`HTGeometry/ImplicitLipschitzGraph.lean` was completed to a genuine local implicit function theorem in
+the form the ODE argument consumes.  A complex-valued Lipschitz function on a set extends to the whole
+space at the cost of a factor two, by extending real and imaginary parts
+(**`LipschitzOnWith.extend_complex`**).  A solution set that is a Lipschitz graph over the lower
+coordinates is therefore cut out by a globally Lipschitz function
+(**`exists_lipschitz_of_graph`**).  Combining with the estimate, and converting the coordinate sum
+into the sup distance (`sum_erase_last_le`):
+
+> **`exists_lipschitz_implicit`**: on a convex region where `‖DP − L‖ ≤ C` and the top partial of `L`
+> exceeds `C`, there is a globally Lipschitz `Φ` with `y_n = Φ(y_0, …, y_{n−1})` for every solution of
+> `P = 0` in the region.
+
+`HTGeometry/StripJetSeparation.lean` then closes eq. (16) for *implicit* relations:
+
+> **`eqOn_of_line_jet_eq_implicit`**: two functions holomorphic on the strip whose `(n+1)`-jets along
+> the central line solve the same relation `P = 0` inside such a region, and whose `n`-jets agree at
+> one point, agree on the whole strip.
+
+So the separant hypothesis of eq. (13) — the only remaining conditional step — enters exactly where
+the card puts it, and produces the injectivity of the finite jet sample on the part of the carrier
+where it holds.  What is left of eq. (14)–(15) is the compactness bookkeeping: covering the carrier by
+finitely many regular-sample regions and assembling the finitely many local jet coordinates into one
+map.
+
+### Eq. (14)–(15) and the constant `2m(n+1)`
+
+`HTGeometry/JetSampleAtlas.lean` closes the sampling bookkeeping.
+
+Cauchy's estimate for derivatives bounds every jet coordinate of the difference of two holomorphic
+functions by their uniform distance on a slightly wider substrip
+(**`norm_iteratedDeriv_sub_le`**, with `iteratedDeriv_sub_eqOn` for differences of iterated
+derivatives on an open strip).  Since the carrier's topology *is* that uniform distance, the jet map
+is Lipschitz, hence continuous, on the carrier.
+
+**`exists_finite_sample_cover`** is eq. (14): if every carrier point is regular at some sample time,
+compactness gives finitely many sample times whose regularity sets cover.  **`injective_jetSample`**
+is eq. (15): if the jet at a regular sample time separates a point from every other, the combined
+sample `x ↦ (jet of x at t)_{t ∈ T}` is injective.  Feeding that into the dimension bound:
+
+> **`rank_le_of_jetAtlas`**: a carrier separated by the jets at `m` sample times with `N` coordinates
+> each has `Module.rank ℤ Γ_B(f) ≤ 2 m N`.
+
+With `N = n + 1` that is exactly the card's `rank_Q Γ_B(f) ≤ 2m(n+1)` — eq. (19) and (22) — now
+assembled in Lean from the Brouwer-level dimension theory upward.
+
+### The two carriers, joined
+
+`HTGeometry/BohrHullComparison.lean` compares carriers built from different translation distances.
+A uniform control of one distance by another extends the identity of the line to a continuous carrier
+map (**`exists_hull_map`**); with control in both directions the two maps compose to the identity on
+the dense image of the line, hence everywhere, so each is injective
+(**`injective_of_hull_maps`**).
+
+`HTGeometry/LineStripCarrier.lean` instantiates this for the two carriers of the finite-phase law.
+The line translation distance is dominated by the strip one because the central line sits inside the
+substrip (**`dist_line_le_dist_strip`**), and dominates it by the three-line theorem
+(**`dist_strip_lt_of_dist_line_lt`**).  Hence
+
+> **`exists_injective_line_to_strip`**: the carrier of the line restriction maps continuously and
+> injectively into the carrier of the strip translates,
+
+and therefore
+
+> **`rank_le_of_strip_jetAtlas`**: a separating jet atlas on the *strip* carrier — where the points
+> are holomorphic functions and jets are meaningful — bounds the rational frequency rank of the
+> *line* restriction, where the frequency group lives, by `2 m N`.
+
+This is the last structural joint of eq. (15)–(22): jets are taken where they exist, the rank is
+read where it is defined, and the three-line theorem certifies that the two carriers are the same
+object.
+
+### Carrier points as holomorphic solutions, and their separation
+
+`HTGeometry/CarrierRepresentative.lean` puts the two carriers to work together.
+`bohrEval_strip_line` says that the strip evaluation of the image of a line-carrier point, read on the
+central line, is exactly the line evaluation — proved by density, both sides being continuous and
+agreeing on translates.  Hence
+
+> **`exists_holomorphic_rep`**: every point of the carrier of the line restriction has a holomorphic
+> representative on the substrip, solving the same relation as `F`, whose values on the central line
+> are the carrier point's own evaluations.
+
+and, combining the implicit jet separation with the corpus's `bohrHull_ext`,
+
+> **`carrier_eq_of_jet_eq`**: two carrier points whose representatives solve the relation inside a
+> region where the top partial derivative dominates, and whose jets agree at one point of the line,
+> are equal.
+
+That is precisely the separation hypothesis the finite jet atlas consumes, so eq. (13)–(15) now reads
+in Lean as: regular jets ⇒ carrier separation ⇒ (compactness) finite atlas ⇒ injective jet sample ⇒
+`rank_ℚ Γ_B(f) ≤ 2m(n+1)`.
+
+### Local separation, matching the card's own argument
+
+The separation step now uses only *local* regularity, as §3 of the companion card does.
+`ODEJetSeparation` gained **`eventuallyEq_of_jetVec_eq_at`**: mathlib's local ODE uniqueness gives
+agreement near the sample time when the jets agree there and run inside the Lipschitz region only
+*near* that time.  `LineJetTransfer` gained **`eqOn_of_eventuallyEq_line`**: agreement of two
+holomorphic functions near a single point of the central line already forces agreement on the whole
+strip, the line accumulating at that point.  Together these replace the global-in-time region
+hypothesis by the local one the regular-sample atlas actually provides.
+
+`CarrierRepresentative` gained the continuity input for the atlas: **`norm_jet_sub_le_dist`** bounds
+jet differences of representatives by the substrip sup-distance (Cauchy), and
+**`continuous_jet_of_representatives`** turns that into continuity of each jet coordinate as a
+function on the carrier — the hypothesis `rank_le_of_jetAtlas` consumes.  `exists_holomorphic_rep`
+now also exposes the representative's values on the closed substrip, which is what the estimate
+needs.
+
+### The separation hypotheses are now exactly the card's
+
+The whole separation chain was weakened to local hypotheses, so it consumes precisely the data the
+regular-sample sets `U_t` of eq. (13) provide.  `hasDerivAt_jetVec` and `iteratedDeriv_line_eq_twist`
+now take the equation at a single time, `eventuallyEq_of_jetVec_eq_at` takes the equation and the
+region membership only near the sample time, and the strip versions follow:
+
+> **`eqOn_of_line_jet_eq_local`** — two holomorphic solutions of the same explicit equation whose
+> jets agree at one point of the central line, with the Lipschitz region entered only near that
+> point, agree on the whole strip;
+> **`eqOn_of_line_jet_eq_implicit_local`** — the same from the implicit relation, the separant
+> condition being required only near the sample time;
+> **`carrier_eq_of_jet_eq_local`** — hence two carrier points whose representatives are regular near
+> one sample time and whose jets agree there are equal.
+
+Nothing global in time is assumed any more: regularity near `t_j`, the jets agreeing at `t_j`, and
+the identity theorem do the whole job — which is the argument of §3 of the companion card, line for
+line.
+
+### The capstone: `rank_Q Γ_B(f) ≤ 2m(n+1)`
+
+`HTGeometry/PhaseRankCapstone.lean` assembles the whole chain into one statement.
+
+> **`rank_le_of_regular_jets`**.  Let every point of the phase carrier have a holomorphic
+> representative on the substrip solving the relation `P = 0` along the central line, and suppose each
+> representative is *regular* at one of finitely many sample times `T`: its full order-`n` jet there
+> lies in an open convex region where `‖DP − L‖ ≤ C` and the top partial of `L` exceeds `C`.  Then
+> `Module.rank ℤ Γ_B(f) ≤ 2 · |T| · (n+1)`.
+
+The proof is the card's, mechanised: the jet sample `J t x` is continuous by Cauchy's estimate
+(`continuous_jet_of_representatives`); if two carrier points have equal jets at a regular time, the
+second one's jet is in the same region, so — the region being open — both stay there for nearby times
+(`eventually_jet_mem`, `continuous_jet_line`), the local implicit separation applies, the identity
+theorem propagates equality to the strip, and `bohrHull_ext` identifies the carrier points; finitely
+many sample times cover, so the combined jet sample is a continuous injection into `ℂ^{|T|(n+1)}`; and
+the dimension bound reads off the rank.
+
+This is eq. (13)–(22) end to end.  The reduction it rests on is the one the card states: `F` is
+almost periodic on the strip, satisfies an autonomous relation, and is regular at finitely many
+sample times.  Everything downstream of that — the carrier, its holomorphy, the identification of the
+line and strip carriers, the propagation of the relation, the implicit solve, the jet separation, the
+finite atlas, the covering dimension of the image and the Pontryagin-free rank bound — is proved
+unconditionally, from Brouwer's fixed point theorem upward, all of it built in this corpus.
+
+### Toward the last analytic input of eq. (3): Gamma on a vertical line
+
+The monomial valuation theorem is formalized with one analytic hypothesis, `Γ(σ + it) → 0` as
+`t → +∞`.  `HTGeometry/GammaVerticalDecay.lean` starts discharging it without Stirling.
+
+On a vertical line the Gamma values at conjugate points are conjugate (`Gamma_conj_vertical`), so
+`‖Γ(σ+it)‖² = Γ(σ+it) Γ(σ−it)`, which the Beta identity converts into
+
+> **`normSq_Gamma_vertical`**: `‖Γ(σ+it)‖² = Γ(2σ) · B(σ+it, σ−it)`.
+
+The Beta integral over the unit interval becomes a Fourier integral along the line under the logistic
+substitution `x = e^v/(1+e^v)`, whose basics are established here (`sigmoid_pos`, `sigmoid_lt_one`,
+`one_sub_sigmoid`, `hasDerivAt_sigmoid`, `sigmoid_strictMono`, `sigmoid_range = Ioo 0 1`): under it
+the integrand is `e^{itv} · (e^v/(1+e^v)²)^σ`, an `L¹` density times a character.  The decay of `Γ` on
+vertical lines is then the Riemann–Lebesgue lemma, which mathlib has — that step is next.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

@@ -105,6 +105,26 @@ theorem suzukiCompactifiedInversePhase_neg
   rw [suzukiCompactifiedInversePhase, suzukiCenteredInversePhase_neg hreflection,
     Real.arctan_neg, suzukiCompactifiedInversePhase]
 
+/-- The reflection normalization already anchors the phase: setting `x = 0` in
+`φ(-x) = 2π - φ(x)` forces `φ 0 = π`.  So the anchor is not an independent hypothesis. -/
+theorem orderIso_zero_of_reflection {φ : ℝ ≃o ℝ}
+    (hreflection : ∀ x, φ (-x) = 2 * Real.pi - φ x) : φ 0 = Real.pi := by
+  have h0 := hreflection 0
+  rw [neg_zero] at h0
+  linarith
+
+/-- Hence a reflection-normalized carrier has a centered compactified profile, with no separate
+anchoring assumption. -/
+theorem suzukiCenteredInversePhase_zero_of_reflection {φ : ℝ ≃o ℝ}
+    (hreflection : ∀ x, φ (-x) = 2 * Real.pi - φ x) :
+    suzukiCenteredInversePhase φ 0 = 0 :=
+  suzukiCenteredInversePhase_zero (orderIso_zero_of_reflection hreflection)
+
+theorem suzukiCompactifiedInversePhase_zero_of_reflection {φ : ℝ ≃o ℝ}
+    (hreflection : ∀ x, φ (-x) = 2 * Real.pi - φ x) :
+    suzukiCompactifiedInversePhase φ 0 = 0 :=
+  suzukiCompactifiedInversePhase_zero (orderIso_zero_of_reflection hreflection)
+
 /-! ## Anchored phase floor and inverse derivatives -/
 
 /-- One Cayley Blaschke factor contributes `2/(1+x²)` to phase speed; every residual inner phase
@@ -171,6 +191,18 @@ theorem deriv_suzukiCompactifiedInversePhase_mem
 
 /-! ## Fixed-lattice Donoghue probability holography -/
 
+/-- **`(2)`.**  The Donoghue atom is the Clark atom divided by `1 + x^2`, because the two measures
+differ by exactly that density.  With the Clark atom `2/q(x)` at an even-extension pole this is
+`nu({x}) = 2 / [q(x) (1 + x^2)]`. -/
+theorem suzukiDonoghueAtom_eq {q x muAtom nuAtom : ℝ}
+    (hdensity : muAtom = (1 + x ^ 2) * nuAtom) (hmu : muAtom = 2 / q) (hq : q ≠ 0) :
+    nuAtom = 2 / (q * (1 + x ^ 2)) := by
+  have hden : q * (1 + x ^ 2) ≠ 0 := mul_ne_zero hq (by positivity)
+  have h1 : (1 + x ^ 2) * nuAtom = 2 / q := by rw [← hdensity, hmu]
+  rw [eq_div_iff hden]
+  field_simp at h1
+  linear_combination h1
+
 /-- A normalized Donoghue atom is exactly twice the compactified inverse-phase derivative at its
 fixed lifted phase label. -/
 theorem suzukiPhaseProbabilityMass_eq_two_mul_compactifiedDeriv
@@ -183,6 +215,19 @@ theorem suzukiPhaseProbabilityMass_eq_two_mul_compactifiedDeriv
   rw [(hasDerivAt_suzukiCompactifiedInversePhase hphase hphaseSpeed).deriv,
     hprobabilityMass]
   ring
+
+/-- **`(2)` feeding `(13)`.**  The Donoghue atom formula need not be assumed: it follows from the
+Clark atom `2/q` together with the density relating the two measures, and then gives the
+compactified derivative law directly. -/
+theorem suzukiPhaseProbabilityMass_eq_two_mul_compactifiedDeriv_of_clarkAtom
+    {φ : ℝ ≃o ℝ} {y phaseSpeed muAtom nuAtom : ℝ}
+    (hphase : HasDerivAt φ phaseSpeed (suzukiCenteredInversePhase φ y))
+    (hphaseSpeed : phaseSpeed ≠ 0)
+    (hdensity : muAtom = (1 + suzukiCenteredInversePhase φ y ^ 2) * nuAtom)
+    (hmu : muAtom = 2 / phaseSpeed) :
+    nuAtom = 2 * deriv (suzukiCompactifiedInversePhase φ) y :=
+  suzukiPhaseProbabilityMass_eq_two_mul_compactifiedDeriv hphase hphaseSpeed
+    (suzukiDonoghueAtom_eq hdensity hmu hphaseSpeed)
 
 /-- The fixed odd-`π` lattice is precisely the centered even-extension phase lattice. -/
 theorem pi_add_suzukiEvenPhaseLattice (k : ℤ) :

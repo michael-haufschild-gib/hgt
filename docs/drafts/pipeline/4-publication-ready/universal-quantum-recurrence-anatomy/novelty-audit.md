@@ -1,102 +1,109 @@
 # Novelty audit
 
-Manuscript: **A universal law of quantum recurrence**  
-Cutoff: 29 July 2026
+Manuscript candidate: **A universal singularity law for quantum recurrence**  
+Cutoff: 1 August 2026
 
-## Exact candidate contribution
+## Candidate contribution
 
-The candidate new scientific object is not any one parent theorem. It is the
-joined recurrence anatomy:
+Novelty is assigned only to the joined **singular recurrence-completion law**:
 
-1. exact persistent-mass threshold for every finite contraction;
-2. reverse-water information governing both exact finite target volume and
-   least worst-spectrum deadline;
-3. observer coherence graph giving exact visible phase quotient and deadline
-   exponent;
-4. additive gap-collision hierarchy determining every continuous long-time
-   fidelity statistic for every probability spectrum;
-5. complete polynomial local and all-orders perturbative data failing to
-   select the global recurrence phase, with compact exact moments as the
-   positive determinacy boundary.
+1. For every finite spectrum and every positive admissible projective temporal
+   dimension, spectra of exactly that dimension occur arbitrarily close.
+2. For every observation horizon and tolerance, the nearby target-dimension
+   Hamiltonian can be chosen so that every normalized Heisenberg probe remains
+   within tolerance throughout the horizon.
+3. Every finite-time recurrence-character reporter is continuous in controls,
+   but its completed-time limit is the exact recurrence-wall indicator and is
+   discontinuous at every transverse wall.
+4. The complete boundary layer has an exact sinc profile and inverse-time
+   width; the wall first appears at its positive-character replica height.
+5. A finite `(2n+1)` phase grid per coordinate exactly isolates every
+   order-`n` character, with worst-case sharp one-coordinate threshold.
+6. Robust characters are exactly the base relation lattice intersected with
+   the annihilator of the allowed perturbation family.
+7. For countably infinite pure-point Hamiltonians, one arbitrarily weak,
+   self-adjoint, trace-class, domain-preserving perturbation produces every
+   finite temporal rank, dense full projective future tails, and no nonzero
+   exact global return.
 
-The exact integration is `[LEAN-PROVED]`; scientific priority remains
-provisional.
+Each statement is unconditionally proved in the internal proof corpus. The
+priority claim remains provisional.
 
-## Closest parent results
+## Parent results that receive no novelty credit
 
-- Bocchieri--Loinger: qualitative finite closed recurrence.
-- Kotowski--Oszmaniec, arXiv:2601.10409: finite closed-system recurrence-time
-  bounds, generic saturation and effective-support refinements.
-- Gupta--Short, arXiv:2604.14995: finite all-state recurrence-time bounds via
-  simultaneous Diophantine approximation.
-- Anand et al., Quantum 10, 2074 (2026): arithmetic classification of exact
-  Floquet recurrence.
-- Liu--Zheng, arXiv:2402.19143: recurrence for time-independent
-  non-Hermitian open-system descriptions with real discrete spectrum.
-- Bourgain et al., arXiv:1302.7286: monitored state/subspace recurrence and
-  operator-valued Schur functions.
-- Wiener: the first long-time fidelity moment as atomic collision mass.
-- Classical indeterminate moment and Jacobi theory: multiple representing
-  measures and boundary data at infinity.
-- Reverse water filling: parallel-Gaussian rate--distortion optimizer.
-- Barbon--Rabinovici and Cotler et al.: late-time black-hole recurrence and
-  spectral-form-factor diagnostics.
+| Parent | What it already supplies | What it does not visibly supply |
+|---|---|---|
+| [Bocchieri--Loinger recurrence](https://doi.org/10.1103/PhysRev.107.337) | qualitative finite closed recurrence | perturbative singularity, dense dimension strata, operational no-go |
+| [Campos Venuti 2015](https://arxiv.org/abs/1509.04352) | generic recurrence-time estimates and effective dimension | exact all-rank indistinguishability and wall completion |
+| [Kotowski--Oszmaniec 2026](https://arxiv.org/abs/2601.10409) | tight closed-system return-time bounds and generic saturation | classification of completed temporal dimension under arbitrary weak perturbation |
+| [Gupta--Short 2026](https://arxiv.org/abs/2604.14995) | simultaneous all-state finite recurrence bounds | discontinuous completed order parameter and exact wall spectroscopy |
+| [Anand et al. 2026](https://doi.org/10.22331/q-2026-04-20-2074) | arithmetic exact Floquet recurrence | arbitrary control-space wall trichotomy, dense rank phases, finite-horizon indistinguishability |
+| [Baroni 2026](https://arxiv.org/abs/2604.02213) | infinite-torus Kronecker flow, minimality and orbit-closure classification | trace-class/domain-preserving saturation joined to finite-time quantum stability |
+| [Amato--Facchi--Konderak 2023](https://arxiv.org/abs/2210.17513) | peripheral/attractor asymptotics of finite quantum channels | recurrence-corona extinction plus arithmetic wall mechanism |
+| [Bain 1984](https://doi.org/10.1016/0022-2364(84)90305-6) | phase cycling and coherence-pathway selection | minimum recurrence height and wall-resolved finite-grid resource law |
+| Kronecker--Weyl/Pontryagin duality | relation lattices and compact orbit closures | joined quantum perturbation, finite-horizon no-go and singular reporter law |
+| rank-nullity over `Q` | temporal-rank/relation-rank conservation | density of all physical recurrence phases with bounded-time indistinguishability |
+| Wiener/Eberlein/JdLG theory | persistent/atomic asymptotic selection | joined recurrence completion and detector hierarchy |
 
-## Exact differences
+## Current black-hole relevance boundary
 
-- Current finite-time papers do not optimize phase resolution against every
-  spectral probability through a pivot water functional while proving a
-  matching adversarial floor for each fixed weight vector.
-- Open-system recurrence papers do not give the state-dependent persistent
-  mass as a sharp lower/upper threshold joined to that finite clock.
-- Observer recurrence papers do not supply the joined coherence-graph
-  capacity, operational displacement identity and matching class-wide
-  exponent used here.
-- Wiener’s one-power law does not give the full additive collision hierarchy
-  and continuous-statistic closure used here.
-- Moment-indeterminacy papers do not state the complete polynomial
-  Krylov/Jacobi recurrence-classifier no-go with opposite temporal phases.
-- Black-hole SFF papers do not state the arbitrary-classifier theorem showing
-  that full all-times, all-orders perturbative SFF jets cannot certify the
-  exact plateau.
+Late-time spectral-form-factor work already treats discreteness and
+nonperturbative completion as central. [Choi--Kim--Song](https://arxiv.org/abs/2206.15357)
+state that late-time spectral form factors encode discreteness; recent work on
+[AdS black-hole saddles](https://arxiv.org/abs/2607.21704) finds that the
+semiclassical black-hole saddle loses dominance or disconnects from the
+integration cycle at late time. These sources motivate the inference problem.
 
-## Searches performed
+The candidate paper proves only the model-independent boundary: bounded-time
+agreement with a Hamiltonian or effective description cannot certify its
+exact completed recurrence phase or temporal dimension. It does not derive a
+black-hole spectrum, solve information loss, or predict gravitational data.
 
-Search families included:
+## Search families
 
-- quantum recurrence + peripheral spectrum + recurrence time;
-- quantum recurrence + rate distortion + water filling;
-- observer-dependent recurrence + coherence graph;
-- survival probability + Wiener theorem + spectral atoms;
-- spectral form factor + moment problem + nonperturbative completion;
-- black-hole recurrence + late-time plateau + perturbative spectral form
-  factor.
+- quantum recurrence + stability/perturbation + infinite-time limit;
+- exact recurrence + arithmetic + Floquet spectrum;
+- rational independence + dense rank strata/nowhere continuity;
+- Kronecker flow + infinite torus + Hamiltonian lattice;
+- peripheral spectrum + open quantum asymptotics;
+- phase cycling + Fourier pathway selection + aliasing;
+- spectral form factor + discreteness + black-hole plateau;
+- noncommuting time/large-system or weak-coupling limits.
 
-Primary sources and their citation ancestry were inspected where available.
-No equivalent joined theorem was found. Absence from a search is not proof of
+No source was found stating the joined theorem. Search absence is not proof of
 priority.
 
 ## Kill tests
 
-Novelty is killed if a prior source proves an equivalent hierarchy containing
-all of:
+Priority is killed if a prior source proves, as one theorem or an immediate
+specialization, all of the following:
 
-1. exact persistent threshold;
-2. state-weighted minimax water clock;
-3. observer graph phase quotient;
-4. arbitrary-spectrum collision-distribution closure;
-5. complete-local and all-orders perturbative non-identifiability with an
-   exact compact boundary.
+1. every positive admissible completed temporal rank is dense in finite
+   Hamiltonian space;
+2. any target rank is compatible with all normalized bounded-time probes to
+   arbitrary tolerance;
+3. completed recurrence is a discontinuous wall indicator obtained as the
+   pointwise limit of continuous reporters with exact sinc scaling;
+4. the same wall has an exact minimum replica order and finite-setting
+   coefficient recovery;
+5. robust exceptions are classified by the perturbation annihilator;
+6. the countable version has one trace-class, domain-preserving saturating
+   direction.
 
-A source containing one parent component does not kill the joined law, but
-can kill novelty claimed for that component. The manuscript therefore cites
-the parents and assigns novelty only to the exact integration and the
-specific new classifier/boundary theorems.
+A source proving one parent component removes novelty from that component but
+does not alone kill the joined mechanism.
 
-## Verdict
+## Hostile priority verdict
 
-`[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`.
+`[PROMISING BUT NOT CLEARED]`
 
-The exact theorem is proved and survives preliminary parent-theory and
-literature attacks. Independent experts must audit priority before any claim
-stronger than “we prove” or “we find no prior joined theorem” is made.
+Strongest objection: the law may be judged an insightful packaging of
+elementary Diophantine topology, Fourier windows and standard perturbation
+bounds. The paper earns novelty only if it shows that their exact conjunction
+changes a physical conclusion: validation on every bounded horizon cannot
+validate the exact dimension or arithmetic structure of quantum eternity,
+and the failure has a complete, measurable crossover and protection law.
+
+Independent specialists in quantum recurrence, Diophantine dynamics,
+Hamiltonian perturbation theory and multidimensional spectroscopy must audit
+priority before submission.

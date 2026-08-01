@@ -306,6 +306,41 @@ trace-class restriction compatibility unconditionally in the chamber relevant to
   operators, and conductor graph, but no matching aperture-anomaly theorem. External priority
   remains provisional pending specialist review.
 
+## Lean
+
+| Statement | Declaration |
+|---|---|
+| `(2)`: the exact projection correction has Hilbert--Schmidt energy `8a²` | `hsNormSq_centralSoninProjectionCorrection_eq_eight_mul_sq` |
+| `(5)`: Hilbert--Schmidt energy is invariant under unitary conjugation | `unitaryPush_isHilbertSchmidt`, `hsNormSq_comp_right_linearIsometryEquiv_symm`, `hsNormSq_unitaryPush` |
+| `(3)`--`(4)`: distinct apertures are unitarily inequivalent, and the converse | `eq_of_unitaryPush_centralSoninProjectionCorrection_eq`, `exists_unitaryPush_centralSoninProjectionCorrection_eq_iff` |
+| `(6)`: nested Sonin carriers, and absorption of their projections in both orders | `centralSoninCarrier_antitone`, `evenCentralSoninCarrier_antitone`, `evenCentralSoninProjection_mul_of_le` |
+| the lost layer `Q_a − Q_b`: self-adjoint, and a projection under nesting | `evenSoninApertureLayer`, `adjoint_evenSoninApertureLayer`, `evenSoninApertureLayer_mul_self` |
+| `(7)`: the exact off-diagonal restriction law | `evenCentralSoninQuadraticCorner_restrictionDefect` |
+| `(8)`: the diagonal defect is the Gram square of the lost-layer transition, and that square is a **positive** operator with nonnegative diagonal | `evenSoninApertureLostTransition`, `evenCentralSoninQuadraticCorner_restrictionDefect_eq_adjoint_mul`, `evenCentralSoninQuadraticCorner_restrictionDefect_isPositive`, `reApplyInnerSelf_restrictionDefect_nonneg` |
+| **exactness criterion**: restriction is exact precisely when the lost-layer transition vanishes | `evenCentralSoninQuadraticCorner_restrictionDefect_eq_zero_iff`, `evenCentralSoninQuadraticCorner_compress_eq_iff` |
+| `(10)`: the lost-layer transition as a compression against the complement | `evenSoninApertureLostTransition_eq_compress` |
+| `(11)`: the aperture corner sends the inverse-dilated exterior shell to normalized shell vectors | `evenSoninApertureLostTransition_pairedShell_tendsto` |
+| `(12)`: compact distance at least one, hence noncompactness of the transition and of the defect; and the defect is nonzero in the crossing chamber | `one_le_norm_evenSoninApertureLostTransition_sub_compact`, `evenSoninApertureLostTransition_not_isCompactOperator`, `evenCentralSoninQuadraticCorner_restrictionDefect_not_isCompactOperator`, `evenCentralSoninQuadraticCorner_restrictionDefect_ne_zero`, `evenSoninApertureLostTransition_ne_zero` |
+| `(13)`--`(15)`: every strict aperture pair has a genuine prime scale at which the defect leaves the relative ideal | `exists_prime_restrictionDefect_not_mem_principalRelativeIdeal` |
+| `(16)`: the exact compressed cocycle; `(20)`: additivity modulo the relative ideal | `evenSoninApertureRestrictionDefect`, `evenSoninApertureRestrictionDefect_compressed_cocycle`, `evenSoninApertureRestrictionDefect_principalRelative_cocycle` |
+| `(18)`: the defect's principal-relative shell normal form, and the layer's window normal form | `evenCentralSoninQuadraticCorner_restrictionDefect_principalRelativeEq_shell`, `evenSoninApertureLayer_eq_window_sub_correction`, `evenSoninApertureLayer_principalRelativeEq_window` |
+| `(19)`: the cyclic logarithmic reader of the lost layer, scale-free | `soninApertureLostLayerWindow`, `soninApertureLostLayerWindow_operator`, `soninLiveWindowCyclicLogWeight_apertureLostLayer` |
+| closure of the enlarged shell algebra under the normal-state product, with the reader on it | `soninLiveComposeScale_scaleOneShell`, `soninWindowStateCyclicLogTrace_composeScaleOneShells`, `soninWindowStateCyclicLogTrace_composeScaleOneShells_comm` |
+| `(21)`: the curvature lies in the relative ideal and is Schatten-1 | `evenSoninApertureRestrictionCurvature`, `evenSoninApertureRestrictionCurvature_mem_principalRelativeIdeal`, `evenSoninApertureRestrictionCurvature_memSchattenClass_one` |
+| the ordinary trace of the curvature: exactly minus the coupling energy, hence nonpositive, and zero exactly when the coupling vanishes | `evenSoninApertureSuccessiveLayerTransition`, `re_opTrace_evenSoninApertureRestrictionCurvature_eq_neg_hsNormSq`, `re_opTrace_evenSoninApertureRestrictionCurvature_nonpos`, `re_opTrace_evenSoninApertureRestrictionCurvature_eq_zero_iff` |
+| `(22)`--`(23)`: the exact retained/lost/total shell splitting and cyclic-mass conservation | `soninApertureRetainedLayerWindow`, `soninApertureCyclicLostLayerWindow`, `soninApertureTotalLayerWindow`, `soninApertureTotalLayerWindow_operator_eq_retained_add_lost`, `soninAperture_cyclicMass_conservation`, `soninAperture_cyclicMass_cocycle` |
+| strictness: at an actual dilation scale the curvature is nonzero, so the defect is not additive | `exists_scale_evenSoninApertureRestrictionCurvature_ne_zero`, `exists_scale_evenSoninApertureRestrictionDefect_ne_add` |
+
+Files: `formal/GaloisForLFunctions/RHTower/SoninApertureAreaRigidity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninApertureRestrictionDefect.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninApertureDefectPositivity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeApertureNoGo.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninLayerWindowNormalForm.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninApertureLayerAlgebra.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninApertureCurvatureTrace.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninApertureCyclicMassConservation.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninApertureDefectNonadditive.lean`.
+
 ## Gates
 
 - [x] prior Sonin aperture and failed-route corpus searched
@@ -359,11 +394,21 @@ trace-class restriction compatibility unconditionally in the chamber relevant to
       (`apertureCocycle_eq_coboundary`), and no coboundary restores a lower floor
       (`not_exists_lower_bound_soninAperturePacketCurvature_add_inert`).  So the repair cannot be
       any additive aperture assignment whatsoever — the Burnol counterterm is only the leading
-      instance of an entire inert class.
+      instance of an entire inert class.  Widened again in
+      `SoninCompletionUnboundedRequirement.lean`: no counterterm *bounded above on the packet
+      family* restores a floor, even a packet-dependent one, so the regularized pairing must be
+      unbounded above along that family.
 - [ ] prove completed coercivity or terminally retire the source class
 
 ## Log
 
+- 2026-08-01 — numbered-statement audit against Lean.  Everything from `(2)` to `(23)` was already
+  formalized except two clauses of `(8)`: the defect's *positivity* and the "exact precisely when
+  the lost layer vanishes" criterion.  Both are now in
+  `SoninApertureDefectPositivity.lean` — positivity from the Gram-square factorization, and the
+  criterion from the C*-identity `x⋆x = 0 ↔ x = 0` on the even Sonin operator algebra, which also
+  gives the nonvanishing of the lost-layer transition itself in the crossing chamber.  The card now
+  carries a full Lean table.
 - 2026-07-31 — principal Burnol cancellation closed, uniformly in the prime.  The counterterm
   depends on the aperture ratio only, so one subtraction removes the principal anomaly at every
   prime of the semilocal graph simultaneously; what survives is the real trace-class residual.

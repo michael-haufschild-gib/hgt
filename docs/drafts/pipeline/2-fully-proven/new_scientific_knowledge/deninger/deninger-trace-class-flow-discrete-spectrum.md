@@ -472,3 +472,170 @@ The next Lean step is therefore the implication with that continuity as an expli
 
 whose content is the Leibniz seminorm estimate for the modulations together with the counting
 bound above.  After that, the F-space closed graph theorem itself.
+
+### The modulation step landed
+
+`formal/GaloisForLFunctions/HTGeometry/FlowTemperedGrowth.lean` — the implication named as the
+next Lean step above.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `cexpLin c = fun t => exp (c t)`, with `contDiff_cexpLin`, `differentiableAt_cexpLin`,
+  `deriv_cexpLin`, and `iteratedDeriv_cexpLin : iteratedDeriv n (cexpLin c) = c^n · cexpLin c`.
+- `modulation x = cexpLin (-(i x))` with `norm_modulation : ‖exp(-i x t)‖ = 1` and
+  `norm_iteratedFDeriv_modulation` — **the `n`-th derivative of the modulating exponential has
+  modulus exactly `|x|^n`**.  This is the only place the frequency enters.
+- `norm_iteratedFDeriv_modulatedWeight_le` — **the Leibniz seminorm estimate**:
+  `‖φ_x^{(n)}‖ ≤ (1 + |x|)^n · M` whenever `M` bounds the derivatives of `φ` up to order `k ≥ n`.
+  Proved from mathlib's `norm_iteratedFDeriv_mul_le`, the modulus computation above, and the
+  binomial theorem `∑ᵢ C(n,i)|x|^i = (1+|x|)^n`.  No derivative is computed by hand.
+- `norm_iteratedFDeriv_modulatedWeight_le_pow` — the uniform form over all orders `≤ k`, with the
+  single factor `(1 + |x|)^k`.
+- `multiplicityMeasure_polynomial_growth` — **`ν([x-ε, x+ε]) ≤ C(1+|x|)^N / c`** from the counting
+  bound, given that the symbol stays above `c` on the window and its total spectral mass grows
+  polynomially.  `finite_and_card_le_polynomial` is the same statement as a count.
+- `multiplicityMeasure_tempered_of_traceSeminormBound` — **the full implication**: a seminorm
+  bound of order `k` on the trace functional, plus the identity `Tr K_{φ_x} = ∑ᵢ φ̂_x(-λᵢ)` and a
+  lower bound on the symbol near the modulation frequency, give
+  `ν_A([x-ε, x+ε]) ≤ (C·M/c)(1+|x|)^k`.  The seminorm bound is the closed-graph continuity of
+  `φ ↦ Tr K_φ`, carried as an explicit hypothesis exactly as planned.
+
+### Remaining after the modulation step
+
+Two analytic inputs, both genuinely absent from mathlib:
+
+1. the closed graph theorem for the Fréchet space `𝒟_J → 𝒮₁(H)`, which would discharge the
+   seminorm hypothesis of `multiplicityMeasure_tempered_of_traceSeminormBound`.  mathlib has the
+   closed graph theorem only for Banach spaces, and has no `𝒟_J`;
+2. Fourier inversion on a compact window, which would turn the trace pairings
+   `φ ↦ ∫ φ̂(-λ) dν_A` into the bounded-continuous pairings that
+   `multiplicityMeasure_eq_of_forall_integral_window_eq` consumes, completing clause-5 uniqueness.
+
+Everything else in clauses 1--5 is formalized.
+
+### The test-pairing step landed
+
+`formal/GaloisForLFunctions/HTGeometry/ContinuousTestPairing.lean` — the fundamental lemma of the
+calculus of variations, the step that turns equality of pairings with test weights into a
+pointwise identity.  mathlib does not have it.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `triangleBump c δ = max 0 (δ - |t - c|)` with continuity, nonnegativity, compact support, and
+  strict positivity on the open interval.
+- `integral_pos_of_pos_on_ball` — a nonnegative integrable function that is strictly positive on
+  an interval has strictly positive integral, since its support then has positive measure
+  (`integral_pos_iff_support_of_nonneg`).  `integral_triangleBump_pos` is the instance for the
+  bump, proved qualitatively with no computation of the integral.
+- `exists_ball_norm_pos` — a continuous function that is nonzero at a point is nonzero on a ball
+  around it.
+- `eq_zero_of_forall_integral_mul_eq_zero_complex` — **a continuous `f : ℝ → ℂ` that integrates to
+  zero against every continuous compactly supported weight vanishes**.  The witness is
+  `φ = triangleBump · conj f`: then `φ f = triangleBump · ‖f‖²` is real, nonnegative, and strictly
+  positive on the ball where `f ≠ 0`, so its integral is strictly positive, contradicting the
+  hypothesis.  No sign analysis and no approximate identity is needed.
+- `eq_zero_of_forall_integral_mul_eq_zero` — the real form, with `φ = triangleBump · f`.
+- `eq_of_forall_integral_mul_eq` — **two continuous functions with the same test pairings agree**.
+
+This is the second of the two ingredients of "Fourier inversion on a compact window".  With it,
+the window route for clause-5 uniqueness reduces to a single remaining step: the Fubini exchange
+identifying the trace pairing `∫ φ̂(-λ) dν` with `∫ φ(t) · charFun ν t dt`.  Given that exchange,
+`eq_of_forall_integral_mul_eq` forces `charFun ν = charFun μ`, and mathlib's
+`MeasureTheory.Measure.ext_of_charFun` — which does apply on `ℝ` — gives `ν = μ` for the finite
+window restrictions, which `measure_eq_of_restrict_Icc_eq` then glues.
+
+### Fourier inversion on a window landed
+
+`formal/GaloisForLFunctions/HTGeometry/FlowCharFunUniqueness.lean` — the Fubini exchange and the
+resulting uniqueness.  Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `cWeightTransform φ λ = ∫ φ(t) χ_λ(t) dt` for a complex weight, with `flowCharacter_apply` and
+  `norm_flowCharacter : ‖χ_λ(t)‖ = 1`.
+- `continuous_uncurry_flowCharacter` — the character is jointly continuous in frequency and time.
+- `integrable_uncurry_weight` — the trace integrand is integrable on `ν × volume` for a finite
+  spectral measure: it is dominated by `‖φ(t)‖`, which is integrable on the product by
+  `Integrable.comp_snd` since `ν` is finite.
+- `integral_cWeightTransform_eq_integral_charFun` — **the Fubini exchange**:
+  `∫ φ̂(-λ) dν(λ) = ∫ φ(t) · charFun ν t dt`.
+- `measure_eq_of_forall_integral_cWeightTransform_eq` — **two finite measures on the line with the
+  same trace pairings are equal**.  The exchange turns the hypothesis into equality of the
+  pairings of `charFun ν` and `charFun μ` with every test weight; both are continuous
+  (`continuous_charFun` for a finite measure), so `eq_of_forall_integral_mul_eq` gives
+  `charFun ν = charFun μ`, and `MeasureTheory.Measure.ext_of_charFun` concludes.
+
+This closes the analytic gap flagged above.  Clause-5 uniqueness now runs end to end on windows:
+`finite_of_orthonormal_flowEigenvectors_of_window` makes each window restriction finite,
+`measure_eq_of_forall_integral_cWeightTransform_eq` identifies it from the trace pairings, and
+`measure_eq_of_restrict_Icc_eq` glues the windows into equality of the multiplicity measures.
+
+### Remaining
+
+One input: the closed graph theorem for the Fréchet space `𝒟_J → 𝒮₁(H)`, which would discharge
+the seminorm hypothesis of `multiplicityMeasure_tempered_of_traceSeminormBound` and hence
+temperedness.  mathlib has the closed graph theorem only for Banach spaces.
+
+### Route correction on the last input, and the engine landed
+
+The closed graph theorem is not the only way to get the seminorm bound, and it is not the cheapest.
+mathlib already has barrelled spaces and Banach--Steinhaus for them:
+`BarrelledSpace`, `BaireSpace.instBarrelledSpace` (every Baire topological vector space — in
+particular every Fréchet space — is barrelled), `WithSeminorms.banach_steinhaus`,
+`WithSeminorms.equicontinuous_TFAE`, and `Seminorm.bound_of_continuous`.  What it does **not**
+have is a closed graph theorem outside normed spaces.  So the trace bound should be obtained by
+uniform boundedness, not by closed graph:
+
+the finite-rank truncations `φ ↦ Tr(K_φ P)` of the trace are continuous (bounded by
+`rank(P)·‖K_φ‖ ≤ rank(P)·‖φ‖_{L¹}`) and pointwise bounded (by `‖K_φ‖₁`, finite exactly because
+each `K_φ` is trace class).  Banach--Steinhaus on the barrelled space `𝒟_J` then makes them
+equicontinuous, and the resulting continuous seminorm is controlled by finitely many `C^k`
+seminorms.  The trace itself is dominated by the truncations, so it inherits the bound.
+
+`formal/GaloisForLFunctions/HTGeometry/BarrelledSeminormBound.lean` — the engine of that argument.
+Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `exists_seminorm_bound_of_bddAbove` — **on a barrelled space with seminorm family `p`, a
+  pointwise bounded family of continuous linear functionals satisfies a single uniform bound
+  `‖F k x‖ ≤ C · (s.sup p) x` for one finite `s`**.  Banach--Steinhaus gives uniform
+  equicontinuity, the equicontinuity TFAE turns that into a continuous dominating seminorm, and
+  `Seminorm.bound_of_continuous` controls that seminorm by finitely many of the `p`.
+- `exists_seminorm_bound_of_le_iSup` — a functional dominated pointwise by such a family inherits
+  the bound.  This is the statement to feed
+  `multiplicityMeasure_tempered_of_traceSeminormBound`.
+
+### Remaining after the engine
+
+Two concrete constructions, no longer any missing general theorem:
+
+1. `𝒟_J` as a barrelled space: the smooth functions supported in a fixed compact `J`, with the
+   `C^k` seminorms, shown complete (hence Baire, hence barrelled by the mathlib instance) and
+   `WithSeminorms` for that family.
+2. the finite-rank truncation family `φ ↦ Tr(K_φ P)` as continuous linear functionals on it,
+   pointwise bounded by the trace norm, with the trace dominated by their supremum — the corpus's
+   `opTrace` and Schatten development is what this is built on.
+
+### The smooth-limit ingredient landed
+
+Completeness of the test space needs one analytic fact that mathlib does not have: mathlib proves
+that a uniform limit of derivatives is a derivative (`hasDerivAt_of_tendstoUniformly`) but says
+nothing at all orders, and there is no `CompleteSpace` instance for Schwartz space either, so the
+fact has to be built.
+
+`formal/GaloisForLFunctions/HTGeometry/SmoothUniformLimit.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `contDiff_of_hasDerivAt_chain`, `contDiff_infty_of_hasDerivAt_chain` — **a chain of derivatives
+  is smooth**: if `g m` is differentiable with derivative `g (m+1)` for every `m`, then every
+  `g m` is `C^∞`.  Induction on the order through `contDiff_succ_iff_deriv`, with the analyticity
+  side condition of that lemma vacuous at finite order.
+- `iteratedDeriv_of_hasDerivAt_chain` — along such a chain, `iteratedDeriv m (g 0) = g m`.
+- `hasDerivAt_of_tendstoUniformly_iteratedDeriv` — **uniform convergence of all iterated
+  derivatives produces such a chain**.  Uniform convergence at order `m+1` plus pointwise
+  convergence at order `m` is exactly the hypothesis of mathlib's one-derivative theorem.
+- `contDiff_infty_of_tendstoUniformly_iteratedDeriv`,
+  `iteratedDeriv_eq_of_tendstoUniformly_iteratedDeriv` — **the uniform limit of all derivatives is
+  smooth, and its derivatives are the limits**.
+
+This is the engine of completeness of `𝒟_J`: a Cauchy sequence for the `C^k` seminorms has each
+iterated derivative uniformly Cauchy, hence uniformly convergent, and the limit is smooth with the
+expected derivatives.  What is left for that construction is the bookkeeping — the space as a
+module, the seminorms as `Seminorm`s, `WithSeminorms` for the family, metrizability, and the
+support condition passing to the limit — after which the mathlib instance
+`BaireSpace.instBarrelledSpace` supplies barrelledness and
+`exists_seminorm_bound_of_le_iSup` closes the temperedness input.

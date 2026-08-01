@@ -127,6 +127,51 @@ theorem normSq_cayleyOfHerglotz_donoghueTransform_lt_one
     Complex.normSq (cayleyOfHerglotz (donoghueTransform nu z)) < 1 :=
   normSq_cayleyOfHerglotz_lt_one (im_donoghueTransform_pos nu hz)
 
+/-! ## The Cayley transform is invertible
+
+The inverse is the parent card's `(1)`, `m = i (1 + Theta) / (1 - Theta)`.  The Cayley value is
+never `1`, so the inversion has no side condition beyond the one already needed to form it. -/
+
+/-- The inverse Cayley transform, carrying the disc back to the upper half plane. -/
+noncomputable def herglotzOfCayley (Θ : ℂ) : ℂ := Complex.I * (1 + Θ) / (1 - Θ)
+
+/-- The Cayley value is never `1`. -/
+theorem cayleyOfHerglotz_ne_one {m : ℂ} (h : m + Complex.I ≠ 0) : cayleyOfHerglotz m ≠ 1 := by
+  intro hc
+  rw [cayleyOfHerglotz, div_eq_one_iff_eq h] at hc
+  have : (2 : ℂ) * Complex.I = 0 := by linear_combination -hc
+  simp at this
+
+theorem one_sub_cayleyOfHerglotz {m : ℂ} (h : m + Complex.I ≠ 0) :
+    1 - cayleyOfHerglotz m = (2 * Complex.I) / (m + Complex.I) := by
+  rw [cayleyOfHerglotz, eq_div_iff h, sub_mul, div_mul_cancel₀ _ h, one_mul]
+  ring
+
+/-- **`(1)`.**  The Cayley transform inverts to `m = i (1 + Theta) / (1 - Theta)`. -/
+theorem herglotzOfCayley_cayleyOfHerglotz {m : ℂ} (h : m + Complex.I ≠ 0) :
+    herglotzOfCayley (cayleyOfHerglotz m) = m := by
+  have hne : (1 : ℂ) - cayleyOfHerglotz m ≠ 0 := by
+    rw [one_sub_cayleyOfHerglotz h]
+    exact div_ne_zero (by simp) h
+  rw [herglotzOfCayley, div_eq_iff hne, one_sub_cayleyOfHerglotz h, cayleyOfHerglotz]
+  field_simp
+  ring
+
+/-- The other direction: every disc value other than `1` comes from a Herglotz value. -/
+theorem cayleyOfHerglotz_herglotzOfCayley {Θ : ℂ} (h : Θ ≠ 1) :
+    cayleyOfHerglotz (herglotzOfCayley Θ) = Θ := by
+  have hne : (1 : ℂ) - Θ ≠ 0 := sub_ne_zero.mpr (Ne.symm h)
+  have hden : herglotzOfCayley Θ + Complex.I = (2 * Complex.I) / (1 - Θ) := by
+    rw [herglotzOfCayley, div_add' _ _ _ hne]
+    field_simp
+    ring
+  have hdne : herglotzOfCayley Θ + Complex.I ≠ 0 := by
+    rw [hden]
+    exact div_ne_zero (by simp) hne
+  rw [cayleyOfHerglotz, div_eq_iff hdne, hden, herglotzOfCayley]
+  field_simp
+  ring
+
 /-! ## The middle links of the rigidity chain -/
 
 /-- Equal spectral probabilities give equal Herglotz transforms: the `sigma -> m` link. -/

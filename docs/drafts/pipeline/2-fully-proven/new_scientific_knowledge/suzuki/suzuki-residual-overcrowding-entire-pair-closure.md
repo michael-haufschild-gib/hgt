@@ -321,6 +321,21 @@ formalized:
   gives the uniform bound, which through the order engine and the tail bookkeeping gives the
   vanishing of the interior residual.
 
+**Equation `(13)`, the meromorphic carrier** —
+`formal/GaloisForLFunctions/RHTower/SuzukiCommonGaugeQuotient.lean`.  The proof of Theorem C calls
+`(13)` "ordinary quotient convergence away from zeros of the limiting denominator", and it had no
+declaration.  The content is that the *common* gauge cancels in the ratio because it is zero-free:
+
+- `quotient_eq_gauged_quotient`: the ungauged ratio equals the gauged one, for any zero-free gauge.
+- `tendsto_commonGauge_quotient`: if a zero-free gauge makes both parity functions converge, the
+  ungauged quotient converges to the quotient of the limits.
+- `tendsto_suzukiMeromorphicCarrier`, `tendsto_suzukiMeromorphicCarrier_at`: **`(13)`** itself, the
+  carrier `-i W_1 / W_(-1)` with the `-i` factor, in value and pointwise-in-`z` form.
+
+Note what is *not* needed: the gauge need not converge, and no relation between the two gauged
+limits is used.  Only zero-freeness.  This is exactly why `(12)` is stated as pair convergence
+before the ratio is taken.
+
 **Discharge of the abstraction** —
 `formal/GaloisForLFunctions/RHTower/SuzukiCompactifiedLabelOvercrowding.lean`.  The theorems above
 are order combinatorics of an abstract label family; this module proves that Suzuki's own
@@ -456,7 +471,10 @@ function of `phi`.  The one link with content is the phase lift, and it is now f
 The parent holography step is itself already formal, in
 `SuzukiCompactifiedPhaseProfile.lean`:
 
-- Theorem A of the parent card: `suzukiCompactifiedInversePhase_mem_Ioo` gives `(5)`,
+- Theorem A of the parent card: `suzukiCompactifiedInversePhase_zero` gives `(5)`, the centering
+  `U(0) = 0` (and `suzukiCompactifiedInversePhase_zero_of_reflection` derives its anchor from the
+  reflection normalization, so no separate assumption is needed);
+  `suzukiCompactifiedInversePhase_mem_Ioo` gives the projective range,
   `hasDerivAt_suzukiCompactifiedInversePhase` and `deriv_suzukiCompactifiedInversePhase_mem` give
   the derivative law and bound `(6)`, and `suzukiCompactifiedInversePhase_lipschitz` gives the sharp
   `1/2`-Lipschitz estimate `(7)`.
@@ -528,11 +546,140 @@ transform of a real Herglotz value lies on the unit circle and its argument is t
 - `eq_of_cayleyOfHerglotz_ofReal_eq`, `eq_of_exp_cayleyPhaseLift_eq`: **the link is an injection**.
   Cross-multiplying, two equal boundary Cayley values differ by `2 i (m_1 - m_2)`.
 
-So every scalar link of the chain `sigma -> m -> Theta -> phi` is now a formal injection.  What
-`(19)` still lacks is not a link but the *class*: the chain constrains a carrier only through
-countably much boundary data, and the counterexample below shows that an arbitrary `ℝ ≃o ℝ`, even
-reflection-normalized, is not determined by it.  Closing `(19)` needs the carrier to be an analytic
-object — a Hermite--Biehler pair — for which the boundary phase determines the carrier globally.
+**Phase lifting is unique, so the inner function *does* determine the phase** —
+`formal/GaloisForLFunctions/HTGeometry/ContinuousPhaseLiftUniqueness.lean`.  The scalar link above
+recovers the phase from one boundary value; the global link recovers the whole phase function:
+
+- `sub_mem_two_pi_int_of_exp_eq`: two continuous lifts of the same phase differ pointwise by a
+  multiple of `2 pi`.
+- `eq_of_exp_eq_of_eq_at`: **the lift is unique once normalized at a single point.**  Were the
+  difference to move, the intermediate value theorem would force it through `pi`, which is not a
+  multiple of `2 pi`.
+- `phase_zero_of_reflection`: the Suzuki reflection normalization `phi(-x) = 2 pi - phi(x)` pins
+  `phi 0 = pi` by itself, so it *supplies* the base point the uniqueness needs.
+- `eq_of_exp_eq_of_reflection`: hence a reflection-normalized continuous phase is determined by its
+  inner function.
+
+This is the exact converse face of the refutation below.  The **inner function** determines the
+phase; the **lattice jets** do not.  What separates them is precisely whether the jets determine the
+inner function — that is the Clark property of the carrier, i.e. that its Herglotz function is the
+Donoghue transform of its own jet measure.  It is a genuine analytic hypothesis and not a
+consequence of the order structure, which is exactly what the counterexample shows.
+
+**`(19)` assembled** — `formal/GaloisForLFunctions/RHTower/SuzukiFixedLatticeRigidity.lean`.  With
+every link formal, the chain composes:
+
+- `phase_eq_of_boundaryHerglotz_eq`: the boundary Herglotz function determines the normalized phase.
+- `boundaryHerglotz_eq_of_phase_eq`: and conversely, since the Cayley transform is injective on real
+  boundary values.
+- `phase_eq_iff_boundaryHerglotz_eq`: so the correspondence is a bijection.
+- `suzuki_fixedLattice_rigidity_of_clark`: **`(19)` for any carrier class with a Clark
+  reconstruction.**  A carrier has the Clark property when its own boundary Herglotz function is the
+  reconstruction of its own lattice jets; for such carriers equal jets force equal phases.
+
+The Clark hypothesis is named, and it is exactly the analytic content the order structure cannot
+supply.  It is not removable: `not_fixedLatticeJets_determine_reflectionNormalized_carrier` refutes
+`(19)` without it, even for reflection-normalized carriers.
+
+**The reconstruction, built for a finite aperture** —
+`formal/GaloisForLFunctions/RHTower/SuzukiClarkFiniteReconstruction.lean`.  For the finite-aperture
+case this card names, the Clark reconstruction is explicit — the Donoghue transform of a finite
+atomic spectral measure — so no abstract parameter remains:
+
+- `donoghueRealKernel`, `suzukiDonoghueKernel_ofReal`: the kernel at a real spectral parameter off
+  the atom is real.
+- `clarkFiniteHerglotz`, `im_clarkFiniteHerglotz_pos`: **the transform of a finite atomic measure is
+  a Herglotz function**, since every kernel value lies strictly above the real axis and the masses
+  are positive.
+- `clarkFiniteReconstruction`, `clarkFiniteHerglotz_ofReal`: its boundary function, real off the
+  atoms.
+- `suzuki_fixedLattice_rigidity_finiteAperture`: **`(19)` with the reconstruction supplied** — two
+  reflection-normalized continuous phases whose boundary Herglotz functions are the Donoghue
+  transforms of their own finite jet data, with equal jets, are equal.
+- `exists_clarkFinite_carrier`: the hypothesis class is inhabited, so the theorem is not vacuous.
+  The witness is the empty aperture with constant phase `pi`.
+
+**The phase equation must be required only off the atoms.**  Demanding it at every real point is
+unsatisfiable for any carrier that carries atoms, because the boundary Herglotz function has a pole
+at each one — which is why the only witness above is the atomless case.  The usable form asks for it
+off the atoms:
+
+- `dense_compl_of_finite`: the complement of a finite subset of the line is dense.
+- `phase_eq_of_boundaryHerglotz_eq_off`: both exponentials are continuous, so agreement on a dense
+  set is agreement everywhere; rigidity then follows as before.
+- `suzuki_fixedLattice_rigidity_finiteAperture_offAtoms`: **`(19)` for the finite-aperture Clark
+  class in the form a carrier with atoms can actually satisfy.**
+
+**Oddness of the boundary Herglotz function *is* the reflection normalization** — same module.  The
+normalization conjugates the inner function, and conjugating a boundary Cayley value is the same as
+negating its Herglotz value:
+
+- `cayleyOfHerglotz_neg_mul_self`: reflecting the Herglotz value inverts the boundary Cayley value.
+- `exp_reflection_of_odd`: hence, for an odd boundary Herglotz function, the reflected phase lifts
+  the Cayley value of the reflected Herglotz value.
+
+This explains the shape a Suzuki spectral configuration must take, and the obstruction is now a
+theorem rather than a remark:
+
+- `cayleyOfHerglotz_sub_one`, `norm_cayleyOfHerglotz_sub_one_le`,
+  `tendsto_cayleyOfHerglotz_of_abs_atTop`: as the boundary Herglotz value escapes to infinity the
+  Cayley value tends to `1`, with the explicit bound `2/|m|`.
+- `not_atom_at_zero_of_reflectionNormalized`: **a reflection-normalized carrier has no atom at the
+  origin.**  At an atom the Cayley value tends to `1`, but the normalization pins the phase at the
+  origin to `pi`, whose Cayley value is `-1`.
+
+So the spectral configuration must straddle the origin.  That a symmetric configuration then works
+is also proved, in `SuzukiClarkFiniteReconstruction.lean`:
+
+- `donoghueRealKernel_neg`: reflecting both the atom and the argument negates the kernel.
+- `clarkFiniteReconstruction_odd`: **any spectral configuration carrying an involution that
+  reflects the atoms and preserves the masses has an odd boundary Herglotz function** — hence, by
+  `exp_reflection_of_odd`, one compatible with the reflection normalization.
+- `clarkFiniteReconstruction_symmetricPair_odd`: the smallest admissible case, a symmetric pair at
+  `+-a` with equal masses.
+
+The two results bracket the admissible configurations: the origin cannot carry an atom, and
+reflection symmetry of the atoms is sufficient for the normalization.
+
+**A non-constant carrier exists** — `exists_nonconstant_reflectionNormalized_carrier`.  The carrier
+whose spectral mass sits entirely at the two projective endpoints has boundary Herglotz function
+`m(t) = t`, odd, with reflection-normalized continuous phase `pi + 2 arctan t` — the normalized
+phase lift itself.  Its phase is genuinely non-constant, so the rigidity hypotheses are satisfied
+non-trivially and not only by the atomless degenerate case.
+
+**The countable lattice** — `formal/GaloisForLFunctions/RHTower/SuzukiDonoghueSeriesTransform.lean`.
+The Suzuki lattice is indexed by `ZZ`, so the transform is a series.  It converges, and absolutely,
+because the Donoghue kernel is bounded *uniformly in the spectral variable*
+(`norm_suzukiDonoghueKernel_le`, bound `‖z‖ + (‖z‖^2+1)/Im z`), so the series is dominated termwise
+by the masses times one constant:
+
+- `donoghueSeriesTransform`, `summable_donoghueSeries`: the countable transform and its absolute
+  convergence, for any summable nonnegative mass family.
+- `im_donoghueSeriesTransform_pos`: **the countable transform is a Herglotz function** — every term
+  has positive imaginary part and at least one mass is positive.
+- `normSq_cayleyOfHerglotz_donoghueSeriesTransform_lt_one`: hence the inner function of the full
+  lattice exists and is Schur.
+- `donoghueSeriesTransform_congr`: it depends on nothing but the jets, so it is a Clark
+  reconstruction for the whole lattice.
+
+**The countable boundary reconstruction** —
+`formal/GaloisForLFunctions/RHTower/SuzukiClarkSeriesReconstruction.lean`.  On the real axis the
+imaginary-height bound degenerates, so the boundary series needs a different input: separation of
+the atoms from the point.  For a Suzuki configuration that is automatic, since the physical points
+`x_k = tan u_k` escape to infinity and have no finite accumulation point.
+
+- `clarkSeriesReconstruction`, `summable_clarkSeries`: the boundary reconstruction and its absolute
+  convergence, with separation replacing the imaginary height as the uniform bound.
+- `clarkSeriesReconstruction_odd`: a symmetric countable configuration has an odd boundary
+  reconstruction, exactly as in the finite case.
+- `dense_compl_of_countable`: the complement of a countable subset of the line is dense — the atom
+  set of a `ZZ`-indexed lattice is countable, not finite.
+- `suzuki_fixedLattice_rigidity_countable_offAtoms`: **`(19)` for the countable Clark class**, with
+  the phase equation required only off the atoms.
+
+So `(19)` is proved for the full `ZZ`-indexed lattice, not only for finite apertures.  What remains
+is the winding lift: constructing, for a configuration with interior atoms, the continuous
+reflection-normalized phase that lifts the Cayley argument across each pole.
 So no argument phrased on `ℝ ≃o ℝ` can prove `(19)`.  The rigidity theorem is a statement about the
 *analytic* Suzuki carrier class, where the Donoghue measure reconstructs the Herglotz function and
 hence the phase; the lattice jets determine the carrier only within that class.  Formalizing `(19)`
@@ -707,3 +854,85 @@ of `(19)` sits entirely in that parent step and not in this card.
   order isomorphism is not determined by it.  Closing `(19)` requires the Hermite--Biehler pair, for
   which the boundary phase determines the carrier globally.  Targeted build green, axiom audit
   `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — phase-lift uniqueness formalized (`eq_of_exp_eq_of_eq_at`,
+  `eq_of_exp_eq_of_reflection`), in
+  `formal/GaloisForLFunctions/HTGeometry/ContinuousPhaseLiftUniqueness.lean`.  A continuous lift is
+  unique once normalized at one point: a moving difference would have to cross `pi` by the
+  intermediate value theorem, and `pi` is not a multiple of `2 pi`.  The Suzuki reflection
+  normalization supplies that base point for free, since it forces `phi 0 = pi`
+  (`phase_zero_of_reflection`).  This isolates the residue of `(19)` exactly: the inner function
+  determines the phase, the lattice jets do not, and the whole gap is whether the jets determine
+  the inner function — the carrier's Clark property, an analytic hypothesis.  Targeted build green,
+  axiom audit `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(19)` assembled (`suzuki_fixedLattice_rigidity_of_clark`), plus the bijection
+  `phase_eq_iff_boundaryHerglotz_eq` between reflection-normalized continuous phases and boundary
+  Herglotz functions.  Rigidity now holds for any carrier class admitting a Clark reconstruction,
+  with that reconstruction as the single named hypothesis; the refutation shows it cannot be
+  dropped.  The card's residue is therefore one well-posed construction — exhibiting the Clark
+  reconstruction for the Hermite--Biehler class — rather than an unexamined chain of five links.
+  Targeted build green, axiom audit `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the Clark reconstruction built for a finite aperture
+  (`clarkFiniteHerglotz`, `im_clarkFiniteHerglotz_pos`, `clarkFiniteReconstruction`), giving
+  `suzuki_fixedLattice_rigidity_finiteAperture`: `(19)` with no abstract reconstruction parameter
+  left.  `exists_clarkFinite_carrier` checks the hypothesis class is inhabited so the theorem is not
+  vacuous — the witness is degenerate (empty aperture, constant phase `pi`), since a non-degenerate
+  one needs a lift winding across the atoms.  The finite-aperture case of `(19)` is closed; the
+  countable lattice still needs summability and boundary analysis of the infinite transform.
+  Targeted build green, axiom audit `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — corrected the finite-aperture rigidity hypothesis.  The earlier form demanded the
+  phase equation at *every* real point, which no carrier carrying atoms can satisfy, since the
+  boundary Herglotz function has a pole at each atom; that is why its only witness was the atomless
+  case.  `suzuki_fixedLattice_rigidity_finiteAperture_offAtoms` requires the equation only off the
+  atoms and recovers it everywhere by continuity and density (`dense_compl_of_finite`,
+  `phase_eq_of_boundaryHerglotz_eq_off`).  The earlier statement remains true but is near-vacuous;
+  this is the usable one.  Targeted build green, axiom audit
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — proved that oddness of the boundary Herglotz function *is* the reflection
+  normalization (`cayleyOfHerglotz_neg_mul_self`, `exp_reflection_of_odd`), and exhibited a
+  non-constant reflection-normalized Clark carrier
+  (`exists_nonconstant_reflectionNormalized_carrier`): the endpoint-concentrated carrier, with
+  `m(t) = t` and phase `pi + 2 arctan t`.  This replaces the degenerate atomless witness and shows
+  the rigidity hypotheses hold non-trivially.  The oddness equivalence also explains the shape a
+  spectral configuration must have: a single atom at the origin admits no reflection-normalized
+  lift, because the normalization would force an additive constant of `pi` where only multiples of
+  `2 pi` are available; a symmetric pair does.  Targeted build green, axiom audit
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the origin-atom obstruction promoted from prose to theorem
+  (`not_atom_at_zero_of_reflectionNormalized`): a reflection-normalized carrier can have no atom at
+  the origin, because at an atom the Cayley value tends to `1` while the normalization pins the
+  phase there to `pi`, whose Cayley value is `-1`.  Supported by the explicit escape bound
+  `‖cayley(m) - 1‖ ≤ 2/|m|` (`norm_cayleyOfHerglotz_sub_one_le`,
+  `tendsto_cayleyOfHerglotz_of_abs_atTop`).  This is the general form of the single-atom remark: the
+  spectral configuration must straddle the origin.  Targeted build green, axiom audit
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the symmetric-configuration claim promoted from prose to theorem
+  (`clarkFiniteReconstruction_odd`): any spectral configuration carrying an involution that reflects
+  the atoms and preserves the masses has an odd boundary Herglotz function, hence one compatible
+  with the reflection normalization; `clarkFiniteReconstruction_symmetricPair_odd` is the two-atom
+  case.  With the origin-atom obstruction this brackets the admissible configurations from both
+  sides: the origin cannot carry an atom, and reflection symmetry suffices.  Targeted build green,
+  axiom audit `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the countable Donoghue transform built and shown Herglotz
+  (`summable_donoghueSeries`, `im_donoghueSeriesTransform_pos`), removing the finiteness
+  restriction from the Clark reconstruction.  The convergence needs no new analysis: the kernel is
+  bounded uniformly in the spectral variable, so summable masses dominate the series termwise.  The
+  inner function of the full `ZZ`-indexed lattice therefore exists and is Schur.  Remaining on this
+  card: the real boundary values of the countable transform off the atoms, and a winding lift for a
+  configuration with interior atoms.  Targeted build green, axiom audit
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the countable boundary reconstruction built
+  (`clarkSeriesReconstruction`, `summable_clarkSeries`, `clarkSeriesReconstruction_odd`), giving
+  `suzuki_fixedLattice_rigidity_countable_offAtoms`: `(19)` for the full `ZZ`-indexed lattice.  On
+  the real axis the imaginary-height bound degenerates, so convergence rests instead on separation
+  of the atoms from the evaluation point — automatic for a Suzuki configuration, whose physical
+  points escape to infinity.  The atom set is countable rather than finite, so density of its
+  complement needed the countable form (`dense_compl_of_countable`).  Remaining: the winding lift
+  for a configuration with interior atoms.  Targeted build green, axiom audit
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — equation `(13)` formalized (`tendsto_suzukiMeromorphicCarrier`).  Re-auditing the
+  whole card rather than continuing on `(19)` surfaced it: `(13)` is a displayed equation that the
+  Theorem C proof dismisses as "ordinary quotient convergence", so it never received a Lean-status
+  bullet.  Its content is that the common gauge cancels in the ratio because it is zero-free —
+  notably, the gauge need not converge and no relation between the two gauged limits is used, which
+  is precisely why `(12)` is stated as pair convergence before the ratio.  Targeted build green,
+  axiom audit `[propext, Classical.choice, Quot.sound]`.

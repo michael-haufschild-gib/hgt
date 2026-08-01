@@ -545,6 +545,12 @@ Formalized so far (all unconditional, `#print axioms` clean, wired into `GaloisF
 
 | 8 | **`(4)` in operator-norm form**: `liminf ||Z_r|| >= 1`, stated as an eventual bound below every level under one | `eventually_one_sub_le_norm_soninApertureCoupling` |
 | 8 | uniform energy floor and its consequences: no lower floor for the packet channel | `eventually_le_hsNormSq_soninApertureCoupling`, `exists_soninAperturePacketCurvature_re_opTrace_lt`, `not_exists_lower_bound_soninAperturePacketCurvature_re_opTrace` |
+| 9 | **`(19)`**: the boundary corona as an algebraic quotient — bounded families modulo norm-null families — with the criterion that two classes agree exactly when the difference is norm-null | `soninBoundedFamilies`, `soninNullFamilies`, `soninNullFamilies_le_soninBoundedFamilies`, `soninNullInBounded`, `SoninCorona`, `soninBoundaryClass`, `soninBoundaryClass_eq_iff` |
+| 9 | the four families as boundary points: the packet, its inverse dilate, and the two coupling images | `soninPacketFamily`, `soninDilatedPacketFamily`, `soninCouplingFamily`, `soninAdjointCouplingFamily`, `soninBoundaryClass_eq_zero_iff` |
+| 9 | **`(20)`** and **`(21)`** as literal equalities of boundary classes, together with the nonvanishing of both packet classes | `soninBoundaryClass_soninCouplingFamily`, `soninBoundaryClass_soninAdjointCouplingFamily`, `soninBoundaryClass_soninPacketFamily_ne_zero`, `soninBoundaryClass_soninDilatedPacketFamily_ne_zero`, `soninBoundaryTransition_nontrivial` |
+| 9 | **`(19)` is a Hausdorff Banach corona**: bounded families under the supremum norm, null families a *closed* subspace, quotient complete and `T2`; and the algebraic corona is the same object | `SoninBoundedSeq`, `soninNullSeq`, `isClosed_soninNullSeq`, `SoninCoronaSpace`, `soninCoronaClass`, `soninCoronaSpace_t2`, `soninCoronaSpace_completeSpace`, `soninCoronaClass_eq_iff`, `norm_soninCoronaClass_le`, `soninBoundedEquiv`, `map_soninNullInBounded`, `soninCoronaEquiv` |
+| 9 | `(20)`, `(21)` and the strictly positive class norms inside the Banach corona | `soninCoronaClass_soninCouplingFamily`, `soninCoronaClass_soninAdjointCouplingFamily`, `norm_soninCoronaClass_soninPacketFamily_pos`, `norm_soninCoronaClass_soninDilatedPacketFamily_pos` |
+| 9 | clock pullback: reindexing is linear, contractive, isometric for a surjective clock, and descends to the corona along an escaping clock | `soninReindex`, `norm_soninReindex_le`, `norm_soninReindex`, `soninReindexₗ`, `soninCoronaReindex` |
 
 Files: `formal/GaloisForLFunctions/RHTower/SoninAnnulusBump.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninAnnulusPacket.lean`,
@@ -583,7 +589,10 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninAnnulusBump.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyLowerBound.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninCouplingOperatorNormFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninUnboundedSourcePacket.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninNoAperturePacketFloor.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninNoAperturePacketFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninBoundaryCorona.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninBoundaryTransition.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCoronaBanach.lean`.
 
 Note the family is read along a sequence `kappa : N -> R` tending to infinity, matching the card's
 own integer-clock phrasing; that is also what the corpus's compact-operator lemma expects.
@@ -593,12 +602,25 @@ pairing of the packet against the unimodular weight `exp(-2 pi i x xi)`, so `(7)
 vanishing directly, and `|u| <= 2 phi` gives a frequency-independent sup bound; dominated
 convergence on the bounded band finishes `(10)`.
 
-Still to formalize: the scaled packet estimates
-`(11)`--`(15)`, and the combination with
-`norm_evenSoninApertureSuccessiveLayerTransition_sub_branches_le` (already in the corpus).
+The whole chain `(3)`--`(5)`, `(4a)`--`(4c)`, `(6)`--`(16)`, `(19a)`--`(19d)` and the boundary
+interpretation `(19)`--`(21)` is now unconditional Lean. The discrete model reads the clock along a
+sequence `r : N -> R` tending to infinity rather than over the real ray `(1, infinity)`; every
+statement of the paper proof is a statement about such clocks, and the crossing clock
+`soninCrossingClock` exhibits one, so nothing is lost.
+
+In the Banach model the corona is `lp (fun _ : N => evenSubspace) infinity` modulo the null
+sequences; closedness of the null subspace is the only new analytic input, and it is the standard
+uniform-approximation argument.
 
 ## Log
 
+- 2026-08-01 — **the boundary interpretation `(19)`--`(21)` is now Lean.**  The corona exists twice:
+  as the algebraic quotient of bounded families by null families, and as the Hausdorff Banach
+  quotient of `lp(N, L^2_even)` at exponent infinity by the *closed* subspace of null sequences,
+  the two being linearly isomorphic.  `(20)` and `(21)` are literal equalities of boundary classes
+  — `(3)` and `(4a)` say exactly that the relevant differences are norm-null — and both packet
+  classes are nonzero, hence of strictly positive corona norm.  Clock pullback is a contraction,
+  isometric for a surjective clock, and descends to the corona along an escaping clock.
 - 2026-08-01 — the `liminf ||Z_r|| >= 1` half of `(4)` is now Lean in operator-norm form, closing
   the last statement of the card that had only been formalized in packet-norm form.
 - 2026-08-01 — **`(4c)` proved.  Every theorem on this card is now formalized unconditionally.**

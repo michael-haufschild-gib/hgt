@@ -192,6 +192,26 @@ whose noncompact restriction defect lies outside the relative ideal.  Thus the r
 RH-bearing construction must first enlarge the principal algebra by lost-aperture layers, then
 attach Burnol's conductor and address one-sided coercivity.
 
+## Lean
+
+| Statement | Declaration |
+|---|---|
+| the presentation space and the map `Phi_p` of `(1)` | `SoninPrincipalRelativePresentation`, `SoninPrincipalRelativePresentation.toOperator`, `toOperator_zero`, `toOperator_add`, `toOperator_smul` |
+| item 2: every relative element is Schatten-1 | `IsSoninPrincipalRelativeIdeal.memSchattenClass_one` |
+| `(6)`: Schatten-1 splits into two Hilbert--Schmidt factors | `traceClassRoot`, `traceClassRoot_isHilbertSchmidt`, `MemSchattenClass.one_isTraceClass` |
+| `(7)`: item 3, ordinary trace is linear on the ideal and cyclic against every bounded operator | `opTrace_add_of_memSchattenClass_one`, `opTrace_smul`, `MemSchattenClass.one_opTrace_comp_comm`, `SoninPrincipalRelativePresentation.opTrace_mul_relative_eq` |
+| `(8)`--`(9)`: directness of the presentation | `SoninPrincipalRelativePresentation.toOperator_injective`, `finitePrimeSoninPrincipalShellCombination_not_mem_relativeIdeal_of_ne_zero` |
+| `(3)`: the signed finite part, well defined on the represented operator and linear | `principalTrace`, `SoninPrincipalRelativePresentation.finitePart`, `finitePart_eq_of_toOperator_eq`, `finitePart_add`, `finitePart_smul`, `finitePart_neg` |
+| item 4, existence half: the presented operators are a subspace and the finite part descends to a linear functional on it with the two normalizations `(2)` | `soninPrincipalRelativeRange`, `shell_mem_soninPrincipalRelativeRange`, `relative_mem_soninPrincipalRelativeRange`, `soninFinitePartOfMem`, `soninFinitePartOfMem_eq`, `soninFinitePartₗ`, `soninFinitePartₗ_shell`, `soninFinitePartₗ_relative` |
+| **item 4, uniqueness half**: every element splits into shell plus correction, so a linear functional with those two normalizations *is* the finite part; and the same read against a functional on all bounded operators | `soninPrincipalRelativeRange_eq_shell_add_relative`, `eq_soninFinitePartₗ_of_normalizations`, `existsUnique_soninFinitePart`, `apply_toOperator_eq_finitePart` |
+| `(10)`: the actual Gram combination differs from its shell by a relative element, hence lies in the presented subspace | `finitePrimeSoninQuadraticCorner_principalRelativeEq_shellCombination`, `SoninPrincipalRelativePresentation.ofQuadraticCorner`, `toOperator_ofQuadraticCorner` |
+| `(4)`--`(5)`: the exact finite-place anomaly, and its linearity in the coefficient matrix | `finitePart_ofQuadraticCorner`, `soninFinitePrimeAnomaly`, `soninFinitePrimeAnomaly_zero`, `soninFinitePrimeAnomaly_add`, `soninFinitePrimeAnomaly_smul`, `finitePart_ofQuadraticCorner_eq_anomaly`, `soninFinitePartₗ_quadraticCorner`, `finitePrimeSoninQuadraticCornerCombination_add`, `finitePrimeSoninQuadraticCornerCombination_smul` |
+
+Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeIdeal.lean`,
+`formal/GaloisForLFunctions/RHTower/TraceClassCyclicity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPrincipalRelativeTraceSplitting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFinitePartUniqueness.lean`.
+
 ## Gates
 
 - [x] exact internal frontier and failed routes audited
@@ -201,6 +221,13 @@ attach Burnol's conductor and address one-sided coercivity.
 - [x] finite-part existence and uniqueness proof closed
 - [x] exact residual anomaly isolated
 - [x] exact Lean theorem
+- [x] **uniqueness half of item 4 formalized** — the existing Lean carried existence and
+      well-definedness of the finite part but not the card's uniqueness claim.
+      `soninPrincipalRelativeRange` makes the presented operators a subspace, `soninFinitePartₗ`
+      is the descended linear functional, and `eq_soninFinitePartₗ_of_normalizations` /
+      `existsUnique_soninFinitePart` prove there is exactly one linear functional on that subspace
+      with the two normalizations `(2)`.  The anomaly `(5)` is now a named functional with proved
+      linearity in the coefficient matrix.
 - [x] aperture compatibility inside the principal-relative class falsified
 - [x] cyclic reader on the enlarged all-prime aperture-layer principal algebra — the aperture
       defect is a scale-one shell modulo the exact relative ideal
@@ -214,10 +241,19 @@ attach Burnol's conductor and address one-sided coercivity.
       unbounded below (`not_exists_lower_bound_soninAperturePacketCurvature_re_opTrace`), so any
       coercivity must come entirely from the Burnol conductor, not from the aperture side.  This
       constrains the remaining question but does not settle it: the completed functional is the
-      sum, and its coercivity is still open.
+      sum, and its coercivity is still open.  Constrained further by
+      `not_bddAbove_of_lower_bound_completion`: the conductor's contribution must be unbounded
+      above along the unit-weight packet family, so a bounded archimedean term cannot work.
 
 ## Log
 
+- 2026-08-01 — numbered-statement audit found the gap: the Lean module proved the finite part is
+  well defined and linear, but never that it is the *only* functional with the two normalizations,
+  which is item 4 of the theorem.  Closed in `SoninFinitePartUniqueness.lean` by making the
+  presented operators a submodule, descending the finite part to a linear functional on it through
+  directness, and splitting an arbitrary element as shell plus correction.  The residual anomaly
+  `(5)` also became a named functional with proved additivity and homogeneity — the card asserted
+  its linearity, and only the two summands' linearity had been formalized.
 - 2026-07-31 — stale gate closed.  The enlarged aperture-layer algebra needed no new construction:
   its elements are scale-one shells, their product is the shell on the intersection, and the reader
   is the logarithmic length of that intersection — symmetric in the two factors.

@@ -100,6 +100,46 @@ theorem cayleyPhaseLift_mem_Ioo (m : ℝ) :
   · rw [cayleyPhaseLift]; linarith
   · rw [cayleyPhaseLift]; linarith
 
+/-! ## The cotangent relation, and the reflection normalization as a consequence
+
+The parent holography card writes the phase-Herglotz relation as `m = -cot(phi/2)` and derives the
+reflection normalization `phi(-x) = 2 pi - phi(x)` from oddness of `m`.  The corpus carries that
+normalization as a hypothesis; here it is derived, so the two are connected rather than assumed
+separately. -/
+
+/-- Halving the phase lift returns the arctangent: this is the relation `m = -cot(phi/2)`. -/
+theorem cayleyPhaseLift_half_sub (m : ℝ) :
+    cayleyPhaseLift m / 2 - Real.pi / 2 = Real.arctan m := by
+  rw [cayleyPhaseLift]
+  ring
+
+/-- **`m = -cot(phi/2)`.** -/
+theorem neg_cot_half_cayleyPhaseLift (m : ℝ) :
+    -(Real.cos (cayleyPhaseLift m / 2) / Real.sin (cayleyPhaseLift m / 2)) = m := by
+  have hhalf : cayleyPhaseLift m / 2 = Real.pi / 2 + Real.arctan m := by
+    rw [cayleyPhaseLift]
+    ring
+  rw [hhalf, Real.cos_add, Real.sin_add, Real.cos_pi_div_two, Real.sin_pi_div_two]
+  simp only [zero_mul, one_mul, zero_sub, add_zero]
+  rw [neg_div, neg_neg, ← Real.tan_eq_sin_div_cos, Real.tan_arctan]
+
+/-- **`(12)`, first line.**  Oddness of the boundary Herglotz function *gives* the reflection
+normalization of the phase; it need not be assumed. -/
+theorem cayleyPhaseLift_reflection_of_odd {m : ℝ → ℝ} (hodd : ∀ x, m (-x) = -m x) (x : ℝ) :
+    cayleyPhaseLift (m (-x)) = 2 * Real.pi - cayleyPhaseLift (m x) := by
+  rw [hodd, cayleyPhaseLift, cayleyPhaseLift, Real.arctan_neg]
+  ring
+
+/-- The principal phase of an odd Herglotz function is reflection-normalized and centered. -/
+theorem cayleyPhaseLift_zero_of_odd {m : ℝ → ℝ} (hodd : ∀ x, m (-x) = -m x) :
+    cayleyPhaseLift (m 0) = Real.pi := by
+  have h0 : m 0 = 0 := by
+    have := hodd 0
+    rw [neg_zero] at this
+    linarith
+  rw [h0, cayleyPhaseLift, Real.arctan_zero]
+  ring
+
 /-- **The phase-lift link `Theta -> phi` is injective.**  Equal boundary Cayley values force equal
 Herglotz boundary values: cross-multiplying, the two sides differ by `2 i (m₁ - m₂)`. -/
 theorem eq_of_cayleyOfHerglotz_ofReal_eq {m1 m2 : ℝ}

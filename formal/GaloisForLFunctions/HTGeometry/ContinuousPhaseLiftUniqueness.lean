@@ -35,13 +35,15 @@ theorem sub_mem_two_pi_int_of_exp_eq {f g : ℝ → ℝ}
 /-- `π` is not an integer multiple of `2 π`. -/
 theorem pi_ne_two_pi_mul_int (n : ℤ) : Real.pi ≠ 2 * Real.pi * n := by
   intro h
-  have hpi : Real.pi ≠ 0 := Real.pi_ne_zero
-  have h1 : (1 : ℝ) = 2 * n := by
-    field_simp at h
-    rcases h with h | h
-    · linarith
-    · exact absurd h hpi
-  have h2 : (2 : ℤ) * n = 1 := by exact_mod_cast h1.symm
+  have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
+  have h1 : Real.pi * (1 - 2 * (n : ℝ)) = 0 := by linear_combination h
+  have h2 : (1 : ℝ) - 2 * (n : ℝ) = 0 := by
+    rcases mul_eq_zero.mp h1 with hc | hc
+    · exact absurd hc (ne_of_gt hpi)
+    · exact hc
+  have h3 : (2 : ℤ) * n = 1 := by
+    have hr : (2 : ℝ) * (n : ℝ) = 1 := by linarith
+    exact_mod_cast hr
   omega
 
 theorem neg_pi_ne_two_pi_mul_int (n : ℤ) : -Real.pi ≠ 2 * Real.pi * n := by
@@ -55,44 +57,74 @@ theorem eq_of_exp_eq_of_eq_at {f g : ℝ → ℝ} (hf : Continuous f) (hg : Cont
     {x₀ : ℝ} (h₀ : f x₀ = g x₀) : f = g := by
   have hd : Continuous (fun x => f x - g x) := hf.sub hg
   have hzero : f x₀ - g x₀ = 0 := by rw [h₀]; ring
+  have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
   funext x₁
   by_contra hne
   have hdne : f x₁ - g x₁ ≠ 0 := fun h => hne (by linarith [sub_eq_zero.mp h])
   obtain ⟨n, hn⟩ := sub_mem_two_pi_int_of_exp_eq hexp x₁
-  have hn0 : n ≠ 0 := by
-    intro h
-    rw [h] at hn
-    simp at hn
-    exact hdne hn
-  have hpi : 0 < Real.pi := Real.pi_pos
-  -- the difference is at least a full turn away from zero, so it must cross `π` or `-π`
   have hIVT := intermediate_value_uIcc (a := x₀) (b := x₁) hd.continuousOn
+  rw [hzero] at hIVT
   rcases lt_or_gt_of_ne hdne with hlt | hgt
-  · -- difference negative: it crosses `-π`
+  · -- the difference is negative, so it is at most `-2 π` and must cross `-π`
+    have hnneg : (n : ℝ) < 0 := by
+      by_contra hc
+      rw [not_lt] at hc
+      nlinarith [hpi]
+    have hnle : (n : ℝ) ≤ -1 := by
+      have h1 : n < 0 := by exact_mod_cast hnneg
+      have h2 : n ≤ -1 := by omega
+      exact_mod_cast h2
     have hle : f x₁ - g x₁ ≤ -(2 * Real.pi) := by
       rw [hn]
-      have : (n : ℝ) ≤ -1 := by
-        have : n ≤ -1 := by omega_nat <;> omega
-        exact_mod_cast this
-      nlinarith
-    have hmem : -Real.pi ∈ uIcc (f x₀ - g x₀) (f x₁ - g x₁) := by
-      rw [hzero, uIcc_of_ge (by linarith)]
-      constructor <;> linarith
+      nlinarith [hpi]
+    have hmem : -Real.pi ∈ uIcc (0 : ℝ) (f x₁ - g x₁) := by
+      rw [uIcc_of_ge (by linarith)]
+      exact Set.mem_Icc.mpr ⟨by linarith, by linarith⟩
     obtain ⟨y, -, hy⟩ := hIVT hmem
     obtain ⟨m, hm⟩ := sub_mem_two_pi_int_of_exp_eq hexp y
-    exact neg_pi_ne_two_pi_mul_int m (by rw [← hy, hm])
-  · -- difference positive: it crosses `π`
+    exact neg_pi_ne_two_pi_mul_int m (hy.symm.trans hm)
+  · -- the difference is positive, so it is at least `2 π` and must cross `π`
+    have hnpos : (0 : ℝ) < (n : ℝ) := by
+      by_contra hc
+      rw [not_lt] at hc
+      nlinarith [hpi]
+    have hnge : (1 : ℝ) ≤ (n : ℝ) := by
+      have h1 : 0 < n := by exact_mod_cast hnpos
+      have h2 : 1 ≤ n := by omega
+      exact_mod_cast h2
     have hge : 2 * Real.pi ≤ f x₁ - g x₁ := by
       rw [hn]
-      have : (1 : ℝ) ≤ (n : ℝ) := by
-        have : 1 ≤ n := by omega_nat <;> omega
-        exact_mod_cast this
-      nlinarith
-    have hmem : Real.pi ∈ uIcc (f x₀ - g x₀) (f x₁ - g x₁) := by
-      rw [hzero, uIcc_of_le (by linarith)]
-      constructor <;> linarith
+      nlinarith [hpi]
+    have hmem : Real.pi ∈ uIcc (0 : ℝ) (f x₁ - g x₁) := by
+      rw [uIcc_of_le (by linarith)]
+      exact Set.mem_Icc.mpr ⟨by linarith, by linarith⟩
     obtain ⟨y, -, hy⟩ := hIVT hmem
     obtain ⟨m, hm⟩ := sub_mem_two_pi_int_of_exp_eq hexp y
-    exact pi_ne_two_pi_mul_int m (by rw [← hy, hm])
+    exact pi_ne_two_pi_mul_int m (hy.symm.trans hm)
+
+/-! ## The reflection normalization supplies the base point -/
+
+/-- A reflection-normalized phase is pinned at the origin: `phi(-x) = 2 π - phi(x)` at `x = 0`
+forces `phi 0 = π`. -/
+theorem phase_zero_of_reflection {φ : ℝ → ℝ}
+    (h : ∀ x, φ (-x) = 2 * Real.pi - φ x) : φ 0 = Real.pi := by
+  have h0 := h 0
+  rw [neg_zero] at h0
+  linarith
+
+/-- **A reflection-normalized continuous phase is determined by its inner function.**  The
+normalization pins the lift at the origin, and lift uniqueness does the rest.
+
+This is the exact converse face of the fixed-lattice refutation: the *inner function* determines the
+phase, while the lattice jets do not.  What separates them is whether the jets determine the inner
+function, which is the Clark property of the carrier and not a consequence of the order
+structure. -/
+theorem eq_of_exp_eq_of_reflection {φ₁ φ₂ : ℝ → ℝ}
+    (h₁ : Continuous φ₁) (h₂ : Continuous φ₂)
+    (hr₁ : ∀ x, φ₁ (-x) = 2 * Real.pi - φ₁ x) (hr₂ : ∀ x, φ₂ (-x) = 2 * Real.pi - φ₂ x)
+    (hexp : ∀ x, Complex.exp ((φ₁ x : ℂ) * Complex.I)
+      = Complex.exp ((φ₂ x : ℂ) * Complex.I)) : φ₁ = φ₂ :=
+  eq_of_exp_eq_of_eq_at h₁ h₂ hexp
+    ((phase_zero_of_reflection hr₁).trans (phase_zero_of_reflection hr₂).symm)
 
 end GaloisForLFunctions.HTGeometry
