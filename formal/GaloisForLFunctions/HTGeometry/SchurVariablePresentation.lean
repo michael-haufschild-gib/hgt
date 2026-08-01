@@ -105,7 +105,7 @@ theorem det_rectangularSchurToeplitz_zero_shift {L m : ℕ} :
 /-- **The corner minor of a rectangle is the smaller rectangle, shifted.**  Deleting the last row and
 the first column of the `(m'+1, n'+1)` section leaves the `(m', n')` section, read two variables
 later. -/
-theorem submatrix_rectangularSchurToeplitz {n' m' : ℕ} (hm : 0 < m') :
+theorem submatrix_rectangularSchurToeplitz {n' m' : ℕ} :
     ((rectangularSchurToeplitz (schurVar K (n' + m' - 1 + 2)) (n' + 1) (m' + 1)).submatrix
         (Fin.last m').succAbove Fin.succ) =
       (rectangularSchurToeplitz (schurVar K (n' + m' - 1)) n' m').map
@@ -124,24 +124,24 @@ theorem submatrix_rectangularSchurToeplitz {n' m' : ℕ} (hm : 0 < m') :
   · rw [if_neg (by omega : ¬ ((i : ℕ) + 1 ≤ n' + 1 + (r : ℕ))), if_neg hg, map_zero]
 
 /-- **The determinant of the corner minor is the smaller determinant, shifted.** -/
-theorem det_submatrix_rectangularSchurToeplitz {n' m' : ℕ} (hm : 0 < m') :
+theorem det_submatrix_rectangularSchurToeplitz {n' m' : ℕ} :
     ((rectangularSchurToeplitz (schurVar K (n' + m' - 1 + 2)) (n' + 1) (m' + 1)).submatrix
         (Fin.last m').succAbove Fin.succ).det =
       MvPolynomial.rename (fun j : Fin (n' + m' - 1) => (j.succ).succ)
         ((rectangularSchurToeplitz (schurVar K (n' + m' - 1)) n' m').det) := by
-  rw [submatrix_rectangularSchurToeplitz hm]
+  rw [submatrix_rectangularSchurToeplitz]
   exact (AlgHom.map_det
     (MvPolynomial.rename (R := K) (fun j : Fin (n' + m' - 1) => (j.succ).succ)) _).symm
 
 /-- **The corner minor in the form the criterion consumes.**  It is `rename Fin.succ` of the
 once-shifted smaller determinant. -/
-theorem det_submatrix_eq_rename_succ {n' m' : ℕ} (hm : 0 < m') :
+theorem det_submatrix_eq_rename_succ {n' m' : ℕ} :
     ((rectangularSchurToeplitz (schurVar K (n' + m' - 1 + 2)) (n' + 1) (m' + 1)).submatrix
         (Fin.last m').succAbove Fin.succ).det =
       MvPolynomial.rename Fin.succ
         (MvPolynomial.rename Fin.succ
           ((rectangularSchurToeplitz (schurVar K (n' + m' - 1)) n' m').det)) := by
-  rw [det_submatrix_rectangularSchurToeplitz hm, MvPolynomial.rename_rename]
+  rw [det_submatrix_rectangularSchurToeplitz, MvPolynomial.rename_rename]
   rfl
 
 /-! ## Evaluating at the unit tail -/

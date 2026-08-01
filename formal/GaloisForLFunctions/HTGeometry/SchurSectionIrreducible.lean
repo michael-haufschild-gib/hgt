@@ -30,7 +30,7 @@ theorem irreducible_det_schur_step [DecidableEq K] {n' m' : ℕ} (hn : 0 < n') (
     (φ := (unitTailEval K (n' + m' - 1 + 1) (n' + 1)).toRingHom)
     (ψ := (unitTailEval K (n' + m' - 1 + 2) (n' + 1)).toRingHom)
     (hcorner := ?_) (hfree := ?_)
-    (hminor := det_submatrix_eq_rename_succ hn hm)
+    (hminor := det_submatrix_eq_rename_succ)
     (hAirr := irreducible_rename_succ ih)
     (hcomp := fun p => unitTailEval_rename_succ (K := K) (L := n' + m' - 1 + 1)
       (n := n' + 1) p) (hA0 := ?_) (hdet0 := ?_)

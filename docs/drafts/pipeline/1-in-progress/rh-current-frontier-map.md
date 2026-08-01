@@ -127,7 +127,7 @@ the rational frequency module spanned by `log p` for `p ≤ N`, of rank `π(N)`.
 the cutoff Euler product is a uniform limit of positive-coefficient exponent-vector polynomials,
 has the same exact frequency module, and its Bohr hull character packet surjects onto the full
 prime torus `T^{π(N)}`. Thus finite-aperture phase dimension and torus coverage are proved for the
-literal Euler observable; neither statement controls the infinite-prime tail or orients the
+literal Euler observable; neither statement controls the infinite-prime tail orients the
 first-clock scalar.
 
 Three exact guardrails make the recurrence premise irreducible to weaker analytic slogans. A
@@ -645,11 +645,14 @@ actual monotone source eigen-coefficient law
    marked half-gap and holonomy Schur debts. Generic top-variable determinant expansion and
    multivariable linear-polynomial irreducibility from coprime coefficients are proved. An
    irreducible cofactor plus a specialization killing that cofactor but not the remainder also
-   suffices, including unit-signed corner expansions. The reversed-variable Schur presentation now
+   suffices, including unit-signed corner expansions. The reversed-variable Schur presentation
    identifies the unique top corner, its smaller shifted complementary minor, the irreducible
    height-one base, and unit-tail evaluations that make the current determinant one while killing
-   the shifted smaller determinant in the regime `m ≤ n`. The final all-rectangle induction
-   assembly and, independently, the arithmetic source identification are not proved;
+   the shifted smaller determinant in the regime `m ≤ n`. `irreducible_det_schur_of_le` now
+   assembles these ingredients: over every field, the universal rectangular Schur determinant is
+   irreducible for every `0 < m ≤ n`. This closes the generic free-variable irreducibility debt.
+   It does not identify the literal Gamma/Robin/holonomy residual with that universal section,
+   control arithmetic specialization, or prove the source-facing Ward sign and lower bound;
 7. prove the resulting rectangular Ward residual uniformly lower-semibounded.
 
 **Dead predecessor.** The legacy entire compact-limit target is impossible because the
@@ -882,8 +885,13 @@ cancels the square of the stipulated transverse frequency, its outward Dirichlet
 and total Dirichlet energy are both `|μ|`, and its boundary Hodge scalar is `i·sign(μ)`, of norm one
 and square `-1`. On an abstract `ℓ²` coefficient space, arbitrary modulus-at-most-one diagonal
 multipliers are contractions; the factors `exp(-r|ℓᵢ|)` satisfy the Poisson semigroup and time-zero
-identity laws. These theorems do not build the arithmetic generator, its domain, strong continuity,
-or a unitary identification between the coefficient space and Deninger's leaf complex.
+identity laws. The diagonal family `i·sign(ℓᵢ)` now defines an actual continuous-linear boundary
+Hodge operator on that coefficient space; it is an isometry and squares to `-1`. Coordinate
+multiplication by the real frequency function on its maximal square-summability domain is densely
+defined, diagonal on the standard basis, and self-adjoint. These are generic coefficient-space
+operators. No theorem identifies their frequency function, domain, or Hilbert space with the
+arithmetic Kummer/leaf complex, proves that the abstract Poisson multipliers are their strongly
+continuous generated semigroup, or transports the Xi divisor into their spectrum.
 
 The same package exposes a sharp topology obstruction. For every positive collar time, the
 Tate-normalized high-frequency energy `λ exp(-2rλ)` tends to zero. Consequently normalized modes
@@ -891,6 +899,15 @@ converge to zero in the product of all positive-time Poisson-energy coordinates 
 Hilbert norm remains one. The positive-time heat family is point-separating but cannot generate the
 required Hilbert topology; a viable completion must retain boundary-time/high-frequency control or
 use a strictly stronger topology.
+
+The prime-period graph scale supplies a precise scalar repair candidate. For
+`deningerTateGraphWeight(L,λ) = L²(1+λ)`, any uniform lower period bound controls unsmoothed energy
+by graph energy; for all prime periods the constant is `log 2`, and a summable all-place graph
+majorant implies summability of unsmoothed energy. Graph-normalized high Tate modes have graph
+weight exactly one and retain unsmoothed energy tending to `L⁻²`, strictly positive when
+`L = log p`. This prevents the positive-time high-frequency escape at the level of scalar spectral
+estimates. It does not construct the completed all-prime graph Hilbert space, identify its vectors
+with arithmetic forms, prove nuclear/closed-range properties, or attach Xi spectral data.
 
 Finite character and cylinder algebra is also formalized generically. Evaluation on a basis
 identifies additive characters of `ℤ^r` with coordinate tuples, lattice maps induce contravariant
@@ -939,8 +956,9 @@ the literal arithmetic Meyer/Deninger relevant complex; establish radial Schwart
 square-integrable domains, a valid local/global interface for the nonlocal packet average, nuclear
 topology and closed range, continuity/sheaf compatibility of the all-degree pointwise Čech
 homotopy and its arithmetic-coefficient instantiation, a topology stronger than the escaping
-positive-time Poisson-energy product topology, an actual generator/domain and strong semigroup
-continuity, arithmetic
+positive-time Poisson-energy product topology, completion and arithmetic identification of the
+Tate graph prime sector, identification of the generic maximal diagonal phase generator with the
+arithmetic flow, strong continuity and generator identification for the Poisson semigroup, arithmetic
 cup/trace/flow/Hodge transport, nuclear almost-idempotence, middle-kernel vanishing, and
 source-to-Xi spectrum inclusion.
 

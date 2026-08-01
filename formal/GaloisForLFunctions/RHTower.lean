@@ -4013,3 +4013,4 @@ import GaloisForLFunctions.RHTower.DeningerTateGraphGreenPrimeSector
 import GaloisForLFunctions.RHTower.DeningerMultiplier
 import GaloisForLFunctions.RHTower.DeningerBoundaryHodgeOperator
 import GaloisForLFunctions.RHTower.DeningerPhaseGenerator
+import GaloisForLFunctions.RHTower.DeningerTwoColumnCauchyFlowGraphDescent
