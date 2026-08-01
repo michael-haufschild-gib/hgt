@@ -1952,3 +1952,40 @@ dividing the discriminant.
   `primitiveRoots_nonempty_symmetricPart`, so the roots-of-unity hypothesis is available over
   `symmetricPart` without needing a `K`-algebra instance on it.  Axioms
   `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-01 — `SymmetricPartRadical.lean` confirms the diagnosis of the diamond precisely.  The
+  **element** and the **irreducibility** transfer to `symmetricPart` by a plain definitional cast —
+  `esymmCoeffPart` and `irreducible_X_pow_sub_C_esymmCoeffPart` build with no coercion at all — so
+  the two carriers really are interchangeable for statements that do not force an instance search.
+  What does not transfer cheaply is the degree statement: elaborating
+  `IntermediateField.adjoin (symmetricPart K d) {alpha}` exhausts two million heartbeats at `whnf`,
+  because the base is a subtype of a subtype and the adjoin instances unfold through both.  That
+  theorem was left out rather than papered over; the general
+  `finrank_adjoin_of_irreducible` is unaffected and can be applied at the call site where the
+  ambient field is concrete.  Axioms `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-01 — **`GenericRadicalBaseChange.lean`: the card's `(3)` instantiated, with the diamond
+  resolved.**  `genericRadicalBaseChange` states: over an algebraically closed field of
+  characteristic zero, for degree at least two, the automorphism group of the splitting field of
+  `genericMonic * (X ^ (2m) - c)` over the root field of the second factor is the full symmetric
+  group on `Fin d`, where `c` is an elementary symmetric function.
+  Keeping everything over `symmetricPart` — rather than casting the polynomial onto the intermediate
+  field — is what makes it go through: the roots-of-unity input was rebuilt there
+  (`primitiveRoots_nonempty_symmetricPart`), the irreducibility transferred by definitional cast
+  (`irreducible_X_pow_sub_C_esymmCoeffPart`), and the degree is obtained inside the proof from
+  `finrank_adjoin_of_irreducible`, where the ambient field is concrete and the earlier `whnf`
+  blow-up does not occur.  Only the square class is left to the caller.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.  The module takes about three minutes to compile.
+
+- 2026-08-01 — `GenericSquareClassInput.lean` supplies the last hypothesis of the instantiation.
+  `vandermondeProd_genericRoot`: the Vandermonde product of the generic roots is the Vandermonde
+  polynomial read in the rational function field.  `no_sqrt_generic_disc_mul_esymm`: a square root
+  in the symmetric part of the discriminant times the top elementary symmetric function would be a
+  square root inside the coefficient field, which
+  `no_sqrt_disc_mul_esymmTop_of_mem_symmetricPartField` excludes.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  It is stated for **any** element of the symmetric part whose image is the top elementary
+  symmetric function, rather than for `esymmCoeffPart`, because that element reaches the symmetric
+  part through the `rw`-built isomorphism of the two presentations, whose action on carriers is not
+  definitional.  Supplying the representative explicitly avoids unfolding it and costs the caller
+  one equation.

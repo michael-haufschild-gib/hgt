@@ -99,6 +99,14 @@ Prove maximal projective spectral rank and full input-state spectral support
 for the concrete fixed-`q` ensemble, then transfer existing spectral Haar laws
 to the state orbit.
 
+**Paper-proof progress.** `../2-fully-proven/generic-two-local-spectral-monodromy.md`
+proves that the generic two-local Pauli characteristic polynomial has full
+`S_(2^n)` spectral monodromy.  It follows that every full-density `q >= 2`
+Pauli ensemble has rationally independent projective energy gaps almost surely.
+Using the Choi trajectory gives exactly uniform spectral weights, removing the
+separate eigenvector-delocalization requirement for the operator-complexity
+law.  Lean formalization is still pending, so O2 is not yet formally closed.
+
 ### O3. Local spectral complexity transversality
 
 Prove that low-complexity state neighborhoods occupy exponentially small Haar
@@ -219,3 +227,8 @@ receive a new title and an independent significance audit.
   not a new slogan. O4 is now the exact unconditional resolution of that
   conjecture for a concrete fixed-`q` ensemble, including the global-shortcut
   gap that local conjugate-point arguments do not close.
+- 2026-08-01 -- Closed O2 on paper by a full-symmetric spectral-monodromy
+  theorem for generic two-local Pauli Hamiltonians. Isolated star-Ising edge
+  degeneracies supply all Boolean-hypercube transpositions; the resulting
+  `S_(2^n)` monodromy forbids every projective rational resonance almost surely.
+  Choi evolution supplies uniform spectral weights. Lean remains pending.

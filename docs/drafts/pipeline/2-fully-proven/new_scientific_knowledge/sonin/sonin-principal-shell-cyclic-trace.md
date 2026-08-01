@@ -1126,9 +1126,27 @@ Both halves of that step are now in place.  The discarded energy is identified a
 integrated over the complement of the band, and above twice the carrier the density is at most
 `16 δ² S(δ|ξ|/2)²`, since each of the three tail arguments then exceeds half the frequency.
 
-What is left is arithmetic: substitute the polynomial rate `S(u) <= C_N/u^N` into that square,
-giving `16 C_N² 4^N δ^{2-2N} |ξ|^{-2N}`, and apply `setIntegral_le_of_le_powerTail` with
-`p = 2N > 1`.  With `N` about `r/K` this gives coupling
+That arithmetic is done, and with it **every error term of the aperture reduction is now bounded**.
+The high-side tail — the last one, and the only one on an unbounded region — is at most
+`2 K δ^{2-2N} t^{1-2N}/(2N-1)` at every order `N >= 1`.
+
+The error budget therefore stands complete:
+
+- the physical shell on the dilate: exactly zero, by support;
+- the projection corrections: Schatten-1, so bounded spoilage of the mode count;
+- the packet's own band content and `‖R_a v‖`: the band fraction;
+- `‖v - R_b v‖`: the high-side power tail, above.
+
+The budget is now a single theorem, `norm_soninApertureCoupling_sub_dilate_le_budget`, in the exact
+shape the survivor count consumes: two relative-ideal errors applied to the vector itself, plus three
+terms the spectral estimates bound.  The step that makes this possible is small but essential — the
+correction difference naturally acts on the *dilate*, and the mode count can only see operators
+applied to the family's own members, so it is rewritten as
+`(Corr_a - Corr_b) * D` applied to the vector, which stays in the ideal because the ideal is closed
+under right multiplication.
+
+What remains is to choose constants: the order `N`, the threshold `ε`, and the schedule constant `K`,
+and read off the linear-in-`r` energy.  With `N` about `r/K` this gives coupling
 energy of order `r`, against the `log r` cap, closing the shortfall test.  Then feed that through the two-branch estimate to get `N` of
 order `r` packets at scale `r`.
 
@@ -1340,6 +1358,8 @@ family is abstract, so two widths have unrelated profiles.
 | **an explicit decay rate at every order** for both majorants: the Schwartz seminorms give one constant bounding `\|v\|^N ‖𝓕 f v‖` at *every* frequency, so the majorant outside radius `u` is at most `C_N / u^N` | `exists_pow_mul_norm_fourierIntegral_le`, `norm_fourierIntegral_le_div_of_pow_bound`, `exists_pow_mul_norm_fourier_soninUnitBumpC_le`, `exists_pow_mul_norm_fourier_soninUnitBumpSqC_le`, `exists_soninRefTailSup_le_div`, `exists_soninRefSqTailSup_le_div` |
 | **mass outside a band**: a power tail `K\|ξ\|^{-p}` with `p > 1` integrates over the outside of a symmetric band to `2K t^{1-p}/(p-1)`, so any nonnegative function it dominates has that much mass at most — the estimate a supremum bound cannot give on an unbounded region | `centralTail_eq_union`, `integrableOn_powerTail_Ioi`, `integrableOn_powerTail_Iic`, `integrableOn_powerTail`, `integral_powerTail_Ioi`, `integral_powerTail`, `setIntegral_le_of_le_powerTail` |
 | **the discarded energy** is the density integrated over the band's *complement*, and above twice the carrier that density is at most `16 δ² S(δ\|ξ\|/2)²` — all three tail arguments then exceed half the frequency | `measurableSet_strictCentralTail`, `norm_sq_sub_evenFourierCutoff_soninScaledPacketEven_eq_density`, `soninScaledPacketSpectralDensity_le_tailSup` |
+| **the energy above a band**: substituting the polynomial rate turns that density into a genuine power tail of order `2N`, integrable at every positive order, so the packet keeps at most `2K δ^{2-2N} t^{1-2N}/(2N-1)` above a band at twice its carrier | `exists_soninScaledPacketSpectralDensity_le_powerTail`, `exists_norm_sq_sub_evenFourierCutoff_soninScaledPacketEven_le` |
+| **the full error budget in five named terms**, with the correction difference written as an ideal operator applied to the vector itself — the ideal absorbs the dilation by right multiplication, which is what lets the mode count see it | `norm_evenSoninApertureLayer_sub_le`, `isSoninPrincipalRelativeIdeal_correctionDiff_comp_dilation`, `norm_soninApertureCoupling_sub_dilate_le_budget` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1456,6 +1476,22 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the five error terms are collected into one theorem, and doing so exposed a mismatch
+  that would have blocked the assembly.  The correction difference in the layer defect acts on the
+  *dilate* of the packet, but `card_sub_le_hsNormSq_of_ideal_errors` can only count operators applied
+  to the orthonormal family's own members.  The fix is that the relative ideal is closed under right
+  multiplication, so `(Corr_a - Corr_b) * D` is itself an ideal element and the term becomes an ideal
+  error on the packet.  Without that closure property the budget would have needed a second, separate
+  counting argument for the dilated family.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninCouplingErrorBudget.lean`.
+- 2026-08-01 — the high-side tail is bounded, completing the error budget: every term of the
+  aperture reduction now has an estimate, and they are controlled by four different mechanisms —
+  exact support vanishing, Schatten-1 mode counting, band measure, and decay.  The Lean cost of this
+  step was almost entirely bookkeeping between the two exponent notations: the majorant rate is
+  stated with a natural power, the tail integral needs a real one, and the bridge is
+  `Real.rpow_natCast` after pushing the cast through `2 * N`.  A second recurring trap: `Set.indicator`
+  rewrites need the membership as a set membership, never as the raw inequality that defines the set.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninScaledPacketHighTailBound.lean`.
 - 2026-08-01 — the discarded energy now has both an identity and a pointwise bound.  The identity is
   the mirror of the band one, but the boundary matters: the complement of the *closed* band is open,
   and stating it with the strict inequality `t < |eta|` makes the pointwise identification exact

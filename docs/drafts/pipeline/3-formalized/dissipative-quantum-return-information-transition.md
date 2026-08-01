@@ -1,7 +1,7 @@
 # Dissipative quantum return information transition
 
 - **ID:** `dissipative-quantum-return-information-transition`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** UNIVERSAL THEOREM CANDIDATE / OPEN-QUANTUM RECURRENCE /
   RATE--DISTORTION PHASE TRANSITION
 - **Scientific status:** `[NEW CORE CANDIDATE] [NOVELTY AUDIT OPEN]`
@@ -226,7 +226,22 @@ closed recurrence.
 - [x] preliminary exact-phrase novelty search found no collision
 - [ ] full primary-source citation-graph collision audit
 - [x] finite damped and Jordan-complete polynomial packets formalized
-- [ ] arbitrary finite-contraction decomposition formalized
-- [ ] bistochastic-channel bridge formalized
+- [x] arbitrary finite-contraction decomposition formalized
+- [x] bistochastic-channel bridge formalized
 - [ ] hostile review confirms result is stronger than a known attractor reformulation
 - [ ] manuscript integration only after all displayed claims are unconditional
+
+## Lean formalization
+
+- Abstract finite-contraction decomposition, transient power decay, exact amplitude/fidelity
+  ceilings, threshold dichotomy, burn-in deadline, and reverse-water deadline:
+  `formal/GaloisForLFunctions/RHTower/DissipativeQuantumReturnInformationTransition.lean`.
+- Exact finite bistochastic matrix-channel bridge:
+  `formal/GaloisForLFunctions/RHTower/FiniteBistochasticMatrixChannel.lean`.
+- Complete positivity is defined through every finite block amplification. The Lean proof derives
+  positivity, adjoint preservation, the two-by-two Kadison--Schwarz inequality, trace/Frobenius
+  identity, Hilbert--Schmidt contractivity, bounded operator realization, and all channel-specific
+  ceiling/dichotomy/deadline capstones without additional hypotheses.
+- Umbrella import: `formal/GaloisForLFunctions/RHTower.lean`.
+- Verification: direct `lake env lean`, final module build, formal lint, and axiom audit pass. Audited
+  capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`.

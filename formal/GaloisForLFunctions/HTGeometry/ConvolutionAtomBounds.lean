@@ -16,6 +16,23 @@ open scoped ENNReal
 namespace GaloisForLFunctions.HTGeometry
 variable {M : Type*} [AddCommMonoid M] [MeasurableSpace M] [MeasurableAdd₂ M] [MeasurableSingletonClass M]
 
+/-- Mapping a product through a function with countable fibers in one atomless coordinate cannot
+create atoms. No finiteness assumption on either factor is needed. -/
+theorem nullSingletonClass_map_prod_of_countable_fibers
+    {α β γ : Type*}
+    [MeasurableSpace α] [MeasurableSpace β] [MeasurableSpace γ]
+    [MeasurableSingletonClass γ]
+    (μ : Measure α) (ν : Measure β) [NullSingletonClass ν]
+    (f : α × β → γ) (hf : Measurable f)
+    (hfiber : ∀ a x, {b | f (a, b) = x}.Countable) :
+    NullSingletonClass ((μ.prod ν).map f) where
+  measure_singleton x := by
+    rw [Measure.map_apply hf (measurableSet_singleton x)]
+    apply Measure.measure_prod_null_of_ae_null
+      (hf (measurableSet_singleton x))
+    filter_upwards with a
+    exact (hfiber a x).measure_zero ν
+
 /-- **Atoms add under convolution.**  For measures `μ, ν` on an additive monoid, the convolution
 `μ ∗ ν` puts at least mass `μ{a}·ν{b}` on `a + b`. -/
 theorem measure_singleton_le_conv (μ ν : Measure M) [SFinite ν] (a b : M) :
@@ -38,6 +55,28 @@ instance sFinite_convPow (μ : Measure M) [SFinite μ] (n : ℕ) : SFinite (conv
   induction n with
   | zero => rw [convPow]; infer_instance
   | succ n ih => rw [convPow]; haveI := ih; infer_instance
+
+/-- Convolution with an atomless right factor cannot create atoms on the real line. -/
+theorem nullSingletonClass_conv_of_right
+    (μ ν : Measure ℝ) [NullSingletonClass ν] :
+    NullSingletonClass (μ ∗ ν) := by
+  rw [Measure.conv]
+  apply nullSingletonClass_map_prod_of_countable_fibers
+    μ ν (fun p : ℝ × ℝ ↦ p.1 + p.2) (by fun_prop)
+  intro a x
+  apply (Set.finite_singleton (x - a)).countable.mono
+  intro b hb
+  simp only [Set.mem_setOf_eq, Set.mem_singleton_iff] at hb ⊢
+  linarith
+
+/-- Every positive convolution power of an atomless real measure is atomless. -/
+theorem nullSingletonClass_convPow
+    (ν : Measure ℝ) [SFinite ν] [NullSingletonClass ν]
+    {n : ℕ} (hn : 0 < n) :
+    NullSingletonClass (convPow ν n) := by
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt hn)
+  rw [convPow, Measure.conv_comm]
+  exact nullSingletonClass_conv_of_right (convPow ν k) ν
 
 set_option maxHeartbeats 800000 in
 /-- **Atoms add under `n`-fold convolution.**  If each `a i` is an atom of `μ`, then `∑ a i` is an

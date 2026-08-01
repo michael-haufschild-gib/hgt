@@ -2554,6 +2554,60 @@ as devices are separately available in the corpus: the elementary pole-orbit obs
 (`no_rational_shift_inv_sq`, eq. 14) and Hölder's theorem for the digamma
 (`DigammaHypertranscendental.hypertranscendental_digamma`, the analytic content of eq. 16).
 
+### §6: the hypertranscendence consequence, and uniform limits
+
+`HTGeometry/StripAlmostPeriodicUniformLimit.lean` adds the two pieces §6 needs.
+
+- **`isStripAlmostPeriodicOn_of_uniform_approx`** / `isStripAlmostPeriodic_of_uniform_approx` — strip
+  almost periodicity passes to uniform limits on each closed substrip, by the `ε/3` transport of a
+  relatively dense set of almost periods.  This is what puts uniformly convergent series —
+  exponential sums, Dirichlet series (30) — inside the class the law governs.
+- **`no_gammaField_relation_of_infinite_rank`** — eq. (31) in contrapositive form: a holomorphic strip
+  almost periodic function whose rational Bohr frequency rank is infinite satisfies *no* differential
+  relation with Gamma-field coefficients; it is hypertranscendental over `ℂ(s)⟨Γ⟩`.
+
+What remains of §6 is the Dirichlet-series input: that a uniformly convergent series (30) is strip
+almost periodic (now a corollary of the uniform-limit theorem plus `isStripAlmostPeriodic_expSum`) and
+that its Bohr spectrum is the exponent set — the latter identifies the rank and specializes to `ζ`
+(eq. 32), a known theorem the card does not claim as new.
+
+### Dirichlet series enter the class
+
+`HTGeometry/DirichletStripAlmostPeriodic.lean` supplies the remaining input of §6's first half:
+
+- `dirichletPartial_eq_expSum` — a partial sum of `∑ aₙ e^{−λₙ s}` is an exponential sum with real
+  frequencies;
+- **`isStripAlmostPeriodic_dirichlet`** — hence a Dirichlet series converging uniformly on the closed
+  substrips is almost periodic on the strip, by the uniform-limit theorem.
+
+So the series (30) of the card — in particular any `L`-series in its half plane of uniform
+convergence — lies in the class the finite-phase law governs, and the contrapositive
+`no_gammaField_relation_of_infinite_rank` applies to it: infinite rational Bohr rank forces
+hypertranscendence over `ℂ(s)⟨Γ⟩`, which is eq. (31).
+
+What is still needed for the `ζ` specialization (32) is the spectrum identification — that the Bohr
+spectrum of a uniformly convergent Dirichlet series is its exponent set — which converts "infinite
+rank exponent group" into "infinite Bohr rank".  Eq. (32) itself is a known theorem (Wang–Yao) and is
+not claimed as new on this card.
+
+### The spectrum of a Dirichlet series
+
+`HTGeometry/DirichletBohrSpectrum.lean` closes the second half of §6's mechanism.
+
+- `dirichletPartial_line` — on a vertical line the partial sums are trigonometric polynomials with
+  frequencies `−λₙ` and coefficients `aₙ e^{−λₙσ}`; `isBohrAlmostPeriodic_trigPoly` gives their almost
+  periodicity on the line;
+- **`bohrCoefficient_dirichlet_line`** — Bohr coefficients are `1`-Lipschitz for the uniform distance,
+  so uniform convergence transfers the coefficients to the limit: the Bohr coefficient of the series
+  at `−λₘ` is exactly `aₘ e^{−λₘσ}` (distinct exponents);
+- **`isBohrHullFrequency_dirichlet`** — hence every exponent with nonzero coefficient is a frequency of
+  the hull.
+
+That is the step converting "exponent group of infinite rational rank" into "infinite Bohr rank", so
+the contrapositive `no_gammaField_relation_of_infinite_rank` applies: such a series is
+hypertranscendental over `ℂ(s)⟨Γ⟩` — eq. (31), and with `{log p}` rationally independent by unique
+factorization, the `ζ` specialization (32), which the card cites as known.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

@@ -39,6 +39,9 @@ audit and positive-survivor extraction. Partial bridge theorems never count as c
   first-derivative cancellation, conformal defect, and massive conjugation added to
   `HTGeometry/ConformalClockDiffusion.lean`; the literal pseudo-Riemannian realization and coupled
   inverse-data theorem remain open.
+- `two-mass-self-calibrating-clock-metric-law`: exact two-jet Leibniz calculus, local second-order
+  endpoint dressing, pure zeroth-order mass difference, principal-symbol scaling, and undressed
+  symbol reconstruction added to `HTGeometry/ClockPrincipalSymbolCalibration.lean`.
 - Exact Stage-3 certificates now cover bounded-relation profile realization, charged scalar torsor,
   split-source boundary matroid, polynomial torsion language, Xi depth successor layer, two-mass
   continuum rigidity, Cassini--Jensen seam law, prime-coordinate fusion, four-dimensional conformal
@@ -68,3 +71,5 @@ exponential block seed is itself differentially algebraic and cannot close that 
 - 2026-08-01 — serialized fifteen exact leaf checks, both area umbrellas, and combined capstone
   axiom audit; added or refreshed thirteen exact Stage-3 certificates.  Rejected nonconstant-carrier
   `htDim` as a simplification of the boundary-wedge HT theorem.
+- 2026-08-01 — closed the differential-operator principal-symbol gap in the two-mass clock metric
+  card; fourteen source cards now have exact Stage-3 closures.

@@ -17,8 +17,12 @@ variable {K : Type*} [Field K] {d : ℕ}
 
 /-- **The two descriptions of the coefficient field agree as rings.** -/
 noncomputable def symmetricPartEquivEsymmField (K : Type*) [Field K] (d : ℕ) :
-    symmetricPartField K d ≃+* esymmField K d := by
-  rw [symmetricPartField_eq_esymmField]
+    symmetricPartField K d ≃+* esymmField K d :=
+  (IntermediateField.equivOfEq (symmetricPartField_eq_esymmField (K := K) (d := d))).toRingEquiv
+
+theorem coe_symmetricPartEquivEsymmField_symm (x : esymmField K d) :
+    (((symmetricPartEquivEsymmField K d).symm x : symmetricPartField K d) :
+      SymmetricRationalField K d) = (x : SymmetricRationalField K d) := rfl
 
 /-- The elementary symmetric function, read in the symmetric part. -/
 noncomputable def esymmCoeffSymm (K : Type*) [Field K] (d : ℕ) (i : Fin d) :

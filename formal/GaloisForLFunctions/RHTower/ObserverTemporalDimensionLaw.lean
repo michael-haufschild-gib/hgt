@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.FiniteQuantumObserverGraphRecurrenceBound
 import GaloisForLFunctions.RHTower.MobiusCriticalClockWeakConvergence
 import GaloisForLFunctions.HTGeometry.RationalIndependentWeights
 import GaloisForLFunctions.HTGeometry.SchwartzPositiveMeasureRepresentation
+import GaloisForLFunctions.HTGeometry.ConvolutionAtomBounds
 import GaloisForLFunctions.Core
 import Mathlib.Analysis.SpecialFunctions.Complex.Log
 import Mathlib.Analysis.Fourier.RiemannLebesgueLemma
@@ -1936,14 +1937,9 @@ theorem noAtoms_map_prod_of_countable_fibers
     (dispersion : α × β → γ) (hdispersion : Measurable dispersion)
     (hfiber :
       ∀ a energy, {b | dispersion (a, b) = energy}.Countable) :
-    NullSingletonClass ((mu.prod nu).map dispersion) where
-  measure_singleton energy := by
-    rw [Measure.map_apply hdispersion
-      (measurableSet_singleton energy)]
-    apply Measure.measure_prod_null_of_ae_null
-      (hdispersion (measurableSet_singleton energy))
-    filter_upwards with a
-    exact (hfiber a energy).measure_zero nu
+    NullSingletonClass ((mu.prod nu).map dispersion) :=
+  GaloisForLFunctions.HTGeometry.nullSingletonClass_map_prod_of_countable_fibers
+    mu nu dispersion hdispersion hfiber
 
 /-- The spatial dephasing mechanism survives arbitrary correlations whose
 joint spectral law is absolutely continuous with respect to a product

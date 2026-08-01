@@ -48,7 +48,9 @@
   `GaloisForLFunctions.RHTower.DeningerKummerSpaceInner`,
   `GaloisForLFunctions.RHTower.DeningerKummerSpaceInnerPos`,
   `GaloisForLFunctions.RHTower.DeningerL2Definite`,
-  `GaloisForLFunctions.RHTower.DeningerKummerL2Definite`
+  `GaloisForLFunctions.RHTower.DeningerKummerL2Definite`,
+  `GaloisForLFunctions.RHTower.DeningerKummerL2Bilinear`,
+  `GaloisForLFunctions.RHTower.DeningerRealSmul`
   (the gluing of the place tower, the absolute height on `Q̄`, the
   normed Kummer group `𝒢`, the normed `ℚ`-vector space `𝒢 ⊗ ℚ`, its
   completion, and the local-degree normalization of the place space)
@@ -1003,10 +1005,46 @@ for the absolute height, and it now has a second instance.
 The `L²` form is therefore a genuine inner product on `𝒢 ⊗ ℚ`: symmetric, biadditive, positive
 definite.
 
+### The bundled `ℚ`-bilinear `L²` form landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerKummerL2Bilinear.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerKummerL2Inner_inv_left`, `deningerKummerL2Inner_zpow_left` — the form negates under
+  inversion and is homogeneous under integer powers.
+- `deningerSpaceL2Inner_qsmul_left` — **homogeneity under rational scalars**: scaling by `q` scales
+  the numerator by `q.num` and the denominator by `q.den`, so the value scales by `q`.
+- `deningerSpaceL2Form : 𝒢 ⊗ ℚ →ₗ[ℚ] 𝒢 ⊗ ℚ →ₗ[ℚ] ℝ` — **the bundled form**, symmetric
+  (`deningerSpaceL2Inner_comm`), positive semidefinite
+  (`deningerSpaceL2Inner_self_nonneg`) and definite (`deningerSpaceL2Inner_self_eq_zero`).
+
+So the card's `(1)` now has a complete Lean realization at the level of `𝒢 ⊗ ℚ`: an inner-product
+`ℚ`-space whose form is the `L²` Kummer pairing, together with `(2)` — `deningerKummerClass`, with
+injectivity and dense span proved.
+
+### The real scalar extension landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerRealSmul.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+mathlib has no way to turn a normed `ℚ`-space into a real one: `UniformSpace.Completion` preserves
+the scalar field, `InnerProductSpace 𝕜` demands `RCLike 𝕜`, and
+`Mathlib/Topology/Instances/RealVectorSpace.lean` — which looks relevant — *assumes* `Module ℝ E`
+and only proves that continuous additive maps are then `ℝ`-linear.  So the extension is built here.
+
+- `deningerRatSmul_lipschitz` — for a fixed vector, `q ↦ q • x` is Lipschitz with constant `‖x‖`,
+  since `‖(q - q')•x‖ = |q - q'|·‖x‖`.
+- `deningerRealSmul` — **the real action**, the extension of the rational one along the dense
+  uniform embedding `ℚ ↪ ℝ` (`uniformly_extend`), available because the space is complete.
+- `deningerRealSmul_ratCast` — it restricts to the rational action;
+  `deningerRealSmul_continuous` — it is continuous in the scalar;
+  `deningerRealSmul_norm` — **`‖r • x‖ = |r|·‖x‖`**, proved by density: both sides are continuous
+  in `r` and agree on `ℚ`.
+
 ### Remaining
 
-Packaging only: define `‖x‖₂ = √⟨x, x⟩`, verify it is a norm (the parallelogram law holds because
-the form is bilinear and symmetric), and install the `InnerProductSpace ℝ` structure whose
-completion is the `H_Kum` of the card's `(1)`.  `(2)` is `deningerKummerClass`, with injectivity
-(`deningerKummerClass_eq_zero_iff_isOfFinOrder`) and dense span
-(`deningerKummerClass_dense_completion`) already proved.
+The module axioms for `deningerRealSmul` — `one_smul`, `mul_smul`, `smul_add`, `add_smul`,
+`zero_smul` — each of which is a density argument in one or two real variables against the
+corresponding rational identity, exactly like the norm law just proved.  With those the completion
+of `𝒢 ⊗ ℚ` for the `L²` norm is a real normed space, hence (being complete, with a form satisfying
+the parallelogram law) the Hilbert space `H_Kum` of the card's `(1)`.

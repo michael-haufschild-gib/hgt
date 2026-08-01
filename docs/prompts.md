@@ -34,7 +34,9 @@ where mathematical knowledge is missing use the /hgtl7 skill to create it.
 
 /goal
 
-formalize UNCONDITIONALLY in lean any proven theorem for all cards in. add missing infrastructure, lean proofs, everything needed to mark a card as fully done - no simplifications.
+formalize UNCONDITIONALLY in lean any proven theorem for all cards in: docs/drafts/pipeline/2-fully-proven (not its subfolders)
+
+add missing infrastructure, lean proofs, everything needed to mark a card as fully done - no simplifications.
 
 Lean rules:
 1. Proofs must be unconditional in lean.
@@ -411,3 +413,16 @@ limit your updates. do not give a status update every 2 minutes. only report whe
 
 
 
+
+## frontier paper
+/goal 
+
+Audit HTGeometry, HilbertMetric, and RHTower and write a paper that exactly and comprehensively maps the current frontier of our research towards an RH proof/disprove:
+
+- All possible proof routes, their endpoint, their chain, their obstacles and open core
+- All proof routes that we have identified as dead ends
+- The research topics / hypotheseses / conjectures that would bring a leap forward in the research and neither literature nor our corpus can answer yet.
+
+Goal is met when after honest and extensive review you cannot add or change anything to the paper and it is truly a full map of where our current research corpus stands.
+
+Mandatory: You let the lean corpus speak and tell you what is. You do not assume what a proof route should look like or what an obstacle is - your training data is biased towards classical proof routes and has not seen all of our research which in part is novel scientific discovery. Do not assume anything, just read lean code.

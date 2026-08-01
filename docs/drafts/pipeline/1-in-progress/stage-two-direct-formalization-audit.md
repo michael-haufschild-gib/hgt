@@ -14,14 +14,14 @@
 - [x] `ccm-first-clock-asymptotic-bohr-torelli-law.md`
 - [ ] `ccm-rational-analytic-real-descent.md`
 - [ ] `ccm-single-clock-complete-source-divisor-tomography.md`
-- [ ] `ccm-unitary-polar-source-atlas.md`
+- [x] `ccm-unitary-polar-source-atlas.md`
 - [ ] `complete-graph-local-projective-spectral-maximality.md`
 - [ ] `component-recurrence-torus-and-replica-factorization-law.md`
 - [x] `countable-euler-family-sonin-gamma-xi-rees-chart.md`
 - [ ] `cusp-spectrum-radius-law.md`
 - [ ] `dense-arithmetic-instability-of-quantum-eternity.md`
 - [ ] `disconnected-local-spectral-factorization-genericity.md`
-- [ ] `dissipative-quantum-return-information-transition.md`
+- [x] `dissipative-quantum-return-information-transition.md`
 - [ ] `field-one-spherical-weyl-multiplier-bridge.md`
 - [x] `finite-contraction-temporal-boundary-law.md`
 - [ ] `finite-horizon-observer-temporal-profile-stability.md`
@@ -62,3 +62,5 @@
 - 2026-08-01 — material formal gaps confirmed: arbitrary-graph temporal-curvature graph induction and capstones; CCM rational analytic/cyclic descent infrastructure; dissipative bistochastic-channel bridge. These are not eligible for Stage 3 yet.
 - 2026-08-01 — closed the remaining `ccm-first-clock-asymptotic-bohr-law.md` Lean gap without weakening: exact literal-source `liminf = 0`, `limsup = ccmFirstClockAsymptoticHullMax`, and intersection-of-closed-tail-images equality. Direct elaboration and final module build pass; all three new capstones audit to `[propext, Classical.choice, Quot.sound]`. An unrelated transient umbrella-lint failure was cleared before promotion.
 - 2026-08-01 — repository-wide lint cleared after the concurrent umbrella update. Sequential direct elaboration passed for 18 audited modules; final `lake build <module>` passed for all 16 exact-complete capstone/dependency modules. Batched capstone audits report only `[propext, Classical.choice, Quot.sound]`. Promoted 14 exact-complete direct cards to Stage 3; 31 direct Stage 2 cards remain.
+- 2026-08-01 — closed bistochastic-channel TODO without weakening: added all-level finite matrix complete positivity, positivity and adjoint preservation, two-by-two Kadison--Schwarz, trace/Frobenius identity, Hilbert--Schmidt contraction, bounded channel operator, and exact channel ceiling/dichotomy/deadline capstones. Direct elaboration, final module build, umbrella reachability, formal lint, and axiom audits pass. Promoted `dissipative-quantum-return-information-transition.md`; 30 direct Stage 2 cards remain.
+- 2026-08-01 — completed UPSA-1 canonical-product seam: source-atlas copies are exactly equivalent to the complete Xi multiplicity-copy divisor, and the atlas product is the normalized centered Xi canonical product. Existing polar/critical atlas capstone plus new divisor/product capstones pass direct elaboration, final module build, umbrella reachability, lint, and axiom audit. Promoted `ccm-unitary-polar-source-atlas.md`; 29 direct Stage 2 cards remain.

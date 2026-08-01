@@ -184,14 +184,20 @@ insufficient.
 ## Falsifiers
 
 - Central residue sign is only one asymptotic vector of `(12)` and cannot prove matrix law.
+  **Formal** as `exists_pos_on_vector_not_posSemidef`: a matrix can be strictly positive on a chosen
+  vector and still fail to be positive semidefinite.
 - `H_beta-H_alpha` need not be positive from abstract self-adjointness; quotient normalization can
-  reverse Loewner order.
+  reverse Loewner order.  **Formal** as `exists_isHermitian_sub_not_posSemidef`: two Hermitian
+  matrices need not be Loewner comparable at all.
 - Canonical finite Donoghue kernel has wrong divisor and cannot substitute for `H_lambda`.
 - Characteristic zeros require cross-multiplied Gram form; quotient identity is used only off that
   real divisor.
 - Functional-equation--Schwarz orbit insertion must violate `(12)` or `(16)`; otherwise argument
   is circular.
 - A scalar or diagonal-only proof does not control off-diagonal finite node forms.
+  **Formal** as `exists_nonneg_diagonal_not_posSemidef`: the antidiagonal symmetric matrix has
+  nonnegative (indeed zero) diagonal yet is not positive semidefinite, taking value `-2` on `(1,-1)`.
+  So diagonal positivity never substitutes for the Loewner law.
 - Central Neumann cancellation cannot be promoted to full frequency; the exact holonomy term is
   mandatory.
 
@@ -218,7 +224,44 @@ equivalence `(11)--(12)`, or three-channel square conjecture `(16)`.  Priority r
 ## Formal status
 
 `formal/GaloisForLFunctions/RHTower/SuzukiJumpKernelLoewnerGap.lean` proves `(3)`, `(8)`, `(11)`,
-and strict extrapolation `(13)` unconditionally.  It connects directly to actual one-sided
+and strict extrapolation `(13)` unconditionally.
+
+`(12)` — the **Loewner** form of the gap law — is formal too.  `(11)` is the per-test-vector
+statement; `(12)` is its quantification into a single matrix inequality, and Theorem C's "Thus full
+jump positivity is equivalent to one Loewner growth-versus-deficit inequality" is exactly that step:
+
+- `suzukiLoewnerGapMatrix`: the gap matrix, source growth times the lever minus the multiplier
+  deficit times the observed separation.
+- `suzukiLoewnerGapMatrix_quadraticForm`: its quadratic form is the difference of the two sides of
+  `(11)`.
+- `suzukiJumpPositivity_iff_loewnerGap`: **`(12)`** — jump positivity on every test vector is
+  nonnegativity of that quadratic form.
+
+What remains conjectural is whether `(12)` *holds* for the actual source, not the equivalence.  It connects directly to actual one-sided
 centered Suzuki quotient.  `SuzukiFullFrequencyNeumannHolonomy.lean` proves the algebraic and Pick
 kernel correction required by the stronger producer.  Source inequality `(12)` and compensated
 square `(16)` remain conjectural.
+
+- 2026-08-01 — `(12)` formalized as the Loewner form of `(11)`.  The module proved the per-test-vector
+  law; Theorem C then states the equivalence with a single matrix inequality, which is the same
+  scalar-versus-operator step that was missing on the two sibling Krein cards.
+  `suzukiLoewnerGapMatrix_quadraticForm` supplies the bridge — the gap matrix's quadratic form is the
+  difference of the two sides — after which `suzukiJumpPositivity_iff_loewnerGap` is the quantified
+  equivalence.  Worth separating clearly: the *equivalence* `(11) <-> (12)` is proved; what remains
+  conjectural is whether `(12)` holds for the actual source.  Three new declarations, targeted build
+  green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the diagonal-only falsifier formalized (`exists_nonneg_diagonal_not_posSemidef`).  The
+  card lists "a scalar or diagonal-only proof does not control off-diagonal finite node forms" as a
+  caution; it is a theorem, witnessed by the antidiagonal matrix with zero diagonal and value `-2` on
+  `(1,-1)`.  Worth having as a proved statement rather than a warning, since it is the precise reason
+  `(12)` must be established in Loewner form and not coordinatewise — the same distinction that was
+  missing from the card's Lean coverage until this session.  One new declaration, targeted build
+  green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — two further falsifiers formalized.  `exists_pos_on_vector_not_posSemidef`: strict
+  positivity on one chosen vector does not give positive semidefiniteness, so a central residue sign
+  cannot establish `(12)`.  `exists_isHermitian_sub_not_posSemidef`: two Hermitian matrices need not
+  be Loewner comparable, so `H_beta - H_alpha` cannot be inferred positive from self-adjointness.
+  Together with the diagonal-only witness, all three of this card's structural cautions are now
+  proved statements rather than warnings — which matters because they are the checks any future
+  candidate proof of `(12)` has to survive.  Two new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.

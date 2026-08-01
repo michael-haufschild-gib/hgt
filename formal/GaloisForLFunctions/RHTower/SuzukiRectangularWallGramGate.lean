@@ -181,4 +181,23 @@ theorem xiGammaBoundary_fusedRectangle_ne_suzukiRectangularWallGramKernel_diagon
 
 end
 
+/-! ## Local positivity is not global positivity
+
+The full formula subtracts twice this block.  A positive semidefinite block entering with a negative
+coefficient can destroy positivity outright, so finite-packet positive semidefiniteness of the wall
+Gram carries no consequence for the assembled formula.  This is the hostile audit's "global sign not
+smuggled", as a theorem. -/
+
+open Matrix in
+/-- **Subtracting a positive block can break positivity.**  There are positive semidefinite `S` and
+`G` with `S - 2 G` not positive semidefinite, so local positive semidefiniteness never implies
+positivity of a formula that subtracts it. -/
+theorem exists_posSemidef_sub_two_smul_not_posSemidef :
+    ∃ S G : Matrix (Fin 1) (Fin 1) ℝ,
+      S.PosSemidef ∧ G.PosSemidef ∧ ¬ (S - (2 : ℝ) • G).PosSemidef := by
+  refine ⟨0, 1, Matrix.PosSemidef.zero, Matrix.PosSemidef.one, ?_⟩
+  intro hM
+  have h := (Matrix.posSemidef_iff_dotProduct_mulVec.mp hM).2 (![1] : Fin 1 → ℝ)
+  norm_num [Matrix.mulVec, dotProduct, Fin.sum_univ_one, Matrix.one_apply] at h
+
 end RHTower

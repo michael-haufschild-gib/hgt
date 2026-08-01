@@ -4,6 +4,9 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM / CONTINUUM GRAVITY / CLOCKS / INVERSE PROPAGATORS / CALIBRATION
 - **Parent:** `../../1-in-progress/continuum-chronometric-equivalence-theorem.md`
+- **Lean:**
+  `formal/GaloisForLFunctions/HTGeometry/ClockPropagatorSelfCalibration.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockPrincipalSymbolCalibration.lean`
 - **Status:** operator and principal-symbol reconstruction paper-proved and formalized
   unconditionally in Lean; physical recovery of complete dressed Green operators remains open.
 
@@ -235,3 +238,18 @@ not proof that no collision exists.
 The theorem does not yet prove that a backreacting finite laboratory implements complete
 \(\widehat G_{\mu_i}\). It closes the exact calibration and conformal-scale obstruction once those
 responses are reconstructed.
+
+## Gates
+
+- [x] 0 → 1: exact shared-gain inverse problem and failure modes stated
+- [x] 1 → 2: operator difference, calibration recovery, principal-symbol scaling, and metric
+  reconstruction proved on paper
+- [x] 2 → 3: noncommutative inverse algebra and literal local second-order differential-operator
+  calculus formalized unconditionally, umbrella-reachable, axiom-audited, and certified
+- [ ] 3 → 4: external priority and publication audit
+
+## Log
+
+- 2026-08-01 — closed prior principal-symbol abstraction gap with exact two-jet Leibniz calculus;
+  proved endpoint dressing coefficient-by-coefficient, pure zeroth-order two-mass difference,
+  calibrated quadratic-symbol law, and exact undressed-symbol reconstruction in Lean.

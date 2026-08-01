@@ -153,4 +153,33 @@ theorem suzukiKreinDiagonal_dominates_debt {m n : Type*} [Fintype m] [Fintype n]
   have hsum := h5.add htax
   simpa using hsum
 
+/-! ## Falsification by a principal minor
+
+Because the negative block is finite, the weld inequality is decidable by determinants: principal
+submatrices of a positive semidefinite matrix are again positive semidefinite, so every principal
+minor is nonnegative.  A single negative principal minor therefore refutes the conjecture outright —
+no further analysis of the source is needed once one such minor is exhibited. -/
+
+/-- Principal minors of a positive semidefinite matrix are nonnegative. -/
+theorem principalMinor_nonneg {n m : Type*} [Fintype n] [Fintype m] [DecidableEq n] [DecidableEq m]
+    {M : Matrix n n ℝ} (hM : M.PosSemidef) (f : m → n) :
+    0 ≤ (M.submatrix f f).det :=
+  (Matrix.PosSemidef.submatrix hM f).det_nonneg
+
+/-- **A negative principal minor falsifies positivity.**  This is the finite decision procedure the
+conjecture is tested by. -/
+theorem not_posSemidef_of_principalMinor_neg {n m : Type*} [Fintype n] [Fintype m]
+    [DecidableEq n] [DecidableEq m] {M : Matrix n n ℝ} (f : m → n)
+    (h : (M.submatrix f f).det < 0) : ¬ M.PosSemidef := fun hM =>
+  absurd (principalMinor_nonneg hM f) (not_le.mpr h)
+
+/-- **Falsification of the weld.**  A negative principal minor of the Schur complement refutes the
+weld inequality `(5)`, hence the conjecture, without examining the rest of the source. -/
+theorem not_schurComplement_posSemidef_of_principalMinor_neg {m n k : Type*}
+    [Fintype m] [Fintype n] [Fintype k] [DecidableEq m] [DecidableEq n] [DecidableEq k]
+    {A : Matrix m m ℝ} {B : Matrix m n ℝ} {D : Matrix n n ℝ} (f : k → n)
+    (h : ((D - Bᴴ * A⁻¹ * B).submatrix f f).det < 0) :
+    ¬ (D - Bᴴ * A⁻¹ * B).PosSemidef :=
+  not_posSemidef_of_principalMinor_neg f h
+
 end RHTower

@@ -1,7 +1,7 @@
 # Unitary--polar source atlas for the complete Riemann divisor
 
 - **ID:** UPSA-1
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** whole-corpus audit; `CCMRectangularFullObservableDivisorTomography`,
   `CCMFirstClockVolterra`, `SummableSpectrumScrewBohrCoefficients`
@@ -243,7 +243,7 @@ Verdict: `SURVIVES PRELIMINARY ATTACK` and `[PAPER-PROVED]`.
 
 - [x] 0 -> 1: exact source-pure statement, non-circular reconstruction, hostile attack
 - [x] 1 -> 2: complete paper proof above; no open mathematical dependency
-- [ ] 2 -> 3: exact unconditional Lean theorem, targeted compile, lint, axiom audit
+- [x] 2 -> 3: exact unconditional Lean theorem, targeted compile, lint, axiom audit
 - [ ] 3 -> 4: literature audit, manuscript rewrite, antagonistic journal review
 
 ## Lean plan after paper closure
@@ -258,3 +258,10 @@ Verdict: `SURVIVES PRELIMINARY ATTACK` and `[PAPER-PROVED]`.
 
 - 2026-08-01 — froze UPSA-1 after full-source polar/Bohr synthesis; closed paper proof and hostile
   circularity audit before Lean work.
+- 2026-08-01 — exact Lean closure in
+  `formal/GaloisForLFunctions/RHTower/CCMUnitaryPolarSourceAtlas.lean`: strict-right polar
+  support/residue recovery, right/left/critical divisor partition, residual critical identity,
+  unique Bohr asymptote, exact critical multiplicity recovery, multiplicity-preserving complete
+  divisor equivalence, and normalized canonical-product reconstruction. Direct elaboration, final
+  module build, umbrella reachability, lint, and axiom audits pass; capstones use only `propext`,
+  `Classical.choice`, and `Quot.sound`.

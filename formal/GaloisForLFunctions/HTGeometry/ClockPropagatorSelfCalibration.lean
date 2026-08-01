@@ -5,6 +5,8 @@ import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NoncommRing
 import Mathlib.Tactic.Ring
+import GaloisForLFunctions.HTGeometry.ClockPrincipalSymbolCalibration
+import GaloisForLFunctions.HTGeometry.ClockLocalityDistributionKernel
 import GaloisForLFunctions.HTGeometry.ExponentialObservationHypertranscendence
 
 /-!
@@ -15,9 +17,11 @@ invertible gains dress two scalar clock species whose squared masses are distinc
 of the two measured inverse operators cancels the entire differential operator and isolates the
 endpoint-calibration product.
 
-This file proves that operator identity in an arbitrary noncommutative algebra. It also proves the
-pointwise principal-symbol reconstruction formula: the mass difference identifies calibration,
-after which the calibrated principal symbol identifies the metric coefficient.
+This file proves that operator identity in an arbitrary noncommutative algebra. Imported exact
+local second-order calculus proves that derivatives of the right endpoint gain contribute only to
+lower-order coefficients, the mass-channel difference is a literal zeroth-order multiplication
+operator with diagonal-supported Dirac kernel fibers, and the calibrated quadratic principal
+symbol reconstructs its undressed value.
 
 Physical use still requires Green operators on the correct support domains, species-independent
 endpoint gains, a normally hyperbolic principal symbol, and experimental recovery of the complete
@@ -522,5 +526,41 @@ theorem backreactionSubtractedHiddenGreen_eq_endpointDressedGreen
   simp only [backreactionSubtractedHiddenGreen, endpointDressedInverse,
     probeSchurComplement, endpointDressedGreen]
   noncomm_ring
+
+/-- **Exact inverse bridge for the backreaction-subtracted contrast.**
+
+If the hidden Green element and both effective coupling/gain dressings have two-sided inverses,
+then the inverse of the coupling-off/coupling-on contrast is the oppositely dressed hidden
+operator. This is the exact bridge from backreaction subtraction to two-mass self-calibration. -/
+theorem backreactionSubtractedHiddenGreen_inverse_isTwoSided
+    {A : Type*} [Ring A]
+    (probeOperator probeSourceGainInv receiverCoupling targetGreen
+      sourceCoupling probeReceiverGainInv targetOperator
+      leftDressingInv rightDressingInv : A)
+    (hTargetOperatorGreen : targetOperator * targetGreen = 1)
+    (hTargetGreenOperator : targetGreen * targetOperator = 1)
+    (hLeftInv :
+      leftDressingInv * (probeSourceGainInv * receiverCoupling) = 1)
+    (hLeft :
+      (probeSourceGainInv * receiverCoupling) * leftDressingInv = 1)
+    (hRightInv :
+      rightDressingInv * (sourceCoupling * probeReceiverGainInv) = 1)
+    (hRight :
+      (sourceCoupling * probeReceiverGainInv) * rightDressingInv = 1) :
+    endpointDressedInverse rightDressingInv targetOperator leftDressingInv *
+          backreactionSubtractedHiddenGreen
+            probeOperator probeSourceGainInv receiverCoupling targetGreen
+            sourceCoupling probeReceiverGainInv = 1 ∧
+      backreactionSubtractedHiddenGreen
+            probeOperator probeSourceGainInv receiverCoupling targetGreen
+            sourceCoupling probeReceiverGainInv *
+          endpointDressedInverse rightDressingInv targetOperator leftDressingInv = 1 := by
+  rw [backreactionSubtractedHiddenGreen_eq_endpointDressedGreen]
+  exact endpointDressedInverse_isTwoSided
+    targetOperator targetGreen
+    (probeSourceGainInv * receiverCoupling) leftDressingInv
+    (sourceCoupling * probeReceiverGainInv) rightDressingInv
+    hTargetOperatorGreen hTargetGreenOperator
+    hLeftInv hLeft hRightInv hRight
 
 end GaloisForLFunctions.HTGeometry

@@ -125,7 +125,15 @@ jump kernel admits common-gauge Pontryagin realization with negative subspace eq
 spectral subspace of restricted-Weil operator, and source blocks satisfy `(5)`.
 
 Because negative block is finite, conjecture is decidable by exact finite Evans determinant.  One
-negative principal minor falsifies it.  If proved, block congruence gives full jump Pick positivity;
+negative principal minor falsifies it.
+
+**The falsification criterion is formal.**  `principalMinor_nonneg`: principal submatrices of a
+positive semidefinite matrix are positive semidefinite, so every principal minor is nonnegative.
+`not_posSemidef_of_principalMinor_neg` and
+`not_schurComplement_posSemidef_of_principalMinor_neg`: hence one negative principal minor of the
+Schur complement refutes `(5)`, and so the conjecture, without examining the rest of the source.
+That is the decision procedure this section proposes, available as a theorem rather than as a
+described method.  If proved, block congruence gives full jump Pick positivity;
 existing pole tomography gives RH.
 
 ## 6. Scientific gain
@@ -189,3 +197,11 @@ Pontryagin-realization conjecture `SUZUKI-FINITE-NEGATIVE-BLOCK-WELD` remain the
   presence alone" — its off-diagonal presence strictly cannot help, which is what the card's repair
   of the earlier "pay negative diagonal debt" language asserts.  Two new declarations, targeted build
   green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — section 5's falsification criterion formalized.  `principalMinor_nonneg` (principal
+  submatrices of a PSD matrix are PSD, so their determinants are nonnegative) and
+  `not_schurComplement_posSemidef_of_principalMinor_neg` make "one negative principal minor falsifies
+  it" a theorem rather than a described method: a single exhibited minor refutes `(5)` and hence
+  `SUZUKI-FINITE-NEGATIVE-BLOCK-WELD`, with no further examination of the source.  A card that states
+  a decision procedure should carry it as a proved implication, since that is what a future
+  refutation would be checked against.  Three new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.

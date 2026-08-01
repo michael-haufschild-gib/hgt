@@ -326,25 +326,16 @@ theorem spectralReturnMomentMeanReal_tendsto_collisionHierarchy
 /-- Convolution with an atomless right factor cannot create atoms. -/
 lemma noAtoms_conv_of_right_noAtoms
     (mu nu : Measure ℝ) [NullSingletonClass nu] :
-    NullSingletonClass (mu ∗ nu) := by
-  rw [Measure.conv]
-  apply noAtoms_map_prod_of_countable_fibers
-    mu nu (fun p : ℝ × ℝ ↦ p.1 + p.2) (by fun_prop)
-  intro a energy
-  apply (Set.finite_singleton (energy - a)).countable.mono
-  intro b hb
-  simp only [Set.mem_setOf_eq, Set.mem_singleton_iff] at hb ⊢
-  linarith
+    NullSingletonClass (mu ∗ nu) :=
+  nullSingletonClass_conv_of_right mu nu
 
 /-- Every positive convolution power of an atomless real measure is
 atomless. -/
 lemma noAtoms_convPow_of_noAtoms
     (nu : Measure ℝ) [SFinite nu] [NullSingletonClass nu]
     {n : ℕ} (hn : 0 < n) :
-    NullSingletonClass (convPow nu n) := by
-  obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt hn)
-  rw [convPow, Measure.conv_comm]
-  exact noAtoms_conv_of_right_noAtoms (convPow nu k) nu
+    NullSingletonClass (convPow nu n) :=
+  nullSingletonClass_convPow nu hn
 
 /-- The difference of two independent samples from an atomless measure is
 atomless. -/
