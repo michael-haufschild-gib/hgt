@@ -157,7 +157,7 @@ LEAN PROOFS MUST BE UNCONDTIONAL!!!
 
 ## research Route
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to fully close Route E  from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md 
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to fully close Route B from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md 
 
 research rules:
 - use heavy conjecturing
@@ -171,8 +171,9 @@ Lean rules:
 2. Always build in the foreground, 1 process per single agent. You can run builds in parallel to other agents, but only 1 at a time.
 3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
 4. No computations.
-5. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
-6. make sure you don't leave stale lean processes running - clean up after yourself.
+5. Do not run full builds.
+6. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
+7. make sure you don't leave stale lean processes running - clean up after yourself.
 
 
 

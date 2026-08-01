@@ -1,0 +1,11 @@
+# Route C2 terminal closure — 2026-08-01
+
+Route C2 in `docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md` is retired as an independent RH producer. Exact phase law already gives `HedenmalmGaussianHankelTailCone tau alpha ↔ XiZeroHalfPlaneBound alpha`; alpha=0 is RH itself.
+
+Strongest positive survivor is formalized in `formal/GaloisForLFunctions/RHTower/ThetaCuspCenterMixedDivisorTomography.lean`: zero-safe transverse current, exact odd `2m-1` factorization, positive cofactor residual, punctured normalized multiplicity limit, physical two-sided chamber, exact planar radial factorization, and exact leading-cone plus higher-residual decomposition. Key capstones: `xiTransverseEnergyCurrent_support_factorization`, `tendsto_xiTransverseEnergyCurrent_normalized_at_support`, `xiTransverseEnergyCurrent_support_planar_factorization`, `xiTransverseEnergyCurrent_eq_planarLeadingCone_add_higher`, `exists_physical_thetaCuspCenterMixedFourierCurrent_sign_chamber`.
+
+Published ownership is formalized separately in `ThetaCuspCenterMixedPublishedGrowthPriorArt.lean`: strict Sondow–Dumitrescu horizontal Xi-modulus monotonicity (`strictMonoOn_norm_XiC_horizontal_of_halfPlaneBound`) and Planat June 2026 theta-kernel/exterior/critical-aperture package (`thetaCuspCenterMixed_publishedGrowthLocalization_package`). Classified not new.
+
+Cards: Stage-2 paper proof `new_scientific_knowledge/other/route-c2-zero-safe-current-multiplicity-tomography.md`; Stage-3 formal cards for new bridge and prior art; Stage-5 `route-c2-theta-cusp-center-mixed-current.md`.
+
+Verification: direct foreground `lake env lean` passed for both new modules; Route F terminal chain also independently rechecked. Axiom audit only `[propext, Classical.choice, Quot.sound]`. No full build was run per user instruction. Repository lint reached the new modules but was blocked by unrelated concurrent untracked `BVCoPoissonCompactSeedRigidity.lean` and `DeningerEnergyIdentity.lean` lacking umbrella imports. No stale Lean processes from this task; persistent IDE Lean server and unrelated concurrent index processes were left untouched.

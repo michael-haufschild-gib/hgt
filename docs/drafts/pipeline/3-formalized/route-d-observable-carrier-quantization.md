@@ -31,14 +31,22 @@ for every `k >= 0`.
 4. consequently no reporter whose every level set has `mu`-measure zero can represent the Route D
    tower. On an atomless source, no countable-to-one reporter can do so; in particular, no
    injective reporter can;
-5. for the literal theta-cusp density, every canonical thermal level set has positive Lebesgue
-   measure. Thus a successful reporter requires genuine positive-measure plateaus, not merely
-   uncountable null fibres.
+5. for the canonically mass-calibrated theta-cusp density, every canonical thermal level set has
+   positive Lebesgue measure. Thus a successful reporter requires genuine positive-measure
+   plateaus, not merely uncountable null fibres.
 
-The intended source specialization is the positive theta-cusp density on the positive real line.
-Every successful deterministic theta reporter must collapse positive-Lebesgue-measure fibres to
-the exact canonical divisor atoms. A diffuse, countable-to-one, or information-preserving
-observable cannot be the missing Route D producer.
+The intended source specialization is the positive theta-cusp density on the positive real line,
+scaled by
+
+```text
+normalizedPrimeArchMoment(0) / thetaCuspRawEvenMoment(0).
+```
+
+The scale is strictly positive, so it changes neither null sets nor support, and the resulting
+measure has total mass exactly `normalizedPrimeArchMoment(0)`. Every successful deterministic
+theta reporter must collapse positive-Lebesgue-measure fibres to the exact canonical divisor
+atoms. A diffuse, countable-to-one, or information-preserving observable cannot be the missing
+Route D producer.
 
 ## Internal frontier
 
@@ -86,6 +94,11 @@ observable cannot be the missing Route D producer.
 8. **Could those uncountable fibres remain Lebesgue-null?** Not for the theta source. Its weighted
    measure is absolutely continuous with respect to Lebesgue measure, so positive source mass
    forces positive Lebesgue mass.
+9. **Is the theta specialization already impossible at degree zero?** Not after calibration. The
+   unscaled density has total mass `thetaCuspRawEvenMoment(0)`, which is not the required observable
+   zeroth moment. Using it would make every theta-specific no-go potentially vacuous. The corrected
+   positive scale gives the exact formal identity
+   `thetaCuspContinuousSourceMeasure univ = ofReal(normalizedPrimeArchMoment 0)`.
 
 **Verdict:** `SURVIVES HOSTILE ATTACK` as an exact classification/no-go, not as an RH proof.
 
@@ -120,9 +133,19 @@ Define `nu = node_* mu`.
    a strictly positive mass, contradiction.
 6. If `mu` is atomless and every fibre of `node` is countable, every level set is null. This gives
    the countable-to-one obstruction; injectivity is its singleton-fibre corollary.
-7. The theta-cusp source is a density with respect to restricted Lebesgue measure and is therefore
-   absolutely continuous with respect to Lebesgue measure. Each positive thermal source fibre from
-   step 4 consequently has positive Lebesgue measure.
+7. The raw theta density is multiplied by the positive ratio of required zeroth mass to raw zeroth
+   mass. The theta moment integral gives the exact total-mass identity
+
+   ```text
+   thetaCuspContinuousSourceMeasure(univ)
+     = ofReal(normalizedPrimeArchMoment(0)).
+   ```
+
+   This closes the degree-zero compatibility condition instead of obtaining a vacuous
+   theta-specific obstruction from a misnormalised source.
+8. The calibrated theta-cusp source is a density with respect to restricted Lebesgue measure and
+   is therefore absolutely continuous with respect to Lebesgue measure. Each positive thermal
+   source fibre from step 4 consequently has positive Lebesgue measure.
 
 Every quantifier and imported theorem is discharged. The claim is `[PAPER-PROVED]` and formalized
 unconditionally in Lean.
@@ -162,6 +185,11 @@ not_isPrimeArchObservableWitness_of_forall_measure_levelSet_eq_zero
 not_isPrimeArchObservableWitness_of_countable_levelSets
 not_isPrimeArchObservableWitness_of_injective_of_nullSingleton
 thetaCuspContinuousSourceMeasure
+thetaCuspContinuousSourceScale
+thetaCuspContinuousSourceScale_pos
+continuous_thetaCuspContinuousSourceDensity
+thetaCuspContinuousSourceMeasure_univ
+thetaCuspContinuousSourceMeasure_isFiniteMeasure
 thetaCuspContinuousSourceMeasure_absolutelyContinuous_volume
 thetaCuspContinuousSourceMeasure_nullSingleton
 IsPrimeArchObservableWitness.volume_levelSet_xiThermalNode_pos
@@ -177,7 +205,8 @@ not_isPrimeArchObservableWitness_thetaCusp_of_injective
 - final module build passed: 9436 jobs,
   `lake build GaloisForLFunctions.RHTower.PrimeArchObservableCarrierQuantization`;
 - module imported by `GaloisForLFunctions.RHTower`;
-- generated formal indexes regenerated;
+- generated formal indexes were previously regenerated; calibration adds declarations without
+  changing umbrella wiring;
 - capstone `#print axioms` audit depends only on
   `propext`, `Classical.choice`, and `Quot.sound`;
 - no `sorry`, `admit`, new axiom, `opaque`, `unsafe`, or numerical computation occurs in the

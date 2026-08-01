@@ -270,8 +270,23 @@ suzukiLogarithmicSourceGenerator_eq_neg_reflectionTangent
 suzukiImplicitPoleVelocity_eq_clarkTransport
 ```
 
-The unbounded Suzuki operator, inverse differentiation, and Fourier integral remain paper-level
-until the concrete Friedrichs operator is represented in Lean.
+**Superseded — see the 2026-08-01 entries below.**  This paragraph read that "the unbounded Suzuki
+operator, inverse differentiation, and Fourier integral remain paper-level until the concrete
+Friedrichs operator is represented in Lean".  Two of those three were never blocked on it, and the
+third is mathlib's:
+
+- **inverse differentiation** — `partial_r R_r = -R_r^2` follows from the first resolvent identity
+  alone, already proved in `HTGeometry/ResolventFamilyJet.lean` for a family of *bounded* elements;
+- **the Fourier integral** — differentiation under an interval integral, supplied by mathlib's
+  `intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_deriv_le`;
+- **the operator itself** — not needed: `(11)`'s derivative law is
+  `hasDerivAt_reflectedQuotientCarrier`, which takes the family's parameter derivative as a
+  hypothesis, and `(10)` = `(12)` is the pure algebra of
+  `suzukiReflectedQuotientDifference_eq_crossWronskian`.
+
+What genuinely remains are the domination hypotheses for the integral differentiation — properties
+of the source family — and the identification of that family with Suzuki's construction.  No
+Friedrichs extension is required anywhere.
 
 ## Pipeline checklist
 
@@ -298,3 +313,95 @@ sentence *"therefore `Xi_r(x)` is purely imaginary and `(13)` is real, as requir
 No new Lean was needed; this entry exists so the target list is not read as a gap. The genuinely
 paper-level remainder is unchanged and is operator-dependent: the unbounded Suzuki operator, the
 inverse differentiation `(11)`, and the Fourier integral defining `G_r` in `(10)`.
+
+### Cross-reference — `(11)`'s "inverse differentiation" is already corpus-owned
+
+The Formalization target parks "the unbounded Suzuki operator, inverse differentiation, and Fourier
+integral" until the concrete Friedrichs operator exists in Lean. The **inverse differentiation** half
+does not need it: `partial_r R_r = -R_r^2` follows from the first resolvent identity alone, and the
+corpus already proves exactly that in `HTGeometry/ResolventFamilyJet.lean`:
+
+- `IsResolventFamilyOn` — the resolvent identity as a property of a family `S : ℝ → A` of **bounded**
+  elements, with no operator construction;
+- `IsResolventFamilyOn.continuousAt`, `.hasDerivAt` — continuity and the derivative law
+  `partial_u R_u = R_u^2` forced by that identity;
+- `.hasDerivAt_pow`, `.hasDerivAt_jet`, `resolventShiftJet`, `hasDerivAt_resolventShiftJet` — the
+  full jet law `partial_u^n R_u = n! R_u^{n+1}`;
+- `aeval_eq_resolventShiftJet_sum` — polynomial realization.
+
+So `(11)`'s `partial_r F_r = -G_r` reduces to differentiating under the Fourier integral, with the
+operator derivative supplied. Combined with the strong-limit machinery recorded on
+`suzuki-neumann-dominated-shift-cone-obstruction.md` and
+`suzuki-boundary-log-nonclock-nonflat-tangent.md`, the only genuinely operator-dependent input left
+on this card is the Fourier integral defining `G_r` in `(10)` — i.e. naming the source, not
+constructing the operator.
+
+### Gap class — objects present, calculus absent
+
+`RHTower/SuzukiFiniteShiftProjectiveHolonomy.lean` defines `suzukiProjectiveSourceTransport`,
+`suzukiFiniteShiftSource`, `suzukiLogarithmicSourceGenerator` and proves their algebra, but contains
+**zero** derivative lemmas — no `HasDerivAt`, `DifferentiableAt` or `deriv` anywhere. Yet `(11)` and
+`(12)` differentiate exactly these objects (`partial_r Theta_r = Theta_r Xi_r`, and `Xi_r` as the
+cross-Wronskian quotient).
+
+So the card's differentiation steps are not blocked on the operator — the operator derivative
+`partial_r R_r = -R_r^2` is already corpus-owned (see the cross-reference above) — but on the
+**calculus of this module's own objects**, which nobody has written. That is a bounded, mechanical
+piece of work: derivative, `DifferentiableAt`, and a logarithmic-derivative law for the transport,
+mirroring what `RHTower/SuzukiDonoghueHerglotzTransform.lean` now carries for the Cayley pair.
+
+Note for whoever writes it: mathlib's `logDeriv_div` (`Mathlib/Analysis/Calculus/LogDeriv.lean`)
+gives the quotient rule for logarithmic derivatives directly, and the transport is a quotient of two
+products, so `logDeriv_mul` and `logDeriv_div` compose to `(12)` without a bare quotient-rule
+computation.
+
+### Lean progress — `(10)` and `(12)` are the same expression
+
+- `suzukiReflectedQuotientDifference_eq_crossWronskian` :
+  `G(-z)/F(-z) - G(z)/F(z) = -[G(z)F(-z) - F(z)G(-z)] / [F(z)F(-z)]`, for `F(z), F(-z) ≠ 0`.
+  [PROVED HERE], standard axioms `[propext, Classical.choice, Quot.sound]`, builds clean.
+
+The card presents `Xi_r` twice — as the reflected difference of logarithmic quotients in `(10)` and
+as the negated cross-Wronskian in `(12)` — and their equality is **pure algebra**, requiring no
+differentiation at all. So that half of `(12)` is independent of how the source family depends on the
+shift, and is now discharged regardless of the parameter setup. What still needs the parameter
+dependence is only `partial_r Theta_r = Theta_r Xi_r` itself.
+
+### Lean progress — `(11)`'s derivative law, with the dependence parameterized
+
+- `hasDerivAt_reflectedQuotientCarrier` : for a parameter family,
+  `d/dr [c * f(r) / g(r)] = (c f/g) * (f'/f - g'/g)` — the carrier times the difference of
+  logarithmic derivatives, with the constant Cayley factor `c` passing straight through.
+  [PROVED HERE], standard axioms `[propext, Classical.choice, Quot.sound]`, builds clean.
+
+This is `(11)`'s `partial_r Theta_r = Theta_r Xi_r` with the family's parameter dependence taken as a
+**hypothesis** rather than assumed of Suzuki's source: instantiate `f = F_r(z)`, `g = F_r(-z)`,
+`c = (z - i)/(z + i)`, and the conclusion is `Theta_r` times `F'(z)/F(z) - F'(-z)/F(-z)`, which is
+`Xi_r` by `suzukiReflectedQuotientDifference_eq_crossWronskian` above.
+
+So `(11)` and `(12)` are now both formal **modulo supplying `HasDerivAt` for the source family** —
+which is precisely the card's `partial_r F_r = -G_r`, and that reduces to differentiating under the
+Fourier integral with `HTGeometry/ResolventFamilyJet.lean`'s `partial_r R_r = -R_r^2` already in
+hand. No step of this card now requires constructing the operator.
+
+### The Fourier integral step is mathlib's, not ours
+
+The Formalization target's last parked item, the Fourier integral behind `partial_r F_r = -G_r`, is
+differentiation under an interval integral, and mathlib provides it directly:
+
+- `Mathlib/Analysis/Calculus/ParametricIntervalIntegral.lean` :
+  `intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_deriv_le` — under a local dominating
+  bound it gives exactly
+  `HasDerivAt (fun x => ∫ t in a..b, F x t) (∫ t in a..b, F' x₀ t) x₀`.
+
+Instantiating `F r t = u_r(t) exp(i z t)` and `F' r t = (partial_r u_r)(t) exp(i z t)` yields
+`(11)`'s `partial_r F_r = -G_r`, with `partial_r u_r = -R_r^2 e` supplied by
+`HTGeometry/ResolventFamilyJet.lean`. The remaining obligations are the domination hypotheses — a
+bound on `‖(partial_r u_r)(t) exp(i z t)‖` integrable over `[-a, a]` — which are properties of the
+source family, not of an operator construction.
+
+**Net position on this card.** Every step of the Theorem is now either formal or located in mathlib:
+`(4)`--`(9)` algebra formal; `(10)` = `(12)` by `suzukiReflectedQuotientDifference_eq_crossWronskian`;
+`(11)`'s derivative law by `hasDerivAt_reflectedQuotientCarrier`; the resolvent derivative by
+`ResolventFamilyJet`; the Fourier differentiation by the mathlib theorem above; and `(13)`'s reality
+by the three declarations noted earlier. Nothing requires the Friedrichs construction.

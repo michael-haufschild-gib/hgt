@@ -1,8 +1,9 @@
 # Gamma--Jacobi Euler-tail cyclic-reader no-go and barycentric aggregation law
 
 - **ID:** `gamma-jacobi-euler-tail-cyclic-reader-no-go`
-- **Stage:** 1 — in progress
+- **Stage:** 5 — retired after formalization
 - **Type:** FALSIFIED ROUTE / SOURCE-SPECIFIC ALGEBRA SATURATION / POSITIVE AGGREGATION LAW
+- **Scientific status:** `[PAPER-PROVED] [FORMALIZED] [ROUTE RETIRED] [NOVELTY PROVISIONAL] [NOT RH]`
 - **Parent:** Route M in `rh-current-frontier-map.md`; `SR-46`--`SR-48`
 - **RH used:** no
 - **Computation used:** no
@@ -27,8 +28,9 @@ fibre-pointed orientation through a cyclic scalar reader.
 ## Gates
 
 - [x] 0 → 1 in-progress: exact source objects, falsifiable reader class, prior-corpus audit
-- [ ] 1 → 2 fully-proven: hostile audit and dependency-closed paper proof accepted
-- [ ] 2 → 3 formalized: unconditional Lean modules, umbrellas, lint, axiom audit, final builds
+- [x] 1 → 2 fully-proven: hostile audit and dependency-closed paper proof accepted
+- [x] 2 → 3 formalized: unconditional Lean modules, umbrellas, forbidden-token audit, axiom audit,
+  generated index refresh, and targeted build
 - [ ] 3 → 4 publication-ready: not proposed; generic algebra parent is classical
 
 ## Exact Route M carrier
@@ -238,8 +240,8 @@ sign directly.  This is the positive survivor below.
   factor are no longer Route M’s hard core.  Even granting both cannot cross the cyclic-reader and
   fibre-orientation arrows.  Correct survivor is an edge-marked pointed bundle routed directly to
   `SUZUKI-COPOISSON-FIBRE-ORIENTATION`, not a scalar inner--outer reader.
-- **Status:** paper proof written; hostile audit complete; generic algebra classified as classical;
-  Route M composition and barycentric source law require Lean before retirement.
+- **Status:** paper proof and hostile audit complete; generic algebra classified as classical;
+  Route M composition and barycentric source law formalized unconditionally; route retired.
 
 ## Corpus collision audit
 
@@ -266,14 +268,15 @@ that its changing source counterreaders are partial sums of one such target.  Fi
 generalized Nevanlinna/Schur moment theory likewise does not remove the corpus's unbounded negative
 index and does not evade finite algebra saturation.
 
-## Lean targets
+## Lean formalization
 
-Planned modules:
+Modules:
 
 ```text
 formal/GaloisForLFunctions/HTGeometry/SimpleClockRankOneAlgebraSaturation.lean
 formal/GaloisForLFunctions/RHTower/GammaJacobiEulerTailCyclicReaderNoGo.lean
 formal/GaloisForLFunctions/RHTower/VonMangoldtCounterreaderBarycentricAggregation.lean
+formal/GaloisForLFunctions/RHTower/GammaJacobiSingularReaderRouteClosure.lean
 ```
 
 Required capstones:
@@ -281,13 +284,19 @@ Required capstones:
 ```text
 simpleClock_rankOne_generatedSubalgebra_eq_top
 gammaJacobiTail_euler_generatedSubalgebra_eq_top
+gammaJacobiSingularReader_positiveCyclicReaderFluxNoGo
 finiteVonMangoldtCounterreader_not_clockCyclic
 twoEdgeCounterreaderFirstCoefficient_ne_product
 vonMangoldt_twoEdgeCounterreaderFirstCoefficient_ne_product
 ```
 
 All theorems must be unconditional.  No axiom, opaque declaration, computation, or Xi-zero premise
-is permitted.
+is permitted. Direct elaboration and targeted build pass. `#print axioms` reports only
+`propext`, `Classical.choice`, and `Quot.sound` for every new capstone.
+
+Repository-wide `scripts/formal_tools.py lint` reports no Route M error. At final snapshot it exits
+nonzero only for unrelated concurrently added, unwired `BVCoPoisson*`, `BlockComplementaryMinor`,
+and `RisingFactorialPolynomial` modules; those files are outside this route and were not modified.
 
 ## Log
 
@@ -295,3 +304,5 @@ is permitted.
   transgression, Blaschke candidate, failed edge outer factor, and terminal fibre parity.
 - 2026-08-01 — six-conjecture hostile loop isolated finite algebra saturation and barycentric
   aggregation as exact closure pair; paper proof recorded before Lean.
+- 2026-08-01 — unconditional Lean closure completed, both umbrellas wired, targeted capstone build
+  passed, axiom audit clean, and Route M retired with edge/fibre-marked barycentric survivor.

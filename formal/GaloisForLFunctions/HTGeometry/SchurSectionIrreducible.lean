@@ -97,4 +97,51 @@ theorem irreducible_det_schur_of_le [DecidableEq K] {n m : ℕ} (hm : 0 < m) (hm
   rw [hpar] at h
   exact h
 
+/-- **The rectangles of shift one are irreducible, at every height.**  Their corner minor is the
+shift-zero section, whose determinant is one, so the unit-minor criterion applies and no relation
+between the parameters is needed. -/
+theorem irreducible_det_schur_shift_one [DecidableEq K] :
+    ∀ m : ℕ, 0 < m →
+      Irreducible ((rectangularSchurToeplitz (schurVar K m) 1 m).det) := by
+  intro m
+  induction m with
+  | zero => intro h; exact absurd h (by omega)
+  | succ m' ih =>
+    intro _
+    rcases Nat.eq_zero_or_pos m' with hm0 | hm0
+    · subst hm0
+      exact irreducible_det_rectangularSchurToeplitz_one (by omega)
+    · have hminor :
+          ((rectangularSchurToeplitz (schurVar K (0 + m' - 1 + 2)) (0 + 1) (m' + 1)).submatrix
+            (Fin.last m').succAbove Fin.succ).det =
+            MvPolynomial.rename Fin.succ (1 : MvPolynomial (Fin (0 + m' - 1 + 1)) K) := by
+        rw [det_submatrix_eq_rename_succ, det_rectangularSchurToeplitz_zero_shift, map_one,
+          map_one]
+      have hcrit : Irreducible
+          ((rectangularSchurToeplitz (schurVar K (0 + m' - 1 + 2)) (0 + 1) (m' + 1)).det) := by
+        refine irreducible_det_of_corner_X_zero_of_isUnit _ (Fin.last m') ?_ ?_ hminor isUnit_one
+        · rw [rectangularSchurToeplitz]
+          have h0 : ((0 : Fin (m' + 1)) : ℕ) = 0 := rfl
+          have hlast : ((Fin.last m' : Fin (m' + 1)) : ℕ) = m' := rfl
+          rw [h0, hlast, if_pos (by omega : (0 : ℕ) ≤ 0 + 1 + m'),
+            show 0 + 1 + m' - 0 = 0 + m' - 1 + 2 by omega]
+          exact schurVar_top (by omega)
+        · intro i j hij
+          rw [rectangularSchurToeplitz]
+          by_cases hg : (j : ℕ) ≤ 0 + 1 + (i : ℕ)
+          · rw [if_pos hg]
+            have hi := i.isLt
+            have hj := j.isLt
+            refine degreeOf_zero_schurVar (by omega) (by omega) ?_
+            intro hcon
+            refine hij ⟨Fin.ext ?_, Fin.ext ?_⟩
+            · show (i : ℕ) = m'
+              omega
+            · show (j : ℕ) = 0
+              omega
+          · rw [if_neg hg, MvPolynomial.degreeOf_zero]
+      have heq : 0 + m' - 1 + 2 = m' + 1 := by omega
+      rw [← rename_finCongr_det_rectangularSchurToeplitz heq 1 (m' + 1)]
+      exact (irreducible_rename_finCongr heq _).2 hcrit
+
 end GaloisForLFunctions.HTGeometry

@@ -79,8 +79,13 @@ theorem aeval_simpleClockLagrangePolynomial
     aeval (Matrix.diagonal label) (simpleClockLagrangePolynomial label i) =
       Matrix.single i i 1 := by
   rw [aeval_diagonal_real]
-  ext j k
-  simp [simpleClockLagrangePolynomial_eval label hlabel]
+  have hselector :
+      (fun j => (simpleClockLagrangePolynomial label i).eval (label j)) =
+        Pi.single i 1 := by
+    funext j
+    rw [simpleClockLagrangePolynomial_eval label hlabel]
+    simp [Pi.single_apply, eq_comm]
+  rw [hselector, Matrix.diagonal_single]
 
 /-- A diagonal simple clock and one full-support rank-one kernel generate the full matrix algebra. -/
 theorem simpleClock_rankOne_generatedSubalgebra_eq_top
@@ -89,23 +94,29 @@ theorem simpleClock_rankOne_generatedSubalgebra_eq_top
     (hlabel : Function.Injective label)
     (hvector : ∀ i, vector i ≠ 0) :
     Algebra.adjoin ℝ
-        {Matrix.diagonal label,
-          (fun i j => vector i * vector j : Matrix I I ℝ)} = ⊤ := by
+        ({Matrix.diagonal label, fun i j => vector i * vector j} :
+          Set (Matrix I I ℝ)) = ⊤ := by
   let clock : Matrix I I ℝ := Matrix.diagonal label
   let boundary : Matrix I I ℝ := fun i j => vector i * vector j
-  let A : Subalgebra ℝ (Matrix I I ℝ) := Algebra.adjoin ℝ {clock, boundary}
+  let generators : Set (Matrix I I ℝ) := {clock, boundary}
+  let A : Subalgebra ℝ (Matrix I I ℝ) := Algebra.adjoin ℝ generators
   have hclock : clock ∈ A := by
-    exact Algebra.subset_adjoin (by simp [A])
+    apply Algebra.subset_adjoin
+    simp [generators]
   have hboundary : boundary ∈ A := by
-    exact Algebra.subset_adjoin (by simp [A])
+    apply Algebra.subset_adjoin
+    simp [generators]
   have hprojector : ∀ i : I, Matrix.single i i 1 ∈ A := by
     intro i
     have hpoly :
         aeval clock (simpleClockLagrangePolynomial label i) ∈ A := by
-      let clockA : A := ⟨clock, hclock⟩
-      rw [← Polynomial.aeval_subalgebra_coe
-        (simpleClockLagrangePolynomial label i) A clockA]
-      exact (aeval clockA (simpleClockLagrangePolynomial label i)).property
+      have hsingleton : Algebra.adjoin ℝ {clock} ≤ A := by
+        apply Algebra.adjoin_le
+        intro x hx
+        rw [Set.mem_singleton_iff] at hx
+        subst x
+        exact hclock
+      exact hsingleton (Polynomial.aeval_mem_adjoin_singleton ℝ clock)
     rw [show clock = Matrix.diagonal label by rfl,
       aeval_simpleClockLagrangePolynomial label hlabel i] at hpoly
     exact hpoly
@@ -121,20 +132,29 @@ theorem simpleClock_rankOne_generatedSubalgebra_eq_top
     rw [hprodEq] at hprod
     have hne : vector i * vector j ≠ 0 := mul_ne_zero (hvector i) (hvector j)
     have hscaled := A.smul_mem hprod (vector i * vector j)⁻¹
-    simpa [smul_smul, hne] using hscaled
-  change A = ⊤
-  apply Algebra.eq_top_iff.mpr
-  intro M
-  have hdecomp :
-      M = ∑ i : I, ∑ j : I, M i j • Matrix.single i j 1 := by
-    ext a b
-    simp
-  rw [hdecomp]
-  apply Subalgebra.sum_mem
-  intro i hi
-  apply Subalgebra.sum_mem
-  intro j hj
-  exact A.smul_mem (hsingle i j) (M i j)
+    have hrescale :
+        (vector i * vector j)⁻¹ •
+            ((vector i * vector j) •
+              (Matrix.single i j (1 : ℝ) : Matrix I I ℝ)) =
+          Matrix.single i j 1 := by
+      rw [smul_smul, inv_mul_cancel₀ hne, one_smul]
+    rw [hrescale] at hscaled
+    exact hscaled
+  have hA : A = ⊤ := by
+    apply Algebra.eq_top_iff.mpr
+    intro M
+    have hdecomp :
+        M = ∑ i : I, ∑ j : I, Matrix.single i j (M i j) :=
+      Matrix.matrix_eq_sum_single M
+    rw [hdecomp]
+    apply Subalgebra.sum_mem
+    intro i hi
+    apply Subalgebra.sum_mem
+    intro j hj
+    simpa only [Matrix.smul_single, smul_eq_mul, mul_one] using
+      A.smul_mem (hsingle i j) (M i j)
+  dsimp only [A, generators, clock, boundary] at hA
+  exact hA
 
 end
 

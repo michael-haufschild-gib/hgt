@@ -111,7 +111,8 @@ lemma xiSupportTransversePoint_sub (rho : XiDivisorSupport) (a : ℝ) :
     xiSupportTransversePoint rho a - xiSpectralPointSupport rho =
       -(xiSupportTransverseDisplacement rho a : ℂ) * I := by
   apply Complex.ext <;>
-    simp [xiSupportTransversePoint, xiSupportTransverseDisplacement] <;> ring
+    simp [xiSupportTransversePoint, xiSupportTransverseDisplacement]
+  ring
 
 @[simp] lemma xiSupportTransversePoint_center (rho : XiDivisorSupport) :
     xiSupportTransversePoint rho (-(xiSpectralPointSupport rho).im) =
@@ -316,7 +317,8 @@ lemma xiSupportPlanePoint_sub (rho : XiDivisorSupport) (a b : ℝ) :
         (xiSupportTransverseDisplacement rho a : ℂ) * I := by
   apply Complex.ext <;>
     simp [xiSupportPlanePoint, xiSupportTangentialDisplacement,
-      xiSupportTransverseDisplacement] <;> ring
+      xiSupportTransverseDisplacement]
+  ring
 
 /-- Exact planar squared-energy factorization by the radial divisor power. -/
 theorem normSq_XiC_support_plane (rho : XiDivisorSupport) (a b : ℝ) :
@@ -384,6 +386,72 @@ theorem xiTransverseEnergyCurrent_support_planar_factorization
   have hcurrent := hasDerivAt_normSq_XiC_transverse a b
   exact hcurrent.unique
     (by simpa only [r, z, m, xiSupportPlanePoint] using hfactorDeriv')
+
+/-- Leading homogeneous divisor cone of the planar current. Its degree is `2m-1`: one signed
+transverse factor times `m-1` radial quadratic factors. -/
+def xiSupportPlanarLeadingCone (rho : XiDivisorSupport) (a b : ℝ) : ℝ :=
+  2 * (xiSupportMultiplicity rho : ℝ) *
+    Complex.normSq (xiSupportCofactor rho (xiSpectralPointSupport rho)) *
+    xiSupportTransverseDisplacement rho a *
+    xiSupportRadiusSq rho a b ^ (xiSupportMultiplicity rho - 1)
+
+/-- Coefficient left after subtracting the leading homogeneous cone and the common radial divisor
+power. Its two summands visibly have one extra vanishing factor. -/
+def xiSupportPlanarHigherResidual (rho : XiDivisorSupport) (a b : ℝ) : ℝ :=
+  2 * (xiSupportMultiplicity rho : ℝ) * xiSupportTransverseDisplacement rho a *
+      (Complex.normSq (xiSupportCofactor rho (xiSupportPlanePoint rho a b)) -
+        Complex.normSq (xiSupportCofactor rho (xiSpectralPointSupport rho))) +
+    xiSupportRadiusSq rho a b *
+      (2 * (deriv (xiSupportCofactor rho) (xiSupportPlanePoint rho a b) *
+        (starRingEnd ℂ) (xiSupportCofactor rho (xiSupportPlanePoint rho a b))).im)
+
+/-- Exact leading-cone decomposition. This is the algebraic form of the full planar germ, with no
+asymptotic or nonvanishing hypothesis. -/
+theorem xiTransverseEnergyCurrent_eq_planarLeadingCone_add_higher
+    (rho : XiDivisorSupport) (a b : ℝ) :
+    xiTransverseEnergyCurrent a b =
+      xiSupportPlanarLeadingCone rho a b +
+        xiSupportRadiusSq rho a b ^ (xiSupportMultiplicity rho - 1) *
+          xiSupportPlanarHigherResidual rho a b := by
+  rw [xiTransverseEnergyCurrent_support_planar_factorization]
+  unfold xiSupportPlanarLeadingCone xiSupportPlanarHigherResidual
+    xiSupportPlanarResidual
+  ring
+
+/-- The higher coefficient is continuous in the full transverse/tangential plane. -/
+theorem continuous_xiSupportPlanarHigherResidual (rho : XiDivisorSupport) :
+    Continuous (Function.uncurry (xiSupportPlanarHigherResidual rho)) := by
+  have hQ : Continuous (xiSupportCofactor rho) :=
+    continuous_iff_continuousAt.mpr (fun z =>
+      (xiThetaDividedChain_analyticAt _ _ z).continuousAt)
+  have hQ' : Continuous (deriv (xiSupportCofactor rho)) :=
+    continuous_iff_continuousAt.mpr (fun z =>
+      (xiThetaDividedChain_analyticAt _ _ z).deriv.continuousAt)
+  unfold xiSupportPlanarHigherResidual xiSupportPlanePoint
+    xiSupportRadiusSq xiSupportTangentialDisplacement
+    xiSupportTransverseDisplacement Function.uncurry
+  fun_prop
+
+@[simp] lemma xiSupportTangentialDisplacement_center (rho : XiDivisorSupport) :
+    xiSupportTangentialDisplacement rho (xiSpectralPointSupport rho).re = 0 := by
+  simp [xiSupportTangentialDisplacement]
+
+@[simp] lemma xiSupportPlanePoint_center (rho : XiDivisorSupport) :
+    xiSupportPlanePoint rho (-(xiSpectralPointSupport rho).im)
+      (xiSpectralPointSupport rho).re = xiSpectralPointSupport rho := by
+  apply Complex.ext <;> simp [xiSupportPlanePoint]
+
+@[simp] lemma xiSupportRadiusSq_center (rho : XiDivisorSupport) :
+    xiSupportRadiusSq rho (-(xiSpectralPointSupport rho).im)
+      (xiSpectralPointSupport rho).re = 0 := by
+  simp [xiSupportRadiusSq]
+
+/-- The higher coefficient vanishes at the divisor. Together with the exact decomposition, this
+certifies that the displayed cone is the first planar germ rather than only a formal summand. -/
+@[simp] theorem xiSupportPlanarHigherResidual_center (rho : XiDivisorSupport) :
+    xiSupportPlanarHigherResidual rho (-(xiSpectralPointSupport rho).im)
+      (xiSpectralPointSupport rho).re = 0 := by
+  simp [xiSupportPlanarHigherResidual]
 
 /-- Centered Xi support coordinate in physical aperture form. -/
 theorem neg_xiSpectralPointSupport_im_eq_re_sub_half (rho : XiDivisorSupport) :

@@ -172,12 +172,18 @@ instantiate the generic `RHVerifiedThrough` interface and enlarge the finite ban
 that merely assumes the certificate is not an acceptable import and replay itself is outside this
 task. The RH-equivalent high-frequency ceiling remains unchanged.
 
-### Route E — critical Möbius/Mertens cancellation
+### Route E — critical Möbius/Mertens cancellation [CLOSED AS INDEPENDENT MECHANISM]
 
 **Local contribution beyond located literature.** The sparse Gamma–Hankel bounded-return endpoint,
 the finite-aperture Euler-normal divergence, and the monotone cofinal finite-prime normal-cone
 diagonal—including Gamma completion and projectivized reciprocal-square limit on `Re(s)>1`—have no
-located external collision.
+located external collision. Two exact terminal classifications sharpen that boundary. Any finite
+prime aperture covering all primes through resolution `N` reproduces the full Möbius coefficients,
+Mertens partial sums, and Mertens self-convolution through `N`; its canonical cofinal
+`N^(2+o(1))` law is exactly the open second-Cesàro source law and implies RH. If RH fails, the
+finite Möbius Gamma–Hankel off-diagonal covariance escapes on every
+`1/2 < σ < 1/2 + xiRightTransverseSup`; frequently bounded returns on one line instead bound that
+supremum by `σ-1/2`. No exact external collision was located for either classification.
 
 **External contribution.** Liflandsky's
 [discrete Möbius–Laplace criterion](https://arxiv.org/abs/2607.09797) proves unconditionally that a
@@ -192,11 +198,12 @@ Classical Mertens, Nyman–Beurling, and Báez–Duarte criteria provide related
 located, but it gives only a strict trivial saving and uses the wrong arithmetic weight for the
 one-sided Möbius Gamma–Hankel covariance.
 
-**Lean action.** Liflandsky's transform, convergence, tail, Mellin identity, and unconditional
-decay-to-RH implication are already formalized without importing the simple-zero hypothesis.
-Verjovsky's theorem is an exact connector/equivalence and does not narrow the first source premise,
-so no frontier-leverage import is selected. No external result continues the proved Plücker diagonal
-from `Re(s)>1` to critical Möbius data.
+**Lean action.** None within Route E. Liflandsky's transform, convergence, tail, Mellin identity,
+and unconditional decay-to-RH implication are already formalized without importing the simple-zero
+hypothesis. Verjovsky's theorem is an exact connector/equivalence and does not narrow the first
+source premise. No external result continues the proved Plücker diagonal from `Re(s)>1` to critical
+Möbius data or supplies the genuinely nonlocal all-prime signed law required after the local and
+finite-aperture mechanisms close.
 
 ### Route F — all-prime Sonin transfer [RETIRED]
 
@@ -266,8 +273,9 @@ irreducibility. Multivariable reduction is also proved: an irreducible cofactor 
 that kills it without killing the remainder imply irreducibility, including unit-signed corner
 expansions. The reversed-variable rectangular Schur presentation now proves the height-one base,
 corner-minor recursion, and unit-tail evaluations separating the current determinant from the
-shifted smaller determinant. The final all-rectangle induction assembly and arithmetic source/Ward
-identification remain open.
+shifted smaller determinant. The induction is now assembled: over fields with decidable equality,
+every universal rectangular Schur determinant with `0 < m ≤ n` is irreducible. Generic
+irreducibility is closed; arithmetic specialization and source/Ward identification remain open.
 At operator level, the corpus now proves strong convergence of the generic resolvent-coordinate
 family for an injective self-adjoint bounded `B` with spectrum in `[0,M]`. It constructs neither the
 unbounded source operator nor the identification `B=(A-ρ)⁻¹`, so it does not validate Suzuki's
@@ -423,10 +431,17 @@ and locally analytic cylinder functions on the ambient function space are stable
 finite algebraic operations; neither is instantiated on the arithmetic character inverse limit.
 For each stipulated nonzero frequency, the Poisson mode is harmonic, has Dirichlet-to-Neumann value
 and energy `|μ|`, and carries the unitary boundary Hodge scalar `i·sign μ`. Abstract diagonal
-Poisson multipliers form contractions with semigroup and time-zero laws on `ℓ²`, but no arithmetic
-generator/domain or strong continuity theorem is supplied. Moreover, all positive-time heat-energy
-coordinates lose normalized high modes while Hilbert norm remains one, so that product topology is
-formally too weak for the desired completion.
+Poisson multipliers form contractions with semigroup and time-zero laws on `ℓ²`. On the same generic
+coefficient space, the boundary Hodge multiplier is now an isometry squaring to `-1`, while the
+real-frequency multiplication operator on its maximal square-summability domain is densely defined,
+diagonal on basis vectors, and self-adjoint. These close the abstract operator facts, not their
+arithmetic identification or strong-semigroup generator relation. Moreover, all positive-time
+heat-energy coordinates lose normalized high modes while Hilbert norm remains one, so that product
+topology is formally too weak for the desired completion. A Tate graph weight
+`L²(1+λ)` gives a scalar repair boundary: `log 2` uniformly controls prime periods, graph-summability
+implies unsmoothed-energy summability, and graph-normalized high modes retain limiting energy
+`L⁻² > 0` at `L=log p`. No completed arithmetic prime-sector graph space, nuclear estimate, or Xi
+spectral comparison is constructed.
 
 **External contribution.** Deninger's
 [dynamical systems paper](https://arxiv.org/abs/1807.06400) gives the Hausdorff suspension
@@ -439,23 +454,29 @@ arithmetic relevant complex, positive Hodge transport, or Xi spectrum inclusion.
 and the corpus's pro-log divisor exact sequence. This advances the geometric carrier from generic
 topology to the actual Deninger model; the arithmetic comparison and polarization remain open.
 
-### Route M — Gamma–Jacobi singular reader
+### Route M — Gamma–Jacobi singular reader [RETIRED]
 
-**Local contribution beyond located literature.** The singular normalization, head/residual
-coefficient recovery, rank-one Szegő tail transgression, adjacent prime-label reconstruction, and
-Blaschke boundary reader form a corpus-specific package with no located collision.
+**Disposition: RETIRED.** Inoue's
+[Meixner–Pollaczek theorem](https://arxiv.org/abs/1412.1220) controls partial sums of one fixed
+meromorphic target under its stated hypotheses; it does not identify Route M's changing finite
+source counterreaders as those partial sums. Romik's
+[quantitative Xi expansion](https://arxiv.org/abs/1902.06330) is likewise target-fed and
+Xi-specific. Finite-negative-index generalized Nevanlinna/Jacobi theory, as in
+[Derkach--Kovalyov](https://arxiv.org/abs/1606.03371), does not cover the corpus's unbounded negative
+index. Classical rank-one perturbation/cyclic-vector mechanisms already contain the generic
+simple-spectrum ancestry (for example [this rank-one perturbation treatment](https://arxiv.org/abs/1111.3095)); generic algebra saturation is not a novelty claim.
 
-**External contribution.** Inoue's
-[Meixner–Pollaczek expansion theorem](https://arxiv.org/abs/1412.1220) proves compact-uniform
-convergence on the maximal pole-free strip (Theorem 2.3) and Rouché convergence of zeros of partial
-sums (Proposition 4.1). Romik's [quantitative Xi expansion](https://arxiv.org/abs/1902.06330)
-supplies an explicit source-specialized convergence rate (Theorem 3.1). Neither identifies the
-corpus's completed Euler cyclic reader.
+**Local closure beyond located literature.** On every finite prime packet the literal completed
+Euler clock and one full-support Gamma--Jacobi Szegő aperture loss generate every matrix unit.
+Therefore no infinite-index Krein metric can preserve a proper finite cyclic anomaly algebra.
+Independently, the accumulated von Mangoldt counterreader has first symbol coefficient
+`-m₄/m₃`, a third-moment-weighted barycentre under source addition; multiplication of isolated edge
+symbols instead adds their coefficients and already fails on the first two literal edges. Thus
+finite inner convergence and a scalar outer factor do not repair the route.
 
-**Lean action.** Formalize Inoue Theorem 2.3 and Proposition 4.1, then the source-specialized
-inner/outer convergence statement needed by the local Gamma–Jacobi normalization. These results
-provide the missing analytic passage from finite Jacobi readers to a holomorphic limit; an
-additional proof must still show that the outer factor is Xi rather than only prime-node data.
+**Retained action.** Do not formalize Inoue/Romik as a Route M bridge. The formalized positive
+survivor is an edge/fibre-marked, nonmultiplicative barycentric bundle with a noncyclic pointed
+reader. It belongs to the co-Poisson fibre-orientation program, not a reopened Route M.
 
 ### Route N — Hedenmalm prime-normal estimate
 
@@ -545,8 +566,10 @@ Route F.
 **Local contribution beyond located literature.** Numerous exact algebraic, monodromy, recurrence,
 and dynamical encodings are formalized, including full centered monodromy after even and every
 positive odd radical base change, exact vertical digamma-jet leading constants, Gamma independence
-over finite digamma-jet fields, and nonlinear Herglotz compact-patch transversality. Their novelty is
-theorem-specific, but none is an independent RH source producer.
+over finite digamma-jet fields, and nonlinear Herglotz compact-patch transversality. The vertical-line
+inverse-power scale is now a graded multiplicative asymptotic algebra with decay, normalized leading-
+coefficient extraction, and uniqueness from a one-order remainder. Their novelty is theorem-specific,
+but none is an independent RH source producer.
 
 **External contribution.** Differential algebra, universality, monodromy, recurrence, and symbolic
 dynamics provide parent machinery. External RH encodings in these categories remain equivalences or
@@ -678,9 +701,7 @@ External results that genuinely strengthen a live route, in dependency order, ar
    positive/total positivity, improper tail, and Corollary 3.3's cutoff budget (Route B).
 4. Deninger Theorem 7.10, Theorem 10.2, and Proposition 11.7: concrete prime-fibre topology and
    divisor support (Route L).
-5. Inoue Theorem 2.3 and Proposition 4.1: compact-normal Jacobi expansion and zero convergence
-   (Route M).
-6. Suzuki 2022 Theorem 1.5: trace-class localized screw carrier and its Weil-polarization handoff
+5. Suzuki 2022 Theorem 1.5: trace-class localized screw carrier and its Weil-polarization handoff
    (Route C1).
 
 Suzuki's screw-moment Hankel criterion, full Li, Hardy, theta-at-infinity, and Romik's coefficient

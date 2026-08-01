@@ -78,12 +78,12 @@ theorem gammaJacobiTail_euler_generatedSubalgebra_eq_top
     Algebra.adjoin ℝ
         {gammaJacobiPrimeEulerClock prime,
           gammaJacobiPrimeTailApertureLoss prime K} = ⊤ := by
-  simpa only [gammaJacobiPrimeEulerClock, gammaJacobiPrimeTailApertureLoss] using
-    GaloisForLFunctions.HTGeometry.simpleClock_rankOne_generatedSubalgebra_eq_top
-      (fun i => Real.log (prime i : ℝ))
-      (fun i => gammaOddJacobiTailBoundaryReadout K (Real.log (prime i : ℝ)))
-      (gammaJacobiPrimeEulerLabel_injective prime hprime)
-      (fun i => gammaOddJacobiTailBoundaryReadout_prime_ne_zero (prime i) K)
+  unfold gammaJacobiPrimeEulerClock gammaJacobiPrimeTailApertureLoss
+  exact GaloisForLFunctions.HTGeometry.simpleClock_rankOne_generatedSubalgebra_eq_top
+    (fun i => Real.log (prime i : ℝ))
+    (fun i => gammaOddJacobiTailBoundaryReadout K (Real.log (prime i : ℝ)))
+    (gammaJacobiPrimeEulerLabel_injective prime hprime)
+    (fun i => gammaOddJacobiTailBoundaryReadout_prime_ne_zero (prime i) K)
 
 /-- First off-diagonal coefficient of every nonempty finite-aperture canonical counterreader is
 strictly negative. -/

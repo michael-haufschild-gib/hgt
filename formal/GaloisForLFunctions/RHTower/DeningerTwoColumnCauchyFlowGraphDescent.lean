@@ -180,6 +180,50 @@ theorem deningerGraphSeminorm_map_le
   rw [hintertwines]
   exact hc _
 
+/-- The linear map induced on common graph cores by a partial-operator intertwiner. -/
+def deningerGraphCoreMap
+    (h : DeningerGraphIntertwining P Q T) :
+    deningerGraphCore P →ₗ[ℂ] deningerGraphCore Q where
+  toFun x := ⟨T x, deningerGraphCore_map_mem_of_intertwining h x.2⟩
+  map_add' x y := by
+    apply Subtype.ext
+    exact map_add T x.1 y.1
+  map_smul' c x := by
+    apply Subtype.ext
+    exact map_smul T c x.1
+
+@[simp]
+theorem deningerGraphCoreMap_coe
+    (h : DeningerGraphIntertwining P Q T)
+    (x : deningerGraphCore P) :
+    ((deningerGraphCoreMap h x : deningerGraphCore Q) : F) = T (x : E) :=
+  rfl
+
+/-- Intertwining right inverses remain right inverses after restriction to graph cores. -/
+theorem deningerGraphCoreMap_comp_rightInverse
+    {S : F →ₗ[ℂ] E}
+    (hT : DeningerGraphIntertwining P Q T)
+    (hS : DeningerGraphIntertwining Q P S)
+    (hTS : T.comp S = LinearMap.id) :
+    (deningerGraphCoreMap hT).comp (deningerGraphCoreMap hS) =
+      LinearMap.id := by
+  apply LinearMap.ext
+  intro y
+  apply Subtype.ext
+  exact LinearMap.congr_fun hTS (y : F)
+
+/-- A split partial-operator intertwiner is surjective on the common graph core. -/
+theorem deningerGraphCoreMap_surjective_of_rightInverse
+    {S : F →ₗ[ℂ] E}
+    (hT : DeningerGraphIntertwining P Q T)
+    (hS : DeningerGraphIntertwining Q P S)
+    (hTS : T.comp S = LinearMap.id) :
+    Function.Surjective (deningerGraphCoreMap hT) := by
+  intro y
+  refine ⟨deningerGraphCoreMap hS y, ?_⟩
+  exact LinearMap.congr_fun
+    (deningerGraphCoreMap_comp_rightInverse hT hS hTS) y
+
 end GraphIntertwining
 
 end RHTower

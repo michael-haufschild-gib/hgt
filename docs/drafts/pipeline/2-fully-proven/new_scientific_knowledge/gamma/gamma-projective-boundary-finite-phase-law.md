@@ -3503,6 +3503,63 @@ Step 5 is the point of the design: the corpus's flat-elimination theorem replace
 Adamczewski–Dreyfus–Hardouin input as the injectivity of the expansion map, so no formal shift field
 is needed even in the general case.
 
+**Step 1 is built.**  `HTGeometry/LineAsymptoticScale.lean` defines the scale and proves it is a
+graded ring: `IsLineBigO σ k f` (`‖f(t)‖·‖σ+it‖^k` bounded) is closed under `add`, `sub`, `mul`
+(orders add), `const_mul`, `pow`, and `mono` (a smaller order absorbs a larger one); a positive order
+forces `f → 0`.  The two bridges to the corpus's `Tendsto` idiom are
+**`tendsto_pow_mul_of_isLineBigO`** — if `f − c·s^{-k}` is one order smaller then `s^k f(s) → c`,
+so an expansion coefficient *is* a residue — and its converse `isLineBigO_of_tendsto`.
+`isLineBigO_coeff_unique` records that the coefficient is determined.
+
+**Step 1 applied.**  `HTGeometry/PolygammaLineOrders.lean` reads the corpus's leading asymptotics
+through the scale: `isLineBigO_iteratedDeriv_succ_digamma` (`ψ^{(m+1)} = O(s^{-(m+1)})`),
+`isLineBigO_jet_pow`, and **`isLineBigO_jet_monomial`** — an arbitrary finite monomial
+`∏ (ψ^{(i+1)})^{e_i}` decays at its total weight `∑ (i+1)e_i`, which is the grading the datum order
+uses.  `#print axioms` clean.
+
+**Step 2 is built, in the form that avoids Euler–Maclaurin entirely.**  Two modules:
+
+- `HTGeometry/ShiftOrbitSumBounds.lean` — the analytic half.  Every orbit point `s+n` has modulus at
+  least the ordinate `t` *and* at least its own abscissa `σ+n` (both already in the corpus).
+  Splitting the orbit at `n ≈ t` — the near part contributes `≤ (t+1)/t³`, the far part telescopes
+  through the corpus's `hasSum_one_div_shift_mul_succ` — gives
+  **`tsum_norm_shift_inv_cube_le`** (`∑_n ‖s+n‖^{-3} ≤ 4/t²`) and
+  **`tsum_norm_shift_inv_pow_le`** (`∑_n ‖s+n‖^{-(q+3)} ≤ 4/t^{q+2}`).  Each is *one full order
+  better* than the trivial term bound, and that gain is what an expansion step consumes.
+- `HTGeometry/RisingFactorialTelescope.lean` — the algebraic half.  With
+  `risingProd s m = s(s+1)⋯(s+m−1)`, the identity
+  **`inv_risingProd_sub`** (`(risingProd s m)^{-1} − (risingProd (s+1) m)^{-1} = m·(risingProd s (m+1))^{-1}`)
+  telescopes to the closed form
+  **`hasSum_inv_risingProd`**: `∑_{n≥0} 1/((s+n)⋯(s+n+m)) = 1/((m+1)·s(s+1)⋯(s+m))` exactly, for
+  every `s` in the right half plane.  These reciprocal rising factorials are the exactly summable
+  basis: `(s+n)^{-k}` differs from the rising factorial of the same length by one order, so the
+  orbit bound converts the difference into a gained power of `t`.
+
+`#print axioms` clean for both.
+
+**The two halves now meet.**  `HTGeometry/PolygammaFactorialComparison.lean` runs one expansion step
+end to end:
+
+- `norm_le_norm_add_nat`, `norm_pow_le_norm_risingProd` — in the right half plane a shift to the
+  right never decreases the modulus, so `‖s(s+1)⋯(s+m−1)‖ ≥ ‖s‖^m`;
+- **`exists_norm_risingProd_sub_pow_le`** — the leading terms of `x(x+1)⋯(x+m)` and `x^{m+1}` cancel:
+  the difference is `O(‖x‖^m)`, by induction on `m` with an explicit constant;
+- **`exists_norm_inv_pow_sub_inv_risingProd_le`** — hence the reciprocals differ by *one order*:
+  `‖x^{-(m+2)} − (x⋯(x+m+1))^{-1}‖ ≤ C‖x‖^{-(m+3)}`;
+- **`exists_norm_polygammaSeries_sub_factorial_le`** — summing over the orbit and applying the orbit
+  bound at exponent `m+3`, the polygamma series and the (exactly summable) factorial series differ
+  by `C/t^{m+2}`;
+- **`exists_norm_iteratedDeriv_digamma_sub_rising_le`** — in the corpus's own normalization,
+
+  `‖ψ^{(m+1)}(σ+it) − (−1)^m (m+1)!/((m+1)·s(s+1)⋯(s+m))‖ ≤ C/t^{m+2}`,
+
+  a *quantitative* leading asymptotic: the jet equals an explicit rational function up to an error
+  one full order smaller than the jet itself.  The corpus previously had only the qualitative limit.
+
+`#print axioms` clean.  What remains is steps 3–6: iterating this step against itself to arbitrary
+depth (the remainder at each stage is again an explicit rational function summed over the orbit), the
+`log s` level for `ψ` itself, and the assembly.
+
 ## Gates
 
 - [x] one-point projective Gamma boundary stated

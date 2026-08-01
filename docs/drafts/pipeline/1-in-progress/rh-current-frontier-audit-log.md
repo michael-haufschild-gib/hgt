@@ -98,3 +98,11 @@ Write a review paper whose route claims are traceable to exact Lean declarations
 - 2026-08-01 — Deninger committed tranche adds unique degree-zero Čech gluing, finite character stages and contravariant restrictions, ambient analytic cylinder closure, exact Poisson mode harmonic/DN/energy/Hodge laws, and abstract `ℓ²` diagonal Poisson multiplier semigroup laws. None is identified with the arithmetic character inverse limit, generator/domain, or relevant complex.
 - 2026-08-01 — `DeningerPoissonHeatTopologyEscape` is a new exact no-go: every positive-time heat-energy coordinate loses normalized Tate high modes although ambient norm stays one. Paper now requires boundary/high-frequency control or a strictly stronger topology, rather than treating the positive-time energy family as a candidate Hilbert topology.
 - 2026-08-01 — `PrimeArchObservableCarrierQuantization` strengthens Route D reporter rigidity from injective reporters to null/countable fibres and proves positive Lebesgue measure of every forced thermal fibre on the theta-cusp source. Route D's remaining source object must be a plateau quantizer/global signed boundary defect; information-preserving deterministic reporters are closed.
+- 2026-08-01 — Route M retired after hostile source-level closure. Simple completed-Euler spectrum
+  plus the full-support rank-one Gamma--Jacobi aperture loss generates every finite matrix unit,
+  so infinite Krein index cannot create a proper cyclic anomaly algebra; existing positive opening
+  flux and fibre-parity no-gos then close the scalar reader. Separately, canonical counterreader
+  coefficient `-m₄/m₃` obeys weighted barycentric source aggregation and disagrees with edge-symbol
+  multiplication on literal von Mangoldt edges `2→3`, `3→4`. Paper proof, four Lean modules,
+  umbrellas, targeted capstone build, and standard-axiom audit are complete. Positive survivor is
+  edge/fibre-marked noncyclic pointed aggregation, redirected to co-Poisson fibre orientation.

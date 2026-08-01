@@ -363,3 +363,73 @@ mathlib has both ingredients (Weierstrass, and the bounded-continuous extensiona
 measures) but not the determinacy statement itself, so this is corpus-owned and reusable — the
 statement quantifies over an arbitrary finite measure on the interval, so it applies verbatim to a
 pushforward. The remaining paper-level item on this card is `(15)` alone.
+
+### Cross-reference — `(15)`'s convergence is now a corpus theorem
+
+Section 9 parks "the concrete operator expansion `(15)`" on a Lean representation of the
+restricted-Weil operator. Its own proof (Section 5) reduces `(15)` to
+
+```text
+[(I + eps A_a)^{-1} e^x - e^x] / eps = -(I + eps A_a)^{-1} A_a e^x -> -A_a e^x,
+```
+
+i.e. to the **strong** convergence `(I + eps A_a)^{-1} -> I` evaluated at the fixed vector
+`A_a e^x`. That statement is now unconditional in the corpus:
+
+- `RHTower/SuzukiStrongResolventLimit.lean` : `tendsto_neumannShiftFamily_id` —
+  `(I + eps A)^{-1} v -> v` strongly as `eps -> 0+`, for `A = rho + B^{-1}` with `B` the bounded,
+  injective, self-adjoint resolvent. No unbounded operator is formed anywhere in its proof.
+
+Instantiating at `v = A_a e^x` gives `(15)`'s limit directly. The remaining input is not analytic:
+it is that `A_a e^x` exists at all, i.e. `e^x ∈ range B` — a domain hypothesis about Suzuki's
+operator. The identity `[(I + eps A)^{-1} - I]/eps = -(I + eps A)^{-1} A` used to get there is pure
+algebra, and the bounded-operator expansion behind it is mathlib's `NormedRing.inverse_add`.
+
+Together with the moment-determinacy entry above, both of this card's parked items are now traced to
+naming the source rather than constructing the operator.
+
+### Lean progress — `(18)`'s derivative FORMALIZED
+
+Section 5 proves `(18)` from "the derivative of `i(1+w)/(1-w)` is `2i/(1-w)^2`". The corpus already
+had that transform as `herglotzOfCayley` but no derivative for it; it is now proved in
+`RHTower/SuzukiDonoghueHerglotzTransform.lean` [PROVED HERE], standard axioms
+`[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `hasDerivAt_herglotzOfCayley` : `HasDerivAt herglotzOfCayley (2 I / (1 - Θ)^2) Θ` for `Θ ≠ 1`.
+
+This is the factor converting a logarithmic derivative of the characteristic into a derivative of
+the Herglotz function, so with `(25)`/`(17)` it supplies `(18)` directly.
+
+### `(17)`/`(25)` need no new Lean — mathlib has the logarithmic derivative
+
+Section 5 obtains `(17)` by "logarithmic differentiation of the quotient in `(16)`", giving
+`dot Theta / Theta = -H_a(z)/F_0(z) + H_a(-z)/F_0(-z)`. That step is mathlib's, not ours:
+
+- `Mathlib/Analysis/Calculus/LogDeriv.lean` : `logDeriv_div (x) (hf : f x ≠ 0) (hg : g x ≠ 0) ...`
+  — the logarithmic derivative of a quotient is the difference of the logarithmic derivatives,
+  under exactly the nonvanishing hypotheses `(16)` already carries.
+
+So `(17)` reduces to supplying `F_0(z) ≠ 0` and `F_0(-z) ≠ 0` on the relevant set and applying it;
+with `hasDerivAt_herglotzOfCayley` above supplying `(18)`, the whole `(16)`--`(18)` block is
+mathlib plus one corpus lemma. Nothing here requires the operator.
+
+- `differentiableAt_herglotzOfCayley` : the transform is differentiable away from `Θ = 1` — the form
+  the chain rule needs when it is composed with a characteristic, as `(16)` does.
+  [PROVED HERE], standard axioms, builds clean.
+- `hasDerivAt_cayleyOfHerglotz`, `differentiableAt_cayleyOfHerglotz` : the same for the inverse
+  transform, `d/dm [(m - I)/(m + I)] = 2I/(m + I)^2` away from `m = -I`. Both directions of the
+  Cayley correspondence now carry derivatives, which is what `(16)`'s chain rule needs in either
+  orientation. [PROVED HERE], standard axioms, builds clean.
+- `hasDerivAt_herglotzOfCayley_comp` : the chain rule, `d/dz [m(Θ(z))] = 2I/(1 - Θ z)^2 * Θ'(z)` —
+  the exact form `(16)`--`(18)` apply, with `(17)`'s logarithmic derivative supplying `Θ'/Θ` from
+  mathlib's `logDeriv_div`. [PROVED HERE], standard axioms, builds clean.
+
+With this the `(16)`--`(18)` block needs no further analytic infrastructure: transform derivatives in
+both directions, the chain rule, and the quotient logarithmic derivative are all available. What
+remains is supplying the nonvanishing side conditions `F_0(±z) ≠ 0` from the card's own setup.
+- `hasDerivAt_cayleyOfHerglotz_comp` : the chain rule for the inverse direction, completing the
+  pair. [PROVED HERE], standard axioms, builds clean.
+
+The Cayley--Herglotz differential layer is now complete in both directions: derivative,
+differentiability, and chain rule for each of `herglotzOfCayley` and `cayleyOfHerglotz`. Any of
+`(16)`--`(18)`'s manipulations can be assembled from these plus mathlib's `logDeriv_div`.

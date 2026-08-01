@@ -31,6 +31,36 @@ namespace GaloisForLFunctions.RHTower
 
 /-! ## Endpoint projective transport -/
 
+/-- **Logarithmic derivative of a reflected quotient carrier.**  For a parameter family, the
+derivative of `c * f / g` is the carrier times the difference of logarithmic derivatives — the
+constant Cayley factor `c` passes straight through and cancels.
+
+This is `(11)`'s `partial_r Theta_r = Theta_r Xi_r` with the family's own parameter dependence taken
+as a hypothesis rather than assumed of Suzuki's source: instantiate `f = F_r(z)`, `g = F_r(-z)` and
+`c = (z - i)/(z + i)`. -/
+theorem hasDerivAt_reflectedQuotientCarrier {f g : ℝ → ℂ} {f' g' c : ℂ} {r : ℝ}
+    (hf : HasDerivAt f f' r) (hg : HasDerivAt g g' r)
+    (hfr : f r ≠ 0) (hgr : g r ≠ 0) :
+    HasDerivAt (fun s => c * f s / g s)
+      ((c * f r / g r) * (f' / f r - g' / g r)) r := by
+  have hcf : HasDerivAt (fun s => c * f s) (c * f') r := hf.const_mul c
+  have hdiv := hcf.div hg hgr
+  have hfun : (fun s => c * f s / g s) = (fun s => c * f s) / g := rfl
+  rw [hfun, show (c * f r / g r) * (f' / f r - g' / g r)
+      = (c * f' * g r - c * f r * g') / g r ^ 2 by field_simp]
+  exact hdiv
+
+/-- **`(10)` equals `(12)`.**  The reflected difference of logarithmic quotients is the negated
+cross-Wronskian over the reflected product.  This is an algebraic identity: it needs no
+differentiation, so the equality of the card's two forms of `Xi_r` is independent of how the source
+family depends on the shift. -/
+theorem suzukiReflectedQuotientDifference_eq_crossWronskian {F G : ℂ → ℂ} {z : ℂ}
+    (hFz : F z ≠ 0) (hFnz : F (-z) ≠ 0) :
+    G (-z) / F (-z) - G z / F z
+      = -((G z * F (-z) - F z * G (-z)) / (F z * F (-z))) := by
+  field_simp
+  ring
+
 /-- Reflected cross-ratio transport from source transform `F₀` to source transform `F₁`. -/
 def suzukiProjectiveSourceTransport (F₁ F₀ : ℂ → ℂ) (z : ℂ) : ℂ :=
   (F₁ z * F₀ (-z)) / (F₁ (-z) * F₀ z)

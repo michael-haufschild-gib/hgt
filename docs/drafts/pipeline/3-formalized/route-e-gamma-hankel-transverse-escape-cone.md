@@ -1,8 +1,8 @@
 # Route E Gamma--Hankel transverse escape cone
 
 - **ID:** `route-e-gamma-hankel-transverse-escape-cone`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / POSITIVE OBSTRUCTION SURVIVOR
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / POSITIVE OBSTRUCTION SURVIVOR
 - **Route:** E — additive Möbius / Gamma--Hankel covariance
 - **Opened:** 2026-08-01
 - **Computation policy:** no numerical computation; symbolic proof only
@@ -166,11 +166,36 @@ on the right-zero abscissa; cofinal bounded-return lines squeeze that abscissa t
 6. **Upper endpoint:** `sigma=1/2+Delta` is excluded because supremum need not be attained.
 7. **Potential `rho=1`:** open-unit-strip support gives `Re rho<1`, excluding Euler pole.
 
+## Lean formalization
+
+Module: `GaloisForLFunctions.RHTower.MobiusGammaHankelTransverseEscapeCone`.
+
+Proof map:
+
+- `MobiusGammaHankelTransverseEscapeCone` freezes the maximal strict open cone.
+- `mobiusGammaHankelTransverseEscapeCone_of_nonempty_xiRightZeroCopy` extracts a Xi-divisor copy
+  below the supremum and invokes the existing one-zero escape theorem.
+- `not_riemannHypothesis_implies_mobiusGammaHankelTransverseEscapeCone` proves `(E-EC)`.
+- `xiRightTransverseSup_le_sub_half_of_frequently_bounded_mobiusGammaHankel` proves quantitative
+  contrapositive `(E-EC2)`, including the empty-divisor branch.
+
+Verification on 2026-08-01:
+
+- `lake env lean GaloisForLFunctions/RHTower/MobiusGammaHankelTransverseEscapeCone.lean` — pass.
+- `lake build GaloisForLFunctions.RHTower.MobiusGammaHankelTransverseEscapeCone` — pass,
+  `9008/9008` jobs.
+- Load-bearing `#print axioms` audit — only `propext`, `Classical.choice`, and `Quot.sound`.
+- Module imported by `GaloisForLFunctions.RHTower` and present in generated API index.
+- Repository non-build lint reached this module without Route E errors. Global command exited on
+  four unrelated un-wired concurrent modules and stale generated indexes; no out-of-scope repair
+  was made.
+- No `sorry`, `admit`, `axiom`, `opaque`, `unsafe`, or computational certificate is used.
+
 ## Gates
 
 - [x] 0 -> 1 in-progress: exact statement, falsifier, hostile boundary audit
 - [x] 1 -> 2 fully-proven: dependency-closed paper proof
-- [ ] 2 -> 3 formalized: unconditional Lean theorem, umbrella wiring, lint and axiom audit
+- [x] 2 -> 3 formalized: unconditional Lean theorem, umbrella wiring, targeted build and axiom audit
 - [ ] 3 -> 4 publication-ready
 
 ## Log
@@ -178,3 +203,5 @@ on the right-zero abscissa; cofinal bounded-return lines squeeze that abscissa t
 - 2026-08-01 — maximal transverse escape-cone claim frozen; Lean work blocked pending paper closure.
 - 2026-08-01 — supremum-extraction and open-strip proof closed without RH, simplicity, or
   computation hypotheses.
+- 2026-08-01 — formalized unconditionally, wired into umbrella, targeted module build and
+  foundational-only axiom audit passed; promoted to Stage 3.

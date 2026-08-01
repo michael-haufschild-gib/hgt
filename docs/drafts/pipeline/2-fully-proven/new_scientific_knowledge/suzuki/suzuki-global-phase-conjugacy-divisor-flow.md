@@ -446,3 +446,26 @@ Added to `RHTower/SuzukiGlobalPhaseConjugacy.lean` [PROVED HERE], standard axiom
 
 Stated with the cell width general rather than fixed at `2 pi`, since the labels `theta + pi + 2 pi k`
 of Section 2 make every label gap a cell of the same kind.
+
+### Cross-reference — the "spectral theorem" half of the parked item is corpus-owned
+
+The Lean target parks "the concrete unbounded Suzuki operator, spectral theorem, and global
+construction of `phi_r`". Of those three, the **spectral theorem** is no longer missing for the
+object this card needs it for. For a compact resolvent the required description — that the spectrum
+away from zero is a finite set of eigenvalues — is unconditional in the corpus:
+
+- `HTGeometry/CompactOperatorDiscreteSpectrum.lean` : `finite_setOf_hasEigenvalue_norm_ge`,
+  `countable_setOf_hasEigenvalue`, `finite_setOf_mem_spectrum_norm_ge`,
+  `countable_spectrum_of_isCompactOperator` — discreteness of the nonzero spectrum of a compact
+  symmetric operator, proved by orthogonality rather than the Riesz lemma.
+- `RHTower/SuzukiFiniteMorseResolventOperatorLift.lean` :
+  `finite_setOf_negativeLevel_of_isCompactOperator` — the same statement in this programme's own
+  resolvent coordinates, so the `[Fintype]` on labelled levels is a **consequence** of compactness
+  rather than a hypothesis.
+
+mathlib still has no spectral theorem for *unbounded* self-adjoint operators, but this card does not
+need one: its levels are read through the bounded resolvent. What genuinely remains is the global
+construction of `phi_r` from the source — naming the operator, not proving a spectral theorem.
+
+This completes the sweep of the five cards sharing the "unbounded Suzuki operator" blocker; see
+`suzuki-neumann-dominated-shift-cone-obstruction.md` for the strong-limit machinery they share.

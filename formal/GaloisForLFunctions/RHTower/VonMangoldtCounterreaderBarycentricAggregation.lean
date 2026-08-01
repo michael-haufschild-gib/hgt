@@ -29,7 +29,6 @@ theorem counterreaderFirstSymbolCoefficient_eq
     HTGeometry.hankelToeplitzCounterweight_succ]
   simp only [Finset.univ_eq_empty, Finset.sum_empty, mul_zero, add_zero]
   field_simp
-  ring
 
 /-- Accumulated moment sequence of a finite marked edge packet. -/
 def finiteEdgeAccumulatedMoment
@@ -55,11 +54,12 @@ theorem counterreaderFirstSymbolCoefficient_finiteEdgeAccumulatedMoment
         -moment e 4 / finiteEdgeAccumulatedMoment edges moment 3 := by
     intro e he
     rw [counterreaderFirstSymbolCoefficient_eq _ (hedge3 e he)]
-    field_simp
-    ring
-  simp_rw [hterm]
+    field_simp [hedge3 e he]
+  rw [Finset.sum_congr rfl hterm]
+  simp only [finiteEdgeAccumulatedMoment]
   rw [← Finset.sum_div]
-  simp [finiteEdgeAccumulatedMoment]
+  congr 1
+  exact (Finset.sum_neg_distrib (fun e => moment e 4)).symm
 
 /-- For two strictly positive edge packets, the accumulated first coefficient is not the first
 coefficient of their symbol product. -/
@@ -73,7 +73,6 @@ theorem twoEdgeCounterreaderFirstCoefficient_ne_product
   rw [counterreaderFirstSymbolCoefficient_eq _ (ne_of_gt (add_pos h13 h23)),
     counterreaderFirstSymbolCoefficient_eq _ (ne_of_gt h13),
     counterreaderFirstSymbolCoefficient_eq _ (ne_of_gt h23)]
-  simp only
   intro h
   have hcross : 0 < moment₁ 4 * moment₂ 3 ^ 2 + moment₂ 4 * moment₁ 3 ^ 2 :=
     add_pos (mul_pos h14 (sq_pos_of_pos h23)) (mul_pos h24 (sq_pos_of_pos h13))
@@ -128,7 +127,14 @@ theorem vonMangoldt_twoEdgeCounterreaderFirstCoefficient_ne_product :
     (vonMangoldtSuccessorRelativeMomentTerm_two_pos 4 (by omega))
     (vonMangoldtSuccessorRelativeMomentTerm_three_pos 3 (by omega))
     (vonMangoldtSuccessorRelativeMomentTerm_three_pos 4 (by omega))
-  simpa only [finiteVonMangoldtSuccessorRelativeMoment_two_eq_edges] using h
+  have hmoment :
+      finiteVonMangoldtSuccessorRelativeMoment 2 =
+        fun q => vonMangoldtSuccessorRelativeMomentTerm q 2 +
+          vonMangoldtSuccessorRelativeMomentTerm q 3 := by
+    funext q
+    exact finiteVonMangoldtSuccessorRelativeMoment_two_eq_edges q
+  rw [hmoment]
+  exact h
 
 end
 

@@ -1,8 +1,8 @@
 # Route E finite-prime aperture source-consumption law
 
 - **ID:** `route-e-finite-prime-aperture-source-consumption`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / TERMINAL ROUTE-E SOURCE-CLASSIFICATION
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / FINITE-APERTURE SOURCE-CLASSIFICATION
 - **Route:** E — additive Möbius / Gamma--Hankel covariance
 - **Opened:** 2026-08-01
 - **Computation policy:** no numerical computation; symbolic proof only
@@ -194,11 +194,39 @@ RH consequence. No Littlewood converse is used.
 7. **Larger cofinal heads:** primes above `N` cannot divide a positive integer at most `N`, so they
    are invisible at resolution `N`.
 
+## Lean formalization
+
+Module:
+`GaloisForLFunctions.RHTower.MobiusFinitePrimeApertureSourceConsumption`.
+
+Proof map:
+
+- `finitePrimeApertureMobiusCoefficient_eq_of_covers` proves coefficient recovery through `N`.
+- `finitePrimeApertureMobiusMertensPartialSum_eq_of_covers` lifts recovery to every partial sum
+  through `N`.
+- `finitePrimeApertureMobiusMertensSelfConvolution_eq_of_covers` proves `(E-SC1)`.
+- `canonicalFinitePrimeApertureMobiusMertensSelfConvolution_eq_secondCesaro` proves `(E-SC2)`.
+- `canonicalFinitePrimeApertureSecondCesaroSubpowerUpperBound_iff` proves source identity `(E-SC3)`.
+- `canonicalFinitePrimeApertureSecondCesaroSubpowerUpperBound_implies_riemannHypothesis` supplies
+  the unconditional RH consumer.
+
+Verification on 2026-08-01:
+
+- `lake env lean GaloisForLFunctions/RHTower/MobiusFinitePrimeApertureSourceConsumption.lean` — pass.
+- `lake build GaloisForLFunctions.RHTower.MobiusFinitePrimeApertureSourceConsumption` — pass,
+  `8962/8962` jobs.
+- Load-bearing `#print axioms` audit — only `propext`, `Classical.choice`, and `Quot.sound`.
+- Module imported by `GaloisForLFunctions.RHTower` and present in generated API index.
+- Repository non-build lint reached this module without Route E errors. Global command exited on
+  four unrelated un-wired concurrent modules and stale generated indexes; no out-of-scope repair
+  was made.
+- No `sorry`, `admit`, `axiom`, `opaque`, `unsafe`, or computational certificate is used.
+
 ## Gates
 
 - [x] 0 -> 1 in-progress: exact source-pure statement, falsifier, novelty audit, hostile ladder
 - [x] 1 -> 2 fully-proven: dependency-closed paper proof
-- [ ] 2 -> 3 formalized: unconditional Lean theorem, umbrella wiring, lint and axiom audit
+- [x] 2 -> 3 formalized: unconditional Lean theorem, umbrella wiring, targeted build and axiom audit
 - [ ] 3 -> 4 publication-ready
 
 ## Log
@@ -206,3 +234,5 @@ RH consequence. No Littlewood converse is used.
 - 2026-08-01 — exact finite-aperture source-consumption claim frozen after internal and external
   audits; Lean work blocked pending paper closure.
 - 2026-08-01 — dependency-closed proof completed; all finite and cutoff edge cases discharged.
+- 2026-08-01 — formalized unconditionally, wired into umbrella, targeted module build and
+  foundational-only axiom audit passed; promoted to Stage 3.

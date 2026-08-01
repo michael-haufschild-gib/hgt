@@ -294,11 +294,50 @@ Note on overlap: `DiagonalEllTwoOperator.lean` already had the bounded diagonal 
 index type `ℕ`.  `DeningerMultiplier.lean` covers an arbitrary index type, which is what the Kummer
 character lattice needs, but the `ℕ`-indexed construction was not new.
 
+### The absolute value `(2)` and the polar decomposition landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerAbsGenerator.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+For a diagonal operator the absolute value needs no general Borel calculus: it is the diagonal of
+the absolute frequencies, and the defining relations are proved directly.
+
+- `deningerFreqSign_mul_abs'` — `sgn μ · |μ| = μ` at every frequency, including zero.
+- `deningerAbsGenerator ℓ = maximalRealDiagonal |ℓ|` — **`|D_ℓ|`**.
+- `deningerAbsGenerator_domain_eq` — it has **the same maximal domain** as the generator, because
+  the coordinates have the same moduli.
+- `deningerAbsGenerator_apply_basis` — **`(2)`**: `|D_ℓ| χ_a = |ℓ(a)| χ_a`.
+- `deningerAbsGenerator_isSelfAdjoint` — self-adjoint on that domain.
+- `deningerSignOperator ℓ` and `deningerPolarDecomposition` — **`sgn(D_ℓ) |D_ℓ| = D_ℓ`**: the sign
+  multiplier applied to the absolute value returns the generator, coordinate by coordinate,
+  including at zero frequency.  This is what ties `(1)`, `(2)` and `(7)` together.
+
+### The power correspondence `(8)`--`(11)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerIndexIsometry.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+The pullback `F_q^*` sends the character of `a` to the character of `q a`, so on coefficients it is
+transport along an injective index map, extended by zero off the image.
+
+- `deningerIndexPush`, `deningerIndexPush_apply_map`, `_apply_notMem`, `_support` — the transported
+  family and its two defining properties.
+- `deningerIndexIsometry` — **it is an isometry**: the coefficient sums agree because the map is
+  injective and the extension vanishes off its range.  This is `(11)` at the level of the
+  coefficient space: an isometric embedding at a finite integral lattice stage, unitary exactly
+  when multiplication by `q` is bijective on the index.
+- `deningerIndexIsometry_diagonal` — **`(8)`**: the isometry intertwines the diagonal multipliers,
+  pulling the symbol back along the index map.  Applied to the sign family this is
+  `sgn(D_ℓ) F_q^* = F_q^* sgn(D_ℓ)`; applied to the Poisson family it is `(9)`.
+
 ### Remaining
 
-Only `|D_ℓ|` as the Borel functional calculus of the generator.  The card's uses of it are all
-formalized directly: `(5)` and `(6)` per mode, the semigroup `e^{-r|D_ℓ|}` as a contraction
-(`deningerPoissonSemigroup`), and `sgn(D_ℓ)` as the isometry `(7)`
-(`deningerBoundaryHodgeOperator`).  What is absent is the identification of those with the
-functional calculus of the self-adjoint operator, for which mathlib has no Borel calculus for
-unbounded operators.
+Nothing that the card proves.  `(1)`--`(11)` are formalized: the generator and its self-adjointness
+on the maximal domain, its absolute value and sign with the polar decomposition, the Poisson
+semigroup as a contraction, harmonicity, the boundary value, the Dirichlet-to-Neumann operator, the
+Dirichlet energy, the boundary Hodge operator as an isometry squaring to `-1`, and the power
+correspondence as an isometry intertwining the diagonal operators.
+
+What is *not* formalized is the sentence identifying `|D_ℓ|` and `sgn(D_ℓ)` with the Borel
+functional calculus of `D_ℓ`, since mathlib has no Borel calculus for unbounded operators.  The
+card never uses that identification: every use is of the diagonal description, which is proved.

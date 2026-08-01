@@ -628,3 +628,146 @@ level.  No new Lean claim is attached to this bridge card.
   The two matrix criteria now available differ exactly in what they ask of the minor — irreducible
   with a separating point, or a unit with nothing further — and between them they cover both ends of
   the corner recursion.
+
+- 2026-08-01 — **The shift-one rectangles are irreducible at every height.**
+  `irreducible_det_schur_shift_one` in `SchurSectionIrreducible.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`: `tau_(m,1)` is irreducible for every `m ≥ 1`, through
+  the unit-minor criterion — its corner minor is the shift-zero section, whose determinant is one.
+
+  This is the first family proved entirely **outside** the range `m ≤ n` of the main theorem, and it
+  is the far end of the corner recursion for every rectangle with `n < m`.
+
+  Two hypotheses were also removed as unnecessary while doing this: the minor identity
+  `submatrix_rectangularSchurToeplitz` and its determinant forms never needed the shift to be
+  positive, only a row to exist, so they now apply at shift zero — which is exactly what the
+  shift-one case requires of them.
+
+- 2026-08-01 — **Analysis of the remaining strip `2 ≤ n < m`, and the route to close it.**
+  No new theorem this entry; the work was to determine what the strip actually needs.
+
+  *Why the corner recursion alone does not reach it.*  Expanding along the first column isolates the
+  top coefficient `h_(n+m-1)` and produces the `(m-1,n-1)` cofactor, decreasing both parameters, so
+  the ratio `n/m` never improves.  Expanding along the **last** column would decrease only `m` — which
+  is what the strip needs — but the largest index in that column is `n`, so the expansion is not
+  linear in a variable absent from the minor and neither corner criterion applies.  The recursion
+  cannot be redirected.
+
+  *What a separating point must do.*  At each step one needs a specialisation with
+  `phi(tau_(m-1,n-1)) = 0` and `psi(tau_(m,n)) ≠ 0`.  Under the convention `h_0 = 1` a point of the
+  form `h_k = [k = j]` makes the section a sum of two band matrices, with nonzero entries where
+  `i - r ∈ {n - j, n}`; its determinant is a signed count of permutations tiled by those two steps.
+  Choosing `j` to make that count vanish for `(m-1,n-1)` but not for `(m,n)` is a lattice condition on
+  `(m, n, j)` and is a genuine combinatorial question, not bookkeeping.
+
+  *The route that avoids it.*  The dual Jacobi--Trudi identity gives
+  `det(h_(n-i+j))_(m×m) = det(e_(m-i+j))_(n×n)`, and the passage from the `h` generators to the `e`
+  generators is the triangular substitution determined by `sum_(i+j=k) (-1)^i e_i h_j = 0`, hence an
+  automorphism of the polynomial ring.  Composing the two exchanges the roles of `m` and `n` without
+  changing irreducibility, so the proved range `m ≤ n` would cover everything.  Three pieces are
+  needed: the recursive definition of the `e` family, that a triangular substitution is an
+  automorphism, and the dual identity itself.
+
+  Coverage as it stands: `m ≤ n` by `irreducible_det_schur_of_le`, and `n = 1` at every height by
+  `irreducible_det_schur_shift_one`.
+
+- 2026-08-01 — **First piece of the dual route: the `e` family and its triangularity.**
+  `formal/GaloisForLFunctions/HTGeometry/DualSchurVariables.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `dualVar` defines the elementary coefficients from the complete homogeneous ones by the alternating
+  convolution `e_(k+1) = sum_(i≤k) (-1)^i h_(i+1) e_(k-i)`, by well-founded recursion;
+  `degreeOf_dualVar` — **each dual coefficient involves only the coefficients of index at most its
+  own**, by strong induction: in the defining sum every factor is either a coefficient of index at
+  most `k+1` or an earlier dual coefficient.
+
+  That is the triangularity the substitution `h ↦ e` needs to be an automorphism, which is the second
+  of the three pieces of the route recorded in the previous entry.  The third is the dual
+  Jacobi--Trudi identity itself.
+
+- 2026-08-01 — **The convolution identity relating the two families.**
+  `DualSchurVariables.lean`, axioms `[propext, Classical.choice, Quot.sound]`:
+  `dualVar_succ_reflect` — the defining recursion read in the reversed order of summation;
+  `sum_dualVar_schurVar` — hence the alternating convolution vanishes above degree zero,
+
+  ```text
+  sum_(i ≤ k+1) (-1)^i e_i h_(k+1-i) = 0.
+  ```
+
+  This is the symmetric form of the relation between the two families: it determines `e` from `h` and
+  equally `h` from `e`, which is what makes the substitution an involution rather than merely
+  triangular.  With `degreeOf_dualVar` from the previous entry, the second piece of the dual route —
+  that `h ↦ e` is an automorphism — now has both of its inputs.
+
+- 2026-08-01 — **The relation is symmetric in the two families.**
+  `schurVar_succ_eq_sum` in `DualSchurVariables.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`: solving the convolution for the complete homogeneous
+  coefficient gives
+
+  ```text
+  h_(k+1) = sum_(i ≤ k) (-1)^i e_(i+1) h_(k-i),
+  ```
+
+  which is the **same shape** as the definition of the dual family with the two exchanged.  So the
+  substitution sending each coefficient to the corresponding dual one carries the defining recursion
+  to itself, and its square fixes every generator — the involutivity that makes it an automorphism,
+  by strong induction on the index.
+
+  That is the last identity needed for the second piece of the dual route; what remains of that piece
+  is to package the substitution as an algebra map and run the induction.
+
+- 2026-08-01 — **The exchange of the two families is an automorphism.**
+  `DualSchurVariables.lean`, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `dualSub` — the substitution sending each coefficient to the corresponding dual one;
+  `dualSub_schurVar` — it sends `h_k` to `e_k` for `k ≤ L`;
+  `dualSub_dualVar` — and sends `e_k` back to `h_k`, by strong induction on the two recursions, which
+  are the same with the families exchanged;
+  `dualSub_comp_dualSub` — hence it squares to the identity; `dualEquiv` — so it is an algebra
+  **automorphism**; `irreducible_dualSub_iff` — and irreducibility is preserved by it.
+
+  That completes the second of the three pieces of the dual route.  Only the dual Jacobi--Trudi
+  identity
+
+  ```text
+  det(h_(n-i+j))_(m×m) = det(e_(m-i+j))_(n×n)
+  ```
+
+  now stands between the proved range `m ≤ n` and the full statement: with it, the automorphism above
+  carries the `(m,n)` section to the `(n,m)` section without changing irreducibility, and the two
+  ranges collapse into one.
+
+- 2026-08-01 — **The two families as triangular matrices.**
+  `formal/GaloisForLFunctions/HTGeometry/DualTriangularInverse.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `schurTri` and `dualTri` arrange the complete homogeneous coefficients and the signed dual ones in
+  lower triangular matrices; `schurTri_diag`, `dualTri_diag` — both have unit diagonal;
+  `det_schurTri`, `det_dualTri` — hence both have determinant one, so both are invertible over the
+  coefficient ring; `schurTri_mul_dualTri_above` and `schurTri_mul_dualTri_diag` — their product is
+  unitriangular.
+
+  The remaining step to `schurTri * dualTri = 1` is the off-diagonal entry below the diagonal, which
+  is the convolution identity after reindexing the sum over the interval between the two indices —
+  the identity is proved (`sum_dualVar_schurVar`), the reindexing is what is left.
+
+  That product identity is the linear-algebraic input to the dual Jacobi--Trudi duality: with the two
+  matrices inverse, Jacobi's complementary-minor formula exchanges an `m × m` minor of one for an
+  `n × n` minor of the other, which is the identity the route needs.
+
+- 2026-08-01 — **The two triangular matrices are inverse.**
+  `schurTri_mul_dualTri` in `DualTriangularInverse.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  schurTri * dualTri = 1.
+  ```
+
+  The below-diagonal entries are the alternating convolution reindexed over the interval between the
+  two indices — `Fin.sum_univ_eq_sum_range` to leave `Fin`, `Finset.sum_subset` to restrict to that
+  interval, and `Finset.sum_Ico_eq_sum_range` to shift it to a range — after which
+  `sum_dualVar_schurVar` closes it.  The diagonal and above-diagonal entries were already proved.
+
+  This is the linear-algebraic form of the relation between the two families and the input to
+  Jacobi's complementary-minor formula, which is what would exchange an `m × m` minor of one matrix
+  for an `n × n` minor of the other and so give the dual Jacobi--Trudi identity.  That formula is
+  absent from mathlib and is the one remaining piece of the route.

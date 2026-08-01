@@ -1,7 +1,7 @@
 # Route D continuous theta-reporter no-go
 
 - **ID:** `route-d-continuous-theta-reporter-no-go`
-- **Status:** fully proven on paper — Stage 2, awaiting Lean formalization
+- **Status:** formalized unconditionally in Lean — Stage 3
 - **Route:** D — prime–archimedean Hankel sign and reconstruction
 - **Claim class:** `[BRIDGE]`; Route D specialization of classical topology and measure theory
 - **Novelty:** not claimed
@@ -16,6 +16,10 @@ Let
 tau = thetaCuspContinuousSourceMeasure
 a_j = xiThermalNode (xiThermalEnumeration j).
 ```
+
+Here `tau` is the positive theta-cusp density multiplied by
+`normalizedPrimeArchMoment(0) / thetaCuspRawEvenMoment(0)`. Its total mass is exactly the required
+zeroth moment, so the theorem is not a degree-zero normalization contradiction.
 
 `[THEOREM]` If `node : R -> R` is measurable and continuous on `(0,infinity)`, then
 
@@ -32,6 +36,8 @@ existing unconditional Route D witness implications.
 - `[CORPUS]` `xiThermalNode_pos` proves `a_j > 0` for every `j`.
 - `[CORPUS]` `thetaCuspFullSource_pos_of_pos` proves the theta density is strictly positive on the
   source domain `(0,infinity)`.
+- `[CORPUS]` `thetaCuspContinuousSourceMeasure_univ` proves the calibrated source has total mass
+  exactly `ofReal(normalizedPrimeArchMoment 0)`.
 - `[CORPUS]` `IsPrimeArchObservableWitness.pushforward_eq_primeArchXiCompactMomentMeasure` forces
   every complete reporter pushforward to equal the canonical atomic Xi measure.
 - `[CORPUS]` `IsPrimeArchObservableWitness.measure_levelSet_xiThermalNode_pos` forces every
@@ -76,13 +82,34 @@ No corpus theorem closes continuity on the connected positive theta domain.
    the already formalized unrestricted carrier theorem, which itself derives RH internally.
 6. **Can discontinuity close Route D?** No. Target-fed step quantizers show that discontinuity is
    necessary but carries no source content by itself.
+7. **Could this theorem be vacuous because the theta measure already has the wrong total mass?**
+   The initially unscaled source did have that defect. It was rejected. The frozen source now has
+   strictly positive calibration and exact required zeroth mass, while retaining the same null
+   sets and full support. The remaining contradiction genuinely uses continuity and atomic carrier
+   geometry.
 
 **Verdict:** `BRIDGE`. The generic theorem is classical; the exact Route D consequence survives
 hostile attack and removes continuous theta observables from the producer search.
 
 ## Dependency-closed paper proof
 
-Put `a_j = xiThermalNode (xiThermalEnumeration j)` and
+First define
+
+```text
+c = normalizedPrimeArchMoment(0) / thetaCuspRawEvenMoment(0),
+tau = (volume restricted to (0,infinity))
+        with density ofReal(c * 2 * thetaCuspFullSource).
+```
+
+Positivity of both moments gives `c > 0`. The theta raw-moment integral and the definition of `c`
+give
+
+```text
+tau(univ) = ofReal(normalizedPrimeArchMoment(0)).                 (0)
+```
+
+Thus the witness's `k=0` equation is compatible with the source. Put
+`a_j = xiThermalNode (xiThermalEnumeration j)` and
 
 ```text
 K = {0} union {a_j : j in N}.
@@ -101,16 +128,17 @@ K = {0} union {a_j : j in N}.
 
    Every summand is carried by `K`, hence the entire canonical measure assigns mass zero to
    `K^c`.
-3. The theta source is
+3. The calibrated theta source is
 
    ```text
    tau = (volume restricted to (0,infinity))
-           with density ofReal(2 * thetaCuspFullSource).
+           with density ofReal(c * 2 * thetaCuspFullSource).
    ```
 
-   Its density is measurable and strictly positive on `(0,infinity)`. Consequently `tau` and
-   restricted Lebesgue measure have the same null sets there. Every nonempty open subset of
-   `(0,infinity)` therefore has positive `tau`-mass, and `tau` is carried by `(0,infinity)`.
+   Its density is measurable and strictly positive on `(0,infinity)` because `c > 0`.
+   Consequently `tau` and restricted Lebesgue measure have the same null sets there. Every
+   nonempty open subset of `(0,infinity)` therefore has positive `tau`-mass, and `tau` is carried
+   by `(0,infinity)`.
 4. Suppose `h : IsPrimeArchObservableWitness tau node`. Existing observable rigidity gives
 
    ```text
@@ -167,13 +195,13 @@ by completed prime--Gamma structure. The mathematical delta is not “use a disc
 is that any proposed continuous spectral coordinate, continuous phase observable, or continuous
 theta potential is now categorically excluded as the Route D producer.
 
-## Formal target after Stage 2
+## Lean formalization
 
 ```text
 GaloisForLFunctions.RHTower.PrimeArchContinuousThetaReporterNoGo
 ```
 
-Planned public surface:
+Formalized public surface:
 
 ```text
 tendsto_xiThermalNode_enumeration_zero
@@ -183,6 +211,7 @@ xiThermalCompactNodeSet_isCompact
 ae_primeArchXiCompactMomentMeasure_mem_xiThermalCompactNodeSet
 volume_restrict_Ioi_absolutelyContinuous_thetaCuspContinuousSourceMeasure
 ae_thetaCuspContinuousSourceMeasure_mem_Ioi
+thetaCuspContinuousSourceMeasure_univ
 countable_isPreconnected_subsingleton_real
 not_isPrimeArchObservableWitness_thetaCusp_of_continuousOn_Ioi
 ```
@@ -198,4 +227,13 @@ not_isPrimeArchObservableWitness_thetaCusp_of_continuousOn_Ioi
 - [x] non-trivial positive survivor recorded
 - [x] final hostile reread
 - [x] Stage 2 promotion
-- [ ] exact Lean formalization
+- [x] exact unconditional Lean formalization
+- [x] theorem-area umbrella import
+- [x] `lake env lean GaloisForLFunctions/RHTower/PrimeArchContinuousThetaReporterNoGo.lean`
+- [x] leaf-only `lake build GaloisForLFunctions.RHTower.PrimeArchContinuousThetaReporterNoGo`
+- [x] axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
+
+The non-build repository lint scanned this module with no proof-debt or wiring error. Its sole
+global failure was the unrelated concurrent module
+`GaloisForLFunctions.RHTower.BVCoPoissonCompactSeedRigidity`, which was not yet imported by the
+shared `RHTower` umbrella. No full build was run.

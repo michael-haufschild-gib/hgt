@@ -224,3 +224,74 @@ faithfulness on Meyer generalized spectral blocks.
   relative energy quotient, proved the trace isometry, Dirichlet
   decomposition, Lagrangian Calderón graph, cup formula, and positive
   odd Hodge identity.
+
+## Lean status
+
+### The Calderón graph Lagrangian theorem landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerCalderonGraph.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerGraph_symplectic_iff` — mathlib's adjoint of a submodule of Cauchy data *is* the Green
+  symplectic orthogonal `(9)`: membership says exactly `⟪ν, φ'⟫ - ⟪φ, ν'⟫ = 0` against every element
+  of the submodule.
+- `deningerCalderonGraph_lagrangian` — **the graph of a densely defined self-adjoint operator is
+  Lagrangian**: its symplectic orthogonal is the graph of the adjoint, which is the operator itself.
+  Isotropy and maximality are both contained in that equality, exactly as the card's proof argues.
+- `deningerAbsGenerator_graph_lagrangian` — **`DAC_KUMMER_CALDERON_GRAPH_LAGRANGIAN`**: the Cauchy
+  data of the Poisson extension are the graph of `A_ℓ = |D_ℓ|`, which is densely defined and
+  self-adjoint, so the graph is Lagrangian.
+- `deningerPhaseGenerator_graph_lagrangian` — the same for the generator itself.
+
+### The completing-the-square identity `(6)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerEnergyIdentity.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerNormSq_hasDerivAt` — **the derivative of the squared modulus** along a differentiable
+  path is `2 Re(ū u')`, obtained by differentiating the real and imaginary parts through the
+  coordinate projections.
+- `deningerEnergy_expand` — the pointwise expansion `‖a + m b‖² = ‖a‖² + 2m Re(b̄ a) + m²‖b‖²`,
+  which is the square being completed.
+- `deningerEnergy_identity` — **`(6)`**: the cross term is the total derivative of the squared
+  modulus, so for a coefficient decaying at infinity it integrates to minus the boundary value,
+  `∫₀^∞ 2m Re(ū u') = -m‖u(0)‖²`.  Combined with the expansion this is exactly
+  `∫₀^∞ (‖u'‖² + m²‖u‖²) = m‖u(0)‖² + ∫₀^∞ ‖u' + m u‖²`, and equality of the two energies holds
+  precisely when `u' + m u = 0`, that is for the Poisson profile `e^{-mr}`.
+
+### The energy identity `(7)` on the trigonometric core landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerTraceEnergy.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+The card proves `(7)` "first for compactly supported coefficients and then by closure"; the core
+case is formalized.
+
+- `deningerModeProfile_sq_integrable` — the squared Poisson profile is integrable on the half line.
+- `deningerPoisson_energyDensity_integrable`, `deningerPoisson_energy_coeff` — scaling a mode by a
+  coefficient scales its Dirichlet energy by the squared modulus.
+- `deningerPoisson_energy_finset` — **`(7)` on the core**: a boundary datum supported on finitely
+  many characters has Poisson energy `∑_a |ℓ(a)| |φ_a|²`, which is its boundary norm `(1)`.  This is
+  the identity that makes the Poisson extension the minimal-energy filling and the trace a quotient
+  isometry.
+
+### The trace bound and the Dirichlet principle landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerTraceBound.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerEnergy_completeSquare` — **`(6)` in the displayed form**: the radial energy is the
+  boundary term plus the energy of the deviation from the decaying exponential, assembled from the
+  pointwise expansion and the cross-term identity.
+- `deningerTrace_bound` — **the trace has norm at most one**: `m ‖u(0)‖² ≤ ∫₀^∞ (‖u'‖² + m²‖u‖²)`,
+  because the deviation energy is nonnegative.  This is the inequality half of `(3)`.
+- `deningerDirichlet_principle` — **equality is attained by the Poisson profile**, whose deviation
+  vanishes identically.  This is `(4)`: the Poisson operator is the minimal-energy right inverse of
+  the trace.
+
+### Remaining
+
+The completions as Hilbert spaces: `ℬ_ℓ` from `(1)`, `Ė_ℓ` from `(2)`, and the zero-trace subspace
+`Ė_{ℓ,0}`.  Everything the card computes is formalized — `(6)` with its equality case, the trace
+bound, the Dirichlet principle, and the energy identity `(7)` on the trigonometric core — so `(3)`,
+`(5)` and `(8)` are exactly the passage to those completions.

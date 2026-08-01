@@ -8,7 +8,8 @@ import GaloisForLFunctions.RHTower.PrimeArchThetaAtomMoments
 Any positive hidden-space observable that represents every normalized prime--archimedean moment
 has a completely prescribed pushforward: the canonical compact atomic Xi-divisor measure.  Thus a
 reporter with null level sets cannot be a Route D producer.  In particular, no injective reporter
-on the literal atomless theta-cusp density can represent the complete moment tower.
+on the canonically mass-calibrated atomless theta-cusp density can represent the complete moment
+tower.
 
 The result is unconditional.  A supplied observable witness first implies RH through the existing
 moment-representation theorem; only then does unrestricted moment determinacy identify its law.
@@ -144,10 +145,76 @@ theorem not_isPrimeArchObservableWitness_of_injective_of_nullSingleton
       exact hy ⟨x, hx⟩
     rw [hpre, measure_empty]
 
-/-- Literal positive theta-cusp density, viewed as a measure on the positive half-line. -/
+/-- Unique scalar calibration making the positive theta-cusp density have the required zeroth
+prime--archimedean moment. -/
+def thetaCuspContinuousSourceScale : ℝ :=
+  normalizedPrimeArchMoment 0 / thetaCuspRawEvenMoment 0
+
+theorem thetaCuspContinuousSourceScale_pos :
+    0 < thetaCuspContinuousSourceScale := by
+  exact div_pos normalizedPrimeArchMoment_zero_pos
+    thetaCuspRawEvenMoment_zero_pos
+
+theorem continuous_thetaCuspContinuousSourceDensity :
+    Continuous (fun x : ℝ =>
+      thetaCuspContinuousSourceScale * (2 * thetaCuspFullSource x)) := by
+  exact continuous_const.mul
+    (continuous_const.mul contDiff_thetaCuspFullSource.continuous)
+
+/-- Calibrated positive theta-cusp density on the positive half-line.  Calibration is essential:
+without it the source has the wrong zeroth mass and every reporter obstruction is vacuous. -/
 def thetaCuspContinuousSourceMeasure : Measure ℝ :=
   (volume.restrict (Ioi 0)).withDensity
-    (fun x => ENNReal.ofReal (2 * thetaCuspFullSource x))
+    (fun x => ENNReal.ofReal
+      (thetaCuspContinuousSourceScale * (2 * thetaCuspFullSource x)))
+
+private theorem integrable_thetaCuspContinuousSourceDensity :
+    Integrable
+      (fun x : ℝ =>
+        thetaCuspContinuousSourceScale * (2 * thetaCuspFullSource x))
+      (volume.restrict (Ioi 0)) := by
+  have h := (integrableOn_thetaCuspRawMoment 0).const_mul
+    (2 * thetaCuspContinuousSourceScale)
+  convert h using 1
+  funext x
+  ring
+
+private theorem ae_nonneg_thetaCuspContinuousSourceDensity :
+    0 ≤ᵐ[volume.restrict (Ioi 0)]
+      (fun x : ℝ =>
+        thetaCuspContinuousSourceScale * (2 * thetaCuspFullSource x)) := by
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+  exact mul_nonneg thetaCuspContinuousSourceScale_pos.le
+    (mul_nonneg (by norm_num) (thetaCuspFullSource_pos_of_pos hx).le)
+
+/-- The calibrated theta source has exactly the zeroth mass required by every Route D moment
+witness.  Thus subsequent reporter no-gos are not consequences of a normalization mismatch. -/
+theorem thetaCuspContinuousSourceMeasure_univ :
+    thetaCuspContinuousSourceMeasure Set.univ =
+      ENNReal.ofReal (normalizedPrimeArchMoment 0) := by
+  rw [thetaCuspContinuousSourceMeasure,
+    withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+  rw [← ofReal_integral_eq_lintegral_ofReal
+    integrable_thetaCuspContinuousSourceDensity
+    ae_nonneg_thetaCuspContinuousSourceDensity]
+  congr 1
+  calc
+    (∫ x : ℝ,
+        thetaCuspContinuousSourceScale * (2 * thetaCuspFullSource x)
+          ∂volume.restrict (Ioi 0)) =
+        thetaCuspContinuousSourceScale * thetaCuspRawEvenMoment 0 := by
+      rw [integral_const_mul, thetaCuspRawEvenMoment]
+      simp only [Nat.mul_zero, pow_zero, one_mul]
+      rw [integral_const_mul]
+    _ = normalizedPrimeArchMoment 0 := by
+      rw [thetaCuspContinuousSourceScale]
+      field_simp [thetaCuspRawEvenMoment_zero_pos.ne']
+
+instance thetaCuspContinuousSourceMeasure_isFiniteMeasure :
+    IsFiniteMeasure thetaCuspContinuousSourceMeasure := by
+  constructor
+  rw [thetaCuspContinuousSourceMeasure_univ]
+  exact ENNReal.ofReal_lt_top
 
 /-- The theta-cusp source measure is absolutely continuous with respect to Lebesgue measure. -/
 theorem thetaCuspContinuousSourceMeasure_absolutelyContinuous_volume :

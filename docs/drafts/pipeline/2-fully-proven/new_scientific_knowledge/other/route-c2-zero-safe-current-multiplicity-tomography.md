@@ -246,7 +246,7 @@ Absence from search is not a priority proof; external status remains `[NOVELTY U
 - [x] Prove bracket continuity and strict positivity at `a=d`.
 - [x] Derive the two-sided physical-aperture sign chamber and normalized limit.
 - [x] State exact route disposition and strongest positive survivor.
-- [ ] Formalize the dependency-closed theorem unconditionally in Lean.
+- [x] Formalize the dependency-closed theorem unconditionally in Lean.
 
 ## Dependency-closed paper proof
 
@@ -422,7 +422,9 @@ an input are bookkeeping, not a new route.
 - [x] 0 -> 1: source object fixed; attack is exact factorization; internal/external collisions
   audited; no numerical evidence used
 - [x] 1 -> 2: dependency-closed paper proof
-- [ ] 2 -> 3: exact unconditional Lean theorem, umbrella wiring, axiom/lint/final-build audit
+- [x] 2 -> 3: exact unconditional Lean theorem and umbrella wiring; direct foreground Lean and
+  axiom audit (no full build, per user instruction). Repository lint sees both new modules but is
+  presently blocked by two unrelated untracked modules missing umbrella imports.
 - [ ] 3 -> 4: independent priority and expert review
 
 ## Log
@@ -431,3 +433,6 @@ an input are bookkeeping, not a new route.
 - 2026-08-01 — exact paper proof closed; Route C2 classified as saturated pending Lean survivor.
 - 2026-08-01 — stronger planar cone conjecture forced by proof audit; hostile transverse attack
   failed and exact paper proof closed before Lean implementation.
+- 2026-08-01 — exact transverse and planar divisor factorizations, positive residual, normalized
+  multiplicity limit, physical two-sided chamber, and leading-cone/higher-residual decomposition
+  formalized in `ThetaCuspCenterMixedDivisorTomography.lean`.
