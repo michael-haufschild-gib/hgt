@@ -27,7 +27,7 @@
   `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedPotential.lean`,
   `formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSquareIndexPolarization.lean`
 - **Parent target:**
-  `../../1-in-progress/xi-taylor-theta-tail-core-density-current.md`
+  `../../5-failed/xi-taylor-theta-tail-core-density-current.md`
 
 ## Statement
 

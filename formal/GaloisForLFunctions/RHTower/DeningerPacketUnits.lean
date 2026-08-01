@@ -72,8 +72,12 @@ noncomputable instance (p : ℕ) : TotallyDisconnectedSpace (DeningerPacketUnits
   inferInstanceAs
     (TotallyDisconnectedSpace (∀ ℓ : {ℓ : Nat.Primes // (ℓ : ℕ) ≠ p}, (ℤ_[(ℓ : ℕ)])ˣ))
 
-noncomputable instance (p : ℕ) : Group (DeningerPacketUnits p) :=
-  inferInstanceAs (Group (∀ ℓ : {ℓ : Nat.Primes // (ℓ : ℕ) ≠ p}, (ℤ_[(ℓ : ℕ)])ˣ))
+noncomputable instance (p : ℕ) : CommGroup (DeningerPacketUnits p) :=
+  inferInstanceAs (CommGroup (∀ ℓ : {ℓ : Nat.Primes // (ℓ : ℕ) ≠ p}, (ℤ_[(ℓ : ℕ)])ˣ))
+
+noncomputable instance (p : ℕ) : IsTopologicalGroup (DeningerPacketUnits p) :=
+  inferInstanceAs
+    (IsTopologicalGroup (∀ ℓ : {ℓ : Nat.Primes // (ℓ : ℕ) ≠ p}, (ℤ_[(ℓ : ℕ)])ˣ))
 
 /-- **The prime packet over the unit group is smoothly fine.**  Every open cover of the packet
 admits a subordinate partition of unity, locally constant along the unit group and smooth along the

@@ -253,8 +253,10 @@ would read `1<=0`. No post hoc diagonal renormalization preserves the capacity i
 `[CONJECTURE]` The only structural replacement not killed by this argument is a source-defined
 principal-relative Julia current in which the diagonal counterterm is inserted before the
 good/bad positive projection and before scalarization, with orientation proved for that relative
-object. This changes the representation and is not current Route J. Its first `[OPEN CORE]` is an
-exact relative negative-excursion inequality; no such theorem is present in corpus or literature.
+object. Its first `[OPEN CORE]` is an exact relative negative-excursion inequality followed by a
+source-uniform relative-capacity bound; no such theorem is present in corpus or literature. No
+other named frontier route owns this Julia-specific representation, so it remains Route J's open
+survivor.
 
 Strongest positive survivor is the exact two-boundary classification `(JDF)` and `(JDF9)`:
 
@@ -269,8 +271,8 @@ early; any successor must be relative before that projection.
 
 ## Route verdict
 
-The original Route-J energy-budget handoff is `FALSE`: its unrenormalized bad energy cannot have a
-uniform upper budget at any aperture. Positive survivor is a sharp classification:
+The original unrenormalized Route-J energy-budget handoff is `FALSE`: its bad energy cannot have a
+uniform upper budget at any aperture. Formalized positive survivor is a sharp classification:
 
 ```text
 zero aperture     -> rank-one total bad mass;
@@ -279,7 +281,8 @@ source fidelity   -> restores rank-one coherence.
 ```
 
 Any surviving Julia descendant must subtract/relativize the diagonal before the good/bad positive
-projection and then re-prove orientation. That is a new route, not completion of current Route J.
+projection and then re-prove orientation. Because this descendant has no other explicit frontier
+owner, Route J remains open at exactly that construction.
 
 ## Lean realization
 

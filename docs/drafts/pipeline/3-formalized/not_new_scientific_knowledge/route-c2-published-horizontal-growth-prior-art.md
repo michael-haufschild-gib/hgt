@@ -50,8 +50,8 @@ Module: `RHTower/ThetaCuspCenterMixedPublishedGrowthPriorArt.lean`.
 
 - [x] unconditional source check with `lake env lean`
 - [x] umbrella import wired
-- [x] axiom audit; repository lint reaches this module and reports only two unrelated untracked
-  modules missing umbrella imports
+- [x] axiom audit; final repository lint reaches this module and reports only seven unrelated
+  concurrently added RHTower modules missing umbrella reachability
 - [x] full build intentionally omitted per user instruction
 
 ## Log

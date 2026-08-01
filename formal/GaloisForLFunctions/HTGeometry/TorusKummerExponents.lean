@@ -109,12 +109,7 @@ theorem torusVal₂_gen₂ (K : Type*) [Field K] :
 theorem torusUnit_eq (K : Type*) [Field K] (u : TorusUnitGroup K) :
     u = ((u.1, 1, 1) : TorusUnitGroup K) *
       torusGen₁ K ^ (u.2.1).toAdd * torusGen₂ K ^ (u.2.2).toAdd := by
-  refine Prod.ext ?_ (Prod.ext ?_ ?_)
-  · simp [torusGen₁, torusGen₂]
-  · show u.2.1 = 1 * (Multiplicative.ofAdd (1 : ℤ)) ^ (u.2.1).toAdd * 1
-    rw [one_mul, mul_one, ofAdd_one_zpow, ofAdd_toAdd]
-  · show u.2.2 = 1 * 1 * (Multiplicative.ofAdd (1 : ℤ)) ^ (u.2.2).toAdd
-    rw [one_mul, one_mul, ofAdd_one_zpow, ofAdd_toAdd]
+  simp [torusGen₁, torusGen₂, ofAdd_one_zpow]
 
 /-- **The `r`-th powers are exactly the units whose two exponents are divisible by `r`.**  The
 constant never obstructs, because an algebraically closed field has all roots. -/

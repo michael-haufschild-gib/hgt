@@ -77,7 +77,7 @@ required before a Fredholm determinant or relative index can be defined.
 Primary source: A. Connes and C. Consani, *Quasi-inner functions and local factors*,
 [arXiv:2008.10974](https://arxiv.org/abs/2008.10974).
 
-## Required all-place theorem `[OPEN CORE]`
+## Required all-place theorem `[HISTORICAL CANDIDATE]`
 
 For every compact positive-ordinate window `I=(H,U]`, construct from the finite-place system a
 source-defined family
@@ -178,15 +178,15 @@ defect to a coboundary. Failure of subclaim 4 leaves a source operator with no R
 - [ ] 3 -> 4: independent proof and literature audit, unconditional Lean endpoint, and explicit
   verified-height improvement
 
-## Current verdict
+## Historical checkpoint: source theorem still isolated
 
-`[OPEN CORE]` The missing Route D source theorem is an **archimedean-compensated, all-place,
+At this checkpoint, the missing Route D source theorem was an **archimedean-compensated, all-place,
 windowed index-stability theorem**. Positive scalar readers and finite source summaries cannot carry
 the collision-stable integer. Finite multiplicative quasi-innerness is the correct source seed, but
 the all-place trace-ideal limit and its quantitative first-window stability are unproved.
 
-This card reopens Route D only at that source-producing level. Another conditional count, winding,
-minimum-modulus interface, or divisor-fed index does not qualify.
+This checkpoint left Route D open only at that source-producing level.  The later closed-model audit
+below proves that every surviving formulation either belongs outside Route D or restates the target.
 
 
 ## Conditional analytic spine `[PROVED; BRIDGE]`
@@ -281,7 +281,7 @@ Consequences:
   deformation remains a distinct source object.  The new Route B theorem that this deformation is
   unbounded rules out bounded perturbation theory but not relative-form or two-resolvent control.
 
-## Sharpened missing theorem `[CONJECTURE; OPEN CORE]`
+## Sharpened missing theorem `[HISTORICAL CONJECTURE; CLOSED AS ROUTE-D OBJECT]`
 
 The exact surviving source statement is now the following **completed-source renormalization-anomaly
 free-orbit theorem**.
@@ -367,7 +367,7 @@ closed source operator cannot extend the canonical scalar residue graph on its w
 any restriction of a closed operator is closable, contradicting the explicit off-RH nonclosability
 sequence.
 
-## Revised source-theorem boundary `[OPEN CORE]`
+## Historical revised source-theorem boundary
 
 The missing theorem can no longer be an ordinary all-place multiplier, a prime-grade monodromy,
 a continuous regular-germ invariant, a finite algebraic corona expression, a Banach extension class,
@@ -457,6 +457,17 @@ The requested source theorem would have to provide every item below.
    Turing enumeration.
 6. **Paper and Lean gates.** Since items 1, 3, and 4 are absent, there is no source theorem to promote
    to stage 2 and no unconditional theorem to formalize in Lean.
+7. **Diffuse scalar reporters.** Exact moment uniqueness forces every reporter pushforward to the
+   canonical Xi-divisor carrier.  The calibrated atomless theta source therefore needs
+   positive-measure fibres at every thermal node; countable-to-one and null-fibre reporters fail.
+8. **Continuous scalar reporters.** Full support and connectedness force any continuous reporter
+   into a connected subset of the countable thermal carrier, hence make it constant; the forced
+   positive fibres then contradict exact pushforward.
+9. **Local quantile metrics.** On full infinite-dimensional complex `L2(0,1)`, the pinned Volterra
+   adjoint defect is self-adjoint of exact rank two with mixed signs.  Every bounded pointwise
+   multiplier satisfying its anticommutator equation is zero, and no injective bounded composite
+   metric can neutralize it.  Unconditional Lean proof:
+   `../3-formalized/hedenmalm-pinned-volterra-boundary-defect.md`.
 
 ## Final verdict
 
@@ -469,7 +480,8 @@ producer either
 - collapses to a trivial completed symbol or split extension;
 - is blind to height or horizontal displacement;
 - is nonclosable unless RH already holds;
-- reconstructs the divisor and applies a target-equivalent count/positivity/index; or
+- reconstructs the divisor and applies a target-equivalent count/positivity/index;
+- tries to hide the two-channel pinned-Volterra flux inside a bounded local source metric; or
 - requires a new source-selected closed geometry and relative homotopy estimate belonging outside
   Route D.
 

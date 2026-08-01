@@ -77,7 +77,7 @@ theorem dyadicSharpPrimeSourceComplexCoeff_two_pos :
   have hsqrt2 : (Real.sqrt 2) ^ 2 = 2 := Real.sq_sqrt (by norm_num)
   have hfour : 4 < 3 * Real.sqrt 2 := by nlinarith
   have hmul : Real.sqrt 2 * Real.log 2 < Real.sqrt 2 :=
-    mul_lt_mul_of_pos_left hlog hsqrtpos
+    by simpa using mul_lt_mul_of_pos_left hlog hsqrtpos
   linarith
 
 /-- The positive unit-frequency phase of the first oscillatory coefficient. -/

@@ -20,6 +20,20 @@ namespace GaloisForLFunctions.RHTower
 
 open Filter Topology GaloisForLFunctions.HTGeometry
 
+/-- **Spectral window of a positive operator.**  A positive bounded operator has spectrum inside
+`[0, ‖B‖]`, so the spectral-window hypothesis of the strong-limit theorems never has to be supplied
+by hand. -/
+theorem spectrum_subset_Icc_of_nonneg {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    [CompleteSpace H] [Nontrivial H] {B : H →L[ℂ] H} (hB : 0 ≤ B) :
+    spectrum ℝ B ⊆ Set.Icc 0 ‖B‖ := by
+  intro x hx
+  refine ⟨spectrum_nonneg_of_nonneg hB hx, ?_⟩
+  have hc : (x : ℂ) ∈ spectrum ℂ B := by
+    simpa using (spectrum.algebraMap_mem_iff ℂ (a := B) (r := x)).mpr hx
+  have hle := spectrum.norm_le_norm_of_mem hc
+  have habs : |x| ≤ ‖B‖ := by simpa using hle
+  exact le_trans (le_abs_self x) habs
+
 /-- **Strong resolvent limit.**  A uniformly bounded resolvent family converges strongly to the
 identity: the symbols are uniformly bounded on the spectrum, their difference from one vanishes
 uniformly after multiplication by the coordinate, and the range of `B` is dense. -/

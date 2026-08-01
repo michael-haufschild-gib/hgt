@@ -3,7 +3,7 @@
 - **ID:** `full-theta-density-monotone-completion-current`
 - **Stage:** 3-formalized
 - **Type:** `[THEOREM (LEAN)] [NEW CORPUS SYNTHESIS] [UNCONDITIONAL] [NO RH CLAIM]`
-- **Parent:** `xi-taylor-theta-tail-core-density-current.md`
+- **Parent:** `../../5-failed/xi-taylor-theta-tail-core-density-current.md`
 - **Falsified predecessor:** `cofinal-completed-lee-yang-seam-defect.md`
 
 ## Actual frontier

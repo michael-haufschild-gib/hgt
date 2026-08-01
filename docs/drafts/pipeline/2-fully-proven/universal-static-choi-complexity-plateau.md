@@ -198,15 +198,24 @@ Completed and compiled in the foreground:
    entropy, and the exact padded circuit-word factor `|gate|^(s+1)`.
 3. `StaticChoiComplexityPlateau.lean` combines those layers into explicit
    finite-dictionary and padded-circuit Choi plateau bounds; its error defect
-   is exactly `2 * delta^2` for Hilbert--Schmidt radius `delta`.
-4. `FiniteSpectralRecurrenceFrequencyLaw.lean` now contains the generic
-   closed-target Portmanteau upper-frequency theorem.
+   is exactly `2 * delta^2` for Hilbert--Schmidt radius `delta`.  Its theorem
+   `completedTime_iUnion_uniformPhaseDensity_paddedCircuitTargets` now also
+   applies the closed-target Portmanteau law and returns both the completed-time
+   occupation bound and the explicit Haar-volume bound.
+4. `FiniteSpectralRecurrenceFrequencyLaw.lean` supplies the generic
+   closed-target Portmanteau upper-frequency theorem used by that capstone.
+5. `StaticChoiProjectiveComplexityPlateau.lean` removes the otherwise fatal
+   full-frequency assumption.  It splits normalized Haar measure exactly into
+   global and zero-anchored projective phase, proves Choi density invariant on
+   the global factor, transfers the entire finite circuit union without losing
+   overlaps, and derives physical relative-frequency independence from maximal
+   projective rank.  Its completed-time theorem therefore applies to traceless
+   Hamiltonians.
 
 Remaining before stage 3:
 
 1. Connect the Hilbert--Schmidt formal theorem to the sharper trace-distance
    constant used in (1), or weaken the displayed paper constant to the exact
    Hilbert--Schmidt consequence and propagate it through (2)--(4).
-2. Instantiate the completed-time theorem in one final capstone declaration.
-3. Close the O2 local-Hamiltonian spectral premise, audit axioms, and run the
+2. Close the O2 local-Hamiltonian spectral premise, audit axioms, and run the
    final umbrella build.

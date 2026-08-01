@@ -4,7 +4,7 @@
 - **Stage:** 5-failed
 - **Type:** NO-GO WITH POSITIVE SURVIVOR
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`
-- **Status:** `[FALSE AT REQUIRED SCALE] [PAPER PROOF] [LEAN ANALYTIC CORE PROVED]`
+- **Status:** `[FALSE AT REQUIRED SCALE] [PAPER PROOF] [LEAN EXACT PERIODIC CENTER AND TUBE PROVED]`
 
 ## Retired claim
 
@@ -61,8 +61,12 @@ Duhamel's inequality for self-adjoint generators gives
 
 `FiniteHorizonCStarPerturbationLaw.lean` proves this periodic-center shortcut
 tube in arbitrary unital C-star algebras, without finite-dimensional,
-commutativity, spectral or matrix assumptions.  The coefficient-box Gaussian
-mass lower bound is not yet formalized.
+commutativity, spectral or matrix assumptions.  It also proves an explicit
+non-scalar two-level sign Hamiltonian with norm `|omega|`, exact identity
+recurrence at every time `2 pi k / omega`, and the resulting fixed-shell
+operator-norm error tube.  Thus periodicity, non-scalarity, fixed nonzero
+energy and the `epsilon/|t|` stability scale are Lean-certified.  The
+coefficient-box Gaussian mass lower bound is not yet formalized.
 
 The coefficient box has volume `(epsilon/(tm))^m`.  A nondegenerate Gaussian
 density has a positive lower bound on the fixed compact region containing

@@ -61,8 +61,8 @@ theorem finiteBarycentricReader_eq_iff_totalMass_smul_eq_current
     rw [← h]
     exact finiteBarycentricTotalMass_smul_reader edges mass value htotal
   · intro h
-    apply (smul_left_cancel₀ _ htotal)
-    rw [finiteBarycentricTotalMass_smul_reader edges mass value htotal, h]
+    rw [finiteBarycentricReader, ← h, smul_smul,
+      inv_mul_cancel₀ htotal, one_smul]
 
 /-- A nonzero normalization cannot create or remove a zero of the additive current. -/
 theorem finiteBarycentricReader_eq_zero_iff_current_eq_zero
@@ -100,9 +100,7 @@ theorem finiteBarycentricReader_pos_iff_current_pos
     0 < finiteBarycentricReader edges mass value ↔
       0 < finiteBarycentricCurrent edges mass value := by
   rw [finiteBarycentricReader]
-  change 0 < (finiteBarycentricTotalMass edges mass)⁻¹ *
-      finiteBarycentricCurrent edges mass value ↔ _
-  exact (mul_pos_iff_of_pos_left (inv_pos.mpr htotal))
+  exact smul_pos_iff_of_pos_left (inv_pos.mpr htotal)
 
 /-- Positive normalization preserves strict negativity of a real additive current. -/
 theorem finiteBarycentricReader_neg_iff_current_neg
@@ -111,9 +109,7 @@ theorem finiteBarycentricReader_neg_iff_current_neg
     finiteBarycentricReader edges mass value < 0 ↔
       finiteBarycentricCurrent edges mass value < 0 := by
   rw [finiteBarycentricReader]
-  change (finiteBarycentricTotalMass edges mass)⁻¹ *
-      finiteBarycentricCurrent edges mass value < 0 ↔ _
-  exact (mul_neg_iff_of_pos_left (inv_pos.mpr htotal))
+  exact smul_neg_iff_of_pos_left (inv_pos.mpr htotal)
 
 end
 

@@ -2,6 +2,7 @@ import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Analysis.CStarAlgebra.Exponential
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.SpecialFunctions.Exponential
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 
 /-!
@@ -129,6 +130,158 @@ theorem selfAdjoint_near_periodicCenter_unitaryEvolution_norm_sub_one_le_of_mul_
     ‖exp (t • ((-Complex.I) • H)) - 1‖ ≤ ε :=
   (selfAdjoint_near_periodicCenter_unitaryEvolution_norm_sub_one_le
     H K hH hK t hperiod).trans hclose
+
+/-! ## Power amplification of endpoint hardness -/
+
+/-- Repeating two unitary endpoints `n` times amplifies their operator-norm
+separation by at most `n`.  The estimate is dimension-free and requires no
+commutativity between the endpoints. -/
+theorem unitary_pow_norm_sub_pow_le
+    (U V : A) (hU : U ∈ unitary A) (hV : V ∈ unitary A) (n : ℕ) :
+    ‖U ^ n - V ^ n‖ ≤ (n : ℝ) * ‖U - V‖ := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      rw [pow_succ U n, pow_succ V n]
+      calc
+        ‖U ^ n * U - V ^ n * V‖ =
+            ‖(U ^ n - V ^ n) * U + V ^ n * (U - V)‖ := by
+          congr 1
+          noncomm_ring
+        _ ≤ ‖(U ^ n - V ^ n) * U‖ + ‖V ^ n * (U - V)‖ :=
+          norm_add_le _ _
+        _ = ‖U ^ n - V ^ n‖ + ‖U - V‖ := by
+          rw [CStarRing.norm_mul_mem_unitary _ hU,
+            CStarRing.norm_mem_unitary_mul _ (pow_mem hV n)]
+        _ ≤ (n : ℝ) * ‖U - V‖ + ‖U - V‖ := add_le_add ih le_rfl
+        _ = (n + 1 : ℕ) * ‖U - V‖ := by
+          push_cast
+          ring
+
+/-- An autonomous exponential at time `t`, repeated `n` times, is exactly the
+same endpoint as the exponential at time `n t`. -/
+theorem exp_real_smul_pow (x : A) (t : ℝ) (n : ℕ) :
+    exp (t • x) ^ n = exp (((n : ℝ) * t) • x) := by
+  let _ : NormedAlgebra ℚ A := .restrictScalars ℚ ℂ A
+  rw [← NormedSpace.exp_nsmul]
+  congr 1
+  rw [← Nat.cast_smul_eq_nsmul ℝ, smul_smul]
+
+/-- **Hard-power backward amplification.** If the `n`th powers of two
+unitaries are separated by at least `ε`, then the original endpoints are
+separated by at least `ε / n`. -/
+theorem unitary_norm_sub_lowerBound_of_pow_detect
+    (U V : A) (hU : U ∈ unitary A) (hV : V ∈ unitary A)
+    (n : ℕ) (hn : 0 < n) (ε : ℝ) (hdetect : ε ≤ ‖U ^ n - V ^ n‖) :
+    ε / n ≤ ‖U - V‖ := by
+  have hε : ε ≤ (n : ℝ) * ‖U - V‖ :=
+    hdetect.trans (unitary_pow_norm_sub_pow_le U V hU hV n)
+  rw [div_le_iff₀ (by exact_mod_cast hn)]
+  simpa [mul_comm] using hε
+
+/-- Autonomous-time specialization of hard-power amplification.  A unitary
+candidate whose repeated circuit endpoint misses the later Hamiltonian
+endpoint by `ε` must already miss the time-`t` endpoint by `ε / n`. -/
+theorem selfAdjoint_unitaryEvolution_norm_sub_lowerBound_of_power_detect
+    (H V : A) (hH : IsSelfAdjoint H) (hV : V ∈ unitary A)
+    (t : ℝ) (n : ℕ) (hn : 0 < n) (ε : ℝ)
+    (hdetect :
+      ε ≤ ‖exp (((n : ℝ) * t) • ((-Complex.I) • H)) - V ^ n‖) :
+    ε / n ≤ ‖exp (t • ((-Complex.I) • H)) - V‖ := by
+  let _ : NormedAlgebra ℚ A := .restrictScalars ℚ ℂ A
+  have hx : (-Complex.I) • H ∈ skewAdjoint A := by
+    rw [skewAdjoint.mem_iff, star_smul, hH.star_eq]
+    simp
+  have hU : exp (t • ((-Complex.I) • H)) ∈ unitary A :=
+    NormedSpace.exp_mem_unitary_of_mem_skewAdjoint
+      (skewAdjoint.smul_mem t hx)
+  apply unitary_norm_sub_lowerBound_of_pow_detect
+    (exp (t • ((-Complex.I) • H))) V hU hV n hn ε
+  simpa only [exp_real_smul_pow] using hdetect
+
+/-! ## Exact non-scalar recurrence centers
+
+The product C⋆-algebra `ℂ × ℂ` is the algebra of observables of a classical
+two-level superselection sector.  Its sign Hamiltonian is non-scalar,
+self-adjoint, norm one, and recurrent at every integral multiple of its
+fundamental period.  The preceding perturbation theorem therefore gives an
+explicit `O(1 / |t|)` operator-norm tube of evolutions close to the identity
+around a fixed nonzero energy shell.
+-/
+
+/-- Non-scalar two-level sign observable. -/
+def twoLevelSign : ℂ × ℂ := (1, -1)
+
+theorem twoLevelSign_ne_one : twoLevelSign ≠ (1 : ℂ × ℂ) := by
+  intro h
+  have hsnd := congrArg Prod.snd h
+  norm_num [twoLevelSign] at hsnd
+
+@[simp]
+theorem norm_twoLevelSign : ‖twoLevelSign‖ = 1 := by
+  simp [twoLevelSign, Prod.norm_def]
+
+theorem isSelfAdjoint_twoLevelSign : IsSelfAdjoint twoLevelSign := by
+  rw [isSelfAdjoint_iff]
+  ext <;> simp [twoLevelSign]
+
+/-- Fixed-energy two-level Hamiltonian with eigenvalues `ω` and `-ω`. -/
+def twoLevelSignHamiltonian (ω : ℝ) : ℂ × ℂ :=
+  ((ω : ℂ) • twoLevelSign)
+
+theorem isSelfAdjoint_twoLevelSignHamiltonian (ω : ℝ) :
+    IsSelfAdjoint (twoLevelSignHamiltonian ω) := by
+  rw [isSelfAdjoint_iff]
+  ext <;> simp [twoLevelSignHamiltonian, twoLevelSign]
+
+@[simp]
+theorem norm_twoLevelSignHamiltonian (ω : ℝ) :
+    ‖twoLevelSignHamiltonian ω‖ = |ω| := by
+  simp [twoLevelSignHamiltonian, twoLevelSign, Prod.norm_def]
+
+/-- **Exact recurrence on every nonzero energy shell.** For fixed `ω ≠ 0`,
+the same non-scalar Hamiltonian returns exactly to the identity at every
+integral multiple `2π k / ω` of its fundamental recurrence time. -/
+theorem twoLevelSignHamiltonian_exact_recurrence
+    (ω : ℝ) (k : ℤ) (hω : ω ≠ 0) :
+    exp ((2 * Real.pi * (k : ℝ) / ω) •
+      ((-Complex.I) • twoLevelSignHamiltonian ω)) = 1 := by
+  ext
+  · simp [twoLevelSignHamiltonian, twoLevelSign]
+    rw [← Complex.exp_eq_exp_ℂ]
+    convert Complex.exp_int_mul_two_pi_mul_I (-k) using 1
+    push_cast
+    field_simp [hω]
+  · simp [twoLevelSignHamiltonian, twoLevelSign]
+    rw [← Complex.exp_eq_exp_ℂ]
+    convert Complex.exp_int_mul_two_pi_mul_I k using 1
+    field_simp [hω]
+
+/-- **Fixed-shell recurrence tube.** At each exact recurrence time of the
+non-scalar two-level Hamiltonian, every self-adjoint perturbation has an
+identity shortcut whose error is at most time times perturbation norm. -/
+theorem selfAdjoint_near_twoLevelSignHamiltonian_recurrence_norm_sub_one_le
+    (H : ℂ × ℂ) (hH : IsSelfAdjoint H) (ω : ℝ) (k : ℤ) (hω : ω ≠ 0) :
+    ‖exp ((2 * Real.pi * (k : ℝ) / ω) • ((-Complex.I) • H)) - 1‖
+      ≤ |2 * Real.pi * (k : ℝ) / ω| *
+        ‖H - twoLevelSignHamiltonian ω‖ := by
+  exact selfAdjoint_near_periodicCenter_unitaryEvolution_norm_sub_one_le
+    H (twoLevelSignHamiltonian ω) hH
+    (isSelfAdjoint_twoLevelSignHamiltonian ω)
+    (2 * Real.pi * (k : ℝ) / ω)
+    (twoLevelSignHamiltonian_exact_recurrence ω k hω)
+
+/-- Error-budget form: a perturbation of radius `ε / |2π k / ω|` remains
+within operator-norm error `ε` of the identity at recurrence `k`. -/
+theorem selfAdjoint_near_twoLevelSignHamiltonian_recurrence_norm_sub_one_le_of_mul_le
+    (H : ℂ × ℂ) (hH : IsSelfAdjoint H) (ω : ℝ) (k : ℤ) (ε : ℝ)
+    (hω : ω ≠ 0)
+    (hclose :
+      |2 * Real.pi * (k : ℝ) / ω| *
+        ‖H - twoLevelSignHamiltonian ω‖ ≤ ε) :
+    ‖exp ((2 * Real.pi * (k : ℝ) / ω) • ((-Complex.I) • H)) - 1‖ ≤ ε :=
+  (selfAdjoint_near_twoLevelSignHamiltonian_recurrence_norm_sub_one_le
+    H hH ω k hω).trans hclose
 
 /-- Operator-normalized conjugation bound for two arbitrary unitary
 elements.  It avoids Hilbert--Schmidt normalization and dimension factors. -/

@@ -108,6 +108,30 @@ formalized in
 `RHTower.deningerSummedGreenEnergy_continuous`, and
 `RHTower.deningerLocalEnergy_summable_of_summable_majorant`.
 
+There is now also a sharp necessary topology condition.  Operator-norm summability in one Banach
+disk forces the norms of the local forms to tend to zero.  Therefore no fixed disk may contain
+unit-norm packets whose own-place Green diagonal is identically one.  This is proved and formalized
+by `DAC_ALL_PLACE_GREEN_FORM_UNIFORM_PACKET_NO_GO`.  Applied to graph-normalized prime packets,
+`(4)` requires an explicit high-prime disk-gauge escape theorem or arithmetic damping of the local
+diagonal; graph coercivity alone cannot prove `(4)`.
+
+Absolute scalar majorants are not the only admissible mechanism.  The same formalized result gives
+an orthogonal maximum-tail criterion: if every finite disjoint packet sum has norm bounded by the
+largest packet norm, then local form-norm decay is equivalent to unordered operator-space
+summability.  This is the correct candidate for the prime graph direct sum.  Its natural local
+bound is `(log p)^(-2)`, which tends to zero but is not scalar-summable over primes (the latter
+divergence is already formalized by `tendsto_primeReciprocalLogSqSum_atTop`).  Therefore the prime
+sector must use graph orthogonality/max-tail control, not the scalar summable-majorant criterion.
+
+That candidate is now instantiated exactly on the orthogonal prime coordinate model
+\(\ell^2(\mathbb P)\). Each local continuous Green form has norm \((\log p)^{-2}\); arbitrary finite
+prime sums satisfy the maximum-tail bound; and the unordered form series converges in operator
+norm. Separately, every unit-Green packet has graph cost at least \((\log p)^2\), hence escapes
+every fixed graph disk cofinally. These theorems close the prime-diagonal functional-analysis
+problem; the summed coordinate energy is nonnegative and has zero radical. They do not prove that
+the actual mixed restricted arithmetic source decomposes as this
+orthogonal model or that cross-prime Milnor/cup incidence preserves its maximum-tail estimate.
+
 Cauchy restriction descent is also abstractly complete.  If each
 full Cauchy restriction carries global boundaries to local
 boundaries, it descends to quotient cohomology.  The single remaining
@@ -157,10 +181,13 @@ energy.
 
 ## Exact remaining inputs
 
-1. Prove `(4)` on every defining Banach disk of the mixed restricted
-   \(L^1/L^2\) nuclear topology.  This single form-level estimate now
-   implies both placewise energy summability for `(1)` and continuity
-   needed for closed-boundary passage.
+1. Prove `(4)` on every defining Banach disk of the actual mixed restricted
+   \(L^1/L^2\) nuclear topology. Quantitative graph-disk escape and the full
+   maximum-tail estimate with exact \((\log p)^{-2}\) local norms are proved on the orthogonal
+   prime coordinate model. Remaining work is arithmetic: identify the relevant source disk with
+   that model or prove a comparison carrying all residue, corestriction, Milnor, and cup cross
+   terms into a decomposition with the same maximum-tail bound. Then extend the estimate across
+   generic and real sectors.
 2. Prove the full Cauchy restriction maps commute with every
    Rost--Schmid differential, Milnor attaching map,
    residue/corestriction, and real orientation descent.  This gives
@@ -235,3 +262,14 @@ energy.
   two-column Rost--Schmid/signature totalization.  Six local
   commutation identities now assemble automatically into a
   three-term chain map and induced maps on \(H^0,H^1,H^2\).
+- 2026-08-01 — Proved and formalized the all-place uniform-packet no-go: form-level operator-norm
+  summability forces local form norms to vanish, so unit-normalized prime packets must escape every
+  fixed defining disk or acquire explicit arithmetic damping.
+- 2026-08-01 — Formalized the orthogonal maximum-tail survivor: local form-norm decay is sufficient
+  for unordered operator-space summability under disjoint maximum-tail control, even when scalar
+  norm majorants diverge.  This isolates the exact prime graph estimate still needing arithmetic
+  instantiation.
+- 2026-08-01 — Instantiated that survivor on \(\ell^2(\mathbb P)\): exact local norm
+  \((\log p)^{-2}\), finite maximum-tail control, unordered operator-norm convergence, and a
+  continuous faithful summed form with zero radical. Also proved the complementary unit-Green graph cost lower bound
+  \((\log p)^2\to\infty\). Actual source-disk and cross-sector comparison remain open.

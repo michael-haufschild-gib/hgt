@@ -2,10 +2,11 @@
 
 - **ID:** `route-j-julia-unrenormalized-coherent-energy-budget`
 - **Stage:** 5-failed
-- **Type:** RETIRED RH ROUTE / UNIFORM DIAGONAL-CAPACITY NO-GO
+- **Type:** RETIRED ROUTE-J SUBROUTE / UNIFORM DIAGONAL-CAPACITY NO-GO
 - **Scientific status:** `[PAPER-PROVED] [FORMALIZED] [NOVELTY UNVERIFIED] [NO COMPUTATION]`
-- **Positive survivor:**
+- **Formalized positive survivor:**
   `../3-formalized/route-j-julia-coherent-energy-diagonal-floor.md`
+- **Live successor:** Route J's source-defined principal-relative pre-projection Julia current
 - **Endpoint attempted:** Route A's eventual first-clock lower floor
 
 ## Intended chain
@@ -104,7 +105,8 @@ the literal first clock. Any viable descendant must define a principal-relative 
 counterterm inserted before good/bad positive projection and scalarization, then prove a new
 relative negative-excursion orientation law.
 
-That representation change is a new route. It does not reopen Route J.
+No other named frontier route owns that representation change. It therefore remains Route J's
+open survivor; only the unrenormalized budget studied on this failed card is retired.
 
 ## No-go closure audit
 
@@ -115,4 +117,4 @@ That representation change is a new route. It does not reopen Route J.
 - [x] prior failed mechanisms audited
 - [x] no RH-equivalent premise used
 - [x] no computation used
-- [x] Route J removed from live frontier and priority lists
+- [x] unrenormalized subroute separated from open Route-J survivor

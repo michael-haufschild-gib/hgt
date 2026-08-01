@@ -100,6 +100,19 @@ Then the following statements hold.
    and its two nonzero eigenvalues are `+1/sqrt(12)` and
    `-1/sqrt(12)`.  Hence its exact inertia is `(1,1)`.
 
+4a. No nonzero bounded local multiplication coefficient can remove this defect.  More precisely,
+    for `a in L-infinity(0,1)`, let `M_a` be multiplication by `a`.  Then
+
+    ```text
+    C* M_a + M_a C = 0  implies  a = 0 almost everywhere.          (5a)
+    ```
+
+    Consequently, if a multiplication metric `G_w=M_w` has bounded composite coefficient
+    `a=wq`, then `T*G_w=G_wT` forces `wq=0` almost everywhere.  In particular no positive local
+    multiplication metric in this bounded-composite class symmetrizes `T`.  Any surviving metric
+    repair must be genuinely nonlocal; changing the local source weight cannot neutralize the two
+    boundary channels.
+
 5. Put
 
    ```text
@@ -267,6 +280,25 @@ The matrix on their span is therefore
 which proves the eigenvalue and inertia claim.  Finally, evaluate `(5)` on an eigenvector.  The
 left side is `(conjugate(lambda)-lambda)<Gg,g>` under the stated convention, yielding `(8)`.
 
+For `(5a)`, apply `C* M_a+M_a C=0` to the constant function `1`.  Since `C1=0`, this gives
+`C*a=0`.  The displayed adjoint formula shows that
+
+```text
+F(u)=integral_u^1 a(t)dt-integral_0^1 t a(t)dt
+```
+
+vanishes almost everywhere.  Because `a` is in `L2(0,1)` and hence in `L1(0,1)`, `F` is absolutely
+continuous.  A continuous function that vanishes almost everywhere on an interval vanishes
+everywhere, and the Lebesgue fundamental theorem gives `F'=-a` almost everywhere.  Thus `a=0`
+almost everywhere.  For a local metric, commutation of the multipliers gives
+
+```text
+T*G_w=G_wT
+iff -i C* M_(qw)=i M_(qw) C,
+```
+
+so `(5a)` applies whenever `qw` is bounded.
+
 For the root-mode formula, put `h=Cg`.  Then `h(0)=h(1)=0` and
 `h'=g-m`.  The eigenvalue equation `i qh=-g/z` becomes
 
@@ -310,8 +342,9 @@ This unifies several corpus observations.
   `R_2` has rank two.
 - The universal rank-two tangent inertia `(1,1)` is the same boundary signature in a different
   chart.
-- Divisor-supported Weil polarization is nonlocal because no multiplication metric can remove
-  `(5)`; the best multiplication metric leaves the exact finite-rank obstruction.
+- Divisor-supported Weil polarization must be nonlocal: `(5a)` proves that every bounded-composite
+  multiplication metric either leaves a defect or is the zero metric.  The canonical source metric
+  removes quantile speed but leaves the exact finite-rank obstruction `(5)`.
 - The dense-radical/ordinary-`L2` no-go is not a separate pathology: `(4a)` says it is exactly
   the completion selected by the canonical quantile metric.
 - Positive completion debt is unavoidable: a rank-two defect of inertia `(1,1)` cannot be
@@ -351,6 +384,10 @@ dagger,” or “conservativity.”
    allowed root-mode boundary traces, not through `(3)`--`(5)` alone.
 6. **No target-fed metric.**  `G` is constructed from `k` before reading a zero.  The null-cone
    condition on all root modes is not constructed and is stated only as the open successor.
+7. **Scope of local-metric rigidity.**  Statement `(5a)` assumes the composite multiplier `wq` is
+   bounded, so all operator products are bounded on full `L2`.  Singular endpoint metrics with
+   unbounded `wq` require a separate domain theorem.  They cannot be credited as repairs until
+   closedness, domain invariance, and the full symmetry identity are proved.
 
 ## Corpus and literature audit
 
@@ -363,12 +400,18 @@ rank-two metric defect.
 The external ingredients are classical separately: probability-integral/quantile transport,
 the Volterra operator and its adjoint, finite-rank boundary forms, and Grushin/Evans reductions.
 Targeted searches found no paper combining them into the source-normal form `(3)`, metric defect
-`(5)`, and Xi spectral-flux law `(8)`.  External novelty remains unverified pending a broader
-operator-theory and boundary-triple citation audit.
+`(5)`, local-metric rigidity `(5a)`, and Xi spectral-flux law `(8)`.  Exact searches for the
+anticommutator `C* M_a+M_a C` and multiplication symmetrizers found adjacent Volterra commutant,
+complex-symmetry, and weighted integral-operator literature, but no matching theorem for the pinned
+primitive.  This is negative search evidence, not a novelty certificate.  External novelty remains
+unverified pending a broader operator-theory and boundary-triple citation audit.
 
 Primary adjacent sources:
 
 - H. Hedenmalm, *Spectral interpretation of Riemann zeta zeros*, arXiv:2606.17494 (2026).
+- P. Aiena, F. Burderi, and S. Triolo, *Further Properties of an Operator Commuting with an
+  Injective Quasi-Nilpotent Operator*, Mediterr. J. Math. 21 (2024), 34.  This records injectivity
+  of the classical Volterra operator and its adjoint, but not `(5a)` for the pinned primitive.
 - F. Gesztesy, Y. Latushkin, and K. A. Makarov, *Evans functions, Jost functions, and Fredholm
   determinants*, Arch. Ration. Mech. Anal. 186 (2007), 361--421.
 - J.-F. Burnol, *Two complete and minimal systems associated with the zeros of the Riemann zeta
@@ -376,10 +419,21 @@ Primary adjacent sources:
 
 ## Lean status
 
-Paper proof is dependency-closed.  Lean formalization is open.  A meaningful formalization must
-include the change-of-variables unitary, the transformed operator identity `(3)`, the adjoint
-calculation, and exact rank-two inertia.  Formalizing only the `2 x 2` matrix would not certify the
-new source theorem.
+The universal infinite-dimensional operator half is formalized in
+`GaloisForLFunctions.RHTower.HedenmalmPinnedVolterraBoundaryDefect`.  Lean constructs the bounded
+pinned primitive and reverse primitive on actual complex `L2(0,1)`, proves the Fubini adjoint
+identity, proves reverse-primitive injectivity by Lebesgue differentiation, identifies the exact
+affine rank-two range, proves self-adjointness, and exhibits quadratic values `+1/6` and `-1/6`.
+It also proves that every bounded injective operator `A` fails
+`C* A+A C=0`, and more sharply that every bounded pointwise multiplication operator satisfying
+this equation is the zero operator.  This is the exact bounded-composite local-metric rigidity
+statement `(5a)`, expressed without choosing an `L-infinity` representative.
+
+The complete source-normal theorem is not yet formalized.  Remaining obligations are the
+probability-integral unitary, transformed Hedenmalm operator identity `(3)`, the unbounded quantile
+multiplier/domain cancellation, and verification that the actual composite coefficient `a=wq`
+defines the bounded pointwise multiplier used by `(5a)`.  Formalizing only the `2 x 2` matrix would
+not certify the new source theorem; the completed module deliberately does not do that.
 
 ## Gates
 
@@ -389,6 +443,8 @@ new source theorem.
 - [x] hostile audit
 - [ ] broad external novelty audit
 - [ ] Lean probability-integral transform and operator identity
-- [ ] Lean exact metric-defect inertia
+- [x] Lean full `L2(0,1)` adjoint calculation and exact metric-defect inertia
+- [x] Lean no-injective bounded composite-metric anticommutator
+- [x] Lean bounded-composite local-metric rigidity
 - [ ] source theorem forcing the theta root traces into the neutral cone
 - [ ] RH

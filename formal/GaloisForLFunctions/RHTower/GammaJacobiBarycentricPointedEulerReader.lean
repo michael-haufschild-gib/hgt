@@ -203,6 +203,8 @@ theorem gammaJacobiPrimeSeamTailOrientation_submatrix
     (gammaJacobiPrimeSeamTailOrientation p K rho).submatrix f f =
       gammaJacobiPrimeSeamTailOrientation (p ∘ f) K rho := by
   ext i j
+  change gammaJacobiPrimeSeamTailOrientation p K rho (f i) (f j) =
+    gammaJacobiPrimeSeamTailOrientation (p ∘ f) K rho i j
   rw [gammaJacobiPrimeSeamTailOrientation_apply,
     gammaJacobiPrimeSeamTailOrientation_apply]
   rfl

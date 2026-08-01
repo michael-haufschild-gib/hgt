@@ -205,8 +205,13 @@ paper once combined with O2.  Lean now certifies translated-cap measure
 invariance, controlled-target and finite-dictionary union bounds, the exact
 Hilbert--Schmidt geometry of equal-weight Choi phase densities, and the
 metric-displacement-to-coherence implication.  Circuit-word counting and the
-metric-ball capstone are also compiled; only the completed-time Portmanteau
-specialization remains.  The result proves the plateau occupation law; it does
+metric-ball capstone are also compiled.  The completed-time Portmanteau
+specialization is now compiled on the physically correct projective torus as
+`completedTime_zeroAnchoredPaddedCircuitTargets`.  Maximal projective spectral
+rank alone makes the zero-anchored relative frequencies independent; an exact
+measure-preserving global-phase split identifies projective target volume with
+the full-torus Choi bound.  Thus traceless local Hamiltonians are included.
+The result proves the plateau occupation law; it does
 not imply O4's pointwise linear growth or O5's first hitting time.
 
 ### O4. Linear no-shortcuts theorem
@@ -224,6 +229,57 @@ bound, then transfer that geometric distance bound to robust finite-gate state
 complexity with only the permitted polynomial losses.  Proving only absence of
 conjugate points is insufficient: that excludes local variations but not a
 globally shorter path.
+
+#### Proved power-amplification bridge and its sharp resolution cost
+
+There is one unconditional backward transfer from a hard late endpoint to an
+earlier autonomous endpoint.  For arbitrary unitary elements `U,V` of any
+unital C-star algebra,
+
+\[
+  \|U^N-V^N\|\leq N\|U-V\|,
+  \qquad
+  e^{-itH\,N}=e^{-iNtH}.
+\]
+
+Consequently, if the repeated circuit endpoint `V^N` misses `e^{-iNtH}` by
+at least `epsilon`, then `V` misses `e^{-itH}` by at least `epsilon/N`.
+`FiniteHorizonCStarPerturbationLaw.lean` proves all three statements without
+dimension, spectrum, locality or commutativity assumptions.  In an exact word
+metric this turns a size-`Ns` lower bound at time `Nt` into a size-`s` lower
+bound at time `t`; this is the rigorous form of backward hardness
+amplification.
+
+The same argument does **not** close robust O4 at fixed resolution: operator
+error accumulates linearly under repetition, so a late `epsilon` separation
+only certifies early `epsilon/N` separation.  Any successful robust theorem
+must prove that coherent shortcut errors cannot track the autonomous orbit,
+not merely invoke subadditivity.  This locates the missing content of O4 more
+sharply than the cut-locus formulation.
+
+There is, however, a stronger fixed-resolution transfer using autonomous time
+addition rather than powers.  If `U(T)` is farther than `epsilon_late` from
+every word of length `P`, `U(tau)` has an `r`-gate approximation at error
+`epsilon_inc`, and
+
+\[
+  \epsilon_{early}+\epsilon_{inc}\leq\epsilon_{late},
+\]
+
+then `U(T-tau)` is farther than `epsilon_early` from every word of length
+`P-r`.  Concatenating hypothetical approximants would otherwise approximate
+`U(T-tau)U(tau)=U(T)`.  The compiled theorem
+`circuitWordSeparated_autonomous_backward_cone` proves this for every group
+metric satisfying the product-distance inequality.  Thus every hard plateau
+endpoint casts a robust linear no-shortcut cone backward through time after
+inserting a direct-simulation upper bound for `r(tau)`.  Unlike power
+amplification, error is paid once, not divided by elapsed time.
+
+This does not yet prove Brown--Susskind growth from the initial simple state:
+O3 supplies a completed-time density of hard terminal points but no bound
+placing the first such point at the direct-simulation saturation time.  The
+remaining O4 content is now precisely that first-terminal-time/cut-time bound,
+not robustness of the backward ramp once a hard endpoint is known.
 
 #### Failed circuitwise entropy route and surviving aggregate word escape
 
@@ -395,6 +451,39 @@ Formalize an explicit two-query experiment and prove a uniform advantage for
 every time in the fixed-locality ensemble. The theorem must expose all
 normalizations and query resources.
 
+**Literature closure and formalization status.**  This obligation is no longer
+an open research theorem.  Cui--Schuster--Mao--Huang--Brandao, *Random
+unitaries from Hamiltonian dynamics*, arXiv:2510.08434 (2025), prove it for an
+arbitrary distribution of fixed-`q` Hamiltonians and arbitrary evolution
+times.  Their forward-only protocol prepares two copies of a random stabilizer
+product state, applies the same sampled `U=exp(-itH)` once to each copy, and
+measures the same uniformly sampled allowed Pauli on both copies.  For a local
+Pauli dictionary of size `M_q`, its mean squared signal obeys
+
+\[
+ E_{\rm local}\geq {3^{-q}\over M_q},
+ \qquad
+ M_q\leq 4^q n\quad\hbox{(one-dimensional)},
+ \qquad
+ M_q\leq (4n)^q\quad\hbox{(all-to-all)}.
+\]
+
+The bound is uniform in time because `H` itself is the conserved local
+observable.  Haar output gives exponentially small signal, yielding the
+required inverse-polynomial two-query advantage for fixed `q`.  The final
+paper must cite this theorem as an input; it is not part of our novelty.
+
+`ConservedLocalCompressionWitness.lean` now certifies the
+dimension-independent algebraic core: autonomous Heisenberg evolution fixes
+`H` exactly; every local compression matrix with this nonzero fixed coordinate
+has squared Frobenius mass at least one; its uniformly sampled mean transition
+weight is at least `1/M_q^2`; and it strictly exceeds an isotropic
+`1/(4^n-1)` benchmark whenever `M_q^2<4^n-1`.  Remaining Lean port obligations
+are the random stabilizer-product twirl giving `3^{-q}`, the Pauli dictionary
+cardinality bounds, and the explicit Haar/two-design comparison.  O6 is
+therefore closed in external mathematics but not yet dependency-closed in
+Lean.
+
 ### O7. Physics transfer
 
 Prove the theorem directly for fixed-`q` SYK before making a black-hole-model
@@ -509,3 +598,36 @@ receive a new title and an independent significance audit.
   the center of an operator-norm shortcut tube with radius proportional to
   `epsilon/|t|`.  Gaussian box volume remains paper-only and is not a
   manuscript claim.
+- 2026-08-01 -- Strengthened the formal no-go from a conditional periodic
+  center to an explicit fixed-energy non-scalar model.  The two-level sign
+  Hamiltonian has norm `|omega|`, returns exactly to the identity at every
+  `2 pi k / omega`, and its full self-adjoint perturbation tube obeys the
+  dimension-free `|t| ||H-K||` bound.  Therefore neither removal of `H=0` nor
+  conditioning on nonzero energy can support a word-by-word exponential
+  capture bound.
+- 2026-08-01 -- Proved the dimension-free hard-power amplification law in
+  `FiniteHorizonCStarPerturbationLaw.lean`: `||U^N-V^N|| <= N||U-V||`, exact
+  autonomous endpoint composition, and the converse `epsilon/N` separation
+  theorem.  This transfers exact endpoint hardness backward but also exposes
+  the unavoidable linear resolution loss, so plateau plus subadditivity alone
+  cannot establish fixed-error robust growth.
+- 2026-08-01 -- Located complete external closure of O6 in Cui et al.
+  (arXiv:2510.08434): a forward-only two-query randomized stabilizer/Pauli test
+  distinguishes every fixed-`q` Hamiltonian ensemble from Haar at every time.
+  Formalized its conserved-coordinate and inverse-dictionary-squared signal
+  core in `ConservedLocalCompressionWitness.lean` and wired the module into the
+  HTGeometry umbrella.  Pauli-twirl and Haar benchmark ports remain.
+- 2026-08-01 -- Closed O3's completed-time transfer first on the full torus,
+  then found and repaired its failure for traceless Hamiltonians.  The new
+  compiled projective capstone
+  `completedTime_zeroAnchoredPaddedCircuitTargets` proves an exact
+  measure-preserving global/projective phase split, derives rational
+  independence of physical relative frequencies from maximal projective rank,
+  and transfers the explicit Choi circuit-target bound to completed time.
+- 2026-08-01 -- Replaced the failed robust power route by a one-step
+  autonomous concatenation theorem.  `AutonomousWordComplexityConeLaw.lean`
+  proves that a `P`-hard late endpoint and an `r`-gate increment force
+  `(P-r)` hardness at the earlier endpoint with only additive fixed error.
+  This gives a full backward linear cone below every hard plateau endpoint;
+  the first plateau hitting/cut-time bound remains the exact unresolved O4
+  core.

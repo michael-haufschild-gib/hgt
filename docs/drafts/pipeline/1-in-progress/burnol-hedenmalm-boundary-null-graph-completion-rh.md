@@ -3,7 +3,8 @@
 - **ID:** `burnol-hedenmalm-boundary-null-graph-completion-rh`
 - **Stage:** 1-in-progress
 - **Type:** `[CONJECTURE]` / CONTRADICTION ROUTE
-- **Scientific status:** `[OPEN] [CONDITIONAL RH ENDPOINT] [GENERIC GRAPH ROUTE RETIRED]`
+- **Scientific status:** `[OPEN] [ROUTE C1 SURVIVOR] [CONDITIONAL RH ENDPOINT] [GENERIC GRAPH SUBROUTE RETIRED]`
+- **Frontier owner:** Route C1 — complete Xi-Weil/Hedenmalm-form positivity
 - **Statement:** A source-defined singular graph completion of Burnol's critical Sonine carrier
   which adjoins the completed common source as a null boundary vector, retains the divided-zero
   family faithfully, and makes centered coordinate multiplication symmetric proves RH and the

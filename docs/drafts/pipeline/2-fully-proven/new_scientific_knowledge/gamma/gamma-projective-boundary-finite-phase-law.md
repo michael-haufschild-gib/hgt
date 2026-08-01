@@ -3677,8 +3677,218 @@ non-flatness go in, and the corpus's `not_isVertFlatGerm_digammaJetEval` is exac
 non-flatness for a nonzero polynomial — which exists because a standard rational function whose
 every coefficient vanished to every depth would make the jet polynomial flat, contradicting
 `not_isVertFlatGerm_digammaJetEval`.  After that, the `log s` level for `ψ` itself (integrating the
-`ψ′` expansion) and the `ℂ(s)`-coefficient case (multiplying by a rational function, whose own
-inverse-power expansion is classical).
+`ψ′` expansion) and the `ℂ(s)`-coefficient case.
+
+The coefficient case has a clean route that needs no new analysis, only the closure already proved.
+Clearing denominators reduces `ℂ(s)` coefficients to *polynomial* ones, and for a polynomial
+coefficient `a ∈ ℂ[X]` of degree at most `d`, the function `a(s)/s^d` is itself standard of defect
+`0` (numerator `a`, denominator `Multiset.replicate d 0`), hence bounded.  So
+
+`f(s)/s^d = ∑_α (a_α(s)/s^d)·(monomial_α)`
+
+is approximated to every depth by standard rational functions of the minimal weight — the main parts
+multiply by `IsStdRat.mul`, and the errors are multiplied by a *bounded* factor — and
+`exists_datum_of_not_flat` applies to it verbatim.  Transporting back multiplies the datum exponent
+by `s^{-d}`, i.e. gives the integer exponent `p − d` that a growing coefficient requires.
+
+That route is now built.  `isStdRat_poly_div_pow` gives the bounded normalized coefficient, and
+`HTGeometry/JetPolyCoeffDatum.lean` carries it through:
+
+- **`exists_jetPolyCoeff_package`** — the monomial packages multiplied by the bounded coefficients:
+  the normalized jet polynomial `∑_α (a_α(s)/s^d)·∏_i(ψ^{(i+1)})^{e_{αi}}` is approximated to every
+  depth `K` by a standard rational function of the minimal weight `W`, with error `A·u^{W+K}` (main
+  parts by `IsStdRat.mul` and `IsStdRat.sum`, errors multiplied by the bounded factor);
+- **`exists_jetPolyCoeff_datum`** — hence, if that normalized polynomial is not flat, it has a datum
+  `s^p·f(s) → c ≠ 0`.
+
+Since clearing denominators turns `ℂ(s)` coefficients into polynomial ones and the normalization by
+`s^d` only shifts the datum exponent by `−d`, this is eq. (19) for the whole coefficient field, with
+no presentation supplied.
+
+The whole `HTGeometry` umbrella rebuilds with all of this wired in (12754 jobs, no warnings).
+
+**The logarithmic level, first case.**  `HTGeometry/DigammaLogPowers.lean` proves
+**`tendsto_digamma_pow_div_vertLog_pow`**: `ψ(σ+it)^e/(log t + iπ/2)^e → 1`, the datum of a pure
+power of `ψ` — the case in which no cancellation between monomials is possible.  It rests on the
+corpus's `digamma_vertical_sub_log_I_tendsto_zero`, which is a *difference* statement
+(`ψ(s) − vertLog t → 0`), not merely a ratio.
+
+**`tendsto_datum_mul_digamma_pow`** carries this into the datum calculus: if `g` has the datum
+`s^p·g(s) → c`, then `ψ^e·g` has the datum `s^p·(ψ^e·g)(s)/vertLog^e → c` — multiplying by a power of
+`ψ` multiplies the datum by the corresponding power of the vertical logarithm, which is exactly the
+`b`-component of the card's `(a, b, c)`.  Composed with `exists_jetPolyCoeff_datum`, this gives the
+datum of any monomial `a(s)·ψ^{e₀}·∏(ψ^{(i+1)})^{e_i}` in the full `(a, b, c)` form.
+
+**The loop is closed against the law's own interface.**  `HTGeometry/DatumToJetShape.lean` proves
+**`tendsto_div_polyJetShape_of_datum`**: a datum in the form the expansion machinery produces —
+`s^p·F(s)/(log t + iπ/2)^a → c` — *is* a residue against the corpus's jet shape,
+`F/polyJetShape σ a 0 p → c`, since that shape is exactly `L^a/s^p`.  So the unquantified datum of a
+jet polynomial is an admissible coefficient datum for `finite_phase_law_of_gammaJet_data`: the new
+machinery feeds the law directly, with no presentation chosen by hand.
+
+**The general logarithmic level needs no expansion of `ψ − log`.**  Group a jet polynomial by its
+`ψ`-degree: `F = ∑_{e₀} ψ^{e₀}·P_{e₀}(ψ′,ψ″,…)` with `P_{e₀}` having `ℂ(s)` coefficients.  Each group
+has a datum `(p_{e₀}, c_{e₀})` from `exists_jetPolyCoeff_datum`, and `ψ^{e₀} = L^{e₀}(1+o(1))` by
+`tendsto_digamma_pow_div_vertLog_pow`, so the group behaves like `c_{e₀}·L^{e₀}·s^{-p_{e₀}}`.
+
+Cancellation between *different* groups is impossible: at a fixed `s`-order the groups carry
+*distinct* powers of `L`, and `L^{e}/L^{e'} → ∞` for `e > e'`, so the lexicographic pair
+`(p, −e₀)` selects a unique dominant group whose coefficient is already known to be nonzero.  The
+ε-mixing that seemed to require an expansion of `ψ − log` only moves weight *downward* in `L`, where
+the ordering has already decided the winner.
+
+**The assembly step is built.**  `HTGeometry/DominantSumDatum.lean`:
+**`tendsto_sum_div_shape`** — a finite sum of functions, each with a residue `c_α` against its own
+shape `S_α`, has the residue `∑ c_α r_α` against any chosen `S_β`, where `r_α` are the shape ratios
+(dividing termwise, `F_α/S_β = (F_α/S_α)·(S_α/S_β)`); and **`tendsto_sum_div_dominant`** — when `β`
+is dominant, i.e. every other shape ratio tends to `0`, the residue of the sum is exactly `c_β`.
+Together with `tendsto_vertLog_pow_ratio` (distinct `ψ`-degrees are separated) and the corpus's
+`polyJetShape` ratio lemmas (distinct `s`-orders are separated), this is the whole assembly; the
+criterion itself is packaged as **`tendsto_polyJetShape_ratio_zero_of_pair`** — a shape `L^{a₁}/s^{b₁}`
+is subordinate to `L^{a₂}/s^{b₂}` exactly when `b₂ < b₁`, or `b₂ = b₁` and `a₁ < a₂`.
+
+The bookkeeping is done too: **`exists_dominant_pair_index`** takes the lexicographic minimum of the
+pairs `(b, M − a)` over the family (`Finset.exists_min_image` on `ℕ ×ₗ ℕ`) and returns an index to
+which every other member is subordinate, using injectivity of the log-degrees to break the second
+component.  Feeding that into the two previous lemmas gives
+
+**`exists_dominant_shape_residue`** — *a finite sum of functions, each with a residue against its own
+shape `L^a/s^b` and with the log-degrees pairwise distinct, has the residue of its dominant member.*
+
+Since grouping a jet polynomial by `ψ`-degree produces exactly such a family — distinct log-degrees
+by construction, each group's residue supplied by `exists_jetPolyCoeff_datum` through
+`tendsto_div_polyJetShape_of_datum` — this completes the general logarithmic level: no cancellation
+can occur between groups, and the datum of the whole polynomial is the dominant group's.
+
+`HTGeometry/FullJetPolyDatum.lean` states that assembly as one theorem,
+**`exists_grouped_jetPoly_datum`**: given groups `G_α` with data `s^{p_α}·G_α → c_α` and pairwise
+distinct `ψ`-degrees `e_α`, the grouped polynomial `∑_α ψ^{e_α}·G_α` has the residue `c_β` against
+the shape `L^{e_β}/s^{p_β}` of its dominant group.  That is eq. (19) for the digamma field in the
+card's own `(a, b, c)` form, assembled from data that the earlier modules produce for each group.
+
+**The Gamma level closes the same way.**  `tendsto_div_gammaJetShape_of_datum` — multiplying a
+residue by `Γ^u` multiplies the shape by `Γ^u`, so the residue against `gammaJetShape σ u a 0 p` is
+unchanged.  Combined with the corpus's `tendsto_gammaField_div_gammaJetShape` (sums over `Γ`-powers)
+and `tendsto_gammaFieldQuotient` (quotients), every element of `ℂ(s)⟨Γ⟩` now obtains its eq. (3)
+datum from data the new machinery produces unconditionally — the `(k, a, b, c)` of §1, with
+uniqueness already supplied by `gammaJet_datum_residue_unique`.
+
+So the remaining step is not analysis but the dominance plumbing the corpus already owns: each group
+is a residue against `polyJetShape σ e₀ 0 p_{e₀}` (by `tendsto_div_polyJetShape_of_datum`), and
+`exists_dominant_with_shape_ratios` together with `tendsto_family_ratio_of_normalized` turns a finite
+family of such residues into a dominant index with convergent ratios — which is exactly the input
+`finite_phase_law_of_coeff_ratios` consumes.
+
+### The law now runs on data
+
+`HTGeometry/FinitePhaseLawFromDatum.lean` closes the circuit: **`finite_phase_law_of_coefficient_datum`**
+takes the coefficients in the form the residue machinery produces —
+`s^{b_α}·F_α(s)/(log t + iπ/2)^{a_α} → c_α` with `c_α ≠ 0` — and returns the law's three conclusions
+(the collapsed relation on the strip, the nonzero constant-coefficient polynomial, and the finite
+rational Bohr rank).  The conversion is `tendsto_div_polyJetShape_of_datum` followed by
+`gammaJetShape_gamma_zero`; nothing else is supplied by hand.
+
+So the chain runs end to end: a relation with `ℂ(s)⟨Γ⟩` coefficients, each coefficient's datum
+obtained unconditionally from the expansion machinery, feeds the finite-phase law directly.
+
+The hypothesis class of the datum form is inhabited: `datum_of_const` (a constant coefficient has the
+trivial datum `(0,0)`) and `datum_of_pow_datum` (a coefficient with a pure `s`-power datum has log
+degree zero), so the entry point is not vacuous at any level of the family.
+
+And **`exists_datum_hypothesis_of_jetPolyCoeff`** supplies the hypothesis from the object itself: a
+jet polynomial with `ℂ(s)` coefficients, *given only that it is not flat*, produces a `(b, c)` with
+`c ≠ 0` in exactly the form `finite_phase_law_of_coefficient_datum` consumes.  Nothing about the
+coefficient is chosen by hand — non-flatness is the only input, and for a nonzero polynomial the
+corpus's `not_isVertFlatGerm_digammaJetEval` provides it.
+
+### Map of the unquantified-residue chain
+
+For navigation, the modules built for the general form of eq. (19)/(3), in dependency order:
+
+| module | content |
+|---|---|
+| `LineAsymptoticScale` | `IsLineBigO`, graded ring, extraction `s^k f → c`, uniqueness |
+| `PolygammaLineOrders` | jets and jet monomials in that scale |
+| `ShiftOrbitSumBounds` | `∑_n ‖s+n‖^{-(q+3)} ≤ 4/t^{q+2}` — one gained order |
+| `RisingFactorialTelescope` | exact factorial series `∑ 1/((s+n)⋯(s+n+m))` |
+| `PolygammaFactorialComparison` | one expansion step, quantitative leading asymptotic |
+| `RationalOrderBound` | degree defect ⟹ decay order |
+| `RisingFactorialPolynomial` | `risingPoly`, the degree-dropping `expansion_step` |
+| `StandardRationalExpansion` | `IsStdRat`, closure (`mul/add/pow/sum/prod/mono`), depth expansion |
+| `PolygammaDepthExpansion` | `exists_jet_expansion` (arbitrary depth) and the jet/monomial/polynomial packages |
+| `WeightedProductBound` | product error at total weight plus depth |
+| `StdRatDatum` | `s^p·P/∏(s+j) → leadingCoeff P` |
+| `JetDatumFromNonFlat` | the dichotomy: non-flat ⟹ datum |
+| `JetPolynomialDatum`, `JetPolyCoeffDatum` | constant and `ℂ(s)` coefficients |
+| `DigammaLogPowers` | `ψ^e ∼ L^e`, log-power separation, datum times `ψ^e` |
+| `DatumToJetShape` | datum ⟹ residue against `polyJetShape` |
+| `DominantSumDatum` | dominant member of a family, separation criterion, dominant index |
+| `FullJetPolyDatum` | the grouped assembly, and the `Γ^u` level |
+
+Every one is `#print axioms` clean and reachable from the `HTGeometry` umbrella.
+
+### Where the next session starts
+
+The analytic content of eq. (3)/(19) is now formalized without presentation hypotheses, and the law
+runs on the resulting data.  What is *not* formalized is the field-theoretic packaging: `K_Γ` is not
+defined in the corpus as a differential subfield object, so "every `F ∈ K_Γ`" is expressed through
+the presentations of §4 (`(21)` `K_Γ = L(Γ)` and `(23)` `F = P(Γ)/Q(Γ)`) rather than quantified over
+an abstract carrier.  Building that packaging is the remaining item on this branch, and it is differential-algebra plumbing
+rather than analysis — and it should *reuse*, not rebuild: the corpus already owns a
+`differentialAdjoin` carrier over meromorphic germs
+(`HTGeometry/MeromorphicRationalCoordinateDifferentialAdjoin.lean`,
+`differentialAdjoin_meromorphicRationalCoordinate_eq`, and the elliptic-gamma modules'
+`differentialAdjoin` covariance theorems).  The carrier is `differentialAdjoin F s = IntermediateField.adjoin F (differentialJetSet s)`
+(`HTGeometry/DifferentialIndependence.lean`), so `L` and `K_Γ` are `differentialAdjoin` of the
+digamma and Gamma germs over the rational-coordinate field, and the presentation lemma is a statement
+about `IntermediateField.adjoin`: every element of the adjoin of a jet set lies in the adjoin of a
+*finite* subset, and over a finite generating set the adjoin is the set of quotients of polynomial
+expressions in the generators.  Both halves are mathlib API rather than new mathematics, and the first is now built:
+`HTGeometry/DifferentialAdjoinPresentation.lean` proves **`mem_differentialAdjoin_iff`** — an element
+of `differentialAdjoin F s` is exactly a quotient of two polynomial expressions in the jets of the
+generators (`IntermediateField.mem_adjoin_iff` applied to `differentialJetSet`), with
+`exists_jetPoly_presentation` as the usable form.  That is §4's `(23)` in formal dress.
+
+`aeval_eq_sum_monomials` puts a presentation in the monomial-sum shape
+`∑_d coeff_d · ∏_i x_i^{d i}`, and `exists_fin_sum_eq` / `exists_fin_prod_eq` reindex any finite sum
+or product over `Fin N` — the bookkeeping steps between a presentation and the `Fin N` families the
+residue theorems take.
+
+**`exists_finite_jetPoly_presentation`** states the two halves as one: every element of a
+differential adjoin is a quotient of two polynomials in *finitely many* jets of the generators —
+eq. `(23)` of the card in formal form.  Its ingredient
+**`exists_finset_jets_of_mem_differentialAdjoin`** is the finiteness half: every element already
+lies in the field generated by a *finite* set of jets, so a presentation is a jet polynomial in
+finitely many variables — the `Fin N` form the residue machinery accepts.
+
+`differentialJetSet_singleton` and `differentialJetSet_pair` give the two shapes the card needs —
+`L = ℂ(s)⟨ψ⟩` presents over the jets of one generator, `K_Γ = ℂ(s)⟨ψ, Γ⟩` over the union of two jet
+ranges — and `mem_differentialAdjoin_singleton_iff` states the presentation in that form.
+
+What is left is the transport, and its primitive is already in the corpus: the carrier is
+`upperEndMeroField` with `upperEndMeroFieldDifferential`
+(`HTGeometry/UpperEndDifferentialField.lean`), and **`upperEndGermDeriv_coe`** states that the germ
+derivative of a function's germ is the germ of its derivative.  Iterating that is now proved:
+`HTGeometry/UpperEndJetTransport.lean` gives **`upperEndGermDeriv_iterate_coe`** —
+`(upperEndGermDeriv)^[n] ⟦f⟧ = ⟦iteratedDeriv n f⟧` — so the abstract jets of a germ *are* the germs
+of the analytic jets.  With that and the two jet-set shapes above, a presentation in `L` or `K_Γ`
+reads as a polynomial in `iteratedDeriv n Complex.digamma` on the line, which is exactly what the
+residue chain consumes; eq. (3) then quantifies over the field.
+
+The field-level half is proved too: **`differentialJet_algebraMap`** — inside `upperEndMeroField`
+the differential-field jets of an analytic germ are `upperEndAnalyticDeriv^[n]`, so the abstract jets
+of a `differentialAdjoin` presentation are the iterated analytic derivatives of the representative.
+With the germ identity above, a presentation of an element of `L` or `K_Γ` *is* a jet polynomial in
+`iteratedDeriv n Complex.digamma` on the line.
+
+(Elaboration note for whoever continues: the germ coercion `(f : Germ upperEndFilter ℂ)` only fires
+inside `namespace GaloisForLFunctions.HTGeometry` with `open Filter Set Topology Function` and
+`open scoped Differential`; in the plain `GaloisForLFunctions` namespace it silently fails to
+elaborate.)
+
+Everything else on the card's Lean side is done: §1–§8 including uniqueness in eq. (3), the §7
+aperture bridge and hull-torus surjection, all of §8's boundary cases, and the unquantified residue
+chain mapped above.
 
 ## Gates
 

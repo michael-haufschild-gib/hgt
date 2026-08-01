@@ -4,10 +4,12 @@
 - **Stage:** 2 — fully proven on paper
 - **Type:** EXACT SOURCE NO-GO + POSITIVE LOG-FLUX SURVIVOR
 - **Scientific status:** `[PAPER-PROVED] [CANDIDATE NEW NO-GO] [POSITIVE SURVIVOR] [NOT RH PROGRESS]`
-- **Parent:** `bv-copoisson-principal-normal-connection-law.md`
+- **Parent:**
+  `../../../3-formalized/not_new_scientific_knowledge/bv-copoisson-principal-normal-connection-law.md`
 - **RH used:** no
 - **Computation used:** no
-- **Lean:** authorized after independent normalization and primary-literature audit; in progress
+- **Lean:** Theorems A--C and E--G formalized unconditionally; Theorem D remains a paper-only,
+  non-load-bearing boundary supplement
 
 ## Frontier changed
 
@@ -469,8 +471,11 @@ bornology; the latter no longer preserves the exact Rademacher/logarithmic Gram 
 - [x] compact co-Poisson convolution repair ruled out by the all-moments density theorem;
 - [x] independent audit of normalization and half-weight direction;
 - [x] primary-literature priority audit against Burnol's co-Müntz and extended-property-S theorems;
-- [ ] decide whether logarithmic finite part has a source-positive coupled realization;
-- [ ] formalize Theorems A--G and wire the resulting modules.
+- [x] completion-only question decided: the Gamma--Gaussian envelope realizes arbitrary moderate
+  data, including off-line models, so existence of a coupled completion is nonselective;
+- [x] formalize load-bearing Theorems A--C and E--G and wire the resulting modules;
+- [ ] formalize supplementary analytic Rademacher Gram Theorem D; it is not used by any terminal
+  no-go or by the provider disposition below.
 
 ## Independent audit and novelty boundary
 
@@ -493,3 +498,45 @@ or the compact-seed half-density resonance no-go.  Priority remains provisional,
 labelled candidate-new rather than externally certified new knowledge.  Classical inputs—Müntz,
 Burnol's property-S theorem, harmonic estimates, Rademacher orthogonality, and polynomial
 density—are not claimed as new.
+
+## Lean closure and provider disposition
+
+The unconditional formal boundary is now dependency-closed:
+
+- `BVCoPoissonSharpCriticalFluxCore.lean` proves the sharp harmonic sandwich, a summable
+  `O(m^-2)` block-energy error, exact cell integrals, and cutoff flux;
+- `BVCoPoissonSharpCriticalFlux.lean` upgrades the cutoff result to arbitrary real `T`, proves
+  `P in L2(0,infinity)`, and proves `t |P(t)|^2` is not integrable;
+- `BVCoPoissonLogBoundaryQuotient.lean` proves the span of the ideal classes `e_0+e_j` is dense;
+- `BVCoPoissonHalfWeightResonance.lean` proves the two reflected eta lattices are nonzero and no
+  nonzero polynomial cancels either infinite pole family;
+- `BVCoPoissonCompactSeedRigidity.lean` proves, for arbitrary finite measures on a positive compact
+  interval, that vanishing of all even or odd moments forces the density to vanish almost
+  everywhere.
+
+`#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound` for all exported
+terminal theorems. No theorem assumes RH, a zeta-zero hypothesis, a source sign, or a numerical
+certificate.
+
+This closes the proposed compact BV/co-Poisson completion provider, not RH. Alternatives are
+exhaustive for this provider family:
+
+```text
+ordinary Burnol L2 completion       -> critical half-weight leaves the carrier;
+logarithmic boundary quotient       -> multiplier ideal is dense, quotient is zero;
+extended property-S, sharp eta      -> infinite parity-resonance obstruction;
+compact multiplicative correction  -> all-moments rigidity forces zero seed;
+noncompact Gamma--Gaussian repair   -> exists for arbitrary moderate data, hence is nonselective.
+```
+
+What remains is not another completion theorem. It is source-generated causal-dagger positivity
+on the completed principal conormal. Contractivity of that source-selected dagger, combined with
+the already proved conormal dilation character, is precisely the RH-bearing implication. Treating
+it as routine functional analysis would assume desired orientation. This provider family is
+therefore terminalized. Route G remains open: Suzuki's actual source-coefficient, chord-mass, and
+global Pick/Ward mechanism has not been refuted. A new discriminating source theorem must attack
+that mechanism, not add a fourth topology or graph completion.
+
+Theorem D records a genuine analytic positive survivor—an exact Rademacher logarithmic Gram and
+Stein defect—but its conormal is unbounded. Its remaining Lean formalization cannot change the
+terminal implication and is deliberately not represented by an abstract `ell2` surrogate.

@@ -280,6 +280,51 @@ theorem not_suzukiXiCharacteristicLimitWall :
   exact not_analyticAt_suzukiXiCharacteristicTarget_of_deriv_eq_zero
     hc0 hcXi hderiv (htarget (c : ℂ) (Set.mem_univ _))
 
+/-! ## Holomorphic exponential gauges do not repair the limit
+
+Suzuki's displayed normalization is an exponential factor.  In the analytic
+characteristic-function category its exponent is entire, so the normalized characteristics are
+again entire and have exactly the same zeros.  The Weierstrass theorem makes their compact-open
+limit entire, reducing the supposedly more general gauged wall to the impossible wall above.
+-/
+
+/-- The gauge-complete analytic reading of Suzuki's displayed characteristic limit.  The
+approximants `W n` and exponent gauges `Phi n` are entire; the exponential gauges therefore never
+change their real zero sets. -/
+def SuzukiHolomorphicGaugeCharacteristicLimitWall : Prop :=
+  ∃ W Phi : ℕ → ℂ → ℂ,
+    TendstoLocallyUniformly
+        (fun n z => Complex.exp (Phi n z) * W n z)
+        suzukiXiCharacteristicTarget atTop ∧
+      (∀ᶠ n in atTop, Differentiable ℂ (W n)) ∧
+      (∀ᶠ n in atTop, Differentiable ℂ (Phi n)) ∧
+      (∀ᶠ n in atTop, ∀ z : ℂ, W n z = 0 → z.im = 0) ∧
+      ∃ a : ℂ, suzukiXiCharacteristicTarget a ≠ 0
+
+/-- **Gauge-complete Suzuki no-go.**  No sequence of finite holomorphic exponential gauges times
+entire real-zero characteristic functions can converge locally uniformly on `ℂ` to Suzuki's
+displayed target.  This quantifies over every source family, aperture schedule, shift, extension
+angle, and entire exponential normalization satisfying the published analytic interface. -/
+theorem not_suzukiHolomorphicGaugeCharacteristicLimitWall :
+    ¬ SuzukiHolomorphicGaugeCharacteristicLimitWall := by
+  rintro ⟨W, Phi, hconv, hW, hPhi, hreal, a, ha⟩
+  let F : ℕ → ℂ → ℂ := fun n z => Complex.exp (Phi n z) * W n z
+  have hF : ∀ᶠ n in atTop, Differentiable ℂ (F n) := by
+    filter_upwards [hW, hPhi] with n hWn hPhin
+    exact hPhin.cexp.mul hWn
+  have htargetDiffOn :
+      DifferentiableOn ℂ suzukiXiCharacteristicTarget Set.univ :=
+    hconv.tendstoLocallyUniformlyOn.differentiableOn
+      (hF.mono fun _ hn => hn.differentiableOn) isOpen_univ
+  have htarget : AnalyticOnNhd ℂ suzukiXiCharacteristicTarget Set.univ :=
+    htargetDiffOn.analyticOnNhd isOpen_univ
+  have hFreal : ∀ᶠ n in atTop, ∀ z : ℂ, F n z = 0 → z.im = 0 := by
+    filter_upwards [hreal] with n hn z hz
+    apply hn z
+    exact (mul_eq_zero.mp hz).resolve_left (Complex.exp_ne_zero _)
+  apply not_suzukiXiCharacteristicLimitWall
+  exact ⟨F, hconv, hF, hFreal, htarget, a, ha⟩
+
 end
 
 end RHTower

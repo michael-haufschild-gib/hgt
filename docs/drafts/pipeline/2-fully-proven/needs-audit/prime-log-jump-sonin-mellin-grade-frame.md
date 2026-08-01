@@ -8,7 +8,7 @@
 - **Parents:**
   `hedenmalm-two-prime-theta-interval-normal-frame.md`;
   `../new_scientific_knowledge/sonin/cofinal-essential-phase-sonin-coupling-nonannihilation.md`;
-  `../../1-in-progress/bv-copoisson-principal-normal-connection-law.md`;
+  `../../3-formalized/not_new_scientific_knowledge/bv-copoisson-principal-normal-connection-law.md`;
   `../../1-in-progress/prime-valuation-hellinger-rees-reflection-fracture.md`;
   `../../4-publication-ready/riemann-source-modular-superselection/main.tex`.
 - **Statement:** A source-defined prime-log jump shell reaches the cofinal Sonin partial-unitary

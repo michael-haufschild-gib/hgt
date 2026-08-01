@@ -73,12 +73,12 @@ Write a review paper whose route claims are traceable to exact Lean declarations
 - 2026-08-01 — Late-July literature reconciliation added Verjovsky's shrinking-arc Möbius moment criterion as a Route E connector without a moment estimate; Michalowski's explicit cubic Xi-Toeplitz tail wedge as a secondary boundary whose directed-rounding proof is excluded by the no-computation rule; and rejection of Gaber's totient claim because its `ℓ=1` RH-conditional `O(x)` error contradicts Montgomery's unconditional omega theorem.
 - 2026-08-01 — User ended delegated audits. All subagents were interrupted; maintenance mode is local document reconciliation only, with no Lean process launched while other agents compile.
 - 2026-08-01 — Follow-on live imports reconciled. `SoninChannelCutIndex` eliminates the cut index as well as tower height from the rescaled-packet logarithmic-channel bound, leaving explicit carrier/half-width/base/ratio data. `DeningerPacketFineSmooth` proves locally constant-by-smooth subordinate finite families for profinite-by-compact-manifold products, including circle specialization; its exported conclusion still omits nonnegativity. `DeningerMappingTorus` proves the product homeomorphism only for a generic quotient with trivial monodromy; no prime-fibre or Frobenius-triviality instantiation is present.
-- 2026-08-01 — Full three-umbrella delta pass reconciled newly wired work. Route J's proposed uniform/subgrowth coherent-energy budget is unconditionally false by a sixth-power-aperture bad-diagonal lower floor uniform in Julia scale; fixed-packet zero scale tends instead to rank-one total-mass energy. Main and literature papers now classify Route J as retired with only a new principal-relative/pre-projection current surviving.
+- 2026-08-01 — Full three-umbrella delta pass reconciled newly wired work. Route J's proposed uniform/subgrowth unrenormalized coherent-energy budget is unconditionally false by a sixth-power-aperture bad-diagonal lower floor uniform in Julia scale; fixed-packet zero scale tends instead to rank-one total-mass energy. This retires that subroute only; the principal-relative/pre-projection current remains Route J's open survivor.
 - 2026-08-01 — `SoninSublinearChannelFamily` extends the typed no-go from bounded operators to arbitrary channel families whose images on bounded packet vectors have sublinear scale envelopes; `SoninPacketHighTailPolynomial` supplies canonical twelfth-order density and eleventh-order energy tails. Route F open core now requires positive-linear packet action, escape from the typed model, or semilocal reduction.
 - 2026-08-01 — Route D unrestricted moment-carrier rigidity and subset-positive Euler-lift classification are now present-state content, not dated update prose. New HT Bohr product laws, Gamma-jet datum uniqueness, transposition/full-symmetric criterion, exact critical-horizon radical boundary, squared-jet algebraic independence, and truncation cancellation are mapped as generic infrastructure without RH source handoffs. The residue-programmed Gauss diagonal has exact Schatten depth but is classified as representation theatre, not a source operator.
 - 2026-08-01 — `SoninFourierChannelFamilyClosed` closes the actual Fourier logarithmic-shell completion for arbitrary heights under exact carrier-proportionality, width-carrier lower-bound, packet-norm, positivity, and mean hypotheses. `SoninChannelMovingThreshold` supplies the height-free moving-threshold estimate used upstream. Paper no longer leaves this family at a mere fixed-annulus bound.
 - 2026-08-01 — `DeningerPacketUnits` instantiates `U_p=∏_{ℓ≠p}ℤ_ℓˣ`, proves compact/T2/totally-disconnected structure, and gives smooth fineness of `U_p×Circle`. Paper preserves missing arithmetic identifications: root-of-unity automorphisms, quotient by closure of `p`, Frobenius-triviality, period `log p`, actual prime-fibre topology, and relevant complex.
-- 2026-08-01 — Route J closure sharpened exactly: positive unit-diagonal bad mass survives every off-diagonal cancellation; post hoc diagonal subtraction violates normalized anchor capacity already for a one-node unit packet. Route J remains retired, with only a differently defined principal-relative pre-projection current outside the route surviving.
+- 2026-08-01 — Route J subroute closure sharpened exactly: positive unit-diagonal bad mass survives every off-diagonal cancellation; post hoc diagonal subtraction violates normalized anchor capacity already for a one-node unit packet. The differently defined principal-relative pre-projection current is not owned elsewhere, so Route J remains open at that survivor.
 - 2026-08-01 — `DeningerPacketNonlocal` proves that packet averaging is not determined by restriction to a proper clopen piece and has a nonzero zero-average mode whenever a clopen piece has intermediate probability mass. Paper records this as a local/global interface obstruction, not a sheaf map or arithmetic relevant-complex theorem.
 - 2026-08-01 — `SoninBurnolFrequencyLogOrder` and `SoninBurnolFrequencyLogarithmicOrderNoGo` close the complete geometric Burnol log-shell conductor, not merely its frequency half: canonical-packet quadratic form has affine-logarithmic carrier growth uniformly in finite tower height, and every height schedule fails the typed lower floor along the positive-linear source schedule.
 - 2026-08-01 — `CfcNormBound` is mapped only as generic continuous-functional-calculus norm control. `PostcriticalFiberSeparation` proves two critical-data-identical states with distinct negative reciprocal constant-term readings. `RectangularSchurTopEntry` proves only top-index/corner uniqueness for the rectangular Toeplitz section; determinant linearity, coprimality, irreducibility, and RH handoff remain absent.
@@ -105,10 +105,41 @@ Write a review paper whose route claims are traceable to exact Lean declarations
   coefficient `-m₄/m₃` obeys weighted barycentric source aggregation and disagrees with edge-symbol
   multiplication on literal von Mangoldt edges `2→3`, `3→4`. Paper proof, four Lean modules,
   umbrellas, targeted capstone build, and standard-axiom audit are complete. Positive survivor is
-  edge/fibre-marked noncyclic pointed aggregation, redirected to co-Poisson fibre orientation.
+  edge/fibre-marked noncyclic pointed aggregation, incorrectly redirected to a nonexistent named
+  co-Poisson continuation.  This historical overclaim is corrected by the next two entries.
 - 2026-08-01 — Route M disposition corrected after scope challenge. `SR-49` proves only failure of
   cyclic scalar contraction, proper cyclic-algebra escape, and multiplicative edge-reader assembly.
   It does not exclude the formalized barycentric survivor: an edge/fibre-marked noncyclic pointed
   reader. No existing numbered co-Poisson route supplies that object or its orientation handoff.
-  Route M is therefore `OPEN — NARROWED`; prior retirement entry is retained as audit history of the
-  overclaim, not current status.
+  At this historical checkpoint Route M was `OPEN — NARROWED`; prior retirement entry is retained
+  as audit history of the overclaim.  Next entry supersedes this status.
+- 2026-08-01 — Route M pointed survivor constructed and formalized.  The off-diagonal reader of
+  the commutator between FE--Schwarz functional calculus of the completed Euler clock and the exact
+  Gamma--Jacobi tail loss is restriction-compatible, completed-Euler covariant, noncyclic,
+  reflection-odd, source-barycentric, and detects exact marked seam equality.  General
+  barycentric dehomogenization proves positive normalization only projectivizes additive marked
+  current.  For every nonempty actual von Mangoldt aperture and every Jacobi aperture, cofinal
+  anchored reader flatness is equivalent to RH.  Route M is now `FORMALIZED — TERMINALIZED`, not
+  retired and not an RH proof; remaining flatness is exactly the target condition.
+- 2026-08-01 — Route K full-source realization retired after heavy-conjecture and hostile
+  closure audit.  The free weight-one Clifford square is arithmetic-blind; finite-rank theta
+  coupling loses Xi phase; finite-channel local models are gauge/lattice; and abstract Weyl
+  realization imports the RH-equivalent Nevanlinna sign.  New formal closure at the hard topology
+  boundary: every nonzero positive momentum-symmetric Hilbert-Gram map on the full theta Schwartz
+  core has a nonclosable ordinary-`L²` graph, even for arbitrary Hilbert target and partial
+  operator.  A continuous reporter on any dense normed `L²` completion also collapses to zero.
+  Exact positive survivor is a singular real-divisor temperate rigging with dense nonclosed
+  radical.  Finite divisor-span or partial/discontinuous carriers are not ruled out, but their
+  all-zero source landing is the RH-bearing conservativity premise; this does not rule out every
+  conceivable Hilbert--Pólya operator.
+- 2026-08-01 — Route G's BV/co-Poisson completion/provider family terminalized after hard-source audit. Canonical
+  sharp BV/co-Poisson seed has ordinary `L2` survival, critical half-weight failure, and exact
+  arbitrary-real-cutoff flux coefficient `1/4`; logarithmic ideal quotient is zero by dense span;
+  critical eta misses both property-S parity lattices; every compact multiplicative resonance
+  repair is zero by all-moments rigidity. Five Lean modules formalize load-bearing A--C/E--G
+  results and are umbrella-wired; targeted builds and standard-axiom audit pass. The analytic
+  Rademacher Gram supplement remains honestly paper-only and is not used by closure. Universal
+  Gamma--Gaussian property-S envelope repairs arbitrary moderate data, including off-line models,
+  so completion existence is nonselective. Remaining source-generated causal-dagger positivity
+  is exact RH-bearing endpoint. Route G itself remains open; this is a provider no-go, not an RH
+  proof or a class-complete Suzuki obstruction.

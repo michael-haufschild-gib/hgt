@@ -222,16 +222,19 @@ cutoff, abandon finite regular contraction/cyclicity, or become a genuinely sing
 anomaly.
 
 Equations `(8)`--`(13)` construct that survivor canonically at finite aperture and prove its
-projective cofinal limit.  Remaining frontier is no longer existence or cutoff compatibility of a
-flux-carrying jet reader.  It is whether this exact Toeplitz countertrace:
+projective cofinal limit.  At this card's historical frontier, the unresolved questions were
+whether this exact Toeplitz countertrace:
 
 1. couples to the fixed coherent odd Gamma--Jacobi marginal through one non-separable source
    incidence;
 2. realizes completed Euler multiplication on its proper anomalous algebra;
-3. feeds the co-Poisson fibre orientation.
+3. feeds a same-fibre orientation before scalar contraction.
 
-This does not construct the required reader, identify completed Euler multiplication, force
-co-Poisson fibre orientation, or prove RH.
+Subsequent `SR-49` closes the cyclic proper-algebra and completed-Euler realization requested in
+items 1--2 as a failed class.  Completed `SR-41` constructs the edge/fibre-marked noncyclic
+replacement, proves its completed-Euler covariance and reflection-odd orientation, and proves its
+cofinal anchored flatness equivalent to RH.  Thus this card itself does not construct the terminal
+reader or prove RH, but these items are no longer an unnamed co-Poisson continuation of Route M.
 
 ## Corpus and literature collision audit
 

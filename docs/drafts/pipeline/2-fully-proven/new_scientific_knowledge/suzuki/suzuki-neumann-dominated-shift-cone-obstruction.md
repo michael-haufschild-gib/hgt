@@ -574,3 +574,114 @@ cancelling. That sign pattern is not decoration — it is what makes `(4)` a pur
 including the cancellation and the `2 cosh a` coefficient, is the theorem above. Only the
 substitution of Suzuki's `v_{lambda,±}` for the exponentials — the content of `(2)`'s strong limit,
 already proved — remains, and it is definitional.
+
+### Lean progress — the spectral-window hypothesis discharged
+
+- `spectrum_subset_Icc_of_nonneg` : a positive bounded operator has `spectrum ℝ B ⊆ Icc 0 ‖B‖`.
+  [PROVED HERE] in `RHTower/SuzukiStrongResolventLimit.lean`, standard axioms
+  `[propext, Classical.choice, Quot.sound]`, builds clean.
+
+So the `hspec` hypothesis of both strong-limit theorems (`tendsto_resolventFamily_id`,
+`tendsto_neumannShiftFamily_id`) never has to be supplied by hand: positivity of the resolvent
+gives it, with `M = ‖B‖`. Lower bound from `spectrum_nonneg_of_nonneg`, upper by pushing to
+`spectrum ℂ` and applying `spectrum.norm_le_norm_of_mem`. Note `[Nontrivial H]` is required —
+`NormOneClass (H →L[ℂ] H)` depends on it.
+
+## Restricted-resolvent instantiation: the abstract limits are inhabited
+
+`RHTower/SuzukiDiagonalResolventInstantiation.lean` supplies an explicit class of operators
+satisfying every hypothesis of `tendsto_resolventFamily_id` and `tendsto_neumannShiftFamily_id`,
+so those limits are not vacuous.  The operators are the diagonal multipliers of
+`lp (fun _ : ℕ => ℂ) 2` (the corpus `diagonalOperator`, which previously carried norms and
+approximation numbers but no spectral theory):
+
+- `isSymmetric_diagonalOperator_ofReal`, `isSelfAdjoint_diagonalOperator_ofReal` — a real
+  multiplier gives a self-adjoint operator.
+- `injective_diagonalOperator` — a nowhere vanishing multiplier gives an injective operator.
+- `isPositive_diagonalOperator_ofReal`, `nonneg_diagonalOperator_ofReal` — a nonnegative real
+  multiplier gives a positive operator, via `⟪Bf, f⟫ = ∑ r n ‖f n‖²`.
+- `spectrum_diagonalOperator_ofReal_subset` — positivity places the spectrum in `Icc 0 ‖B‖`.
+- `tendsto_diagonalResolventFamily_id`, `tendsto_diagonalNeumannShiftFamily_id` — both strong
+  limits, for every nonnegative nowhere vanishing bounded multiplier.
+- `harmonicDiagonalOperator` with multiplier `n ↦ 1/(n+1)`, and
+  `tendsto_harmonicResolventFamily_id`, `tendsto_harmonicNeumannShiftFamily_id` — a single
+  concrete operator whose spectrum accumulates at `0`, which is the regime the abstract theorems
+  were built for: the resolvent symbols fail to converge uniformly near `0`, so the convergence
+  is strong and not norm.
+
+All eight audit to exactly `[propext, Classical.choice, Quot.sound]`.
+
+This closes the *restricted-resolvent* half of gate `formalize actual restricted-resolvent and
+triangle instantiation`.  What the gate still names is the triangle instantiation, which needs
+Suzuki's explicit source rather than further Lean infrastructure: the identification of the
+abstract family with `R_r = (A + rI)⁻¹` for Suzuki's own operator, and of the limiting
+exponentials with `v_{lambda,±}`.  The diagonal family above shows the abstract statements have
+content; it is not claimed to be Suzuki's operator.
+
+Lean note: instance search does not find the real continuous functional calculus on
+`EllTwo →L[ℂ] EllTwo` even though every prerequisite (including the complex calculus at
+`IsStarNormal`) is present and `IsSelfAdjoint.instContinuousFunctionalCalculus` applies when
+named.  The module carries that instance under an explicit alias.
+
+### Compactness of the instantiating operator
+
+The claim that the harmonic instantiation's spectrum accumulates only at `0` is now proved, not
+merely asserted:
+
+- `diagonalOperator_lpBasis` — a diagonal multiplier acts on the canonical `ℓ²` basis by its
+  entries, which is the hypothesis of the corpus theorem
+  `HTGeometry/DiagonalCompactOperator.isCompactOperator_of_diag_tendsto_cofinite`.
+- `isCompactOperator_diagonalOperator` — a multiplier tending to zero gives a compact operator
+  (`Nat.cofinite_eq_atTop` supplies the filter).
+- `isCompactOperator_harmonicDiagonalOperator` — the harmonic operator is compact.
+- `finite_spectrum_harmonicDiagonalOperator` — for every `eps > 0` only finitely many spectral
+  points satisfy `eps ≤ ‖mu‖`, so `0` is the only possible accumulation point.
+- `countable_spectrum_harmonicDiagonalOperator` — the spectrum is countable.
+
+The last two are instances of this session's earlier
+`HTGeometry/CompactOperatorDiscreteSpectrum.lean`.  All five audit to exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+The instantiation therefore reproduces the intended regime in full: a compact positive injective
+self-adjoint operator whose spectrum is a null sequence, so the resolvent symbols fail to converge
+uniformly near `0` and the convergence supplied by the two limit theorems is genuinely strong
+rather than norm.
+
+### The instantiating spectrum is genuinely infinite
+
+The previous entry proved only that *at most* finitely many spectral points lie outside each disc
+around `0`, which would hold vacuously if the spectrum were `{0}`.  The sharpening removes that
+reading:
+
+- `mem_spectrum_harmonicMultiplier` — every entry `1/(n+1)` is an eigenvalue, with the canonical
+  basis vector as eigenvector, hence lies in the spectrum (via mathlib's Fredholm alternative
+  `IsCompactOperator.hasEigenvalue_iff_mem_spectrum`).
+- `infinite_spectrum_harmonicDiagonalOperator` — the entries are distinct, so the spectrum is
+  infinite.
+- `zero_mem_spectrum_harmonicDiagonalOperator` — the spectrum is closed and the entries converge
+  to `0`, so `0` is in it.
+
+Together with the finiteness statement this pins the qualitative picture exactly: the spectrum is
+an infinite null sequence of eigenvalues together with its limit point `0`, and `0` is the sole
+accumulation point.  This is the compact-resolvent regime the card's `(2)` describes, now realised
+by an operator that exists in Lean.  All three audit to exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+### The inverted operator is genuinely unbounded
+
+Without this step the instantiation could be read as a bounded operator in disguise rather than
+the resolvent of an unbounded one, which is the regime the card is about:
+
+- `denseRange_harmonicDiagonalOperator` — the range is dense (from
+  `HTGeometry/CompactOperatorDiscreteSpectrum.denseRange_of_isSelfAdjoint_of_injective`), so the
+  operator inverted in the resolvent coordinate is densely defined.
+- `not_surjective_harmonicDiagonalOperator` — `0` lies in the spectrum, hence the operator is not
+  invertible; an injective bounded operator on a Banach space that were also surjective would be
+  invertible by `ContinuousLinearMap.isUnit_iff_bijective`.
+- `range_harmonicDiagonalOperator_ne_top` — the range is therefore proper.
+
+Dense but proper range is exactly the statement that the inverse is a densely defined operator
+that is not everywhere defined, i.e. unbounded.  So the instantiation realises a genuine
+restricted resolvent: `B` is the bounded inverse of an unbounded densely defined operator, built
+without ever forming that operator, in line with the coordinate strategy the card records.  All
+three audit to exactly `[propext, Classical.choice, Quot.sound]`.

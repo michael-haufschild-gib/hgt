@@ -4,7 +4,7 @@
 - **Stage:** 5 — failed mechanism, formalized
 - **Type:** FALSIFIED CYCLIC/MULTIPLICATIVE MECHANISM / SOURCE-SPECIFIC ALGEBRA SATURATION /
   POSITIVE AGGREGATION LAW
-- **Scientific status:** `[PAPER-PROVED] [FORMALIZED] [ROUTE M OPEN] [NOVELTY PROVISIONAL] [NOT RH]`
+- **Scientific status:** `[PAPER-PROVED] [FORMALIZED] [FAILED CLASS] [ROUTE M TERMINALIZED] [NOVELTY PROVISIONAL] [NOT RH]`
 - **Parent:** Route M in `rh-current-frontier-map.md`; `SR-46`--`SR-48`
 - **RH used:** no
 - **Computation used:** no
@@ -212,7 +212,9 @@ projection mass and is semifinite/infinite, not a normalized Berezin value.
 
 **Verdict: FALSIFIED within this route.**  Reflection parity `(7)` annihilates the odd holonomy
 before post-processing.  Retaining `w` requires a pointed family before contraction; this abandons
-the global scalar reader and belongs to the surviving co-Poisson fibre route.
+the global scalar reader.  That pointed family is now constructed in
+`gamma-jacobi-barycentric-pointed-euler-reader.md`; it is Route M's own survivor, not a co-Poisson
+route.
 
 ### C5 — a forced outer factor absorbs edge aggregation failure
 
@@ -224,10 +226,10 @@ canonical scalar outer function.
 
 ### C6 — keep an edge-marked, noncyclic bundle
 
-**Verdict: SURVIVES, BUT IS A DIFFERENT ROUTE CLASS.**  Preserving edge labels before contraction
+**Verdict: SURVIVES AND IS NOW CONSTRUCTED.**  Preserving edge labels before contraction
 avoids Theorem D’s loss of multiplicativity and permits a pointed family.  It must abandon cyclic
-scalar contraction, carry the barycentric normalization `(14)`, and feed the co-Poisson fibre
-sign directly.  This is the positive survivor below.
+scalar contraction, carry the barycentric normalization `(14)`, and retain its own fibre sign
+directly.  The formalized pointed Euler reader realizes exactly this class.
 
 ## No-go closure
 
@@ -237,14 +239,15 @@ sign directly.  This is the positive survivor below.
   connector.  Global reflection invariance then independently erases terminal fibre orientation.
 - **Strongest positive survivor:** exact barycentric aggregation law `(14)`.  Any viable
   source reader must retain edge/fibre marks before contraction, be nonmultiplicative under source
-  addition, and be noncyclic/non-invariant at a fixed fibre.
+  addition, and be noncyclic/non-invariant at a fixed fibre.  The separate formalized Route M card
+  constructs such a reader and proves its exact RH connector.
 - **New insight:** convergence of finite Blaschke factors and construction of a forced scalar outer
   factor are no longer Route M’s hard core. Even granting both cannot cross the cyclic-reader and
   fibre-orientation arrows. Correct survivor is an edge/fibre-marked pointed bundle, not a scalar
-  inner--outer reader; no existing named route supplies it.
+  inner--outer reader; it is now supplied by Route M's pointed Euler construction.
 - **Status:** paper proof and hostile audit complete; generic algebra classified as classical;
-  failed mechanism and barycentric source law formalized unconditionally; Route M remains open at
-  the pointed noncyclic survivor.
+  failed mechanism and barycentric source law formalized unconditionally.  Route M itself is
+  terminalized at the formalized pointed reader's RH-equivalent cofinal flatness condition.
 
 ## Corpus collision audit
 
@@ -309,4 +312,8 @@ and `RisingFactorialPolynomial` modules; those files are outside this route and 
   aggregation as exact closure pair; paper proof recorded before Lean.
 - 2026-08-01 — unconditional Lean closure completed, both umbrellas wired, targeted capstone build
   passed, and axiom audit clean. Subsequent scope correction retains this card as failed mechanism;
-  Route M remains open at edge/fibre-marked barycentric noncyclic reader construction.
+  at that historical checkpoint Route M was open at edge/fibre-marked barycentric noncyclic reader
+  construction.  Next entry supersedes that status.
+- 2026-08-01 — pointed survivor subsequently constructed and formalized in
+  `gamma-jacobi-barycentric-pointed-euler-reader.md`.  Route M is terminalized there; this card
+  continues to retire only its cyclic/multiplicative predecessor.

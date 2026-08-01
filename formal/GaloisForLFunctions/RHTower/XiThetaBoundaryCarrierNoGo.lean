@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.XiThetaL2Cyclicity
+import GaloisForLFunctions.RHTower.XiThetaL2MetricSingularity
 
 /-!
 # Route K: continuous boundary-carrier no-go
@@ -45,24 +45,9 @@ theorem xiTheta_nonzero_continuousBoundaryReporter_forces_escape
   by_cases hj : DenseRange j
   · right
     by_contra hnone
-    push_neg at hnone
+    push Not at hnone
     exact hq (xiTheta_continuousBoundaryReporter_eq_zero j hj q hnone)
   · exact Or.inl hj
-
-/-- No nonzero continuous boundary reporter on a dense completion can
-annihilate the full translated theta source. -/
-theorem not_exists_nonzero_xiTheta_continuousBoundaryReporter_denseCompletion :
-    ¬ ∃ (B Y : Type) (_ : NormedAddCommGroup B) (_ : NormedSpace ℂ B)
-        (_ : NormedAddCommGroup Y) (_ : NormedSpace ℂ Y)
-        (j : XiThetaL2 →L[ℂ] B) (q : B →L[ℂ] Y),
-      DenseRange j ∧ q ≠ 0 ∧
-        ∀ a : ℝ, q (j (xiThetaTranslationOrbit a)) = 0 := by
-  rintro ⟨B, Y, iB, sB, iY, sY, j, q, hj, hq, hkill⟩
-  letI : NormedAddCommGroup B := iB
-  letI : NormedSpace ℂ B := sB
-  letI : NormedAddCommGroup Y := iY
-  letI : NormedSpace ℂ Y := sY
-  exact hq (xiTheta_continuousBoundaryReporter_eq_zero j hj q hkill)
 
 end
 

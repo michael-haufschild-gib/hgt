@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.StaticChoiPhaseDensity
 import GaloisForLFunctions.RHTower.StaticChoiPhaseTargetEntropy
+import GaloisForLFunctions.HTGeometry.FiniteSpectralRecurrenceFrequencyLaw
 
 /-!
 # Static Choi complexity plateau
@@ -9,7 +10,7 @@ phase-coherence entropy bound.  It controls any finite dictionary of
 Hilbert--Schmidt target balls, independently of the Hamiltonian eigenbasis.
 -/
 
-open MeasureTheory Set
+open Filter MeasureTheory Set Topology
 
 noncomputable section
 
@@ -75,5 +76,45 @@ theorem measureReal_iUnion_uniformPhaseDensity_paddedCircuitTargets_le
       (by positivity : 0 < 2 * δ ^ 2)
       (fun w ↦ uniformPhaseDensity_metricBallTarget_controlled
         hd hδ.le (target w)))
+
+/-- **Completed-time static Choi plateau law.** For every rationally
+independent finite static spectrum, the upper completed-time frequency of
+entering any fixed finite-gate circuit dictionary of Hilbert--Schmidt target
+balls is no larger than its Haar volume.  That volume in turn obeys the
+explicit exponentially small translated-coherence bound.
+
+The statement is deterministic in the frequency vector and uniform in the
+Hamiltonian eigenbasis encoded by the target dictionary. -/
+theorem completedTime_iUnion_uniformPhaseDensity_paddedCircuitTargets
+    {d : ℕ} (hd : 0 < d)
+    (frequency : Fin d → ℝ)
+    (hindependent :
+      GaloisForLFunctions.HTGeometry.RationallyIndependentFrequency frequency)
+    {gate : Type*} [Fintype gate] (s : ℕ)
+    (target : PaddedCircuitWord gate s →
+      EuclideanSpace ℂ (Fin d × Fin d))
+    {δ : ℝ} (hδ : 0 < δ) :
+    let A : Set (UnitAddTorus (Fin d)) :=
+      ⋃ w, torusMetricBallTarget
+        (uniformPhaseDensity d) (target w) δ
+    atTop.limsup (fun T ↦
+        (GaloisForLFunctions.HTGeometry.finiteTorusPhaseProbabilityMeasure
+          frequency T : Measure (UnitAddTorus (Fin d))) A) ≤ volume A ∧
+      volume.real A ≤
+        (Fintype.card gate : ℝ) ^ (s + 1) *
+          ((d : ℝ) * Real.exp ((d : ℝ) / 2) *
+            Real.sqrt (Real.pi * (2 * δ ^ 2) / 2) ^ (d - 1)) := by
+  dsimp only
+  constructor
+  · apply GaloisForLFunctions.HTGeometry.rationallyIndependent_closedTarget_limsup_le_volume
+      frequency hindependent
+    apply isClosed_iUnion_of_finite
+    intro w
+    rw [torusMetricBallTarget]
+    exact isClosed_le
+      ((continuous_uniformPhaseDensity d).dist continuous_const)
+      continuous_const
+  · exact measureReal_iUnion_uniformPhaseDensity_paddedCircuitTargets_le
+      hd s target hδ
 
 end RHTower

@@ -3,7 +3,7 @@
 - **ID:** xi-taylor-finite-translation-logarithmic-haar-edge
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** ../1-in-progress/xi-taylor-theta-tail-core-density-current.md
+- **Source:** ../5-failed/xi-taylor-theta-tail-core-density-current.md
 - **Statement:** The exact two-component finite cosine--sine translation defect, including both packet--edge mixed currents, and the cofinal dyadic Haar row have absolute oriented current `o(n)|P_{2d+3}(z_n)|^2` on every source-selected anisotropic Taylor mesh, at one explicit logarithmic Haar depth.
 
 ## Goal

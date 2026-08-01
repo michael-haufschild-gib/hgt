@@ -298,11 +298,25 @@ nonlinear internal coupling, and by extracting its strongest positive classifica
 
 ### Positive survivor and route disposition
 
-`[PROVED ON PAPER]` The high-line sign law is the positive survivor.  It says exactly what a future
-network route must change: it must apply a nontrivial Cayley/renormalizing transformation before
-passive realization.  Such a transform cannot be advertised as a realization of `F`; it must also
-prove a zero-free, source-only inverse handoff back to `F`.  That is a materially new route and does
-not keep Route I open.
+`[PROVED ON PAPER]` The high-line sign law is the first positive survivor.  It says exactly what a
+future network response must change.  The follow-up audit now closes every nondegenerate real
+boundary-preserving Möbius postcomposition as well: the transformed imaginary part is the raw
+imaginary part times the real determinant divided by a positive norm square, so both signs remain
+above every height.
+
+The canonical noncensored source-dependent completion does survive.  Subtracting the holomorphic
+polar-zeta and quadrature backgrounds, dividing by twice the sharp-window Mellin factor, adding the
+pole and `Gamma_R` logarithmic derivatives, and rotating by `i` gives exactly
+`logDeriv XiC(-z)` on the source overlap.  This is an exact collision with the
+Sondow--Dumitrescu horizontal Xi-growth response and Planat theta-kernel problem tracked by Route
+C2.  Since Route C2 is already retired as a saturated divisor detector, it is not a live receiving
+route.  The collision exhausts this completion branch but does not close Route I.  Paper proof:
+`../2-fully-proven/not_new_scientific_knowledge/dyadic-prime-completed-passive-transfer-to-horizontal-xi-growth.md`.
+
+An arbitrary bias such as `iB+F` is not retained as research salvage.  Its far-right positivity is
+generic for any absolutely convergent Dirichlet series, while a global analytic lift subtracts
+back to the original RH-equivalent holomorphy problem.  It creates no source-forced energy law,
+classification, or independent inverse handoff and fails the scientific-method anti-theatre gate.
 
 Unconditional Lean formalization is complete:
 
@@ -315,10 +329,18 @@ Unconditional Lean formalization is complete:
   signs, witnesses above every height, and
   `dyadicSharpPrimeImpedance_not_upperHalfPlaneValued_above` plus
   `dyadicSharpPrimeImpedance_not_lowerHalfPlaneValued_above`.
+- `GaloisForLFunctions.RHTower.CCMSharpPrimeWindowMobiusPassiveNoGo` proves the determinant law and
+  both terminal no-go orientations for every nondegenerate real Möbius postcomposition.
+- `GaloisForLFunctions.RHTower.CCMSharpPrimeWindowCompletedPassiveTransfer` proves exact recovery of
+  shifted `zeta'/zeta`, exact equality of the completed source response with `logDeriv XiC(-z)`,
+  RH-equivalence of its global sign, and strict Sondow--Dumitrescu orientation beyond every closed
+  horizontal divisor bound.
 - `lake env lean` passed for both files; targeted
   `lake build GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPassiveNoGo` passed.  Axiom audit reports
   only `propext`, `Classical.choice`, and `Quot.sound`.
 
-Route I is retired.  Existing divisor tomography, energy spectra, square sampling, and prime-only
-reduction remain valid positive infrastructure; the sharp subpower endpoint remains an RH
-criterion, not an independently proved source estimate.
+The raw passive-network card remains terminally failed, but Route I remains open.  Its completed
+candidate lands in already-retired Route C2 and therefore supplies no live survivor handoff.
+Existing divisor tomography, energy spectra, square sampling, and prime-only reduction remain
+valid positive infrastructure; the sharp subpower endpoint remains an RH criterion, not an
+independently proved source estimate.

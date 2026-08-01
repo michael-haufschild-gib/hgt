@@ -382,4 +382,13 @@ theorem IsStdRat.prod {ι : Type*} (s : Finset ι) (f : ι → ℂ → ℂ) (p :
       rw [Finset.sum_insert hx]
     rwa [hidx] at hmul
 
+/-- A polynomial against a power of at least its degree is standard of defect zero, hence bounded on
+the line.  This is the shape a polynomial coefficient takes once it is normalized. -/
+theorem isStdRat_poly_div_pow (a : Polynomial ℂ) (d : ℕ) (hd : a.natDegree ≤ d) :
+    IsStdRat (fun x : ℂ => a.eval x / x ^ d) 0 := by
+  refine ⟨a, Multiset.replicate d 0, ?_, fun x hx => ?_⟩
+  · simpa using hd
+  · show a.eval x / x ^ d = a.eval x / shiftProd (Multiset.replicate d 0) x
+    rw [shiftProd_replicate_zero]
+
 end GaloisForLFunctions

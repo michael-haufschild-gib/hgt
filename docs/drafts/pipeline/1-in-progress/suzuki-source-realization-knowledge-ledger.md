@@ -5,7 +5,8 @@
 - **Type:** RESEARCH CONTROL / ANTI-REDISCOVERY LEDGER
 - **Terminal objective:** prove RH, disprove RH, or prove a class-complete no-go for Suzuki's
   source-to-operator mechanism.
-- **Current terminal verdict:** open.
+- **Current terminal verdict:** Route G is open and narrowed; BV/co-Poisson provider is terminalized.
+  Future advance must prove a new pre-divisor source theorem, not choose another completion.
 - **Read first:** this file, `suzuki-terminal-frontier-ledger.md`, and every cited failed card.
 
 ## Admission rule
@@ -77,21 +78,23 @@ they are not novel scientific knowledge.
 | `SR-37` | `ADVANCE` | Actual odd Gamma-Jacobi coefficients satisfy the exact Mercer law `O(t,u)=sum_k a_k(t)a_k(u)`. Finite odd capacity leaves precisely the positive tail, and the least source rank at each prime making its actual Gamma-conductor-weighted diagonal at most `p^-2` yields a summable all-prime residual. | Pointwise ranks alone do not place this boundary inside Suzuki's completed Green--Schur incidence or prove Euler-source compatibility. | `gamma-odd-jacobi-capacity-saturation-law.md`; `GammaOddJacobiCapacity.lean` |
 | `SR-38` | `ADVANCE` | Least primewise ranks can be zero-padded in the common absolute odd-Jacobi coordinate. The resulting cross-prime residual is positive semidefinite on every finite packet, its diagonal is exactly the `SR-37` tail, and its Gamma-conductor-weighted diagonal is summable. Thus odd capacity and cutoff/inclusion coherence are closed without a common rank. Generic Gram/capacity lemma is only `FORMAL-CLOSURE`; source connector is advance. | Coherent positive kernel is not yet the singular/local finite incidence or completed trace required by Suzuki. | `GammaOddJacobiCoherentCapacity.lean`; `AdaptiveMercerCapacity.lean` |
 | `SR-39` | `ADVANCE` | Successor Dirichlet Gram has an exact all-order strictly negative Hankel-curvature density. Hence every additive ordinary Hankel boundary is class-completely incapable of repairing it. Placing the actual pointed Gamma--Bianchi raw feature in the same finite von Mangoldt coordinates instead gives the exact endpoint weld `difference + tail = head`; its forced mixed block has the exact opposite positive curvature, and the coupled Gram is a positive moment-Hankel matrix for every finite aperture and jet size. | Raw pointed boundary has no ordinary cofinal Hilbert limit. Finite Hankel welding does not incorporate odd Gamma-Jacobi capacity, completed Euler trace, or critical normalization. | `von-mangoldt-successor-bianchi-hankel-curvature-weld.md`; `ConservativeHankelRigidity.lean`; `VonMangoldtAdditiveLogJetHankelCurvature.lean`; `VonMangoldtSuccessorBianchiHankelWeld.lean` |
-| `SR-40` | `ADVANCE` | Source-fixed principal subtraction of the exact finite weld is absolutely summable at every jet order. It retains exactly `Successor+Cross`, converges in every finite matrix topology to universal kernel `R(r,s)=rho_(r+s+2)`, and obeys all-order Hankel shift. Forced mixed curvature therefore survives and cancels successor defect at every aperture and order. | Signed jet current is not a positive source realization. `SR-49` retires its proposed completed-Euler cyclic Gamma--Jacobi coupling; Route M remains open at an edge/fibre-marked noncyclic pointed source object. | `von-mangoldt-successor-principal-relative-hankel-current.md`; `VonMangoldtSuccessorPrincipalRelativeHankel.lean` |
-| `SR-41` | `LIVE-SOURCE / NARROWED` | Construct or class-completely refute an inclusion-compatible edge/fibre-marked bivariate prime--jet family whose finite reader obeys the `SR-49` barycentric aggregation law, is noncyclic and non-invariant at one fibre, represents completed Euler multiplication before Xi/zero data, and retains same-fibre orientation. | `SR-49` closes only cyclic scalar contraction and multiplicative edge-reader assembly. Infinite Krein index cannot change that finite algebra obstruction, but neither it nor global reflection parity excludes a pointed noncyclic family. No existing named route supplies this survivor. | Exact post-`SR-49` Route M core below |
+| `SR-40` | `ADVANCE` | Source-fixed principal subtraction of the exact finite weld is absolutely summable at every jet order. It retains exactly `Successor+Cross`, converges in every finite matrix topology to universal kernel `R(r,s)=rho_(r+s+2)`, and obeys all-order Hankel shift. Forced mixed curvature therefore survives and cancels successor defect at every aperture and order. | Signed jet current is not a positive source realization. `SR-49` retires its proposed completed-Euler cyclic Gamma--Jacobi coupling; completed `SR-41` supplies the noncyclic pointed replacement but proves its flatness is exactly RH. | `von-mangoldt-successor-principal-relative-hankel-current.md`; `VonMangoldtSuccessorPrincipalRelativeHankel.lean` |
+| `SR-41` | `ADVANCE / FORMAL-CLOSURE / TERMINAL-COORDINATE` | The required inclusion-compatible edge/fibre-marked reader exists explicitly: it is the off-diagonal coefficient of the commutator between FE--Schwarz functional calculus of the completed Euler clock and the exact Gamma--Jacobi tail loss, normalized by the actual von Mangoldt counterreader coefficient. It is noncyclic, completed-Euler covariant, reflection-odd on one fibre, source-barycentric, and detects exactly marked seam equality. Exact weighted-barycentric readers dehomogenize to additive marked currents. Cofinal anchored flatness of the actual reader is equivalent to RH. | This closes Route M's object, orientation handoff, and connector; it does not prove cofinal flatness or RH. Positive normalization cannot create the missing sign. | `3-formalized/new_scientific_knowledge/gamma-jacobi-barycentric-pointed-euler-reader.md`; `FiniteBarycentricReader.lean`; `GammaJacobiBarycentricPointedEulerReader.lean` |
 | `SR-42` | `ADVANCE` / `FAILED-CLASS` | Every full `SR-40` aperture section is a square Vandermonde congruence of explicit endpoint-divergence masses, so its positive, negative, and null indices are exact sign counts. Left endpoint is always negative. Primes `p>3`, `p=3 mod 4`, force distinct negative masses; negative index is unbounded. | No positive or fixed-index Pontryagin bivariate completion can realize all jet compressions. The formerly surviving infinite-index cyclic option is now closed by `SR-49`; unbounded index does not alter finite Euler-tail algebra saturation. | `von-mangoldt-successor-transport-inertia-law.md`; `SignedAtomicMomentInertia.lean`; `VonMangoldtSuccessorTransportInertia.lean` |
-| `SR-43` | `ADVANCE` / `FAILED-CLASS` | Every finite bivariate coordinate-partial-trace realization has equal total traces on its jet and source marginals. Actual `SR-40` trace obeys exact opening law `tr R_(M,N+1)=tr R_(M,N)+rho_M(2N+2)` with strictly positive source flux at every nonempty aperture. Hence no fixed source marginal—specifically no finite `SR-38` coherent odd Gamma--Jacobi marginal—can coexist with two consecutive `SR-40` jet marginals, for arbitrary real kernels, arbitrary mixed block, and arbitrary Krein index. | Ordinary normal partial trace and, by `SR-49`, every positively normalized inclusion-compatible cyclic full-algebra reader are dead. Positive survivor is a cutoff-aware, edge/fibre-marked noncyclic pointed family carrying flux before contraction. | `von-mangoldt-bivariate-marginal-trace-lock-no-go.md`; `BivariateMarginalTraceLock.lean`; `VonMangoldtBivariateMarginalTraceLock.lean` |
-| `SR-46` | `ADVANCE` | One fixed incidence row on the actual absolute odd Gamma--Jacobi modes gives the truncated artanh coordinate `T_K`; its exact connection defect is `T_K'=1-tanh^(2K)`. The induced finite-mode exchange current converges, for arbitrary source-dependent starting cutoffs and every fixed source/jet aperture, to the full `SR-40` matrix. At the existing `SR-38` prime capacities, the incidence head and coherent residual tail are coordinatewise complementary. The required normalization is provably singular: `phi(log p)^(-2)=(p^2+1)/(2p)>=p/2` and is unbounded on primes. | Common absolute-coordinate incidence remains exact infrastructure. `SR-49` proves it cannot be packaged into the proposed completed-Euler cyclic scalar reader; reuse requires an edge/fibre-marked pointed route. | `3-formalized/needs-audit/gamma-jacobi-artanh-transport-coupling.md`; `GammaJacobiArtanhTransportCoupling.lean` |
+| `SR-43` | `ADVANCE` / `FAILED-CLASS` | Every finite bivariate coordinate-partial-trace realization has equal total traces on its jet and source marginals. Actual `SR-40` trace obeys exact opening law `tr R_(M,N+1)=tr R_(M,N)+rho_M(2N+2)` with strictly positive source flux at every nonempty aperture. Hence no fixed source marginal—specifically no finite `SR-38` coherent odd Gamma--Jacobi marginal—can coexist with two consecutive `SR-40` jet marginals, for arbitrary real kernels, arbitrary mixed block, and arbitrary Krein index. | Ordinary normal partial trace and, by `SR-49`, every positively normalized inclusion-compatible cyclic full-algebra reader are dead. Completed `SR-41` constructs the surviving edge/fibre-marked noncyclic pointed family and classifies its normalization. | `von-mangoldt-bivariate-marginal-trace-lock-no-go.md`; `BivariateMarginalTraceLock.lean`; `VonMangoldtBivariateMarginalTraceLock.lean` |
+| `SR-46` | `ADVANCE` | One fixed incidence row on the actual absolute odd Gamma--Jacobi modes gives the truncated artanh coordinate `T_K`; its exact connection defect is `T_K'=1-tanh^(2K)`. The induced finite-mode exchange current converges, for arbitrary source-dependent starting cutoffs and every fixed source/jet aperture, to the full `SR-40` matrix. At the existing `SR-38` prime capacities, the incidence head and coherent residual tail are coordinatewise complementary. The required normalization is provably singular: `phi(log p)^(-2)=(p^2+1)/(2p)>=p/2` and is unbounded on primes. | Common absolute-coordinate incidence remains exact infrastructure. `SR-49` proves it cannot be packaged into the proposed completed-Euler cyclic scalar reader; completed `SR-41` reuses it only after retaining edge/fibre marks. | `3-formalized/needs-audit/gamma-jacobi-artanh-transport-coupling.md`; `GammaJacobiArtanhTransportCoupling.lean` |
 | `SR-47` | `ADVANCE` | Under the forced singular normalization, the actual odd Gamma--Jacobi tail is an exact Szegő tail `H_K(t,u)=q^(2K)/(1-q^2)`, `q=tanh(t)tanh(u)`. Its aperture loss is rank one and equals the tensor of `SR-46` connection defects: `H_K-H_(K+1)=(1-T_K')⊗(1-T_K')`. At every adaptive prime capacity, this defect is literally the first surviving `SR-38` coordinate. Every common surviving adjacent residual pair reads `((p^2-1)/(p^2+1))^2` and determines the prime uniquely. | Exact rank-one loss is retained, but with the Euler clock it is precisely what forces full finite algebra saturation in `SR-49`. It cannot support a proper cyclic anomaly algebra under any Krein metric. | `3-formalized/needs-audit/gamma-jacobi-tail-connection-transgression.md`; `GammaJacobiTailConnectionTransgression.lean` |
 | `SR-48` | `ADVANCE` | Reciprocal maximal clocks `1/log(p+1)`, conditionally forced as zeros when accumulated finite counterreader symbols continue far enough, are sent by the exact Gamma map `r=tanh(z^(-1))^2` to distinct disk nodes `r_p=tanh(log(p+1))^2`. Their boundary defects satisfy `1-r_p=4(p+1)^2/((p+1)^2+1)^2<=4/p^2`; hence `sum_p(1-r_p)<infinity` and `prod_p r_p` exists and is nonzero. The candidate zero accumulation becomes a nontrivial Blaschke-admissible boundary divisor. | Candidate inner carrier remains valid, but `SR-49` proves products of isolated edge symbols are not the accumulated source reader already at coefficient one. Inner convergence or an arbitrary scalar outer factor cannot rescue the cyclic/multiplicative predecessor. | `gamma-jacobi-blaschke-compactification-toeplitz-clock-escape.md`; `GammaJacobiToeplitzClockBlaschkeCompactification.lean` |
-| `SR-49` | `FORMAL-CLOSURE` / `FAILED-CLASS` | Every finite injective prime packet has simple Euler clock and full-support `SR-47` loss, hence their generated algebra is the full matrix algebra. The actual Toeplitz counterreader is noncyclic on two jet coordinates. Its first symbol coefficient is `-m₄/m₃` and aggregates as a third-moment-weighted barycentre, not as the sum produced by edge-symbol multiplication; literal edges `2→3` and `3→4` witness failure. | Closes Route M's proper cyclic-algebra, infinite-index cyclic, and scalar inner/outer loopholes. Strongest survivor is edge/fibre-marked barycentric aggregation with a noncyclic pointed reader; this is Route M's live open core, not an existing co-Poisson route. | `5-failed/gamma-jacobi-euler-tail-cyclic-reader-no-go.md`; `SimpleClockRankOneAlgebraSaturation.lean`; `GammaJacobiEulerTailCyclicReaderNoGo.lean`; `VonMangoldtCounterreaderBarycentricAggregation.lean`; `GammaJacobiSingularReaderRouteClosure.lean` |
+| `SR-49` | `FORMAL-CLOSURE` / `FAILED-CLASS` | Every finite injective prime packet has simple Euler clock and full-support `SR-47` loss, hence their generated algebra is the full matrix algebra. The actual Toeplitz counterreader is noncyclic on two jet coordinates. Its first symbol coefficient is `-m₄/m₃` and aggregates as a third-moment-weighted barycentre, not as the sum produced by edge-symbol multiplication; literal edges `2→3` and `3→4` witness failure. | Closes Route M's proper cyclic-algebra, infinite-index cyclic, and scalar inner/outer loopholes. Strongest survivor is edge/fibre-marked barycentric aggregation with a noncyclic pointed reader; completed `SR-41` constructs and terminalizes that survivor. | `5-failed/gamma-jacobi-euler-tail-cyclic-reader-no-go.md`; `SimpleClockRankOneAlgebraSaturation.lean`; `GammaJacobiEulerTailCyclicReaderNoGo.lean`; `VonMangoldtCounterreaderBarycentricAggregation.lean`; `GammaJacobiSingularReaderRouteClosure.lean` |
 | `SR-45` | `FORMAL-CLOSURE` | For every contractive geometric phase orbit, both completed light energies have exact sharp interval `R/(1-R^2) <= E_± <= (R+2)/(1-R^2)` and sum `2/(1-R)`. Suzuki's actual Gamma/innovation valuation rays realize this law with `R=p^(-1/2)r_p^4`; both actual light channels are strictly positive at every height and the floor is attained. | Closes local valuation-phase holes only. It does not change `SR-41`, construct restricted-Weil/Robin transfer, reduce critical half-weight, or prove RH. Do not repeat phase-hole or depthwise light-coercivity analysis as terminal research. | `suzuki-valuation-depth-light-coercivity-law.md`; `GeometricPhaseLightCoercivity.lean`; `SuzukiValuationDepthLightCoercivity.lean` |
+| `SR-50` | `ADVANCE` / `FAILED-CLASS` / `FORMAL-CLOSURE` | Canonical sharp compact BV seed is in ordinary co-Poisson `L2` but has exact critical flux `(1/4) log T+o(log T)` and leaves critical carrier. Its logarithmic ideal quotient is zero by dense span; its eta transform fails both property-S parity lattices; every compact multiplicative pole-lattice repair is zero by even/odd moment rigidity. All load-bearing claims are formalized. | Does not rule out arbitrary noncompact completion or prove source sign. Gamma--Gaussian envelope supplies such completion for arbitrary moderate data, proving completion is nonselective. Remaining source-causal dagger positivity is RH-bearing endpoint, not a generic completion debt. | `2-fully-proven/new_scientific_knowledge/suzuki/bv-copoisson-sharp-critical-half-weight-log-flux.md`; `3-formalized/new_scientific_knowledge/bv-copoisson-critical-provider-terminal-closure.md`; five `BVCoPoisson*` Lean modules |
 
-## Level lift forced by `SR-35`--`SR-49`: cyclic mechanism retired, Route M pointed core survives
+## Level lift forced by `SR-35`--`SR-49`: cyclic mechanism retired, `SR-41` terminalized
 
 Route M tests a more general problem of **source-renormalized covariant Dirichlet forms relative
-to a resolved abelian channel algebra**. `SR-49` closes its cyclic scalar realization but leaves a
-pointed noncyclic family open; following formulation records failed target and surviving core.
+to a resolved abelian channel algebra**. `SR-49` closes its cyclic scalar realization. Completed
+`SR-41` constructs the pointed noncyclic family and identifies its exact RH-bearing terminal
+condition; following formulation records failed target and terminal survivor.
 
 For finite channel packet `F`, resolved projections `P_i`, and source incidence `T_F`, define
 
@@ -124,15 +127,19 @@ its inner carrier: reciprocal endpoint zeros that collapse at the clock-germ ori
 nontrivial Blaschke-admissible Gamma boundary packet. `SR-49` closes both formerly advertised
 remaining issues: Euler clock plus one full-support tail loss generates the full finite matrix
 algebra regardless of Krein signature, and the accumulated counterreader is barycentric rather
-than the product of isolated edge symbols already at its first nonconstant coefficient.
+than the product of isolated edge symbols already at its first nonconstant coefficient. Completed
+`SR-41` takes the off-diagonal coefficient of the FE--Schwarz Euler/tail commutator before scalar
+contraction. This reader is restriction-compatible, completed-Euler covariant, noncyclic, and
+reflection-odd. Its cofinal anchored flatness is exactly RH, while its positive barycentric
+normalization dehomogenizes to additive marked current.
 
 Scientific-method frontier is now:
 
 > No such cyclic scalar extension can realize Route M. Finite Euler-tail carriers are already full
 > matrix algebras, positive opening flux forbids a fixed normalized cyclic value, and edge products
-> do not equal the accumulated source reader. Route M remains open at an edge/fibre-marked,
-> barycentric, noncyclic pointed reader constructed before scalar contraction, together with its
-> completed-Euler compatibility and same-fibre orientation handoff.
+> do not equal the accumulated source reader. The edge/fibre-marked barycentric noncyclic reader,
+> completed-Euler compatibility, same-fibre orientation, and exact connector now exist. Route M is
+> terminalized at a cofinal flatness condition equivalent to RH; no source theorem proves it.
 
 Retired data and falsified identity were
 
@@ -176,9 +183,9 @@ positive normalized cyclic opening values; `SR-49` closes the proper-subalgebra 
 edge-product/outer-factor escape. The exact historical falsifiers were: no source-defined
 bivariate connector can have both fixed marginals, restriction destroys one marginal, a connector
 is fitted from Xi/zero data, cyclic reader fails Euler shift compatibility, or finite part kills
-meromorphic principal component. The live replacement keeps edge/fibre marks, uses the formalized
-barycentric law, and contracts only through a noncyclic pointed family. Constructing or
-class-completely refuting that replacement is the current `SR-41` Route M problem.
+meromorphic principal component. Completed `SR-41` keeps edge/fibre marks, uses the formalized
+barycentric law, and contracts only through a noncyclic pointed family. Its cofinal flatness is
+exactly RH, so the reader/interface problem is closed without an RH claim.
 
 ## Level lift: general problem containing current Suzuki frontier
 
@@ -279,7 +286,14 @@ source summation at safe weight
   -> RH.
 ```
 
-## Current specialization
+## Current specialization `[TERMINALIZED AS ROUTE-G PROVIDER]`
+
+`SR-50` supersedes proposed direct compact-provider experiment below. Standard source norm,
+logarithmic quotient, extended-property-S lift of critical eta seed, and every compact
+multiplicative resonance repair are now closed failure classes. Universal noncompact completion is
+also closed as a nonselective mechanism. Historical conjecture is retained for falsifier provenance;
+it is not a live Route-G experiment. Broad `SR-17` survives as source-causal dagger positivity
+inside open Route G; a genuinely new pre-divisor arithmetic theorem may attack it.
 
 `CRITICAL-HALF-WEIGHT-COPOISSON-UNITARIZATION` is a concrete specialization of `SR-17`, not new
 scientific knowledge:
@@ -511,10 +525,25 @@ Before claiming progress, record all answers:
   actual accumulated Toeplitz counterreader is noncyclic already on two jet coordinates and its
   first symbol coefficient aggregates as a third-moment-weighted barycentre, not as the sum forced
   by edge-symbol multiplication; literal von Mangoldt edges `2→3` and `3→4` witness failure.
-  Status: `FORMAL-CLOSURE / RETIRED-ROUTE`; generic algebra ancestry is classical, source
-  composition novelty provisional. Positive survivor is edge/fibre-marked barycentric aggregation
-  before a noncyclic pointed reader, redirected to co-Poisson fibre orientation.
+  Historical status here overclaimed `FORMAL-CLOSURE / RETIRED-ROUTE`; generic algebra ancestry is
+  classical and source composition novelty provisional. Positive survivor is edge/fibre-marked
+  barycentric aggregation before a noncyclic pointed reader. Next entries correct and complete it.
 - **2026-08-01 — `SR-49` scope correction.** Status above overreached: the Lean theorems retire a
   cyclic/multiplicative reader class, not Route M. They do not exclude the edge/fibre-marked
   barycentric noncyclic pointed survivor, and no existing co-Poisson route supplies it. Current
-  status is `FORMAL-CLOSURE / FAILED-CLASS`; `SR-41` and Route M are `LIVE-SOURCE / NARROWED`.
+  corrected `SR-49` status is `FORMAL-CLOSURE / FAILED-CLASS`; at this historical checkpoint
+  `SR-41` and Route M were `LIVE-SOURCE / NARROWED`. Next entry supersedes that status.
+- **2026-08-01 — `SR-41` pointed-reader completion.** The survivor is explicitly the marked
+  off-diagonal reader of the FE--Schwarz completed-Euler/tail commutator. Restriction,
+  completed-Euler covariance, source barycentric aggregation, noncyclicity, reflection oddness,
+  and exact seam detection are proved and formalized. General weighted-barycentric
+  dehomogenization proves positive normalization cannot create a sign. Cofinal anchored flatness
+  of the actual reader is equivalent to RH. Route M is `FORMALIZED / TERMINAL-COORDINATE`, not
+  retired and not an RH proof.
+- **2026-08-01 — sharp BV/co-Poisson provider closure (`SR-50`).** Exact arbitrary-cutoff `1/4`
+  logarithmic flux, ordinary/critical integrability split, dense logarithmic ideal span, two-parity
+  eta resonance, and compact-seed moment rigidity are proved and formalized. Primary-literature and
+  corpus audits found no prior exact combined statement; novelty remains provisional. Universal
+  Gamma--Gaussian property-S envelope supplies noncompact repair for arbitrary moderate data, so
+  completion existence cannot select RH. Provider family is terminalized; Route G remains open at
+  source-generated coefficient/chord/Pick-Ward positivity, explicitly not claimed proved.

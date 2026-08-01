@@ -5,7 +5,7 @@
 - **Type:** THEOREM, `[BRIDGE]`
 - **Scientific status:** `[PROVED] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Parent target:**
-  `../../1-in-progress/xi-taylor-oriented-finite-coefficient-sublinear-flux.md`
+  `../../5-failed/xi-taylor-oriented-finite-coefficient-sublinear-flux.md`
 
 ## Statement
 

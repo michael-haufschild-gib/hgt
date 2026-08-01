@@ -5,7 +5,7 @@
 - **Type:** THEOREM, `[BRIDGE]`
 - **Scientific status:** `[PROVED] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Parent target:**
-  `../../1-in-progress/xi-taylor-theta-tail-core-density-current.md`
+  `../../5-failed/xi-taylor-theta-tail-core-density-current.md`
 
 ## Statement
 

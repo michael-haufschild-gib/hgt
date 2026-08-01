@@ -38,19 +38,32 @@ Dirichlet series.  No continuation or zero hypothesis occurs.
 
 Both modules are imported by their umbrellas.
 
+The closure is strengthened by
+`GaloisForLFunctions.RHTower.CCMSharpPrimeWindowMobiusPassiveNoGo`, which excludes every
+nondegenerate real Möbius postcomposition, and by
+`GaloisForLFunctions.RHTower.CCMSharpPrimeWindowCompletedPassiveTransfer`, which identifies the
+canonical completed survivor with the already-existing horizontal Xi-growth response.
+
 ## Audit
 
 - `lake env lean GaloisForLFunctions/HTGeometry/DirichletHalfPlaneSignRigidity.lean`: pass.
 - `lake env lean GaloisForLFunctions/RHTower/CCMSharpPrimeWindowPassiveNoGo.lean`: pass.
 - `lake build GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPassiveNoGo`: pass.
-- formal lint without build: pass.
+- `lake env lean GaloisForLFunctions/RHTower/CCMSharpPrimeWindowMobiusPassiveNoGo.lean`: pass.
+- `lake env lean GaloisForLFunctions/RHTower/CCMSharpPrimeWindowCompletedPassiveTransfer.lean`:
+  pass.
+- targeted builds for both added Route-I leaf modules: pass.
+- formal lint without build initially passed; final repository-wide rerun reports only seven
+  unrelated concurrently added RHTower modules missing umbrella reachability.  All Route-I modules
+  are reachable and no Route-I lint error is reported.
 - `#print axioms` for generic sign theorems, coefficient positivity, high witnesses, and both
   no-go capstones: only `propext`, `Classical.choice`, and `Quot.sound`.
 - no `sorry`, `admit`, project `axiom`, `opaque`, or `unsafe` declaration introduced.
 
 ## Route impact
 
-This formalizes the terminal kill condition on Route I's passive-impedance producer.  Existing
+This formalizes the terminal kill condition on Route I's raw passive-impedance producer.  Existing
 sharp-window RH criteria and divisor tomography remain valid, but no passive scalar response can
-equal the literal source on its initial overlap.  Route I is retired; a transformed passive source
-would require a new card and an unconditional inverse handoff.
+equal the literal source on its initial overlap, and no real Möbius postcomposition repairs it.
+The exact completed source candidate collides with retired Route C2.  This exhausts that
+transformation branch but does not assign Route I's open arithmetic endpoint to a live route.

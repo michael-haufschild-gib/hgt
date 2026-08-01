@@ -48,6 +48,17 @@ def torusMetricBallTarget {d : Type*} [Fintype d]
     Set (d → UnitAddCircle) :=
   {x | dist (f x) c ≤ δ}
 
+/-- The phase preimage of a closed metric ball is closed whenever the phase
+map is continuous. -/
+theorem isClosed_torusMetricBallTarget
+    {d : Type*} [Fintype d]
+    {Y : Type*} [PseudoMetricSpace Y]
+    {f : (d → UnitAddCircle) → Y} (hf : Continuous f)
+    (c : Y) (δ : ℝ) :
+    IsClosed (torusMetricBallTarget f c δ) := by
+  rw [torusMetricBallTarget]
+  exact isClosed_le (hf.dist continuous_const) continuous_const
+
 /-- If every pair in a radius-`δ` target ball is coherent at defect `η`, the
 whole ball lies in one translated coherence cap. -/
 theorem torusMetricBallTarget_controlled

@@ -6,8 +6,8 @@
 - **Scientific status:** `[PAPER PROOF COMPLETE] [LITERATURE COROLLARY]`
   `[NOT NEW SCIENTIFIC KNOWLEDGE] [ROUTE-CHANGING POSITIVE SURVIVOR] [NOT RH]`
 - **Parents:**
-  - `../1-in-progress/bv-copoisson-sharp-critical-half-weight-log-flux.md`;
-  - `../1-in-progress/bv-copoisson-principal-normal-connection-law.md`;
+  - `../suzuki/bv-copoisson-sharp-critical-half-weight-log-flux.md`;
+  - `../../../3-formalized/not_new_scientific_knowledge/bv-copoisson-principal-normal-connection-law.md`;
   - `../1-in-progress/cofinal-conormal-picard-purity-law.md`;
   - Burnol, *Entrelacement de co-Poisson*, Theorems 4.31 and 4.54.
 - **Statement:** A universal centered-Gaussian reciprocal-Gamma multiplier embeds every

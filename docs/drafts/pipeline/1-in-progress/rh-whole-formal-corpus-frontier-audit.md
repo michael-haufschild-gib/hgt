@@ -536,10 +536,13 @@ not sign a derivative cross-current; termwise negative current is not preserved 
 
 Positive survivor: the full continuous theta-density completion is upper-zero-free and has
 unconditional current contraction, so the entire arithmetic product-fibre current cancels in
-aggregate.  Exact transfer by this zero-free factor localizes the only remaining divisor to the
+aggregate. Exact transfer by this zero-free factor localizes the only remaining divisor to the
 quotient `XiC/F`; the hostile Wronskian limit proves that quotient retains exactly the Xi divisor.
-This is a sharp gauge-localization theorem, not a proof shortcut.  Status:
-`[FORMALIZED IN RHTOWER; DIRECT HT DIVISOR BRIDGE EXHAUSTED]`.
+The stronger terminal law now shows that every source-selected odd superaccurate raw finite theta
+core recovers the exact Xi multiplicity `m` in its horizontal anisotropic charge. A fixed
+meromorphic gauge of order `ell` changes this charge only to `m-ell`; screening holds exactly when
+the gauge imports matching divisor order. This is sharp divisor tomography, not a proof shortcut.
+Status: `[FORMALIZED IN RHTOWER; ROUTE H RETIRED; DIRECT HT DIVISOR BRIDGE EXHAUSTED]`.
 
 ## Corrected whole-theory criterion and first exact transfer
 

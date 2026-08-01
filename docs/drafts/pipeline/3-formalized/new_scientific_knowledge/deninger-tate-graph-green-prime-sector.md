@@ -197,8 +197,45 @@ Direct `lake env lean`, cached module build, and scratch
 `#print axioms` pass.  The theorem declarations use only `propext`,
 `Classical.choice`, and `Quot.sound`.
 
+Two subsequent modules close the quantitative high-prime and orthogonal direct-sum consequences.
+
+`GaloisForLFunctions.RHTower.DeningerTateGraphPrimeDiskEscape` proves:
+
+- unit unsmoothed Green energy at any positive frequency has scalar mass \(\lambda^{-1}\);
+- its Tate graph cost is at least \(L^2\);
+- for arbitrary positive frequency choices along primes, unit-Green graph costs tend to infinity
+  cofinally because \(\log p\to\infty\).
+
+Thus no fixed graph disk contains unit-Green packets at arbitrarily large primes. This is a
+quantitative escape law, not a rejection of graph completion.
+
+`GaloisForLFunctions.RHTower.DeningerPrimeDiagonalGreenSummability` constructs the real Hilbert
+direct sum \(\ell^2(\mathbb P)\) and actual continuous local Green forms supported on individual
+prime coordinates. It proves:
+
+- the \(p\)-local form has exact operator norm \((\log p)^{-2}\);
+- every finite sum has norm at most the largest participating local norm, by an explicit diagonal
+  operator calculation;
+- unordered operator-norm summability is equivalent to cofinite coefficient decay for any
+  nonnegative orthogonal coordinate family;
+- since \((\log p)^{-2}\to0\), prime-local Green forms are summable;
+- `not_summable_deningerPrimeGraphGreenCoefficient` proves the same positive scalar coefficient
+  family is not summable, by transporting finite subtype windows to the existing unconditional
+  reciprocal-log-square prime divergence theorem;
+- their sum is a genuine continuous bilinear form, evaluation commutes with the unordered sum,
+  its energy is nonnegative, and its radical is exactly zero on the orthogonal prime model.
+
+This closes the prime-diagonal functional-analysis gate predicted by the maximum-tail criterion.
+It does not identify the actual restricted arithmetic source disk with \(\ell^2(\mathbb P)\), nor
+prove that Milnor attaching, residue/corestriction, or cup-product cross terms preserve the
+orthogonal decomposition. Claiming full Route L summability from this coordinate theorem would
+still be theatre.
+
 ## Log
 
 - 2026-08-01 — Repaired positive-time topology escape by canonical
   Tate graph scale on finite-prime oscillatory sector; completed paper
   and Lean proofs and promoted to Stage 3.
+- 2026-08-01 — Proved unit-Green graph-disk escape and instantiated the all-prime maximum-tail
+  survivor on the orthogonal prime Hilbert direct sum, including exact local norms and unordered
+  operator-norm convergence.

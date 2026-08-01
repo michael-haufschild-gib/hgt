@@ -322,7 +322,7 @@ Volterra infrastructure cannot discharge the divisor-bearing identity by itself.
 Green/Christoffel--Darboux source-germ proof would be a genuine RH proof and must be evaluated at
 that level, not listed as routine Lean action.
 
-### Route H — Xi Taylor/theta current
+### Route H — Xi Taylor/theta current  [RETIRED]
 
 **Local contribution beyond located literature.** Exact refinement conservation, superaccurate
 Taylor scheduling, equivalent current endpoints, and localization of all surviving error in one
@@ -331,12 +331,20 @@ off-diagonal Hermitian current appear corpus-specific.
 **External contribution.** Romik's Theorems 3.1, 3.2, and 6.1 give compact-uniform
 Meixner–Pollaczek expansion, coefficient asymptotics, and Lambert-`W` Xi-Taylor asymptotics. They
 control coefficient size, not the orientation of the corpus's two-variable all-scale current.
+Planat's 2026 theta-kernel double integral reaches the same sign-indefinite off-diagonal sector but
+does not identify finite-core divisor charge or classify gauge screening.
 
-**Lean action.** Do not import these as a Route-H advance. Theorem 6.1 is useful background
-infrastructure, but fixed-degree or coefficient-magnitude asymptotics cannot prove the surviving
-sublinear core-current estimate and would duplicate a retired extrapolation.
+**Terminal local result.** At every Xi zero of multiplicity `m`, every source-selected odd
+superaccurate raw finite theta core has horizontal mesh-rescaled normalized current tending exactly
+to `m`. A fixed centered meromorphic gauge of local order `ell` changes the transferred charge to
+`m-ell`, so it screens exactly iff `ell=m`. This identifies the former “uncontrolled” current as a
+multiplicity-exact divisor transducer.
 
-### Route I — sharp dyadic prime window  [RETIRED]
+**Lean action.** Completed in `XiCTaylorAnisotropicGaugeCharge.lean` and
+`XiCTaylorThetaTailCoreDivisorChargeRigidity.lean`. Route H is retired as an independent mechanism;
+a non-normal moving gauge is a new route with a separate source-selection obligation.
+
+### Route I — sharp dyadic prime window  [OPEN — SOURCE ACQUISITION UNRESOLVED]
 
 **Local contribution beyond located literature.** The exact shifted-zeta contradiction from one
 subpower sharp dyadic weighted-prime error and the proved height-range obstruction for finite
@@ -351,16 +359,22 @@ Dirichlet-polynomial estimates have the same quantifier mismatch.  Samaris,
 parent positive-real generalized-Dirichlet theory, so the high-line classification is a bridge,
 not a novelty claim.
 
-**Terminal local result.** The last live passive-impedance producer is false.  The exact first
+**Terminal local result.** The raw passive-impedance producer is false.  The exact first
 oscillatory coefficient `S(2)` is positive, and first-coefficient extraction forces opposite
 imaginary signs for `F(sigma-i)` and `F(sigma+i)` eventually.  Hence
 `F(1-i z)` is neither Herglotz nor anti-Herglotz on any upper tail, regardless of internal network
-coupling.
+coupling.  Every nondegenerate real Möbius postcomposition retains the same two-sided sign defect.
 
 **Lean action.** Completed in `DirichletHalfPlaneSignRigidity.lean` and
-`CCMSharpPrimeWindowPassiveNoGo.lean`.  Existing external bounds still do not satisfy the sharp
-typed premise; a transformed passive function would be a new route requiring a source-only inverse
-handoff.
+`CCMSharpPrimeWindowPassiveNoGo.lean`, with Möbius closure in
+`CCMSharpPrimeWindowMobiusPassiveNoGo.lean`.  The nontrivial transformed survivor has also been
+routed rather than discarded: exact Mellin normalization plus archimedean completion equals
+`logDeriv XiC(-z)` on the source overlap, formalized in
+`CCMSharpPrimeWindowCompletedPassiveTransfer.lean`.  Its positivity is precisely the
+Sondow--Dumitrescu/Planat Route-C2 problem, not a new Route-I mechanism.  Because Route C2 was
+already saturated and retired, this collision closes only the completed-response branch; it does
+not receive or close Route I.  Existing external PNT bounds still do not satisfy the sharp typed
+premise, so Route I remains open at its source-pure all-epsilon dyadic-window estimate.
 
 ### Route J — arithmetic Julia coherent energy
 
@@ -375,7 +389,7 @@ explicit-formula and differential-algebra literature supplies separate arithmeti
 No external theorem cancels the literal cross-prime completed energy or revives its proposed
 first-clock handoff.
 
-**Lean action.** None. Route J's unrenormalized handoff is formally closed as false. At
+**Lean action.** None for the live core. Route J's unrenormalized handoff is formally closed as false. At
 `L_m=6 log m`, an explicit prime block forces full bad coherent energy at least `log m/20`, uniformly
 in Julia scale, hence unbounded along these apertures. At zero scale each fixed packet instead tends
 to rank-one energy, the square of total bad mass. Positive unit-diagonal mass cannot be removed by
@@ -384,18 +398,28 @@ the normalized anchor capacity law already for a one-node unit packet, forcing `
 literal/good/bad coherent Gram also has source null vector `(1,-1,1)`, so adding all three channels
 creates no independent capacity. Only a new
 source-defined principal-relative current with counterterm and orientation before positive
-good/bad projection could reopen the mechanism; located literature supplies no such construction.
+good/bad projection survives; located literature supplies no such construction. Because no other
+named route owns it, Route J remains open at that hard source theorem.
 
-### Route K — quadratic spectral realization
+### Route K — quadratic spectral realization `[RETIRED]`
 
 **Local contribution beyond located literature.** The exact quadratic-parameter RH connector and
-its strip/real-zero reduction are typed, but no source operator is constructed; no scientific
-novelty is claimed for Hilbert–Pólya reformulation alone.
+its strip/real-zero reduction are typed.  The weight-one Clifford bulk closes to the free square,
+but no arithmetic determinant is produced.  More decisively, the source-specific Hilbert-Gram
+closed-graph theorem proves that every nonzero positive momentum-symmetric realization on the full
+theta Schwartz core is nonclosable through ordinary `L²`; the continuous dense-completion reporter
+collapses to zero.  The arbitrary-Hilbert-target graph consequence is the local scientific
+increment, not the Hilbert–Pólya reformulation.
 
 **External contribution.** Berry–Keating, Hilbert–Pólya, and 2026 surveys provide candidate
 operators or reviews, not a closed self-adjoint realization with Xi spectrum inclusion.
 
-**Lean action.** None. No external source meets the route premise.
+**Completed Lean action.** `HedenmalmSourceHilbertGramClosedGraphNoGo` formalizes the nonclosable
+partial-operator theorem and its singular real-divisor survivor.
+`XiThetaBoundaryCarrierNoGo` formalizes the dense-completion reporter collapse and its nonzero
+escape trichotomy.  The full-source regular mechanism is retired.  Finite divisor-span or singular
+boundary relations survive only with a source-selection/conservativity theorem that is already
+RH-bearing; no external source supplies it.
 
 ### Route L — Deninger/Hodge/cohomological realization
 
@@ -467,7 +491,7 @@ arithmetic relevant complex, positive Hodge transport, or Xi spectrum inclusion.
 and the corpus's pro-log divisor exact sequence. This advances the geometric carrier from generic
 topology to the actual Deninger model; the arithmetic comparison and polarization remain open.
 
-### Route M — Gamma–Jacobi singular reader [OPEN — NARROWED]
+### Route M — Gamma–Jacobi singular reader [FORMALIZED — TERMINALIZED]
 
 **Closed predecessor.** Inoue's
 [Meixner–Pollaczek theorem](https://arxiv.org/abs/1412.1220) controls partial sums of one fixed
@@ -488,11 +512,19 @@ symbols instead adds their coefficients and already fails on the first two liter
 finite inner convergence and a scalar outer factor do not repair the cyclic/multiplicative
 predecessor.
 
-**Live action.** Do not formalize Inoue/Romik as a Route M bridge. The formalized positive
-survivor is an edge/fibre-marked, nonmultiplicative barycentric bundle with a noncyclic pointed
-reader. No existing numbered route or external theorem supplies this object. Route M remains open
-at construction or class-complete refutation of that pointed reader, completed-Euler compatibility,
-and its same-fibre orientation handoff.
+**Completed local action.**  Do not use Inoue/Romik as a Route M bridge.  The surviving object has
+instead been constructed directly: the off-diagonal pointed reader of the commutator between
+FE--Schwarz functional calculus of the completed Euler clock and the exact Gamma--Jacobi tail
+loss.  It is restriction-compatible, completed-Euler covariant, noncyclic, reflection-odd on one
+marked fibre, and obeys the exact source-barycentric law.  A general dehomogenization theorem shows
+that positive barycentric normalization is only projectivized additive marked current and cannot
+create a sign.
+
+For every nonempty actual von Mangoldt aperture and every Jacobi aperture, cofinal anchored
+flatness of this reader is formally equivalent to RH.  Route M is therefore terminalized at an
+exact RH coordinate, not retired and not proved.  The literature audit located no primary source
+containing this exact Gamma--Jacobi/von-Mangoldt/FE--Schwarz composition; project-level novelty
+remains provisional rather than asserted globally.
 
 ### Route N — Hedenmalm prime-normal estimate
 

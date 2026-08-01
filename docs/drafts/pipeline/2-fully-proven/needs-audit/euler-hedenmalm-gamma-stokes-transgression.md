@@ -8,7 +8,7 @@
   `hedenmalm-theta-source-compressed-inverse-determinant.md`;
   `prime-tail-hedenmalm-wiener-hopf-transgression.md`;
   `hedenmalm-theta-flat-borel-holonomy-law.md`;
-  `../../1-in-progress/xi-taylor-theta-tail-core-density-current.md`;
+  `../../5-failed/xi-taylor-theta-tail-core-density-current.md`;
   `../../3-formalized/new_scientific_knowledge/theta-cusp-finite-shell-seam-cancellation.md`.
 
 ## Question
