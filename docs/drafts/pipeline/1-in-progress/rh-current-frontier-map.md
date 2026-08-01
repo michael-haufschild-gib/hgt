@@ -293,14 +293,14 @@ positive Sonin finite/block/moment values
   square-tail hypotheses;
 - the remaining coupling-band budget is exactly three packet-frequency norms at radii
   `rb`, `ra`, and `b`;
-- squared estimates on those three terms bound the budget by
-  `√Bhigh + √Bra + √Bb`;
+- concrete squared estimates on those three terms are proved and bound the budget by an
+  explicit square-root expression;
 - it blows up but grows at most logarithmically;
 - failure of the final floor is reduced to a quantitative rate shortfall.
 
-**Open core.** Prove the three spectral estimates with asymptotics strong enough after
-normalization to compare coupling-energy growth with the logarithmic frequency channel
-and close the completed packet floor with summable excess.
+**Open core.** Choose schedules controlling explicit reference-tail and packet-mean terms
+so the proved square-root bound remains summably below normalized coupling-energy growth
+and closes the completed packet floor.
 
 **Dead mechanisms.** Scalar, bounded, fixed-operator, Burnol counterterm, position-side,
 and aperture-refinement-only completions fail. Divergence without rate is insufficient.
@@ -320,6 +320,11 @@ finite self-adjoint extensions and interlacing
 → half-plane Herglotz representation and support theorem.
 ```
 
+Finite projective spectral algebra is now exact: projective chord is a sum of spectral gaps
+times source Plücker minors; in two modes its sign is exactly source-minor orientation under
+ordered nodes and positive source-weight product. Marked affine secant has a full finite
+spectral double sum plus homogeneous channel.
+
 **Required continuation.**
 
 ```text
@@ -335,7 +340,8 @@ actual monotone source eigen-coefficient law
 1. actual source coefficient law;
 2. chord-mass threshold;
 3. full normalized jump kernel;
-4. full-frequency global carrier identification.
+4. orientation and sufficient aggregate mass of actual source minors;
+5. control of homogeneous channel and passage from finite spectral sums to global carrier.
 
 **Dead predecessor.** The legacy entire compact-limit target is impossible because the
 actual quotient has genuine poles. The live route is meromorphic and full-frequency.
@@ -421,9 +427,11 @@ positive-definite kernel: source gives an explicit compound-Poisson law with zer
 triangular-clock realization. `CharacteristicDefectGramCapacity` packages the universal
 finite-second-moment anchor-correlation bound used directly by RHTower.
 
-**Open core.** Prove a global coherent bad-energy budget that forces vanishing or bounds
-the excursion by available positive mass, including the finite-packet-to-infinite-source
-limit.
+**Proved finite hierarchy.** `bad correlation² ≤ coherent energy ≤ total bad mass²`.
+
+**Open core.** Pass this sandwich through prime exhaustion and prove total reduced-bad mass
+is uniformly dominated by available positive/continuous source budget strongly enough to
+exclude negative excursions.
 
 **Obstacle.** Diagonal attenuation and scale-four/KMS decompositions preserve bad signs.
 Only a non-diagonal cross-prime or inter-scale inequality can close the gap.
@@ -470,6 +478,11 @@ Poisson realization, polar-sign correction, and Fredholm kernel reductions.
 **Open core.** Meyer-complex comparison; radial Schwartz domain; nuclear topology and
 closed range; nonradial acyclicity; cup/trace/flow/Hodge transport; nuclear
 almost-idempotence; middle-kernel vanishing; and source-to-Xi spectrum inclusion.
+
+The unit sphere is conditionally contractible when supplied an eigenvector-free linear
+isometry whose range is orthogonal to a unit direction. No theorem constructs such an
+isometry on the arithmetic Deninger completion, so this closes generic angular topology,
+not arithmetic comparison or spectral realization.
 
 ### Route M — Gamma–Jacobi singular reader
 
@@ -719,9 +732,12 @@ Dirichlet approximation, closing the exponent-to-spectrum link in the Gamma-fiel
 nonrelation chain. Vertically flat residuals are stable under differences, nonzero rational
 factors, and unit translation, and no nonzero polynomial is vertically flat. Remaining
 analytic assembly is evaluation/translation compatibility for rational digamma jet
-polynomials. Universal-to-generic centering and coefficient-substitution injectivity are
-also present; explicit algebraic independence of the centered generic coefficient family
-still needs final assembly and still has no Xi-source specialization.
+polynomials. Universal-to-generic centering, coefficient-substitution injectivity, and
+algebraic independence of centered generic coefficients are proved, but no Xi-source
+spectral polynomial or analytic handoff exists. The upper-half-plane germ ring makes every
+nonzero rational germ a unit, makes flat germs a rational module, and excludes nonzero
+rational flat germs; evaluation/translation compatibility remains the shift-elimination
+assembly step.
 
 ### Highest-value HT-specific missing inputs
 
@@ -844,11 +860,14 @@ completed integral.
 - atomwise finite causal splice;
 - raw completed-Mellin positive-domain proposals;
 - transfer of symmetric Volterra positivity/sign to the complementary phase coordinate
-  under the stated reflection hypotheses.
+  under the stated reflection hypotheses;
+- rank-one, single-mode, or diagonal spectral positivity as control of projective chord:
+  every diagonal chord contribution vanishes.
 
 **Survivor.** Frequency-side logarithmic Sonin channel; meromorphic Suzuki anti-Pick,
 Herglotz, full-frequency Ward, and projective/Plücker structures; self-adjoint relative
-phase coordinate, complementary parity sector, and independent source-germ-weld route.
+phase coordinate, complementary parity sector, genuine spectral-pair orientation, and
+independent source-germ-weld route.
 
 ### 6.6 Möbius/additive cancellation shortcuts
 
@@ -1054,14 +1073,15 @@ literature. They are stated at source level, before specialization to Xi zeros.
    to a bounded upper region cofinally near the critical exponent?
 5. **Hedenmalm completion theorem.** Is the completed center-mixed Fourier current
    nonnegative in the interior high-frequency corner?
-6. **Julia energy theorem.** Does a global coherent cross-prime budget rule out negative
-   completed-source excursions?
+6. **Julia energy theorem.** Can the proved finite energy sandwich pass through prime
+   exhaustion with total bad mass dominated by positive/continuous source budget?
 7. **Prime–arch high-frequency ceiling.** Can literal source supply any finite uniform
    upper bound above frequency four?
 
 ### Tier 2 — source-to-operator or source-to-form construction
 
-8. All-prime Sonin closure with the required quantitative rate.
+8. All-prime Sonin schedules making explicit tail/mean square-root budget summably smaller
+   than normalized coupling-energy growth.
 9. Suzuki source coefficient monotonicity, chord-mass gap, and full jump Pick kernel.
 10. Relative-Volterra phase Euler-defect source-germ weld.
 11. Source-built all-degree prime–arch Hankel PSD/reconstruction.
@@ -1225,8 +1245,10 @@ Therefore the honest current conclusion is:
 - `RHTower/SoninDilatedBandTransport.lean`
 - `RHTower/SoninShellCutBandPacketTerms.lean`
 - `RHTower/SoninShellCutBandBound.lean`
+- `RHTower/SoninShellCutBandTotalBound.lean`
 - `RHTower/SuzukiFiniteApertureHermiteBiehler.lean`
 - `RHTower/SuzukiVolterraCartesianPhaseDefect.lean`
+- `RHTower/SuzukiAffineSecantSpectralSum.lean`
 - `RHTower/StrictHermiteBiehlerGivesRH.lean`
 - `RHTower/XiCTaylorThetaTailCoreCurrentCapstone.lean`
 - `RHTower/CCMSharpPrimeWindowSubpowerGate.lean`
@@ -1243,6 +1265,11 @@ Therefore the honest current conclusion is:
 - `HTGeometry/SummableSpectrumScrewRecurrence.lean`
 - `HTGeometry/CarriedConclusion.lean`
 - `HTGeometry/JuliaDefectEquilibriumPositiveDefinite.lean`
+- `HTGeometry/CharacteristicDefectGramCapacity.lean`
+- `HTGeometry/ZetaGammaFieldHypertranscendence.lean`
+- `HTGeometry/DirichletBohrSpectrum.lean`
+- `HTGeometry/VerticalFlatness.lean`
+- `HTGeometry/HypertranscendentalHochsterSourceCoherenceDuality.lean`
 - `HTGeometry/AnalyticEulerTailExactFaithfulnessUniversalityLaw.lean`
 - `HTGeometry/PrimeOrientationCompletedRingSignNoGo.lean`
 - `HTGeometry/QuadraticContactPickObstruction.lean`
@@ -1253,3 +1280,5 @@ Therefore the honest current conclusion is:
 - `HilbertMetric/CCRFiniteBlockObstruction.lean`
 - `HilbertMetric/ThreePointCorrelationAngle.lean`
 - `HilbertMetric/DenseClosedScalarRigidity.lean`
+- `HilbertMetric/CharacterIntertwinerObstruction.lean`
+- `HilbertMetric/QuadraticGraphFockConnector.lean`

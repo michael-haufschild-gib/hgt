@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.JuliaDefectAttenuation
 import GaloisForLFunctions.HTGeometry.CharacteristicFunctionPositiveDefinite
+import GaloisForLFunctions.HTGeometry.PositiveDefinitePacketCauchy
 
 /-!
 # Spectral equilibrium structure of the Julia defect
@@ -73,65 +74,12 @@ theorem anchorCorrelation_sq_le_gramEnergy_of_positiveDefinite
     {N : ℕ} (t b : Fin N → ℝ) :
     (∑ i, b i * K (t i)) ^ 2 ≤
       ∑ i, ∑ j, b i * K (t j - t i) * b j := by
-  let S : ℝ := ∑ i, b i * K (t i)
-  let T : Fin (N + 1) → ℝ := Fin.cases 0 t
-  let C : Fin (N + 1) → ℂ :=
-    Fin.cases (-(S : ℂ)) (fun i => (b i : ℂ))
-  obtain ⟨r, hr, hq⟩ := hPD (N + 1) T C
-  have hsumKB :
-      (∑ i, (K (t i) : ℂ) * (b i : ℂ)) = (S : ℂ) := by
-    dsimp only [S]
-    rw [Complex.ofReal_sum]
-    apply Finset.sum_congr rfl
-    intro i _
-    push_cast
-    ring
-  have hsumBK :
-      (∑ i, (b i : ℂ) * (K (t i) : ℂ)) = (S : ℂ) := by
-    dsimp only [S]
-    rw [Complex.ofReal_sum]
-    apply Finset.sum_congr rfl
-    intro i _
-    push_cast
-    rfl
-  have hcrossRight :
-      (∑ i, -(S : ℂ) * (K (t i) : ℂ) * (b i : ℂ)) =
-        -(S : ℂ) ^ 2 := by
-    calc
-      _ = ∑ i, -(S : ℂ) * ((K (t i) : ℂ) * (b i : ℂ)) := by
-        apply Finset.sum_congr rfl
-        intro i _
-        ring
-      _ = -(S : ℂ) * ∑ i, (K (t i) : ℂ) * (b i : ℂ) := by
-        rw [Finset.mul_sum]
-      _ = _ := by rw [hsumKB]; ring
-  have hcrossLeft :
-      (∑ i, (b i : ℂ) * (K (t i) : ℂ) * -(S : ℂ)) =
-        -(S : ℂ) ^ 2 := by
-    calc
-      _ = (∑ i, (b i : ℂ) * (K (t i) : ℂ)) * -(S : ℂ) := by
-        rw [Finset.sum_mul]
-      _ = _ := by rw [hsumBK]; ring
-  have hinternal :
-      (∑ i, ∑ j, (b i : ℂ) * (K (t j - t i) : ℂ) * (b j : ℂ)) =
-        ((∑ i, ∑ j, b i * K (t j - t i) * b j : ℝ) : ℂ) := by
-    push_cast
-    rfl
-  have hqform :
-      (∑ i, ∑ j, star (C i) * (K (T j - T i) : ℂ) * C j) =
-        ((∑ i, ∑ j, b i * K (t j - t i) * b j - S ^ 2 : ℝ) : ℂ) := by
-    simp only [Fin.sum_univ_succ, T, C, Fin.cases_zero, Fin.cases_succ,
-      Complex.star_def, map_neg, Complex.conj_ofReal, sub_zero, zero_sub,
-      hEven]
-    rw [hK0]
-    rw [hcrossRight, Finset.sum_add_distrib, hcrossLeft, hinternal]
-    push_cast
-    ring
-  rw [hqform] at hq
-  have hre := congrArg Complex.re hq
-  simp only [Complex.ofReal_re] at hre
-  change S ^ 2 ≤ ∑ i, ∑ j, b i * K (t j - t i) * b j
-  nlinarith
+  have h :=
+    GaloisForLFunctions.HTGeometry.
+      realKernelPacketCross_sq_le_energy_mul_energy_of_positiveDefinite
+        K hPD hEven (fun _ : Fin 1 => 0) (fun _ : Fin 1 => 1) t b
+  simpa [GaloisForLFunctions.HTGeometry.realKernelPacketCross,
+    GaloisForLFunctions.HTGeometry.realKernelPacketEnergy, hK0] using h
 
 /-- The unnormalized Julia defect is strictly positive away from the wall on the positive side. -/
 theorem juliaDefectSquareProfile_pos {y : ℝ} (hy : 0 < y) :

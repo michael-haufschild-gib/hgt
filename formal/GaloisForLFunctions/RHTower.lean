@@ -3903,3 +3903,4 @@ import GaloisForLFunctions.RHTower.SoninShellCutBandTotalBound
 import GaloisForLFunctions.RHTower.DeningerSphereSlideHomotopy
 import GaloisForLFunctions.RHTower.SoninShellCutEnergyFromBounds
 import GaloisForLFunctions.RHTower.DeningerSphereLineHomotopy
+import GaloisForLFunctions.RHTower.DeningerSphereContractible

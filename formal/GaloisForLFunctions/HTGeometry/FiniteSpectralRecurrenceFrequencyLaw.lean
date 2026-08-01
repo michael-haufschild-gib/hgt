@@ -90,6 +90,23 @@ theorem halfTarget_subset_strictTarget
   rw [strictProjectiveWeightedCoherenceTarget, Set.mem_setOf_eq]
   linarith
 
+/-- Every closed target inherits its Haar upper bound as a completed-time
+upper frequency under a rationally independent finite phase flow. -/
+theorem rationallyIndependent_closedTarget_limsup_le_volume
+    {d : Type*} [Fintype d]
+    (frequency : d → ℝ)
+    (hindependent : RationallyIndependentFrequency frequency)
+    {A : Set (UnitAddTorus d)} (hA : IsClosed A) :
+    atTop.limsup (fun T ↦
+        (finiteTorusPhaseProbabilityMeasure frequency T :
+          Measure (UnitAddTorus d)) A) ≤ volume A := by
+  have hlim := finiteTorusPhaseProbabilityMeasure_tendsto_haar
+    frequency hindependent
+  have hclosed :=
+    ProbabilityMeasure.limsup_measure_closed_le_of_tendsto hlim hA
+  rw [finiteTorusHaarProbabilityMeasure_toMeasure_eq_volume] at hclosed
+  exact hclosed
+
 /-- **Long-time recurrence-frequency law.** For every rationally independent
 finite frequency packet and every positive fidelity tolerance, the lower
 completed-time frequency of strict returns is at least the Haar volume of

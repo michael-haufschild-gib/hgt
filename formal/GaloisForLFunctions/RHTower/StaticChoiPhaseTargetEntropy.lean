@@ -113,4 +113,31 @@ theorem measureReal_iUnion_torusTargetControlled_le
     _ = _ := by
       simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
 
+/-- Fixed-length words used to pad every circuit of length at most `s` once an
+identity-labelled gate is included in the alphabet. -/
+def PaddedCircuitWord (gate : Type*) (s : ℕ) := Fin (s + 1) → gate
+
+instance {gate : Type*} [Fintype gate] (s : ℕ) :
+    Fintype (PaddedCircuitWord gate s) :=
+  inferInstanceAs (Fintype (Fin (s + 1) → gate))
+
+theorem card_paddedCircuitWord (gate : Type*) [Fintype gate] (s : ℕ) :
+    Fintype.card (PaddedCircuitWord gate s) = Fintype.card gate ^ (s + 1) := by
+  simp [PaddedCircuitWord]
+
+/-- A padded circuit dictionary pays exactly `|gate|^(s+1)` in the phase-cap
+union bound.  The theorem is independent of circuit semantics: the caller
+supplies the controlled target associated to each word. -/
+theorem measureReal_iUnion_paddedCircuitTargets_le
+    {d gate : Type*} [Fintype d] [Nonempty d] [Fintype gate]
+    (s : ℕ) (A : PaddedCircuitWord gate s → Set (d → UnitAddCircle))
+    {η : ℝ} (hη : 0 < η)
+    (hA : ∀ w, TorusTargetControlled (A w) η) :
+    volume.real (⋃ w, A w) ≤
+      (Fintype.card gate : ℝ) ^ (s + 1) *
+        ((Fintype.card d : ℝ) * Real.exp ((Fintype.card d : ℝ) / 2) *
+          Real.sqrt (Real.pi * η / 2) ^ (Fintype.card d - 1)) := by
+  simpa only [card_paddedCircuitWord, Nat.cast_pow] using
+    (measureReal_iUnion_torusTargetControlled_le A hη hA)
+
 end RHTower

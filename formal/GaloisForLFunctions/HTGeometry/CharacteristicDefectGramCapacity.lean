@@ -63,6 +63,28 @@ theorem normalizedCharacteristicDefect_le_one
     Complex.norm_real, Real.norm_eq_abs] at hnorm
   exact (le_abs_self _).trans hnorm
 
+/-- **Equilibrium two-packet capacity law.**  Mixed correlation between any two finite packets
+for a normalized characteristic defect is controlled by the product of their coherent energies. -/
+theorem normalizedCharacteristicDefect_packetCross_sq_le_energy_mul_energy
+    (μ : Measure ℝ) [IsProbabilityMeasure μ]
+    {m : ℝ} (hm : 0 < m)
+    (hsq : Integrable (fun x : ℝ => x ^ 2) μ)
+    (hmoment : ∫ x : ℝ, x ^ 2 ∂μ = m)
+    {N M : ℕ} (s a : Fin N → ℝ) (t b : Fin M → ℝ) :
+    (∑ i, ∑ j,
+        a i * normalizedCharacteristicDefect μ m (t j - s i) * b j) ^ 2 ≤
+      (∑ i, ∑ j,
+          a i * normalizedCharacteristicDefect μ m (s j - s i) * a j) *
+        ∑ i, ∑ j,
+          b i * normalizedCharacteristicDefect μ m (t j - t i) * b j := by
+  simpa only [GaloisForLFunctions.HTGeometry.realKernelPacketCross,
+    GaloisForLFunctions.HTGeometry.realKernelPacketEnergy] using
+      (GaloisForLFunctions.HTGeometry.
+        realKernelPacketCross_sq_le_energy_mul_energy_of_positiveDefinite
+          (normalizedCharacteristicDefect μ m)
+          (positiveDefiniteOnReal_normalizedCharacteristicDefect μ hm hsq hmoment)
+          (normalizedCharacteristicDefect_neg μ m) s a t b)
+
 /-- **Universal anchored equilibrium-capacity law.**  Let `μ` be any probability law whose
 second moment is the positive number `m`.  For every finite packet, correlation with the origin
 through the normalized characteristic defect is bounded in square by the complete coherent Gram
@@ -95,6 +117,23 @@ theorem juliaDefectAttenuationKernel_anchorCorrelation_sq_le_gramEnergy
         (m := (3 / 2 : ℝ)) (by norm_num)
         integrable_sq_juliaCompressionEquilibriumProbabilityMeasure
         integral_sq_juliaCompressionEquilibriumProbabilityMeasure t b)
+
+/-- Mixed Julia equilibrium correlation obeys the universal two-packet capacity law. -/
+theorem juliaDefectAttenuationKernel_packetCross_sq_le_energy_mul_energy
+    {N M : ℕ} (s a : Fin N → ℝ) (t b : Fin M → ℝ) :
+    (∑ i, ∑ j,
+        a i * juliaDefectAttenuationKernel (t j - s i) * b j) ^ 2 ≤
+      (∑ i, ∑ j,
+          a i * juliaDefectAttenuationKernel (s j - s i) * a j) *
+        ∑ i, ∑ j,
+          b i * juliaDefectAttenuationKernel (t j - t i) * b j := by
+  simpa only [normalizedCharacteristicDefect_juliaCompressionEquilibriumProbabilityMeasure]
+    using
+      (normalizedCharacteristicDefect_packetCross_sq_le_energy_mul_energy
+        (juliaCompressionEquilibriumProbabilityMeasure : Measure ℝ)
+        (m := (3 / 2 : ℝ)) (by norm_num)
+        integrable_sq_juliaCompressionEquilibriumProbabilityMeasure
+        integral_sq_juliaCompressionEquilibriumProbabilityMeasure s a t b)
 
 theorem juliaDefectAttenuationKernel_le_one (y : ℝ) :
     juliaDefectAttenuationKernel y ≤ 1 := by
