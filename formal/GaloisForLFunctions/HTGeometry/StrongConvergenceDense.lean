@@ -20,7 +20,7 @@ variable {𝕜 E F ι : Type*} [NontriviallyNormedField 𝕜]
 limit candidate is bounded by `C`, and convergence holds on a dense set, then it holds everywhere.
 -/
 theorem tendsto_of_dense_of_uniform_bound {l : Filter ι} {T : ι → E →L[𝕜] F} {S : E →L[𝕜] F}
-    {C : ℝ} (hC0 : 0 ≤ C) (hC : ∀ i, ‖T i‖ ≤ C) (hS : ‖S‖ ≤ C)
+    {C : ℝ} (hC0 : 0 ≤ C) (hC : ∀ᶠ i in l, ‖T i‖ ≤ C) (hS : ‖S‖ ≤ C)
     {s : Set E} (hs : Dense s)
     (hconv : ∀ v ∈ s, Tendsto (fun i => T i v) l (𝓝 (S v))) (v : E) :
     Tendsto (fun i => T i v) l (𝓝 (S v)) := by
@@ -29,12 +29,12 @@ theorem tendsto_of_dense_of_uniform_bound {l : Filter ι} {T : ι → E →L[�
   obtain ⟨w, hw, hvw⟩ :=
     Metric.mem_closure_iff.mp (hs v) (ε / (3 * (C + 1))) (by positivity)
   have hev := Metric.tendsto_nhds.mp (hconv w hw) (ε / 3) (by linarith)
-  filter_upwards [hev] with i hi
+  filter_upwards [hev, hC] with i hi hCi
   have hdist : ‖v - w‖ < ε / (3 * (C + 1)) := by
     rwa [← dist_eq_norm]
   have h1 : ‖T i v - T i w‖ ≤ C * ‖v - w‖ := by
     rw [← ContinuousLinearMap.map_sub]
-    exact ((T i).le_opNorm _).trans (mul_le_mul_of_nonneg_right (hC i) (norm_nonneg _))
+    exact ((T i).le_opNorm _).trans (mul_le_mul_of_nonneg_right hCi (norm_nonneg _))
   have h2 : ‖S w - S v‖ ≤ C * ‖v - w‖ := by
     rw [norm_sub_rev, ← ContinuousLinearMap.map_sub]
     exact (S.le_opNorm _).trans (mul_le_mul_of_nonneg_right hS (norm_nonneg _))

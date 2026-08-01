@@ -480,13 +480,66 @@ the first cohomological consequence.
   vanish because `ρ_k` does.  This is `H¹ = 0` for the leafwise coefficient sheaf, the decisive
   instance of "a fine sheaf is acyclic".
 
+### The contracting homotopy in every degree landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerCechHomotopy.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerCechD` — the Čech differential, the alternating sum over the faces of an index tuple.
+- `deningerCechK` — the averaging homotopy: prepend an index, weight by the partition of unity,
+  extend by zero, and sum.
+- `deningerFace_zero`, `deningerFace_succ`, `deningerCechD_cons` — the simplicial input: the zeroth
+  face of a tuple with a prepended index is the tuple itself, and the later faces keep the prepended
+  index, so the differential of a cochain on such a tuple separates into the tuple's own value minus
+  the alternating sum over the faces with the index still prepended.
+- `deningerCech_homotopy` — **`δK + Kδ = id` in every degree**.  Once the support condition makes
+  the extension by zero pointwise equal to the product, the identity is the simplicial cancellation
+  together with `∑_k ρ_k = 1`.
+- `deningerCech_exact` — hence **every cocycle is a coboundary** in every positive degree.
+
+This is the fineness argument in full: `deningerCechSplit` is its degree-one case, stated with the
+continuity of the splitting cochain.
+
+### The finite-stage factorization used by `(9)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerLocallyConstantFactor.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+The proof of `(9)` opens with "a locally constant function on compact profinite `B_p` factors
+through a finite clopen quotient".  That is now a theorem.
+
+- `deningerLocallyConstant_clopen_nhd` — around every point a locally constant function is constant
+  on a *clopen* neighbourhood: take a neighbourhood of constancy and shrink it inside the clopen
+  basis of a profinite space.
+- `deningerLocallyConstant_factors` — **the finite clopen partition of constancy**: compactness
+  selects finitely many such clopens, and the atoms of the finite family they generate form a clopen
+  partition on which the function is constant.  This is what makes `(7)` the filtered union of its
+  finite stages, so that `(8)` is continuous on the strict inductive limit because it is continuous
+  at each stage.
+
+### The finite-direct-sum expansion of `(7)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerFiniteStageSum.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerLocallyConstant_eq_sum` — **a locally constant function into a module is a finite sum of
+  indicators times values**: it factors through a finite clopen partition, and on the piece
+  containing a point only that indicator survives.  This is the card's "`(7)` is the filtered strict
+  inductive limit of finite direct sums of `C^∞(S_p, ℝ)`", at the level of elements: every section
+  of `(7)` already lives at a finite stage, with its finite stage exhibited.
+
+With `deningerLocallyConstant_factors` and `deningerPacket_isCompl` this is the whole argument of
+`(9)` apart from its LF-topology phrasing: continuity of `(8)` at each finite stage is a finite
+convex average followed by circle integration, and the splitting is the continuous idempotent
+`P_p = ι_p Av_p`.
+
 ### Remaining
 
 1. **Deninger's identification** of `U_p` with the automorphism group of `μ_{p'}` in the topology of
    pointwise convergence, and of the packet `Γ_p` with the mapping torus — his Theorem 7.10 and
    Corollary 7.9.  Everything the card derives *from* those inputs is formalized: the mapping-torus
    collapse `(4)`, the compact-to-Hausdorff upgrade to `(3)`, and the profinite structure of `(1)`.
-2. **Higher-degree acyclicity and the `RΓ` statement.**  The construction is complete and degree one
-   is proved (`deningerCechSplit`); what is not formalized is the same homotopy in every degree and
-   its packaging as `RΓ(Γ_p, ℛ_p^∞) ≃ C_lc(B_p, C^∞(S_p, ℝ))[0]`, which needs a Čech complex indexed
-   by simplices and the comparison with derived-functor cohomology — neither is in mathlib.
+2. **The comparison with derived-functor cohomology.**  The contracting homotopy is proved in every
+   degree, so the Čech complex of any cover carrying a subordinate partition of unity is exact in
+   positive degrees.  Identifying that with `RΓ(Γ_p, ℛ_p^∞)` needs the Čech-to-derived comparison,
+   which mathlib does not have; the card's `(6)` is the statement on the Čech side.

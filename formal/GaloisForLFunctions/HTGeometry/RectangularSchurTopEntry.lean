@@ -64,4 +64,25 @@ theorem rectangularSchurToeplitz_unit_tail {R : Type*} [CommRing R] [DecidableEq
     intro hcon
     exact hle (by rw [hcon]; omega)
 
+/-- **At the unit tail the shifted section has a zero first row.**  With the `n`-th coefficient set
+to one and all others to zero, the section of shift `n - 1` has vanishing first row, since its
+indices never reach `n`. -/
+theorem rectangularSchurToeplitz_shift_unit_tail_row_zero {R : Type*} [CommRing R] [DecidableEq R]
+    {n m : ℕ} (hn : 0 < n) (hm : 0 < m) (i : Fin m) :
+    rectangularSchurToeplitz (fun k => if k = n then (1 : R) else 0) (n - 1) m
+      ⟨0, hm⟩ i = 0 := by
+  rw [rectangularSchurToeplitz]
+  by_cases hle : (i : ℕ) ≤ n - 1 + ((⟨0, hm⟩ : Fin m) : ℕ)
+  · rw [if_pos hle, if_neg]
+    show ¬ n - 1 + 0 - (i : ℕ) = n
+    omega
+  · rw [if_neg hle]
+
+/-- **Hence the shifted section is singular at the unit tail.** -/
+theorem det_rectangularSchurToeplitz_shift_unit_tail {R : Type*} [CommRing R] [DecidableEq R]
+    {n m : ℕ} (hn : 0 < n) (hm : 0 < m) :
+    (rectangularSchurToeplitz (fun k => if k = n then (1 : R) else 0) (n - 1) m).det = 0 :=
+  Matrix.det_eq_zero_of_row_eq_zero (⟨0, hm⟩ : Fin m)
+    (rectangularSchurToeplitz_shift_unit_tail_row_zero hn hm)
+
 end GaloisForLFunctions.HTGeometry

@@ -157,7 +157,7 @@ LEAN PROOFS MUST BE UNCONDTIONAL!!!
 
 ## research Route
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to fully close Route G2  from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md 
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to fully close Route E  from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md 
 
 research rules:
 - use heavy conjecturing

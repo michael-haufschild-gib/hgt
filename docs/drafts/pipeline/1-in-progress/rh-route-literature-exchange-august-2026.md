@@ -221,7 +221,9 @@ canonical packets its position-plus-reflected-frequency quadratic form is bounde
 floor along the corpus's positive-linear source schedule for every height function.
 Within Hilbert–Schmidt completions the local boundary is sharper: every sublinear norm envelope
 fails, one explicit positive linear norm cap still fails, and any family restoring the scheduled
-floor must exceed that cap infinitely often. This is a necessary size law, not a construction.
+floor must exceed that cap infinitely often. Conjugating a fixed channel by arbitrary contractions,
+including tower dilations and their inverses, leaves its contribution bounded and fails as well.
+These are necessary size laws, not constructions.
 
 **External contribution.** Burnol's
 [complete/minimal systems paper](https://doi.org/10.5802/jtnb.434), Theorems 3.1–3.3, proves sharp qualitative
@@ -249,8 +251,10 @@ completion, and exact Ward/source obstructions. No exact external collision was 
 source-specific refinements.
 Generic rectangular algebra now isolates the remaining Schur debt: a variable confined to one
 matrix entry gives an exact degree-one determinant expansion, and coprime linear coefficients give
-irreducibility. The corpus does not prove cofactor/remainder coprimality for the literal rectangular
-source determinant, so no source or Ward premise closes.
+irreducibility. Multivariable reduction is also proved: an irreducible cofactor and a specialization
+that kills it without killing the remainder imply irreducibility, including unit-signed corner
+expansions. The corpus does not instantiate that induction/separating specialization or prove direct
+coprimality for the literal rectangular source determinant, so no source or Ward premise closes.
 
 **External contribution.** Suzuki's
 [Weil quadratic form via the screw function](https://arxiv.org/abs/2606.09096) proves the concrete
@@ -378,7 +382,11 @@ and a clopen set of intermediate mass gives a nonzero zero-average mode. Thus it
 ordinary sheaf endomorphism; an arithmetic local/global comparison must treat the global retraction
 separately. A support-contained bump-times-section now extends continuously by zero, and an explicit
 partition-of-unity average splits every real-valued continuous Čech one-cocycle on a finite open
-cover. This is not higher-degree or arithmetic-sheaf acyclicity. Missing are the identification with prime-to-`p` root-of-unity
+cover. Pointwise real-valued cochains now have an explicit contracting homotopy in every positive
+degree, but preservation of coverwise continuity and an actual arithmetic sheaf is not proved.
+Every locally constant function on the profinite factor is constant on a finite clopen partition;
+module-valued functions consequently have an exact finite clopen-indicator expansion. No filtered
+topological limit or arithmetic finite quotient is identified. Missing are the identification with prime-to-`p` root-of-unity
 automorphisms, quotient by the closure of `p`, Frobenius-triviality, period `log p`, and the
 comparison with Deninger's actual prime fibre. Abstract torsion-symbol realification also does not
 instantiate Milnor K-theory. No theorem identifies these models with the separately defined affine
@@ -491,9 +499,10 @@ isomorphism, the Fourier–Mellin factor relation (Proposition 4.6), and its de 
 (Proposition 4.8). These do not remove zero selection, but they supply a literal finite-prime source
 carrier that the divisor-fed coordinate currently lacks.
 
-**Lean action.** Formalize the semilocal Sonin isomorphism and Proposition 4.6 and connect them to
-the local all-prime/Sonin handoff. The submass predicate remains circular until a source estimate
-or source-to-divisor comparison is proved.
+**Lean action.** Formalize the semilocal Sonin isomorphism and Proposition 4.6 only as carrier
+infrastructure for a new prime-seam route, then prove a source-to-divisor comparison. The submass
+predicate remains circular until that source theorem is proved; this does not reopen retired
+Route F.
 
 ### Route S — algebraicity and dynamical mirrors
 

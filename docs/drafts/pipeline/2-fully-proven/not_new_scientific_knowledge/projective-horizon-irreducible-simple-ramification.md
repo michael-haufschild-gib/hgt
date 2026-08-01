@@ -206,3 +206,128 @@ level.  No new Lean claim is attached to this bridge card.
 
   The irreducibility of `tau_(m,n)` is now reduced to the coprimality of the corner cofactor with the
   remainder, with every other hypothesis of the criterion discharged.
+
+- 2026-08-01 — **Correction of scope, and the divisibility criterion.**
+  `formal/GaloisForLFunctions/HTGeometry/LinearIrreducibleCriterion.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  The first form of the criterion asked for `IsCoprime A B` — the Bezout condition `u A + v B = 1`.
+  Over a polynomial ring in several variables that almost never holds, so as stated it could not have
+  been applied to the Schur expansion.  `irreducible_linear_of_isUnit_gcd` replaces it by the correct
+  hypothesis for a unique factorisation domain, `IsUnit (gcd A B)` — the two coefficients have no
+  common factor — through `dvd_gcd` and `isUnit_of_dvd_unit`.  The `IsCoprime` version is kept, since
+  it is the right one over a Bezout domain.
+
+  `not_dvd_of_map_eq_zero_of_map_ne_zero` — a specialisation that kills the cofactor but not the
+  remainder proves the cofactor does not divide the remainder.
+
+  That fixes the shape of the remaining work: since the corner cofactor of the `(m,n)` rectangle is
+  the `(m-1,n-1)` rectangle, an induction gives its irreducibility, and then `gcd` is a unit exactly
+  when the cofactor does not divide the remainder — for which one explicit specialisation suffices.
+  So the open target is now a single point of evaluation, not a general gcd computation.
+
+- 2026-08-01 — **The criterion is transported to several variables.**
+  `formal/GaloisForLFunctions/HTGeometry/MvLinearIrreducible.lean` and the gcd-free form in
+  `LinearIrreducibleCriterion.lean`, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `irreducible_linear_of_forall_isUnit` — the criterion with the only hypothesis a polynomial ring in
+  several variables can supply: every common divisor of the two coefficients is a unit.  A chosen
+  `gcd` is not available there, so the `GCDMonoid` structure is introduced inside the proof from
+  unique factorisation;
+  `finSuccEquiv_rename_succ` — peeling off the first variable sends a polynomial in the remaining
+  ones to a constant, proved by induction on the polynomial;
+  `irreducible_linear_in_X_zero` — hence `X_0 * A + B` with `A`, `B` in the remaining variables is
+  **irreducible** as soon as `A ≠ 0` and the two have only unit common divisors.
+
+  This is the criterion in the form the Schur expansion needs, since `tau_(m,n)` is exactly of that
+  shape once the top variable is taken as the first one.  With the nonvanishing already proved, the
+  card's irreducibility step is now one statement away: the corner cofactor and the remainder share
+  no non-unit factor.
+
+- 2026-08-01 — **The separating specialisation is found, and it closes the argument on paper.**
+  `det_rectangularSchurToeplitz_shift_unit_tail` in `RectangularSchurTopEntry.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`: at the unit tail — the `n`-th coefficient one, all
+  others zero — the section of shift `n-1` has a **vanishing first row**, because its indices never
+  reach `n`, so its determinant is zero.
+
+  Together with `rectangularSchurToeplitz_unit_tail`, which gives `tau_(m,n) = 1` at that same point,
+  this is the separating specialisation the coprimality needs:
+
+  ```text
+  at the unit tail:   tau_(m,n) = 1,   corner cofactor tau_(m-1,n-1) = 0,   hence  B = 1.
+  ```
+
+  So the cofactor does not divide the remainder (`not_dvd_of_map_eq_zero_of_map_ne_zero`), and if the
+  cofactor is irreducible then every common divisor of the two is a unit — which is exactly the
+  hypothesis of `irreducible_linear_in_X_zero`.  Induction on `m` with base `tau_(1,n) = h_n`, a
+  variable and so prime, then gives the irreducibility of every rectangular section.
+
+  Every step of that chain is now a proved Lean theorem except the assembly itself: writing `tau` as
+  a multivariate polynomial with the top variable first, identifying the corner cofactor with the
+  `(m-1,n-1)` section, and running the induction.  The Dvornicich--Zannier citation is no longer load
+  bearing.
+
+- 2026-08-01 — **The induction step is proved as a single theorem.**
+  `irreducible_linear_of_irreducible_cofactor` in
+  `formal/GaloisForLFunctions/HTGeometry/MvLinearIrreducible.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  cofactor irreducible  +  a specialisation killing the cofactor but not the remainder
+    ==>  X_0 * cofactor + remainder  is irreducible.
+  ```
+
+  The proof: a common divisor of the two either is a unit or is an associate of the cofactor, and in
+  the second case the cofactor would divide the remainder, which the specialisation forbids; then the
+  multivariate linear criterion applies.
+
+  This is the whole induction step of the Schur argument in one reusable statement, with the
+  separating point supplied abstractly as a ring map.  For the rectangular sections that map is
+  evaluation at the unit tail, where the two values are `0` and `1` by
+  `det_rectangularSchurToeplitz_shift_unit_tail` and `rectangularSchurToeplitz_unit_tail`.
+
+  What is left is bookkeeping rather than mathematics: presenting `tau_(m,n)` as a polynomial with
+  the top variable first and identifying its corner cofactor with the `(m-1,n-1)` section, after
+  which this theorem and the base case `tau_(1,n) = h_n` give the induction.
+
+- 2026-08-01 — **The last two presentational gaps are closed.**
+  `formal/GaloisForLFunctions/HTGeometry/MvLinearIrreducible.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `exists_rename_succ_of_degreeOf_zero` — a polynomial of degree zero in the first variable **is** a
+  polynomial in the remaining variables, through `natDegree_finSuccEquiv` and
+  `Polynomial.natDegree_eq_zero`.  This is what converts the "free of the top variable" conclusions of
+  the corner expansion into the renamed form the criterion consumes;
+  `irreducible_of_corner_expansion` — the criterion with the expansion's sign absorbed as a unit, so
+  it applies directly to `(-1)^r * det`.
+
+  The chain for the irreducibility of a rectangular Jacobi--Trudi determinant is now complete as
+  Lean theorems: free coordinates, the corner is the only occurrence of the top variable, degree one
+  there, the explicit expansion, the cofactor and remainder values at the unit tail (`0` and `1`), the
+  passage from a separating point to unit-only common divisors, and the linear criterion over a unique
+  factorisation domain.  What is not yet written is the single definition presenting `tau_(m,n)` with
+  the top variable indexed first, which is what would let these be chained mechanically into
+  `Irreducible tau_(m,n)`.
+
+- 2026-08-01 — **The criterion is now stated at the level of the matrix.**
+  `irreducible_det_of_corner_X_zero` in
+  `formal/GaloisForLFunctions/HTGeometry/MvLinearIrreducible.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  first variable in one entry of the first column and nowhere else,
+  complementary minor = image of an irreducible A,
+  a specialisation of the ambient ring killing A but not the determinant
+    ==>  the determinant is irreducible.
+  ```
+
+  The determinant's decomposition is now derived inside the proof from `det_eq_corner_mul_minor_add`
+  rather than assumed, and the remainder's nonvanishing at the point is deduced from the
+  determinant's: at the specialisation the corner term dies with `A`, so what survives of the
+  determinant is exactly the remainder.
+
+  For the rectangular sections the specialisation is evaluation at the unit tail, where
+  `rectangularSchurToeplitz_unit_tail` gives determinant `1` and
+  `det_rectangularSchurToeplitz_shift_unit_tail` gives cofactor `0`.  So the only thing still missing
+  for `Irreducible tau_(m,n)` is the presentation of the section over a polynomial ring with the top
+  variable indexed first, together with the identification of its corner minor.

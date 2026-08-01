@@ -178,4 +178,46 @@ theorem bohrFrequencyModule_le_of_uniform_approx_nat {g : ℝ → ℂ}
     le_of_forall_pos_le_add fun ε hε => by simpa using key ε hε
   exact norm_le_zero_iff.mp hle
 
+/-- **The frequency module of a uniform limit, along a fixed indexed frequency family.**  If `g` is
+uniformly approximated by finite exponential sums drawn from a fixed frequency family lying in `S`,
+its frequency module lies in the `ℚ`-span of `S`. -/
+theorem bohrFrequencyModule_le_of_uniform_approx_index {g : ℝ → ℂ} {ι : Type*}
+    (hgc : Continuous g) (hga : HTGeometry.IsBohrAlmostPeriodic g) (S : Set ℝ) (mu : ι → ℝ)
+    (hmu : ∀ i, mu i ∈ S)
+    (happrox : ∀ ε : ℝ, 0 < ε → ∃ (u : Finset ι) (c : ι → ℂ),
+      ∀ t : ℝ, ‖g t - ∑ i ∈ u, c i * expChar (mu i) t‖ ≤ ε) :
+    bohrFrequencyModule g ≤ Submodule.span ℚ S := by
+  classical
+  rw [bohrFrequencyModule]
+  refine Submodule.span_le.mpr ?_
+  intro lam hlam
+  by_contra hnot
+  refine hlam ?_
+  have key : ∀ ε : ℝ, 0 < ε → ‖bohrCoefficient g lam‖ ≤ ε := by
+    intro ε hε
+    obtain ⟨u, c, hbound⟩ := happrox ε hε
+    have hGc : Continuous (fun t : ℝ => ∑ i ∈ u, c i * expChar (mu i) t) :=
+      continuous_finsetSum _ (fun i _ => continuous_const.mul (continuous_expChar (mu i)))
+    have hGa : HTGeometry.IsBohrAlmostPeriodic (fun t : ℝ => ∑ i ∈ u, c i * expChar (mu i) t) :=
+      isBohrAlmostPeriodic_sum u
+        (fun i _ => continuous_const.mul (continuous_expChar (mu i)))
+        (fun i _ => isBohrAlmostPeriodic_const_mul (c i) (isBohrAlmostPeriodic_expChar (mu i)))
+    have hzero : bohrCoefficient (fun t : ℝ => ∑ i ∈ u, c i * expChar (mu i) t) lam = 0 := by
+      have hfun : (fun t : ℝ => ∑ i ∈ u, c i * expChar (mu i) t)
+          = fun t : ℝ => ∑ i ∈ u, c i * bohrExp (mu i) t := by
+        funext t
+        exact Finset.sum_congr rfl fun i _ => by rw [expChar_eq_bohrExp]
+      rw [hfun, bohrCoefficient_trigPoly]
+      refine Finset.sum_eq_zero fun i _ => ?_
+      have hne : mu i ≠ lam := by
+        intro h
+        exact hnot (h ▸ Submodule.subset_span (hmu i))
+      simp [hne]
+    have hlip := norm_bohrCoefficient_sub_le hgc hga hGc hGa hbound lam
+    rw [hzero, sub_zero] at hlip
+    exact hlip
+  have hle : ‖bohrCoefficient g lam‖ ≤ 0 :=
+    le_of_forall_pos_le_add fun ε hε => by simpa using key ε hε
+  exact norm_le_zero_iff.mp hle
+
 end GaloisForLFunctions

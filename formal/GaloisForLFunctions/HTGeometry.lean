@@ -525,6 +525,8 @@ import GaloisForLFunctions.HTGeometry.BohrProductSpectrum
 import GaloisForLFunctions.HTGeometry.BohrProductUniformLimit
 import GaloisForLFunctions.HTGeometry.BohrFrequencyModuleProduct
 import GaloisForLFunctions.HTGeometry.EulerFactorRankOne
+import GaloisForLFunctions.HTGeometry.PrimeDirichletApertureSpectrum
+import GaloisForLFunctions.HTGeometry.PrimeEulerProductAperture
 import GaloisForLFunctions.HTGeometry.BohrMeanInvariance
 import GaloisForLFunctions.HTGeometry.BohrConvolution
 import GaloisForLFunctions.HTGeometry.BohrFejerKernel
@@ -3339,3 +3341,4 @@ import GaloisForLFunctions.HTGeometry.PostcriticalFiberSeparation
 import GaloisForLFunctions.HTGeometry.RectangularSchurTopEntry
 import GaloisForLFunctions.HTGeometry.DeterminantDegreeOne
 import GaloisForLFunctions.HTGeometry.LinearIrreducibleCriterion
+import GaloisForLFunctions.HTGeometry.MvLinearIrreducible

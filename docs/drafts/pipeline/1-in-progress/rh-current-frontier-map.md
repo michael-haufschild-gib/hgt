@@ -453,6 +453,9 @@ positive Sonin finite/block/moment values
   positive slope `s` is small enough that an eventual bound `hsNorm(Cᵢ) ≤ s rᵢ` still fails. Hence
   any Hilbert–Schmidt family that restores that scheduled floor must satisfy
   `s rᵢ < hsNorm(Cᵢ)` frequently;
+- conjugating one fixed bounded channel by arbitrary contractions, including the tower's unitary
+  dilations and inverse dilations, keeps its packet contribution bounded and therefore also fails
+  the typed floor. Scale dependence created only by transport does not meet the order-one size law;
 
 **Terminal verdict.** Bounded, sublinear, logarithmic, fixed-height, arbitrary-height, position,
 frequency-reflected, and full finite Burnol-conductor completions are closed. A merely hypothetical
@@ -469,7 +472,7 @@ card and must prove its own source handoff; it is not an unresolved sublemma of 
 
 **Dead mechanisms.** Bounded scalar, uniformly bounded operator-family quadratic, sublinear-image
 channel-family, fixed-operator,
-Burnol counterterm, position-side,
+contraction- or dilation-transport of one fixed channel, Burnol counterterm, position-side,
 aperture-refinement-only, frequency-side logarithmic-shell, and full geometric Burnol log-shell
 conductor completions fail; sublinear and sufficiently small slope-capped Hilbert–Schmidt channel
 families fail as well; every sublinear scalar
@@ -540,8 +543,10 @@ actual monotone source eigen-coefficient law
 6. identify the actual division-free Robin/Gamma/holonomy or Gamma-projected rectangular
    trace with, or dominate it by, the forced negative-light Gram channel while retaining
    marked half-gap and holonomy Schur debts. Generic top-variable determinant expansion and
-   linear-polynomial irreducibility from coprime coefficients are proved; the actual rectangular
-   cofactor/remainder coprimality and source identification are not;
+   multivariable linear-polynomial irreducibility from coprime coefficients are proved. An
+   irreducible cofactor plus a specialization killing that cofactor but not the remainder also
+   suffices, including unit-signed corner expansions. The actual rectangular induction,
+   separating specialization or cofactor/remainder coprimality, and source identification are not;
 7. prove the resulting rectangular Ward residual uniformly lower-semibounded.
 
 **Dead predecessor.** The legacy entire compact-limit target is impossible because the
@@ -762,8 +767,15 @@ along the first factor, and smooth along the manifold factor; the circle case is
 exported fineness theorem does not assert nonnegativity. A support-contained continuous bump times
 a section continuous on its open set extends continuously by zero. For a finite open cover equipped
 with continuous subordinate bumps summing to one, the resulting explicit averaged cochain splits
-every real-valued continuous Čech one-cocycle. This proves the typed first-cohomology split, not
-higher Čech acyclicity, arbitrary sheaf coefficients, or the arithmetic relevant complex. A
+every real-valued continuous Čech one-cocycle. At the underlying pointwise cochain level, the same
+finite partition gives an explicit homotopy `δK + Kδ = id` in every positive degree and makes every
+cocycle a coboundary. The all-degree theorem does not prove that `K` preserves coverwise continuity
+or a genuine sheaf of arithmetic coefficients, so it is not yet fine-sheaf acyclicity for the
+arithmetic relevant complex. Every locally constant function on a compact Hausdorff totally
+disconnected factor is also constant on the pieces of some finite clopen partition. For values in
+a real module it therefore has an exact finite expansion as clopen indicators multiplied by fixed
+values. These theorems exhibit a finite stage for each section but do not construct the filtered
+system, its topology, or the corresponding finite quotient as an arithmetic object. A
 separately defined suspension with
 trivial monodromy is homeomorphic to the product with `AddCircle T`. The concrete candidate unit
 group `U_p = ∏_{ℓ ≠ p} ℤ_ℓˣ` is now defined, proved compact Hausdorff and totally disconnected, and
@@ -781,8 +793,8 @@ trivial-monodromy mapping torus, packet, symbol, and
 coefficientwise cylinder constructions with
 the literal arithmetic Meyer/Deninger relevant complex; establish radial Schwartz and global
 square-integrable domains, a valid local/global interface for the nonlocal packet average, nuclear
-topology and closed range, higher-degree and arithmetic-sheaf acyclicity beyond the generic
-real-valued Čech one-cocycle split, arithmetic
+topology and closed range, continuity/sheaf compatibility of the all-degree pointwise Čech
+homotopy and its arithmetic-coefficient instantiation, arithmetic
 cup/trace/flow/Hodge transport, nuclear almost-idempotence, middle-kernel vanishing, and
 source-to-Xi spectrum inclusion.
 
@@ -897,9 +909,9 @@ the energy controls `(Re(ρ)-1/2)^2 (log 2)^4` on a divisor fibre.
 over `XiDivisorSupport`, and its fibrewise content is exactly `Re(ρ)=1/2`; even the
 first-coefficient energy remains parameterized by `ρ`.
 
-**Potential promotion condition.** Construct a source-to-divisor-fibre all-prime/Sonin
-operator that produces submass growth or zero first-coefficient energy without selecting
-the Xi divisor.
+**Potential promotion condition.** Construct a new source-to-divisor-fibre prime-seam operator
+that produces submass growth or zero first-coefficient energy without selecting the Xi divisor.
+This would not reopen retired Route F.
 
 **Obstacle.** Existing identities expose and coerce the quantity but do not orient it on
 Xi fibres. An outer Euler modulus or prime-seam coupling remains unproduced.
@@ -1065,9 +1077,10 @@ source.
   operator-norm convergence;
 - uniqueness of the top entry index in a rectangular Toeplitz section, generic determinant degree
   at most one when one variable occurs in one entry, exact expansion into that variable times the
-  complementary minor plus a variable-free remainder, and irreducibility of a linear polynomial
-  with coprime coefficients. No theorem proves the needed cofactor/remainder coprimality for the
-  literal rectangular Schur determinant or supplies an RH source handoff;
+  complementary minor plus a variable-free remainder, and multivariable irreducibility from either
+  coprime coefficients or an irreducible cofactor with a separating specialization. No theorem
+  instantiates the induction and specialization for the literal rectangular Schur determinant or
+  supplies an RH source handoff;
 - Lindelöf exponent campaign.
 
 These are not counted as current RH proof chains because no exact source-to-RH handoff is
@@ -1117,7 +1130,8 @@ rational module, and excludes nonzero rational flat germs.
 12. literal source-specific centered-jet instantiation and an RH-facing handoff from the
     now-proved generic compact-patch transversality;
 13. Lindelöf second-spacing plus across-class cancellation.
-14. Literal rectangular Schur cofactor/remainder coprimality and its source-facing Ward handoff.
+14. Literal rectangular Schur induction with an irreducible cofactor and separating specialization
+    (or direct cofactor/remainder coprimality), followed by its source-facing Ward handoff.
 
 ## 6. Dead routes: exhaustive mechanism map
 
@@ -1239,8 +1253,9 @@ completed integral.
 - rank-one, single-mode, or diagonal spectral positivity as control of projective chord:
   every diagonal chord contribution vanishes.
 
-**Survivor.** A source-faithful floor-restoring Sonin contribution exceeding one explicit
-positive linear rate frequently, or a semilocal completion outside the typed additive model;
+**Positive survivor, outside retired Route F.** A source-built order-one Sonin operator or a
+pre-Gamma renormalization of the Weyl-volume term; transporting a fixed channel by tower dilations
+cannot supply it. Separately, the live Suzuki survivors are
 meromorphic Suzuki anti-Pick, Herglotz, full-frequency Ward, and projective/Plücker
 structures; self-adjoint relative phase coordinate, complementary parity sector, genuine
 spectral-pair orientation, and independent source-germ-weld route.
@@ -1662,8 +1677,9 @@ Therefore the honest current conclusion is:
 
 > **RH is neither proved nor disproved. The formal frontier is a finite quotient of
 > source-level open cores, led by first-clock, completed positivity, critical Möbius,
-> Sonin/Suzuki and Xi-current problems. Retired Route J leaves only a principal-relative
-> Julia representation change, not a coherent-energy-budget problem. All other
+> Suzuki and Xi-current problems. Retired Routes F and J leave only new-route requirements:
+> an order-one/renormalized Sonin source and a principal-relative Julia representation change.
+> They are not completion-budget problems inside the retired mechanisms. All other
 > RH-facing declarations are connectors, mirrors, infrastructure, or retired
 > mechanisms unless and until they supply a new literal-source theorem.**
 
@@ -1722,6 +1738,7 @@ Therefore the honest current conclusion is:
 - `RHTower/SoninBurnolFrequencyLogOrder.lean`
 - `RHTower/SoninBurnolFrequencyLogarithmicOrderNoGo.lean`
 - `RHTower/SoninHilbertSchmidtCompletionFloor.lean`
+- `RHTower/SoninTransportedChannelClosed.lean`
 - `RHTower/QuantitativeNymanBeurling.lean`
 - `RHTower/GroskinArchimedeanTailOrder.lean`
 - `RHTower/SuzukiFiniteApertureHermiteBiehler.lean`
@@ -1769,6 +1786,9 @@ Therefore the honest current conclusion is:
 - `RHTower/DeningerPacketNonlocal.lean`
 - `RHTower/DeningerExtendByZero.lean`
 - `RHTower/DeningerCechSplit.lean`
+- `RHTower/DeningerCechHomotopy.lean`
+- `RHTower/DeningerLocallyConstantFactor.lean`
+- `RHTower/DeningerFiniteStageSum.lean`
 - `RHTower/HedenmalmPrimeNormalWickBoundaryEnergy.lean`
 - `RHTower/ThetaCuspCalibratedPowerReciprocalMomentLaw.lean`
 - `RHTower/CCMFirstClockJuliaEquilibriumGram.lean`
@@ -1814,6 +1834,7 @@ Therefore the honest current conclusion is:
 - `HTGeometry/RectangularSchurTopEntry.lean`
 - `HTGeometry/DeterminantDegreeOne.lean`
 - `HTGeometry/LinearIrreducibleCriterion.lean`
+- `HTGeometry/MvLinearIrreducible.lean`
 - `HTGeometry/CenteredCoeffFieldRational.lean`
 - `HTGeometry/CenteredFullMonodromy.lean`
 - `HTGeometry/CenteredFullMonodromyOdd.lean`

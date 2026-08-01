@@ -448,3 +448,23 @@ With this the scalar layer of `(2)` is complete: uniform bound, link identity, u
 Every remaining step is CFC bookkeeping over corpus theorems (`tendsto_norm_cfc_zero`,
 `tendsto_id_of_norm_comp_tendsto_zero`, `denseRange_of_isSelfAdjoint_of_injective`) with no new
 mathematics.
+
+### Lean progress — the scalar link lifted to the operator identity
+
+The CFC bookkeeping step named in the previous entry, now done, in
+`HTGeometry/CfcNormBound.lean` [PROVED HERE], standard axioms
+`[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `cfc_sub_one_mul_self` : `cfc (fun x => (f x - 1) * x) a = (cfc f a - 1) * a`, for any `f`
+  continuous on the spectrum. Proof: `cfc_mul` against `id`, `cfc_sub` against the constant one,
+  then `cfc_one` and `cfc_id`.
+
+Instantiating `f` at the family symbol `(s - rho) x/(1 + s x)` and combining with
+`resolventSymbol_sub_one_mul` turns `(T_lambda - 1) ∘L B` into `cfc g_lambda B`, whose norm
+`tendsto_norm_cfc_zero` sends to zero from `eventually_forall_abs_resolventSymbol_le`. The chain to
+`(2)` is then closed by `tendsto_id_of_norm_comp_tendsto_zero` with
+`denseRange_of_isSelfAdjoint_of_injective`.
+
+Every link of `(2)` is now an unconditional corpus theorem. What is not yet written is the single
+instantiated statement bundling them at Suzuki's `B`, which requires only naming that operator — no
+further mathematics.

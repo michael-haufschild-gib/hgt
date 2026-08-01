@@ -40,7 +40,9 @@ Weyl-volume term before Gamma attachment, starts a new route with a new source h
   Burnol conductor; aperture refinement without source compensation.
 - **Strongest positive survivor:** any universal restorer must have packet-diagonal microlocal order
   at least one along the explicit schedule, or must remove the linear Weyl-volume term before an
-  order-zero conductor is attached.
+  order-zero conductor is attached. The rate part is already formalized by
+  `frequently_slope_lt_of_forall_bddBelow`: a universal typed restorer exceeds one explicit
+  positive linear slope frequently.
 - **New insight:** obstruction is an order mismatch, not lack of tower height or insufficient
   regularization. Tate/Burnol conductor order is logarithmic; Sonin curvature defect is linear.
 - **Status:** paper proof dependency-closed; exact Lean formalization complete; source modules contain

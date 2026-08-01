@@ -33,12 +33,12 @@ theorem norm_cfc_le_of_forall_le (f : 𝕜 → 𝕜) (a : A) {C : ℝ}
 /-- **Norm convergence from uniform symbol smallness.**  If the symbols are eventually uniformly
 small on the spectrum, the corresponding operators tend to zero in norm. -/
 theorem tendsto_norm_cfc_zero {ι : Type*} {l : Filter ι} (g : ι → 𝕜 → 𝕜) (a : A) (ha : p a)
-    (hcont : ∀ i, ContinuousOn (g i) (spectrum 𝕜 a))
+    (hcont : ∀ᶠ i in l, ContinuousOn (g i) (spectrum 𝕜 a))
     (h : ∀ ε : ℝ, 0 < ε → ∀ᶠ i in l, ∀ x ∈ spectrum 𝕜 a, ‖g i x‖ ≤ ε) :
     Tendsto (fun i => ‖cfc (g i) a‖) l (𝓝 0) := by
   refine Metric.tendsto_nhds.mpr fun ε hε => ?_
-  filter_upwards [h (ε / 2) (by linarith)] with i hi
-  have hb := norm_cfc_le_of_forall_le (g i) a (hcont i) ha hi
+  filter_upwards [h (ε / 2) (by linarith), hcont] with i hi hci
+  have hb := norm_cfc_le_of_forall_le (g i) a hci ha hi
   rw [Real.dist_eq, sub_zero, abs_of_nonneg (norm_nonneg _)]
   linarith
 
@@ -129,5 +129,34 @@ theorem resolventSymbol_sub_one_mul {rho s x : ℝ} (hden : 1 + s * x ≠ 0) :
   ring
 
 end Symbol
+
+/-! ## From the scalar link to the operator identity -/
+
+section Composition
+
+variable {A : Type*} {p : A → Prop} [TopologicalSpace A] [Ring A] [StarRing A] [Algebra ℝ A]
+  [ContinuousFunctionalCalculus ℝ A p]
+
+/-- **Operator form of the link identity.**  Subtracting one from a function of `a` and multiplying
+by `a` is the function `x ↦ (f x - 1) * x` of `a`. -/
+theorem cfc_sub_one_mul_self (f : ℝ → ℝ) (a : A) (ha : p a)
+    (hf : ContinuousOn f (spectrum ℝ a)) :
+    cfc (fun x => (f x - 1) * x) a = (cfc f a - 1) * a := by
+  have hsub : ContinuousOn (fun x : ℝ => f x - 1) (spectrum ℝ a) :=
+    hf.sub continuousOn_const
+  have hid : ContinuousOn (id : ℝ → ℝ) (spectrum ℝ a) := continuousOn_id
+  have hmul : cfc (fun x : ℝ => (f x - 1) * id x) a
+      = cfc (fun x : ℝ => f x - 1) a * cfc (id : ℝ → ℝ) a :=
+    cfc_mul _ _ a hsub hid
+  have hone : cfc (fun x : ℝ => f x - 1) a = cfc f a - 1 := by
+    have hpi : (fun _ : ℝ => (1 : ℝ)) = (1 : ℝ → ℝ) := rfl
+    have := cfc_sub f (fun _ : ℝ => (1 : ℝ)) a hf continuousOn_const
+    rw [this, hpi, cfc_one ℝ a ha]
+  calc cfc (fun x => (f x - 1) * x) a
+      = cfc (fun x : ℝ => (f x - 1) * id x) a := rfl
+    _ = cfc (fun x : ℝ => f x - 1) a * cfc (id : ℝ → ℝ) a := hmul
+    _ = (cfc f a - 1) * a := by rw [hone, cfc_id ℝ a ha]
+
+end Composition
 
 end GaloisForLFunctions.HTGeometry

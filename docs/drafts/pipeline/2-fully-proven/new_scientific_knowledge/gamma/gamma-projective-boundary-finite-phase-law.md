@@ -3325,27 +3325,27 @@ statements about the vertical Gamma law itself rather than about the almost-peri
 `#print axioms` clean.
 
 `HTGeometry/EulerFactorRankOne.lean` builds the witness for §8.6 — *finite support is not claimed*.
-The card's example is `exp(2^{-s})`; the formalized witness is the Euler factor at `2`,
-`E(s) = (1 − 2^{-s})^{-1}`, which has the same three features and a geometric rather than an
-exponential tail, and which is the `N = 2` case of the finite aperture `(34)` of §7.
+The card's example is `exp(2^{-s})`; the formalized witness is the Euler factor at an arbitrary base
+`b > 1`, `E(s) = (1 − b^{-s})^{-1}`, which has the same three features and a geometric rather than an
+exponential tail, and which is the single-prime case of the finite aperture `(34)` of §7.
 
-- `twoPowerLine_eq`, `twoPowerLine_pow` — on the line `Re s = σ` the Dirichlet term `2^{-ns}` is the
-  constant `2^{-σn}` times the character of frequency `−n log 2`;
+- `basePowerLine_eq`, `basePowerLine_pow` — on the line `Re s = σ` the Dirichlet term `b^{-ns}` is
+  the constant `b^{-σn}` times the character of frequency `−n log b`;
 - `norm_eulerFactorLine_sub_dirichletSum_le`, `tendsto_dirichlet_error` — the partial sums converge
-  to `E` *uniformly on the line*, with geometric error `(2^{-σ})^N/(1 − 2^{-σ})`.  Hence
+  to `E` *uniformly on the line*, with geometric error `(b^{-σ})^N/(1 − b^{-σ})`.  Hence
   `isBohrAlmostPeriodic_eulerFactorLine`;
-- **`bohrCoefficient_eulerFactorLine`** — the Bohr coefficient at `−m log 2` is exactly the
-  Dirichlet coefficient `2^{-σm}`, by the `1`-Lipschitz bound against the partial sums;
+- **`bohrCoefficient_eulerFactorLine`** — the Bohr coefficient at `−m log b` is exactly the
+  Dirichlet coefficient `b^{-σm}`, by the `1`-Lipschitz bound against the partial sums;
 - **`infinite_bohrSpectrum_eulerFactorLine`** — the spectrum is therefore infinite;
 - **`rank_bohrFrequencyModule_eulerFactorLine_le_one`** — yet every frequency is an integer multiple
-  of `log 2`, so `rank_ℚ Γ_B(E) ≤ 1`, through the new
+  of `log b`, so `rank_ℚ Γ_B(E) ≤ 1`, through the new
   `bohrFrequencyModule_le_of_uniform_approx_nat`;
-- **`eulerFactorTwo_autonomous`** — and `E` is autonomous differentially algebraic: on the
+- **`eulerFactor_autonomous`** — and `E` is autonomous differentially algebraic: on the
   half-plane `Re s > 0`,
 
-  `E′ + (log 2)(E² − E) = 0`,
+  `E′ + (log b)(E² − E) = 0`,
 
-  a first-order polynomial relation with *constant* coefficients (`hasDerivAt_eulerFactorTwo`).
+  a first-order polynomial relation with *constant* coefficients (`hasDerivAt_eulerFactor`).
 
 So infinite Dirichlet support coexists with rank-one frequency module: the law's finite-rank
 conclusion is sharp, and cannot be strengthened to finite support.  `#print axioms` clean.
@@ -3353,6 +3353,34 @@ conclusion is sharp, and cannot be strengthened to finite support.  `#print axio
 `bohrFrequencyModule_le_of_uniform_approx_nat` (in `BohrProductUniformLimit.lean`) is the general
 tool behind that: a function uniformly approximated by the partial sums of an exponential series has
 its frequency module inside the `ℚ`-span of the series' frequencies.
+
+`HTGeometry/PrimeDirichletApertureSpectrum.lean` grounds §7's aperture lattice in an actual Bohr
+spectrum.  Until now `primeApertureCharacterModule N = span_ℚ{log p : p ≤ N}` was an abstract
+lattice, and `primeAperture_carrier_covering_dim_ge` *assumed* an injection of it into the carrier's
+character space.  The finite prime Dirichlet polynomial supplies the missing object:
+
+`D_{N,σ}(t) = ∑_{p ≤ N} p^{-σ-it}`
+
+is a trigonometric polynomial on the line whose frequencies are exactly `−log p`, `p ≤ N`.
+
+- `bohrCoefficient_primeDirichletLine_prime` — its Bohr coefficient at `−log p` is `p^{-σ} ≠ 0`, by
+  injectivity of `p ↦ log p` (`primeLineFrequency_injective`, from `Real.log_injOn_pos`);
+- `bohrSpectrum_primeDirichletLine_subset` — and there are no other frequencies;
+- **`bohrFrequencyModule_primeDirichletLine`** — hence `Γ_B(D_{N,σ}) = primeApertureCharacterModule N`
+  *on the nose*, for every `σ`;
+- **`finrank_bohrFrequencyModule_primeDirichletLine`** — so its rational Bohr rank is exactly `π(N)`;
+- **`primeDirichlet_carrier_covering_dim_ge`** — the §7 carrier bound restated on the concrete
+  observable: any finite rational character space receiving an injection of `Γ_B(D_{N,σ})` has
+  dimension at least `π(N)`.
+
+The aperture lattice is therefore not a modelling choice: it is the frequency module of a genuine
+analytic object on the line, and the finite-phase law's rank invariant attains `π(N)` on it.
+`#print axioms` clean.
+
+The cutoff Euler product `(34)` itself remains to be treated: its Dirichlet expansion runs over
+`N`-smooth numbers, so the coefficient extraction needs the multi-index expansion of a finite
+product of geometric series.  The single-factor case is complete
+(`EulerFactorRankOne.lean`), and this module completes the finite-frequency-packet case.
 
 ## Gates
 

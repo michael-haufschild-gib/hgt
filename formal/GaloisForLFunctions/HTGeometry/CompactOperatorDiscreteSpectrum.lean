@@ -178,7 +178,7 @@ why the limit is strong and not in norm — and the factor `B` is what removes t
 theorem tendsto_id_of_norm_comp_tendsto_zero
     {ι : Type*} {l : Filter ι} {T : ι → H →L[𝕜] H} {B : H →L[𝕜] H} {C : ℝ}
     (hsa : IsSelfAdjoint B) (hinj : Function.Injective B)
-    (hC1 : 1 ≤ C) (hC : ∀ i, ‖T i‖ ≤ C)
+    (hC1 : 1 ≤ C) (hC : ∀ᶠ i in l, ‖T i‖ ≤ C)
     (hnorm : Tendsto (fun i => ‖(T i - ContinuousLinearMap.id 𝕜 H) ∘L B‖) l (nhds 0))
     (v : H) :
     Tendsto (fun i => T i v) l (nhds v) := by

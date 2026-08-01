@@ -180,7 +180,7 @@ it does not close this source estimate
 
 - [x] 0 -> 1 in-progress: source-pure statement, exact falsifier, anti-theatre boundary
 - [x] 1 -> 2 fully-proven: dependency-closed proof of uniform logarithmic diagonal bound
-- [x] 2 -> 3 formalized: unconditional Lean theorem, umbrella wiring, source-level lint and axiom audit
+- [x] 2 -> 3 formalized: unconditional Lean theorem, umbrella wiring, repository-wide formal lint and axiom audit
 - [ ] 3 -> 4 publication-ready
 
 ## Log
