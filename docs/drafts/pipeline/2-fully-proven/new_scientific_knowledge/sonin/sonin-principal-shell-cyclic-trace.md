@@ -1145,6 +1145,15 @@ applied to the family's own members, so it is rewritten as
 `(Corr_a - Corr_b) * D` applied to the vector, which stays in the ideal because the ideal is closed
 under right multiplication.
 
+The general assembly is now one theorem.  `card_sub_le_hsNormSq_soninApertureCoupling` takes an
+orthonormal family in the shell with band terms below `β` and returns
+`(N - discount)(1 - eta)^2 <= hsNormSq Z`, with the discount the fixed energies of three ideal errors
+over `eta^2`.  Two facts made it close: the coupling is *itself* a relative-ideal element, so it is
+Hilbert--Schmidt and the mode count applies to it, and the dilates are unit vectors because dilation
+is unitary, so they serve as the near-isometry targets with no further work.  The correction is
+listed twice in a three-element family, which is how the budget's factor of two enters a sum of
+equally weighted terms.
+
 What remains is to choose constants: the order `N`, the threshold `ε`, and the schedule constant `K`,
 and read off the linear-in-`r` energy.  With `N` about `r/K` this gives coupling
 energy of order `r`, against the `log r` cap, closing the shortfall test.  Then feed that through the two-branch estimate to get `N` of
@@ -1360,6 +1369,7 @@ family is abstract, so two widths have unrelated profiles.
 | **the discarded energy** is the density integrated over the band's *complement*, and above twice the carrier that density is at most `16 δ² S(δ\|ξ\|/2)²` — all three tail arguments then exceed half the frequency | `measurableSet_strictCentralTail`, `norm_sq_sub_evenFourierCutoff_soninScaledPacketEven_eq_density`, `soninScaledPacketSpectralDensity_le_tailSup` |
 | **the energy above a band**: substituting the polynomial rate turns that density into a genuine power tail of order `2N`, integrable at every positive order, so the packet keeps at most `2K δ^{2-2N} t^{1-2N}/(2N-1)` above a band at twice its carrier | `exists_soninScaledPacketSpectralDensity_le_powerTail`, `exists_norm_sq_sub_evenFourierCutoff_soninScaledPacketEven_le` |
 | **the full error budget in five named terms**, with the correction difference written as an ideal operator applied to the vector itself — the ideal absorbs the dilation by right multiplication, which is what lets the mode count see it | `norm_evenSoninApertureLayer_sub_le`, `isSoninPrincipalRelativeIdeal_correctionDiff_comp_dilation`, `norm_soninApertureCoupling_sub_dilate_le_budget` |
+| **coupling energy from a shell family**: an orthonormal family vanishing inside the inner aperture and fixed by the outer one, with band terms below `β`, forces `hsNormSq Z >= (N - discount)(1-η)²` — the coupling is itself an ideal element, hence Hilbert--Schmidt, and its dilates are unit vectors | `soninCouplingIdealErrors`, `isSoninPrincipalRelativeIdeal_soninCouplingIdealErrors`, `card_sub_le_hsNormSq_soninApertureCoupling` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1476,6 +1486,15 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the general assembly closes: family in, energy bound out.  Two things had to be true
+  and both already were.  The coupling is a relative-ideal element
+  (`evenSoninApertureSuccessiveLayerTransition_mem_principalRelativeIdeal`), hence Hilbert--Schmidt
+  — without that the mode count could not be applied to the very operator being bounded.  And the
+  dilates are unit vectors, so the near-isometry targets need no construction at all.  A small
+  encoding point worth keeping: the budget carries a factor two on the projection correction, and
+  the survivor count sums equally weighted terms, so the correction is listed *twice* in a
+  three-element family rather than given a coefficient.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyFromFamily.lean`.
 - 2026-08-01 — the five error terms are collected into one theorem, and doing so exposed a mismatch
   that would have blocked the assembly.  The correction difference in the layer defect acts on the
   *dilate* of the packet, but `card_sub_le_hsNormSq_of_ideal_errors` can only count operators applied

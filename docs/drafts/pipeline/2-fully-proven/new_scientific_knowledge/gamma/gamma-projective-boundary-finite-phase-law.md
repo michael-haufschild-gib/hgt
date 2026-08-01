@@ -2608,6 +2608,23 @@ the contrapositive `no_gammaField_relation_of_infinite_rank` applies: such a ser
 hypertranscendental over `ℂ(s)⟨Γ⟩` — eq. (31), and with `{log p}` rationally independent by unique
 factorization, the `ζ` specialization (32), which the card cites as known.
 
+### Independent exponents force large rank — §6 complete
+
+`HTGeometry/IndependentFrequencyRank.lean` supplies the last link of §6.
+
+- **`cardinal_le_rank_of_independent_frequencies`** — a family of hull frequencies independent over
+  `ℤ` lifts to a linearly independent family inside the frequency group, so its cardinality bounds the
+  rational rank from below;
+- `not_rank_le_of_independent_frequencies` — hence `K+1` independent frequencies rule out the bound
+  `K`;
+- **`not_rank_le_of_dirichlet_independent`** — for a uniformly convergent Dirichlet series, `K+1`
+  independent exponents with nonzero coefficients rule out the bound `K`.
+
+Chained with `no_gammaField_relation_of_infinite_rank`, that is eq. (31) in full: a Dirichlet series
+whose exponent group has infinite rational rank satisfies no differential relation with Gamma-field
+coefficients.  The `ζ` case (32) is the instance where the exponents `log p` are independent by unique
+factorization — a known theorem the card does not claim as new.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

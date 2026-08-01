@@ -3883,3 +3883,7 @@ import GaloisForLFunctions.RHTower.SoninScaledPacketHighTailBound
 import GaloisForLFunctions.RHTower.DeningerRealSmul
 import GaloisForLFunctions.RHTower.SoninCouplingErrorBudget
 import GaloisForLFunctions.RHTower.DeningerRealSmulModule
+import GaloisForLFunctions.RHTower.SoninCouplingEnergyFromFamily
+import GaloisForLFunctions.RHTower.DeningerL2CauchySchwarz
+import GaloisForLFunctions.RHTower.DeningerL2Norm2
+import GaloisForLFunctions.RHTower.SoninShellCutCouplingEnergy

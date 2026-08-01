@@ -5,7 +5,10 @@
 - **Type:** THEOREM / CAUSAL RESPONSE / CLOCK PROBE / METRIC RECOVERY
 - **Novelty labels:** Schur inversion `[REDISCOVERED]`; coupling-contrast/two-mass composition
   `[CANDIDATE-NEW]`
-- **Lean:** `formal/GaloisForLFunctions/HTGeometry/ClockPropagatorSelfCalibration.lean`
+- **Lean modules:**
+  `formal/GaloisForLFunctions/HTGeometry/ClockPropagatorSelfCalibration.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockPrincipalSymbolCalibration.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockLocalityDistributionKernel.lean`
 
 ## Headline
 
@@ -228,3 +231,19 @@ Paper proof of exact algebra is complete. Remaining physical core:
 3. incorporate conservation-constrained gauge-invariant sources;
 4. control genuine nonlinear gravitational backreaction of probe apparatus;
 5. prove the clock-only nonlinear causal-diamond reconstruction theorem.
+
+## Gates
+
+- [x] 0 → 1: exact coupling contrast and two-mass reconstruction chain stated
+- [x] 1 → 2: all eight Schur inverse equations, backreaction subtraction, dressed inverse,
+  calibration cancellation, and metric-symbol recovery proved on paper
+- [x] 2 → 3: noncommutative block algebra, exact two-sided inverse bridge, literal local
+  second-order principal-symbol recovery, diagonal distribution kernels, continuum polarization,
+  and nonlinear graph rigidity formalized unconditionally and axiom-audited
+- [ ] 3 → 4: finite experimental recovery, gauge/control, stability, and priority audit
+
+## Log
+
+- 2026-08-01 — added exact Lean bridge proving that the coupling-off/on contrast has the
+  oppositely dressed hidden operator as a two-sided inverse; connected it to literal two-mass
+  principal-symbol and distribution-kernel infrastructure.

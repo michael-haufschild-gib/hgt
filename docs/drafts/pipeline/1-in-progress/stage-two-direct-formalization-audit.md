@@ -29,6 +29,7 @@
 - [ ] `finite-observer-generated-time-law.md`
 - [x] `finite-satake-reality-torelli-universality-law.md`
 - [ ] `finite-window-replica-collision-resolution-law.md`
+- [ ] `generic-two-local-spectral-monodromy.md`
 - [x] `function-field-spectral-closure-universality-law.md`
 - [x] `gram-weld-trilemma.md`
 - [ ] `hypergraph-local-projective-spectral-factorization.md`
@@ -64,3 +65,4 @@
 - 2026-08-01 — repository-wide lint cleared after the concurrent umbrella update. Sequential direct elaboration passed for 18 audited modules; final `lake build <module>` passed for all 16 exact-complete capstone/dependency modules. Batched capstone audits report only `[propext, Classical.choice, Quot.sound]`. Promoted 14 exact-complete direct cards to Stage 3; 31 direct Stage 2 cards remain.
 - 2026-08-01 — closed bistochastic-channel TODO without weakening: added all-level finite matrix complete positivity, positivity and adjoint preservation, two-by-two Kadison--Schwarz, trace/Frobenius identity, Hilbert--Schmidt contraction, bounded channel operator, and exact channel ceiling/dichotomy/deadline capstones. Direct elaboration, final module build, umbrella reachability, formal lint, and axiom audits pass. Promoted `dissipative-quantum-return-information-transition.md`; 30 direct Stage 2 cards remain.
 - 2026-08-01 — completed UPSA-1 canonical-product seam: source-atlas copies are exactly equivalent to the complete Xi multiplicity-copy divisor, and the atlas product is the normalized centered Xi canonical product. Existing polar/critical atlas capstone plus new divisor/product capstones pass direct elaboration, final module build, umbrella reachability, lint, and axiom audit. Promoted `ccm-unitary-polar-source-atlas.md`; 29 direct Stage 2 cards remain.
+- 2026-08-01 — a concurrently added direct card, `generic-two-local-spectral-monodromy.md`, entered scope; direct Stage 2 inventory returned to 30. Closed exact OC-1 Lean seam with a literal forward crease--pole--frequency proposition, complete divisor bijection/canonical product, arbitrary Stone recurrence chambers, and a stronger inverse obstruction: distinct same-divisor source coordinates admit no set-theoretic reconstruction map. Direct elaboration, module build, umbrella wiring, and axiom audit pass. Promotion waits only for repository lint to clear a concurrent unrelated unreachable-module error.

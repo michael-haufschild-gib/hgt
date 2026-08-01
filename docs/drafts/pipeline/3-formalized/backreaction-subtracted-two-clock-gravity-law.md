@@ -3,9 +3,13 @@
 - **ID:** `backreaction-subtracted-two-clock-gravity-law`
 - **Stage:** 3-formalized
 - **Paper proof:**
-  `../2-fully-proven/new_scientific_knowledge/backreaction-subtracted-two-clock-gravity-law.md`
-- **Lean:**
-  `formal/GaloisForLFunctions/HTGeometry/ClockPropagatorSelfCalibration.lean`
+  `../2-fully-proven/new_scientific_knowledge/other/backreaction-subtracted-two-clock-gravity-law.md`
+- **Lean modules:**
+  `formal/GaloisForLFunctions/HTGeometry/ClockPropagatorSelfCalibration.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockPrincipalSymbolCalibration.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockLocalityDistributionKernel.lean`
+- **Status:** complete unconditional mathematical operator/reconstruction chain; physical
+  acquisition and nonlinear apparatus control remain realization obligations.
 
 ## Formalized theorem chain
 
@@ -48,6 +52,22 @@ mass shifts cancel the common geometric operator, reconstruct endpoint calibrati
 metric principal symbol, polarize the complete continuum inverse-metric field, and identify an
 arbitrary nonlinear gravity operator from equality of its complete source/observation graph.
 
+Lean now also proves the missing composition bridge: if the hidden Green element and effective
+left/right dressings have two-sided inverses, the inverse of the backreaction-subtracted contrast
+is exactly
+
+\[
+  V^{-1}P_\mu U^{-1}
+\]
+
+on both sides. No inverse is selected by metadata or assumed through a one-sided law.
+
+The local differential-operator module then proves coefficient-by-coefficient that two masses
+cancel all first- and second-order terms, reconstruct endpoint calibration, and recover the
+undressed quadratic principal symbol. The distribution module identifies the corresponding
+residual kernel fibers as scalar Dirac deltas with diagonal support. Existing continuum
+polarization reconstructs the full symmetric bilinear form rather than only diagonal values.
+
 ## Lean declarations
 
 - `probeSchurComplement`
@@ -58,9 +78,15 @@ arbitrary nonlinear gravity operator from equality of its complete source/observ
 - `twoChannel_schurInverseLaws`
 - `backreactionSubtractedHiddenGreen`
 - `backreactionSubtractedHiddenGreen_eq_endpointDressedGreen`
+- `backreactionSubtractedHiddenGreen_inverse_isTwoSided`
 - `measuredClockInverse_difference`
 - `endpointCalibrationProduct_reconstruction`
 - `twoMassMetricSymbol_reconstruction`
+- `ScalarSecondOrderOperator.measuredClockInverseOperator_difference`
+- `ScalarSecondOrderOperator.principalSymbol_measuredClockInverseOperator`
+- `ScalarSecondOrderOperator.twoMassPrincipalSymbol_reconstruction`
+- `twoMassClockLocalityKernel`
+- `dsupport_twoMassClockLocalityKernel_subset`
 - `SelfCalibratingMetricField.twoMassObservation_injective`
 - `twoMassSelfCalibratingContinuumGravityRigidity`
 
@@ -71,6 +97,9 @@ The target module compiles with
 ```text
 lake env lean GaloisForLFunctions/HTGeometry/ClockPropagatorSelfCalibration.lean
 ```
+
+Both added dependency modules also pass direct `lake env lean <file>` checks, and
+`lake build GaloisForLFunctions.HTGeometry.ClockPropagatorSelfCalibration` passes.
 
 No `sorry`, `admit`, declared `axiom`, `opaque`, or `unsafe` declaration occurs in the target.
 The new theorem chain uses only standard Lean quotient/extensionality infrastructure reported by

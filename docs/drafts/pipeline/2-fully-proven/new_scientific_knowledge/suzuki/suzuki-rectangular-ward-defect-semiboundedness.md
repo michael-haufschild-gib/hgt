@@ -129,9 +129,16 @@ Predictions and falsifiers:
 - exact equality, orthogonality of zero fibers, and cofinal characteristic convergence are not
   required;
 - any decomposition of defect into a nonnegative bulk plus an endpoint term uniformly lower
-  bounded on the logarithmic orbit proves conjecture;
+  bounded on the logarithmic orbit proves conjecture — **formal** as
+  `riemannHypothesis_of_suzukiRectangularWardDefect_bulk_endpoint` and its Hilbert-source form, so a
+  candidate decomposition can be checked against the connector directly, with neither exactness nor
+  orthogonality of the split required;
 - one sequence of admissible logarithmic apertures with `Delta_L(n)->-infinity` falsifies it and,
-  by `(6)`, is exactly what every off-critical Xi divisor forces;
+  by `(6)`, is exactly what every off-critical Xi divisor forces — **formal** as
+  `suzukiRectangularWardDefect_bddBelow_iff_not_cofinally_unbounded` (the bound and the divergence are
+  exact negations) and
+  `not_suzukiRectangularWardDefect_bddBelow_of_not_riemannHypothesis` (false RH therefore *refutes*
+  the conjecture, for every nonnegative source energy, rather than merely obstructing it);
 - a bound proved only after assuming Xi zeros real, Weil positivity, or a Herglotz target is
   circular and rejected.
 
@@ -155,3 +162,23 @@ Formalized in
 forward connector for arbitrary nonnegative energy and Hilbert norm squares, plus both false-RH
 cofinal divergence converses.  It assumes no source factorization and does not formalize the still
 open bound `(8)`.
+
+## Log
+
+- 2026-08-01 — audited: the forward connector and both false-RH converses are genuinely formal, and
+  the converses hold for *arbitrary* nonnegative source energy and arbitrary seminormed source
+  vectors, so "a positive Gram cannot hide false RH inside a semibounded error" is proved in full
+  generality rather than for a particular source.  Added the open core's third prediction as a
+  theorem: `riemannHypothesis_of_suzukiRectangularWardDefect_bulk_endpoint` shows a nonnegative bulk
+  plus a lower-bounded endpoint suffices, chaining straight into the connector.  A named proof route
+  is worth carrying as a proved sufficient condition, since that is what a candidate decomposition
+  gets checked against.  Two new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the falsifiability made exact.
+  `suzukiRectangularWardDefect_bddBelow_iff_not_cofinally_unbounded` shows the conjectured bound and
+  the named falsifier are precise negations, so a candidate falsification is checked against the
+  right statement.  Composing with the converse gives
+  `not_suzukiRectangularWardDefect_bddBelow_of_not_riemannHypothesis`: false RH *refutes* the
+  conjecture for every nonnegative source energy, not merely obstructs it.  That sharpens the card's
+  "(6) is exactly what every off-critical Xi divisor forces" from an observation into an implication.
+  Two new declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.

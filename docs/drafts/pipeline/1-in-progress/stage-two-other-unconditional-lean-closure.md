@@ -42,6 +42,11 @@ audit and positive-survivor extraction. Partial bridge theorems never count as c
 - `two-mass-self-calibrating-clock-metric-law`: exact two-jet Leibniz calculus, local second-order
   endpoint dressing, pure zeroth-order mass difference, principal-symbol scaling, and undressed
   symbol reconstruction added to `HTGeometry/ClockPrincipalSymbolCalibration.lean`.
+- `two-clock-locality-law`: exact zeroth-order cancellation connected to honest classical
+  distribution-kernel fibers, with diagonal support and nonzero singleton-support equality, in
+  `HTGeometry/ClockLocalityDistributionKernel.lean`.
+- `backreaction-subtracted-two-clock-gravity-law`: exact two-sided inverse bridge added between
+  Schur subtraction and the literal two-mass principal-symbol/kernel reconstruction chain.
 - Exact Stage-3 certificates now cover bounded-relation profile realization, charged scalar torsor,
   split-source boundary matroid, polynomial torsion language, Xi depth successor layer, two-mass
   continuum rigidity, Cassini--Jensen seam law, prime-coordinate fusion, four-dimensional conformal
@@ -73,3 +78,7 @@ exponential block seed is itself differentially algebraic and cannot close that 
   `htDim` as a simplification of the boundary-wedge HT theorem.
 - 2026-08-01 — closed the differential-operator principal-symbol gap in the two-mass clock metric
   card; fourteen source cards now have exact Stage-3 closures.
+- 2026-08-01 — closed the two-clock distribution-kernel locality gap; fifteen source cards now
+  have exact Stage-3 closures.
+- 2026-08-01 — closed the backreaction-subtraction inverse/composition gap; sixteen source cards
+  now have exact Stage-3 closures.

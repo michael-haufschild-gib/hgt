@@ -164,6 +164,9 @@ S64 Gamma-boundary rectangular Caratheodory theorem gives `Re(B)>0`.  Since
 6. **Direct S64 identification killed.**  Strictly positive real part versus exact zero.
 7. **Global sign not smuggled.**  Full Weil formula subtracts twice this positive prime cell and
    adds archimedean/polar terms.  Local PSD does not imply Weil positivity.
+   **Formal** as `exists_posSemidef_sub_two_smul_not_posSemidef`: there are positive semidefinite `S`
+   and `G` with `S - 2G` not positive semidefinite, so a block entering with a negative coefficient
+   can destroy positivity outright.
 8. **All-prime divergence not hidden.**  Theorem is one prime-power and finite height packet.
 9. **Resolvent dressing remains required.**  Actual deficiency response still applies restricted-
    Weil resolvent before boundary observation; `G` identifies source block only.
@@ -204,3 +207,13 @@ residual.  That—not local trace-cell identification—is current RH-bearing fr
 - [x] unconditional Lean formalization
 - [ ] global restricted-Weil/Robin/Gamma/holonomy compensation
 - [ ] RH
+
+## Log
+
+- 2026-08-01 — audited: Theorems A--D are genuinely formal at the level they are stated, including
+  Theorem B's *matrix* positive semidefiniteness (`suzukiRectangularWallGramMatrix_posSemidef`) — so
+  the scalar-versus-operator gap found on the three sibling Krein cards does not occur here.  Added
+  hostile-audit item 7 as a theorem: `exists_posSemidef_sub_two_smul_not_posSemidef` shows a positive
+  semidefinite block entering with a negative coefficient can destroy positivity, so finite-packet
+  PSD of the wall Gram carries no consequence for the assembled formula.  One new declaration,
+  targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.

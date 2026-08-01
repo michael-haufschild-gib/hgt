@@ -4,8 +4,12 @@
 - **Stage:** 2-fully-proven
 - **Type:** UNIVERSAL NULL TEST / CONTINUUM GRAVITY / CLOCKS / HYPERTRANSCENDENCE
 - **Parent:** `two-mass-self-calibrating-clock-metric-law.md`
-- **Status:** paper-proved; noncommutative cancellation and differential-algebraic residual
-  obstruction formalized unconditionally in Lean.
+- **Lean:**
+  `formal/GaloisForLFunctions/HTGeometry/ClockPropagatorSelfCalibration.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockPrincipalSymbolCalibration.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockLocalityDistributionKernel.lean`
+- **Status:** complete mathematical locality law and differential-algebraic residual obstruction
+  formalized unconditionally in Lean; experimental response reconstruction remains open.
 
 ## Headline
 
@@ -166,3 +170,18 @@ Nature's editorial gate requires results that are novel, arresting, and have imm
 far-reaching implications. Equation `(1)` is arresting and falsifiable, but the current package
 still lacks a physical experiment, stability theorem under finite bandwidth/noise, and complete
 priority audit across multichannel inverse scattering and equivalence-principle null tests.
+
+## Gates
+
+- [x] 0 → 1: inverse-residual null test and exact failure modes stated
+- [x] 1 → 2: noncommutative cancellation, local-kernel consequences, and HT obstruction proved
+- [x] 2 → 3: literal local second-order cancellation, zeroth-order operator identity,
+  diagonal-supported Dirac kernel fibers, and DA/HT obstruction formalized unconditionally,
+  umbrella-reachable, and axiom-audited
+- [ ] 3 → 4: physical stability and external priority audit
+
+## Log
+
+- 2026-08-01 — closed derivative/support abstraction gap: formalized exact two-mass coefficient
+  cancellation and honest classical-distribution kernel fibers
+  `(μ₁-μ₂)κ(x)δ_x`, including singleton support and nonzero-support equality.

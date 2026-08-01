@@ -111,4 +111,74 @@ theorem tInner_normalize_sq {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric) (nv nw : 
   rw [tInner_smul_smul hT]
   ring
 
+/-! ## Even–odd defect energies
+
+Splitting a pair of defect vectors into even and odd parts turns their pairing into the *difference*
+of the two energies and, when the pair has equal norms, their sum into the common energy.  So the
+normalized pairing is exactly the even–odd energy imbalance, and it is a strict contraction as soon
+as the odd part is nonzero. -/
+
+/-- The even and odd parts of a defect pair. -/
+noncomputable def evenPart (vp vm : E) : E := (2 : ℝ)⁻¹ • (vp + vm)
+
+noncomputable def oddPart (vp vm : E) : E := (2 : ℝ)⁻¹ • (vp - vm)
+
+/-- **The pairing is the energy difference.** -/
+theorem inner_eq_evenPart_sq_sub_oddPart_sq (vp vm : E) :
+    (inner ℝ vm vp : ℝ) = ‖evenPart vp vm‖ ^ 2 - ‖oddPart vp vm‖ ^ 2 := by
+  rw [evenPart, oddPart, norm_smul, norm_smul]
+  simp only [Real.norm_eq_abs]
+  rw [mul_pow, mul_pow, norm_add_sq_real, norm_sub_sq_real, real_inner_comm]
+  norm_num
+  ring
+
+/-- **Equal norms make the sum the common energy.**  This is where parity of the defect pair
+enters. -/
+theorem norm_sq_eq_evenPart_sq_add_oddPart_sq {vp vm : E} (hnorm : ‖vm‖ = ‖vp‖) :
+    ‖vp‖ ^ 2 = ‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2 := by
+  rw [evenPart, oddPart, norm_smul, norm_smul]
+  simp only [Real.norm_eq_abs]
+  rw [mul_pow, mul_pow, norm_add_sq_real, norm_sub_sq_real, hnorm]
+  norm_num
+  ring
+
+/-- **`(8)`, the normalized even–odd imbalance.**  The anchored jet is the imbalance of the two
+defect energies. -/
+theorem inner_div_norm_sq_eq_imbalance {vp vm : E} (hnorm : ‖vm‖ = ‖vp‖) :
+    (inner ℝ vm vp : ℝ) / ‖vp‖ ^ 2
+      = (‖evenPart vp vm‖ ^ 2 - ‖oddPart vp vm‖ ^ 2)
+        / (‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2) := by
+  rw [inner_eq_evenPart_sq_sub_oddPart_sq, norm_sq_eq_evenPart_sq_add_oddPart_sq hnorm]
+
+/-- **It is a strict contraction exactly when both parts survive.**  A nonzero odd part alone is not
+enough: if the even part vanishes the imbalance is `-1`.  Both energies must be positive. -/
+theorem abs_imbalance_lt_one {vp vm : E} (heven : evenPart vp vm ≠ 0) (hodd : oddPart vp vm ≠ 0) :
+    |(‖evenPart vp vm‖ ^ 2 - ‖oddPart vp vm‖ ^ 2)
+      / (‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2)| < 1 := by
+  have hop : 0 < ‖oddPart vp vm‖ ^ 2 := by positivity
+  have hep : 0 < ‖evenPart vp vm‖ ^ 2 := by positivity
+  have hsum : 0 < ‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2 := by linarith
+  rw [abs_div, abs_of_pos hsum, div_lt_one hsum, abs_lt]
+  constructor <;> linarith
+
+/-- **The boundary cases.**  A vanishing odd part gives imbalance `1`, a vanishing even part gives
+`-1`; so the strict bound is exactly the statement that both defect components survive. -/
+theorem imbalance_eq_one_of_oddPart_eq_zero {vp vm : E} (heven : evenPart vp vm ≠ 0)
+    (hodd : oddPart vp vm = 0) :
+    (‖evenPart vp vm‖ ^ 2 - ‖oddPart vp vm‖ ^ 2)
+      / (‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2) = 1 := by
+  have hep : 0 < ‖evenPart vp vm‖ ^ 2 := by positivity
+  rw [hodd, norm_zero]
+  norm_num
+  exact heven
+
+theorem imbalance_eq_neg_one_of_evenPart_eq_zero {vp vm : E} (heven : evenPart vp vm = 0)
+    (hodd : oddPart vp vm ≠ 0) :
+    (‖evenPart vp vm‖ ^ 2 - ‖oddPart vp vm‖ ^ 2)
+      / (‖evenPart vp vm‖ ^ 2 + ‖oddPart vp vm‖ ^ 2) = -1 := by
+  have hop : 0 < ‖oddPart vp vm‖ ^ 2 := by positivity
+  rw [heven, norm_zero]
+  norm_num
+  rw [neg_div, div_self (ne_of_gt hop)]
+
 end GaloisForLFunctions.HTGeometry

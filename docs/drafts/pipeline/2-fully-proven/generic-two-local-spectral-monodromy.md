@@ -221,15 +221,16 @@ the paper still requires a citation-graph and expert collision audit.
 2. Prove finite-hyperplane avoidance algebraically, without numerical search.
 3. Formalize the exact two-by-two characteristic factor and root exchange in
    a polynomial/Galois formulation.
-4. Prove hypercube connectedness and generation of `Equiv.Perm` by edge
+4. [x] Prove hypercube connectedness and generation of `Equiv.Perm` by edge
    transpositions.
-5. Formalize the full-symmetry linear-relation rigidity and projective
-   rational-independence corollary.
+5. [x] Formalize the full-symmetry linear-relation rigidity and centered trace
+   classification.
 6. Audit `#print axioms`; wire the resulting module into the HTGeometry
    umbrella before any paper claim is promoted.
 
-No Lean theorem currently certifies this card.  It may not move to stage 3 or
-be cited in the paper until that formalization is complete.
+Lean now certifies steps 4 and 5, but not the local Hamiltonian construction or
+its branch/Galois transport.  This card may not move to stage 3 or be cited in
+the paper until the dependency-closed formalization is complete.
 
 ## Log
 
@@ -237,3 +238,14 @@ be cited in the paper until that formalization is complete.
   literature collision audit.  Key construction: isolate every Boolean-cube
   edge with a star-Ising diagonal Hamiltonian; its exact two-level branch loop
   supplies every edge transposition and therefore full symmetric monodromy.
+- 2026-08-01 -- Lean module
+  `HTGeometry/SpectralMonodromyRelationRigidity.lean` certifies the exact
+  swap-defect identity, permutation-invariant relation rigidity, and the
+  classification of centered generic-root relations as scalar trace
+  relations. The local star-Ising isolation and Galois/branch-loop bridge
+  remain to be formalized before stage 3.
+- 2026-08-01 -- Lean module
+  `HTGeometry/BooleanHypercubeTranspositionLaw.lean` certifies that the
+  transpositions along Boolean-hypercube edges generate the full symmetric
+  group. This closes the finite group-theoretic generation step, not the
+  analytic realization of each edge transposition by a local Hamiltonian.

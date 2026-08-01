@@ -875,9 +875,34 @@ in the polynomial ring; the coefficient rescaling law for substituting a scalar 
 variable; squares descend along a specialisation whose kernel is a prime; and the triangular
 parameter change with its intrinsic characterisation of the coefficient field as a fixed field.
 
-What remains is instantiation of this chain on the card's own base field and equation:
-`polyBaseChangeEvenAssembledEquiv` and `polyBaseChangeOddAssembledEquiv` take exactly the card's own
-data, and every one of their inputs is proved somewhere above.
+A third group of modules carries the abstract statement to a concrete instantiation, all building
+with the same three axioms:
+
+```text
+RadicalBaseChangeCapstone      RadicalBaseChangeEvenCapstone  RadicalRootExists
+VandermondeFixed               AutPermutesRoots               RadicalBaseChangeFromRoots
+RootEnumerationTransport       RadicalBaseChangeFromModel     CenteredSplittingField
+RootFieldTransport             KummerCyclic                   PrimitiveRootTransport
+CenteredRadicalBaseChange      CenteredDiscriminantIdentification
+CenteredSquareClassInput       SumZeroParametrisation         PrimePowerClass
+EisensteinRadical              RadicalDegreeExact             EsymmRangeField
+EsymmFieldEquiv                IrreducibleRadicalTransport    EsymmRadicalIrreducible
+SymmetricPartEsymmBridge       GenericRootSet                 GenericPermRootAction
+SymmetricPartConstants         SymmetricPartRadical           GenericRadicalBaseChange
+GenericSquareClassInput        GenericFullMonodromy
+```
+
+**Status of `(3)`.**  `genericFullMonodromy` proves it for the **generic monic polynomial** with no
+hypotheses beyond `3 <= d` and a positive even exponent: the automorphism group of the splitting
+field of `genericMonic * (X ^ (2m) - c_top)` over the root field of the second factor is the full
+symmetric group.  That is the mathematical content of `(3)` — symmetric monodromy survives an even
+Kummer base change — proved unconditionally.
+
+What is **not** yet formalised is the card's own equation `(7)`, which is centered.  The centered
+route stalled on algebraic independence of the centered coefficients (see the log), and the
+uncentered route was taken instead because the abstract capstone accepts any first factor with
+symmetric Galois group.  Bridging the two needs either that independence, or the identification of
+`E_0` with the centered coefficient field.
 
 Separability and the nonsquareness over `E_0` are in
 `GaloisForLFunctions/HTGeometry/GenericPolynomialSeparable.lean`:
@@ -1989,3 +2014,30 @@ dividing the discriminant.
   part through the `rw`-built isomorphism of the two presentations, whose action on carriers is not
   definitional.  Supplying the representative explicitly avoids unfolding it and costs the caller
   one equation.
+
+- 2026-08-01 — **`GenericFullMonodromy.lean`: the two halves compose.**  `genericFullMonodromy` has
+  no hypotheses beyond `3 <= d` and `0 < m`: over an algebraically closed field of characteristic
+  zero, the automorphism group of the splitting field of
+  `genericMonic * (X ^ (2m) - c_top)` over the root field of the second factor is the full symmetric
+  group on `Fin d`, where `c_top` is the top elementary symmetric function.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  The composition was unblocked by rebuilding `symmetricPartEquivEsymmField` with
+  `IntermediateField.equivOfEq` instead of a `rw` on the type: `Subalgebra.equivOfEq` sends `x` to
+  `⟨↑x, _⟩`, so its action on carriers **is** definitional and
+  `coe_symmetricPartEquivEsymmField_symm` holds by `rfl`.  That gives `coe_esymmCoeffPart`, the one
+  equation the square-class theorem asked of its representative.  Note this is the opposite choice
+  from the one recorded earlier for `rootField_centeredMonicE_eq_top`, where `rw` on the type was
+  needed to avoid an elaboration blow-up — the right technique differs by which side needs to
+  compute.
+
+- 2026-08-01 — `TschirnhausShift.lean` starts the bridge back to the card's centered equation `(7)`.
+  `taylor_coeff_pred`: for a monic polynomial of degree `d`, shifting the variable by `r` changes
+  the next-to-leading coefficient to `d * r + c_{d-1}`.  The proof avoids any binomial expansion:
+  `Polynomial.taylor_coeff` turns the coefficient into the Hasse derivative of order `d - 1`
+  evaluated at `r`, that derivative has degree at most one, and its two coefficients are read off
+  by `hasseDeriv_coeff` — slope `d.choose (d-1) = d` by monicity, constant `c_{d-1}`.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  Over a ring where `d` is invertible this says one shift removes the next-to-leading coefficient,
+  which is the Tschirnhaus centering.  It is the first step of the change of variables that would
+  identify the card's `E_0` with the centered coefficient field and so carry
+  `genericFullMonodromy` to the card's own equation.

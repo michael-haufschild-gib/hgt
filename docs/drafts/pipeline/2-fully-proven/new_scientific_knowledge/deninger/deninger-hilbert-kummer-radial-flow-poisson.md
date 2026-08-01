@@ -51,7 +51,9 @@
   `GaloisForLFunctions.RHTower.DeningerKummerL2Definite`,
   `GaloisForLFunctions.RHTower.DeningerKummerL2Bilinear`,
   `GaloisForLFunctions.RHTower.DeningerRealSmul`,
-  `GaloisForLFunctions.RHTower.DeningerRealSmulModule`
+  `GaloisForLFunctions.RHTower.DeningerRealSmulModule`,
+  `GaloisForLFunctions.RHTower.DeningerL2CauchySchwarz`,
+  `GaloisForLFunctions.RHTower.DeningerL2Norm2`
   (the gluing of the place tower, the absolute height on `Q̄`, the
   normed Kummer group `𝒢`, the normed `ℚ`-vector space `𝒢 ⊗ ℚ`, its
   completion, and the local-degree normalization of the place space)
@@ -1065,10 +1067,41 @@ So a complete normed `ℚ`-space is a real normed space, with `‖r • x‖ = |
 module.  This is the piece mathlib lacks, and it is what turns the `L²` completion of `𝒢 ⊗ ℚ` into
 a real space.
 
+### Cauchy--Schwarz for the `L²` form landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerL2CauchySchwarz.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerSpaceL2Inner_add_qsmul` — the expansion `⟨x + q y, x + q y⟩ = ⟨y,y⟩q² + 2⟨x,y⟩q +
+  ⟨x,x⟩`, from biadditivity and rational homogeneity in both arguments.
+- `deningerSpaceL2_quadratic_nonneg` — **the quadratic is nonnegative at every real scalar**.  It
+  is nonnegative at every *rational* scalar by positive semidefiniteness; the set where a
+  continuous function is nonnegative is closed and contains the rationals, whose closure is all of
+  `ℝ`.  This density step is unavoidable: the form is only `ℚ`-homogeneous, so the vertex
+  `-⟨x,y⟩/⟨y,y⟩` of the quadratic need not be rational.
+- `deningerSpaceL2_cauchySchwarz` — **`⟨x,y⟩² ≤ ⟨x,x⟩·⟨y,y⟩`**, the discriminant condition
+  (`discrim_le_zero`).
+
+### The `L²` norm on `𝒢 ⊗ ℚ` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerL2Norm2.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerSpaceL2Inner_zero_left`, `_neg_left`, `_neg_neg` — the form kills zero and is odd in
+  each argument, from additivity alone.
+- `deningerL2Norm x = √⟨x, x⟩`, with `deningerL2Norm_nonneg`, `_zero`, `_neg`.
+- `deningerSpaceL2Inner_le_norm` — **Cauchy--Schwarz in norm form**, `⟨x, y⟩ ≤ ‖x‖₂‖y‖₂`.
+- `deningerL2Norm_triangle` — **the triangle inequality**, by bounding `⟨x+y, x+y⟩` by
+  `(‖x‖₂ + ‖y‖₂)²` and taking square roots.
+- `deningerL2Norm_eq_zero`, `deningerL2AddGroupNorm` — definiteness, and the bundled norm.
+
+So `𝒢 ⊗ ℚ` carries the `L²` Kummer norm as an `AddGroupNorm`, alongside the height norm built
+earlier.
+
 ### Remaining
 
-Assembling `H_Kum`: equip `𝒢 ⊗ ℚ` with the `L²` norm `‖x‖₂ = √⟨x, x⟩` (a norm by
-`deningerSpaceL2Inner_self_nonneg`, `_self_eq_zero` and the Cauchy--Schwarz inequality for the
-bundled form `deningerSpaceL2Form`), take its completion, install `deningerRealModule` there, and
-read off the `InnerProductSpace ℝ` structure.  The arithmetic is all proved; what is left is this
-assembly and the standard Cauchy--Schwarz argument for a positive semidefinite symmetric form.
+The last assembly: install `deningerL2AddGroupNorm` as the `NormedAddCommGroup` structure on
+`𝒢 ⊗ ℚ` with `‖q • x‖₂ = |q|·‖x‖₂` (from `deningerSpaceL2Inner_qsmul_left`), take the completion,
+install `deningerRealModule` there, and read off `InnerProductSpace ℝ`.  Every mathematical
+ingredient is proved; this is instance plumbing over the two normed structures now available on
+the same underlying space.
