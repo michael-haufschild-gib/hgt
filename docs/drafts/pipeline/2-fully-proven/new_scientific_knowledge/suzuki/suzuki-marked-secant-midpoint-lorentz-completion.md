@@ -290,3 +290,35 @@ two-resolvent midpoint forcing, physical Neumann-debt identity, and marked-Xi co
 are formalized in `SuzukiMarkedSecantMidpointLorentzCompletion.lean`.  Direct Lean and final SOTA
 build pass; foundation audit contains only standard `propext`, `Classical.choice`, and `Quot.sound`.
 Open source conjecture `(14)` is deliberately not encoded as an axiom or theorem.
+
+### Lean progress — Theorem B's inertia and minimality claims FORMALIZED
+
+Section 12 claimed Theorems A--D fully formalized. Auditing Theorem B statement by statement, two
+of its assertions had no declaration:
+
+1. **"exact coefficient inertia is `(1,1)`"** — the corpus theorem
+   `suzukiMarkedSecantSymmetricForm_has_positive_and_negative_directions` exhibits one positive and
+   one negative *direction* (`(1,0)` and `(m,1)`). That is strictly weaker than inertia `(1,1)`: two
+   opposite-sign values do not exclude a degenerate or differently-signed third possibility for a
+   form's signature. Its docstring nevertheless asserted the inertia; the docstring is now corrected
+   to state what it proves.
+2. **"unique minimal rate `kappa = d^2`"** — only the equivalence `(5) <-> (6)` was formalized, which
+   does not by itself say `d^2` belongs to the admissible set.
+
+Both closed in `RHTower/SuzukiMarkedSecantMidpointLorentzCompletion.lean` [PROVED HERE], standard
+axioms `[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `suzukiMarkedSecant_rootedCompletion_isLeast` : `IsLeast {kappa | (5)} (d^2)` — `d^2` is the least
+  admissible rate, membership included.
+- `suzukiMarkedSecantFormMatrix` and `..._quadraticForm` : the coefficient matrix
+  `!![1, -m; -m, m^2 - d^2]` and the identity that its quadratic form is the marked symmetric form.
+- `det_suzukiMarkedSecantFormMatrix` : `det = -d^2`.
+- `suzukiMarkedSecantInertiaChart`, `det_suzukiMarkedSecantInertiaChart` : the halfgap chart
+  `(r,s) ↦ (r - m*s, d*s)`, invertible exactly when `d ≠ 0`.
+- `suzukiMarkedSecantFormMatrix_congr_diag` : `Tᵀ * diag(1,-1) * T = M` — the coefficient matrix is
+  **congruent to `diag(1,-1)`**. By Sylvester's law of inertia this is the signature claim itself,
+  and it is the card's own completion identity `(7)` read at matrix level (no spectral theory
+  needed).
+
+The card's other numbered statements (A, C, D, dyadic specialization, compound split, two-resolvent
+forcing, Neumann debt, marked-Xi connectors) each already had a declaration.

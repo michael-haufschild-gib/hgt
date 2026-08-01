@@ -61,6 +61,168 @@ def ccmFirstClockJuliaGoodBadCoherentCorrelation
         (x * Real.log (q j : ℝ) - x * Real.log (p i : ℝ)) *
       ccmFirstClockReducedBadPrimeTerm L (q j)
 
+/-- Literal, reduced-good, and reduced-bad prime coefficients as three coherent channels over the
+same prime-logarithm nodes. -/
+def ccmFirstClockJuliaPrimeDecompositionChannelMass
+    {N : ℕ} (L : ℝ) (p : Fin N → Nat.Primes) : Fin 3 → Fin N → ℝ :=
+  fun r i => Fin.cases
+    (ccmFirstClockPrimePowerTowerMass L (2 * Real.pi / L) (p i))
+    (Fin.cases
+      (ccmFirstClockReducedGoodPrimeTerm L (p i))
+      (fun _ => ccmFirstClockReducedBadPrimeTerm L (p i))) r
+
+@[simp] theorem ccmFirstClockJuliaPrimeDecompositionChannelMass_zero
+    {N : ℕ} (L : ℝ) (p : Fin N → Nat.Primes) (i : Fin N) :
+    ccmFirstClockJuliaPrimeDecompositionChannelMass L p 0 i =
+      ccmFirstClockPrimePowerTowerMass L (2 * Real.pi / L) (p i) := rfl
+
+@[simp] theorem ccmFirstClockJuliaPrimeDecompositionChannelMass_one
+    {N : ℕ} (L : ℝ) (p : Fin N → Nat.Primes) (i : Fin N) :
+    ccmFirstClockJuliaPrimeDecompositionChannelMass L p 1 i =
+      ccmFirstClockReducedGoodPrimeTerm L (p i) := rfl
+
+@[simp] theorem ccmFirstClockJuliaPrimeDecompositionChannelMass_two
+    {N : ℕ} (L : ℝ) (p : Fin N → Nat.Primes) (i : Fin N) :
+    ccmFirstClockJuliaPrimeDecompositionChannelMass L p 2 i =
+      ccmFirstClockReducedBadPrimeTerm L (p i) := rfl
+
+/-- Coherent three-channel Gram matrix of the literal/good/bad CCM prime decomposition. -/
+def ccmFirstClockJuliaPrimeDecompositionChannelGram
+    {N : ℕ} (x L : ℝ) (p : Fin N → Nat.Primes) :
+    Matrix (Fin 3) (Fin 3) ℝ :=
+  GaloisForLFunctions.HTGeometry.realKernelPacketChannelGram
+    HTGeometry.juliaDefectAttenuationKernel
+    (fun _ i => x * Real.log (p i : ℝ))
+    (ccmFirstClockJuliaPrimeDecompositionChannelMass L p)
+
+@[simp] theorem ccmFirstClockJuliaPrimeDecompositionChannelGram_zero_zero
+    {N : ℕ} (x L : ℝ) (p : Fin N → Nat.Primes) :
+    ccmFirstClockJuliaPrimeDecompositionChannelGram x L p 0 0 =
+      ccmFirstClockJuliaPrimePowerCoherentEnergy x L p := rfl
+
+@[simp] theorem ccmFirstClockJuliaPrimeDecompositionChannelGram_one_one
+    {N : ℕ} (x L : ℝ) (p : Fin N → Nat.Primes) :
+    ccmFirstClockJuliaPrimeDecompositionChannelGram x L p 1 1 =
+      ccmFirstClockJuliaGoodCoherentEnergy x L p := rfl
+
+@[simp] theorem ccmFirstClockJuliaPrimeDecompositionChannelGram_two_two
+    {N : ℕ} (x L : ℝ) (p : Fin N → Nat.Primes) :
+    ccmFirstClockJuliaPrimeDecompositionChannelGram x L p 2 2 =
+      ccmFirstClockJuliaBadCoherentEnergy x L p := rfl
+
+@[simp] theorem ccmFirstClockJuliaPrimeDecompositionChannelGram_one_two
+    {N : ℕ} (x L : ℝ) (p : Fin N → Nat.Primes) :
+    ccmFirstClockJuliaPrimeDecompositionChannelGram x L p 1 2 =
+      ccmFirstClockJuliaGoodBadCoherentCorrelation x L p p := rfl
+
+/-- **CCM coherent-channel positivity.**  The literal prime-power packet and its reduced good and
+bad channels form a positive-semidefinite Gram matrix for every finite prime family.  No aperture,
+prime-window, sign, or RH hypothesis is required. -/
+theorem ccmFirstClockJuliaPrimeDecompositionChannelGram_posSemidef
+    {N : ℕ} (x L : ℝ) (p : Fin N → Nat.Primes) :
+    (ccmFirstClockJuliaPrimeDecompositionChannelGram x L p).PosSemidef := by
+  exact
+    GaloisForLFunctions.HTGeometry.realKernelPacketChannelGram_posSemidef_of_positiveDefinite
+      HTGeometry.juliaDefectAttenuationKernel
+      HTGeometry.positiveDefiniteOnReal_juliaDefectAttenuationKernel
+      HTGeometry.juliaDefectAttenuationKernel_neg _ _
+
+/-- The full three-channel coherent determinant is nonnegative without a prime-window cutoff. -/
+theorem ccmFirstClockJuliaPrimeDecompositionChannelGram_det_nonneg
+    {N : ℕ} (x L : ℝ) (p : Fin N → Nat.Primes) :
+    0 ≤ (ccmFirstClockJuliaPrimeDecompositionChannelGram x L p).det :=
+  (ccmFirstClockJuliaPrimeDecompositionChannelGram_posSemidef x L p).det_nonneg
+
+/-- On the admitted prime window, the literal row is exactly the good row minus the bad row. -/
+theorem ccmFirstClockJuliaPrimeDecompositionChannelGram_row_literal_eq_good_sub_bad
+    {N : ℕ} (x L : ℝ) (p : Fin N → Nat.Primes)
+    (hpCut : ∀ i, (p i : ℕ) ≤ ⌊Real.exp L⌋₊) (s : Fin 3) :
+    ccmFirstClockJuliaPrimeDecompositionChannelGram x L p 0 s =
+      ccmFirstClockJuliaPrimeDecompositionChannelGram x L p 1 s -
+        ccmFirstClockJuliaPrimeDecompositionChannelGram x L p 2 s := by
+  simp only [ccmFirstClockJuliaPrimeDecompositionChannelGram,
+    GaloisForLFunctions.HTGeometry.realKernelPacketChannelGram,
+    GaloisForLFunctions.HTGeometry.realKernelPacketCross,
+    ccmFirstClockJuliaPrimeDecompositionChannelMass_zero,
+    ccmFirstClockJuliaPrimeDecompositionChannelMass_one,
+    ccmFirstClockJuliaPrimeDecompositionChannelMass_two]
+  simp_rw [ccmFirstClockPrimePowerTowerMass_eq_reducedGoodPrimeTerm_sub_bad
+    (hpCut := hpCut _), sub_mul]
+  simp_rw [Finset.sum_sub_distrib]
+
+/-- On the admitted prime window, the literal column is exactly the good column minus the bad
+column. -/
+theorem ccmFirstClockJuliaPrimeDecompositionChannelGram_col_literal_eq_good_sub_bad
+    {N : ℕ} (x L : ℝ) (p : Fin N → Nat.Primes)
+    (hpCut : ∀ i, (p i : ℕ) ≤ ⌊Real.exp L⌋₊) (r : Fin 3) :
+    ccmFirstClockJuliaPrimeDecompositionChannelGram x L p r 0 =
+      ccmFirstClockJuliaPrimeDecompositionChannelGram x L p r 1 -
+        ccmFirstClockJuliaPrimeDecompositionChannelGram x L p r 2 := by
+  simp only [ccmFirstClockJuliaPrimeDecompositionChannelGram,
+    GaloisForLFunctions.HTGeometry.realKernelPacketChannelGram,
+    GaloisForLFunctions.HTGeometry.realKernelPacketCross,
+    ccmFirstClockJuliaPrimeDecompositionChannelMass_zero,
+    ccmFirstClockJuliaPrimeDecompositionChannelMass_one,
+    ccmFirstClockJuliaPrimeDecompositionChannelMass_two]
+  simp_rw [ccmFirstClockPrimePowerTowerMass_eq_reducedGoodPrimeTerm_sub_bad
+    (hpCut := hpCut _), mul_sub]
+  simp_rw [Finset.sum_sub_distrib]
+
+/-- **Exact arithmetic null channel.**  The coefficient vector `(1, -1, 1)` is in the kernel of
+the coherent literal/good/bad Gram precisely because the source identity is
+`literal = good - bad`. -/
+theorem ccmFirstClockJuliaPrimeDecompositionChannelGram_mulVec_sourceRelation_eq_zero
+    {N : ℕ} (x L : ℝ) (p : Fin N → Nat.Primes)
+    (hpCut : ∀ i, (p i : ℕ) ≤ ⌊Real.exp L⌋₊) :
+    (ccmFirstClockJuliaPrimeDecompositionChannelGram x L p).mulVec
+        (![1, -1, 1] : Fin 3 → ℝ) = 0 := by
+  funext r
+  rw [Matrix.mulVec, dotProduct, Fin.sum_univ_three]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Pi.zero_apply]
+  simp
+  rw [ccmFirstClockJuliaPrimeDecompositionChannelGram_col_literal_eq_good_sub_bad
+    x L p hpCut r]
+  ring
+
+/-- The admitted literal/good/bad coherent Gram has rank defect: its determinant vanishes while
+the matrix remains positive semidefinite. -/
+theorem ccmFirstClockJuliaPrimeDecompositionChannelGram_det_eq_zero
+    {N : ℕ} (x L : ℝ) (p : Fin N → Nat.Primes)
+    (hpCut : ∀ i, (p i : ℕ) ≤ ⌊Real.exp L⌋₊) :
+    (ccmFirstClockJuliaPrimeDecompositionChannelGram x L p).det = 0 := by
+  rw [Matrix.det_fin_three]
+  rw [ccmFirstClockJuliaPrimeDecompositionChannelGram_row_literal_eq_good_sub_bad
+      x L p hpCut 0,
+    ccmFirstClockJuliaPrimeDecompositionChannelGram_row_literal_eq_good_sub_bad
+      x L p hpCut 1,
+    ccmFirstClockJuliaPrimeDecompositionChannelGram_row_literal_eq_good_sub_bad
+      x L p hpCut 2]
+  ring
+
+/-- Diagonal polarization of the exact arithmetic null channel.  Literal coherent energy is the
+good energy plus bad energy minus twice their coherent correlation. -/
+theorem ccmFirstClockJuliaPrimeDecompositionChannelGram_literalDiagonal
+    {N : ℕ} (x L : ℝ) (p : Fin N → Nat.Primes)
+    (hpCut : ∀ i, (p i : ℕ) ≤ ⌊Real.exp L⌋₊) :
+    ccmFirstClockJuliaPrimeDecompositionChannelGram x L p 0 0 =
+      ccmFirstClockJuliaPrimeDecompositionChannelGram x L p 1 1 +
+        ccmFirstClockJuliaPrimeDecompositionChannelGram x L p 2 2 -
+          2 * ccmFirstClockJuliaPrimeDecompositionChannelGram x L p 1 2 := by
+  rw [ccmFirstClockJuliaPrimeDecompositionChannelGram_row_literal_eq_good_sub_bad
+      x L p hpCut 0,
+    ccmFirstClockJuliaPrimeDecompositionChannelGram_col_literal_eq_good_sub_bad
+      x L p hpCut 1,
+    ccmFirstClockJuliaPrimeDecompositionChannelGram_col_literal_eq_good_sub_bad
+      x L p hpCut 2]
+  have hHermitian :=
+    (ccmFirstClockJuliaPrimeDecompositionChannelGram_posSemidef x L p).isHermitian.eq
+  have hsym :
+      ccmFirstClockJuliaPrimeDecompositionChannelGram x L p 2 1 =
+        ccmFirstClockJuliaPrimeDecompositionChannelGram x L p 1 2 := by
+    simpa using congrFun (congrFun hHermitian 1) 2
+  rw [hsym]
+  ring
+
 /-- Arithmetic Julia attenuation is the origin correlation of the literal prime-power packet;
 no good/bad decomposition or prime-window cutoff is needed. -/
 theorem ccmFirstClockJuliaAttenuatedCompletedPacket_eq_continuousBudget_add_primePowerOrigin
@@ -74,7 +236,6 @@ theorem ccmFirstClockJuliaAttenuatedCompletedPacket_eq_continuousBudget_add_prim
   apply Finset.sum_congr rfl
   intro i _
   rw [gammaSewnMobiusJuliaPrimeAttenuation_eq_equilibriumKernel hx]
-  ring
 
 /-- The literal signed prime-power packet has nonnegative coherent Julia energy. -/
 theorem ccmFirstClockJuliaPrimePowerCoherentEnergy_nonneg
@@ -108,7 +269,21 @@ theorem ccmFirstClockJuliaCompletedCoherentEnergy_eq_arch_prime
     sub_zero, zero_sub, HTGeometry.juliaDefectAttenuationKernel_neg]
   rw [Finset.sum_add_distrib]
   simp_rw [Finset.mul_sum]
-  rw [Finset.sum_mul]
+  ring_nf
+  rw [← Finset.sum_mul]
+  have hcross :
+      (∑ i,
+          ccmFirstClockContinuousHalfWaveBudget L (Real.pi * L⁻¹ * 2) *
+              ccmFirstClockPrimePowerTowerMass L (Real.pi * L⁻¹ * 2) (p i) *
+            HTGeometry.juliaDefectAttenuationKernel (x * Real.log (p i : ℝ))) =
+        ∑ i,
+          ccmFirstClockContinuousHalfWaveBudget L (Real.pi * L⁻¹ * 2) *
+              HTGeometry.juliaDefectAttenuationKernel (x * Real.log (p i : ℝ)) *
+            ccmFirstClockPrimePowerTowerMass L (Real.pi * L⁻¹ * 2) (p i) := by
+    apply Finset.sum_congr rfl
+    intro i _
+    ring
+  rw [hcross]
   ring
 
 /-- **Completed-packet capacity.**  The literal Julia-attenuated completed first-clock value is
@@ -190,35 +365,9 @@ theorem ccmFirstClockJuliaPrimePowerCoherentEnergy_eq_good_add_bad_sub_two_cross
       ccmFirstClockJuliaGoodCoherentEnergy x L p +
         ccmFirstClockJuliaBadCoherentEnergy x L p -
           2 * ccmFirstClockJuliaGoodBadCoherentCorrelation x L p p := by
-  simp only [ccmFirstClockJuliaPrimePowerCoherentEnergy,
-    ccmFirstClockJuliaGoodCoherentEnergy,
-    ccmFirstClockJuliaBadCoherentEnergy,
-    ccmFirstClockJuliaGoodBadCoherentCorrelation,
-    GaloisForLFunctions.HTGeometry.realKernelPacketEnergy]
-  simp_rw [ccmFirstClockPrimePowerTowerMass_eq_reducedGoodPrimeTerm_sub_bad (hpCut := hpCut _),
-    sub_mul, mul_sub, Finset.sum_sub_distrib]
-  have hsym :
-      (∑ i, ∑ j,
-        ccmFirstClockReducedBadPrimeTerm L (p i) *
-          HTGeometry.juliaDefectAttenuationKernel
-            (x * Real.log (p j : ℝ) - x * Real.log (p i : ℝ)) *
-          ccmFirstClockReducedGoodPrimeTerm L (p j)) =
-      ∑ i, ∑ j,
-        ccmFirstClockReducedGoodPrimeTerm L (p i) *
-          HTGeometry.juliaDefectAttenuationKernel
-            (x * Real.log (p j : ℝ) - x * Real.log (p i : ℝ)) *
-          ccmFirstClockReducedBadPrimeTerm L (p j) := by
-    rw [Finset.sum_comm]
-    apply Finset.sum_congr rfl
-    intro i _
-    apply Finset.sum_congr rfl
-    intro j _
-    rw [show x * Real.log (p i : ℝ) - x * Real.log (p j : ℝ) =
-        -(x * Real.log (p j : ℝ) - x * Real.log (p i : ℝ)) by ring,
-      HTGeometry.juliaDefectAttenuationKernel_neg]
-    ring
-  rw [hsym]
-  ring
+  simpa using
+      (ccmFirstClockJuliaPrimeDecompositionChannelGram_literalDiagonal
+        x L p hpCut)
 
 /-- Good/bad interference cannot exceed half of their total coherent energy on the admitted
 prime window. -/

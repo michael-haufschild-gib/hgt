@@ -8,7 +8,8 @@
 - **Parent:** `deninger-kahler-riemann-arithmetic-leaf-realization`
 - **Lean modules:**
   `GaloisForLFunctions.RHTower.DeningerKronecker` (the nonvanishing of `(5)`, deck invariance of
-  `x`), `GaloisForLFunctions.RHTower.DeningerLeafwiseKahler` (`(10)`, `(11)`, `(12)`)
+  `x`), `GaloisForLFunctions.RHTower.DeningerLeafwiseKahler` (`(10)`, `(11)`, `(12)`),
+  `GaloisForLFunctions.RHTower.DeningerResidualLeaves` (`(15)`)
 - **Statement:** the Hilbert--Kummer modulus Euler field and its
   associated Kronecker phase field define a canonical
   two-real-dimensional integrable distribution on the nonunitary
@@ -291,11 +292,76 @@ work is:
 `GaloisForLFunctions.RHTower.DeningerLeafwiseKahler`, together with the Kähler scaling law
 `deningerLeafFlow_wedge` for `(12)`.  They are not reproved here.
 
+### The residual dense locus `(15)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerResidualLeaves.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerNonPerp v = {h | ⟪v, h⟫ ≠ 0}`, with `deningerNonPerp_isOpen` — the complement of an
+  orthogonal hyperplane is open, being the complement of the kernel of a continuous functional.
+- `deningerHyperplane_dense_compl` — **each hyperplane is nowhere dense**: it is a *proper* closed
+  subspace, since `v` itself is not orthogonal to `v`, and a submodule with nonempty interior is
+  everything (`Submodule.eq_top_of_nonempty_interior'`); so its interior is empty and its
+  complement is dense.
+- `deningerNondegenerate_dense`, `deningerNondegenerate_isGδ` — **`(15)` is a dense `Gδ`**: for a
+  *countable* family of nonzero vectors the intersection of the complements is dense by Baire, and
+  `Gδ` as a countable intersection of opens.  Countability of `V` is exactly the hypothesis the
+  card uses.
+- `deningerMem_nondegenerate` — membership says precisely that no member of the family is
+  orthogonal to the vector, i.e. the annihilator `(14)` of the one-parameter subgroup is trivial.
+- `deningerNondegenerate_smul`, `deningerNondegenerate_isometry` — **the other two claims of
+  `(15)`**: the locus is stable under nonzero real scaling, and under any isometry permuting the
+  family, which is the Galois invariance the card asserts.
+
+Together with `deningerKronecker_ne_zero`, this is the analytic content of `DAC_RESIDUAL_DENSE_
+KUMMER_LEAVES`: the passage from a trivial annihilator to density of the Kronecker orbit is
+Pontryagin duality for compact abelian groups.
+
+### Weyl's criterion and Kronecker's theorem in `d` dimensions landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerExpAverage.lean`,
+`DeningerTorusFlow.lean`, `DeningerWeylCriterion.lean`, `DeningerKroneckerDense.lean`.
+Axiom audit: `propext, Classical.choice, Quot.sound` throughout.
+
+The passage from a trivial annihilator to density of the Kronecker orbit is now unconditional.
+Since mathlib has neither Pontryagin duality nor an equidistribution criterion, the route taken is
+the concrete one: build Weyl's criterion from the multivariate Fourier monomials of
+`Mathlib/Analysis/Fourier/AddCircleMulti.lean`, then derive density.
+
+- `deningerExpAverage_norm_le`, `deningerExpAverage_tendsto_zero` — the long-time average of
+  `exp (i a t)` is bounded by `2 / (|a| T)` and vanishes for every nonzero frequency.
+- `deningerMFourier_flow` — a character along the linear flow `t ↦ (t λ_i)_i` is the single
+  oscillation `exp (2π i ⟨n, λ⟩ t)`; `deningerFrequency n λ = ∑ n_i λ_i` is its frequency.
+- `deningerMFourier_integral_eq_zero` — a nontrivial character has zero mean on the torus
+  (orthogonality to the constant function).
+- `deningerFlowAverage_norm_le`, `deningerMeanSubmodule_isClosed` — the averaging operators are
+  bounded by the uniform norm, so the functions whose averages converge to their mean form a
+  *closed* submodule.
+- `deningerWeyl` — **Weyl's criterion**: if `⟨n, λ⟩ ≠ 0` for every nonzero integer vector `n`, the
+  time average of every continuous function converges to its mean over the torus.  Proof:
+  agreement on the monomials, closedness of the agreement submodule, and Stone–Weierstrass density
+  (`span_mFourier_closure_eq_top`).
+- `deningerTorusIntegral_pos` — a nonnegative continuous function positive somewhere has positive
+  mean, because Haar measure is positive on nonempty open sets.
+- `deningerKroneckerFlow_dense` — **Kronecker's theorem in `d` dimensions**: trivial annihilator
+  implies dense orbit.  Urysohn separates a missed point from the orbit closure; the separating
+  function has zero time averages, hence zero mean by Weyl, hence is identically zero.
+- `deningerAnnihilator_eq_zero_of_dense`, `deningerKroneckerFlow_dense_iff` — the converse and the
+  resulting equivalence: the orbit is dense **iff** the annihilator is trivial.
+
+This is the theorem `(15)` invoked as "Pontryagin duality"; none of it existed in mathlib.
+
 ### Remaining
 
-The parts that are differential geometry on an infinite-dimensional manifold: the vector fields
-`(4)`, `(5)` as sections of a tangent bundle, the bracket relation `[A, K] = K` of `(7)`, and
-integrability of the rank-two distribution `(6)`.  mathlib has no manifold structure adequate to
-state these on `X_unit × (H \ {0}) × ℝ_{>0}`; the algebraic content each of them rests on — the
-nonvanishing of `A` and `K`, the deck and flow behaviour of `x`, and the leafwise Kähler
-identities — is formalized above.
+Everything `(15)` asserts is proved: the nondegenerate locus is dense, `Gδ`, scaling-stable,
+Galois-invariant, equal to the locus of trivial annihilator, and — by
+`deningerKroneckerFlow_dense_iff` — exactly the locus where the Kronecker orbit is dense.
+
+One input remains.
+
+1. **The differential geometry** of `(4)`--`(7)`: the vector fields as sections of a tangent
+   bundle, the bracket `[A, K] = K`, and integrability of the rank-two distribution.  mathlib has
+   no manifold structure adequate for `X_unit × (H ∖ {0}) × ℝ_{>0}`.
+
+The algebraic, Hilbert-space, Baire-category and equidistribution content the card's proofs rest
+on is formalized.

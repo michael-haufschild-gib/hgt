@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.CharacteristicEquilibriumDefect
 import GaloisForLFunctions.HTGeometry.JuliaDefectEquilibriumPositiveDefinite
+import GaloisForLFunctions.HTGeometry.PositiveDefinitePacketCauchy
 
 /-!
 # Characteristic-defect Gram capacity
@@ -79,8 +80,7 @@ theorem normalizedCharacteristicDefect_packetCross_sq_le_energy_mul_energy
           b i * normalizedCharacteristicDefect μ m (t j - t i) * b j := by
   simpa only [GaloisForLFunctions.HTGeometry.realKernelPacketCross,
     GaloisForLFunctions.HTGeometry.realKernelPacketEnergy] using
-      (GaloisForLFunctions.HTGeometry.
-        realKernelPacketCross_sq_le_energy_mul_energy_of_positiveDefinite
+      (GaloisForLFunctions.HTGeometry.realKernelPacketCross_sq_le_energy_mul_energy_of_positiveDefinite
           (normalizedCharacteristicDefect μ m)
           (positiveDefiniteOnReal_normalizedCharacteristicDefect μ hm hsq hmoment)
           (normalizedCharacteristicDefect_neg μ m) s a t b)

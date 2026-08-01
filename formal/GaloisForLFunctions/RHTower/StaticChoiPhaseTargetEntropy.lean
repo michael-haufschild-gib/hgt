@@ -123,7 +123,8 @@ instance {gate : Type*} [Fintype gate] (s : ℕ) :
 
 theorem card_paddedCircuitWord (gate : Type*) [Fintype gate] (s : ℕ) :
     Fintype.card (PaddedCircuitWord gate s) = Fintype.card gate ^ (s + 1) := by
-  simp [PaddedCircuitWord]
+  change Fintype.card (Fin (s + 1) → gate) = Fintype.card gate ^ (s + 1)
+  rw [Fintype.card_fun, Fintype.card_fin]
 
 /-- A padded circuit dictionary pays exactly `|gate|^(s+1)` in the phase-cap
 union bound.  The theorem is independent of circuit semantics: the caller

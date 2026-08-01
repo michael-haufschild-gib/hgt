@@ -36,7 +36,7 @@
 - [ ] `local-chain-metric-recurrence-exponents.md`
 - [ ] `local-interaction-replica-collision-extremality.md`
 - [ ] `mobius-fixed-current-von-mangoldt-critical-transport-weld.md`
-- [ ] `mobius-pluecker-normal-cone-diagonal-lift.md`
+- [x] `mobius-pluecker-normal-cone-diagonal-lift.md`
 - [x] `multiple-elliptic-gamma-face-depth-rigidity.md`
 - [ ] `nearest-neighbor-chain-projective-spectral-maximality.md`
 - [ ] `nearest-neighbor-qudit-projective-spectral-maximality.md`
@@ -73,3 +73,9 @@
   complex/real ranks `2/4`, and quaternionic `1+3` capstone. Direct elaboration, module build,
   umbrella reachability, lint, and axiom audit pass. A concurrently added direct card,
   `universal-static-choi-complexity-plateau.md`, entered scope; 29 direct Stage 2 cards remain.
+- 2026-08-01 — closed the Möbius--Pluecker normal-cone diagonal lift without weakening: finite
+  source/product transfer, fixed-aperture no-go, locally uniform Euler product, nested cofinal
+  diagonal for every positive critical sequence, Gamma completion, and projectivized negative
+  reciprocal square. Direct elaboration, target module build, umbrella reachability, lint, and
+  axiom audit pass. Promoted `mobius-pluecker-normal-cone-diagonal-lift.md`; 28 direct Stage 2 cards
+  remain before re-inventory.

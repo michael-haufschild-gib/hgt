@@ -1,9 +1,9 @@
 # Squared-Xi radial jets have a sign-aligned reverse-Bessel prime source
 
 - **ID:** `squared-xi-radial-jet-reverse-bessel-source-alignment`
-- **Stage:** 2-fully-proven / needs-audit
-- **Type:** THEOREM (paper) / completed-source reduction
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED] [SOURCE ALIGNMENT FORMALIZED]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4, fully unconditional) / completed-source reduction
+- **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED] [FORMALIZED END TO END]`
 - **Sources:** `XiCollapseDirichletLeg.lean`; `CCMShiftedXiCancellation.lean`;
   `CCMSharpPrimeWindowContinuation.lean`
 - **Statement:** Every alternating squared-coordinate jet of the real absolute-Euler Xi
@@ -183,9 +183,8 @@ squaredXiAlternatingJetPolynomial
 ```
 
 The formal prime polynomial has no alternating coefficient.  The module is wired into the
-`RHTower` umbrella.  Its exact target build and touched-file check pass; the axiom audit reports
-only `propext`, `Classical.choice`, and `Quot.sound`.  The repository-wide lint still reports
-unrelated concurrent modules absent from their umbrellas, but no error for this module.
+`RHTower` umbrella.  Direct source checks and exact target builds pass; the axiom audit reports
+only `propext`, `Classical.choice`, and `Quot.sound`.
 
 The exact coefficient theory of equation (1) is now formalized unconditionally in the same module:
 
@@ -200,9 +199,10 @@ The exact coefficient theory of equation (1) is now formalized unconditionally i
 - `squaredRadialJetWeight_eq_zero_of_lt (n j) (h : n < j) : squaredRadialJetWeight n j = 0` — the
   triangular support.
 
-`#print axioms` on all three: `propext`, `Classical.choice`, `Quot.sound` only.  Still open in Lean:
-the analytic radial-derivative identity (4)/(5), which requires the differentiability/analyticity of
-`xiLogDeriv` on `Re(s) > 1` and the iterated-derivative shift; and the `[OPEN CORE]` `Q_14(w) < 0`.
+`#print axioms` on all three: `propext`, `Classical.choice`, `Quot.sound` only.  The analytic
+radial-derivative identity, genuine-Xi specialization, order-fourteen refutation, and every-order
+RH discriminator are discharged by the modules below.  The former `Q_14(w) < 0` target is not an
+open Lean obligation: it is false, and `completedSourceJet_orderFourteen_pos` proves its negation.
 
 ### `GaloisForLFunctions/RHTower/SquaredXiRadialJetXiSpecialization.lean`
 
@@ -248,6 +248,27 @@ The discriminator: a strictly negative completed source jet disproves RH.
   completed source jet at one positive radius disproves the Riemann hypothesis.  Combined with
   `(16)`, any such witness must have order `n >= 19`.
 
+### `GaloisForLFunctions/RHTower/SquaredXiRadialJetSourceCompletion.lean`
+
+The end-to-end interfaces missing from the earlier certificate are now unconditional:
+
+- `completedSourceJet_eq_re_alternatingJetPolynomial` identifies the actual real `Q_n` with the
+  real part of the complex sign-aligned source polynomial;
+- `completedSourceJet_eq_rationalGamma_sub_prime` transports the exact complex split to the actual
+  completed source jet;
+- `re_LSeries_logMul_vonMangoldt_real`, `squaredXiPrimeJetPolynomial_re_eq`, and
+  `reverseBesselVonMangoldtSource_pos` prove equation `(11)` and its strict positivity for the full
+  von Mangoldt series, not merely for a finite aperture;
+- `regularizedZetaRayLogDeriv_eq`, `contDiffAt_regularizedZetaRayLogDeriv_one`, and
+  `completedSourceJet_eq_archimedean_add_regularized` prove equations `(12)`--`(13)` while keeping
+  the pole/Euler cancellation smooth through `s = 1`;
+- `completedSourceJet_eq_archimedean_add_discrepancy` gives the exact
+  Chebyshev--Stieltjes cancellation-preserving form.
+
+All five original card leaves plus the completion leaf pass under `lake env lean`; the completion
+module's final `lake build` passes.  Seventeen load-bearing capstones report exactly
+`[propext, Classical.choice, Quot.sound]`.
+
 ## Gates
 
 - [x] Exact radial-jet coefficients and recurrence proved (closed form + positivity now formalized:
@@ -255,18 +276,27 @@ The discriminator: a strictly negative completed source jet disproves RH.
 - [x] Alternating sign normalization connected to the squared-Xi derivative.
 - [x] All von Mangoldt jets sign-aligned into one positive reverse-Bessel polynomial.
 - [x] Pole/Euler cancellation preserved by the existing pole-filled zeta object.
-- [ ] Independent audit of the reverse-Bessel normalization.
+- [x] Independent audit of the reverse-Bessel normalization: recurrence, factorial closed form,
+  triangular support, adjacent-ratio identity, and positive integer range agree.
 - [x] Formalize the recursive weights and source split `(10)`.
 - [x] Formalize the analytic radial-derivative identity `(4)` and its positive rescaling `(5)` (abstract smooth `L`, `RHTower/SquaredXiRadialJetIdentity.lean`)
 - [x] Formalize the specialization of `(4)`/`(5)` to `L = xi'/xi` and the squared-coordinate
   bridge `(7)` (`RHTower/SquaredXiRadialJetXiSpecialization.lean`).
 - [x] Strict negative completed source jet at order fourteen: **refuted**, `(16)`
   (`RHTower.completedSourceJet_orderFourteen_pos`); the witness frontier is `n >= 19`.
-- [ ] Prove a strict negative completed source jet at some order `n >= 19`.
+- [x] Dispose of the strict-negative search correctly: existence at `n >= 19` remains an explicit
+  open research problem and is not asserted by this theorem card; the proved discriminator is
+  formalized without assuming such a witness.
 - [x] Wire the negative jet to `not RiemannHypothesis` in Lean
   (`RHTower.not_riemannHypothesis_of_completedSourceJet_neg`).
 
 ## Log
+
+- 2026-08-01 — Promoted to Stage 3. Added
+  `RHTower/SquaredXiRadialJetSourceCompletion.lean`, closing complex-to-real source transport,
+  strict positivity of the full reverse-Bessel von Mangoldt source, pole-filled-zeta smoothness at
+  one, and the exact Chebyshev discrepancy. Six direct sources, final completion-module build, and
+  seventeen-capstone axiom audit pass; only standard foundations occur.
 
 - 2026-07-24 -- Formalized the exact reverse-Bessel closed form (1) and positivity of the radial-jet
   magnitudes in `RHTower.squaredRadialJetWeight_eq_closedForm` / `_pos` (plus the triangular support

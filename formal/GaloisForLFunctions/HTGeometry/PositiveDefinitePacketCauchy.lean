@@ -120,11 +120,84 @@ theorem realKernelPacketCross_sq_le_energy_mul_energy_of_positiveDefinite
         ring
       rw [hposEq] at hpos
       exact hC (le_antisymm (by linarith) (by linarith))
-    simpa [hA0, hC0]
+    simp [hA0, hC0]
   · have hApos : 0 < A := lt_of_le_of_ne hA (Ne.symm hA0)
     have h := hquad (-C / A)
     field_simp [hA0] at h
     nlinarith
+
+/-- Channel Gram matrix formed from finitely many coherent packets of a common size. -/
+def realKernelPacketChannelGram (K : ℝ → ℝ) {M N : ℕ}
+    (t b : Fin M → Fin N → ℝ) : Matrix (Fin M) (Fin M) ℝ :=
+  fun r s => realKernelPacketCross K (t r) (b r) (t s) (b s)
+
+/-- **Universal coherent-channel law.**  Every finite family of packets for an even real
+positive-definite translation kernel has a positive-semidefinite channel Gram matrix.  Thus all
+channel principal minors and every coherent linear recombination are controlled simultaneously;
+the scalar two-packet inequality is its two-channel shadow. -/
+theorem realKernelPacketChannelGram_posSemidef_of_positiveDefinite
+    (K : ℝ → ℝ)
+    (hPD : PositiveDefiniteOnReal (fun y => (K y : ℂ)))
+    (hEven : ∀ y, K (-y) = K y)
+    {M N : ℕ} (t b : Fin M → Fin N → ℝ) :
+    (realKernelPacketChannelGram K t b).PosSemidef := by
+  apply Matrix.PosSemidef.of_dotProduct_mulVec_nonneg
+  · apply Matrix.IsHermitian.ext
+    intro r s
+    simp only [realKernelPacketChannelGram, star_trivial]
+    unfold realKernelPacketCross
+    rw [Finset.sum_comm]
+    apply Finset.sum_congr rfl
+    intro i _
+    apply Finset.sum_congr rfl
+    intro j _
+    rw [show t r i - t s j = -(t s j - t r i) by ring, hEven]
+    ring
+  · intro x
+    let e : Fin M × Fin N ≃ Fin (M * N) := finProdFinEquiv
+    let T : Fin (M * N) → ℝ := fun k => t (e.symm k).1 (e.symm k).2
+    let c : Fin (M * N) → ℂ := fun k =>
+      ((x (e.symm k).1 * b (e.symm k).1 (e.symm k).2 : ℝ) : ℂ)
+    obtain ⟨q, hq, hform⟩ := hPD (M * N) T c
+    have hflat :
+        (∑ i, ∑ j, star (c i) * (K (T j - T i) : ℂ) * c j) =
+          ((dotProduct (star x)
+              ((realKernelPacketChannelGram K t b).mulVec x) : ℝ) : ℂ) := by
+      have hsum (f : Fin (M * N) → ℂ) :
+          (∑ k, f k) = ∑ r : Fin M, ∑ i : Fin N, f (e (r, i)) := by
+        rw [← e.sum_comp, Fintype.sum_prod_type]
+      rw [hsum]
+      simp_rw [hsum]
+      simp only [e, T, c, Equiv.symm_apply_apply, dotProduct, Matrix.mulVec,
+        realKernelPacketChannelGram, realKernelPacketCross, star_trivial,
+        Complex.star_def, Complex.conj_ofReal]
+      push_cast
+      simp_rw [Finset.mul_sum, Finset.sum_mul]
+      apply Finset.sum_congr rfl
+      intro r _
+      rw [Finset.sum_comm]
+      simp_rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro s _
+      apply Finset.sum_congr rfl
+      intro i _
+      apply Finset.sum_congr rfl
+      intro j _
+      ring
+    have heq : dotProduct (star x)
+        ((realKernelPacketChannelGram K t b).mulVec x) = q := by
+      exact_mod_cast hflat.symm.trans hform
+    exact hq.trans_eq heq.symm
+
+/-- Every full coherent-channel determinant is nonnegative. -/
+theorem realKernelPacketChannelGram_det_nonneg_of_positiveDefinite
+    (K : ℝ → ℝ)
+    (hPD : PositiveDefiniteOnReal (fun y => (K y : ℂ)))
+    (hEven : ∀ y, K (-y) = K y)
+    {M N : ℕ} (t b : Fin M → Fin N → ℝ) :
+    0 ≤ (realKernelPacketChannelGram K t b).det :=
+  (realKernelPacketChannelGram_posSemidef_of_positiveDefinite
+    K hPD hEven t b).det_nonneg
 
 end
 

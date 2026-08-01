@@ -1,4 +1,6 @@
 import GaloisForLFunctions.RHTower.SuzukiGlobalLocalCompoundBezoutianWeld
+import Mathlib.LinearAlgebra.Matrix.Notation
+import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 /-!
 # Midpoint Lorentz completion of Suzuki's marked secant
@@ -19,6 +21,8 @@ source.  This identifies the exact source term that a prime--Gamma Green identit
 
 No RH premise, positivity hypothesis, Xi-divisor data, estimate, or computation is used.
 -/
+
+open scoped Matrix
 
 namespace RHTower
 
@@ -109,7 +113,8 @@ theorem suzukiMarkedSecant_minimalRootedCompletion_eq_square
   rw [suzukiMarkedSecantSymmetricForm_add_rootedCompletion]
   ring
 
-/-- Distinct shifts expose both signs before completion: exact coefficient inertia is `(1,1)`. -/
+/-- Distinct shifts expose both signs before completion: the form is positive at `(1,0)` and
+negative at `(m,1)`. -/
 theorem suzukiMarkedSecantSymmetricForm_has_positive_and_negative_directions
     (m d : ℝ) (hd : d ≠ 0) :
     0 < suzukiMarkedSecantSymmetricForm m d 1 0 1 0 ∧
@@ -119,6 +124,54 @@ theorem suzukiMarkedSecantSymmetricForm_has_positive_and_negative_directions
   · rw [suzukiMarkedSecantSymmetricForm_self_eq]
     norm_num
     exact sq_pos_of_ne_zero hd
+
+/-- **Unique minimal rate.**  The square of the halfgap is the least rooted completion rate, not
+merely one admissible rate. -/
+theorem suzukiMarkedSecant_rootedCompletion_isLeast (m d : ℝ) :
+    IsLeast {kappa : ℝ | ∀ r s : ℝ,
+      0 ≤ suzukiMarkedSecantSymmetricForm m d r s r s + kappa * s ^ 2} (d ^ 2) :=
+  ⟨(suzukiMarkedSecant_rootedCompletion_nonneg_iff m d (d ^ 2)).mpr le_rfl,
+    fun _ hk => (suzukiMarkedSecant_rootedCompletion_nonneg_iff m d _).mp hk⟩
+
+/-- Coefficient matrix of the marked symmetric form in source coordinates `(r, s)`. -/
+def suzukiMarkedSecantFormMatrix (m d : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
+  !![1, -m; -m, m ^ 2 - d ^ 2]
+
+/-- The matrix represents the marked symmetric form. -/
+theorem suzukiMarkedSecantFormMatrix_quadraticForm (m d r s : ℝ) :
+    ![r, s] ⬝ᵥ (suzukiMarkedSecantFormMatrix m d) *ᵥ ![r, s] =
+      suzukiMarkedSecantSymmetricForm m d r s r s := by
+  simp [suzukiMarkedSecantFormMatrix, suzukiMarkedSecantSymmetricForm,
+    Matrix.mulVec, dotProduct, Fin.sum_univ_two]
+  ring
+
+/-- The determinant of the coefficient matrix is exactly minus the squared halfgap. -/
+theorem det_suzukiMarkedSecantFormMatrix (m d : ℝ) :
+    (suzukiMarkedSecantFormMatrix m d).det = -d ^ 2 := by
+  rw [suzukiMarkedSecantFormMatrix, Matrix.det_fin_two_of]
+  ring
+
+/-- The halfgap chart `(r, s) ↦ (r - m*s, d*s)`. -/
+def suzukiMarkedSecantInertiaChart (m d : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
+  !![1, -m; 0, d]
+
+/-- The halfgap chart is invertible exactly when the halfgap is nonzero. -/
+theorem det_suzukiMarkedSecantInertiaChart (m d : ℝ) :
+    (suzukiMarkedSecantInertiaChart m d).det = d := by
+  rw [suzukiMarkedSecantInertiaChart, Matrix.det_fin_two_of]
+  ring
+
+/-- **Exact inertia `(1,1)`.**  The coefficient matrix is congruent to `diag (1, -1)` through the
+halfgap chart; by Sylvester's law this fixes its signature, not merely the existence of one
+positive and one negative direction. -/
+theorem suzukiMarkedSecantFormMatrix_congr_diag (m d : ℝ) :
+    (suzukiMarkedSecantInertiaChart m d)ᵀ * !![1, 0; 0, -1] *
+        suzukiMarkedSecantInertiaChart m d =
+      suzukiMarkedSecantFormMatrix m d := by
+  rw [suzukiMarkedSecantInertiaChart, suzukiMarkedSecantFormMatrix]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    (simp [Matrix.mul_apply, Fin.sum_univ_two]; try ring)
 
 /-- Dyadic Suzuki shifts have sharp missing rooted rate `L^2/4`. -/
 theorem suzukiMarkedSecant_dyadic_rootedCompletion_nonneg_iff

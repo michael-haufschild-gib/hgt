@@ -225,7 +225,7 @@ complexity with only the permitted polynomial losses.  Proving only absence of
 conjugate points is insufficient: that excludes local variations but not a
 globally shorter path.
 
-#### Surviving mechanism: computationally restricted temporal entropy
+#### Failed circuitwise entropy route and surviving aggregate word escape
 
 An initial candidate was unrestricted worst-target concentration
 
@@ -250,8 +250,8 @@ metric balls.  Pigeonhole forces some target ball to have probability at least
 time.  This no-go also explains why fixed-order design and ambient-volume
 arguments stall.
 
-The surviving object restricts the target to computations that would
-constitute a shortcut:
+Restricting the target to computations that would constitute a shortcut does
+not rescue the circuitwise union-bound strategy.  Define
 
 \[
  Q_{\varepsilon,s}^{\rm short}(t)=
@@ -259,34 +259,80 @@ constitute a shortcut:
    \Pr_H\{\Delta(\Phi_H(t),C\Phi_0)\leq\varepsilon\}.
 \]
 
-The required **computational temporal-entropy law** is
+The identity circuit already gives a sharp obstruction.  Let
+`H(J)=sum_(a=1)^m J_a P_a` with `||P_a|| <= 1`, and choose one nonidentity
+Pauli word `P_1`.  For every large `t`, choose an integer `k` with
+`2 pi k/t` in a fixed positive compact coefficient interval and put
+`J^(0)=(2 pi k/t,0,...,0)`.  Then
+
+\[
+ e^{-itH(J^{(0)})}=e^{-2\pi i kP_1}=I.
+\]
+
+On a coefficient box of radius `c epsilon/(tm)` around `J^(0)`, Duhamel's
+inequality keeps the evolution within `epsilon` of the identity.  The Gaussian
+density is bounded below on that box, so for constants depending only on the
+fixed normalization,
+
+\[
+ Q_{\varepsilon,s}^{\rm short}(t)
+ \geq c_0^m\left({\varepsilon\over tm}\right)^m
+ \qquad(s\geq0).                                      \tag{O4.1}
+\]
+
+This obstruction persists on a fixed-energy shell: `J^(0)` has order-one
+norm.  Consequently
+
+\[
+ -\log Q_{\varepsilon,s}^{\rm short}(t)
+ \leq m\log(tm/\varepsilon)+O(m),                     \tag{O4.2}
+\]
+
+and therefore cannot satisfy the previously proposed bound
 
 \[
  -\log Q_{\varepsilon,s}^{\rm short}(t)
    \geq (s+1)\log M+\gamma_n(t)
- \quad\text{for }s\leq a t/\operatorname{poly}(n),
+ \quad\text{for }s\asymp t/\operatorname{poly}(n)
 \]
 
-with a positive tail `gamma_n(t)` strong enough to discretize all times on one
-Hamiltonian event.  Union over the at most `M^(s+1)` circuit outputs then gives
-linear robust complexity growth.  The parameter-covering objection does not
-apply: its high-mass ball centers may themselves require order-`t`
-preparation and hence are excluded from the shortcut dictionary.
+once `s` is much larger than `m log t`.  Thus no proof may pay for circuits one
+at a time.
 
-The new analytic core is a circuit-uniform small-ball theorem for the
-matrix-exponential Gaussian-chaos process
+The surviving object is the **whole shortcut locus**
 
 \[
- X_C(H,t)=\langle C\Phi_0,\Phi_H(t)\rangle,
+ \mathcal B_{\varepsilon,s}(t)
+ =\{H:C_\varepsilon(\Phi_H(t))\leq s\}.
 \]
 
-indexed by all circuits shorter than physical time.  Recent Gaussian-process
-methods for quantum spin glasses uniformly exclude shallow circuits from
-near-ground-state energy, but they do not transfer directly: the dynamical
-endpoint depends nonlinearly on the same Gaussian Hamiltonian and remains at
-the initial state's typical conserved energy.  A proof must develop a
-Gaussian-chaos small-ball inequality sensitive to circuit depth, not reuse the
-ground-state energy argument.
+The new hard target is an **aggregate autonomous word-escape theorem**.  After
+fixing the energy shell, prove directly, without a union over circuit words,
+
+\[
+ \Pr_H\!\left\{
+ C_\varepsilon(\Phi_H(t))
+ \leq {a\Lambda(H)t\over\operatorname{poly}(n)}
+ \right\}
+ \leq
+ \left({A tm\over\varepsilon}\right)^{-c m}           \tag{O4.3}
+\]
+
+uniformly from the resolution time through exponential saturation.  The
+power-law-in-`t` failure with exponent proportional to parameter dimension is
+strong enough for a time net through `t=exp(Theta(n))`, while `(O4.1)` shows
+that its functional form is optimal up to constants.  This is a global
+intersection theorem between the evolved local-Hamiltonian manifold and the
+low-word metric variety; ordinary small-ball estimates and circuit counting
+cannot prove it.
+
+Conceptually, the missing invariant is noncommutative.  Exact spectral
+relations are the abelianized shadow and control completed recurrence.
+Relations between a local one-parameter subgroup and short local-gate words
+control pre-saturation computation.  Finite-dimensional matrix identities
+force saturation.  The proposed universal law says that generic irreducible
+local matter has no robust low-word relations before that capacity boundary.
+Its precise new mathematical content is `(O4.3)`, not the terminology.
 
 This is the proposed physical reinterpretation: autonomous time can generate
 **computational inaccessibility without statistical randomness**.  The orbit
@@ -451,3 +497,15 @@ receive a new title and an independent significance audit.
   `StaticChoiPhaseDensity.lean`; the file compiles in isolation.  Together with
   `StaticChoiPhaseTargetEntropy.lean`, this closes the geometric core of O3 in
   Lean, leaving finite circuit counting and completed-time specialization.
+- 2026-08-01 -- Retired the circuitwise temporal-min-entropy route.  A
+  normalized one-Pauli recurrence point gives the identity circuit capture
+  probability at least `t^(-O(m))`, contradicting the `exp(-Omega(s))` bound
+  needed by a word-by-word union when `s` is linear in exponential time.
+  Replaced it by the aggregate autonomous word-escape target `(O4.3)`, whose
+  failure exponent is compatible with this sharp obstruction and sufficient
+  for uniform-in-time growth.
+- 2026-08-01 -- Lean-proved the dimension-free analytic core of that no-go in
+  `FiniteHorizonCStarPerturbationLaw.lean`: an exact periodic Hamiltonian is
+  the center of an operator-norm shortcut tube with radius proportional to
+  `epsilon/|t|`.  Gaussian box volume remains paper-only and is not a
+  manuscript claim.

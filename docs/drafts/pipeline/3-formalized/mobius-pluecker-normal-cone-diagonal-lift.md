@@ -1,9 +1,9 @@
 # Finite Möbius--Pluecker transfers lift cofinally to the reciprocal normal-cone section
 
 - **ID:** `mobius-pluecker-normal-cone-diagonal-lift`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** `[THEOREM] [HT TWOSCALE COMPLETION] [PLUECKER-TO-RECIPROCAL-HORIZON LIFT]`
-- **Scientific status:** `[PROVED ON PAPER] [SOURCE-PURE] [LEAN FINITE CORE AVAILABLE] [NOT RH]`
+- **Scientific status:** `[PROVED ON PAPER] [SOURCE-PURE] [FORMALIZED UNCONDITIONALLY IN LEAN 4] [NOT RH]`
 - **Parents:**
   - `../3-formalized/not_new_scientific_knowledge/mobius-finite-schur-coisometry-core.md`;
   - `../3-formalized/mobius-prime-loschmidt-purity-survival.md`;
@@ -140,7 +140,31 @@ Thus the exceptional section used by the Gauss--Ward conjecture is not adjoined 
 continuation.  It is a locally uniform diagonal limit of the actual finite Pluecker/Loschmidt
 source transfers on their Euler half-plane.
 
-## 5. Exact remaining boundary
+## 5. Lean formalization
+
+The exact dependency-closed theorem is formalized in
+`formal/GaloisForLFunctions/RHTower/MobiusPlueckerNormalConeDiagonalLift.lean` and exported through
+`GaloisForLFunctions.RHTower`.
+
+The module proves the finite source/product identity, the fixed-aperture nonzero limit and resulting
+failure of finite normalized convergence, locally uniform Euler-product convergence, compact
+exhaustion diagonal selection with nested cofinal finite prime sets, Gamma completion, and the
+projectivized negative reciprocal square.  Its capstone is
+`exists_mobiusPlueckerCompletedDiagonal`; supporting endpoint theorems include
+`finiteMobiusPlueckerAmplitude_eq_prod`,
+`not_tendsto_finiteMobiusPlueckerTransfer_div_epsilon`,
+`exists_mobiusPlueckerDiagonal`, `mobiusPlueckerGammaCompleted`, and
+`mobiusPlueckerProjectivizedSquare`.
+
+Audit evidence:
+
+- `lake env lean GaloisForLFunctions/RHTower/MobiusPlueckerNormalConeDiagonalLift.lean` passes;
+- `lake build GaloisForLFunctions.RHTower.MobiusPlueckerNormalConeDiagonalLift` passes;
+- `scripts/formal_tools.py lint` passes after umbrella wiring;
+- `#print axioms` for the finite source identity, fixed-aperture no-go, and completed-diagonal
+  capstone reports only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## 6. Exact remaining boundary
 
 The theorem constructs the algebraic/analytic Rees section but does not transport the positive
 Pluecker metric through `Re s=1`.  Local uniform convergence on `Re s>1` does not control the
@@ -162,9 +186,8 @@ its opposite-polarization boundary trace.
 - [x] nested cofinal diagonal constructed for every critical sequence
 - [x] local-uniform reciprocal-squarefree limit proved
 - [x] Gamma-completed exceptional lift proved on `Re s>1`
-- [ ] formalize the locally uniform diagonal selection theorem
+- [x] formalize the locally uniform diagonal selection theorem
 - [ ] construct the closed singular Hermitian graph form
 - [ ] control the exceptional Hardy second fundamental form
 - [ ] four-unit estimate
 - [ ] RH
-

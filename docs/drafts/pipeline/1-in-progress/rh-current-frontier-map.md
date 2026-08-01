@@ -34,7 +34,7 @@ Project has solved most connector problems and has not solved source-acquisition
 Nearest routes require one global source theorem: first-clock lower control, fixed-width
 Weil floor, completed Hedenmalm positivity, critical Möbius cancellation, quantitative
 Sonin closure, Suzuki full-frequency source realization, Xi-current control, or Julia
-coherent-energy budget. No route supplies that theorem today.
+coherent-energy budget. No route currently supplies that theorem.
 
 ## 2. What the foundational tower actually proves
 
@@ -279,10 +279,12 @@ bounded returns are needed.
 The Plücker normal-cone branch now has a cofinal diagonal on `Re(s) > 1`: for every
 positive critical sequence tending to zero, Lean constructs a monotone cofinal exhaustion
 by finite prime sets whose Euler-normal source transfers converge locally uniformly to the
-reciprocal squarefree section. Fixed finite prime apertures still cannot have a finite
-Euler-normal limit. The diagonal theorem combines finite-prime exhaustion with the
-Euler-boundary limit, but all of its convergence remains in the absolutely convergent,
-zero-free Euler half-plane and supplies no continuation to critical Möbius data.
+reciprocal squarefree section. The same diagonal survives multiplication by the inverse
+archimedean factor and projectivization to the negative reciprocal-square horizon. Fixed
+finite prime apertures still cannot have a finite Euler-normal limit. These theorems combine
+finite-prime exhaustion with the Euler-boundary and Gamma-completion limits, but all
+convergence remains in the absolutely convergent, zero-free Euler half-plane and supplies
+no continuation to critical Möbius data.
 
 **Open core.** Prove cofinal upper bounded returns of the actual upper-signed Möbius
 Gamma–Hankel covariance, or an equivalent critical Möbius cancellation estimate, from a
@@ -329,6 +331,11 @@ positive Sonin finite/block/moment values
   uniform over every packet in a shell cut;
 - a sharper replacement retains the mean's own tail estimate rather than bounding it by
   one, reducing the band term to one gap-tail times a fixed profile constant;
+- division by the explicit norm floor has a closed form: each sharp band slack is the
+  gap-tail factor times the square root of band radius divided by shell width and fixed
+  profile mass, exposing exactly which coupled scales must vanish;
+- the reference tail majorant absorbs every fixed polynomial weight, including the square-
+  root radius weight occurring in the middle slack term;
 - the packet norm floor is explicit and positive, and the resulting energy theorem has no
   free analytic parameter beyond the shell schedule and its stated tail/slack conditions;
 - it blows up but grows at most logarithmically;
@@ -562,7 +569,9 @@ Poisson realization, polar-sign correction, Fredholm kernel reductions, and exac
 of compact-group invariants through equivariant surjections by Haar averaging. Generic
 dense-span orthogonality also makes the Kronecker phase functional nonzero off zero, and
 the suspension radius is exactly deck-invariant and scales linearly in the suspension
-coordinate.
+coordinate. For every countable family of nonzero Hilbert vectors, the locus orthogonal to
+none of them is a dense `Gδ`; this closes the generic residual nondegeneracy statement, not
+the arithmetic identification of those vectors or the Kronecker orbit theorem.
 
 **Open core.** Meyer-complex comparison; radial Schwartz domain; nuclear topology and
 closed range; nonradial acyclicity; cup/trace/flow/Hodge transport; nuclear
@@ -803,7 +812,8 @@ source.
 
 - Gamma differential hypertranscendence;
 - reflected-digamma orientation;
-- weighted Cauchy-jet smoothness and compact-patch finite-probe transversality;
+- weighted Cauchy-jet smoothness and compact-patch finite-probe transversality, now lifted
+  to nonlinear exponential Herglotz charts for arbitrary base measures;
 - generic transported-parent energy barriers for unitary dynamics;
 - conversion of the now-proved literal-zeta Gamma-field nonrelation into divisor or
   zero-location information;
@@ -822,18 +832,16 @@ proved, but neither has an RH handoff.
 
 Dirichlet exponents are now identified exactly as Bohr-hull frequencies under uniform
 Dirichlet approximation, closing the exponent-to-spectrum link in the Gamma-field
-nonrelation chain. Vertically flat residuals are stable under differences, nonzero rational
-factors, and unit translation, and no nonzero polynomial is vertically flat. Remaining
-assembly is not generator translation: rational germs intertwine rational shift with germ
-translation, flatness is shift-stable, and each actual digamma-jet germ satisfies the exact
-shift-plus-rational-pole law. What remains is polynomial-level evaluation of
-rational-coefficient jet polynomials into the germ ring, construction of the resulting
-shift-stable flat annihilator with the hypotheses of the abstract elimination theorem, and
-removal of the flat residue. Universal-to-generic centering, coefficient-substitution
-injectivity, and algebraic independence of centered generic coefficients are proved. The
-centered coefficient field is now identified with a rational function field in `d-1`
-independent variables; the associated radical polynomial is irreducible and its root has
-the exact expected extension degree. No Xi-source spectral polynomial or analytic handoff
+nonrelation chain. The shift/elimination assembly is now closed at germ level. Rational
+germs intertwine rational shift with germ translation, flatness is shift-stable, and each
+actual digamma-jet germ satisfies the exact shift-plus-rational-pole law. Polynomial
+evaluation into the germ ring is injective: no nonzero differential polynomial in the
+digamma jets over `ℂ(s)` is flat on even one vertical line. Universal-to-generic centering,
+coefficient-substitution injectivity, and algebraic independence of centered generic
+coefficients are proved. The centered coefficient field is a rational function field in
+`d-1` independent variables; the associated radical polynomial is irreducible, its root has
+the exact expected extension degree, and full symmetric monodromy of the centered equation
+survives the even radical base change. No Xi-source spectral polynomial or analytic handoff
 exists. The upper-half-plane germ ring makes every nonzero rational germ a unit, makes flat
 germs a rational module, and excludes nonzero rational flat germs.
 
@@ -1240,6 +1248,11 @@ completion.
 - Suzuki constructs finite self-adjoint extensions and conjectures the limiting
   self-adjoint operator. The infinite/full-frequency identification remains open:
   [Weil's quadratic form via the screw function](https://arxiv.org/abs/2606.09096).
+- The July 2026 finite-element realization of Suzuki's operator proves an archimedean
+  Mellin head coefficient but classifies its spectral, ground-state, characteristic-zero,
+  and critical-line observations as numerical and universal rather than new arithmetic;
+  it supplies no unconditional finite-to-Xi limit:
+  [A Numerical Realization of Suzuki's Weil-Quadratic-Form Operator](https://arxiv.org/abs/2607.24830).
 - The finite Guinand–Weil dictionary gives exact finite zero sums and an explicit
   archimedean tail budget, while expressly making no RH claim:
   [A finite Guinand-Weil dictionary and archimedean tail order](https://arxiv.org/abs/2607.02828).
@@ -1358,6 +1371,10 @@ Therefore the honest current conclusion is:
 - `RHTower/SoninShellCutBandBound.lean`
 - `RHTower/SoninShellCutBandTotalBound.lean`
 - `RHTower/SoninShellCutSharpBandBound.lean`
+- `RHTower/SoninShellCutSharpSchedule.lean`
+- `RHTower/SoninShellCutSlackClosedForm.lean`
+- `RHTower/SoninShellCutHighSlackClosedForm.lean`
+- `RHTower/SoninRefTailWeightedVanishing.lean`
 - `RHTower/SoninShellCutEnergySchedule.lean`
 - `RHTower/SuzukiFiniteApertureHermiteBiehler.lean`
 - `RHTower/SuzukiVolterraCartesianPhaseDefect.lean`
@@ -1378,6 +1395,7 @@ Therefore the honest current conclusion is:
 - `RHTower/DeningerShift.lean`
 - `RHTower/DeningerHaarAverage.lean`
 - `RHTower/DeningerKronecker.lean`
+- `RHTower/DeningerResidualLeaves.lean`
 - `RHTower/HedenmalmPrimeNormalWickBoundaryEnergy.lean`
 - `RHTower/ThetaCuspCalibratedPowerReciprocalMomentLaw.lean`
 - `RHTower/CCMFirstClockJuliaEquilibriumGram.lean`
@@ -1399,8 +1417,12 @@ Therefore the honest current conclusion is:
 - `HTGeometry/VerticalFlatness.lean`
 - `HTGeometry/HalfPlaneGermShift.lean`
 - `HTGeometry/DigammaJetGerm.lean`
+- `HTGeometry/VerticalFlatGermElimination.lean`
 - `HTGeometry/CenteredCoeffFieldRational.lean`
+- `HTGeometry/CenteredFullMonodromy.lean`
+- `HTGeometry/HerglotzJetMapSmoothness.lean`
 - `HTGeometry/WeightedCauchyTranslatedExpandedEvaluationCompactPatch.lean`
+- `HTGeometry/HerglotzTranslatedExpandedEvaluationCompactPatch.lean`
 - `HTGeometry/HypertranscendentalHochsterSourceCoherenceDuality.lean`
 - `HTGeometry/AnalyticEulerTailExactFaithfulnessUniversalityLaw.lean`
 - `HTGeometry/PrimeOrientationCompletedRingSignNoGo.lean`

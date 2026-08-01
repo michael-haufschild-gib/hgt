@@ -46,7 +46,7 @@ for $0<a<\tfrac12$ let
 \[
   D_a(t)\;=\;\int_0^\infty r\sinh(ar)\,\Phi\!\left(\tfrac r2+t\right)\Phi\!\left(\tfrac r2-t\right)dr
 \]
-be the center-mixed density attached to Hedenmalm's positive-form criterion. We prove the closed
+be the center-mixed density studied here. We prove the closed
 form
 \[
   \widehat{D_a}(s)\;=\;-\operatorname{Im}\!\left[\Xii'(\zeta)\,\overline{\Xii(\zeta)}\right]
@@ -58,9 +58,8 @@ Two consequences follow. First, since the center-mixed matrices are the Toeplitz
 $\bigl(D_a(t_i-t_j)\bigr)$, Bochner's theorem turns their positive semidefiniteness at all node
 counts into the single condition $\widehat{D_a}\ge0$; by the identity this is exactly the
 nonpositivity of $\operatorname{Im}(\Xii'/\Xii)$ on the line $\operatorname{Im}\zeta=a$, and exactly
-the monotonicity of $a\mapsto|\Xii(z+ia)|$. Three criteria that appear in the literature as
-independent routes to the Riemann hypothesis are therefore one criterion in three coordinate
-systems.
+the monotonicity of $a\mapsto|\Xii(z+ia)|$. The matrix, Fourier-sign, and vertical-modulus
+formulations are therefore one criterion in three coordinate systems.
 
 Second, the finite-node ladder cannot be closed: positive semidefiniteness at every node count is
 equivalent to a single Fourier sign condition, and each finite node count is a strictly weaker
@@ -105,8 +104,8 @@ For $0<a<\tfrac12$ set
 \begin{equation}\label{eq:D}
   D_a(t)\;=\;\int_0^\infty r\sinh(ar)\,\Phi\!\left(\tfrac r2+t\right)\Phi\!\left(\tfrac r2-t\right)dr .
 \end{equation}
-This is the density underlying the center-mixed matrices of Hedenmalm's positive-form criterion
-\cite{Hedenmalm2026}: for nodes $t_1<\dots<t_n$ one forms
+The associated center-mixed matrices are defined as follows: for nodes
+$t_1<\dots<t_n$ one forms
 \begin{equation}\label{eq:matrix}
   M(t_1,\dots,t_n)\;=\;\bigl(D_a(t_i-t_j)\bigr)_{i,j=1}^n ,
 \end{equation}
@@ -425,11 +424,6 @@ requires only routine algebra together with the identification of $\Xii$ with th
 The author thanks the \texttt{mathlib} community.
 
 \begin{thebibliography}{99}
-
-\bibitem{Hedenmalm2026}
-H.~Hedenmalm,
-\emph{A theta boundary value problem and the zeros of the Riemann zeta function},
-preprint, arXiv:2606.17494.
 
 \bibitem{Levin}
 B.~Ja.~Levin,

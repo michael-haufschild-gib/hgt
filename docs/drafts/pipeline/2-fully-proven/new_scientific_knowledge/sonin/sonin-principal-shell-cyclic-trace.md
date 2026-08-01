@@ -1214,8 +1214,12 @@ do *not* all shrink for the same reason:
   since `delta r` is about the schedule constant `K`, this does *not* vanish with `N` at all.  What
   kills it is the tail factor `S(delta r (q - a))`, of size `S(K(q-a))`, together with the polynomial
   rate: `sqrt(K) S(K(q-a)) = O(1/(sqrt(K)(q-a)))`.  So this term is controlled by `K`, not by `N`;
-- the high-side term is `O(delta^{1-N_0} (r b)^{(1-2N_0)/2})`, which with `delta ~ 1/N` and `r ~ N`
-  is `O(N^{-1/2})` at *every* order `N_0` — the order cancels out of the exponent.
+- the high-side term is *not* refinement-controlled, contrary to what the order count above
+  suggested: writing the radicand exactly (`soninShellCutHighSlack_radicand_eq`) shows the
+  half-width and the radius enter to the same negative order and therefore combine, giving
+  `(delta t)^{1 - 2N_0}` up to a constant.  With `t = r b` the product is `delta r b`, about
+  `kappa b`, a constant of the schedule.  So this term too is governed by `kappa` — large `kappa`
+  or large order both shrink it — and refining the cut does nothing for it.
 
 So the schedule must fix `K` first, large enough for the middle term, and only then let `N` grow.
 That is the same conclusion the earlier `delta w` analysis reached, now visible in the estimate
@@ -1237,7 +1241,83 @@ estimate: the mean is a tail at the carrier, the carrier is further from the ori
 by antitonicity the entire bound collapses to *one* tail at the gap times `(1 + 2 S(0)/J_0)`.  Then
 the `r a` term is `sqrt(kappa a) S(kappa(q-a))`, which the polynomial decay rate drives to zero as
 `kappa` grows.  This is the estimate the schedule needs; the mean-free one is retained but is only
-adequate at fixed radii.  With `N` about `r/K` this gives coupling
+adequate at fixed radii.
+
+The budget and the energy bound are rebuilt on it:
+`exists_card_sub_le_hsNormSq_soninApertureCoupling_shellCut_sharp` has the same shape as before but
+with every band term carrying a tail at its own gap.  Now that no term is bounded below by a constant
+of the reference profile, a schedule can be chosen.  Concretely the three slack terms are, in order
+of what controls them: `sqrt(delta b) S(delta(rq - b))` — refinement; `sqrt(kappa a) S(kappa(q-a))` —
+the schedule constant `kappa = delta r`, through the polynomial rate; and
+`delta^{1-N_0}(rb)^{(1-2N_0)/2}` — refinement at every order.
+
+All three are now *exact*, not asymptotic.  A band term of the slack is
+`4 (1 + 2 S(0)/J_0) S(delta (w - t)) sqrt(t delta / I)`
+(`sqrt_soninShellCutSharpBandBoundAt_div_floor`), so the two quantities that decide it — the tail at
+the gap, and the product of band radius with half-width — are visible in the statement rather than
+inferred from orders.  The high-side term is
+`sqrt(4 K delta t^{1 - 2N_0} / (delta^{2N_0} (2N_0 - 1) I))`
+(`sqrt_soninShellCutHighBoundAt_div_floor`), with the half-width cancelled once against the floor.
+
+The slack condition `3 eps + (sum of the three) <= eta` is therefore an inequality between named
+elementary expressions in the schedule, and choosing a schedule means choosing `kappa` and `N` to
+satisfy it.
+
+The one place analysis still enters is the middle term, which must be driven down by the schedule
+constant rather than by refinement.  That is now settled in both halves.  The vanishing:
+`tendsto_sqrt_mul_soninRefTailSup_atTop` says the majorant absorbs a root, since an extra order of
+decay covers the weight, with `tendsto_pow_mul_soninRefTailSup_atTop` doing the same for any power.
+And the identification: `sqrt_soninShellCutSharpBandBoundAt_div_floor_middle` shows the middle term
+*is* that shape — pulling the half-width inside the root turns it into a constant of the shell times
+`sqrt(kappa u) S(u)`, at the gap `u = delta r (q - a)`, with `kappa = a/((q-a) I)`.
+
+So the middle term vanishes as the gap grows, and the gap grows with the schedule constant at every
+scale.
+
+The outer term is the complementary case and is now settled the same way.  At the fixed radius `b`
+the majorant need not be small at all: after the half-width moves inside the root the term is
+`S(delta(rq - b)) sqrt(delta b / I)`, and the root carries the whole decay, because
+`tendsto_soninShellCutWidth_atTop` — the half-width of a cut into `N` equal annuli vanishes as `N`
+grows.  Two terms, two mechanisms: one needs a large gap, the other a fine cut, and neither can
+substitute for the other.  The high-side term joins the first group, not the second — see the
+correction below.
+
+All three slack terms now have both a closed form and a vanishing theorem, and they sort into two
+groups by what drives them:
+
+| term | closed form | driven by |
+|---|---|---|
+| band at `b` | `S(delta(rq-b)) sqrt(delta b / I)` times a constant | refinement, `N -> infinity` |
+| band at `r a` | shell constant times `sqrt(kappa u) S(u)`, `u` the gap | the schedule constant |
+| high side | `sqrt(C (delta t)^{1-2N_0})` | the schedule constant |
+
+So the schedule is: fix the carrier ratio `q` in `(a, b/2]`, choose the constant `kappa = delta r`
+large enough that the two `kappa`-driven terms fall below their share of `eta - 3 eps`, then let `N`
+grow — which drives the third term and supplies the count.
+
+That schedule is now realised exactly rather than approximately.  Taking `r = 2 N kappa/(c-b)` gives
+`delta r = kappa` on the nose (`soninShellCutWidth_mul_scale`), so the gap is `kappa(q-a)` and the
+high-side product is `kappa b`, both *constants in* `N`; the two `kappa`-driven slack terms are
+therefore literally independent of the cut's size, and only the outer term still moves with `N`.
+The scale grows linearly in `N`, so the coupling's own largeness conditions — scale above one,
+carrier past the outer radius, `c <= r a` — all hold once the cut is fine enough.
+
+Substituting it into the three closed forms makes the separation visible in the statements
+themselves: the middle term is
+`4 C sqrt(a kappa /I) sqrt(...) S(kappa(q-a))` and the high-side term
+`sqrt(4K/((2N_0-1) I) (kappa b)^{1-2N_0})`, *neither mentioning* `N`, while the outer term keeps its
+factor `sqrt(delta b / I)`, which vanishes with the cut.  The slack condition is therefore two fixed
+numbers in `kappa` plus one quantity tending to zero in `N` — which is exactly a statement of the
+form "choose `kappa`, then choose `N`".
+
+The first choice is now made: `exists_kappa_slack_le` gives, for any positive target, a product
+beyond which the two surviving terms sum below it.  Both vanish for their own reason — the middle by
+the weighted majorant, the high-side by the negative exponent — and the statement is free of the cut,
+so the `kappa` it produces can be fixed before any `N` is named.
+
+What remains is the second choice: with `kappa` fixed, pick `N` large enough that the outer term
+falls below the rest of `eta - 3 eps` and the coupling's largeness conditions hold, then read the
+energy off as `N` minus a constant.  With `N` about `r/K` this gives coupling
 energy of order `r`, against the `log r` cap, closing the shortfall test.  Then feed that through the two-branch estimate to get `N` of
 order `r` packets at scale `r`.
 
@@ -1464,6 +1544,17 @@ family is abstract, so two widths have unrelated profiles.
 | **the band bound freed of the annulus** (mean replaced by one, legitimate under the same tail condition), and with it the band budget of *every* packet of a cut below one expression | `soninShellCutBandBoundAt`, `soninShellCutHighBoundAt`, `norm_sq_evenFourierCutoff_soninShellCutPacket_le_uniform`, `exists_soninCouplingBandTotal_soninShellCutPacket_le_uniform` |
 | **the energy bound with every input explicit**: only the schedule enters — shell, number of annuli, scale, carrier ratio, decay order, threshold, shortfall | `exists_card_sub_le_hsNormSq_soninApertureCoupling_shellCut` |
 | **the band bound with the mean kept**, which the growing band needs: the mean is itself a tail at the carrier, and the carrier is further out than the gap, so the whole bound is *one* tail at the gap times a profile constant | `soninShellCutSharpBandBoundAt`, `norm_sq_evenFourierCutoff_soninShellCutPacket_le_sharp` |
+| **the budget and the energy bound rebuilt on the sharp estimate**: same shape, different content — every band term now carries a tail at its own gap, so no term is bounded below by a profile constant | `exists_soninCouplingBandTotal_soninShellCutPacket_le_sharp`, `exists_card_sub_le_hsNormSq_soninApertureCoupling_shellCut_sharp` |
+| **the band slack in closed form**: root of band over root of floor collapses to `2 X sqrt(t/(δ I))`, so a band term of the slack is the tail at its gap times the root of `t δ / I` — the two quantities that decide it, named | `sqrt_band_div_sqrt_floor`, `sqrt_soninShellCutSharpBandBoundAt_div_floor` |
+| **the high-side slack in closed form**: one root, the half-width cancelled once against the floor — `sqrt(4 K δ t^{1-2N_0} / (δ^{2N_0} (2N_0 - 1) I))` | `soninShellCutHighBoundAt_nonneg`, `sqrt_soninShellCutHighBoundAt_div_floor` |
+| **the majorant beats every weight**: one extra order of decay absorbs a power or a root, so `u^n S(u) -> 0` and `sqrt(u) S(u) -> 0` — the vanishing the middle slack term needs | `tendsto_pow_mul_soninRefTailSup_atTop`, `tendsto_sqrt_mul_soninRefTailSup_atTop` |
+| **the middle slack term identified**: pulling the half-width inside the root makes it a shell constant times `sqrt(kappa u) S(u)` at the gap `u = δ r (q - a)` — exactly the shape the weighted vanishing covers | `mul_sqrt_div_eq_sqrt_mul_div`, `tendsto_sqrt_const_mul_soninRefTailSup_atTop`, `sqrt_soninShellCutSharpBandBoundAt_div_floor_middle` |
+| **the outer slack term and the refining cut**: at the fixed radius `b` the root carries the whole decay, and the half-width of a cut into `N` annuli vanishes as `N` grows | `tendsto_soninShellCutWidth_atTop`, `sqrt_soninShellCutSharpBandBoundAt_div_floor_outer`, `tendsto_sqrt_soninShellCutWidth_mul_atTop` |
+| **the high-side slack depends on one product only**: half-width and radius enter to the same negative order, so the radicand is a constant times `(δ t)^{1-2N_0}` — governed by the product, hence by the schedule constant, not by refinement | `soninShellCutHighSlack_radicand_eq`, `sqrt_soninShellCutHighBoundAt_div_floor_product` |
+| **the high-side slack vanishes** in that product, the exponent being negative from the first order on — completing a vanishing theorem for each of the three terms | `tendsto_rpow_one_sub_two_mul_atTop`, `tendsto_sqrt_const_mul_rpow_atTop` |
+| **the scale that fixes the product**: tying `r` to `N` by `r = 2 N kappa/(c-b)` makes `δ r = kappa` *exactly*, so the gap is `kappa(q-a)` and the high-side product is `kappa b`, both constant in `N`; and the scale grows linearly with `N` | `soninShellCutScale`, `soninShellCutWidth_mul_scale`, `soninShellCutScale_pos`, `tendsto_soninShellCutScale_atTop`, `soninShellCutWidth_mul_gap`, `soninShellCutWidth_mul_outer` |
+| **the three slack terms under that scale**: the middle and high-side ones become expressions in `kappa` alone, with `N` absent from the statement; the outer one keeps its vanishing root | `sqrt_soninShellCutSharpBandBoundAt_div_floor_middle_scale`, `sqrt_soninShellCutHighBoundAt_div_floor_scale`, `sqrt_soninShellCutSharpBandBoundAt_div_floor_outer_scale` |
+| **the first constant is choosable**: both surviving terms vanish as the prescribed product grows, so beyond some product their weighted sum is below any target — fixed independently of the cut | `tendsto_middleSlackConst_atTop`, `tendsto_highSlackConst_atTop`, `exists_kappa_slack_le` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1580,6 +1671,82 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the first of the schedule's two constants is chosen.  The statement worth having is
+  not that each term vanishes but that their *sum* is below a target beyond some product, with the
+  cut nowhere in the statement — that is what licenses fixing `kappa` first and leaves `N` genuinely
+  free afterwards.  The two terms vanish for unrelated reasons, so the proof is a sum of two limits
+  rather than one estimate; keeping them separate until the last step is what made it short.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutKappaChoice.lean`.
+- 2026-08-01 — the slack terms are rewritten under the scale, and the separation the last several
+  entries argued for is now visible in the statements: two of the three no longer mention the number
+  of annuli at all.  That is the point of tying the scale to the cut — not that it makes the
+  estimates smaller, but that it removes one variable from two of the three terms, leaving a
+  condition of the shape "two constants in `kappa`, plus something vanishing in `N`".
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutScheduledSlack.lean`.
+- 2026-08-01 — the schedule is realised exactly.  Tying the scale to the cut by
+  `r = 2 N kappa/(c-b)` makes `delta r = kappa` an identity, not an asymptotic, and that single
+  choice collapses the analysis: the gap and the high-side product become constants in `N`, so the
+  two schedule-driven slack terms stop depending on the cut altogether and the quantifier order
+  `kappa` then `N` is realised by construction rather than argued.  Small Lean trap worth noting —
+  rewriting backwards with the product identity substitutes `kappa` inside the scale as well, since
+  the scale mentions it; the fix is to reassociate first and rewrite forwards.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutScale.lean`.
+- 2026-08-01 — the third vanishing is proved, so every slack term now has one.  Nothing subtle in it:
+  the exponent `1 - 2 N_0` is negative from the first order, so the negative power vanishes and the
+  root follows by continuity.  With all three in hand the classification is complete and stable —
+  two terms driven by the schedule constant, one by refinement — which is what makes the order of
+  quantification forced rather than chosen.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutHighSlackVanishing.lean`.
+- 2026-08-01 — writing the high-side radicand exactly corrected an order count made three entries
+  ago.  I had estimated that term as `O(N^{-1/2})`, refinement-controlled at every order; the exact
+  form shows it is `(delta t)^{1-2N_0}` up to a constant, so half-width and radius enter only through
+  their product, and with `t = r b` that product is about `kappa b` — constant under refinement.  The
+  slip was dropping the floor's own factor of `delta` when dividing.  Corrected reading: *two* of the
+  three slack terms are governed by the schedule constant and only the outer one by refinement, so
+  `kappa` must be chosen large before `N` grows, and `N` is then free.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutHighSlackProduct.lean`.
+- 2026-08-01 — the outer slack term is identified and its vanishing supplied, completing the pair.
+  It is the exact complement of the middle one: there the majorant does the work and the root is
+  harmless, here the root does the work and the majorant need not be small.  The mechanism is the
+  trivial-looking `tendsto_soninShellCutWidth_atTop`, which is worth stating separately because it is
+  the only place refinement enters the slack at all.  With both proved, the two constants of the
+  schedule are decoupled — the gap constant handles one term, the cut size the other.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutOuterSlack.lean`.
+- 2026-08-01 — the middle slack term is identified with the shape its vanishing theorem covers, which
+  closes the gap between the closed forms and the limits.  The step that does the work is small:
+  moving the half-width inside the root, after which the band radius and the gap differ only by the
+  ratio `a/(q-a)` of the shell's radii, so the whole term is a shell constant times
+  `sqrt(kappa u) S(u)`.  Every slack term now has both a closed form and a vanishing theorem, and the
+  schedule is a matter of choosing constants against them.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutMiddleSlack.lean`.
+- 2026-08-01 — the weighted vanishing of the majorant is proved, which is the last analytic input the
+  schedule needs: the middle slack term is a majorant times a *root* of its own argument, and only
+  the schedule constant can shrink it.  Both proofs work by spending one extra order of the
+  polynomial rate on the weight — a power `n` is covered by order `n+1`, a root by order `2` — so
+  nothing beyond the rate already established is used.  Worth noting the failed first attempt: the
+  natural route through `sqrt` tending to infinity needs a lemma this toolchain does not have under
+  that name, and taking one more order instead avoids the question entirely.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninRefTailWeightedVanishing.lean`.
+- 2026-08-01 — the high-side slack joins the band slack in closed form, so the schedule's slack
+  condition is now an inequality between named elementary expressions with no hidden constants.  The
+  high-side quotient behaves differently from the band ones: there the half-width cancels *once*
+  against the floor rather than collapsing with a band length, leaving `delta^{1-2N_0}` against the
+  radius to the negative order.  That asymmetry is the reason the high-side term improves with
+  refinement at every order while the band at `r a` does not improve with refinement at all.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutHighSlackClosedForm.lean`.
+- 2026-08-01 — the band slack is put in closed form, which turns the order-of-magnitude reading of
+  the last few entries into an identity.  The quotient of the band root by the floor root collapses
+  because both are roots and the half-width appears to the first power in each: what survives is
+  `2 X sqrt(t/(delta I))`, and with `X` the sharp band bound this is the tail at the gap times
+  `sqrt(t delta / I)`.  The two governing quantities are now named in the statement, so choosing the
+  schedule is a matter of making a tail small and a product small, with nothing hidden in constants.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutSlackClosedForm.lean`.
+- 2026-08-01 — the budget and the energy bound are rebuilt on the sharp estimate, so the whole chain
+  from shell cut to Hilbert--Schmidt energy now runs on bounds that vanish in the schedule.  The two
+  rebuilt theorems are line-for-line the previous ones with the band bound swapped, which is the
+  payoff of having stated the intermediate interfaces in terms of *a* squared bound rather than a
+  particular one — the correction cost two theorems, not the arc.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutSharpSchedule.lean`.
 - 2026-08-01 — checking the assembled bound against the intended schedule found that discarding the
   packet mean is too lossy, and the loss is not a constant factor but the whole estimate.  At a band
   whose radius grows with the scale, the band's length cancels the half-width, and the term left

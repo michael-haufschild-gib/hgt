@@ -2661,6 +2661,16 @@ This is eq. (32) as a Lean theorem.  It is a known result (Wang–Yao) which the
 new; what is new here is that it now follows inside the corpus from the finite phase law, with no
 hypothesis left open — the Bohr-rank mechanism, not a separate argument.
 
+**Overlap, recorded.**  The corpus already contained eq. (32) in differential-algebra form:
+`RHTower/MarkusConjecture.markus_conjecture : HypertranscendentalOver gammaBase zetaUpperEndMero`
+(and `zeta_hypertranscendentalOver_digammaGamma`), proved by algebraic independence of the zeta and
+digamma jets over the coordinate field, `#print axioms` clean.  So `zeta_no_gammaField_relation` is
+a *second, independent* proof of the same fact along the card's own route — strip almost periodicity,
+Bohr spectrum, frequency rank — not a new theorem for the corpus.  Its value is that it exercises the
+finite phase law end to end on the canonical example and supplies the strip-level statement (relation
+on `verticalStrip σ R` with explicit Gamma-field coefficient data) that the abstract germ-field
+formulation does not give.
+
 ### Eq. (19) for the digamma field, not just its ring
 
 `HTGeometry/DigammaFieldQuotientValuation.lean` carries eq. (19) from `ℂ(s)[ψ, ψ′, …]` to the field
@@ -2746,6 +2756,133 @@ That is three of the four hypotheses of `no_shift_stable_annihilatorWith` — di
 multiples, no nonzero constants — for the set of jet polynomials with flat value.  What remains is
 the jet substitution clause: evaluating the digamma jets in this germ ring and matching
 `X_j ↦ X_j + polePart j` with the unit translation.
+
+### Flat cancellation is excluded — eq. (17) without the formal Stirling field
+
+The remaining clause is now proved, and with it the whole flat-cancellation route.
+
+`HTGeometry/HalfPlaneGermShift.lean` makes the unit translation act on the germ ring:
+
+- **`shiftGerm σ₀ : HalfPlaneGerm σ₀ →+* HalfPlaneGerm σ₀`** — precomposition with `s ↦ s + 1`,
+  a ring endomorphism because the translation maps the filter into itself;
+- `shiftGerm_polyGerm` — on polynomial germs it is the substitution `X ↦ X + 1`;
+- **`shiftGerm_ratGerm`** — hence on the whole rational field it is `ratShift`
+  (`IsLocalization.ringHom_ext` from the polynomial case), the coefficient compatibility the
+  elimination requires;
+- `IsFlatGerm.shiftGerm` — flat germs stay flat.
+
+`HTGeometry/DigammaJetGerm.lean` puts the digamma tower in that ring:
+
+- `eventually_off_poles` — the filter misses `−ℕ`, so every jet `ψ⁽ʲ⁾` has a germ;
+- `ratGerm_polePart` — the germ of `polePart j` is the germ of `(−1)ʲ j!/s^{j+1}`;
+- **`shiftGerm_digammaJetGerm`** — the jet substitution *is* the translation:
+  `shift ψ⁽ʲ⁾ = ψ⁽ʲ⁾ + polePart j`, from the corpus's single-step law `digammaJet_shift`.
+
+`HTGeometry/DigammaFlatElimination.lean` closes it:
+
+- `digammaJetEval σ₀ m` — evaluation of a jet polynomial over `ℂ(s)` at the digamma jet germs, a
+  ring homomorphism;
+- `digammaJetEval_jetTranslate` — it intertwines `X_j ↦ X_j + polePart j` with `shiftGerm`;
+- **`not_isFlatGerm_digammaJetEval`** — therefore the flat values form a shift-stable annihilator
+  space with no nonzero constants, and `no_shift_stable_annihilatorWith` says no such space has a
+  nonzero member:
+
+  > **No nonzero differential polynomial in `ψ, ψ′, …` with `ℂ(s)` coefficients has a value that
+  > beats every power of the modulus on the upper right half-plane.**
+
+  `#print axioms` clean.
+
+That is exactly the content §2 imports from Adamczewski–Dreyfus–Hardouin — the exclusion of a flat
+Stirling cancellation, i.e. the injectivity of the expansion map on `ℂ(s)[ψ, ψ′, …]` — proved here
+analytically, with no formal Laurent field, no shift automorphism of `ℂ((s^{-1}))`, and no imported
+difference-Galois theorem.  The corpus's own `ratShift_sub_polePart_combination` (no rational
+function has a shift increment in the span of the pole parts) is the only arithmetic input, and it
+is a theorem.
+
+### The line form, and eq. (22)–(23): Gamma is transcendental over the digamma field
+
+`HTGeometry/VerticalFlatGermElimination.lean` repeats the elimination with the *line* notion of
+flatness (`IsVertFlat`, decay faster than every power of the height on each vertical line), which is
+weaker than half-plane flatness and therefore gives a stronger conclusion:
+
+- `eventually_line_of_halfPlaneUpper` — what holds along the half-plane filter holds along each of
+  its lines, so line flatness is a germ invariant (`IsVertFlatGerm`);
+- the four closure properties again (`IsVertFlatGerm.sub`, `.mul_ratGerm`, `.shiftGerm`,
+  `not_isVertFlatGerm_ratGerm`), so
+- **`not_isVertFlatGerm_digammaJetEval`** — no nonzero jet polynomial over `ℂ(s)` decays faster than
+  every power of the height on even one vertical line; and
+- **`digammaJetEval_injective`** — evaluation at the digamma jets is injective, Hölder's theorem in
+  germ form.
+
+`HTGeometry/LinePolyGrowth.lean` supplies the growth side:
+
+- `HasPolyGrowth σ₀ A` — on each line the modulus is eventually dominated by a power of the height;
+  closed under sums and products;
+- `hasPolyGrowth_polynomial`, `hasPolyGrowth_ratFunc` — rational coefficients;
+- `hasPolyGrowth_digamma` (`ψ` is logarithmic, from `tendsto_digamma_div_vertLog`) and
+  `hasPolyGrowth_iteratedDeriv_succ_digamma` (every higher jet is bounded, from
+  `tendsto_iteratedDeriv_succ_digamma_vertical`), hence `hasPolyGrowth_digammaJet`;
+- **`isVertFlat_gamma_mul`** — `Γ` times anything of polynomial growth is flat on a line, because
+  `tendsto_pow_mul_Gamma_vertical` makes `Γ` beat every power downwards.
+
+`HTGeometry/GammaTranscendentalOverDigamma.lean` closes §4's transcendence step:
+
+- `gammaGerm`, `isUnit_gammaGerm` — `Γ` has no zeros, so its germ is a unit;
+- `HasPolyGrowthGerm` with its closure lemmas and `hasPolyGrowthGerm_digammaJetEval` — every value of
+  a jet polynomial at the digamma jets has polynomial growth;
+- **`digammaJet_gamma_independent`** — if `∑_{i<d} P_i(ψ, ψ′, …)·Γ^i = 0` as germs then every `P_i`
+  is the zero polynomial.
+
+  The proof is the card's dichotomy with the *vertical decay* in place of the scaling automorphism:
+  the constant term equals `−Γ·(rest)`, which is flat because the rest has polynomial growth; the
+  flat elimination kills it; `Γ` is a unit, so the relation divides and the induction continues.
+
+That is eq. (22)–(23) — `Γ` is transcendental over `L`, so every element of `K_Γ` is a rational
+function of `Γ` over `L` — proved unconditionally and without the differential-automorphism argument,
+which has no counterpart in a concrete function field.  `#print axioms` clean.
+
+The same module also gives eq. (25):
+
+- `IsVertFlat.mul_hasPolyGrowth` / `IsVertFlatGerm.mul_hasPolyGrowthGerm` — flat times polynomial
+  growth is flat;
+- `isVertFlatGerm_gammaSum_succ` — a Gamma polynomial with no constant term is flat;
+- **`isVertFlatGerm_gammaSum_sub_const`** — hence a Gamma polynomial with digamma-jet coefficients
+  differs from its constant term by a *flat* germ.  Normalizing by the lowest occurring power, the
+  limit datum is exactly the coefficient of that power — `P(Γ) ~ A_u Γ^u`, with the error not merely
+  smaller but asymptotically invisible.
+
+### What is left for the unrestricted eq. (19), and the route to it
+
+With the flat elimination and the Gamma layer in place, the remaining gap is precisely the *leading
+term*.  The corpus now proves:
+
+- no nonzero element of `ℂ(s)[ψ, ψ′, …]` is flat (`not_isVertFlatGerm_digammaJetEval`), so nothing
+  cancels to invisibility; and
+- eq. (19) whenever the element is presented with a visible dominant monomial
+  (`tendsto_ratCoeff_jetPoly_vertical`, `tendsto_ratio_digammaField_quotient`).
+
+What eq. (19) asserts in general — that *every* nonzero element has an asymptotic `c·s^a·(log s)^b`
+with `c ≠ 0` — additionally needs the leading constant to be *computable* from the jet data, i.e. the
+Poincaré expansion of each jet, because distinct monomials can share the pair (log-degree, s-degree):
+`ψ″` and `(ψ′)²` both sit at `s^{-2}`.
+
+The concrete route, with no external theorem needed:
+
+1. each jet has an exact first-order asymptotic — `ψ ~ log s` (already in the corpus as
+   `tendsto_digamma_div_vertLog`) and `ψ⁽ʲ⁾(s) ~ (−1)^{j−1}(j−1)!/s^j` for `j ≥ 1`, which is *not*
+   yet in the corpus: the vertical estimates give only `O` bounds;
+2. for `j = 1` it follows from the corpus's trigamma series
+   (`RHTower/TrigammaVertical.deriv_digamma_partialSum_tendsto`, `ψ′(z) = Σ (z+n)^{−2}`) and the
+   exact telescoping `Σ_n [1/(s+n) − 1/(s+n+1)] = 1/s`: the difference is
+   `Σ_n 1/((s+n)²(s+n+1))`, which splits at `n ≈ t` into `O(log t / t²)` and `O(1/t²)`, so
+   `s·ψ′(s) → 1`;
+3. the higher orders follow from the same comparison applied to the polygamma series
+   `ψ⁽ᵐ⁺¹⁾(z) = (−1)^m (m+1)! Σ (z+n)^{−(m+2)}` (present but `private` in `DigammaSectorBounds`);
+4. with the exact jet asymptotics, a monomial's leading datum is explicit, and a finite sum's leading
+   datum is the sum of the constants at the dominant `(log-degree, s-degree)` — nonzero exactly when
+   that sum does not vanish, which is where the non-flatness theorem above closes the argument.
+
+Steps 1–3 are the remaining analytic construction; step 4 is bookkeeping over the finite support.
 
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for

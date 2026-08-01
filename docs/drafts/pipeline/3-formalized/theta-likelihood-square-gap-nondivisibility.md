@@ -1,8 +1,8 @@
 # Theta likelihood square-gap nondivisibility
 
 - **ID:** theta-likelihood-square-gap-nondivisibility
-- **Stage:** 2-fully-proven / needs-audit
-- **Type:** THEOREM (paper); theta-specific premise THEOREM (Lean)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean, unconditional)
 - **Source:** `docs/handover/connes.md` §§13–18
 - **Statement:** Every normalized fixed-measure theta likelihood law on the intrinsic half-line
   \(B>0\) has atoms at \(0\) and \(3\), no atom at \(6=3+3\), and therefore is neither infinitely
@@ -134,18 +134,27 @@ law is infinitely divisible, so the GGC/Thorin conclusions follow.
 
 ## Lean certificate
 
-Module:
+Modules:
 
 `formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodAtomicNondivisibility.lean`
 
+`formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodProbabilityNondivisibility.lean`
+
 Lean proves exactly:
 
+- the higher tilted mass equals the spectral response and the complete carrier mass equals `Z(B)`;
+- the literal normalized carrier `P_B = Z(B)⁻¹ • (δ₀ + exp(-Bt)ν)` is a probability measure
+  carried by `[0, ∞)`;
 - singleton formula for every atom-ray carrier;
-- higher measure masses at \(0,3,6\);
+- exact normalized masses at \(0,3,6\), including
+  `P_B{3} = Z(B)⁻¹ exp(-3B) exp(-9/2) 2⁴`;
 - preservation under every real exponential tilt;
 - failure of additive atom closure;
 - persistence under every nonzero scalar normalization.
 - birth of a nonzero self-convolution atom at \(6\).
+- unconditional failure of infinite divisibility for the normalized probability law;
+- exclusion from every concrete GGC or Thorin-marginal law class carrying the standard defining
+  inclusion into infinitely divisible laws.
 
 Principal declarations:
 
@@ -155,6 +164,13 @@ Principal declarations:
 - `not_additivelyClosedAtomSupport_thetaCuspLikelihoodSeamTiltedMeasure`
 - `not_additivelyClosedAtomSupport_smul_thetaCuspLikelihoodSeamTiltedMeasure`
 - `thetaCuspLikelihoodSeamTiltedMeasure_selfConv_singleton_six_ne_zero`
+- `thetaCuspLikelihoodProbabilityMeasure_isProbabilityMeasure`
+- `ae_nonneg_thetaCuspLikelihoodProbabilityMeasure`
+- `thetaCuspLikelihoodProbabilityMeasure_singleton_three_explicit`
+- `thetaCuspLikelihoodProbabilityMeasure_selfConv_singleton_six_ne_zero`
+- `thetaCuspLikelihoodProbabilityMeasure_not_infinitelyDivisible`
+- `thetaCuspLikelihoodProbabilityMeasure_not_generalizedGammaConvolution`
+- `thetaCuspLikelihoodProbabilityMeasure_not_thorinSubordinatorMarginal`
 
 The full nondivisibility corollary is also formalized, and unconditionally: the Steutel--van Harn
 classification is not needed for this carrier, because its atomic support already forbids a
@@ -193,8 +209,8 @@ convolution square root.  See `not_infinitelyDivisible_of_atomic_gap` and
   destroys the arithmetic incidence that distinguishes the actual theta source. The missing
   phase orientation must first be sought in this irreducible two-particle sector, not in another
   one-particle MLR observable.
-- **Status:** paper proof dependency-closed modulo cited standard classification theorem;
-  theta-specific premise formalized exactly; external priority audit incomplete.
+- **Status:** paper proof and Lean formalization dependency-closed and unconditional; external
+  priority audit incomplete.
 
 ## Literature and novelty audit
 
@@ -481,6 +497,16 @@ That is insufficient for a priority claim. Label remains `[NOVELTY-UNVERIFIED]`.
   The compound-Poisson layer built earlier is not wasted: it still gives the independent statement
   `P_B` is not a compound Poisson mixture, and the ID/Laplace/cumulant infrastructure remains general.
 
-  The card's paper Theorem items 1--6 are now all Lean-backed except the classical
-  `ID => GGC` direction of item 6, which is a definitional inclusion rather than an analytic gap.
-  Remaining gates are non-Lean: `3 -> 4` independent novelty review and publication packaging.
+  The carrier-level nondivisibility is unconditional.  A later audit identified one remaining
+  formal mismatch: this module called the unnormalized seam carrier `P_B`, whereas the paper's
+  `P_B` is the literal probability normalization.  That mismatch is closed below.
+
+- 2026-08-01 — **Normalized probability law and items 1--6 formalized exactly.**  Added
+  `RHTower/ThetaCuspLikelihoodProbabilityNondivisibility.lean`, proving the tilted mass and seam
+  mass formulas, defining the literal `P_B`, proving its probability and half-line support laws,
+  transferring the exact `0,3,6` atom formulas, proving the normalized self-convolution atom at
+  `6`, additive nonclosure, and unconditional non-infinite-divisibility.  The GGC and
+  Thorin-subordinator conclusions are formalized uniformly for every concrete law class equipped
+  with its standard inclusion into `InfinitelyDivisible`; no fake analytic GGC definition is
+  introduced.  Direct `lake env lean`, batched `#print axioms`, final module `lake build`, and
+  project formal lint pass.  Module is wired into `GaloisForLFunctions.RHTower`.

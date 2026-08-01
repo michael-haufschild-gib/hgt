@@ -1,8 +1,8 @@
 # Theta-cusp kernel log-concavity by score-variance domination
 
 - **ID:** `theta-cusp-kernel-log-concavity-score-variance-repair`
-- **Stage:** 2-fully-proven / needs-audit
-- **Type:** THEOREM / 2026 LITERATURE REPAIR / SOURCE-SPECIFIC POSITIVITY
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4, fully unconditional) / 2026 LITERATURE REPAIR / SOURCE-SPECIFIC POSITIVITY
 - **Scientific status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [LOCAL-RESEARCH] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED]`
 - **Parent frontier:** `../../1-in-progress/rh-sota-literature-lean-wall-2026.md`
 - **Downstream route:** `../../1-in-progress/hedenmalm-center-mixed-double-positivity-law.md`
@@ -210,6 +210,13 @@ thetaCuspCenterMixedTwoNode_det_nonneg
 No open proposition, certificate structure, project axiom, `sorry`, computation, or RH hypothesis
 occurs in these declarations.
 
+Formal audit complete: exact source leaf passes under `lake env lean`, final module build passes,
+the module is imported by the `RHTower` umbrella, and twenty-one load-bearing declarations report
+only `[propext, Classical.choice, Quot.sound]`.  Audit includes all three rational tail budgets,
+both exponential budgets, first-atom curvature, all higher-tail bounds, endpoint closure, global
+reflection, strict concavity, strict mixed-density positivity, midpoint product, two-node positive
+semidefiniteness, and determinant nonnegativity.
+
 ## Hedenmalm finite positivity consequence
 
 For the center-mixed density
@@ -256,6 +263,7 @@ RH-equivalent.
 - [x] derive the Hedenmalm two-node positive-definiteness consequence on paper
 - [x] formalize `(1)` in Lean
 - [x] formalize the midpoint-product and two-node Hedenmalm transfer
+- [x] direct source, axiom, final-module, and umbrella-reachability audit
 - [ ] complete the wider novelty audit
 
 ## Primary sources

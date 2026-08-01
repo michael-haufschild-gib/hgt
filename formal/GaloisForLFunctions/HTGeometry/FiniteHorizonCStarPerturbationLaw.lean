@@ -110,6 +110,26 @@ theorem selfAdjoint_unitaryEvolution_norm_sub_le
     exp_skewAdjoint_sub_exp_skewAdjoint_norm_le
       ((-Complex.I) • H) ((-Complex.I) • K) hx hy t
 
+/-- A periodic Hamiltonian is the center of an operator-norm shortcut tube:
+every self-adjoint perturbation within radius `ε / |t|` evolves within `ε` of
+the identity at time `t`.  This is the deterministic analytic core behind the
+polynomial-volume recurrence strata in finite-parameter static ensembles. -/
+theorem selfAdjoint_near_periodicCenter_unitaryEvolution_norm_sub_one_le
+    (H K : A) (hH : IsSelfAdjoint H) (hK : IsSelfAdjoint K) (t : ℝ)
+    (hperiod : exp (t • ((-Complex.I) • K)) = 1) :
+    ‖exp (t • ((-Complex.I) • H)) - 1‖ ≤ |t| * ‖H - K‖ := by
+  simpa only [hperiod] using
+    selfAdjoint_unitaryEvolution_norm_sub_le H K hH hK t
+
+/-- Error-budget form of the periodic-center shortcut-tube law. -/
+theorem selfAdjoint_near_periodicCenter_unitaryEvolution_norm_sub_one_le_of_mul_le
+    (H K : A) (hH : IsSelfAdjoint H) (hK : IsSelfAdjoint K) (t ε : ℝ)
+    (hperiod : exp (t • ((-Complex.I) • K)) = 1)
+    (hclose : |t| * ‖H - K‖ ≤ ε) :
+    ‖exp (t • ((-Complex.I) • H)) - 1‖ ≤ ε :=
+  (selfAdjoint_near_periodicCenter_unitaryEvolution_norm_sub_one_le
+    H K hH hK t hperiod).trans hclose
+
 /-- Operator-normalized conjugation bound for two arbitrary unitary
 elements.  It avoids Hilbert--Schmidt normalization and dimension factors. -/
 theorem unitary_conjugation_norm_sub_le

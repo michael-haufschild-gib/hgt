@@ -518,7 +518,8 @@ theorem mem_primesBelowSubtype_iff
     obtain ⟨q, hq, hqp⟩ := Finset.mem_map.mp hp
     have hval := congrArg (fun r : Nat.Primes => (r : ℕ)) hqp
     have hlt := (Nat.mem_primesBelow.mp q.property).1
-    simpa [hval] using hlt
+    rw [← hval]
+    exact hlt
   · intro hp
     rw [GaloisForLFunctions.primesBelowSubtype]
     let q : {a // a ∈ Nat.primesBelow N} :=
@@ -693,5 +694,160 @@ theorem exists_mobiusPlueckerDiagonal
   exact
     tendstoLocallyUniformlyOn_iff_tendstoLocallyUniformly_comp_coe.mpr
       hdiagonalSub
+
+/-- Gamma completion `X_sq = C · Z_sq` on the Euler half-plane. -/
+def mobiusPlueckerCompletedSquarefreePartition (s : ℂ) : ℂ :=
+  archFactor s * GaloisForLFunctions.squarefreePartition s
+
+theorem archFactor_ne_zero_on_mobiusPlueckerEulerDomain
+    {s : ℂ} (hs : s ∈ mobiusPlueckerEulerDomain) :
+    archFactor s ≠ 0 := by
+  apply archFactor_ne_zero
+  · intro hs0
+    rw [hs0] at hs
+    norm_num [mobiusPlueckerEulerDomain] at hs
+  · intro hs1
+    rw [hs1] at hs
+    norm_num [mobiusPlueckerEulerDomain] at hs
+  · exact Complex.Gammaℝ_ne_zero_of_re_pos
+      (lt_trans zero_lt_one hs)
+
+theorem continuousOn_inv_archFactor_mobiusPlueckerEulerDomain :
+    ContinuousOn (fun s : ℂ => (archFactor s)⁻¹)
+      mobiusPlueckerEulerDomain := by
+  intro s hs
+  have hGammaNe : Complex.Gammaℝ s ≠ 0 :=
+    Complex.Gammaℝ_ne_zero_of_re_pos (lt_trans zero_lt_one hs)
+  have hGamma : AnalyticAt ℂ Complex.Gammaℝ s :=
+    Gammaℝ_analyticAt hGammaNe
+  have hpoly : AnalyticAt ℂ (fun z : ℂ => z * (z - 1) / 2) s := by
+    fun_prop
+  have harch : AnalyticAt ℂ archFactor s := by
+    unfold archFactor
+    exact hpoly.mul hGamma
+  exact (harch.continuousAt.inv₀
+    (archFactor_ne_zero_on_mobiusPlueckerEulerDomain hs)).continuousWithinAt
+
+/-- Multiplying a reciprocal-squarefree diagonal by the nonvanishing inverse archimedean factor
+gives the Gamma-completed exceptional lift, locally uniformly on the same half-plane. -/
+theorem TendstoLocallyUniformlyOn.mobiusPlueckerGammaCompleted
+    {epsilon : ℕ → ℝ} {S : ℕ → Finset Nat.Primes}
+    (h : TendstoLocallyUniformlyOn
+      (fun n s =>
+        finiteMobiusPlueckerTransfer (S n) (1 + epsilon n) s /
+          (epsilon n : ℂ))
+      (fun s => (GaloisForLFunctions.squarefreePartition s)⁻¹)
+      atTop mobiusPlueckerEulerDomain) :
+    TendstoLocallyUniformlyOn
+      (fun n s => (archFactor s)⁻¹ *
+        (finiteMobiusPlueckerTransfer (S n) (1 + epsilon n) s /
+          (epsilon n : ℂ)))
+      (fun s => (mobiusPlueckerCompletedSquarefreePartition s)⁻¹)
+      atTop mobiusPlueckerEulerDomain := by
+  have harchFixed : TendstoLocallyUniformlyOn
+      (fun (_n : ℕ) (s : ℂ) => (archFactor s)⁻¹)
+      (fun s : ℂ => (archFactor s)⁻¹)
+      atTop mobiusPlueckerEulerDomain := by
+    intro u hu s hs
+    exact ⟨mobiusPlueckerEulerDomain, self_mem_nhdsWithin,
+      Filter.Eventually.of_forall (fun _n y hy => refl_mem_uniformity hu)⟩
+  have hmul := harchFixed.mul₀ h
+    continuousOn_inv_archFactor_mobiusPlueckerEulerDomain
+    continuousOn_inv_squarefreePartition
+  change TendstoLocallyUniformlyOn
+      (fun n s => (archFactor s)⁻¹ *
+        (finiteMobiusPlueckerTransfer (S n) (1 + epsilon n) s /
+          (epsilon n : ℂ)))
+      (fun s => (archFactor s)⁻¹ *
+        (GaloisForLFunctions.squarefreePartition s)⁻¹)
+      atTop mobiusPlueckerEulerDomain at hmul
+  exact hmul.congr_right fun s hs => by
+    simp [mobiusPlueckerCompletedSquarefreePartition, mul_comm]
+
+/-- Projectivizing the Gamma-completed diagonal gives the exact negative reciprocal-square
+horizon transition `-X_sq⁻²`. -/
+theorem TendstoLocallyUniformlyOn.mobiusPlueckerProjectivizedSquare
+    {epsilon : ℕ → ℝ} {S : ℕ → Finset Nat.Primes}
+    (h : TendstoLocallyUniformlyOn
+      (fun n s => (archFactor s)⁻¹ *
+        (finiteMobiusPlueckerTransfer (S n) (1 + epsilon n) s /
+          (epsilon n : ℂ)))
+      (fun s => (mobiusPlueckerCompletedSquarefreePartition s)⁻¹)
+      atTop mobiusPlueckerEulerDomain) :
+    TendstoLocallyUniformlyOn
+      (fun n s => -((archFactor s)⁻¹ *
+        (finiteMobiusPlueckerTransfer (S n) (1 + epsilon n) s /
+          (epsilon n : ℂ))) ^ 2)
+      (fun s => -(mobiusPlueckerCompletedSquarefreePartition s)⁻¹ ^ 2)
+      atTop mobiusPlueckerEulerDomain := by
+  have htarget : ContinuousOn
+      (fun s => (mobiusPlueckerCompletedSquarefreePartition s)⁻¹)
+      mobiusPlueckerEulerDomain := by
+    intro s hs
+    have hmul := (continuousOn_inv_squarefreePartition s hs).mul
+      (continuousOn_inv_archFactor_mobiusPlueckerEulerDomain s hs)
+    change ContinuousWithinAt
+      (fun z => (GaloisForLFunctions.squarefreePartition z)⁻¹ *
+        (archFactor z)⁻¹) mobiusPlueckerEulerDomain s at hmul
+    simpa only [mobiusPlueckerCompletedSquarefreePartition,
+      mul_inv_rev] using hmul
+  have hsq := h.mul₀ h htarget htarget
+  change TendstoLocallyUniformlyOn
+      (fun n s =>
+        ((archFactor s)⁻¹ *
+          (finiteMobiusPlueckerTransfer (S n) (1 + epsilon n) s /
+            (epsilon n : ℂ))) *
+        ((archFactor s)⁻¹ *
+          (finiteMobiusPlueckerTransfer (S n) (1 + epsilon n) s /
+            (epsilon n : ℂ))))
+      (fun s => (mobiusPlueckerCompletedSquarefreePartition s)⁻¹ *
+        (mobiusPlueckerCompletedSquarefreePartition s)⁻¹)
+      atTop mobiusPlueckerEulerDomain at hsq
+  have hsq' := hsq.neg
+  change TendstoLocallyUniformlyOn
+      (fun n s => -(((archFactor s)⁻¹ *
+        (finiteMobiusPlueckerTransfer (S n) (1 + epsilon n) s /
+          (epsilon n : ℂ))) *
+        ((archFactor s)⁻¹ *
+          (finiteMobiusPlueckerTransfer (S n) (1 + epsilon n) s /
+            (epsilon n : ℂ)))))
+      (fun s => -((mobiusPlueckerCompletedSquarefreePartition s)⁻¹ *
+        (mobiusPlueckerCompletedSquarefreePartition s)⁻¹))
+      atTop mobiusPlueckerEulerDomain at hsq'
+  simpa only [pow_two] using hsq'
+
+/-- Full exact package: nested cofinal prime sets, reciprocal limit, Gamma completion, and its
+projectivized negative square all use one and the same finite-source diagonal. -/
+theorem exists_mobiusPlueckerCompletedDiagonal
+    {epsilon : ℕ → ℝ}
+    (hepsilonPos : ∀ n, 0 < epsilon n)
+    (hepsilonZero : Tendsto epsilon atTop (𝓝 0)) :
+    ∃ S : ℕ → Finset Nat.Primes,
+      Monotone S ∧
+      (∀ p : Nat.Primes, ∃ n, p ∈ S n) ∧
+      TendstoLocallyUniformlyOn
+        (fun n s =>
+          finiteMobiusPlueckerTransfer (S n) (1 + epsilon n) s /
+            (epsilon n : ℂ))
+        (fun s => (GaloisForLFunctions.squarefreePartition s)⁻¹)
+        atTop mobiusPlueckerEulerDomain ∧
+      TendstoLocallyUniformlyOn
+        (fun n s => (archFactor s)⁻¹ *
+          (finiteMobiusPlueckerTransfer (S n) (1 + epsilon n) s /
+            (epsilon n : ℂ)))
+        (fun s => (mobiusPlueckerCompletedSquarefreePartition s)⁻¹)
+        atTop mobiusPlueckerEulerDomain ∧
+      TendstoLocallyUniformlyOn
+        (fun n s => -((archFactor s)⁻¹ *
+          (finiteMobiusPlueckerTransfer (S n) (1 + epsilon n) s /
+            (epsilon n : ℂ))) ^ 2)
+        (fun s => -(mobiusPlueckerCompletedSquarefreePartition s)⁻¹ ^ 2)
+        atTop mobiusPlueckerEulerDomain := by
+  obtain ⟨S, hmono, hcofinal, hdiag⟩ :=
+    exists_mobiusPlueckerDiagonal hepsilonPos hepsilonZero
+  have hcompleted :=
+    TendstoLocallyUniformlyOn.mobiusPlueckerGammaCompleted hdiag
+  exact ⟨S, hmono, hcofinal, hdiag, hcompleted,
+    TendstoLocallyUniformlyOn.mobiusPlueckerProjectivizedSquare hcompleted⟩
 
 end RHTower
