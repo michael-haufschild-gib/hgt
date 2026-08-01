@@ -3196,3 +3196,7 @@ import GaloisForLFunctions.HTGeometry.EsymmRadicalIrreducible
 import GaloisForLFunctions.HTGeometry.GammaFieldFinitePhaseLaw
 import GaloisForLFunctions.HTGeometry.PowerTailIntegral
 import GaloisForLFunctions.HTGeometry.SymmetricPartEsymmBridge
+import GaloisForLFunctions.HTGeometry.GenericRootSet
+import GaloisForLFunctions.HTGeometry.GenericPermRootAction
+import GaloisForLFunctions.HTGeometry.GammaFieldLawWitness
+import GaloisForLFunctions.HTGeometry.SymmetricPartConstants

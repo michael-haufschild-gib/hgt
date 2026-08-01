@@ -107,7 +107,13 @@ Interpretation:
 - right side of `(5)`: unavoidable cross-channel tax.
 
 Holonomy cannot be declared “compensating” from its presence alone.  If it enters only
-off-diagonally, it makes required diagonal completion larger.  Successful proof must exhibit a
+off-diagonally, it makes required diagonal completion larger.
+
+**This is formal.**  `suzukiSchurTax_posSemidef` shows the Schur term is a congruence of the inverted
+positive block, hence positive semidefinite whatever the coupling is, and
+`suzukiKreinDiagonal_dominates_debt` shows that `(5)` therefore forces the diagonal block to dominate
+the bare negative debt already: the cross-channel cost is additional, never a discount.  So no
+off-diagonal completion can reduce the diagonal requirement.  Successful proof must exhibit a
 source square whose diagonal term pays both `N` and Schur tax.
 
 ## 5. New conjecture
@@ -157,6 +163,29 @@ unconditionally in `formal/GaloisForLFunctions/RHTower/SuzukiKreinSchurBlockCong
   threshold, routed through the general congruence and the existing scalar law
   `suzukiTwoChannelKreinCompletionForm_nonneg_iff_schurDebt`.
 
-All four depend only on `[propext, Classical.choice, Quot.sound]`; `lake build` of the RHTower
+Section 3's closing sentence "positive spectral complement is automatic from signed-resolvent
+theorem" is formal too, as `suzukiPositiveBlock_posDef`: a positive definite local metric plus a
+positive semidefinite completion is positive definite, so the congruence's hypothesis
+`P + C_++ > 0` is free for a positive completion.  That is exactly what leaves only the negative
+block to analyse, and hence what reduces the infinite Pick problem to one finite Schur complement.
+On the diagonal side the same fact is `suzukiDiagonalKreinForm_posPart_nonneg` on the parent card.
+
+All five depend only on `[propext, Classical.choice, Quot.sound]`; `lake build` of the RHTower
 umbrella is green; `formal lint passed`.  The RH-bearing inequality (5) and the analytic
 Pontryagin-realization conjecture `SUZUKI-FINITE-NEGATIVE-BLOCK-WELD` remain the open frontier.
+
+- 2026-08-01 — section 3's "positive spectral complement is automatic" formalized
+  (`suzukiPositiveBlock_posDef`).  The block congruence `(4)` carries `P + C_++ > 0` as a hypothesis;
+  for a positive completion that hypothesis is free, since a positive definite matrix plus a positive
+  semidefinite one is positive definite.  This is the step that makes the reduction to a *single*
+  finite Schur complement legitimate — without it, the positive block would need its own analysis and
+  the "one finite Schur complement" claim would not follow.  One new declaration, targeted build
+  green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — section 4's interpretation formalized.  `suzukiSchurTax_posSemidef`: the Schur term of
+  `(4)` is a congruence of the inverted positive block, hence positive semidefinite for *any*
+  coupling.  `suzukiKreinDiagonal_dominates_debt`: consequently `(5)` already forces the diagonal
+  completion to dominate the bare negative debt, so the cross-channel tax is paid on top and is never
+  a discount.  This is the precise content of "holonomy cannot be declared compensating from its
+  presence alone" — its off-diagonal presence strictly cannot help, which is what the card's repair
+  of the earlier "pay negative diagonal debt" language asserts.  Two new declarations, targeted build
+  green, axioms `[propext, Classical.choice, Quot.sound]`.

@@ -267,6 +267,17 @@ With the magnitude available, `(8)` is formal exactly as displayed:
 completion contribution that section 7 claims: the debt is not merely positive, it is that specific
 weighted sum of magnitudes.
 
+Section 5's surviving claim — "exact positive survivor is signed factorization plus explicit
+completion debt" — is formal as well:
+
+- `suzukiDiagonalKreinForm_add_debt_eq_posPart`: adding the debt cancels the negative-node sum
+  exactly, leaving the positive part.
+- `suzukiDiagonalKreinForm_add_debt_nonneg`: **the positive survivor** — with the debt supplied the
+  form is nonnegative.
+
+So the no-go and the survivor are two halves of one computation: the bare form fails precisely by the
+debt, and supplying that debt is precisely what restores nonnegativity.
+
 It does not assert `(13)` or RH.
 
 ## Log
@@ -302,3 +313,10 @@ It does not assert `(13)` or RH.
   coordinate-by-coordinate quantification section 7 claims — the completion debt is not merely
   positive but that specific weighted sum, which is what a candidate completion has to match.  Four
   new declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — section 5's surviving claim formalized.  `suzukiDiagonalKreinForm_add_debt_eq_posPart`
+  and `suzukiDiagonalKreinForm_add_debt_nonneg` show that adding the quantified debt cancels the
+  negative-node sum exactly and leaves a nonnegative form.  The no-go and the survivor are therefore
+  two halves of one computation — the bare form fails *precisely* by the debt, and supplying that
+  debt is *precisely* what restores nonnegativity — which is the sense in which retiring
+  `SUZUKI-RESOLVENT-BIANCHI-SQUARE` does not retire the Suzuki route.  Two new declarations, targeted
+  build green, axioms `[propext, Classical.choice, Quot.sound]`.

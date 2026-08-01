@@ -115,4 +115,42 @@ theorem suzukiKreinScalarWeld_posSemidef_iff_twoChannelForm (a b c n : ℝ) (ha 
 
 end
 
+/-! ## The positive block is automatic
+
+The block congruence carries the hypothesis that `P + C₊₊` is positive definite.  For a positive
+completion that hypothesis is free: a positive definite metric plus a positive semidefinite
+correction is positive definite.  So only the negative block ever needs analysis, which is what
+reduces the infinite Pick problem to one finite Schur complement. -/
+
+/-- **The positive block needs no completion.**  A positive definite local metric plus a positive
+semidefinite completion is positive definite, so the congruence hypothesis holds automatically. -/
+theorem suzukiPositiveBlock_posDef {m : Type*} [Fintype m] [DecidableEq m]
+    {P Cpp : Matrix m m ℝ} (hP : P.PosDef) (hC : Cpp.PosSemidef) : (P + Cpp).PosDef :=
+  Matrix.PosDef.add_posSemidef hP hC
+
+/-! ## The cross-channel tax is unavoidable
+
+The Schur term of `(4)` is a congruence of the inverted positive block, hence positive semidefinite
+whatever the coupling is.  So an off-diagonal completion never reduces the diagonal requirement: the
+inequality `(5)` demands the diagonal block dominate the bare debt *and* the tax, and the tax is
+never negative.  Holonomy present only off-diagonally therefore makes the required diagonal
+completion larger, never smaller. -/
+
+/-- **The Schur tax is positive semidefinite.**  It is a congruence of the inverse of the positive
+block. -/
+theorem suzukiSchurTax_posSemidef {m n : Type*} [Fintype m] [Fintype n] [DecidableEq m]
+    {A : Matrix m m ℝ} (hA : A.PosDef) (B : Matrix m n ℝ) :
+    (Bᴴ * A⁻¹ * B).PosSemidef :=
+  Matrix.PosSemidef.conjTranspose_mul_mul_same hA.inv.posSemidef B
+
+/-- **The tax is paid on top of the debt.**  If the Schur inequality `(5)` holds then the diagonal
+completion already dominates the bare negative debt: the cross-channel cost is additional, never a
+discount. -/
+theorem suzukiKreinDiagonal_dominates_debt {m n : Type*} [Fintype m] [Fintype n] [DecidableEq m]
+    {A : Matrix m m ℝ} (hA : A.PosDef) {B : Matrix m n ℝ} {D : Matrix n n ℝ}
+    (h5 : (D - Bᴴ * A⁻¹ * B).PosSemidef) : D.PosSemidef := by
+  have htax := suzukiSchurTax_posSemidef hA B
+  have hsum := h5.add htax
+  simpa using hsum
+
 end RHTower

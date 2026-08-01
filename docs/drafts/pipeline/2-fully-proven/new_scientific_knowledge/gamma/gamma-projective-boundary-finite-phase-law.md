@@ -2525,6 +2525,35 @@ Both conclusions come from the same two facts about the coefficients, supplied b
 boundary: their normalized ratios converge along the line, and the normalizing coefficient is
 eventually nonzero.
 
+### The law is inhabited on every vertical line
+
+`HTGeometry/GammaFieldLawWitness.lean` applies the master theorem to a concrete object on an
+arbitrary line.  A constant is the full-tower monomial with all data zero
+(`gammaJetEltG_const`), so `Φ′ − μΦ = 0` — the relation satisfied by `Φ(z) = e^{μz}` — has
+coefficients in exactly the monomial normal form the law asks for, with the lexicographic dominance in
+its equality case.  Hence
+
+> **`gammaField_finite_phase_law_expLine`** for every `σ > 0`, and with the hull-frequency lower
+> bound, **`gammaField_finite_phase_law_expLine_pos`**: `1 ≤ rank_ℤ Γ_B(f) ≤ K`.
+
+So the master law is not vacuous on any vertical line of the right half plane, and the objects it
+governs can have nonzero phase rank.
+
+### Eq. (8) in its literal form, and where §2 stands
+
+`gammaField_finite_phase_law` now returns three conclusions rather than two: besides the collapsed
+relation on the strip and the finite rank, it returns that the collapsed relation is a **nonzero**
+polynomial in the jets (`monomialSum_ne_zero` applied to the limit vector, whose `β`-coordinate is
+`1`).  That is eq. (8) literally: the solution satisfies a nontrivial constant-coefficient algebraic
+differential equation, i.e. it is differentially algebraic over `ℂ`.
+
+On §2: the formalized route does not need the formal Stirling series at all.  The analytic inputs it
+replaces are proved directly — the vertical asymptotic `ψ ∼ log`, the vanishing of every positive-order
+polygamma, and the super-polynomial decay of `Γ` on every vertical line.  The two statements §2 uses
+as devices are separately available in the corpus: the elementary pole-orbit obstruction
+(`no_rational_shift_inv_sq`, eq. 14) and Hölder's theorem for the digamma
+(`DigammaHypertranscendental.hypertranscendental_digamma`, the analytic content of eq. 16).
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

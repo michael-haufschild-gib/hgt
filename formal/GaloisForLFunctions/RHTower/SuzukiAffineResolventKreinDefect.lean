@@ -481,4 +481,41 @@ theorem suzukiDiagonalKreinForm_eq_magnitude_difference {ι : Type*} [DecidableE
     suzukiDiagonalKreinForm_negPart_eq s hab t c hta htb hne]
   ring
 
+/-! ## The positive survivor
+
+The no-go retires the bare square, not the route: adding the completion debt to the sewn form
+cancels its negative part exactly, leaving the positive-node sum.  So the survivor is the signed
+factorization *plus* an explicit debt, and the debt is the one quantified above — not an unspecified
+correction. -/
+
+/-- **Adding the debt leaves the positive part.**  The completion cancels the negative-node sum
+exactly. -/
+theorem suzukiDiagonalKreinForm_add_debt_eq_posPart {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {alpha beta : ℝ} (hab : alpha ≠ beta) (t c : ι → ℝ)
+    (hta : ∀ j ∈ s, t j ≠ alpha) (htb : ∀ j ∈ s, t j ≠ beta) (hne : ∀ j ∈ s, t j ≠ 0) :
+    suzukiDiagonalKreinForm s alpha beta t c
+        + ∑ j ∈ s.filter (fun j => ¬ 0 < t j),
+            (c j) ^ 2 * suzukiKreinMagnitude alpha beta (t j)
+      = ∑ j ∈ s.filter (fun j => 0 < t j),
+          (c j) ^ 2 * suzukiKreinMagnitude alpha beta (t j) := by
+  rw [suzukiDiagonalKreinForm_eq_magnitude_difference s hab t c hta htb hne]
+  ring
+
+/-- **The positive survivor.**  With the debt supplied the form is nonnegative — which is what the
+no-go leaves standing once the bare square is retired. -/
+theorem suzukiDiagonalKreinForm_add_debt_nonneg {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {alpha beta : ℝ} (hab : alpha < beta) (hb0 : beta < 0) (t c : ι → ℝ)
+    (hbt : ∀ j ∈ s, beta < t j) (hne : ∀ j ∈ s, t j ≠ 0) :
+    0 ≤ suzukiDiagonalKreinForm s alpha beta t c
+        + ∑ j ∈ s.filter (fun j => ¬ 0 < t j),
+            (c j) ^ 2 * suzukiKreinMagnitude alpha beta (t j) := by
+  have hta : ∀ j ∈ s, t j ≠ alpha := fun j hj =>
+    ne_of_gt (lt_trans hab (hbt j hj))
+  have htb : ∀ j ∈ s, t j ≠ beta := fun j hj => ne_of_gt (hbt j hj)
+  rw [suzukiDiagonalKreinForm_add_debt_eq_posPart s (ne_of_lt hab) t c hta htb hne]
+  refine Finset.sum_nonneg fun j hj => ?_
+  rw [Finset.mem_filter] at hj
+  exact mul_nonneg (sq_nonneg _)
+    (le_of_lt (suzukiKreinMagnitude_pos hab hb0 (hbt j hj.1) (hne j hj.1)))
+
 end RHTower

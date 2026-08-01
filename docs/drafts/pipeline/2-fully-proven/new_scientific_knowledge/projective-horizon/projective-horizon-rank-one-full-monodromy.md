@@ -1905,3 +1905,50 @@ dividing the discriminant.
   Building the isomorphism by rewriting the **type** with the field equality, rather than composing
   `equivOfEq` in term mode, again avoided the elaboration blow-up noted earlier for
   `rootField_centeredMonicE_eq_top`.
+
+- 2026-08-01 — `GenericRootSet.lean`: `rootSet_genericMonic` identifies the root set of the generic
+  polynomial in the rational function field with the set of generic roots.  One inclusion was
+  already in the corpus (`genericRoot_mem_rootSet`); the other comes from factoring the evaluation
+  of the product of linear factors, the same argument as `rootSet_centeredMonicE`.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  This is the root enumeration the base change step asks of the first factor, for the uncentered
+  model: injective by `genericRoot_injective`, exhaustive by this theorem, and with surjective
+  action by `smul_genericRoot`.
+
+- 2026-08-01 — `GenericPermRootAction.lean`: `exists_genericAut_perm` gives the surjectivity of the
+  Galois action on the generic roots, from `symmetricGaloisEquiv_apply` and `smul_genericRoot` —
+  the automorphism attached to a permutation moves the roots by that permutation, since the action
+  on the rational function field permutes the variables.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  With this, every hypothesis of `radicalBaseChangeEvenFromModel` has a named proof for the
+  **uncentered** generic polynomial: `genericMonic_ne_zero`; `isSplittingField_genericMonic`;
+  `symmetricGaloisEquiv`; `primitiveRoots_nonempty_of_algebra`; `genericRoot` with
+  `genericRoot_injective` and `rootSet_genericMonic`; `exists_genericAut_perm`;
+  `finrank_adjoin_esymmCoeffSymm_root`; and
+  `no_sqrt_disc_mul_esymmTop_of_mem_symmetricPartField`.
+
+- 2026-08-01 — attempted the uncentered call and hit an **instance diamond**, diagnosed but not yet
+  resolved.  The generic polynomial is written over `symmetricPart` (a `Subfield`) while the
+  coefficient-field machinery is over `symmetricPartField` (an `IntermediateField` with the same
+  carrier).  Casting the polynomial across is fine — the carriers are definitionally equal, so
+  `genericMonicField := genericMonic` typechecks — but the two views carry **different**
+  `Algebra (coefficient field) (SymmetricRationalField)` instances, so an
+  `IsSplittingField` proved for one is not accepted where the other is expected, even when supplied
+  explicitly by `letI`.  Instance search is up to reducible defeq and does not see through the
+  structure projection.
+  The fix is to state the corpus's generic-polynomial splitting data over `symmetricPartField` from
+  the start, rather than casting after the fact — that is, a `symmetricPartField`-based counterpart
+  of `genericMonic`, `splits_genericMonic`, `adjoin_rootSet_genericMonic` and
+  `isSplittingField_genericMonic`.  Nothing mathematical is missing; this is a coherence problem
+  between two presentations of one field.
+  The attempted module was removed rather than left non-building in the shared tree.
+
+- 2026-08-01 — first step of the fix for the instance diamond, taking the other side of the choice:
+  keep everything over `symmetricPart`, where the generic polynomial and its splitting field already
+  live, and supply the missing inputs there instead of casting the polynomial the other way.
+  `SymmetricPartConstants.lean` provides the piece that was only available on the
+  `symmetricPartField` side: `constToSymmetricPart`, the embedding of the constants into the
+  symmetric part (a constant is a symmetric rational function), and
+  `primitiveRoots_nonempty_symmetricPart`, so the roots-of-unity hypothesis is available over
+  `symmetricPart` without needing a `K`-algebra instance on it.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.

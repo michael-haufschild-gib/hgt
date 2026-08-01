@@ -1122,9 +1122,13 @@ order `N`, the majorant outside radius `u` is at most `C_N / u^N` — and
 `setIntegral_le_of_le_powerTail` now integrates it: any nonnegative function dominated by
 `K|ξ|^{-p}` with `p > 1` has mass at most `2K t^{1-p}/(p-1)` outside the band of radius `t`.
 
-The remaining step on this line is to feed the packet's spectral density into that bound.  For
-`|ξ|` above twice the carrier each of the three tail arguments exceeds `|ξ|/2`, so the density is
-dominated by a constant times `|ξ|^{-2N}`, and `p = 2N > 1` already at `N = 1`.  With `N` about `r/K` this gives coupling
+Both halves of that step are now in place.  The discarded energy is identified as the density
+integrated over the complement of the band, and above twice the carrier the density is at most
+`16 δ² S(δ|ξ|/2)²`, since each of the three tail arguments then exceeds half the frequency.
+
+What is left is arithmetic: substitute the polynomial rate `S(u) <= C_N/u^N` into that square,
+giving `16 C_N² 4^N δ^{2-2N} |ξ|^{-2N}`, and apply `setIntegral_le_of_le_powerTail` with
+`p = 2N > 1`.  With `N` about `r/K` this gives coupling
 energy of order `r`, against the `log r` cap, closing the shortfall test.  Then feed that through the two-branch estimate to get `N` of
 order `r` packets at scale `r`.
 
@@ -1335,6 +1339,7 @@ family is abstract, so two widths have unrelated profiles.
 | **distance to the dilate**, for *any* vector vanishing inside the inner aperture and fixed by the outer one: twice the projection correction, the layer defect on the dilate, and the vector's own band content — and every shell-cut packet satisfies the two support facts | `norm_soninApertureCoupling_sub_dilate_le`, `norm_soninApertureCoupling_soninShellCutPacket_sub_dilate_le` |
 | **an explicit decay rate at every order** for both majorants: the Schwartz seminorms give one constant bounding `\|v\|^N ‖𝓕 f v‖` at *every* frequency, so the majorant outside radius `u` is at most `C_N / u^N` | `exists_pow_mul_norm_fourierIntegral_le`, `norm_fourierIntegral_le_div_of_pow_bound`, `exists_pow_mul_norm_fourier_soninUnitBumpC_le`, `exists_pow_mul_norm_fourier_soninUnitBumpSqC_le`, `exists_soninRefTailSup_le_div`, `exists_soninRefSqTailSup_le_div` |
 | **mass outside a band**: a power tail `K\|ξ\|^{-p}` with `p > 1` integrates over the outside of a symmetric band to `2K t^{1-p}/(p-1)`, so any nonnegative function it dominates has that much mass at most — the estimate a supremum bound cannot give on an unbounded region | `centralTail_eq_union`, `integrableOn_powerTail_Ioi`, `integrableOn_powerTail_Iic`, `integrableOn_powerTail`, `integral_powerTail_Ioi`, `integral_powerTail`, `setIntegral_le_of_le_powerTail` |
+| **the discarded energy** is the density integrated over the band's *complement*, and above twice the carrier that density is at most `16 δ² S(δ\|ξ\|/2)²` — all three tail arguments then exceed half the frequency | `measurableSet_strictCentralTail`, `norm_sq_sub_evenFourierCutoff_soninScaledPacketEven_eq_density`, `soninScaledPacketSpectralDensity_le_tailSup` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1451,6 +1456,15 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the discarded energy now has both an identity and a pointwise bound.  The identity is
+  the mirror of the band one, but the boundary matters: the complement of the *closed* band is open,
+  and stating it with the strict inequality `t < |eta|` makes the pointwise identification exact
+  rather than almost-everywhere, since at `|xi| = t` the discarded part is zero while a closed-set
+  indicator would not be.  The pointwise bound is where the factor two in "twice the carrier" earns
+  its place: it is exactly what makes all three tail arguments — at the two shifted frequencies and
+  at the frequency itself — exceed half the frequency simultaneously, so one majorant value covers
+  the whole expression.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninScaledPacketHighTail.lean`.
 - 2026-08-01 — the power tail is integrated, so the high-side estimate now has both halves.  Two
   things about the Lean were not obvious in advance.  The left ray is not free: mathlib's improper
   integral lemmas are stated for `Ioi` only, so integrability on `Iic (-t)` has to be transported

@@ -46,7 +46,9 @@
   `GaloisForLFunctions.RHTower.DeningerAbsL2InnerAdditive`,
   `GaloisForLFunctions.RHTower.DeningerKummerL2Inner`,
   `GaloisForLFunctions.RHTower.DeningerKummerSpaceInner`,
-  `GaloisForLFunctions.RHTower.DeningerKummerSpaceInnerPos`
+  `GaloisForLFunctions.RHTower.DeningerKummerSpaceInnerPos`,
+  `GaloisForLFunctions.RHTower.DeningerL2Definite`,
+  `GaloisForLFunctions.RHTower.DeningerKummerL2Definite`
   (the gluing of the place tower, the absolute height on `Q̄`, the
   normed Kummer group `𝒢`, the normed `ℚ`-vector space `𝒢 ⊗ ℚ`, its
   completion, and the local-degree normalization of the place space)
@@ -958,11 +960,53 @@ height norm `deningerKummerSpaceNorm` carried by `deningerKummerCompletion` — 
 `L¹` quantity (`‖f_α‖₁ = 2h(α)`).  Both live on the same space `𝒢 ⊗ ℚ`; the `L¹` one gives the
 Banach completion already built, the `L²` one gives the Hilbert completion.
 
+### Definiteness of the `L²` place norm landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerL2Definite.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerL2NormSq_eq_zero_places` — **a vanishing `L²` norm forces every place to take the value
+  one**.  The two halves are separately nonnegative, so both vanish; the archimedean half is a
+  `Finset` sum of nonnegative terms, and the finite half becomes one after cutting down to the
+  multiplicative support, where a place outside the support already has value one.  Each vanishing
+  term gives `log ‖x‖_v = 0`, hence `‖x‖_v = 1`.
+- `deningerL2NormSq_eq_zero` — **definiteness**: a nonzero element of vanishing `L²` norm is a root
+  of unity.  Once every place has value one the logarithmic height vanishes term by term, and the
+  height-zero theorem `deningerLogHeightZero_iff_isOfFinOrder` finishes.  This routes around the
+  `AdmissibleAbsValues` bridge entirely: the conclusion is drawn from the height, not from
+  `deningerAllPlaces_one_isOfFinOrder`.
+
+The `L²` form on the algebraic numbers is now symmetric, biadditive, field-independent, positive
+semidefinite, definite modulo torsion, with diagonal the `L²` place norm — the complete set of
+properties an inner product on `𝒢 ⊗ ℚ` requires.
+
+### Definiteness on `𝒢` and `𝒢 ⊗ ℚ` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerKummerL2Definite.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerIntermediate_isOfFinOrder_of` — finite order transfers back from a subfield element.
+- `deningerAbsL2Inner_self_eq_zero` — **the absolute form is definite modulo torsion**: a nonzero
+  algebraic number with `⟨α, α⟩ = 0` is a root of unity.
+- `deningerKummerL2Inner_self_eq_zero`, `deningerKummerAddL2Inner_self_eq_zero` — **definite on
+  `𝒢`**: the torsion is exactly what has been quotiented out, so the class is trivial.
+- `deningerSpaceL2Inner_self_eq_zero` — **definite on `𝒢 ⊗ ℚ`**: a fraction of vanishing norm has
+  vanishing numerator, hence is zero in the divisible hull.
+
+A note on how this had to be written: stating the degree explicitly, as
+`Module.finrank ℚ (ℚ⟮α, α⟯ : IntermediateField ℚ F)`, makes elaboration diverge — it re-opens the
+`ℚ`-algebra instance diamond on `↥ℚ⟮α, α⟯` and does not terminate even at a million heartbeats.
+Routing the same step through `deningerNormalizedL2Inner`, which is stated on a *type variable*
+and so mentions only the canonical structure, makes it immediate.  This is the same trap recorded
+for the absolute height, and it now has a second instance.
+
+The `L²` form is therefore a genuine inner product on `𝒢 ⊗ ℚ`: symmetric, biadditive, positive
+definite.
+
 ### Remaining
 
-Definiteness of the `L²` form — `⟨x, x⟩ = 0 → x = 0` — which is the statement that a nonzero
-Kummer class has some place where its value differs from one, i.e. `deningerL2NormSq x = 0`
-forces all places to take the value one and hence `x` to be torsion by
-`deningerAllPlaces_one_isOfFinOrder`.  With that, `√⟨·,·⟩` is a norm on `𝒢 ⊗ ℚ` satisfying the
-parallelogram law, its completion is the Hilbert space `H_Kum` of the card's `(1)`, and `(2)` is
-`deningerKummerClass` with injectivity and dense span already proved.
+Packaging only: define `‖x‖₂ = √⟨x, x⟩`, verify it is a norm (the parallelogram law holds because
+the form is bilinear and symmetric), and install the `InnerProductSpace ℝ` structure whose
+completion is the `H_Kum` of the card's `(1)`.  `(2)` is `deningerKummerClass`, with injectivity
+(`deningerKummerClass_eq_zero_iff_isOfFinOrder`) and dense span
+(`deningerKummerClass_dense_completion`) already proved.

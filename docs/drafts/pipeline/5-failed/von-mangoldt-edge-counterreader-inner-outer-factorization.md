@@ -1,11 +1,10 @@
 # Von Mangoldt edge-counterreader inner/outer factorization
 
 - **ID:** `von-mangoldt-edge-counterreader-inner-outer-factorization`
-- **Stage:** 1 — paper proof complete; Lean in progress
+- **Stage:** 5 — retired before formalization
 - **Parents:** `von-mangoldt-weighted-density-boundary-anomaly`, `SR-47`, `SR-48`
 - **Type:** exact source-local cyclic-reader factorization / correction of conditional zero packet
-- **Scientific status:** `[PAPER-PROVED] [LEAN-IN-PROGRESS] [ADVANCE]`
-  `[EXTERNAL NOVELTY PROVISIONAL] [NOT RH]`
+- **Scientific status:** `[PAPER-PROVED] [NOT FRONTIER-MOVING] [NOT RH]`
 - **RH used:** no
 - **Computation used:** no
 
@@ -14,6 +13,13 @@
 `SR-48` compactifies the locations that the full finite-aperture counterreader must vanish at
 *if* its symbol continues past the relevant reciprocal clock. It does not prove that continuation.
 Those nodes cannot be called unconditional zeros of the full reader.
+
+## Retirement reason
+
+Although formulas below are exact, they factor one isolated two-clock edge. They neither discharge
+nor weaken a named hypothesis in any existing RH-equivalence theorem, and no theorem connects their
+product to the accumulated von Mangoldt cyclic reader. Formalizing them now would be local closure,
+not movement of the global RH frontier. Route is retired before Lean work.
 
 The source current is nevertheless an additive sum of literal successor edges, while determinant
 and cyclic readers turn direct sums into products. The correct object to factor first is therefore
@@ -158,8 +164,9 @@ factorization. Generic power-series factorization and radius theory are not nove
 Falsifiers 1--3 are paper-rejected and now require Lean. Failure of 4 must produce the precise
 multiplicative anomaly; failure of 5 must classify the surviving collar invariant.
 
-## Next theorem
+## Positive survivor
 
-Prove `(1)`--`(10)` unconditionally in Lean. Then derive the multiplicative anomaly between direct
-sum of edge currents and accumulated Toeplitz countertrace. Exact vanishing of that anomaly, or an
-exact completion term for it, is the required completed Euler cyclic-reader bridge.
+The exact reflected outer clock `x^2/y` explains why the prior descending-clock continuation
+threshold is sharp in rank two. This is retained as a diagnostic only. No sequel is authorized
+unless an independent global theorem first identifies edge-reader multiplication with a named
+RH-equivalent operator or form.

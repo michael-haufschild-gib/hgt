@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.GammaFieldGeneralLineJets
 import GaloisForLFunctions.HTGeometry.ObservableFrequencyRank
+import GaloisForLFunctions.HTGeometry.MvPolynomialJetDerivative
 
 /-!
 # The finite-phase law over the Gamma field
@@ -8,8 +9,8 @@ This file states the law of the card in one place.  A holomorphic function, almo
 vertical strip of the right half plane, satisfying a differential relation whose coefficients are
 elements of `ℂ(s)[Γ, ψ, ψ′, …]` written in monomial expansion:
 
-* satisfies the collapsed *constant-coefficient* relation on the whole strip — it is differentially
-  algebraic over `ℂ` (eq. 8);
+* satisfies the collapsed *constant-coefficient* relation on the whole strip, and that relation is a
+  nonzero polynomial in the jets — the solution is differentially algebraic over `ℂ` (eq. 8);
 * has finite rational Bohr frequency rank (eq. 9);
 * and so does every observable dominated by it — the divisor clause.
 
@@ -53,6 +54,10 @@ theorem gammaField_finite_phase_law {n N k r : ℕ} {σ R rr ρ : ℝ} (hσ : 0 
         (fun α : Fin N => (∑ i, gammaJetLimit (j α i) (p α i) (q α i) (E α i) jb pb qb Db)
           / ∑ i, gammaJetLimit (j β i) (p β i) (q β i) (E β i) jb pb qb Db) e
         (fun i : Fin (n + 1) => iteratedDeriv (i : ℕ) Φ z) = 0)
+      ∧ (∑ α : Fin N, MvPolynomial.C
+          ((∑ i, gammaJetLimit (j α i) (p α i) (q α i) (E α i) jb pb qb Db)
+            / ∑ i, gammaJetLimit (j β i) (p β i) (q β i) (E β i) jb pb qb Db)
+          * ∏ i : Fin (n + 1), (MvPolynomial.X i : MvPolynomial (Fin (n + 1)) ℂ) ^ (e α i)) ≠ 0
       ∧ ∃ K : ℕ, Module.rank ℤ (bohrHullFrequencies f) ≤ (K : Cardinal) := by
   classical
   set d : Fin N → ℂ := fun α =>
@@ -75,7 +80,8 @@ theorem gammaField_finite_phase_law {n N k r : ℕ} {σ R rr ρ : ℝ} (hσ : 0 
     simp only
     rw [div_self hc]
     exact one_ne_zero
-  refine ⟨fun z hz => strip_relation_of_coeff_limits hR hΦ hap e F d β hcoeff hFβ hrel hz, ?_⟩
+  refine ⟨fun z hz => strip_relation_of_coeff_limits hR hΦ hap e F d β hcoeff hFβ hrel hz,
+    monomialSum_ne_zero d e he β hdβ, ?_⟩
   exact rank_finite_of_coeff_limits hr hρ hrρ hR hΦ hap e F d β hcoeff hFβ hrel he hdβ hf hfu hftb
 
 /-- **The divisor clause of the law.**  Every observable dominated by such a solution has finite
@@ -102,7 +108,7 @@ theorem gammaField_finite_phase_law_observable {n N k r : ℕ} {σ R rr ρ : ℝ
     {g : ℝ →ᵇ ℂ} (hgdom : IsDominatedObservable f g) :
     ∃ K : ℕ, Module.rank ℤ (bohrHullFrequencies g) ≤ (K : Cardinal) := by
   obtain ⟨K, hK⟩ := (gammaField_finite_phase_law hσ hr hρ hrρ hR hΦ hap e F j p q E jb pb qb Db
-    hq hqb hpb hdom β hc hF hrel he hf hfu hftb).2
+    hq hqb hpb hdom β hc hF hrel he hf hfu hftb).2.2
   exact ⟨K, le_trans (rank_le_of_dominated hgdom) hK⟩
 
 end GaloisForLFunctions
