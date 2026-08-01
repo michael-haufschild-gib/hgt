@@ -16,8 +16,6 @@ namespace GaloisForLFunctions.HTGeometry
 
 open MvPolynomial
 
-set_option maxHeartbeats 1000000
-
 variable {K : Type*} [Field K] [CharZero K] {d : ℕ}
 
 /-- The next-to-leading coefficient of the generic polynomial together with the coefficients of the
@@ -41,11 +39,11 @@ theorem algebraicIndependent_centeredCoeffFamily (hd : 0 < d) :
   have h := (algebraicIndependent_centeredFamily (K := K) hd).map'
     (f := coeffSub K d) coeffSub_injective
   have hfun : (⇑(coeffSub K d) ∘ centeredFamily K d hd) = centeredCoeffFamily K d :=
-    funext fun j => coeffSub_centeredFamily hd j
+    _root_.funext fun j => coeffSub_centeredFamily hd j
   rwa [hfun] at h
 
 /-- The coefficients of the centered generic polynomial. -/
-noncomputable def centeredCoeff (K : Type*) [Field K] (d : ℕ) (k : Fin (d - 1)) :
+noncomputable def centeredLowCoeff (K : Type*) [Field K] (d : ℕ) (k : Fin (d - 1)) :
     SymmetricRationalField K d :=
   (centeredMonicF K d).coeff (k : ℕ)
 
@@ -60,21 +58,21 @@ theorem centeredIndex_injective : Function.Injective (centeredIndex d) := by
 
 omit [CharZero K] in
 theorem centeredCoeffFamily_centeredIndex (k : Fin (d - 1)) :
-    centeredCoeffFamily K d (centeredIndex d k) = centeredCoeff K d k := by
+    centeredCoeffFamily K d (centeredIndex d k) = centeredLowCoeff K d k := by
   have hk : ((centeredIndex d k : Fin d) : ℕ) ≠ d - 1 := by
     have := k.isLt
     show (k : ℕ) ≠ d - 1
     omega
-  rw [centeredCoeffFamily, if_neg hk, centeredCoeff]
+  rw [centeredCoeffFamily, if_neg hk, centeredLowCoeff]
   rfl
 
 /-- **The coefficients of the centered generic polynomial are algebraically independent.** -/
-theorem algebraicIndependent_centeredCoeff (hd : 0 < d) :
-    AlgebraicIndependent K (centeredCoeff K d) := by
+theorem algebraicIndependent_centeredLowCoeff (hd : 0 < d) :
+    AlgebraicIndependent K (centeredLowCoeff K d) := by
   have h := (algebraicIndependent_centeredCoeffFamily (K := K) hd).comp
     (centeredIndex d) centeredIndex_injective
-  have hfun : (centeredCoeffFamily K d ∘ centeredIndex d) = centeredCoeff K d :=
-    funext fun k => centeredCoeffFamily_centeredIndex k
+  have hfun : (centeredCoeffFamily K d ∘ centeredIndex d) = centeredLowCoeff K d :=
+    _root_.funext fun k => centeredCoeffFamily_centeredIndex k
   rwa [hfun] at h
 
 end GaloisForLFunctions.HTGeometry

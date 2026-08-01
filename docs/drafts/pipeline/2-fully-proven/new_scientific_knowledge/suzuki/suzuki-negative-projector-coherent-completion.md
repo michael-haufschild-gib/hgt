@@ -267,3 +267,29 @@ completion proves positivity.  Exact live source theorem is
 - 2026-08-01 — equation-level sweep of Sections 3-5 found three displayed equations that the earlier
   card-level check had missed; `(4)`, `(9)` and `(11)` are now formal at operator level, so those
   sections are complete rather than merely represented.
+
+### Lean progress — Section 4's uniqueness claim FORMALIZED
+
+Section 9 mapped every numbered display to a declaration, but Section 4 makes one assertion beyond
+`(9)`: that `D_-` is the **unique** Loewner-minimal commuting positive correction. The corpus had
+only the lower bound `negPart_le_of_cfc_add_nonneg` (`C >= D_-`), which alone does not say `D_-`
+belongs to the admissible class, and so does not give minimality or uniqueness. Now closed in
+`RHTower/SuzukiNegativeProjectorCoherentCompletion.lean` [PROVED HERE], standard axioms
+`[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `suzukiCommutingCompletions` : the admissible class — `C = c(B)` with `c` continuous on the
+  spectrum, `c >= 0`, and `d + c >= 0` there. This is exactly the class quantified in `(8)`.
+- `negPart_mem_commutingCompletions` : `D_-` is itself admissible (`negPart_cfc` for the
+  representation, `d + d⁻ = d⁺ >= 0` for the domination).
+- `negPart_isLeast_commutingCompletions` : `IsLeast (suzukiCommutingCompletions alpha beta B) D_-`
+  — membership plus the existing lower bound, i.e. `D_-` is the least element, not merely a bound.
+- `eq_negPart_of_minimal_commutingCompletion` : any Loewner-**minimal** admissible correction equals
+  `D_-`. (Minimal is a priori weaker than least; the two coincide here precisely because a least
+  element exists.)
+- `isLeast_commutingCompletion_unique` : the least admissible correction is unique, by antisymmetry
+  of the Loewner order.
+
+Same pattern as the other cards in this folder: the inequality was formalized and the
+membership-plus-uniqueness half of the extremality claim was not. Section 9's remaining explicit
+exclusions (the concrete restricted-Weil source operator; the finite-rank statement for `P_-`;
+conjecture `(13)`) are unchanged.

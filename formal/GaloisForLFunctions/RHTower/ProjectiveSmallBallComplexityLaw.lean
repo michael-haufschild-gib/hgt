@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.StaticChoiPhaseTargetEntropy
+import GaloisForLFunctions.RHTower.StaticChoiPhaseDensity
 
 /-!
 # Projective small-ball complexity law

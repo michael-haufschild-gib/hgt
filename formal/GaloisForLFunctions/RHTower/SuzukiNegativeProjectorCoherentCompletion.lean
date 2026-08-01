@@ -257,6 +257,57 @@ theorem negPart_le_of_cfc_add_nonneg {alpha beta : ℝ} {B : H →L[ℂ] H} (hB 
   intro x hx
   exact sub_nonneg.mpr (negPart_le_of_add_nonneg (hcnn x hx) (hdom x hx))
 
+/-- The commuting positive corrections that complete the affine defect to a positive operator:
+continuous functions of `B` that are nonnegative and dominate the defect on the spectrum. -/
+def suzukiCommutingCompletions (alpha beta : ℝ) (B : H →L[ℂ] H) : Set (H →L[ℂ] H) :=
+  {C | ∃ c : ℝ → ℝ, ContinuousOn c (spectrum ℝ B) ∧ C = cfc c B ∧
+    (∀ x ∈ spectrum ℝ B, 0 ≤ c x) ∧
+    (∀ x ∈ spectrum ℝ B, 0 ≤ suzukiInverseKreinDefect alpha beta x + c x)}
+
+/-- The negative part of the defect is itself such a correction: it is nonnegative, and adding it
+to the defect gives the positive part. -/
+theorem negPart_mem_commutingCompletions {alpha beta : ℝ} {B : H →L[ℂ] H}
+    (hB : IsSelfAdjoint B)
+    (hden : ∀ x ∈ spectrum ℝ B, (1 - alpha * x) * (1 - beta * x) ≠ 0) :
+    (suzukiInverseDefectOperator alpha beta B)⁻ ∈ suzukiCommutingCompletions alpha beta B := by
+  have hd : ContinuousOn (suzukiInverseKreinDefect alpha beta) (spectrum ℝ B) :=
+    continuousOn_suzukiInverseKreinDefect alpha beta hden
+  refine ⟨fun x => (suzukiInverseKreinDefect alpha beta x)⁻,
+    hd.neg.sup continuousOn_const, ?_, fun x _ => negPart_nonneg _, fun x _ => ?_⟩
+  · rw [suzukiInverseDefectOperator]
+    exact negPart_cfc hB hd
+  · have h1 := posPart_sub_negPart (suzukiInverseKreinDefect alpha beta x)
+    have h2 : (0 : ℝ) ≤ (suzukiInverseKreinDefect alpha beta x)⁺ := posPart_nonneg _
+    linarith
+
+/-- **`(9)`, least element.**  The negative part of the defect is the least commuting positive
+correction completing the defect, not merely a lower bound for such corrections. -/
+theorem negPart_isLeast_commutingCompletions {alpha beta : ℝ} {B : H →L[ℂ] H}
+    (hB : IsSelfAdjoint B)
+    (hden : ∀ x ∈ spectrum ℝ B, (1 - alpha * x) * (1 - beta * x) ≠ 0) :
+    IsLeast (suzukiCommutingCompletions alpha beta B)
+      ((suzukiInverseDefectOperator alpha beta B)⁻) := by
+  refine ⟨negPart_mem_commutingCompletions hB hden, ?_⟩
+  rintro C ⟨c, hc, rfl, hcnn, hdom⟩
+  exact negPart_le_of_cfc_add_nonneg hB hc hden hcnn hdom
+
+/-- **Uniqueness of the minimal correction.**  Any Loewner-minimal commuting positive completion of
+the defect equals the negative part of the defect. -/
+theorem eq_negPart_of_minimal_commutingCompletion {alpha beta : ℝ} {B : H →L[ℂ] H}
+    (hB : IsSelfAdjoint B)
+    (hden : ∀ x ∈ spectrum ℝ B, (1 - alpha * x) * (1 - beta * x) ≠ 0)
+    {C : H →L[ℂ] H} (hC : C ∈ suzukiCommutingCompletions alpha beta B)
+    (hmin : ∀ C' ∈ suzukiCommutingCompletions alpha beta B, C' ≤ C → C' = C) :
+    C = (suzukiInverseDefectOperator alpha beta B)⁻ := by
+  have hleast := negPart_isLeast_commutingCompletions hB hden
+  exact (hmin _ hleast.1 (hleast.2 hC)).symm
+
+/-- The least commuting positive completion is unique, by antisymmetry of the Loewner order. -/
+theorem isLeast_commutingCompletion_unique {alpha beta : ℝ} {B : H →L[ℂ] H}
+    {C D : H →L[ℂ] H} (hC : IsLeast (suzukiCommutingCompletions alpha beta B) C)
+    (hD : IsLeast (suzukiCommutingCompletions alpha beta B) D) : C = D :=
+  hC.unique hD
+
 /-- The absolute value of a continuous function of a self-adjoint operator is the functional
 calculus of the absolute value of the function. -/
 theorem abs_cfc {f : ℝ → ℝ} {B : H →L[ℂ] H} (hB : IsSelfAdjoint B)

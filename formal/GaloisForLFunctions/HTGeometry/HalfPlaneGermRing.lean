@@ -29,7 +29,7 @@ theorem IsFlatOn.congr_eventually {σ₀ : ℝ} {A B : ℂ → ℂ}
 
 /-- A germ is flat when one — equivalently every — representative is. -/
 def IsFlatGerm (σ₀ : ℝ) (g : HalfPlaneGerm σ₀) : Prop :=
-  Quotient.liftOn g (IsFlatOn σ₀) fun A B h =>
+  Quotient.liftOn g (IsFlatOn σ₀) fun _A _B h =>
     propext ⟨fun hA => hA.congr_eventually h, fun hB => hB.congr_eventually h.symm⟩
 
 @[simp] theorem isFlatGerm_coe {σ₀ : ℝ} (A : ℂ → ℂ) :
@@ -37,9 +37,9 @@ def IsFlatGerm (σ₀ : ℝ) (g : HalfPlaneGerm σ₀) : Prop :=
 
 theorem IsFlatGerm.sub {σ₀ : ℝ} {g h : HalfPlaneGerm σ₀} (hg : IsFlatGerm σ₀ g)
     (hh : IsFlatGerm σ₀ h) : IsFlatGerm σ₀ (g - h) := by
-  induction g using Quotient.inductionOn with
+  induction g using Filter.Germ.inductionOn with
   | h A =>
-    induction h using Quotient.inductionOn with
+    induction h using Filter.Germ.inductionOn with
     | h B => exact IsFlatOn.sub hg hh
 
 /-- The germ of the values of a polynomial. -/
@@ -73,11 +73,12 @@ theorem eventually_eval_ne_zero_filter (σ₀ : ℝ) {p : Polynomial ℂ} (hp : 
 
 /-- The germ of a nonzero polynomial is a unit. -/
 theorem isUnit_polyGerm (σ₀ : ℝ) {p : Polynomial ℂ} (hp : p ≠ 0) : IsUnit (polyGerm σ₀ p) := by
-  refine isUnit_of_mul_eq_one _ ((fun s : ℂ => (p.eval s)⁻¹ : ℂ → ℂ) : HalfPlaneGerm σ₀) ?_
+  refine IsUnit.of_mul_eq_one ((fun s : ℂ => (p.eval s)⁻¹ : ℂ → ℂ) : HalfPlaneGerm σ₀) ?_
   rw [polyGerm_apply, ← Filter.Germ.coe_mul]
   refine Filter.Germ.coe_eq.mpr ?_
   filter_upwards [eventually_eval_ne_zero_filter σ₀ hp] with s hs
   exact mul_inv_cancel₀ hs
+
 
 /-- The germ of a rational function. -/
 noncomputable def ratGerm (σ₀ : ℝ) : RatFunc ℂ →+* HalfPlaneGerm σ₀ :=
@@ -88,41 +89,45 @@ noncomputable def ratGerm (σ₀ : ℝ) : RatFunc ℂ →+* HalfPlaneGerm σ₀ 
     ratGerm σ₀ (algebraMap (Polynomial ℂ) (RatFunc ℂ) p) = polyGerm σ₀ p :=
   IsLocalization.lift_eq _ p
 
-/-- The germ of a rational function is the germ of the quotient of its numerator and
-denominator values. -/
+/-- The reciprocal germ of the denominator values. -/
+noncomputable def denomInvGerm (σ₀ : ℝ) (q : Polynomial ℂ) : HalfPlaneGerm σ₀ :=
+  ((fun s : ℂ => (q.eval s)⁻¹ : ℂ → ℂ) : HalfPlaneGerm σ₀)
+
+theorem polyGerm_mul_denomInvGerm (σ₀ : ℝ) {q : Polynomial ℂ} (hq : q ≠ 0) :
+    polyGerm σ₀ q * denomInvGerm σ₀ q = 1 := by
+  rw [polyGerm_apply, denomInvGerm, ← Filter.Germ.coe_mul]
+  refine Filter.Germ.coe_eq.mpr ?_
+  filter_upwards [eventually_eval_ne_zero_filter σ₀ hq] with s hs
+  exact mul_inv_cancel₀ hs
+
+/-- The germ of a rational function is the germ of the quotient of its numerator and denominator
+values. -/
 theorem ratGerm_eq_div (σ₀ : ℝ) (k : RatFunc ℂ) :
-    ratGerm σ₀ k
-      = ((fun s : ℂ => k.num.eval s / k.denom.eval s : ℂ → ℂ) : HalfPlaneGerm σ₀) := by
+    ratGerm σ₀ k = ((fun s : ℂ => k.num.eval s / k.denom.eval s : ℂ → ℂ) : HalfPlaneGerm σ₀) := by
   have hden : k.denom ≠ 0 := k.denom_ne_zero
+  have hdenK : algebraMap (Polynomial ℂ) (RatFunc ℂ) k.denom ≠ 0 :=
+    fun h => hden (RatFunc.algebraMap_injective ℂ (by rw [h, map_zero]))
+  have hk : k * algebraMap (Polynomial ℂ) (RatFunc ℂ) k.denom
+      = algebraMap (Polynomial ℂ) (RatFunc ℂ) k.num := by
+    nth_rewrite 1 [← RatFunc.num_div_denom k]
+    exact div_mul_cancel₀ _ hdenK
   have hmul : ratGerm σ₀ k * polyGerm σ₀ k.denom = polyGerm σ₀ k.num := by
-    rw [← ratGerm_algebraMap σ₀ k.denom, ← ratGerm_algebraMap σ₀ k.num, ← map_mul]
-    congr 1
-    rw [← RatFunc.num_div_denom k]
-    field_simp
-  have hunit : IsUnit (polyGerm σ₀ k.denom) := isUnit_polyGerm σ₀ hden
-  have hinv : polyGerm σ₀ k.denom
-      * ((fun s : ℂ => (k.denom.eval s)⁻¹ : ℂ → ℂ) : HalfPlaneGerm σ₀) = 1 := by
-    rw [polyGerm_apply, ← Filter.Germ.coe_mul]
-    refine Filter.Germ.coe_eq.mpr ?_
-    filter_upwards [eventually_eval_ne_zero_filter σ₀ hden] with s hs
-    exact mul_inv_cancel₀ hs
+    rw [← ratGerm_algebraMap σ₀ k.denom, ← ratGerm_algebraMap σ₀ k.num, ← map_mul, hk]
+  have hfinal : polyGerm σ₀ k.num * denomInvGerm σ₀ k.denom
+      = ((fun s : ℂ => k.num.eval s / k.denom.eval s : ℂ → ℂ) : HalfPlaneGerm σ₀) := by
+    rw [polyGerm_apply, denomInvGerm, ← Filter.Germ.coe_mul]
+    exact Filter.Germ.coe_eq.mpr (Filter.Eventually.of_forall fun s => (div_eq_mul_inv _ _).symm)
   calc ratGerm σ₀ k
-      = ratGerm σ₀ k * (polyGerm σ₀ k.denom
-          * ((fun s : ℂ => (k.denom.eval s)⁻¹ : ℂ → ℂ) : HalfPlaneGerm σ₀)) := by
-        rw [hinv, mul_one]
-    _ = (ratGerm σ₀ k * polyGerm σ₀ k.denom)
-          * ((fun s : ℂ => (k.denom.eval s)⁻¹ : ℂ → ℂ) : HalfPlaneGerm σ₀) := by ring
-    _ = polyGerm σ₀ k.num
-          * ((fun s : ℂ => (k.denom.eval s)⁻¹ : ℂ → ℂ) : HalfPlaneGerm σ₀) := by rw [hmul]
-    _ = ((fun s : ℂ => k.num.eval s / k.denom.eval s : ℂ → ℂ) : HalfPlaneGerm σ₀) := by
-        rw [polyGerm_apply, ← Filter.Germ.coe_mul]
-        refine Filter.Germ.coe_eq.mpr (Filter.Eventually.of_forall fun s => ?_)
-        simp [div_eq_mul_inv]
+      = ratGerm σ₀ k * (polyGerm σ₀ k.denom * denomInvGerm σ₀ k.denom) := by
+        rw [polyGerm_mul_denomInvGerm σ₀ hden, mul_one]
+    _ = ratGerm σ₀ k * polyGerm σ₀ k.denom * denomInvGerm σ₀ k.denom := (mul_assoc _ _ _).symm
+    _ = polyGerm σ₀ k.num * denomInvGerm σ₀ k.denom := by rw [hmul]
+    _ = ((fun s : ℂ => k.num.eval s / k.denom.eval s : ℂ → ℂ) : HalfPlaneGerm σ₀) := hfinal
 
 /-- Flatness survives multiplication by a rational germ. -/
 theorem IsFlatGerm.mul_ratGerm {σ₀ : ℝ} (k : RatFunc ℂ) {g : HalfPlaneGerm σ₀}
     (hg : IsFlatGerm σ₀ g) : IsFlatGerm σ₀ (ratGerm σ₀ k * g) := by
-  induction g using Quotient.inductionOn with
+  induction g using Filter.Germ.inductionOn with
   | h A =>
     have hA : IsFlatOn σ₀ A := hg
     rw [ratGerm_eq_div]
@@ -130,8 +135,8 @@ theorem IsFlatGerm.mul_ratGerm {σ₀ : ℝ} (k : RatFunc ℂ) {g : HalfPlaneGer
         * (↑A : HalfPlaneGerm σ₀)
         = ((fun s : ℂ => k.num.eval s * A s / k.denom.eval s : ℂ → ℂ) : HalfPlaneGerm σ₀) := by
       rw [← Filter.Germ.coe_mul]
-      refine Filter.Germ.coe_eq.mpr (Filter.Eventually.of_forall fun s => ?_)
-      field_simp
+      exact Filter.Germ.coe_eq.mpr
+        (Filter.Eventually.of_forall fun s => div_mul_eq_mul_div _ _ _)
     rw [hcoe]
     exact (hA.mul_poly k.num).div_poly k.denom_ne_zero
 
@@ -147,7 +152,7 @@ theorem not_isFlatGerm_ratGerm {σ₀ : ℝ} {k : RatFunc ℂ} (hk : k ≠ 0) :
   have hcongr : IsFlatOn σ₀ (fun s : ℂ => k.num.eval s) := by
     refine hmul.congr_eventually ?_
     filter_upwards [eventually_eval_ne_zero_filter σ₀ hden] with s hs
-    field_simp
+    rw [mul_comm, div_mul_cancel₀ _ hs]
   exact not_isFlatOn_polynomial hnum hcongr
 
 end GaloisForLFunctions

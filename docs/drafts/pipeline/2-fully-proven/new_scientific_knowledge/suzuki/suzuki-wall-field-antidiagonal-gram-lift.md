@@ -175,3 +175,29 @@ Weil quadratic form.  This assembly—not local rank-one positivity—is RH-bear
 - [x] unconditional Lean formalization
 - [ ] global reflected Ward assembly
 - [ ] RH
+
+### Lean progress — Theorem B's rank claim FORMALIZED
+
+Audit of the numbered statements against `RHTower/SuzukiWallFieldAntidiagonalGramLift.lean`.
+Theorem A (reflection, difference character, diagonal, anti-diagonal, Hermitian symmetry, far-jump)
+and Theorem C (rooted completion identity and its nonnegativity) each had a declaration. Theorem B
+did not: `..._posSemidef` proved positive semidefiniteness through `Matrix.posSemidef_gram`, but the
+card's two further assertions — the **explicit packet square** `(83)` and **rank at most one, rank
+exactly one on a nonempty section** — had none. Both are now proved, [PROVED HERE], standard axioms
+`[propext, Classical.choice, Quot.sound]`, no new warnings:
+
+- `suzukiCriticalEntryWallBareAmplitude_pos` : `b_e > 0` (its square is the strictly positive
+  far-hinge weight; the earlier corpus lemma covered only `e = 0`).
+- `suzukiCriticalWallField_ne_zero` : `omega_e(t) ≠ 0` — positive amplitude times a nonvanishing
+  exponential.
+- `suzukiCriticalWallFieldGramMatrix_eq_vecMulVec` : the finite section is the outer product
+  `omega ⊗ conj omega`.
+- `suzukiCriticalWallFieldGramMatrix_rank_le_one` : rank ≤ 1, via `Matrix.rank_vecMulVec_le`.
+- `suzukiCriticalWallFieldGramMatrix_dotProduct_mulVec` : `star c ⬝ᵥ M *ᵥ c =
+  ‖∑ᵢ conj(cᵢ) omega_e(tᵢ)‖²` — the card's displayed quadratic identity, from which PSD is
+  immediate (proof: double-sum expansion, `Finset.sum_mul_sum` factorization, `Complex.mul_conj'`).
+- `suzukiCriticalWallFieldGramMatrix_rank_eq_one` : for `N > 0` the rank is exactly one — the range
+  of `mulVecLin` is not `⊥` because the diagonal entry `omega_e(t₀) * conj omega_e(t₀)` is nonzero.
+
+This is again the scalar-law-vs-operator-claim pattern: the per-vector positivity was formalized
+and the matrix-level rank quantification was not. Gate 2 → 3 now holds with the rank claim included.

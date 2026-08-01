@@ -115,8 +115,11 @@ after model existence and therefore cannot supply it.
 
 ### Route B — fixed-width rectangular Weil floor
 
-**Endpoint.** For one fixed width `L > 0`, the rectangular logarithmic Weil samples are
-eventually bounded below. Lean proves this equivalent to RH.
+**Endpoints.** For one fixed width `L > 0`, the rectangular logarithmic Weil samples are
+eventually bounded below. Lean proves this equivalent to RH. An exact positive-quadrature
+chart is also closed: RH is equivalent to eventual domination of the positive prime-wall
+mass by completed positive archimedean lag mass, equivalently to domination of the
+positive Mangoldt quadrature by that completed lag mass.
 
 **Proved chain.**
 
@@ -132,11 +135,27 @@ Equivalent charts include multiplicative screw curvature, negative-channel absci
 cumulative negative mass, holomorphic continuation, and adjacent critical-Mellin block
 imbalance.
 
-**Open core.** Prove one fixed-width lower floor from prime–Gamma or theta source without
+The sharp rectangular identity is now oriented entirely between positive objects:
+
+```text
+Weil polarization + fixed Euler–π boundary charge
+= positive continuous completed-lag mass - 2 × positive prime-wall mass.
+```
+
+Pairwise-disjoint equal-mass log-Haar cells pay monotone prime branches, and every
+unresolved atom is localized to a bounded turning seam. Exact obstructions show that an
+apex atom has no positive-volume pointwise dominating cell, even along a cofinal
+powers-of-two family, and that bicausal splicing creates only duplicated seam mass rather
+than new capacity.
+
+**Open core.** Construct source-specific grouped apex/flank transport across turning seams
+at capacity one, paying the fixed boundary charge and proving tail quadrature domination.
+Equivalently, prove one fixed-width lower floor from prime–Gamma or theta source without
 invoking global Weil positivity.
 
 **Obstacle.** Finite-cutoff positivity has a tail budget. Recent finite Guinand–Weil
 theorems quantify certification but do not produce the required cutoff-free floor.
+Pointwise apex transport and free bicausal splicing are formally dead.
 
 ### Route C1 — complete Xi-Weil/Hedenmalm-form positivity
 
@@ -257,6 +276,14 @@ critical Möbius decay or cofinally bounded off-diagonal covariance
 The Gamma–Hankel split removes diagonal and lower-bound obligations. Only sparse upper
 bounded returns are needed.
 
+The Plücker normal-cone branch now has a cofinal diagonal on `Re(s) > 1`: for every
+positive critical sequence tending to zero, Lean constructs a monotone cofinal exhaustion
+by finite prime sets whose Euler-normal source transfers converge locally uniformly to the
+reciprocal squarefree section. Fixed finite prime apertures still cannot have a finite
+Euler-normal limit. The diagonal theorem combines finite-prime exhaustion with the
+Euler-boundary limit, but all of its convergence remains in the absolutely convergent,
+zero-free Euler half-plane and supplies no continuation to critical Möbius data.
+
 **Open core.** Prove cofinal upper bounded returns of the actual upper-signed Möbius
 Gamma–Hankel covariance, or an equivalent critical Möbius cancellation estimate, from a
 nonlocal all-prime law.
@@ -298,12 +325,20 @@ positive Sonin finite/block/moment values
   `rb`, `ra`, and `b`;
 - concrete squared estimates on those three terms are proved and bound the budget by an
   explicit square-root expression;
+- the packet mean is eliminated from that bound, giving one annulus-free expression
+  uniform over every packet in a shell cut;
+- a sharper replacement retains the mean's own tail estimate rather than bounding it by
+  one, reducing the band term to one gap-tail times a fixed profile constant;
+- the packet norm floor is explicit and positive, and the resulting energy theorem has no
+  free analytic parameter beyond the shell schedule and its stated tail/slack conditions;
 - it blows up but grows at most logarithmically;
 - failure of the final floor is reduced to a quantitative rate shortfall.
 
-**Open core.** Choose schedules controlling explicit reference-tail and packet-mean terms
-so the proved square-root bound remains summably below normalized coupling-energy growth
-and closes the completed packet floor.
+**Open core.** Construct schedules forcing the sharp gap-tail/root budget through the
+explicit norm floor, satisfying the square-tail and slack inequalities, while keeping the
+three ideal-error energies negligible relative to shell cardinality. The theorem now
+exposes this as a concrete asymptotic scheduling problem; it does not prove such schedules
+exist or close the completed packet floor.
 
 **Dead mechanisms.** Scalar, bounded, fixed-operator, Burnol counterterm, position-side,
 and aperture-refinement-only completions fail. Divergence without rate is insufficient.
@@ -328,6 +363,23 @@ times source Plücker minors; in two modes its sign is exactly source-minor orie
 ordered nodes and positive source-weight product. Marked affine secant has a full finite
 spectral double sum plus homogeneous channel.
 
+The critical prime-power wall field now has a positive Hermitian carrier without erasing
+phase: every finite height section is an exact rank-one Gram matrix, its diagonal is the
+positive von-Mangoldt wall weight, and its functional-equation-reflected anti-diagonal is
+the far delayed-hinge numerator. This identifies the right positivity type but does not
+orient an aggregate of distinct source atoms; rank one at each atom is not the global
+chord-mass theorem.
+
+The wall branch extends further. Finite reflected-current packets have an exact
+positive-minus-negative light-cone Gram completion. Cubic aperture dressing gives an
+all-prime Hilbert completion; summing valuation depth supplies a sharp positive floor;
+and coherent causal depth fusion gives an absolutely convergent all-prime cross-prime
+Gram with a faithful height separator. For the affine inverse-Krein defect, the negative
+part is also the unique least—and hence the unique Loewner-minimal—continuous functional-
+calculus correction among commuting positive completions. The completed aperture carrier
+nevertheless has height-flat diagonal and cannot by itself supply Xi curvature, and the
+abstract least correction has not been identified with the literal arithmetic source.
+
 **Required continuation.**
 
 ```text
@@ -344,10 +396,20 @@ actual monotone source eigen-coefficient law
 2. chord-mass threshold;
 3. full normalized jump kernel;
 4. orientation and sufficient aggregate mass of actual source minors;
-5. control of homogeneous channel and passage from finite spectral sums to global carrier.
+5. control of homogeneous channel and passage from finite spectral sums to global carrier;
+6. identify the actual division-free Robin/Gamma/holonomy or Gamma-projected rectangular
+   trace with, or dominate it by, the forced negative-light Gram channel while retaining
+   marked half-gap and holonomy Schur debts;
+7. prove the resulting rectangular Ward residual uniformly lower-semibounded.
 
 **Dead predecessor.** The legacy entire compact-limit target is impossible because the
 actual quotient has genuine poles. The live route is meromorphic and full-frequency.
+Further exact no-gos show that the fused observer rectangle is not the literal sharp trace
+cell, local positive semidefiniteness does not survive subtraction of twice the prime
+block, no finite uniform inverse gain recovers sharp wall from damped causal response,
+and the undressed sharp all-prime wall source cannot lie in ordinary `ℓ²`. The survivor is
+finite cutoff plus a genuinely renormalized or semifinite limit with cutoff-dependent
+unbounded relative observation.
 
 ### Route G2 — relative-Volterra phase source-germ weld
 
@@ -413,6 +475,10 @@ estimates cannot reach the necessary height-linear range.
 
 This route is distinct from older diagonal Julia attenuation.
 
+**Endpoint.** There is no standalone Julia-to-RH theorem. The intended handoff is to
+Route A: use Julia energy to prove the literal completed first-clock source has an
+eventual lower floor.
+
 **Proved chain.**
 
 ```text
@@ -437,12 +503,23 @@ one unresolved tail.
 
 **Proved finite hierarchy.** `bad correlation² ≤ coherent energy ≤ total bad mass²`.
 
-**Open core.** Pass this sandwich through prime exhaustion and prove total reduced-bad mass
-is uniformly dominated by available positive/continuous source budget strongly enough to
-exclude negative excursions.
+For the literal signed prime-power packet, the stronger completed-packet formulation is
+now closed at every finite aperture: prime and archimedean-plus-prime coherent energies
+are nonnegative; the squared completed attenuated value is bounded by completed coherent
+energy; its squared deviation from continuous budget is bounded by full signed prime
+energy; good/bad cross-correlation obeys the two-packet determinant inequality; and, on
+the admitted window, signed energy is exactly good energy plus bad energy minus twice
+their cross term. This bypasses cutoff and good/bad splitting in the primary capacity
+bound.
 
-**Obstacle.** Diagonal attenuation and scale-four/KMS decompositions preserve bad signs.
-Only a non-diagonal cross-prime or inter-scale inequality can close the gap.
+**Open core.** Pass the full completed/prime coherent-energy bounds through prime
+exhaustion, remove Julia attenuation back to the literal first-clock value, and prove a
+uniform or subgrowth arithmetic energy budget strong enough to yield Route A's lower
+floor.
+
+**Obstacle.** Positive definiteness and the now-proved non-diagonal packet Cauchy law bound
+squared correlations but do not orient the literal source or bound global coherent energy.
+Diagonal attenuation and scale-four/KMS decompositions still preserve bad signs.
 
 **Status.** Major literal-source advance; open global energy budget prevents RH closure.
 
@@ -481,16 +558,22 @@ literal arithmetic relevant complex
 
 **Unconditional infrastructure.** Weil-height/Kummer groups, L¹/L² completions, real
 scalar extension, a completed real Hilbert/Kummer inner-product package, radial flow,
-Poisson realization, polar-sign correction, and Fredholm kernel reductions.
+Poisson realization, polar-sign correction, Fredholm kernel reductions, and exact lifting
+of compact-group invariants through equivariant surjections by Haar averaging. Generic
+dense-span orthogonality also makes the Kronecker phase functional nonzero off zero, and
+the suspension radius is exactly deck-invariant and scales linearly in the suspension
+coordinate.
 
 **Open core.** Meyer-complex comparison; radial Schwartz domain; nuclear topology and
 closed range; nonradial acyclicity; cup/trace/flow/Hodge transport; nuclear
 almost-idempotence; middle-kernel vanishing; and source-to-Xi spectrum inclusion.
 
-The unit sphere is conditionally contractible when supplied an eigenvector-free linear
-isometry whose range is orthogonal to a unit direction. No theorem constructs such an
-isometry on the arithmetic Deninger completion, so this closes generic angular topology,
-not arithmetic comparison or spectral realization.
+The generic contraction hypotheses are now instantiated unconditionally on
+`ℓ²(ℕ,ℝ)`: the unilateral shift is an eigenvector-free linear isometry, its range is
+orthogonal to the first basis vector, and the unit sphere is contractible. No theorem
+identifies this model with the arithmetic Deninger completion or transports its source,
+flow, cup product, or spectrum, so this closes generic angular topology, not arithmetic
+comparison or spectral realization.
 
 ### Route M — Gamma–Jacobi singular reader
 
@@ -720,6 +803,8 @@ source.
 
 - Gamma differential hypertranscendence;
 - reflected-digamma orientation;
+- weighted Cauchy-jet smoothness and compact-patch finite-probe transversality;
+- generic transported-parent energy barriers for unitary dynamics;
 - conversion of the now-proved literal-zeta Gamma-field nonrelation into divisor or
   zero-location information;
 - Stanley–Reisner/boundary-wedge dimension;
@@ -739,13 +824,18 @@ Dirichlet exponents are now identified exactly as Bohr-hull frequencies under un
 Dirichlet approximation, closing the exponent-to-spectrum link in the Gamma-field
 nonrelation chain. Vertically flat residuals are stable under differences, nonzero rational
 factors, and unit translation, and no nonzero polynomial is vertically flat. Remaining
-analytic assembly is evaluation/translation compatibility for rational digamma jet
-polynomials. Universal-to-generic centering, coefficient-substitution injectivity, and
-algebraic independence of centered generic coefficients are proved, but no Xi-source
-spectral polynomial or analytic handoff exists. The upper-half-plane germ ring makes every
-nonzero rational germ a unit, makes flat germs a rational module, and excludes nonzero
-rational flat germs; evaluation/translation compatibility remains the shift-elimination
-assembly step.
+assembly is not generator translation: rational germs intertwine rational shift with germ
+translation, flatness is shift-stable, and each actual digamma-jet germ satisfies the exact
+shift-plus-rational-pole law. What remains is polynomial-level evaluation of
+rational-coefficient jet polynomials into the germ ring, construction of the resulting
+shift-stable flat annihilator with the hypotheses of the abstract elimination theorem, and
+removal of the flat residue. Universal-to-generic centering, coefficient-substitution
+injectivity, and algebraic independence of centered generic coefficients are proved. The
+centered coefficient field is now identified with a rational function field in `d-1`
+independent variables; the associated radical polynomial is irreducible and its root has
+the exact expected extension degree. No Xi-source spectral polynomial or analytic handoff
+exists. The upper-half-plane germ ring makes every nonzero rational germ a unit, makes flat
+germs a rational module, and excludes nonzero rational flat germs.
 
 ### Highest-value HT-specific missing inputs
 
@@ -760,7 +850,8 @@ assembly step.
 9. convergence and outer factor for finite prime-clock inner factors;
 10. a theorem converting Dirichlet/Gamma nonrelation into zero-location information;
 11. actual two-variable HT/SR realization;
-12. literal centered-jet surjectivity;
+12. literal source-specific centered-jet instantiation and an RH-facing handoff from the
+    now-proved generic compact-patch transversality;
 13. Lindelöf second-spacing plus across-class cancellation.
 
 ## 6. Dead routes: exhaustive mechanism map
@@ -832,7 +923,7 @@ determinant law `t^(e+m) det(tI + LᵀL)`.
 - Schur/Nevanlinna collapse after assuming an RH-equivalent singularity statement;
 - one-state universal KMS closure;
 - Gamma-field asymptotic valuation stopped modulo a vertically flat residual, without
-  shift-stable elimination and evaluation/translation compatibility.
+  polynomial-level germ evaluation and shift-stable annihilator assembly.
 
 **Survivor.** Exact counterexamples and boundary-contact signs identify missing literal
 source structure; corrected Krein/indefinite kernels remain possible.
@@ -1077,49 +1168,56 @@ literature. They are stated at source level, before specialization to Xi zeros.
    Bohr-almost-periodic asymptote?
 3. **Fixed-width Weil theorem.** Can one fixed rectangular logarithmic family be bounded
    below from prime–Gamma source alone?
-4. **Critical Möbius theorem.** Can the actual Gamma–Hankel off-diagonal covariance return
+4. **Grouped Mangoldt transport theorem.** Can grouped apex/flank log-Haar cells cross
+   every turning seam at capacity one while paying the fixed boundary charge?
+5. **Critical Möbius theorem.** Can the actual Gamma–Hankel off-diagonal covariance return
    to a bounded upper region cofinally near the critical exponent?
-5. **Hedenmalm completion theorem.** Is the completed center-mixed Fourier current
+6. **Hedenmalm completion theorem.** Is the completed center-mixed Fourier current
    nonnegative in the interior high-frequency corner?
-6. **Julia energy theorem.** Can the proved finite energy sandwich pass through prime
-   exhaustion with total bad mass dominated by positive/continuous source budget?
-7. **Prime–arch high-frequency ceiling.** Can literal source supply any finite uniform
+7. **Julia energy theorem.** Can the literal signed completed/prime coherent-energy bounds
+   pass through prime exhaustion, lose attenuation, and yield a uniform or subgrowth
+   source budget implying the first-clock lower floor?
+8. **Prime–arch high-frequency ceiling.** Can literal source supply any finite uniform
    upper bound above frequency four?
 
 ### Tier 2 — source-to-operator or source-to-form construction
 
-8. All-prime Sonin schedules making explicit tail/mean square-root budget summably smaller
-   than normalized coupling-energy growth.
-9. Suzuki source coefficient monotonicity, chord-mass gap, and full jump Pick kernel.
-10. Relative-Volterra phase Euler-defect source-germ weld.
-11. Source-built all-degree prime–arch Hankel PSD/reconstruction.
-12. Source-built self-adjoint quadratic-scale operator with Xi spectrum inclusion.
-13. Deninger relevant-complex comparison, nuclear estimate, Hodge transport, and kernel
+9. All-prime Sonin schedules forcing the sharp gap-tail/root budget through the explicit
+   norm floor while controlling ideal-error energy.
+10. Suzuki source coefficient monotonicity, chord-mass gap, full jump Pick kernel, or a
+    source identification of the forced negative-light Gram channel with the rectangular
+    Ward residual.
+11. Relative-Volterra phase Euler-defect source-germ weld.
+12. Source-built all-degree prime–arch Hankel PSD/reconstruction.
+13. Source-built self-adjoint quadratic-scale operator with Xi spectrum inclusion.
+14. Deninger relevant-complex comparison, nuclear estimate, Hodge transport, and kernel
     vanishing.
-14. Uniform source-domain Hedenmalm prime-normal sub-log-square estimate.
-15. Joint infinite-index Gamma–Jacobi Krein reader and forced outer factor.
-16. Restricted-Weil/prolate ground-state comparison and rigorous finite-to-Xi convergence.
-17. Literal compact Thorin/Markov carrier for the completed seam.
+15. Uniform source-domain Hedenmalm prime-normal sub-log-square estimate.
+16. Joint infinite-index Gamma–Jacobi Krein reader and forced outer factor.
+17. Restricted-Weil/prolate ground-state comparison and rigorous finite-to-Xi convergence.
+18. Literal compact Thorin/Markov carrier for the completed seam.
+19. A continuation mechanism carrying the proved finite-prime/Euler-boundary Plücker
+    normal-cone diagonal from `Re(s) > 1` to critical Möbius data.
 
 ### Tier 3 — new structure that could unlock Tier 1 or 2
 
-18. Non-diagonal inter-scale KMS inequality neutralizing persistent bad layers.
-19. Contractive or variation-diminishing Möbius inversion of Gamma occupation.
-20. Source-stable OPUC terminal identity.
-21. Burnol co-Poisson scalar Berezin sign or parity-block flatness.
-22. Source determinant-line no-first-crossing theorem retaining negative index.
-23. All-prime Calkin collinearity or two-particle Sonin subroot estimate.
-24. Affine-dimension-three and arbitrary-rank Gaussian curvature classification.
-25. Viable vector/operator-valued or nonclosable post-scalar rigging.
-26. Actual two-variable HT/SR realization with rank-one period group.
-27. A theorem converting Dirichlet/Gamma differential nonrelation into zero-location
+20. Non-diagonal inter-scale KMS inequality neutralizing persistent bad layers.
+21. Contractive or variation-diminishing Möbius inversion of Gamma occupation.
+22. Source-stable OPUC terminal identity.
+23. Burnol co-Poisson scalar Berezin sign or parity-block flatness.
+24. Source determinant-line no-first-crossing theorem retaining negative index.
+25. All-prime Calkin collinearity or two-particle Sonin subroot estimate.
+26. Affine-dimension-three and arbitrary-rank Gaussian curvature classification.
+27. Viable vector/operator-valued or nonclosable post-scalar rigging.
+28. Actual two-variable HT/SR realization with rank-one period group.
+29. A theorem converting Dirichlet/Gamma differential nonrelation into zero-location
     information.
-28. Lindelöf second-spacing estimate plus across-class cancellation, followed by an exact
+30. Lindelöf second-spacing estimate plus across-class cancellation, followed by an exact
     typed RH handoff.
 
 ### Disproof leap
 
-29. A rigorously certified off-line zero or any equivalent negative finite certificate.
+31. A rigorously certified off-line zero or any equivalent negative finite certificate.
 
 ## 9. Literature reconciliation
 
@@ -1243,28 +1341,47 @@ Therefore the honest current conclusion is:
 - `RHTower/CCMFirstClockAsymptoticBohrLaw.lean`
 - `RHTower/CCMSingleClockCompleteSourceDivisorTomography.lean`
 - `RHTower/CCMRectangularWeilCompleteness.lean`
+- `RHTower/SuzukiRectangularPositiveArchLagCompletion.lean`
+- `RHTower/SuzukiMangoldtLogHaarTransport.lean`
+- `RHTower/SuzukiMangoldtApexLock.lean`
+- `RHTower/SuzukiBicausalNoFreeSplice.lean`
 - `RHTower/XiWeilPositivityCriterion.lean`
 - `RHTower/HedenmalmCenterMixedOrientationBoundary.lean`
 - `RHTower/PrimeArchThetaHankelDegreeTail.lean`
 - `RHTower/PrimeArchHankelDeterminantCriterion.lean`
 - `RHTower/MobiusLaplaceMellinPlancherelBridge.lean`
 - `RHTower/MobiusLaplaceGammaHankelWall.lean`
+- `RHTower/MobiusPlueckerNormalConeDiagonalLift.lean`
 - `RHTower/SoninCoupledPrimeArchGramTransfer.lean`
 - `RHTower/SoninDilatedBandTransport.lean`
 - `RHTower/SoninShellCutBandPacketTerms.lean`
 - `RHTower/SoninShellCutBandBound.lean`
 - `RHTower/SoninShellCutBandTotalBound.lean`
+- `RHTower/SoninShellCutSharpBandBound.lean`
+- `RHTower/SoninShellCutEnergySchedule.lean`
 - `RHTower/SuzukiFiniteApertureHermiteBiehler.lean`
 - `RHTower/SuzukiVolterraCartesianPhaseDefect.lean`
 - `RHTower/SuzukiAffineSecantSpectralSum.lean`
+- `RHTower/SuzukiWallFieldAntidiagonalGramLift.lean`
+- `RHTower/SuzukiWallFieldLightConeKernelCompletion.lean`
+- `RHTower/SuzukiApertureDressedWallLightCompletion.lean`
+- `RHTower/SuzukiValuationDepthLightCoercivity.lean`
+- `RHTower/SuzukiCoherentCausalDepthFusion.lean`
+- `RHTower/SuzukiRectangularWallGramGate.lean`
+- `RHTower/SuzukiCoherentResponseGainNoGo.lean`
+- `RHTower/SuzukiCoherentSharpSourceDomainNoGo.lean`
 - `RHTower/StrictHermiteBiehlerGivesRH.lean`
 - `RHTower/XiCTaylorThetaTailCoreCurrentCapstone.lean`
 - `RHTower/CCMSharpPrimeWindowSubpowerGate.lean`
 - `RHTower/QuadraticScaleSpectralRH.lean`
 - `RHTower/DeningerHilbertKummer.lean`
+- `RHTower/DeningerShift.lean`
+- `RHTower/DeningerHaarAverage.lean`
+- `RHTower/DeningerKronecker.lean`
 - `RHTower/HedenmalmPrimeNormalWickBoundaryEnergy.lean`
 - `RHTower/ThetaCuspCalibratedPowerReciprocalMomentLaw.lean`
 - `RHTower/CCMFirstClockJuliaEquilibriumGram.lean`
+- `RHTower/CCMFirstClockJuliaTwoPacketCapacity.lean`
 - `RHTower/PrimeArchVerifiedHeightAccretivity.lean`
 - `RHTower/XiPrimeSeamPairAsymptotics.lean`
 - `RHTower/RiemannHypothesisSOTA2026.lean`
@@ -1280,6 +1397,10 @@ Therefore the honest current conclusion is:
 - `HTGeometry/ZetaGammaFieldHypertranscendence.lean`
 - `HTGeometry/DirichletBohrSpectrum.lean`
 - `HTGeometry/VerticalFlatness.lean`
+- `HTGeometry/HalfPlaneGermShift.lean`
+- `HTGeometry/DigammaJetGerm.lean`
+- `HTGeometry/CenteredCoeffFieldRational.lean`
+- `HTGeometry/WeightedCauchyTranslatedExpandedEvaluationCompactPatch.lean`
 - `HTGeometry/HypertranscendentalHochsterSourceCoherenceDuality.lean`
 - `HTGeometry/AnalyticEulerTailExactFaithfulnessUniversalityLaw.lean`
 - `HTGeometry/PrimeOrientationCompletedRingSignNoGo.lean`

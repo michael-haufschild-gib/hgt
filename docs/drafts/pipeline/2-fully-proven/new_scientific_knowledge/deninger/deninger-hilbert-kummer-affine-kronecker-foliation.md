@@ -6,6 +6,9 @@
 - **Labels:** `DAC_HILBERT_KUMMER_AFFINE_LEAF_DISTRIBUTION`,
   `DAC_RESIDUAL_DENSE_KUMMER_LEAVES`
 - **Parent:** `deninger-kahler-riemann-arithmetic-leaf-realization`
+- **Lean modules:**
+  `GaloisForLFunctions.RHTower.DeningerKronecker` (the nonvanishing of `(5)`, deck invariance of
+  `x`), `GaloisForLFunctions.RHTower.DeningerLeafwiseKahler` (`(10)`, `(11)`, `(12)`)
 - **Statement:** the Hilbert--Kummer modulus Euler field and its
   associated Kronecker phase field define a canonical
   two-real-dimensional integrable distribution on the nonunitary
@@ -261,3 +264,38 @@ work is:
   distribution with transverse Deninger flow, proved weight-one
   Kähler geometry, and proved residual phase-density by Baire and
   Pontryagin duality.
+
+## Lean status
+
+### The Kronecker nonvanishing and the deck-invariant radius landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerKronecker.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerOrthogonal_denseSpan_eq_zero` — **a vector orthogonal to a family with dense span is
+  zero**.  The vectors it annihilates form the kernel of a continuous functional, which is closed
+  and contains the span, hence contains its closure.
+- `deningerKronecker_ne_zero` — **the phase field is nonzero off the unitary locus**: this is the
+  card's step "if `K = 0` then `ℓ_h(a) = 0` for every `a`, and the logarithmic Kummer functions
+  span densely, so `h = 0`".  With the dense span of the Kummer classes proved on the parent card
+  (`deningerKummerClass_dense_completion`), this is now unconditional.
+- `deningerRadius u h = u‖h‖`, `deningerRadius_deck_invariant` — **`x` is deck invariant**:
+  `(u/q)·‖q·h‖ = u‖h‖` for `q > 0`, which is the card's check that `(8)` descends.
+- `deningerRadius_flow` — the radius scales linearly along the suspension flow, the weight-one law
+  of `(12)` at the level of `x`.
+
+### Already formalized on a sibling card
+
+`(10)` and `(11)` — `*α = β`, `*β = -α`, `*² = -1`, and `γ ∧ *γ > 0` for `γ ≠ 0` — are
+`deningerLeafStar_star`, `deningerLeafStar_du/dv` and `deningerLeafWedge_star_pos` in
+`GaloisForLFunctions.RHTower.DeningerLeafwiseKahler`, together with the Kähler scaling law
+`deningerLeafFlow_wedge` for `(12)`.  They are not reproved here.
+
+### Remaining
+
+The parts that are differential geometry on an infinite-dimensional manifold: the vector fields
+`(4)`, `(5)` as sections of a tangent bundle, the bracket relation `[A, K] = K` of `(7)`, and
+integrability of the rank-two distribution `(6)`.  mathlib has no manifold structure adequate to
+state these on `X_unit × (H \ {0}) × ℝ_{>0}`; the algebraic content each of them rests on — the
+nonvanishing of `A` and `K`, the deck and flow behaviour of `x`, and the leafwise Kähler
+identities — is formalized above.

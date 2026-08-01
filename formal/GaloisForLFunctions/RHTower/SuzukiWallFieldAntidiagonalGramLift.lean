@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SuzukiCriticalWallFieldSquareRootWeld
 import GaloisForLFunctions.RHTower.SuzukiMarkedSecantMidpointLorentzCompletion
+import Mathlib.LinearAlgebra.Matrix.Rank
 
 /-!
 # Suzuki wall-field anti-diagonal Gram lift
@@ -19,7 +20,7 @@ used.
 -/
 
 open Complex
-open scoped ComplexConjugate ComplexOrder
+open scoped ComplexConjugate ComplexOrder Matrix
 
 namespace RHTower
 
@@ -166,6 +167,92 @@ theorem suzukiCriticalWallFieldGramMatrix_posSemidef {N : ℕ}
     (suzukiCriticalWallFieldGramMatrix height p e).PosSemidef := by
   rw [suzukiCriticalWallFieldGramMatrix_eq_gram]
   exact Matrix.posSemidef_gram ℂ _
+
+/-- The bare critical wall amplitude is strictly positive: its square is the strictly positive
+prime-power far-hinge weight. -/
+theorem suzukiCriticalEntryWallBareAmplitude_pos (p : Nat.Primes) (e : ℕ) :
+    0 < suzukiCriticalEntryWallBareAmplitude p e := by
+  have hsq := sq_suzukiCriticalEntryWallBareAmplitude_eq_vonMangoldt_div_sqrt p e
+  have hpos := suzukiCriticalFarHingeWeight_pos p e
+  have hsqpos : 0 < suzukiCriticalEntryWallBareAmplitude p e ^ 2 := by rw [hsq]; exact hpos
+  have hnn : 0 ≤ suzukiCriticalEntryWallBareAmplitude p e := Real.sqrt_nonneg _
+  rcases hnn.lt_or_eq with h | h
+  · exact h
+  · exfalso; rw [← h] at hsqpos; simp at hsqpos
+
+/-- The critical wall field never vanishes: a strictly positive amplitude times a unimodular
+phase. -/
+theorem suzukiCriticalWallField_ne_zero (t : ℝ) (p : Nat.Primes) (e : ℕ) :
+    suzukiCriticalWallField t p e ≠ 0 := by
+  rw [suzukiCriticalWallField_eq_bareAmplitude_mul_kernel]
+  refine mul_ne_zero ?_ ?_
+  · exact_mod_cast (suzukiCriticalEntryWallBareAmplitude_pos p e).ne'
+  · simp only [suzukiOscillatoryKernel]
+    exact Complex.exp_ne_zero _
+
+/-- The finite wall section is the outer product of the wall feature packet with its conjugate. -/
+theorem suzukiCriticalWallFieldGramMatrix_eq_vecMulVec {N : ℕ}
+    (height : Fin N → ℝ) (p : Nat.Primes) (e : ℕ) :
+    suzukiCriticalWallFieldGramMatrix height p e =
+      Matrix.vecMulVec (fun i => suzukiCriticalWallField (height i) p e)
+        (fun j => star (suzukiCriticalWallField (height j) p e)) := by
+  ext i j
+  rfl
+
+/-- **Rank at most one.**  Every finite height section of the prime-power wall kernel is an outer
+product, hence has rank at most one. -/
+theorem suzukiCriticalWallFieldGramMatrix_rank_le_one {N : ℕ}
+    (height : Fin N → ℝ) (p : Nat.Primes) (e : ℕ) :
+    (suzukiCriticalWallFieldGramMatrix height p e).rank ≤ 1 := by
+  rw [suzukiCriticalWallFieldGramMatrix_eq_vecMulVec]
+  exact Matrix.rank_vecMulVec_le _ _
+
+/-- **Exact packet square.**  The quadratic form of the finite wall section on a complex packet is
+the squared norm of the single scalar overlap the packet has with the wall feature; this is the
+identity behind positive semidefiniteness. -/
+theorem suzukiCriticalWallFieldGramMatrix_dotProduct_mulVec {N : ℕ}
+    (height : Fin N → ℝ) (p : Nat.Primes) (e : ℕ) (c : Fin N → ℂ) :
+    star c ⬝ᵥ (suzukiCriticalWallFieldGramMatrix height p e) *ᵥ c =
+      ‖∑ i, star (c i) * suzukiCriticalWallField (height i) p e‖ ^ 2 := by
+  have expand : star c ⬝ᵥ (suzukiCriticalWallFieldGramMatrix height p e) *ᵥ c
+      = ∑ i, ∑ j, (star (c i) * suzukiCriticalWallField (height i) p e) *
+          (star (suzukiCriticalWallField (height j) p e) * c j) := by
+    rw [dotProduct]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [Matrix.mulVec, dotProduct, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    simp only [Pi.star_apply, suzukiCriticalWallFieldGramMatrix,
+      suzukiCriticalWallFieldGramKernel]
+    ring
+  have hstar : star (∑ i, star (c i) * suzukiCriticalWallField (height i) p e)
+      = ∑ j, star (suzukiCriticalWallField (height j) p e) * c j := by
+    rw [star_sum]
+    exact Finset.sum_congr rfl fun j _ => by rw [star_mul, star_star]
+  rw [expand, ← Finset.sum_mul_sum, ← hstar]
+  exact Complex.mul_conj' _
+
+/-- **Rank exactly one.**  A nonempty height section has nonvanishing diagonal, so its rank is
+exactly one. -/
+theorem suzukiCriticalWallFieldGramMatrix_rank_eq_one {N : ℕ} (hN : 0 < N)
+    (height : Fin N → ℝ) (p : Nat.Primes) (e : ℕ) :
+    (suzukiCriticalWallFieldGramMatrix height p e).rank = 1 := by
+  refine le_antisymm (suzukiCriticalWallFieldGramMatrix_rank_le_one height p e) ?_
+  rw [Nat.one_le_iff_ne_zero]
+  intro h0
+  rw [Matrix.rank] at h0
+  have hbot : LinearMap.range (suzukiCriticalWallFieldGramMatrix height p e).mulVecLin = ⊥ :=
+    Submodule.finrank_eq_zero.mp h0
+  have hmem : (suzukiCriticalWallFieldGramMatrix height p e).mulVecLin
+      (Pi.single ⟨0, hN⟩ 1) ∈
+        LinearMap.range (suzukiCriticalWallFieldGramMatrix height p e).mulVecLin :=
+    LinearMap.mem_range_self _ _
+  rw [hbot, Submodule.mem_bot] at hmem
+  rw [Matrix.mulVecLin_apply, Matrix.mulVec_single_one] at hmem
+  have hval := congrFun hmem ⟨0, hN⟩
+  simp only [Pi.zero_apply] at hval
+  rcases mul_eq_zero.mp hval with h | h
+  · exact suzukiCriticalWallField_ne_zero _ p e h
+  · exact suzukiCriticalWallField_ne_zero _ p e (star_eq_zero.mp h)
 
 /-! ## Sharp marked-tensor rooted completion -/
 

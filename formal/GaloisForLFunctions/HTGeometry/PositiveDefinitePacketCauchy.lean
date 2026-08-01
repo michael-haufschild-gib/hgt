@@ -33,9 +33,8 @@ theorem realKernelPacketEnergy_nonneg_of_positiveDefinite
     0 ≤ realKernelPacketEnergy K t b := by
   obtain ⟨r, hr, hq⟩ := hPD N t (fun i => (b i : ℂ))
   have hre := congrArg Complex.re hq
-  simp only [Complex.star_def, Complex.conj_ofReal, Complex.mul_re,
-    Complex.ofReal_re, Complex.ofReal_im, mul_zero, zero_mul, sub_zero] at hre
-  simpa [realKernelPacketEnergy] using hre.ge.trans_eq hr.symm
+  simp only [Complex.star_def, Complex.conj_ofReal, Complex.ofReal_re] at hre
+  exact hr.trans_eq (by simpa [realKernelPacketEnergy] using hre.symm)
 
 /-- **Universal two-packet Cauchy law.**  For an even real positive-definite translation kernel,
 the square of every mixed finite-packet correlation is bounded by the product of the two coherent
@@ -63,16 +62,16 @@ theorem realKernelPacketCross_sq_le_energy_mul_energy_of_positiveDefinite
         (∑ i, ∑ j, star (D i) * (K (T j - T i) : ℂ) * D j) =
           ((A * z ^ 2 + 2 * C * z + B : ℝ) : ℂ) := by
       simp only [Fin.sum_univ_add, T, D, Fin.append_left, Fin.append_right,
-        Complex.star_def, Complex.conj_ofReal]
+        Complex.star_def, Complex.conj_ofReal, Finset.sum_add_distrib]
       dsimp only [A, B, C, realKernelPacketEnergy, realKernelPacketCross]
       rw [show (∑ i : Fin N, ∑ j : Fin N,
             ((z * a i : ℝ) : ℂ) * (K (s j - s i) : ℂ) * ((z * a j : ℝ) : ℂ)) =
           (((∑ i : Fin N, ∑ j : Fin N, a i * K (s j - s i) * a j) * z ^ 2 : ℝ) : ℂ) by
         push_cast
-        rw [Finset.mul_sum]
+        rw [Finset.sum_mul]
         apply Finset.sum_congr rfl
         intro i _
-        rw [Finset.mul_sum]
+        rw [Finset.sum_mul]
         apply Finset.sum_congr rfl
         intro j _
         ring]
@@ -80,29 +79,31 @@ theorem realKernelPacketCross_sq_le_energy_mul_energy_of_positiveDefinite
             ((z * a i : ℝ) : ℂ) * (K (t j - s i) : ℂ) * (b j : ℂ)) =
           (((∑ i : Fin N, ∑ j : Fin M, a i * K (t j - s i) * b j) * z : ℝ) : ℂ) by
         push_cast
-        rw [Finset.mul_sum]
+        rw [Finset.sum_mul]
         apply Finset.sum_congr rfl
         intro i _
-        rw [Finset.mul_sum]
+        rw [Finset.sum_mul]
         apply Finset.sum_congr rfl
         intro j _
         ring]
       rw [show (∑ i : Fin M, ∑ j : Fin N,
             (b i : ℂ) * (K (s j - t i) : ℂ) * ((z * a j : ℝ) : ℂ)) =
           (((∑ i : Fin N, ∑ j : Fin M, a i * K (t j - s i) * b j) * z : ℝ) : ℂ) by
-        rw [Finset.sum_comm]
+        push_cast
+        rw [Finset.sum_comm, Finset.sum_mul]
         apply Finset.sum_congr rfl
         intro i _
+        rw [Finset.sum_mul]
         apply Finset.sum_congr rfl
         intro j _
         rw [show s i - t j = -(t j - s i) by ring, hEven]
-        push_cast
         ring]
       push_cast
       ring
     rw [hform] at hre
     simp only [Complex.ofReal_re] at hre
     nlinarith
+  change C ^ 2 ≤ A * B
   by_cases hA0 : A = 0
   · have hC0 : C = 0 := by
       by_contra hC

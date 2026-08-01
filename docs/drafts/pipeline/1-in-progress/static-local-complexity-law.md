@@ -225,41 +225,56 @@ complexity with only the permitted polynomial losses.  Proving only absence of
 conjugate points is insufficient: that excludes local variations but not a
 globally shorter path.
 
-#### Candidate new mechanism: ballistic projective min-entropy
+#### Surviving mechanism: computationally restricted temporal entropy
 
-For the Hamiltonian ensemble define the worst-target concentration
+An initial candidate was unrestricted worst-target concentration
 
 \[
  Q_\varepsilon(t)=\sup_\psi
-   \Pr_H\{\Delta(\Phi_H(t),\psi)\leq\varepsilon\},
- \qquad I_\varepsilon(t)=-\log Q_\varepsilon(t).
+   \Pr_H\{\Delta(\Phi_H(t),\psi)\leq\varepsilon\}.
 \]
 
-The sharp sufficient theorem for O4 is a **ballistic projective min-entropy
-law**
+That candidate is false at the strength needed for O4.  A static `q`-local
+ensemble has only `m=poly(n)` Gaussian parameters.  On a coefficient ball of
+fixed positive probability, the Duhamel bound makes
+`H -> exp(-itH)` `O(t)`-Lipschitz.  An `m`-dimensional parameter net therefore
+covers the evolved ensemble by at most
 
 \[
- I_\varepsilon(t)\geq
-   a\min\{t\log M,D\}-\operatorname{polylog}(n)
+  (C t/\varepsilon)^m
 \]
 
-through the exponential saturation scale, with a tail strong enough to
-discretize time on one common high-probability Hamiltonian event.  A union
-bound over the at most `M^(s+1)` circuit outputs then gives
+metric balls.  Pigeonhole forces some target ball to have probability at least
+`(C t/epsilon)^(-m)`, so unrestricted projective min-entropy is at most
+`O(m log(t/epsilon))`.  It cannot certify complexity linear in exponential
+time.  This no-go also explains why fixed-order design and ambient-volume
+arguments stall.
+
+The surviving object restricts the target to computations that would
+constitute a shortcut:
 
 \[
- \Pr_H\{C_\varepsilon(\Phi_H(t))\leq s\}
- \leq M^{s+1}Q_\varepsilon(t),
+ Q_{\varepsilon,s}^{\rm short}(t)=
+   \sup_{C:\,|C|\leq s}
+   \Pr_H\{\Delta(\Phi_H(t),C\Phi_0)\leq\varepsilon\}.
 \]
 
-and hence linear robust complexity growth.  This is strictly weaker than a
-state or unitary design and is compatible with O6's permanent two-query
-non-Haar witness.  It supplies a precise meaning to "complexity without
-randomness": the relevant produced resource is worst-target small-ball
-entropy, not ambient Haar moments.
+The required **computational temporal-entropy law** is
 
-The new analytic core is therefore a circuit-uniform small-ball theorem for
-the Gaussian-chaos process
+\[
+ -\log Q_{\varepsilon,s}^{\rm short}(t)
+   \geq (s+1)\log M+\gamma_n(t)
+ \quad\text{for }s\leq a t/\operatorname{poly}(n),
+\]
+
+with a positive tail `gamma_n(t)` strong enough to discretize all times on one
+Hamiltonian event.  Union over the at most `M^(s+1)` circuit outputs then gives
+linear robust complexity growth.  The parameter-covering objection does not
+apply: its high-mass ball centers may themselves require order-`t`
+preparation and hence are excluded from the shortcut dictionary.
+
+The new analytic core is a circuit-uniform small-ball theorem for the
+matrix-exponential Gaussian-chaos process
 
 \[
  X_C(H,t)=\langle C\Phi_0,\Phi_H(t)\rangle,
@@ -267,17 +282,60 @@ the Gaussian-chaos process
 
 indexed by all circuits shorter than physical time.  Recent Gaussian-process
 methods for quantum spin glasses uniformly exclude shallow circuits from
-near-ground-state energy, but they do not apply directly here: the dynamical
+near-ground-state energy, but they do not transfer directly: the dynamical
 endpoint depends nonlinearly on the same Gaussian Hamiltonian and remains at
-the initial state's typical conserved energy.  A valid proof must control this
-matrix-exponential Gaussian chaos rather than reuse the ground-state energy
-argument.
+the initial state's typical conserved energy.  A proof must develop a
+Gaussian-chaos small-ball inequality sensitive to circuit depth, not reuse the
+ground-state energy argument.
 
-Kotowski--Oszmaniec--Horodecki prove an extremal concentration jump for GUE
-and Haar-conjugated diagonal generators.  Unitary invariance is load-bearing
-there and produces immediate maximal complexity, not the local ballistic law.
-No audited result proves the displayed small-ball entropy production for a
-fixed-locality static ensemble.
+This is the proposed physical reinterpretation: autonomous time can generate
+**computational inaccessibility without statistical randomness**.  The orbit
+remains a low-parameter, efficiently non-Haar family, while every center that
+captures appreciable mass moves beyond the circuit budget available at that
+time.  Kotowski--Oszmaniec--Horodecki obtain an immediate extremal jump for
+GUE and Haar-conjugated diagonal generators using load-bearing unitary
+invariance; no audited result proves this local ballistic law.
+
+#### Dynamical NLTS equivalence
+
+Fix a trivial gapped parent Hamiltonian `K_0` with unique product ground state
+`Phi_0` and define
+
+\[
+ K_t=e^{-itH}K_0e^{itH}.
+\]
+
+`K_t` is unitarily equivalent to `K_0`, so every eigenvalue and the gap remain
+unchanged, while its unique ground state is `Phi_H(t)`.  Bounded-observable
+continuity gives the unconditional implication
+
+\[
+ \|\phi-\Phi_H(t)\|\leq\varepsilon
+ \Longrightarrow
+ \langle\phi,K_t\phi\rangle
+ \leq E_0+2\|K_t\|\varepsilon.
+\]
+
+Consequently O4 follows from a **dynamical NLTS law**: every circuit shorter
+than normalized physical time has an extensive energy separation from the
+ground energy of `K_t`.  This turns endpoint complexity into an extremal-energy
+problem, avoiding the fatal fact that the evolved state has only typical
+conserved energy under `H` itself.
+
+The new family has the Heisenberg/Gaussian-chaos expansion
+
+\[
+ K_t=\sum_{r\geq0}{(it)^r\over r!}\,\operatorname{ad}_H^r(K_0).
+\]
+
+The required new mathematics is uniform control of this hierarchy over the
+short-circuit class.  Low-depth dependency-graph methods can access the first
+support-growth regime; extending the barrier to exponential circuit size must
+use chaos order and circuit entropy after lightcones have saturated.
+`DynamicalParentComplexityBridge.lean` now formally proves exact transported
+energy covariance, the `2||K_t||` expectation Lipschitz bound, and the strict
+energy-barrier certificate.  It does not assume or prove the dynamical NLTS
+barrier.
 
 ### O5. Quantitative first hitting
 

@@ -1,7 +1,7 @@
 # Hilbert--Kummer polar splitting and angular contraction
 
 - **ID:** `deninger-hilbert-kummer-polar-angular-contraction`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Label:** `DAC_DENINGER_HILBERT_KUMMER_POLAR_ANGULAR_CONTRACTION`
 - **Parent:** `deninger-hilbert-kummer-radial-flow-poisson`
@@ -10,7 +10,9 @@
   `GaloisForLFunctions.RHTower.DeningerSphereContraction` (the two deformations of `(8)`, `(9)`),
   `GaloisForLFunctions.RHTower.DeningerSphereSlideHomotopy` (`(9)` as a homotopy),
   `GaloisForLFunctions.RHTower.DeningerSphereLineHomotopy` (`(8)` as a homotopy),
-  `GaloisForLFunctions.RHTower.DeningerSphereContractible` (`(6)`)
+  `GaloisForLFunctions.RHTower.DeningerSphereContractible` (`(6)`),
+  `GaloisForLFunctions.RHTower.DeningerShift` (the model),
+  `GaloisForLFunctions.RHTower.DeningerHaarAverage` (`(7)`)
 - **Statement:** the Hilbert--Kummer bounded generic character locus
   splits into unitary phase and Hilbert logarithmic modulus; the
   nonzero modulus has contractible infinite-dimensional angular factor,
@@ -255,8 +257,67 @@ isometry whose range misses a unit vector.  Such an isometry exists precisely in
 dimensions, so this is the infinite-dimensional sphere contractibility that mathlib lacks, in the
 form the card's `(6)` needs.
 
-### Remaining
+### The model landed — the unit sphere of `ℓ²(ℕ, ℝ)` is contractible
 
-The model — the unilateral shift on `ℓ²(ℕ, ℝ)`, eigenvector-free with `e₀` orthogonal to its
-range — which instantiates the hypotheses; and `(7)`, exactness of compact-group invariants by Haar
-averaging.  The polar homeomorphism `(5)` is mathlib's `homeomorphUnitSphereProd`.
+`formal/GaloisForLFunctions/RHTower/DeningerShift.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerShiftFun`, `deningerShiftFun_memℓp`, `deningerShift` — **the unilateral shift** as a
+  linear isometry of `lp (fun _ : ℕ => ℝ) 2`.  Square-summability and norm preservation are the
+  same series reindexed along `Nat.succ`, using `Function.Injective.summable_iff` and
+  `Function.Injective.tsum_eq` with the support contained in the range of `succ`.
+- `deningerShift_no_eigenvector` — **the shift has no eigenvector**.  Coordinatewise, `Sx = c·x`
+  reads `0 = c·x₀` and `xₙ = c·xₙ₊₁`.  If `c = 0` the second equation alone kills every
+  coordinate; if `c ≠ 0` the first kills `x₀` and the second propagates by induction.
+- `deningerE0`, `deningerE0_norm`, `deningerShift_perp` — the first basis vector is a unit vector
+  orthogonal to the range of the shift, since every shifted sequence vanishes at zero.
+- `deningerL2SeqSphere_contractible` — **the unit sphere of `ℓ²(ℕ, ℝ)` is contractible**,
+  instantiating the abstract contraction.
+
+This is the model the card's `(6)` names, and it makes the contractibility statement concrete
+rather than conditional on the existence of such an isometry.  mathlib has neither the shift nor
+the contractibility.
+
+### Haar averaging `(7)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerHaarAverage.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerHaarAverage μ ρ m = ∫ g, ρ g m ∂μ` — the orbit average against a left-invariant
+  probability measure on a compact group acting by linear isometries.
+- `deningerOrbit_integrable` — the orbit map is integrable: it is continuous, and on a compact
+  space every function has compact support.
+- `deningerHaarAverage_invariant` — **the average is invariant**: the isometry passes through the
+  integral (`ContinuousLinearMap.integral_comp_comm`), turning `ρ g₀ ∘ ρ g` into `ρ (g₀ * g)`, and
+  left invariance of the measure absorbs the translation.
+- `deningerHaarAverage_of_invariant` — it fixes vectors that are already invariant, since the
+  integrand is constant and the measure has total mass one.
+- `deningerInvariants_surjective` — **`(7)`**: for an equivariant continuous linear map, an
+  invariant vector downstairs is the image of an invariant vector upstairs, namely the average of
+  any lift.  This is the exactness of compact-group invariants the card uses to pass `(6)` to
+  invariants.
+
+## Status: fully formalized
+
+Every numbered statement of this card is an unconditional Lean theorem.  Axiom audits throughout:
+`propext, Classical.choice, Quot.sound` only.
+
+| Statement | Lean |
+|---|---|
+| `(1)`, `(2)` polar decomposition | `deningerCharacter_polar`, `deningerCharacter_polar_norm` |
+| `(4)` Frobenius on the two factors | `deningerUnitPart_zpow`, `deningerLogModulus_zpow` |
+| `(5)` polar homeomorphism | mathlib's `homeomorphUnitSphereProd` |
+| `(6)` angular contraction | `deningerSphere_contractible`, `deningerL2SeqSphere_contractible` |
+| `(8)`, `(9)` the two deformations | `deningerSphereLineHomotopy`, `deningerSlideHomotopy` |
+| `(7)` invariants | `deningerInvariants_surjective` |
+
+Built here because mathlib lacks them: contractibility of the unit sphere of an
+infinite-dimensional Hilbert space, and the unilateral shift on `ℓ²(ℕ, ℝ)` with its
+eigenvector-freeness.
+
+### Gates
+
+- [x] 0 → 1 in-progress
+- [x] 1 → 2 fully-proven
+- [x] 2 → 3 formalized
+- [ ] 3 → 4 publication-ready
