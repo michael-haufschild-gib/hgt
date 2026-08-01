@@ -28,6 +28,11 @@ def soninCouplingBandTotal (a b : ℝ) {r : ℝ} (hr : 0 < r) (x : evenSubspace)
       ‖(evenFourierCutoff a * evenDilationCLM r hr) x‖) +
     ‖evenFourierCutoff b x‖
 
+/-- The normalization law, read on the complex carrier. -/
+theorem norm_apply_normalizeC (S : evenSubspace →L[ℂ] evenSubspace) {v : evenSubspace}
+    (hv : v ≠ 0) : ‖S (((‖v‖ : ℂ))⁻¹ • v)‖ = ‖S v‖ / ‖v‖ :=
+  norm_apply_normalize S hv
+
 /-- The budget's band terms are the functional's value. -/
 theorem soninCouplingBandTotal_eq (a b : ℝ) {r : ℝ} (hr : 0 < r) (x : evenSubspace) :
     soninCouplingBandTotal a b hr x =
@@ -35,10 +40,11 @@ theorem soninCouplingBandTotal_eq (a b : ℝ) {r : ℝ} (hr : 0 < r) (x : evenSu
         (‖evenDilationCLM r hr x - evenFourierCutoff b (evenDilationCLM r hr x)‖ +
           ‖evenFourierCutoff a (evenDilationCLM r hr x)‖) +
         ‖evenFourierCutoff b x‖ := by
-  rw [soninCouplingBandTotal]
-  congr 2
-  · congr 1
+  have h : ((1 - evenFourierCutoff b) * evenDilationCLM r hr) x =
+      evenDilationCLM r hr x - evenFourierCutoff b (evenDilationCLM r hr x) := by
     rw [mul_apply, sub_apply, one_apply]
+  rw [soninCouplingBandTotal, h]
+  rfl
 
 /-- **The band total divides under normalization.** -/
 theorem soninCouplingBandTotal_normalize (a b : ℝ) {r : ℝ} (hr : 0 < r)
@@ -46,8 +52,8 @@ theorem soninCouplingBandTotal_normalize (a b : ℝ) {r : ℝ} (hr : 0 < r)
     soninCouplingBandTotal a b hr (((‖v‖ : ℂ))⁻¹ • v) =
       soninCouplingBandTotal a b hr v / ‖v‖ := by
   rw [soninCouplingBandTotal, soninCouplingBandTotal,
-    norm_apply_normalize _ hv, norm_apply_normalize _ hv, norm_apply_normalize _ hv,
-    norm_apply_normalize _ hv]
+    norm_apply_normalizeC _ hv, norm_apply_normalizeC _ hv, norm_apply_normalizeC _ hv,
+    norm_apply_normalizeC _ hv]
   ring
 
 /-- **The uniform band bound for the cut's packets.**  A bound on the packets' band totals, divided
@@ -69,6 +75,13 @@ theorem soninCouplingBandTotal_soninShellCutUnit_le
       (soninShellCutWidth b c N) (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hN)‖ :=
     lt_of_lt_of_le hL hnorm
   rw [soninShellCutUnit, soninCouplingBandTotal_normalize a b hr hne]
-  refine div_le_div_of_nonneg_of_le hP hPnn hL hnorm
+  calc soninCouplingBandTotal a b hr
+        (soninScaledPacketEven (soninShellCutCentre b c N i) (soninShellCutWidth b c N)
+          (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hN)) /
+        ‖soninScaledPacketEven (soninShellCutCentre b c N i) (soninShellCutWidth b c N)
+          (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hN)‖
+      ≤ P / ‖soninScaledPacketEven (soninShellCutCentre b c N i) (soninShellCutWidth b c N)
+          (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hN)‖ := by gcongr
+    _ ≤ P / L := by gcongr
 
 end RHTower

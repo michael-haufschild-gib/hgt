@@ -170,9 +170,12 @@ p_odd =(1-kappa)/2=||v_o||_T^2/(||v_e||_T^2+||v_o||_T^2). (12)
 Hence `kappa` is not an arbitrary derivative: it is the signed polarization of a canonical
 two-state defect density matrix.
 
-`(12)` is formal in `PositiveOperatorInner.lean`: `parity_weights` shows the shifted imbalance is
-each component's share of the total defect energy and that the two shares sum to one, and
-`parity_weight_nonneg` that both are nonnegative.  So the polarization really is a two-state
+`(11)`--`(12)` are formal in `PositiveOperatorInner.lean`.  `defectGramState` is the normalized
+two-defect state; `defectGramState_mulVec_even` and `defectGramState_mulVec_odd` show the parity
+vectors `(1,1)` and `(1,-1)` are eigenvectors with eigenvalues `(1 ± kappa)/2`, and
+`defectGramState_isHermitian` that the state is symmetric, so the parity decomposition is
+orthogonal.  `parity_weights` shows those eigenvalues are each component's share of the total defect
+energy and sum to one, and `parity_weight_nonneg` that both are nonnegative.  So the polarization really is a two-state
 probability, which is what makes the density-matrix reading exact rather than suggestive.  The far-negative projective endpoint is the universal free
 state, whose polarization is `(9)` and tends to zero cofinally.  The no-go therefore identifies an
 actual boundary stratum in the moduli of Suzuki carriers.
@@ -347,3 +350,10 @@ Axiom audit of every declaration above: `[propext, Classical.choice, Quot.sound]
   projective-compactification content of this card is formal apart from the source-side lower bound
   it leaves open.  Three new declarations, targeted build green, axioms
   `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(11)` formalized alongside `(12)`.  `defectGramState` is the normalized two-defect
+  Gram state and the parity vectors are shown to be its eigenvectors with the parity weights as
+  eigenvalues, the state being symmetric so the decomposition is orthogonal.  With the weights
+  already proved to be a nonnegative pair summing to one, the card's "canonical two-state defect
+  density matrix" is now literally that — an explicit symmetric matrix with a spectral decomposition
+  into parity components and a probability spectrum.  Three new declarations, targeted build green,
+  axioms `[propext, Classical.choice, Quot.sound]`.
