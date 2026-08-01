@@ -682,7 +682,7 @@ theorem hasDerivAt_a_mul_tanh {a y : ℝ} :
     HasDerivAt (fun x => a * Real.tanh (a * x))
       (a ^ 2 * Real.cosh (a * y) ^ (-2 : ℝ)) y := by
   have hlin : HasDerivAt (fun x : ℝ => a * x) a y := hasDerivAt_const_mul a
-  have hcomp := (GaloisForLFunctions.HTGeometry.hasDerivAt_tanh (a * y)).comp y hlin
+  have hcomp := (hasDerivAt_tanh (a * y)).comp y hlin
   have hmul := hcomp.const_mul a
   refine hmul.congr_deriv ?_
   rw [Real.rpow_neg (Real.cosh_pos _).le, Real.rpow_two]

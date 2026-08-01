@@ -147,7 +147,7 @@ classical; priority for this CCM application is not established.  Status remains
 - [x] 0 → 1: source-native operation and exact frontier stated
 - [x] 1 → 2: dependency-closed symbolic proof, no zero hypothesis
 - [x] 2 → 3: `(2)--(11)`, exact Chebyshev source change of variables, and admissible-tail decay are
-  formalized unconditionally; serialized final audit and stage move remain
+  formalized unconditionally, umbrella-reachable, axiom-audited, and certified
 - [ ] 3 → 4: external priority and publication audit
 
 ## Log

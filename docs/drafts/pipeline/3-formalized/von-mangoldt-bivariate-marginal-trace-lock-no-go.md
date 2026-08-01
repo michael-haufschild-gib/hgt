@@ -5,7 +5,7 @@
 - **Scientific status:** `[UNCONDITIONAL LEAN] [SOURCE-SPECIFIC CLASS NO-GO]`
   `[NOVELTY UNVERIFIED] [NOT RH]`
 - **Paper proof:**
-  `../2-fully-proven/new_scientific_knowledge/von-mangoldt-bivariate-marginal-trace-lock-no-go.md`
+  `../2-fully-proven/new_scientific_knowledge/other/von-mangoldt-bivariate-marginal-trace-lock-no-go.md`
 
 ## Formal declarations
 

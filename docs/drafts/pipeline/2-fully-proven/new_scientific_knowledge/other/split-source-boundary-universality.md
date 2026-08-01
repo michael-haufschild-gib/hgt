@@ -225,6 +225,7 @@ object together with the Tannakian tensor relations of its adjoint local system.
 - [x] Lean exact dependence/coboundary equivalence for the raw mixed family
 - [x] Lean exact arbitrary-family algebraic matroid criterion
 - [x] Lean mixed-family matroid representation
+- [x] Stage-3 umbrella reachability and capstone axiom audit
 
 ## Lean formalization boundary
 
@@ -276,10 +277,10 @@ Finally, `SplitSourceBoundaryMatroid.lean` identifies the complete raw mixed dif
 with that source-boundary quotient through
 `automorphismFamily_mixedRaw_differentialFamilyMatroid_eq_sourceBoundaryQuotientMatroid`.  The
 capstone `automorphismFamily_mixedRaw_differentialFamilyMatroid_eRk_finset` is exactly `(5)` for
-every finite mixed packet.  The owning target and a scratch `#print axioms` audit pass using only
-`propext`, `Classical.choice`, and `Quot.sound`.  No theorem assumes the quotient representation or
-rank equality as input.  The only remaining Stage-3 gate is serialized umbrella reachability,
-generated-index refresh, and formal lint.
+every finite mixed packet.  The owning target, `HTGeometry` umbrella, and a scratch `#print axioms`
+audit pass using only `propext`, `Classical.choice`, and `Quot.sound`.  No theorem assumes the
+quotient representation or rank equality as input.  The Stage-3 formalization certificate is
+`../../3-formalized/new_scientific_knowledge/split-source-boundary-universality.md`.
 
 ## References checked
 
@@ -303,3 +304,5 @@ generated-index refresh, and formal lint.
   arbitrary-family algebraic Ostrowski equivalence; logarithmic-jet and differential-family
   criteria now specialize this common matroid theorem. The localized quotient rank representation
   remains open.
+- 2026-08-01 -- closed the localized quotient representation, exact raw-family matroid equality,
+  finite-packet rank law, serialized umbrella verification, and Stage-3 certificate.

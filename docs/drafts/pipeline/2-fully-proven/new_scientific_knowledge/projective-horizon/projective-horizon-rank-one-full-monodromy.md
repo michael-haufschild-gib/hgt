@@ -1740,3 +1740,64 @@ dividing the discriminant.
   The isomorphism itself is `splittingFieldAutEquiv`'s ingredient: both fields are splitting fields
   of the centered polynomial over the coefficient field, by `isSplittingField_centeredMonicE` and
   `isSplittingField_rootField`.
+
+- 2026-08-01 — **`RadicalBaseChangeFromModel.lean`: the abstract half of the card is finished.**
+  `radicalBaseChangeEvenFromModel` proves `(3)` with **all** root data taken in a model splitting
+  field of the first factor — the enumeration, the surjectivity of the Galois action, and the
+  Vandermonde product — since the isomorphism with the root field inside the ambient carries each
+  across (`map_vandermondeProd_ringHom` for the last).  Its hypotheses are now exactly the facts the
+  corpus proves about the centered generic polynomial, stated in the frame the corpus proves them
+  in.  Axioms `[propext, Classical.choice, Quot.sound]`.
+  The card's `(3)` therefore holds for any first factor whose Galois group over its coefficient
+  field is symmetric, any even radical extension of that coefficient field whose generator has full
+  degree, and any square-class separation between the discriminant and the radicand.
+
+- 2026-08-01 — `PrimitiveRootTransport.lean` supplies the capstone's root-of-unity hypothesis from
+  the card's own assumption on the constants.  An algebraically closed field of characteristic zero
+  has a primitive root of every positive order (through mathlib's `HasEnoughRootsOfUnity`), and a
+  primitive root survives an injective ring map, so every extension of such a field has them:
+  `primitiveRoots_nonempty_of_algebra`.  The card's `K` is algebraically closed, and the coefficient
+  field is an extension of it, so `hzeta` is discharged.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-01 — `CenteredPermRootAction.lean` supplies the surjectivity of the Galois action on the
+  centered roots.  The corpus builds `centeredGaloisEquiv` out of `centeredRootPerm`, which reads a
+  permutation **off** an automorphism; the capstone needs the other direction, an automorphism
+  realising a given permutation.  That is `centeredPermAlgEquiv`, and
+  `centeredPermAlgEquiv_centeredRootIn` says it moves the roots by exactly that permutation — one
+  coercion away from `smul_centeredRoot`.  Hence `exists_centeredAut_perm`.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  Every hypothesis of `radicalBaseChangeEvenFromModel` now has a named proof for the centered
+  generic polynomial.
+
+- 2026-08-01 — **`CenteredRadicalBaseChange.lean`: the card's `(3)` instantiated on the corpus's own
+  centered generic polynomial.**  `centeredRadicalBaseChange` states: over an algebraically closed
+  field of characteristic zero, for degree at least two, the automorphism group of the splitting
+  field of `centeredMonicE * (X^(2m) - c)` over the root field of the second factor is the full
+  symmetric group on `Fin d`.  Every structural input is discharged from the corpus — the
+  symmetric-group identification, the splitting-field property, the root enumeration, the surjective
+  action, the roots of unity — and the two hypotheses left to the caller are exactly the two facts
+  specific to the equation: the degree of the radical generator and the square class of the product
+  of the radicands.  Axioms `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-01 — `CenteredDiscriminantIdentification.lean` matches the two square-class statements'
+  vocabularies.  `coe_vandermondeProd_centeredRootIn`: the Vandermonde product of the **centered**
+  roots, read in the rational function field, is the Vandermonde polynomial — because translating a
+  family does not change its Vandermonde product (`vandermondeProd_sub_const`), so the centered
+  roots and the generic roots give the same value.  `coe_centeredConstant` names the constant
+  coefficient inside the coefficient field and identifies its image.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  So the discriminant square root that the base change compares against the constant coefficient is
+  literally the object `not_exists_sq_disc_mul_centeredConstant` speaks about, and the two are now
+  in the same language.
+
+- 2026-08-01 — `CenteredSquareClassInput.lean`: `no_sqrt_centered_disc_mul_constant` is the
+  square-class hypothesis of the base change step, for the centered generic polynomial, in the exact
+  form that step consumes.  A square root in the coefficient field of the discriminant times the
+  constant coefficient would, read in the rational function field, be a square root there — which
+  `not_exists_sq_disc_mul_centeredConstant` excludes.  The two coercion identifications of the
+  previous entry are what make the two statements the same statement.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  So the second of the two remaining inputs of `centeredRadicalBaseChange` is now supplied; only the
+  degree of the radical generator is left, and it is `finrank_tailCoeffField` once the radicand is
+  fixed to the constant coefficient.

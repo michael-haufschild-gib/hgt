@@ -24,7 +24,8 @@ of freedom cannot be attributed to omission of the analytic coordinate.
 
 - [x] 0 -> 1 in-progress: exact objects exist; source-pure proof assembled; hostile reductions stated
 - [x] 1 -> 2 fully-proven: complete paper proof below; no open mathematical dependency
-- [ ] 2 -> 3 formalized: exact theorem surface in one dependency-closed module; targeted build and axiom audit
+- [x] 2 -> 3 formalized: exact theorem surface is dependency-closed, umbrella-reachable,
+  axiom-audited, and certified
 - [ ] 3 -> 4 publication-ready: recut paper and rendered PDF
 
 ## Setup
@@ -208,9 +209,10 @@ an RH route based on a finite differential-rational Euler closure must obtain it
 mechanism from additional global structure (completed reflection, archimedean positivity, or an
 infinite analytic limit), not from finite local fusion alone.
 
-## Formalization target
+## Lean status
 
-One new leaf module should establish:
+`formal/GaloisForLFunctions/HTGeometry/PrimeValuationCoordinateFusionCompletion.lean`
+unconditionally establishes:
 
 1. coordinate-relative finite jet rectangles;
 2. coordinate-relative finite and all-layer differential independence;
@@ -219,10 +221,20 @@ One new leaf module should establish:
 5. the principal-filter iff;
 6. the actual-prime totient specialization.
 
-All declarations must be unconditional and pass an exact leaf check plus axiom audit.  No umbrella
-or full build is needed.
+The capstones are
+`cofiniteTailDenseOn_primeResidueValuationUpperEndCarrier_differentialIndependent_over_coordinate`,
+`cofiniteTailDenseOn_primeResidueValuationUpperEndAllLayerCarrier_differentialIndependent_over_coordinate`,
+`cofiniteTailDenseOn_primeResidueValuationUpperEndNextLayer_relativeHT_over_coordinate`,
+`primeResidueValuationUpperEndCoordinateFusionCompletion_principalFilter_iff`, and
+`pairwiseCoprimePrimeResidueValuationUpperEndCoordinateFusionCompletionLaw`.  Direct module and
+`HTGeometry` umbrella checks pass.  A combined scratch axiom audit uses only `propext`,
+`Classical.choice`, and `Quot.sound`.  The Stage-3 formalization certificate is
+`../../3-formalized/new_scientific_knowledge/coordinate-intrinsic-fusion-kolchin-principal-filter-law.md`.
 
 ## Log
 
 - 2026-07-18 — created in stage 1 after corpus-first and hostile literature audit; complete paper
   proof assembled.
+- 2026-08-01 — formalized the complete coordinate-relative independence, frontier-rank,
+  fusion-closure, principal-filter, and actual-prime specialization surface; closed Stage 3 after
+  serialized umbrella verification and capstone axiom audit.

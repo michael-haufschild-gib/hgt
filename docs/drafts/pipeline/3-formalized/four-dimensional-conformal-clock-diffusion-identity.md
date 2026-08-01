@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM / CONTINUUM GRAVITY / CLOCKS / CONFORMAL GEOMETRY
 - **Paper proof:**
-  `../2-fully-proven/new_scientific_knowledge/four-dimensional-conformal-clock-diffusion-identity.md`
+  `../2-fully-proven/new_scientific_knowledge/other/four-dimensional-conformal-clock-diffusion-identity.md`
 - **Lean:** `formal/GaloisForLFunctions/HTGeometry/ConformalClockDiffusion.lean`
 - **Status:** unconditional algebraic continuum theorem.
 
@@ -75,4 +75,3 @@ Still open:
 4. combine that recovery with causal-cone reconstruction to identify the full metric;
 5. reconstruct the nonlinear gravitational field operator rather than a fixed-background wave
    operator.
-

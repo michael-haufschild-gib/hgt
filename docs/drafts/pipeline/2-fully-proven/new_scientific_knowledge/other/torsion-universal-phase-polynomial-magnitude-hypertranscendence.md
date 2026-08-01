@@ -315,10 +315,11 @@ The whole theorem and its deterministic existence corollary are now formalized u
   existence corollary
   `exists_unitTorsionPhase_polynomialMagnitude_hypertranscendental`.
 
-The exact owning builds are green.  Scratch `#print axioms` audits of the phase, defect, literal
-series, HT, and existence capstones report only `propext`, `Classical.choice`, and `Quot.sound`;
-the forbidden-token scans and diff checks are clean.  Only the serialized umbrella/index/lint gate
-and stage move remain.
+The exact owning builds and `HTGeometry` umbrella are green.  Scratch `#print axioms` audits of the
+phase, defect, literal series, HT, and existence capstones report only `propext`,
+`Classical.choice`, and `Quot.sound`; the forbidden-token scans are clean.  The Stage-3
+formalization certificate is
+`../../3-formalized/new_scientific_knowledge/torsion-universal-phase-polynomial-magnitude-hypertranscendence.md`.
 
 ## Gates
 
@@ -329,6 +330,7 @@ and stage move remain.
 - [ ] Parent-theory and exact literature novelty audit.
 - [ ] Independent proof audit.
 - [x] Whole theorem formalized unconditionally in Lean.
+- [x] 2 -> 3: exact capstones are umbrella-reachable, axiom-audited, and certified.
 
 ## Log
 
@@ -338,3 +340,5 @@ and stage move remain.
   convergent generalized-analytic germs and cannot be exponentially flat without vanishing.
 - 2026-07-18 — Formalized the complete polynomial defect compiler, the literal entire series, and
   a unit-norm deterministic universal torsion phase; exact leaf builds and axiom audits are green.
+- 2026-08-01 — Closed Stage 3 after serialized leaf/umbrella verification and combined capstone
+  axiom audit.

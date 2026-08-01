@@ -2389,6 +2389,49 @@ coefficients at all, only their monomial expansion in normal form.  Together wit
 are now exactly: the solution is strip almost periodic and holomorphic, the coefficients are written
 in Gamma-field monomial normal form, and the jet monomials of the relation are distinct.
 
+### Toward the law on every vertical line
+
+The chain above is proved on the lines `Re s = 1/2 + m`, where the corpus supplies two-sided bounds
+for `|Γ|`.  For an arbitrary `σ > 0` the missing input is the *super-polynomial* decay of `Γ` on the
+line, and the route is the log-coordinate Fourier representation `Γ(σ+it) = ∫ e^{itu} e^{σu−e^u} du`
+already in `GammaVerticalDecay`: the Fourier transform of a smooth function whose every derivative is
+integrable decays faster than any polynomial.
+
+Two new modules supply exactly those hypotheses.
+
+- `HTGeometry/GammaLogIntegrand.lean` — `integrable_expSubExp`: the integrand `e^{au − e^u}` is
+  integrable for every `a > 0`, dominated by `e^{au}` on the left half line and, via
+  `e^u ≥ (1 + u/2)²`, by a Gaussian with a linear term on the right.
+- `HTGeometry/GammaLogIntegrandDerivatives.lean` — differentiating `e^{(σ+k)u−e^u}` gives `(σ+k)`
+  times itself minus the same expression with `k` raised by one, so finite combinations are closed
+  under differentiation (`IsExpFamily.deriv`).  Hence **`integrable_iteratedDeriv_expShift`**: every
+  iterated derivative of the log-coordinate Gamma integrand is integrable, and `contDiff_expShift`
+  gives smoothness.
+
+With those, `Real.fourier_iteratedDeriv` plus Riemann–Lebesgue gives `t^N Γ(σ+it) → 0` for every `N`
+and every `σ > 0` — the generalization of the exponential valuation direction from `Re s = 1/2 + m`
+to every vertical line.  That assembly is the next step.
+
+### Gamma beats every polynomial on every vertical line
+
+`HTGeometry/GammaVerticalPolynomialDecay.lean` completes the route sketched above and removes the
+restriction to half-integer lines.
+
+- `iteratedDeriv_ofReal_comp` — iterated derivatives commute with the real-to-complex embedding, so
+  the complexified log-coordinate integrand inherits smoothness and the integrability of all its
+  derivatives;
+- `fourier_expShiftC` — in logarithmic coordinates `Γ(σ+it)` *is* the Fourier transform of
+  `e^{σu−e^u}` at `−t/2π`;
+- **`tendsto_pow_mul_Gamma_vertical`** — `Real.fourier_iteratedDeriv` turns the `N`-th derivative into
+  the factor `(2πix)^N`, and Riemann–Lebesgue kills the left side, so
+
+  > `t^N · Γ(σ+it) → 0` for every `N` and **every** `σ > 0`.
+
+So the exponential valuation direction — `Γ` dominating all polynomial and logarithmic data — is
+available on every vertical line of the right half plane, not only on `Re s = 1/2 + m` where the
+corpus's two-sided modulus bounds live.  Transporting the boundary and collapse theorems to a general
+line is now a matter of replacing that one input.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

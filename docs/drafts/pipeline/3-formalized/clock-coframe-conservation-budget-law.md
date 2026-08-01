@@ -3,7 +3,7 @@
 - **ID:** `clock-coframe-conservation-budget-law`
 - **Stage:** 3-formalized
 - **Paper proof:**
-  `../2-fully-proven/new_scientific_knowledge/clock-coframe-conservation-budget-law.md`
+  `../2-fully-proven/new_scientific_knowledge/other/clock-coframe-conservation-budget-law.md`
 - **Lean:** `formal/GaloisForLFunctions/HTGeometry/ChronometricCausalSusceptibility.lean`
 
 ## Formalized statement

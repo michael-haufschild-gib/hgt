@@ -111,6 +111,15 @@ spectral probability.
 
 ## 3. Pure-point formula and source weights
 
+**Note on "its measure is therefore pure point".**  That step is reachable, and its ingredients are
+formal.  The support theorems of `suzuki-shift-spectral-monotone-likelihood-transfer` show that where
+an anti-Herglotz function tends to zero at part of the boundary the representing measure puts no mass
+there, and `measure_compl_eq_zero_of_rat_Icc` in `PoissonBoundaryPositivity.lean` upgrades that from
+arcs to an arbitrary closed exceptional set: a measure null on every closed rational interval
+avoiding a closed set is concentrated on it, the set being a countable union of such intervals.
+Applied off the poles — where a meromorphic Herglotz function extends analytically and is real — this
+is exactly the assertion that the measure is carried by the pole set.
+
 The functions `A` and `E` are entire because the source interval is compact.  Hence `(5)` is a
 meromorphic Herglotz function.  Its measure is therefore pure point.  The source minimal operator
 is prime: if a vector is orthogonal to every `v_z`, `(1)` makes its compactly supported Fourier
@@ -225,10 +234,32 @@ The deficiency transform itself is formal too:
 - `normSq_freeDeficiencyTransform`: **the free-model weight is flat** — at a quarter-period frequency
   the squared modulus against `1 + x^2` is `4 cosh^2 a`, independent of the mode.
 
-So `(15)`'s constant is formal end to end: the deficiency transform, its constant modulus, the two
-normalizing integrals, and the double-angle identity.  Only the identification of the free model's
-`v_+` and `v_x` with the explicit exponentials remains, and that is the same operator identification
-the rest of the card waits on.
+The pole locations `x_k = (k+1/2)pi/a` are formal too:
+
+- `sinh_add_sinh_conj`: the even pencil is a sum of hyperbolic sines at conjugate arguments, whose
+  odd parts cancel, leaving `2 sinh a * cos(z a)`.
+- `freeEvenPencil_eq_zero_iff`: since `sinh a` never vanishes for a nonzero aperture, **the even
+  pencil's zeros are exactly the zeros of `cos(z a)`** — the quarter-period frequencies.
+
+The odd pencil is the same computation with the *even* parts cancelling:
+
+- `sinh_sub_sinh_conj`, `freeOddPencil_eq_zero_iff`: the odd pencil is `2 cosh a * sin(z a) * i`, so
+  its zeros are the integer multiples of `pi/a`.  This needs **no** hypothesis on the aperture, unlike
+  the even pencil: the hyperbolic cosine never vanishes while the hyperbolic sine vanishes at zero.
+- `freeSpectra_interlace`: the two free spectra **strictly interlace** — between consecutive odd
+  points `k pi/a` and `(k+1) pi/a` sits exactly the even point `(k+1/2) pi/a`.
+- `freeCentre_odd_not_even`: and the centre lies in the odd spectrum only, which is `(14)`'s parity
+  clause verified concretely in the free model.
+
+`(16)` follows: the free spectrum is strictly monotone in the index
+(`freeEvenSpectrum_strictMono`), so the labels are distinct and the labelled atomic measure assigns
+each of them exactly the constant weight (`labelledMeasure_singleton`, `freeMeasure_singleton`).
+That is `mu_a = (coth(a)/a) sum_k delta_{x_k}` at the level of atom masses.
+
+So `(15)`'s constant *and* its pole set are formal end to end: the deficiency transform, its constant
+modulus, the two normalizing integrals, the double-angle identity, and the pencil's zero set.  Only
+the identification of the free model's `v_+` and `v_x` with the explicit exponentials remains, and
+that is the same operator identification the rest of the card waits on.
 
 ## 6. Consequences for the live RH route
 
@@ -331,8 +362,22 @@ orthonormal eigenbasis the resolvent pairing is the Cauchy combination of spectr
   what makes the kernel's constant come out right.
 
 Composed with `donoghuePurePoint_eq_cauchySum` this gives all three equalities of `(7)` for a
-pure-point spectral measure.  What is still missing is the identification of Suzuki's concrete `L`
-with an operator carrying such an eigenbasis.
+pure-point spectral measure, and the whole chain is assembled as
+`donoghueTransform_of_orthonormalEigenbasis`: **for an operator with an orthonormal eigenbasis, a
+unit cyclic vector, and a reflection-symmetric spectrum, the Donoghue transform of its spectral
+measure is the Nevanlinna-weighted Cauchy combination.**  Both hypotheses earn their place — the unit
+norm makes the masses a probability, which absorbs the affine term, and the reflection symmetry kills
+the linear one.  `spectralMass_nonneg` supplies the positivity the interlacing consumes.
+
+The free model's spectrum is indexed by the integers, so the parity clauses have summable
+counterparts in the same module: `tsum_eq_zero_of_symmetric_odd` (a reflection-odd summable family
+sums to zero, by reindexing along the reflection), and its two consequences
+`tsum_moment_eq_zero_of_symmetric` and `tsum_cauchy_eq_zero_at_center`.  No summability hypothesis is
+needed — the reindexing argument is valid whether or not the family converges, since in the divergent
+case both sides are the junk value zero.
+
+What is still missing is the identification of Suzuki's concrete `L` with an operator carrying such
+an eigenbasis.
 
 **`(14)`, the canonical interlacing, is formal** — it was not among the connectors above, and its
 conclusion is carried by a "Therefore" in section 4.  In
@@ -482,3 +527,52 @@ Section 4's identification of the two divisors is algebra on the two-angle quoti
   assumed, which is what section 6 needs if deviation from flatness is to serve as the non-clock
   observable.  Two new declarations, targeted build green, axioms
   `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the free model's pole set formalized.  `sinh_add_sinh_conj` shows the even pencil's
+  two deficiency transforms have cancelling odd parts, collapsing to `2 sinh a * cos(z a)`, and
+  `freeEvenPencil_eq_zero_iff` then locates its zeros exactly at the zeros of the cosine — the card's
+  `x_k = (k+1/2)pi/a` — because `sinh a` cannot vanish for a nonzero aperture.  With the previous
+  entries, `(15)`'s pole set and its constant weight are both proved rather than asserted.  Two new
+  declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the free model's odd spectrum and the concrete interlacing formalized.  The odd pencil
+  is the same difference with the *even* parts cancelling, giving `2 cosh a * sin(z a) * i`, so its
+  zeros are the integer multiples of `pi/a` (`freeOddPencil_eq_zero_iff`) — and unlike the even
+  pencil this needs no hypothesis on the aperture, since `cosh` never vanishes while `sinh` vanishes
+  at zero.  `freeSpectra_interlace` then exhibits the strict interlacing directly, and
+  `freeCentre_odd_not_even` confirms the centre sits in the odd spectrum only.  So `(14)`'s abstract
+  interlacing and parity clauses are now also verified concretely in the model `(15)` uses to fix the
+  signs.  Four new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(16)` formalized.  The free spectrum is strictly monotone in the index, hence has
+  distinct labels (`freeEvenSpectrum_strictMono`/`_injective`), so the labelled atomic measure built
+  earlier in the session assigns each quarter-period frequency exactly the constant weight:
+  `freeMeasure_singleton` gives `mu_a({x_k}) = coth(a)/a`, which is `(16)` at the level of atom
+  masses.  The general step is `labelledMeasure_singleton` — with distinct labels every other Dirac
+  misses the singleton — added to `LabelledAtomicMeasure.lean` and reusable for any atomic spectral
+  measure.  Four new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — section 3's "its measure is therefore pure point" given its missing bridge.  The step
+  is a *therefore*, and every pure-point result on this card rests on it, so it deserved checking
+  rather than inheriting.  `measure_eq_zero_of_isOpen_of_rat_Icc` and
+  `measure_compl_eq_zero_of_rat_Icc` upgrade the arc-vanishing theorems built for
+  `suzuki-shift-spectral-monotone-likelihood-transfer` from single arcs to an arbitrary closed
+  exceptional set: an open set is a countable union of closed rational intervals, so nullity on each
+  gives nullity on the whole.  Off the poles a meromorphic Herglotz function extends analytically and
+  is real, so the arc hypothesis holds there and the measure is carried by the pole set.  A support
+  result proved for one card turned out to be the missing step of another.  Two new declarations,
+  targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(6)`--`(7)` assembled for a concrete operator class
+  (`donoghueTransform_of_orthonormalEigenbasis`): an orthonormal eigenbasis, a unit cyclic vector and
+  a reflection-symmetric spectrum give the Donoghue transform as the Nevanlinna-weighted Cauchy
+  combination.  Both hypotheses are load-bearing and for different reasons — the unit norm makes the
+  masses a probability, which is what absorbs the kernel's affine term, and the reflection symmetry
+  is what kills the linear one.  This is the identification statement at the level the corpus can
+  express: everything downstream of "Suzuki's `L` has an orthonormal eigenbasis with symmetric
+  spectrum" is now proved.  Two new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the parity clauses extended to the countable index the free model uses.
+  `tsum_eq_zero_of_symmetric_odd` reindexes a reflection-odd family along the reflection, making the
+  sum its own negative; `tsum_moment_eq_zero_of_symmetric` and `tsum_cauchy_eq_zero_at_center` are
+  the two consequences already proved in the finite case.  Notably no summability hypothesis is
+  required: the reindexing identity `Equiv.tsum_eq` holds unconditionally, and in the non-summable
+  case both sides are the junk value zero, so the conclusion is still correct.  Three new
+  declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.

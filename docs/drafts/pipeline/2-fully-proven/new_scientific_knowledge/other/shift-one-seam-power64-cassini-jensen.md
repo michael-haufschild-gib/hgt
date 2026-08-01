@@ -165,6 +165,7 @@ The exact backward chain is
 
 ## Lean status
 
+- [x] complete proved theorem surface `(1)--(3)` formalized unconditionally and Stage-3 certified
 - [x] shift-one atom equals squared-seam coordinate
 - [x] source moment `S64` equals the holomorphic power-64 trace
 - [x] `H64-S64=2*C32`
@@ -175,3 +176,7 @@ The exact backward chain is
 - [x] identify the Tonelli divisor profile with `E64` and finish identity `(1)`
 - [ ] prove the source inequality `(3)` from Euler--Gamma data
 - [ ] RH
+
+The unchecked source inequality and RH are consumers of theorem `(3)`, not hypotheses or omitted
+parts of its equivalence.  Exact certificate:
+`../../3-formalized/new_scientific_knowledge/shift-one-seam-power64-cassini-jensen.md`.

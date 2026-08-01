@@ -2,6 +2,7 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import GaloisForLFunctions.HTGeometry.LabelledAtomicMeasure
 
 /-!
 # The modulus of a hyperbolic sine on a vertical line
@@ -174,5 +175,90 @@ theorem freeEvenPencil_eq_zero_iff {a : ℝ} (ha : a ≠ 0) (z : ℂ) :
     · exact Complex.cos_eq_zero_iff.mp h
   · intro h
     exact Or.inr (Complex.cos_eq_zero_iff.mpr h)
+
+/-! ## The free model's odd pencil, and the concrete interlacing
+
+The odd pencil is the difference of the same two transforms; there the *even* parts cancel, leaving
+a hyperbolic cosine times a sine.  So the odd spectrum is the integer multiples of `pi/a` and the
+even spectrum the half-odd ones, which interlace strictly — and the centre lies in the odd spectrum
+only, which is the parity clause. -/
+
+/-- **Conjugate hyperbolic sines subtract to a sine.**  The even parts cancel, leaving `2 cosh a`
+times `sin(z a)`. -/
+theorem sinh_sub_sinh_conj (a : ℝ) (z : ℂ) :
+    Complex.sinh ((a : ℂ) + Complex.I * z * a) - Complex.sinh ((a : ℂ) - Complex.I * z * a)
+      = 2 * Complex.cosh (a : ℂ) * (Complex.sin (z * a) * Complex.I) := by
+  rw [Complex.sinh_add, Complex.sinh_sub,
+    show Complex.I * z * (a : ℂ) = (z * a) * Complex.I by ring,
+    Complex.cosh_mul_I, Complex.sinh_mul_I]
+  ring
+
+/-- **The free model's odd spectrum.**  The odd pencil vanishes exactly at the zeros of `sin(z a)`,
+the integer multiples of `pi/a`.  Unlike the even pencil this needs no hypothesis on the aperture:
+the hyperbolic cosine never vanishes, whereas the hyperbolic sine vanishes at zero. -/
+theorem freeOddPencil_eq_zero_iff {a : ℝ} (z : ℂ) :
+    Complex.sinh ((a : ℂ) + Complex.I * z * a) - Complex.sinh ((a : ℂ) - Complex.I * z * a) = 0
+      ↔ ∃ k : ℤ, z * a = (k : ℂ) * (Real.pi : ℂ) := by
+  rw [sinh_sub_sinh_conj]
+  have hcosh : Complex.cosh (a : ℂ) ≠ 0 := by
+    rw [← Complex.ofReal_cosh, Ne, Complex.ofReal_eq_zero]
+    exact ne_of_gt (Real.cosh_pos a)
+  have h2 : (2 : ℂ) * Complex.cosh (a : ℂ) ≠ 0 := mul_ne_zero two_ne_zero hcosh
+  rw [mul_eq_zero]
+  constructor
+  · rintro (hbad | h)
+    · exact absurd hbad h2
+    · rcases mul_eq_zero.mp h with h' | hI
+      · exact Complex.sin_eq_zero_iff.mp h'
+      · exact absurd hI Complex.I_ne_zero
+  · intro h
+    exact Or.inr (mul_eq_zero.mpr (Or.inl (Complex.sin_eq_zero_iff.mpr h)))
+
+/-- **The two free spectra interlace strictly.**  Between consecutive odd points `k pi/a` and
+`(k+1) pi/a` sits exactly the even point `(k + 1/2) pi/a`. -/
+theorem freeSpectra_interlace {a : ℝ} (ha : 0 < a) (k : ℤ) :
+    (k : ℝ) * Real.pi / a < ((k : ℝ) + 1 / 2) * Real.pi / a ∧
+      ((k : ℝ) + 1 / 2) * Real.pi / a < ((k : ℝ) + 1) * Real.pi / a := by
+  have hpi := Real.pi_pos
+  constructor
+  · exact (div_lt_div_iff_of_pos_right ha).mpr (by nlinarith)
+  · exact (div_lt_div_iff_of_pos_right ha).mpr (by nlinarith)
+
+/-- **The centre lies in the odd spectrum only.**  The sine vanishes at the origin and the cosine
+does not, which is the parity clause of the interlacing. -/
+theorem freeCentre_odd_not_even (a : ℝ) :
+    Complex.sin ((0 : ℂ) * a) = 0 ∧ Complex.cos ((0 : ℂ) * a) ≠ 0 := by
+  constructor
+  · rw [zero_mul, Complex.sin_zero]
+  · rw [zero_mul, Complex.cos_zero]
+    exact one_ne_zero
+
+/-! ## The free measure
+
+The free spectrum is a strictly monotone family of labels, so it carries a labelled atomic measure
+whose mass at each atom is the constant weight.  That is `(16)`: the free Nevanlinna measure is
+`coth(a)/a` times the counting measure on the quarter-period frequencies. -/
+
+/-- The quarter-period frequencies are strictly increasing in the index, hence distinct. -/
+theorem freeEvenSpectrum_strictMono {a : ℝ} (ha : 0 < a) :
+    StrictMono fun k : ℤ => ((k : ℝ) + 1 / 2) * Real.pi / a := by
+  intro j k hjk
+  have hpi := Real.pi_pos
+  refine (div_lt_div_iff_of_pos_right ha).mpr ?_
+  have : (j : ℝ) < k := by exact_mod_cast hjk
+  nlinarith
+
+theorem freeEvenSpectrum_injective {a : ℝ} (ha : 0 < a) :
+    Function.Injective fun k : ℤ => ((k : ℝ) + 1 / 2) * Real.pi / a :=
+  (freeEvenSpectrum_strictMono ha).injective
+
+/-- **`(16)`, the free measure.**  The labelled measure carrying the constant weight `coth(a)/a` at
+the quarter-period frequencies assigns exactly that mass to each of them. -/
+theorem freeMeasure_singleton {a : ℝ} (ha : 0 < a) (k : ℤ) :
+    labelledMeasure (fun _ : ℤ => ENNReal.ofReal (Real.cosh a / (a * Real.sinh a)))
+        (fun j : ℤ => ((j : ℝ) + 1 / 2) * Real.pi / a)
+        {((k : ℝ) + 1 / 2) * Real.pi / a}
+      = ENNReal.ofReal (Real.cosh a / (a * Real.sinh a)) :=
+  labelledMeasure_singleton (freeEvenSpectrum_injective ha) k
 
 end GaloisForLFunctions.HTGeometry

@@ -3,7 +3,7 @@
 - **ID:** `xi-depth-successor-stokes-normal-layer`
 - **Stage:** 3-formalized
 - **Paper proof:**
-  `../2-fully-proven/new_scientific_knowledge/xi-depth-successor-stokes-normal-layer.md`
+  `../2-fully-proven/new_scientific_knowledge/other/xi-depth-successor-stokes-normal-layer.md`
 - **Lean module:**
   `formal/GaloisForLFunctions/RHTower/XiDepthSuccessorStokesNormalLayer.lean`
 - **Status:** `[LEAN-FORMALIZED] [UNCONDITIONAL] [NOT RH]`

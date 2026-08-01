@@ -40,7 +40,10 @@
   `GaloisForLFunctions.RHTower.DeningerL2Norm`,
   `GaloisForLFunctions.RHTower.DeningerL2Inner`,
   `GaloisForLFunctions.RHTower.DeningerL2InnerBaseChange`,
-  `GaloisForLFunctions.RHTower.DeningerAbsL2Inner`
+  `GaloisForLFunctions.RHTower.DeningerAbsL2Inner`,
+  `GaloisForLFunctions.RHTower.DeningerL2InnerAdditive`,
+  `GaloisForLFunctions.RHTower.DeningerL2InnerTorsion`,
+  `GaloisForLFunctions.RHTower.DeningerAbsL2InnerAdditive`
   (the gluing of the place tower, the absolute height on `Q̄`, the
   normed Kummer group `𝒢`, the normed `ℚ`-vector space `𝒢 ⊗ ℚ`, its
   completion, and the local-degree normalization of the place space)
@@ -848,15 +851,64 @@ Together with `deningerAbsHeight` this gives both structures the card's `H_Kum` 
 height and the `L²` inner product — as invariants on the algebraic numbers, each independent of
 the field of definition, each proved from the place tower rather than quoted.
 
+### Additivity of the `L²` inner product landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerL2InnerAdditive.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerInfinitePlace_log_mul`, `deningerFinitePlace_log_mul` — the logarithm of a place is
+  additive on nonzero elements, since a place is an absolute value and its values are positive.
+- `deningerL2Inner_mul_left`, `deningerL2Inner_mul_right` — **the inner product is additive in each
+  argument** under multiplication of algebraic numbers.  The archimedean part is a finite sum; the
+  finite part needs `finsum_add_distrib`, whose support hypotheses hold because the summand
+  vanishes wherever the place value is one, so its support sits inside the multiplicative support
+  of the corresponding element.
+
+This is the bilinearity of the form.  With symmetry (`deningerAbsL2Inner_comm`), field-independence
+(`deningerNormalizedL2Inner_ringHom`) and vanishing on torsion
+(`deningerAllPlaces_one_isOfFinOrder`), the `L²` form now has every property needed to descend to
+`𝒢 = Q̄ˣ/μ_∞` and extend to `𝒢 ⊗ ℚ`.
+
+### Vanishing of the `L²` inner product on torsion landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerL2InnerTorsion.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerInfinitePlace_eq_one_of_isOfFinOrder`, `deningerFinitePlace_eq_one_of_isOfFinOrder` —
+  **a root of unity has value one at every place**, archimedean and finite alike: the place of a
+  power is the power of the place, and a positive real with `t^n = 1` is one.
+- `deningerL2Inner_torsion_left`, `deningerL2Inner_torsion_right` — hence its Kummer function is
+  identically zero and the inner product with anything vanishes.
+- `deningerIntermediate_isOfFinOrder`, `deningerAbsL2Inner_torsion_left` — the same at the absolute
+  level, computing in `ℚ⟮α, β⟯` and transferring finite order into the subfield.
+
+This is the property that lets the form descend to `𝒢 = Q̄ˣ/μ_∞`: the classes that are quotiented
+out are exactly those on which the form is identically zero, so it is well defined on the quotient.
+
+### Additivity of the absolute `L²` inner product landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerAbsL2InnerAdditive.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerAdjoinTriple_numberField` — `ℚ⟮α, β, γ⟯` is a number field, from
+  `IntermediateField.finiteDimensional_adjoin` for a finite set of integral elements, transported
+  across the `ℚ`-algebra instance diamond as before.
+- `deningerAbsL2Inner_mul_left`, `deningerAbsL2Inner_mul_right` — **the absolute inner product is
+  additive in each argument**.  Additivity involves three algebraic numbers at once, so all four
+  values are computed in `ℚ⟮α, α', β⟯`, where it is `deningerL2Inner_mul_left` divided by the
+  degree.
+
+The `L²` form on `Q̄ˣ` now has the complete set of properties it needs: symmetric
+(`deningerAbsL2Inner_comm`), bilinear (this module), zero on roots of unity
+(`deningerAbsL2Inner_torsion_left`), independent of the field of definition
+(`deningerNormalizedL2Inner_ringHom`), with diagonal the `L²` Kummer norm
+(`deningerL2Inner_self`).
+
 ### Remaining
 
-Transport of `deningerAbsL2Inner` along the Kummer class map, so that the completion
-`deningerKummerCompletion` carries an `InnerProductSpace ℝ` structure and not only a norm.  This is
-bookkeeping over what is already proved: the form is symmetric
-(`deningerAbsL2Inner_comm`), additive in each argument under multiplication of algebraic numbers
-(the logarithm of a place is additive), it kills the torsion that `𝒢` quotients out
-(`deningerAllPlaces_one_isOfFinOrder`), and it is field-independent
-(`deningerNormalizedL2Inner_ringHom`).  With that structure `deningerKummerCompletion` *is* the
-`H_Kum` of the card's `(1)`, and `(2)` is `deningerKummerClass` with its injectivity
-(`deningerKummerClass_eq_zero_iff_isOfFinOrder`) and dense span
+Transport only, no new mathematics: descend the form to `𝒢 = Q̄ˣ/μ_∞` (well defined by the
+vanishing on torsion together with bilinearity), extend it to `𝒢 ⊗ ℚ` by `ℚ`-bilinearity, and
+install the resulting `InnerProductSpace ℝ` structure on `deningerKummerCompletion`.  With that,
+the completion *is* the `H_Kum` of the card's `(1)`, and `(2)` is `deningerKummerClass` with its
+injectivity (`deningerKummerClass_eq_zero_iff_isOfFinOrder`) and dense span
 (`deningerKummerClass_dense_completion`) already proved.

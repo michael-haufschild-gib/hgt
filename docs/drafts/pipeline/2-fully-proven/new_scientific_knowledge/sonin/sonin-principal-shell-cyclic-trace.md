@@ -1091,9 +1091,25 @@ of normalized rescaled packets.  Only the supports enter the orthogonality, so t
 relation to each other — which matters, since the schedule gives all annuli the same carrier `r q`
 and a proof that leaned on distinct carriers would not apply.
 
-What remains is the instantiation: cut the shell into `N(r)` separated annuli, take the unit targets
-to be the dilates, and feed the three band terms and the ideal errors into
-`card_sub_le_hsNormSq_of_ideal_errors`.  With `N` about `r/K` this gives coupling
+The cut is now built, and with it the supply side of the count is complete:
+`orthonormal_soninShellCutPacket` produces `N` orthonormal packets at a single common carrier from
+exactly two scalar conditions, both on the product `δ|w| = (c-b)|w|/(2N)`, and both met once that
+product clears the thresholds of the two vanishing theorems.  Note the separation holds with
+*equality* for consecutive pieces — the annuli abut — which the orthogonality tolerates because the
+overlap is a single point.
+
+The demand side now has its estimate.  `norm_soninApertureCoupling_sub_dilate_le` was extracted
+from the interior of the corpus's limit proof, where it sat inline and entangled with the
+fixed-profile packets; stated for an arbitrary vector with the two support properties, it applies
+verbatim to the shell-cut packets, which is
+`norm_soninApertureCoupling_soninShellCutPacket_sub_dilate_le`.  The estimate needs no smallness at
+all — carrier, half-width and scale are free — because it is purely structural; smallness is only
+needed later, to make the three errors small.
+
+What remains is to match the three errors to the survivor count: the correction is an ideal error
+applied to the packet, the layer defect on the dilate resolves into an exactly vanishing physical
+term plus band terms and two more ideal errors (each precomposed with the dilation, which the ideal
+absorbs by right multiplication), and the packet's band content is the escape estimate.  With `N` about `r/K` this gives coupling
 energy of order `r`, against the `log r` cap, closing the shortfall test.  Then feed that through the two-branch estimate to get `N` of
 order `r` packets at scale `r`.
 
@@ -1300,6 +1316,8 @@ family is abstract, so two widths have unrelated profiles.
 | **survivor energy**: an operator estimated on an orthonormal family by a unit target up to finitely many relative-ideal errors and a fixed slack has energy at least `(N - ∑ₖ hsNormSq Tₖ/ε²)(1-η)²` — both discounts independent of `N` | `card_sub_le_hsNormSq_of_ideal_errors`, `card_sub_le_hsNormSq_of_one_ideal_error` |
 | **the band fraction**, not merely a threshold: the share of a packet's energy inside a band of radius `t` below its carrier is at most `16 t δ A² / I`, with `A` the tail bound at the gap — so a *wide* band is harmless provided its gap to the carrier is large | `soninRefTailSup_antitone`, `norm_sq_soninScaledPacketEven_ge_half`, `norm_sq_evenFourierCutoff_le_fraction_mul_norm_sq` |
 | **the orthonormal family**: separated annuli give packets vanishing on each other's supports, hence orthogonal for *arbitrary unrelated carriers*; the energy floor makes each nonzero, so normalizing gives an orthonormal family as large as the shell can be cut | `orthonormal_normalize`, `inner_soninScaledPacketEven_eq_zero_of_disjoint`, `soninScaledPacketEven_ne_zero`, `orthonormal_soninScaledPacketEven` |
+| **the shell cut**: `[b,c]` divided into `N` equal abutting annuli — centres in arithmetic progression, common half-width `(c-b)/(2N)`, separation with equality, every annulus inside the shell, half-width below the inner radius; `N` orthonormal packets at one common carrier from two scalar conditions on `δ|w|` | `soninShellCutWidth`, `soninShellCutCentre`, `soninShellCut_sep`, `soninShellCut_le`, `soninShellCutWidth_lt_centre`, `abs_soninScaledPacketMean_le_one`, `orthonormal_soninShellCutPacket` |
+| **distance to the dilate**, for *any* vector vanishing inside the inner aperture and fixed by the outer one: twice the projection correction, the layer defect on the dilate, and the vector's own band content — and every shell-cut packet satisfies the two support facts | `norm_soninApertureCoupling_sub_dilate_le`, `norm_soninApertureCoupling_soninShellCutPacket_sub_dilate_le` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1416,6 +1434,24 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the coupling's distance to the dilate is now a standalone theorem rather than a step
+  buried inside a limit proof.  The corpus proved it inline, for the fixed-profile packets only, in
+  the middle of `tendsto_norm_soninApertureCoupling_soninPacketEven_sub_subAnnulus`; but the argument
+  never uses the packet, only that the vector vanishes inside the inner aperture and is fixed by the
+  outer one.  Extracted with those as hypotheses it applies to the rescaled shell-cut packets
+  unchanged, and is one theorem rather than a duplicated block.  Worth noting the estimate is free of
+  every smallness assumption — carrier, half-width and scale are unconstrained — because it is
+  structural; the analysis enters only afterwards, in bounding the three error terms.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninCouplingDilateDistance.lean`.
+- 2026-08-01 — the shell cut is built, completing the supply side of the counting argument.  The
+  corpus's `exists_disjoint_annulus_family` produces annuli by endpoints for the fixed-profile
+  family; the rescaled family is parameterised by centre and half-width instead, so the cut is given
+  explicitly — centres `b + (2i+1)δ` with `δ = (c-b)/(2N)` — and its five needed properties proved
+  directly.  Consecutive pieces abut, so the separation inequality holds with equality; that is
+  admissible because the shared endpoint is a null set for the pairing.  The two conditions the
+  packets need collapse to conditions on the single product `δ|w|`, which is what makes one carrier
+  serve all `N` annuli.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCut.lean`.
 - 2026-08-01 — the orthonormal family is constructed for the rescaled packets.  The corpus had
   disjoint-annulus orthogonality only for the *fixed-profile* family, and that proof does not
   transfer by instantiation because the two packet constructions are different objects; but its

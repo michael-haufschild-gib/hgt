@@ -49,10 +49,10 @@ noncomputable def radicalBaseChangeEvenFromModel {p : Polynomial F} {c : F} {m :
   intro e he
   refine hclass e ?_
   have hV : vandermondeProd (fun i => φ.symm (w i)) = φ.symm (vandermondeProd w) :=
-    (map_vandermondeProd_ringHom (φ.symm : rootField F (L := L) p ≃ₐ[F] L₀ → _ |>.toRingHom) w).symm
+    (map_vandermondeProd_ringHom (φ.symm.toRingHom) w).symm
   rw [hV, ← map_mul] at he
   have h := congrArg φ he
-  rw [AlgEquiv.apply_symm_apply, ← AlgEquiv.commutes φ e] at h
-  exact h.symm ▸ rfl
+  rw [AlgEquiv.commutes, AlgEquiv.apply_symm_apply] at h
+  exact h
 
 end GaloisForLFunctions.HTGeometry

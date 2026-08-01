@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM / CONTINUUM GRAVITY / CLOCKS / OPERATOR IDENTIFICATION
 - **Paper proof:**
-  `../2-fully-proven/new_scientific_knowledge/two-mass-self-calibrating-continuum-gravity-rigidity.md`
+  `../2-fully-proven/new_scientific_knowledge/other/two-mass-self-calibrating-continuum-gravity-rigidity.md`
 - **Lean:** `formal/GaloisForLFunctions/HTGeometry/ClockPropagatorSelfCalibration.lean`
 - **Status:** unconditional coordinate-trivialized continuum core.
 
@@ -56,4 +56,3 @@ The observation channels are ideal complete principal-symbol data. Still open ar
 reconstruction from finite clock experiments, Lorentzian support analysis, smooth bundle descent,
 diffeomorphism/gauge quotient, species-independent physical calibration, and backreacting active
 source controllability.
-

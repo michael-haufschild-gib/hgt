@@ -920,4 +920,39 @@ theorem measureReal_Icc_eq_zero_of_radial_tendsto_zero {ν : Measure ℝ} [IsFin
       nlinarith [hε.le, hlt]
     linarith
 
+/-! ## From arc vanishing to concentration
+
+A measure that is null on every closed rational interval inside an open set is null on the whole set:
+the set is the countable union of those intervals.  Combined with the arc-vanishing theorems this
+turns "the function extends across the complement" into "the measure is concentrated on the
+exceptional set" — which is how a meromorphic Herglotz function comes to have a purely atomic
+representing measure. -/
+
+/-- **Null on rational intervals gives null on the open set.**  Every point of an open set lies in a
+closed interval with rational endpoints inside it, and there are only countably many such. -/
+theorem measure_eq_zero_of_isOpen_of_rat_Icc {ν : Measure ℝ} {U : Set ℝ} (hU : IsOpen U)
+    (h : ∀ p : ℚ × ℚ, Set.Icc (p.1 : ℝ) (p.2 : ℝ) ⊆ U → ν (Set.Icc (p.1 : ℝ) (p.2 : ℝ)) = 0) :
+    ν U = 0 := by
+  have hcover : U ⊆ ⋃ p : {p : ℚ × ℚ // Set.Icc (p.1 : ℝ) (p.2 : ℝ) ⊆ U},
+      Set.Icc ((p.1.1 : ℝ)) ((p.1.2 : ℝ)) := by
+    intro x hx
+    obtain ⟨ε, hε, hsub⟩ := Metric.isOpen_iff.mp hU x hx
+    obtain ⟨q, hq1, hq2⟩ := exists_rat_btwn (show x - ε < x by linarith)
+    obtain ⟨r, hr1, hr2⟩ := exists_rat_btwn (show x < x + ε by linarith)
+    have hmem : Set.Icc ((q : ℝ)) ((r : ℝ)) ⊆ U := by
+      intro y hy
+      refine hsub ?_
+      rw [Metric.mem_ball, Real.dist_eq, abs_lt]
+      exact ⟨by linarith [hy.1], by linarith [hy.2]⟩
+    exact Set.mem_iUnion.mpr ⟨⟨(q, r), hmem⟩, ⟨le_of_lt hq2, le_of_lt hr1⟩⟩
+  refine measure_mono_null hcover (measure_iUnion_null fun p => ?_)
+  exact h p.1 p.2
+
+/-- **Concentration on the exceptional set.**  If the measure is null on every closed rational
+interval avoiding a closed set, it is concentrated there. -/
+theorem measure_compl_eq_zero_of_rat_Icc {ν : Measure ℝ} {S : Set ℝ} (hS : IsClosed S)
+    (h : ∀ p : ℚ × ℚ, Set.Icc (p.1 : ℝ) (p.2 : ℝ) ⊆ Sᶜ → ν (Set.Icc (p.1 : ℝ) (p.2 : ℝ)) = 0) :
+    ν Sᶜ = 0 :=
+  measure_eq_zero_of_isOpen_of_rat_Icc hS.isOpen_compl h
+
 end GaloisForLFunctions.HTGeometry

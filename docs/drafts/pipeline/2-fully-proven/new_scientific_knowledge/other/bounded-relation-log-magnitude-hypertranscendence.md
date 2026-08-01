@@ -411,10 +411,11 @@ exists_privatePrime_shiftedPolynomial_profile_entire_fullSupport_hypertranscende
 exists_privatePrime_shiftedPolynomial_positive_entire_fullSupport_hypertranscendental
 ```
 
-The exact owning target builds green.  A combined scratch axiom audit of the public capstones uses
-only `propext`, `Classical.choice`, and `Quot.sound`; the forbidden-token and whitespace checks are
-clean.  No missing analytic or arithmetic parent is passed in as a hypothesis.  The only remaining
-Stage-3 gate is serialized umbrella reachability, generated-index refresh, and formal lint.
+The exact owning target and `HTGeometry` umbrella build green.  A combined scratch axiom audit of
+the public capstones uses only `propext`, `Classical.choice`, and `Quot.sound`; the forbidden-token
+and whitespace checks are clean.  No missing analytic or arithmetic parent is passed in as a
+hypothesis.  The Stage-3 formalization certificate is
+`../../3-formalized/new_scientific_knowledge/bounded-relation-log-magnitude-hypertranscendence.md`.
 
 ## Gates
 
@@ -424,7 +425,7 @@ Stage-3 gate is serialized umbrella reachability, generated-index refresh, and f
 - [ ] Independent proof audit.
 - [x] Whole theorem and all stated realization/asymptotic corollaries formalized unconditionally
   in Lean.
-- [ ] 2 -> 3: serialized umbrella reachability, generated indexes, and formal lint.
+- [x] 2 -> 3: exact capstones are umbrella-reachable, axiom-audited, and certified.
 
 ## Log
 
@@ -437,3 +438,5 @@ Stage-3 gate is serialized umbrella reachability, generated-index refresh, and f
   realization, universal algebraic-unit phases, entirety, full support, HT, and value/first-/second-
   difference asymptotics; repaired the polynomial specialization at index zero by using
   `B*(n+1)^beta`.
+- 2026-08-01 — Closed Stage 3 after serialized leaf/umbrella verification and combined capstone
+  axiom audit.

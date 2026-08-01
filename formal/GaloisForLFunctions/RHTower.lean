@@ -3863,3 +3863,8 @@ import GaloisForLFunctions.RHTower.DeningerL2Inner
 import GaloisForLFunctions.RHTower.DeningerL2InnerBaseChange
 import GaloisForLFunctions.RHTower.SoninScaledPacketOrthogonality
 import GaloisForLFunctions.RHTower.DeningerAbsL2Inner
+import GaloisForLFunctions.RHTower.SoninShellCut
+import GaloisForLFunctions.RHTower.DeningerL2InnerAdditive
+import GaloisForLFunctions.RHTower.DeningerL2InnerTorsion
+import GaloisForLFunctions.RHTower.SoninCouplingDilateDistance
+import GaloisForLFunctions.RHTower.DeningerAbsL2InnerAdditive

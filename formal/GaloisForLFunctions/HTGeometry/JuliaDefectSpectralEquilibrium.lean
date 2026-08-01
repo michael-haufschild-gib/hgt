@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.JuliaDefectAttenuation
-import GaloisForLFunctions.HTGeometry.PrimeDirichletPositiveDefinite
+import GaloisForLFunctions.HTGeometry.CharacteristicFunctionPositiveDefinite
 
 /-!
 # Spectral equilibrium structure of the Julia defect

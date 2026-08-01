@@ -116,4 +116,19 @@ theorem coalescence_not_injective {ι : Type*} {u : ι → ℝ} {j k : ι}
     (hjk : j ≠ k) (heq : u j = u k) : ¬ Function.Injective u :=
   fun hinj => hjk (hinj heq)
 
+/-- **The mass at a labelled point.**  With distinct labels the labelled measure assigns each label
+exactly its own mass: every other Dirac misses the singleton. -/
+theorem labelledMeasure_singleton [MeasurableSingletonClass X] {p : ι → ENNReal} {u : ι → X}
+    (hinj : Function.Injective u) (k : ι) :
+    labelledMeasure p u {u k} = p k := by
+  rw [labelledMeasure, Measure.sum_apply _ (measurableSet_singleton _), tsum_eq_single k]
+  · rw [Measure.smul_apply, smul_eq_mul, Measure.dirac_apply]
+    simp
+  · intro j hj
+    rw [Measure.smul_apply, smul_eq_mul, Measure.dirac_apply]
+    have hne : u j ∉ ({u k} : Set X) := by
+      simp only [Set.mem_singleton_iff]
+      exact fun h => hj (hinj h)
+    rw [Set.indicator_of_notMem hne, mul_zero]
+
 end GaloisForLFunctions.HTGeometry

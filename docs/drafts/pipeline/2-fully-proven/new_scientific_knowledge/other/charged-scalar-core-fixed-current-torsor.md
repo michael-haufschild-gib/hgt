@@ -312,9 +312,9 @@ Finally, `ScalarFiniteDifferentialTorsor.lean` identifies the differential Galoi
 finite cover `C<q^N>` with `mu_N(C)` through
 `scalarFiniteDifferentialGaloisGroupEquiv`.  An exact owning-target build and a combined scratch
 axiom audit of all five theorem clauses pass; every audited capstone depends only on `propext`,
-`Classical.choice`, and `Quot.sound`.  No placeholder axiom or conditional theorem wrapper is
-used.  The remaining Stage-3 gate is serialized umbrella reachability, generated-index refresh,
-and formal lint.
+`Classical.choice`, and `Quot.sound`.  No placeholder axiom or conditional theorem wrapper is used.
+The Stage-3 formalization certificate is
+`../../3-formalized/new_scientific_knowledge/charged-scalar-core-fixed-current-torsor.md`.
 
 ## Gates
 
@@ -323,7 +323,7 @@ and formal lint.
 - [x] logarithmic-current hypertranscendence, `T=L(q)`, and `C<q^N>=L(q^N)` formalized
 - [x] exact finite- and infinite-order scalar fixed fields on the ordinary rational coordinate
 - [x] exact differential `G_m` torsor transport, automorphism group, and holonomy fixed fields
-- [ ] 2 -> 3 formalized: serialized umbrella reachability, generated indexes, and formal lint
+- [x] 2 -> 3 formalized: exact capstones are umbrella-reachable, axiom-audited, and certified
 - [ ] 3 -> 4 publication-ready: specialist external novelty review and integration with scalar
   orbifold classification
 
@@ -346,3 +346,5 @@ and formal lint.
 - 2026-07-18 -- formalized the exact differential torsor transport, full `G_m(C)` automorphism
   group, arbitrary finite/infinite holonomy fixed fields, and the finite-cover `mu_N(C)` Galois
   group; exact leaf build and combined axiom audit pass, with only the batch integration gate left.
+- 2026-08-01 -- closed Stage 3 after serialized leaf/umbrella verification and combined capstone
+  axiom audit.

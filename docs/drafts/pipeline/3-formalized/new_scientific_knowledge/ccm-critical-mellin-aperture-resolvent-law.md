@@ -2,7 +2,7 @@
 
 - **Stage:** 3 — core formalized in Lean 4
 - **Paper theorem:**
-  `../../2-fully-proven/new_scientific_knowledge/ccm-critical-mellin-aperture-resolvent-law.md`
+  `../../2-fully-proven/new_scientific_knowledge/other/ccm-critical-mellin-aperture-resolvent-law.md`
 - **Lean module:**
   `formal/GaloisForLFunctions/RHTower/CCMCriticalMellinApertureResolvent.lean`
 - **Umbrella imports:** `formal/GaloisForLFunctions/RHTower.lean` and
@@ -21,23 +21,28 @@ Lean proves unconditionally:
 - `criticalMellinApertureAveragedMultiplierTail_eq`: exact omitted-aperture multiplier from any
   cutoff onward;
 - `criticalMellinApertureAveragedModeResponseTail_eq`: exact omitted mode response from any cutoff;
+- `criticalMellinApertureAdmissibleModeResponseTail_eq`: exact specialized admissible-width tail;
+- `criticalMellinApertureAdmissibleModeResponseTail_tendsto_zero`: unconditional decay for
+  `0 < Re(w) < 1/2`;
 - `integral_criticalMellinApertureCausalKernel`: exact primitive of the averaged causal kernel;
 - `criticalMellinApertureCausalKernel_volterra_collapse`: pointwise cancellation of Volterra
-  memory to the unit exponential resolvent kernel.
+  memory to the unit exponential resolvent kernel;
+- `criticalMellinChebyshevError_eq_exp`: exact logarithmic-coordinate source identity;
+- `criticalMellinChebyshevResolventSource_log_eq`: exact Chebyshev resolvent source change of
+  variables.
 
 ## Boundary
 
-Module proves filter, omitted-tail, and causal-kernel identities.  It does not assert a sector
-condition for the actual Chebyshev source, one-sided Riesz bound, Weil positivity, or RH.  The
-paper corollary that the specialized admissible-width tail tends to zero is not yet a Lean theorem.
+Module proves filter, omitted-tail, specialized tail decay, causal-kernel identities, and exact
+Chebyshev source transport.  It does not assert a sector condition for the actual Chebyshev source,
+one-sided Riesz bound, Weil positivity, or RH.
 
 ## Verification
 
 - `lake env lean GaloisForLFunctions/RHTower/CCMCriticalMellinApertureResolvent.lean`: passes.
 - `lake build GaloisForLFunctions.RHTower.CCMCriticalMellinApertureResolvent`: passes,
   3553/3553 jobs.
-- `#print axioms` for all eight theorem endpoints reports only `propext`, `Classical.choice`, and
-  `Quot.sound`.
+- `lake build GaloisForLFunctions.RHTower`: passes.
+- Combined `#print axioms` audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
 - Forbidden-declaration scan of module is empty.
-- Repository-wide formal lint reports only unrelated unreachable concurrent modules; it reports no
-  defect in this module, which is imported by both RHTower umbrellas.
+- Module is reachable from both RHTower umbrellas.
