@@ -757,5 +757,43 @@ theorem log_cosh_eq_hyperbolicLevyIntegral
   have heq := eq_of_fderiv_eq hf hg hfd 0 hzero
   exact (congrFun heq y).symm
 
+/-- Exact exponentially decaying remainder after subtracting the linear asymptote of `log cosh`. -/
+theorem log_cosh_eq_linear_remainder (x : ℝ) :
+    Real.log (Real.cosh x) =
+      x - Real.log 2 + Real.log (1 + Real.exp (-2 * x)) := by
+  have he : Real.exp x ≠ 0 := (Real.exp_pos x).ne'
+  have htwo : (2 : ℝ) ≠ 0 := by norm_num
+  have hsum : 1 + Real.exp (-2 * x) ≠ 0 := by positivity
+  rw [Real.cosh_eq]
+  have hid : (Real.exp x + Real.exp (-x)) / 2 =
+      (Real.exp x / 2) * (1 + Real.exp (-2 * x)) := by
+    rw [Real.exp_neg, show -2 * x = -(2 * x) by ring, Real.exp_neg,
+      show 2 * x = x + x by ring, Real.exp_add]
+    field_simp [he]
+  rw [hid, Real.log_mul (div_ne_zero he htwo) hsum,
+    Real.log_div he htwo, Real.log_exp]
+
+/-- The remainder in the positive-ray asymptote `log(cosh(a y)) = a y - log 2 + o(1)`. -/
+theorem log_cosh_remainder_tendsto (a : ℝ) (ha : 0 < a) :
+    Filter.Tendsto
+      (fun y : ℝ => Real.log (Real.cosh (a * y)) - (a * y - Real.log 2))
+      Filter.atTop (nhds 0) := by
+  have htop : Filter.Tendsto (fun y : ℝ => 2 * a * y) Filter.atTop Filter.atTop := by
+    rw [show (fun y : ℝ => 2 * a * y) = fun y => (2 * a) * y by funext y; ring]
+    exact (Filter.tendsto_const_mul_atTop_of_pos (by positivity : 0 < 2 * a)).mpr
+      Filter.tendsto_id
+  have he : Filter.Tendsto (fun y : ℝ => Real.exp (-(2 * a * y))) Filter.atTop
+      (nhds 0) := Real.tendsto_exp_neg_atTop_nhds_zero.comp htop
+  have hone : Filter.Tendsto (fun y : ℝ => 1 + Real.exp (-(2 * a * y))) Filter.atTop
+      (nhds 1) := by
+    simpa using tendsto_const_nhds.add he
+  have hlog : Filter.Tendsto (fun y : ℝ => Real.log (1 + Real.exp (-(2 * a * y))))
+      Filter.atTop (nhds 0) := by
+    simpa using hone.log (by norm_num : (1 : ℝ) ≠ 0)
+  refine hlog.congr' ?_
+  filter_upwards with y
+  rw [log_cosh_eq_linear_remainder]
+  ring
+
 end
 end HTGeometry

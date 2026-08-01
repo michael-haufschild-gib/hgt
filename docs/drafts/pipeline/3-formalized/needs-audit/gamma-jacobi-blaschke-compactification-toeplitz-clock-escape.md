@@ -1,7 +1,7 @@
 # Gamma--Jacobi Blaschke compactification of Toeplitz clock escape
 
 - **ID:** `gamma-jacobi-blaschke-compactification-toeplitz-clock-escape`
-- **Stage:** 1 — paper proof and direct Lean proof complete; audit pending
+- **Stage:** 3 — formalized; external novelty and mathematical audit pending
 - **Parents:** `SR-41`, `SR-47`, `von-mangoldt-toeplitz-countertrace-analytic-radius-capacity-escape`
 - **Type:** source-specific singular-reader compactification / positive no-go survivor
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [ADVANCE]`
@@ -43,8 +43,10 @@ Lean proves every `r_p` is strictly between zero and one and prime marking is re
 r_p=r_q iff p=q.                                        (3)
 ```
 
-Thus interior accumulation at `z=0` becomes boundary accumulation at `r=1`, exactly where a
-nontrivial Hardy inner factor may carry infinitely many zeros.
+Thus the *conditionally forced locations* move from interior accumulation at `z=0` to boundary
+accumulation at `r=1`, exactly where a nontrivial Hardy inner factor may carry infinitely many
+zeros. This theorem alone does not supply analytic continuation or actual zeros of the accumulated
+counterreader.
 
 ## Exact Blaschke budget
 
@@ -89,7 +91,8 @@ von Mangoldt maximal transport clock
 ```
 
 It gives canonical candidate carrier for singular cyclic reader rather than another abstract
-matrix completion.
+matrix completion. The edge-local factorization card now supplies unconditional zeros for the
+multiplicative edge reader; they remain conditional for the accumulated nonlinear reader.
 
 ## Remaining falsifier
 
@@ -136,16 +139,27 @@ Direct command passed:
 lake env lean GaloisForLFunctions/RHTower/GammaJacobiToeplitzClockBlaschkeCompactification.lean
 ```
 
+Final narrow build passed:
+
+```text
+lake build GaloisForLFunctions.RHTower.GammaJacobiToeplitzClockBlaschkeCompactification
+Build completed successfully (9054 jobs).
+```
+
+All capstones use only `propext`, `Classical.choice`, and `Quot.sound`. Module-local forbidden
+declaration scan is clean. Repository lint reaches all RHTower modules; its only failure at audit
+time is unrelated concurrent `HTGeometry.PrimePowerClass` umbrella wiring.
+
 ## Gates
 
 - [x] whole-corpus collision audit
 - [x] generic Blaschke/Meixner--Pollaczek layer classified known
 - [x] source paper proof `(2)`--`(6)`
 - [x] direct unconditional Lean proof
-- [ ] umbrella wiring
-- [ ] axiom audit
-- [ ] forbidden-declaration lint
-- [ ] final narrow build
+- [x] umbrella wiring
+- [x] axiom audit — standard three only
+- [x] forbidden-declaration lint — module clean
+- [x] final narrow build — 9054 jobs
 - [ ] external expert novelty audit
 - [ ] inner/outer convergence of conjugated counterreader
 - [ ] completed Euler reader / fibre orientation / RH

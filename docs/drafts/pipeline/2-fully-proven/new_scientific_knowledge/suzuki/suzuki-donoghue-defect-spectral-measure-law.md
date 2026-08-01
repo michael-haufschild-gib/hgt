@@ -376,6 +376,18 @@ sums to zero, by reindexing along the reflection), and its two consequences
 needed — the reindexing argument is valid whether or not the family converges, since in the divergent
 case both sides are the junk value zero.
 
+For the free spectrum the reflection is realized on the index by `k -> -k-1`
+(`freeReflection`, `freeSpectrum_reflection`): the half-shift in `x_k = (k+1/2)pi/a` is exactly what
+makes this an involution without a fixed point, so the spectrum has no atom at the centre to reflect
+onto itself.  With the constant free weight this discharges every parity hypothesis concretely, and
+`freeSpectrum_moment_eq_zero` and `freeSpectrum_cauchy_eq_zero_at_center` follow.
+
+The two halves of `(14)`'s parity clause are visible at the index level:
+`freeReflection_ne` shows the even reflection `k -> -k-1` has **no** fixed point (`2k = -1` is
+impossible), while `oddSpectrum_fixedPoint_iff` shows the odd reflection `k -> -k` fixes **exactly**
+the centre.  So the odd spectrum carries the atom at the origin that the even one lacks, and the
+reason is arithmetic rather than analytic.
+
 What is still missing is the identification of Suzuki's concrete `L` with an operator carrying such
 an eigenbasis.
 
@@ -576,3 +588,18 @@ Section 4's identification of the two divisors is algebra on the two-angle quoti
   required: the reindexing identity `Equiv.tsum_eq` holds unconditionally, and in the non-summable
   case both sides are the junk value zero, so the conclusion is still correct.  Three new
   declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the free model's parity made concrete.  `freeReflection` realizes the spectral
+  reflection on the index as `k -> -k-1`, and `freeSpectrum_reflection` verifies it sends
+  `x_k = (k+1/2)pi/a` to `-x_k`.  The half-shift is doing real work here: it makes the involution
+  fixed-point-free, which is the index-level statement that the even spectrum has no atom at the
+  centre — the same fact `freeCentre_odd_not_even` records analytically.  With the constant free
+  weight, `freeSpectrum_moment_eq_zero` and `freeSpectrum_cauchy_eq_zero_at_center` then discharge
+  the parity clauses in the model rather than as hypotheses.  Three new declarations, targeted build
+  green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(14)`'s parity clause exhibited at the index level.  `freeReflection_ne`: the even
+  reflection `k -> -k-1` has no fixed point, since `2k = -1` is impossible in the integers.
+  `oddSpectrum_fixedPoint_iff`: the odd reflection `k -> -k` fixes exactly `0`.  So "the forced
+  central eigenvalue lies in the odd spectrum and not the even one" is an arithmetic fact about two
+  involutions, matching the analytic route (`freeCentre_odd_not_even`, via `cos 0 = 1`) from a
+  different direction.  Three new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.

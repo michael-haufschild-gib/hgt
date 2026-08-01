@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.HyperbolicLevyKhintchine
 import GaloisForLFunctions.HTGeometry.HyperbolicBounds
 import GaloisForLFunctions.HTGeometry.JuliaDefectSpectralEquilibrium
+import GaloisForLFunctions.RHTower.SoninCosineRiemannLebesgue
 
 /-!
 # Lévy--Khintchine law for the Julia compression profile
@@ -209,6 +210,94 @@ theorem integrableOn_juliaCompressionLevyDensity :
     exact juliaCompressionLevyDensity_le_tail (lt_trans zero_lt_one ht)
   rw [← Set.Ioc_union_Ioi_eq_Ioi (by norm_num : (0 : ℝ) ≤ 1)]
   exact hnear.union htail
+
+/-- The Julia compression exponent approaches the exact finite Lévy mass. -/
+theorem neg_log_juliaCompressionSquareProfile_tendsto :
+    Filter.Tendsto (fun y : ℝ => -Real.log (juliaCompressionSquareProfile y))
+      Filter.atTop (nhds ((3 / 2 : ℝ) * Real.log 2)) := by
+  have h2 := log_cosh_remainder_tendsto (2 : ℝ) (by norm_num)
+  have hh := log_cosh_remainder_tendsto (1 / 2 : ℝ) (by norm_num)
+  have hlim := (h2.const_mul (1 / 2 : ℝ)).sub (hh.const_mul 2)
+  have hc : Filter.Tendsto (fun _ : ℝ => (3 / 2 : ℝ) * Real.log 2) Filter.atTop
+      (nhds ((3 / 2 : ℝ) * Real.log 2)) := tendsto_const_nhds
+  have hcombo : Filter.Tendsto (fun y : ℝ =>
+      (1 / 2 : ℝ) * Real.log (Real.cosh (2 * y)) -
+        2 * Real.log (Real.cosh (y / 2))) Filter.atTop
+      (nhds ((3 / 2 : ℝ) * Real.log 2)) := by
+    convert hlim.add hc using 1 <;> ring
+  refine hcombo.congr' ?_
+  filter_upwards with y
+  rw [neg_log_juliaCompressionSquareProfile]
+
+/-- Half-line cosine form of Riemann--Lebesgue, reduced to project Fourier infrastructure. -/
+theorem tendsto_setIntegral_mul_cos_atTop {g : ℝ → ℝ}
+    (hg : IntegrableOn g (Set.Ioi 0)) :
+    Filter.Tendsto (fun y : ℝ => ∫ t : ℝ in Set.Ioi 0, Real.cos (t * y) * g t)
+      Filter.atTop (nhds 0) := by
+  let G : ℝ → ℝ := Set.indicator (Set.Ioi 0) g
+  have hG : Integrable G := hg.integrable_indicator measurableSet_Ioi
+  have hRL := RHTower.tendsto_integral_mul_cos_atTop hG
+  have hscale : Filter.Tendsto (fun y : ℝ => y / (2 * Real.pi)) Filter.atTop
+      Filter.atTop := by
+    rw [show (fun y : ℝ => y / (2 * Real.pi)) =
+      fun y => (1 / (2 * Real.pi)) * y by funext y; ring]
+    exact (Filter.tendsto_const_mul_atTop_of_pos
+      (by positivity : 0 < 1 / (2 * Real.pi))).mpr Filter.tendsto_id
+  have hcomp := hRL.comp hscale
+  refine hcomp.congr' ?_
+  filter_upwards with y
+  simp only [Function.comp_apply]
+  rw [← integral_indicator measurableSet_Ioi]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+  by_cases ht : t ∈ Set.Ioi 0
+  · simp only [G, Set.indicator_of_mem ht]
+    rw [show 2 * Real.pi * t * (y / (2 * Real.pi)) = t * y by
+      field_simp [Real.pi_ne_zero]]
+    ring
+  · simp [G, ht]
+
+/-- **Exact Julia jump intensity.**  The positive-half-line Lévy density has mass
+`(3/2) log 2`, hence the associated compound-Poisson rate is finite and explicit. -/
+theorem juliaCompressionLevyDensity_mass :
+    ∫ t : ℝ in Set.Ioi 0, juliaCompressionLevyDensity t =
+      (3 / 2 : ℝ) * Real.log 2 := by
+  have hcosInt (y : ℝ) :
+      IntegrableOn (fun t : ℝ => Real.cos (t * y) * juliaCompressionLevyDensity t)
+        (Set.Ioi 0) := by
+    exact integrableOn_juliaCompressionLevyDensity.bdd_mul
+      ((Real.continuous_cos.comp (continuous_id.mul continuous_const)).aestronglyMeasurable)
+      (Filter.Eventually.of_forall fun t => by
+        rw [Real.norm_eq_abs]
+        exact Real.abs_cos_le_one _)
+  have hsplit (y : ℝ) :
+      (∫ t : ℝ in Set.Ioi 0,
+        (1 - Real.cos (t * y)) * juliaCompressionLevyDensity t) =
+        (∫ t : ℝ in Set.Ioi 0, juliaCompressionLevyDensity t) -
+          ∫ t : ℝ in Set.Ioi 0,
+            Real.cos (t * y) * juliaCompressionLevyDensity t := by
+    rw [← MeasureTheory.integral_sub integrableOn_juliaCompressionLevyDensity (hcosInt y)]
+    refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioi ?_
+    intro t _
+    ring
+  have hcos := tendsto_setIntegral_mul_cos_atTop integrableOn_juliaCompressionLevyDensity
+  have hmassLimit : Filter.Tendsto
+      (fun y : ℝ => -Real.log (juliaCompressionSquareProfile y)) Filter.atTop
+      (nhds (∫ t : ℝ in Set.Ioi 0, juliaCompressionLevyDensity t)) := by
+    have hconst : Filter.Tendsto
+        (fun _ : ℝ => ∫ t : ℝ in Set.Ioi 0, juliaCompressionLevyDensity t) Filter.atTop
+        (nhds (∫ t : ℝ in Set.Ioi 0, juliaCompressionLevyDensity t)) :=
+      tendsto_const_nhds
+    have hright := hconst.sub hcos
+    have hright' : Filter.Tendsto
+        (fun y : ℝ => (∫ t : ℝ in Set.Ioi 0, juliaCompressionLevyDensity t) -
+          ∫ t : ℝ in Set.Ioi 0,
+            Real.cos (t * y) * juliaCompressionLevyDensity t) Filter.atTop
+        (nhds (∫ t : ℝ in Set.Ioi 0, juliaCompressionLevyDensity t)) := by
+      simpa using hright
+    refine hright'.congr' ?_
+    filter_upwards with y
+    rw [neg_log_juliaCompressionSquareProfile_eq_integral, hsplit]
+  exact tendsto_nhds_unique hmassLimit neg_log_juliaCompressionSquareProfile_tendsto
 
 end
 

@@ -111,6 +111,16 @@ Prove a robust lower bound matching direct Hamiltonian-simulation complexity
 through exponential time. This is the central open core, not a corollary of
 recurrence or phase equidistribution.
 
+More precisely, the geometric core is Brown--Freedman--Lin--Susskind
+Conjecture 2 (Nature 622, 58--62, 2023): for the critical complexity metric,
+a typical fixed-local `H` direction does not meet its directional cut locus
+until exponential time.  The paper must replace both informal words by an
+explicit fixed-`q` Gaussian ensemble and a quantified high-probability cut-time
+bound, then transfer that geometric distance bound to robust finite-gate state
+complexity with only the permitted polynomial losses.  Proving only absence of
+conjugate points is insufficient: that excludes local variations but not a
+globally shorter path.
+
 ### O5. Quantitative first hitting
 
 Upgrade completed-time occupation to a first-return lower bound from the
@@ -129,6 +139,37 @@ Prove the theorem directly for fixed-`q` SYK before making a black-hole-model
 claim. A result only for abstract Pauli ensembles permits quantum-many-body
 conclusions, not a claim about real black holes or spacetime interiors.
 
+## State-design route audit
+
+The tempting bridge
+
+\[
+  \text{high-order state design}\quad\Longrightarrow\quad
+  \text{high state-circuit complexity}
+\]
+
+does not presently close O4.  Current autonomous-Hamiltonian results establish
+late-time Haar moments only for each fixed design order `k`, or obtain a
+finite-time error of order `1/T` while the Haar `k`-frame-potential scale is
+of order `D^{-k}`.  The resulting requirement `T \gtrsim D^k` yields at most
+
+\[
+  k \lesssim \log_D T,
+\]
+
+so design order certifies at most logarithmic-in-time complexity rather than
+Brown--Susskind linear growth.  Multiple quenches improve the temporal power
+but replace one time-independent Hamiltonian by driven dynamics and therefore
+do not satisfy the target.
+
+The only surviving design formulation strong enough for O4 would be a new
+fixed-time theorem for the *static local Hamiltonian ensemble*: design order
+`k(t) \asymp t` up to `k \asymp D`, together with concentration from the
+Hamiltonian ensemble to individual autonomous trajectories and robustness to
+polynomial-bit coefficient perturbations.  None of these three statements is
+available in the audited literature or corpus.  They remain possible proof
+targets, not premises.
+
 ## Hard barrier
 
 Robust superpolynomial circuit complexity for exponentially long evolution of
@@ -138,6 +179,24 @@ needed separation, find and justify a theorem formulation outside the exact
 equivalence while retaining physical meaning, or fail honestly. Continuous
 random coefficients do not license hiding exponential information in the
 Hamiltonian: robustness and coefficient precision must be audited.
+
+## Literature collision and exact novelty
+
+The slogan “ballistic escape plus entropic return” and the critical-metric
+picture are not themselves novel.  Brown--Freedman--Lin--Susskind already
+conjecture exponentially late cut loci for typical local directions.  Earlier
+work of Balasubramanian--DeCross--Kar--Parrikar excludes *local* obstructions
+under the Eigenstate Complexity Hypothesis but explicitly leaves global
+shortcuts open.  Brown's Bishop--Gromov argument proves exponential complexity
+for typical ambient unitaries, not for the one-parameter orbit of a succinct
+static local Hamiltonian.
+
+The admissible novelty claim is therefore exact and falsifiable: first
+unconditional proof of the directional critical-metric conjecture for an
+ordinary time-independent fixed-locality ensemble, followed by the first
+single theorem deriving its growth, plateau, first low-complexity recurrence,
+and all-time non-Haar witness.  If the directional cut-time theorem cannot be
+proved, no geometric slogan is promoted as a discovery.
 
 ## No-go discipline
 
@@ -150,3 +209,13 @@ receive a new title and an independent significance audit.
 - 2026-08-01 -- Created in 1-in-progress after literature-first collision
   audit. Existing recurrence and Haar infrastructure inventoried; circuit
   complexity absent; O4 identified as open core.
+- 2026-08-01 -- Audited the autonomous state-design route. Fixed-order moment
+  convergence and one-quench finite-time estimates imply only
+  `k \lesssim log_D T`; they cannot yield linear complexity growth. The route
+  survives only as a substantially stronger fixed-time random-static-local-H
+  design theorem with concentration and precision robustness.
+- 2026-08-01 -- Immediate collision audit identified the proposed global
+  minimizing-geodesic mechanism as Brown--Freedman--Lin--Susskind Conjecture 2,
+  not a new slogan. O4 is now the exact unconditional resolution of that
+  conjecture for a concrete fixed-`q` ensemble, including the global-shortcut
+  gap that local conjugate-point arguments do not close.

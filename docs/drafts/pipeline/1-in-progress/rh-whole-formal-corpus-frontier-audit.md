@@ -1259,3 +1259,33 @@ Formal module and card:
 formal/GaloisForLFunctions/RHTower/GammaJacobiTailConnectionTransgression.lean
 docs/drafts/pipeline/3-formalized/needs-audit/gamma-jacobi-tail-connection-transgression.md
 ```
+
+## Toeplitz-clock escape becomes a Gamma boundary divisor
+
+`[PAPER-PROVED] [LEAN-PROVED] [ADVANCE] [EXTERNAL NOVELTY PROVISIONAL] [NOT RH]`
+
+The prior von Mangoldt Toeplitz counterreader no-go forces zeros
+`zeta_p=1/log(p+1)` toward the analytic germ origin. The exact reciprocal-log Gamma coordinate
+does not merely move these zeros: it converts the whole source packet to
+
+```text
+r_p=tanh(log(p+1))^2,
+1-r_p=4(p+1)^2/((p+1)^2+1)^2<=4/p^2.
+```
+
+Thus `sum_p(1-r_p)<infinity`, while distinct primes remain distinct and `prod_p r_p` exists and is
+nonzero. The obstruction's positive survivor is a nontrivial Blaschke-admissible boundary divisor,
+canonically fixed by the von Mangoldt endpoint clocks and the Gamma--Jacobi projective coordinate.
+No prime distribution theorem is used. Generic Blaschke theory is known and excluded from the
+novelty claim.
+
+Formal module and card:
+
+```text
+formal/GaloisForLFunctions/RHTower/GammaJacobiToeplitzClockBlaschkeCompactification.lean
+docs/drafts/pipeline/3-formalized/needs-audit/gamma-jacobi-blaschke-compactification-toeplitz-clock-escape.md
+```
+
+Open falsifier: after this conjugation, do normalized finite counterreader inner factors converge
+to the prime divisor, and is the residual outer factor forced by the `SR-47` rank-one connection
+transgression? A negative answer must identify the exact surviving outer gauge.

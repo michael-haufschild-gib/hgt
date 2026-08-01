@@ -25,38 +25,40 @@ open _root_.HTGeometry
 /-- **The collapse from abstract coefficient data.**  Whenever the normalized coefficients converge
 along the line and the normalizing coefficient is eventually nonzero, the collapsed relation holds at
 every point of the line. -/
-theorem line_relation_of_coeff_limits {n N m : ℕ} {Φ : ℂ → ℂ} {R : ℝ} (hR : 0 < R)
-    (hΦ : DifferentiableOn ℂ Φ (verticalStrip (1 / 2 + m) R))
-    (hap : IsStripAlmostPeriodic Φ (1 / 2 + m) R)
+theorem line_relation_of_coeff_limits {n N : ℕ} {σ : ℝ} {Φ : ℂ → ℂ} {R : ℝ} (hR : 0 < R)
+    (hΦ : DifferentiableOn ℂ Φ (verticalStrip σ R))
+    (hap : IsStripAlmostPeriodic Φ σ R)
     (e : Fin N → Fin (n + 1) → ℕ) (F : Fin N → ℂ → ℂ) (d : Fin N → ℂ) (β : Fin N)
     (hcoeff : ∀ α, Tendsto (fun t : ℝ =>
-      F α (((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I)
-        / F β (((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I)) atTop (nhds (d α)))
-    (hFβ : ∀ᶠ t : ℝ in atTop, F β (((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I) ≠ 0)
+      F α ((σ : ℂ) + (t : ℂ) * Complex.I)
+        / F β ((σ : ℂ) + (t : ℂ) * Complex.I)) atTop (nhds (d α)))
+    (hFβ : ∀ᶠ t : ℝ in atTop, F β ((σ : ℂ) + (t : ℂ) * Complex.I) ≠ 0)
     (hrel : ∀ s : ℂ, ∑ α, F α s * ∏ i : Fin (n + 1), (iteratedDeriv (i : ℕ) Φ s) ^ (e α i) = 0)
     (t₀ : ℝ) :
     jetPoly d e
       (fun i : Fin (n + 1) => iteratedDeriv (i : ℕ) Φ
-        (((1 / 2 + m : ℝ) : ℂ) + (t₀ : ℂ) * Complex.I)) = 0 := by
+        ((σ : ℂ) + (t₀ : ℂ) * Complex.I)) = 0 := by
   classical
-  set s₀ : ℂ := ((1 / 2 + m : ℝ) : ℂ) + ((t₀ : ℝ) : ℂ) * Complex.I with hs₀
+  set s₀ : ℂ := (σ : ℂ) + ((t₀ : ℝ) : ℂ) * Complex.I with hs₀
   set M : Fin N → ℂ → ℂ := fun α s => ∏ i : Fin (n + 1), (iteratedDeriv (i : ℕ) Φ s) ^ (e α i)
     with hM
   have hjet : ∀ α : Fin N,
-      Continuous (fun t : ℝ => M α (((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I)) ∧
-      IsBohrAlmostPeriodic (fun t : ℝ => M α (((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I)) :=
+      Continuous (fun t : ℝ => M α ((σ : ℂ) + (t : ℂ) * Complex.I)) ∧
+      IsBohrAlmostPeriodic (fun t : ℝ => M α ((σ : ℂ) + (t : ℂ) * Complex.I)) :=
     fun α => isBohrAlmostPeriodic_jetMonomial hR hΦ hap (e α)
   have hshift : Tendsto (fun t : ℝ => t + t₀) atTop atTop :=
     tendsto_atTop_add_const_right _ _ tendsto_id
   have hfun : ∀ (g : ℂ → ℂ) (t : ℝ), g (s₀ + (t : ℂ) * Complex.I)
-      = g (((1 / 2 + m : ℝ) : ℂ) + ((t + t₀ : ℝ) : ℂ) * Complex.I) := by
+      = g ((σ : ℂ) + ((t + t₀ : ℝ) : ℂ) * Complex.I) := by
     intro g t
-    rw [hs₀, line_shift]
+    rw [hs₀]
+    push_cast
+    ring_nf
   have hMcont : ∀ α : Fin N, Continuous fun t : ℝ => M α (s₀ + (t : ℂ) * Complex.I) := by
     intro α
     have hc := (hjet α).1
     have : (fun t : ℝ => M α (s₀ + (t : ℂ) * Complex.I))
-        = fun t : ℝ => (fun u : ℝ => M α (((1 / 2 + m : ℝ) : ℂ) + (u : ℂ) * Complex.I)) (t + t₀) := by
+        = fun t : ℝ => (fun u : ℝ => M α ((σ : ℂ) + (u : ℂ) * Complex.I)) (t + t₀) := by
       funext t
       exact hfun _ t
     rw [this]
@@ -66,7 +68,7 @@ theorem line_relation_of_coeff_limits {n N m : ℕ} {Φ : ℂ → ℂ} {R : ℝ}
     intro α
     have ha := (hjet α).2
     have : (fun t : ℝ => M α (s₀ + (t : ℂ) * Complex.I))
-        = fun t : ℝ => (fun u : ℝ => M α (((1 / 2 + m : ℝ) : ℂ) + (u : ℂ) * Complex.I)) (t + t₀) := by
+        = fun t : ℝ => (fun u : ℝ => M α ((σ : ℂ) + (u : ℂ) * Complex.I)) (t + t₀) := by
       funext t
       exact hfun _ t
     rw [this]
@@ -87,33 +89,33 @@ theorem line_relation_of_coeff_limits {n N m : ℕ} {Φ : ℂ → ℂ} {R : ℝ}
   simpa [jetPoly, hM, hs₀] using hval
 
 /-- **Eq. (8) from abstract coefficient data.** -/
-theorem strip_relation_of_coeff_limits {n N m : ℕ} {Φ : ℂ → ℂ} {R : ℝ} (hR : 0 < R)
-    (hΦ : DifferentiableOn ℂ Φ (verticalStrip (1 / 2 + m) R))
-    (hap : IsStripAlmostPeriodic Φ (1 / 2 + m) R)
+theorem strip_relation_of_coeff_limits {n N : ℕ} {σ : ℝ} {Φ : ℂ → ℂ} {R : ℝ} (hR : 0 < R)
+    (hΦ : DifferentiableOn ℂ Φ (verticalStrip σ R))
+    (hap : IsStripAlmostPeriodic Φ σ R)
     (e : Fin N → Fin (n + 1) → ℕ) (F : Fin N → ℂ → ℂ) (d : Fin N → ℂ) (β : Fin N)
     (hcoeff : ∀ α, Tendsto (fun t : ℝ =>
-      F α (((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I)
-        / F β (((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I)) atTop (nhds (d α)))
-    (hFβ : ∀ᶠ t : ℝ in atTop, F β (((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I) ≠ 0)
+      F α ((σ : ℂ) + (t : ℂ) * Complex.I)
+        / F β ((σ : ℂ) + (t : ℂ) * Complex.I)) atTop (nhds (d α)))
+    (hFβ : ∀ᶠ t : ℝ in atTop, F β ((σ : ℂ) + (t : ℂ) * Complex.I) ≠ 0)
     (hrel : ∀ s : ℂ, ∑ α, F α s * ∏ i : Fin (n + 1), (iteratedDeriv (i : ℕ) Φ s) ^ (e α i) = 0)
-    {z : ℂ} (hz : z ∈ verticalStrip (1 / 2 + m) R) :
+    {z : ℂ} (hz : z ∈ verticalStrip σ R) :
     jetPoly d e (fun i : Fin (n + 1) => iteratedDeriv (i : ℕ) Φ z) = 0 :=
   jetPoly_eqOn_zero_of_line hR hΦ d e
     (fun t => line_relation_of_coeff_limits hR hΦ hap e F d β hcoeff hFβ hrel t) hz
 
 /-- **Eq. (9) from abstract coefficient data.** -/
-theorem rank_finite_of_coeff_limits {n N m : ℕ} {Φ : ℂ → ℂ} {R r ρ : ℝ}
+theorem rank_finite_of_coeff_limits {n N : ℕ} {σ : ℝ} {Φ : ℂ → ℂ} {R r ρ : ℝ}
     (hr : 0 < r) (hρ : 0 < ρ) (hrρ : r + ρ < R) (hR : 0 < R)
-    (hΦ : DifferentiableOn ℂ Φ (verticalStrip (1 / 2 + m) R))
-    (hap : IsStripAlmostPeriodic Φ (1 / 2 + m) R)
+    (hΦ : DifferentiableOn ℂ Φ (verticalStrip σ R))
+    (hap : IsStripAlmostPeriodic Φ σ R)
     (e : Fin N → Fin (n + 1) → ℕ) (F : Fin N → ℂ → ℂ) (d : Fin N → ℂ) (β : Fin N)
     (hcoeff : ∀ α, Tendsto (fun t : ℝ =>
-      F α (((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I)
-        / F β (((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I)) atTop (nhds (d α)))
-    (hFβ : ∀ᶠ t : ℝ in atTop, F β (((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I) ≠ 0)
+      F α ((σ : ℂ) + (t : ℂ) * Complex.I)
+        / F β ((σ : ℂ) + (t : ℂ) * Complex.I)) atTop (nhds (d α)))
+    (hFβ : ∀ᶠ t : ℝ in atTop, F β ((σ : ℂ) + (t : ℂ) * Complex.I) ≠ 0)
     (hrel : ∀ s : ℂ, ∑ α, F α s * ∏ i : Fin (n + 1), (iteratedDeriv (i : ℕ) Φ s) ^ (e α i) = 0)
     (he : Function.Injective e) (hdβ : d β ≠ 0)
-    {f : ℝ →ᵇ ℂ} (hf : ∀ x : ℝ, f x = Φ (((1 / 2 + m : ℝ) : ℂ) + (x : ℂ) * Complex.I))
+    {f : ℝ →ᵇ ℂ} (hf : ∀ x : ℝ, f x = Φ ((σ : ℂ) + (x : ℂ) * Complex.I))
     (hfu : UniformContinuous (fun x => f x)) (hftb : HasTotallyBoundedOrbit (fun x => f x))
     [MeasurableSpace (BohrHull f)] [BorelSpace (BohrHull f)] :
     ∃ K : ℕ, Module.rank ℤ (bohrHullFrequencies f) ≤ (K : Cardinal) := by
@@ -127,10 +129,10 @@ theorem rank_finite_of_coeff_limits {n N m : ℕ} {Φ : ℂ → ℂ} {R r ρ : �
 every coefficient is dominated by one fixed monomial, and the normalizing coefficient has nonzero
 limit constant; then a strip almost periodic holomorphic solution with distinct jet monomials has
 finite rational Bohr frequency rank. -/
-theorem rank_finite_of_gammaFieldSum_relation {n N k m : ℕ} {Φ : ℂ → ℂ} {R r ρ : ℝ}
+theorem rank_finite_of_gammaFieldSum_relation {n N k : ℕ} {σ : ℝ} {Φ : ℂ → ℂ} {R r ρ : ℝ}
     (hr : 0 < r) (hρ : 0 < ρ) (hrρ : r + ρ < R) (hR : 0 < R)
-    (hΦ : DifferentiableOn ℂ Φ (verticalStrip (1 / 2 + m) R))
-    (hap : IsStripAlmostPeriodic Φ (1 / 2 + m) R)
+    (hΦ : DifferentiableOn ℂ Φ (verticalStrip σ R))
+    (hap : IsStripAlmostPeriodic Φ σ R)
     (e : Fin N → Fin (n + 1) → ℕ) (F : Fin N → ℂ → ℂ)
     (j : Fin N → Fin k → ℕ) (p q : Fin N → Fin k → Polynomial ℂ) (D : Fin N → Fin k → ℕ)
     (jb : ℕ) (pb qb : Polynomial ℂ) (Db : ℕ)
@@ -139,11 +141,11 @@ theorem rank_finite_of_gammaFieldSum_relation {n N k m : ℕ} {Φ : ℂ → ℂ}
     (β : Fin N)
     (hc : (∑ i, gammaMonomialLimit (j β i) (p β i) (q β i) (D β i) jb pb qb Db) ≠ 0)
     (hF : ∀ (α : Fin N) (t : ℝ),
-      F α (((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I)
+      F α ((σ : ℂ) + (t : ℂ) * Complex.I)
         = ∑ i, gammaFieldElt m (j α i) (p α i) (q α i) (D α i) t)
     (hrel : ∀ s : ℂ, ∑ α, F α s * ∏ i : Fin (n + 1), (iteratedDeriv (i : ℕ) Φ s) ^ (e α i) = 0)
     (he : Function.Injective e)
-    {f : ℝ →ᵇ ℂ} (hf : ∀ x : ℝ, f x = Φ (((1 / 2 + m : ℝ) : ℂ) + (x : ℂ) * Complex.I))
+    {f : ℝ →ᵇ ℂ} (hf : ∀ x : ℝ, f x = Φ ((σ : ℂ) + (x : ℂ) * Complex.I))
     (hfu : UniformContinuous (fun x => f x)) (hftb : HasTotallyBoundedOrbit (fun x => f x))
     [MeasurableSpace (BohrHull f)] [BorelSpace (BohrHull f)] :
     ∃ K : ℕ, Module.rank ℤ (bohrHullFrequencies f) ≤ (K : Cardinal) := by
@@ -152,14 +154,14 @@ theorem rank_finite_of_gammaFieldSum_relation {n N k m : ℕ} {Φ : ℂ → ℂ}
     (∑ i, gammaMonomialLimit (j α i) (p α i) (q α i) (D α i) jb pb qb Db)
       / ∑ i, gammaMonomialLimit (j β i) (p β i) (q β i) (D β i) jb pb qb Db with hd
   have hcoeff : ∀ α : Fin N, Tendsto (fun t : ℝ =>
-      F α (((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I)
-        / F β (((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I)) atTop (nhds (d α)) := by
+      F α ((σ : ℂ) + (t : ℂ) * Complex.I)
+        / F β ((σ : ℂ) + (t : ℂ) * Complex.I)) atTop (nhds (d α)) := by
     intro α
     have h := tendsto_ratio_gammaFieldSum m j p q D jb pb qb Db hq hqb hpb hdom β hc α
     refine h.congr fun t => ?_
     rw [hF α t, hF β t]
   have hFβ : ∀ᶠ t : ℝ in atTop,
-      F β (((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I) ≠ 0 := by
+      F β ((σ : ℂ) + (t : ℂ) * Complex.I) ≠ 0 := by
     filter_upwards [eventually_sum_gammaFieldElt_ne_zero m (j β) (p β) (q β) (D β) jb pb qb Db
       (fun i => hq β i) hpb hqb (fun i => hdom β i) hc] with t ht
     rw [hF β t]

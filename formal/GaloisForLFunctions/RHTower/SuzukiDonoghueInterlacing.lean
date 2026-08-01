@@ -322,4 +322,23 @@ theorem freeSpectrum_cauchy_eq_zero_at_center (a c : ℝ) :
         ((((k : ℝ) + 1 / 2) * Real.pi / a) - 0) = 0 :=
   tsum_cauchy_eq_zero_at_center freeReflection (freeSpectrum_reflection a) fun _ => rfl
 
+/-- **The even reflection has no fixed point.**  `k = -k-1` would force `2k = -1`, impossible in the
+integers.  This is the index-level form of "the even spectrum has no atom at the centre". -/
+theorem freeReflection_ne (k : ℤ) : freeReflection k ≠ k := by
+  show -k - 1 ≠ k
+  omega
+
+/-- The odd spectrum's reflection is negation of the index. -/
+theorem oddSpectrum_reflection (a : ℝ) (k : ℤ) :
+    ((Equiv.neg ℤ k : ℤ) : ℝ) * Real.pi / a = -(((k : ℝ)) * Real.pi / a) := by
+  show (((-k : ℤ) : ℝ)) * Real.pi / a = _
+  push_cast
+  ring
+
+/-- **The odd reflection fixes exactly the centre.**  So the odd spectrum carries the atom at the
+origin that the even one lacks — the two halves of `(14)`'s parity clause, at the index level. -/
+theorem oddSpectrum_fixedPoint_iff (k : ℤ) : Equiv.neg ℤ k = k ↔ k = 0 := by
+  show -k = k ↔ k = 0
+  omega
+
 end GaloisForLFunctions.RHTower

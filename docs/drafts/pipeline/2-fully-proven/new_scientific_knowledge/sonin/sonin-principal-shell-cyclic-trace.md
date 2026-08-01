@@ -1106,10 +1106,25 @@ verbatim to the shell-cut packets, which is
 all — carrier, half-width and scale are free — because it is purely structural; smallness is only
 needed later, to make the three errors small.
 
-What remains is to match the three errors to the survivor count: the correction is an ideal error
-applied to the packet, the layer defect on the dilate resolves into an exactly vanishing physical
-term plus band terms and two more ideal errors (each precomposed with the dilation, which the ideal
-absorbs by right multiplication), and the packet's band content is the escape estimate.  With `N` about `r/K` this gives coupling
+Matching the three errors to the survivor count needs one estimate the corpus did not have, and
+tracing the layer defect through the dilation says exactly which.  Writing the layer as shell plus
+correction difference, the defect on the dilate is `(A_b - A_a)v` — *exactly zero*, since the
+inverse dilate is supported above both cutoffs once `r b` exceeds them — plus
+`(R_b - R_a)v - v`, plus two projection corrections.  The corrections are ideal errors precomposed
+with the dilation, which the ideal absorbs by right multiplication, so the survivor count takes
+them.  The band part splits into `‖R_{a} v‖`, which is the cutoff at radius `r a` on the packet and
+is covered by the band fraction, and `‖v - R_{b} v‖`, which is the packet's mass *above* radius
+`r b` — above its carrier, not below.
+
+That high-side tail is over an unbounded region, so a supremum bound cannot control it; it needs a
+majorant integrable at infinity.  `exists_soninRefTailSup_le_div` supplies the majorant — at every
+order `N`, the majorant outside radius `u` is at most `C_N / u^N` — and
+`setIntegral_le_of_le_powerTail` now integrates it: any nonnegative function dominated by
+`K|ξ|^{-p}` with `p > 1` has mass at most `2K t^{1-p}/(p-1)` outside the band of radius `t`.
+
+The remaining step on this line is to feed the packet's spectral density into that bound.  For
+`|ξ|` above twice the carrier each of the three tail arguments exceeds `|ξ|/2`, so the density is
+dominated by a constant times `|ξ|^{-2N}`, and `p = 2N > 1` already at `N = 1`.  With `N` about `r/K` this gives coupling
 energy of order `r`, against the `log r` cap, closing the shortfall test.  Then feed that through the two-branch estimate to get `N` of
 order `r` packets at scale `r`.
 
@@ -1318,6 +1333,8 @@ family is abstract, so two widths have unrelated profiles.
 | **the orthonormal family**: separated annuli give packets vanishing on each other's supports, hence orthogonal for *arbitrary unrelated carriers*; the energy floor makes each nonzero, so normalizing gives an orthonormal family as large as the shell can be cut | `orthonormal_normalize`, `inner_soninScaledPacketEven_eq_zero_of_disjoint`, `soninScaledPacketEven_ne_zero`, `orthonormal_soninScaledPacketEven` |
 | **the shell cut**: `[b,c]` divided into `N` equal abutting annuli — centres in arithmetic progression, common half-width `(c-b)/(2N)`, separation with equality, every annulus inside the shell, half-width below the inner radius; `N` orthonormal packets at one common carrier from two scalar conditions on `δ|w|` | `soninShellCutWidth`, `soninShellCutCentre`, `soninShellCut_sep`, `soninShellCut_le`, `soninShellCutWidth_lt_centre`, `abs_soninScaledPacketMean_le_one`, `orthonormal_soninShellCutPacket` |
 | **distance to the dilate**, for *any* vector vanishing inside the inner aperture and fixed by the outer one: twice the projection correction, the layer defect on the dilate, and the vector's own band content — and every shell-cut packet satisfies the two support facts | `norm_soninApertureCoupling_sub_dilate_le`, `norm_soninApertureCoupling_soninShellCutPacket_sub_dilate_le` |
+| **an explicit decay rate at every order** for both majorants: the Schwartz seminorms give one constant bounding `\|v\|^N ‖𝓕 f v‖` at *every* frequency, so the majorant outside radius `u` is at most `C_N / u^N` | `exists_pow_mul_norm_fourierIntegral_le`, `norm_fourierIntegral_le_div_of_pow_bound`, `exists_pow_mul_norm_fourier_soninUnitBumpC_le`, `exists_pow_mul_norm_fourier_soninUnitBumpSqC_le`, `exists_soninRefTailSup_le_div`, `exists_soninRefSqTailSup_le_div` |
+| **mass outside a band**: a power tail `K\|ξ\|^{-p}` with `p > 1` integrates over the outside of a symmetric band to `2K t^{1-p}/(p-1)`, so any nonnegative function it dominates has that much mass at most — the estimate a supremum bound cannot give on an unbounded region | `centralTail_eq_union`, `integrableOn_powerTail_Ioi`, `integrableOn_powerTail_Iic`, `integrableOn_powerTail`, `integral_powerTail_Ioi`, `integral_powerTail`, `setIntegral_le_of_le_powerTail` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1434,6 +1451,26 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the power tail is integrated, so the high-side estimate now has both halves.  Two
+  things about the Lean were not obvious in advance.  The left ray is not free: mathlib's improper
+  integral lemmas are stated for `Ioi` only, so integrability on `Iic (-t)` has to be transported
+  across the reflection, which
+  `MeasurePreserving.integrableOn_comp_preimage` does once the preimage is identified.  And the
+  natural-looking hypothesis `0 <= K` is not needed anywhere — if `K` were negative the domination
+  hypothesis would already be the stronger statement — so it was dropped rather than carried.
+  Lean: `formal/GaloisForLFunctions/HTGeometry/PowerTailIntegral.lean`.
+- 2026-08-01 — tracing the layer defect through the dilation identified the one estimate still
+  missing, and it is not the one the ledger predicted.  Two of the three pieces are already covered
+  — the physical shell term vanishes exactly, the corrections are ideal errors precomposed with the
+  dilation — and of the two band pieces, `‖R_a v‖` is the cutoff at radius `r a` on the packet, which
+  the band fraction handles.  The piece with no existing tool is `‖v - R_b v‖`: the packet's spectral
+  mass *above* radius `r b`, hence over an unbounded region, where a supremum bound is worthless.
+  What that needs is a majorant integrable at infinity, and the Schwartz seminorms give it directly:
+  one constant per order bounding `|v|^N ‖𝓕 f v‖` at every frequency, hence `C_N / u^N` for the
+  majorant outside radius `u`.  Both majorants now have an explicit rate at every order, replacing
+  the qualitative vanishing used so far.
+  Lean: `formal/GaloisForLFunctions/HTGeometry/FourierPowerBound.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninRefTailPolynomialDecay.lean`.
 - 2026-08-01 — the coupling's distance to the dilate is now a standalone theorem rather than a step
   buried inside a limit proof.  The corpus proved it inline, for the fixed-profile packets only, in
   the middle of `tendsto_norm_soninApertureCoupling_soninPacketEven_sub_subAnnulus`; but the argument

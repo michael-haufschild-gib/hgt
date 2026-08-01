@@ -217,4 +217,88 @@ Lean module proves unconditionally:
 - exact decomposition `(9)` and threshold `(10)`;
 - positive debt and impossibility of bare nonnegative square at a negative node.
 
+Section 5's no-go is now formal **as a statement about factorizations**, not only about one value:
+
+- `no_squaredNorm_presentation_of_negativeNode`: no assignment of vectors to spectral nodes presents
+  the bare anti-resolvent gap as a squared norm, since at a negative node the value would be a
+  negative square.
+- `no_innerSelf_presentation_of_negativeNode`: the same in the `B*B` form the retired claim proposed.
+- `negativeNode_range_nonempty`: the hypotheses are satisfiable, so the no-go is not vacuous.
+
+The pre-existing `suzukiNegativeSpectralNode_bareAntiResolventGap_not_nonneg` is the *scalar* fact
+that the gap is negative at such a node; it does not by itself exclude a factorization, which is what
+retiring `SUZUKI-RESOLVENT-BIANCHI-SQUARE` requires.
+
+Equation `(8)` and its negative-index consequence are formal too — they were not in the list above,
+and the index claim sits behind a "Therefore":
+
+- `suzukiDiagonalKreinForm`: the sewn form of a finite diagonal spectral model.
+- `suzukiDiagonalKreinForm_split`: **`(8)`** — the form is its positive-node part plus its
+  negative-node part.
+- `suzukiDiagonalKreinForm_posPart_nonneg`, `suzukiDiagonalKreinForm_negPart_nonpos`: each part has
+  the sign of its nodes, term by term.
+- `suzukiDiagonalKreinForm_nonpos_of_allNegative`: an all-negative model has a nonpositive form, so
+  the negative index is full.
+
+That the sign is decided term by term is the exact sense in which "the negative index equals the
+number of negative nodes": no cancellation between coordinates is possible, so the count is not an
+estimate.
+
+`(5)` and `(11)` are formal as *factorizations*, not only as signs:
+
+- `suzukiKreinMagnitude`, `suzukiKreinMagnitude_pos`: the positive magnitude `omega` the sign
+  multiplies — the module previously had the sign equivalences `(4)` but no definition of the size.
+- `suzukiAffineResolventKreinDefect_eq_sign_mul_magnitude`: **`(5)`**, `D = sgn(t) omega`.
+- `neg_kreinDefect_eq_magnitude_of_neg`: **`(11)`**, at a negative node the deficit *is* the
+  magnitude, hence strictly positive.
+
+The distinction matters because `(11)`'s debt is measured in `omega`: a sign equivalence says the
+debt is positive, but the compensation law `(10)` needs its size.
+
+With the magnitude available, `(8)` is formal exactly as displayed:
+
+- `kreinDefect_eq_magnitude_of_pos`: at a positive node the defect *is* the magnitude.
+- `suzukiDiagonalKreinForm_posPart_eq`, `suzukiDiagonalKreinForm_negPart_eq`: each part rewritten in
+  magnitudes, the negative one as **minus** the weighted magnitude sum.
+- `suzukiDiagonalKreinForm_eq_magnitude_difference`: **`(8)`** — the sewn form is the magnitude sum
+  over positive nodes minus the magnitude sum over negative ones.
+
+`suzukiDiagonalKreinForm_negPart_eq` is the coordinate-by-coordinate quantification of the missing
+completion contribution that section 7 claims: the debt is not merely positive, it is that specific
+weighted sum of magnitudes.
+
 It does not assert `(13)` or RH.
+
+## Log
+
+- 2026-08-01 — section 5's no-go formalized at the level it is stated.  The module already proved the
+  scalar fact that the bare anti-resolvent gap is negative at a negative node, but the no-go claims
+  more: that **no `B*B` factorization can exist**.  Those differ — a negative value at one point does
+  not by itself exclude a factorization until one says the factorization would have to take that
+  value.  `no_squaredNorm_presentation_of_negativeNode` and `no_innerSelf_presentation_of_negativeNode`
+  state it as the impossibility of a presentation, and `negativeNode_range_nonempty` checks the
+  hypothesis class is inhabited so the no-go is not vacuous.  Three new declarations, targeted build
+  green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(8)` and its negative-index consequence formalized.  The card's section 3 derives the
+  diagonal form's split and then concludes, behind a "Therefore", that the negative index equals the
+  number of negative nodes — the bridge section 7 lists as an advance.  Neither was among the
+  module's declarations.  `suzukiDiagonalKreinForm_split` states `(8)`, and the two sign lemmas show
+  each part carries the sign of its nodes **term by term**, which is the exact content of the index
+  claim: no cancellation between coordinates is possible, so the count is structural rather than
+  estimated.  `suzukiDiagonalKreinForm_nonpos_of_allNegative` records the extreme case.  Four new
+  declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(5)` and `(11)` formalized as factorizations.  The module carried the sign
+  equivalences `(4)` but never defined the magnitude `omega = alpha beta/(|t|(t-alpha)(t-beta))` that
+  `(5)` factors the defect through, so `(11)`'s "strictly positive debt" had a sign but no size.
+  `suzukiKreinMagnitude` supplies it, `suzukiAffineResolventKreinDefect_eq_sign_mul_magnitude` is
+  `(5)`, and `neg_kreinDefect_eq_magnitude_of_neg` is `(11)`.  This matters downstream: the
+  compensation law `(10)` bounds the global correction *by* the debt, so it needs the magnitude and
+  not merely its positivity.  Three new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(8)` formalized as displayed, in magnitude terms.  With `omega` defined, each node's
+  contribution rewrites through the factorization, giving
+  `suzukiDiagonalKreinForm_eq_magnitude_difference`: the sewn form is the magnitude sum over positive
+  nodes minus the magnitude sum over negative ones.  `suzukiDiagonalKreinForm_negPart_eq` is the
+  coordinate-by-coordinate quantification section 7 claims — the completion debt is not merely
+  positive but that specific weighted sum, which is what a candidate completion has to match.  Four
+  new declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.

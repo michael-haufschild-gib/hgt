@@ -288,4 +288,197 @@ theorem suzukiNegativeSpectralNode_twoChannelCompletionLaw
 
 end
 
+/-! ## The no-go at the level of a factorization
+
+The scalar statement says the bare gap is negative at a negative node.  The no-go the frontier
+argument needs is stronger: that no *presentation of the gap as a squared norm* can exist at all once
+such a node is present.  It follows at once, since a squared norm is nonnegative — but it is a
+statement about factorizations, not about one value, and that is what rules out a `B*B` form rather
+than merely exhibiting a negative number.
+
+The hypotheses are satisfiable, so the no-go is not vacuous. -/
+
+/-- **No squared-norm presentation at a negative node.**  No assignment of vectors to spectral nodes
+can present the bare anti-resolvent gap as a squared norm: at a negative node the value would be a
+negative square. -/
+theorem no_squaredNorm_presentation_of_negativeNode
+    {ι V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+    {alpha beta : ℝ} (hab : alpha < beta) (hb0 : beta < 0)
+    {t : ι → ℝ} {j : ι} (hbt : beta < t j) (htneg : t j < 0)
+    (B : ι → V) (hQ : ∀ i, suzukiAffineAntiResolventGap alpha beta (t i) = ‖B i‖ ^ 2) :
+    False := by
+  refine suzukiNegativeSpectralNode_bareAntiResolventGap_not_nonneg hab hb0 hbt htneg ?_
+  rw [hQ j]
+  positivity
+
+/-- The same with the factorization given by an inner product of a single map against itself, which
+is the `B*B` form the retired claim proposed. -/
+theorem no_innerSelf_presentation_of_negativeNode
+    {ι V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+    {alpha beta : ℝ} (hab : alpha < beta) (hb0 : beta < 0)
+    {t : ι → ℝ} {j : ι} (hbt : beta < t j) (htneg : t j < 0)
+    (B : ι → V) (hQ : ∀ i, suzukiAffineAntiResolventGap alpha beta (t i) = inner ℝ (B i) (B i)) :
+    False := by
+  refine no_squaredNorm_presentation_of_negativeNode hab hb0 hbt htneg B fun i => ?_
+  rw [hQ i, ← real_inner_self_eq_norm_sq]
+
+/-- **The no-go is not vacuous.**  A negative node in the required range exists. -/
+theorem negativeNode_range_nonempty :
+    ∃ alpha beta t : ℝ, alpha < beta ∧ beta < 0 ∧ beta < t ∧ t < 0 :=
+  ⟨-2, -1, -1 / 2, by norm_num, by norm_num, by norm_num, by norm_num⟩
+
+/-! ## The diagonal form and its negative index
+
+On a finite diagonal spectral model the sewn form is the weighted sum of the defect over the nodes.
+Splitting the index set by the sign of the node splits the form into a nonnegative part and a
+nonpositive one, term by term — which is the exact sense in which the negative index counts the
+negative nodes.  Nothing here is an estimate: each term's sign is decided by its own node. -/
+
+/-- The sewn form of a finite diagonal spectral model. -/
+noncomputable def suzukiDiagonalKreinForm {ι : Type*} (s : Finset ι) (alpha beta : ℝ) (t c : ι → ℝ) : ℝ :=
+  ∑ j ∈ s, (c j) ^ 2 * suzukiAffineResolventKreinDefect alpha beta (t j)
+
+/-- **`(8)`, the signed split.**  The form is its positive-node part plus its negative-node part. -/
+theorem suzukiDiagonalKreinForm_split {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    (alpha beta : ℝ) (t c : ι → ℝ) :
+    suzukiDiagonalKreinForm s alpha beta t c
+      = (∑ j ∈ s.filter (fun j => 0 < t j),
+          (c j) ^ 2 * suzukiAffineResolventKreinDefect alpha beta (t j))
+        + ∑ j ∈ s.filter (fun j => ¬ 0 < t j),
+          (c j) ^ 2 * suzukiAffineResolventKreinDefect alpha beta (t j) :=
+  (Finset.sum_filter_add_sum_filter_not s _ _).symm
+
+/-- Every positive-node term is nonnegative. -/
+theorem suzukiDiagonalKreinForm_posPart_nonneg {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {alpha beta : ℝ} (hab : alpha < beta) (hb0 : beta < 0) (t c : ι → ℝ)
+    (hbt : ∀ j ∈ s, beta < t j) :
+    0 ≤ ∑ j ∈ s.filter (fun j => 0 < t j),
+      (c j) ^ 2 * suzukiAffineResolventKreinDefect alpha beta (t j) := by
+  refine Finset.sum_nonneg fun j hj => ?_
+  rw [Finset.mem_filter] at hj
+  refine mul_nonneg (sq_nonneg _) (le_of_lt ?_)
+  exact (suzukiAffineResolventKreinDefect_pos_iff hab hb0 (hbt j hj.1)
+    (ne_of_gt hj.2)).2 hj.2
+
+/-- Every negative-node term is nonpositive: the defect is negative there. -/
+theorem suzukiDiagonalKreinForm_negPart_nonpos {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {alpha beta : ℝ} (hab : alpha < beta) (hb0 : beta < 0) (t c : ι → ℝ)
+    (hbt : ∀ j ∈ s, beta < t j) (hne : ∀ j ∈ s, t j ≠ 0) :
+    ∑ j ∈ s.filter (fun j => ¬ 0 < t j),
+      (c j) ^ 2 * suzukiAffineResolventKreinDefect alpha beta (t j) ≤ 0 := by
+  refine Finset.sum_nonpos fun j hj => ?_
+  rw [Finset.mem_filter] at hj
+  have htneg : t j < 0 := lt_of_le_of_ne (le_of_not_gt hj.2) (hne j hj.1)
+  refine mul_nonpos_of_nonneg_of_nonpos (sq_nonneg _) (le_of_lt ?_)
+  exact (suzukiAffineResolventKreinDefect_neg_iff hab hb0 (hbt j hj.1)
+    (hne j hj.1)).2 htneg
+
+/-- **An all-negative model has a nonpositive form.**  So a spectral model whose nodes are all
+negative admits no nonnegative sewn form at all — the negative index is full. -/
+theorem suzukiDiagonalKreinForm_nonpos_of_allNegative {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {alpha beta : ℝ} (hab : alpha < beta) (hb0 : beta < 0) (t c : ι → ℝ)
+    (hbt : ∀ j ∈ s, beta < t j) (hneg : ∀ j ∈ s, t j < 0) :
+    suzukiDiagonalKreinForm s alpha beta t c ≤ 0 := by
+  refine Finset.sum_nonpos fun j hj => ?_
+  refine mul_nonpos_of_nonneg_of_nonpos (sq_nonneg _) (le_of_lt ?_)
+  exact (suzukiAffineResolventKreinDefect_neg_iff hab hb0 (hbt j hj)
+    (ne_of_lt (hneg j hj))).2 (hneg j hj)
+
+/-! ## The exact Krein factorization
+
+The sign equivalences say *which way* the defect points; the factorization of `(5)` says more: it
+names the positive magnitude the sign multiplies.  That magnitude is what `(11)`'s debt is measured
+in, so it needs a definition rather than an inequality. -/
+
+/-- The Krein magnitude of `(5)`: the positive size of the defect, with the node's sign removed. -/
+noncomputable def suzukiKreinMagnitude (alpha beta t : ℝ) : ℝ :=
+  alpha * beta / (|t| * (t - alpha) * (t - beta))
+
+/-- **The magnitude is strictly positive** below the spectrum. -/
+theorem suzukiKreinMagnitude_pos {alpha beta t : ℝ} (hab : alpha < beta) (hb0 : beta < 0)
+    (hbt : beta < t) (ht : t ≠ 0) : 0 < suzukiKreinMagnitude alpha beta t := by
+  have ha0 : alpha < 0 := lt_trans hab hb0
+  have hp : 0 < alpha * beta := mul_pos_of_neg_of_neg ha0 hb0
+  have hta : 0 < t - alpha := by linarith
+  have htb : 0 < t - beta := by linarith
+  have habs : 0 < |t| := abs_pos.mpr ht
+  exact div_pos hp (mul_pos (mul_pos habs hta) htb)
+
+/-- **`(5)`, the exact Krein factorization.**  The defect is the node's sign times the magnitude. -/
+theorem suzukiAffineResolventKreinDefect_eq_sign_mul_magnitude {alpha beta t : ℝ}
+    (hab : alpha ≠ beta) (ht : t ≠ 0) (hta : t ≠ alpha) (htb : t ≠ beta) :
+    suzukiAffineResolventKreinDefect alpha beta t
+      = Real.sign t * suzukiKreinMagnitude alpha beta t := by
+  rw [suzukiAffineResolventKreinDefect_eq hab ht hta htb, suzukiKreinMagnitude]
+  rcases lt_or_gt_of_ne ht with hneg | hpos
+  · rw [Real.sign_of_neg hneg, abs_of_neg hneg]
+    field_simp
+  · rw [Real.sign_of_pos hpos, abs_of_pos hpos]
+    ring
+
+/-- **`(11)`, the strictly positive debt.**  At a negative node the anti-resolvent gap's deficit is
+exactly the magnitude, hence strictly positive. -/
+theorem neg_kreinDefect_eq_magnitude_of_neg {alpha beta t : ℝ}
+    (hab : alpha ≠ beta) (hta : t ≠ alpha) (htb : t ≠ beta) (htneg : t < 0) :
+    -suzukiAffineResolventKreinDefect alpha beta t = suzukiKreinMagnitude alpha beta t := by
+  rw [suzukiAffineResolventKreinDefect_eq_sign_mul_magnitude hab (ne_of_lt htneg) hta htb,
+    Real.sign_of_neg htneg]
+  ring
+
+/-! ## The form in magnitude terms
+
+Rewriting each node's contribution through the factorization puts the diagonal form in the shape
+`(8)` displays: a sum of magnitudes over the positive nodes minus a sum over the negative ones.  The
+second sum is the completion debt, quantified coordinate by coordinate. -/
+
+/-- At a positive node the defect equals the magnitude outright. -/
+theorem kreinDefect_eq_magnitude_of_pos {alpha beta t : ℝ}
+    (hab : alpha ≠ beta) (hta : t ≠ alpha) (htb : t ≠ beta) (htpos : 0 < t) :
+    suzukiAffineResolventKreinDefect alpha beta t = suzukiKreinMagnitude alpha beta t := by
+  rw [suzukiAffineResolventKreinDefect_eq_sign_mul_magnitude hab (ne_of_gt htpos) hta htb,
+    Real.sign_of_pos htpos, one_mul]
+
+/-- **The completion debt.**  The negative-node part of the form is exactly minus the weighted sum of
+magnitudes there — the contribution a completion must supply, coordinate by coordinate. -/
+theorem suzukiDiagonalKreinForm_negPart_eq {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {alpha beta : ℝ} (hab : alpha ≠ beta) (t c : ι → ℝ)
+    (hta : ∀ j ∈ s, t j ≠ alpha) (htb : ∀ j ∈ s, t j ≠ beta) (hne : ∀ j ∈ s, t j ≠ 0) :
+    (∑ j ∈ s.filter (fun j => ¬ 0 < t j),
+        (c j) ^ 2 * suzukiAffineResolventKreinDefect alpha beta (t j))
+      = -∑ j ∈ s.filter (fun j => ¬ 0 < t j),
+          (c j) ^ 2 * suzukiKreinMagnitude alpha beta (t j) := by
+  rw [← Finset.sum_neg_distrib]
+  refine Finset.sum_congr rfl fun j hj => ?_
+  rw [Finset.mem_filter] at hj
+  have htneg : t j < 0 := lt_of_le_of_ne (le_of_not_gt hj.2) (hne j hj.1)
+  rw [suzukiAffineResolventKreinDefect_eq_sign_mul_magnitude hab (hne j hj.1) (hta j hj.1)
+    (htb j hj.1), Real.sign_of_neg htneg]
+  ring
+
+/-- The positive-node part is the weighted sum of magnitudes there. -/
+theorem suzukiDiagonalKreinForm_posPart_eq {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {alpha beta : ℝ} (hab : alpha ≠ beta) (t c : ι → ℝ)
+    (hta : ∀ j ∈ s, t j ≠ alpha) (htb : ∀ j ∈ s, t j ≠ beta) :
+    (∑ j ∈ s.filter (fun j => 0 < t j),
+        (c j) ^ 2 * suzukiAffineResolventKreinDefect alpha beta (t j))
+      = ∑ j ∈ s.filter (fun j => 0 < t j),
+          (c j) ^ 2 * suzukiKreinMagnitude alpha beta (t j) := by
+  refine Finset.sum_congr rfl fun j hj => ?_
+  rw [Finset.mem_filter] at hj
+  rw [kreinDefect_eq_magnitude_of_pos hab (hta j hj.1) (htb j hj.1) hj.2]
+
+/-- **`(8)` as displayed.**  The sewn form is the magnitude sum over positive nodes minus the
+magnitude sum over negative ones. -/
+theorem suzukiDiagonalKreinForm_eq_magnitude_difference {ι : Type*} [DecidableEq ι] (s : Finset ι)
+    {alpha beta : ℝ} (hab : alpha ≠ beta) (t c : ι → ℝ)
+    (hta : ∀ j ∈ s, t j ≠ alpha) (htb : ∀ j ∈ s, t j ≠ beta) (hne : ∀ j ∈ s, t j ≠ 0) :
+    suzukiDiagonalKreinForm s alpha beta t c
+      = (∑ j ∈ s.filter (fun j => 0 < t j),
+          (c j) ^ 2 * suzukiKreinMagnitude alpha beta (t j))
+        - ∑ j ∈ s.filter (fun j => ¬ 0 < t j),
+          (c j) ^ 2 * suzukiKreinMagnitude alpha beta (t j) := by
+  rw [suzukiDiagonalKreinForm_split, suzukiDiagonalKreinForm_posPart_eq s hab t c hta htb,
+    suzukiDiagonalKreinForm_negPart_eq s hab t c hta htb hne]
+  ring
+
 end RHTower

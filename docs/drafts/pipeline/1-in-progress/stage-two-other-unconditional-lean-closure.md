@@ -39,11 +39,12 @@ audit and positive-survivor extraction. Partial bridge theorems never count as c
   first-derivative cancellation, conformal defect, and massive conjugation added to
   `HTGeometry/ConformalClockDiffusion.lean`; the literal pseudo-Riemannian realization and coupled
   inverse-data theorem remain open.
-- Existing exact candidates awaiting combined final gates: bounded-relation profile realization,
-  charged scalar torsor, split-source boundary matroid, polynomial torsion language, Xi depth
-  successor layer, two-mass continuum rigidity, Cassini--Jensen seam law, prime-coordinate fusion,
-  four-dimensional conformal diffusion, clock-coframe conservation, and the von Mangoldt
-  bivariate marginal trace-lock no-go.
+- Exact Stage-3 certificates now cover bounded-relation profile realization, charged scalar torsor,
+  split-source boundary matroid, polynomial torsion language, Xi depth successor layer, two-mass
+  continuum rigidity, Cassini--Jensen seam law, prime-coordinate fusion, four-dimensional conformal
+  diffusion, clock-coframe conservation, von Mangoldt bivariate marginal trace-lock, CCM aperture
+  resolvent, and Ramsey--Weyl causal phase.  All audited capstones pass serialized direct checks,
+  area umbrellas, and a combined axiom audit.
 
 ## Falsified disposition
 
@@ -55,10 +56,15 @@ audit and positive-survivor extraction. Partial bridge theorems never count as c
 Exact per-card gaps remain the work queue. First confirmed examples: pseudo-Riemannian realization
 of the general-dimensional conformal conjugation, chronometric ordered characteristic-functional
 differentiation, Euler activation finite Gibbs/Fisher/Borel--Cantelli layers, and analytic parents
-explicitly marked open on their source cards. The boundary-wedge dimension card also retains a
-literal HT-carrier gap: its two-variable Lean datum proves nonconstancy, while the paper statement
-requires hypertranscendental carriers.
+explicitly marked open on their source cards. The boundary-wedge dimension card retains a literal
+HT-carrier gap: its two-variable `EntireSRRealization` proves only nonconstant carriers, while the
+paper statement requires hypertranscendental carriers.  Its named mathematical obstruction is
+differential transcendence of every nonzero finite dilation-orbit combination; the existing
+exponential block seed is itself differentially algebraic and cannot close that gap.
 
 ## Log
 
 - 2026-08-01 — inventory started; one falsified card retired; CCM and Ramsey exact gaps closed.
+- 2026-08-01 — serialized fifteen exact leaf checks, both area umbrellas, and combined capstone
+  axiom audit; added or refreshed thirteen exact Stage-3 certificates.  Rejected nonconstant-carrier
+  `htDim` as a simplification of the boundary-wedge HT theorem.

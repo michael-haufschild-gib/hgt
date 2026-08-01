@@ -43,7 +43,10 @@
   `GaloisForLFunctions.RHTower.DeningerAbsL2Inner`,
   `GaloisForLFunctions.RHTower.DeningerL2InnerAdditive`,
   `GaloisForLFunctions.RHTower.DeningerL2InnerTorsion`,
-  `GaloisForLFunctions.RHTower.DeningerAbsL2InnerAdditive`
+  `GaloisForLFunctions.RHTower.DeningerAbsL2InnerAdditive`,
+  `GaloisForLFunctions.RHTower.DeningerKummerL2Inner`,
+  `GaloisForLFunctions.RHTower.DeningerKummerSpaceInner`,
+  `GaloisForLFunctions.RHTower.DeningerKummerSpaceInnerPos`
   (the gluing of the place tower, the absolute height on `Q̄`, the
   normed Kummer group `𝒢`, the normed `ℚ`-vector space `𝒢 ⊗ ℚ`, its
   completion, and the local-degree normalization of the place space)
@@ -904,11 +907,62 @@ The `L²` form on `Q̄ˣ` now has the complete set of properties it needs: symme
 (`deningerNormalizedL2Inner_ringHom`), with diagonal the `L²` Kummer norm
 (`deningerL2Inner_self`).
 
+### The `L²` inner product on `𝒢` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerKummerL2Inner.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerUnitL2Inner` — the absolute form on the units, where the nonvanishing hypotheses of all
+  the earlier results are automatic.
+- `deningerUnitL2Inner_torsion_left`, `deningerUnitL2Inner_mul_torsion_left/right` — **the form is
+  unchanged by a torsion factor**: biadditivity turns the extra factor into an extra summand, and
+  that summand vanishes.
+- `deningerKummerL2Inner` — **the descended form on `𝒢 = Q̄ˣ/μ_∞`**, obtained by `Quotient.lift₂`
+  from exactly that invariance, with `deningerKummerL2Inner_mk` computing it on classes.
+- `deningerKummerL2Inner_comm`, `deningerKummerL2Inner_mul_left`, `_mul_right` — symmetry and
+  biadditivity survive the descent.
+
+So the card's `H_Kum` inner product now exists on the Kummer group itself.
+
+### The `L²` inner product on `𝒢 ⊗ ℚ` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerKummerSpaceInner.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerKummerL2Inner_one_left` — the form vanishes at the identity, from biadditivity alone
+  (`⟨1,y⟩ = ⟨1,y⟩ + ⟨1,y⟩`).
+- `deningerKummerL2Inner_pow_left`, `deningerKummerAddL2Inner_nsmul_left/right` — **homogeneity**
+  `⟨x^n, y⟩ = n⟨x, y⟩`, by induction from biadditivity, and its additive form.
+- `deningerSpaceL2Inner` — **the extension to `𝒢 ⊗ ℚ`**, by `DivisibleHull.liftOn₂` with
+  `⟨m/s, m'/s'⟩ = ⟨m, m'⟩/(s·s')`.  Well-definedness is exactly homogeneity in both arguments:
+  `mk m s = mk m₁ s₁` means `s₁·m = s·m₁`, so `s₁s₁'⟨m,m'⟩ = ss'⟨m₁,m₁'⟩`.
+- `deningerSpaceL2Inner_mk`, `deningerSpaceL2Inner_comm` — the value on fractions, and symmetry.
+
+The card's `H_Kum` inner product now exists on `𝒢 ⊗ ℚ` itself.
+
+### Positivity and additivity of the `L²` form on `𝒢 ⊗ ℚ` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerKummerSpaceInnerPos.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerL2NormSq_nonneg` — the place norm is a sum of squares against positive weights, hence
+  nonnegative (`Finset.sum_nonneg` and `finsum_nonneg`).
+- `deningerAbsL2Inner_self_nonneg`, `deningerKummerL2Inner_self_nonneg`,
+  `deningerSpaceL2Inner_self_nonneg` — **the form is positive semidefinite**, at the absolute
+  level, on `𝒢`, and on `𝒢 ⊗ ℚ`.
+- `deningerSpaceL2Inner_add_left`, `_add_right` — **additivity on the Kummer space**, from
+  `mk m s + mk n t = mk (t·m + s·n) (s·t)` together with the homogeneity of the form.
+
+Note on the norm: the card's `H_Kum` is the `L²` completion, so its norm is `√⟨x, x⟩`, *not* the
+height norm `deningerKummerSpaceNorm` carried by `deningerKummerCompletion` — the height is the
+`L¹` quantity (`‖f_α‖₁ = 2h(α)`).  Both live on the same space `𝒢 ⊗ ℚ`; the `L¹` one gives the
+Banach completion already built, the `L²` one gives the Hilbert completion.
+
 ### Remaining
 
-Transport only, no new mathematics: descend the form to `𝒢 = Q̄ˣ/μ_∞` (well defined by the
-vanishing on torsion together with bilinearity), extend it to `𝒢 ⊗ ℚ` by `ℚ`-bilinearity, and
-install the resulting `InnerProductSpace ℝ` structure on `deningerKummerCompletion`.  With that,
-the completion *is* the `H_Kum` of the card's `(1)`, and `(2)` is `deningerKummerClass` with its
-injectivity (`deningerKummerClass_eq_zero_iff_isOfFinOrder`) and dense span
-(`deningerKummerClass_dense_completion`) already proved.
+Definiteness of the `L²` form — `⟨x, x⟩ = 0 → x = 0` — which is the statement that a nonzero
+Kummer class has some place where its value differs from one, i.e. `deningerL2NormSq x = 0`
+forces all places to take the value one and hence `x` to be torsion by
+`deningerAllPlaces_one_isOfFinOrder`.  With that, `√⟨·,·⟩` is a norm on `𝒢 ⊗ ℚ` satisfying the
+parallelogram law, its completion is the Hilbert space `H_Kum` of the card's `(1)`, and `(2)` is
+`deningerKummerClass` with injectivity and dense span already proved.

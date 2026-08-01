@@ -2432,6 +2432,99 @@ available on every vertical line of the right half plane, not only on `Re s = 1/
 corpus's two-sided modulus bounds live.  Transporting the boundary and collapse theorems to a general
 line is now a matter of replacing that one input.
 
+### The domination results on an arbitrary vertical line
+
+`HTGeometry/GammaVerticalDominationGeneral.lean` transports the exponential valuation direction off
+the half-integer lines.  Using the super-polynomial decay together with the bound `‖Γ(σ+it)‖ ≤ Γ(σ)`,
+splitting one factor of `Γ` off a positive power dominates every polynomial and logarithmic factor:
+
+> **`tendsto_gamma_pow_mul_vertical_general`**: `Γ(σ+it)^j · s^k · L(t)^b → 0` for every `j ≥ 1`,
+> every `k, b` and **every** `σ > 0`, and
+> **`tendsto_gamma_pow_mul_digamma_vertical_general`** the same with `ψ^b` in place of `L^b`.
+
+These are the general-`σ` forms of the two inputs the Gamma-field boundary and collapse theorems
+consume; re-parametrizing those theorems from `Re s = 1/2 + m` to an arbitrary line is now purely
+mechanical.
+
+### The law on an arbitrary vertical line
+
+Two changes free the whole chain from the half-integer lines.
+
+The abstract collapse layer (`GammaFieldAbstractCollapse`) is now stated for an arbitrary line
+`Re s = σ`: nothing in it used the value of `σ`, only that the coefficient ratios converge along the
+line and the normalizing coefficient is eventually nonzero.  `line_relation_of_coeff_limits`,
+`strip_relation_of_coeff_limits` and `rank_finite_of_coeff_limits` are therefore line-agnostic, and
+the existing half-integer instances are unchanged.
+
+`HTGeometry/GammaFieldGeneralLine.lean` then rebuilds the boundary on a general line, using the
+general-`σ` domination results:
+
+- `gammaEltG σ` — the Gamma-field monomial on `Re s = σ`, with `eventually_gammaEltG_ne_zero`;
+- `tendsto_ratio_gammaEltG_of_gamma_lt` and **`tendsto_ratio_gammaEltG_lex`** — eq. (5) with the same
+  lexicographic dominance, now for every `σ > 0`;
+- **`rank_finite_of_gammaEltG_relation`** — eq. (9): a strip almost periodic holomorphic solution of a
+  differential relation with Gamma-field monomial coefficients on **any** vertical line of the right
+  half plane has finite rational Bohr frequency rank.
+
+The restriction to `Re s = 1/2 + m`, which came only from the availability of two-sided modulus bounds
+for `Γ`, is gone.
+
+### Finite sums on an arbitrary line — the law in its stated generality
+
+`HTGeometry/GammaFieldGeneralLineSums.lean` carries the sum and quotient results to a general line.
+The limit datum `gammaMonomialLimit` and the order `GammaMonomialDominates` do not mention the line at
+all, so once the monomial ratio is available for every `σ > 0` the rest is verbatim:
+
+- `tendsto_sum_ratio_gammaEltG` — eq. (3) for finite sums;
+- `eventually_sum_gammaEltG_ne_zero`, `tendsto_ratio_gammaEltG_sum` — eq. (5) for quotients of sums;
+- **`rank_finite_of_gammaEltG_sum_distinct`** — eq. (9) on **any** vertical line `Re s = σ > 0`, for
+  coefficients that are finite sums of Gamma-field monomials in normal form (nonzero rational parts,
+  pairwise distinct exponent pairs in the normalizing coefficient), with the limit constant `1` coming
+  from `sum_gammaMonomialLimit_eq_one` — itself line-independent.
+
+The formalized statement now matches the card's: a holomorphic, vertically almost periodic solution of
+a differential relation over the Gamma field, on an arbitrary vertical strip in the right half plane,
+is differentially algebraic over the constants and has finite rational Bohr frequency rank.
+
+### Eq. (9) in the generality of the card
+
+`HTGeometry/GammaFieldGeneralLineJets.lean` puts the last two generalizations together — the full
+digamma tower and the arbitrary line:
+
+- `gammaJetEltG σ` and `gammaJetEltG_eq` — a general monomial `Γ^j·(p/q)·∏(ψ⁽ⁱ⁾)^{E i}` is a pure
+  monomial times a product of positive-order polygammas;
+- **`tendsto_ratio_gammaJetEltG`** — hence its normalized ratio converges to
+  `gammaMonomialLimit · ∏ 0^{E i₊₁}`: the datum of the pure part, and `0` as soon as a derivative
+  factor occurs;
+- `tendsto_sum_ratio_gammaJetEltG`, `eventually_sum_gammaJetEltG_ne_zero`,
+  `tendsto_ratio_gammaJetEltG_sum` — sums and quotients of such monomials;
+- **`rank_finite_of_gammaJetEltG_sum_relation`** — eq. (9) with **no restriction left**: an arbitrary
+  vertical line `Re s = σ > 0`, and coefficients that are arbitrary elements of
+  `ℂ(s)[Γ, ψ, ψ′, …]` in monomial expansion.
+
+Hypotheses of the final theorem: the solution is holomorphic and strip almost periodic on
+`V_{σ,R}`, the coefficients are given in monomial expansion with nonzero rational parts, one monomial
+dominates all of them lexicographically (always arrangeable, `exists_dominant_monomial_family`), the
+normalizing coefficient has nonzero limit constant (automatic in normal form,
+`sum_gammaMonomialLimit_eq_one`), and the jet monomials of the relation are distinct.
+
+### The law in one theorem
+
+`HTGeometry/GammaFieldFinitePhaseLaw.lean` states the card's §1 theorem in a single place:
+
+> **`gammaField_finite_phase_law`**: a holomorphic function, almost periodic on a vertical strip of
+> the right half plane, satisfying a differential relation whose coefficients are elements of
+> `ℂ(s)[Γ, ψ, ψ′, …]` in monomial expansion, satisfies the collapsed constant-coefficient relation on
+> the whole strip — eq. (8), it is differentially algebraic over `ℂ` — **and** has finite rational
+> Bohr frequency rank — eq. (9).
+
+> **`gammaField_finite_phase_law_observable`**: the same finiteness for every observable dominated by
+> the solution — the divisor clause.
+
+Both conclusions come from the same two facts about the coefficients, supplied by the projective
+boundary: their normalized ratios converge along the line, and the normalizing coefficient is
+eventually nonzero.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`
