@@ -1165,10 +1165,19 @@ composed with the dilation, and a band — so writing them as one functional
 by term.  `soninCouplingBandTotal_soninShellCutUnit_le` then trades a bound `P` on the packets'
 totals and a lower bound `L` on their norms for the family bound `P/L`.
 
-What remains is to supply `P` and `L`: `L` from the energy floor (`√(δ I / 2)`), and `P` from the
-three estimates already proved — the physical shell term vanishing once `r b` clears the aperture,
-the dilate's band terms and the packet's own band content from the band fraction and the high-side
-tail.  Then choose `N`, `ε` and the schedule constant `K` to satisfy `3 ε + P/L <= eta`.  With `N` about `r/K` this gives coupling
+`L` is supplied: `sqrt(delta I / 2)`, from the energy floor by square roots.  The physical term is
+also settled, and better than expected — it vanishes for *every* scale above one, with no condition
+on the schedule at all, because the cut's annuli start at `b` and the inverse dilate is annihilated
+by any physical cutoff below `r` times the inner radius.
+
+The frequency-side transport was already in the corpus
+(`norm_evenFourierCutoff_evenDilationCLM_inv` and its complement form in
+`SoninFourierCutoffDilation`), so the dilate's two band terms are literally the packet's band content
+at radius `r a` and the packet's spectral mass above radius `r b`.
+
+So `P` is now three named quantities, each with an estimate already proved: the band fraction at
+`r a`, the high-side tail at `r b`, and the band fraction at `b`.  What remains is to add them and
+choose `N`, `ε`, `K` to satisfy `3 ε + P/L <= eta`.  With `N` about `r/K` this gives coupling
 energy of order `r`, against the `log r` cap, closing the shortfall test.  Then feed that through the two-branch estimate to get `N` of
 order `r` packets at scale `r`.
 
@@ -1385,6 +1394,7 @@ family is abstract, so two widths have unrelated profiles.
 | **coupling energy from a shell family**: an orthonormal family vanishing inside the inner aperture and fixed by the outer one, with band terms below `β`, forces `hsNormSq Z >= (N - discount)(1-η)²` — the coupling is itself an ideal element, hence Hilbert--Schmidt, and its dilates are unit vectors | `soninCouplingIdealErrors`, `isSoninPrincipalRelativeIdeal_soninCouplingIdealErrors`, `card_sub_le_hsNormSq_soninApertureCoupling` |
 | **the same with the cut's packets**: normalizing changes nothing the estimate sees, since the cutoffs are linear, so the bound reads with the number of annuli `N` in place of the family's cardinality | `soninShellCutUnit`, `orthonormal_soninShellCutUnit`, `evenIndicatorCutoff_soninShellCutUnit_eq_zero`, `evenIndicatorCutoff_soninShellCutUnit_eq_self`, `card_sub_le_hsNormSq_soninApertureCoupling_shellCut` |
 | **the band budget under normalization**: the three band terms are values of *fixed operators* — shell∘dilation, band-complement∘dilation, band — so each divides by the packet norm, hence so does their total; a bound on the packets' totals over a lower bound for their norms bounds the family's | `norm_apply_normalize`, `soninCouplingBandTotal`, `soninCouplingBandTotal_eq`, `soninCouplingBandTotal_normalize`, `soninCouplingBandTotal_soninShellCutUnit_le` |
+| **the dilate adds nothing new**: its physical term vanishes outright for a cut packet (both aperture radii sit below `r` times the annulus's inner radius), and the packet's norm floor comes from the energy floor by square roots | `evenIndicatorCutoff_evenDilationCLM_inv_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_sub_evenDilationCLM_inv_soninShellCutUnit_eq_zero`, `sqrt_le_norm_soninShellCutPacket` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1501,6 +1511,15 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the dilate's contributions are settled, and two of the three came for free.  The
+  physical term vanishes for *every* scale above one — no schedule condition — because the cut's
+  annuli start at `b` and an inverse dilate dies under any physical cutoff below `r` times its inner
+  radius.  And the frequency-side transport turned out to be already in the corpus: I wrote
+  `norm_evenFourierCutoff_evenDilationCLM_inv` and its complement form and the build rejected both as
+  already declared, in `SoninFourierCutoffDilation`.  Worth recording as a process note — the
+  duplicate was caught by the compiler, not by the pre-write search, because I searched for the
+  mathematical content under the packet's name rather than under the cutoff's.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninDilatedBandTransport.lean`.
 - 2026-08-01 — the band budget is transported to the normalized packets.  Making the three terms one
   functional was the right move: each is a *fixed operator* applied to the vector, so the total
   divides by the norm in a single step instead of three, and the resulting lemma takes a bound on the

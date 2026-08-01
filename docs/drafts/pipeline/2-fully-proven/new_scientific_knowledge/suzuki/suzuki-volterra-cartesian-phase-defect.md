@@ -91,6 +91,18 @@ H_lambda=H_g-lambda H_(r0),                            (7)
 The first term in `(8)` is not a positivity remainder chosen after the fact.  It is the canonical
 skew-Cartesian coordinate of the actual time-ordered prime--Gamma convolution.
 
+**`(5)`--`(6)` are formal as identities**, in
+`formal/GaloisForLFunctions/RHTower/SuzukiVolterraCartesianPhaseDefect.lean`:
+`isSelfAdjoint_volterraSymmetric` and `isSelfAdjoint_volterraPhase` show both Cartesian coordinates
+are self-adjoint for *any* bounded operator, and
+`two_smul_eq_volterraSymmetric_add_I_smul_volterraPhase` is `(6)`.  The response theorems in this
+module previously took the split as a hypothesis; it is a theorem, so the Cartesian coordinates exist
+for every causal observation and the phase is a genuine self-adjoint coordinate.
+
+`inner_volterra_cartesian` closes the loop: reading the three responses as pairings of a fixed
+observation vector against the operator's Cartesian coordinates, the hypothesis those theorems carry
+*is* the operator identity, so it never has to be assumed.
+
 ### Proof
 
 The kernel of `V_k-V_k^*` is `sgn(x-y)k(x-y)`.  It is real antisymmetric, hence skew-adjoint;
@@ -116,6 +128,12 @@ Even_z[-i T_(lambda,R)]
 Odd_z[-i T_(lambda,R)]
  =-i/2 Fourier_I[C_lambda nu_lambda].                  (11)
 ```
+
+**`(9)`'s parity consequence is formal.**  `volterraSymmetric_reflection` and
+`volterraPhase_reflection` show that a reflection conjugating the operator to its adjoint fixes the
+symmetric coordinate and *negates* the phase, via `reflection_adjoint_conj`.  So the two coordinates
+have opposite reflection parity — which is exactly why `(10)` and `(11)` separate, and why a
+positivity statement about one parity sector carries no information about the other.
 
 Suzuki admissibility `lambda<lambda_a` makes the compressed symmetric pencil
 
@@ -413,3 +431,28 @@ prime--Gamma causal commutator `(32)` evaluated in marked secant `(28)`.
 Formalize Cartesian response algebra, phase homogenization, rank-one Neumann orientation,
 complex marked-secant specialization, and RH source-germ connector in
 `RHTower/SuzukiVolterraCartesianPhaseDefect.lean`.
+
+## Log
+
+- 2026-08-01 — `(5)`--`(6)` formalized as identities.  The module's response theorems carried the
+  Cartesian split `2V = C + iH` as a *hypothesis*, so the fact justifying it — that `V + V*` and
+  `-i(V - V*)` are self-adjoint and recombine to `2V` — was assumed rather than proved.  It is an
+  identity for any bounded operator: `isSelfAdjoint_volterraSymmetric`,
+  `isSelfAdjoint_volterraPhase`, `two_smul_eq_volterraSymmetric_add_I_smul_volterraPhase`.  This is
+  what entitles the card to call the phase "the canonical skew-Cartesian coordinate" rather than a
+  remainder.  Three new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the response hypothesis discharged (`inner_volterra_cartesian`).  Pairing the operator
+  identity `(6)` against a fixed observation vector reproduces exactly the Cartesian hypothesis the
+  response theorems carry, so those theorems now rest on a proved identity rather than an assumption
+  about the observation.  Pairing on the *right* avoids the conjugation that mathlib's
+  conjugate-linear-in-the-first-argument convention would introduce.  One new declaration, targeted
+  build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(9)`'s parity consequence formalized.  A reflection conjugating the operator to its
+  adjoint fixes the symmetric Cartesian coordinate and negates the phase
+  (`volterraSymmetric_reflection`, `volterraPhase_reflection`), so the two coordinates have opposite
+  reflection parity.  That is the mechanism behind the separation `(10)`--`(11)`, and it makes
+  precise the card's central point: positivity of the admissible symmetric pencil controls one parity
+  sector and therefore supplies no sign for the other.  The whole argument follows from the single
+  relation `R T R = T*` — evenness of the kernel is used nowhere else.  Three new declarations,
+  targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.

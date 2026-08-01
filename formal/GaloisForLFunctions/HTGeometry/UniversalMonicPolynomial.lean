@@ -1,6 +1,7 @@
 import Mathlib.Algebra.MvPolynomial.CommRing
 import Mathlib.Algebra.Polynomial.Monic
 import Mathlib.Algebra.Polynomial.Eval.Degree
+import Mathlib.Algebra.Polynomial.BigOperators
 
 /-!
 # The monic polynomial with indeterminate coefficients
@@ -43,9 +44,8 @@ theorem natDegree_universalMonic [Nontrivial K] (hd : 0 < d) :
   refine Polynomial.natDegree_add_eq_left_of_natDegree_lt ?_ |>.trans
     (Polynomial.natDegree_X_pow d)
   rw [Polynomial.natDegree_X_pow]
-  refine lt_of_le_of_lt (Polynomial.natDegree_sum_le _ _) ?_
-  refine lt_of_le_of_lt (Finset.fold_max_le (b := d - 1) ?_) (by omega)
-  refine ⟨by omega, fun i _ => ?_⟩
+  refine lt_of_le_of_lt (Polynomial.natDegree_sum_le_of_forall_le _ _ (fun i _ => ?_))
+    (by omega : d - 1 < d)
   refine le_trans (Polynomial.natDegree_C_mul_le _ _) ?_
   rw [Polynomial.natDegree_X_pow]
   exact Nat.le_sub_one_of_lt i.2
@@ -60,7 +60,8 @@ theorem monic_universalMonic [Nontrivial K] (hd : 0 < d) : (universalMonic K d).
     intro b
     rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_neg ?_, mul_zero]
     intro hcon
-    exact absurd (hcon ▸ b.2) (by omega)
+    have hb := b.2
+    omega
   rw [Finset.sum_congr rfl (fun b _ => hzero b), Finset.sum_const_zero, add_zero]
 
 end GaloisForLFunctions.HTGeometry

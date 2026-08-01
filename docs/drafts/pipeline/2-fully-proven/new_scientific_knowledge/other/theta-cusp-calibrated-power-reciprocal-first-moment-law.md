@@ -9,6 +9,8 @@
   `PrimeArchThetaSourceAtomDomination.lean`,
   `ThetaCuspLikelihoodAtomicNondivisibility.lean`, and
   `XiOrderFourteenCornerSourceExclusion.lean`
+- **Lean:**
+  `formal/GaloisForLFunctions/RHTower/ThetaCuspCalibratedPowerReciprocalMomentLaw.lean`
 - **Statement:** Zeroth-mass calibration cannot repair the raw reciprocal-gap Cassini carrier:
   its first moment exceeds the canonical first source moment by more than
   `(19413 / 160000) * normalizedPrimeArchMoment 0`.  There is nevertheless a unique
@@ -30,7 +32,7 @@ calibration problem.  Moment matching from degree two onward remains open.
 - [x] 0 → 1 in-progress: explicit source measure, falsifiable degree-one prediction, and
   corpus-only proof strategy
 - [x] 1 → 2 fully-proven: dependency-closed paper proof below; `[PROVED HERE]`
-- [ ] 2 → 3 formalized: Lean quantitative mismatch, no-go, and power-reciprocal survivor
+- [x] 2 → 3 formalized: Lean quantitative mismatch, no-go, and power-reciprocal survivor
 - [ ] 3 → 4 publication-ready: standalone theorem/proof/Lean certificate and independent
   novelty review
 
@@ -218,7 +220,39 @@ normalizedPrimeArchMoment 2
   constraints.  A scalar can satisfy degree zero only; the first moment forces a geometric
   exponent.  The open Cassini construction should begin at degree two after solving this
   two-parameter calibration exactly.
-- **Status:** paper proof dependency-closed; Lean formalization pending.
+- **Status:** paper proof and unconditional Lean formalization dependency-closed.
+
+## Lean formalization
+
+Lean defines a globally measurable positive extension of `t ↦ t^(-alpha)` and proves that it is
+literally the real power on the carrier's positive support.  Generic finite-measure infrastructure
+then proves, for every measure carried by `[c,∞)` with `c > 1`, positivity, continuity on
+`[0,∞)`, strict decrease, the sharp bound by `c^(-alpha)`, normalization at zero, decay to zero,
+and existence and uniqueness of every target exponent below the value at one.
+
+For the theta carrier, Lean proves
+
+```text
+37/256 < F(1),
+normalizedPrimeArchMoment 1 / normalizedPrimeArchMoment 0 < F(1),
+```
+
+and obtains a unique source-selected exponent `alpha_* > 1`.  The calibrated pushforward at this
+exponent has exact mass `normalizedPrimeArchMoment 0`, exact first moment
+`normalizedPrimeArchMoment 1`, and almost-everywhere support in the strict interval `(0,1/3)`.
+For the fixed reciprocal exponent, Lean proves the literal quantitative obstruction
+
+```text
+normalizedPrimeArchMoment 1
+  + (19413/160000) * normalizedPrimeArchMoment 0
+  < integral x dmu_1(x).
+```
+
+`#print axioms` on the quantitative obstruction, unique-exponent theorem, calibrated moment
+capstone, support theorem, and generic existence theorem reports only `propext`,
+`Classical.choice`, and `Quot.sound`.  Direct source check and
+`lake build GaloisForLFunctions.RHTower.ThetaCuspCalibratedPowerReciprocalMomentLaw` pass; the
+module is imported by `formal/GaloisForLFunctions/RHTower.lean`.
 
 ## Novelty audit
 

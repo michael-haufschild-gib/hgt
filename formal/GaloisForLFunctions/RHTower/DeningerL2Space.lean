@@ -25,14 +25,13 @@ variable (F : Type*) [Field F] [Algebra ℚ F] [Algebra.IsAlgebraic ℚ F]
 /-- The Kummer space `𝒢 ⊗ ℚ` carrying the `L²` norm. -/
 def DeningerL2Space : Type _ := deningerKummerSpace F
 
-instance : AddCommGroup (DeningerL2Space F) :=
-  inferInstanceAs (AddCommGroup (deningerKummerSpace F))
+noncomputable instance : NormedAddCommGroup (DeningerL2Space F) :=
+  letI : AddCommGroup (DeningerL2Space F) :=
+    inferInstanceAs (AddCommGroup (deningerKummerSpace F))
+  (deningerL2AddGroupNorm (F := F)).toNormedAddCommGroup
 
 noncomputable instance deningerL2Space_module : Module ℚ (DeningerL2Space F) :=
   inferInstanceAs (Module ℚ (deningerKummerSpace F))
-
-noncomputable instance : NormedAddCommGroup (DeningerL2Space F) :=
-  (deningerL2AddGroupNorm (F := F)).toNormedAddCommGroup
 
 variable {F}
 

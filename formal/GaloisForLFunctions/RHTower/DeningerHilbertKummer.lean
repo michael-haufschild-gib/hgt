@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.DeningerL2Space
 import Mathlib.Analysis.InnerProductSpace.OfNorm
+import Mathlib.Analysis.Normed.Group.Completion
 
 /-!
 # The Hilbert--Kummer space is an inner product space
@@ -11,6 +12,9 @@ the space is inner-product-able.
 * `deningerL2NormSpace_parallelogram` : the parallelogram identity for the `L²` norm.
 * `deningerL2Space_innerProductSpaceable` : the Kummer space satisfies the scalar-free
   inner-product predicate.
+* `deningerL2Completion_parallelogram` : the identity on the completion.
+* `deningerL2Completion_innerProductSpace` : the Hilbert--Kummer space as a real inner product
+  space.
 -/
 
 namespace RHTower
@@ -58,6 +62,52 @@ instance deningerL2Space_innerProductSpaceable :
     InnerProductSpaceable (DeningerL2Space F) :=
   ⟨deningerL2Norm_parallelogram⟩
 
+/-- **The parallelogram identity on the completion**, by density. -/
+theorem deningerL2Completion_parallelogram (x y : DeningerL2Completion F) :
+    ‖x + y‖ * ‖x + y‖ + ‖x - y‖ * ‖x - y‖ = 2 * (‖x‖ * ‖x‖ + ‖y‖ * ‖y‖) := by
+  have hdense : Dense (Set.range (Prod.map
+      (UniformSpace.Completion.coe' : DeningerL2Space F → DeningerL2Completion F)
+      (UniformSpace.Completion.coe' : DeningerL2Space F → DeningerL2Completion F))) :=
+    (UniformSpace.Completion.denseRange_coe).prodMap UniformSpace.Completion.denseRange_coe
+  have hf : Continuous fun p : DeningerL2Completion F × DeningerL2Completion F =>
+      ‖p.1 + p.2‖ * ‖p.1 + p.2‖ + ‖p.1 - p.2‖ * ‖p.1 - p.2‖ := by
+    fun_prop
+  have hg : Continuous fun p : DeningerL2Completion F × DeningerL2Completion F =>
+      2 * (‖p.1‖ * ‖p.1‖ + ‖p.2‖ * ‖p.2‖) := by
+    fun_prop
+  have heq := Continuous.ext_on hdense hf hg ?_
+  · exact congr_fun heq (x, y)
+  · rintro _ ⟨⟨a, b⟩, rfl⟩
+    simp only [Prod.map_apply]
+    rw [← UniformSpace.Completion.coe_add, ← UniformSpace.Completion.coe_sub,
+      UniformSpace.Completion.norm_coe, UniformSpace.Completion.norm_coe,
+      UniformSpace.Completion.norm_coe, UniformSpace.Completion.norm_coe]
+    exact deningerL2Norm_parallelogram a b
+
 end Parallelogram
+
+section InnerProduct
+
+variable (F : Type*) [Field F] [Algebra ℚ F] [Algebra.IsAlgebraic ℚ F]
+
+/-- The real normed structure on the Hilbert--Kummer space. -/
+@[reducible] noncomputable def deningerL2Completion_normedSpace :
+    letI := deningerL2Completion_realModule F
+    NormedSpace ℝ (DeningerL2Completion F) :=
+  letI := deningerL2Completion_realModule F
+  { norm_smul_le := fun r x => by
+      rw [Real.norm_eq_abs]
+      exact le_of_eq (deningerL2Completion_realSmul_norm F r x) }
+
+/-- **The Hilbert--Kummer space is a real inner product space.** -/
+@[reducible] noncomputable def deningerL2Completion_innerProductSpace :
+    letI := deningerL2Completion_realModule F
+    letI := deningerL2Completion_normedSpace F
+    InnerProductSpace ℝ (DeningerL2Completion F) :=
+  letI := deningerL2Completion_realModule F
+  letI := deningerL2Completion_normedSpace F
+  InnerProductSpace.ofNorm (𝕜 := ℝ) deningerL2Completion_parallelogram
+
+end InnerProduct
 
 end RHTower

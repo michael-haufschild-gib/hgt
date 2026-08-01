@@ -2110,3 +2110,49 @@ dividing the discriminant.
   step `(9)` is actually needed.  It says the centered coefficients are the generic ones plus
   corrections carrying a factor of the average, which is what makes the change of parameters
   invertible and, with an exchange argument, the centered coefficients independent.
+
+- 2026-08-01 — `UniversalMonicPolynomial.lean` sets up the ring in which the change of coefficients
+  can be studied on its own terms: `universalMonic`, the monic polynomial of degree `d` whose
+  coefficients **are** the variables, with `coeff_universalMonic_lt`, `monic_universalMonic` and
+  `natDegree_universalMonic`.  Axioms `[propext, Classical.choice, Quot.sound]`.
+  This is the setting for the independence argument: shifting `universalMonic` gives coefficients
+  `Q_k = X_k + X_0 * s_k` by `taylor_coeff_eq_add`, so the Jacobian of the change of coefficients
+  specialises at `X_0 = 0` to the identity and is therefore nonzero — which the corpus's
+  `algebraicIndependent_of_domain_jacobian` turns into algebraic independence.  That is the planned
+  route to the centered coefficients' independence, with the two ingredients now in place.
+
+- 2026-08-01 — `UniversalCenteredCoefficients.lean` performs the centering in the universal ring.
+  `centeringShift` is minus the next-to-leading coefficient over the degree;
+  `universalCenteredCoeff_pred` shows it does remove that coefficient (this is `taylor_coeff_pred`
+  with the scalar cancelling); and `universalCenteredCoeff_eq_add` records that every other
+  coefficient is the original plus a multiple of the shift.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  The Jacobian argument can now be set up: in the family consisting of the next-to-leading
+  coefficient together with the centered ones, specialising the next-to-leading coefficient to zero
+  kills the shift, so the derivative matrix becomes the identity in the first block and has a unit
+  row for the last coordinate — block triangular with determinant one, hence nonzero as a
+  polynomial.
+
+- 2026-08-01 — analysis of the last step, recorded so it is not rediscovered.  Two routes to the
+  centered coefficients' independence:
+  (a) **Jacobian.**  Take the family (next-to-leading coefficient, centered coefficients).
+  Specialising the next-to-leading coefficient to zero kills `centeringShift`, so by
+  `universalCenteredCoeff_eq_add` the derivative matrix is the identity on the first block with a
+  unit row for the last coordinate: block triangular, determinant one.  Feed to the corpus's
+  `algebraicIndependent_of_domain_jacobian`.
+  (b) **Automorphism.**  Transfer independence along a substitution automorphism, using mathlib's
+  `AlgebraicIndependent.map` (which exists).  The natural candidate — fix the top coefficient, send
+  the others to the centered ones — does **not** telescope: the centering sends the top coefficient
+  to zero while the substitution fixes it, so `map` of the universal polynomial is the centered
+  polynomial **plus** a leftover term, and the composition of the two shifts does not cancel.  Any
+  attempt on this route must handle that mismatch rather than assume it away.
+  Route (a) is the one to take; nothing in it is now missing except the derivative computation and
+  the determinant of a block-triangular matrix.
+
+- 2026-08-01 — `DetUpdateRowOne.lean`: `det_updateRow_one`, the identity matrix with one row replaced
+  has determinant that row's entry in the replaced position — Cramer's rule for the identity, read
+  through a transpose.  Axioms `[propext, Classical.choice, Quot.sound]`.
+  This is the shape the Jacobian of route (a) takes after specialising the next-to-leading
+  coefficient to zero: every row but the last becomes a standard basis vector, and the last row's
+  entry in its own position is one, so the determinant is one and the unspecialised determinant is
+  therefore nonzero.

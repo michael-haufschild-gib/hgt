@@ -1,7 +1,7 @@
 # Hilbert--Kummer radial suspension realizes the Poisson dilations
 
 - **ID:** `deninger-hilbert-kummer-radial-flow-poisson`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Labels:** `DAC_DENINGER_HILBERT_KUMMER_RADIAL_SUSPENSION`,
   `DAC_DENINGER_FLOW_POISSON_DILATION`
@@ -54,7 +54,8 @@
   `GaloisForLFunctions.RHTower.DeningerRealSmulModule`,
   `GaloisForLFunctions.RHTower.DeningerL2CauchySchwarz`,
   `GaloisForLFunctions.RHTower.DeningerL2Norm2`,
-  `GaloisForLFunctions.RHTower.DeningerL2Space`
+  `GaloisForLFunctions.RHTower.DeningerL2Space`,
+  `GaloisForLFunctions.RHTower.DeningerHilbertKummer`
   (the gluing of the place tower, the absolute height on `Q̄`, the
   normed Kummer group `𝒢`, the normed `ℚ`-vector space `𝒢 ⊗ ℚ`, its
   completion, and the local-degree normalization of the place space)
@@ -333,12 +334,11 @@ The earlier "direct check deferred" note is superseded: both modules pass `lake 
 errors and no warnings, their cached builds complete, and they are imported by the
 `GaloisForLFunctions.RHTower` umbrella.
 
-### Remaining
+### Remaining (superseded)
 
-The analytic inputs of the refinement theorem: injectivity and dense span of `(2)`, which rest on
-the height-zero theorem and Allcock--Vaaler, and the Hilbert--Kummer boundedness `(4)` that
-produces the functional `(5)`.  Those are quoted results about the place space, not identities of
-the flow.
+At this point the analytic inputs of the refinement theorem — injectivity and dense span of `(2)`,
+and the boundedness `(4)` producing `(5)` — were still quoted.  All three were proved later; see
+the sections below.
 
 ### The refinement theorem's proof mechanism is formalized
 
@@ -698,16 +698,11 @@ declarations: `propext, Classical.choice, Quot.sound`.
 Both halves of the card's `(2)` — injectivity and dense span — are therefore now proved rather
 than quoted, and `H_Kum` is an explicit Lean object rather than a citation.
 
-### Remaining
+### Remaining (superseded)
 
-One point only: the card's `H_Kum` is an `L²` space, whereas the completion built here carries the
-height norm, which is of `L¹` type (`‖f_α‖₁ = 2h(α)`, formalized as
-`deningerKummerL1Norm_eq_two_mul_logHeight`).  The inner-product structure is carried by the place
-space `(Y, λ)` and is what the `p = 2` Allcock--Vaaler theorem supplies.  Every statement the card
-*derives* from `H_Kum` — the bounded extension, the modulus replacement, the Frobenius scaling, the
-descent and positivity of `(9)`, and the Poisson-flow identities `(11)`--`(14)` — is formalized
-unconditionally, and the injectivity and density it quotes are now proved for the height
-completion.
+At this point only the `L²` structure was missing, the completion built so far carrying the
+`L¹`-type height norm.  The `p = 2` normalization was built afterwards from the local degrees; see
+the sections below.
 ### The local-degree normalization landed
 
 `formal/GaloisForLFunctions/RHTower/DeningerLocalDegree.lean`.  Axiom audit:
@@ -1118,10 +1113,75 @@ earlier.
 So the card's `(1)` is now realized: `H_Kum` exists as a real normed complete space obtained from
 the `L²` Kummer form, and `(2)` is `deningerKummerClass` with its injectivity and dense span.
 
-### Remaining
+### The parallelogram identity landed
 
-Recording the inner product on the completion: extend `deningerSpaceL2Inner` by continuity to
-`DeningerL2Completion` and note that its diagonal is `‖·‖²`, i.e. package the completion as an
-`InnerProductSpace ℝ`.  Both ingredients are proved — the form is bounded by Cauchy--Schwarz so it
-extends, and the real structure is in place; what remains is the extension of a *bilinear* map by
-continuity, the two-variable analogue of the scalar extension already built.
+`formal/GaloisForLFunctions/RHTower/DeningerHilbertKummer.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerL2NormSpace_parallelogram` — **the parallelogram identity** for the `L²` norm on the
+  Kummer space, from the expansions of `⟨x ± y, x ± y⟩` and `‖z‖² = ⟨z, z⟩`.
+- `deningerL2Norm_parallelogram` — the same on the `L²` type synonym (by definitional transfer).
+- `deningerL2Space_innerProductSpaceable` — hence `𝒢 ⊗ ℚ` with the `L²` norm satisfies mathlib's
+  scalar-free `InnerProductSpaceable` predicate, the hypothesis of the
+  Fréchet--von Neumann--Jordan theorem.
+
+### `H_Kum` is a real inner product space — the card's `(1)` is complete
+
+`formal/GaloisForLFunctions/RHTower/DeningerHilbertKummer.lean` (extended).  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerL2Completion_parallelogram` — the parallelogram identity on the completion, by density:
+  it is an equation between continuous functions of two variables agreeing on the dense image of
+  `𝒢 ⊗ ℚ × 𝒢 ⊗ ℚ`.
+- `deningerL2Completion_normedSpace` — the real normed structure, from the scalar extension and its
+  norm law.
+- `deningerL2Completion_innerProductSpace` — **`H_Kum` is a real inner product space**, by the
+  Fréchet--von Neumann--Jordan theorem (`InnerProductSpace.ofNorm`).
+
+The instance obstruction recorded last time was a *diamond*, and worth remembering: the type
+synonym had both a standalone `AddCommGroup` instance and the one inside its
+`NormedAddCommGroup`, so instance search paired the standalone group structure with the normed
+uniformity and could not match mathlib's `IsUniformAddGroup` instance, which requires both to come
+from one `SeminormedAddCommGroup`.  Deleting the standalone instance — building the normed
+structure with a `letI` for the group and letting everything else project out of it — fixes it
+immediately.
+
+So the card's Hilbert space `(1)` is now a Lean object: `DeningerL2Completion F`, a complete real
+inner product space, obtained from the `L²` Kummer form whose arithmetic invariance was proved
+place by place.  `(2)` is `deningerKummerClass`, injective
+(`deningerKummerClass_eq_zero_iff_isOfFinOrder`) with dense span
+(`deningerKummerClass_dense_completion`), and `(3)`--`(14)` were formalized earlier.
+
+## Status: fully formalized
+
+Every numbered statement of this card is now an unconditional Lean theorem, and every object it
+names is an explicit Lean object.  Axiom audits throughout: `propext, Classical.choice, Quot.sound`
+only.
+
+| Statement | Lean |
+|---|---|
+| `(1)` `𝒢`, `H_Kum` | `deningerKummerGroup`, `DeningerL2Completion` (real inner product space) |
+| `(2)` `ι` injective, dense span | `deningerKummerClass_eq_zero_iff_isOfFinOrder`, `deningerKummerClass_span`, `deningerKummerClass_dense_completion` |
+| `(3)` `L_P` | `deningerLogModulus`, `deningerLogModulus_mul` |
+| `(4)` ⟹ `(5)` | `deningerHilbertKummerBounded_extend_closedSpan` |
+| `(6)` radius | `deningerHilbertKummerRadius` |
+| `(7)` density of `α_HK` | `deningerHilbertKummer_pointwise` |
+| `(8)` `r(F_qP) = q r(P)` | `deningerLogModulus_ratPow`, `deningerHilbertKummerRadius_smul` |
+| `(9)` descent, positivity | `deningerSuspensionValue_descent`, `deningerSuspensionValue_pos` |
+| `(10)`--`(14)` deck relation, flow, Meyer dilations | `DeningerArithmeticPoissonTransfer` |
+
+Two external theorems the card quoted are proved here rather than cited: the **height-zero
+theorem** (`deningerMulHeightOne_iff_isOfFinOrder`, Kronecker in height form, absent from mathlib)
+and the **place-space isometry and its `p = 1, 2` normalizations**
+(`deningerKummerL1Norm_eq_two_mul_logHeight`, `deningerNormalizedL2_baseChange`), which is the
+Allcock--Vaaler content the card needed.  Also built, and missing from mathlib: base change for the
+Weil height (`deningerLogHeight_baseChange`), the absolute height on `Q̄`
+(`deningerAbsHeight`), and the extension of a normed `ℚ`-space to a real one
+(`deningerRealModule`).
+
+### Gates
+
+- [x] 0 → 1 in-progress
+- [x] 1 → 2 fully-proven: the refinement theorem and the Poisson-flow identities
+- [x] 2 → 3 formalized: every numbered statement, plus the quoted external inputs
+- [ ] 3 → 4 publication-ready

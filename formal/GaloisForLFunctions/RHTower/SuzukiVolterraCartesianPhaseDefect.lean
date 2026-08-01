@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.SuzukiProjectiveResolventPluckerLift
 import GaloisForLFunctions.RHTower.SuzukiCarlemanJumpEulerDefectWeld
 import GaloisForLFunctions.RHTower.SuzukiProjectiveAffineSecantTensor
+import Mathlib.Analysis.InnerProductSpace.Adjoint
 
 /-!
 # Suzuki Volterra Cartesian phase defect
@@ -334,5 +335,100 @@ theorem riemannHypothesis_of_suzukiVolterraPhaseEulerDefect_source_germ_weld
     hSource hseedUpper hseed
 
 end
+
+/-! ## The Cartesian split is an identity
+
+The response theorems above take the split `2V = C + i H` as a hypothesis.  It is not an
+assumption: for any bounded operator the symmetric part `V + V*` and the phase `-i(V - V*)` are both
+self-adjoint, and their combination reproduces `2V` exactly.  So the Cartesian coordinates exist for
+every causal observation, and the phase is a genuine self-adjoint coordinate rather than a remainder
+chosen after the fact. -/
+
+section Cartesian
+
+variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+
+open ContinuousLinearMap
+
+/-- The symmetric Cartesian coordinate of a bounded operator. -/
+noncomputable def volterraSymmetric (T : H →L[ℂ] H) : H →L[ℂ] H := T + adjoint T
+
+/-- **`(5)`, the Volterra phase coordinate.** -/
+noncomputable def volterraPhase (T : H →L[ℂ] H) : H →L[ℂ] H :=
+  (-Complex.I) • (T - adjoint T)
+
+/-- The symmetric coordinate is self-adjoint. -/
+theorem isSelfAdjoint_volterraSymmetric (T : H →L[ℂ] H) :
+    IsSelfAdjoint (volterraSymmetric T) := by
+  rw [IsSelfAdjoint, volterraSymmetric, star_add, star_eq_adjoint, star_eq_adjoint,
+    adjoint_adjoint]
+  abel
+
+/-- **`(5)`, the phase coordinate is self-adjoint.**  Adjoining conjugates the scalar and reverses
+the difference, and the two sign changes cancel. -/
+theorem isSelfAdjoint_volterraPhase (T : H →L[ℂ] H) :
+    IsSelfAdjoint (volterraPhase T) := by
+  rw [IsSelfAdjoint, volterraPhase, star_smul, star_sub, star_eq_adjoint, star_eq_adjoint,
+    adjoint_adjoint]
+  simp only [RCLike.star_def, Complex.conj_neg_I]
+  module
+
+/-- **`(6)`, the Cartesian split.**  Every bounded operator is half its symmetric coordinate plus
+`i/2` times its phase coordinate — an identity, not a hypothesis. -/
+theorem two_smul_eq_volterraSymmetric_add_I_smul_volterraPhase (T : H →L[ℂ] H) :
+    (2 : ℂ) • T = volterraSymmetric T + Complex.I • volterraPhase T := by
+  rw [volterraSymmetric, volterraPhase, smul_smul,
+    show Complex.I * -Complex.I = 1 by simp [Complex.I_mul_I]]
+  module
+
+/-- **The response hypothesis is automatic.**  Reading the three responses as pairings of a fixed
+observation vector against the operator's Cartesian coordinates, the hypothesis carried by the
+response theorems above is exactly the operator identity `(6)` — so it need never be assumed. -/
+theorem inner_volterra_cartesian (T : H →L[ℂ] H) (u w : H) :
+    2 * inner ℂ w (T u)
+      = inner ℂ w ((volterraSymmetric T) u)
+        + Complex.I * inner ℂ w ((volterraPhase T) u) := by
+  have hop := two_smul_eq_volterraSymmetric_add_I_smul_volterraPhase T
+  have happ : ((2 : ℂ) • T) u = (volterraSymmetric T + Complex.I • volterraPhase T) u := by
+    rw [hop]
+  rw [smul_apply, add_apply, smul_apply] at happ
+  have := congrArg (fun x => inner ℂ w x) happ
+  simpa [inner_add_right, inner_smul_right] using this
+
+/-! ## Reflection parity of the Cartesian coordinates
+
+`(9)` says a reflection conjugates the causal operator to its adjoint.  That single relation forces
+the two Cartesian coordinates to have opposite reflection parity: the symmetric coordinate is fixed
+and the phase is negated.  This is why `(10)`--`(11)` separate — the admissible positive pencil
+controls one parity and says nothing about the other. -/
+
+/-- A reflection conjugating the operator to its adjoint also conjugates the adjoint back. -/
+theorem reflection_adjoint_conj {T R : H →L[ℂ] H} (hR : IsSelfAdjoint R)
+    (h : R * T * R = adjoint T) : R * adjoint T * R = T := by
+  have hstar := congrArg star h
+  rw [star_mul, star_mul, hR.star_eq, star_eq_adjoint, star_eq_adjoint, adjoint_adjoint] at hstar
+  simpa [mul_assoc] using hstar
+
+/-- **The symmetric coordinate is reflection-even.** -/
+theorem volterraSymmetric_reflection {T R : H →L[ℂ] H} (hR : IsSelfAdjoint R)
+    (h : R * T * R = adjoint T) :
+    R * volterraSymmetric T * R = volterraSymmetric T := by
+  have hback := reflection_adjoint_conj hR h
+  rw [volterraSymmetric, mul_add, add_mul, h, hback]
+  exact add_comm _ _
+
+/-- **The phase coordinate is reflection-odd.**  So the two coordinates cannot be controlled by the
+same parity sector, which is the content of `(10)`--`(11)`. -/
+theorem volterraPhase_reflection {T R : H →L[ℂ] H} (hR : IsSelfAdjoint R)
+    (h : R * T * R = adjoint T) :
+    R * volterraPhase T * R = -volterraPhase T := by
+  have hback := reflection_adjoint_conj hR h
+  have hexp : R * volterraPhase T * R
+      = (-Complex.I) • (R * T * R - R * adjoint T * R) := by
+    rw [volterraPhase, mul_smul_comm, smul_mul_assoc, mul_sub, sub_mul]
+  rw [hexp, h, hback, volterraPhase]
+  module
+
+end Cartesian
 
 end RHTower

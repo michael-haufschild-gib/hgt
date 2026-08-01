@@ -2625,6 +2625,42 @@ whose exponent group has infinite rational rank satisfies no differential relati
 coefficients.  The `ζ` case (32) is the instance where the exponents `log p` are independent by unique
 factorization — a known theorem the card does not claim as new.
 
+### Eq. (31) packaged, and the `ζ` instance (32)
+
+`HTGeometry/DirichletHypertranscendence.lean` states eq. (31) as one theorem:
+
+- **`dirichlet_no_gammaField_relation`** — a holomorphic Dirichlet series converging uniformly on the
+  closed substrips, whose exponents contain a `ℤ`-independent family of every finite size with nonzero
+  coefficients, satisfies no nontrivial differential relation with Gamma-field coefficients.  The
+  proof chains `isStripAlmostPeriodic_dirichlet` (a.p. on the strip), `not_rank_le_of_dirichlet_independent`
+  (rank above every `K`) and `no_gammaField_relation_of_infinite_rank` (the finite phase law,
+  contrapositive).
+
+`HTGeometry/ZetaGammaFieldHypertranscendence.lean` discharges the `ζ` specialization (32)
+unconditionally, with every analytic input built rather than assumed:
+
+- `exp_neg_log_succ_mul` — the Dirichlet exponential of frequency `log(i+1)` is the `(i+1)`-st zeta
+  term, so `ζ` is literally a series of the form (30) with `λ_i = log(i+1)`, `a_i = 1`;
+- `norm_zeta_term`, `norm_zeta_term_le`, `summable_zeta_compare`, `summable_zeta_terms` — the
+  comparison series on a closed half-plane `Re z ≥ c > 1`;
+- **`zeta_uniform_approx`** — every partial sum beyond a threshold approximates `ζ` to within `ε`
+  *uniformly* on that half-plane (tail of the comparison series), hence `zeta_dirichlet_conv`, the
+  hypothesis (30) on any vertical strip inside `Re s > 1`;
+- `norm_riemannZeta_le_halfPlane`, `continuous_zeta_line`, `zetaLine` — the restriction of `ζ` to a
+  vertical line `σ > 1` as a bounded continuous function, the carrier the law needs;
+- **`linearIndependent_neg_log_firstPrimes`** — the frequencies `−log p` of the first `K+1` primes are
+  `ℤ`-independent, by unique factorization (`linearIndependent_log_primes` of `Core`), restricted from
+  `ℚ` to `ℤ` and negated;
+- `zetaFrequency_injective` — the exponents `log(i+1)` are pairwise distinct, so the Bohr coefficient
+  identification applies;
+- **`zeta_no_gammaField_relation`** — putting these into `dirichlet_no_gammaField_relation`: on any
+  vertical strip inside `Re s > 1`, `ζ` satisfies no nontrivial differential relation whose
+  coefficients are Gamma-field elements.  `#print axioms` clean.
+
+This is eq. (32) as a Lean theorem.  It is a known result (Wang–Yao) which the card does not claim as
+new; what is new here is that it now follows inside the corpus from the finite phase law, with no
+hypothesis left open — the Bohr-rank mechanism, not a separate argument.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

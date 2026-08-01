@@ -291,7 +291,8 @@ theorem positiveDefiniteOnReal_sinc_sq (A : ℝ) :
 def normalizedCharacteristicDefect (μ : Measure ℝ) (m y : ℝ) : ℝ :=
   if y = 0 then 1 else 2 * (1 - (charFun μ y).re) / (m * y ^ 2)
 
-private theorem sq_mul_sinc_sq_eq_normalized_cosDefect
+/-- Pointwise sinc-square form of a normalized cosine defect. -/
+theorem sq_mul_sinc_sq_eq_normalized_cosDefect
     {m y : ℝ} (hm : m ≠ 0) (hy : y ≠ 0) (x : ℝ) :
     x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2 =
       2 * (1 - Real.cos (x * y)) / (m * y ^ 2) := by
@@ -306,6 +307,106 @@ private theorem sq_mul_sinc_sq_eq_normalized_cosDefect
   rw [hcos]
   field_simp [hm, hy, hx]
   ring
+
+/-- Square-biased version of a real measure, normalized by a proposed second moment `m`. -/
+def squareBiasedMeasure (μ : Measure ℝ) (m : ℝ) : Measure ℝ :=
+  μ.withDensity fun x => ((x ^ 2 / m).toNNReal : ℝ≥0∞)
+
+/-- A square-biased measure has mass one when `m` is its source's positive second moment. -/
+theorem isProbabilityMeasure_squareBiasedMeasure
+    (μ : Measure ℝ) [IsProbabilityMeasure μ]
+    {m : ℝ} (hm : 0 < m)
+    (hsq : Integrable (fun x : ℝ => x ^ 2) μ)
+    (hmoment : ∫ x : ℝ, x ^ 2 ∂μ = m) :
+    IsProbabilityMeasure (squareBiasedMeasure μ m) := by
+  constructor
+  rw [squareBiasedMeasure, withDensity_apply _ MeasurableSet.univ,
+    Measure.restrict_univ]
+  rw [show (fun x : ℝ => ((x ^ 2 / m).toNNReal : ℝ≥0∞)) =
+      fun x => ENNReal.ofReal (x ^ 2 / m) by
+    funext x
+    rw [Real.toNNReal_of_nonneg (div_nonneg (sq_nonneg x) hm.le)]
+    exact (ENNReal.ofReal_eq_coe_nnreal
+      (div_nonneg (sq_nonneg x) hm.le)).symm]
+  rw [← ofReal_integral_eq_lintegral_ofReal
+    (by simpa only [div_eq_mul_inv] using hsq.mul_const m⁻¹)
+    (Filter.Eventually.of_forall fun x => div_nonneg (sq_nonneg x) hm.le)]
+  rw [integral_div, hmoment, div_self hm.ne']
+  norm_num
+
+/-- Square-biased probability law associated to a finite positive second moment. -/
+def squareBiasedProbabilityMeasure
+    (μ : Measure ℝ) [IsProbabilityMeasure μ]
+    {m : ℝ} (hm : 0 < m)
+    (hsq : Integrable (fun x : ℝ => x ^ 2) μ)
+    (hmoment : ∫ x : ℝ, x ^ 2 ∂μ = m) : ProbabilityMeasure ℝ :=
+  ⟨squareBiasedMeasure μ m,
+    isProbabilityMeasure_squareBiasedMeasure μ hm hsq hmoment⟩
+
+/-- Triangular clock: sum of two independent centered uniforms on `[-1/2,1/2]`. -/
+def triangularClockProbabilityMeasure : ProbabilityMeasure ℝ :=
+  let U := centeredUniformClockProbabilityMeasure (1 / 2)
+  ⟨(U : Measure ℝ) ∗ (U : Measure ℝ), by infer_instance⟩
+
+/-- Characteristic function of the centered triangular clock. -/
+theorem charFun_triangularClockProbabilityMeasure (y : ℝ) :
+    charFun (triangularClockProbabilityMeasure : Measure ℝ) y =
+      (Real.sinc (y / 2) ^ 2 : ℂ) := by
+  rw [triangularClockProbabilityMeasure]
+  simp only [ProbabilityMeasure.coe_mk]
+  rw [charFun_conv, charFun_centeredUniformClockProbabilityMeasure]
+  have harg : (1 / 2 : ℝ) * y = y / 2 := by ring
+  rw [harg, pow_two]
+
+/-- Law of the difference of two independent centered uniforms on `[-1/2,1/2]`. -/
+def centeredUniformDifferenceProbabilityMeasure : ProbabilityMeasure ℝ :=
+  let U := centeredUniformClockProbabilityMeasure (1 / 2)
+  ProbabilityMeasure.map (U.prod U)
+    (f := fun p : ℝ × ℝ => p.1 - p.2) (by fun_prop)
+
+/-- Difference and sum of two independent centered uniforms have the same triangular law. -/
+theorem centeredUniformDifferenceProbabilityMeasure_eq_triangular :
+    (centeredUniformDifferenceProbabilityMeasure : Measure ℝ) =
+      (triangularClockProbabilityMeasure : Measure ℝ) := by
+  apply Measure.ext_of_charFun
+  funext y
+  rw [centeredUniformDifferenceProbabilityMeasure,
+    ProbabilityMeasure.toMeasure_map, charFun_apply_real,
+    integral_map (by fun_prop) (by fun_prop)]
+  let U : ProbabilityMeasure ℝ := centeredUniformClockProbabilityMeasure (1 / 2)
+  change (∫ p : ℝ × ℝ,
+      Complex.exp ((y : ℂ) * ((p.1 - p.2 : ℝ) : ℂ) * Complex.I)
+        ∂(U : Measure ℝ).prod (U : Measure ℝ)) = _
+  rw [show (fun p : ℝ × ℝ =>
+      Complex.exp ((y : ℂ) * ((p.1 - p.2 : ℝ) : ℂ) * Complex.I)) =
+      fun p => Complex.exp ((y : ℂ) * (p.1 : ℂ) * Complex.I) *
+        Complex.exp ((-y : ℂ) * (p.2 : ℂ) * Complex.I) by
+    funext p
+    rw [← Complex.exp_add]
+    congr 1
+    push_cast
+    ring]
+  rw [integral_prod_mul
+    (μ := (U : Measure ℝ)) (ν := (U : Measure ℝ))
+    (fun u : ℝ => Complex.exp ((y : ℂ) * (u : ℂ) * Complex.I))
+    (fun v : ℝ => Complex.exp ((-y : ℂ) * (v : ℂ) * Complex.I))]
+  rw [show (∫ u : ℝ, Complex.exp ((y : ℂ) * (u : ℂ) * Complex.I) ∂(U : Measure ℝ)) =
+      charFun (U : Measure ℝ) y by
+    rw [charFun_apply_real]]
+  rw [show (∫ v : ℝ, Complex.exp ((-y : ℂ) * (v : ℂ) * Complex.I) ∂(U : Measure ℝ)) =
+      charFun (U : Measure ℝ) (-y) by
+    rw [charFun_apply_real]
+    simp only [Complex.ofReal_neg]]
+  rw [show charFun (U : Measure ℝ) y = Real.sinc ((1 / 2 : ℝ) * y) by
+      exact charFun_centeredUniformClockProbabilityMeasure (1 / 2) y,
+    show charFun (U : Measure ℝ) (-y) = Real.sinc ((1 / 2 : ℝ) * (-y)) by
+      exact charFun_centeredUniformClockProbabilityMeasure (1 / 2) (-y),
+    charFun_triangularClockProbabilityMeasure]
+  push_cast
+  rw [show (1 / 2 : ℝ) * (-y) = -((1 / 2 : ℝ) * y) by ring,
+    Real.sinc_neg]
+  have harg : (1 / 2 : ℝ) * y = y / 2 := by ring
+  rw [harg, pow_two]
 
 theorem re_charFun_eq_integral_cos (μ : Measure ℝ) [IsProbabilityMeasure μ] (y : ℝ) :
     (charFun μ y).re = ∫ x : ℝ, Real.cos (x * y) ∂μ := by
@@ -331,6 +432,127 @@ theorem re_charFun_eq_integral_cos (μ : Measure ℝ) [IsProbabilityMeasure μ] 
   rw [Complex.exp_ofReal_mul_I_re]
   congr 1
   ring
+
+/-- Square-biased sinc-square expectation equals the continuous normalized characteristic
+defect. -/
+theorem integral_squareBias_sinc_sq_eq_normalizedCharacteristicDefect
+    (μ : Measure ℝ) [IsProbabilityMeasure μ]
+    {m : ℝ} (hm : 0 < m)
+    (hsq : Integrable (fun x : ℝ => x ^ 2) μ)
+    (hmoment : ∫ x : ℝ, x ^ 2 ∂μ = m) (y : ℝ) :
+    (∫ x : ℝ, x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2 ∂μ) =
+      normalizedCharacteristicDefect μ m y := by
+  by_cases hy : y = 0
+  · subst y
+    simp only [mul_zero, Real.sinc_zero, one_pow, mul_one,
+      normalizedCharacteristicDefect, if_pos]
+    rw [integral_div, hmoment, div_self hm.ne']
+  · rw [normalizedCharacteristicDefect, if_neg hy]
+    have hcosInt : Integrable (fun x : ℝ => Real.cos (x * y)) μ := by
+      refine (integrable_const (μ := μ) (1 : ℝ)).mono' (by fun_prop) ?_
+      filter_upwards with x
+      rw [Real.norm_eq_abs]
+      exact Real.abs_cos_le_one _
+    have hdefectInt :
+        (∫ x : ℝ, 1 - Real.cos (x * y) ∂μ) = 1 - (charFun μ y).re := by
+      rw [integral_sub (integrable_const 1) hcosInt, integral_const,
+        measureReal_def, measure_univ, ENNReal.toReal_one, one_smul,
+        ← re_charFun_eq_integral_cos]
+    rw [show (∫ x : ℝ, x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2 ∂μ) =
+        ∫ x : ℝ, 2 * (1 - Real.cos (x * y)) / (m * y ^ 2) ∂μ by
+      apply integral_congr_ae
+      filter_upwards with x
+      exact sq_mul_sinc_sq_eq_normalized_cosDefect hm.ne' hy x]
+    rw [show (fun x : ℝ => 2 * (1 - Real.cos (x * y)) / (m * y ^ 2)) =
+        fun x => (2 / (m * y ^ 2)) * (1 - Real.cos (x * y)) by
+      funext x
+      ring]
+    rw [integral_const_mul, hdefectInt]
+    ring
+
+/-- Actual equilibrium-clock law: square-biased source multiplied by an independent centered
+triangular clock. -/
+def equilibriumClockProbabilityMeasure
+    (μ : Measure ℝ) [IsProbabilityMeasure μ]
+    {m : ℝ} (hm : 0 < m)
+    (hsq : Integrable (fun x : ℝ => x ^ 2) μ)
+    (hmoment : ∫ x : ℝ, x ^ 2 ∂μ = m) : ProbabilityMeasure ℝ :=
+  let Xhat := squareBiasedProbabilityMeasure μ hm hsq hmoment
+  ProbabilityMeasure.map (Xhat.prod triangularClockProbabilityMeasure)
+    (f := fun p : ℝ × ℝ => p.1 * p.2) (by fun_prop)
+
+/-- Characteristic function of the equilibrium-clock law is the normalized second-order defect. -/
+theorem charFun_equilibriumClockProbabilityMeasure
+    (μ : Measure ℝ) [IsProbabilityMeasure μ]
+    {m : ℝ} (hm : 0 < m)
+    (hsq : Integrable (fun x : ℝ => x ^ 2) μ)
+    (hmoment : ∫ x : ℝ, x ^ 2 ∂μ = m) (y : ℝ) :
+    charFun (equilibriumClockProbabilityMeasure μ hm hsq hmoment : Measure ℝ) y =
+      (normalizedCharacteristicDefect μ m y : ℂ) := by
+  rw [equilibriumClockProbabilityMeasure, ProbabilityMeasure.toMeasure_map,
+    charFun_apply_real, integral_map (by fun_prop) (by fun_prop)]
+  let Xhat := squareBiasedProbabilityMeasure μ hm hsq hmoment
+  change (∫ p : ℝ × ℝ,
+      Complex.exp ((y : ℂ) * ((p.1 * p.2 : ℝ) : ℂ) * Complex.I)
+        ∂(Xhat : Measure ℝ).prod (triangularClockProbabilityMeasure : Measure ℝ)) = _
+  have hprodInt : Integrable (fun p : ℝ × ℝ =>
+      Complex.exp ((y : ℂ) * ((p.1 * p.2 : ℝ) : ℂ) * Complex.I))
+      ((Xhat : Measure ℝ).prod (triangularClockProbabilityMeasure : Measure ℝ)) := by
+    refine (integrable_const (μ :=
+      (Xhat : Measure ℝ).prod (triangularClockProbabilityMeasure : Measure ℝ))
+      (1 : ℝ)).mono' (by fun_prop) ?_
+    filter_upwards with p
+    rw [Complex.norm_exp]
+    simp [Complex.mul_re]
+  rw [integral_prod _ hprodInt]
+  rw [show (fun x : ℝ => ∫ z : ℝ,
+      Complex.exp ((y : ℂ) * ((x * z : ℝ) : ℂ) * Complex.I)
+        ∂(triangularClockProbabilityMeasure : Measure ℝ)) =
+      fun x => charFun (triangularClockProbabilityMeasure : Measure ℝ) (x * y) by
+    funext x
+    rw [charFun_apply_real]
+    apply integral_congr_ae
+    filter_upwards with z
+    congr 1
+    push_cast
+    ring]
+  simp_rw [charFun_triangularClockProbabilityMeasure]
+  change (∫ x : ℝ, (Real.sinc (x * y / 2) ^ 2 : ℂ) ∂(Xhat : Measure ℝ)) = _
+  rw [show (Xhat : Measure ℝ) = squareBiasedMeasure μ m by rfl]
+  rw [squareBiasedMeasure,
+    integral_withDensity_eq_integral_smul (by fun_prop)]
+  rw [show (fun x : ℝ => (x ^ 2 / m).toNNReal •
+      (Real.sinc (x * y / 2) ^ 2 : ℂ)) =
+      fun x => ((x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2 : ℝ) : ℂ) by
+    funext x
+    rw [show (x ^ 2 / m).toNNReal =
+        ⟨x ^ 2 / m, div_nonneg (sq_nonneg x) hm.le⟩ by
+      exact Real.toNNReal_of_nonneg (div_nonneg (sq_nonneg x) hm.le)]
+    change ((x ^ 2 / m : ℝ) : ℂ) * (Real.sinc (x * y / 2) ^ 2 : ℂ) = _
+    push_cast
+    congr 3
+    ring]
+  have hrealInt : Integrable
+      (fun x : ℝ => x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2) μ := by
+    have hbase : Integrable (fun x : ℝ => x ^ 2 / m) μ := by
+      simpa only [div_eq_mul_inv] using hsq.mul_const m⁻¹
+    refine hbase.mono' (by fun_prop) ?_
+    filter_upwards with x
+    rw [Real.norm_eq_abs,
+      abs_of_nonneg (mul_nonneg (div_nonneg (sq_nonneg x) hm.le) (sq_nonneg _))]
+    have hs := Real.abs_sinc_le_one (x / 2 * y)
+    have hs2 : Real.sinc (x / 2 * y) ^ 2 ≤ 1 := by
+      have hsq' : Real.sinc (x / 2 * y) ^ 2 ≤ (1 : ℝ) ^ 2 :=
+        sq_le_sq.mpr (by simpa using hs)
+      simpa using hsq'
+    exact mul_le_of_le_one_right (div_nonneg (sq_nonneg x) hm.le) hs2
+  calc
+    (∫ x : ℝ, ((x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2 : ℝ) : ℂ) ∂μ) =
+        ((∫ x : ℝ, x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2 ∂μ : ℝ) : ℂ) :=
+      Complex.ofRealCLM.integral_comp_comm hrealInt
+    _ = (normalizedCharacteristicDefect μ m y : ℂ) := by
+      rw [integral_squareBias_sinc_sq_eq_normalizedCharacteristicDefect
+        μ hm hsq hmoment y]
 
 /-- **Universal equilibrium-defect law.** Every probability characteristic function with a
 finite positive second moment has a positive-definite normalized second-order defect. -/
@@ -365,55 +587,17 @@ theorem positiveDefiniteOnReal_normalizedCharacteristicDefect
   have heq : (fun y => ∫ x, K x y ∂μ) =
       fun y => (normalizedCharacteristicDefect μ m y : ℂ) := by
     funext y
-    by_cases hy : y = 0
-    · subst y
-      simp only [K, mul_zero, Real.sinc_zero, one_pow, mul_one,
-        normalizedCharacteristicDefect, if_pos]
-      calc
-        (∫ x : ℝ, ((x ^ 2 / m : ℝ) : ℂ) ∂μ) =
-            ((∫ x : ℝ, x ^ 2 / m ∂μ : ℝ) : ℂ) :=
-          Complex.ofRealCLM.integral_comp_comm hbaseInt
-        _ = (1 : ℂ) := by
-          rw [integral_div, hmoment, div_self hm.ne']
-          norm_num
-    · rw [normalizedCharacteristicDefect, if_neg hy]
-      have hcosInt : Integrable (fun x : ℝ => Real.cos (x * y)) μ := by
-        refine (integrable_const (μ := μ) (1 : ℝ)).mono' (by fun_prop) ?_
-        filter_upwards with x
-        rw [Real.norm_eq_abs]
-        exact Real.abs_cos_le_one _
-      have hdefectInt :
-          (∫ x : ℝ, 1 - Real.cos (x * y) ∂μ) = 1 - (charFun μ y).re := by
-        rw [integral_sub (integrable_const 1) hcosInt, integral_const,
-          measureReal_def, measure_univ, ENNReal.toReal_one, one_smul,
-          ← re_charFun_eq_integral_cos]
-      have hrealInt : Integrable
-          (fun x : ℝ => x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2) μ := by
-        refine hbaseInt.mono' (by fun_prop) ?_
-        filter_upwards with x
-        rw [Real.norm_eq_abs,
-          abs_of_nonneg (mul_nonneg (div_nonneg (sq_nonneg x) hm.le) (sq_nonneg _))]
-        have hs := Real.abs_sinc_le_one (x / 2 * y)
-        have hs2 : Real.sinc (x / 2 * y) ^ 2 ≤ 1 := by
-          have hsq : Real.sinc (x / 2 * y) ^ 2 ≤ (1 : ℝ) ^ 2 :=
-            sq_le_sq.mpr (by simpa using hs)
-          simpa using hsq
-        exact mul_le_of_le_one_right (div_nonneg (sq_nonneg x) hm.le) hs2
-      rw [show (∫ x, K x y ∂μ) =
-          ((∫ x : ℝ, x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2 ∂μ : ℝ) : ℂ) by
-        exact Complex.ofRealCLM.integral_comp_comm hrealInt]
-      congr 1
-      rw [show (∫ x : ℝ, x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2 ∂μ) =
-          ∫ x : ℝ, 2 * (1 - Real.cos (x * y)) / (m * y ^ 2) ∂μ by
-        apply integral_congr_ae
-        filter_upwards with x
-        exact sq_mul_sinc_sq_eq_normalized_cosDefect hm.ne' hy x]
-      rw [show (fun x : ℝ => 2 * (1 - Real.cos (x * y)) / (m * y ^ 2)) =
-          fun x => (2 / (m * y ^ 2)) * (1 - Real.cos (x * y)) by
-        funext x
-        ring]
-      rw [integral_const_mul, hdefectInt]
-      ring
+    have hrealInt : Integrable
+        (fun x : ℝ => x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2) μ := by
+      simpa only [K, Complex.ofReal_re] using
+        Complex.reCLM.integrable_comp (hKint y)
+    calc
+      (∫ x, K x y ∂μ) =
+          ((∫ x : ℝ, x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2 ∂μ : ℝ) : ℂ) :=
+        Complex.ofRealCLM.integral_comp_comm hrealInt
+      _ = (normalizedCharacteristicDefect μ m y : ℂ) := by
+        rw [integral_squareBias_sinc_sq_eq_normalizedCharacteristicDefect
+          μ hm hsq hmoment y]
   rw [← heq]
   exact hmix
 

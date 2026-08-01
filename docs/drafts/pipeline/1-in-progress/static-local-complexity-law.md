@@ -145,6 +145,23 @@ Prove that low-complexity state neighborhoods occupy exponentially small Haar
 volume on the static spectral orbit. This is the missing replacement for
 full-unitary designs, which static fixed-locality evolution cannot form.
 
+**Paper-proof progress.**
+`../2-fully-proven/universal-static-choi-complexity-plateau.md` proves an
+eigenbasis-free theorem for the Choi/thermofield-double spectral torus.  Every
+trace-distance ball has Haar mass at most
+
+\[
+  D e^{D/2}\left({\pi(1-\sqrt{1-4\delta^2})\over2}\right)^{(D-1)/2}.
+\]
+
+A union over all circuits of size at most `s` gives an explicit
+`M^(s+1)` multiple of this bound.  Thus, at fixed small error, all but
+`exp(-Omega(D))` of completed time has approximate circuit complexity
+`Omega(D/log n)` for local gates, for every eigenbasis.  This closes O3 on
+paper once combined with O2, but not yet in Lean.  It proves the plateau
+occupation law; it does not imply O4's pointwise linear growth or O5's first
+hitting time.
+
 ### O4. Linear no-shortcuts theorem
 
 Prove a robust lower bound matching direct Hamiltonian-simulation complexity
