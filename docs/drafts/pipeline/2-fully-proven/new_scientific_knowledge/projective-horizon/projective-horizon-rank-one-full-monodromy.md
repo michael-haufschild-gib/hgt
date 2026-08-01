@@ -1642,3 +1642,59 @@ dividing the discriminant.
   Axioms `[propext, Classical.choice, Quot.sound]`.
   The card's `(3)` is proved in the abstract.  Every hypothesis of both capstones is either the
   card's own data or a theorem proved above.
+
+- 2026-08-01 — `VandermondeFixed.lean` produces the capstone's `beta` and `e` from the roots.  An
+  automorphism permutes the roots, and permuting the arguments of the Vandermonde product only
+  changes its sign (`vandermondeProd_comp`), so the square is fixed by every automorphism
+  (`vandermondeSq_fixed`); in a Galois extension that means it comes from the base field
+  (`exists_algebraMap_vandermondeSq`, through the corpus's `exists_algebraMap_of_forall_fixed`).
+  So the discriminant **is** a base-field element, which is what the capstone requires of `e`, and
+  the Vandermonde product itself is the `beta` whose square it is.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  Note that the capstone's `hclass` is a statement in the base field alone, so no transport of the
+  square-class theorem across ambient fields is needed after all — a square root in the base field
+  is in particular one in the root field, which is where
+  `not_exists_sq_disc_mul_centeredConstant` already excludes it.
+
+- 2026-08-01 — `vandermondeProd_notMem_bot` completes the `beta` data.  An automorphism acting on the
+  roots by an odd permutation sends the Vandermonde product to its negative; if the product were in
+  the base field it would also be fixed, forcing twice it to vanish and hence, in characteristic
+  zero, the product itself — contradicting distinctness of the roots.  So the discriminant square
+  root is genuinely outside the base field, which is the capstone's `hbetabot`.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  All three components of `beta` are now available from the roots alone: it lies in the first
+  factor's root field by construction, its square is a base-field element
+  (`exists_algebraMap_vandermondeSq`), and it is not itself in the base field.  For the card's
+  centered polynomial the odd automorphism exists because the Galois group is the **full** symmetric
+  group, which for degree at least two contains a transposition.
+
+- 2026-08-01 — `RadicalRootExists.lean`: `exists_pow_eq_mem_rootField` produces the Kummer generator
+  from the situation.  Where the radical polynomial splits it has a root, that root lies in the
+  field its roots generate, and being a root means precisely that its `n`-th power is the constant.
+  So `alpha` and `halphapow` are not inputs of the capstone in any real sense — only the **degree**
+  hypothesis `n <= finrank F F(alpha)` is genuine data, and it must be, since for a constant that is
+  already an `n`-th power the conclusion is false.  On the card that degree is exactly what
+  `finrank_tailCoeffField` computes.  Axioms `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-01 — two coercion lemmas finish the `beta` package.  `vandermondeProd_mem`: the Vandermonde
+  product of members of a subfield lies in it, so `beta` is in the first factor's root field for
+  free.  `notMem_bot_of_notMem_bot_coe`: an element of a subfield that is outside the base **of that
+  subfield** is outside the base of the ambient, which is what carries
+  `vandermondeProd_notMem_bot` — proved where the Galois action lives, inside the root field — up to
+  the ambient field where the capstone states it.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  Every hypothesis of the even capstone is now either derived inside it or supplied by a theorem
+  above; the only genuine data are the two polynomials, the model identification, the degree of the
+  radical generator, and the square class.
+
+- 2026-08-01 — `RadicalBaseChangeFromRoots.lean`: `radicalBaseChangeEvenFromRoots` folds in
+  everything the previous four entries derived.  Its inputs are now the two polynomials, the
+  symmetric-group identification in a model splitting field, a primitive root of unity, the roots of
+  the first factor with their injectivity, the fact that automorphisms permute them, one automorphism
+  acting oddly, the degree of the radical generator, and the square class.  The discriminant square
+  root and the Kummer generator are both constructed inside.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  A Lean note: extracting the generator and the discriminant's base-field square from their
+  existence statements cannot be done with `obtain`, because the result is data (an equivalence of
+  groups) and a `Prop` may not be eliminated into a type.  `Classical.choose` with `choose_spec`,
+  and `.1`/`.2` projections rather than destructuring, is the way through.

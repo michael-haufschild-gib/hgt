@@ -1,7 +1,7 @@
 # Analytic operational-horizon dichotomy
 
 - **ID:** `analytic-operational-horizon-dichotomy`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** HORIZON DISCRIMINATOR / EXACT ANALYTIC SCALING LAW
 - **Status:** `[PAPER-PROVED] [LEAN-PROVED] [FINITE POLYNOMIAL CERTIFICATE] [NOT NOVEL ALONE]`
 - **Parent conjecture:**

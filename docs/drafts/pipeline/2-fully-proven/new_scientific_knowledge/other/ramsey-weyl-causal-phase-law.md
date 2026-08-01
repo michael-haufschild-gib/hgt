@@ -149,3 +149,24 @@ order (<https://arxiv.org/abs/1807.00013>). Equation `(3)` instead uses the exac
 commutator and is state-independent. A priority audit of quantum-switch, out-of-time-order, and
 characteristic-functional measurement protocols remains required before claiming experimental
 novelty.
+
+## Lean status
+
+The complete theorem surface `(1)--(6)` is formalized unconditionally in
+`formal/GaloisForLFunctions/HTGeometry/ContinuumChronometricGravity.lean`:
+
+```text
+CausalWeylSystem.operator_mul_swap
+CausalWeylSystem.operator_smul_mul_swap
+CausalWeylSystem.operator_mul_neg
+CausalWeylSystem.operator_neg_mul
+CausalWeylSystem.operator_smul_groupCommutator
+orderedExpectation_eq_phase_mul_reverse
+orderedExpectation_ratio_eq_phase
+chronometricRamseyQuadratures_injective
+eventually_ne_zero_of_continuousAt_eq_one
+causalPairing_eq_I_mul_deriv_orderPhase_zero
+```
+
+The separate globally hyperbolic support/orientation bridge described after Theorem 3 is explicitly
+outside this card's Weyl--Ramsey theorem.

@@ -1,5 +1,6 @@
 # Replica-collision Hamming tomography law
 
+- **Stage:** 3-formalized
 - **Status:** paper proof and Lean proof complete; external novelty audit open
 - **Target:** universal-quantum-recurrence-anatomy master paper
 - **Claim class:** exact finite-dimensional theorem

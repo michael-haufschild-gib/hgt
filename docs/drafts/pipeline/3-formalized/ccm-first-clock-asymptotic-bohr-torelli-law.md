@@ -1,8 +1,8 @@
 # CCM first-clock asymptotic Bohr Torelli law
 
 - **ID:** `ccm-first-clock-asymptotic-bohr-torelli-law`
-- **Stage:** 2-fully-proven
-- **Labels:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Stage:** 3-formalized
+- **Labels:** `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Source:** `CCMFirstClockAsymptoticBohrLaw`, full Bohr uniqueness/mean corpus, and
   multiplicity-exact `XiZeroCopy` divisor carrier.
 
@@ -98,9 +98,8 @@ even genus-one canonical product is therefore fixed.
 
 ## Formalization gate
 
-- [ ] Generic `AP intersection C_0 = {0}` theorem.
-- [ ] Generic summable-screw Bohr coefficient theorem.
-- [ ] Xi fibre finiteness and quantization specialization.
-- [ ] Unique first-clock compact model and divisor reconstruction capstone.
-- [ ] Targeted `lake env lean`, axiom audit, and final area build.
-
+- [x] Generic `AP intersection C_0 = {0}` theorem.
+- [x] Generic summable-screw Bohr coefficient theorem.
+- [x] Xi fibre finiteness and quantization specialization.
+- [x] Unique first-clock compact model and divisor reconstruction capstone.
+- [x] Targeted `lake env lean`, axiom audit, final module build, and formal lint.

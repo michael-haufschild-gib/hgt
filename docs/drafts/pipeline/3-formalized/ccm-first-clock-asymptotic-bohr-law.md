@@ -1,7 +1,7 @@
 # CCM first-clock asymptotic Bohr law
 
 - **ID:** `ccm-first-clock-asymptotic-bohr-law`
-- **Stage:** `2-fully-proven`
+- **Stage:** `3-formalized`
 - **Type:** THEOREM / source-side RH equivalence and conditional value law
 - **Status:** `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parent:** `../3-formalized/needs-audit/ccm-first-clock-tail-lower-bound-completeness.md`

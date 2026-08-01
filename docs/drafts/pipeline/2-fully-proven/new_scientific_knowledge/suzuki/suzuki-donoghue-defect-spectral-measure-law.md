@@ -196,6 +196,21 @@ mu_a=(coth(a)/a) sum_{k in Z} delta_{x_k}.                (16)
 This is a symbolic specialization, not a numerical check.  It fixes all signs and the factor
 `1+x^2` in `(11)`.
 
+**The cancellation that makes `(15)` come out constant is formal**, in
+`formal/GaloisForLFunctions/HTGeometry/HyperbolicModulus.lean`:
+
+- `normSq_sinh_sub_mul_I`: on a vertical line the squared modulus of `sinh` separates as
+  `sinh^2 a cos^2 θ + cosh^2 a sin^2 θ`.
+- `cos_quarterPeriod_eq_zero`, `normSq_sinh_sub_mul_I_of_cos_eq_zero`: at the quarter-period
+  frequencies `x_k = (k+1/2)pi/a` the cosine vanishes, so the modulus is exactly `cosh^2 a` —
+  independent of the mode.
+- `quarterPeriod_weight_const`: **the free-clock cancellation** — the `1+x^2` of the weight is
+  exactly cancelled by `|1 - i x|^2`, leaving `cosh^2 a` with no dependence on `x`.
+
+That is the mechanism behind flat free-clock weights, and it is what `(15)` uses to fix the factor
+`1+x^2`: the constancy is not a coincidence of the aperture but the identity `|1-ix|^2 = 1+x^2`
+meeting a vanishing cosine.
+
 ## 6. Consequences for the live RH route
 
 The cofinal Suzuki state is no longer an unspecified Clark measure.  It is the probability
@@ -284,8 +299,21 @@ suzukiUpperCayleyInv_residue_at_one
 suzukiUpperCayleyInv_phase_residue_at_one
 ```
 
-The actual operator equality `(7)` remains a paper theorem until Suzuki's concrete symmetric
-operator and its spectral projections exist in Lean.
+The actual operator equality `(7)` remains a paper theorem in general, but **its pure-point case is
+formal** — and the card itself proves the measure is pure point (section 3).  For an operator with an
+orthonormal eigenbasis the resolvent pairing is the Cauchy combination of spectral masses
+(`inner_spectralResolvent`), and then in `SuzukiDonoghueInterlacing.lean`:
+
+- `sum_spectralMass_eq_normSq`: **Parseval** — the squared eigenbasis coefficients of a unit vector
+  total one, which is `(12)`'s third clause.
+- `donoghueResolvent_eq_kernelSum`: **`(7)`'s first two equalities** — `z + (z^2+1)(resolvent
+  pairing)` is the sum of Donoghue kernels against the masses.  The affine term `z` is absorbed
+  precisely because the masses are a probability, so the normalization of the deficiency vector is
+  what makes the kernel's constant come out right.
+
+Composed with `donoghuePurePoint_eq_cauchySum` this gives all three equalities of `(7)` for a
+pure-point spectral measure.  What is still missing is the identification of Suzuki's concrete `L`
+with an operator carrying such an eigenbasis.
 
 **`(14)`, the canonical interlacing, is formal** — it was not among the connectors above, and its
 conclusion is carried by a "Therefore" in section 4.  In
@@ -383,3 +411,39 @@ Section 4's identification of the two divisors is algebra on the two-angle quoti
   operator buys: it excludes common zeros of `A` and `E`, and that is exactly the condition keeping
   the pole and zero divisors disjoint, so the interlacing statement has no hidden coincidence case.
   Two new declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — first foundational piece of the source operator built:
+  `formal/GaloisForLFunctions/HTGeometry/PositiveOperatorInner.lean`, the inner product `<u,v>_T =
+  <Tu,v>` induced by a positive symmetric operator.  Symmetry, bilinearity, and Cauchy–Schwarz from
+  the discriminant of the nonnegative quadratic along a line — no completeness or definiteness used,
+  so it applies to `T = A_a - lambda I` before `H_T` is completed.  The key item for this card is
+  `tInner_eq_inner_of_apply`: **solving `T v = e` removes the operator from the pairing**, so the
+  `T`-pairings `<v_z, v_+>_T` of `(3)` are plain pairings of the right-hand sides `e^{-izx}` — which
+  is the mechanism of the boundary-form calculation the card cites, isolated from the deficiency
+  theory.  Five new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(7)`'s pure-point case formalized.  The card proves in section 3 that the measure is
+  pure point, and for an eigenbasis operator the resolvent pairing is already the Cauchy combination
+  of spectral masses (`inner_spectralResolvent`, built for the monotone-likelihood card).  Adding
+  `sum_spectralMass_eq_normSq` (Parseval, giving `(12)`'s `sum p = 1`) and
+  `donoghueResolvent_eq_kernelSum` closes `(7)`'s first two equalities, and composing with
+  `donoghuePurePoint_eq_cauchySum` gives the third.  Worth recording *why* the affine term works out:
+  `z` is absorbed exactly because the masses total one, so the normalization of the deficiency vector
+  is not cosmetic — it is what makes the Donoghue kernel's constant correct.  Two new declarations,
+  targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(10)`/`(11)`'s normalization content formalized in `PositiveOperatorInner.lean`.
+  `inner_normalize_sq` gives the spectral mass of two normalized vectors as the squared pairing over
+  the two squared norms — which is `(10)`'s `p_x = |<v_+,phi_x>|^2/N = |F(-x)|^2/(N ||v_x||^2)` once
+  the boundary-form identity `tInner_eq_inner_of_apply` supplies `<v_x,v_+>_T = F(-x)`, and `(11)` is
+  then `nevanlinnaWeight` by definition.  The identity needs no nonvanishing hypothesis: in the
+  degenerate case both sides are zero, since Lean's inverse of the zero norm is zero and the quotient
+  has zero numerator.  `tInner_smul_smul` and `tInner_normalize_sq` give the same for the induced
+  form.  Three new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(15)`'s cancellation formalized (`HyperbolicModulus.lean`).  The free-clock weights
+  are flat because two things meet: on a vertical line `|sinh(a - i θ)|^2 = sinh^2 a cos^2 θ +
+  cosh^2 a sin^2 θ`, which at the quarter-period frequencies collapses to `cosh^2 a`; and the
+  weight's `1 + x^2` is exactly `|1 - i x|^2`, the denominator it divides.  So
+  `quarterPeriod_weight_const` gives `cosh^2 a` with no dependence on the mode.  This is the content
+  the card cites as "fixes the factor `1+x^2` in `(11)`" — the constancy is an identity, not an
+  accident of the aperture.  Four new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.

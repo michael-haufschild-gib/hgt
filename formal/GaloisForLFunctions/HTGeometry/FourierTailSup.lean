@@ -58,4 +58,10 @@ theorem fourierTailSup_le {f : ℝ → ℂ} {u c : ℝ} (hc : 0 ≤ c)
   · simpa only [hv, if_true] using h v hv
   · simpa only [hv, if_false] using hc
 
+/-- **The tail supremum shrinks as the band grows.** -/
+theorem fourierTailSup_antitone (f : ℝ → ℂ) : Antitone (fourierTailSup f) := by
+  intro u₁ u₂ hu
+  exact fourierTailSup_le (fourierTailSup_nonneg f u₁)
+    fun v hv => le_fourierTailSup f (le_trans hu hv)
+
 end GaloisForLFunctions.HTGeometry

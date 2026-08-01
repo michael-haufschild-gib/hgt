@@ -1074,10 +1074,21 @@ coupling's Hilbert--Schmidt energy.  Both discounts are constants: the first bec
 error has fixed finite energy, the second because `η` is chosen once from `ε` and the slack.  So the
 bound is `N` minus a constant, times a constant.
 
+One band in the budget is *not* covered by the crude escape threshold, and finding it forced a
+sharper estimate.  Unfolding the layer defect on the dilated packet leaves the term `||R_{a0} v||`,
+and since dilation conjugates a frequency cutoff into another one, this is the cutoff at radius
+`r a0` applied to the packet itself.  Its product with the half-width is about `K a0 (c-b)/2` — a
+*constant that grows with* `K`, so the hypothesis `t delta <= rho` of the escape theorem is exactly
+backwards for it.  What saves the term is that its gap to the carrier, `delta r (q - a0)`, is about
+`K (c-b)(q-a0)/2`, which grows with `K` too, and the tail decays faster than any power.
+`norm_sq_evenFourierCutoff_le_fraction_mul_norm_sq` states the fraction rather than a threshold, so
+this trade is expressible: the fraction is `16 t delta A^2 / I`, linear in the band and quadratic in
+the tail at the gap.
+
 What remains is purely the instantiation: build the `N(r)` rescaled packets on disjoint sub-annuli,
-normalise them (orthogonality is `soninPacketDisjointOrthogonality`), take the unit targets to be
-their dilates, and supply the slack from the band-escape estimate.  With `N` about `r/K` this gives
-coupling energy of order `r`, against the `log r` cap, closing the shortfall test.  Then feed that through the two-branch estimate to get `N` of
+normalise them, take the unit targets to be their dilates, and feed the three band terms and the
+ideal errors into `card_sub_le_hsNormSq_of_ideal_errors`.  With `N` about `r/K` this gives coupling
+energy of order `r`, against the `log r` cap, closing the shortfall test.  Then feed that through the two-branch estimate to get `N` of
 order `r` packets at scale `r`.
 
 **Open.**  By 6 and 7 the gate is one rate comparison: does `hsNormSq Z_r` exceed
@@ -1281,6 +1292,7 @@ family is abstract, so two widths have unrelated profiles.
 | the ideal errors of the aperture reduction are Schatten-1, hence Hilbert--Schmidt, hence spoil only boundedly many packets however many are supplied | `isHilbertSchmidt_of_isSoninPrincipalRelativeIdeal`, `isHilbertSchmidt_evenSoninProjectionCorrection`, `card_filter_le_hsNormSq_of_isSoninPrincipalRelativeIdeal`, `card_le_card_filter_lt_of_isSoninPrincipalRelativeIdeal`, `card_le_card_filter_forall_lt_of_isSoninPrincipalRelativeIdeal` |
 | **energy from nearly preserved modes**: an operator carrying each of `N` orthonormal vectors to within `η` of *some* unit vector has energy at least `N (1-η)²`, with no relation required between the targets | `sum_finset_norm_sq_apply_le_hsNormSq`, `card_mul_sq_le_hsNormSq_of_le_norm_apply`, `card_mul_sq_le_hsNormSq_of_near_unit` |
 | **survivor energy**: an operator estimated on an orthonormal family by a unit target up to finitely many relative-ideal errors and a fixed slack has energy at least `(N - ∑ₖ hsNormSq Tₖ/ε²)(1-η)²` — both discounts independent of `N` | `card_sub_le_hsNormSq_of_ideal_errors`, `card_sub_le_hsNormSq_of_one_ideal_error` |
+| **the band fraction**, not merely a threshold: the share of a packet's energy inside a band of radius `t` below its carrier is at most `16 t δ A² / I`, with `A` the tail bound at the gap — so a *wide* band is harmless provided its gap to the carrier is large | `soninRefTailSup_antitone`, `norm_sq_soninScaledPacketEven_ge_half`, `norm_sq_evenFourierCutoff_le_fraction_mul_norm_sq` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1397,6 +1409,16 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — checking the error budget against the escape threshold found a term the threshold
+  cannot take.  The layer defect on the dilated packet contributes `||R_{a0} v||`, which is the
+  frequency cutoff at radius `r a0` on the packet, because dilation conjugates cutoffs; its
+  band-times-width product *grows* with the schedule constant `K` instead of shrinking.  The term is
+  still negligible, but for a different reason: its gap to the carrier grows with `K` as well, and
+  the reference tail beats every power.  Recording that required replacing the yes/no threshold by
+  the fraction itself, `16 t delta A^2 / I` with `A` the tail bound at the gap.  General lesson for
+  this construction: band radius and band gap are independent knobs, and only the gap is governed by
+  decay.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninScaledPacketBandFraction.lean`.
 - 2026-08-01 — the counting core is proved, in a form that mentions no annulus, no aperture and no
   packet.  `card_mul_sq_le_hsNormSq_of_near_unit` is the honest statement of what the two-branch
   estimate buys: carrying `N` orthonormal vectors to within `η` of unit targets — *any* unit targets,

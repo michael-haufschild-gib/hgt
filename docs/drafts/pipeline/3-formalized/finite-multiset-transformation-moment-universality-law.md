@@ -1,7 +1,7 @@
 # Finite multiset transformation–moment universality law
 
 - **ID:** finite-multiset-transformation-moment-universality-law
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** closure of sharp `PowerSumTorelli` with the corpus's conjugation, reciprocal, and weighted-reciprocal spectral symmetries
 - **Statement:** For any map `τ : ℂ → ℂ`, an `n`-point complex multiset is fixed by `τ` if and only if its power sums through order `n` agree with those of its `τ`-image; reciprocal and weighted function-field spectral closures are immediate instances.
@@ -15,7 +15,7 @@ function-field spectral dualities instead of proving one symmetry at a time.
 
 - [x] 0 → 1  in-progress: exact Lean statements aligned and prior corpus searched
 - [x] 1 → 2  fully-proven: dependency-closed proof passed exact Lean check
-- [ ] 2 → 3  formalized: exact Lean theorem and final formal gates pending
+- [x] 2 → 3  formalized: exact Lean theorem, direct elaboration, final module build, lint, and axiom audit pass
 - [ ] 3 → 4  publication-ready: novelty and exposition audit pending
 
 ## Approach

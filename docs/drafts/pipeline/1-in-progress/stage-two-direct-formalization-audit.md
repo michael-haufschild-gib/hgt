@@ -8,51 +8,51 @@
 
 ## Card ledger
 
-- [ ] `analytic-operational-horizon-dichotomy.md`
+- [x] `analytic-operational-horizon-dichotomy.md`
 - [ ] `arbitrary-graph-quantum-temporal-curvature-law.md`
-- [ ] `ccm-first-clock-asymptotic-bohr-law.md`
-- [ ] `ccm-first-clock-asymptotic-bohr-torelli-law.md`
+- [x] `ccm-first-clock-asymptotic-bohr-law.md`
+- [x] `ccm-first-clock-asymptotic-bohr-torelli-law.md`
 - [ ] `ccm-rational-analytic-real-descent.md`
 - [ ] `ccm-single-clock-complete-source-divisor-tomography.md`
 - [ ] `ccm-unitary-polar-source-atlas.md`
 - [ ] `complete-graph-local-projective-spectral-maximality.md`
 - [ ] `component-recurrence-torus-and-replica-factorization-law.md`
-- [ ] `countable-euler-family-sonin-gamma-xi-rees-chart.md`
+- [x] `countable-euler-family-sonin-gamma-xi-rees-chart.md`
 - [ ] `cusp-spectrum-radius-law.md`
 - [ ] `dense-arithmetic-instability-of-quantum-eternity.md`
 - [ ] `disconnected-local-spectral-factorization-genericity.md`
 - [ ] `dissipative-quantum-return-information-transition.md`
 - [ ] `field-one-spherical-weyl-multiplier-bridge.md`
-- [ ] `finite-contraction-temporal-boundary-law.md`
+- [x] `finite-contraction-temporal-boundary-law.md`
 - [ ] `finite-horizon-observer-temporal-profile-stability.md`
-- [ ] `finite-multiset-transformation-moment-universality-law.md`
+- [x] `finite-multiset-transformation-moment-universality-law.md`
 - [ ] `finite-observer-generated-time-law.md`
-- [ ] `finite-satake-reality-torelli-universality-law.md`
+- [x] `finite-satake-reality-torelli-universality-law.md`
 - [ ] `finite-window-replica-collision-resolution-law.md`
-- [ ] `function-field-spectral-closure-universality-law.md`
-- [ ] `gram-weld-trilemma.md`
+- [x] `function-field-spectral-closure-universality-law.md`
+- [x] `gram-weld-trilemma.md`
 - [ ] `hypergraph-local-projective-spectral-factorization.md`
 - [ ] `local-chain-metric-recurrence-exponents.md`
 - [ ] `local-interaction-replica-collision-extremality.md`
 - [ ] `mobius-fixed-current-von-mangoldt-critical-transport-weld.md`
 - [ ] `mobius-pluecker-normal-cone-diagonal-lift.md`
-- [ ] `multiple-elliptic-gamma-face-depth-rigidity.md`
+- [x] `multiple-elliptic-gamma-face-depth-rigidity.md`
 - [ ] `nearest-neighbor-chain-projective-spectral-maximality.md`
 - [ ] `nearest-neighbor-qudit-projective-spectral-maximality.md`
 - [ ] `positive-shell-koszul-cartier-obstruction-reciprocity.md`
-- [ ] `prime-arch-black-hole-reciprocal-spectral-cone-universality.md`
-- [ ] `prime-arch-cofinal-orientation-charge-universality.md`
+- [x] `prime-arch-black-hole-reciprocal-spectral-cone-universality.md`
+- [x] `prime-arch-cofinal-orientation-charge-universality.md`
 - [ ] `prime-sieve-wold-gamma-bv-relative-character.md`
 - [ ] `prime-valuation-conditioning-normalization-amplification-no-go.md`
 - [ ] `prime-valuation-kakutani-polar-third-completion.md`
 - [ ] `prime-winning-cech-divisor-resolution.md`
 - [ ] `pure-pair-normal-actuality-fracture.md`
-- [ ] `replica-collision-hamming-tomography-law.md`
+- [x] `replica-collision-hamming-tomography-law.md`
 - [ ] `squarefree-euler-modular-corona-curvature-colligation.md`
 - [ ] `summable-nome-infinite-order-multiple-elliptic-gamma.md`
 - [ ] `weak-interaction-singular-quantum-time-expansion.md`
 - [ ] `wold-shell-euler-activation-square.md`
-- [ ] `xi-aperture-counterterm-phase-universality-law.md`
+- [x] `xi-aperture-counterterm-phase-universality-law.md`
 
 ## Active checkpoint
 
@@ -60,4 +60,5 @@
 - 2026-08-01 — exact existing theorem surface confirmed and umbrella-wired for: analytic operational horizon, countable Euler-family Sonin chart, finite contraction boundary, finite multiset transformation moments, finite Satake Torelli, function-field closure, Gram weld trilemma, replica-collision Hamming tomography, and Xi aperture counterterm phase. One batched scratch audit elaborated 14 capstones; every axiom set is `[propext, Classical.choice, Quot.sound]`. Final direct-file checks and module builds remain.
 - 2026-08-01 — additional exact corpus matches found after stale card status: `CCMFirstClockAsymptoticBohrTorelli.lean`, `CCMUnitaryPolarSourceAtlas.lean` (also supplies one-clock crease--pole--frequency capstone), `MultipleEllipticGammaFacePacketDisjointness.lean`, `PrimeArchBlackHoleReciprocalSpectralConeUniversalityLaw.lean`, and `PrimeArchCofinalOrientationChargeUniversalityLaw.lean`. Axiom/direct/final audits remain.
 - 2026-08-01 — material formal gaps confirmed: arbitrary-graph temporal-curvature graph induction and capstones; CCM rational analytic/cyclic descent infrastructure; dissipative bistochastic-channel bridge. These are not eligible for Stage 3 yet.
-- 2026-08-01 — closed the remaining `ccm-first-clock-asymptotic-bohr-law.md` Lean gap without weakening: exact literal-source `liminf = 0`, `limsup = ccmFirstClockAsymptoticHullMax`, and intersection-of-closed-tail-images equality. Direct elaboration and final module build pass; all three new capstones audit to `[propext, Classical.choice, Quot.sound]`. Global lint is currently blocked only by unrelated concurrent module `RHTower.DeningerKummerCompletion` being temporarily unreachable from its umbrella, so card remains in Stage 2 until that repository-wide gate clears.
+- 2026-08-01 — closed the remaining `ccm-first-clock-asymptotic-bohr-law.md` Lean gap without weakening: exact literal-source `liminf = 0`, `limsup = ccmFirstClockAsymptoticHullMax`, and intersection-of-closed-tail-images equality. Direct elaboration and final module build pass; all three new capstones audit to `[propext, Classical.choice, Quot.sound]`. An unrelated transient umbrella-lint failure was cleared before promotion.
+- 2026-08-01 — repository-wide lint cleared after the concurrent umbrella update. Sequential direct elaboration passed for 18 audited modules; final `lake build <module>` passed for all 16 exact-complete capstone/dependency modules. Batched capstone audits report only `[propext, Classical.choice, Quot.sound]`. Promoted 14 exact-complete direct cards to Stage 3; 31 direct Stage 2 cards remain.

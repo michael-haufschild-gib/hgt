@@ -54,9 +54,9 @@ theorem tInner_smul_right {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric) (c : ℝ) (
 /-- The quadratic expansion along a line, the input of the Cauchy–Schwarz argument. -/
 theorem tInner_self_add_smul {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric) (u v : E) (t : ℝ) :
     tInner T (u + t • v) (u + t • v)
-      = tInner T v v * t ^ 2 + 2 * tInner T u v * t + tInner T u u := by
-  rw [tInner_add_left, tInner_add_right hT, tInner_add_right hT, tInner_smul_left,
-    tInner_smul_right hT, tInner_smul_right hT, tInner_comm hT v u]
+      = tInner T v v * (t * t) + 2 * tInner T u v * t + tInner T u u := by
+  simp only [tInner_add_left, tInner_add_right hT, tInner_smul_left, tInner_smul_right hT,
+    tInner_comm hT v u]
   ring
 
 /-- **Cauchy–Schwarz for the induced form.**  Positivity of the quadratic along every line forces its
@@ -65,7 +65,7 @@ theorem tInner_sq_le_of_nonneg {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric)
     (hpos : ∀ w : E, 0 ≤ tInner T w w) (u v : E) :
     (tInner T u v) ^ 2 ≤ tInner T u u * tInner T v v := by
   have hquad : ∀ t : ℝ,
-      0 ≤ tInner T v v * t ^ 2 + 2 * tInner T u v * t + tInner T u u := by
+      0 ≤ tInner T v v * (t * t) + 2 * tInner T u v * t + tInner T u u := by
     intro t
     rw [← tInner_self_add_smul hT u v t]
     exact hpos _
@@ -77,5 +77,38 @@ theorem tInner_sq_le_of_nonneg {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric)
 theorem tInner_eq_zero_of_apply_eq_zero {T : E →ₗ[ℝ] E} {v : E} (h : T v = 0) (w : E) :
     tInner T v w = 0 := by
   rw [tInner_eq_inner_of_apply h, inner_zero_left]
+
+/-! ## Normalized masses
+
+A spectral mass is the squared pairing of two *normalized* vectors.  Expanding the normalizations
+gives the squared pairing over the two squared norms, with no nonvanishing hypothesis: in the
+degenerate case both sides are zero, because the inverse of the zero norm is zero and the quotient
+has zero numerator. -/
+
+/-- The induced form is bilinear in scalars. -/
+theorem tInner_smul_smul {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric) (c d : ℝ) (u v : E) :
+    tInner T (c • u) (d • v) = c * d * tInner T u v := by
+  rw [tInner_smul_left, tInner_smul_right hT]
+  ring
+
+/-- **The normalized mass.**  The squared pairing of the normalizations of `v` and `w` is the squared
+pairing divided by the two squared norms — and this holds unconditionally. -/
+theorem inner_normalize_sq (v w : E) :
+    (inner ℝ (‖v‖⁻¹ • v) (‖w‖⁻¹ • w)) ^ 2
+      = (inner ℝ v w) ^ 2 / (‖v‖ ^ 2 * ‖w‖ ^ 2) := by
+  rw [real_inner_smul_left, real_inner_smul_right]
+  rcases eq_or_ne ‖v‖ 0 with hv | hv
+  · rw [hv]
+    simp
+  · rcases eq_or_ne ‖w‖ 0 with hw | hw
+    · rw [hw]
+      simp
+    · field_simp
+
+/-- The same for the induced form: the mass of the `T`-normalizations. -/
+theorem tInner_normalize_sq {T : E →ₗ[ℝ] E} (hT : T.IsSymmetric) (nv nw : ℝ) (v w : E) :
+    (tInner T (nv • v) (nw • w)) ^ 2 = nv ^ 2 * nw ^ 2 * (tInner T v w) ^ 2 := by
+  rw [tInner_smul_smul hT]
+  ring
 
 end GaloisForLFunctions.HTGeometry

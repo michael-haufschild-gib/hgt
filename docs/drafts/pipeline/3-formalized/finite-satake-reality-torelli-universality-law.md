@@ -1,7 +1,7 @@
 # Finite Satake reality–Torelli universality law
 
 - **ID:** finite-satake-reality-torelli-universality-law
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** cross-folder closure of `SatakeReality` and `PowerSumTorelli`
 - **Statement:** An `n`-point complex Satake spectrum is conjugation-closed if and only if its secular power sums through order `n` are real; failure is witnessed by one nonreal moment of order at most `n`.
@@ -15,7 +15,7 @@ complete finite certificate for unlabelled spectral self-duality.
 
 - [x] 0 → 1  in-progress: exact Lean statements aligned and prior corpus searched
 - [x] 1 → 2  fully-proven: dependency-closed proof passed exact Lean check
-- [ ] 2 → 3  formalized: exact Lean theorem and final formal gates pending
+- [x] 2 → 3  formalized: exact Lean theorem, direct elaboration, final module build, lint, and axiom audit pass
 - [ ] 3 → 4  publication-ready: novelty and exposition audit pending
 
 ## Approach

@@ -1222,3 +1222,40 @@ Formal module and card:
 formal/GaloisForLFunctions/RHTower/GammaJacobiArtanhTransportCoupling.lean
 docs/drafts/pipeline/3-formalized/needs-audit/gamma-jacobi-artanh-transport-coupling.md
 ```
+
+## Source boundary closure: adaptive tail is connection defect
+
+`[PAPER-PROVED] [LEAN-PROVED] [ADVANCE] [EXTERNAL NOVELTY PROVISIONAL] [NOT RH]`
+
+Generic Meixner--Pollaczek coherent states, Szegő kernels, and Hardy shifts were collision-killed as
+known; corpus already contains separate prime-valuation Hardy colligation. New source theorem is
+exact cross-identification. For `t>0`, forced singular readout of actual coefficient satisfies
+
+```text
+d_K(t)=(-1)^K a_K(t)/(c_(2K+1) phi(t)tanh(t))
+      =tanh(t)^(2K)=1-T_K'(t).
+```
+
+At `K=gammaOddJacobiPrimeCapacity(p)`, coefficient is first surviving zero-padded `SR-38`
+coordinate. Thus finite-head connection defect is not extra data: it is tail boundary value.
+Applying same readout to full tail gives
+
+```text
+H_K(t,u)=sum_(j>=0)d_(K+j)(t)d_(K+j)(u)
+        =[tanh(t)tanh(u)]^(2K)/(1-[tanh(t)tanh(u)]^2),
+H_K-H_(K+1)=d_K(t)d_K(u)=(1-T_K'(t))(1-T_K'(u)).
+```
+
+Every adjacent surviving residual pair reads `tanh(t)^2`; for prime sources it is
+`((p^2-1)/(p^2+1))^2` and equality is equivalent to equality of primes. Hence arbitrary adaptive
+finite head deletion preserves projective source marking. Coordinate-level head/tail boundary
+packaging is closed. Remaining source core is representing existing canonical signed Toeplitz
+countertrace and completed Euler multiplication on this nested boundary, then extending to
+infinite-index Krein jet current.
+
+Formal module and card:
+
+```text
+formal/GaloisForLFunctions/RHTower/GammaJacobiTailConnectionTransgression.lean
+docs/drafts/pipeline/3-formalized/needs-audit/gamma-jacobi-tail-connection-transgression.md
+```

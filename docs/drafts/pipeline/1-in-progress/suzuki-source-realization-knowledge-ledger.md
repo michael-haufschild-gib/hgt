@@ -82,9 +82,10 @@ they are not novel scientific knowledge.
 | `SR-42` | `ADVANCE` / `FAILED-CLASS` | Every full `SR-40` aperture section is a square Vandermonde congruence of explicit endpoint-divergence masses, so its positive, negative, and null indices are exact sign counts. Left endpoint is always negative. Primes `p>3`, `p=3 mod 4`, force distinct negative masses; negative index is unbounded. | No positive or fixed-index Pontryagin bivariate completion can realize all jet compressions. Surviving `SR-41` object must be genuinely infinite-index Krein, source-canonical, restriction-compatible, and still realize `SR-38` marginal plus completed Euler trace. | `von-mangoldt-successor-transport-inertia-law.md`; `SignedAtomicMomentInertia.lean`; `VonMangoldtSuccessorTransportInertia.lean` |
 | `SR-43` | `ADVANCE` / `FAILED-CLASS` | Every finite bivariate coordinate-partial-trace realization has equal total traces on its jet and source marginals. Actual `SR-40` trace obeys exact opening law `tr R_(M,N+1)=tr R_(M,N)+rho_M(2N+2)` with strictly positive source flux at every nonempty aperture. Hence no fixed source marginal—specifically no finite `SR-38` coherent odd Gamma--Jacobi marginal—can coexist with two consecutive `SR-40` jet marginals, for arbitrary real kernels, arbitrary mixed block, and arbitrary Krein index. | Ordinary normal partial trace is class-completely dead. Surviving `SR-41` connector must vary source marginal with jet cutoff or use a singular, weighted/renormalized, non-trace-preserving cyclic reader carrying the explicit positive flux. | `von-mangoldt-bivariate-marginal-trace-lock-no-go.md`; `BivariateMarginalTraceLock.lean`; `VonMangoldtBivariateMarginalTraceLock.lean` |
 | `SR-46` | `ADVANCE` | One fixed incidence row on the actual absolute odd Gamma--Jacobi modes gives the truncated artanh coordinate `T_K`; its exact connection defect is `T_K'=1-tanh^(2K)`. The induced finite-mode exchange current converges, for arbitrary source-dependent starting cutoffs and every fixed source/jet aperture, to the full `SR-40` matrix. At the existing `SR-38` prime capacities, the incidence head and coherent residual tail are coordinatewise complementary. The required normalization is provably singular: `phi(log p)^(-2)=(p^2+1)/(2p)>=p/2` and is unbounded on primes. | Common absolute-coordinate incidence is closed, but no single joint infinite-index Krein object or completed Euler cyclic reader has yet been constructed. `SR-41` narrows from “find any bivariate connector” to packaging this forced head/tail connection with the positive jet-opening flux and proving Euler compatibility. | `3-formalized/needs-audit/gamma-jacobi-artanh-transport-coupling.md`; `GammaJacobiArtanhTransportCoupling.lean` |
+| `SR-47` | `ADVANCE` | Under the forced singular normalization, the actual odd Gamma--Jacobi tail is an exact Szegő tail `H_K(t,u)=q^(2K)/(1-q^2)`, `q=tanh(t)tanh(u)`. Its aperture loss is rank one and equals the tensor of `SR-46` connection defects: `H_K-H_(K+1)=(1-T_K')⊗(1-T_K')`. At every adaptive prime capacity, this defect is literally the first surviving `SR-38` coordinate. Every common surviving adjacent residual pair reads `((p^2-1)/(p^2+1))^2` and determines the prime uniquely. | Coordinate-level joint head/tail boundary object and prime marking are closed. Generic Szegő machinery is known, and no completed Euler action, singular cyclic reader, or infinite-index Krein extension has yet been built on this nested kernel. | `3-formalized/needs-audit/gamma-jacobi-tail-connection-transgression.md`; `GammaJacobiTailConnectionTransgression.lean` |
 | `SR-45` | `FORMAL-CLOSURE` | For every contractive geometric phase orbit, both completed light energies have exact sharp interval `R/(1-R^2) <= E_± <= (R+2)/(1-R^2)` and sum `2/(1-R)`. Suzuki's actual Gamma/innovation valuation rays realize this law with `R=p^(-1/2)r_p^4`; both actual light channels are strictly positive at every height and the floor is attained. | Closes local valuation-phase holes only. It does not change `SR-41`, construct restricted-Weil/Robin transfer, reduce critical half-weight, or prove RH. Do not repeat phase-hole or depthwise light-coercivity analysis as terminal research. | `suzuki-valuation-depth-light-coercivity-law.md`; `GeometricPhaseLightCoercivity.lean`; `SuzukiValuationDepthLightCoercivity.lean` |
 
-## Level lift forced by `SR-35`--`SR-46`: singular prime--jet cyclic completion
+## Level lift forced by `SR-35`--`SR-47`: singular prime--jet cyclic completion
 
 Current source problem belongs to more general problem of **source-renormalized covariant
 Dirichlet forms relative to a resolved abelian channel algebra**.
@@ -111,17 +112,19 @@ placement, matrix-entry cofinal renormalization, finite-index completion, and or
 partial trace are no longer open. `SR-46` supplies the missing common absolute coordinate:
 finite odd-Jacobi heads generate exact successor edge currents and converge to `SR-40`, while their
 coordinate complements are the `SR-38` coherent residual tails.  Its prime normalization is
-provably unbounded, so this does not evade the bounded-reader no-go. Remaining issue is packaging
-this forced head/tail connection as one joint infinite-index Krein object and constructing a
-source-fixed singular cyclic reader whose non-normal flux is exactly the jet-opening flux and whose
-multiplication law is completed Euler multiplication.
+provably unbounded, so this does not evade the bounded-reader no-go. `SR-47` identifies the first
+surviving residual coordinate with the finite-head connection defect, realizes the normalized
+tail as one nested Szegő kernel with rank-one aperture transgression, and proves cofinal
+projective prime faithfulness. Remaining issue is representing the canonical signed Toeplitz
+countertrace and completed Euler multiplication on this nested boundary object, then extending it
+to the genuinely infinite-index Krein jet current.
 
 Scientific-method question is now:
 
-> Can the proved Gamma--Jacobi head/tail connection be completed to one source-fixed,
-> inclusion-compatible infinite-index Krein object whose singular cyclic reader carries the exact
-> jet-opening flux and implements completed Euler multiplication before completed moments or Xi
-> characters are read?
+> Does the canonical signed Toeplitz countertrace act on the proved nested Gamma--Jacobi Szegő
+> boundary so that its non-cyclicity is exactly the rank-one connection transgression, and does
+> this action extend to an inclusion-compatible infinite-index Krein reader implementing completed
+> Euler multiplication before completed moments or Xi characters are read?
 
 Required data and conjectural identity are
 
@@ -472,3 +475,12 @@ Before claiming progress, record all answers:
   Status: parent series/Dirac/Mercer layers `FORMAL-CLOSURE`; actual head/tail successor-current
   composition `ADVANCE`, external novelty provisional. New open core is joint infinite-index
   packaging plus completed Euler cyclic reader carrying the `SR-43` positive opening flux.
+- **2026-08-01 — Gamma--Jacobi tail/connection transgression (`SR-47`).** Generic coherent-state,
+  Szegő-kernel, and Hardy-shift structure was explicitly classified as known, including corpus'
+  separate prime-valuation Hardy shift. Source-specific survivor proves first adaptive `SR-38`
+  tail coordinate is exactly `1-T_K'`, singularly normalized tail has closed Szegő kernel, and
+  consecutive tail apertures differ by rank-one tensor of two connection defects. Every common
+  surviving adjacent residual pair reads `((p^2-1)/(p^2+1))^2` and determines prime. Status:
+  paper and direct Lean proofs closed; external novelty provisional. New open core is canonical
+  Toeplitz-countertrace/Euler representation on this nested boundary, not another abstract joint
+  matrix completion.

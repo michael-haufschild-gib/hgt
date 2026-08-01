@@ -36,7 +36,9 @@
   `GaloisForLFunctions.RHTower.DeningerKummerCompletion`,
   `GaloisForLFunctions.RHTower.DeningerLocalDegree`,
   `GaloisForLFunctions.RHTower.DeningerPlaceDegree`,
-  `GaloisForLFunctions.RHTower.DeningerL2PlaceSum`
+  `GaloisForLFunctions.RHTower.DeningerL2PlaceSum`,
+  `GaloisForLFunctions.RHTower.DeningerL2Norm`,
+  `GaloisForLFunctions.RHTower.DeningerL2Inner`
   (the gluing of the place tower, the absolute height on `Q̄`, the
   normed Kummer group `𝒢`, the normed `ℚ`-vector space `𝒢 ⊗ ℚ`, its
   completion, and the local-degree normalization of the place space)
@@ -761,14 +763,50 @@ weighted version is proved here.
 This is the exact `L²` counterpart of `deningerFinitePlaceSum_baseChange`, and it is the step the
 `p = 2` normalization needs that the `p = 1` case did not.
 
+### The `L²` place norm landed — the `p = 2` normalization is proved
+
+`formal/GaloisForLFunctions/RHTower/DeningerL2Norm.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerL2NormSq x = ∑_{v arch} mult(v)·(log v(x))² + ∑ᶠ_{v fin} (log v(x))²/d_v` — the
+  unnormalized `L²` place norm, with `deningerPlaceDegree_pos` for the positivity of the weights.
+- `deningerL2FinsumBaseChange` — **base change for the finite part**: the same
+  support-and-fibration argument as in the `L¹` case, but with the weighted fibre law
+  `deningerL2FibreSum` at the centre instead of the value-only one.
+- `deningerL2NormSq_baseChange` — **`‖f_α‖₂²` computed in an extension is `[L : K]` times its value
+  in the base field**, the archimedean half by `deningerArchPlaceSum_baseChange` with
+  `F = (log ·)²`, the finite half by the previous item.
+- `deningerNormalizedL2_baseChange` — **the normalized `L²` norm is independent of the field of
+  definition**, by the tower law, exactly as for the height.
+
+This is the `p = 2` normalization statement the card attributed to Allcock--Vaaler: the `L²` Kummer
+norm of an algebraic number is an invariant of the number alone, not of the field in which it is
+computed.  Note that this required a genuinely different argument from `p = 1` — the value-scaling
+law `‖x‖_w = ‖x‖_v^{e·f}` alone is not enough, because the `L²` weight carries one factor of the
+local degree and the squared value carries two; the identity that closes the gap is the tower
+factorization of the local degree together with the fundamental identity.
+
+### The `L²` inner product landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerL2Inner.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerL2Inner x y = ∑_{v arch} mult(v)·(log v x)(log v y) + ∑ᶠ_{v fin} (log v x)(log v y)/d_v`
+  — the form whose diagonal is the `L²` norm.
+- `deningerL2Inner_self` — `⟨x, x⟩ = ‖f_x‖₂²`, so the norm of the previous module *is* the norm of
+  this form.
+- `deningerL2Inner_comm` — symmetry.
+- `deningerL2FibreSumProd` — **the fibre law for the product**: `∑_{w|v} (log‖x‖_w)(log‖y‖_w)/d_w
+  = [L:K]·(log‖x‖_v)(log‖y‖_v)/d_v`.  Same mechanism as for the norm: the two values each
+  contribute a factor `d_{w/v}` and the weight contributes `1/(d_v·d_{w/v})`, leaving `d_{w/v}`,
+  whose fibre sum is the degree.
+
 ### Remaining
 
-Assembly only:
-
-`‖f_α‖₂² = (1/[K:ℚ]) · ( ∑_{v arch} mult(v)·(log v(α))² + ∑_{v fin} (log v(α))²/d_v )`,
-
-its base-change invariance — the archimedean half is `deningerArchPlaceSum_baseChange` with
-`F = (log ·)²`, the finite half is `deningerL2FibreSum` summed over the base places by the same
-support argument as `deningerFinitePlaceFinsum_baseChange` — and then the inner product this norm
-defines, which upgrades the Banach completion `deningerKummerCompletion` to the Hilbert space
-`H_Kum` of the card's `(1)`.
+Base change for the inner product itself, then the Hilbert structure.  The fibre law is proved;
+what is left is to run the same support-and-fibration argument as
+`deningerL2FinsumBaseChange` for the finite part — the only new point being that the support of
+`(log v x)(log v y)/d_v` is contained in the *union* of the two multiplicative supports rather
+than in one — together with `deningerArchPlaceSum_baseChange` for the archimedean part.  That
+gives `⟨·,·⟩` as an invariant of the algebraic numbers alone, and with it the completion of
+`𝒢 ⊗ ℚ` becomes the Hilbert space `H_Kum` of the card's `(1)`.

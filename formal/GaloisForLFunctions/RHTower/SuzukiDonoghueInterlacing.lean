@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SuzukiDonoghueSpectralMeasure
 import GaloisForLFunctions.RHTower.SuzukiAntiPickIdentity
+import GaloisForLFunctions.RHTower.SuzukiCrossResolventInstantiation
 
 /-!
 # Canonical interlacing of the two Suzuki extension spectra
@@ -179,5 +180,41 @@ theorem pencil_common_zero_iff {A E : ℂ → ℂ} (z : ℂ) :
   · rintro ⟨hA, hE⟩
     rw [hA, hE]
     norm_num
+
+/-! ## The resolvent form of `(7)`
+
+For a pure-point spectral measure the Donoghue transform is built from the resolvent by
+`m = z + (z²+1)⟨(L-z)⁻¹g, g⟩`.  Once the resolvent pairing is the Cauchy combination of spectral
+masses — which it is for an operator with an orthonormal eigenbasis — that expression is the sum of
+the Donoghue kernels against the masses, provided the masses total one.
+
+The total is one by Parseval, for a unit vector.  So the normalization of the deficiency vector is
+exactly what makes the affine term of the Donoghue kernel come out right. -/
+
+/-- **Parseval for the spectral masses.**  The squared coefficients of a vector in an orthonormal
+eigenbasis sum to its squared norm — so a unit vector has masses totalling one, which is `(12)`. -/
+theorem sum_spectralMass_eq_normSq {n : ℕ} {V : Type*} [NormedAddCommGroup V]
+    [InnerProductSpace ℝ V] (b : OrthonormalBasis (Fin n) ℝ V) (g : V) :
+    ∑ i, inner ℝ (b i) g * inner ℝ (b i) g = ‖g‖ ^ 2 := by
+  have h := b.sum_inner_mul_inner g g
+  rw [real_inner_self_eq_norm_sq] at h
+  simpa [real_inner_comm] using h
+
+/-- **`(7)`, the resolvent form.**  With spectral masses totalling one, the Donoghue combination
+`z + (z²+1)·(resolvent pairing)` is exactly the sum of the Donoghue kernels weighted by the masses.
+The affine term `z` is absorbed precisely because the masses are a probability. -/
+theorem donoghueResolvent_eq_kernelSum {ι : Type*} (s : Finset ι) (p t : ι → ℝ) (z : ℂ)
+    (hp : ∑ j ∈ s, p j = 1) :
+    z + (z ^ 2 + 1) * ∑ j ∈ s, ((p j : ℝ) : ℂ) / ((t j : ℂ) - z)
+      = ∑ j ∈ s, suzukiDonoghueKernel (t j) z * ((p j : ℝ) : ℂ) := by
+  have hterm : ∀ j ∈ s, suzukiDonoghueKernel (t j) z * ((p j : ℝ) : ℂ)
+      = z * ((p j : ℝ) : ℂ) + (z ^ 2 + 1) * (((p j : ℝ) : ℂ) / ((t j : ℂ) - z)) := by
+    intro j _
+    rw [suzukiDonoghueKernel]
+    ring
+  rw [Finset.sum_congr rfl hterm, Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum,
+    ← Complex.ofReal_sum, hp]
+  push_cast
+  ring
 
 end GaloisForLFunctions.RHTower

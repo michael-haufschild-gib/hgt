@@ -146,11 +146,13 @@ classical; priority for this CCM application is not established.  Status remains
 
 - [x] 0 → 1: source-native operation and exact frontier stated
 - [x] 1 → 2: dependency-closed symbolic proof, no zero hypothesis
-- [x] 2 → 3: core `(2)--(9)` and general exact aperture-tail transfer are formalized; asymptotic
-  decay of the specialized tail remains a paper corollary
+- [x] 2 → 3: `(2)--(11)`, exact Chebyshev source change of variables, and admissible-tail decay are
+  formalized unconditionally; serialized final audit and stage move remain
 - [ ] 3 → 4: external priority and publication audit
 
 ## Log
 
 - 2026-07-22 — derived general aperture law, unit resolvent collapse, causal kernel identity, and
   admissible-tail theorem; hostile audit separated detector phase from source-sector sign.
+- 2026-08-01 — formalized exact Chebyshev resolvent source `(10)`, specialized admissible tail
+  `(11)`, and its convergence to zero for `0 < Re(w) < 1/2`.

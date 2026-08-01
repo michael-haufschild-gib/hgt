@@ -1,7 +1,7 @@
 # Xi aperture counterterm phase universality law
 
 - **ID:** xi-aperture-counterterm-phase-universality-law
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** closure of `XiAperturePoissonFullApertureHilbertTransport`, `XiApertureResponseGainPrimeRenormalization`, and `XiApertureResponseCorrelationDet2`
 - **Statement:** After subtracting the unit background only at aperture one, the fused all-prime gain admits a summable scalar prime-harmonic renormalization at every positive integral aperture for one coefficient only: `6` at `a=1`, and `0` at every `a≥2`.
@@ -15,7 +15,7 @@ classification of the renormalization coefficient.
 
 - [x] 0 → 1  in-progress: exact Lean statements aligned and prior corpus searched
 - [x] 1 → 2  fully-proven: dependency-closed proof passed exact Lean check
-- [ ] 2 → 3  formalized: exact Lean theorem and final formal gates pending
+- [x] 2 → 3  formalized: exact Lean theorem, direct elaboration, final module build, lint, and axiom audit pass
 - [ ] 3 → 4  publication-ready: novelty and exposition audit pending
 
 ## Approach

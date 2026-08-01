@@ -209,13 +209,22 @@ Unconditional in
 - `twoSpeciesConformalScale_reconstruction`;
 - `twoSpeciesConformalPotentialPair_injective`.
 
+`formal/GaloisForLFunctions/HTGeometry/ConformalClockDiffusion.lean` now also formalizes the exact
+general-dimensional exponential calculation in an abstract second-order clock calculus:
+
+- `ExponentialSecondOrderClockCalculus.conformalWaveSigma_conjugation`;
+- `ExponentialSecondOrderClockCalculus.conformalKleinGordonSigma_conjugation`;
+- `ExponentialSecondOrderClockCalculus.conformalWaveSigma_dimension_conjugation`;
+- `ExponentialSecondOrderClockCalculus.conformalKleinGordonSigma_dimension_conjugation`.
+
+These theorems prove the chain/product-rule expansion, first-derivative cancellation, geometric
+defect, and mass term at `a=(d-2)/2` without assuming the displayed conclusion.
+
 Missing:
 
-1. smooth pseudo-Riemannian conformal metric rescaling;
-2. scalar d'Alembertian formula `(4)`;
-3. product/chain-rule derivation `(5)`;
-4. operator identity `(3)`;
-5. coupled inverse theorem recovering both effective potentials from clock data.
+1. realization of the abstract calculus by smooth pseudo-Riemannian conformal metric rescaling and
+   the literal scalar d'Alembertian formula `(4)`;
+2. coupled inverse theorem recovering both effective potentials from clock data.
 
 ## Closest SOTA
 
@@ -235,4 +244,3 @@ Missing:
 Targeted searches found no prior result stating the two-mass cancellation `(7)` as a Lorentzian
 inverse-gravity scale reconstruction theorem. This is a priority claim, not an exhaustive
 bibliographic guarantee.
-

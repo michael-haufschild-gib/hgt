@@ -1,7 +1,7 @@
 # Prime-archimedean cofinal orientation-charge universality
 
 - **ID:** prime-arch-cofinal-orientation-charge-universality
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** whole-corpus closure of `PrimeArchCofinalSourceTemperatureMaster` and `PrimeArchExactOffLineQuartetKMSMaster`
 - **Statement:** For every pair of cofinal finite-volume and cooling schedules, vanishing of the exact quartet thermal orientation energy is equivalent to cofinal Bernstein negative-mass vanishing, source response above four, zero free-energy rate, subexponential growth, and recurrent boundedness.
@@ -14,7 +14,7 @@ Identify one schedule-independent intrinsic scalar governing every cofinal two-s
 
 - [x] 0 → 1  in-progress: exact common RH interface identified from Lean theorem statements
 - [x] 1 → 2  fully-proven: dependency-closed equivalence proof
-- [ ] 2 → 3  formalized: final module build and axiom audit pending
+- [x] 2 → 3  formalized: exact Lean theorem, direct elaboration, final module build, lint, and axiom audit pass
 - [ ] 3 → 4  publication-ready: novelty and exposition audit pending
 
 ## Approach

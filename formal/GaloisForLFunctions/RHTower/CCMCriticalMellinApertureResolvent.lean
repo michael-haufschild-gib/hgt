@@ -436,7 +436,7 @@ theorem criticalMellinChebyshevError_eq_exp
       (Chebyshev.psi (Real.exp x) - Real.exp x) * Real.exp (-x / 2) := by
   rw [criticalMellinChebyshevError, Real.rpow_def_of_pos (Real.exp_pos x), Real.log_exp]
   congr 1
-  ring
+  ring_nf
 
 /-- Unit-rate positive causal resolvent of the normalized Chebyshev error. -/
 def criticalMellinChebyshevResolventSource (x : ℝ) : ℝ :=

@@ -1,7 +1,7 @@
 # Multiple elliptic gamma face-depth rigidity
 
 - **ID:** MEG-FACE-DEPTH-RIGIDITY
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** Internal multiple-elliptic-gamma face hierarchy; Kato's irrational-period differential-algebraicity question
 - **Statement:** For an integrally independent period tuple, external-lattice translates of two distinct deletion faces with at least two surviving periods are never equal.
@@ -59,7 +59,7 @@ are pairwise disjoint.
 
 - [x] 0 → 1 in-progress: well-posed, source-pure, attack idea, Door passport
 - [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3 formalized: Lean theorem, `lake build` green, formal lint PASS
+- [x] 2 → 3 formalized: Lean theorem, direct elaboration, `lake build` green, formal lint PASS, axiom audit clean
 - [ ] 3 → 4 publication-ready: incorporated into standalone paper with Lean certificate and external novelty audit
 
 ## Proof `[PROVED HERE]`

@@ -1,7 +1,7 @@
 # Function-field spectral-closure universality law
 
 - **ID:** function-field-spectral-closure-universality-law
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** cross-folder closure of `FunctionFieldFE` and `MultisetSymmetricDetermination`
 - **Statement:** A finite Frobenius multiset is closed under `ω ↦ q/ω` if and only if its elementary symmetric coefficients satisfy the complete `q`-weighted reciprocal functional equation; coefficients only through the multiset cardinality already suffice.
@@ -15,7 +15,7 @@ chosen spectral pairing or intrinsically determines that pairing.
 
 - [x] 0 → 1  in-progress: exact Lean statements aligned and prior corpus searched
 - [x] 1 → 2  fully-proven: dependency-closed proof passed exact Lean check
-- [ ] 2 → 3  formalized: exact Lean theorem and final formal gates pending
+- [x] 2 → 3  formalized: exact Lean theorem, direct elaboration, final module build, lint, and axiom audit pass
 - [ ] 3 → 4  publication-ready: novelty and exposition audit pending
 
 ## Approach

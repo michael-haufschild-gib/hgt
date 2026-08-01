@@ -1,7 +1,7 @@
 # The Gram weld trilemma: finite, positive, Hankel — pick two
 
 - **ID:** `gram-weld-trilemma`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** NO-GO THEOREM
 - **Scientific status:** `[PROVED]` `[UNCONDITIONAL]` `[LEAN, AXIOM-CLEAN]` `[NOT AN RH PROOF]`
 - **Novelty:** elementary; the content is the reduction that makes it visible, and its scope

@@ -1,7 +1,7 @@
 # Countable Euler-family Sonin--Gamma--Xi Rees chart
 
 - **ID:** `countable-euler-family-sonin-gamma-xi-rees-chart`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / SOURCE-GLOBAL BRIDGE
 - **Scientific status:** `[LEAN-PROVED] [NOT RH] [NO NOVELTY CLAIM]`
 - **Source:**

@@ -2320,6 +2320,58 @@ line a bounded continuous function with totally bounded orbit:
 So the hypothesis class of the Gamma-field law — not just the Gamma-rational one — is inhabited by
 objects of nonzero phase rank, on the critical line itself.
 
+### The whole monomial basis of the Gamma field
+
+`HTGeometry/GammaFieldJetBoundary.lean` extends the boundary from pure monomials `Γ^j·(p/q)·ψ^D` to
+the general monomial `Γ^j·(p/q)·∏(ψ⁽ⁱ⁾)^{E i}` of `ℂ(s)⟨Γ⟩`.  Splitting the jet product into its
+order-zero factor and the rest (`gammaFieldJetElt_eq`), a full-tower monomial is a pure monomial times
+a product of positive-order polygammas, and those vanish on a vertical line.  Hence
+
+- **`tendsto_ratio_gammaFieldJet`** — the normalized ratio converges to
+  `gammaMonomialLimit · ∏ 0^{E i₊₁}`;
+- `tendsto_ratio_gammaFieldJet_pure` — with no derivative factor the datum is that of the pure part;
+- `tendsto_ratio_gammaFieldJet_deriv` — one derivative factor makes the monomial negligible;
+- `tendsto_sum_ratio_gammaFieldJet` — finite sums behave termwise.
+
+Together with the sum and quotient results this covers the entire monomial basis of the Gamma field:
+every element of `ℂ(s)[Γ, ψ, ψ′, …]` in monomial expansion has a projective limit along the vertical
+line, and the limit is nonzero exactly on the monomials sharing the dominant datum.
+
+### The finite-phase law for arbitrary Gamma-field coefficients
+
+`HTGeometry/GammaFieldJetCollapse.lean` closes the loop.  With `gammaJetLimit` naming the boundary
+datum of a full-tower monomial against a pure one:
+
+- `tendsto_sum_ratio_gammaFieldJet'` and `eventually_sum_gammaFieldJetElt_ne_zero` — finite sums of
+  full-tower monomials have convergent normalized ratios and are eventually nonvanishing when their
+  limit constant is nonzero;
+- `tendsto_ratio_gammaFieldJetSum` — hence quotients of such sums converge;
+- **`rank_finite_of_gammaFieldJetSum_relation`** — feeding those two facts to the abstract collapse:
+  a strip almost periodic holomorphic solution of a differential relation whose coefficients are
+  arbitrary elements of `ℂ(s)[Γ, ψ, ψ′, …]` in monomial expansion has **finite rational Bohr
+  frequency rank**.
+
+That is eq. (9) with the coefficient field no longer restricted at all beyond the monomial expansion:
+the chain runs projective boundary → collapse → strip relation → descent → finite rank, and the whole
+of it is unconditional in Lean along `Re s = 1/2 + m`.
+
+### The dominant index always exists — the existential of eq. (5)
+
+`HTGeometry/GammaFieldDominantIndex.lean` removes the last combinatorial hypothesis.  The boundary
+datum of a monomial is packaged as a key in the linear order `ℕᵒᵈ ×ₗ ℤ ×ₗ ℕ` — the `Γ`-exponent
+reversed, the degree `deg p − deg q` of the rational factor, and the digamma exponent — and
+
+> **`dominates_iff_key_le`**: `GammaMonomialDominates` is exactly comparison of keys (the
+> cross-degree comparison `deg(p_α q_β) < deg(q_α p_β)` is the difference comparison
+> `deg p_α − deg q_α < deg p_β − deg q_β`, by `natDegree_mul`);
+
+> **`exists_dominant_index`** / **`exists_dominant_monomial_family`**: hence every finite family — in
+> particular the doubly indexed family of all monomials of all coefficients of a finite relation —
+> has a member dominating all of them.
+
+This is the existential in eq. (5) (“there is an index `j` such that …”): the normalizing member can
+always be chosen, so the dominance hypothesis of the collapse costs no generality.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

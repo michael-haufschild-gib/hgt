@@ -1,7 +1,7 @@
 # Finite-contraction temporal-boundary law
 
 - **ID:** `finite-contraction-temporal-boundary-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** OPEN-DYNAMICS THEOREM / OPERATIONAL MEMORY LAW
 - **Status:** `[PAPER-PROVED] [LEAN-PROVED] [EXTERNAL PRIORITY OPEN]`
 - **Parent conjecture:**
@@ -130,4 +130,3 @@ The scratch axiom audit reports only `propext`, `Classical.choice` and
 - [ ] external priority audit
 - [ ] device-feasible protocol
 - [ ] hostile Nature review
-

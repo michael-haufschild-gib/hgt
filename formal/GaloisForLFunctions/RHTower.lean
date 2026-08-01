@@ -3856,3 +3856,7 @@ import GaloisForLFunctions.RHTower.SoninIdealBadModeCount
 import GaloisForLFunctions.RHTower.DeningerPlaceDegree
 import GaloisForLFunctions.RHTower.SoninSurvivorEnergyCount
 import GaloisForLFunctions.RHTower.DeningerL2PlaceSum
+import GaloisForLFunctions.RHTower.DeningerL2Norm
+import GaloisForLFunctions.RHTower.SoninScaledPacketBandFraction
+import GaloisForLFunctions.RHTower.GammaJacobiTailConnectionTransgression
+import GaloisForLFunctions.RHTower.DeningerL2Inner

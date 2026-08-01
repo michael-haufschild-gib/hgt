@@ -35,10 +35,15 @@ audit and positive-survivor extraction. Partial bridge theorems never count as c
 - `ramsey-weyl-causal-phase-law`: exact Weyl half-phase implication, scaled swap law, two-sided
   inverse, group commutator, and local nonvanishing added to
   `HTGeometry/ContinuumChronometricGravity.lean`.
+- `two-species-conformal-clock-scale-law`: general-dimensional exponential chain rules, exact
+  first-derivative cancellation, conformal defect, and massive conjugation added to
+  `HTGeometry/ConformalClockDiffusion.lean`; the literal pseudo-Riemannian realization and coupled
+  inverse-data theorem remain open.
 - Existing exact candidates awaiting combined final gates: bounded-relation profile realization,
   charged scalar torsor, split-source boundary matroid, polynomial torsion language, Xi depth
   successor layer, two-mass continuum rigidity, Cassini--Jensen seam law, prime-coordinate fusion,
-  four-dimensional conformal diffusion, and clock-coframe conservation.
+  four-dimensional conformal diffusion, clock-coframe conservation, and the von Mangoldt
+  bivariate marginal trace-lock no-go.
 
 ## Falsified disposition
 
@@ -47,10 +52,12 @@ audit and positive-survivor extraction. Partial bridge theorems never count as c
 
 ## Named open core
 
-Exact per-card gaps remain the work queue. First confirmed examples: general-dimensional conformal
-clock conjugation, chronometric ordered characteristic-functional differentiation, Euler
-activation finite Gibbs/Fisher/Borel--Cantelli layers, and analytic parents explicitly marked open
-on their source cards.
+Exact per-card gaps remain the work queue. First confirmed examples: pseudo-Riemannian realization
+of the general-dimensional conformal conjugation, chronometric ordered characteristic-functional
+differentiation, Euler activation finite Gibbs/Fisher/Borel--Cantelli layers, and analytic parents
+explicitly marked open on their source cards. The boundary-wedge dimension card also retains a
+literal HT-carrier gap: its two-variable Lean datum proves nonconstancy, while the paper statement
+requires hypertranscendental carriers.
 
 ## Log
 

@@ -1,7 +1,7 @@
 # Prime–archimedean / black-hole / reciprocal spectral-cone universality
 
 - **ID:** prime-arch-black-hole-reciprocal-spectral-cone-universality
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Source:** cross-folder closure of `BlackHoleReciprocalSpectralConeLaw` and `PrimeArchHankelDeterminantCriterion`
 - **Statement:** RH holds exactly when every nonzero nonnegative mixture of the normalized black-hole far-zone clock, reciprocal continuum clock, and normalized prime–archimedean moment clock has positive-definite Hankel matrices at every finite depth; under RH every such mixture escapes all fixed finite spectral and hidden-state dimensions.
@@ -15,7 +15,7 @@ cone and determine the exact resulting cone criterion.
 
 - [x] 0 → 1  in-progress: cross-folder strict-Hankel rays aligned from exact Lean statements
 - [x] 1 → 2  fully-proven: dependency-closed cone proof and pure-ray converse
-- [ ] 2 → 3  formalized: exact Lean theorem and final formal gates pending
+- [x] 2 → 3  formalized: exact Lean theorem, direct elaboration, final module build, lint, and axiom audit pass
 - [ ] 3 → 4  publication-ready: novelty and exposition audit pending
 
 ## Approach
