@@ -1220,5 +1220,5 @@ Formal module and card:
 
 ```text
 formal/GaloisForLFunctions/RHTower/GammaJacobiArtanhTransportCoupling.lean
-docs/drafts/pipeline/1-in-progress/gamma-jacobi-artanh-positive-log-incidence.md
+docs/drafts/pipeline/3-formalized/needs-audit/gamma-jacobi-artanh-transport-coupling.md
 ```

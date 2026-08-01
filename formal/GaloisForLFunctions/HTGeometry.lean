@@ -3147,3 +3147,5 @@ import GaloisForLFunctions.HTGeometry.IntersectionNormal
 import GaloisForLFunctions.HTGeometry.GammaFieldSumBoundary
 import GaloisForLFunctions.HTGeometry.IntersectionFixingSubgroup
 import GaloisForLFunctions.HTGeometry.IntersectionAbelian
+import GaloisForLFunctions.HTGeometry.GammaFieldAbstractCollapse
+import GaloisForLFunctions.HTGeometry.PolynomialBaseChangeAssembled

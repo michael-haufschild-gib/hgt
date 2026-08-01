@@ -287,6 +287,25 @@ suzukiUpperCayleyInv_phase_residue_at_one
 The actual operator equality `(7)` remains a paper theorem until Suzuki's concrete symmetric
 operator and its spectral projections exist in Lean.
 
+**`(14)`, the canonical interlacing, is formal** — it was not among the connectors above, and its
+conclusion is carried by a "Therefore" in section 4.  In
+`formal/GaloisForLFunctions/RHTower/SuzukiDonoghueInterlacing.lean`:
+
+- `nevanlinnaWeight`, `nevanlinnaWeight_pos`: the atom weight `(1+t²)p`, positive when the mass is.
+- `donoghuePurePoint_eq_cauchySum`: **the pure-point Donoghue transform is a positive-weight Cauchy
+  combination** — termwise the kernel splits as the Nevanlinna kernel minus the node, and the
+  subtracted part sums to zero exactly when the first moment vanishes, which the evenness of `nu`
+  supplies.
+- `strictMonoOn_donoghuePurePoint`: strictly increasing off the atoms, needing no ordering.
+- `existsUnique_zero_in_atomGap`: **exactly one zero between consecutive atoms**, hence the poles
+  (even-extension spectrum) and the zeros (odd) strictly interlace.
+- `cauchySum_nevanlinna_ne_zero_of_im_ne_zero`: and there are no nonreal zeros, so the interlacing
+  accounts for the whole zero set.
+
+Once the transform is recognized as a positive-weight Cauchy combination the interlacing needs no
+new analysis: it is the same strict-monotonicity-plus-blow-up argument already proved for the
+anti-Pick card, applied to the Nevanlinna weights.
+
 ## Gates
 
 - [x] exact Suzuki source pair and reference extension identified
@@ -311,3 +330,12 @@ operator and its spectral projections exist in Lean.
   exact normalized defect spectral probability and atomic source weights derived.
 - 2026-07-21 — hostile proof and primary-literature audit closed; dependency-closed two-angle,
   parity, Donoghue-kernel, and residue/phase connectors formalized in Lean.
+- 2026-08-01 — `(14)` formalized (`SuzukiDonoghueInterlacing.lean`).  The card's Lean-target list
+  named six connectors and all six do exist in the repo, but `(14)` — the canonical interlacing — was
+  not among them, and its conclusion sits behind a "Therefore these two canonical Suzuki extension
+  spectra strictly interlace", the pattern that hides claims from a connector-by-connector audit.
+  The proof needs no new analysis: `donoghuePurePoint_eq_cauchySum` recognizes the pure-point
+  transform as a positive-weight Cauchy combination (the subtracted linear part vanishes precisely by
+  evenness of `nu`), after which the strict monotonicity and one-zero-per-gap theorems already proved
+  for `suzuki-shift-spectral-monotone-likelihood-transfer` apply verbatim to the Nevanlinna weights.
+  Five new declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.

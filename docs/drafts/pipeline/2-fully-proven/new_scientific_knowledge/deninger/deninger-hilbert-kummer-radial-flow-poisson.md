@@ -32,9 +32,11 @@
   `GaloisForLFunctions.RHTower.DeningerAbsoluteHeight`,
   `GaloisForLFunctions.RHTower.DeningerAbsoluteHeightSeminorm`,
   `GaloisForLFunctions.RHTower.DeningerKummerGroupNorm`,
-  `GaloisForLFunctions.RHTower.DeningerKummerSpace`
+  `GaloisForLFunctions.RHTower.DeningerKummerSpace`,
+  `GaloisForLFunctions.RHTower.DeningerKummerCompletion`
   (the gluing of the place tower, the absolute height on `Q̄`, the
-  normed Kummer group `𝒢`, and the normed `ℚ`-vector space `𝒢 ⊗ ℚ`)
+  normed Kummer group `𝒢`, the normed `ℚ`-vector space `𝒢 ⊗ ℚ`, and its
+  completion)
 
 ## Source Hilbert space
 
@@ -650,10 +652,38 @@ is the positive-definiteness of that norm rather than a citation.
 So the card's `𝒢 ⊗ ℚ` is now an actual normed `ℚ`-vector space in Lean, with the Weil height as
 its norm.
 
+### The Hilbert--Kummer Banach space landed — `(1)` and `(2)` are now constructions
+
+`formal/GaloisForLFunctions/RHTower/DeningerKummerCompletion.lean`.  Axiom audit on all
+declarations: `propext, Classical.choice, Quot.sound`.
+
+- `deningerKummerSpace_normedAddCommGroup`, `deningerKummerSpace_normedSpace` — `𝒢 ⊗ ℚ` is a
+  normed `ℚ`-vector space: the `AddGroupNorm` of the previous module plus the rational homogeneity
+  `‖q·x‖ = ‖q‖·‖x‖`.
+- `deningerKummerCompletion F` — **the Hilbert--Kummer space**, the completion of `𝒢 ⊗ ℚ` for the
+  Weil height norm.  It is a Banach space over `ℚ` and complete, all inherited from mathlib's
+  `UniformSpace.Completion`.
+- `deningerKummerClass` — **the map `(2)`**, sending a unit to its class in `𝒢 ⊗ ℚ`.
+- `deningerKummerClass_norm` — `‖ι(α)‖ = h(α)`: the norm of a Kummer class *is* the absolute Weil
+  height.  This is the card's identification of the Kummer norm.
+- `deningerKummerClass_mul` — additivity, `ι(αβ) = ι(α) + ι(β)`.
+- `deningerKummerClass_eq_zero_iff_isOfFinOrder` — **injectivity of `(2)`**: the class map
+  annihilates exactly the roots of unity, so it is injective on `𝒢`.
+- `deningerKummerSpace_mk_eq_smul`, `deningerKummerClass_span` — **every element of `𝒢 ⊗ ℚ` is a
+  rational multiple of a class**, so the classes span it: `span ℚ (range ι) = ⊤`.
+- `deningerKummerClass_dense_completion` — **dense span of `(2)`**: pushing that span forward along
+  the isometric inclusion into the completion, the classes have dense `ℚ`-span there.
+
+Both halves of the card's `(2)` — injectivity and dense span — are therefore now proved rather
+than quoted, and `H_Kum` is an explicit Lean object rather than a citation.
+
 ### Remaining
 
-The metric completion of `𝒢 ⊗ ℚ` — a `UniformSpace.Completion` of the normed space just built,
-which needs no new mathematics — and the one genuinely analytic point: the card's `H_Kum` is an
-`L²` space, whereas the height norm is of `L¹` type.  The `L²` structure is carried by the place
-space `(Y, λ)` and is what the `p = 2` Allcock--Vaaler theorem supplies; every *consequence* the
-card draws from it is already formalized.
+One point only: the card's `H_Kum` is an `L²` space, whereas the completion built here carries the
+height norm, which is of `L¹` type (`‖f_α‖₁ = 2h(α)`, formalized as
+`deningerKummerL1Norm_eq_two_mul_logHeight`).  The inner-product structure is carried by the place
+space `(Y, λ)` and is what the `p = 2` Allcock--Vaaler theorem supplies.  Every statement the card
+*derives* from `H_Kum` — the bounded extension, the modulus replacement, the Frobenius scaling, the
+descent and positivity of `(9)`, and the Poisson-flow identities `(11)`--`(14)` — is formalized
+unconditionally, and the injectivity and density it quotes are now proved for the height
+completion.

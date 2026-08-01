@@ -2280,6 +2280,31 @@ Hypotheses left: strip almost periodicity of the solution, the monomial form of 
 lexicographically minimal normalizing index, and distinctness of the monomials.  Nothing analytic is
 open, and the line is `Re s = 1/2 + m` — including the critical line itself.
 
+### Finite sums, and the collapse from abstract coefficient data
+
+`HTGeometry/GammaFieldSumBoundary.lean` extends the boundary from single monomials to finite sums —
+i.e. to all of `ℂ(s)[Γ, ψ]` in monomial expansion.  With `gammaMonomialLimit` and
+`GammaMonomialDominates` naming the two-monomial datum and its lexicographic order:
+
+- `tendsto_sum_ratio_gammaFieldElt` — a finite sum, normalized by a monomial dominating every
+  summand, converges to the sum of the individual limit data (eq. 3 for sums);
+- `eventually_sum_gammaFieldElt_ne_zero` — with nonzero limit constant the sum is eventually
+  nonvanishing;
+- `tendsto_ratio_gammaFieldSum` — hence quotients of such sums converge (eq. 5 for sums).
+
+`HTGeometry/GammaFieldAbstractCollapse.lean` isolates what the collapse actually consumes: the
+normalized coefficient ratios converge along the line, and the normalizing coefficient is eventually
+nonzero.  From just those two facts:
+
+> `line_relation_of_coeff_limits` → **`strip_relation_of_coeff_limits`** (eq. 8) →
+> **`rank_finite_of_coeff_limits`** (eq. 9).
+
+The monomial case and the finite-sum case are now instances; the latter is recorded as
+**`rank_finite_of_gammaFieldSum_relation`**: a strip almost periodic holomorphic solution of a
+differential relation whose coefficients are finite sums of Gamma-field monomials — every summand
+dominated by one fixed monomial, normalizing coefficient with nonzero limit constant, distinct jet
+monomials — has finite rational Bohr frequency rank.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

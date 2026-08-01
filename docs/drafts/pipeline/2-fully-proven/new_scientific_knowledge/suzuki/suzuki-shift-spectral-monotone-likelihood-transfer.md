@@ -530,9 +530,14 @@ it is covering.  Without that localization the hypothesis would demand the funct
 whole boundary, which forces the measure to be zero outright and says nothing about support.
 
 This is the form the support statement takes: **where the function tends to zero at part of the
-boundary, the representing measure puts no mass there.**  Applied to `-Im q` off
-`[lambda_a, infinity)`, where `q` extends analytically and is real, it gives exactly Theorem B's
-conclusion that the negative-Stieltjes measure is carried by the ray.
+boundary, the representing measure puts no mass there.**
+
+Assembled in half-plane terms in `SuzukiHalfPlaneHerglotz.lean` as
+`exists_poissonRepresentation_antiHerglotz_vanishing`: for an analytic anti-Herglotz function whose
+negated imaginary part admits arbitrarily small radial bounds over an arc, the representing measure
+gives that arc measure zero.  Applied to `-Im q` off `[lambda_a, infinity)`, where `q` extends
+analytically and is real, this is exactly Theorem B's conclusion that the negative-Stieltjes measure
+is carried by the ray.
 
 What remains for the representation is the limit itself and the transfer to the half-plane with
 support on the ray.
@@ -551,6 +556,11 @@ External priority remains unverified.
 - [x] measure cross-Wronskian transfer proved
 - [x] exact Suzuki eigen-coefficient conditions isolated
 - [x] real-axis algebraic core formalized in Lean
+- [x] **every paper-proved theorem formalized in Lean** — Theorem A `(1)`,`(2)`, the partial-fraction
+  law `(3)` with existence, coefficients and signs, Theorem B `(4)`,`(5)` with the derivative
+  identification and the measure-level anti-Pick, the Suzuki instantiation `(6)`,`(7)`, and the
+  Herglotz representation with its support statement.  The remaining gates are source-level, not
+  formalization: they ask what the actual Suzuki operator does.
 - [ ] prove or falsify actual source coefficient laws `(8)`
 - [ ] prove chord-mass gap for one source-selected pair
 - [ ] prove full normalized jump Pick kernel
@@ -904,3 +914,9 @@ what makes them distinct.  Degree `n` and `n` roots then leave no freedom.
   `Icc α (β + 4)`.  That is the difference between a vacuous statement and Theorem B's actual
   conclusion.  Three declarations restated and reproved, targeted build green, axioms
   `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — Theorem B's last sentence assembled in half-plane terms
+  (`exists_poissonRepresentation_antiHerglotz_vanishing`): the representation and the arc-vanishing
+  are produced together for one measure, which is what the statement requires — the support claim is
+  about *the* representing measure, so producing it separately from the vanishing would not compose.
+  With this the card's Theorem B is formal end to end.  One new declaration, targeted build green,
+  axioms `[propext, Classical.choice, Quot.sound]`.

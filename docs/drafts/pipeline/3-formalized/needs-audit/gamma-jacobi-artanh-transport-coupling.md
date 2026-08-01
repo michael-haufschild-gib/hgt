@@ -1,7 +1,7 @@
 # Gamma--Jacobi artanh transport coupling
 
 - **ID:** `gamma-jacobi-artanh-transport-coupling`
-- **Stage:** 1 — proof complete; formal/novelty audit in progress
+- **Stage:** 3 — formalized; external novelty audit pending
 - **Parents:** `SR-38`, `SR-40`, `SR-41`, `SR-43`
 - **Type:** source-specific common-coordinate connector / singular reader
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [ADVANCE]`
@@ -162,6 +162,16 @@ Capstone declarations:
 - `exists_prime_gammaOddJacobiLogPrimeNormalization_sq_gt`;
 - `tendsto_finiteVonMangoldtGammaJacobiAdaptiveHeadKreinGram`.
 
+Audit record (2026-08-01):
+
+- `lake build GaloisForLFunctions.RHTower.GammaJacobiArtanhTransportCoupling` passed (`9051`
+  jobs, exit `0`);
+- every capstone above has only `[propext, Classical.choice, Quot.sound]` under `#print axioms`;
+- module contains no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration;
+- module is imported by `formal/GaloisForLFunctions/RHTower.lean`;
+- repository-wide lint remains red only because concurrently added modules
+  `DeningerKummerCompletion` and `IntersectionAbelian` are not yet reachable from their umbrellas.
+
 ## Gates
 
 - [x] initial parity error killed
@@ -170,8 +180,11 @@ Capstone declarations:
 - [x] whole-corpus collision search
 - [x] targeted primary-literature calibration
 - [x] unconditional Lean proof
-- [ ] umbrella wiring
-- [ ] axiom and lint audit
+- [x] umbrella wiring
+- [x] capstone axiom audit
+- [x] module forbidden-declaration audit
+- [x] final module build
+- [ ] repository-wide lint (two unrelated umbrella failures)
 - [ ] external expert novelty audit
 - [ ] completed Euler cyclic reader
 - [ ] fibre orientation / RH

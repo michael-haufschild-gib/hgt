@@ -855,7 +855,29 @@ fundamental theorem of symmetric rational functions; the commutator subgroup of 
 its alternating group; the sign law for the Vandermonde product; natural irrationalities; and the
 coefficientwise extension of a derivation to polynomials.
 
-What remains is instantiation of this chain on the card's own base field and equation.
+A further twenty-six modules complete the two branches and the parameter change, all building with
+the same three axioms:
+
+```text
+SymmetricCoefficientNonSquare  SymmetricCoefficientFractionModel  SquareSpecialisation
+LinearFormPrime                AverageProductNonSquare            CenteredDiscriminantNonSquare
+EvenKummerSqrt                 KummerBaseChangeEvenGenerator      TailCoefficientLinearSolve
+TailParameterField             PolynomialScaleVariable            TailScalingAutomorphism
+TailScalingAction              TailFixedField                     TailCoefficientFixedField
+KummerDegreeBound              TailCoefficientDegree              TailCoefficientTower
+TailParameterChange            PolynomialBaseChangeEven           CenteredPolynomialOverCoefficients
+CenteredRootFieldTop           IntersectionNormal                 IntersectionFixingSubgroup
+IntersectionAbelian            PolynomialBaseChangeAssembled
+```
+
+Further facts proved here that mathlib does not carry: a row form of an invertible matrix is prime
+in the polynomial ring; the coefficient rescaling law for substituting a scalar multiple of the
+variable; squares descend along a specialisation whose kernel is a prime; and the triangular
+parameter change with its intrinsic characterisation of the coefficient field as a fixed field.
+
+What remains is instantiation of this chain on the card's own base field and equation:
+`polyBaseChangeEvenAssembledEquiv` and `polyBaseChangeOddAssembledEquiv` take exactly the card's own
+data, and every one of their inputs is proved somewhere above.
 
 Separability and the nonsquareness over `E_0` are in
 `GaloisForLFunctions/HTGeometry/GenericPolynomialSeparable.lean`:
@@ -1518,3 +1540,38 @@ dividing the discriminant.
   So of the three group-side inputs of the base change step, `hnorm` is now proved from structure;
   `habel` follows from `commute_quotient_of_le_abelian` with the Kummer factor, and `hcyc` from
   `commute_gal_XPowSubC`.
+
+- 2026-08-01 — `IntersectionAbelian.lean` discharges `habel`.  `commute_gal_inf`: restriction from a
+  normal subextension to a normal subextension of it is surjective, so the intersection of two
+  normal subextensions inherits a commutative automorphism group from the second factor alone.
+  `commute_quotient_comap_inf` then reads the intersection inside the first factor — through the
+  Galois correspondence `IsGalois.fixedField_fixingSubgroup` and the corpus's `comapValEquiv` — and
+  passes to the quotient, which is exactly the base change step's abelian-quotient hypothesis.
+  Axioms `[propext, Classical.choice, Quot.sound]`.
+  Two instance traps worth recording, both costing a build each.  Introducing
+  `Algebra (E ⊓ M) M` by hand and then asking for the scalar tower fails in the **kernel**: the
+  tower found refers to `extendScalars`, not to the hand-made algebra, so the two do not match.
+  Passing `extendScalars` itself as the larger field avoids the diamond, at the price of one
+  `inferInstanceAs` for its normality.  And the quotient's multiplication needs the normality
+  instance already at statement-elaboration time, so it must be an explicit hypothesis of the
+  theorem, not a `haveI` in the proof — which is why the corpus's own base change steps take
+  `hnorm` explicitly.
+  All three group-side inputs are now proved: `hnorm`, `habel`, and `hcyc` from
+  `commute_gal_XPowSubC`.
+
+- 2026-08-01 — `PolynomialBaseChangeAssembled.lean`: `polyBaseChangeEvenAssembledEquiv`, the card's
+  `(3)` for even `n` with **every** group-side hypothesis discharged.  Normality of the fixing
+  subgroup comes from normality of the two root fields; the abelian quotient comes from cyclicity of
+  the second factor's automorphism group (cyclic gives commutative, so `habel` need not be assumed
+  separately); and normality of the ambient field is derived from its being the splitting field of
+  the product.  What the caller supplies is exactly the card's own data: the symmetric-group
+  identification for the first factor, cyclicity of the second, the generator with its degree, the
+  discriminant square root, and the square-class computation.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+
+- 2026-08-01 — `polyBaseChangeOddAssembledEquiv` added alongside the even one, so both branches of
+  `(3)` now exist in fully-assembled form.  The odd branch needs no square-class computation at all:
+  cyclicity of the second factor supplies the abelian quotient, normality of the two root fields
+  supplies the normal fixing subgroup, and odd degree excludes the square root.  Its whole input is
+  the symmetric-group identification, cyclicity, and the parity of the degree.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
