@@ -178,6 +178,26 @@ theorem pow_mul_eq_invNumerator_eval_of_lt (u g : ℕ → R) (a : R) {L : ℕ} (
             = u (j + 1) * a ^ j * (a ^ (k - j + 1) * g (k - j)) := by rw [hsplit]; ring
           _ = u (j + 1) * a ^ j * (invNumerator u (k - j)).eval a := by rw [hIH]
 
+/-- **The numerators drop a degree.**  The `k`-th numerator has degree at most `k - 1`, not merely
+`k`: every term of the recursion pairs a shift `X ^ i` with a numerator of index `k - 1 - i`.
+
+For the depth-one fibre equation this is the vanishing of the next-to-leading coefficient — the
+equation is already centred, with no term of degree one below the top. -/
+theorem natDegree_invNumerator_succ_le {R : Type*} [CommRing R] (u : ℕ → R) (k : ℕ) :
+    (invNumerator u (k + 1)).natDegree ≤ k := by
+  rw [invNumerator_succ, Polynomial.natDegree_neg]
+  refine Polynomial.natDegree_sum_le_of_forall_le _ _ fun i hi => ?_
+  rw [Finset.mem_range] at hi
+  refine le_trans (Polynomial.natDegree_mul_le) ?_
+  have hxi : ((X : R[X]) ^ i).natDegree ≤ i := by
+    calc ((X : R[X]) ^ i).natDegree ≤ i * (X : R[X]).natDegree := Polynomial.natDegree_pow_le
+      _ ≤ i * 1 := Nat.mul_le_mul_left i Polynomial.natDegree_X_le
+      _ = i := by omega
+  have h1 : (C (u (i + 1)) * (X : R[X]) ^ i).natDegree ≤ i :=
+    le_trans (Polynomial.natDegree_C_mul_le _ _) hxi
+  have h2 := natDegree_invNumerator_le u (k - i)
+  omega
+
 /-! ## The second unknown -/
 
 section SecondUnknown

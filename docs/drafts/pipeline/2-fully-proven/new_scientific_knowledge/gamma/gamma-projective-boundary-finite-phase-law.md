@@ -501,6 +501,20 @@ Primary sources:
 - F. Lue, S. Jiang, W. Lue, *On algebraic independence of Dirichlet series and the Euler gamma
   function*, Ramanujan J. 67 (2025), article 96, DOI `10.1007/s11139-025-01143-1`.
 
+## 9b. Name audit of the Lean gate
+
+Every Lean theorem this card names in bold — 286 identifiers — was checked against the corpus by
+extracting the declarations of `formal/GaloisForLFunctions` in one pass and matching each claimed
+name (full name and last component, to allow namespaced declarations and dot notation).  **All 286
+exist.**  The
+formal lint gate forbids any active `sorry`, `admit`, `axiom`, `opaque` or `unsafe` declaration, and
+every capstone listed above was additionally checked with `#print axioms`, returning only
+`propext, Classical.choice, Quot.sound`.
+
+So the card's Lean claims are not aspirational text: each names a declaration that exists and is
+unconditional.  What the audit does *not* certify is that the informal English of each claim matches
+its Lean statement — that is what the remaining "independent expert proof audit" gate is for.
+
 ## 10. Lean status
 
 `formal/GaloisForLFunctions/HTGeometry/GammaProjectiveBoundary.lean` now proves unconditionally:
@@ -889,7 +903,8 @@ computation returns the corresponding weighted partial sum of the Bohr–Fourier
 `M_u(f(u+t)·K(u)) = ∑_i c_i a_f(μ_i) e^{iμ_i t}` (`bohrMean_translate_mul_trigKernel`).  Every such
 convolution is therefore a trigonometric polynomial with exactly the right coefficients
 (`bohrCoefficient_trigKernel_convolution`); what remains for the approximation theorem is only the
-choice of weights making these polynomials converge uniformly to `f`.  In particular
+choice of weights making these polynomials converge uniformly to `f`.  (That choice is now made:
+`exists_trigPoly_spectrum_approx`, below.)  In particular
 `bohrMean_translate_mul_trigKernel_eq_zero`: if every Bohr coefficient vanishes then every such
 convolution vanishes identically — the uniqueness theorem is exactly the missing approximation step
 away.
@@ -904,9 +919,64 @@ the double sum carry zero frequency, and there are `N+1` of them).  Convolving `
 of `f` along `βℤ`**: a genuine trigonometric polynomial whose coefficients are the Bohr coefficients
 of `f` at the frequencies `(j−k)β`, weighted by `1/(N+1)`.
 
-What remains for the approximation theorem — and hence for uniqueness, the general product rule and
-the nonlinear case of eq. (9) — is the uniform convergence of these Fejér means, together with the
-multi-dimensional (rationally independent basis) version of the kernel.
+*(Historical: the approximation theorem, uniqueness and the product rule were completed by the
+Peter–Weyl/Stone–Weierstrass route — `exists_char_combination_approx`, `exists_trig_approx`,
+`eq_zero_of_bohrCoefficient_eq_zero`, `BohrFrequencyModuleProduct` — so the Fejér route is no longer
+needed for them.  It remains the route to approximation with frequencies in the **spectrum** rather
+than in the frequency group.)*
+
+The first step of that route is now proved.  `HTGeometry/BohrLatticeAlmostPeriod.lean`:
+
+> **`norm_translate_sub_le_of_freq_lattice`**: if every hull frequency of `f` lies in `βℤ`, then every
+> translation by the dual lattice `(2π/β)ℤ` moves `f` by at most twice the approximation error.
+
+Every approximating character is fixed by such a translation — its frequency times the translation is
+an integer multiple of `2π` — so `f` is moved only by the two approximation errors.  That is exactly
+what makes the Fejér kernel on `βℤ`, whose peaks sit on the dual lattice, an approximate identity for
+such an `f`: at the peaks the function barely moves, and off them the kernel is small
+(`fejerKernel_norm_le_of_cos_le`).
+
+The two statements are joined by `HTGeometry/CosineLatticeDistance.lean`:
+
+> **`exists_int_abs_sub_two_pi_mul_le`**: `1 − cos θ ≤ c` forces `θ` to lie within `π√(c/2)` of
+> `2πℤ`.
+
+(`1 − cos θ = 2 sin²(θ/2)`, and Jordan's inequality `2x/π ≤ sin x` on `[0, π/2]` converts the sine
+bound into a distance bound, after reducing `θ` modulo `2π` by rounding.)  The kernel's smallness
+criterion is stated through the cosine and its peaks live on the dual lattice; this is the conversion
+between the two, and with it the pointwise bound `K_N·‖f(t+u) − f(t)‖ ≤ K_N·(2ε + ω(δ)) + 2‖f‖·B_N`
+needs no cutoff function — which is what makes the Bohr mean of the estimate available.
+
+Taking that mean needs monotonicity, which `HTGeometry/BohrMeanMonotone.lean` supplies:
+
+> **`bohrMean_le_bohrMean`** — window averages over `[0,T]` are monotone in the integrand and the mean
+> is their limit, so `g ≤ h` pointwise forces `M(g) ≤ M(h)` for almost periodic `g, h`; and
+> `bohrMean_nonneg` for the nonnegative case.
+
+The same file proves the other half of the transfer: **`norm_bohrMean_le_bohrMean_norm`**, that
+`‖M(g)‖ ≤ M(‖g‖)` (the norm of a window average is at most the window average of the norm, and both
+converge), with `isBohrAlmostPeriodic_norm` — the norm of an almost periodic function is almost
+periodic — supplying the mean on the right.  The corpus previously had only the cruder
+`norm_bohrMean_le`, which bounds `‖M(g)‖` by a *uniform* bound on `g`; that is too weak here, since
+the Fejér kernel's supremum grows with `N`.  `bohrMean_ofReal` and `isBohrAlmostPeriodic_ofReal`
+complete the bookkeeping: the kernel is real and nonnegative, so its mean may be computed in `ℝ`
+where the monotonicity lives and transported to `ℂ` where the convolution lives.  The real-valued
+linearity the estimate needs — `bohrMean_const_real`, `bohrMean_const_mul_real`,
+`bohrMean_add_const_real` — is proved there too; the corpus's existing linearity lemmas
+(`bohrMean_add`, `bohrMean_sub`, `bohrMean_const_mul`) are all complex-valued.
+
+With the kernel's mean equal to one (`bohrMean_fejerKernel`) the estimate becomes
+`‖K_N * f(t) − f(t)‖ ≤ 2ε + ω(δ) + 2‖f‖·B_N`, and `tendsto_fejerBound` sends the last term to zero.
+
+The estimate itself is `HTGeometry/BohrFejerPointwise.lean`:
+
+> **`fejer_pointwise_bound`**: for every `t` and `u`,
+> `K_N(u)·‖f(t+u) − f(t)‖ ≤ K_N(u)·(2ε + ω) + 2‖f‖·2/((N+1)c)`.
+
+The proof is the two-case split with no cutoff: if `cos(βu) ≤ 1 − c` the kernel is at most
+`2/((N+1)c)` (`fejerKernel_norm_le_of_cos_le`) and the increment at most `2‖f‖`; otherwise
+`exists_int_abs_sub_two_pi_mul_le` puts `u` within `ρ` of a dual-lattice point, where
+`norm_translate_sub_le_of_freq_lattice` gives `2ε` and the modulus of continuity gives `ω`.
 
 `formal/GaloisForLFunctions/HTGeometry/BohrFejerConcentration.lean` supplies the third
 approximate-identity property, **concentration**.  Summing the geometric series
@@ -921,6 +991,114 @@ The Fejér kernel is therefore a genuine approximate identity on the progression
 of mean one, and uniformly small away from its peaks.  The remaining step is the multi-dimensional
 kernel over a rationally independent frequency basis, whose peaks are almost periods of `f`, and the
 resulting uniform convergence.
+
+### The one-dimensional Bochner–Fejér theorem is closed
+
+`formal/GaloisForLFunctions/HTGeometry/BohrFejerConvergence.lean` averages the pointwise estimate and
+so completes the convergence step on a single progression:
+
+> **`norm_bohrMean_fejer_sub_le`**: if every hull frequency of `f` lies in `βℤ`, then
+> `‖M_u(K_N(u)·f(t+u)) − f(t)‖ ≤ 2ε + ω + 2‖f‖·2/((N+1)c)` for every `t`,
+
+with `ε` the almost-period tolerance, `ω` the modulus of continuity on the scale `ρ`, and `c` any
+concentration level compatible with `ρ` through `π√(c/2) ≤ |β|ρ`.  The mechanism: the kernel has mean
+one, so `M(K·f(t+·)) − f(t) = M(K·(f(t+·) − f(t)))` (`bohrMean_sub`, `bohrMean_const_mul`,
+`bohrMean_fejerKernel`); `norm_bohrMean_le_bohrMean_norm` passes to the mean of the norm;
+`fejer_pointwise_bound` bounds the integrand; and `bohrMean_le_bohrMean` integrates the bound, whose
+mean is computed by `bohrMean_const_mul_real`, `bohrMean_add_const_real` and the kernel's mean one.
+The two supporting facts about the kernel that the mean calculus needs are proved in the same file —
+**`isBohrAlmostPeriodic_fejerKernel`** (it is a trigonometric polynomial, by `fejerKernel_eq_sum`),
+and its real form's continuity, almost periodicity and unit mean (**`continuous_fejerKernelReal`**,
+**`isBohrAlmostPeriodic_fejerKernelReal`**, **`bohrMean_fejerKernelReal`**).
+
+`formal/GaloisForLFunctions/HTGeometry/BohrFejerPolynomial.lean` then identifies *what* the Fejér mean
+is and draws the approximation theorem in the form the rank estimates need — with frequencies in the
+**spectrum**, not merely in the frequency group:
+
+> **`bohrMean_fejerKernel_translate`**: `M_u(K_N(u)·f(t+u)) = ∑_p ((N+1)⁻¹·a_f(μ_p))·e^{iμ_p t}` over
+> the index square, `μ_p = (p₂ − p₁)β`.
+>
+> **`exists_spectrum_trigPoly_of_coeff_sum`**: any trigonometric sum whose coefficients carry a factor
+> `a_f(μ)` regroups onto a finite set of *distinct* frequencies all lying in `bohrSpectrum f`.
+>
+> **`exists_trigPoly_spectrum_approx_lattice`**: if every hull frequency of `f` lies in `βℤ`, then for
+> every `δ > 0` there are a finite `S ⊆ bohrSpectrum f` and coefficients with
+> `‖f(t) − ∑_{λ∈S} a_λ e^{iλt}‖ ≤ δ` for all `t`.
+
+The first is `bohrMean_translate_mul_trigKernel` (`BohrConvolution.lean`) applied to the kernel's
+expansion, after `expChar_eq_bohrChar` converts the characters.  The second is a fibrewise regrouping
+(`Finset.sum_fiberwise_of_maps_to`) followed by deletion of the frequencies where `a_f` vanishes —
+those contribute a zero coefficient.  The third fixes the free parameters of the convergence bound
+against `δ`: uniform continuity supplies `ρ` and `ω = δ/3`, the compatibility `π√(c/2) ≤ |β|ρ` is met
+with equality by `c = 2(|β|ρ/π)²`, and `N` is chosen with `(N+1) > 12‖f‖/(δc)` to make the tail
+`δ/3`.
+
+### The Bochner–Fejér approximation theorem, in full
+
+The general case — no hypothesis on the frequencies at all — is now proved, and with the sharp
+conclusion.
+
+> **`exists_trigPoly_spectrum_approx`** (`HTGeometry/BohrBochnerFejerApprox.lean`): for an almost
+> periodic `f` and every `δ > 0` there are a finite `S ⊆ bohrSpectrum f` and coefficients `a` with
+> `‖f(t) − ∑_{λ∈S} a_λ e^{iλt}‖ ≤ δ` for every `t`.
+
+The route is the classical one, and it does *not* go through the one-progression convergence bound.
+Peter–Weyl (`exists_trig_approx`) supplies a trigonometric approximant `P` with no control on its
+frequencies; the Bochner–Fejér operator `T_N g(t) = M_u(g(u+t)K_N(u))` then repairs the frequencies
+without spoiling the approximation, because:
+
+1. **it is a contraction** — `norm_bohrMean_translate_mul_multiFejerKernel_le`: the kernel is
+   nonnegative with mean one, so `‖T_N g‖ ≤ sup‖g‖`.  The real form of the kernel and its unit mean
+   are proved in the same file (`multiFejerKernelReal`, `bohrMean_multiFejerKernelReal`), together
+   with the descent lemmas `continuous_of_ofReal`, `isBohrAlmostPeriodic_of_ofReal`;
+2. **it acts diagonally on characters** — `bohrMean_translate_expChar_mul_multiFejerKernel`:
+   `T_N(e^{iλ·}) = W·e^{iλ·}` for `λ = ∑_i m_iβ_i` an integer combination of the `ℚ`-independent
+   base, with `W = ∏_i(1 − |m_i|/(N_i+1))` the classical **Fejér multiplier** (`fejerMultiplier`).
+   This is proved in `HTGeometry/BohrMultiFejerMultiplier.lean` by counting the kernel frequencies
+   that contribute: rational independence forces `∑_j(b_j−a_j)β_j = ∑_j m_jβ_j` to hold coordinatewise
+   (`multiFejer_fibre_iff`), so the fibre is a product of one-dimensional fibres, each of cardinality
+   `N+1−|m|` (`card_fejerFibre`);
+3. **its multipliers tend to one** — `fejerMultiplier_nonneg`, `fejerMultiplier_le_one` and
+   `one_sub_fejerMultiplier_le`: `1 − ∏_i x_i ≤ ∑_i(1 − x_i)` for `x_i ∈ [0,1]`
+   (`one_sub_prod_le_sum_one_sub`), so the defect is at most `∑_i |m_i|/(N_i+1)`;
+4. **its output is spectral** — the corpus's `bohrMean_translate_mul_multiFejerKernel` writes `T_N f`
+   as a trigonometric polynomial each of whose coefficients carries a factor `a_f(μ)`, and
+   `exists_spectrum_trigPoly_of_coeff_sum` regroups it onto distinct frequencies in the spectrum.
+
+The missing input for step 2 was a **rational base**: `HTGeometry/RationalBasisIntegerCombination.lean`
+proves **`exists_ratBasis_int_combination`** — any finite family of reals consists of *integer*
+combinations of a finite `ℚ`-linearly independent family.  A maximal independent subfamily is
+extracted with `exists_linearIndependent`, each member is written over it with rational coefficients
+(`Submodule.mem_span_range_iff_exists_fun`), and the base is divided by the product of the
+denominators (`exists_int_nat_mul`), which preserves independence (`linearIndependent_const_mul`).
+
+The assembly is then `‖f − T_N f‖ ≤ ‖f − P‖ + ‖P − T_N P‖ + ‖T_N(P − f)‖ ≤ δ/3 + δ/3 + δ/3`, with the
+orders `N` chosen large enough that the multiplier defect times the coefficient mass is below `δ/3`
+(`bohrMean_translate_trigPoly_mul_multiFejerKernel` computes the middle term exactly).
+
+This closes the first of the two "remaining classical theorems" of §6 in its strong form: not merely
+approximation by trigonometric polynomials, but approximation **supported on the spectrum**, which is
+what the frequency-module and rank estimates consume.
+
+### Parseval's identity and countability of the spectrum
+
+`HTGeometry/BohrParsevalIdentity.lean` completes the mean-square half of the same circle.
+
+> **`sum_normSq_bohrCoefficient_le`** (Bessel): every finite partial sum `∑_{λ∈S}|a_f(λ)|²` is at
+> most the mean square `M(|f|²)`.
+>
+> **`hasSum_normSq_bohrCoefficient`** (Parseval): the family `λ ↦ |a_f(λ)|²` is unconditionally
+> summable with sum exactly `M(|f|²)`; `tsum_normSq_bohrCoefficient` is the `∑'` form.
+>
+> **`countable_bohrSpectrum`**: the Bohr spectrum of an almost periodic function is countable.
+
+Bessel is the completed square of the corpus's error expansion `bohrMean_sub_trigPoly_mul_conj` at
+the true coefficients, whose remainder is a mean of `|·|²` and hence nonnegative
+(`bohrMean_mul_conj_re_nonneg`).  The corpus's `exists_finset_bohrMean_normSq_le` supplies partial
+sums within `ε` of the mean square, so the mean square is the least upper bound of the partial sums,
+and for a nonnegative family that is exactly `HasSum` (`hasSum_of_isLUB_of_nonneg`).  Countability of
+the spectrum is then the countability of the support of a summable family — the fact that makes
+"the frequency module is countably generated" legitimate.
 
 `formal/GaloisForLFunctions/HTGeometry/BohrMultiFejerKernel.lean` builds the **multi-dimensional
 Fejér kernel** — the product of one-dimensional kernels over a finite family of base frequencies,
@@ -1289,9 +1467,30 @@ them in mathlib.
    *equivalent* to it, and every attempt to route around it closed back on itself (the Fejér mass
    estimate needs a Bohr set inside the almost periods, which is exactly the statement that the
    characters generate the hull topology; the autocorrelation route needs `φ(0) = ∑ c_λ(φ)`, which
-   is Parseval).  What remains on this side is the *transfer*: apply it to `BohrHull f`, whose
-   compact-group instances are already available, and conclude by Stone–Weierstrass that `f` is a
-   uniform limit of trigonometric polynomials with frequencies in `bohrHullFrequencies f`.
+   is Parseval).  The first half of the transfer is now done in
+   `HTGeometry/BohrHullCharacterSeparation.lean`:
+
+   > **`exists_bohrHullChar_ne`**: two distinct points of the hull are separated by one of the
+   > *frequency* characters `bohrHullChar f μ`, `μ` a hull frequency.
+
+   Peter–Weyl gives some continuous character telling the points apart; its restriction to the line
+   is a continuous unimodular character, hence `t ↦ e^{iμt}` by
+   `exists_real_generator_of_continuous_unimodular_character`; `μ` is a hull frequency because a
+   continuous function on the compact hull is uniformly continuous; and the character *is*
+   `bohrHullChar f μ`, both being continuous and agreeing on the dense image of the line.
+
+   The Stone–Weierstrass step itself was already in the corpus
+   (`CompactAbelianStoneWeierstrass.charSubalgebra_topologicalClosure_eq_top`,
+   `exists_char_combination_approx`), and with it `BohrApproximation.exists_trig_approx` and the
+   uniqueness theorem `BohrUniqueness.eq_zero_of_bohrCoefficient_eq_zero` — so this bullet's
+   "what remains" was stale.  What the new module adds is the *frequency* refinement:
+
+   > **`exists_trig_approx_hullFreq`**: the approximating trigonometric polynomial can be taken with
+   > all its frequencies in `bohrHullFrequencies f`.
+
+   Each approximating character extends continuously to the compact hull, hence is uniformly
+   continuous there, hence its generator is a hull frequency — which is the form of the statement the
+   rank bounds consume.
 `formal/GaloisForLFunctions/HTGeometry/CoveringDimensionEmbedding.lean` takes the first step on the
 topological side, building on the corpus's existing `CoveringDimension` file (`HasCoverDimLE`):
 `hasCoverDimLE_of_continuous_injective` — a continuous injection of a *compact* space into a
@@ -1462,7 +1661,8 @@ using that a `ℤ`-independent family in `ℝ` is `ℚ`-independent:
 **`rank_bohrHullFrequencies_le_two_mul`** — a continuous injective jet-sample map into `ℂ^N` bounds
 the rational rank of the frequency group by `2N` — and the closed-embedding form.  This is exactly
 `rank_Q Γ_B(f) ≤ 2m(n+1)`, eq. (7)/(9), with the only remaining input being injectivity of the jet
-sample (the analytic implicit-function step, eq. 19).
+sample (the analytic implicit-function step, eq. 19).  (That input is now proved as well —
+`hull_injective_of_circleJetSample` and `rank_le_of_separant_jet_relation`, below.)
 
 `HTGeometry/BohrReturnSequence.lean` discharges the diagonal choice of return times used at eq. (28).
 `isBohrAlmostPeriodic_fin` says a finite family of almost periodic functions is almost periodic as a
@@ -1599,7 +1799,37 @@ relation uses complex derivatives — and `HTGeometry/LineJetPolynomialTwist.lea
 jet (`iteratedDeriv_line_restriction`), the relation `P(complex jets) = 0` on the strip becomes
 `(scaleVars (fun k => (i^k)⁻¹) P)(line jets) = 0` at every point of the line.  So the line restriction
 of a solution satisfies a polynomial relation of the same shape, of the same nontriviality, in the
-jets the ODE uniqueness theorems use.  Note that **this card's finite-rank conclusion does
+jets the ODE uniqueness theorems use.  The same file proves `hasDerivAt_iteratedDeriv_line`: every
+iterated derivative of the line restriction is again differentiable with the expected derivative — the
+smoothness those theorems require.
+
+`HTGeometry/JetSampleSeparation.lean` closes the branch:
+
+> **`eqOn_of_jet_eq_of_separant`**: two functions holomorphic on the strip, satisfying the same
+> polynomial relation `Q` in the jets of their line restrictions, whose jets up to order `n` agree at
+> one point `t₀` where the separant of `Q` does not vanish, agree on the whole strip.
+
+The proof is the assembly: `exists_lipschitz_implicit` turns `Q` into an explicit Lipschitz field near
+the common jet and — through its local-uniqueness clause — shows both line restrictions satisfy that
+explicit equation near `t₀`; `eventuallyEq_of_jetVec_eq_at` makes them agree near `t₀`; and
+`eqOn_of_eventuallyEq_line` propagates the agreement to the strip.
+
+The carrier form is proved in the same file:
+
+> **`hull_eq_of_jet_sample_eq`**: for a holomorphic `F` on the strip satisfying a polynomial jet
+> relation `P`, two points of its strip carrier whose representatives have equal jets up to order `n`
+> at one point of the line — at a jet where the separant of the line form of `P` does not vanish — are
+> equal.
+
+Its proof feeds the pieces together: `exists_solution_of_hull` gives each carrier point a
+representative satisfying the same relation and `relation_congr_of_eqOn` moves the relation to any
+other representative of the same point (two representatives agree on the substrip, and iterated
+derivatives are local); `eval_scaleVars_line` converts the relation to the line jets;
+`eqOn_of_jet_eq_of_separant` identifies the two representatives; and `hull_eq_of_line_eq` identifies
+the carrier points.  That is the injectivity of the jet sample of eq. (15)/(18), which is the input
+`rank_frequencies_le_of_vertical` consumes.
+
+Note that **this card's finite-rank conclusion does
 not depend on it**: `rank_finite_of_polynomial_relation` takes an arbitrary nonzero polynomial jet
 relation on the strip with no injectivity hypothesis, and that is the route
 `finite_phase_law_of_gammaField_relation` uses.  The jet-embedding route is the companion card's
@@ -1625,7 +1855,47 @@ Since `r/r' < 1`, that bound tends to `0` with `ε`, which is
 
 So the line pseudometric and the substrip pseudometric induce the *same* uniform structure on the
 translation parameter, and the phase carrier of the line restriction and the carrier of the strip
-translate curve are the same compact group.  This is exactly what the card's §8 attack (5) says
+translate curve are the same compact group.  That identification is now a Lean object,
+`HTGeometry/StripLineCarrierEquiv.lean`: `dist_line_le_dist_strip` gives the easy inequality (the
+central line lies in the substrip), `uniformContinuous_bohrLine_to_strip` the hard one (the
+three-lines bound `exists_delta_strip_of_line` turns a line tolerance into a substrip tolerance, and
+`dist_stripCurve_eq` says the substrip orbit distance is the value distance), hence
+
+> **`stripLineUniformEquiv`** — the identity of the translation parameter is a uniform equivalence of
+> the two Bohr lines — and **`stripLineHullEquiv`**, the induced uniform equivalence of the two
+> carriers, obtained by completing it.
+
+The jet sample itself is made continuous in `HTGeometry/CircleJetSample.lean`.  A carrier point *is*
+its values on the closed substrip, and Cauchy's formula expresses a derivative by those values:
+`circleJetSample z₀ ρ hball k u` is the contour integral of `u` against the kernel
+`1/(z − z₀)^{k+1}` around a circle inside the substrip.  Then
+
+> **`lipschitzWith_circleJetSample`**: the sample is Lipschitz in the carrier point (the kernel is
+> bounded on the circle, so the integral is a bounded functional of the sup norm), and
+> **`circleJetSample_eq_iteratedDeriv`**: for a point represented by a holomorphic function on the
+> disc, the sample *is* the `k`-th derivative at the centre.
+
+So the finite jet sample of eq. (15) is a continuous map from the carrier to `ℂ^{n+1}`, and
+
+> **`hull_injective_of_circleJetSample`**: where the separant does not vanish, two carrier points
+> with the same sampled jets are equal.
+
+Its proof identifies the samples with the complex jets of the carrier points' representatives, twists
+them to line jets by `iteratedDeriv_line_restriction`, and applies `hull_eq_of_jet_sample_eq`.  These
+are the two properties `rank_frequencies_le_of_vertical` requires of a jet sample — continuity and
+injectivity — now both proved for an explicit map, on a carrier identified with the line carrier by
+`stripLineHullEquiv`.
+
+`HTGeometry/JetSampleRankBound.lean` assembles the route:
+
+> **`rank_le_of_separant_jet_relation`**: for `F` holomorphic and strip almost periodic satisfying a
+> polynomial jet relation `P` of order `n`, with a disc inside the substrip around a point `σ+it₀` of
+> the line where the separant does not vanish on carrier points, the rational rank of the frequency
+> group of the line restriction is at most `2(n+1)`.
+
+That is eq. (15)–(22) end to end in Lean: carrier construction in the strip topology, holomorphy of
+carrier points, propagation of the relation, the implicit-function step, jet separation, the contour
+jet sample, the identification of the two carriers, and the dimension/rank bound.  This is exactly what the card's §8 attack (5) says
 compact-open convergence fails to give and what the Bohr strip topology does give: a jet embedding of
 the strip carrier — where jets make sense, the carrier points being holomorphic — is a statement
 about the frequency group of the line restriction, where the rank bound lives.
@@ -3736,21 +4006,17 @@ single nonzero element, no coefficient is lost and none is created.
 This is eq. (3), eq. (19) and eq. (5) of the card in one statement, with every hypothesis discharged
 except those about `Φ` itself.  `#print axioms` clean.
 
-### The generality gap, and how it was closed
+`HTGeometry/GammaFieldLawInstanceFree.lean` removes the last two *instance* hypotheses as well.  The
+rank half of the law is proved through Peter–Weyl on the hull, whose Haar-measure argument carries
+`[MeasurableSpace (BohrHull f)]` and `[BorelSpace (BohrHull f)]` along as instance arguments — never
+an assumption about the problem, since every topological space carries its Borel σ-algebra.  Choosing
+it inside the proof (`letI := borel _`, `haveI : BorelSpace _ := ⟨rfl⟩`) yields
 
+> **`finite_phase_law_of_gammaField_relation'`** and
+> **`finite_phase_law_of_gammaField_carrier_relation'`**,
 
-
-### The one remaining generality gap, and the route to it
-
-### The one remaining generality gap, and the route to it
-
-### The one remaining generality gap, and the route to it
-
-### The one remaining generality gap, and the route to it
-
-### The one remaining generality gap, and the route to it
-
-### The one remaining generality gap, and the route to it
+whose hypotheses are about `Φ`, the coefficients and the relation, and nothing else.  Both
+`#print axioms` clean.
 
 ### The one remaining generality gap, and the route to it
 

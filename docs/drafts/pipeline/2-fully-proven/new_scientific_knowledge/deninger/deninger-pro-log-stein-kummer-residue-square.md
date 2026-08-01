@@ -334,3 +334,43 @@ Cartier purity of Deninger's generalized function \([p]\).
 **Verdict:** `FULLY PROVEN ON PAPER; FINITE-PLACE SOURCE RESIDUE
 MORPHISM CONSTRUCTED ON ALL TATE--MILNOR CELLS; ALL-PRIME COMPLETION
 AND REAL SIGNATURE REMAIN OPEN`.
+
+## Lean status
+
+### The residue square landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerFiniteResidueSquare.lean`, with the Fourier input in
+`DeningerFiniteCharacterBasis.lean`.  Axiom audit for all 13 declarations:
+`propext, Classical.choice, Quot.sound` or less.
+
+- `deningerValuation`, `deningerLogDifferential`, `deningerFiniteResidue` — the split log-toric
+  coordinate `(3)`: a lattice vector is its kernel part plus a multiple of the uniformizer, its
+  logarithmic differential is the kernel differential plus that multiple of `dz/z`, and the residue
+  reads the `dz/z` coefficient, which is `(7)`.
+- `deningerFiniteResidue_logDifferential`, `deningerFiniteResidue_comp_logDifferential` — **`(9)`
+  and the commutative square `(10)`**: the residue of `d log χ^a` is `v(a)`, as an identity of maps
+  out of the lattice.  Since the tame residue in degree one *is* the valuation, this is also
+  `(11)`.
+- `deningerFiniteResidue_uniformizer_change` — changing the uniformizer by a kernel vector alters
+  only the kernel component, so the residue is independent of the splitting used in `(3)`.
+- `deningerFiniteResidue_unique` — the characterization behind `(7)`: a functional killing the
+  kernel part and normalizing the uniformizer is the residue.
+- `deningerFiniteResidueGenerator`, `deningerFiniteResidueLift`,
+  `deningerFiniteResidueLift_mul_eq_zero` — specialization plus residue as an algebra map into the
+  split square-zero extension, with products of two positive-degree generators vanishing.  So the
+  two square-zero lifts agree on the whole free unit algebra, not only in degree one, which is what
+  the card needs before invoking the amalgamation universal property.
+- The vanishing of `{-1}` over `ℝ` is `deningerQuadraticCorrection_eq_zero`, and the unique
+  extension through all Steinberg relations and higher cells is the universal property, both in
+  `DeningerAmalgamationUniversalDescent.lean`.
+- The Fourier statement used for the surjectivity of the residue —
+  `Map(Y_{L,v}, ℂ)` is spanned by evaluations at elements of `L̄_v` — is
+  `deningerEvaluation_span` in `DeningerFiniteCharacterBasis.lean`.
+
+### What cannot be stated in Lean, and why
+
+The geometry: the log-toric Stein chart `(2)`--`(3)`, the logarithmic de Rham complex `(6)`, Cartan
+theorem B and the acyclicity/filtered passage `(12)`--`(14)`.  mathlib has no Stein theory, no
+coherent-sheaf cohomology and no logarithmic de Rham complex, so those steps have no formal
+counterpart; the residue square itself is formalized in the split coordinate the card computes in.
+The card therefore stays at stage 2.

@@ -11,7 +11,9 @@
 - **Lean modules:**
   `GaloisForLFunctions.RHTower.DeningerArithmeticCofiniteOpenBaseChange`
   (the quotient/saturated-open topology of clause 3),
-  `GaloisForLFunctions.RHTower.DeningerInvariantRestriction` (the invariant restriction `(5)`)
+  `GaloisForLFunctions.RHTower.DeningerInvariantRestriction` (the invariant restriction `(5)`),
+  `GaloisForLFunctions.RHTower.DeningerCharacterProjectionOpen` (the projection-level content of
+  clauses 1--2)
 
 ## Goal
 
@@ -272,8 +274,10 @@ construction card rather than further work here.
   (`GaloisForLFunctions.RHTower.DeningerArithmeticCofiniteOpenBaseChange`)
 - [x] 2 → 3 formalized, invariant-restriction part `(5)`
   (`GaloisForLFunctions.RHTower.DeningerInvariantRestriction`)
-- [ ] 2 → 3 formalized, clauses 1--2: blocked on Deninger's character space not being
-  constructed in the corpus
+- [x] 2 → 3 formalized, clauses 1--2, projection-level content
+  (`GaloisForLFunctions.RHTower.DeningerCharacterProjectionOpen`)
+- [ ] 2 → 3 formalized, clauses 1--2, identification of Deninger's character space with such a
+  projection: still blocked on that space not being constructed in the corpus
 - [ ] 3 → 4 publication-ready: integrate with analytic purity proof
 
 ## References
@@ -301,3 +305,27 @@ construction card rather than further work here.
   is again invariant, and for `W ⊆ V` the `W`-part of `π⁻¹V` is equivariantly `π⁻¹W`, so
   equivariant sections agree.  Axiom audit shows these use only `propext` and `Quot.sound`, no
   choice.
+
+### Clauses 1--2, projection level
+
+`formal/GaloisForLFunctions/RHTower/DeningerCharacterProjectionOpen.lean` (8 declarations; the
+set-theoretic ones depend on no axioms at all, the topological ones on `propext` alone) formalizes
+everything in clauses 1--2 that does not mention the internal structure of the character space:
+
+- `deningerCharacterOver` — the character space over an arithmetic open, *defined* as the preimage
+  under the projection, which is what Deninger's Lemma 7.1 identifies it with;
+- `deningerCharacterOver_isOpen`, `deningerCharacterOver_mono` — it is open and grows with the
+  open, which is `(3)` and the functoriality in `U_M ⊆ U_N`;
+- `deningerCharacterOver_map_mem`, `deningerCharacterOver_image_subset` — **`(7)`**: a map
+  preserving the projection, such as every Frobenius, preserves it, since it does not move the
+  underlying scheme point;
+- `deningerCharacterOver_smul_mem` — the suspension action preserves it too, whenever the action
+  preserves the projection; this is why the open of clause 2 times `ℝ_{>0}` is saturated;
+- `deningerColimitCharacterOver_isOpen` — **openness in the Frobenius colimit**: if the colimit
+  carries the inductive-limit topology and its projection restricts to the chart projections, then
+  the character space over an arithmetic open is open in the colimit, because in each chart it is
+  the chart-level character space.
+
+What is still quoted from Deninger is only the identification of his `Ṡ(ℂ)` with a space carrying
+such a projection — Lemmas 7.1--7.3 and Proposition 7.4 — which needs that space to be constructed
+in the corpus first.

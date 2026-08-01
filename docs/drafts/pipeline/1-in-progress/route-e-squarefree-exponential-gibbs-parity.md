@@ -993,6 +993,211 @@ does not contract.  A viable seam source must prove signed orthogonality across 
 `sum_p M(X/p)`, or replace the scalar norm by a structure that sees that orthogonality.  Merely
 improving the friable main-term expansion or the PNT error does not cross `(G46o)`.
 
+#### Primitive Gamma/co-Poisson completion of the seam
+
+The supplied source paper suggests a specific non-scalar replacement for the prime tail, but the
+replacement must first be compared to the literal Route E boundary.  Define the divided-log
+prime-power current
+
+```text
+J_z^Gamma(x)
+  =sum_(p>z) sum_(k>=1) (1/k) A_z(p^k x),
+B_z^Gamma(x)=A_z(x)-J_z^Gamma(x).                         (G46q)
+```
+
+This is not an arbitrary smoothing.  Since
+
+```text
+Lambda(p^k)/log(p^k)=1/k,                                 (G46r)
+```
+
+`J_z^Gamma` is the physical Laplace realization of the primitive Euler--Gamma/co-Poisson normal
+current: divide the already formalized confluent interval jet by one additional logarithmic
+action.  Termwise, for every prime `p` and `k>=1`,
+
+```text
+-EulerGammaCoPoissonPrimitiveTerm(p^k,s)
+  =(1/k) LSeries.term(1,s,p^k).                           (G46s)
+```
+
+The completion is source-exact at strict-half scale.  Indeed,
+
+```text
+B_z^Gamma(x)
+ -(A_z(x)-sum_(p>z)A_z(px))
+ =-sum_(p>z)sum_(k>=2)(1/k)A_z(p^k x).                   (G46t)
+```
+
+Absolute convergence permits the displayed rearrangement.  The elementary envelope
+
+```text
+|A_z(y)| <= sum_(m>=1)exp(-my)
+          =1/(exp(y)-1) <= 1/y
+```
+
+then gives, for `z>=1`,
+
+```text
+|right side of (G46t)|
+ <= x^(-1) sum_(p>z)sum_(k>=2)1/(k p^k)
+ <= x^(-1) sum_(n>z)1/(n(n-1))
+ =1/(xz).                                                 (G46u)
+```
+
+On the critical schedule `(G19)`, `z>=x^(-1/2)` once `x<=exp(-4)`, so `(G46u)` is
+`O(x^(-1/2))`; the remaining compact `x`-range is absorbed into the constant.  Consequently the
+original zero/one boundary estimate `(G20)` is equivalent, in both directions, to the same
+strict-half estimate for `B_z^Gamma`.  No zero-free input enters this equivalence.
+
+Mellin transformation on `Re(s)>1` identifies its exact source symbol:
+
+```text
+M[B_z^Gamma](s)
+ =Gamma(s) product_(p<=z)(1-p^(-s))
+    {1-sum_(p>z)sum_(k>=1)1/(k p^(ks))}.                  (G46v)
+```
+
+The bracket is the linearized primitive logarithmic Euler tail
+`1+sum_(p>z)log(1-p^(-s))`.  Thus Route E's hard seam is, up to an already-critical error, the
+primitive Gamma/co-Poisson current native to `main-universal.tex`, before scalarization.  This is
+the first exact provider bridge to that paper; it does **not** supply the missing critical
+orientation or estimate.  The remaining theorem is now sharply typed:
+
+`[RETIRED AS MIS-TYPED: PRIMITIVE-GAMMA-COPOISSON-SEAM-ORIENTATION]` The first formulation asked
+joint Wold breadth and exponent depth to create the missing norm on all of `B_z^Gamma`.  The
+depth audit below shows that this assigns the hard work to the wrong source axis.  Positive depth
+is already contained in the allowed strict-half error; only the depth-zero infinite-breadth face
+remains hard.
+
+Lean module `MobiusGammaCoPoissonPrimePowerBoundary.lean` formalizes `(G46r)`--`(G46t)` at every
+finite prime and exponent aperture, including the exact primitive Gamma/co-Poisson term and the
+pre-scalar small-prime parity boundary.  The analytic estimate `(G46u)` is the elementary
+cofinal passage.  A targeted literature search found explicit formulas for the Möbius discrete
+Laplace transform and standard log-Euler prime-power expansions, but no published coupling of
+this Route E zero/one seam to a primitive Gamma/co-Poisson current; the individual ingredients are
+classical, while the provider equivalence is recorded as project-new synthesis rather than
+claimed independent resolution of RH.
+
+#### Depth-axis hostile audit: Route E is singular only in breadth
+
+At critical half-density, the divided-log Route E atom at valuation depth `e+1` is
+
+```text
+d_(p,e) = p^(-(e+1)/2)/(e+1).
+```
+
+The conditional Gamma valuation atom in the supplied source paper is
+
+```text
+g_(p,e) = p^(-1/2)(1-p^(-1))p^(-e).
+```
+
+Their exact gauge is therefore
+
+```text
+d_(p,e)/g_(p,e)
+  = p^(e/2)/((e+1)(1-p^(-1))).                           (G46w)
+```
+
+This comparison separates the two source axes.  For fixed `p`, `(G46w)` is exponentially
+unbounded with exponent depth, matching the paper's beyond-finite-Rees obstruction.  At depth
+zero, however,
+
+```text
+d_(p,0)/g_(p,0)=1/(1-p^(-1)) in [1,2].                  (G46x)
+```
+
+The entire singular-depth sector `e>=1` is exactly the higher-prime-power difference in `(G46t)`,
+already bounded by `1/(xz)=O(x^(-1/2))` on the critical schedule.  Consequently no proof can cite
+unbounded primitive depth promotion as the mechanism controlling Route E's hard seam: all capacity
+created only at positive depth acts on a sector which the existing absolute remainder estimate
+has already removed.  The unresolved source is the depth-zero prime face
+
+```text
+B_z^(0)(x)=A_z(x)-sum_(p>z)A_z(px),
+```
+
+with infinitely many Wold breadth labels.  Gamma recovery on that face is uniformly bounded by
+`(G46x)`.  The supplied paper's depth singularity remains essential for its full modular source
+problem, but it is not the active singularity of Route E.
+
+`[CONJECTURE: DEPTH-ZERO-WOLD-BREADTH-SEAM-ORIENTATION]` Construct a source-defined,
+cofinally continuous signed orientation on the depth-zero prime face `B_z^(0)` with norm
+`O_epsilon(x^(-1/2-epsilon))`.  It must act across unbounded Wold breadth before the unit
+codiagonal is scalarized, retain the literal small-prime Möbius parity, and fail on Beurling
+prime systems having strict-right zeros.  Positive exponent depth may enter only through the
+already-proved `O(x^(-1/2))` correction; it may not be used as hidden amplification of the hard
+face.
+
+`MobiusGammaCoPoissonDepthZeroReduction.lean` proves `(G46w)` and the uniform prime-fibre
+certificate `(G46x)` unconditionally.  A March 2026 theorem of Tenenbaum
+([paper](https://tenenb.perso.math.cnrs.fr/PPP/On-Mobius-series.pdf)) independently confirms the
+first-breadth phenomenon: the divisor transform of `mu(n) omega(n)` is supported on prime powers,
+and the corresponding `1/n` series has PNT-level cancellation.  That theorem controls one Wold
+normal derivative, not the singular unit response across all breadths required here.  It therefore
+supports the axis diagnosis but does not supply the conjectured orientation.
+
+#### Beurling firewall: local prime geometry is not enough
+
+`[PAPER-PROVED BRIDGE; NOVELTY UNVERIFIED]` The remaining breadth conjecture must now pass a
+strict countermodel test.  Diamond--Montgomery--Vorhauer construct a **discrete** Beurling prime
+system with
+
+```text
+N_P(X)=kappa X+O(X^theta),  1/2<theta<1,
+```
+
+a de la Vallée Poussin-scale PNT, and infinitely many zeta zeros with real part greater than
+`1/2`.  On that same free prime-factor monoid, all local and PNT-level ingredients retained above
+survive:
+
+1. every finite exponential-Gibbs table remains strictly log-submodular and conditionally
+   two-prime Rayleigh, since the proof uses only `(r-1)(s-1)>0`;
+2. unique factorization gives the identical zero/one-large-prime decomposition;
+3. `N_P(X)=kappa X+O(X^theta)` bounds the sector with at least two primes above `z` by
+   `O(x^(-1/2))` whenever `xz^2>=(1/2)log(1/x)`;
+4. PNT partial summation gives the same unique transition
+   `z tau_z/log z -> 1` and the same scalar renewal barrier;
+5. `Lambda_P(p^k)/log|p^k|=1/k`, and after deleting finitely many initial primes the depth-zero
+   Gamma gauge remains in `[1,2]`.
+
+Nevertheless its Möbius--Laplace transform cannot obey an `O(x^(-a))` bound for any
+`a<Re rho` at a strict-right zero `rho`: Mellin transformation would continue
+`Gamma(s)/zeta_P(s)` holomorphically through its pole.  Since the higher-large-prime remainder is
+already `O(x^(-1/2))`, the zero/one boundary fails the same bound.
+
+Thus the exact axiom package
+
+```text
+prime-factor monoid + PNT + local Gibbs/Rayleigh geometry
++ critical zero/one aperture + scalar renewal
++ divided-log Gamma completion + bounded depth-zero gauge
+```
+
+has a strict-right-zero model.  It cannot imply `(G20)`.  A viable Wold-breadth orientation must
+use an ordinary-integer-specific discriminator absent from that model: the additive lattice,
+its archimedean functional equation/co-Poisson reflection, or an equivalent global invariant.
+Calling the missing discriminator “integer arithmetic” is not progress; the next conjecture must
+name it and derive a quantitative source estimate from it.
+
+Complete theorem and proof:
+`../2-fully-proven/route-e-beurling-local-axiom-firewall.md`.
+
+The firewall is sharp at the generalized-integer counting threshold.  Zhang constructs, after
+any prescribed finite ordinary-prime prefix, a discrete dyadic-rational Beurling system satisfying
+
+```text
+N_P(X)=X+X^(1/2) exp(O((log X)^(2/3))),
+```
+
+whose zeta function continues analytically through `Re(s)>1/2` apart from the pole at one, yet has
+infinitely many zeros on `Re(s)=1-1/log|t|`.  Since this error is
+`O_delta(X^(1/2+delta))`, the same critical higher-large-prime remainder proof applies; the Mellin
+argument then rules out every `O(x^(-a))` seam bound with `1/2<a<Re(rho)`.  Therefore neither
+near-critical integer counting, strict-half continuation, nor agreement with arbitrarily much
+finite ordinary-prime data is the missing discriminator.  It must consume exact all-scale
+additive self-duality, not an asymptotic or finite approximation to it.
+
 Integer-level collisions admit an exact incidence lift.  If a squarefree target `m` has
 `r=omega(m)` prime factors, it has exactly `binom(r,k)` choices of a `k`-factor replacement label.
 Give every lifted copy `(m,Q)` the capacity
@@ -1374,3 +1579,120 @@ Lean modules:
   noninteger `u`.  Friable bias must be cancelled across the smooth/rough seam, not bounded
   separately.  Critical aperture approaches the integer seam `u=2`; strict-half control of its
   beyond-all-orders zero/one-sector remainder is still literal `OPEN-SOURCE-001`.
+- 2026-08-01 — completed the first exact provider bridge from Route E to the supplied
+  Gamma/co-Poisson source.  Adjoining every higher prime power with coefficient `1/k` changes the
+  zero/one boundary by at most `1/(xz)=O(x^(-1/2))` on the critical aperture, hence preserves the
+  strict-half problem exactly.  The completed tail is the primitive Gamma/co-Poisson confluence
+  current `Lambda(p^k)/log(p^k)=1/k`; its finite pre-scalar identity is Lean-proved in
+  `MobiusGammaCoPoissonPrimePowerBoundary.lean`.  The bridge relocates, but does not assume, the
+  remaining signed orientation theorem.
+- 2026-08-01 — hostile source-alignment audit separated exponent depth from Wold breadth.  The
+  exact Gamma-to-divided-log gauge is `p^(e/2)/((e+1)(1-p^(-1)))`; it is uniformly in `[1,2]` at
+  depth zero and singular only for positive depth.  Positive depth is precisely the already
+  admissible `O(x^(-1/2))` higher-prime-power correction.  Retired the mis-typed joint-axis
+  orientation target and replaced it by `DEPTH-ZERO-WOLD-BREADTH-SEAM-ORIENTATION`.
+  `MobiusGammaCoPoissonDepthZeroReduction.lean` formalizes the exact axis separation
+  unconditionally.
+- 2026-08-01 — proved the Beurling local-axiom firewall.  A discrete
+  Diamond--Montgomery--Vorhauer system retains the finite Gibbs Rayleigh/log-submodular law,
+  PNT-scale critical transition, zero/one decomposition with critical higher-sector remainder,
+  scalar-renewal barrier, divided-log Gamma completion, and bounded depth-zero gauge, while its
+  zeta function has infinitely many strict-right zeros.  Mellin continuation forces the
+  corresponding zero/one seam to violate every exponent below such a zero.  Therefore those
+  local/PNT/Gamma inputs cannot produce Route E; the next breadth conjecture must use a named
+  ordinary-integer-specific additive or archimedean discriminator.  Full paper proof:
+  `../2-fully-proven/route-e-beurling-local-axiom-firewall.md`.
+
+## Exact ordinary-lattice successor: rough-composite Lambert image
+
+`[PAPER-PROVED BRIDGE; NOVELTY UNVERIFIED]`  The first named discriminator surviving the
+Beurling firewall is the ordinary integer dilation lattice itself.  Let
+
+\[
+{\cal L}f(x)=\sum_{k\ge1}f(kx)
+\tag{G47}
+\]
+
+and retain the fixed-aperture depth-zero boundary
+
+\[
+B_z^{(0)}(x)=A_z(x)-\sum_{p>z}A_z(px).
+\tag{G48}
+\]
+
+Absolute convergence permits product-index regrouping.  If
+\[
+P^-(n)>z
+\quad\Longleftrightarrow\quad
+p\mid n\Longrightarrow p>z
+\]
+with the convention that \(1\) is \(z\)-rough, then
+
+\[
+{\cal L}B_z^{(0)}(x)
+=e^{-x}
+-\sum_{\substack{n\ge2,\ P^-(n)>z\\\omega(n)\ge2}}
+   (\omega(n)-1)e^{-nx}.
+\tag{G49}
+\]
+
+Indeed, the coefficient of \(e^{-nx}\) after Lambert dilation is the divisor sum of the
+zero/one-large-prime coefficient.  If \(n\) has a prime factor at most \(z\), Boolean
+inclusion--exclusion over its small-prime support makes that divisor sum zero.  If \(n\) is
+\(z\)-rough, only the divisor \(1\) and the \(\omega(n)\) squarefree prime divisors occur in the
+zero/one coefficient, giving \(1-\omega(n)\).  Thus every rough prime-power fibre is annihilated
+exactly; only genuinely transverse rough support remains, with one fixed sign.
+
+Write the positive tail in `(G49)` as \(C_z(x)\).  Since
+\(\omega(n)\le\log n/\log2\), every term has \(n>z^2\), and elementary geometric-tail
+summation gives, uniformly for \(0<x\le1\),
+
+\[
+C_z(x)
+\ll e^{-xz^2}x^{-1}
+   \bigl(\log(1/x)+xz^2+1\bigr).
+\tag{G50}
+\]
+
+On `(G19)`, this is
+
+\[
+C_z(x)=O\!\left(x^{-1/2}\log(1/x)\right)
+       =O_\varepsilon(x^{-1/2-\varepsilon}).
+\tag{G51}
+\]
+
+Consequently the complete ordinary-lattice image of the hard boundary is already at the required
+strict-half scale and has a positive normal form.  Missing arrow is now exact:
+
+```text
+positive rough-composite defect (G49)--(G51)
+  -- singular inverse of ordinary Lambert dilation -->
+depth-zero Wold-breadth boundary B_z^(0).
+```
+
+This is not a proof of the inverse estimate.  The limiting datum \(e^{-x}\) has inverse
+\(\Phi(x)\), and bounded inverse control at every strict-half weight is the reciprocal-zeta/RH
+problem.  Hence generic Lambert inversion, a positive-cone Tauberian bound, or a bounded
+finite-prefix-stable inverse would merely assume `OPEN-SOURCE-001`.  A survivor must exploit the
+specific co-moving rough tail in `(G49)` through a nonclosable or relation-valued inverse whose
+admission is tied to exact integer self-duality.  The local-prefix nonrobustness theorem in
+`../2-fully-proven/route-e-beurling-local-axiom-firewall.md` proves that such admission cannot
+have a uniform finite-prefix margin.
+
+Collision audit: the classical identity \({\cal L}\Phi=e^{-x}\), generic Möbius inversion, and
+truncated divisor convolutions are known and already frozen.  No located source states the
+zero/one Route E boundary image `(G49)`, its prime-power annihilation, or its critical positive
+tail estimate `(G51)`.  These are recorded as project-new synthesis, not claimed as a solution of
+RH.
+
+- 2026-08-01 — sharpened Zhang's construction to the local-prefix nonrobustness theorem: every
+  sound strict-half certificate holding at the ordinary primes is non-open in finite-prefix
+  topology.  This rules out uniform cofinal-continuity language and forces joint
+  aperture/critical-scale singularity.
+- 2026-08-01 — found the first exact ordinary-additive-lattice successor to the Beurling
+  firewall.  Lambert dilation of the fixed-aperture depth-zero boundary kills all rough
+  prime-power fibres and leaves the one-signed rough-composite defect `(G49)`.  Its entire image
+  is already \(O_\varepsilon(x^{-1/2-\varepsilon})\) at critical aperture; unresolved source is
+  precisely singular inverse-Lambert orientation on this co-moving cone, not construction of a
+  small forward image.

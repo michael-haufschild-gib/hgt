@@ -5306,3 +5306,50 @@ with the shift configuration being the translates rather than zero. Its three st
 values are jets — supplied), `hprod`/`hsum` (the `carrierPatternExponent` and
 `expandedDifferentialEvaluationMatrix_apply` bookkeeping, generic), and the expansion-to-evaluation
 step (supplied). No further infrastructure is missing.
+
+### 2026-08-02 — exact discrete-support meromorphic corollary formalized
+
+Added and wired:
+
+- `CountableWeightedDiracLinftyEquiv` — exact real-linear isometric equivalence
+  `lp (fun _ : ℕ => ℝ) ∞ ≃ₗᵢ Lp ℝ ∞ (countableWeightedDirac ε atoms)` for injective atoms and
+  strictly positive weights. Evaluation at every atom is literal, not merely almost everywhere.
+- `HerglotzDiscreteSupportSeries` — exact `(H7)`, `(H7) → H0`, infinite-support certificate,
+  locally uniform convergence on the full pole complement, holomorphy there, global meromorphy,
+  absolute convergence of the real subtraction constant, and the identity
+  `regularized integral = m_u - real constant`.
+- `HerglotzDiscreteSupportFreeness` — homeomorphic transfer of the dense residual phase from
+  `L∞(μ)` to literal `ℓ∞(ℝ)`, followed by the constant-gauge descent proving full finite-family
+  complex-translation differential algebraic independence for the exact series `(1)`.
+
+Direct foreground checks passed for all three modules. No `sorry`, `admit`, `axiom`, `opaque`, or
+`unsafe` declaration occurs in them. `#print axioms` for the isometry, normal-convergence theorem,
+global-meromorphy theorem, exact integral/series identity, and residual-freeness capstone reports
+only `[propext, Classical.choice, Quot.sound]`.
+
+This closes the entire **Discrete-support meromorphic corollary** section without replacing
+`ell^infinity` by an `Lp` proxy. Remaining open sections on this card are the unit-residue
+canonical-product and functional-equation-even strengthenings and their exact-index surgeries.
+
+### 2026-08-02 — unit-residue canonical product and exact moving-location jet core formalized
+
+Added and wired:
+
+- `MovingCanonicalProduct` — exact bounded zero displacement
+  `Λ_j(θ)=j+1+(1/4)tanh(θ_j)`, strict ordering and escape, reciprocal-square summability, exponent
+  of convergence exactly one, an order-one growth envelope, the genus-one entire product, Schwarz
+  reality, exact simple real divisor, normally convergent regularized logarithmic derivative,
+  upper-half-plane Herglotz sign, and `-F'/F=M_θ` off the divisor.
+- `MovingCanonicalJetControllability` — joint real controllability of the additional inverse-square
+  coordinate and an arbitrary finite complex Cauchy packet; exact factorial-shift extraction of
+  the location derivatives `(7)--(8)`; specialization to the moving canonical divisor; and the
+  exact positive diagonal parameter speed `(1/4)cosh(θ_j)⁻²`. Both location and actual
+  bounded-parameter jet maps are unconditionally surjective.
+
+The controllability proof includes the real/conjugate rational-annihilator argument and the pole at
+zero, rather than dropping the regularization coordinate. Direct foreground checks pass for both
+modules. No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration occurs in them.
+
+Remaining for this section: global compact-shift transversality/Baire completion for the nonlinear
+moving-divisor chart, then exact canonical zero-replacement surgery. Functional-equation-even
+product, its full-orbit freeness, and its even-index surgery remain open.

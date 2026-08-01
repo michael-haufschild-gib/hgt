@@ -436,15 +436,17 @@ to dominate the pure-bad excursion.  Multiplying `(24)` by a packet-dependent fa
 the desired excursion would merely move the target into the normalization.  This closes the
 plain centered-variance repair.
 
-The genuinely Julia-centered kernel remains a sharper candidate.  If `K_x` is the finite Julia
-Gram and `P_N=I-N^{-1}11^T`, then
+The genuinely Julia-centered kernel is sharper.  If `K_x` is the finite Julia Gram and
+`P_N=I-N^{-1}11^T`, then
 
 ```text
 E_tr(x,b)=b^T P_N K_x P_N b >= 0.                       (28)
 ```
 
-For every fixed packet, `K_x -> 11^T` as `x->0`, hence `E_tr(x,b)->0`.  The open issue is whether a
-singular pre-fusion coupling to the completed Gamma/co-Poisson orientation can add a bounded
+Section 20 below proves a moving-packet result stronger than fixed-packet convergence:
+`E_tr(x,b)<(sum b)^2` simultaneously on every sixth-power block throughout one zero-scale
+neighbourhood.  Thus the bare Julia-centered kernel is closed.  The remaining question is whether
+a singular pre-fusion coupling to the completed Gamma/co-Poisson orientation can add a bounded
 longitudinal-to-transverse transfer without reinstating the quartic floor.  Neither `(23)` nor
 `(28)` supplies that coupling.
 
@@ -482,7 +484,15 @@ Wold--Poisson conormal before shell fusion, whose Hermitian scalar part:
 Hostile obligations: prove single-valuedness of the scalar despite multivalued graph closure;
 identify its first-clock residual exactly; and survive the sixth-power moving block.
 
-### `J-SF2` — complex polarization of the exterior seam `[CONSTRUCTED CURRENT, OPEN BUDGET]`
+Section 21 closes every version whose depth symbol is the actual Xi successor and whose scalar
+capacity is nonnegative, lower-semicontinuous, and two-homogeneous on the reporter topology:
+the literal Wold-vacuum truncations then force harmonic-square capacity growth unless the
+capacity annihilates the Xi logarithmic connection.  `J-SF1` remains open only for a genuinely
+non-lower-semicontinuous/nonhomogeneous preclosure scalar, or for a new source operator whose
+depth symbol is not the actual successor.  Either alternative must still meet `(2)` and the
+first-clock moving block; neither is supplied by naming the singular graph.
+
+### `J-SF2` — complex polarization of the exterior seam `[CLOSED FOR ALL BOUNDED POLARIZATIONS]`
 
 Multiplication of the real antisymmetric exterior kernel `H` by `i` gives a Hermitian matrix
 `iH`.  Real arithmetic weights still give
@@ -496,19 +506,27 @@ phase does not help.  Generic prime-log phases are already known not to select t
 orientation, so the only live version requires a nonuniform source-derived phase retained across
 singular transport.  Supplying that phase is part of the theorem, not free input.
 
-### `J-SF3` — nonlinear positive-part repair `[HOSTILE DEFAULT: THEATRE]`
+### `J-SF3` — nonlinear positive-part repair
+`[ACTUAL EXTERIOR POSITIVE PART CLOSED; NEW SINGULAR SOURCE OPERATOR OPEN]`
 
 Taking a Jordan/Krein positive part after forming the completed defect gives a nonnegative
 functional, but the spectral projector is computed from the target defect.  Unless its projector
 is independently constructed from the prime--Gamma/co-Poisson source before scalarization, this is
-the operator analogue of `(19)` and receives no Route-J credit.
+the operator analogue of `(19)` and receives no Route-J credit.  Section 23 proves a stronger
+quantitative statement for the actual calibrated exterior matrix: even granting its target
+spectral projector, the full Jordan positive part is too small by a logarithmic factor.  Thus a
+direct positive-part repair of the existing exterior seam is closed.  A genuinely different
+singular completed source operator, with its projector constructed before the target sign is
+read, remains a Route-J survivor under this label.
 
-### `J-SF4` — stable nonlinear classification `[OPEN NO-GO PROGRAM]`
+### `J-SF4` — stable nonlinear classification `[CLOSED ON THE ACTUAL DEPTH CHANNEL]`
 
-Prove that every packet-compatible, two-homogeneous, parallelogram-compatible, lower-semicontinuous
-Hilbert capacity is a closed quadratic form.  Source-fusion nonclosability and Sections 3--6 would
-then exclude the whole stable nonlinear class.  This would not touch genuinely non-parallelogram
-singular functionals; those must be attacked separately.
+Section 21 proves a stronger no-go without the parallelogram law: every nonnegative,
+two-homogeneous, lower-semicontinuous capacity on the actual Xi depth reporter either annihilates
+the Xi logarithmic connection or is unbounded on the literal Wold-vacuum truncations.  Thus stable
+nonlinearization cannot repair the source budget even when it is not quadratic.  Genuinely
+non-lower-semicontinuous or nonhomogeneous preclosure scalars remain part of `J-SF1`; they are not
+silently reassigned.
 
 ### `J-SF5` — semilocal Hardy compression `[OPEN SINGULAR SURVIVOR]`
 
@@ -699,6 +717,13 @@ and Cauchy--Schwarz yields
   <= (25/2)(log 4)^2 X/log(2X).                       (32)
 ```
 
+No novelty is claimed for the weighted-prime estimate in `(32)` itself.  Hubbard,
+[*The S--E route to the Chebyshev bounds for the prime-counting function*]
+(https://arxiv.org/abs/2604.21946), independently studies
+`sum_(p<=X) sqrt(log p/p)` and proves its square has order `X/log X`.  Route J's new content is
+the exact identification of this weight inside the Julia--Gamma exterior current and its
+comparison with the certified first-clock pure-bad mass.
+
 The prime number theorem supplies, for all large `X`, one prime in
 `(2X,(9/4)X)` and one in `(4X,(9/2)X)`.  Their height separation is at least
 `(1/2)log(16/9)`.  Therefore the packet-wide no-wrap condition forces
@@ -755,3 +780,417 @@ Consequences:
 
 Thus `J-SF2` is narrowed to an oscillatory or genuinely beyond-Rees coupling.  Merely choosing a
 different bounded safe phase cannot work.
+
+## 19. Arbitrary bounded polarization cannot dominate `[PAPER-PROVED CLASS NO-GO]`
+
+The no-wrap restriction in Section 18 is unnecessary.  Let `z_p` be arbitrary complex
+multipliers on `P_X`, allowed to depend on the whole packet, and assume only
+
+```text
+|z_p| <= B.
+```
+
+The Hermitian scalarization of the Euler exterior seam is
+
+```text
+E_X(z)
+  = Re sum_(p,q in P_X)
+      conj(z_p) i a_p a_q (h_p-h_q) z_q.
+```
+
+Triangle inequality and the fixed multiplicative width of the block give the phase-free estimate
+
+```text
+|E_X(z)|
+  <= B^2 sum_(p,q in P_X) a_p a_q |h_p-h_q|
+  <= B^2 D (sum_(p in P_X) a_p)^2.                    (37)
+```
+
+Combining `(32)` and `(37)`,
+
+```text
+|E_X(z)|
+  <= (25D/2) B^2 (log 4)^2 X/log(2X)
+  = O_B(X/log X).                                      (38)
+```
+
+This estimate has no sign hypothesis, no phase-flow hypothesis, no no-wrap cone, and no
+source-only selection hypothesis.  It remains true for packet-dependent, oscillatory, or even
+target-selected phases.  On `X=m^4`, `(35)` therefore implies, for every fixed `B`,
+
+```text
+|E_(m^4)(z)| < (sum bad_p)^2
+```
+
+for all sufficiently large `m`.  Thus every uniformly bounded diagonal polarization of the
+calibrated exterior seam fails the required domination.  In particular, source-height phases
+with arbitrary wrapping are closed, not survivors.
+
+The logarithmic loss is sharp at level of available source amplitudes: to compete with the
+linear-in-`X` bad-mass square through this rank-two exterior cell, multiplier norms must grow at
+least on order `sqrt(log X)`.  Such a family is not a complex polarization; it is an unbounded
+amplitude-creating correspondence.  If it is to remain admissible, its closability, uniform
+capacity budget, Wold-breadth response, and beyond-finite-Rees reflected-depth action must be
+proved as one singular construction.  Calling this amplification a phase would conceal the
+missing operator.
+
+Therefore `J-SF2` is class-completely closed for bounded polarizations.  Route J remains open:
+the surviving question is whether one source-defined singular correspondence can generate the
+required unbounded transverse amplitude while still producing a finite scalar capacity, not
+whether a cleverer phase can rescue the exterior seam.
+
+## 20. Moving-block collapse of the centered Julia Gram `[PAPER+LEAN-PROVED NO-GO]`
+
+The fixed-packet limit after `(28)` upgrades uniformly over the moving arithmetic blocks.  Let
+`P` be a nonempty finite packet, let `b_i>=0`, put
+
+```text
+B=sum_i b_i,
+c_i=b_i-B/|P|.
+```
+
+Then
+
+```text
+sum_i c_i=0,
+sum_i |c_i| <= 2B.                                     (39)
+```
+
+The second inequality follows termwise from
+`|b_i-B/|P||<=b_i+B/|P|`.  For any real kernel satisfying
+
+```text
+sup_(i,j in P) |K_ij-1| <= delta,
+```
+
+the constant Gram cancels exactly and
+
+```text
+E_tr(c)
+  =sum_(i,j) c_i (K_ij-1)c_j,
+|E_tr(c)|
+  <=delta (sum_i |c_i|)^2
+  <=4 delta B^2.                                       (40)
+```
+
+This is standard centered-kernel algebra; no standalone novelty is claimed.  The Route-J content
+is that `(40)` is uniform on its hard moving-prime falsifier.  Every pair in
+
+```text
+P_m={p prime:2m^4<p<=5m^4}
+```
+
+satisfies `|log q-log p|<=2`.  The normalized Julia kernel is continuous at zero and equals one
+there.  Therefore one neighbourhood of `x=0`, independent of `m`, satisfies
+
+```text
+sup_(m>=25) sup_(p,q in P_m)
+  |K_x(log q-log p)-1| < 1/8.                           (41)
+```
+
+Combining `(40)`--`(41)` gives
+
+```text
+E_tr(x,b_m) <= |E_tr(x,b_m)|
+             <= (1/2) B_m^2
+             < B_m^2                                   (42)
+```
+
+on every certified nonempty block.  Consequently, for every source-faithful schedule `x_m->0`,
+the centered Julia Gram eventually fails pure-bad domination.  No rate for `x_m`, prime gap,
+kernel Taylor expansion, or fixed-packet interchange is used.
+
+This closes the bare kernel `(28)`, including the possible slow-scale loophole.  A surviving
+`J-SF1` correspondence must add a genuinely new longitudinal-to-transverse source operator; it
+cannot be centering, a Julia Gram evaluated on centered masses, or a bounded polarization of the
+exterior seam.  Such an added operator must simultaneously cross the nonclosable breadth axis,
+cross the beyond-finite-Rees depth fracture, and keep its scalar output within the uniform
+capacity budget.
+
+## 21. Wold-vacuum harmonic capacity dichotomy
+`[PAPER+LEAN-PROVED CLASS NO-GO] [NEW SOURCE WELD]`
+
+The essential-amplification law can be strengthened from a norm lower bound to a scalar-capacity
+obstruction on one canonical source vector.  Let
+
+```text
+h_m = H_m(1) ~ 2^(-(m+1)),
+||delta_m||^2 = h_m,
+delta_m orthogonal,
+```
+
+where `delta_m` is the actual Wold maximum-exponent shell.  Fix a compact set `K` avoiding the Xi
+divisor, and write in `C(K)`
+
+```text
+R_M(u)
+  = Xi(u)/Xi((1+1/(M+1))u)-1,
+L_Xi(u)
+  = -u Xi'(u)/Xi(u).
+```
+
+The exact depth-successor derivative gives
+
+```text
+y_M := (M+1) R_M  ->  L_Xi                              (43)
+```
+
+uniformly on `K`.  Choose `K` with `L_Xi` nonzero.  Suppose one source-global linear
+correspondence `T` on the finite Wold shell core realizes the actual successor,
+
+```text
+T delta_(M+1) = R_M.                                    (44)
+```
+
+### 21.1 Exact vertical graph defect
+
+Put `v_M=(M+1)delta_(M+1)`.  Since
+
+```text
+||v_M||^2
+  = (M+1)^2 h_(M+1)
+  ~ (M+1)^2 2^(-(M+2))
+  -> 0,
+```
+
+while `(43)`--`(44)` give `T v_M -> L_Xi`, graph closure contains
+
+```text
+(0,L_Xi).                                                (45)
+```
+
+Thus every exact source-global depth-successor realization is nonclosable whenever `L_Xi` is
+nonzero.  This identifies its vertical multivalued direction exactly; the earlier operator-norm
+lower bound only proved that bounded realizations fail.
+
+### 21.2 Literal vacuum exhausts every stable scalar budget
+
+No depth-moment reweighting is needed.  Let
+
+```text
+Omega_N = sum_(M<N) delta_(M+1),
+H_N     = sum_(M<N) 1/(M+1).
+```
+
+Wold source masses are summable, so `Omega_N` converges to the literal Wold vacuum.  By linearity
+and `(44)`,
+
+```text
+T Omega_N = sum_(M<N) R_M
+          = sum_(M<N) (1/(M+1)) y_M.
+```
+
+Weighted Cesaro convergence applied to `(43)` and `H_N -> infinity` yields
+
+```text
+(T Omega_N)/H_N -> L_Xi.                                (46)
+```
+
+Let `Q:C(K)->R` satisfy
+
+```text
+Q(f)>=0,
+Q(rf)=r^2 Q(f)          for real r,
+Q lower-semicontinuous at L_Xi.                         (47)
+```
+
+Lower semicontinuity and `(46)` imply
+
+```text
+Q(L_Xi)
+  <= liminf_(N->infinity) Q(T Omega_N/H_N)
+   = liminf_(N->infinity) Q(T Omega_N)/H_N^2.            (48)
+```
+
+Consequently,
+
+```text
+Q(L_Xi)>0
+  -> for every 0<eta<Q(L_Xi),
+     Q(T Omega_N) >= eta H_N^2 eventually
+  -> sup_N Q(T Omega_N)=infinity;                        (49)
+
+sup_N Q(T Omega_N)<infinity
+  -> Q(L_Xi)=0.                                          (50)
+```
+
+This is the missing scalar-budget dichotomy.  A stable capacity detecting the primitive Xi depth
+connection violates the source-uniform upper half of `(2)` already on truncations of one canonical
+finite-norm source vector.  A uniformly budgeted stable capacity annihilates that connection and
+therefore cannot use the actual depth successor to create the missing Route-J orientation.
+Parallelogram compatibility, quadratic representation, closability of `T`, a Xi zero, and RH are
+not assumed.
+
+The theorem closes `J-SF4` on the actual depth channel and closes the lower-semicontinuous
+two-homogeneous part of `J-SF1`.  It does **not** close a discontinuous/nonhomogeneous preclosure
+scalar or a new longitudinal-to-transverse operator with a different depth symbol.  Those
+survivors remain Route J work and must still satisfy first-clock domination and uniform budget
+in `(2)`.
+
+### 21.3 Novelty and hostile audit
+
+Weighted Cesaro convergence, lower semicontinuity, and the elementary graph criterion are standard
+parent facts.  New content is their exact weld to both arithmetic sides:
+
+1. actual Wold source masses make the unweighted vacuum finite;
+2. actual Xi quotient successor is harmonic with limit `L_Xi`;
+3. their source-global graph has precise vertical direction `(0,L_Xi)`; and
+4. same literal vacuum forces harmonic-square blow-up for every stable detecting capacity.
+
+Targeted external searches for nonclosable-operator/Cesaro-capacity results and Xi dilation
+quotients found parent ingredients separately, not this Wold-shell/Xi-successor conjunction.
+This supports a project-new theorem but does not certify external priority.
+
+Unconditional Lean module:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  CCMFirstClockWoldXiDepthCapacityNoGo.lean
+```
+
+It proves weighted Cesaro convergence, general lower-semicontinuous two-homogeneous budget
+dichotomy, exact Xi depth-moment convergence, exact unrenormalized successor recovery, harmonic
+divergence, actual prime-two Wold mass envelope, summability of Wold vacuum and depth-moment norm
+squares, normalized vacuum-reporter convergence, and final capacity non-domination.  No `sorry`,
+`admit`, `axiom`, `opaque`, `unsafe`, computation, or RH input occurs.
+
+## 22. Global Cayley orientation and minimum exterior singularity
+`[PAPER+LEAN-PROVED POSITIVE THEOREM AND SHARP NECESSARY RATE]`
+
+The normalized source chart
+
+```text
+u_tau(h)=(1+i tau h)/sqrt(1+tau^2 h^2)
+```
+
+has unit norm and turns every calibrated Julia--Gamma exterior pair into
+
+```text
+tau A_i A_j (h_i-h_j)^2
+/ (sqrt(1+tau^2 h_i^2)sqrt(1+tau^2 h_j^2)).
+```
+
+Thus exterior orientation is globally nonnegative without phase wrapping.  The same first-clock
+prime block gives a class-wide capacity ceiling.  If `|u_p|<=B_m` and the polarized exterior
+energy dominates the certified pure-bad mass square, then
+
+```text
+log(2 m^4) <= 7200 (log 4)^2 B_m^2.                    (51)
+```
+
+Consequently every dominating exterior chart has
+`B_m >= sqrt(log(2m^4))/(sqrt(7200) log 4)`.  Bounded charts fail, and any surviving exterior
+transport must pay at least square-root-logarithmic multiplier blow-up.  This is a necessary
+rate, not a sufficient construction; it neither proves the renormalized upper budget in `(2)`
+nor closes Route J.
+
+Formal modules:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  CCMFirstClockCayleySourcePhaseOrientation.lean
+  CCMFirstClockCayleyOrientationCapacityDichotomy.lean
+  CCMFirstClockExteriorCapacitySingularity.lean
+```
+
+## 23. Rank-two Jordan positive-part ceiling
+`[PAPER+LEAN-PROVED NONLINEAR CLASS NO-GO] [NEW SOURCE WELD]`
+
+The target-selected positive spectral projector cannot repair the actual exterior seam even if
+one grants it for the audit.  On a finite packet put
+
+```text
+alpha_i = A_i,
+beta_i  = A_i h_i,
+K_ij    = i A_i A_j (h_i-h_j)
+        = i (beta_i alpha_j-alpha_i beta_j).
+```
+
+The Hermitian matrix `K` has rank at most two.  Its Gram determinant
+
+```text
+Delta
+  = ||alpha||^2 ||beta||^2 - <alpha,beta>^2
+  = (sum A_i^2)(sum A_i^2 h_i^2) - (sum A_i^2 h_i)^2       (52)
+```
+
+is nonnegative by Cauchy--Schwarz and invariant under `h_i -> h_i-c`.  On the span of
+`alpha,beta`, Gram--Schmidt puts `K` in the exact form
+
+```text
+[ 0                 -i sqrt(Delta) ]
+[ i sqrt(Delta)      0              ].
+```
+
+It vanishes on the orthogonal complement.  Hence its spectrum is
+`{-sqrt(Delta),0,sqrt(Delta)}`, its Jordan positive part `K_+` has rank at most one, and
+
+```text
+||K_+|| = Tr(K_+) = sqrt(Delta).                           (53)
+```
+
+If `|h_i-h_j|<=D`, choose one retained height as center.  Translation invariance of `(52)` gives
+
+```text
+Delta <= D^2 (sum A_i^2)^2.
+```
+
+Therefore, for every coordinate vector with `|z_i|<=B`,
+
+```text
+0 <= <z,K_+ z>
+   <= B^2 card(P) sqrt(Delta)
+   <= B^2 D card(P) sum A_i^2.                            (54)
+```
+
+This is not the diagonal-polarization theorem again: `K_+` mixes the whole packet and its
+projector is the terminal spectral projector that `J-SF3` proposed using.
+
+On the actual Euler depth-zero block `P_X={p prime:2X<p<=5X}`,
+
+```text
+A_p^2 = log(p)/p,
+h_p   = (1/2)log p,
+D <= 1,
+sum_(p in P_X) A_p^2 <= (5/2)log 4,
+card(P_X) <= 5X log 4/log(2X).
+```
+
+Thus the complete unit-coordinate Jordan envelope satisfies
+
+```text
+sup_(|z_p|<=1) <z,K_+ z>
+ <= (25/2)(log 4)^2 X/log(2X).                           (55)
+```
+
+At `X=m^4`, beyond the same symbolic threshold `exp(7201)<m`, `(55)` is strictly less than the
+certified pure-bad mass square, which is at least `X/576`.  Trace scalarization is smaller still:
+`Tr(K_+)=sqrt(Delta)=O(1)`.  Consequently the direct nonlinear positive part of the actual
+calibrated exterior matrix cannot satisfy the domination half of `(2)`, even when its
+target-selected projector is allowed.  A surviving `J-SF3` object must first construct a
+different singular completed source operator; applying functional calculus to the known
+rank-two seam is closed.
+
+The determinant identity and rank-two spectral calculation are standard finite-dimensional
+linear algebra.  New content is the exact weld of that full nonlinear positive part to the
+Julia--Gamma amplitudes and the certified same-block first-clock lower bound.  Targeted arXiv
+searches found general Hermitian positivity and bounded-rank spectral results, but no occurrence
+of this exterior-matrix/weighted-prime/first-clock conjunction; external priority is not
+certified.
+
+Unconditional Lean module:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  CCMFirstClockExteriorPositivePartNoGo.lean
+```
+
+It now constructs the literal complex Hermitian matrix, proves its rank-two outer-product
+factorization and exact cubic law `K^3=Delta K`, and uses the matrix C-star norm plus mathlib's
+continuous functional calculus to construct the genuine Jordan positive part.  Its quadratic
+energy is proved nonnegative and bounded by the variance envelope for every bounded-coordinate
+state.  The file also proves the Gram determinant nonnegative, height-translation invariant,
+bounded by the squared height diameter, the exact first-clock arithmetic ceiling, and the direct
+operator-level strict same-block failure against the bad-mass square.  Thus the Lean theorem no
+longer reasons through an unattached scalar surrogate.  No computation, RH input, `sorry`,
+`admit`, `axiom`, `opaque`, or `unsafe` declaration occurs.

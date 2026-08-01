@@ -102,7 +102,14 @@ breadth and beyond every finite Rees order in depth.  No zero-exclusion or
 Riemann-hypothesis claim is made.  A positive escape is nevertheless explicit on every finite
 packet: phasing the calibrated Julia--Gamma exterior current by its own source height makes it
 Hermitian, with nonnegative energy before the first phase wrap and strict positivity whenever two
-retained heights differ.
+retained heights differ.  A phase-free diameter theorem then shows that every uniformly bounded
+complex polarization of this exterior current is too small by a logarithmic factor on the
+first-clock prime blocks, including arbitrarily wrapped and packet-dependent phases.
+The full Jordan positive part of the rank-two exterior matrix has the same logarithmic ceiling,
+so terminal spectral projection cannot recover the missing capacity.
+On the singular depth channel, the literal Wold-vacuum truncations have reporter
+$H_N(-u\Xi'/\Xi)+o(H_N)$; hence every lower-semicontinuous two-homogeneous capacity which
+detects that connection violates a uniform scalar budget.
 \end{abstract}
 
 \medskip
@@ -223,6 +230,73 @@ This proposition is the positive dual of Theorem~\ref{law:main}(iii).  Real scal
 the antisymmetric exterior cell, but the source-defined transverse character $u_i$ separates
 distinct heights and converts that cell into a positive Hermitian current before quotienting.
 Its finite phase window is exact; no infinite-packet or uniform-budget conclusion is implicit.
+
+\begin{proposition}[Bounded exterior-polarization ceiling]\label{prop:exterior-ceiling}
+Let $P$ be finite, $A_i\geq0$, and
+$|h_i-h_j|\leq D$ on $P$.  For arbitrary $z_i\in\C$ satisfying $|z_i|\leq B$,
+\[
+ \left|\Re\sum_{i,j\in P}
+   \bar z_i\,iA_iA_j(h_i-h_j)z_j\right|
+ \leq B^2D\left(\sum_{i\in P}A_i\right)^2.
+ \tag{1.5}
+\]
+\end{proposition}
+
+\begin{proof}
+The modulus of the $(i,j)$ summand is at most
+$B^2A_iA_j|h_i-h_j|\leq B^2DA_iA_j$.  Apply the triangle inequality and factor
+$\sum_{i,j}A_iA_j=(\sum_iA_i)^2$.
+\end{proof}
+
+Unlike Proposition~\ref{prop:source-phase}, this estimate has no sign, no-wrap, or one-parameter
+phase hypothesis.  It applies to every bounded diagonal complex polarization, even if the
+multipliers depend on the whole packet.
+
+\begin{proposition}[Rank-two Jordan positive-part ceiling]\label{prop:exterior-positive-part}
+With the notation of Proposition~\ref{prop:exterior-ceiling}, let
+\[
+ K_{ij}=iA_iA_j(h_i-h_j),\qquad
+ \Delta=
+ \left(\sum_iA_i^2\right)\left(\sum_iA_i^2h_i^2\right)
+ -\left(\sum_iA_i^2h_i\right)^2.
+ \tag{1.6}
+\]
+Then $K$ is Hermitian of rank at most two, $\Delta\geq0$, and
+\[
+ \operatorname{Spec}(K)\subseteq\{-\sqrt\Delta,0,\sqrt\Delta\}.
+ \tag{1.7}
+\]
+Its Jordan positive part $K_+$ has
+$\|K_+\|=\operatorname{Tr}(K_+)=\sqrt\Delta$.  If
+$|h_i-h_j|\leq D$ on $P$, then for every $|z_i|\leq B$,
+\[
+ 0\leq\langle z,K_+z\rangle
+ \leq B^2|P|\sqrt\Delta
+ \leq B^2D|P|\sum_{i\in P}A_i^2.
+ \tag{1.8}
+\]
+\end{proposition}
+
+\begin{proof}
+Put $\alpha=(A_i)_i$ and $\beta=(A_ih_i)_i$.  Then
+$K=i(\beta\alpha^*-\alpha\beta^*)$, so its range lies in
+$\operatorname{span}\{\alpha,\beta\}$.  The squared area of this pair is exactly the Gram
+determinant $\Delta$.  After Gram--Schmidt, the restriction of $K$ to that span is
+\[
+ \begin{pmatrix}0&-i\sqrt\Delta\\ i\sqrt\Delta&0\end{pmatrix};
+\]
+it vanishes on the orthogonal complement.  This proves (1.7) and the assertions about $K_+$.
+The determinant in (1.6) is unchanged when every $h_i$ is replaced by $h_i-c$.  Choose one
+retained height as $c$ (the empty packet is trivial).  The diameter hypothesis then gives
+$\|\beta-c\alpha\|\leq D\|\alpha\|$, hence
+$\sqrt\Delta\leq D\|\alpha\|^2=D\sum_iA_i^2$.  Finally
+$\langle z,K_+z\rangle\leq\|K_+\|\|z\|^2$ and
+$\|z\|^2\leq B^2|P|$.
+\end{proof}
+
+Unlike taking a positive part of a scalar after the desired sign is known, this proposition
+audits the entire spectral positive part of the actual source matrix.  The projector may mix all
+packet coordinates and may depend on the completed matrix; the bound still holds.
 
 The Riemann realization makes the law nonformal.  Integers are partitioned by their largest prime
 valuation.  Every sufficiently deep part is a positive Dirichlet stream carrying the same
@@ -480,6 +554,24 @@ $(\sum_jb_j)^2$.  Plain finite centering therefore cannot supply the missing qua
 domination; Theorem~\ref{thm:singular} shows that regular Hilbert fusion also fails at the
 infinite endpoint.
 
+The same conclusion holds for the genuinely Julia-centered Gram, uniformly on the moving block.
+For $B=\sum_jb_j$ and $c_j=b_j-B/N$, one has
+\[
+ \sum_jc_j=0,\qquad \sum_j|c_j|\leq2B.
+\]
+If $|K_{ij}-1|\leq\delta$, constant-Gram cancellation and the triangle inequality give
+\[
+ \left|\sum_{i,j}c_iK_{ij}c_j\right|
+ =\left|\sum_{i,j}c_i(K_{ij}-1)c_j\right|
+ \leq4\delta B^2.
+\]
+Every two primes in the certified block satisfy $|\log q-\log p|\leq2$.  Since the normalized
+Julia kernel is continuous at zero with $K(0)=1$, one zero-scale neighbourhood, independent of
+$m$, has $\delta<1/8$ on every block.  The centered Julia energy is then at most $B^2/2$ and
+cannot dominate $B^2$.  Thus arbitrary slow source-faithful scaling does not rescue the
+Julia-centered Gram; a survivor must add a genuinely new singular longitudinal-to-transverse
+operator.
+
 \section{Infinite fusion is necessarily singular}
 
 Let $c_{00}$ be the finitely supported real sequences, embedded densely in $\ell^2$, and define
@@ -693,6 +785,73 @@ Theorem~\ref{thm:singular} and Theorem~\ref{thm:rees-fracture} are independent a
 law.  Countably many source labels force nonclosability in breadth even at $a=0$.
 Nonzero $a$ additionally forces super-polynomial reflection cost in valuation depth.  The
 critical line removes the depth fracture; it does not make the infinite codiagonal closable.
+
+The actual depth successor gives a stronger joint statement.  Put
+\[
+ h_m=H_m(1),\qquad \|\delta_m\|^2=h_m,
+\]
+where the $\delta_m$ are the orthogonal Wold maximum-exponent shells.  The least-atom law gives
+$h_m\sim2^{-(m+1)}$.  On a compact set $K$ avoiding the $\Xi$ divisor define
+\[
+ R_m(u)=\frac{\Xi(u)}{\Xi((1+m^{-1})u)}-1,\qquad
+ L_\Xi(u)=-u\frac{\Xi'(u)}{\Xi(u)}.
+\tag{6.14}
+\]
+Then $mR_m\to L_\Xi$ uniformly on $K$.
+
+\begin{theorem}[Wold-vacuum harmonic capacity dichotomy]
+\label{thm:wold-vacuum-capacity}
+Suppose a linear correspondence $T$ on the finite Wold shell core satisfies
+$T\delta_m=R_m$ for every $m\geq2$.  Let
+\[
+ \Omega_N=\sum_{m=2}^N\delta_m,\qquad
+ {\mathcal H}_N=\sum_{m=2}^N\frac1m.
+\tag{6.15}
+\]
+Then $\Omega_N$ converges in the Wold Hilbert carrier and
+\[
+ \frac{T\Omega_N}{{\mathcal H}_N}\longrightarrow L_\Xi
+ \quad\hbox{in }C(K).
+\tag{6.16}
+\]
+Moreover $(0,L_\Xi)$ belongs to the closure of the graph of $T$.  If
+$Q:C(K)\to\R$ is nonnegative, lower-semicontinuous at $L_\Xi$, and
+$Q(rf)=r^2Q(f)$ for real $r$, then
+\[
+ Q(L_\Xi)
+ \leq\liminf_{N\to\infty}\frac{Q(T\Omega_N)}{{\mathcal H}_N^2}.
+\tag{6.17}
+\]
+Consequently $Q(L_\Xi)>0$ forces $\sup_NQ(T\Omega_N)=+\infty$, while a uniform
+upper bound on $Q(T\Omega_N)$ forces $Q(L_\Xi)=0$.
+\end{theorem}
+
+\begin{proof}
+The asymptotic for $h_m$ gives both $\sum_mh_m<\infty$ and
+$m^2h_m\to0$.  Orthogonality therefore makes $\Omega_N$ convergent, while
+$m\delta_m\to0$.  But
+\[
+ T(m\delta_m)=mR_m\longrightarrow L_\Xi,
+\]
+which proves the graph-closure assertion.  Write $y_m=mR_m$.  Since $y_m\to L_\Xi$,
+the weighted Ces\`aro lemma with weights $m^{-1}$ and
+$\sum_{m=2}^Nm^{-1}={\mathcal H}_N\to\infty$ gives
+\[
+ \frac{T\Omega_N}{{\mathcal H}_N}
+ =\frac{\sum_{m=2}^Nm^{-1}y_m}{{\mathcal H}_N}
+ \longrightarrow L_\Xi.
+\]
+Lower semicontinuity gives the first inequality in (6.17), and two-homogeneity gives its
+displayed right side.  If the numerator were uniformly bounded, that side would be zero because
+${\mathcal H}_N\to\infty$; nonnegativity then forces $Q(L_\Xi)=0$.  Conversely, if
+$Q(L_\Xi)>0$, every smaller positive lower bound holds eventually for the normalized capacities,
+so $Q(T\Omega_N)$ grows at least as that constant times ${\mathcal H}_N^2$.
+\end{proof}
+
+The theorem uses the literal unweighted Wold vacuum, not a fitted source vector.  It closes every
+stable scalarization of the actual depth successor which both detects $L_\Xi$ and claims a
+uniform source budget.  It does not exclude a non-lower-semicontinuous preclosure scalar or a new
+source operator with a different depth symbol.
 
 \section{One law, not a catalogue}
 
@@ -912,8 +1071,54 @@ where $h_i(x)$ is the packet's source-defined calibrated Euler height.  Proposit
 whose scalar energy is nonnegative before any phase difference reaches $\pi$, and strictly
 positive when the packet retains two different heights.  This is a genuine source-derived
 one-sided orientation before scalar fusion.  It closes the former ``real weights annihilate the
-exterior cell'' obstruction.  It does not yet supply a packet-uniform pre-wrap scale or dominate
-the first-clock bad mass, so it does not exclude a zero.
+exterior cell'' obstruction.
+
+It cannot, however, dominate the first-clock bad mass.  At Euler depth zero on
+\[
+ P_X=\{p\text{ prime}:2X<p\leq5X\},\qquad
+ A_p=\sqrt{\frac{\log p}{p}},\qquad h_p=\frac12\log p,
+\]
+the height diameter is $D=\frac12\log(5/2)$.  Chebyshev's upper bound and
+Cauchy--Schwarz give
+\[
+ \sum_{p\in P_X}\log p\leq5X\log4,\qquad
+ \left(\sum_{p\in P_X}A_p\right)^2
+ \leq \frac{25}{2}(\log4)^2\frac{X}{\log(2X)}.
+ \tag{7.7}
+\]
+Indeed $\#P_X\log(2X)\leq\sum_{p\in P_X}\log p$ and
+$\sum_{p\in P_X}A_p^2\leq\frac52\log4$.  Proposition
+\ref{prop:exterior-ceiling} therefore yields, uniformly over all $|z_p|\leq B$,
+\[
+ \left|\Re\sum_{p,q\in P_X}
+ \bar z_p\,iA_pA_q(h_p-h_q)z_q\right|
+ =O_B\!\left(\frac{X}{\log X}\right).
+ \tag{7.8}
+\]
+Proposition~\ref{prop:exterior-positive-part} gives the strictly larger nonlinear audit
+\[
+ \sup_{|z_p|\leq B}\langle z,K_+z\rangle
+ \leq
+ B^2\frac{25}{2}(\log4)^2\frac{X}{\log(2X)}
+ =O_B\!\left(\frac{X}{\log X}\right).
+ \tag{7.9}
+\]
+Thus even the terminal target-selected spectral projector of the full rank-two exterior matrix
+has the same capacity deficit; its trace is only $\sqrt\Delta=O(1)$.
+On the certified first-clock subsequence $X=m^4$, the squared pure-bad block mass is at least
+$X/576$.  Hence every fixed-$B$ exterior polarization is eventually strictly smaller than the
+quantity it must dominate.  The same is true of the Jordan positive-part energy in (7.9).
+This includes arbitrary phase wrapping, packet-dependent phase selection, and nonlinear spectral
+projection; no global positivity theorem on this matrix can remove the size obstruction.
+Reaching the bad-mass scale through this cell requires multiplier norms growing at least on order
+$\sqrt{\log X}$.  That is an unbounded amplitude-creating correspondence, not a polarization.
+
+The standalone order of $\sum_{p\leq X}\sqrt{\log p/p}$ is independently studied by
+Hubbard~\cite{Hubbard2026}; no novelty is claimed for that weighted-prime estimate.  New content
+here is its forced occurrence in the calibrated Julia--Gamma exterior current and the exact
+same-block comparison with the first-clock pure-bad mass.  The finite source phase constructs
+orientation, but the bounded-polarization class is quantitatively closed and does not exclude a
+zero.
 
 \begin{theorem}[Biaxial Riemann source law]\label{thm:frontier}
 Consider a source architecture intended to retain the nonzero modular charge of a hypothetical
@@ -1103,6 +1308,12 @@ H.~Hedenmalm,
 \newblock Spectral interpretation of Riemann zeta zeros,
 \newblock arXiv:2606.17494 (2026).
 \newblock \url{https://arxiv.org/abs/2606.17494}.
+
+\bibitem{Hubbard2026}
+K.~Hubbard,
+\newblock The S--E route to the Chebyshev bounds for the prime-counting function,
+\newblock arXiv:2604.21946 (2026).
+\newblock \url{https://arxiv.org/abs/2604.21946}.
 
 \bibitem{Kolchin1973}
 E.~R. Kolchin,

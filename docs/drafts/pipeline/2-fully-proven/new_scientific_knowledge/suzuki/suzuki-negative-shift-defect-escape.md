@@ -136,9 +136,26 @@ pairing is the aperture length and the energy is a hyperbolic sine — and
 dominates a quarter of the exponential beyond one).  Both integrals were already proved for
 `suzuki-donoghue-defect-spectral-measure-law`; `(9)` needed only their quotient.
 
-A nonzero lower bound for `|kappa|` is a sufficient source-side noncollapse certificate.  It is not
-necessary: a nonzero Schur limit may have a higher-order zero at `i`.  The full necessary-and-
-sufficient certificate is survival of some fixed anchored derivative order.
+A nonzero lower bound for `|kappa|` is generically only a sufficient source-side noncollapse
+certificate: an arbitrary nonzero Schur limit may have a higher-order zero at `i`. For the exact
+normalized Xi Livsic target, however, this generic loophole is now closed unconditionally:
+
+```text
+77/85 < kappa_Xi=2i Theta_Xi'(i) < 1.
+```
+
+Thus first-order survival is **necessary** for Xi identification, and the corresponding source
+parity shares must satisfy
+
+```text
+p_even>81/85,       0<p_odd<4/85.
+```
+
+Locally uniform convergence of Suzuki's disk-conjugated finite carriers forces their exact
+source defect angles to tend to `kappa_Xi`. Higher-order-only escape remains possible for generic
+Livsic targets but cannot be Suzuki's Xi endpoint. The exact theorem and source connector are in
+`suzuki-xi-first-defect-jet-gap.md`, `SuzukiXiFirstDefectJet.lean`, and
+`SuzukiXiFirstDefectJetSource.lean`.
 
 ## Positive survivor: projective defect compactification
 
@@ -221,10 +238,11 @@ survives cofinally; that is the new source-side problem.
    `|exp(-2a)exp(2iaz)|<1`.  On a compact set it therefore has a positive minimum.  Suzuki's
    finite-shift denominators are nonzero there by the all-angle Hermite--Biehler theorem.  Uniform
    numerator and denominator convergence consequently gives uniform quotient convergence.
-3. **First jet is not complete.** Aleman--Martin--Ross recall that arbitrary contractive analytic
-   functions vanishing at `i` occur as Livsic functions if nondense symmetric relations are
-   allowed.  In particular, higher powers of the Cayley factor show that `(7)` can vanish while
-   the carrier is nonzero.  Only the full anchored jet criterion is necessary and sufficient.
+3. **First jet: generic versus Xi.** Aleman--Martin--Ross recall that arbitrary contractive
+   analytic functions vanishing at `i` occur as Livsic functions if nondense symmetric relations
+   are allowed. Higher powers of the Cayley factor show that `(7)` can vanish while a generic
+   carrier is nonzero. This does not leave an Xi loophole: the exact normalized Xi carrier has
+   first defect jet in `(77/85,1)`, so every Xi-identifying source family must preserve first order.
 4. **No circularity.** The shifts tend away from the RH-bearing value `lambda=0`; no positivity of
    `A_a` or assumption about the Weil floor is used.
 5. **Exact scope.** The theorem refutes uniform noncollapse over all admissible shift schedules.  It
@@ -321,7 +339,8 @@ Axiom audit of every declaration above: `[propext, Classical.choice, Quot.sound]
 - [x] primary-literature collision audit closed at the source-specific level
 - [x] dependency-closed projective/free-boundary survivor formalized in Lean
 - [x] concrete restricted-Weil resolvent escape theorem formalized in Lean: formal/GaloisForLFunctions/RHTower/SuzukiNegativeShiftEscape.lean
-- [ ] source-side defect-retaining shift selected
+- [ ] source-side cofinal shift selected with defect angle tending to `kappa_Xi∈(77/85,1)`,
+      even share `>81/85`, odd share `<4/85`, and persistent ground leakage
 - [ ] RH
 
 ## Log
@@ -370,3 +389,10 @@ Axiom audit of every declaration above: `[propext, Classical.choice, Quot.sound]
   alone, with no absolute scale entering — the property the section needs to escape "the arbitrary
   absolute shift".  Three new declarations, targeted build green, axioms
   `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — exact Xi endpoint removes the card's generic higher-order loophole.
+  Multiplicity-exact squared-zero moments and unconditional divisor geometry give
+  `77/85<kappa_Xi<1`; locally uniform source convergence forces finite defect angles to this value.
+  Therefore any Xi-identifying family has even/odd shares in `(81/85,1)×(0,4/85)` and, under the
+  ground-pole estimate, leakage eventually above `(1-kappa_Xi)/4>0`. Paper proof and unconditional
+  Lean are in `suzuki-xi-first-defect-jet-gap.md`, `SuzukiXiFirstDefectJet.lean`, and
+  `SuzukiXiFirstDefectJetSource.lean`. This narrows source selection; it does not supply it.

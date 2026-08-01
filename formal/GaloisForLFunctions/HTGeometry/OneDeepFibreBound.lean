@@ -492,6 +492,20 @@ noncomputable def fibreOfSystem {m n : ℕ} (hm : 0 < m) {U V A : K[X]}
       show m + n = (m + n - 1) + 1 from by omega]
     exact dvd_invPoly_compat_general ha rfl _
 
+/-- **The depth-one fibre equation is centred**: its next-to-leading coefficient vanishes.  The
+equation has degree `n + 2` and no term of degree `n + 1`, because the numerator of the truncated
+inverse drops a degree.
+
+This is the shape a universal-polynomial comparison needs: translation cannot be used to remove the
+next-to-leading coefficient because it is already absent. -/
+theorem coeff_oneDeepEquation_next (U : K[X]) (d : K) (n : ℕ) :
+    (oneDeepEquation U d (n + 1)).coeff (n + 1) = 0 := by
+  rw [oneDeepEquation, Polynomial.coeff_sub, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
+    if_neg (by omega), mul_zero,
+    Polynomial.coeff_eq_zero_of_natDegree_lt
+      (lt_of_le_of_lt (natDegree_invNumerator_succ_le (fun i => U.coeff i) n) (by omega)),
+    sub_zero]
+
 /-! ## The fibre as a solution set -/
 
 /-- The solutions of the observation's square system: an unknown jet of the right degree, invertible

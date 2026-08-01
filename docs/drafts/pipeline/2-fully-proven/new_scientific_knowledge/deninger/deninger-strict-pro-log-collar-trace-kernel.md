@@ -267,3 +267,64 @@ generic boundaries.
 **Verdict:** `FULLY PROVEN ON PAPER; STRICT ALL-PRIME RESIDUE
 TRACE-KERNEL EXACTNESS AND THE ORIENTATION COKERNEL ARE CLOSED FOR THE
 MIXED PRO-LOG COLLAR COMPLETION`.
+
+## Lean status
+
+### The trace-kernel exactness landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerArakelovTraceKernel.lean`, alongside the concrete real
+boundary already in `DeningerRealKummerArakelovBoundary.lean` (which is the case without the collar
+summand).  Axiom audit for all 11 declarations: `propext, Classical.choice, Quot.sound` or less.
+
+- `deningerCollarArakelovBoundary`, `deningerCollarArakelovTrace` — **`(9)`--`(10)`**: the
+  finite-plus-real boundary of a Kummer unit and a mean-zero collar form, and the Arakelov trace.
+  The finite target is the strict splitting `B_val ⊕ B_pkt,0` of the previous card, so `Av` is the
+  first projection and the mean-zero part is the second.
+- `deningerCollarArakelovTrace_comp_boundary` — the composite vanishes, which is the card's first
+  computation.
+- `deningerCollarArakelovBoundary_exact` — **`(11)`**: the image of the boundary is exactly the
+  trace kernel.  The proof is the card's: split the finite part, use `(6)` to take the unit with
+  the prescribed valuation and the right inverse of `(5)` to take a collar form with the prescribed
+  residue, and the trace-kernel identity forces the real component.
+- `deningerCollarArakelovTrace_surjective`, `deningerCollarArakelovBoundary_injective` — the trace
+  is onto and the boundary is injective, the latter on the summand chosen by the collar section.
+- `deningerCollarArakelovH2Equiv` — **`(12)`**: the top cohomology of the shifted residue fibre is
+  the real orientation line.
+- `deningerCollarSection_isCompl`, `deningerCollarSection_injective` — the algebraic content of
+  `(4)`: a surjection with a linear right inverse has complemented kernel, and on the chosen
+  summand the residue is injective.  This is what "strict with closed kernel" reduces to once the
+  topology is dropped.
+
+### What cannot be stated in Lean, and why
+
+The completions are the obstruction, as for the sibling restricted-sum card: the graph seminorm
+`(3)`, the Hausdorff completion `Ω¹_{log,mix,p}`, and the mixed `L¹`/`L²` packet spaces need a
+theory of complete locally convex spaces that mathlib does not have; and `(1)`--`(2)`, the
+logarithmic residue sequence on a log-toric chart, needs coherent sheaves and logarithmic de Rham
+complexes.  The Fourier-basis argument of `(2)` is now available: see
+`DeningerFiniteCharacterBasis.lean` below.  The card therefore
+stays at stage 2 with its exactness theorem `(11)`--`(12)` formalized and its analytic scaffolding
+recorded as unavailable.
+
+### The Fourier step of `(2)`
+
+`formal/GaloisForLFunctions/RHTower/DeningerFiniteCharacterBasis.lean` (8 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`) supplies the missing infrastructure for the surjectivity
+argument of `(1)`--`(2)`:
+
+- `deningerCharacter_linearIndependent` — distinct characters of a finite abelian group are
+  linearly independent as complex functions, by Dedekind's theorem on monoid homomorphisms into a
+  field.
+- `deningerCharacter_card`, `deningerCharacterGroup_finite` — a finite abelian group has exactly as
+  many complex characters as elements, so the independent family has the dimension of the whole
+  function space.
+- `deningerCharacter_span` — hence **the characters span**: every complex function on the group is
+  a linear combination of characters.
+- `deningerEvaluation_span` — dually, since a finite abelian group is its own double dual through
+  evaluation, **the evaluations at group elements span the functions on the character group**.
+  That is exactly the card's step "Fourier characters form a basis of `Map(Y_{L,p}, ℂ)`, and every
+  Fourier character is evaluation at an element of `L̄_p`", which is what lets an arbitrary
+  `f : Y_{L,p} → ℂ` be written in terms of torus characters and lifted to a collar form.
+
+What remains missing for `(1)`--`(2)` is only the geometric side: the logarithmic residue sequence
+on a log-toric chart, which needs coherent sheaves and logarithmic de Rham complexes.

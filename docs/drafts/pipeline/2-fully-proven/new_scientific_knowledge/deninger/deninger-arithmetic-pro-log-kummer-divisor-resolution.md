@@ -260,3 +260,41 @@ Cartier function.”  It is:
 - 2026-07-27 — replaced unsupported ordinary analytic Cartier
   conjecture for \([p]\) by finite divisorial log stages and their
   exact generalized-prime Kummer resolution.
+
+## Lean status
+
+### The arithmetic content landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerRationalDivisorSequence.lean`, on top of the `S`-unit
+machinery in `DeningerSUnitEndpointPage.lean` and the finite-support lemma in
+`DeningerRestrictedPrimeSheaf.lean`.  Axiom audit for all 11 declarations:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerValuationSupport_finite`, `deningerDivisor`, `deningerDivisor_apply` — the divisor of a
+  rational unit as a finitely supported family of integers, which is what makes `(4)`--`(5)` land
+  in a direct sum.
+- `deningerDivisor_mul` — taking divisors is additive, i.e. the groupified characteristic map of
+  `(4)` is a homomorphism.
+- `deningerDivisor_eq_zero_iff` — **the kernel is trivial on positives**: a positive rational whose
+  valuations all vanish is `1`.  Modulo `{±1}` this is the exactness of `(5)` at `ℚ^×`.
+- `deningerDivisorProduct`, `deningerDivisor_divisorProduct`, `deningerDivisorProduct_pos`,
+  `deningerDivisor_surjective` — **unique factorization in divisor form**: every finitely supported
+  family is the divisor of the corresponding product of prime powers, so the valuation map of `(5)`
+  is onto and the positive rationals are the free abelian group on the primes.  This is the
+  content the card derives `(5)`--`(6)` from, and the multiplicity-one normalization
+  `ord_p(p) = 1` is `deningerPadicValRat_primeUnit`.
+- `deningerDivisor_vanishing_off_iff`, `deningerDivisor_surjective_off` — **the cofinite sequence
+  `(5)`--`(6)`**: a positive unit is an `S`-unit exactly when its divisor is supported in `S`, so
+  the kernel of the surviving-prime valuations is `ℤ[1/N]^×/{±1}`, and every family supported off
+  `S` is realized.
+- The identification of the `S`-units with the free abelian group on `S`, which is `(6)` in
+  coordinates, is `deningerSUnitsEquiv` in `DeningerSUnitEndpointPage.lean`.
+
+### What cannot be stated in Lean, and why
+
+The log-geometric layer: log structures on `Spec ℤ` and their characteristic monoids `(2)`--`(3)`,
+sheaf inverse image and the pullback `(7)`--`(8)` along Deninger's projection, and Proposition 11.7
+of Deninger's paper used for `(9)`.  mathlib has no logarithmic geometry and no inverse-image
+functor for abelian sheaves along a map of arbitrary spaces in usable form.  What is formalized is
+the arithmetic core those steps are built on — the divisor sequence and its cofinite splitting —
+so the card stays at stage 2.

@@ -272,3 +272,71 @@ Deninger topology.
 
 **Verdict:** `FULLY PROVEN ON PAPER; STRICT ALL-PRIME DIRECT IMAGE AND
 DERIVED GLOBAL-SECTION COMPARISON CLOSED UNCONDITIONALLY`.
+
+## Lean status
+
+### What landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerRestrictedPrimeSheaf.lean`.  Axiom audit for all 4
+declarations: `propext, Classical.choice, Quot.sound`.
+
+- `deningerWeighted_summable_of_finiteCover` — **the gluing estimate `(8)`**: a nonnegative weight
+  family that is summable on each member of a *finite* cover of the index set is summable, because
+  it is dominated by the finite sum of the indicator families.  This is exactly the step where
+  quasi-compactness of the cofinite affine open is used, and it is what makes the two weighted
+  summability conditions of `(4)` local.
+- `deningerWeighted_summable_restrict` — coordinate deletion preserves summability, so restriction
+  is well defined.
+- `deningerZeroExtension_tsum` — **flasqueness**: extension by zero does not change the weighted
+  sums, so the deletion map has a norm-preserving right inverse and every restriction is
+  surjective.
+- `deningerPadicValRat_support_finite` — the residue family `(11)` has finite support: a nonzero
+  rational has nonzero valuation at only finitely many primes, so both weighted norms `(12)` are
+  finite sums.  Proved from the finite support of the factorizations of numerator and denominator.
+
+### What cannot be stated in Lean, and why
+
+The card's objects are sheaves of **complete locally convex spaces**: mathlib has no such category,
+no completed mixed `L¹`/`L²` norm space, no strict inductive limit and no completed direct sum, so
+`(4)`--`(7)` cannot be written as stated, and neither can the derived global sections of `(6)` (no
+derived category of sheaves on a space either — see the sibling card
+`deninger-cofinite-base-direct-image-amplitude-reduction`, whose basis theorem *is* formalized).
+The strict splitting `(10)` is the split-leg situation already proved in
+`DeningerPolarizationAlmostProjection.lean` (`deningerExactLeg_isCompl` applied to
+`Av_p ∘ ι_p = id`), but again only in its algebraic form.
+
+### The sheaf itself
+
+`formal/GaloisForLFunctions/RHTower/DeningerRestrictedPrimeGluing.lean` builds the object and
+proves the sheaf axiom, over an arbitrary family of `ℝ`-modules with two seminorms and two
+nonnegative weight systems — which is `(4)`--`(5)` with the completeness of the value spaces
+dropped, that being the only ingredient mathlib cannot express.  Axiom audit for all 13
+declarations: `propext, Classical.choice, Quot.sound`.
+
+- `deningerPrimeSpectrumPoint`, `deningerPrimeIndex` — the closed point of a prime and the primes
+  of an arithmetic open, so that the index set of `U_N` is the set of `p ∤ N`.
+- `deningerPrimeSections` — **`(4)` as a module**: families supported on the primes of the open
+  with both weighted sums finite.  Closure under addition is the seminorm triangle inequality for
+  the `ℓ¹` condition and `(a+b)² ≤ 2a² + 2b²` for the `ℓ²` one; closure under scalars is seminorm
+  homogeneity.
+- `deningerPrimeRestrict`, `deningerPrimeRestrict_mem` — restriction is coordinate deletion, and it
+  preserves both conditions.
+- `deningerArithmeticOpen_isCompact` — every open of `Spec ℤ` is quasi-compact, because the prime
+  spectrum of a Noetherian ring is a Noetherian space.  This is the exact input the card's proof
+  needs.
+- `deningerPrimeSections_unique_gluing` — **the sheaf axiom in its unique-gluing form**: a
+  compatible family over an arbitrary cover glues, uniquely.  The proof is the card's: reduce the
+  cover to a finite one by quasi-compactness, then dominate the glued weight family by the finite
+  sum of the covering weight families, coordinate by coordinate.
+- `deningerPrimeSections_restrict_surjective` — **flasqueness**: extension by zero is a section of
+  every restriction.
+
+### Remaining
+
+The card stays at stage 2 for one reason only: its value spaces are *complete locally convex*
+spaces, and mathlib has no such category — no completed mixed `L¹`/`L²` space, no strict inductive
+limit, no completed direct sum, and no derived category of sheaves in which to state `(6)`--`(7)`.
+Everything in the proof that does not mention completeness is now formalized: the module structure
+of `(4)`, the sheaf axiom, flasqueness, the finite-cover estimate `(8)`, and the finite support of
+the residue family `(11)`--`(12)`.  The strict splitting `(10)` is the split-leg situation of
+`DeningerPolarizationAlmostProjection.lean`.

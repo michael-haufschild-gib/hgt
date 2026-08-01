@@ -368,9 +368,37 @@ classical solution class by
 `../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-exact-log-remainder-signed-trace-rigidity.md`:
 its symmetric BV pairing supplies the averaged trace, and its favorable sign at penalized extrema
 upgrades the average to a signed pointwise trace without conormality. The precise next theorem is
-now the source-domain lift: every completion-safe square-Evans zero mode must have a bounded
-weak/classical representative. An unbounded weak completed mode is the only remaining pre-trace
-boundary-frequency escape.
+now the weak signed-trace lift. The source-domain boundedness problem is closed in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-completed-eigenmode-atomic-jump-boundedness.md`:
+every completed eigenfunction is a bounded continuous weak logarithmic-Dirichlet solution with
+the optimal half-log boundary bound. The remaining pre-trace escape is eliminated by
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-weak-signed-half-log-trace.md`.
+The exact remainder plus its boundary killing term is a whole-line translation-invariant jump
+after zero extension, so moving mollifiers justify penalized extrema in the weak class. The live
+gate is now trace-zero `H1_0` regularity.
+
+The nonconormal homogeneous part of that gate has now been closed in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-gamma-skew-frequency-flux-liouville.md`.
+For the literal whole-line remainder, the Fourier multiplier is
+
+```text
+r(eta)=psi(1+i eta)+psi(1-i eta)+2 EulerGamma,
+```
+
+which is real on the physical frequency line. After differentiating the homogeneous seam equation,
+the Gamma multiplier and every bounded self-adjoint prime-seam adjacency become exactly skew.
+Consequently
+
+```text
+|eta| ||Fhat(eta)||^2
+```
+
+is constant on each frequency half-line, and an `L2(dL)` homogeneous seam state must vanish.
+This removes the previously retained rapidly oscillating, nonconormal `L2` escape without treating
+the exact remainder as lower order. The live scale-gap debt is now narrower: realize the complete
+support-pruned seam system in a self-adjoint Hilbert carrier, prove that zero signed trace puts its
+homogeneous component in `L2(dL)`, and control the forced Gamma strip strongly enough to obtain
+physical decay exponent greater than `1/2`.
 
 ## 5. `SUZUKI-NO-INTERMEDIATE-BOUNDARY-SCALE`
 
@@ -426,10 +454,13 @@ live new claims.
   solution.  Therefore whole-packet log-quasianalytic separation is false without a source scale
   gap.
 - **Strongest positive survivor:** exact Volterra representation `(5)`, sharp `H1` dichotomy
-  `(7)`, bounded-coupling flat-tail exclusion `(18a)`--`(18h)`, and regular/raw connector `(19)`
-  force the two-channel architecture `(20)`--`(21)`.
+  `(7)`, bounded-coupling flat-tail exclusion `(18a)`--`(18h)`, exact Gamma-skew `L2` Liouville
+  rigidity, and regular/raw connector `(19)` force the two-channel architecture `(20)`--`(21)`.
 - **New insight:** inverse-log flux detects only the corona quotient.  RH proof must exclude an
   intermediate transseries sector and then combine corona no-return with raw Evans positivity.
+  The intermediate sector cannot be a homogeneous self-adjoint `L2` seam state; any survivor must
+  fail the literal Hilbert-carrier realization, fail trace-zero-to-`L2`, or be forced by the
+  regular Gamma strip.
 - **Status:** model theorem paper-proved; external novelty audit found optimal boundary bounds but
   no trace-zero/source-scale-gap theorem; full Suzuki scale gap remains open.  Formal tree lacks
   logarithmic boundary calculus, so an abstract Lean wrapper would not certify this theorem.
@@ -446,10 +477,16 @@ live new claims.
 - [x] boundedly coupled homogeneous flat tails excluded by a Volterra tail theorem
 - [x] bounded pointwise seam systems classified by a nonzero half-log trace alternative
 - [x] exact nonlocal remainder closed on the optimal bounded classical solution class
-- [ ] lift every completion-safe square-Evans zero mode into that bounded classical class
+- [x] lift every completion-safe square-Evans zero mode into the bounded continuous weak class
+- [x] extend the signed trace theorem to the bounded continuous weak class
+- [x] prove both endpoint traces for every completed zero mode
+- [x] prove exact Gamma-skew frequency-current conservation for the nonlocal remainder
+- [x] exclude every homogeneous nonconormal `L2(dL)` seam cycle under bounded self-adjoint coupling
 - [x] strongest two-channel survivor extracted
-- [ ] prove endpoint trace existence for exact Suzuki zero modes
-- [ ] exclude inverse-log-flat non-`H1` homogeneous seam cycles
+- [x] prove endpoint trace existence for exact Suzuki zero modes
+- [ ] realize the complete support-pruned seam system in a self-adjoint Hilbert carrier
+- [ ] prove trace-zero homogeneous seam component belongs to `L2(dL)`
+- [ ] prove forced Gamma-strip decay with physical exponent greater than `1/2`
 - [ ] prove trace-zero `H1_0` lift
 - [ ] identify trace-zero square-Evans kernel with raw Evans kernel
 - [ ] prove corona no-return
@@ -461,3 +498,7 @@ live new claims.
 
 - 2026-07-22 -- Created after source/literature audit falsified whole-packet inverse-log
   separation and replaced it with exact corona/regular two-scale closure.
+- 2026-08-01 -- Exact Fourier multiplier of the literal remainder yields conserved
+  `|eta| ||Fhat||^2`; homogeneous self-adjoint `L2` seam coronas, including nonconormal
+  high-frequency flat states, are impossible. Remaining scale-gap debt is source-carrier
+  realization plus forced Gamma-strip decay.

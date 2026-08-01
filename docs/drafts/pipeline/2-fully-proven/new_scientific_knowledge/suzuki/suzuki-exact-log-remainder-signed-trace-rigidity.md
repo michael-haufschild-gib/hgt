@@ -289,17 +289,20 @@ bounded classical Suzuki zero mode
 The nonlocal remainder is no longer an open trace-integrability gate on this class. It has been
 handled exactly, including nonconormal boundary frequencies.
 
-The live source gate is now earlier and sharper:
+The previously live unbounded-completion gate is now closed by
+`suzuki-completed-eigenmode-atomic-jump-boundedness.md`: every completed Suzuki eigenfunction is a
+bounded continuous weak logarithmic-Dirichlet solution with the optimal half-log boundary bound.
+The weak source gate below is now closed in
+`suzuki-weak-signed-half-log-trace.md`:
 
 ```text
-SUZUKI-BOUNDED-CLASSICAL-LIFT:
-every completion-safe square-Evans zero mode belongs to the bounded weak/classical
-solution class to which the optimal half-log estimate applies.              (20)
+SUZUKI-WEAK-SIGNED-TRACE:
+extend the penalized-extremum argument to bounded continuous weak zero modes,
+or prove source-specific Dini control in an endpoint collar.                 (20)
 ```
 
-Only after `(20)` is proved may trace-zero regularity, corona no-return, and raw Evans positivity
-be attacked. Assuming boundedness or classical pointwise evaluation for a completed zero mode
-would be theorem theatre.
+The moving-mollifier proof uses the exact whole-line jump identity and does not assume classical
+pointwise evaluation at the translated seam orbit. Trace-zero regularity is now the next gate.
 
 ## 6. Hostile tests
 
@@ -334,9 +337,10 @@ to the conjugated signed profile `H`, not through a comparison principle.
 
 ### Exact kill boundary
 
-The theorem does not cover an unbounded form-domain zero mode for which `J u` exists only weakly.
-Such a mode is the only remaining boundary-frequency escape before trace formation. Proving `(20)`
-or constructing a counterexample decides this theorem's exact reach.
+The theorem as written does not cover a bounded continuous form-domain zero mode for which `J u`
+exists only weakly at the penalized contact points. Atomic-jump boundedness excludes unbounded
+completed zero modes, but not this weak-to-pointwise gap. Proving `(20)` or constructing a weak
+counterexample decides this theorem's exact reach.
 
 ## 7. Novelty boundary
 
@@ -369,7 +373,8 @@ replacing `R` by an assumed bounded multiplier.
 - [x] pointwise signed half-log trace proved for bounded-source optimal-boundary solutions
 - [x] exact Suzuki lower terms checked to preserve boundedness
 - [x] literature and corpus novelty boundary audited
-- [ ] prove `SUZUKI-BOUNDED-CLASSICAL-LIFT`
+- [x] prove completed zero modes are bounded continuous weak solutions with optimal boundary rate
+- [x] prove `SUZUKI-WEAK-SIGNED-TRACE`
 - [ ] prove trace-zero completed zero modes enter `H1_0`
 - [ ] prove two-ended corona no-return
 - [ ] prove raw Evans positivity

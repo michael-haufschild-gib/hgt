@@ -3,7 +3,8 @@
 - **ID:** generic-two-local-spectral-monodromy
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM
-- **Status:** `[PROVED HERE]`; Lean formalization pending
+- **Status:** `[PARTIALLY FORMALIZED]`; exact local transposition complete,
+  common-base transport and real-slice genericity pending
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`, obligation O2
 
 ## Statement
@@ -216,21 +217,30 @@ the paper still requires a citation-graph and expert collision audit.
 
 ## Formalization plan
 
-1. Define finite Pauli labels, weight-two star-Ising energy functions, and the
-   isolated-edge construction without matrices larger than finite types.
-2. Prove finite-hyperplane avoidance algebraically, without numerical search.
-3. Formalize the exact two-by-two characteristic factor and root exchange in
-   a polynomial/Galois formulation.
+1. [partial] Define finite Pauli labels, weight-two star-Ising energy
+   functions, and the isolated-edge construction without matrices larger than
+   finite types.  Exact diagonal energy and its two-local Boolean
+   decomposition are complete; explicit Pauli-matrix embedding remains.
+2. [x] Replace finite-hyperplane avoidance by the explicit injective binary
+   disagreement code and symmetric energies `+c,-c`.
+3. [x] Formalize the exact two-by-two characteristic factor and an explicit
+   closed parameter loop.  Lean certifies all eigenvalue lifts, global
+   simplicity at every loop point, zero winding and closed continuation for
+   every nonselected block, and exactly one endpoint transposition.
 4. [x] Prove hypercube connectedness and generation of `Equiv.Perm` by edge
    transpositions.
 5. [x] Formalize the full-symmetry linear-relation rigidity and centered trace
    classification.
-6. Audit `#print axioms`; wire the resulting module into the HTGeometry
-   umbrella before any paper claim is promoted.
+6. [partial] Local capstones pass `#print axioms` with only `propext`,
+   `Classical.choice`, and `Quot.sound`; modules are wired into the HTGeometry
+   umbrella.  Full common-base monodromy and probability-zero transfer remain
+   before promotion to stage 3.
 
-Lean now certifies steps 4 and 5, but not the local Hamiltonian construction or
-its branch/Galois transport.  This card may not move to stage 3 or be cited in
-the paper until the dependency-closed formalization is complete.
+Lean now certifies the complete local Hamiltonian branch loop, its exact
+single-transposition endpoint permutation, steps 4 and 5, and the local axiom
+audit.  It does not yet certify transport of all local loops to one common
+simple-spectrum base or the real-slice almost-sure conclusion.  This card may
+not move to stage 3 or be cited in the paper until those dependencies close.
 
 ## Log
 
@@ -249,3 +259,22 @@ the paper until the dependency-closed formalization is complete.
   transpositions along Boolean-hypercube edges generate the full symmetric
   group. This closes the finite group-theoretic generation step, not the
   analytic realization of each edge transposition by a local Hamiltonian.
+- 2026-08-01 -- Replaced finite-hyperplane avoidance in Step 1 by an explicit
+  binary separation construction and formalized it in
+  `HTGeometry/TwoLocalIsolatedEdgeSpectrum.lean`.  For a selected environment,
+  its disagreement code satisfies `c < 2^m`; the two distinguished layers
+  have energies `c` and `2^m c`.  Their only common energy is the selected
+  zero-code edge.  Lean also proves the exact equality classification and an
+  onsite-plus-distinguished-star bilinear decomposition, so the construction
+  is genuinely two-local.  Foreground compilation passes and the four
+  capstones use only `propext`, `Classical.choice`, and `Quot.sound`.  The
+  analytic branch-loop frontier is now closed by
+  `HTGeometry/OddWindingSheetSwap.lean` and
+  `HTGeometry/TwoLocalEdgeMonodromy.lean`: an explicit inverse-branch loop has
+  selected radicand `(1/4)e^{2πis}`, selected roots exchange sheets, all
+  nonselected radicands stay in the right half-plane with winding zero, and
+  cross-block roots never collide.  Lean labels the complete simple spectrum
+  continuously and proves that its endpoint action is exactly
+  `twoLocalSelectedEdgeSwap`.  The remaining frontier is transport of these
+  loops to one common base in the complex discriminant complement, then
+  real-slice null-set transfer.

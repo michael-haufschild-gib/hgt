@@ -64,32 +64,4 @@ theorem eval_scaleVars_line {σ R : ℝ} (hR : 0 < R) {g : ℂ → ℂ}
   rw [hpt]
   exact hrel _ (mem_verticalStrip_line hR σ t)
 
-/-- **The line restriction is smooth, with the expected derivative chain.** -/
-theorem hasDerivAt_iteratedDeriv_line {σ R : ℝ} (hR : 0 < R) {g : ℂ → ℂ}
-    (hg : DifferentiableOn ℂ g (verticalStrip σ R)) (i : ℕ) (t : ℝ) :
-    HasDerivAt (iteratedDeriv i (fun s : ℝ => g ((σ : ℂ) + (s : ℂ) * Complex.I)))
-      (iteratedDeriv (i + 1) (fun s : ℝ => g ((σ : ℂ) + (s : ℂ) * Complex.I)) t) t := by
-  have hgi : DifferentiableOn ℂ (iteratedDeriv i g) (verticalStrip σ R) :=
-    differentiableOn_iteratedDeriv_verticalStrip hg i
-  have hline := hasDerivAt_line_restriction hR hgi t
-  have hfun : iteratedDeriv i (fun s : ℝ => g ((σ : ℂ) + (s : ℂ) * Complex.I))
-      = fun s : ℝ => Complex.I ^ i * iteratedDeriv i g ((σ : ℂ) + (s : ℂ) * Complex.I) := by
-    funext s
-    exact iteratedDeriv_line_restriction hR hg i s
-  have hderiv : HasDerivAt
-      (fun s : ℝ => Complex.I ^ i * iteratedDeriv i g ((σ : ℂ) + (s : ℂ) * Complex.I))
-      (Complex.I ^ i * (Complex.I * deriv (iteratedDeriv i g)
-        ((σ : ℂ) + (t : ℂ) * Complex.I))) t := hline.const_mul _
-  have hvalue : Complex.I ^ i * (Complex.I * deriv (iteratedDeriv i g)
-      ((σ : ℂ) + (t : ℂ) * Complex.I))
-      = iteratedDeriv (i + 1) (fun s : ℝ => g ((σ : ℂ) + (s : ℂ) * Complex.I)) t := by
-    rw [iteratedDeriv_line_restriction hR hg (i + 1) t, iteratedDeriv_succ']
-    have hcomm : iteratedDeriv i (deriv g) = deriv (iteratedDeriv i g) := by
-      funext z
-      rw [← iteratedDeriv_succ, iteratedDeriv_succ']
-    rw [hcomm]
-    ring
-  rw [hfun, ← hvalue]
-  exact hderiv
-
 end GaloisForLFunctions

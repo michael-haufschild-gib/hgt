@@ -211,3 +211,30 @@ arithmetic construction is exactly:
 - 2026-07-26 — proved positive-cell \(\pi_0\)-invariance and monic MW lift.
 - 2026-07-26 — corrected the arithmetic application: rational-Witt is geometry; the rank
   quotient preserves the ordinary coefficient constants.
+
+## Lean status
+
+### What landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerPositiveCellDegreeZero.lean`.  Axiom audit for all 5
+declarations: `propext, Classical.choice, Quot.sound`.
+
+- `deningerPositiveCell_span_le_ker`, `deningerPositiveCell_degreeZero_injective`,
+  `deningerPositiveCell_quotient_injOn` — **`(2)` in its graded shadow**: attaching relations of
+  positive degree means dividing by the ideal they generate, the degree-zero projection of a graded
+  ring is a ring homomorphism killing every positive-degree generator, hence the whole ideal, so no
+  nonzero degree-zero element dies in the quotient.  Degree zero is preserved, and — as the card
+  insists — only degree zero: nothing here constrains higher degrees.
+- `deningerMonicQuotient_powerBasis`, `deningerMonic_isRegular` — the two ring-theoretic inputs of
+  the monic lift theorem: monicity makes `A[T]/(P)` finite free over `A` via a power basis, and a
+  monic polynomial is a non-zero-divisor, which is what makes the immersion regular of codimension
+  one.
+
+### What cannot be stated in Lean, and why
+
+The `∞`-categorical formulation of `(1)`--`(2)` — the free `E_∞`-algebra on a `1`-connective
+object, the homotopy pushout, the connectivity of positive symmetric powers and the `π₀` pushout
+formula — has no mathlib counterpart, so the graded-ring statement above is the available shadow.
+The Milnor--Witt lift itself needs the cotangent complex, determinant twists and MW fundamental
+classes; the equivariant descent needs coherent group actions.  The card therefore stays at
+stage 2 with its degree-zero theorem and the monic inputs formalized.

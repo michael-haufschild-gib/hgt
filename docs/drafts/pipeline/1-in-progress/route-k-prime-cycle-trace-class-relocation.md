@@ -248,36 +248,43 @@ Lean module:
 Formalized theorem card:
 `../3-formalized/not_new_scientific_knowledge/route-k-prime-cycle-reflection-paired-determinant-law.md`.
 
-## Literal completed unit--double cycle candidate `[CONSTRUCTED FINITELY] [LEAN]`
+## Completed physical-endpoint RVM relocation `[CONSTRUCTED GLOBALLY] [LEAN]`
 
-The corpus contains one off-diagonal kernel satisfying Route K provenance.  Put
-
-```text
-S(s) = seamFluxCochain(s) = -xi'(s)/xi(s),
-
-R(p,q) = (log p/p)(log q/q)
-  Re(2S(2+i log(p/q))-S(1+i log(p/q))).                (K6)
-```
-
-`R` is defined from completed source response before zero enumeration, is real symmetric, and is
-independent of finite packet.  Therefore
+Write `S(s)=seamFluxCochain(s)=-xi'(s)/xi(s)`.  Correct physical orientation and the
+valuation-resolved endpoint correction give
 
 ```text
-H(p,q,r)=R(p,q)R(q,r)R(r,p)                            (K7)
+K_phys(t) = S(1+it)-2S(2+it)+Delta_val(t),
+kappa(t)  = Re((K_phys(t)+K_phys(-t))/2),
+
+B(p,q) = (log p/p)(log q/q) kappa(log p-log q).        (K6)
 ```
 
-is a literal restriction-compatible prime-cycle holonomy.  On three marked primes, the source
-edge flip changes the characteristic determinant by `-4H`; after centered reflection its quartic
-trace difference is
+This replaces the stale coarse-minus-fine sign formerly printed here.  `Delta_val` is an
+absolutely convergent prime-by-valuation Fourier series and defines a self-adjoint Schatten-1
+operator.  The primitive ordinary-prime boundary still has divergent absolute nuclear budget
+`sum_p log(p)/p`; cancellation must precede trace norm.  Nevertheless the **completed**
+source-defined matrix `B` is unconditionally Hilbert--Schmidt: boundary zero-freeness and explicit
+zeta/digamma control give a polynomial vertical bound, while the two physical endpoint weights
+absorb it in `ell2(primes x primes)`.
+
+Let `t_n` be the unique smooth Riemann--von Mangoldt quantile and put
 
 ```text
-32(q_0+q_1+q_2)H(p_0,p_1,p_2).                        (K8)
+q(p_n)=t_n^(-1),                 Q e_(p_n)=q(p_n)e_(p_n),
+K_RVM=[Q,[Q,B]].                                      (K7)
 ```
 
-This closes the previous “find a source cycle formula” problem.  It does **not** prove `H` is
-nonzero on a cofinal family or that the resulting infinite operator is trace class.
+The quantiles are positive and injective and `sum_n t_n^(-2)<infinity`, so `Q` is self-adjoint
+Hilbert--Schmidt.  The double commutator is a source-defined self-adjoint Schatten-1 operator with
+exact marked-prime entries
 
-The existing finite row-balanced completion is forced:
+```text
+<e_p,K_RVM e_q>=(q(p)-q(q))^2 B(p,q).                 (K8)
+```
+
+Thus no packet-dependent row balancing or diagonal shell renormalization is needed.  The old
+finite row-balanced completion remains a useful obstruction:
 
 ```text
 C_P(p,q)=R(p,q)                                         if p!=q,
@@ -294,13 +301,98 @@ sum_(p in P) |C_(P union {r})(p,p)-C_P(p,p)|
   =sum_(p in P)|R(p,r)|.                               (K11)
 ```
 
-Thus naive finite balancing is not a projective compression system.  Any trace-norm cofinal limit
-must prove an actual source cancellation/renormalization theorem for these diagonal shells and a
-nuclear estimate for the off-diagonal kernel.  Entrywise convergence or signed row cancellation is
-insufficient because trace norm controls absolute diagonal mass.
+Thus naive finite balancing is not a projective compression system.  Double-commutator relocation
+is the exact source-side replacement: it performs cancellation at bounded-operator level and lands
+in Schatten-1 before any finite compression.
 
-Lean module:
-`formal/GaloisForLFunctions/RHTower/XiPrimeMarkedUnitDoubleCycleCandidate.lean`.
+The remaining nonvanishing problem is also closed.  Positive local stiffness gives
+`kappa(0)>0`; continuity makes `kappa` positive on a zero neighborhood.  Euler divergence
+`sum_p 1/p=infinity` forces, beyond every prime index, three consecutive primes with both adjacent
+log gaps arbitrarily small: otherwise every two-gap block would contain a fixed positive gap,
+forcing two-step geometric prime growth and convergence of the reciprocal-prime series.  Hence
+cofinally
+
+```text
+B(p_n,p_(n+1)) B(p_(n+1),p_(n+2)) B(p_(n+2),p_n) > 0. (K12)
+```
+
+Injectivity of `q` preserves these triangles under `(K8)`.  Their centered-reflection quartic
+edge-flip signal is nonzero cofinally, so the construction retains determinant-visible source
+orientation at the first even order.
+
+Finally, `K_RVM` has exactly zero marked-prime diagonal and is Hilbert--Schmidt-orthogonal to `Q`.
+Therefore
+
+```text
+||Q+K_RVM||_HS^2 = ||Q||_HS^2 + ||K_RVM||_HS^2
+                  > ||Q||_HS^2.                       (K13)
+```
+
+This is the sharp quadratic admission constraint for the raw fixed-head candidate.
+
+It is not the sharp constraint for Route K itself.  Put
+
+```text
+M_0^src=analyticTraceMoments
+  (normalizedTraceMomentGerm continuedPrimeArchSourceRelativeTrace) 0 > 0.
+```
+
+Reciprocal-RVM square summability gives a finite source-selected prime set `F` with
+`||Q_(F^c)||_HS^2<M_0^src/2`.  There is then a unique positive
+
+```text
+c_F^2 =
+  (M_0^src/2-||Q_(F^c)||_HS^2) / ||Q_F+K_RVM||_HS^2
+```
+
+and the asymptotically locked operator
+
+```text
+A_F=c_F(Q_F+K_RVM)+Q_(F^c)                         (K14)
+```
+
+satisfies
+
+```text
+2||A_F||_HS^2=M_0^src.                              (K15)
+```
+
+This is not global spectral rescaling: outside `F`, the diagonal is exactly the original
+reciprocal smooth-RVM skeleton.  Every off-diagonal source edge is multiplied by the same positive
+`c_F`, so cofinal triangle holonomy and the reflection-even quartic edge-flip signal survive.
+Thus degree-two source incidence is now closed without changing RVM asymptotics.  Exact quartic
+and higher incidence remains the first active obstruction.
+
+The quartic target also passes its first unconditional feasibility audit.  Existing certified
+rational bounds imply
+
+```text
+0 < M_1^src < 1/5000,
+1/25 < M_0^src,
+```
+
+and hence
+
+```text
+0 < M_1^src < (M_0^src)^2/2.                         (K16)
+```
+
+Formula `(K16)` is the strict interior of the universal reflected self-adjoint two-moment purity
+cone.  Therefore quartic incidence is not killed by sign or moment size.  The hard problem is
+simultaneous matrix incidence for the same source-cycle operator.
+
+Lean modules:
+
+```text
+XiPrimeMarkedPhysicalEndpointBoundaryNuclearObstruction.lean
+XiPrimeMarkedPhysicalEndpointBoundaryGrowth.lean
+XiPrimeMarkedPhysicalEndpointHilbertSchmidt.lean
+SchattenDoubleCommutatorRelocation.lean
+PrimeLogTripleCluster.lean
+XiPrimeMarkedPhysicalEndpointCofinalHolonomy.lean
+XiPrimeMarkedPhysicalEndpointRVMRelocation.lean
+XiPrimeMarkedPhysicalEndpointRVMQuadraticIncidence.lean
+```
 
 ## Heavy-conjecture / hostile-attack ledger
 
@@ -350,19 +442,37 @@ abstract carrier rejected as Route K progress.
 
 ### K4.5 — cofinal prime--Gamma cycle relocation
 
-**Frozen conjecture.** Use the literal edge kernel `(K6)` and forced finite balancing `(K9)` to
-construct the correction in clauses 1--5.  Prove a source renormalization whose finite diagonal
-shells satisfy trace-norm Cauchy control, retain the cycle holonomies `(K7)`, realize every source
-moment `(S2)`, and give the global centered-Xi determinant.
+**Conjecture.** The corrected completed endpoint kernel admits an unconditional cofinal
+trace-class relocation retaining nonzero cycle holonomy.
 
-**Current attack boundary.** Generic trace damping, finite phase naturality, all flat switching,
-target-fed ordering, abstract determinant realization, and reflection-blindness do not construct
-or refute this object.  Compatible source cycle holonomies are now explicit.  Exact next hard
-theorem is the cofinal shell estimate or renormalization forced by `(K10)--(K11)`, followed by the
-operatorial all-moment identity.  No current theorem proves nonvanishing of a cofinal holonomy
-family, trace-norm convergence, or even the quartic source-moment match for `(K6)`.
+**Attack.** Direct nuclear expansion fails sharply at the primitive boundary.  Moving cancellation
+before trace norm and applying the canonical second commutator `(K7)` succeeds: `K_RVM` is
+self-adjoint Schatten-1, its exact source matrix is `(K8)`, nonzero triangles occur cofinally by
+Euler divergence plus local stiffness, and the first reflection-even quartic signal survives.
 
-**Verdict:** `OPEN — ROUTE K PIVOT`.
+**Verdict:** `PROVED ON PAPER AND IN LEAN`.
+
+### K4.6 — exact centered-Xi incidence for the constructed relocation
+
+**Frozen conjecture.** Put `A_+=Q+K_RVM`, `A=A_+ directSum (-A_+)`, and prove
+
+```text
+det_2(I-zA)=XiC(z)/XiC(0)
+```
+
+from completed Euler--Gamma incidence, without using the Xi divisor.
+
+**Attack.** For the literal fixed head, `(K13)` still makes exact incidence require equality of
+the source zeroth moment with one specific Hilbert--Schmidt energy.  No theorem currently proves
+or refutes that raw normalization equality.
+
+That equality is not a route-level obstruction.  The finite-head normalization `(K14)` leaves the
+entire cofinite RVM tail exact, uses only the already constructed source moment, and proves the
+quadratic equation `(K15)` unconditionally.  Its positive scale preserves every nonzero source
+edge and the cofinal quartic signal.  Exact quartic incidence must now match the source first
+moment, followed by the whole source moment tower and global entire determinant.
+
+**Verdict:** `DEGREE TWO PROVED; OPEN — QUARTIC/ALL-MOMENT/GLOBAL DETERMINANT INCIDENCE`.
 
 ## External primary-source boundary (1 August 2026)
 
@@ -384,20 +494,20 @@ No exact-match source was found.  This is noncollision evidence, not a priority 
 
 ## Lean and infrastructure boundary
 
-The finite cycle theorem is dependency-closed and formalized unconditionally.  The infinite
-trace-class net, Schatten convergence, global regularized determinant, and exact Xi comparison are
-not yet constructed, so Lean must not replace them with a finite wrapper or an assumed proposition.
-Missing honest infrastructure is:
+The marked-prime Hilbert space, smooth reciprocal RVM skeleton, completed endpoint operator,
+Schatten-1 relocation, cofinal nonzero cycle coordinates, first reflection-even quartic signal,
+finite-head/cofinite-tail split, unique positive quadratic admission scale, and exact degree-two
+source incidence are dependency-closed and formalized unconditionally.  The source pair
+`(M_0^src,M_1^src)` is also proved to lie strictly inside the reflected self-adjoint two-moment
+purity cone.  Missing hard knowledge is now:
 
-1. a marked-prime finite-compression system with compatible inclusions;
-2. cofinal nonvanishing and quantitative control of the constructed unit--double cycle
-   coordinates `(K7)`;
-3. a diagonal shell renormalization satisfying `(K10)--(K11)` and trace-norm Cauchy control for the
-   full correction net;
-4. operatorial source-moment lift `(S2)` for every order, with the quartic closed-cycle identity
-   fixed before the limit (scalar targets `(S1)` already exist; quadratic is orientation-blind and
-   odd orders cancel under centered reflection);
-5. global genus-one determinant comparison with the completed Euler--Gamma source.
+1. operatorial source-moment lift `(S2)` at quartic and every higher even order;
+2. proof that these exact moments arise from one compatible prime-source operator rather than
+   separately tuned finite normalizations;
+3. analytic upgrade from the local operator Fredholm germ to the global centered-Xi entire
+   determinant.
+
+These are incidence theorems, not missing boundedness or convergence infrastructure.
 
 ## Log
 
@@ -416,3 +526,20 @@ Missing honest infrastructure is:
   instantiated determinant/quartic laws.  Formalized exact finite-balancing obstruction: adding one
   prime changes every old diagonal by the negative new pair column, with exact absolute shell mass.
   Active core narrowed to shell renormalization, trace ideal, cofinal holonomy, and moment incidence.
+- 2026-08-01 — corrected physical endpoint orientation, separated divergent primitive nuclear
+  budget from absolutely nuclear valuation correction, proved polynomial boundary growth, and
+  constructed full completed endpoint as a self-adjoint Hilbert--Schmidt marked-prime operator.
+- 2026-08-01 — constructed smooth reciprocal RVM Hilbert--Schmidt skeleton and canonical
+  double-commutator Schatten-1 relocation.  Proved exact matrix incidence, zero diagonal,
+  self-adjointness, and Hilbert--Schmidt Pythagorean quadratic budget.
+- 2026-08-01 — derived cofinal three-prime log clusters from Euler divergence alone; combined with
+  source local stiffness to prove cofinal positive completed-endpoint triangle holonomy and
+  nonzero centered-reflection quartic edge-flip signal.
+- 2026-08-01 — disproved the apparent route-level rigidity of the raw quadratic budget: selected a
+  finite RVM head by summable-tail control, proved a unique positive source scale, retained the
+  exact cofinite RVM diagonal and every cofinal source cycle, and matched the source zeroth moment
+  exactly.  Remaining core begins at quartic source incidence, then all moments/global determinant.
+- 2026-08-01 — proved the quartic source target lies strictly inside the necessary reflected
+  self-adjoint purity cone, using the existing source bounds `M_1^src<1/5000` and
+  `M_0^src>1/25`.  Quartic remains live and is narrowed to simultaneous prime-cycle matrix
+  incidence, not positivity or scalar moment feasibility.

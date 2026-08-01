@@ -32,6 +32,20 @@ def schattenDoubleCommutator
     (2 : ℂ) • ((Q ∘L B) ∘L Q) +
       (B ∘L Q) ∘L Q
 
+/-- The double commutator is itself Hilbert--Schmidt whenever the skeleton is
+Hilbert--Schmidt. -/
+theorem schattenDoubleCommutator_isHilbertSchmidt
+    {Q B : H →L[ℂ] H} (hQ : Q.IsHilbertSchmidt) :
+    (schattenDoubleCommutator Q B).IsHilbertSchmidt := by
+  have hleft : ((Q ∘L Q) ∘L B).IsHilbertSchmidt :=
+    (hQ.comp_left Q).comp_right B
+  have hmiddle : ((Q ∘L B) ∘L Q).IsHilbertSchmidt :=
+    (hQ.comp_right B).comp_right Q
+  have hright : ((B ∘L Q) ∘L Q).IsHilbertSchmidt :=
+    (hQ.comp_left B).comp_right Q
+  rw [schattenDoubleCommutator]
+  exact (hleft.sub (hmiddle.smul 2)).add hright
+
 /-- A Hilbert--Schmidt skeleton makes the double commutator trace class against every bounded
 operator. -/
 theorem schattenDoubleCommutator_memSchattenClass_one

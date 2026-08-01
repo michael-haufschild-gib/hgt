@@ -49,21 +49,21 @@ noncomputable def nerveIsoRangeOfAntitone {α β : Type u} [PartialOrder α] [Pa
 variable {F E : Type u} [Field F] [Field E] [Algebra F E] [FiniteDimensional F E]
 variable {K V : Type u} [Field K] [AddCommGroup V] [Module K V]
 
-/-- The horizon field of a family of horizons: the fixed field of its stabiliser. -/
-def horizonField (G : {S : Submodule K V // S ≠ ⊥ ∧ S ≠ ⊤} → Subgroup (E ≃ₐ[F] E))
+/-- The fixed field of the stabiliser of a horizon, as a function of the horizon. -/
+def stabiliserFixedField (G : {S : Submodule K V // S ≠ ⊥ ∧ S ≠ ⊤} → Subgroup (E ≃ₐ[F] E))
     (S : {S : Submodule K V // S ≠ ⊥ ∧ S ≠ ⊤}) : IntermediateField F E :=
   fixedField (G S)
 
 omit [FiniteDimensional F E] in
 /-- **The horizon field assignment reverses the order.** -/
-theorem horizonField_antitone {G : {S : Submodule K V // S ≠ ⊥ ∧ S ≠ ⊤} → Subgroup (E ≃ₐ[F] E)}
-    (hmono : Monotone G) : Antitone (horizonField (F := F) (E := E) G) :=
+theorem stabiliserFixedField_antitone {G : {S : Submodule K V // S ≠ ⊥ ∧ S ≠ ⊤} → Subgroup (E ≃ₐ[F] E)}
+    (hmono : Monotone G) : Antitone (stabiliserFixedField (F := F) (E := E) G) :=
   fun _ _ h => fixedField_antitone (hmono h)
 
 /-- **And reflects it, as soon as the stabiliser assignment does.** -/
-theorem horizonField_reflects {G : {S : Submodule K V // S ≠ ⊥ ∧ S ≠ ⊤} → Subgroup (E ≃ₐ[F] E)}
+theorem stabiliserFixedField_reflects {G : {S : Submodule K V // S ≠ ⊥ ∧ S ≠ ⊤} → Subgroup (E ≃ₐ[F] E)}
     (hreflG : ∀ S T, G S ≤ G T → S ≤ T) (a b : {S : Submodule K V // S ≠ ⊥ ∧ S ≠ ⊤})
-    (h : horizonField (F := F) (E := E) G a ≤ horizonField G b) : b ≤ a :=
+    (h : stabiliserFixedField (F := F) (E := E) G a ≤ stabiliserFixedField G b) : b ≤ a :=
   hreflG b a (fixedField_reflects_le h)
 
 /-- **The canonical simplicial isomorphism between the horizon complex and the order complex of the
@@ -74,8 +74,8 @@ noncomputable def horizonComplexIso
     (G : {S : Submodule K V // S ≠ ⊥ ∧ S ≠ ⊤} → Subgroup (E ≃ₐ[F] E))
     (hmono : Monotone G) (hreflG : ∀ S T, G S ≤ G T → S ≤ T) :
     nerveFunctor.obj (Cat.of ({S : Submodule K V // S ≠ ⊥ ∧ S ≠ ⊤})ᵒᵈ)
-      ≅ nerveFunctor.obj (Cat.of (Set.range (horizonField (F := F) (E := E) G))) :=
-  nerveIsoRangeOfAntitone _ (horizonField_antitone hmono) (horizonField_reflects hreflG)
+      ≅ nerveFunctor.obj (Cat.of (Set.range (stabiliserFixedField (F := F) (E := E) G))) :=
+  nerveIsoRangeOfAntitone _ (stabiliserFixedField_antitone hmono) (stabiliserFixedField_reflects hreflG)
 
 /-- **The horizon complex has the homology of the building**, in every degree and with any
 coefficients. -/
@@ -85,7 +85,7 @@ noncomputable def horizonComplexHomologyIso
     [Limits.HasCoproducts.{u} C] [Preadditive C] [CategoryWithHomology C] (R : C) (n : ℕ) :
     (nerveFunctor.obj (Cat.of ({S : Submodule K V // S ≠ ⊥ ∧ S ≠ ⊤})ᵒᵈ)).homology R n
       ≅ (nerveFunctor.obj
-          (Cat.of (Set.range (horizonField (F := F) (E := E) G)))).homology R n :=
+          (Cat.of (Set.range (stabiliserFixedField (F := F) (E := E) G)))).homology R n :=
   (SSet.homologyFunctor R n).mapIso (horizonComplexIso G hmono hreflG)
 
 /-! ## The homology of the horizon complex -/
@@ -97,7 +97,7 @@ theorem isZero_horizonComplexHomology [FiniteDimensional K V]
     [Limits.HasCoproducts.{u} C] [Preadditive C] [CategoryWithHomology C] (R : C) (n : ℕ)
     (hn : Module.finrank K V - 1 ≤ n) :
     Limits.IsZero ((nerveFunctor.obj
-      (Cat.of (Set.range (horizonField (F := F) (E := E) G)))).homology R n) := by
+      (Cat.of (Set.range (stabiliserFixedField (F := F) (E := E) G)))).homology R n) := by
   haveI := buildingHasDimensionLT K V
   exact Limits.IsZero.of_iso
     (isZero_homology_of_hasDimensionLT _ (Module.finrank K V - 1) R n hn)
@@ -111,7 +111,7 @@ noncomputable def horizonComplexHomologyZeroIso [FiniteDimensional K V]
     (hN : 3 ≤ Module.finrank K V) {C : Type*} [Category C]
     [Limits.HasCoproducts.{u} C] [Preadditive C] [CategoryWithHomology C] (R : C) :
     (nerveFunctor.obj
-      (Cat.of (Set.range (horizonField (F := F) (E := E) G)))).homology R 0 ≅ R := by
+      (Cat.of (Set.range (stabiliserFixedField (F := F) (E := E) G)))).homology R 0 ≅ R := by
   haveI : SSet.IsConnected
       (nerveFunctor.obj (Cat.of (({S : Submodule K V // S ≠ ⊥ ∧ S ≠ ⊤})ᵒᵈ))) :=
     buildingIsConnected K V hN

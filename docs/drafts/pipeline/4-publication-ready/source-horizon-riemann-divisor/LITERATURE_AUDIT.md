@@ -109,3 +109,120 @@ Not defensible:
 
 The universal identities are short enough that an uncatalogued prior occurrence is plausible. Significance cannot rest on algebraic difficulty. It must rest on explanatory compression plus the collision theorem: one forced carrier accounts for analytic escape, differential-matroid collision, Ward mass escape, Li dynamics, and exact height renormalization. Any submission should make that conjunction—not elementary coherent-state algebra—the lead contribution.
 
+## Update: fibre--character conservation, shell fibre, and orientation--capacity
+
+Search date: 2026-08-01.
+
+Additional targeted searches covered:
+
+- equivariant descent of real exponential characters into isometric or unitary targets;
+- invariant positive-semidefinite forms for reflected real-character pairs;
+- largest-prime-valuation shells and \(k\)-free Dirichlet series;
+- differential-algebraic independence of
+  \(\zeta((m+1)s)^{-1}-\zeta(ms)^{-1}\) over the zeta differential field;
+- Cayley phases applied to antisymmetric rank-two kernels;
+- bounded polarization bounds for Julia/Gamma or Riemann-source exterior currents;
+- Hedenmalm theta-null radicals, Sonin/Calkin compactness, and Ward four-unit positivity.
+
+Primary-search results included Hedenmalm, *Spectral interpretation of Riemann zeta zeros*,
+arXiv:2606.17494; Kawalec, *On the series expansion of k-free Dirichlet series and its analytical
+continuation*, arXiv:2603.22775; Voros’s Keiper--Li asymptotics; and Connes--Consani’s scaling
+Hamiltonian. No exact collision was found for the theorem package below. Search failure remains
+evidence, not proof of absence.
+
+| Added component | Prior status | Novelty credit assigned |
+|---|---|---|
+| \(T=0\) or neutral rate for equivariant norm-conservative descent | Elementary eigenvector rigidity | None as abstract linear algebra |
+| Reflected nonzero real characters have only hyperbolic invariant quadratic forms | Elementary \(2\times2\) representation theory | None as abstract classification |
+| Entire Riemann transverse fibre carries the same source character, so conservative descent erases the fibre off horizon | No source-derived occurrence found | Candidate new Riemann support theorem |
+| \(k\)-free Euler products and largest-valuation partition | Classical/near-classical | None |
+| Joint differential independence of all shell multipliers over \(\mathbb C(s)\langle\zeta\rangle\), with common zero-free half-plane and divisor replication | No collision found | Candidate new arithmetic fibre theorem |
+| Normalized Cayley phase turns the calibrated exterior cell into a global positive-square current | Cayley transform and scalar identity elementary | No abstract credit; candidate new calibrated realization |
+| Every bounded polarization, including the sign-correct Cayley chart, is logarithmically too small on the certified macroscopic block | No collision found | Candidate new orientation--capacity theorem |
+| Exact reflected Hellinger sewing has norm beyond every polynomial in physical Suzuki aperture | No collision found | Candidate new quantitative filtered no-go |
+| Wold quadrant boundedness, prime-seam Calkin compactness, and four-unit Ward positivity share the source-rate equalizer | Individual endpoint criteria exist internally; conjunction not found externally | Candidate new explanatory classification |
+
+### Revised defensible novelty statement
+
+> The paper derives an exact source character from meromorphic residue transport and proves that
+> every equivariant norm-conservative descent of its predeclared nonzero analytic-resolution
+> vector either erases it or is supported on the neutral source horizon.  For the Riemann source, independent exponent shells,
+> dense theta radicals, Calkin corners, Ward positivity, reflected Rees sewing, and a new
+> orientation--capacity collision become exact specializations of that fibre--character law.
+
+Still not defensible:
+
+- that the abstract norm argument or Cayley transform is new;
+- that every Hilbert--Pólya, Connes--Consani, CCM, Hedenmalm, Sonin, or Ward implementation is
+  impossible;
+- that faithful equivariant norm-conservative descent exists for the actual Riemann source;
+- zero exclusion or RH.
+
+## Update: summable complete conormal landing
+
+Search date: 2026-08-01.
+
+Targeted exact-phrase and structural searches covered reciprocal differences
+\(\zeta((m+1)s)^{-1}-\zeta(ms)^{-1}\), maximum-prime-exponent partitions, countable \(k\)-free
+resolutions, analytic absolute summability on \(\operatorname{Re}s\ge1/2\), and multiplicity-preserving
+right-half conormal frames.
+
+Kawalec’s 2026 paper treats one \(k\)-free Dirichlet series
+\(\zeta(s)/\zeta(ks)\), its Laurent expansion, and analytic continuation.  Niven’s classical work
+and OEIS A051903 treat average properties of the maximum exponent in an integer’s prime
+factorization.  Standard Euler-product references contain the \(k\)-free identity.  None of the
+searched sources states the combined result
+\[
+ M_{K,0}=\zeta(Ks)^{-1},\quad
+ M_{K,j+1}=\zeta((K+j+1)s)^{-1}-\zeta((K+j)s)^{-1},
+ \quad \sum_j|M_{K,j}(s)|<\infty,\quad\sum_jM_{K,j}(s)=1
+\]
+on the zero-free closed-right domain, nor its fixed-family, exact-multiplicity conormal
+consequence for \(\xi\).
+
+| Component | Prior status | Novelty credit assigned |
+|---|---|---|
+| Individual \(k\)-free identity \(\zeta(s)/\zeta(ks)\) | Classical; explicit in current \(k\)-free literature | None |
+| Maximum prime-exponent statistic | Classical arithmetic statistic | None |
+| Analytic \(\ell^1\) resolution of one by all adjacent reciprocal-zeta depths on \(\operatorname{Re}s\ge1/2\) for \(K\ge12\) | No collision found | Candidate new analytic source theorem |
+| One predeclared countable positive resolution retains exact \(\xi\)-multiplicity at every closed-right divisor point | No collision found | Candidate new conormal-landing theorem |
+
+Search failure does not establish priority.  The defensible claim is the exact conjunction and its
+Riemann-divisor consequence, not invention of \(k\)-free integers or telescoping reciprocal zeta
+values.
+
+## Update: analytic-resolution selection and quantitative exterior singularity
+
+Search date: 2026-08-01.
+
+Exact-phrase and structural searches covered analytic \(\ell^1\) resolutions of unity coupled to
+real exponential characters, reciprocal-zeta adjacent-depth partitions, Cayley polarization of
+antisymmetric kernels, and square-root-logarithmic lower bounds for Riemann-source exterior
+capacity.  The closest primary sources found were Kawalec's treatment of one \(k\)-free series and
+Ball--Kaliuzhnyi-Verbovetskyi's general Cayley-inner positive-kernel realizations.  Neither contains
+the countable reciprocal-zeta resolution, its closed-right divisor landing, or the calibrated
+first-clock capacity estimate.
+
+The abstract implications
+\[
+\sum_jm_j(\rho)=1\Longrightarrow m(\rho)\ne0,\qquad
+\|e^\nu x\|=\|x\|,\ x\ne0\Longrightarrow\nu=0
+\]
+are elementary and receive no priority claim.  Candidate novelty lies in proving that the
+predeclared positive Riemann resolution satisfies the analytic hypotheses at every closed-right
+point and then applying the character alternative to that actual \(\ell^1\) vector, rather than to
+a decorative or post-selected fibre.  The stable inequality
+\[
+\|TU_\nu\mathbf m-VT\mathbf m\|
+\ge |e^\nu-1|\,\|T\mathbf m\|
+\]
+is likewise an elementary reverse-triangle estimate; its novelty credit is limited to the
+source-derived Riemann vector and the resulting quantitative adapter criterion.
+
+No searched source contains the calibrated conclusion
+\[
+\log(2m^4)\le7200(\log4)^2B_m^2
+\]
+for a first-clock exterior polarization which dominates the certified bad-mass square.  The
+underlying operator-norm estimate is elementary; novelty credit is limited to the exact arithmetic
+block, its source-defined orientation, and the forced square-root-logarithmic singularity.

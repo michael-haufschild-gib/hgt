@@ -196,8 +196,23 @@ on the optimal bounded classical solution class in
 `../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-exact-log-remainder-signed-trace-rigidity.md`:
 weighted jump-form duality plus penalized extrema force the signed pointwise trace without
 conormality. The live E1 gate is the earlier source-domain theorem that every completion-safe
-square-Evans zero mode has such a bounded weak/classical representative. This is a strict source
-reduction, not whole-route closure.
+square-Evans zero mode has such a bounded weak/classical representative. Its bounded weak half is
+now proved in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-completed-eigenmode-atomic-jump-boundedness.md`:
+the literal von-Mangoldt block is a positive atomic jump form minus scalar potential, so every
+completed eigenfunction is bounded, continuous, and satisfies the optimal half-log boundary bound.
+The weak trace gate is closed in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-weak-signed-half-log-trace.md` by the
+whole-line jump identity and moving-mollifier extremal transfer. Every completed zero mode has two
+signed endpoint traces. The live E1 gate is now exactly `SUZUKI-TRACE-ZERO-H1`: prove that a
+completed zero mode with both traces zero belongs to `H1_0(-a,a)`. The exact homogeneous
+nonconormal escape has now been removed in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-gamma-skew-frequency-flux-liouville.md`:
+the literal Gamma jump multiplier and bounded self-adjoint prime coupling are skew after
+frequency differentiation, forcing conservation of `|eta| ||Fhat(eta)||^2`; an `L2(dL)`
+homogeneous seam state is therefore zero. E1 is reduced further to completed self-adjoint seam
+realization, trace-zero-to-`L2`, and forced Gamma-strip decay of physical exponent greater than
+`1/2`. This is a strict source reduction, not whole-route closure.
 
 Hostile verdict: `SURVIVES PRELIMINARY ATTACK`. Generic logarithmic ellipticity is insufficient,
 whole-packet inverse-log grading is false, and the completed domain has a genuine corona. The

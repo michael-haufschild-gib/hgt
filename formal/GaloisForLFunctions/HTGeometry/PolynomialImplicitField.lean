@@ -9,7 +9,10 @@ point can be solved there for the top variable: near that point the relation is 
 implicit algebraic differential equation into the explicit form the jet-uniqueness theorems consume.
 
 The proof is the inverse function theorem applied to `(w,u) ↦ (w, P(w,u))`, whose derivative is
-invertible exactly when the derivative of `P` in `u` is nonzero.
+invertible exactly when the derivative of `P` in `u` is nonzero.  `ImplicitLipschitzGraph` proves a
+quantitative variant: there the Lipschitz graph is produced on a region where the derivative stays
+near a fixed functional, a hypothesis one has to establish; here nonvanishing at a single point
+suffices and the region is produced by the inverse function theorem.
 -/
 
 open Filter Topology MvPolynomial
@@ -96,7 +99,7 @@ noncomputable def implicitCLE (A : (Fin n → ℂ) →L[ℂ] ℂ) {c : ℂ} (hc 
 
 /-- **Solving a polynomial relation for its last variable.**  Where the derivative in the last
 variable does not vanish, the relation is locally the graph of a Lipschitz function. -/
-theorem exists_lipschitz_implicit (P : MvPolynomial (Fin (n + 1)) ℂ)
+theorem exists_lipschitz_implicit_of_polynomial (P : MvPolynomial (Fin (n + 1)) ℂ)
     (w₀ : Fin n → ℂ) (u₀ : ℂ)
     (hP : MvPolynomial.eval (Fin.snoc w₀ u₀) P = 0)
     (hsep : deriv (fun u : ℂ => MvPolynomial.eval (Fin.snoc w₀ u) P) u₀ ≠ 0) :

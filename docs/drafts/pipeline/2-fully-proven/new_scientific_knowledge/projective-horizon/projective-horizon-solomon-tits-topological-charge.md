@@ -281,3 +281,38 @@ class to positivity, a Weil criterion, or zero location.
   proved.
 
   Unchanged: `(4)`, `(5)`, `(6)` are homotopy statements and Solomon--Tits itself is not encoded.
+
+- 2026-08-02 — **`(3)` is formalized: the horizon complex *is* the order complex of the building.**
+  `formal/GaloisForLFunctions/HTGeometry/HorizonComplexIso.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  horizonComplexIso :
+    nerve ({S : S ≠ ⊥ ∧ S ≠ ⊤}ᵒᵈ) ≅ nerve (Set.range (fun S => fixedField (G S)))
+  ```
+
+  for every stabiliser assignment `G` that is monotone and order-reflecting.  This is the card's
+  canonical simplicial isomorphism `(3)`, and it needs no topology: an antitone, order-reflecting map
+  is an order isomorphism from the opposite order onto its range (`orderIsoRangeOfAntitone`), and an
+  order isomorphism induces an isomorphism of nerves (`orderIsoNerveIso`).  A strict chain of
+  common-horizon fields is literally a flag of nonzero proper subspaces, which is `(1) ↔ (2)`.
+
+  The two hypotheses are exactly the ones the parent theorem owes and no more.  Monotonicity is
+  already discharged in general by `horizonStabilizer_monotone`; order-reflection is the detection
+  property, and `horizonStabilizer_injective` reduces it to detection on elementary horizons, with
+  `eq_of_lines_le_iff` supplying the generation half.
+
+  Consequences, both in the same module:
+
+  ```text
+  isZero_horizonComplexHomology  :  N - 1 ≤ n  →  H_n(Δ_HT(V); R) = 0
+  horizonComplexHomologyZeroIso  :  3 ≤ N      →  H_0(Δ_HT(V); R) ≅ R
+  ```
+
+  so `(5)` holds at both ends of the range, for any coefficients — and at `N = 3` it holds
+  completely, the homology being concentrated in degree `N - 2 = 1`.  What is still open is the
+  middle range `1 ≤ j ≤ N - 3` and the Steinberg identification `(6)`; both are statements about
+  `Δ_Tits(V*)` alone, which is what the card cites Solomon--Tits for.
+
+  Supporting general lemma: `orderIsoRange`, a monotone order-reflecting map is an order isomorphism
+  onto its range.

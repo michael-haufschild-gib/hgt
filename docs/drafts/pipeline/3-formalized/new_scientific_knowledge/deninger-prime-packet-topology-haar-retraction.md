@@ -573,19 +573,52 @@ sections in degree zero and nothing above.
   \(B_p\times S_p\). `deningerPrimeFibreCandidateFine` gives the finite subordinate partition
   required by the smooth/locally-constant packet coefficient.
 
-This is a construction internal to the candidate unit group. It does not formalize Deninger's
-external identification of pointwise-continuous automorphisms of \(\mu_{p'}\) with \(U_p\), nor his
-comparison of the resulting mapping torus with the literal characteristic-\(p\) fibre.
+### The pointwise automorphism and literal prime-fibre comparison landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerPrimeMultiplicativeAutomorphismComparison.lean`,
+`DeningerPrimeMultiplicativeAutomorphismTopology.lean`, and
+`DeningerPrimeFibreComparison.lean`. Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerPrimeArithmeticMulAutCompatibleTowerMulEquiv` proves
+  \[
+  \operatorname{Aut}(\overline{\mathbb F}_p^\times)
+  \cong
+  \operatorname{Aut}_{\mathrm{compat}}(\mu_{\ell^k})_{\ell\ne p,k\ge0}.
+  \]
+  The proof decomposes the full torsion group into height-one primary components, proves the
+  characteristic-\(p\) component is zero, reconstructs an automorphism from every compatible
+  away-prime tower action, and proves finite-stage restriction jointly injective.
+- `deningerPrimePacketArithmeticMulAutMulEquiv` composes that theorem with the already formalized
+  prime-power inverse limit, giving \(U_p\cong
+  \operatorname{Aut}(\overline{\mathbb F}_p^\times)\).
+  `deningerPrimePacketArithmeticMulAutMulEquiv_frobenius_apply` proves that the diagonal packet
+  prime becomes literal \(x\mapsto x^p\) on every unit, not merely on each finite stage.
+- `deningerPrimePacketArithmeticMulAutContinuousMulEquiv` equips finite root-automorphism groups
+  with discrete topology, compatible towers with product/subtype topology, and the full
+  automorphism group with the induced pointwise topology. It proves the algebraic equivalence is
+  a homeomorphism of topological groups; compactness, Hausdorffness, and total disconnectedness
+  follow rather than being transported as definitions.
+- `deningerPrimePacketArithmeticContinuousMulEquiv_map_frobeniusClosure` identifies the two closed
+  Frobenius subgroups exactly.
+  `deningerPrimePacketArithmeticFrobeniusQuotientContinuousMulEquiv` descends to the quotient
+  topological groups, and `deningerPrimeFibreCandidateArithmeticHomeomorph` identifies the
+  formalized packet mapping torus with the literal arithmetic multiplicative prime fibre.
+
+This closes the former pointwise-automorphism, compatible inverse-limit, Frobenius-quotient, and
+internal arithmetic mapping-torus input. It does not formalize Deninger's external map from that
+mapping torus into the rational-Witt source packet, identify the resulting multiplicative prime
+fibre with the full arithmetic relevant complex, or construct the missing global cohomology theory.
 
 ### Remaining
 
-Both remaining items are inputs the card cites rather than theorems the card proves.
+Two cited inputs remain outside the present formal library.
 
-1. **Deninger's source comparison:** identify the formalized \(U_p\) with the automorphism group of
-   \(\mu_{p'}\) in the topology of pointwise convergence, then identify the formalized quotient
-   mapping torus with the literal packet \(\Gamma_p\) using his Theorem 7.10 and Corollary 7.9. The
-   diagonal unit, closed-subgroup quotient, trivial Frobenius class, quotient profiniteness,
-   prime-period product mapping torus, and fine packet coefficient are now formalized internally.
+1. **Deninger's rational-Witt source comparison.** The candidate packet mapping torus is now
+   homeomorphic to the pointwise arithmetic multiplicative quotient internally. Formalization
+   still lacks Deninger's external map from this mapping torus to the characteristic-\(p\) packet
+   inside his rational-Witt space and the compact-to-Hausdorff upgrade using his Theorem 7.10 and
+   Corollary 7.9.
 2. **The comparison of Čech with derived-functor cohomology.**  The card asserts fineness implies
    acyclicity as standard.  Both halves of the Čech computation are now proved — exactness in every
    positive degree (`deningerCech_exact`) and the global sections in degree zero

@@ -95,3 +95,35 @@ invariants.  It identifies the obstruction to doing so.
 
 - 2026-07-26 — Isolated the canonical coarse-moduli exactness
   obstruction forced by Deninger's underived invariant sheaf.
+
+## Lean status
+
+### What landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerCoarseStackScalarNoGo.lean`, on top of the already
+formalized dense-time core in `DeningerArithmeticPureSuspensionNoGo.lean`.  Axiom audit for all 5
+declarations: `propext, Classical.choice, Quot.sound`.
+
+- `deningerScalarFlow_transport` — **the transport step of `(3)`**: if the comparison induces an
+  isomorphism intertwining the two flows, a scalar flow on the stack side is a scalar flow, with
+  the same scalars, on the coarse side.  Hypothesis 1 of the theorem enters exactly here, as the
+  equivariant isomorphism it provides.
+- `deningerPointSpectrum`, `deningerScalarGenerator_pointSpectrum_subset` — a scalar generator has
+  at most its weight in the point spectrum.
+- `deningerScalarGenerator_no_two_eigenvalues`,
+  `deningerScalarGenerator_not_scalar_of_two_eigenvalues` — **the conclusion**: two distinct point
+  eigenvalues are impossible for a scalar generator, so a spectrum with two distinct points — in
+  particular the infinite nontrivial zeta divisor — cannot be realized, and any coefficient that
+  realizes it has nonzero comparison defect `(4)`.
+- Hypothesis 3, strong continuity, together with the density of `log ℚ_{>0}` in `ℝ`, is
+  `deningerPureSuspension_flow_eq_of_dense`; the scalar-eigenvalue step is
+  `deningerPureSuspension_eigenvalue_eq_weight`.  Both were already in the tree.
+
+### What is still missing, and why
+
+The derived-topos step itself — applying `RΓ` to `(2)` and invoking derived descent for the
+quotient stack to obtain `(3)` — cannot be stated: mathlib has no derived categories of sheaves on
+a site, no quotient stacks and no descent for them.  So the gate
+`derived-topos comparison formalization in Lean` stays open, and the card stays at stage 2.  What
+is formalized is the whole consequence chain that follows once `(3)` is granted: transport of
+scalarity, dense-time rigidity, and the impossibility of two distinct eigenvalues.

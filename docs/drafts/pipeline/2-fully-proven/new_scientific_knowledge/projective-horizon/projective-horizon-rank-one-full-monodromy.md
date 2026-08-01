@@ -2509,3 +2509,703 @@ dividing the discriminant.
 
   So `(3)` is now proved for every tail length: `n = 1` by the quadratic case, `n ≥ 2` by
   `centeredParameterMonodromy` and `centeredParameterMonodromyOdd` according to the parity of `n`.
+
+## Log
+
+- 2026-08-02 — **`(7)` is formalized: the fibre equation is centred, with no `a^n` term.**
+  Axioms `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  natDegree_invNumerator_succ_le  (InverseJetNumerator.lean) :
+    (invNumerator u (k+1)).natDegree ≤ k
+  coeff_oneDeepEquation_next      (OneDeepFibreBound.lean) :
+    (oneDeepEquation U d (n+1)).coeff (n+1) = 0
+  ```
+
+  The card's sentence "There is no `a^n` term" is exactly the second statement, and it follows from
+  the first: the `k`-th numerator of the truncated inverse has degree at most `k - 1`, not merely
+  `k`, because every term of the recursion pairs a shift `X ^ i` with a numerator of index
+  `k - 1 - i`, so the two degrees always sum to one less than the index.  The previous bound in the
+  corpus was the weaker `≤ k`, which does not give the vanishing.
+
+  With `natDegree_oneDeepEquation` (degree `1 + n`, already in the corpus) this is `(7)` in full: the
+  equation is of degree `n + 1` in `a` and already centred, so translation cannot be used to remove
+  the next-to-leading coefficient — it is absent to begin with, which is what the comparison with the
+  universal centred polynomial requires.
+
+  Still open on this card: the triangular coefficient law `(8)`--`(9)` and the algebraic independence
+  it gives, the identification of `(7)` with the universal centred polynomial over `E_0`, and the
+  Kummer base-change argument.  All three are statements about the coefficients `c_j` and are
+  independent of the geometry already formalized.
+
+- 2026-08-02 — **`(8)` proved, and the frame for `(9)`.**
+  `formal/GaloisForLFunctions/HTGeometry/TriangularTailCoefficients.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  tailPoly K n                 -- R(t) = p₁ + p₂t + ⋯ + pₙ t^{n-1}, with indeterminate coefficients
+  coeff_tailPoly               :  [t^i] R = p_{i+1} for i < n, and 0 beyond
+  coeff_zero_tailPoly_pow      :  [t^0] R^m = p₁^m                       -- this is (8)
+  coeff_tailPoly_pow_mem       :  [t^b] R^m ∈ K[p₁, …, p_{b+1}]
+  pderiv_eq_zero_of_mem_tailAdjoin : a later parameter does not occur in the earlier ones
+  ```
+
+  `coeff_zero_tailPoly_pow` is `(8)` up to the sign in `(6)`: `c_0 = (-1)^n p₁^n`.
+  `coeff_tailPoly_pow_mem` is the triangularity of the change of parameters — the `j`-th coefficient
+  involves no parameter beyond `p_{j+1}` — proved by induction on the power through the convolution.
+
+  The remaining half of `(9)` is the diagonal entry, and the formulation chosen for it is
+
+  ```text
+  pderiv (j) ([t^j] R^m) = m • p₁^{m-1}          for 1 ≤ j < n,
+  ```
+
+  which is exactly "the only term involving `p_{j+1}` chooses `p_{j+1}t^j` once and the constant term
+  `p₁` in every other factor", with no existential quantifier over the remainder `H_j` and no
+  subalgebra in the statement: the derivation kills every term the card leaves unnamed.  Together with
+  the membership above, that is `(9)` in full, and the diagonal being `m p₁^{m-1} ≠ 0` is what makes
+  the parameter change étale on `c_0 ≠ 0`.
+
+- 2026-08-02 — **`(9)` is proved: the triangular coefficient law is complete.**
+  `formal/GaloisForLFunctions/HTGeometry/TriangularTailCoefficients.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  pderiv_coeff_tailPoly_pow :
+    1 ≤ j → j < n →  pderiv (j) ([t^j] R^{m+1}) = (m+1) • p₁^m
+  ```
+
+  Together with `coeff_tailPoly_pow_mem` (the coefficient lies in `K[p₁,…,p_{j+1}]`) this is `(9)`:
+  the `j`-th coefficient is linear in `p_{j+1}` with diagonal entry `m p₁^{m-1}`, and everything else
+  involves only earlier parameters.  With `coeff_zero_tailPoly_pow` for `(8)`, the change of
+  parameters `p ↦ c` of `(6)` is proved triangular with diagonal `m p₁^{m-1}`, which is what makes it
+  étale on `c₀ ≠ 0` and hence what the card's Kummer base-change argument rests on.
+
+  The proof is an induction on the power through the convolution, and the three cases of the
+  induction are exactly the card's three sources of a `p_{j+1}`: the factor `p_{j+1}t^j` paired with
+  the constant term of the remaining power, the constant term `p₁` paired with the inductive
+  occurrence, and everything else, which the derivation kills because it lies in the earlier
+  parameters.  Stating the diagonal as a `pderiv` rather than as an existential over an unnamed
+  remainder `H_j` is what made the induction go through in that form.
+
+  Still open on this card: algebraic independence of `c₀, …, c_{n-1}` (which now follows from
+  triangularity plus a Jacobian argument), the Galois group of the universal centred polynomial —
+  classical, and absent from mathlib — and the Kummer base change.
+
+- 2026-08-02 — **The Jacobian of the parameter change, computed.**
+  `formal/GaloisForLFunctions/HTGeometry/TriangularTailCoefficients.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  pderiv_paramCoeff_of_lt :  j < i  →  pderiv i (c_j) = 0
+  pderiv_paramCoeff_self  :  j < n  →  pderiv j (c_j) = (n - j) • p₁^{n-j-1}
+  det_paramJacobian       :  det (pderiv i (c_j))_{i,j} = ∏_{j<n} (n - j) • p₁^{n-j-1}
+  ```
+
+  The card's sentence "all diagonal derivatives are nonzero" is now a computed determinant.  The
+  matrix is triangular by `pderiv_paramCoeff_of_lt` — the `j`-th coefficient does not involve the
+  later parameters — and its diagonal is the `(9)` entry, uniformly for all `j` including `j = 0`,
+  where the coefficient is `p₁^n` and the derivative `n p₁^{n-1}` fits the same formula.  In
+  characteristic zero and on `p₁ ≠ 0` every factor is nonzero, which is exactly the étaleness of the
+  triangular map `(8)`--`(9)` on `c₀ ≠ 0` that the card's Kummer argument invokes.
+
+  Also added: `pderiv_X_pow_self`, the derivative of a power of a variable, which mathlib's
+  `MvPolynomial.PDeriv` does not state.
+
+  What is left on the card is unchanged in kind: algebraic independence of `c₀, …, c_{n-1}` — which
+  is the Jacobian criterion applied to the determinant just computed, and the criterion itself is
+  absent from mathlib — the Galois group of the universal centred polynomial, and the Kummer base
+  change.
+
+- 2026-08-02 — **Linearity in the diagonal variable: `(9)` is now literally an affine-linear law.**
+  `formal/GaloisForLFunctions/HTGeometry/TriangularTailCoefficients.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  degreeOf_eq_zero_of_mem_tailAdjoin :  a later variable does not occur in the earlier subalgebra
+  degreeOf_coeff_tailPoly_pow_of_lt  :  b < j  →  degreeOf j ([t^b] R^m) = 0
+  degreeOf_coeff_tailPoly_pow_self   :  1 ≤ j < n  →  degreeOf j ([t^j] R^m) ≤ 1
+  ```
+
+  The last is the missing structural half of `(9)`: the `j`-th coefficient is **affine-linear** in
+  `p_{j+1}`, not merely a polynomial with a known derivative.  The card's reason — "two occurrences of
+  `p_{j+1}` would need two factors contributing `t^j` each, which overshoots `t^j`" — is the
+  induction's case split: in the convolution, one factor may supply `p_{j+1}`, and then the other
+  contributes only `t^0` and lies in the earlier variables.
+
+  With the three facts now proved — membership in `K[p₁,…,p_{j+1}]`, degree at most one in `p_{j+1}`,
+  and derivative `(n-j)p₁^{n-j-1}` — the coefficient is pinned to the form
+  `(n-j) p₁^{n-j-1} p_{j+1} + H_j(p₁,…,p_j)` of `(9)`, with `H_j` determined rather than posited.
+
+  A note on hypotheses: these three need `Nontrivial K`, because `degreeOf j (X j) = 1` fails over the
+  zero ring, whereas the membership and derivative statements hold for any commutative ring.
+
+- 2026-08-02 — **`(9)` in the card's own form, with `H_j` exhibited.**
+  `formal/GaloisForLFunctions/HTGeometry/TriangularTailCoefficients.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  coeff_tailPoly_pow_decomp :
+    1 ≤ j < n →  ∃ H ∈ K[p₁, …, p_j],  [t^j] R^{m+1} = (m+1) • (p₁^m · p_{j+1}) + H
+  ```
+
+  This is `(9)` as the card writes it, with the remainder `H_j` **constructed** rather than posited:
+  the induction produces it explicitly as `p₁ · H_{j,m} + ∑ (cross terms)`, and its membership in the
+  earlier subalgebra is proved alongside.  The two erasures that isolate `(j,0)` and `(0,j)` from the
+  convolution are exactly the card's two named contributions — the factor `p_{j+1}t^j` against the
+  constant term, and the constant term `p₁` against the inductive occurrence — and everything the
+  card leaves unnamed is the sum over the erased set, each of whose factors is proved to lie in
+  `K[p₁,…,p_j]`.
+
+  With this, `(6)`--`(9)` — the part the card's novelty audit identifies as its new content — is
+  formalized end to end: the constant term `(8)`, the affine-linear form `(9)` with its remainder,
+  the degree bound in the diagonal variable, and the Jacobian determinant of the whole change of
+  parameters.
+
+  The three items that remain are all classical and all absent from mathlib: the Jacobian criterion
+  for algebraic independence, the Galois group of the universal centred polynomial, and the Kummer
+  base-change comparison.
+
+- 2026-08-02 — **`(6)`--`(9)` closed, and an analysis of what independence actually needs.**
+  `formal/GaloisForLFunctions/HTGeometry/TriangularTailCoefficients.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  paramCoeff_zero   :  c_0 = p₁^n                                        -- (8)
+  paramCoeff_decomp :  1 ≤ j < n → ∃ H ∈ K[p₁,…,p_j],
+                       c_j = (n-j) • (p₁^{n-j-1} · p_{j+1}) + H          -- (9)
+  ```
+
+  stated for the card's own coefficients rather than for a general power, which closes `(6)`--`(9)`.
+
+  **On algebraic independence of `c_0, …, c_{n-1}`.**  Three routes were examined and the finding is
+  recorded so they are not re-tried blindly.
+
+  1. *Jacobian criterion.*  `det_paramJacobian` computes the determinant, but the criterion itself —
+     algebraically independent iff the Jacobian is nonzero, in characteristic zero — is not in
+     mathlib and is a transcendence-degree theorem, not a corollary of the determinant.
+  2. *Triangular elimination over `K(p₁)`.*  Solving `c_j` for `p_{j+1}` recursively needs the
+     diagonal `(n-j)p₁^{n-j-1}` to be a unit, so it works over the localization at `p₁` but not over
+     `K[p]`; transferring independence back across the localization needs transcendence-degree API.
+  3. *Induction on the last variable.*  This one is elementary and self-contained: if
+     `P(c_0,…,c_{n-1}) = 0`, view `P` in its last variable and use that `c_{n-1}` is affine-linear in
+     `p_n` with nonzero leading coefficient over a domain, so the top term survives by the inductive
+     independence of `c_0,…,c_{n-2}`.  Every input is now proved — `paramCoeff_decomp` gives the
+     affine-linear form and `degreeOf_coeff_tailPoly_pow_of_lt` gives that the earlier coefficients
+     are free of `p_n`.  What it needs from mathlib is a "leading coefficient in one variable" API
+     for `MvPolynomial`, which exists only via `finSuccEquiv` and peels off the *first* variable, so
+     the parameters would have to be indexed in reverse.
+
+  Route 3 is the one to take, and the reindexing is the whole of the remaining work for independence.
+
+- 2026-08-02 — **The blocker for independence is built: isolating one variable.**
+  `formal/GaloisForLFunctions/HTGeometry/IsolateVariable.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  optionNeEquiv j  :  Option {i // i ≠ j} ≃ σ
+  isolateVar K j   :  MvPolynomial σ K ≃ₐ[K] Polynomial (MvPolynomial {i // i ≠ j} K)
+  isolateVar_X_self:  X j ↦ Polynomial.X
+  isolateVar_X_of_ne: X i ↦ Polynomial.C (X i)      for i ≠ j
+  ```
+
+  The previous entry identified the missing piece as a "leading coefficient in one variable" API,
+  available in mathlib only through `finSuccEquiv`, which peels off the *first* variable of
+  `Fin (n+1)` and would have forced the parameters to be reindexed in reverse.  That reindexing is
+  avoidable: mathlib's `optionEquivLeft` splits `MvPolynomial (Option σ)` correctly, and all that was
+  missing was the equivalence `Option {i // i ≠ j} ≃ σ` splitting an arbitrary index type at an
+  arbitrary element.  With it, any variable can be isolated, and no reindexing of the parameters is
+  needed at all.
+
+  The route to independence is now: transport `c_{n-1} = A p_n + H` through `isolateVar` at `p_n`, where
+  it becomes a degree-one polynomial `C A' · X + C H'` over the ring in the other parameters, with
+  `A' ≠ 0` because `A = (n-1) p₁^{n-2}` is nonzero in a domain; a degree-one polynomial is
+  transcendental over its base, and `AlgebraicIndependent.option_iff_transcendental` then adds
+  `c_{n-1}` to the inductively independent `c_0, …, c_{n-2}`.
+
+- 2026-08-02 — **The transcendence step, in ten lines, and a correction about what was needed.**
+  `formal/GaloisForLFunctions/HTGeometry/TriangularIndependence.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  transcendental_supported_linear :
+    j ∉ s → A ≠ 0 → Transcendental (supported K s) (A · X j + H)     for A, H supported on s
+  ```
+
+  over any commutative domain.  This is the inductive step that adjoins one coefficient to an
+  algebraically independent family.
+
+  **Correction to the previous entry.**  It said the route required transporting `c_{n-1}` through
+  `isolateVar` to reach a degree-one polynomial.  That is not needed: mathlib already has
+  `MvPolynomial.transcendental_supported_X` — a variable outside `s` is transcendental over the
+  polynomials supported on `s` — and `Transcendental.aeval`, which propagates transcendence along a
+  polynomial of nonzero degree with leading coefficient a nonzerodivisor.  Composing the two with
+  `f = C A · X + C H` gives the statement directly.  `isolateVar` from the previous entry is a
+  correct and reusable tool, but it is not on this path; the path is three mathlib lemmas.
+
+  What remains for independence of `c_0, …, c_{n-1}` is the induction itself: `paramCoeff_decomp`
+  puts `c_j` in the form `A · p_{j+1} + H` with `A = (n-j) p₁^{n-j-1} ≠ 0` in characteristic zero and
+  `A, H` supported on the earlier parameters, and `AlgebraicIndependent.option_iff_transcendental`
+  turns each application of the lemma above into one more independent coefficient.
+
+- 2026-08-02 — **Each coefficient is transcendental over the earlier ones.**
+  `formal/GaloisForLFunctions/HTGeometry/TriangularIndependence.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  tailAdjoin_eq_supported   :  the corpus's subalgebra is mathlib's `supported`
+  transcendental_paramCoeff :  1 ≤ j < n → (n - j : K) ≠ 0 →
+                               Transcendental (supported K {i | i < j}) c_j
+  ```
+
+  This applies the previous entry's lemma to the card's own coefficients: `c_j` is affine-linear in
+  `p_{j+1}` with leading coefficient `(n-j) p₁^{n-j-1}`, which is nonzero exactly when `n - j` is
+  invertible — so the characteristic-zero hypothesis of the card enters here and nowhere else in this
+  part of the argument, and it enters as `(n - j : K) ≠ 0` rather than as a blanket assumption.
+
+  The nonvanishing of the leading coefficient reduces, over a domain, to two independent facts: the
+  integer `n - j` is nonzero in `K`, and `p₁^{n-j-1} ≠ 0`; the first is the characteristic condition
+  and the second is `MvPolynomial.X_ne_zero`.
+
+  What is left for `AlgebraicIndependent K (c_0, …, c_{n-1})` is the bookkeeping of the induction:
+  the subalgebra generated by `c_0, …, c_{j-1}` is contained in `supported K {i | i < j}`, so
+  transcendence over the latter restricts to transcendence over the former, and
+  `AlgebraicIndependent.option_iff_transcendental` then extends the family by one element at each
+  step.
+
+- 2026-08-02 — **`(10)` proved: the coefficients `c_0, …, c_{n-1}` are algebraically independent.**
+  `formal/GaloisForLFunctions/HTGeometry/TriangularIndependence.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  transcendental_paramCoeff_zero :  0 < n → Transcendental (supported F ∅) c_0
+  algebraicIndependent_paramCoeff :
+    0 < n → (∀ 0 < j < n, (n - j : F) ≠ 0) →
+    ∀ m ≤ n, AlgebraicIndependent F (fun j : Fin m => c_j)
+  ```
+
+  At `m = n` this is the card's assertion that `c_0, …, c_{n-1}` are algebraically independent, which
+  `(10)` uses to identify `E_0 = K(q, c_0, …, c_{n-1})` as a rational function field of the right
+  transcendence degree.
+
+  The induction adds one coefficient at a time: the subalgebra generated by `c_0, …, c_{m-1}` sits
+  inside the polynomials supported on the first `m` parameters, so `Transcendental.of_tower_top_of_
+  subalgebra_le` restricts the transcendence of `c_m` proved in the previous entry, and
+  `AlgebraicIndependent.option_iff_transcendental` extends the family; the index type is moved from
+  `Option (Fin m)` to `Fin (m+1)` along `finSuccEquivLast`, which sends the last index to the new
+  element.  The base case `c_0 = p₁^n` is transcendental over the constants because `X^n` is
+  transcendental over `F` and a variable is transcendental over the empty support.
+
+  Hypotheses: a field is needed only for the empty-family base case of mathlib's
+  `algebraicIndependent_empty_type`; everything else runs over a commutative domain.  The
+  characteristic enters solely as `(n - j : F) ≠ 0`.
+
+  This closes `(6)`--`(10)`.  What remains on the card is the Galois group of the universal centred
+  polynomial and the Kummer base change, both classical and both absent from mathlib.
+
+- 2026-08-02 — **First step toward the universal polynomial's Galois group: the permutation action.**
+  `formal/GaloisForLFunctions/HTGeometry/PermutationAction.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  permMulSemiringAction :  MulSemiringAction (Equiv.Perm σ) (MvPolynomial σ R)
+  permFaithfulSMul      :  the action is faithful when R is nontrivial
+  mem_symmetricSubalgebra_iff_smul_eq : symmetric ↔ fixed by the action
+  ```
+
+  Mathlib defines a symmetric polynomial as one invariant under `rename` by every permutation and
+  builds `symmetricSubalgebra` from that, but never records that this is a **group action** — so the
+  symmetric polynomials are not available as the fixed points of anything.  They are now, and the
+  action is faithful, which is the hypothesis that Artin's theorem needs.
+
+  Why this is the right first step for `(11)`: mathlib has `IsGalois (FixedPoints.subfield G E) E`
+  for a faithful finite group action on a field, and it has the fundamental theorem of symmetric
+  polynomials.  Composing them gives the Galois group of the universal polynomial as `S_{n+1}` — the
+  card's `(11)` — but neither is usable until the permutation action exists as an instance.  What
+  remains for that composition is to extend the action from the polynomial ring to its fraction
+  field and to identify the fixed field with the rational functions in the elementary symmetric
+  polynomials.
+
+- 2026-08-02 — **The universal polynomial's Galois setting, formalized.**
+  `formal/GaloisForLFunctions/HTGeometry/PermutationAction.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  permFractionAction        :  S_m acts on the field of rational functions in m variables
+  permFractionFaithful      :  faithfully
+  isGalois_symmetricFixedField :
+    IsGalois (FixedPoints.subfield (Perm (Fin m)) (FractionRing (MvPolynomial (Fin m) K)))
+             (FractionRing (MvPolynomial (Fin m) K))
+  ```
+
+  The field of rational functions in `m` variables is Galois over its symmetric part, with `S_m`
+  acting.  This is the Galois setting of `(11)`: the generic polynomial of degree `m` splits there,
+  and its group is the full symmetric group.
+
+  Once the action existed as an instance (previous entry), the extension to the fraction field was
+  mathlib's `IsFractionRing.mulSemiringAction` and the Galois conclusion was `inferInstance` —
+  Artin's theorem, already present, applies the moment the action is faithful.  The only friction was
+  that mathlib states the compatibility `SMulDistribClass` under a `letI` of the very action being
+  defined, so it has to be re-registered as a local instance before faithfulness can be transported
+  from the polynomial ring to its fraction field.
+
+  What remains between this and `(11)` as the card states it: identifying the fixed field with the
+  rational functions in the elementary symmetric polynomials — mathlib's fundamental theorem of
+  symmetric polynomials, extended from polynomials to fractions — and then matching the card's
+  centred polynomial `(7)` with the universal one by the translation that removes the
+  next-to-leading coefficient, which `coeff_oneDeepEquation_next` has already shown to be absent.
+
+- 2026-08-02 — **The Galois group of the generic degree-`m` extension is `S_m`, with degree `m!`.**
+  `formal/GaloisForLFunctions/HTGeometry/PermutationAction.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  finrank_over_symmetricFixedField :
+    finrank (fixed field of S_m) (rational functions in m variables) = m !
+  symmetricGaloisEquiv :
+    Equiv.Perm (Fin m) ≃ (L →ₐ[L^{S_m}] L)
+  ```
+
+  So the extension has degree `m!` and its automorphism group is the symmetric group itself, not
+  merely a group of that order — the content of the card's `(11)` for the universal polynomial,
+  modulo naming the base field as the rational functions in the elementary symmetric polynomials.
+
+  Both follow from mathlib's `FixedPoints.finrank_eq_card` and `FixedPoints.toAlgHomEquiv` once the
+  action is faithful, which the previous two entries supplied; the degree computation is then
+  `Fintype.card_perm` and `Fintype.card_fin`.
+
+  Remaining for `(11)` as the card phrases it: the fixed field is `K(e_1, …, e_m)`, which is the
+  fundamental theorem of symmetric polynomials transported to fractions — mathlib has the polynomial
+  form in `RingTheory/MvPolynomial/Symmetric/FundamentalTheorem.lean`, and what is missing is only
+  the passage to the fraction field.
+
+- 2026-08-02 — **Fixed fractions are fractions of invariants.**
+  `formal/GaloisForLFunctions/HTGeometry/InvariantFractions.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  smul_algebraMap_eq    :  g • algebraMap r = algebraMap (g • r)
+  prod_smul_invariant   :  ∏_{g ∈ G} g • q is invariant
+  prod_smul_ne_zero     :  and nonzero when q is
+  exists_invariant_ratio:  x fixed by G  →  x = a / b with a, b invariant in the base
+  ```
+
+  For a finite group acting by ring automorphisms on a domain, every element of the fraction field
+  fixed by the group is a ratio of **invariant** elements of the base.  This is the missing step
+  between the fixed field and the invariant subring, and mathlib does not have it.
+
+  The proof is the classical one: multiply numerator and denominator by the other translates of the
+  denominator.  The denominator becomes `∏_{g ∈ G} g • q`, invariant by reindexing the product along
+  left translation, and nonzero because the base is a domain; the numerator is then forced to be
+  invariant, not by a combinatorial argument but because it equals `x · b` in the fraction field,
+  where both factors are fixed, and the embedding of the base is injective and equivariant.
+
+  Applied to the symmetric group acting on rational functions, this says the fixed field is the
+  fraction field of the symmetric polynomials, which mathlib's fundamental theorem identifies with a
+  polynomial ring in the elementary symmetric polynomials — the last step in naming the base field of
+  `(11)`.
+
+- 2026-08-02 — **The fixed field is the field of symmetric rational functions.**
+  `formal/GaloisForLFunctions/HTGeometry/PermutationAction.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  smul_eq_self_iff_ratio_isSymmetric :
+    (∀ g : S_m, g • x = x)  ↔  ∃ a b symmetric, b ≠ 0 ∧ x = a / b
+  ```
+
+  Both directions.  Forward is the previous entry's `exists_invariant_ratio` together with the
+  identification of invariance under the action with `MvPolynomial.IsSymmetric`, which is `rfl`;
+  backward is that a ratio of symmetric polynomials is fixed, via `map_div₀` for the ring
+  automorphism the action supplies.
+
+  So the base field of `(11)` is named: the Galois extension
+  `L / L^{S_m}` of degree `m!` recorded two entries ago has for its base exactly the symmetric
+  rational functions in `m` variables.  Together with mathlib's fundamental theorem of symmetric
+  polynomials — `symmetricSubalgebra` is a polynomial ring in `e_1, …, e_m` — this is the classical
+  statement the card cites: the generic polynomial of degree `m` has Galois group `S_m` over the field
+  generated by its coefficients.
+
+  What is left of the card is `(12)`, the Kummer base change: that adjoining `p₁` with `p₁^n = ±c_0`
+  does not shrink the group, which the card reduces to the discriminant not being a square.
+
+- 2026-08-02 — **The group-theoretic core of `(12)`: abelian quotients of `S_k` factor through the
+  sign.**  `formal/GaloisForLFunctions/HTGeometry/AbelianQuotientOfPerm.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  eq_one_of_isThreeCycle  :  φ : S_α →* H abelian  →  φ kills every three-cycle
+  alternatingGroup_le_ker :  alternatingGroup α ≤ φ.ker
+  ```
+
+  So every homomorphism from a symmetric group to an abelian group factors through `S_α / A_α`, which
+  has order two.  This is the card's sentence "the only possible nontrivial cyclic quotient is the
+  sign quotient of order two", proved rather than asserted, and it is what forces the intersection
+  `E ∩ M` of `(12)` to be either `E_0` or the quadratic subfield cut out by the discriminant.
+
+  The proof avoids any decomposition of a three-cycle into transpositions.  A three-cycle is
+  conjugate to its inverse — same cycle type — so in an abelian quotient its image equals its own
+  inverse and therefore squares to one; its order also divides three; and an element whose order
+  divides both two and three is trivial.  Mathlib's `closure_three_cycles_eq_alternating` then
+  upgrades this from three-cycles to the whole alternating group.
+
+  Remaining on the card: that the discriminant of `(7)` is not a square in `K(p₁,…,p_n,q)`, which is
+  the other half of `(12)` and is a statement about the reducedness of the universal discriminant
+  divisor pulled back along the étale map whose Jacobian was computed earlier.
+
+- 2026-08-02 — **The alternating fixed field, and its degree.**
+  `formal/GaloisForLFunctions/HTGeometry/AlternatingFixedField.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  card_alternatingGroup_mul_two            :  2 ≤ m → |A_m| * 2 = m !
+  finrank_over_alternatingFixedField_mul_two :
+    2 ≤ m → finrank (L^{A_m}) L * 2 = m !
+  ```
+
+  With `finrank_over_symmetricFixedField` (`= m !`) this says the alternating fixed field sits
+  halfway: `[L : L^{A_m}] = m !/2` against `[L : L^{S_m}] = m !`.  That halfway field is the one
+  generated by a square root of the discriminant, and the previous entry's
+  `alternatingGroup_le_ker` says it is the *only* proper subfield a cyclic base change could meet —
+  which is what `(12)` has to exclude.
+
+  A Lean note worth recording.  The obstruction for most of this turn was self-inflicted: I declared
+  a `MulSemiringAction` for the alternating group by restricting the symmetric one along the subgroup
+  inclusion.  Mathlib already derives that action, and its faithfulness, canonically; the custom
+  instance shadowed the canonical path, so `FaithfulSMul` was provable in isolation by `inferInstance`
+  yet unavailable to `FixedPoints.finrank_eq_card`, which had resolved the action differently.
+  Deleting the instance made the whole file compile unchanged.  **Do not re-declare a subgroup's
+  action when the group already acts.**
+
+- 2026-08-02 — **The discriminant subfield is quadratic.**
+  `formal/GaloisForLFunctions/HTGeometry/AlternatingFixedField.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  finrank_alternating_over_symmetric :  2 ≤ m →  [L^{A_m} : L^{S_m}] = 2
+  ```
+
+  The alternating fixed field is a **quadratic** extension of the symmetric one — the subfield
+  generated by a square root of the discriminant.  It follows from the two degree computations of the
+  previous entry through the tower `L^{S_m} ⊆ L^{A_m} ⊆ L`: the outer degree is `m !`, the inner
+  `m !/2`, so the middle is `2`.
+
+  The statement takes the algebra structure on the inclusion of fixed fields as an instance
+  hypothesis rather than fixing one, which keeps it unconditional and avoids adding a redundant
+  instance — the mistake diagnosed in the previous entry.
+
+  With this, `(12)`'s two halves are formal in the following sense: any cyclic base change meets the
+  splitting field in a subfield whose group is an abelian quotient of `S_{n+1}`
+  (`alternatingGroup_le_ker`), hence in `E_0` or in this unique quadratic subfield; so the base change
+  preserves the full symmetric group exactly when the discriminant is not a square.  What is still
+  missing is that last nonsquareness for the card's specific discriminant, which the card derives
+  from reducedness of the universal discriminant divisor under an étale pullback.
+
+- 2026-08-02 — **`(12)` for odd `n`, unconditionally — no discriminant needed.**
+  `formal/GaloisForLFunctions/HTGeometry/AbelianQuotientOfPerm.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  alternatingGroup_le_of_isCyclic_quotient   :  N ⊴ S_α, S_α/N cyclic  →  A_α ≤ N
+  index_dvd_two_of_isCyclic_quotient         :  … →  N.index ∣ 2
+  eq_top_of_isCyclic_quotient_of_odd_index   :  … and N.index odd  →  N = ⊤
+  ```
+
+  The last is `(12)` for odd `n`: the Kummer base change `(10)` is cyclic of degree `n`, so the
+  subgroup it cuts out has cyclic quotient and index dividing `n`; if `n` is odd the index also
+  divides `2`, hence is `1`, and the symmetric group survives **without any discriminant argument at
+  all**.
+
+  So the card's appeal to reducedness of the universal discriminant divisor under an étale pullback
+  is needed only for even `n`.  For odd `n` — which includes `n = 1`, the case the card treats
+  separately, and every other odd rank — `(3)` now follows from what is formalized here plus `(11)`.
+
+  For even `n` the remaining gap is exactly one statement: that the discriminant of `(7)` is not a
+  square in `K(p₁, …, p_n, q)`.  Everything else in `(12)` is proved: the intersection is a cyclic
+  quotient of `S_{n+1}`, hence trivial or the unique quadratic subfield
+  (`finrank_alternating_over_symmetric`), and the discriminant is what distinguishes the two.
+
+- 2026-08-02 — **The arithmetic step of `(12)` for even `n`, and an elementary replacement for the
+  étale argument.**  `formal/GaloisForLFunctions/HTGeometry/PrimeNonSquare.lean`, axioms
+  `[propext]` for the first, `[propext, Classical.choice, Quot.sound]` for the second:
+
+  ```text
+  not_isSquare_of_prime_of_not_dvd :  p prime, p ∤ a  →  ¬ IsSquare (p * a)
+  not_X_dvd_of_aeval_ne_zero       :  setting X i to 0 does not kill f  →  X i ∤ f
+  ```
+
+  The first is axiom-light — it needs only `propext` — and is the whole arithmetic content of the
+  even-`n` case: over `E_0 = K(q, c_0, …, c_{n-1})` the discriminant `Δ` is a square in the Kummer
+  extension `M` exactly when `Δ · c_0` is a square in `E_0`, and `c_0` is prime there, so this fails
+  as soon as `c_0 ∤ Δ`.
+
+  This replaces the card's appeal to reducedness of the universal discriminant divisor under an étale
+  pullback by something elementary and checkable: by `not_X_dvd_of_aeval_ne_zero`, `c_0 ∤ Δ` follows
+  from `Δ` not vanishing identically when `c_0 = 0` — and at `c_0 = 0` the polynomial `(7)` becomes
+  `a · (q a^n - c_{n-1} a^{n-1} - ⋯ - c_1)`, whose second factor has nonzero constant term `-c_1`, so
+  `0` is a simple root and the discriminant does not vanish.
+
+  What is left is exactly that one evaluation: `Δ|_{c_0 = 0} ≠ 0`.  It is a statement about mathlib's
+  `Polynomial.discriminant` of an explicit polynomial, with no geometry in it — the étale and
+  reducedness language of the card is not needed on this route.
+
+- 2026-08-02 — **The nonvanishing witness for `(12)`.**
+  `formal/GaloisForLFunctions/HTGeometry/PrimeNonSquare.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  separable_X_pow_succ_sub_X :  n ≠ 0, (n : K) ≠ 0  →  Separable (X^{n+1} - X)
+  ```
+
+  Setting the first coefficient to zero and specialising the rest to `q = 1`, `c_1 = 1`, the others
+  zero, the fibre equation `(7)` becomes `X^{n+1} - X`.  It is separable: it factors as
+  `X · (X^n - 1)`, the first factor is separable, the second is separable because `n` is invertible,
+  and the two are coprime because `X^m · X - (X^{m+1} - 1) = 1`.  So the origin, which acquires a root
+  when `c_0 = 0`, is a **simple** root, and the discriminant survives the specialisation.
+
+  That is the last mathematical input of `(12)`: the discriminant does not vanish identically at
+  `c_0 = 0`, hence `c_0` does not divide it, hence `Δ · c_0` is not a square
+  (`not_isSquare_of_prime_of_not_dvd`), hence the Kummer base change does not meet the quadratic
+  subfield and the symmetric group survives.
+
+  Every step of the card's `(6)`--`(12)` is now formal except the plumbing that connects mathlib's
+  `Polynomial.discriminant` of the explicit family to these facts — the specialisation homomorphism on
+  the coefficient ring.  No mathematical content of the card remains unproved on this route, and the
+  étale-pullback argument the card gives has been replaced throughout by elementary algebra.
+
+- 2026-08-02 — **Separable implies nonzero discriminant, closing the chain of `(12)`.**
+  `formal/GaloisForLFunctions/HTGeometry/PrimeNonSquare.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  discr_ne_zero_of_separable :  0 < deg f, f separable  →  discr f ≠ 0
+  ```
+
+  over a field of characteristic zero.  Mathlib defines `Polynomial.discr` and gives closed formulas
+  in degrees at most three, but does not state the separability criterion; it follows from
+  `resultant_deriv`, which expresses the resultant of `f` and `f'` as a signed multiple of
+  `leadingCoeff · discr`, together with `resultant_eq_zero_iff`.  The degree bookkeeping is where
+  characteristic zero enters: `natDegree f' = natDegree f - 1` is needed for the two resultants to be
+  the same one.
+
+  Combined with the previous entry this gives the specialised nonvanishing outright: `X^{n+1} - X` is
+  separable, hence its discriminant is nonzero, hence the discriminant of `(7)` does not vanish
+  identically at `c_0 = 0`.
+
+  The chain of `(12)` is now complete as a chain of proved statements:
+
+  ```text
+  X^{n+1} - X separable  →  discr ≠ 0 at the specialisation  →  c_0 ∤ Δ
+    →  Δ · c_0 not a square  →  the Kummer base change misses the quadratic subfield
+    →  the symmetric group survives.
+  ```
+
+  What is not formalized is only the identification of the card's family with the specialisation —
+  that the discriminant of `(7)`, evaluated at `c_0 = 0, q = 1, c_1 = 1, c_2 = ⋯ = 0`, is the
+  discriminant of `X^{n+1} - X`.  That is a computation in the coefficient ring, not a further
+  mathematical input.
+
+- 2026-08-02 — **The specialisation step: the discriminant commutes with degree-preserving
+  specialisation.**  `formal/GaloisForLFunctions/HTGeometry/PrimeNonSquare.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  discr_map :  0 < deg f, (f.map φ).natDegree = f.natDegree, φ (leadingCoeff f) ≠ 0
+               →  discr (f.map φ) = φ (discr f)
+  ```
+
+  Mathlib has `sylvester_map_map` and `resultant_map_map` but no discriminant version; proving it
+  through the matrix would require transporting along an equality of index types, since
+  `sylvesterDeriv` is indexed by the degree.  Going through `resultant_deriv` avoids that entirely:
+  both sides are read off the same resultant, and the factor `(-1)^e · φ(leadingCoeff)` cancels
+  because the target is a domain and the leading coefficient survives.
+
+  This is the last piece of `(12)`.  The chain is now:
+
+  ```text
+  discr_map                    -- specialising the family commutes with the discriminant
+  separable_X_pow_succ_sub_X   -- the specialised polynomial is separable
+  discr_ne_zero_of_separable   -- so its discriminant is nonzero
+  not_X_dvd_of_aeval_ne_zero   -- so c_0 does not divide Δ
+  not_isSquare_of_prime_of_not_dvd  -- so Δ · c_0 is not a square
+  alternatingGroup_le_of_isCyclic_quotient, finrank_alternating_over_symmetric
+                               -- so the cyclic base change misses the only candidate subfield
+  ```
+
+  every link of which is proved.  What is left is bookkeeping with no mathematical content: writing
+  the card's family `(7)` as a polynomial over `K[q, c]`, checking that the specialisation
+  `c_0 ↦ 0, q ↦ 1, c_1 ↦ 1, c_j ↦ 0` sends it to `X^{n+1} - X` and preserves the degree, and chaining
+  the six lemmas above.
+
+- 2026-08-02 — **The family `(7)` itself, and its specialisation.**
+  `formal/GaloisForLFunctions/HTGeometry/FibreFamilyDiscriminant.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  fibreFamily K n        :  q a^{n+1} - ∑_{j<n} c_j a^j,  with indeterminate coefficients
+  natDegree_fibreFamily  :  its degree is n + 1
+  leadingCoeff_fibreFamily : its leading coefficient is q
+  map_fibreFamily        :  2 ≤ n →  its specialisation at q = 1, c_1 = 1, rest 0  is  X^{n+1} - X
+  ```
+
+  The card's equation `(7)` is now a Lean object rather than a description, with the two facts the
+  discriminant argument needs about it — degree and leading coefficient — and the specialisation
+  identified explicitly.  `2 ≤ n` is what keeps the index `1` distinct from the index `n` carrying the
+  leading coefficient; the excluded case `n = 1` is the one the card treats separately, and it is
+  also covered by the parity argument, since `1` is odd.
+
+  With `discr_map`, `separable_X_pow_succ_sub_X` and `discr_ne_zero_of_separable` from the previous
+  entries, the specialised discriminant is nonzero and the specialisation preserves degree and
+  leading coefficient — so `c_0` does not divide the discriminant of `(7)`.  Assembling those three
+  into that single statement, and then into the non-squareness of `Δ · c_0`, is what remains.
+
+- 2026-08-02 — **`(12)` assembled: the discriminant of `(7)` is not a square after the Kummer base
+  change.**  `formal/GaloisForLFunctions/HTGeometry/FibreFamilyDiscriminant.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  not_X_zero_dvd_discr_fibreFamily :  2 ≤ n  →  c_0 ∤ discr (fibreFamily F n)
+  not_isSquare_X_zero_mul_discr    :  2 ≤ n  →  ¬ IsSquare (c_0 · discr (fibreFamily F n))
+  ```
+
+  over a field of characteristic zero.  The chain runs exactly as designed: the specialisation sends
+  `(7)` to `X^{n+1} - X` and preserves degree and leading coefficient, that polynomial is separable,
+  so its discriminant is nonzero, so `discr_map` makes the specialised discriminant of `(7)` nonzero,
+  so the specialisation — which kills `c_0` — witnesses that `c_0` does not divide it, and `c_0` is
+  prime, so `c_0 · Δ` is not a square.
+
+  This is the statement the card derives from reducedness of the universal discriminant divisor under
+  an étale pullback.  It is now proved by elementary algebra, with the étale language nowhere in the
+  argument.
+
+  **Status of the card.**  `(6)`--`(12)` are formalized:  the triangular coefficient law and its
+  Jacobian, the algebraic independence of the coefficients, the Galois group of the universal
+  polynomial as the symmetric group over the symmetric rational functions, the fact that abelian
+  quotients of a symmetric group factor through the sign, the quadratic discriminant subfield, and
+  now the non-squareness that excludes it.  What is not formalized is the passage between the card's
+  field-theoretic phrasing of `(12)` — intersections of splitting fields inside a Kummer extension —
+  and the group- and ring-theoretic statements above; the mathematics of every step is proved.
+
+- 2026-08-02 — **The discriminant of the generic polynomial, and its symmetry.**
+  `formal/GaloisForLFunctions/HTGeometry/PermutationAction.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  discrProd K m           :  ∏_{i ≠ j} (x_i - x_j),  the discriminant of the generic polynomial
+  isSymmetric_discrProd   :  it is a symmetric polynomial
+  ```
+
+  The discriminant of the polynomial whose roots are the variables is symmetric, hence lies in the
+  base field of the Galois extension `L / L^{S_m}` — which is where the card's `(12)` needs it, since
+  the question is whether it is a *square* there.
+
+  The proof is a reindexing: a permutation carries the set of ordered pairs of distinct indices
+  bijectively to itself, and the factor attached to a pair is carried to the factor attached to its
+  image.  Mathlib has neither this polynomial nor its symmetry — the symmetric-function files stop at
+  the elementary symmetric polynomials and Newton's identities, and the Galois-group file does not
+  mention discriminants at all.
+
+  This is the object that identifies the quadratic subfield `L^{A_m}` concretely: its square root is
+  the alternating product, fixed by even permutations and negated by odd ones.  Proving that sign law
+  is the remaining dictionary entry between the group-theoretic side of `(12)`, which is complete,
+  and the ring-theoretic non-squareness, which is also complete.

@@ -547,3 +547,271 @@ positivity map or zero-location mechanism is known.
 
   `isZero_homology_above` records the same for the subspaces above a fixed one, which is the
   contractible piece any Solomon--Tits induction glues along.
+
+- 2026-08-02 — **First stone of Mayer--Vietoris: the coproduct splitting.**
+  `formal/GaloisForLFunctions/HTGeometry/CoproductMayerVietoris.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  mvSplitting  : (mvShortComplex R S₁ S₂).Splitting          -- needs S₁ ∪ S₂ = univ
+  mvShortExact : (mvShortComplex R S₁ S₂).ShortExact
+  ```
+
+  For a set covered by two subsets, the coproducts over the four sets form a **split** short exact
+  sequence
+
+  ```text
+  0 → ∐_{S₁ ∩ S₂} R → (∐_{S₁} R) ⊞ (∐_{S₂} R) → ∐_{S} R → 0
+  ```
+
+  in any preadditive category with a zero object, binary biproducts and coproducts.  The retraction
+  keeps only the basis elements of the intersection; the section sends a basis element to the first
+  summand when it lies in the first subset and to minus the second otherwise.
+
+  Two facts worth recording from the proof.  The identity `r ≫ f + g ≫ s = 𝟙` holds **without** the
+  covering hypothesis — the cover is needed only for `s` to be a section of `g`, since that is the
+  only place a basis element outside `S₁` has to be found in `S₂`.  And the sequence is split
+  *degreewise only*: the retraction is not a chain map, because a face of a simplex outside the
+  intersection can land inside it, which is exactly why Mayer--Vietoris needs the degreewise-split
+  criterion rather than a splitting of complexes.
+
+  This is the identified obstruction to the remaining range `1 ≤ j ≤ N - 3` of `(6)`, taken one step
+  down: the chain complex of a simplicial set is a coproduct over its simplices in each degree, and
+  two subcomplexes covering it cover the simplices of each degree, so this is the degreewise input to
+  the Mayer--Vietoris short exact sequence of chain complexes.  What remains before the long exact
+  sequence is to identify the chain complex of a subcomplex with the coproduct over its simplices,
+  check that the two maps are chain maps, and pass from degreewise short exactness to short exactness
+  of complexes.
+
+- 2026-08-02 — **Mayer--Vietoris, second step: chains on a subcomplex are the coproduct over its
+  simplices.**  `formal/GaloisForLFunctions/HTGeometry/SimplicialMayerVietoris.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  chainComplex_X_eq         :  ((A : SSet).chainComplex R).X n = subCoproduct R (A.obj ⦋n⦌)
+  chainComplexMap_ι_f       :  (chainComplexMap A.ι R).f n = inclFull R (A.obj ⦋n⦌)
+  chainComplexMap_homOfLE_f :  (chainComplexMap (homOfLE h) R).f n = inclCop R …
+  subcomplex_obj_union      :  A ⊔ B = ⊤  →  A.obj ⦋n⦌ ∪ B.obj ⦋n⦌ = univ
+  subcomplex_obj_inter      :  (A ⊓ B).obj ⦋n⦌ = A.obj ⦋n⦌ ∩ B.obj ⦋n⦌
+  ```
+
+  The first and the last two are **definitional** — mathlib's `ιChainComplex` is literally
+  `Sigma.ι`, and `Subcomplex` meets and joins are computed degreewise — so the coproduct splitting
+  of the previous entry applies to the chain objects with no transport at all.  The two chain-map
+  identifications need one step each, from `ι_chainComplexMap_f`.
+
+  The total object was refactored from `∐_{↥univ} R` to `∐_{T} R` so that it matches
+  `(X.chainComplex R).X n` on the nose; that removed every reindexing iso the assembly would
+  otherwise have needed, and simplified the splitting proofs as a side effect.
+
+  Remaining before the long exact sequence: the biproduct of chain complexes degreewise (mathlib's
+  `HomologicalComplexBiprod` — it is *not* definitional, unlike everything above), and the passage
+  from degreewise short exactness to short exactness in `ChainComplex C ℕ`.
+
+- 2026-08-02 — **The Mayer--Vietoris short exact sequence of chain complexes is proved.**
+  `formal/GaloisForLFunctions/HTGeometry/SimplicialMayerVietoris.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  mvChainShortExact :  A ⊔ B = ⊤  →  (mvChainShortComplex X R A B).ShortExact
+  ```
+
+  for two subcomplexes `A B` of a simplicial set `X` covering it, with coefficients in any abelian
+  category with coproducts.  The short complex is
+
+  ```text
+  C(A ⊓ B) --(incl, incl)--> C(A) ⊞ C(B) --(incl - incl)--> C(X).
+  ```
+
+  Assembly: `mvChainFst_f` and `mvChainSnd_f` identify the two chain maps in each degree with the
+  maps of the coproduct short complex, through `HomologicalComplex.biprodXIso`;
+  `mvChainShortComplexIso` packages that as an isomorphism of short complexes;
+  `ShortComplex.shortExact_of_iso` transports the splitting, and mathlib's
+  `HomologicalComplex.shortExact_of_degreewise_shortExact` lifts degreewise short exactness to short
+  exactness of complexes.
+
+  The obstruction named three entries ago is therefore removed.  With
+  `HomologicalComplex.HomologySequence` this yields the Mayer--Vietoris long exact sequence, which is
+  the tool the remaining range `1 ≤ j ≤ N - 3` of `(6)` needs: the induction glues the contractible
+  star of a line (`isZero_homology_above`) to the complement along the link.
+
+- 2026-08-02 — **Mayer--Vietoris vanishing, the form the induction consumes.**
+  `formal/GaloisForLFunctions/HTGeometry/SimplicialMayerVietoris.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  isZero_homology_of_mayerVietoris :
+    A ⊔ B = ⊤ → (down ℕ).Rel i j →
+    H_i(A) = 0 → H_i(B) = 0 → H_j(A ⊓ B) = 0 → H_i(X) = 0
+  ```
+
+  Two covering subcomplexes with no homology in degree `i`, whose intersection has none in degree
+  `i - 1`, force the whole simplicial set to have none in degree `i`.  This is exactness of
+
+  ```text
+  H_i(C(A) ⊞ C(B)) → H_i(C(X)) --δ--> H_{i-1}(C(A ⊓ B))
+  ```
+
+  at the middle term, from mathlib's `homology_exact₃` applied to the short exact sequence of the
+  previous entry, with both ends zero.  `isZero_homology_biprod` supplies the left end: the homology
+  of a biproduct of complexes vanishes when both summands' does, proved from `biprod.total` and
+  additivity of `homologyMap` — mathlib does not register `PreservesBinaryBiproduct` for the homology
+  functor, so `mapBiprod` is unavailable and the direct route is shorter anyway.
+
+  The Mayer--Vietoris chain is now complete end to end: coproduct splitting → degreewise identification
+  → short exact sequence of complexes → vanishing criterion.  What the remaining range
+  `1 ≤ j ≤ N - 3` of `(6)` needs from here is purely the combinatorial induction on the building:
+  cover the order complex by the star of a line (contractible, `isZero_homology_above`) and the
+  complement, and identify the intersection with the link.
+
+- 2026-08-02 — **The combinatorial side: full subcomplexes of an order complex.**
+  `formal/GaloisForLFunctions/HTGeometry/NerveSubcomplex.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  nerveSubcomplex Q             -- the simplices all of whose vertices lie in Q
+  nerveSubcomplexIso            :  (nerveSubcomplex Q : SSet) ≅ nerve ↥Q
+  nerveSubcomplex_inter         :  nerveSubcomplex (Q₁ ∩ Q₂) = nerveSubcomplex Q₁ ⊓ nerveSubcomplex Q₂
+  nerveSubcomplex_star_sup_compl:  (∀ q ≤ p, q = p) →
+                                   nerveSubcomplex {q | p ≤ q} ⊔ nerveSubcomplex {q | q ≠ p} = ⊤
+  ```
+
+  `nerveSubcomplexIso` is the bridge: a full subcomplex **is** the order complex of the subposet it
+  spans, so every poset-level result — conical contractibility, `orderTop`/`orderBot` — transfers to
+  it, through `nerveSubcomplexHomologyIso`.
+
+  `nerveSubcomplex_star_sup_compl` is the decomposition the Solomon--Tits induction uses, and its
+  proof is the only place the minimality of the chosen element matters: a simplex either avoids `p`,
+  and then lies in the complement, or contains `p` at some vertex, and then **every** vertex is
+  comparable to `p`, hence above it by minimality, so the whole simplex lies in the star.  For the
+  building, `p` a line is minimal exactly because a nonzero subspace of a line is the line.
+
+  With `nerveSubcomplex_inter` the intersection of the two pieces is the full subcomplex spanned by
+  `{q | p ≤ q} ∩ {q | q ≠ p}` — the **link** of `p`, which for a line `L` in the building is the
+  poset of subspaces strictly between `L` and `V`.  That poset is the building of `V/L`, one
+  dimension down: the induction step.
+
+- 2026-08-02 — **Mayer--Vietoris for an order complex, cut at a minimal element.**
+  `formal/GaloisForLFunctions/HTGeometry/NerveMayerVietoris.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  isZero_homology_nerve_of_minimal' :
+    p minimal → 1 ≤ i → (down ℕ).Rel i j →
+    H_i(Δ(P ∖ {p})) = 0 → H_j(Δ({q | p < q})) = 0 → H_i(Δ(P)) = 0
+  ```
+
+  The star of `p` contributes nothing because it has a least element (`isZero_homology_star`); the two
+  pieces cover because `p` is minimal; and they meet in the link `{q | p < q}`.  Every ingredient
+  named in the previous four entries is used here, and nothing is assumed.
+
+  **What this does not yet give, stated precisely.**  Two things separate this from Solomon--Tits.
+
+  1. *Termination.*  For the building, the minimal elements are the lines, and the link of a line `L`
+     is the building of `V/L` — one dimension down, which is the induction the theorem wants.  But
+     the other piece is `Δ(P ∖ {L})`, and removing lines one at a time does not terminate: over an
+     infinite field there are infinitely many.  So the cut is the right local step and the wrong
+     global induction; the classical proofs use apartments or shellability instead, and neither is a
+     vertex-by-vertex removal.
+  2. *Reduced homology.*  The interesting vanishing at `j = 1` needs the link's **reduced** `H_0` to
+     vanish, not its `H_0`, which for a connected link is `R`.  The Mayer--Vietoris sequence built
+     here is unreduced.  Reduced homology — the augmented complex — is the missing object;
+     mathlib supplies the augmentation `SSet.homology₀ε` but not the augmented complex.
+
+  Both are now concrete, named, and independent of the card's own content, which remains proved.
+
+- 2026-08-02 — **Reduced homology turns out not to be needed: a monicity criterion replaces it.**
+  `SimplicialMayerVietoris.lean` and `NerveMayerVietoris.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  isZero_homology_of_mayerVietoris_mono :
+    A ⊔ B = ⊤ → (down ℕ).Rel i j → H_i(A) = 0 → H_i(B) = 0 →
+    Mono (H_j(A ⊓ B) → H_j(A) ⊞ H_j(B)) → H_i(X) = 0
+
+  isZero_homology_nerve_of_minimal_mono   -- the same, cut at a minimal element of a poset
+  ```
+
+  The previous entry named the augmented complex as the missing object.  It is not needed.  The
+  vanishing argument used `H_j(A ⊓ B) = 0` only to force the connecting map `δ` to be zero, and `δ`
+  is killed just as well by `δ ≫ (H_j(A ⊓ B) → H_j(A) ⊞ H_j(B)) = 0` — mathlib's `δ_comp` — together
+  with monicity of that comparison map.  So the hypothesis that fails in degree zero, where a
+  connected piece has homology `R` rather than `0`, is replaced by the injectivity that the reduced
+  statement would have expressed, and no augmented complex is built.
+
+  Concretely for `H_1`: the star and the link are both connected, so the comparison
+  `H_0(link) → H_0(star) ⊞ H_0(compl)` is injective, and `H_1` of the order complex vanishes as soon
+  as it does for the complement.  Supplying that injectivity from connectedness needs naturality of
+  mathlib's augmentation `homology₀ε`, which is the one remaining piece on this route; the
+  termination problem of the induction, recorded in the previous entry, is unaffected and remains the
+  substantive obstruction.
+
+- 2026-08-02 — **Naturality of the augmentation; connectedness now supplies the monicity.**
+  `formal/GaloisForLFunctions/HTGeometry/SimplicialAugmentation.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  homology₀_hom_ext          :  degree-zero homology is determined by the classes of the vertices
+  zeroCycle_comp_homologyMap :  the class of a vertex is natural
+  homologyMap_comp_homology₀ε:  H_0(f) ≫ ε_Y = ε_X
+  isIso_homologyMap_zero     :  X, Y connected → IsIso (H_0(f))
+  mono_homologyMap_zero      :  X, Y connected → Mono (H_0(f))
+  ```
+
+  Mathlib has the augmentation `homology₀ε` and proves it is an isomorphism for a connected
+  simplicial set, but does not state its naturality.  The proof needed one ext principle:
+  `homology₀Iso` identifies `H_0(X; R)` with a coproduct indexed by `π₀ X`, and each summand's
+  inclusion is the class of a vertex, so two maps out of `H_0` agree as soon as they agree on vertex
+  classes.  The class of a vertex is natural by `homologyπ_naturality` together with the uniqueness
+  of a lift to cycles — proved by cancelling the mono `iCycles`, which avoids the motive-not-type-correct
+  rewrite that the dependent proof argument of `liftCycles` otherwise causes.
+
+  This closes the piece flagged in the previous entry: the Mayer--Vietoris monicity hypothesis in
+  degree zero is now supplied by connectedness of the two complexes involved.  The remaining
+  obstruction on this route is the one recorded two entries ago and is unchanged: the induction that
+  removes a minimal element does not terminate over an infinite field.
+
+- 2026-08-02 — **The link of a vertex of the building is the building of the quotient.**
+  `formal/GaloisForLFunctions/HTGeometry/BuildingLink.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  quotientBuildingOrderIso :
+    {S | L < S ∧ S ≠ ⊤} ≃o {T : Submodule K (V ⧸ L) // T ≠ ⊥ ∧ T ≠ ⊤}
+  linkOrderIso, linkNerveIso   -- the same for the link of a vertex, and on order complexes
+  ```
+
+  The correspondence theorem, restricted on both sides: `S ↦ S / L` carries the subspaces strictly
+  between `L` and `V` to the nonzero proper subspaces of `V ⧸ L`, with inverse the preimage.  On
+  nerves this says the link of a vertex of the building **is** a building, of one lower dimension.
+
+  This makes the induction step of a Solomon--Tits argument explicit and formal: cutting at a line
+  `L` (`isZero_homology_nerve_of_minimal_mono`) leaves the complement and the link, and the link is
+  now identified with a smaller building, to which the same statement applies.  The obstruction
+  remains where it was — the *other* piece, the complement of a line, is not smaller, and over an
+  infinite field there is no finite sequence of such cuts.  Every step of the induction is formal
+  except the recursion itself.
+
+- 2026-08-02 — **Negative finding: the star/complement cut cannot prove Solomon--Tits.**
+
+  Recorded so the route is not re-attempted.  `isZero_homology_nerve_of_minimal_mono` requires the
+  complement `Δ(P ∖ {L})` to be acyclic in the degree being killed.  For the building that hypothesis
+  is **false**, not merely unproved: at `N = 3` the order complex is a wedge of circles, and deleting
+  one line leaves a wedge of circles, so `H_1(Δ(P ∖ {L})) ≠ 0`.  The obstruction is therefore not the
+  termination of the recursion, as the previous two entries recorded, but the decomposition itself:
+  removing vertices makes the complex smaller without making it acyclic.
+
+  This also rules out the dual cut at a hyperplane, for the same reason, and any cover by two full
+  subcomplexes: a cover of an order complex by the full subcomplexes on two subsets exists only when
+  every chain lies entirely in one of them, which for a poset forces the star/complement shape.
+
+  The classical proofs build the building **up** — by attaching apartments to a chamber, or by a
+  shelling — rather than cutting it down.  Formalizing either needs the chamber-and-gallery theory of
+  buildings, which is a development in its own right and is not implied by anything above.
+
+  What survives and is permanent: the Mayer--Vietoris chain (coproduct splitting → degreewise
+  identification → short exact sequence → vanishing and monicity criteria), the poset-homotopy
+  toolkit, the augmentation's naturality, full subcomplexes of a nerve, and the identification of a
+  link with a smaller building.  All are general tools, none is specific to this route, and the
+  card's own content — `(4)`, the homology transfer, `H_j = 0` for `j ≥ N-1`, `H_0`, cusp
+  contractibility, and the complete `N = 3` case — stands proved.

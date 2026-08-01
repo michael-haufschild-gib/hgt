@@ -5,8 +5,12 @@
 - **Type:** SOURCE FINITE-STAGE TOPOLOGICAL THEOREM
 - **Label:** `DAC_BAUMSLAG_FREE_RATIONAL_MILNOR_PACKET`
 - **Parent:** `deninger-baumslag-milnor-pro-realization`
-- **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerUniquelyDivisibleKernel` (clauses 1 and 2)
+- **Lean modules:**
+  `GaloisForLFunctions.RHTower.DeningerUniquelyDivisibleKernel` (clauses 1 and 2),
+  `GaloisForLFunctions.RHTower.DeningerDegreeOneInflation` (the degree-one reduction of clause 3),
+  `GaloisForLFunctions.RHTower.DeningerMilnorAmplitude` and
+  `GaloisForLFunctions.RHTower.DeningerTwoTermFormality` (the square-zero product and the formality
+  of clause 4)
 
 ## Statement
 
@@ -156,3 +160,26 @@ Not formalized, and none of it is a mathlib gap of the ordinary kind:
 - 2026-08-01 — Formalized clauses 1 and 2 unconditionally, reusing the already formalized
   divisible-fiber theorem for clause 2.  Clauses 3--5 are recorded as blocked on objects that do
   not exist yet, not on missing proofs.
+
+## Lean status
+
+Clauses 1 and 2 were already formalized in `DeningerUniquelyDivisibleKernel.lean`.  The remaining
+clauses split as follows.
+
+- **Clause 3, degree one.**  `DeningerDegreeOneInflation.lean` (4 declarations, axiom audit
+  `propext, Classical.choice, Quot.sound` or less) proves that with trivial coefficients —
+  where first cohomology is the group of homomorphisms — restriction along a surjection is
+  injective (`deningerHomRestrict_injective`), its image is exactly the homomorphisms killing the
+  kernel (`deningerHomRestrict_mem_range_iff`), and hence the comparison is an isomorphism exactly
+  when every homomorphism kills the kernel (`deningerHomRestrict_bijective_iff`).  So clause 3 is
+  reduced to that vanishing, which is where Casacuberta--Peschke's rational homology computation
+  enters; that computation is an imported theorem and is not reproved here.
+- **Clause 4.**  The square-zero product of `(3)` — degree two vanishes, so products of degree-one
+  classes vanish — is `deningerGradedDegreeOne_mul_eq_zero` in `DeningerMilnorAmplitude.lean`, and
+  the formality assertion is `DeningerTwoTermFormality.lean`, both already in the tree.
+- **Clause 5.**  Classifying spaces, homotopy fibres and homotopy pullbacks have no mathlib
+  counterpart, so this clause has no formal statement here.
+
+The card therefore stays at stage 2: everything group-theoretic and algebraic in it is formalized,
+and what remains is the imported rational-homology input together with the topology of classifying
+spaces.

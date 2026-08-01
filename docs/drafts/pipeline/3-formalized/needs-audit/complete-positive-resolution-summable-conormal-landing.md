@@ -8,7 +8,8 @@
   `../../4-publication-ready/riemann-source-modular-superselection/main.tex`;
   `formal/GaloisForLFunctions/RHTower/HighExponentShellLeastAtomAsymptotic.lean`.
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.CompleteResolutionSummableLanding`
+  `GaloisForLFunctions.RHTower.CompleteResolutionSummableLanding`;
+  `GaloisForLFunctions.RHTower.CompleteResolutionSummableConormalLanding`
 
 ## Statement
 
@@ -147,9 +148,10 @@ The formal theorem uses the already-formalized least-atom and adjacent-shell lim
 ratio test, finite-prefix telescoping, and uniqueness of infinite sums.  It introduces no RH,
 zero-location, positivity, or computation hypothesis.
 
-The vector-valued analytic-order specialization `(5)`--`(6)` is paper-proved but not yet packaged
-as a separate Lean theorem; the scalar componentwise order theorem and nonzero-vector theorem are
-already formalized dependencies.
+`CompleteResolutionSummableConormalLanding.lean` now packages the missing closed-right
+analytic-order specialization.  `completeResolution_summable_conormalLanding` proves that the
+fixed multiplier vector is summable with sum one and that at least one analytic channel preserves
+the exact `xi` order at every point with `Re rho >= 1/2`.
 
 ## Gates
 
@@ -159,7 +161,7 @@ already formalized dependencies.
 - [x] source-pointed nonannihilation
 - [x] paper proof of vector conormal and multiplicity retention
 - [x] Lean formalization of the summable landing and nonannihilation
-- [ ] Lean vector-valued analytic-order adapter
+- [x] Lean vector-valued analytic-order adapter
 - [ ] independent literature and significance audit
 - [ ] theta/Poisson channel intertwiner
 - [ ] reflection-internal adjoint transport

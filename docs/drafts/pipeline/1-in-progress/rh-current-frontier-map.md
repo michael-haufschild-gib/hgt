@@ -64,6 +64,51 @@ three distinct levels with exact transition gauges.  What remains open is a sing
 source-pointed continuation which applies primitive promotion before scalar positivity loses
 orientation and then proves the existing four-unit/Weil sign.
 
+A second update changes how this entire atlas is organized.  Evolving a meromorphic logarithmic
+response by `exp(x/(s-c))` before residue extraction sends a divisor point `rho` to the coherent
+mode `m exp(x/(rho-c))`.  Factorial derivative-order normalization uniquely forces
+`x=|rho-c|² tau` and gives the exact packet
+
+```text
+|m|² · exp((2 Re(rho-c)+1) tau) · Pois(tau).
+```
+
+This is the source-horizon parent law.  In the Riemann case `c=1`, its rate is
+`nu(rho)=2 Re(rho)-1`; compact-open escape, bounded Ward-window escape, finite-jet blindness,
+Li-Cayley growth, and Wold-Poisson order transport are fixed-observer or coordinate shadows of
+this one packet.  The associated fibre law is sharper: an equivariant norm-conservative descent
+of a whole source fibre satisfies `T=0 or nu=0`.  Reflected nonzero rates retain only hyperbolic,
+never nonzero positive-semidefinite, invariant geometry.
+
+The Riemann source fibre is now explicit rather than formal.  A fixed positive
+largest-valuation resolution is a nonzero \(\ell^1\) multiplier vector of total coordinate one at
+every closed-right point, with at least one channel preserving exact completed-divisor
+multiplicity; its strict-right quotient tail is jointly differentially independent over the zeta
+differential field.  This closes the former adapter gap quantitatively: every norm-conservative
+consumer has centered-character intertwining defect at least
+\[
+|e^{2\operatorname{Re}\rho-1}-1|\,\|T\mathbf M_K(\rho)\|.
+\]
+Since \(\|\mathbf M_K(\rho)\|_1\ge1\), a consumer bounded below by \(\kappa\) has the uniform
+defect floor \(\kappa|e^{2\operatorname{Re}\rho-1}-1|\).
+Hence an exact equivariant consumer either erases this actual predeclared vector or has
+\(\operatorname{Re}\rho=1/2\).  Finite fusion conserves reflected
+signature; countable unit fusion is nonclosable.  Hedenmalm dense radicals, Sonin-Calkin
+compactness, and four-unit Ward failure instantiate the fibre and character branches separately.
+Exact reflected Hellinger sewing has norm beyond every fixed power of the matching Suzuki
+aperture.
+
+Route J's sign question is also resolved for bounded diagonal phases.  The normalized Cayley
+source phase globally orients every finite calibrated Julia-Gamma exterior packet with an exact
+positive-square formula and no phase-wrap condition.  A phase-free ceiling then proves that every
+unit-bounded polarization, including this sign-correct chart, is smaller by a logarithmic factor
+than the certified first-clock bad-mass square.  Thus bounded orientation is not the remaining
+problem; bounded capacity is impossible.  More sharply, any dominating exterior polarization
+with block norm bound \(B_m\) must satisfy
+\(\log(2m^4)\le7200(\log4)^2B_m^2\).  Square-root-logarithmic blow-up is therefore a necessary
+singularity, not a qualitative guess.  Any Route-J survivor must be singular, relation-valued,
+genuinely nonlinear, or source-co-moving.
+
 On the disproof side, the most source-explicit current route is a negative growing-order
 squared-Xi reverse-Bessel radial jet. Its logical tail is closed, but all orders through
 eighteen are positive and the surviving `n≥19` problem requires a moving-prime-window
@@ -79,12 +124,15 @@ its strongest positive survivor remains part of frontier.
 Project has solved most connector problems and has not proved RH or its negation.  The former
 phrase “source-acquisition problem” is now too coarse.  Positive activation, Wold formation of the
 von-Mangoldt current, Fisher/Gamma disintegration, Julia--KMS scale resolution, the half-density
-reflection law, and the exponential critical Euler clock are unconditional.  The first missing
-map is specifically a singular, source-pointed primitive-current continuation which retains the
-full depth/breadth incidence and orientation before scalarization.  Its decisive consumer is the
-already-proved four-unit Ward/Weil sign.  Independent live alternatives remain completed
-Hedenmalm positivity, sharp dyadic prime-window subpower control, critical Möbius cancellation,
-principal-relative Julia orientation, corrected pole-compatible Suzuki continuation,
+reflection law, the exponential critical Euler clock, and source-horizon Poisson transport are
+unconditional.  Global Cayley orientation now removes the bounded phase-sign subproblem, while
+the orientation--capacity theorem proves that no bounded polarization can close Route J.  The
+first missing map is specifically a singular or genuinely nonlinear source-pointed
+primitive-current continuation which retains the full depth/breadth incidence and has
+macroscopic capacity before scalarization.  Its decisive consumer is the already-proved
+four-unit Ward/Weil sign.  Independent live alternatives remain completed Hedenmalm positivity,
+sharp dyadic prime-window subpower control, critical Möbius cancellation, corrected
+pole-compatible Suzuki continuation,
 prime-cycle trace-class relocation, and upstream Deninger/Connes/Thorin constructions. Route H
 instead closes negatively: every source-selected superaccurate finite theta core asymptotically
 transmits local Xi multiplicity.
@@ -629,6 +677,71 @@ contraction can prove PNT, while scalar renewal induction cannot bootstrap any f
 saving.  A surviving source needs signed orthogonality across the prime-scale samples
 `M(X/p)` or an equivalent non-scalar structure; stronger absolute estimates are ruled out.
 
+The first exact bridge to the supplied Gamma/co-Poisson source is now proved.  Complete the
+large-prime tail by adjoining prime powers with divided-log weight:
+
+```text
+B_z^Gamma(x)
+ = A_z(x)-sum_(p>z)sum_(k>=1)(1/k)A_z(p^k x).
+```
+
+Since `|A_z(y)|<=1/y`,
+
+```text
+|B_z^Gamma(x)-(A_z(x)-sum_(p>z)A_z(px))|
+ <= x^(-1) sum_(p>z)sum_(k>=2)1/(k p^k)
+ <= 1/(xz)=O(x^(-1/2))
+```
+
+on the critical aperture.  Thus the primitive completion is equivalent to the literal Route E
+boundary at strict-half scale, not a smoothing or stronger assumption.  Its coefficient
+`Lambda(p^k)/log(p^k)=1/k` is exactly the Gamma/co-Poisson confluence current divided by one
+additional logarithmic action.  `MobiusGammaCoPoissonPrimePowerBoundary.lean` proves the finite
+prime/exponent identity and its pre-scalar small-prime parity lift unconditionally.  Remaining
+source is now a more sharply typed singular-provider problem.  The divided-log half-density atom
+at exponent depth `e+1` differs from the conditional Gamma atom by the exact gauge
+
+```text
+p^(e/2)/((e+1)(1-p^(-1))).
+```
+
+At depth zero this lies in `[1,2]`; all positive depths form exactly the higher-prime-power tail
+already bounded by `O(x^(-1/2))`.  Thus the supplied paper's beyond-finite-Rees depth singularity
+cannot create the missing Route E estimate: it acts only on a sector already inside the allowed
+error.  The active hard source is a cofinally continuous signed orientation across infinite Wold
+breadth on the depth-zero prime face, before its unit codiagonal is scalarized.
+`MobiusGammaCoPoissonDepthZeroReduction.lean` proves this axis separation unconditionally.  The
+publication-ready superselection paper supplies finite source decomposition and the
+Gamma/co-Poisson comparison, but explicitly does not supply the remaining breadth orientation.
+
+A new Beurling firewall now rules out treating that breadth orientation as a consequence of local
+prime geometry.  Diamond--Montgomery--Vorhauer's discrete generalized-prime system retains
+linear generalized-integer density with power error, a de la Vallée Poussin-scale PNT, finite
+Gibbs Rayleigh/log-submodular geometry, the exact zero/one-large-prime split, an
+`O(x^(-1/2))` higher-large-prime remainder at the critical aperture, the same unique renewal
+transition and scalar exponent barrier, and the divided-log Gamma completion with bounded
+depth-zero gauge.  Its zeta function nevertheless has infinitely many strict-right zeros, so
+Mellin continuation forces its zero/one seam to fail the required strict-half bound.  Hence the
+entire local/PNT/Gamma package has a countermodel.  Any viable Route E source must invoke a named
+ordinary-integer-specific discriminator—additive lattice structure, archimedean functional
+equation/co-Poisson reflection, or an equivalent global invariant—and derive the bound from it.
+
+The firewall is sharp at the generalized-integer counting threshold.  Zhang's normalized
+Beurling construction can agree with every ordinary rational prime below any prescribed finite
+cutoff and still satisfy
+
+```text
+N_P(X)=X+X^(1/2) exp(O((log X)^(2/3)))
+```
+
+with analytic continuation through `Re(s)>1/2`, while possessing infinitely many zeros on
+`Re(s)=1-1/log|t|`.  Because the counting error is `O_delta(X^(1/2+delta))`, every local Route E
+mechanism and the `O(x^(-1/2))` higher-large-prime remainder survive.  Thus finite prime agreement,
+near-critical counting rigidity, and strict-half analytic continuation are still insufficient.
+Any surviving source must detect exact infinite additive self-duality rather than an arbitrarily
+accurate finite or asymptotic approximation.
+Paper proof: `../2-fully-proven/route-e-beurling-local-axiom-firewall.md`.
+
 One pointwise supply gate is now closed on paper.  Extracting the factor ranges and count from the
 Matomäki--Teräväinen all-interval `E_3` proof at `p/2` shows that every large prime
 `z<p<=z^2` has a squarefree product of four distinct primes at most `z` within
@@ -1002,23 +1115,99 @@ valid. Exact rank-drop Cayley and resolvent laws are formalized in
 This still does not force locally normalized moving defect functions to converge to zero, so it
 does not close scalar two-angle meromorphic producer.
 
-**Closed regular unit-response shell-fusion subclass.** The source-signature conservation theorem
-in `riemann-source-modular-superselection/main-universal.tex` classifies one possible realization
-of a Suzuki source proof. Before scalarization, an `N`-shell reciprocal packet splits into one
-fused hyperbolic divisor block and a centered transverse block of signature `(N-1,N-1)`. If every
-countable exponent shell has the same nonzero unit response and the shell modes are orthogonal in
-`ell^2` or form a Bessel family, the scalar codiagonal is respectively nonclosable or cannot be
-represented by one bounded constant-response vector. A proof inside that architecture cannot
-manufacture its terminal sign by bounded/closable processing after shell fusion. This exact
-conditional classification is formalized by `CommonCharacterFusionConservation.lean` and
-`HighExponentShellFusionConservation.lean`.
+**Closed regular unit-response / finite-Rees post-fusion subclass.** The updated biaxial theorem
+in `riemann-source-modular-superselection/main-universal.tex` classifies one precise possible
+realization of a Suzuki source proof. Its hypotheses are conjunctive and exact:
 
-It does **not** follow that every bounded functional of Suzuki's scalar screw data loses source
-orientation: the scalar data can still recover von Mangoldt coefficients and encode the completed
-divisor. Nor does the theorem refute locally uniform convergence of the scalar two-angle carrier.
-It says only that a shell-based unit-response realization must keep a singular, source-pointed
-pre-fusion correspondence through sign formation. This is an optional surviving architecture,
-not a proved necessary factorization of Suzuki's concrete scalar finite-interval construction.
+```text
+same unit response on every positive exponent shell
++ orthogonal ell2 or Bessel shell modes
++ reflected prime-valuation sewing at one finite Rees grade
++ terminal sign formed only after reflection-invariant scalar fusion.
+```
+
+Breadth and depth fail independently. Before scalarization, an `N`-shell reciprocal packet splits
+into one fused hyperbolic divisor block and a centered transverse block of signature `(N-1,N-1)`.
+Countably many unit-response modes make the orthogonal codiagonal nonclosable and exclude a bounded
+constant-response Bessel reader even at zero charge. At nonzero reflected charge, every exact
+bounded sewing has norm beyond every finite inverse-Wold Rees power. Reflection-invariant terminal
+scalarization then kills the odd modular charge. This classification is formalized by
+`CommonCharacterFusionConservation.lean`, `HighExponentShellFusionConservation.lean`, and
+`PrimeValuationHellingerReesReflectionFracture.lean`.
+
+The source-specific quantitative connector is now also closed. Suzuki's interval `[-a,a]` sees
+exactly the arithmetic translations `log n` with `n<=exp(2a)`. At integer cutoff `X`, put
+`a_X=(1/2)log(X+1)`. Harmonic-sum/Euler-product domination gives
+
+```text
+log(X+1) <= primeWoldBoundaryVolumeBelow(X+1)^(-1).
+```
+
+Consequently every exact reflected Hellinger sewing in the theorem's valuation architecture obeys,
+for every fixed `K`,
+
+```text
+a_X^K = o(||R_(X+1)||),
+||R_(X+1)|| is not O(a_X^K).
+```
+
+Thus polynomially conditioned reflected sewing is impossible in physical Suzuki aperture, not
+merely in an abstract Rees coordinate. Paper proof and unconditional Lean are in
+`suzuki-aperture-rees-superpolynomial-conditioning.md` and
+`SuzukiApertureReesConditioningNoGo.lean`.
+
+**Unconditional Xi first-defect cone and exact source obligation.** Normalize the Xi Donoghue
+target at `i`, take its Livšic transform `Theta_Xi`, and put
+
+```text
+kappa_Xi = Re(2i Theta_Xi'(i)).
+```
+
+Multiplicity-exact squared-zero moments, the unconditional zero-height gap
+`Im(rho)^2>41/2`, and the open critical strip give the atomwise inequality
+
+```text
+85 Re(r_q^2) < 4 Re(r_q).
+```
+
+After summation and differentiation of the Xi logarithmic derivative this proves, without RH,
+
+```text
+77/85 < kappa_Xi < 1,
+2i Theta_Xi'(i) = kappa_Xi in R.
+```
+
+Consequently an Xi-identifying Suzuki source has normalized parity shares
+
+```text
+even share > 81/85,
+0 < odd share < 4/85.
+```
+
+Locally uniform convergence of the actual disk-conjugated finite Suzuki Livšic carriers forces
+their exact source defect angles to tend to `kappa_Xi`; higher-order-only noncollapse cannot
+identify Xi. Combining this convergence with the ground-pole law `1-kappa <= 2 rho_ground`
+forces the fixed positive eventual leakage floor
+
+```text
+(1-kappa_Xi)/4 < rho_ground.
+```
+
+Thus both free collapse (`kappa→0`) and ground saturation/Cayley universality (`kappa→1`,
+`rho_ground→0`) are quantitatively excluded. Paper proof and unconditional Lean are in
+`suzuki-xi-first-defect-jet-gap.md`, `SuzukiXiFirstDefectJet.lean`, and
+`SuzukiXiFirstDefectJetSource.lean`.
+
+None of this implies that every bounded functional of Suzuki's scalar screw data loses source
+orientation: scalar data can recover von Mangoldt coefficients and encode completed divisor.
+Neither theorem refutes locally uniform convergence of scalar two-angle carrier. They exclude only
+architectures satisfying their stated stable-label, reflected-valuation, finite-Rees, and
+post-scalar hypotheses. Singular or relation-valued breadth, beyond-all-orders depth, and
+source-selected pre-fusion orientation survive. The updated superselection paper's
+admission--separation ledger is decisive here: a target-selected moment/interface can satisfy every
+downstream Xi identity while supplying no arithmetic source map. The first-defect cone is therefore
+a necessary source test, not an admission theorem, and the singular/pre-fusion factorization is not
+proved necessary for Suzuki's concrete scalar finite-interval construction.
 
 **Strongest positive survivor and live Route-G core.** Two distinct extension angles give the
 meromorphic quotient
@@ -1040,13 +1229,17 @@ therefore keeps Route G open.
 
 **Current verdict.** Route G is open and narrowed. Suzuki's global one-angle holomorphic-gauge
 compact-limit program is dead, but the pole-compatible two-angle Livšic/Hermite--Biehler producer
-survives. BV/co-Poisson closure is another failed provider subclass. Full closure requires either an
-unconditional source-selected two-angle limit and Xi/de Branges identification or a genuinely
-class-complete no-go for that meromorphic producer.
+survives. BV/co-Poisson closure and polynomially conditioned finite-Rees reflected sewing are
+additional failed provider/source-realization subclasses. Any survivor must now stay in the strict
+Xi first-defect cone, retain a positive ground-leakage floor, and satisfy source admission rather
+than a fitted target interface. Full closure requires either an unconditional source-selected
+two-angle limit and Xi/de Branges identification or a genuinely class-complete no-go for that
+meromorphic producer.
 
 **Dead mechanisms.** Every holomorphically gauged one-angle entire compact limit to
 `z^2 XiC/XiC'`; legacy ungauged entire compact limit; ordinary Burnol `L2` at critical half-weight;
 stable-deficiency phase locking for compact-test graph exhaustion;
+polynomially conditioned exact reflected-valuation sewing at physical Suzuki aperture;
 bare logarithmic-current quotient; critical eta in either extended-property-S parity; every compact
 multiplicative resonance repair; fused observer rectangle as literal sharp trace cell; local PSD
 after subtraction of twice prime block; finite uniform inverse gain from damped causal response;
@@ -1055,8 +1248,9 @@ undressed sharp all-prime wall in ordinary `ell2`; and generic completion existe
 **Live positive core.** Pole-compatible two-angle Livšic quotient and all-angle finite-aperture
 Hermite--Biehler carrier; exact critical flux coefficient `1/4`; sharp parity/weight resonance law;
 compact-seed moment rigidity; dense-ideal quotient classification; finite source Stein defects;
-and universal Gamma--Gaussian property-S completion. None discriminates critical-line zeros without
-missing source-generated dagger.
+unconditional Xi first-defect/parity cone with a source convergence connector and persistent
+ground-leakage floor; and universal Gamma--Gaussian property-S completion. None supplies source
+admission or discriminates critical-line zeros without missing source-generated dagger.
 
 ### Route G2 — relative-Volterra phase source-germ weld [RETIRED]
 
@@ -1432,8 +1626,34 @@ to zero therefore forces off-diagonal energy at least
 `(1/2)(m⁴/576-65(log m)²)`. It is unbounded.
 The existing exact calibrated Julia--Euler seam does provide sign-changing source orientation, but
 its kernel is antisymmetric, so its scalar quadratic energy is identically zero on every finite
-packet. It therefore cannot be the missing capacity; a quadratic survivor needs a nonzero
-symmetric sign-changing completed block.
+packet before a transverse phase is chosen.  This sign loss is now solved globally: the normalized
+Cayley multiplier
+
+```text
+u_tau(h) = (1 + i tau h) / sqrt(1 + tau^2 h^2)
+```
+
+has unit norm and turns each Hermitianized exterior cell into the positive square
+
+```text
+tau A_i A_j (h_i-h_j)^2
+/ (sqrt(1+tau^2 h_i^2) sqrt(1+tau^2 h_j^2)).
+```
+
+No phase-diameter or pre-wrap restriction remains.  But the accompanying phase-free theorem is
+class-complete for bounded diagonal polarizations: every multiplier family with norm at most one
+has block energy `O(m^4/log(m^4))`, whereas the certified bad-mass square is at least `m^4/576`.
+Beyond the explicit symbolic threshold `exp(7201)<m`, no bounded polarization can dominate it.
+The full-scale theorem is quantitative.  Whenever a block polarization bounded by `B_m` does
+dominate certified bad mass,
+
+```text
+log(2 m^4) <= 7200 (log 4)^2 B_m^2.
+```
+
+Hence every successful exterior capacity has multiplier norm at least a fixed multiple of
+`sqrt(log m)`.  Thus sign is not Route J's missing resource; bounded exterior capacity is
+impossible, and the minimum regularity loss is now explicit.
 
 **Endpoint classification.** Forgetting representation data, let `CAP_J` assert existence
 on some physical aperture tail of a nonnegative capacity `R(L)` and constant `M` satisfying
@@ -1465,11 +1685,12 @@ Endpoint equivalence to the Ward law does not identify that Gram with `R_x(L)`, 
 moving-block floor, or prove either bound without an RH-equivalent sign. It is a bridge, not route
 closure.
 
-**Exact open core.** Construct a source-constrained symmetric sign-changing completed
-prime--Gamma/co-Poisson current, or a genuinely nonlinear Julia source functional, whose scalar
-part is nonzero, which cancels the pure-bad quartic floor while remaining nonnegative on the
-literal source locus, dominates every negative first-clock excursion, and has one source-uniform
-upper bound. Alternatively prove a class-complete no-go. This researchable survivor is not
+**Exact open core.** Construct a singular/unbounded source-constrained completed
+prime--Gamma/co-Poisson current, a relation-valued co-moving transport, or a genuinely nonlinear
+Julia source functional which escapes the bounded-polarization theorem, cancels the pure-bad
+quartic floor while remaining nonnegative on the literal source locus, dominates every negative
+first-clock excursion, and has one source-uniform renormalized upper bound. Alternatively prove a
+class-complete no-go for those remaining categories. This researchable survivor is not
 discharged by calling its endpoint Route A or its strongest named input Route R; Route J remains
 open.
 
@@ -1479,7 +1700,7 @@ Open principal-relative owner card:
 Failed unrenormalized subroute:
 `../5-failed/route-j-julia-unrenormalized-coherent-energy-budget.md`.
 
-### Route K — quadratic spectral realization `[OPEN — PRIME-CYCLE TRACE-CLASS RELOCATION]`
+### Route K — quadratic spectral realization `[OPEN — QUARTIC/ALL-MOMENT INCIDENCE]`
 
 **Endpoint.** `XiQuadraticSpectralReality ↔ RH`.
 
@@ -1524,13 +1745,59 @@ maps to Route P and is not K progress.  Exact K core: construct compatible prime
 matrices before divisor input, prove trace-norm convergence, lift all known source moments to their
 closed-walk traces, and prove the resulting global genus-one determinant is centered Xi.
 
-One literal source matrix candidate is now selected.  Completed unit--double response at prime-log
-ratios gives packet-independent symmetric off-diagonal entries and explicit triangle holonomies;
-the determinant and quartic laws instantiate on them in Lean.  Forced finite row balancing is not
-compression-compatible: inserting one prime changes every old diagonal by the negative new pair
-response, and exact absolute diagonal shell mass is the `ell1` mass of that response column.  Thus
-K's next theorem is no longer “find cycles”; it is source renormalization/nuclear control of these
-shells, cofinal holonomy nonvanishing, and all-moment incidence.
+The operator-existence part of that pivot is now closed.  Correct physical orientation gives
+
+```text
+K_phys(t)=S(1+it)-2S(2+it)+Delta_val(t).
+```
+
+The valuation correction is absolutely nuclear; literal primitive ordinary-prime expansion has
+divergent nuclear budget.  After cancellation at source-function level, however, the completed
+prime-ratio matrix is a bounded self-adjoint Hilbert--Schmidt operator `B`.  Smooth
+Riemann--von Mangoldt reciprocal quantiles define an injective self-adjoint Hilbert--Schmidt
+diagonal `Q`, and
+
+```text
+K_RVM=[Q,[Q,B]]
+```
+
+is a source-defined self-adjoint Schatten-1 relocation with exact entries
+`(q_p-q_q)^2 B(p,q)`.
+
+Cofinal cycle faithfulness is also unconditional.  Positive completed local stiffness supplies a
+zero neighborhood on which pair response is positive.  Euler divergence of reciprocal primes
+forces arbitrarily late triples of consecutive primes with both log gaps in any prescribed
+neighborhood—otherwise two-step geometric growth would make the reciprocal-prime series
+summable.  Hence `K_RVM` has cofinal nonzero triangle holonomy and a cofinal nonzero
+centered-reflection quartic edge-flip signal.
+
+The surviving hard core is now exact incidence, not trace-ideal infrastructure.  `K_RVM` has zero
+diagonal and is Hilbert--Schmidt-orthogonal to `Q`, giving the raw fixed-head quadratic law
+
+```text
+||Q+K_RVM||_HS^2=||Q||_HS^2+||K_RVM||_HS^2>||Q||_HS^2.
+```
+
+The apparent quadratic route obstruction is now removed without globally rescaling the RVM
+skeleton.  Positivity of the source zeroth moment and reciprocal-RVM square summability select a
+finite prime head `F` whose cofinite tail energy is smaller than half that moment.  A unique
+positive source scale `c_F` makes
+
+```text
+A_F=c_F(Q_F+K_RVM)+Q_(F^c),
+2||A_F||_HS^2=M_0^src.
+```
+
+Outside `F`, `A_F` retains the exact reciprocal smooth-RVM diagonal.  Every off-diagonal source
+edge is multiplied by the same nonzero scalar, so cofinal triangle holonomy and the
+reflection-even quartic edge-flip signal survive.  This proves exact degree-two source incidence
+unconditionally.  Moreover, existing certified bounds give
+`0<M_1^src<(M_0^src)^2/2`, placing the quartic target strictly inside the necessary reflected
+self-adjoint purity cone.  First open theorem is exact quartic source incidence for the same
+operator; this is a simultaneous prime-cycle matrix problem, not a sign or scalar-feasibility
+obstruction.  Then all higher moments and the global centered-Xi determinant remain.  Proving that
+determinant identity would still prove RH; degree-two admission and cofinal holonomy alone do not
+imply it.
 
 Open pivot card: `route-k-prime-cycle-trace-class-relocation.md`.
 
@@ -1602,6 +1869,10 @@ For the concrete quotient packets, the Hilbert fibres are now canonically normal
 \(L^2\). Their all-prime full-block Green form is summable and faithful on every packet mode,
 including mean-zero modes. Remaining comparison must land in these source-native fibres; no
 divisor-indexed or post hoc Hilbert metric is being chosen.
+Finite cyclotomic rational-Witt evaluation now reaches this target nontrivially at every prime:
+an explicit faithful finite quotient subspace contains a source-generated nonzero mean-zero mode
+with strictly positive literal arithmetic Green energy.  The unresolved comparison theorem is
+therefore global and kernel-theoretic, not local source nonvacuity.
 
 **Unconditional infrastructure.** Weil-height/Kummer groups, L¹/L² completions, real
 scalar extension, a completed real Hilbert/Kummer inner-product package, radial flow,
@@ -1616,7 +1887,7 @@ The generic fine-point carrier also has explicit modulus and phase one-parameter
 their affine conjugation/bracket law, rank-two generators, integrated leaves, Frobenius and
 Galois naturality, and suspension-flow transversality. These close the generic Kronecker and
 affine-foliation mathematics, not the arithmetic identification of the frequency vector,
-prime fibres, relevant complex, or Xi spectrum.
+rational-Witt source packet, relevant complex, or Xi spectrum.
 
 In a standalone half-line complex-pair ODE model motivated by an affine leaf, each nonzero
 frequency has an explicit decaying closed/coclosed-labelled chiral solution with squared norm
@@ -1719,16 +1990,50 @@ circle and is smoothly fine. The arithmetic comparison is now proved at every fi
 stage: \(\operatorname{Aut}(\mu_n)\cong(\mathbb Z/n\mathbb Z)^\times\), Frobenius acts by the
 explicit `p`-power automorphism when \((p,n)=1\), and each \(\ell\)-adic component of the diagonal
 packet unit reduces to the same class `p mod ℓ^k` at every level. The coherent inverse-limit
-homeomorphism with the pointwise automorphism group of all prime-to-`p` roots of unity, and the
-resulting identification of the candidate mapping torus with Deninger's literal prime fibre,
-remain unproved.
+and pointwise-topology comparison are now closed:
+\[
+\operatorname{Aut}(\overline{\mathbb F}_p^\times)
+\cong_{\mathrm{top}}
+\prod_{\ell\ne p}\mathbb Z_\ell^\times .
+\]
+The proof decomposes the full torsion group into height-one primary components, kills the
+characteristic-`p` component, reconstructs arbitrary compatible tower actions, and proves joint
+finite-stage restriction injective. The diagonal packet prime becomes literal arithmetic
+Frobenius \(x\mapsto x^p\) on every unit. The homeomorphism maps the two closed Frobenius subgroups
+exactly, descends to the quotient topological groups, and identifies the candidate mapping torus
+with the internally defined arithmetic multiplicative prime fibre. Lean modules are
+`DeningerPrimeMultiplicativeAutomorphismComparison`,
+`DeningerPrimeMultiplicativeAutomorphismTopology`, and `DeningerPrimeFibreComparison`.
+What remains at this gate is Deninger's external rational-Witt source map from that arithmetic
+mapping torus to the characteristic-`p` packet, not the automorphism/inverse-limit calculation.
+The first genuinely transverse part of that external restriction is now closed.  At every finite
+cyclotomic stage \(n\) coprime to \(p\), Frobenius-orbit root evaluations span the entire function
+space on
+\[
+  (\mathbb Z/n\mathbb Z)^\times/\langle p\rangle .
+\]
+This is exact finite Fourier inversion after Reynolds averaging, not a dimension count.  Uniform
+moduli \(n_p=8\) for odd \(p\) and \(n_2=15\) give a nontrivial quotient at every prime.  Continuous
+surjective reduction from the literal packet quotient to this finite detector is proved, including
+CRT at \(p=2\), compatibility with literal diagonal Frobenius, and descent across its topological
+closure.  Pullback is faithful on the detector's whole function space and is exactly spanned by
+the orbit evaluations.  Consequently finite cyclotomic source data produces a nonconstant mode on
+every literal packet; centering a real or imaginary part gives a nonzero zero-Haar-mean vector in
+the literal arithmetic Haar \(L^2\) fibre and strictly positive all-prime arithmetic Green energy.
+Lean modules are `DeningerFiniteFrobeniusOrbitEvaluationSpan`,
+`DeningerPrimeTransverseEvaluationRestriction`, and
+`DeningerPrimeTransverseEvaluationHaarL2`; paper and novelty audit are in
+`pipeline/3-formalized/new_scientific_knowledge/deninger-rational-witt-finite-transverse-visibility.md`.
+This closes scalar-collapse and finite-source nonvacuity.  It does not yet build the full filtered
+rational-Witt relevant complex or one global Bessel comparison.
 Separately, an abstract
 symbol additive in every entry over a torsion group is torsion; a group generated by such symbols has
 zero real tensor product. This is not an instantiation of Milnor K-theory over an algebraic closure
 of a finite field or of the arithmetic relevant complex.
 
-**Open core.** Complete the finite-stage-compatible profinite inverse-limit and prime-fibre
-comparison; identify the formalized trivial-monodromy quotient mapping torus, packet, symbol, and
+**Open core.** Extend the now-formalized faithful finite cyclotomic restrictions to Deninger's full
+filtered rational-Witt source map for the identified arithmetic multiplicative mapping torus;
+identify that source packet, symbol, and
 coefficientwise cylinder constructions with
 the literal arithmetic Meyer/Deninger relevant complex; establish radial Schwartz and global
 square-integrable domains, a valid local/global interface for the nonlocal packet average, nuclear

@@ -4,8 +4,10 @@
 - **Status:** active research control file; read before any Suzuki work
 - **Terminal objective:** prove RH, disprove RH, or prove a source-complete no-go for Suzuki's
   operator mechanism.
-- **Current terminal result:** none. One-angle holomorphic-gauge and BV/co-Poisson subclasses are
-  closed; two-angle meromorphic Livšic/Hermite--Biehler producer remains live.
+- **Current terminal result:** none. One-angle holomorphic-gauge, BV/co-Poisson, and regular
+  finite-Rees post-fusion reflected-sewing subclasses are closed. Exact Xi identification now
+  forces a strict first-defect/parity cone and persistent ground leakage, but source admission into
+  that cone is open; two-angle meromorphic Livšic/Hermite--Biehler producer remains live.
 - **Knowledge control:** `suzuki-source-realization-knowledge-ledger.md` classifies every attempted
   mechanism as parent theory, corpus-known, formal closure, failed class, or live source theorem.
   Read it before changing this file.
@@ -216,21 +218,53 @@ quotient, in which common gauges cancel and poles remain; that survivor is the l
     resolvent consequences. Do not use stable-deficiency phase locking as Suzuki source mechanism.
     Positive survivor is narrower scalar moving-boundary limit; strong graph convergence alone
     does not control normalized moving defect vectors, so two-angle meromorphic Route G remains open.
-27. **Regular unit-response shell fusion is class-completely dead.**
-    The publication-ready common-divisor theorem classifies a precise possible Suzuki source
-    realization. Finite reciprocal exponent-shell packets split into one common-divisor hyperbolic
-    quotient and a centered transverse block of signature `(N-1,N-1)`. If every countable shell
-    has the same nonzero unit response and the shell modes are orthogonal in `ell^2` or form a
-    Bessel family, scalar fusion is respectively nonclosable or cannot be represented by one
-    bounded constant-response vector. Therefore a proof routed through this shell architecture
-    cannot reconstruct the terminal sign by a bounded/closable selector acting only after fusion.
-    Its exact survivor is a singular, source-pointed **pre-fusion** correspondence retaining shell,
-    valuation-depth, and reflection labels until the Hermite--Biehler sign is formed.
+27. **Regular unit-response / finite-Rees post-fusion architecture is class-completely dead.**
+    Updated publication-ready biaxial theorem has four conjunctive hypotheses: same unit response
+    on every positive exponent shell; orthogonal `ell²` or Bessel shell modes; reflected
+    prime-valuation sewing at one finite Rees grade; and terminal sign only after
+    reflection-invariant scalar fusion. Finite reciprocal packets split into one common-divisor
+    hyperbolic quotient and centered signature `(N-1,N-1)`. Countable breadth is nonclosable or has
+    no bounded constant-response Bessel reader even at zero charge. Nonzero reflected depth forces
+    sewing norm beyond every finite inverse-Wold power. Post-fusion invariant scalarization erases
+    odd modular charge. These failures are independent.
 
-    This theorem does not cover arbitrary bounded functionals of Suzuki's scalar screw data:
-    scalar data can still encode von Mangoldt coefficients and the completed divisor. It therefore
-    closes one source-realization class, not the Suzuki scalar two-angle producer. No claim that
-    Suzuki itself is dead follows from the superselection theorem.
+    Exact survivor inside this class is singular or relation-valued in breadth, beyond all finite
+    Rees orders in reflected depth, and source-selected **before** scalar fusion while retaining
+    shell, valuation-depth, and reflection labels. The theorem does not cover arbitrary bounded
+    functionals of Suzuki's scalar screw data and does not close scalar two-angle producer.
+28. **Polynomial conditioning in physical Suzuki aperture is dead for exact reflected-valuation
+    sewing.** Suzuki's kernel on `[-a,a]` exposes precisely translations `log n` with
+    `n≤exp(2a)`. At cutoff `X`, `a_X=(1/2)log(X+1)`. Harmonic/Euler-product domination gives
+    `log(X+1)≤b_(X+1)^(-1)`, where `b_N` is finite Wold boundary volume. Combining this with item 27
+    proves, for every exact bounded reflected Hellinger sewing family and fixed `K`,
+    `a_X^K=o(||R_(X+1)||)` and `||R_(X+1)||` is not `O(a_X^K)`.
+    `SuzukiApertureReesConditioningNoGo.lean` formalizes theorem unconditionally.
+
+    This is a genuine quantitative narrowing, not terminal closure. Singular/relation-valued,
+    beyond-all-orders, or source-selected pre-fusion maps and direct scalar two-angle convergence
+    remain outside its hypotheses.
+29. **Xi identification forces a strict first-defect cone and persistent ground leakage.**
+    Normalize the exact Xi Donoghue/Livšic target at `i` and write
+    `κ_Xi=Re(2i Theta_Xi'(i))`. Multiplicity-exact squared-zero moments, the unconditional
+    first-zero-height gap, and the open critical strip prove
+
+    ```text
+    77/85 < κ_Xi < 1,
+    2i Theta_Xi'(i) = κ_Xi in R.
+    ```
+
+    Therefore every Xi-identifying Suzuki parity state has even energy share `>81/85` and odd
+    share in `(0,4/85)`. Weierstrass derivative convergence for the actual disk-conjugated finite
+    Livšic quotients forces their exact source defect angles to tend to `κ_Xi`; higher-order-only
+    noncollapse cannot identify Xi. Under the exact ground-pole inequality, every such family has
+    eventual leakage `>(1-κ_Xi)/4>0`. Thus both free collapse and ground-edge Cayley saturation are
+    excluded quantitatively.
+
+    `SuzukiXiFirstDefectJet.lean` and `SuzukiXiFirstDefectJetSource.lean` formalize all statements
+    unconditionally. This is a target obstruction plus source-convergence connector, not source
+    admission. Per the updated superselection paper, fitting `κ_Xi` from target data would be
+    source-provenance theatre. Live arrow is source-only construction of a cofinal schedule in the
+    strict cone with full Xi identification, or a proof actual source dynamics cannot remain there.
 
 ## Provider/source-sign edge — live but not the whole Route-G terminal class
 
@@ -492,3 +526,11 @@ Before each new action, answer in this file's log:
   zero. Lean now proves finite deficiency projections vanish and all contractive finite boundary
   schedules share same Cayley/resolvent limit. This closes operator phase-selection subclass only;
   scalar two-angle moving-defect limit remains exact Route-G open core.
+- **2026-08-01 Xi first-defect cone advance.** Exact normalized Xi target has real anchored
+  defect jet `kappa_Xi∈(77/85,1)` unconditionally. Actual locally uniform Suzuki convergence forces
+  source angles to this scalar, parity shares into `(81/85,1)×(0,4/85)`, and ground leakage above
+  a fixed positive Xi floor. The hard arrow changes from “retain some jet” to source-only entry
+  and full identification inside this strict cone. Corpus complete-monotonicity and generic
+  Livšic theorems contain ingredients but not this exact ratio/source consequence; falsifier was
+  an atom violating `85 Re(r²)<4 Re(r)`, which unconditional zero geometry excludes. This is a
+  source necessity law, not RH or source admission.

@@ -580,9 +580,32 @@ handled, without replacing it by a pointwise multiplier, in
 `../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-exact-log-remainder-signed-trace-rigidity.md`.
 For every bounded classical zero mode with the optimal half-log bound, BV duality for the literal
 symmetric remainder and penalized-extremum noncancellation force the signed pointwise endpoint
-trace. The surviving pre-trace escape is narrower: prove that every completion-safe square-Evans
-zero mode has the bounded weak/classical representative required by the optimal boundary theorem.
-Assuming that lift is rejected.
+trace. The completion-to-bounded-weak lift is now proved in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-completed-eigenmode-atomic-jump-boundedness.md`.
+Every completed eigenfunction is bounded because each von-Mangoldt shift pair is a positive atomic
+Dirichlet jump minus a scalar potential; the polar--Gamma remainder maps `L2` to `L-infinity`.
+The optimal boundary theorem therefore gives continuity and the sharp half-log bound. The weak
+pre-trace gap is also closed in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-weak-signed-half-log-trace.md`:
+zero extension joins the exact remainder and killing term into a translation-invariant whole-line
+jump; moving mollifiers transfer penalized-extremum noncancellation to bounded continuous weak
+solutions. Every completed zero mode therefore has both signed endpoint traces. The exact next gate
+is trace-zero regularity: prove that vanishing traces force membership in `H1_0`.
+
+The exact remainder no longer leaves an arbitrary nonconormal homogeneous escape. In
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-gamma-skew-frequency-flux-liouville.md`,
+its full Gamma Fourier multiplier is retained. Differentiation turns that multiplier and every
+bounded self-adjoint prime-seam adjacency into a skew frequency generator, so
+
+```text
+|eta| ||Fhat(eta)||^2
+```
+
+is conserved. Hence every homogeneous seam state in `L2(dL)` is zero, including rapidly
+oscillating inverse-log-flat states outside all conormal classes. The remaining trace-zero gate is
+now the literal completed-carrier connector: build the support-pruned self-adjoint Hilbert seam
+state, prove trace zero places its homogeneous part in `L2(dL)`, and show the forced part inherits
+Gamma-strip decay of physical order greater than `1/2`.
 
 ## 7. Lean decision
 
@@ -626,7 +649,15 @@ paper mathematics; abstract formalization would not certify source-specific anal
 - [x] classify every bounded pointwise homogeneous seam coupling by its half-log trace
 - [ ] construct exact Suzuki transport to every prescribed finite grade
 - [x] prove weighted BV pairing and extremal noncancellation for the exact nonlocal remainder
-- [ ] prove every completion-safe square-Evans zero mode has a bounded weak/classical representative
+- [x] prove every completion-safe square-Evans zero mode has a bounded weak representative
+- [x] prove continuity and optimal half-log boundary decay for every completed zero mode
+- [x] extend signed trace to bounded continuous weak zero modes
+- [x] prove both signed endpoint traces exist for every completed zero mode
+- [x] prove exact Gamma-skew frequency current for the literal nonlocal remainder
+- [x] exclude homogeneous nonconormal `L2(dL)` seam coronas under self-adjoint coupling
+- [ ] construct the literal support-pruned self-adjoint Hilbert seam carrier
+- [ ] prove trace-zero homogeneous component belongs to `L2(dL)`
+- [ ] prove forced Gamma-strip decay with physical exponent greater than `1/2`
 - [ ] prove inverse-log-flat zero modes lie in `H1_0`
 - [ ] identify the trace-zero square-Evans kernel with the raw Evans kernel
 - [ ] prove corona separation for the finite square-Evans characteristic packet
@@ -645,3 +676,6 @@ paper mathematics; abstract formalization would not certify source-specific anal
   Finite-dimensional square-Evans compression then removed countable seam convergence as a
   prerequisite: arbitrary finite-order transport plus joint log-flatness separation yields one
   finite separating grade cutoff.
+- 2026-08-01 — Retaining the exact Gamma multiplier gives conserved frequency current
+  `|eta| ||Fhat||^2`; no homogeneous `L2(dL)` seam corona survives, even with nonconormal
+  high-frequency oscillation. Source-carrier realization and forced Gamma-strip decay remain.

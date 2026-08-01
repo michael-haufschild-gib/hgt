@@ -16,7 +16,7 @@
   linkcolor=blue!55!black,
   citecolor=blue!55!black,
   urlcolor=blue!55!black,
-  pdftitle={Poisson-normalized generator duality},
+  pdftitle={The source-character conservation law},
   pdfauthor={Michael Haufschild}
 }
 
@@ -42,8 +42,8 @@
 \newcommand{\cW}{\mathcal W}
 \newcommand{\dd}{\,\mathrm d}
 
-\title{\textbf{Poisson-normalized generator duality}\\
-\large A universal source horizon for escaping Riemann divisors}
+\title{\textbf{The source--character conservation law}\\
+\large Positive descent, singular completion, and the Riemann horizon}
 \author{Michael Haufschild}
 \date{}
 
@@ -52,12 +52,13 @@
 \maketitle
 
 \begin{abstract}
-A divisor can escape every fixed compact observer without losing its information.  We prove a
-universal law governing where that information goes.
+A divisor can escape every fixed observer without losing its information.  We prove one
+source--character conservation law whose two conserved coordinates identify what survives this
+escape and where several proposed regular realizations must become singular.
 
 For a nonzero coherent generator \(b\), factorially normalized evolution derivatives have Poisson
-mean \(|b|^2x\).  Requiring that mean to equal an intrinsic time \(\tau\) uniquely forces
-\(x=\tau/|b|^2\).  At that same forced clock,
+mean \(|b|^2x\).  Normalizing that mean to intrinsic time \(\tau\) uniquely forces
+\(x=\tau/|b|^2\), and at this same forced clock
 \[
  bx=\frac{\tau}{\overline b},
  \qquad
@@ -65,36 +66,61 @@ mean \(|b|^2x\).  Requiring that mean to equal an intrinsic time \(\tau\) unique
  =|m|^2e^{[\,2\Rea(b^{-1})+1\,]\tau}
    \Pr\{\Pois(\tau)=r\}.
 \]
-Thus order normalization automatically converts a generator into its conjugate reciprocal.  The
-universal neutral horizon is \(\Rea(b^{-1})=-\tfrac12\).
+Thus order normalization converts a generator into its conjugate reciprocal.  The universal
+neutral horizon is \(\Rea(b^{-1})=-\tfrac12\).
 
 For a meromorphic response evolved from a marked source \(c\), residue extraction gives
 \(b=(\rho-c)^{-1}\).  The forced clock is therefore
 \(x=|\rho-c|^2\tau\), the dual coordinate is \(\overline{\rho-c}\), and the horizon pulls back to
-\(\Rea\rho=\Rea c-\tfrac12\).  A finite transported divisor becomes a
-constant-coefficient exponential spectrum: it is differentially algebraic, its explicit
-annihilator has characteristic roots \((\rho-c)^{-1}\), and its first \(N\) evolution jets are
-Vandermonde-faithful for \(N\) distinct divisor points.
+\(\Rea\rho=\Rea c-\tfrac12\).  Its Poisson packet carries the real character
+\(\exp(\nu_c(\rho)\tau)\), where \(\nu_c(\rho)=2\Rea(\rho-c)+1\).
+
+The structural theorem is independent of zeta functions.  A summable analytic resolution of one
+is a nonzero \(\ell^1\) source vector, and multiplication by at least one of its channels preserves
+the exact divisor.  If this vector carries one real exponential character \(e^{\nu t}\), then
+every equivariant linear descent into a norm-conservative target satisfies the sharp alternative
+\[
+  T\mathbf m(\rho)=0\qquad\text{or}\qquad \nu=0.
+\]
+Without exact equivariance, its intertwining defect is at least
+\(|e^\nu-1|\,\|T\mathbf m(\rho)\|\); if \(T\) is bounded below by \(\kappa\), the defect is at
+least \(\kappa|e^\nu-1|\).  Thus uniformly source-faithful norm-conservative approximants cannot
+converge to equivariance off the neutral horizon.
+For the reflected pair of rates \(\pm\nu\ne0\), the invariant symmetric quadratic forms are
+exactly the hyperbolic cross pairings; no nonzero positive-semidefinite invariant form exists.
+A realization which is both positive and norm-conservative can therefore retain the nonzero
+source vector only on its neutral horizon.  Off the horizon, retention forces erasure,
+indefiniteness, singularity, or loss of conservativity.
 
 For the completed Riemann response, \(c=1\) is present in the prime--Gamma source, so the pulled-back
-horizon is the critical line.  Its residue mode is the Poisson completion of the inverse
-Li--Cayley orbit; packet drift and dual rate reconstruct the zero up to conjugation.  We couple
-this law to functional-equation-preserving hypertranscendental quartet perturbations.  Every
-holomorphic jet converges compact-open to \(\xi\), the complete rational differential matroid is
-unchanged, and a nonnegative Ward density vanishes on every bounded window while retaining
-\(8\pi\) per quartet.  The uniquely normalized source carrier nevertheless remains exact and
-height-independent.
+horizon is the critical line and \(\nu_1(\rho)=2\Rea\rho-1\).  The residue mode is the Poisson
+completion of the inverse Li--Cayley orbit.  Its transverse fibre is arithmetically nontrivial:
+a fixed positive exponent-shell resolution has an \(\ell^1\) multiplier vector of total coordinate
+one throughout \(\Rea s\ge\tfrac12\).  At every such point it is nonzero and one coordinate retains
+exact multiplicity; every equivariant norm-conservative consumer either erases this actual vector
+or the point is on the critical line.  Its strict-right tail remains jointly differentially
+independent over the zeta differential field.  Finite common-character fusion conserves
+hyperbolic signature; countable unit fusion is nonclosable; reflected valuation sewing costs more
+than every polynomial in physical aperture; and the regular Wold--Poisson, Sonin--Calkin, and
+four-unit Ward consumers have the same neutral equalizer.
 
-The result does not prove the Riemann hypothesis.  It establishes a new scale-covariant carrier
-that converts divisor data invisible to fixed analytic, differential-algebraic, and index
-observers into a finite reconstructible spectrum, and identifies zero exclusion with control of
-its reciprocal-generator Lyapunov rates.
+A global Cayley source phase supplies the missing one-sided sign for every finite Julia--Gamma
+exterior packet, without phase wrapping.  Yet a phase-free capacity theorem proves that every
+unit-bounded polarization, including this sign-correct chart, is smaller by a logarithmic factor
+than the certified macroscopic bad-mass square.  More generally, domination forces multiplier
+norm at least of square-root-logarithmic size.  Orientation is therefore available; regular
+capacity is not.
+
+The result does not prove the Riemann hypothesis.  It proves a source-derived carrier,
+classification, and obstruction: nonerasing equivariant norm-conservative realizations select the
+Riemann horizon, while every audited off-horizon realization enters one of the singular
+alternatives detected by the same source data.
 \end{abstract}
 
 \medskip
 \noindent\textbf{Keywords.}
-Riemann hypothesis; meromorphic divisor; generator duality; logarithmic derivative; Li
-coefficients; coherent state; Poisson law; hypertranscendence; Ward index.
+Riemann hypothesis; meromorphic divisor; source character; positive descent; coherent state;
+Poisson law; hypertranscendence; singular completion; Ward index.
 
 \medskip
 \noindent\textbf{2020 Mathematics Subject Classification.}
@@ -178,39 +204,54 @@ finite, rigid differential-algebraic object.
 
 \subsection*{Main results}
 
-The paper proves five closed statements.
+The paper proves one conservation law and six exact consequences.
 
 \begin{enumerate}[leftmargin=2.2em]
-\item The \emph{generator-duality law}: Poisson drift normalization uniquely fixes the clock and
-converts every nonzero generator into its conjugate reciprocal.
-\item The \emph{source-horizon law}: source evolution pulls the universal generator horizon back
-to \(\Rea\rho=\Rea c-\tfrac12\), with exact Poisson channel conservation.
-\item The \emph{finite-carrier law}: transported divisor points form a constant-coefficient
-exponential spectrum, differentially algebraic and faithful in a finite jet.
-\item The \emph{Riemann source law}: the prime--Gamma logarithmic response transports each
-\(\xi\)-zero residue into this packet, with no simplicity assumption, and the mode is the Poisson
-completion of the inverse Li--Cayley orbit.
-\item The \emph{escape--renormalization law}: explicit off-line quartets are simultaneously
-invisible to every fixed compact holomorphic jet, to a complete rational differential matroid,
-and to every bounded Ward window, but reappear exactly at canonical source time.
+\item Poisson drift normalization uniquely fixes the source clock, converts a generator into its
+conjugate reciprocal, and produces an exact source-horizon packet.
+\item Every summable analytic resolution of one contains a divisor-faithful channel, and
+every norm-conservative descent has defect at least
+\(|e^\nu-1|\,\|T\mathbf m\|\).  Exact equivariance gives
+\(T\mathbf m=0\) or \(\nu=0\); reflected nonneutral characters have only hyperbolic invariant
+geometry.
+\item Transported finite divisors form explicit constant-coefficient exponential spectra,
+differentially algebraic and faithful in finite jets.
+\item The completed prime--Gamma response transports every \(\xi\)-zero residue into this packet,
+without a simplicity assumption, and the packet is the Poisson completion of the inverse
+Li--Cayley orbit.
+\item A fixed positive high-exponent resolution lands in \(\ell^1\), sums to one, and has a
+multiplicity-preserving channel at every closed-right point.  Every conservative equivariant
+consumer erases this vector off the critical line.  The strict-right shell tail is differentially
+independent; finite fusion conserves signature, whereas countable unit fusion and finite-Rees
+reflected sewing are necessarily singular.
+\item A Cayley source chart orients every finite Julia--Gamma exterior packet globally, but every
+dominating polarization must have at least square-root-logarithmic multiplier blow-up.
+\item Explicit off-line quartets are invisible to every fixed compact holomorphic jet, a complete
+rational differential matroid, and every bounded Ward window, but reappear exactly at canonical
+source time.
 \end{enumerate}
 
-The first statement is generator-universal; the next two hold for every finite meromorphic
-divisor.  The last two identify why the Riemann critical line is the neutral line selected by its
-arithmetic source and why several apparently strong observers lose the same off-line data.
+The generator and descent statements are universal.  The remaining results prove that the Riemann
+divisor is a literal arithmetic realization rather than a decorative substitution into an
+abstract character theorem.
 
 \subsection*{Novelty boundary}
 
 No novelty is claimed for logarithmic residues, coherent-state Poisson statistics
-\cite{Bargmann1961,Glauber1963}, Li's criterion, exponential Li asymptotics, or symmetric
-polynomial perturbations.  The contribution is the exact conjunction and classification: order
-normalization uniquely forces reciprocal-generator duality; meromorphic source transport pulls
-its universal horizon into divisor space; finite hidden divisors become explicit
-Vandermonde-faithful differential-algebraic spectra; the Riemann specialization is the factorial
-completion of the inverse Li orbit; and the same carrier resolves the compact-open,
-differential-algebraic, and Ward escape examples.  We found no prior source stating this
-generator-duality/source-horizon theorem or its Riemann specialization.  That database statement
-is evidence, not a claim that literature search proves absence.
+\cite{Bargmann1961,Glauber1963}, the Cayley transform, finite exponential sums, Li's criterion,
+exponential Li asymptotics, or symmetric polynomial perturbations.  The contribution is the exact
+source-derived conjunction and classification: Poisson normalization forces
+reciprocal-generator duality; meromorphic source transport pulls its neutral horizon into divisor
+space; the resulting character controls equivariant norm-conservative descent of a summable
+analytic resolution; the Riemann source realizes that resolution through a
+multiplicity-faithful positive
+resolution with an independent strict-right tail and singular reflected valuation sectors; and
+the same character explains fixed-scale, Calkin, Ward,
+and differential-algebraic blindness.  The Cayley orientation identity is elementary; novelty is
+claimed only for its calibrated Julia--Gamma realization and its exact collision with the
+bounded-polarization capacity theorem.  We found no prior source stating this fibre--character
+conservation theorem or its Riemann realization.  That search result is evidence, not a proof of
+priority.
 
 \section{Meromorphic source evolution}
 
@@ -718,6 +759,590 @@ The sign statement is \cref{cor:horizon-classification}.  Direct calculation giv
 and \(\Rea\bar\rho=\Rea\rho\).
 \end{proof}
 
+\section{The source--character conservation law}\label{sec:fibre-law}
+
+The source horizon becomes restrictive only after one asks how an analytic source resolution may
+descend to a conservative realization.  The next theorem is the universal law used in the paper.
+It couples two data which are often scalarized separately: a transverse analytic resolution of
+one and its horizontal real character.
+
+\begin{theorem}[Source--character conservation for analytic resolutions]
+\label{thm:fibre-conservation}
+Let \(f\) and \(m_j\), \(j\ge0\), be holomorphic near \(\rho\), and suppose
+\[
+ \sum_{j\ge0}|m_j(\rho)|<\infty,\qquad
+ \sum_{j\ge0}m_j(\rho)=1.
+\]
+Put \(\mathbf m(\rho)=(m_j(\rho))_{j\ge0}\in\ell^1\).  Let \(F\) be a real normed
+space, \(V:F\to F\) and \(T:\ell^1\to F\) be real-linear, suppose
+\(\|Vy\|=\|y\|\), and let
+\[
+ U_\nu x=e^\nu x,\qquad
+ \Delta_\nu(T;\rho)
+ :=\|TU_\nu\mathbf m(\rho)-VT\mathbf m(\rho)\|.
+\]
+Then
+\begin{align}
+ &\mathbf m(\rho)\ne0,\qquad
+ \ord_\rho(fm_j)=\ord_\rho f
+     \quad\text{for at least one }j,                    \tag{7.1a}\\
+ &|e^\nu-1|\,\|T\mathbf m(\rho)\|
+      \le \Delta_\nu(T;\rho).                            \tag{7.1b}
+\end{align}
+Moreover \(\|\mathbf m(\rho)\|_1\ge1\).  Hence if \(T\) is uniformly source-faithful,
+\[
+ \|Tx\|\ge\kappa\|x\|_1\quad(x\in\ell^1),\qquad\kappa\ge0,
+\]
+then
+\[
+             \Delta_\nu(T;\rho)\ge\kappa|e^\nu-1|.       \tag{7.1c}
+\]
+In particular, exact equivariance \(\Delta_\nu(T;\rho)=0\) implies
+\[
+       T\mathbf m(\rho)=0\qquad\text{or}\qquad\nu=0.     \tag{7.1d}
+\]
+Thus a summable analytic resolution is simultaneously divisor-faithful in at least one channel
+and quantitatively character-selective under every norm-conservative descent.
+\end{theorem}
+
+\begin{proof}
+The identity \(\sum_jm_j(\rho)=1\) implies \(\mathbf m(\rho)\ne0\) and supplies an index
+\(j\) with \(m_j(\rho)\ne0\).  That \(m_j\) is an analytic unit at \(\rho\), so multiplication by
+it preserves analytic order, proving \((7.1a)\).
+
+The triangle inequality for the coordinate sum gives
+\[
+ 1=\left|\sum_jm_j(\rho)\right|
+ \le\sum_j|m_j(\rho)|=\|\mathbf m(\rho)\|_1.
+\]
+The reverse triangle inequality and norm conservation then give
+\[
+ \Delta_\nu(T;\rho)
+ \ge\left|\|TU_\nu\mathbf m(\rho)\|
+          -\|VT\mathbf m(\rho)\|\right|
+ =|e^\nu-1|\,\|T\mathbf m(\rho)\|,
+\]
+which proves \((7.1b)\).  If the defect vanishes and the retained vector is nonzero, then
+\(e^\nu=1\), hence \(\nu=0\), proving \((7.1d)\).  If \(T\) is bounded below by \(\kappa\),
+combine \(\|T\mathbf m(\rho)\|\ge\kappa\|\mathbf m(\rho)\|_1\ge\kappa\) with
+\((7.1b)\) to obtain \((7.1c)\).
+\end{proof}
+
+This is a support and stability law, not an existence theorem.  At \(\nu=0\) it permits a faithful
+conservative descent but does not manufacture one.  For \(\nu\ne0\), however, every approximate
+consumer pays a defect proportional to retained source norm; exact equivariance forces erasure.
+
+Reflection shows that the alternative is not merely norm growth.  It determines the only
+conservative geometry that remains off the horizon.
+
+\begin{proposition}[Reflected-character geometry]\label{prop:reflected-geometry}
+For \(q\ne0\), consider
+\[
+ D_t(x,y)=(e^{qt}x,e^{-qt}y)
+\]
+and a symmetric quadratic form
+\[
+ Q_{a,b,c}(x,y)=ax^2+2bxy+cy^2.
+\]
+Then
+\[
+ Q_{a,b,c}(D_t(x,y))=Q_{a,b,c}(x,y)
+ \quad\text{for all }t,x,y
+ \quad\Longleftrightarrow\quad a=c=0.                \tag{7.2}
+\]
+Hence every invariant form is a multiple of the hyperbolic cross pairing \(2xy\).
+If it is also positive semidefinite, then \(a=b=c=0\).
+\end{proposition}
+
+\begin{proof}
+Evaluate invariance at \(t=1\) on \((1,0)\) and \((0,1)\).  Since
+\(e^{2q}\ne1\ne e^{-2q}\), the two identities force \(a=c=0\).  Conversely,
+\[
+ (e^{qt}x)(e^{-qt}y)=xy,
+\]
+so every cross pairing is invariant.  If \(2bxy\ge0\) for all \(x,y\), evaluation at
+\((1,1)\) and \((1,-1)\) forces \(b=0\).
+\end{proof}
+
+\begin{corollary}[Conservative descent selects the Riemann horizon]\label{cor:positive-selects}
+Let \(\rho\) be a nontrivial Riemann divisor point and let an analytic resolution vector over
+\(\rho\) carry the centered character
+\[
+ \chi_\rho(t)=\exp\!\left(t(\rho-\tfrac12)\right).
+\]
+Any equivariant norm-conservative descent which does not erase that vector forces
+\[
+ \Rea\rho=\frac12.
+\]
+For a reflected off-line pair, exact conservative pairing is necessarily hyperbolic and cannot
+be positive semidefinite.
+\end{corollary}
+
+\begin{proof}
+On the real ray,
+\[
+ |\chi_\rho(t)|=e^{t(\Rea\rho-1/2)}.
+\]
+Apply \cref{thm:fibre-conservation} to its real rate
+\(\Rea\rho-\tfrac12=\nu_1(\rho)/2\).  The reflected rate is its negative, so
+\cref{prop:reflected-geometry} gives the second assertion.
+\end{proof}
+
+The conclusion is stronger than the statement that one chosen modular character happens to be
+unitary: it classifies the support of every nonerasing equivariant conservative descent of an
+actual analytic resolution vector.  The remaining task is arithmetic---to produce such a vector
+for the Riemann divisor without selecting either \(\rho\) or a channel in advance.
+
+\subsection{The arithmetic transverse fibre}\label{subsec:shell-fibre}
+
+For \(n\ge2\), put \(M(n)=\max_{p\mid n}v_p(n)\), and let
+\[
+ a_m(n)=\mathbf 1_{\{M(n)=m\}},\qquad a_m(1)=0.
+\]
+The associated positive Dirichlet stream is
+\[
+ S_m(s)=\sum_{n\ge1}a_m(n)n^{-s}.
+\]
+
+\begin{theorem}[Summable positive shell conormal]\label{thm:shell-fibre}
+The coefficient supports of the \(S_m\) are pairwise disjoint and
+\[
+ \sum_{m\ge1}S_m(s)=\zeta(s)-1\qquad(\Rea s>1).
+\]
+Moreover
+\[
+ S_m(s)=\zeta(s)H_m(s),\qquad
+ H_m(s)=\frac1{\zeta((m+1)s)}-\frac1{\zeta(ms)}.       \tag{7.3}\label{eq:shell-factor}
+\]
+For every \(m\ge12\), \(H_m\) is holomorphic and zero-free on
+\(\Rea s>\tfrac12\).  Consequently
+\[
+ \ord_\rho(\xi H_m)=\ord_\rho\xi
+\]
+at every nontrivial Riemann divisor point with \(\Rea\rho>\tfrac12\).  Finally, the family
+\((H_m)_{m\ge2}\) is jointly differentially algebraically independent over
+\[
+ K_\zeta=\C(s)\langle\zeta\rangle.
+\]
+There is also a fixed complete landing on the boundary.  For any \(K\ge12\), set
+\[
+ M_{K,0}(s)=\frac1{\zeta(Ks)},\qquad
+ M_{K,j+1}(s)=H_{K+j}(s)\quad(j\ge0).                 \tag{7.3a}\label{eq:complete-shell}
+\]
+On \(\Rea s>1\), the streams \(\zeta(s)M_{K,j}(s)\) have pairwise disjoint \(0/1\)
+coefficients and sum coefficientwise to \(\zeta(s)\).
+Then, at every \(s\) with \(\Rea s\ge\tfrac12\),
+\[
+ \sum_{j\ge0}|M_{K,j}(s)|<\infty,\qquad
+ \sum_{j\ge0}M_{K,j}(s)=1.                            \tag{7.3b}\label{eq:shell-l1}
+\]
+At every \(\rho\) with \(\Rea\rho\ge\tfrac12\), all \(M_{K,j}\) are holomorphic near \(\rho\)
+and at least one fixed channel is nonzero there.  Consequently, for some \(j\),
+\[
+ \ord_\rho\!\bigl(\xi M_{K,j}\bigr)=\ord_\rho\xi.      \tag{7.3c}\label{eq:shell-conormal}
+\]
+Thus the predeclared countable source resolution is an \(\ell^1\), multiplicity-faithful conormal
+landing on the closed right half of the Riemann divisor; its strict-right shell tail has infinite
+differential rank.
+\end{theorem}
+
+\begin{proof}
+Let \(b_r\) be the indicator of \(r\)-free integers.  Then
+\(a_m=b_{m+1}-b_m\), and Euler factors give
+\[
+ \sum_{n\ge1}b_r(n)n^{-s}=\frac{\zeta(s)}{\zeta(rs)}.
+\]
+This proves \eqref{eq:shell-factor}, disjointness, and the coefficientwise telescoping identity.
+For fixed \(K\), the head of \eqref{eq:complete-shell} is the \(K\)-free indicator.  Every integer
+is either \(K\)-free or has one unique maximal prime-exponent level \(K+j\); this proves the
+positive, disjoint coefficient resolution.
+
+For zero-freeness, write \(s=\sigma+it\), \(m\ge12\), \(\sigma>\tfrac12\), and
+\[
+ \zeta(ms)-\zeta((m+1)s)
+ =\bigl(2^{-ms}-2^{-(m+1)s}\bigr)
+  +\sum_{n\ge3}\bigl(n^{-ms}-n^{-(m+1)s}\bigr).
+\]
+The first term has modulus greater than
+\(\frac{29}{100}2^{-m\sigma}\).  With \(x=m\sigma>6\), the tail is bounded by
+\[
+ \frac85\sum_{n\ge3}n^{-x}
+ \le 2^{-x}\frac{512}{5}
+ \left(3^{-6}+4^{-6}+\frac1{2500}\right)
+ <\frac{21}{100}2^{-x}.
+\]
+Hence the difference is nonzero.  Both denominator factors in \eqref{eq:shell-factor} are nonzero in this
+region, so \(H_m\) is zero-free and analytic orders are preserved.
+
+For differential independence, work in the Dirichlet-convolution domain of arithmetic functions,
+graded by \(\Omega(n)=\sum_pv_p(n)\).  The derivations
+\[
+ \delta f(n)=-(\log n)f(n),\qquad
+ (\partial_pf)(n)=(v_p(n)+1)f(np)
+\]
+respect convolution.  A nonzero coefficient of \(a_m\) has grade at least \(m\), with equality
+only at \(p^m\).  After \(\partial_p\), the first possible grade is \(m-1\); for the \(k\)-th
+\(\delta\)-jet its coefficient is, up to a fixed nonzero sign,
+\[
+                  m(m\log p)^k.
+\]
+Choose distinct primes for the finitely many jets at each shell level.  The lowest graded
+Jacobian coefficient is block triangular, with Vandermonde diagonal blocks in the distinct
+numbers \(m\log p\), hence is nonzero.  The characteristic-zero Jacobian criterion gives joint
+algebraic independence of every finite collection of shell jets.  The Dirichlet transform
+intertwines \(\delta\) with \(s\)-differentiation.  Adjoining \(\zeta\) and its derivatives and
+using the invertible gauge \(S_m=\zeta H_m\) proves independence over \(K_\zeta\).
+
+For the boundary landing, the least-prime term gives, when \(\Rea s\ge\tfrac12\),
+\[
+ 2^{ns}H_n(s)\longrightarrow1-2^{-s},
+ \qquad
+ \frac{H_{n+1}(s)}{H_n(s)}\longrightarrow2^{-s}.       \tag{7.3d}\label{eq:shell-ratio}
+\]
+The first limit is nonzero and \(|2^{-s}|<1\), so the ratio test proves absolute summability of
+the tail in \eqref{eq:complete-shell}.  Finite telescoping gives
+\[
+ \sum_{j=0}^{N}M_{K,j}(s)=\frac1{\zeta((K+N)s)};
+\]
+letting \(N\to\infty\) proves \eqref{eq:shell-l1}.  If all coordinates vanished at one point,
+their sum would be both zero and one.
+
+When \(\Rea\rho\ge\tfrac12\) and \(K\ge12\), every zeta argument occurring in
+\eqref{eq:complete-shell} has real part at least \(6\).  Hence all channels are holomorphic near
+\(\rho\).  Choose a nonzero coordinate supplied by \eqref{eq:shell-l1}.  It is an analytic unit
+at \(\rho\), so multiplication by it preserves analytic order, proving
+\eqref{eq:shell-conormal}.
+\end{proof}
+
+\begin{corollary}[Complete Riemann source--character selection]
+\label{cor:complete-source-selection}
+Fix \(K\ge12\), let \(\Rea\rho\ge\tfrac12\), and put
+\[
+ \mathbf M_K(\rho)=\bigl(M_{K,j}(\rho)\bigr)_{j\ge0}\in\ell^1.
+\]
+Then \(\mathbf M_K(\rho)\ne0\), its coordinates sum to one, and one coordinate preserves the
+exact analytic order of \(\xi\) at \(\rho\); moreover
+\(\|\mathbf M_K(\rho)\|_1\ge1\).  Let \(F\) be a real normed space and suppose
+\(V:F\to F\) is norm-conservative, \(T:\ell^1\to F\) is real-linear, and
+\[
+ U_\rho x=e^{\,2\Rea\rho-1}x.
+\]
+Then
+\[
+ |e^{\,2\Rea\rho-1}-1|\,\|T\mathbf M_K(\rho)\|
+ \le
+\|TU_\rho\mathbf M_K(\rho)-VT\mathbf M_K(\rho)\|.      \tag{7.3e}
+\]
+If \(\|Tx\|\ge\kappa\|x\|_1\) for every \(x\in\ell^1\), then
+\[
+ \|TU_\rho\mathbf M_K(\rho)-VT\mathbf M_K(\rho)\|
+ \ge\kappa|e^{\,2\Rea\rho-1}-1|.                       \tag{7.3f}
+\]
+Consequently, if \(T\) is equivariant, then
+\[
+       T\mathbf M_K(\rho)=0
+       \qquad\text{or}\qquad
+       \Rea\rho=\frac12.                                \tag{7.3g}
+\]
+If \(\Rea\rho\ne\tfrac12\) and \(\kappa>0\), there is no sequence
+\((V_n,T_n)\) for which every \(V_n\) is norm-conservative,
+\(\|T_nx\|\ge\kappa\|x\|_1\), and
+\[
+ \|T_nU_\rho\mathbf M_K(\rho)-V_nT_n\mathbf M_K(\rho)\|
+ \longrightarrow0.                                     \tag{7.3h}
+\]
+\end{corollary}
+
+\begin{proof}
+\Cref{thm:shell-fibre} verifies every analytic-resolution hypothesis of
+\cref{thm:fibre-conservation} for \(m_j=M_{K,j}\), \(f=\xi\), and
+\(\nu=2\Rea\rho-1\).  Equations \((7.1b)\)--\((7.1d)\) give the three displayed conclusions.
+In particular, exact equivariance gives either erasure or
+\(2\Rea\rho-1=0\).  If the latter rate is nonzero, the right side of \((7.3f)\) is one fixed
+positive number, contradicting \((7.3h)\).
+\end{proof}
+
+The shell coordinate is transverse to the character coordinate: it changes the source label but
+not the rate \(\nu_1(\rho)\).  Corollary~\ref{cor:complete-source-selection} is therefore the
+literal carrier theorem which the abstract character argument alone lacked.  Away from the
+critical line a regular conservative consumer must erase a predeclared, nonzero, summable,
+multiplicity-faithful source vector---not merely one scalar chosen after seeing the divisor.
+
+\subsection{Finite conservation and the singular countable endpoint}
+
+Let \(\varepsilon_N(x)=\sum_{j=1}^Nx_j\),
+\(\bar x=N^{-1}\varepsilon_N(x)\), and
+\(x^\circ=x-\bar x\mathbf1\).  On the reflected label double define
+\[
+ Q_N(x,y)=2\sum_{j=1}^Nx_jy_j.
+\]
+
+\begin{proposition}[Fusion conservation and its endpoint]\label{prop:fusion-endpoint}
+For every \(N\ge1\),
+\[
+ Q_N(x,y)
+ =\frac2N\varepsilon_N(x)\varepsilon_N(y)
+  +2\sum_{j=1}^Nx_j^\circ y_j^\circ.                 \tag{7.4}\label{eq:fusion-conservation}
+\]
+The reciprocal-character action
+\[
+ (x,y)\longmapsto(e^{qt}x,e^{-qt}y)
+\]
+preserves both sides.  Thus scalar fusion separates one longitudinal hyperbolic plane from a
+transverse block of signature \((N-1,N-1)\); it does not destroy reciprocal signature.
+
+At countable multiplicity, the unit-response codiagonal
+\[
+ \varepsilon_\infty:c_{00}\subset\ell^2\longrightarrow\R,\qquad
+ \varepsilon_\infty(x)=\sum_jx_j,
+\]
+is not closable.  More generally, no Bessel family \((u_j)\) in a Hilbert space admits a vector
+\(y\) with \(\langle u_j,y\rangle=c\ne0\) for every \(j\).
+\end{proposition}
+
+\begin{proof}
+Expand \(x=\bar x\mathbf1+x^\circ\) and
+\(y=\bar y\mathbf1+y^\circ\).  The centered cross terms vanish, proving
+\eqref{eq:fusion-conservation}; reciprocal
+exponential factors cancel in every pairing.
+
+For the endpoint, take
+\[
+ x^{(N)}=\frac1N\sum_{j=1}^Ne_j.
+\]
+Then \(\|x^{(N)}\|_2=N^{-1/2}\to0\), but
+\(\varepsilon_\infty(x^{(N)})=1\), which contradicts closability.  If \((u_j)\) has Bessel bound
+\(C\), then for every finite set \(A\),
+\[
+ |A||c|^2=\sum_{j\in A}|\langle u_j,y\rangle|^2\le C\|y\|^2.
+\]
+Letting \(|A|\to\infty\) gives the Bessel contradiction.
+\end{proof}
+
+\Cref{thm:shell-fibre,prop:fusion-endpoint} identify the breadth singularity forced by the Riemann
+source.  Finite fusion conserves rather than removes its indefinite reflection geometry.
+Countable fusion with uniform response cannot remain inside ordinary Hilbert-space operator
+theory.  Weighted, rigged, relation-valued, or source-dependent fusion is not excluded; one of
+these genuinely singular mechanisms is mandatory.
+
+\subsection{Global orientation forces quantitative singularity}\label{subsec:orientation-capacity}
+
+The fibre law distinguishes orientation from size.  The former can be solved globally by a
+canonical bounded chart.  Let \(P\) be finite, let \(A_i\ge0\) and \(h_i\in\R\), and put
+\[
+ u_\tau(h)=\frac{1+i\tau h}{\sqrt{1+\tau^2h^2}},\qquad
+ K_{ij}=iA_iA_j(h_i-h_j).
+\]
+Every \(u_\tau(h)\) has modulus one.
+
+\begin{theorem}[Cayley orientation--capacity dichotomy]\label{thm:orientation-capacity}
+For every \(\tau\ge0\),
+\begin{equation}\label{eq:cayley-square}
+ \Rea\sum_{i,j\in P}\overline{u_\tau(h_i)}K_{ij}u_\tau(h_j)
+ =
+ \tau\sum_{i,j\in P}
+ \frac{A_iA_j(h_i-h_j)^2}
+ {\sqrt{1+\tau^2h_i^2}\sqrt{1+\tau^2h_j^2}}
+ \ge0.
+\end{equation}
+The value is strictly positive when \(\tau>0\), all \(A_i>0\), and two retained heights differ.
+There is no phase-diameter or no-wrap hypothesis.
+
+Conversely, for arbitrary complex multipliers \(z_i\) satisfying \(|z_i|\le B\), if
+\(|h_i-h_j|\le D\), then
+\begin{equation}\label{eq:bounded-capacity}
+ \left|\Rea\sum_{i,j\in P}\bar z_iK_{ij}z_j\right|
+ \le B^2D\left(\sum_{i\in P}A_i\right)^2.
+\end{equation}
+
+This ceiling is decisive on the first-clock prime blocks.  For
+\[
+ P_m=\{p\ \text{prime}:2m^4<p\le5m^4\},\qquad
+ A_p=\sqrt{\frac{\log p}{p}},\qquad h_p=\frac12\log p,
+\]
+let
+\[
+ \beta_p(m)=
+ -\frac{\log p}{\sqrt p}
+   \sin\!\left(\frac{\pi\log p}{3\log m}\right),
+ \qquad B_m=\sum_{p\in P_m}\beta_p(m).
+\]
+If \(e^{7201}<m\), the Cayley-oriented energy \(E_m(\tau)\) from
+\eqref{eq:cayley-square} satisfies, for every \(\tau\ge0\),
+\begin{equation}\label{eq:orientation-capacity-collision}
+                    0\le E_m(\tau)<B_m^2.
+\end{equation}
+Indeed the stronger assertion holds for every unit-bounded, packet-dependent complex
+polarization, whether or not it has coherent phase.
+
+More generally, suppose \(m\ge25\), \(e^{20}\le m^4\), \(C_m\ge0\), and
+\(|z_p|\le C_m\) on \(P_m\).  If the corresponding exterior energy dominates \(B_m^2\), then
+\begin{equation}\label{eq:capacity-singularity}
+ \log(2m^4)\le7200(\log4)^2C_m^2.
+\end{equation}
+Thus any dominating exterior polarization satisfies
+\[
+ C_m\ge\frac{\sqrt{\log(2m^4)}}{\sqrt{7200}\log4}.
+\]
+\end{theorem}
+
+\begin{proof}
+Write
+\[
+ a_i=(1+\tau^2h_i^2)^{-1/2},\qquad
+ u_\tau(h_i)=a_i+i\tau h_i a_i.
+\]
+Direct multiplication gives
+\[
+ \Rea\!\left(\overline{u_\tau(h_i)}\,iA_iA_j(h_i-h_j)\,
+ u_\tau(h_j)\right)
+ =
+ \tau A_iA_j(h_i-h_j)^2a_ia_j,
+\]
+which proves \eqref{eq:cayley-square} and its strict form.
+
+For \eqref{eq:bounded-capacity}, bound each summand by
+\[
+ |z_i|\,A_iA_j|h_i-h_j|\,|z_j|
+ \le B^2DA_iA_j
+\]
+and sum.
+
+Put \(n=m^4\) and \(L_n=\sum_{p\in P_m}\log p\).  The explicit Chebyshev inequalities
+\[
+ \theta(x)\le x\log4,\qquad
+ \theta(x)\ge(x-1)\log2-\log(x+2)-2\sqrt{x}\log x
+\]
+give, for \(n\ge e^{20}\),
+\[
+                 \frac n4\le L_n\le5n\log4.             \tag{7.4a}
+\]
+Indeed, apply the lower bound at \(5n\), the upper bound at \(2n\), and use
+\(\log(5n)/\sqrt{5n}<1/50\) together with
+\(\log(5n+2)\le n/100\).  These two elementary inequalities follow respectively from monotonicity
+of \(\log x/\sqrt x\) on \(x\ge e^2\) and \(n\ge e^{20}\).
+
+The lower edge of the block also gives
+\[
+ \#P_m\,\log(2n)\le L_n,\qquad
+ \sum_{p\in P_m}A_p^2
+ =\sum_{p\in P_m}\frac{\log p}{p}
+ \le\frac{L_n}{2n}\le\frac52\log4.
+\]
+Cauchy--Schwarz therefore yields
+\[
+ \left(\sum_{p\in P_m}A_p\right)^2
+ \le\frac{25}{2}(\log4)^2\frac{n}{\log(2n)}.
+\]
+Since the height diameter is at most
+\(\tfrac12\log(5/2)<1\), \eqref{eq:bounded-capacity} proves
+\[
+ \left|\Rea\sum_{p,q\in P_m}\bar z_pK_{pq}z_q\right|
+ \le
+ \frac{25}{2}(\log4)^2\,
+ \frac{m^4}{\log(2m^4)}
+\]
+for \(|z_p|\le1\).
+
+The complete block lies in the terminal negative sine chamber.  More precisely, \(m\ge25\) and
+\(2m^4<p\le5m^4\) put the angle
+\(\pi\log p/(3\log m)\) between \(4\pi/3\) and \(3\pi/2\).  Hence
+\(-\sin(\pi\log p/(3\log m))\ge\tfrac12\); also
+\(\sqrt p\le\sqrt5\,m^2<3m^2\).  It follows that
+\[
+ \beta_p(m)\ge\frac{\log p}{6m^2}.
+\]
+Summing and using \((7.4a)\) gives
+\[
+ B_m\ge\frac{L_{m^4}}{6m^2}\ge\frac{m^2}{24},
+ \qquad B_m^2\ge\frac{m^4}{576}.
+\]
+The explicit inequality \(e^{7201}<m\) makes the displayed upper bound strictly smaller than
+\(m^4/576\).  Since the Cayley multipliers have unit modulus, its energy is covered by this
+uniform ceiling; \eqref{eq:cayley-square} supplies nonnegativity.
+
+For the quantitative statement, \eqref{eq:bounded-capacity} and the same Cauchy estimate give
+\[
+ \left|\Rea\sum_{p,q\in P_m}\bar z_pK_{pq}z_q\right|
+ \le C_m^2\frac{25}{2}(\log4)^2\frac{m^4}{\log(2m^4)}.
+\]
+Combine this with \(m^4/576\le B_m^2\) and the assumed domination, then cancel the positive
+factor \(m^4\).  The result is \eqref{eq:capacity-singularity}; taking square roots gives its last
+form.
+\end{proof}
+
+This closes the bounded-phase repair, not the full source problem.  The antisymmetric
+Julia--Gamma exterior cell does possess a canonical global one-sided orientation.  What it lacks
+is macroscopic capacity.  Any realization intended to dominate the first-clock negative
+excursion must leave the bounded diagonal-polarization class and pay at least the explicit
+square-root-logarithmic singularity above; phase engineering alone cannot do so.  This conclusion
+points in the same direction as countable nonclosability: the surviving carrier must be singular,
+relation-valued, or co-moving.
+
+\subsection{Reflected valuation depth is beyond every physical Rees order}
+
+The singularity forced by reflection is quantitatively stronger than unboundedness.  For
+\(0<c<\tfrac12\), define the finite-prime squared Hellinger affinity
+\[
+ \mathcal A_N(c)=
+ \prod_{p<N}
+ \frac{(1-p^{-1})(1-p^{-(1-2c)})}
+      {(1-p^{-(1-c)})^2},
+ \qquad
+ b_N=\prod_{p<N}(1-p^{-1}).
+\]
+The source coordinate \(b_N\) is the finite Wold boundary volume.  At integer cutoff \(X\), the
+matching Suzuki aperture is
+\[
+                     a_X=\frac12\log(X+1).
+\]
+
+\begin{theorem}[Physical aperture--Rees fracture]\label{thm:aperture-rees}
+Let \(R_N:\R\to\R\) be bounded linear maps satisfying the exact reflected sewing equation
+\[
+                     R_N\mathcal A_N(c)=\mathcal A_N(-c)
+                     \qquad(N\ge1).                    \tag{7.5}\label{eq:rees-sew}
+\]
+Then for every fixed \(K\ge0\),
+\[
+                 a_X^K=o\!\left(\|R_{X+1}\|\right)
+                 \qquad(X\to\infty).                   \tag{7.6}\label{eq:rees-aperture}
+\]
+In particular, no exact reflected sewing has operator norm bounded by any polynomial in physical
+aperture.
+\end{theorem}
+
+\begin{proof}
+For \(c>0\), the local factor at \(p\) is
+\[
+ F_p(c)=
+ \frac{(1-q)(1-r)}{(1-u)^2},
+ \qquad q=p^{-1},\quad r=p^{-(1-2c)},\quad u=p^{-(1-c)},
+\]
+with \(u^2=qr\).  For every fixed \(L\), all sufficiently large primes satisfy
+\[
+                 F_p(c)\le1-\frac r4\le1-Lq\le(1-q)^L.
+\]
+Hence \(\mathcal A_N(c)=O(b_N^L)\) for every \(L\): the positive-rate sector is flat beyond every
+finite Rees order.  The reflected factor has the opposite asymptotic regime,
+\(\mathcal A_N(-c)\asymp b_N\).  The sewing identity therefore gives
+\[
+       b_N^{-K}=o(\|R_N\|)\qquad\text{for every fixed }K.
+\]
+Finally the finite Euler-product domination of the harmonic sum yields
+\[
+ \log(X+1)\le b_{X+1}^{-1},
+\]
+and therefore \(a_X^K=O(b_{X+1}^{-K})\).  Combining the two estimates proves
+\eqref{eq:rees-aperture}.
+\end{proof}
+
+The two reflected rates are not merely different finite grades.  One sector is visible at a
+finite Wold/Rees scale; the other is flat beyond every finite grade.  Finite-Rees-moderate
+operators preserve that flat radical and cannot sew the pair.  This is the filtered realization
+of \cref{prop:reflected-geometry}: the hyperbolic reflection exists algebraically, but positive
+regular sewing cannot implement it.
+
 \section{Fixed-scale blindness and exact escape}
 
 We now exhibit a family for which compact analysis, differential algebra, and bounded-window
@@ -897,6 +1522,143 @@ Nevertheless the divisor is off line at every stage, its Ward charge is fixed, a
 source-horizon packet is recovered exactly after canonical rescaling.  Fixed observers do not
 contradict the conserved observer; they are its non-co-moving projections.
 
+\section{Regular consumers are one character equalizer}\label{sec:consumers}
+
+The source law predicts that unrelated regular consumers should fail on exactly the same
+nonneutral character.  Three constructions make that prediction exact.
+
+We first fix the consumer notation.  On the archimedean Hardy--Titchmarsh space, let
+\(C_p^{(a)}=(1-P_a)M_{w_p}P_a\) be the positive one-prime Sonin Euler corner and put
+\[
+ E_{p,q}^{(a)}=(C_p^{(a)})^*C_q^{(a)}.
+\]
+Here \(P_a\) is the standard Sonin boundary projection and \(M_{w_p}\) is multiplication by
+\[
+ w_p(t)=\left|1-p^{-1/2-it}\right|^2.
+\]
+The shell partial-isometry calculation gives the exact essential norm
+\begin{equation}\label{eq:sonin-essential}
+ \|E_{p,q}^{(a)}\|_{\mathrm{ess}}
+   =(\sqrt p\,\sqrt q)^{-1}\qquad(a>0).
+\end{equation}
+Here the Euler weights contribute the displayed scalar, while the unweighted ordered dilation
+Gram entry is compactly congruent to a nonzero shell partial isometry and has essential norm one.
+
+For the Ward consumer, let \(\mathcal Z_+\) be the multiplicity-weighted multiset of centered
+strict-right upper zeros
+\(\lambda=\rho-\tfrac12\), \(\Rea\lambda>0\), \(\Ima\lambda>0\), and define, for \(\Rea w>0\),
+\begin{equation}\label{eq:ward-response}
+ \mathfrak W_\xi(w)
+ :=\sum_{\lambda\in\mathcal Z_+}
+ 2\left(\frac1{w+\lambda}+\frac1{w+\bar\lambda}\right).
+\end{equation}
+Schwarz pairing makes this series absolutely convergent; it is the continued anti-causal Ward
+response used below.
+
+\begin{theorem}[Wold--Calkin--Ward equalizer]\label{thm:consumer-equalizer}
+Let
+\[
+ C_\nu(\tau,d)=e^{\nu(\tau-d)},\qquad \tau,d\ge0.
+\]
+Then \(C_\nu\) is bounded on the full independent quadrant if and only if \(\nu=0\).
+
+For an open-strip point \(\rho\), define the prime seam charge
+\[
+ c_p(\rho)=
+ (\log p)\left(p^{-\bar\rho}-p^{-(1-\rho)}\right).
+\]
+Put \(G_{p,q}^{(a)}=(c_p(\rho)-c_q(\rho))E_{p,q}^{(a)}\).  Then
+\begin{equation}\label{eq:calkin-equalizer}
+  G_{p,q}^{(a)}\ \text{is compact for every prime pair }p,q
+  \quad\Longleftrightarrow\quad
+  \Rea\rho=\frac12.
+\end{equation}
+
+Finally, if \(\rho=\tfrac12+\alpha+i\gamma\) is an actual strict-right upper
+\(\xi\)-zero, \(\alpha>0\), then at the adapted Euler-edge node
+\(w_\rho=\tfrac12-i\gamma\),
+\begin{equation}\label{eq:ward-four-unit-failure}
+                 |\mathfrak W_\xi(w_\rho)|^2>4.
+\end{equation}
+Consequently the one-node four-unit Schur defect is strictly negative and its boundary Gram is
+not positive semidefinite.
+\end{theorem}
+
+\begin{proof}
+If \(\nu>0\), take \(d=0\) and let \(\tau\to\infty\); if \(\nu<0\), take
+\(\tau=0\) and let \(d\to\infty\).  Conversely \(C_0=1\).
+
+By \eqref{eq:sonin-essential}, the essential norm of the weighted prime corner is exactly
+\[
+ |c_p(\rho)-c_q(\rho)|(\sqrt p\,\sqrt q)^{-1}.
+\]
+Thus all corners are compact exactly when the prime charges are constant.  The charges tend to
+zero with \(p\), so constancy means that every charge vanishes.  At \(p=2\), vanishing is
+equivalent in the open strip to \(\Rea\rho=\tfrac12\), which proves
+\eqref{eq:calkin-equalizer}.
+
+For \eqref{eq:ward-four-unit-failure}, write
+\(\lambda=\alpha+i\gamma\).  The Schwarz pair containing \(\rho\) contributes
+\[
+ 2\Rea\left(\frac1{\tfrac12+\alpha}
+   +\frac1{\tfrac12+\alpha-2i\gamma}\right)>2
+\]
+at \(w_\rho\).  Every other term in \eqref{eq:ward-response} has positive real part because both
+denominators have positive real part.  Hence
+\(\Rea\mathfrak W_\xi(w_\rho)>2\), and
+\[
+ |\mathfrak W_\xi(w_\rho)|^2
+ \ge \bigl(\Rea\mathfrak W_\xi(w_\rho)\bigr)^2>4.
+\]
+The four-unit diagonal is \(4-|\mathfrak W_\xi(w_\rho)|^2<0\).
+\end{proof}
+
+For the Riemann source, the rate in the first clause is precisely
+\(\nu=\nu_1(\rho)=2\Rea\rho-1\).  The Calkin charge is a prime chart of the centered character,
+and the Ward witness is the terminal positive consumer.  Hence bounded two-clock transport,
+Sonin--Calkin compactness, and four-unit positivity do not constitute three unexplained RH
+criteria: they are three regularity shadows of the same source character.  None supplies the
+upstream arithmetic estimate that would force neutrality.
+
+There remains a transverse issue even at the neutral horizon.  Hedenmalm's theta source makes it
+topologically sharp.
+
+\begin{proposition}[Dense-radical alternative]\label{prop:dense-radical}
+Let \(Q\) be a continuous, momentum-symmetric, nonnegative sesquilinear form on Schwartz space,
+let \(\Theta\) be the completed theta source, and let \(D_\Theta\) be the linear span of its
+momentum-symmetry orbit.  The theta density theorem says that the image of \(D_\Theta\) in
+ordinary \(L^2\) is dense \cite{Hedenmalm2026}.  Suppose
+\[
+                         Q(\Theta,\Theta)=0.
+\]
+If \(Q\ne0\), then the image in ordinary \(L^2\) of the \(Q\)-radical is dense, proper, and
+nonclosed.  Moreover \(Q\) is not sequentially closable through the standard
+Schwartz-to-\(L^2\) embedding.  Conversely, a theta-null form which is sequentially closable
+through ordinary \(L^2\) is identically zero.
+\end{proposition}
+
+\begin{proof}
+Nonnegativity and Cauchy--Schwarz propagate theta-nullity to the complete theta-cyclic source
+orbit, so \(D_\Theta\subset\operatorname{rad}Q\).  The theta-source density theorem makes its
+ordinary-\(L^2\) image dense.  If \(Q\ne0\), its radical is proper.  A proper dense linear
+subspace cannot be closed.
+Sequential \(L^2\)-closability would force the form to vanish on the \(L^2\)-closure of its
+radical, hence on all of \(L^2\), contradicting \(Q\ne0\).  The converse follows by the same
+closure argument.
+\end{proof}
+
+The source architecture therefore has two independent factors:
+\[
+ \boxed{\text{transverse source fibre}}\ \otimes\
+ \boxed{\text{horizontal exponential character}}.
+\]
+The dense-radical and countable-fusion theorems govern admission of the first factor.  The
+source-horizon, Wold, Calkin, and Ward theorems govern conservative support of the second.
+\Cref{thm:fibre-conservation} joins them: a faithful regular realization which is
+norm-conservative requires both a closable fibre and a neutral character.  Off the line, the
+character already forbids faithful conservative descent; on the line, the Hedenmalm theorem shows
+that ordinary \(L^2\) still does not automatically admit the detector.
+
 \section{Consequences for Riemann-hypothesis routes}
 
 \subsection{Why squaring and fixed scale lose orientation}
@@ -921,6 +1683,84 @@ It answers a different closed question: it identifies the exact oriented dynamic
 the static index omits.  Ward mass records \emph{how much} divisor charge escapes; the Lyapunov
 rate records \emph{to which side} of the source horizon it belongs.
 
+\subsection{Exact specialization map}
+
+The master law conserves two objects before scalarization: a nonzero analytic resolution vector
+and its horizontal character.  Each row below either instantiates one of these two clauses or
+quantifies the precise regularity that must fail when a consumer attempts to erase or sew that
+object.  The individual arithmetic estimates are not being claimed as consequences of the
+elementary norm identity alone.
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{p{0.18\textwidth}p{0.39\textwidth}p{0.32\textwidth}}
+\toprule
+Corpus phenomenon & Exact specialization & Consequence \\
+\midrule
+Li--Cayley orbit &
+\(b=(\rho-1)^{-1}\), \(1+b=(1-\rho^{-1})^{-1}\) in
+\cref{thm:generator-duality} &
+Li circle, source horizon, and neutral growth are one generator identity. \\
+
+Wold--Poisson ancestry &
+\(C_{\nu_1(\rho)}(\tau,d)=e^{\nu_1(\rho)(\tau-d)}\) in
+\cref{thm:consumer-equalizer} &
+Independent quadrant boundedness holds exactly at zero character rate. \\
+
+Positive exponent resolution &
+\(\sum_jM_{K,j}=1\) in \(\ell^1\), with a nonzero multiplicity-preserving channel at every
+closed-right point and a zero-free, jointly independent strict-right tail in
+\cref{thm:shell-fibre,cor:complete-source-selection} &
+The common divisor has a fixed summable conormal landing; every conservative equivariant consumer
+erases it off the neutral horizon, and uniformly source-faithful approximants have a positive
+off-horizon defect floor. \\
+
+Finite and countable fusion &
+The character acts diagonally on \eqref{eq:fusion-conservation}; then take \(N\to\infty\) in
+\cref{prop:fusion-endpoint} &
+Finite signature moves to the centered kernel; uniform countable fusion becomes nonclosable. \\
+
+Hedenmalm dense radicals &
+Apply source-fibre admission to the theta-null positive form in
+\cref{prop:dense-radical} &
+Ordinary \(L^2\) retains the detector only through a dense nonclosed radical. \\
+
+Sonin--Calkin consumers &
+Weight each noncompact Euler corner by the prime chart \(c_p(\rho)-c_q(\rho)\) in
+\eqref{eq:calkin-equalizer} &
+Every corner is compact exactly on the neutral horizon. \\
+
+Four-unit Ward positivity &
+Evaluate the continued response at the source-adapted Euler-edge node in
+\eqref{eq:ward-four-unit-failure} &
+One positive-rate divisor forces a negative Schur diagonal. \\
+
+Valuation reflection &
+Sew \(\mathcal A_N(c)\) to \(\mathcal A_N(-c)\) in
+\cref{thm:aperture-rees} &
+Exact sewing costs more than every polynomial in physical aperture. \\
+
+Julia--Gamma orientation &
+Use the unit Cayley chart in \eqref{eq:cayley-square}, then the universal ceiling
+\eqref{eq:bounded-capacity} &
+One-sided sign exists globally, but every bounded polarization lacks macroscopic capacity. \\
+
+Compact jets, differential matroids, \(8\pi\) Ward mass &
+Hold \(x\) and order fixed while \(d_\rho\to0\), then restore
+\(x=\tau/d_\rho\) in \cref{cor:escape-renormalization} &
+All are fixed-observer shadows of one packet recovered by canonical co-moving time. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+This table is the promised unification.  Breadth phenomena live in the transverse resolution;
+horizontal location lives in one exponential character; regular conservative descent must solve
+both.  The classification leaves no ambiguity about logical direction: source shells and theta
+radicals concern fibre admission, while Wold, Calkin, Ward, Li, and Rees constructions read or
+fail to transport the same character.  Their route-specific estimates verify the failure mode;
+they are not decorative RH equivalences.
+
 \subsection{The new route boundary}
 
 For the completed Riemann response, RH is equivalent to neutral source rate for every nontrivial
@@ -943,15 +1783,27 @@ roots \((\rho-1)^{-1}\) and a faithful Vandermonde jet;
 \item packet drift and dual rate reconstruct each zero up to conjugation;
 \item explicit countermodels prove why every fixed compact, finite differential, or bounded-window
 observer can miss it;
-\item the uniquely normalized carrier recovers it without a limiting error.
+\item the uniquely normalized carrier recovers it without a limiting error;
+\item every equivariant norm-conservative descent of the predeclared nonzero
+\(\ell^1\) source-resolution vector either erases it or is supported on the critical line, while
+uniformly source-faithful approximate descents have a strictly positive off-line defect floor;
+\item finite reflection is necessarily hyperbolic, countable unit fusion is nonclosable, and
+finite-Rees reflected sewing has superpolynomial physical cost;
+\item global source-defined orientation exists, but the entire bounded-polarization class is
+quantitatively too small for first-clock domination.
 \end{enumerate}
 
-This replaces the search for another fixed positive scalar by a sharply specified spectral
-problem: control the arithmetic source semigroup at the unique Poisson-normalized clock, or
-equivalently control the characteristic roots of its finite transported carriers relative to the
-shifted-generator unit circle.  The present paper closes the information-loss and carrier-design
-problems.  It does not claim the additional arithmetic estimate that would exclude positive-rate
-modes.
+This replaces the search for another fixed positive scalar by a classification.  A regular
+equivariant norm-conservative Riemann realization cannot carry the source-resolution vector off
+its horizon.  If an off-horizon fibre is retained, the realization must occur through one of the explicitly exhibited
+nonregular branches: hyperbolic indefiniteness, a dense nonclosed radical, nonclosable countable
+fusion, beyond-all-orders filtered sewing, or co-moving/unbounded transport.  The
+orientation--capacity theorem additionally excludes bounded diagonal phase repair.
+
+The paper does not formulate a final unproved estimate as its conclusion.  Its closed result is
+the carrier and descent classification above.  It neither asserts nor assumes that the actual
+Riemann source admits a faithful equivariant norm-conservative descent; asserting such existence would
+already contain the zero-exclusion problem that RH asks to solve.
 
 \section{Relation to prior work}
 
@@ -974,10 +1826,27 @@ the literal residue of the evolved arithmetic response.  The source inversion
 \(z^{-1}|z|^2\tau=\bar z\tau\) and the resulting attenuation--order-entropy horizon are then exact
 properties of meromorphic divisor transport.
 
+The norm argument in \cref{thm:fibre-conservation} and the two-dimensional hyperbolic
+classification in \cref{prop:reflected-geometry} are elementary representation theory; no
+abstract priority is claimed for them.  Their contribution here is a source-derived support
+theorem: the exact Riemann residue packet supplies the character, while independent exponent
+shells, Hedenmalm's theta radical, Calkin corners, and the Ward boundary supply four genuinely
+different target categories on which the same alternative can be tested.
+
 Finite exponential sums, their constant-coefficient annihilators, and Vandermonde recovery are
 also classical.  The point here is the carrier transition: the spectrum is produced canonically
 from residues of a hypertranscendental response, its frequencies are inverse source displacements,
 and it remains faithful precisely where the ambient rational differential matroid collides.
+
+The identity \(\sum b_r(n)n^{-s}=\zeta(s)/\zeta(rs)\) for \(r\)-free integers is classical;
+recent work studies Laurent expansions and continuation of the individual \(k\)-free series
+\cite{Kawalec2026}.
+No novelty is assigned to the shell partition or its Euler product.  The new arithmetic statement
+is the fixed positive resolution's absolute \(\ell^1\) landing and exact closed-right conormal
+nonannihilation, together with joint differential independence of its strict-right quotient tail
+over the full zeta differential field, a common zero-free half-plane, and exact divisor
+replication.  A literature search found no prior theorem with this combined summable-conormal and
+relative differential-fibre conclusion.
 
 Gauthier and Xarles showed broad instability of RH under small functional-equation-preserving
 perturbations \cite{GauthierXarles2009}.  We assign no novelty to quartet insertion or
@@ -993,28 +1862,44 @@ recent theta differential problem likewise isolates a missing self-adjoint struc
 Hilbert space.  It specifies the noncompact, scale-covariant divisor datum that any successful
 global carrier must retain.
 
+The normalized Cayley phase in \cref{thm:orientation-capacity} is likewise not presented as a new
+transform.  Its role is an exact falsification test.  It proves that the calibrated
+Julia--Gamma exterior current has a global source-defined sign, then places that sign-correct
+current under a phase-free bound covering every bounded diagonal polarization.  The resulting
+orientation--capacity collision, rather than the elementary Cayley identity alone, is the
+Riemann-source statement.
+
 \section{Closed scope}
 
 The paper answers the question it poses:
 
 \begin{quote}
-When a divisor point becomes invisible to compact analytic observation, finite differential
-algebra, and bounded charge windows, its information is transported into a source-generated
-coherent mode.  Poisson normalization uniquely fixes observation time and converts the generator
-to its conjugate reciprocal.  Radial displacement becomes clock, imaginary displacement becomes
-phase, and signed distance from the pulled-back universal horizon becomes the exact Lyapunov rate.
+Every meromorphic divisor point produces, before scalarization, a source-generated coherent mode
+with a uniquely normalized Poisson clock.  That clock separates its data into a transverse source
+resolution and one real exponential character.  Equivariant norm-conservative descent can retain
+the resolution vector only at zero character rate, and uniformly source-faithful approximants
+cannot converge to equivariance off the horizon.  Away from the horizon, exact retention must be erased,
+hyperbolic, nonclosable, beyond every finite Rees order, unbounded, or co-moving.
 \end{quote}
 
 For the Riemann response, the source is \(1\), the horizon is the critical line, and the coherent
 mode is the Poisson completion of the inverse Li orbit.  Finite divisor data additionally becomes
-an explicit, differentially algebraic, Vandermonde-faithful exponential spectrum.  The conclusion
-is unconditional and contains no simplicity, rightmost-zero, finite-off-line-divisor, or RH
-assumption.
+an explicit, differentially algebraic, Vandermonde-faithful exponential spectrum.  A fixed
+positive exponent-shell resolution gives a nonzero summable conormal and exact multiplicity on
+the closed-right divisor; its strict-right tail provides a countably infinite relative
+differential fibre.
+Finite fusion conserves its reflected signature; countable unit fusion is nonclosable.  Ordinary
+\(L^2\) theta-null detection has a dense nonclosed radical, finite-Rees reflection has
+superpolynomial aperture cost, and Wold--Poisson, Sonin--Calkin, and four-unit Ward regularity read
+the identical neutral character.  A global Cayley chart settles orientation, while the universal
+bounded-polarization ceiling proves that sign alone lacks the required macroscopic capacity.
 
-The theorem does not assert that all Riemann modes are neutral.  It proves what the existing
-blindness and charge laws are projections of, why the critical line and Li circle are the same
-neutral generator geometry, and which exact finite carrier retains the orientation that fixed
-scalarizations lose.
+These are unconditional classifications.  They contain no simplicity, rightmost-zero,
+finite-off-line-divisor, or RH assumption.  The theorem does not assert that all Riemann modes are
+neutral and therefore does not claim RH.  It proves, without a residual conjecture inside its
+scope, what the corpus's positive theorems and no-gos are projections of and why every regular
+nonerasing equivariant norm-conservative realization has the critical line as its only possible
+support.
 
 \begin{thebibliography}{99}
 
@@ -1071,6 +1956,12 @@ J.~B. Keiper,
 \newblock Power series expansions of Riemann's \(\xi\) function,
 \newblock \emph{Math. Comp.} \textbf{58} (1992), 765--773.
 \newblock \url{https://doi.org/10.1090/S0025-5718-1992-1122072-5}.
+
+\bibitem{Kawalec2026}
+A.~Kawalec,
+\newblock On the series expansion of \(k\)-free Dirichlet series and its analytical continuation,
+\newblock arXiv:2603.22775 (2026).
+\newblock \url{https://arxiv.org/abs/2603.22775}.
 
 \bibitem{Li1997}
 X.-J. Li,

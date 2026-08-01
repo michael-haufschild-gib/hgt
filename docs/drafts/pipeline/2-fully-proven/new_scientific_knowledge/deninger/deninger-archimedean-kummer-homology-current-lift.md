@@ -221,3 +221,39 @@ middle group with Meyer's Poisson quotient, remain separate.
 - 2026-07-27 — Constructed the archimedean real Betti boundary as a
   natural homology-current functional and a square-zero derived
   algebra map on the pro-Stein arithmetic direct image.
+
+## Lean status
+
+### The source-defined content landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerArchimedeanCurrentLift.lean`.  Axiom audit for all 12
+declarations: `propext, Classical.choice, Quot.sound`.
+
+- `deningerArchimedeanCurrent`, `deningerArchimedeanCurrent_basis`,
+  `deningerArchimedeanCurrent_exists_unique` — **`(3)`**: once the perfect de Rham pairing
+  identifies `H_1(Z_L, ℂ)` with the dual of `L ⊗ ℂ`, the class is the functional prescribed by
+  `ℓ_∞` on a lattice basis, and it exists and is unique.  That prescription-and-uniqueness step is
+  the card's whole proof, and it is what is formalized.
+- `deningerArchimedeanCurrent_natural` — transition compatibility along a lattice inclusion,
+  immediate from the uniqueness.
+- `deningerArchimedeanGenerator`, `deningerArchimedeanGenerator_sq`, `deningerArchimedeanLift`,
+  `deningerArchimedeanLift_ι` — **`(4)`--`(6)`**: the universal property of the exterior algebra
+  lifts the current to a unital algebra map into `ℂ[ε]/(ε²) = TrivSqZeroExt ℂ ℂ`, with value
+  `ℓ_∞(a)ε` on a Kummer generator.  The side condition of the universal property — that generators
+  square to zero — holds because every purely square-zero element does.
+- `deningerArchimedeanLift_mul_eq_zero` — products of two positive-degree generators vanish, which
+  is the square-zero assertion of `(5)`.
+- `deningerArchimedeanCurrent_smul`, `deningerArchimedeanTate_cancel` — power equivariance:
+  `ℓ_∞(a^q) = q ℓ_∞(a)` and the weight `-1` Tate line cancels the factor `q`.
+- The unique extension of `(5)` through all Steinberg and higher relative cells is the universal
+  property already formalized in `DeningerAmalgamationUniversalDescent.lean`.
+
+### What cannot be stated in Lean, and why
+
+`(1)`, the de Rham computation identifying invariant logarithmic forms with `RΓ(Z_L, Ω^•)`, and the
+pro-Stein direct image `(7)` are not formalizable here: mathlib has no de Rham complex of a complex
+manifold, no Stein theory, no coherent-sheaf cohomology and no derived category in which `(6)` and
+`(7)` would live.  The estimate `(8)` needs the Allcock--Vaaler space.  What the card contributes
+beyond those imports — the existence, uniqueness and naturality of the current, the square-zero
+algebra map and its power equivariance — is formalized above; the card therefore stays at stage 2
+with its analytic scaffolding recorded as unavailable.

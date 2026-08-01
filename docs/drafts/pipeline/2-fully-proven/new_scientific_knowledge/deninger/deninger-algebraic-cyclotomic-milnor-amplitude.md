@@ -171,3 +171,34 @@ a finite-dimensional foliation.  Archimedean Milnor--Witt signature requires
 the separate source-natural window identified above.
 
 **Verdict:** `FULLY PROVEN ON PAPER`.
+
+## Lean status
+
+### What landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerMilnorAmplitude.lean`.  Axiom audit for all 5
+declarations: `propext, Classical.choice, Quot.sound`.
+
+- `deningerTorsion_tmul_real_eq_zero`, `deningerTorsionTensorReal_eq_zero`,
+  `deningerRealification_torsionQuotient_bijective`, `deningerRealificationTorsionEquiv` —
+  **`(3)`**: realification is insensitive to torsion.  A torsion element tensored with a real
+  number vanishes because the annihilating integer is invertible on `ℝ`; hence the torsion
+  submodule realifies to zero, and right exactness of the tensor product makes the quotient map by
+  the torsion an isomorphism after `⊗ ℝ`.  Applied to `F^×`, whose torsion is exactly the roots of
+  unity, this is `F^× ⊗ ℝ ≅ (F^×/μ_∞) ⊗ ℝ`.
+- `deningerGradedDegreeOne_mul_eq_zero` — the closing assertion of `(4)`: in a graded algebra whose
+  degree-two part vanishes, the product of two degree-one classes is zero, because it lands in
+  degree two.  This is the square-zero structure that the two-term amplitude produces.
+
+### What cannot be stated in Lean, and why
+
+`(1)` and `(2)` are not formalized and are not formalizable in this toolchain: mathlib has neither
+motivic cohomology nor Milnor `K`-theory, so `H_M^{q,q}` and `K_q^M` cannot even be written down.
+Independently of that, `(1)` is not proved on this card — it is imported from Gallauer's Remark 6.8
+together with Borel's computation of the rational algebraic `K`-theory of number fields, and
+formalizing Borel's theorem is a research-scale project of its own.  `(4)` as an equivalence of
+`E_∞`-algebras needs the same missing infrastructure as
+`DAC_CHARACTER_SHAPE_FORMALITY` (no `E_∞`/CDGA homotopy theory in mathlib).
+
+The card therefore stays at stage 2: its two statable algebraic ingredients are proved and audited,
+its headline vanishing remains an import.
