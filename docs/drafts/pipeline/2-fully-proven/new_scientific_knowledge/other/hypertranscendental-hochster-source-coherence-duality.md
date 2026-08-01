@@ -1,10 +1,10 @@
 # Hypertranscendental source coherence is the topology of the constraint boundary
 
 - **ID:** `hypertranscendental-hochster-source-coherence-duality`
-- **Stage:** 2-fully-proven / general finite-complex Lean bridge complete (strand chain equivalence
-  at every Koszul degree) / independent audit and specialist review required
+- **Stage:** 3-formalized / unconditional analytic--derived capstone complete / independent audit
+  and specialist review required
 - **Type:** THEOREM / DERIVED CONSTRAINT-TOPOLOGY REALIZATION / SELECTOR NO-GO
-- **Scientific status:** `[PAPER PROOF COMPLETE] [ANALYTIC INPUT FORMALIZED]`
+- **Scientific status:** `[PAPER PROOF COMPLETE] [FORMALIZED UNCONDITIONALLY]`
   `[HOCHSTER PARENT THEOREM] [CROSS-CATEGORY NOVELTY PROVISIONAL] [NOT AN RH RESULT]`
 - **Parents:**
   - `../../3-formalized/new_scientific_knowledge/hypertranscendental-constraint-spectrum-universality.md`
@@ -224,6 +224,19 @@ difference algebra and combinatorial commutative algebra.
 
 ## 7. Lean boundary
 
+The complete analytic--derived theorem is now formalized in
+`formal/GaloisForLFunctions/HTGeometry/HypertranscendentalHochsterSourceCoherenceDuality.lean`.
+`HochsterSourceCoherenceExact` quantifies over every multidegree, every Koszul degree, and every
+alternating tensor in the exact Stanley--Reisner strand; it identifies cycles with reduced
+simplicial cocycles and boundaries with reduced simplicial coboundaries.
+`hypertranscendentalHochsterSourceCoherence_orientationProduct` composes that all-degree
+correspondence with the universal prime-log realization and finite residue surgery on the same
+facet complex.  For every prescribed index `k` and every finite localized structural family, it
+simultaneously proves unchanged embedded differential field, Herglotz positivity exactly at
+`k = 0`, exact negative index `k`, exact nonlinear Stanley--Reisner differential matroid, and the
+complete Hochster source-coherence profile.  This is the literal derived-topology--orientation
+product law, not a finite-degree or nonvanishing surrogate.
+
 Already Lean-formalized inputs include:
 
 - exact Stanley--Reisner nonface ideals and facet-prime decomposition;
@@ -291,6 +304,9 @@ equivalence for arbitrary finite complexes remains open, so this card stays in s
   vertices
 - [x] Lean-formalize the full independent reduced-`H^0` family for every finite discrete complex
 - [x] Lean-formalize the general finite-complex bridge
+- [x] compose the analytic realization, exact nonlinear matroid, all-degree Hochster profile, and
+  arbitrary finite orientation index in one unconditional Lean capstone
+- [x] 2 → 3 formalized: capstone umbrella-registered and axiom-audited
 - [ ] independently audit localization and grading conventions
 - [ ] obtain specialist novelty and significance review
 - [ ] construct one active polarized analytic sheaf realization

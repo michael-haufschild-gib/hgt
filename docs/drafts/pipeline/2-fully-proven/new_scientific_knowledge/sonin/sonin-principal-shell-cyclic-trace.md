@@ -1184,11 +1184,29 @@ The interface to those estimates is now built:
 returns the budget as the sum of their square roots, which is the right shape because the budget is a
 sum of norms while every spectral estimate bounds a square.
 
-Supplying the three is now a matter of matching hypotheses, and one of them is a genuine constraint
-on the schedule rather than a formality: the high-side tail needs the band radius at twice the
-carrier, `2 w <= r b` with `w = r q`, hence `2 q <= b`.  So `q` must be chosen in `(a, b/2]`, not
-merely in `(a, b)` — which also forces `a < b/2`, shrinking the inner aperture if necessary.  That is
-free, since `a` is ours to choose.  With `N` about `r/K` this gives coupling
+The third of the three is now supplied in the cut's own terms.  Two hypotheses had to be discharged
+and both came out of conditions already imposed: the mean below one follows from the *same* reference
+tail condition that the orthonormality and the energy floor need, so it costs nothing new; and
+`2 w <= r b` with `w = r q` reduces to `2 q <= b`, a condition on the carrier ratio alone, with the
+scale cancelling.  So `q` must be chosen in `(a, b/2]`, not merely in `(a, b)` — which also forces
+`a < b/2`, shrinking the inner aperture if necessary.  That is free, since `a` is ours to choose.
+
+Both remaining bounds are now supplied, so `P` is complete:
+`exists_soninCouplingBandTotal_soninShellCutPacket_le` gives every packet of a shell cut an explicit
+band budget.  The whole estimate rests on exactly three conditions on the schedule — the carrier
+ratio `q` in `(a, b/2]`, the scale large enough that `b < r q`, and the reference tail small at
+`delta * r q`.
+
+`P` and `L` are now joined: `card_sub_le_hsNormSq_soninApertureCoupling_shellCut_of_bounds` takes a
+bound on the packets' band budgets, a floor for their norms, and returns
+`(N - discount)(1 - eta)^2 <= hsNormSq Z` with slack `P/L`.  Every input to the energy bound is
+therefore an explicit quantity of the schedule.
+
+The last step is arithmetic in the constants: `P/L` must be driven below `eta - 3 epsilon`.  Reading
+the orders, `P` is `O(delta)` (each of its three roots carries `delta` from the band bound, or
+`delta^{1-N}` times `(r b)^{(1-2N)/2}` from the tail) while `L` is `Theta(sqrt(delta))`, so `P/L` is
+`O(sqrt(delta)) = O(1/sqrt(N))` — it vanishes as the cut refines, which is the direction the count
+needs.  With `N` about `r/K` this gives coupling
 energy of order `r`, against the `log r` cap, closing the shortfall test.  Then feed that through the two-branch estimate to get `N` of
 order `r` packets at scale `r`.
 
@@ -1408,6 +1426,9 @@ family is abstract, so two widths have unrelated profiles.
 | **the dilate adds nothing new**: its physical term vanishes outright for a cut packet (both aperture radii sit below `r` times the annulus's inner radius), and the packet's norm floor comes from the energy floor by square roots | `evenIndicatorCutoff_evenDilationCLM_inv_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_sub_evenDilationCLM_inv_soninShellCutUnit_eq_zero`, `sqrt_le_norm_soninShellCutPacket` |
 | **the band budget in three radii of one vector**: mass above `r b`, content in the band of radius `r a`, content in the band of radius `b` — the physical term discarded, the dilate's terms transported back | `soninCouplingBandTotal_eq_packetTerms`, `evenIndicatorCutoff_sub_evenDilationCLM_inv_soninShellCutPacket_eq_zero`, `soninCouplingBandTotal_soninShellCutPacket_eq` |
 | **squared estimates enter through their roots**: the budget is a sum of norms while the spectral estimates bound squares, so three squared bounds give the budget as the sum of their square roots — for the cut packets the physical term is supplied by the geometry | `norm_le_sqrt_of_sq_le`, `soninCouplingBandTotal_le_of_sq_bounds`, `soninCouplingBandTotal_soninShellCutPacket_le_of_sq_bounds` |
+| **the third squared bound, in the cut's own terms**: the mean hypothesis discharged by the same tail condition the orthonormality and the floor already need, and the carrier ratio `q <= b/2` putting the band at `r b` above twice the carrier | `exists_norm_sq_sub_evenFourierCutoff_le_of_tail`, `exists_norm_sq_sub_evenFourierCutoff_soninShellCutPacket_le` |
+| **`P` complete**: all three squared bounds supplied and fed through the roots, so every packet of a shell cut has an explicit band budget under three schedule conditions — carrier ratio in `(a, b/2]`, scale large enough that `b < r q`, reference tail small at `δ·rq` | `norm_sq_evenFourierCutoff_soninShellCutPacket_le`, `exists_soninCouplingBandTotal_soninShellCutPacket_le` |
+| **energy from `P` and `L`**: a bound on the packets' band budgets and a floor for their norms supply the family hypothesis with slack `P/L`, giving `(N - discount)(1-η)² <= hsNormSq Z` | `card_sub_le_hsNormSq_soninApertureCoupling_shellCut_of_bounds` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1524,6 +1545,29 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — `P` and `L` are joined, so the energy bound's every input is now an explicit quantity
+  of the schedule.  The join itself is where the two halves of the last several rounds meet: the
+  family hypothesis wants the budget of the *normalized* packets, the estimates give the budget of the
+  packets, and the division between them is exactly the norm floor.  Nothing about the aperture, the
+  layer or the ideal appears in the statement any more — only `N`, `P`, `L`, the threshold and the
+  shortfall.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutEnergyFromBounds.lean`.
+- 2026-08-01 — `P` is complete: every packet of a shell cut now has an explicit band budget, resting
+  on three schedule conditions and nothing else.  Worth noting how few they are — the carrier ratio
+  bound, one scale condition, and one tail condition, with the tail condition doing quadruple duty
+  (orthonormality, energy floor, mean bound, high-side tail).  A Lean detail that cost a cycle: named
+  hypothesis binders inside a `forall` whose types do not mention them are flagged unused by the
+  warning-strict gate, even when the proof body uses the corresponding introduced variables; they
+  have to be written as bare arrows instead.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutBandTotalBound.lean`.
+- 2026-08-01 — the high-side bound is restated in the cut's terms, and the two hypotheses it needed
+  both turned out to be already paid for.  The mean-below-one assumption is implied by the reference
+  tail condition that orthonormality and the energy floor separately require, so a single condition
+  on `delta * carrier` now serves three purposes.  And the "above twice the carrier" requirement,
+  which looked like it might couple the scale to the geometry, reduces to `2 q <= b` — the scale
+  cancels on both sides, so it is a constraint on the carrier ratio alone and holds at every scale at
+  once.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutHighTail.lean`.
 - 2026-08-01 — the squared-to-norm interface is built, and writing it surfaced a constraint on the
   schedule that the qualitative account had hidden.  The high-side tail estimate applies only above
   *twice* the carrier, so the term `‖psi - R_{r b} psi‖` needs `2 r q <= r b`, that is `2 q <= b`.

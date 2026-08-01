@@ -219,4 +219,46 @@ theorem suzukiCenteredProjectiveShiftNumerator_eq_projectiveMinor
 
 end
 
+/-! ## The finite diagonal expansion
+
+`(10)` is the two-mode case.  Summing it over all coordinate pairs gives `(11)`: the chord of a
+diagonal model expands as a double sum whose summand carries the spectral gap `t_j - t_i` against a
+source Plücker minor.  The expansion is bilinear algebra — the resolvent denominators enter only
+through the coefficients `v`. -/
+
+/-- **`(11)`, the diagonal expansion.**  The chord of a diagonal model is the double sum of the
+spectral gap against the source coefficients. -/
+theorem suzukiDiagonalProjectiveChord_expansion {n : Type*} [Fintype n] (t v b d : n → ℝ) :
+    (∑ i, b i * v i) * (∑ j, d j * (t j * v j))
+        - (∑ i, b i * (t i * v i)) * (∑ j, d j * v j)
+      = ∑ i, ∑ j, v i * v j * b i * d j * (t j - t i) := by
+  rw [Finset.sum_mul_sum, Finset.sum_mul_sum, ← Finset.sum_sub_distrib]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [← Finset.sum_sub_distrib]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  ring
+
+/-- **Rank-one blindness at the diagonal.**  Every diagonal term of the expansion vanishes, so a
+single mode contributes nothing: the chord sees only genuine spectral pairs. -/
+theorem suzukiDiagonalProjectiveChord_diagonal_eq_zero {n : Type*} (t v b d : n → ℝ) (i : n) :
+    v i * v i * b i * d i * (t i - t i) = 0 := by
+  ring
+
+/-- **The blade separates from the source.**  Symmetrizing the expansion pairs the blade coordinate
+`(t_j - t_i) v_i v_j`, which involves only the spectral data, against the source's own two-by-two
+minor `b_i d_j - b_j d_i`.  This is `(4)`'s claim in coordinates: the chord's dependence on the
+source enters only through source minors, the blade being fixed. -/
+theorem suzukiDiagonalProjectiveChord_symmetrized {n : Type*} [Fintype n] (t v b d : n → ℝ) :
+    2 * (∑ i, ∑ j, v i * v j * b i * d j * (t j - t i))
+      = ∑ i, ∑ j, (t j - t i) * (v i * v j) * (b i * d j - b j * d i) := by
+  have hswap : (∑ i, ∑ j, v i * v j * b i * d j * (t j - t i))
+      = ∑ i, ∑ j, v j * v i * b j * d i * (t i - t j) := Finset.sum_comm
+  rw [two_mul]
+  nth_rewrite 2 [hswap]
+  rw [← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  ring
+
 end RHTower

@@ -521,6 +521,30 @@ theorem intervalFourier_causal_eq_indicator_double (k u : ℝ → ℂ) (a : ℝ)
   rw [Set.uIcc_of_le (by linarith : -a ≤ a)] at hx
   rw [causal_eq_indicator_integral k u a x hx]
 
+/-- **`(3)`'s Fubini step.**  On the fixed square the double integral may be taken in either order.
+The indicator carries the causal restriction, so this is an ordinary product-measure swap and the
+only hypothesis is integrability on the square. -/
+theorem causal_double_swap (F : ℝ → ℝ → ℂ) (a : ℝ)
+    (hF : Integrable (Function.uncurry F)
+      ((volume.restrict (Set.Ioc (-a) a)).prod (volume.restrict (Set.Ioc (-a) a)))) :
+    (∫ x in Set.Ioc (-a) a, ∫ y in Set.Ioc (-a) a, F x y)
+      = ∫ y in Set.Ioc (-a) a, ∫ x in Set.Ioc (-a) a, F x y :=
+  MeasureTheory.integral_integral_swap hF
+
+/-- The causal integrand of `(3)`, as a function on the square. -/
+noncomputable def causalSquareIntegrand (k u : ℝ → ℂ) (w : ℂ) (x y : ℝ) : ℂ :=
+  Complex.exp (w * x) * Set.indicator {y | y ≤ x} (fun y => k (x - y) * u y) y
+
+/-- **`(3)` on the square.**  Swapping the order of the causal double integral exchanges the roles of
+the two triangles, which is exactly the passage between the right-triangle response and the
+transform of the causal convolution. -/
+theorem causalSquareIntegrand_swap (k u : ℝ → ℂ) (w : ℂ) (a : ℝ)
+    (hF : Integrable (Function.uncurry (causalSquareIntegrand k u w))
+      ((volume.restrict (Set.Ioc (-a) a)).prod (volume.restrict (Set.Ioc (-a) a)))) :
+    (∫ x in Set.Ioc (-a) a, ∫ y in Set.Ioc (-a) a, causalSquareIntegrand k u w x y)
+      = ∫ y in Set.Ioc (-a) a, ∫ x in Set.Ioc (-a) a, causalSquareIntegrand k u w x y :=
+  causal_double_swap _ a hF
+
 end Triangles
 
 end RHTower

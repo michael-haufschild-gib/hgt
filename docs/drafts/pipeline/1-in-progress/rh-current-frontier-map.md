@@ -1,114 +1,42 @@
 # Current Formal Frontier Toward Proving or Disproving the Riemann Hypothesis
 
-## A declaration-grounded audit of HTGeometry, HilbertMetric, and RHTower
-
-**Audit date:** 1 August 2026  
-**Research status:** snapshot review; neither RH nor its negation is proved  
-**Primary evidence:** Lean source declarations and proof dependencies  
-**Secondary evidence:** pipeline cards, failed-route records, and primary literature  
+## Formal research map of HTGeometry, HilbertMetric, and RHTower
 
 ## Abstract
 
-This paper maps the complete research frontier represented by the current
-`HTGeometry`, `HilbertMetric`, and `RHTower` source trees. The map is derived from
-Lean declarations and their hypotheses, not from filenames, docstrings, route names, or
-expectations imported from classical RH programs.
+This paper states where the project stands now. It maps every independent route toward a
+proof or disproof of the Riemann hypothesis represented in `HTGeometry`, `HilbertMetric`,
+and `RHTower`, together with its proved chain, endpoint, first open premise, obstruction,
+and strongest surviving theorem.
 
-The decisive finding is negative but precise: the audited corpus contains no unconditional
+The central fact is negative but precise: the formal corpus contains no unconditional
 theorem of `RiemannHypothesis` and no unconditional theorem of
 `¬RiemannHypothesis`. It contains a large connected atlas of exact RH equivalents,
 conditional reducers, disproof certificates, and source-independent infrastructure. After
 quotienting that atlas by shared unresolved premises, the live proof frontier consists of a
 smaller set of genuinely different source routes. The nearest are: the literal CCM
 first-clock tail/Bohr route; fixed-width rectangular Weil lower floors; all-node
-Hedenmalm/Weil positivity; critical Möbius cancellation; all-prime Sonin closure;
+Xi-Weil form positivity; theta-cusp center-mixed positivity; critical Möbius cancellation;
+all-prime Sonin closure;
 Suzuki full-frequency Hermite–Biehler/Ward realization; Xi Taylor core-current control;
 and a new Julia compound-Poisson coherent-energy route. Operator, Deninger, Gamma–Jacobi,
 Connes/prolate, and source-domain Hedenmalm routes remain structurally meaningful but
 farther upstream.
 
-For every route this paper records endpoint, proved chain, first unproved premise,
-obstacle, circularity risk, and disproof analogue. It also records every independent
-dead-mechanism class found in source and failed-route cards, together with its strongest
-positive survivor. The result is a frontier map, not an RH claim.
+The map uses exact Lean declaration types as authority. **RH equivalent** means a complete
+target, not progress toward its source proof. **Open core** means first unproved premise
+after proved connectors are removed. **Dead mechanism** kills only stated construction;
+its strongest positive survivor remains part of frontier.
 
-## 1. Scope, evidence, and status language
+## 1. Current conclusion
 
-### 1.1 Scope
+Project has solved most connector problems and has not solved source-acquisition problem.
+Nearest routes require one global source theorem: first-clock lower control, fixed-width
+Weil floor, completed Hedenmalm positivity, critical Möbius cancellation, quantitative
+Sonin closure, Suzuki full-frequency source realization, Xi-current control, or Julia
+coherent-energy budget. No route supplies that theorem today.
 
-The audit covers:
-
-- every Lean leaf physically present under
-  `formal/GaloisForLFunctions/HTGeometry/`;
-- every Lean leaf under
-  `formal/GaloisForLFunctions/HilbertMetric/`;
-- every Lean leaf under
-  `formal/GaloisForLFunctions/RHTower/`;
-- the three umbrella modules and their actual import closures;
-- direct and material cross-area handoffs;
-- RH-facing pipeline cards, formalized cards, failed-route cards, and the long-running RH
-  worklog;
-- current primary literature corresponding to the corpus's named external routes.
-
-The audit does not infer a mathematical dependency from lexical similarity. In particular,
-`HT_RH_CROSSMATCHES.tsv` is a search aid, not proof evidence.
-
-### 1.2 Evidence hierarchy
-
-Claims use the following order of authority:
-
-1. exact Lean declaration type and proof dependencies;
-2. source body and import graph;
-3. a paper proof recorded in a pipeline card;
-4. narrative prose or generated indexes;
-5. exploratory computation.
-
-Generated `LEAN_API.md`, `LEAN_GAPS.md`, and `LEAN_OVERVIEW.md` were useful for
-discovery but were stale and internally inconsistent during the audit. They never override
-source.
-
-### 1.3 Labels
-
-- **PROVED:** unconditional Lean theorem in the audited source.
-- **CONDITIONAL REDUCTION:** Lean theorem whose explicit premise remains unproved.
-- **RH EQUIVALENT:** exact target; not independent evidence for RH.
-- **OPEN CORE:** first missing source statement after every proved connector is removed.
-- **DEAD MECHANISM:** exact proposed derivation is refuted, circular, or structurally
-  impossible. This does not kill every proof of its endpoint.
-- **PAPER-FALSIFIED:** paper proof exists, but full Lean falsifier is not present.
-- **SOURCE-WIRED, UNVERIFIED:** declaration exists and is imported, but the late moving
-  snapshot was not successfully checked by the formal lint/build gate.
-- **DISPROOF CERTIFICATE:** a finite or typed witness that would imply `¬RH`, but no such
-  witness is unconditionally constructed.
-
-## 2. Corpus census and audit limitations
-
-The source was changing concurrently. Therefore exact counts below are timestamped rather
-than presented as timeless repository facts.
-
-| Area | Frozen source census | RH status |
-|---|---:|---|
-| HilbertMetric, 13:19 CEST | 52 leaves; 19,737 leaf lines; 1,079 public declarations | No occurrence of `RiemannHypothesis`; source-independent infrastructure only |
-| RHTower, 13:22:32 CEST | 4,036 leaves; 1,005,498 lines; 50,070 declaration heads; 559 RH-containing files | No unconditional RH or ¬RH theorem |
-| HTGeometry, 13:23:35 CEST | 3,420 leaves; 680,946 lines; inferred 37,477 declarations | No RH or ¬RH proof; upstream source and rigidity machinery |
-
-At those snapshots:
-
-- the RHTower umbrella missed then-untracked `DeningerHilbertKummer.lean`;
-- the HTGeometry umbrella missed `JuliaDefectProfileDerivatives.lean` and
-  `UniversalMonicPolynomial.lean`;
-- the formal lint gate failed on unreachable modules and stale generated files;
-- RHTower's generated overview and API disagreed on declaration count;
-- the published whole-corpus manifest was older by 102 RHTower modules and 172
-  HTGeometry modules;
-- the project-mandated `docs/support-extraction-log.md` was absent;
-- `HilbertMetric/FourthCurvatureMixture.lean` imported HTGeometry despite the
-  documented independence rule.
-
-Accordingly, “complete” in this paper means complete for the explicitly frozen source
-snapshot plus the final delta audit, not complete for files written after the audit cutoff.
-
-## 3. What the foundational tower actually proves
+## 2. What the foundational tower actually proves
 
 `RHTower/RiemannTower.lean` supplies the logical skeleton:
 
@@ -130,7 +58,7 @@ must establish one coordinate from information that does not already contain Xi 
 location. The same rule applies to the hundreds of later `↔ RiemannHypothesis`
 theorems.
 
-## 4. Complete quotient of live proof routes
+## 3. Complete quotient of live proof routes
 
 This section quotients thousands of declarations by their first unresolved premise. Two
 criteria belong to the same route when their proved chains return to the same missing
@@ -207,13 +135,12 @@ invoking global Weil positivity.
 **Obstacle.** Finite-cutoff positivity has a tail budget. Recent finite Guinand–Weil
 theorems quantify certification but do not produce the required cutoff-free floor.
 
-### Route C — complete Weil/Hedenmalm positivity
+### Route C1 — complete Xi-Weil/Hedenmalm-form positivity
 
 **Endpoint.**
 
 - `riemannHypothesis_iff_xiWeilPolarization_nonneg`;
-- `HedenmalmXiPositiveFormWall`;
-- `thetaCuspCenterMixedFourierNonnegative_iff_riemannHypothesis`.
+- `HedenmalmXiPositiveFormWall`.
 
 **Proved chain.**
 
@@ -222,6 +149,14 @@ nonnegative completed form on every admissible test
 → every Xi spectral point real
 → RH.
 ```
+
+**Open core.** Construct the complete positive form from literal source on its full test
+class. This premise is not source-level equivalent to the theta Fourier-current premise
+below; no theorem converts one missing sign law to the other without traversing RH.
+
+### Route C2 — theta-cusp center-mixed Fourier current
+
+**Endpoint.** `thetaCuspCenterMixedFourierNonnegative_iff_riemannHypothesis`.
 
 **Unconditional progress.**
 
@@ -237,8 +172,8 @@ nonnegative completed form on every admissible test
 - absolute far-shell convergence;
 - exact coupled-cone integral normal form.
 
-**Open core.** Prove all-node/all-order positivity, equivalently the actual Fourier-current
-sign in the remaining interior high-frequency region
+**Open core.** Prove the actual Fourier-current sign in the remaining interior
+high-frequency region
 `0 < a < 1/2`, `|b| > 218/25`.
 
 **Exact unresolved data.**
@@ -269,22 +204,34 @@ all-polynomial prime–Gamma source Hankel nonnegativity
 → RH.
 ```
 
-HilbertMetric closes finite unisolvent evaluation and prescribed reconstruction. It does
-not establish the all-degree source sign.
+HilbertMetric proves existential unisolvent reconstruction for independent features and an
+equivalence at arbitrary prescribed nodes. It does not construct reconstruction on the
+fixed prime–archimedean source packet or establish its all-degree sign.
 
-**Open core.** Prove full source PSD plus exact recovery, or positivity on one cofinal
-degree family, from literal prime–Gamma structure.
+**Open core.** Prove fixed-node source PSD plus exact recovery, or positivity on one
+cofinal degree family, from literal prime–Gamma structure.
 
 **Obstacle.** Low theta moments do not weaken the target. Lean proves any infinite exact
 degree set already reconstructs the full cone by opposite high-degree perturbations.
 Zero-selected tests are circular.
 
-**Weakest high-frequency chart.** Lean also proves that mere finite upper boundedness of
-the continued prime–arch source imaginary part above frequency four is RH equivalent:
-`ContinuedPrimeArchPositiveFrequencyAboveImBoundedAbove 4 ↔ RH`. If RH is false, the
-source exceeds every finite ceiling at admissible points above four. Thus a source-side
-analytic upper bound of any finite size would close this route; the existing verified
-central band cannot propagate itself to high frequency.
+### Route D2 — continued prime–arch high-frequency ceiling
+
+**Endpoint.** `ContinuedPrimeArchPositiveFrequencyAboveImBoundedAbove 4 ↔ RH`.
+
+**Proved chain.**
+
+```text
+verified central band through height 9/2
++ any finite upper ceiling for continued prime–arch imaginary source above frequency 4
+→ global upper ceiling by reflection
+→ RH.
+```
+
+If RH is false, the source exceeds every finite ceiling at admissible points above four.
+
+**Open core.** Construct any finite uniform upper bound from literal source. Existing
+central-band sign cannot propagate itself to high frequency.
 
 ### Route E — critical Möbius/Mertens cancellation
 
@@ -344,11 +291,16 @@ positive Sonin finite/block/moment values
 - inverse-dilated packet physical cutoff and physical-band error vanish exactly;
 - a square-root norm floor follows from the packet-energy floor under the stated mean and
   square-tail hypotheses;
+- the remaining coupling-band budget is exactly three packet-frequency norms at radii
+  `rb`, `ra`, and `b`;
+- squared estimates on those three terms bound the budget by
+  `√Bhigh + √Bra + √Bb`;
 - it blows up but grows at most logarithmically;
 - failure of the final floor is reduced to a quantitative rate shortfall.
 
-**Open core.** Compare coupling-energy growth with the logarithmic frequency channel with
-summable excess, thereby proving the completed packet floor.
+**Open core.** Prove the three spectral estimates with asymptotics strong enough after
+normalization to compare coupling-energy growth with the logarithmic frequency channel
+and close the completed packet floor with summable excess.
 
 **Dead mechanisms.** Scalar, bounded, fixed-operator, Burnol counterterm, position-side,
 and aperture-refinement-only completions fail. Divergence without rate is insufficient.
@@ -368,11 +320,6 @@ finite self-adjoint extensions and interlacing
 → half-plane Herglotz representation and support theorem.
 ```
 
-The latest Volterra decomposition also proves unconditionally that `2V = C + iH`, with
-`C` and `H` self-adjoint, `C` reflection-even, and `H` reflection-odd. It isolates
-relative phase, projective chord, Neumann moment, and affine-secant carriers exactly.
-Symmetric-coordinate positivity alone cannot determine the RH-bearing phase coordinate.
-
 **Required continuation.**
 
 ```text
@@ -388,11 +335,32 @@ actual monotone source eigen-coefficient law
 1. actual source coefficient law;
 2. chord-mass threshold;
 3. full normalized jump kernel;
-4. the actual phase Green/Christoffel–Darboux source-germ weld;
-5. full-frequency global carrier identification.
+4. full-frequency global carrier identification.
 
 **Dead predecessor.** The legacy entire compact-limit target is impossible because the
 actual quotient has genuine poles. The live route is meromorphic and full-frequency.
+
+### Route G2 — relative-Volterra phase source-germ weld
+
+This is a separate disjunctive route; it bypasses Suzuki coefficient monotonicity,
+chord-mass, Pick-kernel, Ward, and Hermite–Biehler obligations.
+
+**Unconditional algebra.** `2V = C + iH`, with `C` and `H` self-adjoint. Under explicit
+hypotheses that the reflection operator is self-adjoint and conjugates `T` to its adjoint,
+`C` is reflection-even and `H` reflection-odd; odd-sector claims additionally require the
+reflection square to be the identity.
+
+**Endpoint.** `riemannHypothesis_of_suzukiVolterraPhaseEulerDefect_source_germ_weld`
+concludes RH from analytic response/Weyl packages, real-zero conditions, and the seed
+source-germ identity.
+
+**Open core.** Prove the actual phase Green/Christoffel–Darboux Euler-defect source-germ
+weld (`hseed`) and discharge its analytic and real-zero premises from source.
+
+**Retired transfer mechanism.** Under the stated reflection structure, sign or positivity
+of the symmetric coordinate cannot simply be transferred to the complementary phase
+sector. The exact difference identity is an algebraic separation, not an unconditional
+universal impossibility theorem.
 
 ### Route H — Xi Taylor/theta core current
 
@@ -434,10 +402,9 @@ estimates cannot reach the necessary height-linear range.
 
 ### Route J — Julia compound-Poisson coherent energy
 
-This route appeared during the audit and must be distinguished from older diagonal Julia
-attenuation.
+This route is distinct from older diagonal Julia attenuation.
 
-**Proved/source-wired chain.**
+**Proved chain.**
 
 ```text
 literal compound-Poisson equilibrium source
@@ -448,6 +415,12 @@ literal compound-Poisson equilibrium source
 → negative completed source forces a squared excursion into that energy.
 ```
 
+The equilibrium kernel is now an actual characteristic function, not only an abstract
+positive-definite kernel: source gives an explicit compound-Poisson law with zero atom
+`1/(2√2)`, a square-biased law with density `(2/3)x²`, and an independent centered
+triangular-clock realization. `CharacteristicDefectGramCapacity` packages the universal
+finite-second-moment anchor-correlation bound used directly by RHTower.
+
 **Open core.** Prove a global coherent bad-energy budget that forces vanishing or bounds
 the excursion by available positive mass, including the finite-packet-to-infinite-source
 limit.
@@ -455,8 +428,7 @@ limit.
 **Obstacle.** Diagonal attenuation and scale-four/KMS decompositions preserve bad signs.
 Only a non-diagonal cross-prime or inter-scale inequality can close the gap.
 
-**Status.** Major literal-source advance, but late source was not post-mutation
-lint/build-verified.
+**Status.** Major literal-source advance; open global energy budget prevents RH closure.
 
 ### Route K — quadratic spectral realization
 
@@ -587,7 +559,7 @@ existence.
 `α=1` carrier fails at degree one; one-particle infinite divisibility fails by atomic
 support. A two-particle completion survives but has no transform identification.
 
-### Route R — Xi prime-seam submass
+### Divisor-fed prime-seam submass coordinate
 
 **Endpoint.** `XiPrimeSeamPairEnergySubmass ↔ RH`.
 
@@ -596,8 +568,13 @@ is identified exactly with a horizontal prime-seam weighted norm square. Prime-p
 difference energy divided by reciprocal prime mass converges to twice this quantity, and
 the energy controls `(Re(ρ)-1/2)^2 (log 2)^4` on a divisor fibre.
 
-**Open core.** Prove submass growth, or zero first-coefficient energy, on actual Xi-divisor
-fibres from a source-built all-prime/Sonin operator without using zero location.
+**Classification.** This is not yet a live source route. The predicate quantifies directly
+over `XiDivisorSupport`, and its fibrewise content is exactly `Re(ρ)=1/2`; even the
+first-coefficient energy remains parameterized by `ρ`.
+
+**Potential promotion condition.** Construct a source-to-divisor-fibre all-prime/Sonin
+operator that produces submass growth or zero first-coefficient energy without selecting
+the Xi divisor.
 
 **Obstacle.** Existing identities expose and coerce the quantity but do not orient it on
 Xi fibres. An outer Euler modulus or prime-seam coupling remains unproduced.
@@ -627,6 +604,7 @@ The following families reduce to Routes A–S or remain bare equivalences:
 - OPUC and phase-adapted Prouhet terminal identities;
 - Hurwitz FE/Schwarz seam, current, and energy charts;
 - outer Euler modulus × prime-seam coupling;
+- divisor-fed Xi prime-seam submass;
 - determinant-line and spectral-flow no-first-crossing charts;
 - function-field `q → 1` degeneration;
 - hyperbolic/adelic scattering;
@@ -636,10 +614,11 @@ The following families reduce to Routes A–S or remain bare equivalences:
 
 They remain useful coordinates. None adds an independent source producer.
 
-## 5. Role of HilbertMetric
+## 4. Role of HilbertMetric
 
-HilbertMetric has no RH declaration. Its contribution is an exact source-independent
-mechanism layer.
+HilbertMetric has no RH declaration. Its mathematical statements form a source-independent
+mechanism layer, except that `FourthCurvatureMixture.lean` currently has an implementation
+dependency on an HTGeometry integral inequality.
 
 ### Closed infrastructure
 
@@ -663,20 +642,44 @@ HilbertMetric.PrescribedEvaluationReconstruction
 ↔ RH.
 ```
 
-Finite reconstruction is closed. The all-degree source PSD/reconstruction phase is not.
+Existence of some unisolvent nodes is closed, and reconstruction at prescribed nodes is
+characterized exactly. Reconstruction and PSD for the fixed prime–arch source nodes are
+not proved.
 
-### HilbertMetric open research boundaries
+### Complete direct import handoffs
+
+The direct surface is 3 HTGeometry consumers and 25 RHTower consumers through 30 import
+statements. Only `PrimeArchHankelDeterminantCriterion` directly reaches an RH equivalence.
+
+| Handoff class | Exact direct consumers |
+|---|---|
+| HTGeometry reconstruction/energy | `BipolarGramDriftAnomaly`; `ContinuousCofiniteRealHilbertReconstruction`; `PointedCollisionIncidenceLinearBridge` |
+| RHTower reconstruction/freeness | `GammaShiftDirichletLSeriesArithmeticHilbertReconstruction`; `GammaShiftZetaJetArithmeticHilbertReconstruction`; `PrimeArchHankelDeterminantCriterion`; `XiJetFreeness`; `XiMobiusContinuousApertureSzegoMetric`; `XiTransverseValuationCanonicalReconstruction` |
+| Hedenmalm/theta low-block geometry | `HedenmalmCenterMixedCorrelationAngle`; `HedenmalmCenterMixedFourthJetCusp`; `HedenmalmCenterMixedFourthJetCuspClosure`; `HedenmalmCenterMixedLocalThreePoint`; `HedenmalmCenterMixedRaywiseCoalescedCone`; `HedenmalmCenterMixedThreePoint`; `HedenmalmCenterMixedUniformCoalescedSquare`; `SquaredXiThreePointOrbitPositivity`; `ThetaCuspFullReflectionFourthTuran`; `ThetaCuspReflectedRiccatiAngle` |
+| Gaussian curvature | `GaussianMetricHermiteStableRankFractureUniversalityLaw`; `HermiteEvenGaussianMetricCurvature`; `XiTransverseValuationGaussianCurvatureHilbertPhase`; `XiTransverseValuationGaussianCurvatureSignDuality`; `XiTransverseValuationGaussianRadicalConnector` |
+| Fock/Plücker/phase | `GammaSewnFourRatePluckerConnector`; `HermiteEvenSlaterPluckerConnector`; `UniversalPhaseCoherenceEntropy` |
+| Rigging no-go | `ArithmeticSchurExactNormRiggingNoGo` |
+
+### HilbertMetric-facing downstream boundaries
+
+**Internal HilbertMetric mathematics:**
 
 1. affine-dimension-three Gaussian curvature boundary;
-2. arbitrary-rank Gaussian curvature classification;
+2. arbitrary-rank Gaussian curvature classification.
+
+**RHTower literal-source cores using HilbertMetric infrastructure:**
+
 3. all-order prime–arch Hankel reconstruction;
 4. all-order Hedenmalm positivity beyond closed low blocks;
 5. source-specific CCR/Fock realization with a decisive sign;
-6. source filling/rank/phase estimates;
+6. source filling/rank/phase estimates.
+
+**Category and interface boundaries:**
+
 7. a viable post-scalar rigging category;
 8. sufficiency, not merely necessity, of matching characters.
 
-## 6. Role of HTGeometry
+## 5. Role of HTGeometry
 
 HTGeometry supplies rigidity, faithful encodings, source decompositions, exact no-gos,
 moment determinacy, Bohr recurrence/Torelli machinery, and the new Julia positive-definite
@@ -696,13 +699,29 @@ source.
 
 - Gamma differential hypertranscendence;
 - reflected-digamma orientation;
-- Dirichlet infinite-frequency nonrelation;
+- conversion of the now-proved literal-zeta Gamma-field nonrelation into divisor or
+  zero-location information;
 - Stanley–Reisner/boundary-wedge dimension;
 - generic monodromy rigidity;
 - Lindelöf exponent campaign.
 
 These are not counted as current RH proof chains because no exact source-to-RH handoff is
 present.
+
+The literal zeta specialization is closed only for the exact Gamma-jet normal form stated
+in `ZetaGammaFieldHypertranscendence.lean`: its denominator, dominant-monomial,
+noncancellation, and differential-monomial hypotheses must not be erased. Controlled
+digamma quotient valuations and centered coefficient algebraic independence are also now
+proved, but neither has an RH handoff.
+
+Dirichlet exponents are now identified exactly as Bohr-hull frequencies under uniform
+Dirichlet approximation, closing the exponent-to-spectrum link in the Gamma-field
+nonrelation chain. Vertically flat residuals are stable under differences, nonzero rational
+factors, and unit translation, and no nonzero polynomial is vertically flat. Remaining
+analytic assembly is evaluation/translation compatibility for rational digamma jet
+polynomials. Universal-to-generic centering and coefficient-substitution injectivity are
+also present; explicit algebraic independence of the centered generic coefficient family
+still needs final assembly and still has no Xi-source specialization.
 
 ### Highest-value HT-specific missing inputs
 
@@ -720,12 +739,12 @@ present.
 12. literal centered-jet surjectivity;
 13. Lindelöf second-spacing plus across-class cancellation.
 
-## 7. Dead routes: exhaustive mechanism map
+## 6. Dead routes: exhaustive mechanism map
 
 A route is retired only at the quantifier level proved or paper-falsified. Each entry
 therefore lists the surviving positive theorem.
 
-### 7.1 Universal finite selectors and local readers
+### 6.1 Universal finite selectors and local readers
 
 **Dead.**
 
@@ -745,7 +764,7 @@ theorems preserve all finite observations while changing the unresolved divisor 
 the conclusion that any viable selector must be infinite, divisor-sensitive, and
 source-faithful.
 
-### 7.2 Universal Gaussian/CCR/Fock signs
+### 6.2 Universal Gaussian/CCR/Fock signs
 
 **Dead.**
 
@@ -755,16 +774,29 @@ source-faithful.
 - compressed-annihilator universal positive defect;
 - coherent row/column compensation as a universal sign law;
 - all finite annihilation-invariant-subspace sign laws;
+- pairwise commutativity as an identification of defect with half the mixed-commutator
+  square;
+- arbitrary commuting, nilpotent, symmetric-graded tuples as a universal sign producer;
 - direct Fock-square repair; cubic/triadic source-incomplete replacements.
 
-**Formal falsifiers.** Degree-five ambient-16 Gaussian positive log-curvature; finite
-full-CCR nonexistence; explicit two-mode quasi-free margin `-2`.
+**Lean-certified falsifiers.** Degree-five ambient-16 Gaussian positive log-curvature;
+finite full-CCR nonexistence; explicit two-mode quasi-free margin `-2`.
+
+**Paper-level retirements.** The compressed-annihilator, row/column compensation,
+commuting-tuple, and universal finite invariant-subspace mechanisms are paper-level
+falsifications or implications unless a separate Lean declaration is cited.
+
+The proposed complete-Bernstein Gaussian scale law is also dead by a symbolic
+equilateral-three-point paper falsifier, but no matching Lean declaration was found; its
+status is PAPER-FALSIFIED, not formally certified.
 
 **Survivor.** Rank-one strict concavity, intrinsic-dimension power concavity, invariant
-block CCR, sharp filling threshold, rank/phase defect classifications, and stable
-higher-rank fracture.
+block CCR, sharp filling threshold, rank/phase defect classifications, stable higher-rank
+fracture, and the paper-level exact row–column decomposition. The strongest formal
+quadratic survivor is the complete graph completion: annihilation invariance and the
+determinant law `t^(e+m) det(tI + LᵀL)`.
 
-### 7.3 Generic positivity, moment, and Pick arguments
+### 6.3 Generic positivity, moment, and Pick arguments
 
 **Dead.**
 
@@ -774,12 +806,14 @@ higher-rank fracture.
 - generic positive/log-concave Schwartz shape as Fourier positivity;
 - direct Pick-kernel positivity at a quadratic boundary contact;
 - Schur/Nevanlinna collapse after assuming an RH-equivalent singularity statement;
-- one-state universal KMS closure.
+- one-state universal KMS closure;
+- Gamma-field asymptotic valuation stopped modulo a vertically flat residual, without
+  shift-stable elimination and evaluation/translation compatibility.
 
 **Survivor.** Exact counterexamples and boundary-contact signs identify missing literal
 source structure; corrected Krein/indefinite kernels remain possible.
 
-### 7.4 Hedenmalm/theta finite-shell mechanisms
+### 6.4 Hedenmalm/theta finite-shell mechanisms
 
 **Dead.**
 
@@ -795,7 +829,7 @@ source structure; corrected Krein/indefinite kernels remain possible.
 positivity, exact higher-shell quadrants, one compact ground defect, and the coupled
 completed integral.
 
-### 7.5 Sonin and Suzuki finite completion mechanisms
+### 6.5 Sonin and Suzuki finite completion mechanisms
 
 **Dead.**
 
@@ -808,12 +842,15 @@ completed integral.
 - local differential corrections;
 - unrenormalized cofinal Bianchi mass;
 - atomwise finite causal splice;
-- raw completed-Mellin positive-domain proposals.
+- raw completed-Mellin positive-domain proposals;
+- transfer of symmetric Volterra positivity/sign to the complementary phase coordinate
+  under the stated reflection hypotheses.
 
 **Survivor.** Frequency-side logarithmic Sonin channel; meromorphic Suzuki anti-Pick,
-Herglotz, full-frequency Ward, and projective/Plücker structures.
+Herglotz, full-frequency Ward, and projective/Plücker structures; self-adjoint relative
+phase coordinate, complementary parity sector, and independent source-germ-weld route.
 
-### 7.6 Möbius/additive cancellation shortcuts
+### 6.6 Möbius/additive cancellation shortcuts
 
 **Dead.**
 
@@ -827,7 +864,7 @@ Herglotz, full-frequency Ward, and projective/Plücker structures.
 **Survivor.** Gamma–Hankel off-diagonal bounded-return target, supercritical LCM boundary
 localization, and exact positive Liu reciprocal-square gap.
 
-### 7.7 Moving completed-source polynomial parity
+### 6.7 Moving completed-source polynomial parity
 
 **Proposed chain.**
 
@@ -847,10 +884,10 @@ given the negative value at 10; the explicit negative estimate itself is not for
 **Survivor.** Four-crossing law and signed crossing structure. Do not erase crossings;
 classify them.
 
-### 7.8 Axiomatic and deformation routes
+### 6.8 Axiomatic and deformation routes
 
-The long-running worklog closes the abstract “positive generalized prime system + Riemann
-functional equation” lane as circular-or-false.
+The abstract “positive generalized prime system + Riemann functional equation” lane is
+circular-or-false.
 
 **Dead.**
 
@@ -866,7 +903,7 @@ functional equation” lane as circular-or-false.
 positive generalized system can deviate. A from-scratch Beurling system remains a
 dichotomy about the strength of the axiom class, not a proof route for zeta.
 
-### 7.9 Source algebraicity and representation theatre
+### 6.9 Source algebraicity and representation theatre
 
 **Dead or unsupported.**
 
@@ -878,13 +915,23 @@ dichotomy about the strength of the axiom class, not a proof route for zeta.
   orientation;
 - function-field, scattering, QECC, Böttcher, observer, and physics analogies without a
   typed arithmetic source functor.
+- genuinely unbounded closable scalar-current rigging on a dense domain: every closed
+  densely defined real scalar functional has full domain, and on a Banach source every
+  closed or closable dense scalar functional extends boundedly and continuously;
+- invertible linear intertwiners across a trace/character mismatch: one mismatched element
+  excludes every invertible intertwiner.
+- complete Hochster derived topology plus Stanley–Reisner differential matroid and embedded
+  differential field as an orientation selector: arbitrary finite negative residue surgery
+  preserves all three while changing the Herglotz chamber.
 
-**Survivor.** Exact consequence atlases and compatibility constraints. They can become
-routes only after a new source construction.
+**Survivor.** Exact consequence atlases, bounded continuous scalarization, character
+equality as a necessary—but not sufficient—compatibility condition, and an exact
+topology–orientation product classification. Live rigging must leave the scalar closable
+Hilbert category. These structures become RH routes only after a new source construction.
 
-### 7.10 HTGeometry failed cards with direct RH relevance
+### 6.10 HTGeometry direct RH-adjacent failures
 
-The exact HT-referenced failed cards add:
+HTGeometry adds:
 
 - differential-field real-zero nonidentifiability;
 - Gamma-hypertranscendence/Hankel-sign independence;
@@ -898,8 +945,7 @@ Their positive survivors are, respectively: divisor-sensitive gauge classificati
 source-specific sign necessity; sharp flat inverse; multiplicity classification; weighted
 invariants; exact residual correction; and clock-dilation norm rigidity.
 
-Fifteen additional HT-referenced Stage-5 cards concern adjacent physics/algebra mechanisms
-but have no exact RH endpoint:
+Fifteen additional adjacent physics/algebra mechanisms have no exact RH endpoint:
 
 - `actuality-factorization-interchange-law`;
 - `albert-hessian-as-rank-six-event`;
@@ -920,7 +966,46 @@ but have no exact RH endpoint:
 They remain retired and are excluded from the active RH map until an exact source handoff
 exists.
 
-## 8. Disproof frontier
+### 6.11 Named RHTower no-go modules and exact survivors
+
+| Module family | Retired mechanism | Strongest survivor |
+|---|---|---|
+| `EdgeScaleNoGo` | sub-resolution edge selector | sharp phase resolution `π/ρ₀` |
+| `EndpointNoGo` | fixed deck class determines endpoint sign | all four sign pairs occur |
+| `JointReadingNoGo` | a joint scalar reading selects the branch | exact `C₂×C₂` orbit obstruction |
+| `LandauShadowNoGo` | global orientation from the Landau shadow | parity localizes the fixed locus |
+| `PinnedAffineWeldBoundaryNoGo` | raw pinned affine source selects a weld | nonzero Fitting class survives, but raw source activates everywhere |
+| `PrimeDivisorAtomsNoGo` | individual prime-factor atoms detect the divisor | prime atoms are analytic units |
+| `SeamArchimedeanNoGo` | seam support alone transfers archimedean orientation | exact support/sampling quotient separation |
+| `ShortWindowNoGo` and `ShortWindowNoGoGeneral` | short local windows select the global phase | local/spread-cone obstruction |
+| `SpurNoGo` | one-pair preservation under the spur construction | sharp geometric spur law |
+| `WeldGermOrientationNoGo` | scalar or vector germ reader recovers orientation | symplectic area survives and requires at least two arithmetic directions |
+| `WindowSymmetryNoGo` | a larger hidden window stabilizer supplies phase | stabilizer is exactly identity/mirror |
+
+### 6.12 Additional structural retirements
+
+Current corpus also retires the following mechanisms at their exact stated scope:
+
+- polynomial surgery that leaves the Dirichlet-series class;
+- scalar gluing that records orbit shape but not orientation;
+- ramification data descending only to the orbit quotient;
+- positive weld metrics attempting to recover Krein signature by congruence;
+- conservation of connected deck charge as a zero selector;
+- rational coefficient charge, which disappears although integral charge survives;
+- constant sources, which collapse to scalar sums;
+- positive prime-rate blocks, which are mutually congruent;
+- weld/Hankel finite-block combinations required to be simultaneously positive, finite,
+  and source-faithful;
+- finite repaired frequency packets, whose infinite replacement demands the missing
+  admissibility condition;
+- zero-frequency reservoirs that are target equivalent or collapse to the `dx/x`
+  boundary;
+- boundary-Weyl, Stieltjes, contractivity, and finite-KMS atlases used without an
+  independent source producer;
+- generic Julia “coherent capacity” based only on Gram/Cauchy–Schwarz rather than the
+  literal equilibrium source.
+
+## 7. Disproof frontier
 
 No unconditional disproof is present. The corpus nevertheless has exact witness-producing
 interfaces.
@@ -934,24 +1019,28 @@ produce a nontrivial zeta/Xi zero ρ with Re(ρ) ≠ 1/2
 
 ### Equivalent finite or typed witnesses
 
-- nonempty right-half Xi-zero copy and a sharp ladder failure;
-- a certified negative heat-Hankel form or determinant;
-- a negative shifted reciprocal Hankel quadratic;
-- a positive Hurwitz orientation-energy defect;
-- a nonzero modulus-slope defect;
-- rectangular or first-clock cofinal divergence;
-- persistent Bernstein negative mass;
-- a certified source-sector failure.
+| Certificate class | Representative exact interface | Classification |
+|---|---|---|
+| Completed-flux/Laguerre failure | `completedFluxTaylorCoeff_two_line_re_pos_not_RH` | typed negative certificate |
+| Negative completed source jet | `not_riemannHypothesis_of_completedSourceJet_neg` | typed source certificate |
+| Prime continuation nonanalyticity | `not_riemannHypothesis_iff_primeContinuationNonanalyticPhaseUniversalCertificate` | exact equivalent certificate |
+| Positive Ward endpoint index | `xiEndpointWeightedWardIndex_pos_iff_not_rh` | exact equivalent certificate |
+| Nonzero SEM Fitting charge | `not_riemannHypothesis_iff_exists_semHoleFittingCharge_ne_zero` | exact equivalent certificate |
+| Heat-Hankel negativity | negative heat form, Turán defect, or trace determinant | finite analytic certificate |
+| Shifted-reciprocal negativity | negative reciprocal Hankel quadratic | finite analytic certificate |
+| Rectangular/first-clock divergence | cofinal negative rectangular floor or first-clock failure | source-asymptotic certificate |
+| Bernstein/source-sector failure | persistent negative mass or sector violation | source-asymptotic certificate |
+| Right-half divisor/ladder | nonempty right-half Xi copy and sharp ladder failure | divisor-fed mirror |
+| Hurwitz orientation/modulus slope | positive orientation energy or nonzero slope defect | divisor-fed mirror |
 
 Every current theorem either derives these from assumed `¬RH` or concludes `¬RH` from
 an unproduced certificate. Thus the disproof open core is a concrete certified negative
 witness, not a missing logical connector.
 
-## 9. Research hypotheses that would create a leap
+## 8. Research hypotheses that would create a leap
 
-The following questions remain unanswered by both the audited source and the primary
-literature checked for this review. They are stated at source level, before specialization
-to Xi zeros.
+The following questions remain unanswered by both formal corpus and current primary
+literature. They are stated at source level, before specialization to Xi zeros.
 
 ### Tier 1 — shortest RH chains
 
@@ -967,44 +1056,47 @@ to Xi zeros.
    nonnegative in the interior high-frequency corner?
 6. **Julia energy theorem.** Does a global coherent cross-prime budget rule out negative
    completed-source excursions?
+7. **Prime–arch high-frequency ceiling.** Can literal source supply any finite uniform
+   upper bound above frequency four?
 
 ### Tier 2 — source-to-operator or source-to-form construction
 
-7. All-prime Sonin closure with the required quantitative rate.
-8. Suzuki source coefficient monotonicity, chord-mass gap, and full jump Pick kernel.
-9. Source-built all-degree prime–arch Hankel PSD/reconstruction.
-10. Source-built self-adjoint quadratic-scale operator with Xi spectrum inclusion.
-11. Deninger relevant-complex comparison, nuclear estimate, Hodge transport, and kernel
+8. All-prime Sonin closure with the required quantitative rate.
+9. Suzuki source coefficient monotonicity, chord-mass gap, and full jump Pick kernel.
+10. Relative-Volterra phase Euler-defect source-germ weld.
+11. Source-built all-degree prime–arch Hankel PSD/reconstruction.
+12. Source-built self-adjoint quadratic-scale operator with Xi spectrum inclusion.
+13. Deninger relevant-complex comparison, nuclear estimate, Hodge transport, and kernel
     vanishing.
-12. Uniform source-domain Hedenmalm prime-normal sub-log-square estimate.
-13. Joint infinite-index Gamma–Jacobi Krein reader and forced outer factor.
-14. Restricted-Weil/prolate ground-state comparison and rigorous finite-to-Xi convergence.
-15. Literal compact Thorin/Markov carrier for the completed seam.
+14. Uniform source-domain Hedenmalm prime-normal sub-log-square estimate.
+15. Joint infinite-index Gamma–Jacobi Krein reader and forced outer factor.
+16. Restricted-Weil/prolate ground-state comparison and rigorous finite-to-Xi convergence.
+17. Literal compact Thorin/Markov carrier for the completed seam.
 
 ### Tier 3 — new structure that could unlock Tier 1 or 2
 
-16. Non-diagonal inter-scale KMS inequality neutralizing persistent bad layers.
-17. Contractive or variation-diminishing Möbius inversion of Gamma occupation.
-18. Source-stable OPUC terminal identity.
-19. Burnol co-Poisson scalar Berezin sign or parity-block flatness.
-20. Source determinant-line no-first-crossing theorem retaining negative index.
-21. All-prime Calkin collinearity or two-particle Sonin subroot estimate.
-22. Affine-dimension-three and arbitrary-rank Gaussian curvature classification.
-23. Viable vector/operator-valued or nonclosable post-scalar rigging.
-24. Actual two-variable HT/SR realization with rank-one period group.
-25. A theorem converting Dirichlet/Gamma differential nonrelation into zero-location
+18. Non-diagonal inter-scale KMS inequality neutralizing persistent bad layers.
+19. Contractive or variation-diminishing Möbius inversion of Gamma occupation.
+20. Source-stable OPUC terminal identity.
+21. Burnol co-Poisson scalar Berezin sign or parity-block flatness.
+22. Source determinant-line no-first-crossing theorem retaining negative index.
+23. All-prime Calkin collinearity or two-particle Sonin subroot estimate.
+24. Affine-dimension-three and arbitrary-rank Gaussian curvature classification.
+25. Viable vector/operator-valued or nonclosable post-scalar rigging.
+26. Actual two-variable HT/SR realization with rank-one period group.
+27. A theorem converting Dirichlet/Gamma differential nonrelation into zero-location
     information.
-26. Lindelöf second-spacing estimate plus across-class cancellation, followed by an exact
+28. Lindelöf second-spacing estimate plus across-class cancellation, followed by an exact
     typed RH handoff.
 
 ### Disproof leap
 
-27. A rigorously certified off-line zero or any equivalent negative finite certificate.
+29. A rigorously certified off-line zero or any equivalent negative finite certificate.
 
-## 10. Literature reconciliation
+## 9. Literature reconciliation
 
-The literature audit used primary papers and distinguishes new finite or structural
-advances from proof completion.
+Current primary literature distinguishes new finite or structural advances from proof
+completion.
 
 - Connes and van Suijlekom prove real zeros for the Fourier transform of an isolated
   simple even ground state of a lower-bounded convolution operator. This validates a
@@ -1041,10 +1133,9 @@ advances from proof completion.
   source-constructed critical-seam carrier:
   [Riemann, Thorin, van Dantzig Pairs, Wald Couples and Hadamard Factorisation](https://arxiv.org/abs/1804.10043).
 
-No checked primary source closes any Tier-1 or Tier-2 open core above. This is a dated
-search conclusion, not a proof that no unpublished or differently phrased result exists.
+The cited primary sources close no Tier-1 or Tier-2 open core above.
 
-## 11. Priority and research policy
+## 10. Priority and research policy
 
 ### Highest expected leverage
 
@@ -1053,8 +1144,9 @@ search conclusion, not a proof that no unpublished or differently phrased result
 3. Hedenmalm completed high-frequency current;
 4. Möbius Gamma–Hankel bounded returns;
 5. fixed-width rectangular Weil floor;
-6. Sonin quantitative frequency-channel closure;
-7. Suzuki source-selected full jump kernel.
+6. any finite prime–arch high-frequency ceiling;
+7. Sonin quantitative frequency-channel closure;
+8. Suzuki source-selected full jump kernel or relative-Volterra source-germ weld.
 
 These routes begin with literal source and have short, formally closed tails to RH.
 
@@ -1077,7 +1169,7 @@ These routes begin with literal source and have short, formally closed tails to 
   even factorization;
 - lexical HT/RH crossmatches without exact imports and identifier use.
 
-## 12. Final frontier statement
+## 11. Final frontier statement
 
 The corpus has already solved most connector problems. Its remaining difficulty is not a
 shortage of RH criteria. It is source acquisition.
@@ -1099,6 +1191,7 @@ The routes differ in the missing theorem:
 - critical cancellation for Möbius;
 - rate-controlled closure for Sonin;
 - source-selected full-frequency Pick/Hermite–Biehler structure for Suzuki;
+- relative-Volterra phase source-germ weld;
 - off-diagonal core-current control for Xi Taylor;
 - coherent global energy budget for Julia;
 - source-built operator and spectrum inclusion for spectral/Deninger programs.
@@ -1110,7 +1203,7 @@ Therefore the honest current conclusion is:
 
 > **RH is neither proved nor disproved. The formal frontier is a finite quotient of
 > source-level open cores, led by first-clock, completed positivity, critical Möbius,
-> Sonin/Suzuki, Xi-current, and Julia coherent-energy problems. All other audited
+> Sonin/Suzuki, Xi-current, and Julia coherent-energy problems. All other
 > RH-facing declarations are connectors, mirrors, infrastructure, or retired
 > mechanisms unless and until they supply a new literal-source theorem.**
 
@@ -1129,12 +1222,21 @@ Therefore the honest current conclusion is:
 - `RHTower/MobiusLaplaceMellinPlancherelBridge.lean`
 - `RHTower/MobiusLaplaceGammaHankelWall.lean`
 - `RHTower/SoninCoupledPrimeArchGramTransfer.lean`
+- `RHTower/SoninDilatedBandTransport.lean`
+- `RHTower/SoninShellCutBandPacketTerms.lean`
+- `RHTower/SoninShellCutBandBound.lean`
 - `RHTower/SuzukiFiniteApertureHermiteBiehler.lean`
+- `RHTower/SuzukiVolterraCartesianPhaseDefect.lean`
 - `RHTower/StrictHermiteBiehlerGivesRH.lean`
 - `RHTower/XiCTaylorThetaTailCoreCurrentCapstone.lean`
 - `RHTower/CCMSharpPrimeWindowSubpowerGate.lean`
 - `RHTower/QuadraticScaleSpectralRH.lean`
+- `RHTower/DeningerHilbertKummer.lean`
 - `RHTower/HedenmalmPrimeNormalWickBoundaryEnergy.lean`
+- `RHTower/ThetaCuspCalibratedPowerReciprocalMomentLaw.lean`
+- `RHTower/CCMFirstClockJuliaEquilibriumGram.lean`
+- `RHTower/PrimeArchVerifiedHeightAccretivity.lean`
+- `RHTower/XiPrimeSeamPairAsymptotics.lean`
 - `RHTower/RiemannHypothesisSOTA2026.lean`
 - `HTGeometry/SummableSpectrumScrewAlmostPeriodic.lean`
 - `HTGeometry/SummableSpectrumScrewBohrCoefficients.lean`
@@ -1151,17 +1253,3 @@ Therefore the honest current conclusion is:
 - `HilbertMetric/CCRFiniteBlockObstruction.lean`
 - `HilbertMetric/ThreePointCorrelationAngle.lean`
 - `HilbertMetric/DenseClosedScalarRigidity.lean`
-
-## Appendix B. Audit artifacts
-
-- `docs/drafts/pipeline/1-in-progress/rh-current-frontier-audit-log.md`
-- `docs/drafts/non-ccm-rh-proof-chain-working-map.md`
-- `docs/handover/rh-worklog.md`
-- `docs/drafts/pipeline/0-backlog/rh-landscape-proof-gate.md`
-- `docs/drafts/pipeline/4-publication-ready/riemann-source-modular-superselection/WHOLE_CORPUS_CENSUS.md`
-- `docs/drafts/pipeline/4-publication-ready/riemann-source-modular-superselection/RH_DECLARATIONS.tsv`
-- `docs/drafts/pipeline/4-publication-ready/riemann-source-modular-superselection/RH_OBSTRUCTION_CLUSTERS.tsv`
-- `docs/drafts/pipeline/4-publication-ready/riemann-source-modular-superselection/PRIMITIVE_OBSTRUCTIONS.tsv`
-
-The publication-ready census artifacts in the last four entries are historical baselines,
-not current exact inventories.

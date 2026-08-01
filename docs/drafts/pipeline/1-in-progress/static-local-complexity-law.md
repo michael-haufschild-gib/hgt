@@ -39,6 +39,46 @@ a gap between them:
    cannot be fast-forwarded, and thereby identifying a physical origin of the
    computational time--energy uncertainty principle.
 
+### Unifying conjectural jump: autonomous computational time
+
+The research target is not the conjunction of those three problems.  It is the
+following proposed law of which they would be consequences:
+
+> **No-Shortcut Law for Autonomous Time.**  After fixing energy scale and
+> observational resolution, generic irreducible local quantum matter reaches
+> its future state by an essentially shortest local quantum computation until
+> its finite state capacity is exhausted.  Thereafter it occupies maximal
+> complexity for asymptotic density one and can become simple again only on
+> its full spectral-recurrence scale.
+
+For the Choi clock of `H_n`, the falsifiable mathematical form is
+
+\[
+ C_\varepsilon(\Phi_{H_n}(t))
+   =\widetilde\Theta\!\left(
+      \min\{\Lambda(H_n)|t|,\,2^n\}\right)
+\]
+
+from the resolution time to exponential saturation, followed by a
+`exp(Theta(2^n))` first return to polynomial complexity.  Here `Lambda(H_n)`
+is an explicit local interaction-rate normalization, not an adjustable fit
+parameter, and the tildes may hide only the polynomial factors stated in the
+theorem.  A permanent efficient locality witness must hold on the same event.
+
+This would identify elapsed autonomous time with irreducible preparation work,
+not merely correlate two curves.  In a holographic model for which complexity
+has a geometric dual, it would say that the growing interior cannot be reached
+by a shorter boundary preparation.  That transfer remains forbidden until the
+law is proved for the corresponding SYK/CFT model.
+
+Literal quantification over every Hamiltonian is false: `H = 0`, commuting
+models, free systems, and finite-order evolutions can be fast-forwarded or
+recur immediately.  Universality must therefore be a proved classification:
+the no-shortcut phase is characterized by explicit spectral and computational
+irreducibility predicates, while the exceptional phases are characterized by
+the precise invariant that collapses.  Calling only the generic branch
+"universal" without this complementary classification is not allowed.
+
 The first headline theorem must concern robust state complexity (equivalently,
 the thermofield-double/Choi trajectory after its fixed linear-size
 preparation), not only black-box query complexity or uniform simulation.
@@ -137,7 +177,10 @@ proves that the generic two-local Pauli characteristic polynomial has full
 Pauli ensemble has rationally independent projective energy gaps almost surely.
 Using the Choi trajectory gives exactly uniform spectral weights, removing the
 separate eigenvector-delocalization requirement for the operator-complexity
-law.  Lean formalization is still pending, so O2 is not yet formally closed.
+law.  Lean now certifies the full-symmetric permutation-to-relation-rigidity
+step and generation of the full Boolean-hypercube symmetric group by edge
+transpositions.  The analytic bridge from the two-local Pauli family to those
+branch transpositions remains to be formalized, so O2 is not yet closed.
 
 ### O3. Local spectral complexity transversality
 
@@ -158,9 +201,13 @@ A union over all circuits of size at most `s` gives an explicit
 `M^(s+1)` multiple of this bound.  Thus, at fixed small error, all but
 `exp(-Omega(D))` of completed time has approximate circuit complexity
 `Omega(D/log n)` for local gates, for every eigenbasis.  This closes O3 on
-paper once combined with O2, but not yet in Lean.  It proves the plateau
-occupation law; it does not imply O4's pointwise linear growth or O5's first
-hitting time.
+paper once combined with O2.  Lean now certifies translated-cap measure
+invariance, controlled-target and finite-dictionary union bounds, the exact
+Hilbert--Schmidt geometry of equal-weight Choi phase densities, and the
+metric-displacement-to-coherence implication.  Circuit-word counting and the
+completed-time Portmanteau specialization remain.  The result proves the
+plateau occupation law; it does not imply O4's pointwise linear growth or O5's
+first hitting time.
 
 ### O4. Linear no-shortcuts theorem
 
@@ -281,3 +328,14 @@ receive a new title and an independent significance audit.
   degeneracies supply all Boolean-hypercube transpositions; the resulting
   `S_(2^n)` monodromy forbids every projective rational resonance almost surely.
   Choi evolution supplies uniform spectral weights. Lean remains pending.
+- 2026-08-01 -- Promoted the scientific target from a four-result conjunction
+  to the falsifiable No-Shortcut Law for Autonomous Time: normalized physical
+  duration equals irreducible endpoint-preparation work until finite-state
+  saturation, after which spectral entropy fixes the plateau and return scale.
+  Recorded fast-forwardable systems as a required complementary class rather
+  than hiding them behind "generic".
+- 2026-08-01 -- Formalized exact equal-weight Choi phase-density geometry and
+  the displacement-to-coherence implication in
+  `StaticChoiPhaseDensity.lean`; the file compiles in isolation.  Together with
+  `StaticChoiPhaseTargetEntropy.lean`, this closes the geometric core of O3 in
+  Lean, leaving finite circuit counting and completed-time specialization.

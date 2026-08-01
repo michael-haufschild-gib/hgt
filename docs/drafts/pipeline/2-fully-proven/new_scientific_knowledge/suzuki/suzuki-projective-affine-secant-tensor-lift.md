@@ -283,3 +283,24 @@ This discharges the "full finite spectral sum remain paper/source-level" item (c
 marked tensor's boundary-source reconstruction over the finite eigenmode decomposition is now formalized.
 (Remaining out-of-scope items: the Volterra boundary factorization is analytic, and the ultimate RH
 positivity goal is open.)
+
+### Lean progress — `(7)`'s diagonal/pair split FORMALIZED
+
+Audit of this card's numbered statements against its two modules
+(`RHTower/SuzukiProjectiveAffineSecantTensor.lean`, `RHTower/SuzukiAffineSecantSpectralSum.lean`):
+every statement has a declaration. One shape mismatch remained and is now closed.
+
+`(7)` is displayed as a **three-part** decomposition — a per-mode diagonal part, genuine pair terms
+over `i < j`, and the homogeneous `c`-channel — whereas `suzukiProjectiveAffineSecant_finite_spectral_sum`
+absorbs the diagonal into the full double sum. Added in `RHTower/SuzukiAffineSecantSpectralSum.lean`
+[PROVED HERE], standard axioms `[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `sum_sum_eq_diag_add_offDiag` : `∑ᵢ ∑ⱼ F i j = (∑ᵢ F i i) + ∑ᵢ ∑_{j ≠ i} F i j` — the general
+  diagonal split of a finite double sum (proof: `Finset.add_sum_erase` termwise under
+  `Finset.sum_add_distrib`).
+- `offDiag_sum_eq_sub_diag` : the off-diagonal part as double sum minus diagonal.
+
+Composing the split with the spectral sum puts `(7)` in its displayed shape: the diagonal collects
+the `(tᵢ−α)(tᵢ−β)bᵢdᵢvᵢ²` terms, the off-diagonal part carries the spectral gaps `tⱼ − tᵢ` (a
+diagonal term of the secant kernel contributes only through its own mode), and the `c`-channel is
+untouched. No further gap on this card; gate 2 → 3 stands.

@@ -2677,6 +2677,45 @@ line and `digammaFieldNorm` its normalization by its own valuation datum `(deg p
 The proof is division of the two normalized limits; the eventual nonvanishing of the denominator
 comes from its own limit being nonzero, so no new analytic input enters.
 
+### The flat-cancellation gap, and the route that closes it
+
+§2 justifies eq. (19) *in full generality* — every nonzero `A ∈ L` has a nonzero leading constant — by
+the formal Stirling embedding (17), whose hypertranscendence input (15) the card imports from
+Adamczewski–Dreyfus–Hardouin.  In Lean the corpus proves eq. (19) for elements presented with a
+visible dominant monomial (`tendsto_ratCoeff_jetPoly_vertical`, and now
+`tendsto_ratio_digammaField_quotient` for quotients).  The unrestricted statement is exactly the
+exclusion of a *flat* value: a nonzero jet polynomial over `ℂ(s)` whose value decays faster than every
+power on the vertical lines.
+
+The corpus already owns the elimination that closes this, in a form that needs no formal field:
+
+- `HolderShiftElimination.no_shift_stable_annihilatorWith` — a subset of the jet-polynomial algebra
+  over `ℂ(s)`, closed under differences, `ℂ(s)`-multiples and the jet substitution
+  `X_j ↦ X_j + r_j`, and containing no nonzero constant, contains no nonzero element at all;
+- `HolderShiftElimination.ratShift_sub_polePart_combination` — its analytic hypothesis for the digamma
+  increments `polePart j = (−1)ʲ j!/X^{j+1}` is a *theorem*: no rational function has a shift
+  increment in their span.
+
+So it suffices to check the four closure properties for the set of jet polynomials whose value at the
+digamma jets is flat.  `HTGeometry/VerticalFlatness.lean` supplies the analysis:
+
+- `IsVertFlat σ₀ A` — `t^N ‖A(σ+it)‖ → 0` for every `N` and every line `σ ≥ σ₀`;
+- `IsVertFlat.sub` — differences;
+- `eventually_norm_eval_le` / `eventually_norm_eval_ge` — a polynomial is squeezed between two powers
+  of the height on a vertical line;
+- **`IsVertFlat.mul_poly`** and **`IsVertFlat.div_poly`** — flatness is invariant under multiplication
+  and division by a nonzero polynomial, hence under nonzero rational factors in both directions;
+- **`IsVertFlat.shift`** — the unit translation moves the line right, so flatness is shift-stable;
+- **`not_isVertFlat_polynomial`** — a nonzero polynomial is not flat, the "no nonzero constant"
+  clause.
+
+What remains is the bookkeeping that evaluates a jet polynomial over `ℂ(s)` at the digamma jets as an
+honest function and matches the jet substitution with the unit translation of the argument — the
+identity `eval (jetTranslate G) (s) = eval G (s+1)`, available abstractly as
+`RationalShiftHypertranscendence.eval₂_jetTranslateWith` in any differential field with the shift.
+With it, eq. (17) and the unrestricted eq. (19) become unconditional without the formal Stirling
+field and without importing Adamczewski–Dreyfus–Hardouin.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

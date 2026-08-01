@@ -37,12 +37,18 @@ theorem map_coeffSub_universalMonic (hd : 0 < d) :
   · rw [coeff_universalMonic_lt hk]
     exact coeffSub_X _
   · by_cases hkd : k = d
-    · have h1 : (universalMonic K d).coeff k = 1 := by
-        rw [hkd, ← natDegree_universalMonic (K := K) hd]
-        exact (monic_universalMonic hd).coeff_natDegree
+    · have hn1 : (universalMonic K d).natDegree = d := natDegree_universalMonic hd
+      have hn2 : (genericMonicF K d).natDegree = d := natDegree_genericMonicF
+      have h1 : (universalMonic K d).coeff k = 1 := by
+        have hm := (monic_universalMonic (K := K) hd).coeff_natDegree
+        rw [hn1] at hm
+        rw [hkd]
+        exact hm
       have h2 : (genericMonicF K d).coeff k = 1 := by
-        rw [hkd, ← natDegree_genericMonicF (K := K) (d := d)]
-        exact (monic_genericMonicF (K := K) (d := d)).coeff_natDegree
+        have hm := (monic_genericMonicF (K := K) (d := d)).coeff_natDegree
+        rw [hn2] at hm
+        rw [hkd]
+        exact hm
       rw [h1, h2, map_one]
     · have h1 : (universalMonic K d).coeff k = 0 := by
         refine Polynomial.coeff_eq_zero_of_natDegree_lt ?_

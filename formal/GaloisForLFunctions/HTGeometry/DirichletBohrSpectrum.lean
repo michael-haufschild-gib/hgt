@@ -38,7 +38,8 @@ theorem dirichletPartial_line (a : ℕ → ℂ) (lam : ℕ → ℝ) (σ : ℝ) (
   rw [hsplit, Complex.exp_add, ← Complex.ofReal_exp]
   ring
 
-theorem isBohrAlmostPeriodic_trigPoly {ι : Type*} (s : Finset ι) (c : ι → ℂ) (mu : ι → ℝ) :
+theorem isBohrAlmostPeriodic_indexedTrigPoly
+    {ι : Type*} (s : Finset ι) (c : ι → ℂ) (mu : ι → ℝ) :
     IsBohrAlmostPeriodic (fun t : ℝ => ∑ i ∈ s, c i * expChar (mu i) t) := by
   refine isBohrAlmostPeriodic_sum s (fun i _ => ?_) (fun i _ => ?_)
   · exact continuous_const.mul (continuous_expChar (mu i))
@@ -80,7 +81,7 @@ theorem bohrCoefficient_dirichlet_line {σ : ℝ} (a : ℕ → ℂ) (lam : ℕ �
         exact absurd (Finset.mem_range.mpr hmn) hcon
     have hac : IsBohrAlmostPeriodic
         (fun t : ℝ => ∑ k ∈ Finset.range n, c k * expChar (-(lam k)) t) :=
-      isBohrAlmostPeriodic_trigPoly _ _ _
+      isBohrAlmostPeriodic_indexedTrigPoly _ _ _
     have hcc : Continuous (fun t : ℝ => ∑ k ∈ Finset.range n, c k * expChar (-(lam k)) t) := by
       refine continuous_finsetSum _ fun k _ => ?_
       exact continuous_const.mul (continuous_expChar _)

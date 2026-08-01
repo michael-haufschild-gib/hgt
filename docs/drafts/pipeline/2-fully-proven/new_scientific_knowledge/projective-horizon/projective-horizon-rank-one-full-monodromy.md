@@ -2203,3 +2203,35 @@ dividing the discriminant.
   the centered coefficients of a monic polynomial with indeterminate coefficients **are**
   algebraically independent, and the proof needs no expansion of the shift — only that each
   coefficient changes by a multiple of it, and that the multiple dies when the shift does.
+
+- 2026-08-01 — `UniversalToGeneric.lean`: `coeffSub` sends each variable to the matching coefficient
+  of the generic polynomial, and `map_coeffSub_universalMonic` shows it carries the monic polynomial
+  with indeterminate coefficients to the generic one.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  This is the specialisation along which the universal statements descend to the corpus's objects:
+  since `coeffSub` commutes with the Taylor shift (`map_taylor`) and sends the universal centering
+  shift to the average of the roots, it carries the universal centered coefficients to the corpus's
+  centered coefficients — so their algebraic independence follows from
+  `algebraicIndependent_centeredFamily` once the injectivity of `coeffSub` is in hand, which is the
+  fundamental theorem of symmetric functions.
+  A note on cost: proving the polynomial identity needed the degree facts as **forward** hypotheses;
+  rewriting the goal backwards with `natDegree` exhausted two million heartbeats at `whnf`.
+
+- 2026-08-01 — `GenericCoeffPred.lean`: `coeff_genericMonicF_pred`, the next-to-leading coefficient
+  of the generic polynomial is minus the sum of the roots (the same `prod_X_add_C_coeff` argument the
+  corpus used for the centered analogue), and `genericAverage_eq`, the average is minus that
+  coefficient over the degree.  Axioms `[propext, Classical.choice, Quot.sound]`.
+  This is the last ingredient of the specialisation: it says `coeffSub` sends the **universal**
+  centering shift to the average of the roots, so — through `map_taylor` and
+  `map_coeffSub_universalMonic` — it carries the universal centered coefficients to the corpus's
+  centered coefficients.
+
+- 2026-08-01 — `CenteredCoeffIndependent.lean` completes the descent.  `coeffSub_centeringShift`:
+  the specialisation sends the universal centering shift to the average of the roots.
+  `coeffSub_universalCenteredCoeff`: hence it carries each universal centered coefficient to the
+  matching coefficient of the **centered generic polynomial** — through `map_taylor`,
+  `map_coeffSub_universalMonic` and `taylor_genericMonicF`.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  So the corpus's centered coefficients are the image of an algebraically independent family under
+  `coeffSub`; their own independence follows as soon as that map is known injective, which is the
+  fundamental theorem of symmetric functions already in the corpus.

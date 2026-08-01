@@ -170,6 +170,19 @@ Here `v_i=e_i/((t_i-alpha)(t_i-beta))`.  When both shifts lie below the spectrum
 denominators have fixed positive sign.  The remaining sign problem is exactly total orientation
 of boundary Plücker minors.
 
+**`(11)` is formal** as `suzukiDiagonalProjectiveChord_expansion`: the chord of a diagonal model is
+the double sum of the spectral gap `t_j - t_i` against the source coefficients.  The module
+previously carried only `(10)`, the two-mode case.
+`suzukiDiagonalProjectiveChord_diagonal_eq_zero` records that every diagonal term vanishes, so the
+chord sees genuine spectral pairs only — the rank-one blindness of Theorem C at the level of the
+sum.
+
+`suzukiDiagonalProjectiveChord_symmetrized` exhibits the displayed pairing: symmetrizing the
+expansion couples the blade coordinate `(t_j - t_i) v_i v_j`, which involves only spectral data,
+against the source's own minor `b_i d_j - b_j d_i`.  That is `(4)`'s "fixed blade" claim in
+coordinates — the source enters only through its minors — and it needs no ordering of the index set,
+so no choice of orientation is smuggled in.
+
 ### Proof
 
 Expand both products in `(10)`; diagonal terms cancel and two cross terms combine.  Summing the
@@ -239,3 +252,21 @@ Formalize `(2)--(3)`, `(6)--(10)`, quotient cross-multiplication, rank-one blind
 connector to Suzuki's existing projective Neumann numerator in
 `RHTower/SuzukiProjectiveResolventPluckerLift.lean`.
 
+
+## Log
+
+- 2026-08-01 — `(11)` formalized (`suzukiDiagonalProjectiveChord_expansion`).  The module carried
+  `(10)`, the two-mode identity, but not its summed form, which is the one the finite-model sign
+  discussion actually uses — the same two-mode-versus-general-sum gap as the scalar-versus-operator
+  pattern elsewhere in this folder.  `suzukiDiagonalProjectiveChord_diagonal_eq_zero` gives Theorem
+  C's rank-one blindness at the level of the sum: the diagonal terms vanish identically, so only
+  genuine spectral pairs contribute.  Two new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the blade/source factorization made explicit
+  (`suzukiDiagonalProjectiveChord_symmetrized`).  Symmetrizing the `(11)` expansion pairs the blade
+  coordinate `(t_j - t_i) v_i v_j` against the source minor `b_i d_j - b_j d_i`, which is `(4)`'s
+  fixed-blade claim in coordinates.  Doing it by symmetrization rather than by summing over `i < j`
+  avoids choosing an ordering of the index set, so no orientation is introduced by the formalization
+  itself — which matters on a card whose open problem is precisely the total orientation of the
+  source minors.  One new declaration, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.

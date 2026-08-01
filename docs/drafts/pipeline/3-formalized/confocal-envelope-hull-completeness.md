@@ -1,8 +1,8 @@
 # Confocal envelope hull completeness and exposed-face recovery
 
 - **ID:** `confocal-envelope-hull-completeness`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** The complete confocal upper field of any bounded source determines an idempotent canonical hull of its lifted points `(Re z, |z|)`; singleton exposed faces, including isolated ones, are exactly recoverable, while non-singleton faces are the exact residual ambiguity.
 
 ## Goal
@@ -262,3 +262,5 @@ Direct verification: `lake build GaloisForLFunctions.HTGeometry.ConfocalEnvelope
   `isConfocalEnvelopeOn_confocalHullOfField`, so re-hulling reproduces it).  Module builds; axioms
   `[propext, Classical.choice, Quot.sound]`; every part of the exact claim is now a named
   unconditional theorem (mapping above).
+- 2026-08-01 — Needs-audit recheck passed: direct leaf elaboration, twelve-capstone axiom audit,
+  umbrella reachability, and final foreground module build all green. Promoted to Stage 3.

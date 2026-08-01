@@ -47,4 +47,24 @@ theorem suzukiProjectiveAffineSecant_finite_spectral_sum
 
 end
 
+/-! ## Separating the diagonal
+
+`(7)` displays the spectral sum as a per-mode diagonal part plus genuine pair terms plus the
+homogeneous channel.  The double sum absorbs the diagonal; separating it is the general fact that a
+double sum over a finite index set splits into its diagonal and its off-diagonal parts. -/
+
+/-- **The diagonal split.**  A double sum is its diagonal plus its off-diagonal part. -/
+theorem sum_sum_eq_diag_add_offDiag {ι : Type*} [Fintype ι] [DecidableEq ι] (F : ι → ι → ℝ) :
+    ∑ i, ∑ j, F i j = (∑ i, F i i) + ∑ i, ∑ j ∈ Finset.univ.erase i, F i j := by
+  rw [← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  exact (Finset.add_sum_erase _ _ (Finset.mem_univ i)).symm
+
+/-- The off-diagonal part is what carries the spectral gaps: a diagonal term of the secant kernel
+contributes only through its own mode. -/
+theorem offDiag_sum_eq_sub_diag {ι : Type*} [Fintype ι] [DecidableEq ι] (F : ι → ι → ℝ) :
+    (∑ i, ∑ j ∈ Finset.univ.erase i, F i j) = (∑ i, ∑ j, F i j) - ∑ i, F i i := by
+  rw [sum_sum_eq_diag_add_offDiag F]
+  ring
+
 end RHTower

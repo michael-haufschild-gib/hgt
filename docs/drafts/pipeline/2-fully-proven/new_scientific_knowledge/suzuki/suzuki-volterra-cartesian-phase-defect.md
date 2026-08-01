@@ -66,7 +66,15 @@ zero, proving `(4)`.
 subtractive form.  `causal_eq_indicator_integral` records the reduction `(3)` needs: writing the
 moving upper limit as an indicator inside a fixed interval turns the causal triangle into an ordinary
 product region, so the Fubini step there is a plain product-measure swap rather than a change of
-variables.  What is still missing for `(3)` itself is the Fourier transform on the interval.  Stated on interval integrals the shared endpoint contributes nothing
+variables.  `intervalFourier_causal_eq_indicator_double` completes that reduction: the transform of a causal
+convolution is the double integral over the *fixed* square carrying the causal indicator, which with
+a product-measure swap is `(3)`.  The interval transform itself already exists in the corpus as
+`apertureFourier` in `HTGeometry/ApertureFourierPairing.lean`, with
+`apertureFourier_eq_integral` giving its integral form, so the swap itself is now formal too:
+`causal_double_swap` and `causalSquareIntegrand_swap` exchange the order of the causal double
+integral on the fixed square, carrying integrability on the square as the single hypothesis.  So
+`(3)`'s proof structure — reduce the moving triangle to an indicator on a fixed square, then swap —
+is formal end to end, with the integrability of the concrete kernel the only remaining input.  Stated on interval integrals the shared endpoint contributes nothing
 automatically, so the measure-zero-diagonal step is not a separate argument — additivity over
 adjacent intervals already carries it.
 
@@ -492,3 +500,24 @@ complex marked-secant specialization, and RH source-germ connector in
   what remains for `(3)` is the Fourier transform on the interval, which is a construction rather
   than an identity.  Two new declarations, targeted build green, axioms
   `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(3)`'s reduction completed (`intervalFourier_causal_eq_indicator_double`): the
+  transform of a causal convolution is the double integral over the fixed square with the causal
+  indicator.  The interval transform is not missing after all — it exists as `apertureFourier` in
+  `HTGeometry/ApertureFourierPairing.lean`, built for `suzuki-negative-shift-defect-escape`, so what
+  remains for `(3)` is the integrability side conditions of the product-measure swap rather than any
+  construction.  Checking the sibling module before assuming a gap was what found it.  One new
+  declaration, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(3)`'s Fubini step formalized (`causal_double_swap`, `causalSquareIntegrand_swap`).
+  With the indicator reduction from the previous entry, the proof structure of `(3)` is now formal
+  end to end: the moving triangle becomes an indicator on a fixed square, and the exchange is an
+  ordinary product-measure swap whose only hypothesis is integrability on that square.  The card's
+  change of variables `x = y + t` is not needed at all.  What remains is integrability of the
+  concrete kernel, which is a property of the source rather than a step of the argument.  Two new
+  declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — card audit closed.  `SuzukiVolterraCartesianPhaseDefect.lean` now carries 29 theorems:
+  Theorems D--F's algebra were already formal, and this session added Theorem A (`(3)`'s reduction and
+  Fubini step, `(4)`), Theorem B (`(5)`--`(6)` plus the discharge of the response hypothesis), and
+  Theorem C (`(9)`--`(11)` including the vector-level parity separation).  Module wired to the RHTower
+  umbrella, lint clean, every declaration `[propext, Classical.choice, Quot.sound]`.  The card's
+  algebraic content is complete; what remains is the source frontier it states as open — whether any
+  positivity reaches the even parity sector — together with integrability of the concrete kernel.

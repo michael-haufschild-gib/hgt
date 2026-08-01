@@ -169,6 +169,44 @@ def ccmFirstClockJuliaBadCoherentEnergy
         (x * Real.log (p j : ℝ) - x * Real.log (p i : ℝ)) *
       ccmFirstClockReducedBadPrimeTerm L (p j)
 
+/-- The coherent Julia energy is bounded by the square of total bad mass. -/
+theorem ccmFirstClockJuliaBadCoherentEnergy_le_totalBadMass_sq
+    {N : ℕ} {x L : ℝ} (hL : 0 < L) (p : Fin N → Nat.Primes)
+    (hpCut : ∀ i, (p i : ℕ) ≤ ⌊Real.exp L⌋₊) :
+    ccmFirstClockJuliaBadCoherentEnergy x L p ≤
+      (∑ i, ccmFirstClockReducedBadPrimeTerm L (p i)) ^ 2 := by
+  rw [ccmFirstClockJuliaBadCoherentEnergy]
+  calc
+    (∑ i, ∑ j,
+        ccmFirstClockReducedBadPrimeTerm L (p i) *
+          HTGeometry.juliaDefectAttenuationKernel
+            (x * Real.log (p j : ℝ) - x * Real.log (p i : ℝ)) *
+          ccmFirstClockReducedBadPrimeTerm L (p j)) ≤
+        ∑ i, ∑ j,
+          ccmFirstClockReducedBadPrimeTerm L (p i) * 1 *
+            ccmFirstClockReducedBadPrimeTerm L (p j) := by
+      apply Finset.sum_le_sum
+      intro i _
+      apply Finset.sum_le_sum
+      intro j _
+      exact mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left
+          (HTGeometry.juliaDefectAttenuationKernel_le_one _)
+          (ccmFirstClockReducedBadPrimeTerm_nonneg hL (p i) (hpCut i)))
+        (ccmFirstClockReducedBadPrimeTerm_nonneg hL (p j) (hpCut j))
+    _ = (∑ i, ccmFirstClockReducedBadPrimeTerm L (p i)) ^ 2 := by
+      simp only [mul_one]
+      calc
+        (∑ i, ∑ j,
+            ccmFirstClockReducedBadPrimeTerm L (p i) *
+              ccmFirstClockReducedBadPrimeTerm L (p j)) =
+            ∑ i, ccmFirstClockReducedBadPrimeTerm L (p i) *
+              ∑ j, ccmFirstClockReducedBadPrimeTerm L (p j) := by
+          apply Finset.sum_congr rfl
+          intro i _
+          rw [Finset.mul_sum]
+        _ = _ := by rw [← Finset.sum_mul, pow_two]
+
 /-- **Coherent bad-channel capacity law.**  The bad origin correlation cannot exceed the full
 cross-prime equilibrium Gram energy in square. -/
 theorem ccmFirstClockJuliaBadOriginCorrelation_sq_le_coherentEnergy
@@ -180,6 +218,18 @@ theorem ccmFirstClockJuliaBadOriginCorrelation_sq_le_coherentEnergy
       (HTGeometry.juliaDefectAttenuationKernel_anchorCorrelation_sq_le_gramEnergy
         (fun i => x * Real.log (p i : ℝ))
         (fun i => ccmFirstClockReducedBadPrimeTerm L (p i)))
+
+/-- **Julia bad-channel energy sandwich.**  Origin correlation, coherent cross-prime energy,
+and total bad mass form one unconditional hierarchy on every admitted finite packet. -/
+theorem ccmFirstClockJulia_badChannel_energySandwich
+    {N : ℕ} {x L : ℝ} (hL : 0 < L) (p : Fin N → Nat.Primes)
+    (hpCut : ∀ i, (p i : ℕ) ≤ ⌊Real.exp L⌋₊) :
+    ccmFirstClockJuliaBadOriginCorrelation x L p ^ 2 ≤
+        ccmFirstClockJuliaBadCoherentEnergy x L p ∧
+      ccmFirstClockJuliaBadCoherentEnergy x L p ≤
+        (∑ i, ccmFirstClockReducedBadPrimeTerm L (p i)) ^ 2 :=
+  ⟨ccmFirstClockJuliaBadOriginCorrelation_sq_le_coherentEnergy x L p,
+    ccmFirstClockJuliaBadCoherentEnergy_le_totalBadMass_sq hL p hpCut⟩
 
 theorem ccmFirstClockJuliaGoodOriginCorrelation_nonneg
     {N : ℕ} {x L : ℝ} (hL : 0 < L) (p : Fin N → Nat.Primes)
@@ -247,6 +297,19 @@ theorem ccmFirstClockJulia_negative_attenuatedCompletedPacket_forces_badCoherent
     hL p hpCut (by
       simpa only [ccmFirstClockJuliaAttenuatedCompletedPacket_eq_originCorrelation
         hx p hpCut] using hneg)
+
+/-- Any negative Julia-attenuated completed packet is bounded in magnitude by total bad mass;
+the coherent energy is the intermediate certificate. -/
+theorem ccmFirstClockJulia_negative_attenuatedCompletedPacket_sq_le_totalBadMass_sq
+    {N : ℕ} {x L : ℝ} (hx : 0 < x) (hL : 0 < L)
+    (p : Fin N → Nat.Primes)
+    (hpCut : ∀ i, (p i : ℕ) ≤ ⌊Real.exp L⌋₊)
+    (hneg : ccmFirstClockJuliaAttenuatedCompletedPacket x L p < 0) :
+    ccmFirstClockJuliaAttenuatedCompletedPacket x L p ^ 2 ≤
+      (∑ i, ccmFirstClockReducedBadPrimeTerm L (p i)) ^ 2 :=
+  (ccmFirstClockJulia_negative_attenuatedCompletedPacket_forces_badCoherentEnergy
+      hx hL p hpCut hneg).trans
+    (ccmFirstClockJuliaBadCoherentEnergy_le_totalBadMass_sq hL p hpCut)
 
 end
 

@@ -51,6 +51,10 @@ audit and positive-survivor extraction. Partial bridge theorems never count as c
   gap plus generic normalized negative-power profile theory, unique source-selected exponent,
   calibrated mass/first moment, and strict support below `1/3` added to
   `RHTower/ThetaCuspCalibratedPowerReciprocalMomentLaw.lean`.
+- `hypertranscendental-hochster-source-coherence-duality`: exact all-multidegree, all-Koszul-degree
+  cycle/cocycle and boundary/coboundary correspondence composed with the universal analytic
+  Stanley--Reisner realization and every finite residue-orientation index in
+  `HTGeometry/HypertranscendentalHochsterSourceCoherenceDuality.lean`.
 - Exact Stage-3 certificates now cover bounded-relation profile realization, charged scalar torsor,
   split-source boundary matroid, polynomial torsion language, Xi depth successor layer, two-mass
   continuum rigidity, Cassini--Jensen seam law, prime-coordinate fusion, four-dimensional conformal
@@ -88,3 +92,5 @@ exponential block seed is itself differentially algebraic and cannot close that 
   now have exact Stage-3 closures.
 - 2026-08-01 — closed theta-cusp fixed reciprocal quantitative no-go and unique power-reciprocal
   survivor; seventeen source cards now have exact Stage-3 closures.
+- 2026-08-01 — closed the HT--Hochster all-degree derived topology and orientation-product law;
+  eighteen source cards now have exact Stage-3 closures.

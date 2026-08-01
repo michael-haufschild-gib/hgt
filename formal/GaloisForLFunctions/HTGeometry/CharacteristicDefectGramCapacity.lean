@@ -35,6 +35,34 @@ theorem normalizedCharacteristicDefect_neg
       if_neg (neg_ne_zero.mpr hy), if_neg hy, charFun_neg]
     simp only [Complex.conj_re, neg_sq]
 
+/-- A normalized characteristic defect is nonnegative: it is the expectation of a sinc-square
+under the square-biased source law. -/
+theorem normalizedCharacteristicDefect_nonneg
+    (μ : Measure ℝ) [IsProbabilityMeasure μ]
+    {m : ℝ} (hm : 0 < m)
+    (hsq : Integrable (fun x : ℝ => x ^ 2) μ)
+    (hmoment : ∫ x : ℝ, x ^ 2 ∂μ = m) (y : ℝ) :
+    0 ≤ normalizedCharacteristicDefect μ m y := by
+  rw [← integral_squareBias_sinc_sq_eq_normalizedCharacteristicDefect
+    μ hm hsq hmoment y]
+  exact integral_nonneg_of_ae
+    (Filter.Eventually.of_forall fun x =>
+      mul_nonneg (div_nonneg (sq_nonneg x) hm.le) (sq_nonneg _))
+
+/-- A normalized characteristic defect is at most one: its equilibrium-clock realization is a
+probability characteristic function. -/
+theorem normalizedCharacteristicDefect_le_one
+    (μ : Measure ℝ) [IsProbabilityMeasure μ]
+    {m : ℝ} (hm : 0 < m)
+    (hsq : Integrable (fun x : ℝ => x ^ 2) μ)
+    (hmoment : ∫ x : ℝ, x ^ 2 ∂μ = m) (y : ℝ) :
+    normalizedCharacteristicDefect μ m y ≤ 1 := by
+  have hnorm := norm_charFun_le_one
+    (μ := (equilibriumClockProbabilityMeasure μ hm hsq hmoment : Measure ℝ)) y
+  rw [charFun_equilibriumClockProbabilityMeasure μ hm hsq hmoment,
+    Complex.norm_real, Real.norm_eq_abs] at hnorm
+  exact (le_abs_self _).trans hnorm
+
 /-- **Universal anchored equilibrium-capacity law.**  Let `μ` be any probability law whose
 second moment is the positive number `m`.  For every finite packet, correlation with the origin
 through the normalized characteristic defect is bounded in square by the complete coherent Gram
@@ -67,6 +95,16 @@ theorem juliaDefectAttenuationKernel_anchorCorrelation_sq_le_gramEnergy
         (m := (3 / 2 : ℝ)) (by norm_num)
         integrable_sq_juliaCompressionEquilibriumProbabilityMeasure
         integral_sq_juliaCompressionEquilibriumProbabilityMeasure t b)
+
+theorem juliaDefectAttenuationKernel_le_one (y : ℝ) :
+    juliaDefectAttenuationKernel y ≤ 1 := by
+  simpa only [normalizedCharacteristicDefect_juliaCompressionEquilibriumProbabilityMeasure]
+    using
+      (normalizedCharacteristicDefect_le_one
+        (juliaCompressionEquilibriumProbabilityMeasure : Measure ℝ)
+        (m := (3 / 2 : ℝ)) (by norm_num)
+        integrable_sq_juliaCompressionEquilibriumProbabilityMeasure
+        integral_sq_juliaCompressionEquilibriumProbabilityMeasure y)
 
 end
 

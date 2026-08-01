@@ -5,6 +5,10 @@
 - **Type:** THEOREM (paper)
 - **Label:** `DAC_DENINGER_HILBERT_KUMMER_POLAR_ANGULAR_CONTRACTION`
 - **Parent:** `deninger-hilbert-kummer-radial-flow-poisson`
+- **Lean modules:**
+  `GaloisForLFunctions.RHTower.DeningerCharacterPolar` (`(1)`, `(2)`, `(4)`),
+  `GaloisForLFunctions.RHTower.DeningerSphereContraction` (the two deformations of `(8)`, `(9)`),
+  `GaloisForLFunctions.RHTower.DeningerSphereSlideHomotopy` (`(9)` as a homotopy)
 - **Statement:** the Hilbert--Kummer bounded generic character locus
   splits into unitary phase and Hilbert logarithmic modulus; the
   nonzero modulus has contractible infinite-dimensional angular factor,
@@ -178,3 +182,63 @@ claims.
 - 2026-07-27 — Split the bounded character locus into phase and modulus
   and proved the infinite-dimensional modulus sphere contributes no
   angular ordinary cohomology.
+
+## Lean status
+
+### The polar decomposition landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerCharacterPolar.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerCharacter_polar` — **`(1)`--`(2)`**: `P(α) = η_P(α)·exp(L_P(α))`, with
+  `η_P = P/|P|` and `L_P = log|P|`.  Unconditional: a character of a *group* into `ℂ` never
+  vanishes, so no nonvanishing hypothesis is needed.
+- `deningerCharacter_eq_modulusReplace` — the same decomposition read through the modulus
+  replacement of the parent card, which is what makes the two factors independently deformable.
+- `deningerCharacter_polar_norm` — the factors really are a phase and a positive scale:
+  `‖η_P(α)‖ = 1` and `exp(L_P(α)) > 0`.
+- `deningerUnitPart_zpow` together with `deningerLogModulus_zpow` (parent card) — **`(4)`**: under
+  the power map the phase is raised to the exponent and the modulus is multiplied by it,
+  `(η, h) ↦ (η^q, q·h)`.
+
+### The two sphere deformations landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerSphereContraction.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+Both statements are proved for an arbitrary real inner product space and an arbitrary linear
+isometry with the stated properties, so no model of `H` has to be fixed yet.
+
+- `deningerSphereLine_ne_zero` — **`(8)` is defined**: if the isometry `S` has no eigenvector, the
+  segment `(1-t)x + tSx` from a unit vector to its image never meets the origin, so it can be
+  normalized.  At `t = 0` the point is `x ≠ 0`; for `t > 0` vanishing would make `x` an eigenvector
+  of `S` with eigenvalue `-(1-t)/t`.
+- `deningerSphereSlide_norm` — **`(9)` stays on the sphere**: if `e` is a unit vector orthogonal to
+  the range of `S`, then `‖√(1-t²)·Sx + t·e‖ = 1` for every unit `x` and `t ∈ [0,1]`, by the
+  Pythagorean expansion and `‖Sx‖ = ‖x‖`.
+
+### The quarter-circle homotopy landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerSphereSlideHomotopy.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerSphereIsometryMap` — a linear isometry restricts to a continuous self-map of the unit
+  sphere.
+- `deningerSphereConstMap` — the constant map at a unit vector.
+- `deningerSlideHomotopy` — **`(9)` as a bundled `ContinuousMap.Homotopy`** from the isometry to
+  that constant map, given that the vector is orthogonal to the range of the isometry.  The
+  sphere-membership of every intermediate point is the previous module's
+  `deningerSphereSlide_norm`; the endpoints are `t = 0`, where the square root is one, and
+  `t = 1`, where it is zero.
+
+So the second half of the contraction is complete as a homotopy.
+
+### Remaining
+
+The first half: `(8)` as a homotopy from the identity of the sphere to the isometry, which is the
+normalized straight line and so needs the nonvanishing already proved
+(`deningerSphereLine_ne_zero`) plus continuity of the normalization.  Concatenating the two gives
+`ContractibleSpace` for the sphere and hence `(6)`; `(7)` is then Haar averaging.  Separately, the
+model in which the hypotheses hold — the unilateral shift on `ℓ²(ℕ, ℝ)`, eigenvector-free with
+`e₀` orthogonal to its range — still has to be built, since mathlib has neither it nor the
+contractibility of an infinite-dimensional sphere.

@@ -1,8 +1,8 @@
 # Julia defect equilibrium-clock law
 
 - **ID:** `julia-defect-equilibrium-clock-law`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / SOURCE-SIDE SPECTRAL REPRESENTATION / SHARP NO-GO
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / SOURCE-SIDE SPECTRAL REPRESENTATION / SHARP NO-GO
 - **Statement:** The continuous extension of the normalized Gamma--Julia defect is a
   characteristic function: the compression square is a boundary compound-Poisson law and the
   attenuation kernel is its square-biased triangular equilibrium clock.
@@ -189,24 +189,39 @@ Lévy--Khintchine formula.
 
 ## Lean status
 
-Module:
+Unconditionally formalized, dependency-closed, and built in:
 
 ```text
 formal/GaloisForLFunctions/HTGeometry/JuliaDefectSpectralEquilibrium.lean
+formal/GaloisForLFunctions/HTGeometry/HyperbolicLevyKhintchine.lean
+formal/GaloisForLFunctions/HTGeometry/JuliaDefectLevyKhintchine.lean
+formal/GaloisForLFunctions/HTGeometry/CharacteristicEquilibriumDefect.lean
+formal/GaloisForLFunctions/HTGeometry/JuliaDefectProfileDerivatives.lean
+formal/GaloisForLFunctions/HTGeometry/JuliaDefectEquilibriumPositiveDefinite.lean
 ```
 
-Unconditionally formalized:
+Load-bearing theorem inventory:
 
-- exact compression-square hyperbolic form;
-- defect/compression complement;
-- corrected kernel at zero and equality with raw profile off zero;
-- positivity/evenness of raw profile off wall;
-- explicit two-point proof that raw profile is not positive definite;
-- strict positivity `(JSE4)` of exact Julia Lévy density.
+- `log_cosh_eq_hyperbolicLevyIntegral`: `(JSE1)`;
+- `neg_log_juliaCompressionSquareProfile_eq_integral`: `(JSE2)`--`(JSE3)`;
+- `juliaCompressionLevyDensity_pos`: `(JSE4)`;
+- `juliaCompressionLevyDensity_mass`: `(JSE5)`;
+- `charFun_juliaCompressionJumpProbabilityMeasure` and
+  `charFun_juliaCompressionEquilibriumProbabilityMeasure`: `(JSE6)`;
+- `juliaCompressionEquilibriumProbabilityMeasure_zero_mass`: `(JSE7)`;
+- `integral_sq_juliaCompressionEquilibriumProbabilityMeasure` and
+  `iteratedDeriv_two_juliaCompressionSquareProfile`: `(JSE8)`;
+- `normalizedCharacteristicDefect_juliaCompressionEquilibriumProbabilityMeasure`: `(JSE9)`;
+- `sq_mul_sinc_sq_eq_normalized_cosDefect`: `(JSE10)`;
+- `juliaCompressionSquareBiasedProbabilityMeasure_toMeasure`,
+  `integral_sinc_sq_juliaCompressionSquareBiasedProbabilityMeasure`, and
+  `charFun_juliaDefectEquilibriumDifferenceProbabilityMeasure`: exact square-biased
+  `Xhat * (U - V)` construction `(JSE11)`;
+- `positiveDefiniteOnReal_juliaDefectAttenuationKernel`: `(JSE12)`;
+- `not_positiveDefiniteOnReal_juliaDefectAttenuationProfile`: sharp raw-profile no-go.
 
-Remaining Lean closure: integrability and exact mass of `rho`, `(JSE2)` as integral identity,
-compound-Poisson characteristic identity `(JSE6)`, moment `(JSE8)`, and equilibrium-clock identity
-`(JSE11)`.
+`#print axioms` for every load-bearing theorem reports only `propext`, `Classical.choice`, and
+`Quot.sound`; no project axiom, `sorry`, `admit`, `opaque`, or conditional hypothesis remains.
 
 ## RH boundary and next risky test
 
@@ -221,7 +236,7 @@ theorem as positive survivor.
 
 - [x] 0 → 1: well-posed source theorem and exact corpus synthesis
 - [x] 1 → 2: dependency-closed paper proof, no RH or numerical input
-- [ ] 2 → 3: full compound-Poisson and equilibrium-clock identities formalized in Lean
+- [x] 2 → 3: full compound-Poisson and equilibrium-clock identities formalized in Lean
 - [ ] 3 → 4: standalone novelty-reviewed preprint
 
 ## Log
@@ -230,3 +245,6 @@ theorem as positive survivor.
   mechanisms previously not applied to Julia attenuation profile. Hostile test killed raw profile
   at zero and produced canonical equilibrium-clock survivor. Paper proof completed; exact density
   positivity and raw-profile no-go formalized.
+- 2026-08-01 — Closed `(JSE1)`--`(JSE12)` unconditionally in Lean. Added reusable hyperbolic
+  Lévy--Khintchine, square-bias, triangular-difference, atomless-convolution, and equilibrium-clock
+  infrastructure. Built leaf modules in foreground and audited load-bearing theorem axioms.
