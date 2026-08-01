@@ -97,11 +97,11 @@ theorem norm_iteratedDeriv_sub_le {g h : ℂ → ℂ} {ε : ℝ} (hρ : 0 < ρ)
 
 /-- **Finite regular-sample atlas.**  A compact space whose points each lie in the regularity set of
 some sample time is covered by finitely many of them. -/
-theorem exists_finite_sample_cover {X : Type*} [TopologicalSpace X] [CompactSpace X]
-    {U : ℝ → Set X} (hopen : ∀ t, IsOpen (U t)) (hcov : ∀ x : X, ∃ t, x ∈ U t) :
-    ∃ T : Finset ℝ, ∀ x : X, ∃ t ∈ T, x ∈ U t := by
+theorem exists_finite_sample_cover {X ι : Type*} [TopologicalSpace X] [CompactSpace X]
+    {U : ι → Set X} (hopen : ∀ t, IsOpen (U t)) (hcov : ∀ x : X, ∃ t, x ∈ U t) :
+    ∃ T : Finset ι, ∀ x : X, ∃ t ∈ T, x ∈ U t := by
   classical
-  have hsub : (Set.univ : Set X) ⊆ ⋃ t : ℝ, U t := by
+  have hsub : (Set.univ : Set X) ⊆ ⋃ t : ι, U t := by
     intro x _
     obtain ⟨t, ht⟩ := hcov x
     exact Set.mem_iUnion.mpr ⟨t, ht⟩
@@ -115,10 +115,10 @@ theorem exists_finite_sample_cover {X : Type*} [TopologicalSpace X] [CompactSpac
 /-- **Injectivity from a separating atlas.**  If each point is regular at some sample time and the
 jet at a regular sample time separates it from every other point, the combined jet sample is
 injective. -/
-theorem injective_jetSample {X : Type*} {T : Finset ℝ} {N : ℕ} {J : ℝ → X → (Fin N → ℂ)}
-    {U : ℝ → Set X} (hcov : ∀ x : X, ∃ t ∈ T, x ∈ U t)
-    (hsep : ∀ (t : ℝ) (x y : X), x ∈ U t → J t x = J t y → x = y) :
-    Function.Injective (fun x : X => fun t : T => J (t : ℝ) x) := by
+theorem injective_jetSample {X ι : Type*} {T : Finset ι} {N : ℕ} {J : ι → X → (Fin N → ℂ)}
+    {U : ι → Set X} (hcov : ∀ x : X, ∃ t ∈ T, x ∈ U t)
+    (hsep : ∀ (t : ι) (x y : X), x ∈ U t → J t x = J t y → x = y) :
+    Function.Injective (fun x : X => fun t : T => J (t : ι) x) := by
   intro x y hxy
   obtain ⟨t, htT, htU⟩ := hcov x
   have h := congrFun hxy ⟨t, htT⟩
@@ -131,13 +131,14 @@ sample times, each with `N` coordinates, has frequency rank at most `2 m N`. -/
 theorem rank_le_of_jetAtlas (hf : UniformContinuous (fun x => f x))
     (htb : HasTotallyBoundedOrbit (fun x => f x))
     [MeasurableSpace (BohrHull f)] [BorelSpace (BohrHull f)]
-    {T : Finset ℝ} {N : ℕ} {J : ℝ → BohrHull f → (Fin N → ℂ)} {U : ℝ → Set (BohrHull f)}
+    {ι : Type*} {T : Finset ι} {N : ℕ} {J : ι → BohrHull f → (Fin N → ℂ)}
+    {U : ι → Set (BohrHull f)}
     (hJcont : ∀ t, Continuous (J t)) (hcov : ∀ x : BohrHull f, ∃ t ∈ T, x ∈ U t)
-    (hsep : ∀ (t : ℝ) (x y : BohrHull f), x ∈ U t → J t x = J t y → x = y) :
+    (hsep : ∀ (t : ι) (x y : BohrHull f), x ∈ U t → J t x = J t y → x = y) :
     Module.rank ℤ (bohrHullFrequencies f) ≤ ((2 * (T.card * N) : ℕ) : Cardinal) := by
   classical
-  set Φ : BohrHull f → (↥T → (Fin N → ℂ)) := fun x => fun t => J (t : ℝ) x with hΦ
-  have hcont : Continuous Φ := continuous_pi fun t => hJcont (t : ℝ)
+  set Φ : BohrHull f → (↥T → (Fin N → ℂ)) := fun x => fun t => J (t : ι) x with hΦ
+  have hcont : Continuous Φ := continuous_pi fun t => hJcont (t : ι)
   have hinj : Function.Injective Φ := injective_jetSample hcov hsep
   have hdim : Module.finrank ℝ (↥T → (Fin N → ℂ)) = 2 * (T.card * N) := by
     rw [Module.finrank_pi_fintype]

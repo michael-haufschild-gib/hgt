@@ -38,6 +38,16 @@ theorem vandermondeProd_comp (v : Fin n → R) (e : Equiv.Perm (Fin n)) :
   rw [← det_vandermonde_eq_vandermondeProd, ← det_vandermonde_eq_vandermondeProd,
     vandermonde_comp, Matrix.det_permute, zsmul_eq_mul]
 
+/-- **The Vandermonde product of a family with distinct entries is nonzero.** -/
+theorem vandermondeProd_ne_zero {R : Type*} [CommRing R] [IsDomain R] {n : ℕ}
+    {v : Fin n → R} (hv : Function.Injective v) : vandermondeProd v ≠ 0 := by
+  rw [vandermondeProd]
+  refine Finset.prod_ne_zero_iff.2 fun i _ => ?_
+  refine Finset.prod_ne_zero_iff.2 fun j hj => ?_
+  rw [Finset.mem_Ioi] at hj
+  refine sub_ne_zero.2 fun hcon => ?_
+  exact absurd (hv hcon) (by omega)
+
 /-- **The Vandermonde product is unchanged by translating the family.**  Differences do not see a
 common shift. -/
 theorem vandermondeProd_sub_const (v : Fin n → R) (t : R) :

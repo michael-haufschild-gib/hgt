@@ -1834,6 +1834,140 @@ The squared-modulus route through the Beta integral (`normSq_Gamma_vertical`, pl
 substitution `sigmoid`) is kept as well: it expresses `‖Γ(σ+it)‖²` as `Γ(2σ)` times a Beta integral,
 which is the shape the reflection-formula arguments of §4 use.
 
+### Eq. (3) unconditional, and eq. (5) for tuples
+
+With the vertical decay proved, `HTGeometry/GammaMonomialValuationUnconditional.lean` records
+**`gamma_monomial_valuation_residue_of_pos`**: on every vertical line of positive abscissa the
+projective normalization of a Gamma-field element converges to the residue `R(0)/S(0)` — eq. (3) with
+no hypotheses beyond `σ > 0`.
+
+`HTGeometry/GammaTupleProjectiveBoundary.lean` extends this to ratios, which is eq. (5).  Writing two
+elements as `Γ^u R(Γ)/(Γ^v S(Γ))`, their ratio is `Γ^k` times a ratio of polynomial values
+(`ratio_eventuallyEq`), where `k` is the difference of valuations.  Hence
+
+> **`ratio_tendsto_residue`** — equal valuations: the ratio converges to
+> `R_α(0) S_β(0) / (S_α(0) R_β(0))`;
+> **`ratio_tendsto_zero`** — strictly larger valuation: the ratio converges to `0`.
+
+Normalizing a finite coefficient tuple by a valuation-minimal member therefore makes every ratio
+converge: the tuple has a single constant point at its upper vertical projective boundary, which is
+what the recurrence collapse consumes as its `hcoeff` input — and that collapse already has its Bohr
+return times proved.
+
+### Eq. (27) → (29) with nothing left open on the coefficient side
+
+`HTGeometry/GammaRationalCollapse.lean` assembles the collapse for the field the card is about.
+
+> **`recurrence_collapse_gamma_rational`**.  Let a finite relation `∑ F_α M_α = 0` have Gamma-rational
+> coefficients `F_α = Γ^{u_α} R_α(Γ) / (Γ^{v_α} S_α(Γ))` with `R_α(0), S_α(0) ≠ 0`, let `β` be
+> valuation-minimal, and let the monomials be continuous and almost periodic along the line
+> `Re s = σ > 0`.  Then there is a constant vector `d` with `∑ d_α M_α(σ) = 0` and `d_β = 1`.
+
+Both analytic inputs are now theorems rather than hypotheses: the coefficient ratios converge by the
+tuple projective boundary (itself resting on the vertical decay of `Γ`), and the return times come
+from the common Bohr almost periods of the finitely many monomials.  The dominant coefficient is
+eventually nonzero because `Γ` does not vanish and `R_β, S_β` do not vanish at the origin.
+
+So the passage from a Gamma-differential relation to an autonomous one — eq. (8) — is complete in
+Lean for Gamma-rational coefficients, given only that the solution is almost periodic on the line.
+
+### The monomials need no hypothesis either
+
+`HTGeometry/JetMonomialAlmostPeriodic.lean` removes the last data assumption of the collapse.
+Powers (`isBohrAlmostPeriodic_pow`) and finite products (`isBohrAlmostPeriodic_finsetProd`) of
+continuous almost periodic functions are almost periodic, by induction on the corpus's product law.
+Since the jets of a strip almost periodic holomorphic function restrict to continuous almost periodic
+functions on the central line,
+
+> **`isBohrAlmostPeriodic_jetMonomial`**: every monomial `∏_j (F⁽ʲ⁾)^{e_j}` in the jets of a strip
+> almost periodic holomorphic `F` is continuous and almost periodic along the line.
+
+Those are exactly the monomials of an algebraic differential relation.  So
+`recurrence_collapse_gamma_rational` needs nothing about them beyond the strip almost periodicity of
+the solution: eq. (27) → (29) holds for any strip almost periodic holomorphic solution of a
+Gamma-rational differential relation, with every analytic input proved.
+
+### Eq. (8): the collapsed relation holds on the whole strip
+
+The limit coefficient vector of the collapse is explicit and does not depend on the line: it is now
+the named `gammaRatioLimit p q u v β` (`GammaRationalCollapse`), the residue quotient at the origin on
+the valuation-minimal indices and zero elsewhere.  Because it is line-independent, the collapse can be
+run on *every* vertical line of the strip at once:
+
+- `isStripAlmostPeriodic_shift` — strip almost periodicity is inherited by every concentric strip
+  centred at another interior point, so every interior centre is an admissible collapse line;
+- `gamma_rational_autonomous_relation` (`GammaRationalStripCollapse`) — the collapsed relation
+  therefore vanishes at every real point of the strip; being holomorphic on a convex strip it vanishes
+  identically.
+
+> **Eq. (8) is a theorem**: a strip almost periodic holomorphic solution of a Gamma-rational
+> differential relation satisfies the constant-coefficient relation with coefficient vector
+> `gammaRatioLimit` at *every* point of the strip.  The solution is differentially algebraic over the
+> constants, and the relation is nontrivial (`gammaRatioLimit β = 1`).
+
+### Eq. (9) over the Gamma field
+
+Two further modules turn eq. (8) into the rank bound.
+
+`HTGeometry/JetPolynomialDerivative.lean` makes an algebraic differential relation an analytic object:
+`jetPoly d e` is the monomial sum, `jetPolyDeriv d e y` its Fréchet derivative (`hasFDerivAt_jetPoly`),
+and `partialCoeff_jetPolyDeriv` computes the partial derivative in each jet coordinate — the quantity
+whose dominance drives the separation step.
+
+`HTGeometry/StripSolutionPhaseRank.lean` internalizes all the carrier plumbing.  From the function
+alone it builds the bounded almost periodic translate curve, the embedding of the line carrier in the
+strip carrier, and the holomorphic representatives solving the same relation, so that
+
+> **`rank_le_of_strip_solution`**: a strip almost periodic holomorphic solution of a relation whose
+> solutions are all regular at one of finitely many sample times has
+> `rank_ℤ Γ_B(f) ≤ 2 |T| (n+1)`.
+
+Combining the two with eq. (8):
+
+> **`rank_le_of_gamma_rational`** (`HTGeometry/GammaRationalPhaseRank.lean`): for a strip almost
+> periodic holomorphic `Φ` satisfying a differential relation with Gamma-rational coefficients,
+> `rank_ℤ Γ_B(f) ≤ 2 |T| (n+1)`.
+
+Nothing about the coefficients, the monomials, the carrier, or the transfer is hypothetical any more:
+the coefficient limits come from the vertical decay of `Γ`, the monomials are almost periodic because
+the jets are, the relation propagates to the carrier by uniform convergence, and the derivative data
+of the relation is computed from its own coefficients.  The one remaining input is the regularity
+region: a set of jets, valid for every solution at one of the sample times, on which the top partial
+derivative of the relation dominates.
+
+### The regularity atlas is a consequence, not an assumption
+
+The atlas was the last hypothesis, and it is now discharged.  Two changes make that possible.
+
+First the atlas API is indexed by an arbitrary type rather than by sample times
+(`rank_le_of_jetAtlas`, `rank_le_of_regular_jets`, `rank_le_of_strip_solution`): a finite family of
+*(time, region)* pairs is allowed, so several regularity regions may sit over one and the same time.
+That is what a covering argument needs, since a compact set of jets is covered by many small balls at
+one time, not by one ball at many times.
+
+Then `HTGeometry/NondegenerateSolutionPhaseRank.lean` builds the cover.  Around any jet where the top
+partial derivative of the relation is nonzero, continuity of the derivative gives a ball on which it
+dominates — an admissible convex regularity region, with `L` the derivative at the centre and
+`C` half the modulus of its top partial.  The carrier is compact and the centre jet of the
+representative is continuous on it (Cauchy's estimate), so finitely many of those balls cover the
+carrier:
+
+> **`rank_finite_of_nondegenerate_solution`**: if the top partial derivative of the relation is
+> nonzero at the centre jet of *every* holomorphic solution on the substrip, then
+> `rank_ℤ Γ_B(f) < ∞`.
+
+Specialised to the Gamma field (`rank_finite_of_gamma_rational`), with the collapsed relation's own
+derivative supplied by `JetPolynomialDerivative`:
+
+> A strip almost periodic holomorphic solution of a differential relation with Gamma-rational
+> coefficients, whose collapsed relation is nondegenerate in the top jet along the carrier, has
+> **finite rational Bohr frequency rank** — eq. (9), with no atlas, no regularity region, and no
+> hypothesis on the coefficients.
+
+What remains on this branch is the nondegeneracy itself: an order-`n` relation that degenerates in
+its top jet on the whole carrier is one whose solutions satisfy a lower-order relation, so the
+expected route is a minimal-order argument rather than new analysis.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

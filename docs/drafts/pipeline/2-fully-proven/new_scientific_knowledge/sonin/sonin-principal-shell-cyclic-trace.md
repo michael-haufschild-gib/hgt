@@ -1139,6 +1139,17 @@ provisional pending expert/literature review.
 | packets on disjoint annuli are exactly orthogonal | `inner_soninPacketEven_eq_zero_of_disjoint` |
 | **`N` disjoint annuli force coupling energy above `N - 1`**, the uniform subdivision that supplies them, and hence **the coupling energy tends to infinity** | `eventually_sub_one_le_hsNormSq_of_disjointAnnuli`, `soninUniformAnnulusFloor`, `exists_disjoint_annulus_family`, `tendsto_hsNormSq_soninApertureCoupling_atTop` |
 | **no completion bounded above restores the floor**, at any strict flag | `not_bddBelow_soninCompletedPacketValueVar_of_bddAbove` |
+| **band escape for shell modes**: a high mode's mass inside any fixed frequency band vanishes, because the physical-then-Fourier block on the shell is a finite rectangle | `tendsto_norm_evenFourierCutoff_evenShellVectorEven`, `tendsto_norm_sub_evenFourierCutoff_evenShellVectorEven` |
+| compact operators die on any orthonormal sequence (Bessel + Fréchet--Riesz), hence on the shell modes — the exact projection correction included | `tendsto_inner_orthonormal_atTop_zero`, `tendsto_apply_orthonormal_atTop_zero`, `tendsto_norm_compactOperator_apply_orthonormal`, `tendsto_norm_compactOperator_apply_evenShellVectorEven`, `tendsto_norm_evenSoninProjectionCorrection_apply_evenShellVectorEven` |
+| **mode counting**: a fixed shell carries an orthonormal family indexed by mode number, so the energy dominates the count of modes an operator does not contract | `sum_norm_sq_evenShellVectorEven_apply_le_hsNormSq`, `card_le_hsNormSq_of_evenShellVectorEven` |
+| **rate test**: a completion whose contribution eventually falls short of the coupling energy by a fixed amount cannot restore the floor | `not_bddBelow_soninCompletedPacketValueVar_of_shortfall`, `not_bddBelow_soninCompletedPacketValueVar_of_shortfall_clock` |
+| the matching **upper** bound: a shell projection is a contraction, so the channel norm never exceeds the largest layer logarithm below the height — in position and in frequency | `norm_evenIndicatorLayer_apply_le`, `norm_evenLogShellChannel_apply_le`, `norm_evenFourierLogShellChannel_apply_le` |
+| an **explicit** carrier and height schedule realising the blow-up: carrier at height `2i`, tower bracketed between heights `i` and `3i` | `tendsto_logShellRadius_atTop`, `exists_schedule_tendsto_norm_evenFourierLogShellChannel_atTop` |
+| **frequency-side blow-up**: along a bracketing height schedule the reflected channel sends the packets to vectors of unbounded norm | `tendsto_norm_evenFourierLogShellChannel_soninPacketEven_atTop` |
+| the packet's frequency mass between a slow band and a fast band stays above a fixed positive level | `exists_pos_eventually_le_fourier_band_gap` |
+| the tower channel reflected into the **frequency** variable, its energy read through the isometry, and the two-radius lower bound transported to frequency-band masses | `evenFourierLogShellChannel`, `norm_evenFourierLogShellChannel_apply`, `norm_evenIndicatorCutoff_evenFourierTransform`, `norm_evenIndicatorLayer_evenFourierTransform`, `sq_le_norm_sq_evenFourierLogShellChannel_apply` |
+| **exact energy of a step multiplier**: finite Pythagoras, the layer decomposition, and the resulting two-sided bounds — a lower bound by the smallest layer logarithm, and a **hypothesis-free** version reading the mass between two radii | `norm_sum_sq_of_pairwise_inner_eq_zero`, `inner_layer_apply_eq_zero_of_ne`, `norm_sq_evenLogShellChannel_apply`, `le_norm_evenLogShellChannel_apply`, `sq_le_norm_sq_evenLogShellChannel_apply` |
+| the tower's layers are orthogonal projections: disjoint shells annihilate, their images pair to zero, and the partial sums telescope | `evenIndicatorLayer`, `adjoint_evenIndicatorLayer`, `evenIndicatorLayer_mul_of_le`, `evenIndicatorLayer_mul_of_le'`, `inner_evenIndicatorLayer_apply_eq_zero`, `sum_evenIndicatorLayer`, `evenIndicatorLayer_mul_self` |
 | **the general necessary condition**: a completion with a floor must send the source packets to vectors of unbounded norm | `soninClockPacket`, `soninChannelFamilyContribution`, `norm_soninBumpL2_pos`, `tendsto_norm_apply_soninClockPacket_atTop_of_bddBelow` |
 | on a fixed annulus the channel is bounded independently of the tower height, so **no height schedule** makes the log-shell channel restore the floor | `evenLogShellChannel_layer_apply_eq_zero`, `exists_bound_norm_evenLogShellChannel_of_annulus`, `not_bddBelow_soninCompletedPacketValueVar_logShellChannelFamily` |
 | the channel norm dominates every layer logarithm below the height, so the channel norms **diverge** with the tower — the surviving completion class is inhabited | `log_logShellRadius`, `le_norm_evenLogShellChannel`, `tendsto_norm_evenLogShellChannel_atTop`, `exists_norm_atTop_channel_family` |
@@ -1194,7 +1205,18 @@ Files: `formal/GaloisForLFunctions/RHTower/SoninPrincipalShellCyclicTrace.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellLayerProjections.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelNormIdentity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
 All declarations depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 Novelty split for Theorem G: `(7)` was already in the corpus
@@ -1205,6 +1227,163 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the band term came free as well.  A shell mode is fixed by the physical cutoff at the
+  shell's outer radius, so a frequency cutoff reaches it only through the physical-then-Fourier
+  block — which is one of the relative ideal's own generators, a finite time--frequency rectangle,
+  hence compact.  Compact operators die on orthonormal sequences, so the mode's mass in any fixed
+  band vanishes with the mode number, with no new analysis.  Two of the three error terms of a mode
+  estimate are now discharged; the layer defect on the *dilated* mode is the one that remains.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
+- 2026-08-01 — first input of the mode estimate discharged.  The two-branch estimate carries three
+  error terms; the compact one is now free for *any* orthonormal sequence, by Bessel plus
+  Fréchet--Riesz plus the corpus's compact/weakly-null lemma, so on the shell modes the exact
+  projection correction vanishes with no further work.  What the mode estimate still needs is the
+  band term: the Fourier mass of a high shell mode below a fixed radius, which is the analogue for
+  modes of the packet's low-band escape and is not in the corpus.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
+- 2026-08-01 — built the instrument a rate needs.  The energy lower bound so far came from cutting
+  the window into `N` annuli, which forces a fresh scale threshold for each `N` and so yields no
+  speed.  A fixed shell already carries an orthonormal family indexed by the *mode number*
+  (`evenShellVectorEven`), so `card_le_hsNormSq_of_evenShellVectorEven` bounds the energy below by
+  the number of modes the coupling does not contract — a count that can grow with the scale inside
+  one fixed geometry.  Turning that into a rate needs a quantitative version of the two-branch
+  estimate on shell modes, which is the analytic step still missing.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
+- 2026-08-01 — the comparison itself is now a corpus theorem rather than a remark: a completion whose
+  per-scale contribution eventually falls short of the coupling energy by any fixed positive amount
+  leaves the channel unbounded below, whatever the completion is built from.  With the logarithmic
+  upper bound on the frequency channel, the whole gate reduces to one question with two named
+  quantities: does `hsNormSq Z_r` exceed `log(outer radius)` by a fixed amount at all large scales?
+  A growth *rate* for the coupling energy is the missing input — the divergence proof supplies none.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
+- 2026-08-01 — the frequency-side contribution is now pinned from both sides: the same orthogonal
+  decomposition that gives the lower bound gives `||channel_n u|| <= (largest layer logarithm) ||u||`,
+  since the layer masses total at most the vector's.  So the completion this channel can supply
+  grows *at most* like the logarithm of the outer tower radius.  The gate is therefore a rate
+  comparison: the floor needs the contribution to track the coupling energy with summable excess,
+  and the contribution is logarithmic in the radius.  What is still missing is a *rate* for the
+  coupling energy — the divergence proof gives `hsNormSq Z_r > N - 1` for each `N` eventually, with
+  no speed, so the two sides cannot yet be compared.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
+- 2026-08-01 — the schedule is no longer a hypothesis.  Reading the carrier along the tower itself —
+  carrier at height `2i`, inner radius at height `i`, outer at height `3i` — makes the bracketing
+  automatic: geometric growth separates all three by `a(r^i - 1)`, and the inner radius climbs.  So
+  `exists_schedule_tendsto_norm_evenFourierLogShellChannel_atTop` exhibits an actual carrier and
+  height schedule with `||T_i w_i|| -> infinity`, unconditionally.  The awkward direction — picking
+  integer heights to bracket a *given* carrier — was avoidable because the packet family is
+  parameterised by an arbitrary carrier sequence.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
+- 2026-08-01 — **the blow-up condition is met on the frequency side.**  Along a height schedule whose
+  inner tower radius is outrun by the carrier, whose outer radius outruns it, and whose inner radius
+  climbs the tower, the reflected channel satisfies `||T_i w_i|| -> infinity` on the source packets.
+  That is exactly the necessary condition
+  (`tendsto_norm_apply_soninClockPacket_atTop_of_bddBelow`) that the scalar counterterm, every
+  bounded contribution, every fixed operator, and the position-side tower under any height schedule
+  all failed.  The schedule is still a hypothesis — the arithmetic realising it, and whether the
+  resulting contribution beats the coupling energy with summable excess, are the next questions —
+  but the frequency side is no longer excluded, and it is the only side that is not.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
+- 2026-08-01 — the mass the frequency-side bound consumes is now known not to erode: between a band
+  the carrier outruns and a band that outruns the carrier, the packet holds frequency energy above a
+  fixed positive level, uniformly along the clock.  Both corpus band limits in gap form feed this
+  directly, and the packet norm limit supplies the level.  Multiplying by the layer logarithm — which
+  diverges once the inner radius is taken to infinity — is the remaining step.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
+- 2026-08-01 — the estimate moved to the frequency side, which is where the packets actually travel.
+  Reflecting the tower channel through the Fourier involution turns it into a step multiplier in
+  frequency; the reflection is isometric, so the energy is the position channel's energy on the
+  transformed vector and the layer masses become frequency-band masses.  The two-radius lower bound
+  therefore transports verbatim.  The packets' support is fixed — that is what closed the position
+  channel — but their frequency runs to infinity, so on this side the corpus's own band limits feed
+  the bound.  What remains is to choose the inner and outer radii as functions of the clock and let
+  the two band limits run.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninFourierChannelBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
+- 2026-08-01 — the lower bound restated without support hypotheses, which is the form the Fourier
+  side needs: `L^2 (||layer(rho_0, rho_n) u||^2 - ||layer(rho_0, rho_m) u||^2) <= ||channel_n u||^2`.
+  A packet's Fourier transform never vanishes exactly on a band, so the earlier version — which
+  assumed no mass below the inner radius — could not be applied to it; this one asks only how much
+  mass sits between two radii, which the corpus's band limits do control.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninChannelNormIdentity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
+- 2026-08-01 — the step multiplier now has an exact energy, not just an upper bound:
+  `||channel u||^2 = sum over layers of (layer logarithm)^2 times (layer mass)^2`, from finite
+  Pythagoras on the orthogonal layer decomposition.  The lower bound follows —
+  `le_norm_evenLogShellChannel_apply`: on a vector living between two tower radii the channel is at
+  least the smallest layer logarithm in that range, times the norm.  Finite Pythagoras for a
+  pairwise-orthogonal `Finset` family is not in mathlib in this form (only the
+  `OrthogonalFamily`-of-subspaces version) and is now corpus-owned.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninChannelNormIdentity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
+- 2026-08-01 — built the orthogonal decomposition the tower estimates were doing by hand: the
+  difference of two nested cutoffs is the shell projection between them, disjoint shells annihilate
+  in both orders, their images are orthogonal, and the layers of a tower telescope to the difference
+  of the extreme cutoffs.  This is what a *lower* bound on a step multiplier needs — the upper
+  bounds so far went through the triangle inequality, which cannot see cancellation, and the next
+  question (whether a Fourier-side channel blows up on the packets, whose frequency does run to
+  infinity even though their support does not) is a lower-bound question.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellLayerProjections.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelNormIdentity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
 - 2026-08-01 — the constraint stated once, for completions of arbitrary shape: the contribution at a
   scale is at most the packet norm times the norm of the operator *applied to that packet*, and the
   packet norms are uniformly bounded, so a completion restoring the floor must satisfy
@@ -1212,7 +1391,18 @@ cyclicity, and the single-corner formula `(8)`.
   exactly where the source packets live.  Each earlier no-go is an instance: constants, bounded
   contributions, fixed operators, and the log-shell tower under any height schedule all keep
   `||T_i w_i||` bounded.
-  Lean: `formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellLayerProjections.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelNormIdentity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
 - 2026-08-01 — and the inhabitant does not in fact help.  The channel norms diverge only because the
   tower reaches far out in position; the source packets never leave a fixed annulus, and on that
   annulus all but finitely many layers cancel between their two cutoffs, so the channel's pairing
@@ -1220,7 +1410,18 @@ cyclicity, and the single-corner formula `(8)`.
   restores the floor.  The surviving class is now narrower still: a completion must grow *on the
   fixed annulus where the packets live*, which the logarithm of position cannot do.
   Lean: `formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellLayerProjections.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelNormIdentity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
 - 2026-08-01 — checked that the elimination has not emptied the space.  The channel acts on the
   `k`-th layer unit by `log(r^k a)`, so its norm is at least that for every layer below the tower
   height, and the norms therefore diverge with the height.  So the one surviving class — channel
@@ -1229,7 +1430,18 @@ cyclicity, and the single-corner formula `(8)`.
   nothing; this one does not.
   Lean: `formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellLayerProjections.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelNormIdentity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
 - 2026-08-01 — extended from scalars to operators: pairing the source packets against any *fixed*
   bounded operator is bounded above, because the packet energy is uniform in the frequency, so no
   fixed channel restores the floor — the concrete Burnol conductor at one aperture and one tower
@@ -1238,7 +1450,18 @@ cyclicity, and the single-corner formula `(8)`.
   Lean: `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellLayerProjections.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelNormIdentity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
 - 2026-08-01 — applied to the actual Burnol term: it is `log(b/a)`, one constant per scale, so the
   completed channel is unbounded below at every strict flag.  Any completion that restores the
   floor must tend to infinity along the scales.  The scalar-counterterm form of the weld is closed;
@@ -1247,7 +1470,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellLayerProjections.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelNormIdentity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
 - 2026-08-01 — **the coupling energy is unbounded, and that closes the bounded completion class.**
   Cutting the aperture window into `N` disjoint annuli gives `N` exactly orthogonal packets; the
   coupling carries each to its own dilate without losing norm, so after normalisation the coupling
@@ -1264,7 +1498,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellLayerProjections.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelNormIdentity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
 - 2026-08-01 — both ingredients of the growth argument are now in place.  The transition chain never
   used the packet annulus as such, only two support facts — vanishing inside the inner aperture and
   support inside the outer one — so it restates verbatim for a packet on any sub-annulus of `(b,c)`;
@@ -1280,7 +1525,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellLayerProjections.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelNormIdentity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
 - 2026-08-01 — set up the growth question, which is what the summability criterion now turns on.
   `sum_norm_sq_apply_le_hsNormSq` generalises the corpus's one-vector domination to a finite
   orthonormal family, so `N` orthonormal vectors that the coupling does not contract force
@@ -1298,7 +1554,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellLayerProjections.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelNormIdentity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
 - 2026-08-01 — the last gate is now an exact summability criterion, for completions of arbitrary
   shape: the completed packet channel is bounded below **iff** the sequence
   `min(contribution - coupling energy, 0)` is summable.  Consequently any completion that restores
@@ -1313,7 +1580,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellLayerProjections.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelNormIdentity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
 - 2026-08-01 — the last gate, for extensive completions, is now a single inequality: contribution
   per scale versus coupling energy per scale.  Above every scale's energy the completed channel is
   bounded below by zero; below the uniform floor `1/4` it is unbounded below.  The aperture
@@ -1328,7 +1606,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellLayerProjections.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelNormIdentity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
 - 2026-08-01 — the last gate is now a property of the archimedean side alone.  Since the packet
   channel is unbounded below, any counterterm bounded above on the packet family — packet-dependent
   or not — leaves it unbounded below, so a completion with a lower floor must be unbounded above
@@ -1344,7 +1633,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellLayerProjections.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelNormIdentity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
 - 2026-08-01 — Theorem G items 1--2 upgraded from *properties* of the glued functional to a
   *characterization* of it.  Directness said the presentation is unique and the restrictions said
   what the value is on each part, but nothing said the extended trace is the only assignment with
@@ -1366,7 +1666,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellLayerProjections.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelNormIdentity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
 - 2026-08-01 — `(38)`, the card's own terminus, is now a theorem *and* is false.  The explicit
   carrier equation `Q_b D_r (Q_a - Q_b) D_r (Q_b - Q_c) = 0` had never been stated in Lean — only
   its predecessors `(35)`--`(37)` had — so it is now `..._eq_zero_iff_tripleProduct`, derived from
@@ -1386,7 +1697,18 @@ cyclicity, and the single-corner formula `(8)`.
 `formal/GaloisForLFunctions/RHTower/SoninFixedChannelNoFloor.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninLogShellChannelGrowth.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninChannelAnnulusBound.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninCompletionBlowUpRequirement.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellLayerProjections.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelNormIdentity.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUp.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninFourierChannelBlowUpInstance.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninChannelUpperBound.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninCompletionRateTest.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeCounting.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninOrthonormalCompactVanishing.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninShellModeBandEscape.lean`.
 - 2026-08-01 — added a worked numerical instance of the whole chain at `1 < 3/2 < 2 < 3`.  Every
   no-go here is stated over a hypothesis class, and a no-go over an empty class asserts nothing;
   the instance module makes non-vacuity checkable at a glance rather than by inspection.

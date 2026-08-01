@@ -530,6 +530,12 @@ corpus, so it is built here:
 This is the engine of the Corollary: it turns coordinatewise convergence of the surviving masses
 into control of the whole family, hence tightness, and then `(25)`.
 
+**The measure/series bridge for `(15)`** — `integral_labelledMeasure` in
+`LabelledAtomicMeasure.lean`.  Integrating any test function against the labelled atomic measure is
+exactly the labelled sum of its values.  So *whatever* transform one takes of a labelled atomic
+measure — Donoghue, Cauchy, or another kernel — its value is the corresponding series, and `(15)`
+reduces to identifying the measure rather than computing with it.
+
 What genuinely remains is `(15)`, the identification of the spectral measure itself as the labelled
 sum, and `(20)`, which names `sigma_lab` as that limit — both of which do need Suzuki's Clark measure
 represented — together with the Blaschke inner factor of `(8)`.
@@ -645,3 +651,10 @@ remain paper-level until Suzuki's operator and Clark measure are represented in 
   transform carries the disc to the half plane (`im_herglotzOfCayley_pos`) and sends `0` to the
   anchor `i`, so mathlib's Schwarz lemma at the origin transfers directly.  Targeted build green,
   axiom audit `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the measure/series bridge for `(15)` formalized (`integral_labelledMeasure`):
+  integrating any test function against the labelled atomic measure is the labelled sum of its
+  values.  This separates the two halves of `(15)`: computing with a labelled atomic measure is now
+  formal for every kernel, so the only remaining content is the identification of Suzuki's `nu` with
+  the labelled measure, which does need the operator.  That identification, and `(20)` naming
+  `sigma_lab`, are the card's genuine boundary.  Targeted build green, axiom audit
+  `[propext, Classical.choice, Quot.sound]`.

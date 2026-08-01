@@ -103,6 +103,13 @@ theorem vandermondeProd_centeredRootIn_ne_zero [CharZero K] :
   refine sub_ne_zero.2 fun hcon => ?_
   exact absurd (centeredRootIn_injective hcon) (by omega)
 
+/-- **Even permutations fix the square root of the discriminant.** -/
+theorem smul_vandermondeProd_centeredRootIn_of_mem_alternating [CharZero K]
+    {e : Equiv.Perm (Fin d)} (he : e ∈ alternatingGroup (Fin d)) :
+    e • vandermondeProd (centeredRootIn K d) = vandermondeProd (centeredRootIn K d) := by
+  rw [smul_vandermondeProd_centeredRootIn, Equiv.Perm.mem_alternatingGroup.1 he]
+  simp
+
 /-- **The square root of the discriminant is not a centered coefficient.**  An odd permutation
 negates it, while it fixes every centered coefficient. -/
 theorem vandermondeProd_notMem_centeredCoeffField [CharZero K] {e : Equiv.Perm (Fin d)}

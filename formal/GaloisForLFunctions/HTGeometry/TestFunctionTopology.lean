@@ -38,6 +38,10 @@ noncomputable instance instTopologicalSpaceDeningerTest (J : Compacts ℝ) :
     TopologicalSpace (DeningerTest J) :=
   (deningerTestFamily J).moduleFilterBasis.topology'
 
+noncomputable instance instUniformSpaceDeningerTest (J : Compacts ℝ) :
+    UniformSpace (DeningerTest J) :=
+  ((deningerTestFamily J).addGroupFilterBasis.uniformSpace).replaceTopology rfl
+
 /-- **The topology of the test space is its seminorm topology.** -/
 theorem withSeminorms_deningerTest (J : Compacts ℝ) :
     WithSeminorms (deningerTestFamily J) := ⟨rfl⟩
@@ -45,10 +49,6 @@ theorem withSeminorms_deningerTest (J : Compacts ℝ) :
 instance instIsTopologicalAddGroupDeningerTest (J : Compacts ℝ) :
     IsTopologicalAddGroup (DeningerTest J) :=
   (deningerTestFamily J).addGroupFilterBasis.isTopologicalAddGroup
-
-noncomputable instance instUniformSpaceDeningerTest (J : Compacts ℝ) :
-    UniformSpace (DeningerTest J) :=
-  (deningerTestFamily J).addGroupFilterBasis.uniformSpace
 
 instance instIsUniformAddGroupDeningerTest (J : Compacts ℝ) :
     IsUniformAddGroup (DeningerTest J) :=

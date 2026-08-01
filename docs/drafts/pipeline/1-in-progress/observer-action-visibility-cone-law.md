@@ -178,3 +178,13 @@ Reject the master-law claim if any occurs:
 - 2026-07-30 — proved exact Boolean local replica height \(2^{s-1}\) and
   integrated it with the connected-spanning temporal floor into an attained
   explicit space--time--detector corner.
+- 2026-08-01 — closed finite-dimensional deterministic open-system escape:
+  an explicit normalized reset-noise Kraus channel approximates every finite
+  unitary history below arbitrary operational tolerance yet drives every
+  pair of initial states to zero operational distance.  Combined with the
+  angular perturbation theorem, one common finite diagonal reference admits
+  this total-forgetting completion and unitary completions of every exact
+  temporal rank \(1\le k\le d\).  Formal sources:
+  `FiniteKrausRecurrenceFutureFanLaw.lean` and
+  `OperationalQuantumRecurrenceFutureFanLaw.lean`; capstone axiom audit uses
+  only `propext`, `Classical.choice`, and `Quot.sound`.

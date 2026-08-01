@@ -1,7 +1,7 @@
 # Riesz-eigenfunctional Hodge purity
 
 - **ID:** `deninger-riesz-eigenfunctional-hodge-purity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** ABSTRACT HILBERT--HODGE THEOREM
 - **Label:** `DAC_RIESZ_EIGENFUNCTIONAL_HODGE_PURITY`
 - **Parent:** `deninger-arithmetic-calderon-paugam-hardy-comparison`
@@ -112,6 +112,35 @@ The same module defines
 `DeningerClosedWeightOneRieszXiSpectrum` and proves
 `riemannHypothesis_of_closedWeightOne_rieszXiSpectrum`.
 
+`deningerClosedWeightOne_rieszEigenfunctional_re_eq_half` states the
+card's theorem exactly: the weight-one adjoint law `(1)` is carried by
+`DeningerClosedWeightOnePolarization`, hypothesis `(2)` is the
+transpose-eigenfunctional condition on the generator domain, and the
+conclusion is `(3)`.  The proof is the card's: conjugate symmetry turns
+`⟨Θy, y⟩` into `conj ρ ‖y‖²`, the adjoint law gives
+`(conj ρ + ρ)‖y‖² = ‖y‖²`, and `‖y‖² ≠ 0` cancels.
+
+### Verification
+
+- Direct command: `lake env lean` on the module — passes with no
+  errors and no warnings.
+- Cached module build: completes.
+- Scratch `#print axioms` on
+  `deningerClosedWeightOne_rieszEigenfunctional_re_eq_half` and
+  `riemannHypothesis_of_closedWeightOne_rieszXiSpectrum`: only
+  `propext`, `Classical.choice`, `Quot.sound`.
+- Imported by the `GaloisForLFunctions.RHTower` umbrella.
+
+## Gates
+
+- [x] 0 → 1 in-progress: statement isolated
+- [x] 1 → 2 fully-proven: `(3)` proved from `(1)` and `(2)`
+- [x] 2 → 3 formalized: the purity theorem, the Xi-spectrum package
+      and the RH criterion, with cached build and axiom audit
+- [ ] 3 → 4 publication-ready: condition `(5)` — Hodge-boundedness of
+      the order-zero Meyer functionals with Riesz representatives in
+      the generator domain — is the open arithmetic input
+
 ## References
 
 - `DAC_SOURCE_THREE_TERM_HODGE_PURITY`.
@@ -123,3 +152,6 @@ The same module defines
 - 2026-07-27 — Replaced vague generalized-jet faithfulness by the
   exact RH-useful condition: order-zero Meyer eigenfunctionals must be
   Hodge-bounded with Riesz representatives in the generator domain.
+- 2026-08-01 — Closed the stage-3 gate: verified the module states the
+  card's theorem, then ran the cached build and the declaration-axiom
+  audit.  No new Lean was needed.

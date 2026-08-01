@@ -55,8 +55,9 @@ theorem eventually_jet_mem {u : ℂ → ℂ} {R : ℝ} (hR : 0 < R)
   exact hcont.continuousAt (hSopen.mem_nhds ht)
 
 /-- **Finite phase rank from a regular jet atlas on the carrier.**  If every carrier point has a
-holomorphic representative solving the relation, and each is regular at one of finitely many sample
-times, the rational frequency rank is at most `2 m (n+1)`. -/
+holomorphic representative solving the relation, and each is regular in one of finitely many
+regularity regions, each attached to a sample time, the rational frequency rank is at most
+`2 |T| (n+1)`. -/
 theorem rank_le_of_regular_jets (hρ : 0 < ρ) (hrpos : 0 < r)
     {f : ℝ →ᵇ ℂ} (hfu : UniformContinuous (fun x => f x))
     (hftb : HasTotallyBoundedOrbit (fun x => f x))
@@ -70,16 +71,17 @@ theorem rank_le_of_regular_jets (hρ : 0 < ρ) (hrpos : 0 < r)
     (hrepline : ∀ (x : BohrHull f) (t : ℝ),
       rep x ((σ : ℂ) + (t : ℂ) * Complex.I) = bohrEval f (x + bohrIota f t))
     (hn : 0 < n) {P : (Fin (n + 1) → ℂ) → ℂ}
-    {P' : (Fin (n + 1) → ℂ) → ((Fin (n + 1) → ℂ) →L[ℂ] ℂ)} {S : ℝ → Set (Fin (n + 1) → ℂ)}
-    {L : ℝ → (Fin (n + 1) → ℂ) →L[ℂ] ℂ} {C : ℝ → ℝ} {T : Finset ℝ}
-    (hSopen : ∀ t, IsOpen (S t)) (hSconv : ∀ t, Convex ℝ (S t))
-    (hPd : ∀ t, ∀ y ∈ S t, HasFDerivWithinAt P ((P' y).restrictScalars ℝ) (S t) y)
-    (hC : ∀ t, 0 ≤ C t) (hbnd : ∀ t, ∀ y ∈ S t, ‖P' y - L t‖ ≤ C t)
-    (hdom : ∀ t, C t < ‖partialCoeff (L t) (Fin.last n)‖)
+    {P' : (Fin (n + 1) → ℂ) → ((Fin (n + 1) → ℂ) →L[ℂ] ℂ)}
+    {ι : Type*} {τ : ι → ℝ} {S : ι → Set (Fin (n + 1) → ℂ)}
+    {L : ι → (Fin (n + 1) → ℂ) →L[ℂ] ℂ} {C : ι → ℝ} {T : Finset ι}
+    (hSopen : ∀ i, IsOpen (S i)) (hSconv : ∀ i, Convex ℝ (S i))
+    (hPd : ∀ i, ∀ y ∈ S i, HasFDerivWithinAt P ((P' y).restrictScalars ℝ) (S i) y)
+    (hC : ∀ i, 0 ≤ C i) (hbnd : ∀ i, ∀ y ∈ S i, ‖P' y - L i‖ ≤ C i)
+    (hdom : ∀ i, C i < ‖partialCoeff (L i) (Fin.last n)‖)
     (hrelrep : ∀ (x : BohrHull f) (s : ℝ), P (fun k : Fin (n + 1) =>
       iteratedDeriv (k : ℕ) (rep x) ((σ : ℂ) + (s : ℂ) * Complex.I)) = 0)
-    (hatlas : ∀ x : BohrHull f, ∃ t ∈ T, (fun k : Fin (n + 1) =>
-      iteratedDeriv (k : ℕ) (rep x) ((σ : ℂ) + (t : ℂ) * Complex.I)) ∈ S t) :
+    (hatlas : ∀ x : BohrHull f, ∃ i ∈ T, (fun k : Fin (n + 1) =>
+      iteratedDeriv (k : ℕ) (rep x) ((σ : ℂ) + ((τ i : ℝ) : ℂ) * Complex.I)) ∈ S i) :
     Module.rank ℤ (bohrHullFrequencies f) ≤ ((2 * (T.card * (n + 1)) : ℕ) : Cardinal) := by
   classical
   have hrρ : r < r + ρ := by linarith
@@ -88,28 +90,28 @@ theorem rank_le_of_regular_jets (hρ : 0 < ρ) (hrpos : 0 < r)
     show |z.re - σ| < r + ρ
     have : |z.re - σ| < r := hz
     linarith
-  set J : ℝ → BohrHull f → (Fin (n + 1) → ℂ) := fun t x => fun k : Fin (n + 1) =>
-    iteratedDeriv (k : ℕ) (rep x) ((σ : ℂ) + (t : ℂ) * Complex.I) with hJ
-  set U : ℝ → Set (BohrHull f) := fun t => {x | J t x ∈ S t} with hU
-  refine rank_le_of_jetAtlas hfu hftb (J := J) (U := U) (fun t => ?_) (fun x => ?_)
-    (fun t x y hx hxy => ?_)
+  set J : ι → BohrHull f → (Fin (n + 1) → ℂ) := fun i x => fun k : Fin (n + 1) =>
+    iteratedDeriv (k : ℕ) (rep x) ((σ : ℂ) + ((τ i : ℝ) : ℂ) * Complex.I) with hJ
+  set U : ι → Set (BohrHull f) := fun i => {x | J i x ∈ S i} with hU
+  refine rank_le_of_jetAtlas hfu hftb (J := J) (U := U) (fun i => ?_) (fun x => ?_)
+    (fun i x y hx hxy => ?_)
   · exact continuous_pi fun k =>
-      continuous_jet_of_representatives hρ hrpos hrρ hν hrepdiff hrepval (k : ℕ) t
-  · obtain ⟨t, htT, htS⟩ := hatlas x
-    exact ⟨t, htT, htS⟩
+      continuous_jet_of_representatives hρ hrpos hrρ hν hrepdiff hrepval (k : ℕ) (τ i)
+  · obtain ⟨i, hiT, hiS⟩ := hatlas x
+    exact ⟨i, hiT, hiS⟩
   · -- separation at a regular sample time
-    have hxS : J t x ∈ S t := hx
-    have hyS : J t y ∈ S t := by
+    have hxS : J i x ∈ S i := hx
+    have hyS : J i y ∈ S i := by
       rw [← hxy]
       exact hxS
-    have hxev : ∀ᶠ s : ℝ in nhds t, (fun k : Fin (n + 1) =>
-        iteratedDeriv (k : ℕ) (rep x) ((σ : ℂ) + (s : ℂ) * Complex.I)) ∈ S t :=
-      eventually_jet_mem (by linarith) (hrepdiff x) (hSopen t) hxS
-    have hyev : ∀ᶠ s : ℝ in nhds t, (fun k : Fin (n + 1) =>
-        iteratedDeriv (k : ℕ) (rep y) ((σ : ℂ) + (s : ℂ) * Complex.I)) ∈ S t :=
-      eventually_jet_mem (by linarith) (hrepdiff y) (hSopen t) hyS
+    have hxev : ∀ᶠ s : ℝ in nhds (τ i), (fun k : Fin (n + 1) =>
+        iteratedDeriv (k : ℕ) (rep x) ((σ : ℂ) + (s : ℂ) * Complex.I)) ∈ S i :=
+      eventually_jet_mem (by linarith) (hrepdiff x) (hSopen i) hxS
+    have hyev : ∀ᶠ s : ℝ in nhds (τ i), (fun k : Fin (n + 1) =>
+        iteratedDeriv (k : ℕ) (rep y) ((σ : ℂ) + (s : ℂ) * Complex.I)) ∈ S i :=
+      eventually_jet_mem (by linarith) (hrepdiff y) (hSopen i) hyS
     refine carrier_eq_of_jet_eq_local hrpos hfu hn ((hrepdiff x).mono hstripsub)
-      ((hrepdiff y).mono hstripsub) (hSconv t) (hPd t) (hC t) (hbnd t) (hdom t)
+      ((hrepdiff y).mono hstripsub) (hSconv i) (hPd i) (hC i) (hbnd i) (hdom i)
       hxev (Filter.Eventually.of_forall (hrelrep x)) hyev
       (Filter.Eventually.of_forall (hrelrep y)) (fun k => ?_) (hrepline x) (hrepline y)
     have h := congrFun hxy k.castSucc

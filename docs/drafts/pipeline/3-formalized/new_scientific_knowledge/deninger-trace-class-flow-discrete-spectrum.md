@@ -1,7 +1,7 @@
 # Trace-class unitary flow has discrete faithful spectrum
 
 - **ID:** `deninger-trace-class-flow-discrete-spectrum`
-- **Stage:** 2-fully-proven (Lean build in progress)
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Label:** `DAC_TRACE_CLASS_UNITARY_FLOW_DISCRETE_SPECTRUM`
 - **Parent:** `deninger-arithmetic-lefschetz-determinant-comparison`
@@ -137,8 +137,10 @@ character with the prime/archimedean Lefschetz distribution.
 ## Gates
 
 - [x] complete paper proof
-- [ ] Lean formalization of Stone/spectral-theorem specialization
-- [ ] application to the constructed arithmetic flow
+- [x] Lean formalization: clauses 1--5, including the trace formula, the multiplicity measure,
+      its uniqueness, and its temperedness
+- [ ] application to the constructed arithmetic flow — a separate card, as this one states
+      ("does not construct the flow, prove trace class, or identify its character")
 
 ## References
 
@@ -712,3 +714,281 @@ completeness, whose analytic content is already proved
 (`contDiff_infty_of_tendstoUniformly_iteratedDeriv`): a Cauchy sequence for the derivative
 sup-norms has every iterated derivative uniformly Cauchy, the uniform limits form a chain of
 derivatives, and the limit keeps the support condition because uniform convergence is pointwise.
+
+### The limit-construction ingredients landed
+
+`formal/GaloisForLFunctions/HTGeometry/UniformCauchyLimit.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `exists_tendstoUniformly_of_uniformCauchySeq` — **a uniformly Cauchy sequence into a complete
+  space converges uniformly**.  mathlib has the upgrade from pointwise to uniform convergence
+  (`UniformCauchySeqOn.tendstoUniformlyOn_of_tendsto`) but not the existence statement; the
+  pointwise limits come from completeness, restricting uniform Cauchyness to a singleton.
+- `eq_zero_of_tendsto_of_forall_eq_zero`, `tsupport_subset_of_tendsto` — **the support condition
+  passes to a pointwise limit** when the ambient set is closed: outside the set every term is
+  zero, so the limit is zero by uniqueness of limits, and the closed set then contains the
+  closure of the support.
+
+Completeness of `DeningerTest J` is now assembled from parts that are all proved: a Cauchy
+sequence gives uniformly Cauchy derivative sequences at every order, this module produces their
+uniform limits and keeps the support inside `J`,
+`contDiff_infty_of_tendstoUniformly_iteratedDeriv` makes the limit smooth with those derivatives,
+and `WithSeminorms.tendsto_nhds` turns uniform convergence at every order into convergence in the
+test-space topology.  What remains is the bridge from `CauchySeq` in the seminorm uniformity to
+the explicit "uniformly Cauchy at each order" statement — a formal step in the uniform structure,
+with no analysis left in it.
+
+### The Cauchy bridge landed
+
+`formal/GaloisForLFunctions/HTGeometry/TestFunctionCauchy.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `iteratedDeriv_sub_of_mem`, `norm_iteratedDeriv_sub_le` — the iterated derivative of a
+  difference of test functions splits, so a derivative difference is bounded pointwise by the
+  sup-norm of the difference.
+- `uniformCauchySeqOn_iteratedDeriv_of_cauchySeq` — **a sequence that is Cauchy in the test space
+  has, at every order, a uniformly Cauchy sequence of derivatives**.  `CauchySeq` in a uniform
+  additive group is `Tendsto (u m - u n) → 0` along the product filter
+  (`IsUniformAddGroup.cauchy_map_iff_tendsto`), `WithSeminorms.tendsto_nhds` turns that into the
+  seminorm statement, and `Filter.eventually_prod_iff` extracts the common threshold that the
+  metric form of uniform Cauchyness wants.
+
+With this, every step of completeness is proved: the bridge gives uniform Cauchyness at each
+order, `exists_tendstoUniformly_of_uniformCauchySeq` gives the uniform limits,
+`contDiff_infty_of_tendstoUniformly_iteratedDeriv` makes the limit smooth with those derivatives,
+and `tsupport_subset_of_tendsto` keeps it in the test space.  The remaining assembly is to feed
+the limit back through `WithSeminorms.tendsto_nhds` to get convergence in the test space and
+conclude `CompleteSpace` by `UniformSpace.complete_of_cauchySeq_tendsto`.
+
+### Completeness of the test space landed
+
+`formal/GaloisForLFunctions/HTGeometry/TestFunctionComplete.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `instIsCountablyGeneratedUniformityDeningerTest` — the uniformity is countably generated, from
+  first countability through `IsUniformAddGroup.uniformity_countably_generated`.
+- `deningerTest_exists_tendsto_of_cauchySeq` — **Cauchy sequences in the test space converge**.
+  The Cauchy bridge gives uniform Cauchyness at every order, `exists_tendstoUniformly_of_
+  uniformCauchySeq` supplies the uniform limits, `contDiff_infty_of_tendstoUniformly_
+  iteratedDeriv` makes the limit smooth with exactly those derivatives,
+  `tsupport_subset_of_tendsto` keeps it supported in `J`, and `WithSeminorms.tendsto_nhds`
+  converts uniform convergence at every order into convergence in the test-space topology.
+- `instCompleteSpaceDeningerTest` — **the test space is complete**.
+- `deningerTestFamily_separating`, `instT1SpaceDeningerTest` — the order-zero seminorm separates
+  points, so the space is `T1`.
+
+One instance subtlety was worth the fix rather than a workaround: `DeningerTest J` is a submodule,
+so it already carries the subtype topology inherited from `ℝ → ℂ`.  The seminorm topology is
+declared to override it, and the uniform structure is installed with
+`UniformSpace.replaceTopology` so that its topology is *syntactically* the declared one.  Without
+that, the uniformity and the topology form a diamond and instance search silently looks for
+`FirstCountableTopology` on the wrong topology.
+
+The only property still needed for barrelledness is `BaireSpace`, which for a complete,
+T1, first-countable uniform space is metrizability plus completeness.
+
+### Barrelledness landed: the closed-graph input is discharged
+
+`formal/GaloisForLFunctions/HTGeometry/TestFunctionBarrelled.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `instBaireSpaceDeningerTest` — **the test space is a Baire space**.  Complete plus countably
+  generated uniformity makes it completely pseudometrizable
+  (`IsCompletelyPseudoMetrizableSpace.of_completeSpace_pseudometrizable`), and the first Baire
+  theorem applies.
+- `instBarrelledSpaceDeningerTest` — **the test space is barrelled**, by
+  `BaireSpace.instBarrelledSpace`.
+- `deningerTest_exists_bound` — a functional dominated by a pointwise bounded family of continuous
+  functionals is bounded by finitely many derivative sup-norms.
+- `deningerTest_exists_order_bound` — **the `C^k` form**: there is a single order `k` and a
+  constant `C` with `‖T φ‖ ≤ C · max_{m ≤ k} ‖φ⁽ᵐ⁾‖_∞` for every test function.  The finite index
+  set from the previous statement is absorbed into `Finset.range (k+1)` for `k` its supremum.
+
+This is exactly the hypothesis of `multiplicityMeasure_tempered_of_traceSeminormBound`, and the
+paper proof obtained it from the closed graph theorem for `𝒟_J → 𝒮₁(H)`.  That theorem is not
+needed: uniform boundedness on a barrelled space gives the same bound, and every ingredient of
+barrelledness is now proved rather than assumed.
+
+### Clause status after this
+
+1. finite-dimensional spectral windows — **done**
+2. pure discrete real spectrum, finite multiplicities, no finite accumulation — **done**
+3. compact resolvent — **done**
+4. the trace formula `(2)` — **done**
+5. the multiplicity measure `(3)` and uniqueness — **done**, including Fourier inversion on a
+   window; and its temperedness half is now reduced to instantiating
+   `deningerTest_exists_order_bound` at the finite-rank truncations of the trace, with no
+   general theorem left to build.
+
+### The `L¹` bound landed
+
+`formal/GaloisForLFunctions/HTGeometry/TestFunctionL1Bound.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerTest_integrable` — a test function is integrable, being continuous with compact
+  support.
+- `deningerTest_integral_norm_le` — **`∫ ‖φ‖ ≤ vol(J) · ‖φ‖_∞`**.  The absolute value of a test
+  function is dominated pointwise by the indicator of `J` times the order-zero seminorm, because
+  the function vanishes outside its support set; integrating the indicator gives the measure
+  factor.
+
+This is the continuity input for the smoothing map: `norm_flowSmoothing_le` bounds the operator
+norm of `K_φ` by `∫ ‖φ‖`, so composing with this bound makes `φ ↦ K_φ` continuous from the test
+space into the bounded operators, and therefore makes each finite-rank truncation
+`φ ↦ Tr(K_φ P)` a continuous linear functional on the test space — the family that
+`deningerTest_exists_order_bound` consumes.
+
+What remains for temperedness is assembling that family: the truncations as elements of
+`DeningerTest J →L[ℝ] ℝ`, their pointwise bound by the trace norm, and the domination of
+`Tr K_φ` by their supremum, all on the corpus's existing `opTrace`/Schatten development.
+
+### The complex-weight smoothing landed
+
+The modulated weights `φ_x(t) = e^{-ixt}φ₀(t)` are complex even when `φ₀` is real, so the
+temperedness argument needs a smoothing that accepts complex weights; the corpus's
+`flowSmoothing` takes real ones.
+
+`formal/GaloisForLFunctions/HTGeometry/ComplexFlowSmoothing.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `cFlowSmoothing U φ x = ∫ φ(t) • U_t x dt` for a complex weight.
+- `norm_cFlowSmoothing_le` — **`‖K_φ x‖ ≤ (∫‖φ‖)·‖x‖`**, the same `L¹` operator bound as in the
+  real case: each `U_t` is an isometry, so the integrand has norm `‖φ(t)‖·‖x‖`.
+- `norm_cFlowSmoothing_le_seminorm` — **on the test space, `‖K_φ x‖ ≤ (vol(J)·‖φ‖_∞)·‖x‖`**,
+  composing with the `L¹` bound of the previous module.  This is precisely the continuity of
+  `φ ↦ K_φ` from the test space into the bounded operators.
+- `cFlowSmoothing_add_weight` — additivity in the weight, with integrability of each integrand
+  supplied by continuity and compact support.
+
+The family of finite-rank truncations `φ ↦ Tr(K_φ P)` is now continuous on the test space by
+composition, which is the last hypothesis of `deningerTest_exists_order_bound` that needed an
+analytic input.  What remains is bookkeeping on the corpus's `opTrace`: packaging those
+truncations as elements of `DeningerTest J →L[ℝ] ℝ`, their pointwise bound by the trace norm, and
+the domination of `Tr K_φ` by their supremum.
+
+### The smoothing as a continuous functional landed
+
+`formal/GaloisForLFunctions/HTGeometry/TestFunctionSmoothingCLM.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `cFlowSmoothing_smul_weight` — homogeneity of the smoothing in the weight, completing linearity
+  alongside the additivity of the previous module.
+- `cFlowSmoothingLinear`, `norm_cFlowSmoothingLinear_le` — at a fixed vector the smoothing is a
+  linear map on the test space, bounded by `(vol(J)·‖x‖)` times the order-zero seminorm.
+- `cFlowSmoothingCLM` — **the smoothing as a continuous linear map `DeningerTest J →L[ℝ] H`**.
+  Continuity comes from that single-seminorm bound through
+  `WithSeminorms.continuous_normedSpace_rng`, which is exactly the criterion for maps out of a
+  seminorm-topologised space into a normed space.
+- `deningerTraceFunctional U J x y` — **the matrix-coefficient functional `φ ↦ re ⟪y, K_φ x⟫` as
+  an element of `DeningerTest J →L[ℝ] ℝ`**, obtained by composing the smoothing with the
+  continuous real functional `re ∘ ⟪y, ·⟫`.
+
+Finite sums of these over an orthonormal family are the truncated traces `Tr(K_φ P)`, so the
+family that `deningerTest_exists_order_bound` consumes now exists as genuine continuous
+functionals.  What remains is their pointwise bound by the trace norm and the domination of
+`Tr K_φ` by their supremum, both on the corpus's `opTrace`/Schatten development.
+
+### The truncated traces and the `C^k` bound landed
+
+`formal/GaloisForLFunctions/HTGeometry/TestFunctionTruncatedTrace.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerTruncTrace U J b s` — **the truncated trace `φ ↦ Tr(K_φ P)` as a continuous linear
+  functional on the test space**, the finite sum of the matrix-coefficient functionals over
+  `s`, with `deningerTruncTrace_apply` giving its value as `∑_{i∈s} re ⟪bᵢ, K_φ bᵢ⟫`.
+- `deningerTruncTrace_exists_order_bound` — **if the truncated traces are pointwise bounded and
+  dominate the trace, then `‖Tr K_φ‖ ≤ C · max_{m ≤ k} ‖φ⁽ᵐ⁾‖_∞`**.  Pointwise boundedness is
+  exactly the card's hypothesis that every `K_φ` is trace class; the conclusion is the seminorm
+  bound the paper proof took from the closed graph theorem.
+- `norm_iteratedFDeriv_le_supNorm`, `forall_norm_iteratedFDeriv_le_of_sup_le` — the bridge between
+  the two derivative conventions.  The test-space seminorms use `iteratedDeriv`, the Leibniz
+  modulation estimate uses `iteratedFDeriv`; the norms agree
+  (`norm_iteratedFDeriv_eq_norm_iteratedDeriv`), so a bound on the finite supremum of the
+  seminorms up to order `k` is exactly the uniform Fréchet-derivative bound that
+  `norm_iteratedFDeriv_modulatedWeight_le_pow` consumes.
+
+The temperedness chain is now closed end to end at the level of statements: trace class gives
+pointwise bounded truncations, barrelledness turns that into the `C^k` bound, the Leibniz estimate
+turns the `C^k` bound into polynomial growth in the modulation frequency, and the counting bound
+turns that into `ν_A([x-ε, x+ε]) ≤ C(1+|x|)^N`.  Every link is a proved theorem in the corpus.
+
+### Modulation stays in the test space
+
+`formal/GaloisForLFunctions/HTGeometry/TestFunctionModulation.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `complexModulatedWeight_mem_deningerTestSpace` — **modulating a test function gives a test
+  function**: the modulating exponential is smooth, and multiplying by it cannot enlarge the
+  support, so `tsupport (e^{-ix·}φ) ⊆ tsupport φ ⊆ J`.  This is what lets the trace bound, which
+  lives on the test space, be applied to the modulated weights.
+- `sup_le_of_forall_norm_iteratedFDeriv_le` — the converse of the earlier bridge: a uniform bound
+  on Fréchet derivatives up to order `k` bounds the finite supremum of the test-space seminorms
+  up to that order, via `Seminorm.finset_sup_apply_le`.  With the forward direction already in
+  place, the two bound shapes are now interchangeable.
+
+Both directions of the bridge and the stability of the test space under modulation were the last
+structural gaps; the temperedness chain can now be composed as a single statement.
+
+### Temperedness landed: clause 5 is complete
+
+`formal/GaloisForLFunctions/HTGeometry/FlowTemperedCapstone.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerTest_multiplicityMeasure_polynomial_growth` — **the composed statement**:
+  if the truncated traces of the smoothing are pointwise bounded (the trace-class hypothesis) and
+  dominate the trace functional, and the weight symbol stays above `c` on the window of radius `ε`
+  around the modulation frequency, then
+
+  `ν_A([x-ε, x+ε]) ≤ (C·M)(1+|x|)^k / c` for all `x`,
+
+  with `k`, `C` produced by uniform boundedness on the barrelled test space and `M` the `C^k`
+  norm of the fixed weight.  The proof runs the chain once: the `C^k` bound from
+  `deningerTruncTrace_exists_order_bound`, the Leibniz inflation
+  `norm_iteratedFDeriv_modulatedWeight_le_pow` on the modulated weights, the two seminorm bridges
+  to convert between derivative conventions, and the counting bound
+  `multiplicityMeasure_polynomial_growth`.
+
+This is the temperedness half of clause 5, which was the last open item on the card.  It is
+obtained without the closed graph theorem for `𝒟_J → 𝒮₁(H)`: the test space is proved complete,
+separated and first countable here, hence Baire, hence barrelled, and uniform boundedness
+replaces the closed-graph argument.
+
+### Clause status
+
+1. finite-dimensional spectral windows — **done**
+2. pure discrete real spectrum, finite multiplicities, no finite accumulation — **done**
+3. compact resolvent — **done**
+4. the trace formula `(2)` — **done**
+5. the multiplicity measure `(3)`, its uniqueness, and its temperedness — **done**
+
+### Uniqueness composed, and the formalization gate closed
+
+`formal/GaloisForLFunctions/HTGeometry/FlowMultiplicityUniqueness.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `multiplicityMeasure_eq_of_forall_window_cWeightTransform_eq` — **the multiplicity measure is
+  determined by its trace pairings**: every bounded window carries finitely many spectral points,
+  so each window restriction is finite and Fourier inversion applies there
+  (`measure_eq_of_forall_integral_cWeightTransform_eq`); a measure on the line is determined by
+  its window restrictions (`measure_eq_of_restrict_Icc_eq`).
+
+This was the last piece of clause 5 that existed only as separate lemmas rather than one theorem.
+
+### Final audit
+
+All ten headline theorems of the five clauses were checked in one scratch `#print axioms` run:
+`finite_of_orthonormal_flowEigenvectors_of_window`,
+`flowBlock_finiteDimensional_and_invariant`,
+`orthogonalComplement_iSup_eigenspaces_flowSmoothing_eq_bot`,
+`exists_real_generator_of_continuous_unimodular_character`,
+`isCompactOperator_resolvent_of_tendsto_cofinite`,
+`opTrace_flowSmoothing_eq_tsum_fourier`,
+`multiplicityMeasure_apply_eq_tsum_atoms`,
+`multiplicityMeasure_eq_of_forall_integral_window_eq`,
+`measure_eq_of_forall_integral_cWeightTransform_eq`,
+`deningerTest_multiplicityMeasure_polynomial_growth` — each depends only on
+`propext, Classical.choice, Quot.sound`.  All modules are imported by the
+`GaloisForLFunctions.HTGeometry` umbrella.
+
+Card moved to `3-formalized`.  The remaining gate, application to the constructed arithmetic
+flow, is what this card explicitly says it does not do.

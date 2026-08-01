@@ -101,4 +101,25 @@ theorem eq_alternatingGroup_or_top_of_abelian_quotient [Nontrivial α]
     have hcards : Nat.card N ≤ Nat.card (alternatingGroup α) := by omega
     exact (Subgroup.eq_of_le_of_card_ge hle hcards).symm
 
+/-! ## Transport along an isomorphism -/
+
+/-- **The dichotomy transported.**  A normal subgroup with abelian quotient of a group isomorphic to
+a symmetric group maps onto the alternating group or onto everything. -/
+theorem map_eq_alternatingGroup_or_top {G : Type*} [Group G] [Nontrivial α]
+    (φ : G ≃* Equiv.Perm α) (N : Subgroup G) [N.Normal]
+    (habel : ∀ x y : G ⧸ N, x * y = y * x) :
+    Subgroup.map (φ : G →* Equiv.Perm α) N = alternatingGroup α ∨
+      Subgroup.map (φ : G →* Equiv.Perm α) N = ⊤ := by
+  have hnormal : (Subgroup.map (φ : G →* Equiv.Perm α) N).Normal :=
+    Subgroup.Normal.map inferInstance _ φ.surjective
+  have hcongr : G ⧸ N ≃* Equiv.Perm α ⧸ Subgroup.map (φ : G →* Equiv.Perm α) N :=
+    QuotientGroup.congr N (Subgroup.map (φ : G →* Equiv.Perm α) N) φ rfl
+  have habel' : ∀ x y : Equiv.Perm α ⧸ Subgroup.map (φ : G →* Equiv.Perm α) N,
+      x * y = y * x := by
+    intro x y
+    obtain ⟨x', rfl⟩ := hcongr.surjective x
+    obtain ⟨y', rfl⟩ := hcongr.surjective y
+    rw [← map_mul, ← map_mul, habel]
+  exact eq_alternatingGroup_or_top_of_abelian_quotient habel'
+
 end GaloisForLFunctions.HTGeometry

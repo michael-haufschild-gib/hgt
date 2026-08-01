@@ -1,7 +1,7 @@
 # Positive graph--conormal transversality
 
 - **ID:** `deninger-positive-graph-conormal-transversality`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** FINITE-STAGE LINEAR HODGE THEOREM
 - **Label:** `DAC_POSITIVE_GRAPH_CONORMAL_TRANSVERSALITY`
 - **Parent:** `deninger-unit-amalgamation-derived-lagrangian-enhancement`
@@ -131,8 +131,33 @@ as
 `RHTower.deningerPositiveCalderonGraph_inf_conormal_eq_bot` and
 `RHTower.deningerPositiveCalderonGraph_sup_conormal_eq_top`.
 Explicit graph/conormal linear equivalences and their finrank
-identities are included.  Required direct-file check passes; final
-cached module build and axiom audit remain reserved for final audit.
+identities are included.
+
+Checked against the card: `_inf_conormal_eq_bot` is `(2)`, proved by
+the card's argument — a point of the graph inside the conormal has
+`⟨Ax, x⟩ = 0`, and strict positivity forces `x = 0`.
+`_sup_conormal_eq_top` is `(3)`, proved from `(2)` and the dimension
+count `finrank Γ_A + finrank N*L = 2 dim B`.  The Lean statements
+assume only strict positivity, not self-adjointness of `A`, so they
+are slightly more general than the card.
+
+### Verification
+
+- Direct command: `lake env lean` on the module — passes with no
+  errors and no warnings.
+- Cached module build: completes.
+- Scratch `#print axioms` on both theorems: only `propext`,
+  `Classical.choice`, `Quot.sound`.
+- Imported by the `GaloisForLFunctions.RHTower` umbrella.
+
+## Gates
+
+- [x] 0 → 1 in-progress: transversality statement isolated
+- [x] 1 → 2 fully-proven: `(2)` and `(3)` proved
+- [x] 2 → 3 formalized: both clauses, with cached build and axiom audit
+- [ ] 3 → 4 publication-ready: the arithmetic specialization needs the
+      Calderón graph and incidence conormal of the global card, which
+      this one does not construct
 
 ## References
 
@@ -147,3 +172,6 @@ cached module build and axiom audit remain reserved for final audit.
   source of infinite arithmetic middle cohomology.
 - 2026-07-27 — Formalized finite complementary-sum statement, closing
   acyclicity of finite linear position--momentum fibre in Lean.
+- 2026-08-01 — Closed the stage-3 gate: verified both Lean statements
+  against clauses `(2)` and `(3)`, then ran the cached build and the
+  declaration-axiom audit.  No new Lean was needed.

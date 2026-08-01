@@ -153,8 +153,62 @@ It does not establish actual Suzuki hypotheses `(8)`.  Remaining source work is 
 
 `formal/GaloisForLFunctions/RHTower/SuzukiShiftSpectralMonotoneRatio.lean` proves `(5)`, integrated
 cross-Wronskian inequality, and exact quotient-rule nonpositivity from monotone-likelihood kernel.
-Complex anti-Pick identity `(1)`, rational partial fractions `(3)`, and concrete eigenvector
-instantiation `(7)--(8)` remain paper-level.
+**The setup fact** — that `D` has positive imaginary part above the real axis and hence never
+vanishes there — is formal in the same module.  It is what makes `q = N / D` well posed at all:
+
+- `im_cauchyTerm`: a single Cauchy term's imaginary part is `w * Im z / |t - z|^2`.
+- `im_cauchySum_pos`, `cauchySum_ne_zero`: a positive combination of Cauchy kernels is Herglotz
+  above the real axis, hence nonvanishing there.
+- `im_cauchySum_neg`, `cauchySum_ne_zero_of_im_ne_zero`: **`D` has no nonreal zeros** — off the real
+  axis the imaginary part carries the sign of `Im z`, in both half-planes.  This is the half of the
+  zero-structure claim behind `(3)` that needs no node ordering.
+- `hasDerivAt_cauchySumReal`, `deriv_cauchySumReal_pos`, `injOn_cauchySumReal`: **the uniqueness
+  half of the interlacing** — off the nodes the derivative is `sum w_j/(t_j - x)^2 > 0`, so `D` is
+  strictly increasing on every node-free interval and takes each value at most once.  That is the
+  "one" of "one real zero between consecutive nodes".
+- `continuousOn_cauchySumReal`, `exists_zero_of_sign_change`,
+  `existsUnique_zero_of_sign_change`: **`(3)`'s interlacing** — on a node-free interval whose
+  endpoints carry opposite signs there is *exactly one* zero, existence by the intermediate value
+  theorem and uniqueness by the strict monotonicity above.  The remaining analytic input is the sign
+  change itself, which comes from the one-sided blow-up of the two bounding node terms.
+
+**Complex anti-Pick identity `(1)`** is now formal, in
+`formal/GaloisForLFunctions/RHTower/SuzukiAntiPickIdentity.lean`.  The identity is algebra, not
+analysis, and splits into two ingredients:
+
+- `im_cauchy_mul_conj`: the imaginary part of a Cauchy factor against the conjugate of another
+  carries the antisymmetric node difference `t_k - t_j`.
+- `sum_sum_add_swap`: symmetrization of a double sum over one finite index set.
+- `im_antiPick_sum`: **`(1)`** — symmetrized, every summand carries `(r_j - r_k)(t_j - t_k)` behind
+  a leading minus sign, which is exactly what makes `(2)` read off from monotonicity.
+
+The identity needs no nonvanishing hypothesis: it holds as stated with the junk values of division
+by zero agreeing on both sides, so it applies verbatim at any spectral parameter.
+
+**`(2)`, the anti-Herglotz sign**, follows in the same module:
+
+- `antiPick_sum_nonneg`: monotone likelihood is exactly nonnegativity of every product
+  `(r_j - r_k)(t_j - t_k)`, so with nonnegative weights the symmetrized sum is nonnegative.
+- `im_antiPick_nonpos`: **`(2)` in summed form** — the leading minus sign of `(1)` and `Im z > 0`
+  turn that nonnegativity into nonpositivity.
+- `im_div_eq_im_mul_conj`, `im_ratio_nonpos_of_im_mul_conj_nonpos`: and a ratio whose numerator
+  against the conjugate denominator has nonpositive imaginary part is anti-Herglotz.  This last
+  needs no nonvanishing hypothesis either.
+
+**The residue sign of `(3)`** is formal in the same module.  The partial-fraction form carries one
+piece of content beyond its algebra — that the coefficients are nonnegative — and that sign is
+forced pointwise:
+
+- `im_poleTerm`: the imaginary part of a pole term directly above its own pole is `-nu/y`.
+- `poleCoeff_nonneg_iff_im_nonpos`: **`nu_k >= 0`** — a pole term is anti-Herglotz on that line
+  exactly when its coefficient is nonnegative.  No global partial-fraction theory is needed to see
+  the sign; evaluating one term on one vertical line suffices, in both directions.
+
+What remains of `(3)` is the algebraic decomposition itself — that `q` *has* this form with poles at
+the uncancelled zeros of `D` — which needs the zero structure of `D` between consecutive nodes.
+Concrete eigenvector instantiation `(7)--(8)` also remains paper-level; note that `(8)` is exactly
+the monotone-likelihood hypothesis consumed by `antiPick_sum_nonneg`, so the abstract side of it is
+already discharged.
 
 ## Novelty audit
 
@@ -174,3 +228,51 @@ External priority remains unverified.
 - [ ] prove chord-mass gap for one source-selected pair
 - [ ] prove full normalized jump Pick kernel
 - [ ] RH
+
+## Log
+
+- 2026-08-01 — the complex anti-Pick identity `(1)` formalized (`im_antiPick_sum`), one of the three
+  items this card listed as paper-level.  It is finite-sum algebra: the imaginary part of each mixed
+  Cauchy term carries `t_k - t_j` (`im_cauchy_mul_conj`), and symmetrizing the double sum
+  (`sum_sum_add_swap`) turns that into the factor `(r_j - r_k)(t_j - t_k)` behind a minus sign, from
+  which `(2)` reads off directly.  No nonvanishing hypothesis is needed — division-by-zero junk
+  values agree on both sides — so the identity holds at every spectral parameter.  Targeted build
+  green, axiom audit `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(2)` derived from `(1)` (`im_antiPick_nonpos`,
+  `im_ratio_nonpos_of_im_mul_conj_nonpos`).  Monotone likelihood enters exactly as nonnegativity of
+  each `(r_j - r_k)(t_j - t_k)`, which the symmetrization of `(1)` isolates; the leading minus sign
+  and `Im z > 0` then give the anti-Herglotz sign.  The ratio step also needs no nonvanishing
+  hypothesis, since `Complex.div_im` already handles a zero denominator consistently.  Targeted
+  build green, axiom audit `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the residue sign of `(3)` formalized (`poleCoeff_nonneg_iff_im_nonpos`).  The
+  nonnegativity `nu_k >= 0` needs no partial-fraction theory: evaluating a single pole term on the
+  vertical line above its own pole gives `-nu/y`, so anti-Herglotz and nonnegativity are equivalent
+  there, in both directions.  What remains of `(3)` is the decomposition itself, which needs the
+  zero structure of `D`.  Recorded also that `(8)` is precisely the monotone-likelihood hypothesis
+  `antiPick_sum_nonneg` consumes, so its abstract side is discharged and only the concrete
+  eigenvector data is outstanding.  Targeted build green, axiom audit
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the setup fact formalized (`im_cauchySum_pos`, `cauchySum_ne_zero`): a positive
+  combination of Cauchy kernels is Herglotz above the real axis and therefore nonvanishing, which is
+  what makes the ratio `q = N/D` well posed.  The card states this in passing while setting up, and
+  it had no declaration although everything downstream depends on it.  Targeted build green, axiom
+  audit `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — "`D` has no nonreal zeros" formalized (`cauchySum_ne_zero_of_im_ne_zero`), the half
+  of `(3)`'s zero-structure claim that needs no node ordering: off the real axis the imaginary part
+  of a positive Cauchy combination carries the sign of `Im z`, in both half-planes.  What remains of
+  the zero structure is the interlacing — one real zero between consecutive nodes — which is an
+  intermediate-value argument requiring the nodes ordered and the one-sided limits at them.
+  Targeted build green, axiom audit `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the uniqueness half of `(3)`'s interlacing formalized (`deriv_cauchySumReal_pos`,
+  `injOn_cauchySumReal`): off the nodes `D' = sum w_j/(t_j-x)^2 > 0`, so `D` is strictly increasing
+  on every node-free interval and has at most one zero there.  "One real zero between consecutive
+  nodes" is thus two claims with different proofs — uniqueness from the derivative sign, needing no
+  ordering, and existence from the sign change at the endpoints, needing the nodes ordered and their
+  one-sided limits.  Only the latter remains.  Targeted build green, axiom audit
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(3)`'s interlacing assembled (`existsUnique_zero_of_sign_change`): on a node-free
+  interval with a sign change there is exactly one zero, existence by the intermediate value theorem
+  and uniqueness by the derivative sign.  What is left of the zero structure is only the sign change
+  itself — the one-sided blow-up of the two bounding node terms — which is where the node ordering
+  and the limits actually enter.  Targeted build green, axiom audit
+  `[propext, Classical.choice, Quot.sound]`.

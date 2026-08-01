@@ -215,5 +215,82 @@ or Robin compression `(14)`.  Priority remains unverified beyond those sources.
 ## Formal status
 
 Exact topology and algebra are formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/SuzukiGroundEdgeApertureObstruction.lean`.  Concrete Suzuki
-convolution, eigenfunction trace regularity, and integral instantiation remain absent from Lean.
+`formal/GaloisForLFunctions/RHTower/SuzukiGroundEdgeApertureObstruction.lean`.
+
+**Integral instantiation** is now formal too, in
+`formal/GaloisForLFunctions/RHTower/SuzukiGroundEdgeIntegralInstantiation.lean`.  The algebraic
+average was stated for an abstract `moment` and `mass`; its analytic consumer needs those to be
+genuine integrals, and the step between is integration of a pointwise inequality against a
+nonnegative weight:
+
+- `lowerMoment_of_pointwise_bound`: a nonnegative weight transfers a lower bound on the profile to a
+  lower bound on the weighted moment.
+- `suzukiGroundEdgeAverage_integral_gt`: **`(3)` with genuine integrals** — a strict profile
+  threshold and positive ground mass force the weighted ground average above the target.
+- `exists_smallAperture_integral_average_gt`: **Theorem A in integral form** — for a continuous
+  screw profile vanishing at zero and a strictly negative target, every sufficiently small aperture
+  makes the weighted ground average of an actual nonnegative ground weight exceed the target.  The
+  strict gap comes from applying the profile bound at `c/2`, which is exactly the `c/2` of `(2)`.
+
+**Eigenfunction trace regularity** is now formal too, in the same module.  The Robin compression
+`suzukiGroundEdgeBoundaryRatio_eq_average_of_flux` consumes the flux law `(13)` as a *hypothesis*;
+the card derives it by integrating the even eigen-equation, and that derivation is now Lean:
+
+- `suzukiGroundEdgeFluxLaw`: **`(13)`** — integrating `-U'' = lambda phi` across `[-a,a]` gives
+  `-2 U'(a) = lambda * mass`.  The fundamental theorem turns the integral into the endpoint traces
+  of `U'`, and evenness of the mode — oddness of its derivative — collapses the two traces into one.
+- `suzukiGroundEdgeBoundaryRatio_eq_average_of_eigen`: **`(14)`** — Robin compression with the flux
+  law derived rather than assumed, so the boundary ratio equals the ground-edge average directly
+  from the eigen-equation.
+
+**Concrete Suzuki convolution** is now formal, in the same module, closing the last of the three:
+
+- `hasDerivAt_apertureConvolution`: the screw kernel's `x`-derivative passes inside the aperture
+  integral, giving the convolution of the derivative.
+- `hasDerivAt_deriv_apertureConvolution_of_eigen`: **`(12)` from `(10)` and `(11)`** — if the
+  potential's second derivative is the convolution of the kernel's second derivative and the weight
+  is an eigenfunction of the second-derivative convolution, the potential satisfies
+  `-U'' = lambda phi`.  That is exactly the hypothesis `suzukiGroundEdgeFluxLaw` consumes, so the
+  chain `(10) -> (11) -> (12) -> (13) -> (14)` closes end to end.
+
+**Symmetrization `(5)`--`(6)`** — same module.  The feasibility boundary is stated on `[0,a]`
+against the symmetrized profile `s_a`, and the fold that gets there is now formal:
+
+- `integral_fold_even`: against an even weight, the integral over the full aperture is the integral
+  over the right half against the symmetrized integrand.
+- `suzukiGroundEdgeAverage_fold_even`: **`(5)` and `(6)`** — the ground-edge average is unchanged by
+  the fold, since it leaves both moment and mass invariant, so the feasibility test may be run on
+  `[0,a]` against `s_a`.
+
+All three items previously listed as absent are formalized.
+
+## Log
+
+- 2026-08-01 — integral instantiation of Theorem A formalized
+  (`exists_smallAperture_integral_average_gt`), one of the three items this card's formal status
+  listed as absent.  The algebraic ground-edge average was proved for an abstract moment/mass pair;
+  what was missing was producing the hypothesis `lower * mass <= moment` from a pointwise profile
+  bound, which is integration of an inequality against a nonnegative weight
+  (`lowerMoment_of_pointwise_bound`).  The strict gap in `(3)` comes from instantiating the profile
+  bound at `c/2` rather than `c`, which is exactly what `(2)` displays.  Targeted build green, axiom
+  audit `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — eigenfunction trace regularity formalized (`suzukiGroundEdgeFluxLaw`), the second of
+  the three items listed as absent.  As elsewhere on this lane the displayed equation was a
+  hypothesis of the theorem citing it: `(13)` was the input to the Robin compression, not its
+  output.  Deriving it is the fundamental theorem plus oddness of `U'`, and
+  `suzukiGroundEdgeBoundaryRatio_eq_average_of_eigen` now routes `(14)` through that derivation.
+  Only concrete Suzuki convolution remains.  Targeted build green, axiom audit
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — concrete Suzuki convolution formalized (`hasDerivAt_apertureConvolution`,
+  `hasDerivAt_deriv_apertureConvolution_of_eigen`), the last of the three items this card's formal
+  status listed as absent.  Differentiating under the integral is mathlib's parametric
+  interval-integral theorem applied to the aperture convolution; with it, `(10)` and `(11)` give
+  `(12)`, which feeds the flux law and the Robin compression, so the whole chain
+  `(10) -> (14)` is now Lean.  Targeted build green, axiom audit
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — symmetrization `(5)`/`(6)` formalized (`integral_fold_even`,
+  `suzukiGroundEdgeAverage_fold_even`).  The feasibility-boundary section runs on `[0,a]` against
+  the symmetrized profile, and the fold justifying that reduction had no declaration; it is
+  reflection of the left half plus evenness of the weight, and it leaves both moment and mass
+  invariant so the average is unchanged.  Targeted build green, axiom audit
+  `[propext, Classical.choice, Quot.sound]`.

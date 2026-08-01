@@ -55,8 +55,8 @@ theorem evenIndicatorLayer_mul_of_le' {s t u v : ℝ} (hst : s ≤ t) (htu : t �
       (evenIndicatorLayer s t ∘L evenIndicatorLayer u v) =
     ContinuousLinearMap.adjoint (0 : evenSubspace →L[ℂ] evenSubspace) at h
   rw [ContinuousLinearMap.adjoint_comp, adjoint_evenIndicatorLayer,
-    adjoint_evenIndicatorLayer] at h
-  simpa using h
+    adjoint_evenIndicatorLayer, ContinuousLinearMap.adjoint.map_zero] at h
+  exact h
 
 /-- **Orthogonality of disjoint shells.**  Their images pair to zero. -/
 theorem inner_evenIndicatorLayer_apply_eq_zero {s t u v : ℝ} (hst : s ≤ t) (htu : t ≤ u)

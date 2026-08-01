@@ -1,7 +1,7 @@
 # Dense-resolvent transpose purity
 
 - **ID:** `deninger-dense-resolvent-transpose-purity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Label:** `DAC_DENSE_RESOLVENT_TRANSPOSE_PURITY`
 - **Parent:** `deninger-arithmetic-calderon-paugam-hardy-comparison`
@@ -112,17 +112,45 @@ The order-zero algebraic kernel, finite generalized-jet kernel,
 centered weight-one purity theorem, source-resolvent Xi spectrum
 package, and RH corollary are formalized in
 `GaloisForLFunctions.RHTower.DeningerArithmeticDenseResolventPurity`.
-The required direct command
-`lake env lean GaloisForLFunctions/RHTower/DeningerArithmeticDenseResolventPurity.lean`
-passes.  Final cached module build and imported-module axiom print are
-reserved for final audit.
+Checked against the card statement by statement:
+
+- `deningerTransposeEigenfunctional_eq_zero_of_sub_surjective` is the
+  algebraic theorem `(1)`--`(2)`: a transpose eigenfunctional vanishes
+  when `T - λ` is surjective, proved exactly as on the card by
+  choosing a preimage;
+- `deningerLinearMap_pow_surjective` is the generalized-jet step:
+  every power of a surjective endomorphism is surjective, so a finite
+  Jordan chain is excluded as well;
+- `deningerSourceResolvent_transposeEigenvalue_re_eq_zero` and
+  `deningerSourceResolvent_transposeEigenvalue_re_eq_half` are `(3)`
+  and `(4)`: off-axis surjectivity of every difference forces the
+  centered eigenvalue onto the imaginary axis, i.e. `Re ρ = 1/2`;
+- `DeningerHodgeSchwartzResolventXiSpectrum` and
+  `riemannHypothesis_of_hodgeSchwartzResolventXiSpectrum` package the
+  hypothesis and the criterion, with dense-range variants
+  `deningerSourceDenseRange_transposeEigenvalue_re_eq_half` and
+  `riemannHypothesis_of_hodgeSchwartzDenseRangeXiSpectrum` for the
+  weaker form `(5)`.
+
+### Verification
+
+- Direct command: `lake env lean` on the module — passes with no
+  errors and no warnings.
+- Cached module build: `lake build` of the module completes.
+- Scratch `#print axioms` on every headline declaration: only
+  `propext`, `Classical.choice`, `Quot.sound`.
+- Imported by the `GaloisForLFunctions.RHTower` umbrella.
 
 ## Gates
 
 - [x] 0 → 1 in-progress: source-pure statement and attack
 - [x] 1 → 2 fully-proven: complete algebraic and dense-core proofs
-- [ ] 2 → 3 formalized: code complete; final axiom/build audit pending
-- [ ] 3 → 4 publication-ready
+- [x] 2 → 3 formalized: algebraic kernel, generalized-jet kernel,
+      weight-one purity, the Xi-spectrum package and the RH criterion,
+      with cached build and axiom audit
+- [ ] 3 → 4 publication-ready: the criterion's hypothesis — a dense
+      source Hodge core with off-axis resolvent surjectivity — is the
+      open arithmetic input, not part of this theorem
 
 ## Log
 
@@ -131,3 +159,6 @@ reserved for final audit.
   minimal strong-dual spectral-faithfulness gate.
 - 2026-07-27 — Formalized surjectivity of every power and exclusion of
   finite generalized transpose eigenjets; direct Lean check passes.
+- 2026-08-01 — Closed the stage-3 gate: verified the module states the
+  card's theorems clause by clause, then ran the cached build and the
+  declaration-axiom audit.  No new Lean was needed.

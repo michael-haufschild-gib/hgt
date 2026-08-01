@@ -1,6 +1,6 @@
 import Mathlib.MeasureTheory.Measure.Dirac
 import Mathlib.MeasureTheory.Measure.Sub
-import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
 
 /-!
 # The labelled atomic measure and its residual

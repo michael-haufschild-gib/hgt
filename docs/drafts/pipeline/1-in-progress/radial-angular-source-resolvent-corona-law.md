@@ -1,4 +1,4 @@
-# Radial--angular source--resolvent--corona law
+# Finite-observation / asymptotic-completion separation law
 
 - **ID:** RASRC-1
 - **Stage:** 1-in-progress
@@ -9,6 +9,47 @@
 ## Exact claim
 
 `[PAPER-PROVED] [CORPUS] [NOVELTY UNVERIFIED] [NOT RH]`
+
+Let `I` be any coordinate set, `A` any alphabet, and `~` any equivalence relation on records
+`I -> A` which identifies records differing on only finitely many coordinates.  For every finite
+set `S` of observed coordinates, every set `Y`, and every map
+
+```text
+F : ((I -> A) / ~) -> Y,
+```
+
+if `F` can be computed from the coordinates in `S` of a representative record, then `F` is
+constant.  In symbols, the implication
+
+```text
+(forall u v, u|S=v|S -> F([u])=F([v]))
+  -> Function.Constant F                                      (A)
+```
+
+holds without topology, linearity, positivity, or boundedness assumptions.  Thus no nonconstant
+asymptotic spectral invariant is a finite-horizon observable.
+
+Every finite cylinder therefore surjects onto the whole quotient.  Sequential recurrence modulo
+late-time-vanishing differences is one instance, not the definition of the law.
+
+Equip `A` with any topology and the record space with its product topology.  Every quotient fibre
+is dense, because it contains all finite modifications of each representative.  The coinduced
+quotient topology is therefore indiscrete.  More sharply, if `Y` is `T1`, any reporter whose
+pullback to record space is continuous at even one point is constant.  This is the topological
+form of `(A)` and requires no countability, metrizability, algebra, or probability.
+
+Two corpus constructions are literal additional instances.  The Hadamard coefficient-tail
+algebra identifies finite-support changes, so every finite prime/coefficient prescription occurs
+in every reduced-product class.  The Sonin singular-grade relation identifies sections modulo
+`o(epsilon)`; every finite depth modification is exactly zero eventually and hence preserves the
+grade.  In both cases every finite-coordinate reporter on the completed quotient is constant.
+
+This exact categorical separation has a robust physical form.  In every finite diagonal quantum
+system, every finite normalized Heisenberg record and every positive tolerance admit both:
+
+1. an arbitrarily close strict-contraction completion for which every complete Heisenberg history
+   vanishes;
+2. an arbitrarily close unitary completion of every admissible positive projective temporal rank.
 
 Spectral completion has two independent coordinates which no finite observation horizon can
 identify:
@@ -24,7 +65,7 @@ exactly its peripheral spectral carrier and vanishes exactly when peripheral mas
 radial survival is selected before angular recurrence dimension; neither is a finite-horizon
 observable.
 
-The Riemann first-clock atlas is an arithmetic infinite-divisor realization of the same split.
+The Riemann first-clock atlas is an arithmetic infinite-divisor realization of this separation.
 Finite-aperture creases recover the source births.  Strictly off-critical characters have nonzero
 radial exponent and are recovered as poles of fixed-width source continuation.  After subtracting
 their reflected polar sector, critical characters have unit modulus and form the unique Bohr
@@ -36,10 +77,39 @@ radial/growth  -> off-critical divisor,
 angular/corona -> critical divisor.
 ```
 
-The three readouts are jointly complete.  The finite-horizon future-fan theorem proves that the
-radial and angular readouts cannot be collapsed into one bounded finite-time observer in general.
+The three readouts are jointly complete, but they are not three strata of the universal theorem.
+Creases are the finite-aperture source readout; poles and Bohr frequencies are two necessarily
+non-finite boundary readouts of the completed divisor.  Law `(A)` proves that no nonconstant
+divisor invariant descending to the recurrence corona can be replaced by any exact finite-time
+reporter.  The physical future-fan strengthens this from an abstract splice obstruction to
+arbitrarily close genuine finite-dimensional evolutions.
 
 ## Dependency-closed proof
+
+### Universal finite-observation separation
+
+Fix a finite coordinate set `S` and two arbitrary quotient classes `q_1,q_2`.  Choose a record
+`u` representing `q_1`.  Splice the coordinates `u|S` to any representative of `q_2`.  The
+spliced record `w` agrees with `u` on `S` and differs from the chosen representative only on `S`,
+hence represents `q_2`.  If `F` is determined by `S`, then
+
+```text
+F(q_1)=F([u])=F([w])=F(q_2).
+```
+
+As `q_1,q_2` were arbitrary, `F` is constant.  This also proves the sharper geometric statement:
+every finite cylinder projects surjectively onto the entire quotient.
+
+### Positive survivor: cofinal observation is necessary and can work
+
+The law does not say completed information is inaccessible.  It says a nonconstant completed
+invariant must escape every fixed finite coordinate set.  The corpus supplies an exact positive
+model: Sonin packets lose all mass below every band they outrun and retain all mass below every
+band that outruns them.  Between one moving slow band and one moving fast band, their Fourier
+energy has an eventual uniform positive floor.  Thus cofinal moving observation detects precisely
+the tail energy that every fixed band misses.  The Riemann pole chart and Bohr chart are the
+analytic-continuation and infinite-mean counterparts of this constructive escape from finite
+observation.
 
 ### Universal radial branch
 
@@ -98,6 +168,19 @@ source--radial--angular realization.  No zero exclusion is used.
 
 ## Formal evidence
 
+- `formal/GaloisForLFunctions/HTGeometry/TailQuotientSeparationLaw.lean`
+  - `finiteCoordinateCylinder_surjective_quotient`
+  - `finiteCoordinate_quotientReporter_constant`
+  - `nonconstant_finiteModificationQuotientReporter_not_determinedBy`
+  - `finiteModificationQuotient_fiber_dense`
+  - `finiteModificationQuotient_coinduced_eq_indiscrete`
+  - `continuousAt_pullback_finiteModificationQuotientReporter_constant`
+  - `finiteCylinder_surjective_tailQuotient`
+  - `finiteHorizon_tailQuotientReporter_constant`
+  - `nonconstant_tailQuotientReporter_not_determinedBy`
+- `formal/GaloisForLFunctions/HTGeometry/TailHadamardFiniteObservationSeparationLaw.lean`
+  - `finiteCoordinateCylinder_surjective_tailHadamardReducedProduct`
+  - `finiteCoordinate_tailHadamardReporter_constant`
 - `formal/GaloisForLFunctions/HTGeometry/RadialAngularRecurrenceCompletionLaw.lean`
   - `exists_scalarDampedUnitary_heisenberg_finiteHorizon_close_extinct`
   - `exists_finiteQuantumRecurrenceFutureFan`
@@ -108,8 +191,22 @@ source--radial--angular realization.  No zero exclusion is used.
   - `finiteContraction_recurrenceCorona_eq_persistentCarrier`
   - `finiteContraction_recurrenceCorona_eq_zero_iff_persistentMass_zero`
   - `finiteCylinder_surjective_recurrenceCorona`
+- `formal/GaloisForLFunctions/RHTower/AsymptoticCompletionSeparationLaw.lean`
+  - `recurrenceAsymptoticSetoid_tailSaturated`
+  - `finiteHorizon_recurrenceCoronaReporter_constant`
+  - `nonconstant_recurrenceCoronaReporter_not_determinedBy`
+- `formal/GaloisForLFunctions/RHTower/SingularGradeFiniteObservationSeparationLaw.lean`
+  - `singularGradeSetoid_finiteModificationSaturated`
+  - `finiteCoordinateCylinder_surjective_singularGradeQuotient`
+  - `finiteCoordinate_singularGradeReporter_constant`
+- `formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`
+  - `exists_pos_eventually_le_fourier_band_gap`
 - `formal/GaloisForLFunctions/RHTower/CCMUnitaryPolarSourceAtlas.lean`
   - `ccmFirstClockCreasePolarFrequencyAtlas`
+- `formal/GaloisForLFunctions/RHTower/CCMFirstClockAsymptoticBohrTorelli.lean`
+  - `ccmFirstClockAsymptoticBohrModel_eq_explicitScrew`
+  - `bohrCoefficient_ccmFirstClockAsymptoticBohrModel_eq_multiplicity`
+  - `ccmFirstClockAsymptoticBohrModel_recovers_absoluteMultiplicity`
 
 Direct check and axiom audit of the new radial--angular module remain to be repeated in this lane
 after other foreground builds stop.  Existing atlas and recurrence modules are already in corpus;
@@ -121,13 +218,15 @@ final audit remains pending.
   They are not novelty claims.
 - Peripheral/transient spectral splitting is classical.  The recurrence-corona formulation is a
   bridge, not a priority claim without deeper literature audit.
-- Candidate scientific contribution is the exact future-fan theorem plus its literal Riemann
-  source realization: one finite record admits extinct and arbitrarily ranked recurrent futures,
-  while one arithmetic clock resolves source birth, radial divisor, and angular divisor by three
-  singular boundary readouts.
+- The splice proof of `(A)` is elementary once the correct quotient is named.  Its significance is
+  explanatory, not technical: it is the representation-independent impossibility theorem behind
+  every attempted finite observer of a complete spectral phase.
+- Candidate scientific contribution is the combination of the exact categorical law `(A)`, its
+  robust physical future-fan, and its literal Riemann source realization: one finite physical
+  record admits extinct and arbitrarily ranked recurrent futures, while one arithmetic clock
+  resolves source birth and the complete divisor only by singular boundary readouts.
 - This theorem explains why finite-time positivity, bounded Hilbert-space completion, or one regular
   scalar observer cannot replace the pole and recurrence charts.  It does not prove their polar
   chart is empty and therefore does not prove RH.
 - Paper inclusion is conditional on concise presentation.  If it reads as analogy rather than a
   theorem-driven interpretation of the atlas, omit it rather than create another collage.
-

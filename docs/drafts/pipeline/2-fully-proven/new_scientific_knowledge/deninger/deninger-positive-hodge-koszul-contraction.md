@@ -170,3 +170,30 @@ formalized.
 
 - 2026-07-27 — Proved explicit Euler contracting homotopy for every
   positive finite Calderón--Milnor critical packet.
+
+### The exterior half of `(7)` landed
+
+`formal/GaloisForLFunctions/HTGeometry/ExteriorEulerIdentity.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `ExteriorAlgebra.ι_mul_ι_add_swap_eq_zero` — two exterior generators anticommute, and
+  `ι_mul_ι_mul` is the form used below: moving a creation past another creation flips the sign.
+- `sum_ι_mul_contractLeft_listProd` — **the exterior Euler identity**:
+
+  `∑ᵢ eᵢ ∧ ι_{eᵢ*}(v₁ ∧ ⋯ ∧ v_k) = k · (v₁ ∧ ⋯ ∧ v_k)`,
+
+  i.e. summing creation against contraction over a basis multiplies a product of `k` generators
+  by `k`.  The induction is on the list of generators: the creation--annihilation relation
+  `CliffordAlgebra.contractLeft_ι_mul` splits off the head, the basis expansion
+  `∑ᵢ eᵢ*(a)·eᵢ = a` reassembles it, and anticommutation moves the head past the remaining
+  creations so the inductive hypothesis applies.  Since `ExteriorAlgebra.ιMulti_span_fixedDegree`
+  says `Λ^k` is spanned by such products, this is the identity on `Λ^k`.
+
+This is the exterior half of the Koszul Euler identity `dh + hd = (r + p)·id`.  The symmetric half
+is mathlib's `MvPolynomial.IsHomogeneous.sum_X_mul_pderiv`, so what remains for `(7)` is the
+tensor-product bookkeeping on `Sym(L*) ⊗ Λ L` — mathlib has no Koszul complex, so the bigraded
+differential and homotopy have to be assembled by hand.
+
+Recorded for the next session: `CliffordAlgebra.contractLeft` is the contraction operator (the
+exterior algebra is the Clifford algebra of the zero form), and `Module.Basis` — not `Basis` — is
+the current mathlib name.

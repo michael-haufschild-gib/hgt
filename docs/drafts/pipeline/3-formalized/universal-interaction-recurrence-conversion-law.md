@@ -187,3 +187,47 @@ Axiom audit of every load-bearing declaration reports only:
 No `sorry`, `admit`, custom `axiom`, `opaque`, or `unsafe` declaration is
 used. Final module build and repository lint are reserved for publication
 audit.
+
+## Genericity upgrade — 2026-08-01
+
+The weak separable interaction is no longer only an existence witness.
+For every pair of finite input spectra, parameters whose rank-one diagonal
+interaction erases all nonzero balanced spectral relations form a dense
+residual set with Lebesgue-null complement.  The null-complement result
+remains true after restriction to every parameter region, including every
+arbitrarily small ball.  Every parameter in this generic set realizes full
+product temporal rank, creates at least `m*n` new temporal directions,
+leaves zero post-interaction relation rank, and attains the permutation
+collision floor at every replica order.
+
+Formal source:
+`formal/GaloisForLFunctions/HTGeometry/SeparableInteractionProjectiveGenericityLaw.lean`.
+Targeted foreground compilation passes; axiom audit of all three load-bearing
+genericity declarations reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+## Deterministic recurrence-frequency upgrade — 2026-08-01
+
+Full temporal rank now has an exact single-system frequency consequence,
+not only an ensemble-volume interpretation.  For every rationally
+independent finite frequency packet and every positive tolerance, the lower
+centered-time frequency of strict returns is bounded below by the Haar
+volume of the half-tolerance target, while the upper centered-time frequency
+of weak returns is bounded above by the Haar volume of the full target.  The
+half/full tolerance separation makes the theorem unconditional: no
+regular-value or null-boundary hypothesis is required.
+
+For every parameter in the generic separable-interaction set, every choice
+of spectral anchor, every weighted recurrence probe, and every positive
+tolerance, this frequency sandwich holds on exactly `m*n+m+n` projective
+temporal directions.  Thus the generic interaction theorem now connects the
+additive-to-multiplicative rank jump to the actual long-time fraction of
+high-fidelity returns of one deterministic coupled system.
+
+Formal sources:
+
+- `formal/GaloisForLFunctions/HTGeometry/FiniteSpectralRecurrenceFrequencyLaw.lean`;
+- `formal/GaloisForLFunctions/HTGeometry/GenericInteractionRecurrenceFrequencyLaw.lean`.
+
+Both targeted foreground checks pass in about four seconds.  The capstone
+axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
