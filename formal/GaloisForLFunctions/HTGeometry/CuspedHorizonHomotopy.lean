@@ -279,4 +279,38 @@ noncomputable def cuspHomologyZeroIso (K V : Type u) [Field K] [AddCommGroup V] 
   exact cuspBuildingHomologyIso K V R 0 ≪≫
     asIso ((nerveFunctor.obj (Cat.of (({S : Submodule K V // S ≠ ⊥ ∧ S ≠ ⊤})ᵒᵈ))).homology₀ε R)
 
+/-! ## The cusps are contractible -/
+
+/-- **A cusp has a greatest element.**  All the vertices carried by one subspace form a chain whose
+largest member is the depth-one vertex on that subspace. -/
+@[reducible] def cuspOrderTop {S : Submodule K V} (hb : S ≠ ⊥) (ht : S ≠ ⊤) :
+    OrderTop {v : CuspedVertex K V // v.space = S} where
+  top := ⟨⟨S, 0, hb, ht, fun h => absurd rfl h⟩, rfl⟩
+  le_top v := ⟨Nat.zero_le _, fun _ => le_of_eq v.2.symm, fun _ => v.2.symm⟩
+
+/-- **Each cusp is contractible.**  The order complex of the vertices carried by one subspace has no
+homology in positive degrees, however deep the cusp runs.
+
+This is the card's sentence that the order complex of a jet-tail chain is an infinite simplex, hence
+contractible, in the form the homology of the nerve records. -/
+theorem isZero_homology_cusp (K V : Type u) [Field K] [AddCommGroup V] [Module K V]
+    [FiniteDimensional K V] {S : Submodule K V} (hb : S ≠ ⊥) (ht : S ≠ ⊤) {C : Type*} [Category C]
+    [Limits.HasCoproducts.{u} C] [Preadditive C] [CategoryWithHomology C] (R : C) (n : ℕ)
+    (hn : 1 ≤ n) :
+    Limits.IsZero
+      ((nerveFunctor.obj (Cat.of {v : CuspedVertex K V // v.space = S})).homology R n) := by
+  haveI := cuspOrderTop (K := K) (V := V) hb ht
+  exact isZero_homology_of_orderTop R n hn
+
+/-- **The subspaces above a fixed one form a contractible poset**, having a least element. -/
+theorem isZero_homology_above (K V : Type u) [Field K] [AddCommGroup V] [Module K V]
+    [FiniteDimensional K V] (L : Submodule K V) {C : Type*} [Category C]
+    [Limits.HasCoproducts.{u} C] [Preadditive C] [CategoryWithHomology C] (R : C) (n : ℕ)
+    (hn : 1 ≤ n) :
+    Limits.IsZero
+      ((nerveFunctor.obj (Cat.of {S : Submodule K V // L ≤ S})).homology R n) := by
+  haveI : OrderBot {S : Submodule K V // L ≤ S} :=
+    { bot := ⟨L, le_rfl⟩, bot_le := fun S => S.2 }
+  exact isZero_homology_of_orderBot R n hn
+
 end GaloisForLFunctions.HTGeometry

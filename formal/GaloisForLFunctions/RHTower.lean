@@ -4123,3 +4123,4 @@ import GaloisForLFunctions.RHTower.DeningerRealApexEndpoint
 import GaloisForLFunctions.RHTower.DeningerSUnitEndpointPage
 import GaloisForLFunctions.RHTower.DeningerPoissonZetaDuality
 import GaloisForLFunctions.RHTower.DeningerProjectorLimitPassage
+import GaloisForLFunctions.RHTower.DeningerPolarizationAlmostProjection

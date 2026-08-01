@@ -1,7 +1,7 @@
 # Meyer Poisson nuclear polarization pair
 
 - **ID:** `deninger-meyer-poisson-nuclear-polarization-pair`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** PUBLISHED SOURCE THEOREM / TOPOLOGICAL GUARDRAIL
 - **Label:** `DAC_MEYER_POISSON_NUCLEAR_POLARIZATION_PAIR`
 - **Parent:** `deninger-arithmetic-calderon-paugam-hardy-comparison`
@@ -118,3 +118,46 @@ energy, not assumed on Meyer's Fréchet quotient.
 - 2026-07-27 — Replaced an unjustified strict source Hardy projector
   by Meyer's exact analytic structure: closed Poisson embeddings and
   an almost-projector whose convolution defects are nuclear.
+- 2026-08-02 — Formalized the guardrail: the exact leg is a projection, the
+  almost-leg is idempotent exactly modulo its transported defect, and exact
+  idempotence would itself produce the complement Meyer does not claim.
+
+## Lean status
+
+### The guardrail landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerPolarizationAlmostProjection.lean`.  Axiom audit for
+all 12 declarations: `propext, Classical.choice, Quot.sound` or less.
+
+The nuclearity statements `(5)` and `(6)` are Meyer's published analytic theorems and enter as
+named hypotheses; what is proved here is the algebra that the card's hostile audit is about.
+
+- `deningerLeg` — the leg operator `ι ∘ π` of a polarization leg `(ι, π)`.
+- `deningerExactLeg_isIdempotent`, `deningerExactLeg_range`, `deningerExactLeg_isCompl` — **the
+  negative leg**: from `π₋ι₋ = 1` of `(3)`, `P₋ = ι₋π₋` is an honest idempotent, its range is
+  `ι₋H₋`, and the ambient space splits as `ker P₋ ⊕ ι₋H₋`.
+- `deningerAlmostLeg_defect` — **the positive leg**: for any `(ι, π)` the idempotence defect is the
+  transported retraction defect, `P² - P = ι ∘ (πι - 1) ∘ π`.  This is the precise sense in which
+  `(4)` controls how far `P₊` is from a projection.
+- `deningerAlmostLeg_isIdempotent_iff` — `P₊` is idempotent exactly when that transported defect
+  vanishes; so it must not be silently treated as an idempotent.
+- `deningerAlmostLeg_defect_mem` — **idempotence modulo a two-sided class**: if the retraction
+  defect lies in a class of operators closed under composition with `ι` and `π` — a trace ideal, in
+  particular the nuclear ideal of `(6)` — then so does the idempotence defect of the leg.  This is
+  level 2 of the card's arithmetic interpretation, stated exactly.
+- `deningerAlmostLeg_defect_of_cutoff` — the shape of `(4)`: if `πι = 1 + cutoff - conjugate` and
+  the class contains both and is closed under differences, the retraction defect is in the class.
+- `deningerAlmostLeg_isCompl_of_isIdempotent` — **the guardrail itself**: if the almost-leg were an
+  exact idempotent and `π₊ι₊` were onto, then `ι₊H₊` would be complemented, with `ker P₊` as its
+  complement.  Assuming exact idempotence is therefore a complementation claim, which is precisely
+  what Meyer states he does not know; calling `(5)` a difference of exact projectors would
+  strengthen him without proof.
+- `deningerScalarLeg_defect`, `deningerScalarLeg_isIdempotent_iff` — the hypothesis class is not
+  vacuous: scalar legs realize every defect, and are idempotent exactly for idempotent scalars.
+
+### Remaining
+
+Nothing in the theorem.  Meyer's nuclearity of `(5)` and `(6)`, and the uniformity over bounded
+test sets, are imported analytic results; the levels 1 and 3 of the arithmetic interpretation —
+exact local Calderón Hardy projectors and exact orthogonal Hardy projectors after the positive
+Hodge completion — are separate constructions and remain open.

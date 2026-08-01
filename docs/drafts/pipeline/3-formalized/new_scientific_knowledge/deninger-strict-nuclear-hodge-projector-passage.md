@@ -157,17 +157,17 @@ Projective-limit theorem:
   subspace topology of the product, which is the initial (projective-limit) topology used in the
   card; local convexity is not needed for any of the statements below, and Hausdorffness enters
   only through `T1Space` in the closed-range claim.
-- `deningerCoordinateOperator` — **`(2)`**: compatibility `(1)` makes the coordinatewise family
+- `deningerLimitCoordinateOperator` — **`(2)`**: compatibility `(1)` makes the coordinatewise family
   preserve compatible families, and the map is continuous because it is the corestriction of a
-  product map.  Its coordinates are `deningerCoordinateOperator_apply`.
-- `deningerCoordinateOperator_unique` — **the uniqueness in `(2)`**: a continuous linear map on the
+  product map.  Its coordinates are `deningerLimitCoordinateOperator_apply`.
+- `deningerLimitCoordinateOperator_unique` — **the uniqueness in `(2)`**: a continuous linear map on the
   limit is determined by its coordinates.
-- `deningerCoordinateOperator_idem` — idempotence is coordinatewise.
-- `deningerCoordinateOperator_mem_range_iff` — **`(3)`**: a compatible family lies in the range
+- `deningerLimitCoordinateOperator_idem` — idempotence is coordinatewise.
+- `deningerLimitCoordinateOperator_mem_range_iff` — **`(3)`**: a compatible family lies in the range
   exactly when each coordinate lies in the corresponding stagewise range.  Since both sides carry
   the induced topology of the limit, this membership identity *is* the identification of `ran P`
   with `lim ran P_i` as topological vector spaces.
-- `deningerCoordinateOperator_range_isClosed` — the range is closed, being the kernel of `1 - P`.
+- `deningerLimitCoordinateOperator_range_isClosed` — the range is closed, being the kernel of `1 - P`.
 - `deningerLimitGreen` — **`(4)`**: the Green identity `1 - P = QQ†G + Q†QG` passes verbatim to the
   limit, because equality in a limit is detected coordinatewise.
 

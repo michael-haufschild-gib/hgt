@@ -3430,3 +3430,4 @@ import GaloisForLFunctions.HTGeometry.StripHullSeparation
 import GaloisForLFunctions.HTGeometry.EventualRelationFinitePhaseLaw
 import GaloisForLFunctions.HTGeometry.GammaFieldCoefficientLaw
 import GaloisForLFunctions.HTGeometry.PolynomialImplicitField
+import GaloisForLFunctions.HTGeometry.LineJetPolynomialTwist

@@ -191,8 +191,13 @@ Active claim: `SUZUKI-COMPLETED-LOG-SEAM-NO-RETURN`.
 The exact bounded pointwise part of its scale-gap gate is now closed in
 `../2-fully-proven/not_new_scientific_knowledge/suzuki-bounded-seam-half-log-rigidity.md`.
 Finite prime adjacency plus bounded polar--Gamma multiplication forces either a zero terminal
-state or a nonzero vector half-log trace. The genuinely nonlocal logarithmic remainder remains
-live; this is a strict source reduction, not whole-route closure.
+state or a nonzero vector half-log trace. The literal nonlocal logarithmic remainder is now closed
+on the optimal bounded classical solution class in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-exact-log-remainder-signed-trace-rigidity.md`:
+weighted jump-form duality plus penalized extrema force the signed pointwise trace without
+conormality. The live E1 gate is the earlier source-domain theorem that every completion-safe
+square-Evans zero mode has such a bounded weak/classical representative. This is a strict source
+reduction, not whole-route closure.
 
 Hostile verdict: `SURVIVES PRELIMINARY ATTACK`. Generic logarithmic ellipticity is insufficient,
 whole-packet inverse-log grading is false, and the completed domain has a genuine corona. The

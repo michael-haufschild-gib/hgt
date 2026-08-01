@@ -363,9 +363,14 @@ sqrt(L)F(L) -> beta != 0.
 No positivity, self-adjointness, commutativity, or finite-dimensional hypothesis is needed.
 Consequently finite prime adjacency and bounded polar--Gamma multiplication cannot create an
 inverse-log-flat non-`H1` homogeneous cycle. The only surviving scale-gap mechanism is the
-genuinely nonlocal logarithmic remainder `(18j)`. The precise next theorem is therefore not a
-generic tail estimate: lift `(18j)` to the completed seam carrier and prove that it is an
-integrable perturbation after half-log conjugation.
+genuinely nonlocal logarithmic remainder `(18j)`. That remainder is now closed on the bounded
+classical solution class by
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-exact-log-remainder-signed-trace-rigidity.md`:
+its symmetric BV pairing supplies the averaged trace, and its favorable sign at penalized extrema
+upgrades the average to a signed pointwise trace without conormality. The precise next theorem is
+now the source-domain lift: every completion-safe square-Evans zero mode must have a bounded
+weak/classical representative. An unbounded weak completed mode is the only remaining pre-trace
+boundary-frequency escape.
 
 ## 5. `SUZUKI-NO-INTERMEDIATE-BOUNDARY-SCALE`
 
@@ -440,7 +445,8 @@ live new claims.
 - [x] whole-packet log-grade separation falsified
 - [x] boundedly coupled homogeneous flat tails excluded by a Volterra tail theorem
 - [x] bounded pointwise seam systems classified by a nonzero half-log trace alternative
-- [x] full scale-gap reduced to a uniform exact-remainder/seam-carrier bound
+- [x] exact nonlocal remainder closed on the optimal bounded classical solution class
+- [ ] lift every completion-safe square-Evans zero mode into that bounded classical class
 - [x] strongest two-channel survivor extracted
 - [ ] prove endpoint trace existence for exact Suzuki zero modes
 - [ ] exclude inverse-log-flat non-`H1` homogeneous seam cycles

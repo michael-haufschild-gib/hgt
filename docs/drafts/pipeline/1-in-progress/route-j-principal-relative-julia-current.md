@@ -647,3 +647,111 @@ questions are quantitative:
    breadth axis and beyond-finite-Rees reflected depth, rather than only positive Euler height?
 
 Until those are proved or contradicted, `J-SF2` is a real survivor.
+
+## 18. Safe source-height phase cannot dominate `[PAPER-PROVED NO-GO]`
+
+The positive phase cone in Section 17 admits a quantitative audit.  At the Euler boundary and
+valuation depth zero, for `p` in the macroscopic block
+
+```text
+P_X = {p prime : 2X < p <= 5X},
+```
+
+the source amplitude and height are
+
+```text
+a_p = sqrt(log(p)/p),
+h_p = (1/2) log(p).
+```
+
+Write `D=(1/2)log(5/2)`.  For every `p,q in P_X`,
+`|h_p-h_q|<=D`.  In the no-wrap cone,
+
+```text
+0 <= d sin(tau d) <= tau d^2,
+```
+
+so the phased exterior energy satisfies
+
+```text
+0 <= Q_X(tau)
+   <= tau D^2 (sum_(p in P_X) a_p)^2.                  (31)
+```
+
+Chebyshev's elementary upper bound gives
+
+```text
+sum_(p in P_X) log p <= theta(5X) <= 5X log 4.
+```
+
+Since every `p>2X`,
+
+```text
+sum a_p^2 = sum log(p)/p <= (5/2) log 4,
+card(P_X) log(2X) <= sum log p,
+```
+
+and Cauchy--Schwarz yields
+
+```text
+(sum a_p)^2
+  <= card(P_X) sum a_p^2
+  <= (25/2)(log 4)^2 X/log(2X).                       (32)
+```
+
+The prime number theorem supplies, for all large `X`, one prime in
+`(2X,(9/4)X)` and one in `(4X,(9/2)X)`.  Their height separation is at least
+`(1/2)log(16/9)`.  Therefore the packet-wide no-wrap condition forces
+
+```text
+tau <= 2 pi / log(16/9),                               (33)
+```
+
+uniformly in `X`.  Combining `(31)`--`(33)` gives
+
+```text
+Q_X(tau) = O(X/log X) = o(X).                          (34)
+```
+
+On the certified first-clock block `X=m^4`, the pure-bad mass theorem gives
+
+```text
+(sum bad_p)^2 >= X/576.                                (35)
+```
+
+Hence every source-height phase staying in the proven positive cone eventually satisfies
+
+```text
+Q_X(tau) < (sum bad_p)^2.                              (36)
+```
+
+It cannot meet the packet-hereditary domination demanded by `(2)`.
+
+This persists at finite Julia aperture along every moving-block source-faithful scale:
+
+```text
+x_m log(5m^4) -> 0.
+```
+
+Indeed
+
+```text
+normalizedJuliaPrimeLog_x(p)/log p
+```
+
+is a continuous function of `x log p` with limit one at zero, by the exact prime-attenuation
+profile.  The displayed scale condition makes this convergence uniform on `P_(m^4)`, so calibrated
+heights and `(31)`--`(36)` survive with an arbitrarily small multiplicative error.
+
+Consequences:
+
+1. the nonuniform phase constructed in Section 17 is genuine new source orientation, not
+   scalar-zero theatre;
+2. its entire termwise-positive/no-wrap class is nevertheless too small by a logarithmic factor
+   on the hard arithmetic block;
+3. any remaining `J-SF2` mechanism must use phase wrapping with a non-termwise global positivity
+   theorem, or combine the phase with the manuscript's beyond-finite-Rees depth relation before
+   scalarization.
+
+Thus `J-SF2` is narrowed to an oscillatory or genuinely beyond-Rees coupling.  Merely choosing a
+different bounded safe phase cannot work.

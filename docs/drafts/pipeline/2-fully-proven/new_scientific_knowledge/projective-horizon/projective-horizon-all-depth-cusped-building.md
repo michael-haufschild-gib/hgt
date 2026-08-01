@@ -511,3 +511,39 @@ positivity map or zero-location mechanism is known.
 
   Supporting infrastructure in `NerveHomotopy.lean`: `nerveEdgeOfLE`, `pi0_mk_eq_of_comparable`,
   `isPreconnected_nerve_of_zigzag`, `zigzag_orderDual`.
+
+- 2026-08-02 — **A poset-homotopy toolkit, and the cusps are proved contractible.**
+  `formal/GaloisForLFunctions/HTGeometry/NerveHomotopy.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  nerveHomotopyOfLE        :  f ≤ g pointwise  →  SSet.Homotopy (nerve f) (nerve g)
+  isZero_homology_of_conical:  id ≤ F ≥ const p₀  →  H_n = 0 for n ≥ 1
+  isZero_homology_of_orderTop / _of_orderBot
+  ```
+
+  `nerveHomotopyOfLE` is the poset case of "a natural transformation induces a simplicial homotopy of
+  nerves": the cylinder `leCylinder f g h` sends `(x, 0) ↦ f x` and `(x, 1) ↦ g x`, and is monotone
+  exactly because `f x ≤ f y ≤ g y`.  It is the engine behind every contractibility statement, and
+  the earlier cusp retraction is its first instance.
+
+  A caution recorded from the build: `SSet.Homotopy` is **not** an equivalence relation for general
+  simplicial sets — mathlib supplies no `symm` or `trans`, correctly, since composing homotopies needs
+  a Kan condition.  So conical contractibility cannot be assembled as a chain of homotopies; it is
+  assembled one level down, where `homologyMap` equality *is* symmetric and transitive.  Both
+  `nerveHomotopyConst_of_orderTop` and `nerveHomotopyConst_of_orderBot` are genuine single homotopies
+  and are stated as such; the conical case is stated on homology.
+
+  Applied to the card, in `CuspedHorizonHomotopy.lean`:
+
+  ```text
+  isZero_homology_cusp :  S ≠ ⊥ → S ≠ ⊤ → H_n(nerve {v : v.space = S}) = 0 for n ≥ 1
+  ```
+
+  **each cusp is contractible.**  The earlier entry recorded that "a chain is contractible, but that
+  sentence is not available here — what is available is that it is a chain".  It is available now:
+  the cusp has a greatest element, the depth-one vertex it hangs from, and a poset with a greatest
+  element has a contractible nerve.  This is the card's own sentence about `(2)`, proved.
+
+  `isZero_homology_above` records the same for the subspaces above a fixed one, which is the
+  contractible piece any Solomon--Tits induction glues along.

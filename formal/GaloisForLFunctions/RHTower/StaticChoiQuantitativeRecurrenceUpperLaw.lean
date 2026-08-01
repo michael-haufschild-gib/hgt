@@ -104,10 +104,19 @@ theorem inner_staticSpectralChoiVector_zero
   have hcoef :
       (((Real.sqrt (d : ℝ))⁻¹ : ℂ) *
           starRingEnd ℂ (((Real.sqrt (d : ℝ))⁻¹ : ℂ))) =
-        (((d : ℝ)⁻¹ : ℝ) : ℂ) := by
+        (d : ℂ)⁻¹ := by
     rw [starRingEnd_apply, Complex.star_def, map_inv₀,
       Complex.conj_ofReal]
-    exact_mod_cast hreal
+    calc
+      (↑(Real.sqrt (d : ℝ)) : ℂ)⁻¹ *
+            (↑(Real.sqrt (d : ℝ)) : ℂ)⁻¹ =
+          (((Real.sqrt (d : ℝ))⁻¹ *
+            (Real.sqrt (d : ℝ))⁻¹ : ℝ) : ℂ) := by
+              rw [Complex.ofReal_mul, Complex.ofReal_inv]
+      _ = (((d : ℝ)⁻¹ : ℝ) : ℂ) :=
+        congrArg (fun x : ℝ ↦ (x : ℂ)) hreal
+      _ = (d : ℂ)⁻¹ := by
+        rw [Complex.ofReal_inv, Complex.ofReal_natCast]
   simp_rw [fourier_finiteHamiltonianAddCirclePhase]
   have hzero :
       ∀ i : Fin d,
@@ -115,9 +124,25 @@ theorem inner_staticSpectralChoiVector_zero
     intro i
     simp [finiteObserverHamiltonianVertexPhase]
   simp_rw [hzero]
-  simp only [map_one, mul_one]
-  simp only [ite_mul, zero_mul]
-  simp only [Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
+  simp only [mul_one]
+  simp_rw [apply_ite (starRingEnd ℂ)]
+  simp only [map_zero, ite_mul, zero_mul]
+  have hdiag (i j : Fin d) :
+      (if i = j then
+          ((Real.sqrt (d : ℝ))⁻¹ : ℂ) *
+              finiteObserverHamiltonianVertexPhase t energy i *
+            if i = j then
+              starRingEnd ℂ (((Real.sqrt (d : ℝ))⁻¹ : ℂ))
+            else 0
+        else 0) =
+        if i = j then
+          (((Real.sqrt (d : ℝ))⁻¹ : ℂ) *
+              finiteObserverHamiltonianVertexPhase t energy i) *
+            starRingEnd ℂ (((Real.sqrt (d : ℝ))⁻¹ : ℂ))
+        else 0 := by
+    by_cases hij : i = j <;> simp [hij]
+  simp_rw [hdiag]
+  simp only [Fintype.sum_ite_eq]
   rw [finiteSpectralSurvivalAmplitude]
   simp only [uniformSurvivalWeight]
   push_cast

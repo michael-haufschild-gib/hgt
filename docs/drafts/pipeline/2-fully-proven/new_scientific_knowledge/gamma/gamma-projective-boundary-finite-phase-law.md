@@ -1577,9 +1577,29 @@ corpus: `HTGeometry/StripRelationPropagation.lean` proves
 because locally uniform limits of holomorphic functions carry every derivative and vertical translates
 of a solution of an autonomous relation are solutions.
 
-What is still open on that branch is only the *implicit-function step*: turning a polynomial relation
-with non-vanishing separant into an explicit Lipschitz field `y⁽ⁿ⁾ = Φ(y, …, y⁽ⁿ⁻¹⁾)`, which is what
-`ODEJetSeparation`'s uniqueness theorems consume.  Note that **this card's finite-rank conclusion does
+The *implicit-function step* is now proved as well, in `HTGeometry/PolynomialImplicitField.lean`.
+Writing the relation as `splitEval P (w,u) = P(w,u)` — the polynomial evaluated with its last variable
+split off, analytic by `AnalyticOnNhd.eval_continuousLinearMap` through the coordinate map `snocCLM` —
+the map `(w,u) ↦ (w, P(w,u))` has strict derivative `(dw,du) ↦ (dw, A dw + c du)` with
+`c = ∂P/∂u`, and `implicitCLE` exhibits that as a continuous linear equivalence exactly when `c ≠ 0`.
+The inverse function theorem then gives
+
+> **`exists_lipschitz_implicit`**: if `P(w₀,u₀) = 0` and the derivative of `u ↦ P(w₀,u)` at `u₀` is
+> nonzero, there are a neighbourhood `S` of `w₀`, a constant `K` and `Φ` with `LipschitzOnWith K Φ S`,
+> `Φ w₀ = u₀` and `P(w, Φ w) = 0` for all `w` near `w₀`.
+
+That is the explicit Lipschitz field `y⁽ⁿ⁾ = Φ(y, …, y⁽ⁿ⁻¹⁾)` which `ODEJetSeparation`'s local
+uniqueness theorems (`eq_of_jetVec_eq_at_on`, `eventuallyEq_of_jetVec_eq_at`) consume.
+
+The two sides speak different jets — the uniqueness theorems use derivatives along the line, the
+relation uses complex derivatives — and `HTGeometry/LineJetPolynomialTwist.lean` reconciles them.
+`scaleVars c P` rescales the variables of a polynomial; `eval_scaleVars` computes its values,
+`scaleVars_ne_zero` shows the rescaling by nonzero scalars keeps a polynomial nonzero, and
+**`eval_scaleVars_line`**: since the `k`-th jet of the line restriction is `i^k` times the complex
+jet (`iteratedDeriv_line_restriction`), the relation `P(complex jets) = 0` on the strip becomes
+`(scaleVars (fun k => (i^k)⁻¹) P)(line jets) = 0` at every point of the line.  So the line restriction
+of a solution satisfies a polynomial relation of the same shape, of the same nontriviality, in the
+jets the ODE uniqueness theorems use.  Note that **this card's finite-rank conclusion does
 not depend on it**: `rank_finite_of_polynomial_relation` takes an arbitrary nonzero polynomial jet
 relation on the strip with no injectivity hypothesis, and that is the route
 `finite_phase_law_of_gammaField_relation` uses.  The jet-embedding route is the companion card's

@@ -182,34 +182,6 @@ theorem nerveFunctor_map_constOrderHom {P Q : Type u} [Preorder P] [Preorder Q] 
     CategoryTheory.Functor.ext (fun _ => rfl) (fun _ _ _ => Subsingleton.elim _ _)]
   exact nerveFunctor_map_const q
 
-/-- **A poset that is conically contractible has contractible nerve.**  If a monotone map dominates
-both the identity and a constant, the identity of the nerve is homotopic to that constant map. -/
-noncomputable def nerveHomotopyConst_of_conical {P : Type u} [Preorder P] (p₀ : P) (F : P →o P)
-    (hid : ∀ x, x ≤ F x) (hpt : ∀ x, p₀ ≤ F x) :
-    SSet.Homotopy (𝟙 (nerveFunctor.obj (Cat.of P)))
-      (SSet.const (X := nerveFunctor.obj (Cat.of P)) (ComposableArrows.mk₀ p₀)) := by
-  have h₁ := nerveHomotopyOfLE (OrderHom.id (α := P)) F hid
-  have h₂ := nerveHomotopyOfLE (constOrderHom P p₀) F hpt
-  rw [show Monotone.functor (OrderHom.id (α := P)).monotone
-      = CategoryTheory.Functor.id P from
-        CategoryTheory.Functor.ext (fun _ => rfl) (fun _ _ _ => Subsingleton.elim _ _),
-    show (CategoryTheory.Functor.id P).toCatHom = 𝟙 (Cat.of P) from rfl,
-    nerveFunctor.map_id] at h₁
-  rw [nerveFunctor_map_constOrderHom] at h₂
-  exact h₁.trans h₂.symm
-
-/-- **A poset with a greatest element has contractible nerve.** -/
-noncomputable def nerveHomotopyConst_of_orderTop {P : Type u} [Preorder P] [OrderTop P] :
-    SSet.Homotopy (𝟙 (nerveFunctor.obj (Cat.of P)))
-      (SSet.const (X := nerveFunctor.obj (Cat.of P)) (ComposableArrows.mk₀ (⊤ : P))) :=
-  nerveHomotopyConst_of_conical ⊤ (constOrderHom P (⊤ : P)) (fun _ => le_top) (fun _ => le_rfl)
-
-/-- **A poset with a least element has contractible nerve.** -/
-noncomputable def nerveHomotopyConst_of_orderBot {P : Type u} [Preorder P] [OrderBot P] :
-    SSet.Homotopy (𝟙 (nerveFunctor.obj (Cat.of P)))
-      (SSet.const (X := nerveFunctor.obj (Cat.of P)) (ComposableArrows.mk₀ (⊥ : P))) :=
-  nerveHomotopyConst_of_conical ⊥ (OrderHom.id (α := P)) (fun _ => le_rfl) (fun _ => bot_le)
-
 /-! ## Deformation retracts -/
 
 /-- **A strong deformation retraction of simplicial sets**: a retraction that is a section on the
@@ -333,5 +305,92 @@ theorem zigzag_orderDual {α : Type u} [PartialOrder α]
   Relation.ReflTransGen.mono
     (p := fun x y : α => y ≤ x ∨ x ≤ y) (fun _ _ hxy => Or.symm hxy) _ _
     (h (OrderDual.ofDual a) (OrderDual.ofDual b))
+
+/-! ## Contractibility -/
+
+/-- **A poset with a greatest element has contractible nerve.**  The identity is below the constant
+map at the greatest element, so the two have homotopic nerves. -/
+noncomputable def nerveHomotopyConst_of_orderTop {P : Type u} [Preorder P] [OrderTop P] :
+    SSet.Homotopy (𝟙 (nerveFunctor.obj (Cat.of P)))
+      (SSet.const (X := nerveFunctor.obj (Cat.of P)) (ComposableArrows.mk₀ (⊤ : P))) := by
+  have h := nerveHomotopyOfLE (OrderHom.id (α := P)) (constOrderHom P (⊤ : P)) (fun _ => le_top)
+  rwa [show Monotone.functor (OrderHom.id (α := P)).monotone = CategoryTheory.Functor.id P from
+      CategoryTheory.Functor.ext (fun _ => rfl) (fun _ _ _ => Subsingleton.elim _ _),
+    show (CategoryTheory.Functor.id P).toCatHom = 𝟙 (Cat.of P) from rfl,
+    nerveFunctor.map_id, nerveFunctor_map_constOrderHom] at h
+
+/-- **A poset with a least element has contractible nerve.** -/
+noncomputable def nerveHomotopyConst_of_orderBot {P : Type u} [Preorder P] [OrderBot P] :
+    SSet.Homotopy
+      (SSet.const (X := nerveFunctor.obj (Cat.of P)) (ComposableArrows.mk₀ (⊥ : P)))
+      (𝟙 (nerveFunctor.obj (Cat.of P))) := by
+  have h := nerveHomotopyOfLE (constOrderHom P (⊥ : P)) (OrderHom.id (α := P)) (fun _ => bot_le)
+  rwa [show Monotone.functor (OrderHom.id (α := P)).monotone = CategoryTheory.Functor.id P from
+      CategoryTheory.Functor.ext (fun _ => rfl) (fun _ _ _ => Subsingleton.elim _ _),
+    show (CategoryTheory.Functor.id P).toCatHom = 𝟙 (Cat.of P) from rfl,
+    nerveFunctor.map_id, nerveFunctor_map_constOrderHom] at h
+
+/-- **The point has no homology in positive degrees.** -/
+theorem isZero_homology_nerve_punit {C : Type*} [Category C] [Limits.HasCoproducts.{u} C]
+    [Preadditive C] [CategoryWithHomology C] (R : C) (n : ℕ) (hn : 1 ≤ n) :
+    Limits.IsZero ((nerveFunctor.obj (Cat.of PUnit.{u + 1})).homology R n) := by
+  haveI : SSet.HasDimensionLT (nerveFunctor.obj (Cat.of PUnit.{u + 1})) 1 :=
+    hasDimensionLT_nerve_of_chain_bound 1 (fun k f hf => by
+      by_contra hcon
+      exact absurd (hf (show (0 : Fin (k + 1)) < ⟨1, by omega⟩ by
+        simp [Fin.lt_def])) (by simp))
+  exact isZero_homology_of_hasDimensionLT _ 1 R n hn
+
+/-- **A simplicial set whose identity induces the same map on homology as a constant map has no
+homology in positive degrees.**  The constant map factors through a point. -/
+theorem isZero_homology_of_homologyMap_id_eq_const {X : SSet.{u}} (pt : X _⦋0⦌)
+    {C : Type*} [Category C] [Limits.HasCoproducts.{u} C] [Preadditive C] [CategoryWithHomology C]
+    (R : C) (n : ℕ) (hn : 1 ≤ n)
+    (h : SSet.homologyMap (𝟙 X) R n = SSet.homologyMap (SSet.const pt) R n) :
+    Limits.IsZero (X.homology R n) := by
+  rw [Limits.IsZero.iff_id_eq_zero]
+  have hfact : (SSet.const pt : X ⟶ X)
+      = SSet.const (X := X) (Y := nerveFunctor.obj (Cat.of PUnit.{u + 1}))
+          (ComposableArrows.mk₀ PUnit.unit) ≫ SSet.const pt :=
+    (SSet.comp_const _ _).symm
+  have hzero : SSet.homologyMap (SSet.const (X := X)
+      (Y := nerveFunctor.obj (Cat.of PUnit.{u + 1})) (ComposableArrows.mk₀ PUnit.unit)) R n = 0 :=
+    (isZero_homology_nerve_punit R n hn).eq_zero_of_tgt _
+  rw [← SSet.homologyMap_id (X := X) (R := R) n, h, hfact, SSet.homologyMap_comp, hzero,
+    Limits.zero_comp]
+
+/-- **A conically contractible poset has no homology in positive degrees.**  If a monotone map
+dominates both the identity and a constant, then on homology the identity and that constant agree. -/
+theorem isZero_homology_of_conical {P : Type u} [Preorder P] (p₀ : P) (F : P →o P)
+    (hid : ∀ x, x ≤ F x) (hpt : ∀ x, p₀ ≤ F x) {C : Type*} [Category C]
+    [Limits.HasCoproducts.{u} C] [Preadditive C] [CategoryWithHomology C] (R : C) (n : ℕ)
+    (hn : 1 ≤ n) :
+    Limits.IsZero ((nerveFunctor.obj (Cat.of P)).homology R n) := by
+  have h₁ := (nerveHomotopyOfLE (OrderHom.id (α := P)) F hid).congr_homologyMap R n
+  have h₂ := (nerveHomotopyOfLE (constOrderHom P p₀) F hpt).congr_homologyMap R n
+  rw [show Monotone.functor (OrderHom.id (α := P)).monotone = CategoryTheory.Functor.id P from
+      CategoryTheory.Functor.ext (fun _ => rfl) (fun _ _ _ => Subsingleton.elim _ _),
+    show (CategoryTheory.Functor.id P).toCatHom = 𝟙 (Cat.of P) from rfl,
+    nerveFunctor.map_id] at h₁
+  rw [nerveFunctor_map_constOrderHom] at h₂
+  exact isZero_homology_of_homologyMap_id_eq_const (X := nerveFunctor.obj (Cat.of P))
+    (ComposableArrows.mk₀ p₀) R n hn (h₁.trans h₂.symm)
+
+/-- **A poset with a greatest element has no homology in positive degrees.** -/
+theorem isZero_homology_of_orderTop {P : Type u} [Preorder P] [OrderTop P] {C : Type*} [Category C]
+    [Limits.HasCoproducts.{u} C] [Preadditive C] [CategoryWithHomology C] (R : C) (n : ℕ)
+    (hn : 1 ≤ n) :
+    Limits.IsZero ((nerveFunctor.obj (Cat.of P)).homology R n) :=
+  isZero_homology_of_conical (⊤ : P) (constOrderHom P (⊤ : P)) (fun _ => le_top) (fun _ => le_rfl)
+    R n hn
+
+/-- **A poset with a least element has no homology in positive degrees.** -/
+theorem isZero_homology_of_orderBot {P : Type u} [Preorder P] [OrderBot P] {C : Type*} [Category C]
+    [Limits.HasCoproducts.{u} C] [Preadditive C] [CategoryWithHomology C] (R : C) (n : ℕ)
+    (hn : 1 ≤ n) :
+    Limits.IsZero ((nerveFunctor.obj (Cat.of P)).homology R n) :=
+  isZero_homology_of_conical (⊥ : P) (OrderHom.id (α := P)) (fun _ => le_rfl) (fun _ => bot_le)
+    R n hn
+
 
 end GaloisForLFunctions.HTGeometry

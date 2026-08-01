@@ -102,7 +102,9 @@ theorem exists_lipschitz_implicit (P : MvPolynomial (Fin (n + 1)) ℂ)
     (hsep : deriv (fun u : ℂ => MvPolynomial.eval (Fin.snoc w₀ u) P) u₀ ≠ 0) :
     ∃ (Φ : (Fin n → ℂ) → ℂ) (K : NNReal) (S : Set (Fin n → ℂ)),
       S ∈ nhds w₀ ∧ LipschitzOnWith K Φ S ∧ Φ w₀ = u₀ ∧
-      ∀ᶠ w in nhds w₀, MvPolynomial.eval (Fin.snoc w (Φ w)) P = 0 := by
+      (∀ᶠ w in nhds w₀, MvPolynomial.eval (Fin.snoc w (Φ w)) P = 0) ∧
+      ∀ᶠ p : (Fin n → ℂ) × ℂ in nhds (w₀, u₀),
+        MvPolynomial.eval (Fin.snoc p.1 p.2) P = 0 → p.2 = Φ p.1 := by
   classical
   set base : (Fin n → ℂ) × ℂ := (w₀, u₀) with hbase
   set D : ((Fin n → ℂ) × ℂ) →L[ℂ] ℂ := fderiv ℂ (splitEval P) base with hD
@@ -148,7 +150,7 @@ theorem exists_lipschitz_implicit (P : MvPolynomial (Fin (n + 1)) ℂ)
   have hcontslice : ContinuousAt (fun w : Fin n → ℂ => ((w, 0) : (Fin n → ℂ) × ℂ)) w₀ :=
     (continuous_id.prodMk continuous_const).continuousAt
   refine ⟨fun w => (inv (w, 0)).2, K, {w : Fin n → ℂ | ((w, 0) : (Fin n → ℂ) × ℂ) ∈ S},
-    hcontslice.preimage_mem_nhds hS, ?_, ?_, ?_⟩
+    hcontslice.preimage_mem_nhds hS, ?_, ?_, ?_, ?_⟩
   · intro w₁ h₁ w₂ h₂
     have h := hlip h₁ h₂
     calc edist (inv (w₁, 0)).2 (inv (w₂, 0)).2
@@ -169,5 +171,13 @@ theorem exists_lipschitz_implicit (P : MvPolynomial (Fin (n + 1)) ℂ)
     have h2 : splitEval P (inv (w, 0)) = 0 := congrArg Prod.snd hw
     have h2' : MvPolynomial.eval (Fin.snoc ((inv (w, 0)).1) ((inv (w, 0)).2)) P = 0 := h2
     rwa [h1] at h2'
+  · have hleft := hHL.eventually_left_inverse
+    filter_upwards [hleft] with p hp hzero
+    have hHp : ((p.1, splitEval P p) : (Fin n → ℂ) × ℂ) = (p.1, 0) := by
+      refine Prod.ext rfl ?_
+      show splitEval P p = 0
+      exact hzero
+    rw [hHp] at hp
+    exact (congrArg Prod.snd hp).symm
 
 end GaloisForLFunctions

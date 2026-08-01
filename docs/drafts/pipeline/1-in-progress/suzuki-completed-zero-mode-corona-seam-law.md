@@ -576,8 +576,13 @@ a visible prime power, or if a nonzero corona state satisfies the exact two-ende
 The bounded homogeneous part of the scale-gap problem is now closed by
 `suzuki-bounded-seam-half-log-rigidity.md`: arbitrary bounded vector-valued prime/polar--Gamma
 coupling has either zero tail or a nonzero half-log trace. The exact nonlocal remainder `(15d)` is
-the sole surviving intermediate-scale mechanism. Any proof that replaces it by a pointwise
-multiplier is rejected.
+handled, without replacing it by a pointwise multiplier, in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-exact-log-remainder-signed-trace-rigidity.md`.
+For every bounded classical zero mode with the optimal half-log bound, BV duality for the literal
+symmetric remainder and penalized-extremum noncancellation force the signed pointwise endpoint
+trace. The surviving pre-trace escape is narrower: prove that every completion-safe square-Evans
+zero mode has the bounded weak/classical representative required by the optimal boundary theorem.
+Assuming that lift is rejected.
 
 ## 7. Lean decision
 
@@ -620,7 +625,8 @@ paper mathematics; abstract formalization would not certify source-specific anal
 - [x] falsify whole-packet inverse-log separation and extract two-channel survivor
 - [x] classify every bounded pointwise homogeneous seam coupling by its half-log trace
 - [ ] construct exact Suzuki transport to every prescribed finite grade
-- [ ] prove the exact nonlocal remainder is integrable after half-log seam conjugation
+- [x] prove weighted BV pairing and extremal noncancellation for the exact nonlocal remainder
+- [ ] prove every completion-safe square-Evans zero mode has a bounded weak/classical representative
 - [ ] prove inverse-log-flat zero modes lie in `H1_0`
 - [ ] identify the trace-zero square-Evans kernel with the raw Evans kernel
 - [ ] prove corona separation for the finite square-Evans characteristic packet
