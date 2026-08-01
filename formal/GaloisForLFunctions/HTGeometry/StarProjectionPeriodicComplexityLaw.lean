@@ -46,6 +46,35 @@ theorem idempotentPhase_injective_of_ne_one
   apply smul_right_injective A (sub_ne_zero.mpr hz)
   simpa [idempotentPhase] using congrArg (fun x : A ↦ x - 1) hpq
 
+/-- Exact exponential of a scalar-supported idempotent. -/
+theorem exp_smul_idempotent
+    {A : Type*} [NormedRing A] [NormedAlgebra ℂ A] [CompleteSpace A]
+    {p : A} (hp : IsIdempotentElem p) (z : ℂ) :
+    NormedSpace.exp (z • p) = idempotentPhase p (Complex.exp z) := by
+  have hsScalar : HasSum
+      (fun n : ℕ ↦ ((n.factorial : ℂ)⁻¹) • z ^ n)
+      (Complex.exp z) := by
+    rw [Complex.exp_eq_exp_ℂ]
+    exact NormedSpace.exp_series_hasSum_exp' z
+  have hsScalarTail : HasSum
+      (fun n : ℕ ↦ ((n + 1).factorial : ℂ)⁻¹ * z ^ (n + 1))
+      (Complex.exp z - 1) := by
+    have htail := (hasSum_nat_add_iff' 1).mpr hsScalar
+    simpa [smul_eq_mul] using htail
+  have hsATail : HasSum
+      (fun n : ℕ ↦ ((n + 1).factorial : ℂ)⁻¹ • (z • p) ^ (n + 1))
+      ((Complex.exp z - 1) • p) := by
+    convert hsScalarTail.smul_const p using 1
+    funext n
+    rw [smul_pow, hp.pow_succ_eq]
+    simp [mul_smul]
+  have hsA : HasSum
+      (fun n : ℕ ↦ (n.factorial : ℂ)⁻¹ • (z • p) ^ n)
+      (idempotentPhase p (Complex.exp z)) := by
+    apply (hasSum_nat_add_iff' 1).mp
+    simpa [idempotentPhase] using hsATail
+  exact (NormedSpace.exp_series_hasSum_exp' (z • p)).unique hsA
+
 /-- The phase loop attached to a projection. -/
 noncomputable def starProjectionPhaseOrbit
     {A : Type*} [NormedRing A] [NormedAlgebra ℂ A]
@@ -73,6 +102,48 @@ theorem starProjectionPhaseOrbit_add
       starProjectionPhaseOrbit p θ * starProjectionPhaseOrbit p φ := by
   rw [starProjectionPhaseOrbit, AddCircle.toCircle_add]
   exact (idempotentPhase_mul hp _ _).symm
+
+/-- The real-time projector clock is the ordinary exponential of the static
+self-adjoint generator `-2π p` (up to the sign convention for time
+evolution). -/
+theorem starProjectionPhaseOrbit_real_eq_exp
+    {A : Type*} [NormedRing A] [NormedAlgebra ℂ A] [CompleteSpace A]
+    {p : A} (hp : IsIdempotentElem p) (t : ℝ) :
+    starProjectionPhaseOrbit p (t : AddCircle (1 : ℝ)) =
+      NormedSpace.exp ((((2 * Real.pi * t : ℝ) : ℂ) * Complex.I) • p) := by
+  rw [starProjectionPhaseOrbit, AddCircle.toCircle_apply_mk, Circle.coe_exp]
+  rw [exp_smul_idempotent hp]
+  congr 2
+  congr 1
+  norm_num
+
+/-- Static Hamiltonian whose Schrödinger evolution is the projector clock. -/
+noncomputable def starProjectionHamiltonian
+    {A : Type*} [NormedRing A] [NormedAlgebra ℂ A] (p : A) : A :=
+  (((-2 * Real.pi : ℝ) : ℂ)) • p
+
+theorem starProjectionHamiltonian_isSelfAdjoint
+    {A : Type*} [NormedRing A] [NormedAlgebra ℂ A]
+    [StarRing A] [StarModule ℂ A]
+    {p : A} (hp : IsStarProjection p) :
+    IsSelfAdjoint (starProjectionHamiltonian p) := by
+  simp only [starProjectionHamiltonian, IsSelfAdjoint, star_smul]
+  rw [hp.isSelfAdjoint]
+  norm_num
+
+/-- Exact identification with ordinary time-independent Schrödinger
+evolution `exp(-itH)`. -/
+theorem starProjectionPhaseOrbit_eq_staticEvolution
+    {A : Type*} [NormedRing A] [NormedAlgebra ℂ A] [CompleteSpace A]
+    {p : A} (hp : IsIdempotentElem p) (t : ℝ) :
+    starProjectionPhaseOrbit p (t : AddCircle (1 : ℝ)) =
+      NormedSpace.exp (((-(t : ℂ)) * Complex.I) •
+        starProjectionHamiltonian p) := by
+  rw [starProjectionPhaseOrbit_real_eq_exp hp]
+  rw [starProjectionHamiltonian, smul_smul]
+  congr 2
+  push_cast
+  ring
 
 theorem star_idempotentPhase
     {A : Type*} [NormedRing A] [NormedAlgebra ℂ A]

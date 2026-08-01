@@ -1,13 +1,13 @@
 # Route I — sharp dyadic prime-window source acquisition
 
 - **ID:** `route-i-sharp-dyadic-prime-window-source-acquisition`
-- **Stage:** `1-in-progress`
-- **Type:** `CONJECTURE`
-- **Status:** `[CONJECTURE] [OPEN CORE] [SOURCE-PURE]`
+- **Stage:** `5-failed`
+- **Type:** `RETIRED ROUTE / EXACT ALL-WIDTH COLLISION`
+- **Status:** `[PAPER-PROVED COLLISION] [LEAN TRANSFER PROVED] [NOT AN INDEPENDENT ROUTE]`
 - **Source:** `rh-current-frontier-map.md`, Route I
 - **Statement:** There exists `N : Nat` such that `DyadicWeightedPrimeWindowSubpowerUpper N`.
 
-## Exact open claim
+## Retired endpoint
 
 For some fixed `N`, every `epsilon>0` admits `C>=0` such that, for every `n>=N`,
 
@@ -17,8 +17,10 @@ sum_{n/2 < k <= n} Lambda(k)/sqrt(k)
 ```
 
 The Lean theorem `riemannHypothesis_of_dyadicWeightedPrimeWindowSubpowerUpper` proves this source
-estimate implies RH.  Prime-only reduction, square sampling, positive-excess energy gates, and
-right-divisor tomography are already formalized connectors; none proves the source estimate.
+estimate implies RH. Classical generalized von Koch plus exact Abel transfer proves the converse
+under RH. More strongly, the parameterized exponent is exactly Xi half-plane width for every
+`alpha>=0`; the endpoint is therefore a collision with retired C2, not an independent source
+mechanism.
 
 ## Corrected frontier
 
@@ -47,7 +49,7 @@ Schoenfeld's RH bound plus exact Abel summation gives
 independent-producer interpretation is retired:
 `../5-failed/route-i-square-aperture-von-mangoldt-correlation-bound.md`.
 
-`[OPEN CORE]` Stronger replacement representation keeps only positive deviations. Its exact
+`[RETIRED COLLISION]` Stronger replacement representation keeps only positive deviations. Its exact
 finite convex dual ranges over nonnegative aperture weights. The open estimate is
 
 ```text
@@ -55,19 +57,40 @@ for every delta>0,
 sum_{m<=M} (W(m^2)-2(1-1/sqrt(2))m)_+^2 = O_delta(M^(1+delta)).
 ```
 
-Active card: `route-i-square-aperture-positive-excess-dual-bound.md`.
+Retired card: `route-i-square-aperture-positive-excess-dual-bound.md`.
 
-## Hard problem
+## Exact killing theorem
 
-Prove genuinely arithmetic one-sided cancellation in a discontinuous moving dyadic window without
-assuming an Xi zero-width bound, horizontal Xi positivity, or an equivalent analytic-continuation
-premise.  Current zero-free-region PNT errors become `n^(1/2-o(1))` after square-root weighting and
-miss the all-epsilon subpower scale.
+For `alpha>=0`, let `SharpUpper(alpha,N)` be the eventual pointwise bound with error
+`C_epsilon n^(alpha+epsilon)`. Then
 
-Strongest concrete pivot now asks for a uniform nonnegative-aperture dual inequality for literal
-von-Mangoldt mass. Positive Selberg majorants lose the exact density-one main term at the parity
-barrier; continuous critical PNT mean square is itself RH-equivalent. A live proof must supply
-signed source dispersion or another mechanism sharp enough to absorb the quadratic dual penalty.
+```text
+XiZeroHalfPlaneBound(alpha)
+  <-> exists N, SharpUpper(alpha,N).
+```
+
+Forward direction is generalized von Koch plus exact Abel summation. Reverse direction chooses an
+intermediate exponent below any offending zero and applies the formal fixed-power Landau theorem.
+At `alpha=0`, `SharpUpper(0,N)` is definitionally
+`DyadicWeightedPrimeWindowSubpowerUpper N`.
+
+Paper proof:
+`../2-fully-proven/not_new_scientific_knowledge/sharp-dyadic-prime-window-zero-width-collision.md`.
+Lean module:
+`formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean`.
+
+## No-go closure
+
+- **Exact killing mechanism:** pointwise sharp-window exponent and C2 Xi half-plane width determine
+  one another for every nonnegative width.
+- **Strongest positive survivor:** quantitative all-width identity, plus exact square-energy
+  identity `sigma_2=1+4*xiRightTransverseSup` off the critical line.
+- **New insight:** discontinuous dyadic sampling and one-sided truncation do not evade classical
+  PNT-error/zero-width equivalence. Both pointwise and coefficient-nonlocal pivots are coordinate
+  changes of the same divisor width.
+- **Status:** dependency-closed paper proof; all new Abel, pointwise-spectrum, square-energy, and
+  reverse-width steps unconditional in Lean. Shared formal generalized-von-Koch theorem is absent,
+  so no assumption-free Lean biconditional is claimed.
 
 ## Anti-theatre boundary
 
@@ -79,8 +102,9 @@ The following do not advance this card:
 - more finite-degree, finite-mode, or monomial-tail infrastructure without height-uniform control;
 - formalizing the already-proved conditional implication again.
 
-First admissible progress must be an unconditional source-pure estimate controlling actual dyadic
-von-Mangoldt mass or positive excess with quantifiers strong enough to enter an existing Lean gate.
+Reopening Route I requires a genuinely new arithmetic theorem forcing width zero without importing
+an equivalent Xi-width, continuation, or horizontal-monotonicity premise. Another reformulation of
+the same optimal exponent does not qualify.
 
 ## Gates
 
@@ -94,9 +118,12 @@ von-Mangoldt mass or positive excess with quantifiers strong enough to enter an 
 - [x] correlation-subpower implication to RH formalized
 - [x] full square-correlation pivot paper-proved RH-equivalent and retired as independent producer
 - [x] one-sided positive-excess convex dual paper-proved and formalized
-- [ ] unconditional arithmetic source estimate
-- [ ] dependency-closed paper proof
-- [ ] exact unconditional Lean proof of new source theorem
+- [x] parameterized pointwise spectrum isolated
+- [x] all-width paper equivalence with Xi half-plane bound
+- [x] exact collision with retired C2
+- [x] Chebyshev-to-window transfer formalized unconditionally
+- [x] window-to-Xi-width transfer formalized unconditionally
+- [ ] generalized von Koch formalized in Lean (shared infrastructure gap)
 
 ## Log
 
@@ -104,4 +131,6 @@ von-Mangoldt mass or positive excess with quantifiers strong enough to enter an 
 - 2026-08-01 — scalar analytic branch closed; square-aperture correlation energy promoted as live
   coefficient-nonlocal pivot.
 - 2026-08-01 — full correlation pivot killed as an independent producer by its RH reverse
-  implication; one-sided positive-excess dual survives and Route I remains open.
+  implication; one-sided positive-excess dual was retained provisionally and Route I was left open.
+- 2026-08-01 — generalized-width audit proves both pointwise and positive-excess pivots are exact
+  C2-width coordinates; Route I retired as an independent route.

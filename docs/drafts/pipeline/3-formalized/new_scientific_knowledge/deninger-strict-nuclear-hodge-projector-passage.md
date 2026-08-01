@@ -1,7 +1,7 @@
 # Strict nuclear passage of Hodge projectors
 
 - **ID:** `deninger-strict-nuclear-hodge-projector-passage`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Label:** `DAC_STRICT_NUCLEAR_HODGE_PROJECTOR_PASSAGE`
 - **Parent:** `deninger-arithmetic-calderon-green-intermediate-extension`
@@ -133,7 +133,7 @@ replace corrected global projector by orthogonal local sum.
 
 - [x] 0 → 1 in-progress: exact strict-limit statement
 - [x] 1 → 2 fully-proven: complete proof
-- [ ] 2 → 3 formalized
+- [x] 2 → 3 formalized
 - [ ] 3 → 4 publication-ready
 
 ## Log
@@ -141,3 +141,51 @@ replace corrected global projector by orthogonal local sum.
 - 2026-07-27 — Proved projective-limit and restricted-direct-sum
   passage.  Isolated compatibility and weighted uniform estimates as
   the only remaining global projector inputs.
+- 2026-08-02 — Formalized both theorems in Lean.
+
+## Lean status
+
+### Both theorems landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerProjectorLimitPassage.lean`.  Axiom audit for all 12
+declarations: `propext, Classical.choice, Quot.sound` or less.
+
+Projective-limit theorem:
+
+- `deningerProjectiveLimit` — the limit of a system of topological modules over a preordered index,
+  realized as the submodule of compatible families inside the product.  Its topology is the
+  subspace topology of the product, which is the initial (projective-limit) topology used in the
+  card; local convexity is not needed for any of the statements below, and Hausdorffness enters
+  only through `T1Space` in the closed-range claim.
+- `deningerCoordinateOperator` — **`(2)`**: compatibility `(1)` makes the coordinatewise family
+  preserve compatible families, and the map is continuous because it is the corestriction of a
+  product map.  Its coordinates are `deningerCoordinateOperator_apply`.
+- `deningerCoordinateOperator_unique` — **the uniqueness in `(2)`**: a continuous linear map on the
+  limit is determined by its coordinates.
+- `deningerCoordinateOperator_idem` — idempotence is coordinatewise.
+- `deningerCoordinateOperator_mem_range_iff` — **`(3)`**: a compatible family lies in the range
+  exactly when each coordinate lies in the corresponding stagewise range.  Since both sides carry
+  the induced topology of the limit, this membership identity *is* the identification of `ran P`
+  with `lim ran P_i` as topological vector spaces.
+- `deningerCoordinateOperator_range_isClosed` — the range is closed, being the kernel of `1 - P`.
+- `deningerLimitGreen` — **`(4)`**: the Green identity `1 - P = QQ†G + Q†QG` passes verbatim to the
+  limit, because equality in a limit is detected coordinatewise.
+
+Restricted-direct-sum theorem:
+
+- `deningerWeightedSum_summable` — a stagewise bound `p_i ≤ C q_i` with `C` independent of the
+  stage keeps the weighted sum `(5)` finite, by comparison with the summable majorant.
+- `deningerWeightedSum_le` — **`(6)` ⟹ `(7)`**: the same constant bounds the weighted sum
+  seminorm, so the coordinatewise projection is continuous for it and extends to the completed
+  restricted sum.
+- `deningerEnergyProjection_weightedSum_le` — the uncoupled local boundary case named in the card:
+  each stagewise energy projection is an orthogonal projection, hence norm nonincreasing, so the
+  constant is `1` uniformly in the place and packet, and the weighted `L¹`-of-`L²` sum contracts.
+
+### Remaining
+
+Nothing in the theorem.  Its two named obligations stay open and are not formalization work: exact
+compatibility of the actual Kummer, prime-cusp and real-apex projectors with every transition,
+residue/corestriction and Milnor incidence map, and place-independent bounds `(6)` in every nuclear
+and mixed source seminorm — in particular for the Milnor-incidence and Meyer `Z`/Fourier correction
+of the uncoupled projector.

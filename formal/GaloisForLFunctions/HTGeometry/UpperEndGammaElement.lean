@@ -69,7 +69,7 @@ theorem digammaMero_mem_jetAlgebra :
   Algebra.subset_adjoin ⟨digammaMero, Set.mem_singleton _, 0, rfl⟩
 
 /-- Complex constants are constant for the derivation. -/
-theorem deriv_algebraMap_complex (c : ℂ) :
+theorem upperEndMero_deriv_algebraMap_complex (c : ℂ) :
     (algebraMap ℂ upperEndMeroField c)′ = 0 :=
   upperEndMero_deriv_complexConstant c
 
@@ -86,7 +86,7 @@ theorem exists_gammaJet_factor (n : ℕ) :
     obtain ⟨y, hy, hn⟩ := ih
     refine ⟨digammaMero * y + (y)′,
       add_mem (mul_mem digammaMero_mem_jetAlgebra hy)
-        (deriv_mem_differentialJetAlgebra deriv_algebraMap_complex hy), ?_⟩
+        (deriv_mem_differentialJetAlgebra upperEndMero_deriv_algebraMap_complex hy), ?_⟩
     have hleib := Differential.deriv.leibniz gammaUpperMero y
     rw [differentialJet_succ, hn, hleib, deriv_gammaUpperMero]
     simp only [smul_eq_mul]

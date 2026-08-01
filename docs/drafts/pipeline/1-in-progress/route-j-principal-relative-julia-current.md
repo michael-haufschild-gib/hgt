@@ -361,3 +361,289 @@ researchable, this card stays in Stage 1.
 - [ ] construct a completed symmetric/nonlinear current satisfying `(2)`, or prove the surviving
       class impossible
 - [ ] close Route J only when no researchable unowned survivor remains
+
+## 12. Source-fusion superselection input
+
+The publication-ready source-fusion theorem
+
+```text
+../4-publication-ready/riemann-source-modular-superselection/main-universal.tex
+```
+
+changes the admissible Route-J class.  The positive high-exponent shells are coefficient-disjoint,
+relatively differentially independent over the full zeta differential field, and carry the same
+strict-right completed divisor with unit response.  Finite reciprocal label packets obey the exact
+orthogonal splitting
+
+```text
+2 sum_i x_i y_i
+  = (2/N)(sum_i x_i)(sum_i y_i)
+    + 2 sum_i (x_i-x_bar)(y_i-y_bar).                   (23)
+```
+
+At countable multiplicity, the unit-response codiagonal is nonclosable on the orthogonal `ell2`
+label sum, and no Bessel realization has one bounded vector with the same nonzero response on
+every label.  Therefore a regular post-fusion Hilbert current is no longer a Route-J survivor.
+Any successful current must:
+
+1. act before common-divisor scalar fusion;
+2. retain shell, valuation-depth, and reflection-orientation coordinates;
+3. be singular in every stable Hilbert realization: relation-valued, rigged, nonclosable, or
+   beyond every finite Rees order;
+4. still produce one unambiguous scalar capacity satisfying both inequalities in `(2)`.
+
+The corpus already proves that the actual-prime clock and the CCM block--Fock graph have
+full-product closure and no closed single-valued extension, even nonlinear.  This kills those two
+singular carriers only.  It does not kill a nonclosed source-core correspondence or a different
+singular prime--Gamma/co-Poisson carrier.
+
+## 13. The centered fusion current `[PAPER+LEAN-PROVED NO-GO]`
+
+For a nonempty finite bad-label packet `b=(b_i)`, put
+
+```text
+B = sum_i b_i,
+D = sum_i b_i^2,
+b_bar = B/N,
+V_fus(b) = sum_i (b_i-b_bar)^2.                         (24)
+```
+
+Expanding `(24)` gives the exact identity
+
+```text
+V_fus(b) = D - B^2/N,      0 <= V_fus(b) <= D.          (25)
+```
+
+Thus `V_fus` is a nonzero symmetric positive-semidefinite current on the transverse fusion fibre.
+It annihilates the constant common-response mode and is not the antisymmetric scalar-zero current
+closed in Section 6.
+
+On the sixth-power pure-bad block, the proved estimates `(14)` give
+
+```text
+0 <= V_fus(b_m) <= 65 (log m)^2,
+B_m^2 >= m^4/576.                                      (26)
+```
+
+Since `(log m)^2=o(m^4)`, eventually
+
+```text
+V_fus(b_m) < B_m^2.                                    (27)
+```
+
+Therefore centered fusion cancels the common quartic mode only by discarding the magnitude needed
+to dominate the pure-bad excursion.  Multiplying `(24)` by a packet-dependent factor chosen from
+the desired excursion would merely move the target into the normalization.  This closes the
+plain centered-variance repair.
+
+The genuinely Julia-centered kernel remains a sharper candidate.  If `K_x` is the finite Julia
+Gram and `P_N=I-N^{-1}11^T`, then
+
+```text
+E_tr(x,b)=b^T P_N K_x P_N b >= 0.                       (28)
+```
+
+For every fixed packet, `K_x -> 11^T` as `x->0`, hence `E_tr(x,b)->0`.  The open issue is whether a
+singular pre-fusion coupling to the completed Gamma/co-Poisson orientation can add a bounded
+longitudinal-to-transverse transfer without reinstating the quartic floor.  Neither `(23)` nor
+`(28)` supplies that coupling.
+
+## 14. Heavy conjecture ledger
+
+### `J-SF0` — actual arithmetic Julia normal cone `[CONSTRUCTED INPUT, OPEN CAPACITY]`
+
+`arithmeticJuliaNormalConeUniversality` already supplies more than an abstract singular carrier:
+
+```text
+finite actual-prime Julia-normal clocks -> literal logarithmic clock,
+every bounded Hardy extension has norm -> infinity,
+critical completed face -> full strict-right Xi divisor with multiplicity.
+```
+
+Its positive two-channel cell lift is unique and minimal.  However the fixed Möbius--Gamma/Ward
+source graph has exact base gain `1/(2|epsilon|)` and its normal-cone blow-up has gain
+`1/(2|epsilon|^2)`; both are expansive on the physical critical ray.  Thus this constructed
+singular input cannot inherit positivity from ambient source-norm contractivity.  The open task is
+to find a graph norm and scalar polarization whose singular gains cancel before the Route-J
+capacity is read.
+
+### `J-SF1` — singular centered Julia--Wold current `[OPEN]`
+
+There is a source-core relation coupling the centered Julia Gram `(28)` to the two-coordinate
+Wold--Poisson conormal before shell fusion, whose Hermitian scalar part:
+
+```text
+- is nonnegative on the literal arithmetic source locus;
+- dominates every negative first-clock excursion;
+- has one source-uniform upper bound;
+- is independent of any Xi zero, Ward sign, or target-selected packet.
+```
+
+Hostile obligations: prove single-valuedness of the scalar despite multivalued graph closure;
+identify its first-clock residual exactly; and survive the sixth-power moving block.
+
+### `J-SF2` — complex polarization of the exterior seam `[CONSTRUCTED CURRENT, OPEN BUDGET]`
+
+Multiplication of the real antisymmetric exterior kernel `H` by `i` gives a Hermitian matrix
+`iH`.  Real arithmetic weights still give
+
+```text
+b^* (iH) b = 0.                                        (29)
+```
+
+A nonzero value therefore requires label-dependent complex phases before scalarization.  A common
+phase does not help.  Generic prime-log phases are already known not to select the arithmetic
+orientation, so the only live version requires a nonuniform source-derived phase retained across
+singular transport.  Supplying that phase is part of the theorem, not free input.
+
+### `J-SF3` — nonlinear positive-part repair `[HOSTILE DEFAULT: THEATRE]`
+
+Taking a Jordan/Krein positive part after forming the completed defect gives a nonnegative
+functional, but the spectral projector is computed from the target defect.  Unless its projector
+is independently constructed from the prime--Gamma/co-Poisson source before scalarization, this is
+the operator analogue of `(19)` and receives no Route-J credit.
+
+### `J-SF4` — stable nonlinear classification `[OPEN NO-GO PROGRAM]`
+
+Prove that every packet-compatible, two-homogeneous, parallelogram-compatible, lower-semicontinuous
+Hilbert capacity is a closed quadratic form.  Source-fusion nonclosability and Sections 3--6 would
+then exclude the whole stable nonlinear class.  This would not touch genuinely non-parallelogram
+singular functionals; those must be attacked separately.
+
+### `J-SF5` — semilocal Hardy compression `[OPEN SINGULAR SURVIVOR]`
+
+Connes--Consani's scaling-Hamiltonian criterion identifies positivity of the direct Hardy
+compression with innerness of the local phase.  Finite-prime and archimedean local-factor ratios
+are not bounded inner functions, and the direct inequality fails even at the archimedean place.
+Their semilocal Poisson/Weil program remains explicitly conjectural.  Hence regular local Hardy
+compression is closed, but singular semilocal source coupling remains live and belongs to this
+Route-J audit.
+
+### `J-SF6` — Xi Taylor theta-tail oriented current `[OPEN INPUT]`
+
+The finite theta-tail source has an exact signed current and a fully arithmetic two-term remainder
+bridge.  Its remaining joint sublinear bound is equivalent to RH, so it cannot be imported as an
+estimate.  It is nevertheless a source-defined odd current before scalar fusion, and the
+full-density decomposition proves that all unresolved positive contribution lies in one canonical
+finite-truncation transfer current.  Route J must test an exact transgression from that transfer
+current to `(2)`, or prove that no Julia/Gamma/co-Poisson transgression preserves its sign.  Merely
+calling the Taylor current a different route would leave a source-current survivor unexamined.
+
+## 15. Post-manuscript exact open core
+
+Route J now asks for, or must exclude class-completely, a singular source-pointed correspondence
+on the pre-fusion transverse fibre.  It must retain a nonuniform reflection-odd phase, pass through
+completed prime--Gamma/co-Poisson transport, and land in a symmetric scalar Julia current meeting
+`(2)`.  Common-test Weil reconstruction supplies the terminal form but selects its approximating
+packets from the target vector; using that selection is theatre.  Route J remains open until the
+source-only section and its sign are constructed or every singular class above is eliminated.
+
+## 16. Updated biaxial source-conservation law
+
+The 1 August 2026 revision of
+
+```text
+../4-publication-ready/riemann-source-modular-superselection/main-universal.tex
+```
+
+adds two exact gates which must now be carried explicitly in every Route-J construction.
+For a partial completion `pi : D -> Q` and target distinction `c`, recovery is equivalent to:
+
+```text
+admission:   D = X,
+separation:  pi(x)=pi(y) -> c(x)=c(y).
+```
+
+Postprocessing only enlarges the kernel relation.  In particular, a reflection-invariant
+completion cannot recover a nonzero reflection-odd real target.  The missing orientation must be
+present in a transverse channel before invariant scalarization; constructing it after fusion is
+set-theoretically impossible.
+
+The revision also identifies one chart-independent modular charge
+
+```text
+a_rho = Re(rho)-1/2,
+```
+
+simultaneously carried by normalized shell transport, the centered Xi logarithmic residue,
+principal Hurwitz phase, and compact-BV dilation.  Reflection sends `a_rho` to `-a_rho`.
+Its arithmetic realization has two independent singular axes:
+
+1. **breadth:** unit response on countably many positive exponent shells forces a nonclosable
+   codiagonal, even at `a_rho=0`;
+2. **depth:** for `0<a_rho<1/2`, the positive Wold Hellinger sector is flat beyond every power of
+   the finite Wold boundary volume, while its reflection is half-normal.  Exact reflection sewing
+   therefore has norm larger than every finite inverse Rees power.
+
+Thus a Route-J survivor must act on the joint Wold-breadth/exponent-depth incidence grid, promote
+the primitive current before scalar fusion, be nonclosable or relation-valued in breadth, and be
+beyond every finite Rees grade in reflected depth.  A merely nonclosed shell codiagonal is
+insufficient; a merely all-orders-flat valuation map is also insufficient.
+
+The manuscript now includes the explicit centered-fusion estimate `(24)`--`(27)`, including the
+threshold `m>=300`.  Its dependency-closed Lean proof is:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  CCMFirstClockSourceFusionSuperselectionNoGo.lean
+```
+
+The module proves the exact centered-energy identity, nonnegativity, logarithmic-square upper
+bound, strict failure against squared pure-bad block mass, and combined regular Hilbert fusion
+no-go.  It is wired into `RHTower.lean`.
+
+## 17. Source-height polarization of the exterior seam `[PAPER+LEAN-PROVED CURRENT]`
+
+The earlier `J-SF2` audit left one precise obligation: construct a nonuniform phase from source
+data before scalarization.  The finite Julia--Gamma transport itself supplies one.  Let
+
+```text
+h_x(p,e)
+  = (1/2) gammaMidHeight(p,e)
+    + (1/4) normalizedJuliaPrimeLog_x(p),
+a_u(p,e) = xiGammaEulerBoundaryRealAmplitude(u,p,e) > 0.
+```
+
+The calibrated exterior cell has exact rank-two form
+
+```text
+H_x(i,j) = a_u(i) a_u(j) (h_x(i)-h_x(j)).
+```
+
+For `tau>=0`, phase each source cell before scalarization by
+
+```text
+z_i(tau)=exp(i tau h_x(i)).
+```
+
+Then the Hermitian scalarization of `i H_x` is real and equals
+
+```text
+Q_x,u,tau(P)
+  = Re sum_(i,j in P) conj(z_i) i H_x(i,j) z_j
+  = sum_(i,j in P)
+      a_u(i)a_u(j)(h_x(i)-h_x(j))
+      sin(tau(h_x(i)-h_x(j))).                         (30)
+```
+
+If every packet phase difference has magnitude at most `pi`, every summand in `(30)` is
+nonnegative because `d sin(tau d)>=0`.  If two retained source heights differ and their phase
+difference is strictly below `pi`, `(30)` is strictly positive.  This is a genuine nonzero
+symmetric scalar current obtained from the previously scalar-zero exterior seam.  It uses only
+finite-aperture prime--Gamma--Julia source coordinates; no Xi zero, desired sign, negative part,
+Ward conclusion, or target-selected packet occurs in its definition.
+
+The scratch formalization proves the exact complex-to-real identity, nonnegativity, strict
+positivity, and calibrated-height factorization unconditionally.  It is being promoted to a
+Route-J module.
+
+This construction closes the phase-existence part of `J-SF2`, but not Route J.  Remaining
+questions are quantitative:
+
+1. does `(30)` dominate the full first-clock negative excursion, rather than only orient an
+   exterior source packet?
+2. can `(30)` have one source-uniform upper budget on cofinal moving packets?
+3. can its phase carry the chart-independent odd modular charge through both the nonclosable
+   breadth axis and beyond-finite-Rees reflected depth, rather than only positive Euler height?
+
+Until those are proved or contradicted, `J-SF2` is a real survivor.

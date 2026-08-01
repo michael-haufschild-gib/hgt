@@ -344,7 +344,7 @@ multiplicity-exact divisor transducer.
 `XiCTaylorThetaTailCoreDivisorChargeRigidity.lean`. Route H is retired as an independent mechanism;
 a non-normal moving gauge is a new route with a separate source-selection obligation.
 
-### Route I — sharp dyadic prime window  [OPEN — SOURCE ACQUISITION UNRESOLVED]
+### Route I — sharp dyadic prime window  [RETIRED — EXACT C2 WIDTH COLLISION]
 
 **Local contribution beyond located literature.** The exact shifted-zeta contradiction from one
 subpower sharp dyadic weighted-prime error and the proved height-range obstruction for finite
@@ -370,11 +370,18 @@ coupling.  Every nondegenerate real Möbius postcomposition retains the same two
 `CCMSharpPrimeWindowMobiusPassiveNoGo.lean`.  The nontrivial transformed survivor has also been
 routed rather than discarded: exact Mellin normalization plus archimedean completion equals
 `logDeriv XiC(-z)` on the source overlap, formalized in
-`CCMSharpPrimeWindowCompletedPassiveTransfer.lean`.  Its positivity is precisely the
-Sondow--Dumitrescu/Planat Route-C2 problem, not a new Route-I mechanism.  Because Route C2 was
-already saturated and retired, this collision closes only the completed-response branch; it does
-not receive or close Route I.  Existing external PNT bounds still do not satisfy the sharp typed
-premise, so Route I remains open at its source-pure all-epsilon dyadic-window estimate.
+`CCMSharpPrimeWindowCompletedPassiveTransfer.lean`. Its positivity is precisely the
+Sondow--Dumitrescu/Planat Route-C2 problem, not a new Route-I mechanism.
+
+Subsequent quantitative audit closes the remaining source branch as well. For every `alpha>=0`,
+generalized von Koch plus exact Abel transfer maps `XiZeroHalfPlaneBound alpha` to the eventual
+sharp-window error `O_epsilon(n^(alpha+epsilon))`; the formal fixed-power Landau theorem maps that
+pointwise spectrum back to `XiZeroHalfPlaneBound alpha`. The one-sided square-aperture energy has
+the same collision, with abscissa `1+4*xiRightTransverseSup` off the critical line. Thus Route I's
+pointwise and coefficient-nonlocal endpoints are exact C2 width coordinates, not independent
+source mechanisms. Paper/Lean certificates:
+`../2-fully-proven/not_new_scientific_knowledge/sharp-dyadic-prime-window-zero-width-collision.md`
+and `RHTower/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean`.
 
 ### Route J — arithmetic Julia coherent energy
 

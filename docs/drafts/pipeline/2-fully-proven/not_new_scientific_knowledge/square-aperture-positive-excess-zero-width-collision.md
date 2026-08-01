@@ -165,8 +165,7 @@ width.
 
 ### 4. Intrinsic equality
 
-The classical generalized von Koch theorem says that if `Theta` is the supremum of real parts of
-nontrivial zeta zeros, then, for every `epsilon>0`,
+When `Theta<1`, the classical generalized von Koch theorem says that, for every `epsilon>0`,
 
 ```text
 psi(x)-x = O_epsilon(x^(Theta+epsilon)).
@@ -179,6 +178,18 @@ The commonly quoted stronger fixed-exponent form is
 ```text
 sigma_2 <= 1+4alpha_*.
 ```
+
+The passage from the fixed logarithmic form to the all-epsilon form loses no dependency: for
+`x>=1`, setting `u=log x` and maximizing `u^2 exp(-epsilon u)` gives
+
+```text
+log(x)^2 <= 4/(e^2 epsilon^2) x^epsilon.
+```
+
+If the supremum is the limiting value `Theta=1`, Chebyshev's unconditional `psi(x)=O(x)` estimate
+instead gives `O_epsilon(x^(1+epsilon))`, which is the same required spectrum at
+`alpha_*=1/2`. Thus no unproved assertion that the zero-free strip has fixed positive width is
+being used.
 
 Taking the supremum of `(2)` over right Xi zeros gives the reverse inequality, so
 

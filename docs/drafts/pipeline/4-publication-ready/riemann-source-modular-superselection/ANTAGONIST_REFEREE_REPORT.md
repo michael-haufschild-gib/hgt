@@ -1,138 +1,219 @@
 # Antagonist referee report
 
-Manuscript: **The Euler primitive--fibre law: A singular source boundary for Riemann's explicit formula**
+Manuscript: **The biaxial source-conservation law over the Riemann divisor:
+Modular charge and an infinite hypertranscendental fibre**
 
-Standard: hostile reviewer at a renowned general mathematics/science journal.
+Standard: hostile reviewer at a renowned general scientific or general
+mathematics journal.
 
 Date: 2026-08-01.
 
 ## Recommendation
 
-**Reject at a general scientific journal.** Consider only as a short specialist structural note
-after a serious external priority audit and stronger placement against probabilistic number theory,
-explicit-formula, and operator-algebra literature.
+**Reject at a renowned general scientific journal in present form.**
+Potentially consider at a strong specialist mathematics journal after
+external priority review and substantial compression.
 
-Manuscript is now coherent and no longer collage-prone. It has one named local law, exact scope,
-and an honest statement that RH and zero exclusion remain open. Its mathematical assertions have
-clear proofs and internal claim trace. That is a substantial quality improvement, not enough
-significance for requested venue.
+This verdict is about significance, not correctness.  Manuscript is now
+coherent, has one law and one Riemann theorem, states exact hypotheses, and
+does not claim RH or zero exclusion.  It no longer presents a collage of
+independent route results.
 
-## What manuscript genuinely proves
+## What is genuinely proved
 
-At each geometric valuation fibre it distinguishes three exact source levels:
+The paper has two levels.
 
-1. positive activation mass;
-2. Fisher-damped/whitened Gamma valuation coordinate;
-3. logarithmically primitive von-Mangoldt half-density.
+First, partial completion obeys an admission--separation factorization:
+global recovery requires total source admission and constancy of the target
+on completion fibres.  Postprocessing cannot repair either failure.  A
+reflection-invariant completion cannot recover a nonzero reflection-odd
+charge.
 
-The second-to-third transition has an exact exponentially growing depth gauge. Functional-equation
-reflection adds another exact depth gauge, with fixed geometric mean and unique balance at the
-half-density. This gives sharp no-go statements for uniformly bounded source-label-preserving
-depth-diagonal recovery and sewing.
+Second, one explicit Riemann source realizes this law on two independent
+arithmetic axes.
 
-The same von-Mangoldt current already occurs in four independently established realizations:
-Wold normal differentiation, Julia--KMS positive resolution, pole-scale exponential clock, and
-reflected Schatten duality. Manuscript correctly does not claim those parent theories separately.
+1. **Breadth.** Positive largest-exponent shells have pairwise disjoint
+   coefficient support, carry the same strict-right completed-zeta divisor,
+   and remain jointly differentially algebraically independent over the full
+   zeta differential field after the common divisor is removed.  Finite
+   fusion sends reciprocal signature into the centered kernel.  Countable
+   unit fusion is nonclosable and cannot be represented by a bounded vector
+   against any Bessel family.
+2. **Depth.** One centered modular charge
+   \(a_\rho=\Re\rho-\tfrac12\) appears identically in shell transfer,
+   centered Xi residue, Hurwitz phase, and compact-BV dilation.  Reflected
+   prime-valuation sectors have distinct asymptotic types: one is
+   all-orders flat and the other half-normal.  Exact sewing cost exceeds
+   every finite inverse Rees power.
+
+The two axes are independent.  Critical-line neutrality removes the depth
+fracture but not the breadth nonclosability.  A nonzero off-line charge adds
+the depth obstruction.
+
+The exact Route-J application is stronger than the earlier qualitative
+story: centered fusion energy is logarithmic-square on certified blocks,
+while squared fused bad mass is quartic.  Plain centering cannot provide the
+missing domination.
+
+## Does one law subsume the corpus observations?
+
+**Yes at the mechanism level, with a necessary qualification.**
+
+Every audited relevant result has a named source map and lands in one of two
+defects:
+
+- source not admitted to the regularity class;
+- source admitted but target distinction collapsed on a fibre.
+
+Linear signature, derived Tor/middle fibre, dense radical, all-orders-flat
+Rees ideal, nonclosable graph, nonabsolute nuclearity, vanished deficiency
+phase, and target-selected source interfaces are exact realizations of these
+two defects.  Positive theorems are zero-defect realizations: Wold--Poisson
+preserves shell labels, central-line restriction separates the holomorphic
+strip hull, twisted Deninger orientation survives before the invariant
+quotient, source-defined double commutators relocate distinctions into
+Schatten--1, and common-test packets represent terminal quadratic consumers.
+
+Qualification: the elementary set theorem does not prove the analytic
+estimates in those rows.  Each row is an independently proved specialization
+of the same law.  Claiming literal derivation of 84,490 declarations from one
+factorization would be false.
 
 ## Strongest favorable reading
 
-Headline insight is elegant:
+The paper identifies a new geometric object over the Riemann divisor:
 
-> Prime powers are composite in valuation geometry but primitive in Euler differential geometry.
+\[
+\text{one scalar divisor}
+\quad\text{with}\quad
+\begin{cases}
+\text{an infinite relative differential fibre in shell breadth},\\
+\text{a reflected modular superselection fracture in valuation depth}.
+\end{cases}
+\]
 
-This corrects a real conceptual conflation. Fisher whitening does not create the explicit-formula
-current; a second singular primitive promotion is unavoidable. It also gives a precise meaning to
-off-critical nonunitarity: reflected source profiles agree only at half-density and otherwise one
-depth-diagonal sewing direction grows exponentially.
+This explains several persistent failures at once.
 
-As a research map, this is useful. It localizes surviving RH program at a singular,
-source-pointed, breadth/depth continuation performed before sign and orientation are erased.
+- Additional positive sources do not create new divisor multiplicity or
+  additional Ward charge; their information moves into a transverse kernel.
+- A larger ordinary Hilbert space does not regularize unit response across
+  countably many independent labels.
+- Finite filtered/reflected completion cannot sew a nonzero modular charge.
+- Squaring or invariant scalarization preserves divisor location but erases
+  the orientation needed to distinguish a reflected pair.
+- Terminal Weil, Ward, Calkin, Sonin, Suzuki, and sharp-window criteria can
+  judge transported data but cannot create missing source orientation.
+
+The surviving architecture is therefore sharply localized: a source-pointed,
+relation-valued correspondence on the joint breadth--depth grid, active
+before scalar fusion, nonclosable in breadth, and beyond finite Rees order in
+reflected depth.
+
+That is more than a decorative RH equivalence and more than a no-go for one
+dead route.
 
 ## Fatal attacks
 
-### 1. Main theorem is elementary algebra
+### 1. Abstract law is elementary
 
-Equations defining the advertised law are substitutions among geometric sequences. Divergence is
-the observation that `r^{-1}>1`; reflection is cancellation of opposite exponential rates. A broad
-journal will ask what difficult theorem follows that was not already visible from
-`Lambda(p^k)=log p`.
+Admission plus fibre separation is the standard factorization criterion for a
+map.  Kernel pairs grow under postprocessing.  A broad-journal referee will
+not treat this as mathematical novelty.
 
-**Attack succeeds.** Cross-factorization may be new as a conjunction, but current manuscript has
-not extracted a nontrivial analytic or arithmetic consequence commensurate with its framing.
+**Attack succeeds.**  Manuscript now concedes this.  Significance must rest
+entirely on the exact Riemann realization and its conjunction.
 
-### 2. Global section is an atlas, not a consequence of local theorem
+### 2. No zero exclusion
 
-Wold, Julia--KMS, exponential-clock, and Schatten results share the von-Mangoldt current, but none
-is derived from the primitive--fibre identities. Calling them “four geometries of the same current”
-is correct; calling their collection one universal theorem would be too strong.
+The common divisor is replicated, not excluded.  Hypertranscendence removes
+finite differential-algebraic explanations of that divisor but cannot move
+zeros.  The Rees theorem says off-line reflected sectors cannot be regularly
+sewn; it does not show such sectors do not exist.  No one-sided source
+orientation, Ward/Weil sign, defect-index vanishing, or improved zero-free
+region is proved.
 
-**Attack lands partly.** Paper is focused rather than a collage, but universality is explanatory,
-not a new theorem with one hypothesis and several deep corollaries.
+**Attack succeeds completely.**
 
-### 3. No zero exclusion or new quantitative RH consequence
+### 3. The new object may still be judged diagnostic, not decisive
 
-Positive Julia layers preserve a negative external phase. Reflection balance is an identity true
-for every prime power regardless of Xi zeros. No defect index is shown to vanish, no one-sided
-Ward/Weil sign is proved, and no zero-free region improves.
+The biaxial source object classifies what a successful proof architecture
+must retain.  It does not construct that architecture or derive a new theorem
+about the distribution of Xi zeros.  A general journal can reasonably call
+this a sophisticated research-program boundary rather than progress on RH
+itself.
 
-**Attack succeeds completely.** Paper identifies missing conversion but does not execute it.
+**Attack succeeds for a flagship venue.**
 
-### 4. No-go scope is narrow
+### 4. No-go scope remains hypothesis-dependent
 
-Unbounded diagonal multiplier excludes only source-label-preserving depth-diagonal recovery. It
-does not exclude non-diagonal transforms, reindexing, singular correspondences, unbounded closed
-operators, or arbitrary Hilbert-space models. Broader statements would be false.
+The theorem excludes architectures with unit shell response, an orthogonal or
+Bessel label realization, finite-Rees reflected sewing, and invariant
+terminal scalarization.  It does not exclude non-diagonal singular
+correspondences, multivalued relations, unbounded nonclosable transforms, or
+programs retaining orientation from the start.
 
-**Manuscript now scopes this correctly.** Result is sharp but much narrower than death of
-Hilbert--Polya, Connes--Consani, or completely positive approaches.
+**Manuscript scopes this correctly.**  Any title or publicity implying death
+of Hilbert--Pólya, CCM, Hedenmalm, or operator-algebraic RH programs would be
+false.
 
-### 5. Novelty remains unestablished
+### 5. Priority remains unproved
 
-Geometric prime valuations, Bernoulli squarefree occupancy, von Mangoldt logarithmic
-differentiation, half-density, detailed balance, and Holder/Schatten reflection are established.
-Targeted searches did not locate exact cross-factorization, but absence from a small search is not
-priority evidence.
+Largest prime exponents, \(m\)-free Dirichlet series, modified zeta functions
+with common zeros, differential-algebraic independence methods, Kakutani
+product-measure theory, Rees filtrations, and Krein signature all have prior
+literature.  Targeted formula searches found no exact collision with the
+combined theorem, but search absence is not priority.
 
-**Attack remains open.** Specialist literature review is mandatory. Manuscript's restrained
-priority paragraph is appropriate.
+**Attack remains open.**  Expert external review in analytic number theory,
+differential algebra, and operator theory is required.
 
-### 6. “Universal” is too broad without category in title/theorem
+### 6. Breadth of the explanatory table can again look like collage
 
-Law is universal over one geometric fibre parameter `0<r<1`, one positive primitive weight, and
-depth-diagonal reflection. It is not universal over Euler products, L-functions, source operators,
-or divisor theories.
+The table includes Hedenmalm, Deninger, Suzuki, Sonin, Ward, Weil, Calkin,
+recurrence, Gamma-field carriers, and physical prime endpoints.  Even with a
+common defect ledger, a referee may ask for a shorter paper centered only on
+the shell/modular/Rees theorem.
 
-**Attack succeeds against broad marketing.** “Euler primitive--fibre law” is acceptable;
-“universal source law for RH” would not be.
+**Attack partly succeeds.**  The table is useful as an audit, but journal
+version should move secondary realizations to an appendix or companion paper
+unless editors value the synthesis.
 
 ## Original acceptance criteria
 
 | Criterion | Verdict |
 |---|---|
-| Only unconditional mathematical claims | **Pass**, subject to final axiom/build audit |
-| Proves RH or high-interest progress / opens unprecedented route / kills classic route | **Partial at best**: sharp source-program localization, no RH consequence or classic-route death |
-| Renowned general scientific journal quality | **Fail on significance**, pass on basic coherence and honesty |
-| Answers rather than leaves decisive questions open | **Fail**: singular common-test continuation and Ward/Weil orientation remain open |
+| Only unconditional mathematical claims | **Pass**, pending final build/axiom audit |
+| Proves RH or gives high-interest progress / unprecedented route / intrinsic death theorem | **Partial**: new exact source architecture and sharp regularity boundary; no zero theorem |
+| Renowned general scientific journal quality | **Fail on present significance** |
+| Answers rather than leaves decisive questions open | **Fail for RH**: source-derived positive orientation remains missing |
+| One law subsumes audited observations | **Pass at exact-specialization level; fail if interpreted as literal derivation of every analytic theorem** |
 
 ## What a renowned-journal reviewer would demand
 
 At least one of:
 
-1. construct singular source-pointed common-test continuation and prove its one-sided Ward/Weil
-   sign;
-2. derive a genuinely nontrivial theorem about Xi zeros, not another equivalent criterion;
-3. prove broad source-category theorem from which finite-Rees superselection, Hedenmalm dense
-   radicals, Wold normal selection, Julia sign preservation, Sonin/Calkin compression, and Ward
-   failure follow as actual corollaries;
-4. prove an impossibility theorem covering a famous route under assumptions recognized as
-   intrinsic by that route's literature;
-5. establish external priority and explain why exact primitive promotion changes current research
-   practice.
+1. construct the singular source-pointed breadth--depth correspondence and
+   prove its one-sided orientation;
+2. deduce a new quantitative theorem about Xi zeros that is not equivalent to
+   RH;
+3. prove an intrinsic impossibility theorem for a recognized classic program,
+   with hypotheses justified by that program rather than selected for the
+   no-go;
+4. establish external priority for the infinite relative shell fibre plus
+   modular-Rees superselection conjunction and show it changes current
+   research practice;
+5. compress the manuscript to the new arithmetic theorem and supply a
+   specialist referee with a self-contained proof of every analytic input.
 
 ## Final honest verdict
 
-Current paper is strongest clean source theorem extracted from this frontier pass, but it does not
-meet user's flagship acceptance bar. Its value is that it replaces vague “missing source” language
-with an exact singular conversion problem and prevents further work on bounded diagonal
-normalizations. It should be treated as a theorem/card anchoring Route R, not yet as final
-general-journal submission.
+Paper now presents one genuine law and uses it to explain all audited relevant
+positive and negative mechanisms without pretending they prove RH.  Its
+strongest result is the biaxial classification: common-divisor source
+information survives as infinite breadth and reflected depth, forcing any
+regular post-fusion selector to fail in two independent ways.
+
+That is scientifically interesting and plausibly publishable in a specialist
+venue.  It is not yet a Nature-level or renowned-general-journal RH advance,
+because it classifies the missing object but does not supply its positive
+orientation or exclude one zero.

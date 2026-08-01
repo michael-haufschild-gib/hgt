@@ -380,3 +380,130 @@ orientation-before-completion theorem; its exact singular/topological/filtered
 consequences; and the Riemann theorem identifying one centered modular charge
 simultaneously in source-normal, shell, Hurwitz, BV, Gamma--Stokes, Hedenmalm
 singular-support, and reflected-Rees charts.
+
+## 2026-08-01 zero-omission delta reconciliation
+
+Fresh stable mechanical census contains 7,889 modules, 84,490 declarations,
+and 67,384 theorem/lemma declarations.  Previous checked census contained
+7,839 modules.  The following disposition covers all 50 new modules; no
+sampling was used.
+
+### Direct strengthening of manuscript theorem
+
+- `CommonCharacterFusionConservation`: finite codiagonal identity, kernel
+  codimension, reciprocal signature, reflected action.
+- `HighExponentShellFusionConservation`: exact common divisor, infinite
+  relative differential fibre, finite signature conservation, nonclosable and
+  Bessel infinite-fusion boundaries.
+- `CCMFirstClockSourceFusionSuperselectionNoGo`: certified Route-J finite
+  centered energy is lower order than squared fused bad mass; infinite regular
+  Hilbert fusion fails independently.
+
+These are now in Sections 4, 5, and 8.  They sharpen “breadth obstruction”
+from an analogy to an exact finite/infinite theorem.
+
+### Positive admission or separation realizations
+
+- `StripHullSeparation`: central-line restriction is injective on the
+  holomorphic vertical Bohr carrier.
+- `DeningerKahlerRiemannFlowPurity`
+- `DeningerKummerStalkTor`
+- `DeningerMiddleFiber`
+- `DeningerPacketFrobeniusQuotientNontrivial`
+- `DeningerPrimeArithmeticCyclotomicComparison`
+- `DeningerPrimePacketContinuousRestrictionGreen`
+- `DeningerPrimePacketCyclotomicTowerAction`
+- `DeningerRealApexEndpoint`
+- `DeningerReesJetTower`
+- `DeningerSUnitEndpointPage`
+- `DeningerStationaryKahlerGerm`
+- `SchattenDoubleCommutatorRelocation`
+- `XiPrimeMarkedPhysicalEndpointBoundaryGrowth`
+- `XiPrimeMarkedPhysicalEndpointBoundaryNuclearObstruction`
+- `XiPrimeMarkedPhysicalEndpointCorrectionTraceClass`
+
+These occupy the positive side of the same ledger: injective strip
+restriction; derived transgression; exact nontrivial cyclotomic quotient;
+faithful tower action; twisted real orientation; flow purity; source-defined
+Green form; Rees jet character; trace-class relocation and valuation
+correction.  The manuscript now states both survivors and their exact
+remaining acquisition gates.
+
+### Regular Gamma/jet carrier boundary
+
+- `DigammaRationalFieldDatum`
+- `EventualRelationFinitePhaseLaw`
+- `FullJetPolyNonzeroDatum`
+- `GammaFieldCoefficientLaw`
+- `GammaFieldRatDatum`
+- `GammaShapeDominantResidue`
+- `RatCoeffClearing`
+- `RatCoeffJetPoly`
+- `UpperEndGammaElement`
+
+Together they prove, under the stated strip almost-periodic hypotheses, that
+nonzero Gamma-field coefficients do not hide an infinite relation: an
+eventual relation collapses to a finite constant-coefficient phase law.
+This is a conditional specialization of separation, not a blanket Gamma
+no-go.  The manuscript uses exactly that scope.
+
+### Terminal consumers and exact loss
+
+- `CCMSharpPrimeWindowSquareEnergyWidthCollision`
+- `CCMSharpPrimeWindowSquarePositiveExcessDuality`
+- `SuzukiCompactCorePhaseUniversality`
+- `SuzukiEdgeDataInterface`
+- `SuzukiIntervalEdgeData`
+
+Sharp-window square energy collides exactly with classical Chebyshev width and
+remains a terminal RH criterion.  Dense Suzuki compact-core ranges erase all
+bounded boundary schedules in the strong Cayley/resolvent limit, while the
+edge-data interface is freely inhabitable and therefore does not acquire an
+arithmetic source.  Both are direct admission/separation instances.
+
+### Supporting geometry, analysis, and recurrence/complexity laws
+
+- `CompactIntervalL2Pairing`
+- `CuspedHorizonHomotopy`
+- `DiagonalProjectorClockPackingLaw`
+- `FinTwoProjectorClockComplexityLaw`
+- `IntervalL2Density`
+- `InverseJetNumerator`
+- `MetricEntropyRecurrenceAmplificationLaw`
+- `NerveHomotopy`
+- `NerveProductComparison`
+- `NestedExhaustionPhaseUniversality`
+- `OneDeepFibreBound`
+- `PeriodicMetricEntropySeparationLaw`
+- `SpectralSliceComplexityAmplificationLaw`
+- `StarProjectionPeriodicComplexityLaw`
+- `FiniteAndersonChoiComplexityAlternationLaw`
+- `StaticChoiComplexityAlternationLaw`
+- `StaticChoiTraceDistanceLaw`
+
+Compact-interval, inverse-jet, nerve, and cusp results are infrastructure for
+already-classified source maps.  Recurrence/complexity results are exact
+positive examples of the maximal accessible quotient: one-frequency
+recurrence does not bound ambient carrier complexity, and finite dictionaries
+fail by metric separation.  They strengthen the universal information law
+but do not strengthen the Riemann arithmetic consequence, so importing their
+technical statements into the manuscript would recreate the rejected
+collage.
+
+### Scope conclusion
+
+Every new module is now one of:
+
+1. a direct theorem used in the biaxial Riemann law;
+2. a positive admission/separation realization;
+3. a terminal consumer or exact completion loss;
+4. an infrastructure theorem; or
+5. an unrelated recurrence/complexity realization of the same information
+   law.
+
+“Subsumes” therefore means exact specialization through a named source map
+and target distinction.  It does not mean that elementary set factorization
+proves the analytic estimates, nor that unrelated infrastructure is a
+corollary.  No new delta theorem exposes a third obstruction beyond admission
+and separation, or a third independent Riemann source axis beyond shell
+breadth and reflected valuation depth.

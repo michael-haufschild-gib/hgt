@@ -344,6 +344,29 @@ trace-zero pair satisfies `(18d)` after regular power jets are removed.  Once th
 `(18a)`--`(18h)` eliminate the entire intermediate transseries sector; no enumeration of possible
 flat scales is needed.
 
+### Bounded homogeneous coupling is now completely classified
+
+`suzuki-bounded-seam-half-log-rigidity.md` proves a stronger vector-valued theorem for the
+homogeneous pointwise part. If
+
+```text
+(2L I+T(L))F(L)=integral_(L_0)^L F(t)dt,
+sup_L ||T(L)||<infinity,
+```
+
+on any Banach seam carrier, then either `F` vanishes on a terminal half-line or
+
+```text
+sqrt(L)F(L) -> beta != 0.
+```
+
+No positivity, self-adjointness, commutativity, or finite-dimensional hypothesis is needed.
+Consequently finite prime adjacency and bounded polar--Gamma multiplication cannot create an
+inverse-log-flat non-`H1` homogeneous cycle. The only surviving scale-gap mechanism is the
+genuinely nonlocal logarithmic remainder `(18j)`. The precise next theorem is therefore not a
+generic tail estimate: lift `(18j)` to the completed seam carrier and prove that it is an
+integrable perturbation after half-log conjugation.
+
 ## 5. `SUZUKI-NO-INTERMEDIATE-BOUNDARY-SCALE`
 
 `[CONJECTURE; RH-BEARING ANALYTIC GATE]` For the exact restricted Weil operator and every
@@ -416,6 +439,7 @@ live new claims.
 - [x] intermediate inverse-log-flat non-`H1` channel constructed
 - [x] whole-packet log-grade separation falsified
 - [x] boundedly coupled homogeneous flat tails excluded by a Volterra tail theorem
+- [x] bounded pointwise seam systems classified by a nonzero half-log trace alternative
 - [x] full scale-gap reduced to a uniform exact-remainder/seam-carrier bound
 - [x] strongest two-channel survivor extracted
 - [ ] prove endpoint trace existence for exact Suzuki zero modes

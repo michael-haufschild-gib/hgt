@@ -843,8 +843,10 @@ has finitely many roots and `λ ↦ iλ` is injective, hence the spectrum is fin
 (`bohrFrequencyModule_fg_of_linearOde`).  Supporting linearity lemmas — `bohrCoefficient_finsetSum`,
 `bohrCoefficient_const_mul`, `bohrCoefficient_of_eq_zero` — are proved here as well.
 
-The nonlinear case is what still needs the topological argument (jet embedding, covering dimension,
-Pontryagin duality); the linear case needs none of it.
+The nonlinear case needs the topological argument (jet embedding, covering dimension, Pontryagin
+duality); the linear case needs none of it.  Both are now available: the dimension step is Lean-native
+(see the Brouwer section), and the finite-rank conclusion for arbitrary jet monomials is
+`finite_phase_law_of_gammaField_relation`.
 
 `formal/GaloisForLFunctions/HTGeometry/GammaLinearStripDerivative.lean` reads the graded collapse on
 the derivatives themselves.  Specializing the differential monomials to `M_j(f) = f⁽ʲ⁾`
@@ -1553,9 +1555,35 @@ Hence
 
 This is the analytic Poincaré transfer the card records as open: the carrier is a compact family of
 holomorphic functions on the strip, which is what makes the jet sample of eq. (15) meaningful on it.
-What remains for the injectivity of eq. (18) is the identity-theorem step (two carrier points with
-equal restriction to the central line coincide) and the propagation of the defining relation to
-carrier points.
+
+The identity-theorem step is now proved too, in `HTGeometry/StripHullSeparation.lean`.  Two
+ingredients.  `bohrEval_injective_of_isometry`: if the evaluation of a Bohr curve is isometric — the
+distance between two values equals the distance between the two translates — then the carrier embeds
+in the value space (proved by `Completion.induction_on₂`: the identity `dist (eval x) (eval y) =
+dist x y` is closed and holds on the dense image of the line).  `dist_stripCurve_eq`: for the
+vertical translate curve that isometry holds outright, because a closed vertical substrip is
+invariant under vertical translation, so the supremum over the orbit adds nothing.  With
+`eq_of_eqOn_verticalStrip_closed` (a bounded continuous function on the closed substrip is determined
+by its values on the open one, by approximating a boundary point from inside):
+
+> **`hull_eq_of_line_eq`**: two carrier points whose restrictions to the central line agree are
+> equal.
+
+So a carrier point is determined by its restriction to the line — the separation the jet embedding of
+eq. (15)/(18) needs.  The propagation of the defining relation to carrier points was already in the
+corpus: `HTGeometry/StripRelationPropagation.lean` proves
+`relation_of_tendstoLocallyUniformlyOn`, `relation_of_translate_limit` and
+**`exists_solution_of_hull`** — every point of the phase carrier solves the same autonomous relation,
+because locally uniform limits of holomorphic functions carry every derivative and vertical translates
+of a solution of an autonomous relation are solutions.
+
+What is still open on that branch is only the *implicit-function step*: turning a polynomial relation
+with non-vanishing separant into an explicit Lipschitz field `y⁽ⁿ⁾ = Φ(y, …, y⁽ⁿ⁻¹⁾)`, which is what
+`ODEJetSeparation`'s uniqueness theorems consume.  Note that **this card's finite-rank conclusion does
+not depend on it**: `rank_finite_of_polynomial_relation` takes an arbitrary nonzero polynomial jet
+relation on the strip with no injectivity hypothesis, and that is the route
+`finite_phase_law_of_gammaField_relation` uses.  The jet-embedding route is the companion card's
+second proof of the same bound.
 
 ### Three lines: the line carrier and the strip carrier are the same object
 
@@ -3627,7 +3655,70 @@ residue attaches to whichever representative appears in the relation, giving
 Every coefficient hypothesis of the law is now produced from nonvanishing alone.  `#print axioms`
 clean.
 
-### The one remaining generality gap, and the route to it
+### The relation hypothesis weakened to what a germ relation gives
+
+The collapse argument samples the relation along a Bohr return sequence, which tends to `+∞`, so the
+relation is only ever *used* far up the vertical line.  `EventualRelationFinitePhaseLaw.lean` records
+that: `recurrence_collapse_to_autonomous_of_eventual`,
+`recurrence_collapse_of_bohr_return_eventual`, `line_relation_of_coeff_limits_eventual`,
+`strip_relation_of_coeff_limits_eventual`, `rank_finite_of_coeff_limits_eventual`,
+`finite_phase_law_of_coeff_ratios_eventual` and `finite_phase_law_of_gammaJet_data_eventual` are the
+whole chain with `∀ s : ℂ` replaced by `∀ᶠ t in atTop` on the line.  Nothing is lost, and the
+conclusion is unchanged: the collapsed constant-coefficient relation still holds on the *whole* strip
+(the line-to-strip step is `jetPoly_eqOn_zero_of_line`, which needs the collapsed relation only on the
+line).
+
+This matters because a relation between elements of the differential field is a relation between
+germs at the upper end: it determines the representing functions only there.  Combining with the
+coefficient work above gives the final form
+
+> **`finite_phase_law_of_gammaField_coefficients_eventual`**: for a relation that holds far up the
+> line, whose coefficients are nonzero elements of the `Γ` jet algebra over `ℂ(s)` represented by the
+> functions appearing in it, the collapsed constant-coefficient relation holds on the whole strip, is
+> nontrivial, and the Bohr frequency rank is finite.
+
+No residue hypothesis, no presentation, no relation off the line.  `#print axioms` clean.
+
+### The law from a relation stated in the carrier
+
+The last link is the one that makes the law's input a statement *about the field* rather than about
+functions.  `eventual_line_relation_of_analytic_relation` applies the germ representation to an
+identity between analytic elements of the upper-end carrier — the coefficients `W α` and the jets
+`upperEndAnalyticDeriv^[i] Ψ` of the solution's germ — and returns the pointwise identity far up
+every vertical line.  Combined with everything above:
+
+> **`finite_phase_law_of_gammaField_carrier_relation`**: given a relation
+> `∑_α W_α ∏_i (δ^i Ψ)^{e_{αi}} = 0` in the upper-end analytic carrier, whose coefficients are
+> nonzero elements of the `Γ` jet algebra over `ℂ(s)` and whose solution germ `Ψ` represents a
+> strip-almost-periodic holomorphic `Φ`, the collapsed constant-coefficient relation holds on the
+> whole strip, is nontrivial, and the Bohr frequency rank of `Φ` on the line is finite.
+
+No residue hypothesis, no datum, no presentation, no relation off the line: the only inputs are the
+relation itself, the nonvanishing of its coefficients, and the almost periodicity of `Φ`.
+`#print axioms` clean.
+
+### The law for a relation with arbitrary field coefficients
+
+**`finite_phase_law_of_gammaField_relation`** removes the last restriction.  The coefficients are
+arbitrary *nonzero elements of the field* `ℂ(s)⟨Γ⟩` — denominators allowed — and the relation is
+stated in the field itself, between the jets `δⁱ Ψ` of the solution's germ:
+
+> if `∑_α x_α ∏_i (δⁱΨ)^{e_{αi}} = 0` with `x_α ∈ ℂ(s)⟨Γ⟩ \ {0}`, `Ψ` the germ of a
+> strip-almost-periodic holomorphic `Φ`, and the jet exponents distinct, then the collapsed
+> constant-coefficient relation holds on the whole strip, is nontrivial, and `Φ`'s Bohr frequency
+> rank is finite.
+
+The proof clears twice — `exists_common_denominator` for the field denominator, then the per
+coefficient clearing polynomials `q_α`, whose product multiplies the relation — lands in the analytic
+carrier by `IsFractionRing.injective`, and applies the carrier form.  Since the multiplier is a
+single nonzero element, no coefficient is lost and none is created.
+
+This is eq. (3), eq. (19) and eq. (5) of the card in one statement, with every hypothesis discharged
+except those about `Φ` itself.  `#print axioms` clean.
+
+### The generality gap, and how it was closed
+
+
 
 ### The one remaining generality gap, and the route to it
 
@@ -3641,8 +3732,13 @@ clean.
 
 ### The one remaining generality gap, and the route to it
 
-With §8 closed, every numbered claim of §1–§8 has Lean except one *quantifier*: eq. (3) and eq. (19)
-are proved for field elements **presented with their residue data** (a datum `(u,a,dP,b)` and a
+### The one remaining generality gap, and the route to it
+
+*(Historical: this section describes the gap as it stood before the existential was proved; it is
+recorded because the obstruction it identifies is what the new modules had to overcome.)*
+
+With §8 closed, every numbered claim of §1–§8 had Lean except one *quantifier*: eq. (3) and eq. (19)
+were proved for field elements **presented with their residue data** (a datum `(u,a,dP,b)` and a
 nonzero limit `c`), and — since `GammaJetDatumUniqueness.lean` — that presentation is unique when it
 exists.  What is not yet Lean is the existential half in the card's own phrasing: *every* nonzero
 `A ∈ L` has such a datum, with no presentation supplied.

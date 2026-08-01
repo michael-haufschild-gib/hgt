@@ -1,7 +1,7 @@
 # Finite-prime Milnor endpoint page
 
 - **ID:** `deninger-finite-prime-milnor-endpoint-page`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Label:** `DAC_FINITE_PRIME_MILNOR_ENDPOINT_PAGE`
 - **Parent:** `deninger-cofinite-divisor-split-strictness`
@@ -123,8 +123,8 @@ The calculation is unique factorization plus elementary homological
 algebra and is not new.  Its role is to fix the exact finite target of
 the derived quotient contraction.
 
-**Verdict:** `FULLY PROVEN ON PAPER; LEAN IMPLEMENTATION WRITTEN,
-DIRECT CHECK DEFERRED UNTIL SHARED LOAD CLEARS`.
+**Verdict:** `FULLY PROVEN ON PAPER; FORMALIZED AND CHECKED IN LEAN,
+INCLUDING THE ARITHMETIC INPUT (2)`.
 
 ## References
 
@@ -132,3 +132,49 @@ DIRECT CHECK DEFERRED UNTIL SHARED LOAD CLEARS`.
 - `DAC_REAL_ARAKELOV_DIVISOR_ENDPOINT`
 - Christopher Deninger, *Dynamical systems for arithmetic schemes*:
   https://arxiv.org/abs/1807.06400
+
+## Lean status
+
+### The whole page landed, including the arithmetic input
+
+Two modules:
+
+- `formal/GaloisForLFunctions/RHTower/DeningerArithmeticFiniteResidueEndpoint.lean` (already in the
+  tree) — the homological half: given *any* residue coordinate isomorphism, the three-term complex
+  `(3)`--`(4)` has `H⁰ = R`, `H¹ = 0`, `H² = O` by projection.
+- `formal/GaloisForLFunctions/RHTower/DeningerSUnitEndpointPage.lean` (new) — the arithmetic half,
+  i.e. that `(2)` *is* such an isomorphism, plus the naturality claim.
+
+Axiom audit for all 24 new declarations: `propext, Classical.choice, Quot.sound`.
+
+- `deningerSUnits` — `(1)`: the group of positive `S`-units, realized inside `ℚˣ` as the positive
+  units whose `p`-adic valuation vanishes at every prime outside `S`.  Working with the positive
+  part is exactly the quotient by `{±1}`.
+- `deningerSOrd` — `(2)`: the valuation coordinates.
+- `deningerSUnitProduct`, `deningerSUnitProduct_val`, `deningerSUnitProduct_mem` — the map
+  `n ↦ ∏_{p ∈ S} p^{n_p}` of `(6)`, its valuations (its exponent inside `S`, zero outside), and the
+  fact that it lands in the `S`-units.
+- `deningerSOrd_product` — **unique factorization, surjectivity half**: the coordinates of a
+  prescribed product are its exponents.
+- `deningerRat_eq_one_of_valuations` — **the injectivity half, proved from scratch**: a positive
+  rational all of whose `p`-adic valuations vanish is `1`.  Numerator and denominator are coprime,
+  so a prime dividing either would force a nonzero valuation; hence both are `1`.  mathlib has no
+  such statement, and no "the positive rationals are free abelian on the primes".
+- `deningerSUnits_eq_of_ord_eq` — `S`-units are determined by their coordinates.
+- `deningerSUnitsEquiv` — **`(2)` is an isomorphism onto `⨁_{p ∈ S} ℤ`**, the additive form of
+  `ℤ[S^{-1}]^×/{±1} ≅ ⨁_{p∈S} ℤ[p]`.
+- `deningerSResidueEquiv` — the linear isomorphism `ℝ ⊗ U_S ≅ ℝ^S` obtained by extension of
+  scalars, which is the residue coordinate map required by the endpoint page.
+- `deningerSEndpointComplex`, `deningerSEndpoint_H0`, `deningerSEndpoint_H1`,
+  `deningerSEndpoint_H2` — **`(5)`** for the actual arithmetic page: `H⁰ ≅ ℝ`, `H¹ = 0`,
+  `H² ≅ O` induced by the projection `ℝ^S ⊕ O → O`, for an arbitrary orientation line `O`.
+- `deningerSUnits_mono`, `deningerSOrd_extension`, `deningerSUnitProduct_extension` — **naturality
+  under `S ⊆ S'`**: `S`-units are `S'`-units, on them the larger coordinate system is the extension
+  by zero of the smaller one, and the prescribed products agree accordingly.
+
+### Remaining
+
+Nothing for this page.  The four boundary items of the hostile audit — the comparison from
+Deninger's coarse invariant sheaf, passage to infinitely many primes, closed range after nuclear or
+mixed-topology completion, and the provenance of the orientation line — are outside this theorem;
+the corrected inside/outside sequence is `DAC_COFINITE_DIVISOR_SPLIT_STRICTNESS`.

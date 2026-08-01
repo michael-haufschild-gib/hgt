@@ -573,6 +573,12 @@ half-log coefficients. The strongest survivor is the two-channel law in
 equation admits an inverse-log-flat non-`H1` zero mode, if the coefficient in `(18)` can vanish for
 a visible prime power, or if a nonzero corona state satisfies the exact two-ended seam system.
 
+The bounded homogeneous part of the scale-gap problem is now closed by
+`suzuki-bounded-seam-half-log-rigidity.md`: arbitrary bounded vector-valued prime/polar--Gamma
+coupling has either zero tail or a nonzero half-log trace. The exact nonlocal remainder `(15d)` is
+the sole surviving intermediate-scale mechanism. Any proof that replaces it by a pointwise
+multiplier is rejected.
+
 ## 7. Lean decision
 
 The arithmetic collision classifier is formalized in
@@ -612,7 +618,9 @@ paper mathematics; abstract formalization would not certify source-specific anal
 - [x] remove convergence of the infinite graded seam state as a necessary kernel-exclusion gate
 - [x] formalize finite-dimensional collapse of a jointly separating hierarchy to finite grade
 - [x] falsify whole-packet inverse-log separation and extract two-channel survivor
+- [x] classify every bounded pointwise homogeneous seam coupling by its half-log trace
 - [ ] construct exact Suzuki transport to every prescribed finite grade
+- [ ] prove the exact nonlocal remainder is integrable after half-log seam conjugation
 - [ ] prove inverse-log-flat zero modes lie in `H1_0`
 - [ ] identify the trace-zero square-Evans kernel with the raw Evans kernel
 - [ ] prove corona separation for the finite square-Evans characteristic packet

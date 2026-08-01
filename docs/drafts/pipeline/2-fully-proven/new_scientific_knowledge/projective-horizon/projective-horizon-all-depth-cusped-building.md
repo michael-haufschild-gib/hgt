@@ -144,7 +144,8 @@ positivity map or zero-location mechanism is known.
 - [x] all heterogeneous-depth field intersections classified
 - [x] all-depth poset decomposition proved
 - [x] deformation retraction and Solomon--Tits homology deduced
-- [ ] formal order-complex topology
+- [x] formal order-complex topology — `(4)` and the homology half of `(6)`
+- [ ] Solomon--Tits: the building's own homotopy type `(5)` and the Steinberg identification
 - [ ] independent specialist audit
 
 ## Log
@@ -385,3 +386,128 @@ positivity map or zero-location mechanism is known.
   The minimal fix is to rename the declaration and its single use inside `UpperEndGammaElement`.
   Not done here: that file belongs to other work and was under active build, and a rename landing on
   top of in-flight edits is worse than the report.
+
+- 2026-08-01 — **The deformation retraction is now a simplicial homotopy, unconditionally.**
+  Three new modules, all axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `formal/GaloisForLFunctions/HTGeometry/NerveProductComparison.lean`
+  — `isIso_nerveProductComparison`: the comparison map from the nerve of a product of categories to
+  the tensor of the nerves is an isomorphism.  Proof: `catProdIsLimit` exhibits `Cat.of (C × D)` as a
+  binary product in `Cat`; the nerve is a right adjoint, so it carries that to a binary product of
+  simplicial sets; the tensor is the categorical product; the comparison commutes with both
+  projections, hence is the canonical map between two limit cones.  The hypothesis `[IsIso …]` that
+  `nerveTensorMap` previously carried is discharged and removed.
+
+  `formal/GaloisForLFunctions/HTGeometry/NerveHomotopy.lean`
+  — `nerveHomotopy`: **a functor out of a cylinder `C × [1]` is a simplicial homotopy between the
+  nerves of its two ends**, as an `SSet.Homotopy`.  The interval is `ULift (Fin 2)`, whose nerve is
+  `Δ[1]`.  The two endpoint identifications rest on `nerveFunctor_map_const` (the nerve of a constant
+  functor is a constant simplicial map) and on the vertices of `stdSimplex.isoNerve 1`.  Mathlib has
+  simplicial homotopies and the nerve, but does not connect them; this is the missing bridge.
+  — `prodPreorderFunctor`: a monotone map out of a product of preorders as a functor out of the
+  product *category*.  The preorder on a product and the product of the two preorder categories are
+  different category structures on the same type, and a cylinder needs the latter.
+
+  `formal/GaloisForLFunctions/HTGeometry/CuspedHorizonHomotopy.lean`
+  — `cuspCylinder_zero`, `cuspCylinder_one`: the cusp deformation's two ends are the identity and the
+  retraction.
+  — `cuspNerveHomotopyId`: **the identity of the nerve of the all-depth cusped poset is simplicially
+  homotopic to the nerve of the retraction onto the depth-one skeleton.**
+
+  With `depthOneOrderIso` identifying that skeleton with the building poset, the topological bullet
+  of `(3)` is now proved in the simplicial category and no longer only at the level of poset maps.
+  What remains for the card is the Steinberg identification, which is a separate statement.
+
+- 2026-08-01 — **`(4)` is proved, and with it the homology half of `(6)`.**
+  `formal/GaloisForLFunctions/HTGeometry/CuspedHorizonHomotopy.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  cuspBuildingDeformationRetract :
+    SSetDeformationRetract (nerve P_∞(V)) (nerve {S : S ≠ ⊥ ∧ S ≠ ⊤}ᵒᵈ)
+  ```
+
+  a **strong deformation retraction of the order complex of the all-depth cusped poset onto the
+  order complex of the building** — the inclusion is a section of the retraction on the nose
+  (`depthOneIncl_comp_cuspRetract`), and the other composite is simplicially homotopic to the
+  identity (`cuspNerveHomotopyId`).  The target is the poset of nonzero proper subspaces under
+  reverse inclusion itself, reached through `depthOneNerveIso`, which is `depthOneOrderIso`
+  transported to nerves by `orderIsoNerveIso`.  This is `(4)`.
+
+  ```text
+  cuspBuildingHomologyIso : H_n(Δ_∞(V); R) ≅ H_n(Δ_Tits(V*); R)
+  ```
+
+  in **every** degree and with **any** coefficient object, from
+  `SSetDeformationRetract.homologyIso` and mathlib's homotopy invariance of simplicial homology.
+  So the cusps contribute nothing to homology: the card's sentence "these radial cusps add no
+  homotopy and cannot kill the building's top class" is now a theorem, not an assertion, in its
+  homological form.
+
+  What `(5)` and `(6)` still need is the *building's own* homotopy type — Solomon--Tits — which is a
+  statement about `Δ_Tits(V*)` alone and involves nothing about depth or cusps.  The card's own
+  contribution, that the all-depth structure has the same topology as the depth-one one, is proved.
+  The `formal order-complex topology` gate is closed; the remaining gate is Solomon--Tits itself.
+
+  Supporting infrastructure, all in
+  `formal/GaloisForLFunctions/HTGeometry/NerveHomotopy.lean`:
+  `SSetDeformationRetract` (structure), `SSetDeformationRetract.homologyIso`, `orderIsoCatIso`
+  (an order isomorphism is an isomorphism in `Cat`), `orderIsoNerveIso`.
+
+- 2026-08-01 — **The vanishing half of `(6)` above the top degree.**
+  `formal/GaloisForLFunctions/HTGeometry/CuspedHorizonHomotopy.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  isZero_cuspHomology :  N - 1 ≤ n  →  H_n(Δ_∞(V); R) = 0
+  ```
+
+  for any coefficient object.  This is the first half of
+
+  ```text
+  reduced H_j(Δ_∞(V)) = 0,   j ≠ N - 2
+  ```
+
+  and it is not visible on `Δ_∞(V)` itself: that complex is **infinite dimensional**, since every
+  cusp is an infinite chain and so carries nondegenerate simplices in every degree.  The vanishing
+  is transported from the building through `cuspBuildingHomologyIso`, where it is a dimension count:
+  `buildingHasDimensionLT` says the order complex of the building has dimension below `N - 1`,
+  because a nondegenerate simplex is a strict chain of nonzero proper subspaces and
+  `card_le_finrank_sub_one` bounds such a chain by `N - 1`.
+
+  So the card's "the cusps add no homotopy" now has a sharp consequence that its own geometry cannot
+  see: an infinite-dimensional complex with homology concentrated below degree `N - 1`.
+
+  Supporting infrastructure in `NerveHomotopy.lean`: `isZero_homology_of_hasDimensionLT` (homology
+  vanishes above the dimension, via mathlib's normalized chain complex) and
+  `hasDimensionLT_nerve_of_chain_bound` (a bound on strict chains bounds the dimension of a nerve).
+
+  What remains of `(5)`--`(6)` is entirely about the building itself: that its reduced homology
+  vanishes *below* `N - 2` and is the Steinberg module in degree `N - 2` — Solomon--Tits, which
+  mentions neither depth nor cusps.
+
+- 2026-08-02 — **Degree zero, and `(6)` complete for `N = 3`.**
+  `formal/GaloisForLFunctions/HTGeometry/CuspedHorizonHomotopy.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  buildingZigzag       :  3 ≤ N  →  any two vertices of the building are joined by a zigzag
+  buildingIsConnected  :  3 ≤ N  →  SSet.IsConnected (nerve Δ_Tits(V*))
+  cuspHomologyZeroIso  :  3 ≤ N  →  H_0(Δ_∞(V); R) ≅ R
+  ```
+
+  The zigzag is uniform and short: pick a line in each of the two subspaces and join them through
+  the plane the two lines span, which is a proper subspace exactly because `N ≥ 3`.  Four steps, no
+  case split on whether the two subspaces meet.  Vanishing of **reduced** `H_0` is the `j = 0` case
+  of the card's homology statement.
+
+  Together with `isZero_cuspHomology` this settles `(6)` **completely for `N = 3`**: there
+  `N - 2 = 1`, the homology vanishes in degrees `≥ 2` by the dimension bound and in degree `0` by
+  connectedness, so it is concentrated in degree `1`, as claimed.
+
+  For `N ≥ 4` what is left is the intermediate range `1 ≤ j ≤ N - 3`, that is, the
+  `(N-3)`-connectedness of the building.  That is Solomon--Tits proper and it is a statement about
+  `Δ_Tits(V*)` alone.
+
+  Supporting infrastructure in `NerveHomotopy.lean`: `nerveEdgeOfLE`, `pi0_mk_eq_of_comparable`,
+  `isPreconnected_nerve_of_zigzag`, `zigzag_orderDual`.

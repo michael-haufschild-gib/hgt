@@ -79,9 +79,10 @@ P_M = sum_(m<=M) (W(m^2)-2(1-1/sqrt(2))m)_+^2.
 ```
 
 Its finite convex dual ranges over nonnegative aperture weights, retaining coefficient-nonlocal
-testing without the irrelevant negative channel. This survivor remains Route I's open source
-problem; it does not collide with retired C2 or Route E. Active card:
-`../1-in-progress/route-i-square-aperture-positive-excess-dual-bound.md`.
+testing without the irrelevant negative channel. This was initially retained as Route I's open
+source problem. Subsequent quantitative Abel audit proved its Dirichlet abscissa is exactly the C2
+Xi-width coordinate, so it is now retired. Successor card:
+`route-i-square-aperture-positive-excess-dual-bound.md`.
 
 ## Anti-theatre boundary
 

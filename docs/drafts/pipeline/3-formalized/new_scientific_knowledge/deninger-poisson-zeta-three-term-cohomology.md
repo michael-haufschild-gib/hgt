@@ -1,7 +1,7 @@
 # Poisson--zeta three-term arithmetic cohomology
 
 - **ID:** `deninger-poisson-zeta-three-term-cohomology`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper; source construction plus published analytic inputs)
 - **Labels:** `DAC_POISSON_ZETA_MIDDLE_COEFFICIENT`,
   `DAC_POISSON_ZETA_THREE_TERM_COHOMOLOGY`,
@@ -526,3 +526,63 @@ Not used:
   `DeningerArithmeticRealArakelovEndpoint.lean` and
   `DeningerArithmeticArakelovPoissonComplex.lean` pass; final cached
   module and axiom audit remains the stage-3 promotion gate.
+- 2026-08-01 — Completed the Lean surface: audited every module of the
+  assembly, and added the descended duality statements and the endpoint
+  determinant normalization.
+
+## Lean status
+
+### The algebraic assembly is complete and audited
+
+Modules already in the tree, all now directly checked (110 declarations, axiom audit
+`propext, Classical.choice, Quot.sound` or less):
+
+- `DeningerArithmeticThreeTermCohomology.lean` — the three-term complex, its cocycles,
+  boundaries, `H⁰/H¹/H²`, and the transverse flow with its induced generators.
+- `DeningerArithmeticRealArakelovEndpoint.lean` — `(8)`, `(9)`: the finite-plus-archimedean
+  principal divisor map, the degree map, injectivity of `pr`, surjectivity of `deg`, and the
+  exactness `deningerArakelov_exact_principal_degree`.
+- `DeningerArithmeticPoissonZetaAssembly.lean` — `(10)`: the complex, the cocycle/boundary
+  descriptions, the three cohomology equivalences, the chain-level cup pairing `(25)` (whose
+  `differential_adjoint` field is exactly the derivation law of §8), and the flow.
+- `DeningerArithmeticArakelovPoissonComplex.lean` — the concrete instantiation: `H⁰ ≃ R`,
+  `H¹ ≃ H₋/range Z`, `H² ≃ R`, i.e. **`(11)`**, with the weight-one cup law.
+- `DeningerArithmeticThreeTermCupDescent.lean` — the descent of the chain-level pairing to
+  `H⁰ × H²` and `H¹ × H¹`, its skew-symmetry, and the weight-one laws on cohomology.
+- `DeningerArithmeticPaugamKReal.lean` — the odd `K_ℝ` structure `C² = -1` and its descent
+  through the cokernel of a conjugation-intertwining Poisson map.
+
+### New this round: `DeningerPoissonZetaDuality.lean`
+
+- `deningerPoissonZetaPairH02_nondegenerate_left`, `..._right` — **`(26)`, endpoint half**: with
+  `Z` injective, `deg` onto and the endpoint sequence exact, the descended pairing
+  `H⁰ × H² → R` is nondegenerate in both variables.  The proof is the concrete one: a nonzero
+  constant pairs with a degree-one divisor class, and a nonzero divisor class has nonzero degree
+  by exactness, so it pairs with the constant `1`.
+- `deningerPoissonZetaPairH11_nondegenerate` — **`(26)`, middle half**: if the source pairing `ψ`
+  separates modulo `range Z` — which is what Paugam's unconditional symplectic form supplies —
+  then the descended `H¹ × H¹ → R` pairing is nondegenerate.  A degree-one class is nonzero
+  exactly when its generic component avoids `range Z`, and skew-symmetry converts the separating
+  vector into a pairing partner.
+- `deningerDet0`, `deningerDet2`, `deningerXiD` — **`(17)`, `(20)`**: the two endpoint
+  determinants `s/2π`, `(s-1)/2π` and the symmetric product `D₀ D₂ Λ`.
+- `deningerXiD_eq_xi` — the determinant normalization equals the corpus entire `xi` divided by
+  `2π²`; the poles of `Λ` at `0` and `1` are exactly cancelled by the endpoint determinants, so
+  `ξ_D` is the entire object of `(18)`.
+- `deningerXiD_one_sub` — its functional equation `ξ_D(1-s) = ξ_D(s)`, unconditional.
+- `deningerCompletedZeta_eq_det_quotient` — **`(21)`**: `Λ = ξ_D / (D₀ D₂)`.
+- `deningerXiD_eq_jetDeterminant`, `deningerCompletedZeta_eq_jetDeterminant_quotient` — the bridge
+  to the already formalized source-jet regularized determinant
+  (`deningerArithmeticJetUncenteredRegularizedDeterminant_eq_xi`), which is the corpus's proof of
+  the multiplicity-exact determinant of `(18)`: the middle determinant of `(19)` is that jet
+  determinant, up to the fixed scalar `2π²`.
+
+### Remaining
+
+Nothing formalizable is left in the theorem.  The analytic imports it names — Meyer's closed-range
+theorem `(6)`, his spectral theorem `(12)`--`(13)`, the summable character `(14)`--`(16)`, and
+Paugam's construction of `ψ` — enter the Lean surface as explicit hypotheses of the statements
+above, which is the honest form for an imported analytic input.  The four unchecked gates of §11
+are open mathematics, not formalization work: the continuity/nondegeneracy audit on the full
+generalized-jet topology, the source-geometric cup/Hodge comparison, the packetwise fixed-orbit
+identification on Deninger's space, and the source-positive Hodge operator.

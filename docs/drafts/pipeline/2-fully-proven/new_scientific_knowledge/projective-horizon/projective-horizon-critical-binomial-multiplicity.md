@@ -962,3 +962,11 @@ show how an Euler marking resolves or orients the binomial critical fiber.
   field.  At `m = 1` that number is proved to be `choose(1+n, 1)`.  At `m ≥ 2` it is the
   multiprojective count the card computes on paper, and the tools for attacking it —
   `Polynomial.resultant` and its degree theory — are in mathlib.
+
+- 2026-08-01 — **Degree of the fibre equations in a second unknown.**
+  `natDegree_coeff_invNumerator_le` in `InverseJetNumerator.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`: if the first datum of the inverse-jet recursion is
+  linear in a second variable and the later data are constant in it, then every coefficient of the
+  `k`-th numerator has degree at most `k` in that variable.  At depth two the two fibre equations are
+  therefore of degrees `n` and `n + 1` in the second unknown jet coefficient, which is the input an
+  elimination between them consumes.

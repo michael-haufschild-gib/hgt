@@ -1122,3 +1122,148 @@ Steps 1–3 together give: every element of `L^2[-a,a]` is approximated in `L^2`
 polynomial function.  What remains for the basis is linear independence of the monomials in `L^2`
 (a nonzero polynomial has finite, hence null, zero set) and `gramSchmidtNormed` /
 `gramSchmidt_orthonormal`, then `HilbertBasis.mk`.
+
+### Step 4: the monomials span the polynomials in `L^2`
+
+`HTGeometry/IntervalL2Density.lean`:
+
+- `monomialL2 a n` — the `n`-th monomial as an `L^2` element; `polyToL2 a p` — a real polynomial as
+  an `L^2` element.
+- `toIntervalL2_congr` — the element depends only on the function, not the continuity proof.
+- `polyToL2_add`, `polyToL2_smul` — additivity and scalar multiplication.
+- `polyToL2_mem_span` — **every polynomial's `L^2` element lies in the `ℂ`-span of the monomials**,
+  by `Polynomial.induction_on'`.
+
+All audit to exactly `[propext, Classical.choice, Quot.sound]`.
+
+Combined with steps 1–3, the closed `ℂ`-span of `{monomialL2 a n}` is everything: bounded continuous
+functions are dense, each is uniformly approximable on `[-a,a]` by `p + i q` with `p, q` real
+polynomials, uniform closeness gives `L^2` closeness, and each polynomial lies in the span.  The
+monomials are therefore a **countable total family** in `L^2[-a,a]`.
+
+Remaining for the basis: linear independence of the monomials in `L^2` (a nonzero polynomial's zero
+set is finite, hence null), `gramSchmidtNormed` and `gramSchmidt_orthonormal` to orthonormalise
+without changing the closed span, then `HilbertBasis.mk`.
+
+### Step 5: the monomials are total in `L^2[-a,a]`
+
+`dense_span_monomialL2` (`HTGeometry/IntervalL2Density.lean`): **the `ℂ`-span of the monomials is
+dense in `L^2[-a,a]`.**  Supporting bridges: `bcfToLp_eq_toIntervalL2` (the two ways of sending a
+bounded continuous function into `L^2` agree, by a.e. equality of their coercions) and
+`toIntervalL2_complexPoly` (the element of `p + i q` is the corresponding combination of polynomial
+elements).
+
+All audit to exactly `[propext, Classical.choice, Quot.sound]`.
+
+The proof is the assembly of steps 1--4: given `f` and `eps`, take a bounded continuous `g` within
+`eps/2`, approximate it uniformly on the interval within `delta = (eps/2)/(M+1)` by `p + i q`, use
+the sup-norm bound to get `L^2` distance at most `M * delta < eps/2`, and note `p + i q` lies in the
+span.  `M` is the square root of the total mass; the `+1` in `delta` removes the need to treat
+`M = 0` separately.
+
+**`L^2[-a,a]` therefore has a countable total family**, which is what mathlib's missing separability
+instance would have provided.  Remaining for the Hilbert basis: linear independence of the monomials
+in `L^2` (a nonzero polynomial's zero set is finite, hence null), then `gramSchmidtNormed` and
+`gramSchmidt_orthonormal`, then `HilbertBasis.mk`.
+
+### Step 6: the polynomial map into `L^2` is injective
+
+`HTGeometry/IntervalL2Density.lean`:
+
+- `continuous_cpoly` — a complex polynomial evaluated at a real argument is continuous.
+- `cpolyToL2 a : Polynomial ℂ →ₗ[ℂ] IntervalL2 a` — the polynomial-to-`L^2` map, bundled as a
+  linear map (so finite sums pass through it by `map_sum`).
+- `cpolyToL2_injective` — **injective for `a > 0`**: if the `L^2` element is zero the polynomial
+  vanishes a.e. on the interval, so the *non*-root set is null; the root set is null too by
+  `Polynomial.finite_setOf_isRoot`, and the two cover the interval, forcing measure zero — false
+  since the interval has measure `2a > 0`.
+
+Axiom audit exactly `[propext, Classical.choice, Quot.sound]`.
+
+This is the last mathematical ingredient for linear independence of the monomials: with `cpolyToL2`
+injective and linear, `LinearIndependent.map'` transfers independence of the monomials in `ℂ[X]` to
+their `L^2` images.  Then `gramSchmidtNormed` / `gramSchmidt_orthonormal` orthonormalise without
+changing the closed span, and `HilbertBasis.mk` combines that with the density of step 5.
+
+### Step 7: the monomials are linearly independent in `L^2`
+
+`linearIndependent_monomialL2` (`HTGeometry/IntervalL2Density.lean`): **for `a > 0` the monomials
+are linearly independent in `L^2[-a,a]`.**  The monomials form a basis of `ℂ[X]`
+(`Polynomial.basisMonomials`), and `cpolyToL2` is linear with trivial kernel (step 6), so
+`LinearIndependent.map'` transfers independence to the images; `cpolyToL2_X_pow` identifies those
+images with `monomialL2`.
+
+Both audit to exactly `[propext, Classical.choice, Quot.sound]`.
+
+**The monomials are now a countable, linearly independent, total family in `L^2[-a,a]`** — steps 5
+and 7 together.  That is precisely the input to Gram–Schmidt: `gramSchmidtNormed` and
+`gramSchmidt_orthonormal` produce an orthonormal family with the same span, and `HilbertBasis.mk`
+turns orthonormality plus dense span into the basis.  Only that last mechanical step separates the
+construction from a countable Hilbert basis of `L^2[-a,a]`, which is what mathlib's absent `Lp`
+separability instance would have supplied.
+
+### The blocked step is built: a countable Hilbert basis of `L^2[-a,a]`
+
+`intervalL2Basis a ha : HilbertBasis ℕ ℂ (IntervalL2 a)`
+(`HTGeometry/IntervalL2Density.lean`), with `intervalL2Basis_apply` identifying its vectors as the
+Gram–Schmidt orthonormalisation of the monomials.  Axiom audit exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+`HilbertBasis.mk` takes orthonormality — `InnerProductSpace.gramSchmidtNormed_orthonormal` applied
+to step 7's linear independence — together with dense span, obtained by chaining
+`span_gramSchmidtNormed_range` and `span_gramSchmidt` to rewrite the span back to the monomials and
+then applying step 5's density.
+
+This closes the step recorded as blocked: mathlib has **no separability instance for `Lp`**, so no
+countable basis of `L^2` of an interval was available from the general theory.  It is now available,
+built from the monomials via Weierstrass and Gram–Schmidt, in eight steps.
+
+Consequence for the card: `basisMultiplierOperator` can now be instantiated on `L^2[-a,a]`,
+giving a compact self-adjoint coordinate there, with its spectrum supplied by
+`spectrum_conjugateOperator`.  The identity coordinate in `nonempty_intervalEdgeData` can therefore
+be replaced by a genuine resolvent coordinate on the same space where the pairing weights live.
+
+### A genuine compact resolvent coordinate on `L^2[-a,a]`
+
+`RHTower/IntervalL2ResolventCoordinate.lean` transports the diagonal model onto the interval space
+via the new basis:
+
+- `injective_conjugateOperator_iff`, `conjugateOperator_real_smul`,
+  `spectrum_real_conjugateOperator` — injectivity and the **real** spectrum transport along
+  conjugation, completing the transport package alongside compactness and the complex spectrum.
+- `spectrum_real_basisMultiplierOperator`, `injective_basisMultiplierOperator` — the multiplier
+  operator's real spectrum and injectivity along any Hilbert basis.
+- `intervalHarmonicCoordinate a ha` — the harmonic multiplier along the polynomial basis of
+  `L^2[-a,a]`, with `isSelfAdjoint_`, `injective_`, `isCompactOperator_`, and
+  `spectrum_..._subset` (contained in `Icc 0 M`).
+
+All audit to exactly `[propext, Classical.choice, Quot.sound]`.
+
+This is a **compact, self-adjoint, injective operator with nonnegative bounded spectrum on the very
+space where the edge pairing weights live** — every hypothesis `SuzukiEdgeData` asks of its resolvent
+coordinate, on `L^2[-a,a]` rather than on `ℓ^2` or on an abstract space, and not the identity.  The
+`B` field of the edge data can now be filled with it.
+
+### Edge data with a compact resolvent coordinate and named weights
+
+`nonempty_intervalEdgeData_compact` (`RHTower/SuzukiIntervalEdgeData.lean`): edge data on
+`L^2[-a,a]` in which
+
+- the resolvent coordinate is `intervalHarmonicCoordinate` — **compact, self-adjoint, injective,
+  spectrum in `Icc 0 M`** — not the identity, and
+- the pairing vectors are the `L^2` elements of `edgeNumeratorWeight` and `edgeDenominatorWeight`,
+  whose value equations are the proved integral identities.
+
+Axiom audit exactly `[propext, Classical.choice, Quot.sound]`.
+
+Through `SuzukiEdgeData.tendsto_normalizedQuotient` this yields, unconditionally: **for a compact
+resolvent coordinate on `L^2[-a,a]` with these explicit weights, the Weyl-normalized edge quotient
+converges to the aperture average `H (2a) / (2a)`.**  Both defects of the earlier construction —
+a content-free coordinate and free pairing vectors — are removed.
+
+What this is and is not.  It is a complete, unconditional realisation of the card's passage
+`(2) => (10)` on the interval space, with every object named and every value proved.  It is not
+Suzuki's operator: the coordinate is a harmonic multiplier along the polynomial basis, chosen because
+it is constructible, not because it is his resolvent.  The single remaining item is unchanged and is
+a matching, not a construction — exhibiting his `R_r = (A_a + rI)^(-1)` and his numerator and
+denominator functionals in place of these, in a structure whose every other field is now supplied.

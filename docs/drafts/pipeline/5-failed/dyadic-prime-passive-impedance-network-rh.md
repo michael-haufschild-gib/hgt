@@ -339,8 +339,9 @@ Unconditional Lean formalization is complete:
   `lake build GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPassiveNoGo` passed.  Axiom audit reports
   only `propext`, `Classical.choice`, and `Quot.sound`.
 
-The raw passive-network card remains terminally failed, but Route I remains open.  Its completed
-candidate lands in already-retired Route C2 and therefore supplies no live survivor handoff.
-Existing divisor tomography, energy spectra, square sampling, and prime-only reduction remain
-valid positive infrastructure; the sharp subpower endpoint remains an RH criterion, not an
-independently proved source estimate.
+The raw passive-network card remains terminally failed. A later all-width audit also retires Route
+I itself: generalized von Koch and exact Abel transfer identify the pointwise sharp-window exponent
+with `XiZeroHalfPlaneBound alpha`, while square positive-excess energy has the same C2-width
+identity after affine rescaling. Existing divisor tomography, energy spectra, square sampling, and
+prime-only reduction remain valid positive infrastructure, but no live independent Route I
+survivor remains.

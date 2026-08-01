@@ -551,7 +551,7 @@ must therefore cancel the full negative bulk against signed `z`-smooth Möbius t
 the transition geometry.  Transition-window positivity and absolute-value estimates are now
 explicitly dead.
 
-The first concrete producer surviving normalization audits is a multitype opposite-sign transport
+The first concrete producer tested after the normalization audits was a multitype opposite-sign transport
 on the finite boundary atoms through `z^2`.  Its permitted local moves are
 `one large prime <-> four small primes` across sectors and
 `one small prime <-> two small primes` within a sector.  A global injective Hall matching with
@@ -562,15 +562,15 @@ its total unused Gibbs capacity.  For canonical endpoint-normalized conductance,
 exactly isolated Gibbs mass plus normalized-degree variation over the replacement edges.  Both
 finite flow identities are unconditional Lean theorems.  Large-prime-to-two-small-prime matching
 fails a weighted supply audit; four-small-prime cross-sector moves pass that count gate but cannot
-cover the zero/one density imbalance without the same-sector move.  The remaining hard theorem is
-the positive unsigned critical bound for this explicit local capacity defect, not an assumed Hall
-matching.
+cover the zero/one density imbalance without the same-sector move.  The proposed positive unsigned
+critical bound for a sublinear displacement pruning is now falsified by an exact friable
+macroscopic-gap law; this kills the local producer, not the all-prime Route E source.
 
 Representation congestion is also removed exactly: split each squarefree target among its
 `k`-prime-factor incidence labels with weight `1/binom(omega(n),k)`.  These lifted capacities sum
-back to the full vertex weight, an unconditional Lean theorem.  The arithmetic target is now a
-spectator-fiber weighted incidence estimate for the four-factor and one/two-factor lifts; selecting
-their capacity split and proving its critical aggregate regularity remain open.
+back to the full vertex weight, an unconditional Lean theorem.  This remains valid infrastructure
+on the non-friable portion; no capacity split can create a sublinear-window neighbor for the
+friable bulk.
 
 The concrete bounded-prime replacement adjacency is now itself defined in Lean.  Its symmetric
 closure is proved to reverse the literal Möbius coefficient, and the canonical defect theorem is
@@ -581,9 +581,53 @@ Unrestricted fractional transport is now terminally classified without closing R
 positive and negative Gibbs masses are `P,N`, every symmetric opposite-sign conductance has unused
 capacity at least `|P-N|`, and proportional conductance on the complete bipartite graph attains
 equality.  Both directions are Lean-proved.  Therefore an unspecified low-defect flow is exactly
-the original signed source; arithmetic content can enter only through a fixed local graph.  The
-Lean graph now has a separate displacement-`H` pruning and a concrete canonical defect theorem on
-that windowed relation, preventing raw far-edge degree from masquerading as short-interval supply.
+the original signed source; arithmetic content must enter through a fixed arithmetic graph or an
+independent analytic cancellation theorem.  The Lean graph has a separate displacement-`H`
+pruning and a concrete canonical defect theorem on that windowed relation, which made a terminal
+obstruction visible rather than letting raw far-edge degree masquerade as short-interval supply.
+
+Precisely, if every prime divisor of `n` is at most `y<z`, every `{1<->2,1>z<->4}`
+replacement neighbor `m` satisfies
+
+```text
+|m-n| >= n/y^4.
+```
+
+For `N=1/x`, fixed `theta<1`, and
+`0<alpha<min(1/2,(1-theta)/4)`, the unconditional Dickman and
+Ivić--Tenenbaum squarefree-smooth asymptotics give `Omega_alpha(N)` squarefree
+`N^alpha`-smooth vertices in `[N/2,N]`.  Each is isolated in the displacement-`N^theta`
+graph and has Gibbs weight bounded below by `exp(-1)`.  Thus every such pruning has
+`Omega_alpha(N)` isolated capacity, far above the strict-half target.  In particular, the
+proposed `z^(1+o(1))=N^(1/2+o(1))` support cannot work.  The exact gap theorem is
+paper- and Lean-proved on the Route E card; the density input is a published friable-number
+asymptotic, not a Möbius cancellation assumption.
+
+A separate friable-sector repair is also impossible.  De la Bretèche--Tenenbaum's friable
+Selberg--Delange theorem, specialized to `f=mu`, proves for fixed noninteger `u>1` and
+`Y=X^(1/u)` that
+
+```text
+sum_(n<=X, P+(n)<=Y) mu(n)
+= X/(log Y)^2 {phi_(-1)(u)+O_u(1/log Y)},
+```
+
+where `v phi_(-1)'(v)=phi_(-1)(v-1)` and `phi_(-1)=1` on `(0,1]`; hence the leading
+profile is positive.  The power-smooth signed sector therefore has size
+`asymp_u X/log^2 X`, not strict-half size.  Any successful source must cancel this
+deterministic bias against non-friable mass across a macroscopic seam.  Critical Route E has
+`log N/log z=2-o(1)`, an integer-delay boundary where the one-large-prime term supplies the
+necessary profile correction.  Existing PNT/zero-free-region estimates control that seam only
+far above square-root scale; its beyond-all-orders strict-half remainder is still
+`OPEN-SOURCE-001`.
+
+The corresponding largest-prime renewal has a sharp exponent barrier.  For fixed `1<u<2`,
+`Y=X^(1/u)`, its positive operator on an `X^alpha` weighted sup norm has exact norm
+`sum_(Y<p<=X)p^(-alpha)`.  PNT gives `log u+o(1)` at `alpha=1`, but
+`X^(1-alpha)/((1-alpha)log X)` for every `alpha<1`.  Hence Daboussi's linear-norm
+contraction can prove PNT, while scalar renewal induction cannot bootstrap any fixed power
+saving.  A surviving source needs signed orthogonality across the prime-scale samples
+`M(X/p)` or an equivalent non-scalar structure; stronger absolute estimates are ruled out.
 
 One pointwise supply gate is now closed on paper.  Extracting the factor ranges and count from the
 Matomäki--Teräväinen all-interval `E_3` proof at `p/2` shows that every large prime
@@ -592,14 +636,15 @@ Matomäki--Teräväinen all-interval `E_3` proof at `p/2` shows that every large
 supercritical prime-only atoms are not isolated.  Extending that extraction uniformly after
 excluding every prime of a spectator `a<=z^2/p` requires the sharper scaled gap
 `a|Q-p|<=z^{1+o(1)}`.  At `p asymp a asymp z` this is a polylogarithmic prime-centered interval,
-not the all-interval square-root regime.  This every-spectator pointwise formulation is now
-recognized as stronger than required and insufficient as a capacity theorem: source row counts do
-not control target co-degree.  Active target is instead an aggregate unbalanced transportation
-estimate between binomially lifted source and target incidence measures, supported on the hard
-physical window `a|Q-p|<=z^(1+o(1))` and summed over spectator and dyadic value fibers.  Its
-fractional objective is unused capacity only: the masses already contain `exp(-anx)`, so adding a
-displacement moment would incorrectly mix it with the unsplit atom-matching model.  Proving
-two-sided capacity regularity for the combined cross/same-sector graph remains open.
+not the all-interval square-root regime.  This every-spectator pointwise formulation is stronger
+than required and insufficient as a capacity theorem: source row counts do not control target
+co-degree.  The subsequent aggregate unbalanced transportation target between binomially lifted
+incidence measures imposed the hard physical window `a|Q-p|<=z^(1+o(1))`.  It is now retired:
+the friable macroscopic-gap theorem disproves its required aggregate defect bound before target
+co-degree enters.  The pointwise prime-only incidence statement remains correct paper-level supply
+information but cannot cover the smooth bulk.  Any stronger transport source must allow
+macroscopic friable edges and prove their arithmetic capacity directly; alternatively, a new
+signed friable-sum theorem must cancel that sector.  Neither replacement is currently proved.
 
 On the analytic side, failure of RH activates a maximal open escape cone: finite Möbius
 Gamma–Hankel off-diagonal covariance tends to `+infinity` on every line
@@ -713,7 +758,12 @@ The sharp current target is the zero/one-large-prime comparison above.
   the Mertens source, since the boundary coefficients through `z^2` are exactly `mu(n)`.
 - unrestricted fractional transport, even on the complete opposite-sign graph, has optimal defect
   exactly equal to the signed Gibbs imbalance.  Thus conductance optimization itself is exhausted;
-  only a proved value-local arithmetic incidence theorem can be a producer.
+  only a proved arithmetic incidence theorem or independent analytic cancellation law can be a
+  producer.
+- every sublinear displacement pruning of the `{1<->2,1>z<->4}` graph has linear isolated
+  capacity on a positive-density power-smooth squarefree sector.  This kills weighted
+  spectator-fiber incidence regularity with `z^(1+o(1))` hard support and every analogous
+  uniformly sublinear-window repair.
 
 **Positive survivor.** Gamma–Hankel covariance is a quantitative zero-abscissa detector: one
 frequently bounded-return line at `sigma` bounds all right-half transverse zeros by
@@ -723,14 +773,15 @@ remains open. The Gibbs attack adds a second positive survivor: all contribution
 large primes are already below the critical floor, leaving one explicit zero-versus-one-large-prime
 boundary comparison and no uncontrolled higher-prime sector.  That comparison is now a Möbius
 sampling of one explicit one-sign-change renewal defect, so the only unresolved content is global
-signed cancellation across both sides of its transition.  The multitype fractional-flow
-conjecture gives that content a concrete integer-local, positive incidence target: isolated Gibbs
-mass plus normalized replacement-edge variation must have strict-half size.  Its exact analytic
-implication is formalized; the arithmetic defect estimate remains open.
+signed cancellation across both sides of its transition.  The multitype fractional-flow audit
+also yields a sharp positive obstruction: its power-smooth bulk forces macroscopic replacement
+distance.  Therefore any viable continuation must use macroscopic arithmetic transport or prove
+signed friable cancellation; short-interval almost-prime supply alone cannot close Route E.
 
 Cards: `../3-formalized/route-e-finite-prime-aperture-source-consumption.md` and
 `../3-formalized/route-e-gamma-hankel-transverse-escape-cone.md`; active source card:
-`route-e-squarefree-exponential-gibbs-parity.md`.
+`route-e-squarefree-exponential-gibbs-parity.md`; failed local producer:
+`../5-failed/route-e-sublinear-factor-replacement-flow.md`.
 
 ### Route F — all-prime Sonin transfer [RETIRED]
 
@@ -951,6 +1002,24 @@ valid. Exact rank-drop Cayley and resolvent laws are formalized in
 This still does not force locally normalized moving defect functions to converge to zero, so it
 does not close scalar two-angle meromorphic producer.
 
+**Closed regular unit-response shell-fusion subclass.** The source-signature conservation theorem
+in `riemann-source-modular-superselection/main-universal.tex` classifies one possible realization
+of a Suzuki source proof. Before scalarization, an `N`-shell reciprocal packet splits into one
+fused hyperbolic divisor block and a centered transverse block of signature `(N-1,N-1)`. If every
+countable exponent shell has the same nonzero unit response and the shell modes are orthogonal in
+`ell^2` or form a Bessel family, the scalar codiagonal is respectively nonclosable or cannot be
+represented by one bounded constant-response vector. A proof inside that architecture cannot
+manufacture its terminal sign by bounded/closable processing after shell fusion. This exact
+conditional classification is formalized by `CommonCharacterFusionConservation.lean` and
+`HighExponentShellFusionConservation.lean`.
+
+It does **not** follow that every bounded functional of Suzuki's scalar screw data loses source
+orientation: the scalar data can still recover von Mangoldt coefficients and encode the completed
+divisor. Nor does the theorem refute locally uniform convergence of the scalar two-angle carrier.
+It says only that a shell-based unit-response realization must keep a singular, source-pointed
+pre-fusion correspondence through sign formation. This is an optional surviving architecture,
+not a proved necessary factorization of Suzuki's concrete scalar finite-interval construction.
+
 **Strongest positive survivor and live Route-G core.** Two distinct extension angles give the
 meromorphic quotient
 
@@ -1080,7 +1149,7 @@ tomography and the sharp fixed-gauge charge law `m-ell`. Paper/Lean certificate:
 `RHTower/XiCTaylorAnisotropicGaugeCharge.lean`, and
 `RHTower/XiCTaylorThetaTailCoreDivisorChargeRigidity.lean`.
 
-### Route I — sharp dyadic prime window  [OPEN — SOURCE ACQUISITION UNRESOLVED]
+### Route I — sharp dyadic prime window  [RETIRED — EXACT C2 WIDTH COLLISION]
 
 **Endpoint.** `DyadicWeightedPrimeWindowSubpowerUpper N`.
 
@@ -1148,17 +1217,51 @@ owns Route I's source-acquisition obligation.  A freely added dissipative bias i
 analytic-lift theatre: global extension minus the bias is the original RH-equivalent holomorphy
 premise and supplies no source-forced mechanism.
 
-**Disposition.** Route I remains open. Its raw passive, real-Möbius, all local real-analytic
-scalar-postcomposition, and completed-Xi-response
-branches are terminal, but its source-pure endpoint is unresolved:
+**Terminal pointwise-width theorem.** For every `alpha>=0`, define the eventual pointwise spectrum
+by
+
+```text
+SharpUpper(alpha,N):
+  for every epsilon>0,
+  W(n) <= 2(1-1/sqrt(2))sqrt(n)+C_epsilon n^(alpha+epsilon)
+  for all n>=N.
+```
+
+Generalized von Koch plus the exact Abel identity proves
+
+```text
+XiZeroHalfPlaneBound(alpha) -> SharpUpper(alpha,2).
+```
+
+Conversely, the formal fixed-power Landau theorem applied at an intermediate exponent below any
+offending zero proves
+
+```text
+(exists N, SharpUpper(alpha,N)) -> XiZeroHalfPlaneBound(alpha).
+```
+
+Therefore, for every `alpha>=0`,
+
+```text
+XiZeroHalfPlaneBound(alpha) <-> exists N, SharpUpper(alpha,N).
+```
+
+At `alpha=0`, `SharpUpper(0,N)` is definitionally
+`DyadicWeightedPrimeWindowSubpowerUpper N`. This is an all-width quantitative collision with C2,
+not merely composition of two endpoint RH criteria.
+
+**Disposition.** Route I is retired as an independent source mechanism. Its raw passive,
+real-Möbius, all local real-analytic scalar-postcomposition, completed-Xi-response, pointwise
+source, and coefficient-nonlocal branches are terminal. Its former source-pure endpoint was
 
 ```text
 exists N, DyadicWeightedPrimeWindowSubpowerUpper N.
 ```
 
-Current PNT bounds do not prove this all-epsilon sharp-window estimate, and no live route absorbs
-it.  Proving either this pointwise endpoint or a formally sufficient positive-excess energy bound
-is the hard source problem, not missing routine infrastructure.
+Current unconditional PNT bounds do not prove this all-epsilon sharp-window estimate because it is
+width zero itself. Retired C2 absorbs the entire parameterized invariant. A new theorem forcing
+width zero without an equivalent Xi-width or continuation premise would be a new route, not
+unfinished Route I infrastructure.
 
 Full coefficient-nonlocal correlation was attacked and does not survive as an independent
 producer. With `K_M(k,l)` counting square apertures whose dyadic window contains both `k` and `l`,
@@ -1234,16 +1337,19 @@ survivor transfer are in `CCMSharpPrimeWindowMobiusPassiveNoGo` and
 `docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/dyadic-prime-completed-passive-transfer-to-horizontal-xi-growth.md`.
 Failed raw-producer card:
 `docs/drafts/pipeline/5-failed/dyadic-prime-passive-impedance-network-rh.md`.
-Live source-acquisition card:
-`docs/drafts/pipeline/1-in-progress/route-i-sharp-dyadic-prime-window-source-acquisition.md`.
+Retired source-acquisition card:
+`docs/drafts/pipeline/5-failed/route-i-sharp-dyadic-prime-window-source-acquisition.md`.
 Retired positive-excess dual-pivot card:
 `docs/drafts/pipeline/5-failed/route-i-square-aperture-positive-excess-dual-bound.md`.
 
-**Current live core after correlation-pivot closure.** Route I itself remains open only through the
-separate pointwise source-acquisition endpoint
-`exists N, DyadicWeightedPrimeWindowSubpowerUpper N`. The square-aperture survivor no longer
-justifies an independent pivot. Formalizing generalized von Koch would close a shared Lean library
-gap but would not prove the pointwise endpoint unconditionally or reopen this survivor.
+**No live Route I core remains.** Pointwise and square-aperture exponents are now exact coordinates
+of retired C2 divisor width. Formalizing generalized von Koch would close a shared Lean library gap
+but would not prove width zero unconditionally or reopen Route I.
+
+Paper certificate:
+`docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/sharp-dyadic-prime-window-zero-width-collision.md`.
+Unconditional downstream Lean certificate:
+`RHTower/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean`.
 
 ### Route J — Julia compound-Poisson coherent energy  [OPEN — COMPLETED RELATIVE CURRENT]
 
@@ -1774,6 +1880,8 @@ unclosed. New determinant normalizations, arbitrary real-zero approximants, or r
 comparisons alone do not advance Route O.
 
 Failed mechanism card: `../5-failed/route-o-independent-prolate-determinant-last-mile.md`.
+Whole-route audit and active literal-source conjecture:
+`route-o-whole-connes-closure-audit.md`.
 
 ### Route P — completed-seam Thorin/Markov representation
 

@@ -4,10 +4,10 @@ import Mathlib.Combinatorics.Hall.Basic
 /-!
 # Opposite-sign transport consumer for the Möbius boundary
 
-A local pairing of positive and negative boundary atoms converts into a Laplace bound through a
-sharp damped displacement cost.  This module formalizes the unconditional analytic implication
-used by the `FOUR-PRIME-BOUNDARY-TRANSPORT` conjecture; it does not assume that the arithmetic
-matching exists.
+A pairing of positive and negative boundary atoms converts into a Laplace bound through a sharp
+damped displacement cost.  This module formalizes the unconditional flow consumers, classifies
+unrestricted fractional transport, and proves the friable macroscopic-gap obstruction which
+falsifies uniformly sublinear displacement pruning.  It does not assume an arithmetic matching.
 -/
 
 open scoped BigOperators
@@ -117,6 +117,85 @@ theorem mobiusBoundaryFactorReplacementAdjacent_symm
   · exact Or.inr (Or.inr (Or.inr h))
   · exact Or.inr (Or.inr (Or.inl h))
 
+private theorem replacementToken_mul_le_pow_mul_dist
+    {a u v y k : ℕ} (hu : u ≤ y ^ k) (huv : u ≠ v) :
+    u * a ≤ y ^ k * Nat.dist (u * a) (v * a) := by
+  rw [Nat.dist_mul_right]
+  have hdist : 1 ≤ Nat.dist u v := Nat.dist_pos_of_ne huv
+  calc
+    u * a ≤ (y ^ k) * a := Nat.mul_le_mul_right a hu
+    _ ≤ y ^ k * (Nat.dist u v * a) := by
+      apply Nat.mul_le_mul_left
+      simpa using Nat.mul_le_mul_right a hdist
+
+/-- Exact friable macroscopic-gap obstruction for the Route E `{1 ↔ 2, 1 ↔ 4}` replacement
+graph.  If every prime factor of the distinguished endpoint `n` is at most `y < z`, every
+replacement neighbor lies at integer distance at least `n / y^4`, expressed division-free as
+`n ≤ y^4 * dist n m`. -/
+theorem le_pow_four_mul_dist_of_boundaryFactorReplacementAdjacent_of_primeFactors_le
+    {z y n m : ℕ}
+    (hyz : y < z)
+    (hn : ∀ p : ℕ, p.Prime → p ∣ n → p ≤ y)
+    (h : MobiusBoundaryFactorReplacementAdjacent z n m) :
+    n ≤ y ^ 4 * Nat.dist n m := by
+  rcases h with h | h | h | h
+  · obtain ⟨a, q, r, s, hq, hr, hs, _hqz, _hrz, _hsz,
+      _hqa, _hra, _hsa, _hrs, rfl, rfl⟩ := h
+    have hqy : q ≤ y := hn q hq ⟨a, rfl⟩
+    have hy1 : 1 ≤ y := hq.one_lt.le.trans hqy
+    have hqpow : q ≤ y ^ 4 := hqy.trans (le_self_pow hy1 (by norm_num))
+    have hne : q ≠ r * s := by
+      intro heq
+      have hp : (r * s).Prime := heq ▸ hq
+      exact Nat.not_prime_mul (ne_of_gt hr.one_lt) (ne_of_gt hs.one_lt) hp
+    exact replacementToken_mul_le_pow_mul_dist hqpow hne
+  · obtain ⟨a, q, r, s, hq, hr, hs, _hqz, _hrz, _hsz,
+      _hqa, _hra, _hsa, _hrs, rfl, rfl⟩ := h
+    have hry : r ≤ y := hn r hr ⟨s * a, by ring⟩
+    have hsy : s ≤ y := hn s hs ⟨r * a, by ring⟩
+    have hy1 : 1 ≤ y := hr.one_lt.le.trans hry
+    have hrspow : r * s ≤ y ^ 4 := by
+      calc
+        r * s ≤ y * y := Nat.mul_le_mul hry hsy
+        _ = y ^ 2 := by ring
+        _ ≤ y ^ 4 := pow_le_pow_right' hy1 (by norm_num)
+    have hne : r * s ≠ q := by
+      intro heq
+      have hp : (r * s).Prime := heq ▸ hq
+      exact Nat.not_prime_mul (ne_of_gt hr.one_lt) (ne_of_gt hs.one_lt) hp
+    exact replacementToken_mul_le_pow_mul_dist hrspow hne
+  · obtain ⟨a, p, q₁, q₂, q₃, q₄, hp, _hq₁, _hq₂, _hq₃, _hq₄,
+      hpz, _h1z, _h2z, _h3z, _h4z, _hpa, _h1a, _h2a, _h3a, _h4a,
+      _h12, _h13, _h14, _h23, _h24, _h34, rfl, rfl⟩ := h
+    have hpy : p ≤ y := hn p hp ⟨a, rfl⟩
+    omega
+  · obtain ⟨a, p, q₁, q₂, q₃, q₄, hp, hq₁, hq₂, hq₃, hq₄,
+      _hpz, _h1z, _h2z, _h3z, _h4z, _hpa, _h1a, _h2a, _h3a, _h4a,
+      _h12, _h13, _h14, _h23, _h24, _h34, rfl, rfl⟩ := h
+    have hq₁y : q₁ ≤ y := hn q₁ hq₁ ⟨q₂ * q₃ * q₄ * a, by ring⟩
+    have hq₂y : q₂ ≤ y := hn q₂ hq₂ ⟨q₁ * q₃ * q₄ * a, by ring⟩
+    have hq₃y : q₃ ≤ y := hn q₃ hq₃ ⟨q₁ * q₂ * q₄ * a, by ring⟩
+    have hq₄y : q₄ ≤ y := hn q₄ hq₄ ⟨q₁ * q₂ * q₃ * a, by ring⟩
+    have hQpow : ((q₁ * q₂) * q₃) * q₄ ≤ y ^ 4 := by
+      calc
+        ((q₁ * q₂) * q₃) * q₄ ≤ ((y * y) * y) * y := by
+          exact Nat.mul_le_mul (Nat.mul_le_mul (Nat.mul_le_mul hq₁y hq₂y) hq₃y) hq₄y
+        _ = y ^ 4 := by ring
+    have hne : ((q₁ * q₂) * q₃) * q₄ ≠ p := by
+      intro heq
+      have hq12ne : q₁ * q₂ ≠ 1 := by
+        have htwo : 2 * 2 ≤ q₁ * q₂ := Nat.mul_le_mul hq₁.two_le hq₂.two_le
+        omega
+      have hq34ne : q₃ * q₄ ≠ 1 := by
+        have htwo : 2 * 2 ≤ q₃ * q₄ := Nat.mul_le_mul hq₃.two_le hq₄.two_le
+        omega
+      have hnot : ¬ Nat.Prime ((q₁ * q₂) * (q₃ * q₄)) :=
+        Nat.not_prime_mul hq12ne hq34ne
+      apply hnot
+      rw [show (q₁ * q₂) * (q₃ * q₄) = ((q₁ * q₂) * q₃) * q₄ by ring, heq]
+      exact hp
+    exact replacementToken_mul_le_pow_mul_dist hQpow hne
+
 theorem mobiusComplexCoefficient_eq_neg_of_boundaryFactorReplacementAdjacent
     {z m n : ℕ} (h : MobiusBoundaryFactorReplacementAdjacent z m n) :
     mobiusComplexCoefficient m = -mobiusComplexCoefficient n := by
@@ -153,9 +232,9 @@ def mobiusBoundaryFactorReplacementAdjacentOn (z : ℕ)
     (m n : MobiusBoundaryFactorReplacementVertex z) : Prop :=
   MobiusBoundaryFactorReplacementAdjacent z m n
 
-/-- Value-local replacement relation.  The two inequalities express `|m-n| ≤ H` without an
-integer-to-real coercion; unlike the raw factor graph, its degrees measure supply at the physical
-Laplace resolution. -/
+/-- Value-local test relation.  The two inequalities express `|m-n| ≤ H` without an
+integer-to-real coercion.  The friable isolation theorem below shows that every uniformly
+sublinear choice of `H` leaves a macroscopic obstruction. -/
 def MobiusBoundaryFactorReplacementWindowAdjacent (z H m n : ℕ) : Prop :=
   MobiusBoundaryFactorReplacementAdjacent z m n ∧ m ≤ n + H ∧ n ≤ m + H
 
@@ -176,6 +255,28 @@ theorem mobiusBoundaryFactorReplacementWindowAdjacent_symm
     {z H m n : ℕ} (h : MobiusBoundaryFactorReplacementWindowAdjacent z H m n) :
     MobiusBoundaryFactorReplacementWindowAdjacent z H n m := by
   exact ⟨mobiusBoundaryFactorReplacementAdjacent_symm h.1, h.2.2, h.2.1⟩
+
+/-- A `y`-friable endpoint above `y^4 * H` is isolated in the displacement-`H` replacement
+graph.  This is the finite combinatorial core of the Route E sublinear-window obstruction. -/
+theorem not_boundaryFactorReplacementWindowAdjacent_of_primeFactors_le_of_pow_mul_lt
+    {z y H n m : ℕ}
+    (hyz : y < z)
+    (hn : ∀ p : ℕ, p.Prime → p ∣ n → p ≤ y)
+    (hlarge : y ^ 4 * H < n) :
+    ¬ MobiusBoundaryFactorReplacementWindowAdjacent z H n m := by
+  intro h
+  rcases h with ⟨hadj, hnmH, hmnH⟩
+  have hgap :=
+    le_pow_four_mul_dist_of_boundaryFactorReplacementAdjacent_of_primeFactors_le hyz hn hadj
+  have hdist : Nat.dist n m ≤ H := by
+    rcases le_total n m with hnm | hmn
+    · rw [Nat.dist_eq_sub_of_le hnm]
+      omega
+    · rw [Nat.dist_eq_sub_of_le_right hmn]
+      omega
+  have hupper : y ^ 4 * Nat.dist n m ≤ y ^ 4 * H :=
+    Nat.mul_le_mul_left (y ^ 4) hdist
+  exact (not_le_of_gt hlarge) (hgap.trans hupper)
 
 theorem mobiusComplexCoefficient_eq_neg_of_boundaryFactorReplacementWindowAdjacent
     {z H m n : ℕ} (h : MobiusBoundaryFactorReplacementWindowAdjacent z H m n) :
@@ -789,9 +890,9 @@ theorem abs_truncatedMobiusLaplace_le_degreeNormalizedFactorReplacementDefect
   · intro m n h
     exact mobiusBoundaryRealSign_add_eq_zero_of_factorReplacementAdjacent h
 
-/-- Value-local concrete Route E consumer.  This is the canonical defect on replacement edges of
-integer displacement at most `H`; it is the direct finite target for short-interval incidence
-estimates. -/
+/-- Canonical defect on replacement edges of integer displacement at most `H`.  This remains an
+unconditional consumer, but the friable isolation theorem proves that uniformly sublinear `H`
+cannot supply the Route E strict-half source. -/
 theorem abs_truncatedMobiusLaplace_le_degreeNormalizedWindowedFactorReplacementDefect
     (z H : ℕ) (x : ℝ) :
     |∑ n : MobiusBoundaryFactorReplacementVertex z,

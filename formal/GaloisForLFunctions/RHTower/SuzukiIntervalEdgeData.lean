@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SuzukiEdgeDataInterface
 import GaloisForLFunctions.HTGeometry.CompactIntervalL2Pairing
+import GaloisForLFunctions.RHTower.IntervalL2ResolventCoordinate
 
 /-!
 # Edge data on `L²` of the interval, with pairing vectors that are named weights
@@ -80,6 +81,38 @@ theorem nonempty_intervalEdgeData (a : ℝ) (ha : 0 < a) {H H' : ℝ → ℝ}
              simp only [Set.mem_singleton_iff] at hr
              subst hr
              exact ⟨zero_le_one, le_rfl⟩
+           v := oneIntervalL2 a
+           gnum := (-Complex.I) • toIntervalL2 a (continuous_edgeNumeratorWeightC hH hH'c a)
+           gden := toIntervalL2 a continuous_edgeDenominatorWeight
+           aperture := a
+           aperture_ne := Complex.ofReal_ne_zero.mpr (ne_of_gt ha)
+           edgeWeight := ((Real.cosh a : ℝ) : ℂ)
+           edgeWeight_ne := Complex.ofReal_ne_zero.mpr (ne_of_gt (Real.cosh_pos a))
+           primitiveValue := ((H (2 * a) : ℝ) : ℂ)
+           num_value := inner_edgeNumeratorVector_one a ha hH hH'c hH0
+           den_value := inner_edgeDenominatorVector_one a ha }⟩
+
+/-! ## Edge data with a compact resolvent coordinate
+
+The earlier construction used the identity as the resolvent coordinate, which the interface admits
+but which carries no resolvent content.  With a compact, self-adjoint, injective coordinate now
+available on the same space, the identity can be replaced: this edge data has a genuine resolvent
+coordinate *and* pairing vectors that are named weights. -/
+
+/-- **Edge data on `L²[-a,a]` with a compact resolvent coordinate and named pairing weights.**  The
+coordinate is the harmonic multiplier along the polynomial Hilbert basis — compact, self-adjoint,
+injective, with spectrum in `Icc 0 M` — and the pairing vectors are the `L²` elements of the edge
+numerator and denominator weights, whose values are the integral identities. -/
+theorem nonempty_intervalEdgeData_compact (a : ℝ) (ha : 0 < a) {H H' : ℝ → ℝ}
+    (hH : ∀ x, HasDerivAt H (H' x) x) (hH'c : Continuous H') (hH0 : H 0 = 0) :
+    Nonempty (@SuzukiEdgeData (IntervalL2 a) _ _ _ (nontrivial_intervalL2 a ha)) := by
+  letI := nontrivial_intervalL2 a ha
+  exact ⟨{ B := intervalHarmonicCoordinate a ha
+           selfAdjoint := isSelfAdjoint_intervalHarmonicCoordinate a ha
+           injective := injective_intervalHarmonicCoordinate a ha
+           specBound := ‖_root_.RHTower.diagonalOperator
+             (fun n => ((harmonicMultiplier n : ℝ) : ℂ)) norm_harmonicMultiplier_le‖
+           spectrum_subset := spectrum_intervalHarmonicCoordinate_subset a ha
            v := oneIntervalL2 a
            gnum := (-Complex.I) • toIntervalL2 a (continuous_edgeNumeratorWeightC hH hH'c a)
            gden := toIntervalL2 a continuous_edgeDenominatorWeight

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.GammaFieldRatDatum
 import GaloisForLFunctions.HTGeometry.FinitePhaseLawFromRatios
+import GaloisForLFunctions.HTGeometry.EventualRelationFinitePhaseLaw
 
 /-!
 # The finite phase law with coefficients from the Gamma field
@@ -120,6 +121,226 @@ theorem finite_phase_law_of_gammaField_coefficients {n N : ℕ} {σ R rr ρ : �
   choose u a d b c hc hFlim using hdat
   exact finite_phase_law_of_gammaJet_data hσ hN hr hρ hrρ hR hΦ hap e F u a d b c hc hFlim hrel
     he hf hfu hftb
+
+/-- **The law for a relation that holds only far up the line.**  This is the form in which a relation
+between elements of the field arrives: germs at the upper end determine the functions only there. -/
+theorem finite_phase_law_of_gammaField_coefficients_eventual {n N : ℕ} {σ R rr ρ : ℝ} (hσ : 0 < σ)
+    (hN : 0 < N) (hr : 0 < rr) (hρ : 0 < ρ) (hrρ : rr + ρ < R) (hR : 0 < R) {Φ : ℂ → ℂ}
+    (hΦ : DifferentiableOn ℂ Φ (verticalStrip σ R)) (hap : IsStripAlmostPeriodic Φ σ R)
+    (e : Fin N → Fin (n + 1) → ℕ) (he : Function.Injective e)
+    (x : Fin N → upperEndMeroField)
+    (hxmem : ∀ α, x α ∈ differentialJetAlgebra (RatFunc ℂ)
+      ({gammaUpperMero} : Set upperEndMeroField))
+    (hx0 : ∀ α, x α ≠ 0) (F : Fin N → ℂ → ℂ)
+    (hFrep : ∀ α, ∃ (q : Polynomial ℂ) (W : upperEndAnalyticSubring), q ≠ 0
+      ∧ upperEndPolyToMero q * x α = algebraMap upperEndAnalyticSubring upperEndMeroField W
+      ∧ upperEndAnalyticSubring.subtype W
+        = Germ.coeRingHom upperEndFilter (fun z : ℂ => q.eval z * F α z))
+    (hrel : ∀ᶠ t : ℝ in atTop, ∑ α, F α ((σ : ℂ) + (t : ℂ) * Complex.I)
+      * ∏ i : Fin (n + 1), (iteratedDeriv (i : ℕ) Φ ((σ : ℂ) + (t : ℂ) * Complex.I)) ^ (e α i) = 0)
+    {f : ℝ →ᵇ ℂ} (hf : ∀ y : ℝ, f y = Φ ((σ : ℂ) + (y : ℂ) * Complex.I))
+    (hfu : UniformContinuous (fun y => f y)) (hftb : HasTotallyBoundedOrbit (fun y => f y))
+    [MeasurableSpace (BohrHull f)] [BorelSpace (BohrHull f)] :
+    ∃ (β : Fin N) (d : Fin N → ℂ), d β = 1
+      ∧ (∀ z ∈ verticalStrip σ R,
+        jetPoly d e (fun i : Fin (n + 1) => iteratedDeriv (i : ℕ) Φ z) = 0)
+      ∧ (∑ α : Fin N, MvPolynomial.C (d α)
+          * ∏ i : Fin (n + 1), (MvPolynomial.X i : MvPolynomial (Fin (n + 1)) ℂ) ^ (e α i)) ≠ 0
+      ∧ ∃ K : ℕ, Module.rank ℤ (bohrHullFrequencies f) ≤ (K : Cardinal) := by
+  classical
+  have hdat : ∀ α : Fin N, ∃ (u a d b : ℕ) (c : ℂ), c ≠ 0 ∧
+      Tendsto (fun t : ℝ => F α ((σ : ℂ) + (t : ℂ) * Complex.I)
+        / gammaJetShape σ u a d b t) atTop (nhds c) := by
+    intro α
+    obtain ⟨q', W', G', u, a, d, b, c, hq', hc, hW', hG'germ, hlim⟩ :=
+      exists_gammaAlgebra_line_datum hσ (hxmem α) (hx0 α)
+    obtain ⟨q, W, hq, hW, hWgerm⟩ := hFrep α
+    refine ⟨u, a, d, b, c, hc, hlim.congr' ?_⟩
+    have hev := eventually_line_eq_of_representatives σ hq' hq hW' hW hG'germ hWgerm
+    filter_upwards [hev, eventually_polyLine_ne_zero σ hq] with t ht hq0
+    rw [ht, mul_comm, mul_div_assoc, div_self hq0, mul_one]
+  choose u a d b c hc hFlim using hdat
+  exact finite_phase_law_of_gammaJet_data_eventual hσ hN hr hρ hrρ hR hΦ hap e F u a d b c hc
+    hFlim hrel he hf hfu hftb
+
+/-- **A relation in the carrier gives the relation far up the line.**  Applying the germ
+representation to an identity between analytic elements turns it into a pointwise identity at the
+upper end, hence on every vertical line for large ordinate. -/
+theorem eventual_line_relation_of_analytic_relation {σ : ℝ} {N n : ℕ}
+    (Φ : ℂ → ℂ) (Ψ : upperEndAnalyticSubring)
+    (hΨ : upperEndAnalyticSubring.subtype Ψ = Germ.coeRingHom upperEndFilter Φ)
+    (F : Fin N → ℂ → ℂ) (W : Fin N → upperEndAnalyticSubring)
+    (hWgerm : ∀ α, upperEndAnalyticSubring.subtype (W α)
+      = Germ.coeRingHom upperEndFilter (F α))
+    (e : Fin N → Fin (n + 1) → ℕ)
+    (hrel : ∑ α : Fin N, W α
+      * ∏ i : Fin (n + 1), (upperEndAnalyticDeriv^[(i : ℕ)] Ψ) ^ (e α i) = 0) :
+    ∀ᶠ t : ℝ in atTop, ∑ α : Fin N, F α ((σ : ℂ) + (t : ℂ) * Complex.I)
+      * ∏ i : Fin (n + 1), (iteratedDeriv (i : ℕ) Φ ((σ : ℂ) + (t : ℂ) * Complex.I)) ^ (e α i)
+      = 0 := by
+  classical
+  have hjet : ∀ i : Fin (n + 1),
+      upperEndAnalyticSubring.subtype (upperEndAnalyticDeriv^[(i : ℕ)] Ψ)
+        = Germ.coeRingHom upperEndFilter (fun z : ℂ => iteratedDeriv (i : ℕ) Φ z) := by
+    intro i
+    exact upperEndAnalyticDeriv_iterate_repr (i : ℕ) Ψ Φ hΨ
+  have hterm : ∀ α : Fin N,
+      upperEndAnalyticSubring.subtype
+        (W α * ∏ i : Fin (n + 1), (upperEndAnalyticDeriv^[(i : ℕ)] Ψ) ^ (e α i))
+      = Germ.coeRingHom upperEndFilter (fun z : ℂ => F α z
+        * ∏ i : Fin (n + 1), iteratedDeriv (i : ℕ) Φ z ^ e α i) := by
+    intro α
+    rw [map_mul, map_prod, hWgerm α]
+    rw [Finset.prod_congr rfl fun i _ => by rw [map_pow, hjet i, ← map_pow]]
+    rw [← map_prod, ← map_mul]
+    refine congrArg _ ?_
+    funext z
+    simp only [Pi.mul_apply, Finset.prod_apply, Pi.pow_apply]
+  have hzero : Germ.coeRingHom upperEndFilter (fun z : ℂ => ∑ α : Fin N, F α z
+      * ∏ i : Fin (n + 1), iteratedDeriv (i : ℕ) Φ z ^ e α i) = 0 := by
+    have h1 := congrArg upperEndAnalyticSubring.subtype hrel
+    rw [map_sum, map_zero, Finset.sum_congr rfl fun α _ => hterm α, ← map_sum] at h1
+    refine Eq.trans ?_ h1
+    refine congrArg _ ?_
+    funext z
+    simp only [Finset.sum_apply]
+  have hcoe : ((fun z : ℂ => ∑ α : Fin N, F α z
+      * ∏ i : Fin (n + 1), iteratedDeriv (i : ℕ) Φ z ^ e α i : ℂ → ℂ) : Germ upperEndFilter ℂ)
+      = ((0 : ℂ → ℂ) : Germ upperEndFilter ℂ) :=
+    hzero.trans (map_zero (Germ.coeRingHom upperEndFilter)).symm
+  exact eventually_line_of_upperEnd (Filter.Germ.coe_eq.mp hcoe) σ
+
+/-- **The finite phase law from a relation in the carrier.**  A relation between analytic elements of
+the upper-end carrier whose coefficients are nonzero elements of the `Γ` jet algebra over `ℂ(s)`
+collapses to a nontrivial constant-coefficient relation on the whole strip, and the frequency rank is
+finite — with no hypothesis beyond the relation itself. -/
+theorem finite_phase_law_of_gammaField_carrier_relation {n N : ℕ} {σ R rr ρ : ℝ} (hσ : 0 < σ)
+    (hN : 0 < N) (hr : 0 < rr) (hρ : 0 < ρ) (hrρ : rr + ρ < R) (hR : 0 < R) {Φ : ℂ → ℂ}
+    (hΦ : DifferentiableOn ℂ Φ (verticalStrip σ R)) (hap : IsStripAlmostPeriodic Φ σ R)
+    (e : Fin N → Fin (n + 1) → ℕ) (he : Function.Injective e)
+    (Ψ : upperEndAnalyticSubring)
+    (hΨ : upperEndAnalyticSubring.subtype Ψ = Germ.coeRingHom upperEndFilter Φ)
+    (F : Fin N → ℂ → ℂ) (W : Fin N → upperEndAnalyticSubring)
+    (hWgerm : ∀ α, upperEndAnalyticSubring.subtype (W α)
+      = Germ.coeRingHom upperEndFilter (F α))
+    (hWmem : ∀ α, algebraMap upperEndAnalyticSubring upperEndMeroField (W α)
+      ∈ differentialJetAlgebra (RatFunc ℂ) ({gammaUpperMero} : Set upperEndMeroField))
+    (hW0 : ∀ α, W α ≠ 0)
+    (hrel : ∑ α : Fin N, W α
+      * ∏ i : Fin (n + 1), (upperEndAnalyticDeriv^[(i : ℕ)] Ψ) ^ (e α i) = 0)
+    {f : ℝ →ᵇ ℂ} (hf : ∀ y : ℝ, f y = Φ ((σ : ℂ) + (y : ℂ) * Complex.I))
+    (hfu : UniformContinuous (fun y => f y)) (hftb : HasTotallyBoundedOrbit (fun y => f y))
+    [MeasurableSpace (BohrHull f)] [BorelSpace (BohrHull f)] :
+    ∃ (β : Fin N) (d : Fin N → ℂ), d β = 1
+      ∧ (∀ z ∈ verticalStrip σ R,
+        jetPoly d e (fun i : Fin (n + 1) => iteratedDeriv (i : ℕ) Φ z) = 0)
+      ∧ (∑ α : Fin N, MvPolynomial.C (d α)
+          * ∏ i : Fin (n + 1), (MvPolynomial.X i : MvPolynomial (Fin (n + 1)) ℂ) ^ (e α i)) ≠ 0
+      ∧ ∃ K : ℕ, Module.rank ℤ (bohrHullFrequencies f) ≤ (K : Cardinal) := by
+  have hline := eventual_line_relation_of_analytic_relation (σ := σ) Φ Ψ hΨ F W hWgerm e hrel
+  refine finite_phase_law_of_gammaField_coefficients_eventual hσ hN hr hρ hrρ hR hΦ hap e he
+    (fun α => algebraMap upperEndAnalyticSubring upperEndMeroField (W α)) hWmem ?_ F ?_ hline
+    hf hfu hftb
+  · intro α h0
+    exact hW0 α (IsFractionRing.injective upperEndAnalyticSubring upperEndMeroField
+      (by rw [h0, map_zero]))
+  · intro α
+    refine ⟨1, W α, one_ne_zero, by rw [map_one, one_mul], ?_⟩
+    rw [hWgerm α]
+    refine congrArg _ ?_
+    funext z
+    simp
+
+/-- **The finite phase law from a relation in the field.**  Coefficients may be arbitrary nonzero
+elements of the differential field generated by `Γ` over `ℂ(s)`: clearing the field denominator and
+the coefficient denominators turns the relation into one in the analytic carrier, which the previous
+theorem consumes. -/
+theorem finite_phase_law_of_gammaField_relation {n N : ℕ} {σ R rr ρ : ℝ} (hσ : 0 < σ)
+    (hN : 0 < N) (hr : 0 < rr) (hρ : 0 < ρ) (hrρ : rr + ρ < R) (hR : 0 < R) {Φ : ℂ → ℂ}
+    (hΦ : DifferentiableOn ℂ Φ (verticalStrip σ R)) (hap : IsStripAlmostPeriodic Φ σ R)
+    (e : Fin N → Fin (n + 1) → ℕ) (he : Function.Injective e)
+    (Ψ : upperEndAnalyticSubring)
+    (hΨ : upperEndAnalyticSubring.subtype Ψ = Germ.coeRingHom upperEndFilter Φ)
+    (x : Fin N → upperEndMeroField)
+    (hxmem : ∀ α, x α ∈ differentialAdjoin (RatFunc ℂ)
+      ({gammaUpperMero} : Set upperEndMeroField))
+    (hx0 : ∀ α, x α ≠ 0)
+    (hrel : ∑ α : Fin N, x α * ∏ i : Fin (n + 1),
+      (differentialJet (i : ℕ)
+        (algebraMap upperEndAnalyticSubring upperEndMeroField Ψ)) ^ (e α i) = 0)
+    {f : ℝ →ᵇ ℂ} (hf : ∀ y : ℝ, f y = Φ ((σ : ℂ) + (y : ℂ) * Complex.I))
+    (hfu : UniformContinuous (fun y => f y)) (hftb : HasTotallyBoundedOrbit (fun y => f y))
+    [MeasurableSpace (BohrHull f)] [BorelSpace (BohrHull f)] :
+    ∃ (β : Fin N) (d : Fin N → ℂ), d β = 1
+      ∧ (∀ z ∈ verticalStrip σ R,
+        jetPoly d e (fun i : Fin (n + 1) => iteratedDeriv (i : ℕ) Φ z) = 0)
+      ∧ (∑ α : Fin N, MvPolynomial.C (d α)
+          * ∏ i : Fin (n + 1), (MvPolynomial.X i : MvPolynomial (Fin (n + 1)) ℂ) ^ (e α i)) ≠ 0
+      ∧ ∃ K : ℕ, Module.rank ℤ (bohrHullFrequencies f) ≤ (K : Cardinal) := by
+  classical
+  obtain ⟨D, hD0, hDmem⟩ := exists_common_denominator (F := RatFunc ℂ) x hxmem
+  have hy0 : ∀ α, x α * D ≠ 0 := fun α => mul_ne_zero (hx0 α) hD0
+  choose q W G u a d b r hq hrne hWeq hWgerm _hlim using
+    fun α : Fin N => exists_gammaAlgebra_datum hσ (hDmem α) (hy0 α)
+  set Qc : Fin N → Polynomial ℂ := fun α => ∏ γ ∈ Finset.univ.erase α, q γ with hQc
+  set V : Fin N → upperEndAnalyticSubring :=
+    fun α => upperEndPolyToAnalytic (Qc α) * W α with hV
+  have hQ0 : (∏ γ : Fin N, q γ) ≠ 0 := Finset.prod_ne_zero_iff.mpr fun γ _ => hq γ
+  have hQmero : upperEndPolyToMero (∏ γ : Fin N, q γ) ≠ 0 := fun h =>
+    hQ0 (upperEndPolyToMero_injective (by rw [h, map_zero]))
+  have hVimg : ∀ α : Fin N, algebraMap upperEndAnalyticSubring upperEndMeroField (V α)
+      = upperEndPolyToMero (∏ γ : Fin N, q γ) * (x α * D) := by
+    intro α
+    rw [hV, map_mul, ← hWeq α]
+    have hsplit : (∏ γ : Fin N, q γ) = q α * Qc α :=
+      (Finset.mul_prod_erase Finset.univ q (Finset.mem_univ α)).symm
+    rw [hsplit, map_mul]
+    show upperEndPolyToMero (Qc α) * (upperEndPolyToMero (q α) * (x α * D))
+      = upperEndPolyToMero (q α) * upperEndPolyToMero (Qc α) * (x α * D)
+    ring
+  have hVmem : ∀ α : Fin N, algebraMap upperEndAnalyticSubring upperEndMeroField (V α)
+      ∈ differentialJetAlgebra (RatFunc ℂ) ({gammaUpperMero} : Set upperEndMeroField) := by
+    intro α
+    rw [hVimg α]
+    refine mul_mem ?_ (hDmem α)
+    have himg : upperEndPolyToMero (∏ γ : Fin N, q γ)
+        = algebraMap (RatFunc ℂ) upperEndMeroField
+          (algebraMap (Polynomial ℂ) (RatFunc ℂ) (∏ γ : Fin N, q γ)) :=
+      (upperEndRatfuncToMero_algebraMap_polynomial _).symm
+    rw [himg]
+    exact Subalgebra.algebraMap_mem _ _
+  have hV0 : ∀ α : Fin N, V α ≠ 0 := by
+    intro α h0
+    have himg := hVimg α
+    rw [h0, map_zero] at himg
+    exact (mul_ne_zero hQmero (hy0 α)) himg.symm
+  have hcarrier : ∑ α : Fin N, V α
+      * ∏ i : Fin (n + 1), (upperEndAnalyticDeriv^[(i : ℕ)] Ψ) ^ (e α i) = 0 := by
+    refine IsFractionRing.injective upperEndAnalyticSubring upperEndMeroField ?_
+    rw [map_sum, map_zero]
+    have hterm : ∀ α : Fin N, algebraMap upperEndAnalyticSubring upperEndMeroField
+        (V α * ∏ i : Fin (n + 1), (upperEndAnalyticDeriv^[(i : ℕ)] Ψ) ^ (e α i))
+        = (upperEndPolyToMero (∏ γ : Fin N, q γ) * D)
+          * (x α * ∏ i : Fin (n + 1), (differentialJet (i : ℕ)
+            (algebraMap upperEndAnalyticSubring upperEndMeroField Ψ)) ^ (e α i)) := by
+      intro α
+      have hjets : ∀ i : Fin (n + 1),
+          algebraMap upperEndAnalyticSubring upperEndMeroField
+            ((upperEndAnalyticDeriv^[(i : ℕ)] Ψ) ^ (e α i))
+            = (differentialJet (i : ℕ)
+              (algebraMap upperEndAnalyticSubring upperEndMeroField Ψ)) ^ (e α i) := by
+        intro i
+        rw [map_pow, ← differentialJet_algebraMap (i : ℕ) Ψ]
+      rw [map_mul, map_prod, hVimg α, Finset.prod_congr rfl (fun i _ => hjets i)]
+      ring
+    rw [Finset.sum_congr rfl fun α _ => hterm α, ← Finset.mul_sum, hrel, mul_zero]
+  refine finite_phase_law_of_gammaField_carrier_relation hσ hN hr hρ hrρ hR hΦ hap e he Ψ hΨ
+    (fun α z => (Qc α).eval z * G α z) V ?_ hVmem hV0 hcarrier hf hfu hftb
+  intro α
+  rw [hV, map_mul, polyToAnalytic_subtype, hWgerm α, ← map_mul]
+  refine congrArg _ ?_
+  funext z
+  simp only [Pi.mul_apply]
 
 end
 

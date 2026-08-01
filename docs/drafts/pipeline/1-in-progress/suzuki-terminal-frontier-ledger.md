@@ -216,6 +216,21 @@ quotient, in which common gauges cancel and poles remain; that survivor is the l
     resolvent consequences. Do not use stable-deficiency phase locking as Suzuki source mechanism.
     Positive survivor is narrower scalar moving-boundary limit; strong graph convergence alone
     does not control normalized moving defect vectors, so two-angle meromorphic Route G remains open.
+27. **Regular unit-response shell fusion is class-completely dead.**
+    The publication-ready common-divisor theorem classifies a precise possible Suzuki source
+    realization. Finite reciprocal exponent-shell packets split into one common-divisor hyperbolic
+    quotient and a centered transverse block of signature `(N-1,N-1)`. If every countable shell
+    has the same nonzero unit response and the shell modes are orthogonal in `ell^2` or form a
+    Bessel family, scalar fusion is respectively nonclosable or cannot be represented by one
+    bounded constant-response vector. Therefore a proof routed through this shell architecture
+    cannot reconstruct the terminal sign by a bounded/closable selector acting only after fusion.
+    Its exact survivor is a singular, source-pointed **pre-fusion** correspondence retaining shell,
+    valuation-depth, and reflection labels until the Hermite--Biehler sign is formed.
+
+    This theorem does not cover arbitrary bounded functionals of Suzuki's scalar screw data:
+    scalar data can still encode von Mangoldt coefficients and the completed divisor. It therefore
+    closes one source-realization class, not the Suzuki scalar two-angle producer. No claim that
+    Suzuki itself is dead follows from the superselection theorem.
 
 ## Provider/source-sign edge — live but not the whole Route-G terminal class
 

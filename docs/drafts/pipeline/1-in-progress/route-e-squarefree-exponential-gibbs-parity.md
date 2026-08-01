@@ -812,11 +812,12 @@ The other ordering is symmetric.  Lean formalizes the construction and equality 
 
 This is an exhaustive theorem for unrestricted fractional transport, not a no-go for arithmetic
 local transport.  It proves the exact burden: a low-defect existence assertion on an unspecified
-graph is merely the source written as a flow.  New knowledge can enter only by proving that an
-explicit value-local arithmetic graph attains nearly the complete-graph optimum.
+graph is merely the source written as a flow.  New knowledge can enter only through an explicit
+arithmetic graph or an independent analytic cancellation theorem.  The next audit proves that the
+arithmetic graph cannot be uniformly value-local: macroscopic edges are forced on a
+positive-density friable sector.
 
-The raw factor-replacement relation is too coarse for that task because it connects tokens at
-arbitrary integer displacement.  For `H>=0`, define the windowed relation by
+To test the value-local branch rather than assume it, for `H>=0` define the windowed relation by
 
 ```text
 m ~_(z,H) n  iff  m~_z n and m<=n+H and n<=m+H.            (G46f)
@@ -825,9 +826,172 @@ m ~_(z,H) n  iff  m~_z n and m<=n+H and n<=m+H.            (G46f)
 Lean defines this literal relation as `MobiusBoundaryFactorReplacementWindowAdjacent`, proves it
 symmetric and parity-flipping, and instantiates the canonical defect theorem as
 `abs_truncatedMobiusLaplace_le_degreeNormalizedWindowedFactorReplacementDefect`.  Its degrees now
-measure short-interval supply at a stated physical resolution.  Any use of `(G46)` below refers
-either to this pruned graph or to an explicitly weighted multiscale union; raw global degree is no
-longer accepted as evidence.
+measure short-interval supply at a stated physical resolution.  This infrastructure makes the
+following obstruction literal.
+
+**Theorem F1b (friable macroscopic-gap law; paper-proved here).**  Let every prime divisor of
+`n` be at most `y`, with `y<z`.  If `m~_z n` in the undirected `{one prime <-> two primes,
+one prime >z <-> four primes <=z}` replacement graph, then
+
+```text
+                         |m-n| >= n/y^4.                  (G46h)
+```
+
+Proof.  For a same-sector edge written `n=aq`, `m=ars`, primality gives `q!=rs`; hence
+`|m-n|=a|q-rs|>=a` and `n=aq<=ay<=ay^4`.  In the reverse orientation,
+`n=ars`, so `n<=ay^2<=ay^4`.  A cross edge with `n=ap`, `p>z`, is impossible because
+`p|n` would give `p<=y<z`.  In the remaining orientation `n=aq1q2q3q4`, and all four
+prime divisors are at most `y`.  A prime cannot equal their fourfold product, so again
+`|m-n|>=a` and `n<=ay^4`.  These cases exhaust the relation.  No distributional estimate
+or Möbius cancellation is used.
+
+Lean formalizes this division-free as
+`le_pow_four_mul_dist_of_boundaryFactorReplacementAdjacent_of_primeFactors_le`:
+
+```text
+              n <= y^4 * Nat.dist n m.                   (G46h-L)
+```
+
+**Corollary F1c (sublinear-window isolation; paper-proved here).**  Put `N=1/x`.  Fix
+`theta<1`, choose
+
+```text
+             0<alpha<min(1/2,(1-theta)/4),   y=N^alpha.
+```
+
+On the critical schedule `z^2` is of order `N log N`, so `y<z` and every `n in [N/2,N]`
+lies inside the truncation.  The fixed-parameter Dickman asymptotic together with the
+Ivić--Tenenbaum squarefree-smooth density gives `Omega_alpha(N)` squarefree `y`-smooth
+integers in `[N/2,N]`.  Theorem F1b gives
+
+```text
+                  |m-n| >= (1/2)N^(1-4 alpha) > N^theta. (G46i)
+```
+
+Every one of these Möbius vertices is therefore isolated in the displacement-`N^theta`
+graph.  Since `exp(-nx)` lies between `exp(-1)` and `exp(-1/2)` on this interval, their
+total isolated Gibbs capacity is `Omega_alpha(N)`, not
+`O_epsilon(N^(1/2+epsilon))` for `epsilon<1/2`.
+
+Lean formalizes the finite isolation implication as
+`not_boundaryFactorReplacementWindowAdjacent_of_primeFactors_le_of_pow_mul_lt`:
+if `y^4 H<n`, no displacement-`H` replacement edge can leave `n`.
+
+For the squarefree-smooth input, see Ivić--Tenenbaum's asymptotic as quoted with its range
+in [Gorodetsky, §1.4](https://link.springer.com/article/10.1007/s00209-024-03601-w):
+`Psi_(mu^2)(X,Y)=Psi(X,Y)/zeta(2)(1+o(1))`; Hildebrand's unconditional Dickman
+asymptotic applies to `Y=X^alpha`.  Applying it at `X=N` and `X=N/2` gives the stated
+dyadic positive density.
+
+`[FALSIFIED: WEIGHTED-FIBER-INCIDENCE-REGULARITY WITH SUBLINEAR HARD SUPPORT]`
+The proposed physical support `a|p-Q|<=z^(1+o(1))` has integer displacement
+`N^(1/2+o(1))` on the critical schedule.  Corollary F1c applies with any fixed
+`theta>1/2` and leaves linear isolated capacity.  Analogous sublinear windows for the
+same-sector edges do not repair it.  Thus neither pointwise short-interval supply nor an
+aggregate capacity split on this hard-support graph can prove `(G20)`.  This is a
+falsification of the windowed producer, not of raw/macroscopic fractional transport and
+not of Route E.  Failed-route record:
+`../5-failed/route-e-sublinear-factor-replacement-flow.md`.
+
+#### Rejected replacement: sectorwise friable cancellation
+
+The macroscopic-gap law suggests splitting at a lower smoothness threshold and estimating the
+friable signed sector separately.  This also fails, for a stronger reason than lack of a known
+bound.
+
+Put
+
+```text
+M_fri(X,Y)=sum_(n<=X, P+(n)<=Y) mu(n).
+```
+
+`[PUBLISHED THEOREM; PROJECT BRIDGE]` Fix a noninteger `u>1` and set `Y=X^(1/u)`.
+Corollary 1.3(i) of de la Bretèche--Tenenbaum, applied to `f=mu` and zeta exponent
+`z=-1`, gives
+
+```text
+M_fri(X,Y) = X/(log Y)^2 {phi_(-1)(u)+O_u(1/log Y)}.       (G46j)
+```
+
+Here `phi_(-1)` is the right-continuous delay solution
+
+```text
+v phi_(-1)'(v)=phi_(-1)(v-1),   phi_(-1)(v)=1 on 0<v<=1. (G46k)
+```
+
+It is strictly positive: positivity on `(0,1]` and `(G46k)` propagate inductively across every
+unit interval.  Consequently
+
+```text
+                    M_fri(X,X^(1/u)) asymp_u X/log^2 X,   (G46l)
+```
+
+with positive leading sign.  This is far larger than `X^(1/2+epsilon)` for every fixed
+`epsilon<1/2`.  The hypotheses of the cited theorem are literal here:
+`sum mu(n)n^(-s)=zeta(s)^(-1)` has analytic factor `B(s)=1`, and `mu^2` admits a standard
+positive divisor-function majorant.  Fixed noninteger `u` eventually lies away from the theorem's
+integer-delay exceptional neighborhoods.
+
+Source: [de la Bretèche--Tenenbaum, *Friable averages of complex arithmetic functions*,
+Corollary 1.3](https://tenenb.perso.math.cnrs.fr/PPP/Friable-complex.pdf).
+
+`[FALSIFIED: FRIABLE-SIFTED SPLIT SOURCE]` No proof may assign the fixed-power friable sector an
+independent strict-half bound and then transport only the rough complement.  The friable sector
+has a deterministic near-linear signed bias.  Any successful source must cancel that bias against
+non-friable mass across macroscopic edges, or exploit the full integer-delay seam before taking
+absolute values.
+
+This identifies the next exact hard object.  The critical Route E aperture has
+`log N/log z=2-o(1)`, so it approaches the integer seam `u=2`, precisely where the uniform
+expansion `(G46j)` acquires boundary correction terms.  The zero/one-large-prime comparison is
+therefore not a sum of two independently small sectors: it is the seam cancellation between the
+positive friable delay profile and its one-large-prime correction.  PNT-scale theory cancels the
+algebraic main profile but leaves a zero-free-region remainder far above `N^(1/2+epsilon)`.
+Square-root control of this beyond-all-orders seam remainder remains `OPEN-SOURCE-001`; renaming
+it “friable cancellation” would be theatre.
+
+#### Scalar renewal cannot bootstrap a power saving
+
+The sharp-cutoff analogue makes the remaining obstruction quantitative.  For fixed `1<u<2`, put
+`Y=X^(1/u)`.  Since an integer at most `X<Y^2` has at most one prime factor above `Y`,
+largest-prime factorization gives the exact identity
+
+```text
+M(X)=M_fri(X,Y)-sum_(Y<p<=X) M(X/p).                       (G46m)
+```
+
+Consider the positive majorant of the renewal operator
+
+```text
+(T_(X,Y)f)=sum_(Y<p<=X) f(X/p)
+```
+
+in the weighted sup norm `|f(t)|<=t^alpha`.  Its exact norm on the positive extremizer
+`f(t)=t^alpha` is
+
+```text
+X^(-alpha) T_(X,Y)f = sum_(Y<p<=X) p^(-alpha).             (G46n)
+```
+
+`[PAPER-PROVED BRIDGE; NOVELTY UNVERIFIED]` PNT and partial summation give
+
+```text
+sum_(Y<p<=X) p^(-alpha)
+  ~ X^(1-alpha)/((1-alpha)log X)       (0<=alpha<1),       (G46o)
+sum_(Y<p<=X) 1/p
+  = log u+o(1)                         (alpha=1).           (G46p)
+```
+
+Thus the operator is contractive at the linear PNT norm when `log u<1`, but its absolute norm
+diverges in every fixed power-saving norm, including `alpha=1/2+epsilon`.  This is the exact
+exponent barrier behind the Daboussi renewal method: it can force `M(X)=o(X)` by a linear-norm
+limsup argument, but no scalar magnitude bootstrap can reach `M(X)=O(X^alpha)` for any
+`alpha<1`.
+
+`[FALSIFIED: SCALAR-RENEWAL-POWER-BOOTSTRAP]` Reusing `(G46m)` with a stronger inductive sup bound
+does not contract.  A viable seam source must prove signed orthogonality across prime scales in
+`sum_p M(X/p)`, or replace the scalar norm by a structure that sees that orthogonality.  Merely
+improving the friable main-term expansion or the PNT error does not cross `(G46o)`.
 
 Integer-level collisions admit an exact incidence lift.  If a squarefree target `m` has
 `r=omega(m)` prime factors, it has exactly `binom(r,k)` choices of a `k`-factor replacement label.
@@ -866,7 +1030,8 @@ actual Möbius--Laplace truncation through `z^2`; its right side is the positive
 normalized-edge-variation expression.  No unnamed graph or sign hypothesis remains in this
 consumer.
 
-`[CONJECTURE: WEIGHTED-FIBER-INCIDENCE-REGULARITY]` Split every vertex capacity between the cross
+`[RETIRED CONJECTURE: WEIGHTED-FIBER-INCIDENCE-REGULARITY]` The falsified proposal split every
+vertex capacity between the cross
 four-factor lift and the same-sector one/two-factor lifts by an explicit function of its factor
 count.  For a fixed spectator `a`, regard the cross source and target as measures on token value,
 
@@ -876,36 +1041,35 @@ nu_a     = sum_(Q, omega(Q)=4, P+(Q)<=z, (a,Q)=1)
                theta'_(omega(a)) exp(-aQx)/binom(omega(a)+4,4) delta_Q. (G46g)
 ```
 
-For the fractional-flow model, require the cross coupling to be supported on
+It required the cross coupling to be supported on
 `a|p-Q|<=z^(1+o(1))`, with analogous physical windows for the one/two-factor measures.  The
 required statement is an *aggregate unbalanced capacity bound*: after adding those same-sector
 measures, there are sub-couplings whose unused source and target mass, summed over all spectators
 and dyadic value windows, is `O_epsilon(z^(1+epsilon))`.  Under `(G43)`--`(G46)`, this positive
 weighted statement implies `LOCAL-FRACTIONAL-BOUNDARY-FLOW`.
 
-No displacement moment is added to this fractional objective.  Conductance couples portions of
+No displacement moment was added to this fractional objective.  Conductance couples portions of
 the already weighted masses `exp(-nx)`, so equal coupled capacity cancels exactly even when the
 integer labels differ.  A cost `min(1,xa|p-Q|)` belongs to the unsplit atom-matching formulation
 `(G39)`; mixing it into `(G43)` would double-charge displacement.  Value locality remains a hard
-support condition because it is the only interface to short-interval incidence theorems.
+support condition only in this retired short-interval branch.
 
-This conjecture is not yet a proof: choosing the capacity split so that both move types balance,
-and proving `(G46b)` uniformly in the spectator, are the remaining arithmetic tasks.  Its gain is
-that injectivity and representation congestion are no longer hidden inside those tasks.
+Corollary F1c now disproves the required aggregate bound before any incidence estimate is invoked.
+The binomial lift remains valid infrastructure; it cannot create neighbors for isolated friable
+vertices.
 
-`[CONJECTURE: LOCAL-FRACTIONAL-BOUNDARY-FLOW]` For every `epsilon>0`, at a critical aperture the
-two replacement edge families can be pruned or positively reweighted, using only their local
-factor data, so that the right side of `(G44)` is
-`O_epsilon(x^(-1/2-epsilon))`.  For the canonical flow `(G45)`, it is enough to prove the same
-bound for `(G46)`.
+`[RETIRED IN SUBLINEAR-WINDOW FORM: LOCAL-FRACTIONAL-BOUNDARY-FLOW]` The conjecture required, for
+every `epsilon>0`, pruning or positive reweighting of the two replacement families at a critical
+aperture so that the right side of `(G44)` was `O_epsilon(x^(-1/2-epsilon))`.  Corollary F1c
+rules this out whenever all retained edges have displacement `N^theta`, `theta<1`.  A replacement
+flow conjecture can remain viable only if it permits macroscopic edges on the friable bulk and
+proves a genuinely arithmetic capacity theorem for them.
 
-This is a strictly more concrete producer than an existential matching: `(G46)` is a positive,
-unsigned incidence-regularity estimate with no cancellation left inside it.  It also exposes its
-own likely failure modes.  Cross-sector prime-to-four-prime degrees have different raw densities,
-so the unweighted graph need not have small normalized-degree variation; same-sector edges or
-nonuniform conductances must absorb that density mismatch.  Vertices in the small smooth core may
-be isolated, but their entire mass is admissible only while it is `O(z^{1+o(1)})` on the critical
-schedule.  Neither `(G44)` nor `(G46)` may be justified by first assuming a Mertens bound.
+The failed conjecture was more concrete than an existential matching because `(G46)` is positive
+and unsigned.  Its exposed failure is now exact: the “small smooth core” is not a negligible
+`O(z^(1+o(1)))` fringe at effective scale `N=1/x`; power-smooth squarefree vertices have linear
+mass.  Neither `(G44)` nor `(G46)` may be justified by assuming a Mertens bound or by deleting
+this bulk.
 
 The conjecture is deliberately incompatible with Beurling fake-prime systems lacking dense
 integer four-almost-prime replacements.  Unlike positive Gram, generic negative dependence, and
@@ -996,6 +1160,12 @@ bound supplies only `z/((log z)^0.45 log log z)` candidates in a window of lengt
 unresolved.  Those factors are fatal if paid as unused Gibbs mass.  The unbalanced measure target
 `(G46g)` therefore requires a two-sided incidence estimate or a multiscale capacity split, not
 pointwise existence followed by an arbitrary selector.
+
+Corollary F1c adds a terminal limitation: even a proof of this pointwise prime-center statement
+would cover only vertices containing a prime above `z`.  It cannot supply any edge for the
+positive-density `N^alpha`-smooth bulk in a sublinear window.  The prime-center theorem remains a
+correct prime-only incidence survivor, but it is no longer a candidate source without a separate
+macroscopic mechanism for friable vertices.
 
 The factor `a` in this statement is essential.  Corollary F2 uses the all-interval
 `sqrt(p)(log p)^1.55` gap and therefore handles `a=z^{o(1)}`.  At the opposite corner
@@ -1189,4 +1359,18 @@ Lean modules:
   spectators require `a|Q-p|<=z^{1+o(1)}`; at `a,p asymp z` this returns to the unresolved
   polylogarithmic prime-center regime.  Introduced the binomial incidence-capacity lift `(G46a)` to
   remove representation congestion exactly, and formalized its uniform capacity partition in
-  Lean.  Weighted spectator-fiber incidence regularity remains the hard source theorem.
+  Lean.  Weighted spectator-fiber incidence regularity was the resulting hard source theorem; the
+  next audit falsified its sublinear hard support.
+- 2026-08-01 — falsified that hard-support target.  Every neighbor of a `y`-smooth vertex in the
+  `{1<->2,1>z<->4}` replacement graph has displacement at least `n/y^4`.  Fixed-power
+  squarefree-smooth density therefore gives `Omega(N)` isolated Gibbs capacity in every
+  displacement-`N^theta` pruning with `theta<1`, including the proposed
+  `z^(1+o(1))=N^(1/2+o(1))` support.  The exact gap law is the positive survivor; Route E remains
+  open and any replacement transport must permit macroscopic friable edges or provide an
+  independent signed friable cancellation theorem.
+- 2026-08-01 — rejected the latter sectorwise repair.  De la Bretèche--Tenenbaum's complex
+  friable-average expansion at zeta exponent `-1` gives a positive
+  `X/(log Y)^2 phi_(-1)(u)` main term for the `Y=X^(1/u)`-smooth Möbius sum at fixed
+  noninteger `u`.  Friable bias must be cancelled across the smooth/rough seam, not bounded
+  separately.  Critical aperture approaches the integer seam `u=2`; strict-half control of its
+  beyond-all-orders zero/one-sector remainder is still literal `OPEN-SOURCE-001`.

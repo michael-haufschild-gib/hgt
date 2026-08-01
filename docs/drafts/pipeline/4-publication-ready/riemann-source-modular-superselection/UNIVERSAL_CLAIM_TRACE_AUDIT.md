@@ -1,106 +1,128 @@
-# Claim trace: `main-universal.tex`
+# Claim trace for `main-universal.tex`
 
-Internal audit only. Manuscript must not mention formalization.
+Internal truth audit only.  Verification technology is not mentioned in the
+manuscript and contributes nothing to novelty or significance.
 
-## Universal law
+Audit date: 2026-08-01.
 
-| Manuscript claim | Declaration(s) | Module |
+## Policy
+
+- Every mathematical claim in `main-universal.tex` must be an unconditional
+  consequence of a declaration below or an explicit proof in the manuscript.
+- RH, zero exclusion, positive source orientation, and finite-Rees reflected
+  sewing are not claimed.
+- “Subsumes” means exact specialization of the admission/separation defect
+  ledger through a named source map.  It does not mean that the elementary
+  factorization theorem supplies each analytic estimate.
+
+## Admission--separation law
+
+| Manuscript claim | Declaration | Module |
 |---|---|---|
-| partial completion globally recovers exactly under admission plus kernel refinement | `partialCompletion_globallyRecovers_iff_admission_and_kernelRefines` | `HTGeometry/PartialCompletionAdmissionSeparationLaw.lean` |
-| postprocessing preserves admission and enlarges the kernel pair | `partialCompletion_postprocess_admitted`, `partialCompletion_kernelPair_mono_postprocess` | same |
-| invariant partial completion kills odd charge on its admitted domain | `oddTarget_eq_zero_on_admitted_of_invariantPartialCompletion` | same |
-| every recovering partial completion separates admitted reflected pairs of nonzero charge | `partialCompletion_separates_reflection_of_oddCharge_ne_zero` | same |
-| factorization on attained range iff kernel refinement | `factorsThroughRange_iff_kernelRefines` | `HTGeometry/CompletionKernelPairTransversalityLaw.lean` |
-| arbitrary heterogeneous family recovery | `observationFamilyRecovers_iff_factorsThroughRecordRange` | same |
-| downstream postprocessing enlarges kernel | `mapKernelPair_mono_of_factorsThrough` | same |
-| invariant completion kills an odd real target | `oddTarget_eq_zero_of_factorsThrough_invariantCompletion` | same |
-| every repair separates a nonzero reflected pair | `transverseChannel_separates_reflection_of_oddCharge_ne_zero`, `reflectionOddPart_ne_zero_of_jointlyRecovers` | same |
-| dense fibres force a one-point-continuous separated reporter to be constant | `downstreamReporter_constant_of_dense_completionFibers` | same |
-| `(1-epsilon)(1+epsilon)=0` | `reflectionOrientation_mul_hyperbolic_eq_zero` | `HTGeometry/ReflectionOrientationSingularSupportLaw.lean` |
-| regular symmetric channel forces trivial orientation | `reflectionOrientation_eq_one_of_hyperbolic_regular` | same |
-| with regular `2`, nontrivial orientation iff symmetric channel is nonregular | `reflectionOrientation_ne_one_iff_hyperbolic_not_regular` | same |
-| anti-invariant module vectors lie in symmetric-channel kernel | `hyperbolic_smul_antiInvariant_eq_zero`, `antiInvariant_eq_zero_of_hyperbolic_smul_injective` | same |
-| invariant and anti-invariant sectors are complementary when `2` is invertible | `deningerReflectionModuleDecomposition`, `deningerFaithfulOrientationDescent` | `RHTower/DeningerOrientationDescent.lean` |
-| scalar and operator sewing cost beyond every finite order | `reesEssentialSewingCost_beyondEveryFiniteOrder`, `reesExactSewingOperatorNorm_beyondEveryFiniteOrder` | `RHTower/AsymptoticTypeSuperselection.lean` |
+| Global recovery iff admission and kernel refinement | `partialCompletion_globallyRecovers_iff_admission_and_kernelRefines` | `HTGeometry/PartialCompletionAdmissionSeparationLaw.lean` |
+| Postprocessing only enlarges the kernel pair | `partialCompletion_kernelPair_mono_postprocess`; `mapKernelPair_mono_of_factorsThrough` | `PartialCompletionAdmissionSeparationLaw.lean`; `CompletionKernelPairTransversalityLaw.lean` |
+| Invariant completion kills a recovered odd target | `oddTarget_eq_zero_on_admitted_of_invariantPartialCompletion`; `oddTarget_eq_zero_of_factorsThrough_invariantCompletion` | same two modules |
+| A sufficient transverse channel separates a nonzero reflected charge | `partialCompletion_separates_reflection_of_oddCharge_ne_zero`; `transverseChannel_separates_reflection_of_oddCharge_ne_zero` | same two modules |
+| Dense completion fibres force continuous downstream reporters to be constant | `downstreamReporter_constant_of_dense_completionFibers` | `HTGeometry/CompletionKernelPairTransversalityLaw.lean` |
+| Hyperbolic channel annihilates anti-invariants | `reflectionOrientation_mul_hyperbolic_eq_zero`; `hyperbolic_smul_antiInvariant_eq_zero` | `HTGeometry/ReflectionOrientationSingularSupportLaw.lean` |
+| Nontrivial orientation iff hyperbolic element is nonregular | `reflectionOrientation_ne_one_iff_hyperbolic_not_regular` | same |
 
-## Exact Hedenmalm admission domain
+The elementary converse factorization and the decomposition
+`v=(v+εv)/2+(v-εv)/2` are proved directly in the manuscript.
 
-| Manuscript claim | Declaration(s) | Module |
+## Positive exponent-shell source and common divisor
+
+| Manuscript claim | Declaration | Module |
 |---|---|---|
-| source-normal prime-row energy is vertical plus radial energy | `hedenmalmPrimeNormalEnergy_eq_vertical_add_radial` | `RHTower/HedenmalmPrimeNormalWickBoundaryEnergy.lean` |
-| radial displacement forces prime-susceptibility cost | `im_sq_mul_primeClockSusceptibility_le_hedenmalmPrimeNormalEnergy` | same |
-| vertical energy is bounded by four harmonic numbers | `primeClockVerticalEnergy_le_four_mul_harmonic` | `RHTower/HedenmalmPrimeNormalSubLogSquareClassification.lean` |
-| sub-`log²` completion domain is exactly the centered real axis | `hedenmalmPrimeNormalSubLogSquare_iff_im_eq_zero` | same |
-| universal admission of Xi root blocks implies RH, but is not supplied | `riemannHypothesis_of_xiCZeroHedenmalmPrimeNormalSubLogSquare` | `RHTower/HedenmalmPrimeNormalWickBoundaryEnergy.lean` |
+| Exact largest-exponent shell and disjoint positive support | `shellIndicator_eq_one_iff`; `shellIndicator_eq_zero_of_ne` | `RHTower/HighExponentShellZeroFree.lean` |
+| Shell factorization `S_m=ζH_m` | `LSeries_shellIndicator` | same |
+| `H_m` analytic and zero-free on `Re s>1/2`, `m≥12` | `analyticAt_shellMultiplier`; `shellMultiplier_ne_zero` | same |
+| Exact divisor-order replication | `finiteHighShell_analyticOrderReplication` | `RHTower/HighExponentShellFusionConservation.lean` |
+| Relative differential independence over the zeta differential field | `finiteHighShell_relativeDifferentialIndependent`; `relativeShellMultiplierUpperEndCarrier_differentialIndependent_two` | `HighExponentShellFusionConservation.lean`; `HighExponentShellHypertranscendence.lean` |
+| Infinite relative differential fibre | finite-packet theorem for every `n`, as stated above | same |
 
-## Riemann centered character
+## Finite and infinite fusion
 
-| Manuscript claim | Declaration(s) | Module |
+| Manuscript claim | Declaration | Module |
 |---|---|---|
-| character law and real-ray norm | `centeredComplexModularCharacter_add`, `norm_centeredComplexModularCharacter_ofReal` | `RHTower/RiemannComplexModularCharacterLaw.lean` |
-| exact charge recovery | `centeredComplexModularCharacter_weight_recovery` | same |
-| reflection negates charge and norms multiply to one | `criticalLineReflectionPoint_weight`, `norm_centeredComplexModularCharacter_reflection_mul` | same |
-| principal Hurwitz phase gives absolute centered charge | `centeredComplexModularCharacter_principalPhase` | same |
-| shell transfer entropy gives negative charge | `shellTransferEntropy_eq_neg_xiRightSourceModularCharge` | `RHTower/XiSourceModularTypeSuperselectionLaw.lean` |
-| normal-cone/current residue gives multiplicity times centered charge | `tendsto_re_xiExceptionalAffineDivisorCurrent_eq_neg_modularCharge` | same |
-| complex residue `-m(rho-1/2)` | `tendsto_xiCenteredPoleResidueMode_eq` and capstone fields | `RHTower/XiHypertranscendentalModularResidueTransgression.lean`, `RHTower/XiDepthMobiusGammaOuterInnerWeld.lean` |
+| Mean/centered decomposition | `finiteLabel_inner_fusion_decomposition` | `HTGeometry/CommonCharacterFusionConservation.lean` |
+| Fusion kernel has codimension one | `finiteLabelFusionLinearMap_finrank_ker` | same |
+| Reciprocal quadratic conservation identity | `reciprocalLabelQuadratic_fusion_conservation` | same |
+| Positive diagonal and negative antidiagonal directions | `reciprocalLabelQuadratic_diag_pos`; `reciprocalLabelQuadratic_antidiag_neg` | same |
+| Opposite-character reflected action preserves the form and intertwines fusion | `reciprocalLabelForm_reflectedLabelAction_invariant`; `finiteLabelFusion_reflectedLabelAction_fst`; `finiteLabelFusion_reflectedLabelAction_snd` | same |
+| Shell codiagonal is not sequentially closable and Bessel unit response is impossible | `highShell_no_stableHilbert_unitFusion`; `highShell_infiniteFusionSingularity_and_unitaryLocus` | `RHTower/HighExponentShellFusionConservation.lean` |
+| Route-J centered block energy is smaller than squared bad mass | `ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy_lt_badMass_sq`; `ccmFirstClock_sourceFusion_regularHilbert_noGo` | `RHTower/CCMFirstClockSourceFusionSuperselectionNoGo.lean` |
 
-The manuscript also gives the elementary local logarithmic-derivative proof of the current residue, so its truth does not depend on terminology of the source-normal chart.
+## One centered modular charge
 
-## Gamma--Stokes source factor
-
-| Manuscript claim | Declaration(s) | Module |
+| Manuscript claim | Declaration | Module |
 |---|---|---|
-| literal theta seed Mellin transform equals archimedean factor | `mellin_thetaCuspSeed_eq_archFactor` | `RHTower/EulerHedenmalmGammaStokesTransgression.lean` |
-| causal minus anti-causal mode is `t^(-s) A(s)` | `thetaGamma_causal_sub_anti_eq_archFactor_character` | same |
-| jump nonzero in open strip | `thetaGamma_stokes_jump_ne_zero` | same |
-| Euler multiplication kills jump iff Xi zero | `thetaGamma_completedEuler_kills_stokes_iff_xi_zero` | same |
-| character preserves analytic multiplicity | `analyticOrderAt_thetaGammaCompletedEulerOutput` | same |
+| Centered complex character is additive and has exact real-ray norm | `centeredComplexModularCharacter_add`; `centeredComplexModularCharacter_real_cpow` | `RHTower/RiemannComplexModularCharacterLaw.lean` |
+| Unitary locus is exactly `Re ρ=1/2` | `norm_centeredComplexModularCharacter_ofReal`; direct proof in manuscript | same |
+| Reflected real-ray norms are reciprocal | `norm_centeredComplexModularCharacter_reflection_mul`; `criticalLineReflectionPoint_weight` | same |
+| Principal Hurwitz phase recovers the same charge | `centeredComplexModularCharacter_principalPhase` | same |
+| Shell entropy equals centered real displacement | `shellTransferEntropy_eq` | `RHTower/XiHypertranscendentalModularResidueTransgression.lean` |
+| Centered Xi residue reports shell entropy times multiplicity | `re_centeredXiAffineResidue_eq_shellTransferEntropy` | same |
+| Compact-BV residue ratio reports the same charge | `xiBVResiduePhaseCoordinate_eq_sourceModularCharge` | `RHTower/XiSourceModularTypeSuperselectionLaw.lean` |
 
-## Infinite Hedenmalm divisor transgression
+## Activation, reflected depth, and Rees superselection
 
-| Manuscript claim | Declaration(s) | Module |
+| Manuscript claim | Declaration | Module |
 |---|---|---|
-| removable germ value equals translated multiplicity difference | `xiFluxShiftDifferenceFullResidueGerm_zero` | `RHTower/HedenmalmOrientationDivisorTransgression.lean` |
-| multiplicity jump forces nonanalyticity | `not_analyticAt_xiFluxShiftDifference_of_order_ne` | same |
-| every positive shift has infinitely many multiplicity jumps | `xiTranslationOrderJumpSet_infinite` | same |
-| affine Hedenmalm multiplier has infinite singular carrier | `xiCanonicalOrientationOrderJumpFrequencySet_infinite`, `xiCanonicalOrientationOrderJumpFrequencySet_subset_singularSet`, `xiCanonicalOrientationSingularSet_infinite_via_orderTransgression` | same |
-| affine current/multiplier identity | `xiFluxShiftDifference_eq_neg_canonicalOrientation` | `RHTower/HedenmalmInfiniteOrientationSingularities.lean` |
+| Diagonal activation equals `ζ(s)/ζ(2s)` | `woldActivationHolonomy_diagonal_eq_squarefreePartition` | `RHTower/EulerActivationSquarefreeDisintegration.lean` |
+| Local valuation law splits occupancy and conditional geometric depth | `diagonalActivationPositiveValuationMass_factorization`; `diagonalActivationValuationMass_total` | same |
+| Occupancy Fisher variance and Möbius/Gamma atoms | `diagonalActivationOccupancyFisher_eq_variance`; `diagonalActivationPositiveValuationMass_prime_eq_mobiusDifference`; `diagonalActivationPrimeMass_eq_fisherDampedGammaValuation` | same |
+| Reflected Hellinger sector is critical, half-normal, or all-orders flat according to charge | `primeValuationHellinger_reesType_trichotomy`; `reflected_primeValuationSquaredHellinger_type_fracture` | `RHTower/PrimeValuationHellingerReesReflectionFracture.lean` |
+| Finite-grade matrices/operators preserve the flat radical | `reesAllOrdersFlat_finiteReesJetTransform`; `reesAllOrdersFlat_apply_reesOperatorGradeAtMost` | `RHTower/PrimeValuationHellingerReesJetStability.lean` |
+| Exact reflected sewing cost exceeds every finite inverse Rees power | `xiRightModularAffinitySewingCost_beyondEveryReesOrder`; `xiRightModularAffinitySewingOperatorNorm_beyondEveryReesOrder` | `RHTower/XiSourceModularTypeSuperselectionLaw.lean` |
 
-Sign audit: manuscript defines `G_h = logDeriv xi(s) - logDeriv xi(s-h)`, the negative of the corpus `xiFluxShiftDifference`. Therefore its removable center value is exactly `m(rho)-m(rho-h)`, as written.
+The finite Euler-product proof of the explicit affinity estimates is included
+in the manuscript.
 
-## Escaping quartet
+## Exact positive and negative specializations in Table 1
 
-| Manuscript claim | Declaration(s) | Module |
+| Row | Declarations | Module |
 |---|---|---|
-| Xi hypertranscendental | `xi_hypertranscendental` | `RHTower/XiHypertranscendenceUnconditional.lean` |
-| FE/Schwarz quartet, all-jet compact escape, bounded Ward escape, `8*pi` mass | `compactOpenKolchinWardChargeEscape_law` | `RHTower/CompactOpenKolchinWardChargeEscape.lean` |
-| full continuum real-shift differential matroid blind | `escapingQuartetRealShiftUpperEndCarrier_differentialMatroid_eq_raw` | `RHTower/XiRealTransverseQuartetSurgeryMatroidInvariance.lean` |
-| reciprocal-square energy formula and decay | `escapingModularTraceEnergy_eq`, `escapingModularTraceEnergy_tendsto_zero` | `RHTower/RiemannComplexModularCharacterLaw.lean` |
-| fixed modular charge and fixed Hurwitz phase survive | `escapingModularPoint_weight`, `escapingModularPoint_principalPhase` | same |
-| combined certificate | `escapingModularCharacterSeparation_law` | same |
+| Wold--Poisson faithful lift | `xiWoldPoissonBivariateConormalResponse_residue_transport`; `xiWoldPoissonBivariateConormalResidueMode_eq_zero_iff` | `RHTower/XiWoldPoissonBivariateConormal.lean` |
+| Holomorphic strip separation | `hull_eq_of_line_eq`; `bohrEval_injective_of_isometry` | `HTGeometry/StripHullSeparation.lean` |
+| Gamma-field finite-phase boundary | `finite_phase_law_of_gammaField_relation`; `finite_phase_law_of_gammaField_coefficients_eventual` | `HTGeometry/GammaFieldCoefficientLaw.lean` |
+| Hedenmalm dense radical and nonclosability | `dense_xiThetaL2RadicalImage_of_scalarThetaNull`; `universalPositiveForm_thetaNull_sequentiallyL2Closable_iff_leftTemperedDistribution_zero`; `hilbertGram_l2PartialOperator_not_closable` | `RHTower/HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw.lean`; `HedenmalmSourceHilbertGramClosedGraphNoGo.lean` |
+| Deninger Tor and middle fibre | `deningerTor_injective`; `deningerTor_map_eq`; `deningerMiddleFiber_degree_zero`; `deningerMiddleFiber_degree_one_injective`; `deningerMiddleFiber_degree_one_surjective`; `deningerMiddleFiber_degree_two` | `RHTower/DeningerKummerStalkTor.lean`; `DeningerMiddleFiber.lean` |
+| Deninger finite-prime endpoint | `deningerSOrd_product`; `deningerSEndpoint_H0`; `deningerSEndpoint_H1`; `deningerSEndpoint_H2` | `RHTower/DeningerSUnitEndpointPage.lean` |
+| Arithmetic cyclotomic comparison and nontrivial quotient | `deningerPrimeArithmeticCyclotomicCharacter_range`; `deningerPacketFrobeniusClosure_ne_top` | `DeningerPrimeArithmeticCyclotomicComparison.lean`; `DeningerPacketFrobeniusQuotientNontrivial.lean` |
+| Real twisted orientation and Rees jets | `deningerRealTwist_forced`; `deningerGermJ_flow_comm`; `deningerRealJet_reesFlow`; `deningerJetTower_tsum`; `deningerGermJetTower_character` | `DeningerRealApexEndpoint.lean`; `DeningerReesJetTower.lean`; `DeningerStationaryKahlerGerm.lean` |
+| Deninger flow purity and Green radical | `deningerFlowPurity_re_eq`; `deningerLeafHodgeJ_pos`; `deningerPrimePacketContinuousRestrictionSummedGreenForm_self_eq_zero_iff` | `DeningerKahlerRiemannFlowPurity.lean`; `DeningerPrimePacketContinuousRestrictionGreen.lean` |
+| Sonin linear completion boundary | `not_sublinear_of_forall_bddBelow` | `RHTower/SoninCompletionMustGrowLinearly.lean` |
+| Suzuki phase erasure | `tendsto_suzukiCompactCoreDeficiencyProjection_zero`; `tendsto_suzukiApertureCayley_allBoundarySchedules`; `tendsto_suzukiApertureResolvent_allBoundarySchedules` | `RHTower/SuzukiCompactCorePhaseUniversality.lean` |
+| Free Suzuki interface | `exists_suzukiEdgeData_of_operator`; `nonempty_suzukiEdgeData` | `RHTower/SuzukiEdgeDataInterface.lean` |
+| Trace-class valuation correction | `routeKPhysicalEndpointCorrectionOperator_memSchattenClass_one` | `RHTower/XiPrimeMarkedPhysicalEndpointCorrectionTraceClass.lean` |
+| Primitive boundary is not absolutely nuclear | `not_summable_norm_routeKPhysicalEndpointBoundaryRankOne` | `RHTower/XiPrimeMarkedPhysicalEndpointBoundaryNuclearObstruction.lean` |
+| Polynomially moderate scalar boundary | `exists_norm_seamFluxCochain_boundary_global_le` | `RHTower/XiPrimeMarkedPhysicalEndpointBoundaryGrowth.lean` |
+| Source-defined trace-class relocation preserves triangles | `schattenDoubleCommutator_memSchattenClass_one`; `schattenDoubleCommutator_triangleHolonomy_ne_zero` | `RHTower/SchattenDoubleCommutatorRelocation.lean` |
+| Sharp-window terminal collision | `squarePrimeWindowPositiveExcessSquare_abscissa_eq_intrinsicXiWidth`; `riemannHypothesis_of_squarePrimeWindowPositiveExcessSquareEnergySubpower` | `RHTower/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean`; `CCMSharpPrimeWindowSquarePositiveExcessDuality.lean` |
 
-Parameter audit: paper uses horizontal displacement `c`; Ward width is `c+1/2`, matching the formal `d`/`c=d+1/2` convention after renaming. Trace energy uses centered displacement `c`, matching `escapingModularTraceEnergy_eq`.
+## Biaxial theorem
 
-## Prime-valuation type fracture
+Theorem `thm:frontier` uses exactly four implications:
 
-| Manuscript claim | Declaration(s) | Module |
-|---|---|---|
-| local squared Hellinger factor | `primeValuationSquaredHellingerFactor` and its definitions | `RHTower/PrimeValuationHellingerReesReflectionFracture.lean` |
-| negative charge has exact Wold grade | `primeValuationSquaredHellingerBelow_isTheta_wold_of_neg` | same |
-| positive charge flat beyond all Wold orders | `primeValuationSquaredHellingerBelow_reesAllOrdersFlat_of_pos` | same |
-| no finite-Rees operator sews reflected sectors | `no_finiteReesOperator_sews_reflected_Hellinger_sectors` | same |
-| scalar cost and operator norm beyond every order | `reflectedHellingerSewingCost_beyondEveryReesOrder`, `reflectedHellingerSewingOperatorNorm_beyondEveryReesOrder` | same |
-| actual Xi right-charge specialization | `xiRightModularSewingOperatorNorm_beyondEveryReesOrder`, `no_finiteReesOperator_sews_xiRightModularAffinities` | `RHTower/XiSourceModularTypeSuperselectionLaw.lean` |
+1. unit shell response plus orthogonal/Bessel realization invokes
+   `highShell_no_stableHilbert_unitFusion`;
+2. nonzero right modular charge plus finite-Rees sewing invokes
+   `xiRightModularAffinitySewingOperatorNorm_beyondEveryReesOrder`;
+3. invariant scalarization of an odd charge invokes
+   `oddTarget_eq_zero_on_admitted_of_invariantPartialCompletion`;
+4. independence of breadth and depth follows because the first obstruction
+   holds at zero charge, while the second requires nonzero charge.
 
-## Explicit exclusions
+No converse existence theorem is asserted.
 
-Paper does not claim:
+## Final forbidden-claim gate
 
-- RH or zero exclusion;
-- every centered modular character is unitary;
-- bounded Ward positivity makes off-line defect mass vanish;
-- Hedenmalm dense-radical, Sonin--Calkin, or Wold--Poisson estimates follow from set-level kernel theory without their analytic hypotheses;
-- the elementary kernel-pair or ring identities are standalone novelty;
-- finite-Rees impossibility excludes singular graded correspondences;
-- compact/local agreement controls global divisor orientation.
+Reject the manuscript if it says any of:
+
+- every modular character is unitary;
+- the biaxial theorem excludes an off-line zero;
+- every Hilbert--Pólya or CCM architecture satisfies its four hypotheses;
+- singular sewing supplies the missing positive orientation;
+- the elementary admission/separation factorization is the novelty;
+- the whole corpus is literally deduced from one set-theoretic proof.

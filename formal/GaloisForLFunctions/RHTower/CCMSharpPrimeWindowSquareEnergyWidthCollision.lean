@@ -2,10 +2,11 @@ import GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquarePositiveExcessDualit
 import GaloisForLFunctions.RHTower.XiThermalPrimeSquareEnergySpectrum
 
 /-!
-# Chebyshev-width transfer for square-aperture positive excess
+# Chebyshev-width transfer for sharp windows and square-aperture positive excess
 
-This file isolates and proves the exact Abel-transfer theorem needed to compare Route I's
-square-aperture Hilbert energy with the classical zero-width invariant.
+This file isolates and proves the exact Abel-transfer theorem needed to compare both Route I's
+literal pointwise sharp-window endpoint and its square-aperture Hilbert energy with the classical
+zero-width invariant.
 
 If the Chebyshev error satisfies
 
@@ -15,11 +16,12 @@ then the dyadic critical-Mellin error increment is
 
 `Oε(n^(α + ε))`.
 
-After sampling at `n = m²` and squaring the positive part, the corresponding Dirichlet
-abscissa is at most `1 + 4α`.  Existing zero-by-zero lower bounds give the reverse inequality at
-the intrinsic rightmost Xi displacement.  Thus, once the classical generalized von Koch source
-estimate is supplied, the square-aperture spectrum is not an independent source mechanism: it is
-the same zero-width invariant with the affine rescaling `α ↦ 1 + 4α`.
+The same estimate gives the eventual pointwise sharp-window upper spectrum at width `alpha`, and
+the existing fixed-power Landau theorem recovers `XiZeroHalfPlaneBound alpha` from that spectrum.
+After sampling at `n = m²` and squaring the positive part, the corresponding Dirichlet abscissa is
+at most `1 + 4α`; existing zero-by-zero lower bounds give the reverse inequality at intrinsic
+rightmost Xi displacement. Thus, once the classical generalized von Koch source estimate is
+supplied, neither pointwise nor square-aperture spectrum is an independent source mechanism.
 
 All results here are unconditional Lean theorems.  In particular, the analytic source estimate is
 an explicit hypothesis, not an axiom or hidden declaration.
@@ -287,9 +289,7 @@ theorem squarePrimeWindowPositiveExcessSquare_abscissa_le_of_chebyshevErrorPower
     have hmPos : 0 < m := Nat.pos_of_ne_zero hm
     by_cases hmOne : m = 1
     · subst m
-      simpa [B] using
-        (le_max_right (D ^ 2)
-          ‖squarePrimeWindowPositiveExcessSquareDirichletCoefficient 1‖)
+      simp [B]
     · have hm2 : 2 ≤ m := by omega
       have hcoeff :=
         squarePrimeWindowPositiveExcessSquare_coefficient_norm_le
@@ -305,6 +305,88 @@ theorem squarePrimeWindowPositiveExcessSquare_abscissa_le_of_chebyshevErrorPower
         _ = B * (m : ℝ) ^ ((1 + 4 * (alpha + epsilon)) - 1) := by
           congr 2
           ring
+
+/-- Eventual all-epsilon upper spectrum of the literal sharp dyadic prime window at transverse
+width `alpha`.  The cutoff is fixed before `epsilon` is chosen. -/
+def DyadicWeightedPrimeWindowPowerUpper (alpha : ℝ) (N : ℕ) : Prop :=
+  ∀ epsilon : ℝ, 0 < epsilon →
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ, N ≤ n →
+      dyadicWeightedPrimeWindow n ≤
+        2 * (1 - (Real.sqrt 2)⁻¹) * Real.sqrt n +
+          C * (n : ℝ) ^ (alpha + epsilon)
+
+/-- Exact endpoint identification with the original Route I source predicate. -/
+theorem dyadicWeightedPrimeWindowPowerUpper_zero_iff_subpowerUpper (N : ℕ) :
+    DyadicWeightedPrimeWindowPowerUpper 0 N ↔
+      DyadicWeightedPrimeWindowSubpowerUpper N := by
+  simp only [DyadicWeightedPrimeWindowPowerUpper,
+    DyadicWeightedPrimeWindowSubpowerUpper, zero_add]
+
+/-- The Chebyshev error spectrum transfers not only to square energy but to the literal pointwise
+sharp-window upper spectrum. -/
+theorem dyadicWeightedPrimeWindowPowerUpper_of_chebyshevErrorPowerSpectrum
+    {alpha : ℝ} (halpha : 0 ≤ alpha)
+    (herror : ChebyshevErrorPowerSpectrum alpha) :
+    DyadicWeightedPrimeWindowPowerUpper alpha 2 := by
+  intro epsilon hepsilon
+  obtain ⟨C, hC, hCerror⟩ := herror epsilon hepsilon
+  let D : ℝ := 2 * C + C / (alpha + epsilon)
+  have hD : 0 ≤ D := by
+    dsimp only [D]
+    positivity
+  refine ⟨D, hD, ?_⟩
+  intro n hn
+  have hinc :=
+    dyadicCriticalMellinErrorIncrement_abs_le_of_chebyshevErrorPower
+      halpha hepsilon hC hCerror hn
+  rw [dyadicWeightedPrimeWindow_eq_floorSum,
+    dyadicWeightedPrimeWindow_eq_main_add_errorIncrement hn]
+  simpa only [D, add_comm] using
+    add_le_add_left ((le_abs_self _).trans hinc)
+      (2 * (1 - (Real.sqrt 2)⁻¹) * Real.sqrt n)
+
+/-- The literal pointwise upper spectrum recovers the same Xi half-plane width.  The proof uses
+one intermediate exponent strictly between an offending zero and the claimed width, then invokes
+the existing fixed-power Landau theorem. -/
+theorem xiZeroHalfPlaneBound_of_dyadicWeightedPrimeWindowPowerUpper
+    {alpha : ℝ} {N : ℕ} (halpha : 0 ≤ alpha)
+    (hwindow : DyadicWeightedPrimeWindowPowerUpper alpha N) :
+    XiZeroHalfPlaneBound alpha := by
+  intro rho hzero
+  by_contra hnot
+  have hrho : 1 / 2 + alpha < rho.re := lt_of_not_ge hnot
+  let epsilon : ℝ := (rho.re - (1 / 2 + alpha)) / 2
+  have hepsilon : 0 < epsilon := by
+    dsimp only [epsilon]
+    linarith
+  obtain ⟨C, hC, htail⟩ := hwindow epsilon hepsilon
+  let support : XiDivisorSupport :=
+    ⟨rho, mem_xi_divisor_support_of_eq_zero hzero⟩
+  have hpos := xi_divisor_pos_on_support support
+  have hn : 0 < Int.toNat
+      ((MeromorphicOn.divisor xi Set.univ) (support : ℂ)) := by
+    omega
+  let q : XiZeroCopy := ⟨support, ⟨0, hn⟩⟩
+  have hqright : 0 < (I * xiSpectralPoint q).re := by
+    have hcoord : I * xiSpectralPoint q = rho - 1 / 2 := by
+      simpa only [q, support] using I_mul_xiSpectralPoint q
+    rw [hcoord, Complex.sub_re]
+    norm_num
+    linarith
+  let qr : XiRightZeroCopy := ⟨q, hqright⟩
+  have hqbound :=
+    xiRightCenteredZero_re_le_of_eventually_dyadicWeightedPrimeWindow_upper
+      (alpha := alpha + epsilon) (N := N) (C := C)
+      (by linarith) hC htail qr
+  have hcoord : (xiRightCenteredZero qr).re = rho.re - 1 / 2 := by
+    change (I * xiSpectralPoint q).re = _
+    have heq : I * xiSpectralPoint q = rho - 1 / 2 := by
+      simpa only [q, support] using I_mul_xiSpectralPoint q
+    rw [heq, Complex.sub_re]
+    norm_num
+  rw [hcoord] at hqbound
+  dsimp only [epsilon] at hqbound
+  linarith
 
 /-- Chebyshev width implies the matching Xi zero half-plane width.  This is the unconditional
 reverse direction needed to certify that the source hypothesis carries genuine zero information. -/

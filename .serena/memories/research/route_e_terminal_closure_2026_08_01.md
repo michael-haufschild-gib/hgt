@@ -2,7 +2,7 @@
 
 > Correction: this memory never established Route E closure. It classified two submechanisms while leaving literal OPEN-SOURCE-001 untouched. Route E is OPEN. Continue from `mem:research/route_e_open_source_pursuit_2026_08_01`.
 
-Route E is closed as an independent finite/local mechanism, not as a proof of RH.
+Route E is OPEN. The work below classified two finite/local submechanisms only; it did not close the route.
 
 ## New formal theorems
 
@@ -17,7 +17,7 @@ Promoted to Stage 3:
 - `docs/drafts/pipeline/3-formalized/route-e-finite-prime-aperture-source-consumption.md`
 - `docs/drafts/pipeline/3-formalized/route-e-gamma-hankel-transverse-escape-cone.md`
 
-Frontier map marks Route E `[CLOSED AS INDEPENDENT MECHANISM]`. Remaining source lies outside this mechanism: a genuinely nonlocal all-prime signed cancellation theorem, which is RH-strength through existing consumers.
+Frontier map correction: Route E is `[OPEN — SOURCE MISSING]`. Finite/local classifications constrain the source but do not move it outside Route E; literal all-prime cancellation remains RH-strength through existing consumers.
 
 ## Verification
 

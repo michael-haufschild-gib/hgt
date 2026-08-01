@@ -721,3 +721,50 @@ receive a new title and an independent significance audit.
   harder: a quantitative direct-simulation cut time/no-shortcut theorem.  The
   qualitative infinite alternation and local-H transfer no longer depend on
   O4.
+- 2026-08-01 -- Proved the ambient-seed recurrence amplifier in
+  `MetricEntropyRecurrenceAmplificationLaw.lean`: if an ambient carrier needs
+  more radius-`epsilon` balls than a circuit endpoint dictionary contains, one
+  hard seed on one compact autonomous slice generates ordered easy--hard--easy
+  epochs forever.  Ambient covering entropy sets circuit depth; recurrence
+  amplifies one seed in time.  The slice dimension does not cap a hardness
+  certificate imported from its ambient family.
+- 2026-08-01 -- Isolated and proved the spectrum/orientation separation law.
+  `PeriodicMetricEntropySeparationLaw.lean` gives exact period-one bounds:
+  after every start, easy, hard, and easy phases occur in strict order with
+  every leg at most one period.  `StarProjectionPeriodicComplexityLaw.lean`
+  proves that `1 + (exp(2*pi*i*theta)-1)P` is a continuous unitary subgroup for
+  every star projection, proves the exact idempotent exponential formula, and
+  identifies it with ordinary time-independent evolution `exp(-itH)` for the
+  self-adjoint Hamiltonian `H=-2*pi*P`.  Thus eigenvalues set the recurrence
+  clock while eigenspace orientation sets which endpoints the clock contains;
+  locality is the extra structure that can couple the two.
+- 2026-08-01 -- Removed the remaining entropy premise in a concrete quantum
+  model.  `FinTwoProjectorClockComplexityLaw.lean` constructs an injective real
+  line of rank-one projections in `M_2(C)`, proves its nontrivial phase carrier
+  infinite, and proves: for every finite gate alphabet and every requested
+  circuit depth `s`, some exactly one-periodic two-level static Hamiltonian has
+  a positively separated depth-`>s` endpoint in every period, bracketed by
+  identity-near epochs.  Resolution and Hamiltonian may depend on `s`; the
+  theorem does not give fixed-resolution many-body maximal complexity and does
+  not close O4.  Axiom audit reports only `propext`, `Classical.choice`, and
+  `Quot.sound`.
+- 2026-08-01 -- Closed the fixed-resolution and many-body-size gaps for the
+  nonlocal recurrence/complexity separation theorem.
+  `DiagonalProjectorClockPackingLaw.lean` proves that the `2^D` Boolean
+  diagonal projections in `M_D(C)` give half-period reflections at pairwise
+  operator-norm distance exactly `2`.  Their external covering number at
+  radius `1/2` is therefore at least `2^D`.  For every finite gate alphabet of
+  size `g` and every depth `s` with
+  `sum_(k=0)^s g^k < 2^D`, one diagonal star projection `P` yields the ordinary
+  self-adjoint static Hamiltonian `H=-2*pi*P` whose evolution has exact period
+  one and, after every start, a strict easy--hard--easy sequence with each leg
+  at most one period; the hard endpoint is more than `1/2` in operator norm
+  from every word of depth at most `s`.  Thus fixed-resolution exponential
+  circuit hardness and immediate exact recurrence are rigorously compatible.
+  The selected Boolean spectral projector is generally not fixed-`q` local.
+  Hence this theorem proves that recurrence time alone cannot control
+  complexity and isolates locality, rather than spectrum, as the remaining
+  coupling mechanism.  It does not close O4's static fixed-local no-shortcut
+  law.  Axiom audit of the packing, cardinal, fixed-radius recurrence, and
+  circuit-hard capstones reports only `propext`, `Classical.choice`, and
+  `Quot.sound`.

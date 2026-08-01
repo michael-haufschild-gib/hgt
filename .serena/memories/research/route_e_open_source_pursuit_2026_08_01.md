@@ -1,36 +1,45 @@
 # Route E literal OPEN-SOURCE-001 pursuit (2026-08-01)
 
-Status: OPEN. Do not reuse the earlier false “terminal closure” framing as Route E completion.
+Status: OPEN. Never reuse earlier finite/local “terminal closure” framing as Route E completion.
 
 Exact hard source:
-- Critical schedule (z^2x/\log z\to1).
-- Need (|A_z(x)-\sum_{p>z}A_z(px)|\ll_\epsilon x^{-1/2-\epsilon}).
-- Finite renewal identity and two-large-prime remainder are proved; this source implies strict-half Möbius Laplace decay and RH.
-- At (T=z^2), zero-plus-one boundary coefficient equals literal Möbius coefficient for every (n\le T); Lean theorem `mobiusZero_add_oneLargePrimeCoefficient_eq_mobius_of_le_sq`.
+- Critical schedule `z^2 x / log z -> 1`.
+- Need `|A_z(x)-sum_{p>z} A_z(px)| <<_epsilon x^(-1/2-epsilon)`.
+- Zero/one boundary coefficient through `T=z^2` is literal Möbius coefficient; source implies RH through existing consumer.
 
-Current surviving mechanism:
-- Explicit factor-replacement graph: cross-sector (p\leftrightarrow q_1q_2q_3q_4), same-sector (q\leftrightarrow rs).
-- Existential low-defect matching alone is source repackaging.
-- New exact fractional-flow reduction: symmetric conductance on parity-flipping edges cancels signed row mass; signed Gibbs mass is bounded by unused capacity.
-- Canonical (c(m,n)=1_{m\sim n}\min(w(m)/d(m),w(n)/d(n))) reduces source to isolated Gibbs mass plus normalized-degree edge variation.
-- Lean module `MobiusBoundaryOppositeSignTransport.lean` proves Hall selection, exponential transport, fractional cancellation, generic minimum-endpoint defect, and fully canonical degree-normalized defect.
-- Umbrella import already present.
+Exact flow infrastructure in `formal/GaloisForLFunctions/RHTower/MobiusBoundaryOppositeSignTransport.lean`:
+- unrestricted proportional bipartite conductance attains defect exactly equal to signed imbalance, so unspecified flow is source repackaging;
+- literal `{1<->2, 1>z<->4}` factor-replacement graph and window pruning;
+- weighted Hall-cut necessary condition and canonical defect consumers;
+- umbrella import already in `formal/GaloisForLFunctions/RHTower.lean`.
 
-Hostile audits:
-- Cross p↔two-small products has logarithmic supply deficit.
-- Cross four-small alone cannot cover zero/one sector density imbalance.
-- General spectator transport cost sees (a|Q-p|), not (|Q-p|).
-- At (p\asymp z,a\asymp z), required token window is polylogarithmic. Existing almost-all exact-almost-prime theorems do not control prime centers or spectator exclusions.
-- For (a=1), extracting Matomäki–Teräväinen’s all-interval E3 factor ranges at (p/2) gives a squarefree four-small (Q) with (|Q-p|\ll z(\log z)^{1.55}); prime-only atoms are pointwise non-isolated. This does not give capacity balance.
+New terminal obstruction:
+- If every prime factor of `n` is at most `y<z`, every replacement neighbor `m` satisfies `n <= y^4 * Nat.dist n m`.
+- Lean theorem: `le_pow_four_mul_dist_of_boundaryFactorReplacementAdjacent_of_primeFactors_le`.
+- If `y^4 H<n`, no displacement-`H` neighbor exists. Lean theorem: `not_boundaryFactorReplacementWindowAdjacent_of_primeFactors_le_of_pow_mul_lt`.
+- Fixed-power squarefree-smooth density gives `Omega(N)` isolated Gibbs capacity in every `H=N^theta`, `theta<1`; this falsifies the proposed `z^(1+o(1))=N^(1/2+o(1))` hard-support producer.
+- Direct `lake env lean GaloisForLFunctions/RHTower/MobiusBoundaryOppositeSignTransport.lean` passes. Targeted module build was run only because scratch import needed current `.olean`; no full build.
 
-Current named hard lemma:
-`SPECTATOR-COPRIME-E3-ALL-INTERVAL`: uniformly (a\le z^2/p), find enough coprime four-small replacements with (a|Q-p|\le z^{1+o(1)}), then prove combined cross/same-sector canonical defect (O_\epsilon(x^{-1/2-\epsilon})). Still unproved.
+Second terminal obstruction:
+- De la Bretèche--Tenenbaum 2024, Cor. 1.3, specialized to `f=mu`, zeta exponent `-1`: for fixed noninteger `u>1`, `Y=X^(1/u)`,
+  `M_fri(X,Y)=X/(log Y)^2 {phi_{-1}(u)+O_u(1/log Y)}`.
+- `v phi' = phi(v-1)`, `phi=1` on `(0,1]`, hence positive. Fixed-power friable Möbius sector has near-linear positive bias, not strict-half size.
+- Therefore `FRIABLE-SIFTED SPLIT SOURCE` is false: bias must cancel across macroscopic smooth/rough seam.
 
-Files modified:
+Renewal exponent barrier:
+- For fixed `1<u<2`, `Y=X^(1/u)`, exact sharp recurrence is `M(X)=M_fri(X,Y)-sum_{Y<p<=X}M(X/p)`.
+- Positive renewal norm on `X^alpha` is `sum p^(-alpha)`: PNT gives `log u+o(1)` at `alpha=1` but `~X^(1-alpha)/((1-alpha)log X)` for every `alpha<1`.
+- Scalar Daboussi renewal contracts only in linear PNT norm; it cannot bootstrap any fixed power saving. Surviving source must see sign/correlation across lower Mertens scales or use another non-scalar macroscopic structure.
+
+Current exact open core:
+- critical aperture approaches integer delay seam `log N/log z=2-o(1)`;
+- zero/one comparison is cross-seam cancellation between deterministic friable bias and one-large-prime correction;
+- PNT/zero-free-region theory cancels algebraic profiles but leaves a beyond-all-orders remainder far above square-root;
+- strict-half control of that remainder is still literal `OPEN-SOURCE-001`, not renamed closure.
+
+Primary files:
 - `docs/drafts/pipeline/1-in-progress/route-e-squarefree-exponential-gibbs-parity.md`
 - `docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md`
-- `formal/GaloisForLFunctions/RHTower/MobiusExponentialGibbsBoundary.lean`
 - `formal/GaloisForLFunctions/RHTower/MobiusBoundaryOppositeSignTransport.lean`
-- `formal/GaloisForLFunctions/RHTower.lean`
 
-Lean discipline: direct `lake env lean <file>` passed for the two edited source modules. No full build. Targeted build only when missing olean.
+Lean discipline: foreground only, one Lean process for this agent, `lake env lean <file>` direct checks, targeted module build only when `.olean` missing/stale, never full build.
