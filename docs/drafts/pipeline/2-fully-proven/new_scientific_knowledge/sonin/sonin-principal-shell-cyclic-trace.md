@@ -1175,9 +1175,20 @@ The frequency-side transport was already in the corpus
 `SoninFourierCutoffDilation`), so the dilate's two band terms are literally the packet's band content
 at radius `r a` and the packet's spectral mass above radius `r b`.
 
-So `P` is now three named quantities, each with an estimate already proved: the band fraction at
-`r a`, the high-side tail at `r b`, and the band fraction at `b`.  What remains is to add them and
-choose `N`, `ε`, `K` to satisfy `3 ε + P/L <= eta`.  With `N` about `r/K` this gives coupling
+`soninCouplingBandTotal_soninShellCutPacket_eq` now states `P` exactly: the band budget of a cut
+packet is three band quantities *of the packet itself*, at radii `r b` (from above), `r a`, and `b`.
+Nothing in it refers to the dilate or to the aperture layer any more.
+
+The interface to those estimates is now built:
+`soninCouplingBandTotal_soninShellCutPacket_le_of_sq_bounds` takes the three *squared* bounds and
+returns the budget as the sum of their square roots, which is the right shape because the budget is a
+sum of norms while every spectral estimate bounds a square.
+
+Supplying the three is now a matter of matching hypotheses, and one of them is a genuine constraint
+on the schedule rather than a formality: the high-side tail needs the band radius at twice the
+carrier, `2 w <= r b` with `w = r q`, hence `2 q <= b`.  So `q` must be chosen in `(a, b/2]`, not
+merely in `(a, b)` — which also forces `a < b/2`, shrinking the inner aperture if necessary.  That is
+free, since `a` is ours to choose.  With `N` about `r/K` this gives coupling
 energy of order `r`, against the `log r` cap, closing the shortfall test.  Then feed that through the two-branch estimate to get `N` of
 order `r` packets at scale `r`.
 
@@ -1395,6 +1406,8 @@ family is abstract, so two widths have unrelated profiles.
 | **the same with the cut's packets**: normalizing changes nothing the estimate sees, since the cutoffs are linear, so the bound reads with the number of annuli `N` in place of the family's cardinality | `soninShellCutUnit`, `orthonormal_soninShellCutUnit`, `evenIndicatorCutoff_soninShellCutUnit_eq_zero`, `evenIndicatorCutoff_soninShellCutUnit_eq_self`, `card_sub_le_hsNormSq_soninApertureCoupling_shellCut` |
 | **the band budget under normalization**: the three band terms are values of *fixed operators* — shell∘dilation, band-complement∘dilation, band — so each divides by the packet norm, hence so does their total; a bound on the packets' totals over a lower bound for their norms bounds the family's | `norm_apply_normalize`, `soninCouplingBandTotal`, `soninCouplingBandTotal_eq`, `soninCouplingBandTotal_normalize`, `soninCouplingBandTotal_soninShellCutUnit_le` |
 | **the dilate adds nothing new**: its physical term vanishes outright for a cut packet (both aperture radii sit below `r` times the annulus's inner radius), and the packet's norm floor comes from the energy floor by square roots | `evenIndicatorCutoff_evenDilationCLM_inv_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_sub_evenDilationCLM_inv_soninShellCutUnit_eq_zero`, `sqrt_le_norm_soninShellCutPacket` |
+| **the band budget in three radii of one vector**: mass above `r b`, content in the band of radius `r a`, content in the band of radius `b` — the physical term discarded, the dilate's terms transported back | `soninCouplingBandTotal_eq_packetTerms`, `evenIndicatorCutoff_sub_evenDilationCLM_inv_soninShellCutPacket_eq_zero`, `soninCouplingBandTotal_soninShellCutPacket_eq` |
+| **squared estimates enter through their roots**: the budget is a sum of norms while the spectral estimates bound squares, so three squared bounds give the budget as the sum of their square roots — for the cut packets the physical term is supplied by the geometry | `norm_le_sqrt_of_sq_le`, `soninCouplingBandTotal_le_of_sq_bounds`, `soninCouplingBandTotal_soninShellCutPacket_le_of_sq_bounds` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1511,6 +1524,19 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the squared-to-norm interface is built, and writing it surfaced a constraint on the
+  schedule that the qualitative account had hidden.  The high-side tail estimate applies only above
+  *twice* the carrier, so the term `‖psi - R_{r b} psi‖` needs `2 r q <= r b`, that is `2 q <= b`.
+  The carrier ratio `q` therefore has to be taken in `(a, b/2]` rather than anywhere in `(a, b)`,
+  which in turn forces `a < b/2`.  Both are free choices, but the earlier ledger entries said only
+  "`a < q < b`", which is not enough.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutBandBound.lean`.
+- 2026-08-01 — the band budget is now stated in the packet's own terms: three band quantities of one
+  vector, at radii `r b`, `r a` and `b`.  Every reference to the dilate and to the layer has been
+  eliminated — the physical term by exact vanishing, the two dilate band terms by the corpus's
+  frequency transport.  This is the point where the aperture geometry stops mattering and only the
+  packet's spectrum does; the remaining work is arithmetic on three numbers with known estimates.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutBandPacketTerms.lean`.
 - 2026-08-01 — the dilate's contributions are settled, and two of the three came for free.  The
   physical term vanishes for *every* scale above one — no schedule condition — because the cut's
   annuli start at `b` and an inverse dilate dies under any physical cutoff below `r` times its inner

@@ -898,11 +898,28 @@ field of `genericMonic * (X ^ (2m) - c_top)` over the root field of the second f
 symmetric group.  That is the mathematical content of `(3)` — symmetric monodromy survives an even
 Kummer base change — proved unconditionally.
 
-What is **not** yet formalised is the card's own equation `(7)`, which is centered.  The centered
-route stalled on algebraic independence of the centered coefficients (see the log), and the
-uncentered route was taken instead because the abstract capstone accepts any first factor with
-symmetric Galois group.  Bridging the two needs either that independence, or the identification of
-`E_0` with the centered coefficient field.
+A fourth group carries the statement back to the **centered** setting, all building with the same
+three axioms:
+
+```text
+TschirnhausShift            TaylorRoots                 CenteredIsTaylorShift
+GenericAverageSymmetric     CenteredPartSplittingField  UniversalMonicPolynomial
+UniversalCenteredCoefficients                           DetUpdateRowOne
+CenteredCoefficientIndependence
+```
+
+Further facts proved here that mathlib does not carry: the coefficient law for a Taylor shift in
+Hasse-derivative form, with no binomial expansion (`taylor_coeff_pred`, `taylor_coeff_eq_add`);
+irreducibility of `X ^ n - q` for a prime radicand at **every** exponent, where mathlib's criteria
+stop at odd `n` and prime powers; and the algebraic independence of the centered coefficients of a
+monic polynomial with indeterminate coefficients (`algebraicIndependent_centeredFamily`).
+
+**What remains for the card's own equation `(7)`.**  Both halves of `(10)` are now proved — the
+Tschirnhaus substitution and its inverse, and the independence of the centered coefficients — and
+`CenteredPartSplittingField` shows the centered and generic polynomials share a splitting field and
+hence a Galois group.  What is still to be written is the assembly: identifying the card's
+`E_0 = K(q, c_0, ..., c_{n-1})` with the centered coefficient field through those two facts, and
+then reading `genericFullMonodromy` there.
 
 Separability and the nonsquareness over `E_0` are in
 `GaloisForLFunctions/HTGeometry/GenericPolynomialSeparable.lean`:
@@ -2156,3 +2173,33 @@ dividing the discriminant.
   coefficient to zero: every row but the last becomes a standard basis vector, and the last row's
   entry in its own position is one, so the determinant is one and the unspecialised determinant is
   therefore nonzero.
+
+- 2026-08-01 — `CenteredCoefficientIndependence.lean` builds route (a) up to the determinant.
+  `centeredFamily` is the next-to-leading coefficient together with the centered ones,
+  `centeredJacobian` its derivative matrix, `killLast` the specialisation setting the
+  next-to-leading coefficient to zero, and `killLast_centeredJacobian`: **off the last row the
+  specialised Jacobian is exactly the identity**.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  A correction to the plan while proving it: off the last row the *unspecialised* Jacobian is
+  **not** the identity — the Leibniz rule leaves a term `centeringShift * pderiv s` which only the
+  specialisation kills.  My earlier sketch had claimed the identity before specialising; the
+  specialisation is needed for both Leibniz terms, not just one.
+
+- 2026-08-01 — `det_centeredJacobian_ne_zero`: **the Jacobian of the centering change of parameters
+  is nonsingular.**  Specialising the next-to-leading coefficient to zero turns it into the identity
+  with one row replaced (`killLast_mapMatrix_centeredJacobian`), whose determinant is that row's own
+  entry — which is one, since the last family member is the next-to-leading coefficient itself.  A
+  determinant with a nonzero image is nonzero.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  This is the hypothesis of the corpus's `algebraicIndependent_of_domain_jacobian`; applying it
+  gives algebraic independence of the next-to-leading coefficient together with the centered ones,
+  which is the missing half of the card's `(10)`.
+
+- 2026-08-01 — **`algebraicIndependent_centeredFamily`: the missing half of `(10)` is proved.**  The
+  next-to-leading coefficient together with the centered coefficients form an algebraically
+  independent family, by the corpus's `algebraicIndependent_of_domain_jacobian` applied to the
+  nonsingular Jacobian of the previous entry.  Axioms `[propext, Classical.choice, Quot.sound]`.
+  This is the obstruction that sent the work down the uncentered route many entries ago:
+  the centered coefficients of a monic polynomial with indeterminate coefficients **are**
+  algebraically independent, and the proof needs no expansion of the shift — only that each
+  coefficient changes by a multiple of it, and that the multiple dies when the shift does.

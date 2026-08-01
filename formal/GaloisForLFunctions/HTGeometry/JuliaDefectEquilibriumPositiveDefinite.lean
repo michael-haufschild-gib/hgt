@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.JuliaDefectLevyKhintchine
 import GaloisForLFunctions.HTGeometry.CharacteristicEquilibriumDefect
+import GaloisForLFunctions.HTGeometry.ConvolutionAtomBounds
 
 /-!
 # Positive definiteness of the Julia equilibrium defect
@@ -450,6 +451,49 @@ theorem charFun_juliaCompressionEquilibriumProbabilityMeasure (y : ℝ) :
   rw [neg_neg, ← Complex.ofReal_exp,
     Real.exp_log (juliaCompressionSquareProfile_pos y)]
 
+/-- The zero-jump Poisson sector is the exact atom at the origin. -/
+theorem juliaCompressionEquilibriumProbabilityMeasure_zero_mass_exp :
+    (juliaCompressionEquilibriumProbabilityMeasure : Measure ℝ) {0} =
+      ENNReal.ofReal (Real.exp (-juliaCompressionJumpRate)) := by
+  change (compoundPoisson juliaCompressionJumpRate
+      (juliaCompressionJumpProbabilityMeasure : Measure ℝ)) {0} = _
+  rw [compoundPoisson, convPowMixture_singleton, tsum_eq_single 0]
+  · simp [convPow]
+  · intro n hn
+    have hnpos : 0 < n := Nat.pos_of_ne_zero hn
+    letI : NullSingletonClass juliaCompressionJumpMeasure := by
+      rw [juliaCompressionJumpMeasure]
+      infer_instance
+    letI : NullSingletonClass
+        (juliaCompressionJumpProbabilityMeasure : Measure ℝ) := by
+      change NullSingletonClass juliaCompressionJumpMeasure
+      infer_instance
+    letI : NullSingletonClass
+        (convPow (juliaCompressionJumpProbabilityMeasure : Measure ℝ) n) :=
+      nullSingletonClass_convPow
+        (juliaCompressionJumpProbabilityMeasure : Measure ℝ) hnpos
+    rw [measure_singleton, mul_zero]
+
+theorem exp_neg_juliaCompressionJumpRate :
+    Real.exp (-juliaCompressionJumpRate) =
+      1 / (2 * Real.sqrt 2) := by
+  have hsqrt : Real.exp (Real.log 2 / 2) = Real.sqrt 2 := by
+    rw [← Real.log_sqrt (by norm_num : (0 : ℝ) ≤ 2),
+      Real.exp_log (Real.sqrt_pos.mpr (by norm_num))]
+  rw [juliaCompressionJumpRate,
+    show -((3 / 2 : ℝ) * Real.log 2) =
+      -(Real.log 2 + Real.log 2 / 2) by ring,
+    Real.exp_neg, Real.exp_add,
+    Real.exp_log (by norm_num : (0 : ℝ) < 2), hsqrt]
+  ring
+
+/-- Exact boundary atom of the Julia compression compound-Poisson law. -/
+theorem juliaCompressionEquilibriumProbabilityMeasure_zero_mass :
+    (juliaCompressionEquilibriumProbabilityMeasure : Measure ℝ) {0} =
+      ENNReal.ofReal (1 / (2 * Real.sqrt 2)) := by
+  rw [juliaCompressionEquilibriumProbabilityMeasure_zero_mass_exp,
+    exp_neg_juliaCompressionJumpRate]
+
 theorem integrable_sq_juliaCompressionEquilibriumProbabilityMeasure :
     Integrable (fun x : ℝ => x ^ 2)
       (juliaCompressionEquilibriumProbabilityMeasure : Measure ℝ) := by
@@ -492,6 +536,101 @@ theorem normalizedCharacteristicDefect_juliaCompressionEquilibriumProbabilityMea
     simp only [Complex.ofReal_re]
     field_simp [hy]
     ring
+
+/-- Square-biased Julia compression law, with density `(2 / 3) x²` relative to the source
+compound-Poisson law. -/
+def juliaCompressionSquareBiasedProbabilityMeasure : ProbabilityMeasure ℝ :=
+  squareBiasedProbabilityMeasure
+    (juliaCompressionEquilibriumProbabilityMeasure : Measure ℝ)
+    (m := (3 / 2 : ℝ)) (by norm_num)
+    integrable_sq_juliaCompressionEquilibriumProbabilityMeasure
+    integral_sq_juliaCompressionEquilibriumProbabilityMeasure
+
+/-- Literal `(2 / 3) x²` density formula for the square-biased Julia compression law. -/
+theorem juliaCompressionSquareBiasedProbabilityMeasure_toMeasure :
+    (juliaCompressionSquareBiasedProbabilityMeasure : Measure ℝ) =
+      (juliaCompressionEquilibriumProbabilityMeasure : Measure ℝ).withDensity
+        (fun x => (((2 / 3 : ℝ) * x ^ 2).toNNReal : ℝ≥0∞)) := by
+  rw [juliaCompressionSquareBiasedProbabilityMeasure,
+    squareBiasedProbabilityMeasure]
+  simp only [ProbabilityMeasure.coe_mk, squareBiasedMeasure]
+  congr 1
+  funext x
+  congr 2
+  ring
+
+/-- First form of the Julia equilibrium identity: square-biased sinc-square expectation. -/
+theorem integral_sinc_sq_juliaCompressionSquareBiasedProbabilityMeasure
+    (y : ℝ) :
+    (∫ x : ℝ, Real.sinc (x / 2 * y) ^ 2
+      ∂(juliaCompressionSquareBiasedProbabilityMeasure : Measure ℝ)) =
+      juliaDefectAttenuationKernel y := by
+  rw [juliaCompressionSquareBiasedProbabilityMeasure,
+    squareBiasedProbabilityMeasure]
+  simp only [ProbabilityMeasure.coe_mk]
+  rw [squareBiasedMeasure,
+    integral_withDensity_eq_integral_smul (by fun_prop)]
+  rw [show (fun x : ℝ => (x ^ 2 / (3 / 2 : ℝ)).toNNReal •
+      Real.sinc (x / 2 * y) ^ 2) =
+      fun x => x ^ 2 / (3 / 2 : ℝ) * Real.sinc (x / 2 * y) ^ 2 by
+    funext x
+    rw [show (x ^ 2 / (3 / 2 : ℝ)).toNNReal =
+        ⟨x ^ 2 / (3 / 2 : ℝ), by positivity⟩ by
+      exact Real.toNNReal_of_nonneg (by positivity)]
+    rfl]
+  rw [integral_squareBias_sinc_sq_eq_normalizedCharacteristicDefect
+    (juliaCompressionEquilibriumProbabilityMeasure : Measure ℝ)
+    (m := (3 / 2 : ℝ)) (by norm_num)
+    integrable_sq_juliaCompressionEquilibriumProbabilityMeasure
+    integral_sq_juliaCompressionEquilibriumProbabilityMeasure]
+  exact normalizedCharacteristicDefect_juliaCompressionEquilibriumProbabilityMeasure y
+
+/-- Julia attenuation as an actual equilibrium-clock probability law. -/
+def juliaDefectEquilibriumClockProbabilityMeasure : ProbabilityMeasure ℝ :=
+  equilibriumClockProbabilityMeasure
+    (juliaCompressionEquilibriumProbabilityMeasure : Measure ℝ)
+    (m := (3 / 2 : ℝ)) (by norm_num)
+    integrable_sq_juliaCompressionEquilibriumProbabilityMeasure
+    integral_sq_juliaCompressionEquilibriumProbabilityMeasure
+
+/-- Second form of the Julia equilibrium identity: the corrected attenuation kernel is a
+characteristic function. -/
+theorem charFun_juliaDefectEquilibriumClockProbabilityMeasure (y : ℝ) :
+    charFun (juliaDefectEquilibriumClockProbabilityMeasure : Measure ℝ) y =
+      (juliaDefectAttenuationKernel y : ℂ) := by
+  rw [juliaDefectEquilibriumClockProbabilityMeasure,
+    charFun_equilibriumClockProbabilityMeasure]
+  exact_mod_cast
+    normalizedCharacteristicDefect_juliaCompressionEquilibriumProbabilityMeasure y
+
+/-- Explicit law of `X̂ (U - V)`, where `X̂` is square-biased Julia compression and `U,V` are
+independent uniforms on `[-1/2,1/2]`. -/
+def juliaDefectEquilibriumDifferenceProbabilityMeasure : ProbabilityMeasure ℝ :=
+  ProbabilityMeasure.map
+    (juliaCompressionSquareBiasedProbabilityMeasure.prod
+      centeredUniformDifferenceProbabilityMeasure)
+    (f := fun p : ℝ × ℝ => p.1 * p.2) (by fun_prop)
+
+/-- The explicit independent-difference construction is the generic triangular equilibrium
+clock. -/
+theorem juliaDefectEquilibriumDifferenceProbabilityMeasure_eq_clock :
+    juliaDefectEquilibriumDifferenceProbabilityMeasure =
+      juliaDefectEquilibriumClockProbabilityMeasure := by
+  apply ProbabilityMeasure.toMeasure_injective
+  rw [juliaDefectEquilibriumDifferenceProbabilityMeasure,
+    juliaDefectEquilibriumClockProbabilityMeasure,
+    equilibriumClockProbabilityMeasure]
+  simp only [ProbabilityMeasure.toMeasure_map, ProbabilityMeasure.toMeasure_prod]
+  rw [centeredUniformDifferenceProbabilityMeasure_eq_triangular]
+  unfold juliaCompressionSquareBiasedProbabilityMeasure
+  rfl
+
+/-- Exact characteristic identity for the paper's independent `X̂ (U - V)` construction. -/
+theorem charFun_juliaDefectEquilibriumDifferenceProbabilityMeasure (y : ℝ) :
+    charFun (juliaDefectEquilibriumDifferenceProbabilityMeasure : Measure ℝ) y =
+      (juliaDefectAttenuationKernel y : ℂ) := by
+  rw [juliaDefectEquilibriumDifferenceProbabilityMeasure_eq_clock,
+    charFun_juliaDefectEquilibriumClockProbabilityMeasure]
 
 /-- **Julia equilibrium Gram law from source data.**  The theta-specific center-mixed Julia
 kernel is positive definite on every finite real configuration. -/

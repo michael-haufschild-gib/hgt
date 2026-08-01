@@ -2661,6 +2661,22 @@ This is eq. (32) as a Lean theorem.  It is a known result (Wang–Yao) which the
 new; what is new here is that it now follows inside the corpus from the finite phase law, with no
 hypothesis left open — the Bohr-rank mechanism, not a separate argument.
 
+### Eq. (19) for the digamma field, not just its ring
+
+`HTGeometry/DigammaFieldQuotientValuation.lean` carries eq. (19) from `ℂ(s)[ψ, ψ′, …]` to the field
+`ℂ(s)⟨ψ⟩` it generates.  `digammaFieldElt` is the value of `p(s)·P(ψ, ψ′, …) / q(s)` on a vertical
+line and `digammaFieldNorm` its normalization by its own valuation datum `(deg p − deg q, D)`;
+`tendsto_digammaFieldNorm` is eq. (19) for that normalization.
+
+- **`tendsto_ratio_digammaField_quotient`** — for two such elements with the denominator's leading
+  constant nonzero, the quotient normalized by the *difference* of the valuation data converges to
+  the quotient of the leading constants.  So a general element of the field — a quotient, not only a
+  polynomial in the jets — has the asymptotic `c·s^a·L(t)^b` of eq. (19), with
+  `a = (deg p₁ − deg q₁) − (deg p₂ − deg q₂)` and `b = D₁ − D₂`.
+
+The proof is division of the two normalized limits; the eventual nonvanishing of the denominator
+comes from its own limit being nonzero, so no new analytic input enters.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`
@@ -2668,18 +2684,22 @@ that is the classical brick decomposition into `M + 1` families of disjoint boxe
 genuinely geometric input left on the Euclidean side.
 
 2. **The dimension identity** `dim X = rank_ℚ X̂` for compact abelian groups, in the direction
-   needed here: an embedding `X ↪ ℂ^N` forbids a surjection onto `𝕋^r` for `r > 2N`.  The surjection
-   itself is now a theorem (`exists_bohrHull_charPacket_eq`), and the character injection
-   `Γ(f) ↪ X̂` is a theorem (`BohrHullCharacter`), so this is the only step of the eq. (9) chain
-   still missing, together with the finite jet-sample embedding `hull ↪ ℂ^N` it consumes.  Note that
+   needed here: an embedding `X ↪ ℂ^N` forbids a surjection onto `𝕋^r` for `r > 2N`.  Note that
    plain continuity is *not* enough for the dimension step (Peano curves; and open maps can raise
    dimension, by Keldysh's example): the group structure of the fibres is load-bearing.
 
-Also still open: the analytic Poincaré transfer promoting eq. (19) to unconditional analytic
-asymptotics for a coefficient with nonconstant digamma-field data (the *jet* coefficients and the
-whole subfield `ℂ(Γ)` are already unconditional, see `GammaJetVerticalStripCollapse` and
-`GammaRationalProjectiveBoundary`); and the relative differential Galois theory for the classical
-eq. (32) (Wang–Yao).
+   **This step is closed.**  `HTGeometry/JetSampleAtlas.rank_bohrHullFrequencies_le` bounds the
+   frequency rank by the real dimension of any finite-dimensional space the carrier injects into
+   continuously, and `rank_le_of_jetAtlas` consumes the finite jet-sample embedding to give
+   `rank_ℤ Γ_B(f) ≤ 2 |T| N` outright; `PhaseRankCapstone.rank_le_of_regular_jets` and
+   `NondegenerateSolutionPhaseRank.rank_finite_of_nondegenerate_solution` are its analytic form.
+   Both are `#print axioms` clean, so the whole eq. (9) chain — surjection, character injection,
+   dimension bound, jet embedding — is unconditional in Lean.
+
+Formerly open and now closed as well: the analytic Poincaré transfer of eq. (19) beyond the ring
+`ℂ(s)[ψ, ψ′, …]` (see the quotient section below), and the classical eq. (32), which no longer
+needs relative differential Galois theory — it is proved here from the finite phase law
+(`zeta_no_gammaField_relation`).
 
 `formal/GaloisForLFunctions/HTGeometry/GammaProjectivePrimeTorusCarrier.lean` proves the §7
 finite-aperture prime-torus carrier law (eq. 34) unconditionally:

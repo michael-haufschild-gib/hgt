@@ -429,6 +429,98 @@ theorem volterraPhase_reflection {T R : H →L[ℂ] H} (hR : IsSelfAdjoint R)
   rw [hexp, h, hback, volterraPhase]
   module
 
+/-- The reflection commutes with the symmetric coordinate. -/
+theorem volterraSymmetric_comm_reflection {T R : H →L[ℂ] H} (hR : IsSelfAdjoint R)
+    (hinv : R * R = 1) (h : R * T * R = adjoint T) :
+    R * volterraSymmetric T = volterraSymmetric T * R := by
+  have hfix := volterraSymmetric_reflection hR h
+  calc R * volterraSymmetric T = R * volterraSymmetric T * (R * R) := by rw [hinv, mul_one]
+    _ = (R * volterraSymmetric T * R) * R := by noncomm_ring
+    _ = volterraSymmetric T * R := by rw [hfix]
+
+/-- The reflection anticommutes with the phase coordinate. -/
+theorem volterraPhase_anticomm_reflection {T R : H →L[ℂ] H} (hR : IsSelfAdjoint R)
+    (hinv : R * R = 1) (h : R * T * R = adjoint T) :
+    R * volterraPhase T = -(volterraPhase T * R) := by
+  have hneg := volterraPhase_reflection hR h
+  calc R * volterraPhase T = R * volterraPhase T * (R * R) := by rw [hinv, mul_one]
+    _ = (R * volterraPhase T * R) * R := by noncomm_ring
+    _ = (-volterraPhase T) * R := by rw [hneg]
+    _ = -(volterraPhase T * R) := by noncomm_ring
+
+/-- **`(10)`--`(11)`, the parity separation.**  On an odd vector the symmetric coordinate stays odd
+while the phase becomes even, so the two responses occupy complementary reflection sectors and no
+sign transfers between them. -/
+theorem volterraSymmetric_apply_odd {T R : H →L[ℂ] H} (hR : IsSelfAdjoint R)
+    (hinv : R * R = 1) (h : R * T * R = adjoint T) {u : H} (hu : R u = -u) :
+    R ((volterraSymmetric T) u) = -((volterraSymmetric T) u) := by
+  have hcomm := volterraSymmetric_comm_reflection hR hinv h
+  have := congrArg (fun A : H →L[ℂ] H => A u) hcomm
+  rw [mul_apply_eq_comp, mul_apply_eq_comp] at this
+  rw [this, hu, map_neg]
+
+theorem volterraPhase_apply_odd {T R : H →L[ℂ] H} (hR : IsSelfAdjoint R)
+    (hinv : R * R = 1) (h : R * T * R = adjoint T) {u : H} (hu : R u = -u) :
+    R ((volterraPhase T) u) = (volterraPhase T) u := by
+  have hanti := volterraPhase_anticomm_reflection hR hinv h
+  have := congrArg (fun A : H →L[ℂ] H => A u) hanti
+  rw [mul_apply_eq_comp, neg_apply, mul_apply_eq_comp] at this
+  rw [this, hu, map_neg, neg_neg]
+
 end Cartesian
+
+section Triangles
+
+open MeasureTheory
+
+/-- **`(4)`, the complementary triangles.**  The causal and anticausal halves of a convolution
+recombine into the full one.  Stated on interval integrals the shared endpoint contributes nothing
+automatically, so the "diagonal has measure zero" step is not a separate argument. -/
+theorem causal_add_anticausal (k u : ℝ → ℂ) (a x : ℝ)
+    (h₁ : IntervalIntegrable (fun y => k (x - y) * u y) volume (-a) x)
+    (h₂ : IntervalIntegrable (fun y => k (x - y) * u y) volume x a) :
+    (∫ y in (-a)..x, k (x - y) * u y) + (∫ y in x..a, k (x - y) * u y)
+      = ∫ y in (-a)..a, k (x - y) * u y :=
+  intervalIntegral.integral_add_adjacent_intervals h₁ h₂
+
+/-- The anticausal half is the full convolution minus the causal one. -/
+theorem anticausal_eq_sub (k u : ℝ → ℂ) (a x : ℝ)
+    (h₁ : IntervalIntegrable (fun y => k (x - y) * u y) volume (-a) x)
+    (h₂ : IntervalIntegrable (fun y => k (x - y) * u y) volume x a) :
+    (∫ y in x..a, k (x - y) * u y)
+      = (∫ y in (-a)..a, k (x - y) * u y) - ∫ y in (-a)..x, k (x - y) * u y := by
+  rw [← causal_add_anticausal k u a x h₁ h₂]
+  ring
+
+/-- **The causal restriction is an indicator factor.**  Writing the moving upper limit as an
+indicator inside a fixed interval turns the triangle of `(3)` into an ordinary product region, so the
+Fubini step there is a plain product-measure swap rather than a change of variables. -/
+theorem causal_eq_indicator_integral (k u : ℝ → ℂ) (a x : ℝ) (hx : x ∈ Set.Icc (-a) a) :
+    (∫ y in (-a)..a, Set.indicator {y | y ≤ x} (fun y => k (x - y) * u y) y)
+      = ∫ y in (-a)..x, k (x - y) * u y :=
+  intervalIntegral.integral_indicator hx
+
+/-- The anticausal restriction likewise, read from the complementary triangle. -/
+theorem anticausal_eq_sub_indicator (k u : ℝ → ℂ) (a x : ℝ) (hx : x ∈ Set.Icc (-a) a)
+    (h₁ : IntervalIntegrable (fun y => k (x - y) * u y) volume (-a) x)
+    (h₂ : IntervalIntegrable (fun y => k (x - y) * u y) volume x a) :
+    (∫ y in x..a, k (x - y) * u y)
+      = (∫ y in (-a)..a, k (x - y) * u y)
+        - ∫ y in (-a)..a, Set.indicator {y | y ≤ x} (fun y => k (x - y) * u y) y := by
+  rw [causal_eq_indicator_integral k u a x hx]
+  exact anticausal_eq_sub k u a x h₁ h₂
+
+/-- **`(3)`'s reduction, completed.**  The interval transform of a causal convolution is the double
+integral over the *fixed* square carrying the causal indicator.  Combined with a product-measure
+swap this is `(3)`; no change of variables on a moving triangle is required. -/
+theorem intervalFourier_causal_eq_indicator_double (k u : ℝ → ℂ) (a : ℝ) (ha : 0 ≤ a) (w : ℂ) :
+    (∫ x in (-a)..a, Complex.exp (w * x) *
+        ∫ y in (-a)..a, Set.indicator {y | y ≤ x} (fun y => k (x - y) * u y) y)
+      = ∫ x in (-a)..a, Complex.exp (w * x) * ∫ y in (-a)..x, k (x - y) * u y := by
+  refine intervalIntegral.integral_congr fun x hx => ?_
+  rw [Set.uIcc_of_le (by linarith : -a ≤ a)] at hx
+  rw [causal_eq_indicator_integral k u a x hx]
+
+end Triangles
 
 end RHTower

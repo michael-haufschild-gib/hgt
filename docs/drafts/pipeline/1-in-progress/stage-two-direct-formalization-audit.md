@@ -13,7 +13,7 @@
 - [x] `ccm-first-clock-asymptotic-bohr-law.md`
 - [x] `ccm-first-clock-asymptotic-bohr-torelli-law.md`
 - [ ] `ccm-rational-analytic-real-descent.md`
-- [ ] `ccm-single-clock-complete-source-divisor-tomography.md`
+- [x] `ccm-single-clock-complete-source-divisor-tomography.md`
 - [x] `ccm-unitary-polar-source-atlas.md`
 - [ ] `complete-graph-local-projective-spectral-maximality.md`
 - [ ] `component-recurrence-torus-and-replica-factorization-law.md`
@@ -47,10 +47,11 @@
 - [ ] `prime-valuation-conditioning-normalization-amplification-no-go.md`
 - [ ] `prime-valuation-kakutani-polar-third-completion.md`
 - [ ] `prime-winning-cech-divisor-resolution.md`
-- [ ] `pure-pair-normal-actuality-fracture.md`
+- [x] `pure-pair-normal-actuality-fracture.md`
 - [x] `replica-collision-hamming-tomography-law.md`
 - [ ] `squarefree-euler-modular-corona-curvature-colligation.md`
 - [ ] `summable-nome-infinite-order-multiple-elliptic-gamma.md`
+- [ ] `universal-static-choi-complexity-plateau.md`
 - [ ] `weak-interaction-singular-quantum-time-expansion.md`
 - [ ] `wold-shell-euler-activation-square.md`
 - [x] `xi-aperture-counterterm-phase-universality-law.md`
@@ -66,3 +67,9 @@
 - 2026-08-01 — closed bistochastic-channel TODO without weakening: added all-level finite matrix complete positivity, positivity and adjoint preservation, two-by-two Kadison--Schwarz, trace/Frobenius identity, Hilbert--Schmidt contraction, bounded channel operator, and exact channel ceiling/dichotomy/deadline capstones. Direct elaboration, final module build, umbrella reachability, formal lint, and axiom audits pass. Promoted `dissipative-quantum-return-information-transition.md`; 30 direct Stage 2 cards remain.
 - 2026-08-01 — completed UPSA-1 canonical-product seam: source-atlas copies are exactly equivalent to the complete Xi multiplicity-copy divisor, and the atlas product is the normalized centered Xi canonical product. Existing polar/critical atlas capstone plus new divisor/product capstones pass direct elaboration, final module build, umbrella reachability, lint, and axiom audit. Promoted `ccm-unitary-polar-source-atlas.md`; 29 direct Stage 2 cards remain.
 - 2026-08-01 — a concurrently added direct card, `generic-two-local-spectral-monodromy.md`, entered scope; direct Stage 2 inventory returned to 30. Closed exact OC-1 Lean seam with a literal forward crease--pole--frequency proposition, complete divisor bijection/canonical product, arbitrary Stone recurrence chambers, and a stronger inverse obstruction: distinct same-divisor source coordinates admit no set-theoretic reconstruction map. Direct elaboration, module build, umbrella wiring, and axiom audit pass. Promotion waits only for repository lint to clear a concurrent unrelated unreachable-module error.
+- 2026-08-01 — repository lint cleared. Promoted OC-1 after all gates passed. Closed the pure-pair
+  geometric TODO without weakening: exact tangent compatibility quotient, projective normal-fiber
+  quotient, determinant-one unitary `SU(3)` action, fixed subspace exactly the weak doublet,
+  complex/real ranks `2/4`, and quaternionic `1+3` capstone. Direct elaboration, module build,
+  umbrella reachability, lint, and axiom audit pass. A concurrently added direct card,
+  `universal-static-choi-complexity-plateau.md`, entered scope; 29 direct Stage 2 cards remain.

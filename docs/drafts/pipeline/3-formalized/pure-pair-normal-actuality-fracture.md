@@ -1,7 +1,7 @@
 # Actuality is normal to quantum possibility
 
 - **ID:** `pure-pair-normal-actuality-fracture`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / NO-GO / POSITIVE SURVIVOR
 - **Parent conjecture:** `../1-in-progress/quantum-disagreement-spacetime-law.md`
 - **Statement:** For the standard compatible \(\operatorname{Spin}(10)\) pure pair, every
@@ -9,7 +9,8 @@
   colour-preserving normal defect is instead exactly one complex weak doublet, hence four real
   directions.
 - **Scientific status:** `[PROVED HERE] [PURE-SPINOR COORDINATE PROOF]`
-  `[QUATERNIONIC 1+3 SURVIVOR LEAN-PROVED] [FULL CARTAN DERIVATIVE NOT YET LEAN]`
+  `[QUATERNIONIC 1+3 SURVIVOR LEAN-PROVED]`
+  `[FULL CARTAN DERIVATIVE AND NORMAL STABILIZER LEAN-PROVED]`
 
 ## Headline exposed by the theorem
 
@@ -206,12 +207,13 @@ in
 - **New insight:** Tangential changes among possibilities report the common/internal three complex
   directions. The candidate spacetime reporter lives normal to individual purity and is selected
   intrinsically by preservation of colour.
-- **Status:** Pure-spinor derivative and incidence proof dependency-closed on paper. Quaternionic
-  survivor formalized. The explicit Cartan-coordinate equations, tangent classification,
-  pure-tangent no-go, agreement-three surjectivity, transverse colour-preserving doublet, and its
-  real dimension four are now unconditional in
-  `formal/GaloisForLFunctions/HTGeometry/PurePairNormalFracture.lean`. Geometric normal-bundle and
-  stabilizer packaging remains outside Lean, so the card stays at stage 2.
+- **Status:** Complete theorem formalized unconditionally. The explicit Cartan-coordinate equations,
+  tangent classification, pure-tangent no-go, agreement-three surjectivity, transverse
+  colour-preserving doublet, and its real dimension four are in
+  `formal/GaloisForLFunctions/HTGeometry/PurePairNormalFracture.lean`. The tangent compatibility
+  quotient, projective normal-fiber quotient, `SU(3)` action and exact fixed subspace, and joined
+  quaternionic `1+3` capstone are in
+  `formal/GaloisForLFunctions/HTGeometry/PurePairNormalBundleStabilizer.lean`.
 
 ## Post-theorem physical conjecture
 
@@ -280,8 +282,8 @@ until specialist review.
 
 - [x] 0 → 1: exact question and kill condition identified
 - [x] 1 → 2: Cartan-coordinate proof and strongest positive survivor dependency-closed on paper
-- [ ] 2 → 3: coordinate tangent/no-go theorem formalized and audited; geometric normal-bundle and
-  stabilizer identification still require Lean packaging
+- [x] 2 → 3: exact coordinate tangent/no-go, tangent quotient, projective normal fiber,
+  stabilizer-fixed doublet, dimension, and quaternionic survivor formalized and audited
 - [ ] 3 → 4: physical actualization, gauge-invariant soldering, gravity, prediction, and hostile
   novelty review passed
 
@@ -296,3 +298,10 @@ until specialist review.
   linearized system, the vanishing weak/disagreement reporter for every pure tangent, surjectivity
   onto the agreement three-vector, and the non-tangent real-four colour-preserving channel in
   `HTGeometry/PurePairNormalFracture.lean`.
+- 2026-08-01 — closed geometric packaging in
+  `HTGeometry/PurePairNormalBundleStabilizer.lean`: tangent compatibility quotient is linearly
+  equivalent to the agreement triplet; projective normal fiber is linearly equivalent to
+  `A ⊕ B`; an explicit determinant-one unitary `SU(3)` action has fixed subspace exactly `B`;
+  its complex and real ranks are two and four; and the capstone includes the exact quaternionic
+  radial-plus-orbit decomposition. Direct elaboration, umbrella reachability, formal lint, axiom
+  audit, and final module build pass.

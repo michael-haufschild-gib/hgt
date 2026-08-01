@@ -62,6 +62,14 @@ which is `(3)`.  The adjoint formula follows by interchanging the lower triangle
 `y<=x`; adding the two complementary triangles fills `I^2`.  Their common diagonal has measure
 zero, proving `(4)`.
 
+`(4)`'s integral content is formal as `causal_add_anticausal`, with `anticausal_eq_sub` its
+subtractive form.  `causal_eq_indicator_integral` records the reduction `(3)` needs: writing the
+moving upper limit as an indicator inside a fixed interval turns the causal triangle into an ordinary
+product region, so the Fubini step there is a plain product-measure swap rather than a change of
+variables.  What is still missing for `(3)` itself is the Fourier transform on the interval.  Stated on interval integrals the shared endpoint contributes nothing
+automatically, so the measure-zero-diagonal step is not a separate argument — additivity over
+adjacent intervals already carries it.
+
 ## Theorem B: exact Cartesian split `[PAPER-PROVED]`
 
 Define the self-adjoint Volterra phase operator
@@ -134,6 +142,11 @@ Odd_z[-i T_(lambda,R)]
 symmetric coordinate and *negates* the phase, via `reflection_adjoint_conj`.  So the two coordinates
 have opposite reflection parity — which is exactly why `(10)` and `(11)` separate, and why a
 positivity statement about one parity sector carries no information about the other.
+
+The transfer to vectors is formal too: `volterraSymmetric_apply_odd` and `volterraPhase_apply_odd`
+show that on an odd vector the symmetric coordinate stays odd while the phase becomes even, which is
+the card's "if `u` is odd, then `C_k u` is odd and `H_k u` is even" — the statement `(10)`--`(11)`
+are read off from.
 
 Suzuki admissibility `lambda<lambda_a` makes the compressed symmetric pencil
 
@@ -456,3 +469,26 @@ complex marked-secant specialization, and RH source-germ connector in
   sector and therefore supplies no sign for the other.  The whole argument follows from the single
   relation `R T R = T*` — evenness of the kernel is used nowhere else.  Three new declarations,
   targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the parity separation completed on vectors.  `volterraSymmetric_comm_reflection` and
+  `volterraPhase_anticomm_reflection` turn the operator parities into a commutation and an
+  anticommutation with the reflection, and `volterraSymmetric_apply_odd` /
+  `volterraPhase_apply_odd` then give the card's "if `u` is odd, then `C_k u` is odd and `H_k u` is
+  even" — the sentence `(10)`--`(11)` are read off from.  With the Cartesian identity and `(9)`'s
+  parity from the previous entries, Theorem C's separation mechanism is formal end to end; what the
+  card leaves open is whether any positivity reaches the even sector.  Four new declarations,
+  targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(4)`'s integral content formalized (`causal_add_anticausal`, `anticausal_eq_sub`):
+  the causal and anticausal halves of the convolution recombine into the full one.  Worth recording
+  that the card's "their common diagonal has measure zero" is not needed as a separate step once the
+  statement is phrased on interval integrals — additivity over adjacent intervals already handles the
+  shared endpoint.  With Theorems A `(4)`, B `(5)`--`(6)` and C `(9)`--`(11)` now formal, this card's
+  algebraic content is complete; what remains is the Fourier identification `(3)` and the open source
+  frontier.  Two new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the reduction `(3)` needs is formal (`causal_eq_indicator_integral`,
+  `anticausal_eq_sub_indicator`): the moving upper limit becomes an indicator factor inside a fixed
+  interval, so the card's change of variables `x = y + t` followed by Fubini is replaceable by an
+  ordinary product-measure swap on a fixed square.  That reformulation is the part worth having —
+  what remains for `(3)` is the Fourier transform on the interval, which is a construction rather
+  than an identity.  Two new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.

@@ -77,4 +77,57 @@ theorem killLast_centeredJacobian {i j : Fin d} (hd : 0 < d) (hi : (i : ℕ) ≠
     · rw [if_pos hij, hij, MvPolynomial.pderiv_X_self, map_one]
     · rw [if_neg hij, MvPolynomial.pderiv_X_of_ne (fun hcon => hij hcon.symm), map_zero]
 
+omit [CharZero K] in
+theorem killLast_centeredJacobian_last (hd : 0 < d) :
+    killLast K d (centeredJacobian K d hd (⟨d - 1, by omega⟩ : Fin d)
+      (⟨d - 1, by omega⟩ : Fin d)) = 1 := by
+  rw [centeredJacobian, Matrix.of_apply, centeredFamily, if_pos rfl,
+    MvPolynomial.pderiv_X_self, map_one]
+
+omit [CharZero K] in
+/-- **The specialised Jacobian is the identity with one row replaced.** -/
+theorem killLast_mapMatrix_centeredJacobian (hd : 0 < d) :
+    (killLast K d).toRingHom.mapMatrix (centeredJacobian K d hd) =
+      Matrix.updateRow (1 : Matrix (Fin d) (Fin d) (MvPolynomial (Fin d) K))
+        (⟨d - 1, by omega⟩ : Fin d)
+        (fun j => killLast K d
+          (centeredJacobian K d hd (⟨d - 1, by omega⟩ : Fin d) j)) := by
+  refine Matrix.ext fun i j => ?_
+  rw [Matrix.updateRow_apply]
+  by_cases hi : i = (⟨d - 1, by omega⟩ : Fin d)
+  · rw [if_pos hi, hi]
+    rfl
+  · rw [if_neg hi]
+    have hival : (i : ℕ) ≠ d - 1 := fun hcon => hi (Fin.ext hcon)
+    show killLast K d (centeredJacobian K d hd i j) = _
+    rw [killLast_centeredJacobian hd hival, Matrix.one_apply]
+
+omit [CharZero K] in
+/-- **The Jacobian is nonsingular.** -/
+theorem det_centeredJacobian_ne_zero (hd : 0 < d) :
+    (centeredJacobian K d hd).det ≠ 0 := by
+  intro hcon
+  have h : (killLast K d).toRingHom ((centeredJacobian K d hd).det) = 0 := by
+    rw [hcon]
+    exact map_zero _
+  rw [RingHom.map_det, killLast_mapMatrix_centeredJacobian hd, det_updateRow_one,
+    killLast_centeredJacobian_last hd] at h
+  exact one_ne_zero h
+
+/-- **The centering coefficients are algebraically independent.**  The next-to-leading coefficient
+together with the centered ones form an algebraically independent family, so the centered
+coefficients are independent over the constants extended by the next-to-leading one. -/
+theorem algebraicIndependent_centeredFamily (hd : 0 < d) :
+    AlgebraicIndependent K (centeredFamily K d hd) := by
+  classical
+  exact algebraicIndependent_of_domain_jacobian
+    (K := K) (R := MvPolynomial (Fin d) K)
+    (centeredFamily K d hd)
+    (fun i f => MvPolynomial.pderiv i f)
+    (fun i a b => map_add _ a b)
+    (fun i a b => by rw [Derivation.leibniz]; simp only [smul_eq_mul])
+    (fun i c => Derivation.map_algebraMap _ c)
+    (centeredJacobian K d hd) (det_centeredJacobian_ne_zero hd)
+    (fun i j => rfl)
+
 end GaloisForLFunctions.HTGeometry

@@ -27,8 +27,8 @@ theorem soninCouplingBandTotal_eq_packetTerms (a b : ℝ) {r : ℝ} (hr : 0 < r)
           (evenDilationCLM r⁻¹ (inv_pos.mpr hr) x)‖ +
         (‖x - evenFourierCutoff (r * b) x‖ + ‖evenFourierCutoff (r * a) x‖) +
         ‖evenFourierCutoff b x‖ := by
-  rw [soninCouplingBandTotal_eq, norm_sub_evenFourierCutoff_evenDilationCLM_inv,
-    norm_evenFourierCutoff_evenDilationCLM_inv]
+  rw [soninCouplingBandTotal_eq, norm_sub_evenFourierCutoff_evenDilationCLM_inv b r hr,
+    norm_evenFourierCutoff_evenDilationCLM_inv a r hr]
 
 /-- The physical term vanishes on a cut packet. -/
 theorem evenIndicatorCutoff_sub_evenDilationCLM_inv_soninShellCutPacket_eq_zero

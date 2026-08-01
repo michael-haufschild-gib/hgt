@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaSewnMobiusJuliaPrimeOrderAttenuation
-import GaloisForLFunctions.HTGeometry.JuliaDefectEquilibriumPositiveDefinite
+import GaloisForLFunctions.HTGeometry.CharacteristicDefectGramCapacity
 
 /-!
 # Coherent Julia equilibrium Gram on the reduced CCM first clock
@@ -177,11 +177,7 @@ theorem ccmFirstClockJuliaBadOriginCorrelation_sq_le_coherentEnergy
       ccmFirstClockJuliaBadCoherentEnergy x L p := by
   simpa only [ccmFirstClockJuliaBadOriginCorrelation,
     ccmFirstClockJuliaBadCoherentEnergy, mul_comm] using
-      (HTGeometry.anchorCorrelation_sq_le_gramEnergy_of_positiveDefinite
-        HTGeometry.juliaDefectAttenuationKernel
-        HTGeometry.positiveDefiniteOnReal_juliaDefectAttenuationKernel
-        HTGeometry.juliaDefectAttenuationKernel_zero
-        HTGeometry.juliaDefectAttenuationKernel_neg
+      (HTGeometry.juliaDefectAttenuationKernel_anchorCorrelation_sq_le_gramEnergy
         (fun i => x * Real.log (p i : ℝ))
         (fun i => ccmFirstClockReducedBadPrimeTerm L (p i)))
 
@@ -235,6 +231,22 @@ theorem ccmFirstClockJulia_negative_completedSource_forces_badCoherentEnergy
   exact hsquare.trans
     (ccmFirstClockJuliaBadOriginCorrelation_sq_le_coherentEnergy
       x L p)
+
+/-- **Arithmetic-facing coherent-capacity law.**  If the literal Julia-attenuated completed
+first-clock packet is negative, its squared excursion is carried by the coherent cross-prime bad
+energy.  The auxiliary origin-correlation interface is eliminated using the exact source action. -/
+theorem ccmFirstClockJulia_negative_attenuatedCompletedPacket_forces_badCoherentEnergy
+    {N : ℕ} {x L : ℝ} (hx : 0 < x) (hL : 0 < L)
+    (p : Fin N → Nat.Primes)
+    (hpCut : ∀ i, (p i : ℕ) ≤ ⌊Real.exp L⌋₊)
+    (hneg : ccmFirstClockJuliaAttenuatedCompletedPacket x L p < 0) :
+    ccmFirstClockJuliaAttenuatedCompletedPacket x L p ^ 2 ≤
+      ccmFirstClockJuliaBadCoherentEnergy x L p := by
+  rw [ccmFirstClockJuliaAttenuatedCompletedPacket_eq_originCorrelation hx p hpCut]
+  exact ccmFirstClockJulia_negative_completedSource_forces_badCoherentEnergy
+    hL p hpCut (by
+      simpa only [ccmFirstClockJuliaAttenuatedCompletedPacket_eq_originCorrelation
+        hx p hpCut] using hneg)
 
 end
 

@@ -1,9 +1,9 @@
 # One-clock crease--pole--frequency tomography
 
 - **ID:** `ccm-single-clock-complete-source-divisor-tomography`
-- **Stage:** `2-fully-proven`
+- **Stage:** `3-formalized`
 - **Type:** SOURCE/DIVISOR TOMOGRAPHY / UNIVERSAL INFORMATION LAW
-- **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
+- **Status:** `[LEAN-FORMALIZED] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
 - **Parents:** `ccm-first-clock-prime-entry-slope-tomography`,
   `ccm-unitary-polar-source-atlas`
 
@@ -303,14 +303,17 @@ Second verdict: `SURVIVES PRELIMINARY ATTACK`; exact paper proof is dependency-c
 - [x] first circularity attack passed
 - [x] second hostile proof audit and exact statement normalization
 - [x] move to Stage 2
-- [ ] exact unconditional Lean theorem for full-trace crease current
-- [ ] exact unconditional Lean theorem for polar-subtracted critical atlas
-- [ ] capstone one-clock reconstruction theorem
-- [ ] umbrella wiring, targeted foreground checks, lint, axiom audit, final module build
+- [x] exact unconditional Lean theorem for full-trace crease current
+- [x] exact unconditional Lean theorem for polar-subtracted critical atlas
+- [x] capstone one-clock reconstruction theorem
+- [x] umbrella wiring, targeted foreground checks, lint, axiom audit, final module build
 - [ ] exhaustive priority and general-journal significance review
 
-## Next mathematical discriminator
+## Lean closure
 
-Can the full-trace one-sided derivative theorem be stated without a hidden choice of derivative
-representative and proved from a fixed local finite sum?  If yes, OC-1 moves to Stage 2.  If not,
-the single-clock headline collapses to separate atomic statements and is not significant enough.
+`formal/GaloisForLFunctions/RHTower/CCMSingleClockCompleteSourceDivisorTomography.lean`
+formalizes the literal full-trace one-sided crease current, strict-right polar support and residue
+atlas, polar-subtracted critical Bohr atlas with exact multiplicity, complete divisor bijection and
+canonical product, arbitrary Stone recurrence chambers, and a stronger inverse obstruction:
+distinct same-divisor source coordinates admit no set-theoretic reconstruction map. Direct
+elaboration, umbrella reachability, formal lint, axiom audit, and final module build pass.

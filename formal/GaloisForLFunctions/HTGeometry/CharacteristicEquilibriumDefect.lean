@@ -402,7 +402,6 @@ theorem centeredUniformDifferenceProbabilityMeasure_eq_triangular :
     show charFun (U : Measure ℝ) (-y) = Real.sinc ((1 / 2 : ℝ) * (-y)) by
       exact charFun_centeredUniformClockProbabilityMeasure (1 / 2) (-y),
     charFun_triangularClockProbabilityMeasure]
-  push_cast
   rw [show (1 / 2 : ℝ) * (-y) = -((1 / 2 : ℝ) * y) by ring,
     Real.sinc_neg]
   have harg : (1 / 2 : ℝ) * y = y / 2 := by ring
@@ -438,7 +437,7 @@ defect. -/
 theorem integral_squareBias_sinc_sq_eq_normalizedCharacteristicDefect
     (μ : Measure ℝ) [IsProbabilityMeasure μ]
     {m : ℝ} (hm : 0 < m)
-    (hsq : Integrable (fun x : ℝ => x ^ 2) μ)
+    (_hsq : Integrable (fun x : ℝ => x ^ 2) μ)
     (hmoment : ∫ x : ℝ, x ^ 2 ∂μ = m) (y : ℝ) :
     (∫ x : ℝ, x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2 ∂μ) =
       normalizedCharacteristicDefect μ m y := by
@@ -469,6 +468,24 @@ theorem integral_squareBias_sinc_sq_eq_normalizedCharacteristicDefect
       ring]
     rw [integral_const_mul, hdefectInt]
     ring
+
+/-- The square-biased sinc-square integrand is integrable under a finite second moment. -/
+theorem integrable_squareBias_sinc_sq
+    (μ : Measure ℝ) {m : ℝ} (hm : 0 < m)
+    (hsq : Integrable (fun x : ℝ => x ^ 2) μ) (y : ℝ) :
+    Integrable (fun x : ℝ => x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2) μ := by
+  have hbase : Integrable (fun x : ℝ => x ^ 2 / m) μ := by
+    simpa only [div_eq_mul_inv] using hsq.mul_const m⁻¹
+  refine hbase.mono' (by fun_prop) ?_
+  filter_upwards with x
+  rw [Real.norm_eq_abs,
+    abs_of_nonneg (mul_nonneg (div_nonneg (sq_nonneg x) hm.le) (sq_nonneg _))]
+  have hs := Real.abs_sinc_le_one (x / 2 * y)
+  have hs2 : Real.sinc (x / 2 * y) ^ 2 ≤ 1 := by
+    have hsq' : Real.sinc (x / 2 * y) ^ 2 ≤ (1 : ℝ) ^ 2 :=
+      sq_le_sq.mpr (by simpa using hs)
+    simpa using hsq'
+  exact mul_le_of_le_one_right (div_nonneg (sq_nonneg x) hm.le) hs2
 
 /-- Actual equilibrium-clock law: square-biased source multiplied by an independent centered
 triangular clock. -/
@@ -532,20 +549,7 @@ theorem charFun_equilibriumClockProbabilityMeasure
     push_cast
     congr 3
     ring]
-  have hrealInt : Integrable
-      (fun x : ℝ => x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2) μ := by
-    have hbase : Integrable (fun x : ℝ => x ^ 2 / m) μ := by
-      simpa only [div_eq_mul_inv] using hsq.mul_const m⁻¹
-    refine hbase.mono' (by fun_prop) ?_
-    filter_upwards with x
-    rw [Real.norm_eq_abs,
-      abs_of_nonneg (mul_nonneg (div_nonneg (sq_nonneg x) hm.le) (sq_nonneg _))]
-    have hs := Real.abs_sinc_le_one (x / 2 * y)
-    have hs2 : Real.sinc (x / 2 * y) ^ 2 ≤ 1 := by
-      have hsq' : Real.sinc (x / 2 * y) ^ 2 ≤ (1 : ℝ) ^ 2 :=
-        sq_le_sq.mpr (by simpa using hs)
-      simpa using hsq'
-    exact mul_le_of_le_one_right (div_nonneg (sq_nonneg x) hm.le) hs2
+  have hrealInt := integrable_squareBias_sinc_sq μ hm hsq y
   calc
     (∫ x : ℝ, ((x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2 : ℝ) : ℂ) ∂μ) =
         ((∫ x : ℝ, x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2 ∂μ : ℝ) : ℂ) :=
@@ -587,10 +591,7 @@ theorem positiveDefiniteOnReal_normalizedCharacteristicDefect
   have heq : (fun y => ∫ x, K x y ∂μ) =
       fun y => (normalizedCharacteristicDefect μ m y : ℂ) := by
     funext y
-    have hrealInt : Integrable
-        (fun x : ℝ => x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2) μ := by
-      simpa only [K, Complex.ofReal_re] using
-        Complex.reCLM.integrable_comp (hKint y)
+    have hrealInt := integrable_squareBias_sinc_sq μ hm hsq y
     calc
       (∫ x, K x y ∂μ) =
           ((∫ x : ℝ, x ^ 2 / m * Real.sinc (x / 2 * y) ^ 2 ∂μ : ℝ) : ℂ) :=
