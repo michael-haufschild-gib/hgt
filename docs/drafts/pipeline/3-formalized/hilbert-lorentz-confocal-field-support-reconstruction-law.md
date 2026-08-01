@@ -1,9 +1,9 @@
 # Hilbert--Lorentz confocal field/support reconstruction law
 
 - **ID:** `hilbert-lorentz-confocal-field-support-reconstruction-law`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** MASTER THEOREM / INVERSE GEOMETRY / LORENTZ CONES / CONFOCAL ENVELOPES
-- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-FORMALIZED] [NOVELTY UNVERIFIED]`
 - **Statement:** On every nonzero real inner-product space, the complete all-direction,
   all-positive-radius confocal envelope field of a bounded Lorentz source, its causal support
   function, and its maximal Lorentz hull determine one another exactly.  The nonlinear field is
@@ -437,7 +437,9 @@ ancestry is audited.
 - [x] final hostile source-level proof audit
 - [x] 1 -> 2 fully-proven: dependency-closed paper proof
 - [x] formalize the exact scalar global theorem (`ConfocalGlobalSupportTransform.lean` + `ConfocalGlobalSupportFaithfulness.lean`: greatest-root, projective graph, radical bifurcation, transform faithfulness, maximal-hull identity)
-- [x] formalize the Hilbert--Lorentz master theorem (`HilbertLorentzConfocalReconstruction.lean`)
+- [x] formalize the Hilbert--Lorentz master theorem
+  (`HilbertLorentzConfocalReconstruction.lean` +
+  `HilbertLorentzConfocalReconstructionComplete.lean`)
 - [x] narrow source checks and final module builds
 - [x] axiom audit (`[propext, Classical.choice, Quot.sound]`)
 - [ ] rewrite the paper around this theorem
@@ -536,3 +538,15 @@ ancestry is audited.
   self-dual Lorentz cone, and maximal Lorentz half-space hull — are now proved to determine one another
   unconditionally, in any finite or infinite dimension.  Only the non-Lean manuscript-rewrite gate
   remains.
+- 2026-08-01 — **Exact source-level closure audited and completed.**  The new wired module
+  `HTGeometry/HilbertLorentzConfocalReconstructionComplete.lean` exposes every literal clause that
+  the earlier transfer module left implicit: causal contact equation (9), greatest contact-level
+  selection, uniqueness above the diagonal, supremal-height identification, complete radical root
+  classification and fold, nonradical existence/uniqueness, sharp exterior contraction/stability,
+  causal-support reconstruction from the maximal hull, and the three-way field/support/hull inverse
+  theorem.  Direct Lean and exact-module builds pass.  All 23 public endpoints depend only on
+  `[propext, Classical.choice, Quot.sound]`; no `sorry`, `admit`, project axiom, `opaque`, or `unsafe`
+  declaration is introduced.  `GaloisForLFunctions.HTGeometry` imports the completion module.
+  Global lint and umbrella build were attempted: both reached this module, then failed solely on
+  unrelated concurrent work (unwired modules in lint; syntax errors in
+  `DynamicalParentComplexityBridge.lean` during umbrella build).  Card-specific gates are closed.

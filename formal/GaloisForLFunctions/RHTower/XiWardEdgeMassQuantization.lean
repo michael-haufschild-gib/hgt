@@ -200,9 +200,11 @@ theorem lintegral_re_xiAntiCausalWardSchwarzPairResponse_eulerEdge
 
 /-! ## Edge mass quantization -/
 
-noncomputable local instance : Countable XiRightZeroCopy := inferInstance
+noncomputable local instance xiWardEdgeMassQuantizationRightCountable :
+    Countable XiRightZeroCopy := inferInstance
 
-noncomputable local instance : Countable XiRightUpperZeroCopy := inferInstance
+noncomputable local instance xiWardEdgeMassQuantizationRightUpperCountable :
+    Countable XiRightUpperZeroCopy := inferInstance
 
 /-- **Edge mass quantization law.**  The total edge mass of the continued Ward
 response counts the strict-right Schwarz pairs with universal charge `4π`. -/

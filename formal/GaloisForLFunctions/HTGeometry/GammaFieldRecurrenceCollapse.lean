@@ -34,7 +34,7 @@ theorem eventually_gammaFieldElt_ne_zero (m j : ℕ) {p q : Polynomial ℂ} (hp 
     simp at ht
   filter_upwards [eventually_gamma_ne_zero m, eventually_eval_ne_zero (1 / 2 + m : ℝ) hp,
     eventually_eval_ne_zero (1 / 2 + m : ℝ) hq, hψ] with t hΓ hpt hqt hψt
-  simp only [gammaFieldElt, gammaLine]
+  simp only [gammaFieldElt, gammaVerticalPoint]
   exact mul_ne_zero (mul_ne_zero (pow_ne_zero _ hΓ) (div_ne_zero hpt hqt)) (pow_ne_zero _ hψt)
 
 /-- **Eq. (27) → (29) for coefficients in the Gamma field.**  A finite differential relation whose

@@ -38,9 +38,9 @@ theorem transportedParent_apply_evolved
 
 /-- Every parent eigenpair is transported with exactly the same eigenvalue. -/
 theorem transportedParent_eigenvector
-    (V K : E →L[ℂ] E) (ψ : E) (λ : ℂ)
-    (hleft : V.adjoint * V = 1) (heigen : K ψ = λ • ψ) :
-    transportedParent V K (V ψ) = λ • V ψ := by
+    (V K : E →L[ℂ] E) (ψ : E) (eigenvalue : ℂ)
+    (hleft : V.adjoint * V = 1) (heigen : K ψ = eigenvalue • ψ) :
+    transportedParent V K (V ψ) = eigenvalue • V ψ := by
   rw [transportedParent_apply_evolved V K ψ hleft, heigen, map_smul]
 
 /-- The evolved parent has exactly the original energy on the evolved state. -/
@@ -57,8 +57,8 @@ theorem quantumExpectationReal_transportedParent_evolved
   rw [← V.adjoint_inner_left]
   exact congrArg (fun y : E => inner ℂ y (K ψ)) hleftApply
 
-/-- Bounded-operator expectations are `2‖K‖`-Lipschitz on the unit ball. -/
 omit [CompleteSpace E] in
+/-- Bounded-operator expectations are `2‖K‖`-Lipschitz on the unit ball. -/
 theorem norm_expectation_sub_expectation_le
     (K : E →L[ℂ] E) (x y : E) (hx : ‖x‖ ≤ 1) (hy : ‖y‖ ≤ 1) :
     ‖inner ℂ x (K x) - inner ℂ y (K y)‖ ≤

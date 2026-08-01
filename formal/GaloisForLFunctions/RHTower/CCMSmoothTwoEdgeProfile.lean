@@ -130,7 +130,8 @@ def xiSmoothProfileGenericSet (eta L : ℝ) :
   {f | ∀ q : XiRightZeroCopy,
     smoothProfileLaplaceAmplitude f (xiRightCenteredZero q) ≠ 0}
 
-noncomputable local instance : Countable XiRightZeroCopy := inferInstance
+noncomputable local instance ccmSmoothTwoEdgeProfileRightCountable :
+    Countable XiRightZeroCopy := inferInstance
 
 /-- Simultaneous nonvanishing at the entire positive-transverse Xi divisor is
 residual and dense in the literal smooth fixed-support profile space. -/

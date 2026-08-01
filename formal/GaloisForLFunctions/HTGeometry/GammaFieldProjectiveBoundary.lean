@@ -19,13 +19,13 @@ open Filter Topology Complex Polynomial
 namespace GaloisForLFunctions
 
 /-- The point of the vertical line `Re s = 1/2 + m` at height `t`. -/
-noncomputable def gammaLine (m : ℕ) (t : ℝ) : ℂ := ((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I
+noncomputable def gammaVerticalPoint (m : ℕ) (t : ℝ) : ℂ := ((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I
 
 /-- An element of the Gamma field in monomial form: `Γ^j · (p/q) · ψ^D` on the line. -/
 noncomputable def gammaFieldElt (m j : ℕ) (p q : Polynomial ℂ) (D : ℕ) (t : ℝ) : ℂ :=
-  Complex.Gamma (gammaLine m t) ^ j
-    * (p.eval (gammaLine m t) / q.eval (gammaLine m t))
-    * Complex.digamma (gammaLine m t) ^ D
+  Complex.Gamma (gammaVerticalPoint m t) ^ j
+    * (p.eval (gammaVerticalPoint m t) / q.eval (gammaVerticalPoint m t))
+    * Complex.digamma (gammaVerticalPoint m t) ^ D
 
 /-- The algebraic identity behind the ratio decomposition, in atoms. -/
 theorem key_ratio_identity (Gjb Gc zdu psiA psiB P Qa Pb Qb : ℂ)
@@ -64,7 +64,7 @@ theorem tendsto_ratio_gammaFieldElt_of_gamma_lt (m : ℕ) (pa qa pb qb : Polynom
     eventually_eval_ne_zero (1 / 2 + m : ℝ) hqb,
     eventually_eval_ne_zero (1 / 2 + m : ℝ) hpb, hψ,
     eventually_gamma_ne_zero m] with t hs hqat hqbt hpbt hψt hΓt
-  simp only [gammaFieldElt, gammaLine, Polynomial.eval_mul, Polynomial.eval_one, pow_zero, hc,
+  simp only [gammaFieldElt, gammaVerticalPoint, Polynomial.eval_mul, Polynomial.eval_one, pow_zero, hc,
     pow_add]
   set z : ℂ := ((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I with hzdef
   exact (key_ratio_identity (Complex.Gamma z ^ jb) (Complex.Gamma z ^ c)
@@ -100,8 +100,8 @@ theorem tendsto_ratio_gammaFieldElt_lex (m : ℕ) (pa qa pb qb : Polynomial ℂ)
     rw [hif]
     refine hbase.congr' ?_
     filter_upwards [eventually_gamma_ne_zero m] with t hΓt
-    have hG : Complex.Gamma (gammaLine m t) ^ ja ≠ 0 := pow_ne_zero _ hΓt
-    simp only [gammaFieldElt, gammaLine]
+    have hG : Complex.Gamma (gammaVerticalPoint m t) ^ ja ≠ 0 := pow_ne_zero _ hΓt
+    simp only [gammaFieldElt, gammaVerticalPoint]
     rw [mul_assoc, mul_assoc]
     exact (mul_div_mul_left _ _ hG).symm
 

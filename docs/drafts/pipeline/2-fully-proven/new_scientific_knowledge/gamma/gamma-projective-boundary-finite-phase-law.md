@@ -2996,10 +2996,70 @@ rather than the normalized surrogates:
 - **`exists_datum_tendsto_sum_jetMonomial`** — hence *every* finite nonempty combination of digamma
   jet monomials has a normalization datum for which it converges, with the explicit limit.
 
+`HTGeometry/PolyCoeffJetResidue.lean` puts the coefficients back:
+
+- `polyJetShape` — the asymptotic shape of a term `p_α(s)·M_α(s)`: log degree `e_α 0`, coefficient
+  degree `deg p_α`, monomial argument degree `Σ_j j·e_{α j}`.  Comparing two such data needs no
+  integers, since `deg p_α − b_α ≤ deg p_β − b_β` is `deg p_α + b_β ≤ deg p_β + b_α`;
+- **`tendsto_sum_polyCoeff_jetMonomial`** — dividing by the shape of a dominant term, the
+  combination converges to `Σ_{α dominant} lead p_α · Π_j c_j^{e_{α j}}`.
+
 That is eq. (19) in the corpus's own terms, unconditionally: the algebraic-logarithmic residue of a
-finite combination of digamma-jet monomials is *visible* — an explicit finite sum of products of the
-jet leading constants `1` and `(−1)^{j−1}(j−1)!` — and it vanishes only when those constants cancel
-inside the dominant class.  The non-flatness theorem `not_isVertFlatGerm_digammaJetEval` closes the
+finite combination of digamma-jet monomials — now with polynomial coefficients — is *visible*: an
+explicit finite sum of leading coefficients times products of the jet leading constants `1` and
+`(−1)^{j−1}(j−1)!`, vanishing only when those cancel inside the dominant class.
+
+`HTGeometry/RatCoeffJetResidue.lean` finishes the coefficient side:
+
+- **`tendsto_sum_ratCoeff_jetMonomial`** — putting a finite family of rational coefficients over a
+  common denominator `q`, the combination normalized by the dominant shape divided by `s^{deg q}`
+  converges to the dominant residue divided by `lead q`.
+
+So eq. (19) is unconditional in the corpus for finite combinations of digamma-jet monomials with
+coefficients in `ℂ(s)` — that is, for the elements of `L = ℂ(s)⟨ψ⟩` written in normal form — with an
+explicit residue.  `#print axioms` clean throughout.
+
+### The Gamma layer of eq. (3), with the residue
+
+`HTGeometry/GammaLowestPowerResidue.lean` lifts this to `K_Γ = L(Γ)`:
+
+- `HasPolyGrowthLine` and `gammaLine`, with `gammaLine_ne_zero` (`Γ` has no zeros on a line to the
+  right of the imaginary axis);
+- **`tendsto_gammaLine_pow_mul`** — a positive power of `Γ` times any coefficient of polynomial
+  growth tends to zero, since `Γ` beats every power of the height downwards;
+- **`tendsto_gammaSum_div_pow`** — hence a finite Gamma polynomial whose coefficients have
+  polynomial growth, divided by its lowest occurring power `Γ^u`, converges to the limit of the
+  `u`-th coefficient.
+
+That is eq. (25) → (3) on the Gamma layer, with the limit *explicit*.
+
+`HTGeometry/GammaFieldProjectiveResidue.lean` composes the two layers:
+
+- `HasPolyGrowthLine.of_tendsto` — a convergent coefficient has polynomial growth, so the growth
+  hypotheses of the Gamma layer are discharged by the eq. (19) limits themselves;
+- **`tendsto_gammaField_projective`** — a finite Gamma polynomial whose coefficients converge after
+  division by a common shape, and whose coefficients below the lowest index vanish, converges after
+  division by that power of `Γ` times the shape, to the residue of the lowest coefficient.
+
+That is eq. (3) with an explicit limit: the projective boundary of an element of `ℂ(s)⟨Γ⟩` is the
+algebraic-logarithmic residue of the coefficient of its lowest Gamma power — with the residue itself
+computed by the eq. (19) chain as a finite sum of leading coefficients times products of the jet
+constants `1` and `(−1)^{j−1}(j−1)!`.  `#print axioms` clean.
+
+### Eq. (5): the ratio law
+
+`HTGeometry/NormalizedRatioLaw.lean` turns the boundary law into the tuple statement:
+
+- **`tendsto_ratio_of_normalized`** — two functions presented by a shape and their limit after
+  dividing by it have a convergent ratio as soon as the shape ratio converges, with limit
+  `c_F·r/c_G`; it vanishes exactly when the shape ratio does, that is when the numerator is strictly
+  dominated;
+- **`tendsto_gammaLine_pow_ratio`** — a strictly larger Gamma power is negligible.
+
+Combined with the shape-ratio limits (`tendsto_jetNormFactor_ratio` on the digamma side) this is
+eq. (5): a finite tuple of Gamma-field elements, normalized by a dominant member, has a constant
+projective limit — nonzero exactly on the members sharing the dominant datum, and the limit is the
+quotient of the explicit residues.  `#print axioms` clean.  The non-flatness theorem `not_isVertFlatGerm_digammaJetEval` closes the
 degenerate branch: a nonzero jet polynomial cannot decay faster than every power, so a normalization
 whose visible residue cancels still leaves a nonzero element behind, to be found one dominance level
 down.  Iterating the split over the finitely many levels is the remaining bookkeeping, and it needs

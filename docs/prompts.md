@@ -155,26 +155,25 @@ LEAN PROOFS MUST BE UNCONDTIONAL!!!
 
 
 
-## ht
+## research Route
 
-use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to research new and significant scientific knowledge about the nature of hypertranscendental functions and the mathematical landscape they are part of.
+use the [$hgt-fields-medalist](/Users/Spare/.codex/skills/l7/hgt-fields-medalist/SKILL.md) skill to fully close route J from docs/drafts/pipeline/1-in-progress/rh-current-frontier-map.md 
 
 research rules:
-- check from time to time the lean code for new additions and pipeline cards for new additions that aren't yet formalized
-- for any nogo always try to find an interesting significant positive statement
-- you can use subagents for read-only research into literature and our own research corpus
+- use heavy conjecturing
+- always check that you do not play theatre and actually are creating new knowledge
+- focus on the hard problems
 
-lean rules:
-1. limit lean builds to the absolute necessary. be as memory and cpu efficient as possible. each agent can run max 1 process at a time so agents can build in parallel without clogging the system. always build in foreground. there are more agents active not just you.
-2. aim for the smallest lean build possible and use caching heavily for lean. write lean code in batches instead of building after every edit.
-3. lean proofs must be unconditional
-4. always check first what the project lean code already offers
-5. effort estimation are not a criterion. if it is missing in mathlib -> you build it. if it takes months -> you build it.
-6. no computations.
+add missing infrastructure, lean proofs, everything needed to get this route fully done - no simplifications.
 
-folders:
-- formal/GaloisForLFunctions/HTGeometry for lean about hypertranscendental functions in general
-- formal/GaloisForLFunctions/RHTower for lean about the riemann zeta function
+Lean rules:
+1. Proofs must be unconditional in lean.
+2. Always build in the foreground, 1 process per single agent.
+3. Be efficient, use caching, batch instead of running constant loops of tiny edits and rebuilds
+4. No computations.
+5. Always use  lake env lean <file>  and only lake build <module> for the final audit. Do not forget to wire new modules into the umbrellas.
+6. make sure you don't leave stale lean processes running - clean up after yourself.
+
 
 
 ## physics

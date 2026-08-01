@@ -45,8 +45,10 @@ theorem not_bddBelow_soninCompletedPacketValueVar_of_log_cap (N₀ : ℕ) (hN₀
     rw [hslope]
     positivity
   -- the scale diverges along the sequence
+  have hadd : Tendsto (fun i : ℕ => Nstart + i) atTop atTop := by
+    simpa [Nat.add_comm] using tendsto_add_atTop_nat Nstart
   have hdiv : Tendsto (fun i : ℕ => soninShellCutScale b c (Nstart + i) κ) atTop atTop :=
-    (tendsto_soninShellCutScale_atTop b c hbc hκ).comp (tendsto_add_atTop_nat Nstart)
+    (tendsto_soninShellCutScale_atTop b c hbc hκ).comp hadd
   -- the cap trails the energy by one, eventually
   have hshort : ∀ᶠ i : ℕ in atTop,
       f (soninShellCutScale b c (Nstart + i) κ) + 1 ≤
@@ -55,19 +57,16 @@ theorem not_bddBelow_soninCompletedPacketValueVar_of_log_cap (N₀ : ℕ) (hN₀
     filter_upwards [hdiv.eventually
       (GaloisForLFunctions.HTGeometry.eventually_log_add_le_linear hslopepos (36 * Dis) 1)]
       with i hi
-    have hN : 0 < Nstart + i ∨ True := Or.inr trivial
     have hlin : ((Nstart + i : ℕ) : ℝ) / 4 =
         slope * soninShellCutScale b c (Nstart + i) κ := by
       have hmul := soninShellCutScale_mul_slope b c hbc
-        (show 0 < Nstart + i from by
-          by_contra hcon
-          push Not at hcon
-          have : Nstart + i = 0 := Nat.le_zero.mp hcon
-          have h1 := hp i
-          rw [this] at h1
-          rw [soninShellCutScale] at h1
-          norm_num at h1
-          nlinarith [h1, hκ, hbc]) hκ
+        (show 0 < Nstart + i by
+          rcases Nat.eq_zero_or_pos (Nstart + i) with h0 | hpos
+          · exfalso
+            have h1 := hp i
+            rw [h0, soninShellCutScale] at h1
+            norm_num at h1
+          · exact hpos) hκ
       rw [hslope]
       calc ((Nstart + i : ℕ) : ℝ) / 4
           = ((c - b) / (2 * κ) * soninShellCutScale b c (Nstart + i) κ) / 4 := by rw [hmul]

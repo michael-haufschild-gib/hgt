@@ -27,12 +27,15 @@ namespace RHTower
 open UnitAddTorus MeasureTheory Filter Topology
 
 /-- The circle is normalised to total mass one, as in the multivariate Fourier theory. -/
-noncomputable local instance : MeasureSpace UnitAddCircle := ⟨AddCircle.haarAddCircle⟩
+noncomputable local instance deningerKroneckerDenseMeasureSpace : MeasureSpace UnitAddCircle :=
+  ⟨AddCircle.haarAddCircle⟩
 
-local instance : Measure.IsAddHaarMeasure (volume : Measure UnitAddCircle) :=
+local instance deningerKroneckerDenseIsAddHaarMeasure :
+    Measure.IsAddHaarMeasure (volume : Measure UnitAddCircle) :=
   inferInstanceAs (Measure.IsAddHaarMeasure AddCircle.haarAddCircle)
 
-local instance : IsProbabilityMeasure (volume : Measure UnitAddCircle) :=
+local instance deningerKroneckerDenseIsProbabilityMeasure :
+    IsProbabilityMeasure (volume : Measure UnitAddCircle) :=
   inferInstanceAs (IsProbabilityMeasure AddCircle.haarAddCircle)
 
 section Kronecker

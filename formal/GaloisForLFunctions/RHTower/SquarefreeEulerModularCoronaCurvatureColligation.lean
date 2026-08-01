@@ -353,6 +353,25 @@ theorem sum_squarefreeBitWeight_mul_centeredEnergy_sq
     sum_squarefreeBitWeight_mul_energy, sum_squarefreeBitWeight]
   ring
 
+/-- Exact centered first moment.  This is the scalar horizontality identity used below. -/
+theorem sum_squarefreeBitWeight_mul_centeredEnergy
+    {α : Type*} [DecidableEq α] (S : Finset α) (r energy : α → ℝ) :
+    ∑ x : SquarefreeBitConfig S, squarefreeBitWeight S r x *
+        (squarefreeBitEnergy S energy x - squarefreeBitMean S r energy) = 0 := by
+  calc
+    _ = (∑ x : SquarefreeBitConfig S,
+          squarefreeBitWeight S r x * squarefreeBitEnergy S energy x) -
+        squarefreeBitMean S r energy *
+          (∑ x : SquarefreeBitConfig S, squarefreeBitWeight S r x) := by
+            rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
+            apply Finset.sum_congr rfl
+            intro x _
+            ring
+    _ = 0 := by
+      rw [sum_squarefreeBitWeight_mul_energy,
+        sum_squarefreeBitWeight]
+      ring
+
 /-- The Gibbs form of the independent Bernoulli law, with its full partition denominator. -/
 theorem squarefreeBitWeight_logistic_eq
     {α : Type*} [DecidableEq α] (S : Finset α) (sigma : ℝ)
@@ -670,6 +689,49 @@ theorem norm_finiteSquarefreeTangent_sq
   norm_num
   ring
 
+/-- Centering makes the normalized source line horizontal to its calibrated tangent. -/
+theorem inner_finiteSquarefreeSource_tangent_eq_zero
+    (S : Finset Nat.Primes) (sigma : ℝ) :
+    inner ℂ (finiteSquarefreeSource S sigma)
+      (finiteSquarefreeTangent S sigma) = 0 := by
+  rw [EuclideanSpace.inner_eq_star_dotProduct, dotProduct]
+  simp only [finiteSquarefreeSource, finiteSquarefreeTangent, PiLp.toLp_apply,
+    Pi.star_apply]
+  rw [show (∑ x : SquarefreeBitConfig S,
+      (((-2 * (sigma - 1) *
+        (finiteSquarefreeHamiltonian S x - finiteSquarefreeCurrent S sigma) : ℝ) : ℂ) *
+          finiteSquarefreeSourceCoefficient S sigma x) *
+        star (finiteSquarefreeSourceCoefficient S sigma x)) =
+      ((-2 * (sigma - 1) : ℝ) : ℂ) *
+        ∑ x : SquarefreeBitConfig S,
+          ((finiteSquarefreeBornWeight S sigma x *
+            (finiteSquarefreeHamiltonian S x - finiteSquarefreeCurrent S sigma) : ℝ) : ℂ) by
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro x _
+    have hnorm :
+        finiteSquarefreeSourceCoefficient S sigma x *
+            star (finiteSquarefreeSourceCoefficient S sigma x) =
+          (finiteSquarefreeBornWeight S sigma x : ℂ) := by
+      rw [← starRingEnd_apply]
+      calc
+        _ = ((‖finiteSquarefreeSourceCoefficient S sigma x‖ : ℂ) ^ 2) :=
+          RCLike.mul_conj (finiteSquarefreeSourceCoefficient S sigma x)
+        _ = _ := by
+          rw [← Complex.ofReal_pow,
+            norm_finiteSquarefreeSourceCoefficient_sq]
+    rw [mul_assoc, hnorm]
+    push_cast
+    ring]
+  rw [← Complex.ofReal_sum]
+  have hcentered : (∑ x : SquarefreeBitConfig S,
+      finiteSquarefreeBornWeight S sigma x *
+        (finiteSquarefreeHamiltonian S x - finiteSquarefreeCurrent S sigma)) = 0 := by
+    exact sum_squarefreeBitWeight_mul_centeredEnergy S
+      (squarefreePrimeOccupation sigma) squarefreePrimeEnergy
+  rw [hcentered]
+  simp
+
 /-- Derivative of the local nome. -/
 theorem hasDerivAt_squarefreePrimeNome
     (sigma : ℝ) (p : Nat.Primes) :
@@ -681,11 +743,9 @@ theorem hasDerivAt_squarefreePrimeNome
       Real.exp (-sigma * squarefreePrimeEnergy p)) sigma
   have hlin : HasDerivAt (fun t : ℝ => -t * squarefreePrimeEnergy p)
       (-squarefreePrimeEnergy p) sigma := by
-    convert (hasDerivAt_id sigma).const_mul (-squarefreePrimeEnergy p) using 1
-    · funext t
-      ring
-    · ring
-  convert hlin.exp using 1 <;> ring
+    simpa only [id_eq, one_mul, mul_one, mul_neg, neg_mul, mul_comm] using!
+      (hasDerivAt_id sigma).const_mul (-squarefreePrimeEnergy p)
+  exact hlin.exp.congr_deriv (by ring)
 
 /-- Derivative of the local Bernoulli occupation. -/
 theorem hasDerivAt_squarefreePrimeOccupation
@@ -714,7 +774,7 @@ theorem hasDerivAt_squarefreePrimeOccupation
           (1 + squarefreePrimeNome sigma p)) := by
     field_simp [hden]
     ring
-  simpa only [Pi.add_apply, Pi.one_apply, zero_add, hder] using hquot
+  simpa only [Pi.add_apply, Pi.one_apply, zero_add, hder] using! hquot
 
 /-- The determinant connection is `-d log Z_S`. -/
 theorem hasDerivAt_finiteSquarefreeLogPartition
@@ -734,12 +794,7 @@ theorem hasDerivAt_finiteSquarefreeLogPartition
     have hden : 1 + squarefreePrimeNome sigma p ≠ 0 := by
       linarith [squarefreePrimeNome_pos sigma p]
     have h := (hasDerivAt_const sigma 1 |>.add hq).log hden
-    change HasDerivAt
-      (fun t : ℝ => Real.log (1 + squarefreePrimeNome t p))
-      ((-squarefreePrimeEnergy p * squarefreePrimeNome sigma p) /
-        (1 + squarefreePrimeNome sigma p)) sigma at h
-    convert h using 1
-    ring
+    simpa only [Pi.add_apply, Pi.one_apply, zero_add] using! h
   have hlocal' : ∀ p : ↥S,
       HasDerivAt (fun t : ℝ => Real.log (1 + squarefreePrimeNome t p))
         (-(squarefreePrimeOccupation sigma p * squarefreePrimeEnergy p)) sigma := by
@@ -747,7 +802,12 @@ theorem hasDerivAt_finiteSquarefreeLogPartition
     convert hlocal p using 1
     rw [squarefreePrimeOccupation]
     ring
-  simpa only [Finset.sum_neg_distrib] using
+  rw [show (fun t : ℝ =>
+      ∑ p : ↥S, Real.log (1 + squarefreePrimeNome t p)) =
+      ∑ p : ↥S, (fun t : ℝ => Real.log (1 + squarefreePrimeNome t p)) by
+        funext t
+        simp]
+  simpa only [Finset.sum_neg_distrib] using!
     HasDerivAt.sum (u := Finset.univ) (fun p _ => hlocal' p)
 
 theorem hasDerivAt_log_finiteSquarefreePartition
@@ -774,10 +834,16 @@ theorem hasDerivAt_finiteSquarefreeCurrent
         (-(squarefreePrimeOccupation sigma p *
           (1 - squarefreePrimeOccupation sigma p) * squarefreePrimeEnergy p ^ 2)) sigma := by
     intro p
-    convert (hasDerivAt_squarefreePrimeOccupation sigma p).mul_const
-      (squarefreePrimeEnergy p) using 1
+    apply ((hasDerivAt_squarefreePrimeOccupation sigma p).mul_const
+      (squarefreePrimeEnergy p)).congr_deriv
     ring
-  simpa only [Finset.sum_neg_distrib] using
+  rw [show (fun t : ℝ => ∑ p : ↥S,
+      squarefreePrimeOccupation t p * squarefreePrimeEnergy p) =
+      ∑ p : ↥S, (fun t : ℝ =>
+        squarefreePrimeOccupation t p * squarefreePrimeEnergy p) by
+          funext t
+          simp]
+  simpa only [Finset.sum_neg_distrib] using!
     HasDerivAt.sum (u := Finset.univ) (fun p _ => hlocal p)
 
 /-- The normalized projective metric is one quarter of the Fisher curvature. -/
@@ -811,27 +877,21 @@ theorem hasDerivAt_finiteSquarefreeSourceCoefficient
     have hfirst : HasDerivAt
         (fun t : ℝ => -t * finiteSquarefreeHamiltonian S x / 2)
         (-finiteSquarefreeHamiltonian S x / 2) sigma := by
-      convert ((hasDerivAt_id sigma).const_mul
-        (-finiteSquarefreeHamiltonian S x) |>.div_const 2) using 1
-      · funext t
-        ring
-      · ring
-    convert hfirst.sub
-      ((hasDerivAt_finiteSquarefreeLogPartition S sigma).div_const 2) using 1
-    ring
+      simpa only [id_eq, one_mul, mul_one, mul_neg, neg_mul, mul_comm] using!
+        ((hasDerivAt_id sigma).const_mul
+          (-finiteSquarefreeHamiltonian S x) |>.div_const 2)
+    exact (hfirst.sub
+      ((hasDerivAt_finiteSquarefreeLogPartition S sigma).div_const 2)).congr_deriv
+        (by ring)
   have hexp := hexponent.exp
   have hcast := hexp.ofReal_comp
-  change HasDerivAt
-    (fun t : ℝ => (finiteSquarefreeMobiusSign x : ℂ) *
-      (Real.exp (-t * finiteSquarefreeHamiltonian S x / 2 -
-        finiteSquarefreeLogPartition S t / 2) : ℂ))
-    (finiteSquarefreeSourceDerivativeCoefficient S sigma x) sigma
-  convert hcast.const_mul (finiteSquarefreeMobiusSign x : ℂ) using 1
-  change ((-1 / 2 : ℝ) *
-      (finiteSquarefreeHamiltonian S x - finiteSquarefreeCurrent S sigma) : ℂ) *
-        ((finiteSquarefreeMobiusSign x : ℂ) *
-          (Real.exp (-sigma * finiteSquarefreeHamiltonian S x / 2 -
-            finiteSquarefreeLogPartition S sigma / 2) : ℂ)) = _
+  rw [show (fun t : ℝ => finiteSquarefreeSourceCoefficient S t x) =
+      fun t : ℝ => (finiteSquarefreeMobiusSign x : ℂ) *
+        (Real.exp (-t * finiteSquarefreeHamiltonian S x / 2 -
+          finiteSquarefreeLogPartition S t / 2) : ℂ) by rfl]
+  apply (hcast.const_mul (finiteSquarefreeMobiusSign x : ℂ)).congr_deriv
+  rw [finiteSquarefreeSourceDerivativeCoefficient,
+    finiteSquarefreeSourceCoefficient]
   push_cast
   ring
 
@@ -845,9 +905,10 @@ theorem hasDerivAt_finiteSquarefreeSource
   intro x
   have hx :=
     (hasDerivAt_finiteSquarefreeSourceCoefficient S sigma x).hasFDerivAt.hasFDerivWithinAt
+      (s := Set.univ)
   simpa only [finiteSquarefreeSource, finiteSquarefreeSourceDerivative,
     PiLp.toLp_apply, ContinuousLinearMap.comp_apply, PiLp.proj_apply,
-    ContinuousLinearMap.toSpanSingleton_apply, one_smul] using hx
+    ContinuousLinearMap.toSpanSingleton_apply, one_smul] using! hx
 
 /-- Exact covariant-derivative calibration `chi_S = 4 (sigma-1) nabla psi_S`. -/
 theorem finiteSquarefreeTangent_eq_four_mul_sourceDerivative
@@ -861,5 +922,452 @@ theorem finiteSquarefreeTangent_eq_four_mul_sourceDerivative
     PiLp.smul_apply, Complex.real_smul]
   push_cast
   ring
+
+/-! ## Exact adjacent-prime boundary colligation -/
+
+theorem squarefreeBitMean_insert
+    {α : Type*} [DecidableEq α] {S : Finset α} {a : α}
+    (ha : a ∉ S) (r energy : α → ℝ) :
+    squarefreeBitMean (insert a S) r energy =
+      r a * energy a + squarefreeBitMean S r energy := by
+  rw [squarefreeBitMean, squarefreeBitMean]
+  rw [Fintype.sum_equiv (Finset.subtypeInsertEquivOption ha)
+    (fun i : ↥(insert a S) => r i * energy i)
+    (fun o : Option ↥S => match o with
+      | none => r a * energy a
+      | some i => r i * energy i)
+    (fun i => by
+      by_cases hia : (i : α) = a
+      · simp [Finset.subtypeInsertEquivOption, hia]
+      · simp [Finset.subtypeInsertEquivOption, hia])]
+  simp
+
+theorem squarefreeBitVariance_insert
+    {α : Type*} [DecidableEq α] {S : Finset α} {a : α}
+    (ha : a ∉ S) (r energy : α → ℝ) :
+    squarefreeBitVariance (insert a S) r energy =
+      r a * (1 - r a) * energy a ^ 2 +
+        squarefreeBitVariance S r energy := by
+  rw [squarefreeBitVariance, squarefreeBitVariance]
+  rw [Fintype.sum_equiv (Finset.subtypeInsertEquivOption ha)
+    (fun i : ↥(insert a S) => r i * (1 - r i) * energy i ^ 2)
+    (fun o : Option ↥S => match o with
+      | none => r a * (1 - r a) * energy a ^ 2
+      | some i => r i * (1 - r i) * energy i ^ 2)
+    (fun i => by
+      by_cases hia : (i : α) = a
+      · simp [Finset.subtypeInsertEquivOption, hia]
+      · simp [Finset.subtypeInsertEquivOption, hia])]
+  simp
+
+theorem finiteSquarefreeLogPartition_insert
+    {S : Finset Nat.Primes} {p : Nat.Primes} (hp : p ∉ S) (sigma : ℝ) :
+    finiteSquarefreeLogPartition (insert p S) sigma =
+      Real.log (1 + squarefreePrimeNome sigma p) +
+        finiteSquarefreeLogPartition S sigma := by
+  rw [finiteSquarefreeLogPartition, finiteSquarefreeLogPartition]
+  rw [Fintype.sum_equiv (Finset.subtypeInsertEquivOption hp)
+    (fun i : ↥(insert p S) => Real.log (1 + squarefreePrimeNome sigma i))
+    (fun o : Option ↥S => match o with
+      | none => Real.log (1 + squarefreePrimeNome sigma p)
+      | some i => Real.log (1 + squarefreePrimeNome sigma i))
+    (fun i => by
+      by_cases hip : (i : Nat.Primes) = p
+      · simp [Finset.subtypeInsertEquivOption, hip]
+      · simp [Finset.subtypeInsertEquivOption, hip])]
+  simp
+
+theorem finiteSquarefreeCurrent_insert
+    {S : Finset Nat.Primes} {p : Nat.Primes} (hp : p ∉ S) (sigma : ℝ) :
+    finiteSquarefreeCurrent (insert p S) sigma =
+      finiteSquarefreeCurrent S sigma +
+        squarefreePrimeEnergy p * squarefreePrimeOccupation sigma p := by
+  rw [finiteSquarefreeCurrent, finiteSquarefreeCurrent,
+    squarefreeBitMean_insert hp]
+  ring
+
+theorem finiteSquarefreeCurvature_insert
+    {S : Finset Nat.Primes} {p : Nat.Primes} (hp : p ∉ S) (sigma : ℝ) :
+    finiteSquarefreeCurvature (insert p S) sigma =
+      finiteSquarefreeCurvature S sigma +
+        squarefreePrimeEnergy p ^ 2 * squarefreePrimeNome sigma p /
+          (1 + squarefreePrimeNome sigma p) ^ 2 := by
+  rw [finiteSquarefreeCurvature, finiteSquarefreeCurvature,
+    squarefreeBitVariance_insert hp]
+  rw [squarefreePrimeOccupation]
+  have hden : 1 + squarefreePrimeNome sigma p ≠ 0 := by
+    linarith [squarefreePrimeNome_pos sigma p]
+  field_simp [hden]
+  ring
+
+/-- Normalized one-prime source symbol `v_p`. -/
+def squarefreePrimeSourceCoefficient
+    (sigma : ℝ) (p : Nat.Primes) (b : Fin 2) : ℂ :=
+  (((-1 : ℝ) ^ (b : ℕ) : ℝ) : ℂ) *
+    Real.exp (-sigma * ((b : ℕ) : ℝ) * squarefreePrimeEnergy p / 2 -
+      Real.log (1 + squarefreePrimeNome sigma p) / 2)
+
+/-- Horizontal outgoing one-prime tangent `chi_p`. -/
+def squarefreePrimeTangentCoefficient
+    (sigma : ℝ) (p : Nat.Primes) (b : Fin 2) : ℂ :=
+  ((-2 * (sigma - 1) * squarefreePrimeEnergy p *
+    (((b : ℕ) : ℝ) - squarefreePrimeOccupation sigma p) : ℝ) : ℂ) *
+      squarefreePrimeSourceCoefficient sigma p b
+
+def squarefreePrimeSource (sigma : ℝ) (p : Nat.Primes) :
+    EuclideanSpace ℂ (Fin 2) :=
+  WithLp.toLp 2 (squarefreePrimeSourceCoefficient sigma p)
+
+def squarefreePrimeTangent (sigma : ℝ) (p : Nat.Primes) :
+    EuclideanSpace ℂ (Fin 2) :=
+  WithLp.toLp 2 (squarefreePrimeTangentCoefficient sigma p)
+
+theorem norm_squarefreePrimeSourceCoefficient_sq
+    (sigma : ℝ) (p : Nat.Primes) (b : Fin 2) :
+    ‖squarefreePrimeSourceCoefficient sigma p b‖ ^ 2 =
+      if b = 0 then 1 - squarefreePrimeOccupation sigma p
+      else squarefreePrimeOccupation sigma p := by
+  have hsign : ‖((((-1 : ℝ) ^ (b : ℕ) : ℝ) : ℂ))‖ = 1 := by
+    rw [Complex.norm_real, Real.norm_eq_abs]
+    simp
+  rw [squarefreePrimeSourceCoefficient, norm_mul, hsign, one_mul,
+    Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _),
+    ← Real.exp_nat_mul]
+  norm_num
+  by_cases hb : b = 0
+  · subst b
+    simp only [Fin.val_zero, Nat.cast_zero, mul_zero, zero_mul, if_pos]
+    rw [show (2 : ℝ) *
+      (-0 / 2 - Real.log (1 + squarefreePrimeNome sigma p) / 2) =
+      -Real.log (1 + squarefreePrimeNome sigma p) by ring]
+    rw [Real.exp_neg, Real.exp_log]
+    · rw [squarefreePrimeOccupation]
+      have hden : 1 + squarefreePrimeNome sigma p ≠ 0 := by
+        linarith [squarefreePrimeNome_pos sigma p]
+      field_simp [hden]
+      ring
+    · linarith [squarefreePrimeNome_pos sigma p]
+  · rw [Fin.eq_one_of_ne_zero b hb]
+    simp only [Fin.val_one, Nat.cast_one,
+      show (1 : Fin 2) ≠ 0 by decide, if_false]
+    rw [show (2 : ℝ) *
+      (-(sigma * 1 * squarefreePrimeEnergy p) / 2 -
+        Real.log (1 + squarefreePrimeNome sigma p) / 2) =
+      -sigma * squarefreePrimeEnergy p -
+        Real.log (1 + squarefreePrimeNome sigma p) by ring,
+      Real.exp_sub, Real.exp_log]
+    · rw [← squarefreePrimeNome_eq_exp, squarefreePrimeOccupation]
+    · linarith [squarefreePrimeNome_pos sigma p]
+
+theorem norm_squarefreePrimeSource_sq (sigma : ℝ) (p : Nat.Primes) :
+    ‖squarefreePrimeSource sigma p‖ ^ 2 = 1 := by
+  rw [squarefreePrimeSource, EuclideanSpace.norm_sq_eq]
+  change ∑ b : Fin 2, ‖squarefreePrimeSourceCoefficient sigma p b‖ ^ 2 = 1
+  rw [Fin.sum_univ_two]
+  simp [norm_squarefreePrimeSourceCoefficient_sq]
+
+/-- The new-prime source symbol is horizontal to its outgoing tangent. -/
+theorem inner_squarefreePrimeSource_tangent_eq_zero
+    (sigma : ℝ) (p : Nat.Primes) :
+    inner ℂ (squarefreePrimeSource sigma p)
+      (squarefreePrimeTangent sigma p) = 0 := by
+  rw [EuclideanSpace.inner_eq_star_dotProduct, dotProduct]
+  simp only [squarefreePrimeSource, squarefreePrimeTangent, PiLp.toLp_apply,
+    squarefreePrimeTangentCoefficient, Pi.star_apply]
+  rw [Fin.sum_univ_two]
+  have hnorm (b : Fin 2) :
+      squarefreePrimeSourceCoefficient sigma p b *
+          star (squarefreePrimeSourceCoefficient sigma p b) =
+        ((if b = 0 then 1 - squarefreePrimeOccupation sigma p
+          else squarefreePrimeOccupation sigma p : ℝ) : ℂ) := by
+    rw [← starRingEnd_apply]
+    calc
+      _ = ((‖squarefreePrimeSourceCoefficient sigma p b‖ : ℂ) ^ 2) :=
+        RCLike.mul_conj (squarefreePrimeSourceCoefficient sigma p b)
+      _ = _ := by
+        rw [← Complex.ofReal_pow,
+          norm_squarefreePrimeSourceCoefficient_sq]
+  simp only [mul_assoc, hnorm]
+  simp only [Fin.val_zero, Nat.cast_zero, Fin.val_one, Nat.cast_one,
+    if_pos, show (1 : Fin 2) ≠ 0 by decide, if_false]
+  push_cast
+  ring_nf
+
+/-- Exact one-prime Fisher energy of the outgoing transverse tangent. -/
+theorem norm_squarefreePrimeTangent_sq
+    (sigma : ℝ) (p : Nat.Primes) :
+    ‖squarefreePrimeTangent sigma p‖ ^ 2 =
+      4 * (sigma - 1) ^ 2 * squarefreePrimeEnergy p ^ 2 *
+        squarefreePrimeOccupation sigma p *
+          (1 - squarefreePrimeOccupation sigma p) := by
+  rw [squarefreePrimeTangent, EuclideanSpace.norm_sq_eq]
+  change (∑ b : Fin 2,
+      ‖squarefreePrimeTangentCoefficient sigma p b‖ ^ 2) = _
+  rw [Fin.sum_univ_two]
+  simp only [squarefreePrimeTangentCoefficient, norm_mul, mul_pow,
+    Complex.norm_real, Real.norm_eq_abs,
+    norm_squarefreePrimeSourceCoefficient_sq, Fin.val_zero, Nat.cast_zero,
+    Fin.val_one, Nat.cast_one, if_pos,
+    show (1 : Fin 2) ≠ 0 by decide, if_false, sq_abs]
+  ring_nf
+
+theorem norm_squarefreePrimeTangent_sq_eq_nome
+    (sigma : ℝ) (p : Nat.Primes) :
+    ‖squarefreePrimeTangent sigma p‖ ^ 2 =
+      4 * (sigma - 1) ^ 2 * squarefreePrimeEnergy p ^ 2 *
+        squarefreePrimeNome sigma p /
+          (1 + squarefreePrimeNome sigma p) ^ 2 := by
+  rw [norm_squarefreePrimeTangent_sq, squarefreePrimeOccupation]
+  have hden : 1 + squarefreePrimeNome sigma p ≠ 0 := by
+    linarith [squarefreePrimeNome_pos sigma p]
+  field_simp [hden]
+  ring
+
+theorem finiteSquarefreeHamiltonian_insert_symm
+    {S : Finset Nat.Primes} {p : Nat.Primes} (hp : p ∉ S)
+    (b : Fin 2) (x : SquarefreeBitConfig S) :
+    finiteSquarefreeHamiltonian (insert p S)
+        ((squarefreeInsertBitEquiv hp).symm (b, x)) =
+      ((b : ℕ) : ℝ) * squarefreePrimeEnergy p +
+        finiteSquarefreeHamiltonian S x :=
+  squarefreeBitEnergy_insert_symm hp squarefreePrimeEnergy b x
+
+theorem finiteSquarefreeMobiusSign_insert_symm
+    {S : Finset Nat.Primes} {p : Nat.Primes} (hp : p ∉ S)
+    (b : Fin 2) (x : SquarefreeBitConfig S) :
+    finiteSquarefreeMobiusSign
+        ((squarefreeInsertBitEquiv hp).symm (b, x)) =
+      (-1 : ℝ) ^ (b : ℕ) * finiteSquarefreeMobiusSign x := by
+  rw [finiteSquarefreeMobiusSign, finiteSquarefreeMobiusSign]
+  have hsum := squarefreeBitEnergy_insert_symm hp (fun _ => (1 : ℝ)) b x
+  simp only [squarefreeBitEnergy, mul_one] at hsum
+  have hnat :
+      (∑ i : ↥(insert p S),
+        ((((squarefreeInsertBitEquiv hp).symm (b, x)) i : ℕ))) =
+      (b : ℕ) + ∑ i : ↥S, (x i : ℕ) := by
+    exact_mod_cast hsum
+  rw [hnat, pow_add]
+
+/-- Exact source tensor factorization under insertion of one prime. -/
+theorem finiteSquarefreeSourceCoefficient_insert_symm
+    {S : Finset Nat.Primes} {p : Nat.Primes} (hp : p ∉ S)
+    (sigma : ℝ) (b : Fin 2) (x : SquarefreeBitConfig S) :
+    finiteSquarefreeSourceCoefficient (insert p S) sigma
+        ((squarefreeInsertBitEquiv hp).symm (b, x)) =
+      finiteSquarefreeSourceCoefficient S sigma x *
+        squarefreePrimeSourceCoefficient sigma p b := by
+  rw [finiteSquarefreeSourceCoefficient,
+    finiteSquarefreeSourceCoefficient, squarefreePrimeSourceCoefficient,
+    finiteSquarefreeHamiltonian_insert_symm hp,
+    finiteSquarefreeMobiusSign_insert_symm hp,
+    finiteSquarefreeLogPartition_insert hp]
+  push_cast
+  rw [show
+    -(sigma : ℂ) * (((b : ℕ) : ℂ) * (squarefreePrimeEnergy p : ℂ) +
+        (finiteSquarefreeHamiltonian S x : ℂ)) / 2 -
+      ((Real.log (1 + squarefreePrimeNome sigma p) : ℂ) +
+        (finiteSquarefreeLogPartition S sigma : ℂ)) / 2 =
+      (-((sigma : ℂ) * (finiteSquarefreeHamiltonian S x : ℂ)) / 2 -
+        (finiteSquarefreeLogPartition S sigma : ℂ) / 2) +
+      (-((sigma : ℂ) * ((b : ℕ) : ℂ) * (squarefreePrimeEnergy p : ℂ)) / 2 -
+        (Real.log (1 + squarefreePrimeNome sigma p) : ℂ) / 2) by ring,
+    Complex.exp_add]
+  ring
+
+/-- Exact tangent Leibniz/colligation identity in prime tensor coordinates. -/
+theorem finiteSquarefreeTangent_insert_symm
+    {S : Finset Nat.Primes} {p : Nat.Primes} (hp : p ∉ S)
+    (sigma : ℝ) (b : Fin 2) (x : SquarefreeBitConfig S) :
+    finiteSquarefreeTangent (insert p S) sigma
+        ((squarefreeInsertBitEquiv hp).symm (b, x)) =
+      finiteSquarefreeTangent S sigma x *
+          squarefreePrimeSourceCoefficient sigma p b +
+        finiteSquarefreeSourceCoefficient S sigma x *
+          squarefreePrimeTangentCoefficient sigma p b := by
+  simp only [finiteSquarefreeTangent, PiLp.toLp_apply,
+    squarefreePrimeTangentCoefficient,
+    finiteSquarefreeHamiltonian_insert_symm hp,
+    finiteSquarefreeCurrent_insert hp,
+    finiteSquarefreeSourceCoefficient_insert_symm hp]
+  push_cast
+  ring
+
+/-! ## Actual tensor branches and one-dimensional transverse width -/
+
+/-- Coordinate tensor product, pulled back through the insert-one-prime equivalence. -/
+def squarefreeTensorPullback
+    {I J K : Type*} [Fintype I] [Fintype J] [Fintype K]
+    (e : K ≃ J × I) (u : EuclideanSpace ℂ I) (v : EuclideanSpace ℂ J) :
+    EuclideanSpace ℂ K :=
+  WithLp.toLp 2 fun k => u (e k).2 * v (e k).1
+
+/-- Hermitian products factor exactly under the coordinate tensor pullback. -/
+theorem inner_squarefreeTensorPullback
+    {I J K : Type*} [Fintype I] [Fintype J] [Fintype K]
+    (e : K ≃ J × I)
+    (u u' : EuclideanSpace ℂ I) (v v' : EuclideanSpace ℂ J) :
+    inner ℂ (squarefreeTensorPullback e u v)
+        (squarefreeTensorPullback e u' v') =
+      inner ℂ u u' * inner ℂ v v' := by
+  rw [EuclideanSpace.inner_eq_star_dotProduct, dotProduct]
+  simp only [squarefreeTensorPullback, PiLp.toLp_apply, Pi.star_apply, star_mul]
+  rw [← e.symm.sum_comp, Fintype.sum_prod_type]
+  simp only [Equiv.apply_symm_apply]
+  rw [EuclideanSpace.inner_eq_star_dotProduct,
+    EuclideanSpace.inner_eq_star_dotProduct, dotProduct, dotProduct]
+  simp only [Pi.star_apply]
+  calc
+    (∑ j, ∑ i, (u' i * v' j) * (star (v j) * star (u i))) =
+        ∑ j, (∑ i, u' i * star (u i)) * (v' j * star (v j)) := by
+          apply Finset.sum_congr rfl
+          intro j _
+          rw [Finset.sum_mul]
+          apply Finset.sum_congr rfl
+          intro i _
+          ring
+    _ = (∑ i, u' i * star (u i)) *
+        (∑ j, v' j * star (v j)) := by
+      rw [Finset.mul_sum]
+
+/-- Squared norms multiply exactly under the coordinate tensor pullback. -/
+theorem norm_squarefreeTensorPullback_sq
+    {I J K : Type*} [Fintype I] [Fintype J] [Fintype K]
+    (e : K ≃ J × I) (u : EuclideanSpace ℂ I) (v : EuclideanSpace ℂ J) :
+    ‖squarefreeTensorPullback e u v‖ ^ 2 = ‖u‖ ^ 2 * ‖v‖ ^ 2 := by
+  rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq,
+    EuclideanSpace.norm_sq_eq]
+  simp only [squarefreeTensorPullback, PiLp.toLp_apply, norm_mul, mul_pow]
+  rw [← e.symm.sum_comp, Fintype.sum_prod_type]
+  simp only [Equiv.apply_symm_apply]
+  calc
+    (∑ j, ∑ i, ‖u i‖ ^ 2 * ‖v j‖ ^ 2) =
+        ∑ j, (∑ i, ‖u i‖ ^ 2) * ‖v j‖ ^ 2 := by
+          apply Finset.sum_congr rfl
+          intro j _
+          rw [Finset.sum_mul]
+    _ = (∑ i, ‖u i‖ ^ 2) * (∑ j, ‖v j‖ ^ 2) := by
+      rw [Finset.mul_sum]
+
+/-- Lower-system part of the enlarged horizontal tangent. -/
+def finiteSquarefreeLowerTangentBranch
+    {S : Finset Nat.Primes} {p : Nat.Primes} (hp : p ∉ S) (sigma : ℝ) :
+    EuclideanSpace ℂ (SquarefreeBitConfig (insert p S)) :=
+  squarefreeTensorPullback (squarefreeInsertBitEquiv hp)
+    (finiteSquarefreeTangent S sigma) (squarefreePrimeSource sigma p)
+
+/-- New-prime outgoing part of the enlarged horizontal tangent. -/
+def finiteSquarefreePrimeTangentBranch
+    {S : Finset Nat.Primes} {p : Nat.Primes} (hp : p ∉ S) (sigma : ℝ) :
+    EuclideanSpace ℂ (SquarefreeBitConfig (insert p S)) :=
+  squarefreeTensorPullback (squarefreeInsertBitEquiv hp)
+    (finiteSquarefreeSource S sigma) (squarefreePrimeTangent sigma p)
+
+/-- Equation (9): the enlarged normalized source is the exact source tensor product. -/
+theorem finiteSquarefreeSource_insert
+    {S : Finset Nat.Primes} {p : Nat.Primes} (hp : p ∉ S) (sigma : ℝ) :
+    finiteSquarefreeSource (insert p S) sigma =
+      squarefreeTensorPullback (squarefreeInsertBitEquiv hp)
+        (finiteSquarefreeSource S sigma) (squarefreePrimeSource sigma p) := by
+  apply PiLp.ext
+  intro y
+  change finiteSquarefreeSourceCoefficient (insert p S) sigma y =
+    finiteSquarefreeSourceCoefficient S sigma
+        ((squarefreeInsertBitEquiv hp y).2) *
+      squarefreePrimeSourceCoefficient sigma p
+        ((squarefreeInsertBitEquiv hp y).1)
+  have h := finiteSquarefreeSourceCoefficient_insert_symm hp sigma
+    (squarefreeInsertBitEquiv hp y).1 (squarefreeInsertBitEquiv hp y).2
+  have hy : (squarefreeInsertBitEquiv hp).symm
+      ((squarefreeInsertBitEquiv hp y).1,
+        (squarefreeInsertBitEquiv hp y).2) = y := by
+    rw [show ((squarefreeInsertBitEquiv hp y).1,
+      (squarefreeInsertBitEquiv hp y).2) = squarefreeInsertBitEquiv hp y by rfl,
+      Equiv.symm_apply_apply]
+  rwa [hy] at h
+
+/-- Equation (10): exact vector-valued adjacent-prime tangent colligation. -/
+theorem finiteSquarefreeTangent_insert
+    {S : Finset Nat.Primes} {p : Nat.Primes} (hp : p ∉ S) (sigma : ℝ) :
+    finiteSquarefreeTangent (insert p S) sigma =
+      finiteSquarefreeLowerTangentBranch hp sigma +
+        finiteSquarefreePrimeTangentBranch hp sigma := by
+  apply PiLp.ext
+  intro y
+  change finiteSquarefreeTangent (insert p S) sigma y =
+    finiteSquarefreeTangent S sigma ((squarefreeInsertBitEquiv hp y).2) *
+        squarefreePrimeSourceCoefficient sigma p
+          ((squarefreeInsertBitEquiv hp y).1) +
+      finiteSquarefreeSourceCoefficient S sigma
+          ((squarefreeInsertBitEquiv hp y).2) *
+        squarefreePrimeTangentCoefficient sigma p
+          ((squarefreeInsertBitEquiv hp y).1)
+  have h := finiteSquarefreeTangent_insert_symm hp sigma
+    (squarefreeInsertBitEquiv hp y).1 (squarefreeInsertBitEquiv hp y).2
+  have hy : (squarefreeInsertBitEquiv hp).symm
+      ((squarefreeInsertBitEquiv hp y).1,
+        (squarefreeInsertBitEquiv hp y).2) = y := by
+    rw [show ((squarefreeInsertBitEquiv hp y).1,
+      (squarefreeInsertBitEquiv hp y).2) = squarefreeInsertBitEquiv hp y by rfl,
+      Equiv.symm_apply_apply]
+  rwa [hy] at h
+
+/-- The two actual tangent branches in the colligation are orthogonal. -/
+theorem inner_finiteSquarefreeTangentBranches_eq_zero
+    {S : Finset Nat.Primes} {p : Nat.Primes} (hp : p ∉ S) (sigma : ℝ) :
+    inner ℂ (finiteSquarefreeLowerTangentBranch hp sigma)
+      (finiteSquarefreePrimeTangentBranch hp sigma) = 0 := by
+  rw [finiteSquarefreeLowerTangentBranch, finiteSquarefreePrimeTangentBranch,
+    inner_squarefreeTensorPullback,
+    inner_squarefreePrimeSource_tangent_eq_zero]
+  simp
+
+/-- Equation (11): the vector colligation obeys the exact one-particle Pythagorean law. -/
+theorem norm_finiteSquarefreeTangent_insert_sq
+    {S : Finset Nat.Primes} {p : Nat.Primes} (hp : p ∉ S) (sigma : ℝ) :
+    ‖finiteSquarefreeTangent (insert p S) sigma‖ ^ 2 =
+      ‖finiteSquarefreeTangent S sigma‖ ^ 2 +
+        ‖squarefreePrimeTangent sigma p‖ ^ 2 := by
+  rw [finiteSquarefreeTangent_insert hp]
+  calc
+    ‖finiteSquarefreeLowerTangentBranch hp sigma +
+        finiteSquarefreePrimeTangentBranch hp sigma‖ ^ 2 =
+      ‖finiteSquarefreeLowerTangentBranch hp sigma‖ ^ 2 +
+        ‖finiteSquarefreePrimeTangentBranch hp sigma‖ ^ 2 := by
+          simpa only [pow_two] using
+            norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero
+              (finiteSquarefreeLowerTangentBranch hp sigma)
+              (finiteSquarefreePrimeTangentBranch hp sigma)
+              (inner_finiteSquarefreeTangentBranches_eq_zero hp sigma)
+    _ = _ := by
+      rw [finiteSquarefreeLowerTangentBranch,
+        finiteSquarefreePrimeTangentBranch,
+        norm_squarefreeTensorPullback_sq,
+        norm_squarefreeTensorPullback_sq,
+        norm_finiteSquarefreeSource_sq,
+        norm_squarefreePrimeSource_sq]
+      ring
+
+/-- For `sigma > 1`, every local outgoing tangent is genuinely nonzero. -/
+theorem squarefreePrimeTangent_ne_zero
+    {sigma : ℝ} (hsigma : 1 < sigma) (p : Nat.Primes) :
+    squarefreePrimeTangent sigma p ≠ 0 := by
+  have henergy : 0 < squarefreePrimeEnergy p := by
+    exact Real.log_pos (by exact_mod_cast p.property.one_lt)
+  have hepsilon : 0 < sigma - 1 := sub_pos.mpr hsigma
+  have hnome : 0 < squarefreePrimeNome sigma p :=
+    squarefreePrimeNome_pos sigma p
+  have hden : 0 < 1 + squarefreePrimeNome sigma p := by linarith
+  have hnorm : 0 < ‖squarefreePrimeTangent sigma p‖ ^ 2 := by
+    rw [norm_squarefreePrimeTangent_sq_eq_nome]
+    positivity
+  intro hzero
+  rw [hzero, norm_zero, zero_pow (by norm_num : (2 : ℕ) ≠ 0)] at hnorm
+  exact (lt_irrefl 0 hnorm)
+
+/-- Uniform transverse width is exactly one at every prime aperture. -/
+theorem squarefreePrimeTransverseWidth_eq_one
+    {sigma : ℝ} (hsigma : 1 < sigma) (p : Nat.Primes) :
+    Module.finrank ℂ (ℂ ∙ squarefreePrimeTangent sigma p) = 1 :=
+  finrank_span_singleton (squarefreePrimeTangent_ne_zero hsigma p)
 
 end RHTower

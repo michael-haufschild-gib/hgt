@@ -625,9 +625,11 @@ theorem integral_mul_lorentzianHalves_general {x₁ x₂ : ℝ}
     field_simp
     ring
 
-noncomputable local instance : Countable XiRightZeroCopy := inferInstance
+noncomputable local instance xiWardEdgeReChannelDepositRightCountable :
+    Countable XiRightZeroCopy := inferInstance
 
-noncomputable local instance : Countable XiRightUpperZeroCopy := inferInstance
+noncomputable local instance xiWardEdgeReChannelDepositRightUpperCountable :
+    Countable XiRightUpperZeroCopy := inferInstance
 
 /-- Distributivity of `ℝ≥0∞` series products over the product index. -/
 theorem ennreal_tsum_mul_tsum {ι κ : Type*} (f : ι → ENNReal)

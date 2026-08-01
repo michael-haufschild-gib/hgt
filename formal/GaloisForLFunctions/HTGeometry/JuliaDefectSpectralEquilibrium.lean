@@ -75,11 +75,10 @@ theorem anchorCorrelation_sq_le_gramEnergy_of_positiveDefinite
     (∑ i, b i * K (t i)) ^ 2 ≤
       ∑ i, ∑ j, b i * K (t j - t i) * b j := by
   have h :=
-    GaloisForLFunctions.HTGeometry.
-      realKernelPacketCross_sq_le_energy_mul_energy_of_positiveDefinite
+    GaloisForLFunctions.HTGeometry.realKernelPacketCross_sq_le_energy_mul_energy_of_positiveDefinite
         K hPD hEven (fun _ : Fin 1 => 0) (fun _ : Fin 1 => 1) t b
   simpa [GaloisForLFunctions.HTGeometry.realKernelPacketCross,
-    GaloisForLFunctions.HTGeometry.realKernelPacketEnergy, hK0] using h
+    GaloisForLFunctions.HTGeometry.realKernelPacketEnergy, hK0, mul_comm] using h
 
 /-- The unnormalized Julia defect is strictly positive away from the wall on the positive side. -/
 theorem juliaDefectSquareProfile_pos {y : ℝ} (hy : 0 < y) :

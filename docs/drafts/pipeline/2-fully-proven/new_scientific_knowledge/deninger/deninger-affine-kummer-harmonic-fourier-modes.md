@@ -365,11 +365,45 @@ proof performs.
   This is the card's remark that assumption `(1)` leaves only the constant torus mode, which
   contributes nothing.
 
+### The cylinder modes, their orthonormality and the character completeness landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerCylinderModes.lean`,
+`DeningerTorusCompleteness.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+The phase torus is `UnitAddTorus d`, its characters are the exponential monomials `mFourier n`,
+and the functional `ℓ` of `(1)` is the pairing `deningerFrequency n λ = ∑ nᵢ λᵢ` already built for
+Kronecker's theorem — so hypothesis `(1)` of this card is literally the triviality of the
+annihilator that makes the Kronecker orbit dense.
+
+- `deningerFrequency_neg` — `μ_{-a} = -μ_a`.
+- `deningerCylinderMode lam n r η = χ_n(η) · α_{μ_n}(r)` — the mode `(8)` on the cylinder.
+- `deningerCylinderInner`, `deningerCylinderCup` — the measured leafwise inner product `(5)` and
+  the cup trace `(17)`, as the iterated integrals the card writes.
+- `deningerCylinderInner_mode` — **Haar orthogonality**: modes of distinct characters are
+  orthogonal.
+- `deningerCylinderInner_self` — the diagonal value `1/|μ_a|`, which is `(9)` on the cylinder.
+- `deningerNormalizedCylinderMode_orthonormal` — **the normalized modes `e_a` are orthonormal**:
+  the inner product is `1` on the diagonal and `0` off it.  This is the "mutually orthogonal
+  one-dimensional mode spaces" half of item 4.
+- `deningerCylinderCup_mode` — **`(18)` on the cylinder**: the cup pairing vanishes unless
+  `a + b = 0`, because the character product integrates to zero.
+- `deningerCylinderCup_mode_neg` — and equals `i/μ_a` when `b = -a`.
+- `deningerTorusCompleteness`, `deningerTorusEq_of_coeffs` — **the characters are complete**: a
+  continuous function on the phase torus orthogonal to every character vanishes.  The monomials
+  are a Hilbert basis of `L²`, so all coefficients vanishing kills the `L²` class, and Haar
+  positivity on nonempty open sets upgrades "zero almost everywhere" to "zero".
+
 ### Remaining
 
-The per-frequency statements of items 1--4, `(8)`--`(11)`, `(14)`--`(15)`, and `(18)`--`(20)` are
-formalized.  What is not yet formalized is the assembly of item 4 across characters: that
-`L²` of the leaf cylinder decomposes as the orthogonal Hilbert sum of the character eigenspaces, so
-that the one-dimensional mode spaces exhaust the solution space globally.  That is a Fourier
-decomposition of `L²((0,∞) × T_L)` into `L²(0,∞)`-valued character components, not a further
-property of the modes themselves.
+Items 1--3 and `(8)`--`(11)`, `(14)`--`(15)`, `(17)`--`(20)` are formalized, on the cylinder as
+well as radially.  Item 4 is formalized in both of its halves separately: the mode spaces are
+mutually orthogonal (`deningerNormalizedCylinderMode_orthonormal`), each is exactly the
+square-integrable solution space at its frequency (`deningerSolution_eq_smul_mode`,
+`deningerSolution_zeroFreq_eq_zero`), and the characters miss nothing
+(`deningerTorusCompleteness`).
+
+What is not yet formalized is the single step that joins them: that the character coefficients of
+an arbitrary square-integrable solution again solve `(11)`.  That is a differentiation under the
+integral sign in the torus variable, after which the per-frequency uniqueness applies coefficient
+by coefficient and the orthonormal expansion assembles the Hilbert sum.

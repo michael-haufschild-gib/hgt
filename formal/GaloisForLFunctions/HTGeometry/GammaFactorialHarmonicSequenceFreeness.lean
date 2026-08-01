@@ -101,7 +101,7 @@ theorem ratNatEval_injective : Function.Injective ratNatEval := by
   exact IsLocalization.mk'_zero _
 
 /-- Shift an eventual sequence germ by one natural-number index. -/
-def shiftGerm : NatGerm →+* NatGerm :=
+def natShiftGerm : NatGerm →+* NatGerm :=
   { toFun := fun f => f.compTendsto (fun n : ℕ => n + 1)
       ((Filter.tendsto_add_atTop_iff_nat 1).2 tendsto_id)
     map_one' := by
@@ -174,7 +174,7 @@ theorem ratNatEval_polePart (j : ℕ) :
   exact (polyNatEval_denominator_isUnit den).mul_right_cancel (hspec.trans hc.symm)
 
 theorem shift_harmonicJetGerm (j : ℕ) :
-    shiftGerm (harmonicJetGerm j) = harmonicJetGerm j + ratNatEval (polePart j) := by
+    natShiftGerm (harmonicJetGerm j) = harmonicJetGerm j + ratNatEval (polePart j) := by
   change (↑(harmonicJetSequence j) : NatGerm).compTendsto
       (fun n : ℕ => n + 1) ((Filter.tendsto_add_atTop_iff_nat 1).2 tendsto_id) =
     (↑(harmonicJetSequence j) : NatGerm) + ratNatEval (polePart j)
@@ -183,7 +183,7 @@ theorem shift_harmonicJetGerm (j : ℕ) :
   exact Filter.Eventually.of_forall fun n => harmonicJetSequence_succ j n
 
 theorem shift_polyNatEval (p : Polynomial ℂ) :
-    shiftGerm (polyNatEval p) = polyNatEval
+    natShiftGerm (polyNatEval p) = polyNatEval
       (p.comp (Polynomial.X + Polynomial.C 1)) := by
   change (↑(fun n : ℕ => p.eval (n : ℂ)) : NatGerm).compTendsto
       (fun n : ℕ => n + 1) ((Filter.tendsto_add_atTop_iff_nat 1).2 tendsto_id) =
@@ -193,8 +193,8 @@ theorem shift_polyNatEval (p : Polynomial ℂ) :
     simp [Polynomial.eval_comp]
 
 theorem shift_ratNatEval (r : RatFunc ℂ) :
-    shiftGerm (ratNatEval r) = ratNatEval (ratShift r) := by
-  have hhom : shiftGerm.comp ratNatEval = ratNatEval.comp ratShift := by
+    natShiftGerm (ratNatEval r) = ratNatEval (ratShift r) := by
+  have hhom : natShiftGerm.comp ratNatEval = ratNatEval.comp ratShift := by
     apply IsLocalization.ringHom_ext (nonZeroDivisors (Polynomial ℂ))
     apply Polynomial.ringHom_ext
     · intro c
@@ -212,8 +212,8 @@ def harmonicJetEval (m : ℕ) :
   MvPolynomial.eval₂Hom ratNatEval (fun j => harmonicJetGerm (j : ℕ))
 
 theorem shift_harmonicJetEval (m : ℕ) (P : MvPolynomial (Fin m) (RatFunc ℂ)) :
-    shiftGerm (harmonicJetEval m P) = harmonicJetEval m (jetTranslate m P) := by
-  have hhom : shiftGerm.comp (harmonicJetEval m) =
+    natShiftGerm (harmonicJetEval m P) = harmonicJetEval m (jetTranslate m P) := by
+  have hhom : natShiftGerm.comp (harmonicJetEval m) =
       (harmonicJetEval m).comp (jetTranslate m) := by
     apply MvPolynomial.ringHom_ext
     · intro k
@@ -282,7 +282,7 @@ theorem ratNatEval_X_sq : ratNatEval ((RatFunc.X : RatFunc ℂ) ^ 2) =
     simp [polyNatFunctionEval]
 
 theorem shift_factorialSquareGerm :
-    shiftGerm factorialSquareGerm =
+    natShiftGerm factorialSquareGerm =
       ratNatEval ((RatFunc.X : RatFunc ℂ) ^ 2) * factorialSquareGerm := by
   change (↑factorialSquareSequence : NatGerm).compTendsto
       (fun n : ℕ => n + 1) ((Filter.tendsto_add_atTop_iff_nat 1).2 tendsto_id) =
@@ -357,9 +357,9 @@ theorem natDegree_factorialSquareTranslate {m : ℕ}
 
 theorem shift_factorialSquareEval (m : ℕ)
     (P : Polynomial (MvPolynomial (Fin m) (RatFunc ℂ))) :
-    shiftGerm (factorialSquareEval m P) =
+    natShiftGerm (factorialSquareEval m P) =
       factorialSquareEval m (factorialSquareTranslate m P) := by
-  change shiftGerm (Polynomial.eval₂ (harmonicJetEval m) factorialSquareGerm P) =
+  change natShiftGerm (Polynomial.eval₂ (harmonicJetEval m) factorialSquareGerm P) =
     Polynomial.eval₂ (harmonicJetEval m) factorialSquareGerm
       (factorialSquareTranslate m P)
   rw [Polynomial.eval₂_eq_sum, Polynomial.sum_def, map_sum]

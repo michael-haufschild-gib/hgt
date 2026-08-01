@@ -70,6 +70,24 @@ theorem evenPart_div_of_odd {F W : ℂ → ℂ} (hW : ∀ z, W (-z) = -W z) {z :
   field_simp
   ring
 
+/-- **Assembly of the normalized reflection-odd response.**  If the numerator's even part is the
+sine kernel carrying `mu1`, and the denominator is odd with central jet `d = I * mu1`, then the odd
+part of the normalized quotient is `-d sin (a z) / (2 z W z)`.
+
+This is the algebraic step that turns an even-part computation and a central-jet identification
+into the response formula; no analysis enters beyond the two inputs. -/
+theorem oddPart_normalizedResponse_eq {T W : ℂ → ℂ} {a mu1 d z : ℂ}
+    (hW : ∀ w, W (-w) = -W w) (hWz : W z ≠ 0) (hz : z ≠ 0)
+    (heven : (T z + T (-z)) / 2 = mu1 * Complex.sin (a * z) / (2 * z))
+    (hjet : d = I * mu1) :
+    ((-I * T z) / W z - (-I * T (-z)) / W (-z)) / 2
+      = -d * Complex.sin (a * z) / (2 * z * W z) := by
+  have hodd := oddPart_div_of_odd (F := fun w => -I * T w) hW hWz
+  rw [hodd]
+  have hnum : ((-I * T z) + (-I * T (-z))) / 2 = -I * ((T z + T (-z)) / 2) := by ring
+  rw [hnum, heven, hjet]
+  field_simp
+
 end
 
 end GaloisForLFunctions.HTGeometry

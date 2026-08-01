@@ -62,4 +62,21 @@ theorem eventually_log_add_le_linear {s : ℝ} (hs : 0 < s) (C δ : ℝ) :
   have hlog := log_le_two_mul_sqrt hx
   linarith
 
+/-- **Any sublinear growth is eventually below any positive slope.**  The logarithm is one case;
+what the argument uses is only that the quotient by the argument tends to zero. -/
+theorem eventually_sublinear_add_le_linear {f : ℝ → ℝ} {s : ℝ} (hs : 0 < s)
+    (hf : Tendsto (fun r : ℝ => f r / r) atTop (𝓝 0)) (C δ : ℝ) :
+    ∀ᶠ r : ℝ in atTop, f r + δ ≤ s * r - C := by
+  have hhalf : ∀ᶠ r : ℝ in atTop, f r / r < s / 2 :=
+    hf.eventually (gt_mem_nhds (by linarith : (0 : ℝ) < s / 2))
+  filter_upwards [eventually_gt_atTop (0 : ℝ), hhalf,
+    eventually_ge_atTop (2 * (C + δ) / s)] with r hr hquot hbig
+  have hfr : f r < s / 2 * r := by
+    rw [div_lt_iff₀ hr] at hquot
+    linarith
+  have hshift : C + δ ≤ s * r / 2 := by
+    rw [div_le_iff₀ hs] at hbig
+    linarith
+  linarith
+
 end GaloisForLFunctions.HTGeometry

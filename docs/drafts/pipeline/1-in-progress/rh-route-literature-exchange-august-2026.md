@@ -182,7 +182,13 @@ sharp three-term gap-tail budget, closed-form slack laws, polynomially weighted 
 the exact two-stage product/cut schedule satisfying every analytic tail and slack obligation have no
 located external counterpart. The scale-free relative-ideal discount and target-by-target
 unboundedness of the scheduled coupling energy are additional local results; the latter is now
-strengthened to a positive linear lower rate along one admissible scale sequence.
+strengthened to a positive linear lower rate along one admissible scale sequence. The actual
+frequency-side logarithmic shell channel is already excluded by a uniform fixed-annulus bound.
+Along the linear schedule, the corpus now excludes every typed scalar additive term `f(scale)` in the
+typed `soninCompletedPacketValueVar` model with `f(r)/r → 0`, including unbounded logarithmic and
+other sublinear contributions. It does not reduce arbitrary semilocal operators to that model.
+Conversely, a typed additive term restoring the floor for every admissible schedule is proved not to satisfy
+`f(r)/r → 0`; this is a necessary condition, not a constructed positive linear asymptotic.
 
 **External contribution.** Burnol's
 [complete/minimal systems paper](https://doi.org/10.5802/jtnb.434), Theorems 3.1–3.3, proves sharp qualitative
@@ -190,14 +196,19 @@ completeness/minimality laws for evaluator systems, Sonine evaluators including 
 `a=1` case, and the functions `ζ(s)/(s-ρ)^l`; Theorem 6.3 identifies exact critical dual systems.
 Connes–Consani's semilocal/scaling analyses provide a related finite-prime Sonin carrier. These
 results can settle qualitative carrier closure but provide no quantitative convergence rate,
-all-prime shell schedule, or ideal-error energy control; the first two schedule layers are supplied
-locally, not by the cited papers.
+all-prime shell schedule, ideal-error energy control, or normalized-nonsublinear floor-restoring
+completion; those quantitative
+layers are supplied locally, not by the cited papers.
 
 **Lean action.** Formalize Burnol's qualitative completeness/minimality and co-Poisson complement,
 then identify its carrier with the local `evenSonin`/shell-cut carrier. This removes a qualitative
 literature debt. The route's analytic tail/slack schedule is already constructed; decisive work is
-the concrete shortfall comparison between that linear coupling bound and the surviving
-logarithmic-shell completion contribution, followed by the literal all-prime source handoff.
+the construction of a source-faithful typed completion restoring the floor for every admissible
+schedule. Only for that universal premise does local Lean force its normalized contribution not to
+tend to zero. The alternatives are proving that the arithmetic completion lies outside the typed
+scalar-additive model or reducing a semilocal operator to that model, followed by the literal
+all-prime source handoff. Burnol's qualitative theorem does not by itself cross the typed sublinear
+additive obstruction.
 
 ### Route G — Suzuki Hermite–Biehler, anti-Pick, and Ward realization
 
@@ -302,7 +313,18 @@ completion infrastructure, Haar lifting, contractibility of the real `ℓ²` sph
 Kronecker nonvanishing, an exact finite-torus Kronecker dense-orbit criterion, deck/flow radius laws,
 residual Hilbert nondegeneracy, and an integrated rank-two affine leaf system with bracket,
 Frobenius/Galois naturality, and transverse suspension flow. These generic theorems do not occur as
-the arithmetic Deninger comparison in located literature.
+the arithmetic Deninger comparison in located literature. A separate half-line complex-pair ODE
+model motivated by the affine leaf now has an explicit nonzero-frequency decaying chiral solution,
+exact norm and positive star-pairing, pairing and power-pullback laws, uniqueness up to scalar among
+square-integrable ODE solutions, and zero-frequency vanishing. No Lean theorem identifies this
+radial model with forms on the affine-leaf complex. The radial solution is now additionally
+tensored with `UnitAddTorus` Fourier characters in a concrete analytic cylinder model; Haar
+orthogonality, reciprocal-frequency norms, vanishing away from opposite-character cup pairs,
+the exact opposite-pair cup, and normalized orthonormality are proved. Continuous torus functions
+are also determined by all character coefficients. This is continuous-function completeness, not
+a theorem about arbitrary square-integrable cylinder data. Its frequency uses the Kronecker
+direction, but no theorem identifies this cylinder with the separately defined affine leaf or the
+arithmetic relevant complex.
 
 **External contribution.** Deninger's
 [dynamical systems paper](https://arxiv.org/abs/1807.06400) gives the Hausdorff suspension
@@ -397,7 +419,10 @@ asymptotic hyperbolicity do not imply the all-order source condition.
 **Lean action.** None. Importing more finite orders would not discharge the quantified wall unless
 paired with a valid all-order closure theorem.
 
-### Prime-seam divisor-fed coordinate
+No Route R is assigned: the following coordinate is divisor-fed and therefore is compared for
+completeness without being promoted to an independent source route.
+
+### Non-route coordinate — prime-seam divisor-fed submass
 
 **Local contribution beyond located literature.** Exact divisor-to-prime-seam pair asymptotics and
 submass equivalences are corpus-specific but divisor-fed; they do not constitute source production.
@@ -433,20 +458,37 @@ Li–Keiper, Nyman–Beurling/Báez–Duarte, Salem, Hardy, Colombeau, theta-inf
 Burnol co-Poisson, OPUC, determinant-line, spectral-flow, de Bruijn–Newman, Jensen-polynomial,
 Lagarias, and related criteria add coordinates rather than source producers.
 
+Yang's August 2026
+[Friedrichs-angle theorem](https://doi.org/10.1016/j.jmaa.2026.130494) proves that RH implies zero
+Friedrichs angle for two localized Nyman–Beurling pairs, while also proving unconditional strict
+inclusions among the corresponding subspace sums; its completeness proposition gives another RH
+equivalence. The located result supplies neither a converse angle criterion nor the missing source
+estimate of a live route. It is current Hilbert-space SOTA, but gives no frontier-leverage Lean
+import.
+
+The local `QuantitativeNymanBeurling` module contributes only the exact scalar Hardy-kernel cost
+model: normalized kernel and floor identities, positivity, inverse-height upper degradation, and a
+reciprocal complementary-length inequality. Its theorem signatures do not contain concrete
+fractional-part generators, Mellin transforms, the global closure equivalence, or RH. Thus neither
+the local module nor Yang's theorem supplies the decisive approximation estimate; no beyond-SOTA
+source theorem is claimed here.
+
 The 2026 Salem improper-integral criterion and Liflandsky one-way Möbius implication are already
 formalized. Hedenmalm's normalized boundary problem and generic Hardy evaluation obstruction are
 formalized. Exact absent literature packages are:
 
 - Li's full analytic criterion, not merely a finite or sequence-level abstraction;
+- the concrete Nyman–Beurling/Báez–Duarte generators, Mellin theorem, and global closure criterion;
 - Hardy's 2026 concrete evaluation functions and their density/obstruction theorems;
 - the 2026 automorphic theta-at-infinity carrier and its density consequences;
 - Burnol's evaluator/co-Poisson completeness and exact dual systems;
 - the concrete Suzuki, CCM, Inoue, Deninger, Groskin, and Burnol/semilocal theorems named above.
 
-Full Li, Hardy, and theta-at-infinity formalizations improve corpus completeness but do not narrow a
-live source premise beyond an equivalent positivity, density, or closure wall. They are therefore
-secondary to the concrete operator/carrier imports. Colombeau remains low priority: no located
-unconditional theorem improves a route's first open core.
+Full Li, Nyman–Beurling, Hardy, and theta-at-infinity formalizations improve corpus completeness but
+do not narrow a live source premise beyond an equivalent positivity, density, or closure wall. They
+are therefore secondary to the concrete operator/carrier imports. Yang's unconditional strict
+subspace inclusions sharpen Nyman–Beurling geometry but do not change this ordering. Colombeau
+remains low priority: no located unconditional theorem improves a route's first open core.
 
 ## 4. Retired routes and external SOTA
 
@@ -467,7 +509,7 @@ The growing-order reverse-Bessel finite-prime mechanism is also retired. Classic
 polynomial theory begins with Krall and Frink's
 [1949 construction](https://doi.org/10.1090/S0002-9947-1949-0028473-1), and later work gives broad
 large-order asymptotics, including Wong and Zhang's
-[generalized Bessel expansions](https://doi.org/10.1016/S0377-0427(97)00131-3). The special-function
+[generalized Bessel expansions](<https://doi.org/10.1016/S0377-0427(97)00131-3>). The special-function
 ancestry is therefore not a local novelty claim. The corpus-specific result is the exact
 squared-Xi consequence: normalized reverse-Bessel weights cancel Euler damping at every fixed
 prime, forcing any surviving argument into a moving nonsummable prime window. That theorem and its
@@ -508,8 +550,9 @@ External results that genuinely strengthen a live route, in dependency order, ar
 3. Complete the Groskin import after the now-formalized semidefinite compact-window core: strict
    positive/total positivity, improper tail, and Corollary 3.3's cutoff budget (Route B).
 4. Burnol Theorems 3.1--3.3: qualitative Sonin/evaluator completeness and co-Poisson complement,
-   followed by CCM's semilocal Sonin isomorphism and Fourier–Mellin factor law (Route F and prime
-   seam).
+   followed by CCM's semilocal Sonin isomorphism and Fourier–Mellin factor law. These identify the
+   carrier but do not by themselves overcome the typed sublinear scalar-additive obstruction;
+   applicability to their semilocal operator requires a separate reduction (Route F and prime seam).
 5. Deninger Theorem 7.10, Theorem 10.2, and Proposition 11.7: concrete prime-fibre topology and
    divisor support (Route L).
 6. Inoue Theorem 2.3 and Proposition 4.1: compact-normal Jacobi expansion and zero convergence

@@ -29,7 +29,7 @@ theorem gammaFieldJetElt_eq (m j : ℕ) (p q : Polynomial ℂ) {r : ℕ} (E : Fi
     gammaFieldJetElt m j p q E t
       = gammaFieldElt m j p q (E 0) t
         * ∏ i : Fin r, (digammaJetLine (1 / 2 + m) ((i.succ : Fin (r + 1)) : ℕ) t) ^ (E i.succ) := by
-  rw [gammaFieldJetElt, gammaFieldElt, gammaLine, Fin.prod_univ_succ]
+  rw [gammaFieldJetElt, gammaFieldElt, gammaVerticalPoint, Fin.prod_univ_succ]
   have h0 : digammaJetLine (1 / 2 + m) ((0 : Fin (r + 1)) : ℕ) t
       = Complex.digamma (((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I) := by
     rw [digammaJetLine, Fin.val_zero, iteratedDeriv_zero]

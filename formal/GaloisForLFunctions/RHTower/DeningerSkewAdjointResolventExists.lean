@@ -16,8 +16,8 @@ the adjoint with `A† y = z̄ y`, so skew-adjointness gives `(A + z̄)y = 0` an
 forces `y = 0`.  A closed subspace with trivial orthogonal complement is everything.
 
 * `deningerSkewAdjoint_skewSymmetric` : skew-adjoint implies skew-symmetric.
-* `deningerShift_range_isClosed` : the range of `A - z` is closed.
-* `deningerShift_bijective` : `A - z` is a bijection onto the whole space.
+* `deningerResolventShift_range_isClosed` : the range of `A - z` is closed.
+* `deningerResolventShift_bijective` : `A - z` is a bijection onto the whole space.
 * `deningerSkewAdjointResolvent` : the resolvent, with `‖R_z y‖ ≤ |Re z|⁻¹ ‖y‖`.
 -/
 
@@ -46,26 +46,26 @@ theorem deningerSkewAdjoint_skewSymmetric (hdense : Dense (A.domain : Set E))
   exact neg_eq_iff_eq_neg.mp h
 
 /-- The shifted generator `A - z`, defined on the domain of `A`. -/
-noncomputable def deningerShift (A : E →ₗ.[ℂ] E) (z : ℂ) : A.domain →ₗ[ℂ] E :=
+noncomputable def deningerResolventShift (A : E →ₗ.[ℂ] E) (z : ℂ) : A.domain →ₗ[ℂ] E :=
   A.toFun - z • A.domain.subtype
 
 omit [CompleteSpace E] in
-theorem deningerShift_apply (A : E →ₗ.[ℂ] E) (z : ℂ) (x : A.domain) :
-    deningerShift A z x = A.toFun x - z • (x : E) := rfl
+theorem deningerResolventShift_apply (A : E →ₗ.[ℂ] E) (z : ℂ) (x : A.domain) :
+    deningerResolventShift A z x = A.toFun x - z • (x : E) := rfl
 
 /-- The lower bound for the shifted generator, written for the shift map. -/
-theorem deningerShift_lower_bound (hdense : Dense (A.domain : Set E))
+theorem deningerResolventShift_lower_bound (hdense : Dense (A.domain : Set E))
     (hskew : DeningerSkewAdjointPMap A) (z : ℂ) (x : A.domain) :
-    |z.re| * ‖(x : E)‖ ≤ ‖deningerShift A z x‖ :=
+    |z.re| * ‖(x : E)‖ ≤ ‖deningerResolventShift A z x‖ :=
   deningerSkew_lower_bound (deningerSkewAdjoint_skewSymmetric hdense hskew) z x
 
 /-- The shift map is injective off the imaginary axis. -/
-theorem deningerShift_injective (hdense : Dense (A.domain : Set E))
+theorem deningerResolventShift_injective (hdense : Dense (A.domain : Set E))
     (hskew : DeningerSkewAdjointPMap A) {z : ℂ} (hz : z.re ≠ 0) :
-    Function.Injective (deningerShift A z) := by
+    Function.Injective (deningerResolventShift A z) := by
   intro a b hab
-  have h := deningerShift_lower_bound hdense hskew z (a - b)
-  have hval : deningerShift A z (a - b) = 0 := by
+  have h := deningerResolventShift_lower_bound hdense hskew z (a - b)
+  have hval : deningerResolventShift A z (a - b) = 0 := by
     rw [map_sub, hab, sub_self]
   rw [hval, norm_zero] at h
   have habs : 0 < |z.re| := abs_pos.mpr hz
@@ -75,20 +75,20 @@ theorem deningerShift_injective (hdense : Dense (A.domain : Set E))
   exact Subtype.ext (sub_eq_zero.mp hsub)
 
 /-- **The range of the shifted generator is closed.** -/
-theorem deningerShift_range_isClosed (hdense : Dense (A.domain : Set E))
+theorem deningerResolventShift_range_isClosed (hdense : Dense (A.domain : Set E))
     (hskew : DeningerSkewAdjointPMap A) (hclosed : A.IsClosed) {z : ℂ} (hz : z.re ≠ 0) :
-    IsClosed ((LinearMap.range (deningerShift A z) : Submodule ℂ E) : Set E) := by
+    IsClosed ((LinearMap.range (deningerResolventShift A z) : Submodule ℂ E) : Set E) := by
   have habs : 0 < |z.re| := abs_pos.mpr hz
   refine IsSeqClosed.isClosed ?_
   intro u p hu hup
-  have hu' : ∀ n, ∃ w : A.domain, deningerShift A z w = u n := fun n => hu n
+  have hu' : ∀ n, ∃ w : A.domain, deningerResolventShift A z w = u n := fun n => hu n
   choose x hx using hu'
   have hbound : ∀ a b : A.domain,
-      |z.re| * ‖(a : E) - (b : E)‖ ≤ ‖deningerShift A z a - deningerShift A z b‖ := by
+      |z.re| * ‖(a : E) - (b : E)‖ ≤ ‖deningerResolventShift A z a - deningerResolventShift A z b‖ := by
     intro a b
-    have h := deningerShift_lower_bound hdense hskew z (a - b)
+    have h := deningerResolventShift_lower_bound hdense hskew z (a - b)
     have hcoe : ((a - b : A.domain) : E) = (a : E) - (b : E) := rfl
-    have hval : deningerShift A z (a - b) = deningerShift A z a - deningerShift A z b := map_sub _ _ _
+    have hval : deningerResolventShift A z (a - b) = deningerResolventShift A z a - deningerResolventShift A z b := map_sub _ _ _
     rw [hcoe, hval] at h
     exact h
   have hxcau : CauchySeq (fun n => ((x n : A.domain) : E)) := by
@@ -106,7 +106,7 @@ theorem deningerShift_range_isClosed (hdense : Dense (A.domain : Set E))
   have hAt : Tendsto (fun n => A.toFun (x n)) atTop (𝓝 (p + z • xlim)) := by
     have hrw : ∀ n, A.toFun (x n) = u n + z • ((x n : A.domain) : E) := by
       intro n
-      rw [← hx n, deningerShift_apply]
+      rw [← hx n, deningerResolventShift_apply]
       abel
     simp only [hrw]
     exact hup.add (hxlim.const_smul z)
@@ -119,14 +119,14 @@ theorem deningerShift_range_isClosed (hdense : Dense (A.domain : Set E))
   have hy1 : (y : E) = xlim := congrArg Prod.fst hy
   have hy2 : A.toFun y = p + z • xlim := congrArg Prod.snd hy
   refine ⟨y, ?_⟩
-  rw [deningerShift_apply, hy2, hy1]
+  rw [deningerResolventShift_apply, hy2, hy1]
   abel
 
 /-- **The range of the shifted generator is dense.**  This is where skew-adjointness, rather than
 mere skew-symmetry, is used. -/
-theorem deningerShift_range_orthogonal_eq_bot (hdense : Dense (A.domain : Set E))
+theorem deningerResolventShift_range_orthogonal_eq_bot (hdense : Dense (A.domain : Set E))
     (hskew : DeningerSkewAdjointPMap A) {z : ℂ} (hz : z.re ≠ 0) :
-    (LinearMap.range (deningerShift A z))ᗮ = ⊥ := by
+    (LinearMap.range (deningerResolventShift A z))ᗮ = ⊥ := by
   have habs : 0 < |z.re| := abs_pos.mpr hz
   rw [Submodule.eq_bot_iff]
   intro y hy
@@ -134,8 +134,8 @@ theorem deningerShift_range_orthogonal_eq_bot (hdense : Dense (A.domain : Set E)
   have hall : ∀ x : A.domain,
       (inner ℂ (A.toFun x) y : ℂ) = (starRingEnd ℂ z) * (inner ℂ ((x : E)) y : ℂ) := by
     intro x
-    have h0 := hy (deningerShift A z x) ⟨x, rfl⟩
-    rw [deningerShift_apply, inner_sub_left, inner_smul_left, sub_eq_zero] at h0
+    have h0 := hy (deningerResolventShift A z x) ⟨x, rfl⟩
+    rw [deningerResolventShift_apply, inner_sub_left, inner_smul_left, sub_eq_zero] at h0
     exact h0
   have hadj : ∀ x : A.domain,
       (inner ℂ ((starRingEnd ℂ z) • y) ((x : E)) : ℂ) = (inner ℂ y (A.toFun x) : ℂ) := by
@@ -155,9 +155,9 @@ theorem deningerShift_range_orthogonal_eq_bot (hdense : Dense (A.domain : Set E)
   rw [LinearPMap.neg_apply, hval] at hstep
   have hAy : A.toFun ⟨y, hmemA⟩ = -((starRingEnd ℂ z) • y) :=
     neg_eq_iff_eq_neg.mp hstep.symm
-  have hlow := deningerShift_lower_bound hdense hskew (-(starRingEnd ℂ z)) ⟨y, hmemA⟩
-  have hzero : deningerShift A (-(starRingEnd ℂ z)) ⟨y, hmemA⟩ = 0 := by
-    rw [deningerShift_apply, hAy]
+  have hlow := deningerResolventShift_lower_bound hdense hskew (-(starRingEnd ℂ z)) ⟨y, hmemA⟩
+  have hzero : deningerResolventShift A (-(starRingEnd ℂ z)) ⟨y, hmemA⟩ = 0 := by
+    rw [deningerResolventShift_apply, hAy]
     module
   rw [hzero, norm_zero] at hlow
   have hre : (-(starRingEnd ℂ z)).re = -z.re := by simp
@@ -166,18 +166,18 @@ theorem deningerShift_range_orthogonal_eq_bot (hdense : Dense (A.domain : Set E)
   exact norm_eq_zero.mp this
 
 /-- **The shifted generator is a bijection onto the whole space.** -/
-theorem deningerShift_bijective (hdense : Dense (A.domain : Set E))
+theorem deningerResolventShift_bijective (hdense : Dense (A.domain : Set E))
     (hskew : DeningerSkewAdjointPMap A) (hclosed : A.IsClosed) {z : ℂ} (hz : z.re ≠ 0) :
-    Function.Bijective (deningerShift A z) := by
-  refine ⟨deningerShift_injective hdense hskew hz, ?_⟩
-  haveI hc : IsClosed ((LinearMap.range (deningerShift A z) : Submodule ℂ E) : Set E) :=
-    deningerShift_range_isClosed hdense hskew hclosed hz
-  haveI : CompleteSpace (LinearMap.range (deningerShift A z)) := hc.completeSpace_coe
-  have htop : LinearMap.range (deningerShift A z) = ⊤ :=
+    Function.Bijective (deningerResolventShift A z) := by
+  refine ⟨deningerResolventShift_injective hdense hskew hz, ?_⟩
+  haveI hc : IsClosed ((LinearMap.range (deningerResolventShift A z) : Submodule ℂ E) : Set E) :=
+    deningerResolventShift_range_isClosed hdense hskew hclosed hz
+  haveI : CompleteSpace (LinearMap.range (deningerResolventShift A z)) := hc.completeSpace_coe
+  have htop : LinearMap.range (deningerResolventShift A z) = ⊤ :=
     Submodule.orthogonal_eq_bot_iff.mp
-      (deningerShift_range_orthogonal_eq_bot hdense hskew hz)
+      (deningerResolventShift_range_orthogonal_eq_bot hdense hskew hz)
   intro y
-  have hmem : y ∈ LinearMap.range (deningerShift A z) := by
+  have hmem : y ∈ LinearMap.range (deningerResolventShift A z) := by
     rw [htop]
     exact Submodule.mem_top
   exact hmem
@@ -186,13 +186,13 @@ theorem deningerShift_bijective (hdense : Dense (A.domain : Set E))
 noncomputable def deningerSkewAdjointResolvent (hdense : Dense (A.domain : Set E))
     (hskew : DeningerSkewAdjointPMap A) (hclosed : A.IsClosed) {z : ℂ} (hz : z.re ≠ 0)
     (y : E) : A.domain :=
-  Classical.choose ((deningerShift_bijective hdense hskew hclosed hz).surjective y)
+  Classical.choose ((deningerResolventShift_bijective hdense hskew hclosed hz).surjective y)
 
 theorem deningerSkewAdjointResolvent_spec (hdense : Dense (A.domain : Set E))
     (hskew : DeningerSkewAdjointPMap A) (hclosed : A.IsClosed) {z : ℂ} (hz : z.re ≠ 0)
     (y : E) :
-    deningerShift A z (deningerSkewAdjointResolvent hdense hskew hclosed hz y) = y :=
-  Classical.choose_spec ((deningerShift_bijective hdense hskew hclosed hz).surjective y)
+    deningerResolventShift A z (deningerSkewAdjointResolvent hdense hskew hclosed hz y) = y :=
+  Classical.choose_spec ((deningerResolventShift_bijective hdense hskew hclosed hz).surjective y)
 
 /-- **The resolvent estimate for a skew-adjoint generator.** -/
 theorem deningerSkewAdjointResolvent_norm_le (hdense : Dense (A.domain : Set E))

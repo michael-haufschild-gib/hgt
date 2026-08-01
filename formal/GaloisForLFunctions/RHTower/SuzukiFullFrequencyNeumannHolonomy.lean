@@ -1,4 +1,6 @@
 import GaloisForLFunctions.RHTower.SuzukiJumpKernelLoewnerGap
+import GaloisForLFunctions.HTGeometry.MomentFunctionalPositivity
+import GaloisForLFunctions.HTGeometry.CompactFourierSineKernel
 
 /-!
 # Full-frequency Neumann holonomy in Suzuki affine sewing
@@ -350,6 +352,65 @@ theorem suzukiNeumannHolonomyCorrection_finiteUpdate_eq_zero_iff_projectiveTange
   · intro h
     have hzero : centralJet * J z - tangentJet * W z = 0 := sub_eq_zero.mpr h
     linear_combination (((beta - alpha : ℝ) : ℂ)) * hzero
+
+/-! ## `(7)` and `(8)` for a moment source -/
+
+/-- An **odd source**: every even moment vanishes.  This is what oddness of the compactly supported
+source gives on its moment sequence. -/
+def IsOddSourceMoments (s : ℕ → ℝ) : Prop := ∀ k : ℕ, s (2 * k) = 0
+
+theorem IsOddSourceMoments.zeroth {s : ℕ → ℝ} (h : IsOddSourceMoments s) : s 0 = 0 := by
+  simpa using h 0
+
+/-- The moment functional of a constant polynomial is that constant times the zeroth moment. -/
+theorem momentFunctional_C (s : ℕ → ℝ) (c : ℝ) :
+    HTGeometry.momentFunctional s (Polynomial.C c) = c * s 0 := by
+  have hsmul : (Polynomial.C c : Polynomial ℝ) = c • (Polynomial.X : Polynomial ℝ) ^ 0 := by
+    rw [pow_zero, Polynomial.smul_eq_C_mul, mul_one]
+  rw [hsmul, HTGeometry.momentFunctional_smul, HTGeometry.momentFunctional_X_pow]
+
+/-- **`(7)`.**  For an odd source the right-minus-left Neumann response is the constant `s 1 / 2`:
+the smoothed kernel `sgn(t) r₀(t) = -t/2` pairs against the source through its first moment only,
+and the `x`-dependent term is killed by the vanishing zeroth moment. -/
+theorem momentFunctional_neumannResponseDifference {s : ℕ → ℝ}
+    (hs : IsOddSourceMoments s) (x : ℝ) :
+    HTGeometry.momentFunctional s
+        (Polynomial.C (2⁻¹ : ℝ) * (Polynomial.X - Polynomial.C x)) = s 1 / 2 := by
+  have hC : (Polynomial.C (2⁻¹ : ℝ) * Polynomial.C x : Polynomial ℝ)
+      = Polynomial.C (x / 2) := by
+    rw [← Polynomial.C_mul]
+    congr 1
+    ring
+  have hsplit : (Polynomial.C (2⁻¹ : ℝ) * (Polynomial.X - Polynomial.C x) : Polynomial ℝ)
+      = (2⁻¹ : ℝ) • (Polynomial.X : Polynomial ℝ) ^ 1 + Polynomial.C (-(x / 2)) := by
+    rw [pow_one, Polynomial.smul_eq_C_mul, mul_sub, hC, Polynomial.C_neg]
+    ring
+  rw [hsplit, HTGeometry.momentFunctional_add, HTGeometry.momentFunctional_smul,
+    HTGeometry.momentFunctional_X_pow, momentFunctional_C, hs.zeroth]
+  ring
+
+/-- The response is independent of the evaluation point: this constancy is exactly what makes `(8)`
+the Fourier transform of a constant. -/
+theorem momentFunctional_neumannResponseDifference_const {s : ℕ → ℝ}
+    (hs : IsOddSourceMoments s) (x y : ℝ) :
+    HTGeometry.momentFunctional s
+        (Polynomial.C (2⁻¹ : ℝ) * (Polynomial.X - Polynomial.C x))
+      = HTGeometry.momentFunctional s
+        (Polynomial.C (2⁻¹ : ℝ) * (Polynomial.X - Polynomial.C y)) := by
+  rw [momentFunctional_neumannResponseDifference hs x,
+    momentFunctional_neumannResponseDifference hs y]
+
+/-- **`(8)`.**  Half the compact Fourier transform of the constant response over `[-a, a]` is the
+first moment carried by the sine kernel. -/
+theorem half_integral_neumannResponseDifference_eq_sineKernel
+    (s : ℕ → ℝ) (a : ℝ) {z : ℂ} (hz : z ≠ 0) :
+    (2⁻¹ : ℂ) *
+        ∫ y in (-a : ℝ)..a, ((s 1 / 2 : ℝ) : ℂ) * Complex.exp (I * z * (y : ℝ))
+      = (s 1 : ℂ) * Complex.sin ((a : ℂ) * z) / (2 * z) := by
+  rw [GaloisForLFunctions.HTGeometry.integral_const_mul_exp_mul_I_symm a
+    ((s 1 / 2 : ℝ) : ℂ) z hz]
+  push_cast
+  field_simp
 
 end
 

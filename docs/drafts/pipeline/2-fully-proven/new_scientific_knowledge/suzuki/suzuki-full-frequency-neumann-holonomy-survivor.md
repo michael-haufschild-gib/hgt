@@ -405,3 +405,83 @@ by `(P11)`), [PROVED HERE], standard axioms `[propext, Classical.choice, Quot.so
 So `(P13)` now rests only on `(P11)` and the distributional passage, not on any unformalized
 estimate: the "rational term diverges like `1/[2(a-x)]` and cannot be canceled" sentence is a
 theorem.
+
+### Lean progress — `(8)` and `(10)` do not need the distribution interface
+
+The Formal status section treats `(7)--(10)` as one block awaiting Suzuki's distribution triangle
+in Lean. Re-reading them separately, only `(7)` and `(9)` pair a distribution against a test
+function. `(8)` and `(10)` are elementary once `(7)` is granted:
+
+- `(8)` is the Fourier transform of a **constant** `mu_1/2` over `[-a,a]` — an interval integral of
+  an exponential, no distribution anywhere;
+- `(10)` is the parity algebra of a quotient whose denominator is odd.
+
+Both are now formal, as reusable analysis in `HTGeometry/CompactFourierSineKernel.lean`
+[PROVED HERE], wired into the `HTGeometry` umbrella, standard axioms
+`[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `integral_const_mul_exp_mul_I_symm` : `∫ y in -a..a, c * exp (I z y) = c * (2 sin (a z) / z)` for
+  `z ≠ 0`. Composing with `(7)`'s value `mu_1/2` and the leading `1/2` gives exactly `(8)`'s
+  `mu_1 sin(az)/(2z)`. Proof: `integral_exp_mul_complex` plus `Complex.two_sinh` through
+  `Complex.sinh_mul_I`.
+- `tendsto_sineKernel_nhdsNE_zero` : the sine kernel is regular at the origin with value `2a`,
+  which is what makes the `(8)`-`(9)` central-jet division legitimate.
+- `oddPart_div_of_odd` : **`(10)` itself** — for `W(-z) = -W(z)`, the odd part of `F/W` equals the
+  even part of `F` divided by `W`.
+- `evenPart_div_of_odd` : the companion identity.
+
+The formalization boundary of this card is therefore narrower than recorded: it is `(7)` and `(9)`
+alone — the two genuine distribution pairings — not the whole `(7)--(10)` passage.
+
+### Lean progress — `(7)` FORMALIZED on the corpus moment functional
+
+`(7)` does not need a general distribution theory either. Its whole content is: linearity of the
+pairing, applied to the **smooth** kernel `sgn(t) r_0(t) = -t/2` (the smoothing identity is already
+formal), plus `mu_0 = 0` from oddness. The corpus already owns the right vehicle —
+`HTGeometry/MomentFunctionalPositivity.lean`'s `momentFunctional s p = ∑ₖ aₖ sₖ`, with additivity,
+`smul`, and `momentFunctional_X_pow` — so no new source theory was needed.
+
+Added to `RHTower/SuzukiFullFrequencyNeumannHolonomy.lean` [PROVED HERE], standard axioms
+`[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `IsOddSourceMoments` : an odd source is one with all even moments vanishing; `.zeroth` extracts
+  `mu_0 = 0`.
+- `momentFunctional_C` : the moment functional of a constant is that constant times `mu_0`.
+- `momentFunctional_neumannResponseDifference` : **`(7)` itself** —
+  `⟨nu, (y - x)/2⟩ = mu_1 / 2` for an odd source, for every `x`.
+- `momentFunctional_neumannResponseDifference_const` : the response is independent of `x`. This
+  constancy is the property `(8)` consumes, stated separately because it is what makes the Fourier
+  transform in `(8)` the transform of a *constant*.
+- `half_integral_neumannResponseDifference_eq_sineKernel` : `(7)` composed with `(8)` —
+  half the compact Fourier transform of that constant over `[-a,a]` is
+  `mu_1 sin(a z)/(2 z)`, exactly the card's `(8)`.
+
+**Revised formalization boundary.**  Of the `(7)--(10)` passage, `(7)`, `(8)` and `(10)` are now
+formal. The only remaining item is `(9)` — `W'(0) = i mu_1` — which differentiates the compact
+Fourier transform of the source itself under the pairing, and is the one step that genuinely needs
+Suzuki's distribution triangle in Lean.
+
+### Lean progress — `(9)` FORMALIZED for a signed measure source; `(7)--(10)` closed
+
+`(9)` was the last item of the passage. It is a theorem about differentiating a characteristic
+function at the origin, and mathlib already carries that: `iteratedDeriv_charFun_zero` gives
+`iteratedDeriv n (charFun mu) 0 = I^n * ∫ x^n dmu`. The only thing missing was the **signed** case —
+`charFun` is defined for nonnegative measures, while an odd source is necessarily signed.
+
+New reusable module `HTGeometry/SignedCharFunCentralJet.lean` [PROVED HERE], wired into the
+`HTGeometry` umbrella, standard axioms `[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `signedCharFun mp mn = charFun mp - charFun mn` : the characteristic of a signed source presented
+  as a difference of two finite measures (every finite signed measure is such a difference).
+- `contDiff_signedCharFun` : it is `C^1` when both parts have a first moment.
+- `deriv_signedCharFun_zero` : **`(9)` itself** — `W'(0) = I * (∫x dmp - ∫x dmn) = I mu_1`.
+- `signedCharFun_reflected_odd` : if the negative part is the reflection of the positive part — i.e.
+  the source is **odd** — then `W(-t) = -W(t)`. This is exactly the hypothesis `(10)` consumes, so
+  `(9)` and `(10)` now compose without an extra assumption.
+
+**Passage `(7)--(10)` is now formal in full** for a signed-measure source: `(7)` on the moment
+functional, `(8)` as the compact Fourier transform of the resulting constant, `(9)` as the central
+jet above, `(10)` as the parity identity. The card's Formal status paragraph, which recorded the
+whole passage as awaiting a Lean distribution triangle, is superseded: what is still not represented
+is a source of distributional order above a measure, which the card's own argument never uses —
+`(7)` needs only linearity and a vanishing zeroth moment, and `(9)` needs only a first moment.

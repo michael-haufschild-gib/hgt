@@ -19,7 +19,8 @@ namespace GaloisForLFunctions
 variable {σ : ℝ}
 
 /-- **A finite family of jet monomials has a dominant member.** -/
-theorem exists_dominant_index {N n : ℕ} (hN : 0 < N) (e : Fin N → Fin (n + 1) → ℕ) :
+theorem exists_jet_dominant_index {N n : ℕ} (hN : 0 < N)
+    (e : Fin N → Fin (n + 1) → ℕ) :
     ∃ β : Fin N, ∀ α : Fin N, (e α 0 = e β 0 ∧ jetSDeg (e α) = jetSDeg (e β))
       ∨ (jetSDeg (e β) < jetSDeg (e α)
         ∨ (jetSDeg (e β) = jetSDeg (e α) ∧ e α 0 < e β 0)) := by
@@ -59,7 +60,7 @@ theorem exists_datum_tendsto_sum_jetMonomial (hσ : 0 < σ) {n N : ℕ} (hN : 0 
           (fun α : Fin N => e α 0 = e β 0 ∧ jetSDeg (e α) = jetSDeg (e β)),
         d α * ∏ j : Fin (n + 1), (jetLeadingConst (j : ℕ)) ^ (e α j))) := by
   classical
-  obtain ⟨β, hβ⟩ := exists_dominant_index hN e
+  obtain ⟨β, hβ⟩ := exists_jet_dominant_index hN e
   exact ⟨β, tendsto_sum_jetMonomial_div_dominant hσ d e β hβ⟩
 
 end GaloisForLFunctions

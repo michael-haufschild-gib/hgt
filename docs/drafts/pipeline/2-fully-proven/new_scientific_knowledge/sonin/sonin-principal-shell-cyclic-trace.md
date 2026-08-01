@@ -1399,9 +1399,46 @@ eventually `log x + δ <= s x - C`.  The proof is two steps — `log x <= 2 sqrt
 logarithm puts it under the square root's own bound `log y <= y - 1`; and a square root is eventually
 under any positive multiple of the argument.
 
-What remains is to apply it along the sequence: the cap gives the completion's contribution as at
-most a logarithm of the scale, the energy is at least a positive slope times the scale less a
-constant, and the two meet in the rate test's hypothesis.
+Applied along the sequence this closes the comparison.
+`not_bddBelow_soninCompletedPacketValueVar_of_log_cap` states it: for *any* function `f` with
+`f r <= log r` for `r > 1` — that is, any completion whose per-scale contribution obeys the
+logarithmic cap — the schedule's own sequence of scales witnesses that the packet channel has no
+floor.
+
+The statement takes the cap as a hypothesis on an arbitrary `f` rather than naming a particular
+completion, so it applies to every completion the cap covers, and it names no packet, cut or slack —
+only the aperture, the cap and the conclusion.
+
+**What this adds over the corpus, precisely.**  The log-shell channel itself was *already* closed, by
+`not_bddBelow_soninCompletedPacketValueVar_logShellChannelFamily`, and by a cheaper route: the
+packets sit inside the fixed outer radius, so the annulus bound caps that channel's contribution by a
+*constant*, and constant-versus-unbounded needs no rate.  The linear rate is not needed there.  What
+it buys is the class of completions whose contribution *grows*: `..._of_sublinear` closes every
+completion with `f(r)/r -> 0`, growing or not, bounded or not.  Between "bounded above" and
+"sublinear" lies everything the earlier qualitative argument could not touch.
+
+Read the other way, this sharpens the open gate itself.  `not_sublinear_of_forall_bddBelow` says a
+completion surviving at every schedule must have `f(r)/r` *not* tending to zero — it must grow at
+least linearly in the scale along some sequence.  The remaining question is therefore no longer "is
+there a completion?" but the much more specific "is there an *admissible* one growing at least
+linearly?", and admissibility is where the corpus already has leverage: an ideal element, or any
+uniformly bounded family, contributes `O(1)` on packets of bounded norm and so is excluded outright.
+
+That exclusion is now formal on the schedule's own scales rather than borrowed from the crossing
+clock: a bounded contribution divides by the scale to zero, so
+`not_bddBelow_soninCompletedPacketValueVar_of_bounded` follows from the sublinear theorem, and
+`re_inner_self_le_opNorm_mul_sq` supplies the bound for a uniformly bounded operator family — the
+pairing is at most the operator norm times the squared packet norm.  That inequality had been proved
+inline inside the log-shell closure; it is now a lemma.
+
+One further step was needed to make that usable, and it is a matter of *shape* rather than strength.
+A completion built from an operator family produces a contribution indexed by the schedule's steps,
+not a function of the scale, so the failure had to be restated for a bare sequence:
+`not_bddBelow_soninCompletedPacketValueVar_of_bddAbove_seq` closes every contribution sequence
+bounded above, and uses only that the energy diverges — the linear rate is not needed for it.  The
+packets' own size is bounded as it must be for the pairing bound to bite:
+`norm_sq_soninScaledPacketEven_le` gives `‖psi‖^2 <= 8 delta I`, since with the mean below one the
+packet is pointwise at most twice the profile.
 
 What remains on this line is the comparison against the logarithmic cap: the cap bounds the
 completed contribution by `log` of the outer radius, while the schedule's scale grows linearly in
@@ -1655,6 +1692,11 @@ family is abstract, so two widths have unrelated profiles.
 | the schedule statement strengthened to the **eventual** form — one product, and *every* fine enough cut works — which is the shape the rate test consumes | `exists_schedule_card_sub_le_hsNormSq_soninApertureCoupling` (restated) |
 | **the schedule as a sequence**: shifting the index past the point where the conditions start holding gives scales `p i` with uniform admissibility (`1 < p i`, `c < p i a`) and energy growing with `i` — the rate test's input shape | `eventually_soninShellCutScale_gt`, `exists_scale_sequence_of_schedule` |
 | **a logarithm falls short of every positive slope**: `log x <= 2 sqrt x` (halving puts it under the root's own bound), and a root is eventually under any positive multiple — so `log x + δ <= s x - C` eventually, for every `s > 0` | `log_le_two_mul_sqrt`, `eventually_log_add_le_linear` |
+| **no logarithmically capped completion restores the floor**: along the schedule's scales the capped contribution trails the coupling energy by a fixed amount, which is the rate test's hypothesis | `not_bddBelow_soninCompletedPacketValueVar_of_log_cap` |
+| **no *sublinear* completion restores the floor** — the widest class the linear rate reaches: the contribution may grow, and grow without bound, provided it grows more slowly than the scale | `eventually_sublinear_add_le_linear`, `not_bddBelow_soninCompletedPacketValueVar_of_sublinear` |
+| **what a completion would have to do**: one that restores the floor at every schedule cannot have its contribution divide by the scale to zero — it must grow at least linearly along some sequence of scales | `not_sublinear_of_forall_bddBelow` |
+| **the bounded case sits inside the sublinear one** on the schedule's scales, and a uniformly bounded operator family contributes at most `‖C‖` times the squared packet norm | `tendsto_div_atTop_nhds_zero_of_bounded`, `re_inner_self_le_opNorm_mul_sq`, `not_bddBelow_soninCompletedPacketValueVar_of_bounded` |
+| **the failure for a bounded contribution *sequence*** — the form an operator family supplies — using only divergence of the energy; with the packets' own size bounded, `‖ψ‖² <= 8 δ I` | `integrable_soninScaledPacket_sq`, `norm_sq_soninScaledPacketEven_le`, `not_bddBelow_soninCompletedPacketValueVar_of_bddAbove_seq` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1771,6 +1813,43 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the failure is restated for a bare contribution *sequence*, which is the shape an
+  operator family actually produces — a function of the schedule's step, not of the scale.  Worth
+  noting the proof needs only divergence of the energy, not the linear rate, so the bounded-sequence
+  case is genuinely cheaper than the sublinear one and should be cited directly rather than through
+  it.  Also proved the matching upper bound on the packets, `‖psi‖^2 <= 8 delta I`, without which the
+  pairing bound has nothing to bite on.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninBoundedSequenceCompletionFails.lean`.
+- 2026-08-01 — the bounded case is placed inside the sublinear one, so the schedule now covers it
+  without borrowing the crossing-clock argument.  Two small things came out of it: a bounded function
+  divides by its argument to zero (stated once, rather than re-derived), and the pairing bound
+  `re <inner> <= ‖C‖ ‖w‖²`, which had been living inline inside the log-shell closure proof and is
+  now a named lemma.  Neither is deep; both were being re-proved implicitly.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninBoundedCompletionFails.lean`.
+- 2026-08-01 — the sublinear result is turned round into a statement about the gate: any completion
+  that restores the floor at every schedule must grow at least linearly in the scale.  Formally it is
+  the contrapositive and costs three lines, but it is the more useful direction to have written down
+  — it converts the open question from an existence question about completions into a growth
+  condition that a candidate must satisfy, and a growth condition can be checked against the
+  admissibility the corpus already imposes.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninCompletionMustGrowLinearly.lean`.
+- 2026-08-01 — checking the corpus for the cap found that the log-shell channel completion is
+  *already closed*, and by a cheaper argument than mine: its contribution is bounded by a **constant**
+  (the packets live inside the fixed outer radius, so the annulus bound applies uniformly), and a
+  constant is beaten by qualitative unboundedness alone.  So the linear rate is not what closes the
+  Burnol channel.  What it does close is the class of completions that *grow*, which is where the
+  qualitative argument has nothing to say — and the natural boundary is not the logarithm but
+  sublinearity, so I proved that instead: any `f` with `f(r)/r -> 0` fails.  The logarithm is one
+  case of it.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninSublinearCompletionFails.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/LogBelowLinear.lean` (extended).
+- 2026-08-01 — **the comparison closes.**  Any completion whose contribution at each scale is at most
+  the logarithm of that scale fails to give the packet channel a floor, witnessed by the schedule's
+  own sequence.  Stating the cap as a hypothesis on an arbitrary function was the right move: it
+  keeps the theorem independent of how any particular completion is built, which is what the rate
+  test was designed for.  The proof is the three results of the last four entries meeting — linear
+  energy, logarithm below every slope, and the sequence — with nothing new needed.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninLogCappedCompletionFails.lean`.
 - 2026-08-01 — the log-versus-linear comparison is proved in general, which keeps it out of the
   aperture-specific chain: for every positive slope, a logarithm plus a constant is eventually below
   it.  The two-step route through `log x <= 2 sqrt x` is worth preferring to a direct limit argument

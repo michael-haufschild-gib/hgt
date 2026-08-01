@@ -2356,3 +2356,26 @@ dividing the discriminant.
   Axioms `[propext, Classical.choice, Quot.sound]` throughout.  What remains is the assembly: taking
   the ambient field to be the rational functions over the splitting field, identifying the second
   factor with the image of the small rational functions, and reading `centeredFullMonodromy` there.
+
+- 2026-08-01 — **The free parameter theorem is proved.**  `FreeParameterBaseChange.lean`:
+
+  `freeParameterBaseChange (hp : p ≠ 0) (hsep : p.Separable) (hsplit) (hgen)` — for `E` a splitting
+  field of a separable `p` over `F`, the automorphisms of the rational functions `E(t)` over the
+  rational functions `F(t)` are the Galois group of `p` over `F`.  Adjoining a free parameter to the
+  base does not change the Galois group.  Axioms `[propext, Classical.choice, Quot.sound]`.
+
+  The proof: `fracSub F E` — the image of `F(t)` in `E(t)` — meets the splitting field in `F`,
+  because every element of the splitting field is algebraic over `F` while the image carries no
+  algebraic element beyond `F`; and the two generate `E(t)`, because the constants and the variable
+  generate every polynomial hence every quotient (`eq_top_of_mem_of_mem`).  Natural irrationalities
+  then makes restriction an isomorphism.  Along the way `E(t)` is shown to be a splitting field of
+  `p` over `F(t)` (`isSplittingField_fracSub`), which is what supplies the Galois hypotheses; the
+  field-versus-algebra adjoin step goes through `adjoin_toSubalgebra_of_isAlgebraic`.
+
+  This is the missing ingredient identified in the previous entry.  It is a classical statement with
+  no counterpart in mathlib, and it applies to any separable polynomial, not only the ones here.
+
+  Two cost notes.  A `≤` between intermediate fields is not a function: `SetLike.le_def.mp` is
+  needed to apply it to a membership.  And an implicit type argument that has to be recovered from
+  under a `Polynomial.map` sends the unifier into `Polynomial.C =?= Polynomial.C` delta-unfolding
+  for eight seconds and then a heartbeat timeout; pinning `(E := E)` at the call site costs nothing.

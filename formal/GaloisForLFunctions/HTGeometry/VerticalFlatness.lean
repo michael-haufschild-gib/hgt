@@ -43,7 +43,7 @@ theorem IsVertFlat.sub {σ₀ : ℝ} {A B : ℂ → ℂ} (hA : IsVertFlat σ₀ 
             + t ^ N * ‖B ((σ : ℂ) + (t : ℂ) * Complex.I)‖ := by ring
 
 /-- The height dominates the modulus on a vertical line. -/
-theorem norm_vertical_le {σ : ℝ} (hσ : 0 ≤ σ) :
+theorem eventually_norm_vertical_le {σ : ℝ} (hσ : 0 ≤ σ) :
     ∀ᶠ t : ℝ in atTop, ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ ≤ (1 + σ) * t := by
   filter_upwards [eventually_ge_atTop (1 : ℝ)] with t ht
   have ht0 : (0 : ℝ) ≤ t := le_trans zero_le_one ht
@@ -70,7 +70,7 @@ theorem eventually_norm_eval_le {σ : ℝ} (hσ : 0 ≤ σ) (p : Polynomial ℂ)
           / ((σ : ℂ) + (t : ℂ) * Complex.I) ^ p.natDegree‖ < ‖p.leadingCoeff‖ + 1 :=
       this.eventually (eventually_lt_nhds (by linarith))
     filter_upwards [hlt] with t ht using ht.le
-  filter_upwards [hbound, norm_vertical_le hσ, eventually_vertical_ne_zero σ,
+  filter_upwards [hbound, eventually_norm_vertical_le hσ, eventually_vertical_ne_zero σ,
     eventually_ge_atTop (1 : ℝ)] with t hb hv hne ht
   have ht0 : (0 : ℝ) ≤ t := le_trans zero_le_one ht
   have hpow : ‖((σ : ℂ) + (t : ℂ) * Complex.I) ^ p.natDegree‖ ≤ ((1 + σ) * t) ^ p.natDegree := by
@@ -165,7 +165,8 @@ theorem IsVertFlat.div_poly {σ₀ : ℝ} (hσ₀ : 0 ≤ σ₀) {A : ℂ → �
   refine squeeze_zero' ?_ ?_ hmul
   · filter_upwards [eventually_ge_atTop (0 : ℝ)] with t ht
     positivity
-  filter_upwards [hbound, eventually_ge_atTop (1 : ℝ), norm_vertical_le (le_trans hσ₀ hσ)]
+  filter_upwards [hbound, eventually_ge_atTop (1 : ℝ),
+    eventually_norm_vertical_le (le_trans hσ₀ hσ)]
     with t hb ht hv
   have ht0 : (0 : ℝ) ≤ t := le_trans zero_le_one ht
   have hnorm1 : (1 : ℝ) ≤ ‖(σ : ℂ) + (t : ℂ) * Complex.I‖ := by

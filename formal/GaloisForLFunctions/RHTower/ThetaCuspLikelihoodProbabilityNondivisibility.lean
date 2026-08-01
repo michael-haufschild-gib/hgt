@@ -31,14 +31,17 @@ theorem thetaCuspHigherLikelihoodTiltedMeasure_univ
       ENNReal.ofReal (thetaCuspHigherLikelihoodSpectralResponse B) := by
   rw [thetaCuspHigherLikelihoodTiltedMeasure,
     withDensity_apply _ MeasurableSet.univ]
+  have hdensity :
+      (fun t : ℝ => ((thetaCuspHigherLikelihoodTiltDensity B t : NNReal) : ENNReal)) =
+        fun t : ℝ => ENNReal.ofReal (Real.exp (-B * t)) := by
+    funext t
+    rfl
+  rw [hdensity]
+  simp only [Measure.restrict_univ]
   rw [← ofReal_integral_eq_lintegral_ofReal
     (integrable_exp_neg_mul_thetaCuspHigherLikelihoodSpectralMeasure hB)
     (Filter.Eventually.of_forall fun t => (Real.exp_pos _).le)]
   rw [integral_exp_neg_mul_thetaCuspHigherLikelihoodSpectralMeasure hB]
-  congr 1
-  funext t
-  simp [thetaCuspHigherLikelihoodTiltDensity,
-    ENNReal.ofReal_eq_coe_nnreal, Real.exp_pos]
 
 /-- The unnormalized seam carrier has total mass exactly `Z(B)`. -/
 theorem thetaCuspLikelihoodSeamTiltedMeasure_univ
@@ -47,15 +50,23 @@ theorem thetaCuspLikelihoodSeamTiltedMeasure_univ
       ENNReal.ofReal (thetaCuspLikelihoodPartition B) := by
   rw [thetaCuspLikelihoodSeamTiltedMeasure, Measure.add_apply,
     thetaCuspHigherLikelihoodTiltedMeasure_univ hB]
-  simp [thetaCuspLikelihoodPartition, ENNReal.ofReal_add,
-    integral_exp_neg_mul_thetaCuspHigherLikelihoodSpectralMeasure hB,
-    integral_nonneg fun t => (Real.exp_pos _).le]
+  have hresponse : 0 ≤ thetaCuspHigherLikelihoodSpectralResponse B := by
+    rw [← integral_exp_neg_mul_thetaCuspHigherLikelihoodSpectralMeasure hB]
+    exact integral_nonneg fun _ => (Real.exp_pos _).le
+  rw [thetaCuspLikelihoodPartition,
+    ENNReal.ofReal_add (by norm_num : (0 : ℝ) ≤ 1) hresponse]
+  simp
 
 /-- Literal normalized theta seam likelihood
 `P_B = Z(B)⁻¹ • (δ₀ + exp(-B t) ν)`. -/
 def thetaCuspLikelihoodProbabilityMeasure (B : ℝ) : Measure ℝ :=
-  ENNReal.ofReal (thetaCuspLikelihoodPartition B)⁻¹ •
+  (ENNReal.ofReal (thetaCuspLikelihoodPartition B))⁻¹ •
     thetaCuspLikelihoodSeamTiltedMeasure B
+
+private theorem thetaCuspLikelihoodNormalization_ne_zero (B : ℝ) :
+    (ENNReal.ofReal (thetaCuspLikelihoodPartition B))⁻¹ ≠ 0 :=
+  (@ENNReal.inv_ne_zero
+    (ENNReal.ofReal (thetaCuspLikelihoodPartition B))).mpr ENNReal.ofReal_ne_top
 
 /-- For every positive spectral coordinate, the normalized law has total mass one. -/
 theorem thetaCuspLikelihoodProbabilityMeasure_univ
@@ -64,7 +75,7 @@ theorem thetaCuspLikelihoodProbabilityMeasure_univ
   rw [thetaCuspLikelihoodProbabilityMeasure, Measure.smul_apply,
     thetaCuspLikelihoodSeamTiltedMeasure_univ hB, smul_eq_mul]
   exact ENNReal.inv_mul_cancel
-    (ENNReal.ofReal_ne_zero.mpr (thetaCuspLikelihoodPartition_pos hB).ne')
+    (ENNReal.ofReal_ne_zero_iff.mpr (thetaCuspLikelihoodPartition_pos hB))
     ENNReal.ofReal_ne_top
 
 /-- The normalized carrier is an actual probability measure, not merely a nonzero scalar
@@ -95,33 +106,32 @@ theorem ae_nonneg_thetaCuspLikelihoodSeamTiltedMeasure (B : ℝ) :
   rw [thetaCuspLikelihoodSeamTiltedMeasure, ae_add_measure_iff]
   constructor
   · rw [ae_dirac_iff measurableSet_Ici]
-    exact le_rfl
   · exact ae_nonneg_thetaCuspHigherLikelihoodTiltedMeasure B
 
 /-- The normalized likelihood is carried by the intrinsic half-line `[0, ∞)`. -/
 theorem ae_nonneg_thetaCuspLikelihoodProbabilityMeasure (B : ℝ) :
     ∀ᵐ t ∂thetaCuspLikelihoodProbabilityMeasure B, 0 ≤ t := by
   rw [thetaCuspLikelihoodProbabilityMeasure]
-  exact Measure.ae_smul_measure
-    (ae_nonneg_thetaCuspLikelihoodSeamTiltedMeasure B)
+  apply Measure.ae_smul_measure
+  exact ae_nonneg_thetaCuspLikelihoodSeamTiltedMeasure B
 
 theorem thetaCuspLikelihoodProbabilityMeasure_Iio_zero (B : ℝ) :
     thetaCuspLikelihoodProbabilityMeasure B (Set.Iio 0) = 0 := by
-  rw [← ae_iff]
-  simpa only [Set.mem_Iio, not_lt] using
-    ae_nonneg_thetaCuspLikelihoodProbabilityMeasure B
+  have h := ae_nonneg_thetaCuspLikelihoodProbabilityMeasure B
+  change thetaCuspLikelihoodProbabilityMeasure B {a : ℝ | a < 0} = 0
+  simpa only [not_le] using ae_iff.mp h
 
 /-! ### Exact normalized atoms -/
 
 theorem thetaCuspLikelihoodProbabilityMeasure_singleton_zero (B : ℝ) :
     thetaCuspLikelihoodProbabilityMeasure B {0} =
-      ENNReal.ofReal (thetaCuspLikelihoodPartition B)⁻¹ := by
+      (ENNReal.ofReal (thetaCuspLikelihoodPartition B))⁻¹ := by
   rw [thetaCuspLikelihoodProbabilityMeasure, Measure.smul_apply, smul_eq_mul,
     thetaCuspLikelihoodSeamTiltedMeasure_singleton_zero, mul_one]
 
 theorem thetaCuspLikelihoodProbabilityMeasure_singleton_three (B : ℝ) :
     thetaCuspLikelihoodProbabilityMeasure B {3} =
-      ENNReal.ofReal (thetaCuspLikelihoodPartition B)⁻¹ *
+      (ENNReal.ofReal (thetaCuspLikelihoodPartition B))⁻¹ *
         (((thetaCuspHigherLikelihoodTiltDensity B 3 : NNReal) : ENNReal) *
           ENNReal.ofReal (thetaCuspLikelihoodAtomWeight 2)) := by
   rw [thetaCuspLikelihoodProbabilityMeasure, Measure.smul_apply, smul_eq_mul,
@@ -130,29 +140,32 @@ theorem thetaCuspLikelihoodProbabilityMeasure_singleton_three (B : ℝ) :
 /-- Exact paper formula `P_B{3} = Z(B)⁻¹ exp(-3B) exp(-9/2) 2⁴`. -/
 theorem thetaCuspLikelihoodProbabilityMeasure_singleton_three_explicit (B : ℝ) :
     thetaCuspLikelihoodProbabilityMeasure B {3} =
-      ENNReal.ofReal (thetaCuspLikelihoodPartition B)⁻¹ *
+      (ENNReal.ofReal (thetaCuspLikelihoodPartition B))⁻¹ *
         ENNReal.ofReal
           (Real.exp (-3 * B) * (Real.exp (-(9 / 2 : ℝ)) * 16)) := by
   rw [thetaCuspLikelihoodProbabilityMeasure_singleton_three]
   congr 1
+  change ENNReal.ofReal (Real.exp (-B * 3)) *
+      ENNReal.ofReal (thetaCuspLikelihoodAtomWeight 2) = _
   rw [← ENNReal.ofReal_mul (Real.exp_pos _).le]
   congr 1
-  · simp [thetaCuspHigherLikelihoodTiltDensity, Real.exp_pos]
-  · simp [thetaCuspLikelihoodAtomWeight, thetaCuspLikelihoodGap]
+  congr 1
+  · ring_nf
+  · norm_num [thetaCuspLikelihoodAtomWeight, thetaCuspLikelihoodGap]
 
 theorem thetaCuspLikelihoodProbabilityMeasure_singleton_zero_pos
-    {B : ℝ} (hB : 0 < B) :
+    {B : ℝ} (_hB : 0 < B) :
     0 < thetaCuspLikelihoodProbabilityMeasure B {0} := by
   rw [pos_iff_ne_zero,
     thetaCuspLikelihoodProbabilityMeasure_singleton_zero]
-  exact ENNReal.inv_ne_zero.mpr ENNReal.ofReal_ne_top
+  exact thetaCuspLikelihoodNormalization_ne_zero B
 
 theorem thetaCuspLikelihoodProbabilityMeasure_singleton_three_ne_zero
     (B : ℝ) :
     thetaCuspLikelihoodProbabilityMeasure B {3} ≠ 0 := by
   rw [thetaCuspLikelihoodProbabilityMeasure, Measure.smul_apply, smul_eq_mul]
   exact mul_ne_zero
-    (ENNReal.inv_ne_zero.mpr ENNReal.ofReal_ne_top)
+    (thetaCuspLikelihoodNormalization_ne_zero B)
     (thetaCuspLikelihoodSeamTiltedMeasure_singleton_three_ne_zero B)
 
 theorem thetaCuspLikelihoodProbabilityMeasure_singleton_three_pos (B : ℝ) :
@@ -172,7 +185,7 @@ theorem not_additivelyClosedAtomSupport_thetaCuspLikelihoodProbabilityMeasure
     (B : ℝ) :
     ¬ AdditivelyClosedAtomSupport (thetaCuspLikelihoodProbabilityMeasure B) :=
   not_additivelyClosedAtomSupport_smul_thetaCuspLikelihoodSeamTiltedMeasure
-    B (ENNReal.inv_ne_zero.mpr ENNReal.ofReal_ne_top)
+    B (thetaCuspLikelihoodNormalization_ne_zero B)
 
 /-- The normalized two-particle law creates the missing atom at `6`. -/
 theorem thetaCuspLikelihoodProbabilityMeasure_selfConv_singleton_six_ne_zero
@@ -203,7 +216,7 @@ theorem thetaCuspLikelihoodProbabilityMeasure_not_infinitelyDivisible
     (B : ℝ) :
     ¬ InfinitelyDivisible (thetaCuspLikelihoodProbabilityMeasure B) :=
   not_infinitelyDivisible_smul_thetaCuspLikelihoodSeamTiltedMeasure
-    B (ENNReal.inv_ne_zero.mpr ENNReal.ofReal_ne_top)
+    B (thetaCuspLikelihoodNormalization_ne_zero B)
 
 /-! ### GGC and Thorin-subordinator exclusions -/
 

@@ -41,8 +41,9 @@ its strongest positive survivor remains part of frontier.
 
 Project has solved most connector problems and has not solved source-acquisition problem.
 Nearest routes require one global source theorem: first-clock lower control, fixed-width
-Weil floor, completed Hedenmalm positivity, critical Möbius cancellation, quantitative
-Sonin closure, Suzuki full-frequency source realization, Xi-current control, or Julia
+Weil floor, completed Hedenmalm positivity, critical Möbius cancellation,
+normalized-nonsublinear Sonin floor restoration and source handoff, Suzuki full-frequency
+source realization, Xi-current control, or Julia
 coherent-energy budget. No route currently supplies that theorem.
 
 ## 2. What the foundational tower actually proves
@@ -67,7 +68,7 @@ must establish one coordinate from information that does not already contain Xi 
 location. The same rule applies to the hundreds of later `↔ RiemannHypothesis`
 theorems.
 
-## 3. Complete quotient of live proof routes
+## 3. Complete quotient of live proof routes and one source-adjacent coordinate
 
 This section quotients thousands of declarations by their first unresolved premise. Two
 criteria belong to the same route when their proved chains return to the same missing
@@ -341,7 +342,8 @@ positive Sonin finite/block/moment values
 
 - aperture refinement is strictly subadditive;
 - lost-layer coupling energy is positive and divergent;
-- frequency-side logarithmic shell channel is the sole surviving completion candidate;
+- the frequency-side logarithmic shell channel does not restore a floor: on every fixed
+  annulus its packet contribution has a uniform upper bound, independently of tower height;
 - inverse-dilated packet physical cutoff and physical-band error vanish exactly;
 - a square-root norm floor follows from the packet-energy floor under the stated mean and
   square-tail hypotheses;
@@ -372,18 +374,29 @@ positive Sonin finite/block/moment values
 - one fixed schedule product and starting cut now give a single admissible sequence of
   scales whose successive-layer coupling energy is bounded below by a positive linear
   function of both annulus count and scale;
-- the frequency-side logarithmic shell channel blows up but grows at most logarithmically;
-- failure of the final floor is reduced to a quantitative rate shortfall.
+- one analytic comparison also excludes every logarithmically capped additive term in the
+  typed completed-packet model along the schedule;
+- more generally, every sublinear scalar additive term `f(scale)` in the typed
+  `soninCompletedPacketValueVar` model fails along the constructed schedule when
+  `f(r)/r → 0`, even if `f` is positive and unbounded.
+- conversely, any typed additive term restoring the floor for every admissible schedule is proved not to
+  satisfy `f(r)/r → 0`; this is a necessary condition, not a positive linear asymptotic.
 
-**Open core.** Instantiate the existing shortfall test by comparing the actual admissible
-completion contribution with the new linear coupling lower bound—particularly formalize
-the required linear-versus-logarithmic inequality for the surviving log-shell channel—then
-connect the result to literal all-prime source data. Schedule existence, scale-free ideal
-discount, and one-sequence linear coupling growth are closed; the concrete completion
-shortfall and arithmetic source handoff are not.
+**Open core.** Construct a literal all-prime typed additive completion whose lower floor exists for
+every `κ`, every starting index, and every admissibility proof in the schedule theorem. Only under
+that universal premise is `¬ Tendsto (fun r ↦ f r / r) atTop (𝓝 0)` proved necessary; no
+such necessity is proved for one selected schedule or for an unreduced semilocal operator.
+Alternatively prove that the arithmetic completion is not governed by the typed model, then
+establish the source handoff. Schedule existence,
+scale-free ideal discount, one-sequence linear coupling growth, the actual logarithmic-shell
+channel, and every sublinear additive term inside that typed model are closed. No corpus theorem
+constructs a source-faithful normalized-nonsublinear compensation satisfying the floor or reduces
+a semilocal operator completion to this scalar model.
 
-**Dead mechanisms.** Scalar, bounded, fixed-operator, Burnol counterterm, position-side,
-and aperture-refinement-only completions fail. Divergence without rate is insufficient.
+**Dead mechanisms.** Bounded, fixed-operator, Burnol counterterm, position-side,
+aperture-refinement-only and actual logarithmic-shell completions fail; every sublinear scalar
+additive term inside the typed completed-packet model also fails. Mere unboundedness with normalized
+ratio tending to zero is insufficient within that model.
 
 ### Route G — Suzuki Hermite–Biehler, anti-Pick, and Ward realization
 
@@ -621,8 +634,25 @@ Galois naturality, and suspension-flow transversality. These close the generic K
 affine-foliation mathematics, not the arithmetic identification of the frequency vector,
 prime fibres, relevant complex, or Xi spectrum.
 
+In a standalone half-line complex-pair ODE model motivated by an affine leaf, each nonzero
+frequency has an explicit decaying closed/coclosed-labelled chiral solution with squared norm
+`1 / |μ|`; every square-integrable solution of the stated ODE is its scalar multiple, while
+zero frequency has no nonzero square-integrable solution. Opposite frequencies have the defined
+pairing `i / μ`, positive star-pairing value `1 / |μ|`, and the defined power pullback shifts
+`μ ↦ q μ` with pairing weight one. The radial solution is also tensored with Fourier characters
+on `UnitAddTorus` to form a concrete analytic cylinder model: Haar integration makes distinct
+characters orthogonal, gives the same reciprocal-frequency norm, kills cup pairing unless the
+characters are opposite, recovers `i / μ` for the opposite pair, and makes the normalized modes
+orthonormal. A continuous torus function whose coefficient against every character vanishes is
+identically zero, and two continuous torus functions with equal character coefficients agree.
+Frequency is the integer-character pairing with the same Kronecker direction used by the
+dense-orbit criterion. This closes the radial/cylinder mode, pairing, scaling, continuous-torus
+completeness, and uniqueness calculations. It does not prove completeness for arbitrary
+square-integrable cylinder data. No Lean theorem identifies this analytic cylinder with the
+separately defined integrated affine-leaf carrier or with the arithmetic relevant complex.
+
 **Open core.** Meyer-complex comparison; radial Schwartz domain; nuclear topology and
-closed range; nonradial acyclicity; cup/trace/flow/Hodge transport; nuclear
+closed range; nonradial acyclicity; arithmetic cup/trace/flow/Hodge transport; nuclear
 almost-idempotence; middle-kernel vanishing; and source-to-Xi spectrum inclusion.
 
 The generic contraction hypotheses are now instantiated unconditionally on
@@ -720,7 +750,10 @@ existence.
 `α=1` carrier fails at degree one; one-particle infinite divisibility fails by atomic
 support. A two-particle completion survives but has no transform identification.
 
-### Divisor-fed prime-seam submass coordinate
+No Route R is assigned at this snapshot. The following divisor-fed coordinate is retained for its
+exact identities but fails the paper's source-independence criterion for a live route.
+
+### Non-route coordinate — divisor-fed prime-seam submass
 
 **Endpoint.** `XiPrimeSeamPairEnergySubmass ↔ RH`.
 
@@ -758,6 +791,7 @@ leading routes.
 The following families reduce to Routes A–S or remain bare equivalences:
 
 - Li coefficient and shifted reciprocal moment criteria;
+- Nyman–Beurling/Báez–Duarte closure and its scalar Hardy-cost abstraction;
 - Salem integral exclusion;
 - Hardy and Colombeau closure criteria;
 - theta-infinity and arbitrary-length mollifier criteria;
@@ -774,6 +808,15 @@ The following families reduce to Routes A–S or remain bare equivalences:
 - Böttcher, QECC, static-Choi/observer, and universality atlases.
 
 They remain useful coordinates. None adds an independent source producer.
+
+The exact local Nyman–Beurling scope is smaller than its module commentary: Lean defines the
+normalized half-plane kernel and vanishing floor and proves their scalar identities, positivity,
+inverse-height upper degradation, and a complementary reciprocal-length inequality. It does not
+formalize the fractional-part generators, their Mellin transform, the global closure equivalence,
+or an RH connector. Yang's August 2026 localized Friedrichs-angle theorem adds an RH consequence
+and unconditional subspace-sum structure, not a distance estimate tending to zero. A Nyman route
+therefore remains a classical equivalent closure problem with no new primitive source theorem in
+the corpus or located literature.
 
 ## 4. Role of HilbertMetric
 
@@ -1018,7 +1061,8 @@ completed integral.
 **Dead.**
 
 - Sonin aperture refinement alone;
-- scalar/bounded/fixed-operator/position-side Sonin completion;
+- bounded/fixed-operator/position-side Sonin completion and sublinear scalar-additive terms
+  in the typed completed-packet model;
 - second-order Koplienko subtraction that deletes required linear terms;
 - legacy Suzuki entire compact limit;
 - scalar jump/Herglotz identifications with mismatched coordinates;
@@ -1032,10 +1076,11 @@ completed integral.
 - rank-one, single-mode, or diagonal spectral positivity as control of projective chord:
   every diagonal chord contribution vanishes.
 
-**Survivor.** Frequency-side logarithmic Sonin channel; meromorphic Suzuki anti-Pick,
-Herglotz, full-frequency Ward, and projective/Plücker structures; self-adjoint relative
-phase coordinate, complementary parity sector, genuine spectral-pair orientation, and
-independent source-germ-weld route.
+**Survivor.** A source-faithful floor-restoring Sonin contribution whose normalized scalar
+term does not tend to zero, or a semilocal completion outside the typed additive model;
+meromorphic Suzuki anti-Pick, Herglotz, full-frequency Ward, and projective/Plücker
+structures; self-adjoint relative phase coordinate, complementary parity sector, genuine
+spectral-pair orientation, and independent source-germ-weld route.
 
 ### 6.6 Möbius/additive cancellation shortcuts
 
@@ -1269,9 +1314,9 @@ literature. They are stated at source level, before specialization to Xi zeros.
 
 ### Tier 2 — source-to-operator or source-to-form construction
 
-9. The concrete Sonin completion shortfall comparing the surviving logarithmic-shell
-   contribution with the now-proved linear coupling lower bound, followed by a literal
-   all-prime source handoff.
+9. A source-faithful Sonin completion satisfying the floor with normalized contribution not
+   tending to zero, or a proof that the arithmetic completion lies outside the typed scalar-additive model,
+   followed by the literal all-prime source handoff.
 10. Suzuki source coefficient monotonicity, chord-mass gap, full jump Pick kernel, or a
     source identification of the forced negative-light Gram channel with the rectangular
     Ward residual.
@@ -1349,6 +1394,10 @@ completion.
   not the missing source estimates:
   [Hardy space approximation](https://arxiv.org/abs/2606.16097) and
   [Colombeau–Beurling criterion](https://arxiv.org/abs/2606.22562).
+- Yang proves RH-implied zero Friedrichs angles for localized Nyman–Beurling subspace pairs and
+  unconditional strict subspace-sum inclusions. These sharpen the Hilbert geometry but do not
+  provide the missing approximation estimate:
+  [A Friedrichs angle between the Nyman–Beurling spaces and the Riemann hypothesis](https://doi.org/10.1016/j.jmaa.2026.130494).
 - The Salem note is explicitly an equivalence:
   [A new equivalence by means of the Salem integral equation](https://arxiv.org/abs/2604.15396).
 - Polson's revised Thorin paper establishes the probabilistic/Hadamard framework, not a
@@ -1367,7 +1416,8 @@ The cited primary sources close no Tier-1 or Tier-2 open core above.
 4. Möbius Gamma–Hankel bounded returns;
 5. fixed-width rectangular Weil floor;
 6. any finite prime–arch high-frequency ceiling;
-7. Sonin quantitative frequency-channel closure;
+7. Sonin source-faithful floor restoration beyond the typed sublinear barrier and literal
+   all-prime handoff;
 8. Suzuki source-selected full jump kernel or relative-Volterra source-germ weld.
 
 These routes begin with literal source and have short, formally closed tails to RH.
@@ -1411,7 +1461,7 @@ The routes differ in the missing theorem:
 - fixed-width lower floor for rectangular Weil;
 - all-order completed positivity for Hedenmalm/prime–arch;
 - critical cancellation for Möbius;
-- rate-controlled closure for Sonin;
+- normalized-nonsublinear floor restoration and literal all-prime handoff for Sonin;
 - source-selected full-frequency Pick/Hermite–Biehler structure for Suzuki;
 - relative-Volterra phase source-germ weld;
 - off-diagonal core-current control for Xi Taylor;
@@ -1464,6 +1514,10 @@ Therefore the honest current conclusion is:
 - `RHTower/SoninCouplingEnergyUnbounded.lean`
 - `RHTower/SoninCouplingEnergyLinear.lean`
 - `RHTower/SoninScheduleSequence.lean`
+- `RHTower/SoninLogCappedCompletionFails.lean`
+- `RHTower/SoninSublinearCompletionFails.lean`
+- `RHTower/SoninCompletionMustGrowLinearly.lean`
+- `RHTower/QuantitativeNymanBeurling.lean`
 - `RHTower/GroskinArchimedeanTailOrder.lean`
 - `RHTower/SuzukiFiniteApertureHermiteBiehler.lean`
 - `RHTower/SuzukiVolterraCartesianPhaseDefect.lean`
@@ -1490,6 +1544,11 @@ Therefore the honest current conclusion is:
 - `RHTower/DeningerKroneckerDense.lean`
 - `RHTower/DeningerAffineLeafFlow.lean`
 - `RHTower/DeningerAffineLeafSymmetry.lean`
+- `RHTower/DeningerHarmonicMode.lean`
+- `RHTower/DeningerHarmonicCup.lean`
+- `RHTower/DeningerHarmonicUniqueness.lean`
+- `RHTower/DeningerCylinderModes.lean`
+- `RHTower/DeningerTorusCompleteness.lean`
 - `RHTower/HedenmalmPrimeNormalWickBoundaryEnergy.lean`
 - `RHTower/ThetaCuspCalibratedPowerReciprocalMomentLaw.lean`
 - `RHTower/CCMFirstClockJuliaEquilibriumGram.lean`
