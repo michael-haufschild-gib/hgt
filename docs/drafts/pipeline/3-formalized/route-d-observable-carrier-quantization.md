@@ -30,11 +30,14 @@ for every `k >= 0`.
 3. every canonical Xi thermal node has positive pushforward atomic mass;
 4. consequently no reporter whose every level set has `mu`-measure zero can represent the Route D
    tower. On an atomless source, no countable-to-one reporter can do so; in particular, no
-   injective reporter can.
+   injective reporter can;
+5. for the literal theta-cusp density, every canonical thermal level set has positive Lebesgue
+   measure. Thus a successful reporter requires genuine positive-measure plateaus, not merely
+   uncountable null fibres.
 
 The intended source specialization is the positive theta-cusp density on the positive real line.
-Every successful deterministic theta reporter must collapse uncountable positive-measure fibres
-to the exact canonical divisor atoms. A diffuse, countable-to-one, or information-preserving
+Every successful deterministic theta reporter must collapse positive-Lebesgue-measure fibres to
+the exact canonical divisor atoms. A diffuse, countable-to-one, or information-preserving
 observable cannot be the missing Route D producer.
 
 ## Internal frontier
@@ -80,6 +83,9 @@ observable cannot be the missing Route D producer.
 7. **Can a mildly noninjective reporter evade the theorem?** Not if every level set is countable.
    Atomlessness makes every countable fibre null. Successful thermal fibres must be uncountable and
    have the exact positive canonical masses.
+8. **Could those uncountable fibres remain Lebesgue-null?** Not for the theta source. Its weighted
+   measure is absolutely continuous with respect to Lebesgue measure, so positive source mass
+   forces positive Lebesgue mass.
 
 **Verdict:** `SURVIVES HOSTILE ATTACK` as an exact classification/no-go, not as an RH proof.
 
@@ -114,6 +120,9 @@ Define `nu = node_* mu`.
    a strictly positive mass, contradiction.
 6. If `mu` is atomless and every fibre of `node` is countable, every level set is null. This gives
    the countable-to-one obstruction; injectivity is its singleton-fibre corollary.
+7. The theta-cusp source is a density with respect to restricted Lebesgue measure and is therefore
+   absolutely continuous with respect to Lebesgue measure. Each positive thermal source fibre from
+   step 4 consequently has positive Lebesgue measure.
 
 Every quantifier and imported theorem is discharged. The claim is `[PAPER-PROVED]` and formalized
 unconditionally in Lean.
@@ -126,7 +135,7 @@ quantization theorem for the observable, not merely a negation. It turns the nex
 into a falsifiable one:
 
 ```text
-construct source-defined uncountable positive-measure theta fibres
+construct source-defined positive-Lebesgue-measure theta plateaus
   whose masses and reported values satisfy the canonical Route D moments
   without selecting Xi zeros or assuming positivity.
 ```
@@ -153,7 +162,10 @@ not_isPrimeArchObservableWitness_of_forall_measure_levelSet_eq_zero
 not_isPrimeArchObservableWitness_of_countable_levelSets
 not_isPrimeArchObservableWitness_of_injective_of_nullSingleton
 thetaCuspContinuousSourceMeasure
+thetaCuspContinuousSourceMeasure_absolutelyContinuous_volume
 thetaCuspContinuousSourceMeasure_nullSingleton
+IsPrimeArchObservableWitness.volume_levelSet_xiThermalNode_pos
+not_isPrimeArchObservableWitness_thetaCusp_of_forall_volume_levelSet_eq_zero
 not_isPrimeArchObservableWitness_thetaCusp_of_countable_levelSets
 not_isPrimeArchObservableWitness_thetaCusp_of_injective
 ```

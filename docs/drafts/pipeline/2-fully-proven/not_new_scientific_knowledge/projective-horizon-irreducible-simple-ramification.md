@@ -491,3 +491,15 @@ level.  No new Lean claim is attached to this bridge card.
   `finCongr` resolves it.
 
   With this the induction for `m ≤ n` can be written from proved parts only.
+
+- 2026-08-01 — **The presentation transports along an equality of variable counts.**
+  `SchurVariablePresentation.lean`, axioms `[propext, Classical.choice, Quot.sound]`:
+  `rename_finCongr_schurVar` — reindexing the variables carries each coefficient to the
+  corresponding one; `map_rename_finCongr_rectangularSchurToeplitz` and
+  `rename_finCongr_det_rectangularSchurToeplitz` — hence a section and its determinant transport too.
+
+  Combined with `irreducible_rename_finCongr`, this removes the last friction in the induction: the
+  ambient ring appearing as `n' + m' - 1 + 2` on one side and `n' + m' + 1` on the other can now be
+  matched, since both the statement and the object transport along the arithmetic identity.
+
+  Every ingredient of the `m ≤ n` induction is proved.  What is left is to write it.

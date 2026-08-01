@@ -668,10 +668,10 @@ source packet to produce the mixed value `m_1` as well as both diagonal values.
    boundary.  Construct instead a global signed prime–Gamma object whose positive quotient is
    formed only after all Euler, Gamma, and polar modes have been combined.  Prove its positivity
    without target moments or zero locations, then prove `(22j)`.  On any hidden positive source,
-   the resulting observable must be a target-shaped quantizer: every canonical thermal value has
-   an uncountable positive-measure fibre with its forced divisor weight.  A cutoff-dependent fitted
-   counterterm, target-fed quantile map, or chosen conditionally convergent prime order is not
-   source-functorial evidence.
+   the resulting observable must be a target-shaped plateau quantizer: every canonical thermal
+   value has a positive-Lebesgue-measure fibre with its forced divisor weight.  A cutoff-dependent
+   fitted counterterm, target-fed quantile map, or chosen conditionally convergent prime order is
+   not source-functorial evidence.
 2. **Two-vector completed comparison.**  For `N=2`, identify three entries of that one source
    packet with `m_0,m_1,m_2` through the inverse-tilted central source relation.  This subsumes
    `(23)` without defining its square root from the determinant.
@@ -739,11 +739,11 @@ source packet to produce the mixed value `m_1` as well as both diagonal values.
 - [x] Euler-subset-natural off-diagonal channel-mixing unbalancing excluded in Lean, even with an
       arbitrary fixed Gamma/polar boundary vector
 - [x] unrestricted observable carriers classified in Lean: their reporter pushforward is the
-      canonical Xi law, every thermal node has an uncountable positive-measure fibre, and every
-      countable-to-one reporter on the atomless theta-cusp source is excluded
+      canonical Xi law, every thermal node has a positive-Lebesgue-measure theta fibre, and every
+      Lebesgue-null-level-set reporter on the theta-cusp source is excluded
 - [ ] construct a genuinely global nonlocal signed prime–Gamma quotient whose positivity appears
       only after completion and is proved without target moments or zero locations
-- [ ] construct its source-defined uncountable positive-measure fibre partition/correspondence
+- [ ] construct its source-defined positive-Lebesgue-measure fibre partition/correspondence
       without selecting Xi zeros or importing the target moment law
 - [ ] formalize the positive mixed center-jet Gram of the infinite kernel
 - [ ] couple the Gamma spectral clock and polar boundary modes with the prime anomaly kernel
@@ -788,8 +788,8 @@ source packet to produce the mixed value `m_1` as well as both diagonal values.
   a global signed boundary/domain defect formed before positivity; its resolvent-flux identification
   is the irreducible Weil/RH clause.
 - 2026-08-01 -- Classified every deterministic observable on an arbitrary hidden positive source.
-  Its pushforward is forced to the canonical Xi-divisor law, and each thermal value has an
-  uncountable positive-measure source fibre.  Hence countable-to-one reporters on the atomless
-  theta-cusp density cannot be the producer.  The surviving source problem is an explicit
-  uncountable-to-one fibre quantization forced by prime--Gamma completion rather than encoded
+  Its pushforward is forced to the canonical Xi-divisor law, and each thermal value has a
+  positive-Lebesgue-measure theta-source fibre.  Hence any reporter with Lebesgue-null level sets
+  cannot be the producer.  The surviving source problem is an explicit plateau quantization
+  forced by prime--Gamma completion rather than encoded
   from zeros; this is another exact form of the same global Weil-positivity clause.

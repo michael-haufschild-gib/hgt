@@ -4006,3 +4006,4 @@ import GaloisForLFunctions.RHTower.DeningerCechGlue
 import GaloisForLFunctions.RHTower.DeningerCharacterStage
 import GaloisForLFunctions.RHTower.DeningerCylinderFunction
 import GaloisForLFunctions.RHTower.DeningerPoissonBoundary
+import GaloisForLFunctions.RHTower.DeningerPoissonHeatTopologyEscape

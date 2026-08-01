@@ -227,6 +227,20 @@ This theorem does not disprove RH and does not prove the source floor. It closes
 Connection-valued or signed nonlinear successors remain open only after being separated into a
 new route with their own source-first theorem.
 
+## External priority audit
+
+Exact-term searches over current arXiv primary literature found no source-faithful Markov or
+barycentric-transport formulation of the CCM first-clock source. Connes--Consani--Moscovici
+(`arXiv:2511.22755`) construct finite self-adjoint operators but leave convergence to the zeta
+zeros, and determinant convergence to Xi, unproved. Suzuki's screw-function and operator-limit
+papers (`arXiv:2206.03682`, `2209.04658`, `2606.09096`) supply RH-equivalent positivity or
+convergence targets, not this finite completed-packet transport classification. Groskin's exact
+finite Guinand--Weil dictionary (`arXiv:2607.02828`) explicitly does not prove global positivity.
+
+No novelty is claimed for the generic finite identity `(3)`, which is elementary barycentric
+linear algebra. Scoped new content is `(7)--(9)` and its joint terminal interpretation with the
+physical-phase transport-rigidity theorem.
+
 ## Falsifiers
 
 - a nonnegative finite source vector of positive total mass and an oriented source-faithful matrix

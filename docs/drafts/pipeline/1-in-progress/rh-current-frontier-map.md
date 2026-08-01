@@ -18,8 +18,11 @@ theorem of `RiemannHypothesis` and no unconditional theorem of
 `¬RiemannHypothesis`. It contains a large connected atlas of exact RH equivalents,
 conditional reducers, disproof certificates, and source-independent infrastructure. After
 quotienting that atlas by shared unresolved premises, the live proof frontier consists of a
-smaller set of genuinely different source routes. The nearest are: the literal CCM
-first-clock tail/Bohr route; fixed-width rectangular Weil lower floors; all-node
+smaller set of genuinely different source routes. The literal CCM first-clock tail/Bohr
+coordinate is now terminalized: fixed phase-natural transports reduce to identity and arbitrary
+aperture-dependent positive Markov transports exist exactly when the original source already has
+the RH-equivalent sign. The nearest remaining independent routes are fixed-width rectangular Weil
+lower floors; all-node
 Xi-Weil form positivity; theta-cusp center-mixed positivity; critical Möbius cancellation;
 Suzuki full-frequency Hermite–Biehler/Ward realization; and Xi Taylor core-current control.
 The all-prime Sonin/Burnol route and Julia compound-Poisson route are retired by exact
@@ -41,8 +44,8 @@ its strongest positive survivor remains part of frontier.
 ## 1. Current conclusion
 
 Project has solved most connector problems and has not solved source-acquisition problem.
-Nearest routes require one global source theorem: first-clock lower control, fixed-width
-Weil floor, completed Hedenmalm positivity, critical Möbius cancellation,
+Nearest independent routes require one global source theorem: fixed-width Weil floor, completed
+Hedenmalm positivity, critical Möbius cancellation,
 Suzuki full-frequency source realization, or Xi-current control. No route currently supplies
 that theorem.
 
@@ -75,7 +78,10 @@ criteria belong to the same route when their proved chains return to the same mi
 source law. Retired coordinates are marked explicitly; all others remain live at their stated open
 core.
 
-### Route A — literal CCM first clock
+### Route A — literal CCM first clock `[TERMINALIZED]`
+
+**Status.** `RETIRED AS AN INDEPENDENT SOURCE-PRODUCING MECHANISM / RETAINED AS AN EXACT RH
+COORDINATE`. This does not assert the first-clock sign or RH.
 
 **Endpoint.**
 
@@ -116,19 +122,37 @@ lies in the join of the two factor modules; a parallel theorem passes the same c
 uniform trigonometric approximation. This closes a generic frequency-bookkeeping step, not the
 literal first-clock asymptotic model or its uniform prime-tail approximation.
 
-**Open core.** Prove directly from the literal source either:
+The final positive-transport audit closes the last advertised source/response predecessor.
+`ccmFirstClockPrimePowerPacket_phaseNatural_sourceFaithful_iff_eq_one` proves that a fixed
+source-faithful mixer natural for every physical first-clock phase is the identity, even with
+signed entries. Every nonidentity mixer creates an explicit phase-connection defect.
+`ccm_orientedSourceFaithfulMarkovTransport_iff_dotProduct_nonnegative` then classifies the most
+permissive aperture-dependent positive case: a column-stochastic source-fixing matrix orients all
+dual phase coordinates if and only if the original source--phase scalar is nonnegative. Its
+rank-one barycentric witness is explicit. On the completed literal CCM packet,
+`ccmFirstClockAllCompletedMarkovOrientations_iff_rh` makes universal feasibility exactly RH.
+
+**Terminal target, not an independent open premise.** Either of the following remains a valid
+statement of RH:
 
 ```text
 ∃ C ≥ 0, A ≥ π/2, ∀ L ≥ A, -C ≤ B₁(L),
 ```
 
-or a continuous Bohr-almost-periodic asymptote for the scaled source.
+or a continuous Bohr-almost-periodic asymptote for the scaled source. Existing completeness
+theorems already prove these are RH coordinates; restating them supplies no source acquisition.
 
-**Obstacle.** A zero-frequency top layer, accumulating spectrum, or failure of uniform
+**Terminal obstruction.** A zero-frequency top layer, accumulating spectrum, or failure of uniform
 remainder separation can evade the existing AP-vanishing theorem. Torelli recovery occurs
-after model existence and therefore cannot supply it.
+after model existence and therefore cannot supply it. Fixed natural transport is identity;
+arbitrary positive Markov transport is equivalent to target sign. Remaining signed
+connection-current evolution would need a new source-first orientation theorem and is a distinct
+route, not an unfinished Route-A connector.
 
-**Assessment.** Nearest single-source route and cleanest current endpoint.
+**Assessment.** Clean exact RH endpoint, but no longer counted as an independent proof route. All
+advertised positive-factorization predecessors are formally falsified, identity-rigid, or exactly
+target-equivalent. Strongest survivor is explicit phase-connection defect plus canonical
+barycentric certificate after source sign is known.
 
 ### Route B — fixed-width rectangular Weil floor
 
@@ -274,7 +298,8 @@ fixed prime–archimedean source packet or establish its all-degree sign.
    and deterministic reporter realizing the source moments has exactly the canonical Xi-divisor
    pushforward law. Every thermal node therefore has a positive-measure source fibre. Reporters
    with null or merely countable level sets—and in particular countable-to-one reporters on the
-   atomless positive theta-cusp source—are impossible.
+   atomless positive theta-cusp source—are impossible. Absolute continuity strengthens this on
+   the literal theta density: every forced thermal fibre has positive Lebesgue measure.
 
 Together with the existing Krein constraint—positive isotropic reciprocity is zero and the full
 doubled signed reciprocity graph is Lagrangian with zero quotient—this retires diagonal mixing,
@@ -283,8 +308,8 @@ diffuse or information-preserving deterministic source reporters.
 
 **Irreducible open core.** Construct a genuinely global signed prime–Gamma boundary/domain defect
 whose positive quotient is formed only after completion, and prove its resolvent-flux identity with
-the literal source. Equivalently, construct from source data an uncountable-to-one quantizer or
-correspondence whose positive-measure fibres have the forced canonical law, without selecting Xi
+the literal source. Equivalently, construct from source data a plateau quantizer or correspondence
+whose positive-Lebesgue-measure fibres have the forced canonical law, without selecting Xi
 zeros. This is no longer a reconstruction-node or carrier-selection problem. The identity pins
 the quotient divisor to Xi; its positivity and forced fibre law are global Weil positivity and
 therefore exactly RH.
@@ -296,8 +321,8 @@ reciprocal spectral pairs can be adjoined unless the exact resolvent-flux identi
 
 **Assessment.** Route D's carrier/reconstruction and observable-pushforward freedom is fully
 classified. RH is neither proved nor disproved. No independent source-first Route D mechanism
-remains below construction of target-shaped uncountable positive source fibres, equivalently the
-global boundary-defect/Weil-positivity theorem.
+remains below construction of target-shaped positive-Lebesgue-measure source fibres, equivalently
+the global boundary-defect/Weil-positivity theorem.
 
 ### Route D2 — continued prime–arch high-frequency ceiling
 
@@ -649,8 +674,8 @@ estimates cannot reach the necessary height-linear range.
 
 This route is distinct from older diagonal Julia attenuation.
 
-**Endpoint.** There is no standalone Julia-to-RH theorem. The intended handoff is to
-Route A: use Julia energy to prove the literal completed first-clock source has an
+**Endpoint.** There is no standalone Julia-to-RH theorem. Its intended handoff was the now-terminal
+Route-A coordinate: use Julia energy to prove the literal completed first-clock source has an
 eventual lower floor.
 
 **Proved chain.**
@@ -1072,7 +1097,7 @@ source.
 
 ### Material HT-enabled routes
 
-- first-clock Bohr model and recurrence: Route A;
+- first-clock Bohr model and recurrence: terminalized Route-A coordinate infrastructure;
 - compact moment/Thorin determinacy: Route P;
 - Julia diagonal/rank-one obstruction: retired Route J;
 - Euler-tail faithfulness and source tomography feeding prime/Gamma programs;
@@ -1142,22 +1167,22 @@ rational module, and excludes nonzero rational flat germs.
 
 ### Highest-value HT-specific missing inputs
 
-1. first-clock lower floor or Bohr model;
-2. completed prime–Gamma sign combining prime and archimedean terms;
-3. a source-defined principal-relative Julia current with orientation proved before positive
+1. completed prime–Gamma sign combining prime and archimedean terms outside the terminal
+   first-clock transport class;
+2. a source-defined principal-relative Julia current with orientation proved before positive
    good/bad projection;
-4. non-diagonal KMS/inter-scale inequality;
-5. contractive or variation-diminishing Möbius inversion;
-6. literal compact Thorin representation;
-7. honest Xi-linked indeterminate Hamburger family;
-8. completed Euler cyclic reader with infinite-index Krein packaging;
-9. convergence and outer factor for finite prime-clock inner factors;
-10. a theorem converting Dirichlet/Gamma nonrelation into zero-location information;
-11. actual two-variable HT/SR realization;
-12. literal source-specific centered-jet instantiation and an RH-facing handoff from the
+3. non-diagonal KMS/inter-scale inequality;
+4. contractive or variation-diminishing Möbius inversion;
+5. literal compact Thorin representation;
+6. honest Xi-linked indeterminate Hamburger family;
+7. completed Euler cyclic reader with infinite-index Krein packaging;
+8. convergence and outer factor for finite prime-clock inner factors;
+9. a theorem converting Dirichlet/Gamma nonrelation into zero-location information;
+10. actual two-variable HT/SR realization;
+11. literal source-specific centered-jet instantiation and an RH-facing handoff from the
     now-proved generic compact-patch transversality;
-13. Lindelöf second-spacing plus across-class cancellation.
-14. Literal rectangular Schur induction with an irreducible cofactor and separating specialization
+12. Lindelöf second-spacing plus across-class cancellation.
+13. Literal rectangular Schur induction with an irreducible cofactor and separating specialization
     (or direct cofactor/remainder coprimality), followed by its source-facing Ward handoff.
 
 ## 6. Dead routes: exhaustive mechanism map
@@ -1505,69 +1530,72 @@ witness, not a missing logical connector.
 The following questions remain unanswered by both formal corpus and current primary
 literature. They are stated at source level, before specialization to Xi zeros.
 
-### Tier 1 — shortest RH chains
+### Terminalized exact coordinates — not independent research hypotheses
 
-1. **First-clock lower-floor theorem.** Is the literal published first-clock source
-   eventually bounded below?
-2. **First-clock Bohr theorem.** Does its scaled source admit a continuous
-   Bohr-almost-periodic asymptote?
-3. **Fixed-width Weil theorem.** Can one fixed rectangular logarithmic family be bounded
+- Literal first-clock eventual lower floor and scaled Bohr asymptote. Both are already exact RH
+  coordinates. Fixed natural transport is identity, and arbitrary positive source-faithful Markov
+  orientation is feasible exactly when source sign already holds. A new attempt needs a distinct
+  source-first mechanism, not another equivalent transport wrapper.
+
+### Tier 1 — shortest live RH chains
+
+1. **Fixed-width Weil theorem.** Can one fixed rectangular logarithmic family be bounded
    below from prime–Gamma source alone?
-4. **Grouped Mangoldt transport theorem.** Can grouped apex/flank log-Haar cells cross
+2. **Grouped Mangoldt transport theorem.** Can grouped apex/flank log-Haar cells cross
    every turning seam at capacity one while paying the fixed boundary charge?
-5. **Critical Möbius theorem.** Can the actual Gamma–Hankel off-diagonal covariance return
+3. **Critical Möbius theorem.** Can the actual Gamma–Hankel off-diagonal covariance return
    to a bounded upper region cofinally near the critical exponent?
-6. **Hedenmalm completion theorem.** Is the completed center-mixed Fourier current
+4. **Hedenmalm completion theorem.** Is the completed center-mixed Fourier current
    nonnegative in the interior high-frequency corner?
-7. **Prime–arch high-frequency ceiling.** Can literal source supply any finite uniform
+5. **Prime–arch high-frequency ceiling.** Can literal source supply any finite uniform
    upper bound above frequency four?
 
 ### Tier 2 — source-to-operator or source-to-form construction
 
-8. **New-route order-one Sonin source theorem.** Build an arithmetic packet-diagonal operator of
+6. **New-route order-one Sonin source theorem.** Build an arithmetic packet-diagonal operator of
    microlocal order at least one, or renormalize away the Sonin Weyl-volume term before Gamma
    attachment, then establish a new literal all-prime source handoff. This is the positive survivor
    of retired Route F, not an open completion estimate within it.
-9. Suzuki source coefficient monotonicity, chord-mass gap, full jump Pick kernel, or a
+7. Suzuki source coefficient monotonicity, chord-mass gap, full jump Pick kernel, or a
     source identification of the forced negative-light Gram channel with the rectangular
     Ward residual.
-10. Relative-Volterra phase Euler-defect source-germ weld.
-11. Source-built all-degree prime–arch Hankel PSD/reconstruction.
-12. Source-built self-adjoint quadratic-scale operator with Xi spectrum inclusion.
-13. Deninger relevant-complex comparison, nuclear estimate, Hodge transport, and kernel
+8. Relative-Volterra phase Euler-defect source-germ weld.
+9. Source-built all-degree prime–arch Hankel PSD/reconstruction.
+10. Source-built self-adjoint quadratic-scale operator with Xi spectrum inclusion.
+11. Deninger relevant-complex comparison, nuclear estimate, Hodge transport, and kernel
     vanishing.
-14. Uniform source-domain Hedenmalm prime-normal sub-log-square estimate.
-15. Joint infinite-index Gamma–Jacobi Krein reader and forced outer factor.
-16. Restricted-Weil/prolate ground-state comparison and rigorous finite-to-Xi convergence.
-17. Literal compact Thorin/Markov carrier for the completed seam.
-18. A continuation mechanism carrying the proved finite-prime/Euler-boundary Plücker
+12. Uniform source-domain Hedenmalm prime-normal sub-log-square estimate.
+13. Joint infinite-index Gamma–Jacobi Krein reader and forced outer factor.
+14. Restricted-Weil/prolate ground-state comparison and rigorous finite-to-Xi convergence.
+15. Literal compact Thorin/Markov carrier for the completed seam.
+16. A continuation mechanism carrying the proved finite-prime/Euler-boundary Plücker
     normal-cone diagonal from `Re(s) > 1` to critical Möbius data.
 
 ### Tier 3 — new structure that could unlock Tier 1 or 2
 
-19. Non-diagonal inter-scale KMS inequality neutralizing persistent bad layers.
-20. Contractive or variation-diminishing Möbius inversion of Gamma occupation.
-21. Source-stable OPUC terminal identity.
-22. Burnol co-Poisson scalar Berezin sign or parity-block flatness.
-23. Source determinant-line no-first-crossing theorem retaining negative index.
-24. All-prime Calkin collinearity or two-particle Sonin subroot estimate.
-25. Affine-dimension-three and arbitrary-rank Gaussian curvature classification.
-26. Viable vector/operator-valued or nonclosable post-scalar rigging.
-27. Actual two-variable HT/SR realization with rank-one period group.
-28. A theorem converting Dirichlet/Gamma differential nonrelation into zero-location
+17. Non-diagonal inter-scale KMS inequality neutralizing persistent bad layers.
+18. Contractive or variation-diminishing Möbius inversion of Gamma occupation.
+19. Source-stable OPUC terminal identity.
+20. Burnol co-Poisson scalar Berezin sign or parity-block flatness.
+21. Source determinant-line no-first-crossing theorem retaining negative index.
+22. All-prime Calkin collinearity or two-particle Sonin subroot estimate.
+23. Affine-dimension-three and arbitrary-rank Gaussian curvature classification.
+24. Viable vector/operator-valued or nonclosable post-scalar rigging.
+25. Actual two-variable HT/SR realization with rank-one period group.
+26. A theorem converting Dirichlet/Gamma differential nonrelation into zero-location
     information.
-29. Lindelöf second-spacing estimate plus across-class cancellation, followed by an exact
+27. Lindelöf second-spacing estimate plus across-class cancellation, followed by an exact
     typed RH handoff.
-30. A cancellation-preserving moving-prime-window asymptotic for growing reverse-Bessel
+28. A cancellation-preserving moving-prime-window asymptotic for growing reverse-Bessel
     squared-Xi radial jets, strong enough to orient one order `n≥19` against the completed
     Gamma/polar source.
-31. A uniform positivity theorem for consecutive Xi-coefficient Toeplitz minors in the
+29. A uniform positivity theorem for consecutive Xi-coefficient Toeplitz minors in the
     complementary region `k < 10^18 r^3`, especially `k = O(r)`, or a theorem reducing every
     remaining minor to the proved cubic tail wedge without numerical certification.
 
 ### Disproof leap
 
-32. A rigorously certified off-line zero or any equivalent negative finite certificate.
+30. A rigorously certified off-line zero or any equivalent negative finite certificate.
 
 ## 9. Literature reconciliation
 
@@ -1639,12 +1667,12 @@ The cited primary sources close no Tier-1 or Tier-2 open core above.
 
 ### Highest expected leverage
 
-1. first-clock lower floor / Bohr asymptote;
-2. Hedenmalm completed high-frequency current;
-3. Möbius Gamma–Hankel bounded returns;
-4. fixed-width rectangular Weil floor;
-5. any finite prime–arch high-frequency ceiling;
-6. Suzuki source-selected full jump kernel or relative-Volterra source-germ weld.
+1. Hedenmalm completed high-frequency current;
+2. Möbius Gamma–Hankel bounded returns;
+3. fixed-width rectangular Weil floor;
+4. any finite prime–arch high-frequency ceiling;
+5. Suzuki source-selected full jump kernel or relative-Volterra source-germ weld;
+6. a genuinely new signed connection-current route carrying the terminal Route-A defect.
 
 These routes begin with literal source and have short, formally closed tails to RH.
 
@@ -1659,6 +1687,8 @@ These routes begin with literal source and have short, formally closed tails to 
 ### Do not spend cycles on
 
 - new names for RH-equivalent divisor coordinates;
+- first-clock tail/Bohr restatements, fixed physical-phase intertwiners, or positive
+  source-faithful Markov mixers without a new source-first invariant;
 - finite local selectors;
 - shellwise or finite-prefix positivity as completed positivity;
 - abstract zero-fed spectral models;
@@ -1681,9 +1711,10 @@ literal prime/theta/Möbius/clock source
 → RiemannHypothesis.                                                   [NOT PROVED]
 ```
 
-The routes differ in the missing theorem:
+The live routes differ in the missing theorem. First-clock lower floor/Bohr asymptote remains an
+exact RH coordinate but is no longer counted as an independent route after the terminal transport
+classification.
 
-- lower floor or Bohr asymptote for the first clock;
 - fixed-width lower floor for rectangular Weil;
 - all-order completed positivity for Hedenmalm/prime–arch;
 - critical cancellation for Möbius;
@@ -1703,10 +1734,12 @@ finite witness would suffice, but the corpus produces none.
 Therefore the honest current conclusion is:
 
 > **RH is neither proved nor disproved. The formal frontier is a finite quotient of
-> source-level open cores, led by first-clock, completed positivity, critical Möbius,
+> source-level open cores, led by completed positivity, critical Möbius,
 > Suzuki and Xi-current problems. Retired Routes F and J leave only new-route requirements:
 > an order-one/renormalized Sonin source and a principal-relative Julia representation change.
-> They are not completion-budget problems inside the retired mechanisms. All other
+> Terminalized Route A leaves an explicit signed phase-connection defect as a new-route
+> requirement; positive transport is already exactly target-equivalent. These are not
+> completion-budget problems inside retired mechanisms. All other
 > RH-facing declarations are connectors, mirrors, infrastructure, or retired
 > mechanisms unless and until they supply a new literal-source theorem.**
 
@@ -1717,6 +1750,8 @@ Therefore the honest current conclusion is:
 - `RHTower/CCMFirstClockTailLowerBoundCompleteness.lean`
 - `RHTower/CCMFirstClockAsymptoticBohrLaw.lean`
 - `RHTower/CCMSingleClockCompleteSourceDivisorTomography.lean`
+- `RHTower/CCMFirstClockPhaseNaturalTransportRigidity.lean`
+- `RHTower/CCMFirstClockBarycentricOrientationCompleteness.lean`
 - `RHTower/CCMRectangularWeilCompleteness.lean`
 - `RHTower/SuzukiRectangularPositiveArchLagCompletion.lean`
 - `RHTower/SuzukiMangoldtLogHaarTransport.lean`

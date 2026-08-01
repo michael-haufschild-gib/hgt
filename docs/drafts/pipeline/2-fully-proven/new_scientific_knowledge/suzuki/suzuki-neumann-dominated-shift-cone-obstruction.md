@@ -189,9 +189,20 @@ eventually_XiC_curvature_lt_suzukiDyadicNegativeShiftIntercept
 eventually_XiC_curvature_lt_suzukiDyadicNegativeShiftIntercept_of_tendsto_zero
 ```
 
-Strong-resolvent endpoint-source limit `(4)`, triangle limit `(8)`, and identification with
-Suzuki's explicit `g` remain paper-level because the actual restricted Weil operator and
-distributional half-triangle have not been constructed in Lean.
+**Superseded — see the 2026-08-01 log entries below.**  This paragraph read that `(4)`, `(8)` and
+the identification with Suzuki's explicit `g` were paper-level "because the actual restricted Weil
+operator and distributional half-triangle have not been constructed in Lean".  That reasoning was
+over-scoped: neither object is needed.
+
+`(2)` is `tendsto_resolventFamily_id`, stated entirely in the coordinate of the **bounded**
+resolvent, so no unbounded operator is ever formed.  `(4)`'s limit value is
+`exponentialSourceCombination_pairing` together with `exponentialEdge_atomCoefficients`, which
+derive the endpoint atoms from integration by parts rather than from a distribution theory.
+`(5)`--`(9)` and `(11)` are likewise unconditional theorems.  What remains is the substitution of
+Suzuki's `v_{lambda,±}` for the limiting exponentials, which is definitional.
+
+The only genuinely open item is the identification with Suzuki's explicit screw function `g`, which
+is external mathematics cited by the card, not Lean infrastructure.
 
 ## Novelty audit
 

@@ -3432,6 +3432,26 @@ insufficient*.  The witness is `1/(s+2)`:
 So the return property is strictly stronger than boundedness plus holomorphy, exactly as §8.5 says;
 the recurrence hypothesis of the law is not decorative.  `#print axioms` clean.
 
+`HTGeometry/SinExpNotRecurrent.lean` closes §8.4 — *arbitrary DA functions*.  The card's example is
+`sin(s e^s)`, and both halves of its claim are now theorems.
+
+- **`sinExp_differentialAlgebraic`** — eliminating `e^s` and `cos(s e^s)` from the first two
+  derivatives leaves the second-order polynomial relation with rational coefficients
+
+  `(1+s)(1 − y²) y″ − (2+s)(1 − y²) y′ + (1+s) y (y′)² = 0`,
+
+  valid at *every* point: the elimination needs no division, because substituting `1 − y² = cos²`
+  makes the whole expression `cos³·((1+s)u″ − (2+s)u′)` with `u = s e^s`, and that vanishes
+  identically.  So `sin(s e^s)` is differentially algebraic over `ℂ(s)`;
+- `norm_sin_ge`, `exp_line_sample` — at the sample parameters `t = 2πn` the exponential returns to
+  `e^σ`, so the argument `s e^s` has imaginary part `2πn e^σ`, and `‖sin‖ ≥ (e^y − e^{-y})/2`;
+- **`not_isBohrAlmostPeriodic_sinExpLine`** — hence the restriction to *any* vertical line is
+  unbounded (`exists_norm_sinExpLine_gt`), and an almost-periodic continuous function is bounded, so
+  it is not Bohr almost periodic there.
+
+Differential algebraicity over `ℂ(s)` — with finite order and whatever zero density — therefore does
+not give recurrence.  `#print axioms` clean.
+
 ## Gates
 
 - [x] one-point projective Gamma boundary stated

@@ -3,7 +3,7 @@
 - **ID:** `ccm-first-clock-direct-positive-factorization-attack`
 - **Stage:** `1-in-progress`
 - **Type:** DIRECT RH ATTACK
-- **Status:** `[ACTIVE] [NO HYPOTHESES ALLOWED]`
+- **Status:** `[TERMINAL NO-GO] [RETIRED AS INDEPENDENT ROUTE-A PREDECESSOR]`
 - **Endpoint:** `CCMFirstClockPublishedSourceNonnegative ↔ RiemannHypothesis`
 
 ## Target
@@ -521,3 +521,56 @@ Positive survivor: `(AS19)--(AS21)` remain an exact local capacity audit. They r
 Schur innovation and show that strict local rank by itself is insufficient. Rightmost open RH
 predecessor remains a **source-complete** coefficientwise source/response intertwiner whose
 compression is proved equal to first-clock dominance; no power-dilation proxy discharges it.
+
+## Terminal transport classification `[PAPER + LEAN]`
+
+The last sentence above is now resolved. The proposed source-complete coefficientwise
+intertwiner splits into two exhaustive linear-positive cases.
+
+1. **One fixed transport natural for every physical first-clock phase.** On any duplicate-free
+   finite actual prime-power packet, source faithfulness and physical-phase naturality force the
+   identity, even for signed matrices:
+
+   ```text
+   ccmFirstClockPrimePowerPacket_phaseNatural_sourceFaithful_iff_eq_one.
+   ```
+
+   Every nonidentity source-faithful mixer has a nonzero phase-connection defect at an explicit
+   aperture:
+
+   ```text
+   ccmFirstClockPrimePowerPacket_nontrivial_has_explicit_phaseConnectionDefect.
+   ```
+
+2. **An arbitrary positive Markov mixer chosen separately at every aperture.** For every finite
+   nonnegative source vector of positive total mass, such a mixer fixes the source and orients all
+   dual phase coordinates exactly when the original source--phase scalar is nonnegative:
+
+   ```text
+   ccm_orientedSourceFaithfulMarkovTransport_iff_dotProduct_nonnegative.
+   ```
+
+   The reverse implication has the explicit rank-one barycentric witness whose columns are the
+   normalized source. For the literal completed first-clock packet, with the strictly positive
+   Gamma--polar budget as anchor,
+
+   ```text
+   ccmFirstClockAllCompletedMarkovOrientations_iff_rh.
+   ```
+
+Thus neither fixed phase-natural transport nor unrestricted aperture-dependent positive Markov
+transport is an independent source producer. The former is identity; the latter is feasible
+exactly after the RH-equivalent scalar sign is known. Calling either a factorization proof would
+be theatre.
+
+**Strongest positive survivor.** A nonidentity source-faithful fixed mixer carries an explicit
+phase-connection defect, while the barycentric matrix is the canonical positive orientation
+certificate whenever source sign already holds. A live successor must use a signed,
+connection-valued aperture evolution and prove a new source-first orientation law for its defect.
+That is a different mechanism and must receive a separate route card; it is not unfinished Route
+A infrastructure.
+
+**Terminal verdict.** Literal first-clock nonnegativity remains an exact RH coordinate, not a
+proved truth. Every advertised Route-A positive-factorization predecessor in this card is now
+either formally falsified, reduced to the identity, or formally equivalent to the target scalar.
+Route A is retired as an independent proof mechanism without claiming RH or its negation.

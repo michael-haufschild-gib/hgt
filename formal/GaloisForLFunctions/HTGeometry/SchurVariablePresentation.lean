@@ -203,4 +203,34 @@ theorem unitTailEval_rename_succ {L n : ℕ} (p : MvPolynomial (Fin L) K) :
       show L + 1 - ((j : ℕ) + 1) = L - (j : ℕ) by omega]
   rw [unitTailEval, unitTailEval, MvPolynomial.aeval_rename, hfun]
 
+/-! ## Transporting the presentation along an equality of variable counts -/
+
+/-- **The presentation is natural in the number of variables.** -/
+theorem rename_finCongr_schurVar {L₁ L₂ : ℕ} (h : L₁ = L₂) (k : ℕ) :
+    MvPolynomial.rename (finCongr h) (schurVar K L₁ k) = schurVar K L₂ k := by
+  subst h
+  have hid : ((finCongr (rfl : L₁ = L₁)) : Fin L₁ → Fin L₁) = id := rfl
+  rw [hid, MvPolynomial.rename_id]
+  rfl
+
+/-- **Transporting a section along an equality of variable counts.** -/
+theorem map_rename_finCongr_rectangularSchurToeplitz {L₁ L₂ : ℕ} (h : L₁ = L₂) (n m : ℕ) :
+    (rectangularSchurToeplitz (schurVar K L₁) n m).map
+        (MvPolynomial.rename (R := K) (finCongr h)) =
+      rectangularSchurToeplitz (schurVar K L₂) n m := by
+  refine Matrix.ext fun r i => ?_
+  rw [Matrix.map_apply, rectangularSchurToeplitz, rectangularSchurToeplitz]
+  by_cases hg : (i : ℕ) ≤ n + (r : ℕ)
+  · rw [if_pos hg, if_pos hg]
+    exact rename_finCongr_schurVar h _
+  · rw [if_neg hg, if_neg hg, map_zero]
+
+/-- **Hence the determinants correspond.** -/
+theorem rename_finCongr_det_rectangularSchurToeplitz {L₁ L₂ : ℕ} (h : L₁ = L₂) (n m : ℕ) :
+    MvPolynomial.rename (R := K) (finCongr h)
+        ((rectangularSchurToeplitz (schurVar K L₁) n m).det) =
+      (rectangularSchurToeplitz (schurVar K L₂) n m).det := by
+  rw [AlgHom.map_det, AlgHom.mapMatrix_apply,
+    map_rename_finCongr_rectangularSchurToeplitz h n m]
+
 end GaloisForLFunctions.HTGeometry

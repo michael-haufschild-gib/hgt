@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HTGeometry.PrimeDirichletApertureSpectrum
 import GaloisForLFunctions.HTGeometry.EulerFactorRankOne
+import GaloisForLFunctions.HTGeometry.BohrTorusQuotientHom
+import GaloisForLFunctions.HTGeometry.BohrBochnerEquivalence
 
 /-!
 # The cutoff Euler product carries the whole aperture
@@ -445,6 +447,61 @@ theorem eulerProduct_carrier_covering_dim_ge {A : Type*} [AddCommGroup A] [Modul
   refine primeAperture_carrier_covering_dim_ge N
     (j.comp (LinearEquiv.ofEq _ _ h.symm).toLinearMap) ?_
   exact hj.comp (LinearEquiv.ofEq _ _ h.symm).injective
+
+theorem norm_eulerProductLine_le (hσ : 0 < σ) (N : ℕ) (t : ℝ) :
+    ‖eulerProductLine N σ t‖ ≤ (apertureBound σ) ^ (primesLE N).card := by
+  rw [eulerProductLine, norm_prod]
+  calc ∏ p ∈ primesLE N, ‖eulerFactorLine ((p : ℕ) : ℝ) σ t‖
+      ≤ ∏ _p ∈ primesLE N, apertureBound σ :=
+        Finset.prod_le_prod (fun p _ => norm_nonneg _)
+          (fun p _ => norm_eulerFactorLine_prime_le hσ p t)
+    _ = (apertureBound σ) ^ (primesLE N).card := by rw [Finset.prod_const]
+
+/-- The cutoff Euler product as a bounded continuous observable of the line. -/
+noncomputable def eulerProductBCF (N : ℕ) (σ : ℝ) (hσ : 0 < σ) : BoundedContinuousFunction ℝ ℂ :=
+  BoundedContinuousFunction.ofNormedAddCommGroup (eulerProductLine N σ)
+    (continuous_eulerProductLine hσ N) ((apertureBound σ) ^ (primesLE N).card)
+    (fun t => norm_eulerProductLine_le hσ N t)
+
+@[simp] theorem eulerProductBCF_apply (hσ : 0 < σ) (N : ℕ) (t : ℝ) :
+    eulerProductBCF N σ hσ t = eulerProductLine N σ t := rfl
+
+theorem hasTotallyBoundedOrbit_eulerProductBCF (hσ : 0 < σ) (N : ℕ) :
+    HasTotallyBoundedOrbit (fun t : ℝ => eulerProductBCF N σ hσ t) :=
+  hasTotallyBoundedOrbit_of_isBohrAlmostPeriodic
+    (continuous_eulerProductLine hσ N) (isBohrAlmostPeriodic_eulerProductLine hσ N)
+
+theorem isBohrHullFrequency_primeLog (hσ : 0 < σ) {N : ℕ} (p : ↥(primesLE N)) :
+    IsBohrHullFrequency (eulerProductBCF N σ hσ) (Real.log (((p : Nat.Primes) : ℕ) : ℝ)) := by
+  have hcoeff : bohrCoefficient (fun t : ℝ => eulerProductBCF N σ hσ t)
+      (primeLineFrequency (p : Nat.Primes)) ≠ 0 :=
+    primeLineFrequency_mem_bohrSpectrum_eulerProductLine hσ p.2
+  have hfreq := isBohrHullFrequency_of_bohrCoefficient_ne_zero
+    (isBohrAlmostPeriodic_eulerProductLine hσ N) hcoeff
+  have hneg := isBohrHullFrequency_neg hfreq
+  rwa [primeLineFrequency, neg_neg] at hneg
+
+/-- **The phase carrier of the cutoff Euler product surjects onto the prime torus `T^{π(N)}`.**
+Multiplicatively, with every coordinate of modulus one and every point of the torus attained: this is
+the finite-aperture carrier statement of §7 for the observable itself. -/
+theorem eulerProduct_bohrHull_torus_surjective (hσ : 0 < σ) (N : ℕ) :
+    (∀ x y : BohrHull (eulerProductBCF N σ hσ), ∀ p : ↥(primesLE N),
+        bohrHullCharPacket (eulerProductBCF N σ hσ)
+          (fun q : ↥(primesLE N) => Real.log (((q : Nat.Primes) : ℕ) : ℝ)) (x + y) p
+        = bohrHullCharPacket (eulerProductBCF N σ hσ)
+            (fun q : ↥(primesLE N) => Real.log (((q : Nat.Primes) : ℕ) : ℝ)) x p
+          * bohrHullCharPacket (eulerProductBCF N σ hσ)
+            (fun q : ↥(primesLE N) => Real.log (((q : Nat.Primes) : ℕ) : ℝ)) y p)
+      ∧ (∀ x : BohrHull (eulerProductBCF N σ hσ), ∀ p : ↥(primesLE N),
+        ‖bohrHullCharPacket (eulerProductBCF N σ hσ)
+          (fun q : ↥(primesLE N) => Real.log (((q : Nat.Primes) : ℕ) : ℝ)) x p‖ = 1)
+      ∧ (∀ z : ↥(primesLE N) → ℂ, (∀ p, ‖z p‖ = 1) →
+        ∃ x : BohrHull (eulerProductBCF N σ hσ), ∀ p : ↥(primesLE N),
+          bohrHullCharPacket (eulerProductBCF N σ hσ)
+            (fun q : ↥(primesLE N) => Real.log (((q : Nat.Primes) : ℕ) : ℝ)) x p = z p) := by
+  classical
+  exact bohrHull_torus_surjective_hom (hasTotallyBoundedOrbit_eulerProductBCF hσ N)
+    (primeAperture_linearIndependent N) (fun p => isBohrHullFrequency_primeLog hσ p)
 
 end
 

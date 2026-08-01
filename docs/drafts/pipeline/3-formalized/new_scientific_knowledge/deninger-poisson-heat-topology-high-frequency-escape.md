@@ -1,7 +1,7 @@
 # Poisson-heat topology has unavoidable high-frequency escape
 
 - **ID:** `deninger-poisson-heat-topology-high-frequency-escape`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** SHARP NO-GO WITH POSITIVE SURVIVOR
 - **Label:** `DAC_POISSON_HEAT_TOPOLOGY_HIGH_FREQUENCY_ESCAPE`
 - **Parent:** `deninger-tate-poisson-pro-hodge-rigging`
@@ -148,6 +148,29 @@ Hodge problem.
 - [x] internal failed-route and collision audit
 - [x] primary-literature boundary audit
 - [x] dependency-closed paper proof
-- [ ] Lean formalization
+- [x] Lean formalization
 - [ ] source-native nonsmoothing survivor
 
+## Lean status
+
+Formalized in
+`GaloisForLFunctions.RHTower.DeningerPoissonHeatTopologyEscape`.
+The module proves:
+
+- high-frequency decay of the general Poisson--heat multiplier;
+- exact Tate-circle specialization and positivity of every nonzero
+  finite mode;
+- fixed-prime normalized packet escape;
+- convergence to zero in the product topology of all positive collar
+  coordinates while the normalized ambient norm remains one.
+
+It is imported by the `GaloisForLFunctions.RHTower` umbrella.  Direct
+`lake env lean`, cached module build, and scratch `#print axioms` audit
+pass.  All theorem declarations use only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+## Log
+
+- 2026-08-01 — Proved the high-frequency topology no-go, restricted
+  its application after hostile quotient audit, formalized the exact
+  multiplier and product-topology theorem, and promoted to Stage 3.
