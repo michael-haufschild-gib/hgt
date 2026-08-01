@@ -1049,8 +1049,35 @@ the threshold `u0` is not met automatically.  The fix is to take `N` about `r/K`
 `t*delta` (with `t = b` fixed) is about `2 b K / r`, which clears `rho` for large `r`.  The count is
 still linear in `r`, so the energy still beats the logarithmic cap.
 
-What remains is the other two error terms of the two-branch estimate — the projection correction and
-the layer defect on the dilated packet — in the same annulus-free form, and then the count itself.  Then feed that through the two-branch estimate to get `N` of
+The other two error terms of the two-branch estimate are now accounted for, and the accounting
+turned out not to need a rate at all.
+
+Tracing `tendsto_norm_soninApertureCoupling_soninPacketEven_sub_subAnnulus`, the error is
+`2||Corr_b w|| + ||L v - v|| + ||R_b w||`, and unfolding the middle term through
+`tendsto_norm_evenSoninApertureLayer_soninDilatedPacket_sub` shows every contribution is one of
+three kinds: (i) the *physical* shell on the dilated packet, which is **exactly zero** once
+`r b >= b0` — a support condition, uniform over the annuli since every annulus starts at or above
+`b`; (ii) *band* terms, for the packet and for its dilate, which the band-escape estimate covers;
+(iii) *projection corrections*, which are elements of the principal-relative ideal.
+
+For (iii) the corpus already proves the decisive fact: every ideal element is Schatten-1
+(`IsSoninPrincipalRelativeIdeal.memSchattenClass_one`), hence Hilbert--Schmidt.  A Hilbert--Schmidt
+operator has a *fixed finite* energy, so by mode counting it can exceed a threshold `ε` on at most
+`hsNormSq/ε^2` members of any orthonormal family — a bound that does not grow with the family.  The
+packets on disjoint annuli are orthogonal, so however many the schedule supplies, the corrections
+spoil only boundedly many.  No rate for a compact operator is needed, and none is available.
+
+The assembly itself is now proved in annulus-free form.  `card_sub_le_hsNormSq_of_ideal_errors`
+takes exactly the shape of the two-branch estimate — a unit target, finitely many relative-ideal
+errors, a fixed slack — and returns `(N - ∑ₖ hsNormSq Tₖ/ε²)(1 - η)²` as a lower bound on the
+coupling's Hilbert--Schmidt energy.  Both discounts are constants: the first because each ideal
+error has fixed finite energy, the second because `η` is chosen once from `ε` and the slack.  So the
+bound is `N` minus a constant, times a constant.
+
+What remains is purely the instantiation: build the `N(r)` rescaled packets on disjoint sub-annuli,
+normalise them (orthogonality is `soninPacketDisjointOrthogonality`), take the unit targets to be
+their dilates, and supply the slack from the band-escape estimate.  With `N` about `r/K` this gives
+coupling energy of order `r`, against the `log r` cap, closing the shortfall test.  Then feed that through the two-branch estimate to get `N` of
 order `r` packets at scale `r`.
 
 **Open.**  By 6 and 7 the gate is one rate comparison: does `hsNormSq Z_r` exceed
@@ -1250,6 +1277,10 @@ family is abstract, so two widths have unrelated profiles.
 | **the squared profile's oscillation bound**: its cosine mass against frequency `w` is at most four half-widths times the reference-square majorant at `δ\|w\|` | `norm_fourier_soninOneSidedBump_sq`, `fourier_soninScaledAnnulusBump_sq_eq_oneSided`, `norm_fourier_soninScaledAnnulusBump_sq_le`, `soninRefSqTailSup`, `tendsto_soninRefSqTailSup_atTop`, `abs_integral_soninScaledAnnulusBump_sq_mul_cos_le`, `abs_integral_soninScaledAnnulusBump_sq_mul_cos_le_tailSup` |
 | **the packet's energy floor**: squaring turns the carrier into a constant plus a doubled carrier, so the energy is half the squared profile's mass plus two oscillatory corrections and a nonnegative mean term — hence at least `δ` times a positive constant, minus reference-square tails | `norm_sq_soninScaledPacketEven_eq_expansion`, `norm_sq_soninScaledPacketEven_ge` |
 | **uniform band escape**: two constants, naming no annulus, force every packet of the family to keep more than half its energy outside the band — the carrier far from the origin on the scale of the half-width, and the product of band radius and half-width small | `soninRefTailSup_le_mass`, `abs_soninScaledPacketMean_le_tailSup`, `exists_uniform_soninScaledPacket_band_escape` |
+| **bounded spoilage**: a Hilbert--Schmidt operator exceeds a threshold `ε` on at most `hsNormSq/ε²` members of *any* finite orthonormal family, so all but boundedly many survive — and simultaneously for finitely many such operators | `card_filter_le_hsNormSq`, `card_le_card_filter_lt_add_hsNormSq` |
+| the ideal errors of the aperture reduction are Schatten-1, hence Hilbert--Schmidt, hence spoil only boundedly many packets however many are supplied | `isHilbertSchmidt_of_isSoninPrincipalRelativeIdeal`, `isHilbertSchmidt_evenSoninProjectionCorrection`, `card_filter_le_hsNormSq_of_isSoninPrincipalRelativeIdeal`, `card_le_card_filter_lt_of_isSoninPrincipalRelativeIdeal`, `card_le_card_filter_forall_lt_of_isSoninPrincipalRelativeIdeal` |
+| **energy from nearly preserved modes**: an operator carrying each of `N` orthonormal vectors to within `η` of *some* unit vector has energy at least `N (1-η)²`, with no relation required between the targets | `sum_finset_norm_sq_apply_le_hsNormSq`, `card_mul_sq_le_hsNormSq_of_le_norm_apply`, `card_mul_sq_le_hsNormSq_of_near_unit` |
+| **survivor energy**: an operator estimated on an orthonormal family by a unit target up to finitely many relative-ideal errors and a fixed slack has energy at least `(N - ∑ₖ hsNormSq Tₖ/ε²)(1-η)²` — both discounts independent of `N` | `card_sub_le_hsNormSq_of_ideal_errors`, `card_sub_le_hsNormSq_of_one_ideal_error` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1366,6 +1397,27 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the counting core is proved, in a form that mentions no annulus, no aperture and no
+  packet.  `card_mul_sq_le_hsNormSq_of_near_unit` is the honest statement of what the two-branch
+  estimate buys: carrying `N` orthonormal vectors to within `η` of unit targets — *any* unit targets,
+  unrelated to each other — costs `N (1-η)²` of Hilbert--Schmidt energy.  Composing it with the
+  bounded-spoilage count gives `card_sub_le_hsNormSq_of_ideal_errors`, whose hypothesis is literally
+  the shape the aperture estimate produces.  Both discounts to `N` are constants, so the conclusion
+  is linear in the number of modes supplied.
+  Lean: `formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtNearIsometryCount.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninSurvivorEnergyCount.lean`.
+- 2026-08-01 — the correction terms are handled, and the route through them is not the one the plan
+  assumed.  The corpus kills them with compactness
+  (`IsCompactOperator.norm_apply_tendsto_zero_of_bounded_weakly_null`), which gives no rate and so
+  cannot be made uniform over a family of annuli that changes with the scale.  The way out is that
+  the ideal errors are not merely compact but Schatten-1, which the corpus already proves — hence
+  Hilbert--Schmidt, hence of *fixed finite energy*.  Mode counting then replaces the rate entirely:
+  `card_filter_le_hsNormSq` says a Hilbert--Schmidt operator exceeds `ε` on at most `hsNormSq/ε^2`
+  members of any orthonormal family, a bound independent of the family's size, so a growing family
+  of orthogonal packets loses only boundedly many to a fixed error.  This also removes the need for
+  any absolute-continuity or weak-nullity argument about shrinking supports.
+  Lean: `formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtBadModeCount.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninIdealBadModeCount.lean`.
 - 2026-08-01 — the two halves are combined, and the combination exposed the real constraint on the
   schedule.  `exists_uniform_soninScaledPacket_band_escape` produces two constants that mention no
   annulus: a carrier threshold `u0` and a shortness threshold `rho`.  Producing them needs the mean

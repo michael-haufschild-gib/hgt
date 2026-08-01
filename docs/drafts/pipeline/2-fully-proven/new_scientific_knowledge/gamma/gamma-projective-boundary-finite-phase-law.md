@@ -2305,6 +2305,21 @@ differential relation whose coefficients are finite sums of Gamma-field monomial
 dominated by one fixed monomial, normalizing coefficient with nonzero limit constant, distinct jet
 monomials — has finite rational Bohr frequency rank.
 
+### The Gamma-field law is inhabited on the critical line
+
+`HTGeometry/GammaFieldWitness.lean` exercises the whole Gamma-field stack on a concrete object.  A
+constant is the Gamma-field monomial with all data zero (`gammaFieldElt_const`), so the relation
+`Φ′ − μΦ = 0` satisfied by `Φ(z) = e^{μz}` has Gamma-field coefficients whose lexicographic dominance
+is the equality case.  With `Φ` entire, strip almost periodic, and its restriction to the critical
+line a bounded continuous function with totally bounded orbit:
+
+> **`rank_finite_expLine_gammaField`**: the Gamma-field finite-phase law applies on `Re s = 1/2`, and
+> with the hull-frequency lower bound, **`rank_expLine_gammaField_pos_and_finite`**:
+> `1 ≤ rank_ℤ Γ_B(f) ≤ K`.
+
+So the hypothesis class of the Gamma-field law — not just the Gamma-rational one — is inhabited by
+objects of nonzero phase rank, on the critical line itself.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

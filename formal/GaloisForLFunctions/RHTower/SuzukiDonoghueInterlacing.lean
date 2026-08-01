@@ -73,4 +73,111 @@ theorem cauchySum_nevanlinna_ne_zero_of_im_ne_zero {ι : Type*} (s : Finset ι) 
   _root_.RHTower.cauchySum_ne_zero_of_im_ne_zero s (fun j => nevanlinnaWeight (p j) (t j)) t hz
     (fun j hj => nevanlinnaWeight_pos (hp j hj)) hne
 
+/-! ## Evenness, and the derivative formula of `(14)`
+
+The hypothesis that the first moment vanishes is not an extra assumption: it is exactly what parity
+of the spectral measure gives.  Pairing each atom with its reflection makes the moment its own
+negative.
+
+The displayed derivative of `(14)` is then the Cauchy combination's derivative, positive term by
+term. -/
+
+/-- **A reflection-odd family sums to zero.**  Pairing each index with its reflection makes the sum
+its own negative; a fixed point contributes zero because the summand is odd there. -/
+theorem sum_eq_zero_of_symmetric_odd {ι : Type*} (s : Finset ι) (f : ι → ℝ) (σ : ι → ι)
+    (hmem : ∀ j ∈ s, σ j ∈ s) (hinv : ∀ j ∈ s, σ (σ j) = j)
+    (hodd : ∀ j ∈ s, f (σ j) = -f j) :
+    ∑ j ∈ s, f j = 0 := by
+  refine Finset.sum_involution (fun a _ => σ a) (fun a ha => ?_) (fun a ha hne => ?_)
+    (fun a ha => hmem a ha) (fun a ha => hinv a ha)
+  · rw [hodd a ha]
+    ring
+  · intro hfix
+    apply hne
+    have h1 := hodd a ha
+    rw [hfix] at h1
+    linarith
+
+/-- **Parity kills the first moment.**  If the atoms come in reflected pairs of equal mass, the
+first moment vanishes — so `donoghuePurePoint_eq_cauchySum` applies with no further hypothesis. -/
+theorem sum_moment_eq_zero_of_symmetric {ι : Type*} (s : Finset ι) (p t : ι → ℝ) (σ : ι → ι)
+    (hmem : ∀ j ∈ s, σ j ∈ s) (hinv : ∀ j ∈ s, σ (σ j) = j)
+    (hnode : ∀ j ∈ s, t (σ j) = -t j) (hmass : ∀ j ∈ s, p (σ j) = p j) :
+    ∑ j ∈ s, t j * p j = 0 :=
+  sum_eq_zero_of_symmetric_odd s (fun j => t j * p j) σ hmem hinv fun j hj => by
+    rw [hnode j hj, hmass j hj]
+    ring
+
+/-- **The centre lies in the odd spectrum.**  A reflection-symmetric pure-point transform with no
+atom at the origin vanishes there, so the origin is a zero — the card's forced central eigenvalue.
+The reflected pair of any atom cancels against it exactly at the centre. -/
+theorem cauchySum_eq_zero_at_center {ι : Type*} (s : Finset ι) (p t : ι → ℝ) (σ : ι → ι)
+    (hmem : ∀ j ∈ s, σ j ∈ s) (hinv : ∀ j ∈ s, σ (σ j) = j)
+    (hnode : ∀ j ∈ s, t (σ j) = -t j) (hmass : ∀ j ∈ s, p (σ j) = p j) :
+    ∑ j ∈ s, nevanlinnaWeight (p j) (t j) / (t j - 0) = 0 := by
+  refine sum_eq_zero_of_symmetric_odd s
+    (fun j => nevanlinnaWeight (p j) (t j) / (t j - 0)) σ hmem hinv fun j hj => ?_
+  rw [nevanlinnaWeight, nevanlinnaWeight, hnode j hj, hmass j hj, sub_zero, sub_zero]
+  rw [show (1 : ℝ) + (-t j) ^ 2 = 1 + t j ^ 2 by ring]
+  rw [div_neg]
+
+/-- **`(14)`'s derivative formula.**  The transform's derivative is the sum of `(1+t²)p/(t-x)²`. -/
+theorem hasDerivAt_donoghuePurePoint {ι : Type*} (s : Finset ι) (p t : ι → ℝ) (x : ℝ)
+    (h : ∀ j ∈ s, t j - x ≠ 0) :
+    HasDerivAt (fun y : ℝ => ∑ j ∈ s, nevanlinnaWeight (p j) (t j) / (t j - y))
+      (∑ j ∈ s, nevanlinnaWeight (p j) (t j) / (t j - x) ^ 2) x :=
+  _root_.RHTower.hasDerivAt_cauchySumReal s (fun j => nevanlinnaWeight (p j) (t j)) t x h
+
+/-- **And it is positive**, which is the analytic content of `(14)`. -/
+theorem deriv_donoghuePurePoint_pos {ι : Type*} (s : Finset ι) (p t : ι → ℝ) (x : ℝ)
+    (h : ∀ j ∈ s, t j - x ≠ 0) (hp : ∀ j ∈ s, 0 < p j) (hne : s.Nonempty) :
+    0 < ∑ j ∈ s, nevanlinnaWeight (p j) (t j) / (t j - x) ^ 2 :=
+  _root_.RHTower.deriv_cauchySumReal_pos s (fun j => nevanlinnaWeight (p j) (t j)) t x h
+    (fun j hj => nevanlinnaWeight_pos (hp j hj)) hne
+
+/-- **The Cauchy form from parity alone.**  For a reflection-symmetric pure-point measure the
+Donoghue transform is the Nevanlinna-weighted Cauchy combination, with no moment hypothesis. -/
+theorem donoghuePurePoint_eq_cauchySum_of_symmetric {ι : Type*} (s : Finset ι) (p t : ι → ℝ)
+    (σ : ι → ι) (hmem : ∀ j ∈ s, σ j ∈ s) (hinv : ∀ j ∈ s, σ (σ j) = j)
+    (hnode : ∀ j ∈ s, t (σ j) = -t j) (hmass : ∀ j ∈ s, p (σ j) = p j)
+    {z : ℂ} (hz : ∀ j ∈ s, ((t j : ℂ) - z) ≠ 0) :
+    ∑ j ∈ s, suzukiDonoghueKernel (t j) z * ((p j : ℝ) : ℂ)
+      = ∑ j ∈ s, ((nevanlinnaWeight (p j) (t j) : ℝ) : ℂ) / ((t j : ℂ) - z) :=
+  donoghuePurePoint_eq_cauchySum s p t hz
+    (sum_moment_eq_zero_of_symmetric s p t σ hmem hinv hnode hmass)
+
+/-! ## The two divisors
+
+Section 4's identification of the pole and zero divisors is algebra on the two-angle quotient: the
+carrier vanishes exactly where the odd pencil does, and the two pencils share a zero exactly where
+`A` and `E` do.  So the primeness of the source operator, which excludes common zeros of `A` and
+`E`, is precisely what keeps the two divisors disjoint. -/
+
+/-- **The carrier's zeros are the zeros of the odd pencil.** -/
+theorem suzukiHerglotz_eq_zero_iff {A E : ℂ → ℂ} {z : ℂ}
+    (hE : E z ≠ 0) (hW : suzukiCharacteristicPencil A E (-1) z ≠ 0) :
+    suzukiHerglotz A E z = 0 ↔ suzukiCharacteristicPencil A E 1 z = 0 := by
+  rw [suzukiHerglotz_eq_twoAngleDonoghueQuotient hE hW, neg_mul, neg_eq_zero,
+    mul_eq_zero, div_eq_zero_iff]
+  constructor
+  · rintro (hI | (h1 | h2))
+    · exact absurd hI Complex.I_ne_zero
+    · exact h1
+    · exact absurd h2 hW
+  · intro h
+    exact Or.inr (Or.inl h)
+
+/-- **The two pencils share a zero exactly when `A` and `E` do.**  Hence excluding common zeros of
+the source pair is exactly what makes the pole and zero divisors disjoint. -/
+theorem pencil_common_zero_iff {A E : ℂ → ℂ} (z : ℂ) :
+    (suzukiCharacteristicPencil A E 1 z = 0 ∧ suzukiCharacteristicPencil A E (-1) z = 0)
+      ↔ (A z = 0 ∧ E z = 0) := by
+  simp only [suzukiCharacteristicPencil, one_mul, neg_one_mul]
+  constructor
+  · rintro ⟨h1, h2⟩
+    refine ⟨by linear_combination (h1 + h2) / 2, by linear_combination (h1 - h2) / 2⟩
+  · rintro ⟨hA, hE⟩
+    rw [hA, hE]
+    norm_num
+
 end GaloisForLFunctions.RHTower

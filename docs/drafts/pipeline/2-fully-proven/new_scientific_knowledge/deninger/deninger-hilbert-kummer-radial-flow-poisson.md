@@ -33,10 +33,13 @@
   `GaloisForLFunctions.RHTower.DeningerAbsoluteHeightSeminorm`,
   `GaloisForLFunctions.RHTower.DeningerKummerGroupNorm`,
   `GaloisForLFunctions.RHTower.DeningerKummerSpace`,
-  `GaloisForLFunctions.RHTower.DeningerKummerCompletion`
+  `GaloisForLFunctions.RHTower.DeningerKummerCompletion`,
+  `GaloisForLFunctions.RHTower.DeningerLocalDegree`,
+  `GaloisForLFunctions.RHTower.DeningerPlaceDegree`,
+  `GaloisForLFunctions.RHTower.DeningerL2PlaceSum`
   (the gluing of the place tower, the absolute height on `Q̄`, the
-  normed Kummer group `𝒢`, the normed `ℚ`-vector space `𝒢 ⊗ ℚ`, and its
-  completion)
+  normed Kummer group `𝒢`, the normed `ℚ`-vector space `𝒢 ⊗ ℚ`, its
+  completion, and the local-degree normalization of the place space)
 
 ## Source Hilbert space
 
@@ -687,3 +690,85 @@ space `(Y, λ)` and is what the `p = 2` Allcock--Vaaler theorem supplies.  Every
 descent and positivity of `(9)`, and the Poisson-flow identities `(11)`--`(14)` — is formalized
 unconditionally, and the injectivity and density it quotes are now proved for the height
 completion.
+### The local-degree normalization landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerLocalDegree.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+This is the foundation for the `L²` structure, and it clarifies exactly why the `L¹` and `L²`
+place norms behave differently.  In mathlib's normalization the adic absolute value at `w` is the
+`d_w`-th power of the one restricting to the standard absolute value on `ℚ`, where `d_w` is the
+local degree.  Consequently
+
+`∑_w |log ‖x‖_w^{mathlib}|^p = ∑_w d_w^p · |log |x|_w|^p`,
+
+which for `p = 1` is the base-change-invariant weighting `∑_w d_w |log |x|_w|` — the `L¹` isometry
+already proved — but for `p = 2` is *not*: the invariant `L²` weight is `∑_w d_w (log |x|_w)²`,
+i.e. one factor of `d_w`, not `d_w²`.  So the `L²` Kummer norm requires dividing the log by the
+local degree, and its base-change invariance rests on two facts about that degree rather than on
+the value-scaling law:
+
+- `deningerLocalDegree p P = e(P|p) · f(P|p)`, and `deningerLocalDegree_tower` — **the local degree
+  is multiplicative in towers**, from `Ideal.ramificationIdx'_algebra_tower` and
+  `Ideal.inertiaDeg'_algebra_tower`.  Hence `d_{w/ℚ} = d_{v/ℚ} · d_{w/v}`.
+- `deningerLocalDegree_sum` — **the fibre sum of local degrees over an extension is its degree**,
+  `∑_{w|v} d_{w/v} = [L : K]`, the fundamental identity.
+
+Together: `∑_{w|v} d_{w/ℚ} = d_{v/ℚ} · [L : K]`, so weighting each place by `d/[K:ℚ]` gives a
+weight unchanged by enlarging the field — the normalization under which *every* `L^p` place norm,
+`p = 2` included, is an invariant of the algebraic number alone.
+
+### The place degree landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerPlaceDegree.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerPlaceDegree w` — the local degree over `ℚ` of a finite place, i.e. the local degree of
+  its maximal ideal over the rational prime below it.
+- `deningerPlaceDegree_tower` — **it factors along a tower of number fields**:
+  `d_{w/ℚ} = d_{(w|K)/ℚ} · d_{w/(w|K)}`.  This is the ideal-level tower law of the previous module
+  transported to the language of places, using `Ideal.under_under` to identify the rational prime
+  below `w` with the one below its restriction, and `Ring.DimensionLEOne.maximalOfPrime` plus
+  `Ideal.under_ne_bot` to supply the maximality and nonvanishing the tower lemma needs.
+
+This is the weight in the `L²` normalization, now known to behave correctly under base change.
+
+### The weighted fibre sum for `L²` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerL2PlaceSum.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+The `L²` summand `(log ‖x‖_w)²/d_w` depends on the *place*, not only on its value, so the earlier
+fibrewise law — which was stated for summands of the form `F(‖x‖_w)` — does not apply.  The
+weighted version is proved here.
+
+- `deningerRelDegree w` — the relative local degree of a place of `L` over its restriction to `K`.
+- `deningerRelDegree_sum` — **its fibre sum is `[L : K]`**: transported from
+  `deningerLocalDegree_sum` across the bijection between the fibre `deningerPlacesOver v` and
+  `primesOverFinset`, using that a prime in the fibre lies over `v`, so the prime of `𝓞 K` under it
+  *is* `v`.
+- `deningerFinitePlace_apply_relDegree` — the value law in this language,
+  `‖x‖_w = ‖x‖_v ^ d_{w/v}`.
+- `deningerL2FibreSum` — **the weighted fibre sum law**:
+
+  `∑_{w | v} (log ‖x‖_w)²/d_w = [L : K] · (log ‖x‖_v)²/d_v`.
+
+  On the fibre the value contributes `(d_{w/v})²` and the weight `1/(d_v·d_{w/v})` — using
+  `deningerPlaceDegree_tower` for `d_w = d_v·d_{w/v}` — leaving exactly `d_{w/v}`, whose fibre sum
+  is the degree.  Nonvanishing of both degrees comes from `ramificationIdx'_ne_zero_of_liesOver`
+  and `inertiaDeg'_ne_zero`.
+
+This is the exact `L²` counterpart of `deningerFinitePlaceSum_baseChange`, and it is the step the
+`p = 2` normalization needs that the `p = 1` case did not.
+
+### Remaining
+
+Assembly only:
+
+`‖f_α‖₂² = (1/[K:ℚ]) · ( ∑_{v arch} mult(v)·(log v(α))² + ∑_{v fin} (log v(α))²/d_v )`,
+
+its base-change invariance — the archimedean half is `deningerArchPlaceSum_baseChange` with
+`F = (log ·)²`, the finite half is `deningerL2FibreSum` summed over the base places by the same
+support argument as `deningerFinitePlaceFinsum_baseChange` — and then the inner product this norm
+defines, which upgrades the Banach completion `deningerKummerCompletion` to the Hilbert space
+`H_Kum` of the card's `(1)`.

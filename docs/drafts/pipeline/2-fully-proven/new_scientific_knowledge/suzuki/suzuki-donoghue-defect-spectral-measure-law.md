@@ -306,6 +306,28 @@ Once the transform is recognized as a positive-weight Cauchy combination the int
 new analysis: it is the same strict-monotonicity-plus-blow-up argument already proved for the
 anti-Pick card, applied to the Nevanlinna weights.
 
+The parity clause of `(9)` and the displayed derivative of `(14)` are formal in the same module:
+
+- `sum_eq_zero_of_symmetric_odd`: a reflection-odd family sums to zero, the single parity argument
+  behind both clauses below.
+- `sum_moment_eq_zero_of_symmetric`: **parity kills the first moment** — pairing each atom with its
+  reflection makes `sum t p` its own negative.  So the vanishing linear part is not an extra
+  hypothesis but exactly the evenness the card derives from oddness of `m`.
+- `cauchySum_eq_zero_at_center`: **the centre lies in the odd spectrum** — a reflection-symmetric
+  transform vanishes at the origin, which is section 4's "parity puts the forced central eigenvalue
+  `0` in the odd spectrum".
+- `donoghuePurePoint_eq_cauchySum_of_symmetric`: hence the Cauchy form holds from parity alone.
+- `hasDerivAt_donoghuePurePoint`, `deriv_donoghuePurePoint_pos`: `(14)`'s displayed derivative
+  `sum (1+t^2) p/(t-x)^2` and its positivity.
+
+Section 4's identification of the two divisors is algebra on the two-angle quotient:
+
+- `suzukiHerglotz_eq_zero_iff`: **the carrier vanishes exactly where the odd pencil `W_1` does.**
+- `pencil_common_zero_iff`: **the two pencils share a zero exactly where `A` and `E` do.**  So the
+  primeness of the source operator — which section 3 uses to exclude common zeros of `A` and `E` — is
+  precisely what keeps the pole and zero divisors disjoint.  The card states these as consequences of
+  `(5)`; they are, and the derivation is two lines of algebra once the quotient form is available.
+
 ## Gates
 
 - [x] exact Suzuki source pair and reference extension identified
@@ -339,3 +361,25 @@ anti-Pick card, applied to the Nevanlinna weights.
   evenness of `nu`), after which the strict monotonicity and one-zero-per-gap theorems already proved
   for `suzuki-shift-spectral-monotone-likelihood-transfer` apply verbatim to the Nevanlinna weights.
   Five new declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(14)`'s derivative formula and the parity clause of `(9)` formalized.
+  `sum_moment_eq_zero_of_symmetric` shows the vanishing first moment is not an extra hypothesis of
+  `donoghuePurePoint_eq_cauchySum` but precisely the evenness the card derives from oddness of `m`:
+  pairing each atom with its reflection makes the moment its own negative, and the fixed-point case
+  is handled by the node being zero there.  With it the Cauchy form holds from parity alone
+  (`donoghuePurePoint_eq_cauchySum_of_symmetric`), and `(14)`'s displayed derivative and positivity
+  follow from the corresponding Cauchy-combination theorems.  Four new declarations, targeted build
+  green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — section 4's parity clause formalized (`cauchySum_eq_zero_at_center`): a
+  reflection-symmetric pure-point transform vanishes at the origin, which is the card's "parity puts
+  the forced central eigenvalue `0` in the odd spectrum" — a claim carried by a sentence rather than
+  a displayed equation, and so invisible to an audit of the numbered list alone.  It and the
+  first-moment vanishing are the same fact, so both now go through one lemma
+  (`sum_eq_zero_of_symmetric_odd`): a reflection-odd family sums to zero, with the fixed-point case
+  discharged by oddness forcing the summand to vanish there.  Three declarations (one new, two
+  refactored through it), targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — section 4's divisor identification formalized: `suzukiHerglotz_eq_zero_iff` (the
+  carrier vanishes exactly where the odd pencil does) and `pencil_common_zero_iff` (the two pencils
+  share a zero exactly where `A` and `E` do).  The second makes precise what primeness of the source
+  operator buys: it excludes common zeros of `A` and `E`, and that is exactly the condition keeping
+  the pole and zero divisors disjoint, so the interlacing statement has no hidden coincidence case.
+  Two new declarations, targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.

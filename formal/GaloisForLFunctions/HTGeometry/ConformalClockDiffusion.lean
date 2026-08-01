@@ -1,4 +1,6 @@
 import Mathlib.Algebra.Ring.Basic
+import Mathlib.Algebra.Algebra.Basic
+import Mathlib.Data.Real.Basic
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Ring
 
@@ -192,5 +194,154 @@ theorem conformalKleinGordon_conjugation
   ring
 
 end SecondOrderClockCalculus
+
+/-- Second-order clock calculus equipped with the exact exponential chain rules. -/
+structure ExponentialSecondOrderClockCalculus
+    (A : Type u) [CommRing A] [Algebra ℝ A] where
+  toSecondOrder : SecondOrderClockCalculus A
+  expSmul : ℝ → A → A
+  expSmul_zero : ∀ sigma, expSmul 0 sigma = 1
+  expSmul_add : ∀ c d sigma,
+    expSmul (c + d) sigma = expSmul c sigma * expSmul d sigma
+  laplacian_expSmul : ∀ c sigma,
+    toSecondOrder.laplacian (expSmul c sigma) =
+      expSmul c sigma *
+        (c • toSecondOrder.laplacian sigma +
+          c ^ 2 • toSecondOrder.gamma sigma sigma)
+  gamma_expSmul_left : ∀ c sigma u,
+    toSecondOrder.gamma (expSmul c sigma) u =
+      expSmul c sigma * (c • toSecondOrder.gamma sigma u)
+  gamma_expSmul_right : ∀ c sigma u,
+    toSecondOrder.gamma u (expSmul c sigma) =
+      expSmul c sigma * (c • toSecondOrder.gamma u sigma)
+
+namespace ExponentialSecondOrderClockCalculus
+
+variable {A : Type u} [CommRing A] [Algebra ℝ A]
+
+/-- Conformal wave operator in dimension parameter `a = (d - 2) / 2`. -/
+def conformalWaveSigma
+    (C : ExponentialSecondOrderClockCalculus A)
+    (a : ℝ) (sigma f : A) : A :=
+  C.expSmul (-2) sigma *
+    (C.toSecondOrder.laplacian f +
+      2 * (a • C.toSecondOrder.gamma sigma f))
+
+theorem expSmul_weight_cancellation
+    (C : ExponentialSecondOrderClockCalculus A)
+    (a : ℝ) (sigma : A) :
+    C.expSmul (a + 2) sigma * C.expSmul (-2) sigma *
+        C.expSmul (-a) sigma = 1 := by
+  rw [← C.expSmul_add, ← C.expSmul_add]
+  convert C.expSmul_zero sigma using 2
+  ring
+
+/-- Exact general-dimensional conformal conjugation. -/
+theorem conformalWaveSigma_conjugation
+    (C : ExponentialSecondOrderClockCalculus A)
+    (a : ℝ) (sigma u : A) :
+    C.expSmul (a + 2) sigma *
+        C.conformalWaveSigma a sigma (C.expSmul (-a) sigma * u) =
+      C.toSecondOrder.laplacian u +
+        ((-a) • C.toSecondOrder.laplacian sigma -
+          a ^ 2 • C.toSecondOrder.gamma sigma sigma) * u := by
+  rw [conformalWaveSigma, C.toSecondOrder.laplacian_mul,
+    C.toSecondOrder.gamma_mul_right, C.laplacian_expSmul,
+    C.gamma_expSmul_left, C.gamma_expSmul_right]
+  simp only [Algebra.smul_def]
+  have hweight := C.expSmul_weight_cancellation a sigma
+  calc
+    C.expSmul (a + 2) sigma *
+        (C.expSmul (-2) sigma *
+          (C.expSmul (-a) sigma * C.toSecondOrder.laplacian u +
+            u *
+              (C.expSmul (-a) sigma *
+                ((algebraMap ℝ A (-a)) * C.toSecondOrder.laplacian sigma +
+                  algebraMap ℝ A ((-a) ^ 2) *
+                    C.toSecondOrder.gamma sigma sigma)) +
+            2 *
+              (C.expSmul (-a) sigma *
+                ((algebraMap ℝ A (-a)) * C.toSecondOrder.gamma sigma u)) +
+            2 * (algebraMap ℝ A a *
+              (C.expSmul (-a) sigma * C.toSecondOrder.gamma sigma u +
+                u *
+                  (C.expSmul (-a) sigma *
+                    (algebraMap ℝ A (-a) *
+                      C.toSecondOrder.gamma sigma sigma)))))) =
+      (C.expSmul (a + 2) sigma * C.expSmul (-2) sigma *
+          C.expSmul (-a) sigma) *
+        (C.toSecondOrder.laplacian u +
+          (algebraMap ℝ A (-a) * C.toSecondOrder.laplacian sigma -
+            algebraMap ℝ A (a ^ 2) * C.toSecondOrder.gamma sigma sigma) * u) := by
+      push_cast
+      ring
+    _ = _ := by rw [hweight, one_mul]
+
+/-- Massive general-dimensional conformal clock law. -/
+theorem conformalKleinGordonSigma_conjugation
+    (C : ExponentialSecondOrderClockCalculus A)
+    (a massSq : ℝ) (sigma u : A) :
+    C.expSmul (a + 2) sigma *
+        (C.conformalWaveSigma a sigma (C.expSmul (-a) sigma * u) +
+          massSq • (C.expSmul (-a) sigma * u)) =
+      C.toSecondOrder.laplacian u +
+        (massSq • C.expSmul 2 sigma +
+          (-a) • C.toSecondOrder.laplacian sigma -
+          a ^ 2 • C.toSecondOrder.gamma sigma sigma) * u := by
+  rw [mul_add, C.conformalWaveSigma_conjugation]
+  have hmassWeight :
+      C.expSmul (a + 2) sigma * C.expSmul (-a) sigma =
+        C.expSmul 2 sigma := by
+    rw [← C.expSmul_add]
+    congr 2
+    ring
+  simp only [Algebra.smul_def]
+  calc
+    C.toSecondOrder.laplacian u +
+          ((algebraMap ℝ A) (-a) * C.toSecondOrder.laplacian sigma -
+            (algebraMap ℝ A) (a ^ 2) * C.toSecondOrder.gamma sigma sigma) * u +
+        C.expSmul (a + 2) sigma *
+          ((algebraMap ℝ A) massSq * (C.expSmul (-a) sigma * u)) =
+      C.toSecondOrder.laplacian u +
+          ((algebraMap ℝ A) (-a) * C.toSecondOrder.laplacian sigma -
+            (algebraMap ℝ A) (a ^ 2) * C.toSecondOrder.gamma sigma sigma) * u +
+        (algebraMap ℝ A) massSq *
+          (C.expSmul (a + 2) sigma * C.expSmul (-a) sigma) * u := by ring
+    _ = _ := by rw [hmassWeight]; ring
+
+/-- Conformal conjugation weight `a = (d - 2) / 2` in dimension `d`. -/
+noncomputable def conformalDimensionWeight (d : ℕ) : ℝ :=
+  ((d : ℝ) - 2) / 2
+
+/-- Literal `d ≥ 3` specialization of the general conformal conjugation law. -/
+theorem conformalWaveSigma_dimension_conjugation
+    (C : ExponentialSecondOrderClockCalculus A)
+    (d : ℕ) (_hd : 3 ≤ d) (sigma u : A) :
+    C.expSmul (conformalDimensionWeight d + 2) sigma *
+        C.conformalWaveSigma (conformalDimensionWeight d) sigma
+          (C.expSmul (-conformalDimensionWeight d) sigma * u) =
+      C.toSecondOrder.laplacian u +
+        ((-conformalDimensionWeight d) • C.toSecondOrder.laplacian sigma -
+          conformalDimensionWeight d ^ 2 •
+            C.toSecondOrder.gamma sigma sigma) * u :=
+  C.conformalWaveSigma_conjugation (conformalDimensionWeight d) sigma u
+
+/-- Literal massive `d ≥ 3` conformal clock law. -/
+theorem conformalKleinGordonSigma_dimension_conjugation
+    (C : ExponentialSecondOrderClockCalculus A)
+    (d : ℕ) (_hd : 3 ≤ d) (massSq : ℝ) (sigma u : A) :
+    C.expSmul (conformalDimensionWeight d + 2) sigma *
+        (C.conformalWaveSigma (conformalDimensionWeight d) sigma
+            (C.expSmul (-conformalDimensionWeight d) sigma * u) +
+          massSq • (C.expSmul (-conformalDimensionWeight d) sigma * u)) =
+      C.toSecondOrder.laplacian u +
+        (massSq • C.expSmul 2 sigma +
+          (-conformalDimensionWeight d) • C.toSecondOrder.laplacian sigma -
+          conformalDimensionWeight d ^ 2 •
+            C.toSecondOrder.gamma sigma sigma) * u :=
+  C.conformalKleinGordonSigma_conjugation
+    (conformalDimensionWeight d) massSq sigma u
+
+end ExponentialSecondOrderClockCalculus
 
 end GaloisForLFunctions.HTGeometry

@@ -16,12 +16,10 @@ namespace GaloisForLFunctions.HTGeometry
 variable {K : Type*} [Field K] [CharZero K] {d : ℕ}
 
 theorem splits_centeredMonicE :
-    Polynomial.Splits (algebraMap (centeredCoeffField K d) (centeredField K d))
-      (centeredMonicE K d) := by
-  rw [← Polynomial.splits_id_iff_splits, map_centeredMonicE, centeredMonicL, Polynomial.map_prod]
-  refine Polynomial.splits_prod _ fun i _ => ?_
-  rw [Polynomial.map_sub, Polynomial.map_X, Polynomial.map_C]
-  exact Polynomial.splits_X_sub_C _
+    Polynomial.Splits
+      ((centeredMonicE K d).map (algebraMap (centeredCoeffField K d) (centeredField K d))) := by
+  rw [map_centeredMonicE, centeredMonicL]
+  exact Polynomial.Splits.prod fun i _ => Polynomial.Splits.X_sub_C _
 
 theorem adjoin_rootSet_centeredMonicE :
     Algebra.adjoin (centeredCoeffField K d) ((centeredMonicE K d).rootSet (centeredField K d)) =
@@ -31,7 +29,7 @@ theorem adjoin_rootSet_centeredMonicE :
     intro x hx
     refine ⟨centeredMonicE K d, centeredMonicE_ne_zero, ?_⟩
     exact (Polynomial.mem_rootSet'.1 hx).2
-  have h := IntermediateField.adjoin_algebraic_toSubalgebra
+  have h := IntermediateField.adjoin_toSubalgebra_of_isAlgebraic
     (F := centeredCoeffField K d) (E := centeredField K d)
     (S := (centeredMonicE K d).rootSet (centeredField K d)) halg
   rw [← h, show IntermediateField.adjoin (centeredCoeffField K d)

@@ -341,7 +341,7 @@ theorem eventually_ne_zero_of_continuousAt_eq_one
     {F : ℝ × ℝ → ℂ}
     (hF : ContinuousAt F (0, 0)) (hF0 : F (0, 0) = 1) :
     ∀ᶠ p in nhds (0, 0), F p ≠ 0 := by
-  exact hF.eventually_ne (by simpa [hF0])
+  exact hF.eventually_ne (by simp [hF0])
 
 /-- Continuous order phase associated with a complexified causal pairing. Real causal pairings are
 included through the canonical embedding into `ℂ`. -/
