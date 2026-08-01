@@ -454,11 +454,24 @@ Targeted build green; axiom audit `[propext, Classical.choice, Quot.sound]`.
 
 Targeted build green; axiom audit `[propext, Classical.choice, Quot.sound]`.
 
-Remaining in Module 2 for general `1 <= k < infinity`: the polar factor
-`J_a = T_a (T_a^* T_a)^(-1/2)`.  Route settled: `A_a = T_a^* T_a` is a positive invertible element
-of the C*-algebra `N ->L N` with `A_a -> 1` in norm, so mathlib's `continuousOn_cfc` applied to
-`t |-> t^(-1/2)` on a compact neighbourhood of `1` gives `A_a^(-1/2) -> 1` in norm; `J_a` is then an
-isometry between spaces of equal finite dimension, hence unitary.
+**Module 2b (DONE)** the general-`k` polar factor:
+`formal/GaloisForLFunctions/HTGeometry/PolarTransportUnitary.lean`.
+
+- `spectrum_subset_nearOneWindow`: a self-adjoint operator within `1/2` of the identity has real
+  spectrum in `[1/2, 3/2]`.
+- `invSqrtNearOne`, `invSqrtNearOne_mul_mul`: the inverse square root `A^(-1/2)`, defined by the
+  continuous functional calculus of `t |-> t^(-1/2)` on that window, satisfies
+  `A^(-1/2) A A^(-1/2) = 1`.
+- `tendsto_invSqrtNearOne`: continuity of the functional calculus in the operator gives
+  `A_a^(-1/2) -> 1` in norm whenever `A_a -> 1` in norm.
+- `isSelfAdjoint_gram`, `norm_gram_sub_one_le`: the Gram operator `T^* T` is self-adjoint and
+  within `d(2+d)` of the identity when `T` is within `d` of an isometry.
+- `polarTransport T = T (T^* T)^(-1/2)`, with `adjoint_polarTransport_comp_self` and
+  `norm_polarTransport_apply` proving it is an isometry, `range_polarTransport` proving its range is
+  exactly the range of `T` — hence a unitary of the finite-dimensional source onto that subspace —
+  and `tendsto_polarTransport` proving `J_a -> iota` in operator norm.
+
+This is exactly `(3.3)-(3.4)` for arbitrary finite deficiency index `k`.
 
 **Module 3 (DONE)** Cayley assembly `(4.1)-(4.14)`:
 `formal/GaloisForLFunctions/HTGeometry/NestedExhaustionCayleyLimit.lean`.
@@ -520,10 +533,11 @@ spectral pollution away from the target spectrum, exactly as the paper states.
 All modules wired into the area umbrellas, targeted builds green, axiom audit
 `[propext, Classical.choice, Quot.sound]` for every declaration listed.
 
-**Remaining Lean work.**  Only the general-`k` polar factor of Module 2.  Everything else in
-Sections 2-5 is formalized: Theorem 3.1, Theorem 4.1, Theorem 4.2 in both directions, the Cayley
-resolvent transfer, and Theorem 5.1.  At deficiency index `(1,1)` — the index of Suzuki's
-finite-aperture operators, and the only index the source application uses — the chain is complete.
+**Remaining Lean work: none.**  The whole universal law of Sections 2-5 is formalized —
+Theorem 3.1 including the general-`k` polar transport, Theorem 4.1, Theorem 4.2 in both directions,
+the Cayley resolvent transfer, and Theorem 5.1.  Every module is wired into its area umbrella, its
+targeted build is green, and every declaration audits to
+`[propext, Classical.choice, Quot.sound]`.
 
 **Explicitly out of scope for the Lean gate.**  Section 6 is `[PROVED FROM RH]` and stays out: the
 global positive Weil space and the target self-adjoint generator are downstream of RH, and the
@@ -538,7 +552,7 @@ universal law of Sections 2-5.
 - [x] source-exact Suzuki hypothesis verification
 - [x] adjacent-literature comparison
 - [ ] manuscript completed
-- [ ] exact Lean formalization
+- [x] exact Lean formalization of the unconditional universal law (Sections 2-5); see Section 9b
 - [ ] independent specialist novelty review
 
 ## Log
@@ -556,3 +570,6 @@ universal law of Sections 2-5.
 - 2026-08-01 — Theorem 4.2's necessity direction and the normal-element resolvent-distance identity
   formalized; Module 4 closed with the full spectral-inclusion statement.  The only remaining Lean
   item is the general-`k` polar factor of Module 2.
+- 2026-08-01 — general-`k` polar transport unitary formalized, closing Module 2 and with it the
+  whole unconditional universal law of Sections 2-5.  The Lean gate is closed; Section 6 stays out
+  of scope because it is `[PROVED FROM RH]`.

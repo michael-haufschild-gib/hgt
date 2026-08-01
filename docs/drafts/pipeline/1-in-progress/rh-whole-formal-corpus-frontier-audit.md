@@ -593,3 +593,39 @@ that every witness measure equals this canonical Xi-divisor pushforward.  Theref
 Thorin wall has no alternative-carrier freedom: a source-side construction must reconstruct this
 exact measure without reading Xi zeros.  This is the positive classification exposed by the
 generic measure-existence no-go.
+
+## First-clock tail lower-bound frontier theorem
+
+Whole-corpus normalization exposed a stronger live claim already implicit in the first-clock
+Landau family but not proved there.  For
+
+```text
+B1(L) = ccmPublishedSourceSineCoefficient(L/2, 2*pi/L),
+```
+
+the exact target is
+
+```text
+(exists C>=0 and A>=pi/2, forall L>=A, -C <= B1(L)) <-> RH.
+```
+
+Paper proof is dependency-closed in
+`../2-fully-proven/ccm-first-clock-tail-lower-bound-completeness.md`.  Its decisive carrier is
+
+```text
+R(L) = Re Q(L) + (C/2)L
+       + 1_(pi/2,A](L) max(-(Re Q(L)+(C/2)L),0).
+```
+
+Compact summand has entire Laplace transform.  Affine summand uses exact corpus Perron identity
+`integral_0^infinity L exp(-sL) dL = s^-2`; after deleting `(0,pi/2]` it is analytic on `Re s>0`.
+Hence `R` inherits the same positive-axis disks as literal first-clock continuation.  Continuous
+Landau halving reaches every positive abscissa.  Removing both corrections returns all positive
+exponential moments of `Q`, and existing Volterra-reflection capstone implies RH.
+
+Lean implementation is in
+`RHTower/CCMFirstClockTailLowerBoundCompleteness.lean`.  Current file contains exact predicate,
+source-to-affine divisor law, compact carrier and integrability, analytic continuation, corrected
+Landau measure, halving/dyadic descent, correction removal, full Xi-moment reconstruction, RH
+equivalence, and false-RH unboundedness capstone.  Status at this checkpoint:
+`[PAPER-PROVED] [LEAN WRITTEN; COMPILER CLOSURE IN PROGRESS] [NO SORRY/AXIOM]`.

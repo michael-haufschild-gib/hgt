@@ -179,6 +179,8 @@ Audit date: 2026-07-31.
 | Julia packet clock tends to actual prime-log clock | `tendsto_gammaSewnMobiusJuliaFiniteTraceClock_nhdsGT_zero` | `ArithmeticJuliaNormalConeUniversalityLaw.lean` |
 | Prime source/log-clock graph closure is the full product | `primeFiniteTraceClock_graphClosure_eq_top` | `ArithmeticLogClockBoundedCompletionSaturation.lean` |
 | Every bounded packet recovery has diverging operator norm | `tendsto_norm_of_extends_gammaSewnMobiusJuliaFiniteTraceClock` | `ArithmeticJuliaNormalConeUniversalityLaw.lean` |
+| Actual-prime first-trace clock is not sequentially closable through intrinsic prime Hardy completion | `not_closable_primeFirstTraceClock` | `formal/GaloisForLFunctions/RHTower/ArithmeticSchurFirstTraceNonclosability.lean` |
+| CCM block--Fock shifted-tail graph has full-product closure; no closed single-valued linear or nonlinear relation extends it | `ccmPrimeOddBlockFockTailClock_graphClosure_eq_top`; `ccmPrimeOddBlockFock_no_closed_singleValuedRelationExtension`; `ccmPrimeOddBlockFock_no_closed_singleValuedRelation` | `formal/GaloisForLFunctions/RHTower/CCMBlockFockCodiagonalNoGo.lean` |
 | Pointed Fisher--Ward trace is odd in the unsquared tangent | `pointedCutoffWardTrace_neg_tangent`; `pointedFisherWard_orientationTransgression` | `formal/GaloisForLFunctions/HTGeometry/PointedFisherCutoffWardTrace.lean`; capstone |
 | For self-adjoint cutoff, pointed trace is pairing with double-cutoff curvature | `pointedCutoffWardTrace_eq_opTrace_curvature`; `pointedFisherWard_orientationTransgression` | same |
 | Bundled source acquisition law | field `arithmeticJuliaOrientedAcquisition` of `xiRamifiedSingularBoundary_law` | capstone |
@@ -188,6 +190,7 @@ Audit date: 2026-07-31.
 | Manuscript claim | Checked declaration | Module |
 |---|---|---|
 | Squared completed Xi remains hypertranscendental | `xiRotatedUpperEndCarrier_sq_hypertranscendentalOver` | `formal/GaloisForLFunctions/RHTower/XiRamifiedDifferentialOrientationLaw.lean` |
+| Actual completed (+2) Xi logarithmic-current shift is hypertranscendental over genuine coordinate plus every scalar prime-zeta valuation layer | `xiLogDerivShiftTwoUncorrectedCarrier_hypertranscendentalOver_all_valuationLayers`; `xiLogDerivShiftTwoUncorrectedCarrier_germ_eq` | `formal/GaloisForLFunctions/RHTower/XiShiftAllValuationLayerBarrier.lean` |
 | Squaring preserves the complete logarithmic-current differential field | `differentialAdjoin_logDeriv_xiRotatedUpperEndCarrier_sq_eq` | same |
 | Source-selected Cayley coordinate reverses under sharp reflection | `thetaCuspTailSecondDensityReflectionOddCoordinate_sharp` | same |
 | Odd Cayley coordinate vanishes exactly on the regular Xi divisor chart | `thetaCuspTailSecondDensityReflectionOddCoordinate_eq_zero_iff`; `thetaCuspTailSecondDensityReflectionOddCoordinate_eq_zero_at_XiC_zero` | same |
@@ -224,7 +227,11 @@ Audit date: 2026-07-31.
 | Every nonzero such form has dense nonclosed \(L^2\) radical and is nonclosable | `universalPositiveForm_nonzero_thetaNull_temperedDenseRadicalLaw`; `universalPositiveForm_thetaNull_sequentiallyL2Closable_iff_zero` | `HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw.lean`; `HedenmalmUniversalPositiveFormClassification.lean` |
 | Independent Wold-depth/Poisson-time quadrant boundedness is the zero-rate equalizer | `conjugateTwoClockQuadrantBounded_iff`; `conjugateTwoClockQuadrantBounded_xiSourceRate_iff_boundaryFracture_zero` | `HighExponentShellLeastAtomAsymptotic.lean`; capstone |
 | All-scale prime-seam Sonin/Calkin compactness is the same equalizer | `xiPrimeSeamAllScaleCalkinCertificate_iff_riemannHypothesis`; `xiBoundaryCharacterNeutral_iff_regularBoundaryConsumers` | `XiPrimeSeamCalkinUniversalityLaw.lean`; capstone |
+| Finite prime Sonin Gram matrices are quantitatively linearly independent modulo compact operators | `norm_matrixEntry_le_norm_finitePrimeEvenDilationGram_sub_compact`; `finitePrimeEvenDilationGram_isCompactOperator_iff` | `formal/GaloisForLFunctions/RHTower/SoninEulerFiniteGramLower.lean` |
+| One absolutely norm-summable all-prime Sonin Gram aggregate is compact exactly on the critical-line equalizer | `summable_norm_primeSeamAggregateTerm`; `orbitwisePrimeSeamSummableCalkinAggregateCompact_iff_re_eq_half`; `xiPrimeSeamSummableCalkinAggregateCompact_iff_riemannHypothesis` | `formal/GaloisForLFunctions/RHTower/XiPrimeSeamSummableCalkinAggregate.lean` |
 | Fixed-edge four-unit Ward positivity is the same equalizer; one strict-right zero gives a one-node failure | `continuedXiWardEulerEdgeBoundaryGramLaw_of_riemannHypothesis`; `xiRightUpperHorizontalFailure_law` | `GammaSewnMobiusXiWardEulerEdgeCompleteness.lean`; capstone |
+| Zero-free margin thickens every strict-right Ward failure into an explicit height window | `xiRightCenteredZero_re_le_half_sub_margin`; `normSq_continuedXiAntiCausalWardResponse_marginWindow_gt_four` | `formal/GaloisForLFunctions/RHTower/XiWardZeroFreeMarginPrimeLogSampling.lean` |
+| Signed prime logarithms plus one finite grid form a locally finite RH-complete Ward sample set | `exists_cutoff_xiWardDetectionCover_primeLogSampleSet`; `exists_cutoff_riemannHypothesis_iff_primeLogSampledScalarLaw`; `xiWardPrimeLogSampleSet_bounded_finite` | same |
 | All three consumers are bundled by one character-neutrality law | `xiBoundaryCharacterNeutral_iff_regularBoundaryConsumers` | capstone |
 
 ## Dyadic ramification and full aperture spectrum
@@ -323,6 +330,9 @@ Audit date: 2026-07-31.
 |---|---|---|
 | Reflected rate pair preserves only the hyperbolic quadratic form \(2xy\) up to scale | `reflectedRealCharacter_invariantQuadratic_iff` | capstone |
 | Only positive-semidefinite invariant quadratic form at nonzero rate is zero | `reflectedRealCharacter_no_nonzero_positiveInvariantQuadratic` | capstone |
+| Every two positive-rate FE weld Grams are invertibly congruent | `weldFEKreinGram_congr_of_pos`; `prime_weldFEKreinGram_congr` | `formal/GaloisForLFunctions/RHTower/WeldKreinRateBlindness.lean` |
+| Complete factorwise Euler-plus-Gamma order profile is zero on \(\Re s>0\) | `factorwiseWeldOrderProfile_eq_zero` | same |
+| No zero-preserving assembler of the complete factorwise order profile recovers Xi order at a zero | `no_factorwiseWeldOrderAssembler_at_xi_zero` | same |
 | Finite generic quartet Ward charge/\(4\pi\), Euler pole excess, and Weil negative index agree | `finiteQuartet_eulerWardWeil_index_law` | `formal/GaloisForLFunctions/RHTower/PositiveEulerFiniteQuartetOrientationLaw.lean` |
 | Positive two-channel completion requires \(c\ge n+b^2/a\) | `suzukiKreinScalarSchurComplement_posSemidef_iff`; `suzukiKreinScalarWeld_posSemidef_iff_twoChannelForm` | `formal/GaloisForLFunctions/RHTower/SuzukiKreinSchurBlockCongruence.lean` |
 | Bundled reflection-character completion | `xiReflectionCharacterCompletion_law` | capstone |
@@ -350,15 +360,20 @@ Audit date: 2026-07-31.
 
 Final targeted audit after manuscript freeze:
 
-- `lake build GaloisForLFunctions.RHTower.XiHedenmalmReflectionFoldedDirac`
-  completed successfully (8,932 jobs);
-- a single `lake env lean` audit imported the exact source-cup, universal
-  reconstruction, orientation-sequence, Hedenmalm-fold, and critical-trilemma
-  modules and printed axioms for their promoted declarations;
+- `lake build GaloisForLFunctions.RHTower.WeldKreinRateBlindness`
+  completed successfully from cache in 10 seconds (8,809-job dependency
+  graph; no umbrella build);
+- a single `lake env lean` audit imported the exact valuation-layer,
+  nonclosable-clock, CCM codiagonal, all-prime Calkin, prime-log Ward,
+  factorwise-weld, moment-representation, compact-rigidity, source-cup,
+  orientation-sequence, and Hedenmalm-fold modules and printed axioms for
+  fourteen promoted declarations;
 - every promoted declaration depends only on `propext`, `Classical.choice`,
   and `Quot.sound`;
+- `scripts/formal_tools.py lint` reported no forbidden declaration;
 - manuscript static audit found no verification-method references, duplicate
-  labels, stale conjugated coefficient, or whitespace error;
+  labels/tags, undefined references/citations, control characters, stale
+  conjugated coefficient, or whitespace error;
 - Tectonic completed both TeX passes but PDF generation could not be refreshed
   because the sandboxed engine lacked `rsfs10.pfb` and font download approval
   was not granted.  The existing PDF therefore predates this revision and is

@@ -12,7 +12,9 @@ positive hierarchy, not any ingredient alone:
    breadth; two transverse views recover joint incidence, while no additive
    nonnegative scalar grade can;
 2. finite positive Xi source metrics represent one rooted collision matroid,
-   even after adjoining every scalar valuation layer;
+   even after adjoining every scalar valuation layer, while the actual
+   completed (+2) Xi logarithmic-current shift remains hypertranscendental
+   over that whole scalar field;
 3. positive source marking survives only as lift data above signed
    differential-field quotient: every projective-tail fibre is dense, but
    positive definiteness selects literal all-positive Euler source;
@@ -60,6 +62,14 @@ positive hierarchy, not any ingredient alone:
 14. singular acquisition turns divisor into ramified character
     \((m_\rho,\chi_\rho)\), whose continuous rate and dyadic deck tower govern
     Wold, Sonin/Calkin, Ward, Rees, density, monodromy, and mass consumers.
+15. actual-prime clock transport has full-product graph closure and no closed
+    single-valued extension, even nonlinear; the CCM block--Fock codiagonal
+    has the same maximal multivalued closure;
+16. final consumers are nevertheless compressible without loss: one
+    absolutely norm-summable all-prime Sonin Gram operator retains every seam
+    coefficient modulo compacts, while unconditional zero-free margins and
+    shrinking prime-log windows make signed prime logarithms plus one finite
+    grid a locally finite RH-complete Ward jury.
 
 The universal claim is therefore a source-completion law and a strict
 information order:
@@ -79,6 +89,11 @@ insufficient, why common-test Weil detection nevertheless has an exact source
 factorization, and why final zero selection must be singular, source-only,
 pointed, and cross-prime before diagonal/even/cylinder quotienting.
 
+Equivalently: formation is faithful, transport is necessarily relation-valued,
+and judgment is losslessly compressible. The missing theorem is sign across
+transport, not supply of coordinates, a closed clock operator, or a larger
+consumer.
+
 ## Closest checked literature
 
 | Source | What it establishes | Boundary relative to this paper |
@@ -90,6 +105,7 @@ pointed, and cross-prime before diagonal/even/cylinder quotienting.
 | R. Meyer, “A spectral interpretation for the zeros of the Riemann zeta function,” [arXiv:math/0412277](https://arxiv.org/abs/math/0412277) | Nuclear Fréchet-space spectral realization and explicit formula as character formula | Spectral realization, but no source-normal odd lift or conservative-character descent theorem |
 | H. Hedenmalm, “Spectral interpretation of Riemann zeta zeros,” [arXiv:2606.17494](https://arxiv.org/abs/2606.17494) | Half-line theta differential pencil \(LDu+\alpha Lu=0\) and generalized self-adjointness problem | Does not state the reflection-folded affine Dirac source normal form, exact theta defect, dense-radical/nonclosability classification, or source-completion boundary |
 | J.-F. Burnol, “Two complete and minimal systems associated with the zeros of the Riemann zeta function,” *J. Théor. Nombres Bordeaux* 16 (2004), 65--94, [DOI](https://doi.org/10.5802/jtnb.434) | Sonine/co-Poisson Hilbert systems tied to zeros and multiplicities | Closest Sonin parent; no prime-seam Calkin equalizer or source breadth obstruction |
+| A. Connes and C. Consani, “Quasi-inner functions and local factors,” [arXiv:2008.10974](https://arxiv.org/abs/2008.10974) | Compact Hankel/off-diagonal local-factor operators modulo compacts and semilocal Sonin spaces | Closest Calkin/Sonin parent. Search found no cancellation-free infinite prime Gram injectivity, one seam-weighted all-prime aggregate, or critical-line equivalence for that aggregate |
 | J.-F. Burnol, “Entrelacement de co-Poisson,” [arXiv:math/0407443](https://arxiv.org/abs/math/0407443) | Co-Poisson intertwining and Sonine-space analysis | No parity-resolved source orientation or finite-ramified boundary charge law |
 | P. M. Gauthier and X. Xarles, “Perturbations of \(L\)-functions with or without non-trivial zeros off the critical line,” [arXiv:0911.5135](https://arxiv.org/abs/0911.5135) | Small symmetry-preserving perturbations can alter off-line zeros | Parent for instability; paper adds explicit compact-observer blindness and persistent character charge |
 | A. Ostrowski, “Über Dirichletsche Reihen und algebraische Differentialgleichungen,” *Math. Z.* 8 (1920), 241--298, [DOI](https://doi.org/10.1007/BF01206523) | Classical Dirichlet-series hypertranscendence mechanism | No largest-exponent shell frame, bifiltered fusion, or relative theorem over full zeta differential field |
@@ -145,6 +161,12 @@ Revision searches added:
 - `"Thorin" "Riemann hypothesis" xi`
 - `"compact Thorin" "Riemann" xi`
 - `Nicholas Polson Riemann Xi Thorin measure canonical measure uniqueness`
+- `site:arxiv.org Riemann hypothesis "prime logarithms" sampling Ward positivity`
+- `site:arxiv.org Riemann zeta Sonine spaces Calkin compact operator prime dilation Gram`
+- `site:arxiv.org Burnol Sonine co-Poisson Riemann zeros compact operators`
+- `"Sonin" "Calkin" Riemann zeta compactness`
+- `"prime-log" "Riemann hypothesis" sampling`
+- `"signed prime logarithms" Riemann hypothesis`
 
 Searches found adjacent trace, zero-free-region, spectral, and ramification
 literature, Li/Weil positivity criteria, and computational zero verification,

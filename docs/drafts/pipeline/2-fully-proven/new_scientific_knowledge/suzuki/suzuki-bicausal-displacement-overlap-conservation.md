@@ -3,7 +3,7 @@
 - **ID:** suzuki-bicausal-displacement-overlap-conservation
 - **Stage:** 2-fully-proven
 - **Type:** UNIVERSAL LAW / SHARP TRANSPORT FRONTIER
-- **Status:** `[PAPER PROVED] [LEAN PENDING]`
+- **Status:** `[PAPER PROVED] [LEAN-PROVED]`
 
 ## Theorem A: displacement--overlap conservation
 

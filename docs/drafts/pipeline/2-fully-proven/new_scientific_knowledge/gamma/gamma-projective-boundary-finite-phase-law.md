@@ -1047,6 +1047,21 @@ subordinate to a cover by translates of a small neighbourhood
 limit of compact operators.  Compactness is exactly what makes the eigenspaces finite-dimensional,
 which is the step that produces characters.
 
+`formal/GaloisForLFunctions/HTGeometry/CompactAbelianConvSymmetric.lean` supplies the second
+hypothesis of the spectral theorem: for a Hermitian kernel, `conj (k (−z)) = k z`, the convolution
+operator is **symmetric** (`isSymmetric_convOp`).  Both `⟪k * u, v⟫` and `⟪u, k * v⟫` are the same
+double integral over `G × G`, and the two orders of integration agree by Fubini, the integrand being
+dominated by `‖k‖_∞ |u| |v|` (`integrable_uncurry_kernel`).  With `isCompactOperator_convOp` this
+puts mathlib's spectral theorem for compact self-adjoint operators — eigenspaces spanning, and
+finite-dimensional for nonzero eigenvalues — at the disposal of the phase carrier.
+
+`formal/GaloisForLFunctions/HTGeometry/CompactAbelianTranslation.lean` adds the group action:
+translation is an isometry of `L²(G)` (`transOp`, `norm_transOp`, from invariance of Haar measure)
+and **commutes with convolution** (`convOp_transOp`, by the substitution `y ↦ y + a` inside the
+convolution integral).  Hence every eigenspace of a convolution operator is translation invariant —
+finite-dimensional by compactness, and carrying a commuting family of unitaries, which is the exact
+situation in which simultaneous diagonalization produces characters.
+
 `formal/GaloisForLFunctions/HTGeometry/IsometricRecurrence.lean` abstracts the recurrence to any
 relatively-compact isometric `ℝ`-action (`isometricAction_recurrence`, `isometricAction_return_seq`),
 so it instantiates both to `ℝ →ᵇ ℂ` and to vertical translation of holomorphic functions on a strip.

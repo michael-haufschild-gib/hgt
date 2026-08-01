@@ -49,6 +49,25 @@ independently of cube dimension.  Infinite vector-current faithfulness and
 bounded scalar observability are therefore not competing claims: finite
 reporting is the precise information bottleneck.
 
+The current RHTower delta closes two possible misreadings and yields a
+**formation--transport--judgment separation law**:
+
+1. formation is not missing: the actual completed (+2) Xi logarithmic
+   current is hypertranscendental even over the genuine coordinate and every
+   scalar prime-zeta valuation layer. Yet local activation is absent: all
+   positive-rate welds are congruent and the complete factorwise
+   Euler--Gamma divisor-order profile is zero throughout \(\Re s>0\);
+2. transport is necessarily singular: the actual-prime clock and CCM
+   block--Fock graphs have full-product closure, hence no closed
+   single-valued extension, even nonlinear;
+3. judgment is losslessly compressible after transport: all prime-seam
+   Calkin coefficients survive in one absolutely norm-summable operator, and
+   every Ward failure is caught by one locally finite signed-prime-log jury.
+
+Thus neither source-coordinate supply nor consumer size is the remaining
+problem. The precise missing datum is source-derived sign across the singular
+relation-valued transport.
+
 This is stronger than the previous “bifiltered ramified-character” statement
 because it explains why a small positive global defect still does not provide
 zero exclusion.
@@ -77,6 +96,11 @@ zero exclusion.
 | Under RH the canonical compact Xi atomic measure realizes every source moment | Explicit positive branch; no unspecified ambient measure is needed | Direct theorem |
 | Any two compact completed-seam Thorin witnesses coincide, and every witness is canonical | Compact positive completion is rigid rather than tunable | Direct theorem |
 | Hedenmalm reflected quotients fold into one nonzero two-component system with sole affine defect \(i\Xi\) | Reflection is internal; missing datum is source-defect completion | Direct theorem |
+| Actual completed \(+2\) Xi logarithmic-current shift is hypertranscendental over all scalar prime-zeta valuation layers | Scalar depth completion does not algebraically absorb completed current | Direct theorem |
+| All positive prime-rate weld Grams are congruent, while the complete factorwise Euler--Gamma order profile is zero on \(\Re s>0\) | Local geometry supplies universal shape but not arithmetic activation; completed divisor order is non-factorwise extension data | Direct theorem |
+| Actual-prime clock and CCM block--Fock graphs have full-product closure and no closed single-valued extension | Odd orientation transport is relation-valued, not merely unbounded | Direct theorem |
+| One norm-summable all-prime Sonin Gram aggregate is compact exactly on horizontal equalizer | Infinite pairwise consumer family has lossless one-object compression | Direct theorem |
+| Zero-free margins thicken every Ward failure; signed prime logs plus finite grid hit every window | Fixed arithmetic source jury reaches final Ward consumer | Direct theorem |
 
 ## Post-freeze 21-module delta audit
 
@@ -102,17 +126,28 @@ The two current umbrella misses are `HTGeometry.NormalResolventDistance` and
 `RHTower.StationaryRecurrenceQuotientLaw`.  This is an index/reachability fact,
 not a mathematical gap in the paper.
 
-## Live post-census five-module audit
+## Live post-census fourteen-module audit
 
-Five modules appeared after the 6,885-module census; all are classified here.
+Fourteen modules appeared after the 6,885-module census. Frozen review tree
+therefore contains 6,899 RHTower/HTGeometry modules. All fourteen are
+classified here.
 
 | New module | Strongest exact content | Disposition |
 |---|---|---|
-| HTGeometry.CompactAbelianConvOperator | Constructs and bounds the \(L^2\) convolution operator through continuous functions | Infrastructure only. Despite module prose, no compactness theorem is declared, so manuscript makes no compactness claim from it |
+| HTGeometry.CompactAbelianConvOperator | Constructs and bounds the \(L^2\) convolution operator through continuous functions | Infrastructure for compactness theorem below |
+| HTGeometry.CompactAbelianConvCompact | Gives finite-rank operator-norm approximants and proves continuous-kernel convolution compact | Standard compact-group operator theorem; supports Sonin infrastructure but adds no Xi-specific claim |
+| HTGeometry.CompactAbelianConvSymmetric | Hermitian continuous kernels give symmetric compact-group convolution operators | Standard spectral infrastructure; no Xi specialization |
+| HTGeometry.CompactAbelianTranslation | Haar-preserving translations act isometrically on \(L^2\) and commute with continuous-kernel convolution | Standard compact-group representation infrastructure; no Xi specialization or new source-sign theorem |
 | HTGeometry.FiniteWalshObservationCapacityLaw | Exact normalized Walsh Parseval law and dimension-free threshold bound \(\eta^2N_\eta\le B^2\) | Direct strengthening: quantitative bounded-observer side of source observability |
+| HTGeometry.LBitBoundaryOperationalCapacityLaw | Boundary-time response satisfies \(\eta^2N_\eta D^2\le4t^2K^2\); full visibility costs \(\eta^2D^3\le4t^2K^2\) | Exact physical realization of Walsh capacity; structural analogue, not an Xi specialization |
+| HTGeometry.PolarTransportUnitary | Nearby finite-dimensional subspaces have canonical norm-continuous polar isometric transport | Positive operator survivor: transport existence is routine once phase/source selection is supplied; no Xi specialization |
+| HTGeometry.ProjectiveHorizonCramerJetSystem | Consecutive Pascal-minor determinant is one and missing transverse jets have a unique Cramer reconstruction | Positive two-horizon reconstruction shadow; loop-current theorem is stronger for paper's stated rational-jet scope |
 | HTGeometry.ProjectiveHorizonJetLoopDescent | Annihilation by one complete loop-current family per row forces a rational jet observable to be constant | Direct strengthening: positive full-current survivor paired with finite-reporter no-go |
+| RHTower.CCMFirstClockTailLowerBoundCompleteness | A hypothetical published-clock tail lower bound yields a nonnegative affine-plus-compact carrier and entire compact correction | Conditional completion of consequence, not proof of lower bound; records primitive CCM source wall without promoting it |
 | RHTower.SoninCosineRiemannLebesgue | Compactly supported cosine moments vanish at high frequency | Analytic infrastructure |
-| RHTower.SoninAnnulusPacketAsymptotics | Sonin annular packet mean vanishes and its squared norm tends to half the positive profile energy | Nondegenerate cofinal packet normalization is now proved; cross-layer nonorthogonality and source-to-Sonin value coupling remain absent, so no headline promotion |
+| RHTower.SoninAnnulusPacketAsymptotics | Sonin annular packet mean vanishes and its squared norm tends to half the positive profile energy | Nondegenerate cofinal packet normalization; direct input to Calkin injectivity |
+| RHTower.SoninPacketWeakEscape | Annular packets pair to zero against every fixed profile-integrable weight | Direct input to finite Calkin Gram injectivity and the new all-prime aggregate theorem; absorbed there |
+| RHTower.SoninPacketL2 | Realizes annular packets in the even Sonin (L^2) carrier and proves weak escape against every fixed (L^2) vector | Hilbert-space form of same Calkin injectivity input; absorbed in all-prime compression proof |
 
 The height floor is not sold as competitive numerical zero verification.
 Its value is conceptual: the same analytic endpoint charge which bounds total
@@ -137,8 +172,40 @@ transverse energy also forces a per-quartet cost without using a zero table.
 | Compact finite-factor-invariant germ reader is constant | Local quotient removes global divisor fibre | Direct theorem |
 | Exact Gamma/co-Poisson interval cell has a negative reflected two-point determinant | Actionwise exact reflection is intrinsically Krein | Direct theorem |
 | Canonical critical rooted Gamma coordinate is cofinally square-summable after scalar renormalization only for scalar zero | Zero leaves Krein negativity; nonzero scalar leaves ordinary Hilbert norm | Direct theorem |
+| All positive-rate FE welds are congruent, and all individual Euler/Gamma orders vanish even at a completed zero | Local hyperbolic shape forgets prime rate and local divisor bookkeeping cannot assemble global activation | Direct theorem |
 | Fixed singular Xi graph is not nonexpansive in ambient source norm, and Euler normal blow-up squares the gain | Target Hardy contractivity cannot replace source graph norm | Direct theorem |
 | Simultaneous complex-aperture Cayley contractivity holds exactly on nonnegative real ray | Holomorphic Schwarz--Pick aperture cannot create Ward sign | Direct theorem |
+
+## Primitive-wall exhaustion
+
+The declaration census identifies sixteen primitive obstruction interfaces.
+This table classifies every one; it does not relabel an unproved wall as a
+solution.
+
+| Primitive wall | Classification under formation--transport--judgment law | Disposition |
+|---|---|---|
+| completed prime--Gamma sign | Source-derived orientation sign before singular transport | Exact remaining boundary |
+| prime--archimedean source positive form | Positive judgment on full source moments | Existence is equivalent to RH; compact witness is unique |
+| Hedenmalm--Weil positive form | Sign of already-constructed global common-test form | Representation solved; positivity is RH boundary |
+| Hedenmalm centre mixed-Fourier sign | Concrete theta-source selector for same sign | Not proved; no independent transport or observer gap |
+| CCM continued two-pole passivity | Continued-source energy sign | Same source-sign boundary in a two-pole chart |
+| CCM first-clock reduced-tower dominance | Tail lower bound needed to activate published-clock carrier | Conditional consequence complete; arithmetic lower bound remains source wall |
+| completed-seam compact Thorin representation | Positive-measure completion | Completely classified: exists iff RH and is canonical when it exists |
+| Connes unstructured real-zero limit | Spectral-reality consumer | Re-encodes zero location; supplies no source selector |
+| Möbius critical cancellation | Arithmetic cancellation sufficient for source orientation | Quantitative source wall, not a missing consumer |
+| Möbius discrete-Laplace half decay | One-way half-scale cancellation estimate | Same quantitative source wall |
+| Sonin prime--archimedean value transfer | Transfer of source sign into Sonin judgment | Calkin compression is complete; coupling sign is missing source input |
+| dyadic prime-window subpower | Windowed arithmetic cancellation for ramified charts | Quantitative source wall |
+| Suzuki Hermite--Biehler | Global analytic orientation inequality | Sign/zero-location wall, not absent geometry |
+| moving-polynomial even factorization | Positive factorization of completed odd current | Source-sign factorization wall |
+| Xi Taylor core current | Sublinear control of a formed current | Formation exists; requested quantitative orientation control is missing |
+| Arakelov integral contractive chamber | Arithmetic-geometric zero-location chamber | Consumer mirror; no proved source production mechanism |
+
+No primitive interface asks for more scalar valuation coordinates, a regular
+closed clock operator, or a larger terminal positivity family. They all reduce
+either to the same source-derived sign, a quantitative arithmetic estimate
+that would produce it, or a consumer-side re-encoding of zero location. This
+is the exhaustiveness claim used by the manuscript; it is not an RH proof.
 
 ## Previously absorbed shadows
 
@@ -160,6 +227,7 @@ transverse energy also forces a per-quartet cost without using a zero table.
 | Dyadic roots, loops, windows, and deck descent | Multiplicity/ramification coordinate |
 | Xi–Hurwitz energy | Reflection-even quadratic detector |
 | Hyperbolic invariant form, Euler–Ward–Weil index, Schur tax | Conservative metric and completion debt |
+| Positive-rate weld congruence and zero factorwise order profile | Universal local shape versus non-factorwise activation |
 | Source horizon | Inverse generator converted to direct conjugate displacement |
 | Escaping quartets and \(8\pi\) charge escape | Compact consumers lose fixed global charge |
 

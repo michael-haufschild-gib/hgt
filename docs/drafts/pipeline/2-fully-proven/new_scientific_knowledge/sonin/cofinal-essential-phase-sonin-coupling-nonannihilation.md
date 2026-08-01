@@ -466,20 +466,29 @@ Formalized so far (all unconditional, `#print axioms` clean, wired into `GaloisF
 | 3 | Riemann--Lebesgue upgraded to merely *integrable* weights, real and complex | `tendsto_integral_mul_cos_atTop`, `tendsto_integral_complex_mul_cos_atTop`, `tendsto_integral_complex_mul_cos_freq_atTop` |
 | 3 | **weak escape `(7)`**: every fixed weight integrable against the profile pairs to zero with the packet | `tendsto_integral_mul_soninPacket_atTop` |
 
+| 3 | the packet as an `L²` vector, and as a vector of the **even** subspace | `soninPacketL2`, `soninPacketL2_mem_evenSubspace`, `soninPacketEven` |
+| 3 | **weak escape in `L²`**: `< g , w_kappa > -> 0` for every fixed `L²` weight | `tendsto_inner_soninPacketL2_atTop` |
+| 3 | uniform `L²` bound, from `|mu| <= 1` and `|u| <= 2 phi` | `abs_soninPacketMean_le_one`, `abs_soninPacket_le`, `norm_soninPacketL2_le` |
+
 Files: `formal/GaloisForLFunctions/RHTower/SoninAnnulusBump.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninAnnulusPacket.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninCosineRiemannLebesgue.lean`,
 `formal/GaloisForLFunctions/RHTower/SoninAnnulusPacketAsymptotics.lean`,
-`formal/GaloisForLFunctions/RHTower/SoninPacketWeakEscape.lean`.
+`formal/GaloisForLFunctions/RHTower/SoninPacketWeakEscape.lean`,
+`formal/GaloisForLFunctions/RHTower/SoninPacketL2.lean`.
 
-Still to formalize: `(8)` (compact corrections vanish — the corpus already has
-`IsCompactOperator.norm_apply_tendsto_zero_of_bounded_weakly_null`, so this needs the packet family
-read as an `L²` sequence plus Fréchet--Riesz), Fourier escape `(10)`, the scaled packet estimates
+Still to formalize: `(8)` itself — both inputs of
+`IsCompactOperator.norm_apply_tendsto_zero_of_bounded_weakly_null` are now in place (weak escape and
+the uniform bound), so what remains is Fréchet--Riesz to turn an arbitrary continuous functional
+into an inner product, and reading the family along a sequence.  Then Fourier escape `(10)`, the scaled packet estimates
 `(11)`--`(15)`, and the combination with
 `norm_evenSoninApertureSuccessiveLayerTransition_sub_branches_le` (already in the corpus).
 
 ## Log
 
+- 2026-08-01 — the packet now lives in the corpus as an actual vector of the even Sonin space,
+  with weak escape against every `L²` weight and a frequency-independent norm bound.  Both
+  hypotheses of the corpus's compact-operator/weakly-null lemma are therefore available.
 - 2026-08-01 — weak escape `(7)` proved in Lean, after upgrading the cosine Riemann--Lebesgue
   lemma from continuous-compactly-supported to merely integrable weights (real and complex), which
   is what pairing against an arbitrary `L²` vector needs.

@@ -37,8 +37,9 @@ Manuscript proves one strict positive-observability hierarchy.
    definiteness selects literal all-positive Euler source.
 2. Every finite Xi source metric in audited construction realizes same rooted
    collision matroid; adjoining complete scalar valuation field adds no
-   incidence information. Positive carrier faithfulness still need not see
-   logarithmic current. More generally, a bounded response on any finite
+   incidence information. Stronger: actual completed (+2) Xi logarithmic
+   current remains hypertranscendental over that entire valuation field.
+   Positive carrier faithfulness still need not see logarithmic current. More generally, a bounded response on any finite
    source-sign cube has at most \(B^2/\eta^2\) Walsh modes visible at
    resolution \(\eta\), independent of cube dimension.
 3. Critical clock is divisor-blind in strongest explicit sense. For every
@@ -78,7 +79,9 @@ Manuscript proves one strict positive-observability hierarchy.
    Fisher--Ward trace remains odd. Squaring preserves logarithmic-current
    differential field and hypertranscendence while erasing orientation. The
    full projective loop-current atlas is jointly faithful modulo constants,
-   locating blindness at finite reporting rather than current formation.
+   locating blindness at finite reporting rather than current formation. The
+   actual-prime clock and CCM block--Fock graph closures are the full product,
+   so no closed single-valued extension exists, even nonlinear.
 12. Singular acquisition packages remaining divisor data as
    \[
      (m_\rho,\chi_\rho),\qquad
@@ -86,6 +89,16 @@ Manuscript proves one strict positive-observability hierarchy.
    \]
    whose continuous rate and dyadic ramification explain Wold, Sonin/Calkin,
    Ward, Rees, thermal/deck, and mass consumers.
+13. Consumer size is not the missing resource. All prime-seam Sonin/Calkin
+    coefficients compress into one absolutely norm-summable operator without
+    cancellation modulo compacts. Zero-free margins thicken every Ward
+    failure, and signed prime logarithms plus one finite grid give a fixed,
+    locally finite arithmetic sampling set complete for the four-unit law.
+14. Local activation is not hidden in a more careful factorwise divisor
+    ledger. Every positive prime-rate reflection weld is congruent to every
+    other, while all individual Euler-factor orders and the Gamma-factor
+    order vanish throughout \(\Re s>0\). At a completed zero, no
+    zero-preserving function of this entire profile recovers Xi multiplicity.
 
 This theorem says positive information is ordered but not scalar:
 
@@ -188,6 +201,48 @@ equivalent to RH. Surviving arrow exists as representation, not as positive
 selection theorem.
 
 **Verdict:** material strengthening; zero-exclusion/sign remains hard ceiling.
+
+### H. “All-prime compression and prime-log sampling are engineered RH equivalents”
+
+**Attack.** The Calkin aggregate damps coefficients using their own norms and
+the divisor seam differences. The Ward response is itself built from the
+strict-right divisor. Compressing all pair tests into one operator and sampling
+the response on prime logs may therefore be cosmetic.
+
+**Finding.** Attack lands against any claim of a new positivity producer. The
+Calkin damping is deliberately engineered for norm convergence and supplies no
+compactness theorem. Its nontrivial content is cancellation-free infinite
+Calkin injectivity: weakly escaping Sonin packets recover every coefficient
+from one convergent operator. Prime-log sampling is stronger. Its sample set is
+fixed by primes, independent of zeros, locally finite, and reaches every
+hypothetical failure through an unconditional zero-free margin and shrinking
+prime-log windows. It removes continuous or target-adapted observation as a
+possible missing ingredient. It still does not derive the sampled four-unit
+sign from arithmetic source data.
+
+**Verdict:** genuine formation-to-consumer bridge and exact route localization;
+not zero exclusion and not standalone flagship novelty.
+
+### I. “Factorwise activation obstruction is trivial local-factor bookkeeping”
+
+**Attack.** In the critical strip every individual Euler factor is a
+holomorphic unit, as is the archimedean Gamma factor. Their orders therefore
+vanish. The new assembler no-go may be a verbose restatement of that
+elementary fact.
+
+**Finding.** Attack succeeds against standalone novelty and against any claim
+that global Euler products are impossible. The theorem is useful only in the
+larger separation law. It combines two exact blindness statements: local
+reflection welds forget numerical prime rate up to congruence, and even the
+complete local order profile forgets activation. This sits opposite the
+proved positive result that the full completed current remains
+hypertranscendental over every scalar valuation layer. Together they identify
+completed divisor order as non-factorwise extension data. The paper states
+this scope explicitly and does not advertise local-unit bookkeeping as a
+flagship theorem.
+
+**Verdict:** valid universal boundary and useful synthesis; elementary by
+itself, no zero exclusion, no Euler-product no-go.
 
 ### G. “Positive-carrier rigidity is another decorative RH equivalence”
 
@@ -436,8 +491,11 @@ The declaration-level claim trace covers:
 - source bifiltration and paired recovery;
 - dimension-free Walsh source-observation capacity;
 - full projective loop-current faithfulness modulo constants;
+- completed Xi (+2) log-current hypertranscendence over every scalar
+  valuation layer;
 - positive shell and relative hypertranscendence;
-- Julia normal lift, prime-log limit, dense graph, and recovery blow-up;
+- Julia normal lift, prime-log limit, dense graph, recovery blow-up, and
+  impossibility of any closed single-valued clock/codiagonal extension;
 - pointed Fisher--Ward oddness and curvature pairing;
 - squared-Xi hypertranscendence, current-field equality, odd Cayley lift, and
   even-reader zero jet;
@@ -447,7 +505,13 @@ The declaration-level claim trace covers:
 - Xi--Hurwitz energy and its exact zero locus;
 - Wold, Sonin/Calkin, Ward, Hellinger--Rees, dyadic, thermal/deck, aperture,
   and mass-consumer laws;
+- finite and infinite Calkin Gram injectivity, one all-prime compactness
+  equalizer, Ward zero-free detection windows, and locally finite prime-log
+  sampling completeness;
 - conservative character descent;
+- positive-rate weld congruence, vanishing of the complete factorwise
+  Euler--Gamma order profile, and impossibility of a zero-preserving local
+  order assembler for completed Xi multiplicity;
 - compact-jet, bounded-window, and reciprocal-energy blindness.
 
 No paper theorem assumes RH, simplicity, a zero-free region, a rightmost zero,
@@ -479,7 +543,11 @@ manuscript. Its “wow” claim is:
 > common-test Weil form; one target-selected sequence reaches canonical
 > orientation sector; positive moment completion is exactly RH and its compact
 > carrier is forced; regular scalar reflection is either Krein or divergent;
-> odd source pointing is the exact datum erased between lower levels.
+> odd source pointing is the exact datum erased between lower levels. Source
+> formation is faithful, singular transport cannot be functionalized, and
+> final Calkin/Ward judgment is losslessly compressible to one operator and one
+> locally finite arithmetic jury. What remains is sign, not coordinates,
+> transport regularization, or observer size.
 
 This is materially closer to credible broad-journal mathematics, but still
 not an honest accept recommendation. Central theorem remains buried in a

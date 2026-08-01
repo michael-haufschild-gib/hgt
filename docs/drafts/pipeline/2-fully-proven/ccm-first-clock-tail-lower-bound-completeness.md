@@ -1,7 +1,7 @@
 # CCM first-clock tail lower-bound completeness
 
 - **ID:** `ccm-first-clock-tail-lower-bound-completeness`
-- **Stage:** `1-in-progress`
+- **Stage:** `2-fully-proven`
 - **Type:** THEOREM / source-side RH completeness
 - **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [LEAN PENDING]`
 - **Parent:** `ccm-first-clock-landau-completeness-law.md`
@@ -209,4 +209,3 @@ Required capstones:
 ccmFirstClockPublishedSourceEventuallyBoundedBelow_iff_rh
 not_ccmFirstClockPublishedSourceEventuallyBoundedBelow_of_not_rh
 ```
-
