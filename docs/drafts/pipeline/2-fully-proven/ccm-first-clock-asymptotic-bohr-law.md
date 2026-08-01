@@ -3,7 +3,7 @@
 - **ID:** `ccm-first-clock-asymptotic-bohr-law`
 - **Stage:** `2-fully-proven`
 - **Type:** THEOREM / source-side RH equivalence and conditional value law
-- **Status:** `[PAPER-PROVED] [LEAN-PARTIAL: EQUIVALENCE+RECURRENCE+PARITY] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Status:** `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parent:** `../3-formalized/needs-audit/ccm-first-clock-tail-lower-bound-completeness.md`
 - **HT source:** `HTGeometry/SummableSpectrumScrewRecurrence.lean`
 
@@ -231,6 +231,17 @@ Targeted `lake env lean` checks and
 on the generic HT theorem, both required capstones, bounded-gap recurrence, and parity theorem
 reports exactly `[propext, Classical.choice, Quot.sound]`.
 
-Still Lean-pending on this broader card: explicit `liminf`/`limsup` identities and an equality for
-the intersection of all closed tail images. These are perturbation corollaries, not dependencies of
-the RH equivalence or bounded-gap recurrence theorem.
+The same module now also proves the remaining exact value-law capstones:
+
+```text
+ccmFirstClockScaledPublishedSource_liminf_eq_zero_of_rh
+ccmFirstClockScaledPublishedSource_limsup_eq_asymptoticHullMax_of_rh
+iInter_closure_ccmFirstClockScaledPublishedSource_image_Ici_eq_of_rh
+```
+
+The last theorem identifies the intersection of all closed cofinal tail images with
+`[0, ccmFirstClockAsymptoticHullMax]`, exactly matching the paper's asymptotic tail-cluster set.
+Targeted `lake env lean`, final
+`lake build GaloisForLFunctions.RHTower.CCMFirstClockAsymptoticBohrLaw`, and `#print axioms` on all
+three new capstones are green. Their axiom set is exactly
+`[propext, Classical.choice, Quot.sound]`.

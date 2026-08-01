@@ -27,6 +27,7 @@ theorem fixingSubgroup_comap_inf_normal [CharZero F] (E M : IntermediateField F 
     [Normal F L] [FiniteDimensional F E] [IsGalois F E] [Normal F M] :
     (IntermediateField.comap E.val (E ⊓ M)).fixingSubgroup.Normal := by
   haveI : Normal F E := IsGalois.to_normal
+  haveI : IsGalois F (IntermediateField.comap E.val (E ⊓ M)) := ⟨⟩
   infer_instance
 
 end GaloisForLFunctions.HTGeometry

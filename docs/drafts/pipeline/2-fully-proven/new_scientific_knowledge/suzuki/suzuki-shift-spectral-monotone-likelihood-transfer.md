@@ -516,9 +516,23 @@ The arc bound is formal:
 - `measureReal_Icc_le_of_radial_bound`: **the arc bound** — bounded by `M` on the radius of level
   `1 - δ` through every angle gives `nu(arc) <= 4 δ M N`.
 
-Choosing `N` of order `(β-α)/δ` makes the right-hand side proportional to `M` times the length of the
-arc, with no dependence on `δ`.  So the remaining step for Theorem B's last sentence is the choice of
-`N` and the passage `M -> 0`, which the analyticity off `[lambda_a, infinity)` supplies.
+Both remaining steps are formal:
+
+- `measureReal_Icc_le_of_uniform_radial_bound`: choosing `N = ceil((β-α)/(2δ)) + 1` and letting `δ`
+  shrink removes the covering scale entirely — a uniform radial bound `M` gives
+  `nu(arc) <= 2 M |arc|`.
+- `measureReal_Icc_eq_zero_of_radial_tendsto_zero`: **vanishing on an arc** — if the function admits
+  arbitrarily small uniform radial bounds, the measure of every arc is zero.
+
+All three are **localized in the angle**: the radial bound is required only for angles in
+`Icc α (β + 4)`, not everywhere, because the covering only ever centres its intervals inside the arc
+it is covering.  Without that localization the hypothesis would demand the function vanish at the
+whole boundary, which forces the measure to be zero outright and says nothing about support.
+
+This is the form the support statement takes: **where the function tends to zero at part of the
+boundary, the representing measure puts no mass there.**  Applied to `-Im q` off
+`[lambda_a, infinity)`, where `q` extends analytically and is real, it gives exactly Theorem B's
+conclusion that the negative-Stieltjes measure is carried by the ray.
 
 What remains for the representation is the limit itself and the transfer to the half-plane with
 support on the ray.
@@ -875,4 +889,18 @@ what makes them distinct.  Degree `n` and `n` roots then leave no freedom.
   (`β - α < 2 δ N`) in `Icc_subset_biUnion_Icc`, which avoids the endpoint case where the floor index
   reaches `N`.  With `N` of order `(β-α)/δ` the bound is proportional to `M` times the arc length and
   independent of `δ`.  Three new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — **the support mechanism is proved**: `measureReal_Icc_eq_zero_of_radial_tendsto_zero`
+  — where the function admits arbitrarily small uniform radial bounds, the representing measure of
+  every arc vanishes.  The covering scale drops out by choosing `N = ceil((β-α)/(2δ)) + 1` and letting
+  `δ` shrink (`measureReal_Icc_le_of_uniform_radial_bound`), which leaves `nu(arc) <= 2 M |arc|` with
+  no `δ` dependence; a second epsilon passage in `M` then gives zero.  Applied to `-Im q` off
+  `[lambda_a, infinity)`, where `q` extends analytically and is real, this is exactly Theorem B's
+  conclusion that the negative-Stieltjes measure is carried by the ray.  Two new declarations,
+  targeted build green, axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — the support theorems localized in the angle.  As first stated they demanded the radial
+  bound at *every* angle, which forces the whole measure to vanish and says nothing about support;
+  the covering only ever centres its intervals inside the arc, so the hypothesis is needed only on
+  `Icc α (β + 4)`.  That is the difference between a vacuous statement and Theorem B's actual
+  conclusion.  Three declarations restated and reproved, targeted build green, axioms
   `[propext, Classical.choice, Quot.sound]`.

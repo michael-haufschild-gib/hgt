@@ -261,6 +261,88 @@ theorem centralOrderPhase_groupCommutator
   rw [hphase]
   simp only [smul_mul_assoc, mul_assoc, hfirst, mul_one, hsecond]
 
+/-- Exact Weyl system for a real symplectic test-function space. -/
+structure CausalWeylSystem
+    (V : Type*) (A : Type*)
+    [AddCommGroup V] [Module ℝ V] [Ring A] [Algebra ℂ A] where
+  operator : V → A
+  causalPairing : LinearMap.BilinForm ℝ V
+  causalPairing_self : ∀ f, causalPairing f f = 0
+  operator_zero : operator 0 = 1
+  operator_mul : ∀ f h,
+    operator f * operator h =
+      Complex.exp (-(Complex.I * (causalPairing f h : ℂ)) / 2) •
+        operator (f + h)
+
+namespace CausalWeylSystem
+
+variable {V : Type*} {A : Type*}
+  [AddCommGroup V] [Module ℝ V] [Ring A] [Algebra ℂ A]
+
+theorem causalPairing_skew (S : CausalWeylSystem V A) (f h : V) :
+    S.causalPairing h f = -S.causalPairing f h := by
+  have hzero := S.causalPairing_self (f + h)
+  simp only [map_add, LinearMap.add_apply] at hzero
+  rw [S.causalPairing_self f, S.causalPairing_self h] at hzero
+  linarith
+
+/-- Weyl relation with order swapped: exact causal phase, derived from the half-phase law. -/
+theorem operator_mul_swap (S : CausalWeylSystem V A) (f h : V) :
+    S.operator f * S.operator h =
+      Complex.exp (-(Complex.I * (S.causalPairing f h : ℂ))) •
+        (S.operator h * S.operator f) := by
+  rw [S.operator_mul f h, S.operator_mul h f, add_comm,
+    S.causalPairing_skew h f, Complex.ofReal_neg]
+  rw [smul_smul, ← Complex.exp_add]
+  congr 2
+  ring
+
+/-- Coupling-scaled form of the Weyl causal phase. -/
+theorem operator_smul_mul_swap
+    (S : CausalWeylSystem V A) (lambda eta : ℝ) (f h : V) :
+    S.operator (lambda • f) * S.operator (eta • h) =
+      Complex.exp
+          (-(Complex.I * ((lambda * eta * S.causalPairing f h : ℝ) : ℂ))) •
+        (S.operator (eta • h) * S.operator (lambda • f)) := by
+  rw [S.operator_mul_swap]
+  congr 2
+  simp only [map_smul, LinearMap.smul_apply, smul_eq_mul]
+  rw [show eta * (lambda * S.causalPairing f h) =
+      lambda * eta * S.causalPairing f h by ring]
+
+theorem operator_mul_neg (S : CausalWeylSystem V A) (f : V) :
+    S.operator f * S.operator (-f) = 1 := by
+  rw [S.operator_mul]
+  simp [S.causalPairing_self, S.operator_zero]
+
+theorem operator_neg_mul (S : CausalWeylSystem V A) (f : V) :
+    S.operator (-f) * S.operator f = 1 := by
+  rw [S.operator_mul]
+  simp [S.causalPairing_self, S.operator_zero]
+
+/-- Exact order commutator, with the inverse Weyl operators identified as opposite smearings. -/
+theorem operator_smul_groupCommutator
+    (S : CausalWeylSystem V A) (lambda eta : ℝ) (f h : V) :
+    S.operator (lambda • f) * S.operator (eta • h) *
+          S.operator (-(lambda • f)) * S.operator (-(eta • h)) =
+      Complex.exp
+          (-(Complex.I * ((lambda * eta * S.causalPairing f h : ℝ) : ℂ))) •
+        (1 : A) := by
+  exact centralOrderPhase_groupCommutator
+    (S.operator (lambda • f)) (S.operator (eta • h))
+    (S.operator (-(lambda • f))) (S.operator (-(eta • h))) _
+    (S.operator_smul_mul_swap lambda eta f h)
+    (S.operator_mul_neg (lambda • f)) (S.operator_mul_neg (eta • h))
+
+end CausalWeylSystem
+
+/-- Continuity and unit normalization make Ramsey expectations nonzero near zero coupling. -/
+theorem eventually_ne_zero_of_continuousAt_eq_one
+    {F : ℝ × ℝ → ℂ}
+    (hF : ContinuousAt F (0, 0)) (hF0 : F (0, 0) = 1) :
+    ∀ᶠ p in nhds (0, 0), F p ≠ 0 := by
+  exact hF.eventually_ne (by simpa [hF0])
+
 /-- Continuous order phase associated with a complexified causal pairing. Real causal pairings are
 included through the canonical embedding into `ℂ`. -/
 noncomputable def causalOrderPhase (causal t : ℂ) : ℂ :=

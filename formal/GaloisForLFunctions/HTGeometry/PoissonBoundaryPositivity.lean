@@ -809,9 +809,8 @@ arc.  Choosing `N` of order `(β-α)/δ` makes the right-hand side proportional 
 of the arc, with no dependence on `δ`. -/
 theorem measureReal_Icc_le_of_radial_bound {ν : Measure ℝ} [IsFiniteMeasure ν] {u : ℂ → ℝ}
     (hrep : ∀ w ∈ ball (0 : ℂ) 1, ∫ θ, poissonKernel 0 w (circleMap 0 1 θ) ∂ν = u w)
-    {α β M δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1)
-    (hM : ∀ θ₀ : ℝ, u (((1 - δ : ℝ) : ℂ) * circleMap 0 1 θ₀) ≤ M)
-    {N : ℕ} (hN : β - α < 2 * δ * N) :
+    {α β M δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) {N : ℕ} (hN : β - α < 2 * δ * N)
+    (hM : ∀ θ₀ ∈ Set.Icc α (α + 2 * δ * N), u (((1 - δ : ℝ) : ℂ) * circleMap 0 1 θ₀) ≤ M) :
     ν.real (Set.Icc α β) ≤ 4 * δ * M * N := by
   have hr : (0 : ℝ) ≤ 1 - δ := by linarith
   have hr1 : (1 : ℝ) - δ < 1 := by linarith
@@ -823,7 +822,11 @@ theorem measureReal_Icc_le_of_radial_bound {ν : Measure ℝ} [IsFiniteMeasure �
   refine hmono.trans (((measureReal_biUnion_finset_le _ _).trans ?_))
   have hterm : ∀ k ∈ Finset.range N,
       ν.real (Set.Icc (α + 2 * k * δ) (α + 2 * (k + 1) * δ)) ≤ 4 * δ * M := by
-    intro k _
+    intro k hk
+    have hkN : (k : ℝ) + 1 ≤ N := by
+      have := Finset.mem_range.mp hk
+      exact_mod_cast this
+    have hk0 : (0 : ℝ) ≤ k := Nat.cast_nonneg k
     have hcentre : Set.Icc (α + 2 * k * δ) (α + 2 * (k + 1) * δ)
         = Set.Icc ((α + (2 * k + 1) * δ) - (1 - (1 - δ)))
             ((α + (2 * k + 1) * δ) + (1 - (1 - δ))) := by
@@ -831,7 +834,7 @@ theorem measureReal_Icc_le_of_radial_bound {ν : Measure ℝ} [IsFiniteMeasure �
     rw [hcentre]
     refine (measureReal_Icc_le_radial hrep (α + (2 * k + 1) * δ) hr hr1).trans ?_
     rw [hone]
-    have := hM (α + (2 * k + 1) * δ)
+    have := hM (α + (2 * k + 1) * δ) ⟨by nlinarith, by nlinarith⟩
     nlinarith [hδ]
   calc ∑ _k ∈ Finset.range N, ν.real (Set.Icc (α + 2 * _k * δ) (α + 2 * (_k + 1) * δ))
       ≤ ∑ _k ∈ Finset.range N, 4 * δ * M := Finset.sum_le_sum hterm
@@ -843,7 +846,7 @@ order `(β-α)/δ` and letting `δ` shrink removes it: a uniform radial bound `M
 theorem measureReal_Icc_le_of_uniform_radial_bound {ν : Measure ℝ} [IsFiniteMeasure ν] {u : ℂ → ℝ}
     (hrep : ∀ w ∈ ball (0 : ℂ) 1, ∫ θ, poissonKernel 0 w (circleMap 0 1 θ) ∂ν = u w)
     {α β M : ℝ} (hαβ : α ≤ β) (hM0 : 0 ≤ M)
-    (hM : ∀ δ : ℝ, 0 < δ → δ < 1 → ∀ θ₀ : ℝ,
+    (hM : ∀ δ : ℝ, 0 < δ → δ < 1 → ∀ θ₀ ∈ Set.Icc α (β + 4),
       u (((1 - δ : ℝ) : ℂ) * circleMap 0 1 θ₀) ≤ M) :
     ν.real (Set.Icc α β) ≤ 2 * M * (β - α) := by
   refine le_of_forall_pos_le_add fun ε hε => ?_
@@ -859,11 +862,19 @@ theorem measureReal_Icc_le_of_uniform_radial_bound {ν : Measure ℝ} [IsFiniteM
   have hN : β - α < 2 * δ * N := by
     rw [div_lt_iff₀ (by linarith)] at hqN
     linarith
-  have hbound := measureReal_Icc_le_of_radial_bound hrep hδ hδ1 (hM δ hδ hδ1) hN
   have hNlt : (N : ℝ) < (β - α) / (2 * δ) + 2 := by
     rw [hNdef]
     push_cast
     linarith [Nat.ceil_lt_add_one hq]
+  have hspan : 2 * δ * (N : ℝ) < (β - α) + 4 * δ := by
+    have h2 : 2 * δ * (N : ℝ) < 2 * δ * ((β - α) / (2 * δ) + 2) :=
+      mul_lt_mul_of_pos_left hNlt (by linarith)
+    have hcalc : 2 * δ * ((β - α) / (2 * δ) + 2) = (β - α) + 4 * δ := by field_simp; ring
+    linarith
+  have hbound := measureReal_Icc_le_of_radial_bound hrep hδ hδ1 hN
+    (fun θ₀ hθ₀ => hM δ hδ hδ1 θ₀ ⟨hθ₀.1, by
+      have := hθ₀.2
+      linarith⟩)
   have hstep : 4 * δ * M * N ≤ 2 * M * (β - α) + 8 * δ * M := by
     have hmul : 4 * δ * M * (N : ℝ) ≤ 4 * δ * M * ((β - α) / (2 * δ) + 2) :=
       mul_le_mul_of_nonneg_left hNlt.le (by positivity)
@@ -890,7 +901,7 @@ theorem measureReal_Icc_eq_zero_of_radial_tendsto_zero {ν : Measure ℝ} [IsFin
     {u : ℂ → ℝ}
     (hrep : ∀ w ∈ ball (0 : ℂ) 1, ∫ θ, poissonKernel 0 w (circleMap 0 1 θ) ∂ν = u w)
     {α β : ℝ} (hαβ : α ≤ β)
-    (hsmall : ∀ M : ℝ, 0 < M → ∀ δ : ℝ, 0 < δ → δ < 1 → ∀ θ₀ : ℝ,
+    (hsmall : ∀ M : ℝ, 0 < M → ∀ δ : ℝ, 0 < δ → δ < 1 → ∀ θ₀ ∈ Set.Icc α (β + 4),
       u (((1 - δ : ℝ) : ℂ) * circleMap 0 1 θ₀) ≤ M) :
     ν.real (Set.Icc α β) = 0 := by
   refine le_antisymm ?_ measureReal_nonneg

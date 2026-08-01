@@ -80,4 +80,27 @@ theorem exists_poissonRepresentation_upperHalfPlane {q : ℂ → ℂ}
     nlinarith [norm_nonneg (cayleyOfHerglotz m)]
   rw [hrep _ hmem, herglotzOfCayley_cayleyOfHerglotz (cayleyOfHerglotz_denom_ne_zero hm)]
 
+/-! ## The support statement
+
+Theorem B's last sentence in half-plane form: where the negated imaginary part tends to zero at part
+of the boundary, the representing measure puts no mass there.  The hypothesis is local in the angle —
+it is required only on the arc in question — so the conclusion is a genuine support statement rather
+than the assertion that the whole measure vanishes. -/
+
+/-- **The representation with vanishing on an arc.**  For an analytic anti-Herglotz function whose
+negated imaginary part admits arbitrarily small radial bounds over an arc, the representing measure
+gives that arc measure zero. -/
+theorem exists_poissonRepresentation_antiHerglotz_vanishing {q : ℂ → ℂ}
+    (hq : ∀ z : ℂ, 0 < z.im → AnalyticAt ℂ q z)
+    (hsign : ∀ z : ℂ, 0 < z.im → (q z).im ≤ 0)
+    {α β : ℝ} (hαβ : α ≤ β)
+    (hvanish : ∀ M : ℝ, 0 < M → ∀ δ : ℝ, 0 < δ → δ < 1 → ∀ θ₀ ∈ Set.Icc α (β + 4),
+      -(q (herglotzOfCayley (((1 - δ : ℝ) : ℂ) * circleMap 0 1 θ₀))).im ≤ M) :
+    ∃ ν : Measure ℝ, IsFiniteMeasure ν ∧
+      (∀ w ∈ ball (0 : ℂ) 1,
+        ∫ θ, poissonKernel 0 w (circleMap 0 1 θ) ∂ν = -(q (herglotzOfCayley w)).im) ∧
+      ν.real (Set.Icc α β) = 0 := by
+  obtain ⟨ν, hfin, hrep⟩ := exists_poissonRepresentation_antiHerglotz hq hsign
+  exact ⟨ν, hfin, hrep, measureReal_Icc_eq_zero_of_radial_tendsto_zero hrep hαβ hvanish⟩
+
 end GaloisForLFunctions.RHTower

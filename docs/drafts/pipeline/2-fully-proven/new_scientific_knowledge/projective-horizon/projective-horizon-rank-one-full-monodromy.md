@@ -1507,3 +1507,14 @@ dividing the discriminant.
   to be Galois.  That is the remaining step: an `F`-algebra equivalence
   `comap E.val (E ⊓ M) ≃ₐ[F] (E ⊓ M)`, which is subtype bookkeeping — mathlib has no
   `comapAlgEquiv` for intermediate fields, so it has to be written out.
+
+- 2026-08-01 — `IntersectionFixingSubgroup.lean` discharges `hnorm` outright.  The corpus already
+  had the missing bookkeeping: `comapValEquiv` in `IntermediateFieldComap.lean` is exactly the
+  `F`-algebra equivalence `comap E.val K ≃ₐ[F] K` for `K ≤ E`, built earlier for a degree
+  computation.  Transporting `normal_inf` along it gives `normal_comap_inf`, and mathlib's
+  `fixingSubgroup_normal_of_isGalois` then yields `fixingSubgroup_comap_inf_normal`: the subgroup of
+  the first factor's automorphism group fixing the intersection is normal, from normality of the two
+  factors alone.  Axioms `[propext, Classical.choice, Quot.sound]`.
+  So of the three group-side inputs of the base change step, `hnorm` is now proved from structure;
+  `habel` follows from `commute_quotient_of_le_abelian` with the Kummer factor, and `hcyc` from
+  `commute_gal_XPowSubC`.

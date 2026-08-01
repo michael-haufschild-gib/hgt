@@ -3145,3 +3145,5 @@ import GaloisForLFunctions.HTGeometry.GammaFieldFinitePhaseRank
 import GaloisForLFunctions.HTGeometry.CenteredRootFieldTop
 import GaloisForLFunctions.HTGeometry.IntersectionNormal
 import GaloisForLFunctions.HTGeometry.GammaFieldSumBoundary
+import GaloisForLFunctions.HTGeometry.IntersectionFixingSubgroup
+import GaloisForLFunctions.HTGeometry.IntersectionAbelian
