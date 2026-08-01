@@ -283,3 +283,18 @@ until the concrete Friedrichs operator is represented in Lean.
 - [x] Lean module
 - [x] exact module build, lint, and axiom audit
 - [x] promote to Stage 2/3 and connect to SOTA wall
+
+### Audit — item 6's reality claim is already formal (target list was under-listing)
+
+The Formalization target block omits three declarations that
+`RHTower/SuzukiFiniteShiftProjectiveHolonomy.lean` already proves, all discharging item 6's closing
+sentence *"therefore `Xi_r(x)` is purely imaginary and `(13)` is real, as required"*:
+
+- `conj_suzukiLogarithmicSourceGenerator_eq_neg` : from `F(-x) = conj F(x)` and `G(-x) = conj G(x)`,
+  the generator is anti-self-conjugate.
+- `suzukiLogarithmicSourceGenerator_re_eq_zero` : hence `Xi_r(x)` is purely imaginary.
+- `suzukiClarkTransport_im_eq_zero` : hence `(13)`'s velocity `i mu Xi / 2` is real.
+
+No new Lean was needed; this entry exists so the target list is not read as a gap. The genuinely
+paper-level remainder is unchanged and is operator-dependent: the unbounded Suzuki operator, the
+inverse differentiation `(11)`, and the Fourier integral defining `G_r` in `(10)`.

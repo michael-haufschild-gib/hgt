@@ -336,3 +336,30 @@ abstract wrapper claiming source construction.
 - [ ] Xi divisor weld
 - [ ] specialist novelty review
 - [ ] RH
+
+### Lean progress — compact moment determinacy FORMALIZED
+
+Section 9 parks two items: the concrete operator expansion `(15)`, and *"measure pushforward
+determinacy"*, both "until the restricted-Weil operator is represented in Lean". The second does not
+depend on the operator at all: determinacy of a **compactly supported** measure by its moments is a
+statement about the measure alone, and the hostile audit's item 4 uses it exactly in that form
+("compact determinacy of the reciprocal-square pushforward"). It is now proved.
+
+New module `HTGeometry/CompactMomentDeterminacy.lean` [PROVED HERE], wired into the `HTGeometry`
+umbrella, standard axioms `[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `integrable_of_continuous` : a continuous function on a compact space is integrable against a
+  finite measure.
+- `continuous_integral_continuousMap` : integration against a finite measure is Lipschitz with
+  constant `rho(univ)` on `C(X, ℝ)` for compact `X`, hence continuous.
+- `ext_of_forall_integral_pow_eq` : **the determinacy theorem** — two finite measures on `Icc a b`
+  with the same moments are equal. Mechanism: equal moments give equal integrals of every
+  polynomial (`Polynomial.eval_eq_sum_range` plus termwise integrability); Weierstrass
+  (`polynomialFunctions_closure_eq_top`) makes the polynomial functions dense in `C(Icc a b, ℝ)`;
+  two continuous functionals agreeing on a dense set are equal; and
+  `ext_of_forall_integral_eq_of_IsFiniteMeasure` converts that into equality of measures.
+
+mathlib has both ingredients (Weierstrass, and the bounded-continuous extensionality of finite
+measures) but not the determinacy statement itself, so this is corpus-owned and reusable — the
+statement quantifies over an arbitrary finite measure on the interval, so it applies verbatim to a
+pushforward. The remaining paper-level item on this card is `(15)` alone.

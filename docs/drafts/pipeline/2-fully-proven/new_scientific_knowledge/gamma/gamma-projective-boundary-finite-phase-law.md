@@ -3059,7 +3059,101 @@ constants `1` and `(−1)^{j−1}(j−1)!`.  `#print axioms` clean.
 Combined with the shape-ratio limits (`tendsto_jetNormFactor_ratio` on the digamma side) this is
 eq. (5): a finite tuple of Gamma-field elements, normalized by a dominant member, has a constant
 projective limit — nonzero exactly on the members sharing the dominant datum, and the limit is the
-quotient of the explicit residues.  `#print axioms` clean.  The non-flatness theorem `not_isVertFlatGerm_digammaJetEval` closes the
+quotient of the explicit residues.  `#print axioms` clean.
+
+### Eq. (27) → (29) from the residues
+
+`HTGeometry/NormalizedFamilyRatios.lean` packages the coefficient data:
+
+- `eventually_ne_zero_of_normalized` — a nonzero normalized limit makes the function eventually
+  nonzero;
+- **`tendsto_family_ratio_of_normalized`** — normalizing a family by a member with nonzero limit
+  gives exactly the collapse input: that member is eventually nonzero, its own shape ratio is `1`,
+  and every ratio converges to `c_α·r_α/c_β`.
+
+`HTGeometry/GammaFieldCollapseFromResidues.lean` feeds it to the Bohr-return collapse:
+
+- **`recurrence_collapse_of_normalized`** — a finite differential relation whose coefficients
+  converge after division by their shapes, with convergent shape ratios and a nonzero normalizing
+  residue, collapses along the return times to the autonomous relation
+  `Σ_α (c_α r_α / c_β)·M_α(σ) = 0` with the coefficient at `β` equal to `1`.
+
+So eq. (27) → (29) now holds with the coefficient vector *explicit* — the quotients of the residues
+computed by the eq. (19)/(3) chain — and with no hypothesis on the coefficient data beyond its
+normalized presentation.  `#print axioms` clean.
+
+`HTGeometry/GammaJetShapeRatios.lean` supplies the shape ratios that presentation needs:
+
+- `gammaJetShape` — a power of `Γ` times the shape of the lowest coefficient, with
+  `eventually_gammaJetShape_ne_zero`;
+- `hasPolyGrowthLine_polyJetShape_ratio` — a ratio of jet shapes has at most polynomial growth,
+  since `‖L‖` and `‖s‖` are between `1` and a multiple of the height;
+- **`tendsto_gammaJetShape_ratio_of_gamma_lt`** — hence a strictly larger Gamma power makes the whole
+  shape ratio vanish, whatever the jet data;
+- **`tendsto_gammaJetShape_ratio_of_gamma_eq`** — and at equal Gamma powers the jet dominance decides.
+
+That is the `(Γ-exponent, s-degree, log-degree)` lexicographic order of eq. (26), with each level
+proved on the line.  `#print axioms` clean.
+
+`HTGeometry/GammaJetDominantExists.lean` completes eq. (26) with the existence statement:
+
+- **`exists_dominant_gammaJet_index`** — a finite nonempty family of Gamma-jet data has a dominant
+  member: minimize the Gamma exponent, maximize the argument degree among the minimizers, maximize
+  the log degree among those.  The argument-degree comparison stays in `ℕ` in the statement
+  (`deg p_α + b_β ≤ deg p_β + b_α`), with the intermediate maximization run over `ℤ`.
+
+So "choose a component with dominant triple and divide the tuple by it" — the sentence that opens
+eq. (5)'s proof on the card — is now a Lean theorem, together with all three dominance limits.
+`#print axioms` clean.
+
+`HTGeometry/GammaJetRatioFamily.lean` assembles the tuple statement:
+
+- `polyJetShape_ratio_eq` — a ratio of jet shapes *is* a ratio of normalization factors with shifted
+  argument degrees, so the digamma-layer dominance limits transfer verbatim
+  (`tendsto_polyJetShape_ratio_one`, `..._zero_of_deg`, `..._zero_of_log`);
+- **`exists_dominant_with_shape_ratios`** — hence a finite nonempty family of Gamma-jet data has a
+  dominant member together with the full family of shape-ratio limits: `1` at the dominant member,
+  `0` at every strictly dominated one.
+
+That is the input `hr` of `recurrence_collapse_of_normalized`, so the collapse now runs on concrete
+Gamma-field shape data with no hypothesis chosen by hand.  `#print axioms` clean.
+
+`HTGeometry/GammaJetCollapse.lean` is the capstone of the chain:
+
+> **`exists_collapse_of_gammaJet_data`** — a finite differential relation whose coefficients converge
+> after division by their Gamma-jet shapes, with nonzero residues, collapses along the Bohr return
+> times to an autonomous relation `Σ_α d_α·M_α(σ) = 0` with `d` explicit and `d_β = 1` at the
+> dominant datum.
+
+The dominance is *produced*, not assumed: the `(Γ-exponent, argument degree, log degree)` order gives
+the dominant member, the shape ratios follow, the residues come from the eq. (19)/(3) chain, and the
+Bohr-return collapse turns them into the autonomous relation.  `#print axioms` clean.
+
+`HTGeometry/GammaFieldShapeConvergence.lean` closes the loop back to concrete elements:
+
+- `eventually_polyJetShape_ne_zero`;
+- **`tendsto_gammaField_div_gammaJetShape`** — a Gamma polynomial whose coefficients converge
+  against a common jet shape converges against the *Gamma-jet shape* of its lowest index, to the
+  residue of that coefficient.
+
+That is exactly the `hF` hypothesis of `exists_collapse_of_gammaJet_data`, so an element of
+`ℂ(s)⟨Γ⟩` presented in normal form — a Gamma polynomial with jet-monomial coefficients over `ℂ(s)` —
+feeds the collapse directly.  The chain runs end to end:
+
+`polygamma series → jet asymptotics → jet leading constants → dominance → residue (19) → Gamma layer
+(3) → shape ratios (26) → dominant datum → ratio family (5) → Bohr-return collapse (27)→(29)`,
+
+every step unconditional and `#print axioms` clean.
+
+`HTGeometry/GammaFieldQuotientBoundary.lean` extends the boundary from the ring `L[Γ]` to the field
+`L(Γ)` of eq. (23):
+
+- **`tendsto_gammaFieldQuotient`** — with numerator and denominator each presented by their Gamma-jet
+  data, and the denominator's residue nonzero, the quotient converges against the ratio of the two
+  shapes, to `c_A·r/c_B`.
+
+So the boundary law covers every element of `K_Γ = L(Γ)` written as a quotient of Gamma polynomials
+over `ℂ(s)⟨ψ⟩`, not only the polynomial case.  `#print axioms` clean.  The non-flatness theorem `not_isVertFlatGerm_digammaJetEval` closes the
 degenerate branch: a nonzero jet polynomial cannot decay faster than every power, so a normalization
 whose visible residue cancels still leaves a nonzero element behind, to be found one dominance level
 down.  Iterating the split over the finitely many levels is the remaining bookkeeping, and it needs
@@ -3107,9 +3201,66 @@ finite-aperture prime-torus carrier law (eq. 34) unconditionally:
 - **fixed-carrier exclusion** (`primeAperture_no_fixed_finiteCarrier`): for every finite rational
   character space `A`, some aperture module admits no linear injection into `A`.
 
-The remaining formal work is the full Laurent shift field, Poincare asymptotic field, general
-Gamma-field monomial valuation, holomorphic almost-periodic hull, and Bohr-frequency rank
-infrastructure. The card remains at stage 2 until the whole claim is formalized unconditionally.
+That list of remaining formal work — full Laurent shift field, Poincaré asymptotic field, general
+Gamma-field monomial valuation, holomorphic almost-periodic hull, Bohr-frequency rank infrastructure
+— is now out of date on every item except the first, which the corpus *bypasses*:
+
+- **Laurent shift field**: not built, and not needed.  Its purpose was eq. (17), the injectivity of
+  the formal Stirling expansion; the corpus proves that content analytically instead
+  (`not_isVertFlatGerm_digammaJetEval`: no nonzero jet polynomial over `ℂ(s)` decays faster than
+  every power on a vertical line), using the corpus's own shift elimination rather than
+  Adamczewski–Dreyfus–Hardouin.
+- **Poincaré asymptotic field**: built, in the exact form the law needs — the jet leading constants
+  `1` and `(−1)^{j−1}(j−1)!` (`tendsto_pow_mul_iteratedDeriv_digamma_vertical`), the residue of a
+  finite combination (`tendsto_sum_ratCoeff_jetMonomial`), and its Gamma layer
+  (`tendsto_gammaField_projective`).
+- **General Gamma-field monomial valuation**: built — the three-level order with each dominance limit
+  proved (`tendsto_gammaJetShape_ratio_of_gamma_lt`, `..._of_gamma_eq`,
+  `tendsto_polyJetShape_ratio_zero_of_deg`, `..._of_log`) and the dominant datum produced
+  (`exists_dominant_gammaJet_index`).
+- **Holomorphic almost-periodic hull** and **Bohr-frequency rank**: built earlier in the session
+  (`AlmostPeriodicHull`, `PhaseRankCapstone.rank_le_of_regular_jets`,
+  `NondegenerateSolutionPhaseRank.rank_finite_of_nondegenerate_solution`).
+
+**That bridge is now built.**  `HTGeometry/FinitePhaseLawFromRatios.lean` isolates the law's
+coefficient interface and re-enters it from the new presentation:
+
+- **`finite_phase_law_of_coeff_ratios`** — the law needs only three facts about the coefficients: the
+  normalizing one is eventually nonzero, the ratios converge, and the limit at the normalizing index
+  is nonzero.  Stated that way it is independent of how the coefficients are written
+  (`strip_relation_of_coeff_limits`, `monomialSum_ne_zero`, `rank_finite_of_coeff_limits` are the
+  three pieces it assembles);
+- **`finite_phase_law_of_gammaJet_data`** — feeding it the Gamma-jet presentation: each coefficient
+  given by its datum `(u, a, deg p, b)` and residue `c α ≠ 0`.  The datum order produces the
+  normalizing index, `exists_dominant_with_shape_ratios` gives the shape-ratio limits,
+  `tendsto_family_ratio_of_normalized` turns them into coefficient ratios, and the conclusion is the
+  law's own: the collapsed relation holds on the strip, the collapsed polynomial is nonzero, and the
+  rational Bohr frequency rank is finite — with `d β = 1`.
+
+So the law now runs on either coefficient format, and on the new one *no dominance hypothesis is
+chosen by hand*.  `#print axioms` clean.
+
+`HTGeometry/FinitePhaseLawGammaJetWitness.lean` checks that the new hypothesis class is inhabited —
+a law whose hypotheses were never satisfiable would assert nothing:
+
+- `gammaJetShape_zero` — the trivial Gamma-jet datum has shape `1`, so a constant coefficient is
+  presented by it with its own value as residue;
+- **`finite_phase_law_gammaJet_expLine`** — the exponential line satisfies the hypotheses of
+  `finite_phase_law_of_gammaJet_data` on every vertical line, with the relation `Φ′ − μΦ = 0` and
+  constant coefficients, and its rational Bohr frequency rank is finite;
+- **`finite_phase_law_gammaJet_expLine_of_data`** — the general form: multiplying the relation
+  `Φ′ − μΦ = 0` by *any* coefficient that converges against its Gamma-jet shape keeps every
+  hypothesis, so each datum level can be exercised by a one-line corollary;
+- the three levels are then all inhabited: `finite_phase_law_gammaJet_expLine_coordCoeff` (argument
+  degree, shape `s`), `..._digammaCoeff` (log degree, shape the leading logarithm, residue `1` by
+  `tendsto_digamma_div_vertLog`), `..._gammaCoeff` (Gamma exponent, shape `Γ`), with the shape
+  identities `gammaJetShape_zero`, `..._arg_one`, `..._log_one`, `..._gamma_one`.
+
+So the hypothesis class is not confined to constants: every level of the datum is realized by a
+genuine Gamma-field coefficient.
+
+`#print axioms` clean.  The card remains at stage 2 until the two non-Lean gates — the literature
+comparison and the independent audit — are closed.
 
 ## Gates
 

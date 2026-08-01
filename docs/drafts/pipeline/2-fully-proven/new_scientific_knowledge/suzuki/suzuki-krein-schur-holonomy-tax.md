@@ -149,7 +149,9 @@ No claim is made that `(5)` currently holds for actual source.  That is exact RH
 
 Lean proves scalar completed-square identity `(2)`, equivalence `(3)`, strict positivity of
 nonzero coupling tax, and specialization to exact negative-node affine-resolvent debt.  General
-finite-dimensional block congruence remains paper-proved.
+finite-dimensional block congruence is **also formal** — see the log entry immediately below, which
+closes it in `RHTower/SuzukiKreinSchurBlockCongruence.lean`, together with the automatic positive
+spectral complement `suzukiPositiveBlock_posDef` of §3.
 
 ### Lean progress — general finite block congruence formalized
 

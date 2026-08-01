@@ -369,9 +369,17 @@ their exact synthesis into the Neumann holonomy survivor.  Priority remains unve
 algebraic layer `(3)--(6)`, `(12)--(14)`, the centered-pole cancellation identity, dyadic
 specialization, Pick-kernel split `(18)`, projective-cancellation rigidity, and the exact dyadic
 reciprocal-secant derivative limit used in `(P6)--(P8)`.  It also proves the pointwise smoothing identity
-`sgn(t)(-|t|/2)=-t/2` behind `(7)`.  The compact-distributional Fourier passage `(7)--(10)` remains
-paper-proved until Suzuki's distribution triangle interface is represented in Lean, so this card
-stays at Stage 2 rather than overstating exact formal closure.
+`sgn(t)(-|t|/2)=-t/2` behind `(7)`.
+
+The passage `(7)--(10)`, and `(1)` itself, are **now also formal** for a signed-measure source; see
+the 2026-08-01 log entries below.  `(7)` is `momentFunctional_neumannResponseDifference`, `(8)` is
+`half_integral_neumannResponseDifference_eq_sineKernel` over
+`HTGeometry/CompactFourierSineKernel.lean`, `(9)` is `deriv_signedCharFun_zero` in
+`HTGeometry/SignedCharFunCentralJet.lean`, `(10)` is `oddPart_div_of_odd`, and their assembly into
+`(1)` is `oddPart_normalizedResponse_eq`.  Only linearity, a vanishing zeroth moment and a first
+moment are used — no distribution of order above a measure — which is why no distribution triangle
+was needed.  What is still not represented in Lean is a source of higher distributional order,
+which this card's argument never invokes.
 
 ## Log
 
@@ -485,3 +493,24 @@ jet above, `(10)` as the parity identity. The card's Formal status paragraph, wh
 whole passage as awaiting a Lean distribution triangle, is superseded: what is still not represented
 is a source of distributional order above a measure, which the card's own argument never uses —
 `(7)` needs only linearity and a vanishing zeroth moment, and `(9)` needs only a first moment.
+
+### Lean progress — `(1)` assembled from `(8)`--`(10)`
+
+With `(8)`, `(9)` and `(10)` formal, the card's own sentence *"substitution of `(8)--(9)` into
+`(10)` proves `(1)`"* is now a Lean theorem. Added to
+`HTGeometry/CompactFourierSineKernel.lean` [PROVED HERE], standard axioms
+`[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `oddPart_normalizedResponse_eq` : for an odd denominator `W` with `W z ≠ 0`, a numerator whose
+  even part is the sine kernel carrying `mu_1`, and a central jet `d = I mu_1`,
+
+  `Odd_z[(-i T)/W](z) = -d sin(a z) / (2 z W(z))`,
+
+  which is exactly `(1)` — the formula in this module's own header docstring. The mechanism is
+  `-i * mu_1 = -d` after substituting the jet identity; no analysis is used beyond the two inputs,
+  which is the point: `(1)` is an algebraic consequence of the even-part computation and the
+  central-jet identification, both of which are now proved rather than assumed.
+
+It is stated generically (in `T`, `W`, `a`, `mu_1`, `d`) so that instantiating it needs only the
+card's own objects. Kept in the light `CompactFourierSineKernel` module deliberately: the Suzuki
+module's import cone costs ~3.5 minutes per typecheck, so generic algebra iterates there instead.

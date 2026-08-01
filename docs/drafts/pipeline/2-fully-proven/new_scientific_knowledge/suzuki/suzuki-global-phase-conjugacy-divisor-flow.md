@@ -427,3 +427,22 @@ paper-level until those source objects exist in Lean.
   restricted-Weil norm-weight transference.
 - 2026-07-21 — dependency-closed order-isomorphism and weighted-transport core formalized and
   axiom-audited in `SuzukiGlobalPhaseConjugacy.lean`.
+
+### Lean progress — Section 3's `(12)` FORMALIZED
+
+The Lean target lists eight declarations and all exist, but Section 3's `(12)` — *each phase cell
+carries the invariant mass `2 pi`* — is not among them and had no declaration. It needs no source
+object: with the phase speed as the derivative of the chart, the cell integral telescopes to the
+phase increment by the fundamental theorem of calculus.
+
+Added to `RHTower/SuzukiGlobalPhaseConjugacy.lean` [PROVED HERE], standard axioms
+`[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `integral_phaseSpeed_phaseCell` : between the poles at lifted levels `level` and `level + cell`,
+  the phase-speed density integrates to exactly `cell`. Proof:
+  `intervalIntegral.integral_eq_sub_of_hasDerivAt`, then `OrderIso.apply_symm_apply` collapses both
+  endpoints to their labels.
+- `integral_phaseSpeed_fullTurn` : the full-turn specialization, `(12)` itself, with mass `2 pi`.
+
+Stated with the cell width general rather than fixed at `2 pi`, since the labels `theta + pi + 2 pi k`
+of Section 2 make every label gap a cell of the same kind.

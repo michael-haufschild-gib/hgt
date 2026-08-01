@@ -62,6 +62,29 @@ theorem signedCharFun_reflected_odd (mp : Measure ℝ) (t : ℝ) :
   simp only [signedCharFun, hmap, neg_neg]
   ring
 
+/-! ## Endpoint atoms and the normalized edge ratio -/
+
+/-- **Endpoint atom pairing.**  The signed pair of endpoint atoms `delta_{-a} - delta_a`, paired
+against `y ↦ H (a - y)` for a primitive vanishing at the origin, returns the value of the primitive
+at the full aperture. -/
+theorem integral_endpointAtomPair (a : ℝ) (H : ℝ → ℂ) (hH0 : H 0 = 0) :
+    (∫ y, H (a - y) ∂(Measure.dirac (-a))) - (∫ y, H (a - y) ∂(Measure.dirac a))
+      = H (2 * a) := by
+  rw [integral_dirac, integral_dirac, show a - -a = 2 * a by ring, sub_self, hH0, sub_zero]
+
+/-- **Normalized edge ratio.**  Dividing the paired atom value by the central jet and applying the
+Weyl normalization `q_norm = -I q_phys` returns the aperture average of the primitive: the two
+factors of `I` cancel and the edge weight divides out. -/
+theorem normalizedEdgeRatio {a : ℝ} (ha : (a : ℂ) ≠ 0) {c H2a : ℂ} (hc : c ≠ 0) :
+    -I * ((I * (2 * c) * H2a) / (4 * (a : ℂ) * c)) = H2a / (2 * (a : ℂ)) := by
+  have hI : I * I = -1 := Complex.I_mul_I
+  rw [mul_div_assoc']
+  have h1 : -I * (I * (2 * c) * H2a) = 2 * c * H2a := by
+    linear_combination (-(2 * c * H2a)) * hI
+  rw [h1]
+  field_simp
+  ring
+
 end
 
 end GaloisForLFunctions.HTGeometry

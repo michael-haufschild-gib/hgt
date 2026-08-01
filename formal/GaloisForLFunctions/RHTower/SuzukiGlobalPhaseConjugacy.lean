@@ -1,3 +1,4 @@
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 import GaloisForLFunctions.RHTower.SuzukiFiniteShiftProjectiveHolonomy
 
 /-!
@@ -88,6 +89,34 @@ theorem suzukiPhasePole_lt_phasePole
 theorem suzukiPhaseTransport_strictMono (φₛ φᵣ : ℝ ≃o ℝ) :
     StrictMono (suzukiPhaseTransport φₛ φᵣ) :=
   (suzukiPhaseTransport φₛ φᵣ).strictMono
+
+/-! ## Phase-cell mass -/
+
+/-- **Invariant phase-cell mass.**  The phase-speed density integrates over the cell between two
+lifted phase levels to exactly the phase increment: the density is the derivative of the chart, so
+the fundamental theorem of calculus telescopes the cell to its labels. -/
+theorem integral_phaseSpeed_phaseCell
+    {φ : ℝ ≃o ℝ} {q : ℝ → ℝ} (level cell : ℝ)
+    (hderiv : ∀ x ∈ Set.uIcc (suzukiPhasePole φ level) (suzukiPhasePole φ (level + cell)),
+      HasDerivAt (⇑φ) (q x) x)
+    (hint : IntervalIntegrable q MeasureTheory.volume
+      (suzukiPhasePole φ level) (suzukiPhasePole φ (level + cell))) :
+    (∫ x in (suzukiPhasePole φ level)..(suzukiPhasePole φ (level + cell)), q x) = cell := by
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint]
+  simp only [suzukiPhasePole, OrderIso.apply_symm_apply]
+  ring
+
+/-- The full-turn cell carries mass `2 π`, which is the normalization of Suzuki's angle labels. -/
+theorem integral_phaseSpeed_fullTurn
+    {φ : ℝ ≃o ℝ} {q : ℝ → ℝ} (level : ℝ)
+    (hderiv : ∀ x ∈ Set.uIcc (suzukiPhasePole φ level)
+        (suzukiPhasePole φ (level + 2 * Real.pi)),
+      HasDerivAt (⇑φ) (q x) x)
+    (hint : IntervalIntegrable q MeasureTheory.volume
+      (suzukiPhasePole φ level) (suzukiPhasePole φ (level + 2 * Real.pi))) :
+    (∫ x in (suzukiPhasePole φ level)..(suzukiPhasePole φ (level + 2 * Real.pi)), q x)
+      = 2 * Real.pi :=
+  integral_phaseSpeed_phaseCell level (2 * Real.pi) hderiv hint
 
 /-! ## Phase-speed and atom-weight Jacobians -/
 

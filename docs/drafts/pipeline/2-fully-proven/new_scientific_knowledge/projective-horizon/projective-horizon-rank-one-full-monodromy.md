@@ -145,9 +145,21 @@ need an arithmetic marking that reduces this generic symmetry in a controlled, s
 
 ## Formal verification
 
+Every numbered step of the proof carries an unconditional Lean theorem, all building with only
+`propext`, `Classical.choice`, `Quot.sound`:
+
+| step | Lean |
+|---|---|
+| `(1)`, `(5)` | `GeometricInverseTruncation`: `coeff_eq_geomInverseSum_of_mul_eq_one`, `coeff_geomInverseSum_top` |
+| `(5) -> (7)` | `ReciprocalFiberEquation`: `coeff_mul_pow_eq_tail_sum`, `coeff_mul_pow_eq_polynomial_tail_sum` |
+| `(6)`, `(8)`, `(9)`, `(10)` | `TailPolynomialTriangularity`, `TailCoefficientIndependence`, `TailParameterChange`: `tailParameterChange` |
+| `(11)` | `TailCenteredCoefficientMatch`: `tailCenteredCoeffEquiv`, `coe_tailCenteredCoeffEquiv` |
+| `(3)`, uncentered | `GenericFullMonodromy`, `GenericFullMonodromyOdd` |
+| `(3)`, centered | `CenteredFullMonodromy`, `CenteredFullMonodromyOdd` |
+| `(3)`, over the parameter field | `CenteredParameterMonodromy`: `centeredParameterMonodromy`, `centeredParameterMonodromyOdd` |
+
 `ProjectiveHorizonExactLagrangian.lean` proves the exact reversed coefficient pairing and its
-positive-degree vanishing under truncated inversion; these are the coefficient identities from
-which `(5)--(7)` arise.  The triangular finite-cover and splitting-field argument are paper-level.
+positive-degree vanishing under truncated inversion, the coefficient identities behind `(5)--(7)`.
 Only targeted leaf builds are used.
 
 ## Formalisation route for the symmetric monodromy
@@ -2379,3 +2391,121 @@ dividing the discriminant.
   needed to apply it to a membership.  And an implicit type argument that has to be recovered from
   under a `Polynomial.map` sends the unifier into `Polynomial.C =?= Polynomial.C` delta-unfolding
   for eight seconds and then a heartbeat timeout; pinning `(E := E)` at the call site costs nothing.
+
+- 2026-08-01 — **The card's `(3)` is now proved over the card's own field.**  Three modules close it:
+
+  `CenteredRadicalBaseChangeIn.lean` and `CenteredFullMonodromyIn.lean` restate the base change and
+  the full-monodromy conclusion **in any ambient splitting field**, not only the canonical one.  Both
+  inputs of the step are statements about the coefficient field alone — the radical polynomial over
+  the constant coefficient is irreducible because that coefficient is a variable of a rational
+  function field, and the discriminant times it is not a square — so nothing forces a particular
+  ambient.
+
+  `CenteredParameterMonodromy.lean` reads it over the parameter field:
+  `centeredParameterMonodromy (hd : 3 ≤ d) (hm : 0 < m)` and
+  `centeredParameterMonodromyOdd (hd : 3 ≤ d) (hn : 0 < n) (hodd : ¬ 2 ∣ n)` give, for any ambient
+  splitting field `L` of `centeredMonicE * (X ^ n - c_0)`, an isomorphism
+
+  ```text
+  (FractionRing (Polynomial L) ≃ₐ[fracSub (rootField … (X ^ n - c_0)) L] FractionRing (Polynomial L))
+    ≃* Equiv.Perm (Fin d)
+  ```
+
+  — the Galois group over the coefficient field extended by a radical of the constant coefficient and
+  by one independent transcendental, which is the card's `M = K(p_1, …, p_n, q)`.  Axioms
+  `[propext, Classical.choice, Quot.sound]` throughout.
+
+  **Why stating it in an arbitrary ambient was necessary, not merely convenient.**  Pinning the
+  ambient to the canonical `SplittingField` makes the statement carry that expression four times;
+  elaborating `fracSub` over an intermediate field of it exhausted a million heartbeats at
+  `isDefEq`, comparing `Field.toSemifield.toCommSemiring` with `SubsemiringClass.toCommSemiring`
+  through the whole term.  Naming the ambient with an opaque `def` and re-deriving its instances by
+  `inferInstanceAs` moves the same cost into the transport — the two views of the instances are
+  definitionally but not syntactically equal, and the unifier grinds through the projections; that
+  attempt was killed by the operating system.  With the ambient a variable the statement is small
+  and the proof is an application.  Two further seconds-to-minutes swings came from arguments whose
+  implicit `K`, `d` were left to inference: `separable_centeredMonicE` with metavariables sends the
+  unifier into the same subsemiring comparison.  Pinning `(K := K) (d := d)` took the file from 145 s
+  to 28 s.
+
+- 2026-08-01 — **The fiber equation `(2)` is the tail polynomial equation `(7)`.**
+  `ReciprocalFiberEquation.lean` closes the step `(5) → (7)`, which the card had only at paper level.
+
+  `coeff_mul_pow_eq_tail_sum`: for `a` invertible with inverse `b` and `Y` the inverse of `a + t R`,
+
+  ```text
+  [t^n] Y * a^(n+1) = ∑_(j<n) (-1)^(n-j) * [t^j] (R^(n-j)) * a^j
+  ```
+
+  So the equation `[t^n] Y = q` of `(2)`, cleared of denominators, is a polynomial equation in `a` of
+  degree `n+1` with **no term of degree `n`** and with the alternating tail coefficients of `(6)`.
+  `coeff_mul_pow_eq_polynomial_tail_sum` states the same with the tail given by a polynomial, in
+  which form the coefficients are literally the corpus's `tailCoeff K n j = ((tailPoly K n) ^ (n-j)).coeff j`.
+  Axioms `[propext, Classical.choice, Quot.sound]`.
+
+  The existing `GeometricInverseTruncation.lean` already had `(5)`; what was missing was clearing the
+  inverse powers, which is the identity `b^(k+1) * a^(n+1) = a^(n-k)` for `k ≤ n`, and the
+  reindexing `j = n - k` that turns the sum over `k` into the tail polynomial in `a`.
+
+  **What is left for the card.**  Only the identification of the two coefficient models: the tail
+  coefficient field `K(c_0, …, c_(n-1))` and the centered coefficient field of the generic
+  polynomial of degree `n+1`.  Both are rational function fields on an algebraically independent
+  family of the same size — `algebraicIndependent_tailCoeff` and `algebraicIndependent_centeredLowCoeff`
+  — so the identification is a matching of generators, under which the fiber equation of `(7)` becomes
+  the centered generic polynomial and `centeredParameterMonodromy` reads as the card's `(3)`.
+
+- 2026-08-01 — **The two coefficient models are identified.**  `TailCenteredCoefficientMatch.lean`:
+
+  `tailCenteredCoeffEquiv K n` — an isomorphism over the constants between the field generated by the
+  `n` tail coefficients of the reciprocal jet and the field generated by the `n` centered
+  coefficients of the generic polynomial of degree `n + 1`; `coe_tailCenteredCoeffEquiv` says it
+  carries the `j`-th tail coefficient to the `j`-th centered coefficient.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+
+  Both fields are rational function fields on an algebraically independent family of size `n`, so the
+  identification is the composite of the two rational models — `algebraicIndependent_tailCoeffIn`
+  (the tail coefficients pushed into the fraction field, independent by `map'` along the injective
+  algebra map) and `centeredCoeffFieldEquiv`.  The degree bookkeeping `Fin (n + 1 - 1) = Fin n` is
+  definitional but not syntactic, so the last step closes by `exact`, not `rw`.
+
+  With this, every numbered step of the card carries an unconditional Lean theorem: `(5)` and its
+  clearing to `(7)` in `GeometricInverseTruncation` and `ReciprocalFiberEquation`, the parameter
+  change `(6),(8),(9),(10)` in the tail modules, the coefficient field `(11)` here, and `(3)` itself
+  in `centeredParameterMonodromy` and `centeredParameterMonodromyOdd`.
+
+- 2026-08-01 — **The reciprocal duality claim is formalized.**  The theorem statement ends with "by
+  reciprocal duality the same holds for `Phi_(n,1)`", which the numbered steps never covered.
+  `ReciprocalFiberEquation.lean` now carries it:
+
+  `constantCoeff_inverse` — the constant term of the inverse jet is the inverse of the constant term;
+  `eq_const_add_X_mul_reciprocalTail` — every jet splits as its constant term plus `t` times its
+  tail; and `coeff_mul_pow_eq_tail_sum_reciprocal` — the inverse of a jet with invertible constant
+  term is again such a jet, and **its** fiber equation is the same equation with the two packets
+  exchanged.  Axioms `[propext, Classical.choice, Quot.sound]`.
+
+  So the rank-one cover on the reciprocal side is the same object as on the source side, which is the
+  content of the duality: `(3)` for `Phi_(1,n)` is `(3)` for `Phi_(n,1)` read through the exchange.
+
+- 2026-08-01 — **The degree claim of the theorem statement is formalized.**  The statement asserts
+  that the generic fiber equation "has degree `n+1` in `a`"; that was implicit in the derivation but
+  never stated.  `ReciprocalFiberEquation.lean` now names the equation and proves its shape:
+
+  `fiberPolynomial q R n` — the polynomial `q a^(n+1) - Σ_(j<n) (-1)^(n-j) [t^j](R^(n-j)) a^j`;
+  `natDegree_fiberPolynomial` — its degree is `n+1` whenever `q ≠ 0`;
+  `coeff_fiberPolynomial_self` — its coefficient in degree `n` vanishes, so it is centered;
+  `eval_fiberPolynomial_eq_zero` — the source coefficient of a jet whose inverse has `q` as its
+  `n`-th coefficient is a root of it.  Axioms `[propext, Classical.choice, Quot.sound]`.
+
+  That is `(2) -> (7)` in full: the fiber equation is a centered polynomial equation of degree `n+1`
+  whose lower coefficients are the tail coefficients, and the observed coefficient is a root.
+
+- 2026-08-01 — **The boundary case `n = 1` is covered.**  The proof of `(3)` ends "when `n = 1`,
+  `(10)` is the identity and the quadratic group is `S_2` directly", and the capstones assume
+  `3 ≤ d`, so `n = 1` — degree two — fell outside them.  It needs no base change at all:
+  `quadraticParameterMonodromy` in `CenteredFreeParameter.lean` is the `d = 2` instance of
+  `centeredFreeParameterMonodromy`, which carries no degree hypothesis, and gives `Equiv.Perm (Fin 2)`
+  over the coefficient field with the free parameter.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+
+  So `(3)` is now proved for every tail length: `n = 1` by the quadratic case, `n ≥ 2` by
+  `centeredParameterMonodromy` and `centeredParameterMonodromyOdd` according to the parity of `n`.

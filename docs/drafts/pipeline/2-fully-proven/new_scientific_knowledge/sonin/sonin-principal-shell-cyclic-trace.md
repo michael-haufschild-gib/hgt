@@ -1440,6 +1440,65 @@ packets' own size is bounded as it must be for the pairing bound to bite:
 `norm_sq_soninScaledPacketEven_le` gives `‖psi‖^2 <= 8 delta I`, since with the mean below one the
 packet is pointwise at most twice the profile.
 
+With those in place the exclusion can be stated at the level of operators rather than numbers:
+`not_bddBelow_soninCompletedPacketValueVar_of_bounded_family` closes every completion assembled from
+a uniformly bounded family of operators paired against vectors of bounded norm.  That is the form in
+which a candidate completion is actually presented, so it is the form worth citing.
+
+The exclusion is not confined to the sublinear class, and the rate says by how much.  Half the
+energy's own slope is a *threshold*: `exists_slope_not_bddBelow_soninCompletedPacketValueVar`
+produces a single positive `s` and a single schedule that together defeat every completion whose
+contribution stays below `s r` at large scales, whatever its growth.  The proof spends the energy in
+two halves — one half absorbs the contribution, the other outruns the fixed constant `36 Dis` plus
+the shortfall — so no comparison with `o(r)` is involved.  Sublinear completions are the special
+case where the cap holds for every `s`.
+
+Read as a necessary condition this is strictly sharper than `not_sublinear_of_forall_bddBelow`:
+`frequently_slope_lt_of_forall_bddBelow` says a completion restoring the floor at every schedule must
+satisfy `s r < f r` for arbitrarily large `r`, with `s` fixed in advance by the aperture — not merely
+fail to be `o(r)`.  A completion is therefore pinned between two named quantities: it must beat a
+definite slope infinitely often, and it must do so while remaining admissible, which the pairing
+bound forbids for anything of bounded operator norm.
+
+**The one live candidate, and what a tall tower can actually buy.**  Item 5 above leaves exactly one
+channel unexcluded: the frequency-side one, which unlike the position-side channel does blow up on
+the packets, because their frequency runs with the scale even though their support does not.  Its
+freedom is the *height* schedule — a completion may take the tower as tall as it likes at each step —
+and the crude bound `norm_evenFourierLogShellChannel_apply_le` grows with that height, since it takes
+the largest layer logarithm below it.
+
+That freedom is now shown to be illusory against a vector with a rapidly decaying spectrum, and the
+argument is structural rather than analytic.  The exact energy identity is a sum over shells, so it
+splits at any index: `norm_sq_evenLogShellChannel_apply_le_split` bounds the shells below the cut by
+the largest layer logarithm there times the vector's own mass — the layers being orthogonal with
+total mass at most `‖u‖^2`, which is `sum_norm_sq_evenIndicatorLayer_le` — and leaves the shells above
+the cut as their own weighted sum.  Everything the height can add sits in that second sum.
+
+The second sum is then bounded by a quantity independent of the height.  Three facts do it.  A shell
+above a radius sees only what the vector leaves above that radius
+(`norm_evenIndicatorLayer_apply_le_high`, from the shell's annihilation of the inner cutoff), so a
+power decay of the mass outside a ball gives a power decay of every outer shell's mass.  A tower's
+radii are geometric in the index, so `logShellRadius_pow` turns that power into a geometric sequence.
+And a logarithm squared is below four times its argument (`sq_log_le_four_mul`, from `log t <= 2 sqrt
+t`), so *one order of the decay pays for the entire logarithmic weight* — no comparison of growth
+orders is needed, and the polynomial-times-geometric sum never has to be estimated.  What is left is
+a bare geometric tail, and `sum_Ico_geom_le` closes it.
+
+The conclusion is `norm_evenFourierLogShellChannel_apply_le_of_highTail`: for a vector whose spectral
+mass outside every radius past the cut decays like an inverse power, the channel's norm is at most
+`sqrt(M^2 ‖w‖^2 + 4 C a^{-p} (r^p)^{-K} (1 - (r^p)^{-1})^{-1})` — **with no reference to the tower's
+height at all**, only to the cut index `K` and the bound `M` on the layer logarithms below it.
+`re_inner_evenFourierLogShellChannel_le` states the number a completion built from it actually
+contributes.
+
+So a tall tower buys nothing: the contribution is the logarithm at the cut and no more.  Placing the
+cut just past the packet's carrier makes `M` the logarithm of the carrier — logarithmic in the scale
+— and the outer term a constant of the schedule.  What remains to supply is the packet's own spectral
+power tail above the cut, which is the same estimate the shell-cut budget already uses on the high
+side (`exists_soninRefTailSup_le_div`, `setIntegral_le_of_le_powerTail`), read at radii past the
+carrier rather than at the carrier itself.  With that in hand the frequency-side channel joins the
+excluded list by the logarithmic cap, and item 5 closes.
+
 What remains on this line is the comparison against the logarithmic cap: the cap bounds the
 completed contribution by `log` of the outer radius, while the schedule's scale grows linearly in
 `N`, so the energy `N - const` outruns `log r` and the shortfall test applies.  With `N` about `r/K` this gives coupling
@@ -1697,6 +1756,12 @@ family is abstract, so two widths have unrelated profiles.
 | **what a completion would have to do**: one that restores the floor at every schedule cannot have its contribution divide by the scale to zero — it must grow at least linearly along some sequence of scales | `not_sublinear_of_forall_bddBelow` |
 | **the bounded case sits inside the sublinear one** on the schedule's scales, and a uniformly bounded operator family contributes at most `‖C‖` times the squared packet norm | `tendsto_div_atTop_nhds_zero_of_bounded`, `re_inner_self_le_opNorm_mul_sq`, `not_bddBelow_soninCompletedPacketValueVar_of_bounded` |
 | **the failure for a bounded contribution *sequence*** — the form an operator family supplies — using only divergence of the energy; with the packets' own size bounded, `‖ψ‖² <= 8 δ I` | `integrable_soninScaledPacket_sq`, `norm_sq_soninScaledPacketEven_le`, `not_bddBelow_soninCompletedPacketValueVar_of_bddAbove_seq` |
+| **no completion from a uniformly bounded operator family restores the floor** — the operator-level form of the exclusion | `re_inner_family_le`, `not_bddBelow_soninCompletedPacketValueVar_of_bounded_family` |
+| **a definite positive slope below which every completion fails**, and the sharpened necessary condition: a surviving completion must exceed that slope infinitely often | `exists_slope_not_bddBelow_soninCompletedPacketValueVar`, `frequently_slope_lt_of_forall_bddBelow` |
+| **the step multiplier splits at any shell index**: Bessel below the cut, the outer shells' own weighted mass above it | `sum_norm_sq_evenIndicatorLayer_le`, `sum_range_logShellRadius_weight_le`, `norm_sq_evenLogShellChannel_apply_le_split`, `norm_evenLogShellChannel_apply_le_of_tail`, `norm_evenFourierLogShellChannel_apply_le_of_tail` |
+| **a logarithmic weight against a geometric tail**: partial geometric sums, and `(log t)^2 <= 4t` | `geom_sum_range_le`, `sum_Ico_geom_le`, `sq_log_le_four_mul`, `sq_abs_log_le_four_mul` |
+| **the outer shells against a power tail** — a shell sees only the mass above its inner radius, and the weighted outer sum is one geometric term | `norm_evenIndicatorLayer_apply_le_high`, `logShellRadius_pow`, `sum_Ico_logShellRadius_weight_le` |
+| **the channel on a vector with a power tail is bounded uniformly in the tower height**, in position and in frequency, with the pairing bound it supplies | `norm_evenLogShellChannel_apply_le_of_powerTail`, `norm_sq_evenIndicatorLayer_le_of_highTail`, `norm_evenLogShellChannel_apply_le_of_highTail`, `norm_evenFourierLogShellChannel_apply_le_of_highTail`, `re_inner_evenFourierLogShellChannel_le` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1813,6 +1878,31 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the last unexcluded channel's freedom is measured, and it is smaller than it looked.
+  A completion using the frequency-side channel may choose the tower's height at each step, and the
+  crude bound grows with it; but against a vector with a rapidly decaying spectrum the height is
+  irrelevant.  The mechanism is worth recording because it avoids the estimate one expects to need:
+  the shells above the cut carry a weight growing linearly in the index and a mass decaying
+  geometrically in it, and rather than sum polynomial-times-geometric, `(log t)^2 <= 4t` lets one
+  order of the decay absorb the whole weight, leaving a bare geometric tail.  The bound that comes
+  out mentions only the cut index.
+  Lean: `formal/GaloisForLFunctions/HTGeometry/LogWeightedGeometricSum.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninChannelHeightSplit.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninShellTailWeightedSum.lean`,
+  `formal/GaloisForLFunctions/RHTower/SoninChannelHeightUniform.lean`.
+- 2026-08-01 — the sublinear exclusion is replaced by a *threshold* one: there is a definite positive
+  slope, half the energy's own, below which every completion fails, and correspondingly a surviving
+  completion must exceed that slope infinitely often.  The strengthening is free — the energy is
+  spent in two halves instead of compared against a vanishing quotient — and it converts the open
+  gate from a qualitative growth condition into an inequality against a named constant of the
+  aperture.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninLinearThresholdCompletionFails.lean`.
+- 2026-08-01 — the exclusion is lifted to the operator level: any completion built from a uniformly
+  bounded operator family, paired against vectors of bounded norm, fails.  Nothing new is proved —
+  it is the pairing bound and the bounded-sequence failure composed — but it is the form a candidate
+  completion is actually presented in, and it removes the step where a reader has to check that the
+  numbers coming out of an operator family are bounded.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninBoundedFamilyCompletionFails.lean`.
 - 2026-08-01 — the failure is restated for a bare contribution *sequence*, which is the shape an
   operator family actually produces — a function of the schedule's step, not of the scale.  Worth
   noting the proof needs only divergence of the energy, not the linear rate, so the bounded-sequence

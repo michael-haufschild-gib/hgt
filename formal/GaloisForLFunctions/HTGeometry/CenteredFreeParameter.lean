@@ -36,4 +36,14 @@ noncomputable def centeredFreeParameterMonodromy (K : Type*) [Field K] [CharZero
     (p := centeredMonicE K d) centeredMonicE_ne_zero separable_centeredMonicE
     splits_centeredMonicE rootField_centeredMonicE_eq_top (centeredGaloisEquiv K d).symm
 
+/-- **The rank-one boundary case of degree two.**  At tail length one the parameter change is the
+identity, so no radical base change is needed: the fiber equation is a centered quadratic over its
+coefficient field extended by one free parameter, and its Galois group is the symmetric group on two
+letters. -/
+noncomputable def quadraticParameterMonodromy (K : Type*) [Field K] [CharZero K] :
+    (FractionRing (Polynomial (centeredField K 2)) ≃ₐ[
+        fracSub (centeredCoeffField K 2) (centeredField K 2)]
+      FractionRing (Polynomial (centeredField K 2))) ≃* Equiv.Perm (Fin 2) :=
+  centeredFreeParameterMonodromy K 2
+
 end GaloisForLFunctions.HTGeometry

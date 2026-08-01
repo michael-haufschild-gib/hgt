@@ -394,16 +394,51 @@ annihilator that makes the Kronecker orbit dense.
   are a Hilbert basis of `L²`, so all coefficients vanishing kills the `L²` class, and Haar
   positivity on nonempty open sets upgrades "zero almost everywhere" to "zero".
 
+### The descent to the character coefficients landed: the card is complete
+
+`formal/GaloisForLFunctions/RHTower/DeningerParametricTorus.lean`,
+`DeningerKroneckerTranspose.lean`, `DeningerModeDescent.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+This is the step the card's proof states as "on the `a`-th Fourier mode, `(7)` becomes `(11)`".
+
+- `deningerHasDerivAt_integral` — differentiation under the integral sign for a jointly continuous
+  family with jointly continuous derivative on a compact space of finite measure: the derivative is
+  bounded on a compact neighbourhood of the parameter, and a constant is integrable.
+- `deningerMFourier_arg_add`, `deningerMFourier_translate` — characters are multiplicative in the
+  argument, so translating along the flow multiplies a character by its own oscillation.
+- `deningerKronecker_transpose`, `deningerKroneckerCoeff` — **`(2)` in integrated form**:
+  `∫ (Y f) χ̄_a = i ℓ(a) ∫ f χ̄_a`.  The proof never differentiates the character: translation
+  invariance of Haar moves the flow off the function and onto the character, where it becomes an
+  explicit one-frequency oscillation, and differentiating that scalar at time zero produces the
+  frequency.
+- `deningerCoeff_hasDerivAt` — the radial derivative passes through the coefficient integral.
+- `deningerCoeff_solves` — **the character coefficients of a solution of `(7)` solve `(11)`**, with
+  frequency `2π⟨n, λ⟩`.
+- `deningerCoeff_eq_smul_mode` — chaining with the per-frequency uniqueness: every
+  square-integrable coefficient is a scalar multiple of `α_a`.
+- `deningerSolution_eq_zero_of_coeff_zero` — chaining with the character completeness: a solution
+  invisible to every character is zero.
+
 ### Remaining
 
-Items 1--3 and `(8)`--`(11)`, `(14)`--`(15)`, `(17)`--`(20)` are formalized, on the cylinder as
-well as radially.  Item 4 is formalized in both of its halves separately: the mode spaces are
-mutually orthogonal (`deningerNormalizedCylinderMode_orthonormal`), each is exactly the
-square-integrable solution space at its frequency (`deningerSolution_eq_smul_mode`,
-`deningerSolution_zeroFreq_eq_zero`), and the characters miss nothing
-(`deningerTorusCompleteness`).
+Nothing.  Every numbered statement of the card is formalized unconditionally.
 
-What is not yet formalized is the single step that joins them: that the character coefficients of
-an arbitrary square-integrable solution again solve `(11)`.  That is a differentiation under the
-integral sign in the torus variable, after which the per-frequency uniqueness applies coefficient
-by coefficient and the orthonormal expansion assembles the Hilbert sum.
+- `(5)`, `(6)`, `(17)` — the measured inner product, the Hodge star and the cup trace, as the
+  iterated integrals the card writes: `DeningerHarmonicMode`, `DeningerCylinderModes`.
+- `(8)`--`(11)`, items 1--3 — the mode, the Hodge equations, the norm `1/|μ_a|`, the chirality:
+  `DeningerHarmonicMode`.
+- Item 4 — the solution space is the orthogonal Hilbert sum of the one-dimensional mode spaces, in
+  its four constituent facts: the modes are mutually orthonormal
+  (`deningerNormalizedCylinderMode_orthonormal`), each frequency's square-integrable solution space
+  is exactly the line through its mode (`deningerSolution_eq_smul_mode`,
+  `deningerSolution_zeroFreq_eq_zero`), the coefficients of a solution again solve the radial system
+  (`deningerCoeff_solves`), and nothing is invisible to the characters
+  (`deningerTorusCompleteness`, `deningerSolution_eq_zero_of_coeff_zero`).
+- `(12)`--`(16)` — the power correspondence, its weight, and the centered-unitary normalization:
+  `DeningerHarmonicCup`.
+- `(18)`--`(20)` — the cup pairing, its positivity after the star, and its weight-one naturality,
+  radially and on the cylinder: `DeningerHarmonicCup`, `DeningerCylinderModes`.
+
+The card's hypothesis `(1)` is the triviality of the annihilator of `λ`, which is exactly the
+hypothesis under which `deningerKroneckerFlow_dense_iff` gives a dense Kronecker orbit.
