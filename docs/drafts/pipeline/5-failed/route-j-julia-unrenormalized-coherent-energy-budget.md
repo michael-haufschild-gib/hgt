@@ -6,7 +6,7 @@
 - **Scientific status:** `[PAPER-PROVED] [FORMALIZED] [NOVELTY UNVERIFIED] [NO COMPUTATION]`
 - **Formalized positive survivor:**
   `../3-formalized/route-j-julia-coherent-energy-diagonal-floor.md`
-- **Positive survivor transfer:** unrestricted endpoint to Route A; singular completed current to Route R
+- **Live successor:** Route J's source-defined symmetric completed/nonlinear relative current
 - **Endpoint attempted:** Route A's eventual first-clock lower floor
 
 ## Intended chain
@@ -101,10 +101,10 @@ zero aperture  -> full rank-one coherence is restored.
 ```
 
 Julia coherence cannot be both the positive capacity certificate and a removable regularizer for
-the literal first clock. The subsequent principal-relative audit closes every concrete Julia
-implementation. Its unrestricted capacity endpoint is exactly Route A's eventual lower floor,
-while the corpus's explicit singular completed Julia/Ward current and missing sign are Route R.
-Thus no independent Route-J survivor remains.
+the literal first clock. The subsequent principal-relative audit closes several concrete Julia
+implementations, but does not construct or class-completely exclude a source-defined symmetric
+sign-changing completed/nonlinear current. Endpoint equivalence to Route A and overlap with a Ward
+construction do not discharge that researchable survivor. Route J remains open.
 
 ## No-go closure audit
 
@@ -115,4 +115,4 @@ Thus no independent Route-J survivor remains.
 - [x] prior failed mechanisms audited
 - [x] no RH-equivalent premise used
 - [x] no computation used
-- [x] positive endpoint and completed-current survivors transferred to Routes A and R
+- [x] unrenormalized subroute separated from open completed-current Route-J survivor

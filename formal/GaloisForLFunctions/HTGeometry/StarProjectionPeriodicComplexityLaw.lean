@@ -37,6 +37,15 @@ theorem idempotentPhase_mul
     Algebra.smul_mul_assoc, Algebra.mul_smul_comm, hp.eq]
   module
 
+/-- A nontrivial scalar phase remembers its idempotent support exactly. -/
+theorem idempotentPhase_injective_of_ne_one
+    {A : Type*} [NormedRing A] [NormedAlgebra ℂ A]
+    {z : ℂ} (hz : z ≠ 1) :
+    Function.Injective (fun p : A ↦ idempotentPhase p z) := by
+  intro p q hpq
+  apply smul_right_injective A (sub_ne_zero.mpr hz)
+  simpa [idempotentPhase] using congrArg (fun x : A ↦ x - 1) hpq
+
 /-- The phase loop attached to a projection. -/
 noncomputable def starProjectionPhaseOrbit
     {A : Type*} [NormedRing A] [NormedAlgebra ℂ A]

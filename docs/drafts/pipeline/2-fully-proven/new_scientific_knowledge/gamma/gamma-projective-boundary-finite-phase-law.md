@@ -3606,6 +3606,29 @@ and the `Γ`-dominance selects one.  Finally **`exists_gammaField_datum`**:
 That is eq. (3)/(19) in existential form for `ℂ(s)⟨Γ⟩`: no presentation supplied, no datum assumed —
 nonvanishing alone produces the residue.  `#print axioms` clean.
 
+### The law itself, with the coefficient data discharged
+
+`GammaShapeDominantResidue.lean` gains `gammaJetShape_denom_add` and
+`tendsto_div_poly_gammaJetShape`: dividing a residue by a polynomial moves the polynomial's degree
+into the shape's denominator slot and divides the limit by the leading coefficient.  With it,
+`exists_gammaAlgebra_line_datum` gives the element *itself* — not only its cleared multiple — a
+single-shape residue, which is exactly the form of the law's coefficient hypothesis.
+
+`GammaFieldCoefficientLaw.lean` closes the loop.  `eventually_polyLine_ne_zero` and
+**`eventually_line_eq_of_representatives`** show that any two cleared meromorphic representatives of
+the same field element agree far up the line (the two clearings cross-multiply to an identity of
+analytic germs, and `IsFractionRing.injective` moves it back to the analytic subring).  So the
+residue attaches to whichever representative appears in the relation, giving
+
+> **`finite_phase_law_of_gammaField_coefficients`**: the finite phase law for a relation whose
+> coefficients are nonzero elements of the `Γ` jet algebra over `ℂ(s)`, represented by the functions
+> in the relation — with no residue hypothesis at all.
+
+Every coefficient hypothesis of the law is now produced from nonvanishing alone.  `#print axioms`
+clean.
+
+### The one remaining generality gap, and the route to it
+
 ### The one remaining generality gap, and the route to it
 
 ### The one remaining generality gap, and the route to it

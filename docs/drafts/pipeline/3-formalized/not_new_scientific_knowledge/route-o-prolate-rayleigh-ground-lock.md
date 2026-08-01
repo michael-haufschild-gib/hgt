@@ -2,7 +2,7 @@
 
 - **ID:** `route-o-prolate-rayleigh-ground-lock`
 - **Stage:** 3-formalized
-- **Type:** THEOREM / TERMINAL ROUTE CLASSIFICATION
+- **Type:** THEOREM / DETERMINANT-SUBMECHANISM CLASSIFICATION
 - **Scientific status:** `[PROVED HERE] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE]
   [NOT AN RH PROOF]`
 - **Route:** O — Connes/CCM restricted-Weil and prolate limit
@@ -133,20 +133,23 @@ CCMProlateRayleighGroundData.eventually_rayleighExcess_ge_of_not_riemannHypothes
 CCMProlateRayleighGroundData.riemannHypothesis_iff_rayleighExcess_tendsto_zero
 ```
 
-## Route verdict
+## Scope verdict
 
-Route O is terminalized as an **independent determinant/prolate last mile**. Finite arithmetic
-matrix, completion, and real-zero algebra are closed. The surviving source theorem is the direct
-cofinal true-floor problem:
+This theorem retires only the claim that determinant transfer is an independent last mile after a
+prolate-to-ground comparison. It does **not** terminalize Route O or Connes's program as a whole.
+Finite arithmetic matrix, completion, and real-zero algebra are closed; at least three source
+problems remain live:
 
 ```text
+prove the literal constrained-prolate seed lies in the required graph domain and r_n -> 0;
+prove the original simple-even eta-channel branch is the selected ground branch;
 prove epsilon_n -> 0 on one literal cofinal restricted-Weil family.       (O4)
 ```
 
 Any prolate ground comparison strong enough to justify determinant convergence already proves
-`(O4)` and RH before determinants are used. Reopening Route O requires a genuinely new source
-inequality proving `(O4)`; a new approximant normalization, determinant wrapper, or ground-state
-name does not reopen it.
+`(O4)` and RH before determinants are used. This is a cost classification, not a no-go theorem:
+Connes's source geometry could still prove that comparison or prove `(O4)` directly. A new
+approximant normalization, determinant wrapper, or ground-state name alone supplies no progress.
 
 ## Gates
 
@@ -158,4 +161,5 @@ name does not reopen it.
 - [x] literal finite published matrix formalized
 - [x] finite ground shift and real-rooted completion closed
 - [x] novelty downgraded to not-new route infrastructure
-- [x] Route O terminal classification
+- [x] determinant-after-comparison submechanism classified
+- [ ] Route O whole-program closure

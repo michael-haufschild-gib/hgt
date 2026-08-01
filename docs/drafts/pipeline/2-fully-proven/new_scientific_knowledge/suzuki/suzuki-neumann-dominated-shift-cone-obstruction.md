@@ -1089,3 +1089,36 @@ Remaining steps of this construction, with the mathlib inputs identified:
 With that basis, `basisMultiplierOperator` supplies a compact, self-adjoint coordinate on
 `L^2[-a,a]`, its spectrum transported by `spectrum_conjugateOperator`, and the identity coordinate
 in `nonempty_intervalEdgeData` can be replaced by a genuine resolvent coordinate.
+
+### Step 2: sup-norm control of the `L^2` norm
+
+`norm_toIntervalL2_sub_le` (`HTGeometry/IntervalL2Density.lean`): if two continuous functions are
+within `C` uniformly on `[-a,a]`, their `L^2` elements are within
+`(measureUnivNNReal mu)^(1/2) * C`.  Axiom audit exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+This is the step that converts uniform approximation into `L^2` approximation, so Stone–Weierstrass
+can be applied on the compact interval where it is available.  With step 1 (density of bounded
+continuous functions) it reduces the construction of a countable total family to polynomial
+approximation.
+
+Remaining: the complex Stone–Weierstrass on `Icc` (the real form
+`polynomialFunctions_closure_eq_top` exists; the complex-valued statement needs the star-subalgebra
+version), then linear independence of monomials in `L^2` and `gramSchmidtNormed` /
+`gramSchmidt_orthonormal` to produce the orthonormal family, then `HilbertBasis.mk`.
+
+### Step 3: polynomial approximation, without complex Stone–Weierstrass
+
+`exists_complexPolynomial_near` (`HTGeometry/IntervalL2Density.lean`): every complex continuous
+function is uniformly within any `eps` on `[-a,a]` of `p + i q` with `p`, `q` **real** polynomials.
+Axiom audit exactly `[propext, Classical.choice, Quot.sound]`.
+
+The card's earlier plan listed "complex Stone–Weierstrass via the star-subalgebra version" as the
+input here.  That is not needed: splitting into real and imaginary parts and approximating each with
+mathlib's `exists_polynomial_near_of_continuousOn` suffices, because the real monomials already span
+enough over `ℂ`.  One less dependency than planned.
+
+Steps 1–3 together give: every element of `L^2[-a,a]` is approximated in `L^2` by a complex
+polynomial function.  What remains for the basis is linear independence of the monomials in `L^2`
+(a nonzero polynomial has finite, hence null, zero set) and `gramSchmidtNormed` /
+`gramSchmidt_orthonormal`, then `HilbertBasis.mk`.

@@ -33,10 +33,12 @@ The all-prime Sonin/Burnol route is retired by an exact order-growth obstruction
 concrete coherent-energy and principal-relative implementations fail, but its source-defined
 symmetric sign-changing completed/nonlinear current remains open; endpoint overlap with Routes A
 and R does not discharge that source construction.
-Operator, Deninger, Gamma--Jacobi, and source-domain Hedenmalm routes remain structurally meaningful
-but farther upstream. Connes/prolate Route O is now terminalized as an independent determinant last
-mile: its finite source matrix and real-rooted completion are closed, while its required
-seed-to-ground comparison is exactly RH.
+Operator, Deninger, Gamma--Jacobi, source-domain Hedenmalm, and Connes/prolate routes remain
+structurally meaningful but farther upstream. Route O's determinant-after-comparison submechanism
+is retired as an independent last mile: its finite source matrix and real-rooted completion are
+closed, while its required seed-to-ground comparison is exactly RH. This does not terminalize
+Connes's whole program; direct cofinal restricted-Weil positivity and source-derived ground
+comparison remain live.
 
 The largest change since the earlier route inventory is source formation.  The corpus now proves
 that several previously separate prime constructions are one exact law.  Wold activation has
@@ -1171,18 +1173,41 @@ Schoenfeld's RH-conditional `psi(x)-x=O(sqrt(x)log(x)^2)` bound and the exact Ab
 RH. Thus this pivot is an exact RH-equivalent bridge, not a source mechanism. Failed card:
 `docs/drafts/pipeline/5-failed/route-i-square-aperture-von-mangoldt-correlation-bound.md`.
 
-The live replacement removes the irrelevant negative-deviation channel:
+The one-sided replacement removed the irrelevant negative-deviation channel:
 
 ```text
 P_M = sum_{m<=M} (W(m^2)-2(1-1/sqrt(2))m)_+^2.
 ```
 
 Lean formalizes the exact finite convex dual `P_M=sup_{u>=0} sum_m(2u_m d_m-u_m^2)` through its
-sharp upper-bound characterization and canonical optimizer. The open source estimate is
-`P_M=O_delta(M^(1+delta))` for every `delta>0`. Positive-sieve density loss cannot supply its exact
-main term; signed aperture dispersion remains the hard mechanism. This pivot is neither scalar
-response, retired C2 normalization, nor Route E Möbius cancellation. Active card:
-`docs/drafts/pipeline/1-in-progress/route-i-square-aperture-positive-excess-dual-bound.md`.
+sharp upper-bound characterization and canonical optimizer. A later quantitative audit closes this
+pivot: if `sigma_2` is the Dirichlet abscissa of `(d_m)_+^2`, exact Abel transfer from the classical
+generalized von Koch estimate gives
+
+```text
+sigma_2 <= 1+4 alpha
+```
+
+for every Chebyshev/Xi half-plane width `alpha`, while the existing zero-by-zero lower theorem gives
+the reverse bound. Hence, whenever the positive-right Xi divisor is nonempty,
+
+```text
+sigma_2 = 1+4*xiRightTransverseSup.
+```
+
+At the endpoint,
+
+```text
+RH <-> sigma_2<=1 <-> P_M=O_delta(M^(1+delta)) for every delta>0.
+```
+
+Thus coefficient-nonlocal signed aperture dispersion is an exact collision with retired C2's
+zero-width invariant, not a live independent source mechanism. Paper proof:
+`docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/square-aperture-positive-excess-zero-width-collision.md`.
+Retired card:
+`docs/drafts/pipeline/5-failed/route-i-square-aperture-positive-excess-dual-bound.md`.
+Unconditional downstream Lean transfer:
+`RHTower/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean`.
 
 Exact defect and normalization are also closed in Lean:
 
@@ -1192,8 +1217,9 @@ P_M-D_M(u)=sum_m((u_m-(d_m)_+)^2+2u_m(d_m)_-),
 ```
 
 Thus finite preset aperture dictionaries are terminal and the pivot is exactly the square-sampled
-Hilbert negative-part problem of Route I's original sharp source—not a new route. It remains open
-because no other route or unconditional theorem supplies the signed full-cone estimate.
+Hilbert negative-part problem of Route I's original sharp source—not a new route. The quantitative
+width identity now retires the full cone: it contains no narrower invariant than C2's divisor
+width.
 
 **Positive survivor.** Arbitrary-first-mode Dirichlet high-line sign rigidity: a nonconstant real
 ordinary Dirichlet series cannot be a raw-coordinate scalar Herglotz or anti-Herglotz response on
@@ -1210,8 +1236,14 @@ Failed raw-producer card:
 `docs/drafts/pipeline/5-failed/dyadic-prime-passive-impedance-network-rh.md`.
 Live source-acquisition card:
 `docs/drafts/pipeline/1-in-progress/route-i-sharp-dyadic-prime-window-source-acquisition.md`.
-Live positive-excess dual-pivot card:
-`docs/drafts/pipeline/1-in-progress/route-i-square-aperture-positive-excess-dual-bound.md`.
+Retired positive-excess dual-pivot card:
+`docs/drafts/pipeline/5-failed/route-i-square-aperture-positive-excess-dual-bound.md`.
+
+**Current live core after correlation-pivot closure.** Route I itself remains open only through the
+separate pointwise source-acquisition endpoint
+`exists N, DyadicWeightedPrimeWindowSubpowerUpper N`. The square-aperture survivor no longer
+justifies an independent pivot. Formalizing generalized von Koch would close a shared Lean library
+gap but would not prove the pointwise endpoint unconditionally or reopen this survivor.
 
 ### Route J — Julia compound-Poisson coherent energy  [OPEN — COMPLETED RELATIVE CURRENT]
 
@@ -1697,11 +1729,11 @@ tower.
 **Dead predecessor.** Strict descent of every named Xi root block into the
 prime-harmonic Besicovitch domain is already RH equivalent.
 
-### Route O — Connes restricted-Weil/prolate limit `[TERMINALIZED]`
+### Route O — Connes restricted-Weil/prolate limit `[OPEN]`
 
-**Status.** `RETIRED AS AN INDEPENDENT DETERMINANT/PROLATE LAST MILE / RETAINED AS THE DIRECT
-COFINAL WEIL-FLOOR ROUTE`. This does not assert RH, false RH, or failure of the proposed analytic
-convergence.
+**Status.** `OPEN; DETERMINANT-AFTER-COMPARISON SUBMECHANISM RETIRED AS AN INDEPENDENT LAST MILE`.
+This does not assert RH, false RH, failure of the proposed analytic convergence, or failure of
+Connes's program as a whole.
 
 **Endpoint.** `ConnesXiGroundStateLimitWall ↔ RH`.
 
@@ -1714,7 +1746,7 @@ characteristic polynomial has only real zeros. No simple-even hypothesis remains
 source-or-response conclusion; identification with the original eta-channel ground-vector
 determinant is not claimed.
 
-**Terminal obstruction.** Let `epsilon_n` be the true nested restricted-Weil floor, `r_n` the
+**Submechanism obstruction.** Let `epsilon_n` be the true nested restricted-Weil floor, `r_n` the
 normalized prolate-seed Rayleigh value, and `Delta_n=r_n-epsilon_n`. Once the source theorem
 `r_n->0` is installed, Lean proves
 
@@ -1733,10 +1765,13 @@ before determinants are used.
 `CCMPublishedRestrictedWeilMatrix.lean`. Paper:
 `../3-formalized/not_new_scientific_knowledge/route-o-prolate-rayleigh-ground-lock.md`.
 
-**Exact reopening theorem.** Prove `epsilon_n->0` from literal prime/Gamma/prolate source on one
+**Whole-route open core.** Prove `epsilon_n->0` from literal prime/Gamma/prolate source on one
 cofinal nested restricted-Weil family. This is the direct Weil criterion and hence the RH-bearing
-hard problem. New determinant normalizations, arbitrary real-zero approximants, or renamed
-ground-state comparisons do not reopen Route O.
+hard problem. A source-derived proof of the prolate-to-ground comparison would also close it; the
+comparison's equivalence to RH shows its difficulty, not its impossibility. The literal seed
+graph-domain estimate and identification of the original simple-even eta-channel branch also remain
+unclosed. New determinant normalizations, arbitrary real-zero approximants, or renamed ground-state
+comparisons alone do not advance Route O.
 
 Failed mechanism card: `../5-failed/route-o-independent-prolate-determinant-last-mile.md`.
 

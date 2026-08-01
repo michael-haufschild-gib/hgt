@@ -280,9 +280,10 @@ positive aperture -> still carries an unbounded arithmetic diagonal;
 source fidelity   -> restores rank-one coherence.
 ```
 
-No independent Julia descendant remains. A representation-free capacity assertion is Route A;
-the exact nontrivial completed preprojection source object is Route R. Route J is retired after
-that ownership transfer without claiming the remaining Ward sign.
+A representation-free capacity assertion is target-equivalent to Route A, and the exact Ward
+transport supplies a candidate completed source object, but neither result proves the Route-J
+relative-capacity inequalities or a class-complete no-go. The symmetric sign-changing
+completed/nonlinear descendant remains researchable, so Route J remains open.
 
 ## Lean realization
 

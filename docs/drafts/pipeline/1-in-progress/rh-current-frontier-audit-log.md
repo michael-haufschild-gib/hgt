@@ -200,3 +200,12 @@ Write a review paper whose route claims are traceable to exact Lean declarations
   negative-part witness is explicitly target theatre. The corpus's actual singular completed
   preprojection Julia source transport lands in the four-unit Ward boundary law, exactly Route R's
   open core. Route J is therefore retired with survivors transferred to A/R, not declared proved.
+- 2026-08-01 — Route J retirement/transfer claim retracted after scope audit. Endpoint equivalence
+  and overlap with Route A/R constrain a Route-J mechanism but do not construct or exclude it.
+  No theorem identifies the Ward Schur defect with the required principal-relative current, proves
+  cancellation of the moving-block quartic floor while retaining arithmetic-locus nonnegativity,
+  or gives the required source-uniform upper bound without importing an RH-equivalent sign.
+  Route J remains `OPEN`. Its live core is a source-defined symmetric sign-changing completed
+  prime--Gamma/co-Poisson current, or a genuinely nonlinear Julia source functional, satisfying
+  all Route-J gates. Closure requires unconditional construction or a class-complete unconditional
+  no-go covering every surviving class; assigning a survivor to another route is not closure.

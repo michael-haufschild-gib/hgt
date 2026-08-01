@@ -1,7 +1,7 @@
 # Real stationary Kähler--conormal product germ
 
 - **ID:** `deninger-real-stationary-kahler-conormal-product-germ`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** SOURCE LOCAL GEOMETRY THEOREM
 - **Label:** `DAC_REAL_STATIONARY_KAHLER_CONORMAL_PRODUCT_GERM`
 - **Parent:** `deninger-archimedean-conormal-dual-conormal-trace-domain`
@@ -186,3 +186,68 @@ These remain in
 - 2026-07-27 — Split the leaf half-density and transverse real Rees
   weights into independent tangent blocks and constructed their
   compatible three-dimensional stationary quotient germ.
+
+- 2026-08-01 — Formalized the germ, its involution, its flow, the transverse
+  exponent, the tangent-block dimensions and weights, the orientation-sign
+  Hodge laws, and the dual-conormal character in Lean.
+
+## Lean status
+
+### The whole germ landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerStationaryKahlerGerm.lean`, on top of the already
+formalized leaf factor (`DeningerLeafwiseKahler.lean`) and transverse factor
+(`DeningerReesJetTower.lean`).  Axiom audit for all 48 declarations:
+`propext, Classical.choice, Quot.sound`.
+
+Each numbered claim of §5:
+
+1. **Real dimension three** — `deningerGerm_finrank` : `finrank ℝ (ℂ × ℝ) = 3`.
+2. **Codimension-one complex-leaf foliation** — `deningerGermLeafBlock` is the kernel of the
+   transverse projection and `deningerGermLeafBlock_finrank` gives it real dimension two, by
+   rank--nullity against the surjectivity `deningerGermTransverseProj_range`.
+3. **One stationary point on the preserved real leaf** — `deningerGermFlow_apex` and
+   `deningerGermFlow_fixed_iff` (the apex `(7)` is the *only* fixed point of the whole flow),
+   `deningerGermFlow_leaf_iff` (the leaf `r = 0` and its complement are preserved),
+   `deningerGermSigma_leaf` (the involution acts on the leaf by conjugation, so `(5)` is the real
+   quotient), and `deningerGermSigma_fixed_iff` (the fixed locus of `(2)` is exactly the real axis
+   of that leaf, so the quotient is an orbifold precisely along `L_∞`).
+4. **Deninger's real transverse orbifold and exponent `-2`** — `deningerGermFlow_zero`,
+   `deningerGermFlow_add` (the flow `(6)` is a one-parameter group), `deningerGermFlow_sigma` (it
+   commutes with `(2)`, hence descends to `(3)`), `deningerGermTransverse_sigma` and
+   `deningerGermTransverse_fiber` (`x = r²` of `(4)` is invariant and its fibres are exactly the
+   involution pairs `{r, -r}`, so it is the transverse coordinate downstairs), and
+   `deningerGermTransverse_flow` — **`(8)`**: the descended flow on `x` is literally
+   `deningerReesFlow t`, i.e. `e^{-2t}x`.  The embedding `(9)` is `deningerGermIota`, with
+   `deningerGermTransverse_iota` (it is a section of the transverse coordinate, i.e. transverse to
+   the leaf distribution), `deningerGermIota_leaf_iff` (`ι^{-1}(L_∞) = {0}`),
+   `deningerGermIota_injOn`, and `deningerGermIota_equivariant` — **`(10)`**.
+5. **Leafwise Kähler weight one** — `deningerGermKahler_weight` : the flow scales the leafwise
+   Kähler form `(11)` by `e^{t}`, i.e. `(12)`, the square of the half-density weight
+   (`deningerGermLeafWeight_sq`).  The block-diagonality `(14)` is
+   `deningerGermFlow_leafBlock` (on the leaf block the flow is multiplication by `e^{t/2}`)
+   together with `deningerGermTransverse_flow`; the two weights are provably independent,
+   `deningerGermWeight_ne` : `e^{t/2} = e^{-2t}` only at `t = 0`, which is the hostile-audit claim
+   that no coordinate carries both weights.
+6. **Forced orientation-sign Hodge descent** — `deningerGermSigmaOne` is the action of `(2)` on
+   leafwise one-forms; `deningerGermSigmaOne_wedge` is `σ^*ω = -ω` and
+   `deningerGermSigmaOne_star` is `σ^* ⋆ = -⋆ σ^*`, both halves of `(13)`.
+   `deningerGermKahler_invariant_eq_zero` is the forcing: an *invariant* multiple of the Kähler
+   form is zero, so the form descends only through the sign local system.
+   `deningerGermStar_of_invariant` and `deningerGermStar_of_antiInvariant` are the statement that
+   the star exchanges untwisted and orientation-sign one-forms.  `deningerGermJ`,
+   `deningerGermJ_sq`, `deningerGermJ_pos` and `deningerGermJ_pos_of_ne` are `J = ⋆c` with
+   `J² = -1` and the strictly positive Hodge density.
+7. **The complete dual-conormal even-jet character `(17)`** — `deningerGermPullback` (the
+   transverse pullback along the germ flow is the Rees pullback in the coordinate `x`),
+   `deningerGermJet_flow` (**`(16)`** in the germ's own weight vocabulary) and
+   `deningerGermJetTower_character` (**`(17)`**), the last two resting on the already formalized
+   `deningerRealJet_reesFlow` and `deningerJetTower_tsum`.
+
+### Remaining
+
+Nothing for the germ.  The six clauses of §7 — global embedding into the rational-Witt suspension,
+existence and uniqueness of a global arithmetic compactification, compactness of the preserved
+leaf, the global conormal/dual-conormal exact sequences, the `b`-trace extension at `t = 0`, and
+harmonic faithfulness on `M_ζ` — are explicitly outside this theorem and stay with
+`DAC_ARCHIMEDEAN_CONORMAL_DUAL_CONORMAL_TRACE_DOMAIN`.

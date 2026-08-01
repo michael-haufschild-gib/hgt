@@ -178,4 +178,56 @@ theorem pow_mul_eq_invNumerator_eval_of_lt (u g : ℕ → R) (a : R) {L : ℕ} (
             = u (j + 1) * a ^ j * (a ^ (k - j + 1) * g (k - j)) := by rw [hsplit]; ring
           _ = u (j + 1) * a ^ j * (invNumerator u (k - j)).eval a := by rw [hIH]
 
+/-! ## The second unknown -/
+
+section SecondUnknown
+
+variable {K : Type*} [CommRing K]
+
+/-- **The degree of the numerators in a second unknown.**  If the first datum of the recursion is
+linear in a second variable and the later data are constant in it, then every coefficient of the
+`k`-th numerator has degree at most `k` in that variable.
+
+For a jet of depth two this is the degree of the fibre equations in the second unknown jet
+coefficient, which is exactly what an elimination between two of them consumes. -/
+theorem natDegree_coeff_invNumerator_le (u : ℕ → K[X]) (h1 : (u 1).natDegree ≤ 1)
+    (hrest : ∀ i : ℕ, 2 ≤ i → (u i).natDegree = 0) :
+    ∀ k i : ℕ, ((invNumerator u k).coeff i).natDegree ≤ k := by
+  intro k
+  induction k using Nat.strong_induction_on with
+  | _ k ih =>
+    match k with
+    | 0 =>
+        intro i
+        rw [invNumerator_zero]
+        by_cases hi : i = 0
+        · rw [hi, Polynomial.coeff_one_zero, Polynomial.natDegree_one]
+        · rw [Polynomial.coeff_one, if_neg hi, Polynomial.natDegree_zero]
+    | (j + 1) =>
+        intro i
+        rw [invNumerator_succ, Polynomial.coeff_neg, Polynomial.natDegree_neg,
+          Polynomial.finsetSum_coeff]
+        refine Polynomial.natDegree_sum_le_of_forall_le _ _ fun t ht => ?_
+        rw [Finset.mem_range] at ht
+        have hrw : (C (u (t + 1)) * X ^ t * invNumerator u (j - t)).coeff i
+            = if t ≤ i then u (t + 1) * (invNumerator u (j - t)).coeff (i - t) else 0 := by
+          rw [mul_right_comm, Polynomial.coeff_mul_X_pow']
+          by_cases hti : t ≤ i
+          · rw [if_pos hti, if_pos hti, Polynomial.coeff_C_mul]
+          · rw [if_neg hti, if_neg hti]
+        rw [hrw]
+        by_cases hti : t ≤ i
+        · rw [if_pos hti]
+          refine le_trans Polynomial.natDegree_mul_le ?_
+          have hcoef := ih (j - t) (by omega) (i - t)
+          rcases Nat.eq_zero_or_pos t with rfl | hpos
+          · have h1' : (u (0 + 1)).natDegree ≤ 1 := by simpa using h1
+            omega
+          · rw [hrest (t + 1) (by omega)]
+            omega
+        · rw [if_neg hti, Polynomial.natDegree_zero]
+          omega
+
+end SecondUnknown
+
 end GaloisForLFunctions.HTGeometry

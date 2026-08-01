@@ -1,7 +1,7 @@
 # Real orbifold Rees dual-conormal jet tower
 
 - **ID:** `deninger-real-orbifold-rees-dual-conormal-jet-tower`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** SOURCE LOCAL THEOREM
 - **Label:** `DAC_REAL_ORBIFOLD_REES_DUAL_CONORMAL_JET_TOWER`
 - **Parent:** `deninger-archimedean-conormal-dual-conormal-trace-domain`

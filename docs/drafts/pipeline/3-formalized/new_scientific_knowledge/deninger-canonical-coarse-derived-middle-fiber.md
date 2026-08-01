@@ -1,7 +1,7 @@
 # Canonical coarse-to-derived endpoint fiber
 
 - **ID:** `deninger-canonical-coarse-derived-middle-fiber`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** ABSTRACT THEOREM / QUARANTINED DIAGNOSTIC
 - **Label:** `DAC_CANONICAL_COARSE_DERIVED_MIDDLE_FIBER`
 - **Parent:** none; former

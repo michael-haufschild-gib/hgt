@@ -894,3 +894,71 @@ show how an Euler marking resolves or orients the binomial critical fiber.
   in it.  Together with the injectivity of a fibre point into its jet — proved earlier for arbitrary
   observations — the fibre embeds in the solution set of this system.  The remaining content of `(2)`
   for `m, n ≥ 2` is exactly the count of that solution set.
+
+- 2026-08-01 — **The reconstruction generalises to any jet.**
+  `formal/GaloisForLFunctions/HTGeometry/OneDeepFibreBound.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `dvd_invPoly_compat_general` — for **any** polynomial `F` whose constant term `a` is invertible,
+
+  ```text
+  X^(N+1) ∣ F · invPoly F· a N - 1.
+  ```
+
+  The earlier version assumed the jet was a constant, which is the depth-one case.  Inspecting the
+  proof showed it never used that: what it used was `F(0) = a` and that the higher coefficients of `F`
+  are the recursion's data.  So the hypothesis is invertibility at the origin, not degree.
+
+  This is the converse direction for arbitrary depths.  With `fibre_system` giving the forward
+  direction — the fibre satisfies the square system in the observation — and this giving the
+  reconstruction, a solution of the system with invertible constant term yields a reciprocal jet
+  satisfying the truncated compatibility.  What remains to identify the fibre with the solution set is
+  the degree bookkeeping on the reconstructed reciprocal part, the analogue of the step that made
+  `fibreOfRoot` work at depth one.
+
+- 2026-08-01 — **The fibre is the solution set of the system, at arbitrary depths.**
+  `formal/GaloisForLFunctions/HTGeometry/OneDeepFibreBound.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `fibreOfSystem` — given an unknown jet `A` of degree below the jet depth, invertible at the origin,
+  satisfying the `m` observed equations of `fibre_system`, the reconstructed reciprocal
+  `invPoly - V` has degree below the reciprocal depth and the pair is a point of
+  `criticalFibre K m n U V`.
+
+  The degree bookkeeping is where the system is used: for `n ≤ k < m + n` the equation forces the
+  reconstructed coefficient to equal the observed `V_k`, so the difference vanishes there; above
+  `m + n` both vanish for degree reasons.  `Polynomial.degree_lt_iff_coeff_zero` then gives the bound.
+  Compatibility is `dvd_invPoly_compat_general` once the two reciprocal parts recombine.
+
+  With `fibre_system` in the other direction, this closes the reduction: for **any** depths and any
+  observation whose tails vanish to their own orders, the fibre of the observation map is exactly the
+  set of solutions of an explicit square polynomial system, with the jet coefficient as the
+  coordinate and the observed tail as the data.  `(2)` is now a counting statement about that system
+  and nothing else — no jets, no truncations, no compatibility conditions remain in it.
+
+  For `m = 1` that count is proved.  For `m ≥ 2` it is the multivariate elimination.
+
+- 2026-08-01 — **`(2)` reduced to a counting problem, at arbitrary depths.**
+  `formal/GaloisForLFunctions/HTGeometry/OneDeepFibreBound.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  Nat.card (criticalFibre K m n U V) = Nat.card (criticalSystemSolutions K m n U V)
+  ```
+
+  `nat_card_criticalFibre_eq_solutions`, for **all** depths and every observation whose tails vanish
+  to their own orders and whose reciprocal tail has degree below the horizon.
+  `criticalSystemSolutions` is the explicit square system: an unknown jet of degree below the jet
+  depth, invertible at the origin, satisfying the `m` observed equations.
+
+  Both directions were proved separately in the previous entries; this packages them as a bijection,
+  with injectivity from the squareness of the fibre and surjectivity from the reconstruction.  The
+  hypotheses that the tails vanish at the origin are derived from their vanishing to their own
+  orders rather than assumed.
+
+  This is the natural stopping point of the reduction.  Everything the card's geometry contributes —
+  jets, truncated inverses, compatibility, degrees — is discharged, and `(2)` is now a statement about
+  the number of solutions of a square polynomial system in `m` unknowns over an algebraically closed
+  field.  At `m = 1` that number is proved to be `choose(1+n, 1)`.  At `m ≥ 2` it is the
+  multiprojective count the card computes on paper, and the tools for attacking it —
+  `Polynomial.resultant` and its degree theory — are in mathlib.

@@ -2,8 +2,8 @@
 
 - **ID:** `route-o-independent-prolate-determinant-last-mile`
 - **Stage:** 5-failed
-- **Type:** TERMINAL ROUTE CLASSIFICATION / NO-INDEPENDENT-LAST-MILE
-- **Scientific status:** `[TERMINALIZED] [NOT AN RH PROOF]`
+- **Type:** FAILED SUBMECHANISM / NO-INDEPENDENT-LAST-MILE
+- **Scientific status:** `[SUBMECHANISM RETIRED] [ROUTE O OPEN] [NOT AN RH PROOF]`
 - **Positive survivor:**
   `../3-formalized/not_new_scientific_knowledge/route-o-prolate-rayleigh-ground-lock.md`
 
@@ -20,7 +20,9 @@ explicit constrained-prolate seed
 ```
 
 It is retired **as an independent last mile**. This does not disprove the proposed convergence and
-does not prove or disprove RH.
+does not prove or disprove RH. In particular, it does not rule out a source-derived proof of the
+ground comparison, a direct cofinal restricted-Weil positivity proof, or another construction in
+Connes's program.
 
 ## Exact obstruction
 
@@ -75,7 +77,7 @@ Finite source infrastructure survivor:
 restricted-Weil functional, exact CCM matrix, rank-two displacement, reflection, automatic ground
 shift, and real-rooted source/response completion.
 
-## Exact reopening theorem
+## Surviving whole-route theorem
 
 Prove from literal prime/Gamma/prolate source, without an RH-equivalent spectral premise,
 
@@ -84,8 +86,9 @@ epsilon_n -> 0
 ```
 
 for one cofinal nested restricted-Weil family. This directly proves RH by Weil positivity. Any
-claimed reopening must identify a source inequality capable of proving this theorem; determinant
-normalization, zero transfer, finite real-rootedness, or relabeling `Delta_n` is insufficient.
+claimed progress on this surviving branch must identify a source inequality capable of proving this
+theorem; determinant normalization, zero transfer, finite real-rootedness, or relabeling `Delta_n`
+is insufficient. This branch never closed, so no "reopening" claim is made.
 
 ## Closure gates
 
@@ -95,3 +98,5 @@ normalization, zero transfer, finite real-rootedness, or relabeling `Delta_n` is
 - [x] literal finite source matrix and completion formalized
 - [x] exact reopening theorem recorded
 - [x] no claim that RH or the proposed convergence is false
+- [x] scope restricted to determinant-after-comparison submechanism
+- [ ] Connes/CCM program classified as a whole

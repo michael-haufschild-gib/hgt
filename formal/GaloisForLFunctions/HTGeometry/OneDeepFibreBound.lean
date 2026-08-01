@@ -416,4 +416,114 @@ theorem fibre_system {m n : ℕ} (hm : 0 < m) {U V : K[X]}
   have h := fibre_eval_invNumerator hm hU hV p hk2
   rwa [hcoeff] at h
 
+/-- **The reconstruction works for any jet, not only a constant one.**  For any polynomial whose
+constant term is invertible, the reconstructed reciprocal satisfies the truncated compatibility.  This
+is the general form of the converse: it is the jet's invertibility at the origin that matters, not its
+degree. -/
+theorem dvd_invPoly_compat_general {F : K[X]} {a : K} (ha : a ≠ 0) (hF : F.coeff 0 = a) (N : ℕ) :
+    (X : K[X]) ^ (N + 1) ∣ F * invPoly (fun i => F.coeff i) a N - 1 := by
+  classical
+  set u : ℕ → K := fun i => F.coeff i with hu
+  set G : K[X] := invPoly u a N with hG
+  have hsum : ∀ k : ℕ, (F * G).coeff k
+      = (∑ i ∈ Finset.range k, u (i + 1) * G.coeff (k - (i + 1))) + a * G.coeff k := by
+    intro k
+    rw [Polynomial.coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ
+      (fun i j => F.coeff i * G.coeff j), Finset.sum_range_succ']
+    simp only [hu, hF, Nat.sub_zero]
+  rw [Polynomial.X_pow_dvd_iff]
+  intro k hk
+  rw [Polynomial.coeff_sub, hsum k]
+  match k with
+  | 0 =>
+      rw [Finset.range_zero, Finset.sum_empty, zero_add, coeff_invPoly u a N (by omega),
+        mul_invCoeff_zero ha, Polynomial.coeff_one_zero, sub_self]
+  | (j + 1) =>
+      have hcoeffs : ∀ i ∈ Finset.range (j + 1),
+          u (i + 1) * G.coeff (j + 1 - (i + 1)) = u (i + 1) * invCoeff u a (j - i) := by
+        intro i hi
+        rw [Finset.mem_range] at hi
+        rw [show j + 1 - (i + 1) = j - i from by omega, coeff_invPoly u a N (by omega)]
+      rw [Finset.sum_congr rfl hcoeffs, coeff_invPoly u a N (by omega),
+        mul_invCoeff_succ ha j, Polynomial.coeff_one, if_neg (by omega)]
+      ring
+
+/-- **A solution of the system is a fibre point, at arbitrary depths.**  Given an unknown jet of the
+right degree, invertible at the origin, satisfying the `m` observed equations, the reconstructed
+reciprocal has degree below the reciprocal depth and the pair is compatible. -/
+noncomputable def fibreOfSystem {m n : ℕ} (hm : 0 < m) {U V A : K[X]}
+    (hU : (X : K[X]) ^ m ∣ U) (hV : (X : K[X]) ^ n ∣ V)
+    (hVdeg : V.degree < ((m + n : ℕ) : WithBot ℕ)) (hA : A.degree < (m : ℕ))
+    (ha : (A + U).coeff 0 ≠ 0)
+    (hsys : ∀ k : ℕ, n ≤ k → k < m + n →
+      (A + U).coeff 0 ^ (k + 1) * V.coeff k
+        = (invNumerator (fun i => (A + U).coeff i) k).eval ((A + U).coeff 0)) :
+    criticalFibre K m n U V := by
+  classical
+  set a : K := (A + U).coeff 0 with hadef
+  set u : ℕ → K := fun i => (A + U).coeff i with hu
+  set G : K[X] := invPoly u a (m + n - 1) with hG
+  have hcoeffG : ∀ k : ℕ, n ≤ k → k < m + n → G.coeff k = V.coeff k := by
+    intro k hk1 hk2
+    have hle : k ≤ m + n - 1 := by omega
+    rw [hG, coeff_invPoly u a _ hle]
+    have h1 := pow_mul_invCoeff_eq u ha k
+    have h2 := hsys k hk1 hk2
+    have hane : a ^ (k + 1) ≠ 0 := pow_ne_zero _ ha
+    refine (mul_left_cancel₀ hane ?_).symm
+    rw [h1, h2]
+  refine ⟨(A, G - V), hA, ?_, ?_⟩
+  · rw [Polynomial.degree_lt_iff_coeff_zero]
+    intro k hk
+    have hkn : n ≤ k := by exact_mod_cast hk
+    rw [Polynomial.coeff_sub]
+    by_cases hlt : k < m + n
+    · rw [hcoeffG k hkn hlt, sub_self]
+    · have hGk : G.coeff k = 0 := by
+        refine Polynomial.coeff_eq_zero_of_degree_lt (lt_of_le_of_lt (degree_invPoly_le u a _) ?_)
+        exact_mod_cast (by omega : m + n - 1 < k)
+      have hVk : V.coeff k = 0 := by
+        refine Polynomial.coeff_eq_zero_of_degree_lt (lt_of_lt_of_le hVdeg ?_)
+        exact_mod_cast (by omega : m + n ≤ k)
+      rw [hGk, hVk, sub_self]
+  · rw [dvd_criticalLowProduct_sub_one_iff_mul_sub_one hU hV]
+    simp only
+    rw [show G - V + V = G from by ring, hG,
+      show m + n = (m + n - 1) + 1 from by omega]
+    exact dvd_invPoly_compat_general ha rfl _
+
+/-! ## The fibre as a solution set -/
+
+/-- The solutions of the observation's square system: an unknown jet of the right degree, invertible
+at the origin, satisfying the `m` observed equations. -/
+def criticalSystemSolutions (K : Type*) [Field K] (m n : ℕ) (U V : K[X]) : Type _ :=
+  {A : K[X] // A.degree < (m : ℕ) ∧ (A + U).coeff 0 ≠ 0 ∧
+    ∀ k : ℕ, n ≤ k → k < m + n →
+      (A + U).coeff 0 ^ (k + 1) * V.coeff k
+        = (invNumerator (fun i => (A + U).coeff i) k).eval ((A + U).coeff 0)}
+
+/-- **The fibre of an observation is its system's solution set**, at arbitrary depths.  Everything
+about jets, truncation and compatibility has been discharged; what is left of `(2)` is a count of
+solutions of an explicit square polynomial system. -/
+theorem nat_card_criticalFibre_eq_solutions {m n : ℕ} (hm : 0 < m) (hn : 0 < n) {U V : K[X]}
+    (hU : (X : K[X]) ^ m ∣ U) (hV : (X : K[X]) ^ n ∣ V)
+    (hVdeg : V.degree < ((m + n : ℕ) : WithBot ℕ)) :
+    Nat.card (criticalFibre K m n U V) = Nat.card (criticalSystemSolutions K m n U V) := by
+  classical
+  have hU0 : U.coeff 0 = 0 := by
+    refine (Polynomial.X_dvd_iff).1 (dvd_trans ?_ hU)
+    exact dvd_pow_self _ (by omega)
+  have hV0 : V.coeff 0 = 0 := by
+    refine (Polynomial.X_dvd_iff).1 (dvd_trans ?_ hV)
+    exact dvd_pow_self _ (by omega)
+  refine Nat.card_congr (Equiv.ofBijective
+    (fun p : criticalFibre K m n U V =>
+      (⟨p.1.1, p.2.1, coeff_zero_add_ne_zero_of_dvd (by omega) hU0 hV0 p.2.2.2,
+        fun k hk1 hk2 => fibre_system hm hU hV p hk1 hk2⟩ :
+        criticalSystemSolutions K m n U V)) ⟨?_, ?_⟩)
+  · intro p q h
+    exact criticalFibre_fst_injective hm hn hU0 hV0 (congrArg Subtype.val h)
+  · rintro ⟨A, hA, ha, hsys⟩
+    exact ⟨fibreOfSystem hm hU hV hVdeg hA ha hsys, rfl⟩
+
 end GaloisForLFunctions.HTGeometry

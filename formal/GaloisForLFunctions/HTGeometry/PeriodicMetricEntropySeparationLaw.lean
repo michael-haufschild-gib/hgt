@@ -1,4 +1,5 @@
 import Mathlib.Topology.Instances.AddCircle.Real
+import Mathlib.Topology.MetricSpace.HausdorffDistance
 import GaloisForLFunctions.HTGeometry.MetricEntropyRecurrenceAmplificationLaw
 
 /-!
@@ -65,6 +66,72 @@ theorem unitPeriodicFamily_coveringEntropy_easyHard_alternate
     rw [hbase p]
     exact mem_interior_metricClosedBallTarget hε hcenter
   refine ⟨p, fun a ↦ ?_⟩
+  have hEasyRep : (0 : AddCircle (1 : ℝ)) ∈
+      ((↑) : ℝ → AddCircle (1 : ℝ)) '' Set.Icc a (a + 1) := by
+    rw [AddCircle.coe_image_Icc_eq]
+    exact Set.mem_univ _
+  obtain ⟨tEasy, htEasy, htEasyZero⟩ := hEasyRep
+  have hHardRep : seed ∈
+      ((↑) : ℝ → AddCircle (1 : ℝ)) '' Set.Ioc tEasy (tEasy + 1) := by
+    rw [AddCircle.coe_image_Ioc_eq]
+    exact Set.mem_univ _
+  obtain ⟨tHard, htHard, htHardSeed⟩ := hHardRep
+  have hEasyRep' : (0 : AddCircle (1 : ℝ)) ∈
+      ((↑) : ℝ → AddCircle (1 : ℝ)) '' Set.Ioc tHard (tHard + 1) := by
+    rw [AddCircle.coe_image_Ioc_eq]
+    exact Set.mem_univ _
+  obtain ⟨tEasy', htEasy', htEasyZero'⟩ := hEasyRep'
+  refine ⟨tEasy, htEasy, tHard, htHard, tEasy', htEasy', ?_, ?_, ?_⟩
+  · simpa [htEasyZero] using heasy
+  · intro c hc
+    simpa [htHardSeed, hpseed] using hxhard c hc
+  · simpa [htEasyZero'] using heasy
+
+/-- **Every infinite exactly-periodic family defeats every finite
+dictionary at some positive resolution.** If the fixed-phase carrier `A` is
+infinite and `C` is finite, one loop has a positive robustness radius at which
+it alternates easy--hard--easy after every start, with every leg bounded by one
+period.
+
+Unlike the covering-entropy theorem above, this statement has no numerical
+entropy premise: the positive resolution is produced from the finite
+dictionary itself. -/
+theorem unitPeriodicFamily_infiniteCarrier_finiteDictionary_alternate
+    {P X : Type*} [MetricSpace X]
+    (embed : P → AddCircle (1 : ℝ) → X)
+    {A C : Set X} (hcover : ∀ x ∈ A, ∃ p z, embed p z = x)
+    (hA : A.Infinite) (hC : C.Finite)
+    (center : X) (hcenter : center ∈ C)
+    (hbase : ∀ p, embed p (0 : AddCircle (1 : ℝ)) = center) :
+    ∃ ε : ℝ≥0, 0 < ε ∧ ∃ p : P, ∀ a : ℝ,
+      ∃ tEasy ∈ Set.Icc a (a + 1),
+      ∃ tHard ∈ Set.Ioc tEasy (tEasy + 1),
+      ∃ tEasy' ∈ Set.Ioc tHard (tHard + 1),
+        embed p (tEasy : AddCircle (1 : ℝ)) ∈
+          interior (metricClosedBallTarget ε C) ∧
+        (∀ c ∈ C,
+          (ε : ℝ) < dist (embed p (tHard : AddCircle (1 : ℝ))) c) ∧
+        embed p (tEasy' : AddCircle (1 : ℝ)) ∈
+          interior (metricClosedBallTarget ε C) := by
+  have hnotSubset : ¬ A ⊆ C := by
+    intro hsubset
+    exact hA (hC.subset hsubset)
+  obtain ⟨x, hxA, hxC⟩ := Set.not_subset.mp hnotSubset
+  have hCne : C.Nonempty := ⟨center, hcenter⟩
+  have hδ : 0 < Metric.infDist x C :=
+    (hC.isClosed.notMem_iff_infDist_pos hCne).mp hxC
+  let ε : ℝ≥0 := ⟨Metric.infDist x C / 2, (half_pos hδ).le⟩
+  have hε : 0 < ε := by
+    exact_mod_cast half_pos hδ
+  have hxhard : ∀ c ∈ C, (ε : ℝ) < dist x c := by
+    intro c hc
+    exact (half_lt_self hδ).trans_le (Metric.infDist_le_dist_of_mem hc)
+  obtain ⟨p, seed, hpseed⟩ := hcover x hxA
+  have heasy : embed p (0 : AddCircle (1 : ℝ)) ∈
+      interior (metricClosedBallTarget ε C) := by
+    rw [hbase p]
+    exact mem_interior_metricClosedBallTarget hε hcenter
+  refine ⟨ε, hε, p, fun a ↦ ?_⟩
   have hEasyRep : (0 : AddCircle (1 : ℝ)) ∈
       ((↑) : ℝ → AddCircle (1 : ℝ)) '' Set.Icc a (a + 1) := by
     rw [AddCircle.coe_image_Icc_eq]

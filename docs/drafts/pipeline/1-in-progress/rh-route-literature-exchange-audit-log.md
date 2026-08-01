@@ -70,3 +70,8 @@
   Route A/RH and is not credited as a mechanism. The exact singular completed Julia/Ward source
   transport already belongs to Route R, whose four-unit sign remains open. Route J is retired with
   no external priority claim and no RH claim.
+- 2026-08-01 — Previous Route J retirement is rescinded. Existing Julia/Ward transport and
+  Route-A/R endpoint equivalences are comparison data, not ownership transfers and not closure.
+  External/internal audit must continue over symmetric sign-changing completed prime--Gamma and
+  co-Poisson currents, Krein/Pontryagin scalarizations, Schur-complement cancellations, and
+  genuinely nonlinear source functionals. Route J stays `OPEN` while any such survivor remains.
