@@ -264,3 +264,122 @@ for the Nonvanishing step of `suzuki-full-frequency-neumann-holonomy-survivor.md
 `suzukiBoundaryPole_ne_log_add_bounded` — a logarithmic endpoint singularity cannot absorb a simple
 pole, with a variable log coefficient allowed. It sits next to this card's `suzukiBoundaryLogTerm`
 layer because it is the same endpoint analysis; look here before rebuilding it elsewhere.
+
+### Cross-reference — the operator blocker now has a resolvent-coordinate route
+
+This card parks on "concrete construction of Suzuki's unbounded `A_a`, form domain, and distribution
+kernel".  That blocker is shared with four sibling cards, and on
+`suzuki-neumann-dominated-shift-cone-obstruction.md` it has now been dissolved rather than solved:
+the statements it was thought to require were restated in the coordinate of the **bounded** resolvent
+`B = (A - rho)^{-1}`, where no unbounded operator is ever formed.
+
+Machinery available for reuse here, all unconditional and axiom-clean:
+
+- `RHTower/SuzukiStrongResolventLimit.lean` : `tendsto_resolventFamily_id` — the strong resolvent
+  limit `(-lambda)(A - lambda)^{-1} -> I` as a single theorem about a bounded `B`.
+- `HTGeometry/CfcNormBound.lean` : CFC norm bounds and the resolvent symbol estimates that drive it.
+- `HTGeometry/StrongConvergenceDense.lean`, `HTGeometry/CompactOperatorDiscreteSpectrum.lean` :
+  the `eps/3` strong-convergence bridge, dense range of an injective self-adjoint operator, and the
+  discrete nonzero spectrum of a compact symmetric operator.
+- `HTGeometry/SignedCharFunCentralJet.lean` : endpoint atoms from integration by parts
+  (`neg_integral_exp_mul_deriv`, `neg_integral_expNeg_mul_deriv`), their coefficient sum
+  `2 cosh a`, and the interior cancellation `exponentialSourceCombination_pairing`.
+
+The endpoint-atom layer is directly relevant to this card's `(P11)`-style boundary analysis, and
+sits in the same module as this card's own log-versus-pole separation.  Before treating the operator
+as a prerequisite here, check whether the statement can be phrased in the resolvent coordinate.
+
+### `(P1)` in the resolvent coordinate — what it actually needs
+
+Restating `(P1)` as the cross-reference above recommends, with `A = rho + B^{-1}` for the bounded
+resolvent `B`:
+
+```text
+I + eps A = B^{-1} (eps I + (1 + eps rho) B),
+(I + eps A)^{-1} = (eps I + (1 + eps rho) B)^{-1} B,
+```
+
+whose symbol at a spectral point `x` of `B` is `x / (eps + (1 + eps rho) x)`.  As `eps -> 0` this
+tends to `1` for every `x > 0` but **not** at `x = 0` — the same pointwise-not-uniform structure as
+`(2)`, so `(I + eps A)^{-1} -> I` is again a *strong* limit and is reachable by
+`tendsto_id_of_norm_comp_tendsto_zero` with the estimates in `HTGeometry/CfcNormBound.lean`.
+
+Two consequences worth recording before anyone builds machinery for this:
+
+- The **bounded-operator skeleton of `(P1)` is already in mathlib**: `NormedRing.inverse_add`,
+  `NormedRing.inverse_add_norm_diff_nth_order` in `Mathlib/Analysis/Normed/Ring/Units.lean` give the
+  first-order expansion of `inverse (x + t)` with its remainder bound.  Nothing needs to be written
+  for that half.
+- The genuinely card-specific input is `A_a e^x`, i.e. `B^{-1} e^x`, which presupposes
+  `e^x ∈ range B` — the statement that the exponential lies in the operator's domain.  That is a
+  hypothesis about Suzuki's operator, not an analytic gap, and it is the only part of `(P1)` that
+  the resolvent coordinate does not remove.
+
+### Lean progress — `(P1)`'s symbol estimate FORMALIZED
+
+The estimate the resolvent-coordinate route needs for `(P1)`, in
+`HTGeometry/CfcNormBound.lean` [PROVED HERE], standard axioms
+`[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `abs_neumannSymbol_le` : for `A = rho + B⁻¹`, the family `(I + eps A)⁻¹` has symbol
+  `x / (eps + (1 + eps rho) x)` in the coordinate of `B`, and its estimate symbol
+  `-eps x (1 + rho x) / (eps + (1 + eps rho) x)` is bounded by `2 eps (1 + |rho| M)` on `[0, M]`,
+  whenever `1 + eps rho >= 1/2`.
+
+The uniformity has the same source as in `(2)`: `x / (eps + (1 + eps rho) x) <= 1 / (1 + eps rho)`
+holds for **every** `x >= 0`, the accumulation point included, because cross-multiplying leaves only
+`0 <= eps`. So `(I + eps A)⁻¹ -> I` strongly follows from `tendsto_id_of_norm_comp_tendsto_zero` by
+the same chain that closed `(2)`, with this estimate in place of `abs_resolventSymbol_le`.
+
+`(P1)`'s remaining content is then its **first-order term** `A_a e^x = B⁻¹ e^x`, which needs
+`e^x ∈ range B`; the bounded-operator expansion itself is mathlib's `NormedRing.inverse_add`.
+
+### Lean progress — `(P1)`'s scalar layer is complete
+
+- `eventually_forall_abs_neumannSymbol_le` : as `eps -> 0+`, the Neumann-shift estimate symbols are
+  uniformly small on `[0, M]` — the direct input of `tendsto_norm_cfc_zero`.
+  [PROVED HERE], standard axioms `[propext, Classical.choice, Quot.sound]`, builds clean.
+
+With `abs_neumannSymbol_le` this completes the scalar layer for `(I + eps A)^{-1} -> I` strongly,
+exactly mirroring what closed `(2)` on the sibling card: uniform bound, estimate symbol, uniform
+smallness, then `tendsto_norm_cfc_zero` and `tendsto_id_of_norm_comp_tendsto_zero`. The bundling
+into one theorem is the same CFC bookkeeping already carried out in
+`RHTower/SuzukiStrongResolventLimit.lean`, and would go in an RHTower module for the same
+instance reason recorded there.
+
+`(P1)`'s first-order term `A_a e^x = B^{-1} e^x` remains, needing `e^x ∈ range B`.
+
+### Lean progress — `(P1)`'s link identity; the scalar layer is closed
+
+- `neumannSymbol_sub_one_mul` : `(x/(eps + (1+eps rho)x) - 1) * x
+  = -(eps (x(1+rho x))/(eps + (1+eps rho)x))` — the `x` terms cancel, leaving an `eps`-only
+  numerator. [PROVED HERE], standard axioms `[propext, Classical.choice, Quot.sound]`, builds clean.
+
+All three scalar inputs for `(I + eps A)^{-1} -> I` strongly now exist — uniform bound
+(`abs_neumannSymbol_le`), link identity, and uniform smallness
+(`eventually_forall_abs_neumannSymbol_le`) — matching one-for-one the inputs that closed `(2)`.
+Bundling is the CFC bookkeeping of `RHTower/SuzukiStrongResolventLimit.lean`.
+
+Note for whoever writes that bundle: `field_simp` does **not** close this identity — it normalises
+the denominator to a different associativity than the hypothesis and leaves an inverse-form goal
+`ring` cannot finish. The working route is `div_sub_one`, then `div_mul_eq_mul_div`, then rewriting
+the numerator by hand.
+
+### Lean progress — `(P1)`'s strong limit IS NOW ONE THEOREM
+
+- `abs_neumannFamilySymbol_le` : the shift symbol is bounded by `2` on `[0, M]` when
+  `1 + eps rho >= 1/2`, uniformly in `x` and `eps`.
+- `tendsto_neumannShiftFamily_id`, in `RHTower/SuzukiStrongResolventLimit.lean` :
+  **`(I + eps A)^{-1} -> I` strongly as `eps -> 0+`**, for `A = rho + B^{-1}` with `B` bounded,
+  injective and self-adjoint with spectrum in `[0, M]`.
+
+Both [PROVED HERE], standard axioms `[propext, Classical.choice, Quot.sound]`, build clean.
+
+`(P1)`'s convergence half is therefore closed, by the same chain that closed `(2)` on
+`suzuki-neumann-dominated-shift-cone-obstruction.md` and with no unbounded operator formed. The
+assembly compiled on the first attempt: only the scalar estimates differ between the two families,
+so the bridge is genuinely reusable rather than a one-off.
+
+What remains of `(P1)` is its **first-order term** `A_a e^x = B^{-1} e^x`, which needs
+`e^x ∈ range B` — a domain hypothesis about Suzuki's operator, not analysis. The bounded-operator
+expansion behind it is mathlib's `NormedRing.inverse_add`.

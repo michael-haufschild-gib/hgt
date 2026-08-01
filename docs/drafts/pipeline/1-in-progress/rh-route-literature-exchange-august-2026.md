@@ -36,13 +36,21 @@ the Lean corpus, narrows a named open core, and is not merely another coordinate
 
 ## 2. Route-by-route exchange
 
-### Route A — first clock
+### Route A — first clock [TERMINALIZED]
 
 **Local contribution beyond located literature.** No external source was found proving that one
 fixed published logarithmic clock is multiplicity-complete for every off-critical Xi divisor,
 classifying its false-RH power/abscissa spectra, or reducing RH to its eventual lower floor and
 Bohr-asymptotic source laws. This fixed-scalar tomography package is a plausible local contribution;
 priority remains specialist-review dependent.
+The concrete finite-aperture carrier is now exact in Lean: both the prime Dirichlet polynomial and
+the cutoff Euler product have frequency module of rank `π(N)`, and the Euler-product Bohr hull
+surjects onto the complete prime torus. Local guardrails also separate recurrence from weaker
+properties: bounded holomorphy and differential algebraicity do not imply almost periodicity,
+while one Euler factor is almost periodic with infinite support but rank-one frequency module.
+None of this orients the published first-clock scalar. Fixed phase-natural source transport is
+identity-rigid, and arbitrary aperture-dependent positive Markov feasibility is exactly the
+original source sign; universal feasibility is exactly RH.
 
 **External contribution.** CCM finite spectral triples and Connes's 2026 survey motivate the clock
 and finite-to-infinite limit, but leave rigorous convergence open. In particular, Theorem 1.1 of
@@ -51,10 +59,10 @@ regularized-determinant formula for the finite rank-one perturbation under its f
 ground-state hypothesis. That finite theorem is absent as a concrete Lean object. It does not prove
 the Route-A source floor, tail lower bound, or continuous Bohr asymptote.
 
-**Lean action.** Formalize CCM Theorem 1.1 source-faithfully and identify its normalized finite
-determinant coefficient with the local published first clock. This supplies a concrete finite
-baseline and a bridge into the local tomography package; the convergence and lower-floor premises
-must remain explicit.
+**Lean action.** None as a Route-A advance. CCM Theorem 1.1 remains useful finite operator
+infrastructure for Route O, but identifying another finite determinant coefficient or positive
+transport cannot reopen this terminalized coordinate. A successor must orient the explicit signed
+phase-connection defect by a genuinely new source theorem.
 
 ### Route B — fixed-width rectangular Weil and positive quadrature
 
@@ -131,8 +139,11 @@ proves unrestricted-carrier rigidity: every positive measure representing all no
 prime–archimedean moments equals the canonical compact Xi-divisor pushforward, and unique witness
 existence is exactly RH. It also classifies subset-natural positive Euler lifts: polarization kills
 all real cross-prime covariance while divergent local energy remains. These close alternative
-carrier and naive off-diagonal-mixing freedom; they do not construct the global signed source
-boundary defect.
+carrier and naive off-diagonal-mixing freedom. Deterministic observable carriers are quantized too:
+every canonical thermal node requires a positive-measure fibre; on the atomless theta-cusp source
+that fibre has positive Lebesgue measure. Null-, countable-, countable-to-one, and injective fibre
+reporters therefore fail. These results do not construct the global signed source boundary defect
+or its required plateau correspondence.
 
 **External contribution.** Classical Hamburger/Stieltjes moment theory and Hankel positivity give
 generic machinery, while Weil/Barner explicit formulae identify the arithmetic source. They do not
@@ -253,8 +264,14 @@ Generic rectangular algebra now isolates the remaining Schur debt: a variable co
 matrix entry gives an exact degree-one determinant expansion, and coprime linear coefficients give
 irreducibility. Multivariable reduction is also proved: an irreducible cofactor and a specialization
 that kills it without killing the remainder imply irreducibility, including unit-signed corner
-expansions. The corpus does not instantiate that induction/separating specialization or prove direct
-coprimality for the literal rectangular source determinant, so no source or Ward premise closes.
+expansions. The reversed-variable rectangular Schur presentation now proves the height-one base,
+corner-minor recursion, and unit-tail evaluations separating the current determinant from the
+shifted smaller determinant. The final all-rectangle induction assembly and arithmetic source/Ward
+identification remain open.
+At operator level, the corpus now proves strong convergence of the generic resolvent-coordinate
+family for an injective self-adjoint bounded `B` with spectrum in `[0,M]`. It constructs neither the
+unbounded source operator nor the identification `B=(A-ρ)⁻¹`, so it does not validate Suzuki's
+conjectural finite-to-global spectral limit.
 
 **External contribution.** Suzuki's
 [Weil quadratic form via the screw function](https://arxiv.org/abs/2606.09096) proves the concrete
@@ -273,7 +290,7 @@ Lean, but cannot stand in for Suzuki's objects. Corollary 1.6 must remain condit
 proves that its proposed entire `z²ξ/ξ′` limit target has unavoidable real poles. Numerical
 finite-element claims are not imported.
 
-### Route G2 — relative-Volterra phase source-germ weld
+### Route G2 — relative-Volterra phase source-germ weld [RETIRED]
 
 **Local closed classification.** The exact Cartesian Volterra split and reflection obstruction are
 unconditional. The affine-sewn exterior quotient now has a formal source-transparency normal form:
@@ -399,6 +416,17 @@ automorphisms, quotient by the closure of `p`, Frobenius-triviality, period `log
 comparison with Deninger's actual prime fibre. Abstract torsion-symbol realification also does not
 instantiate Milnor K-theory. No theorem identifies these models with the separately defined affine
 leaf or arithmetic relevant complex.
+
+Further generic layers are now explicit. Compatible continuous real zero-cochains glue uniquely.
+Finite free-lattice characters are coordinate tuples with functorial contravariant restriction,
+and locally analytic cylinder functions on the ambient function space are stable under the required
+finite algebraic operations; neither is instantiated on the arithmetic character inverse limit.
+For each stipulated nonzero frequency, the Poisson mode is harmonic, has Dirichlet-to-Neumann value
+and energy `|μ|`, and carries the unitary boundary Hodge scalar `i·sign μ`. Abstract diagonal
+Poisson multipliers form contractions with semigroup and time-zero laws on `ℓ²`, but no arithmetic
+generator/domain or strong continuity theorem is supplied. Moreover, all positive-time heat-energy
+coordinates lose normalized high modes while Hilbert norm remains one, so that product topology is
+formally too weak for the desired completion.
 
 **External contribution.** Deninger's
 [dynamical systems paper](https://arxiv.org/abs/1807.06400) gives the Hausdorff suspension
@@ -643,9 +671,9 @@ with the completed Gamma/polar source. No external import advances that open cor
 External results that genuinely strengthen a live route, in dependency order, are:
 
 1. Suzuki Theorems 1.1 and 1.5: concrete finite screw space, Friedrichs and deficiency operators,
-   self-adjoint extensions, and literal `W` (Routes G/G2).
+   self-adjoint extensions, and literal `W` (Route G; not retired G2).
 2. CCM Theorem 1.1: concrete finite restricted-Weil operator and determinant, connected to the
-   already-formalized finite real-zero transfer (Routes A/O).
+   already-formalized finite real-zero transfer (Route O; terminalized Route A only gains background).
 3. Complete the Groskin import after the now-formalized semidefinite compact-window core: strict
    positive/total positivity, improper tail, and Corollary 3.3's cutoff budget (Route B).
 4. Deninger Theorem 7.10, Theorem 10.2, and Proposition 11.7: concrete prime-fibre topology and

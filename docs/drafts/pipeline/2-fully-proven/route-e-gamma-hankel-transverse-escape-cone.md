@@ -140,6 +140,20 @@ Tendsto
 
 Since `sigma` was arbitrary in the strict interval, `(E-EC)` follows.
 
+### Quantitative contrapositive
+
+Fix `sigma>1/2`. If for some `C` the covariance returns below `C` frequently at unbounded finite
+apertures, then
+
+```text
+Delta <= sigma-1/2.                                    (E-EC2)
+```
+
+If the right divisor is empty, `Delta=sup(empty)=0` and the claim follows from `sigma>1/2`.
+Otherwise, if `sigma-1/2<Delta`, `(E-EC)` makes the covariance eventually exceed `C`, contradicting
+the assumed frequent bounded returns. Thus one bounded-return line gives a quantitative upper bound
+on the right-zero abscissa; cofinal bounded-return lines squeeze that abscissa to the critical line.
+
 ### Edge cases
 
 1. **Empty right divisor:** impossible under `not RH`; excluded before supremum extraction.

@@ -241,9 +241,64 @@ which is the mode profile already built for `DAC_AFFINE_KUMMER_HARMONIC_FOURIER_
 - `deningerBoundaryHodge_eq_star` — **item 6**: it is exactly the boundary value of the leafwise
   Hodge star, since the star of the harmonic mode is multiplication by this scalar.
 
+### The Poisson semigroup as an operator landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerMultiplier.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+mathlib has no diagonal multiplier on a square-summable coefficient space, so it is built here.
+
+- `deningerMultiplier_memℓp` — a family of scalars of modulus at most one preserves square
+  summability.
+- `deningerMultiplierMap_norm_le`, `deningerMultiplier` — **it defines a contraction**: the norm
+  comparison is termwise on the coefficient sums.
+- `deningerMultiplier_comp`, `deningerMultiplier_one` — composing multipliers multiplies the
+  families, and the constant family one is the identity.
+- `deningerPoissonMultiplier ℓ r i = e^{-r|ℓ i|}` with `_norm_le`, `_add`, `_zero` — the Poisson
+  family of a diagonal generator, of modulus at most one at nonnegative times.
+- `deningerPoissonSemigroup ℓ hr` — **`(3)` as an operator**: the Poisson extension at time `r` is a
+  contraction of the coefficient space, with `deningerPoissonSemigroup_add` the semigroup law and
+  `deningerPoissonSemigroup_zero` the identity at time zero.
+
+### The boundary Hodge operator as an operator landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerBoundaryHodgeOperator.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+`sgn(D_ℓ)` is bounded, so `(7)` can be built as a genuine operator with the multiplier machinery.
+
+- `deningerMultiplier_norm_eq` — **a multiplier of modulus exactly one is an isometry**: the
+  coefficient sums agree term by term.
+- `deningerSignFamily ℓ i = i · sgn(ℓ i)`, with `deningerSignFamily_norm` — the unimodular family.
+- `deningerBoundaryHodgeOperator ℓ` — **`(7)` as an operator** on the coefficient space, with
+  `deningerBoundaryHodgeOperator_sq` (`W² = -1`) and `deningerBoundaryHodgeOperator_isometry`
+  (`W` is unitary for the boundary form).
+
+### The phase generator `(1)` landed, by reuse
+
+`formal/GaloisForLFunctions/RHTower/DeningerPhaseGenerator.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+The corpus already contained the hard theorem: `MaximalRealDiagonalSelfAdjoint.lean` constructs
+coordinate multiplication by an arbitrary real function on `ℓ²(ι)` with its maximal
+square-summability domain and proves it densely defined and self-adjoint.  The card's `D_ℓ` is
+exactly that operator for the frequency function.
+
+- `deningerPhaseGenerator ℓ = maximalRealDiagonal ℓ` — the generator.
+- `deningerPhaseGenerator_apply_basis` — **`(1)`**: `D_ℓ χ_a = ℓ(a) χ_a`, the characters are
+  eigenvectors with the frequencies as eigenvalues.
+- `deningerPhaseGenerator_dense`, `deningerPhaseGenerator_isSelfAdjoint` — densely defined and
+  self-adjoint on the maximal domain, by reuse of the existing theorem.
+
+Note on overlap: `DiagonalEllTwoOperator.lean` already had the bounded diagonal operator for the
+index type `ℕ`.  `DeningerMultiplier.lean` covers an arbitrary index type, which is what the Kummer
+character lattice needs, but the `ℕ`-indexed construction was not new.
+
 ### Remaining
 
-The operator-level statements: that `D_ℓ` is essentially self-adjoint on trigonometric polynomials,
-that `|D_ℓ|` and `sgn(D_ℓ)` are its Borel functional calculus, and that the semigroup `e^{-r|D_ℓ|}`
-assembles the per-mode profiles.  What is formalized is every claim `(4)`--`(7)` makes about a
-single mode, which is what the card's proof computes.
+Only `|D_ℓ|` as the Borel functional calculus of the generator.  The card's uses of it are all
+formalized directly: `(5)` and `(6)` per mode, the semigroup `e^{-r|D_ℓ|}` as a contraction
+(`deningerPoissonSemigroup`), and `sgn(D_ℓ)` as the isometry `(7)`
+(`deningerBoundaryHodgeOperator`).  What is absent is the identification of those with the
+functional calculus of the self-adjoint operator, for which mathlib has no Borel calculus for
+unbounded operators.

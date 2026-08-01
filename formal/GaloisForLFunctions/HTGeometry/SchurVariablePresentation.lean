@@ -105,7 +105,7 @@ theorem det_rectangularSchurToeplitz_zero_shift {L m : ℕ} :
 /-- **The corner minor of a rectangle is the smaller rectangle, shifted.**  Deleting the last row and
 the first column of the `(m'+1, n'+1)` section leaves the `(m', n')` section, read two variables
 later. -/
-theorem submatrix_rectangularSchurToeplitz {n' m' : ℕ} (hn : 0 < n') (hm : 0 < m') :
+theorem submatrix_rectangularSchurToeplitz {n' m' : ℕ} (hm : 0 < m') :
     ((rectangularSchurToeplitz (schurVar K (n' + m' - 1 + 2)) (n' + 1) (m' + 1)).submatrix
         (Fin.last m').succAbove Fin.succ) =
       (rectangularSchurToeplitz (schurVar K (n' + m' - 1)) n' m').map
@@ -124,24 +124,24 @@ theorem submatrix_rectangularSchurToeplitz {n' m' : ℕ} (hn : 0 < n') (hm : 0 <
   · rw [if_neg (by omega : ¬ ((i : ℕ) + 1 ≤ n' + 1 + (r : ℕ))), if_neg hg, map_zero]
 
 /-- **The determinant of the corner minor is the smaller determinant, shifted.** -/
-theorem det_submatrix_rectangularSchurToeplitz {n' m' : ℕ} (hn : 0 < n') (hm : 0 < m') :
+theorem det_submatrix_rectangularSchurToeplitz {n' m' : ℕ} (hm : 0 < m') :
     ((rectangularSchurToeplitz (schurVar K (n' + m' - 1 + 2)) (n' + 1) (m' + 1)).submatrix
         (Fin.last m').succAbove Fin.succ).det =
       MvPolynomial.rename (fun j : Fin (n' + m' - 1) => (j.succ).succ)
         ((rectangularSchurToeplitz (schurVar K (n' + m' - 1)) n' m').det) := by
-  rw [submatrix_rectangularSchurToeplitz hn hm]
+  rw [submatrix_rectangularSchurToeplitz hm]
   exact (AlgHom.map_det
     (MvPolynomial.rename (R := K) (fun j : Fin (n' + m' - 1) => (j.succ).succ)) _).symm
 
 /-- **The corner minor in the form the criterion consumes.**  It is `rename Fin.succ` of the
 once-shifted smaller determinant. -/
-theorem det_submatrix_eq_rename_succ {n' m' : ℕ} (hn : 0 < n') (hm : 0 < m') :
+theorem det_submatrix_eq_rename_succ {n' m' : ℕ} (hm : 0 < m') :
     ((rectangularSchurToeplitz (schurVar K (n' + m' - 1 + 2)) (n' + 1) (m' + 1)).submatrix
         (Fin.last m').succAbove Fin.succ).det =
       MvPolynomial.rename Fin.succ
         (MvPolynomial.rename Fin.succ
           ((rectangularSchurToeplitz (schurVar K (n' + m' - 1)) n' m').det)) := by
-  rw [det_submatrix_rectangularSchurToeplitz hn hm, MvPolynomial.rename_rename]
+  rw [det_submatrix_rectangularSchurToeplitz hm, MvPolynomial.rename_rename]
   rfl
 
 /-! ## Evaluating at the unit tail -/
@@ -203,6 +203,63 @@ theorem unitTailEval_rename_succ {L n : ℕ} (p : MvPolynomial (Fin L) K) :
       show L + 1 - ((j : ℕ) + 1) = L - (j : ℕ) by omega]
   rw [unitTailEval, unitTailEval, MvPolynomial.aeval_rename, hfun]
 
+/-- **Evaluating a section at the unit tail of the next index.**  The section of shift `n` seen at
+the unit tail belonging to `n+1` becomes the constant section of that tail. -/
+theorem map_unitTailEval_succ_rectangularSchurToeplitz [DecidableEq K] {n m : ℕ} (hnm : m ≤ n) :
+    (rectangularSchurToeplitz (schurVar K (n + m - 1)) n m).map
+        (unitTailEval K (n + m - 1) (n + 1)) =
+      rectangularSchurToeplitz (fun k => if k = n + 1 then (1 : K) else 0) n m := by
+  refine Matrix.ext fun r i => ?_
+  rw [Matrix.map_apply, rectangularSchurToeplitz, rectangularSchurToeplitz]
+  have hr := r.isLt
+  have hi := i.isLt
+  by_cases hg : (i : ℕ) ≤ n + (r : ℕ)
+  · rw [if_pos hg, if_pos hg]
+    exact unitTailEval_schurVar (by omega) (by omega)
+  · rw [if_neg hg, if_neg hg, map_zero]
+
+/-- **Hence that determinant vanishes.**  It is the shifted section at the unit tail, whose first row
+is zero. -/
+theorem unitTailEval_succ_det_rectangularSchurToeplitz [DecidableEq K] {n m : ℕ} (hm : 0 < m)
+    (hnm : m ≤ n) :
+    unitTailEval K (n + m - 1) (n + 1)
+      ((rectangularSchurToeplitz (schurVar K (n + m - 1)) n m).det) = 0 := by
+  rw [AlgHom.map_det, AlgHom.mapMatrix_apply,
+    map_unitTailEval_succ_rectangularSchurToeplitz hnm]
+  have h := det_rectangularSchurToeplitz_shift_unit_tail (R := K) (n := n + 1) (m := m)
+    (by omega) hm
+  rw [show n + 1 - 1 = n by omega] at h
+  exact h
+
+/-! ## The unit tail without a range restriction
+
+The convention `h_0 = 1` adds ones strictly above the diagonal, which leaves the section
+unitriangular; so its determinant is one whatever the height. -/
+
+/-- **Below the diagonal the unit-tail section vanishes.** -/
+theorem unitTailEval_rectangularSchurToeplitz_below [DecidableEq K] {n m : ℕ} (hn : 0 < n)
+    (r i : Fin m) (hir : i < r) :
+    rectangularSchurToeplitz (fun k => if k = 0 ∨ k = n then (1 : K) else 0) n m r i = 0 := by
+  have hlt : (i : ℕ) < (r : ℕ) := hir
+  rw [rectangularSchurToeplitz, if_pos (by omega : (i : ℕ) ≤ n + (r : ℕ)), if_neg]
+  intro hcon
+  rcases hcon with h | h <;> omega
+
+/-- **On the diagonal it is one.** -/
+theorem unitTailEval_rectangularSchurToeplitz_diag [DecidableEq K] {n m : ℕ} (hn : 0 < n)
+    (r : Fin m) :
+    rectangularSchurToeplitz (fun k => if k = 0 ∨ k = n then (1 : K) else 0) n m r r = 1 := by
+  rw [rectangularSchurToeplitz, if_pos (by omega : (r : ℕ) ≤ n + (r : ℕ)),
+    if_pos (Or.inr (by omega : n + (r : ℕ) - (r : ℕ) = n))]
+
+/-- **Hence its determinant is one, with no constraint between the parameters.** -/
+theorem det_unitTail_rectangularSchurToeplitz [DecidableEq K] {n m : ℕ} (hn : 0 < n) :
+    (rectangularSchurToeplitz (fun k => if k = 0 ∨ k = n then (1 : K) else 0) n m).det = 1 := by
+  rw [Matrix.det_of_upperTriangular
+    (fun i j h => unitTailEval_rectangularSchurToeplitz_below hn i j h)]
+  refine Finset.prod_eq_one fun r _ => ?_
+  exact unitTailEval_rectangularSchurToeplitz_diag hn r
+
 /-! ## Transporting the presentation along an equality of variable counts -/
 
 /-- **The presentation is natural in the number of variables.** -/
@@ -232,5 +289,23 @@ theorem rename_finCongr_det_rectangularSchurToeplitz {L₁ L₂ : ℕ} (h : L₁
       (rectangularSchurToeplitz (schurVar K L₂) n m).det := by
   rw [AlgHom.map_det, AlgHom.mapMatrix_apply,
     map_rename_finCongr_rectangularSchurToeplitz h n m]
+
+/-! ## Ambient-generalised forms
+
+Each statement is repeated with the number of variables given as a parameter together with the
+equation defining it, so that an application can supply the arithmetic in whatever form it arises and
+discharge it by `subst`. -/
+
+theorem unitTailEval_det_rectangularSchurToeplitz' [DecidableEq K] {L n m : ℕ}
+    (hL : L = n + m - 1) (hnm : m ≤ n) :
+    unitTailEval K L n ((rectangularSchurToeplitz (schurVar K L) n m).det) = 1 := by
+  subst hL
+  exact unitTailEval_det_rectangularSchurToeplitz hnm
+
+theorem unitTailEval_succ_det_rectangularSchurToeplitz' [DecidableEq K] {L n m : ℕ}
+    (hL : L = n + m - 1) (hm : 0 < m) (hnm : m ≤ n) :
+    unitTailEval K L (n + 1) ((rectangularSchurToeplitz (schurVar K L) n m).det) = 0 := by
+  subst hL
+  exact unitTailEval_succ_det_rectangularSchurToeplitz hm hnm
 
 end GaloisForLFunctions.HTGeometry

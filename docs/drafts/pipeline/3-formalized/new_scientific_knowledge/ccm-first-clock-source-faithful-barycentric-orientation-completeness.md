@@ -1,7 +1,7 @@
 # CCM first-clock source-faithful barycentric orientation completeness
 
 - **ID:** `ccm-first-clock-source-faithful-barycentric-orientation-completeness`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / ROUTE-A POSITIVE-TRANSPORT COMPLETENESS
 - **Source:** Hostile audit of the aperture-dependent positive-mixer survivor left by
   `ccm-first-clock-phase-natural-transport-rigidity`
@@ -28,8 +28,8 @@ rank-one barycentric collapse exists whenever that scalar already has the target
 
 - [x] 0 → 1 in-progress: exact source-pure statement, hostile conjecture tournament, complete
   dependency-closed paper proof
-- [ ] 1 → 2 fully-proven: hostile proof and novelty audits complete; move card
-- [ ] 2 → 3 formalized: Lean module, umbrellas, direct check, axioms, lint, final module build
+- [x] 1 → 2 fully-proven: hostile proof and novelty audits complete
+- [x] 2 → 3 formalized: Lean module, umbrellas, direct check, axioms, final SOTA module build
 - [ ] 3 → 4 publication-ready: not proposed; generic barycentric parent is elementary
 
 ## Exact abstract theorem
@@ -251,15 +251,31 @@ physical-phase transport-rigidity theorem.
   `(7)`;
 - universal completed transport existence without the RH-equivalent first-clock source floor.
 
-## Lean plan
+## Lean certificate
 
-1. define finite oriented source-faithful column-stochastic transport;
-2. formalize invariant necessity and explicit barycentric sufficiency;
-3. define the completed CCM `Option` packet and prove its exact scalar identity;
-4. prove aperturewise transport/source-sign equivalence and universal transport/RH equivalence;
-5. wire RHTower umbrellas and audit direct check, axioms, lint, and final module build.
+`RHTower/CCMFirstClockBarycentricOrientationCompleteness.lean` defines finite oriented
+source-faithful column-stochastic transport, formalizes invariant necessity and explicit
+barycentric sufficiency, defines the completed CCM `Option` packet, proves its exact scalar
+identity, and closes aperturewise and universal equivalences.
+
+Audited endpoints:
+
+```text
+ccmBarycentricSourceTransport_mulVec
+ccmBarycentricSourceTransport_transpose_mulVec
+ccm_orientedSourceFaithfulMarkovTransport_iff_dotProduct_nonnegative
+ccmFirstClockCompletedPacket_dotProduct
+ccmFirstClockCompletedMarkovOrientationAtFrequency_iff_source_nonnegative
+ccmFirstClockAllCompletedMarkovOrientations_iff_rh
+```
+
+The module is wired into `RHTower.lean` and `RiemannHypothesisSOTA2026.lean`.
+`lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` passed 9,960 jobs. Scratch
+`#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Log
 
 - 2026-08-01 — frozen after the fixed-intertwiner classification exposed aperture-dependent
   positive transport as the strongest surviving Route A predecessor class.
+- 2026-08-01 — paper proof formalized through universal completed-packet `↔ RH`, both umbrellas
+  wired, direct check and SOTA build passed; promoted to Stage 3.

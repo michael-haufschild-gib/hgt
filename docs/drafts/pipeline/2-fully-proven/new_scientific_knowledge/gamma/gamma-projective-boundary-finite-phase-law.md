@@ -3406,6 +3406,16 @@ That closes the `[PROVED; BRIDGE]` clause of §7 in Lean: the finite-aperture Eu
 transport `π(N)` independent phase dimensions, and the aperture lattice is its Bohr frequency
 module, not a modelling choice.  `#print axioms` clean.
 
+The literal hull statement of §7 — *its translation hull is the full prime torus `T^{π(N)}`* — is
+now a theorem about the observable too.  `eulerProductBCF` bundles `Z_{N,σ}` as a bounded continuous
+function (`norm_eulerProductLine_le`), `hasTotallyBoundedOrbit_eulerProductBCF` gives Bochner
+compactness of its orbit, and `isBohrHullFrequency_primeLog` promotes each spectral frequency
+`−log p` to a hull frequency `log p`.  Feeding those, with the rational independence
+`primeAperture_linearIndependent`, to the corpus's `bohrHull_torus_surjective_hom` yields
+**`eulerProduct_bohrHull_torus_surjective`**: the joint character map of the packet
+`{log p : p ≤ N}` is multiplicative, unimodular in every coordinate, and *surjective onto the whole
+torus* — every point of `T^{π(N)}` is attained by a point of the hull.  `#print axioms` clean.
+
 `HTGeometry/ScaledGammaLine.lean` closes §8.8 in the form the card claims it — *scaled archimedean
 factors admit the same argument after an affine change of variable*, and nothing more.
 
@@ -3451,6 +3461,47 @@ the recurrence hypothesis of the law is not decorative.  `#print axioms` clean.
 
 Differential algebraicity over `ℂ(s)` — with finite order and whatever zero density — therefore does
 not give recurrence.  `#print axioms` clean.
+
+### The one remaining generality gap, and the route to it
+
+With §8 closed, every numbered claim of §1–§8 has Lean except one *quantifier*: eq. (3) and eq. (19)
+are proved for field elements **presented with their residue data** (a datum `(u,a,dP,b)` and a
+nonzero limit `c`), and — since `GammaJetDatumUniqueness.lean` — that presentation is unique when it
+exists.  What is not yet Lean is the existential half in the card's own phrasing: *every* nonzero
+`A ∈ L` has such a datum, with no presentation supplied.
+
+The obstruction is real and is exactly the one §2–§3 address on paper.  The corpus knows the
+*leading* asymptotic of every jet (`tendsto_pow_mul_iteratedDeriv_digamma_vertical`) and knows that
+no nonzero jet polynomial over `ℂ(s)` is flat (`not_isVertFlatGerm_digammaJetEval`).  But two
+distinct monomials can share a datum — `ψ′ψ‴` and `(ψ″)²` both have `s`-degree `6` and log-degree
+`0`, with leading constants `2` and `1` — so a combination such as `ψ′ψ‴ − 2(ψ″)²` cancels at
+leading order, and its true datum lies deeper.  Deciding the datum of an *arbitrary* element
+therefore needs the asymptotic expansion to arbitrary depth, which is what the paper gets from the
+formal Stirling field.
+
+Route (nothing here is blocked, only unbuilt; mathlib has no Euler–Maclaurin and no asymptotic
+expansion of the polygamma functions):
+
+1. **Asymptotic scale on a vertical line.**  A predicate for `‖f(t)‖ = O(t^{-k})` on the line, closed
+   under sums, products and rational coefficients; the leading-coefficient extraction map.
+2. **One order at a time, algebraically.**  For `T_k(s) = ∑_{n≥0}(s+n)^{-k}` (which is the corpus's
+   `hasSum_polygamma_series` up to a factorial) the identity
+   `(k−1)^{-1}[(s+n)^{-(k-1)} − (s+n+1)^{-(k-1)}] = (s+n)^{-k} + O((s+n)^{-k-1})`
+   telescopes: `T_k(s) = ((k−1)s^{k−1})^{-1} + (a sum of the same type one order higher)`.  This is
+   Euler–Maclaurin done by rational algebra, with no integrals.
+3. **All orders.**  Iterating (2) with the coefficients carried as data gives, for every `K`, an
+   expansion `ψ^{(m)}(s) = ∑_{j<K} c_{m,j} s^{-m-j} + O(s^{-m-K})`; differentiation transfers
+   expansions between levels by Cauchy's estimate on discs of radius `|s|/2`.
+4. **`ψ` itself** carries the `log s` term: integrate the expansion of `ψ′`.
+5. **Products and sums.**  The scale is a ring, so every jet polynomial over `ℂ(s)` has an expansion
+   to every depth; if *all* coefficients vanished the function would be flat, which
+   `not_isVertFlatGerm_digammaJetEval` forbids — so a first nonzero coefficient exists, and that is
+   the datum.
+6. **Eq. (19) and eq. (3) unquantified**, then the field version by the existing quotient lemmas.
+
+Step 5 is the point of the design: the corpus's flat-elimination theorem replaces the
+Adamczewski–Dreyfus–Hardouin input as the injectivity of the expansion map, so no formal shift field
+is needed even in the general case.
 
 ## Gates
 

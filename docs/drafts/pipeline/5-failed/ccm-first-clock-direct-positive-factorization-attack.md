@@ -5,6 +5,8 @@
 - **Type:** DIRECT RH ATTACK
 - **Status:** `[TERMINAL NO-GO] [RETIRED AS INDEPENDENT ROUTE-A PREDECESSOR]`
 - **Endpoint:** `CCMFirstClockPublishedSourceNonnegative ↔ RiemannHypothesis`
+- **Closure:** fixed phase-natural transport is identity; arbitrary aperture-dependent positive
+  source-faithful Markov orientation exists exactly when target source scalar is nonnegative.
 
 ## Target
 

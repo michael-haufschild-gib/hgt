@@ -76,6 +76,34 @@ C_Xi(a,b0) / (a-d)^(2m-1) -> 2m |Q(alpha)|^2 > 0,          (C2.4)
 and the first nonzero transverse order is exactly `2m-1`. This recovers `m` without dividing by
 `XiC`, so it remains meaningful at the divisor where the logarithmic derivative is singular.
 
+### Stronger two-dimensional conjecture exposed by the paper audit
+
+Set additionally
+
+```text
+y=b-b0,                    r2=x^2+y^2,
+z_(a,b)=b-a i=alpha+y-x i.
+```
+
+The full current should obey the exact planar factorization
+
+```text
+C_Xi(a,b)
+ = r2^(m-1)
+    [2m x |Q(z_(a,b))|^2
+     + 2r2 Im(Q'(z_(a,b)) conjugate(Q(z_(a,b))))].         (C2.5)
+```
+
+Consequently its first nonzero two-variable homogeneous germ is
+
+```text
+2m |Q(alpha)|^2 x (x^2+y^2)^(m-1),                        (C2.6)
+```
+
+of total degree `2m-1`; the remainder has order at least `2m`. This predicts a conical negative
+sector on the critical-line side and positive sector on the exterior side. It directly attacks
+the remaining “transverse components may compensate” loophole.
+
 ## Heavy conjecture / hostile falsification loop
 
 ### H1 — infinite shell completion can hide an off-line zero
@@ -156,6 +184,18 @@ evade the divisor.
 
 **Expected verdict.** False. If H5 is proved, Route C2 is saturated as an exact divisor detector
 and must be retired as an independent mechanism.
+
+### H7 — transverse-frequency motion destroys the one-line bifurcation
+
+**Bold claim.** Even if H5 holds at `b=b0`, moving `b` can introduce a cofactor term of the same
+order and rotate or cancel the leading negative sector.
+
+**Attack.** Differentiate the full energy identity
+`|XiC(b-a i)|^2=(x^2+y^2)^m|Q(b-a i)|^2` in `a`. The cofactor derivative carries an extra factor
+`x^2+y^2`; only differentiation of the radial divisor factor contributes at degree `2m-1`.
+
+**Verdict.** False. Equations (C2.5)--(C2.6) follow, and the transverse component cannot cancel the
+leading oriented divisor cone. This is the strongest dependency-closed survivor.
 
 ## Internal-priority audit
 
@@ -326,6 +366,35 @@ Then both intervals `(d-epsilon,d)` and `(d,d+epsilon)` lie inside the physical 
 negative C2 chamber immediately below its displacement and an open positive chamber immediately
 above it. Left-of-line zeros give the reflected statement.
 
+### Lemma 7 — exact planar divisor cone
+
+For arbitrary real `a,b`, (P2) and
+
+```text
+z_(a,b)-alpha=y-i x,              |z_(a,b)-alpha|^2=x^2+y^2
+```
+
+give
+
+```text
+|XiC(z_(a,b))|^2=(x^2+y^2)^m |Q(z_(a,b))|^2.              (P5)
+```
+
+Hold `b` fixed and differentiate in `a`. Since `dx/da=1`, `dy/da=0`, and
+`d(x^2+y^2)/da=2x`, the product rule plus (P1) proves (C2.5) exactly.
+
+To identify its germ, continuity and analyticity give
+
+```text
+|Q(z)|^2=|Q(alpha)|^2+O(sqrt(r2)),
+Im(Q'(z) conjugate(Q(z)))=O(1).
+```
+
+The difference between the first bracket term and `2m x|Q(alpha)|^2` is `O(r2)`, because
+`x=O(sqrt(r2))`; the second bracket term is also `O(r2)`. Multiplication by
+`r2^(m-1)` proves (C2.6) with remainder `O(r^(2m))`, where `r=sqrt(r2)`. Thus no tangential
+cofactor component can change the leading oriented cone.
+
 ## Route disposition
 
 Route C2 is **saturated and retired as an independent RH route** once the exact survivor is
@@ -340,9 +409,9 @@ formalized. Reasons are structural:
    generic log-concavity have already failed and cannot alter this divisor normal form.
 
 **Strongest positive survivor:** the completed theta-cusp center-mixed current is an exact,
-zero-safe divisor transducer. Its phase threshold recovers horizontal zero width; its local sign
-recovers side/orientation; its odd germ order recovers analytic multiplicity. This is new internal
-knowledge and a source-specific bridge, but not a proof of RH.
+zero-safe divisor transducer. Its phase threshold recovers horizontal zero width; its planar
+leading cone recovers side/orientation; its odd germ degree recovers analytic multiplicity. This
+is new internal knowledge and a source-specific bridge, but not a proof of RH.
 
 Any future progress must introduce a genuinely new theorem that shrinks actual Xi zero width from
 source data. More C2 coordinates, shell cancellations, or finite positivity packets without such
@@ -360,3 +429,5 @@ an input are bookkeeping, not a new route.
 
 - 2026-08-01 — conjecture frozen after internal phase-law audit and current primary-source audit.
 - 2026-08-01 — exact paper proof closed; Route C2 classified as saturated pending Lean survivor.
+- 2026-08-01 — stronger planar cone conjecture forced by proof audit; hostile transverse attack
+  failed and exact paper proof closed before Lean implementation.

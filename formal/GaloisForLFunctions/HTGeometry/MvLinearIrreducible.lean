@@ -127,6 +127,13 @@ theorem irreducible_rename_finCongr {L₁ L₂ : ℕ} (h : L₁ = L₂) (p : MvP
   rw [hmap]
   exact MulEquiv.irreducible_iff (MvPolynomial.renameEquiv K (finCongr h)).toMulEquiv
 
+/-- **The multivariate form with a unit cofactor.**  When the cofactor is a unit no separating point
+is needed. -/
+theorem irreducible_linear_in_X_zero_of_isUnit {A B : MvPolynomial (Fin n) K} (hA : IsUnit A) :
+    Irreducible (MvPolynomial.X 0 * MvPolynomial.rename Fin.succ A +
+      MvPolynomial.rename Fin.succ B) :=
+  irreducible_linear_in_X_zero hA.ne_zero fun _ hrA _ => isUnit_of_dvd_unit hrA hA
+
 /-! ## The matrix form -/
 
 /-- **Irreducibility of a determinant from its corner.**  Suppose the first variable occupies one
@@ -169,5 +176,36 @@ theorem irreducible_det_of_corner_X_zero {S : Type*} [CommRing S] {N : ℕ}
     have h2 : ((-1 : S) ^ (r₀ : ℕ)) * ((-1 : S) ^ (r₀ : ℕ) * φ B) = 0 := by
       rw [hcon, mul_zero]
     rwa [← mul_assoc, ← pow_add, ← two_mul, pow_mul, neg_one_sq, one_pow, one_mul] at h2
+
+/-- **Irreducibility of a determinant whose corner minor is a unit.**  No separating point is
+needed: a linear polynomial with unit leading coefficient is irreducible. -/
+theorem irreducible_det_of_corner_X_zero_of_isUnit {N : ℕ}
+    (M : Matrix (Fin (n + 1)) (Fin (n + 1)) (MvPolynomial (Fin (N + 1)) K)) (r₀ : Fin (n + 1))
+    (hcorner : M r₀ 0 = MvPolynomial.X 0)
+    (hfree : ∀ i j, ¬ (i = r₀ ∧ j = 0) → MvPolynomial.degreeOf 0 (M i j) = 0)
+    {A : MvPolynomial (Fin N) K}
+    (hminor : (M.submatrix r₀.succAbove Fin.succ).det = MvPolynomial.rename Fin.succ A)
+    (hAunit : IsUnit A) :
+    Irreducible M.det := by
+  obtain ⟨C, hCdeg, hdet⟩ := det_eq_corner_mul_minor_add M 0 r₀ (by rw [hcorner]) hfree
+  obtain ⟨B, hCB⟩ := exists_rename_succ_of_degreeOf_zero hCdeg
+  rw [hdet, hminor, hCB]
+  set u : (MvPolynomial (Fin (N + 1)) K)ˣ := (-1 : (MvPolynomial (Fin (N + 1)) K)ˣ) ^ (r₀ : ℕ)
+    with hu
+  have hucoe : (u : MvPolynomial (Fin (N + 1)) K) =
+      (-1 : MvPolynomial (Fin (N + 1)) K) ^ (r₀ : ℕ) := by
+    rw [hu, Units.val_pow_eq_pow_val, Units.val_neg, Units.val_one]
+  refine (irreducible_units_mul u).1 ?_
+  have hEq : (u : MvPolynomial (Fin (N + 1)) K) *
+      ((-1 : MvPolynomial (Fin (N + 1)) K) ^ (r₀ : ℕ) * MvPolynomial.X 0 *
+        MvPolynomial.rename Fin.succ A + MvPolynomial.rename Fin.succ B) =
+      MvPolynomial.X 0 * MvPolynomial.rename Fin.succ A +
+        MvPolynomial.rename Fin.succ ((-1 : MvPolynomial (Fin N) K) ^ (r₀ : ℕ) * B) := by
+    rw [hucoe, map_mul, map_pow, map_neg, map_one]
+    ring_nf
+    rw [show (r₀ : ℕ) * 2 = 2 * (r₀ : ℕ) from Nat.mul_comm _ _, pow_mul, neg_one_sq, one_pow]
+    ring
+  rw [hEq]
+  exact irreducible_linear_in_X_zero_of_isUnit hAunit
 
 end GaloisForLFunctions.HTGeometry

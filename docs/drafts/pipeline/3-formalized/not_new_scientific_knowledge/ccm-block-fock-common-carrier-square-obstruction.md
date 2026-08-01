@@ -5,7 +5,7 @@
 - **Type:** KNOWN `2x2` PSD TEST / LOCAL SOURCE-CARRIER AUDIT
 - **Scientific status:** `[PAPER-PROVED] [LEAN-FORMALIZED]`
   `[NOT NEW SCIENTIFIC KNOWLEDGE] [NOT RH]`
-- **Parent:** `../../1-in-progress/ccm-first-clock-direct-positive-factorization-attack.md`
+- **Parent:** `../../5-failed/ccm-first-clock-direct-positive-factorization-attack.md`
 - **RH used:** no
 - **Computation used:** no
 

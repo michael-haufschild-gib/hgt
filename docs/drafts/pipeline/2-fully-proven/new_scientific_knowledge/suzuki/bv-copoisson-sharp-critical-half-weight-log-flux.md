@@ -1,13 +1,13 @@
 # Sharp BV co-Poisson critical-half-weight logarithmic flux
 
 - **ID:** `bv-copoisson-sharp-critical-half-weight-log-flux`
-- **Stage:** 1 — in progress
+- **Stage:** 2 — fully proven on paper
 - **Type:** EXACT SOURCE NO-GO + POSITIVE LOG-FLUX SURVIVOR
-- **Scientific status:** `[PAPER PROOF] [INDEPENDENT AUDIT PENDING] [NOVELTY UNVERIFIED] [NOT RH PROGRESS]`
+- **Scientific status:** `[PAPER-PROVED] [CANDIDATE NEW NO-GO] [POSITIVE SURVIVOR] [NOT RH PROGRESS]`
 - **Parent:** `bv-copoisson-principal-normal-connection-law.md`
 - **RH used:** no
 - **Computation used:** no
-- **Lean:** none; forbidden before independent paper/novelty audit
+- **Lean:** authorized after independent normalization and primary-literature audit; in progress
 
 ## Frontier changed
 
@@ -467,7 +467,29 @@ bornology; the latter no longer preserves the exact Rademacher/logarithmic Gram 
 - [x] critical half-weight excluded by infinitely many uncancelled Fourier gamma poles;
 - [x] strongest survivor extracted as the parity/weight resonance law `(30)`--`(31)`;
 - [x] compact co-Poisson convolution repair ruled out by the all-moments density theorem;
-- [ ] independent audit of normalization and half-weight direction;
-- [ ] primary-literature priority audit beyond targeted co-Poisson/harmonic searches;
+- [x] independent audit of normalization and half-weight direction;
+- [x] primary-literature priority audit against Burnol's co-Müntz and extended-property-S theorems;
 - [ ] decide whether logarithmic finite part has a source-positive coupled realization;
-- [ ] formalize only after all preceding gates close.
+- [ ] formalize Theorems A--G and wire the resulting modules.
+
+## Independent audit and novelty boundary
+
+Burnol's co-Müntz formula uses the right Mellin convention `integral f(x) x^(-s) dx` and the
+source sum `sum_n f(x/n)/n`; this confirms `(1)` and confirms that multiplication by `sqrt(t)` is
+the required positive half-unit shift.  Burnol's extended-property-S classification uses exactly
+
+```text
+chi(s)=pi^(s-1/2) Gamma((1-s)/2)/Gamma(s/2),
+chi_sin(s)=i pi^(s-1/2) Gamma((2-s)/2)/Gamma((s+1)/2),
+```
+
+so the positive odd/even Gamma pole lattices in Theorem F have the stated orientation.  His
+classification also permits only finitely many poles after multiplication by one polynomial;
+the infinite uncancelled pole families therefore give a genuine obstruction.
+
+Targeted searches of the co-Poisson, property-S, harmonic-error, and Rademacher-boundary
+literature found no prior statement of the sharp `1/4` logarithmic flux, the dyadic boundary Gram,
+or the compact-seed half-density resonance no-go.  Priority remains provisional, so result is
+labelled candidate-new rather than externally certified new knowledge.  Classical inputs—Müntz,
+Burnol's property-S theorem, harmonic estimates, Rademacher orthogonality, and polynomial
+density—are not claimed as new.

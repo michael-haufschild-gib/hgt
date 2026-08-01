@@ -128,4 +128,11 @@ theorem irreducible_linear_of_forall_isUnit [UniqueFactorizationMonoid R] {A B :
   refine Polynomial.degree_linear ?_
   exact fun hc => hA ((IsFractionRing.injective R (FractionRing R)) (by simpa using hc))
 
+/-- **A linear polynomial with unit leading coefficient is irreducible.**  Every common divisor of
+the coefficients divides a unit. -/
+theorem irreducible_linear_of_isUnit_leading [UniqueFactorizationMonoid R] {A B : R}
+    (hA : IsUnit A) :
+    Irreducible (Polynomial.C A * Polynomial.X + Polynomial.C B) :=
+  irreducible_linear_of_forall_isUnit hA.ne_zero fun _ hrA _ => isUnit_of_dvd_unit hrA hA
+
 end GaloisForLFunctions.HTGeometry

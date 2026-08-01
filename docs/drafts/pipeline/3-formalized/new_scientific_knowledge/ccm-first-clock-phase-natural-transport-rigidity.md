@@ -1,7 +1,7 @@
 # CCM first-clock phase-natural transport rigidity
 
 - **ID:** `ccm-first-clock-phase-natural-transport-rigidity`
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / ROUTE-A TRANSPORT CLASSIFICATION
 - **Source:** Route A terminal audit of the remaining coefficientwise source/response
   intertwiner seam
@@ -35,8 +35,8 @@ critical-Mellin weight vector. The theorem classifies their intersection.
 
 - [x] 0 → 1 in-progress: exact source-pure statement, hard seam, falsifiers, and complete paper
   proof
-- [ ] 1 → 2 fully-proven: hostile proof and novelty audits complete; move card
-- [ ] 2 → 3 formalized: Lean module, umbrellas, direct check, axioms, lint, final module build
+- [x] 1 → 2 fully-proven: hostile proof and novelty audits complete
+- [x] 2 → 3 formalized: Lean module, umbrellas, direct check, axioms, final SOTA module build
 - [ ] 3 → 4 publication-ready: not proposed; generic commutant parent is classical
 
 ## Exact theorem
@@ -174,9 +174,11 @@ projection and must be sourced, not normalized away.
   intertwiner, even one allowed signed entries and requiring naturality only for physical sine
   clocks. A viable successor is necessarily connection-valued/aperture-dependent and is therefore
   a different mechanism from the advertised coefficientwise intertwiner.
-- **Status:** paper proof dependency-closed. Generic diagonal-commutant and sine monotonicity
-  parents are classical; novelty claim is limited to the physical-family classification, literal
-  CCM source specialization, and unavoidable connection-defect consequence.
+- **Status:** paper and Lean proofs dependency-closed. Generic diagonal-commutant and sine
+  monotonicity parents are classical; novelty claim is limited to the physical-family
+  classification, literal CCM source specialization, and unavoidable connection-defect
+  consequence. Formal certificate:
+  `RHTower/CCMFirstClockPhaseNaturalTransportRigidity.lean`.
 
 ## Anti-theatre boundary
 
@@ -192,15 +194,27 @@ original RH-equivalent first-clock source.
 - distinct positive labels whose phases agree at `L=4(a+b)`;
 - an actual prime-power packet with a zero critical-Mellin weight.
 
-## Lean plan
+## Lean certificate
 
-1. prove explicit phase-pair separation at `L=4(a+b)`;
-2. combine it with the existing diagonal-commutant classification;
-3. prove source-faithful identity and nontrivial-transport defect dichotomy;
-4. specialize to finite duplicate-free prime-power packets;
-5. wire RHTower umbrellas and audit direct check, axioms, lint, and final module build.
+The module proves explicit phase-pair separation at `L=4(a+b)`, combines it with the diagonal
+commutant classification, proves source-faithful identity and nontrivial-transport defect, and
+specializes to duplicate-free prime-power packets. It is wired into `RHTower.lean` and
+`RiemannHypothesisSOTA2026.lean`.
+
+Audited endpoints:
+
+```text
+ccmFirstClockPhaseNatural_sourceFaithful_iff_eq_one
+ccmFirstClockPrimePowerPacket_phaseNatural_sourceFaithful_iff_eq_one
+ccmFirstClockPrimePowerPacket_nontrivial_has_explicit_phaseConnectionDefect
+```
+
+`lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` passed 9,960 jobs. Scratch
+`#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Log
 
 - 2026-08-01 — frozen after internal no-go audit and primary-source review of Suzuki, CCM, and
   finite Guinand--Weil constructions; no checked source supplies the missing global source floor.
+- 2026-08-01 — paper proof formalized, both umbrellas wired, direct check and SOTA build passed;
+  promoted to Stage 3.

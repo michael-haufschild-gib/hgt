@@ -3288,6 +3288,7 @@ import GaloisForLFunctions.HTGeometry.GammaLineBoundaryCases
 import GaloisForLFunctions.HTGeometry.ScaledGammaLine
 import GaloisForLFunctions.HTGeometry.BoundedNonAlmostPeriodic
 import GaloisForLFunctions.HTGeometry.SinExpNotRecurrent
+import GaloisForLFunctions.HTGeometry.LineAsymptoticScale
 import GaloisForLFunctions.HTGeometry.GammaFieldProjectiveResidue
 import GaloisForLFunctions.HTGeometry.NormalizedRatioLaw
 import GaloisForLFunctions.HTGeometry.CompactCauchyRowPacketAtlas
@@ -3346,3 +3347,4 @@ import GaloisForLFunctions.HTGeometry.DeterminantDegreeOne
 import GaloisForLFunctions.HTGeometry.LinearIrreducibleCriterion
 import GaloisForLFunctions.HTGeometry.MvLinearIrreducible
 import GaloisForLFunctions.HTGeometry.SchurVariablePresentation
+import GaloisForLFunctions.HTGeometry.SchurSectionIrreducible

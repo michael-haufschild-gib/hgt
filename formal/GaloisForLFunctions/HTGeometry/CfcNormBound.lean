@@ -128,6 +128,90 @@ theorem resolventSymbol_sub_one_mul {rho s x : ℝ} (hden : 1 + s * x ≠ 0) :
   field_simp
   ring
 
+/-- **The Neumann-shift symbol estimate.**  For `A = rho + B⁻¹` the family `(I + eps A)⁻¹` has
+symbol `x / (eps + (1 + eps rho) x)` in the coordinate of `B`, and the estimate symbol
+`(f_eps(x) - 1) x = -eps x (1 + rho x) / (eps + (1 + eps rho) x)` is `O(eps)` uniformly on `[0, M]`.
+
+The uniformity again comes from `x / (eps + (1 + eps rho) x) <= 1 / (1 + eps rho)`, which holds for
+every `x >= 0` including the spectral accumulation point. -/
+theorem abs_neumannSymbol_le {rho M eps x : ℝ} (heps : 0 < eps)
+    (hd : (1 : ℝ) / 2 ≤ 1 + eps * rho) (hx0 : 0 ≤ x) (hxM : x ≤ M) :
+    |eps * (x * (1 + rho * x)) / (eps + (1 + eps * rho) * x)| ≤ 2 * eps * (1 + |rho| * M) := by
+  have hpos : (0 : ℝ) < 1 + eps * rho := by linarith
+  have hden : 0 < eps + (1 + eps * rho) * x := by nlinarith
+  have hM : 0 ≤ M := le_trans hx0 hxM
+  have habs : |1 + rho * x| ≤ 1 + |rho| * M := by
+    have h1 : |1 + rho * x| ≤ 1 + |rho| * x := by
+      calc |1 + rho * x| ≤ |(1 : ℝ)| + |rho * x| := abs_add_le _ _
+        _ = 1 + |rho| * x := by rw [abs_one, abs_mul, abs_of_nonneg hx0]
+    nlinarith [abs_nonneg rho]
+  have hfrac : x / (eps + (1 + eps * rho) * x) ≤ 1 / (1 + eps * rho) := by
+    rw [div_le_div_iff₀ hden hpos]
+    nlinarith
+  have hnum : |eps * (x * (1 + rho * x))| ≤ eps * (x * (1 + |rho| * M)) := by
+    rw [abs_mul, abs_of_pos heps, abs_mul, abs_of_nonneg hx0]
+    exact mul_le_mul_of_nonneg_left
+      (mul_le_mul_of_nonneg_left habs hx0) heps.le
+  rw [abs_div, abs_of_pos hden]
+  calc |eps * (x * (1 + rho * x))| / (eps + (1 + eps * rho) * x)
+      ≤ (eps * (x * (1 + |rho| * M))) / (eps + (1 + eps * rho) * x) := by gcongr
+    _ = (eps * (1 + |rho| * M)) * (x / (eps + (1 + eps * rho) * x)) := by ring
+    _ ≤ (eps * (1 + |rho| * M)) * (1 / (1 + eps * rho)) := by
+        refine mul_le_mul_of_nonneg_left hfrac ?_
+        exact mul_nonneg heps.le (by positivity)
+    _ ≤ 2 * eps * (1 + |rho| * M) := by
+        rw [mul_one_div, div_le_iff₀ hpos]
+        have hnn : (0 : ℝ) ≤ eps * (1 + |rho| * M) := mul_nonneg heps.le (by positivity)
+        nlinarith [hnn, hd]
+
+/-- **Uniform smallness of the Neumann-shift symbols.**  As the shift parameter goes to zero from
+above, the estimate symbols become uniformly small on the spectral window `[0, M]`. -/
+theorem eventually_forall_abs_neumannSymbol_le (rho M : ℝ) {delta : ℝ} (hdelta : 0 < delta) :
+    ∀ᶠ eps in nhdsWithin (0 : ℝ) (Set.Ioi 0), ∀ x ∈ Set.Icc (0 : ℝ) M,
+      |eps * (x * (1 + rho * x)) / (eps + (1 + eps * rho) * x)| ≤ delta := by
+  have h1 : Tendsto (fun eps : ℝ => 1 + eps * rho) (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (𝓝 1) := by
+    have hc : ContinuousAt (fun eps : ℝ => 1 + eps * rho) 0 := by fun_prop
+    have hlim := hc.tendsto
+    simp only [zero_mul, add_zero] at hlim
+    exact hlim.mono_left nhdsWithin_le_nhds
+  have h2 : Tendsto (fun eps : ℝ => 2 * eps * (1 + |rho| * M))
+      (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (𝓝 0) := by
+    have hc : ContinuousAt (fun eps : ℝ => 2 * eps * (1 + |rho| * M)) 0 := by fun_prop
+    have hlim := hc.tendsto
+    simp only [mul_zero, zero_mul] at hlim
+    exact hlim.mono_left nhdsWithin_le_nhds
+  filter_upwards [self_mem_nhdsWithin,
+    h1.eventually (eventually_gt_nhds (by norm_num : (1 : ℝ) / 2 < 1)),
+    h2.eventually (Iio_mem_nhds hdelta)] with eps heps hd hsm x hx
+  exact le_trans (abs_neumannSymbol_le heps hd.le hx.1 hx.2) hsm.le
+
+/-- **The Neumann-shift link identity.**  Subtracting one from the shift symbol and multiplying by
+the coordinate gives the estimate symbol: the `x` terms cancel, leaving an `eps`-only numerator. -/
+theorem neumannSymbol_sub_one_mul {rho eps x : ℝ} (hden : eps + (1 + eps * rho) * x ≠ 0) :
+    (x / (eps + (1 + eps * rho) * x) - 1) * x
+      = -(eps * (x * (1 + rho * x)) / (eps + (1 + eps * rho) * x)) := by
+  rw [div_sub_one hden, div_mul_eq_mul_div,
+    show x - (eps + (1 + eps * rho) * x) = -(eps * (1 + rho * x)) by ring,
+    neg_mul, neg_div]
+  congr 1
+  ring
+
+/-- **Uniform bound on the Neumann-shift symbols.**  The shift symbol is bounded by `2` on `[0, M]`
+whenever `1 + eps rho >= 1/2`, uniformly in `x` and `eps`. -/
+theorem abs_neumannFamilySymbol_le {rho eps x : ℝ} (heps : 0 < eps)
+    (hd : (1 : ℝ) / 2 ≤ 1 + eps * rho) (hx0 : 0 ≤ x) :
+    |x / (eps + (1 + eps * rho) * x)| ≤ 2 := by
+  have hpos : (0 : ℝ) < 1 + eps * rho := by linarith
+  have hden : 0 < eps + (1 + eps * rho) * x := by nlinarith
+  have hfrac : x / (eps + (1 + eps * rho) * x) ≤ 1 / (1 + eps * rho) := by
+    rw [div_le_div_iff₀ hden hpos]
+    nlinarith
+  have hle2 : 1 / (1 + eps * rho) ≤ 2 := by
+    rw [div_le_iff₀ hpos]
+    linarith
+  rw [abs_of_nonneg (by positivity)]
+  linarith
+
 end Symbol
 
 /-! ## From the scalar link to the operator identity -/

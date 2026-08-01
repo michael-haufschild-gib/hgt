@@ -503,3 +503,128 @@ level.  No new Lean claim is attached to this bridge card.
   matched, since both the statement and the object transport along the arithmetic identity.
 
   Every ingredient of the `m ≤ n` induction is proved.  What is left is to write it.
+
+- 2026-08-01 — **The cofactor's vanishing at the point, in the form the step needs.**
+  `SchurVariablePresentation.lean`, axioms `[propext, Classical.choice, Quot.sound]`:
+  `map_unitTailEval_succ_rectangularSchurToeplitz` — the section of shift `n`, seen at the unit tail
+  belonging to `n+1`, becomes the constant section of that tail;
+  `unitTailEval_succ_det_rectangularSchurToeplitz` — hence its determinant is **zero**, its first row
+  being zero.
+
+  The distinction matters: in the step the ambient specialisation belongs to the **larger** rectangle,
+  whose shift is one more than the cofactor's.  So the cofactor is evaluated at the unit tail of the
+  next index, not of its own, and the earlier lemma — which evaluates a section at its own tail and
+  gives `1` — is the wrong one for it.  Both are now available, and they are what make the two
+  separating values `1` and `0` come from the same specialisation.
+
+- 2026-08-01 — **Ambient-generalised forms of the two separating values.**
+  `unitTailEval_det_rectangularSchurToeplitz'` and `unitTailEval_succ_det_rectangularSchurToeplitz'`
+  in `SchurVariablePresentation.lean`, axioms `[propext, Classical.choice, Quot.sound]`: the values
+  `1` and `0` with the number of variables given as a parameter together with the equation defining
+  it, so an application can supply the arithmetic in whatever form it arises and discharge it by
+  `subst`.
+
+  A note on what can and cannot be generalised this way.  Both sides of these statements are scalars,
+  so the ambient appears only inside the argument and the equation hypothesis is harmless.  The
+  minor identity `det_submatrix_eq_rename_succ` cannot be generalised so: its two sides live in
+  polynomial rings whose variable counts differ by two, so with the ambient a free parameter the
+  statement does not even typecheck.  There the arithmetic has to be met in its own form, which is
+  why the step will be written with the ambient exactly as the minor lemma produces it.
+
+- 2026-08-01 — **The induction step is proved for the rectangular section itself.**
+  `irreducible_det_schur_step` in
+  `formal/GaloisForLFunctions/HTGeometry/SchurSectionIrreducible.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  0 < n', 0 < m', m' ≤ n',  section (n', m') irreducible
+    ==>  section (n'+1, m'+1) irreducible.
+  ```
+
+  Every hypothesis of `irreducible_det_of_corner_X_zero` is discharged from the presentation lemmas:
+  the corner is the first variable, the other entries are free of it, the minor is the smaller
+  determinant renamed twice, that renaming preserves irreducibility, the two specialisations agree,
+  and the unit tail gives `0` on the minor and `1` on the determinant.
+
+  Two mechanical points that cost iterations and are worth remembering.  The criterion's
+  specialisations are **ring** homomorphisms while `unitTailEval` is an algebra homomorphism, so they
+  must be passed as `.toRingHom` and the resulting goals restated with `show` before the algebra-map
+  lemmas apply.  And the compatibility argument must be supplied with its indices pinned, since
+  unifying a metavariable ring hom against a coerced algebra hom is beyond what Lean will do on its
+  own.
+
+  With the step proved, the two boundary cases already in hand, and the reindexing transport, the
+  induction for `m ≤ n` is a recursion over these.
+
+- 2026-08-01 — **The rectangular Schur determinant is proved irreducible, unconditionally in Lean.**
+  `irreducible_det_schur` and `irreducible_det_schur_of_le` in
+  `formal/GaloisForLFunctions/HTGeometry/SchurSectionIrreducible.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  0 < m,  m ≤ n   ==>   Irreducible (det (rectangularSchurToeplitz (schurVar K (n+m-1)) n m))
+  ```
+
+  The induction is on the height with the difference of the parameters fixed, since the corner
+  expansion lowers both by one: the height-one section is a single variable, and the step is
+  `irreducible_det_schur_step`.
+
+  **This is the statement the card cited Dvornicich--Zannier for.**  It is now a proved theorem of the
+  corpus in the range `m ≤ n`, resting on nothing external: the coordinates are free
+  (`algebraicIndependent_sqJetFamily`), the corner carries the top variable alone, the determinant is
+  linear in it, the cofactor is the smaller section, the unit tail separates the two, and a linear
+  polynomial with no common factor in its coefficients is irreducible over a unique factorisation
+  domain.
+
+  The complementary range `n < m` remains open for the reason recorded earlier: the convention
+  `h_0 = 1` is not a variable, so the unit tail is not a separating point there and a different
+  specialisation is needed.  For the ramification divisor of this card the relevant rectangle is
+  `(n^m)` with `n = L - m`, so the proved range covers the horizons with `m ≤ L/2`, and by the
+  symmetry of the two depths that is every case up to exchanging them.
+
+- 2026-08-01 — **Half of the range restriction is removed.**
+  `det_unitTail_rectangularSchurToeplitz` in `SchurVariablePresentation.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`: at the unit tail, with the convention `h_0 = 1` in
+  force, the section is **unitriangular** — below the diagonal the index exceeds `n` so the entry
+  vanishes, on the diagonal it is one — hence its determinant is one **for every height**, with no
+  constraint between the parameters.
+
+  This corrects the reasoning behind the earlier restriction.  The point was never that the matrix
+  had to be the identity; the extra ones forced by `h_0 = 1` sit strictly above the diagonal and do
+  not disturb the determinant.  So the hypothesis `psi (det) ≠ 0` of the step holds in general.
+
+  What still needs `m ≤ n` is the other half: the cofactor's vanishing.  Its first row acquires a one
+  at column `n-1` exactly when `n ≤ m-1`, so for `n < m` the unit tail no longer kills it.  The
+  restriction on the proved theorem is therefore located precisely: it comes from the cofactor, not
+  from the determinant.
+
+- 2026-08-01 — **The unit-cofactor case, which is what the complementary range needs.**
+  `irreducible_linear_of_isUnit_leading` and `irreducible_linear_in_X_zero_of_isUnit`, axioms
+  `[propext, Classical.choice, Quot.sound]`: when the cofactor is a **unit**, `X_0 * A + B` is
+  irreducible with no separating point at all — every common divisor of the coefficients divides a
+  unit.
+
+  This is the missing case for `n < m`.  There the corner recursion reaches shift zero, where the
+  section is unitriangular with determinant one — a unit, not an irreducible — so the step that
+  assumes an irreducible cofactor does not apply and the one above does.  The smallest instance is
+  the `(2,1)` rectangle, whose determinant `h_1^2 - h_2` is linear in `h_2` with unit leading
+  coefficient.
+
+  So the two ranges need different final moves: `m ≤ n` bottoms out at a variable and uses the
+  separating point throughout; `n < m` bottoms out at a unit and uses the unit-cofactor criterion at
+  that end.  Both criteria are now proved; what remains is the recursion for the second range, whose
+  cofactor identification is the same lemma already used for the first.
+
+- 2026-08-01 — **The matrix criterion with a unit minor.**
+  `irreducible_det_of_corner_X_zero_of_isUnit` in `MvLinearIrreducible.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`: if the first variable occupies one entry of the first
+  column and no other, and the complementary minor is a **unit**, the determinant is irreducible —
+  with no separating point and no hypothesis relating the parameters.
+
+  This is the form the shift-one rectangles need: their corner minor is the shift-zero section, whose
+  determinant is one.  It applies at any height, so `tau_(m,1)` is irreducible for every `m`, a family
+  entirely outside the range `m ≤ n` covered by the main theorem.
+
+  The two matrix criteria now available differ exactly in what they ask of the minor — irreducible
+  with a separating point, or a unit with nothing further — and between them they cover both ends of
+  the corner recursion.
