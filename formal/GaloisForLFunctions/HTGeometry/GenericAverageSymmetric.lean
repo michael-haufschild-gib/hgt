@@ -45,4 +45,10 @@ theorem map_centeredMonicPart :
   rw [centeredMonicPart, map_taylor, map_genericMonic]
   exact taylor_genericMonicF
 
+/-- **Shifting back recovers the generic polynomial.**  So its coefficients are expressions in the
+average and the centered coefficients, and the two coefficient systems determine each other. -/
+theorem taylor_neg_centeredMonicPart :
+    Polynomial.taylor (-genericAverageIn K d) (centeredMonicPart K d) = genericMonic K d := by
+  rw [centeredMonicPart, Polynomial.taylor_taylor, neg_add_cancel, Polynomial.taylor_zero]
+
 end GaloisForLFunctions.HTGeometry

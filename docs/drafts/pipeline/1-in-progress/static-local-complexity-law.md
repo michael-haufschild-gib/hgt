@@ -14,6 +14,38 @@ random circuits, growing locality, exact gate complexity, an assumed
 complexity-class separation, or a nonphysical exponentially described
 Hamiltonian.
 
+### Scientific question and public headline
+
+The paper is to answer a broader question than whether one chosen complexity
+metric grows:
+
+> Can an ordinary isolated quantum system computationally skip its own future?
+
+The proposed answer is a **computational arrow-of-time law**.  For the generic
+fixed-locality many-body phase, reaching the state at physical time `t` costs
+order `t` elementary operations until exponential saturation; the system then
+spends almost all time at maximal complexity and returns to a simple state only
+on the doubly exponential recurrence scale.  Locality remains efficiently
+observable throughout, so maximal complexity is not Haar randomness.
+
+This one theorem would resolve three existing open problems rather than occupy
+a gap between them:
+
+1. Brown--Susskind's growth--plateau--recurrence history underlying the proposed
+   growth of black-hole interiors.
+2. Brown--Freedman--Lin--Susskind Conjecture 2 on exponentially late directional
+   cut loci in critical complexity geometry.
+3. Atia--Aharonov's open problem of proving that a typical local Hamiltonian
+   cannot be fast-forwarded, and thereby identifying a physical origin of the
+   computational time--energy uncertainty principle.
+
+The first headline theorem must concern robust state complexity (equivalently,
+the thermofield-double/Choi trajectory after its fixed linear-size
+preparation), not only black-box query complexity or uniform simulation.
+Atia--Aharonov explicitly distinguish non-fast-forwarding of a unitary from the
+stronger possibility that its distinguished evolved state has a shorter
+preparation.  Closing only the former does not close this card.
+
 The minimum target model is the standard all-to-all fixed-`q` Pauli
 Hamiltonian ensemble on `n` qubits,
 

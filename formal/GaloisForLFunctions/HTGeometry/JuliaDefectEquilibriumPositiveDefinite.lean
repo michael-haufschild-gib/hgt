@@ -246,3 +246,265 @@ theorem charFun_juliaCompressionJumpProbabilityMeasure_sub_one (y : ℝ) :
   field_simp [hrate, hlog, hlogC]
   ring
 
+theorem integrableOn_sq_mul_juliaCompressionLevyDensity :
+    IntegrableOn (fun t : ℝ => t ^ 2 * juliaCompressionLevyDensity t)
+      (Set.Ioi 0) := by
+  have h2 : IntegrableOn
+      (fun t : ℝ => t / Real.sinh (Real.pi * t / 4)) (Set.Ioi 0) := by
+    convert integrableOn_t_div_sinh (a := (2 : ℝ)) (by norm_num) using 1 <;>
+      norm_num
+  have hh : IntegrableOn
+      (fun t : ℝ => t / Real.sinh (Real.pi * t)) (Set.Ioi 0) := by
+    convert integrableOn_t_div_sinh (a := (1 / 2 : ℝ)) (by norm_num) using 1 <;>
+      norm_num
+  have hlin := (h2.const_mul (1 / 2 : ℝ)).sub (hh.const_mul (2 : ℝ))
+  refine hlin.congr ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+  have ht0 : t ≠ 0 := ht.ne'
+  have hs4 : Real.sinh (Real.pi * t / 4) ≠ 0 :=
+    (Real.sinh_pos_iff.mpr
+      (div_pos (mul_pos Real.pi_pos ht) (by norm_num))).ne'
+  have hs1 : Real.sinh (Real.pi * t) ≠ 0 :=
+    (Real.sinh_pos_iff.mpr (mul_pos Real.pi_pos ht)).ne'
+  unfold juliaCompressionLevyDensity
+  change (1 / 2 : ℝ) * (t / Real.sinh (Real.pi * t / 4)) -
+      2 * (t / Real.sinh (Real.pi * t)) =
+    t ^ 2 * (1 / (2 * t * Real.sinh (Real.pi * t / 4)) -
+      2 / (t * Real.sinh (Real.pi * t)))
+  field_simp [ht0, hs4, hs1]
+
+/-- Exact positive-half-line quadratic mass of the Julia compression Lévy law. -/
+theorem integral_Ioi_sq_mul_juliaCompressionLevyDensity :
+    (∫ t : ℝ in Set.Ioi 0, t ^ 2 * juliaCompressionLevyDensity t) = 3 / 2 := by
+  have h2 : (∫ t : ℝ in Set.Ioi 0,
+      t / Real.sinh (Real.pi * t / 4)) = 4 := by
+    convert integral_t_cos_div_sinh
+      (a := (2 : ℝ)) (y := (0 : ℝ)) (by norm_num) using 1 <;> norm_num
+  have hh : (∫ t : ℝ in Set.Ioi 0,
+      t / Real.sinh (Real.pi * t)) = 1 / 4 := by
+    convert integral_t_cos_div_sinh
+      (a := (1 / 2 : ℝ)) (y := (0 : ℝ)) (by norm_num) using 1 <;> norm_num
+  have hi2 : IntegrableOn
+      (fun t : ℝ => t / Real.sinh (Real.pi * t / 4)) (Set.Ioi 0) := by
+    convert integrableOn_t_div_sinh (a := (2 : ℝ)) (by norm_num) using 1 <;>
+      norm_num
+  have hih : IntegrableOn
+      (fun t : ℝ => t / Real.sinh (Real.pi * t)) (Set.Ioi 0) := by
+    convert integrableOn_t_div_sinh (a := (1 / 2 : ℝ)) (by norm_num) using 1 <;>
+      norm_num
+  rw [show (∫ t : ℝ in Set.Ioi 0,
+      t ^ 2 * juliaCompressionLevyDensity t) =
+      (1 / 2 : ℝ) * (∫ t : ℝ in Set.Ioi 0,
+          t / Real.sinh (Real.pi * t / 4)) -
+        2 * (∫ t : ℝ in Set.Ioi 0,
+          t / Real.sinh (Real.pi * t)) by
+    rw [← integral_const_mul, ← integral_const_mul,
+      ← integral_sub (hi2.const_mul (1 / 2)) (hih.const_mul 2)]
+    apply setIntegral_congr_fun measurableSet_Ioi
+    intro t ht
+    have ht0 : t ≠ 0 := ht.ne'
+    have hs4 : Real.sinh (Real.pi * t / 4) ≠ 0 :=
+      (Real.sinh_pos_iff.mpr
+        (div_pos (mul_pos Real.pi_pos ht) (by norm_num))).ne'
+    have hs1 : Real.sinh (Real.pi * t) ≠ 0 :=
+      (Real.sinh_pos_iff.mpr (mul_pos Real.pi_pos ht)).ne'
+    unfold juliaCompressionLevyDensity
+    field_simp [ht0, hs4, hs1]]
+  rw [h2, hh]
+  norm_num
+
+theorem integrable_sq_mul_juliaCompressionJumpDensity :
+    Integrable (fun x : ℝ => x ^ 2 * juliaCompressionJumpDensity x) := by
+  have hpos : IntegrableOn
+      (fun x : ℝ => x ^ 2 * juliaCompressionJumpDensity |x|) (Set.Ioi 0) := by
+    have hscaled := integrableOn_sq_mul_juliaCompressionLevyDensity.const_mul
+      (2 * juliaCompressionJumpRate)⁻¹
+    refine hscaled.congr ?_
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+    change 0 < x at hx
+    simp only [juliaCompressionJumpDensity, abs_of_pos hx]
+    rw [div_eq_mul_inv]
+    ring
+  have hneg : IntegrableOn
+      (fun x : ℝ => x ^ 2 * juliaCompressionJumpDensity |x|) (Set.Iic 0) := by
+    rw [← Measure.map_neg_eq_self (volume : Measure ℝ)]
+    let e : MeasurableEmbedding fun x : ℝ => -x :=
+      (Homeomorph.neg ℝ).measurableEmbedding
+    rw [e.integrableOn_map_iff]
+    simp_rw [Function.comp_def, neg_sq, abs_neg, neg_preimage, neg_Iic, neg_zero]
+    exact Iff.mpr integrableOn_Ici_iff_integrableOn_Ioi hpos
+  have hfull : Integrable
+      (fun x : ℝ => x ^ 2 * juliaCompressionJumpDensity |x|) := by
+    have hu : IntegrableOn
+        (fun x : ℝ => x ^ 2 * juliaCompressionJumpDensity |x|) Set.univ := by
+      simpa only [Set.Iic_union_Ioi] using hneg.union hpos
+    simpa only [IntegrableOn, Measure.restrict_univ] using hu
+  exact hfull.congr (Filter.Eventually.of_forall fun x => by
+    simp [juliaCompressionJumpDensity])
+
+theorem integral_sq_mul_juliaCompressionJumpDensity :
+    (∫ x : ℝ, x ^ 2 * juliaCompressionJumpDensity x) =
+      (3 / 2 : ℝ) / juliaCompressionJumpRate := by
+  rw [show (fun x : ℝ => x ^ 2 * juliaCompressionJumpDensity x) =
+      fun x => (fun z : ℝ => z ^ 2 * juliaCompressionJumpDensity z) |x| by
+    funext x
+    simp [juliaCompressionJumpDensity, sq_abs]]
+  calc
+    (∫ x : ℝ,
+        (fun z : ℝ => z ^ 2 * juliaCompressionJumpDensity z) |x|) =
+        2 * ∫ x : ℝ in Set.Ioi 0,
+          x ^ 2 * juliaCompressionJumpDensity x :=
+      integral_comp_abs (f := fun z : ℝ => z ^ 2 * juliaCompressionJumpDensity z)
+    _ = 2 * ((2 * juliaCompressionJumpRate)⁻¹ *
+        ∫ x : ℝ in Set.Ioi 0,
+          x ^ 2 * juliaCompressionLevyDensity x) := by
+      congr 1
+      rw [← integral_const_mul]
+      apply setIntegral_congr_fun measurableSet_Ioi
+      intro x hx
+      change 0 < x at hx
+      simp only [juliaCompressionJumpDensity, abs_of_pos hx]
+      rw [div_eq_mul_inv]
+      ring
+    _ = (3 / 2 : ℝ) / juliaCompressionJumpRate := by
+      rw [integral_Ioi_sq_mul_juliaCompressionLevyDensity]
+      field_simp [juliaCompressionJumpRate_pos.ne']
+
+theorem integrable_sq_juliaCompressionJumpProbabilityMeasure :
+    Integrable (fun x : ℝ => x ^ 2)
+      (juliaCompressionJumpProbabilityMeasure : Measure ℝ) := by
+  unfold juliaCompressionJumpProbabilityMeasure
+  simp only [ProbabilityMeasure.coe_mk]
+  rw [juliaCompressionJumpMeasure,
+    integrable_withDensity_iff_integrable_coe_smul
+      measurable_juliaCompressionJumpDensityNNReal]
+  change Integrable (fun x : ℝ => juliaCompressionJumpDensity x * x ^ 2)
+  simpa only [mul_comm] using integrable_sq_mul_juliaCompressionJumpDensity
+
+theorem integral_sq_juliaCompressionJumpProbabilityMeasure :
+    (∫ x : ℝ, x ^ 2
+      ∂(juliaCompressionJumpProbabilityMeasure : Measure ℝ)) =
+      (3 / 2 : ℝ) / juliaCompressionJumpRate := by
+  unfold juliaCompressionJumpProbabilityMeasure
+  simp only [ProbabilityMeasure.coe_mk]
+  rw [juliaCompressionJumpMeasure,
+    integral_withDensity_eq_integral_smul
+      measurable_juliaCompressionJumpDensityNNReal]
+  rw [show (fun x : ℝ => juliaCompressionJumpDensityNNReal x • x ^ 2) =
+      fun x : ℝ => x ^ 2 * juliaCompressionJumpDensity x by
+    funext x
+    change juliaCompressionJumpDensity x * x ^ 2 = _
+    ring]
+  exact integral_sq_mul_juliaCompressionJumpDensity
+
+theorem integral_id_juliaCompressionJumpProbabilityMeasure :
+    (∫ x : ℝ, x
+      ∂(juliaCompressionJumpProbabilityMeasure : Measure ℝ)) = 0 := by
+  unfold juliaCompressionJumpProbabilityMeasure
+  simp only [ProbabilityMeasure.coe_mk]
+  rw [juliaCompressionJumpMeasure,
+    integral_withDensity_eq_integral_smul
+      measurable_juliaCompressionJumpDensityNNReal]
+  change (∫ x : ℝ, juliaCompressionJumpDensity x * x) = 0
+  have hodd : (fun x : ℝ => juliaCompressionJumpDensity (-x) * (-x)) =
+      fun x : ℝ => -(juliaCompressionJumpDensity x * x) := by
+    funext x
+    simp [juliaCompressionJumpDensity]
+  have hneg := MeasureTheory.integral_neg_eq_self
+    (fun x : ℝ => juliaCompressionJumpDensity x * x) volume
+  rw [hodd, MeasureTheory.integral_neg] at hneg
+  linarith
+
+theorem memLp_id_juliaCompressionJumpProbabilityMeasure :
+    MemLp id 2 (juliaCompressionJumpProbabilityMeasure : Measure ℝ) := by
+  exact (memLp_two_iff_integrable_sq (by fun_prop)).2
+    integrable_sq_juliaCompressionJumpProbabilityMeasure
+
+/-- Compound-Poisson equilibrium measure generated by the Julia compression Lévy source. -/
+def juliaCompressionEquilibriumProbabilityMeasure : ProbabilityMeasure ℝ :=
+  ⟨compoundPoisson juliaCompressionJumpRate
+      (juliaCompressionJumpProbabilityMeasure : Measure ℝ),
+    isProbabilityMeasure_compoundPoisson
+      juliaCompressionJumpRate juliaCompressionJumpRate_pos.le
+      (juliaCompressionJumpProbabilityMeasure : Measure ℝ)⟩
+
+theorem juliaCompressionSquareProfile_pos (y : ℝ) :
+    0 < juliaCompressionSquareProfile y := by
+  rw [juliaCompressionSquareProfile_eq_cosh_ratio]
+  exact div_pos (sq_pos_of_pos (Real.cosh_pos _))
+    (Real.sqrt_pos.mpr (Real.cosh_pos _))
+
+/-- The source compound-Poisson law has the Julia compression square as characteristic
+function. -/
+theorem charFun_juliaCompressionEquilibriumProbabilityMeasure (y : ℝ) :
+    charFun (juliaCompressionEquilibriumProbabilityMeasure : Measure ℝ) y =
+      (juliaCompressionSquareProfile y : ℂ) := by
+  unfold juliaCompressionEquilibriumProbabilityMeasure
+  simp only [ProbabilityMeasure.coe_mk]
+  rw [charFun_compoundPoisson juliaCompressionJumpRate
+    juliaCompressionJumpRate_pos.le
+    (juliaCompressionJumpProbabilityMeasure : Measure ℝ) y]
+  rw [charFun_juliaCompressionJumpProbabilityMeasure_sub_one]
+  rw [← neg_log_juliaCompressionSquareProfile_eq_integral]
+  push_cast
+  rw [neg_neg, ← Complex.ofReal_exp,
+    Real.exp_log (juliaCompressionSquareProfile_pos y)]
+
+theorem integrable_sq_juliaCompressionEquilibriumProbabilityMeasure :
+    Integrable (fun x : ℝ => x ^ 2)
+      (juliaCompressionEquilibriumProbabilityMeasure : Measure ℝ) := by
+  have h := compoundPoisson_centered_secondMoment
+    juliaCompressionJumpRate juliaCompressionJumpRate_pos.le
+    (juliaCompressionJumpProbabilityMeasure : Measure ℝ)
+    memLp_id_juliaCompressionJumpProbabilityMeasure
+    integral_id_juliaCompressionJumpProbabilityMeasure
+  exact h.1
+
+/-- Exact variance of the source measure underlying the Julia center-mixed kernel. -/
+theorem integral_sq_juliaCompressionEquilibriumProbabilityMeasure :
+    (∫ x : ℝ, x ^ 2
+      ∂(juliaCompressionEquilibriumProbabilityMeasure : Measure ℝ)) = 3 / 2 := by
+  have h := (compoundPoisson_centered_secondMoment
+    juliaCompressionJumpRate juliaCompressionJumpRate_pos.le
+    (juliaCompressionJumpProbabilityMeasure : Measure ℝ)
+    memLp_id_juliaCompressionJumpProbabilityMeasure
+    integral_id_juliaCompressionJumpProbabilityMeasure).2
+  rw [integral_sq_juliaCompressionJumpProbabilityMeasure] at h
+  rw [show (∫ x : ℝ, x ^ 2
+      ∂(juliaCompressionEquilibriumProbabilityMeasure : Measure ℝ)) =
+      ∫ x : ℝ, x ^ 2 ∂compoundPoisson juliaCompressionJumpRate
+        (juliaCompressionJumpProbabilityMeasure : Measure ℝ) by rfl]
+  rw [h]
+  field_simp [juliaCompressionJumpRate_pos.ne']
+
+theorem normalizedCharacteristicDefect_juliaCompressionEquilibriumProbabilityMeasure
+    (y : ℝ) :
+    normalizedCharacteristicDefect
+        (juliaCompressionEquilibriumProbabilityMeasure : Measure ℝ) (3 / 2) y =
+      juliaDefectAttenuationKernel y := by
+  by_cases hy : y = 0
+  · subst y
+    simp [normalizedCharacteristicDefect]
+  · rw [normalizedCharacteristicDefect, if_neg hy,
+      juliaDefectAttenuationKernel_eq_profile hy, juliaDefectAttenuationProfile,
+      juliaDefectSquareProfile_eq_one_sub_compression,
+      charFun_juliaCompressionEquilibriumProbabilityMeasure]
+    simp only [Complex.ofReal_re]
+    field_simp [hy]
+    ring
+
+/-- **Julia equilibrium Gram law from source data.**  The theta-specific center-mixed Julia
+kernel is positive definite on every finite real configuration. -/
+theorem positiveDefiniteOnReal_juliaDefectAttenuationKernel :
+    PositiveDefiniteOnReal (fun y => (juliaDefectAttenuationKernel y : ℂ)) := by
+  have hpd := positiveDefiniteOnReal_normalizedCharacteristicDefect
+    (juliaCompressionEquilibriumProbabilityMeasure : Measure ℝ)
+    (m := (3 / 2 : ℝ)) (by norm_num)
+    integrable_sq_juliaCompressionEquilibriumProbabilityMeasure
+    integral_sq_juliaCompressionEquilibriumProbabilityMeasure
+  simpa only [normalizedCharacteristicDefect_juliaCompressionEquilibriumProbabilityMeasure]
+    using hpd
+
+end
+
+end HTGeometry

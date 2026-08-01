@@ -189,6 +189,12 @@ T_a^(tau)=A_a-lambda_a I+tau I.                          (13)
 ```
 
 Then `lambda_a^(tau)<lambda_a` for every aperture, and the bottom of `T_a^(tau)` is exactly `tau`.
+
+`(13)`'s mechanism is formal in `PositiveOperatorInner.lean`: `tInner_add_smul_id` shows adding a
+multiple of the identity raises the induced form by exactly that multiple of the squared norm, so
+`tInner_shift_lower_bound` shifts any lower bound by the same amount and
+`tInner_shift_floor_eq_shift` puts the bottom at `tau` for a source normalized to its own bottom.
+The chart is therefore source-relative by construction: no absolute scale enters.
 This **ground-centered projective family** exists without RH and cannot be confused with the
 RH-bearing unshifted choice `lambda=0`.  It is the canonical family on which to ask the next
 noncollapse question.
@@ -357,3 +363,10 @@ Axiom audit of every declaration above: `[propext, Classical.choice, Quot.sound]
   density matrix" is now literally that — an explicit symmetric matrix with a spectral decomposition
   into parity components and a probability spectrum.  Three new declarations, targeted build green,
   axioms `[propext, Classical.choice, Quot.sound]`.
+- 2026-08-01 — `(13)`'s shift mechanism formalized.  `tInner_add_smul_id` gives the exact effect of
+  adding a multiple of the identity to the induced form, from which `tInner_shift_lower_bound` and
+  `tInner_shift_floor_eq_shift` place the bottom at the shift value for a source normalized to its
+  own bottom.  This is what makes the chart source-relative: the bottom is determined by the shift
+  alone, with no absolute scale entering — the property the section needs to escape "the arbitrary
+  absolute shift".  Three new declarations, targeted build green, axioms
+  `[propext, Classical.choice, Quot.sound]`.

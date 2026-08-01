@@ -216,7 +216,12 @@ Therefore its dyadic affine intercept satisfies
 ```
 
 So every sufficiently large finite `L` supplies two actual admissible negative shifts whose
-central sewn source flux has the required strict Herglotz residue sign.  Unlike the ground-edge
+central sewn source flux has the required strict Herglotz residue sign.
+
+**Formalized**, in `formal/GaloisForLFunctions/RHTower/SuzukiLargeNegativeShiftCentralFlux.lean`
+rather than in this card's own module: `suzukiDyadicNegativeShiftIntercept` is the intercept,
+`tendsto_suzukiDyadicNegativeShiftIntercept_atTop` is `(13)`'s limit, and
+`eventually_XiC_curvature_lt_suzukiDyadicNegativeShiftIntercept` is the strict-sign conclusion.  Unlike the ground-edge
 selector, `(13)` stays away from the spectral floor and does not trigger Cayley universality.
 
 ## Remaining RH frontier after this theorem

@@ -2091,3 +2091,22 @@ dividing the discriminant.
   So the centered polynomial over `symmetricPart` has the same splitting field as the generic one,
   and therefore the same Galois group — the symmetric group.  The Tschirnhaus transfer is complete
   at the level of the model.
+
+- 2026-08-01 — `taylor_neg_centeredMonicPart`: shifting back by the average recovers the generic
+  polynomial from the centered one.  Axioms `[propext, Classical.choice, Quot.sound]`.
+  This is the algebraic heart of the recoverability the card's `(10)` asserts in the other
+  direction: the generic coefficients are expressions in the average and the centered coefficients,
+  exactly as the centered ones are expressions in the generic coefficients, so the two systems
+  determine each other.  Turning that into algebraic independence of the centered coefficients still
+  needs the passage from "two generating systems of the same size" to independence, which is a
+  transcendence-degree argument and remains the open piece for the card's own equation.
+
+- 2026-08-01 — `taylor_coeff_eq_add`: a shift changes each coefficient by a multiple of the shift,
+  `(taylor r p).coeff k = p.coeff k + r * s`.  The constant term of the `k`-th Hasse derivative is
+  the `k`-th coefficient, and the rest of its evaluation is divisible by `r` because
+  `eval r q - eval 0 q` always is.  No binomial expansion is involved.  Axioms
+  `[propext, Classical.choice, Quot.sound]`.
+  This is the triangularity of the coefficient change under a shift — the form in which the card's
+  step `(9)` is actually needed.  It says the centered coefficients are the generic ones plus
+  corrections carrying a factor of the average, which is what makes the change of parameters
+  invertible and, with an exchange argument, the centered coefficients independent.

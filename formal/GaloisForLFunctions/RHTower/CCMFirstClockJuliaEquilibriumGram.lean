@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaSewnMobiusJuliaPrimeOrderAttenuation
-import GaloisForLFunctions.HTGeometry.JuliaDefectSpectralEquilibrium
+import GaloisForLFunctions.HTGeometry.JuliaDefectEquilibriumPositiveDefinite
 
 /-!
 # Coherent Julia equilibrium Gram on the reduced CCM first clock
@@ -10,14 +10,11 @@ factor.  This file identifies those diagonal factors as origin correlations of t
 Julia equilibrium kernel and restores the missing cross-prime Gram.
 
 For every finite prime packet, the Julia-deformed completed source is exactly its correlation
-with the origin.  Conditional only on the paper-proved Julia equilibrium Gram law, the square of
-the bad origin correlation is bounded by its full coherent cross-prime energy.  Consequently any
-negative deformed completed source forces at least its squared excursion into the outer-prime
-coherent energy.  This is the positive replacement demanded by the independent-prime harmonic
-capacity obstruction: bad mass cannot be treated as a collection of unrelated scalar channels.
-
-The module does not assert the Julia Gram law itself; its remaining Lean closure is the
-compound-Poisson/equilibrium-clock step in `JuliaDefectSpectralEquilibrium`.
+with the origin.  Source-level compound-Poisson positivity bounds the square of the bad origin
+correlation by its full coherent cross-prime energy.  Consequently any negative deformed completed
+source forces at least its squared excursion into the outer-prime coherent energy.  This is the
+positive replacement demanded by the independent-prime harmonic capacity obstruction: bad mass
+cannot be treated as a collection of unrelated scalar channels.
 -/
 
 open scoped BigOperators
@@ -172,23 +169,17 @@ def ccmFirstClockJuliaBadCoherentEnergy
         (x * Real.log (p j : ℝ) - x * Real.log (p i : ℝ)) *
       ccmFirstClockReducedBadPrimeTerm L (p j)
 
-/-- The exact paper-proved Julia equilibrium-clock assertion, isolated as the sole remaining
-Lean dependency of the coherent capacity application. -/
-def JuliaDefectEquilibriumGramLaw : Prop :=
-  GaloisForLFunctions.HTGeometry.PositiveDefiniteOnReal
-    (fun y => (HTGeometry.juliaDefectAttenuationKernel y : ℂ))
-
 /-- **Coherent bad-channel capacity law.**  The bad origin correlation cannot exceed the full
 cross-prime equilibrium Gram energy in square. -/
 theorem ccmFirstClockJuliaBadOriginCorrelation_sq_le_coherentEnergy
-    (hGram : JuliaDefectEquilibriumGramLaw)
     {N : ℕ} (x L : ℝ) (p : Fin N → Nat.Primes) :
     ccmFirstClockJuliaBadOriginCorrelation x L p ^ 2 ≤
       ccmFirstClockJuliaBadCoherentEnergy x L p := by
   simpa only [ccmFirstClockJuliaBadOriginCorrelation,
     ccmFirstClockJuliaBadCoherentEnergy, mul_comm] using
       (HTGeometry.anchorCorrelation_sq_le_gramEnergy_of_positiveDefinite
-        HTGeometry.juliaDefectAttenuationKernel hGram
+        HTGeometry.juliaDefectAttenuationKernel
+        HTGeometry.positiveDefiniteOnReal_juliaDefectAttenuationKernel
         HTGeometry.juliaDefectAttenuationKernel_zero
         HTGeometry.juliaDefectAttenuationKernel_neg
         (fun i => x * Real.log (p i : ℝ))
@@ -216,7 +207,6 @@ theorem ccmFirstClockJuliaBadOriginCorrelation_nonneg
 first-clock source forces at least its squared excursion into coherent bad-prime energy.  This is
 strictly stronger information than the diagonal statement that outer-prime weights are positive. -/
 theorem ccmFirstClockJulia_negative_completedSource_forces_badCoherentEnergy
-    (hGram : JuliaDefectEquilibriumGramLaw)
     {N : ℕ} {x L : ℝ} (hL : 0 < L) (p : Fin N → Nat.Primes)
     (hpCut : ∀ i, (p i : ℕ) ≤ ⌊Real.exp L⌋₊)
     (hneg : ccmFirstClockJuliaCompletedOriginCorrelation x L p < 0) :
@@ -244,7 +234,7 @@ theorem ccmFirstClockJulia_negative_completedSource_forces_badCoherentEnergy
     nlinarith
   exact hsquare.trans
     (ccmFirstClockJuliaBadOriginCorrelation_sq_le_coherentEnergy
-      hGram x L p)
+      x L p)
 
 end
 

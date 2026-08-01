@@ -3888,3 +3888,5 @@ import GaloisForLFunctions.RHTower.DeningerL2CauchySchwarz
 import GaloisForLFunctions.RHTower.DeningerL2Norm2
 import GaloisForLFunctions.RHTower.SoninShellCutCouplingEnergy
 import GaloisForLFunctions.RHTower.DeningerL2Space
+import GaloisForLFunctions.RHTower.SoninShellCutBandTotal
+import GaloisForLFunctions.RHTower.DeningerHilbertKummer

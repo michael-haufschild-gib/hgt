@@ -254,4 +254,33 @@ theorem defectGramState_isHermitian (N C : ℝ) : (defectGramState N C).IsHermit
   fin_cases i <;> fin_cases j <;>
     simp [defectGramState, Matrix.conjTranspose_apply]
 
+/-! ## Shifting the floor
+
+Adding a multiple of the identity raises the induced form by exactly that multiple of the squared
+norm.  So a shift chosen relative to the source's own bottom places the new bottom at the shift
+value, with no reference to an absolute scale. -/
+
+/-- The induced form of a shifted operator. -/
+theorem tInner_add_smul_id (T : E →ₗ[ℝ] E) (c : ℝ) (v : E) :
+    tInner (T + c • LinearMap.id) v v = tInner T v v + c * ‖v‖ ^ 2 := by
+  rw [tInner_def, tInner_def, LinearMap.add_apply, LinearMap.smul_apply, LinearMap.id_apply,
+    inner_add_left, real_inner_smul_left, real_inner_self_eq_norm_sq]
+
+/-- **`(13)`, the shifted floor.**  A lower bound for the form shifts by exactly the added
+multiple. -/
+theorem tInner_shift_lower_bound {T : E →ₗ[ℝ] E} {floor : ℝ}
+    (h : ∀ v : E, floor * ‖v‖ ^ 2 ≤ tInner T v v) (c : ℝ) (v : E) :
+    (floor + c) * ‖v‖ ^ 2 ≤ tInner (T + c • LinearMap.id) v v := by
+  rw [tInner_add_smul_id]
+  have := h v
+  nlinarith [this]
+
+/-- **A source-relative shift puts the bottom at the shift.**  If the form is nonnegative — the
+source normalized to its own bottom — then shifting by `c` makes `c` a lower bound. -/
+theorem tInner_shift_floor_eq_shift {T : E →ₗ[ℝ] E}
+    (h : ∀ v : E, 0 ≤ tInner T v v) (c : ℝ) (v : E) :
+    c * ‖v‖ ^ 2 ≤ tInner (T + c • LinearMap.id) v v := by
+  have := tInner_shift_lower_bound (floor := 0) (fun w => by simpa using h w) c v
+  simpa using this
+
 end GaloisForLFunctions.HTGeometry

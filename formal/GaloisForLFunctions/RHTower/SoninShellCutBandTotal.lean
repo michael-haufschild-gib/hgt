@@ -42,7 +42,7 @@ theorem soninCouplingBandTotal_eq (a b : ℝ) {r : ℝ} (hr : 0 < r) (x : evenSu
         ‖evenFourierCutoff b x‖ := by
   have h : ((1 - evenFourierCutoff b) * evenDilationCLM r hr) x =
       evenDilationCLM r hr x - evenFourierCutoff b (evenDilationCLM r hr x) := by
-    rw [mul_apply, sub_apply, one_apply]
+    rw [mul_apply_eq_comp, sub_apply, one_apply_eq_self]
   rw [soninCouplingBandTotal, h]
   rfl
 
@@ -59,7 +59,7 @@ theorem soninCouplingBandTotal_normalize (a b : ℝ) {r : ℝ} (hr : 0 < r)
 /-- **The uniform band bound for the cut's packets.**  A bound on the packets' band totals, divided
 by a lower bound for their norms, bounds the normalized family's band totals. -/
 theorem soninCouplingBandTotal_soninShellCutUnit_le
-    (a b c : ℝ) (hb : 0 < b) (hbc : b < c) {N : ℕ} (hN : 0 < N) {r : ℝ} (hr : 0 < r) (w : ℝ)
+    (a b c : ℝ) (hbc : b < c) {N : ℕ} (hN : 0 < N) {r : ℝ} (hr : 0 < r) (w : ℝ)
     (i : Fin N)
     (hne : soninScaledPacketEven (soninShellCutCentre b c N i) (soninShellCutWidth b c N)
       (2 * Real.pi * w) (soninShellCutWidth_pos b c hbc hN) ≠ 0)
