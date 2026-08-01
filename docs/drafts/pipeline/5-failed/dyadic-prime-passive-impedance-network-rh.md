@@ -1,7 +1,7 @@
 # Dyadic-prime passive impedance network to RH
 
 - **ID:** `dyadic-prime-passive-impedance-network-rh`
-- **Status:** `1-in-progress — PAPER CLOSED; LEAN CLOSURE IN PROGRESS`
+- **Status:** `5-failed — TERMINAL`
 - **Type:** `[LARGE OUTLANDISH DETOUR] [FALSIFIED] [PROVED SOURCE TOMOGRAPHY END]`
 - **Inputs:** `../3-formalized/dyadic-prime-source-divisor-tomography.md`,
   `CCMSharpPrimeWindowDivisorTomography.lean`, `CCMSharpPrimeWindowExcessEnergyGate.lean`,
@@ -185,10 +185,12 @@ overlap.
 - [x] parallel-atom and zero-fed network shortcuts closed with positive successors
 - [x] finite complex prime--polar--defect colligation and positive prime Gram formalized
 - [x] raw prime-delay Herglotz shortcut disproved in Lean
-- [ ] distinguished finite Fock coupling and source-resolved passivity proved
-- [ ] passive response exhaustion proved
-- [ ] source overlap identity proved
-- [ ] holomorphy capstone composed with divisor tomography to obtain RH
+- [x] distinguished finite Fock coupling retired: equality with source is incompatible with either
+  passive sign orientation
+- [x] passive response exhaustion retired before limit theory: no candidate limit can equal source
+  on overlap and remain passive
+- [x] exact source-overlap values on the two high lines formalized
+- [x] holomorphy capstone cancelled: its passive premise is false
 
 ## Terminal hostile audit: source-level high-line sign rigidity (2026-08-01)
 
@@ -302,8 +304,19 @@ passive realization.  Such a transform cannot be advertised as a realization of 
 prove a zero-free, source-only inverse handoff back to `F`.  That is a materially new route and does
 not keep Route I open.
 
-After unconditional Lean formalization of the generic sign theorem, the exact value `S(2)>0`, the
-two dyadic source signs, and the Herglotz/anti-Herglotz no-go, move this card to `5-failed` and mark
-Route I retired on the frontier map.  Existing divisor tomography, energy spectra, square sampling,
-and prime-only reduction remain valid positive infrastructure; the sharp subpower endpoint remains
-an RH criterion, not an independently proved source estimate.
+Unconditional Lean formalization is complete:
+
+- `GaloisForLFunctions.HTGeometry.DirichletHalfPlaneSignRigidity` proves finite-abscissa stability
+  under power twists, normalized first-mode imaginary limits, peeled/raw imaginary equality for
+  real coefficients, and both eventual sign orientations for an arbitrary first surviving mode.
+- `GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPassiveNoGo` proves `S(2)>0`, the two exact dyadic
+  high-line signs, witnesses above every height, and
+  `dyadicSharpPrimeImpedance_not_upperHalfPlaneValued_above` plus
+  `dyadicSharpPrimeImpedance_not_lowerHalfPlaneValued_above`.
+- `lake env lean` passed for both files; targeted
+  `lake build GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPassiveNoGo` passed.  Axiom audit reports
+  only `propext`, `Classical.choice`, and `Quot.sound`.
+
+Route I is retired.  Existing divisor tomography, energy spectra, square sampling, and prime-only
+reduction remain valid positive infrastructure; the sharp subpower endpoint remains an RH
+criterion, not an independently proved source estimate.

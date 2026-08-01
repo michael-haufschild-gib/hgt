@@ -169,7 +169,7 @@ advertised positive-factorization predecessors are formally falsified, identity-
 target-equivalent. Strongest survivor is explicit phase-connection defect plus canonical
 barycentric certificate after source sign is known.
 
-### Route B — fixed-width rectangular Weil floor
+### Route B — fixed-width rectangular Weil floor [RETIRED]
 
 **Status: RETIRED AS AN INDEPENDENT SCALAR ROUTE / FORMALLY CLOSED NO-GO.**  Fixed-width lower
 boundedness remains an exact RH endpoint.  Route B no longer contributes a distinct source
@@ -781,11 +781,11 @@ top-row decay cannot dissipate it.
 **Positive survivor.** Exact refinement conservation identifies the current that must be
 oriented directly.
 
-### Route I — sharp dyadic prime window
+### Route I — sharp dyadic prime window  [RETIRED]
 
 **Endpoint.** `DyadicWeightedPrimeWindowSubpowerUpper N`.
 
-**Chain.**
+**Proved conditional chain.**
 
 ```text
 sharp weighted-prime main term + subpower error for all large n
@@ -793,8 +793,45 @@ sharp weighted-prime main term + subpower error for all large n
 → RH.
 ```
 
-**Open core.** Prove the sharp dyadic error from source. Monomial-tail and finite-degree
-estimates cannot reach the necessary height-linear range.
+The endpoint is an exact RH-strength source criterion, not a known prime-number-theorem estimate.
+Prime-only reduction, square sampling, positive-excess energy, quantitative energy spectra, and
+exact right-divisor tomography are formalized.  Monomial-tail and finite-degree estimates cannot
+reach the necessary height-linear range; current zero-free-region PNT errors remain
+`n^(1/2-o(1))` after square-root window weighting rather than all-epsilon subpower.
+
+**Terminal producer audit.** The last active source mechanism proposed realizing
+`Z(z)=dyadicSharpPrimeContinuedSource(1-i z)` as a coupled passive impedance.  It is impossible
+before any network construction or limit issue arises.  The exact source coefficient at the first
+oscillatory index satisfies
+
+```text
+S(2)=4(sqrt(2)-1)-sqrt(2)log(2)>0.
+```
+
+First-coefficient Dirichlet asymptotics therefore give, for all sufficiently large `sigma`,
+
+```text
+Im F(sigma-i)>0,
+Im F(sigma+i)<0.
+```
+
+Equivalently, `Z` takes both imaginary signs above every upper-half-plane height on `Re z=1` and
+`Re z=-1`.  It is neither Herglotz nor anti-Herglotz on any upper tail.  Arbitrary internal
+coupling, Schur complementation, distributed delays, and normal-family exhaustion cannot change
+this value-level contradiction once equality with source on the overlap is required.
+
+**Disposition.** Route I is retired.  Proving the sharp endpoint directly remains mathematically
+possible, but that is the RH-strength open estimate itself, not missing routine infrastructure.
+Any Cayley-renormalized passive transform must prove a new source-only inverse handoff to `F` and
+enters the pipeline as a new route.
+
+**Positive survivor.** Arbitrary-first-mode Dirichlet high-line sign rigidity: a nonconstant real
+ordinary Dirichlet series cannot be a raw-coordinate scalar Herglotz or anti-Herglotz response on
+an upper tail.  Paper proof:
+`docs/drafts/pipeline/2-fully-proven/not_new_scientific_knowledge/dyadic-prime-dirichlet-high-line-sign-rigidity.md`.
+Lean modules: `GaloisForLFunctions.HTGeometry.DirichletHalfPlaneSignRigidity` and
+`GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPassiveNoGo`.  Failed-route card:
+`docs/drafts/pipeline/5-failed/dyadic-prime-passive-impedance-network-rh.md`.
 
 ### Route J — Julia compound-Poisson coherent energy  [RETIRED]
 

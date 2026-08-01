@@ -3624,9 +3624,38 @@ i.e. the product is approximated to the *total weight plus the depth* — each f
 multiplied by the others, which are themselves small.  `norm_prod_le_mul_pow` is the companion size
 bound.  `#print axioms` clean.
 
-So the remaining chain is: assemble a jet monomial (weighted product of the depth-`K` expansions,
-`IsStdRat` on the nose), sum monomials (`IsStdRat.add`), and read off the first nonzero coefficient
-of the resulting standard rational function — which exists because a standard rational function whose
+**The per-factor packages are built.**  `IsStdRat.sum`, `IsStdRat.prod`, `isStdRat_zero` and
+`isStdRat_inv_risingProd` complete the closure list, and `PolygammaDepthExpansion.lean` now packages
+each factor in exactly the shape the weighted product estimate consumes:
+
+- **`exists_jet_stdRat_approx`** — the depth-`K` approximation of `ψ^{(m+1)}` *is* a standard
+  rational function of defect `m+1` (a finite combination of reciprocal rising factorials);
+- **`exists_jet_package`** — the jet, its approximation and the error, all measured against powers of
+  `u = 1/t`: sizes `A·u^{m+1}`, error `A·u^{m+1+K}`;
+- **`exists_jet_pow_package`** — the same for a *power* `(ψ^{(m+1)})^e`, obtained by feeding the
+  constant family into `norm_prod_sub_prod_mul_pow_le`: size and error at weight `(m+1)·e`, with the
+  approximation still standard (`IsStdRat.pow`).
+
+**The assembly is now built, and so is the extraction.**
+
+- **`exists_monomial_package`** — multiplying the power packages over the finitely many jets (outer
+  weighted product, uniform constant `B = 1 + ∑ A_i`), a jet *monomial* is approximated to its own
+  weight plus the depth by a standard rational function of that weight;
+- **`exists_jetPoly_package`** — summing monomials of weight at least `W` (each approximant
+  `mono`'d down to defect `W`, each error absorbed since `u ≤ 1`), a *jet polynomial* with constant
+  coefficients is approximated to depth `K` by a single standard rational function of defect `W`;
+- `HTGeometry/StdRatDatum.lean` — the extraction.  `tendsto_inv_vertical`,
+  `tendsto_polynomial_mul_inv_pow` (a polynomial against its degree power tends to its leading
+  coefficient) and `tendsto_shiftProd_mul_inv_pow` (a shift product against its length power tends to
+  `1`) combine into **`tendsto_stdRat_datum`**: for `card l = deg P + p`,
+
+  `s^p · P(s)/∏_j(s+j) → leadingCoeff P` on every vertical line with `σ > 0`.
+
+  So a nonzero standard rational function *has* a datum, read off its numerator.
+
+`#print axioms` clean.  What remains for the unquantified eq. (19) is the last logical step — for a
+nonzero jet polynomial some depth must give a nonzero approximant, since otherwise the polynomial
+would be flat, contradicting `not_isVertFlatGerm_digammaJetEval` — which exists because a standard rational function whose
 every coefficient vanished to every depth would make the jet polynomial flat, contradicting
 `not_isVertFlatGerm_digammaJetEval`.  After that, the `log s` level for `ψ` itself (integrating the
 `ψ′` expansion) and the `ℂ(s)`-coefficient case (multiplying by a rational function, whose own

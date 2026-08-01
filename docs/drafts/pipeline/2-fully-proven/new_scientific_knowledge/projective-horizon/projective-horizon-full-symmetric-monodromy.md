@@ -394,3 +394,27 @@ Only targeted leaf checks are used; no full build is run.
   The lemma is stated for a general truncation `X^L ∣ U B + A V`, so it also serves the boundary
   exclusions of the multiplicity card and the postcritical rigidity card, which cancel the same kind
   of factor.
+
+- 2026-08-01 — **The Schur divisor's irreducibility and reducedness are no longer paper-level.**
+  `formal/GaloisForLFunctions/HTGeometry/BlockComplementaryMinor.lean`,
+  `DualRectangularSection.lean`, `SchurCofactorLocus.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `irreducible_det_rectangularSchurToeplitz` — the rectangular Schur section is irreducible at
+  **every** pair of parameters; `squarefree_det_rectangularSchurToeplitz` — hence squarefree, so the
+  ramification divisor is reduced; `not_dvd_det_submatrix_rectangularSchur` — the section does not
+  divide its corner cofactor, which is generic corank one in its algebraic form: the cofactor locus
+  is a proper closed subset of the divisor.
+
+  Those are the three geometric inputs this card has repeatedly recorded as paper-level.  The route
+  to the first was the missing complementary-minor formula: mathlib has none, so
+  `det_toBlocks₂₁_eq` proves the block form directly, and with the two coefficient families forming
+  inverse triangular matrices it exchanges the two parameters of a section.  That removes the
+  restriction `m ≤ n` under which the corner-expansion induction had proved irreducibility, and the
+  cofactor argument then needs irreducibility at the *unrelated* pair `(n-1,m-1)`, which only the
+  unrestricted statement supplies.
+
+  What remains for `(4)` is the classification of finite etale covers of `(G_m)^2 x A^(L-2)` as torus
+  Kummer covers, and the identification of the meridian action.  The group theory (step 4), the
+  conormal pairing and state uniqueness (steps 2 and 3), the radical regime `(18)`, and the division
+  step of the coprimality argument were already formalized.

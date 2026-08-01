@@ -277,8 +277,10 @@ third is mathlib's:
 
 - **inverse differentiation** — `partial_r R_r = -R_r^2` follows from the first resolvent identity
   alone, already proved in `HTGeometry/ResolventFamilyJet.lean` for a family of *bounded* elements;
-- **the Fourier integral** — differentiation under an interval integral, supplied by mathlib's
-  `intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_deriv_le`;
+- **the Fourier integral** — now a corpus theorem, `hasDerivAt_compactFourier` in
+  `HTGeometry/CompactFourierSineKernel.lean`: differentiation under a compact Fourier transform with
+  *every* hypothesis of mathlib's dominated parametric derivative discharged from the amplitude
+  family alone, the kernel contributing only continuity and the constant `exp (|Im z| a)`;
 - **the operator itself** — not needed: `(11)`'s derivative law is
   `hasDerivAt_reflectedQuotientCarrier`, which takes the family's parameter derivative as a
   hypothesis, and `(10)` = `(12)` is the pure algebra of
@@ -469,3 +471,69 @@ resulting constant bound is interval-integrable on `[-a, a]`, and
   `partial_u^n S u = n! (S u)^(n+1)` (`hasDerivAt_jet`), this is what higher-order domination needs,
   so the differentiation-under-the-integral argument extends to every jet, not just the first.
   [PROVED HERE], standard axioms, builds clean.
+
+- `IsResolventFamilyOn.eventually_small_of_nhds` : the smallness hypothesis of the local bounds
+  holds **eventually** near any reference shift, so it never has to be supplied by hand inside a
+  `filter_upwards`. [PROVED HERE], standard axioms, builds clean.
+
+The domination package is now ergonomic as well as complete: `eventually_small_of_nhds` discharges
+the hypothesis, `norm_pow_le_of_small` bounds the amplitude at every jet order,
+`norm_mul_fourierKernel_le` carries it through the kernel, and a constant is interval-integrable —
+all four compose inside one `filter_upwards`.
+
+- `continuous_mul_fourierKernel` : continuity of an amplitude against the kernel, supplying the
+  `AEStronglyMeasurable` hypotheses of parametric differentiation — automatic for a continuous
+  amplitude. [PROVED HERE], standard axioms, builds clean.
+
+**All four hypothesis slots of `hasDerivAt_integral_of_dominated_loc_of_deriv_le` are now covered by
+corpus lemmas**: measurability (`continuous_mul_fourierKernel`), the derivative
+(`IsResolventFamilyOn.hasDerivAt`), the dominating bound
+(`norm_pow_le_of_small` + `norm_mul_fourierKernel_le`, with the hypothesis discharged by
+`eventually_small_of_nhds`), and its integrability (a constant on a compact interval). `(11)`'s
+`partial_r F_r = -G_r` needs only the identification of the abstract family with Suzuki's resolvent.
+
+### Lean progress — differentiation under the compact Fourier transform, assembled
+
+- `hasDerivAt_compactFourier` : **the payoff theorem.** For an amplitude family continuous in the
+  variable, differentiable in the parameter, with a uniformly bounded parameter derivative on the
+  interval, the compact Fourier transform may be differentiated under the integral:
+  `d/dr ∫_{-a}^{a} u_r(t) e^{izt} dt = ∫_{-a}^{a} (∂_r u_r)(t) e^{izt} dt`.
+  [PROVED HERE] in `HTGeometry/CompactFourierSineKernel.lean`, standard axioms
+  `[propext, Classical.choice, Quot.sound]`, builds clean.
+
+Every hypothesis slot of mathlib's dominated parametric derivative is discharged inside the proof
+from the amplitude alone; the kernel contributes only continuity and the constant
+`exp (|Im z| a)`. **This is `(11)`'s `partial_r F_r = -G_r` as a general theorem** — instantiate
+`u_r = R_r e` and `w_r = -R_r^2 e`, with the resolvent derivative and its uniform bound supplied by
+`HTGeometry/ResolventFamilyJet.lean`. Nothing in the chain constructs the operator.
+
+- `intervalIntegrable_mul_fourierKernel` : interval integrability of an amplitude against the
+  kernel, from continuity alone — discharging the last unsupplied hypothesis of
+  `hasDerivAt_compactFourier`. [PROVED HERE], standard axioms, builds clean.
+
+**Every hypothesis of the Fourier differentiation is now derivable from continuity of the amplitude
+family plus a uniform bound on its parameter derivative** — both of which
+`HTGeometry/ResolventFamilyJet.lean` supplies for a resolvent family. `(11)` is complete as
+infrastructure; only the identification of that family with Suzuki's `R_r` remains.
+
+- `abs_le_of_mem_uIoc_symm` : on a symmetric interval every point of the integration set satisfies
+  `|t| <= a` — the interval fact `hasDerivAt_compactFourier` takes as `ha`, now a lemma rather than
+  a hypothesis to be supplied. [PROVED HERE], standard axioms, builds clean.
+
+So of `hasDerivAt_compactFourier`'s six hypotheses, three are now discharged by corpus lemmas from
+continuity alone (`hmeas`, `hint`, `hwmeas` via `continuous_mul_fourierKernel` and
+`intervalIntegrable_mul_fourierKernel`), one is a proved interval fact (`ha`), and only the two
+genuinely amplitude-specific ones remain — the uniform derivative bound and the pointwise
+differentiability, both supplied for a resolvent family by
+`HTGeometry/ResolventFamilyJet.lean`.
+
+- `hasDerivAt_mul_fourierKernel` : the parameter derivative against the kernel from the amplitude's
+  own parameter derivative — the kernel is constant in the parameter and multiplies through.
+  [PROVED HERE], standard axioms, builds clean.
+
+**The kernel is now fully abstracted away.** All five of `hasDerivAt_compactFourier`'s non-content
+hypotheses are discharged by corpus lemmas, and the only inputs a caller must supply are two
+statements about the *amplitude family alone*: that `partial_r u_r` exists pointwise, and that it is
+uniformly bounded on the interval near the base shift. For a resolvent family both come from
+`HTGeometry/ResolventFamilyJet.lean` (`hasDerivAt` and `norm_pow_le_of_small`, with
+`eventually_small_of_nhds` discharging the smallness side condition).

@@ -4,7 +4,7 @@
 - **Stage:** `3-formalized`
 - **Type:** `[PROVED] [FORMALIZED] [NO-GO] [POSITIVE SUCCESSOR] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lean:** `formal/GaloisForLFunctions/RHTower/PrimeDelayHerglotzNoGo.lean`
-- **Route:** `../../1-in-progress/dyadic-prime-passive-impedance-network-rh.md`
+- **Route:** `../../5-failed/dyadic-prime-passive-impedance-network-rh.md`
 
 ## Theorem
 
@@ -26,15 +26,14 @@ Consequently `D_lambda` does not map the upper half-plane into its closure and c
 Herglotz/Nevanlinna driving-point impedance.  In particular, the individual Euler delay
 `exp(i z log p)` is not a passive scalar channel for any prime `p`.
 
-## Positive successor
+## Positive successor after terminal route audit
 
-The theorem retires only the termwise impedance interpretation.  It does not retire passive prime
-systems.  `CCMComplexMellinColligation.lean` independently proves that the resolved von-Mangoldt
-prime-power matrix is a positive semidefinite Gram on every finite complex right-half-plane packet.
-Therefore passivity must be constructed after nonlinear coupling: a contractive scattering
-colligation followed by a Cayley transform, an internal Schur complement, or the complete
-prime--polar--critical-defect Fock response.  Raw delay modes may be internal phase channels but
-not separate positive impedances.
+At this card's original stage, nonlinear coupling remained a possible successor.
+`CCMSharpPrimeWindowPassiveNoGo.lean` now closes that possibility for any scalar response which
+equals the literal source on the initial overlap: the full source itself takes both imaginary signs
+above every height.  The positive Gram in `CCMComplexMellinColligation.lean` remains valid, but it
+can only support a nontrivially transformed response.  A Cayley/renormalized response must prove a
+new source-only inverse handoff to the literal source and therefore belongs to a new route.
 
 ## Formal certificate
 

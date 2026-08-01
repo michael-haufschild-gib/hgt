@@ -835,3 +835,30 @@ level.  No new Lean claim is attached to this bridge card.
   same theorem with the parameters exchanged, transported across the complementary block relation and
   the exchange of the two coefficient families.  This closes the dual route and the last gap in the
   Schur irreducibility chain of this card.
+
+- 2026-08-01 — **Reducedness and the proper cofactor locus.**
+  `formal/GaloisForLFunctions/HTGeometry/SchurCofactorLocus.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `squarefree_det_rectangularSchurToeplitz` — the section is squarefree, at every pair of parameters.
+  In a commutative monoid an irreducible element is squarefree, so with irreducibility now proved this
+  is the "characteristic zero makes an irreducible polynomial square-free" clause of the theorem, and
+  the divisor is **reduced**.
+
+  `not_dvd_det_submatrix_rectangularSchur` — the section does **not divide** its corner cofactor.
+  This is the generic corank one clause in its algebraic form: the cofactor does not vanish
+  identically along the divisor, so the locus where the corank jumps is a proper closed subset.
+
+  The mechanism is the degree in the first variable.  `rectangularSchur_corner` and
+  `rectangularSchur_free` isolate that variable in the corner entry alone, so the corner expansion
+  `det_eq_corner_mul_minor_add` writes the section as `X_0` times the corner cofactor plus a
+  remainder free of `X_0`.  The cofactor is the smaller section, nonzero because it is irreducible,
+  so `degreeOf_zero_det_rectangularSchur`: the section has degree **exactly one** in `X_0`
+  (`Polynomial.natDegree_linear` after `finSuccEquiv_linear`), while
+  `degreeOf_zero_rename_succ` gives the cofactor degree zero.  `degreeOf_le_of_dvd` — divisibility
+  cannot lower the degree in a variable, by `MvPolynomial.natDegree_finSuccEquiv` and
+  `Polynomial.natDegree_le_of_dvd` — then closes it.
+
+  Both clauses use irreducibility at parameters with no relation between them, which is exactly what
+  the dual route supplied: the cofactor of the `(n,m)` section is the `(n-1,m-1)` section, whose
+  parameters need not satisfy `m ≤ n` even when the original pair does.

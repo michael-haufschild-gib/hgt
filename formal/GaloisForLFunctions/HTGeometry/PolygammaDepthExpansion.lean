@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.StandardRationalExpansion
+import GaloisForLFunctions.HTGeometry.WeightedProductBound
 import GaloisForLFunctions.HTGeometry.PolygammaFactorialComparison
 
 /-!
@@ -221,6 +222,200 @@ theorem exists_jet_package (m K : ℕ) :
     exact mul_le_mul_of_nonneg_right hle hpow0
   · refine le_trans herr ?_
     have hle : C ≤ C + CF + 1 := by linarith
+    exact mul_le_mul_of_nonneg_right hle (by positivity)
+
+/-- **The power package.**  A power of a jet, its standard approximation, and the error, at the
+weight `(m+1)·e`. -/
+theorem exists_jet_pow_package (m K e : ℕ) :
+    ∃ (F : ℂ → ℂ) (A : ℝ), IsStdRat F ((m + 1) * e) ∧ 1 ≤ A ∧ ∀ σ t : ℝ, 0 < σ → 2 ≤ t →
+      ‖iteratedDeriv (m + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) ^ e‖
+          ≤ A * (1 / t) ^ ((m + 1) * e)
+        ∧ ‖F ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤ A * (1 / t) ^ ((m + 1) * e)
+        ∧ ‖iteratedDeriv (m + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) ^ e
+            - F ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤ A * (1 / t) ^ ((m + 1) * e + K) := by
+  classical
+  obtain ⟨F, A, hFstd, hA, hpkg⟩ := exists_jet_package m K
+  refine ⟨fun x => F x ^ e, (e : ℝ) * A ^ e + A ^ e + 1, ?_, ?_, fun σ t hσ ht => ?_⟩
+  · have := hFstd.pow e
+    rwa [] at this
+  · have hA0 : (0 : ℝ) ≤ A := le_trans zero_le_one hA
+    have : (0 : ℝ) ≤ (e : ℝ) * A ^ e := by positivity
+    have h1 : (1 : ℝ) ≤ A ^ e := one_le_pow₀ hA
+    linarith
+  · have htpos : (0 : ℝ) < t := by linarith
+    have hu0 : (0 : ℝ) ≤ 1 / t := by positivity
+    obtain ⟨hjet, hF, herr⟩ := hpkg σ t hσ ht
+    -- constant families over `Finset.range e`
+    have hjetc : ∀ i ∈ Finset.range e,
+        ‖iteratedDeriv (m + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)‖
+          ≤ A * (1 / t) ^ (m + 1) := fun i _ => hjet
+    have hFc : ∀ i ∈ Finset.range e, ‖F ((σ : ℂ) + (t : ℂ) * Complex.I)‖
+        ≤ A * (1 / t) ^ (m + 1) := fun i _ => hF
+    have herrc : ∀ i ∈ Finset.range e,
+        ‖iteratedDeriv (m + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I)
+          - F ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤ A * (1 / t) ^ (m + 1 + K) := fun i _ => herr
+    have hprodjet := norm_prod_le_mul_pow
+      (fun _ : ℕ => iteratedDeriv (m + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I))
+      (fun _ : ℕ => m + 1) hA hu0 (Finset.range e) hjetc
+    have hprodF := norm_prod_le_mul_pow
+      (fun _ : ℕ => F ((σ : ℂ) + (t : ℂ) * Complex.I))
+      (fun _ : ℕ => m + 1) hA hu0 (Finset.range e) hFc
+    have hproderr := norm_prod_sub_prod_mul_pow_le
+      (fun _ : ℕ => iteratedDeriv (m + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I))
+      (fun _ : ℕ => F ((σ : ℂ) + (t : ℂ) * Complex.I))
+      (fun _ : ℕ => m + 1) hA hu0 K (Finset.range e) hjetc hFc herrc
+    rw [Finset.prod_const, Finset.card_range, Finset.sum_const, Finset.card_range,
+      smul_eq_mul] at hprodjet
+    rw [Finset.prod_const, Finset.card_range, Finset.sum_const, Finset.card_range,
+      smul_eq_mul] at hprodF
+    rw [Finset.prod_const, Finset.prod_const, Finset.card_range, Finset.sum_const,
+      Finset.card_range, smul_eq_mul] at hproderr
+    have hmulcomm : e * (m + 1) = (m + 1) * e := by ring
+    rw [hmulcomm] at hprodjet hprodF hproderr
+    have hA0 : (0 : ℝ) ≤ A := le_trans zero_le_one hA
+    have hAe : (1 : ℝ) ≤ A ^ e := one_le_pow₀ hA
+    have hpow0 : (0 : ℝ) ≤ (1 / t) ^ ((m + 1) * e) := by positivity
+    have hpow0' : (0 : ℝ) ≤ (1 / t) ^ ((m + 1) * e + K) := by positivity
+    refine ⟨?_, ?_, ?_⟩
+    · refine le_trans hprodjet ?_
+      have hle : A ^ e ≤ (e : ℝ) * A ^ e + A ^ e + 1 := by
+        have : (0 : ℝ) ≤ (e : ℝ) * A ^ e := by positivity
+        linarith
+      exact mul_le_mul_of_nonneg_right hle hpow0
+    · show ‖F ((σ : ℂ) + (t : ℂ) * Complex.I) ^ e‖ ≤ _
+      refine le_trans hprodF ?_
+      have hle : A ^ e ≤ (e : ℝ) * A ^ e + A ^ e + 1 := by
+        have : (0 : ℝ) ≤ (e : ℝ) * A ^ e := by positivity
+        linarith
+      exact mul_le_mul_of_nonneg_right hle hpow0
+    · show ‖iteratedDeriv (m + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) ^ e
+        - F ((σ : ℂ) + (t : ℂ) * Complex.I) ^ e‖ ≤ _
+      refine le_trans hproderr ?_
+      have hle : (e : ℝ) * A ^ e ≤ (e : ℝ) * A ^ e + A ^ e + 1 := by linarith
+      exact mul_le_mul_of_nonneg_right hle hpow0'
+
+/-- **The monomial package.**  A monomial in the digamma jets is approximated, to the monomial weight
+plus the depth, by a standard rational function of that weight. -/
+theorem exists_monomial_package (N K : ℕ) (e : Fin N → ℕ) :
+    ∃ (F : ℂ → ℂ) (A : ℝ), IsStdRat F (∑ i : Fin N, ((i : ℕ) + 1) * e i) ∧ 1 ≤ A ∧
+      ∀ σ t : ℝ, 0 < σ → 2 ≤ t →
+        ‖(∏ i : Fin N, iteratedDeriv ((i : ℕ) + 1) Complex.digamma
+              ((σ : ℂ) + (t : ℂ) * Complex.I) ^ e i)
+            - F ((σ : ℂ) + (t : ℂ) * Complex.I)‖
+          ≤ A * (1 / t) ^ ((∑ i : Fin N, ((i : ℕ) + 1) * e i) + K) := by
+  classical
+  choose F A hstd hA hpkg using fun i : Fin N => exists_jet_pow_package (i : ℕ) K (e i)
+  set B : ℝ := 1 + ∑ i : Fin N, A i with hB
+  have hAle : ∀ i : Fin N, A i ≤ B := by
+    intro i
+    have hsum : A i ≤ ∑ j : Fin N, A j :=
+      Finset.single_le_sum (f := A) (fun j _ => le_trans zero_le_one (hA j)) (Finset.mem_univ i)
+    rw [hB]
+    linarith
+  have hB1 : 1 ≤ B := by
+    have hnn : (0 : ℝ) ≤ ∑ j : Fin N, A j :=
+      Finset.sum_nonneg fun j _ => le_trans zero_le_one (hA j)
+    rw [hB]
+    linarith
+  refine ⟨fun x => ∏ i : Fin N, F i x, (N : ℝ) * B ^ N + 1,
+    IsStdRat.prod Finset.univ (fun i => F i) (fun i => ((i : ℕ) + 1) * e i)
+      (fun i _ => hstd i), ?_, fun σ t hσ ht => ?_⟩
+  · have hnn : (0 : ℝ) ≤ (N : ℝ) * B ^ N := by
+      have hB0 : (0 : ℝ) ≤ B := le_trans zero_le_one hB1
+      positivity
+    linarith
+  have htpos : (0 : ℝ) < t := by linarith
+  have hu0 : (0 : ℝ) ≤ 1 / t := by positivity
+  have hsize : ∀ i : Fin N,
+      ‖iteratedDeriv ((i : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) ^ e i‖
+        ≤ B * (1 / t) ^ (((i : ℕ) + 1) * e i) := by
+    intro i
+    refine le_trans (hpkg i σ t hσ ht).1 ?_
+    exact mul_le_mul_of_nonneg_right (hAle i) (by positivity)
+  have hsizeF : ∀ i : Fin N, ‖F i ((σ : ℂ) + (t : ℂ) * Complex.I)‖
+      ≤ B * (1 / t) ^ (((i : ℕ) + 1) * e i) := by
+    intro i
+    refine le_trans (hpkg i σ t hσ ht).2.1 ?_
+    exact mul_le_mul_of_nonneg_right (hAle i) (by positivity)
+  have herr : ∀ i : Fin N,
+      ‖iteratedDeriv ((i : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) ^ e i
+          - F i ((σ : ℂ) + (t : ℂ) * Complex.I)‖
+        ≤ B * (1 / t) ^ (((i : ℕ) + 1) * e i + K) := by
+    intro i
+    refine le_trans (hpkg i σ t hσ ht).2.2 ?_
+    exact mul_le_mul_of_nonneg_right (hAle i) (by positivity)
+  have hprod := norm_prod_sub_prod_mul_pow_le
+    (fun i : Fin N => iteratedDeriv ((i : ℕ) + 1) Complex.digamma
+      ((σ : ℂ) + (t : ℂ) * Complex.I) ^ e i)
+    (fun i : Fin N => F i ((σ : ℂ) + (t : ℂ) * Complex.I))
+    (fun i : Fin N => ((i : ℕ) + 1) * e i) hB1 hu0 K Finset.univ
+    (fun i _ => hsize i) (fun i _ => hsizeF i) (fun i _ => herr i)
+  rw [Finset.card_univ, Fintype.card_fin] at hprod
+  refine le_trans hprod ?_
+  have hle : (N : ℝ) * B ^ N ≤ (N : ℝ) * B ^ N + 1 := by linarith
+  exact mul_le_mul_of_nonneg_right hle (by positivity)
+
+/-- **The jet-polynomial package.**  A finite combination of jet monomials, all of weight at least
+`W`, is approximated to depth `K` by a standard rational function of defect `W`. -/
+theorem exists_jetPoly_package (N M K W : ℕ) (e : Fin M → Fin N → ℕ) (a : Fin M → ℂ)
+    (hW : ∀ α : Fin M, W ≤ ∑ i : Fin N, ((i : ℕ) + 1) * e α i) :
+    ∃ (F : ℂ → ℂ) (A : ℝ), IsStdRat F W ∧ 1 ≤ A ∧ ∀ σ t : ℝ, 0 < σ → 2 ≤ t →
+      ‖(∑ α : Fin M, a α * ∏ i : Fin N,
+            iteratedDeriv ((i : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) ^ e α i)
+          - F ((σ : ℂ) + (t : ℂ) * Complex.I)‖
+        ≤ A * (1 / t) ^ (W + K) := by
+  classical
+  choose F A hstd hA hpkg using fun α : Fin M => exists_monomial_package N K (e α)
+  refine ⟨fun x => ∑ α : Fin M, a α * F α x, 1 + ∑ α : Fin M, ‖a α‖ * A α, ?_, ?_,
+    fun σ t hσ ht => ?_⟩
+  · refine IsStdRat.sum Finset.univ _ fun α _ => ?_
+    exact ((hstd α).const_mul (a α)).mono (hW α)
+  · have hnn : (0 : ℝ) ≤ ∑ α : Fin M, ‖a α‖ * A α :=
+      Finset.sum_nonneg fun α _ => by
+        have := le_trans zero_le_one (hA α)
+        positivity
+    linarith
+  · have htpos : (0 : ℝ) < t := by linarith
+    have hu0 : (0 : ℝ) ≤ 1 / t := by positivity
+    have hu1 : (1 : ℝ) / t ≤ 1 := by
+      rw [div_le_one htpos]
+      linarith
+    have hsplit : (∑ α : Fin M, a α * ∏ i : Fin N,
+          iteratedDeriv ((i : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) ^ e α i)
+        - (∑ α : Fin M, a α * F α ((σ : ℂ) + (t : ℂ) * Complex.I))
+        = ∑ α : Fin M, a α * ((∏ i : Fin N,
+            iteratedDeriv ((i : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) ^ e α i)
+          - F α ((σ : ℂ) + (t : ℂ) * Complex.I)) := by
+      rw [← Finset.sum_sub_distrib]
+      refine Finset.sum_congr rfl fun α _ => ?_
+      ring
+    show ‖(∑ α : Fin M, a α * ∏ i : Fin N,
+        iteratedDeriv ((i : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) ^ e α i)
+      - ∑ α : Fin M, a α * F α ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤ _
+    rw [hsplit]
+    refine le_trans (norm_sum_le _ _) ?_
+    have hterm : ∀ α : Fin M, ‖a α * ((∏ i : Fin N,
+          iteratedDeriv ((i : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) ^ e α i)
+        - F α ((σ : ℂ) + (t : ℂ) * Complex.I))‖
+        ≤ (‖a α‖ * A α) * (1 / t) ^ (W + K) := by
+      intro α
+      rw [norm_mul]
+      have hpow : (1 / t) ^ ((∑ i : Fin N, ((i : ℕ) + 1) * e α i) + K) ≤ (1 / t) ^ (W + K) :=
+        pow_le_pow_of_le_one hu0 hu1 (by have := hW α; omega)
+      have hstep : ‖(∏ i : Fin N,
+            iteratedDeriv ((i : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) ^ e α i)
+          - F α ((σ : ℂ) + (t : ℂ) * Complex.I)‖ ≤ A α * (1 / t) ^ (W + K) := by
+        refine le_trans (hpkg α σ t hσ ht) ?_
+        exact mul_le_mul_of_nonneg_left hpow (le_trans zero_le_one (hA α))
+      calc ‖a α‖ * ‖(∏ i : Fin N,
+              iteratedDeriv ((i : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) ^ e α i)
+            - F α ((σ : ℂ) + (t : ℂ) * Complex.I)‖
+          ≤ ‖a α‖ * (A α * (1 / t) ^ (W + K)) :=
+            mul_le_mul_of_nonneg_left hstep (norm_nonneg _)
+        _ = (‖a α‖ * A α) * (1 / t) ^ (W + K) := by ring
+    refine le_trans (Finset.sum_le_sum fun α _ => hterm α) ?_
+    rw [← Finset.sum_mul]
+    have hle : (∑ α : Fin M, ‖a α‖ * A α) ≤ 1 + ∑ α : Fin M, ‖a α‖ * A α := by linarith
     exact mul_le_mul_of_nonneg_right hle (by positivity)
 
 end GaloisForLFunctions

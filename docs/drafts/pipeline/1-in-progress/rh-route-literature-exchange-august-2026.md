@@ -172,12 +172,12 @@ instantiate the generic `RHVerifiedThrough` interface and enlarge the finite ban
 that merely assumes the certificate is not an acceptable import and replay itself is outside this
 task. The RH-equivalent high-frequency ceiling remains unchanged.
 
-### Route E — critical Möbius/Mertens cancellation [CLOSED AS INDEPENDENT MECHANISM]
+### Route E — critical Möbius/Mertens cancellation [OPEN — SOURCE MISSING]
 
 **Local contribution beyond located literature.** The sparse Gamma–Hankel bounded-return endpoint,
 the finite-aperture Euler-normal divergence, and the monotone cofinal finite-prime normal-cone
 diagonal—including Gamma completion and projectivized reciprocal-square limit on `Re(s)>1`—have no
-located external collision. Two exact terminal classifications sharpen that boundary. Any finite
+located external collision. Two exact finite/local classifications sharpen that boundary. Any finite
 prime aperture covering all primes through resolution `N` reproduces the full Möbius coefficients,
 Mertens partial sums, and Mertens self-convolution through `N`; its canonical cofinal
 `N^(2+o(1))` law is exactly the open second-Cesàro source law and implies RH. If RH fails, the
@@ -198,12 +198,13 @@ Classical Mertens, Nyman–Beurling, and Báez–Duarte criteria provide related
 located, but it gives only a strict trivial saving and uses the wrong arithmetic weight for the
 one-sided Möbius Gamma–Hankel covariance.
 
-**Lean action.** None within Route E. Liflandsky's transform, convergence, tail, Mellin identity,
+**Lean action from this literature pass.** None. Liflandsky's transform, convergence, tail, Mellin identity,
 and unconditional decay-to-RH implication are already formalized without importing the simple-zero
 hypothesis. Verjovsky's theorem is an exact connector/equivalence and does not narrow the first
 source premise. No external result continues the proved Plücker diagonal from `Re(s)>1` to critical
 Möbius data or supplies the genuinely nonlocal all-prime signed law required after the local and
-finite-aperture mechanisms close.
+finite-aperture mechanisms close. Consequently Route E itself remains open: those mechanisms are
+constraints on a future producer, not an exhaustive closure of `OPEN-SOURCE-001`.
 
 ### Route F — all-prime Sonin transfer [RETIRED]
 
@@ -335,7 +336,7 @@ control coefficient size, not the orientation of the corpus's two-variable all-s
 infrastructure, but fixed-degree or coefficient-magnitude asymptotics cannot prove the surviving
 sublinear core-current estimate and would duplicate a retired extrapolation.
 
-### Route I — sharp dyadic prime window
+### Route I — sharp dyadic prime window  [RETIRED]
 
 **Local contribution beyond located literature.** The exact shifted-zeta contradiction from one
 subpower sharp dyadic weighted-prime error and the proved height-range obstruction for finite
@@ -345,9 +346,21 @@ monomial tails appear local.
 [2025 zero-density work](https://arxiv.org/abs/2508.02041) gives near-edge zero density and the
 strongest current unconditional PNT error in that framework (Theorems 1.1--1.5 and Corollary 1.6).
 It remains exponentially weaker than the `O(n^ε)` dyadic gate. Other zero-free-region and large
-Dirichlet-polynomial estimates have the same quantifier mismatch.
+Dirichlet-polynomial estimates have the same quantifier mismatch.  Samaris,
+*Dirichlet series with positive real part*, Bull. Aust. Math. Soc. 46 (1992), 159--166, supplies
+parent positive-real generalized-Dirichlet theory, so the high-line classification is a bridge,
+not a novelty claim.
 
-**Lean action.** None. Existing external bounds do not satisfy the typed premise.
+**Terminal local result.** The last live passive-impedance producer is false.  The exact first
+oscillatory coefficient `S(2)` is positive, and first-coefficient extraction forces opposite
+imaginary signs for `F(sigma-i)` and `F(sigma+i)` eventually.  Hence
+`F(1-i z)` is neither Herglotz nor anti-Herglotz on any upper tail, regardless of internal network
+coupling.
+
+**Lean action.** Completed in `DirichletHalfPlaneSignRigidity.lean` and
+`CCMSharpPrimeWindowPassiveNoGo.lean`.  Existing external bounds still do not satisfy the sharp
+typed premise; a transformed passive function would be a new route requiring a source-only inverse
+handoff.
 
 ### Route J — arithmetic Julia coherent energy
 

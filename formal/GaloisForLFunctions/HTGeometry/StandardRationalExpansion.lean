@@ -359,4 +359,27 @@ theorem isStdRat_inv_risingProd (q : ℕ) : IsStdRat (fun x : ℂ => (risingProd
     rw [risingProd_eq_shiftProd]
     simp
 
+/-- Finite products of standard rational functions are standard, with defects adding. -/
+theorem IsStdRat.prod {ι : Type*} (s : Finset ι) (f : ι → ℂ → ℂ) (p : ι → ℕ)
+    (hf : ∀ i ∈ s, IsStdRat (f i) (p i)) :
+    IsStdRat (fun x => ∏ i ∈ s, f i x) (∑ i ∈ s, p i) := by
+  classical
+  induction s using Finset.induction with
+  | empty =>
+    refine ⟨1, 0, by simp, fun x _ => ?_⟩
+    show ∏ i ∈ (∅ : Finset ι), f i x = Polynomial.eval x 1 / shiftProd 0 x
+    simp [shiftProd]
+  | insert x s hx ih =>
+    have hrest := ih (fun i hi => hf i (Finset.mem_insert_of_mem hi))
+    have hhead := hf x (Finset.mem_insert_self x s)
+    have hmul := hhead.mul hrest
+    have hfun : (fun y : ℂ => f x y * ∏ i ∈ s, f i y)
+        = fun y : ℂ => ∏ i ∈ insert x s, f i y := by
+      funext y
+      rw [Finset.prod_insert hx]
+    rw [hfun] at hmul
+    have hidx : p x + ∑ i ∈ s, p i = ∑ i ∈ insert x s, p i := by
+      rw [Finset.sum_insert hx]
+    rwa [hidx] at hmul
+
 end GaloisForLFunctions

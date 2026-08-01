@@ -1,4 +1,5 @@
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+import Mathlib.Analysis.Calculus.ParametricIntervalIntegral
 
 /-!
 # The compact Fourier transform of a constant, and parity of a quotient
@@ -216,6 +217,69 @@ theorem norm_mul_fourierKernel_le {f : ℝ → ℂ} {bound : ℝ → ℝ} {z : �
       ≤ bound t * Real.exp (|z.im| * a) :=
         mul_le_mul hf hk (norm_nonneg _) hb
     _ = Real.exp (|z.im| * a) * bound t := by ring
+
+/-- **Continuity of an amplitude against the Fourier kernel.**  This supplies the
+`AEStronglyMeasurable` hypotheses of parametric differentiation under a compact Fourier transform,
+which for a continuous amplitude are automatic. -/
+theorem continuous_mul_fourierKernel {f : ℝ → ℂ} (hf : Continuous f) (z : ℂ) :
+    Continuous (fun t : ℝ => f t * Complex.exp (I * z * (t : ℝ))) := by
+  refine hf.mul ?_
+  fun_prop
+
+/-- The parameter derivative against the kernel comes from the amplitude's own parameter
+derivative: the kernel is constant in the parameter, so it simply multiplies through. -/
+theorem hasDerivAt_mul_fourierKernel {u : ℝ → ℂ} {u' : ℂ} {r : ℝ} (z : ℂ) (t : ℝ)
+    (h : HasDerivAt u u' r) :
+    HasDerivAt (fun s => u s * Complex.exp (I * z * (t : ℝ)))
+      (u' * Complex.exp (I * z * (t : ℝ))) r :=
+  h.mul_const _
+
+/-- On a symmetric interval, every point of the integration set satisfies `|t| ≤ a`.  This is the
+interval fact `hasDerivAt_compactFourier` needs, so it is a lemma rather than a hypothesis. -/
+theorem abs_le_of_mem_uIoc_symm {a t : ℝ} (ha : 0 ≤ a) (ht : t ∈ Set.uIoc (-a) a) : |t| ≤ a := by
+  rw [Set.uIoc_of_le (by linarith : (-a : ℝ) ≤ a)] at ht
+  exact abs_le.mpr ⟨le_of_lt ht.1, ht.2⟩
+
+/-- Interval integrability of an amplitude against the Fourier kernel, from continuity alone.  This
+discharges the base-point integrability hypothesis of `hasDerivAt_compactFourier`. -/
+theorem intervalIntegrable_mul_fourierKernel {f : ℝ → ℂ} (hf : Continuous f) (z : ℂ) (a b : ℝ) :
+    IntervalIntegrable (fun t => f t * Complex.exp (I * z * (t : ℝ)))
+      MeasureTheory.volume a b :=
+  (continuous_mul_fourierKernel hf z).intervalIntegrable a b
+
+/-- **Differentiation under a compact Fourier transform.**  For an amplitude family that is
+continuous in the variable, differentiable in the parameter, and has a uniformly bounded parameter
+derivative on the interval, the compact Fourier transform may be differentiated under the integral.
+
+Every hypothesis slot of mathlib's dominated parametric derivative is discharged here from the
+amplitude alone: the kernel contributes only continuity and the constant `exp (|Im z| a)`. -/
+theorem hasDerivAt_compactFourier {u w : ℝ → ℝ → ℂ} {a r₀ M : ℝ} {z : ℂ}
+    (hmeas : ∀ᶠ r in nhds r₀, Continuous (u r))
+    (hint : IntervalIntegrable
+      (fun t => u r₀ t * Complex.exp (I * z * (t : ℝ))) MeasureTheory.volume (-a) a)
+    (hwmeas : Continuous (w r₀))
+    (ha : ∀ t ∈ Set.uIoc (-a) a, |t| ≤ a)
+    (hbound : ∀ t ∈ Set.uIoc (-a) a, ∀ r ∈ Metric.ball r₀ 1, ‖w r t‖ ≤ M)
+    (hdiff : ∀ t ∈ Set.uIoc (-a) a, ∀ r ∈ Metric.ball r₀ 1,
+      HasDerivAt (fun s => u s t * Complex.exp (I * z * (t : ℝ)))
+        (w r t * Complex.exp (I * z * (t : ℝ))) r) :
+    HasDerivAt (fun r => ∫ t in (-a)..a, u r t * Complex.exp (I * z * (t : ℝ)))
+      (∫ t in (-a)..a, w r₀ t * Complex.exp (I * z * (t : ℝ))) r₀ := by
+  have hball : Metric.ball r₀ 1 ∈ nhds r₀ := Metric.ball_mem_nhds r₀ one_pos
+  refine (intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_deriv_le
+    (F := fun r t => u r t * Complex.exp (I * z * (t : ℝ)))
+    (F' := fun r t => w r t * Complex.exp (I * z * (t : ℝ)))
+    (bound := fun _ => Real.exp (|z.im| * a) * M) hball ?_ hint ?_ ?_ ?_ ?_).2
+  · filter_upwards [hmeas] with r hr
+    exact ((continuous_mul_fourierKernel hr z).aestronglyMeasurable).restrict
+  · exact ((continuous_mul_fourierKernel hwmeas z).aestronglyMeasurable).restrict
+  · filter_upwards with t
+    intro ht r hr
+    exact norm_mul_fourierKernel_le (f := w r) (bound := fun _ => M) (ha t ht) (hbound t ht r hr)
+  · exact intervalIntegrable_const
+  · filter_upwards with t
+    intro ht r hr
+    exact hdiff t ht r hr
 
 end
 

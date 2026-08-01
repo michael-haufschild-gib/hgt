@@ -3299,6 +3299,7 @@ import GaloisForLFunctions.HTGeometry.RisingFactorialPolynomial
 import GaloisForLFunctions.HTGeometry.StandardRationalExpansion
 import GaloisForLFunctions.HTGeometry.PolygammaDepthExpansion
 import GaloisForLFunctions.HTGeometry.WeightedProductBound
+import GaloisForLFunctions.HTGeometry.StdRatDatum
 import GaloisForLFunctions.HTGeometry.GammaFieldProjectiveResidue
 import GaloisForLFunctions.HTGeometry.NormalizedRatioLaw
 import GaloisForLFunctions.HTGeometry.CompactCauchyRowPacketAtlas
@@ -3362,3 +3363,5 @@ import GaloisForLFunctions.HTGeometry.DualSchurVariables
 import GaloisForLFunctions.HTGeometry.DualTriangularInverse
 import GaloisForLFunctions.HTGeometry.BlockComplementaryMinor
 import GaloisForLFunctions.HTGeometry.DualRectangularSection
+import GaloisForLFunctions.HTGeometry.DirichletHalfPlaneSignRigidity
+import GaloisForLFunctions.HTGeometry.SchurCofactorLocus
