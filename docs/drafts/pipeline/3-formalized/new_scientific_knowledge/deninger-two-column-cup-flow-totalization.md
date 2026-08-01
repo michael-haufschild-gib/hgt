@@ -19,7 +19,7 @@ not an additional conjecture.
 
 - [x] 0 → 1 in-progress: source-pure statement, attack, falsifiers
 - [x] 1 → 2 fully-proven: dependency-closed paper proof
-- [ ] 2 → 3 formalized: Lean constructors
+- [x] 2 → 3 formalized: Lean constructors
   `deningerTwoColumnSignatureFlow` and
   `deningerTwoColumnCupPairing`
 - [ ] 3 → 4 publication-ready: standalone theorem and Lean certificate
@@ -160,3 +160,36 @@ nondegeneracy, is already formalized in
 ## Log
 
 - 2026-07-26 — exact flow and cup--trace totalization proved on paper.
+
+## Lean status
+
+### Both theorems landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerArithmeticTwoColumnSignatureTotalization.lean`, over
+the three-term complex/flow/cup framework of `DeningerArithmeticThreeTermCohomology.lean` and
+`DeningerArithmeticThreeTermCupDescent.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerTwoColumnSignatureD0`, `deningerTwoColumnSignatureD1`,
+  `deningerTwoColumnSignatureD1_comp_D0`, `deningerTwoColumnSignatureComplex` — the setup `(1)` and
+  the total complex `(2)`: `L⁰ = G^{0,0}`, `L¹ = G^{1,0} ⊕ G^{0,1}`, `L² = G^{1,1} ⊕ S`, with
+  `d⁰a = (h₀a, v₀a)` and `d¹(c,b) = (v₁c - h₁b, σ₁₀c + σ₀₁b)`, and `d¹d⁰ = 0` forced by exactly the
+  two identities of `(1)`.
+- `deningerTwoColumnProductEnd`, `deningerTwoColumnSignatureFlow` —
+  **`DAC_TWO_COLUMN_FLOW_TOTALIZATION`**: five componentwise endomorphisms commuting with the two
+  residues, the internal differential and the two signature boundaries assemble into a flow on the
+  three-term complex; the two commutation obligations in each total degree are discharged exactly
+  as the card's proof does.
+- `deningerTwoColumnPair02`, `deningerTwoColumnPair11` — the endpoint and middle pairings `(3)`.
+- `deningerTwoColumnCupPairing` — **`DAC_TWO_COLUMN_CUP_TRACE_TOTALIZATION`**: the two local
+  adjunction identities `(4)` give the chain-level cup–trace identity `(5)`
+  (`differential_adjoint`), and the middle pairing is alternating (`skew`).  Descent of this
+  pairing to `H⁰ × H²` and `H¹ × H¹`, with the radical criterion for nondegeneracy, is the already
+  formalized `DeningerArithmeticThreeTermCupDescent.lean`.
+
+### Remaining
+
+Nothing.  The card's own scope is exactly this formal algebra: it constructs no arithmetic sheaf,
+proves no acyclicity, and does not claim perfectness — those obligations belong to the global
+Rost–Schmid, Galois and real-signature descent cards that must supply `(1)`, flow naturality and
+`(4)` for the actual coefficient.

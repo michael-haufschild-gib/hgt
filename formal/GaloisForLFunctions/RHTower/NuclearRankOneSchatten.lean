@@ -13,6 +13,7 @@ noncomputable section
 namespace RHTower
 
 open ContinuousLinearMap
+open Filter Topology
 open scoped InnerProductSpace
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
@@ -140,6 +141,148 @@ theorem memSchattenClass_one_tsum_rankOne
       (fun n => approxNumber_tsum_rankOne_le_tail x y hnorm n)
       htail
   exact happ.congr fun n => (Real.rpow_one _).symm
+
+/-! ## Absolute nuclear series
+
+The tail-of-the-given-enumeration estimate above is useful for factorial series, but its weighted
+tail hypothesis is not intrinsic to nuclearity.  The next theorem supplies the sharp classical
+bridge: absolute summability of rank-one operator norms alone implies Schatten-1 membership.
+The proof compares each finite set of approximation numbers with a finite-rank partial sum and
+then sends its operator-norm tail to zero. -/
+
+omit [CompleteSpace H] in
+/-- A rank-at-most-one operator has trace norm equal to its operator norm. -/
+theorem traceNorm_eq_norm_of_hasRankLE_one
+    {A : H →L[ℂ] H} (hA : HasRankLE A 1) :
+    traceNorm H A = ‖A‖ := by
+  have hzero : ∀ n : ℕ, n ≠ 0 → approxNumber A n = 0 := by
+    intro n hn
+    apply le_antisymm
+    · simpa using approxNumber_le A n A (hA.mono (Nat.one_le_iff_ne_zero.mpr hn))
+    · exact approxNumber_nonneg A n
+  rw [traceNorm, tsum_eq_single 0]
+  · exact approxNumber_zero_eq_norm A
+  · intro n hn
+    exact hzero n hn
+
+omit [CompleteSpace H] in
+/-- A finite sum of rank-at-most-one terms has rank bounded by the number of terms. -/
+theorem hasRankLE_sum_finset_of_rankOne
+    {ι : Type*} (A : ι → H →L[ℂ] H) (hA : ∀ k, HasRankLE (A k) 1)
+    (s : Finset ι) :
+    HasRankLE (∑ k ∈ s, A k) s.card := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simpa using hasRankLE_zero (H := H) 0
+  | @insert k s hk ih =>
+      rw [Finset.sum_insert hk, Finset.card_insert_of_notMem hk]
+      simpa [Nat.add_comm] using (hA k).add ih
+
+/-- Trace norm of a finite rank-one sum is bounded by the sum of term norms. -/
+theorem traceNorm_sum_le_sum_norm_of_rankOneTerms
+    {ι : Type*} (A : ι → H →L[ℂ] H) (hA : ∀ k, HasRankLE (A k) 1)
+    (s : Finset ι) :
+    traceNorm H (∑ k ∈ s, A k) ≤ ∑ k ∈ s, ‖A k‖ := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp [traceNorm_zero]
+  | @insert k s hk ih =>
+      rw [Finset.sum_insert hk, Finset.sum_insert hk]
+      have hkS : MemSchattenClass 1 (A k) :=
+        memSchattenClass_of_hasRankLE one_pos (hA k)
+      have hsRank : HasRankLE (∑ j ∈ s, A j) s.card :=
+        hasRankLE_sum_finset_of_rankOne A hA s
+      have hsS : MemSchattenClass 1 (∑ j ∈ s, A j) :=
+        memSchattenClass_of_hasRankLE one_pos hsRank
+      have hkRaw : Summable (fun n => approxNumber (A k) n) :=
+        hkS.congr fun n => Real.rpow_one _
+      have hsRaw : Summable (fun n => approxNumber (∑ j ∈ s, A j) n) :=
+        hsS.congr fun n => Real.rpow_one _
+      have htri := traceNorm_add_le
+        (hkS.isCompactOperator one_pos) (hsS.isCompactOperator one_pos)
+        hkRaw hsRaw
+      calc
+        traceNorm H (A k + ∑ j ∈ s, A j) ≤
+            traceNorm H (A k) + traceNorm H (∑ j ∈ s, A j) := htri
+        _ = ‖A k‖ + traceNorm H (∑ j ∈ s, A j) := by
+          rw [traceNorm_eq_norm_of_hasRankLE_one (hA k)]
+        _ ≤ ‖A k‖ + ∑ j ∈ s, ‖A j‖ := by gcongr
+
+omit [CompleteSpace H] in
+private theorem approxNumber_le_norm_sub_add
+    (T S : H →L[ℂ] H) (n : ℕ) :
+    approxNumber T n ≤ ‖T - S‖ + approxNumber S n := by
+  apply le_of_forall_pos_le_add
+  intro ε hε
+  obtain ⟨F, hF, hFlt⟩ := exists_hasRankLE_norm_sub_lt S n
+    (lt_add_of_pos_right _ hε)
+  calc
+    approxNumber T n ≤ ‖T - F‖ := approxNumber_le T n F hF
+    _ = ‖(T - S) + (S - F)‖ := by congr 1; abel
+    _ ≤ ‖T - S‖ + ‖S - F‖ := norm_add_le _ _
+    _ ≤ ‖T - S‖ + approxNumber S n + ε := by linarith
+
+/-- **Absolute nuclear rank-one series are Schatten-1.** No weighted tail condition and no
+preferred enumeration are required beyond absolute operator-norm summability. -/
+theorem memSchattenClass_one_tsum_rankOneTerms_of_summable_norm
+    {ι : Type*} (A : ι → H →L[ℂ] H) (hA : ∀ k, HasRankLE (A k) 1)
+    (hnorm : Summable (fun k => ‖A k‖)) :
+    MemSchattenClass 1 (∑' k, A k) := by
+  classical
+  have hsum : Summable A := Summable.of_norm hnorm
+  unfold MemSchattenClass
+  apply (show Summable (fun n => approxNumber (∑' k, A k) n) from ?_).congr
+  · intro n
+    exact (Real.rpow_one _).symm
+  apply summable_of_sum_le (c := ∑' k, ‖A k‖)
+    (fun n => approxNumber_nonneg _ n)
+  intro s
+  apply le_of_forall_pos_le_add
+  intro ε hε
+  let c : ℝ := s.card
+  have hc0 : 0 ≤ c := Nat.cast_nonneg _
+  obtain ⟨u, hu⟩ : ∃ u : Finset ι,
+      c * ‖(∑' k, A k) - ∑ k ∈ u, A k‖ < ε := by
+    by_cases hc : c = 0
+    · exact ⟨∅, by simp [hc, hε]⟩
+    · have hcpos : 0 < c := lt_of_le_of_ne hc0 (Ne.symm hc)
+      have htend : Tendsto (fun u : Finset ι => ∑ k ∈ u, A k) atTop
+          (nhds (∑' k, A k)) := hsum.hasSum
+      have hevent : ∀ᶠ u : Finset ι in atTop,
+          ‖(∑' k, A k) - ∑ k ∈ u, A k‖ < ε / c := by
+        have hball := htend.eventually
+          (Metric.ball_mem_nhds _ (div_pos hε hcpos))
+        filter_upwards [hball] with u hu
+        rw [dist_eq_norm] at hu
+        simpa only [norm_sub_rev] using hu
+      obtain ⟨u, htail⟩ := hevent.exists
+      exact ⟨u, by
+        have heq : c * (ε / c) = ε := by field_simp [hc]
+        nlinarith⟩
+  let S : H →L[ℂ] H := ∑ k ∈ u, A k
+  have hpoint : ∀ n, approxNumber (∑' k, A k) n ≤
+      ‖(∑' k, A k) - S‖ + approxNumber S n :=
+    fun n => approxNumber_le_norm_sub_add _ _ _
+  calc
+    ∑ n ∈ s, approxNumber (∑' k, A k) n ≤
+        ∑ n ∈ s, (‖(∑' k, A k) - S‖ + approxNumber S n) :=
+      Finset.sum_le_sum fun n _ => hpoint n
+    _ = c * ‖(∑' k, A k) - S‖ + ∑ n ∈ s, approxNumber S n := by
+      simp [c, Finset.sum_add_distrib]
+    _ ≤ c * ‖(∑' k, A k) - S‖ + traceNorm H S := by
+      gcongr
+      exact Summable.sum_le_tsum s
+        (fun n _ => approxNumber_nonneg S n)
+        ((memSchattenClass_of_hasRankLE one_pos
+          (hasRankLE_sum_finset_of_rankOne A hA u)).congr
+            (fun n => Real.rpow_one _))
+    _ ≤ c * ‖(∑' k, A k) - S‖ + ∑ k ∈ u, ‖A k‖ := by
+      gcongr
+      exact traceNorm_sum_le_sum_norm_of_rankOneTerms A hA u
+    _ ≤ c * ‖(∑' k, A k) - S‖ + ∑' k, ‖A k‖ := by
+      gcongr
+      exact hnorm.sum_le_tsum u (fun k _ => norm_nonneg _)
+    _ ≤ ∑' k, ‖A k‖ + ε := by dsimp [S] at hu ⊢; linarith
 
 /-- A weighted first moment controls the sum of all tails.  This is the discrete Tonelli
 identity needed to turn factorial decay of a nuclear expansion into Schatten-1 summability. -/

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.DeningerPrimeBlockGreenSummability
-import GaloisForLFunctions.RHTower.DeningerPacketFrobeniusQuotient
+import GaloisForLFunctions.RHTower.DeningerPacketFrobeniusQuotientNontrivial
+import GaloisForLFunctions.RHTower.DeningerPacketNonlocal
 import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.MeasureTheory.Function.LpSpace.ContinuousFunctions
 import Mathlib.MeasureTheory.Measure.Haar.Basic
@@ -91,6 +92,38 @@ theorem deningerPrimePacketContinuousToHaarL2_apply_norm_le
 theorem deningerPrimePacketContinuousToHaarL2_injective (p : Nat.Primes) :
     Function.Injective (deningerPrimePacketContinuousToHaarL2 p) := by
   exact ContinuousMap.toLp_injective (deningerPrimePacketHaarMeasure p)
+
+/-- Every quotient packet has a clopen piece of strictly intermediate Haar probability. -/
+theorem deningerPrimePacket_exists_clopen_intermediateMass (p : Nat.Primes) :
+    ∃ D : Set (DeningerPacketFrobeniusQuotient p), IsClopen D ∧
+      0 < (deningerPrimePacketHaarMeasure p).real D ∧
+      (deningerPrimePacketHaarMeasure p).real D < 1 := by
+  obtain ⟨x, y, hxy⟩ := exists_pair_ne (DeningerPacketFrobeniusQuotient p)
+  obtain ⟨D, hD, hx, hy⟩ := exists_isClopen_of_totally_separated hxy
+  have hDne : D.Nonempty := ⟨x, hx⟩
+  have hDcne : Dᶜ.Nonempty := ⟨y, hy⟩
+  have hpos : 0 < (deningerPrimePacketHaarMeasure p).real D := by
+    exact ENNReal.toReal_pos
+      (hD.isOpen.measure_ne_zero (deningerPrimePacketHaarMeasure p) hDne)
+      (measure_ne_top (deningerPrimePacketHaarMeasure p) D)
+  have hcomppos : 0 < (deningerPrimePacketHaarMeasure p).real Dᶜ := by
+    exact ENNReal.toReal_pos
+      (hD.compl.isOpen.measure_ne_zero (deningerPrimePacketHaarMeasure p) hDcne)
+      (measure_ne_top (deningerPrimePacketHaarMeasure p) Dᶜ)
+  refine ⟨D, hD, hpos, ?_⟩
+  rw [measureReal_compl hD.isClosed.measurableSet, probReal_univ] at hcomppos
+  linarith
+
+/-- **Nonvacuous transverse sector.**  Every prime packet has a nonzero continuous mean-zero
+function whose image remains nonzero in Haar `L²`. -/
+theorem deningerPrimePacket_exists_nonzero_meanZeroHaarMode (p : Nat.Primes) :
+    ∃ f : C(DeningerPacketFrobeniusQuotient p, ℝ),
+      deningerPacketAv (deningerPrimePacketHaarMeasure p) f = 0 ∧
+      deningerPrimePacketContinuousToHaarL2 p f ≠ 0 := by
+  obtain ⟨D, hD, hpos, hlt⟩ := deningerPrimePacket_exists_clopen_intermediateMass p
+  obtain ⟨f, havg, hf⟩ :=
+    deningerPacketAv_ker_ne_bot (deningerPrimePacketHaarMeasure p) hD hpos hlt
+  exact ⟨f, havg, (deningerPrimePacketContinuousToHaarL2_injective p).ne hf⟩
 
 /-- All-prime Hilbert sum of the canonical packet Haar-`L²` fibres. -/
 abbrev DeningerPrimePacketHaarHilbertSum : Type :=

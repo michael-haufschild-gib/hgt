@@ -71,4 +71,44 @@ theorem denseAddOrbit_open_hits_syndetically
   · change orbit (a - lo) + orbit s ∈ U at hVs
     simpa [map_add] using hVs
 
+/-- **Syndetic alternation law.** A dense real subgroup of a compact group
+cannot merely revisit two disjoint open regimes: it must pass from the first
+to the second and back again, with one finite upper bound on every leg,
+starting after every real time.
+
+This is the abstract growth--plateau--recurrence mechanism.  The two regimes
+may encode low and high circuit complexity, localized and delocalized phases,
+or any other disjoint open dynamical properties. -/
+theorem denseAddOrbit_disjoint_open_targets_alternate_syndetically
+    {X : Type*} [TopologicalSpace X] [AddGroup X]
+    [IsTopologicalAddGroup X] [CompactSpace X]
+    (orbit : ℝ →+ X) (hdense : DenseRange orbit)
+    {U V : Set X} (hUopen : IsOpen U) (hUne : U.Nonempty)
+    (hVopen : IsOpen V) (hVne : V.Nonempty) (hdisj : Disjoint U V) :
+    ∃ L : ℝ, 0 ≤ L ∧ ∀ a : ℝ,
+      ∃ tU ∈ Icc a (a + L),
+      ∃ tV ∈ Ioc tU (tU + L),
+      ∃ tU' ∈ Ioc tV (tV + L),
+        orbit tU ∈ U ∧ orbit tV ∈ V ∧ orbit tU' ∈ U := by
+  obtain ⟨LU, hLU, hUhit⟩ :=
+    denseAddOrbit_open_hits_syndetically orbit hdense hUopen hUne
+  obtain ⟨LV, hLV, hVhit⟩ :=
+    denseAddOrbit_open_hits_syndetically orbit hdense hVopen hVne
+  refine ⟨LU + LV, add_nonneg hLU hLV, fun a ↦ ?_⟩
+  obtain ⟨tU, htU, htUmem⟩ := hUhit a
+  obtain ⟨tV, htV, htVmem⟩ := hVhit tU
+  obtain ⟨tU', htU', htU'mem⟩ := hUhit tV
+  have htUneV : tU ≠ tV := by
+    intro heq
+    subst tV
+    exact Set.disjoint_left.mp hdisj htUmem htVmem
+  have htVneU : tV ≠ tU' := by
+    intro heq
+    subst tU'
+    exact Set.disjoint_left.mp hdisj htU'mem htVmem
+  refine ⟨tU, ⟨htU.1, htU.2.trans (by linarith)⟩, tV,
+    ⟨lt_of_le_of_ne htV.1 htUneV, htV.2.trans (by linarith)⟩,
+    tU', ⟨lt_of_le_of_ne htU'.1 htVneU, htU'.2.trans (by linarith)⟩,
+    htUmem, htVmem, htU'mem⟩
+
 end GaloisForLFunctions.HTGeometry

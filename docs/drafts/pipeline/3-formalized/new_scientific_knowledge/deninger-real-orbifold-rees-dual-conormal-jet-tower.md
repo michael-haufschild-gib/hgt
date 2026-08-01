@@ -109,9 +109,10 @@ In particular:
   \]
   for every repository positive-time test.
 
-No new Lean build is needed for the local character. What remains to
-formalize is its representation as the flow trace of the explicit
-jet-product object `(4)`.
+The remaining item — the representation of the character as the flow
+trace of the explicit jet-product object `(4)` — is now formalized in
+`formal/GaloisForLFunctions/RHTower/DeningerReesJetTower.lean`; see the
+Lean status section at the end of this card.
 
 ## 6. Boundary of the theorem
 
@@ -150,3 +151,33 @@ Those are the remaining clauses of
 - 2026-07-27 — Identified Deninger's real Rees orbifold coordinate
   with the full dual-conormal even-jet product and derived the exact
   positive-time archimedean character.
+
+## Lean status
+
+### The jet tower, its flow law and its character landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerReesJetTower.lean`, alongside the already formalized
+analytic identity in `DeningerArithmeticArchimedean.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerReesFlow`, `deningerRealJet` — the real-place Rees flow `(2)` on the orbifold coordinate
+  and the normalized dual-conormal Taylor jet `(3)`.
+- `deningerJetWeight`, `deningerJetWeight_eq_pow` — the weight `e^{-2kt}` and its geometric form.
+- `deningerRealJet_reesFlow` — **`(6)`, the flow law**: for every `C^k` germ,
+  `j_k((φ^t)^* f) = e^{-2kt} j_k(f)`, so the `k`-th jet is an eigenline.  This is the `κ = -2`
+  specialization of the dual-conormal flow law.
+- `deningerJetTowerOperator`, `deningerJetTower_trace` — **`(7)`**: on the truncation `(5)` the
+  flow is the diagonal operator with those weights, and its trace is `∑_{k≤N} e^{-2kt}`.
+- `deningerJetTower_summable`, `deningerJetTower_tsum` — **`(8)`**: for `t > 0` the weights are
+  summable and sum to `(1 - e^{-2t})^{-1}`.
+- `deningerJetTower_trace_tendsto` — the truncated traces converge to that character, which is the
+  precise sense of `lim_N Tr(φ^t | K'_{∞,≤N})` in `(8)`.
+- `deningerDensityCurrentWeight`, `deningerDensityCurrentWeight_one_lt` — the complementary
+  supported density-current tower has the expanding weights `e^{2(k+1)t} > 1` in positive time, so
+  the attracting character belongs to `(4)`, as the card assigns.
+
+### Remaining
+
+Nothing for the local character.  The clauses listed in §6 — the global stationary leaf, the
+compactified source, the extension through `t = 0`, the `b`-trace anomaly, the global Hodge/Green
+projection and the finite-prime periodic-orbit trace — are explicitly outside this theorem.

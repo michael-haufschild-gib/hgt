@@ -1,4 +1,6 @@
-# Route E terminal closure (2026-08-01)
+# RETRACTED framing — Route E finite/local submechanism classification (2026-08-01)
+
+> Correction: this memory never established Route E closure. It classified two submechanisms while leaving literal OPEN-SOURCE-001 untouched. Route E is OPEN. Continue from `mem:research/route_e_open_source_pursuit_2026_08_01`.
 
 Route E is closed as an independent finite/local mechanism, not as a proof of RH.
 

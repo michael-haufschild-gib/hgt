@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ProjectiveFlagDimension
+import Mathlib.CategoryTheory.Category.Preorder
 
 /-!
 # The all-depth horizon poset
@@ -286,6 +287,55 @@ omit [DecidableEq (Submodule K V)] in
 omit [DecidableEq (Submodule K V)] in
 @[simp] theorem cuspHomotopy_true (v : CuspedVertex K V) :
     cuspHomotopy (v, true) = retract v := rfl
+
+/-! ## The homotopy over the simplicial interval -/
+
+omit [DecidableEq (Submodule K V)] in
+/-- **The elementary homotopy over the interval as mathlib models it.**  The same map as
+`cuspHomotopy`, with the interval taken to be `ULift (Fin 2)`, which is the preordered type whose
+nerve is the standard `1`-simplex. -/
+def cuspHomotopyInterval : (CuspedVertex K V × ULift (Fin 2)) →o CuspedVertex K V where
+  toFun p := if p.2.down = 0 then p.1 else retract p.1
+  monotone' := by
+    rintro ⟨v, i⟩ ⟨w, j⟩ ⟨hvw, hij⟩
+    by_cases hi : i.down = 0
+    · by_cases hj : j.down = 0
+      · simpa [hi, hj] using hvw
+      · simpa [hi, hj] using le_trans hvw (le_retract w)
+    · have hj : j.down ≠ 0 := by
+        intro hcon
+        refine hi ?_
+        have hle : i.down ≤ j.down := hij
+        rw [hcon] at hle
+        exact le_antisymm hle (Fin.zero_le _)
+      simpa [hi, hj] using retract_monotone hvw
+
+omit [DecidableEq (Submodule K V)] in
+@[simp] theorem cuspHomotopyInterval_zero (v : CuspedVertex K V) :
+    cuspHomotopyInterval (v, ⟨0⟩) = v := by
+  simp [cuspHomotopyInterval]
+
+/-! ## The homotopy as categorical data -/
+
+omit [DecidableEq (Submodule K V)] in
+/-- The retraction as a functor of the poset viewed as a category. -/
+def retractFunctor : CategoryTheory.Functor (CuspedVertex K V) (CuspedVertex K V) :=
+  Monotone.functor retract_monotone
+
+omit [DecidableEq (Submodule K V)] in
+/-- The homotopy as a functor out of the poset times the interval.  Its nerve is the map whose
+endpoints are the identity and the retraction. -/
+def cuspHomotopyFunctor :
+    CategoryTheory.Functor (CuspedVertex K V × Bool) (CuspedVertex K V) :=
+  Monotone.functor cuspHomotopy.monotone
+
+omit [DecidableEq (Submodule K V)] in
+/-- **The natural transformation from the identity to the retraction.**  In a poset every diagram
+commutes, so the inequality `x ≤ retract x` is already a natural transformation — the categorical
+input to the statement that the nerve of the retraction is homotopic to the identity. -/
+def unitToRetract : CategoryTheory.Functor.id (CuspedVertex K V) ⟶ retractFunctor where
+  app v := CategoryTheory.homOfLE (le_retract v)
+  naturality _ _ _ := Subsingleton.elim _ _
 
 end CuspedVertex
 

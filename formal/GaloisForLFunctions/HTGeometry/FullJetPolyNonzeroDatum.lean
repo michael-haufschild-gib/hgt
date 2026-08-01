@@ -110,7 +110,7 @@ theorem exists_full_jetPoly_datum {σ : ℝ} (hσ : 0 < σ) {M K : ℕ} (hM : 0 
       · intro h
         refine T.equivFin.symm.injective ?_
         rw [Equiv.symm_apply_apply]
-        exact Subtype.ext (by simpa [v] using h.symm)
+        exact Subtype.ext (by simpa [v] using h)
     rw [hfilter]
     have hpull : ∑ α ∈ Finset.univ.filter (fun α => lg α = v β),
         Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) ^ lg α * g α t

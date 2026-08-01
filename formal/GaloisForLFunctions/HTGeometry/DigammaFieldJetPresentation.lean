@@ -3,6 +3,8 @@ import GaloisForLFunctions.HTGeometry.UpperEndJetTransport
 import GaloisForLFunctions.HTGeometry.UpperEndLiteralLinearIndependence
 import GaloisForLFunctions.HTGeometry.DifferentialJetAlgebra
 import GaloisForLFunctions.HTGeometry.JetOrderRegrouping
+import GaloisForLFunctions.HTGeometry.FullJetPolyNonzeroDatum
+import GaloisForLFunctions.HTGeometry.SupportReindex
 
 /-!
 # Presentation of the digamma differential field
@@ -152,6 +154,169 @@ theorem exists_digamma_algebra_analytic {y : upperEndMeroField}
   refine Finset.sum_congr rfl fun α _ => ?_
   rw [hc α, ← hE α]
   exact congrArg _ (Finset.prod_congr rfl fun i _ => by rw [hn i])
+
+/-- **The presentation with distinct monomials.**  The order-indexed exponent vectors of a jet-algebra
+element are pairwise distinct, so the presentation is a genuine polynomial in the polygammas. -/
+theorem exists_digamma_algebra_analytic_inj {y : upperEndMeroField}
+    (hy : y ∈ differentialJetAlgebra ℂ ({digammaMero} : Set upperEndMeroField)) :
+    ∃ (M K : ℕ) (c : Fin M → ℂ) (E : Fin M → Fin (K + 1) → ℕ) (a : upperEndAnalyticSubring),
+      Function.Injective E
+        ∧ y = algebraMap upperEndAnalyticSubring upperEndMeroField a
+        ∧ upperEndAnalyticSubring.subtype a
+          = Germ.coeRingHom upperEndFilter
+            (fun z : ℂ => ∑ α : Fin M, c α
+              * ∏ j : Fin (K + 1), iteratedDeriv (j : ℕ) Complex.digamma z ^ E α j) := by
+  classical
+  obtain ⟨M, N, b, e, h, hb, hh, hhinj, heinj, hy'⟩ := exists_fin_jetPoly_of_mem_algebra_inj hy
+  rw [differentialJetSet_digamma] at hh
+  choose c hc using hb
+  choose n hn using hh
+  have hninj : Function.Injective n := by
+    intro i i' hii'
+    refine hhinj ?_
+    rw [← hn i, ← hn i', hii']
+  obtain ⟨K, E, hEinj, hE⟩ :=
+    exists_canonical_exponents_family_inj (R := upperEndMeroField) digammaJetMero n hninj e heinj
+  obtain ⟨a, ha, hgerm⟩ := exists_jetPoly_analytic c E (fun j : Fin (K + 1) => (j : ℕ))
+  refine ⟨M, K, c, E, a, hEinj, ?_, hgerm⟩
+  rw [← ha, hy']
+  refine Finset.sum_congr rfl fun α _ => ?_
+  rw [hc α, ← hE α]
+  exact congrArg _ (Finset.prod_congr rfl fun i _ => by rw [hn i])
+
+/-- **Every nonzero element of the digamma jet algebra has a datum.**  Its representing function on
+the line is a nonzero polynomial in the polygammas, so it has a residue against a `polyJetShape`
+with nonzero limit. -/
+theorem exists_digamma_algebra_datum {σ : ℝ} (hσ : 0 < σ) {y : upperEndMeroField}
+    (hy : y ∈ differentialJetAlgebra ℂ ({digammaMero} : Set upperEndMeroField)) (hy0 : y ≠ 0) :
+    ∃ (M K a b : ℕ) (c : Fin M → ℂ) (E : Fin M → Fin (K + 1) → ℕ) (r : ℂ)
+      (A : upperEndAnalyticSubring),
+      r ≠ 0 ∧ y = algebraMap upperEndAnalyticSubring upperEndMeroField A
+        ∧ upperEndAnalyticSubring.subtype A
+          = Germ.coeRingHom upperEndFilter
+            (fun z : ℂ => ∑ α : Fin M, c α
+              * ∏ j : Fin (K + 1), iteratedDeriv (j : ℕ) Complex.digamma z ^ E α j)
+        ∧ Tendsto (fun t : ℝ => (∑ α : Fin M, c α * ∏ j : Fin (K + 1),
+            iteratedDeriv (j : ℕ) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) ^ E α j)
+            / polyJetShape σ a 0 b t) atTop (nhds r) := by
+  classical
+  obtain ⟨M, K, c, E, A, hEinj, hyA, hgerm⟩ := exists_digamma_algebra_analytic_inj hy
+  obtain ⟨M', ι, hιinj, hcne, hsum⟩ :=
+    exists_reindex_support (M := M) c
+      (fun α => (fun z : ℂ => c α
+        * ∏ j : Fin (K + 1), iteratedDeriv (j : ℕ) Complex.digamma z ^ E α j))
+      (fun α hα => by funext z; simp [hα])
+  have hfun : (fun z : ℂ => ∑ α : Fin M, c α
+        * ∏ j : Fin (K + 1), iteratedDeriv (j : ℕ) Complex.digamma z ^ E α j)
+      = (fun z : ℂ => ∑ j : Fin M', c (ι j)
+        * ∏ i : Fin (K + 1), iteratedDeriv (i : ℕ) Complex.digamma z ^ E (ι j) i) := by
+    funext z
+    have hz := congrFun hsum z
+    simpa [Finset.sum_apply] using hz
+  rw [hfun] at hgerm
+  have hM'pos : 0 < M' := by
+    rcases Nat.eq_zero_or_pos M' with h0 | h
+    · exfalso
+      refine hy0 ?_
+      have hAzero : upperEndAnalyticSubring.subtype A = 0 := by
+        rw [hgerm]
+        subst h0
+        simp only [Finset.univ_eq_empty, Finset.sum_empty]
+        exact map_zero (Germ.coeRingHom upperEndFilter)
+      rw [hyA, show A = 0 from Subtype.ext hAzero, map_zero]
+    · exact h
+  obtain ⟨a, b, r, hr, hlim⟩ :=
+    exists_full_jetPoly_datum hσ hM'pos (fun j => c (ι j)) (fun j => E (ι j)) hcne
+      (fun j k hjk => hιinj (hEinj hjk))
+  exact ⟨M', K, a, b, fun j => c (ι j), fun j => E (ι j), r, A, hr, hyA, hgerm, hlim⟩
+
+/-- **Every nonzero element of the digamma differential field has a datum.**  Clearing denominators
+presents it as a quotient of two nonzero jet-algebra elements, each with its own residue, and the
+quotient of the two residues is the datum of the element against the quotient of the two shapes. -/
+theorem exists_digamma_field_datum {σ : ℝ} (hσ : 0 < σ) {x : upperEndMeroField}
+    (hx : x ∈ differentialAdjoin ℂ ({digammaMero} : Set upperEndMeroField)) (hx0 : x ≠ 0) :
+    ∃ (M₁ K₁ a₁ b₁ M₂ K₂ a₂ b₂ : ℕ) (c₁ : Fin M₁ → ℂ) (E₁ : Fin M₁ → Fin (K₁ + 1) → ℕ)
+      (c₂ : Fin M₂ → ℂ) (E₂ : Fin M₂ → Fin (K₂ + 1) → ℕ) (r : ℂ) (A B : upperEndAnalyticSubring),
+      r ≠ 0 ∧ B ≠ 0
+        ∧ x = algebraMap upperEndAnalyticSubring upperEndMeroField A
+            / algebraMap upperEndAnalyticSubring upperEndMeroField B
+        ∧ upperEndAnalyticSubring.subtype A = Germ.coeRingHom upperEndFilter
+            (fun z : ℂ => ∑ α : Fin M₁, c₁ α
+              * ∏ j : Fin (K₁ + 1), iteratedDeriv (j : ℕ) Complex.digamma z ^ E₁ α j)
+        ∧ upperEndAnalyticSubring.subtype B = Germ.coeRingHom upperEndFilter
+            (fun z : ℂ => ∑ α : Fin M₂, c₂ α
+              * ∏ j : Fin (K₂ + 1), iteratedDeriv (j : ℕ) Complex.digamma z ^ E₂ α j)
+        ∧ Tendsto (fun t : ℝ =>
+            ((∑ α : Fin M₁, c₁ α * ∏ j : Fin (K₁ + 1), iteratedDeriv (j : ℕ) Complex.digamma
+                ((σ : ℂ) + (t : ℂ) * Complex.I) ^ E₁ α j) / polyJetShape σ a₁ 0 b₁ t)
+            / ((∑ α : Fin M₂, c₂ α * ∏ j : Fin (K₂ + 1), iteratedDeriv (j : ℕ) Complex.digamma
+                ((σ : ℂ) + (t : ℂ) * Complex.I) ^ E₂ α j) / polyJetShape σ a₂ 0 b₂ t))
+          atTop (nhds r) := by
+  classical
+  obtain ⟨D, hDmem, hD0, hxD⟩ := exists_jetAlgebra_denominator (F := ℂ) hx
+  have hxD0 : x * D ≠ 0 := mul_ne_zero hx0 hD0
+  obtain ⟨M₁, K₁, a₁, b₁, c₁, E₁, r₁, A, hr₁, hA, hgermA, hlimA⟩ :=
+    exists_digamma_algebra_datum hσ hxD hxD0
+  obtain ⟨M₂, K₂, a₂, b₂, c₂, E₂, r₂, B, hr₂, hB, hgermB, hlimB⟩ :=
+    exists_digamma_algebra_datum hσ hDmem hD0
+  have hquot : Tendsto (fun t : ℝ =>
+      ((∑ α : Fin M₁, c₁ α * ∏ j : Fin (K₁ + 1), iteratedDeriv (j : ℕ) Complex.digamma
+          ((σ : ℂ) + (t : ℂ) * Complex.I) ^ E₁ α j) / polyJetShape σ a₁ 0 b₁ t)
+      / ((∑ α : Fin M₂, c₂ α * ∏ j : Fin (K₂ + 1), iteratedDeriv (j : ℕ) Complex.digamma
+          ((σ : ℂ) + (t : ℂ) * Complex.I) ^ E₂ α j) / polyJetShape σ a₂ 0 b₂ t))
+      atTop (nhds (r₁ / r₂)) := hlimA.div hlimB hr₂
+  refine ⟨M₁, K₁, a₁, b₁, M₂, K₂, a₂, b₂, c₁, E₁, c₂, E₂, r₁ / r₂, A, B,
+    div_ne_zero hr₁ hr₂, ?_, ?_, hgermA, hgermB, hquot⟩
+  · intro h
+    rw [h, map_zero] at hB
+    exact hD0 hB
+  · rw [← hA, ← hB]
+    exact (mul_div_cancel_right₀ x hD0).symm
+
+/-- A polynomial analytic germ is the germ of the polynomial's values. -/
+theorem polyToAnalytic_subtype (p : Polynomial ℂ) :
+    upperEndAnalyticSubring.subtype (upperEndPolyToAnalytic p)
+      = Germ.coeRingHom upperEndFilter (fun z : ℂ => p.eval z) := rfl
+
+/-- **Germ of a jet polynomial with polynomial coefficients.** -/
+theorem subtype_sum_prod_poly {M N : ℕ} (p : Fin M → Polynomial ℂ) (e : Fin M → Fin N → ℕ)
+    (u : Fin N → ℂ → ℂ) (A : Fin N → upperEndAnalyticSubring)
+    (hA : ∀ i, upperEndAnalyticSubring.subtype (A i) = Germ.coeRingHom upperEndFilter (u i)) :
+    upperEndAnalyticSubring.subtype
+        (∑ α : Fin M, upperEndPolyToAnalytic (p α) * ∏ i : Fin N, A i ^ e α i)
+      = Germ.coeRingHom upperEndFilter
+          (fun z : ℂ => ∑ α : Fin M, (p α).eval z * ∏ i : Fin N, u i z ^ e α i) := by
+  have hfun : (fun z : ℂ => ∑ α : Fin M, (p α).eval z * ∏ i : Fin N, u i z ^ e α i)
+      = ∑ α : Fin M, (fun z : ℂ => (p α).eval z) * ∏ i : Fin N, (u i) ^ e α i := by
+    funext z
+    simp [Finset.sum_apply, Finset.prod_apply]
+  rw [hfun, map_sum, map_sum]
+  refine Finset.sum_congr rfl fun α _ => ?_
+  rw [map_mul, map_mul, map_prod, map_prod, polyToAnalytic_subtype]
+  refine congrArg _ (Finset.prod_congr rfl fun i _ => ?_)
+  rw [map_pow, map_pow, hA i]
+
+/-- **A jet polynomial with polynomial coefficients is an analytic germ.** -/
+theorem exists_jetPolyPoly_analytic {M N : ℕ} (p : Fin M → Polynomial ℂ) (e : Fin M → Fin N → ℕ)
+    (n : Fin N → ℕ) :
+    ∃ a : upperEndAnalyticSubring,
+      (∑ α : Fin M, upperEndPolyToMero (p α)
+          * ∏ i : Fin N, digammaJetMero (n i) ^ e α i)
+        = algebraMap upperEndAnalyticSubring upperEndMeroField a
+      ∧ upperEndAnalyticSubring.subtype a
+        = Germ.coeRingHom upperEndFilter
+          (fun z : ℂ => ∑ α : Fin M, (p α).eval z
+            * ∏ i : Fin N, iteratedDeriv (n i) Complex.digamma z ^ e α i) := by
+  refine ⟨∑ α : Fin M, upperEndPolyToAnalytic (p α)
+      * ∏ i : Fin N, (upperEndAnalyticDeriv^[n i] digammaAnalytic) ^ e α i, ?_, ?_⟩
+  · rw [map_sum]
+    refine Finset.sum_congr rfl fun α _ => ?_
+    rw [map_mul, map_prod]
+    refine congrArg₂ _ rfl ?_
+    refine Finset.prod_congr rfl fun i _ => ?_
+    rw [map_pow, ← digammaJetMero_eq_algebraMap]
+  · exact subtype_sum_prod_poly p e (fun i => iteratedDeriv (n i) Complex.digamma) _
+      (fun i => digammaJet_analytic_coe (n i))
 
 end
 

@@ -693,3 +693,31 @@ receive a new title and an independent significance audit.
   density restricts exactly to the phase density.  The syndetic theorem now
   holds against arbitrary full circuit-target densities without dimension or
   radius loss.
+- 2026-08-01 -- Closed the operational-metric objection in
+  `StaticChoiTraceDistanceLaw.lean`.  For normalized pure states the full
+  density Hilbert--Schmidt distance is proved exactly equal to `sqrt 2` times
+  trace distance; the physical diagonal-unitary Choi vector is normalized and
+  has exactly the previously used full density.  Hard Choi endpoints are now
+  syndetic against normalized pure circuit targets in operational trace
+  distance.
+- 2026-08-01 -- Replaced the plateau-only statement by an ordered universal
+  mechanism.  `denseAddOrbit_disjoint_open_targets_alternate_syndetically`
+  proves that every dense real flow on every compact group alternates between
+  any two disjoint nonempty open regimes, with one finite bound on every leg.
+  `StaticChoiComplexityAlternationLaw.lean` instantiates the regimes as
+  recurrence to the identity channel and separation from every circuit of
+  bounded depth.  After every starting time there is a strictly ordered
+  low--high--low cycle, and this repeats forever.
+- 2026-08-01 -- Closed local-Hamiltonian ensemble transfer for the already
+  formal finite Anderson family in
+  `FiniteAndersonChoiComplexityAlternationLaw.lean`.  For every fixed finite
+  Hermitian hopping matrix, the existing corpus proves that qualifying onsite
+  potentials are dense, residual, and full Lebesgue measure; every qualifying
+  Hamiltonian obeys the operational low--high--low law.  This does not yet
+  formalize the separate paper-only nearest-neighbour many-body qudit result.
+- 2026-08-01 -- Axiom audit of the trace identity, syndetic trace-hard law,
+  ordered alternation law, and finite-Anderson specialization reports only
+  `propext`, `Classical.choice`, and `Quot.sound`.  O4 remains narrower and
+  harder: a quantitative direct-simulation cut time/no-shortcut theorem.  The
+  qualitative infinite alternation and local-H transfer no longer depend on
+  O4.

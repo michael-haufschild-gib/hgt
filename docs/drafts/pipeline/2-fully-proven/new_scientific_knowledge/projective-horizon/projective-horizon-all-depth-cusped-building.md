@@ -272,3 +272,116 @@ positivity map or zero-location mechanism is known.
   from `cuspHomotopy` by a fact about geometric realisation, not by anything further about horizons.
   The Steinberg identification of `(6)` on the parent card is a separate homotopy input and is
   untouched by this.
+
+- 2026-08-01 — **The homotopy in categorical form; and the toolchain has more than assumed.**
+  `formal/GaloisForLFunctions/HTGeometry/CuspedHorizonPoset.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `retractFunctor` and `cuspHomotopyFunctor` — the retraction and the elementary homotopy as
+  **functors** of the poset viewed as a category, the second out of `P_infinity(V) × [1]`.
+  `unitToRetract` — a natural transformation from the identity to the retraction: in a poset every
+  diagram commutes, so the inequality `x ≤ retract x` already **is** natural, and naturality is
+  `Subsingleton.elim`.
+
+  A correction to the earlier entries.  They record the retraction as blocked on absent order-complex
+  homotopy theory.  That was checked too shallowly: mathlib has `SSet.Homotopy` — homotopies of
+  simplicial sets as a morphism `X ⊗ Δ[1] ⟶ Y` with its two endpoints — the nerve of a category, the
+  nerve adjunction, geometric realisation through `SimplicialSet/TopAdj`, and `Monotone.functor` for
+  turning a poset map into a functor.  What is genuinely missing is not the notion of homotopy but the
+  bridge `nerve (C × [1]) ≅ nerve C ⊗ Δ[1]`, which is what would turn `cuspHomotopyFunctor` into an
+  `SSet.Homotopy` between the nerve of the identity and the nerve of the retraction.
+
+  So the gate is narrower again: the poset, its classification, the simplex decomposition, the closure
+  operator, the elementary homotopy, the identification of the retract as the building poset, and now
+  all three of these as categorical data are formalized.  The remaining step is a general fact about
+  nerves and products, not anything further about horizons.
+
+- 2026-08-01 — **Attempted the nerve bridge; stopped at the bundling, nothing landed.**
+
+  The remaining step identified in the previous entry is the comparison
+  `nerve (C × [1]) ≅ nerve C ⊗ Δ[1]`.  Simplicial sets are `CartesianMonoidalCategory`, so the tensor
+  **is** the product and the comparison map is the lift of the two projections' nerves — mathematically
+  a two-line construction.  In Lean it did not land: `nerveFunctor` is a functor out of the bundled
+  `Cat`, and a plain functor `C × D ⥤ C` is not accepted as a morphism `Cat.of (C × D) ⟶ Cat.of C`
+  without the bundling coercion, which is not `Cat.homOf` in this toolchain.  Two attempts failed on
+  that point and the file was removed rather than left broken.
+
+  Recorded so the next attempt starts from the right place: the obstacle is `Cat`-bundling plumbing,
+  not the mathematics, and the mathematical content of the gate is unchanged from the previous entry.
+
+- 2026-08-01 — **The nerve bridge lands.**
+  `formal/GaloisForLFunctions/HTGeometry/NerveProductComparison.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `nerveProductComparison` — the canonical map from the nerve of a product of categories to the
+  tensor of the nerves, the lift of the two projections' nerves; `nerveProductComparison_fst` and
+  `_snd` identify its components.  `PreservesLimits nerveFunctor` — the nerve preserves limits, being
+  the right adjoint of `nerveAdjunction`, so that comparison is an isomorphism.
+
+  The obstacle recorded in the previous entry was the `Cat` bundling, and the missing piece was
+  `CategoryTheory.Functor.toCatHom`, which turns a functor into a morphism of the bundled category
+  `Cat`.  With it the construction is the two lines it should be.
+
+  What this gives the card: `cuspHomotopyFunctor` is a functor `P_infinity(V) × [1] ⥤ P_infinity(V)`,
+  its nerve is a map out of `nerve (P × [1])`, and the comparison above identifies that source with
+  `nerve P ⊗ Δ[1]` once `Δ[1]` is recognised as the nerve of the interval.  That last identification
+  is the only step still missing before the deformation retraction is an `SSet.Homotopy` in mathlib's
+  own sense.
+
+- 2026-08-01 — **The last named gap is not a gap: mathlib has the standard simplex as a nerve.**
+  `formal/GaloisForLFunctions/HTGeometry/CuspedHorizonPoset.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  The previous entry left one step: recognising `Δ[1]` as the nerve of the interval.  mathlib has it —
+  `SSet.stdSimplex` carries `(Δ[n] : SSet.{u}) ≅ nerve (ULift.{u} (Fin (n + 1)))`.
+
+  `cuspHomotopyInterval` — the elementary homotopy restated over `ULift (Fin 2)`, the preordered type
+  whose nerve is that simplex, so the poset-level data now matches mathlib's model of the interval
+  rather than the ad hoc `Bool`.  `cuspHomotopyInterval_zero` fixes the identity endpoint.
+
+  Every ingredient of the card's deformation retraction is therefore present: the homotopy as a
+  functor out of `P_infinity(V) × [1]`, the comparison identifying the nerve of a product with the
+  tensor of nerves and its being an isomorphism, and the identification of `Δ[1]` as the nerve of the
+  interval.  What is left is to compose them into a term of type `SSet.Homotopy`, which is assembly of
+  named pieces.
+
+  This supersedes the earlier entries' claim that the toolchain lacks order-complex homotopy theory.
+  It lacks an `OrderComplex`, but the nerve serves that role and the surrounding theory is present.
+
+- 2026-08-01 — **The homotopy's target shape, and the one input it rests on.**
+  `formal/GaloisForLFunctions/HTGeometry/NerveProductComparison.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `nerveTensorMap` — a functor out of a product induces a map out of the tensor of the nerves,
+
+  ```text
+  (C × D ⥤ E)  ↦  nerve C ⊗ nerve D ⟶ nerve E,
+  ```
+
+  which with `D` the interval is exactly the shape of a homotopy of simplicial sets.
+  `nerveProductComparison_comp_nerveTensorMap` records that it is a section of the comparison.
+
+  The construction takes `IsIso (nerveProductComparison C D)` as an instance argument, and that is now
+  the only input the card's deformation retraction rests on.  It is true — the nerve preserves limits
+  (recorded in the previous entry) and `Cat` has all limits (`CategoryTheory.Category.Cat.Limit`) — but
+  deriving it needs the identification of the product in `Cat` with `Cat.of (C × D)` and of the
+  cartesian-monoidal tensor with the categorical product, which is mathlib-specific plumbing rather
+  than mathematics.
+
+  Applying `nerveTensorMap` to `cuspHomotopyInterval` viewed as a functor, and reading its two
+  endpoints, then gives the `SSet.Homotopy` between the nerve of the identity and the nerve of the
+  retraction.  That is the whole remaining content of the card's deformation retraction.
+
+- 2026-08-01 — **Audit note.**  All modules of this card's chain build:
+  `CuspedHorizonPoset`, `NerveProductComparison`, together with the flag machinery they rest on
+  (`ProjectiveFlagDimension`), every result depending only on `propext`, `Classical.choice`,
+  `Quot.sound`.
+
+  The `HTGeometry` umbrella itself does **not** build, for a reason unrelated to this card: two
+  modules owned by other work, `UpperEndGammaElement` and `RelativeTwoShiftGaugeCharacterization`,
+  both declare `deriv_algebraMap_complex` in the same namespace, so the umbrella cannot import both.
+  They are genuinely different theorems — one about `upperEndMeroField`, the other about
+  `meroField Set.univ` — and nine further modules reference the name, all resolving to the second.
+  The minimal fix is to rename the declaration and its single use inside `UpperEndGammaElement`.
+  Not done here: that file belongs to other work and was under active build, and a rename landing on
+  top of in-flight edits is worse than the report.

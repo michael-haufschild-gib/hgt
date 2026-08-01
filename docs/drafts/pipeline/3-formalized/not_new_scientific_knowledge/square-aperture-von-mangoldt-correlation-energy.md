@@ -2,7 +2,7 @@
 
 - **ID:** `square-aperture-von-mangoldt-correlation-energy`
 - **Stage:** `3-formalized`
-- **Type:** `[BRIDGE] [SOURCE REDUCTION]`
+- **Type:** `[BRIDGE] [EXACT IDENTITY / FORWARD RH IMPLICATION]`
 - **Scientific status:** `[PROVED] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Paper proof:**
   `../../2-fully-proven/not_new_scientific_knowledge/square-aperture-von-mangoldt-correlation-energy.md`
@@ -19,11 +19,14 @@
 - `squareWindowCorrelationEnergy_eq_centeredDeviation_square_sum`;
 - `squareWindowCorrelationEnergy_nonneg`;
 - exact square positive-excess comparison;
-- `SquarePrimeWindowCorrelationEnergySubpower`, the isolated open source conjecture;
+- `SquarePrimeWindowCorrelationEnergySubpower`, now paper-classified as an exact RH equivalent;
 - `riemannHypothesis_of_squarePrimeWindowCorrelationEnergySubpower`.
 
-No theorem asserts the open correlation bound. The module proves its exact meaning and downstream
-RH consequence unconditionally.
+No theorem asserts the correlation bound. The module proves its exact meaning and downstream RH
+consequence unconditionally. The reverse implication is paper-proved from Schoenfeld's
+RH-conditional Chebyshev bound and the exact Abel identity, but is not yet formalized because the
+project has no formal von Koch--Schoenfeld theorem. The full-square pivot is therefore retired as
+an independent source producer; one-sided positive-excess duality is its live successor.
 
 ## Audit
 

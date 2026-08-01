@@ -188,3 +188,42 @@ SOURCE HODGE/PURITY IMPLICATIONS CLOSED`.
 - 2026-07-27 — Added the positive-unitary twisted degree-one extension
   using the Benameur--Heitsch reduced harmonic identification plus the
   weight-one cup/trace calculation.
+
+## Lean status
+
+### The flow corollary, the twisted extension, and the odd Hodge operator landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerKahlerRiemannFlowPurity.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+The Deninger--Singhof input (Proposition 4.6) enters exactly as the card's proof uses it: as the
+hypothesis that the flow acts in reduced degree `n` as `e^{nt/2}` times a unitary.  Everything
+after that is formalized.
+
+- `deningerFlowPurity_norm` — **`(2)`**: the flow scales norms by `e^{nt/2}`.
+- `deningerFlowPurity_unitaryGroup` — the unitary parts satisfy `U_n(t+s) = U_n(t) U_n(s)`, because
+  the scalar factor is nonzero and the flow has the group law.
+- `deningerFlowPurity_re_eq` — **`(4)`**, the purity statement: if the flow acts on `x ≠ 0` by
+  `e^{tλ}`, then `Re λ = n/2`.  This is the card's generator-free argument: the two expressions for
+  `‖(φ^t)^* x‖` force `e^{Re λ} = e^{n/2}`.  For `n = 1` it is Deninger's critical-line purity.
+- `deningerTwistedFlow_centered` — **the twisted extension**: if the positive harmonic form scales
+  by `e^t`, then `e^{-t/2} φ^{t*}` preserves it exactly.  This is the finite content of
+  `Θ₁ = 1/2 + S` with `S` skew.
+- `deningerLeafMulI`, `deningerLeafHodgeJ`, `deningerLeafHodgeJ_sq`,
+  `deningerLeafHodgeJ_conjLinear` — **`(5)`**: on the complexified real leafwise one-forms
+  `J = ⋆c` is anti-linear (it anticommutes with multiplication by `i`) and `J² = -1`.
+- `deningerLeafCupTrace`, `deningerLeafHodgeJ_pos`, `deningerLeafHodgeJ_pos_of_ne` — the
+  positivity: with the real Hodge identity `T u (⋆v) = ⟪u,v⟫`, the cup trace of `α` against `Jα` is
+  real and equals `‖u‖² + ‖v‖²`, strictly positive for `α ≠ 0`; the mixed terms cancel by symmetry
+  of the inner product, exactly as the card's computation says.
+
+### Exact scope
+
+Formalized: every step the card proves, in the generator-free form the card itself supplies.
+
+Not formalized: the passage `strong continuity + Stone ⟹ Θ_n = n/2 + S_n` with `S_n` skew-adjoint.
+mathlib has no Stone theorem for one-parameter unitary groups, and the card's own alternative
+argument — which is what gives `(4)` — is formalized instead, so nothing is lost: `(4)` is proved
+unconditionally.  The Deninger--Singhof Section 4 inputs (reduced Hodge decomposition, leafwise
+Poincaré duality, Proposition 4.6) are literature theorems about a foliation the corpus does not
+construct; they enter as hypotheses, as in the card.

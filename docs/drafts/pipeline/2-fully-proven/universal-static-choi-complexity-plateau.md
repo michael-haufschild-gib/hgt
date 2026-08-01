@@ -252,11 +252,35 @@ Completed and compiled in the foreground:
    that the evolved full density restricts exactly to `uniformPhaseDensity`.
    Its headline theorem therefore establishes (5) against arbitrary full
    circuit-target density matrices, with no dimension or radius loss.
+8. `StaticChoiTraceDistanceLaw.lean` proves directly from finite coordinates
+   that Hilbert--Schmidt distance between normalized pure-state densities is
+   exactly `sqrt 2` times operational pure-state trace distance.  It identifies
+   `fullUniformPhaseChoiDensity` with the density of a normalized physical Choi
+   vector and transfers the syndetic theorem to normalized pure circuit
+   targets with the exact radius conversion and no dimension loss.
+9. `SyndeticDenseOrbitLaw.lean` now proves the ordered two-regime alternation
+   theorem: every dense real flow on every compact group passes from either
+   nonempty open regime to a disjoint second regime and back, with one finite
+   upper bound on every leg after every starting time.
+   `StaticChoiComplexityAlternationLaw.lean` specializes it to an ordered
+   operational recurrence--circuit-hardness--recurrence cycle in trace
+   distance.  All three times are strictly ordered and the cycle repeats
+   forever.
+10. `FiniteAndersonChoiComplexityAlternationLaw.lean` transfers the ordered
+    law to the standard finite Anderson family.  Combined with the existing
+    `finiteAndersonProjectiveMaximalSet_dense_residual_fullMeasure`, it applies
+    to a dense, residual, full-Lebesgue-measure set of onsite potentials for
+    every fixed finite Hermitian hopping matrix.  The headline theorem was
+    audited with `#print axioms`; it uses only `propext`,
+    `Classical.choice`, and `Quot.sound`.
 
 Remaining before stage 3:
 
-1. Connect the Hilbert--Schmidt formal theorem to the sharper trace-distance
-   constant used in (1), or weaken the displayed paper constant to the exact
-   Hilbert--Schmidt consequence and propagate it through (2)--(4).
-2. Close the O2 local-Hamiltonian spectral premise, audit axioms, and run the
-   final umbrella build.
+1. Run the final umbrella build after concurrent corpus work settles.
+2. If the manuscript claims a fixed-`q` many-body nearest-neighbour chain
+   rather than the already formal finite Anderson family, formalize the
+   dependency-closed qudit-chain genericity proof first.  Its paper proof is
+   not manuscript-authorized.
+3. Any quantitative claim about the common alternation gap `L`, first hard
+   time, linear cut time, or first low-complexity recurrence remains outside
+   this theorem.  Those require new Diophantine/no-shortcut input.

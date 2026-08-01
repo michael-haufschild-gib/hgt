@@ -250,13 +250,13 @@ anchor correlation^2 <= energy-diagonal
 
 would read `1<=0`. No post hoc diagonal renormalization preserves the capacity inequality.
 
-`[CONJECTURE]` The only structural replacement not killed by this argument is a source-defined
-principal-relative Julia current in which the diagonal counterterm is inserted before the
-good/bad positive projection and before scalarization, with orientation proved for that relative
-object. Its first `[OPEN CORE]` is an exact relative negative-excursion inequality followed by a
-source-uniform relative-capacity bound; no such theorem is present in corpus or literature. No
-other named frontier route owns this Julia-specific representation, so it remains Route J's open
-survivor.
+The subsequent principal-relative audit tested that structural replacement directly. Positive
+channel-linear and globally positive kernels lose every coupling incident to a cancelled
+diagonal; anchored Schur residuals lose the source correlation; the diagonal-null positive-Julia
+Krein current has quartically divergent off-diagonal energy; and the existing sign-changing
+Julia--Euler exterior seam scalarizes to zero. The unrestricted capacity existential is exactly
+Route A's eventual lower-floor property, while the explicit singular completed Julia/Ward source
+transport is Route R's open core.
 
 Strongest positive survivor is the exact two-boundary classification `(JDF)` and `(JDF9)`:
 
@@ -280,9 +280,9 @@ positive aperture -> still carries an unbounded arithmetic diagonal;
 source fidelity   -> restores rank-one coherence.
 ```
 
-Any surviving Julia descendant must subtract/relativize the diagonal before the good/bad positive
-projection and then re-prove orientation. Because this descendant has no other explicit frontier
-owner, Route J remains open at exactly that construction.
+No independent Julia descendant remains. A representation-free capacity assertion is Route A;
+the exact nontrivial completed preprojection source object is Route R. Route J is retired after
+that ownership transfer without claiming the remaining Ward sign.
 
 ## Lean realization
 

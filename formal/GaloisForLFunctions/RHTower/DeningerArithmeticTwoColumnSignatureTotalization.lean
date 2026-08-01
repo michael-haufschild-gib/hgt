@@ -133,6 +133,27 @@ def deningerTwoColumnSignatureComplex
       horizontal0 horizontal1 vertical0 vertical1
       signature10 signature01 hSquare hSignature
 
+/--
+**A nonzero archimedean `k`-invariant creates no fourth term.**  Adding any further component to
+the signature boundary leaves the same three total degrees; only the reciprocity identity of the
+degree-one differential changes.
+-/
+def deningerTwoColumnSignatureComplexKInvariant
+    (horizontal0 : G00 →ₗ[R] G10)
+    (horizontal1 : G01 →ₗ[R] G11)
+    (vertical0 : G00 →ₗ[R] G01)
+    (vertical1 : G10 →ₗ[R] G11)
+    (signature10 : G10 →ₗ[R] S)
+    (signature01 kInvariant : G01 →ₗ[R] S)
+    (hSquare :
+      vertical1.comp horizontal0 = horizontal1.comp vertical0)
+    (hSignature :
+      signature10.comp horizontal0 + (signature01 + kInvariant).comp vertical0 = 0) :
+    DeningerArithmeticThreeTermComplex
+      R G00 (G10 × G01) (G11 × S) :=
+  deningerTwoColumnSignatureComplex horizontal0 horizontal1 vertical0 vertical1
+    signature10 (signature01 + kInvariant) hSquare hSignature
+
 /-- Componentwise endomorphism on a product of coefficient columns. -/
 def deningerTwoColumnProductEnd
     {A B : Type*}

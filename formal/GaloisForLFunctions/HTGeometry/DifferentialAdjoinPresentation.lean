@@ -228,4 +228,47 @@ theorem exists_fin_jetPoly_quotient_mem (F : Type*) {K : Type*} [Field F] [Field
     obtain ⟨y, hy⟩ := hh₂ i
     exact hy ▸ hT y.2
 
+/-- **The `Fin`-indexed presentation with distinct variables and distinct monomials.**  When the
+generators are distinct the variable list is injective, and the monomials of a polynomial are
+distinct by construction. -/
+theorem exists_fin_monomial_sum_inj {F K T : Type*} [CommSemiring F] [CommSemiring K] [Algebra F K]
+    [DecidableEq T] (g : T → K) (hg : Function.Injective g) (r : MvPolynomial T F) :
+    ∃ (M N : ℕ) (a : Fin M → K) (e : Fin M → Fin N → ℕ) (h : Fin N → K),
+      (∀ α, a α ∈ Set.range (algebraMap F K)) ∧ (∀ i, h i ∈ Set.range g)
+        ∧ Function.Injective h ∧ Function.Injective e
+        ∧ MvPolynomial.aeval g r = ∑ α : Fin M, a α * ∏ i : Fin N, h i ^ e α i := by
+  classical
+  refine ⟨r.support.card, r.vars.card,
+    fun α => algebraMap F K (r.coeff ((r.support.equivFin.symm α : {x // x ∈ r.support}) : T →₀ ℕ)),
+    fun α i => ((r.support.equivFin.symm α : {x // x ∈ r.support}) : T →₀ ℕ)
+      ((r.vars.equivFin.symm i : {x // x ∈ r.vars}) : T),
+    fun i => g ((r.vars.equivFin.symm i : {x // x ∈ r.vars}) : T),
+    fun α => ⟨_, rfl⟩, fun i => ⟨_, rfl⟩, ?_, ?_, ?_⟩
+  · intro i i' hii'
+    exact r.vars.equivFin.symm.injective (Subtype.ext (hg hii'))
+  · intro α γ hαγ
+    refine r.support.equivFin.symm.injective (Subtype.ext ?_)
+    refine Finsupp.ext fun x => ?_
+    by_cases hx : x ∈ r.vars
+    · have hxi : ((r.vars.equivFin.symm (r.vars.equivFin ⟨x, hx⟩) : {x // x ∈ r.vars}) : T) = x := by
+        rw [Equiv.symm_apply_apply]
+      have hcong := congrFun hαγ (r.vars.equivFin ⟨x, hx⟩)
+      simpa only [hxi] using hcong
+    · have hα := monomial_support_subset_vars r (r.support.equivFin.symm α).2
+      have hγ := monomial_support_subset_vars r (r.support.equivFin.symm γ).2
+      have h1 : ((r.support.equivFin.symm α : {x // x ∈ r.support}) : T →₀ ℕ) x = 0 := by
+        by_contra hne
+        exact hx (hα (Finsupp.mem_support_iff.mpr hne))
+      have h2 : ((r.support.equivFin.symm γ : {x // x ∈ r.support}) : T →₀ ℕ) x = 0 := by
+        by_contra hne
+        exact hx (hγ (Finsupp.mem_support_iff.mpr hne))
+      rw [h1, h2]
+  · rw [aeval_eq_sum_monomials_vars, ← Finset.sum_attach r.support]
+    refine Fintype.sum_equiv r.support.equivFin _ _ fun d => ?_
+    simp only [Equiv.symm_apply_apply]
+    congr 1
+    rw [← Finset.prod_attach r.vars]
+    refine Fintype.prod_equiv r.vars.equivFin _ _ fun i => ?_
+    simp
+
 end GaloisForLFunctions

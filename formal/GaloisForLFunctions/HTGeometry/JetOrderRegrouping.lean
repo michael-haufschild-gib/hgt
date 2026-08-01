@@ -59,4 +59,24 @@ theorem exists_canonical_exponents_family {N M : ℕ} (u : ℕ → R) (n : Fin N
   refine ⟨univ.sup n, fun α j => ∑ i ∈ univ.filter (fun i => n i = (j : ℕ)), e α i, fun α => ?_⟩
   exact prod_pow_fiber u n (fun i => Nat.lt_succ_of_le (Finset.le_sup (mem_univ i))) (e α)
 
+/-- **Canonical exponent vectors keep monomials distinct.**  When the orders are distinct, collecting
+by order is injective on exponent families. -/
+theorem exists_canonical_exponents_family_inj {N M : ℕ} (u : ℕ → R) (n : Fin N → ℕ)
+    (hn : Function.Injective n) (e : Fin M → Fin N → ℕ) (he : Function.Injective e) :
+    ∃ (K : ℕ) (E : Fin M → Fin (K + 1) → ℕ), Function.Injective E ∧ ∀ α : Fin M,
+      ∏ i : Fin N, u (n i) ^ e α i = ∏ j : Fin (K + 1), u (j : ℕ) ^ E α j := by
+  classical
+  refine ⟨univ.sup n, fun α j => ∑ i ∈ univ.filter (fun i => n i = (j : ℕ)), e α i, ?_, fun α => ?_⟩
+  · intro α γ hαγ
+    refine he ?_
+    funext i
+    have hlt : n i < univ.sup n + 1 := Nat.lt_succ_of_le (Finset.le_sup (mem_univ i))
+    have hval := congrFun hαγ (⟨n i, hlt⟩ : Fin (univ.sup n + 1))
+    have hfilter : (univ.filter (fun i' => n i' = n i)) = {i} := by
+      ext i'
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_singleton]
+      exact ⟨fun h => hn h, fun h => by rw [h]⟩
+    simpa [hfilter] using hval
+  · exact prod_pow_fiber u n (fun i => Nat.lt_succ_of_le (Finset.le_sup (mem_univ i))) (e α)
+
 end GaloisForLFunctions

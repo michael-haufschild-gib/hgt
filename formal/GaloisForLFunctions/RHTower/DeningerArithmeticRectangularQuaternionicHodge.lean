@@ -241,6 +241,42 @@ theorem deningerRectangularCenteredScale_mul
       deningerRectangularComplexScale, Complex.ofReal_mul] <;>
     ring
 
+/-- The canonical centering `U_q = q^{-1/2} A_q` of a moving-modulus map. -/
+def deningerRectangularUnitaryScale (q : ℝ) (v : ℂ × ℂ) : ℂ × ℂ :=
+  deningerRectangularCenteredScale (Real.sqrt q)⁻¹ q v
+
+/-- The canonical centering satisfies the unitary normalization. -/
+theorem deningerRectangularUnitaryScale_norm {q : ℝ} (hq : 0 < q) :
+    ((Real.sqrt q)⁻¹) ^ 2 * q = 1 := by
+  have hsq : (Real.sqrt q) ^ 2 = q := Real.sq_sqrt (le_of_lt hq)
+  have hne : Real.sqrt q ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hq)
+  field_simp
+  exact hsq.symm
+
+/-- **The centered prime map is unitary.** -/
+theorem deningerRectangularUnitaryScale_energy {q r : ℝ} (hq : 0 < q) (hr : r ≠ 0) (v : ℂ × ℂ) :
+    deningerRectangularComplexEnergy (q * r) (deningerRectangularUnitaryScale q v) =
+      deningerRectangularComplexEnergy r v :=
+  deningerRectangularCenteredScale_energy (ne_of_gt hq) hr
+    (deningerRectangularUnitaryScale_norm hq) v
+
+/-- **The centered prime map is a Hodge intertwiner.** -/
+theorem deningerRectangularUnitaryScale_intertwines_hodge {q r : ℝ} (hq : q ≠ 0) (hr : r ≠ 0)
+    (v : ℂ × ℂ) :
+    deningerRectangularUnitaryScale q (deningerRectangularQuaternionicHodge r v) =
+      deningerRectangularQuaternionicHodge (q * r) (deningerRectangularUnitaryScale q v) :=
+  deningerRectangularCenteredScale_intertwines_hodge hq hr v
+
+/-- **The centered prime maps compose**: `U_{q₁} U_{q₂} = U_{q₁q₂}`, by the positive square-root
+law. -/
+theorem deningerRectangularUnitaryScale_mul {q₁ q₂ : ℝ} (h₁ : 0 ≤ q₁) (v : ℂ × ℂ) :
+    deningerRectangularUnitaryScale q₁ (deningerRectangularUnitaryScale q₂ v) =
+      deningerRectangularUnitaryScale (q₁ * q₂) v := by
+  rw [deningerRectangularUnitaryScale, deningerRectangularUnitaryScale,
+    deningerRectangularCenteredScale_mul, deningerRectangularUnitaryScale]
+  congr 1
+  rw [Real.sqrt_mul h₁, mul_inv]
+
 end
 
 end RHTower

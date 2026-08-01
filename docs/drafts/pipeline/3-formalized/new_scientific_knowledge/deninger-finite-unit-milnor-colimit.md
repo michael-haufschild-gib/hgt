@@ -87,12 +87,33 @@ relative Eilenberg--Moore comparison and commute with the pro-realization.
 
 **Verdict:** `FULLY PROVEN ON PAPER`.
 
-## Lean status (in progress)
+## Lean status
 
-### Clauses 2 and 3 landed
+### All three clauses landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerMilnorSquareZeroQuotient.lean`.  Axiom audit:
-`propext, Classical.choice, Quot.sound`.
+`formal/GaloisForLFunctions/RHTower/DeningerMilnorSquareZeroQuotient.lean` and
+`formal/GaloisForLFunctions/RHTower/DeningerExteriorFreeness.lean`.  Axiom audit of every
+declaration: `propext, Classical.choice, Quot.sound`.
+
+**Clause 1 — freeness.**  `DeningerExteriorFreeness.lean`.
+
+- `deningerZeroQuadraticForm_prod`, `deningerZeroProdIsometry` — the zero form of a product is the
+  product of the zero forms, isometrically.
+- `deningerExteriorProdEquiv` — **`Λ(M₁ ⊕ M₂) ≃ₐ[k] Λ(M₁) ᵍ⊗[k] Λ(M₂)`**: the exterior algebra is
+  the Clifford algebra of the zero form, so mathlib's `CliffordAlgebra.prodEquiv` applies.  This is
+  the card's "exterior multiplication gives `Λ(V) ≅ Λ(U) ⊗ Λ(W)`", with the Koszul signs made
+  explicit by the graded tensor product.
+- `deningerExteriorProdEquiv_inl`, `deningerGradedTmul_left` — the decomposition carries `Λ(M₁)`
+  to the left factor, and left multiplication by the left factor carries no Koszul sign.
+- `deningerExtProdTensorEquiv` — hence `Λ(M₁) ⊗_k Λ(M₂) ≃ₗ[Λ(M₁)] Λ(M₁ ⊕ M₂)`.
+- `deningerExterior_free`, `deningerExteriorSubmodule_free`,
+  `deningerExteriorSubmodule_free_of_field` — **clause 1**: `Λ(V)` is a free `Λ(U)`-module, for
+  every subspace `U` (over a field a complement always exists).  Since `Λ(U)` is noncommutative,
+  the module structure is the one induced by `Λ(U) → Λ(V)`; mathlib's `Module.Flat` is defined only
+  over commutative rings, so "hence flat" is not restatable there, but freeness is the substantive
+  input and gives flatness in any framework.
+
+**Clauses 2 and 3 — base change and colimit.**  `DeningerMilnorSquareZeroQuotient.lean`.
 
 The finite-stage algebra `P ⊗_{P_U} K_U = P/⟨Λ^{≥2}U⟩` is modelled as `RingQuot` of the relation
 "the product of two vectors of `U` vanishes"; this is the correct model because `Λ(V)` is
@@ -101,9 +122,9 @@ noncommutative, so the relation ideal has to be two-sided.
 - `DeningerExtSquareRel`, `DeningerExtSquareQuot` — the stage relation and its quotient.
 - `deningerExtSquareQuot_universal` — **clause 2**: the stage quotient has the universal property
   of the base change `P ⊗_{P_U} K_U`, i.e. of the pushout of `K_U ← P_U → P`: an algebra map out of
-  it is exactly an algebra map out of `P` killing the products of two vectors of `U`.  (mathlib has
-  no tensor product over a noncommutative ring, so the pushout property is the faithful way to
-  state the base change; it is what the card's proof uses.)
+  it is exactly an algebra map out of `P` killing the products of two vectors of `U`.  mathlib has
+  no tensor product over a noncommutative ring, so the pushout property is the faithful statement of
+  the base change, and it is what the card's proof uses.
 - `deningerExtSquareStageMap` — the transition maps of the filtered system.
 - `deningerExtToSquareZero`, `deningerExtSquareQuotEquiv` — **clause 3**: the total quotient is
   `k ⊕ V` with `V² = 0`, as `k`-algebras.  The quotient map and the obvious section are mutually
@@ -115,13 +136,11 @@ noncommutative, so the relation ideal has to be two-sided.
   generated stage, since each relation involves only two vectors.  So no degree-zero or degree-one
   element is killed at any finite stage, and the colimit is exactly the square-zero algebra.
 
-### Remaining: clause 1
+### Remaining
 
-`P` free over `P_U`.  The route is now clear and uses only mathlib: `ExteriorAlgebra k M` is by
-definition `CliffordAlgebra (0 : QuadraticForm k M)`, `(0 : QuadraticForm k (M₁ × M₂))` is the
-product of the two zero forms, and `CliffordAlgebra.prodEquiv` gives
-`Λ(M₁ × M₂) ≃ₐ[k] evenOdd 0 ᵍ⊗[k] evenOdd 0`.  The graded tensor product has `Λ(M₁) ⊗_k Λ(M₂)` as
-its underlying module, and left multiplication by `a ᵍ⊗ₜ 1` carries no Koszul sign, so this is the
-statement that `Λ(V)` is free over `Λ(U)` on any `k`-basis of `Λ(W)`.  What remains is the
-instance plumbing: the non-canonical `Algebra (Λ U) (Λ V)` along `Λ(inl)`, and transporting the
-module structure across the equivalence.
+Nothing among the card's three clauses.  The closing remark — that `(2)`–`(3)` survive replacing
+`K_U` by a cofibrant `P_U`-algebra resolution — is the standard consequence of the formalized
+flatness together with exactness of filtered colimits; stating it in Lean would need a model
+structure on differential graded algebras, which mathlib does not have.  The card's own
+application (the geometric Eilenberg--Moore comparison and pro-realization) is explicitly outside
+this theorem.

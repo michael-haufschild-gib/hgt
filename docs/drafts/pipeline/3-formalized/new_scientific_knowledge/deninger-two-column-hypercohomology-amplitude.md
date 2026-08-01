@@ -126,8 +126,49 @@ hypercohomology or that chartwise amplitude is stalkwise amplitude.
 The algebraic totalization, including a nonzero signature boundary and the
 two reciprocity identities forcing \(d^1d^0=0\), is implemented
 unconditionally in
-`DeningerArithmeticTwoColumnSignatureTotalization.lean`.  Direct Lean
-verification is pending a low-load window; no claim of a passed build is
-made here.
+`DeningerArithmeticTwoColumnSignatureTotalization.lean`, and is now verified:
+the module compiles and builds, and every declaration audits to
+`propext, Classical.choice, Quot.sound`.
 
 **Verdict:** `FULLY PROVEN ON PAPER`.
+
+## Lean status
+
+### The totalization is verified
+
+`formal/GaloisForLFunctions/RHTower/DeningerArithmeticTwoColumnSignatureTotalization.lean`,
+building on the three-term complex framework of
+`DeningerArithmeticThreeTermCohomology.lean`.  Axiom audit: `propext, Quot.sound` for the
+totalization itself, `propext, Classical.choice, Quot.sound` for the flow and cup constructions.
+
+- `deningerTwoColumnSignatureD0`, `deningerTwoColumnSignatureD1` (with their `_apply` lemmas) —
+  **`(5)`–`(6)`**: `d⁰(a) = (∂₀a, δ⁰a)` and `d¹(c,b) = δ¹c - ∂₁b` together with the archimedean
+  signature boundary.
+- `deningerTwoColumnSignatureD1_comp_D0` — **`d¹d⁰ = 0`**, forced by exactly the two reciprocity
+  identities: commutation of the residue square and vanishing of the total signature boundary on
+  degree zero.
+- `deningerTwoColumnSignatureComplex` — **`(2)`–`(4)`**: the total complex
+  `L⁰ = Γ𝒢^{0,0}`, `L¹ = Γ𝒢^{1,0} ⊕ Γ𝒢^{0,1}`, `L² = Γ𝒢^{1,1} ⊕ Γ i_∞ℝ(-1)`, as a three-term
+  complex — the amplitude claim, since the listed bidegrees `(0,0),(1,0),(0,1),(1,1),(0,2)` are
+  exactly the terms of total degree at most two and there is no fourth term.  This is also the
+  derived-descent shape `(8)`.
+- `deningerTwoColumnSignatureComplexKInvariant` — **a nonzero archimedean `k`-invariant creates no
+  fourth term**: adding any further component to the signature boundary changes only the
+  reciprocity identity, not the three total degrees.
+- `deningerTwoColumnSignatureFlow` — the transverse flow acts by commuting endomorphisms of
+  `(2)`–`(4)`, as the card's scope requires; it is not a differential.
+- `deningerTwoColumnPair02`, `deningerTwoColumnPair11`, `deningerTwoColumnCupPairing` — the
+  chain-level cup pairing assembled from the endpoint and middle traces.
+
+### Exact scope of the formalization
+
+Formalized: the total complex, its differentials, `d¹d⁰ = 0`, the absence of a fourth term, the
+flow action, and the cup pairing — that is, the card's own computation, which its novelty audit
+already identifies as the Lean content.
+
+Not formalized, and not formalizable in mathlib today: the reduction of `RΓ(X,𝒜)` to that total
+complex, i.e. the Cartan--Eilenberg resolution and the statement that `Γ`-acyclic entries compute
+derived global sections.  mathlib has no sheaf cohomology on a site, so this step cannot even be
+stated there; it is the standard homological-algebra input the card quotes, and the card's own
+"what this does not prove" list already places the construction of the resolutions `(1)` and the
+comparison `(7)` outside the theorem.

@@ -1,14 +1,16 @@
 import GaloisForLFunctions.HTGeometry.TwoChannelRelativeCapacityNoGo
 import GaloisForLFunctions.RHTower.CCMFirstClockJuliaCoherentEnergyDiagonalFloor
+import GaloisForLFunctions.RHTower.CCMFirstClockTailLowerBoundCompleteness
 import GaloisForLFunctions.RHTower.GammaJuliaEndpointCorrectionHilbertSchmidtDressing
 import GaloisForLFunctions.RHTower.GammaSewnMobiusJuliaSourceTransport
+import GaloisForLFunctions.RHTower.GammaSewnMobiusXiWardCofinalBoundaryLift
 
 /-!
-# Principal-relative Julia-current no-go
+# Principal-relative Julia-current no-go and endpoint classification
 
-The surviving Route-J proposal moves a diagonal counterterm before good/bad projection.  This file
-closes the natural channel-linear, finite-packet-hereditary, and anchored-Schur implementations of
-that proposal.
+The principal-relative Route-J proposal moves a diagonal counterterm before good/bad projection.
+This file closes the natural channel-linear, finite-packet-hereditary, anchored-Schur,
+diagonal-null Julia, and existing exterior-current implementations of that proposal.
 
 Every prime in the sixth-power block is an actual pure-bad source cell: its reduced good term is
 zero and its reduced bad term is strictly positive.  Hence a two-channel linear current whose
@@ -20,6 +22,10 @@ The results are unconditional.  A globally positive quadratic cross-block curren
 a null diagonal annihilates its row.  The final section audits the genuinely indefinite
 diagonal-null Julia current on the full sixth-power prime block and proves that the existing exact
 calibrated Julia--Euler exterior seam has zero scalar quadratic energy by antisymmetry.
+
+Finally, the unrestricted residual capacity existential is proved equivalent to the literal
+first-clock eventual lower floor, RH, and Route R's four-unit Ward boundary-lift endpoint.  The
+reverse negative-part witness is target-defined and is not asserted to be a source construction.
 -/
 
 open Set Finset Filter Topology
@@ -563,5 +569,98 @@ theorem ccmFirstClockJuliaSixthPowerBlockOffDiagonalEnergy_unbounded_of_scale_te
         (1 / 2 : ℝ) * ((m : ℝ) ^ 4 / 576 - 65 * Real.log (m : ℝ) ^ 2) := by
     nlinarith
   exact ⟨m, hCquartic.trans_le (hpolynomial.trans hlower)⟩
+
+/-! ## Terminal classification of an unrestricted residual capacity -/
+
+/-- Widest literal-source version of the residual Route-J capacity request.  It deliberately
+imposes no representation condition on `capacity`: this is the endpoint existential left after
+forgetting whether a proposed current is Julia, Krein, nonlinear, or source-constructed. -/
+def CCMFirstClockPrincipalRelativeCapacityOnTail : Prop :=
+  ∃ (capacity : ℝ → ℝ) (M A : ℝ),
+    0 ≤ M ∧ Real.pi / 2 ≤ A ∧
+      ∀ L : ℝ, A ≤ L →
+        0 ≤ capacity L ∧
+        capacity L ≤ M ∧
+        (ccmPublishedSourceSineCoefficient (L / 2) (2 * Real.pi / L) < 0 →
+          ccmPublishedSourceSineCoefficient (L / 2) (2 * Real.pi / L) ^ 2 ≤
+            capacity L)
+
+/-- Any uniformly bounded negative-excursion capacity gives the literal first clock a fixed lower
+floor.  This direction uses only the inequalities in the capacity interface. -/
+theorem ccmFirstClockPublishedSourceEventuallyBoundedBelow_of_principalRelativeCapacityOnTail
+    (hcapacity : CCMFirstClockPrincipalRelativeCapacityOnTail) :
+    CCMFirstClockPublishedSourceEventuallyBoundedBelow := by
+  obtain ⟨capacity, M, A, hM, hA, hcapacity⟩ := hcapacity
+  refine ⟨M + 1, A, by linarith, hA, ?_⟩
+  intro L hL
+  let source := ccmPublishedSourceSineCoefficient (L / 2) (2 * Real.pi / L)
+  have hdata := hcapacity L hL
+  by_cases hsource : source < 0
+  · have hsquare : source ^ 2 ≤ M := (hdata.2.2 hsource).trans hdata.2.1
+    dsimp only [source] at hsquare ⊢
+    nlinarith [sq_nonneg (source + 1)]
+  · have hsource0 : 0 ≤ source := le_of_not_gt hsource
+    dsimp only [source] at hsource0 ⊢
+    linarith
+
+/-- Canonical negative-part capacity.  This is the exact target-defined witness used only for the
+reverse logical classification; it is not claimed as a source mechanism. -/
+def ccmFirstClockCanonicalNegativePartCapacity (L : ℝ) : ℝ :=
+  let source := ccmPublishedSourceSineCoefficient (L / 2) (2 * Real.pi / L)
+  if source < 0 then source ^ 2 else 0
+
+/-- A tail lower floor supplies the target-defined negative-part witness.  This proves logical
+completeness of the unrestricted interface and identifies why the witness itself is representation
+theatre rather than independent Julia information. -/
+theorem principalRelativeCapacityOnTail_of_ccmFirstClockPublishedSourceEventuallyBoundedBelow
+    (hbounded : CCMFirstClockPublishedSourceEventuallyBoundedBelow) :
+    CCMFirstClockPrincipalRelativeCapacityOnTail := by
+  obtain ⟨C, A, hC, hA, hsource⟩ := hbounded
+  let source := fun L : ℝ =>
+    ccmPublishedSourceSineCoefficient (L / 2) (2 * Real.pi / L)
+  refine ⟨ccmFirstClockCanonicalNegativePartCapacity, C ^ 2, A,
+    sq_nonneg C, hA, ?_⟩
+  intro L hL
+  have hfloor := hsource L hL
+  by_cases hneg : source L < 0
+  · have hneg0 : 0 ≤ -source L := by linarith
+    have hle : -source L ≤ C := by
+      dsimp only [source] at hfloor ⊢
+      linarith
+    have hsquare : (-source L) ^ 2 ≤ C ^ 2 :=
+      (sq_le_sq₀ hneg0 hC).2 hle
+    rw [ccmFirstClockCanonicalNegativePartCapacity]
+    rw [if_pos hneg]
+    refine ⟨sq_nonneg _, ?_, ?_⟩
+    · nlinarith
+    · intro _hnegative
+      rfl
+  · rw [ccmFirstClockCanonicalNegativePartCapacity]
+    rw [if_neg hneg]
+    exact ⟨le_rfl, sq_nonneg C, fun h => (hneg h).elim⟩
+
+/-- **Route-J endpoint completeness.**  Once representation data are forgotten, existence of a
+bounded principal-relative capacity is exactly Route A's eventual lower-floor property. -/
+theorem ccmFirstClockPrincipalRelativeCapacityOnTail_iff_eventuallyBoundedBelow :
+    CCMFirstClockPrincipalRelativeCapacityOnTail ↔
+      CCMFirstClockPublishedSourceEventuallyBoundedBelow :=
+  ⟨ccmFirstClockPublishedSourceEventuallyBoundedBelow_of_principalRelativeCapacityOnTail,
+    principalRelativeCapacityOnTail_of_ccmFirstClockPublishedSourceEventuallyBoundedBelow⟩
+
+/-- The unrestricted residual capacity interface is exactly RH, not an independent mechanism. -/
+theorem ccmFirstClockPrincipalRelativeCapacityOnTail_iff_rh :
+    CCMFirstClockPrincipalRelativeCapacityOnTail ↔ RiemannHypothesis := by
+  rw [ccmFirstClockPrincipalRelativeCapacityOnTail_iff_eventuallyBoundedBelow,
+    ccmFirstClockPublishedSourceEventuallyBoundedBelow_iff_rh]
+
+/-- Endpoint ownership bridge: the unrestricted residual Route-J interface and Route R's actual
+four-unit Ward boundary-lift law are equivalent because both are exact RH criteria.  This theorem
+classifies endpoints; the nontrivial source transport itself is supplied by Route R's singular
+Möbius--Gamma/Xi Julia construction. -/
+theorem ccmFirstClockPrincipalRelativeCapacityOnTail_iff_continuedXiWardFourUnitBoundaryLiftLaw :
+    CCMFirstClockPrincipalRelativeCapacityOnTail ↔
+      ContinuedXiWardFourUnitBoundaryLiftLaw := by
+  rw [ccmFirstClockPrincipalRelativeCapacityOnTail_iff_rh,
+    riemannHypothesis_iff_continuedXiWardFourUnitBoundaryLiftLaw]
 
 end RHTower

@@ -19,7 +19,7 @@ Xi cohomology carrier.
 
 - [x] 0 → 1 in-progress: exact source-pure statement and hostile boundary recorded
 - [x] 1 → 2 fully-proven: complete proof below
-- [ ] 2 → 3 formalized: exact theorem in
+- [x] 2 → 3 formalized: exact theorem in
   `DeningerArithmeticRectangularQuaternionicHodge.lean`
 - [ ] 3 → 4 publication-ready
 
@@ -125,3 +125,36 @@ theorem is global twisted descent and dense cup-isometric comparison.
 ## Log
 
 - 2026-07-26 — exact local quaternionic Hodge and centered-unitary laws proved.
+
+## Lean status
+
+### All six identities landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerArithmeticRectangularQuaternionicHodge.lean`.  Axiom
+audit: `propext, Classical.choice, Quot.sound`.
+
+- `deningerRectangularConjugation`, `deningerRectangularComplexJ`,
+  `deningerRectangularQuaternionicHodge`, `deningerRectangularComplexScale`,
+  `deningerRectangularComplexEnergy` — the objects `κ`, `J_r`, `⋆_r = J_r κ`, `A_q` and
+  `‖·‖_r²`.
+- `deningerRectangularQuaternionicHodge_sq`, `deningerRectangularQuaternionicHodge_smul` —
+  **`(1)`**: `⋆_r` is anti-linear and `⋆_r² = -1`.
+- `deningerRectangularQuaternionicHodge_energy`, `deningerRectangularComplexEnergy_pos` —
+  **`(2)`**: `⋆_r` preserves the energy, which is positive definite.
+- `deningerRectangularComplexScale_intertwines_hodge` — **`(3)`**: `A_q ⋆_r = ⋆_{qr} A_q`.
+- `deningerRectangularComplexEnergy_scale` — **`(4)`**: `‖A_q v‖²_{qr} = q ‖v‖²_r`, the weight-one
+  law.
+- `deningerRectangularCenteredScale`, `_energy`, `_intertwines_hodge`, `_mul` — the centered maps
+  for any normalization `a` with `a²q = 1`.
+- `deningerRectangularUnitaryScale` with `_norm`, `_energy`, `_intertwines_hodge`, `_mul` —
+  **`(5)`–`(6)`** for the canonical centering `U_q = q^{-1/2} A_q`: it is a Hodge intertwiner, it is
+  unitary for the moving energy, and `U_{q₁} U_{q₂} = U_{q₁ q₂}` by the positive square-root law.
+  The exponent `1/2` is forced by `(4)`, exactly as the card's hostile audit records.
+
+### Remaining
+
+Nothing.  The card's `Θ = ½ + S` is the infinitesimal reading of `(4)`–`(5)`: the uncentered action
+scales the energy by `q` and the centered one preserves it; both finite statements are formalized,
+and the card states the generator decomposition only formally, with no domain or topology fixed.
+The global obligations named in the card — twisted `K_ℝ`/Steinberg descent and dense cup-isometric
+comparison — are explicitly outside this local theorem.

@@ -206,6 +206,16 @@ quotient, in which common gauges cancel and poles remain; that survivor is the l
     traces. Mixed entries and infinite negative index do not change this obstruction. Surviving
     connector must use a singular, weighted/renormalized, non-trace-preserving cyclic reader that
     carries the explicit positive opening flux.
+26. **Compact-test operator phase selection is class-completely dead.**
+    Under RH, global Weil translations form strongly continuous unitary group and compact smooth
+    tests are dense and translation invariant. Invariant-core theorem makes compact-test derivative
+    essentially self-adjoint, so its graph closure has deficiency zero. Hence finite deficiency
+    projections vanish strongly and every contractive extension-angle schedule has same generalized
+    strong-resolvent limit. `NestedExhaustionPhaseUniversality.lean` and
+    `SuzukiCompactCorePhaseUniversality.lean` formalize exact unconditional rank-drop Cayley and
+    resolvent consequences. Do not use stable-deficiency phase locking as Suzuki source mechanism.
+    Positive survivor is narrower scalar moving-boundary limit; strong graph convergence alone
+    does not control normalized moving defect vectors, so two-angle meromorphic Route G remains open.
 
 ## Provider/source-sign edge — live but not the whole Route-G terminal class
 
@@ -461,3 +471,9 @@ Before each new action, answer in this file's log:
   the unconditional target-pole theorem refute the whole class. Paper and Lean are dependency
   closed. Route G is not retired: two-angle meromorphic Livšic/Hermite--Biehler reconstruction is
   exact positive survivor and remains its live core.
+- **2026-08-01 compact-core rank-drop correction.** Primary-source operator audit refutes earlier
+  Suzuki application of stable-deficiency phase locking. Under RH, compact tests are invariant core
+  for unitary translation generator, so graph closure is self-adjoint and global deficiency rank is
+  zero. Lean now proves finite deficiency projections vanish and all contractive finite boundary
+  schedules share same Cayley/resolvent limit. This closes operator phase-selection subclass only;
+  scalar two-angle moving-defect limit remains exact Route-G open core.

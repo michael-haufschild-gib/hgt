@@ -91,9 +91,10 @@ curve \(d=1\), where complementary weight is \(1-n\) and total degree is \(3\).
 ## Status
 
 - Paper proof: dependency-closed.
-- Lean: implementation written in
-  `formal/GaloisForLFunctions/RHTower/DeningerArithmeticWeilArakelovDuality.lean`;
-  direct check pending shared Lean-load clearance.
+- Lean: implemented and verified in
+  `formal/GaloisForLFunctions/RHTower/DeningerArithmeticWeilArakelovDuality.lean`; the module
+  compiles and builds, and every declaration audits to
+  `propext, Classical.choice, Quot.sound`.  See the Lean status section below.
 - Positivity/RH: not used and not implied.
 
 ## Reference
@@ -101,3 +102,32 @@ curve \(d=1\), where complementary weight is \(1-n\) and total degree is \(3\).
 - Matthias Flach, Baptiste Morin,
   *Deninger's conjectures and Weil--Arakelov cohomology*, Conjecture 4.1 and Remark 4.12:
   https://www.math.u-bordeaux.fr/~bmorin/Deninger-WA5.pdf
+
+## Lean status
+
+### The chain-level duality landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerArithmeticWeilArakelovDuality.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound` (and `propext, Quot.sound` for the skew-transfer lemma).
+
+- `deningerWeilArakelovCenteredVertical` — the vertical map `Θ - n` of the mapping fibre.
+- `deningerWeilArakelovD0`, `deningerWeilArakelovD1`, `deningerWeilArakelovD2` — the four
+  mapping-fibre differentials `δ⁰_n`, `δ¹_n`, `δ²_n` of the proof.
+- `deningerWeilArakelovPair03`, `deningerWeilArakelovPair12`, `deningerWeilArakelovPair21`,
+  `deningerWeilArakelovPair30` — **`(3)`**: the four components of the total-degree-three pairing
+  between `F_n` and `F_{1-n}`, with the signs forced by the mapping-fibre differential.
+- `deningerWeilArakelov_centered_pair02`, `deningerWeilArakelov_centered_pair11` — **`(5)`**: the
+  weight-one hypothesis `(2)` gives complementary vertical adjointness at `n` and `1-n`.
+- `deningerThreeTermPoincare_d_right` — **`(6)`**: skew-symmetry plus the chain compatibility `(1)`
+  give `B₁₁(y, d⁰x) = B₀₂(x, d¹y)`.
+- `deningerWeilArakelov_pair_D0_D2`, `deningerWeilArakelov_pair_D1_D1`,
+  `deningerWeilArakelov_pair_D2_D0` — **`(4)`**: graded adjointness
+  `P(δ_{F_n}a, b) + (-1)^i P(a, δ_{F_{1-n}}b) = 0` in each of the three degrees, each proved from
+  exactly the ingredient the card's proof names: `(1)` in degree zero, `(5)` in degree one, `(6)`
+  in degree two.
+
+### Remaining
+
+Nothing at chain level.  Passing `(3)` to cohomology needs perfectness of the source pairing and
+the finiteness hypotheses the card names as hypotheses of its consequence, not as claims; the
+Flach–Morin comparison is a reference statement about objects the corpus does not construct.

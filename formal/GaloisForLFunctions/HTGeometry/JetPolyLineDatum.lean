@@ -119,28 +119,34 @@ theorem digammaJetEval_jetPolyMv (σ₀ : ℝ) (N M : ℕ) (a : Fin M → ℂ) (
     rw [map_pow, digammaJetEval_X, digammaJetGerm, Fin.val_succ]
     rfl
 
-/-- **A nonzero jet polynomial has bounded decay order on every line.**  Flatness on a single line
-would be flatness on the half-plane, which Hölder's theorem forbids. -/
+/-- **The line criterion behind every datum.**  A nonzero differential polynomial in the digamma jets
+whose value on the line carries standard rational approximations of every depth is not of arbitrarily
+high decay order there: flatness on the line would be flatness on the half-plane. -/
+theorem exists_not_isLineBigO_of_germ {σ : ℝ} (hσ : 0 < σ) {W m : ℕ}
+    {G : MvPolynomial (Fin m) (RatFunc ℂ)} {g : ℂ → ℂ} (hG : G ≠ 0)
+    (hgerm : digammaJetEval σ m G = (g : HalfPlaneGerm σ))
+    (hpkg : ∀ K : ℕ, ∃ (F : ℂ → ℂ) (A : ℝ), IsStdRat F W ∧ 0 ≤ A ∧
+      ∀ σ' t : ℝ, 0 < σ' → 2 ≤ t →
+        ‖g ((σ' : ℂ) + (t : ℂ) * Complex.I) - F ((σ' : ℂ) + (t : ℂ) * Complex.I)‖
+          ≤ A * (1 / t) ^ (W + K)) :
+    ∃ n : ℕ, ¬ IsLineBigO σ n (fun t : ℝ => g ((σ : ℂ) + (t : ℂ) * Complex.I)) := by
+  by_contra hcon
+  push Not at hcon
+  have hflat : IsVertFlat σ g := isVertFlat_of_isLineBigO_all hσ hpkg hcon hσ
+  refine not_isVertFlatGerm_digammaJetEval (σ₀ := σ) hσ.le (m := m) hG ?_
+  rw [hgerm]
+  exact hflat
+
+/-- **A nonzero jet polynomial has bounded decay order on every line.** -/
 theorem exists_not_isLineBigO_jetPoly {σ : ℝ} (hσ : 0 < σ) (N M W : ℕ) (a : Fin M → ℂ)
     (e : Fin M → Fin N → ℕ) (hW : ∀ α : Fin M, W ≤ ∑ i : Fin N, ((i : ℕ) + 1) * e α i)
     (hne : jetPolyMv N M a e ≠ 0) :
     ∃ n : ℕ, ¬ IsLineBigO σ n (fun t : ℝ => ∑ α : Fin M, a α * ∏ i : Fin N,
       iteratedDeriv ((i : ℕ) + 1) Complex.digamma ((σ : ℂ) + (t : ℂ) * Complex.I) ^ e α i) := by
-  by_contra hcon
-  push Not at hcon
-  set g : ℂ → ℂ := fun s : ℂ => ∑ α : Fin M, a α * ∏ i : Fin N,
-    iteratedDeriv ((i : ℕ) + 1) Complex.digamma s ^ e α i with hg
-  have hpkg : ∀ K : ℕ, ∃ (F : ℂ → ℂ) (A : ℝ), IsStdRat F W ∧ 0 ≤ A ∧
-      ∀ σ' t : ℝ, 0 < σ' → 2 ≤ t →
-        ‖g ((σ' : ℂ) + (t : ℂ) * Complex.I) - F ((σ' : ℂ) + (t : ℂ) * Complex.I)‖
-          ≤ A * (1 / t) ^ (W + K) := by
-    intro K
-    obtain ⟨F, A, hstd, hA, hb⟩ := exists_jetPoly_package N M K W e a hW
-    exact ⟨F, A, hstd, le_trans zero_le_one hA, hb⟩
-  have hflat : IsVertFlat σ g := isVertFlat_of_isLineBigO_all hσ hpkg hcon hσ
-  refine not_isVertFlatGerm_digammaJetEval (σ₀ := σ) hσ.le (m := N + 1) hne ?_
-  rw [digammaJetEval_jetPolyMv]
-  exact hflat
+  refine exists_not_isLineBigO_of_germ (W := W) hσ hne (digammaJetEval_jetPolyMv σ N M a e)
+    fun K => ?_
+  obtain ⟨F, A, hstd, hA, hb⟩ := exists_jetPoly_package N M K W e a hW
+  exact ⟨F, A, hstd, le_trans zero_le_one hA, hb⟩
 
 /-- **The datum of a nonzero jet polynomial.**  No presentation is supplied: nonvanishing alone
 produces the residue `s^p·A(s) → c ≠ 0` along the line. -/

@@ -41,16 +41,21 @@ coordinate.  Route C2 is already retired as a saturated RH-equivalent divisor de
 collision closes only this transformed-response branch.  It does not receive Route I's source
 obligation.
 
-`[OPEN CORE]` Surviving coefficient-nonlocal pivot is square-aperture centered correlation energy.
-Its exact finite von-Mangoldt pair-kernel expansion and implication to RH are formalized; open
-estimate is
+`[CIRCULAR]` Full square-aperture centered correlation energy is paper-equivalent to RH.
+Schoenfeld's RH bound plus exact Abel summation gives
+`C_M=O(M log(M)^4)`, while existing Lean proves its all-subpower bound implies RH. The
+independent-producer interpretation is retired:
+`../5-failed/route-i-square-aperture-von-mangoldt-correlation-bound.md`.
+
+`[OPEN CORE]` Stronger replacement representation keeps only positive deviations. Its exact
+finite convex dual ranges over nonnegative aperture weights. The open estimate is
 
 ```text
 for every delta>0,
-sum_{m<=M} (W(m^2)-2(1-1/sqrt(2))m)^2 = O_delta(M^(1+delta)).
+sum_{m<=M} (W(m^2)-2(1-1/sqrt(2))m)_+^2 = O_delta(M^(1+delta)).
 ```
 
-Active card: `route-i-square-aperture-von-mangoldt-correlation-bound.md`.
+Active card: `route-i-square-aperture-positive-excess-dual-bound.md`.
 
 ## Hard problem
 
@@ -59,9 +64,10 @@ assuming an Xi zero-width bound, horizontal Xi positivity, or an equivalent anal
 premise.  Current zero-free-region PNT errors become `n^(1/2-o(1))` after square-root weighting and
 miss the all-epsilon subpower scale.
 
-Strongest concrete pivot now asks for a sparse square-trace variance bound on literal von-Mangoldt
-window.  It implies weighted `L²` Dirichlet energy of positive excess but is not known. Continuous
-PNT mean square does not control these sparse square samples without a trace theorem.
+Strongest concrete pivot now asks for a uniform nonnegative-aperture dual inequality for literal
+von-Mangoldt mass. Positive Selberg majorants lose the exact density-one main term at the parity
+barrier; continuous critical PNT mean square is itself RH-equivalent. A live proof must supply
+signed source dispersion or another mechanism sharp enough to absorb the quadratic dual penalty.
 
 ## Anti-theatre boundary
 
@@ -86,6 +92,8 @@ von-Mangoldt mass or positive excess with quantifiers strong enough to enter an 
 - [x] completed-response collision with retired Route C2 classified
 - [x] exact square-aperture von-Mangoldt correlation kernel formalized
 - [x] correlation-subpower implication to RH formalized
+- [x] full square-correlation pivot paper-proved RH-equivalent and retired as independent producer
+- [x] one-sided positive-excess convex dual paper-proved and formalized
 - [ ] unconditional arithmetic source estimate
 - [ ] dependency-closed paper proof
 - [ ] exact unconditional Lean proof of new source theorem
@@ -95,3 +103,5 @@ von-Mangoldt mass or positive excess with quantifiers strong enough to enter an 
 - 2026-08-01 — reopened after correcting invalid survivor handoff to already-retired Route C2.
 - 2026-08-01 — scalar analytic branch closed; square-aperture correlation energy promoted as live
   coefficient-nonlocal pivot.
+- 2026-08-01 — full correlation pivot killed as an independent producer by its RH reverse
+  implication; one-sided positive-excess dual survives and Route I remains open.

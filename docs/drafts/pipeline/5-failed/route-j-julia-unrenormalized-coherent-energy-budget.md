@@ -6,7 +6,7 @@
 - **Scientific status:** `[PAPER-PROVED] [FORMALIZED] [NOVELTY UNVERIFIED] [NO COMPUTATION]`
 - **Formalized positive survivor:**
   `../3-formalized/route-j-julia-coherent-energy-diagonal-floor.md`
-- **Live successor:** Route J's source-defined principal-relative pre-projection Julia current
+- **Positive survivor transfer:** unrestricted endpoint to Route A; singular completed current to Route R
 - **Endpoint attempted:** Route A's eventual first-clock lower floor
 
 ## Intended chain
@@ -101,12 +101,10 @@ zero aperture  -> full rank-one coherence is restored.
 ```
 
 Julia coherence cannot be both the positive capacity certificate and a removable regularizer for
-the literal first clock. Any viable descendant must define a principal-relative current with the
-counterterm inserted before good/bad positive projection and scalarization, then prove a new
-relative negative-excursion orientation law.
-
-No other named frontier route owns that representation change. It therefore remains Route J's
-open survivor; only the unrenormalized budget studied on this failed card is retired.
+the literal first clock. The subsequent principal-relative audit closes every concrete Julia
+implementation. Its unrestricted capacity endpoint is exactly Route A's eventual lower floor,
+while the corpus's explicit singular completed Julia/Ward current and missing sign are Route R.
+Thus no independent Route-J survivor remains.
 
 ## No-go closure audit
 
@@ -117,4 +115,4 @@ open survivor; only the unrenormalized budget studied on this failed card is ret
 - [x] prior failed mechanisms audited
 - [x] no RH-equivalent premise used
 - [x] no computation used
-- [x] unrenormalized subroute separated from open Route-J survivor
+- [x] positive endpoint and completed-current survivors transferred to Routes A and R

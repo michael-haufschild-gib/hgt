@@ -3,16 +3,19 @@
 - **ID:** `route-j-principal-relative-julia-capacity-no-go`
 - **Stage:** 3-formalized
 - **Type:** THEOREM / ROUTE-BOUNDARY CLASSIFICATION
-- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE WELD] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [ROUTE J RETIRED] [NOVELTY UNVERIFIED]`
 - **RH used:** no
 - **Computation used:** no
-- **Live successor:** `../../1-in-progress/route-j-principal-relative-julia-current.md`
+- **Retired route card:** `../../5-failed/route-j-principal-relative-julia-current.md`
+- **Positive survivor:** Route R singular primitive-current/Ward boundary continuation
 
 ## Result
 
 The unrenormalized Route-J no-go left a semantic escape: insert a principal-relative counterterm
 before good/bad projection and ask the resulting current to orient negative completed-source
-excursions.  Five structural classes and one existing arithmetic dressing are now closed.
+excursions.  The natural structural classes are closed, and the widest residual endpoint is
+classified exactly as Route A/RH.  The only explicit nontrivial completed survivor is Route R's
+singular Möbius--Gamma/Ward construction.
 
 ### 1. Positive channel-linear currents
 
@@ -195,12 +198,44 @@ The following are closed:
 7. the existing Gamma--Julia endpoint Hilbert--Schmidt diagonal dressing;
 8. scalar quadratic capacity from the existing calibrated Julia--Euler exterior current.
 
-This does not close Route J.  A source-constrained current on the complete prime--archimedean
-packet could still use a new exact sign-changing arithmetic cross-block identity cancelling the
-quartic positive-Julia floor while keeping the literal source value nonnegative.  A quadratic
-version must be indefinite on the ambient coordinate space; a genuinely nonlinear current is the
-other unexcluded class.  No other named route owns either construction, so this remains Route J's
-open core.
+## Unrestricted endpoint completeness and route ownership
+
+Let `S(L)` be the literal published first-clock source and let
+`CCMFirstClockPrincipalRelativeCapacityOnTail` assert existence of `R,M,A` such that, for every
+`L>=A>=pi/2`,
+
+```text
+0 <= R(L) <= M,
+S(L)<0 -> S(L)^2 <= R(L).                               (17)
+```
+
+Then, unconditionally,
+
+```text
+CCMFirstClockPrincipalRelativeCapacityOnTail
+  <-> CCMFirstClockPublishedSourceEventuallyBoundedBelow
+  <-> RiemannHypothesis.                                (18)
+```
+
+The forward implication gives `-(M+1)<=S(L)`.  The reverse implication uses the canonical
+negative-part witness `R(L)=S(L)^2` when `S(L)<0` and zero otherwise.  This reverse witness is
+explicitly *not* a source mechanism; it exposes why an unrestricted “some nonlinear capacity”
+placeholder is Route-A target theatre rather than an independent Julia survivor.
+
+The corpus's actual nontrivial completed preprojection construction is
+`mobiusGammaFourUnitTangent_to_continuedXiTraceColumn`: singular division by the source's own
+squarefree overlap reconstructs the completed prime--Gamma current, and an anchored non-diagonal
+Julia cross-cell has the continued Xi trace column as its tangent.  Its nonzero Hermitian capacity
+is the four-unit Ward boundary Gram.  The exact endpoint theorem is
+
+```text
+ContinuedXiWardFourUnitBoundaryLiftLaw <-> RiemannHypothesis.  (19)
+```
+
+That construction and missing sign are precisely Route R's stated source object and open core.
+Thus the strongest positive survivor is owned by Route R, while the representation-free residual
+is Route A.  A merely hypothetical nonlinear formula with no source identity is not a construction
+survivor.  No independent Route-J obligation remains, so Route J is retired without claiming RH.
 
 ## Lean realization
 
@@ -251,6 +286,11 @@ eventually_half_le_juliaKernel_on_every_sixthPowerBlock
 ccmFirstClockJuliaSixthPowerBlockOffDiagonalEnergy_unbounded_of_scale_tendsto_zero
 gammaSewnMobiusJuliaCalibratedEulerExteriorCell_swap
 gammaSewnMobiusJuliaCalibratedEulerExteriorScalarEnergy_eq_zero
+CCMFirstClockPrincipalRelativeCapacityOnTail
+ccmFirstClockCanonicalNegativePartCapacity
+ccmFirstClockPrincipalRelativeCapacityOnTail_iff_eventuallyBoundedBelow
+ccmFirstClockPrincipalRelativeCapacityOnTail_iff_rh
+ccmFirstClockPrincipalRelativeCapacityOnTail_iff_continuedXiWardFourUnitBoundaryLiftLaw
 ```
 
 Both modules are imported by their area umbrellas.  All declarations are unconditional and use no
@@ -262,7 +302,8 @@ Positive-cone algebra and anchored Schur-complement identities are standard and 
 credit.  Candidate new content is only the exact weld to the pure-bad sixth-power CCM prime cells
 and the exclusion of the existing arithmetic endpoint dressing.  Targeted corpus and arXiv
 searches found no exact arithmetic-Julia/first-clock collision; external novelty remains
-unverified.
+unverified.  The endpoint equivalence `(18)` is elementary and receives no novelty credit; its
+purpose is anti-theatre and route ownership.
 
 ## Gates
 
@@ -275,4 +316,6 @@ unverified.
 - [x] globally positive cross-block rescue excluded formally
 - [x] copositive diagonal-null Julia cross-prime survivor refuted formally
 - [x] existing calibrated Julia--Euler exterior current excluded as scalar capacity formally
-- [ ] construct or refute sign-changing completed-Krein/nonlinear full-source survivor
+- [x] unrestricted residual capacity classified exactly as Route A/RH
+- [x] nontrivial completed preprojection survivor assigned to Route R's exact Ward endpoint
+- [x] Route J retired with no unowned survivor

@@ -389,17 +389,19 @@ explicit-formula and differential-algebra literature supplies separate arithmeti
 No external theorem cancels the literal cross-prime completed energy or revives its proposed
 first-clock handoff.
 
-**Lean action.** None for the live core. Route J's unrenormalized handoff is formally closed as false. At
+**Lean action.** Route J is formally retired. Its unrenormalized handoff is false. At
 `L_m=6 log m`, an explicit prime block forces full bad coherent energy at least `log m/20`, uniformly
 in Julia scale, hence unbounded along these apertures. At zero scale each fixed packet instead tends
 to rank-one energy, the square of total bad mass. Positive unit-diagonal mass cannot be removed by
 off-diagonal cancellation, while subtracting the diagonal after forming coherent energy destroys
 the normalized anchor capacity law already for a one-node unit packet, forcing `1 ≤ 0`. The
 literal/good/bad coherent Gram also has source null vector `(1,-1,1)`, so adding all three channels
-creates no independent capacity. Only a new
-source-defined principal-relative current with counterterm and orientation before positive
-good/bad projection survives; located literature supplies no such construction. Because no other
-named route owns it, Route J remains open at that hard source theorem.
+creates no independent capacity. The principal-relative audit additionally closes positive global
+kernels, anchored Schur residuals, the copositive diagonal-null Julia current by a quartic moving-
+block floor, and scalarization of the existing antisymmetric Julia--Euler seam. The unrestricted
+residual capacity existential is exactly Route A's eventual lower-bound criterion. The actual
+nontrivial singular completed Julia/Ward source transport and its missing four-unit sign are
+Route R. Located literature supplies neither sign, but there is no unowned Route-J core.
 
 ### Route K — quadratic spectral realization `[OPEN — PRIME-CYCLE TRACE-CLASS RELOCATION]`
 

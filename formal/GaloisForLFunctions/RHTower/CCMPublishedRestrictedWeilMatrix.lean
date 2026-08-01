@@ -24,7 +24,8 @@ namespace RHTower
 /-- The finite archimedean distribution `W_ℝ#` on the logarithmic aperture `(0,2a]`.
 
 The endpoint correction is written in the exact form used in equation (4.4) of the published CCM
-matrix calculation. -/
+matrix calculation.  For the physical construction one takes `a > 0`; the definition is totalized
+over `ℝ` so its algebraic identities have no side conditions. -/
 def ccmPublishedRestrictedArchimedeanPairing (a : ℝ) (F : ℝ → ℝ) : ℝ :=
   F 0 / 2 *
       (Real.eulerMascheroniConstant +
@@ -149,7 +150,8 @@ def ccmPublishedCenteredDiagonal (a : ℝ) (N : ℕ)
       2 * (1 - h / (2 * a)) *
         Real.cos (ccmPublishedCenteredFrequency a N i * h))
 
-/-- The exact finite restricted-Weil matrix in the centered Fourier packet. -/
+/-- The exact finite restricted-Weil matrix in the centered Fourier packet at physical `a > 0`,
+with a totalized algebraic extension to every real `a`. -/
 def ccmPublishedRestrictedWeilMatrix (a : ℝ) (N : ℕ) :
     Matrix (Fin (2 * N + 1)) (Fin (2 * N + 1)) ℝ :=
   ccmDividedDifferenceMatrix
@@ -324,7 +326,8 @@ theorem ccmPublishedRestrictedWeilMatrix_hasSourceResponseCompletion
 real spectral-floor shift whose source/response completion is metric-adjoint and whose full
 characteristic polynomial has only real zeros.  Thus finite ground selection, positivity,
 singularity, reflection, and completion are all closed unconditionally; no simple-even hypothesis
-survives. -/
+survives in this source-or-response conclusion.  The theorem does not assert that the selected
+branch is the original CCM eta-channel ground-vector completion. -/
 theorem exists_ccmPublishedRestrictedWeilMatrix_groundShift_completion
     (a : ℝ) (N : ℕ) :
     ∃ mu : ℝ,

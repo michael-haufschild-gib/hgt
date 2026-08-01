@@ -456,6 +456,16 @@ theorem mobiusTwoLargePrimeRemainderCoefficient_eq_zero_of_le_sq
   intro hcount
   exact (not_lt_of_ge hn) (sq_lt_of_two_le_mobiusLargePrimeFactorCount hcount)
 
+/-- Through the square boundary `z^2`, the combined zero/one-large-prime coefficient is the
+literal Möbius coefficient.  Thus a transport theorem on this truncation cannot replace the
+all-prime sign problem by a different finite coefficient system. -/
+theorem mobiusZero_add_oneLargePrimeCoefficient_eq_mobius_of_le_sq
+    {z n : ℕ} (hn : n ≤ z ^ 2) :
+    mobiusZeroLargePrimeCoefficient z n + mobiusOneLargePrimeCoefficient z n =
+      mobiusComplexCoefficient n := by
+  rw [mobiusCoefficient_eq_zero_add_one_add_twoLarge z n,
+    mobiusTwoLargePrimeRemainderCoefficient_eq_zero_of_le_sq hn, add_zero]
+
 /-- Absolute geometric bound for the sector with at least two primes beyond `z`. -/
 theorem norm_mobiusTwoLargePrimeRemainderLaplaceTransform_le
     (z : ℕ) {x : ℝ} (hx : 0 < x) :

@@ -144,4 +144,72 @@ theorem basisMultiplierOperator_reindex_apply_basis (b : HilbertBasis ι ℂ E) 
 
 end Reindex
 
+/-! ## Spectrum under conjugation
+
+The corpus already transports compactness along a continuous linear equivalence.  The spectrum
+transports too, because conjugation is a ring isomorphism of the operator algebras: it preserves
+products, the identity, and the scalars, so it preserves invertibility in both directions.  This is
+what carries a spectral bound proved on the diagonal model to any space with a Hilbert basis. -/
+
+section ConjSpectrum
+
+variable {K : Type*} [NormedAddCommGroup K] [NormedSpace ℂ K]
+variable {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℂ E']
+
+theorem conjugateOperator_mul (u : E' ≃L[ℂ] K) (S T : K →L[ℂ] K) :
+    conjugateOperator u (S * T) = conjugateOperator u S * conjugateOperator u T := by
+  ext x
+  simp [conjugateOperator]
+
+theorem conjugateOperator_one (u : E' ≃L[ℂ] K) :
+    conjugateOperator u (1 : K →L[ℂ] K) = 1 := by
+  ext x
+  simp [conjugateOperator]
+
+theorem conjugateOperator_sub (u : E' ≃L[ℂ] K) (S T : K →L[ℂ] K) :
+    conjugateOperator u (S - T) = conjugateOperator u S - conjugateOperator u T := by
+  ext x
+  simp [conjugateOperator]
+
+theorem conjugateOperator_smul (u : E' ≃L[ℂ] K) (c : ℂ) (T : K →L[ℂ] K) :
+    conjugateOperator u (c • T) = c • conjugateOperator u T := by
+  ext x
+  simp [conjugateOperator]
+
+/-- Conjugating by an equivalence and then by its inverse returns the operator. -/
+theorem conjugateOperator_symm_conj (u : E' ≃L[ℂ] K) (T : K →L[ℂ] K) :
+    conjugateOperator u.symm (conjugateOperator u T) = T := by
+  ext x
+  simp [conjugateOperator]
+
+/-- Conjugation preserves invertibility. -/
+theorem isUnit_conjugateOperator (u : E' ≃L[ℂ] K) {T : K →L[ℂ] K} (h : IsUnit T) :
+    IsUnit (conjugateOperator u T) := by
+  obtain ⟨w, hw⟩ := h
+  refine ⟨⟨conjugateOperator u T, conjugateOperator u ↑w⁻¹, ?_, ?_⟩, rfl⟩
+  · rw [← hw, ← conjugateOperator_mul, w.mul_inv, conjugateOperator_one]
+  · rw [← hw, ← conjugateOperator_mul, w.inv_mul, conjugateOperator_one]
+
+/-- Conjugation preserves invertibility in both directions. -/
+theorem isUnit_conjugateOperator_iff (u : E' ≃L[ℂ] K) (T : K →L[ℂ] K) :
+    IsUnit (conjugateOperator u T) ↔ IsUnit T := by
+  refine ⟨fun h => ?_, isUnit_conjugateOperator u⟩
+  have h2 := isUnit_conjugateOperator u.symm h
+  rwa [conjugateOperator_symm_conj] at h2
+
+/-- **The spectrum is invariant under conjugation.**  Together with
+`isCompactOperator_conjugateOperator_iff`, this carries the whole spectral picture of the diagonal
+model to any space with a Hilbert basis. -/
+theorem spectrum_conjugateOperator (u : E' ≃L[ℂ] K) (T : K →L[ℂ] K) :
+    spectrum ℂ (conjugateOperator u T) = spectrum ℂ T := by
+  have hr : ∀ r : ℂ, algebraMap ℂ (E' →L[ℂ] E') r - conjugateOperator u T
+      = conjugateOperator u (algebraMap ℂ (K →L[ℂ] K) r - T) := by
+    intro r
+    rw [conjugateOperator_sub, Algebra.algebraMap_eq_smul_one,
+      Algebra.algebraMap_eq_smul_one, conjugateOperator_smul, conjugateOperator_one]
+  ext r
+  simp only [spectrum.mem_iff, hr r, isUnit_conjugateOperator_iff]
+
+end ConjSpectrum
+
 end GaloisForLFunctions.RHTower

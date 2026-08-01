@@ -128,9 +128,38 @@ THE DENINGER SOURCE DEPENDENCY GRAPH`.
 
 ## Lean status
 
-No Lean module is retained for this diagnostic theorem.  Formalization
-effort is reserved for the source invariant sheaf and
-Leray--Rost--Schmid resolution.
+### The fibre lemma landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerMiddleFiber.lean`.  Axiom audit: `propext` for the
+five exactness theorems, `propext, Classical.choice, Quot.sound` for the equivariance of the
+inverse.
+
+mathlib has no stable `∞`-categories, so the theorem is formalized in the form its own proof uses:
+the exactness content of the long exact sequence of the fibre triangle `(4)`.  Every statement
+therefore applies verbatim to the fibre of a morphism of cochain complexes, which is what the
+`t`-structure hypotheses `(1)` amount to.
+
+- `deningerMiddleFiber_connecting_eq_zero` — a surjective comparison kills the connecting
+  morphism; this is the step that makes both `H⁰(f)` and `H²(f)` surjectivity bite.
+- `deningerMiddleFiber_degree_zero` — `H⁰(C_mid) = 0`, from injectivity of `H⁰(f)`.
+- `deningerMiddleFiber_degree_one_injective`, `_surjective`, `_bijective` — **`(3)` in degree
+  one**: the vanishing connecting map makes the fibre inject, and `H¹(C_der) = 0` makes it
+  surject, so `H¹(C_mid) ≅ H¹(C_coarse)` canonically.
+- `deningerMiddleFiber_degree_two` — `H²(C_mid) = 0`, from `H¹(C_der) = 0` and injectivity of
+  `H²(f)`.
+- `deningerMiddleFiber_degree_three` — `H³(C_mid) = 0`, from surjectivity of `H²(f)`.
+- `deningerMiddleFiberEquiv`, `deningerMiddleFiber_symm_equivariant` — the degree-one
+  identification as a linear equivalence, and its equivariance: whatever endomorphisms the
+  comparison intertwines — a flow or a semigroup of correspondences — the inverse intertwines too.
+
+The theorem stays quarantined from the Deninger source dependency graph, exactly as the card
+records; formalizing it only makes the diagnostic reusable.
+
+### Remaining
+
+Nothing.  The hypotheses `(1)`–`(3)` and the conclusion `(3)` are formalized; the only step not
+expressible in mathlib is the passage from a fibre triangle in a stable category to its long exact
+sequence, which is standard and is the card's own starting point.
 
 ## References
 

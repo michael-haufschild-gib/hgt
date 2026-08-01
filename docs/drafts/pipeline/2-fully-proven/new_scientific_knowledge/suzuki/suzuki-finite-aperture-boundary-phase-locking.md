@@ -1,20 +1,32 @@
 # Suzuki finite-aperture boundary-phase locking
 
+> **SOURCE-SPECIALIZATION RETRACTED — 2026-08-01.**  Universal stable-deficiency theorem below is
+> valid, but its Suzuki application is not.  Under RH, `C_c^infinity(R)` is dense and invariant
+> under unitary translation group on `H(A_infinity)`; standard invariant-core argument makes
+> compact-test derivative essentially self-adjoint.  Hence actual graph-exhaustion limit has
+> deficiency `(0,0)`, not stable deficiency `(1,1)`.  Separate de Branges minimal multiplication
+> operator has deficiency `(1,1)`, but Suzuki Section 7.4 explicitly does not identify compact
+> tests with its domain.  Correct source theorem is phase **universality**: every finite extension
+> schedule has same generalized strong-resolvent limit because deficiency projections converge
+> strongly to zero.  See
+> `../../../1-in-progress/suzuki-compact-core-essential-selfadjoint-phase-universality.md`.
+> No statement below claiming Suzuki phase locking or source verification may be used.
+
 - **ID:** `suzuki-finite-aperture-boundary-phase-locking`
 - **Stage:** 5 — ineligible under the hypothesis-free/Lean-complete paper gate
 - **Type:** UNIVERSAL OPERATOR LIMIT LAW / SUZUKI 2026 CENTRAL CONJECTURE
-- **Scientific status:** `[UNIVERSAL PART PAPER-PROVED] [RH-CONDITIONAL APPLICATION REJECTED]`
-  `[NOT LEAN-COMPLETE] [NOT PUBLICATION-ELIGIBLE] [NOT RH]`
+- **Scientific status:** `[UNIVERSAL STABLE-RANK PART PAPER/LEAN-PROVED]`
+  `[SUZUKI APPLICATION FALSIFIED: GLOBAL RANK DROPS TO ZERO]`
+  `[UNIVERSAL PART LEAN-COMPLETE] [NOT PUBLICATION-ELIGIBLE AS SUZUKI CLAIM] [NOT RH]`
 - **Primary source target:** Suzuki 2026, Sections 7.5--7.6
 - **Computation used:** no
 
 ## 0. Gate verdict (2026-07-22)
 
-This card is not eligible for the requested paper.  The abstract nested-operator law is
-unconditional as an implication, but the advertised Suzuki specialization imports RH to obtain
-the positive global Weil Hilbert space and target self-adjoint translation generator.  Moreover,
-the full unbounded-operator theorem has not been formalized in Lean.  Neither defect may be hidden
-inside a theorem statement or discharged by citation under the current gate.
+This card is not eligible for requested Suzuki paper.  Abstract nested-operator law is
+unconditional and its bounded Cayley formulation is Lean-complete.  Advertised Suzuki
+specialization both imports RH and fails stable-deficiency hypothesis: compact-test graph closure
+is self-adjoint.  Neither defect may be hidden inside theorem statement.
 
 The manuscript is retained only as a rejected research draft.  Current unconditional Suzuki
 frontier is the later `SUZUKI-APEX-BLOCK-TRANSPORT` / restricted-Weil Robin producer recorded in
@@ -280,7 +292,12 @@ for all sufficiently large `a`.  Hence `spectrum(A_a)` meets `U`.  QED.
 This is spectral inclusion, not norm-resolvent convergence.  The theorem does not exclude additional
 finite-aperture spectral pollution away from the target spectrum.
 
-## 6. Suzuki source verification `[PROVED FROM RH]`
+## 6. Suzuki source verification `[RETRACTED: STABLE DEFICIENCY FAILS]`
+
+Text below records original attempted verification.  It establishes Hilbert-space nesting but not
+load-bearing condition `(2.4)`.  Invariant compact-core theorem proves global graph closure has
+deficiency zero, so Theorems 4.1--4.2 cannot be instantiated with Suzuki's separate
+deficiency-one de Branges minimal operator.
 
 Assume RH and use Suzuki's notation.
 

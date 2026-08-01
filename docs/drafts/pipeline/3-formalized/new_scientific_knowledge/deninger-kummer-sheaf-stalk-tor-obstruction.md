@@ -106,3 +106,38 @@ two-term Milnor computation to stalkwise amplitude of
 \(R\alpha_*\mathscr G\).
 
 **Verdict:** `FULLY PROVEN ON PAPER`.
+
+## Lean status
+
+### The Tor computation landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerKummerStalkTor.lean`, together with
+`formal/GaloisForLFunctions/RHTower/DeningerMilnorSquareZeroQuotient.lean` for `K = E/I`.
+Axiom audit: `propext, Classical.choice, Quot.sound`.
+
+- `deningerExtGe j` — the part of `E = Λ(V)` of degree at least `j`: `m = Λ^{≥1}`,
+  `I = Λ^{≥2}`, `mI = Λ^{≥3}`.
+- `deningerExtGe_mul_le`, `deningerIota_mem_one`, `deningerIotaMulti_mem`,
+  `deningerExtGe_one_mul` — **`(1)`**: `m · Λ^{≥j} = Λ^{≥j+1}` for `j ≥ 1`.  With `j = 1` this is
+  `I = m²`; with `j = 2` it is `mI = Λ^{≥3}`.  The hard inclusion is the splitting
+  `v₁ ∧ ⋯ ∧ vₙ = v₁ · (v₂ ∧ ⋯ ∧ vₙ)` on the spanning wedge monomials.
+- `deningerProj_two_of_ge_three`, `deningerExtSquare_inf_ge_three` — the graded projection kills
+  `Λ^{≥3}`, so `Λ²V ∩ mI = 0`.
+- `deningerExtGe_two_eq_sup` — `I = Λ²V ⊕ mI`.
+- `deningerTor_map_eq`, `deningerTor_injective` — **`(2)`, `(5)`**: the quotient `I/mI` is exactly
+  the image of `Λ²V`, and `Λ²V` injects into it: `I/mI ≅ Λ²V`.
+- `deningerStalkTor_ne` — **the obstruction**: if `Λ²V ≠ 0` then `I ≠ mI`, so `I/mI ≠ 0` and the
+  augmentation base change of `K` is not derived-trivial.
+- `deningerExtSquareQuotEquiv` (companion module) — `K = E/I ≅ k ⊕ V` with `V² = 0`, the `(1)` of
+  this card, proved as `RingQuot` of the square-zero relation.
+
+### Exact scope
+
+Formalized: the whole computation, i.e. `m² = I`, `mI = Λ^{≥3}`, `I/mI ≅ Λ²V` and its
+nonvanishing — the content that makes the obstruction real.
+
+Not formalized: the identification `Tor₁^E(k,K) ≅ I/mI` itself, which is the long exact sequence of
+`(3)`–`(5)` together with `Tor₁^E(k,E) = 0`.  `E = Λ(V)` is noncommutative and mathlib has neither
+tensor products nor Tor over a noncommutative ring, so that step cannot be stated there; it is
+standard homological algebra and the card's own proof treats it as such.  The consequences listed
+for Deninger's coefficient are statements about objects the corpus does not construct.

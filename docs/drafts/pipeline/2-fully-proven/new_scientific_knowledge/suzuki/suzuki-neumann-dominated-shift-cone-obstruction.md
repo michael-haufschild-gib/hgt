@@ -892,3 +892,172 @@ The two halves existed separately — `exponentialSourceCombination_pairing` for
 for one definitional statement: that Suzuki's physical numerator and denominator are the inner
 products whose values these identities compute.  No analysis, no limit, and no value computation is
 left anywhere in Theorem A's chain.
+
+### The remaining debt, named as one interface
+
+Following the project convention of representing a missing input as a `Prop`/structure interface,
+`RHTower/SuzukiEdgeDataInterface.lean` names the entire remaining debt of Theorem A as a single
+structure `SuzukiEdgeData`:
+
+- the bounded resolvent coordinate `B` with self-adjointness, injectivity and
+  `spectrum ⊆ Icc 0 specBound`,
+- the vector `v` the family is applied to,
+- the two pairing vectors `gnum`, `gden`,
+- the aperture and edge weight, both nonzero,
+- and the two value equations `inner gnum v = i * 2c * H(2a)`, `inner gden v = 4ac`.
+
+`SuzukiEdgeData.tendsto_normalizedQuotient` — given such data, the normalized edge quotient
+converges to the aperture average, **with no further hypothesis**.  That is the card's passage
+`(2) => (10)` reduced to the exhibition of one structure.
+
+`nonempty_suzukiEdgeData` — **the interface is inhabited.**  The harmonic diagonal operator supplies
+the coordinate, and `exists_inner_eq` produces the pairing vectors from any nonzero vector, so the
+structure is not vacuous and the theorem above is not empty.
+
+Both audit to exactly `[propext, Classical.choice, Quot.sound]`.
+
+What a source must now do is exhibit a `SuzukiEdgeData` whose `B` is Suzuki's restricted resolvent
+and whose `gnum`, `gden` are his physical numerator and denominator functionals.  Nothing analytic
+remains between that and `(10)`.
+
+### Where the remaining content actually sits — a caution
+
+`exists_suzukiEdgeData_of_operator` proves that the value equations of `SuzukiEdgeData` impose
+**no constraint**: for any admissible coordinate `B`, any nonzero `v`, and *any* prescribed
+aperture, edge weight and primitive value, pairing vectors realising them exist (Riesz, via
+`exists_inner_eq`).  Axiom audit exactly `[propext, Classical.choice, Quot.sound]`.
+
+Two consequences, both worth stating plainly:
+
+1. `nonempty_suzukiEdgeData` establishes non-vacuity and nothing more.  Exhibiting *a*
+   `SuzukiEdgeData` is not evidence that anything Suzuki-specific has been done.
+2. The entire remaining debt of Theorem A is the **provenance** of `gnum` and `gden` — that they are
+   the source's physical numerator and denominator functionals — not the values those pairings take.
+   The values are already computed unconditionally
+   (`integral_edgeDenominatorSum`, `exponentialSourceCombination_primitive_pairing`).
+
+So the correct reading of `SuzukiEdgeData.tendsto_normalizedQuotient` is: all the analysis of the
+passage `(2) => (10)` is discharged, and what remains is a definitional identification that the
+interface deliberately does not and cannot enforce.
+
+### Pairing vectors with provenance: `L^2` of the interval
+
+The previous entry showed the edge-data value equations constrain nothing, because `gnum`, `gden`
+were free vectors of an abstract Hilbert space.  Giving them provenance requires the pairing to *be*
+an integral, which requires the concrete space.  `HTGeometry/CompactIntervalL2Pairing.lean` supplies
+it:
+
+- `IntervalL2 a` — `L^2` of `[-a,a]` for the restricted Lebesgue measure.
+- `memLp_two_of_continuous` — a continuous function lies in `L^2` there (bounded on a compact set,
+  finite measure).
+- `toIntervalL2` — a continuous weight as an element of that space.
+- `inner_toIntervalL2` — **the pairing against such a weight is the explicit integral**
+  `∫ conj (w x) * f x` over `[-a,a]`.
+- `inner_toIntervalL2_toIntervalL2` — both sides continuous.
+
+All audit to exactly `[propext, Classical.choice, Quot.sound]`.
+
+This is the concrete reading of the card's "bounded `L^2` functional": the functional is its weight.
+A `SuzukiEdgeData` whose `gnum`, `gden` are `toIntervalL2` of named weights therefore has value
+equations that are integral identities about those weights, rather than free choices — which is what
+the trivial-satisfiability caution above says is needed.  Mathlib has no such interval-`L^2` pairing
+layer and the corpus did not either.
+
+### A pairing vector whose value is proved, not chosen
+
+The trivial-satisfiability caution asked for pairing vectors with provenance.  One now exists
+(`HTGeometry/CompactIntervalL2Pairing.lean`):
+
+- `oneIntervalL2` — the constant function as an `L^2` element.
+- `inner_toIntervalL2_one` — pairing a weight against it is the interval integral of the conjugate
+  weight, converting `Icc`-restricted integrals to `intervalIntegral` form.
+- `edgeDenominatorWeight` — the explicit continuous weight
+  `y => (e^y + e^(-y)) + y (e^y - e^(-y))`.
+- `integral_edgeDenominatorWeight` — its interval integral is `4 a cosh a`, by additivity from
+  `integral_edgeDenominatorSum`.
+- `inner_edgeDenominatorWeight_one` — **the pairing of this named weight against the constant
+  function equals the central jet `4 a cosh a`**.
+
+All audit to exactly `[propext, Classical.choice, Quot.sound]`.
+
+This is a `gden` that is not a free choice: it is a named function, and its value equation is a
+theorem about that function.  The denominator half of the edge data therefore now has genuine
+provenance.  Remaining on this line: the same for the numerator, whose weight involves the primitive
+`H` and its derivative, and whose value `2 cosh a * H (2a)` is
+`exponentialSourceCombination_primitive_pairing`.
+
+### Both pairing vectors now have provenance
+
+The numerator half is complete (`HTGeometry/CompactIntervalL2Pairing.lean`):
+
+- `edgeNumeratorWeight a H H' x = (e^x + e^(-x)) H'(a-x) + (e^(-x) - e^x) H(a-x)` — the weight read
+  off from the exponential source combination.
+- `hasDerivAt_reflect` — the reflected primitive `y => H (a - y)` has derivative `-H'(a-y)`.
+- `integral_edgeNumeratorWeight` — its interval integral is `2 cosh a * H (2a)`, by regrouping into
+  the four integrals of `exponentialSourceCombination_primitive_pairing`.
+- `inner_edgeNumeratorWeight_one` — **the pairing of this named weight against the constant function
+  is `2 cosh a * H (2a)`**, under the natural hypotheses on the primitive: `H'` continuous,
+  `H` its antiderivative everywhere, `H 0 = 0`.
+
+All audit to exactly `[propext, Classical.choice, Quot.sound]`.
+
+Both value equations of the edge data are therefore realised by **named explicit weights** whose
+values are theorems about those weights, not free choices:
+
+```text
+gden ~ edgeDenominatorWeight,  pairing = 4 a cosh a
+gnum ~ edgeNumeratorWeight,    pairing = 2 cosh a * H (2a)
+```
+
+The `i` and the edge weight `c = cosh a` of `SuzukiEdgeData` are the normalization constants relating
+these to `i * 2c * H(2a)` and `4ac`.  What the source still owes is unchanged and singular: that its
+physical numerator and denominator functionals are these pairings — now a comparison against two
+written-down weights rather than against unspecified vectors.
+
+### Edge data realised on `L^2` of the interval
+
+`RHTower/SuzukiIntervalEdgeData.lean` assembles the two weights into actual edge data:
+
+- `oneIntervalL2_ne_zero`, `nontrivial_intervalL2` — for `a > 0` the space is nontrivial (the
+  constant function is not a.e. zero, since `Icc (-a) a` has measure `2a > 0`).
+- `inner_edgeNumeratorVector_one` — scaling the numerator weight by `-i` gives pairing value
+  `i * 2 cosh a * H (2a)`, the form the interface requires (`inner` is conjugate-linear in its first
+  slot, so `-i` produces the factor `i`).
+- `inner_edgeDenominatorVector_one` — the denominator pairing value `4 a cosh a`.
+- `nonempty_intervalEdgeData` — **edge data exists on `L^2[-a,a]` whose pairing vectors are the `L^2`
+  elements of the two named weights**, with `aperture = a`, `edgeWeight = cosh a`,
+  `primitiveValue = H (2a)`.
+
+All audit to exactly `[propext, Classical.choice, Quot.sound]`.
+
+Honest scope.  The resolvent coordinate used here is the **identity**, which the interface admits but
+which carries no resolvent content.  So this is not Suzuki's operator, and the construction does not
+claim to be: what it establishes is that the two value equations — the part that looked like the
+remaining mathematical debt — are satisfied by explicitly named weights, with the values proved from
+their integrals rather than chosen by Riesz.  The outstanding item is now solely the resolvent
+coordinate: supplying `B` as Suzuki's restricted resolvent, with these same pairing vectors.
+
+### Spectrum transports along conjugation
+
+Replacing the identity coordinate by a genuine compact resolvent needs the spectral bound to move
+from the diagonal model to the target space.  Compactness already transported
+(`isCompactOperator_conjugateOperator_iff`); the spectrum now does too
+(`RHTower/HilbertBasisMultiplierOperator.lean`):
+
+- `conjugateOperator_mul`, `_one`, `_sub`, `_smul`, `conjugateOperator_symm_conj` — conjugation is a
+  ring isomorphism of the operator algebras and undoes itself.
+- `isUnit_conjugateOperator_iff` — invertibility transports in both directions.
+- `spectrum_conjugateOperator` — **`spectrum (conjugateOperator u T) = spectrum T`**.
+
+Both audit to exactly `[propext, Classical.choice, Quot.sound]`.
+
+Blocked step, recorded honestly.  Putting a compact multiplier coordinate on `L^2[-a,a]` needs a
+*countable* Hilbert basis there, i.e. separability of that space.  **mathlib has no separability
+instance for `Lp` at all** — `SeparableSpace (IntervalL2 a)` does not synthesize, and a search of
+`Mathlib/MeasureTheory/Function/` finds no such instance to invoke.  So that step is a genuine
+mathlib-scale development (density of simple functions over a countable generating algebra), not a
+lookup.  The alternative is a concrete basis: mathlib has `AddCircle.fourierBasis` for
+`L^2 (AddCircle T)`, but the isometry identifying it with `L^2[-a,a]` is also absent.
+
+Everything downstream of that basis is now in place: the multiplier operator, its compactness,
+self-adjointness, reindexing from any countable index, and — with this entry — its spectrum.

@@ -15,6 +15,7 @@ algebra.
 namespace GaloisForLFunctions
 
 open MvPolynomial
+open scoped Differential
 
 variable {F K : Type*} [Field F] [Field K] [Algebra F K] [Differential K] {s : Set K}
 
@@ -98,5 +99,40 @@ theorem exists_fin_jetPoly_of_mem_algebra {y : K} (hy : y ∈ differentialJetAlg
   refine ⟨M, N, a, e, h, ha, fun i => ?_, by rw [← hr]; exact hval⟩
   obtain ⟨z, hz⟩ := hh i
   exact hz ▸ z.2
+
+/-- **The presentation of a jet-algebra element with distinct jets and distinct monomials.** -/
+theorem exists_fin_jetPoly_of_mem_algebra_inj {y : K} (hy : y ∈ differentialJetAlgebra F s) :
+    ∃ (M N : ℕ) (a : Fin M → K) (e : Fin M → Fin N → ℕ) (h : Fin N → K),
+      (∀ α, a α ∈ Set.range (algebraMap F K)) ∧ (∀ i, h i ∈ differentialJetSet s)
+        ∧ Function.Injective h ∧ Function.Injective e
+        ∧ y = ∑ α : Fin M, a α * ∏ i : Fin N, h i ^ e α i := by
+  classical
+  rw [differentialJetAlgebra_eq_range] at hy
+  obtain ⟨r, hr⟩ := hy
+  obtain ⟨M, N, a, e, h, ha, hh, hhinj, heinj, hval⟩ :=
+    exists_fin_monomial_sum_inj (Subtype.val : differentialJetSet s → K) Subtype.val_injective r
+  refine ⟨M, N, a, e, h, ha, fun i => ?_, hhinj, heinj, by rw [← hr]; exact hval⟩
+  obtain ⟨z, hz⟩ := hh i
+  exact hz ▸ z.2
+
+/-- **The jet algebra is closed under the derivation.**  Its generators are jets, whose derivatives
+are jets, and the base constants are constant. -/
+theorem deriv_mem_differentialJetAlgebra (hconst : ∀ c : F, (algebraMap F K c)′ = 0)
+    {y : K} (hy : y ∈ differentialJetAlgebra F s) : (y)′ ∈ differentialJetAlgebra F s := by
+  induction hy using Algebra.adjoin_induction with
+  | mem x hx =>
+    obtain ⟨z, hz, n, hn⟩ := hx
+    refine Algebra.subset_adjoin ⟨z, hz, n + 1, ?_⟩
+    rw [differentialJet_succ, hn]
+  | algebraMap c =>
+    rw [hconst c]
+    exact zero_mem _
+  | add x y hx hy ihx ihy =>
+    rw [map_add]
+    exact add_mem ihx ihy
+  | mul x y hx hy ihx ihy =>
+    rw [Derivation.leibniz]
+    simp only [smul_eq_mul]
+    exact add_mem (mul_mem hx ihy) (mul_mem hy ihx)
 
 end GaloisForLFunctions

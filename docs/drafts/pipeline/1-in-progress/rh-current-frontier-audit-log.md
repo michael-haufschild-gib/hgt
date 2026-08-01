@@ -193,3 +193,10 @@ Write a review paper whose route claims are traceable to exact Lean declarations
   response, with absolute shell cost equal to the response column's finite `ell1` mass.  Pivot now
   demands source shell renormalization/nuclear control, cofinal holonomy nonvanishing, and
   all-source-moment incidence.  New module is umbrella-wired, target-built, and standard-axiom-only.
+- 2026-08-01 — Route J ownership audit completed. Positive/channel-linear, globally positive,
+  anchored-Schur, endpoint-dressing, copositive diagonal-null, and existing exterior-current
+  principal-relative implementations are formally closed. The widest bounded negative-excursion
+  capacity existential is proved equivalent to Route A's eventual lower floor and RH; its reverse
+  negative-part witness is explicitly target theatre. The corpus's actual singular completed
+  preprojection Julia source transport lands in the four-unit Ward boundary law, exactly Route R's
+  open core. Route J is therefore retired with survivors transferred to A/R, not declared proved.

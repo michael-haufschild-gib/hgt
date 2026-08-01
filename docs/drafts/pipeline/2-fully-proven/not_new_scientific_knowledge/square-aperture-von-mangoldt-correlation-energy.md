@@ -2,8 +2,8 @@
 
 - **ID:** `square-aperture-von-mangoldt-correlation-energy`
 - **Stage:** `2-fully-proven`
-- **Type:** `THEOREM (paper) / SOURCE REDUCTION`
-- **Scientific status:** `[PAPER-PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE]`
+- **Type:** `THEOREM (paper) / EXACT RH EQUIVALENCE`
+- **Scientific status:** `[PAPER-PROVED] [BRIDGE] [CIRCULAR AS SOURCE PRODUCER] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Route:** Route I, coefficient-nonlocal square-aperture pivot
 
 ## Definitions
@@ -100,12 +100,56 @@ sum_m E(m^2)^2/m^(1+epsilon) < infinity.
 
 The already-proved square-sampled positive-excess `L^2` gate now gives RH.
 
+## Reverse implication from RH
+
+This correlation estimate is not an independent source conjecture. It follows from RH by the
+classical von Koch--Schoenfeld prime-number-theorem error bound. Schoenfeld's Theorem 10, equation
+`(6.2)`, proves under RH that, for `x>73.2`,
+
+```text
+|psi(x)-x| < sqrt(x) log(x)^2/(8 pi).                    (4)
+```
+
+Write `R(x)=psi(x)-x`. The exact Abel identity already formalized for Route I is
+
+```text
+W(n)-c sqrt(n)
+  = R(n)/sqrt(n) - R(n/2)/sqrt(n/2)
+    + (1/2) integral_[n/2,n] R(t)t^(-3/2) dt.            (5)
+```
+
+For `n>146.4`, `(4)` bounds each endpoint term in absolute value by
+`log(n)^2/(8 pi)`. For the integral term,
+
+```text
+(1/2) integral_[n/2,n] |R(t)|t^(-3/2) dt
+ <= (1/(16 pi)) integral_[n/2,n] log(t)^2/t dt
+ <= (log 2)/(16 pi) log(n)^2.                            (6)
+```
+
+Thus `|W(n)-c sqrt(n)|=O(log(n)^2)`. At `n=m^2`, squaring and summing gives
+
+```text
+C_M = O(M log(M)^4) = O_delta(M^(1+delta))               (7)
+```
+
+for every `delta>0`. Combined with the formalized forward implication, this proves on paper
+
+```text
+RH  iff  SquarePrimeWindowCorrelationEnergySubpower.     (8)
+```
+
+Primary source: L. Schoenfeld, *Sharper Bounds for the Chebyshev Functions theta(x) and psi(x).
+II*, Mathematics of Computation 30 (1976), Theorem 10,
+<https://doi.org/10.1090/S0025-5718-1976-0457374-X>.
+
 ## Hard-core classification
 
-Estimate `(3)` is the new Route-I open core, not a proved consequence. It asks for near-linear
-variance after centering a discontinuous dyadic von-Mangoldt window at square apertures. Expanding
-and bounding the positive pair term separately loses the cancellation and leaves cubic-scale main
-mass. Current pointwise PNT errors also miss `(3)` by a power.
+Estimate `(3)` is an exact RH equivalent, not a new Route-I source producer. It asks for
+near-linear variance after centering a discontinuous dyadic von-Mangoldt window at square
+apertures. Expanding and bounding the positive pair term separately loses the cancellation and
+leaves cubic-scale main mass. Current unconditional pointwise PNT errors miss `(3)` by a power;
+RH supplies it immediately through `(4)`--`(7)`.
 
 This pivot does not map to:
 
@@ -125,13 +169,18 @@ Brent--Platt--Trudgian, *The mean square of the error term in the prime number t
 RH and unconditional lower/oscillation results. It does not supply a restriction theorem from the
 continuous measure to unit neighborhoods of square arguments. Bellotti's current zero-density/PNT
 error work likewise remains pointwise far above the critical square-trace scale. No primary source
-publishing estimate `(3)` or this exact square-window kernel was located. The finite Fubini identity
-is routine and is not claimed as publication-level novelty; conjecture `(3)` is explicitly open.
+publishing this exact square-window kernel was located. The finite Fubini identity and its RH
+consequence are routine applications of finite rearrangement and Schoenfeld's theorem; neither is
+claimed as publication-level novelty. The independent-source interpretation of `(3)` is rejected
+as circular.
 
 ## Gates
 
 - [x] exact finite kernel and carrier fixed
 - [x] complete finite-Fubini proof
 - [x] exact correlation-growth implication to RH
+- [x] RH-to-correlation reverse implication from Schoenfeld plus exact Abel summation
+- [x] exact paper equivalence and circularity classification
 - [x] anti-theatre and route-collision audit
-- [x] exact unconditional Lean formalization
+- [x] exact identity and forward implication formalized unconditionally in Lean
+- [ ] reverse implication formalized in Lean (requires a formal von Koch--Schoenfeld theorem)

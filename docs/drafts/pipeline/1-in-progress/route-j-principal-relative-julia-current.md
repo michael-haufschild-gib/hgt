@@ -1,18 +1,18 @@
 # Route J principal-relative Julia current
 
 - **ID:** `route-j-principal-relative-julia-current`
-- **Stage:** 3-formalized / pending pipeline move
-- **Type:** TERMINAL CLASSIFICATION / SOURCE NO-GO / ROUTE TRANSFER
-- **Scientific status:** `[ROUTE J RETIRED] [ROUTE A/R TRANSFER] [NO RH INPUT] [NO COMPUTATION]`
+- **Stage:** 1-in-progress
+- **Type:** `[CONJECTURE]` / SOURCE CONSTRUCTION / NO-GO CLASSIFICATION
+- **Scientific status:** `[OPEN] [ROUTE J OWNER] [NO RH INPUT] [NO COMPUTATION]`
 - **Parent no-go:** `../5-failed/route-j-julia-unrenormalized-coherent-energy-budget.md`
 - **Endpoint:** Route A's literal first-clock source is eventually bounded below
 
 ## Mission
 
 Classify every Julia-coherent implementation of a principal-relative completed first-clock
-capacity, separate genuine source mechanisms from target-equivalent capacity witnesses, and
-transfer any positive survivor to its load-bearing route.  Route J is retired only after both the
-concrete no-go closure and this ownership audit.
+capacity and construct one unconditionally or prove a class-complete no-go.  Target equivalence and
+overlap with another route do not discharge this card while a source-defined current remains
+researchable.
 
 ## 1. Exact endpoint
 
@@ -274,7 +274,7 @@ witness: it proves the reverse logical implication but supplies no source mechan
 unrestricted “some nonlinear capacity exists” placeholder is not independent Route-J content; it
 is exactly Route A's endpoint under a new existential wrapper.
 
-## 8. Ownership of the nontrivial completed survivor
+## 8. The completed Ward overlap does not close Route J
 
 The corpus now contains the exact non-diagonal completed construction previously described only
 schematically:
@@ -304,27 +304,28 @@ W_P is positive semidefinite for every finite packet
   <-> RiemannHypothesis.                                (22)
 ```
 
-This is the strongest positive survivor exposed by Route J's no-go.  It clearly belongs to Route
-R: its load-bearing operation is the singular Möbius--Gamma/co-Poisson graph continuation and its
-missing theorem is precisely Route R's four-unit Ward boundary sign.  Julia supplies the
-non-diagonal cross-cell transport, but no independent Julia energy estimate remains.
+This construction is the strongest named candidate exposed by Route J's no-go, but it does not
+close or transfer the card.  Three missing identifications are mathematical, not administrative:
 
-The earlier “genuinely nonlinear source functional” placeholder was overbroad.  Without an
-explicit source identity it is only `CAP_J` and therefore Route A by `(18)`; with the singular
-completed identity `(20)` it is Route R by `(21)--(22)`.  A hypothetical mechanism with a different
-load-bearing source operation would be a new route, not an unfinished compound-Poisson coherent
-energy estimate.  There is no unowned Route-J survivor.
+1. no theorem identifies the Ward Schur defect `(21)` with a first-clock relative capacity
+   `R_x(L)` satisfying `(2)`;
+2. no theorem shows its symmetric completed block cancels the quartic positive-Julia floor `(15)`
+   on the sixth-power pure-bad packet while remaining nonnegative on the literal source locus;
+3. the equivalence of both endpoints to RH proves only target equivalence.  It supplies neither
+   source identity nor estimate and cannot establish mechanism ownership.
+
+Thus the exact surviving class remains a source-constrained symmetric sign-changing completed
+prime--Gamma/co-Poisson current, or a genuinely nonlinear Julia source functional, satisfying both
+halves of `(2)`.  The candidate must have a nonzero scalar part, survive the pure-bad moving-block
+falsifier, and prove its bound without importing the Ward sign, the first-clock lower floor, or RH.
+The existing singular Ward transport is a candidate input to attack, not a reason to stop.
 
 ## 9. Route disposition
 
-Route J is retired as an independent route.
-
-- Every concrete Julia coherent-energy, diagonal-null, Schur, positive-kernel, endpoint-dressing,
-  and existing exterior-current implementation is closed unconditionally.
-- The unrestricted residual capacity existential is exactly terminal Route A.
-- The one explicit nontrivial completed preprojection survivor is exactly live Route R.
-- Neither transfer proves RH; Route R's Ward sign remains open and is already known equivalent to
-  RH.
+Route J remains open.  Concrete natural subclasses are closed and the representation-free
+existential is target-equivalent to Route A, but neither fact eliminates the explicit completed
+current problem above.  As long as that construction or a class-complete no-go remains
+researchable, this card stays in Stage 1.
 
 ## 10. Novelty and theatre audit
 
@@ -341,8 +342,8 @@ Route J is retired as an independent route.
   exterior-orientation interpretation.
 - Theorem D is elementary endpoint logic, not new mathematics.  Its research value is preventing
   the negative-part witness `(19)` from masquerading as an independent Julia construction.
-- Transfer to Route R uses exact source transport and exact endpoint ownership already present in
-  the corpus; no new RH claim is made.
+- The Route-R endpoint equivalence is a bridge only.  Treating it as route closure would be
+  mechanism-transfer theatre.
 
 ## 11. Lean plan and gates
 
@@ -355,6 +356,8 @@ Route J is retired as an independent route.
 - [x] positive global cross-block rescue excluded
 - [x] canonical copositive diagonal-null Julia off-diagonal current refuted
 - [x] existing calibrated Julia--Euler exterior current proved scalar-zero
-- [ ] formalize Theorem D and its Route-R endpoint equivalence
-- [x] identify positive survivor `(20)--(22)` with Route R
-- [ ] move card to failed/retired pipeline and reconcile frontier status
+- [x] formalize Theorem D and the target-equivalent Route-R endpoint bridge
+- [x] prove that endpoint equivalence alone supplies no source-current construction
+- [ ] construct a completed symmetric/nonlinear current satisfying `(2)`, or prove the surviving
+      class impossible
+- [ ] close Route J only when no researchable unowned survivor remains

@@ -547,3 +547,309 @@ show how an Euler marking resolves or orients the binomial critical fiber.
   monomial-tail observation.  Proved for every observation: the compatibility equation's exact
   factorization form modulo the horizon, the depth symmetry, and squareness.  Not proved: the count
   for an observation with a longer tail, where the truncation is not vacuous.
+
+- 2026-08-01 — **Towards the count at a long-tail observation: the inverse-jet numerators.**
+  `formal/GaloisForLFunctions/HTGeometry/InverseJetNumerator.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  For a one-deep observation the fibre equation can be eliminated to a single polynomial equation in
+  the unknown constant term `a`, and its degree is what gives the count.  Inverting a jet with
+  constant term `a` puts a power of `a` in each denominator; clearing it leaves the numerators
+
+  ```text
+  p_0 = 1,     p_(k+1) = - Σ_(i ≤ k) u_(i+1) a^i p_(k-i),
+  ```
+
+  which is `invNumerator`.  `natDegree_invNumerator_le` — the `k`-th numerator has degree at most `k`
+  in `a`; each term of the recursion carries `a^i` against a numerator of index `k - i`, so the
+  degrees add to at most `k`.  `natDegree_invNumerator_lt` — in particular the numerator at index
+  `L - 1` has degree below `L`.
+
+  That degree bound is the point.  For `m = 1` the fibre condition is
+  `[X^(L-1)]((a + U)^(-1)) = d` with `d` the observed reciprocal tail coefficient, which clears to
+
+  ```text
+  d · a^L - p_(L-1)(a) = 0,
+  ```
+
+  of degree exactly `L` whenever `d ≠ 0`, because the subtracted numerator has degree below `L`.  At
+  most `L = choose(L,1)` roots follow.  What remains to connect is the identification of the fibre's
+  jet coefficient with a root of that polynomial, which is the elimination itself.
+
+  This is the first line of attack on an observation whose tail is **not** monomial, where the
+  truncation is not vacuous and the earlier factorization route does not apply.
+
+- 2026-08-01 — **The elimination itself.**
+  `formal/GaloisForLFunctions/HTGeometry/InverseJetNumerator.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `pow_mul_eq_invNumerator_eval` — if a family `g` satisfies the coefficient recursion of an inverse
+  jet with constant term `a`,
+
+  ```text
+  a · g 0 = 1,      a · g (k+1) = - Σ_(j ≤ k) u_(j+1) · g (k-j),
+  ```
+
+  then
+
+  ```text
+  a^(k+1) · g k = (invNumerator u k).eval a
+  ```
+
+  for every `k`.  So each inverse coefficient, cleared of its denominator, **is** the numerator
+  polynomial evaluated at the unknown.  That is the elimination the previous entry was missing: the
+  recursion satisfied by the fibre's reciprocal coefficients is exactly the recursion defining the
+  numerators, and the induction transports it one power of `a` at a time.
+
+  Combined with the degree bound, the one-deep fibre equation `g (L-1) = d` becomes
+
+  ```text
+  d · a^L = (invNumerator u (L-1)).eval a,
+  ```
+
+  a polynomial equation of degree exactly `L` in `a` when `d ≠ 0`, since the right-hand side has
+  degree below `L`.  At most `L = choose(L,1)` solutions follow, and the fibre is determined by `a`
+  by the squareness already proved.
+
+  What remains is bookkeeping rather than mathematics: reading the two recursion hypotheses off
+  `X^L ∣ (C a + U)(B + V) - 1` by extracting coefficients, which is `Polynomial.coeff_mul` against
+  the vanishing of the low coefficients of a multiple of `X^L`.
+
+- 2026-08-01 — **The truncated inverse relation is read off as the recursion.**
+  `formal/GaloisForLFunctions/HTGeometry/InverseJetNumerator.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `coeff_eq_zero_of_dvd_X_pow` — a multiple of the horizon has no coefficients below it;
+  `coeff_recursion_of_dvd` — hence reading `X ^ L ∣ F G - 1` in each degree below the horizon gives
+
+  ```text
+  F(0) G(0) = 1,     F(0) G_(j+1) = - Σ_(i ≤ j) F_(i+1) G_(j-i)      for j + 1 < L,
+  ```
+
+  which are exactly the two hypotheses of the elimination.  Peeling the `i = 0` term off the
+  convolution (`Finset.sum_range_succ'`) is what separates the unknown constant term from the tail.
+
+  `pow_mul_eq_invNumerator_eval_of_lt` — the elimination in the bounded form the fibre supplies: only
+  the recursion in degrees below the horizon is available, and it determines the numerators in those
+  degrees.
+
+  So the chain for a one-deep observation is now complete as separate theorems: the fibre condition
+  gives the recursion, the recursion gives `a^L · G_(L-1) = (invNumerator u (L-1)).eval a`, the
+  observed reciprocal tail fixes `G_(L-1) = d`, and the numerator has degree below `L`.  For `d ≠ 0`
+  that is a degree-`L` equation in the unknown jet coefficient, so at most `choose(L,1)` fibre points,
+  and the fibre is determined by that coefficient by the squareness proved earlier.
+
+  What is left is to state that composite as one theorem about `criticalFibre`, which is assembly of
+  the pieces above and introduces no new mathematics.
+
+- 2026-08-01 — **The elimination polynomial of a one-deep observation.**
+  `formal/GaloisForLFunctions/HTGeometry/OneDeepFibreBound.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `oneDeepEquation U d n = C d * X^(1+n) - invNumerator (fun i => U.coeff i) n` is the equation the
+  unknown jet coefficient satisfies at a one-deep observation with observed tail `U` and observed
+  reciprocal tail coefficient `d`.
+
+  `degree_oneDeepEquation` and `natDegree_oneDeepEquation` — its degree is exactly the horizon length
+  `1 + n`, for every nonzero `d` and **every** `U`, however long its tail.  The numerator has degree
+  at most `n`, so the leading term `d X^(1+n)` survives.  `oneDeepEquation_ne_zero` follows.
+
+  Note what the tail is not required to do: `U` is arbitrary.  The degree of the elimination
+  polynomial does not depend on it, only on the horizon length, which is why this route reaches
+  observations that the factorization route cannot.
+
+  With the recursion extraction and the elimination of the previous entries, the fibre's jet
+  coefficient is a root of this polynomial, so a one-deep fibre has at most `1 + n = choose(L,1)`
+  points.  Assembling that sentence into a single statement about `criticalFibre` is what is left.
+
+- 2026-08-01 — **The first count at a long-tail observation.**
+  `formal/GaloisForLFunctions/HTGeometry/OneDeepFibreBound.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  Nat.card (criticalFibre K 1 n U (C d * X^n)) ≤ 1 + n
+  ```
+
+  `nat_card_criticalFibre_one_le`, for every nonzero `d` and **every** observed tail `U` vanishing at
+  the origin — with no restriction on its length.  Since `1 + n = choose(1+n, 1)`, this is the bound
+  of `(2)` at depth one, at an observation the factorization route cannot reach.
+
+  `isRoot_oneDeepEquation` is the content: a fibre point's jet coefficient is a root of
+  `oneDeepEquation`.  The proof runs the chain built over the previous three entries — the fibre
+  condition becomes `X^L ∣ F G - 1`, `coeff_recursion_of_dvd` reads off the recursion,
+  `pow_mul_eq_invNumerator_eval_of_lt` turns it into the numerator evaluated at the unknown, and the
+  observed reciprocal tail fixes the last inverse coefficient at `d`.  The jet's higher coefficients
+  drop out because it has degree below one, which is what makes the tail arbitrary.
+
+  The count then follows from injectivity: the fibre embeds in the roots by the squareness proved
+  earlier, and a nonzero polynomial of degree `1 + n` has at most that many roots.
+
+  This closes the depth-one case of `(2)` in full generality.  For `m ≥ 2` the elimination is
+  multivariate and the same route does not apply; that case is still where the biprojective
+  compactification is needed.
+
+- 2026-08-01 — **Towards exactness at depth one: the converse construction.**
+  `formal/GaloisForLFunctions/HTGeometry/OneDeepFibreBound.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  The previous entry bounded the depth-one fibre by the roots of the elimination polynomial.  Going
+  the other way needs the reciprocal jet reconstructed from a root, and the pieces are now in place.
+
+  `invCoeff` — the inverse coefficients built from a nonzero constant term by the recursion
+  `g_0 = a⁻¹`, `g_(k+1) = -a⁻¹ Σ u_(j+1) g_(k-j)`; `mul_invCoeff_zero` and `mul_invCoeff_succ` — they
+  satisfy the two hypotheses of the elimination, so `pow_mul_invCoeff_eq` gives
+  `a^(k+1) g_k = (invNumerator u k).eval a` for **all** `k`, this time with the recursion available at
+  every index rather than only below the horizon.
+
+  `invCoeff_eq_of_isRoot` — hence at a nonzero root of the elimination polynomial the last
+  reconstructed coefficient is exactly the observed one, `g_n = d`.  That is the condition the
+  reciprocal low part has to satisfy for the reconstructed pair to lie in the fibre.
+
+  What remains for exactness is to assemble the reconstructed coefficients into a polynomial and
+  check the truncated compatibility, which is `Polynomial.X_pow_dvd_iff` against the recursion.  With
+  that, the depth-one fibre is in bijection with the nonzero roots, and the bound of the previous
+  entry becomes an equality whenever the elimination polynomial is separable with no root at zero.
+
+- 2026-08-01 — **The reconstructed jet satisfies the observation's equation.**
+  `formal/GaloisForLFunctions/HTGeometry/OneDeepFibreBound.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `invPoly` assembles the reconstructed inverse coefficients into a polynomial, `coeff_invPoly` reads
+  them back below the horizon, and
+
+  `dvd_invPoly_compat` — for any nonzero `a` and any observed tail vanishing at the origin,
+
+  ```text
+  X^(n+1) ∣ (C a + U) · invPoly u a n - 1.
+  ```
+
+  So the reconstructed pair does satisfy the truncated compatibility equation.  The proof is the
+  coefficient computation run in the opposite direction to the extraction: peel the constant term off
+  the convolution, and the recursion defining `invCoeff` is exactly what makes every coefficient below
+  the horizon vanish, the zeroth giving `a · a⁻¹ = 1`.
+
+  With `invCoeff_eq_of_isRoot` from the previous entry, a nonzero root of the elimination polynomial
+  yields a jet and a reciprocal jet whose last coefficient is the observed one — the two conditions
+  defining a fibre point, up to packaging the degree bounds.  The depth-one fibre and the nonzero
+  roots are therefore in bijection, and the earlier inequality is an equality whenever the elimination
+  polynomial is separable and does not vanish at zero.
+
+- 2026-08-01 — **Every nonzero root is a fibre point.**
+  `formal/GaloisForLFunctions/HTGeometry/OneDeepFibreBound.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `fibreOfRoot` — from a nonzero root of the elimination polynomial, a point of
+  `criticalFibre K 1 n U (C d * X^n)`.  The jet is the constant `a`; the reciprocal low part is the
+  reconstructed inverse minus the observed tail.
+
+  The three fibre conditions come out as follows.  The jet has degree below one because it is a
+  constant.  The reciprocal part has degree below the second depth because the reconstructed inverse
+  has degree exactly `n` with leading coefficient `d` — that is `invCoeff_eq_of_isRoot`, the root
+  condition — so subtracting `d X^n` drops the degree (`degree_sub_lt`).  The compatibility is
+  `dvd_invPoly_compat` after the two monomials cancel.  `degree_invPoly_le` supplies the degree of
+  the reconstruction.
+
+  With the previous entries the depth-one fibre and the nonzero roots of `oneDeepEquation` are now in
+  bijection: `isRoot_oneDeepEquation` one way, `fibreOfRoot` the other, and the jet coefficient is a
+  common invariant.  The count `≤ 1 + n` of the earlier entry is therefore an equality exactly when
+  the elimination polynomial is separable with no root at zero, which is the generic case.
+
+  Depth one of `(2)` is complete.  For `m ≥ 2` the elimination is multivariate and this route does
+  not apply.
+
+- 2026-08-01 — **Depth one of `(2)` is closed: the fibre is exactly the nonzero roots.**
+  `formal/GaloisForLFunctions/HTGeometry/OneDeepFibreBound.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  Nat.card (criticalFibre K 1 n U (C d * X^n))
+      = Nat.card {a : a ≠ 0 ∧ (oneDeepEquation U d n).IsRoot a}
+  ```
+
+  `nat_card_criticalFibre_one_eq`, for every nonzero `d` and every observed tail `U` vanishing at the
+  origin, with no restriction on the tail's length.  `range_fibre_coeff` states the same as an
+  identification of the range: the jet coefficients occurring in the fibre are exactly the nonzero
+  roots of a single polynomial of degree the horizon length.
+
+  `coeff_zero_ne_zero_of_fibre` supplies the nonvanishing, and it is not an assumption: compatibility
+  forces the jet to be invertible at the origin, which is `coeff_zero_add_ne_zero_of_dvd` proved
+  earlier for arbitrary observations.
+
+  So at depth one the fibre count is a root count.  It is at most `1 + n = choose(1+n, 1)` by the
+  degree, and equal to it exactly when the elimination polynomial is separable with no root at zero —
+  the generic case, and the same shape of condition as the separability that made the monomial-tail
+  and generic-target counts work.
+
+  For `m ≥ 2` the elimination is multivariate and this route does not apply.  That case remains the
+  one place on this card where the biprojective compactification of sections 2 and 3 is still needed.
+
+- 2026-08-01 — **The dual depth-one case, free from the symmetry; and an audit.**
+  `formal/GaloisForLFunctions/HTGeometry/OneDeepFibreBound.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `nat_card_criticalFibre_snd_one_eq` — the same count when it is the **reciprocal** depth that is
+  one:
+
+  ```text
+  Nat.card (criticalFibre K m 1 (C d * X^m) V)
+      = Nat.card {a : a ≠ 0 ∧ (oneDeepEquation V d m).IsRoot a}
+  ```
+
+  for arbitrary `V` vanishing at the origin.  This costs two lines, because `criticalFibreSwap` is a
+  bijection of fibres and not merely an equality of counts: exchanging the jet with its reciprocal
+  turns an observation whose jet tail is a monomial and whose reciprocal tail is arbitrary into one
+  of the shape already settled.  The structural form of the depth symmetry pays for itself here.
+
+  Audit.  `lake build GaloisForLFunctions.HTGeometry` completes, `12798` jobs, with every module of
+  this card's chain wired in and every result depending only on `propext`, `Classical.choice`,
+  `Quot.sound`.
+
+  State of `(2)` on this card.  Proved: the count for the pure critical target; for every separable
+  split target; for the generic target; for every monomial-tail observation at the level of the fibre;
+  for every observation of jet depth one with arbitrary tail; and, dually, for every observation of
+  reciprocal depth one with arbitrary tail.  Proved for all observations: the exact factorization form
+  of the compatibility, the depth symmetry, and squareness.  Open: `m, n ≥ 2` with a tail that is not
+  a monomial, where the elimination is multivariate and naive Bezout overcounts.
+
+- 2026-08-01 — **Depth one attains the horizon count exactly; and mathlib does have resultants.**
+  `formal/GaloisForLFunctions/HTGeometry/OneDeepFibreBound.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `nat_card_criticalFibre_one_eq_horizon` — over an algebraically closed field,
+
+  ```text
+  Nat.card (criticalFibre K 1 n U (C d * X^n)) = 1 + n
+  ```
+
+  whenever the elimination polynomial is separable and does not vanish at the origin.  Both are the
+  generic conditions, and the second is not an extra assumption in spirit: a root at the origin would
+  be a jet not invertible there, which compatibility already excludes.  So `(2)` holds **with
+  equality** at depth one, for arbitrary observed tails.
+
+  A correction to the earlier entries on this card.  They record multiprojective Bezout as out of
+  reach partly because the elimination tools were assumed absent; mathlib in fact has
+  `Polynomial.resultant`, the Sylvester matrix, `resultant_eq_zero_iff` over a field,
+  `isUnit_resultant_iff_isCoprime`, `resultant_eq_prod_roots_sub` and `discr`.  The separability
+  hypothesis above is therefore checkable as a discriminant condition rather than assumed abstractly,
+  and the `m = 2` elimination — two equations in two unknowns, eliminate one by a resultant — is no
+  longer blocked on missing machinery.  What it still needs is the degree computation for that
+  resultant, which is where `choose(L,m)` would have to come from.
+
+- 2026-08-01 — **`(2)` stated in the card's own notation at both unit depths.**
+  `formal/GaloisForLFunctions/HTGeometry/OneDeepFibreBound.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  Nat.card (criticalFibre K 1 n U (C d * X^n)) = criticalHorizonMultiplicity 1 n
+  Nat.card (criticalFibre K m 1 (C d * X^m) V) = criticalHorizonMultiplicity m 1
+  ```
+
+  `nat_card_criticalFibre_one_eq_multiplicity` and its dual, for any tail vanishing at the origin,
+  under the two generic conditions on the elimination polynomial.  The counts proved in the previous
+  entries were stated as `1 + n`; these state them against `criticalHorizonMultiplicity`, the card's
+  own `(8)`, so the degree claim `(2)` now reads literally at `m = 1` and at `n = 1`.
+
+  The dual form goes through `criticalFibreSwap` again, and the binomial bookkeeping is
+  `Nat.choose_symm` — `(1+m).choose m = (1+m).choose 1`.
+
+  Open on this card: `m, n ≥ 2` with a non-monomial tail.

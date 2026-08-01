@@ -65,3 +65,8 @@
   diagonal has an exact packet-insertion `ell1` shell obstruction, so no generic perturbation-
   determinant reference supplies the missing cofinal trace ideal.  External gap is narrowed to a
   nuclear/source-renormalization theorem for this kernel and its all-moment Xi incidence.
+- 2026-08-01 — Route J literature status corrected after terminal ownership audit. Concrete Julia
+  principal-relative candidates are formally excluded; an unrestricted bounded capacity is exactly
+  Route A/RH and is not credited as a mechanism. The exact singular completed Julia/Ward source
+  transport already belongs to Route R, whose four-unit sign remains open. Route J is retired with
+  no external priority claim and no RH claim.

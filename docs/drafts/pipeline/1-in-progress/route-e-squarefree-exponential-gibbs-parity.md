@@ -775,6 +775,124 @@ sum_n(w_x(n)-q_x(n))
    +sum_({m,n} edge)|a_x(m)-a_x(n)|.                       (G46)
 ```
 
+#### Theorem F1 — unrestricted fractional transport is exactly source-optimal
+`[PAPER- AND LEAN-PROVED HERE]`
+
+There is no hidden gain from optimizing the conductance after forgetting arithmetic locality.
+Let
+
+```text
+P=sum_(sigma(n)=+1)w_x(n),   N=sum_(sigma(n)=-1)w_x(n).
+```
+
+For any admissible conductance on any opposite-sign graph, put
+`F=sum_(sigma(m)=+1,sigma(n)=-1)c(m,n)`.  Row capacity gives
+`F<=min(P,N)`, while symmetry gives the exact unused mass
+
+```text
+U(c)=P+N-2F >= |P-N|.                                    (G46c)
+```
+
+The bound is sharp on the complete opposite-sign graph.  If `P<=N` and `N>0`, set
+
+```text
+c(m,n)=w_x(m)w_x(n)/N   for sigma(m)=+1, sigma(n)=-1,     (G46d)
+```
+
+and extend symmetrically, with zero same-sign conductance.  Every positive row is saturated,
+every negative row uses the fraction `P/N` of its capacity, and
+
+```text
+U(c)=N-P=|sum_n sigma(n)w_x(n)|.                          (G46e)
+```
+
+The other ordering is symmetric.  Lean formalizes the construction and equality as
+`completeBipartiteProportionalConductance_exact_unused` and
+`completeBipartiteProportionalConductance_attains_signedImbalance`.
+
+This is an exhaustive theorem for unrestricted fractional transport, not a no-go for arithmetic
+local transport.  It proves the exact burden: a low-defect existence assertion on an unspecified
+graph is merely the source written as a flow.  New knowledge can enter only by proving that an
+explicit value-local arithmetic graph attains nearly the complete-graph optimum.
+
+The raw factor-replacement relation is too coarse for that task because it connects tokens at
+arbitrary integer displacement.  For `H>=0`, define the windowed relation by
+
+```text
+m ~_(z,H) n  iff  m~_z n and m<=n+H and n<=m+H.            (G46f)
+```
+
+Lean defines this literal relation as `MobiusBoundaryFactorReplacementWindowAdjacent`, proves it
+symmetric and parity-flipping, and instantiates the canonical defect theorem as
+`abs_truncatedMobiusLaplace_le_degreeNormalizedWindowedFactorReplacementDefect`.  Its degrees now
+measure short-interval supply at a stated physical resolution.  Any use of `(G46)` below refers
+either to this pruned graph or to an explicitly weighted multiscale union; raw global degree is no
+longer accepted as evidence.
+
+Integer-level collisions admit an exact incidence lift.  If a squarefree target `m` has
+`r=omega(m)` prime factors, it has exactly `binom(r,k)` choices of a `k`-factor replacement label.
+Give every lifted copy `(m,Q)` the capacity
+
+```text
+w_x(m,Q)=w_x(m)/binom(omega(m),k),  Q|m, omega(Q)=k.
+```
+
+Then
+
+```text
+sum_(Q|m, omega(Q)=k) w_x(m,Q)=w_x(m).                    (G46a)
+```
+
+Thus repeated representations of the same target consume exactly its available capacity, not a
+worst-case congestion multiple.  For a cross-sector copy `m=aQ` with `omega(Q)=4` and `(a,Q)=1`,
+the denominator is the explicit `binom(omega(a)+4,4)`.  The corresponding target supply in a token
+interval `I` is therefore the positive weighted incidence sum
+
+```text
+nu_4(a,I;x)=sum_(Q in I, omega(Q)=4, P^+(Q)<=z, (a,Q)=1)
+              exp(-aQx)/binom(omega(a)+4,4).              (G46b)
+```
+
+The same construction with one- and two-factor labels applies to the same-sector edges.  Lean
+formalizes `(G46a)` as
+`sum_uniform_fixedCardinalityIncidenceCapacity_eq_one`; it is a finite binomial identity and adds
+no source assumption.
+
+Lean also defines the literal aperture-bounded edge relation
+`MobiusBoundaryFactorReplacementAdjacent`, proves its symmetric closure reverses the embedded
+Möbius coefficient, and instantiates the canonical flow theorem as
+`abs_truncatedMobiusLaplace_le_degreeNormalizedFactorReplacementDefect`.  Its left side is the
+actual Möbius--Laplace truncation through `z^2`; its right side is the positive isolated-mass plus
+normalized-edge-variation expression.  No unnamed graph or sign hypothesis remains in this
+consumer.
+
+`[CONJECTURE: WEIGHTED-FIBER-INCIDENCE-REGULARITY]` Split every vertex capacity between the cross
+four-factor lift and the same-sector one/two-factor lifts by an explicit function of its factor
+count.  For a fixed spectator `a`, regard the cross source and target as measures on token value,
+
+```text
+lambda_a = sum_(p>z, ap<=z^2, (a,p)=1) theta_(omega(a)) exp(-apx) delta_p,
+nu_a     = sum_(Q, omega(Q)=4, P+(Q)<=z, (a,Q)=1)
+               theta'_(omega(a)) exp(-aQx)/binom(omega(a)+4,4) delta_Q. (G46g)
+```
+
+For the fractional-flow model, require the cross coupling to be supported on
+`a|p-Q|<=z^(1+o(1))`, with analogous physical windows for the one/two-factor measures.  The
+required statement is an *aggregate unbalanced capacity bound*: after adding those same-sector
+measures, there are sub-couplings whose unused source and target mass, summed over all spectators
+and dyadic value windows, is `O_epsilon(z^(1+epsilon))`.  Under `(G43)`--`(G46)`, this positive
+weighted statement implies `LOCAL-FRACTIONAL-BOUNDARY-FLOW`.
+
+No displacement moment is added to this fractional objective.  Conductance couples portions of
+the already weighted masses `exp(-nx)`, so equal coupled capacity cancels exactly even when the
+integer labels differ.  A cost `min(1,xa|p-Q|)` belongs to the unsplit atom-matching formulation
+`(G39)`; mixing it into `(G43)` would double-charge displacement.  Value locality remains a hard
+support condition because it is the only interface to short-interval incidence theorems.
+
+This conjecture is not yet a proof: choosing the capacity split so that both move types balance,
+and proving `(G46b)` uniformly in the spectator, are the remaining arithmetic tasks.  Its gain is
+that injectivity and representation congestion are no longer hidden inside those tasks.
+
 `[CONJECTURE: LOCAL-FRACTIONAL-BOUNDARY-FLOW]` For every `epsilon>0`, at a critical aperture the
 two replacement edge families can be pruned or positively reweighted, using only their local
 factor data, so that the right side of `(G44)` is
@@ -814,6 +932,77 @@ partners injectively, and bound one global damped Hall displacement.  The almost
 nevertheless relevant: `(G39)` is an aggregate cost, so a controlled exceptional set could be
 absorbed.  The concrete next lemma is therefore a spectator-uniform weighted incidence estimate,
 not a new pointwise short-interval theorem.
+
+#### Corollary F2 — prime-only atoms have pointwise close four-small replacements
+`[PAPER-PROVED HERE]`
+
+The all-interval part of Matomäki--Teräväinen contains more factor information than its abstract.
+For every large `y`, their proof produces
+
+```text
+r_1 r_2 r_3 in (y,y+h_y],
+h_y=sqrt(y)(log y)^1.55,
+r_1 asymp (log y)^1.1,
+r_2 asymp sqrt(y/(log y)^1.1),                            (G47)
+```
+
+with a lower-bound count of order at least
+`sqrt(y)/((log y)^0.45 log log y)`.  Let `z` be large, let `z<p<=z^2` be prime, and apply `(G47)`
+at `y=p/2`.  Put `Q=2r_1r_2r_3`.  The factor ranges give, for large `z`,
+
+```text
+p<Q<=p+C z(log z)^1.55,
+every prime factor of Q is <=z.                           (G48)
+```
+
+The produced triples may a priori include `r_2=r_3`.  This does not obstruct squarefreeness: for
+each `r_1`, the condition `r_1 r_2^2 in (y,y+h_y]` permits only
+`O(h_y/(r_1 sqrt(y/(log y)^1.1))+1)=O(log y)` integer values of `r_2`.  Summing over the
+`O((log y)^1.1/log log y)` possible `r_1` gives only
+`O((log y)^2.1/log log y)` diagonal products, negligible against the lower bound in `(G47)`.
+The other factor ranges are disjoint, and exclude the fixed factor `2`.  Hence one may choose `Q`
+squarefree with four distinct prime factors, so `mu(Q)=+1=-mu(p)`.
+
+Thus every prime-only negative atom through `z^2` has a pointwise parity-flipping cross edge whose
+Gibbs relative displacement is
+
+```text
+x|Q-p| <= C (log z)^2.55/z                                (G49)
+```
+
+on the minimal critical schedule.  This is below every required `z^(-1+epsilon)` relative scale.
+It closes the prime-center *existence* gate unconditionally; it does not close the flow.
+
+For a general one-large atom `ap`, multiplication by `a` requires the four replacement primes to
+avoid every prime factor of `a`.  The proof of `(G47)` uses one polylogarithmic prime factor and two
+factors near `sqrt(y/(log y)^1.1)`.  A spectator `a<=z^2/p` excludes only a
+`O((log z)^(-0.1))` fraction of the first factor interval and only `O(1)` primes in either large
+factor interval, but the published theorem is not stated uniformly after these exclusions.
+
+`[POINTWISE STRENGTHENING, NOT THE ACTIVE TARGET: SPECTATOR-COPRIME-E3-ALL-INTERVAL]` Uniformly for squarefree
+`a<=z^2/p` and prime `z<p<=z^2`, there are four-small-prime replacements `Q` with
+`a|Q-p|<=z^{1+o(1)}`, with `(a,Q)=1`, in the factor ranges of `(G47)`; quantitatively there are
+enough such `Q` to
+retain the lower bound in `(G47)` up to `z^{o(1)}`.  This is the precise modification of the
+all-interval Type-II theorem needed for cross-edge degree.  Even this conjecture gives only row
+supply.  The combined cross/same-sector graph must still satisfy `(G46)`; pointwise non-isolation
+alone cannot control its normalized-degree variation.
+
+The pointwise statement is stronger than Route E needs and is no longer the primary conjecture.
+It also has the wrong proof interface: a lower bound for the number of candidates in each source
+row gives no upper bound on target load.  In the top `p asymp z^2` regime, the published lower
+bound supplies only `z/((log z)^0.45 log log z)` candidates in a window of length
+`z(log z)^1.55`; even Brun--Titchmarsh-scale target co-degree control leaves logarithmic factors
+unresolved.  Those factors are fatal if paid as unused Gibbs mass.  The unbalanced measure target
+`(G46g)` therefore requires a two-sided incidence estimate or a multiscale capacity split, not
+pointwise existence followed by an arbitrary selector.
+
+The factor `a` in this statement is essential.  Corollary F2 uses the all-interval
+`sqrt(p)(log p)^1.55` gap and therefore handles `a=z^{o(1)}`.  At the opposite corner
+`p asymp z`, `a asymp z`, the allowed token gap is only `z^{o(1)}`.  The almost-all
+polylogarithmic `E_k` theorems live at that scale, but their published exceptional set may contain
+all prime centers and they are not uniform under spectator-factor deletion.  Combining these two
+regimes, rather than citing either theorem alone, is the exact cross-edge supply bottleneck.
 
 ## Rejected producer: all-orders additive restriction
 
@@ -915,7 +1104,9 @@ in this audit states `(G37)` or the hierarchy `(G33)`.
   formalization now covers Gibbs normalization/source consumption, finite aperture and sector
   decomposition, finite additive Parseval plus its hostile flat model, two-prime Rayleigh,
   cardinality coalescence/tangent identities, finite divisor-incidence diagonalization, Hall
-  selection with damped displacement, and symmetric fractional-flow capacity consumption.
+  selection with damped displacement, exact parity reversal of both local replacement types, and
+  symmetric fractional-flow capacity consumption.  It also covers the complete-bipartite
+  proportional optimizer and the literal displacement-windowed replacement graph.
   The all-prime estimate `(G20)` remains unproved, so Route E remains open.
 
 Lean modules:
@@ -985,3 +1176,17 @@ Lean modules:
   Gibbs mass plus normalized-degree edge variation.  Lean formalizes both the general symmetric
   cancellation consumer and the minimum-endpoint conductance defect reduction.  The unsigned
   arithmetic incidence bound remains open.
+- 2026-08-01 — proved the sharp converse for fractional transport: every opposite-sign
+  conductance leaves at least the signed Gibbs imbalance, while proportional transport on the
+  complete bipartite graph attains equality.  This exhausts unspecified conductance optimization
+  without retiring the local arithmetic producer.  Added a displacement-windowed replacement
+  relation and its concrete Lean defect theorem; replaced the overstrong every-spectator
+  pointwise conjecture by an aggregate unbalanced incidence-capacity target with hard physical
+  support and explicit source/target masses.  A hostile recheck separated this fractional target
+  from the displacement cost used only by unsplit atom matching.
+- 2026-08-01 — extracted a pointwise prime-only four-small replacement from the factor ranges in
+  Matomäki--Teräväinen's all-interval `E_3` proof.  A second scale audit showed that general
+  spectators require `a|Q-p|<=z^{1+o(1)}`; at `a,p asymp z` this returns to the unresolved
+  polylogarithmic prime-center regime.  Introduced the binomial incidence-capacity lift `(G46a)` to
+  remove representation congestion exactly, and formalized its uniform capacity partition in
+  Lean.  Weighted spectator-fiber incidence regularity remains the hard source theorem.
