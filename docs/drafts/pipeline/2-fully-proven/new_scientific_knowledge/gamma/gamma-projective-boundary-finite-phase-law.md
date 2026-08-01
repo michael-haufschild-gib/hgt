@@ -3377,10 +3377,60 @@ The aperture lattice is therefore not a modelling choice: it is the frequency mo
 analytic object on the line, and the finite-phase law's rank invariant attains `π(N)` on it.
 `#print axioms` clean.
 
-The cutoff Euler product `(34)` itself remains to be treated: its Dirichlet expansion runs over
-`N`-smooth numbers, so the coefficient extraction needs the multi-index expansion of a finite
-product of geometric series.  The single-factor case is complete
-(`EulerFactorRankOne.lean`), and this module completes the finite-frequency-packet case.
+`HTGeometry/PrimeEulerProductAperture.lean` then does the same for the cutoff Euler product `(34)`
+itself, `Z_{N,σ}(t) = ∏_{p ≤ N} (1 − p^{-σ-it})^{-1}`, which is the object §7 actually names.
+
+- `norm_prod_sub_prod_le` — a uniform factor bound turns a per-factor error `δ` into the product
+  error `|s|·C^{|s|}·δ`;
+- `eulerProductApprox_eq` — expanding the product of the factors' geometric partial sums
+  (`Finset.prod_univ_sum`, `prod_expChar`) gives a trigonometric polynomial indexed by exponent
+  vectors `e : {p ≤ N} → ℕ`, with frequency `smoothFreq = −∑ e_p log p` and coefficient
+  `smoothCoeff = ∏ p^{-σ e_p}`;
+- `norm_eulerProductLine_sub_approx_le`, `tendsto_apertureError` — those trigonometric polynomials
+  converge to `Z_{N,σ}` uniformly on the line, since `p^{-σ} ≤ 2^{-σ} < 1` for every `p ≤ N`.  Hence
+  `isBohrAlmostPeriodic_eulerProductLine`;
+- **`prime_rpow_le_smoothTrig_coeff`** — the no-cancellation step, and the reason this needs no
+  smooth-number bookkeeping: *every* exponent-vector coefficient is a positive real, so the
+  coefficient at `−log p` is bounded below by the single vector `e = δ_p`, i.e. by `p^{-σ}`;
+- **`prime_rpow_le_norm_bohrCoefficient_eulerProductLine`** — passing to the limit,
+  `‖c_{−log p}(Z_{N,σ})‖ ≥ p^{-σ} > 0`, so every aperture prime really is a frequency;
+- **`bohrFrequencyModule_eulerProductLine`** — with the converse inclusion from
+  `smoothFreq_mem_aperture` and the new `bohrFrequencyModule_le_of_uniform_approx_index`, the
+  frequency module of the cutoff Euler product is *exactly* `primeApertureCharacterModule N`;
+- **`finrank_bohrFrequencyModule_eulerProductLine`** — so `rank_ℚ Γ_B(Z_{N,σ}) = π(N)`;
+- **`eulerProduct_carrier_covering_dim_ge`** — §7's carrier bound now applies to `(34)` itself: any
+  finite rational character space receiving an injection of `Γ_B(Z_{N,σ})` has dimension at least
+  `π(N)`.
+
+That closes the `[PROVED; BRIDGE]` clause of §7 in Lean: the finite-aperture Euler product does
+transport `π(N)` independent phase dimensions, and the aperture lattice is its Bohr frequency
+module, not a modelling choice.  `#print axioms` clean.
+
+`HTGeometry/ScaledGammaLine.lean` closes §8.8 in the form the card claims it — *scaled archimedean
+factors admit the same argument after an affine change of variable*, and nothing more.
+
+- `scaledGammaLine_eq` — `Γ((σ+μ+it)/2)` is `Γ` on the line `Re s = (σ+μ)/2` at parameter `t/2`;
+- **`tendsto_scaledGammaLine_pow_mul`** — hence a positive power of the scaled factor still kills
+  every coefficient of polynomial growth (`HasPolyGrowthLine.comp_mul_two` carries the growth bound
+  across the substitution), and `tendsto_scaledGammaLine_zero`, `tendsto_scaledGammaLine_pow_ratio`
+  give the decay and the dominance of a higher scaled power.
+
+The transfer is one affine substitution, so it says nothing about *simultaneous incommensurable*
+Gamma scales — which is exactly the limitation §8.8 states.  `#print axioms` clean.
+
+`HTGeometry/BoundedNonAlmostPeriodic.lean` supplies the §8.5 separation — *compact-open normality is
+insufficient*.  The witness is `1/(s+2)`:
+
+- `norm_shiftedInverse_le`, `differentiableOn_shiftedInverse` — bounded by `1/2` and holomorphic on
+  every vertical strip inside the right half plane, so Montel makes its translate family normal for
+  the compact-open topology;
+- `tendsto_shiftedInverse_line` — on each vertical line it tends to `0` at `+∞`;
+- **`not_isBohrAlmostPeriodic_shiftedInverse_line`** — hence it is *not* Bohr almost periodic on any
+  such line: the corpus's vanishing lemma would force it to vanish identically, and its value at
+  `t = 0` is `(σ+2)^{-1} ≠ 0`.
+
+So the return property is strictly stronger than boundedness plus holomorphy, exactly as §8.5 says;
+the recurrence hypothesis of the law is not decorative.  `#print axioms` clean.
 
 ## Gates
 

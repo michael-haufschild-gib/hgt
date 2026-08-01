@@ -102,6 +102,31 @@ theorem irreducible_of_corner_expansion {S : Type*} [CommRing S]
   rw [← hD] at h
   exact (irreducible_units_mul u).1 h
 
+/-- **Adding a variable preserves irreducibility.**  An irreducible polynomial stays irreducible when
+read in one more variable, since it becomes a constant there and a constant is prime exactly when it
+was. -/
+theorem irreducible_rename_succ {A : MvPolynomial (Fin n) K} (hA : Irreducible A) :
+    Irreducible (MvPolynomial.rename Fin.succ A) := by
+  have hprime : Prime A := UniqueFactorizationMonoid.irreducible_iff_prime.1 hA
+  have hCprime : Prime (Polynomial.C A) := Polynomial.prime_C_iff.2 hprime
+  have hmap : (MvPolynomial.finSuccEquiv K n) (MvPolynomial.rename Fin.succ A) =
+      Polynomial.C A := finSuccEquiv_rename_succ A
+  refine UniqueFactorizationMonoid.irreducible_iff_prime.2 ?_
+  refine (MulEquiv.prime_iff (MvPolynomial.finSuccEquiv K n).toMulEquiv).1 ?_
+  show Prime (MvPolynomial.finSuccEquiv K n (MvPolynomial.rename Fin.succ A))
+  rw [hmap]
+  exact hCprime
+
+/-- **Irreducibility is unaffected by a reindexing of the variables.**  In particular by an
+arithmetic identity between the numbers of variables, which is what lets an induction whose index
+arithmetic is written in different but equal forms be carried out. -/
+theorem irreducible_rename_finCongr {L₁ L₂ : ℕ} (h : L₁ = L₂) (p : MvPolynomial (Fin L₁) K) :
+    Irreducible (MvPolynomial.rename (finCongr h) p) ↔ Irreducible p := by
+  have hmap : MvPolynomial.rename (R := K) (finCongr h) p =
+      (MvPolynomial.renameEquiv K (finCongr h)) p := rfl
+  rw [hmap]
+  exact MulEquiv.irreducible_iff (MvPolynomial.renameEquiv K (finCongr h)).toMulEquiv
+
 /-! ## The matrix form -/
 
 /-- **Irreducibility of a determinant from its corner.**  Suppose the first variable occupies one

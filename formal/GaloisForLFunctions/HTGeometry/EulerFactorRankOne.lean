@@ -279,7 +279,7 @@ theorem hasDerivAt_basePower (b : ℝ) (s : ℂ) :
 /-- **The Euler factor satisfies a constant-coefficient first-order algebraic differential
 equation.**  It is differentially algebraic over `ℂ` — the relation carries no coefficient in `s`
 at all. -/
-theorem hasDerivAt_eulerFactor (hb : 1 < b) {s : ℂ} (hs : 0 < s.re) :
+theorem hasDerivAt_eulerFactorBase (hb : 1 < b) {s : ℂ} (hs : 0 < s.re) :
     HasDerivAt (eulerFactor b)
       (-(Real.log b : ℂ) * (eulerFactor b s ^ 2 - eulerFactor b s)) s := by
   have hne : (1 : ℂ) - basePower b s ≠ 0 := one_sub_basePower_ne_zero hb hs
@@ -296,7 +296,7 @@ theorem hasDerivAt_eulerFactor (hb : 1 < b) {s : ℂ} (hs : 0 < s.re) :
 coefficients, vanishes identically on the half-plane. -/
 theorem eulerFactor_autonomous (hb : 1 < b) {s : ℂ} (hs : 0 < s.re) :
     deriv (eulerFactor b) s + (Real.log b : ℂ) * (eulerFactor b s ^ 2 - eulerFactor b s) = 0 := by
-  rw [(hasDerivAt_eulerFactor hb hs).deriv]
+  rw [(hasDerivAt_eulerFactorBase hb hs).deriv]
   ring
 
 end GaloisForLFunctions

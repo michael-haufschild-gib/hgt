@@ -275,18 +275,26 @@ finite-element claims are not imported.
 
 ### Route G2 — relative-Volterra phase source-germ weld
 
-**Local contribution beyond located literature.** The exact Cartesian Volterra split,
-reflection-even/odd obstruction, typed Euler-defect source-germ weld endpoint, and pointed phase
-germ formulation have no located external match.
+**Local closed classification.** The exact Cartesian Volterra split and reflection obstruction are
+unconditional. The affine-sewn exterior quotient now has a formal source-transparency normal form:
+the relative-Volterra term is analytic off the real source divisor and the only global singular
+term is `-XiC'/(z² XiC)`. Every off-real Xi zero therefore gives the Euler defect an exact double
+pole. Existence of one analytic upper-half-plane pointed source germ is formally equivalent to RH,
+including after substitution of the actual Euler/Neumann boundary responses.
 
 **External contribution.** Suzuki's 2022 Theorem 1.1(1) gives the source screw/Volterra
-representation; the 2026 operator paper supplies its later finite-aperture setting. Neither paper
-contains the corpus's relative-phase defect or source-germ weld.
+representation only for `Im z > 1/2`, where the Euler product is available. Suzuki's 2026 operator
+paper supplies unconditional finite-aperture self-adjoint models and real-zero characteristic
+functions, while its global limiting identification remains conjectural/conditional. Suzuki's
+2012 canonical-system construction likewise does not supply unconditional continuation across the
+critical parameter range. Boundary-triple Green identities give abstract Nevanlinna structure but
+do not identify the global Xi logarithmic derivative. No exact external match for the local
+normal-form/pointed-germ iff package was located; priority remains unverified.
 
-**Lean action.** Formalize the actual continuous `V_k` and `C_k`: boundedness, adjoint and parity,
-Fubini causal-triangle decomposition, commutator identity, and compatibility with the source germ.
-This imports the concrete source operator beneath the existing abstract Cartesian/phase theorems;
-the Euler–Gamma weld remains the local open premise.
+**Disposition.** Retire Route G2 as an independent bypass. Formalizing more finite continuous
+Volterra infrastructure cannot discharge the divisor-bearing identity by itself. A literal
+Green/Christoffel--Darboux source-germ proof would be a genuine RH proof and must be evaluated at
+that level, not listed as routine Lean action.
 
 ### Route H — Xi Taylor/theta current
 

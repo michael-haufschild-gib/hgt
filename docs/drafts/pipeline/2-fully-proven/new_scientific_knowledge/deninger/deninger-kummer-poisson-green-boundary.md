@@ -215,3 +215,35 @@ zero.
 - 2026-07-27 — Constructed the finite-stage Kummer phase Poisson
   semigroup, exact positive Green energy, odd boundary chirality, and
   centered-unitary power law.
+
+## Lean status
+
+### The per-mode Poisson boundary theory landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerPoissonBoundary.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+On the character of frequency `μ` the Poisson extension `(3)` is the decaying profile `e^{-|μ| r}`,
+which is the mode profile already built for `DAC_AFFINE_KUMMER_HARMONIC_FOURIER_MODES`.  All of
+`(4)`--`(7)` are per-mode statements about it.
+
+- `deningerPoissonProfile_deriv`, `deningerPoissonProfile_secondDeriv` — the radial derivatives:
+  `∂_r u = -|μ| u` and `∂_r² u = μ² u`.
+- `deningerPoisson_harmonic` — **`(4)`**: the second radial derivative is exactly the negative of the
+  transverse term, since the Kronecker generator acts by `i μ` and so its square contributes `-μ²`.
+- `deningerPoissonProfile_zero` — **`(2)`**: the extension attains its boundary value.
+- `deningerPoisson_dirichletToNeumann` — **`(5)`**: the outward normal derivative at the boundary is
+  `|μ|`, the absolute value of the generator.
+- `deningerPoisson_energyDensity`, `deningerPoisson_energy` — **`(6)`**: the radial and transverse
+  energy densities are equal, and the total Dirichlet energy is `|μ| > 0`.
+- `deningerBoundaryHodge μ = i · sgn μ`, with `deningerBoundaryHodge_sq` and
+  `deningerBoundaryHodge_norm` — **`(7)`**: it squares to `-1` and is unitary.
+- `deningerBoundaryHodge_eq_star` — **item 6**: it is exactly the boundary value of the leafwise
+  Hodge star, since the star of the harmonic mode is multiplication by this scalar.
+
+### Remaining
+
+The operator-level statements: that `D_ℓ` is essentially self-adjoint on trigonometric polynomials,
+that `|D_ℓ|` and `sgn(D_ℓ)` are its Borel functional calculus, and that the semigroup `e^{-r|D_ℓ|}`
+assembles the per-mode profiles.  What is formalized is every claim `(4)`--`(7)` makes about a
+single mode, which is what the card's proof computes.

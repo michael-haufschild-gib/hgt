@@ -331,3 +331,163 @@ level.  No new Lean claim is attached to this bridge card.
   `det_rectangularSchurToeplitz_shift_unit_tail` gives cofactor `0`.  So the only thing still missing
   for `Irreducible tau_(m,n)` is the presentation of the section over a polynomial ring with the top
   variable indexed first, together with the identification of its corner minor.
+
+- 2026-08-01 — **The reversed presentation of the coefficients.**
+  `formal/GaloisForLFunctions/HTGeometry/SchurVariablePresentation.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `schurVar K L k` presents the complete homogeneous coefficients as variables indexed in reverse —
+  the largest index `L = n + m - 1` becoming the **first** variable — with the convention that the
+  zeroth coefficient is one.  `schurVar_top` — the top coefficient is the first variable;
+  `degreeOf_zero_schurVar` — every coefficient of index `k ≤ L` with `k ≠ L` is free of that variable.
+
+  Those are exactly the first two hypotheses of `irreducible_det_of_corner_X_zero`, now available for
+  the rectangular section in this presentation.  What remains is the third: identifying the corner
+  minor with the `(m-1, n-1)` section in its own reversed presentation, which is an index shift
+  between the two variable numberings.
+
+  One correction found while proving it: the freeness statement needs `k ≤ L`.  Without it the
+  natural-number truncation makes `L - k = 0` for `k > L`, so the coefficient would be read as the
+  first variable again — vacuous in the application, where indices never exceed `L`, but false as
+  stated.
+
+- 2026-08-01 — **Adding a variable preserves irreducibility.**
+  `irreducible_rename_succ` in `formal/GaloisForLFunctions/HTGeometry/MvLinearIrreducible.lean`,
+  axioms `[propext, Classical.choice, Quot.sound]`: an irreducible polynomial stays irreducible when
+  read in one more variable.  The proof passes to primality, where the added variable makes it a
+  constant and `Polynomial.prime_C_iff` applies.
+
+  This is needed by the induction independently of the indexing, and it settles a point the index
+  bookkeeping raised: the corner minor of the `(m,n)` section uses only the coefficients of index at
+  most `n+m-3`, so in the reversed presentation it is free of the **first two** variables, not just
+  the first.  It is therefore the `(m-1,n-1)` section read in extra variables, and the lemma above
+  says its irreducibility is unaffected — so the induction can carry the smaller section's
+  irreducibility across the shift without a bespoke transport.
+
+- 2026-08-01 — **The presentation shift is proved, closing the identification at entry level.**
+  `schurVar_shift` in `formal/GaloisForLFunctions/HTGeometry/SchurVariablePresentation.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  schurVar K (L' + 2) k  =  rename (fun j => j.succ.succ) (schurVar K L' k)     for k ≤ L'.
+  ```
+
+  Since the corner expansion drops the top two coefficient indices, `L = L' + 2` exactly, and a
+  coefficient surviving into the minor is the same variable read two places later.  So the minor of
+  the `(m,n)` section is the `(m-1,n-1)` section renamed by two successive shifts, and
+  `irreducible_rename_succ` applied twice carries its irreducibility across.
+
+  With this the criterion's third hypothesis is available in the same form as the first two: the minor
+  is `rename Fin.succ A` for `A` the once-shifted smaller section, and `A` is irreducible whenever the
+  smaller section is.  The induction on `m` — base `tau_(1,n) = h_n`, step
+  `irreducible_det_of_corner_X_zero` with the unit-tail specialisation — is now assembled from proved
+  parts only.
+
+- 2026-08-01 — **A boundary case of the induction, found by working it out.**
+  `det_rectangularSchurToeplitz_zero_shift` in `SchurVariablePresentation.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`: at shift zero the section is lower triangular with unit
+  diagonal, so its determinant is **one**.
+
+  This matters for the shape of the induction.  The corner expansion of the `(m,n)` rectangle has the
+  `(m-1,n-1)` rectangle as cofactor, so the recursion in `n` bottoms out at shift zero — and there the
+  cofactor is a **unit**, not an irreducible.  The step `irreducible_det_of_corner_X_zero`, which
+  assumes an irreducible cofactor, therefore cannot be used at `n = 1`; that case needs its own
+  argument, as does `m = 1`, where `tau_(1,n) = h_n` is a variable.
+
+  So the induction is on both parameters with two boundary families, not the single chain the paper
+  sketch suggests.  Both boundaries are now computed: `tau_(1,n) = h_n` and `tau_(m,1)` has unit
+  cofactor with `det = 1` at shift zero.
+
+- 2026-08-01 — **The base rectangle is proved irreducible.**
+  `SchurVariablePresentation.lean`, axioms `[propext, Classical.choice, Quot.sound]`:
+  `det_rectangularSchurToeplitz_one` — a rectangle of height one has determinant the single
+  coefficient `h_n`, which in the reversed presentation is the first variable;
+  `irreducible_det_rectangularSchurToeplitz_one` — hence it is irreducible, a variable being prime.
+
+  That is the `m = 1` boundary of the induction.  With the `n = 1` boundary computed in the previous
+  entry (`det = 1` at shift zero) and the step available as
+  `irreducible_det_of_corner_X_zero`, the two-parameter induction has all three of its cases
+  supplied.
+
+- 2026-08-01 — **The corner minor is identified.**  `SchurVariablePresentation.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `submatrix_rectangularSchurToeplitz` — deleting the last row and the first column of the
+  `(m'+1, n'+1)` section leaves the `(m', n')` section read two variables later, entry by entry
+  through `schurVar_shift`;
+  `det_submatrix_rectangularSchurToeplitz` and `det_submatrix_eq_rename_succ` — hence its determinant
+  is the smaller determinant renamed twice, which is the form `irreducible_det_of_corner_X_zero`
+  consumes for its minor hypothesis.
+
+  All four hypotheses of the step are now available for the rectangular sections: the corner is the
+  first variable (`schurVar_top`), the other entries are free of it (`degreeOf_zero_schurVar`), the
+  minor is a renamed smaller determinant (here), and the unit tail separates
+  (`rectangularSchurToeplitz_unit_tail`, `det_rectangularSchurToeplitz_shift_unit_tail`).  With the
+  two boundary cases proved, what is left is to write the induction itself.
+
+- 2026-08-01 — **A scope condition on the separating point, found while wiring the induction.**
+  `SchurVariablePresentation.lean`, axioms `[propext, Classical.choice, Quot.sound]`:
+  `unitTailEval` is the unit tail as a specialisation of the reversed presentation;
+  `unitTailEval_schurVar` — a coefficient of index `1 ≤ k ≤ L` evaluates to `1` if `k = n` and `0`
+  otherwise; `unitTailEval_schurVar_zero` — the **zeroth** coefficient evaluates to `1`.
+
+  The last of these is the point.  The convention `h_0 = 1` is not a variable, so no specialisation
+  can send it to zero.  The unit tail therefore realises the identity matrix — the computation
+  behind `rectangularSchurToeplitz_unit_tail` — only when the index zero never occurs in the section,
+  that is when `n + r - i = 0` is impossible for `r, i < m`, which means **`n ≥ m`**.
+
+  For `n < m` the same point gives a matrix with extra ones below the diagonal and the separating
+  argument needs a different specialisation.  Since the corner recursion decreases `m` and `n`
+  together, the ratio `n/m` is preserved along it, so this is a genuine restriction on the induction
+  rather than something that disappears at the next step: the argument as sketched proves the
+  irreducibility of `tau_(m,n)` for `n ≥ m`, and the complementary range needs its own separating
+  point.
+
+- 2026-08-01 — **The separating value is proved in the valid regime.**
+  `SchurVariablePresentation.lean`, axioms `[propext, Classical.choice, Quot.sound]`:
+  `map_unitTailEval_rectangularSchurToeplitz` — when the shift is at least the height, no entry has
+  index zero, so evaluating at the unit tail turns the section into the constant unit-tail section;
+  `unitTailEval_det_rectangularSchurToeplitz` — hence the determinant evaluates to **one** there.
+
+  That is the `ψ M.det ≠ 0` hypothesis of `irreducible_det_of_corner_X_zero`, for `m ≤ n`.  The
+  companion `φ A = 0` is the same evaluation applied to the corner minor, where
+  `det_rectangularSchurToeplitz_shift_unit_tail` gives zero.
+
+  So in the range `m ≤ n` every hypothesis of the induction step is now a proved theorem about the
+  presentation itself, not about an abstract matrix: corner, freeness, minor, and both separating
+  values.
+
+- 2026-08-01 — **The last connector: the unit tail commutes with adding a variable.**
+  `unitTailEval_rename_succ` in `SchurVariablePresentation.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`: reading a polynomial one variable later and evaluating
+  at the unit tail is the unit-tail evaluation of the smaller presentation.
+
+  This is the `hcomp` hypothesis of `irreducible_det_of_corner_X_zero`, which relates the
+  specialisation of the ambient ring to the one of the coefficient ring.  With it, all six inputs of
+  the step are proved for the rectangular presentation in the range `m ≤ n`:
+
+  ```text
+  corner = X 0                    schurVar_top
+  other entries free of X 0       degreeOf_zero_schurVar + rectangularSchurToeplitz_index_lt_top
+  minor = rename succ of smaller  det_submatrix_eq_rename_succ
+  smaller irreducible             induction hypothesis + irreducible_rename_succ
+  specialisations agree           unitTailEval_rename_succ
+  values 0 and 1                  det_..._shift_unit_tail, unitTailEval_det_...
+  ```
+
+  Writing the induction is now a matter of instantiating the step with these; no further lemma is
+  needed for `m ≤ n`.
+
+- 2026-08-01 — **Reindexing transport, the last obstacle to writing the induction.**
+  `irreducible_rename_finCongr` in `MvLinearIrreducible.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`: irreducibility is unaffected by a reindexing of the
+  variables along an equality of their number.
+
+  This is needed for a reason particular to the formalisation rather than the mathematics.  The
+  number of variables is a **type index**, and the induction meets the same ambient ring written in
+  two arithmetically equal but syntactically different ways — `n' + m' - 1 + 2` from the minor lemma
+  against `n' + m' + 1` in the natural statement of the step.  No phrasing of the induction avoids
+  this: it is inherent in the corner recursion decreasing both parameters.  Transporting along
+  `finCongr` resolves it.
+
+  With this the induction for `m ≤ n` can be written from proved parts only.

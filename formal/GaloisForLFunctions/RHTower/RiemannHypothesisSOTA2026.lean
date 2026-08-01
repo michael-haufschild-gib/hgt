@@ -103,6 +103,7 @@ import GaloisForLFunctions.RHTower.CCMUnitRieszMobiusCausalVirial
 import GaloisForLFunctions.RHTower.CCMBlockFockCommonCarrierSquareObstruction
 import GaloisForLFunctions.RHTower.CCMBlockFockPowerDilationTrichotomy
 import GaloisForLFunctions.RHTower.CCMFirstClockPhaseNaturalTransportRigidity
+import GaloisForLFunctions.RHTower.CCMFirstClockBarycentricOrientationCompleteness
 import GaloisForLFunctions.RHTower.HedenmalmCenterMixedUniformCoalescedSquare
 import GaloisForLFunctions.RHTower.XiGuinandWeilRectangularFullFormula
 import GaloisForLFunctions.RHTower.XiHedenmalmBoundaryValueProblem
@@ -605,9 +606,21 @@ This is the typed endpoint ledger for the live RH routes in the primary literatu
   `gradedPartition_mul_sq_le`; it is not a new positivity mechanism or RH predecessor.
   Cubing stays inside one prime-power tower, misses exponent-one prime atoms, and transports
   neither hard aperture nor first-clock sine sign. Formerly proposed triadic phase assembly
-  would have to insert exactly those missing source data and is therefore retired. Live wall
-  remains a source-complete coefficientwise source/response intertwiner whose compression is
-  proved to be first-clock half-wave dominance.
+  would have to insert exactly those missing source data and is therefore retired. The fixed
+  coefficientwise-intertwiner wall is now classified by
+  `ccmFirstClockPrimePowerPacket_phaseNatural_sourceFaithful_iff_eq_one`: on every duplicate-free
+  finite actual-source packet, exact source faithfulness plus naturality for all physical
+  first-clock phases forces the identity, even for signed matrices. Every nonidentity
+  source-faithful mixer has the explicit nonzero current supplied by
+  `ccmFirstClockPrimePowerPacket_nontrivial_has_explicit_phaseConnectionDefect`. Allowing an
+  unrelated positive mixer at every aperture does not evade the wall:
+  `ccm_orientedSourceFaithfulMarkovTransport_iff_dotProduct_nonnegative` classifies feasibility
+  exactly by the original source--phase scalar, with an explicit rank-one barycentric witness,
+  and `ccmFirstClockAllCompletedMarkovOrientations_iff_rh` identifies universal completed-packet
+  feasibility with RH itself. Thus both the fixed natural-intertwiner and arbitrary
+  aperture-dependent positive-Markov predecessor classes are terminal. A surviving signed
+  connection-current construction would be a distinct route and must orient the explicit defect
+  before positive good/bad projection.
 
 ## Positivity, Li, approximation, and explicit-formula routes
 

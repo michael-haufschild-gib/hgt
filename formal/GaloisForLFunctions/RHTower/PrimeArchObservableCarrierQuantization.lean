@@ -111,6 +111,16 @@ theorem not_isPrimeArchObservableWitness_of_forall_measure_levelSet_eq_zero
   rw [hlevel] at heq
   exact (ne_of_gt (primeArchXiCompactMomentMeasure_singleton_pos 0)) heq.symm
 
+/-- **Countable-fibre no-go.** On an atomless hidden source, a reporter with countable fibres
+cannot represent the complete Route D moment tower.  Thus every successful reporter has an
+uncountable positive-measure fibre above every canonical thermal node. -/
+theorem not_isPrimeArchObservableWitness_of_countable_levelSets
+    {mu : Measure X} [NullSingletonClass mu] {node : X → ℝ}
+    (hcountable : ∀ y, (node ⁻¹' {y}).Countable) :
+    ¬ IsPrimeArchObservableWitness mu node :=
+  not_isPrimeArchObservableWitness_of_forall_measure_levelSet_eq_zero fun y =>
+    (hcountable y).measure_zero mu
+
 /-- An injective reporter on an atomless hidden source has null level sets, so it cannot represent
 the complete Route D tower. -/
 theorem not_isPrimeArchObservableWitness_of_injective_of_nullSingleton
@@ -139,12 +149,49 @@ def thetaCuspContinuousSourceMeasure : Measure ℝ :=
   (volume.restrict (Ioi 0)).withDensity
     (fun x => ENNReal.ofReal (2 * thetaCuspFullSource x))
 
+/-- The theta-cusp source measure is absolutely continuous with respect to Lebesgue measure. -/
+theorem thetaCuspContinuousSourceMeasure_absolutelyContinuous_volume :
+    thetaCuspContinuousSourceMeasure ≪ (volume : Measure ℝ) := by
+  unfold thetaCuspContinuousSourceMeasure
+  exact (withDensity_absolutelyContinuous _ _).trans
+    Measure.restrict_le_self.absolutelyContinuous
+
 /-- The theta-cusp density is atomless because it is absolutely continuous with respect to
 restricted Lebesgue measure. -/
 instance thetaCuspContinuousSourceMeasure_nullSingleton :
     NullSingletonClass thetaCuspContinuousSourceMeasure := by
   unfold thetaCuspContinuousSourceMeasure
   infer_instance
+
+/-- **Theta-fibre plateau law.** Every successful deterministic theta reporter has a
+positive-Lebesgue-measure level set above every enumerated canonical thermal node. -/
+theorem IsPrimeArchObservableWitness.volume_levelSet_xiThermalNode_pos
+    {node : ℝ → ℝ} (h : IsPrimeArchObservableWitness thetaCuspContinuousSourceMeasure node)
+    (j : ℕ) :
+    0 < volume (node ⁻¹' {xiThermalNode (xiThermalEnumeration j)}) := by
+  have hsource := h.measure_levelSet_xiThermalNode_pos j
+  apply lt_of_not_ge
+  intro hle
+  have hvol : volume (node ⁻¹' {xiThermalNode (xiThermalEnumeration j)}) = 0 :=
+    bot_unique hle
+  exact (ne_of_gt hsource)
+    (thetaCuspContinuousSourceMeasure_absolutelyContinuous_volume hvol)
+
+/-- No reporter whose level sets are all Lebesgue-null can produce the complete moment carrier
+from the literal theta-cusp density. -/
+theorem not_isPrimeArchObservableWitness_thetaCusp_of_forall_volume_levelSet_eq_zero
+    {node : ℝ → ℝ} (hlevel : ∀ y, volume (node ⁻¹' {y}) = 0) :
+    ¬ IsPrimeArchObservableWitness thetaCuspContinuousSourceMeasure node := by
+  intro h
+  exact (ne_of_gt (h.volume_levelSet_xiThermalNode_pos 0))
+    (hlevel (xiThermalNode (xiThermalEnumeration 0)))
+
+/-- No countable-to-one deterministic observable of the literal positive theta-cusp density
+produces the complete prime--archimedean moment carrier. -/
+theorem not_isPrimeArchObservableWitness_thetaCusp_of_countable_levelSets
+    {node : ℝ → ℝ} (hcountable : ∀ y, (node ⁻¹' {y}).Countable) :
+    ¬ IsPrimeArchObservableWitness thetaCuspContinuousSourceMeasure node :=
+  not_isPrimeArchObservableWitness_of_countable_levelSets hcountable
 
 /-- **Theta-source specialization.** No injective deterministic observable of the literal
 positive theta-cusp density produces the complete prime--archimedean moment carrier. -/

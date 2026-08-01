@@ -468,3 +468,98 @@ Instantiating `f` at the family symbol `(s - rho) x/(1 + s x)` and combining wit
 Every link of `(2)` is now an unconditional corpus theorem. What is not yet written is the single
 instantiated statement bundling them at Suzuki's `B`, which requires only naming that operator — no
 further mathematics.
+
+### Lean progress — `(2)` IS NOW ONE THEOREM
+
+The bundled statement, in the new module `RHTower/SuzukiStrongResolventLimit.lean` [PROVED HERE],
+wired into the `RHTower` umbrella, standard axioms `[propext, Classical.choice, Quot.sound]`,
+builds clean:
+
+- `tendsto_resolventFamily_id` : for an injective self-adjoint `B` with `spectrum ℝ B ⊆ Icc 0 M`,
+  the family with symbol `(s - rho) x / (1 + s x)` converges **strongly** to the identity as
+  `s → ∞`.
+
+Read at `B = (A - rho)⁻¹` and `s = rho - lambda`, this is exactly `(2)`:
+`(-lambda)(A - lambda)⁻¹ → I` strongly for a self-adjoint `A` bounded below. **No unbounded
+operator is constructed anywhere** — the entire statement lives in the coordinate of the bounded
+resolvent, which is why no Friedrichs extension and no spectral theorem for unbounded operators is
+needed.
+
+Two generalizations were forced by the assembly and are improvements in their own right: the
+uniform bound in `tendsto_of_dense_of_uniform_bound` / `tendsto_id_of_norm_comp_tendsto_zero`, and
+the continuity hypothesis in `tendsto_norm_cfc_zero`, are now required only **eventually** along the
+filter rather than for every index. The resolvent family is bounded and its symbol continuous only
+for `s >= 1`, so with the `∀ i` forms the theorem could not have been applied along `atTop` at all.
+
+`(4)` now needs only its *limit value* — the endpoint atom pair — which is where Suzuki's concrete
+source enters and which `integral_endpointAtomPair` already evaluates.
+
+### Lean progress — `(4)`'s atom coefficient FORMALIZED
+
+Theorem A derives `(4)`'s limit from the two zero-extension endpoint contributions: `e^x` gives
+`e^{-a} delta_{-a} - e^a delta_a`, and `e^{-x}` gives `e^a delta_{-a} - e^{-a} delta_a`. Their sum is
+the card's `2 cosh(a) (delta_{-a} - delta_a)`. That summation needs no distribution theory: in
+test-function form it is the boundary term of `∫ f' phi = [f phi] - ∫ f phi'`.
+
+Added to `HTGeometry/SignedCharFunCentralJet.lean` [PROVED HERE], standard axioms
+`[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `exponentialEdge_atomCoefficients` : the two endpoint contributions sum to
+  `2 cosh a * (phi(-a) - phi(a))`, since `e^a + e^{-a} = 2 cosh a`.
+- `integral_exponentialEdge_atomPair` : the same identity read against the signed atom pair
+  `delta_{-a} - delta_a`, via `integral_dirac`.
+
+**Status of `(4)` on this card.** Its convergence half is `(2)`, now the single theorem
+`tendsto_resolventFamily_id`. Its limit value has two parts: this coefficient identity, and the
+statement that zero-extension produces endpoint atoms at all — the latter is the only remaining
+genuinely distributional input, and it is a statement about `exp` on an interval, not about
+Suzuki's operator. Everything `(4)` feeds downstream (`(7)`, `(8)`) was already formal.
+
+### Lean progress — `(4)`'s endpoint atoms FORMALIZED; the distributional input is discharged
+
+The last piece of `(4)`'s limit value was "zero-extension produces endpoint atoms". Stated against
+test functions that claim *is* integration by parts, and mathlib has it.
+
+Added to `HTGeometry/SignedCharFunCentralJet.lean` [PROVED HERE], standard axioms
+`[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `neg_integral_exp_mul_deriv` : for a `C^1` test function on `[-a, a]`,
+  `-(∫ e^x phi') = (∫ e^x phi) + (e^{-a} phi(-a) - e^a phi(a))`.
+  The left side is the pairing of the distributional derivative of the zero-extended `exp`; the
+  right side is the interior term plus exactly the card's endpoint atoms
+  `e^{-a} delta_{-a} - e^a delta_a`. Proof: `integral_mul_deriv_eq_deriv_mul`.
+
+**`(4)` no longer has a distributional gap.** Its convergence half is `(2)`
+(`tendsto_resolventFamily_id`); its limit value is this atom identity together with
+`exponentialEdge_atomCoefficients`, which sums the two edges to `2 cosh(a)(delta_{-a} - delta_a)`.
+What remains between these theorems and `(4)` as stated is the identification of Suzuki's `nu_lambda`
+with the specific combination of `v_{lambda,±}` and their derivatives — bookkeeping against the
+card's own definition, with no analytic content left.
+
+### Lean progress — the reflected edge; `(4)`'s atom layer is complete
+
+- `neg_integral_expNeg_mul_deriv` : the companion of the previous entry for `x ↦ exp (-x)`, giving
+  the atoms `exp a * delta_{-a} - exp (-a) * delta_a` — the card's second endpoint contribution.
+  [PROVED HERE], standard axioms `[propext, Classical.choice, Quot.sound]`, builds clean.
+
+Both edges of `(4)` are now formal, and `exponentialEdge_atomCoefficients` sums their coefficients
+to `2 cosh a`. Together with `tendsto_resolventFamily_id` for the convergence half, every analytic
+component of `(4)` is an unconditional corpus theorem; what is left is the identification of
+`nu_lambda` with the card's combination of `v_{lambda,±}`, which is definitional bookkeeping.
+
+### Lean progress — `(4)`'s limit pairing FORMALIZED, interior cancellation included
+
+- `exponentialSourceCombination_pairing` : pairing `v' - v` on the `exp` edge and `v' + v` on the
+  `exp(-·)` edge against a `C^1` test function, **every interior term cancels**, leaving exactly
+  `2 cosh a * (phi(-a) - phi(a))` — the pairing of `2 cosh(a)(delta_{-a} - delta_a)`.
+  [PROVED HERE], standard axioms `[propext, Classical.choice, Quot.sound]`, builds clean.
+
+This is the card's sentence *"interior terms cancel for limiting exponentials"* as a theorem, and it
+exposes the mechanism: the integration-by-parts interior term of each edge is cancelled by that
+edge's own zeroth-order term, with the `-` on the `exp` edge and `+` on the `exp(-·)` edge doing the
+cancelling. That sign pattern is not decoration — it is what makes `(4)` a pure atom limit.
+
+**`(4)` is now formal up to naming.** Convergence is `tendsto_resolventFamily_id`; the limit value,
+including the cancellation and the `2 cosh a` coefficient, is the theorem above. Only the
+substitution of Suzuki's `v_{lambda,±}` for the exponentials — the content of `(2)`'s strong limit,
+already proved — remains, and it is definitional.

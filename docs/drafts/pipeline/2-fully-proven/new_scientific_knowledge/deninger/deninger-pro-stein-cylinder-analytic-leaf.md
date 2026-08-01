@@ -189,3 +189,57 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+
+## Lean status
+
+### The finite character stages `(1)` and the power law `(4)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerCharacterStage.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerCharacterStage r A : (Fin r → A) ≃ₗ[ℤ] ((Fin r → ℤ) →ₗ[ℤ] A)` — **`(1)`**: the characters
+  of a rank-`r` lattice are exactly the `r`-tuples of values, a character being determined by and
+  prescribable through its values on a basis.  With `A = Additive ℂˣ` this is
+  `Z_{W,L} = Hom(L, ℂ^×) ≅ (ℂ^×)^{rk L}`; with `A = Additive S¹` it is the corresponding pro-torus
+  stage.
+- `deningerCharacterStage_apply_single` — the coordinates are the values at the basis vectors,
+  which is the evaluation-coordinate description the cylinder condition refers to.
+- `deningerCharacterRestrict`, `_comp`, `_id` — the contravariant transition maps induced by lattice
+  maps, and their functoriality: this is the cofiltered structure of the finite stages, covering
+  both the finite-index lattice inclusions and the inclusions of finite-dimensional subspaces.
+- `deningerCharacter_zsmul` — **`(4)`**: `P(a^q) = P(a)^q` in additive notation, the stability of the
+  character stages under the power maps.
+
+### The cylinder condition and its stability landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerCylinderFunction.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+The card's first `[PROVED HERE]` rests on the sentence "Local cylinder representations are preserved
+by restriction, addition, multiplication, exterior derivative, Galois permutation, and `(4)`".  The
+algebraic half of that is now proved.
+
+- `DeningerIsCylinderAt f P₀` — the card's local definition: near `P₀`, `f P = h (P a₁, …, P a_r)`
+  with `h` analytic.  Locality is built into the definition, which is what gives the sheaf gluing
+  the card appeals to.
+- `deningerIsCylinderAt_const`, `deningerIsCylinderAt_eval` — constants and the evaluation
+  coordinates `P ↦ P(a)` are cylinder.
+- `deningerIsCylinderAt_add`, `deningerIsCylinderAt_mul` — **sums and products are cylinder**: the
+  two coordinate tuples are concatenated with `Fin.append`, and the two coordinate projections are
+  continuous linear, so the merged function is analytic by composition.
+- `deningerIsCylinderAt_comp` — **stability under a permutation of the character variable**: a
+  Galois map permutes the evaluation coordinates, and precomposition is continuous, so the local
+  representation transports.
+- `deningerIsCylinderAt_eval_pow` — **stability under `(4)`**: a power of an evaluation coordinate
+  is again cylinder.
+
+### Remaining
+
+1. **The differential layer.**  `(3)` and the stability of the cylinder condition under the exterior
+   derivative: this needs cylinder differential forms, which requires the several-variable
+   holomorphic de Rham complex.
+2. **The Stein property.**  That each `Z_{W,L} = (ℂ^×)^r` is Stein.  mathlib has no Stein theory.
+3. **`(5)`--`(6)`**, the de Rham cohomology `H^k((ℂ^×)^r, ℂ) ≅ Λ^k(L ⊗ ℂ)` and its colimit; mathlib
+   has no de Rham cohomology of a complex manifold.
+4. **`(7)`**, the relative cell statement, whose proof invokes Cartan theorem B — absent from
+   mathlib — and the pro-Ind global-section formalism.

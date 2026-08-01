@@ -533,13 +533,30 @@ With `deningerLocallyConstant_factors` and `deningerPacket_isCompl` this is the 
 convex average followed by circle integration, and the splitting is the continuous idempotent
 `P_p = ι_p Av_p`.
 
+### Degree zero of the Čech complex landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerCechGlue.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerCechCocycle_zero_iff` — in degree zero the Čech differential is the difference of the two
+  restrictions, so a zero-cocycle is exactly a compatible family.
+- `deningerCechGlue` — **a compatible family of continuous functions glues** to a single continuous
+  function, which is locally one of the given ones.
+- `deningerCechGlue_unique` — and the glued function is unique.
+
+With the exactness in positive degrees this is the whole Čech computation of `(6)`: the global
+sections in degree zero and nothing above.
+
 ### Remaining
+
+Both remaining items are inputs the card cites rather than theorems the card proves.
 
 1. **Deninger's identification** of `U_p` with the automorphism group of `μ_{p'}` in the topology of
    pointwise convergence, and of the packet `Γ_p` with the mapping torus — his Theorem 7.10 and
    Corollary 7.9.  Everything the card derives *from* those inputs is formalized: the mapping-torus
    collapse `(4)`, the compact-to-Hausdorff upgrade to `(3)`, and the profinite structure of `(1)`.
-2. **The comparison with derived-functor cohomology.**  The contracting homotopy is proved in every
-   degree, so the Čech complex of any cover carrying a subordinate partition of unity is exact in
-   positive degrees.  Identifying that with `RΓ(Γ_p, ℛ_p^∞)` needs the Čech-to-derived comparison,
-   which mathlib does not have; the card's `(6)` is the statement on the Čech side.
+2. **The comparison of Čech with derived-functor cohomology.**  The card asserts fineness implies
+   acyclicity as standard.  Both halves of the Čech computation are now proved — exactness in every
+   positive degree (`deningerCech_exact`) and the global sections in degree zero
+   (`deningerCechGlue`) — so what is missing is only the identification of that complex with
+   `RΓ(Γ_p, ℛ_p^∞)`, which mathlib has no machinery for.

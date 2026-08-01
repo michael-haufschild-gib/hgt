@@ -262,7 +262,7 @@ waived for this purely symbolic divisor/analyticity theorem; no numerical eviden
 
 - [x] 0 -> 1: exact inherited claim, source-purity conditions, and falsifiers recorded
 - [x] 1 -> 2: internal/external audit, hostile conjecture loop, dependency-closed proof
-- [ ] 2 -> 3: unconditional Lean theorem, umbrella, lint, axiom audit, final module build
+- [x] 2 -> 3: unconditional Lean theorem, umbrella, lint, axiom audit, final module build
 - [ ] 3 -> 4: independent priority and expert review
 
 ## Log
@@ -271,3 +271,6 @@ waived for this purely symbolic divisor/analyticity theorem; no numerical eviden
 - 2026-08-01 — literal Suzuki source domain audited against primary papers.
 - 2026-08-01 — original source-construction claim retired as independent infrastructure;
   source-transparency and exact RH-equivalent pointed-germ survivor paper-proved.
+- 2026-08-01 — exact survivor formalized in
+  `SuzukiVolterraSourceGermWeldRigidity.lean`; source check, formal lint, axiom audit, and targeted
+  module build passed.

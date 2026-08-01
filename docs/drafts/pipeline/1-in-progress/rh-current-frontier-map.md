@@ -260,7 +260,7 @@ HilbertMetric proves existential unisolvent reconstruction for independent featu
 equivalence at arbitrary prescribed nodes. It does not construct reconstruction on the
 fixed prime–archimedean source packet or establish its all-degree sign.
 
-**Closed carrier classifications.** Two carrier loopholes are closed unconditionally in Lean.
+**Closed carrier classifications.** Three carrier loopholes are closed unconditionally in Lean.
 
 1. `primeMellinJet_eulerSubsetPositiveLift_classification`: even arbitrary off-diagonal prime
    outputs and an arbitrary fixed Gamma/polar boundary cannot make positive-log Mellin packets
@@ -270,25 +270,34 @@ fixed prime–archimedean source packet or establish its all-degree sign.
    measure representing the complete source moments, with no support hypothesis, equals the
    canonical compact atomic Xi-divisor pushforward. Unique carrier existence is exactly RH, and
    every Euclidean spectral realization has this same observable pushforward.
+3. `IsPrimeArchObservableWitness.measure_levelSet_xiThermalNode_pos`: any positive hidden carrier
+   and deterministic reporter realizing the source moments has exactly the canonical Xi-divisor
+   pushforward law. Every thermal node therefore has a positive-measure source fibre. Reporters
+   with null or merely countable level sets—and in particular countable-to-one reporters on the
+   atomless positive theta-cusp source—are impossible.
 
 Together with the existing Krein constraint—positive isotropic reciprocity is zero and the full
 doubled signed reciprocity graph is Lagrangian with zero quotient—this retires diagonal mixing,
-subset-natural off-diagonal mixing, naive positive quotienting, and alternative moment carriers.
+subset-natural off-diagonal mixing, naive positive quotienting, alternative moment carriers, and
+diffuse or information-preserving deterministic source reporters.
 
 **Irreducible open core.** Construct a genuinely global signed prime–Gamma boundary/domain defect
 whose positive quotient is formed only after completion, and prove its resolvent-flux identity with
-the literal source. This is no longer a reconstruction-node or carrier-selection problem. The
-identity pins the quotient divisor to Xi; its positivity is global Weil positivity and therefore
-exactly RH.
+the literal source. Equivalently, construct from source data an uncountable-to-one quantizer or
+correspondence whose positive-measure fibres have the forced canonical law, without selecting Xi
+zeros. This is no longer a reconstruction-node or carrier-selection problem. The identity pins
+the quotient divisor to Xi; its positivity and forced fibre law are global Weil positivity and
+therefore exactly RH.
 
 **Obstacle.** Low theta moments do not weaken the target. Lean proves any infinite exact
 degree set already reconstructs the full cone by opposite high-degree perturbations.
 Zero-selected tests are circular. Positivity and reciprocity alone underdetermine the divisor:
 reciprocal spectral pairs can be adjoined unless the exact resolvent-flux identity is proved.
 
-**Assessment.** Route D's carrier/reconstruction freedom is fully classified. RH is neither proved
-nor disproved. No independent source-first Route D mechanism remains below the global
-boundary-defect/Weil-positivity theorem.
+**Assessment.** Route D's carrier/reconstruction and observable-pushforward freedom is fully
+classified. RH is neither proved nor disproved. No independent source-first Route D mechanism
+remains below construction of target-shaped uncountable positive source fibres, equivalently the
+global boundary-defect/Weil-positivity theorem.
 
 ### Route D2 — continued prime–arch high-frequency ceiling
 
@@ -558,27 +567,45 @@ and the undressed sharp all-prime wall source cannot lie in ordinary `ℓ²`. Th
 finite cutoff plus a genuinely renormalized or semifinite limit with cutoff-dependent
 unbounded relative observation.
 
-### Route G2 — relative-Volterra phase source-germ weld
+### Route G2 — relative-Volterra phase source-germ weld [RETIRED]
 
-This is a separate disjunctive route; it bypasses Suzuki coefficient monotonicity,
-chord-mass, Pick-kernel, Ward, and Hermite–Biehler obligations.
+**Status: RETIRED.** This closed no-go is not a separate lower-cost disjunctive route. It bypasses Suzuki
+coefficient monotonicity, chord-mass, Pick-kernel, Ward, and Hermite–Biehler obligations only by
+placing the full RH burden in one analytic source-germ identity.
 
 **Unconditional algebra.** `2V = C + iH`, with `C` and `H` self-adjoint. Under explicit
 hypotheses that the reflection operator is self-adjoint and conjugates `T` to its adjoint,
 `C` is reflection-even and `H` reflection-odd; odd-sector claims additionally require the
 reflection square to be the identity.
 
-**Endpoint.** `riemannHypothesis_of_suzukiVolterraPhaseEulerDefect_source_germ_weld`
-concludes RH from analytic response/Weyl packages, real-zero conditions, and the seed
-source-germ identity.
+**Exact classification.** Away from the real sewn-characteristic divisor, the actual exterior
+Weyl quotient is
 
-**Open core.** Prove the actual phase Green/Christoffel–Darboux Euler-defect source-germ
-weld (`hseed`) and discharge its analytic and real-zero premises from source.
+```text
+analytic relative-Volterra correction - XiC'/(z^2 XiC).
+```
+
+Therefore every off-real Xi zero gives the quotient an exact simple pole and its Euler defect an
+exact double pole. `riemannHypothesis_iff_exists_suzukiVolterraPhaseEulerDefect_source_germ_weld`
+proves that, under the stated analytic-response and real-zero packages, existence of one analytic
+upper-half-plane source with one pointed germ equal to the Euler defect is equivalent to RH.
+
+**Disposition.** Route G2 is retired in full. A literal phase Green/Christoffel–Darboux proof of
+`hseed` remains mathematically possible, but it is the hard RH proof itself, not missing routine
+Volterra infrastructure; any materially new source mechanism must enter the pipeline as a new
+route, not reopen G2. Suzuki's literal prime--Gamma transform is initially valid only in its
+Euler-product half-plane; analytically continuing it through the whole upper half-plane is exactly
+the zero-free conclusion.
 
 **Retired transfer mechanism.** Under the stated reflection structure, sign or positivity
 of the symmetric coordinate cannot simply be transferred to the complementary phase
 sector. The exact difference identity is an algebraic separation, not an unconditional
 universal impossibility theorem.
+
+**Positive survivor.** Exact source-transparency normal form, pole-order amplification, and the
+generic plus actual-relative-Volterra pointed-germ iff classification. Paper proof:
+`docs/drafts/pipeline/2-fully-proven/route-g2-relative-volterra-source-germ-weld.md`. Lean module:
+`GaloisForLFunctions.RHTower.SuzukiVolterraSourceGermWeldRigidity`.
 
 ### Route H — Xi Taylor/theta core current
 
@@ -618,7 +645,7 @@ sharp weighted-prime main term + subpower error for all large n
 **Open core.** Prove the sharp dyadic error from source. Monomial-tail and finite-degree
 estimates cannot reach the necessary height-linear range.
 
-### Route J — Julia compound-Poisson coherent energy
+### Route J — Julia compound-Poisson coherent energy  [RETIRED]
 
 This route is distinct from older diagonal Julia attenuation.
 
