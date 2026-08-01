@@ -28,8 +28,9 @@
   `GaloisForLFunctions.RHTower.DeningerFinitePlaceBaseChange`,
   `GaloisForLFunctions.RHTower.DeningerFinitePlaceSumBaseChange`,
   `GaloisForLFunctions.RHTower.DeningerPlaceRestriction`,
-  `GaloisForLFunctions.RHTower.DeningerHeightBaseChange`
-  (the gluing of the place tower)
+  `GaloisForLFunctions.RHTower.DeningerHeightBaseChange`,
+  `GaloisForLFunctions.RHTower.DeningerAbsoluteHeight`
+  (the gluing of the place tower and the absolute height on `Q̄`)
 
 ## Source Hilbert space
 
@@ -556,12 +557,44 @@ the absolute degree, is the same at every level, so the level-wise place models 
 the Kummer norm of `α` is an invariant of `α` alone.  Note that mathlib has no absolute height on
 `Q̄` and no base-change law for `Height.logHeight₁`; both are built here.
 
+### The absolute Weil height on the algebraic numbers landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerAbsoluteHeight.lean`.  Axiom audit on all
+declarations: `propext, Classical.choice, Quot.sound`.
+
+mathlib has heights only on a fixed number field.  The global object the card's place space needs
+is the height on all of `Q̄` at once; it is built here.
+
+- `deningerNormalizedHeight K x = h_K(x)/[K : ℚ]`, and `deningerNormalizedHeight_ringHom` — **it is
+  preserved by every field embedding** `φ : K →+* K'`.  A ring map between number fields is
+  automatically a `ℚ`-algebra map, because `ℚ` admits a unique ring map into a field of
+  characteristic zero (`RingHom.ext_rat`); that supplies the `IsScalarTower ℚ K K'` needed by
+  `deningerNormalizedHeight_baseChange`.  Note this needs no compatibility hypothesis on `φ` at
+  all.
+- `deningerAbsHeight α` — **the absolute logarithmic Weil height** of an element of any algebraic
+  extension `F/ℚ`: its normalized height in `ℚ⟮α⟯`.
+- `deningerAbsHeight_intermediateField` — **any** finite intermediate field containing `α`
+  computes it, since the inclusion `ℚ⟮α⟯ ↪ E` is a field embedding.  This is the well-definedness
+  that makes the height an invariant of `α` alone.
+- `deningerAbsHeight_eq_zero_iff` — **the height-zero theorem on `Q̄`**: a nonzero algebraic number
+  has absolute height zero exactly when it is a root of unity.  The generator of `ℚ⟮α⟯` and `α`
+  have the same order because the structure map is an injective ring hom.
+- `deningerAbsHeight_pow`, `deningerAbsHeight_nonneg` — homogeneity `h(α^n) = n·h(α)` and
+  nonnegativity.
+
+One trap worth recording: `↥ℚ⟮α⟯` carries two `Algebra ℚ` structures — `IntermediateField.algebra'`
+and the canonical `DivisionRing.toRatAlgebra` — which are equal but not definitionally so.
+`NumberField` is stated for the latter, `IntermediateField.adjoin.finiteDimensional` produces the
+former.  The fix is to transport once, at the `NumberField ℚ⟮α⟯` instance, via
+`Subsingleton (Module ℚ M)`, and to state everything downstream on a *type variable* carrying
+`[NumberField K]` so that only the canonical structure is ever mentioned.
+
 ### Remaining
 
-Only the construction of the single global object: the absolute Weil height on `Q̄`, defined by
-`h(α) = h_K(α)/[K : ℚ]` for any number field `K` containing `α` — well defined by
-`deningerNormalizedHeight_baseChange` — and the Hilbert--Kummer space as the completion of
-`𝒢 ⊗ ℚ` for the associated norm.  With that completion as the definition of `H_Kum`, the dense
-span of `(2)` is true by construction (`deningerClosedSpan_eqOn`) and its injectivity is the
-height-zero theorem, both already proved; what is left is to *build* the colimit, not to prove a
-new mathematical statement about it.
+The Hilbert--Kummer space itself: `𝒢 = Q̄ˣ/μ_∞` tensored with `ℚ`, normed by the absolute height,
+and completed.  The three inputs are in place — the height is defined on all of `Q̄`
+(`deningerAbsHeight`), it vanishes exactly on the torsion that is quotiented out
+(`deningerAbsHeight_eq_zero_iff`), and it is homogeneous (`deningerAbsHeight_pow`) — so what
+remains is subadditivity `h(αβ) ≤ h(α) + h(β)`, which makes it a seminorm on the group, and then
+the completion.  With `H_Kum` defined as that completion, `(2)` is injective by the height-zero
+theorem and has dense span by construction.

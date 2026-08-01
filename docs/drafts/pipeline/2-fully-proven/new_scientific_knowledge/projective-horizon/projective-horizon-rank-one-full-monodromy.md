@@ -1427,3 +1427,13 @@ dividing the discriminant.
   Both ends of the sandwich are now available: `E_0 <= Fix` with `[top : Fix] = n`, and
   `top = E_0(p_1)` with `p_1^n in E_0` giving `[top : E_0] <= n`.  What remains is the tower
   identity itself, which forces `[top : E_0] = n` and `Fix = E_0`.
+
+- 2026-08-01 — `TailCoefficientDegree.lean` closes the upper half of the sandwich.
+  `tailCoeffField_adjoin_eq_top`: the parameter field is generated over the coefficient field by the
+  first parameter alone — the statement `top = E_0(p_1)` of the card's `(10)`, obtained from
+  `tailParamField_eq_top` by moving the base with `restrictScalars`.  Since `p_1^n` is the first
+  tail coefficient (`pow_algebraMap_X_zero`), the radical-degree bound gives
+  `finrank_tailCoeffField_le`: the degree is at most `n`, and `finiteDimensional_tailCoeffField`
+  records that the extension is finite.  Axioms `[propext, Classical.choice, Quot.sound]`.
+  With `finrank_deckFixedField` and `card_deckGroup` this leaves only the tower identity
+  `[top : E_0] = [Fix : E_0] * [top : Fix]`, which forces `[top : E_0] = n` and `Fix = E_0`.

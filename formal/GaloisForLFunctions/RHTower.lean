@@ -3835,3 +3835,4 @@ import GaloisForLFunctions.RHTower.DeningerHeightBaseChange
 import GaloisForLFunctions.RHTower.SoninScaledPacketTail
 import GaloisForLFunctions.RHTower.SoninReferenceTailSup
 import GaloisForLFunctions.RHTower.SuzukiHalfPlaneHerglotz
+import GaloisForLFunctions.RHTower.DeningerAbsoluteHeight

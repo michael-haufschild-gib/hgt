@@ -2212,6 +2212,25 @@ lexicographically minimal member has a constant projective limit, nonzero exactl
 sharing the minimal datum.  §3's digamma layer — eq. (19) and eq. (5) — is now unconditional in Lean
 for elements of the form `R(s)·P(ψ, ψ′, …)`.
 
+### The exponential valuation direction, analytically
+
+§4 says that adjoining `Γ` creates one exponential valuation direction.  Its algebraic half is
+already in the corpus: `HTGeometry/GammaBellSubstitution.lean` builds the Bell polynomials, proves
+`Γ⁽ᵏ⁾ = Γ·B_k(ψ, …, ψ⁽ᵏ⁻¹⁾)` (`gamma_iteratedDeriv_eq_bellCore`, eq. 20), the triangular recursion,
+and surjectivity of the Bell value map — so `K_Γ = L(Γ)` (eq. 21) needs nothing further.
+
+`HTGeometry/GammaVerticalSuperPolynomialDecay.lean` now supplies the analytic half.  On the line
+`Re s = 1/2 + m` the corpus's two-sided modulus bounds give `‖Γ(s)‖ ≤ C |t|^m e^{-π|t|/2}`, while
+`‖s‖ ≤ C₂ t` and `‖L(t)‖ ≤ C₃ t`, so squeezing against `t^N e^{-(jπ/2)t}`:
+
+> **`tendsto_gamma_pow_mul_vertical`**: `Γ(s)^j · s^k · L(t)^b → 0` for every `j ≥ 1` and all
+> `k, b`, and **`tendsto_gamma_pow_mul_digamma_vertical`** the same with `ψ^b` in place of `L^b`.
+
+So in the projective boundary of `ℂ(s)⟨Γ⟩` the `Γ`-exponent dominates every polynomial and
+logarithmic datum: the valuation is lexicographic in `(Γ-exponent, degree, digamma exponent)`, and the
+first two levels are now proved.  What remains is only the assembly of the three-level ratio
+statement, which needs no new analytic input.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

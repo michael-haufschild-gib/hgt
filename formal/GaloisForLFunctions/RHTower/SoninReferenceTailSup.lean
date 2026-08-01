@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.SoninScaledPacketTail
+import GaloisForLFunctions.HTGeometry.FourierTailSup
 
 /-!
 # A uniform tail majorant for the reference profile
@@ -22,61 +23,28 @@ set_option maxHeartbeats 1000000
 namespace RHTower
 
 open Filter MeasureTheory
-open scoped Topology FourierTransform
+open scoped Topology FourierTransform ContDiff
 
 /-- The transform of the reference profile is bounded by the profile's mass. -/
 theorem norm_fourier_soninUnitBumpC_le (v : ℝ) :
     ‖𝓕 soninUnitBumpC v‖ ≤ ∫ y : ℝ, ‖soninUnitBumpC y‖ :=
-  VectorFourier.norm_fourierIntegral_le_integral_norm _ _ _ _ _
+  GaloisForLFunctions.HTGeometry.norm_fourierIntegral_le_mass soninUnitBumpC v
 
-/-- **The reference tail majorant.**  The largest transform magnitude outside a symmetric band. -/
-def soninRefTailSup (u : ℝ) : ℝ :=
-  ⨆ v : ℝ, if u ≤ |v| then ‖𝓕 soninUnitBumpC v‖ else 0
-
-theorem bddAbove_soninRefTail (u : ℝ) :
-    BddAbove (Set.range fun v : ℝ => if u ≤ |v| then ‖𝓕 soninUnitBumpC v‖ else 0) := by
-  refine ⟨∫ y : ℝ, ‖soninUnitBumpC y‖, ?_⟩
-  rintro _ ⟨v, rfl⟩
-  by_cases h : u ≤ |v|
-  · simp only [h, if_true]
-    exact norm_fourier_soninUnitBumpC_le v
-  · simp only [h, if_false]
-    exact integral_nonneg fun y => norm_nonneg _
-
-/-- Outside the band, the transform is bounded by the majorant. -/
-theorem norm_fourier_soninUnitBumpC_le_tailSup {u v : ℝ} (h : u ≤ |v|) :
-    ‖𝓕 soninUnitBumpC v‖ ≤ soninRefTailSup u := by
-  have hle := le_ciSup (bddAbove_soninRefTail u) v
-  simpa only [soninRefTailSup, h, if_true] using hle
-
-theorem soninRefTailSup_nonneg (u : ℝ) : 0 ≤ soninRefTailSup u := by
-  refine le_trans (norm_nonneg (𝓕 soninUnitBumpC (|u| + 1))) ?_
-  refine norm_fourier_soninUnitBumpC_le_tailSup ?_
-  rw [abs_of_pos (by positivity : (0 : ℝ) < |u| + 1)]
-  exact le_trans (le_abs_self u) (by linarith)
-
-/-- A uniform bound outside the band bounds the majorant. -/
-theorem soninRefTailSup_le {u c : ℝ} (hc : 0 ≤ c)
-    (h : ∀ v : ℝ, u ≤ |v| → ‖𝓕 soninUnitBumpC v‖ ≤ c) : soninRefTailSup u ≤ c := by
-  refine ciSup_le fun v => ?_
-  by_cases hv : u ≤ |v|
-  · simpa only [hv, if_true] using h v hv
-  · simpa only [hv, if_false] using hc
-
-/-- **The majorant vanishes.**  Rapid decay in both directions makes the whole outside of a growing
-band uniformly small. -/
-theorem tendsto_soninRefTailSup_atTop : Tendsto soninRefTailSup atTop (𝓝 0) := by
+/-- **The tail supremum of a smooth compactly supported profile vanishes.**  Rapid decay in both
+directions makes the whole outside of a growing band uniformly small. -/
+theorem tendsto_fourierTailSup_atTop {f : ℝ → ℂ} (hsupp : HasCompactSupport f)
+    (hsmooth : ContDiff ℝ ∞ f) :
+    Tendsto (GaloisForLFunctions.HTGeometry.fourierTailSup f) atTop (𝓝 0) := by
   rw [Metric.tendsto_atTop]
   intro ε hε
-  have hpos := (tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop 0)
-  have hneg := tendsto_pow_mul_norm_fourier_neg_atTop
-    hasCompactSupport_soninUnitBumpC contDiff_soninUnitBumpC 0
+  have hpos := tendsto_pow_mul_norm_fourier_atTop hsupp hsmooth 0
+  have hneg := tendsto_pow_mul_norm_fourier_neg_atTop hsupp hsmooth 0
   rw [Metric.tendsto_atTop] at hpos hneg
   obtain ⟨U₁, hU₁⟩ := hpos (ε / 2) (by linarith)
   obtain ⟨U₂, hU₂⟩ := hneg (ε / 2) (by linarith)
   refine ⟨max U₁ U₂, fun u hu => ?_⟩
-  have hbound : soninRefTailSup u ≤ ε / 2 := by
-    refine soninRefTailSup_le (by linarith) fun v hv => ?_
+  have hbound : GaloisForLFunctions.HTGeometry.fourierTailSup f u ≤ ε / 2 := by
+    refine GaloisForLFunctions.HTGeometry.fourierTailSup_le (by linarith) fun v hv => ?_
     rcases le_total 0 v with hv0 | hv0
     · have hvU : U₁ ≤ v := by
         rw [abs_of_nonneg hv0] at hv
@@ -91,8 +59,31 @@ theorem tendsto_soninRefTailSup_atTop : Tendsto soninRefTailSup atTop (𝓝 0) :
       rw [Real.dist_eq, sub_zero, pow_zero, one_mul, neg_neg,
         abs_of_nonneg (norm_nonneg _)] at h
       exact h.le
-  rw [Real.dist_eq, sub_zero, abs_of_nonneg (soninRefTailSup_nonneg u)]
+  rw [Real.dist_eq, sub_zero,
+    abs_of_nonneg (GaloisForLFunctions.HTGeometry.fourierTailSup_nonneg f u)]
   linarith
+
+/-- **The reference tail majorant.**  The largest transform magnitude of the reference profile
+outside a symmetric band. -/
+def soninRefTailSup (u : ℝ) : ℝ :=
+  GaloisForLFunctions.HTGeometry.fourierTailSup soninUnitBumpC u
+
+/-- Outside the band, the reference transform is bounded by the majorant. -/
+theorem norm_fourier_soninUnitBumpC_le_tailSup {u v : ℝ} (h : u ≤ |v|) :
+    ‖𝓕 soninUnitBumpC v‖ ≤ soninRefTailSup u :=
+  GaloisForLFunctions.HTGeometry.le_fourierTailSup soninUnitBumpC h
+
+theorem soninRefTailSup_nonneg (u : ℝ) : 0 ≤ soninRefTailSup u :=
+  GaloisForLFunctions.HTGeometry.fourierTailSup_nonneg soninUnitBumpC u
+
+/-- A uniform bound outside the band bounds the majorant. -/
+theorem soninRefTailSup_le {u c : ℝ} (hc : 0 ≤ c)
+    (h : ∀ v : ℝ, u ≤ |v| → ‖𝓕 soninUnitBumpC v‖ ≤ c) : soninRefTailSup u ≤ c :=
+  GaloisForLFunctions.HTGeometry.fourierTailSup_le hc h
+
+/-- **The majorant of the reference profile vanishes.** -/
+theorem tendsto_soninRefTailSup_atTop : Tendsto soninRefTailSup atTop (𝓝 0) :=
+  tendsto_fourierTailSup_atTop hasCompactSupport_soninUnitBumpC contDiff_soninUnitBumpC
 
 /-- The profile tail at a frequency separated from the origin. -/
 theorem soninScaledBumpTailBound_le {δ u η : ℝ} (hδ : 0 < δ) (hsep : u ≤ δ * |η|) :

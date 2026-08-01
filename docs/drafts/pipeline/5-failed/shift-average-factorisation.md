@@ -18,6 +18,10 @@
 > further (erratum E21) that the Mellin direction is Perron's method in disguise, so its outputs are
 > classical, not new.**
 >
+> **Pipeline disposition:** `[FALSIFIED]` for Theorems 1--3; `[LEAN-PROVED] [BRIDGE]` for the
+> kernel antisymmetry, Laplace factorization, and phase-speed survivors named above. No stronger
+> non-trivial survivor remains after the recorded second-pass Mellin audit.
+>
 > The note is retained unedited below as a record of what was attempted and why it failed. **Do not
 > cite Theorems 1–3.**
 
@@ -26,9 +30,9 @@
 # The shift-average of a divisor correlation is the square of a one-variable exponential sum
 
 - **ID:** `shift-average-factorisation`
-- **Stage:** 2-fully-proven
+- **Stage:** 5-failed (withdrawn theorem; Lean-proved positive survivors retained)
 - **Type:** THEOREM (paper) — an *exact identity*, not a bound
-- **Scientific status:** `[PROVED HERE] [POSITIVE RESULT] [NEEDS EXTERNAL AUDIT]`
+- **Scientific status:** `[FALSIFIED]`; surviving kernel laws are `[LEAN-PROVED] [BRIDGE]`
 - **Lean:** `HTGeometry.TernaryVoronoiAntisymmetry` (the two mechanisms), axioms
   `[propext, Classical.choice, Quot.sound]`
 

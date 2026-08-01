@@ -12,8 +12,9 @@ It vanishes exactly on the roots of unity — the height-zero theorem — and is
 degree one under powers.  These are the two properties of the Kummer norm on `𝒢 = Q̄ˣ/μ_∞` that
 its Hilbert space needs.
 
-* `deningerNormalizedHeight_ringHom` : normalized heights agree along any field embedding.
-* `deningerAbsHeight` : the absolute height.
+* `deningerNormalizedHeight` : the height divided by the degree.
+* `deningerNormalizedHeight_ringHom` : it is preserved by every field embedding.
+* `deningerAbsHeight` : the absolute height of an algebraic number.
 * `deningerAbsHeight_intermediateField` : it is computed by *any* finite intermediate field
   containing the element.
 * `deningerAbsHeight_eq_zero_iff` : the height-zero theorem on the algebraic numbers.
@@ -26,16 +27,23 @@ open NumberField Module
 
 open scoped IntermediateField
 
-section NormalizedHeightHom
+section NormalizedHeight
+
+/-- The logarithmic height normalized by the degree of the field. -/
+noncomputable def deningerNormalizedHeight (K : Type*) [Field K] [NumberField K] (x : K) : ℝ :=
+  Height.logHeight₁ x / (finrank ℚ K : ℝ)
 
 variable {K K' : Type*} [Field K] [NumberField K] [Field K'] [NumberField K']
 
-/-- **Normalized heights agree along any field embedding.**  A ring homomorphism between number
-fields is automatically a `ℚ`-algebra map, because `ℚ` admits a unique ring map to a field of
-characteristic zero, so the base-change law applies. -/
+theorem deningerFinrank_ne_zero : (finrank ℚ K : ℝ) ≠ 0 := by
+  have hpos : 0 < finrank ℚ K := Module.finrank_pos
+  positivity
+
+/-- **The normalized height is preserved by every field embedding.**  A ring homomorphism between
+number fields is automatically a `ℚ`-algebra map, because `ℚ` admits a unique ring map to a field
+of characteristic zero, so the base-change law applies. -/
 theorem deningerNormalizedHeight_ringHom (φ : K →+* K') (x : K) :
-    Height.logHeight₁ (φ x) / (finrank ℚ K' : ℝ)
-      = Height.logHeight₁ x / (finrank ℚ K : ℝ) := by
+    deningerNormalizedHeight K' (φ x) = deningerNormalizedHeight K x := by
   letI : Algebra K K' := φ.toAlgebra
   haveI : IsScalarTower ℚ K K' := by
     refine IsScalarTower.of_algebraMap_eq fun q => ?_
@@ -44,7 +52,22 @@ theorem deningerNormalizedHeight_ringHom (φ : K →+* K') (x : K) :
     exact (congrArg (fun f : ℚ →+* K' => f q) h).symm
   exact deningerNormalizedHeight_baseChange (L := K') x
 
-end NormalizedHeightHom
+theorem deningerNormalizedHeight_nonneg (x : K) : 0 ≤ deningerNormalizedHeight K x := by
+  refine div_nonneg (Height.zero_le_logHeight₁ _) ?_
+  have hpos : 0 < finrank ℚ K := Module.finrank_pos
+  positivity
+
+theorem deningerNormalizedHeight_eq_zero_iff {x : K} (hx : x ≠ 0) :
+    deningerNormalizedHeight K x = 0 ↔ IsOfFinOrder x := by
+  rw [deningerNormalizedHeight, div_eq_zero_iff]
+  simp only [deningerFinrank_ne_zero, or_false]
+  exact deningerLogHeightZero_iff_isOfFinOrder hx
+
+theorem deningerNormalizedHeight_pow (x : K) (n : ℕ) :
+    deningerNormalizedHeight K (x ^ n) = n * deningerNormalizedHeight K x := by
+  rw [deningerNormalizedHeight, deningerNormalizedHeight, Height.logHeight₁_pow, mul_div_assoc]
+
+end NormalizedHeight
 
 section AbsoluteHeight
 
@@ -57,25 +80,30 @@ instance deningerAdjoinSimple_numberField (α : F) : NumberField ℚ⟮α⟯ whe
     convert h using 2
     exact Subsingleton.elim _ _
 
-/-- **The absolute logarithmic Weil height** of an algebraic number: its height in the field it
-generates, divided by the degree of that field. -/
+/-- **The absolute logarithmic Weil height** of an algebraic number: its normalized height in the
+field it generates. -/
 noncomputable def deningerAbsHeight (α : F) : ℝ :=
-  Height.logHeight₁ (IntermediateField.AdjoinSimple.gen ℚ α) / (finrank ℚ ℚ⟮α⟯ : ℝ)
+  deningerNormalizedHeight ℚ⟮α⟯ (IntermediateField.AdjoinSimple.gen ℚ α)
 
-/-- **Any finite intermediate field computes the absolute height.** -/
+/-- **Any finite intermediate field computes the absolute height.**  The inclusion of `ℚ⟮α⟯` into
+such a field is a field embedding, and the normalized height is preserved by embeddings. -/
 theorem deningerAbsHeight_intermediateField (E : IntermediateField ℚ F) [NumberField E]
     {α : F} (hα : α ∈ E) :
-    deningerAbsHeight α = Height.logHeight₁ (⟨α, hα⟩ : E) / (finrank ℚ E : ℝ) := by
+    deningerAbsHeight α = deningerNormalizedHeight E ⟨α, hα⟩ := by
   have hle : ℚ⟮α⟯ ≤ E := IntermediateField.adjoin_simple_le_iff.mpr hα
-  have hgen : (IntermediateField.inclusion hle) (IntermediateField.AdjoinSimple.gen ℚ α)
-      = (⟨α, hα⟩ : E) :=
+  let ι : (ℚ⟮α⟯ : IntermediateField ℚ F) →+* (E : IntermediateField ℚ F) :=
+    { toFun := fun x => ⟨(x : F), hle x.2⟩
+      map_one' := rfl
+      map_mul' := fun _ _ => rfl
+      map_zero' := rfl
+      map_add' := fun _ _ => rfl }
+  have hgen : ι (IntermediateField.AdjoinSimple.gen ℚ α) = (⟨α, hα⟩ : E) :=
     Subtype.ext (IntermediateField.AdjoinSimple.algebraMap_gen ℚ α)
   rw [deningerAbsHeight, ← hgen]
-  exact (deningerNormalizedHeight_ringHom (IntermediateField.inclusion hle).toRingHom _).symm
+  exact (deningerNormalizedHeight_ringHom ι _).symm
 
-theorem deningerAbsHeight_nonneg (α : F) : 0 ≤ deningerAbsHeight α := by
-  refine div_nonneg (Height.zero_le_logHeight₁ _) ?_
-  positivity
+theorem deningerAbsHeight_nonneg (α : F) : 0 ≤ deningerAbsHeight α :=
+  deningerNormalizedHeight_nonneg _
 
 omit [Algebra.IsAlgebraic ℚ F] in
 /-- The generator of `ℚ⟮α⟯` has a power equal to one exactly when `α` does. -/
@@ -98,13 +126,8 @@ theorem deningerAbsHeight_eq_zero_iff {α : F} (hα : α ≠ 0) :
     intro h
     refine hα ?_
     rw [← IntermediateField.AdjoinSimple.algebraMap_gen ℚ α, h, map_zero]
-  have hrank : (finrank ℚ (ℚ⟮α⟯ : IntermediateField ℚ F) : ℝ) ≠ 0 := by
-    have := Module.finrank_pos (R := ℚ) (M := (ℚ⟮α⟯ : IntermediateField ℚ F))
-    positivity
-  rw [deningerAbsHeight, div_eq_zero_iff]
-  simp only [hrank, or_false]
-  rw [deningerLogHeightZero_iff_isOfFinOrder hgen, isOfFinOrder_iff_pow_eq_one,
-    isOfFinOrder_iff_pow_eq_one]
+  rw [deningerAbsHeight, deningerNormalizedHeight_eq_zero_iff hgen,
+    isOfFinOrder_iff_pow_eq_one, isOfFinOrder_iff_pow_eq_one]
   exact exists_congr fun n => and_congr_right fun _ => deningerGen_pow_eq_one_iff α n
 
 /-- **Homogeneity of the absolute height.** -/
@@ -118,7 +141,7 @@ theorem deningerAbsHeight_pow (α : F) (n : ℕ) :
     rw [map_pow, IntermediateField.AdjoinSimple.algebraMap_gen ℚ α]
     rfl
   rw [deningerAbsHeight_intermediateField (ℚ⟮α⟯ : IntermediateField ℚ F) hmem, hval,
-    Height.logHeight₁_pow, deningerAbsHeight, mul_div_assoc]
+    deningerNormalizedHeight_pow, deningerAbsHeight]
 
 end AbsoluteHeight
 

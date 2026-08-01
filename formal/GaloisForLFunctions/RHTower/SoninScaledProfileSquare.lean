@@ -20,7 +20,7 @@ set_option maxHeartbeats 1000000
 namespace RHTower
 
 open MeasureTheory
-open scoped FourierTransform
+open scoped FourierTransform ContDiff
 
 /-- The square of the reference profile. -/
 def soninUnitBumpSq : ℝ → ℝ := fun y => soninUnitBumpData y ^ 2
@@ -39,7 +39,7 @@ theorem soninUnitBumpSq_eq_zero_of_one_le {y : ℝ} (hy : 1 ≤ |y|) : soninUnit
 theorem continuous_soninUnitBumpSq : Continuous soninUnitBumpSq :=
   soninUnitBumpData.continuous.pow 2
 
-theorem contDiff_soninUnitBumpSqC : ContDiff ℝ ⊤ soninUnitBumpSqC :=
+theorem contDiff_soninUnitBumpSqC : ContDiff ℝ ∞ soninUnitBumpSqC :=
   Complex.ofRealCLM.contDiff.comp (soninUnitBumpData.contDiff.pow 2)
 
 theorem hasCompactSupport_soninUnitBumpSqC : HasCompactSupport soninUnitBumpSqC := by

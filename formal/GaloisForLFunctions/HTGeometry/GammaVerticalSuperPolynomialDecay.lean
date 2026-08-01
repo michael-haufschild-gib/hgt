@@ -139,11 +139,11 @@ theorem tendsto_gamma_pow_mul_digamma_vertical (m : ℕ) {j : ℕ} (hj : 0 < j) 
 /-- `Γ` does not vanish on a vertical line above the real axis. -/
 theorem eventually_gamma_ne_zero (m : ℕ) :
     ∀ᶠ t : ℝ in atTop,
-      Complex.Gamma (linePt m t) ≠ 0 := by
+      Complex.Gamma (((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I) ≠ 0 := by
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
   refine Complex.Gamma_ne_zero fun n => ?_
   intro hcon
-  have him : (linePt m t).im = t := by simp [linePt]
+  have him : ((((1 / 2 + m : ℝ) : ℂ) + (t : ℂ) * Complex.I)).im = t := by simp
   rw [hcon] at him
   simp only [Complex.neg_im, Complex.natCast_im, neg_zero] at him
   linarith [him]
