@@ -2,6 +2,10 @@
 
 ## Formal research map of HTGeometry, HilbertMetric, and RHTower
 
+**Corpus cutoff:** 1 August 2026. “Formal corpus” means declarations reachable from the three area
+umbrellas at the audited snapshot; unwired work-in-progress files are not counted as established
+frontier results.
+
 ## Abstract
 
 This paper states where the project stands now. It maps every independent route toward a
@@ -22,6 +26,11 @@ Suzuki full-frequency Hermite–Biehler/Ward realization; Xi Taylor core-current
 and a new Julia compound-Poisson coherent-energy route. Operator, Deninger, Gamma–Jacobi,
 Connes/prolate, and source-domain Hedenmalm routes remain structurally meaningful but
 farther upstream.
+
+On the disproof side, the most source-explicit current route is a negative growing-order
+squared-Xi reverse-Bessel radial jet. Its logical tail is closed, but all orders through
+eighteen are positive and the surviving `n≥19` problem requires a moving-prime-window
+comparison not present in corpus or literature.
 
 The map uses exact Lean declaration types as authority. **RH equivalent** means a complete
 target, not progress toward its source proof. **Open core** means first unproved premise
@@ -142,6 +151,11 @@ Weil polarization + fixed Euler–π boundary charge
 = positive continuous completed-lag mass - 2 × positive prime-wall mass.
 ```
 
+The completed lag has an explicit strictly positive zero-lag lower carrier,
+`2L·e⁻ᵗ/(1-e⁻ᵗ)·(1-e⁻ᵗ/⁴)`, under the rectangular window hypotheses, and the sampled
+positive channel lies pointwise between zero and the completed kernel. This identifies the
+source of archimedean strictness but does not by itself dominate the prime wall.
+
 Pairwise-disjoint equal-mass log-Haar cells pay monotone prime branches, and every
 unresolved atom is localized to a bounded turning seam. Exact obstructions show that an
 apex atom has no positive-volume pointwise dominating cell, even along a cofinal
@@ -156,6 +170,14 @@ invoking global Weil positivity.
 **Obstacle.** Finite-cutoff positivity has a tail budget. Recent finite Guinand–Weil
 theorems quantify certification but do not produce the required cutoff-free floor.
 Pointwise apex transport and free bicausal splicing are formally dead.
+
+The literal Groskin rank-two archimedean tail kernel is now present in Lean without a
+computed cutoff. The digamma density is proved to tend to `+∞`, an analytic eventual
+positivity threshold is selected, and every compact tail-window increment beyond that
+threshold is positive semidefinite. This imports the Loewner-monotonicity core of Groskin's
+Theorem 3.2. Strict positive definiteness, strict total positivity, the improper infinite
+tail, and Corollary 3.3's trace/eigenvalue budget are not yet formalized and the result does
+not pay the rectangular boundary charge.
 
 ### Route C1 — complete Xi-Weil/Hedenmalm-form positivity
 
@@ -338,14 +360,27 @@ positive Sonin finite/block/moment values
   root radius weight occurring in the middle slack term;
 - the packet norm floor is explicit and positive, and the resulting energy theorem has no
   free analytic parameter beyond the shell schedule and its stated tail/slack conditions;
-- it blows up but grows at most logarithmically;
+- the shell schedule itself is now explicit: tying the scale to a cut into `N` annuli makes
+  half-width times scale exactly one prescribed product; middle and high-side normalized
+  slacks then depend only on that product, while the outer slack vanishes with refinement;
+- one product can be chosen to satisfy both packet-tail conditions and both product-driven
+  slack obligations, and after that one arbitrarily fine cut can satisfy every remaining
+  scale, aperture, and outer-slack obligation; the total normalized slack is an exact sum
+  of those three terms;
+- right composition by the moving dilation preserves Hilbert–Schmidt energy, so the
+  three relative-ideal error energies have one exact aperture-dependent, scale-free sum;
+- one fixed schedule product and starting cut now give a single admissible sequence of
+  scales whose successive-layer coupling energy is bounded below by a positive linear
+  function of both annulus count and scale;
+- the frequency-side logarithmic shell channel blows up but grows at most logarithmically;
 - failure of the final floor is reduced to a quantitative rate shortfall.
 
-**Open core.** Construct schedules forcing the sharp gap-tail/root budget through the
-explicit norm floor, satisfying the square-tail and slack inequalities, while keeping the
-three ideal-error energies negligible relative to shell cardinality. The theorem now
-exposes this as a concrete asymptotic scheduling problem; it does not prove such schedules
-exist or close the completed packet floor.
+**Open core.** Instantiate the existing shortfall test by comparing the actual admissible
+completion contribution with the new linear coupling lower bound—particularly formalize
+the required linear-versus-logarithmic inequality for the surviving log-shell channel—then
+connect the result to literal all-prime source data. Schedule existence, scale-free ideal
+discount, and one-sequence linear coupling growth are closed; the concrete completion
+shortfall and arithmetic source handoff are not.
 
 **Dead mechanisms.** Scalar, bounded, fixed-operator, Burnol counterterm, position-side,
 and aperture-refinement-only completions fail. Divergence without rate is insufficient.
@@ -369,6 +404,12 @@ Finite projective spectral algebra is now exact: projective chord is a sum of sp
 times source Plücker minors; in two modes its sign is exactly source-minor orientation under
 ordered nodes and positive source-weight product. Marked affine secant has a full finite
 spectral double sum plus homogeneous channel.
+
+At the abstract compact self-adjoint resolvent level, discreteness is now derived rather
+than assumed: real spectral points outside any neighborhood of zero are finite, hence only
+finitely many model levels can lie in a fixed negative band. This removes the auxiliary
+finiteness premise from the finite Morse completion once a compact source resolvent and its
+level identification are supplied; it does not construct either object.
 
 The critical prime-power wall field now has a positive Hermitian carrier without erasing
 phase: every finite height section is an exact rank-one Gram matrix, its diagonal is the
@@ -516,8 +557,10 @@ are nonnegative; the squared completed attenuated value is bounded by completed 
 energy; its squared deviation from continuous budget is bounded by full signed prime
 energy; good/bad cross-correlation obeys the two-packet determinant inequality; and, on
 the admitted window, signed energy is exactly good energy plus bad energy minus twice
-their cross term. This bypasses cutoff and good/bad splitting in the primary capacity
-bound.
+their cross term. The literal/good/bad coherent Gram is positive semidefinite but exactly
+singular: the pointwise source relation gives null vector `(1,-1,1)`. Thus adding all three
+channels creates no independent coherent capacity. This bypasses cutoff and good/bad
+splitting in the primary capacity bound while sharply classifying its boundary.
 
 **Open core.** Pass the full completed/prime coherent-energy bounds through prime
 exhaustion, remove Julia attenuation back to the literal first-clock value, and prove a
@@ -570,8 +613,13 @@ of compact-group invariants through equivariant surjections by Haar averaging. G
 dense-span orthogonality also makes the Kronecker phase functional nonzero off zero, and
 the suspension radius is exactly deck-invariant and scales linearly in the suspension
 coordinate. For every countable family of nonzero Hilbert vectors, the locus orthogonal to
-none of them is a dense `Gδ`; this closes the generic residual nondegeneracy statement, not
-the arithmetic identification of those vectors or the Kronecker orbit theorem.
+none of them is a dense `Gδ`. On every finite real torus, the linear orbit is now proved
+dense exactly when its integer annihilator is trivial, through a formal Weyl criterion.
+The generic fine-point carrier also has explicit modulus and phase one-parameter groups,
+their affine conjugation/bracket law, rank-two generators, integrated leaves, Frobenius and
+Galois naturality, and suspension-flow transversality. These close the generic Kronecker and
+affine-foliation mathematics, not the arithmetic identification of the frequency vector,
+prime fibres, relevant complex, or Xi spectrum.
 
 **Open core.** Meyer-complex comparison; radial Schwartz domain; nuclear topology and
 closed range; nonradial acyclicity; cup/trace/flow/Hodge transport; nuclear
@@ -841,9 +889,15 @@ coefficient-substitution injectivity, and algebraic independence of centered gen
 coefficients are proved. The centered coefficient field is a rational function field in
 `d-1` independent variables; the associated radical polynomial is irreducible, its root has
 the exact expected extension degree, and full symmetric monodromy of the centered equation
-survives the even radical base change. No Xi-source spectral polynomial or analytic handoff
-exists. The upper-half-plane germ ring makes every nonzero rational germ a unit, makes flat
-germs a rational module, and excludes nonzero rational flat germs.
+survives the even radical base change and every positive odd radical base change; the same
+odd-degree law is proved for the uncentered generic polynomial. Every higher digamma
+derivative also has its exact vertical leading constant after the natural power
+normalization, so normalized jet monomials have explicit nonzero limiting data. Gamma is
+transcendental over each finite digamma-jet field in the precise germ-polynomial sense: a
+finite polynomial in the Gamma germ with digamma-jet polynomial coefficients vanishes only
+coefficientwise. No Xi-source spectral polynomial or analytic handoff exists. The
+upper-half-plane germ ring makes every nonzero rational germ a unit, makes flat germs a
+rational module, and excludes nonzero rational flat germs.
 
 ### Highest-value HT-specific missing inputs
 
@@ -877,6 +931,8 @@ therefore lists the surviving positive theorem.
 - finite-codimension landscapes;
 - finite reciprocal moments and finite polynomial degree tests;
 - finite divisor prefixes;
+- least-prime or any fixed finite-prime localization for growing-order squared-Xi
+  reverse-Bessel radial jets;
 - scalar orbit quotients and unweighted invariant `ℓ²` lifts;
 - invariant-fibre “deciders” that merely restate the target.
 
@@ -885,7 +941,12 @@ theorems preserve all finite observations while changing the unresolved divisor 
 
 **Survivor.** Exact sharp resolution/codimension bounds, weighted orbit invariants, and
 the conclusion that any viable selector must be infinite, divisor-sensitive, and
-source-faithful.
+source-faithful. For the reverse-Bessel mechanism specifically, the normalized polynomial
+has an exact positive Gamma-integral representation, is bounded by the cancelling
+exponential, and converges to it at every fixed Euler frequency. The limiting fixed-prime
+weights are therefore proportional to `Λ(m)/√m` and are nonsummable: viable growing-order
+work must locate and control a moving prime window against the completed source before
+passing to the order limit.
 
 ### 6.2 Universal Gaussian/CCR/Fock signs
 
@@ -1159,6 +1220,24 @@ produce a nontrivial zeta/Xi zero ρ with Re(ρ) ≠ 1/2
 | Right-half divisor/ladder | nonempty right-half Xi copy and sharp ladder failure | divisor-fed mirror |
 | Hurwitz orientation/modulus slope | positive orientation energy or nonzero slope defect | divisor-fed mirror |
 
+### Closest source-level disproof route — growing-order squared-Xi radial jets
+
+For each order `n` and radius `w>0`, the completed source jet `Q_n(w)` has an exact
+reverse-Bessel split
+
+```text
+Q_n(w) = rational–Gamma contribution
+         - positive von-Mangoldt reverse-Bessel contribution.
+```
+
+One strict negative value implies `¬RH`. Orders through eighteen are unconditionally
+strictly positive, so any witness has `n≥19`. At growing order, normalized reverse-Bessel
+weights cancel Euler damping at each fixed prime and converge to nonsummable
+`Λ(m)/√m` weights. Least-prime and every fixed finite-prime proof are therefore dead.
+The open core is a cancellation-preserving moving-prime-window comparison against the
+regularized completed Gamma/polar source, strong enough to make one `Q_n(w)` negative.
+Neither corpus nor located literature supplies that comparison.
+
 Every current theorem either derives these from assumed `¬RH` or concludes `¬RH` from
 an unproduced certificate. Thus the disproof open core is a concrete certified negative
 witness, not a missing logical connector.
@@ -1190,8 +1269,9 @@ literature. They are stated at source level, before specialization to Xi zeros.
 
 ### Tier 2 — source-to-operator or source-to-form construction
 
-9. All-prime Sonin schedules forcing the sharp gap-tail/root budget through the explicit
-   norm floor while controlling ideal-error energy.
+9. The concrete Sonin completion shortfall comparing the surviving logarithmic-shell
+   contribution with the now-proved linear coupling lower bound, followed by a literal
+   all-prime source handoff.
 10. Suzuki source coefficient monotonicity, chord-mass gap, full jump Pick kernel, or a
     source identification of the forced negative-light Gram channel with the rectangular
     Ward residual.
@@ -1222,10 +1302,13 @@ literature. They are stated at source level, before specialization to Xi zeros.
     information.
 30. Lindelöf second-spacing estimate plus across-class cancellation, followed by an exact
     typed RH handoff.
+31. A cancellation-preserving moving-prime-window asymptotic for growing reverse-Bessel
+    squared-Xi radial jets, strong enough to orient one order `n≥19` against the completed
+    Gamma/polar source.
 
 ### Disproof leap
 
-31. A rigorously certified off-line zero or any equivalent negative finite certificate.
+32. A rigorously certified off-line zero or any equivalent negative finite certificate.
 
 ## 9. Literature reconciliation
 
@@ -1376,6 +1459,12 @@ Therefore the honest current conclusion is:
 - `RHTower/SoninShellCutHighSlackClosedForm.lean`
 - `RHTower/SoninRefTailWeightedVanishing.lean`
 - `RHTower/SoninShellCutEnergySchedule.lean`
+- `RHTower/SoninShellCutScheduleExists.lean`
+- `RHTower/SoninIdealErrorEnergyConstant.lean`
+- `RHTower/SoninCouplingEnergyUnbounded.lean`
+- `RHTower/SoninCouplingEnergyLinear.lean`
+- `RHTower/SoninScheduleSequence.lean`
+- `RHTower/GroskinArchimedeanTailOrder.lean`
 - `RHTower/SuzukiFiniteApertureHermiteBiehler.lean`
 - `RHTower/SuzukiVolterraCartesianPhaseDefect.lean`
 - `RHTower/SuzukiAffineSecantSpectralSum.lean`
@@ -1387,6 +1476,7 @@ Therefore the honest current conclusion is:
 - `RHTower/SuzukiRectangularWallGramGate.lean`
 - `RHTower/SuzukiCoherentResponseGainNoGo.lean`
 - `RHTower/SuzukiCoherentSharpSourceDomainNoGo.lean`
+- `RHTower/SuzukiFiniteMorseResolventOperatorLift.lean`
 - `RHTower/StrictHermiteBiehlerGivesRH.lean`
 - `RHTower/XiCTaylorThetaTailCoreCurrentCapstone.lean`
 - `RHTower/CCMSharpPrimeWindowSubpowerGate.lean`
@@ -1396,12 +1486,18 @@ Therefore the honest current conclusion is:
 - `RHTower/DeningerHaarAverage.lean`
 - `RHTower/DeningerKronecker.lean`
 - `RHTower/DeningerResidualLeaves.lean`
+- `RHTower/DeningerWeylCriterion.lean`
+- `RHTower/DeningerKroneckerDense.lean`
+- `RHTower/DeningerAffineLeafFlow.lean`
+- `RHTower/DeningerAffineLeafSymmetry.lean`
 - `RHTower/HedenmalmPrimeNormalWickBoundaryEnergy.lean`
 - `RHTower/ThetaCuspCalibratedPowerReciprocalMomentLaw.lean`
 - `RHTower/CCMFirstClockJuliaEquilibriumGram.lean`
 - `RHTower/CCMFirstClockJuliaTwoPacketCapacity.lean`
 - `RHTower/PrimeArchVerifiedHeightAccretivity.lean`
 - `RHTower/XiPrimeSeamPairAsymptotics.lean`
+- `RHTower/ReverseBesselFixedFrequencyBlindness.lean`
+- `RHTower/ReverseBesselPositiveIntegral.lean`
 - `RHTower/RiemannHypothesisSOTA2026.lean`
 - `HTGeometry/SummableSpectrumScrewAlmostPeriodic.lean`
 - `HTGeometry/SummableSpectrumScrewBohrCoefficients.lean`
@@ -1418,8 +1514,13 @@ Therefore the honest current conclusion is:
 - `HTGeometry/HalfPlaneGermShift.lean`
 - `HTGeometry/DigammaJetGerm.lean`
 - `HTGeometry/VerticalFlatGermElimination.lean`
+- `HTGeometry/GammaTranscendentalOverDigamma.lean`
+- `HTGeometry/PolygammaLeadingAsymptotic.lean`
+- `HTGeometry/DigammaJetLeadingConstants.lean`
 - `HTGeometry/CenteredCoeffFieldRational.lean`
 - `HTGeometry/CenteredFullMonodromy.lean`
+- `HTGeometry/CenteredFullMonodromyOdd.lean`
+- `HTGeometry/GenericFullMonodromyOdd.lean`
 - `HTGeometry/HerglotzJetMapSmoothness.lean`
 - `HTGeometry/WeightedCauchyTranslatedExpandedEvaluationCompactPatch.lean`
 - `HTGeometry/HerglotzTranslatedExpandedEvaluationCompactPatch.lean`

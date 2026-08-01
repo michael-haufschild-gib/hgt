@@ -460,6 +460,17 @@ theorem — conditional-expectation identity `(5)`, `H_hor/H_ver` splitting `(8)
 absent Nevanlinna/disintegration/Stieltjes-uniqueness stack as its parent moment-fiber cards. No
 partial file is added.
 
+Unconditional promotion re-audit: `nevExtremalFamily` now removes the abstract classical boundary
+input, and `NevBauerMarkovFacesUnconditional.lean` instantiates its measure-side and Markov
+projectors.  This does not close the Hilbert theorem.  `BoundaryConditionalProjection` remains an
+abstract structure with no constructor on `L²(Beta eta)`; its three theorems are projection algebra,
+not the conditional-expectation identity or the concrete horizontal/vertical splitting.
+`measure_eq_of_completeCauchyJet_eq` separates two measures but does not prove density of
+conditional resolvents in the horizontal subspace.  No definitions or theorems were found for the
+centered horizontal Gram, within-leaf Gram, the three-layer Pick splitting, or their exact ranks.
+Those exact connectors must be formalized before Stage 3; no separation theorem or abstract
+projection is substituted for them.
+
 ## Gates
 
 - [x] parent support fibration and Bauer projector used intrinsically

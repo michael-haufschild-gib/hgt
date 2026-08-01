@@ -1,5 +1,4 @@
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
-import Mathlib.Order.Filter.AtTopBot.Basic
 
 /-!
 # Long-time averages of oscillating exponentials

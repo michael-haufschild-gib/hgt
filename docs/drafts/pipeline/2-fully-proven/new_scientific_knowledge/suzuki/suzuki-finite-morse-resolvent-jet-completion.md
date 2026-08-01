@@ -386,3 +386,57 @@ of the finite-Morse theorem is now formal.
   `K_C(z,w) = <p(R)Gamma(w), p(R)Gamma(z)>` is `suzukiResolventJetSquare_inner_eq`.  Every numbered
   statement `1`–`6` and `(T1)`–`(T3)` of this card now has a named Lean declaration.  Targeted
   builds green, axiom audits `[propext, Classical.choice, Quot.sound]`.
+
+### Lean progress — the mathlib gap is closed
+
+The "What is still not formalized" section stated: *"mathlib has no spectral theorem for compact
+self-adjoint operators in infinite dimensions, so the eigenvector form above takes that description
+as given."*  That is no longer accurate for this toolchain. Mathlib now carries
+`LinearMap.IsSymmetric.orthogonalComplement_iSup_eigenspaces_eq_bot` and
+`LinearMap.IsSymmetric.finite_dimensional_eigenspace` for compact operators, and the full Fredholm
+alternative `IsCompactOperator.hasEigenvalue_iff_mem_spectrum`. What remained genuinely absent was
+**discreteness of the nonzero spectrum**, which is the part the card actually assumes.
+
+Built here as reusable operator infrastructure in
+`HTGeometry/CompactOperatorDiscreteSpectrum.lean` [PROVED HERE], wired into the `HTGeometry`
+umbrella, standard axioms `[propext, Classical.choice, Quot.sound]` for every declaration, builds
+clean:
+
+- `inner_eq_zero_of_hasEigenvector_of_ne` : eigenvectors of a symmetric operator for distinct
+  eigenvalues are orthogonal (extracted from mathlib's orthogonal family).
+- `finite_setOf_hasEigenvalue_norm_ge` : a compact symmetric operator has only **finitely many**
+  eigenvalues of norm `>= eps`, for every `eps > 0`.
+- `countable_setOf_hasEigenvalue` : hence countably many eigenvalues.
+- `finite_setOf_mem_spectrum_norm_ge` and `countable_spectrum_of_isCompactOperator` : the same for
+  the **spectrum**, on a complete space, through the Fredholm alternative.
+
+Proof mechanism: orthogonality, not the Riesz lemma. For unit eigenvectors at distinct eigenvalues,
+Cauchy--Schwarz gives `‖T w_m - T w_n‖ >= |<T w_m - T w_n, w_m>| = ‖mu_m‖ >= eps`, so infinitely
+many such eigenvalues would give a sequence in the compact closure of the image of the unit ball
+with no Cauchy subsequence.
+
+This supplies exactly the description the card's `suzukiFiniteMorse_operatorCompletion_nonneg_of_eigenvectors`
+takes as a hypothesis: for a compact resolvent, the spectral levels outside any ball around zero
+are a finite set of eigenvalues. The remaining non-formalized item on this card is unchanged and is
+not a theorem of the card: the Suzuki source domination `(C)`, retired as canonical producer on
+2026-07-22 and stated as a conjecture.
+
+### Lean progress — the discreteness input is now derived, not assumed
+
+Consuming the new `HTGeometry/CompactOperatorDiscreteSpectrum.lean` inside the operator lift.
+Added to `RHTower/SuzukiFiniteMorseResolventOperatorLift.lean` [PROVED HERE], standard axioms
+`[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `finite_setOf_mem_real_spectrum_abs_ge` : for a compact self-adjoint resolvent `R`, the real
+  spectral points with `|x| >= eps` are **finite**, for every `eps > 0`. Proof: each such point is
+  an eigenvalue by the corpus's `exists_eigenvector_of_mem_spectrum_real` (Fredholm in the resolvent
+  coordinate), and the real-to-complex coercion is injective, so the set embeds in the finite
+  eigenvalue set of the discreteness theorem.
+- `finite_setOf_negativeLevel_of_isCompactOperator` : for `rho < beta < 0`, only **finitely many
+  spectral levels lie in the band `(beta, 0)`**. Their resolvent nodes `(t - rho)⁻¹` are bounded
+  below by `(-rho)⁻¹ > 0` because `0 < t - rho < -rho`, and the node map is injective on the band.
+
+This is the card's stated gap discharged in its own coordinates: the `[Fintype ι]` on the negative
+levels of `suzukiFiniteMorse_operatorCompletion_nonneg_of_eigenvectors` is a **consequence** of
+compactness of the resolvent, not an extra hypothesis. What `heigen` still supplies is only the
+*identification* of which levels occur — a description of the model, not a finiteness assumption.

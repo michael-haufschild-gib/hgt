@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SuzukiFiniteMorseResolventJetCompletion
 import GaloisForLFunctions.HTGeometry.ResolventFamilyJet
+import GaloisForLFunctions.HTGeometry.CompactOperatorDiscreteSpectrum
 import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
 import Mathlib.Analysis.InnerProductSpace.Positive
 import Mathlib.Analysis.Normed.Operator.Compact.Basic
@@ -454,6 +455,58 @@ theorem suzukiFiniteMorse_operatorCompletion_nonneg_of_eigenvectors
   · exact Or.inl hx0
   · obtain ⟨v, hv0, hveig⟩ := exists_eigenvector_of_mem_spectrum_real hcomp hx hx0
     exact Or.inr (heigen x v hv0 hveig)
+
+/-! ## Finiteness of the Morse index is not an assumption -/
+
+/-- **Discrete real spectrum of a compact self-adjoint resolvent.**  Only finitely many real
+spectral points have absolute value at least a positive bound; each such point is an eigenvalue by
+the Fredholm alternative, and the eigenvalues of a compact symmetric operator are discrete away
+from zero. -/
+theorem finite_setOf_mem_real_spectrum_abs_ge
+    {R : H →L[ℂ] H} (hR : IsSelfAdjoint R) (hcomp : IsCompactOperator ⇑R)
+    {eps : ℝ} (heps : 0 < eps) :
+    {x : ℝ | x ∈ spectrum ℝ R ∧ eps ≤ |x|}.Finite := by
+  have hsymm : (R : H →ₗ[ℂ] H).IsSymmetric :=
+    ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp hR
+  have hfin := GaloisForLFunctions.HTGeometry.finite_setOf_hasEigenvalue_norm_ge
+    (T := (R : H →ₗ[ℂ] H)) hcomp hsymm heps
+  have hpre : ((fun x : ℝ => (x : ℂ)) ⁻¹'
+      {mu : ℂ | Module.End.HasEigenvalue (R : H →ₗ[ℂ] H) mu ∧ eps ≤ ‖mu‖}).Finite :=
+    Set.Finite.preimage (Complex.ofReal_injective.injOn) hfin
+  refine hpre.subset ?_
+  rintro x ⟨hx, habs⟩
+  have hx0 : x ≠ 0 := by
+    intro h
+    rw [h, abs_zero] at habs
+    linarith
+  obtain ⟨v, hv0, hveig⟩ := exists_eigenvector_of_mem_spectrum_real hcomp hx hx0
+  refine ⟨Module.End.hasEigenvalue_of_hasEigenvector
+    ⟨Module.End.mem_eigenspace_iff.mpr hveig, hv0⟩, ?_⟩
+  simpa using habs
+
+/-- **The finite-Morse hypothesis is automatic.**  For a compact self-adjoint resolvent, only
+finitely many spectral levels lie in a band `(beta, 0)` strictly above the shift `rho`: their
+resolvent nodes are bounded away from zero by `(-rho)⁻¹`, and the node map is injective there. -/
+theorem finite_setOf_negativeLevel_of_isCompactOperator
+    {R : H →L[ℂ] H} (hR : IsSelfAdjoint R) (hcomp : IsCompactOperator ⇑R)
+    {rho beta : ℝ} (hrho : rho < beta) (hbeta : beta < 0) :
+    {t : ℝ | suzukiFiniteMorseResolventNode rho t ∈ spectrum ℝ R ∧ beta < t ∧ t < 0}.Finite := by
+  have hrho0 : rho < 0 := lt_trans hrho hbeta
+  have heps : 0 < (-rho)⁻¹ := inv_pos.mpr (by linarith)
+  refine Set.Finite.of_finite_image
+    (f := fun t : ℝ => suzukiFiniteMorseResolventNode rho t) ?_ ?_
+  · refine (finite_setOf_mem_real_spectrum_abs_ge hR hcomp heps).subset ?_
+    rintro _ ⟨t, ⟨hspec, hbt, ht0⟩, rfl⟩
+    refine ⟨hspec, ?_⟩
+    have hpos : 0 < t - rho := by linarith
+    have hlt : t - rho < -rho := by linarith
+    show (-rho)⁻¹ ≤ |suzukiFiniteMorseResolventNode rho t|
+    rw [suzukiFiniteMorseResolventNode, abs_of_pos (inv_pos.mpr hpos)]
+    exact inv_anti₀ hpos hlt.le
+  · rintro t ⟨-, hbt, ht0⟩ u ⟨-, hbu, hu0⟩ h
+    simp only [suzukiFiniteMorseResolventNode] at h
+    have := inv_injective h
+    linarith
 
 end
 

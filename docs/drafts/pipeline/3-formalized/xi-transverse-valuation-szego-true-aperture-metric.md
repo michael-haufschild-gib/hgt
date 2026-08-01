@@ -1,7 +1,7 @@
 # Xi transverse valuation--Szegő true-aperture metric
 
 - **ID:** `xi-transverse-valuation-szego-true-aperture-metric`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / positive completion of the raw valuation-layer collapse
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW STRUCTURAL KNOWLEDGE]`
   `[EXTERNAL NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
@@ -167,9 +167,10 @@ external novelty remains unaudited.
 5. the completed metric sum `(4)` and diagonal law `(5)`; and
 6. the pseudohyperbolic defect identity `(7)` and strict separation.
 
-Direct Lean check and the narrow object build pass.  The principal theorems use only the standard
-Lean axioms `propext`, `Classical.choice`, and `Quot.sound`; no project axiom or proof placeholder
-is present.
+Promotion audit: direct Lean check, final narrow object build, and umbrella reachability pass.
+Ten selected arithmetic, finite-Gram, completed-metric, and separation capstones use only
+`propext`, `Classical.choice`, and `Quot.sound`; no project axiom or proof placeholder is present.
+Open source-to-Xi Pick domination `(14)` remains excluded.
 
 ## Gates
 

@@ -1,7 +1,7 @@
 # Xi Transverse Aperture Projective Tangent Ultrametric
 
 - **ID:** `xi-transverse-aperture-projective-tangent-ultrametric`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / positive survivor of the naive true-aperture completion
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW STRUCTURAL KNOWLEDGE]`
   `[EXTERNAL NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
@@ -211,10 +211,11 @@ consumer.  The Laplace primitive and Brownian covariance separately are classica
 5. the complex interval-Laplace primitive; and
 6. the normalized prime-power identity `(14)` for the actual transverse Xi arithmetic source.
 
-The direct source check and narrow module build pass.  `#print axioms` for the principal collapse,
-first-defect, Brownian metric, Laplace factorization, and valuation-layer theorems reports only
-`propext`, `Classical.choice`, and `Quot.sound` (the purely arithmetic grade inequality omits
-`Classical.choice`).
+Promotion audit: direct source check, final narrow module build, and umbrella reachability pass.
+`#print axioms` for seven principal collapse, first-defect, Brownian metric, Laplace factorization,
+and valuation-layer capstones reports only `propext`, `Classical.choice`, and `Quot.sound` (the
+purely arithmetic grade inequality omits `Classical.choice`).  Open source-to-Xi contraction `(19)`
+is not part of the proved theorem surface.
 
 ## Gates
 

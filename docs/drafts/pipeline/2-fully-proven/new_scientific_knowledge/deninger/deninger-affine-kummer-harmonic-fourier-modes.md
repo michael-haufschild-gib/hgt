@@ -304,3 +304,72 @@ carrier not killed by
 - 2026-07-27 — Computed the source cup pairing mode-by-mode, proved
   alternating nondegeneracy on finite packets, positivity after Hodge
   star, and exact weight-one power naturality.
+
+## Lean status
+
+### The mode, the Hodge equations, the norm and the chirality landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerHarmonicMode.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+Leafwise one-forms are carried by their coefficient pairs, so the star `(6)` is the quarter turn
+`deningerCxStar` and the wedge is the determinant `deningerCxWedge`; chirality is then literally an
+eigenvalue equation for the star, whose eigenvalues are `± i`.
+
+- `deningerFreqSign`, with `deningerFreqSign_mul_abs` (`ε |μ| = μ`) and `deningerFreqSign_abs`
+  (`|μ| = ε μ`) — the two forms of `ε = sgn μ` that the mode algebra needs.
+- `deningerModeProfile μ r = e^{-|μ| r}` and `deningerMode` — the mode `(8)`.
+- `deningerMode_coclosed`, `deningerMode_closed` — the system `(11)`, `a' + i μ b = 0` and
+  `b' - i μ a = 0`, as `HasDerivAt` statements.  This is item 1 of the theorem.
+- `deningerMode_chirality` — `*α = i ε α`, which is `(10)`, item 3.
+- `deningerModeProfile_integral` — `∫_0^∞ e^{-2|μ| r} dr = 1/(2|μ|)`, by the scaling substitution
+  `integral_comp_mul_left_Ioi` on `integral_exp_neg_Ioi`.
+- `deningerMode_pointwise_normSq` and `deningerMode_normSq` — `‖α_μ‖² = 1/|μ|`, which is `(9)`,
+  item 2.
+- `deningerMode_scale` — `α_μ (q r) = α_{q μ} (r)`, the identity behind `(13)`.
+
+### The cup pairing and the power correspondence landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerHarmonicCup.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerMode_neg` — the mode of the opposite frequency has the same profile and the opposite
+  chirality, which is the statement that conjugation sends `α_a` to `α_{-a}`.
+- `deningerMode_wedge_neg` — the pointwise wedge `(dr - iε dy) ∧ (dr + iε dy) = 2 i ε dr ∧ dy`.
+- `deningerMode_cup` — **`(18)`**: `B(α_a, α_{-a}) = i / μ`.
+- `deningerMode_cupStar`, `deningerMode_cupStar_pos` — **`(19)`**: `B(α_a, *conj α_a) = 1/|μ| > 0`.
+- `deningerPowerPullback`, `deningerPowerPullback_mode` — **`(14)`**: `F_q^* α_μ = q α_{qμ}`.
+- `deningerNormalizedMode`, `deningerNormalizedMode_normSq` — `e = |μ|^{1/2} α` has norm one.
+- `deningerPowerPullback_normalizedMode` — **`(15)`**: `q^{-1/2} F_q^* e_a = e_{qa}`, the centered
+  unitary normalization.
+- `deningerPowerPullback_cup` — **`(20)`**: the cup pairing has weight one under the power
+  correspondence.
+
+### Completeness of the mode list landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerHarmonicUniqueness.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+This is item 4 of the theorem at a fixed frequency, which is exactly the ODE analysis the card's
+proof performs.
+
+- `deningerSolution_growing_eq_zero` — the combination `v = a - i ε b` solves `v' = |μ| v`, so
+  `v · e^{-|μ| r}` is constant on the open half line and `‖v‖` is bounded below by a positive
+  constant; a function bounded below by a positive constant is not integrable on `(0, ∞)`, so
+  square integrability forces `v ≡ 0`.
+- `deningerSolution_eq_smul_mode` — what is left is the chirality relation `b = -i ε a`, which
+  turns the system into `a' = -|μ| a`; hence every square-integrable solution at frequency `μ` is a
+  scalar multiple of `α_μ`.
+- `deningerSolution_zeroFreq_eq_zero` — at `μ = 0` both coefficients are constant, and a nonzero
+  constant is not square integrable on the half line, so the zero-frequency contribution vanishes.
+  This is the card's remark that assumption `(1)` leaves only the constant torus mode, which
+  contributes nothing.
+
+### Remaining
+
+The per-frequency statements of items 1--4, `(8)`--`(11)`, `(14)`--`(15)`, and `(18)`--`(20)` are
+formalized.  What is not yet formalized is the assembly of item 4 across characters: that
+`L²` of the leaf cylinder decomposes as the orthogonal Hilbert sum of the character eigenspaces, so
+that the one-dimensional mode spaces exhaust the solution space globally.  That is a Fourier
+decomposition of `L²((0,∞) × T_L)` into `L²(0,∞)`-valued character components, not a further
+property of the modes themselves.

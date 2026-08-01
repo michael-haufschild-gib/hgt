@@ -1,7 +1,7 @@
 # Electrical-engineering and optics law application census
 
 - **ID:** `electrical-optical-law-application-census`
-- **Stage:** 2-fully-proven/needs-audit
+- **Stage:** 3-formalized
 - **Type:** `[CENSUS] [BRIDGE MAP] [NO-GO CLOSURE] [NO RH CLAIM]`
 - **Area:** whole owned Lean corpus: `HTGeometry`, `RHTower`, `HilbertMetric`, `Hurwitz`, `U0`,
   `Bottcher`, plus package-level bridge declarations
@@ -456,3 +456,8 @@ and ABCD laws all consume that analytic object and therefore do not discharge th
   bridges.  Hurwitz was confirmed closed, the Bottcher continuation supplier remained external to
   electrical/optical laws, and the U0 analytic-affine-filter natural-boundary bridge was formalized,
   axiom-audited, indexed, linted, and built through the U0 umbrella.
+- 2026-08-01 -- Stage-3 audit revalidated every local formal output: all three sources pass direct
+  Lean, all nineteen public theorem declarations use only standard logical foundations, all three
+  completion modules build together, and each module is wired into its theorem-area umbrella. The
+  census adds no fourth dependency-closed theorem and does not turn rejected/open external-law rows
+  into Lean hypotheses.

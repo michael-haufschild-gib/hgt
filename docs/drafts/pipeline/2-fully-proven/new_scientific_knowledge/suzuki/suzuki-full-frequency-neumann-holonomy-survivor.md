@@ -381,3 +381,27 @@ stays at Stage 2 rather than overstating exact formal closure.
   distribution triangle-to-response bridge remains the exact formalization boundary.
 - 2026-07-22 — formalized dyadic reciprocal-secant limit with exact factor `1/2`, closing the
   analytic amplification engine from first characteristic motion to order-one holonomy.
+
+### Lean progress — the Nonvanishing step's engine `(P12)` FORMALIZED
+
+The Formal status section correctly records that the compact-distributional Fourier passage
+`(7)--(10)` awaits a Lean representation of Suzuki's distribution triangle. The **Nonvanishing**
+argument `(P10)--(P13)` does not depend on that interface: once `(P11)` is granted, the
+contradiction is pure real analysis at the endpoint — a logarithmic singularity cannot cancel a
+simple pole. That engine is now formal, in
+`RHTower/SuzukiFiniteShiftNonClock.lean` (the module that already owns the endpoint log layer used
+by `(P11)`), [PROVED HERE], standard axioms `[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `tendsto_sub_mul_suzukiBoundaryLog` : `(a - x) * log (a^2 - x^2) -> 0` as `x -> a⁻`, i.e. the
+  endpoint logarithm is `o(1/(a-x))`. Proof: factor `a^2 - x^2 = (a-x)(a+x)` and use mathlib's
+  `Real.continuous_mul_log` (continuity of `u * log u` at `0`) on the first factor.
+- `tendsto_sub_mul_suzukiBoundaryPole` : `(a - x) * (x cosh x/(a^2 - x^2)) -> cosh a / 2 ≠ 0` — the
+  pole reaches the rate the logarithm misses.
+- `suzukiBoundaryPole_ne_log_add_bounded` : **`(P12)` itself.** There is no eventual identity
+  `x cosh x/(a^2 - x^2) = c(x) log(a^2 - x^2) + R(x)` near `a⁻` with `c` and `R` having finite
+  endpoint limits. The coefficient `c` is allowed to vary — which is what the card needs, since its
+  log coefficient is `-(1/2) sinh x`, not a constant.
+
+So `(P13)` now rests only on `(P11)` and the distributional passage, not on any unformalized
+estimate: the "rational term diverges like `1/[2(a-x)]` and cannot be canceled" sentence is a
+theorem.

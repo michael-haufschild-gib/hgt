@@ -220,3 +220,27 @@ an unrelated concurrently added unreachable module
 
 Card remains Stage 2 because source identification `(14)` is paper conjecture, not because local
 bipolarization theorem lacks formal closure.
+
+### Lean progress — Section 2's degeneracy claim and Section 3's minimality FORMALIZED
+
+Audit against `RHTower/SuzukiXiRealFEBipolarizationCompletion.lean`. The algebraic content of
+`(5)`--`(8)`, `(10)`, `(11)`, `(12)` and the negative-node specialization each had a declaration.
+Two assertions did not.
+
+1. Section 2: *"For `theta >= 0`, both `Q+_theta` and `Q-_theta` are positive semidefinite
+   rank-at-most-one forms.  For `theta > 0`, their kernels are the negative and positive light
+   lines respectively."*  Only the rank-one *factorization* `..._apply` was formal — neither the
+   positive semidefiniteness nor the kernel identification.
+2. Section 3: *"`theta` is unique minimal completion rate, not merely a sufficient bound."*  Only
+   the equivalence `(11)` was formal, which does not by itself place `theta` in the admissible set.
+
+Closed [PROVED HERE], standard axioms `[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `suzukiWeldPositiveLightForm_self_nonneg`, `suzukiWeldNegativeLightForm_self_nonneg` : both
+  light-cone squares are positive semidefinite for `theta >= 0`.
+- `suzukiWeldPositiveLightForm_self_eq_zero_iff` : for `theta > 0`, `Q+_theta(x,x) = 0` exactly on
+  `span {(1,-1)}` — the negative light line, as a submodule equality rather than a sample vector.
+- `suzukiWeldNegativeLightForm_self_eq_zero_iff` : likewise `Q-_theta` degenerates exactly on
+  `span {(1,1)}`, the positive light line.
+- `suzukiWeldCompletedNonnegative_isLeast` : `IsLeast {kappa | (11)} theta` for `theta >= 0` — the
+  minimality claim itself, membership included.

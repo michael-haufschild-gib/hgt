@@ -48,6 +48,60 @@ theorem suzukiWeldNegativeLightForm_apply (theta : ℝ) (x y : ℝ × ℝ) :
   simp [suzukiWeldNegativeLightForm, weldPlaneQ_apply, weldFEKreinQ_apply]
   ring
 
+/-- The positive-light form is positive semidefinite for a nonnegative rate. -/
+theorem suzukiWeldPositiveLightForm_self_nonneg {theta : ℝ} (htheta : 0 ≤ theta) (x : ℝ × ℝ) :
+    0 ≤ suzukiWeldPositiveLightForm theta x x := by
+  rw [suzukiWeldPositiveLightForm_apply]
+  have : theta / 2 * (x.1 + x.2) * (x.1 + x.2) = theta / 2 * (x.1 + x.2) ^ 2 := by ring
+  rw [this]
+  exact mul_nonneg (div_nonneg htheta (by norm_num)) (sq_nonneg _)
+
+/-- The negative-light form is positive semidefinite for a nonnegative rate. -/
+theorem suzukiWeldNegativeLightForm_self_nonneg {theta : ℝ} (htheta : 0 ≤ theta) (x : ℝ × ℝ) :
+    0 ≤ suzukiWeldNegativeLightForm theta x x := by
+  rw [suzukiWeldNegativeLightForm_apply]
+  have : theta / 2 * (x.1 - x.2) * (x.1 - x.2) = theta / 2 * (x.1 - x.2) ^ 2 := by ring
+  rw [this]
+  exact mul_nonneg (div_nonneg htheta (by norm_num)) (sq_nonneg _)
+
+/-- **Kernel of the positive-light square.**  At a strictly positive rate the positive-light form
+degenerates exactly on the negative light line. -/
+theorem suzukiWeldPositiveLightForm_self_eq_zero_iff {theta : ℝ} (htheta : 0 < theta)
+    (x : ℝ × ℝ) :
+    suzukiWeldPositiveLightForm theta x x = 0 ↔
+      x ∈ Submodule.span ℝ {((1 : ℝ), (-1 : ℝ))} := by
+  rw [suzukiWeldPositiveLightForm_apply, Submodule.mem_span_singleton]
+  constructor
+  · intro h
+    have hsum : x.1 + x.2 = 0 := by
+      rcases mul_eq_zero.mp h with h' | h'
+      · rcases mul_eq_zero.mp h' with h'' | h''
+        · exact absurd h'' (by positivity)
+        · exact h''
+      · exact h'
+    exact ⟨x.1, Prod.ext (by simp) (by simp; linarith)⟩
+  · rintro ⟨a, rfl⟩
+    simp
+
+/-- **Kernel of the negative-light square.**  At a strictly positive rate the negative-light form
+degenerates exactly on the positive light line. -/
+theorem suzukiWeldNegativeLightForm_self_eq_zero_iff {theta : ℝ} (htheta : 0 < theta)
+    (x : ℝ × ℝ) :
+    suzukiWeldNegativeLightForm theta x x = 0 ↔
+      x ∈ Submodule.span ℝ {((1 : ℝ), (1 : ℝ))} := by
+  rw [suzukiWeldNegativeLightForm_apply, Submodule.mem_span_singleton]
+  constructor
+  · intro h
+    have hdiff : x.1 - x.2 = 0 := by
+      rcases mul_eq_zero.mp h with h' | h'
+      · rcases mul_eq_zero.mp h' with h'' | h''
+        · exact absurd h'' (by positivity)
+        · exact h''
+      · exact h'
+    exact ⟨x.1, Prod.ext (by simp) (by simp; linarith)⟩
+  · rintro ⟨a, rfl⟩
+    simp
+
 /-- Xi-real plane metric is the sum of its two light-cone squares. -/
 theorem weldPlaneQ_eq_positive_add_negative (theta : ℝ) :
     weldPlaneQ theta =
@@ -112,6 +166,13 @@ theorem suzukiWeldCompletedNonnegative_iff (theta kappa : ℝ) :
     have hminus : 0 ≤ (kappa - theta) / 2 * (x.1 - x.2) ^ 2 :=
       mul_nonneg (div_nonneg (sub_nonneg.mpr hkappa) (by norm_num)) (sq_nonneg _)
     exact add_nonneg hplus hminus
+
+/-- **Unique minimal completion rate.**  For a nonnegative positive-light rate, that same rate is
+the least admissible completion coefficient, not merely a sufficient one. -/
+theorem suzukiWeldCompletedNonnegative_isLeast {theta : ℝ} (htheta : 0 ≤ theta) :
+    IsLeast {kappa : ℝ | SuzukiWeldCompletedNonnegative theta kappa} theta :=
+  ⟨(suzukiWeldCompletedNonnegative_iff theta theta).mpr ⟨htheta, le_rfl⟩,
+    fun _ hk => ((suzukiWeldCompletedNonnegative_iff theta _).mp hk).2⟩
 
 /-- Positive-light square-zero triangle direction `(J + R) / 2`. -/
 def suzukiWeldPositiveTriangleLinear : (ℝ × ℝ) →ₗ[ℝ] (ℝ × ℝ) :=

@@ -216,3 +216,31 @@ Robin transport rather than a universal sampling claim.
 - [x] unconditional Lean formalization
 - [ ] positive-lag quadrature deficit
 - [ ] RH
+
+### Lean progress — Theorem D's lower half and audit item 4 FORMALIZED
+
+Audit of Theorems A--D against `RHTower/SuzukiRectangularPositiveArchLagCompletion.lean`.
+Theorem A (`(1)`, through `rectangularTwoEdgeAutocorrelation_le_zeroLag` with the corpus
+`..._nonneg` and `..._zero`), Theorem B (`(2)`, nonnegativity, strict positivity), Theorem C
+(`(3)`, `(4)`, `(5)`) and Theorem D's `(6)`--`(7)` each had a declaration. Two things did not.
+
+1. Theorem D asserts `0 <= A_(L,a)(t) <= K_arch(t)`. Only the **upper** half was formalized.
+2. Hostile-audit item 4 asserts that strictness comes from the zero-lag mass `C(0)(1-exp(-t/4))`.
+   The corpus proved only the bare `0 < K_arch`, which does not exhibit that source.
+
+Both closed [PROVED HERE], standard axioms `[propext, Classical.choice, Quot.sound]`, builds clean:
+
+- `suzukiRectangularPositiveArchSampleChannel_nonneg` : `0 <= A`, with no window hypotheses (the
+  unconditional autocorrelation nonnegativity suffices).
+- `suzukiRectangularPositiveArchSampleChannel_mem_Icc` : `A ∈ Icc 0 K_arch`, the displayed
+  two-sided claim.
+- `suzukiRectangularCompletedArchLagKernel_zeroLag_lower_bound` :
+  `exp(-t)/(1-exp(-t)) * (C(0) * (1 - exp(-t/4))) <= K_arch(t)` — a **quantitative** lower bound,
+  which is audit item 4 as a theorem: the whole strictness is carried by the zero-lag term, and the
+  bound survives when `C(t/2) = 0`.
+- `suzukiRectangularCompletedArchLagKernel_two_mul_lower_bound` : the same with `C(0)` replaced by
+  its exact value `2L`.
+
+The second bound is the quantitative form the deficit conjecture `(8)` needs on the left-hand side:
+it bounds the Lebesgue mass of `K_arch` from below by an explicit elementary integrand, with no
+appeal to the autocorrelation profile.

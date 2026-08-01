@@ -1,7 +1,7 @@
 # QFT, quantum-cosmology, string/M-theory, and supersymmetry law-application census
 
 - **ID:** `qft-quantum-gravity-string-supersymmetry-law-application-census`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** RESEARCH CENSUS / APPLICATION AND NO-GO LEDGER
 - **Audit date:** 2026-07-20
 - **Scope:** named laws, equations, identities, actions, dualities, and exact constructions found
@@ -440,3 +440,8 @@ analytic interpolation that the source does not supply.
   audited capstones use only `propext`, `Classical.choice`, and `Quot.sound`; the final exact module
   build passes.  Repository lint sees this module through the `HTGeometry` umbrella; the current
   remaining lint failures are unrelated concurrent unreachable modules in three theorem areas.
+- 2026-08-01 -- Stage-3 audit revalidated the census's five exact module outputs: Virasoro--Shapiro
+  differential boundary, bounded BRST--Hodge constraint, both direct BRST consumers, and generalized
+  spin-tower boundary. All five sources pass direct Lean, twenty-one selected capstones use only
+  standard logical foundations, the five completion modules build together, and every leaf is wired
+  into `HTGeometry` or `RHTower`. All `LIVE` source/convergence rows remain explicitly open.

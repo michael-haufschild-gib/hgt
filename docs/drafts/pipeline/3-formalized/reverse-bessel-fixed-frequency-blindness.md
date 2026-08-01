@@ -1,9 +1,9 @@
 # Reverse-Bessel radial jets are blind to every fixed Euler frequency
 
 - **ID:** reverse-bessel-fixed-frequency-blindness
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / growing-order route discriminator
-- **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED] [ANALYTIC CONTENT FORMALIZED]`
+- **Scientific status:** `[PROVED HERE] [NOVELTY UNAUDITED] [LEAN FORMALIZED]`
 - **Parent:** `squared-xi-radial-jet-reverse-bessel-source-alignment.md`
 - **Statement:** After normalization by its constant coefficient, the order-`n` reverse-Bessel radial polynomial converges at every fixed nonnegative frequency to the exponential that exactly cancels the Euler damping; hence no finite set of primes can dominate the growing-order squared-Xi source.
 
@@ -98,9 +98,16 @@ the order limit.
 
 ## Lean formalization
 
-`formal/GaloisForLFunctions/RHTower/ReverseBesselFixedFrequencyBlindness.lean` (namespace
-`RHTower`), building on the parent card's formalized reverse-Bessel weights
-`squaredRadialJetWeight` and its closed form. Formalized unconditionally:
+`formal/GaloisForLFunctions/RHTower/ReverseBesselFixedFrequencyBlindness.lean` and
+`formal/GaloisForLFunctions/RHTower/ReverseBesselPositiveIntegral.lean` (namespace `RHTower`),
+building on the parent card's formalized reverse-Bessel weights `squaredRadialJetWeight`, their
+closed form, and the project's scaled Gamma-integral infrastructure. Formalized unconditionally:
+
+- `reverseBesselPoly_eq_positiveIntegral` — the exact representation `(1)`, proved by finite
+  binomial expansion, termwise integration, the existing Gamma-moment theorem, and exact
+  identification with the recursively defined radial-jet weight.
+- `reverseBessel_integrand_pos` — strict positivity of the integral kernel on `u>0` for `x≥0`;
+  `reverseBesselPoly_pos` gives the resulting strict polynomial positivity.
 
 - `reverseBesselPoly n x = ∑_{j=0}^n b(n,j) x^j` (`b = squaredRadialJetWeight`).
 - The ratio recurrence `b(n,j+1)·(2n−j)·(j+1) = b(n,j)·2(n−j)` (`weight_ratio_rec_nat`), derived from
@@ -117,10 +124,9 @@ the order limit.
 - `reverseBessel_fixed_frequency_blind (hw : 0 < w) (hm : 2 ≤ m) :`
   `m^{-1/2-w} · B_n(w log m)/b(n,0) → m^{-1/2}` — the Euler-frequency blindness `(4)`.
 
-`#print axioms` on all of these: `propext`, `Classical.choice`, `Quot.sound` only.  The full
-analytic content `(2)`–`(4)` is thus formalized; the integral representation `(1)` is an independent
-alternative derivation of the coefficients (already available via the parent's closed form) and is
-not needed.
+`#print axioms` on all named capstones: standard logical foundations only (`propext`,
+`Classical.choice`, `Quot.sound`). Equations `(1)`–`(4)` and every proved theorem claim on this card
+are formalized. Open moving-window research below is correctly excluded from the proved theorem.
 
 ## Gates
 
@@ -146,3 +152,9 @@ not needed.
   `reverseBesselRatio_tendsto` and mathlib's Tannery theorem) and the Euler-frequency blindness
   `(4)` (`reverseBessel_fixed_frequency_blind`). Full analytic content `(2)`–`(4)` now unconditional;
   axioms clean; module builds. Only the open moving-window comparison gates remain.
+- 2026-08-01 -- Promoted to Stage 3 after adding
+  `RHTower.ReverseBesselPositiveIntegral`: exact positive integral representation `(1)`, pointwise
+  strict kernel positivity, and strict polynomial positivity. New module is wired into `RHTower`;
+  direct source check, complete capstone axiom audit, and final module build pass. Formal lint accepts
+  this module and its umbrella reachability; repository-wide run reports only unrelated concurrently
+  added modules not yet wired into their umbrellas.

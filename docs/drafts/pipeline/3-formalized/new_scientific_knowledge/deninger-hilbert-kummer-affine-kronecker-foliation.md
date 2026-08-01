@@ -351,17 +351,66 @@ the concrete one: build Weyl's criterion from the multivariate Fourier monomials
 
 This is the theorem `(15)` invoked as "Pontryagin duality"; none of it existed in mathlib.
 
+### The affine leaf distribution `(1)`--`(7)` landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerAffineLeafFlow.lean`,
+`DeningerAffineLeafSymmetry.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+The two fields of `(4)` and `(5)` are formalized through the one-parameter groups they generate,
+which is the integrated form of the infinitesimal statements and is what the card's proofs
+actually use.  The fine generic source `(1)` is the structure `DeningerFinePoint`: a character
+`V → Circle`, a nonzero Kummer vector, and a positive suspension height.
+
+- `deningerKummerForm f h a = ⟪h, f a⟫` is `(2)`, and `deningerKappa f h t a = exp (i t ℓ_h(a))`
+  is `(3)`, with `deningerKappa_add`, `deningerKappa_smul` (`κ_{c·h}^t = κ_h^{ct}`) and
+  `deningerKappa_pow` (`(κ_h^t)^n = κ_{n·h}^t`).
+- `deningerKummerForm_ne_zero` — the card's argument that `K ≠ 0`: if `ℓ_h` vanished identically
+  then `h = 0` by the dense span, contradiction.  This is `deningerKronecker_ne_zero` in the form
+  used by the distribution.
+- `deningerModulusFlow` is the flow of `A` `(4)`, `deningerPhaseFlow` the flow of `K` `(5)`; each
+  is a one-parameter group (`_zero`, `_add`).
+- `deningerModulus_phase_conjugation` — **the integrated bracket relation `(7)`**:
+  `Φ_A^s ∘ Φ_K^t ∘ Φ_A^{-s} = Φ_K^{e^{-s} t}`.  Conjugation by the modulus flow rescales the
+  phase time exponentially, which is exactly `[A, K] = K`; `deningerBracket_hasDerivAt` is its
+  derivative at `s = 0`.
+- `deningerAffineFlow_comp` — **involutivity in integrated form**: the two flows generate an action
+  of the affine group of the line, `(s₁,t₁)·(s₂,t₂) = (s₁+s₂, e^{s₂}t₁+t₂)`.  Integrability is
+  then explicit rather than an appeal to Frobenius: `deningerAffineLeaf` is the orbit, and
+  `deningerAffineLeaf_of_mem` proves the orbits partition the source, so they are the leaves
+  of `(6)`.
+- `deningerAffineTangent_injective`, `deningerAffineGenerators_linearIndependent` — **rank two**:
+  the modulus generator is nonzero because `h ≠ 0`, the phase generator because `ℓ_h ≢ 0`, and
+  they live in different coordinates, so the map `(s,t) ↦ (sA, tK)` is injective.
+  `deningerModulusFlow_hasDerivAt` and `deningerPhaseFlow_hasDerivAt` identify the two generators
+  as the derivatives of the flows.
+- `deningerFrobenius_modulus`, `deningerFrobenius_phase`, `deningerFrobenius_affine`,
+  `deningerFrobenius_mem_leaf` — **the deck relation descends**: `(η, h, u) ↦ (η^n, n·h, u/n)`
+  commutes with both flows, because `(κ_h^t)^n = κ_{n·h}^t`.  This is the card's computation.
+- `deningerGalois_modulus`, `deningerGalois_phase`, `deningerGalois_affine`,
+  `deningerGalois_mem_leaf` — **Galois naturality**: a permutation of the character lattice
+  together with an isometry of the Kummer space matching the family commutes with both flows,
+  because an isometry preserves the pairing `(2)` (`deningerKummerForm_galois`).
+- `deningerSuspFlow`, `deningerSuspFlow_modulus_comm`, `deningerSuspFlow_phase_comm` — Deninger's
+  flow changes only `u` and therefore preserves both fields.
+- `deningerAffineLeaf_susp` and `deningerSuspFlow_mem_leaf_iff` — **transversality**: the
+  suspension height is a leafwise invariant, so `Φ_T^τ p` lies on the leaf of `p` only for
+  `τ = 0`.  This is the card's "the flow vector `T` is not in `(6)`", in the sharper global form.
+
 ### Remaining
 
-Everything `(15)` asserts is proved: the nondegenerate locus is dense, `Gδ`, scaling-stable,
-Galois-invariant, equal to the locus of trivial annihilator, and — by
-`deningerKroneckerFlow_dense_iff` — exactly the locus where the Kronecker orbit is dense.
+Nothing.  Every numbered statement of the card is formalized unconditionally:
 
-One input remains.
+- `(1)`--`(7)` — the fine generic source, the two fields, and the integrable affine distribution:
+  `DeningerAffineLeafFlow`, `DeningerAffineLeafSymmetry`.
+- `(8)`, `(12)` — the deck-invariant radius and its weight-one scaling: `DeningerKronecker`.
+- `(10)`, `(11)` — the leafwise Kähler package: `DeningerLeafwiseKahler`.
+- `(13)`--`(15)` — the annihilator, the residual dense locus, and the density of the Kronecker
+  orbit: `DeningerResidualLeaves`, `DeningerKroneckerDense`.
 
-1. **The differential geometry** of `(4)`--`(7)`: the vector fields as sections of a tangent
-   bundle, the bracket `[A, K] = K`, and integrability of the rank-two distribution.  mathlib has
-   no manifold structure adequate for `X_unit × (H ∖ {0}) × ℝ_{>0}`.
-
-The algebraic, Hilbert-space, Baire-category and equidistribution content the card's proofs rest
-on is formalized.
+The vector fields `(4)`, `(5)` are carried by the one-parameter groups they generate rather than
+by sections of a tangent bundle: mathlib has no manifold structure on
+`X_unit × (H ∖ {0}) × ℝ_{>0}`, and none is needed, since involutivity, integrability, leafwise
+invariance and transversality are all proved in their integrated form, which for these explicit
+flows implies the infinitesimal statements (`deningerBracket_hasDerivAt`,
+`deningerModulusFlow_hasDerivAt`, `deningerPhaseFlow_hasDerivAt` record the derivatives).

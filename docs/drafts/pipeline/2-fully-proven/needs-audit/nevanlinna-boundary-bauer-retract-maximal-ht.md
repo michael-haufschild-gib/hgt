@@ -497,5 +497,23 @@ classical Nevanlinna family". They now carry only `PositiveMomentForm s`, `Bound
 `s 0 = 1`. The Lean-status line "Formalized relative to the classical Nevanlinna family stated on the
 card" should be revised on audit: the classical family is now a theorem of this tree, not an input.
 
-Not touched by this entry: the residual maximal-translation-HT statements on infinite closed faces,
-which are independent of where the family comes from, and the priority/novelty gates.
+The remaining generic Bauer consequences are now instantiated in
+`formal/GaloisForLFunctions/HTGeometry/NevBauerMarkovFacesUnconditional.lean`.  Its exact endpoints
+cover projective-law recovery; continuous affine idempotent measure projection; the pointwise
+idempotent weak-Feller Markov kernel; positivity, unitality, norm contraction and idempotence of its
+dual operator; stationarity; monomial flattening; invariant-set ergodicity; and the closed-face
+lattice, including genuine facehood and complete moments on every face.  These statements use only
+`PositiveMomentForm s`, `BoundedKernel s 0`, and `s 0 = 1`.
+
+## Unconditional Lean promotion audit — blocked
+
+The card is not yet eligible for Stage 3.  Repository-wide symbol search found no construction of
+`ClassicalAnalyticNevanlinnaCarrierFamily` from `nevExtremalFamily`, and no term of type
+`MaximalTranslationInputs`.  Consequently
+`boundaryCarrierFace_maximalTranslationPhase_dense_residual` still requires six undischarged
+analytic fields: minimal exponential type, no common zero of the denominator row, a zero point, a
+regular point, the upper-half-plane quotient law, and the intrinsic phase `G_delta` theorem.  The
+claim that normalization independence follows for arbitrary admissible Nevanlinna matrices also
+remains short of an unconditional endpoint: `carrierProjector_eq_of_leaf_label_covariance` proves
+the exact implication from leaf/label covariance, but the tree does not derive that covariance from
+arbitrary normalization changes.  No weaker statement is substituted for either claim.

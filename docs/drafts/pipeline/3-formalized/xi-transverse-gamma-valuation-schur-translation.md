@@ -1,7 +1,7 @@
 # Xi transverse Gamma--valuation Schur translation
 
 - **ID:** `xi-transverse-gamma-valuation-schur-translation`
-- **Stage:** 2-fully-proven / needs-audit
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / positive resolution of the Gamma scalar-capacity no-go
 - **Scientific status:** `[PROVED HERE] [CANDIDATE NEW STRUCTURAL KNOWLEDGE]`
   `[EXTERNAL NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
@@ -177,9 +177,10 @@ No matching statement was found in the live corpus.  External novelty is not yet
 
 `XiTransverseGammaValuationCoherence.lean` contains the exact coordinate identity `(4)`, the
 Hardy-shift eigenvector law `(5a)`, the completed Schur-translation law `(5)`, and the finite block
-positivity `(7)`.  Direct compilation and the narrow object build pass.  The principal theorems
-use only the standard Lean axioms `propext`, `Classical.choice`, and `Quot.sound`; no project axiom
-or proof placeholder is present.
+positivity `(7)`.  Promotion audit: direct compilation, final narrow object build, and umbrella
+reachability pass; eight selected capstones use only `propext`, `Classical.choice`, and `Quot.sound`.
+No project axiom or proof placeholder is present.  Open source-to-Xi Pick contraction remains
+excluded.
 
 ## Gates
 

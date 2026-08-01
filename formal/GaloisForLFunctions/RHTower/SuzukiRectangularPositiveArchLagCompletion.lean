@@ -169,6 +169,40 @@ theorem rectangularPrimeAutocorrelationSum_eq_positiveArchMangoldtQuadrature (L 
   have hk2 : 2 ≤ k := (Finset.mem_Icc.mp hk).1
   exact vonMangoldt_primeCell_eq_positiveArchSample (by omega : 0 < k) L a
 
+/-- **The source of strictness.**  The completed lag is bounded below by the zero-lag mass times
+the Gamma weight and the exponential defect `1 - exp (-t/4)`; strict positivity is carried by this
+term alone, not by the autocorrelation at the lag in question. -/
+theorem suzukiRectangularCompletedArchLagKernel_zeroLag_lower_bound
+    {L a t : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) (ht : 0 < t) :
+    Real.exp (-t) / (1 - Real.exp (-t)) *
+        (rectangularTwoEdgeAutocorrelation L a 0 * (1 - Real.exp (-(t / 4)))) ≤
+      suzukiRectangularCompletedArchLagKernel L a t := by
+  rw [suzukiRectangularCompletedArchLagKernel_eq_positive_split ht]
+  have hA : 0 ≤ Real.exp (t / 4) * rectangularTwoEdgeAutocorrelation L a (t / 2) :=
+    mul_nonneg (Real.exp_pos _).le
+      (rectangularTwoEdgeAutocorrelation_nonneg hL ha (by positivity))
+  have hCtC0 := rectangularTwoEdgeAutocorrelation_le_zeroLag
+    hL ha (by positivity : 0 ≤ t / 2)
+  have hq : 0 ≤ Real.exp (-t) / (1 - Real.exp (-t)) :=
+    div_nonneg (Real.exp_pos _).le
+      (sub_pos.mpr (Real.exp_lt_one_iff.mpr (by linarith))).le
+  have he : 0 ≤ Real.exp (-(t / 4)) := (Real.exp_pos _).le
+  nlinarith [mul_nonneg hq (mul_nonneg he (sub_nonneg.mpr hCtC0))]
+
+/-- The same lower bound written through the exact zero-lag mass `2L`. -/
+theorem suzukiRectangularCompletedArchLagKernel_two_mul_lower_bound
+    {L a t : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) (ht : 0 < t) :
+    Real.exp (-t) / (1 - Real.exp (-t)) * (2 * L * (1 - Real.exp (-(t / 4)))) ≤
+      suzukiRectangularCompletedArchLagKernel L a t := by
+  have h := suzukiRectangularCompletedArchLagKernel_zeroLag_lower_bound hL ha ht
+  rwa [rectangularTwoEdgeAutocorrelation_zero hL ha] at h
+
+/-- The sampled positive channel is nonnegative, with no window hypotheses. -/
+theorem suzukiRectangularPositiveArchSampleChannel_nonneg (L a t : ℝ) :
+    0 ≤ suzukiRectangularPositiveArchSampleChannel L a t :=
+  mul_nonneg (Real.exp_pos _).le
+    (rectangularTwoEdgeAutocorrelation_nonneg_unconditional L a (t / 2))
+
 /-- The sampled positive channel is pointwise bounded by the full completed archimedean kernel. -/
 theorem suzukiRectangularPositiveArchSampleChannel_le_completed
     {L a t : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) (ht : 0 < t) :
@@ -194,6 +228,15 @@ theorem suzukiRectangularPositiveArchSampleChannel_le_completed
     div_nonneg (Real.exp_pos _).le
       (sub_pos.mpr (Real.exp_lt_one_iff.mpr (by linarith))).le
   nlinarith [mul_nonneg hquot hbracket]
+
+/-- The sampled positive channel lies between zero and the completed kernel at every positive
+lag. -/
+theorem suzukiRectangularPositiveArchSampleChannel_mem_Icc
+    {L a t : ℝ} (hL : 0 ≤ L) (ha : L ≤ a) (ht : 0 < t) :
+    suzukiRectangularPositiveArchSampleChannel L a t ∈
+      Set.Icc 0 (suzukiRectangularCompletedArchLagKernel L a t) :=
+  ⟨suzukiRectangularPositiveArchSampleChannel_nonneg L a t,
+    suzukiRectangularPositiveArchSampleChannel_le_completed hL ha ht⟩
 
 /-- The exact prime wall is bounded by the completed-kernel Mangoldt quadrature on the same
 logarithmic nodes.  This is an atomic-versus-continuous positive-measure interface, not an

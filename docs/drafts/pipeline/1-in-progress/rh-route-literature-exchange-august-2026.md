@@ -31,8 +31,8 @@ same hypotheses and conclusion. It does not establish legal or historical priori
 Lean” requires a source-specific declaration or an exact logical/analytic connector; generic
 functional analysis is not called a formalization of a paper's concrete operator.
 
-Formalization is recommended only when an external unconditional theorem is absent, narrows a
-named open core, and is not merely another coordinate equivalent to RH.
+Formalization is recommended only when an unconditional external theorem exists, is absent from
+the Lean corpus, narrows a named open core, and is not merely another coordinate equivalent to RH.
 
 ## 2. Route-by-route exchange
 
@@ -62,7 +62,8 @@ must remain explicit.
 one predetermined positive-width rectangular profile, exact prime–Gamma evaluation, complete
 off-critical divisor/multiplicity reconstruction, false-RH two-sided exponent and negative-mass
 spectra, and the exact positive completed-lag versus prime-wall quadrature. Grouped Mangoldt
-transport, apex-lock, and no-free-splice classifications also appear local.
+transport, apex-lock, no-free-splice classifications, and the explicit strict zero-lag lower carrier
+for the completed archimedean lag also appear local.
 
 **External contribution.** Classical Guinand–Weil and Weil positivity provide the parent formula
 and endpoint. Groskin's [finite Guinand–Weil dictionary](https://arxiv.org/abs/2607.02828) gives an
@@ -71,10 +72,13 @@ exact vector-to-bandlimited-test and zero-sum dictionary (Theorem 2.5), quotient
 positive-definite, strictly totally positive Cauchy–Stieltjes archimedean-tail increment with
 cutoff budget (Theorem 3.2 and Corollary 3.3).
 
-**Lean action.** Formalize Theorem 3.2 and Corollary 3.3 in the literal rectangular basis, then
-compare the resulting positive tail budget with the local boundary charge. This is not a duplicate:
-it is the strongest external finite-cutoff theorem directly testing whether omitted archimedean
-mass can pay that charge. It still does not resolve grouped apex/flank capacity-one transport.
+**Lean status and remaining action.** `GroskinArchimedeanTailOrder` now formalizes the literal
+digamma density, proves it eventually positive without a numerical computation, defines the two
+Cauchy feature vectors and exact rank-two compact-window kernel, and proves every such tail
+increment positive semidefinite. This is the Loewner-order core of Theorem 3.2. Strict positive
+definiteness, strict total positivity, the convergent improper tail, and Corollary 3.3's trace and
+eigenvalue budget remain to be formalized before comparison with the local boundary charge. The
+external result still does not resolve grouped apex/flank capacity-one transport.
 
 ### Route C1 — complete Xi–Weil positivity
 
@@ -84,7 +88,8 @@ contributions, not claimed new mathematics.
 
 **External contribution.** Weil, Guinand, Barner, Yoshida, Bombieri, Connes–Consani, Suzuki, and
 Groskin supply the established explicit-formula, localization, and finite-operator framework.
-Suzuki's 2022 screw-function theorem makes every localized kernel operator trace class
+Suzuki's [2022 screw-function theorem](https://arxiv.org/abs/2206.03682) makes every localized
+kernel operator trace class
 unconditionally and characterizes RH by nonnegativity/nondegeneracy of those concrete localized
 forms.
 
@@ -112,11 +117,10 @@ problem and formal self-adjoint-pair strategy. The 2026 theta log-concavity prep
 order-two statements; computation-dependent or axiomatized perturbation claims are excluded.
 
 **Lean action.** Hedenmalm's normalized boundary-value equivalence is already formalized but is not
-the source of the center-mixed criterion. The actionable external input is the independently
-checker-replayable Platt–Trudgian verification that all zeta zeros through height
-`3,000,175,332,800` lie on the critical line. Once replayed rather than assumed, the existing
-current identity transfers it to center-mixed nonnegativity on the corresponding finite band. It
-does not prove simplicity and leaves the infinite high-frequency sign open.
+the source of the center-mixed criterion. Platt–Trudgian's verified height could transfer through
+the existing current identity only by replaying a computational certificate. The present task
+forbids computations, so no such theorem is imported or assumed. It would not prove simplicity and
+would leave the infinite high-frequency sign open in any case.
 
 ### Route D — prime–archimedean Hankel reconstruction
 
@@ -146,10 +150,10 @@ zeros, through exact height `3,000,175,332,800`, lie on the critical line. This 
 continued-source tail ceiling and does not assert simplicity, but it enlarges the certified central
 band by twelve orders of magnitude.
 
-**Lean action.** Replay the published verification in an independently checkable certificate and
-instantiate the existing generic `RHVerifiedThrough` interface. This advances the route's finite
-band but leaves the RH-equivalent high-frequency ceiling unchanged. A theorem that merely assumes
-the published certificate is not an acceptable import.
+**Lean action.** None under the no-computation rule. Replaying the published certificate would
+instantiate the generic `RHVerifiedThrough` interface and enlarge the finite band, but a theorem
+that merely assumes the certificate is not an acceptable import and replay itself is outside this
+task. The RH-equivalent high-frequency ceiling remains unchanged.
 
 ### Route E — critical Möbius/Mertens cancellation
 
@@ -174,19 +178,26 @@ No external result continues the proved Plücker diagonal from `Re(s)>1` to crit
 
 **Local contribution beyond located literature.** The shell-cut completion classification,
 positive divergent lost-layer energy, exact physical-band vanishing, explicit packet norm floor,
-sharp three-term gap-tail budget, closed-form slack laws, and polynomially weighted tail vanishing
-have no located external counterpart as an arithmetic Sonin-to-prime transfer theorem.
+sharp three-term gap-tail budget, closed-form slack laws, polynomially weighted tail vanishing, and
+the exact two-stage product/cut schedule satisfying every analytic tail and slack obligation have no
+located external counterpart. The scale-free relative-ideal discount and target-by-target
+unboundedness of the scheduled coupling energy are additional local results; the latter is now
+strengthened to a positive linear lower rate along one admissible scale sequence.
 
-**External contribution.** Burnol's 2002 Theorems 3.1–3.3 prove sharp qualitative
+**External contribution.** Burnol's
+[complete/minimal systems paper](https://doi.org/10.5802/jtnb.434), Theorems 3.1–3.3, proves sharp qualitative
 completeness/minimality laws for evaluator systems, Sonine evaluators including the critical
 `a=1` case, and the functions `ζ(s)/(s-ρ)^l`; Theorem 6.3 identifies exact critical dual systems.
 Connes–Consani's semilocal/scaling analyses provide a related finite-prime Sonin carrier. These
 results can settle qualitative carrier closure but provide no quantitative convergence rate,
-all-prime shell schedule, or ideal-error energy control.
+all-prime shell schedule, or ideal-error energy control; the first two schedule layers are supplied
+locally, not by the cited papers.
 
 **Lean action.** Formalize Burnol's qualitative completeness/minimality and co-Poisson complement,
 then identify its carrier with the local `evenSonin`/shell-cut carrier. This removes a qualitative
-literature debt. The route's decisive quantitative schedule remains new work.
+literature debt. The route's analytic tail/slack schedule is already constructed; decisive work is
+the concrete shortfall comparison between that linear coupling bound and the surviving
+logarithmic-shell completion contribution, followed by the literal all-prime source handoff.
 
 ### Route G — Suzuki Hermite–Biehler, anti-Pick, and Ward realization
 
@@ -269,7 +280,9 @@ explicit-formula and differential-algebra literature supplies separate arithmeti
 No external theorem controls the literal cross-prime completed energy.
 
 **Lean action.** None. The generic operator theory is already represented; missing input is prime
-exhaustion, unattenuation, and a uniform/subgrowth arithmetic energy budget.
+exhaustion, unattenuation, and a uniform/subgrowth arithmetic energy budget. The exact local
+singular-boundary law also shows that the literal/good/bad coherent Gram has source null vector
+`(1,-1,1)`, so adding all three channels creates no independent capacity.
 
 ### Route K — quadratic spectral realization
 
@@ -286,8 +299,10 @@ operators or reviews, not a closed self-adjoint realization with Xi spectrum inc
 
 **Local contribution beyond located literature.** The corpus adds explicit Hilbert/Kummer
 completion infrastructure, Haar lifting, contractibility of the real `ℓ²` sphere, generic
-Kronecker nonvanishing, deck/flow radius laws, and residual Hilbert nondegeneracy. These generic
-theorems do not occur as the arithmetic Deninger comparison in located literature.
+Kronecker nonvanishing, an exact finite-torus Kronecker dense-orbit criterion, deck/flow radius laws,
+residual Hilbert nondegeneracy, and an integrated rank-two affine leaf system with bracket,
+Frobenius/Galois naturality, and transverse suspension flow. These generic theorems do not occur as
+the arithmetic Deninger comparison in located literature.
 
 **External contribution.** Deninger's
 [dynamical systems paper](https://arxiv.org/abs/1807.06400) gives the Hausdorff suspension
@@ -347,10 +362,11 @@ rank-one perturbations and numerical spectral/determinant convergence; Connes–
 real zeros for the Fourier transform of an isolated simple even ground state. Rigorous convergence
 of the concrete family would prove RH and remains open.
 
-**Lean action.** Formalize the concrete CCM finite operator and determinant theorem together with
-Connes–van Suijlekom's exact isolated-simple-even-ground-state real-zero theorem. The real-zero
-transfer and abstract constrained-prolate machinery are already present, but the source-defined
-finite family is not. Do not encode the numerical finite-to-Xi convergence as a theorem.
+**Lean action.** Formalize the concrete CCM finite operator and determinant theorem. The finite
+Carathéodory--Fejér/paraorthogonal real-zero transfer and abstract constrained-prolate machinery are
+already present, so a second generic real-zero endpoint is not selected for frontier leverage. The
+source-defined CCM family is the missing object. Do not encode numerical finite-to-Xi convergence
+as a theorem.
 
 ### Route P — completed-seam Thorin/Markov carrier
 
@@ -363,9 +379,10 @@ unlocked-carrier insufficiency. No local theorem constructs the critical measure
 supercritical GGC statement for `α>1` (Theorem 21). Its critical theorem is conditional and cannot
 be imported as source positivity. Classical GGC/Thorin theory supplies the generic representation.
 
-**Lean action.** Formalize Theorem 21 as the exact supercritical comparison carrier and prove its
-nonextension across the corpus's sharp quarter-tilt barrier. This gives Route P a source-faithful
-control case; it does not construct the critical compact measure.
+**Lean action.** None for frontier leverage. The unconditional theorem lives strictly in the
+supercritical regime, while the corpus already formalizes the sharp quarter-tilt obstruction to the
+proposed critical transport. Importing the safe control case would improve bibliographic coverage
+but would not narrow construction of the critical compact measure.
 
 ### Route Q — theta–Cassini likelihood hierarchy
 
@@ -398,9 +415,10 @@ or source-to-divisor comparison is proved.
 ### Route S — algebraicity and dynamical mirrors
 
 **Local contribution beyond located literature.** Numerous exact algebraic, monodromy, recurrence,
-and dynamical encodings are formalized, including full centered monodromy after even radical base
-change and nonlinear Herglotz compact-patch transversality. Their novelty is theorem-specific, but
-none is an independent RH source producer.
+and dynamical encodings are formalized, including full centered monodromy after even and every
+positive odd radical base change, exact vertical digamma-jet leading constants, Gamma independence
+over finite digamma-jet fields, and nonlinear Herglotz compact-patch transversality. Their novelty is
+theorem-specific, but none is an independent RH source producer.
 
 **External contribution.** Differential algebra, universality, monodromy, recurrence, and symbolic
 dynamics provide parent machinery. External RH encodings in these categories remain equivalences or
@@ -423,7 +441,7 @@ formalized. Exact absent literature packages are:
 - Hardy's 2026 concrete evaluation functions and their density/obstruction theorems;
 - the 2026 automorphic theta-at-infinity carrier and its density consequences;
 - Burnol's evaluator/co-Poisson completeness and exact dual systems;
-- the concrete Suzuki, CCM, Inoue, Deninger, Groskin, and Polson theorems named above.
+- the concrete Suzuki, CCM, Inoue, Deninger, Groskin, and Burnol/semilocal theorems named above.
 
 Full Li, Hardy, and theta-at-infinity formalizations improve corpus completeness but do not narrow a
 live source premise beyond an equivalent positivity, density, or closure wall. They are therefore
@@ -445,6 +463,17 @@ the corpus. External work supports several of the same boundaries:
 - criteria assuming RH, simple zeros, localization, independence, or arbitrary-length moment
   bounds cannot supply those hypotheses.
 
+The growing-order reverse-Bessel finite-prime mechanism is also retired. Classical Bessel
+polynomial theory begins with Krall and Frink's
+[1949 construction](https://doi.org/10.1090/S0002-9947-1949-0028473-1), and later work gives broad
+large-order asymptotics, including Wong and Zhang's
+[generalized Bessel expansions](https://doi.org/10.1016/S0377-0427(97)00131-3). The special-function
+ancestry is therefore not a local novelty claim. The corpus-specific result is the exact
+squared-Xi consequence: normalized reverse-Bessel weights cancel Euler damping at every fixed
+prime, forcing any surviving argument into a moving nonsummable prime window. That theorem and its
+positive integral carrier are already formalized; the located literature supplies no completed
+prime--Gamma moving-window comparison to import.
+
 The corpus nevertheless contributes sharper positive survivors: exact fixed-width tomography,
 refinement conservation, source boundary charges, light-cone Gram decompositions, quantitative
 leakage thresholds, compactification residual classifications, normal-cone diagonals, and explicit
@@ -462,16 +491,22 @@ negative certificate. Numerical verification of many critical-line zeros is evid
 disproof route. Claimed proof/disproof manuscripts are not imported without independent complete
 proof audit.
 
+The most source-explicit local negative route is the growing-order squared-Xi radial jet: one
+negative completed reverse-Bessel source jet disproves RH, orders through eighteen are positive,
+and fixed-prime localization is formally impossible. Classical Bessel-polynomial literature
+supplies special-function ancestry but no cancellation-preserving moving-prime-window comparison
+with the completed Gamma/polar source. No external import advances that open core.
+
 ## 6. Formalization priorities
 
 External results that genuinely strengthen a live route, in dependency order, are:
 
 1. Suzuki Theorems 1.1 and 1.5: concrete finite screw space, Friedrichs and deficiency operators,
    self-adjoint extensions, and literal `W` (Routes G/G2).
-2. CCM Theorem 1.1 and Connes--van Suijlekom Theorem 6.1: concrete finite restricted-Weil operator,
-   determinant, and exact finite real-zero transfer (Routes A/O).
-3. Groskin Theorem 3.2 and Corollary 3.3: positive archimedean tail and cutoff budget in the
-   rectangular basis (Route B).
+2. CCM Theorem 1.1: concrete finite restricted-Weil operator and determinant, connected to the
+   already-formalized finite real-zero transfer (Routes A/O).
+3. Complete the Groskin import after the now-formalized semidefinite compact-window core: strict
+   positive/total positivity, improper tail, and Corollary 3.3's cutoff budget (Route B).
 4. Burnol Theorems 3.1--3.3: qualitative Sonin/evaluator completeness and co-Poisson complement,
    followed by CCM's semilocal Sonin isomorphism and Fourier–Mellin factor law (Route F and prime
    seam).
@@ -481,15 +516,12 @@ External results that genuinely strengthen a live route, in dependency order, ar
    (Route M).
 7. Suzuki 2022 Theorem 1.5: trace-class localized screw carrier and its Weil-polarization handoff
    (Route C1).
-8. Polson Theorem 21: safe `α>1` Thorin/GGC comparison, stopped at the quarter-tilt barrier
-   (Route P).
-9. Platt--Trudgian's checker-replayable verified-height certificate (Routes C2/D2), only through an
-   independently audited certificate and not by an assumed or newly computed fact.
 
 Suzuki's screw-moment Hankel criterion, full Li, Hardy, theta-at-infinity, and Romik's coefficient
 asymptotic are corpus-completeness imports, not first-order route advances. Bellotti, Mangerel, fixed
 Jensen degrees, numerical Suzuki/CCM convergence, and conditional critical Thorin statements do not
-meet a current route premise and should not be formalized for frontier leverage.
+meet a current route premise and should not be formalized for frontier leverage. Platt--Trudgian
+certificate replay is also excluded from this task by the no-computation rule.
 
 ## 7. Present conclusion
 

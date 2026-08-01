@@ -255,3 +255,12 @@ boundary and sampling mechanisms are formalized without axioms.
 4. **No finite-dimensional surrogate.** All integer Fourier modes are used.
 5. **No cofinal overclaim.** Fixed-`a` nonvanishing may still decay after `a` varies; that remains
    open.
+
+### Cross-reference — endpoint separation added to this card's module
+
+`RHTower/SuzukiFiniteShiftNonClock.lean` now also carries the endpoint *separation* layer, proved
+for the Nonvanishing step of `suzuki-full-frequency-neumann-holonomy-survivor.md`:
+`tendsto_sub_mul_suzukiBoundaryLog`, `tendsto_sub_mul_suzukiBoundaryPole`, and
+`suzukiBoundaryPole_ne_log_add_bounded` — a logarithmic endpoint singularity cannot absorb a simple
+pole, with a variable log coefficient allowed. It sits next to this card's `suzukiBoundaryLogTerm`
+layer because it is the same endpoint analysis; look here before rebuilding it elsewhere.

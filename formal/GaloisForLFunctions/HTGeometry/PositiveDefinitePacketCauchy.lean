@@ -131,6 +131,69 @@ def realKernelPacketChannelGram (K : ℝ → ℝ) {M N : ℕ}
     (t b : Fin M → Fin N → ℝ) : Matrix (Fin M) (Fin M) ℝ :=
   fun r s => realKernelPacketCross K (t r) (b r) (t s) (b s)
 
+/-- Channel Gram matrix for packets sharing one node family but carrying different masses. -/
+def realKernelSharedNodePacketChannelGram (K : ℝ → ℝ) {M N : ℕ}
+    (t : Fin N → ℝ) (b : Fin M → Fin N → ℝ) :
+    Matrix (Fin M) (Fin M) ℝ :=
+  realKernelPacketChannelGram K (fun _ => t) b
+
+/-- Node Gram matrix before packet channels are mixed. -/
+def realKernelNodeGram (K : ℝ → ℝ) {N : ℕ}
+    (t : Fin N → ℝ) : Matrix (Fin N) (Fin N) ℝ :=
+  fun i j => K (t j - t i)
+
+/-- **Exact packet-channel factorization.**  Every shared-node coherent Gram is the congruence
+of its node Gram by the channel-mass matrix.  This identity uses no positivity assumption. -/
+theorem realKernelSharedNodePacketChannelGram_eq_mass_mul_nodeGram_mul_transpose
+    (K : ℝ → ℝ) {M N : ℕ} (t : Fin N → ℝ)
+    (b : Fin M → Fin N → ℝ) :
+    realKernelSharedNodePacketChannelGram K t b =
+      Matrix.of b * realKernelNodeGram K t *
+        Matrix.transpose (Matrix.of b) := by
+  ext r s
+  simp only [realKernelSharedNodePacketChannelGram,
+    realKernelPacketChannelGram, realKernelPacketCross,
+    realKernelNodeGram, Matrix.mul_apply, Matrix.transpose_apply,
+    Matrix.of_apply]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [Finset.sum_mul]
+
+/-- Channel rank cannot exceed arithmetic mass rank.  Kernel analysis can change the form on the
+mass image, but cannot create a new coherent channel direction. -/
+theorem realKernelSharedNodePacketChannelGram_rank_le_massRank
+    (K : ℝ → ℝ) {M N : ℕ} (t : Fin N → ℝ)
+    (b : Fin M → Fin N → ℝ) :
+    (realKernelSharedNodePacketChannelGram K t b).rank ≤
+      Matrix.rank (Matrix.of b) := by
+  rw [realKernelSharedNodePacketChannelGram_eq_mass_mul_nodeGram_mul_transpose]
+  exact (Matrix.rank_mul_le_left _ _).trans (Matrix.rank_mul_le_left _ _)
+
+/-- In particular, at most one coherent channel dimension can be carried by each shared node. -/
+theorem realKernelSharedNodePacketChannelGram_rank_le_nodeCount
+    (K : ℝ → ℝ) {M N : ℕ} (t : Fin N → ℝ)
+    (b : Fin M → Fin N → ℝ) :
+    (realKernelSharedNodePacketChannelGram K t b).rank ≤ N := by
+  exact (realKernelSharedNodePacketChannelGram_rank_le_massRank K t b).trans
+    (by simpa using Matrix.rank_le_card_width (Matrix.of b))
+
+/-- More channels than shared nodes force singularity for every kernel, without needing an
+explicit mass relation. -/
+theorem realKernelSharedNodePacketChannelGram_det_eq_zero_of_nodeCount_lt_channelCount
+    (K : ℝ → ℝ) {M N : ℕ} (hNM : N < M) (t : Fin N → ℝ)
+    (b : Fin M → Fin N → ℝ) :
+    (realKernelSharedNodePacketChannelGram K t b).det = 0 := by
+  by_contra hdet
+  have hunitDet : IsUnit (realKernelSharedNodePacketChannelGram K t b).det :=
+    isUnit_iff_ne_zero.mpr hdet
+  have hunit : IsUnit (realKernelSharedNodePacketChannelGram K t b) :=
+    (Matrix.isUnit_iff_isUnit_det _).mpr hunitDet
+  have hrank : (realKernelSharedNodePacketChannelGram K t b).rank = M := by
+    simpa using Matrix.rank_of_isUnit _ hunit
+  have hle := realKernelSharedNodePacketChannelGram_rank_le_nodeCount K t b
+  omega
+
 /-- **Universal coherent-channel law.**  Every finite family of packets for an even real
 positive-definite translation kernel has a positive-semidefinite channel Gram matrix.  Thus all
 channel principal minors and every coherent linear recombination are controlled simultaneously;
@@ -198,6 +261,51 @@ theorem realKernelPacketChannelGram_det_nonneg_of_positiveDefinite
     0 ≤ (realKernelPacketChannelGram K t b).det :=
   (realKernelPacketChannelGram_posSemidef_of_positiveDefinite
     K hPD hEven t b).det_nonneg
+
+/-- Every shared-node channel mass relation is an exact null vector of the coherent Gram.  This
+is the universal linear-algebra law behind good/bad source decompositions: it requires neither
+positivity nor a representing measure. -/
+theorem realKernelSharedNodePacketChannelGram_mulVec_eq_zero_of_mass_relation
+    (K : ℝ → ℝ) {M N : ℕ} (t : Fin N → ℝ)
+    (b : Fin M → Fin N → ℝ) (c : Fin M → ℝ)
+    (hrel : ∀ j, ∑ s, b s j * c s = 0) :
+    (realKernelSharedNodePacketChannelGram K t b).mulVec c = 0 := by
+  rw [realKernelSharedNodePacketChannelGram_eq_mass_mul_nodeGram_mul_transpose]
+  rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec]
+  have hb : (Matrix.transpose (Matrix.of b)).mulVec c = 0 := by
+    funext j
+    simpa [Matrix.mulVec, dotProduct] using hrel j
+  rw [hb]
+  simp
+
+/-- A nontrivial shared-node mass relation forces the coherent channel determinant to vanish. -/
+theorem realKernelSharedNodePacketChannelGram_det_eq_zero_of_mass_relation
+    (K : ℝ → ℝ) {M N : ℕ} (t : Fin N → ℝ)
+    (b : Fin M → Fin N → ℝ) (c : Fin M → ℝ)
+    (hrel : ∀ j, ∑ s, b s j * c s = 0)
+    (k : Fin M) (hk : c k ≠ 0) :
+    (realKernelSharedNodePacketChannelGram K t b).det = 0 := by
+  apply Matrix.det_eq_zero_of_mulVec_eq_zero_of_mem_nonZeroDivisors
+    (realKernelSharedNodePacketChannelGram_mulVec_eq_zero_of_mass_relation
+      K t b c hrel) (i := k)
+  simpa [mem_nonZeroDivisors_iff_ne_zero] using hk
+
+/-- **Shared-node coherent boundary law.**  Positive definiteness controls every channel
+recombination, while any nontrivial pointwise relation places the channel Gram exactly on the
+boundary of the positive-semidefinite cone. -/
+theorem realKernelSharedNodePacketChannelGram_boundary_of_positiveDefinite_of_mass_relation
+    (K : ℝ → ℝ)
+    (hPD : PositiveDefiniteOnReal (fun y => (K y : ℂ)))
+    (hEven : ∀ y, K (-y) = K y)
+    {M N : ℕ} (t : Fin N → ℝ) (b : Fin M → Fin N → ℝ)
+    (c : Fin M → ℝ) (hrel : ∀ j, ∑ s, b s j * c s = 0)
+    (k : Fin M) (hk : c k ≠ 0) :
+    (realKernelSharedNodePacketChannelGram K t b).PosSemidef ∧
+      (realKernelSharedNodePacketChannelGram K t b).det = 0 := by
+  exact ⟨realKernelPacketChannelGram_posSemidef_of_positiveDefinite
+      K hPD hEven (fun _ => t) b,
+    realKernelSharedNodePacketChannelGram_det_eq_zero_of_mass_relation
+      K t b c hrel k hk⟩
 
 end
 

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.SuzukiProjectiveDefectBoundary
 import Mathlib.Analysis.InnerProductSpace.l2Space
+import Mathlib.Analysis.SpecialFunctions.Log.NegMulLog
 
 namespace GaloisForLFunctions.RHTower
 
@@ -69,6 +70,106 @@ theorem suzukiBoundaryKernelProfile_ne_exp_smul
   have hinf := suzukiBoundaryKernelProfile_tendsto_atTop ha hR
   exact not_tendsto_nhds_of_tendsto_atTop hinf (c * Real.exp a)
     (hfinite.congr' hevent.symm)
+
+/-! ## A logarithmic endpoint singularity cannot absorb a simple pole -/
+
+/-- The endpoint logarithm is `o(1/(a - x))`: multiplying by the endpoint distance kills it. -/
+theorem tendsto_sub_mul_suzukiBoundaryLog (a : ℝ) (ha : 0 < a) :
+    Tendsto (fun x : ℝ => (a - x) * Real.log (a ^ 2 - x ^ 2)) (𝓝[<] a) (𝓝 0) := by
+  have hleft : ∀ᶠ x : ℝ in 𝓝[<] a, -a < x :=
+    (show ∀ᶠ x : ℝ in 𝓝 a, -a < x from
+      Ioi_mem_nhds (show -a < a by linarith)).filter_mono nhdsWithin_le_nhds
+  have hfac : ∀ᶠ x : ℝ in 𝓝[<] a,
+      (a - x) * Real.log (a - x) + (a - x) * Real.log (a + x)
+        = (a - x) * Real.log (a ^ 2 - x ^ 2) := by
+    filter_upwards [self_mem_nhdsWithin, hleft] with x hxa hax
+    simp only [mem_Iio] at hxa
+    have h1 : a - x ≠ 0 := ne_of_gt (sub_pos.mpr hxa)
+    have h2 : a + x ≠ 0 := by intro h; linarith
+    have hsq : a ^ 2 - x ^ 2 = (a - x) * (a + x) := by ring
+    rw [hsq, Real.log_mul h1 h2, mul_add]
+  refine Tendsto.congr' hfac ?_
+  have h1 : Tendsto (fun x : ℝ => (a - x) * Real.log (a - x)) (𝓝[<] a) (𝓝 0) := by
+    have hcont : Continuous (fun x : ℝ => (a - x) * Real.log (a - x)) :=
+      Real.continuous_mul_log.comp (continuous_const.sub continuous_id)
+    have hlim := hcont.tendsto a
+    simp only [sub_self, Real.log_zero, mul_zero] at hlim
+    exact hlim.mono_left nhdsWithin_le_nhds
+  have h2 : Tendsto (fun x : ℝ => (a - x) * Real.log (a + x)) (𝓝[<] a) (𝓝 0) := by
+    have hlog : ContinuousAt (fun x : ℝ => Real.log (a + x)) a :=
+      (Real.continuousAt_log (by linarith : a + a ≠ 0)).comp (by fun_prop)
+    have hsub : ContinuousAt (fun x : ℝ => a - x) a := by fun_prop
+    have hmul : ContinuousAt (fun x : ℝ => (a - x) * Real.log (a + x)) a := hsub.mul hlog
+    have hlim := hmul.tendsto
+    simp only [sub_self, zero_mul] at hlim
+    exact hlim.mono_left nhdsWithin_le_nhds
+  simpa using h1.add h2
+
+/-- The endpoint simple pole survives multiplication by the endpoint distance, with a nonzero
+limit.  This is the exact rate the logarithm fails to reach. -/
+theorem tendsto_sub_mul_suzukiBoundaryPole (a : ℝ) (ha : 0 < a) :
+    Tendsto (fun x : ℝ => (a - x) * (x * Real.cosh x / (a ^ 2 - x ^ 2)))
+      (𝓝[<] a) (𝓝 (Real.cosh a / 2)) := by
+  have hleft : ∀ᶠ x : ℝ in 𝓝[<] a, -a < x :=
+    (show ∀ᶠ x : ℝ in 𝓝 a, -a < x from
+      Ioi_mem_nhds (show -a < a by linarith)).filter_mono nhdsWithin_le_nhds
+  have hfac : ∀ᶠ x : ℝ in 𝓝[<] a,
+      x * Real.cosh x / (a + x) = (a - x) * (x * Real.cosh x / (a ^ 2 - x ^ 2)) := by
+    filter_upwards [self_mem_nhdsWithin, hleft] with x hxa hax
+    simp only [mem_Iio] at hxa
+    have h1 : a - x ≠ 0 := ne_of_gt (sub_pos.mpr hxa)
+    have h2 : a + x ≠ 0 := by intro h; linarith
+    have hsq : a ^ 2 - x ^ 2 = (a - x) * (a + x) := by ring
+    rw [hsq]
+    field_simp
+  refine Tendsto.congr' hfac ?_
+  have hcont : ContinuousAt (fun x : ℝ => x * Real.cosh x / (a + x)) a := by
+    refine ContinuousAt.div (by fun_prop) (by fun_prop) (by linarith)
+  have hval : a * Real.cosh a / (a + a) = Real.cosh a / 2 := by
+    rw [show a + a = 2 * a by ring]
+    field_simp
+  have hlim := hcont.tendsto
+  rw [hval] at hlim
+  exact hlim.mono_left nhdsWithin_le_nhds
+
+/-- **The endpoint separation.**  A simple pole at the endpoint cannot be produced by a
+logarithmic term with a finite-limit coefficient plus a term with a finite endpoint limit: after
+multiplication by the endpoint distance the pole leaves a nonzero limit while the right-hand side
+leaves zero. -/
+theorem suzukiBoundaryPole_ne_log_add_bounded
+    {a : ℝ} (ha : 0 < a) {c R : ℝ → ℝ} {Lc LR : ℝ}
+    (hc : Tendsto c (𝓝[<] a) (𝓝 Lc)) (hR : Tendsto R (𝓝[<] a) (𝓝 LR)) :
+    ¬ ∀ᶠ x : ℝ in 𝓝[<] a,
+        x * Real.cosh x / (a ^ 2 - x ^ 2) = c x * Real.log (a ^ 2 - x ^ 2) + R x := by
+  intro hEq
+  have hpole := tendsto_sub_mul_suzukiBoundaryPole a ha
+  have hzero : Tendsto (fun x : ℝ => a - x) (𝓝[<] a) (𝓝 0) := by
+    have hc : ContinuousAt (fun x : ℝ => a - x) a := by fun_prop
+    have hlim := hc.tendsto
+    simp only [sub_self] at hlim
+    exact hlim.mono_left nhdsWithin_le_nhds
+  have hlogpart : Tendsto (fun x : ℝ => c x * ((a - x) * Real.log (a ^ 2 - x ^ 2)))
+      (𝓝[<] a) (𝓝 0) := by
+    have := hc.mul (tendsto_sub_mul_suzukiBoundaryLog a ha)
+    simpa using this
+  have hRpart : Tendsto (fun x : ℝ => (a - x) * R x) (𝓝[<] a) (𝓝 0) := by
+    have := hzero.mul hR
+    simpa using this
+  have hright : Tendsto (fun x : ℝ => (a - x) * (c x * Real.log (a ^ 2 - x ^ 2) + R x))
+      (𝓝[<] a) (𝓝 0) := by
+    have hsum := hlogpart.add hRpart
+    simp only [add_zero] at hsum
+    exact hsum.congr fun x => by ring
+  have hcongr : ∀ᶠ x : ℝ in 𝓝[<] a,
+      (a - x) * (x * Real.cosh x / (a ^ 2 - x ^ 2))
+        = (a - x) * (c x * Real.log (a ^ 2 - x ^ 2) + R x) := by
+    filter_upwards [hEq] with x hx
+    rw [hx]
+  have heq := tendsto_nhds_unique (hpole.congr' hcongr) hright
+  have hpos : 0 < Real.cosh a / 2 := by
+    have := Real.cosh_pos a
+    linarith
+  linarith
 
 /-- Non-anchor free-clock zeros on the horizontal sampling line `im z = 1`. -/
 def suzukiFreeClockSample (a : ℝ) (n : ℤ) : ℂ :=

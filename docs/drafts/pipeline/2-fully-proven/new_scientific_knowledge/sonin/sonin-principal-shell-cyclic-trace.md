@@ -1315,9 +1315,97 @@ beyond which the two surviving terms sum below it.  Both vanish for their own re
 the weighted majorant, the high-side by the negative exponent — and the statement is free of the cut,
 so the `kappa` it produces can be fixed before any `N` is named.
 
-What remains is the second choice: with `kappa` fixed, pick `N` large enough that the outer term
-falls below the rest of `eta - 3 eps` and the coupling's largeness conditions hold, then read the
-energy off as `N` minus a constant.  With `N` about `r/K` this gives coupling
+The second choice is now available too.  `eventually_outerSlack_le` says the outer term is below any
+positive target once the cut is fine enough, and the step that makes it independent of the carrier is
+`outerSlack_le_global`: past the outer radius the majorant at the gap is below the *global* majorant,
+so the carrier drops out of the bound entirely and only the vanishing root remains.
+
+Both constants of the schedule are therefore choosable, in the right order and each by its own
+mechanism.
+
+The coupling's own hypotheses are now checked against the schedule as well, and they split the same
+way.  The largeness conditions — scale above one, `b < r q`, `c <= r a`, and the cut nonempty — are
+each a linearly growing quantity passing a fixed threshold, so all hold from some cut onwards
+(`eventually_soninShellCutScale_conditions`).  The two tail conditions do *not* depend on the cut at
+all: under the tied scale they are conditions on `kappa q` alone
+(`soninShellCut_tail_conditions_of_product`), so they belong with the first choice, not the second.
+
+Every hypothesis of the energy bound is therefore discharged by one of the two choices, and the
+assembly is a matter of instantiating them.
+
+The first choice is now made in one step: `exists_kappa_full` produces a single `kappa` satisfying
+all four of its obligations at once — both tail conditions and both cut-independent slack terms.
+All four improve as the product grows, so the four eventualities intersect, and the statement
+mentions no cut.
+
+The mirror statement is now proved as well: `exists_soninShellCut_second_choice` gives one `N`
+satisfying the outer slack bound and the four largeness conditions together, *and* exceeding any
+prescribed threshold.  That last clause is the one that matters for the conclusion — it is what makes
+the count unbounded rather than merely positive.
+
+Both choices are therefore available as clean existence statements, in the forced order.
+
+`totalSlack_scale_eq` closes the algebra between them and the energy bound's hypothesis: the
+hypothesis divides a *sum* of three roots by the floor, division distributes, and each quotient is
+one of the three closed forms already computed.  So the hypothesis reads, literally, as
+"first-choice quantity plus first-choice quantity plus second-choice quantity, below the threshold".
+
+That instantiation is now done.  `exists_schedule_card_sub_le_hsNormSq_soninApertureCoupling` is the
+capstone of the line: for every shortfall `eta` in `(0,1]` and every threshold `M` there are a
+product `kappa` and a cut with `N >= M` annuli such that
+
+  `(N - (sum of three ideal energies)/(eta/6)^2) (1 - eta)^2 <= hsNormSq Z`.
+
+The shortfall is spent as `eps = eta/6` for the mode threshold and `eta/6` for each of the two
+choices, leaving `5 eta/6 <= eta`.  That "everything subtracted from `N` is a constant" needed checking, because one of the three ideal
+errors is a correction difference *precomposed with the dilation*, and the dilation moves with the
+scale.  It is a constant: `hsNormSq_comp_evenDilationCLM` shows right composition by a dilation
+preserves Hilbert--Schmidt energy — passing to adjoints turns it into left composition by the
+inverse dilation, which is an isometry — so the discount is
+`(2 hsNormSq(Corr_b) + hsNormSq(Corr_a - Corr_b))/(eta/6)^2`, depending on the aperture and the
+shortfall but not on the schedule.
+
+Since `M` is arbitrary and the discount is fixed, **the coupling's Hilbert--Schmidt energy is
+unbounded along the schedule, with the count growing without limit**.  That conclusion is now a
+theorem rather than a reading: `exists_hsNormSq_soninApertureCoupling_ge` fixes the shortfall at a
+half, so the bound reads `(N - 144 Dis)/4` with `Dis` the aperture's own constant, and demands the
+cut past `ceil(4B + 144 Dis)` — giving `B <= hsNormSq Z` for any prescribed `B`.
+
+**Unboundedness by itself is not new.**  `tendsto_hsNormSq_soninApertureCoupling_atTop`, already in
+the corpus, gives the coupling energy tending to infinity along any clock past the crossing
+threshold; the statement above is weaker in form and adds nothing on its own.  What this line adds
+is the *rate*.  `exists_linear_hsNormSq_soninApertureCoupling` states it: one product `kappa` serves
+every threshold, the count is the fixed multiple `(c-b)/(2 kappa)` of the scale, and hence
+
+  `hsNormSq Z_r >= (c-b)/(8 kappa) * r - 36 Dis`,
+
+a positive slope in the scale rather than mere divergence.  That is the form a comparison with a
+sublinear cap can use, and it is what the older argument — which picks a fresh annulus family for
+each target and concludes only "eventually" — does not provide.
+
+Reading the rate test (`not_bddBelow_soninCompletedPacketValueVar_of_shortfall`) showed what shape
+the conclusion has to take: it wants a *sequence* of scales with a global `1 < p i` and
+`c < p i * a`, and an eventual shortfall against the coupling energy.  So the schedule statement is
+now the eventual one — one product, and *every* fine enough cut — rather than a threshold-indexed
+existence.  Reindexing `p i := scale (N_0 + i)` past the point where the conditions hold then gives
+the test its sequence, and `exists_scale_sequence_of_schedule` now does exactly that: one product,
+one starting cut, and thereafter a scale for each index, each exceeding one and reaching the aperture
+*strictly* — the strict form being what the test asks for, one notch stronger than the energy bound
+itself needs.  Along the sequence the energy is at least `(Nstart + i)/4 - 36 Dis`.
+
+The comparison itself is now available in general form:
+`eventually_log_add_le_linear` says that for every positive slope `s` and all constants `C`, `δ`,
+eventually `log x + δ <= s x - C`.  The proof is two steps — `log x <= 2 sqrt x`, since halving the
+logarithm puts it under the square root's own bound `log y <= y - 1`; and a square root is eventually
+under any positive multiple of the argument.
+
+What remains is to apply it along the sequence: the cap gives the completion's contribution as at
+most a logarithm of the scale, the energy is at least a positive slope times the scale less a
+constant, and the two meet in the rate test's hypothesis.
+
+What remains on this line is the comparison against the logarithmic cap: the cap bounds the
+completed contribution by `log` of the outer radius, while the schedule's scale grows linearly in
+`N`, so the energy `N - const` outruns `log r` and the shortfall test applies.  With `N` about `r/K` this gives coupling
 energy of order `r`, against the `log r` cap, closing the shortfall test.  Then feed that through the two-branch estimate to get `N` of
 order `r` packets at scale `r`.
 
@@ -1555,6 +1643,18 @@ family is abstract, so two widths have unrelated profiles.
 | **the scale that fixes the product**: tying `r` to `N` by `r = 2 N kappa/(c-b)` makes `δ r = kappa` *exactly*, so the gap is `kappa(q-a)` and the high-side product is `kappa b`, both constant in `N`; and the scale grows linearly with `N` | `soninShellCutScale`, `soninShellCutWidth_mul_scale`, `soninShellCutScale_pos`, `tendsto_soninShellCutScale_atTop`, `soninShellCutWidth_mul_gap`, `soninShellCutWidth_mul_outer` |
 | **the three slack terms under that scale**: the middle and high-side ones become expressions in `kappa` alone, with `N` absent from the statement; the outer one keeps its vanishing root | `sqrt_soninShellCutSharpBandBoundAt_div_floor_middle_scale`, `sqrt_soninShellCutHighBoundAt_div_floor_scale`, `sqrt_soninShellCutSharpBandBoundAt_div_floor_outer_scale` |
 | **the first constant is choosable**: both surviving terms vanish as the prescribed product grows, so beyond some product their weighted sum is below any target — fixed independently of the cut | `tendsto_middleSlackConst_atTop`, `tendsto_highSlackConst_atTop`, `exists_kappa_slack_le` |
+| **the second constant is choosable**: past the outer radius the carrier drops out of the outer term's bound (majorant below the global one), leaving a fixed multiple of a root that vanishes with the cut | `soninRefTailSup_le_global`, `outerSlack_le_global`, `eventually_outerSlack_le` |
+| **the coupling's largeness conditions are eventual in the cut**, and its two tail conditions are conditions on the prescribed product alone — the tied scale holds that product fixed | `eventually_soninShellCutScale_conditions`, `soninShellCut_tail_conditions_of_product` |
+| **one product serves all four first-choice obligations**: the two tail conditions and the two cut-independent slack terms all improve with the product, so a single `kappa` satisfies them together | `exists_kappa_full` |
+| **one cut serves all five second-choice obligations**, and can be taken as fine as desired — which is what supplies the count | `eventually_soninShellCut_second_choice`, `exists_soninShellCut_second_choice` |
+| **the total slack is the sum of the three quotients**, two in the prescribed product and one in the cut — no algebra left between the hypothesis and the two choices | `sum_div_three`, `totalSlack_scale_eq` |
+| **a schedule exists at every size**: for any shortfall and any threshold there are a product and a cut past that threshold realising the energy bound — `(N - discount)(1-η)² <= hsNormSq Z` with `N` unbounded | `exists_schedule_card_sub_le_hsNormSq_soninApertureCoupling` |
+| **the discount is scale free**: right composition by a dilation preserves Hilbert--Schmidt energy (adjoints turn it into left composition by the inverse), so the three ideal errors sum to `2 hsNormSq(Corr_b) + hsNormSq(Corr_a - Corr_b)`, a constant of the aperture | `hsNormSq_comp_evenDilationCLM`, `hsNormSq_soninCouplingIdealErrors_two`, `sum_hsNormSq_soninCouplingIdealErrors` |
+| **the coupling's energy exceeds every level**: at a fixed aperture window and carrier ratio, some schedule drives `hsNormSq Z` past any prescribed bound | `exists_hsNormSq_soninApertureCoupling_ge` |
+| **the energy is linear in the scale**: one product serves every threshold, and the count is a fixed multiple of the scale, so `hsNormSq Z >= (c-b)/(8 kappa) * r - 36 Dis` — a positive slope, not merely divergence | `soninShellCutScale_mul_slope`, `exists_linear_hsNormSq_soninApertureCoupling` |
+| the schedule statement strengthened to the **eventual** form — one product, and *every* fine enough cut works — which is the shape the rate test consumes | `exists_schedule_card_sub_le_hsNormSq_soninApertureCoupling` (restated) |
+| **the schedule as a sequence**: shifting the index past the point where the conditions start holding gives scales `p i` with uniform admissibility (`1 < p i`, `c < p i a`) and energy growing with `i` — the rate test's input shape | `eventually_soninShellCutScale_gt`, `exists_scale_sequence_of_schedule` |
+| **a logarithm falls short of every positive slope**: `log x <= 2 sqrt x` (halving puts it under the root's own bound), and a root is eventually under any positive multiple — so `log x + δ <= s x - C` eventually, for every `s > 0` | `log_le_two_mul_sqrt`, `eventually_log_add_le_linear` |
 | **rapid decay of the reference profile**, and hence of every lobe in the rescaled variable `δξ` | `contDiff_soninUnitBumpC`, `hasCompactSupport_soninUnitBumpC`, `tendsto_pow_mul_norm_fourier_soninUnitBumpC_atTop`, `tendsto_pow_mul_norm_fourier_soninOneSidedBump` |
 | **the lobe profile's transform is centre free**: a phase times `δ` times the reference transform at `δξ`, so its magnitude is `δ‖𝓕φ_ref(δξ)‖` | `soninUnitBumpC`, `soninOneSidedBump_eq_comp`, `fourier_soninOneSidedBump`, `norm_fourier_soninOneSidedBump` |
 | the two hypotheses the two-branch estimate consumes, for the rescaled family: a cutoff at or below `m-δ` annihilates it, one at or above `m+δ` fixes it | `soninScaledPacket_eq_zero_of_abs_le`, `soninScaledPacket_eq_zero_of_le_abs`, `evenIndicatorCutoff_soninScaledPacketEven_eq_zero`, `evenIndicatorCutoff_soninScaledPacketEven_eq_self` |
@@ -1671,6 +1771,89 @@ cyclicity, and the single-corner formula `(8)`.
 
 ## Log
 
+- 2026-08-01 — the log-versus-linear comparison is proved in general, which keeps it out of the
+  aperture-specific chain: for every positive slope, a logarithm plus a constant is eventually below
+  it.  The two-step route through `log x <= 2 sqrt x` is worth preferring to a direct limit argument
+  because it is elementary and quantitative — the threshold is `max(16/s^2, 2(C+δ)/s)`, explicitly.
+  Lean: `formal/GaloisForLFunctions/HTGeometry/LogBelowLinear.lean`.
+- 2026-08-01 — the schedule is turned into a sequence, which is the form the rate test needs.  One
+  detail worth recording: the test asks for `c < p i * a` strictly, while the energy bound only ever
+  needed `c <= r a`, so the strict version had to be produced separately — from the same divergence
+  of the scale, but as its own eventual statement rather than by weakening.  Cheaper than editing the
+  conditions lemma and rebuilding its dependents.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninScheduleSequence.lean`.
+- 2026-08-01 — the schedule statement is strengthened from "for every threshold there is a cut" to
+  "every fine enough cut works", which is not a cosmetic change: the rate test consumes a *sequence*
+  of scales with uniform conditions, and a threshold-indexed existence does not produce one without
+  choice-and-recursion.  The eventual form does, by reindexing past the point where the conditions
+  start holding.  The proof needed only `filter_upwards` in place of `.exists`, since the second
+  choice was already eventual — the weaker form had been throwing information away.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutScheduleExists.lean` (restated).
+- 2026-08-01 — checking the corpus before going further found that *unboundedness of the coupling
+  energy was already proved* (`tendsto_hsNormSq_soninApertureCoupling_atTop`), so the previous
+  entry's theorem restates known content in a weaker form.  The novelty of this line is the rate, and
+  the rate needed one change to be expressible: the schedule's product had to be hoisted outside the
+  threshold quantifier, which it can be, since none of its four obligations mentions the cut.  With
+  `kappa` fixed once, the count is a *fixed* multiple of the scale and the bound becomes linear in
+  the scale — the form a sublinear cap can be compared against.  Corrected framing recorded in the
+  ledger.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyLinear.lean`.
+- 2026-08-01 — the unboundedness is stated and proved as its own theorem, with the shortfall fixed at
+  a half so the bound becomes `(N - 144 Dis)/4` and the threshold `ceil(4B + 144 Dis)` does the rest.
+  Nothing new is used; the value is in having the conclusion in a form that later work can cite
+  without re-deriving the schedule.  This is the first statement of the line whose conclusion
+  mentions neither packets nor cuts nor slack — only the coupling and a bound.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninCouplingEnergyUnbounded.lean`.
+- 2026-08-01 — the discount is verified scale free, which the unboundedness claim silently assumed.
+  One of the three ideal errors carries the dilation, so its energy could have grown with the scale
+  and eaten the count; it does not, because right composition by a unitary preserves
+  Hilbert--Schmidt energy.  The corpus had only the *left* version of that
+  (`hsNormSq_comp_left_eq_of_norm_map`) plus a one-sided bound on the right, so the equality had to
+  be routed through adjoints — right composition by `D` is left composition by `D†` after adjoining,
+  and `D† = D_{1/r}` is again an isometry.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninIdealErrorEnergyConstant.lean`.
+- 2026-08-01 — **the schedule exists.**  Instantiating the two choices against the energy bound gives,
+  for every shortfall and every threshold, a product and a cut past that threshold with
+  `(N - const)(1 - eta)^2 <= hsNormSq Z`.  The assembly went through unchanged on the first attempt,
+  which is the payoff of the last dozen entries: every hypothesis had already been sorted to one of
+  the two choices, the algebra between them had been closed, and the closed forms matched the
+  theorem's arguments syntactically.  The count is unbounded because the second choice admits an
+  arbitrary threshold and everything subtracted from it is a constant of the aperture and the
+  shortfall.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutScheduleExists.lean`.
+- 2026-08-01 — the algebra between the two choices and the energy bound's hypothesis is closed.  The
+  hypothesis divides a sum by the floor, so the three closed forms only apply after distributing the
+  division — a one-line fact, but it is the join between the analytic work and the schedule, and
+  without it the two existence statements do not meet the theorem they are meant to feed.  The
+  hypothesis now reads as two first-choice quantities plus one second-choice quantity below the
+  threshold.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutTotalSlack.lean`.
+- 2026-08-01 — the second choice is packaged to match, with one clause added that the first did not
+  need: the cut may be demanded finer than any prescribed threshold.  That is the clause the final
+  conclusion rests on — the energy bound gives `N` minus a constant, so an `N` that is merely
+  admissible proves nothing, while an `N` that can be pushed past any threshold makes the energy
+  unbounded.  Both choices now exist as statements of the same shape, in the forced order.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutSecondChoice.lean`.
+- 2026-08-01 — the first choice is packaged as a single existence: one `kappa` meeting all four of
+  its obligations.  Worth noting that the four are of two different kinds — two are conditions on
+  the packets (mean below one, energy floor) and two are conditions on the coupling's error — and
+  they only combine because *all four improve in the same variable*.  That is not automatic; it is
+  the consequence of the tied scale having made the two slack terms functions of the product alone.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutKappaFull.lean`.
+- 2026-08-01 — the coupling's own hypotheses are sorted against the schedule, and the sorting is
+  clean: the four largeness conditions are eventual in the cut, while the two tail conditions turn
+  out not to involve the cut at all — under the tied scale they are conditions on `kappa q`, so they
+  are discharged by the *first* choice rather than the second.  That was not obvious in advance and
+  it matters for the assembly: the tail conditions must be imposed when `kappa` is picked, not left
+  to be arranged later by refining.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutScaleConditions.lean`.
+- 2026-08-01 — the second constant is choosable, and the step that makes it work is worth naming:
+  past the outer radius the outer term's majorant is below the *global* majorant, so the carrier —
+  which grows with the cut under the tied scale — drops out of the bound altogether.  Without that
+  the outer term would still depend on `N` through two competing factors; with it, only the
+  vanishing root is left.  Both schedule constants are now choosable, each by its own mechanism and
+  in the forced order.
+  Lean: `formal/GaloisForLFunctions/RHTower/SoninShellCutCutChoice.lean`.
 - 2026-08-01 — the first of the schedule's two constants is chosen.  The statement worth having is
   not that each term vanishes but that their *sum* is below a target beyond some product, with the
   cut nowhere in the statement — that is what licenses fixing `kappa` first and leaves `N` genuinely

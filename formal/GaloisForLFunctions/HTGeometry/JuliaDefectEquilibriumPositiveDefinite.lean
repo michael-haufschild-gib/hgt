@@ -603,6 +603,31 @@ theorem charFun_juliaDefectEquilibriumClockProbabilityMeasure (y : ℝ) :
   exact_mod_cast
     normalizedCharacteristicDefect_juliaCompressionEquilibriumProbabilityMeasure y
 
+/-- The corrected Julia attenuation kernel is continuous because it is the characteristic
+function of the explicit equilibrium-clock probability law.  In particular, the special value
+at zero is the genuine spectral limit rather than an isolated totalization branch. -/
+theorem continuous_juliaDefectAttenuationKernel :
+    Continuous juliaDefectAttenuationKernel := by
+  have h := MeasureTheory.continuous_charFun
+    (μ := (juliaDefectEquilibriumClockProbabilityMeasure : Measure ℝ))
+  have heq : charFun
+      (juliaDefectEquilibriumClockProbabilityMeasure : Measure ℝ) =
+      fun y => (juliaDefectAttenuationKernel y : ℂ) := by
+    funext y
+    exact charFun_juliaDefectEquilibriumClockProbabilityMeasure y
+  rw [heq] at h
+  have hre := Complex.continuous_re.comp h
+  change Continuous (fun y => ((juliaDefectAttenuationKernel y : ℂ)).re) at hre
+  simpa only [Complex.ofReal_re] using hre
+
+/-- Julia attenuation disappears continuously at zero scale. -/
+theorem tendsto_juliaDefectAttenuationKernel_zero :
+    Filter.Tendsto juliaDefectAttenuationKernel (nhds 0) (nhds 1) := by
+  have h0 : Filter.Tendsto juliaDefectAttenuationKernel (nhds 0)
+      (nhds (juliaDefectAttenuationKernel 0)) :=
+    continuous_juliaDefectAttenuationKernel.continuousAt
+  simpa only [juliaDefectAttenuationKernel_zero] using h0
+
 /-- Explicit law of `X̂ (U - V)`, where `X̂` is square-biased Julia compression and `U,V` are
 independent uniforms on `[-1/2,1/2]`. -/
 def juliaDefectEquilibriumDifferenceProbabilityMeasure : ProbabilityMeasure ℝ :=

@@ -2884,6 +2884,127 @@ The concrete route, with no external theorem needed:
 
 Steps 1–3 are the remaining analytic construction; step 4 is bookkeeping over the finite support.
 
+**Step 2 is done.**  `HTGeometry/TrigammaLeadingAsymptotic.lean` proves the first jet's exact leading
+datum unconditionally:
+
+- `hasSum_one_div_shift_mul_succ` — the telescoping real majorant `Σ 1/((σ+n)(σ+n+1)) = 1/σ`,
+  obtained from the partial sums and `summable_of_sum_range_le`;
+- `norm_vertical_add_nat_ge_re` / `..._ge_im` — on a vertical line the modulus of `s+n` is bounded
+  below by both the real part `σ+n` and the height `t`, hence `‖s+n‖² ≥ t(σ+n)`;
+- **`hasSum_trigamma_tail`** — the trigamma series minus the telescoping series for `s⁻¹` sums
+  termwise to `Σ ((s+n)²(s+n+1))⁻¹`, i.e. `ψ′(s) − 1/s` is that tail;
+- **`tendsto_mul_deriv_digamma_vertical`** — multiplying the tail by `s` gives terms bounded by the
+  fixed summable sequence `2/((σ+n)(σ+n+1))` and each tending to `0`, so dominated convergence for
+  series gives
+
+  > `s · ψ′(s) → 1` on every vertical line with `σ > 0`.
+
+  This is the exact first-order law; the corpus's earlier vertical estimates gave only the order.
+  `#print axioms` clean.
+
+**Step 3's series input is done too.**  `HTGeometry/PolygammaSeries.lean` derives the polygamma
+series publicly, from corpus assets only — no need to un-privatise `DigammaSectorBounds`:
+
+- `summable_one_div_shift_pow` — a shifted `p`-series with exponent `≥ 2` is summable, by comparison
+  with the telescoping majorant;
+- `summable_polygamma_terms` — hence the terms `((s+n)^{m+2})⁻¹` are summable on a vertical line;
+- **`hasSum_polygamma_series`** — the all-order shift law
+  (`HTGeometry.iteratedDeriv_digamma_add_nat`) rearranges the partial sums into
+  `c·(ψ⁽ᵐ⁺¹⁾(s+N) − ψ⁽ᵐ⁺¹⁾(s))`, and the far-field anchor
+  (`iteratedDeriv_digamma_add_nat_tendsto`, already in `GammaProjectiveBoundary`) sends the shifted
+  term to zero, so
+
+  > `Σ_n (s+n)^{−(m+2)} = (−1)^m/(m+1)! · ψ⁽ᵐ⁺¹⁾(s)`,
+
+  the trigamma series being the case `m = 0`.  `#print axioms` clean.
+
+**Steps 1–3 are now complete.**  `HTGeometry/ReciprocalPowerTelescope.lean` proves the defect bound
+algebraically, with no integral representation:
+
+- `norm_pow_sub_pow_le_of_sub_eq_mul` — for reciprocals with `a − b = a·b`,
+  `‖a^j − b^j‖ ≤ j‖a‖^{j+1}` (geometric factorization plus `‖b‖ ≤ ‖a‖`);
+- `pow_sub_pow_eq_sum_of_sub_eq_mul` — the telescoping difference expands as
+  `Σ_{i<m+1} a^{i+1} b^{m−i+1}`;
+- **`norm_telescope_defect_le`** — each summand differs from `a^{m+2}` only by exchanging factors
+  `a` for `b`, and each exchange costs another `a·b`, so
+  `‖(a^{m+1} − b^{m+1}) − (m+1)a^{m+2}‖ ≤ (m+1)(m+2)‖a‖^{m+3}`.
+
+`HTGeometry/PolygammaLeadingAsymptotic.lean` then closes the route:
+
+- `norm_vertical_add_nat_le_succ`, `inv_sub_inv_eq_mul` — the two structural facts on a vertical
+  line (`‖s+n‖ ≤ ‖s+n+1‖` and `a − b = a·b`);
+- `hasSum_telescope_pow` — `Σ_n [(s+n)^{−(m+1)} − (s+n+1)^{−(m+1)}] = s^{−(m+1)}`;
+- **`tendsto_pow_mul_polygamma_sum`** — multiplying the defect series by `s^{m+1}` gives terms
+  dominated by `2^{m+1}(m+1)(m+2)/(σ+n)²` (from `‖s+n‖^{m+3} ≥ t^{m+1}(σ+n)²`) and each tending to
+  zero, so dominated convergence gives `s^{m+1} Σ_n (s+n)^{−(m+2)} → 1/(m+1)`;
+- **`tendsto_pow_mul_iteratedDeriv_digamma_vertical`** — with the polygamma series this is the exact
+  leading law of every jet:
+
+  > `s^{m+1} · ψ⁽ᵐ⁺¹⁾(s) → (−1)^m m!` on every vertical line with `σ > 0`.
+
+  `#print axioms` clean.
+
+So each digamma jet now has its exact first-order datum in the corpus: `ψ ~ log s` and
+`ψ⁽ʲ⁾ ~ (−1)^{j−1}(j−1)!/s^j`.
+
+**Step 4 is under way.**  `HTGeometry/DigammaJetLeadingConstants.lean` assembles the monomial datum:
+
+- `normJet` — the `j`-th jet normalized by its own datum (`ψ/L` for `j = 0`, `s^j·ψ⁽ʲ⁾` otherwise);
+- `jetLeadingConst` with `jetLeadingConst_ne_zero` — the limits `1` and `(−1)^{j−1}(j−1)!`;
+- **`tendsto_normJet`**, **`tendsto_prod_normJet`** — every normalized jet, and hence every
+  normalized monomial, converges to the product of those constants, and
+  `prod_jetLeadingConst_ne_zero` says that product is never zero;
+- `tendsto_sum_prod_normJet` — a finite combination at one dominance level converges to the
+  corresponding combination of leading constants.
+
+`HTGeometry/JetNormalizationDominance.lean` supplies the order between data:
+
+- **`tendsto_vertLog_pow_div_vertical_pow`** — a power of the leading logarithm is negligible
+  against any positive power of the argument;
+- `jetNormFactor` and **`tendsto_jetNormFactor_ratio`** — hence for data ordered by argument degree
+  first and log degree second, the dominated normalization factor over the dominant one vanishes.
+
+Both `#print axioms` clean.
+
+`HTGeometry/JetDominantClassLimit.lean` performs the split:
+
+- `eventually_jetNormFactor_ne_zero` — the normalization factor is eventually nonzero on the line;
+- **`tendsto_sum_normJet_dominant`** — in a finite combination of normalized jet monomials, each
+  rescaled by its own datum relative to the dominant one, the members of the dominant class keep
+  their leading constants and every other member vanishes:
+
+  > the normalized combination converges to `Σ_{α : datum α = dominant} d_α · Π_j c_j^{e_α j}`.
+
+  `#print axioms` clean.
+
+`HTGeometry/JetMonomialNormalization.lean` finally states all of this about the *actual* monomials
+rather than the normalized surrogates:
+
+- `jetMonomial`, `jetSDeg` — the monomial `Π_j (ψ⁽ʲ⁾)^{e_j}` and its argument degree `Σ_j j·e_j`;
+- `normJet_eq_mul`, `prod_normJet_mul_jetNormFactor` — the product of the normalized jets *is* the
+  monomial divided by the normalization factor of its own datum `(e₀, Σ_j j·e_j)`;
+- **`tendsto_jetMonomial_div_jetNormFactor`** — hence a jet monomial divided by that factor
+  converges to the product of the jet leading constants, a nonzero number;
+- **`tendsto_sum_jetMonomial_div_dominant`** — and a finite combination, divided by the factor of a
+  dominant datum, converges to the sum of those constants over the members sharing the datum.
+
+`HTGeometry/JetDominantExists.lean` removes the last hypothesis:
+
+- **`exists_dominant_index`** — the jet data are ordered by argument degree first (smaller
+  dominates) and log degree second (larger dominates), so a finite nonempty family always has a
+  dominant member: minimize the argument degree, then maximize the log degree among the minimizers;
+- **`exists_datum_tendsto_sum_jetMonomial`** — hence *every* finite nonempty combination of digamma
+  jet monomials has a normalization datum for which it converges, with the explicit limit.
+
+That is eq. (19) in the corpus's own terms, unconditionally: the algebraic-logarithmic residue of a
+finite combination of digamma-jet monomials is *visible* — an explicit finite sum of products of the
+jet leading constants `1` and `(−1)^{j−1}(j−1)!` — and it vanishes only when those constants cancel
+inside the dominant class.  The non-flatness theorem `not_isVertFlatGerm_digammaJetEval` closes the
+degenerate branch: a nonzero jet polynomial cannot decay faster than every power, so a normalization
+whose visible residue cancels still leaves a nonzero element behind, to be found one dominance level
+down.  Iterating the split over the finitely many levels is the remaining bookkeeping, and it needs
+no further analytic input.
+
 *(b) The Euclidean side reduces to fine covers of small order.*  For a compact metric space, a
 Lebesgue number turns any finite open cover into a mesh condition, so `dim X ≤ n` follows from: for
 every `δ > 0` there is a finite open cover of mesh `< δ` and order `≤ n + 1`.  For a subset of `ℝ^M`

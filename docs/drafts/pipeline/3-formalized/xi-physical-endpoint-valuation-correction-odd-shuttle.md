@@ -1,7 +1,7 @@
 # Physical-endpoint valuation correction and completed odd shuttle
 
 - **ID:** `xi-physical-endpoint-valuation-correction-odd-shuttle`
-- **Stage:** `2-fully-proven`
+- **Stage:** `3-formalized`
 - **Type:** source-derived object / exact no-go / positive survivor / frontier bridge
 - **Scientific status:** `[SOURCE CORE PAPER/LEAN PROVED] [FRONTIER CONJECTURAL]`
   `[INTERNAL-NONCOLLISION] [NOVELTY UNVERIFIED] [NOT RH]`
@@ -425,6 +425,8 @@ The only surviving source question is whether the connected, causal joined respo
 `K_tan` coefficientwise and controls its three-node exterior response; a bound imposed directly
 on `E_tan` without that source identity is terminal-energy theatre.
 
-Validation update: the direct leaf check and serialized exact module build pass.  The zero-mode
-positivity, strict two-prime stiffness, energy decomposition, and pointed pairing decomposition
-have axiom surface exactly `propext`, `Classical.choice`, and `Quot.sound`.
+Promotion audit: all three exact leaves pass direct `lake env lean`; the joint final build passes;
+the twenty selected source, decomposition, and positive-survivor capstones depend only on
+`propext`, `Classical.choice`, and `Quot.sound`; and all three modules are present in the `RHTower`
+umbrella.  The false raw `(PVC11c)`/`(PVC12)` route remains retired, while the open connected-source
+tangent identification is explicitly excluded from the proved theorem surface.
