@@ -2,9 +2,20 @@
 
 - **ID:** `relative-shell-baire-finite-stage-factorization-wall`
 - **Stage:** 2-fully-proven
-- **Type:** SOURCE-TO-COEFFICIENT TOPOLOGY OBSTRUCTION AND POSITIVE SURVIVOR
+- **Type:** AUXILIARY LITERATURE-DERIVED TOPOLOGY OBSTRUCTION
 - **Labels:** `[PAPER-PROVED] [NOVELTY UNVERIFIED]`
 - **Parent:** Route L in `rh-current-frontier-map.md`
+- **Frontier status:** `[AUXILIARY ONLY — NO ROUTE-L GATE CLOSED]`
+
+## 2026-08-02 frontier correction
+
+Full Deninger-corpus audit shows this theorem is not on Route L's active frontier.  Its Baire
+factorization mechanism is known Grothendieck theory, its Baire topology is only hypothesized, and
+the relative-shell source has not been identified with Deninger's rational-Witt relevant
+coefficient.  It may constrain a future comparison after that identification exists, but it does
+not construct the arithmetic coefficient, source-to-packet restriction, secondary Cauchy map,
+closed-boundary topology, cup/Hodge structure, or Xi transport.  Do not cite this card as Route L
+progress.
 
 ## 1. Exact statement
 

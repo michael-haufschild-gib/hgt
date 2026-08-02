@@ -18,7 +18,7 @@ noncomputable section
 open MvPolynomial
 
 theorem eval₂_jetTranslateWith
-    {L : Type*} [Field L] [Algebra (RatFunc ℂ) L]
+    {L : Type*} [CommRing L] [Algebra (RatFunc ℂ) L]
     (sigma : L ≃+* L)
     (hbase : ∀ r : RatFunc ℂ,
       sigma (algebraMap (RatFunc ℂ) L r) =

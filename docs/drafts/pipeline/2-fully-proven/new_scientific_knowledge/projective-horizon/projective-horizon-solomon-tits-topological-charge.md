@@ -1594,3 +1594,36 @@ Steps, each its own module:
 
 The chains of a subcomplex inject into the chains of the ambient complex (a coproduct over a
 subfamily has a retraction), which is what lets step 3 compute only the star half.
+
+### 2026-08-02 — steps 1 and 3 of the descent are proved
+
+`ApartmentUnnormalizedCycle.lean` (green, in the umbrella):
+
+- `apartment_face_sum_eq_zero` — the signed sum of faces of apartment chambers vanishes over any
+  set of (ordering, place) pairs closed under the transposition at the deleted place.  This is the
+  cancellation that was proved once for the normalized chains, now stated for an arbitrary abelian
+  group so that both complexes and both halves of the cover use one lemma.
+- `apartmentChainIn e₀ g R s` — the signed sum of the chambers listed by a set `s` of orderings,
+  carried by a map `g` out of the apartment into any simplicial set; with its behaviour under a
+  further map (`apartmentChainIn_comp_chainComplexMap`), under a disjoint union of `s`
+  (`apartmentChainIn_union`) and its boundary (`apartmentChainIn_comp_d`).
+- `apartmentChainIn_univ_comp_d` — the whole chain is a cycle;
+  `apartmentCycleIn`, `apartmentClassIn`, `apartmentClassIn_comp_homologyMap`.
+- `apartmentFundamentalClass_eq_apartmentClassIn` — the fundamental class of the apartment, defined
+  through the normalized chains, is the class of this unnormalized cycle.  This is the bridge that
+  lets the Mayer--Vietoris computation see the class the rest of the card is stated with.
+
+`ApartmentLinkChain.lean` (green, in the umbrella):
+
+- `restrictPerm` / `extendPerm` — the orderings that fix the last place are the orderings of the
+  other places, and `sign_restrictPerm` says the restriction keeps the sign (it is the same
+  permutation read on a subtype, via `Equiv.Perm.ofSubtype`).
+- `properBelowIncl`, `delta_last_apartmentChainSimplex` — the face of a chamber that deletes the top
+  vertex is the chamber of the restricted ordering, inside the apartment of the frame minus the
+  chosen vector.
+- `apartmentChainIn_star_comp_d_eq` — **the boundary of the star half of an apartment cycle is
+  `(-1)^(n+1)` times the apartment cycle of the link.**  This is the geometric heart of the descent.
+
+Next: the two halves as chains of the base and of the star piece.  A chain supported on the
+simplices of a subcomplex is lifted to that subcomplex by the retraction that sends a simplex
+outside it to zero, which avoids having to carry membership proofs inside the sum.

@@ -977,9 +977,25 @@ have poles.  Both are handled by working with germs at the upper end, where the 
 > `σ(ψ⁽ʲ⁾(·+λ)) = ψ⁽ʲ⁾(·+λ) + (−1)ʲ j!/(·+λ)^{j+1}` in the exact form
 > `jetGerm + ratFuncGerm (familyIncrement …)` that the eliminator's hypothesis `hjet` wants.
 
-What remains is the evaluation homomorphism `MvPolynomial (Fin M) ℂ(X) → Germ upperEndFilter ℂ` and
-the assembly: feed `eval₂_jetTranslateWith`, the four closure properties, and the already-proved
-residue statement into `no_shift_stable_annihilatorWith`.
+The assembly is complete.  `HTGeometry/JetIncrementFlat.lean` states the residue theorem in the
+shape the eliminator indexes by, and `HTGeometry/JetNonNegligible.lean` runs the eliminator:
+
+> **`ratShift_sub_familyIncrement_flat`** — a charge vector on an injectively indexed set of jets is
+> a rational shift coboundary only if it vanishes (the charge matrix is the pushforward along the
+> index map);
+> **`upperEndTranslateGerm_ratFuncGerm`** — the unit shift of a rational germ is the germ of the
+> shifted rational function, from `ratShift_algebraMap` and `Polynomial.eval_comp`;
+> **`jetEval`** — the evaluation `MvPolynomial (Fin M) ℂ(X) → Germ upperEndFilter ℂ`;
+> **`not_isGermNegligible_jetEval`** — **for pairwise incongruent shifts, no nonzero polynomial in
+> the shifted digamma jets is vertically negligible.**
+
+`#print axioms` clean.  (`eval₂_jetTranslateWith` was generalized from a field to a commutative ring
+target, which its proof already supported, so the germ ring qualifies.)
+
+This is the analytic replacement for `(10)`: together with the expansions of `ψ`, its jets and their
+shifts, the truncated expansion of a nonzero element of `L_E` is eventually nonzero, which is
+`(11)`.  What remains is bookkeeping: turning "not negligible" plus "expansion to order `N`" into the
+leading term `c·s^a(log s)^b`, and then the datum of an arbitrary element of `K_E`.
 
 Downstream of `(11)` the chain is already Lean: the signature ordering `(16)`, the datum `(4)`, the
 projective boundary `(6)`, the finite phase law `(19)` and its consequences `(21)`, `(25)`.
@@ -1058,3 +1074,6 @@ projective boundary `(6)`, the finite phase law `(19)` and its consequences `(21
 - 2026-08-02 -- negligibility transported to germs at the upper end with all closure properties, plus
   the jet germs and their shift law (`GermNegligible`); only the evaluation homomorphism and the
   eliminator call remain for the non-negligibility theorem.
+- 2026-08-02 -- the non-negligibility theorem is proved (`JetIncrementFlat`, `JetNonNegligible`): no
+  nonzero jet polynomial decays faster than every power of the height, which replaces the injectivity
+  of the formal Stirling expansion.

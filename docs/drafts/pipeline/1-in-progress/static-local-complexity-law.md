@@ -483,6 +483,274 @@ energy covariance, the `2||K_t||` expectation Lipschitz bound, and the strict
 energy-barrier certificate.  It does not assume or prove the dynamical NLTS
 barrier.
 
+#### Connected Pauli-walk reduction and its exact surviving target
+
+The July 2026 Gaussian-process lower bound of Al-Ghattas--Gamarnik does not
+extend to O4 by increasing constants.  Its ancilla-uniform circuit entropy is
+controlled by backward supports of size `2^depth`; after depth `Theta(log n)`
+those supports fill the system and the variance reduction disappears.  It
+therefore proves a genuine shallow-depth spin-glass obstruction, not an
+exponential gate-count obstruction.
+
+A direct Wick transfer from Brownian to static disorder also fails.  For a
+fixed weight-`w` Pauli word `Q`, the exact number of weight-`q` Pauli words
+that anticommute with it is
+
+\[
+ N_{\rm ac}(w,q)=
+ \sum_{j=0}^{\min\{w,q\}}
+ {w\choose j}{n-w\choose q-j}3^{q-j}
+ {3^j-(-1)^j\over2}.                                 \tag{O4.4}
+\]
+
+Indeed `j` is the support-overlap size; on the overlap the odd-parity choices
+among the three nonidentity Pauli letters number
+`(3^j-(-1)^j)/2`.  In particular, for two independent weight-`q` words,
+
+\[
+ \Pr(PQ=-QP)
+ ={2q^2\over3n}+O_q(n^{-2}).                          \tag{O4.5}
+\]
+
+Thus two random fixed-locality terms commute with probability `1-O(1/n)`.
+The non-time-local Wick pairings of one quenched Hamiltonian are not small
+perturbations of Brownian pairings, so ordinary Gaussian decoupling cannot
+transfer the random-circuit theorem.
+
+The transported parent removes precisely this disconnected obstruction.
+Label Pauli words by the binary symplectic space and write `omega` for its
+commutation form.  For Pauli labels `p_1,...,p_r,z`,
+
+\[
+ \operatorname{ad}_{P_{p_r}}\cdots
+ \operatorname{ad}_{P_{p_1}}(P_z)\ne0
+ \quad\Longleftrightarrow\quad
+ \omega\!\left(p_j,z+\sum_{\ell<j}p_\ell\right)=1
+ \quad(1\le j\le r).                                  \tag{O4.6}
+\]
+
+When nonzero, the result is a phase times `2^r P_{z+\sum_jp_j}`.  Hence every
+coefficient of `ad_H^r(K_0)` is exactly a Gaussian-chaos sum over
+parity-admissible walks on the exponential Pauli commutator graph.  Commuting
+disconnected words vanish before any probabilistic estimate is taken.
+
+This exposes a narrower surviving theorem than an unspecified “dynamical
+NLTS” assumption:
+
+> **Quenched connected-walk escape target.**  Prove an aggregate tube bound
+> for `exp(it ad_H)K_0` against the set of conjugates of `K_0` by circuits of
+> fewer than `a t/poly(n)` gates, using the parity-admissible walk expansion,
+> uniformly until `t=Theta(2^n/poly(n))`.
+
+Unweighted graph expansion or Pauli-support growth is insufficient: a
+linear-depth circuit can already populate exponentially many Pauli
+coefficients.  The load-bearing estimate must control the joint amplitudes
+of the connected Gaussian-chaos walk against the entire low-circuit tube.
+Proving only vertex delocalization, Krylov dimension, or a spectral ramp does
+not close O4.
+
+#### Exact support-adaptive memory law
+
+The first non-Brownian connected correction can be evaluated exactly.  This
+is useful both as a positive theorem and as a falsifier for indiscriminate
+Brownian comparison.
+
+Let
+
+\[
+ H=\sum_{p\in S}\sqrt{v_p}\,g_pP_p,\qquad
+ g_p\mathrel{\mathop\sim}^{\rm iid}N(0,1),
+\]
+
+where `S` is any finite set of Pauli labels and `v_p >= 0`.  For a Pauli label
+`z`, put
+
+\[
+ \lambda_z=\sum_{\omega(p,z)=1}v_p,\qquad
+ \beta_p=\sum_{\omega(r,p)=1}v_r,\qquad
+ \gamma_{z,p}=\sum_{\substack{\omega(r,p)=1\\\omega(r,z)=1}}v_r .
+\]
+
+Then the return component of the second and fourth adjoint moments is
+
+\[
+ \mathbb E\,\operatorname{ad}_H^2(P_z)=4\lambda_zP_z,                 \tag{O4.7}
+\]
+
+\[
+ \mathbb E\,\operatorname{ad}_H^4(P_z)
+ =\left[
+ 48\lambda_z^2+
+ 16\sum_{\omega(p,z)=1}v_p(\beta_p-3\gamma_{z,p})
+ \right]P_z .                                                       \tag{O4.8}
+\]
+
+In particular,
+
+\[
+ \left\|\mathbb E\,\operatorname{ad}_H^4(P_z)
+             -48\lambda_z^2P_z\right\|
+ \leq 32\lambda_z\max_{\omega(p,z)=1}\beta_p .                       \tag{O4.9}
+\]
+
+**Proof.**  Write `A_p=ad_(P_p)`.  If `p` anticommutes with the current
+Pauli label then `A_p` changes that label by `p`, with coefficient of modulus
+two; otherwise it kills the word.  Hence
+`A_p^2(P_z)=4 P_z` when `omega(p,z)=1`, and it is zero otherwise, proving
+(O4.7).
+
+For the fourth moment Wick's rule gives the three words
+
+\[
+ A_p^2A_r^2,\qquad A_pA_rA_pA_r,\qquad A_pA_r^2A_p.
+\]
+
+Fix `omega(p,z)=1`, and write
+`x=omega(r,z)`, `b=omega(r,p)`.  Their respective coefficients, divided by
+sixteen, are
+
+\[
+ x,\qquad x(1-b),\qquad x\mathbin{\mathsf{xor}}b.
+\]
+
+For `b=0` their sum is `3x`; for `b=1` it is one.  Summing first over `r`
+therefore gives
+
+\[
+ 16\sum_{\omega(p,z)=1}v_p
+ \left[3(\lambda_z-\gamma_{z,p})+\beta_p\right],
+\]
+
+which is (O4.8).  Since `0 <= gamma_(z,p) <= beta_p`,
+`|beta_p-3 gamma_(z,p)| <= 2 beta_p`, proving (O4.9).  No asymptotic,
+independence approximation, or spectral hypothesis enters the argument.
+
+For the uniform weight-`q` ensemble, (O4.4) makes the bound explicit:
+
+\[
+ {\max_p\beta_p\over\sum_rv_r}
+ ={2q^2\over3n}+O_q(n^{-2}).
+\]
+
+If `|z|/n -> alpha` with `0 < alpha <= 1`, then
+
+\[
+ {\lambda_z\over\sum_rv_r}
+ ={1-(1-4\alpha/3)^q\over2}+O_q(n^{-1}),                             \tag{O4.10}
+\]
+
+so the relative fourth-moment defect in (O4.9) is `O_(q,alpha)(1/n)`.
+For a one-site seed, by contrast,
+`lambda_z/sum_r v_r=2q/(3n)` and `beta_p/lambda_z -> q`; the same defect
+need not vanish.  Quenched static evolution therefore does not begin as a
+Brownian process.  Its first possible comparison window opens only after
+operator support becomes extensive.
+
+The crude higher-moment comparison has a `k^2/n` collision parameter: in a
+Wick word with `k` paired local labels, pairwise commutation reduces the word
+to scalar-Gaussian pairing, while (O4.5) bounds the chance of any
+anticommuting label pair.  That estimate is not the correct renormalized
+barrier, however.  Paired commutator words obey a stronger exact parity law.
+
+Number the paired labels by `a=1,...,k`, and let their two locations in the
+application-ordered word be `l_a<r_a`.  Two blocks cross when their endpoints
+interlace.  Immediately before a location `j`, let `O_j` be the blocks that
+have occurred exactly once.  The current Pauli label is
+
+\[
+ z+\sum_{b\in O_j}p_b.
+\]
+
+Thus the paired word is nonzero exactly when, at every occurrence of block
+`a`,
+
+\[
+ \omega\left(p_a,z+\sum_{b\in O_j}p_b\right)=1.                       \tag{O4.11}
+\]
+
+Comparing the equations at `l_a` and `r_a` gives the following equivalent
+criterion:
+
+\[
+ \begin{split}
+ \omega(p_a,z)
+  +\sum_{b:\ l_b<l_a<r_b}\omega(p_a,p_b)&=1,\\
+ \sum_{b:\ a\ {\rm crosses}\ b}\omega(p_a,p_b)&=0
+ \qquad\text{for every }a.                                          \tag{O4.12}
+ \end{split}
+\]
+
+The equivalence is exact.  A block `b` belongs to the symmetric difference
+of the open sets at the two endpoints of `a` precisely when the two chords
+cross; XOR of the two endpoint equations is therefore the second line of
+(O4.12), while the first line is the equation at `l_a`.
+
+Consequently, place an edge between crossing chords `a,b` exactly when
+`P_(p_a)` and `P_(p_b)` anticommute.  The second line of (O4.12) says that
+this anticommutation subgraph is Eulerian: every vertex has even degree.
+Every nonempty crossing-memory component must therefore contain a cycle.  In
+particular, one isolated crossing anticommutation kills the Wick word rather
+than contributing an error.  Nested and containing chords can change the
+first-line seed parity but create no compatibility defect; they belong in a
+dressed self-energy, not in the crossing-memory remainder.
+
+That nested sector can be resummed exactly.  Let `N_k(z)` be the coefficient
+of `P_z` obtained by summing the `2k`-th Wick expansion over noncrossing
+pairings only, with `N_0(z)=1`.  Decomposing at the chord incident to the
+first location gives
+
+\[
+ N_k(z)=4\sum_{\omega(p,z)=1}v_p
+       \sum_{j=0}^{k-1}N_j(z+p)N_{k-1-j}(z).                          \tag{O4.13}
+\]
+
+Indeed the opening commutator moves `z` to `z+p`, the `j` enclosed pairs
+return to `z+p`, the closing commutator contributes the second factor of two
+and returns to `z`, and the remaining pairs evolve from `z`.  Hence the
+formal generating functions
+
+\[
+ \mathcal N_z(u)=\sum_{k\geq0}N_k(z)u^k
+\]
+
+are the unique coefficientwise solution of the coupled cavity equations
+
+\[
+ \mathcal N_z(u)=
+ {1\over
+  1-4u\sum_{\omega(p,z)=1}v_p\mathcal N_{z+p}(u)}.                    \tag{O4.14}
+\]
+
+This is an exact all-orders self-energy law on the Pauli commutator graph.
+For example, if `lambda_z <= Lambda` on the reachable component, induction in
+(O4.13) yields
+
+\[
+ 0\leq N_k(z)\leq C_k(4\Lambda)^k,                                  \tag{O4.15}
+\]
+
+where `C_k` is the `k`-th Catalan number.  Thus nested growth is not an open
+diagrammatic remainder.  Pairings with crossing chords remain: commuting
+crossings form the Gaussian background, whereas their nonempty
+anticommutation subgraph is constrained by (O4.12) to be Eulerian.
+
+This Eulerian law moves the live problem beyond the elementary `k^2/n`
+collision ceiling.  The next object is a forest-renormalized expansion in
+which all nested self-energy insertions are summed exactly and the remaining
+polymers are Eulerian crossing components.  For fixed-`q` labels, a connected
+component on `v` sampled local words already costs support coincidences; the
+Eulerian condition excludes the single-edge component that would have
+produced the earliest divergence.  What remains unproved is a uniform
+polymer bound after `k` reaches order `n`, followed by a joint-amplitude
+version against the complete circuit tube.  Even a complete return-moment
+resummation would not by itself prove O4.
+
+A circuit-tube estimate at gate budget `s` must ultimately control entropy at
+order comparable to `s`, which reaches `Theta(2^n/poly(n))` at saturation.
+Fixed-order moment universality, including (O4.8), still cannot pay that
+entropy; the exact gain is that the first nontrivial resummation target is
+now a cycle gas rather than an arbitrary collision gas.
+
 ### O5. Quantitative first hitting
 
 Upgrade completed-time occupation to a first-return lower bound from the

@@ -1696,3 +1696,37 @@ via the functional equation and the exact formula `|Γ(1+iy)|² = πy/sinh(πy)`
 That is the remaining analytic package for `(3)`–`(4)`; everything else on the card is proved.
 
 - 2026-08-02 — The elementary zeta bound, the reverse Mellin estimate, and the Fourier reflection.
+
+### Lean: the reverse Mellin estimate on the left line `[PROVED HERE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerZetaLeftLine.lean` (7 declarations),
+`DeningerCapVanishing.lean` (3) and `DeningerCapMellinLeft.lean` (11); axiom audit
+`propext, Classical.choice, Quot.sound`.
+
+The second vertical line of the strictness argument is now available, and — this is the point —
+it needs nothing about the zeros of `ζ` either.
+
+- `norm_Gamma_one_sub_mul_I_sq` — **`|Γ(1 − it)|² = πt/sinh(πt)`**, from Euler's reflection formula
+  together with `Γ(z+1) = zΓ(z)` and `Γ(conj z) = conj Γ(z)`.  No Stirling.
+- `one_add_sq_le_cosh_sq_mul_gamma` — **`1 + t² ≤ cosh²(πt/2)|Γ(2 − it)|²`**, using the elementary
+  `sinh u ≤ u cosh u` (the corpus already owned it in `CothInfra`).
+- `norm_riemannZeta_left_line_ge` — **`|ζ(−1+it)| ≥ √(1+t²)/(8π²)`**: the functional equation
+  trades the value on `Re s = −1` for one on `Re s = 2`, where the Dirichlet series bounds it, times
+  an archimedean factor that only grows.  Hence `1/|ζ|` is *bounded* on that line.
+- `deriv_zero_of_even_schwartzMap`, `norm_le_seminorm_mul_sq` — a member of Meyer's space vanishes
+  to **second order** at the origin (`‖f x‖ ≤ p₀,₀(f'')x²`), by two mean-value steps.
+- `mellinConvergent_cap`, `differentiableAt_mellin_cap` — consequently `M(f)` is holomorphic on
+  `Re s > −2`.
+- `mellin_deningerPoissonValue_eq_zeta_mul_left` — the factorization `M(Zf) = ζM(f)` propagates to
+  that half plane (identity theorem on the same two-convex-open region, now based at `−2`).
+- `norm_mellin_le_left_line` — **`‖M(f)(−1+it)‖ ≤ 8π²‖M(Zf)(−1+it)‖` for `t ≠ 0`** (the single
+  real point is a null set, so this is all an integral estimate needs).
+
+Both halves of the multiplier estimate are now proved: `Re s = 2` (elementary Dirichlet bound) and
+`Re s = −1` (functional equation + exact Gamma modulus).  What remains for strictness is the
+inversion plumbing: the log-coordinate weights of a member of Meyer's space are Schwartz, hence
+`VerticalIntegrable (mellin f) σ` for `σ ∈ {−1, 2}`, and then `mellinInv_mellin_eq` converts the two
+line estimates into `sup`-bounds for `f` — with the Fourier reflection supplying the mirror bounds
+for `𝓕f`, which is what controls the derivatives near the origin.
+
+- 2026-08-02 — **The reverse Mellin estimate on a line left of the critical strip.**

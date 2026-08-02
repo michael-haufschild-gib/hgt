@@ -3636,6 +3636,8 @@ import GaloisForLFunctions.HTGeometry.VerticallyNegligible
 import GaloisForLFunctions.HTGeometry.RationalTubeGrowth
 import GaloisForLFunctions.HTGeometry.RatFuncUpperEndGerm
 import GaloisForLFunctions.HTGeometry.GermNegligible
+import GaloisForLFunctions.HTGeometry.JetIncrementFlat
+import GaloisForLFunctions.HTGeometry.JetNonNegligible
 import GaloisForLFunctions.HTGeometry.IsolateVariable
 import GaloisForLFunctions.HTGeometry.TriangularIndependence
 import GaloisForLFunctions.HTGeometry.PermutationAction
@@ -3765,3 +3767,5 @@ import GaloisForLFunctions.HTGeometry.SchwartzEulerOperator
 import GaloisForLFunctions.HTGeometry.ApartmentGenerator
 import GaloisForLFunctions.HTGeometry.ApartmentInterval
 import GaloisForLFunctions.HTGeometry.ApartmentBuildingCover
+import GaloisForLFunctions.HTGeometry.ApartmentUnnormalizedCycle
+import GaloisForLFunctions.HTGeometry.ApartmentLinkChain

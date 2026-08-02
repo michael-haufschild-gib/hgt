@@ -109,7 +109,9 @@ priority.
 | Positive coefficient-disjoint channels with identical zeta divisor and two-sided differential separation | No collision found; candidate new arithmetic object |
 | Complete source vector in the affine mass-one fibre, injective on \(\operatorname{Re}s>0\), with reflection displacement zero exactly on the critical line | No exact collision found; candidate new source-embedding theorem |
 | Every bounded vector-valued label-blind observer is constant on that embedding and kills its nonzero off-line displacement | Abstract factorization is elementary; no collision found for this exact Riemann-source application |
+| Finite-stage injective and divisor-faithful source embeddings converge cofinally to one universal \(\ell^1\) atom; inverse conditioning diverges and every uniformly Lipschitz nonlinear observer loses spectral separation, while a canonical two-clock projective blow-up remains injective and is provably non-uniformly-Lipschitz even on every fixed distinct pair | Tail convergence and the Lipschitz squeeze are elementary abstractly; no collision found for the exact Riemann largest-valuation resolution, its simultaneous divisor-fidelity/metric-collapse theorem, the resolving prime-two/prime-three normal chart, or the pairwise inevitable-singularity statement |
 | Source-normalized \(H_{m+1}/H_m\to2^{1/2-s}\), residual transfer \(\to3^{1/2-s}\), pair injective | No collision found; candidate new cofinal boundary theorem |
+| Infinite source-pointed normal reader on the complete-resolution image: internal tail ratios recover the exact two-prime spectral character, but no shell-independent Lipschitz bound exists across cofinal bases | Classical uniqueness and coefficient peeling for ordinary Dirichlet series are prior art and receive no novelty credit. Targeted searches found no exact reciprocal-zeta/largest-valuation source-image reader combining finite divisor fidelity, two-prime injectivity, cofinal norm collapse, and forced singularity |
 | Exact identification of cofinal Lyapunov charge with Poisson escape, nearby-cycle charge, centered Xi residue, and Fisher/Weil/Cauchy mass | Individual local identities are elementary/classical; no collision found for the source-to-divisor conservation chain |
 | Every exact sewing from the positive-charge valuation sector to its reflected sector has norm beyond every finite inverse Rees order | Abstract flat-to-finite asymptotic obstruction is elementary once types are known; no collision found for these explicit prime-valuation sectors or the sharp all-orders operator consequence |
 | One theorem placing Hedenmalm, Wold--Poisson, Calkin, Ward, and Rees phenomena in the same charge alternatives | No collision found; novelty is explanatory classification, not the consumer criteria individually |
@@ -135,8 +137,10 @@ priority.
 > residue--valuation fusion.  The same unsquared modular charge is transported
 > from the cofinal prime tail through a Poisson packet to the centered Xi
 > residue; bounded label-blind and positive consumers respectively erase or
-> square it, while every exact reflected valuation sewing is singular beyond
-> all finite Rees orders.
+> square it.  The finite-stage embeddings are nevertheless cofinally
+> norm-collapsing, so every uniformly Lipschitz nonlinear consumer also loses
+> spectral separation and inverse conditioning necessarily diverges; every
+> exact reflected valuation sewing is singular beyond all finite Rees orders.
 
 Not defensible:
 
@@ -159,7 +163,9 @@ the full local-Euler residue--valuation field, the explicit positive
 isodivisorial mass-one embedding, the exact complete shell Boolean-field algebra,
 finite-support no-ghost theorem, and private tensor law,
 and the transport of one unsquared charge from source tail to divisor residue
-with its essential reflected sewing cost.
+with its essential reflected sewing cost.  The new conditioning theorem adds a class-complete
+regularity boundary: linearity and label blindness are no longer needed, because every uniformly
+Lipschitz cofinal observer collapses on the actual finite-faithful Riemann source family.
 
 A referee may regard the generic free-field, boost/Fisher, and abstract
 observer lemma as elementary.  Manuscript therefore leads with the exact

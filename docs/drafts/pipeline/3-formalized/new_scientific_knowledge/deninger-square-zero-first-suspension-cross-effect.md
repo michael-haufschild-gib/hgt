@@ -1,11 +1,11 @@
 # Square-zero first-suspension cross-effect obstruction
 
 - **ID:** `deninger-square-zero-first-suspension-cross-effect`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** EXACT NO-GO WITH TENSOR-LINEARIZED POSITIVE SURVIVOR
 - **Label:** `DAC_DENINGER_SQUARE_ZERO_FIRST_SUSPENSION_CROSS_EFFECT`
 - **Parent:** Route L in `rh-current-frontier-map.md`
-- **Scientific status:** `[PAPER-PROVED] [SOURCE-SPECIFIC NOVELTY; EXTERNAL PRIORITY UNVERIFIED]`
+- **Scientific status:** `[LEAN-PROVED] [SOURCE-SPECIFIC NOVELTY; EXTERNAL PRIORITY UNVERIFIED]`
 - **Claim:** the source-varying Calderón/rational-Witt first-suspension regulator is a nonzero
   bilinear cross-effect.  It has a canonical tensor linearization, but no ordinary linear map on
   the square-zero radial/phase direct sum can realize it.  Thus the square-zero totalization may
@@ -191,9 +191,29 @@ remains provisional pending specialist review.
 - [x] source-pure statement and exact paper proof
 - [x] no-go closure with nontrivial tensor survivor
 - [x] actual finite rational-Witt nonvacuity
-- [ ] unconditional Lean formalization
+- [x] unconditional Lean formalization
 - [ ] finite-stage naturality and sheaf descent
 - [ ] completed global secondary attachment and exact closed radical
+
+## 9. Lean certificate
+
+Formalized in
+`formal/GaloisForLFunctions/RHTower/DeningerSquareZeroFirstSuspensionCrossEffect.lean` and wired
+into `GaloisForLFunctions.RHTower`.  Capstones:
+
+1. `deningerMeyerCalderonPacketTensorRegulator_tmul_eq_fixedPacket` identifies the tensor map with
+   the existing fixed-packet regulator;
+2. `deningerMeyerCalderonDirectSumLinearization_forces_zero` proves the axis-vanishing mechanism;
+3. `deningerMeyerCalderonPacketTensorRegulator_unit_ne_zero` proves nonzero detection for every
+   nonzero packet;
+4. `deningerFiniteRationalWitt_no_squareZeroLinearFirstSuspension` gives the finite-stage no-go;
+5. `deningerPrimeComplexifiedRationalWitt_exists_crossEffect_no_directSum` packages an actual
+   arithmetic-Frobenius-fixed complexified rational-Witt witness with both the nonzero tensor
+   survivor and direct-sum obstruction.
+
+Direct `lake env lean`, targeted module build, and scratch `#print axioms` pass.  The declarations
+use only `propext`, `Classical.choice`, and `Quot.sound`; no `sorry`, `admit`, `axiom`, `opaque`,
+`unsafe`, computation, Xi divisor, zeta zero, or RH-equivalent hypothesis occurs.
 
 ## References
 
@@ -210,3 +230,5 @@ remains provisional pending specialist review.
   consumer structures and rejected the peripheral Baire route.
 - 2026-08-02 — source-varying first-suspension cross-effect isolated; direct-sum no-go and
   tensor-linearized positive survivor proved on paper.
+- 2026-08-02 — tensor survivor, fixed-packet identification, direct-sum no-go, finite Wrat
+  nonvacuity, and actual complexified rational-Witt capstone formalized unconditionally in Lean.

@@ -5281,3 +5281,65 @@ Paper and Lean:
 
 SemilocalProlateThirdEulerCriticalJet.lean
 ```
+
+## 2026-08-02 Route L frontier correction: square-zero first-suspension cross-effect
+
+Full Deninger-corpus audit separates a large proved infrastructure layer from Route L's actual
+open interface.  The corpus contains hundreds of `Deninger*.lean` modules, but the decisive
+producer theorem is still absent: no module constructs a source-varying rational-Witt-to-Meyer
+Cauchy restriction on the actual relevant coefficient.  Existing Hodge, resolvent, and
+arithmetic-three-term structures are consumers parameterized by positivity, spectral inclusion,
+or comparison data.  Existing fixed-packet Calderón regulators become linear only after the
+packet has been selected externally.
+
+The square-zero amalgamation therefore needs a precise correction.  Its degree-one direct sum can
+remain the underlying cochain group, but it cannot encode the known source-varying local
+restriction.  At each prime, let
+
+```text
+Q_p = C^2 / Gamma_p
+P_p = L^2(B_p)
+S_p = L^2(B_p x (R / log(p) Z)).
+```
+
+The source-forced local value is the bilinear cross-effect
+
+```text
+chi_p(q,a) = delta_bar_p(q) p^(-1/2) T_p(a).
+```
+
+It has a canonical tensor linearization
+
+```text
+Q_p tensor P_p --> S_p,
+```
+
+which is nonzero on the canonical unit defect tensor every nonzero finite rational-Witt packet.
+No complex-linear map on `Q_p direct_sum P_p` can agree with `chi_p` for all two inputs: linearity
+splits `(q,a)=(q,0)+(0,a)`, while the cross-effect vanishes on both axes.  This is now an
+unconditional Lean theorem, including an actual arithmetic-Frobenius-fixed complexified
+rational-Witt witness.
+
+This does not reinsert the previously rejected raw global
+`P_Q tensor M_zeta` as a new degree-two cohomology group.  It identifies the tensor as the domain
+of a missing secondary operation or \(k\)-invariant.  Freezing packet data externally explains
+why previous local maps typechecked, but cannot prove the required source-to-packet restriction
+containing all finite Wrat stages.
+
+Consequently Route L's next construction-critical theorem is now sharper:
+
+1. retain the square-zero three-term complex only as underlying amplitude;
+2. sheafify the tensor-linearized Calderón/packet cross-effect over cofinal finite Frobenius
+   stages;
+3. encode it as a secondary attachment before global cohomology;
+4. prove nuclear continuity and identify its closed radical with actual middle boundaries;
+5. only then transport Paugam cup/Hodge data and Xi spectral inclusion.
+
+Paper:
+`../3-formalized/new_scientific_knowledge/deninger-square-zero-first-suspension-cross-effect.md`.
+Lean:
+`DeningerSquareZeroFirstSuspensionCrossEffect.lean`.
+
+The earlier relative-shell Baire factorization card is corrected to auxiliary status.  Its
+Grothendieck/Baire mechanism is known and its source topology is not instantiated on Deninger's
+rational-Witt geometry; it closes no Route L gate.

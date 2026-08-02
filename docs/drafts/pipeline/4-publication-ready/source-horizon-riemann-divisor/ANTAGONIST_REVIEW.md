@@ -15,8 +15,12 @@ Publishable contribution is concrete:
 2. a complete relative Boolean algebra of explicit Riemann shell differential fields;
 3. a finite-support/no-infinitary-ghost theorem for every field observable;
 4. exact private-sector linear disjointness and irreducibility of the common zeta current;
-5. an exact source-level signed charge transported to the centered Xi residue, followed by
-   sharply typed consumer obstructions.
+5. an exact source-level signed charge transported to the centered Xi residue;
+6. a finite-faithful/cofinally-collapsing source law: divisor-faithful embeddings converge to one
+   \(\ell^1\) atom, every uniformly Lipschitz nonlinear observer loses spectral separation, and
+   inverse conditioning diverges;
+7. a canonical two-clock projective blow-up which resolves that collapse and retains the full
+   complex spectral coordinate.
 
 This is substantially stronger than an RH equivalence or a repackaged positivity criterion.
 
@@ -25,7 +29,7 @@ This is substantially stronger than an RH equivalence or a repackaged positivity
 | Criterion | Verdict | Reason |
 |---|---|---|
 | Only unconditional mathematical claims | **Pass** | Every theorem-level claim is traced to a checked declaration. New arbitrary meet/join, finite-support, complement, and private-tensor capstones build and print only standard foundational axioms. Manuscript makes no computational or conditional inference. |
-| Genuine RH progress or novel route | **Pass, route/progress branch** | Paper does not exclude zeros. It instead constructs a new positive isodivisorial source object, proves its complete source-field exactness, locates signed horizontal position before divisor scalarization, and types the missing descent. This is a new pre-divisor route, not a proof. |
+| Genuine RH progress or novel route | **Pass, route/progress branch** | Paper does not exclude zeros. It constructs a positive isodivisorial source, proves finite-stage divisor fidelity and cofinal norm collapse, rules out every uniformly Lipschitz nonlinear cofinal consumer, and constructs the projective normal chart where the full spectral coordinate survives. This is a concrete singular pre-divisor route, not a proof. |
 | General-journal quality | **Pass for broad mathematics; fail for flagship general science** | Result is explicit, surprising, reusable, and connected to several current RH programs. Proof burden, novelty boundary, hypotheses, and failure classes are stated. Nature-level impact would require zero exclusion or adoption by independent experts. |
 | No dangling mathematical question inside claimed scope | **Pass** | Paper answers its stated classification problem. Existence of an RH-forcing descent is identified as the external frontier, not assumed as a lemma and not needed by any result. RH remains open, as explicitly stated. |
 
@@ -74,6 +78,8 @@ Contribution is a new source object and a typed frontier:
 
 - source labels retain signed horizontal position;
 - bounded label-blind descent kills it;
+- every uniformly Lipschitz cofinal descent loses it, even if nonlinear and label-sensitive;
+- the explicit two-clock projective blow-up recovers the full spectral coordinate;
 - reciprocal-quadratic positive descent retains only curvature;
 - norm-conservative equivariance selects the neutral line if non-erasing;
 - finite-Rees sewing cannot join reflected valuation sectors.
@@ -84,20 +90,34 @@ This narrows possible proof mechanisms but does not create the missing descent.
 
 They would overreach if stated route-wide. They are not. Each conclusion is restricted to its
 displayed class: bounded label-blind maps, reciprocal two-mode invariant quadratic forms,
-norm-conservative equivariant maps, or finite-Rees-moderate sewing. Nonlinear,
-label-sensitive, relation-valued, and singular realizations remain outside the theorem.
+norm-conservative equivariant maps, uniformly Lipschitz cofinal maps, or finite-Rees-moderate
+sewing. The paper does not claim every nonlinear construction fails: non-Lipschitz,
+relation-valued, and topology-changing realizations remain outside the no-go.
 
-### 6. “The paper is a collage of unrelated theorems.”
+### 6. “Cofinal collapse is an elementary tail estimate.”
+
+Correct abstractly. Translated tails of an absolutely summable sequence vanish, and a uniform
+Lipschitz estimate cannot separate collapsing pairs. Neither fact receives novelty credit.
+Candidate novelty is their exact simultaneous Riemann realization: every finite source map is
+injective and divisor-faithful, the complete source nevertheless collapses cofinally, every
+uniformly Lipschitz nonlinear consumer becomes blind, and an explicit two-prime projective chart
+recovers the full spectral parameter but provably admits no shell-independent Lipschitz bound
+even on one distinct pair. No exact prior instance was found, but priority remains subject to
+independent expert review.
+
+### 7. “The paper is a collage of unrelated theorems.”
 
 Earlier versions deserved this criticism. Current version has one hierarchy:
 
 1. faithful source realization;
-2. transport of one modular charge;
-3. classified loss under explicit consumers.
+2. cofinal collapse and projective recovery;
+3. transport of one modular charge;
+4. classified loss under explicit consumers.
 
 Complete Boolean fields, positive divisor channels, common-current irreducibility, and the
-finite-support law all belong to the first clause. Charge identities belong to the second.
-Observer, positivity, conservative, and Rees statements belong to the third. Later named programs
+finite-support law all belong to the first clause. Metric collapse and the two-clock normal chart
+belong to the second. Charge identities belong to the third. Observer, positivity, conservative,
+and Rees statements belong to the fourth. Later named programs
 are declared specializations with their own hypotheses, not additional main theorems.
 
 Remaining editorial risk: a pure analytic-number-theory referee may prefer consumer applications
@@ -111,7 +131,10 @@ Exact-formula and theorem-level searches found no prior Riemann realization of:
 - the complete shell-field Boolean algebra;
 - arbitrary shell-field meet equality plus finite-support/no-ghost rigidity;
 - private tensor independence over exact common shell fields;
-- common-current hypertranscendence over the complete zero-free shell frame.
+- common-current hypertranscendence over the complete zero-free shell frame;
+- simultaneous finite-stage divisor fidelity and cofinal metric collapse;
+- uniformly Lipschitz nonlinear blindness together with an injective two-prime projective chart
+  whose recovery is necessarily singular.
 
 Search failure is not proof of priority. Generic ingredients—largest-exponent densities,
 free-field lattice algebra, label-blind factorization, reciprocal boosts, Fisher information, and
@@ -127,6 +150,9 @@ independence, and recent zeta–Gamma independence literature before acceptance.
   `lake build GaloisForLFunctions.RHTower.RelativeShellExactCommonCore`: passed.
 - New arbitrary meet/join, finite-support, complement, inclusion, and private-tensor theorems
   depend only on `propext`, `Classical.choice`, and `Quot.sound`.
+- Cofinal collapse, nonlinear observer blindness, two-clock blow-up, and pairwise inevitable
+  singularity are traced to `CompleteResolutionCofinalConditioningLaw.lean`; final foreground
+  check and axiom audit remain required after a competing dependency build releases the module.
 - PDF compiles to 24 A4 pages with no overfull boxes, undefined references, or duplicate
   labels/tags.
 - Manuscript contains no mention of formalization.
@@ -151,9 +177,11 @@ Strongest honest claim:
 > Explicit positive Riemann channels with disjoint arithmetic support can share one complete
 > divisor while their zero-free labels retain the entire source power set as a complete relative
 > Boolean algebra of differential fields, with finite support, exact common cores, and
-> torsion-free private composition. Signed horizontal position survives in the labeled source but
-> is erased, squared, or forced into singularity by the regular consumer classes classified in
-> the paper.
+> torsion-free private composition. Those finite divisor-faithful embeddings collapse
+> cofinally to one metric atom, while an explicit two-prime projective normal chart retains the
+> full spectral coordinate and cannot satisfy any uniform Lipschitz estimate. Signed horizontal
+> position survives in this singular labeled geometry but is erased or squared by the regular
+> consumer classes classified in the paper.
 
 That is new scientific knowledge if priority survives independent review. It is interesting
 because it replaces a vague “missing positivity” narrative by an explicit source object, a

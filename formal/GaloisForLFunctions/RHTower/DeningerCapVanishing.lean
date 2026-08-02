@@ -11,7 +11,8 @@ This is the estimate that pushes the Mellin transform of a member of Meyer's spa
 imaginary axis: it converges on `Re s > −2`, which is what makes a vertical line to the left of the
 critical strip available.
 
-* `deriv_zero_of_even_schwartzMap` : an even Schwartz function has vanishing derivative at the origin.
+* `deriv_zero_of_even_schwartzMap` : an even Schwartz function has vanishing derivative at
+  the origin.
 * `norm_le_seminorm_mul_sq` : **`‖f x‖ ≤ p₀,₀(f'')·x²`** for such an `f`.
 -/
 

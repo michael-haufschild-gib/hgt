@@ -17,7 +17,7 @@
   linkcolor=blue!55!black,
   citecolor=blue!55!black,
   urlcolor=blue!55!black,
-  pdftitle={A positive divisor-replicating partition of the Riemann zeta function},
+  pdftitle={A divisor-replicating Riemann source: exact conservation and inevitable singularity},
   pdfauthor={Michael Haufschild}
 }
 
@@ -43,8 +43,8 @@
 \newcommand{\Rea}{\operatorname{Re}}
 \newcommand{\Span}{\operatorname{span}}
 
-\title{\textbf{A positive divisor-replicating partition of the Riemann zeta function}\\
-\large Prime-source conservation, exact Boolean fields, and singular reflection}
+\title{\textbf{A divisor-replicating Riemann source}\\
+\large Exact conservation and inevitable singularity}
 \author{Michael Haufschild}
 \date{}
 
@@ -97,15 +97,25 @@ have disjoint \(0/1\)-coefficient supports and the common zeta divisor.  Cofinal
 canonical Poisson jet packet, and the normalized horizontal residue of
 \(-(s-\tfrac12)\xi'/\xi\).  Yet every bounded label-blind map \(T:\ell^1\to F\) factors through total mass,
 \(Tx=(\Sigma x)Te_0\), and therefore annihilates every nonzero off-line source displacement.
+More generally, \(E_K(s)\to e_0\) in \(\ell^1\) for every fixed
+\(\Rea s>0\), although every finite-\(K\) map \(s\mapsto E_K(s)\) remains injective and
+divisor-faithful.  Hence inverse sensitivity between any two distinct spectral points diverges,
+and every uniformly Lipschitz family of observers---without linearity, positivity, or label
+symmetry---loses their separation cofinally.  The collapse is not information destruction:
+the canonical projective ratios of the first two prime asymptotic layers converge to
+\((2^{1/2-s},3^{1/2-s})\), an injective chart of the entire complex spectral coordinate.
+For every distinct pair of spectral points, chart separation converges to a positive limit while
+source separation converges to zero; consequently no shell-independent Lipschitz bound can
+realize this chart on the source image.
 Reflection-positive regularization retains only the square of the charge.  For every off-line
 reflected valuation pair, one sector is flat beyond every Rees order and its partner is
 half-normal; every exact sewing operator therefore has norm larger than every finite inverse
 Rees power.  A non-erasing norm-conservative equivariant descent would
 force \(\nu=0\), but its existence is not proved.  The results are unconditional and do not
 prove the Riemann hypothesis.  They show that zero exclusion cannot come from a post-divisor
-fusion of any bounded label-blind, reflection-even positive, norm-conservative equivariant, or
-finite-Rees type classified here.  A viable descent must retain source labels or be singular
-relative to the canonical source norms.
+fusion of any bounded label-blind, uniformly Lipschitz cofinal, reflection-even positive,
+norm-conservative equivariant, or finite-Rees type classified here.  A viable descent must have
+unbounded cofinal conditioning or use a topology singular relative to the canonical source norms.
 \end{abstract}
 
 \medskip
@@ -145,7 +155,10 @@ source stores spectral position in a labeled zero-mass radical and transports on
 charge from prime tail to divisor residue.  Label-blind descent erases that radical, positive
 descent squares the charge, norm-conservative equivariant descent can retain it only at the
 neutral fixed point, and reflected Rees sewing is necessarily singular beyond every finite
-order.
+order.  At the same time the finite-stage source embeddings converge to one universal atom, so
+every uniformly regular cofinal descent erases even label-sensitive nonlinear distinctions.
+Their two-clock projective normal blow-up remains injective, identifying the exact singular
+geometry in which those distinctions survive.
 \end{quote}
 
 The law has a concrete conserved quantity:
@@ -164,7 +177,8 @@ connection over two complete Euler-source frames, embeds the full Boolean shell 
 differential fields as a complete relative Boolean algebra with no infinitary ghosts, identifies
 the longitudinal zeta field as the exact meet of disjoint
 infinite shell frames, and classifies the stated consumer classes of the conserved charge.
-No statement about all nonlinear or relation-valued realizations is made.
+The nonlinear conclusion is class-complete for uniformly Lipschitz cofinal families; no statement
+is made about non-Lipschitz or relation-valued realizations.
 The remaining RH-bearing statement is sharply typed: construct a
 source-faithful norm-conservative equivariant descent of the already existing primitive current.
 The paper does not assert such a construction.
@@ -243,7 +257,7 @@ positive prime powers, write \(\mathcal Lf(s)=\sum_n f(n)n^{-s}\) in its converg
 Here \(\operatorname{DiffInd}\) denotes joint differential-algebraic independence and
 \(K\langle a\rangle\) denotes differential-field generation by every member of the family \(a\).
 
-\begin{theorem}[Prime-source exactness and singular-descent law]\label{thm:common-mode-law}
+\begin{theorem}[Prime-source conservation, collapse, and blow-up law]\label{thm:common-mode-law}
 Clause \textup{I} gives faithful source realization, Clause \textup{II} transports its
 continuous charge, and Clause \textup{III} gives the regular-descent boundary.
 
@@ -483,7 +497,7 @@ coupling is precisely the product \(-m_\rho(\rho-\tfrac12)\) in
 
 \item \textbf{Regular-descent boundary.}
 \begin{enumerate}[label=\textup{(\alph*)},leftmargin=2.2em]
-\item \textbf{Exact bounded-observer blindness.}
+\item \textbf{Cofinal conditioning and exact bounded-observer blindness.}
 Let \(F\) be any normed complex vector space and
 \(T:\ell^1(\N_0)\to F\) any bounded linear map.  If \(Te_i=Te_j\) for all \(i,j\), then
 \[
@@ -497,6 +511,70 @@ Equivalently, label blindness is exactly annihilation of \(\ker\Sigma\).  Conseq
 \]
 Thus when \(\Rea s\ne\tfrac12\), the actual source displacement \(\Delta(s)\) is nonzero but
 invisible to every bounded label-blind linear consumer.
+
+This exact finite-stage blindness is one face of a stronger cofinal law.  For every
+\(M\geq1\), set
+\[
+ E_M(s)=\bigl(\zeta(Ms)^{-1},H_M(s),H_{M+1}(s),\ldots\bigr),
+ \qquad e_0=(1,0,\ldots).
+\]
+Then, for every fixed \(\Rea s>0\),
+\[
+ E_M(s)\longrightarrow e_0\quad\hbox{in }\ell^1
+ \qquad(M\to\infty),                                      \tag{2.14a}
+\label{eq:cofinal-collapse}
+\]
+although \(s\mapsto E_M(s)\) is injective for every finite \(M\).  Consequently, for distinct
+\(s,t\) in the right half-plane,
+\[
+ \|E_M(s)-E_M(t)\|\longrightarrow0,\qquad
+ \|E_M(s)-E_M(t)\|^{-1}\longrightarrow\infty.              \tag{2.14b}
+\label{eq:inverse-conditioning}
+\]
+Let \((Y,d)\) be any metric space and let \(T_M:\ell^1\to Y\) be arbitrary maps satisfying one
+uniform Lipschitz estimate
+\[
+ d(T_Mx,T_My)\leq C\|x-y\|\qquad(M\geq1,\ x,y\in\ell^1).
+\]
+No linearity, positivity, additivity, or label symmetry is assumed.  Then
+\[
+ d\bigl(T_ME_M(s),T_ME_M(t)\bigr)\longrightarrow0.         \tag{2.14c}
+\label{eq:lipschitz-collapse}
+\]
+Thus no uniformly Lipschitz cofinal observer retains a fixed positive spectral separation.
+The collapse has a canonical singular resolution.  Put
+\[
+ \widetilde H_M(s)=H_M(s)-2^{-Ms}(1-2^{-s})
+\]
+and form the projective normal chart
+\[
+ B_M(s)=
+ \left(
+ \sqrt2\,\frac{H_{M+1}(s)}{H_M(s)},\
+ \sqrt3\,\frac{\widetilde H_{M+1}(s)}{\widetilde H_M(s)}
+ \right).
+\]
+Then
+\[
+ B_M(s)\longrightarrow
+ \bigl(2^{1/2-s},3^{1/2-s}\bigr),                       \tag{2.14d}
+\label{eq:blowup-chart}
+\]
+and the limiting map is injective.  Thus the ordinary source converges to one point while its
+canonical two-clock blow-up retains the entire complex spectral coordinate.
+More precisely, for \(s\ne t\) there is no finite \(C\) such that
+\[
+ d\bigl(B_M(s),B_M(t)\bigr)
+ \leq C\|E_M(s)-E_M(t)\|_1
+ \qquad\hbox{for every }M.                              \tag{2.14e}
+\label{eq:inevitable-singularity}
+\]
+Thus faithful cofinal recovery is necessarily singular relative to the canonical source norm,
+even when required only on one fixed pair.
+For \(0<\Rea s<1\), the reflected displacement
+\(\Delta_M(s)=E_M(s)-E_M(1-\bar s)\) is nonzero at every finite \(M\) exactly off the critical
+line, but \(\Delta_M(s)\to0\); off line,
+\(\|\Delta_M(s)\|^{-1}\to\infty\).
 
 \item \textbf{Reflection trichotomy and the conservative gate.}
 Let \(d=1-2\Rea\rho\) and
@@ -669,6 +747,40 @@ For \textup{III(a)}, finite-support vectors are dense in \(\ell^1\).  Label blin
 agree with \(x\mapsto(\Sigma x)Te_0\) on every coordinate vector and hence on their dense span.
 Continuity gives equality everywhere.  Since \(\Sigma E(s)=1\), all stated blindness conclusions
 follow.
+
+For the cofinal statement, the norm has the exact decomposition
+\[
+ \|E_M(s)-e_0\|_1
+ =
+ \bigl|\zeta(Ms)^{-1}-1\bigr|
+ +\sum_{j\geq0}|H_{M+j}(s)|.
+\]
+The first term tends to zero because \(\zeta(Ms)\to1\) on every ray
+\(\Rea s>0\).  The shell sequence \((H_m(s))_{m\geq0}\) is absolutely summable there, so its
+translated tails tend to zero.  This proves \eqref{eq:cofinal-collapse}.  Finite-\(M\)
+injectivity was proved in \textup{II}; hence the distance between two distinct points is positive
+at every finite stage, tends to zero, and has reciprocal tending to infinity.  Finally
+\[
+ 0\leq d(T_ME_M(s),T_ME_M(t))
+ \leq C\|E_M(s)-E_M(t)\|\longrightarrow0
+\]
+proves \eqref{eq:lipschitz-collapse}.  Applying the same argument to
+\((s,1-\bar s)\), together with the reflection fixed-point law in \textup{II}, gives the reflected
+conditioning statement.  Finally, the least-atom shell asymptotics give
+\[
+ \sqrt2\,H_{M+1}/H_M\to2^{1/2-s}.
+\]
+After exact subtraction of that prime-two atom, the prime-three asymptotic gives
+\(\sqrt3\,\widetilde H_{M+1}/\widetilde H_M\to3^{1/2-s}\).  The two-prime injectivity proved in
+\textup{II} yields \eqref{eq:blowup-chart}.  If \(s\ne t\), continuity of distance and injectivity
+give
+\[
+ d(B_M(s),B_M(t))\longrightarrow
+ d\!\left((2^{1/2-s},3^{1/2-s}),(2^{1/2-t},3^{1/2-t})\right)>0.
+\]
+The right-hand side of the proposed estimate in \eqref{eq:inevitable-singularity} tends to zero
+by \eqref{eq:inverse-conditioning}, a contradiction.  Hence the projective normal chart is the
+explicit necessarily singular inverse retained by the collapsing source.
 
 The first half of \textup{III(b)} is the complete classification of a quadratic form invariant under channel
 exchange and reciprocal boost.  Boost invariance at nonzero rate kills the diagonal coefficient;
@@ -1474,6 +1586,12 @@ common core; the complete transverse frame cannot differentially generate either
 functional-equation displacement vanishes exactly on the critical line;
 \item every bounded vector-valued label-blind observer factors uniquely through total mass and
 therefore annihilates the entire spectral radical, including each nonzero off-line displacement;
+\item the finite-stage injective, divisor-faithful source embeddings converge cofinally to one
+universal \(\ell^1\) atom; inverse spectral conditioning diverges, and every uniformly Lipschitz
+cofinal observer---including nonlinear and label-sensitive observers---loses all fixed spectral
+separation, while a canonical two-clock projective blow-up converges to an injective chart of the
+full complex spectral coordinate and admits no shell-independent Lipschitz realization even on
+one distinct spectral pair;
 \item prime-tail entropy, canonical Poisson escape, nearby-cycle charge, and the residue of the
 centered Xi current carry exactly the same unsquared modular charge;
 \item reflection-conservative positive geometry in the reciprocal two-mode quadratic class is
@@ -1510,9 +1628,10 @@ divisor point \(\rho\), construct source-defined \(A\) and norm-conservative \(V
 Then \Cref{thm:common-mode-law}\textup{III(b)} forces
 \(\Rea\rho=\tfrac12\).  The present paper neither assumes nor constructs this descent.
 \Cref{thm:completion-classification} shows why it cannot come from bounded label-blind descent,
-a fibrewise invariant metric, reflection-even scalarization, scalar whitening, or finite-Rees
-correction.  Any viable proof must retain the labeled radical or act through a topology singular
-relative to the ordinary source norms.
+a uniformly Lipschitz cofinal family, a fibrewise invariant metric, reflection-even
+scalarization, scalar whitening, or finite-Rees correction.  Any viable proof must have
+unbounded cofinal conditioning or act through a topology singular relative to the ordinary
+source norms.
 
 \section{Conclusion}
 
@@ -1563,7 +1682,23 @@ The affine constraint does not compress the source: all complex spectral informa
        \quad\Longrightarrow\quad
        T(E(s)-E(t))=0 .
 \]
-This is the precise boundary between bounded fusion and spectral observation.
+The cofinal boundary is stricter:
+\[
+ \boxed{\quad
+ E_M(s)\longrightarrow e_0,\qquad
+ s\ne t\Longrightarrow
+ \|E_M(s)-E_M(t)\|^{-1}\longrightarrow\infty,\qquad
+ B_M(s)\longrightarrow(2^{1/2-s},3^{1/2-s}),\qquad
+ \frac{d(B_M(s),B_M(t))}{\|E_M(s)-E_M(t)\|_1}
+ \text{ is unbounded},\qquad
+ \sup_M\operatorname{Lip}(T_M)<\infty
+ \Longrightarrow d(T_ME_M(s),T_ME_M(t))\longrightarrow0 .
+ \quad}
+\]
+Thus bounded label blindness is exact blindness at each stage, while uniform Lipschitz
+regularity is asymptotic blindness even for nonlinear label-sensitive observers.  The injective
+blow-up chart proves that the lost coordinate is not absent; it lives in projective normal
+geometry.  This is the precise boundary between stable fusion and spectral observation.
 
 At a divisor point, the same number
 \[
@@ -1588,8 +1723,8 @@ stated explicitly in \Cref{thm:completion-classification}.
 This is the paper's answer: missing information is not zero location but transport category.
 Arithmetic spectral position and its orientation already exist as a nonzero primitive current
 in the labeled zero-mass radical.  Bounded label blindness kills it exactly;
-reciprocal-quadratic positive reflection retains only curvature; finite local fusion cannot
-synthesize it.  RH would follow
+uniformly regular nonlinear observation kills it cofinally; reciprocal-quadratic positive
+reflection retains only curvature; finite local fusion cannot synthesize it.  RH would follow
 from a source-faithful norm-conservative equivariant descent of this labeled current.  No such
 descent is asserted here, and no equivalence is counted as a proof.
 

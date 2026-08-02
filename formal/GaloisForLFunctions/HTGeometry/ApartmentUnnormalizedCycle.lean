@@ -270,11 +270,16 @@ theorem apartmentFundamentalClass_eq_apartmentClassIn {n : ℕ} [Finite ι]
     refine Finset.sum_congr rfl fun σ _ => ?_
     rw [Preadditive.zsmul_comp, SSet.ιChainComplex_toNormalizedChainComplex_f]
     rfl
+  have h1 : apartmentClassIn e₀ (𝟙 (nerve (properPart (Set ι)))) R
+      ≫ (topHomologyIsoCycles (X := nerve (properPart (Set ι))) (R := R) (n := n + 1)).hom
+      = apartmentFundamentalCycle e₀ R := by
+    rw [apartmentClassIn, topHomologyIsoCycles, Iso.trans_hom, asIso_hom, Iso.symm_hom, asIso_inv,
+      Category.assoc, ← Category.assoc
+        (HomologicalComplex.homologyπ ((nerve (properPart (Set ι))).chainComplex R) (n + 1)),
+      HomologicalComplex.homologyπ_naturality, Category.assoc, IsIso.hom_inv_id, Category.comp_id]
+    exact key
   rw [apartmentFundamentalClass]
-  refine (Iso.comp_inv_eq _).2 ?_
-  rw [apartmentClassIn, topHomologyIsoCycles, Iso.trans_hom, asIso_hom, Iso.symm_hom, asIso_inv,
-    ← Category.assoc, IsIso.eq_comp_inv, Category.assoc,
-    HomologicalComplex.homologyπ_naturality, ← Category.assoc, key]
+  exact (Iso.comp_inv_eq _).2 h1.symm
 
 end Class
 
