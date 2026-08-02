@@ -533,6 +533,82 @@ theorem eulerPrimitiveHorizonHeadGram_posSemidef
         hsigma M w hw
   · exact tendsto_eulerPrimitiveHorizonPartialHeadSourceGram hsigma w hw
 
+/-- The resolved prime channel is continuous throughout its open
+right-half-plane of absolute convergence. -/
+theorem continuousAt_vonMangoldtPrimeLaplaceChannelComplex
+    {s : ℂ} (hs : 0 < s.re) :
+    ContinuousAt vonMangoldtPrimeLaplaceChannelComplex s := by
+  have habs :
+      LSeries.abscissaOfAbsConv
+          (fun n => (ArithmeticFunction.vonMangoldt n : ℂ)) ≤ 1 := by
+    apply LSeries.abscissaOfAbsConv_le_of_forall_lt_LSeriesSummable
+    intro y hy
+    exact ArithmeticFunction.LSeriesSummable_vonMangoldt
+      (by simpa using hy)
+  unfold vonMangoldtPrimeLaplaceChannelComplex
+  have hL := (LSeries_hasDerivAt
+    (lt_of_le_of_lt habs (by
+      exact_mod_cast (show (1 : ℝ) < (s + 1).re by
+        simp
+        linarith)))).continuousAt
+  have hadd : ContinuousAt (fun z : ℂ => z + 1) s := by
+    fun_prop
+  exact ContinuousAt.comp (x := s) hL hadd
+
+/-- The pole-normal source has a genuine critical limit, not merely an
+assigned endpoint value. -/
+theorem tendsto_eulerPrimitiveHorizonShiftedTailGram_one
+    {N : ℕ} (w : Fin N → ℂ) (hw : ∀ i, 0 < (w i).re) :
+    Tendsto (fun sigma : ℝ =>
+        eulerPrimitiveHorizonShiftedTailGram sigma w)
+      (nhds 1) (nhds (eulerPrimitiveCommonTestGram w)) := by
+  apply tendsto_pi_nhds.mpr
+  intro i
+  apply tendsto_pi_nhds.mpr
+  intro j
+  let arg : ℝ → ℂ := fun sigma =>
+    eulerPrimitiveHorizonShift sigma (w i) +
+      star (eulerPrimitiveHorizonShift sigma (w j))
+  have hargContinuous : ContinuousAt arg 1 := by
+    dsimp only [arg, eulerPrimitiveHorizonShift]
+    fun_prop
+  have hre : 0 < (arg 1).re := by
+    simp [arg, eulerPrimitiveHorizonShift]
+    linarith [hw i, hw j]
+  have hchannel :
+      ContinuousAt
+        (fun sigma =>
+          vonMangoldtPrimeLaplaceChannelComplex (arg sigma))
+        1 :=
+    (continuousAt_vonMangoldtPrimeLaplaceChannelComplex hre).comp
+      hargContinuous
+  have hproduct :=
+    hchannel.mul_const (rightHalfPlaneHardyCauchyGram w i j)
+  simpa [eulerPrimitiveHorizonShiftedTailGram,
+    eulerPrimitiveCommonTestGram, vonMangoldtPrimeRightHalfPlaneGram,
+    eulerPrimitiveHorizonShift_one, arg] using hproduct.tendsto
+
+/-- Along the physical Euler region, multiplying the normalized tail by its
+diverging partition function converges to the critical retained-label
+source. -/
+theorem tendstoWithin_eulerPrimitiveHorizon_poleNormal_tail
+    {N : ℕ} (w : Fin N → ℂ) (hw : ∀ i, 0 < (w i).re) :
+    Tendsto (fun sigma : ℝ =>
+        ((eulerPrimeCurrentTotal sigma : ℝ) : ℂ) •
+          eulerPrimitiveHorizonTailGram sigma w)
+      (nhdsWithin 1 (Ioi 1))
+      (nhds (eulerPrimitiveCommonTestGram w)) := by
+  have hshiftWithin :
+      Tendsto (fun sigma : ℝ =>
+          eulerPrimitiveHorizonShiftedTailGram sigma w)
+        (nhdsWithin 1 (Ioi 1))
+        (nhds (eulerPrimitiveCommonTestGram w)) :=
+    (tendsto_eulerPrimitiveHorizonShiftedTailGram_one w hw).mono_left
+      inf_le_left
+  apply hshiftWithin.congr'
+  filter_upwards [self_mem_nhdsWithin] with sigma hsigma
+  exact (eulerPrimitiveHorizon_poleNormal_tail hsigma w).symm
+
 end
 
 end RHTower

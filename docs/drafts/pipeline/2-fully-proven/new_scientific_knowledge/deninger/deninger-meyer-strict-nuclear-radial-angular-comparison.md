@@ -2372,3 +2372,44 @@ The remaining steps of the pro-Ind passage are: the direct-sum seminorm family (
 coordinate seminorms), the identification of its comparison map with the sum of the coordinate
 comparison maps conjugated by inclusion and projection, and the choice of weights `2ⁿ(1 + Mₙ)` that
 makes the masses summable.  Then quotient permanence gives the inductive limit.
+
+### Record — §2 pro-Ind: a countable direct sum of nuclear spaces is nuclear (Lean, unconditional)
+
+* `RHTower/DeningerSigmaSeminorm.lean` — the presentation.
+  - `deningerSigmaSummable`, `deningerSigmaSeminorm` — **the direct sum seminorm**, written as an
+    unconditional sum of the coordinate seminorms; a vector of the direct sum has finite support, so
+    no convergence question arises and no decidability hypothesis on the coordinates is needed.
+  - `deningerSigmaSeminorm_proj_le`, `deningerSigmaSeminorm_single` — the two bounds that make the
+    coordinate projections and inclusions bounded.
+  - `deningerSigmaFamily` — **the direct sum presentation**, indexed by a coordinate seminorm and a
+    weight per coordinate.  The weights have to be part of the index: the defining family of a
+    coordinate need not be closed under scaling, and the whole proof turns on being able to enlarge
+    one coordinate's seminorm by a constant.
+
+* `RHTower/DeningerSeminormInducedCompleted.lean`
+  - `deningerSeminormInducedC`, `_mkC`, `_norm_le`, `deningerSeminormComparisonC_mkC` — the completed
+    map of Banach spaces induced by a bounded linear map, its value on a class, and that it keeps the
+    bound.  Nuclearity is stated on the completed quotients, so the coordinate projections and
+    inclusions are needed there.
+
+* `RHTower/DeningerSigmaNuclear.lean`
+  - `deningerSigma_eq_sum_single` — a vector of a direct sum is the sum of its coordinate vectors.
+  - `deningerIsNuclearSpaceC_sigma` — **a countable direct sum of nuclear spaces is nuclear.**
+
+  The proof: given a target seminorm with weights `c` and coordinate indices `a`, take on each
+  coordinate the dominating index `b i` with constant `C i` and a nuclear representation of mass
+  `M i`, and use the weight
+  `v i = (c i + 1)(|C i| + 1)(M i + 1) 2^{e i}`,
+  where `e` is an injection of the index set into the natural numbers.  Then `v i ≥ c i |C i|`
+  gives the domination with constant one, while the coordinate map
+  `incl i ∘ comparison i ∘ proj i` has mass at most
+  `c i · v i⁻¹ · M i ≤ 2^{-e i}`,
+  so the masses are summable and the sum converges in the operator norm.  Its value is the
+  comparison map: on a class of a vector of the direct sum only finitely many coordinates
+  contribute, and there the sum is `∑_{i ∈ supp} single i (x i) = x`; both maps are continuous and
+  those classes are dense.
+
+This is the direct sum half of the pro-Ind passage.  What remains is the presentation of a countable
+strict inductive limit as a quotient of the direct sum, after which the corpus's own quotient
+permanence (`deningerIsNuclearSpaceC_quotient`) finishes Trèves Prop. 50.1 and, with it,
+`deningerTensor_poisson_strict` applies to the phase coefficient.

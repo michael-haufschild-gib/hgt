@@ -60,6 +60,7 @@ variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
 variable {ι : Type} [DecidableEq ι] [Countable ι] {F : ι → Type*}
 variable [∀ i, AddCommGroup (F i)] [∀ i, Module 𝕜 (F i)]
 
+omit [CompleteSpace 𝕜] in
 /-- **A countable direct sum of nuclear spaces is nuclear.** -/
 theorem deningerIsNuclearSpaceC_sigma {κ : ι → Type*} (P : ∀ i, SeminormFamily 𝕜 (F i) (κ i))
     (hP : ∀ i, DeningerIsNuclearSpaceC (P i)) :
@@ -70,12 +71,10 @@ theorem deningerIsNuclearSpaceC_sigma {κ : ι → Type*} (P : ∀ i, SeminormFa
   choose b C hle hnucC using fun i => hP i (a i)
   choose M hMnn hMle using fun i => (hnucC i).exists_nuclearLe
   -- the dominating weights
-  set v : ι → ℝ≥0 := fun i =>
-    (c i + 1) * (Real.toNNReal |C i| + 1) * (Real.toNNReal (M i) + 1) * 2 ^ e i with hv
-  have hvreal : ∀ i, (v i : ℝ)
-      = ((c i : ℝ) + 1) * (|C i| + 1) * (M i + 1) * 2 ^ e i := by
-    intro i
-    rw [hv]
+  obtain ⟨v, hvreal⟩ : ∃ v : ι → ℝ≥0, ∀ i,
+      (v i : ℝ) = ((c i : ℝ) + 1) * (|C i| + 1) * (M i + 1) * 2 ^ e i := by
+    refine ⟨fun i =>
+      (c i + 1) * (Real.toNNReal |C i| + 1) * (Real.toNNReal (M i) + 1) * 2 ^ e i, fun i => ?_⟩
     push_cast [Real.coe_toNNReal _ (abs_nonneg (C i)), Real.coe_toNNReal _ (hMnn i)]
     ring
   have hcnn : ∀ i, (0 : ℝ) ≤ (c i : ℝ) := fun i => (c i).coe_nonneg
@@ -109,11 +108,19 @@ theorem deningerIsNuclearSpaceC_sigma {κ : ι → Type*} (P : ∀ i, SeminormFa
     have h2pos : (0 : ℝ) < (2 : ℝ) ^ e i := by positivity
     have hkey : (c i : ℝ) * M i * 2 ^ e i ≤ (v i : ℝ) := by
       rw [hvreal i]
-      have h1 : (c i : ℝ) * M i ≤ ((c i : ℝ) + 1) * (|C i| + 1) * (M i + 1) := by
-        nlinarith [hcnn i, abs_nonneg (C i), hMnn i]
-      exact mul_le_mul_of_nonneg_right h1 (le_of_lt h2pos)
+      have hstep : (c i : ℝ) * M i ≤ ((c i : ℝ) + 1) * (M i + 1) := by
+        have hexp : ((c i : ℝ) + 1) * (M i + 1)
+            = (c i : ℝ) * M i + ((c i : ℝ) + M i + 1) := by ring
+        rw [hexp]
+        linarith [hcnn i, hMnn i]
+      have hfac : ((c i : ℝ) + 1) ≤ ((c i : ℝ) + 1) * (|C i| + 1) :=
+        le_mul_of_one_le_right (by linarith [hcnn i]) (by linarith [abs_nonneg (C i)])
+      have hstep2 : ((c i : ℝ) + 1) * (M i + 1)
+          ≤ ((c i : ℝ) + 1) * (|C i| + 1) * (M i + 1) :=
+        mul_le_mul_of_nonneg_right hfac (by linarith [hMnn i])
+      exact mul_le_mul_of_nonneg_right (hstep.trans hstep2) (le_of_lt h2pos)
     have heq : (c i : ℝ) * ((v i : ℝ)⁻¹ * M i) = ((c i : ℝ) * M i) / (v i : ℝ) := by
-      field_simp
+      rw [div_eq_mul_inv]
       ring
     have hinv : ((1 : ℝ) / 2) ^ e i * 2 ^ e i = 1 := by
       rw [← mul_pow]
@@ -160,29 +167,39 @@ theorem deningerIsNuclearSpaceC_sigma {κ : ι → Type*} (P : ∀ i, SeminormFa
   refine ⟨(b, v), 1, hdom, ?_⟩
   -- the coordinate maps
   have hproj : ∀ i : ι, ∀ x : Π₀ j, F j,
-      P i (b i) ((DFinsupp.lapply (R := 𝕜) i) x) ≤ (v i : ℝ)⁻¹ * deningerSigmaFamily P (b, v) x := by
+      P i (b i) ((DFinsupp.lapply (R := 𝕜) i) x)
+        ≤ (v i : ℝ)⁻¹ * deningerSigmaFamily P (b, v) x := by
     intro i x
     rw [DFinsupp.lapply_apply, ← div_eq_inv_mul, le_div_iff₀ (hvpos i), mul_comm]
     exact hprojle i x
   have hincl : ∀ i : ι, ∀ u : F i,
       deningerSigmaFamily P (a, c) ((DFinsupp.lsingle (R := 𝕜) i) u) ≤ (c i : ℝ) * P i (a i) u :=
     fun i u => le_of_eq (hsingle i u)
-  set proj : ∀ i : ι, DeningerSeminormCompletion (deningerSigmaFamily P (b, v)) →L[𝕜]
-      DeningerSeminormCompletion (P i (b i)) :=
-    fun i => deningerSeminormInducedC (DFinsupp.lapply (R := 𝕜) i) (hproj i) with hprojdef
-  set incl : ∀ i : ι, DeningerSeminormCompletion (P i (a i)) →L[𝕜]
-      DeningerSeminormCompletion (deningerSigmaFamily P (a, c)) :=
-    fun i => deningerSeminormInducedC (DFinsupp.lsingle (R := 𝕜) i) (hincl i) with hincldef
-  set G : ι → (DeningerSeminormCompletion (deningerSigmaFamily P (b, v)) →L[𝕜]
-      DeningerSeminormCompletion (deningerSigmaFamily P (a, c))) :=
-    fun i => (incl i).comp ((deningerSeminormComparisonC (hle i)).comp (proj i)) with hG
+  obtain ⟨proj, hprojdef⟩ : ∃ proj : ∀ i : ι,
+      DeningerSeminormCompletion (deningerSigmaFamily P (b, v)) →L[𝕜]
+        DeningerSeminormCompletion (P i (b i)),
+      ∀ i, proj i = deningerSeminormInducedC (DFinsupp.lapply (R := 𝕜) i) (hproj i) :=
+    ⟨_, fun _ => rfl⟩
+  obtain ⟨incl, hincldef⟩ : ∃ incl : ∀ i : ι, DeningerSeminormCompletion (P i (a i)) →L[𝕜]
+      DeningerSeminormCompletion (deningerSigmaFamily P (a, c)),
+      ∀ i, incl i = deningerSeminormInducedC (DFinsupp.lsingle (R := 𝕜) i) (hincl i) :=
+    ⟨_, fun _ => rfl⟩
+  obtain ⟨G, hG⟩ : ∃ G : ι → (DeningerSeminormCompletion (deningerSigmaFamily P (b, v)) →L[𝕜]
+      DeningerSeminormCompletion (deningerSigmaFamily P (a, c))),
+      ∀ i, G i = (incl i).comp ((deningerSeminormComparisonC (hle i)).comp (proj i)) :=
+    ⟨_, fun _ => rfl⟩
   -- the masses are summable
-  have hprojnorm : ∀ i, ‖proj i‖ ≤ (v i : ℝ)⁻¹ := fun i =>
-    deningerSeminormInducedC_norm_le (le_of_lt (inv_pos.mpr (hvpos i))) _ (hproj i)
-  have hinclnorm : ∀ i, ‖incl i‖ ≤ (c i : ℝ) :=
-    fun i => deningerSeminormInducedC_norm_le (hcnn i) _ (hincl i)
+  have hprojnorm : ∀ i, ‖proj i‖ ≤ (v i : ℝ)⁻¹ := by
+    intro i
+    rw [hprojdef i]
+    exact deningerSeminormInducedC_norm_le (le_of_lt (inv_pos.mpr (hvpos i))) _ (hproj i)
+  have hinclnorm : ∀ i, ‖incl i‖ ≤ (c i : ℝ) := by
+    intro i
+    rw [hincldef i]
+    exact deningerSeminormInducedC_norm_le (hcnn i) _ (hincl i)
   have hGmass : ∀ i, DeningerIsNuclearLe (G i) ((1 / 2 : ℝ) ^ e i) := by
     intro i
+    rw [hG i]
     have h1 := (hMle i).compR (proj i)
     have h2 := h1.compL (incl i)
     refine h2.mono ?_
@@ -202,11 +219,10 @@ theorem deningerIsNuclearSpaceC_sigma {κ : ι → Type*} (P : ∀ i, SeminormFa
   have hGsummable : Summable G := by
     refine Summable.of_norm ?_
     exact Summable.of_nonneg_of_le (fun i => norm_nonneg _) hGnorm hNsummable
-  set S' := ∑' i, G i with hS'
-  have hpt : ∀ z, HasSum (fun i => G i z) (S' z) := by
-    intro z
-    exact (ContinuousLinearMap.apply 𝕜
-      (DeningerSeminormCompletion (deningerSigmaFamily P (a, c))) z).hasSum hGsummable.hasSum
+  obtain ⟨S', hS'⟩ := hGsummable
+  have hpt : ∀ z, HasSum (fun i => G i z) (S' z) := fun z =>
+    (ContinuousLinearMap.apply 𝕜
+      (DeningerSeminormCompletion (deningerSigmaFamily P (a, c))) z).hasSum hS'
   have hS'nuc : DeningerIsNuclearLe S' (∑' i : ι, (1 / 2 : ℝ) ^ e i) :=
     DeningerIsNuclearLe.tsum hGmass hNsummable hpt
   -- the sum is the comparison map
@@ -217,17 +233,16 @@ theorem deningerIsNuclearSpaceC_sigma {κ : ι → Type*} (P : ∀ i, SeminormFa
     intro i x
     have h1 : proj i (deningerSeminormMkC (deningerSigmaFamily P (b, v)) x)
         = deningerSeminormMkC (P i (b i)) (x i) := by
-      rw [hprojdef]
-      rw [deningerSeminormInducedC_mkC, DFinsupp.lapply_apply]
+      rw [hprojdef i, deningerSeminormInducedC_mkC, DFinsupp.lapply_apply]
     have h2 : deningerSeminormComparisonC (hle i) (deningerSeminormMkC (P i (b i)) (x i))
         = deningerSeminormMkC (P i (a i)) (x i) :=
       deningerSeminormComparisonC_mkC (hle i) (x i)
     have h3 : incl i (deningerSeminormMkC (P i (a i)) (x i))
         = deningerSeminormMkC (deningerSigmaFamily P (a, c))
             (DFinsupp.lsingle (R := 𝕜) i (x i)) := by
-      rw [hincldef]
+      rw [hincldef i]
       exact deningerSeminormInducedC_mkC _ _ (x i)
-    rw [hG]
+    rw [hG i]
     simp only [ContinuousLinearMap.comp_apply]
     rw [h1, h2, h3]
   have hSeq : deningerSeminormComparisonC hdom = S' := by
@@ -236,10 +251,6 @@ theorem deningerIsNuclearSpaceC_sigma {κ : ι → Type*} (P : ∀ i, SeminormFa
       (deningerSeminormComparisonC hdom).continuous S'.continuous ?_
     funext z
     obtain ⟨x, rfl⟩ := deningerSeminormMk_surjective (deningerSigmaFamily P (b, v)) z
-    have hlhs : deningerSeminormComparisonC hdom
-        (deningerSeminormMkC (deningerSigmaFamily P (b, v)) x)
-        = deningerSeminormMkC (deningerSigmaFamily P (a, c)) x :=
-      deningerSeminormComparisonC_mkC hdom x
     have hfin := x.finite_support
     have hsupp : ∀ i ∉ hfin.toFinset, x i = 0 := by
       intro i hi
@@ -260,9 +271,8 @@ theorem deningerIsNuclearSpaceC_sigma {κ : ι → Type*} (P : ∀ i, SeminormFa
     show deningerSeminormComparisonC hdom
         (deningerSeminormMkC (deningerSigmaFamily P (b, v)) x)
       = S' (deningerSeminormMkC (deningerSigmaFamily P (b, v)) x)
-    rw [hlhs]
-    have := (hpt (deningerSeminormMkC (deningerSigmaFamily P (b, v)) x)).unique hfinsum
-    rw [this, hvalue]
+    rw [deningerSeminormComparisonC_mkC hdom x]
+    rw [(hpt (deningerSeminormMkC (deningerSigmaFamily P (b, v)) x)).unique hfinsum, hvalue]
   rw [hSeq]
   exact hS'nuc.isNuclear
 

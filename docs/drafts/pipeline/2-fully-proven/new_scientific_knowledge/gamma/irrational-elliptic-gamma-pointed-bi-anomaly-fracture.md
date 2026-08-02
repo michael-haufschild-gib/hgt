@@ -543,3 +543,27 @@ of `x` maps, under the base automorphism, to a nonzero relation satisfied by the
 translate.  With that lemma the degreewise sector `C_A` of `(3)` is closed under the group
 differential, and the multiplicative Koszul layer already built becomes a genuine complex of
 sectors rather than of sets.
+
+## Lean status of the DA subcomplex property
+
+`HTGeometry/TranslationStableDifferentialAlgebraicity.lean` closes the next step:
+
+> **`shiftCompHomBy`**, **`ratShiftBy`**, **`ratShiftEquivBy`** -- the translation automorphism
+> `r(X) ↦ r(X + q)` of the coordinate field, for an arbitrary complex shift (the corpus previously
+> had only the unit shift);
+> **`addTranslationMeroEquiv_ratfuncToMero_by`** -- translation of the meromorphic field restricts
+> to it, so a translation covers an automorphism of the base rather than fixing it;
+> **`differentialJet_addTranslationMeroEquiv`** -- jets commute with translation;
+> **`differentialAlgebraicOver_of_transport`** -- **the transport principle**: differential
+> algebraicity passes along any derivation-compatible automorphism covering an automorphism of the
+> base, by mapping the relation's coefficients;
+> **`differentialAlgebraicOver_addTranslationMeroEquiv`**, **`daSector_addTranslationMeroEquiv`**,
+> **`daSector_shiftQuotient`** -- **the differentially algebraic sector is translation stable, and
+> stable under the entrywise group differential.**
+
+`#print axioms` clean.  With this the degreewise sector `C_A` of `(3)` is closed under the group
+direction of the differential, which is what makes it a subcomplex there rather than a graded
+subgroup; the Cech direction of `(2)` is untouched by this module.
+
+- 2026-08-02 -- translation stability of the DA sector proved, with the general coordinate shift
+  automorphism built along the way.

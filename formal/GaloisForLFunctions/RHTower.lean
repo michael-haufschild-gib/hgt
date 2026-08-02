@@ -4444,3 +4444,4 @@ import GaloisForLFunctions.RHTower.DeningerEndpointCodimension
 import GaloisForLFunctions.RHTower.DeningerNuclearTsum
 import GaloisForLFunctions.RHTower.DeningerSigmaSeminorm
 import GaloisForLFunctions.RHTower.DeningerSeminormInducedCompleted
+import GaloisForLFunctions.RHTower.DeningerSigmaNuclear
