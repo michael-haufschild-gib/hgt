@@ -303,3 +303,136 @@ The module proves all unconditional statements above with no `sorry`, `admit`, `
 - 2026-08-02 — `J-PPES0` closed in Lean: explicit fixed-dilation source current dominates the
   complete hard-block bad-mass square.  Aperture-coherent completed-source renormalization and its
   uniform budget remain open.
+
+## Orientation-transgression correction: source transport before trace
+
+The publication-ready orientation-transgression source law rules out treating the scalar
+Gamma/co-Poisson cell as the completed object. Required order is
+
+```text
+labelled degree one
+  -> vector-valued exterior cup
+  -> singular reflected boundary transport
+  -> Hodge polarization
+  -> orientation trace.
+```
+
+Accordingly `J-PPES1` now has a finite algebraic part and a genuinely cofinal part.
+
+### `J-PPES1a` — normalized Gamma/co-Poisson Green transport
+
+`[LEAN-PROVED] [SOURCE-DEFINED]`
+
+For `pe=(p,e)`, set
+
+```text
+C_pe(z,w)=-(e+1)^(-1)
+  gammaCoPoissonIntervalCell (-(e+1)log(p)) z w.       (PPES-9)
+```
+
+This normalization is forced, not fitted:
+
+```text
+C_pe(1+a,1+a)=J_a(pe),                                (PPES-10)
+
+(z-w)C_pe(z,w)
+ =(e+1)^(-1)(
+    exp((w-1/2)L_pe)-exp((z-1/2)L_pe)),               (PPES-11)
+
+L_pe=-(e+1)log(p).
+```
+
+It is also exactly the negatively oriented ordinary-integer
+Gamma/co-Poisson Euler jet. For depths `r,s`, interval concatenation gives the exact barycentric
+law
+
+```text
+((r+1)+(s+1)) C_(p,r+s+1)
+ =(s+1) exp((z-1/2)L_(p,r)) C_(p,s)
+  +(r+1) C_(p,r) exp((w-1/2)L_(p,s)).                 (PPES-12)
+```
+
+No Euler-depth limit or scalar renormalization is inserted.
+
+At one cell, `C_pe(z,w)` acts on the rational-Witt packet leg of
+Calderón--Witt degree one while fixing the Calderón-defect leg. Its exterior lift satisfies
+
+```text
+cup o T_pe = (C_pe(z,w) id) o cup,                    (PPES-13)
+T_pe o GreenSection = GreenSection o (C_pe(z,w) id), (PPES-14)
+GreenRetraction o T_pe = T_pe^I o GreenRetraction.   (PPES-15)
+```
+
+This is vector-valued chain transport before orientation trace.
+
+### Prime-power-cell source object
+
+Existing all-prime Calderón--Witt source retains prime labels but identifies Euler depths.
+Route J needs independent cells, so define
+
+```text
+A1_cell = directSum_(pe : Nat.Primes x Nat) A1_(pe.prime),
+A2_cell = directSum_(pe : Nat.Primes x Nat) A2_(pe.prime).       (PPES-16)
+```
+
+Componentwise local cup defines an onto exterior cup
+
+```text
+d1_cell : exteriorSquare(A1_cell) -> A2_cell.          (PPES-17)
+```
+
+Its kernel is the cell Milnor-incidence sector. Every unequal-cell exterior pair belongs to this
+kernel, including two distinct depths at the same prime. The explicit cellwise Koszul section
+splits `(PPES-17)`, hence gives a canonical Green retraction.
+
+For every coefficient family `c(pe)`, diagonal packet-leg transport is a chain map and is natural
+for both Green section and Green retraction. Taking `c(pe)=C_pe(z,w)` constructs the complete
+finite-support Gamma/co-Poisson source transport. In particular, every Route J cross-cell carrier
+is its own canonical Green primitive: orientation trace and cup quotient erase it exactly.
+
+This is new infrastructure forced by the paper's operation order. It closes source existence and
+finite-stage transport compatibility; it does not manufacture the missing analytic estimate.
+
+### `J-PPES1b` — cofinal sector-preserving extension
+
+`[OPEN CORE] [DISTANCE 1]`
+
+Extend the finite-support cell transport through aperture refinement to the singular
+beyond-finite-Rees completion and prove that its explicit incidence endomorphism preserves the
+admitted positive/Hodge sector. Because cross-cell energy lives entirely in incidence, a
+boundary-blind orientation consumer cannot prove this: by orientation-transgression completeness
+it sees only the one orientation line.
+
+The exact missing statement is now:
+
+```text
+T^I_(z,w)(S_L) subset S_L
+```
+
+for the source-defined cofinal admitted sector `S_L`, compatibly in `L`, together with reflected
+odd Hodge positivity. Scalarization before this theorem deletes the object that carries Route J
+energy.
+
+## Expanded Lean certificate
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  CCMFirstClockPrimitivePromotedGammaCoPoissonGreenTransport.lean
+  CCMFirstClockPrimitivePromotedPrimePowerCellGreenTransport.lean
+```
+
+Both modules are wired into `RHTower.lean`. Direct `lake env lean` checks pass. Proofs use no
+`sorry`, `admit`, new axiom, `opaque`, `unsafe`, computation, or RH input.
+
+## Log extension
+
+- 2026-08-02 — orientation-transgression paper incorporated. Primitive promotion identified as
+  exact depth-normalized Gamma/co-Poisson confluence, with spectral boundary and all-depth
+  concatenation proved in Lean.
+- 2026-08-02 — constructed independent prime-power-cell Calderón--Witt source, diagonal
+  Gamma/co-Poisson cup chain map, cell Koszul--Green splitting, incidence transport, and Green
+  naturality. Same-prime unequal-depth carriers are proved exact and equal to their own Green
+  primitives. New same-prime depth-escape theorem proves every such carrier has nonzero
+  reflection-odd Gamma coefficient at every nonzero modular displacement. Thus required
+  countertransport must be depth-nonlocal inside each prime; cross-prime sewing alone cannot work.
+  Remaining survivor is cofinal sector preservation and Hodge-positive uniform budget.

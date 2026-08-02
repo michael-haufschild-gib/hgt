@@ -68,9 +68,9 @@ theorem hasRatApprox_jetPolyFun (lam : Fin r → ℝ) (hlam : ∀ i, 0 ≤ lam i
     simp only [jetPolyFun, MvPolynomial.eval₂_mul, MvPolynomial.eval₂_X, Pi.mul_apply, jetFun]
 
 /-- The value of a jet polynomial is the germ the eliminator works with. -/
-theorem jetEval_map_eq_coe (lam : Fin r → ℝ) {Mm : ℕ} (idx : Fin Mm → Fin r × ℕ)
+theorem shiftedJetEval_map_eq_coe (lam : Fin r → ℝ) {Mm : ℕ} (idx : Fin Mm → Fin r × ℕ)
     (P : MvPolynomial (Fin Mm) (Polynomial ℂ)) :
-    jetEval lam (fun k => ((idx k).1, (idx k).2 + 1))
+    shiftedJetEval lam (fun k => ((idx k).1, (idx k).2 + 1))
         (MvPolynomial.map (algebraMap (Polynomial ℂ) (RatFunc ℂ)) P)
       = ((jetPolyFun lam idx P : ℂ → ℂ) : Germ upperEndFilter ℂ) := by
   have hcoe : ((jetPolyFun lam idx P : ℂ → ℂ) : Germ upperEndFilter ℂ)
@@ -91,7 +91,7 @@ theorem jetEval_map_eq_coe (lam : Fin r → ℝ) {Mm : ℕ} (idx : Fin Mm → Fi
     funext k
     rw [jetGerm]
     rfl
-  rw [hcoe, jetEval, MvPolynomial.eval₂_map, hhom, hfun]
+  rw [hcoe, shiftedJetEval, MvPolynomial.eval₂_map, hhom, hfun]
 
 /-- **The boundary datum of a nonzero shifted jet polynomial.**  For pairwise incongruent
 nonnegative shifts, the value of a nonzero polynomial in the shifted digamma jets of positive order
@@ -117,9 +117,9 @@ theorem exists_hasShiftTubeDatum_jetPolyFun (lam : Fin r → ℝ) (hlam : ∀ i,
         (MvPolynomial.map (σ := Fin Mm) (algebraMap (Polynomial ℂ) (RatFunc ℂ))) :=
       MvPolynomial.map_injective _ (RatFunc.algebraMap_injective ℂ)
     exact hmap (by rw [h0, map_zero])
-  have hgerm := not_isGermNegligible_jetEval lam hincong
+  have hgerm := not_isGermNegligible_shiftedJetEval lam hincong
     (fun k => ((idx k).1, (idx k).2 + 1)) hinj' hPmap
-  rw [jetEval_map_eq_coe lam idx P] at hgerm
+  rw [shiftedJetEval_map_eq_coe lam idx P] at hgerm
   have hnn : ¬ IsVerticallyNegligible (jetPolyFun lam idx P) := by
     intro hneg
     exact hgerm (isGermNegligible_coe.mpr hneg)

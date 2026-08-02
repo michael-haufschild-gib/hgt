@@ -148,6 +148,12 @@ from that boundary to Weil positivity, the critical line, or zero exclusion is k
   directions onto the determinant-one observer metrics, with the spectral logarithm as inverse
 - [x] the tangent norm and the radial distance: the Hilbert–Schmidt norm of a direction is the
   Euclidean norm of its eigenvalues, and a ray leaves the reference metric at constant rate
+- [x] maximal flats are Euclidean: in the logarithmic chart the distance between two points of a
+  flat is the Euclidean distance of their weights
+- [x] inversion is the geodesic symmetry: `log (P⁻¹) = − log P`, so an observer metric and its
+  inverse are at the same distance from the reference metric
+- [x] the distance between two observer metrics is defined and separates them; only its triangle
+  inequality (the nonpositive-curvature theorem) is still open
 - [ ] 2 -> 3: parent reconstruction core formalized; the Tits boundary of `SL_N(C)/SU(N)` as a
   metric object (symmetric-space distance, geodesic asymptote classes, Tits metric) is still
   unavailable in Lean, so `(3)` itself is not encoded
@@ -465,3 +471,90 @@ from that boundary to Weil positivity, the critical line, or zero exclusion is k
   What is still not formalized, and is the last item of `(3)`: the distance between two *arbitrary*
   observer metrics — whose triangle inequality is the nonpositive-curvature statement — and the Tits
   metric on the boundary.  The radial case, which is what the card's rays use, is done.
+
+- 2026-08-02 — **Maximal flats are Euclidean.**
+  `formal/GaloisForLFunctions/HTGeometry/FlatEuclidean.lean`, in the umbrella, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+
+  The tangent-norm formula of the previous entry was generalized from an eigenbasis to *any*
+  orthonormal basis (`hsNorm_toCLM_diagonal`: an operator diagonal in an orthonormal basis has
+  tangent norm the Euclidean norm of its diagonal), which is what a flat needs, since the directions
+  of a flat are diagonal in a common frame but their eigenvalue *ordering* is not the frame's.
+
+  Consequently, for the flat of a frame:
+
+  ```text
+  ‖diag w‖              = √(∑ᵢ wᵢ²)                       (hsNorm_diagOp)
+  ‖diag w − diag w'‖    = √(∑ᵢ (wᵢ − w'ᵢ)²)               (hsNorm_diagOp_sub)
+  ```
+
+  and, transported to the points of the flat by the logarithm (`logOp_metricRay_diagOp`),
+  `flat_dist_eq`: the distance between two points of a flat, measured by the tangent norm of the
+  difference of their logarithms, is the **Euclidean distance of their weights**.  It vanishes only
+  on the diagonal (`flat_dist_eq_zero_iff`) and the parametrization is faithful
+  (`metricRay_diagOp_injective`).
+
+  With `finrank_flat = N - 1` this is the card's "real rank `N - 1`" in metric form: a maximal flat
+  is a Euclidean space of dimension `N - 1`, so its sphere at infinity is a genuine `S^(N-2)`, the
+  dimension of an apartment.
+
+  Still open, and now the only gap: the distance between observer metrics in *different* flats —
+  whose triangle inequality is the nonpositive-curvature theorem — and the Tits metric on the
+  boundary.
+
+- 2026-08-02 — **Inversion, and a general handle on the logarithm.**
+  `formal/GaloisForLFunctions/HTGeometry/ObserverInverse.lean`, in the umbrella, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+
+  The reusable piece is `logOp_eq_of_diagonal`: an operator diagonal in **any** orthonormal frame
+  with positive weights has as logarithm the operator diagonal in the *same* frame with the
+  logarithms of those weights.  Proved through the flag and the uniqueness theorem, so no
+  eigenbasis bookkeeping is needed — mathlib's chosen eigenbasis of the operator never has to be
+  compared with the frame one actually holds.  Two supporting general facts came with it: the
+  quadratic form of a frame-diagonal operator is the weighted sum of squared coordinates
+  (`inner_self_of_diagonal`), so positive weights give a positive-definite form
+  (`inner_self_pos_of_diagonal`).
+
+  With that, `invOp` — the spectral inverse of a positive-definite Hermitian form — is immediate:
+  it is Hermitian (`isSymmetric_invOp`), positive definite (`inner_invOp_pos`), inverts
+  (`invOp_comp`), and
+
+  ```text
+  log (P⁻¹) = − log P            (logOp_invOp)
+  dist (P⁻¹) = dist P            (distId_invOp)
+  ```
+
+  so inversion fixes the distance from the reference metric: it is the geodesic symmetry through the
+  reference point, the involution that makes the observer-metric space *symmetric* in the sense of
+  the card's phrase "Riemannian symmetric space".
+
+  Two earlier eigenbasis-specific lemmas (`inner_eq_sum_repr`, `repr_metricRay`) were rewritten as
+  corollaries of the new frame-general ones, so the corpus keeps one proof of each fact.
+
+  Still open: the distance between observer metrics in different flats — the triangle inequality
+  there is the nonpositive-curvature theorem — and the Tits metric on the boundary.
+
+- 2026-08-02 — **The distance between two observer metrics.**
+  `formal/GaloisForLFunctions/HTGeometry/ObserverPairDistance.lean`, in the umbrella, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+
+  `observerDist P Q = ‖log (√P⁻¹ Q √P⁻¹)‖`: the second metric measured in the frame of the first,
+  then read by the radial distance of the earlier modules.  The relative form `relOp` is Hermitian
+  (`isSymmetric_relOp`) and positive definite (`inner_relOp_pos`), so it *is* an observer metric and
+  the definition is legitimate; and
+
+  ```text
+  observerDist P P = 0                       (observerDist_self)
+  observerDist P Q = 0 ↔ Q = P               (observerDist_eq_zero_iff)
+  relOp id Q = Q                             (relOp_id)
+  ```
+
+  — the distance vanishes exactly on the diagonal, and measured from the reference metric it is the
+  radial distance already studied.  Supporting facts proved on the way: the spectral inverse inverts
+  on both sides (`comp_invOp`) and is injective, and the square root is positive definite
+  (`inner_sqrtOp_pos`).
+
+  So the observer-metric space now carries a genuine point-separating distance function.  What is
+  still missing — and it is now the *only* missing analytic input for `(3)` — is its **triangle
+  inequality**, which for this distance is precisely the nonpositive-curvature (CAT(0)) theorem for
+  the symmetric space, together with the Tits metric that is built from it on the boundary.

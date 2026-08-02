@@ -23,9 +23,8 @@ variable {n : ℕ} {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ E] [
 
 theorem inner_eq_sum_repr (hT : T.IsSymmetric) (hn : finrank ℂ E = n) (v w : E) :
     inner ℂ v w = ∑ i, (starRingEnd ℂ) ((hT.eigenvectorBasis hn).repr v i)
-      * (hT.eigenvectorBasis hn).repr w i := by
-  rw [← (hT.eigenvectorBasis hn).repr.inner_map_map v w, PiLp.inner_apply]
-  exact Finset.sum_congr rfl fun i _ => (RCLike.inner_apply _ _).trans (mul_comm _ _)
+      * (hT.eigenvectorBasis hn).repr w i :=
+  inner_eq_sum_repr_of_orthonormalBasis (hT.eigenvectorBasis hn) v w
 
 theorem norm_sq_eq_sum_repr (hT : T.IsSymmetric) (hn : finrank ℂ E = n) (v : E) :
     ‖v‖ ^ 2 = ∑ i, ‖(hT.eigenvectorBasis hn).repr v i‖ ^ 2 := by

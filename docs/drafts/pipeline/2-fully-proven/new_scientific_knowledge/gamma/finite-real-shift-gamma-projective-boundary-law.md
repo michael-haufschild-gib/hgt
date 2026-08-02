@@ -986,7 +986,7 @@ shape the eliminator indexes by, and `HTGeometry/JetNonNegligible.lean` runs the
 > **`upperEndTranslateGerm_ratFuncGerm`** — the unit shift of a rational germ is the germ of the
 > shifted rational function, from `ratShift_algebraMap` and `Polynomial.eval_comp`;
 > **`jetEval`** — the evaluation `MvPolynomial (Fin M) ℂ(X) → Germ upperEndFilter ℂ`;
-> **`not_isGermNegligible_jetEval`** — **for pairwise incongruent shifts, no nonzero polynomial in
+> **`not_isGermNegligible_shiftedJetEval`** — **for pairwise incongruent shifts, no nonzero polynomial in
 > the shifted digamma jets is vertically negligible.**
 
 `#print axioms` clean.  (`eval₂_jetTranslateWith` was generalized from a field to a commutative ring
@@ -1035,7 +1035,7 @@ function is the datum of a quotient of polynomials — which the datum algebra a
 > **`polyFunHom`**, **`jetFun`**, **`jetPolyFun`** — the value of a jet polynomial with polynomial
 > coefficients, as an honest ring evaluation into the function ring;
 > **`hasRatApprox_jetPolyFun`** — every such value is approximable, by induction on the polynomial;
-> **`jetEval_map_eq_coe`** — that value is the germ the eliminator works with, via
+> **`shiftedJetEval_map_eq_coe`** — that value is the germ the eliminator works with, via
 > `MvPolynomial.eval₂_comp_left` and `ratFuncGerm_algebraMap`;
 > **`exists_hasShiftTubeDatum_jetPolyFun`** — **`(11)` for the shifted polygamma ring: for pairwise
 > incongruent nonnegative shifts, the value of a nonzero polynomial in the shifted digamma jets of
@@ -1086,7 +1086,7 @@ ordering the boundary shape already carries.
 > dominant signature that did not beat `s^{-N}` would make the whole approximant, hence the
 > function, negligible at order `N`;
 > **`jetFieldFun`**, **`jetFieldPolyFun`**, **`hasLogRatApprox_jetFieldPolyFun`**,
-> **`jetEval_map_eq_coe_field`**;
+> **`shiftedJetEval_map_eq_coe_field`**;
 > **`exists_hasShiftTubeDatum_jetFieldPolyFun`** — **equation `(11)`: for pairwise incongruent
 > nonnegative shifts, the value of a nonzero polynomial in the shifted digamma jets of any orders,
 > `ψ` itself included, has an argument exponent, a logarithm exponent and a nonzero residue on every
@@ -1228,3 +1228,9 @@ projective boundary `(6)`, the finite phase law `(19)` and its consequences `(21
 - 2026-08-02 -- the Lean gate closed: an arbitrary element of the shifted Gamma field, presented as a
   quotient of normal-form sums, has a boundary datum (`exists_hasShiftTubeDatum_jetGammaQuotient`).
   The only gate left on this card is the literature comparison before publication.
+
+- 2026-08-02 -- the jet evaluation of this card is now named `shiftedJetEval` (with
+  `not_isGermNegligible_shiftedJetEval`, `shiftedJetEval_map_eq_coe`,
+  `shiftedJetEval_map_eq_coe_field`): a concurrently added module `PolynomialJetEvaluation`
+  declares a different `jetEval` in the same namespace, and the two cones collided in the
+  `HTGeometry` umbrella.  The umbrella builds again.

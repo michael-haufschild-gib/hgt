@@ -74,24 +74,8 @@ theorem metricRay_eigenvectorBasis (hT : T.IsSymmetric) (hn : finrank ℂ E = n)
 by the exponentials of the eigenvalues. -/
 theorem repr_metricRay (hT : T.IsSymmetric) (hn : finrank ℂ E = n) (v : E) (t : ℝ) (i : Fin n) :
     (hT.eigenvectorBasis hn).repr (metricRay T t v) i
-      = ((Real.exp (t * hT.eigenvalues hn i) : ℝ) : ℂ) * (hT.eigenvectorBasis hn).repr v i := by
-  classical
-  set b := hT.eigenvectorBasis hn with hb
-  have hexp : metricRay T t v = ∑ j, (b.repr v j * ((Real.exp (t * hT.eigenvalues hn j) : ℝ) : ℂ))
-      • b j := by
-    conv_lhs => rw [← b.sum_repr v]
-    rw [map_sum]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    rw [ContinuousLinearMap.map_smul, metricRay_eigenvectorBasis hT hn j t, smul_smul]
-  have hortho : ∀ j k : Fin n, inner ℂ (b j) (b k) = if j = k then (1 : ℂ) else 0 :=
-    fun j k => orthonormal_iff_ite.1 b.orthonormal j k
-  rw [hexp, b.repr_apply_apply, inner_sum]
-  rw [Finset.sum_eq_single i]
-  · rw [inner_smul_right, b.repr_apply_apply, hortho i i, if_pos rfl, mul_one, mul_comm]
-  · intro j _ hj
-    rw [inner_smul_right, hortho i j, if_neg (Ne.symm hj), mul_zero]
-  · intro hcon
-    exact absurd (Finset.mem_univ i) hcon
+      = ((Real.exp (t * hT.eigenvalues hn i) : ℝ) : ℂ) * (hT.eigenvectorBasis hn).repr v i :=
+  repr_of_diagonal (hT.eigenvectorBasis hn) (fun j => metricRay_eigenvectorBasis hT hn j t) v i
 
 theorem norm_sq_repr (hT : T.IsSymmetric) (hn : finrank ℂ E = n) (v : E) :
     ‖v‖ = Real.sqrt (∑ i, ‖(hT.eigenvectorBasis hn).repr v i‖ ^ 2) := by

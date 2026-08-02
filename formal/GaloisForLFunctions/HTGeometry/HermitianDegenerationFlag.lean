@@ -158,6 +158,33 @@ theorem toMatrix_diagonal_of_orthonormalBasis {m : ℕ} (b : OrthonormalBasis (F
     simp
   · simp [hij]
 
+/-- **Parseval in coordinates**: the inner product is the coordinate pairing of an orthonormal
+basis. -/
+theorem inner_eq_sum_repr_of_orthonormalBasis {m : ℕ} (b : OrthonormalBasis (Fin m) ℂ E) (v w : E) :
+    inner ℂ v w = ∑ i, (starRingEnd ℂ) (b.repr v i) * b.repr w i := by
+  rw [← b.repr.inner_map_map v w, PiLp.inner_apply]
+  exact Finset.sum_congr rfl fun i _ => (RCLike.inner_apply _ _).trans (mul_comm _ _)
+
+/-- **The coordinates of the image under an operator diagonal in the basis** are the coordinates
+scaled by the diagonal. -/
+theorem repr_of_diagonal {m : ℕ} (b : OrthonormalBasis (Fin m) ℂ E) {f : E →ₗ[ℂ] E} {d : Fin m → ℂ}
+    (hd : ∀ i, f (b i) = d i • b i) (v : E) (i : Fin m) :
+    b.repr (f v) i = d i * b.repr v i := by
+  classical
+  have hfv : f v = ∑ j, (b.repr v j * d j) • b j := by
+    conv_lhs => rw [← b.sum_repr v]
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [map_smul, hd j, smul_smul]
+  have hortho : ∀ j k : Fin m, inner ℂ (b j) (b k) = if j = k then (1 : ℂ) else 0 :=
+    fun j k => orthonormal_iff_ite.1 b.orthonormal j k
+  rw [hfv, b.repr_apply_apply, inner_sum, Finset.sum_eq_single i]
+  · rw [inner_smul_right, hortho i i, if_pos rfl, mul_one, b.repr_apply_apply, mul_comm]
+  · intro j _ hj
+    rw [inner_smul_right, hortho i j, if_neg (Ne.symm hj), mul_zero]
+  · intro hcon
+    exact absurd (Finset.mem_univ i) hcon
+
 /-- **A basis vector outside an index set is orthogonal to its span.** -/
 theorem mem_orthogonal_span_of_notMem (b : OrthonormalBasis ι ℂ E) {s : Set ι} {j : ι}
     (hj : j ∉ s) : b j ∈ (Submodule.span ℂ (b '' s))ᗮ := by

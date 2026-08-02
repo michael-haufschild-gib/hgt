@@ -86,8 +86,8 @@ theorem locQuotCoboundary_mk (om : Finset ι → L) (T : Finset ι) :
 
 The localization of the augmented facet complex at any multiplicative set of the polynomial ring
 stays exact: a cochain on the `c+1`-element sets of facets, vanishing off the given family and
-killed by the differential, is the differential of a cochain one degree lower with the same
-vanishing properties.
+killed by the differential on those sets, is the differential of a cochain one degree lower which
+vanishes off the family and off degree `c`.
 
 The proof clears denominators.  A common denominator exists because only the finitely many subsets
 of the given facet family matter; one further element of the multiplicative set turns the localized
@@ -97,7 +97,6 @@ theorem locFacetComplex_exact (M : Submonoid (MvPolynomial α k)) [IsLocalizatio
     (facets : Finset ι) (c : ℕ)
     (om : ∀ T : Finset ι, locFacetQuot k Fam L T)
     (hdeg : ∀ T : Finset ι, T.card ≠ c + 1 → om T = 0)
-    (hsub : ∀ T : Finset ι, ¬ T ⊆ facets → om T = 0)
     (hcoc : ∀ T : Finset ι, T ⊆ facets → locQuotCoboundary k Fam L om T = 0) :
     ∃ eta : ∀ T : Finset ι, locFacetQuot k Fam L T,
       (∀ T : Finset ι, T.card ≠ c → eta T = 0) ∧ (∀ T : Finset ι, ¬ T ⊆ facets → eta T = 0)

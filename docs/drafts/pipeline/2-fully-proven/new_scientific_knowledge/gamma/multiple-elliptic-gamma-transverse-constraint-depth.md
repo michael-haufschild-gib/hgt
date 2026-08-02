@@ -357,3 +357,23 @@ proof.
 - 2026-07-10 - Transferred the threshold to multiplicative hypercube quotients and isolated the full annihilator ideal as the next open core.
 - 2026-07-10 - Audited Narukawa, Winding, Ogawara, Kato, one-operator difference-Galois parents, and the 2024--2026 hierarchy literature; found no equivalent DA/HT support theorem.
 - 2026-07-10 - Closed the former open core: proved that the full parameter-translation annihilator is exactly the squarefree degree-`r` ideal and transferred it to every finite integer translate product of `G_r`.
+
+## Lean status of the transverse-depth corollary: sufficiency half
+
+The special-function half of `D_m Psi_r is DA iff s(m)>=r` is no longer entirely outside Lean.
+`GaloisForLFunctions/HTGeometry/MultipleGammaTransverseDifference.lean` builds the iterated
+structural difference operator (`meroShiftDiff`, `listShiftDiff`), proves it depends only on the
+multiset of directions (`listShiftDiff_perm`), identifies a repetition-free iteration with the
+corresponding face of the genuine hierarchy (`listShiftDiff_nodup`), and proves
+`differentialAlgebraicOver_listShiftDiff_multipleEllipticGammaLogDerivMero`: once the directions
+occurring in the list delete all but at most one parameter, the iterated difference is
+differentially algebraic over `C(z)`, with arbitrary repetitions absorbed.  That is exactly the
+sufficiency direction `s(m)>=r`, unconditional and `#print axioms` clean.
+
+The necessity direction still rests on the order-one defect matroid; inside this corpus that is
+`multipleEllipticGammaSelectedFaces_differentialIndependent`, so the missing step is the passage
+from differential independence of a face-packet family to non-differential-algebraicity of a nonzero
+integer combination of its members.
+
+- 2026-08-02 -- sufficiency half formalized; necessity half reduced to one matroid-to-combination
+  step inside the corpus.

@@ -47,17 +47,17 @@ theorem upperEndTranslateGerm_ratFuncGerm (k : RatFunc ℂ) :
   simp [Polynomial.eval_comp]
 
 /-- The evaluation of a jet polynomial as a germ at the upper end. -/
-def jetEval (lam : Fin r → ℝ) {M : ℕ} (idx : Fin M → Fin r × ℕ)
+def shiftedJetEval (lam : Fin r → ℝ) {M : ℕ} (idx : Fin M → Fin r × ℕ)
     (P : MvPolynomial (Fin M) (RatFunc ℂ)) : Germ upperEndFilter ℂ :=
   MvPolynomial.eval₂ (algebraMap (RatFunc ℂ) (Germ upperEndFilter ℂ))
     (fun k => jetGerm lam (idx k)) P
 
 /-- **No nonzero polynomial in the shifted digamma jets is vertically negligible.** -/
-theorem not_isGermNegligible_jetEval (lam : Fin r → ℝ)
+theorem not_isGermNegligible_shiftedJetEval (lam : Fin r → ℝ)
     (hincong : ∀ i i', i ≠ i' → ∀ n : ℤ, ((lam i : ℝ) : ℂ) - ((lam i' : ℝ) : ℂ) ≠ (n : ℂ))
     {M : ℕ} (idx : Fin M → Fin r × ℕ) (hinj : Function.Injective idx)
     {P : MvPolynomial (Fin M) (RatFunc ℂ)} (hP : P ≠ 0) :
-    ¬ IsGermNegligible (jetEval lam idx P) := by
+    ¬ IsGermNegligible (shiftedJetEval lam idx P) := by
   classical
   intro hneg
   set lamC : Fin r → ℂ := fun i => ((lam i : ℝ) : ℂ) with hlamC
@@ -68,21 +68,22 @@ theorem not_isGermNegligible_jetEval (lam : Fin r → ℝ)
     rw [hrj]
     simp only [k.isLt, dif_pos, Fin.eta]
   set I : Set (MvPolynomial (Fin M) (RatFunc ℂ)) :=
-    {G | IsGermNegligible (jetEval lam idx G)} with hI
+    {G | IsGermNegligible (shiftedJetEval lam idx G)} with hI
   have hjetHom : ∀ G H : MvPolynomial (Fin M) (RatFunc ℂ),
-      jetEval lam idx (G - H) = jetEval lam idx G - jetEval lam idx H := by
+      shiftedJetEval lam idx (G - H) = shiftedJetEval lam idx G - shiftedJetEval lam idx H := by
     intro G H
-    rw [jetEval, jetEval, jetEval, MvPolynomial.eval₂_sub]
+    rw [shiftedJetEval, shiftedJetEval, shiftedJetEval, MvPolynomial.eval₂_sub]
   have hsub : ∀ G H, G ∈ I → H ∈ I → G - H ∈ I := by
     intro G H hG hH
-    show IsGermNegligible (jetEval lam idx (G - H))
+    show IsGermNegligible (shiftedJetEval lam idx (G - H))
     rw [hjetHom]
     exact hG.sub hH
   have hsmul : ∀ (k : RatFunc ℂ) (G), G ∈ I → MvPolynomial.C k * G ∈ I := by
     intro k G hG
-    show IsGermNegligible (jetEval lam idx (MvPolynomial.C k * G))
-    have hval : jetEval lam idx (MvPolynomial.C k * G) = ratFuncGerm k * jetEval lam idx G := by
-      rw [jetEval, jetEval, MvPolynomial.eval₂_mul, MvPolynomial.eval₂_C]
+    show IsGermNegligible (shiftedJetEval lam idx (MvPolynomial.C k * G))
+    have hval : shiftedJetEval lam idx (MvPolynomial.C k * G)
+        = ratFuncGerm k * shiftedJetEval lam idx G := by
+      rw [shiftedJetEval, shiftedJetEval, MvPolynomial.eval₂_mul, MvPolynomial.eval₂_C]
       rfl
     rw [hval]
     exact hG.mul_ratFuncGerm k
@@ -101,16 +102,16 @@ theorem not_isGermNegligible_jetEval (lam : Fin r → ℝ)
     exact upperEndTranslateGerm_ratFuncGerm q
   have hshift : ∀ G, G ∈ I → jetTranslateWith rj M G ∈ I := by
     intro G hG
-    show IsGermNegligible (jetEval lam idx (jetTranslateWith rj M G))
+    show IsGermNegligible (shiftedJetEval lam idx (jetTranslateWith rj M G))
     have hval := eval₂_jetTranslateWith (upperEndTranslationRingEquiv 1) hbase rj
       (fun k => jetGerm lam (idx k)) hjetShift G
-    rw [jetEval, hval, upperEndTranslationRingEquiv_apply]
+    rw [shiftedJetEval, hval, upperEndTranslationRingEquiv_apply]
     exact hG.shift
   have hconst : ∀ k : RatFunc ℂ, MvPolynomial.C k ∈ I → k = 0 := by
     intro k hk
     by_contra hkne
-    have hval : jetEval lam idx (MvPolynomial.C k) = ratFuncGerm k := by
-      rw [jetEval, MvPolynomial.eval₂_C]
+    have hval : shiftedJetEval lam idx (MvPolynomial.C k) = ratFuncGerm k := by
+      rw [shiftedJetEval, MvPolynomial.eval₂_C]
       rfl
     have : IsGermNegligible (ratFuncGerm k) := by
       have := hk

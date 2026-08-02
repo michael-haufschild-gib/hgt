@@ -38,26 +38,32 @@ theorem hsNorm_smul_of_isHilbertSchmidt {S : E →L[ℂ] E}
   rw [ContinuousLinearMap.hsNorm, ContinuousLinearMap.hsNorm, hsNormSq_smul hS c,
     Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (norm_nonneg c)]
 
+/-- **The tangent norm of an operator diagonal in an orthonormal basis** is the Euclidean norm of
+its diagonal. -/
+theorem hsNorm_toCLM_diagonal (b : OrthonormalBasis (Fin n) ℂ E) {f : E →ₗ[ℂ] E} {d : Fin n → ℂ}
+    (hd : ∀ i, f (b i) = d i • b i) :
+    ContinuousLinearMap.hsNorm (LinearMap.toContinuousLinearMap f)
+      = Real.sqrt (∑ i, ‖d i‖ ^ 2) := by
+  classical
+  rw [ContinuousLinearMap.hsNorm,
+    ContinuousLinearMap.hsNormSq_eq (isHilbertSchmidt_toCLM f) b.toHilbertBasis, tsum_fintype]
+  congr 1
+  refine Finset.sum_congr rfl fun i _ => ?_
+  have hb : (b.toHilbertBasis : Fin n → E) i = b i := by
+    rw [OrthonormalBasis.coe_toHilbertBasis]
+  have happ : (LinearMap.toContinuousLinearMap f) ((b.toHilbertBasis : Fin n → E) i) = f (b i) := by
+    rw [hb]
+    rfl
+  rw [happ, hd i, norm_smul, b.orthonormal.1 i, mul_one]
+
 /-- **The tangent norm of a Hermitian direction is the Euclidean norm of its eigenvalues.** -/
 theorem hsNorm_toCLM_eq_sqrt (hT : T.IsSymmetric) (hn : finrank ℂ E = n) :
     ContinuousLinearMap.hsNorm (LinearMap.toContinuousLinearMap T)
       = Real.sqrt (∑ i, hT.eigenvalues hn i ^ 2) := by
-  classical
-  rw [ContinuousLinearMap.hsNorm,
-    ContinuousLinearMap.hsNormSq_eq (isHilbertSchmidt_toCLM T)
-      ((hT.eigenvectorBasis hn).toHilbertBasis), tsum_fintype]
+  rw [hsNorm_toCLM_diagonal (hT.eigenvectorBasis hn) (hT.apply_eigenvectorBasis hn)]
   congr 1
   refine Finset.sum_congr rfl fun i _ => ?_
-  have hb : ((hT.eigenvectorBasis hn).toHilbertBasis : Fin n → E) i
-      = (hT.eigenvectorBasis hn) i := by
-    rw [OrthonormalBasis.coe_toHilbertBasis]
-  have happ : (LinearMap.toContinuousLinearMap T)
-      (((hT.eigenvectorBasis hn).toHilbertBasis : Fin n → E) i)
-      = T ((hT.eigenvectorBasis hn) i) := by
-    rw [hb]
-    rfl
-  rw [happ, hT.apply_eigenvectorBasis hn i, norm_smul, (hT.eigenvectorBasis hn).orthonormal.1 i,
-    mul_one, RCLike.norm_ofReal, sq_abs]
+  rw [RCLike.norm_ofReal, sq_abs]
 
 theorem hsNorm_toCLM_nonneg (T : E →ₗ[ℂ] E) :
     0 ≤ ContinuousLinearMap.hsNorm (LinearMap.toContinuousLinearMap T) :=

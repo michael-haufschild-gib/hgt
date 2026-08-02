@@ -2945,3 +2945,98 @@ scalarization and prove an aperture-refinement identity that cancels this longit
 mass while retaining the local lower comparison `(162)`.  Normalizing `(157)` by hand, moving the
 survivor to another route, or taking an absolute prime norm would erase the required source
 identity and does not close Route J.
+
+## 45. Prime-power-cell Gamma/co-Poisson Green transport
+
+The orientation-transgression source law changes the type of the missing object. A scalar
+Gamma/co-Poisson counterterm is too late: every regular boundary-blind scalar consumer factors
+through one orientation line, while Route J cross-cell energy lives in exact incidence. Required
+transport must therefore act before cup and orientation trace.
+
+For a labelled Euler cell `pe=(p,e)`, define
+
+```text
+C_pe(z,w)=-(e+1)^(-1)
+  gammaCoPoissonIntervalCell (-(e+1)log(p)) z w.       (163)
+```
+
+The following identities are now unconditional Lean theorems:
+
+```text
+C_pe(1+a,1+a)=J_a(pe),                                (164)
+
+(z-w)C_pe(z,w)
+ =(e+1)^(-1)(
+    exp((w-1/2)L_pe)-exp((z-1/2)L_pe)),               (165)
+
+L_pe=-(e+1)log(p),
+```
+
+and exact depth sewing
+
+```text
+((r+1)+(s+1)) C_(p,r+s+1)
+ =(s+1) exp((z-1/2)L_(p,r)) C_(p,s)
+  +(r+1) C_(p,r) exp((w-1/2)L_(p,s)).                 (166)
+```
+
+Equation `(164)` identifies primitive promotion as canonical depth-normalized confluence of the
+ordinary-integer Gamma/co-Poisson Euler jet. It is not a multiplier selected from the target bad
+mass.
+
+The source has now been constructed at the correct label resolution:
+
+```text
+A1_cell = directSum_(pe : Nat.Primes x Nat) A1_(pe.prime),
+A2_cell = directSum_(pe : Nat.Primes x Nat) A2_(pe.prime).       (167)
+```
+
+Componentwise Calderón--Witt cup induces a surjective exterior differential
+
+```text
+d1_cell : exteriorSquare(A1_cell) -> A2_cell,          (168)
+```
+
+with explicit Koszul--Green section and retraction. Distinct cells have zero componentwise cup, so
+
+```text
+pe != qe
+ -> wedge(lof_pe x, lof_qe y) in ker(d1_cell),         (169)
+```
+
+including `pe.prime=qe.prime` with unequal Euler depths. More strongly, the carrier in `(169)` is
+its own canonical Green primitive.
+
+For any diagonal coefficient family `c(pe)`, transport only the rational-Witt packet leg in degree
+one. Its exterior lift satisfies
+
+```text
+d1_cell o T_c = T2_c o d1_cell,                       (170)
+T_c o GreenSection = GreenSection o T2_c,             (171)
+GreenRetraction o T_c = T_c^I o GreenRetraction.      (172)
+```
+
+Taking `c(pe)=C_pe(z,w)` gives the source-pointed Gamma/co-Poisson transport at every finite
+support stage. This closes the missing algebraic source construction and shows exactly why scalar
+renormalization was theatre: scalar orientation trace kills the carrier in `(169)`.
+
+Lean certificate:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  CCMFirstClockPrimitivePromotedGammaCoPoissonGreenTransport.lean
+  CCMFirstClockPrimitivePromotedPrimePowerCellGreenTransport.lean
+```
+
+Route J remains open on one hard theorem, not on source existence. The explicit incidence
+endomorphisms `T_c^I` must extend through the beyond-finite-Rees aperture system, preserve its
+admitted positive/Hodge sector, and yield a cofinally uniform capacity while retaining finite
+lower comparison `(162)`. Orientation-factorization cannot prove that statement; it is singular
+sector preservation before trace.
+
+There is now a sharper necessary condition. For every prime `p`, unequal depths `e!=f`, and
+nonzero modular displacement `a`, the canonical same-prime depth carrier is exact incidence and
+its own Green primitive, but its reflection-odd Gamma coefficient is nonzero. Hence no completion
+using only cross-prime countersewing can preserve the reflection-balanced sector. Any successful
+countertransport must be depth-nonlocal within every prime and only cancel after cofinal depth
+assembly.

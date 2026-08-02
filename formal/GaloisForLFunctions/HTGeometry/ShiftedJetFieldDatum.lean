@@ -232,9 +232,9 @@ theorem hasLogRatApprox_jetFieldPolyFun (lam : Fin r → ℝ) (hlam : ∀ i, 0 �
     simp only [jetFieldPolyFun, MvPolynomial.eval₂_mul, MvPolynomial.eval₂_X, Pi.mul_apply]
 
 /-- The value of a jet polynomial of the full field is the germ the eliminator works with. -/
-theorem jetEval_map_eq_coe_field (lam : Fin r → ℝ) {Mm : ℕ} (idx : Fin Mm → Fin r × ℕ)
+theorem shiftedJetEval_map_eq_coe_field (lam : Fin r → ℝ) {Mm : ℕ} (idx : Fin Mm → Fin r × ℕ)
     (P : MvPolynomial (Fin Mm) (Polynomial ℂ)) :
-    jetEval lam idx (MvPolynomial.map (algebraMap (Polynomial ℂ) (RatFunc ℂ)) P)
+    shiftedJetEval lam idx (MvPolynomial.map (algebraMap (Polynomial ℂ) (RatFunc ℂ)) P)
       = ((jetFieldPolyFun lam idx P : ℂ → ℂ) : Germ upperEndFilter ℂ) := by
   have hcoe : ((jetFieldPolyFun lam idx P : ℂ → ℂ) : Germ upperEndFilter ℂ)
       = MvPolynomial.eval₂ ((Germ.coeRingHom upperEndFilter).comp polyFunHom)
@@ -254,7 +254,7 @@ theorem jetEval_map_eq_coe_field (lam : Fin r → ℝ) {Mm : ℕ} (idx : Fin Mm 
     funext k
     rw [jetGerm]
     rfl
-  rw [hcoe, jetEval, MvPolynomial.eval₂_map, hhom, hfun]
+  rw [hcoe, shiftedJetEval, MvPolynomial.eval₂_map, hhom, hfun]
 
 /-- **Equation (11): the boundary datum of a nonzero element of the shifted polygamma ring.**  For
 pairwise incongruent nonnegative shifts, the value of a nonzero polynomial in the shifted digamma
@@ -275,8 +275,8 @@ theorem exists_hasShiftTubeDatum_jetFieldPolyFun (lam : Fin r → ℝ) (hlam : �
         (MvPolynomial.map (σ := Fin Mm) (algebraMap (Polynomial ℂ) (RatFunc ℂ))) :=
       MvPolynomial.map_injective _ (RatFunc.algebraMap_injective ℂ)
     exact hmap (by rw [h0, map_zero])
-  have hgerm := not_isGermNegligible_jetEval lam hincong idx hinj hPmap
-  rw [jetEval_map_eq_coe_field lam idx P] at hgerm
+  have hgerm := not_isGermNegligible_shiftedJetEval lam hincong idx hinj hPmap
+  rw [shiftedJetEval_map_eq_coe_field lam idx P] at hgerm
   have hnn : ¬ IsVerticallyNegligible (jetFieldPolyFun lam idx P) := by
     intro hneg
     exact hgerm (isGermNegligible_coe.mpr hneg)
