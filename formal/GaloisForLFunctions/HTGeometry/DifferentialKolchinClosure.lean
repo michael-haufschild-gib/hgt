@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.DifferentialPolynomialOver
 import GaloisForLFunctions.HTGeometry.KolchinExchangeGaugeObstruction
+import Mathlib.Topology.Basic
 
 /-!
 # Kolchin closure and fixed fields
@@ -54,6 +55,18 @@ theorem mem_differentialVanishingIdealOver_iff
     P ∈ differentialVanishingIdealOver X ↔
       ∀ x ∈ X, differentialPolynomialEvalOver (K := K) x P = 0 :=
   Iff.rfl
+
+/-- A differential vanishing ideal is stable under the total differential-polynomial
+derivation. -/
+theorem differentialPolynomialOverDerivation_mem_differentialVanishingIdealOver
+    {ι K L : Type*} [CommRing K] [CommRing L] [Algebra K L]
+    [Differential K] [Differential L] [DifferentialAlgebra K L]
+    (X : Set (ι → L)) {P : DifferentialPolynomial ι K}
+    (hP : P ∈ differentialVanishingIdealOver X) :
+    differentialPolynomialOverDerivation ι K P ∈
+      differentialVanishingIdealOver X := by
+  intro x hx
+  rw [differentialPolynomialEvalOver_derivation, hP x hx, map_zero]
 
 /-- Zero loci and vanishing ideals form the defining Kolchin Galois connection. -/
 theorem subset_differentialZeroLocusOver_iff
@@ -144,6 +157,137 @@ theorem isKolchinClosedOver_iff_kolchinClosureOver_eq
     rw [← hX]
     exact isKolchinClosedOver_kolchinClosureOver X
 
+/-- Empty affine locus is Kolchin closed. -/
+theorem isKolchinClosedOver_empty
+    {ι K L : Type*} [Field K] [Field L] [Algebra K L] [Differential L] :
+    IsKolchinClosedOver K (∅ : Set (ι → L)) := by
+  refine ⟨{1}, ?_⟩
+  ext x
+  simp [differentialZeroLocusOver]
+
+/-- Whole affine space is Kolchin closed. -/
+theorem isKolchinClosedOver_univ
+    {ι K L : Type*} [Field K] [Field L] [Algebra K L] [Differential L] :
+    IsKolchinClosedOver K (Set.univ : Set (ι → L)) := by
+  refine ⟨∅, ?_⟩
+  ext x
+  simp [differentialZeroLocusOver]
+
+/-- Finite unions of affine Kolchin-closed sets are Kolchin closed. -/
+theorem IsKolchinClosedOver.union
+    {ι K L : Type*} [Field K] [Field L] [Algebra K L] [Differential L]
+    {X Y : Set (ι → L)}
+    (hX : IsKolchinClosedOver K X) (hY : IsKolchinClosedOver K Y) :
+    IsKolchinClosedOver K (X ∪ Y) := by
+  classical
+  obtain ⟨S, hS⟩ := hX
+  obtain ⟨T, hT⟩ := hY
+  let U : Set (DifferentialPolynomial ι K) :=
+    {R | ∃ P ∈ S, ∃ Q ∈ T, R = P * Q}
+  refine ⟨U, ?_⟩
+  ext x
+  constructor
+  · intro hx
+    by_cases hxX : x ∈ X
+    · exact Or.inl hxX
+    · right
+      have hxnotS : x ∉ differentialZeroLocusOver S := by
+        rw [hS]
+        exact hxX
+      have hexP : ∃ P ∈ S,
+          differentialPolynomialEvalOver (K := K) x P ≠ 0 := by
+        simpa [differentialZeroLocusOver] using hxnotS
+      obtain ⟨P, hPS, hPne⟩ := hexP
+      rw [← hT]
+      intro Q hQT
+      have hPQ := hx (P * Q) ⟨P, hPS, Q, hQT, rfl⟩
+      rw [map_mul] at hPQ
+      exact (mul_eq_zero.mp hPQ).resolve_left hPne
+  · rintro (hxX | hxY) R ⟨P, hPS, Q, hQT, rfl⟩
+    · have hxS : x ∈ differentialZeroLocusOver S := by
+        rw [hS]
+        exact hxX
+      rw [map_mul, hxS P hPS, zero_mul]
+    · have hxT : x ∈ differentialZeroLocusOver T := by
+        rw [hT]
+        exact hxY
+      rw [map_mul, hxT Q hQT, mul_zero]
+
+/-- Arbitrary intersections of affine Kolchin-closed sets are Kolchin closed. -/
+theorem isKolchinClosedOver_sInter
+    {ι K L : Type*} [Field K] [Field L] [Algebra K L] [Differential L]
+    (C : Set (Set (ι → L)))
+    (hC : ∀ X ∈ C, IsKolchinClosedOver K X) :
+    IsKolchinClosedOver K (⋂₀ C) := by
+  classical
+  let equations : (X : C) → Set (DifferentialPolynomial ι K) :=
+    fun X => Classical.choose (hC X.1 X.2)
+  have hequations (X : C) :
+      differentialZeroLocusOver (equations X) = X.1 :=
+    Classical.choose_spec (hC X.1 X.2)
+  let U : Set (DifferentialPolynomial ι K) :=
+    {P | ∃ X : C, P ∈ equations X}
+  refine ⟨U, ?_⟩
+  ext x
+  constructor
+  · intro hx
+    rw [Set.mem_sInter]
+    intro X hXC
+    let X' : C := ⟨X, hXC⟩
+    change x ∈ X'.1
+    rw [← hequations X']
+    intro P hP
+    exact hx P ⟨X', hP⟩
+  · intro hx P hP
+    obtain ⟨X, hPX⟩ := hP
+    have hxX : x ∈ X.1 := (Set.mem_sInter.mp hx) X.1 X.2
+    rw [← hequations X] at hxX
+    exact hxX P hPX
+
+/-- Affine Kolchin topology over `K`, evaluated in the differential field `L`. -/
+@[implicit_reducible]
+noncomputable def kolchinTopologicalSpace
+    (K : Type*) {ι L : Type*} [Field K] [Field L] [Algebra K L] [Differential L] :
+    TopologicalSpace (ι → L) :=
+  TopologicalSpace.ofClosed
+    {X | IsKolchinClosedOver K X}
+    isKolchinClosedOver_empty
+    (fun C hC => isKolchinClosedOver_sInter C fun _X hX => hC hX)
+    (fun _ hX _ hY => hX.union hY)
+
+/-- Closed sets in the constructed topology are exactly differential-polynomial zero loci. -/
+theorem isClosed_kolchinTopologicalSpace_iff
+    {ι K L : Type*} [Field K] [Field L] [Algebra K L] [Differential L]
+    (X : Set (ι → L)) :
+    @IsClosed (ι → L) (kolchinTopologicalSpace K) X ↔
+      IsKolchinClosedOver K X := by
+  letI : TopologicalSpace (ι → L) := kolchinTopologicalSpace K
+  change IsClosed X ↔ IsKolchinClosedOver K X
+  constructor
+  · intro hX
+    have hopen := hX.isOpen_compl
+    change IsKolchinClosedOver K Xᶜᶜ at hopen
+    simpa only [compl_compl] using hopen
+  · intro hX
+    refine ⟨?_⟩
+    change IsKolchinClosedOver K Xᶜᶜ
+    simpa only [compl_compl] using hX
+
+/-- Topological closure in the affine Kolchin topology is the vanishing-ideal closure. -/
+theorem closure_kolchinTopologicalSpace_eq_kolchinClosureOver
+    {ι K L : Type*} [Field K] [Field L] [Algebra K L] [Differential L]
+    (X : Set (ι → L)) :
+    @closure (ι → L) (kolchinTopologicalSpace K) X = kolchinClosureOver K X := by
+  letI : TopologicalSpace (ι → L) := kolchinTopologicalSpace K
+  change closure X = kolchinClosureOver K X
+  apply Set.Subset.antisymm
+  · apply closure_minimal (subset_kolchinClosureOver X)
+    rw [isClosed_kolchinTopologicalSpace_iff]
+    exact isKolchinClosedOver_kolchinClosureOver X
+  · apply kolchinClosureOver_minimal subset_closure
+    rw [← isClosed_kolchinTopologicalSpace_iff]
+    exact isClosed_closure
+
 /-- The subfield fixed by every differential translation labelled by a point of `S`. -/
 def differentialTranslationFixedField
     {K L A : Type*} [Field K] [Field L] [Algebra K L] [Differential L]
@@ -194,6 +338,7 @@ theorem differentialTranslationFixedField_eq_fixedField_of_image_eq
     exact hz a ha
   · intro hz a ha
     apply hz (translation a).toAlgEquiv
+    change (translation a).toAlgEquiv ∈ (G : Set (L ≃ₐ[K] L))
     rw [← himage]
     exact ⟨a, ha, rfl⟩
 

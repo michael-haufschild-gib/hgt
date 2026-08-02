@@ -12,6 +12,34 @@ producer obligations.
 - **OPEN, EXPLICIT**: stated only as an unproved route obligation.
 - **EXCLUDED OVERCLAIM**: tempting stronger claim which the manuscript expressly denies.
 
+## Relative admission-spectrum law and cross-route consequence
+
+| Manuscript claim | Status | Exact certificate |
+|---|---|---|
+| Relative obstruction vanishes iff the parameter has a primitive in the admitted sector | PROVED | `HTGeometry/RelativeAdmissionSpectrumNaturalityLaw.lean`: `relativeAdmissionSpectrum_mem_iff` |
+| Relative class is independent of ambient primitive selector | PROVED | Same module: `relativePrimitiveObstruction_eq_of_primitives` |
+| Every sector-preserving chain square induces a quotient transport and carries source obstruction to target obstruction | PROVED | Same module: `relativeAdmissionTransport_le_comap`, `relativeAdmissionQuotientMap`, `relativePrimitiveObstruction_natural` |
+| Injective admitted-quotient transport preserves the parameter spectrum exactly | PROVED | Same module: `relativeAdmissionSpectrum_natural_eq_of_injective` |
+| Target admission without source admission produces a specific nonzero kernel class and forces noninjectivity | PROVED | Same module: `relativeAdmissionTransport_information_loss` |
+| Ordinary `L²` membership is an exact identity-complex admission spectrum | PROVED | `HTGeometry/L2RelativeAdmissionSpectrum.lean`: `relativeAdmissionSpectrum_id_eq_memLp` |
+| Hedenmalm Borel reflection profile is in `L²` for every centered displacement `|a|<1/2` | PROVED | `RHTower/HedenmalmEulerReflectionAdmissionFracture.lean`: `memLp_hedenmalmBorelReflectionOddFun`, `Ioo_subset_hedenmalmBorelReflectionAdmissionSpectrum` |
+| Weighted Euler--Hardy reflection profile is in `L²` iff `a=0` | PROVED | Same module: `memLp_eulerPrimitiveWeightedReflectionOddFun_iff`, `eulerPrimitiveReflectionAdmissionSpectrum_eq_singleton` |
+| Hedenmalm and Euler admission spectra differ at every Borel basepoint | PROVED | Same module: `hedenmalmBorelReflectionAdmissionSpectrum_ne_eulerPrimitive`; packaged as relative spectra in `RiemannRelativeAdmissionSpectrumUniversalityLaw.lean` |
+| No linear profile transport preserving even one-way `L²` membership can intertwine the two profiles at nonzero centered-strip displacement | PROVED | `HedenmalmEulerReflectionAdmissionFracture.lean`: `not_hedenmalmEulerReflectionL2TransportAt`; global sector form: `RiemannRelativeAdmissionSpectrumUniversalityLaw.lean`: `no_l2AdmissionSectorTransport_hedenmalm_to_euler` |
+| All-prime Deninger family membership is the same relative admission-spectrum construction | PROVED | `RiemannRelativeAdmissionSpectrumUniversalityLaw.lean`: `mem_deningerCalderonWittGlobalRelativeAdmissionSpectrum_iff` |
+
+## Newly consolidated physical source and finite boundary prefix
+
+| Manuscript claim | Status | Exact certificate |
+|---|---|---|
+| Target-free power-supported Möbius--theta source has Fourier--Laplace transform `ζ(m s(w))⁻¹ XiC(w)` on the joint convergence domain | PROVED | `RHTower/MobiusThetaComplexSourceToXiLanding.lean`: `mobiusThetaFourierLaplace_eq_invZeta_mul_XiC` |
+| Complete head/difference physical source channels land as complete-resolution multiplier times `XiC` | PROVED | Same module: `mobiusThetaCompleteChannelFourierLaplace_eq`; zero-fibre corollary `mobiusThetaCompleteChannelFourierLaplace_eq_zero_of_XiC_eq_zero` |
+| Physical Möbius--theta rung exists in `L²` and its Plancherel transform is reciprocal-zeta times `XiC` almost everywhere | PROVED | `RHTower/MobiusThetaPhysicalSourceToXiLanding.lean`: `summable_mobiusThetaRungTerm_of_three_le`, `fourier_mobiusThetaRung_ae` |
+| Every Hellinger--Beta residue has a nonzero actual cross-prime incidence lift with exact normalized residue coordinate | PROVED | `RHTower/DeningerCalderonWittHellingerBetaRelativeResidueTransgression.lean`: `hellingerBetaCalderonWittCrossPrimeResidue_ne_zero`, `deningerCalderonWittCrossPrimeNormalizedIncidenceCoordinate_hellingerBetaResidue` |
+| Hellinger residue incidence lies in admitted sector, and its relative Gamma class vanishes, iff displacement is zero | PROVED | Same module: `hellingerBetaCalderonWittCrossPrimeResidue_mem_admittedHodgeSector_iff`, `deningerCalderonWittGammaRelativeBoundaryClass_hellingerBetaResidue_eq_zero_iff` |
+| Existing Gamma vector transport is head/tail diagonal while odd-Hodge unit seed is transverse | PROVED | Same module: `deningerCalderonWittGammaPolarizedVectorTransport_head_eq_tail`, `eulerPrimitiveBoundaryOddHodge_unitSeed_head_ne_tail` |
+| Adjacent-grade off-diagonal cofinal Hellinger/Beta graph landing exists | OPEN, EXPLICIT | Stated only as the surviving producer in (8.3); manuscript explicitly says it is not presently available |
+
 ## Main law and completed specialization
 
 | Manuscript claim | Status | Exact certificate |
@@ -66,16 +94,16 @@ connector from the named open theorem to RH are mathematical claims.
 
 | Route | Proved prefix/connector anchors | Open statement status |
 |---|---|---|
-| C1 singular Hedenmalm | `HedenmalmUniversalPositiveFormClassification.lean`: `universalPositiveForm_thetaNull_iff_canonicalMeasure_support_realDivisor`; `HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw.lean`: `universalPositiveForm_nonzero_thetaNull_temperedDenseRadicalLaw`; `HedenmalmSourceHilbertGramClosedGraphNoGo.lean`: `hilbertGram_l2PartialOperator_not_closable` | OPEN, EXPLICIT: source-selected singular boundary form |
+| C1 singular Hedenmalm | Previous positive-form/radical modules plus `XiHedenmalmThetaBorelHilbert.lean` and `HedenmalmEulerReflectionAdmissionFracture.lean` for the genuine Borel source and exact spectrum mismatch | OPEN, EXPLICIT: source-selected domain-singular boundary form |
 | E critical Möbius | `MobiusBoundaryOppositeSignTransport.lean`: exact factor-replacement sign, Hall transport, proportional conductance, isolated/degree defect bounds, and window no-go declarations including `not_boundaryFactorReplacementWindowAdjacent_of_primeFactors_le_of_pow_mul_lt`, `completeBipartiteProportionalConductance_attains_signedImbalance`, `abs_truncatedMobiusLaplace_le_degreeNormalizedWindowedFactorReplacementDefect` | OPEN, EXPLICIT: strict-half all-prime seam cancellation |
 | G Suzuki | `SuzukiSafeBoundaryThetaCumulantWall.lean`: exact Xi jets, safe minor/cumulant identity, positive Hankel carrier and sign chamber; finite carrier and source-category no-gos are imported by the current Route-G capstones | OPEN, EXPLICIT: pole-compatible source-selected two-angle continuation and identification |
 | J Julia | `CCMFirstClockPrimitivePromotedCofinalDepthCountertransport.lean` plus the Julia capacity/no-go modules imported by it | OPEN, EXPLICIT: source-relative pretrace polarization or class-complete no-go |
-| L Calderón–Witt/Hodge | Main-law and completed-incidence modules above; `RiemannGammaCoPoissonHodgeGreenDescentLaw.lean` classifies the labelled tail-energy condition | OPEN, EXPLICIT: source-derived graph-domain landing |
+| L Calderón–Witt/Hodge | Main-law and completed-incidence modules above; `DeningerCalderonWittHellingerBetaRelativeResidueTransgression.lean` closes fixed-witness residue classification | OPEN, EXPLICIT: adjacent-grade off-diagonal cofinal Hellinger/Beta graph landing |
 | N prime-normal | `HedenmalmPrimeNormalWickBoundaryEnergy.lean`: `hedenmalmPrimeNormalEnergy_eq_vertical_add_radial`, `riemannHypothesis_of_xiCZeroHedenmalmPrimeNormalSubLogSquare`; `HedenmalmPrimeNormalSubLogSquareClassification.lean`: `hedenmalmPrimeNormalSubLogSquare_iff_im_eq_zero` | OPEN, EXPLICIT: uniform source-domain sub-log-square estimate |
 | O Connes/CCM | `CCMProlateRayleighGroundLock.lean`: `CCMProlateRayleighGroundData.riemannHypothesis_iff_rayleighExcess_tendsto_zero`, false-RH persistent separation; `CCMPublishedRestrictedWeilMatrix.lean` for finite matrices | OPEN, EXPLICIT: source proof of cofinal floor convergence |
 | P Thorin/Markov | `PrimeArchXiCompactThorinRH.lean`: `primeArchCompactMarkovGermRepresentation_iff_riemannHypothesis`, `primeArchCompactThorinExponentRepresentation_iff_riemannHypothesis`; compact determinacy modules | OPEN, EXPLICIT: source-built positive carrier |
 | Q theta–Cassini | `ThetaCuspCassiniHyperbolicSourceLaw.lean`: positive likelihood carrier; `SuzukiSafeBoundaryThetaCumulantWall.lean`: all Hankel blocks; `ThetaCuspCalibratedPowerReciprocalSecondMomentLaw.lean`: calibrated exponent/moments; `XiSquaredSeamCassiniResolventSourceLaw.lean`: `thetaCuspCassiniInwardBoundarySaturated_iff_riemannHypothesis` | OPEN, EXPLICIT: higher calibrated carrier control or saturation inequality |
-| R primitive current | `EulerActivationSquarefreeDisintegration.lean`, `PrimitiveFibreModularRenormalizationLaw.lean`, `EulerPrimitiveHellingerKMSReflectionLaw.lean`, primitive-promotion and Ward boundary modules | OPEN, EXPLICIT: singular breadth/depth common-test continuation plus source Ward sign |
+| R primitive current | Previous valuation/Hellinger/primitive modules plus `MobiusThetaPhysicalSourceToXiLanding.lean` and `MobiusThetaComplexSourceToXiLanding.lean` for target-free physical source-to-Xi landing | OPEN, EXPLICIT: singular prime-normal graph plus source-derived Hellinger/Ward admission |
 | Analytic–Hurwitz | `XiSourceMatroidCircuitFracture.lean` declarations listed above | OPEN, EXPLICIT: source relation comparison |
 | HT/recurrence | `HypertranscendentalHochsterSourceCoherenceDuality.lean`, `DARelativeSourceConservativity.lean`, `UniversalProjectiveRecurrenceCapstoneLaw.lean` | OPEN, EXPLICIT: arithmetic reporter and source-allowed protection theorem |
 

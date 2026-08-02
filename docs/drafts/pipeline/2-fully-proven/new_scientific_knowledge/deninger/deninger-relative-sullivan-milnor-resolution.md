@@ -176,28 +176,89 @@ algebra on `V`:
   kernel of `H(P) → H(K)`", with the kernel computed rather than assumed.
 - `deningerSullivanFirstLayerProjection_surjective` — the surjectivity half of clause 3.
 
-### What cannot be stated in Lean, and why
+### The cohomology layer, and step 3 of the proof
+
+`formal/GaloisForLFunctions/HTGeometry/CochainComplexCohomology.lean` supplies the cohomology
+functor whose absence previously made clause 3 unstatable.  Axiom audit for all 29 declarations:
+`propext, Classical.choice, Quot.sound` (the structures and the identity map need only
+`propext, Quot.sound`).
+
+- `DeningerCochainComplex`, `cocycles`, `coboundaries`, `coboundaries_le_cocycles`, `cohomology` —
+  a cochain complex of `k`-modules and its cohomology, cocycles modulo coboundaries, in every
+  degree.
+- `DeningerCochainMap`, `mapsTo_cocycles`, `mapsTo_coboundaries`, `cocyclesMap`, `cohomologyMap`,
+  together with `deningerCochainMapId_cohomologyMap` and
+  `deningerCochainMapComp_cohomologyMap` — cochain maps, the induced maps on cohomology, and
+  functoriality.
+- `DeningerQuasiIso` — **the quasi-isomorphism predicate**.  Clause 3's conclusion is therefore now
+  a statable Prop about an explicit cochain map, not an informal phrase.
+- `deningerZeroComplexCohomologyEquiv` — the cohomology of a complex with vanishing differential is
+  the complex itself, which computes the cohomology of the target `K = k ⊕ V` of the resolution.
+- `DeningerSubcomplex`, `deningerFiltered_directed`, `deningerFiltered_cocycle_stage`,
+  `deningerFiltered_coboundary_stage`, `deningerFiltered_cohomology_comparison` — **step 3 of the
+  proof, proved**: for a directed family of subcomplexes exhausting the complex, every cocycle
+  already lies at a stage and every class that becomes a coboundary in the union already becomes
+  one at a later stage.  This is the assertion "filtered colimits of vector spaces are exact, so
+  the cohomology comparison is preserved through limit stages", now unconditional.
+
+### The graded differential
+
+`formal/GaloisForLFunctions/HTGeometry/ExteriorOddDerivation.lean` supplies the graded derivation
+the tower needs, without any graded tensor product.  Axiom audit for all 23 declarations:
+`propext, Classical.choice, Quot.sound` (the extension type and its projections need only
+`propext, Quot.sound`).
+
+- `deningerExteriorInvolute`, `deningerExteriorInvolute_ι`, `deningerExteriorInvolute_involute` —
+  the grading involution `σ` of `Λ(U)`, the algebra map negating the generators, and `σ² = 1`.
+- `DeningerOddExt` — **the square-zero odd extension** `Λ(U) ⊕ ε Λ(U)`, with `ε` anticommuting with
+  odd elements and `ε² = 0`, realized as a ring by the product
+  `(a, b)(a', b') = (a a', σ a · b' + b · a')`.  This is the Koszul sign rule in the one place it is
+  needed, so no graded tensor product is required.
+- `deningerOddExtGen_sq_zero`, `deningerOddDerivationHom`, `deningerOddDerivation` — lifting
+  `u ↦ (ι u, φ u)` into the extension produces **the odd derivation `D` with `D (ι u) = φ u`** for
+  any generator assignment `φ` whose values are central.  `deningerOddDerivationHom_even` proves
+  the even component of the lift is the identity, which is what makes the odd component a
+  derivation.
+- `deningerOddDerivation_leibniz` — **the graded Leibniz rule**
+  `D (x y) = σ x · D y + D x · y`, obtained for free from multiplicativity of the lift.
+- `deningerOddDerivation_involute` — `D σ = -σ D`, proved by induction on the algebra, using that
+  the generator values are involution-invariant.
+- `deningerOddDerivation_comp_self` — **`D² = 0`** whenever `D` kills the generator values, again by
+  induction on the algebra.  For the first Sullivan layer the generator values lie in `Λ²V` and `D`
+  vanishes on `V`, so this hypothesis is exactly the layer's own lower-triangularity.
+
+### What is still missing, and why
 
 The theorem's proof is a factorization in the model category of nonnegatively graded commutative
-DGAs.  mathlib has no commutative differential graded algebras, no model category structures, and
-no small-object argument, so:
+DGAs.  mathlib has no model category structures and no small-object argument, so:
 
-- clause 3's *quasi-isomorphism* cannot be stated: there is no cohomology functor on CDGAs to
-  compare.  Only the surjectivity half of "surjective quasi-isomorphism" is formalized.
 - clause 4's *functoriality* cannot be stated: it is functoriality of a factorization in a model
   category.
-- the transfinite induction of steps 2--4 of the proof — attaching further generators at successor
-  stages, taking filtered unions at limit stages, and terminating by the small-object argument —
-  cannot be run.  `DeningerRelativeSullivan` records what such a tower would have to satisfy, and
-  the first layer is built; the tower itself needs the differential to be a graded derivation on
-  `Λ(V ⊕ W)`, which requires the graded tensor product and hence the Koszul sign rule.
+- the transfinite induction of steps 2 and 4 — attaching further generators at successor stages
+  and terminating by the small-object argument — cannot be run.  `DeningerRelativeSullivan`
+  records what such a tower would have to satisfy, the first layer is built, and the graded
+  differential the tower runs on now exists; what is absent is the ordinal-indexed factorization
+  itself.
+- consequently clause 3's quasi-isomorphism, though now statable, is not yet *proved*: the first
+  layer alone is not a quasi-isomorphism, and the proof of the quasi-isomorphism is exactly the
+  transfinite argument above.  Only its surjectivity half is formalized
+  (`deningerSullivanFirstLayerProjection_surjective`).
 
-So the card stays at stage 2.  What is formalized is the entire algebraic skeleton: the target of
-the resolution is identified as an explicit quotient, the relative extension is constructed and
-proved free, and the first layer is built with its differential's span computed to be exactly the
-ideal that the resolution must kill.
+So the card stays at stage 2.  What is formalized is the entire algebraic skeleton — the target of
+the resolution identified as an explicit quotient, the relative extension constructed and proved
+free, the first layer built with its differential's span computed to be exactly the ideal the
+resolution must kill — together with the cohomology functor, the quasi-isomorphism predicate, and
+the limit-stage comparison of step 3.
 
 ### Log
 
 - 2026-08-02 — Formalized the specialization `(4)`, the relative extension of `(3)`, and the first
   Sullivan layer with clauses 1 and 2.
+- 2026-08-02 — Built the missing cohomology layer: cochain complexes, cohomology, induced maps,
+  functoriality, the quasi-isomorphism predicate, the zero-differential computation, and step 3's
+  filtered limit-stage comparison.  Clause 3's conclusion is now statable and its limit-stage input
+  is proved; what remains is the model-category factorization.
+- 2026-08-02 — Built the graded differential: the grading involution, the square-zero odd
+  extension carrying the Koszul sign, the odd derivation determined by central generator
+  values, its graded Leibniz rule, its anticommutation with the involution, and `D² = 0`.
+  The remaining gap is the ordinal-indexed model-category factorization.

@@ -1,5 +1,7 @@
 import GaloisForLFunctions.RHTower.MFreeLadder
 import GaloisForLFunctions.RHTower.XiThetaL2Cyclicity
+import Mathlib.Analysis.Normed.Group.Tannery
+import Mathlib.Analysis.PSeries
 
 /-!
 # Physical Möbius--theta source landing in Xi
@@ -14,7 +16,7 @@ spectral parameter, or zero.  Thus the theorem is an unconditional physical sour
 not scalar multiplication by a preselected target value.
 -/
 
-open Complex Real MeasureTheory ArithmeticFunction LSeries
+open Complex Real MeasureTheory ArithmeticFunction LSeries Filter Topology
 open scoped BigOperators LSeries.notation Moebius FourierTransform SchwartzMap
 
 noncomputable section
@@ -234,5 +236,198 @@ theorem fourier_mobiusThetaRung_ae {m : ℕ} (hm : 3 ≤ m) :
       have hmPos : (0 : ℝ) < m := by positivity
       rw [inv_lt_comm₀ hmPos (by norm_num : (0 : ℝ) < 1 / 2)]
       linarith
+
+/-! ## Singular prime-normal extraction
+
+The source below is the physical normal form obtained after peeling at the integer `p`, translating
+the `p`-channel back to the origin, and multiplying by its half-density normalization.  Its leading
+channel is `μ(p) • xiThetaSourceL2`; every later channel carries the exact relative coefficient
+`μ(n) (p / n)^(m/2)` and relative logarithmic translation.  No spectral value or zero occurs in
+the construction.
+-/
+
+/-- Summable `m = 3` envelope for the prime-normal tail. -/
+def mobiusThetaPrimeNormalMajorant (p k : ℕ) : ℝ :=
+  ((p : ℝ) / (p + k + 1 : ℕ)) ^ (3 / 2 : ℝ) * ‖xiThetaSourceL2‖
+
+theorem summable_mobiusThetaPrimeNormalMajorant (p : ℕ) :
+    Summable (mobiusThetaPrimeNormalMajorant p) := by
+  have hs : Summable (fun k : ℕ => (k : ℝ) ^ (-(3 / 2 : ℝ))) :=
+    Real.summable_nat_rpow.mpr (by norm_num)
+  have hshift : Summable
+      (fun k : ℕ => ((k + (p + 1) : ℕ) : ℝ) ^ (-(3 / 2 : ℝ))) :=
+    (_root_.summable_nat_add_iff (p + 1)).2 hs
+  have hmul := hshift.mul_left ((p : ℝ) ^ (3 / 2 : ℝ) * ‖xiThetaSourceL2‖)
+  refine hmul.congr fun k => ?_
+  rw [mobiusThetaPrimeNormalMajorant,
+    Real.div_rpow (by positivity) (by positivity),
+    Real.rpow_neg (by positivity : (0 : ℝ) ≤ ((k + (p + 1) : ℕ) : ℝ))]
+  push_cast
+  ring_nf
+
+/-- Exact real coefficient of the `k`-th channel strictly beyond the peeled index `p`. -/
+def mobiusThetaPrimeNormalWeight (p m k : ℕ) : ℝ :=
+  (μ (p + k + 1) : ℝ) *
+    ((p : ℝ) / (p + k + 1 : ℕ)) ^ ((m : ℝ) / 2)
+
+/-- The `k`-th physical relative channel after prime-normal recentering. -/
+def mobiusThetaPrimeNormalTailTerm (p m k : ℕ) : MobiusThetaSourceL2 :=
+  (mobiusThetaPrimeNormalWeight p m k : ℂ) •
+    MellinL2.additiveTranslationUnitary
+      (-((m : ℝ) * Real.log ((p + k + 1 : ℕ) / (p : ℝ))) *
+        MellinL2.spectralNormalization)
+      xiThetaSourceL2
+
+theorem norm_mobiusThetaPrimeNormalTailTerm (p m k : ℕ) :
+    ‖mobiusThetaPrimeNormalTailTerm p m k‖ =
+      |mobiusThetaPrimeNormalWeight p m k| * ‖xiThetaSourceL2‖ := by
+  rw [mobiusThetaPrimeNormalTailTerm, norm_smul, LinearIsometryEquiv.norm_map,
+    Complex.norm_real, Real.norm_eq_abs]
+
+/-- Uniform Tannery bound for every high-exponent physical relative channel. -/
+theorem norm_mobiusThetaPrimeNormalTailTerm_le_majorant
+    {p m : ℕ} (hp : 1 ≤ p) (hm : 3 ≤ m) (k : ℕ) :
+    ‖mobiusThetaPrimeNormalTailTerm p m k‖ ≤
+      mobiusThetaPrimeNormalMajorant p k := by
+  rw [norm_mobiusThetaPrimeNormalTailTerm, mobiusThetaPrimeNormalWeight, abs_mul]
+  have hmu : |(μ (p + k + 1) : ℝ)| ≤ 1 := by
+    rw [← Int.cast_abs]
+    exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n := p + k + 1)
+  have hratio_pos : 0 < (p : ℝ) / (p + k + 1 : ℕ) := by positivity
+  rw [abs_of_nonneg (Real.rpow_nonneg hratio_pos.le _)]
+  have hratio_le : (p : ℝ) / (p + k + 1 : ℕ) ≤ 1 := by
+    rw [div_le_one (by positivity)]
+    exact_mod_cast (by omega : p ≤ p + k + 1)
+  have hmR : (3 : ℝ) ≤ m := by exact_mod_cast hm
+  have hexp : (3 / 2 : ℝ) ≤ (m : ℝ) / 2 := by linarith
+  unfold mobiusThetaPrimeNormalMajorant
+  calc
+    |(μ (p + k + 1) : ℝ)| *
+          ((p : ℝ) / (p + k + 1 : ℕ)) ^ ((m : ℝ) / 2) * ‖xiThetaSourceL2‖ ≤
+        1 * ((p : ℝ) / (p + k + 1 : ℕ)) ^ ((m : ℝ) / 2) *
+          ‖xiThetaSourceL2‖ := by
+      exact mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_right hmu (Real.rpow_nonneg hratio_pos.le _))
+        (norm_nonneg xiThetaSourceL2)
+    _ ≤ ((p : ℝ) / (p + k + 1 : ℕ)) ^ (3 / 2 : ℝ) *
+          ‖xiThetaSourceL2‖ := by
+      simpa only [one_mul] using mul_le_mul_of_nonneg_right
+        (Real.rpow_le_rpow_of_exponent_ge hratio_pos hratio_le hexp)
+        (norm_nonneg xiThetaSourceL2)
+
+/-- Every fixed post-`p` relative channel vanishes strongly as the exponent grows.  Translation
+may escape without converging; the exact half-density coefficient nevertheless forces its norm to
+zero. -/
+theorem tendsto_mobiusThetaPrimeNormalTailTerm_zero
+    {p : ℕ} (hp : 1 ≤ p) (k : ℕ) :
+    Tendsto (fun m : ℕ => mobiusThetaPrimeNormalTailTerm p m k) atTop (nhds 0) := by
+  have hratio_pos : 0 < (p : ℝ) / (p + k + 1 : ℕ) := by positivity
+  have hratio_lt : (p : ℝ) / (p + k + 1 : ℕ) < 1 := by
+    rw [div_lt_one (by positivity)]
+    exact_mod_cast (by omega : p < p + k + 1)
+  have hpow : Tendsto
+      (fun m : ℕ => ((p : ℝ) / (p + k + 1 : ℕ)) ^ ((m : ℝ) / 2))
+      atTop (nhds 0) := by
+    have hb := tendsto_rpow_atTop_of_base_lt_one
+      ((p : ℝ) / (p + k + 1 : ℕ)) (by linarith) hratio_lt
+    exact hb.comp
+      (tendsto_natCast_atTop_atTop.atTop_div_const (by norm_num : (0 : ℝ) < 2))
+  have hscalar : Tendsto
+      (fun m : ℕ => |(μ (p + k + 1) : ℝ)| *
+        ((p : ℝ) / (p + k + 1 : ℕ)) ^ ((m : ℝ) / 2) * ‖xiThetaSourceL2‖)
+      atTop (nhds 0) := by
+    simpa using ((tendsto_const_nhds.mul hpow).mul tendsto_const_nhds)
+  rw [tendsto_zero_iff_norm_tendsto_zero]
+  convert hscalar using 1
+  funext m
+  rw [norm_mobiusThetaPrimeNormalTailTerm, mobiusThetaPrimeNormalWeight, abs_mul,
+    abs_of_nonneg (Real.rpow_nonneg hratio_pos.le _)]
+
+/-- The full post-`p` physical tail vanishes strongly.  This is the infinite-source step: the
+conclusion is about the `L²` sum, not any finite projection or scalar multiplier. -/
+theorem tendsto_tsum_mobiusThetaPrimeNormalTailTerm_zero
+    {p : ℕ} (hp : 1 ≤ p) :
+    Tendsto (fun m : ℕ => ∑' k : ℕ, mobiusThetaPrimeNormalTailTerm p m k)
+      atTop (nhds 0) := by
+  rw [show (0 : MobiusThetaSourceL2) = ∑' _k : ℕ, 0 by simp]
+  apply tendsto_tsum_of_dominated_convergence
+    (summable_mobiusThetaPrimeNormalMajorant p)
+  · exact tendsto_mobiusThetaPrimeNormalTailTerm_zero hp
+  · filter_upwards [eventually_ge_atTop (3 : ℕ)] with m hm k
+    exact norm_mobiusThetaPrimeNormalTailTerm_le_majorant hp hm k
+
+/-- Singular prime-normal physical source: retained `p`-channel plus its complete later tail. -/
+def mobiusThetaPrimeNormalResidual (p m : ℕ) : MobiusThetaSourceL2 :=
+  ((μ p : ℝ) : ℂ) • xiThetaSourceL2 +
+    ∑' k : ℕ, mobiusThetaPrimeNormalTailTerm p m k
+
+/-- **Unconditional physical prime-normal extraction.**  At every positive peeled index, the full
+recentered Möbius--theta source converges strongly to its retained oriented channel.  In particular,
+for prime `p` the limit is `-xiThetaSourceL2`; the sign is derived from `μ(p)`, not selected from a
+Xi value. -/
+theorem tendsto_mobiusThetaPrimeNormalResidual
+    {p : ℕ} (hp : 1 ≤ p) :
+    Tendsto (mobiusThetaPrimeNormalResidual p) atTop
+      (nhds (((μ p : ℝ) : ℂ) • xiThetaSourceL2)) := by
+  unfold mobiusThetaPrimeNormalResidual
+  simpa using tendsto_const_nhds.add (tendsto_tsum_mobiusThetaPrimeNormalTailTerm_zero hp)
+
+/-- Prime specialization: the oriented retained channel is canonically negative. -/
+theorem tendsto_mobiusThetaPrimeNormalResidual_of_prime
+    {p : ℕ} (hp : p.Prime) :
+    Tendsto (mobiusThetaPrimeNormalResidual p) atTop (nhds (-xiThetaSourceL2)) := by
+  simpa [ArithmeticFunction.moebius_apply_prime hp] using
+    tendsto_mobiusThetaPrimeNormalResidual (p := p) hp.one_le
+
+/-! ## Complete physical codiagonal
+
+The case `p = 1` of prime-normal extraction is the direct power-indexed Möbius--theta rung.  Its
+successive differences retain every exponent channel while telescoping back to one physical source
+vector.  This is countable retention inside `L²`, not a closed multivalued relation into a product
+target.
+-/
+
+/-- Direct physical Möbius--theta rung, expressed by its principal channel and complete relative
+tail. -/
+def mobiusThetaDirectPhysicalRung (m : ℕ) : MobiusThetaSourceL2 :=
+  mobiusThetaPrimeNormalResidual 1 m
+
+/-- The direct physical rungs converge strongly to the canonical theta source. -/
+theorem tendsto_mobiusThetaDirectPhysicalRung :
+    Tendsto mobiusThetaDirectPhysicalRung atTop (nhds xiThetaSourceL2) := by
+  change Tendsto (mobiusThetaPrimeNormalResidual 1) atTop (nhds xiThetaSourceL2)
+  simpa using
+    (tendsto_mobiusThetaPrimeNormalResidual (p := 1) (by omega : 1 ≤ 1))
+
+/-- Complete physical difference channel based at exponent `K`. -/
+def mobiusThetaCompletePhysicalChannel (K : ℕ) : ℕ → MobiusThetaSourceL2
+  | 0 => mobiusThetaDirectPhysicalRung K
+  | j + 1 =>
+      mobiusThetaDirectPhysicalRung (K + j + 1) -
+        mobiusThetaDirectPhysicalRung (K + j)
+
+/-- Exact finite physical codiagonal: all internal exponent channels cancel. -/
+theorem sum_range_mobiusThetaCompletePhysicalChannel (K N : ℕ) :
+    ∑ j ∈ Finset.range (N + 1), mobiusThetaCompletePhysicalChannel K j =
+      mobiusThetaDirectPhysicalRung (K + N) := by
+  induction N with
+  | zero => simp [mobiusThetaCompletePhysicalChannel]
+  | succ N ih =>
+      rw [Finset.sum_range_succ, ih]
+      simp [mobiusThetaCompletePhysicalChannel, add_assoc]
+
+/-- **Unconditional complete physical codiagonal limit.**  The full sequence of difference
+channels has a canonical strong sum limit equal to the theta source. -/
+theorem tendsto_sum_range_mobiusThetaCompletePhysicalChannel (K : ℕ) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ j ∈ Finset.range (N + 1), mobiusThetaCompletePhysicalChannel K j)
+      atTop (nhds xiThetaSourceL2) := by
+  have h := tendsto_mobiusThetaDirectPhysicalRung.comp (tendsto_add_atTop_nat K)
+  have h' : Tendsto (fun N : ℕ => mobiusThetaDirectPhysicalRung (K + N))
+      atTop (nhds xiThetaSourceL2) := by
+    simpa [Function.comp_def, Nat.add_comm] using h
+  exact h'.congr' (Filter.Eventually.of_forall fun N =>
+    (sum_range_mobiusThetaCompletePhysicalChannel K N).symm)
 
 end RHTower

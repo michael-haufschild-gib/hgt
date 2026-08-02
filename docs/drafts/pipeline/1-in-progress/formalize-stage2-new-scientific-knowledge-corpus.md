@@ -367,7 +367,10 @@ DAGs without repeating the audits.
   atomicity, finite-family degree, and the multiplicative family formalized unconditionally
   (`OrderThreeBottomFaceJointAtomicity.lean`)
 - [ ] `order-three-elliptic-gamma-full-structural-differential-matroid` — theorem/corollary surface inventory pending
-- [ ] `order-two-elliptic-gamma-full-structural-differential-matroid` — theorem/corollary surface inventory pending
+- [x] `order-two-elliptic-gamma-full-structural-differential-matroid` — complete: squarefree
+  hierarchy identification, faithful coordinate packet, and the operator-row matroid and rank laws
+  formalized unconditionally (`OrderTwoStructuralTranslateDecomposition.lean`,
+  `OrderTwoStructuralMatroid.lean`)
 - [x] `order-two-multiple-gamma-period-deletion-phase-split` — complete: transverse DA depth, the
   hierarchy relation, and both depth values formalized unconditionally
   (`MultipleEllipticGammaTransverseDADepth.lean`, `OrderTwoPeriodDeletionDADepth.lean`)

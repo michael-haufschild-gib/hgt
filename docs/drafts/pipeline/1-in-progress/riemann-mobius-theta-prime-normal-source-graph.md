@@ -202,8 +202,13 @@ the remaining scientific theorem after physical landing and singular graph const
 ## Lean plan
 
 - [ ] Define direct power-indexed physical rungs and prove equality with the `mPart` rungs.
-- [ ] Prove the `L2` prime-normal extraction theorem by Tannery domination.
-- [ ] Define complete physical source channels and prove finite telescoping plus codiagonal limit.
+- [x] Prove the `L2` prime-normal extraction theorem by Tannery domination:
+      `tendsto_mobiusThetaPrimeNormalResidual` and its prime specialization
+      `tendsto_mobiusThetaPrimeNormalResidual_of_prime` in
+      `MobiusThetaPhysicalSourceToXiLanding.lean`.
+- [x] Define complete physical source channels and prove finite telescoping plus codiagonal limit:
+      `sum_range_mobiusThetaCompletePhysicalChannel` and
+      `tendsto_sum_range_mobiusThetaCompletePhysicalChannel`.
 - [ ] Prove the Fourier--Laplace formula (R-PN.6) on its honest domain.
 - [ ] Formalize reflected cocycle (R-PN.7)--(R-PN.8).
 - [ ] Package the single-valued closed graph and zero multivalued fibre.

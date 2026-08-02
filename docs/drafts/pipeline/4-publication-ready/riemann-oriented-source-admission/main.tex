@@ -199,7 +199,7 @@ admission-spectrum law, the all-prime incidence specialization, and the
 Hedenmalm--Euler fracture.
 Section~\ref{sec:routes} identifies the precise obligation of each
 remaining route.  Sections~\ref{sec:shadows} and~\ref{sec:proof} explain
-why the corpus no-go theorems and positive consumers are shadows of the
+why the no-go theorems and positive consumers are shadows of the
 same law and state the exact theorem which would complete the RH proof.
 
 \section{The common oriented invariant}
@@ -281,7 +281,7 @@ equivalence does not prove its vanishing.
 \section{Constructed sources}
 \label{sec:sources}
 
-The corpus supplies several nonisomorphic sources.  Their coexistence is
+The constructions supply several nonisomorphic sources.  Their coexistence is
 important: a source failure in one category does not imply absence of
 arithmetic data.
 
@@ -323,6 +323,8 @@ target-free translate sum
  \qquad a_m=\operatorname{mPart}_m(\mu).
 \tag{3.4}\label{eq:physical-mobius-theta}
 \]
+Thus \(a_m(k^m)=\mu(k)\) and \(a_m(n)=0\) off the set of perfect
+\(m\)-th powers.
 The corresponding series converges in the physical \(L^2\) source.  On
 the joint absolute-convergence domain
 \[
@@ -473,6 +475,42 @@ admitted Hodge sector.  Consequently the existing finite packet
 construction supplies no admission mechanism; a successful continuation
 must remain relation-valued and preserve its cell labels.
 
+\subsection{Hellinger residues and the off-diagonal boundary obstruction}
+
+The reflected Hellinger/co-Poisson column has nonzero half-lattice
+residues \(r_n\) at \(3/2+2n\).  For distinct primes \(p,q\), let
+\(w_{p,q}\) be the normalized cross-prime incidence witness and define
+\[
+                         R_{p,q,n}=r_n w_{p,q}.
+\tag{4.3}\label{eq:hellinger-incidence-residue}
+\]
+This is a nonzero actual Calder\'on--Witt incidence, and its normalized
+incidence coordinate is exactly \(r_n\).  If \(\cA_a\) denotes the
+Gamma--Hardy admitted sector at modular displacement \(a\), then
+\[
+ R_{p,q,n}\in\cA_a
+ \quad\Longleftrightarrow\quad
+ \mathfrak o_{\cA_a}(R_{p,q,n})=0
+ \quad\Longleftrightarrow\quad a=0.
+\tag{4.4}\label{eq:hellinger-relative-class}
+\]
+Moreover, its actual reflection-odd scalar boundary coordinate is
+\[
+ r_n\,\Gamma^{\mathrm{odd}}_{p,q,e}(a),
+\tag{4.5}\label{eq:hellinger-odd-coordinate}
+\]
+and vanishes exactly at \(a=0\).
+
+This closes the fixed-witness question negatively.  Nonzero residue
+scaling cannot alter admission.  The obstruction is also polarized: the
+existing vector Gamma transport has equal head and tail profiles before
+Haar orientation, whereas the odd-Hodge image of the elementary head seed
+has unequal channels at every positive source time.  Thus neither a fixed
+incidence line nor a finite diagonal cell packet can furnish the missing
+bridge.  A survivor must change the differential itself through an
+off-diagonal, adjacent-grade coface whose infinite labelled chain has a
+graph limit.
+
 \subsection{Completed Xi-to-incidence bridge}
 
 Fix distinct primes \(p,q\), and let \(w_{p,q}\ne0\) be the canonical
@@ -480,7 +518,7 @@ cross-prime Calder\'on--Witt incidence witness.  A finite Xi jet
 \(a=(a_r)\) is realized by the actual incidence profile
 \[
                          r\longmapsto a_r w_{p,q}.
-\tag{4.3}\label{eq:finite-incidence}
+\tag{4.6}\label{eq:finite-incidence}
 \]
 Pull back the Xi \(\ell^2\) norm along this coefficient-faithful map and
 complete.  The resulting Hilbert space
@@ -490,14 +528,14 @@ completed Xi jet carrier.
 There is a continuous Green comparison
 \[
  U_{p,q}:H^1_{\!c}\longrightarrow\widehat{\cI}_{p,q}
-\tag{4.4}\label{eq:completed-green}
+\tag{4.7}\label{eq:completed-green}
 \]
 with the following unconditional properties:
 \begin{align}
- \|U_{p,q}\ell\|&=\|\cG_\Xi\ell\|, \tag{4.5}\\
- \cl\ran U_{p,q}&=\widehat{\cI}_{p,q}, \tag{4.6}\\
+ \|U_{p,q}\ell\|&=\|\cG_\Xi\ell\|, \tag{4.8}\\
+ \cl\ran U_{p,q}&=\widehat{\cI}_{p,q}, \tag{4.9}\\
  \operatorname{ev}_r(U_{p,q}\ell)
-   &=\cG_\Xi(\ell)_r\,w_{p,q}. \tag{4.7}
+   &=\cG_\Xi(\ell)_r\,w_{p,q}. \tag{4.10}
 \end{align}
 On finite jets, \(U_{p,q}\) is the already constructed oriented
 Calder\'on--Witt Green reflection.  Hence it is not a formal Hilbert copy
@@ -507,10 +545,167 @@ Equations \eqref{eq:finite-incidence}--\eqref{eq:completed-green} close the
 completed transport problem.  They do not define the correct closed
 Gamma/Hodge admission at a divisor fibre.
 
-\section{Orientation--transgression completeness}
+\section{Relative admission-spectrum conservation}
 \label{sec:admission}
 
-\subsection{Absolute source information}
+\subsection{The route-independent law}
+
+Let \(R\) be a field, let \(A_0,A_1\) be \(R\)-vector spaces, and fix
+\[
+ d:A_0\longrightarrow A_1,\qquad S\subset A_0,\qquad
+ h:A_1\longrightarrow A_0.
+\]
+Here \(d\) is the source differential, \(S\) is the route's admitted
+primitive sector, and \(h\) is any ambient primitive selector.  For a
+family \(x:P\to A_1\), assume
+\[
+                           d\,h(x_p)=x_p.
+\tag{5.A}\label{eq:primitive-selector}
+\]
+
+\begin{definition}[Relative admission spectrum]
+The relative obstruction and its admission spectrum are
+\[
+ \mathfrak o_{S,d,h}(p)=[h(x_p)]
+       \in Q_S(d):=A_0/(S+\ker d),
+ \qquad
+ \Sigma_S(d,h;x)=\{p:\mathfrak o_{S,d,h}(p)=0\}.
+\tag{5.B}\label{eq:admission-spectrum}
+\]
+\end{definition}
+
+Consider a second source complex \(e:B_0\to B_1\), an admitted sector
+\(U\subset B_0\), and a chain square
+\[
+\begin{array}{ccc}
+A_0&\xrightarrow{T_0}&B_0\\
+{\scriptstyle d}\downarrow&&\downarrow{\scriptstyle e}\\
+A_1&\xrightarrow{T_1}&B_1
+\end{array}
+\qquad
+eT_0=T_1d,\qquad T_0(S)\subset U.
+\tag{5.C}\label{eq:chain-square}
+\]
+\begin{theorem}[Relative admission-spectrum conservation]
+\label{thm:main}
+Under \eqref{eq:primitive-selector}, the following statements hold.
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em]
+\item \emph{Completeness.}
+\[
+ p\in\Sigma_S(d,h;x)
+ \quad\Longleftrightarrow\quad
+ \exists s\in S\ \text{such that}\ ds=x_p.
+\tag{5.D}\label{eq:spectrum-completeness}
+\]
+\item \emph{Choice independence.}  If \(h'\) is another selector with
+      \(dh'(x_p)=x_p\), then
+      \(\mathfrak o_{S,d,h}(p)=\mathfrak o_{S,d,h'}(p)\).
+\item \emph{Naturality.}  The square \eqref{eq:chain-square} induces
+      \[
+       \overline T_0:Q_S(d)\longrightarrow Q_U(e).
+      \]
+      If \(k\) selects primitives of \(T_1x_p\), then
+      \[
+       \overline T_0\bigl(\mathfrak o_{S,d,h}(p)\bigr)
+        =\mathfrak o_{U,e,k}(p).
+      \tag{5.E}\label{eq:obstruction-naturality}
+      \]
+\item \emph{Faithful conservation.}  If \(\overline T_0\) is injective,
+      then
+      \[
+                    \Sigma_S(d,h;x)=\Sigma_U(e,k;T_1x).
+      \tag{5.F}\label{eq:spectrum-conservation}
+      \]
+\item \emph{Exact loss law.}  If the target admits \(p\) and the source
+      does not, then \(\overline T_0\) is noninjective and the specific
+      nonzero class \(\mathfrak o_{S,d,h}(p)\) lies in
+      \(\ker\overline T_0\).
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The class of \(h(x_p)\) vanishes precisely when
+\(h(x_p)=s+n\) with \(s\in S\) and \(n\in\ker d\).  Applying \(d\)
+gives \(ds=x_p\).  Conversely, if \(ds=x_p\), then
+\(h(x_p)-s\in\ker d\), proving (i).  If \(h'\) is another selector, then
+\(d(h(x_p)-h'(x_p))=0\); the two representatives therefore have the same
+class, proving (ii).
+
+For \(a=s+n\in S+\ker d\), sector preservation gives
+\(T_0s\in U\), while the chain identity gives
+\(eT_0n=T_1dn=0\).  Hence \(T_0a\in U+\ker e\), so \(T_0\) induces
+\(\overline T_0\).  Both \(T_0h(x_p)\) and \(k(T_1x_p)\) are primitives
+of \(T_1x_p\); their difference lies in \(\ker e\), proving
+\eqref{eq:obstruction-naturality}.  Injectivity now makes source and target
+vanishing equivalent, proving (iv).  If target vanishing occurs without
+source vanishing, \eqref{eq:obstruction-naturality} places a nonzero source
+class in \(\ker\overline T_0\), proving (v).
+\end{proof}
+
+The theorem does not identify unlike source spaces.  It states the exact
+condition under which they may be identified: a bridge must commute with
+their source differentials, preserve the admitted sector, and remain
+injective after quotienting both admitted primitives and primitive
+ambiguity.  Failure of admission conservation has only three possible
+locations: failure of intertwining, loss of relative information, or a
+singular change of domain.
+
+\subsection{The Hedenmalm--Euler admission fracture}
+
+Let \(H_a^x\) be the reflection-odd difference of the two Hedenmalm Borel
+holonomy vectors at parameters \(ia\) and \(-ia\), based at \(x\).  Let
+\[
+ E_a(t)=\sqrt{1-e^{-t}}\,(e^{at}-e^{-at}),\qquad t>0,
+\tag{5.G}\label{eq:weighted-euler-profile}
+\]
+be the polarized Euler--Hardy reflection profile with its actual tail
+weight absorbed into the vector.
+
+\begin{theorem}[Hedenmalm--Euler admission fracture]
+\label{thm:hedenmalm-euler}
+For every real basepoint \(x\), define
+\[
+ \Sigma_H(x)=\{a:H_a^x\in L^2(0,\infty)\},\qquad
+ \Sigma_E=\{a:E_a\in L^2(0,\infty)\}.
+\]
+Then
+\[
+ \left(-\frac12,\frac12\right)\subset\Sigma_H(x),
+ \qquad \Sigma_E=\{0\}.
+\tag{5.H}\label{eq:analytic-spectra}
+\]
+In particular, for \(0<|a|<1/2\), no linear raw-profile map \(T\) can
+satisfy both
+\[
+                  T H_a^x=E_a,\qquad
+                  H_a^x\in L^2\Longrightarrow T H_a^x\in L^2.
+\tag{5.I}\label{eq:no-regular-intertwiner}
+\]
+No boundedness, injectivity, inverse, or reverse domain implication is
+needed.
+\end{theorem}
+
+\begin{proof}
+Both Hedenmalm holonomy vectors are square integrable when \(|a|<1/2\),
+and \(L^2\) is closed under subtraction; hence the first inclusion.  The
+squared norm of \eqref{eq:weighted-euler-profile} is
+\[
+ \int_0^\infty(1-e^{-t})|e^{at}-e^{-at}|^2\,dt,
+\]
+which is finite exactly when \(a=0\), giving the second identity.  If a
+map in \eqref{eq:no-regular-intertwiner} existed at nonzero \(a\), the
+first spectrum would put \(H_a^x\) in \(L^2\); domain preservation and
+intertwining would then put \(E_a\) in \(L^2\), contradicting
+\(\Sigma_E=\{0\}\).
+\end{proof}
+
+This is the first direct cross-route consequence.  A regular common
+Hilbert carrier cannot merge the permissive Borel source with the sharp
+Euler--Hardy boundary.  The missing bridge is necessarily a singular
+domain restriction before scalarization.  The result does not show that
+Xi zero fibres land in that singular domain.
+
+\subsection{Absolute orientation as one incidence specialization}
 
 Let \(A^1\) be the all-prime finite-support Calder\'on--Witt degree-one
 source, \(A^2\) its first suspension, and
@@ -530,9 +725,9 @@ unoriented complex is acyclic.  Its normalized Haar orientation trace
 One has \(\operatorname{im}D=\ker T\), and the resulting top cohomology is
 one-dimensional.
 
-\begin{theorem}[Orientation--transgression completeness]
-\label{thm:main}
-The all-prime oriented source has the following three universal
+\begin{theorem}[All-prime orientation--transgression completeness]
+\label{thm:orientation}
+The all-prime oriented incidence source has the following three
 properties.
 \begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em]
 \item Every linear consumer \(F:A^2\oplus\C\to V\) has a canonical
@@ -595,9 +790,23 @@ invariant is sector-sensitive primitive escape.  It does not identify
 the admitted sectors of different routes.  It states exactly what each
 route must preserve before passing to its consumer.
 
+For any parameter family \(w_p\) of all-prime exterior cocycles, the
+incidence instance of Theorem~\ref{thm:main} is therefore the exact set
+identity
+\[
+ \Sigma_S(w)=
+ \left\{p:h(w_p)\in S\right\}
+ =\left\{p:\exists s\in S\text{ with }\iota(s)=w_p\right\}.
+\tag{5.J}\label{eq:deninger-spectrum}
+\]
+This is not a metaphorical comparison with the analytic spectra in
+\eqref{eq:analytic-spectra}; all three are vanishing spectra of the same
+relative-primitive construction.  Their different shapes record different
+admitted sectors, not different choices of Green operator.
+
 \subsection{The completion threshold}
 
-\begin{theorem}[Universal dense-admission threshold]
+\begin{lemma}[Dense closed-admission threshold]
 \label{thm:dense-admission}
 Let \(U:E\to H\) have dense range in a topological space \(H\), let
 \(d\in H\), and let \(P\) be any oriented target condition.  Define a
@@ -607,7 +816,7 @@ closed admission realization to be a closed set \(K\subset H\) satisfying
 \tag{5.5}\label{eq:abstract-admission}
 \]
 Then a closed admission realization exists if and only if \(P\) holds.
-\end{theorem}
+\end{lemma}
 
 \begin{proof}
 If \(K\) exists, closedness and density give
@@ -615,9 +824,10 @@ If \(K\) exists, closedness and density give
 if \(P\) holds, \(K=H\) satisfies \eqref{eq:abstract-admission}.
 \end{proof}
 
-This theorem is route-independent but not an RH proof: a route must
-construct its own dense source transport, detector, and exact trace
-without assuming \(P\).
+This elementary closure lemma is not the paper's universal law.  Its sole
+role is to close the completed-incidence specialization once a route has
+constructed its dense source transport, detector, and exact trace without
+assuming \(P\).
 
 \subsection{Completed-incidence specialization}
 
@@ -728,10 +938,11 @@ following atlas records where each route currently stops.
 \bottomrule
 \endlastfoot
 C1: singular Hedenmalm
-& Theta eigenfamily; full-source positive-form classification; dense
-  nonclosed radical and ordinary-\(L^2\) closed-graph exclusion
-& Construct source-selected singular boundary form retaining divided-zero
-  levels and closed coordinate action\\
+& Genuine Borel \(L^2\) source throughout the centered half-strip;
+  full-source positive-form classification; exact admission-spectrum
+  mismatch with the Euler--Hardy carrier
+& Construct a source-selected domain-singular boundary form retaining
+  divided-zero levels and intertwining the sharp polarized profile\\
 
 E: M\"obius
 & Exact zero/one all-prime boundary factorization; renewal kernel; finite
@@ -754,9 +965,10 @@ J: Julia relative current
 
 L: Calder\'on--Witt/Hodge
 & All-prime oriented source complex; finite Gamma/co-Poisson boundary
-  comparison; dense norm-preserving completed Xi incidence bridge
-& Derive labelled finite-tail graph-norm landing from source-side
-  prime-power Green current\\
+  comparison; dense norm-preserving completed Xi incidence bridge;
+  fixed-witness Hellinger residue classified exactly
+& Construct an adjacent-grade off-diagonal Hellinger/Beta coface whose
+  labelled cofinal chain is graph-Cauchy and lands the Xi Green primitive\\
 
 N: prime-normal domain
 & Exact decomposition of prime-normal energy into vertical clock and
@@ -783,10 +995,11 @@ Q: theta--Cassini
   Jensen/jet saturation\\
 
 R: primitive current
-& Wold activation, von Mangoldt current, valuation disintegration,
+& Wold activation, valuation disintegration, target-free physical
+  M\"obius--theta source, exact complex source-to-Xi landing,
   Hellinger/Gamma coordinates, primitive promotion, Julia/KMS resolution
-& Construct singular source-pointed breadth/depth common-test
-  factorization and prove four-unit Ward sign before scalarization\\
+& Complete the singular prime-normal source graph and prove its
+  source-derived Hellinger/Ward admission before scalarization\\
 
 analytic--Hurwitz
 & Completed-density relation at each divisor point and corresponding
@@ -803,14 +1016,19 @@ HT/recurrence
 
 \subsection{Why these remain different routes}
 
-Rows C1, E, N, O, P, and Q lack a source-domain estimate or source-built
-carrier.  Rows G, R, analytic--Hurwitz, and HT/recurrence lack a faithful
-continuation into their target relation.  Route J has constructed a
+Rows E, N, O, P, and Q lack a source-domain estimate or source-built
+carrier.  Route C1 has a genuine Hilbert source but, by
+Theorem~\ref{thm:hedenmalm-euler}, any comparison with the sharp
+Euler--Hardy carrier must be domain-singular.  Rows G,
+analytic--Hurwitz, and HT/recurrence lack a faithful continuation into
+their target relation.  Route R now has physical source-to-Xi landing but
+lacks the singular prime-normal-to-Hodge admission.  Route J has constructed a
 cofinal vector transport but lacks the source-relative polarization which
 survives its singular scalar recovery.  Route L alone has a dense
 completed incidence carrier and an exact finite detector, so
-Corollary~\ref{thm:xi-admission} sharpens its remaining theorem to
-graph-domain landing.  These are not interchangeable gaps.
+Corollary~\ref{thm:xi-admission} sharpens its remaining theorem to a
+source-derived off-diagonal cofinal graph landing.  These are not
+interchangeable gaps.
 
 Terminalized first-clock and Gamma--Jacobi reader coordinates, and
 determinant, Calkin, Sonin, Ward, or recurrence equivalences without an
@@ -864,8 +1082,9 @@ A dense nonclosed Hedenmalm radical can contain every finite source test
 without containing a decisive completed vector.  Closing it forces loss of
 orientation information.  The prime-normal product completion is the
 relation-valued extreme: its vertical part becomes the whole target.
-Both are failures of closed source admission.  One fails closedness; the
-other closes to an output-free object.
+In admission-spectrum language, the first changes the domain on which the
+quotient class is defined; the second kills every quotient class.  One is
+necessarily singular, while the other is maximally noninjective.
 
 \subsection{Wold--Poisson ancestry and Rees superselection}
 
@@ -874,8 +1093,8 @@ of one integer source.  At nonzero modular displacement their reflected
 valuation sectors acquire different asymptotic species.  A finite-Rees
 operator preserves the flat radical, so it cannot produce an admission
 set with the finite trace \eqref{eq:finite-trace}.  The singular growth in
-\eqref{eq:beyond-rees} is the cost of attempting to make that trace
-closed.
+\eqref{eq:beyond-rees} is the cost of leaving one admission-spectrum
+class for another without killing the source quotient.
 
 \subsection{Sonin, Calkin, and positive Ward consumers}
 
@@ -903,19 +1122,19 @@ All these shadows can be summarized without identifying their categories:
 \boxed{
 \begin{minipage}{0.84\linewidth}
 \centering
-Every regular source observer splits uniquely into orientation compression
-and boundary Green transgression.  After restriction to an admitted sector,
-the relative class vanishes exactly when the Green primitive is admitted.
-Zero exclusion requires preservation of that unsquared primitive before
-scalar consumption.
+Relative primitive classes are independent of Green choice and natural
+under source chain maps.  Every injective admitted-quotient transport
+conserves their vanishing spectrum.  A spectral mismatch forces a precise
+kernel class or a singular change of source domain.
 \end{minipage}}
 \tag{7.1}\label{eq:universal-law}
 \]
-Theorem~\ref{thm:main} proves the factorization and relative-obstruction
-statements.  Corollary~\ref{thm:xi-admission} proves that closed admission
+Theorem~\ref{thm:main} proves this statement.  The
+orientation--transgression split is its all-prime incidence shadow;
+Theorem~\ref{thm:hedenmalm-euler} is its analytic cross-route
+consequence.  Corollary~\ref{thm:xi-admission} proves that closed admission
 is exactly the critical-line condition for the completed-incidence
-instance.  It makes no such completion claim for routes still missing a
-source estimate or faithful transport.
+instance.  None of these results supplies source-derived global landing.
 
 \section{What remains for a full RH proof}
 \label{sec:proof}
@@ -932,11 +1151,20 @@ single route uses all of them.
 \item The Hellinger/KMS polarization, Beta/Gamma transform, transverse
       four-unit source vector, finite Gamma/co-Poisson transport,
       Calder\'on--Witt incidence, and Green retraction are explicit.
+\item Target-free physical M\"obius--theta rungs have exact
+      source-to-Xi Fourier--Laplace landing on their honest convergence
+      domain.
 \item The completed Xi Green source maps coefficient-faithfully and
       densely into an honest incidence completion.
 \item One finite completed incidence coordinate decodes to the actual
       nonzero Gamma witness.
 \item That witness is Hodge-admitted exactly at zero displacement.
+\item Every Hellinger--Beta half-lattice residue has a nonzero actual
+      incidence lift whose relative Gamma class vanishes exactly at zero
+      displacement.
+\item Hedenmalm and Euler--Hardy reflection sources have incompatible
+      finite-energy admission spectra; every intertwining bridge between
+      them is necessarily domain-singular.
 \item Regular product completion, finite-Rees sewing, bounded
       label-blind polarization, local positive carriers, bounded scalar
       codiagonals, and finite differential closure cannot replace a
@@ -946,8 +1174,7 @@ single route uses all of them.
 \subsection{The completed-incidence route}
 
 Fix any distinct primes \(p,q\) and any one divisor coordinate \(r\).
-For Route L, a sufficient last theorem is the source-derived construction
-of
+For Route L, the terminal criterion is the source-derived construction of
 \[
 \boxed{
 \begin{minipage}{0.84\linewidth}
@@ -983,6 +1210,29 @@ assumed at the divisor.  Existing results classify
 \eqref{eq:tail-energy} as equivalent to zero displacement; they do not
 prove it.
 
+The residue computation rules out treating \(K_\rho\) as an arbitrary
+closure or as the completion of a fixed witness line.  Each nonzero
+Hellinger residue remains outside the admitted sector at every nonzero
+displacement, and every current finite Gamma packet is diagonal in the
+head/tail polarization.  The surviving producer is consequently more
+specific:
+\[
+\boxed{
+\begin{minipage}{0.84\linewidth}
+Construct an adjacent-grade Hellinger--Beta coface on the labelled
+prime-power incidence chain.  Its finite boundaries must telescope, its
+partial Green primitives must be Cauchy in the closed boundary graph norm,
+and its graph limit must be the completed Xi Green primitive.  Coefficients
+and domain must be derived from the physical source before a divisor point
+is selected.
+\end{minipage}}
+\tag{8.3}\label{eq:missing-cofinal-coface}
+\]
+This formulation identifies the required transport and excludes
+fixed-witness, finite-cell diagonal, bounded-Hilbert, and arbitrary
+closed-set repairs.  The construction in
+\eqref{eq:missing-cofinal-coface} is not presently available.
+
 The topological formulation is nevertheless strictly weaker than earlier
 completion targets.  It does not ask for:
 \begin{enumerate}[leftmargin=2.2em]
@@ -1000,9 +1250,9 @@ The other routes do not first need to construct
 \(K_\rho\subset\widehat{\cI}_{p,q}\).  Each has its own sufficient theorem
 and an already constructed connector to zero exclusion.
 \begin{enumerate}[leftmargin=2.2em]
-\item \emph{Singular Hedenmalm:} construct the source-selected boundary
-      form retaining divided-zero levels with graph-closed centered
-      coordinate multiplication.
+\item \emph{Singular Hedenmalm:} construct the source-selected singular
+      boundary domain which maps the permissive Borel spectrum to the
+      sharp Euler--Hardy spectrum while retaining divided-zero levels.
 \item \emph{Critical M\"obius:} prove the strict-half zero/one cancellation
       across the macroscopic smooth/one-large-prime seam.
 \item \emph{Suzuki:} construct the pole-compatible two-angle meromorphic
@@ -1021,9 +1271,10 @@ and an already constructed connector to zero exclusion.
 \item \emph{Theta--Cassini:} control the calibrated positive carrier from
       degree two onward, or prove the boundary Jensen/jet saturation
       inequality directly.
-\item \emph{Primitive current:} construct the singular breadth/depth
-      common-test factorization and prove its source-derived four-unit
-      Ward sign before scalarization.
+\item \emph{Primitive current:} extend the constructed physical
+      M\"obius--theta source-to-Xi landing to its singular prime-normal
+      graph and prove source-derived Hellinger/Ward admission before
+      scalarization.
 \item \emph{Analytic--Hurwitz:} transport the theta completed-density
       relation into the Hurwitz differential circuit.
 \item \emph{Hypertranscendental/recurrence:} identify an arithmetic
@@ -1033,51 +1284,29 @@ and an already constructed connector to zero exclusion.
 
 Any one of these theorems, with its proved connector, would settle RH.
 None is presently proved.  Theorem~\ref{thm:main} explains their shared
-architecture: each must preserve a relative oriented primitive which its
+architecture: each must preserve a relative primitive class which its
 downstream consumer cannot reconstruct.  It does not turn them into one
 technical problem.
 
 \section{Scope and conclusion}
 
-This paper proves a universal source law and a route-independent
-completion threshold, not RH.  It neither assumes nor constructs the
-missing source estimates, singular continuations, or admitted graph
-domains in Section~\ref{sec:proof}.  In the completed-incidence instance,
-it proves that closed realization exists exactly on the critical line and
-that global realization is RH.
+This paper proves a route-independent conservation law and a concrete
+cross-route singularity theorem, not RH.  It neither assumes nor
+constructs the missing source estimates, singular continuations, or
+admitted graph domains in Section~\ref{sec:proof}.  In the
+completed-incidence instance, closed realization exists exactly on the
+critical line and global realization is equivalent to RH.
 
 The universal law is:
 \[
 \boxed{
 \begin{minipage}{0.84\linewidth}
 \centering
-Every regular source observer splits uniquely into orientation trace and
-boundary Green transgression.  After sector restriction, the relative
-class vanishes exactly when the Green primitive is admitted.  A
-zero-exclusion route succeeds only by transporting that primitive, with
-unsquared orientation, before scalar consumption.
+The vanishing spectrum of a relative source primitive is independent of
+primitive choice and is conserved by every injective admitted-quotient
+chain transport.  If two route spectra differ, every intertwining bridge
+must kill a nonzero relative class or change source domain singularly.
 \end{minipage}}
 \tag{9.1}\label{eq:conclusion-law}
 \]
-This law explains why dense Hedenmalm radicals, maximally vertical product
-completions, finite-Rees reflection failure, positive Ward mass, Calkin
-regularization, differential independence, and unprotected recurrence
-relations are not unrelated accidents.  Each records a different fate of
-the relative primitive under compression.
-
-It also prevents a false conclusion.  Corpus does not have one remaining
-technical lemma.  Route L has source, finite boundary transport, and dense
-completed carrier, but lacks source-derived graph-domain landing.
-Critical M\"obius, singular Hedenmalm, Suzuki, Julia, prime-normal,
-Connes, Thorin, theta--Cassini, primitive-current, analytic--Hurwitz, and
-HT/recurrence routes stop at distinct earlier arrows.  Their common law is
-the same; their missing theorems are not.
-
-This is the practical output.  A proposed RH advance must identify its
-literal source, the relative primitive it preserves, the source-defined
-admitted sector, and the unsquared detector reaching the zero-exclusion
-consumer.  If it supplies only a new equivalent consumer, an orientation-
-blind regular completion, or an admission chosen after the divisor is
-known, it has not crossed the frontier.
-
 \end{document}

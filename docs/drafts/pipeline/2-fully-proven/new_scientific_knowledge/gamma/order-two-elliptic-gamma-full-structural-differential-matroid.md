@@ -1,12 +1,12 @@
 # The order-two elliptic-gamma structural orbit has no hidden nonlinear relations
 
 - **ID:** `order-two-elliptic-gamma-full-structural-differential-matroid`
-- **Stage:** 2-fully-proven / needs independent audit
+- **Stage:** 3-formalized / needs independent audit
 - **Type:** THEOREM (paper) / COMPLETE DIFFERENTIAL-ALGEBRAIC MATROID
 - **Date:** 2026-07-10
-- **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` -- conditional on the independently
-  unaudited order-one elliptic-gamma atomic theorem and still requiring an independent specialist
-  priority check. The squarefree structural annihilator was already proved; the new result below
+- **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [UNCONDITIONALLY LEAN-FORMALIZED]`
+  -- the order-one elliptic-gamma atomic theorem is itself an unconditional Lean theorem, so the
+  chain is no longer conditional; an independent specialist priority check is still required. The squarefree structural annihilator was already proved; the new result below
   upgrades it from a classification of DA linear combinations to an exact classification of every
   nonlinear differential dependence among finite structural translates.
 - **Parents:**
@@ -325,10 +325,53 @@ differentialFamilyMatroid_differentialOperatorRows_eq
 so the genuine differential-family matroid of every finite operator-output packet equals that row
 matroid. The corollaries `differentialOperatorRows_eRk_eq_finrank_span` and
 `differentialOperatorRows_matroidRank_eq_finrank_span` identify that rank explicitly with the
-`Frac(C[delta])`-dimension of the localized row span for arbitrary dependent families. Thus the
-remaining inputs are analytic and special-function-specific: the actual three-branch
-differential-independence theorem, the off-face packetwise DA statements, and the hierarchy
-identification of the concrete order-two outputs with these operator rows.
+`Frac(C[delta])`-dimension of the localized row span for arbitrary dependent families.
+
+### The special-function inputs are discharged
+
+All three remaining inputs are now unconditional Lean theorems for the actual meromorphic kernels.
+
+The three-branch differential independence and the off-face packetwise DA statements come from the
+layered face-independence engine, with the genericity hypothesis written as
+`PeriodsIntegrallyIndependent τ`:
+
+- `multipleEllipticGammaProperFacePackets_diffIndepOn`
+  (`MultipleEllipticGammaAllFaceIndependence.lean`) — for `tau : Fin 3 -> C` this is exactly joint
+  independence of the top packet and the three codimension-one branch packets;
+- `differentialAlgebraicOver_facePacket_of_compl_lt_two` (same file) — every translate of a face
+  retaining fewer than two periods, that is every `x_i x_j` face, is DA;
+- `multipleEllipticGammaCompleteDifferentialMatroid` and
+  `multipleEllipticGammaCompleteDifferentialRank`
+  (`MultipleEllipticGammaCompleteDifferentialMatroid.lean`) — the operator-row matroid law on any
+  faithful selection from those packets.
+
+`formal/GaloisForLFunctions/HTGeometry/OrderTwoStructuralTranslateDecomposition.lean` supplies the
+hierarchy identification, that is the relation `x_i x_j = 0` realized on the actual kernels:
+
+- `differentialAlgebraicOver_facePacket_translate_sub`,
+  `differentialAlgebraicOver_facePacket_translate_nsmul_sub` and
+  `differentialAlgebraicOver_facePacket_translate_finsetSum_sub` — translating a face packet in any
+  surviving direction whose insertion leaves one period is differentially algebraic;
+- `orderTwoFaceBranch` and `orderTwoFaceBranch_eq_translate_sub` — the single-direction difference
+  `(T_i^{n_i} - 1)F` telescopes into translates of the face coordinate deleting `i`;
+- `orderTwoStructuralTranslate_sub_branches_differentialAlgebraic` — the decomposition
+  `T^n F = F + sum_i (T_i^{n_i} - 1) F` modulo DA.
+
+`formal/GaloisForLFunctions/HTGeometry/OrderTwoStructuralMatroid.lean` labels the resulting
+coordinate packet and closes the identification:
+
+- `orderTwoStructuralCoordinate` is the packet `{F} union {T_i^k x_i F}`,
+  `orderTwoStructuralCoordinate_mem` places it inside the independent face-packet union and
+  `orderTwoStructuralCoordinate_injective` proves the labelling faithful, using bottom-face lattice
+  injectivity and complete face-packet disjointness;
+- `orderTwoStructuralTranslate_eq_coordinateSum_add_differentialAlgebraic` states the squarefree
+  reduction of an arbitrary structural translate to that packet;
+- `orderTwoStructural_completeDifferentialMatroid` and
+  `orderTwoStructural_completeDifferentialRank` are `(10)`: the nonlinear differential matroid of
+  every finite constant-coefficient differential-operator family on the packet is the localized
+  operator-row matroid over `Frac(C[delta])`, and its rank is the localized row rank.
+
+`#print axioms` on each of these returns only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Consequences
 
@@ -455,10 +498,14 @@ complete nonlinear differential invariant.
 - [x] complete additive structural differential matroid proved
 - [x] multiplicative finite-product matroid derived
 - [x] arbitrary dependent operator-row matroid and rank law formalized unconditionally in Lean
+- [x] three-branch differential independence and off-face packetwise DA discharged in Lean for the
+  actual kernels
+- [x] squarefree hierarchy identification of the concrete order-two outputs with the operator rows
+  formalized unconditionally in Lean
+- [x] 2 -> 3: the analytic parent is an unconditional Lean theorem, so the whole chain is
 - [ ] independent proof audit
 - [x] exact/stronger/equivalent literature audit completed provisionally through 2026
 - [ ] independent audit of the order-one atomic parent
-- [ ] 2 -> 3: formalization only after the analytic parent is formalized
 
 ## Log
 
@@ -472,3 +519,8 @@ complete nonlinear differential invariant.
 - 2026-07-10 -- Audited Hardouin's diagonal hyperindependence theorem, Ogawara's Vigneras hierarchy,
   and Kato's rational-period theorem; found no equivalent squarefree structural family matroid and
   promoted the result provisionally to candidate new scientific knowledge.
+- 2026-08-02 -- Closed the Lean gate.  The order-one atomic parent, the three-branch independence
+  and the off-face packetwise DA statements were already unconditional in the corpus.  Built the
+  missing hierarchy identification: the cross-translation DA lemmas, the squarefree decomposition
+  `T^n F = F + sum_i (T_i^{n_i} - 1) F` modulo DA, the faithful labelling of the coordinate packet,
+  and the operator-row matroid and rank laws `(10)`.  Promoted to Stage 3.

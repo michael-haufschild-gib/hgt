@@ -97,6 +97,16 @@ reciprocal Hodge leg tends to infinity, indeed beyond every finite Rees order, s
 diverges.  This proves `(PHMT-3)` and supplies the required hostile falsifier: any claimed bounded
 off-critical completion contradicts the source sewing asymptotics.
 
+The positive and oriented channels are related by an exact source purity-defect identity:
+
+```text
+W_ij^2 (C_a(i,j)-2) = 4 gamma_a(i,j)^2.             (PHMT-5)
+```
+
+Thus graph-capacity does not merely correlate with the mixed defect.  Its excess above the Hodge
+minimum is exactly the square of the secondary unsquared trace.  The sign remains in `(PHMT-2)`;
+positive capacity sees precisely its reflection-even shadow.
+
 ## Why this is not a renamed equivalence
 
 `(PHMT-2)` is a new chain-level factorization of an existing boundary coefficient through a
@@ -135,6 +145,7 @@ Key unconditional declarations:
 - `pureHodgeCellOddTransgression_mem_actual`;
 - `pureHodgeCellPoincareTrace_eq_actualMixedBoundary`;
 - `pureHodgeCellPoincareTrace_oddTransgression_eq_zero_iff`;
+- `pureHodgeCellPoincareTrace_sq_eq_capacityDefect`;
 - `pureHodgeBalancedGraphCapacity_eq_sewing_add_reflection`;
 - `pureHodgeBalancedGraphCapacity_tendsto_atTop`;
 - `pureHodgeBalancedGraphCapacity_uniform_iff`.
@@ -155,3 +166,6 @@ the prime-power source/Green chain; assuming graph-boundedness would restate the
   Hodge-anti-fixed odd transgression, actual admission, exact equality with mixed Gamma/Hardy
   boundary, zero-displacement trace classification, reciprocal sewing-capacity identity, and
   uniform-capacity iff theorem.  Direct Lean check passes; targeted final audit remains.
+- 2026-08-02 — Proved source-side purity-defect identity `(PHMT-5)`: balanced capacity excess is
+  exactly squared secondary Gamma curvature.  This is chain-level analogue of divisor-side
+  Frobenius--Hodge purity defect, with unsquared sign retained before the positive shadow.

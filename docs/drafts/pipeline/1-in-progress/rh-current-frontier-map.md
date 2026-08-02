@@ -6081,6 +6081,16 @@ graph capacity is the sum of reciprocal Gamma sewing costs and is uniformly boun
 the modular displacement is zero.  This rules out every regular off-critical realization of this
 secondary trace while retaining the finite source object.
 
+Exact source purity-defect law now identifies the positive shadow:
+
+```text
+weight(i,j)^2 * (balancedCapacity_a(i,j)-2)
+  = 4 * gamma_a(i,j)^2.
+```
+
+So bounded Hodge capacity and unsquared orientation are no longer separate desiderata.  Capacity
+excess is exactly squared secondary curvature; sign survives only before positive scalarization.
+
 Remaining Route-J producer is no longer “find an unsquared trace.”  It is:
 
 ```text

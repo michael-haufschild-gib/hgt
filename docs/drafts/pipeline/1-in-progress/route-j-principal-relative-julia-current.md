@@ -3366,16 +3366,25 @@ the sum of reciprocal Gamma sewing costs.  Since
 exists C, forall n, C_a(p,q,n)<=C  <->  a=0.         (196)
 ```
 
+More sharply, the graph-capacity excess is exactly the squared oriented curvature:
+
+```text
+W_ij^2(C_a(i,j)-2)=4 gamma_a(i,j)^2.                 (197)
+```
+
+Equation `(197)` is the source-side purity-defect law.  Positive Hodge capacity sees exactly the
+square of the secondary trace, while `(193)` retains its sign before scalar positivity.
+
 This closes the search for an unsquared secondary detector and proves its class-complete
 graph-capacity boundary.  It does not assume or prove that completed Xi source vectors satisfy
 the bounded side of `(196)`.  Exact remaining Route-J producer is now:
 
 ```text
 derive, from the prime-power Xi Green source relation, graph-bounded landing
-of its balanced pure-Hodge modular transgression.                         (197)
+of its balanced pure-Hodge modular transgression.                         (198)
 ```
 
-Assuming `(197)` would be theatre; deriving it would force `a=0` at every divisor coordinate by
+Assuming `(198)` would be theatre; deriving it would force `a=0` at every divisor coordinate by
 `(196)` and close RH.  Lean certificate:
 
 ```text

@@ -472,7 +472,19 @@ norm_soninMellinEvaluation_le_geometric_sample
 The head is evaluated exactly (`integral_Ioo_soninMellinKernel`), the tail is the Cauchy--Schwarz
 factor `(integral_A^infinity t^(-2 Re w) dt)^(1/2)`
 (`integral_Ioi_norm_sq_soninMellinKernel`), and the head amplitude is controlled by
-`||c|| sqrt A <= ||f||` (`norm_head_mul_sqrt_le`).  Thus both exponents compared in `(16f)` --- the
+`||c|| sqrt A <= ||f||` (`norm_head_mul_sqrt_le`).
+
+The Sonine carrier itself is built in
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolSoninEvenCosineAperture.lean
+```
+
+which realizes `L^2(0,infinity)` as the even carrier of `L^2(R)` with the exact norm factor
+`1/sqrt 2` (`norm_soninHalfLine`), constructs the cosine transform `soninCosineUnitary` as the
+restriction of the ambient Fourier unitary, proves it is a unitary involution, defines the extended
+Sonine space `soninExtendedSpace a` as the constant-head vectors whose cosine transform also has
+constant head, and proves that space cosine invariant.  Thus both exponents compared in `(16f)` --- the
 Borel condition-number exponent and the Sonine evaluator aperture exponent --- are now Lean objects
 with the same value `|Re rho - 1/2|`.  What remains outside the formal tree is only the *lower* half
 of the sibling card's `(12)`, which is supplied by the co-Poisson dilation contractions of the parent

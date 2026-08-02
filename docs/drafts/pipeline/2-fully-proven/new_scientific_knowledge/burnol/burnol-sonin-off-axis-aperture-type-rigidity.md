@@ -286,10 +286,40 @@ for `1/2 < sigma = Re w < 1`.  All `#print axioms` reduce to
 the constant head, not the full Sonine condition; the Sonine condition enters the paper proof only
 through the functional equation `(8)` used to transfer the estimate to `sigma < 1/2`.
 
-Still outside the formal tree: the unitary cosine transform `F_+` on `L^2(0,infinity)` with the
-completed Mellin functional equation `(8)` (needed for the reflected range `sigma < 1/2`), Burnol's
-orthogonal-complement identification `(10)`, and the co-Poisson dilation contractions giving the
-lower bound `(11)`.  Those are what the two-sided law `(12)` and the limit `(13)` still require.
+The unitary cosine transform and the extended Sonine space are now built as well, in
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolSoninEvenCosineAperture.lean
+```
+
+The half-line model `L^2(0,infinity)` is realized as the even carrier of `L^2(R)`, for which the
+formal tree already owns the Fourier unitary and the even projection.  The module proves
+
+```text
+integral_Iio_norm_sq_eq_integral_Ioi : an even carrier splits its mass evenly,
+norm_soninHalfLine                   : ||f|_(0,infinity)|| = ||f||/sqrt 2,
+soninCosineUnitary                   : evenSubspace ~=L2 evenSubspace, the cosine transform F_+,
+soninCosineUnitary_involutive        : F_+^2 = 1, since F^2 is the reflection,
+soninCosineUnitary_symm_eq           : F_+^(-1) = F_+,
+soninHeadConstantSubmodule a         : the constant-aperture-head submodule,
+soninExtendedSpace a                 : L_a, both f and F_+ f with constant head a,
+soninCosineUnitary_mem_soninExtendedSpace
+                                     : L_a is cosine invariant,
+norm_soninMellinEvaluation_le_aperture_even
+                                     : the ambient bound on an even carrier,
+norm_soninMellinEvaluation_cosine_le_aperture
+                                     : the same bound applied to F_+ f, with the same norm.
+```
+
+The last item is the entire right-hand side of the reflected estimate: once the completed Mellin
+functional equation `(8)` is available, the `sigma < 1/2` case of `(3)` is immediate from it, because
+`F_+` is norm preserving and `L_a` is cosine invariant.
+
+Still outside the formal tree: the completed Mellin--cosine functional equation `(8)`
+`M f(w) = M(F_+ f)(1-w)`, which is the archimedean local functional equation for even test
+functions; Burnol's orthogonal-complement identification `(10)`; and the co-Poisson dilation
+contractions giving the lower bound `(11)`.  Those are what the two-sided law `(12)` and the limit
+`(13)` still require.
 
 ## Gates
 
@@ -301,6 +331,7 @@ lower bound `(11)`.  Those are what the two-sided law `(12)` and the limit `(13)
 - [x] targeted literature noncollision audit
 - [ ] construct the surviving source anomaly-cancellation comparison
 - [x] Lean: completed Mellin evaluator, aperture-head class, ambient bound `(3)`--`(7)`, `(14)`
-- [ ] Lean: unitary cosine transform and completed Mellin functional equation `(8)` (range `sigma < 1/2`)
+- [x] Lean: unitary cosine transform `F_+`, extended Sonine space `L_a`, cosine invariance
+- [ ] Lean: completed Mellin functional equation `(8)` (range `sigma < 1/2`)
 - [ ] Lean: orthogonal-complement identification `(10)` and co-Poisson lower bound `(11)`
 

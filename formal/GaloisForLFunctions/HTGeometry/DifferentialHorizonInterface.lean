@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.DeckClosureStableCore
 import GaloisForLFunctions.HTGeometry.NonautonomousDeckClosure
 import GaloisForLFunctions.HTGeometry.DifferentialIndependentFieldUniversality
 import GaloisForLFunctions.HTGeometry.KolchinExchangeGaugeObstruction
+import GaloisForLFunctions.HTGeometry.DifferentialKolchinClosure
 
 /-!
 # Differential horizon interfaces
@@ -121,6 +122,61 @@ theorem stableRangeCore_eq_closedDeck_eq_differentialQuotient
     stableRangeCore_eq_fixedField_iSup φ deck hdeck
   exact ⟨htail.trans hclosure,
     htail.trans (hclosure.trans hquotient)⟩
+
+/-- **Kolchin-density form of the Manin/deck horizon identity.**  Finite deck quotients give the
+stable core.  A point-labelled differential translation action identifies the increasing deck
+group and its closed envelope.  Kolchin density, together with differential-polynomial closedness
+of every element stabilizer, then proves equality of their fixed fields rather than assuming that
+equality as an input. -/
+theorem stableRangeCore_eq_kolchinClosedDeck_eq_differentialQuotient
+    {K L ι κ : Type*} [Field K] [Field L] [Algebra K L]
+    [Differential K] [Differential L] [DifferentialAlgebra K L]
+    (φ : L →ₐ[K] L)
+    (deck : ℕ → Subgroup (L ≃ₐ[K] L))
+    (hdeck : ∀ n,
+      IntermediateField.map (φ ^ n) ⊤ =
+        IntermediateField.fixedField (deck n))
+    (translation : (κ → K) → DifferentialAlgEquiv K L)
+    (finiteDeckPoints closedDeckPoints : Set (κ → K))
+    (closedDeck : Subgroup (L ≃ₐ[K] L))
+    (hfiniteDeckImage :
+      (fun a => (translation a).toAlgEquiv) '' finiteDeckPoints =
+        ((⨆ n, deck n) : Subgroup (L ≃ₐ[K] L)))
+    (hclosedDeckImage :
+      (fun a => (translation a).toAlgEquiv) '' closedDeckPoints =
+        (closedDeck : Set (L ≃ₐ[K] L)))
+    (hkolchin : kolchinClosureOver K finiteDeckPoints = closedDeckPoints)
+    (hclosedStabilizer : ∀ z : L,
+      IsKolchinClosedOver K
+        {a : κ → K | (translation a).toAlgEquiv z = z})
+    (quotientCoordinate : ι → L)
+    (hquotient :
+      IntermediateField.fixedField closedDeck =
+        differentialAdjoin K (Set.range quotientCoordinate)) :
+    stableRangeCore φ = IntermediateField.fixedField closedDeck ∧
+      stableRangeCore φ =
+        differentialAdjoin K (Set.range quotientCoordinate) := by
+  have hdenseFixed :
+      differentialTranslationFixedField translation finiteDeckPoints =
+        differentialTranslationFixedField translation closedDeckPoints :=
+    differentialTranslationFixedField_eq_of_kolchinClosureOver_eq
+      translation finiteDeckPoints closedDeckPoints hkolchin hclosedStabilizer
+  have hfiniteFixed :
+      differentialTranslationFixedField translation finiteDeckPoints =
+        IntermediateField.fixedField (⨆ n, deck n) :=
+    differentialTranslationFixedField_eq_fixedField_of_image_eq
+      translation finiteDeckPoints (⨆ n, deck n) hfiniteDeckImage
+  have hclosedFixed :
+      differentialTranslationFixedField translation closedDeckPoints =
+        IntermediateField.fixedField closedDeck :=
+    differentialTranslationFixedField_eq_fixedField_of_image_eq
+      translation closedDeckPoints closedDeck hclosedDeckImage
+  have hclosure :
+      IntermediateField.fixedField (⨆ n, deck n) =
+        IntermediateField.fixedField closedDeck :=
+    hfiniteFixed.symm.trans (hdenseFixed.trans hclosedFixed)
+  exact stableRangeCore_eq_closedDeck_eq_differentialQuotient
+    φ deck hdeck closedDeck hclosure quotientCoordinate hquotient
 
 /-- Pointwise Manin-horizon form. -/
 theorem mem_stableRangeCore_iff_mem_differentialQuotient

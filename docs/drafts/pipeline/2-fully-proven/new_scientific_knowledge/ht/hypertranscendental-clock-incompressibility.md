@@ -341,3 +341,43 @@ Independence of the Frechet rows of a differentially independent family is reduc
 `KaehlerKernel.lean` (kernel of the universal derivation in characteristic zero) plus a
 derivation-prescription lemma obtained by the same transcendence-basis and formally-etale
 argument used there.
+
+## Lean status of the Frechet/Ore layer, first completion
+
+Theorem A is now formalized unconditionally, in the form
+
+`∃ K, ∀ u, ord (Φ u) ≤ ord u + K ∧ ord u ≤ ord (Φ u) + K`,
+
+for every differential embedding `Φ` of free differential rational fields of finite rank over a
+characteristic-zero field of constants.  The order used is the order of the Frechet row, i.e. the
+largest jet level at which a partial derivative of the element does not vanish.
+
+Modules and their capstones:
+
+| Module | Content |
+|---|---|
+| `DifferentialOperatorOre.lean` | the Ore ring `K[∂;δ]`, degree, leading coefficient, `NoZeroDivisors` |
+| `DifferentialOperatorOreDivision.lean` | `exists_right_div`: division with remainder |
+| `DifferentialOperatorOreMatrix.lean` | `boundedDistortion_of_rowIndep`: `degVec v ≤ degVec (v·P) + B` |
+| `DifferentialOperatorOreMap.lean` | coefficientwise transport of operators, `coeff_mul_of_subset` |
+| `FreeDifferentialJetField.lean` | `JetField C ι` with `δ`, the coordinate partials, `pd_deriv_succ` |
+| `JetFieldDerivationExpansion.lean` | `pd_expansion`: `D u = ∑ₚ (∂u/∂xₚ) • D xₚ` |
+| `FreeDifferentialFrechet.lean` | the Frechet row, `frechet_deriv : J(δu) = ∂·J(u)` |
+| `FreeDifferentialChainRule.lean` | `frechet_algebraMap_eq_vecMul`: equation `(8)` |
+| `DerivationPrescription.lean` | derivations with prescribed values on an algebraically independent family |
+| `FreeDifferentialFrechetIndependence.lean` | `rowIndep_frechetMatrix`: full row rank of `P` |
+| `HypertranscendentalClockIncompressibility.lean` | `exists_uniform_ordJet_comparison` = Theorem A `(4)`; `tendsto_normalized_of_bounded_diff` = `(5)` |
+
+All of these are axiom-clean (`propext`, `Classical.choice`, `Quot.sound` only).
+
+The pseudodifferential right inverse `(6)` is not constructed: its only use is the bounded
+two-sided degree comparison, and that is obtained inside the operator ring itself from division
+with remainder plus elimination in a pivot column (`boundedDistortion_of_rowIndep`).  This is the
+same mathematics with the skew field of fractions removed from the dependency graph.
+
+Remaining for the card:
+
+- [ ] identification of the Frechet order with the rational-expressibility order
+      (`u ∈ C(jets of level ≤ N)` iff all higher partials vanish);
+- [ ] the finite-tuple form of `(4)` and the dynamical corollary `(16)`;
+- [ ] Theorem B: the valuation-lattice/Cartan-vector refinement `(12)–(13)`.

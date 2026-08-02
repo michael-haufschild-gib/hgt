@@ -1,7 +1,7 @@
 # Euler prime-current singular Hodge graph fracture
 
 - **ID:** `euler-prime-current-singular-hodge-graph-fracture`
-- **Status:** fully proved on paper; Lean formalization pending
+- **Status:** formalized unconditionally in Lean 4
 - **Route:** L (Calderón--Witt/Hodge)
 - **Date:** 2026-08-02
 - **Parents:** `EulerPrimeCurrentClockLaw`,
@@ -219,15 +219,15 @@ The individual ingredients are classical or already formalized.  Claimed novelty
 source-faithful conjunction (5)--(12) and its Route-L consequence, not Euler's divergence, Mellin
 size bias, or the continuous exponential integral separately.
 
-## 7. Formalization target
+## 7. Lean formalization
 
-Planned Lean module:
+Formalized module:
 
 ```text
 GaloisForLFunctions.RHTower.EulerPrimeCurrentSingularHodgeGraphFracture
 ```
 
-Required unconditional declarations:
+Verified unconditional declarations:
 
 - discrete Hodge scale and reflected endpoint difference;
 - exact comparison with `eulerPrimitiveBoundaryHodgeScale` and
@@ -237,3 +237,5 @@ Required unconditional declarations:
 - summability iff zero displacement;
 - Xi-fracture specialization, without assuming RH.
 
+Direct `lake env lean` elaboration and targeted module build pass.  `#print axioms` reports only
+`propext`, `Classical.choice`, and `Quot.sound`; there is no project-specific axiom or RH assumption.

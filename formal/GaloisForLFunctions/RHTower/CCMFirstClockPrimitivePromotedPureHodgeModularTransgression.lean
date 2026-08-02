@@ -4,11 +4,11 @@ import GaloisForLFunctions.RHTower.CCMFirstClockPrimitivePromotedPureHodgeCounte
 # Pure-Hodge modular transgression
 
 The primary Gamma/Hardy boundary annihilates both pure cell incidences
-`d_i wedge d_j` and `w_i wedge w_j`.  Nevertheless, their Hodge exchange
+\`d_i wedge d_j\` and \`w_i wedge w_j\`.  Nevertheless, their Hodge exchange
 retains the actual unsquared mixed boundary as a secondary operation.
 
 This module constructs the balanced modular orbit on the canonical pure
-Hodge plane.  Hodge exchange conjugates displacement `a` to `-a`; hence its
+Hodge plane.  Hodge exchange conjugates displacement \`a\` to \`-a\`; hence its
 reflection-odd part is Hodge-anti-fixed and remains actual-admitted
 incidence.  Pairing its packet--packet coordinate against the dual
 defect--defect leg with the source half-height weight recovers exactly the
@@ -176,6 +176,18 @@ theorem pureHodgeCellPoincareTrace_planeEmbedding
     cellPacketPacketExterior_canonical]
   simp
 
+theorem reflectionOddExterior_eq_pureHodgePoincareFactor
+    (a : ℝ) (ij : XiGammaEulerCalderonWittOrderedDistinctCellPair) :
+    xiGammaEulerPrimitiveReflectionOddExterior a ij.1.1 ij.1.2 =
+      pureHodgeCellPoincareWeight ij *
+        ((Real.exp (a * pureHodgeCellModularRate ij) -
+          Real.exp (-a * pureHodgeCellModularRate ij)) / 2) := by
+  rw [xiGammaEulerPrimitiveReflectionOddExterior,
+    xiGammaEulerPrimitiveModularExterior_eq,
+    xiGammaEulerPrimitiveModularExterior_eq]
+  unfold pureHodgeCellPoincareWeight pureHodgeCellModularRate
+  ring
+
 theorem pureHodgeCellOddTransgressionCoefficients_snd
     (a : ℝ) (ij : XiGammaEulerCalderonWittOrderedDistinctCellPair) :
     (pureHodgeCellOddTransgressionCoefficients a ij).2 =
@@ -202,10 +214,7 @@ theorem pureHodgeCellPoincareTrace_oddTransgression_eq_reflectionOddExterior
               Real.exp (-a * pureHodgeCellModularRate ij))) =
         xiGammaEulerPrimitiveReflectionOddExterior
           a ij.1.1 ij.1.2 := by
-    rw [xiGammaEulerPrimitiveReflectionOddExterior,
-      xiGammaEulerPrimitiveModularExterior_eq,
-      xiGammaEulerPrimitiveModularExterior_eq]
-    unfold pureHodgeCellPoincareWeight pureHodgeCellModularRate
+    rw [reflectionOddExterior_eq_pureHodgePoincareFactor]
     ring
   calc
     (pureHodgeCellPoincareWeight ij : ℂ) *
@@ -245,6 +254,46 @@ theorem pureHodgeCellPoincareTrace_oddTransgression_eq_zero_iff
   exact_mod_cast
     xiGammaEulerPrimitiveReflectionOddExterior_eq_zero_iff
       a ij.1.1 ij.1.2 hheight
+
+def pureHodgeCellBalancedCapacity
+    (a : ℝ) (ij : XiGammaEulerCalderonWittOrderedDistinctCellPair) : ℝ :=
+  Real.exp (-a * pureHodgeCellModularRate ij) ^ 2 +
+    Real.exp (a * pureHodgeCellModularRate ij) ^ 2
+
+theorem pureHodgeCellBalancedCapacity_sub_two
+    (a : ℝ) (ij : XiGammaEulerCalderonWittOrderedDistinctCellPair) :
+    pureHodgeCellBalancedCapacity a ij - 2 =
+      (Real.exp (a * pureHodgeCellModularRate ij) -
+        Real.exp (-a * pureHodgeCellModularRate ij)) ^ 2 := by
+  have hmul :
+      Real.exp (a * pureHodgeCellModularRate ij) *
+          Real.exp (-a * pureHodgeCellModularRate ij) = 1 := by
+    rw [← Real.exp_add]
+    have hzero :
+        a * pureHodgeCellModularRate ij +
+            -a * pureHodgeCellModularRate ij = 0 := by ring
+    rw [hzero, Real.exp_zero]
+  unfold pureHodgeCellBalancedCapacity
+  nlinarith
+
+/-- Source-side purity defect: positive graph-capacity excess is exactly
+the square of the unsquared secondary Poincare/Gamma trace. -/
+theorem pureHodgeCellPoincareTrace_sq_eq_capacityDefect
+    (a : ℝ) (ij : XiGammaEulerCalderonWittOrderedDistinctCellPair) :
+    4 * xiGammaEulerPrimitiveReflectionOddExterior
+          a ij.1.1 ij.1.2 ^ 2 =
+      pureHodgeCellPoincareWeight ij ^ 2 *
+        (pureHodgeCellBalancedCapacity a ij - 2) := by
+  rw [reflectionOddExterior_eq_pureHodgePoincareFactor,
+    pureHodgeCellBalancedCapacity_sub_two]
+  ring
+
+theorem pureHodgeCellBalancedCapacity_two_le
+    (a : ℝ) (ij : XiGammaEulerCalderonWittOrderedDistinctCellPair) :
+    2 ≤ pureHodgeCellBalancedCapacity a ij := by
+  rw [← sub_nonneg]
+  rw [pureHodgeCellBalancedCapacity_sub_two]
+  positivity
 
 /-! Cofinal graph-capacity classification. -/
 
