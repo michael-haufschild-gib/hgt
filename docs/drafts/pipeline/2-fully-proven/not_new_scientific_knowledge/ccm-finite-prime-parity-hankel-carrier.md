@@ -232,6 +232,14 @@ weighted all-prime coefficient tail
 Compact-open determinant convergence remains the final divisor-transfer conclusion, but a source
 proof of that convergence must be built in the stronger incidence topology `(17)`.
 
+## Cofinal inertia sharpening
+
+The carrier's sign-indefiniteness is now exact. Prime-free corners already give infinite negative
+index. For `a>log(2)/2`, the first-prime term in `(9)` is an interior negative reflection across
+`x+y=log 2`; arbitrarily many narrow reflected-even and reflected-odd bump pairs retain opposite
+signs against the regular kernel. Thus the full parity difference has infinite positive and
+negative index cofinally. See `suzuki-prime-seam-parity-hankel-strong-indefiniteness.md`.
+
 ## Exact limitation
 
 The sign of `H_a` is not fixed on the whole positive cone. The regular kernel is positive on an

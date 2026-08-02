@@ -36,13 +36,18 @@ Formula and concept searches covered:
 - the exact differential-field meet law
   \(L\langle a,b\rangle\cap L\langle a,c\rangle=L\langle a\rangle\) for a jointly free
   common/private block, linear disjointness of the private extensions over the common field,
-  and its Riemann specialization to the full shell-set laws
+  and its Riemann specialization to the complete shell-set laws
   \[
   \mathcal F_A\cap\mathcal F_B=\mathcal F_{A\cap B},\quad
   \mathcal F_A\vee\mathcal F_B=\mathcal F_{A\cup B},\quad
   \mathcal F_A\subseteq\mathcal F_B\Longleftrightarrow A\subseteq B,
   \]
-  together with
+  the nonempty arbitrary-family extensions
+  \[
+  \bigcap_i\mathcal F_{A_i}=\mathcal F_{\cap_iA_i},\qquad
+  \bigvee_i\mathcal F_{A_i}=\mathcal F_{\cup_iA_i},
+  \]
+  finite shell support of every field observable, exact relative complements, and
   \(\bigcap_{m\ge12}\mathbb C(s)\langle\zeta,H_m\rangle
    =\mathbb C(s)\langle\zeta\rangle\);
 - source-normalized adjacent-shell transfer converging to
@@ -100,7 +105,7 @@ priority.
 | Filtered von Mangoldt/Xi \(+2\) current survives full local-Euler all-depth residue--valuation completion | No exact collision found; candidate new primitive-boundary theorem |
 | \(\zeta'/\zeta\) hypertranscendental over complete zero-free \(H_m\)-frame while recovered as every shell's relative connection | No exact collision found; candidate new common-current theorem |
 | Any two shell-test differential fields, and the intersection of the complete family, equal exactly \(\mathbb C(s)\langle\zeta\rangle\) | Generic free-field intersection is algebraic folklore; no collision found for this explicit differential Riemann-shell common-core theorem |
-| Arbitrary shell subsets preserve intersection, compositum, inclusion, and equality exactly; their private extensions are linearly disjoint over the common shell field | Generic rational-function lattice facts are folklore. Targeted searches for zeta/Euler-product differential-field lattices and shell-field intersections found no explicit Riemann realization; candidate strongest new structural theorem |
+| Arbitrary nonempty families of shell subsets preserve intersection and compositum exactly; every observable has finite source support; complements, inclusion, and equality are exact; private extensions are linearly disjoint over the common shell field | Generic finite rational-function lattice facts are folklore. Targeted searches for complete zeta/Euler-product differential-field lattices, infinitary shell-field intersections, or a finite-support/no-ghost theorem found no explicit Riemann realization; candidate strongest new structural theorem |
 | Positive coefficient-disjoint channels with identical zeta divisor and two-sided differential separation | No collision found; candidate new arithmetic object |
 | Complete source vector in the affine mass-one fibre, injective on \(\operatorname{Re}s>0\), with reflection displacement zero exactly on the critical line | No exact collision found; candidate new source-embedding theorem |
 | Every bounded vector-valued label-blind observer is constant on that embedding and kills its nonzero off-line displacement | Abstract factorization is elementary; no collision found for this exact Riemann-source application |
@@ -118,10 +123,12 @@ priority.
 > realization first gives a partition of the positive integers into disjoint
 > positive \(0/1\)-coefficient subseries, every member of which has exactly
 > the zeta zero divisor on \(\operatorname{Re}s>1/2\).  The associated
-> injective mass-one source has
-> shell fields form a faithful Boolean sublattice of differential fields:
-> intersections, composita, inclusion, equality, and private tensor
-> independence reproduce the corresponding source-set operations exactly.
+> injective mass-one source has shell fields forming a faithful complete
+> Boolean algebra relative to their common-zeta bottom and full-shell top:
+> arbitrary nonempty intersections, composita, complements, inclusion,
+> equality, and private tensor independence reproduce the corresponding
+> source-set operations exactly, while every field observable has finite
+> shell support.
 > Its common zeta differential field is exactly the intersection of every shell-test
 > field, whose logarithmic connection is irreducible over the complete
 > transverse shell frame, and whose von Mangoldt/Xi primitive survives complete local
@@ -149,7 +156,8 @@ label-blind factorization on abstract \(\ell^1\) is elementary.  Novelty
 cannot rest on either deduction alone.  Strongest priority candidates are
 the analytic iff/relative clock classifiers, the primitive Xi boundary over
 the full local-Euler residue--valuation field, the explicit positive
-isodivisorial mass-one embedding, the exact shell Boolean-field lattice and private tensor law,
+isodivisorial mass-one embedding, the exact complete shell Boolean-field algebra,
+finite-support no-ghost theorem, and private tensor law,
 and the transport of one unsquared charge from source tail to divisor residue
 with its essential reflected sewing cost.
 

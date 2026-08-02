@@ -11,7 +11,7 @@ Internal verification record. Not part of manuscript; not novelty evidence.
 | Generic exact meet: two jointly free common/private differential fields intersect in precisely their common field | `differentialIndependent_threeBlock_differentialAdjoin_inf` in `RelativeShellExactCommonCore.lean` |
 | Generic private tensor law: jointly free private differential extensions are linearly disjoint over their common differential field | `differentialIndependent_threeBlock_private_linearDisjoint` in `RelativeShellExactCommonCore.lean` |
 | Exact Riemann private tensor law for arbitrary shell subsets | `relativeShellPrivateDifferentialField_linearDisjoint` in `RelativeShellExactCommonCore.lean` |
-| Full Riemann shell Boolean lattice: arbitrary shell subsets preserve intersections and composita exactly; field inclusion and equality reflect source inclusion and equality; the power-set realization is injective | `relativeShellSubsetDifferentialField_inf`; `relativeShellSubsetDifferentialField_sup`; `relativeShellSubsetDifferentialField_le_iff`; `relativeShellSubsetDifferentialField_eq_iff`; `relativeShellSubsetDifferentialField_injective` in `RelativeShellExactCommonCore.lean` |
+| Complete Riemann shell Boolean algebra: arbitrary nonempty families preserve intersections and composita exactly; complements are exact relative complements; every observable has finite shell support; field inclusion and equality reflect source inclusion and equality; the power-set realization is injective | `relativeShellSubsetDifferentialField_iInf`; `relativeShellSubsetDifferentialField_iSup`; `relativeShellSubsetDifferentialField_compl`; `relativeShellSubsetDifferentialField_exists_finset_support`; `relativeShellSubsetDifferentialField_inf`; `relativeShellSubsetDifferentialField_sup`; `relativeShellSubsetDifferentialField_le_iff`; `relativeShellSubsetDifferentialField_eq_iff`; `relativeShellSubsetDifferentialField_injective` in `RelativeShellExactCommonCore.lean` |
 | A source nonzero at every prime on infinitely many private depths stays free over all-depth finite residue--valuation carriers and all finite-prime Euler germs | `analyticPrimeProfileCarrier_differentialIndependent_over_localEulerResidueFusionCompletion`; `analyticPrimeProfileCarrier_hypertranscendentalOver_localEulerResidueFusionCompletion` in `PrimeResidueValuationExactSourceBoundary.lean` |
 | Filtered von Mangoldt current and uncorrected completed \(+2\) Xi logarithmic shift are hypertranscendental over full local-Euler residue--valuation fusion completion | `filteredVonMangoldtUpperEndCarrier_hypertranscendentalOver_localEulerResidueFusionCompletion`; `xiLogDerivShiftTwoUncorrectedCarrier_hypertranscendentalOver_localEulerResidueFusionCompletion` in `XiShiftResidueValuationFusionBarrier.lean` |
 | Complete \(K\)-free head plus exact largest-exponent shells have disjoint \(0/1\) supports partitioning all positive integers | `completeResolutionIndicator_eq_zero_or_one`; `tsum_completeResolutionIndicator`; `completeResolutionIndicator_pairwiseDisjoint` in `CompletePositiveKolchinFreeRiemannResolution.lean` |
@@ -76,16 +76,16 @@ lake env lean GaloisForLFunctions/RHTower/RelativeShellCommonCurrentHypertransce
 lake env lean GaloisForLFunctions/RHTower/RelativeShellExactCommonCore.lean
 ```
 
-Exited successfully with no warnings. Final targeted module build, lint, and axiom print remain
-complete:
+Exited successfully with no warnings. Final targeted module builds and axiom prints are complete:
 
 ```text
 lake build GaloisForLFunctions.RHTower.RelativeShellExactCommonCore
 lake build GaloisForLFunctions.RHTower.XiShiftResidueValuationFusionBarrier
 ```
 
-Both builds succeeded. Axiom prints for the new lattice, private-tensor, common-core, and Xi-shift
-capstones report only `propext`, `Classical.choice`, and `Quot.sound`.
+Both builds succeeded. Axiom prints for arbitrary shell meets and joins, finite shell support,
+relative complements, private-tensor independence, common-core, and Xi-shift capstones report
+only `propext`, `Classical.choice`, and `Quot.sound`.
 
 Repository lint reported no forbidden declaration in this work. It remains globally nonzero
 because seven unrelated owned modules are not reachable from their theorem-area umbrellas:

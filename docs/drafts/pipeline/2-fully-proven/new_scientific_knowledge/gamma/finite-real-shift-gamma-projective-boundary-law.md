@@ -544,9 +544,308 @@ Every hypothesis of `rank_finite_of_gammaShiftClass` is discharged explicitly �
 normal form, the nonvanishing of the dominant class, the pointwise relation, the strip data — so the
 shifted law is a statement about a nonempty class, and one whose coefficients are not constants.
 
+### The ordering, uniformly on a tube
+
+Equation (4) is stated *uniformly after adding a value in a fixed compact subset of a vertical tube*,
+so the ordering `(16)` has to hold with one height threshold for every abscissa at once.
+`HTGeometry/GammaShiftShapeTube.lean` proves that:
+
+> **`tubeLimit_gammaShiftShape_ratio_zero`**: a dominated shifted shape is negligible against the
+> dominating one, uniformly for `0 < σ ≤ M`.
+
+The three mechanisms are uniform for three different reasons.  The logarithmic one
+(**`tubeLimit_gammaShiftShape_zero_of_log_neg`**) does not see the abscissa at all — the shifted shape
+*is* the integer shape there (`gammaShiftShape_zero_zero`), so the corpus's tube lemma applies
+verbatim.  The real-power one (**`tubeLimit_gammaShiftShape_zero_of_arg_neg`**) is bounded by `t^ω`
+because `‖σ+it‖ ≥ t`, and `(log t)^b·t^ω → 0` for `ω < 0`.  The `Γ`-power one
+(**`tubeLimit_gammaShiftShape_zero_of_gamma_pos`**) uses the corpus's uniform Gamma bound at the
+*shifted* abscissa: for `σ ∈ (0, M]` and `λ ≥ 0` the shifted abscissa lies in `(0, M+λ]`, a tube of
+its own, and one power of `Γ` beyond the argument exponent leaves `(log t)^b/t`.
+
+This is the tube form of eq. (16).  `HTGeometry/GammaShiftTubeDatum.lean` carries it to the datum:
+**`HasShiftTubeDatum`** is eq. (4) as stated — one height threshold for every abscissa in `(0, M]` —
+`HasShiftTubeDatum.hasShiftDatum` restricts it to each line, so **`hasShiftTubeDatum_unique`** is the
+line uniqueness read on the tube, and
+
+> **`exists_dominant_shiftShape_tube_ratio`** — eq. (6) uniformly: a finite family with tube data has
+> a dominant member, and every ratio to it converges with a single threshold for the whole tube.
+
+So `(4)` and `(6)` now hold in the uniform form the card states them, not only line by line.
+
+Equation (14) itself is uniform too (`HTGeometry/GammaShiftRatioTube.lean`):
+
+> **`tubeLimit_gammaShift_ratio`**: `Γ((σ+λ)+it)/(Γ(σ+it)·(σ+it)^λ) → 1` uniformly for `0 < σ ≤ M`.
+
+The digamma side was uniform already (`exists_uniform_bound_digamma_sub_vertLog`); what was missing
+was the logarithm side, now proved with tube-uniform constants:
+**`abs_log_norm_vertical_sub_le`** (`|log‖σ+it‖ − log t| ≤ M²/t`, from `‖σ+it‖ ≤ t + M²` and
+`log(1+u) ≤ u`) and **`abs_arg_vertical_sub_le`** (`|π/2 − arg(σ+it)| ≤ (π/2)·M/t`, by Jordan's
+inequality `2x/π ≤ sin x` applied to `sin(π/2 − arg s) = cos(arg s) = σ/‖s‖`), combined in
+**`norm_log_vertical_sub_vertLog_le`**.  Exponentiating the resulting uniform `O(1/t)` through
+`Complex.norm_exp_sub_one_le` gives the ratio `1 + O(1/t)` — with the pointwise identity
+`gammaShift_ratio_eq_exp` doing the algebra.
+
+### The tube signature, computed
+
+`HTGeometry/GammaShiftTubeDatumAlgebra.lean` repeats the datum algebra on the tube:
+**`HasShiftTubeDatum.mul`**, **`.inv`**, **`.div`**, **`.pow`** and **`hasShiftTubeDatum_prod`**,
+with the same pointwise shape identities and the `TubeLimit` product and inverse rules.  The
+generators have explicit tube data — `hasShiftTubeDatum_const`, `hasShiftTubeDatum_vertLogPow`,
+**`hasShiftTubeDatum_poly`** (from the corpus's uniform polynomial normalization) and
+**`hasShiftTubeDatum_gammaShift`** (eq. (14) on the tube) — so the signature is computed uniformly:
+
+> **`hasShiftTubeDatum_multiMonomial`**: `c·∏ Γ(s+λ_i)^{e_i}·(q/p)·(log s)^b` has tube datum
+> `(∑ e_i, ∑ e_i λ_i + deg q − deg p, b)` with residue `c·lc(q)/lc(p)`.
+
+So eq. (4)'s uniform datum is not only defined and unique but exhibited on the monomials the law
+consumes, and the tube boundary `exists_dominant_shiftShape_tube_ratio` applies to them.
+
+### Equations (15) and (16) uniformly
+
+`HTGeometry/GammaShiftTubeSum.lean` closes the uniform chain at the level of coefficients:
+
+> **`hasShiftTubeDatum_sum_class`** — a finite sum has the dominant signature class's tube datum,
+> with one height threshold for every abscissa, provided that class's residues do not cancel;
+> **`exists_hasShiftTubeDatum_sum_class`** picks the class by the eq. (16) order;
+> **`exists_hasShiftTubeDatum_multiMonomialSum_class`** — a normal-form sum of multi-translate
+> monomials has a tube datum, computed from the degrees and leading coefficients.
+
+So eqs. `(4)`, `(6)`, `(15)` and `(16)` all hold uniformly on the tube, on exactly the coefficient
+shapes the law consumes.  The per-line law of eq. (19) is unchanged by this — it needs only the line
+data — but the boundary is now available in the form the card's statement of eq. (4) asks for.
+
 `#print axioms` clean.  What remains paper-proved is the formal-transseries injection — Theorems A
 and B — which supplies the *existence* of the datum for each element of `K_E`; everything downstream
 of that existence, `(6)`, `(19)`, `(21)` and `(25)`, is now Lean.
+
+### The bound of (19) is attained at every rank
+
+The law returns *a* finite bound; the bound depends on the relation, and
+`HTGeometry/GammaShiftExpSumWitness.lean` shows it has to.  A sum of `r` exponentials with rationally
+independent frequencies satisfies the constant-coefficient equation whose characteristic polynomial
+is the annihilator of the frequency packet; multiplying that equation by `Γ(s+λ)` makes every
+coefficient a one-term shifted Gamma monomial of exactly the shape `(15)` prescribes:
+
+> **`exists_gammaShift_relation_expSum`**: for every packet `μ` and every shift `λ`, the exponential
+> sum satisfies a relation `∑_α c_α Γ(s+λ)·Φ^{(j_α)} = 0` with distinct jet exponent vectors and
+> nonzero scalars — the `c_α` being the nonzero coefficients of the annihilator, indexed by its
+> support;
+> **`gammaShift_scalar_multiMonomial`**: `c·Γ(s+λ)` *is* `multiMonomialSum` with one translate, one
+> monomial, exponent vector `(1)`, trivial rational factor and no logarithm.
+
+Packaging the line restriction — a trigonometric polynomial — as a bounded continuous observable
+(**`isBohrAlmostPeriodic_expSum_line`**, **`hasTotallyBoundedOrbit_expSum_line`**,
+**`expSumLineBC`**) discharges the remaining hypotheses of the law, and the corpus's sharp rank
+computation supplies the frequency module:
+
+> **`exists_gammaShift_solution_rank_eq`**: for every `r` and every rationally independent `μ` with
+> nonzero coefficients, there is a strip almost periodic holomorphic solution of a shifted Gamma
+> relation in normal form whose frequency module along the line has rank exactly `r`;
+> **`gammaShift_rank_finite_expSum`**: every hypothesis of `rank_finite_of_gammaShiftMulti` is
+> discharged for that solution, so the law's conclusion is asserted about a nonempty class at each
+> rank.
+
+So `(19)` cannot be improved to a bound independent of the relation, and the hypothesis class of the
+shifted law is inhabited at every finite rank — not only at rank one, as `gammaShift_law_witness`
+already showed.
+
+### The orbit-residue core of Theorem A, in Lean
+
+Theorem A's own argument has two parts: the Hardouin--Singer reduction, which converts a differential
+relation among the shifted digammas into the rational identity `(8)`, and the residue calculation
+that kills `(8)`.  The second part is now Lean (`HTGeometry/GammaShiftOrbitIndependence.lean`):
+
+> **`meromorphicOrderAt_shiftedInvOperatorSum`**: at `-λ_{i₀}` the combination
+> `∑_i L_i(∂)(1/(s+λ_i))` has order exactly `−(deg L_{i₀} + 1)` — only the member sitting there
+> contributes, the others being analytic;
+> **`no_shiftCoboundary_shiftedInvOperatorSum`**: if the shifts are pairwise incongruent and one
+> `L_{i₀} ≠ 0`, the combination is not `g(s+1) − g(s)` for any meromorphic `g` with finite pole
+> support on the orbit of `-λ_{i₀}`;
+> **`shiftedInv_no_constantCoeff_rational_coboundary`** — equation `(8)` itself: with `g` rational
+> the hypothesis is automatic (**`poleIndexSet_finite_ratio`**), so no nonzero constant-coefficient
+> linear differential polynomial in the shifted simple poles is a rational shift coboundary.
+
+The mechanism is the one the paper proof describes: incongruence `(1)` puts the poles of the left
+side on pairwise distinct translation orbits with exactly one pole on each, and a shift coboundary
+with finite pole support on an orbit can never have exactly one pole there — the extreme indices of
+its pole set both survive the telescoping.
+
+### Theorem A itself, without the Hardouin--Singer citation
+
+The Hardouin--Singer criterion is not needed: the corpus already owns an unconditional Hölder
+eliminator for jet polynomials over `ℂ(X)` whose variables translate by rational increments
+(`RationalIncrementHolder.no_shift_stable_annihilatorWith`), and that eliminator does not care
+whether the variables are the jets of one element or of a whole family.  Two modules turn this into
+Theorem A.
+
+`HTGeometry/ShiftedDigammaFamilyIncrement.lean` proves equation `(8)` for a charge *matrix* — one
+charge per translate and per jet order, which is what a family relation produces:
+
+> **`ratShift_sub_familyIncrement_combination`**: for pairwise incongruent shifts, if
+> `w(X+1) − w(X) = ∑_{i,j} δ_{i,j}(-1)^j j!/(X+λ_i)^{j+1}` in `ℂ(X)` then every `δ_{i,j} = 0`.
+
+Over the common denominator `∏_i (X+λ_i)^{N+1}` the numerator at `-λ_{i₀}`
+(**`familyNumerator_eval_center_ne_zero`**) is the top charge of that translate times
+`∏_{i≠i₀}(λ_i − λ_{i₀})^{N+1} ≠ 0`, while incongruence keeps the denominator from vanishing anywhere
+else on that orbit, so the single-orbit rational obstruction kills the top layer
+(**`familyIncrement_top_eq_zero`**); descending on the jet order kills the matrix.
+
+`HTGeometry/ShiftedDigammaFamilyIndependence.lean` runs the eliminator on the family:
+
+> **`algebraicIndependent_of_rationalShiftIncrements`** — a finite family of elements translating by
+> rational increments is algebraically independent over `ℂ(X)` once no nonzero constant charge is a
+> shift coboundary;
+> **`differentialIndependent_of_rationalShiftIncrements`** — the same for the complete jet family,
+> after flattening `translate × jet order` into one variable list and reducing to finite subfamilies;
+> **`differentialIndependent_digammaShiftMero`** — **Theorem A**: finitely many pairwise incongruent
+> shifted digammas are differentially independent over `ℂ(X)` in the global meromorphic differential
+> field.
+
+`#print axioms` clean.  So the free-coordinate content of Theorem A is unconditional Lean, with the
+literature criterion replaced by the corpus's own eliminator.  What Theorem A still states beyond
+this is the *formal* form `(10)`: the injection of `L_E` into `ℂ(log s)((s^{-1}))` by substitution of
+the complete Stirling expansions, which is what supplies the leading data `(11)` for every element,
+and the same statement for the Gamma coordinates in Theorem B.
+
+The route to Theorem B by the same method is fixed by the shape of the jets.  Under the unit shift
+the Gamma jets transform *linearly and triangularly* rather than by a translation:
+`σ(Γ_i) = (X+λ_i)Γ_i`, hence `σ(Γ_i^{(j)})` is an `ℂ(X)`-combination of `Γ_i^{(0)},…,Γ_i^{(j)}`.  Two
+routes are open, both resting on the residue statement already proved:
+
+1. a multiplicative eliminator — the analogue of `no_shift_stable_annihilatorWith` for jet
+   polynomials whose variables undergo a triangular linear substitution, whose minimal-degree
+   argument produces the multiplicative coboundary equation `σ(u)/u = ∏(X+λ_i)^{m_i}` in `L_E`;
+2. Kolchin--Ostrowski over `L_E`, which reduces algebraic dependence of the `Γ_i` to a monomial
+   `∏Γ_i^{m_i} ∈ L_E` and hence to the same equation.
+
+Either way the final step is the same: taking logarithmic derivatives turns that equation into
+`σ(v) − v = ∑_i m_i/(X+λ_i)` for `v = logDeriv u ∈ L_E`, and Theorem A makes `L_E` a rational
+function field in the `ψ` jets over `ℂ(X)`, on which
+**`ratShift_sub_familyIncrement_combination`** applies.
+
+Route 2's algebraic half is now in place, unconditionally
+(`HTGeometry/MultiplicativeShiftIndependence.lean`):
+
+> **`algebraicIndependent_of_multiplicativeShift`**: nonzero elements `y_i` of a difference field
+> with `σ(y_i) = q_i y_i`, `q_i` in the base, are algebraically independent over the base as soon as
+> the base has no `u ≠ 0` with `τ(u) = u ∏ q_i^{m_i}` for a nonzero integer vector `m`.
+
+The proof is the minimal-support descent: `σ` scales the coefficients of a shortest annihilator by
+the corresponding `q`-monomials (**`aeval_shiftScale`**), subtracting the normalized relations
+shortens the support, and each surviving coefficient ratio would solve the excluded equation.
+
+What remains for Theorem B is that excluded equation for `K = L_E`, and Theorem A reduces it to the
+rational case.  Writing `u ∈ L_E` as `P/Q` in the `ψ` jets — legitimate because Theorem A makes them
+algebraically independent — the equation `σ(u) = q·u` becomes `T(P)·Q = q·P·T(Q)` in
+`ℂ(X)[jets]`, where `T` translates each variable by its increment and acts on coefficients by
+`ratShift`.  Translation does not change the top homogeneous form except through its coefficients, so
+comparing the top forms and then the extreme monomial in each gives
+`ratShift(w) = q·w` for `w` the ratio of two coefficients in `ℂ(X)^×`.  So Theorem B needs only:
+
+> no `w ∈ ℂ(X)^×` satisfies `w(X+1) = w(X)·∏(X+λ_i)^{m_i}` with `m ≠ 0`,
+
+which is the multiplicative twin of the residue statement: on the orbit of `-λ_{i₀}` the order of `w`
+satisfies `n_{k+1} = n_k + m_{i₀}[k=0]`, and a divisor that vanishes at both ends of the orbit forces
+`m_{i₀} = 0`.  That statement is now Lean (`HTGeometry/RationalMultiplicativeShiftOrbit.lean`):
+
+> **`ratShift_ne_mul_shiftMonomial`**: with pairwise incongruent shifts, no nonzero rational `w`
+> satisfies `w(X+1) = w(X)·∏(X+λ_i)^{m_i}` when some `m_{i₀} ≠ 0`.
+
+Its ingredients are the order bookkeeping the proof needs: **`rootMultiplicity_comp_X_add_C_one`**
+(composition with the unit shift translates root multiplicities),
+**`rootMultiplicity_prod_shift`** (the order of a product of shifted linear factors) and
+**`shiftMonomial_eq_div`** (the rational monomial as a quotient of its positive and negative parts).
+### Theorem B, in Lean
+
+The transport is the remaining step, and it is a leading-term computation
+(`HTGeometry/JetTranslateLeadingTerm.lean`).  Translating the jet variables by rational increments
+changes nothing on the top total-degree layer except the coefficient shift
+(**`coeff_jetTranslate_top`**), so for the degree-lexicographic order the leading monomial is
+preserved and the leading coefficient is shifted (**`degree_jetTranslate`**,
+**`leadingCoeff_jetTranslate`**).  Multiplicativity of the leading coefficient then gives
+
+> **`ratShift_leadingCoeff_ratio`**: if `T P · Q = q·(P · T Q)` in `ℂ(X)[jets]` then the ratio of the
+> two leading coefficients is a rational solution of `w(X+1) = q·w(X)`.
+
+`HTGeometry/ShiftedGammaMultiplicativeCoboundary.lean` runs this on the digamma jets — the shift law
+of a jet (**`addTranslationMeroEquiv_digammaJet`**) together with their algebraic independence
+(Theorem A) turns the field equation into the polynomial one — and concludes
+
+> **`no_multiplicative_coboundary_digammaJets`**: a quotient of polynomials in finitely many digamma
+> jets is never multiplied by a nontrivial monomial `∏(X+λ_i)^{m_i}` under the unit shift.
+
+`HTGeometry/ShiftedGammaFieldIndependence.lean` packages `L_E` and closes the theorem.  The field
+**`digammaField`** is `ℂ(X)` adjoined the digamma jets; the unit shift maps it into itself
+(**`shift_mem_digammaField`**), so it restricts to an injective ring endomorphism
+(**`digammaFieldShift`**), and every element is a quotient of polynomial expressions in finitely many
+jets (**`exists_fin_rename₂`**), whence
+
+> **`no_multiplicative_coboundary_digammaField`** — the excluded equation has no solution in `L_E`,
+> and therefore, by the minimal-support descent,
+> **`algebraicIndependent_gammaShiftMero`** — **Theorem B**: `Γ(s+λ_1),…,Γ(s+λ_r)` are algebraically
+> independent over `L_E` for pairwise incongruent shifts.
+
+`#print axioms` clean.  This is the card's own "equivalently" form of Theorem B; with Theorem A it
+gives the freeness of the whole coordinate system of `K_E`, again with no Hardouin--Singer citation:
+the multiplicative criterion is replaced by the descent of `MultiplicativeShiftIndependence` and the
+orbit obstruction of `RationalMultiplicativeShiftOrbit`.
+
+### What the transseries injection still needs, and how to build it
+
+With Theorems A and B in Lean the only paper-level step left is `(10)`--`(11)`: the injection of
+`L_E` into `ℂ(log s)((s^{-1}))` and the resulting leading term of every nonzero element.  The Lean
+datum layer needs `(11)` in its analytic form, because a cancellation among the dominant terms of a
+normal-form sum is resolved only by the next order of the expansion — `ψ_1 − ψ_2 ∼ (λ_1−λ_2)/s` is
+the smallest example.  Two ingredients are required, and neither is in mathlib, whose Stirling file
+covers only the factorial:
+
+1. **All-order asymptotics of the digamma jets, uniformly on tubes.**  The economical route is
+   telescoping rather than Euler--Maclaurin: for the remainder `R_N` of the truncated expansion, the
+   difference equation gives `R_N(z+1) − R_N(z) = E_N(z)` with an explicit `E_N(z) = O(‖z‖^{-N-2})`,
+   and `R_N(z+n) → 0`, so `R_N(z) = −∑_{n≥0} E_N(z+n)`; on a vertical line
+   `∑_{n≥0} (t²+(σ+n)²)^{-p/2} = O(t^{1-p})`, which is exactly the gain of one power.  The reusable
+   engine is therefore: *a shift defect of size `O(‖z‖^{-p})` whose iterates vanish has size
+   `O(t^{1-p})` on every vertical line, uniformly on a tube.*  The corpus already owns the first
+   order of this (`TrigammaLeadingAsymptotic`, `GammaShiftRatioTube`).
+2. **The formal Stirling field and its shift.**  `ℂ(log s)((s^{-1}))` as `LaurentSeries (ℂ(L))`, the
+   expansion map on `ℂ(X)` and on the jets, and injectivity — which is the formal twin of Theorem A
+   and can reuse the same Hölder eliminator once the shift automorphism of the formal field is
+   built.
+
+The two inputs of route 1 are now Lean.  `HTGeometry/VerticalShiftTailEstimate.lean` is the engine:
+
+> **`tsum_inv_sq_vertical_le`**: `∑_{n≥0} ((σ+n)²+t²)^{-1} ≤ 4/t` for `t ≥ 2` — the head has `O(t)`
+> terms of size `t^{-2}`, the tail is dominated by the telescoping majorant;
+> **`pow_norm_vertical_add_nat_ge`**: a modulus power at least two splits off the height;
+> **`norm_le_of_shift_defect`**: if `R(z+1) − R(z) = E(z)` with `‖E‖ ≤ C‖z‖^{-p}` along the orbit and
+> `R(z+n) → 0`, then `‖R(σ+it)‖ ≤ 4C/t^{p-1}`.
+
+`HTGeometry/DigammaHorizontalVanishing.lean` supplies the vanishing hypothesis:
+
+> **`digamma_natCast_add_one`**: `ψ(N+1) = −γ + H_N`;
+> **`tendsto_digamma_natCast_sub_log`**: `ψ(N+1) − log N → 0`, from mathlib's Euler--Mascheroni limit;
+> **`tendsto_log_add_nat_sub_log`**: `log(z+N) − log N → 0`;
+> **`tendsto_digamma_sub_log_horizontal`**: `ψ(z+N) − log(z+N) → 0` for `Re z > 0`, by reading the
+> corpus's finite Gauss sum backwards.
+
+The first order of the induction is done and shows the pattern
+(`HTGeometry/DigammaSecondOrderVertical.lean`).  Subtracting `log z − 1/(2z)` leaves a remainder
+whose unit-shift defect is elementary:
+
+> **`log_add_one_eq`**: `log(z+1) = log z + log(1+1/z)` in the right half plane at distance `≥ 2`,
+> proved from the argument bound and `log_mul_eq_add_log_iff`;
+> **`digamma_second_defect`**: the defect equals `1/z − log(1+1/z) − 1/(2z(z+1))`;
+> **`norm_digamma_second_defect_le`**: that expression is `−(log(1+w) − logTaylor₃ w) + w³/(2(1+w))`
+> with `w = 1/z`, hence at most `(5/3)‖z‖^{-3}`;
+> **`norm_digamma_sub_log_add_half_inv_le`**: therefore
+> `‖ψ(σ+it) − log(σ+it) + 1/(2(σ+it))‖ ≤ (20/3)/t²` for every `σ > 0` and `t ≥ 2`.
+
+Each further order repeats this with one more Taylor coefficient: the defect of the next truncated
+remainder is again elementary in `w = 1/z`, its leading coefficient fixes the new expansion
+coefficient, and the engine converts the resulting order `p` defect into an order `p-1` remainder.
+
+Downstream of `(11)` the chain is already Lean: the signature ordering `(16)`, the datum `(4)`, the
+projective boundary `(6)`, the finite phase law `(19)` and its consequences `(21)`, `(25)`.
 
 ## Gates
 
@@ -560,7 +859,7 @@ of that existence, `(6)`, `(19)`, `(21)` and `(25)`, is now Lean.
 - [x] translation-saturated prime-log consequence proved
 - [x] local orbit-residue and prime-log inputs connected to axiom-clean Lean
 - [ ] exact adjacent 2024--2025 full texts compared before publication
-- [ ] full formal-transseries and almost-periodic limit proof formalized in Lean (almost-periodic limit done: `GammaShiftShape/Datum/FinitePhase/Zeta`; transseries injection open)
+- [ ] full formal-transseries and almost-periodic limit proof formalized in Lean (almost-periodic limit done: `GammaShiftShape/Datum/FinitePhase/Zeta`; Theorem A done unconditionally: `ShiftedDigammaFamilyIncrement/Independence`; Theorem B done unconditionally: `MultiplicativeShiftIndependence`, `RationalMultiplicativeShiftOrbit`, `JetTranslateLeadingTerm`, `ShiftedGammaMultiplicativeCoboundary`, `ShiftedGammaFieldIndependence`; the formal transseries injection (10)--(11) open)
 
 ## Log
 
@@ -571,3 +870,29 @@ of that existence, `(6)`, `(19)`, `(21)` and `(25)`, is now Lean.
 - 2026-07-11 -- extracted the finite real-shift extension of the one-Gamma projective boundary;
   proved the formal orbit-residue injection, finite transseries ordering, recurrent finite-phase
   law, and translation-saturated prime-log zeta consequence.
+- 2026-08-02 -- sharpness of (19): the annihilator of a rationally independent frequency packet,
+  multiplied by `Γ(s+λ)`, is a shifted-Gamma relation in normal form, and the line restriction of its
+  exponential-sum solution has frequency rank exactly `r`; every hypothesis of the multi-translate law
+  is discharged for it (`GammaShiftExpSumWitness`).
+- 2026-08-02 -- Theorem A made unconditional in Lean: the orbit-residue core (8) both analytically
+  (`GammaShiftOrbitIndependence`) and in `ℂ(X)` for a charge matrix
+  (`ShiftedDigammaFamilyIncrement`), then the family Hölder elimination
+  (`ShiftedDigammaFamilyIndependence`), giving differential independence of finitely many pairwise
+  incongruent shifted digammas over `ℂ(X)` without the Hardouin--Singer citation.
+- 2026-08-02 -- Theorem B's algebraic half: the multiplicative minimal-support criterion
+  (`MultiplicativeShiftIndependence`); the remaining input is the classification of `v` in `L_E`
+  with `sigma(v) - v` rational.
+- 2026-08-02 -- the multiplicative orbit no-go for rational functions
+  (`RationalMultiplicativeShiftOrbit`): both inputs of Theorem B's route 2 are now proved; the
+  remaining step is the jet-coordinate transport from `L_E` to `C(X)`.
+- 2026-08-02 -- Theorem B made unconditional in Lean: leading-term law of the jet substitution
+  (`JetTranslateLeadingTerm`), the coboundary exclusion on the digamma jets
+  (`ShiftedGammaMultiplicativeCoboundary`), and the field packaging with the minimal-support descent
+  (`ShiftedGammaFieldIndependence`), giving algebraic independence of the Gamma translates over the
+  field their logarithmic derivatives generate.
+- 2026-08-02 -- transseries route 1 started: the telescoping engine on vertical lines
+  (`VerticalShiftTailEstimate`) and the vanishing of the digamma defect along the shift orbit
+  (`DigammaHorizontalVanishing`); the order-by-order induction is next.
+- 2026-08-02 -- first order of the expansion: `psi(sigma+it) = log(sigma+it) - 1/(2(sigma+it)) +
+  O(t^-2)` uniformly in the abscissa (`DigammaSecondOrderVertical`), via the telescoping engine and
+  the elementary third-order defect.

@@ -294,7 +294,10 @@ objects rather than on a shadow.
 - `deningerNormalize_smul` — **the positive rational flow fixes `h/‖h‖`**, the sentence in §3 that
   makes `(8)` commute with every Poisson dilation.
 
-### What cannot be stated in Lean, and why
+### What cannot be stated in Lean, and why *(superseded 2026-08-02 — see the sections below:*
+*the corpus now owns nuclear locally convex spaces, `𝒮(ℝ)` is proved nuclear, and `(1)` and `(2)`*
+*are proved nuclear.  Only the strictness/closed-range claims of `(3)`–`(4)` and §3's topological*
+*chain cosheaf are still open.)*
 
 Every claim of this card that contains the word *nuclear*, *Fréchet* or *strict* is out of reach,
 and so is the Poisson operator itself:
@@ -971,3 +974,596 @@ Since `x = (A+B)/4π` and `d/dx = (B−A)/2`, iterating these two bounds control
 
 - 2026-08-02 — Cauchy–Schwarz for the pairing, conjugation compatibility, and the `L²` bounds for
   the creation and annihilation operators.
+
+### Lean: the supremum bound through the Fourier transform
+
+`formal/GaloisForLFunctions/HTGeometry/SchwartzSupL2Bound.lean` (4 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+The reverse comparison converts an `L²` bound into a bound on the Schwartz sup-seminorms.  The
+route chosen avoids the fundamental theorem of calculus: it goes through the Fourier transform,
+using that mathlib knows Plancherel for Schwartz functions (`SchwartzMap.norm_fourier_toL2_eq`).
+
+- `norm_toLp_sq_eq_integral` — **`‖f‖₂² = ∫ ‖f t‖² dt`** for a Schwartz function: the `L²` inner
+  product of the class with itself, computed pointwise.
+- `weightSchwartz`, `_apply` — multiplication by `1 + x²` as an operator on the Schwartz space,
+  the weight that will carry the `L¹`-to-`L²` step.
+- `norm_apply_le_integral_norm_fourier` — **`‖f x‖ ≤ ∫ ‖𝓕 f‖`**: Fourier inversion writes the
+  value as an integral of the transform against a unit complex number, whose modulus is one.
+
+The remaining step of the reverse comparison is the weighted Cauchy–Schwarz
+`∫ ‖h‖ ≤ ‖(1+t²)⁻¹‖₂ · ‖(1+t²)h‖₂` (mathlib's `integral_mul_le_Lp_mul_Lq_of_nonneg` at `p = q = 2`),
+after which Plancherel turns `‖(1+t²)𝓕f‖₂` into `‖f − f''/4π²‖₂`, an oscillator seminorm.
+
+- 2026-08-02 — `L²` norm as an integral, the quadratic weight, and the supremum bound by the `L¹`
+  norm of the transform.
+
+### Lean: the weighted Hölder step
+
+`formal/GaloisForLFunctions/HTGeometry/SchwartzWeightedHolder.lean` (8 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `continuous_inv_one_add_sq`, `integrable_inv_one_add_sq_sq`, `memLp_inv_one_add_sq` — **the
+  weight `(1+t²)⁻¹` is square integrable**, because its square is dominated by itself and
+  `integrable_inv_one_add_sq` is in mathlib.
+- `norm_weightSchwartz_apply`, `memLp_weight_mul_norm` — the quadratic weighting of a Schwartz
+  function has pointwise norm `(1+t²)‖h t‖` and lies in `L²`.
+- `integral_norm_le_weight` — **`∫‖h‖ ≤ C · ‖(1+t²)h‖₂`**, Hölder at `p = q = 2` on the splitting
+  `‖h‖ = (1+t²)⁻¹ · (1+t²)‖h‖`, with `C = ‖(1+t²)⁻¹‖₂`.
+- `norm_apply_le_weight_fourier` — **`‖f x‖ ≤ C · ‖(1+t²)·𝓕f‖₂`**, combining with the supremum
+  bound by the `L¹` norm of the transform.
+
+So the supremum of a Schwartz function is bounded by an `L²` norm of a quadratic weighting of its
+Fourier transform.  What is left of the reverse comparison: Plancherel turns `‖(1+t²)𝓕f‖₂` into
+`‖f − f''/4π²‖₂` — mathlib has `SchwartzMap.norm_fourier_toL2_eq` and the transform rules for
+multiplication and differentiation are already in the corpus (`fourierSCLM_derivSCLM`,
+`derivSCLM_fourierSCLM`) — and then the oscillator algebra `x = (A+B)/4π`, `d/dx = (B−A)/2`
+together with the `L²` bounds of the previous module expresses that by oscillator seminorms.
+
+- 2026-08-02 — The weighted Hölder step: supremum bounded by the weighted `L²` norm of the
+  transform.
+
+### Lean: the Sobolev estimate
+
+`formal/GaloisForLFunctions/HTGeometry/SchwartzSobolevEstimate.lean` (7 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `sobolevOp`, `_apply` — the elliptic expression `f ↦ f − f''/4π²` as an operator on the Schwartz
+  space.
+- `mulXCLM_fourierSCLM` — **multiplication by the coordinate on the Fourier side is
+  differentiation**: `x·𝓕f = (2πi)⁻¹𝓕(f′)`.
+- `weightSchwartz_fourierSCLM` — **`(1+t²)·𝓕f = 𝓕(f − f''/4π²)`**, since `((2πi)⁻¹)² = −(4π²)⁻¹`.
+- `norm_weight_fourier_toLp` — Plancherel (`SchwartzMap.norm_fourier_toL2_eq`) turns the weighted
+  `L²` norm of the transform into `‖f − f''/4π²‖₂`.
+- `norm_apply_le_sobolev` — **the Sobolev estimate `‖f x‖ ≤ C · ‖f − f''/4π²‖₂`**, with the
+  explicit constant `‖(1+t²)⁻¹‖₂`.
+
+This is the tool that converts the oscillator `L²` bounds into bounds on the Schwartz
+sup-seminorms.  What remains of the reverse comparison is bookkeeping in the oscillator algebra:
+apply the Sobolev estimate to `x^k ∂ⁿ f`, write `x = (A+B)/4π` and `∂ = (B−A)/2`, and use
+`norm_toLp_creationCLM_sq_le` and `norm_toLp_annihilationCLM_sq_le` repeatedly to bound the
+resulting `L²` norm by an oscillator seminorm `qₘ(f) = ‖Hᵐf‖₂`.
+
+- 2026-08-02 — The Sobolev estimate, via the Fourier transform and Plancherel rather than the
+  fundamental theorem of calculus.
+
+### Lean: multiplication and differentiation inside the oscillator algebra
+
+`formal/GaloisForLFunctions/HTGeometry/SchwartzOscillatorAlgebra.lean` (10 declarations, axiom
+audit `propext, Classical.choice, Quot.sound`).
+
+- `creation_add_annihilation`, `annihilation_sub_creation` — `A + B = 4π·x` and `B − A = 2·d/dx`.
+- `mulXCLM_eq_oscillator`, `derivSCLM_eq_oscillator` — **multiplication by the coordinate and
+  differentiation expressed in the oscillator operators**: `x = (A+B)/4π`, `d/dx = (B−A)/2`.  So
+  every operator built from `x·` and `d/dx` — in particular every Schwartz seminorm's operator and
+  the elliptic operator of the Sobolev estimate — is a polynomial in `A` and `B`.
+- `numberCLM_creationCLM`, `numberCLM_annihilationCLM` — **the commutators `[N,A] = 4πA` and
+  `[N,B] = −4πB`**, which is what lets an iterated `L²` bound be pushed back to a power of the
+  number operator instead of accumulating uncontrolled terms.
+- `le_half_add_of_sq_le_mul`, `norm_toLp_creationCLM_le`, `norm_toLp_annihilationCLM_le` — the
+  quadratic `L²` bounds of the previous module in linear form, by the arithmetic–geometric mean
+  inequality: `‖Ag‖₂ ≤ (‖g‖₂ + ‖(N+4π)g‖₂)/2` and `‖Bg‖₂ ≤ (‖g‖₂ + ‖Ng‖₂)/2`.
+
+Everything the reverse comparison needs is now present: the Sobolev estimate converts a Schwartz
+sup-seminorm into an `L²` norm of a polynomial in `A` and `B` applied to `f`, the linear bounds
+strip the operators one at a time, and the commutators keep the remainder a polynomial in `N`,
+that is an oscillator seminorm.
+
+- 2026-08-02 — The oscillator algebra: `x` and `d/dx` in terms of `A` and `B`, the commutators with
+  `N`, and the linear `L²` bounds.
+
+### Lean: the shifted number operator dominates everything
+
+`formal/GaloisForLFunctions/HTGeometry/SchwartzShiftedNumberBounds.lean` (11 declarations, axiom
+audit `propext, Classical.choice, Quot.sound`).
+
+The word induction would accumulate lower-order terms if the bounds were stated with sums of
+oscillator seminorms.  They are not needed: the number operator is *nonnegative*, so a single
+power of the shifted operator `K = N + 4π` dominates everything.
+
+- `schwartzPair_conj_self`, `toLp_sub`, `toLp_smul` — the pairing of a conjugate against itself is
+  the squared `L²` norm, and `toLp` is linear.
+- `schwartzPair_conj_numberCLM` — **the number operator is nonnegative**: its pairing against a
+  function is `‖Bg‖₂²`, by adjointness `N = A B`.
+- `norm_le_shiftedNumberCLM` — **`4π‖g‖₂ ≤ ‖Kg‖₂`**: Cauchy–Schwarz against the pairing, whose
+  value is `‖Bg‖₂² + 4π‖g‖₂²`.
+- `norm_creationCLM_sq_le_shifted`, `norm_annihilationCLM_sq_le_shifted` — **`4π‖Ag‖₂² ≤ ‖Kg‖₂²`
+  and `2π‖Bg‖₂² ≤ ‖Kg‖₂²`**: the quadratic bounds of two modules ago, with the identity factor
+  absorbed into `K` by the previous item.
+- `shiftedNumberCLM_creationCLM`, `shiftedNumberCLM_annihilationCLM` — **`K A = A(K + 4π)` and
+  `K B = B N`**: commuting the shift past an oscillator operator only shifts it again, so an
+  induction on word length stays inside powers of `K` with no extra terms.
+
+That is the last analytic ingredient of the reverse comparison; what remains is the induction on
+word length itself, bounding `‖W f‖₂ ≤ C_{|W|}‖K^{|W|} f‖₂` for every word `W` in `A` and `B`, and
+then reading the Schwartz seminorms off the Sobolev estimate.
+
+- 2026-08-02 — Nonnegativity of the number operator, and the domination of the oscillator
+  operators by a single power of the shifted operator.
+
+### Lean: iterating the shift past the oscillator operators
+
+`formal/GaloisForLFunctions/HTGeometry/SchwartzShiftedIterates.lean` (14 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `shiftedPlusCLM`, `_apply` — the raised shift `K + 4π`; `toLp_add`, `norm_toLp_smul_four_pi` —
+  linearity bookkeeping for the `L²` class map.
+- `norm_numberCLM_le_two`, `norm_shiftedPlusCLM_le_two` — **`‖Ng‖₂ ≤ 2‖Kg‖₂` and
+  `‖(K+4π)g‖₂ ≤ 2‖Kg‖₂`**: both neighbours of the shift are dominated by it, using `4π‖g‖₂ ≤
+  ‖Kg‖₂`.
+- `shiftedNumberCLM_numberCLM`, `shiftedNumberCLM_shiftedPlusCLM`,
+  `numberCLM_iterate_shiftedNumberCLM`, `shiftedPlusCLM_iterate_shiftedNumberCLM` — the shift
+  commutes with both neighbours, and with their iterates.
+- `norm_numberCLM_iterate_le`, `norm_shiftedPlusCLM_iterate_le` — **`‖Nʲg‖₂ ≤ 2ʲ‖Kʲg‖₂`** and the
+  same for the raised shift.  This is the step that makes binomial expansions unnecessary: one
+  factor of two per application, since the neighbour commutes with the shift.
+- `shiftedNumberCLM_iterate_creationCLM`, `shiftedNumberCLM_iterate_annihilationCLM` — **`Kʲ A =
+  A (K+4π)ʲ` and `Kʲ B = B Nʲ`**, the iterated commutation rules.
+
+With these, a power of the shift can be moved across any word in the oscillator operators, at the
+cost of a factor `2ʲ` and a change of neighbour, so the word induction `‖Wf‖₂ ≤ C‖K^{|W|}f‖₂`
+closes.
+
+- 2026-08-02 — Iterated commutation and domination for the shifted number operator.
+
+### Lean: words in the oscillator operators
+
+`formal/GaloisForLFunctions/HTGeometry/SchwartzOscillatorWord.lean` (10 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `one_le_four_pi`, `one_le_two_pi`, `norm_creationCLM_le_shifted`,
+  `norm_annihilationCLM_le_shifted` — since `π ≥ 2`, the quadratic bounds collapse to **`‖Ag‖₂ ≤
+  ‖Kg‖₂` and `‖Bg‖₂ ≤ ‖Kg‖₂`**: the oscillator operators are contractions relative to the shift,
+  with constant one and no square roots.
+- `oscWord` — a word in the two operators, indexed by a list of booleans, applied to a Schwartz
+  function.
+- `oscWord_shift_bound` — **`‖Kʲ(W g)‖₂ ≤ C·‖K^{j+|W|} g‖₂`**, by induction on the word.  Each step
+  moves the power of the shift across the leading operator by the iterated commutation rules,
+  replaces the neighbour's power by the shift's at the cost of `2ʲ`, and applies the induction
+  hypothesis at `j+1`.
+- `oscWord_bound` — the case `j = 0`: **`‖W g‖₂ ≤ C·‖K^{|W|} g‖₂`.**
+
+So every word in `A` and `B` — hence, by `mulXCLM_eq_oscillator` and `derivSCLM_eq_oscillator`,
+every operator built from multiplication by the coordinate and differentiation — is bounded in `L²`
+by a single power of the shifted number operator.
+
+- 2026-08-02 — The word induction: an arbitrary word in the oscillator operators is bounded by one
+  power of the shift.
+
+### Lean: the calculus of controlled operators
+
+`formal/GaloisForLFunctions/HTGeometry/SchwartzShiftControlled.lean` (14 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `shiftedNumberCLM_iterate_add`, `_smul`, `norm_toLp_iterate_le_succ` — the iterated shift is
+  linear, and one power of it dominates the previous one with factor `(4π)⁻¹`.
+- `L2ShiftControlled T m` — **the control predicate**: every power of the shift applied after `T`
+  is `L²`-bounded by that power raised by `m`.
+- `L2ShiftControlled.mono`, `.mono_le`, `.add`, `.smul`, `.comp`, `.congr`, `.order_congr` — the
+  closure properties.  **Composition adds the orders**, which is what makes the predicate usable:
+  control is stated for *all* shift powers precisely so that it survives composition.
+- `l2ShiftControlled_oscWord`, `_id`, `_creationCLM`, `_annihilationCLM` — words are controlled at
+  their length.
+- `l2ShiftControlled_mulXCLM`, `_derivSCLM` — **multiplication by the coordinate and
+  differentiation are controlled at order one**, being combinations of the two oscillator
+  operators.
+- `l2ShiftControlled_sobolevOp` — **the elliptic operator `f ↦ f − f''/4π²` is controlled at order
+  two.**
+
+So any composite of multiplications and differentiations is controlled at the sum of its orders,
+and composing with the elliptic operator adds two.  Feeding that into the Sobolev estimate bounds
+the Schwartz sup-seminorms by `‖K^m f‖₂`, which is the reverse comparison.
+
+- 2026-08-02 — The control calculus: sums, scalars and composition, with the basic operators
+  controlled at their natural orders.
+
+### Lean: the reverse comparison is proved
+
+`formal/GaloisForLFunctions/HTGeometry/SchwartzSeminormOscillator.lean` (5 declarations, axiom
+audit `propext, Classical.choice, Quot.sound`).
+
+- `coe_derivSCLM_iterate`, `mulXCLM_iterate_apply`, `norm_mulXCLM_iterate_apply` — the iterated
+  operators compute what they should: `‖x‖ᵏ‖f⁽ⁿ⁾(x)‖ = ‖(MᵏDⁿf)(x)‖`.
+- `l2ShiftControlled_iterate` — iterating a controlled operator multiplies its order.
+- `schwartzSeminorm_le_shifted` — **`p_{k,n}(f) ≤ C·‖K^{k+n+2}f‖₂` for every `k`, `n`.**  The
+  Schwartz seminorm is bounded through `SchwartzMap.seminorm_le_bound` by the supremum of
+  `MᵏDⁿf`, the Sobolev estimate turns that supremum into the `L²` norm of the elliptic operator
+  applied to it, and the control calculus turns that into a power of the shifted number operator.
+
+**This is the reverse comparison.**  Together with `oscillatorSeminorm_le_schwartzSeminorm` (each
+oscillator seminorm is continuous, hence bounded by finitely many Schwartz seminorms) the two
+presentations of the Schwartz topology — the standard seminorms and the `L²` norms of powers of the
+oscillator — are equivalent.
+
+Remaining for `𝒮(ℝ)` nuclear: package the shifted family `Q_m(f) = ‖K^m f‖₂` as a `SeminormFamily`
+with its continuity (the same two-line argument as for `oscillatorSeminorm`), so that the two
+families present the same topology; then nuclearity of that Hilbertian family follows from the
+Hermite eigen-decomposition — the coefficient map sends `Q_m` to the weighted `ℓ²` norm with weights
+`(4π(n+1))^m`, whose ratios are summable — and transports to `𝒮(ℝ)` by
+`deningerIsNuclearSpace_of_linearEquiv` and the corpus's Köthe/rapid-sequence nuclearity.
+
+- 2026-08-02 — The reverse seminorm comparison, the last analytic step: Schwartz seminorms are
+  dominated by the oscillator ones.
+
+### Lean: the two seminorm families dominate each other
+
+`formal/GaloisForLFunctions/HTGeometry/SchwartzShiftedSeminorm.lean` (10 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `shiftedPowCLM`, `shiftedSeminorm`, `_apply`, `shiftedSeminormFamily` — the family
+  `Q_m(f) = ‖Kᵐf‖₂` as genuine `Seminorm` objects and a `SeminormFamily`.
+- `shiftedSeminorm_le_succ`, `shiftedSeminorm_le_of_le` — **the family increases up to constants**:
+  `Q_m ≤ (4π)^{-(m'-m)} Q_{m'}` for `m ≤ m'`.  This is what makes it directed, which the Schwartz
+  family itself is not (lower derivatives are not controlled by higher ones alone).
+- `shiftedSeminorm_continuous`, `shiftedSeminorm_le_schwartzSup` — **each `Q_m` is bounded by a
+  constant times a finite supremum of Schwartz seminorms** (`Seminorm.bound_of_continuous`).
+- `schwartzSup_le_shiftedSeminorm` — **each finite supremum of Schwartz seminorms is bounded by a
+  single `Q_m`**, by induction on the finite set, using the reverse comparison on each member and
+  the directedness above to put them all at one index.
+
+These are exactly the two hypotheses of the corpus transfer lemma
+`deningerIsNuclearSpaceC_of_dominating`, with the Schwartz side taken in its finite-supremum
+presentation.  So once the family `Q_m` is proved nuclear, nuclearity transfers to the Schwartz
+space.
+
+Remaining: nuclearity of `Q_m` itself.  The Hermite functions diagonalize `K` with eigenvalues
+`4π(n+1)`, and the corpus already owns the Grothendieck–Pietsch criterion for Köthe spaces
+(`deningerKothe_isNuclearSpace`) with the summability condition `∑ (w_k/w_m) < ∞`, satisfied here
+by `∑ (4π(n+1))^{k-m} < ∞` for `m ≥ k+2`.  The remaining Lean work is the coefficient map:
+completeness gives injectivity, the eigenrelation gives the weights.
+
+- 2026-08-02 — Mutual domination of the Schwartz and oscillator seminorm families, in the exact
+  form the nuclearity transfer consumes.
+
+### Lean: the normalized Hermite coefficient map
+
+`formal/GaloisForLFunctions/HTGeometry/HermiteCoefficientMap.lean` (6 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `hermiteNorm_pos`, `hermiteCoeff`, `norm_hermiteCoeff` — the coefficient of a Schwartz function
+  along the *normalized* `n`-th Hermite function.
+- `norm_hermiteCoeff_le` — **`|cₙ(f)| ≤ ‖f‖₂`**, Cauchy–Schwarz against a unit vector.
+- `hermiteCoeff_decay` — **`(2π(2n+1))ᵏ|cₙ(f)| ≤ ‖Hᵏf‖₂`**: the coefficients decay faster than any
+  power, with an oscillator seminorm as the constant.
+- `hermiteCoeff_eq_zero_iff` — **the coefficient map is injective on the Schwartz space**, from the
+  completeness theorem.
+
+These are exactly the two inputs the map into a Köthe space needs: the decay says the coefficient
+sequence lies in the space of rapidly decreasing sequences with weights `(2π(2n+1))ᵏ`, and the
+bound says the map is continuous.  With injectivity, the Schwartz space is identified with a
+subspace of that Köthe space.
+
+Remaining for `𝒮(ℝ)` nuclear: the *reverse* estimate, `‖Kᵐf‖₂ ≤ C·(weighted ℓ¹ norm of the
+coefficients)`, which is where completeness has to be upgraded from the Schwartz space to `L²` —
+the same exponential-integral argument goes through for an `L²` function, since the Gaussian weight
+makes `∫|u|e^{−πx²}e^{a|x|}` finite by Cauchy–Schwarz, and the conclusion `𝓕(u·gauss) = 0` then
+gives `u = 0` through Plancherel.  After that the corpus's Grothendieck–Pietsch criterion applies
+and nuclearity transfers to the Schwartz seminorms by `deningerIsNuclearSpaceC_of_dominating`.
+
+- 2026-08-02 — The normalized coefficient map with its two estimates and its injectivity.
+
+### Lean: polynomial growth of the Hermite seminorms
+
+`formal/GaloisForLFunctions/HTGeometry/HermiteSeminormGrowth.lean` (6 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `shiftedNumberCLM_hermiteSchwartz`, `_iterate_` — **`K hⱼ = 4π(j+1)hⱼ`** and the corresponding
+  powers.
+- `hermiteUnit`, `norm_toLp_hermiteUnit_shifted` — the normalized Hermite function as a Schwartz
+  map, with `‖Kᵐĥⱼ‖₂ = (4π(j+1))ᵐ` exactly.
+- `schwartzSeminorm_hermiteUnit_le` — **`p_{k,n}(ĥⱼ) ≤ C·(4π(j+1))^{k+n+2}`**: every Schwartz
+  seminorm of the *normalized* Hermite functions grows only polynomially in the index.  The
+  normalization is what makes this true — the unnormalized functions have `‖hⱼ‖₂² = j!/π^j·‖h₀‖₂²`,
+  factorial growth, which cancels exactly.
+
+This is the second half of the convergence criterion for the Hermite expansion: coefficients decay
+faster than any power (`hermiteCoeff_decay`) while the normalized functions grow only polynomially
+in each Schwartz seminorm.  So `∑ⱼ cⱼ(f)ĥⱼ` converges absolutely in every Schwartz seminorm, hence
+in the Fréchet space `𝒮(ℝ)`, and its sum has the same Hermite coefficients as `f`, so by the
+completeness theorem it *is* `f`.
+
+That expansion — convergent in `𝒮(ℝ)`, hence in `L²` — supplies Parseval, which is the reverse
+estimate `‖Kᵐf‖₂ ≤ C·(weighted norm of the coefficients)` that the nuclearity transfer still needs.
+It also upgrades completeness to `L²` for free, since the span of the Hermite functions is then
+dense in the image of `𝒮(ℝ)`, which is dense in `L²`.
+
+- 2026-08-02 — Polynomial growth of the normalized Hermite functions in every Schwartz seminorm.
+
+### Lean: the Hermite expansion is absolutely summable in every seminorm
+
+`formal/GaloisForLFunctions/HTGeometry/HermiteExpansionSummable.lean` (5 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `shifted_le_two_mul_hamiltonian`, `hermiteCoeff_decay_shift` — the coefficient decay restated
+  against the *shifted* eigenvalue `4π(j+1)`, which is the one the growth bound uses: the two
+  eigenvalues differ by a factor at most two.
+- `schwartzSeminorm_hermiteTerm_le` — **each term of the expansion is `O((j+1)⁻²)` in every
+  Schwartz seminorm**: taking the decay two orders above the growth `k+n+2` leaves exactly a square
+  in the denominator.
+- `summable_schwartzSeminorm_hermiteTerm` — **the seminorm series converges**, by comparison with
+  the `p`-series at `p = 2`.
+
+So the Hermite expansion of a Schwartz function is absolutely summable in every seminorm of
+`𝒮(ℝ)`.  Since `𝒮(ℝ)` is a complete metrizable space, absolute summability in every seminorm gives
+a sum there; the sum has the same Hermite coefficients as `f` (the coefficient functionals are
+continuous), so completeness identifies it with `f`.  That expansion is the last missing input: it
+gives Parseval, hence the reverse estimate for the oscillator seminorms, hence — with the mutual
+domination already proved and the corpus's Grothendieck–Pietsch criterion — nuclearity of `𝒮(ℝ)`.
+
+- 2026-08-02 — Absolute summability of the Hermite expansion in every Schwartz seminorm.
+
+### Lean: completeness of the Hermite system in `L²(ℝ)`
+
+`formal/GaloisForLFunctions/HTGeometry/HermiteL2Moments.lean` (6 declarations) and
+`formal/GaloisForLFunctions/HTGeometry/HermiteL2Completeness.lean` (10 declarations), axiom audit
+`propext, Classical.choice, Quot.sound`.
+
+The route through completeness of the Fréchet space `𝒮(ℝ)` was abandoned: mathlib has no
+`CompleteSpace 𝓢(E, F)` instance, and the corpus's nuclearity criterion never needs it — the
+comparison maps live on seminorm *quotients*, so only convergence in each individual seminorm is
+required, and every one of those seminorms is an `L²` norm.  So completeness of the Hermite system
+was upgraded from the Schwartz space to `L²` instead.
+
+- `inner_polyGaussSchwartz_toLp_eq_zero` — an `L²` function orthogonal to every Hermite function is
+  orthogonal to every polynomial multiple of the Gaussian (span induction on `hermitePoly`).
+- `memLp_gauss_mul_exp_abs`, `integrable_norm_l2_gauss_mul_exp_abs` — the dominating function
+  `gauss·e^{|a||x|}` is in `L²`, so its product with an `L²` factor is integrable: this is the
+  Hölder replacement for the uniform bound available on a Schwartz function.
+- `integral_gaussMul_exp_l2_eq_zero` — **every exponential integral vanishes**, by termwise
+  integration of the exponential series under that dominating function.
+- `fourier_l2GaussMul_eq_zero` — hence `𝓕(u·gauss) ≡ 0`.
+- `integral_l2GaussMul_schwartz_eq_zero` — the self-adjointness of the Fourier transform for the
+  integral pairing (`VectorFourier.integral_fourierIntegral_smul_eq_flip`, which needs only
+  integrability, not continuity) turns that into vanishing against every Schwartz function, because
+  `𝓕` maps `𝒮(ℝ)` onto itself.
+- `hermite_l2_complete` — **an `L²` function orthogonal to every Hermite function is zero**, since
+  Schwartz functions are dense in `L²` and the Gaussian is nowhere zero.
+
+Note the pointwise Fourier inversion theorem is unusable here (`u·gauss` is not continuous); the
+duality route avoids it entirely.
+
+- 2026-08-02 — Completeness of the Hermite system in `L²(ℝ)`.
+
+### Lean: the Hermite expansion converges in `L²`, and the oscillator quotients
+
+`formal/GaloisForLFunctions/HTGeometry/HermiteL2Expansion.lean` (7 declarations) and
+`formal/GaloisForLFunctions/HTGeometry/HermiteShiftedCoefficients.lean` (8 declarations), axiom
+audit `propext, Classical.choice, Quot.sound`.
+
+- `summable_norm_hermiteCoeff` — the coefficients are absolutely summable (decay at order two).
+- `hasSum_hermiteExpansion_toLp` — **`f = ∑ⱼ cⱼ(f)ĥⱼ` in `L²`** for every Schwartz `f`: the series
+  converges absolutely in the Banach space `L²`, its sum has the same coefficients as `f`, and the
+  Hermite system is complete.
+- `norm_toLp_le_tsum_hermiteCoeff` — **`‖f‖₂ ≤ ∑ⱼ|cⱼ(f)|`**, the reverse estimate.  Note this is
+  the triangle inequality on the expansion, not Parseval: no orthogonality is needed for it.
+- `schwartzPair_shiftedNumberCLM`, `hermiteCoeff_shiftedIterate` — `K` is symmetric for the
+  bilinear pairing, so `cⱼ(Kᵐf) = (4π(j+1))ᵐcⱼ(f)`.
+- `norm_hermiteCoeff_shifted_le` — **`(4π(j+1))ᵐ|cⱼ(f)| ≤ Qₘ(f)`**, and
+  `shiftedSeminorm_hermiteUnit` — **`Qₖ(ĥⱼ) = (4π(j+1))ᵏ`** exactly.
+
+- 2026-08-02 — The `L²` Hermite expansion and the two oscillator estimates.
+
+### Lean: `𝒮(ℝ)` is a nuclear space `[PROVED HERE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerSchwartzNuclear.lean` (13 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `deningerOscL2CLM`, `deningerOscL2CLM_partialSum` — the oscillator map `f ↦ (Kᵐf).toLp`, and the
+  identity that turns a partial sum of the expansion in the `Qₖ`-quotient into a partial sum of the
+  `L²` expansion of `Kᵏf`.
+- `hasSum_hermiteExpansion_shiftedQuotient` — **the expansion converges in every oscillator
+  seminorm quotient.**
+- `deningerHermiteCoeffQuotient`, `norm_deningerHermiteCoeffQuotient_le` — the coefficient
+  functional on the `Qₘ`-quotient, of norm at most `(4π(j+1))^{-m}`.
+- `deningerIsNuclearSpace_shiftedSeminormFamily` — **the oscillator family is nuclear**: the
+  comparison map `Q_{k+2} → Qₖ` is `∑ⱼ φⱼ ⊗ [ĥⱼ]` with `∑ⱼ‖φⱼ‖‖[ĥⱼ]‖ ≤ ∑ⱼ(4π(j+1))⁻² < ∞`.
+- `deningerIsNuclearSpaceC_schwartzSup` — **the Schwartz space of the line is a nuclear space**,
+  transported to the finite suprema of the Schwartz seminorms by
+  `deningerIsNuclearSpaceC_of_dominating`.
+
+The statement is for the *directed* family of finite suprema, which is forced: the bare Schwartz
+family `p_{k,n}` is not directed — no single `p_{k,n}` dominates another (dilate a bump to see
+`p₀,₀ ≰ C·p₀,₁`) — so nuclearity in the corpus's sense is a statement about the directed hull, as
+it is in the classical definition.
+
+This closes the first half of `(1)`–`(2)` of the card: the ambient space of `H_∩` is nuclear
+Fréchet.  What remains for `(2)` is the permanence step (`H_∩` is the kernel of two continuous
+functionals inside the even subspace) and for `(1)` the countable-product-and-subspace
+presentation of `H_−`.
+
+- 2026-08-02 — **`𝒮(ℝ)` is a nuclear space, unconditionally in Lean.**
+
+### Lean: both radial spaces of `(1)`–`(2)` are nuclear `[PROVED HERE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerRadialNuclear.lean` (16 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `H_∩` is the already-formalized `DeningerMeyerCap` of `DeningerMeyerRadialEndpoints.lean`
+  (even, `f(0) = 0`, `f̂(0) = 0`); the module reuses it rather than defining a second copy.
+- `deningerIsNuclearSpaceC_meyerCap`, `_schwartz` — **`(2)` is nuclear**, in both the oscillator
+  and the Schwartz presentation of the restricted seminorms.
+- `deningerRadialCompat` — `H_−` in the card's own presentation: the compatibility submodule
+  `{(g_s)_{s∈ℤ} : g_s(t) = e^{st}g_0(t)}` of the countable product of the integer-weight copies.
+  `deningerRadialCompat_ext` shows a member is determined by `g_0`, so this really is the space of
+  functions all of whose integer exponential weightings are Schwartz — and it carries the
+  projective-limit family, not the subspace family of one weight.
+- `deningerIsNuclearSpaceC_radialCompat` — **`(1)` is nuclear**: a subspace of a countable product
+  of nuclear spaces, by `deningerIsNuclearSpace_pi` and `deningerIsNuclearSpaceC_subspace`.
+- `deningerMeyerCapWitness`, `deningerRadialGauss` and the two `_ne_bot` theorems — **neither space is
+  zero**, so the two nuclearity statements are not vacuous.  The witness for `(2)` is
+  `h₄(0)·h₀ − h₀(0)·h₄`: both Hermite functions are even with Fourier eigenvalue `(−i)⁴ = 1`, so
+  the combination is its own Fourier transform and vanishing at the origin gives both constraints
+  at once — no Gaussian moment computation is needed.  The witness for `(1)` is the Gaussian in
+  logarithmic coordinates, whose `s`-th weight `e^{st}e^{−πt²} = e^{s²/4π}·gauss(t − s/2π)` is a
+  translate of the Gaussian times a constant.
+
+Note nuclearity needs only the submodule structure; closedness is what makes the two spaces
+*Fréchet*, and enters `(3)`–`(4)`, not here.
+
+- 2026-08-02 — **`(1)` and `(2)` of the card are nuclear, unconditionally in Lean.**
+
+### Lean: the Poisson operator `(3)` — values, Euler stability, two-ended decay
+
+`formal/GaloisForLFunctions/HTGeometry/SchwartzEulerOperator.lean` (7 declarations) and
+`formal/GaloisForLFunctions/RHTower/DeningerPoissonOperator.lean` (9 declarations), axiom audit
+`propext, Classical.choice, Quot.sound`.
+
+The analytic core of `(3)` turned out to be **already in the corpus**:
+`CCMRationalArchimedeanSchwartzPoisson.lean` proves the scaled Poisson identity for the full
+integer lattice trace `Θ_f(a) = ∑_{n∈ℤ} f(an)` together with arbitrary-power decay at *both*
+multiplicative ends under exactly Meyer's two conditions `f(0) = 0` and `∫f = 0`.  For an even `f`
+the card's `Zf(a) = ∑_{n≥1} f(na)` is `Θ_f(a)/2`, so those estimates are the estimates for `Z`.
+
+- `eulerSCLM` — the Euler operator `θf(x) = xf'(x)`, with `hasDerivAt_comp_exp`: **it is the
+  derivative along the multiplicative flow**, `d/dt f(ae^t) = (θf)(ae^t)`.  This is what converts
+  `t`-derivatives of the Poisson sum into Poisson sums of `θᵏf`.
+- `fourierSCLM_eulerSCLM` — **`𝓕(θf) = −𝓕f − θ𝓕f`**, from the two Fourier commutation rules;
+  hence `𝓕(θf)(0) = −𝓕f(0)`.
+- `deningerMeyerCap_eulerSCLM` — **Meyer's space is stable under the Euler operator**: parity, the
+  value at the origin, and the Fourier constraint all propagate.  So every multiplicative
+  derivative of `Zf` is again a Poisson sum of a member of `ℋ_∩`.
+- `deningerPoissonValue`, `deningerPoissonValue_eq_half_latticeTrace` — `Z` and the halving
+  identity (`ℤ = {0} ⊔ ℕ₊ ⊔ −ℕ₊`, with the origin term killed and the two halves equal by parity).
+- `norm_deningerPoissonValue_le_large`, `_small` — **`‖Zf(a)‖ ≤ C_N/2 · a^{−2N−2}` and
+  `≤ C_N'/2 · a^{2N+1}`**: arbitrary-power decay at both ends.
+
+What remains for `(3)`: differentiating the sum term by term (`G^{(k)}(t) = Z(θᵏf)(e^t)`, needing
+local uniform convergence), assembling the weights `e^{st}G(t)` into a Schwartz map for each
+`s ∈ ℤ`, and the continuity of `f ↦ Zf` — after which `Z : ℋ_∩ → ℋ_−` is defined and continuous.
+Strictness and closed range (Meyer's theorem) come after that.
+
+- 2026-08-02 — The Poisson operator's value layer: Euler stability and two-ended decay.
+
+### Lean: the Poisson operator `Z : ℋ_∩ → ℋ_−` is constructed `[PROVED HERE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerPoissonDerivative.lean` (10 declarations),
+`DeningerPoissonWeight.lean` (13), `DeningerPoissonSchwartz.lean` (17); axiom audit
+`propext, Classical.choice, Quot.sound` throughout.
+
+- `deningerPoissonLog` — the Poisson sum in the logarithmic coordinate, `G_f(t) = ∑_{n≥1}f(ne^t)`.
+  On each half line `t > T` the terms and their derivatives are dominated by
+  `p_{2,0}(·)/(n e^T)²`, so `hasDerivAt_tsum_of_isPreconnected` applies and
+  **`G_f' = G_{θf}`** (`hasDerivAt_deningerPoissonLog`).  Hence `contDiff_deningerPoissonLog`
+  (smooth) and `iteratedDeriv_deningerPoissonLog`: **`G_f^{(k)} = G_{θᵏf}`.**
+- `deningerShiftCLM s = s + θ` and `deningerPoissonWeight s f t = e^{st}G_f(t)`.  Linearity of the
+  Poisson sum turns the product rule into a single operator identity:
+  **`(e^{st}G_f)' = e^{st}G_{A_s f}`**, so the `n`-th derivative is `e^{st}G_{A_sⁿ f}`
+  (`iteratedDeriv_deningerPoissonWeight`) — no Leibniz expansion is needed.
+- `deningerPoissonDecayIndex s = |s| + 1` — the decay order chosen from the weight.  With it the
+  large-end estimate leaves exponent `s − 2|s| − 4 ≤ −1` and the small-end estimate leaves
+  `s + 2|s| + 3 ≥ 1`, so both ends are killed by `uᵏe^{−u} ≤ k!`
+  (`norm_deningerPoissonWeight_le_of_nonneg`, `_of_nonpos`).
+- `deningerPoissonSchwartz` — **each weight is a Schwartz map of the logarithmic coordinate**: the
+  smoothness is the tsum differentiation, and the decay at order `(k, n)` is the above bound
+  applied to `A_sⁿ f`, which is again in Meyer's space.
+- `deningerPoissonFamily_mem` — **the family of all integer weights satisfies the compatibility
+  law `g_s(t) = e^{st}g_0(t)`**, hence lies in `deningerRadialCompat`.
+- `deningerPoissonLM : DeningerMeyerCap →ₗ[ℂ] deningerRadialCompat` — **the Poisson operator of
+  `(3)`, constructed as a linear map.**
+
+So `(3)` now exists as a map between the two spaces of `(1)`–`(2)`, with `Zf` verified to lie in
+the radial space.  What remains of `(3)`: continuity (each target seminorm bounded by finitely many
+source seminorms — the constants above are already linear in `p_{2(N+1),0}(A_sⁿf)` and
+`p_{2(N+1),0}(𝓕A_sⁿf)`, so this is the continuity of the fixed operators `A_sⁿ` and `𝓕`), then
+injectivity, closed range and the topological isomorphism onto the range (Meyer's theorem), and
+finally the strict exact sequence `(4)`.
+
+- 2026-08-02 — **The Poisson operator `Z : ℋ_∩ → ℋ_−` constructed and shown to land in `ℋ_−`.**
+
+### Lean: the Poisson operator is continuous `[PROVED HERE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerPoissonContinuous.lean` (8 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+The decay constants of the two-ended estimates are *explicit Schwartz seminorms* —
+`ccmRationalArchimedeanDecayConstant h N = p_{2N+2,0}(h)·∑ₙ n^{−2N−2}` — so the whole estimate is
+linear in a seminorm of `A_sⁿf` and of `𝓕A_sⁿf`.
+
+- `deningerShiftPowCLM` — the powers of `A_s = s + θ` as continuous linear maps (the function
+  iterate of a CLM is not itself packaged as one).
+- `exists_bound_seminorm_comp` — for any continuous operator `T` on `𝒮(ℝ)`, `p_{k,0}∘T` is bounded
+  by finitely many Schwartz seminorms (`Seminorm.bound_of_continuous` against
+  `schwartz_withSeminorms`).
+- `exists_bound_seminorm_deningerPoissonSchwartz` — **`p_{k,n}(Z_s f) ≤ C·sup_K p(f)`**, uniformly
+  in `f ∈ ℋ_∩`.
+- `exists_bound_schwartzSup_deningerPoissonSchwartz`, `exists_bound_shiftedSeminorm_deningerPoisson`,
+  `exists_bound_sum_shiftedSeminorm_deningerPoisson` — the same for finite suprema, for the
+  oscillator seminorms, and for finite sums over the coordinates.
+- `deningerPoissonLM_bound` — **every seminorm of the radial presentation of `Zf` is bounded by
+  finitely many Schwartz seminorms of `f`**: the Poisson operator `ℋ_∩ → ℋ_−` is continuous.
+
+Next for `(3)`: injectivity and the reverse estimate.  Both should come from the *same* object —
+Möbius inversion `f(x) = ∑_{n≥1} μ(n)(Zf)(nx)`, which converges absolutely because a member of
+`ℋ_−` decays faster than every power at *both* multiplicative ends.  That exhibits a continuous
+left inverse of `Z` on its range, which is exactly strictness plus injectivity.
+
+- 2026-08-02 — **The Poisson operator is continuous.**
+
+### Lean: Möbius inversion and injectivity of `Z` `[PROVED HERE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerPoissonMoebius.lean` (9 declarations) and
+`DeningerPoissonInjective.lean` (2); axiom audit `propext, Classical.choice, Quot.sound`.
+
+- `deningerMoebiusPair f x (n,m) = μ(n)f(nmx)` — the double family.  Both degenerate index values
+  are harmless: `μ(0) = 0` and `f(0) = 0`, so the family is supported on `n,m ≥ 1` without any
+  index gymnastics.  `summable_deningerMoebiusPair` bounds it by
+  `p_{2,0}(f)/x²·n^{−2}m^{−2}` (division by zero being zero makes the majorant handle the
+  degenerate indices too).
+- `tsum_deningerMoebiusPair_eq` — summing over `m` first gives `∑_{n} μ(n)(Zf)(nx)`.
+- `sum_moebius_divisorsAntidiagonal` — `∑_{de=k} μ(d) = [k = 1]`, from
+  `ArithmeticFunction.moebius_mul_coe_zeta`.
+- `tsum_fiber_deningerMoebiusPair` — summing along the fibres of `(n,m) ↦ nm` gives
+  `[k = 1]·f(kx)` on the fibre over `k`.
+- `deningerMoebius_poissonValue` — **`∑_{n≥1} μ(n)(Zf)(nx) = f(x)`** for every `x > 0`: the two
+  summation orders of one absolutely summable family.
+- `deningerPoissonValue_injOn` — the Poisson sum determines the function on the positive half line.
+- `deningerPoissonLM_injective` — **`Z : ℋ_∩ → ℋ_−` is injective**: the zeroth weight of `Zf` is
+  the Poisson sum, Möbius inversion recovers `f` on `x > 0`, and evenness with `f(0) = 0` extends
+  that to the whole line.  This is exactness of `(4)` at `ℋ_∩`.
+
+- 2026-08-02 — **Möbius inversion of the Poisson sum, and injectivity of `Z`.**
+
+### Lean: the Mellin symbol of `Z` is `ζ` `[PROVED HERE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerPoissonMellin.lean` (7 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `schwartz_isBigO_atTop`, `schwartz_isBigO_zero`, `mellinConvergent_schwartz` — the Mellin
+  transform of a Schwartz function converges for `Re s > 0` (rapid decay at infinity, boundedness
+  at the origin, through `mellinConvergent_of_isBigO_rpow`).
+- `integral_mellinNorm_comp_mul` — the scaling law `∫₀^∞ x^{σ−1}|f(cx)|dx = c^{−σ}∫₀^∞x^{σ−1}|f|`.
+- `tsum_one_add_cpow_eq_zeta` — `∑_{n≥0}(n+1)^{−s} = ζ(s)` for `Re s > 1`.
+- `mellin_deningerPoissonValue` — **`M(Zf)(s) = ζ(s)·M(f)(s)` for `Re s > 1`**: each term of the
+  Poisson sum is a dilation, the Mellin transform turns a dilation by `n` into `n^{−s}`, and the
+  family of dilated integrals is absolutely summable, so the sum comes out of the integral
+  (`integral_tsum_of_summable_integral_norm`).
+
+This is the identity that makes `M_ζ` a zeta object: on the Mellin side the Poisson operator *is*
+multiplication by `ζ`, so its cokernel is supported exactly on the zero divisor of `ζ`.  It is also
+the reason the remaining claim of `(3)` — strictness, i.e. the reverse estimate — is genuinely
+deep: dividing by `ζ` on vertical lines needs quantitative lower bounds for `ζ` (Meyer's zeta
+estimate).  The naive route through Möbius inversion cannot give it: for `x → 0` the absolute
+series `∑ₙ|Zf(nx)|` is of size `1/x` even though `f` is bounded, so the cancellation carried by
+`μ` is essential.
+
+- 2026-08-02 — **The Mellin symbol of the Poisson operator is `ζ`.**

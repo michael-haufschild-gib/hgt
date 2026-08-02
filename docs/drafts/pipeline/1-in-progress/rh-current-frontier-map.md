@@ -1352,6 +1352,79 @@ finite self-adjoint extensions and interlacing
 → half-plane Herglotz representation and support theorem.
 ```
 
+The self-adjoint-extension interlacing in this chain is not parity interlacing. Literal parity
+reduction gives `Q_even=T_a+H_a` and `Q_odd=T_a-H_a`. For every aperture, a corner
+`(0,b)^2` with `2b<log 2` contains no prime seam, and there
+
+```text
+H_a(x,y)
+ =exp((x+y)/2)
+  -exp(-5(x+y)/2)/(1-exp(-2(x+y))).
+```
+
+Distinct translates of this archimedean profile are linearly independent on every nonempty
+positive interval: clearing translate denominators gives an entire relation, and evaluation at
+the distinct poles `z=-y_j` kills every coefficient. Hence this corner, `H_a`, and
+`Q_even-Q_odd=2H_a` all have infinite rank. The two parity blocks are never rank-one or
+finite-rank perturbations. Donoghue interlacing for two boundary angles therefore cannot be
+imported as a source theorem for `T_a+H_a` versus `T_a-H_a`. Accidental or genuinely
+infinite-rank parity interlacing remains possible. Paper proof and unconditional analytic Lean
+are in `suzuki-parity-hankel-infinite-rank-no-go.md` and
+`SuzukiArchimedeanParityHankelInfiniteRank.lean`.
+
+The same prime-free corner now has a sharp indefinite classification. For `x,y>0`,
+
+```text
+H_a(x,y)
+ =p(x)p(y)-sum_(k>=0) q_k(x)q_k(y),
+
+p(x)=exp(x/2),
+q_k(x)=exp(-(5/2+2k)x).
+```
+
+For any `m+1` distinct positive nodes, the first `m+1` negative moments factor through the
+Vandermonde matrix on `r_j=exp(-2x_j)`. On the kernel of the single positive moment `P`, a
+subspace of dimension at least `m`, every nonzero Gram vector is strictly negative. Conversely,
+the positive moment must be injective on every strictly positive subspace, so such a subspace has
+dimension at most one. Localization by disjoint bumps transfers the finite Gram witnesses to the
+integral form. Hence every aperture has
+
+```text
+ind_-(H_a)=ind_-(Q_even-Q_odd)=infinity,
+finite-Gram positive index <= 1.
+```
+
+Finite-negative-square and finite-index Pontryagin transfers of boundary-angle interlacing are
+therefore dead as well. This remains a mechanism no-go, not a Suzuki no-go: comparison with
+genuinely infinite negative index, direct credit/debt transport, and the two-angle meromorphic
+producer remain live. Paper proof and unconditional finite-Gram Lean are in
+`suzuki-parity-hankel-infinite-negative-index.md` and
+`SuzukiArchimedeanParityHankelInfiniteNegativeIndex.lean`.
+
+The tempting positive-index-one survivor is itself killed by the first arithmetic seam. The full
+positive-ray kernel contains
+
+```text
+-Lambda(n)n^(-1/2) delta_(x+y-log n).
+```
+
+Whenever `log n<2a`, this is a weighted reflection across the line `x+y=log n`. On reflected bump
+packets its swap-even and swap-odd sectors have opposite signs. By taking arbitrarily many
+disjoint narrow bump pairs, the bounded regular kernel becomes smaller than the fixed seam weight
+while all other prime seams are avoided. Therefore, for every `a>log(2)/2`,
+
+```text
+ind_+(H_a)=ind_-(H_a)=infinity,
+ind_+(Q_even-Q_odd)=ind_-(Q_even-Q_odd)=infinity.
+```
+
+Thus neither orientation of a one-sided finite-index/Pontryagin min--max comparison survives
+cofinally. Generic singular-Hankel reflection theory is classical; the new candidate content is
+the exact Suzuki first-prime-seam application. Paper proof and unconditional robust finite-packet
+Lean are in `suzuki-prime-seam-parity-hankel-strong-indefiniteness.md` and
+`SuzukiPrimeSeamParityHankelStrongIndefiniteness.lean`. This still does not exclude a genuinely
+arithmetic infinite-seam oscillation theorem or the two-angle meromorphic producer.
+
 Finite projective spectral algebra is now exact: projective chord is a sum of spectral gaps
 times source Plücker minors; in two modes its sign is exactly source-minor orientation under
 ordered nodes and positive source-weight product. Marked affine secant has a full finite
@@ -1750,6 +1823,15 @@ producer must leave the bounded category through singular, nonclosable, or relat
 transport. This does not assert that Suzuki's literal source map factors through the shell frame,
 and does not exclude a genuinely nonlinear producer.
 
+The updated complete Boolean-shell theorem sharpens, but does not bypass, this warning. Every
+finite differential-field observable has finite shell support and arbitrary shell-field
+intersections contain no infinitary ghost. A Suzuki aperture therefore cannot acquire hidden
+finite-stage provenance from completion. However locally uniform, weak, and normal-family limits
+are not finite differential-field operations; growing finite supports can converge to a
+common-core infinite source. Using the no-ghost theorem itself to reject the two-angle cofinal
+limit would therefore be invalid. A valid no-go must control the actual limiting topology or
+prove literal local Clark overcrowding.
+
 The literal position torque now passes the faithful side of this gate. Its prime coefficient
 stream is exactly
 
@@ -1805,6 +1887,73 @@ and `A>0`, so its nonnegativity is equivalent without loss to `AC-B^2>=0`. This 
 nonlinear necessary condition on an Xi-identifying Suzuki limit. It is not the unshifted central
 minor and not the full RH-equivalent Hankel tail: it is the exact `y=1` first minor selected by
 Suzuki's Donoghue/Livšic normalization.
+
+This safe-shift minor now has a complete multiplicity-exact response/charge decomposition. Put
+
+```text
+lambda_q=xiShiftedReciprocalSquare(1,q),
+a_q=Re(lambda_q),
+tau_q=Re(lambda_q^2)/a_q,
+chi_q=Im(lambda_q)^2 |lambda_q|^2/a_q.
+```
+
+The unconditional shifted sector gives `a_q>0`, `tau_q>0`, and complete summability. Exact
+pointwise cubic algebra and an infinite Cauchy--Schwarz passage give
+
+```text
+AC-B^2 = H_Xi-Q_Xi,                                      (G.2a)
+
+H_Xi=A sum_q a_q tau_q^2-(sum_q a_q tau_q)^2 >= 0,
+Q_Xi=A sum_q chi_q >= 0,
+Q_Xi=0 iff RH.                                           (G.2b)
+```
+
+Hence the first nonlinear Suzuki wall is no longer an opaque target minor:
+
+```text
+AC-B^2>=0 iff Q_Xi<=H_Xi.                                (G.2c)
+```
+
+Every genuinely off-line atom pays strictly positive transverse charge; only cross-orbit shifted
+response dispersion can cancel it. This is not a proof of `(G.2c)`: neither sector positivity nor
+positivity of all individual low powers controls that competition. It is the sharp target
+classification exposed by the live producer. Paper proof and unconditional Lean are in
+`suzuki-safe-shift-response-charge-cancellation.md` and
+`SuzukiSafeShiftResponseChargeCancellation.lean`.
+
+The two sides of this competition now have a quantitative separation.  If
+`r_q=xiZeroCopyReciprocalSquare(q)`, `mu_0=normalizedPrimeArchMoment(0)`, and
+`E=sum_q Im(r_q)^2`, exact inverse-coordinate algebra gives
+
+```text
+safe response mass(q) < Re(r_q),
+chi_q <= (4/85) Im(r_q)^2,
+
+Q_Xi <= (4/85) mu_0 E
+     < 116/7,968,750,000.                                (G.2d)
+```
+
+The response slopes also tend to zero off finite sets while remaining strictly positive. Infinite
+Xi divisor support therefore makes them nonconstant, and the Hilbert term has the exact centered
+form
+
+```text
+H_y=Re M_0(y) sum_q a_q(tau_q-bar_tau_y)^2 > 0
+for every y>0.                                           (G.2e)
+```
+
+Thus the safe wall is no longer a comparison of two merely nonnegative unknowns. Its negative
+channel is below an explicit source scale and its positive channel is genuinely nondegenerate.
+The remaining quantitative target problem is the single sufficient floor
+
+```text
+116/7,968,750,000 <= H_1,                                (G.2f)
+```
+
+which would force `AC-B^2>0`. Strict positivity `(G.2e)` does not prove `(G.2f)`, and replacing the
+missing floor by that qualitative fact would be invalid. Paper proof and unconditional Lean are in
+`suzuki-safe-shift-transverse-charge-budget.md` and
+`SuzukiSafeShiftTransverseChargeBudget.lean`.
 
 The literal restricted-Weil position commutator has also been determined. Multiplication by
 position produces the logarithmically weighted Mangoldt torque; its completed tent transform is
@@ -1934,13 +2083,18 @@ or prove no literal cofinal source family can satisfy this chain.
 
 Paper proof and unconditional Lean are in `suzuki-two-jet-shifted-hankel-gate.md` and
 `SuzukiTwoJetShiftedHankelGate.lean`,
-`SuzukiRelativeTiltReciprocalConcavity.lean`, and
+`SuzukiRelativeTiltReciprocalConcavity.lean`,
+`SuzukiSafeShiftResponseChargeCancellation.lean`, and
 `SuzukiPositiveResolventParityNoGo.lean`, and
 `SuzukiPositiveSpectralResponseNoGo.lean`. The source torque and its resolvent promotion are in
 `suzuki-weil-position-torque-recurrence.md`, `SuzukiWeilPositionTorqueCurvature.lean`, and
 `SuzukiResolventPositionTorquePromotion.lean`. Its exact source-horizon irreducibility is in
 `suzuki-position-torque-prime-clock-irreducibility.md` and
-`SuzukiPositionTorquePrimeClockIrreducibility.lean`.
+`SuzukiPositionTorquePrimeClockIrreducibility.lean`. The parity-difference inertia classification
+is in `suzuki-parity-hankel-infinite-negative-index.md` and
+`SuzukiArchimedeanParityHankelInfiniteNegativeIndex.lean`; its cofinal first-prime-seam
+strengthening is in `suzuki-prime-seam-parity-hankel-strong-indefiniteness.md` and
+`SuzukiPrimeSeamParityHankelStrongIndefiniteness.lean`.
 
 None of this implies that every bounded functional of Suzuki's scalar screw data loses source
 orientation: scalar data can recover von Mangoldt coefficients and encode completed divisor.
@@ -1996,6 +2150,10 @@ every two-jet closure using only generic positive, invertible, self-adjoint pari
 structure and a self-adjoint parity-reversing position operator;
 every repair using only compact symmetric position spectrum, pointwise-positive exponential
 response, and a positive resolvent commuting with position;
+every transfer of deficiency-one extension-angle interlacing to literal even/odd restricted-Weil
+blocks through a rank-one, finite-rank, finite-codimensional, finite-negative-square, or
+either one-sided finite-index Pontryagin parity perturbation; the first visible prime seam makes
+the cofinal literal parity difference infinite-index in both signs;
 bare logarithmic-current quotient; critical eta in either extended-property-S parity; every compact
 multiplicative resonance repair; fused observer rectangle as literal sharp trace cell; local PSD
 after subtraction of twice prime block; finite uniform inverse gain from damped causal response;
@@ -2015,7 +2173,14 @@ second-jet/safe-shift-Hankel identification; cofinally two-signed literal positi
 deficiency-level promotion and hypertranscendental prime-clock carrier beyond complete local-Euler
 residue--valuation fusion; sharp fixed-torque fiber classification; sharp normalized
 relative-tilt window `0<g<=1`; reciprocal-radial concavity calibration; the exact positive
-exponential spectral-response countermodel; and universal Gamma--Gaussian property-S completion.
+safe-shift response-dispersion/transverse-charge cancellation with RH-exact charge radical; the
+strict centered-response law and exact safe-shift charge cap
+`Q_Xi<116/7,968,750,000`;
+the exact positive exponential spectral-response countermodel; infinite-rank archimedean
+parity-Hankel carrier on
+every aperture, sharpened to finite-Gram signature `(positive index <=1, negative index=infinity)`;
+cofinal first-prime-seam signature `(positive index=infinity, negative index=infinity)`; and
+universal Gamma--Gaussian property-S completion.
 None proves either cofinal restricted-Weil selector branch, source-selected meromorphic
 convergence, or discrimination of critical-line zeros without the missing source-generated dagger.
 
@@ -3301,6 +3466,131 @@ admission synthesis. Lean modules:
 `pipeline/3-formalized/new_scientific_knowledge/deninger-meyer-finite-synthesis-cofinal-singularity-wall.md`.
 This closes the literal Meyer packetwise Xi-inclusion item, not the arithmetic source comparison
 or positive Hodge gate.
+The updated complete-source theorem now meets this Meyer wall at the level of one fixed
+source-to-source comparison. Normalize the actual complete-resolution vector
+\(E_K(\rho)\in\ell^1\) to unit source norm. If one complex-linear comparison from the whole
+complete source into literal all-weight Meyer space is uniformly bounded for the canonical
+first vertical Sobolev cost throughout \(0\le\Re s\le1\), then along actual Xi points
+\(|\Im\rho_j|>j+1\),
+\[
+ {\cal M}\!\left(T\frac{E_K(\rho_j)}{\|E_K(\rho_j)\|_1}\right)(\rho_j)
+ \longrightarrow0.
+\]
+Hence no uniformly first-order regular comparison is uniformly Xi-trace-faithful on normalized
+actual source vectors. This is not obtained by selecting an interpolant at each zero: \(T\) is
+one fixed map on the predeclared arithmetic source. Combined with label-blind observer
+classification, any uniformly faithful last-mile comparison must both retain transverse source
+labels and be singular relative to canonical literal-Meyer vertical seminorms. Pointwise
+nonerasure may still survive with cofinally vanishing amplitude, so this removes the ordinary
+regular uniformly faithful class without constructing the RH-bearing comparison or positive
+Hodge metric. Lean module
+`DeningerMeyerCompleteSourceComparisonSingularity`; paper and audit:
+`pipeline/3-formalized/new_scientific_knowledge/deninger-meyer-complete-source-comparison-singularity.md`.
+The pointwise survivor is now classified exactly, and it is weaker than the previous open-core
+wording suggested. One fixed compactly supported literal Meyer source can be chosen whose Mellin
+transform is nonzero at every actual Xi divisor point simultaneously: complex modulation
+translates one nonzero entire Mellin transform, while the union of bad translates over countable
+Xi support is countable. Composing this single source with the norm-one complete-source
+codiagonal gives one fixed comparison which is uniformly first-order regular and pointwise
+Xi-nonerasing for every complete-resolution exponent. Nevertheless it identifies every pair of
+unit source labels and annihilates every canonical reflection displacement. On normalized actual
+sources its Xi trace is nonzero at every escaping stage but tends to zero. Thus the cofinal
+attenuation theorem is sharp—it cannot be promoted to eventual vanishing—and pointwise
+nonerasure by itself is source-provenance theatre. The last-mile hypothesis must separately
+retain transverse source labels and reflection/Hodge geometry; only then does pointwise Xi
+nonerasure become arithmetically meaningful. Lean module
+`DeningerMeyerPointwiseXiComparisonSharpness`; paper and audit:
+`pipeline/3-formalized/new_scientific_knowledge/deninger-meyer-pointwise-xi-comparison-sharpness.md`.
+The updated complete Boolean shell theorem now yields a canonical observable-level provenance
+invariant. For an observable \(x\) in the full shell differential field, intersect all shell sets
+\(A\) for which \(x\in\mathcal F_A\). Exact arbitrary-meet preservation proves that this
+intersection still generates \(x\), and the finite-support theorem makes it finite. Hence every
+observable has a unique least finite support \(\operatorname{src}(x)\), characterized by
+\[
+ x\in\mathcal F_A\quad\Longleftrightarrow\quad
+ \operatorname{src}(x)\subseteq A.
+\]
+Support is subadditive under sums and products, unchanged by negation and inversion, and cannot
+grow under differentiation. The common zeta mode has empty private support, while the private
+shell multiplier \(H_m\) has support exactly \(\{m\}\). This upgrades label retention from an
+informal requirement to a canonical source invariant independent of expression or presentation.
+Taking the largest indispensable label gives a canonical source grade. Grade at most \(N\) is
+equivalent to membership in the finite initial-shell differential field through \(N\); these
+fields form a monotone exhaustive filtration of the full shell field. Grade obeys max bounds
+under sums and products, is unchanged by negation and inversion, and cannot grow under
+differentiation. Thus the missing comparison now has a source-derived algebraic domain scale;
+no nuclear/analytic topology on that filtration is yet claimed. The grade also yields an exact
+non-Archimedean source seminorm: common-field observables have size zero and an observable with
+nonempty support has size \(2^{\mathrm{grade}}\). Its radical is exactly the common zeta
+differential field. The transverse quotient therefore has an honest normed additive-group
+structure, and the private class \(H_m\) has exact norm \(2^m\). Hostile audit proves that every
+nonzero transverse class has norm at least one, so this topology is discrete. It is an exact
+provenance gauge, not the missing mixed nuclear/complex topology; in particular the latter cannot
+be obtained by refining it.
+The opposite dyadic scalarization is also now exact. Summing \(2^{-m}\) over the unique least
+finite support gives an additive seminorm with the same exact common-field radical and hence an
+honest quotient norm. It satisfies
+\[
+ q([H_m])=2^{-m}.
+\]
+For \(m_n=n+12\), every \([H_{m_n}]\) is nonzero but
+\([H_{m_n}]\to0\); therefore the dyadic quotient topology is non-discrete. Moreover no constant
+\(C\) can satisfy \(p(u)\le Cq(u)\) on the transverse quotient: the atomic classes would force
+\(4^m\le C\) cofinally. This is a formal singularity theorem between two source-derived
+topologies, not merely an observed sequence. It shows that algebraic provenance retention and
+topological cofinal nonescape cannot be conflated. The relevant-complex topology must use a
+separating family with additional target/Hodge structure, permit the already-forced Meyer
+attenuation, and prove nonannihilation algebraically rather than demand one uniformly faithful
+scalar norm.
+The vector-valued positive survivor is now constructed. For each private label \(m\), the
+\(0/1\) occurrence function
+\[
+ p_m(x)=\mathbf1_{\{m\in\operatorname{src}(x)\}}
+\]
+is a non-Archimedean additive-group seminorm. Its kernel is exactly the shell field generated by
+all labels except \(m\), and the joint kernel of the entire family is exactly the common zeta
+differential field. Private atoms have Kronecker matrix \(p_m(H_n)=\delta_{mn}\). The finitely
+supported provenance vector therefore has support exactly \(\operatorname{src}(x)\), is unchanged
+by common-field translation, vanishes exactly on the common field, and sends \(H_m\) to the
+standard basis vector \(e_m\). For \(m_n=n+12\), \(e_{m_n}\to0\) in the product coordinate
+topology although every vector is nonzero and its active coordinate is detected exactly.
+Thus source-level Hausdorff label separation and cofinal topological attenuation are compatible:
+faithfulness must be carried by a family, not a uniform scalar lower bound. This vector is a
+nonlinear support shadow, not a coefficient, cup/trace, Hodge, or Meyer realization; transporting
+and enriching the family is now the hard comparison problem.
+Hostile scalar audit closes the naive enrichment step. Nonzero complex scaling preserves
+canonical support, every \(0/1\) coordinate, and the full provenance vector exactly. Therefore no
+complex seminorm can equal one label gauge and no complex-linear scalar coefficient can have
+magnitude equal to it. More strongly, for every topology on the full shell field with continuous
+complex scalar multiplication, each exact label gauge is discontinuous: along
+\(a_n=2^{-n}\), \(a_nH_m\to0\) while the gauge remains one. Exact support coordinates cannot be
+installed as defining seminorms of a nuclear complex space or as continuous provenance
+observables. They must be transported as algebraic support strata, while homogeneous
+coefficient/Meyer/Hodge seminorms are constructed independently and proved not to annihilate
+active strata.
+The scalar-coefficient escape is now closed at the level of exact kernels. Full differential
+independence implies that each \(H_m\) is transcendental over the deletion field generated by
+zeta and all \(H_n\) with \(n\ne m\). Hence \(H_m^2-cH_m\) remains outside that deletion field
+for every \(c\in\mathbb C\). If one complex-linear scalar coefficient vanished exactly when
+label \(m\) was absent, choosing \(c=L(H_m^2)/L(H_m)\) would annihilate
+\(H_m^2-cH_m\) without removing label \(m\), a contradiction. Thus neither magnitude nor exact
+zero-set provenance can be compressed into one scalar coefficient. More strongly, any
+complex-linear map with that exact deletion kernel sends
+\(H_m,H_m^2,H_m^3,\ldots\) to a complex-linearly independent family: a finite image relation
+would give a polynomial relation for \(H_m\) over its deletion field. Hence every
+finite-dimensional coefficient target is excluded. Exact linear label detection forces infinite
+coefficient rank. This does not construct or classify the required infinite-dimensional target;
+it forces the actual coefficient comparison to retain the full power-direction information.
+A comparison collapsing distinct singleton supports now fails before topology or Hodge theory;
+preservation of some target-selected finite presentation is insufficient. Lean module
+`RelativeShellCanonicalProvenanceSupport` and
+`RelativeShellCanonicalComplexityFiltration` and
+`RelativeShellProvenanceUltrametric` and
+`RelativeShellSummableProvenanceTopology` and
+`RelativeShellProvenanceCoordinateTopology` and
+`RelativeShellProvenanceScalarHomogeneityWall` and
+`RelativeShellPrivateHypertranscendenceCoefficientWall`; paper and audit:
+`pipeline/3-formalized/new_scientific_knowledge/relative-shell-canonical-provenance-support.md`.
 Separately, an abstract
 symbol additive in every entry over a torsion group is torsion; a group generated by such symbols has
 zero real tensor product. This is not an instantiation of Milnor K-theory over an algebraic closure
@@ -3318,14 +3608,29 @@ the literal arithmetic Meyer/Deninger relevant complex; establish radial Schwart
 square-integrable domains beyond the now-closed endpoint-global separated sector, a valid local/global interface
 for the nonlocal packet average, extend the now-constructed secondary Poisson regulator from the
 endpoint-zero global two-collar graph domain to that literal complex and prove that its exact analytic
-prime-graph radical equals the full closed middle-boundary space, establish nuclear topology and
-closed range,
+prime-graph radical equals the full closed middle-boundary space; transport the now-constructed
+canonical least-support strata algebraically through every finite stage, without requiring their
+discontinuous \(0/1\) gauges to be continuous; construct an infinite-rank coefficient channel
+whose exact deletion kernel carries the linearly independent family
+\(H_m,H_m^2,H_m^3,\ldots\), rather than any finite-dimensional replacement; retain enough
+coefficient multiplicity to distinguish every nonconstant polynomial in \(H_m\) from the deletion
+field; independently construct a complete nuclear
+non-discrete mixed topology from homogeneous coefficient-sensitive Meyer and Hodge seminorms,
+not a refinement of the discrete increasing-grade norm and not an extension of the discontinuous
+support gauges; prove every active algebraic support stratum avoids the analytic radical after
+comparison while cofinal attenuation remains compatible with both the provenance basis null
+sequence and literal-Meyer decay wall; prove closed range,
 continuity/sheaf compatibility of the all-degree
 pointwise Čech
 homotopy and its arithmetic-coefficient instantiation, a topology stronger than the escaping
 positive-time Poisson-energy product topology and compatible with the now-proved all-orders
 literal-Meyer Xi trace decay, an arithmetic source comparison into the completed
-orthogonal Tate graph prime model with kernel exactly the closed middle boundaries, identification
+orthogonal Tate graph prime model with kernel exactly the closed middle boundaries and whose
+induced literal-Meyer realization retains transverse source labels, does not annihilate canonical
+reflection/Hodge displacement, preserves the now-canonical least finite shell provenance support,
+and retains every Xi fibre pointwise while
+respecting the now-proved exclusion of uniform first-order regular Xi-trace faithfulness;
+identification
 of the generic maximal diagonal phase generator with the
 arithmetic flow, strong continuity and generator identification for the Poisson semigroup, arithmetic
 cup/trace/flow/Hodge transport, nuclear almost-idempotence, middle-kernel vanishing, and
@@ -4852,3 +5157,32 @@ Paper:
 `../3-formalized/new_scientific_knowledge/route-j-one-prime-geometric-grading-profile.md`.
 Lean:
 `SoninSemilocalGradingGeometricProfile.lean`.
+
+## 2026-08-02 Route J frontier update: determinant-provenance first-Euler boundary
+
+The literal one-prime semilocal `q`-moment tangent has now been carried through full Hankel
+orthogonalization and the Route-J four-radius critical residual. If `J_k` is the residual's first
+Euler jet, then
+
+```text
+J_(n+1)/sqrt(2(n+1)) -> 4sqrt(2/pi).
+```
+
+The proof starts from the published rank-two source tangent, proves its determinant trace for every
+genuine normalized matrix path with that tangent, and proves universal transfer through arbitrary
+determinant families with the same first jets. Its exact factorization has two normalized cross
+terms `-1,-1`, curvature `+6`, and Wallis factor `1/sqrt(pi)`.
+
+Hence `q sqrt(n) asymp 1`, or `n asymp p^2` at `q=p^(-1)`, is the sharp first-jet interaction
+scale. This does not control the complete higher-order `q`-series; the `q^2` coefficient and
+all-order boundary-layer resummation remain live Route-J research.
+
+Updated `source-horizon-riemann-divisor/main.tex` simultaneously rules out an ordinary
+differential-field shortcut: arbitrary shell meets/joins are exact and every field observable has
+finite shell support, so completion creates no infinite-label ghost. Any global J-SF5 current
+assembled from fixed-prime boundary layers must be a genuine pro-object, relation, or
+topology-singular limit. Route J remains open.
+
+Paper:
+`../3-formalized/new_scientific_knowledge/route-j-semilocal-prolate-first-euler-critical-boundary.md`.
+Lean: `SemilocalProlateFirstEulerCriticalJet.lean`.

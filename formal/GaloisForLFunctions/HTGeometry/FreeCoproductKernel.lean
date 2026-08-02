@@ -218,6 +218,15 @@ theorem nonempty_unique_sigmaKerIndex {A B : Type w} (u : A → B) [Subsingleton
       · rfl
       · exact absurd ((hsec a).trans h) ha
 
+omit [Preadditive C] [HasCoproducts C] in
+/-- **A non-injective map leaves a nonempty kernel index.** -/
+theorem nonempty_sigmaKerIndex_of_ne {A B : Type w} (u : A → B) {a₀ a₁ : A} (hne : a₀ ≠ a₁)
+    (heq : u a₀ = u a₁) : Nonempty (sigmaKerIndex u) := by
+  by_cases h : sigmaSection u a₀ = a₀
+  · refine ⟨⟨a₁, fun hcon => hne ?_⟩⟩
+    rw [← h, sigmaSection_congr heq, hcon]
+  · exact ⟨⟨a₀, h⟩⟩
+
 /-! ## Reindexing -/
 
 omit [Preadditive C] in

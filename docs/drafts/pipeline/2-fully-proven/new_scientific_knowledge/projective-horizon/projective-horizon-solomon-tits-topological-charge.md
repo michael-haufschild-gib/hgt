@@ -137,9 +137,23 @@ Formalized, unconditionally, axioms `[propext, Classical.choice, Quot.sound]` th
   `isFreeOver_homology_famBuilding`, which gives freeness of the homology of a disjoint union of
   interval buildings in every positive degree, for any bounded modular lattice with atoms below
   every nonzero element, with no rank hypothesis.
+- `(6)`'s nonvanishing — `BuildingNonvanishing.lean` (`not_isZero_steinbergModule`,
+  `exists_nonempty_index_steinbergModule`): for `N ≥ 3` the index set of that coproduct is nonempty,
+  so the Steinberg module is a nonzero representation and the building is not contractible.
+- The apartment classes — `ApartmentClass.lean` (`apartmentClass`,
+  `apartmentClass_steinbergAction`): every observer frame gives a map `R ⟶ St_N`, the image of the
+  fundamental class of its Coxeter sphere, and the observer group permutes these classes.  They are
+  monomorphisms, hence nonzero — `ApartmentClassMono.lean` (`mono_apartmentClass`,
+  `apartmentClass_ne_zero`), from the general fact that in the top degree homology is a subobject of
+  the normalized chains (`TopDegreeMono.lean`).
 - Extra structure the card did not state: the top homology of a building of rank `r` is
   *isomorphic* to that of the disjoint union of the buildings of rank `r - 1` below the coatoms
   (`FamilyTopHomologyEmbedding.lean`, `isIso_famTopEmbedding`).
+- The apartment paragraph's sphere statement — `ApartmentTopHomology.lean`
+  (`nonempty_homology_iso_apartment`): the top homology of the order complex of the proper part of
+  the Boolean lattice on `N` elements is one copy of the coefficients.  Its input is the thinness of
+  the Boolean cover (`BooleanIntervalCover.lean`): exactly one element of an interval spans it with
+  a given point.
 
 Not formalized, and not claimed:
 
@@ -1103,3 +1117,343 @@ class to positivity, a Weil criterion, or zero location.
 
   With the vanishing above degree zero, `(5)` now holds in the sense the card states it: for
   `N ≥ 3` the reduced homology of `Δ_HT(V)` vanishes in every degree except `N - 2`.
+
+- 2026-08-02 — **The apartment is a sphere: its top homology is one copy of the coefficients.**
+  Four new modules, all axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `PiZeroNerve.lean` — the components of an order complex.  An edge of a subcomplex of a nerve is a
+  comparability (`nerveSub_edge_le`), so a subcomplex spanned by an antichain has one component per
+  vertex (`nerveSubAntichainPi0`), a subcomplex whose subset has a cone point is connected
+  (`isPreconnected_nerveSubcomplex_of_cone`), and the components of a disjoint union are the
+  disjoint union of the components (`famSSetPi0Equiv`).
+
+  `BooleanIntervalCover.lean` — **thinness**: in the lattice of subsets, the elements of `[∅, S]`
+  spanning it with `{a}` are exactly one, `S \ {a}` (`uniqueBoolCoverIndex`).  So the Solomon--Tits
+  cover of a Boolean interval has a single piece and the descent removes one element at a time.
+  With it, `famBuildingUniqueOrderIso`, which names the single interval a one-element family
+  consists of.
+
+  `FreeCoproductKernel.lean` (extended) — `nonempty_unique_sigmaKerIndex`: a two-element source over
+  a one-element target leaves a one-element kernel index; `sigmaUniqueIso`, `sigmaIsoOfEquiv`; and
+  `kernelIsoSigmaKerIndex`, which exposes the kernel's index set instead of only its freeness.  The
+  same exposure was added to `SimplicialPiZeroFree.lean` and `FamilyDegreeOneFree.lean`
+  (`homologyOneIsoSigmaKerIndex`).
+
+  `ApartmentTopHomology.lean` — the computation.  `nonempty_homology_iso_bool_three`: for a
+  three-element interval the intersection of the base with the single piece is the two-point
+  antichain below the coatom and the piece is connected, so the Mayer--Vietoris kernel is one copy of
+  the coefficients.  `nonempty_homology_iso_boolInterval`: the descent carries that up one element at
+  a time.  **`nonempty_homology_iso_apartment`**: for `3 ≤ N`,
+
+  ```text
+  H_(N-2)(Delta(properPart(Set ι))) ≅ R,     Nat.card ι = N.
+  ```
+
+  That is the card's "its order complex is the Coxeter sphere `S^(N-2)`", in its homological form,
+  and it is the first *computation* in this line of work rather than a vanishing or a freeness
+  statement.
+
+  **Card correction.**  This morning's entry said the sphere statement "is not proved; it is the one
+  place where a genuine computation, rather than a vanishing, is needed".  It is proved now.  What
+  the apartment paragraph still does not have is the map from that class into the Steinberg module
+  and the statement that such classes generate — Solomon's basis theorem.
+
+- 2026-08-02 — **The apartment class, its equivariance, and the nonvanishing of the Steinberg
+  module.**  Two new modules, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `ApartmentClass.lean` — `orderHomNerveMap`: a monotone map of posets induces a map of order
+  complexes.  With the frame's order embedding `apartmentVertices` and the sphere isomorphism, this
+  gives **`apartmentClass`**: for a frame `b` of an `N`-dimensional space with `N ≥ 3`, a map
+
+  ```text
+  R  ⟶  H_(N-2)(building)  =  St_N,
+  ```
+
+  the image of the fundamental class of the Coxeter sphere of the frame.  And
+  `apartmentClass_steinbergAction`: `apartmentClass b ≫ steinbergAction g = apartmentClass (b.map g)`
+  — the observer group permutes the apartment classes, which is the card's "topological cycles are
+  changes of complete projective observer frame".
+
+  `BuildingNonvanishing.lean` — **`not_isZero_steinbergModule`**: for `3 ≤ N` and any nonzero
+  coefficients the Steinberg module is not zero; more precisely
+  `exists_nonempty_index_steinbergModule` gives `St ≅ ∐_B R` with `B` *nonempty*.  Freeness alone did
+  not say this: the empty coproduct is free.  Two facts about subspaces that a general modular
+  lattice does not have carry it, and both are proved here:
+
+  `exists_spanning_of_finrank` — a line inside a subspace of dimension `≥ 3` has a complement there
+  that is neither zero nor everything, so the Solomon--Tits cover always has a piece and the descent
+  never stalls;
+  `exists_two_atoms_of_finrank_two` — a plane contains two distinct lines, so at the bottom of the
+  descent the intersection of the base with a piece has two components, while the piece itself is
+  connected: the map on components is not injective, and `nonempty_sigmaKerIndex_of_ne` turns that
+  into a nonempty index for the Mayer--Vietoris kernel.
+
+  So the homology of the building of an `N`-dimensional space, `N ≥ 3`, is: zero in every positive
+  degree except `N - 2`, a single copy of the coefficients in degree `0`, and in degree `N - 2` a
+  free object on a nonempty index set carrying the observer action, with apartment classes attached
+  to every frame.  What remains of `(6)` is Solomon's *basis* theorem: that the apartment classes can
+  be chosen as a basis.
+
+- 2026-08-02 — **The apartment class is a monomorphism, hence a nonzero class.**  Two new modules,
+  axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `TopDegreeMono.lean` — the general mechanism.  A chain complex that vanishes one degree up has no
+  boundaries there, so `topHomologyι` embeds its homology in its chains, naturally
+  (`topHomologyι_naturality`); hence `mono_homologyMap_of_mono_f`.  For a simplicial set of dimension
+  at most `n` the normalized chains vanish above `n` and are the coproduct over the nondegenerate
+  `n`-simplices, so a map injective on those — and preserving nondegeneracy — is injective on
+  normalized chains (`mono_normalizedChainComplexMap_f`, by an explicit retraction), and therefore
+  **`mono_homologyMap_of_injective_nonDegenerate`**: injective on homology in the top degree.
+
+  `ApartmentClassMono.lean` — the application.  `chain_bound_of_hasDimensionLT` inverts the corpus's
+  chain-bound criterion, so `hasDimensionLT_nerve_of_reflecting` transports a dimension bound along
+  an order-reflecting map: the apartment of a frame has the dimension of the building
+  (`apartmentHasDimensionLT`), without a separate cardinality argument.  The frame's embedding is
+  injective on chains and keeps strict chains strict, so
+
+  `mono_apartmentClass` — the apartment class `R ⟶ St_N` is a monomorphism, and
+  `apartmentClass_ne_zero` — it is nonzero whenever the coefficients are.
+
+  So the card's "its fundamental class is an apartment generator of the Steinberg module" now has its
+  first half: the class exists, is natural for the observer action, and is a nonzero — indeed
+  injective — class.  What is still missing is that such classes *generate*, which is Solomon's basis
+  theorem.
+
+- 2026-08-02 — **The Steinberg module as top cycles inside the free object on the chambers, and the
+  wedge statement packaged.**  `SteinbergCycles.lean` (plus `topHomologyIsoCycles` in
+  `TopDegreeMono.lean`), axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `steinbergIsoCycles` — the building has dimension `N - 2`, so a top homology class is exactly a
+  normalized cycle: `St_N` **is** the module of top cycles of the order complex.
+  `steinbergToChambers`, `mono_steinbergToChambers` — and it embeds in the coproduct of copies of the
+  coefficients over the complete flags (`buildingChamber`), which is the classical picture of the
+  Steinberg module as a submodule of the free module on chambers.
+  `apartmentChamberCycle`, `mono_apartmentChamberCycle` — the apartment class of a frame read in
+  those flag coordinates, still a monomorphism.
+
+  `homology_building_wedge` — one statement collecting the homological content of `(4)`: degree zero
+  is a single copy of the coefficients, every positive degree except `N - 2` vanishes, and `N - 2` is
+  a coproduct of copies of the coefficients over a nonempty index set.
+
+  `apartment_ncard_eq_one_or_two`, `apartment_ncard_ne_of_lt` — the card's hexagon: for a
+  three-vector frame every apartment vertex is a one- or two-element coordinate set, and a comparable
+  pair always has one of each.  That is the alternation "single-observer horizons <-> pairwise
+  common-horizon fields", and the loop itself is the `H_1 ≅ R` already proved.
+
+  **Duplication found.**  `CuspedHorizonHomotopy.lean` already contained `buildingZigzag`,
+  `zigzag_orderDual` and `buildingIsConnected` — the connectivity of the building — when
+  `BuildingConnected.lean` was written this morning, so that module re-proves it in the
+  non-dual presentation.  Both are green and both are used; the overlap is recorded here rather than
+  removed, because the two presentations are consumed by different downstream files.  The lesson is
+  the standing one: grep the object's name across the tree before proving a connectivity or zigzag
+  lemma.
+
+- 2026-08-02 — **The combinatorial skeleton of the Coxeter sphere: top chains are orderings of the
+  frame.**  `ApartmentChains.lean`, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `strictMono_add_le` and its two corollaries — a strictly monotone family of naturals on `Fin (m+1)`
+  grows by at least one per step, in both directions from any index.  With them,
+  `apartment_chain_ncard`: **along a top chain of a Boolean apartment the `i`-th vertex has exactly
+  `i + 1` frame vectors** — the sizes are squeezed between `1` and `N - 1` with no room to spare.
+
+  `initialSegSet`, `chainOfOrdering`, `chainOfOrdering_strictMono`,
+  `chainOfOrdering_nonDegenerate` — every ordering of the frame gives a top simplex of the apartment,
+  the chain of its initial segments; and `chainOfOrdering_injective` — distinct orderings give
+  distinct chains, because an ordering is read off its chain one vector at a time
+  (`initialSegSet_succ`, `notMem_initialSegSet_succ`).
+
+  This is infrastructure, not a card claim: it is the indexing an *explicit* fundamental cycle of the
+  Coxeter sphere needs, and an explicit cycle is what a proof of Solomon's basis theorem would have to
+  push through the Mayer--Vietoris connecting map (`ShortComplex.ShortExact.δ_eq'` is the categorical
+  form of the lift-and-chase that such a computation uses).  The remaining steps are surjectivity of
+  `chainOfOrdering` onto top chains, the signed sum over orderings, and its cycle property.
+
+- 2026-08-02 — **The fundamental cycle of the Coxeter sphere, explicitly.**  `ApartmentChains.lean`
+  extended, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `image_swap_Iic`, `initialSegSet_swap`, `chainOfOrdering_swap_eq`, `chainOfOrdering_swap_ne` — an
+  initial segment is unchanged by a transposition of two vectors both inside or both outside it, so
+  swapping two *adjacent* vectors of an ordering changes its chain at exactly one index.  That is the
+  thinness of the Coxeter complex, in the only form the boundary computation needs.
+
+  `apartmentChainSimplex`, `delta_apartmentChainSimplex_swap` — the top simplex of an ordering and
+  the fact that an adjacent transposition leaves the corresponding face untouched.
+
+  `apartmentFundamentalChain` — the signed sum over the orderings of the frame,
+
+  ```text
+  zeta = sum over sigma in S_N of sign(sigma) * (chain of sigma),
+  ```
+
+  and **`apartmentFundamentalChain_comp_d`: its boundary is zero.**  The proof is the involution
+  `sigma ↦ sigma ∘ (adjacent transposition)` on ordering-face pairs: the two terms carry the same
+  face and opposite signs, so `Finset.sum_involution` cancels them.  `apartmentFundamentalCycle`
+  packages it as a map into the cycles of the normalized chains.
+
+  This is the first *explicit* class in this line of work: everything before it went through
+  `Classical.choice` on an existence statement.  What remains for Solomon's basis theorem is to show
+  this cycle generates the top homology of the apartment — the missing step is a coefficient
+  functional, available because an apartment has finitely many chambers, so its top chain object is a
+  biproduct and has projections.
+
+- 2026-08-02 — **The fundamental class of the Coxeter sphere is an explicit split monomorphism.**
+  `ApartmentChains.lean` extended, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `chamberCoefficient`, `ι_chamberCoefficient` — the coefficient of a normalized chain at one
+  chamber, as a map out of the coproduct over nondegenerate simplices; no finiteness is needed,
+  because a map *out* of a coproduct is given chamber by chamber.
+  `apartmentChamber`, `apartmentChamber_injective` — distinct orderings give distinct chambers.
+  **`apartmentFundamentalChain_coefficient`** — the fundamental chain has coefficient `sign(sigma)`
+  at the chamber of `sigma`, hence `isSplitMono_apartmentFundamentalChain`: the coefficient at any one
+  chamber retracts it.
+
+  `apartmentHasDimensionLT_of_card` — the apartment of an `N`-vector frame has dimension below
+  `N - 1`, proved intrinsically from the vertex sizes rather than through a basis of a vector space.
+  With it, **`apartmentFundamentalClass`** — the explicit class in the top homology of the apartment
+  — and **`isSplitMono_apartmentFundamentalClass`**: it is a split monomorphism.
+
+  So the Coxeter sphere now has a *constructed* fundamental class, not merely an abstract
+  isomorphism to the coefficients: `R` is a direct summand of the apartment's top homology, cut out
+  by the signed sum over orderings.  Proving that it is the *whole* of that homology needs the
+  converse direction — that a top cycle is determined by one coefficient — which is thinness in the
+  "exactly two chambers per face" form together with the connectivity of the chamber graph
+  (adjacent transpositions generate the symmetric group).  That is the next brick, and after it
+  Solomon's basis theorem needs the same class transported into the building.
+
+- 2026-08-02 — **Chambers of an apartment are exactly the orderings of the frame, and a chain is
+  determined by its coefficients.**  `ApartmentChains.lean` extended, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `finite_nerve_simplices` — the simplices of the nerve of a finite poset are finite, because a
+  simplex is determined by its vertices.  With it, `chamberCoefficient_total`: the coefficients at
+  the chambers sum to the identity — the biproduct total identity, proved without any biproduct API
+  — and **`eq_zero_of_chamberCoefficient`**: a normalized chain all of whose chamber coefficients
+  vanish is zero.  That is the converse direction the generation argument needs.
+
+  `prevSet`, `chainNewElt`, `chainLastElt`, `chainOrdering` — from a top chain, the ordering it
+  determines: the vector acquired at each step, and the one left over at the top.
+  **`exists_ordering_chainOfOrdering`** — every top chain of a Boolean apartment is the chain of
+  initial segments of an ordering, proved by comparing cardinalities rather than reconstructing the
+  chain step by step.  With `chainOfOrdering_injective` this gives **`apartmentChamberEquiv`**: the
+  chambers of an apartment are in bijection with the orderings of its frame.
+
+  Remaining for Solomon's basis theorem: thinness in the "exactly two chambers per face" form, and
+  then the assembly — coefficients of a cycle are equal up to sign along adjacent transpositions, and
+  those generate the symmetric group (`Equiv.Perm.mclosure_swap_castSucc_succ`, already in mathlib),
+  so a cycle with one vanishing coefficient vanishes.  Every other ingredient is now in place.
+
+- 2026-08-02 — **Thinness of the Coxeter complex: exactly two chambers per face.**
+  `ApartmentChains.lean` extended, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `eq_or_swap_of_agree_off_two` — a general fact with no simplicial content: **two bijections that
+  agree outside a two-element set are equal or differ by the transposition of that set.**  The proof
+  is that the images of the exceptional pair are forced to be the same pair, by injectivity and
+  surjectivity of both maps.
+
+  `initialSegSet_zero`, `ordering_eq_zero_of_seg`, `ordering_eq_succ_of_segs` — an ordering is read
+  off its initial segments one vector at a time; the earlier injectivity proof is refactored onto
+  them.  With the general fact this gives **`eq_or_swap_of_chainOfOrdering_agree`**: if the chains of
+  two orderings agree at every index but one, the orderings are equal or differ by the transposition
+  at that place.
+
+  `ncard_chainOfOrdering`, **`face_index_eq`** — the vertex sizes along a chain determine where a
+  face was taken, so two faces of chambers agree only if they are faces at the same place.
+
+  Together these are thinness in the exact form the generation argument needs: a face of a chamber
+  lies in that chamber and in exactly one other, obtained by the adjacent transposition.  What is
+  left is the assembly: expand the boundary in chamber coordinates, read off that a cycle's
+  coefficients agree up to sign across adjacent transpositions, and conclude with
+  `Equiv.Perm.mclosure_swap_castSucc_succ` and `eq_zero_of_chamberCoefficient` that
+  `apartmentFundamentalClass` is an isomorphism.
+
+- 2026-08-02 — **The boundary relation of the Coxeter sphere in chamber coordinates.**  New module
+  `ApartmentGenerator.lean`, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `faceMultiplicity`, **`comp_d_comp_chamberCoefficient`** — a normalized chain is the sum of its
+  chamber coordinates, so the value of its boundary at a face is the signed sum of its chamber
+  coefficients weighted by how often each chamber carries that face.
+  `apartmentFace`, **`faceMultiplicity_apartment`** — thinness in coordinates: that weight is
+  `(-1)^i` for the two chambers containing the face and zero for every other chamber.
+  `orderingChamberEquiv` — chambers indexed by permutations of a reference ordering.
+
+  **`cycleCoefficient_swap`** — hence for any cycle `x` of the apartment and any ordering `sigma`,
+
+  ```text
+  c(sigma * s) = -c(sigma)     for every adjacent transposition s,
+  ```
+
+  where `c` is the coefficient of `x` at the chamber of `sigma`.  This is the boundary relation of
+  the sphere read in the coordinates the fundamental cycle is written in, and it is the last piece of
+  geometry the generation argument needs.
+
+  What is left is a word induction: adjacent transpositions generate the symmetric group
+  (`Equiv.Perm.mclosure_swap_castSucc_succ`), so `c(sigma) = sign(sigma) * c(1)`; a cycle with
+  `c(1) = 0` then has all coefficients zero and vanishes by `eq_zero_of_chamberCoefficient`; and the
+  fundamental cycle has `c(1) = 1`, so it is an isomorphism onto the cycles — the top homology of the
+  apartment.
+
+- 2026-08-02 — **The fundamental class of the Coxeter sphere generates: the apartment's top homology
+  is one copy of the coefficients on an explicit cycle.**  `ApartmentGenerator.lean` completed,
+  axioms `[propext, Classical.choice, Quot.sound]`:
+
+  **`cycleCoefficient_eq_sign_smul`** — the coefficients of any cycle of an apartment satisfy
+  `c(sigma) = sign(sigma) * c(1)`.  Adjacent transpositions flip the sign by the boundary relation,
+  and they generate the symmetric group (`Equiv.Perm.mclosure_swap_castSucc_succ`), so a list
+  induction over words in them settles every ordering at once.
+  **`cycle_eq_zero_of_cycleCoefficient`** — hence a cycle whose coefficient at one chamber vanishes
+  is zero.
+  **`isIso_apartmentFundamentalCycle`** — with the retraction already available this makes the
+  fundamental cycle an *isomorphism* onto the cycles: `1 - p ∘ zeta` is a cycle killed by the
+  coefficient at the reference chamber, so it vanishes.
+  **`isIso_apartmentFundamentalClass`**, **`apartmentHomologyIso`** — and therefore
+
+  ```text
+  R  ≅  H_(N-2)(apartment),      generated by  sum over sigma of sign(sigma) * (chain of sigma).
+  ```
+
+  This closes the apartment half of the card's "its fundamental class is an apartment generator of
+  the Steinberg module".  The class is now *constructed*, not chosen: `apartmentIso` was
+  `Classical.choice` on an existence proof, while `apartmentHomologyIso` is the explicit signed sum
+  over orderings of the frame, and the two agree up to the sign of a reference ordering.
+
+  What remains of Solomon's basis theorem is the building half: that the apartment classes, one for
+  each frame, *span* the Steinberg module.  The apartment side is now complete and explicit, and
+  `mono_apartmentClass` already gives that each class injects.
+
+- 2026-08-02 — **The apartment class of a frame, explicitly.**  `ApartmentGenerator.lean` extended,
+  axioms `[propext, Classical.choice, Quot.sound]`:
+
+  **`apartmentClassOf`** — the fundamental class of a frame's Coxeter sphere, now a *constructed*
+  cycle rather than a chosen isomorphism, pushed into the building along the frame's order
+  embedding; and **`mono_apartmentClassOf`** — it is a monomorphism, so the Steinberg module contains
+  the class of an explicitly written cycle for every observer frame.
+
+  Two notes for whoever continues.  First, the equivariance of the explicit class under the observer
+  group is *not* included: the proof of the chosen-class version transfers verbatim except for one
+  rewrite, which fails on the `nerve P` versus `nerveFunctor.obj (Cat.of P)` mismatch —
+  `apartmentFundamentalClass` is stated in the first form and `apartmentNerveMap` in the second, so
+  `SSet.homologyMap_comp` will not match.  Restating `apartmentFundamentalClass` in the functor form
+  is the fix.  Second, the remaining mathematics of Solomon's basis theorem is now exactly:
+  the apartment classes span.  The classical proof of that is a shelling induction on gallery
+  distance, which is elementwise and does not transfer to an arbitrary abelian category; the route
+  that does is to show the Mayer--Vietoris descent carries apartment classes to apartment classes one
+  rank down, for which `ShortComplex.ShortExact.δ_eq'` is the categorical lift-and-chase and the
+  explicit cycle built here is the object to lift.
+
+- 2026-08-02 — **Equivariance of the explicit apartment class, and the star splitting.**  Axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  The mismatch flagged in the previous entry is fixed: `apartmentFundamentalClass` is now stated with
+  `nerveFunctor.obj (Cat.of ...)` rather than `nerve ...`, which is what every map out of it is
+  typed with, so `SSet.homologyMap_comp` matches.  With `homologyMap_apartmentNerveMap_comp` this
+  gives **`apartmentClassOf_comp_homologyMap`**: the observer group permutes the *explicit* apartment
+  classes, exactly as it permutes the chosen ones.  The lesson is worth stating plainly: in this
+  corpus a statement should be phrased in the form its consumers use, since `nerve P` and
+  `nerveFunctor.obj (Cat.of P)` are definitionally equal but not interchangeable for `rw`.
+
+  **`chainOfOrdering_eq_singleton_iff`** — a chamber of an apartment contains the line of a frame
+  vector exactly when its ordering starts with that vector.  This is the splitting of an apartment's
+  chambers into those inside the star of a vertex and those outside it, which is the first step of
+  the descent computation: to push an apartment class through the Mayer--Vietoris connecting map one
+  splits its signed sum along exactly this criterion, lifts the two halves to the base and the star,
+  and reads off the image in the intersections.

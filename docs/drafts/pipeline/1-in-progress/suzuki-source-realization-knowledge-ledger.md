@@ -12,7 +12,16 @@
   first-defect/parity cone with persistent ground leakage; `SR-56` forces every interior survivor
   through a high-ratio stationary mean/variance wall; `SR-57` proves literal position torque is a
   globally irreducible prime-clock carrier, while also recording that torque alone cannot orient
-  parity. The pole-compatible two-angle
+  parity; `SR-58` proves actual parity blocks differ by infinite rank, killing transfer of
+  rank-one extension interlacing to parity spectra; `SR-59` sharpens the same literal difference
+  to infinite negative index with positive index at most one on finite Gram packets, killing every
+  finite-index Pontryagin transfer on the regular corner; `SR-60` shows the first visible prime
+  seam makes the full cofinal parity difference infinite-index in both signs, killing the remaining
+  one-sided min--max survivor. `SR-61` resolves Suzuki's safe-shift two-jet minor as nonnegative
+  cross-orbit response dispersion minus a nonnegative transverse charge whose zero radical is
+  exactly RH. `SR-62` proves the dispersion is strictly positive, damps the complete shifted charge
+  below `116/7,968,750,000`, and isolates that same rational value as a sufficient missing
+  dispersion floor; it does not prove the floor or required domination. The pole-compatible two-angle
   meromorphic Livšic/Hermite--Biehler producer remains Suzuki and is exact live Route-G core;
   source admission into that cone is unproved.
 - **Read first:** this file, `suzuki-terminal-frontier-ledger.md`, and every cited failed card.
@@ -103,6 +112,11 @@ they are not novel scientific knowledge.
 | `SR-55` | `ADVANCE` / `FORMAL-CLOSURE` | For the exact normalized Xi Donoghue/Livšic target, multiplicity-exact squared-zero moments plus the unconditional first-zero-height gap and critical strip prove `77/85<κ_Xi<1`, with `2i Theta_Xi'(i)=κ_Xi` real. Any Xi-identifying Suzuki source therefore has even share `>81/85`, odd share in `(0,4/85)`, and—under the exact ground-pole bound—eventual leakage `>(1-κ_Xi)/4>0`. Locally uniform convergence of the actual disk-conjugated Suzuki quotients forces their source defect angles to tend to `κ_Xi`; higher-order-only survival, free collapse, and ground saturation cannot identify Xi. | This is an unconditional target obstruction with exact source-convergence and leakage connectors, not source admission. Updated superselection paper forbids treating a fitted target interface as source provenance. Live task is a source-only cofinal schedule entering this strict cone and matching the full target, or proof actual source dynamics cannot do so. Exact source-specific synthesis is candidate novel; external priority unverified. | `2-fully-proven/new_scientific_knowledge/suzuki/suzuki-xi-first-defect-jet-gap.md`; `SuzukiXiFirstDefectJet.lean`; `SuzukiXiFirstDefectJetSource.lean` |
 | `SR-56` | `ADVANCE` / `FORMAL-CLOSURE` | If a literal Suzuki parity-resolvent path has both selected endpoints below the Xi wall and rises above it inside, an interior maximizer has `E/O>R_Xi>81/4`, equal even/odd tilted inverse-gap means, and even tilted inverse-gap variance no larger than odd variance. Exactly, `κ''=4EO/(E+O)^2(Var_+-Var_-)≤0` at the same credit/debt balance point. | This is a forced obstruction on any interior source admission, not proof that the literal restricted-Weil parity measures attain such an excursion. Generic cumulant calculus is classical; candidate novelty is the same-point Suzuki/Xi incidence. | `2-fully-proven/new_scientific_knowledge/suzuki/suzuki-parity-resolvent-transport-budget.md`; `SuzukiInteriorExcursionSpectralTurningPoint.lean` |
 | `SR-57` | `ADVANCE` / `FORMAL-CLOSURE` | Suzuki's exact prime position-torque numerator is the half-shifted log-weighted filtered von Mangoldt source `F_T(n)=Λ(n)log(n)[sqrt(n)-n^(-3/2)]`. It is supported on positive prime powers and nonzero at every prime on every valuation depth. Exact source--analytic correspondence therefore makes its upper-end carrier hypertranscendental over every complete local-Euler residue--valuation fusion field. | Authenticates literal torque as irreducibly global source data; does not prove parity credit/debt, second-jet Hankel positivity, cofinal shift selection, two-angle meromorphic convergence, or RH. Fixed torque remains class-completely insufficient away from parity balance. | `2-fully-proven/new_scientific_knowledge/suzuki/suzuki-position-torque-prime-clock-irreducibility.md`; `SuzukiPositionTorquePrimeClockIrreducibility.lean` |
+| `SR-58` | `ADVANCE` / `FAILED-CLASS` / `FORMAL-CLOSURE` | On every aperture, a prime-free positive corner of the literal parity Hankel form has kernel `h(x+y)`, `h(z)=exp(z/2)-exp(-5z/2)/(1-exp(-2z))`. Distinct nonnegative translates of `h` are linearly independent on every nonempty positive interval, so this kernel has infinite separation and operator rank. Hence `Q_even-Q_odd=2H_a` is never rank one or finite rank. | Kills only transfer of deficiency-one boundary-extension interlacing to literal parity blocks through finite-rank perturbation. Accidental interlacing, infinite-rank comparison, total positivity, parity transport, and two-angle meromorphic convergence remain live. Generic finite-rank Hankel ancestry is classical; candidate novelty is exact Suzuki application. | `2-fully-proven/new_scientific_knowledge/suzuki/suzuki-parity-hankel-infinite-rank-no-go.md`; `SuzukiArchimedeanParityHankelInfiniteRank.lean` |
+| `SR-59` | `ADVANCE` / `FAILED-CLASS` / `FORMAL-CLOSURE` | The same regular kernel has exact signed Gram expansion `h(x+y)=p(x)p(y)-sum_(k>=0)q_k(x)q_k(y)` with `p(x)=exp(x/2)` and `q_k(x)=exp(-(5/2+2k)x)`. Distinct nodes give an invertible negative-moment Vandermonde packet. The kernel of the single positive moment has arbitrarily large dimension and is strictly negative, while every strictly positive Gram subspace has dimension at most one. Localization gives `ind_-(H_a)=ind_-(Q_even-Q_odd)=infinity` at every aperture. | Kills finite-negative-square and finite-index Pontryagin transfers of boundary-angle interlacing to literal parity blocks. It does not kill infinite-index comparison, source-derived total positivity after another transform, direct parity credit/debt transport, or the two-angle meromorphic producer. Generic indefinite-kernel/Hankel inertia theory is classical; candidate novelty is the exact Suzuki prime-free signature. | `2-fully-proven/new_scientific_knowledge/suzuki/suzuki-parity-hankel-infinite-negative-index.md`; `SuzukiArchimedeanParityHankelInfiniteNegativeIndex.lean` |
+| `SR-60` | `ADVANCE` / `FAILED-CLASS` / `FORMAL-CLOSURE` | For every `a>log(2)/2`, the first-prime atom `-(log 2)/sqrt 2 delta_(x+y-log 2)` is an interior weighted reflection. Arbitrarily many disjoint narrow reflected-even bump pairs give strictly negative directions and reflected-odd pairs give strictly positive directions; the regular-kernel error vanishes with width and all other seams can be avoided. Hence the full literal parity difference has both positive and negative index infinite cofinally. | Kills the positive-index-one/global one-sided min--max survivor suggested by `SR-59`, and every finite-index comparison in either orientation. It does not exclude arithmetic infinite-seam oscillation/variation-diminishing laws, direct credit/debt transport, source transforms, or the two-angle meromorphic producer. Generic delta-Hankel reflection theory is classical; candidate novelty is the exact first-prime Suzuki consequence. | `2-fully-proven/new_scientific_knowledge/suzuki/suzuki-prime-seam-parity-hankel-strong-indefiniteness.md`; `SuzukiPrimeSeamParityHankelStrongIndefiniteness.lean` |
+| `SR-61` | `TARGET-CLASSIFICATION` / `FORMAL-CLOSURE` | For every positive safe squared shift, the complete multiplicity-exact first reciprocal-moment minor is `H_y-Q_y`: `H_y` is a nonnegative weighted response-slope Hilbert dispersion, `Q_y` is a nonnegative transverse charge, and `Q_y=0` exactly iff RH. At Suzuki's `y=1` prime--Gamma source specialization, the two-jet wall is exactly `Q_1<=H_1`. A singleton off-line atom has strictly negative minor `-Im(lambda)^2|lambda|^2`, so atomwise sector positivity cannot prove the gate. | This is candidate new target classification, not a source-admission advance under this ledger's rule. It exposes the only cancellation mechanism and turns the opaque two-jet wall into one exact source inequality. It proves neither `Q_1<=H_1` nor its failure, source-selected cofinal shifts, common-gauge normality, Xi/Hermite--Biehler identification, or RH. | `3-formalized/new_scientific_knowledge/suzuki-safe-shift-response-charge-cancellation.md`; `SuzukiSafeShiftResponseChargeCancellation.lean` |
+| `SR-62` | `TARGET-QUANTIFICATION` / `FORMAL-CLOSURE` | Safe shifting strictly decreases every response mass and damps each transverse density by `4/85` relative to central orientation. Hence `Q_1<116/7,968,750,000`. Independently, shifted slopes vanish cofinally but remain positive, so infinite Xi support gives the exact centered-energy law `H_y=Re M_0(y) sum a_q(tau_q-bar_tau_y)^2>0`. | This is candidate new quantitative target knowledge, not source admission. It replaces two unscaled nonnegative terms by strict positive dispersion and an explicit charge ceiling. The sufficient floor `116/7,968,750,000<=H_1` remains unproved; qualitative `H_1>0` cannot substitute for it. Cofinal selection, normality, Xi/Hermite--Biehler identification, and RH remain open. | `3-formalized/new_scientific_knowledge/suzuki-safe-shift-transverse-charge-budget.md`; `SuzukiSafeShiftTransverseChargeBudget.lean` |
 
 ## Level lift forced by `SR-35`--`SR-49`: cyclic mechanism retired, `SR-41` terminalized
 
@@ -590,3 +604,37 @@ Before claiming progress, record all answers:
   carrier is therefore hypertranscendental over every complete local-Euler residue--valuation
   fusion. Paper and unconditional Lean are closed. This eliminates local-Euler/post-fusion
   provenance theatre but not torque's class-complete parity-information deficit.
+- **2026-08-01 — parity finite-rank interlacing closure (`SR-58`).** Every aperture contains a
+  prime-free corner where the literal parity difference is the explicit archimedean Hankel kernel.
+  Its distinct translates are independent on every positive interval, so the corner and full
+  parity difference have infinite rank. This closes every rank-one/finite-rank transfer of
+  boundary-angle interlacing to literal parity spectra. Direct translate/pole proof and analytic
+  Lean are closed; genuinely infinite-rank arithmetic comparison remains live.
+- **2026-08-01 — parity infinite-index classification (`SR-59`).** Geometric expansion of the
+  exact prime-free profile is one positive exponential square minus the full odd half-integer
+  exponential tower. Finite negative moments are Vandermonde independent, giving negative
+  subspaces of arbitrary dimension; every strictly positive Gram subspace has dimension at most
+  one. Localization makes the literal parity difference infinite negative index at every aperture.
+  This closes finite-negative-square and finite-index Pontryagin transfer, with paper proof and
+  unconditional finite-Gram Lean. Infinite-index comparison and two-angle meromorphic Suzuki
+  remain live.
+- **2026-08-01 — first-prime seam strong indefiniteness (`SR-60`).** The positive-index-one
+  regular-corner survivor does not globalize. Once `a>log(2)/2`, the negative first-prime Hankel
+  atom is an interior reflection swap. Narrow reflected-even and reflected-odd bump packets retain
+  opposite signs against the bounded regular kernel in arbitrary dimension, so the full cofinal
+  parity difference has infinite positive and negative index. Robust swap-packet Lean and paper
+  localization proof are closed. Only genuinely arithmetic infinite-seam comparison, direct
+  credit/debt transport, a source transform, or the two-angle meromorphic carrier remains.
+- **2026-08-01 — safe-shift response/charge cancellation (`SR-61`).** The first nonlinear
+  Suzuki/Xi wall is now exactly `H_1-Q_1`: complete shifted Hilbert response dispersion minus
+  complete transverse charge. Both terms are nonnegative, the charge radical is exactly RH, and
+  every singleton off-line orbit has a strictly negative minor. Complete-divisor summability,
+  infinite Cauchy--Schwarz, the prime--Gamma specialization, and unconditional Lean are closed.
+  This is target classification, not source admission: proving or refuting `Q_1<=H_1` from the
+  literal source remains open, as do cofinal selection, normality, and Xi identification.
+- **2026-08-01 — safe-shift charge budget and strict dispersion (`SR-62`).** Exact node-resolvent
+  algebra proves safe shifting decreases every response mass and bounds each transverse density by
+  `4/85` of central orientation. Complete summation and cubic endpoint estimates give
+  `Q_1<116/7,968,750,000`. Cofinite slope decay plus infinite Xi support upgrades `H_y>=0` to the
+  exact centered-energy law `H_y>0`. Unconditional Lean is closed. The rational dispersion floor
+  sufficient for strict wall passage remains the live quantitative gate.

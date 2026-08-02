@@ -1513,14 +1513,27 @@ nonzero at every prime on every valuation depth, so its meromorphic carrier rema
 hypertranscendental over complete local-Euler residue--valuation fusion.  The literal
 commutator is therefore faithful global source data, although its one scalar coordinate does not
 orient the parity gate. & Admission\\
+Suzuki parity-block inertia & Every aperture contains a prime-free corner where
+$Q_{\rm even}-Q_{\rm odd}=2H_a$ has the smooth Hankel kernel
+$2\{\exp((x+y)/2)-\exp(-5(x+y)/2)/(1-\exp(-2(x+y)))\}$.
+Its distinct translates are linearly independent on every positive interval, so the parity
+difference has infinite rank.  More sharply, its finite Gram forms have negative index
+unbounded and positive index at most one.  Once the first prime seam is visible, the full
+difference has infinite index in both signs.  Boundary-angle finite-rank or finite-index
+interlacing is not parity interlacing. &
+Separation\\
 Suzuki parity two-jet source & The anchored finite-aperture Schur carrier forces
 the exact mixed-ground selector
 $(1+\kappa_\Xi)m_O<(1-\kappa_\Xi)m_E$, equivalently a sharp reflection-fidelity
 cone for the bottom-projected exponential source; a finite interior resolvent excursion supplies
 the complementary selector branch.  The second jet forces
 $O(E+\alpha)-E\beta\geq0$.  At the Xi target the latter's normalized slack is exactly the
-safe-shift reciprocal-moment minor.  Generic positive parity-resolvent geometry cannot supply
-source selection or force the target transfer. & Admission\\
+safe-shift reciprocal-moment minor, now resolved as nonnegative cross-orbit Hilbert dispersion
+minus a nonnegative transverse charge whose zero radical is exactly RH.  The dispersion is
+strictly positive, while the complete charge is below
+$116/7{,}968{,}750{,}000$; its missing source floor remains unproved.  Generic positive
+parity-resolvent geometry cannot supply source selection, prove charge domination, or force the
+target transfer. & Admission\\
 Recurrence completion & Relation rank plus completed temporal dimension equals projective
 capacity; the exact relation lattice is the kernel of the detuning map. & Exact sequence\\
 \bottomrule
@@ -1547,7 +1560,70 @@ the genuine completion theorem from that source-provenance gap without changing 
 
 Before this compact-core erasure, Suzuki's anchored finite-aperture carrier
 \cite{Suzuki2026} exposes positive pre-scalar laws that are not covered by the regular
-unit-response/finite-Rees/post-fusion no-go.  First, simplicity and pure parity of the spectral
+unit-response/finite-Rees/post-fusion no-go.  One tempting transfer is nevertheless impossible.
+Parity reduction gives
+\[
+ Q_{\rm even}=T_a+H_a,\qquad Q_{\rm odd}=T_a-H_a.
+\]
+Every aperture contains a corner \((0,b)^2\) with \(2b<\log2\), hence with no prime-power Hankel
+atom.  On that corner the difference has the regular kernel
+\[
+ 2h(x+y),\qquad
+ h(z)=e^{z/2}-\frac{e^{-5z/2}}{1-e^{-2z}}.
+\]
+Distinct nonnegative translates of \(h\) are linearly independent on every nonempty positive
+interval.  Indeed, clear the denominators in a finite translate relation; the result is entire,
+so interval vanishing is global, and evaluation at each distinct pole \(z=-y_j\) leaves exactly
+one nonzero product times the corresponding coefficient.  Thus \(H_a\), and therefore
+\(Q_{\rm even}-Q_{\rm odd}\), has infinite rank at every aperture.  Donoghue interlacing for two
+self-adjoint boundary extensions cannot be imported by treating the literal parity restrictions
+as rank-one or finite-rank perturbations.  This does not exclude accidental or genuinely
+infinite-rank arithmetic parity interlacing.
+
+The same corner has a sharper inertia law.  For \(x,y>0\), geometric expansion gives
+\[
+ h(x+y)=p(x)p(y)-\sum_{k\geq0}q_k(x)q_k(y),\qquad
+ p(x)=e^{x/2},\quad q_k(x)=e^{-(5/2+2k)x}.                 \tag{7.1a}
+\]
+Consequently, at distinct positive nodes \(x_0,\ldots,x_m\),
+\[
+ \sum_{i,j}c_ic_jh(x_i+x_j)
+ =\left|\sum_i c_ip(x_i)\right|^2
+  -\sum_{k\geq0}\left|\sum_i c_iq_k(x_i)\right|^2.        \tag{7.1b}
+\]
+The first \(m+1\) negative moments factor as a nonzero diagonal times the Vandermonde matrix on
+\(r_j=e^{-2x_j}\).  On the kernel of the single positive moment, which has dimension at least
+\(m\), every nonzero vector therefore makes \((7.1b)\) strictly negative.  Conversely that
+positive moment is injective on every strictly positive subspace, so such a subspace has
+dimension at most one.  Localization by disjoint bumps transfers the finite Gram witnesses to
+the integral form.  Thus \(H_a\) and \(Q_{\rm even}-Q_{\rm odd}\) have infinite negative index
+at every aperture.  General Hankel sign and inertia theory is classical
+\cite{Yafaev2013}; the claim here is only the exact Suzuki prime-free specialization.  It excludes
+finite-negative-square and finite-index Pontryagin transfers, but still does not exclude a
+genuinely infinite-index arithmetic comparison or the two-angle meromorphic producer.
+
+The positive-index-one bound in \((7.1b)\) is local to the prime-free regular corner.  The full
+kernel contains the arithmetic atoms
+\[
+ -\Lambda(n)n^{-1/2}\delta(x+y-\log n).                  \tag{7.1c}
+\]
+For \(a>\frac12\log2\), the first atom is interior.  On two small intervals reflected across
+\(x+y=\log2\), it is a negative weighted swap: reflected-even bumps are negative and
+reflected-odd bumps are positive.  Subdivide one interval into arbitrarily many disjoint narrow
+cells.  The regular-kernel quadratic is bounded by the cell width times the \(L^2\)-mass, while
+the fixed atom has weight \((\log2)/\sqrt2\); other prime seams are avoided by shrinking the
+support.  Both signs therefore persist in arbitrary dimension:
+\[
+ \operatorname{ind}_{+}H_a=\operatorname{ind}_{-}H_a=\infty,\qquad
+ \operatorname{ind}_{+}(Q_{\rm even}-Q_{\rm odd})
+ =\operatorname{ind}_{-}(Q_{\rm even}-Q_{\rm odd})=\infty. \tag{7.1d}
+\]
+Positive-point singular Hankel operators and their two-sided spectra have classical theory
+\cite{Yafaev2013b}; \((7.1d)\) records only its exact first-prime Suzuki consequence.  Thus neither
+orientation of a one-sided finite-index comparison can replace the missing arithmetic parity
+transport.
+
+First, simplicity and pure parity of the spectral
 floor are unnecessary for source selection.  If $\lambda_a$ is the floor and
 \[
  (\lambda_a-\lambda)E(\lambda)\longrightarrow m_E,\qquad
@@ -1784,6 +1860,13 @@ predeclared arithmetic source, separate reflection before invariant scalarizatio
 label-sensitive or singular mechanism, and then prove either the ground cone or the exact
 credit--debt budget.
 
+The complete Boolean-shell/no-ghost theorem does not strengthen this into a cofinal no-go.
+It says every finite differential-field observable has finite shell support and that arbitrary
+shell-field intersections create no hidden infinitary source.  Locally uniform, weak, and
+normal-family limits are not finite field operations: growing finite supports can converge to a
+common-core infinite carrier.  Therefore any Suzuki obstruction based on no-ghost provenance must
+add an actual topological support theorem, such as literal local Clark overcrowding.
+
 For the second jet, let $E,O>0$ be the even and odd deficiency energies and let
 $\alpha,\beta$ be their exponential tilt moments.  If $\kappa$ and $q$ are the first two real
 disk jets, then
@@ -1807,6 +1890,84 @@ prime--Gamma reciprocal moments gives
 Thus the first nonlinear Suzuki admission gate is precisely the shifted $2\times2$ Hankel minor,
 but only because the literal source jets lead to it.  Equation (7.2h) alone would be another
 freely inhabitable target interface.
+
+The minor itself admits an exact complete-divisor resolution.  For the multiplicity-exact
+safe-shift reciprocal atoms $\lambda_q$, put
+\[
+ a_q=\Re\lambda_q,\qquad
+ \tau_q=\frac{\Re(\lambda_q^2)}{a_q},\qquad
+ \chi_q=\frac{(\Im\lambda_q)^2|\lambda_q|^2}{a_q}.
+\]
+The unconditional shifted sector gives $a_q>0$, $\tau_q>0$, and absolute summability of all
+three series below.  Direct cubic algebra followed by infinite Cauchy--Schwarz gives
+\[
+ AC-B^2=\mathcal H_\Xi-\mathcal Q_\Xi,                  \tag{7.2h1}
+\]
+where
+\[
+ \mathcal H_\Xi
+ =A\sum_q a_q\tau_q^2-\left(\sum_q a_q\tau_q\right)^2\geq0,
+ \qquad
+ \mathcal Q_\Xi=A\sum_q\chi_q\geq0.                    \tag{7.2h2}
+\]
+Moreover
+\[
+ \mathcal Q_\Xi=0\quad\Longleftrightarrow\quad
+ \Re\rho_q=\frac12\ \hbox{for every Xi divisor copy }q
+ \quad\Longleftrightarrow\quad \mathrm{RH}.             \tag{7.2h3}
+\]
+Thus Suzuki's first nonlinear target wall is exactly
+\[
+                     \mathcal Q_\Xi\leq\mathcal H_\Xi.  \tag{7.2h4}
+\]
+This is not a proof of that inequality.  It proves that every off-line atom pays positive
+transverse charge and that only cross-orbit shifted response dispersion can cancel it.  In
+particular, positivity of individual low reciprocal powers is insufficient: a singleton
+off-line packet has minor $-(\Im\lambda)^2|\lambda|^2<0$.
+
+The charge side is nevertheless quantitatively small.  Write
+$r_q=\operatorname{xiZeroCopyReciprocalSquare}(q)$ and let
+\[
+ \mu_0=\operatorname{normalizedPrimeArchMoment}(0),
+ \qquad
+ \mathcal E_\perp=\sum_q(\Im r_q)^2.
+\]
+If $N_q=r_q^{-1}$ and $N_q=(A_q-1)+iB_q$, then the endpoint height gap gives
+$A_q>85/4$.  Since $\lambda_q=(1+N_q)^{-1}$, direct inverse-coordinate algebra yields
+\[
+ \Re\lambda_q<\Re r_q,\qquad
+ \chi_q\leq\frac4{85}(\Im r_q)^2.                       \tag{7.2h5}
+\]
+Absolute summation and the exact central source identity therefore give
+\[
+ \mathcal Q_\Xi
+ \leq\frac4{85}\mu_0\mathcal E_\perp
+ \leq\frac4{85}\mu_0\,
+       \mathrm{xiThermalExactCubicEndpointBudget}
+ <\frac{116}{7\,968\,750\,000}.                         \tag{7.2h6}
+\]
+Every inequality here is unconditional and exact; the last step uses the proved rational bounds
+$\mu_0<29/625$ and $\mathcal E_\perp<1/150000$.
+
+The response channel is also genuinely nondegenerate.  For every positive shift $y$, put
+\[
+ \bar\tau_y=\frac{\Re M_1(y)}{\Re M_0(y)}.
+\]
+The positive slopes satisfy $0<\tau_q(y)\leq|\lambda_q(y)|$ and hence tend to zero off finite
+sets.  Infinite Xi divisor support makes them nonconstant.  Expanding the absolutely summable
+centered square gives
+\[
+ \mathcal H_y
+ =\Re M_0(y)\sum_q a_q\bigl(\tau_q(y)-\bar\tau_y\bigr)^2
+ >0.                                                    \tag{7.2h7}
+\]
+Thus the remaining safe-shift problem is quantitative, not qualitative: the explicit sufficient
+source floor
+\[
+ \frac{116}{7\,968\,750\,000}\leq\mathcal H_1
+\]
+would force $AC-B^2>0$.  Equation~(7.2h7) alone does not prove that floor, so it does not close
+the Suzuki producer or RH.
 
 The position commutator itself passes the exact prime-source admission test.  Its arithmetic
 numerator is the finite-abscissa profile
@@ -1921,7 +2082,8 @@ The generic matrix and Hankel identities used here are classical; the novelty cl
 to their Suzuki-specific source calibration, the exact mixed-ground residue threshold, its sharp
 bottom-projection reflection-fidelity form, the interior-excursion selector branch, its forced
 stationary mean/variance wall, the position-torque prime-clock irreducibility law, and the
-resulting operator-class boundary.  Specialist priority
+infinite-rank boundary between extension-angle and parity interlacing, and the resulting
+operator-class boundary.  Specialist priority
 review remains outstanding.
 
 The derived row makes ``transgression'' literal.  Let $E$ be an exterior algebra,
@@ -2328,6 +2490,18 @@ M.~Suzuki,
 \newblock Weil's quadratic form via the screw function,
 \newblock arXiv:2606.09096 (2026).
 \newblock \url{https://arxiv.org/abs/2606.09096}.
+
+\bibitem{Yafaev2013}
+D.~R. Yafaev,
+\newblock Criteria for Hankel operators to be sign-definite,
+\newblock \emph{Analysis and Applications} \textbf{13} (2015), 313--333.
+\newblock \url{https://arxiv.org/abs/1303.4040}.
+
+\bibitem{Yafaev2013b}
+D.~R. Yafaev,
+\newblock Diagonalizations of two classes of unbounded Hankel operators,
+\newblock \emph{Bulletin of Mathematical Sciences} \textbf{4} (2014), 175--198.
+\newblock \url{https://arxiv.org/abs/1306.3676}.
 
 \end{thebibliography}
 

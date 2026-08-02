@@ -786,3 +786,43 @@ receive a new title and an independent significance audit.
   a maximally hard endpoint by normalized time `O(2^n/poly(n))`, which the
   already compiled autonomous cone converts into the full initial linear
   growth ramp.
+- 2026-08-02 -- Closed the exact Haar-moment and abstract all-time comparison
+  layers of O6. `FiniteUnitaryHaarMeasureLaw.lean` now proves normalized Haar
+  is a probability measure, exact first moments, exact same-row and
+  distinct-row fourth moments
+  `2/(D(D+1))` and `1/(D(D+1))`, and the exact mean-square law
+  `1/(D+1)` for every balanced operator-norm-one diagonal probe. It also
+  constructs such a probe explicitly in every even dimension, including all
+  nontrivial qubit dimensions. `PermanentLocalityHaarSeparationLaw.lean`
+  combines that benchmark with the physical product-stabilizer lower bound:
+  whenever `M*3^q < D+1`, every Pauli-transfer time slice fixing the nonzero
+  local Hamiltonian coordinate has protocol signal strictly above Haar. Both
+  modules compile individually with `lake env lean`; the new separator is
+  imported by the `HTGeometry` umbrella. Remaining O6 work is the concrete
+  fixed-local Hamiltonian-to-Pauli-transfer instantiation and full same-score
+  ensemble packaging, not the moment or dimension-linear inequality. The
+  explicit balanced diagonal observable is also constructed as a unitary
+  matrix and proved to have L2 operator norm exactly one, closing the previous
+  Hilbert--Schmidt-normalization objection.
+  `SelfAdjointPauliTransferConservationLaw.lean` then removes the abstract
+  fixed-vector assumption: in every finite real basis of self-adjoint
+  observables, the exact Heisenberg transfer matrix of every nonzero
+  time-independent Hamiltonian fixes its nonzero coefficient vector at every
+  real time. Combining this with the product-stabilizer theorem gives the
+  strict all-time Haar gap directly for the basis-coordinate transfer matrix.
+  The module compiles and is imported by `HTGeometry`. Remaining O6 work is a
+  fully explicit arbitrary-qubit Pauli-basis realization tying the label
+  combinatorics to matrix expectations; O4 remains unchanged and is still the
+  master theorem gap.
+- 2026-08-02 -- Completed the literal arbitrary-qubit Pauli realization in
+  `FiniteQubitPauliBasisLaw.lean`. The module proves exact Pauli-string
+  Hilbert--Schmidt orthogonality, constructs the real basis of all Hermitian
+  matrices, defines the principal weight-`q` Pauli-transfer block, and proves
+  that every nonzero Pauli-`q`-local finite-matrix Hamiltonian supplies a
+  nonzero fixed vector of that block at every real time. Consequently its
+  local two-query sub-signal strictly exceeds the inverse-Hilbert-dimension
+  benchmark whenever `M_q 3^q < 2^n+1`. The module compiles in isolation and
+  is wired into `HTGeometry`; the final identical-protocol Haar ensemble
+  packaging remains. No new O4 endpoint machinery appeared in the concurrent
+  corpus audit: the maximally hard endpoint by time `O(2^n/poly(n))` remains
+  the unique growth bottleneck.

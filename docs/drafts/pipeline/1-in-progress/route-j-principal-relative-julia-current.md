@@ -2566,3 +2566,88 @@ docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
 formal/GaloisForLFunctions/RHTower/
   SoninSemilocalGradingGeometricProfile.lean
 ```
+
+## 40. J-SF5 first Euler orthogonalization has a sharp `p^2` boundary
+
+`[PAPER+LEAN-PROVED SOURCE-LOCAL THEOREM]`
+`[CANDIDATE SOURCE-SPECIFIC NEW SCIENTIFIC KNOWLEDGE]`
+
+The one-prime Lambert moment matrix has literal first source coefficient
+
+```text
+[q] c(2k,q)=2(-1)^k(1/2)^(2k).
+```
+
+In the archimedean orthonormal polynomial basis this is the signed rank-two tangent formed from
+
+```text
+eta_0(m)=2^(-m)sqrt((2m)!)/m!,
+eta_0(m)^2=4^(-m)binom(2m,m).
+```
+
+Its trace recovers the published normalized determinant jet
+
+```text
+Delta'_n(0)=2sqrt(2) sum_(j=0)^n alpha_j,
+alpha_j=(-4)^(-j)binom(2j,j).
+```
+
+The new theorem propagates that exact determinant tangent through the determinant quotient for
+the positive Jacobi radii and then through the four-radius critical residual `(128)`. If `J_k`
+denotes the resulting first Euler jet, then
+
+```text
+J_(n+1)/sqrt(2(n+1)) -> 4sqrt(2/pi).                   (134)
+```
+
+The proof is not based on a freely chosen linear deformation. Lean proves that every genuine
+normalized matrix path with the literal source tangent has the same determinant derivative, and
+that every determinant family with those jets has the same critical-residual derivative,
+independently of all higher Euler coefficients.
+
+The exact factorization is
+
+```text
+J_k=sqrt(2)c_(2k)B_(2k),                               (135)
+c_m=4^(-m)binom(2m,m),
+B_m/m -> (-1)+(-1)+6=4.                                (136)
+```
+
+Wallis' law `sqrt(m)c_m->1/sqrt(pi)` gives `(134)`. Thus the first Euler correction is order one
+when
+
+```text
+q sqrt(n) asymp 1,
+n asymp p^2 for q=p^(-1).                              (137)
+```
+
+This is a sharp first-jet boundary law, not a claim about uniformity of the full `q`-series. The
+`q^2` and higher critical coefficients remain live and must now be determined.
+
+The latest complete shell-field theorem in
+
+```text
+../4-publication-ready/source-horizon-riemann-divisor/main.tex
+```
+
+adds a second non-negotiable constraint. Arbitrary nonempty field meets and joins reproduce source
+intersections and unions exactly, every ordinary field observable has finite shell support, and no
+infinitary ghost is created by differential-field completion. Therefore adjoining all fixed-prime
+boundary germs cannot construct the global J-SF5 current. A successful global object must be a
+genuine pro-limit, relation-valued carrier, or topology singular relative to the direct-sum local
+norm. This narrows the survivor but does not close it.
+
+Dependency-closed certificate:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+  route-j-semilocal-prolate-first-euler-critical-boundary.md
+
+formal/GaloisForLFunctions/RHTower/
+  SemilocalProlateFirstEulerCriticalJet.lean
+```
+
+Remaining hard theorem: derive the exact higher-Euler critical-residual growth, decide whether
+all orders share and resum on `(137)`, propagate the boundary layer through finite-prime
+orthogonalization, and realize or eliminate the resulting infinite-label singular carrier through
+the Sonin corner.

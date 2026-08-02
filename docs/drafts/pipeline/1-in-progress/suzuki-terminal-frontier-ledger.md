@@ -265,6 +265,53 @@ quotient, in which common gauges cancel and poles remain; that survivor is the l
     admission. Per the updated superselection paper, fitting `κ_Xi` from target data would be
     source-provenance theatre. Live arrow is source-only construction of a cofinal schedule in the
     strict cone with full Xi identification, or a proof actual source dynamics cannot remain there.
+30. **The safe-shift two-jet wall is response dispersion minus RH-exact transverse charge.**
+    For every positive squared shift, write the complete shifted reciprocal-square atom as
+    `lambda_q`, its positive response mass as `a_q=Re(lambda_q)`, its longitudinal slope as
+    `tau_q=Re(lambda_q^2)/a_q`, and its transverse density as
+    `chi_q=Im(lambda_q)^2|lambda_q|^2/a_q`. Then
+
+    ```text
+    Re(lambda_q^3)=a_q tau_q^2-chi_q,
+    A C-B^2=H_y-Q_y,
+    H_y>=0, Q_y>=0, Q_y=0 iff RH.
+    ```
+
+    Complete-divisor summability makes this an infinite identity, not a finite-packet heuristic.
+    At Suzuki's safe shift `y=1`, the prime--Gamma source minor is nonnegative exactly when
+    `Q_1<=H_1`. Every singleton off-line atom instead contributes the strictly negative minor
+    `-Im(lambda)^2|lambda|^2`; only cross-orbit response dispersion can pay transverse charge.
+
+    `SuzukiSafeShiftResponseChargeCancellation.lean` formalizes the classification
+    unconditionally. It does not prove either direction of the source inequality. Live hard gate
+    is now literal-source proof or refutation of `Q_1<=H_1`, followed by source-selected cofinal
+    normality and Xi/Hermite--Biehler identification.
+31. **Safe shifting damps charge explicitly, while infinite support makes dispersion strict.**
+    For `r_q=xiZeroCopyReciprocalSquare(q)`, exact safe-node algebra proves
+
+    ```text
+    safe response mass(q) < Re(r_q),
+    chi_q <= (4/85) Im(r_q)^2.
+    ```
+
+    Hence the complete safe-shift charge satisfies
+
+    ```text
+    Q_1 <= (4/85) normalizedPrimeArchMoment(0)
+                 xiThermalOrientationEnergy
+        < 116/7,968,750,000.
+    ```
+
+    At every positive shift, response slopes are positive but tend to zero cofinally. Infinite Xi
+    support therefore forces nonconstant slope, and
+
+    ```text
+    H_y=Re M_0(y) sum_q a_q(tau_q-bar_tau_y)^2>0.
+    ```
+
+    The wall is now a quantitative floor problem: the explicit sufficient source inequality
+    `116/7,968,750,000<=H_1` would force strict passage. It is not proved by `H_1>0`.
+    `SuzukiSafeShiftTransverseChargeBudget.lean` formalizes all unconditional statements.
 
 ## Provider/source-sign edge — live but not the whole Route-G terminal class
 
@@ -534,3 +581,9 @@ Before each new action, answer in this file's log:
   Livšic theorems contain ingredients but not this exact ratio/source consequence; falsifier was
   an atom violating `85 Re(r²)<4 Re(r)`, which unconditional zero geometry excludes. This is a
   source necessity law, not RH or source admission.
+- **2026-08-01 safe-shift quantitative wall advance.** Safe node inversion damps each transverse
+  density by `4/85` and decreases response mass. Complete source bounds give
+  `Q_1<116/7,968,750,000`. Cofinite slope decay and infinite Xi support give the exact strict
+  centered-energy law `H_y>0`. The live two-jet question is now the explicit dispersion floor at
+  that rational scale; strict positivity alone is insufficient. Paper and unconditional Lean are
+  closed.
