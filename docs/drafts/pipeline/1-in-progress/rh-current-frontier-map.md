@@ -5246,3 +5246,38 @@ Paper and Lean:
 
 SemilocalProlateSecondEulerCriticalJet.lean
 ```
+
+## 2026-08-02 Route J frontier update: third Euler atom breaks the `p^2` pattern
+
+Literal `q^3` determinant-ratio coefficient contains new `ell=1` source factor
+
+```text
+D_n=16n^2+20n+5+1/(4n+4).
+```
+
+After exact positive-square-root transport and four-radius welding, if `H_k` is critical
+residual's `q^3` coefficient and `m_n=2(n+1)`, then
+
+```text
+H_(n+1)/((m_n+1)^2sqrt(m_n+1))
+  ->-160sqrt(2/pi).
+```
+
+Proof includes exact two-step regular-variation multiplier `-5`, cancellation of subleading
+third-radius stencil, and vanishing mixed first/second-jet stencil. Hence third Euler order becomes
+order one at `n asymp p^(6/5)`, strictly before order-one/order-two `p^2` scale. Naive law
+`[q^r]R_n=O(n^(r/2))` is false at `r=3`.
+
+Route J stays open. Next hard source problem: classify higher `ell` atoms at orders `r>=4` and
+determine lower envelope of their degree exponents before any resummation claim. Fixed-prime
+result remains quotient-zero, and complete-shell finite-support theorem still forbids ordinary
+differential-field promotion to global carrier.
+
+Paper and Lean:
+
+```text
+../3-formalized/new_scientific_knowledge/
+  route-j-semilocal-prolate-third-euler-critical-boundary.md
+
+SemilocalProlateThirdEulerCriticalJet.lean
+```

@@ -1664,3 +1664,35 @@ zero divisor of `ζ`.  Strictness (equivalently, closed range plus the reverse e
 single open analytic input, and it is exactly Meyer's zeta estimate.
 
 - 2026-08-02 — **Quotient permanence for nuclearity, and `M_ζ` is nuclear.**
+
+### Lean: towards strictness — the elementary zeta bound, the reverse Mellin estimate, and the
+### Fourier reflection `[PROVED HERE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerZetaLowerBound.lean` (4 declarations),
+`DeningerPoissonReverseMellin.lean` (2) and `DeningerPoissonFourierReflection.lean` (4); axiom
+audit `propext, Classical.choice, Quot.sound`.
+
+- `norm_riemannZeta_ge_of_two_le_re` — **`|ζ(s)| ≥ 1/4` for `Re s ≥ 2`**, proved from the Dirichlet
+  series: the tail is at most the Basel tail `π²/6 − 1 < 3/4`.  No zero-free region is involved;
+  this is the elementary half of the multiplier estimate.
+- `norm_mellin_le_of_two_le_re` — **`‖M(f)(s)‖ ≤ 4‖M(Zf)(s)‖` for `Re s ≥ 2`**: the reverse
+  estimate on a line to the right of the Euler product region, i.e. the half of strictness that
+  needs nothing about the zeros.  `norm_mellin_le_radial` states it against the radial
+  presentation of the image.
+- `deningerMeyerCap_fourierSCLM` — **Meyer's space is stable under the Fourier transform**
+  (evenness is preserved, and the two boundary constraints exchange under `𝓕`, the second one
+  returning by Fourier inversion).
+- `deningerPoissonValue_fourier_reflection` — **`Zf(a) = a⁻¹·Z(𝓕f)(a⁻¹)`**: the Poisson operator
+  carries the Fourier involution to multiplicative inversion.  This is the theta transformation in
+  operator form, and it explains the card's two boundary conditions: they are exactly the two that
+  make the scaled Poisson identity boundary-term free.
+
+Where strictness stands after this.  The estimate above controls `f` on a vertical line to the
+right; the reflection identity gives the mirror control for `𝓕f`.  What is *not* reachable this
+way is the behaviour of `f` near the origin: bounding the Taylor coefficients of `f` at `0` by
+`ℋ_−` data is bounding residues of `M(f) = M(Zf)/ζ` at the trivial zeros `s = −2, −4, …`, which
+needs `ζ'(−2m) ≠ 0` and a line in `−2 < Re s < 0` where `1/ζ` is polynomially bounded — the latter
+via the functional equation and the exact formula `|Γ(1+iy)|² = πy/sinh(πy)` (no Stirling needed).
+That is the remaining analytic package for `(3)`–`(4)`; everything else on the card is proved.
+
+- 2026-08-02 — The elementary zeta bound, the reverse Mellin estimate, and the Fourier reflection.

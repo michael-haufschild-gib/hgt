@@ -1,6 +1,6 @@
 # Route J semilocal prolate third-Euler critical boundary
 
-**Status:** `[ACTIVE FRONTIER] [CONJECTURE UNDER HOSTILE ATTACK]`
+**Status:** `[PROVED; FORMALIZED]`
 
 ## Source input
 
@@ -24,7 +24,7 @@ delta_3(n)
 
 This published formula is input, not proposed novelty.
 
-## First hostile prediction
+## First hostile prediction — resolved
 
 Put
 
@@ -73,7 +73,7 @@ w_n / ((-1)^n n^(5/2)) -> 8 tau
 
 This already falsifies naive order law `[q^r]R_n=O(n^(r/2))` at radius level.
 
-## Critical weld conjecture
+## Critical weld theorem
 
 Let `H_k=[q^3]R_k(q)` for Route-J four-radius residual. Terms involving `u_nv_n` are only
 `O(sqrt(n))`. Linear `w` terms have alternating four-radius stencil. For a regularly varying
@@ -83,7 +83,7 @@ amplitude `f_n~Cn^(5/2)`, that stencil has leading multiplier
 -4*(5/2)=-10.
 ```
 
-With `C=8tau`, active conjecture is
+With `C=8tau`, proved theorem is
 
 ```text
 H_(n+1)/(2(n+1))^(5/2)
@@ -91,17 +91,17 @@ H_(n+1)/(2(n+1))^(5/2)
    = -160sqrt(2/pi).                                   (C4)
 ```
 
-Consequently third Euler order would become order one at
+Consequently third Euler order becomes order one at
 
 ```text
 q^3 n^(5/2) asymp 1,
 n asymp p^(6/5),                                       (C5)
 ```
 
-strictly before first- and second-order `p^2` scale. This would show that `p^2` persistence through
+strictly before first- and second-order `p^2` scale. This shows that `p^2` persistence through
 order two is exceptional, not all-orders evidence.
 
-## Required hostile checks
+## Resolved hostile checks
 
 1. Prove `(C2)` from exact finite alternating sum, not endpoint heuristic.
 2. Show all `t_n^3Y_n^j` contributions are negligible at `n^(7/2)` after summation without assuming
@@ -122,3 +122,24 @@ formal/GaloisForLFunctions/RHTower/
 
 No assumptions, computations, `sorry`, `admit`, project axioms, opaque constants, or unsafe
 declarations.
+
+## Resolution
+
+Proof bypasses initial anomaly-summation heuristic and uses direct published determinant-ratio
+coefficient. Its new `ell=1` term factors exactly as
+
+```text
+(-1)^n T_n(16n^2+20n+5+1/(4n+4)).
+```
+
+This yields signed squared-radius growth `n^(7/2)`, positive-radius growth `n^(5/2)`, exact
+two-step multiplier `-5`, and four-radius multiplier `-10`. Canonical dependency-closed
+certificate:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+  route-j-semilocal-prolate-third-euler-critical-boundary.md
+```
+
+Direct `lake env lean` validation and exact-target module build pass. `#print axioms` reports only
+`propext`, `Classical.choice`, and `Quot.sound`.

@@ -2718,3 +2718,79 @@ Route J remains open. Immediate hard frontier: extract literal `q^3` squared-rad
 determine whether critical `q^3` weld has `n^(3/2)` growth, then attack fixed-order induction or
 boundary-layer resummation. After that, finite-prime orthogonalization and genuine infinite-label
 singular carrier remain unavoidable.
+
+## 42. J-SF5 third Euler order breaks the `p^2` pattern
+
+`[PAPER+LEAN-PROVED SOURCE-LOCAL THEOREM]`
+`[CANDIDATE SOURCE-SPECIFIC NEW SCIENTIFIC KNOWLEDGE]`
+
+Published `q^3` determinant-ratio formula contains new `ell=1` trace atom. Its direct relative
+squared-radius contribution factors exactly as
+
+```text
+(-1)^n T_nD_n,
+T_n=2sqrt(2)4^(-n)binom(2n,n),
+D_n=16n^2+20n+5+1/(4n+4).                              (142)
+```
+
+This polynomial is absent at orders one and two. Products of lower-order parity traces are only
+order `sqrt(n)`, while `(142)` is order `n^(3/2)`. Consequently
+
+```text
+(-1)^n[q^3]a_n(q)^2/((n+1)^3sqrt(n+1))
+  ->32sqrt(2/pi),                                      (143)
+
+(-1)^n[q^3]a_n(q)/((n+1)^2sqrt(n+1))
+  ->16sqrt(2/pi).                                      (144)
+```
+
+Pointwise `(144)` is not differentiated heuristically. For exact dominant amplitude
+`F_n=r_nT_nD_n/2`, source ratios give
+
+```text
+(n+1)(r_(n+2)/r_n-1) ->2,
+(n+1)(c_(n+2)/c_n-1) ->-1,
+(n+1)(D_(n+2)/D_n-1) ->4,                             (145)
+```
+
+so
+
+```text
+(F_n-F_(n+2))/((n+1)sqrt(n+1))
+  ->-80sqrt(2/pi).                                     (146)
+```
+
+Two such differences survive in four-radius weld. Radius-curvature terms, exact subleading
+`n^(3/2)` remainder stencil, and all mixed first/second-jet terms vanish at critical scale. If
+`H_k=[q^3]R_k(q)` and `m_n=2(n+1)`, then
+
+```text
+H_(n+1)/((m_n+1)^2sqrt(m_n+1))
+  ->-160sqrt(2/pi).                                    (147)
+```
+
+Thus third Euler correction becomes order one at
+
+```text
+q^3n^(5/2) asymp1,
+n asymp p^(6/5),                                       (148)
+```
+
+strictly before `p^2`. Order-one/order-two agreement was exceptional. Naive fixed-order law
+`[q^r]R_n=O(n^(r/2))` is false at `r=3`.
+
+Dependency-closed certificate:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+  route-j-semilocal-prolate-third-euler-critical-boundary.md
+
+formal/GaloisForLFunctions/RHTower/
+  SemilocalProlateThirdEulerCriticalJet.lean
+```
+
+Route J remains open. New immediate frontier is not “confirm `p^2`”: classify source atoms at
+orders `r>=4`, determine lower envelope of interaction exponents, and decide whether complete
+one-prime Euler series has any nontrivial uniform degree window. Finite-prime orthogonalization,
+source-selected extension, Sonin-corner resolvent transport, and genuine infinite-label singular
+carrier remain unresolved.

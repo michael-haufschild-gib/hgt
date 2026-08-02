@@ -110,4 +110,38 @@ theorem chamber_mem_generalStar {n : ℕ} (hN : Nat.card ι = n + 2) (b : Basis 
 
 end Chambers
 
+/-! ## The apartment inside the disjoint-union presentation of the building -/
+
+section FamBuilding
+
+variable {K V ι : Type u} [DivisionRing K] [AddCommGroup V] [Module K V]
+
+/-- The apartment of a frame, as a subposet of the disjoint-union presentation of the building that
+the Mayer--Vietoris cover is stated on. -/
+def apartmentToFamBuilding (b : Basis ι K V) :
+    properPart (Set ι) →o famBuilding (fun _ : PUnit.{u + 1} => (⊤ : Submodule K V)) where
+  toFun U := ⟨(PUnit.unit, apartmentVertices b U), (apartmentVertices b U).2.2⟩
+  monotone' _ _ h := ⟨rfl, (apartmentVertices b).monotone h⟩
+
+/-- **A vertex of an apartment other than the coatom is a vertex of the base of the cover**, in the
+presentation the descent uses. -/
+theorem apartmentToFamBuilding_mem_famCoverBase (b : Basis ι K V) {a : ι}
+    (U : properPart (Set ι)) (h : (U : Set ι) ≠ Set.univ \ {a}) :
+    apartmentToFamBuilding b U
+      ∈ famCoverBase (fun _ : PUnit.{u + 1} => (⊤ : Submodule K V))
+        (fun _ => coordSpan b {a}) := by
+  refine ⟨?_, ?_⟩
+  · exact (apartmentVertices b U).2.2
+  · exact coordSpan_sup_singleton_ne_top b U h
+
+/-- **And the vertices below the coatom lie in the star of the cover.** -/
+theorem apartmentToFamBuilding_mem_generalStar (b : Basis ι K V) {a : ι}
+    (U : properPart (Set ι)) (hbot : (⊥ : Set ι) < Set.univ \ {a})
+    (htop : (Set.univ \ {a} : Set ι) < ⊤) (hle : (U : Set ι) ⊆ Set.univ \ {a}) :
+    apartmentToFamBuilding b U
+      ∈ generalStar (apartmentToFamBuilding b ⟨Set.univ \ {a}, hbot, htop⟩) := by
+  exact Or.inl ⟨rfl, (apartmentVertices b).monotone hle⟩
+
+end FamBuilding
+
 end GaloisForLFunctions.HTGeometry

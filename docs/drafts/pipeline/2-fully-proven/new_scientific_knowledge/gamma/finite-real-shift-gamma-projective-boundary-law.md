@@ -894,8 +894,92 @@ others at once:
 The seed here is the monomial `(−1)^{j+1}(j+1)!·w^{j+2}` coming from the corpus's all-order shift law
 `HTGeometry/PolygammaShift`, so the general induction applies verbatim.
 
-What is left of `(10)`--`(11)` is the shifted arguments `ψ(s+λ)` re-expanded in powers of `1/s`, the
-formal Stirling field with its shift, and the injection of `L_E` into it.
+The shifted arguments are handled by an analytic change of variable
+(`HTGeometry/ShiftedDigammaExpansionVertical.lean`).  Expanding at abscissa `σ+λ` gives powers of
+`1/(s+λ)`; since `log(s+λ) = log s + log(1+λ/s)` and `1/(s+λ) = w/(1+λw)` with `w = 1/s`, the
+correction is one analytic function of `w`, and its Taylor polynomial absorbs it:
+
+> **`log_add_eq`**: the logarithm splits off an arbitrary shift small against `‖z‖` in the right half
+> plane;
+> **`exists_taylor_poly_of_analytic`** (in `DigammaExpansionDefect`): every function analytic at `0`
+> equals a polynomial plus `w^M` times an analytic function — proved by iterating the factorization
+> lemma;
+> **`exists_digamma_shift_expansion`**: for every real `λ` and every `N` a polynomial `P` with
+> `‖ψ(s+λ) − log s − P(1/s)‖ ≤ C/t^{N+1}` whenever `σ > 0`, `σ+λ > 0`, `t ≥ T`;
+> **`exists_iteratedDeriv_digamma_shift_expansion`**: the same for every jet order, without the
+> logarithm.
+
+So every generator of `L_E` now has, in the single coordinate `1/s`, an expansion to any prescribed
+order, uniformly in the abscissa — exactly the analytic side of `(9)`.
+
+### The formal Stirling field can be bypassed
+
+`(10)` is used only for one thing: a nonzero element of `L_E` must not be asymptotically zero to all
+orders.  That statement can be proved *analytically*, with the same Hölder eliminator that already
+proved Theorem A, and without constructing `ℂ(log s)((s^{-1}))` at all.
+
+Call a function **vertically negligible** when on every vertical tube it decays faster than any power
+of the height, and consider
+
+```text
+I = { P ∈ ℂ(X)[jets] : the value of P at the digamma jets is vertically negligible }.
+```
+
+`I` is closed under subtraction, under multiplication by `ℂ(X)` (rational functions have polynomial
+tube growth, and polynomial growth times superpolynomial decay is superpolynomial decay), and under
+the jet substitution (the value of the substituted polynomial is the value shifted by one, and
+negligibility is shift-stable because the tube bound is uniform in the abscissa).  It contains no
+nonzero constant, because a nonzero rational function has an exact leading order on a vertical line.
+Its residue hypothesis is exactly **`ratShift_sub_familyIncrement_combination`**, already proved.  So
+`no_shift_stable_annihilatorWith` forces `I = 0`: *no nonzero polynomial in the digamma jets is
+vertically negligible.*  Combined with the expansions above, the leading term of the truncated
+expansion of a nonzero element is eventually nonzero, which is `(11)`.
+
+`HTGeometry/VerticallyNegligible.lean` starts that route:
+
+> **`IsVerticallyNegligible`**, **`HasTubePolyGrowth`** — the two notions;
+> **`IsVerticallyNegligible.add/.neg/.sub`**, **`.shift`** (uniformity in the abscissa is what makes
+> the shift harmless), **`.mul_polyGrowth`**;
+> **`hasTubePolyGrowth_polyEval`** — polynomials have polynomial tube growth.
+
+and `HTGeometry/RationalTubeGrowth.lean` supplies the coefficient-field side:
+
+> **`one_le_norm_shape_natDegree`**, **`not_isVerticallyNegligible_polyEval`** — a nonzero polynomial
+> has an exact leading order on the line `Re s = 1`, so it cannot decay like `1/t`;
+> **`exists_lower_bound_polyEval`** — from the corpus's tube datum, `‖q(σ+it)‖ ≥ c·t^{deg q}`
+> uniformly on every tube beyond a height;
+> **`exists_height_polyEval_ne_zero`** — beyond a height a nonzero polynomial has no zeros on any
+> vertical line at all (its roots have bounded imaginary parts);
+> **`hasTubePolyGrowth_ratEval`**, **`not_isVerticallyNegligible_ratEval`** — hence a rational
+> function has polynomial tube growth, and is negligible only if its numerator vanishes;
+> **`IsVerticallyNegligible.congr_eventually`** — negligibility only sees large heights.
+
+The evaluation of a jet polynomial has to be an honest ring homomorphism, and rational coefficients
+have poles.  Both are handled by working with germs at the upper end, where the poles are invisible
+(`HTGeometry/RatFuncUpperEndGerm.lean`):
+
+> **`exists_upperTail_polyEval_ne_zero`** — a nonzero polynomial has no zeros above a height;
+> **`polyGermHom`**, **`isUnit_polyGermHom`** — polynomials as germs at `upperEndFilter`, with
+> nonzero ones invertible there;
+> **`ratFuncGerm`** — hence `ℂ(X) → Germ upperEndFilter ℂ`, built directly from `RatFunc.eval` with
+> the eventual nonvanishing of denominators supplying `map_add` and `map_mul`.
+
+`HTGeometry/GermNegligible.lean` then carries the whole closure structure into that ring:
+
+> **`IsVerticallyNegligible.germ_congr`**, **`IsGermNegligible`**, **`isGermNegligible_coe`** —
+> negligibility descends to germs, because germ equality is agreement above a height;
+> **`IsGermNegligible.sub`**, **`.shift`**, **`.mul_ratFuncGerm`** — the three closure properties, on
+> germs;
+> **`not_isGermNegligible_ratFuncGerm`** — a nonzero rational function is not a negligible germ;
+> **`ratFuncGerm_algebraMap`**, **`ratFuncGerm_div`** — the germ of a quotient of polynomials, by
+> cancelling the unit germ of the denominator;
+> **`jetGerm`** and **`upperEndTranslateGerm_jetGerm`** — the jets as germs, and the shift law
+> `σ(ψ⁽ʲ⁾(·+λ)) = ψ⁽ʲ⁾(·+λ) + (−1)ʲ j!/(·+λ)^{j+1}` in the exact form
+> `jetGerm + ratFuncGerm (familyIncrement …)` that the eliminator's hypothesis `hjet` wants.
+
+What remains is the evaluation homomorphism `MvPolynomial (Fin M) ℂ(X) → Germ upperEndFilter ℂ` and
+the assembly: feed `eval₂_jetTranslateWith`, the four closure properties, and the already-proved
+residue statement into `no_shift_stable_annihilatorWith`.
 
 Downstream of `(11)` the chain is already Lean: the signature ordering `(16)`, the datum `(4)`, the
 projective boundary `(6)`, the finite phase law `(19)` and its consequences `(21)`, `(25)`.
@@ -958,3 +1042,19 @@ projective boundary `(6)`, the finite phase law `(19)` and its consequences `(21
 - 2026-08-02 -- all positive-order digamma jets expanded to every order on vertical lines
   (`PolygammaExpansionVertical`), with their horizontal far-field decay proved by Cauchy's estimate
   from the corpus's digamma shift bound.
+- 2026-08-02 -- shifted arguments re-expanded in the unshifted coordinate
+  (`ShiftedDigammaExpansionVertical`), with the general Taylor-approximation lemma added to
+  `DigammaExpansionDefect`; every generator of L_E now has an all-order expansion in 1/s.
+- 2026-08-02 -- route to (11) shortened: the formal Stirling field is not needed, since
+  "no nonzero jet polynomial is vertically negligible" is another instance of the Hölder eliminator
+  with the residue hypothesis already proved; `VerticallyNegligible` sets up the notion and its
+  closure properties.
+- 2026-08-02 -- coefficient-field side of the negligible-ideal argument (`RationalTubeGrowth`):
+  nonzero polynomials and rational functions are never negligible, rational functions have
+  polynomial tube growth, and a nonzero polynomial is zero-free beyond a height.
+- 2026-08-02 -- rational coefficients as germs at the upper end (`RatFuncUpperEndGerm`), so the jet
+  evaluation can be a ring homomorphism; built from `RatFunc.eval` rather than the fraction-field
+  universal property, which does not elaborate at this size.
+- 2026-08-02 -- negligibility transported to germs at the upper end with all closure properties, plus
+  the jet germs and their shift law (`GermNegligible`); only the evaluation homomorphism and the
+  eliminator call remain for the non-negligibility theorem.

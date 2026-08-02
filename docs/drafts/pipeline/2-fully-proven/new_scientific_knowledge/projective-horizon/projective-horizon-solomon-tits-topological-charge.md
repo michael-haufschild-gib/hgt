@@ -1550,3 +1550,47 @@ class to positivity, a Weil criterion, or zero location.
 
   These are the two membership facts the lift into `C(base) ⊞ C(star)` consumes, one per chamber, so
   the geometric input to the descent step is complete down to the level of individual simplices.
+
+### 2026-08-02 — plan of record for the descent (Solomon spanning)
+
+`ApartmentBuildingCover.lean` now compiles with the transport layer
+`apartmentToFamBuilding`, `apartmentToFamBuilding_mem_famCoverBase`,
+`apartmentToFamBuilding_mem_generalStar`: an apartment sits inside the disjoint-union presentation
+`famBuilding (fun _ : PUnit => ⊤)` that the Mayer--Vietoris cover is stated on, its vertices other
+than the coatom opposite the chosen frame vector lie in the base of the cover, and those below that
+coatom lie in the star.  (The monotonicity field must be given as the term `⟨rfl, _⟩`: the `≤` of
+`famPoset` unfolds definitionally to a conjunction, while `famPoset_le_iff` leaves the poset
+implicit stuck behind a metavariable.)
+
+The remaining mathematical content of the stretch goal — the apartment classes span the Steinberg
+module — is a descent along the connecting map of that cover.  Route decided after comparing two:
+
+* *Naturality route*: prove that `famTopEmbedding` is natural for a map of covers, using mathlib's
+  `HomologicalComplex.HomologySequence.δ_naturality`.  Rejected as the primary route: it needs
+  separate naturality statements for `famSupHomologyIso`, for `famPosetHomologyIso` and for
+  `famCoverInterNerveIso`, each of which contains an `eqToIso`.
+* *Chain route* (chosen): mathlib's `δ_eq` computes the connecting map on an explicit cycle.  Every
+  object in sight is then a signed sum of `ιChainComplex` of named simplices, and every map in sight
+  is induced by a map of simplicial sets, which acts on those sums by `ι_chainComplexMap_f`.
+
+Steps, each its own module:
+
+1. `ApartmentUnnormalizedCycle.lean`: the apartment cycle in the *unnormalized* chains, where the
+   Mayer--Vietoris sequence lives.  A general involution lemma — the signed sum of faces over any
+   set of orderings closed under the transposition at the deleted place vanishes — then the cycle
+   itself, and the bridge `apartmentFundamentalClass = ` its class.
+2. The split: the chambers whose ordering ends with the chosen vector give a chain of the star, the
+   others a chain of the base; their sum is the apartment cycle.  Membership is already proved
+   (`chamber_mem_notSpanning`, `chamber_mem_generalStar`).
+3. The boundary of the star half is, up to sign, the apartment cycle of the link, by the same
+   involution lemma applied to the orderings that end with the chosen vector: only the face that
+   deletes the top vertex survives, and `coe_properBelowSetOrderIso_symm_chainOfOrdering` says that
+   face is the chamber of the restricted ordering.
+4. `δ_eq` then gives `δ(apartment class) = ±(link apartment class)`, and `isIso_famTopEmbedding`
+   makes `δ` invertible, so the two classes generate each other.
+5. The induction on rank: the class of a frame of a coatom is `δ` of the class of any frame of the
+   whole space extending it, so `Epi` of the coproduct of the apartment classes follows from the
+   same statement one rank down.
+
+The chains of a subcomplex inject into the chains of the ambient complex (a coproduct over a
+subfamily has a retraction), which is what lets step 3 compute only the star half.
