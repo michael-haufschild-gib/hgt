@@ -1,10 +1,11 @@
 # Elliptic Gamma Rank-Three DA Translation Spectrum
 
 - **ID:** elliptic-gamma-rank-three-da-spectrum
-- **Stage:** 2-fully-proven / adversarial paper audit passed / unconditional Lean proof open
+- **Stage:** 3-formalized / adversarial paper audit passed / unconditional Lean proof complete
 - **Type:** THEOREM (paper) / OPEN-PROBLEM CANDIDATE
-- **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` — paper audit passed; provisional
-  pending independent expert scrutiny and full unconditional Lean formalization
+- **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [UNCONDITIONALLY LEAN-FORMALIZED]`
+  — paper audit passed; the unconditional Lean formalization gate below is closed, so only
+  independent expert scrutiny remains
 - **Statement:** For multiplicatively independent elliptic nomes, the elliptic gamma function is hypertranscendental; its additive logarithmic-derivative defects and multiplicative shift quotients have exact DA spectrum equal to the rank-three period group; and the differential transcendence degree of any finite defect or quotient family is the number of distinct nonzero shift cosets.
 - **Abstraction audit:** `paired-quasi-elliptic-constraint-rigidity` collapses under its one-pole hypotheses to translated scalar-affine copies of `Psi`; it is retained as an anti-novelty bridge, not claimed as an independent structural parent.
 

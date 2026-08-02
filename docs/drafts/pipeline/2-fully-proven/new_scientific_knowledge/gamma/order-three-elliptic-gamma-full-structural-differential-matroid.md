@@ -1,11 +1,12 @@
 # The order-three elliptic-gamma structural orbit has no hidden nonlinear relations
 
 - **ID:** `order-three-elliptic-gamma-full-structural-differential-matroid`
-- **Stage:** 2-fully-proven / needs independent audit
+- **Stage:** 3-formalized / needs independent audit
 - **Type:** THEOREM (paper) / THREE-LAYER DIFFERENTIAL-ALGEBRAIC MATROID
 - **Date:** 2026-07-10
-- **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` -- conditional on the independently
-  unaudited order-one elliptic-gamma atomic theorem. The theorem closes the first case containing
+- **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [UNCONDITIONALLY LEAN-FORMALIZED]`
+  -- the order-one elliptic-gamma atomic theorem is itself an unconditional Lean theorem, so the
+  chain is no longer conditional; the independent specialist audit remains. The theorem closes the first case containing
   several atomic bottom faces, external orbits of higher faces, and a top primitive. Its
   free-shift summability lemma is a `[BRIDGE]`; the candidate scientific content is the exact
   nonlinear matroid of the generic order-three multiple-elliptic-gamma structural orbit.
@@ -422,8 +423,55 @@ subcardinal rank standing for `dtrdeg`. The special-function inputs enter as the
 `Rank`/star-independence/free-translate/`CrossNeutral` interfaces.
 `DifferentialOperatorMatroid.lean` now formalizes the complete dependent-family rank step: the
 genuine differential-family matroid of polynomial operator outputs equals the ordinary row matroid
-over `Frac(C[delta])`. Thus the remaining inputs are the concrete order-three star independence,
-orbit-height, off-star packetwise DA, and hierarchy-to-operator-row identifications.
+over `Frac(C[delta])`.
+
+### The concrete special-function inputs are discharged
+
+All four remaining inputs are now unconditional Lean theorems for the actual meromorphic kernels,
+under the card's own genericity hypothesis written as `PeriodsIntegrallyIndependent tau`.
+
+Star independence and off-star packetwise DA come from the layered face-independence engine, which
+covers every face of every order at once:
+
+- `multipleEllipticGammaProperFacePackets_diffIndepOn`
+  (`MultipleEllipticGammaAllFaceIndependence.lean`) -- the external translation packets of *all*
+  faces retaining at least two periods are jointly differentially independent.  For `tau : Fin 4 ->
+  C` this is exactly the three-layer family: the six bottom faces, the four order-two faces, and
+  the top primitive;
+- `differentialAlgebraicOver_facePacket_of_compl_lt_two` (same file) -- every translate of a face
+  retaining fewer than two periods is DA.
+
+Orbit-height faithfulness is `faceShiftLattice_translate_injective`
+(`FaceTranslateInjective.lean`), and
+`multipleEllipticGammaFace_translate_ne_of_ne`
+(`MultipleEllipticGammaFacePacketDisjointness.lean`) separates distinct faces.
+`MultipleEllipticGammaDeepPacketFaithfulness.lean` combines them into the coordinate statement
+`multipleEllipticGammaDeepCoordinate_injective`: the pair `(face, external shift)` is a faithful
+coordinate on the whole deep packet union.
+
+The hierarchy-to-operator-row identification is
+`MultipleEllipticGammaStructuralSpanDecomposition.lean`, proved for an arbitrary finite period
+family and hence for every order:
+
+- `multipleEllipticGammaTotalPacket_span_translate_mem` -- the span of all face packets is stable
+  under every structural translation, because a deleted direction preserves the packet and a
+  surviving direction telescopes into the next face;
+- `multipleEllipticGammaStructuralTranslate_mem_span` -- consequently every structural translate of
+  the top primitive is a finite `C`-linear combination of face-packet coordinates;
+- `differentialAlgebraicOver_mem_span_boundaryPacket` -- the span of the boundary packets consists
+  of DA functions;
+- `multipleEllipticGammaStructuralTranslate_eq_deepSpan_add_differentialAlgebraic` -- hence, modulo
+  a DA error, every structural translate is a linear combination of the jointly independent deep
+  packet coordinates.  This is the squarefree relation `x_ix_jx_k = 0` of `I_3` realized on the
+  actual kernels: only faces with at least two surviving periods contribute.
+
+`multipleEllipticGammaDeepSelection_differentialMatroid` and
+`multipleEllipticGammaDeepSelection_differentialRank` close the chain: for any faithful finite
+selection of deep face coordinates and any finite family of constant-coefficient
+differential-operator rows, the nonlinear differential matroid of the outputs is the localized
+operator-row matroid over `Frac(C[delta])`, with rank the localized row rank.
+
+`#print axioms` on each of these returns only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## What this changes and what remains open
 
@@ -491,6 +539,8 @@ three.
 - [x] complete additive structural differential matroid proved
 - [x] multiplicative finite-product matroid proved
 - [x] exact/stronger/equivalent literature gate completed provisionally through 2026
+- [x] concrete star independence, orbit-height faithfulness, off-star packetwise DA, and the
+  hierarchy-to-operator-row identification discharged in Lean for the actual kernels
 - [ ] independent proof audit
 - [ ] independent specialist priority audit
 - [ ] independent audit of the order-one atomic parent
@@ -505,3 +555,10 @@ three.
 - 2026-07-10 -- Glued all four external order-two face orbits by relative block replication.
 - 2026-07-10 -- Recovered the top primitive by a long structural translation and computed the full
   order-three additive and multiplicative differential matroids.
+- 2026-08-02 -- Closed the Lean gate.  The order-one atomic parent, the all-face joint independence
+  and the off-face packetwise DA statements were already unconditional in the corpus, and general
+  shift faithfulness already existed.  Built the missing hierarchy-to-operator-row identification
+  for arbitrary order: translation stability of the total packet span, membership of every
+  structural translate in that span, differential algebraicity of the boundary span, and the
+  resulting deep-span decomposition; then the faithful `(face, shift)` coordinate and the
+  operator-row matroid and rank laws on any faithful deep selection.

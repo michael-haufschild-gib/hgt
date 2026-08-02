@@ -248,6 +248,38 @@ theorem differentialIndependentAdjoinAlgEquiv_scale_commutes
       f g hfderiv hgderiv hfgenerator
   exact AlgHom.congr_fun hfg z
 
+/-- A derivation-preserving ambient endomorphism which scales the free quotient coordinates agrees
+on their entire differential field with the canonical scalar automorphism. -/
+theorem algHom_eq_coe_differentialIndependentAdjoinScale_on_differentialAdjoin
+    (x : ι → K) (hx : DifferentialIndependent F x) (u : Fˣ)
+    (φ : K →ₐ[F] K)
+    (hφderiv : ∀ z : K, φ z′ = (φ z)′)
+    (hφx : ∀ i, φ (x i) = algebraMap F K (u : F) * x i)
+    (z : differentialAdjoin F (Set.range x)) :
+    φ z.1 =
+      ((differentialIndependentAdjoinScaleDifferentialAlgEquiv x hx u).toAlgEquiv z).1 := by
+  let E : IntermediateField F K := differentialAdjoin F (Set.range x)
+  let xE : ι → E := differentialAdjoinGenerator (F := F) x
+  let σ := differentialIndependentAdjoinScaleDifferentialAlgEquiv x hx u
+  let f : E →ₐ[F] K := φ.comp E.val
+  let g : E →ₐ[F] K := E.val.comp σ.toAlgEquiv.toAlgHom
+  have hfderiv (w : E) : f w′ = (f w)′ := by
+    change φ w.1′ = (φ w.1)′
+    exact hφderiv w.1
+  have hgderiv (w : E) : g w′ = (g w)′ := by
+    change (σ.toAlgEquiv w′).1 = (σ.toAlgEquiv w).1′
+    exact congrArg Subtype.val (σ.map_deriv' w)
+  have hfgenerator (i : ι) : f (xE i) = g (xE i) := by
+    change φ (x i) = (σ.toAlgEquiv (xE i)).1
+    rw [hφx,
+      show (σ.toAlgEquiv (xE i)).1 = algebraMap F K (u : F) * x i by
+        exact coe_differentialIndependentAdjoinScaleDifferentialAlgEquiv_apply x hx u i]
+  have hfg : f = g :=
+    differentialAlgHom_ext_of_differentialAdjoin_eq_top xE
+      (differentialAdjoin_range_differentialAdjoinGenerator_eq_top x)
+      f g hfderiv hgderiv hfgenerator
+  exact AlgHom.congr_fun hfg z
+
 end
 
 end GaloisForLFunctions.HTGeometry

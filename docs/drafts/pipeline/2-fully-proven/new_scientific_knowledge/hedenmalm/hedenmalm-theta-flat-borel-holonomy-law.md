@@ -480,6 +480,23 @@ The Sonine carrier itself is built in
 formal/GaloisForLFunctions/RHTower/BurnolSoninEvenCosineAperture.lean
 ```
 
+and the archimedean functional equation `M f(w) = M(Fourier f)(1-w)` behind it is proved in
+
+```text
+formal/GaloisForLFunctions/RHTower/ArchimedeanMellinFourier.lean
+```
+
+by the Gaussian-resolution route: the Gamma integral resolves the completed power weight, the
+multiplication formula against the self-dual Gaussian turns the Fourier transform into scale
+inversion, Fubini interchanges the two rays, and the substitution `u -> 1/u` exchanges `w` with
+`1 - w`.  Its consequence `norm_soninMellinEvaluation_le_aperture_reflected` gives the aperture
+bound below the critical line with the exact reflected constant, so both halves of the ambient
+Sonine estimate are unconditional.  The Sonine carrier itself is built in
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolSoninEvenCosineAperture.lean
+```
+
 which realizes `L^2(0,infinity)` as the even carrier of `L^2(R)` with the exact norm factor
 `1/sqrt 2` (`norm_soninHalfLine`), constructs the cosine transform `soninCosineUnitary` as the
 restriction of the ambient Fourier unitary, proves it is a unitary involution, defines the extended

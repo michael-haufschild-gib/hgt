@@ -381,3 +381,87 @@ Remaining for the card:
       (`u ∈ C(jets of level ≤ N)` iff all higher partials vanish);
 - [ ] the finite-tuple form of `(4)` and the dynamical corollary `(16)`;
 - [ ] Theorem B: the valuation-lattice/Cartan-vector refinement `(12)–(13)`.
+
+## Lean status: Theorem A complete and faithful
+
+`JetFieldOrderCharacterization.lean` closes the gap between the Frechet order and the order of
+definition `(2)`:
+
+- `mem_adjoin_of_pd_eq_zero`: an element whose partial derivatives outside a set of jet coordinates
+  all vanish is a rational function of those coordinates.  The proof descends on the total degree
+  of a denominator: differentiating a fractional representation with respect to an outside
+  coordinate produces a representation with a strictly smaller denominator, so some denominator has
+  no outside coordinate, and in characteristic zero neither has the numerator.  No unique
+  factorization, no reduced fractions, no relative algebraic closedness are needed.
+- `ordJet_le_iff` and `isLeast_ordJet`: `ordJet u` is exactly the least `N` with
+  `u ∈ C(x_j^{(m)} : m ≤ N)`.
+
+Together with `exists_uniform_ordJet_comparison` this is Theorem A in the exact form stated in
+section 2, and `exists_uniform_ordJet_comparison_tuple` is its finite-tuple form.  The dynamical
+corollary of section 4 is `exists_uniform_orbit_comparison` (bound `|a_n - b_n| ≤ K`) together with
+`tendsto_orbit_clock_speed` (equality of the two clock speeds).
+
+- [x] Theorem A `(4)`, `(5)`, its tuple form, and the dynamical corollary `(16)` are formalized
+      unconditionally and are axiom-clean.
+- [ ] Theorem B `(12)-(13)` remains: it needs the skew field of rational pseudodifferential
+      operators, invariant factors of matrices over the operator ring, and the vector-valued
+      lattice distance.
+
+## Lean status: the pseudodifferential skew field
+
+`DifferentialOperatorOreField.lean` supplies the object that section 2 names `Q_F`:
+
+- `exists_ore_left_multiple`: for `s ≠ 0` and any `r` there are `s' ≠ 0` and `r'` with
+  `s' r = r' s`.  Proof: operators of order `≤ n` form an `(n+1)`-dimensional `K`-space, the two
+  products live in order `≤ n + max(deg r, deg s)`, and `2(n+1) > n + max + 1` at `n = max`, so the
+  difference map has a nonzero kernel.
+- `instOreSet` and `PseudoDiffOp K = OreLocalization (DiffOp K)⁰ (DiffOp K)`, a `DivisionRing`.
+
+Theorem B now needs, on top of this:
+
+1. Jacobson (diagonal) normal form for matrices over `DiffOp K` under row and column operations —
+   the row half already exists in `DifferentialOperatorOreMatrix.lean`;
+2. the invariant-factor vector of a pair of lattices in `PseudoDiffOp K ^ s`, and its invariance
+   under an isomorphism of ambient spaces;
+3. the estimate that changing one endpoint of the vector-valued lattice distance by a fixed
+   commensurable lattice changes every partial sum `∑_{i≤k} μ_i` by a bounded amount.
+
+Item 3 is the affine-building triangle inequality in the form actually used by `(12)`.
+
+### Plumbing available for the lattice stage
+
+`DiffOp` now carries `IsScalarTower K (DiffOp K) (DiffOp K)`, so `PseudoDiffOp K` is simultaneously
+a left module over the operator ring and a `K`-space.  That is exactly what the index of a pair of
+lattices needs:
+
+`ind (L, M) = dim_K ((L ⊔ M)/L) - dim_K ((L ⊔ M)/M)`.
+
+With that index, `(12)` reduces to two elementary facts and needs no normal form: the index is
+additive along a chain of commensurable lattices, and intersecting with a subspace can only shrink
+the quotient, so for `L₁ ⊆ L₂` with `dim_K (L₂/L₁) = c` every subspace `V` satisfies
+`0 ≤ ind (L₁ ∩ V, M ∩ V) - ind (L₂ ∩ V, M ∩ V) ≤ c`.  Taking the maximum over `k`-dimensional `V`
+gives the partial sums `∑_{i≤k} μ_i` and the uniform bound `K_k = c`.  `(13)` then follows from the
+already formalized prefix-to-coordinate kernels in `DifferentialIndependentObservableNet.lean`.
+
+### Relative-dimension layer for `(12)`
+
+`SubspaceRelativeDimension.lean` starts the index calculus in the form the estimate needs, for
+subspaces of an arbitrary vector space (lattices over the operator ring are in particular
+`K`-subspaces, so nothing operator-specific is required):
+
+- `quotDim A B = dim_K (B mod A)`, the dimension of the image of `B` in `V ⧸ A`, and
+  `relIndex A B = quotDim A B - quotDim B A`;
+- `quotDim_inf_le : quotDim (A ⊓ N) (B ⊓ N) ≤ quotDim A B` — intersecting with an arbitrary
+  subspace can only shrink a relative dimension, because `(B ⊓ N)/(A ⊓ N)` embeds in `B/A`.  This
+  is what makes the constant in `(12)` independent of the moving lattice;
+- `quotDim_chain : quotDim X Z = quotDim Y Z + quotDim X Y` for `X ≤ Y ≤ Z`, by rank-nullity for
+  the comparison map `V ⧸ X → V ⧸ Y`.
+
+Remaining for `(12)`:
+
+1. `quotDim (A ⊓ N) N = quotDim A N` (the comparison map is bijective on these images);
+2. `finrank P + quotDim P Q = finrank Q` for `P ≤ Q`, and the resulting bound
+   `quotDim N B - quotDim N A ≤ quotDim A B`;
+3. assembling `0 ≤ relIndex (A ⊓ N) N - relIndex (B ⊓ N) N ≤ 2 · quotDim A B` for `A ≤ B`;
+4. `σ_k (L, M) = sup over k-dimensional subspaces V of relIndex (L ⊓ V) (M ⊓ V)`, the Cartan vector
+   `μ_k = σ_k - σ_{k-1}`, and the transport of `σ_k` through `j_P`.

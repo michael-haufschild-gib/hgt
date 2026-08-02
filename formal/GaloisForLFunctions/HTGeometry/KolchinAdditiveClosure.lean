@@ -58,9 +58,8 @@ theorem differentialPolynomialEvalOver_translate
       rcases p with ⟨i, n⟩
       rw [map_mul, map_mul, hP, differentialPolynomialTranslate_X,
         map_add, differentialPolynomialEvalOver_X,
-        differentialPolynomialEvalOver_C, map_mul, differentialPolynomialEvalOver_X,
-        GaloisForLFunctions.differentialJet_add_apply]
-      simp
+        differentialPolynomialEvalOver_C, map_mul, differentialPolynomialEvalOver_X]
+      simp [GaloisForLFunctions.differentialJet_add_apply]
 
 /-- Evaluation after polynomial negation is evaluation at the negative point. -/
 theorem differentialPolynomialEvalOver_neg
@@ -75,8 +74,8 @@ theorem differentialPolynomialEvalOver_neg
       rcases p with ⟨i, n⟩
       rw [map_mul, map_mul, hP, differentialPolynomialNeg_X,
         map_neg, differentialPolynomialEvalOver_X, map_mul,
-        differentialPolynomialEvalOver_X,
-        GaloisForLFunctions.differentialJet_neg_apply]
+        differentialPolynomialEvalOver_X]
+      simp [GaloisForLFunctions.differentialJet_neg_apply]
 
 /-- The affine Kolchin closure of an additive subgroup is an additive subgroup. -/
 def kolchinClosureAddSubgroup

@@ -208,7 +208,9 @@ the remaining scientific theorem after physical landing and singular graph const
       `MobiusThetaPhysicalSourceToXiLanding.lean`.
 - [x] Define complete physical source channels and prove finite telescoping plus codiagonal limit:
       `sum_range_mobiusThetaCompletePhysicalChannel` and
-      `tendsto_sum_range_mobiusThetaCompletePhysicalChannel`.
+      `tendsto_sum_range_mobiusThetaCompletePhysicalChannel`.  The quantitative refinement
+      `summable_norm_mobiusThetaCompletePhysicalChannel_three` proves the codiagonal is actually
+      `ell^1(L2)`, using an explicit geometric prime-normal envelope.
 - [ ] Prove the Fourier--Laplace formula (R-PN.6) on its honest domain.
 - [ ] Formalize reflected cocycle (R-PN.7)--(R-PN.8).
 - [ ] Package the single-valued closed graph and zero multivalued fibre.

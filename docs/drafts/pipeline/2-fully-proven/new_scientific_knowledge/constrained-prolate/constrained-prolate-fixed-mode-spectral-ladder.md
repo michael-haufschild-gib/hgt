@@ -452,8 +452,19 @@ terms of the constraint pairing corrected by the head defects.  A convergence pr
 only to drive the orthogonality defects to zero -- the passage from "defects small" to "close to the
 ladder" is an identity, not an estimate.
 
-This supplies the LIMIT side of `(10)`--`(11)` as `ell^2` data.  It does NOT prove that the exact eigenvectors
-converge to it, which is what the gate below still asks for.
+This supplies the LIMIT side of `(10)`--`(11)` as `ell^2` data.
+
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateDepthVectorLimit.lean` now completes the
+exact-root assembly under the named analytic contract.  It proves square-summability of every
+fixed-depth secular eigenvector, convergence of every finite-head coordinate ratio, collapse of
+the full offset tail, and the strong `ell^2` limit after scaling by the zeroth coordinate
+(`ClockEnvelope.ccm_depth_rescaled_secularLp_tendsto_hermiteContrast`).  The normalized capstone
+`ClockEnvelope.ccm_depth_normalized_rescaled_secularLp_tendsto_hermiteContrastUnit` proves that
+the resulting unit eigenvector converges strongly to `-hermiteContrastUnit k`; the minus sign is
+the canonical orientation forced by the negative zeroth coordinate of `w_k`.  No root-existence,
+tail, summability, or infinite-dimensional hypothesis remains outside `ClockEnvelope`, Bessel
+control, and the named finite prolate-to-Hermite coordinate limits.  Discharging those last true
+operator inputs remains the separate gate below.
 
 The **adjacent-level law `(9)` and its first excited constant `(13)` are now formalized** for the
 two-mode Fuchs model in `GaloisForLFunctions/RHTower/LadderAdjacentScaleSeparation.lean`.  Writing
@@ -527,7 +538,8 @@ adjacent law `(9)` (its two-mode and leakage-side forms are already formalized i
   `ccm_fuchsModel_depthSecularRoot_ratio_tendsto`) and the exact-root `lambda^8` adjacent law
   `(9)` (`ccm_fuchsModel_ladder_adjacent_scaled_ratio_tendsto`, coefficient
   `(theta_(k+1)/theta_k)·A_(k+2)/A_(k+1)`) formalized in Lean
-- [ ] eigenvector ladder limits `(10)`--`(11)` for the exact roots in Lean
+- [x] exact-root eigenvector ladder assembly `(10)`--`(11)` in Lean from `ClockEnvelope`, Bessel
+  control, and the named finite coordinate limits, including strong normalized `ell^2` convergence
 - [ ] true-operator ℓ-side inputs (Bessel bound, prolate-to-Hermite limits) and Fuchs
   identification in Lean
 - [ ] independent proof review

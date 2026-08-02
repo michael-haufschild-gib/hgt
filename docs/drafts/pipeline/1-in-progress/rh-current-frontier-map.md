@@ -6112,3 +6112,49 @@ Lean:
 ```text
 CCMFirstClockPrimitivePromotedPureHodgeModularTransgression.lean
 ```
+
+## 2026-08-02 Route J frontier update: adjacent-grade Hellinger--Gamma pure-Hodge coface
+
+The updated oriented-source-admission paper is decisive: fixed Hellinger-residue scaling cannot
+change relative admission, and the surviving producer must be an off-diagonal adjacent-grade
+coface with telescoping finite boundaries and a graph-Cauchy labelled chain.
+
+Its local source object is now constructed.  The even Gamma residue factor
+
+```text
+g_n = Res(Gamma,-2n) = 1/(2n)!
+```
+
+gauges the common-depth pure-Hodge modular transgression.  Adjacent differences change cell grade,
+remain Hodge-anti-fixed and actual-admitted for every auxiliary displacement, and telescope exactly.
+Factorial domination beats both reciprocal modular exponentials: the full two-sided gauged graph
+capacity tends to zero and has an explicit uniform bound for every real displacement.  Nevertheless
+each finite gradewise unsquared Poincare trace still vanishes exactly at zero displacement.
+
+This is new positive infrastructure, not a fixed-witness repair.  It closes the local coface,
+telescoping, Hodge-sector, and graph-capacity obligations.  It does not identify the local graph
+limit with the completed Xi Green primitive.
+
+Remaining Route-J producer is now:
+
+```text
+construct the coefficient-faithful completed-Xi coend of the local
+Hellinger--Gamma coface, prove labelled graph landing, and prove injectivity
+on the relative admission quotient.
+```
+
+The injectivity audit is mandatory: otherwise the pure target can erase the nonzero mixed relative
+class while preserving its secondary scalar trace.  Route J remains open until this coend is
+constructed unconditionally.
+
+Paper card:
+
+```text
+route-j-hellinger-gamma-residue-pure-hodge-coface.md
+```
+
+Lean:
+
+```text
+CCMFirstClockPrimitivePromotedHellingerGammaPureHodgeCoface.lean
+```

@@ -3391,3 +3391,97 @@ Assuming `(198)` would be theatre; deriving it would force `a=0` at every diviso
 formal/GaloisForLFunctions/RHTower/
   CCMFirstClockPrimitivePromotedPureHodgeModularTransgression.lean
 ```
+
+## 51. Hellinger--Gamma residue gauge produces the adjacent-grade graph-Cauchy coface
+
+`[PAPER+LEAN-PROVED LOCAL CONSTRUCTION]`
+`[PAPER+LEAN-PROVED UNIFORM CAPACITY]`
+`[OPEN COMPLETED-XI COEND]`
+
+The updated oriented source-admission law sharpens `(198)`: multiplying a fixed mixed witness by
+the full nonzero Hellinger residue cannot change its relative admission class.  A valid producer
+must change grade and differential.  The even Gamma residue inside the same Hellinger--Beta column
+does exactly that.  Put
+
+```text
+g_n=Res_(z=-2n) Gamma(z)=1/(2n)!.                  (199)
+```
+
+For fixed distinct primes `p,q`, apply this source-native grade gauge to the PHMT carrier at common
+Euler depth `n`:
+
+```text
+Q_n(a)=g_n Omega_a((p,n),(q,n)),
+E_n(a)=Q_(n+1)(a)-Q_n(a).                          (200)
+```
+
+Every `Q_n(a)` is Hodge-anti-fixed in its coefficient plane and actual-admitted for every auxiliary
+boundary displacement.  Hence every off-diagonal edge `E_n(a)` is actual-admitted.  Its finite
+boundaries telescope before any scalar orientation:
+
+```text
+sum_(n<N) E_n(a)=Q_N(a)-Q_0(a).                    (201)
+```
+
+This is not full-residue scaling on a fixed incidence line: both cell label and Gamma residue grade
+move.  It is the first literal adjacent-grade coface surviving the updated paper's obstruction.
+
+Let `L=log p+log q`, `c=|2aL|`, and let `C_a(p,q,n)` be `(195)`.  Its gauged graph capacity is
+
+```text
+K_a(p,q,n)=g_n^2 C_a(p,q,n).
+```
+
+Factorial domination gives the unconditional estimate
+
+```text
+0<=K_a(p,q,n)
+  <=2 exp(c(n+1))/((2n)!)^2
+  <=2 exp(c)(exp(c))^n/n!  -> 0.                  (202)
+```
+
+In particular, for every real `a`,
+
+```text
+K_a(p,q,n)<=2 exp(c) exp(exp(c))                  (203)
+```
+
+uniformly in `n`.  Thus the Hellinger--Gamma source grade overcomes the reciprocal exponential
+PHMT obstruction without assuming `a=0`.  If `x=e^{-a r_n}` and `y=e^{a r_n}`, the squared norm
+of the two opposite odd channels is
+
+```text
+g_n^2 (y-x)^2/2 <= g_n^2(x^2+y^2)=K_a(p,q,n),    (204)
+```
+
+so `Q_n(a)` is coefficient-graph-null and the partial coface primitives in `(201)` converge to
+`-Q_0(a)`.
+
+Graph damping does not erase the finite unsquared charge.  Gradewise Poincare trace gives
+
+```text
+Tr_n(Q_n(a))=g_n gamma_a((p,n),(q,n)),             (205)
+Tr_n(Q_n(a))=0 <-> a=0.                            (206)
+```
+
+The scalar trace differences telescope only after the vector coface has been constructed.  This
+closes the local adjacent-grade, telescoping, Hodge-preserving, uniformly graph-Cauchy part of the
+producer in the updated paper.
+
+It does not close Route J.  The limit of `(201)` is one depth-zero pure carrier, not the completed
+Xi Green primitive.  Exact remaining producer is now the coefficient-faithful coend:
+
+```text
+tensor the Hellinger--Gamma coface with the completed Xi Green source;
+prove its labelled graph limit equals the completed Xi Green primitive;
+prove the induced relative-admission quotient map is injective.          (207)
+```
+
+The final clause is forced by relative admission-spectrum conservation: without quotient
+injectivity, a pure lift could merely kill the nonzero mixed obstruction class.  Assuming any
+part of `(207)` would restate landing.  Lean certificate:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  CCMFirstClockPrimitivePromotedHellingerGammaPureHodgeCoface.lean
+```

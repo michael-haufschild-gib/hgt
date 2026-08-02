@@ -190,4 +190,361 @@ theorem gaussianSmoothing_of_even {f : ℝ → ℂ} (hf : Integrable f)
   rw [gaussianSmoothing, ← hsplit]
   ring
 
+
+/-! ## The reciprocal change of variables -/
+
+theorem ofReal_cpow_pos {v : ℝ} (hv : 0 < v) (z : ℂ) :
+    ((v : ℝ) : ℂ) ^ z = Complex.exp ((Real.log v : ℂ) * z) := by
+  rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (ne_of_gt hv)),
+    ← Complex.ofReal_log hv.le]
+
+theorem ofReal_inv_sq_eq_exp {v : ℝ} (hv : 0 < v) :
+    (((v ^ 2)⁻¹ : ℝ) : ℂ) = Complex.exp ((Real.log v : ℂ) * (-2)) := by
+  have hreal : Real.exp (Real.log v * (-2)) = (v ^ 2)⁻¹ := by
+    rw [show Real.log v * (-2) = -(2 * Real.log v) by ring, Real.exp_neg,
+      show (2 : ℝ) * Real.log v = ((2 : ℕ) : ℝ) * Real.log v by norm_num,
+      Real.exp_nat_mul, Real.exp_log hv]
+  rw [show ((Real.log v : ℂ) * (-2)) = ((Real.log v * (-2) : ℝ) : ℂ) by push_cast; ring,
+    ← Complex.ofReal_exp, hreal]
+
+theorem image_inv_Ioi : (fun v : ℝ => v⁻¹) '' Ioi 0 = Ioi 0 := by
+  ext u
+  constructor
+  · rintro ⟨v, hv, rfl⟩
+    exact mem_Ioi.mpr (inv_pos.mpr (mem_Ioi.mp hv))
+  · intro hu
+    exact ⟨u⁻¹, mem_Ioi.mpr (inv_pos.mpr (mem_Ioi.mp hu)), inv_inv u⟩
+
+theorem injOn_inv_Ioi : Set.InjOn (fun v : ℝ => v⁻¹) (Ioi 0) :=
+  fun _ _ _ _ h => inv_injective h
+
+/-- **Reciprocal change of variables on the positive ray.** -/
+theorem integral_Ioi_comp_inv {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (g : ℝ → F) :
+    (∫ u in Ioi (0 : ℝ), g u) = ∫ v in Ioi (0 : ℝ), (v ^ 2)⁻¹ • g v⁻¹ := by
+  have hderiv : ∀ v ∈ Ioi (0 : ℝ),
+      HasDerivWithinAt (fun s : ℝ => s⁻¹) (-(v ^ 2)⁻¹) (Ioi 0) v := by
+    intro v hv
+    exact (hasDerivAt_inv (ne_of_gt (mem_Ioi.mp hv))).hasDerivWithinAt
+  have h := MeasureTheory.integral_image_eq_integral_abs_deriv_smul
+    measurableSet_Ioi hderiv injOn_inv_Ioi g
+  rw [image_inv_Ioi] at h
+  rw [h]
+  refine setIntegral_congr_fun measurableSet_Ioi ?_
+  intro v hv
+  have hvpos : (0 : ℝ) < v := mem_Ioi.mp hv
+  have habs : |-(v ^ 2)⁻¹| = (v ^ 2)⁻¹ := by
+    rw [abs_neg, abs_of_pos (by positivity)]
+  dsimp only
+  rw [habs]
+
+/-- **Inversion of the completed Mellin weight.**  The reciprocal substitution exchanges the
+completed exponent `w` with `1 - w`. -/
+theorem integral_Ioi_cpow_mul_inv (w : ℂ) (H : ℝ → ℂ) :
+    (∫ u in Ioi (0 : ℝ),
+        (u : ℂ) ^ (w / 2 - 1) * (1 / (u : ℂ) ^ (1 / 2 : ℂ)) * H u⁻¹) =
+      ∫ v in Ioi (0 : ℝ), (v : ℂ) ^ ((1 - w) / 2 - 1) * H v := by
+  rw [integral_Ioi_comp_inv
+    (fun u : ℝ => (u : ℂ) ^ (w / 2 - 1) * (1 / (u : ℂ) ^ (1 / 2 : ℂ)) * H u⁻¹)]
+  refine setIntegral_congr_fun measurableSet_Ioi ?_
+  intro v hv
+  have hvpos : (0 : ℝ) < v := mem_Ioi.mp hv
+  have hvinv : (0 : ℝ) < v⁻¹ := inv_pos.mpr hvpos
+  have hscalar : (((v ^ 2)⁻¹ : ℝ) : ℂ) *
+      ((((v⁻¹ : ℝ)) : ℂ) ^ (w / 2 - 1) * (1 / (((v⁻¹ : ℝ)) : ℂ) ^ (1 / 2 : ℂ))) =
+      ((v : ℝ) : ℂ) ^ ((1 - w) / 2 - 1) := by
+    rw [ofReal_inv_sq_eq_exp hvpos, ofReal_cpow_pos hvinv, ofReal_cpow_pos hvinv,
+      ofReal_cpow_pos hvpos, Real.log_inv, one_div, ← Complex.exp_neg,
+      ← Complex.exp_add, ← Complex.exp_add]
+    congr 1
+    push_cast
+    ring
+  dsimp only
+  rw [inv_inv, Complex.real_smul, ← mul_assoc, hscalar]
+
+
+/-! ## Integrability of the Gamma kernel -/
+
+theorem integrableOn_rpow_mul_exp_neg_mul_Ioi {a r : ℝ} (ha : 0 < a) (hr : 0 < r) :
+    IntegrableOn (fun u : ℝ => u ^ (a - 1) * Real.exp (-(r * u))) (Ioi 0) := by
+  have hbase : IntegrableOn (fun x : ℝ => Real.exp (-x) * x ^ (a - 1)) (Ioi (r * 0)) := by
+    simpa using Real.GammaIntegral_convergent ha
+  have hscale :=
+    (integrableOn_Ioi_comp_mul_left_iff
+      (fun x : ℝ => Real.exp (-x) * x ^ (a - 1)) 0 hr).mpr hbase
+  have hconst : IntegrableOn
+      (fun u : ℝ => r ^ (1 - a) * (Real.exp (-(r * u)) * (r * u) ^ (a - 1))) (Ioi 0) :=
+    hscale.const_mul (r ^ (1 - a))
+  refine hconst.congr_fun ?_ measurableSet_Ioi
+  intro u hu
+  have hu0 : (0 : ℝ) < u := hu
+  dsimp only
+  rw [Real.mul_rpow hr.le hu0.le]
+  have hcancel : r ^ (1 - a) * r ^ (a - 1) = 1 := by
+    rw [← Real.rpow_add hr, show (1 : ℝ) - a + (a - 1) = 0 by ring, Real.rpow_zero]
+  calc r ^ (1 - a) * (Real.exp (-(r * u)) * (r ^ (a - 1) * u ^ (a - 1)))
+      = (r ^ (1 - a) * r ^ (a - 1)) * (u ^ (a - 1) * Real.exp (-(r * u))) := by ring
+    _ = u ^ (a - 1) * Real.exp (-(r * u)) := by rw [hcancel, one_mul]
+
+theorem continuousOn_cpow_ofReal (z : ℂ) :
+    ContinuousOn (fun u : ℝ => (u : ℂ) ^ z) (Ioi (0 : ℝ)) := by
+  refine ContinuousOn.congr ?_ (fun u hu => ofReal_cpow_pos (mem_Ioi.mp hu) z)
+  refine Complex.continuous_exp.comp_continuousOn ?_
+  refine ContinuousOn.mul ?_ continuousOn_const
+  refine Complex.continuous_ofReal.comp_continuousOn ?_
+  exact Real.continuousOn_log.mono (fun u hu => ne_of_gt (mem_Ioi.mp hu))
+
+theorem integrableOn_cpow_mul_gaussianKernel {a : ℂ} (ha : 0 < a.re) {t : ℝ} (ht : 0 < t) :
+    IntegrableOn (fun u : ℝ => (u : ℂ) ^ (a - 1) *
+      Complex.exp (-(Real.pi : ℂ) * (u : ℂ) * (t : ℂ) ^ 2)) (Ioi 0) := by
+  have hr : 0 < Real.pi * t ^ 2 := by positivity
+  refine Integrable.mono' (integrableOn_rpow_mul_exp_neg_mul_Ioi
+    (by simpa using ha : 0 < a.re) hr) ?_ ?_
+  · refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_Ioi
+    refine (continuousOn_cpow_ofReal (a - 1)).mul ?_
+    exact (Complex.continuous_exp.comp (by fun_prop)).continuousOn
+  · filter_upwards [ae_restrict_mem measurableSet_Ioi] with u hu
+    have hu0 : (0 : ℝ) < u := hu
+    rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hu0, gaussianKernel_ofReal,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+    have hre : (a - 1).re = a.re - 1 := by simp
+    rw [hre]
+    have harg : -(Real.pi * u * t ^ 2) = -(Real.pi * t ^ 2 * u) := by ring
+    rw [harg]
+
+/-- The real Gamma resolution of the completed power weight. -/
+theorem integral_Ioi_rpow_gaussianPower {σ : ℝ} (hσ : 0 < σ) {t : ℝ} (ht : 0 < t) :
+    (∫ u in Ioi (0 : ℝ), u ^ (σ / 2 - 1) * Real.exp (-(Real.pi * t ^ 2 * u))) =
+      Real.Gamma (σ / 2) * (Real.pi ^ (-σ / 2) * t ^ (-σ)) := by
+  have hr : 0 < Real.pi * t ^ 2 := by positivity
+  have h := integral_rpow_mul_exp_neg_mul_Ioi (a := σ / 2) (r := Real.pi * t ^ 2)
+    (by linarith) hr
+  rw [h]
+  have hbase : (1 / (Real.pi * t ^ 2)) ^ (σ / 2) =
+      Real.pi ^ (-σ / 2) * t ^ (-σ) := by
+    rw [one_div, ← Real.rpow_neg_one (Real.pi * t ^ 2), ← Real.rpow_mul hr.le,
+      Real.mul_rpow Real.pi_pos.le (by positivity),
+      show (t : ℝ) ^ (2 : ℕ) = t ^ (2 : ℝ) from (Real.rpow_natCast t 2).symm,
+      ← Real.rpow_mul ht.le]
+    congr 1
+    · congr 1
+      ring
+    · congr 1
+      ring
+  rw [hbase]
+  ring
+
+
+/-! ## The Fubini interchange -/
+
+/-- **The completed Mellin transform factors through Gaussian smoothing.**  Resolving the power
+weight by the Gamma integral and interchanging the two positive rays expresses the completed Mellin
+evaluation as the Mellin transform of the Gaussian smoothing family. -/
+theorem mellinCompletion_eq_integral_gaussianSmoothing
+    {w : ℂ} (hw : 0 < w.re) {f : ℝ → ℂ}
+    (hmeas : AEStronglyMeasurable f (volume.restrict (Ioi (0 : ℝ))))
+    (hint : IntegrableOn (fun t : ℝ => ‖f t‖ * t ^ (-w.re)) (Ioi 0)) :
+    mellinCompletionFactor w * (∫ t in Ioi (0 : ℝ), f t * (t : ℂ) ^ (-w)) =
+      ∫ u in Ioi (0 : ℝ), (u : ℂ) ^ (w / 2 - 1) *
+        ∫ t in Ioi (0 : ℝ), f t *
+          Complex.exp (-(Real.pi : ℂ) * (u : ℂ) * (t : ℂ) ^ 2) := by
+  have hw2 : 0 < (w / 2).re := by
+    rw [re_div_two]
+    linarith
+  set F : ℝ → ℝ → ℂ := fun t u =>
+    f t * ((u : ℂ) ^ (w / 2 - 1) *
+      Complex.exp (-(Real.pi : ℂ) * (u : ℂ) * (t : ℂ) ^ 2)) with hFdef
+  have hker : ContinuousOn
+      (fun p : ℝ × ℝ => (p.2 : ℂ) ^ (w / 2 - 1) *
+        Complex.exp (-(Real.pi : ℂ) * (p.2 : ℂ) * (p.1 : ℂ) ^ 2))
+      (Ioi (0 : ℝ) ×ˢ Ioi (0 : ℝ)) := by
+    refine ContinuousOn.mul ?_ ?_
+    · exact (continuousOn_cpow_ofReal (w / 2 - 1)).comp continuous_snd.continuousOn
+        fun p hp => hp.2
+    · exact (Complex.continuous_exp.comp (by fun_prop)).continuousOn
+  have hAE : AEStronglyMeasurable (Function.uncurry F)
+      ((volume.restrict (Ioi (0 : ℝ))).prod (volume.restrict (Ioi (0 : ℝ)))) := by
+    have h1 : AEStronglyMeasurable (fun p : ℝ × ℝ => f p.1)
+        ((volume.restrict (Ioi (0 : ℝ))).prod (volume.restrict (Ioi (0 : ℝ)))) :=
+      hmeas.comp_fst
+    have h2 : AEStronglyMeasurable
+        (fun p : ℝ × ℝ => (p.2 : ℂ) ^ (w / 2 - 1) *
+          Complex.exp (-(Real.pi : ℂ) * (p.2 : ℂ) * (p.1 : ℂ) ^ 2))
+        ((volume.restrict (Ioi (0 : ℝ))).prod (volume.restrict (Ioi (0 : ℝ)))) := by
+      rw [Measure.prod_restrict]
+      exact hker.aestronglyMeasurable (measurableSet_Ioi.prod measurableSet_Ioi)
+    exact h1.mul h2
+  have hslice : ∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))),
+      Integrable (fun u => F t u) (volume.restrict (Ioi (0 : ℝ))) := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+    exact (integrableOn_cpow_mul_gaussianKernel hw2 (mem_Ioi.mp ht)).const_mul (f t)
+  have hnormF : ∀ t ∈ Ioi (0 : ℝ), ∀ u ∈ Ioi (0 : ℝ),
+      ‖F t u‖ = ‖f t‖ * (u ^ (w.re / 2 - 1) * Real.exp (-(Real.pi * t ^ 2 * u))) := by
+    intro t _ u hu
+    have hu0 : (0 : ℝ) < u := hu
+    rw [hFdef]
+    dsimp only
+    rw [norm_mul, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hu0,
+      gaussianKernel_ofReal, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_pos (Real.exp_pos _)]
+    have hre : (w / 2 - 1).re = w.re / 2 - 1 := by
+      rw [Complex.sub_re, re_div_two]
+      norm_num
+    rw [hre, show -(Real.pi * u * t ^ 2) = -(Real.pi * t ^ 2 * u) from by ring]
+  have hnormint : ∀ t ∈ Ioi (0 : ℝ),
+      (∫ u, ‖F t u‖ ∂(volume.restrict (Ioi (0 : ℝ)))) =
+        Real.Gamma (w.re / 2) * Real.pi ^ (-w.re / 2) * (‖f t‖ * t ^ (-w.re)) := by
+    intro t ht
+    have ht0 : (0 : ℝ) < t := ht
+    rw [setIntegral_congr_fun measurableSet_Ioi (fun u hu => hnormF t ht u hu),
+      integral_const_mul, integral_Ioi_rpow_gaussianPower (by linarith) ht0]
+    ring
+  have hbound : Integrable (fun t => ∫ u, ‖F t u‖ ∂(volume.restrict (Ioi (0 : ℝ))))
+      (volume.restrict (Ioi (0 : ℝ))) := by
+    have hc : IntegrableOn (fun t : ℝ =>
+        Real.Gamma (w.re / 2) * Real.pi ^ (-w.re / 2) * (‖f t‖ * t ^ (-w.re))) (Ioi 0) :=
+      hint.const_mul _
+    refine hc.congr_fun ?_ measurableSet_Ioi
+    intro t ht
+    exact (hnormint t ht).symm
+  have hprod : Integrable (Function.uncurry F)
+      ((volume.restrict (Ioi (0 : ℝ))).prod (volume.restrict (Ioi (0 : ℝ)))) :=
+    (integrable_prod_iff hAE).mpr ⟨hslice, hbound⟩
+  have hswap := integral_integral_swap hprod
+  have hL : (∫ t in Ioi (0 : ℝ), ∫ u in Ioi (0 : ℝ), F t u) =
+      mellinCompletionFactor w * ∫ t in Ioi (0 : ℝ), f t * (t : ℂ) ^ (-w) := by
+    rw [← integral_const_mul]
+    refine setIntegral_congr_fun measurableSet_Ioi ?_
+    intro t ht
+    have ht0 : (0 : ℝ) < t := ht
+    dsimp only [hFdef]
+    rw [integral_const_mul, integral_Ioi_gaussianPower hw ht0]
+    ring
+  have hR : (∫ u in Ioi (0 : ℝ), ∫ t in Ioi (0 : ℝ), F t u) =
+      ∫ u in Ioi (0 : ℝ), (u : ℂ) ^ (w / 2 - 1) *
+        ∫ t in Ioi (0 : ℝ), f t *
+          Complex.exp (-(Real.pi : ℂ) * (u : ℂ) * (t : ℂ) ^ 2) := by
+    refine setIntegral_congr_fun measurableSet_Ioi ?_
+    intro u _
+    dsimp only
+    rw [← integral_const_mul]
+    refine setIntegral_congr_fun measurableSet_Ioi ?_
+    intro t _
+    dsimp only [hFdef]
+    ring
+  rw [← hL, hswap, hR]
+
+
+/-! ## The archimedean functional equation -/
+
+theorem ofReal_inv_cpow {v : ℝ} (hv : 0 < v) (z : ℂ) :
+    (((v⁻¹ : ℝ)) : ℂ) ^ z = ((v : ℝ) : ℂ) ^ (-z) := by
+  rw [ofReal_cpow_pos (inv_pos.mpr hv), ofReal_cpow_pos hv, Real.log_inv]
+  congr 1
+  push_cast
+  ring
+
+/-- The Fourier transform of an even function is even. -/
+theorem fourier_even_of_even {f : ℝ → ℂ} (heven : ∀ t : ℝ, f (-t) = f t) (ξ : ℝ) :
+    (𝓕 f) (-ξ) = (𝓕 f) ξ := by
+  have h := (Measure.measurePreserving_neg (volume : Measure ℝ)).integral_comp
+    measurableEmbedding_neg (fun v : ℝ => Real.fourierChar (-(inner ℝ v ξ)) • f v)
+  rw [Real.fourier_eq, Real.fourier_eq, ← h]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun v => ?_)
+  show (Real.fourierChar (-(inner ℝ v (-ξ))) • f v) =
+    Real.fourierChar (-(inner ℝ (-v) ξ)) • f (-v)
+  rw [heven v, inner_neg_left, inner_neg_right]
+
+/-- **The archimedean functional equation.**  For an even integrable function with integrable
+Fourier transform, the completed Mellin evaluation at `w` agrees with that of the Fourier transform
+at `1 - w`. -/
+theorem soninMellinEvaluation_fourier
+    {w : ℂ} (hlo : 0 < w.re) (hhi : w.re < 1) {f : ℝ → ℂ}
+    (hf : Integrable f) (hFf : Integrable (𝓕 f)) (heven : ∀ t : ℝ, f (-t) = f t)
+    (hint : IntegrableOn (fun t : ℝ => ‖f t‖ * t ^ (-w.re)) (Ioi 0))
+    (hFint : IntegrableOn (fun t : ℝ => ‖(𝓕 f) t‖ * t ^ (-(1 - w).re)) (Ioi 0)) :
+    soninMellinEvaluation w f = soninMellinEvaluation (1 - w) (𝓕 f) := by
+  have hw1 : 0 < (1 - w).re := by
+    rw [Complex.sub_re, Complex.one_re]
+    linarith
+  have hmeas : AEStronglyMeasurable f (volume.restrict (Ioi (0 : ℝ))) :=
+    hf.aestronglyMeasurable.restrict
+  have hFmeas : AEStronglyMeasurable (𝓕 f) (volume.restrict (Ioi (0 : ℝ))) :=
+    hFf.aestronglyMeasurable.restrict
+  have hFeven : ∀ t : ℝ, (𝓕 f) (-t) = (𝓕 f) t := fourier_even_of_even heven
+  have hhalf : ∀ u : ℝ, 0 < u →
+      (∫ t in Ioi (0 : ℝ), f t *
+          Complex.exp (-(Real.pi : ℂ) * (u : ℂ) * (t : ℂ) ^ 2)) =
+        1 / (u : ℂ) ^ (1 / 2 : ℂ) *
+          ∫ t in Ioi (0 : ℝ), (𝓕 f) t *
+            Complex.exp (-(Real.pi : ℂ) * ((u⁻¹ : ℝ) : ℂ) * (t : ℂ) ^ 2) := by
+    intro u hu
+    have huinv : (0 : ℝ) < u⁻¹ := inv_pos.mpr hu
+    have h1 := gaussianSmoothing_of_even hf heven hu.le
+    have h2 := gaussianSmoothing_of_even hFf hFeven huinv.le
+    have h3 := gaussianSmoothing_fourier hf huinv
+    rw [inv_inv] at h3
+    -- h3 : gaussianSmoothing (𝓕 f) u⁻¹ = 1/((u⁻¹ : ℝ) : ℂ)^(1/2) * gaussianSmoothing f u
+    have hfac : ((1 : ℂ) / (((u⁻¹ : ℝ)) : ℂ) ^ (1 / 2 : ℂ))⁻¹ =
+        1 / ((u : ℝ) : ℂ) ^ (1 / 2 : ℂ) := by
+      rw [ofReal_inv_cpow hu, Complex.cpow_neg]
+      simp
+    have hne : (((u⁻¹ : ℝ)) : ℂ) ^ (1 / 2 : ℂ) ≠ 0 := by
+      rw [ofReal_cpow_pos huinv]
+      exact Complex.exp_ne_zero _
+    have hsolve : gaussianSmoothing f u =
+        1 / ((u : ℝ) : ℂ) ^ (1 / 2 : ℂ) * gaussianSmoothing (𝓕 f) u⁻¹ := by
+      rw [h3, ← hfac, inv_mul_cancel_left₀ (one_div_ne_zero hne)]
+    rw [h1, h2] at hsolve
+    linear_combination hsolve / 2
+  have hA : soninMellinEvaluation w f =
+      ∫ u in Ioi (0 : ℝ), (u : ℂ) ^ (w / 2 - 1) *
+        ∫ t in Ioi (0 : ℝ), f t *
+          Complex.exp (-(Real.pi : ℂ) * (u : ℂ) * (t : ℂ) ^ 2) := by
+    rw [soninMellinEvaluation]
+    simp only [soninMellinKernel]
+    exact mellinCompletion_eq_integral_gaussianSmoothing hlo hmeas hint
+  have hB : soninMellinEvaluation (1 - w) (𝓕 f) =
+      ∫ v in Ioi (0 : ℝ), (v : ℂ) ^ ((1 - w) / 2 - 1) *
+        ∫ t in Ioi (0 : ℝ), (𝓕 f) t *
+          Complex.exp (-(Real.pi : ℂ) * (v : ℂ) * (t : ℂ) ^ 2) := by
+    rw [soninMellinEvaluation]
+    simp only [soninMellinKernel]
+    exact mellinCompletion_eq_integral_gaussianSmoothing hw1 hFmeas hFint
+  have hsub := integral_Ioi_cpow_mul_inv w
+    (fun v : ℝ => ∫ t in Ioi (0 : ℝ), (𝓕 f) t *
+      Complex.exp (-(Real.pi : ℂ) * (v : ℂ) * (t : ℂ) ^ 2))
+  rw [hA, hB, ← hsub]
+  refine setIntegral_congr_fun measurableSet_Ioi ?_
+  intro u hu
+  dsimp only
+  rw [hhalf u (mem_Ioi.mp hu)]
+  ring
+
+
+/-- **Reflected aperture bound.**  Below the critical line the completed Mellin evaluator obeys the
+aperture bound with the reflected constant `C(1-w)` and the reflected exponent `A^(Re w - 1/2)`, by
+transporting the ambient estimate across the archimedean functional equation. -/
+theorem norm_soninMellinEvaluation_le_aperture_reflected
+    {w : ℂ} (hlo : 0 < w.re) (hhi : w.re < 1 / 2) {A : ℝ} (hA : 0 < A)
+    {f : ℝ → ℂ} (hf : Integrable f) (hFf : Integrable (𝓕 f))
+    (heven : ∀ t : ℝ, f (-t) = f t)
+    (hint : IntegrableOn (fun t : ℝ => ‖f t‖ * t ^ (-w.re)) (Ioi 0))
+    (hFint : IntegrableOn (fun t : ℝ => ‖(𝓕 f) t‖ * t ^ (-(1 - w).re)) (Ioi 0))
+    (hFmem : MemLp (𝓕 f) 2 (volume.restrict (Ioi (0 : ℝ))))
+    (hFhead : SoninHeadConstant A (𝓕 f)) :
+    ‖soninMellinEvaluation w f‖ ≤
+      soninApertureConstant (1 - w) * A ^ (w.re - 1 / 2) * ‖hFmem.toLp _‖ := by
+  have hre : (1 - w).re = 1 - w.re := by
+    rw [Complex.sub_re, Complex.one_re]
+  have h1 : 1 / 2 < (1 - w).re := by
+    rw [hre]
+    linarith
+  have h2 : (1 - w).re < 1 := by
+    rw [hre]
+    linarith
+  rw [soninMellinEvaluation_fourier hlo (by linarith) hf hFf heven hint hFint]
+  have hbound := norm_soninMellinEvaluation_le_soninApertureConstant h1 h2 hA hFmem hFhead
+  rwa [show (1 : ℝ) / 2 - (1 - w).re = w.re - 1 / 2 from by rw [hre]; ring] at hbound
+
 end RHTower

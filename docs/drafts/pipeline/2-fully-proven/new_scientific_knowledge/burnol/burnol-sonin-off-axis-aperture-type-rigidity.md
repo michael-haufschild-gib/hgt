@@ -337,13 +337,76 @@ gaussianSmoothing_of_even
 
 The first is the Gamma integral applied to the Gaussian at rate `pi t^2`; the second is mathlib's
 self-adjointness of the Fourier integral tested against the self-dual Gaussian, whose transform
-supplies exactly the factor `u^(-1/2)` and the reciprocal scale.  Chaining them by Fubini and the
-inversion substitution `u -> 1/u` yields `(8)`; those two remaining steps are the current front.
+supplies exactly the factor `u^(-1/2)` and the reciprocal scale.
 
-Still outside the formal tree: the Fubini interchange and the inversion substitution completing
-`(8)`; Burnol's orthogonal-complement identification `(10)`; and the co-Poisson dilation
-contractions giving the lower bound `(11)`.  Those are what the two-sided law `(12)` and the limit
-`(13)` still require.
+The inversion substitution is proved as well:
+
+```text
+integral_Ioi_comp_inv      : reciprocal change of variables on the positive ray,
+integral_Ioi_cpow_mul_inv  : integral_{(0,infinity)} u^(w/2-1) u^(-1/2) H(1/u) du
+                               = integral_{(0,infinity)} v^((1-w)/2-1) H(v) dv,
+```
+
+so the substitution that exchanges `w` with `1 - w` is now a Lean theorem.  The side conditions of
+the remaining Fubini interchange are also in place:
+
+```text
+integrableOn_rpow_mul_exp_neg_mul_Ioi : the scaled real Gamma kernel is integrable,
+integrableOn_cpow_mul_gaussianKernel  : the complex Gamma kernel is integrable at rate pi t^2,
+integral_Ioi_rpow_gaussianPower       : integral_{(0,infinity)} u^(sigma/2-1) exp(-pi t^2 u) du
+                                          = Gamma(sigma/2) pi^(-sigma/2) t^(-sigma).
+```
+
+The Fubini interchange is proved as well, so `(8)` itself is now a Lean theorem:
+
+```text
+mellinCompletion_eq_integral_gaussianSmoothing
+  : 0 < Re w, integral ||f(t)|| t^(-Re w) dt < infinity
+    -> pi^(-w/2) Gamma(w/2) integral f(t) t^(-w) dt
+         = integral_{(0,infinity)} u^(w/2-1) (integral_{(0,infinity)} f(t) e^{-pi u t^2} dt) du,
+fourier_even_of_even
+  : the Fourier transform of an even function is even,
+soninMellinEvaluation_fourier
+  : 0 < Re w < 1, f even, f and its Fourier transform integrable and Mellin admissible
+    -> M f(w) = M(Fourier f)(1-w).                                              (8)
+```
+
+Consequently the reflected range of `(3)` follows by transporting the ambient bound across `(8)`:
+
+```text
+norm_soninMellinEvaluation_le_aperture_reflected
+  : 0 < Re w < 1/2 -> ||M f w|| <= C(1-w) A^(Re w - 1/2) ||Fourier f||           (3), (4) for C_-
+```
+
+with `C(1-w) = ||gamma(1-w)|| (1/||w|| + 1/sqrt(1 - 2 Re w))`, which is exactly the constant
+`C_-(w)` of the card.  Both halves of the ambient off-axis bound are therefore unconditional in
+Lean.
+
+The Sonine space is also proved to be a Hilbert space, in
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolSoninRieszVector.lean
+```
+
+The constant-head class is exhibited as the kernel of one bounded operator --- the head cutoff minus
+the rank-one projection onto the head indicator:
+
+```text
+soninHeadDefect a           = indicatorCutoff (0,a) - <head indicator, -> * a^(-1) * head indicator,
+soninHeadDefect_eq_zero_iff : soninHeadDefect a f = 0 <-> f is a.e. constant on (0,a),
+isClosed_soninHeadConstant  : the constant-head class is closed,
+isClosed_soninExtendedSpace : L_a is a closed subspace of the even carrier,
+instCompleteSpaceSoninExtendedSpace : hence L_a is complete.
+```
+
+Completeness is the missing prerequisite for the continuous Gamma-completed evaluation vector
+`k_{w,a}` of `(GS3)`: with `L_a` complete and the aperture estimate bounding the completed Mellin
+evaluation on it, Riesz representation produces `k_{w,a}` with `||k_{w,a}||` equal to the functional
+norm, which is what turns the proved bound into the boxed form of `(3)`.
+
+Still outside the formal tree: the Riesz representative itself, Burnol's orthogonal-complement
+identification `(10)`, and the co-Poisson dilation contractions giving the lower bound `(11)`.
+Those are what the two-sided law `(12)` and the limit `(13)` still require.
 
 ## Gates
 
@@ -357,6 +420,11 @@ contractions giving the lower bound `(11)`.  Those are what the two-sided law `(
 - [x] Lean: completed Mellin evaluator, aperture-head class, ambient bound `(3)`--`(7)`, `(14)`
 - [x] Lean: unitary cosine transform `F_+`, extended Sonine space `L_a`, cosine invariance
 - [x] Lean: Gamma resolution of the completed power weight and the Gaussian multiplication formula
-- [ ] Lean: Fubini interchange and inversion substitution completing `(8)`
+- [x] Lean: inversion substitution exchanging `w` with `1 - w`
+- [x] Lean: Gamma-kernel integrability and the real Gamma resolution (Fubini side conditions)
+- [x] Lean: Fubini interchange and the archimedean functional equation `(8)`
+- [x] Lean: reflected aperture bound `(3)`,`(4)` with the constant `C_-` for `Re w < 1/2`
+- [x] Lean: `L_a` is closed and complete (prerequisite for the Riesz evaluation vector)
+- [ ] Lean: the Riesz evaluation vector `k_{w,a}` and the boxed form of `(3)`
 - [ ] Lean: orthogonal-complement identification `(10)` and co-Poisson lower bound `(11)`
 

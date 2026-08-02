@@ -366,7 +366,11 @@ DAGs without repeating the audits.
 - [x] `order-three-elliptic-gamma-bottom-face-joint-atomicity` — complete: six-face joint
   atomicity, finite-family degree, and the multiplicative family formalized unconditionally
   (`OrderThreeBottomFaceJointAtomicity.lean`)
-- [ ] `order-three-elliptic-gamma-full-structural-differential-matroid` — theorem/corollary surface inventory pending
+- [x] `order-three-elliptic-gamma-full-structural-differential-matroid` — complete: all-order
+  structural span decomposition, deep-packet `(face, shift)` faithfulness, and the operator-row
+  matroid and rank laws formalized unconditionally
+  (`MultipleEllipticGammaStructuralSpanDecomposition.lean`,
+  `MultipleEllipticGammaDeepPacketFaithfulness.lean`)
 - [x] `order-two-elliptic-gamma-full-structural-differential-matroid` — complete: squarefree
   hierarchy identification, faithful coordinate packet, and the operator-row matroid and rank laws
   formalized unconditionally (`OrderTwoStructuralTranslateDecomposition.lean`,

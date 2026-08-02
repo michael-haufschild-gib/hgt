@@ -328,6 +328,9 @@ instance : Ring (DiffOp K) :=
     one_mul := one_mul'
     mul_one := mul_one' }
 
+instance : IsScalarTower K (DiffOp K) (DiffOp K) :=
+  ⟨fun a p q => smul_mul' a p q⟩
+
 /-- Scalars, as order-zero operators. -/
 def C (a : K) : DiffOp K := mono 0 a
 

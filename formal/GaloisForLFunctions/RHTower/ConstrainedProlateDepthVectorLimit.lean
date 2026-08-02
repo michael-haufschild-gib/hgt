@@ -179,6 +179,60 @@ theorem ClockEnvelope.ccm_depth_rescaled_secularLp_tendsto_hermiteContrast
   rw [tendsto_iff_norm_sub_tendsto_zero]
   simpa only [w0] using hnorm
 
+/-- The unit normalization of the rescaled Hermite contrast is the negative canonical contrast
+unit.  The minus sign is forced because its zeroth coordinate is negative. -/
+theorem normalized_rescaled_hermiteContrast_eq_neg (k : ℕ) :
+    (‖(constrainedProlateHermiteContrast k 0)⁻¹ • hermiteContrastLp k‖)⁻¹ •
+        ((constrainedProlateHermiteContrast k 0)⁻¹ • hermiteContrastLp k) =
+      -hermiteContrastUnit k := by
+  have ha0 := constrainedProlateHermiteCoordinate_pos 0
+  have hw0 : constrainedProlateHermiteContrast k 0 =
+      -constrainedProlateHermiteCoordinate 0 :=
+    constrainedProlateHermiteContrast_of_le (Nat.zero_le k)
+  have hW := hermiteContrastLp_ne_zero k
+  rw [norm_smul, Real.norm_eq_abs, hw0, inv_neg, abs_neg,
+    abs_inv, abs_of_pos ha0, hermiteContrastUnit]
+  have ha0ne := ha0.ne'
+  have hnormne := norm_ne_zero_iff.mpr hW
+  rw [smul_smul, ← neg_smul]
+  congr 1
+  field_simp
+
+/-- **Normalized fixed-depth eigenvector ladder limit.**  The exact depth eigenvector, oriented by
+its nonzero zeroth coordinate and normalized to unit length, converges strongly to the canonical
+Hermite contrast unit (with the forced global minus sign).  This is the metric `ℓ²` statement of
+the card's eigenvector limit. -/
+theorem ClockEnvelope.ccm_depth_normalized_rescaled_secularLp_tendsto_hermiteContrastUnit
+    {D : ℝ → ℕ → ℝ} {e : ℕ → ℕ} {E : ℝ → ℝ}
+    (h : ClockEnvelope D e E) (k : ℕ) {ℓ : ℝ → ℕ → ℝ}
+    (hsum : ∀ᶠ lam in atTop, Summable fun j => ℓ lam j ^ 2)
+    (hbessel : ∀ᶠ lam in atTop, (∑' j : ℕ, ℓ lam j ^ 2) ≤ 2 * lam)
+    (hl : ∀ j, j ≤ k + 1 → Tendsto (fun lam => ℓ lam j) atTop
+      (nhds (constrainedProlateHermiteCoordinate j))) :
+    Tendsto (fun lam =>
+      let V := (secularVector (D lam) (ℓ lam)
+          (depthSecularRoot (D lam) (ℓ lam) k) 0)⁻¹ •
+        secularLp (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k)
+      (‖V‖)⁻¹ • V) atTop (nhds (-hermiteContrastUnit k)) := by
+  let X : ℝ → lp (fun _ : ℕ => ℝ) 2 := fun lam =>
+    (secularVector (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k) 0)⁻¹ •
+      secularLp (D lam) (ℓ lam) (depthSecularRoot (D lam) (ℓ lam) k)
+  let X0 : lp (fun _ : ℕ => ℝ) 2 :=
+    (constrainedProlateHermiteContrast k 0)⁻¹ • hermiteContrastLp k
+  have hX : Tendsto X atTop (nhds X0) :=
+    h.ccm_depth_rescaled_secularLp_tendsto_hermiteContrast k hsum hbessel hl
+  have hscalar : Tendsto (fun lam => (‖X lam‖)⁻¹) atTop (nhds (‖X0‖)⁻¹) :=
+    hX.norm.inv₀ (norm_ne_zero_iff.mpr (smul_ne_zero
+      (inv_ne_zero (by
+        rw [constrainedProlateHermiteContrast_of_le (Nat.zero_le k)]
+        exact neg_ne_zero.mpr (constrainedProlateHermiteCoordinate_ne_zero 0)))
+      (hermiteContrastLp_ne_zero k)))
+  have hnormalized : Tendsto (fun lam => (‖X lam‖)⁻¹ • X lam) atTop
+      (nhds ((‖X0‖)⁻¹ • X0)) := hscalar.smul hX
+  rw [show (‖X0‖)⁻¹ • X0 = -hermiteContrastUnit k by
+    exact normalized_rescaled_hermiteContrast_eq_neg k] at hnormalized
+  exact hnormalized
+
 end RHTower
 
 end

@@ -392,6 +392,158 @@ tail. -/
 def mobiusThetaDirectPhysicalRung (m : ℕ) : MobiusThetaSourceL2 :=
   mobiusThetaPrimeNormalResidual 1 m
 
+/-! ### Exact physical-source weld
+
+The prime-normal residual was constructed from physical integer labels, whereas `mobiusThetaRung`
+was constructed from the power-supported arithmetic function `mPart`.  The next theorem proves
+that these are the same `L²` vector.  This is the missing representation weld: prime-normal graph
+estimates therefore apply to the source whose Fourier transform lands in Xi, rather than to a
+parallel surrogate.
+-/
+
+/-- Direct power-indexed Dirichlet term before `mPart` reindexing. -/
+def mobiusThetaDirectDirichletTerm (m n : ℕ) : MobiusThetaSourceL2 :=
+  LSeries.term (↗(μ : ArithmeticFunction ℤ)) ((m : ℂ) / 2) n •
+    MellinL2.additiveTranslationUnitary
+      (-((m : ℝ) * Real.log n) * MellinL2.spectralNormalization)
+      xiThetaSourceL2
+
+theorem mobiusThetaDirectDirichletTerm_zero (m : ℕ) :
+    mobiusThetaDirectDirichletTerm m 0 = 0 := by
+  simp [mobiusThetaDirectDirichletTerm]
+
+theorem mobiusThetaDirectDirichletTerm_one (m : ℕ) :
+    mobiusThetaDirectDirichletTerm m 1 = xiThetaSourceL2 := by
+  simp only [mobiusThetaDirectDirichletTerm, LSeries.term_of_ne_zero one_ne_zero,
+    ArithmeticFunction.moebius_apply_one, Nat.cast_one, one_cpow, div_one,
+    Real.log_one, mul_zero, neg_zero, zero_mul]
+  apply Lp.ext
+  filter_upwards [Lp.coeFn_compMeasurePreserving xiThetaSourceL2
+    (MellinL2.realTranslation_measurePreserving 0)] with x hx
+  simpa [MellinL2.additiveTranslationUnitary, MellinL2.lpCompMeasurePreservingEquiv,
+    MellinL2.realTranslationEquiv] using hx
+
+/-- The tail used in prime-normal extraction is exactly the direct Dirichlet source term at the
+corresponding positive integer label. -/
+theorem mobiusThetaDirectDirichletTerm_add_two (m k : ℕ) :
+    mobiusThetaDirectDirichletTerm m (k + 2) =
+      mobiusThetaPrimeNormalTailTerm 1 m k := by
+  rw [mobiusThetaDirectDirichletTerm,
+    LSeries.term_of_ne_zero (by omega : k + 2 ≠ 0),
+    mobiusThetaPrimeNormalTailTerm, mobiusThetaPrimeNormalWeight]
+  rw [show 1 + k + 1 = k + 2 by omega]
+  congr 2
+  · rw [Complex.ofReal_mul]
+    norm_num only [Nat.cast_one]
+    have hr := Complex.ofReal_cpow
+      (x := (1 : ℝ) / (k + 2 : ℕ))
+      (by positivity : 0 ≤ (1 : ℝ) / (k + 2 : ℕ)) ((m : ℝ) / 2)
+    rw [hr]
+    push_cast
+    rw [one_div, Complex.inv_cpow _ _ (by
+      rw [show (k : ℂ) + 2 = (((k : ℝ) + 2 : ℝ) : ℂ) by push_cast; rfl,
+        Complex.arg_ofReal_of_nonneg (by positivity)]
+      exact Real.pi_pos.ne'.symm)]
+    ring
+  · congr 2
+    congr 1
+    push_cast
+    ring_nf
+
+theorem summable_mobiusThetaDirectDirichletTerm {m : ℕ} (hm : 3 ≤ m) :
+    Summable (mobiusThetaDirectDirichletTerm m) := by
+  apply (_root_.summable_nat_add_iff 2).1
+  have hnorm : Summable
+      (fun k : ℕ => ‖mobiusThetaPrimeNormalTailTerm 1 m k‖) := by
+    exact (summable_mobiusThetaPrimeNormalMajorant 1).of_norm_bounded (fun k => by
+      rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)]
+      exact norm_mobiusThetaPrimeNormalTailTerm_le_majorant (by omega) hm k)
+  have ht := Summable.of_norm hnorm
+  exact ht.congr (fun k => (mobiusThetaDirectDirichletTerm_add_two m k).symm)
+
+/-- Prime-normal residual is the complete, absolutely convergent direct Dirichlet source. -/
+theorem mobiusThetaDirectPhysicalRung_eq_tsum {m : ℕ} (hm : 3 ≤ m) :
+    mobiusThetaDirectPhysicalRung m =
+      ∑' n : ℕ, mobiusThetaDirectDirichletTerm m n := by
+  have hs := (summable_mobiusThetaDirectDirichletTerm hm).sum_add_tsum_nat_add 2
+  rw [mobiusThetaDirectPhysicalRung, mobiusThetaPrimeNormalResidual]
+  rw [show (((μ 1 : ℝ) : ℂ) • xiThetaSourceL2) = xiThetaSourceL2 by norm_num]
+  calc
+    xiThetaSourceL2 + ∑' k : ℕ, mobiusThetaPrimeNormalTailTerm 1 m k =
+        ∑ i ∈ Finset.range 2, mobiusThetaDirectDirichletTerm m i +
+          ∑' k : ℕ, mobiusThetaDirectDirichletTerm m (k + 2) := by
+      rw [Finset.sum_range_succ, Finset.sum_range_succ]
+      simp only [Finset.sum_range_zero, zero_add,
+        mobiusThetaDirectDirichletTerm_zero, mobiusThetaDirectDirichletTerm_one,
+        mobiusThetaDirectDirichletTerm_add_two]
+    _ = ∑' n : ℕ, mobiusThetaDirectDirichletTerm m n := hs
+
+private theorem coe_mPart_moebius_intCoe_physical (m : ℕ) :
+    ⇑(mPart m ((μ : ArithmeticFunction ℤ) : ArithmeticFunction ℂ)) =
+      ↗(mPart m (μ : ArithmeticFunction ℤ)) := by
+  rw [← mPart_intCoe]
+  funext n
+  simp [intCoe_apply]
+
+theorem mobiusThetaDirectDirichletTerm_eq_rungTerm_pow
+    {m : ℕ} (hm : m ≠ 0) (n : ℕ) :
+    mobiusThetaDirectDirichletTerm m n = mobiusThetaRungTerm m (n ^ m) := by
+  rcases eq_or_ne n 0 with rfl | hn
+  · simp [mobiusThetaDirectDirichletTerm, mobiusThetaRungTerm, zero_pow hm]
+  have hcoeff :
+      LSeries.term (↗(μ : ArithmeticFunction ℤ)) ((m : ℂ) / 2) n =
+        LSeries.term (↗(mPart m (μ : ArithmeticFunction ℤ)))
+          (1 / 2 : ℂ) (n ^ m) := by
+    rw [← coe_mPart_moebius_intCoe_physical]
+    rw [term_mPart_pow hm]
+    congr 2
+    ring
+  have hlog : Real.log ((n ^ m : ℕ) : ℝ) = (m : ℝ) * Real.log n := by
+    rw [Nat.cast_pow, Real.log_pow]
+  rw [mobiusThetaDirectDirichletTerm, mobiusThetaRungTerm, hcoeff, hlog]
+
+private theorem mobiusThetaRungTerm_vanish_outside_power {m n : ℕ}
+    (h : n ∉ Set.range (fun k : ℕ => k ^ m)) : mobiusThetaRungTerm m n = 0 := by
+  rcases eq_or_ne n 0 with rfl | hn
+  · simp [mobiusThetaRungTerm]
+  rw [mobiusThetaRungTerm, LSeries.term_of_ne_zero hn,
+    mPart_apply_of_forall_pow_ne m (μ : ArithmeticFunction ℤ)
+      (fun k hk => h ⟨k, hk⟩)]
+  simp
+
+/-- Exact reindexing from direct integer labels to the `mPart` power support. -/
+theorem tsum_mobiusThetaDirectDirichletTerm_eq_mobiusThetaRung
+    {m : ℕ} (hm : m ≠ 0) :
+    (∑' n : ℕ, mobiusThetaDirectDirichletTerm m n) = mobiusThetaRung m := by
+  rw [mobiusThetaRung]
+  calc
+    (∑' n : ℕ, mobiusThetaDirectDirichletTerm m n) =
+        ∑' n : ℕ, mobiusThetaRungTerm m (n ^ m) :=
+      tsum_congr (mobiusThetaDirectDirichletTerm_eq_rungTerm_pow hm)
+    _ = ∑' n : ℕ, mobiusThetaRungTerm m n :=
+      (Nat.pow_left_injective hm).tsum_eq
+        (Function.support_subset_iff'.mpr (fun n hn =>
+          mobiusThetaRungTerm_vanish_outside_power hn))
+
+/-- **Exact physical-source identification.**  For every honest high exponent, the source obtained
+by complete prime-normal extraction is definitionally independent of Xi yet equals the previously
+compiled `mPart` source vector. -/
+theorem mobiusThetaDirectPhysicalRung_eq_mobiusThetaRung
+    {m : ℕ} (hm : 3 ≤ m) :
+    mobiusThetaDirectPhysicalRung m = mobiusThetaRung m := by
+  rw [mobiusThetaDirectPhysicalRung_eq_tsum hm,
+    tsum_mobiusThetaDirectDirichletTerm_eq_mobiusThetaRung (by omega)]
+
+/-- **Unconditional prime-normal physical source-to-Xi landing.**  The Fourier transform of the
+source built from the complete physical integer-labelled residual—not a target-side copy—is Xi
+times the reciprocal high-exponent zeta multiplier almost everywhere. -/
+theorem fourier_mobiusThetaPrimeNormalPhysicalRung_ae {m : ℕ} (hm : 3 ≤ m) :
+    ((𝓕 (mobiusThetaDirectPhysicalRung m) : MobiusThetaSourceL2) : ℝ → ℂ) =ᵐ[volume]
+      fun t : ℝ =>
+        (riemannZeta ((m : ℂ) * ((1 / 2 : ℂ) + (t : ℂ) * I)))⁻¹ * XiC (t : ℂ) := by
+  rw [mobiusThetaDirectPhysicalRung_eq_mobiusThetaRung hm]
+  exact fourier_mobiusThetaRung_ae hm
+
 /-- The direct physical rungs converge strongly to the canonical theta source. -/
 theorem tendsto_mobiusThetaDirectPhysicalRung :
     Tendsto mobiusThetaDirectPhysicalRung atTop (nhds xiThetaSourceL2) := by
@@ -429,5 +581,151 @@ theorem tendsto_sum_range_mobiusThetaCompletePhysicalChannel (K : ℕ) :
     simpa [Function.comp_def, Nat.add_comm] using h
   exact h'.congr' (Filter.Eventually.of_forall fun N =>
     (sum_range_mobiusThetaCompletePhysicalChannel K N).symm)
+
+/-! ## Quantitative graph-domain control
+
+Strong convergence alone is too weak for the singular Hellinger--Beta graph.  The next estimates
+retain the exact relative half-density and show that the physical complete channel is absolutely
+summable in `L²`.  This gives a genuine source-defined Banach graph input before any divisor or
+boundary value is selected.
+-/
+
+/-- Geometric refinement of the Tannery majorant.  The first omitted label `p + 1` controls the
+entire post-`p` physical tail uniformly. -/
+theorem norm_mobiusThetaPrimeNormalTailTerm_le_geometricMajorant
+    {p m : ℕ} (hp : 1 ≤ p) (hm : 3 ≤ m) (k : ℕ) :
+    ‖mobiusThetaPrimeNormalTailTerm p m k‖ ≤
+      (((p : ℝ) / (p + 1 : ℕ)) ^ (((m : ℝ) - 3) / 2)) *
+        mobiusThetaPrimeNormalMajorant p k := by
+  rw [norm_mobiusThetaPrimeNormalTailTerm,
+    mobiusThetaPrimeNormalWeight, abs_mul]
+  have hmu : |(μ (p + k + 1) : ℝ)| ≤ 1 := by
+    rw [← Int.cast_abs]
+    exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n := p + k + 1)
+  let r : ℝ := (p : ℝ) / (p + k + 1 : ℕ)
+  let q : ℝ := (p : ℝ) / (p + 1 : ℕ)
+  have hrpos : 0 < r := by dsimp [r]; positivity
+  have hqpos : 0 < q := by dsimp [q]; positivity
+  have hrq : r ≤ q := by
+    dsimp [r, q]
+    exact (div_le_div_iff_of_pos_left
+      (by exact_mod_cast hp) (by positivity) (by positivity)).2
+      (by exact_mod_cast (by omega : p + 1 ≤ p + k + 1))
+  have hmR : (3 : ℝ) ≤ m := by exact_mod_cast hm
+  have hexp : 0 ≤ ((m : ℝ) - 3) / 2 := by linarith
+  have hrpow : r ^ ((m : ℝ) / 2) =
+      r ^ (3 / 2 : ℝ) * r ^ (((m : ℝ) - 3) / 2) := by
+    rw [← Real.rpow_add hrpos]
+    congr 1
+    ring
+  have hbase : r ^ (((m : ℝ) - 3) / 2) ≤
+      q ^ (((m : ℝ) - 3) / 2) :=
+    Real.rpow_le_rpow hrpos.le hrq hexp
+  rw [abs_of_nonneg (Real.rpow_nonneg hrpos.le _)]
+  change |(μ (p + k + 1) : ℝ)| * r ^ ((m : ℝ) / 2) * ‖xiThetaSourceL2‖ ≤
+    q ^ (((m : ℝ) - 3) / 2) * (r ^ (3 / 2 : ℝ) * ‖xiThetaSourceL2‖)
+  rw [hrpow]
+  calc
+    |(μ (p + k + 1) : ℝ)| *
+          (r ^ (3 / 2 : ℝ) * r ^ (((m : ℝ) - 3) / 2)) * ‖xiThetaSourceL2‖ ≤
+        1 * (r ^ (3 / 2 : ℝ) * r ^ (((m : ℝ) - 3) / 2)) *
+          ‖xiThetaSourceL2‖ := by
+      gcongr
+    _ ≤ q ^ (((m : ℝ) - 3) / 2) *
+          (r ^ (3 / 2 : ℝ) * ‖xiThetaSourceL2‖) := by
+      rw [one_mul]
+      calc
+        r ^ (3 / 2 : ℝ) * r ^ (((m : ℝ) - 3) / 2) * ‖xiThetaSourceL2‖ =
+            r ^ (((m : ℝ) - 3) / 2) *
+              (r ^ (3 / 2 : ℝ) * ‖xiThetaSourceL2‖) := by ring
+        _ ≤ q ^ (((m : ℝ) - 3) / 2) *
+              (r ^ (3 / 2 : ℝ) * ‖xiThetaSourceL2‖) := by
+          exact mul_le_mul_of_nonneg_right hbase
+            (mul_nonneg (Real.rpow_nonneg hrpos.le _) (norm_nonneg _))
+
+theorem summable_norm_mobiusThetaPrimeNormalTailTerm
+    {p m : ℕ} (hp : 1 ≤ p) (hm : 3 ≤ m) :
+    Summable (fun k : ℕ => ‖mobiusThetaPrimeNormalTailTerm p m k‖) := by
+  exact (summable_mobiusThetaPrimeNormalMajorant p).of_norm_bounded (fun k => by
+    rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)]
+    exact norm_mobiusThetaPrimeNormalTailTerm_le_majorant hp hm k)
+
+/-- Explicit strong-tail rate, before spectral transform. -/
+theorem norm_tsum_mobiusThetaPrimeNormalTailTerm_le_geometricMajorant
+    {p m : ℕ} (hp : 1 ≤ p) (hm : 3 ≤ m) :
+    ‖∑' k : ℕ, mobiusThetaPrimeNormalTailTerm p m k‖ ≤
+      (((p : ℝ) / (p + 1 : ℕ)) ^ (((m : ℝ) - 3) / 2)) *
+        ∑' k : ℕ, mobiusThetaPrimeNormalMajorant p k := by
+  let c : ℝ := ((p : ℝ) / (p + 1 : ℕ)) ^ (((m : ℝ) - 3) / 2)
+  have hterms := summable_norm_mobiusThetaPrimeNormalTailTerm hp hm
+  have hscaled : Summable
+      (fun k : ℕ => c * mobiusThetaPrimeNormalMajorant p k) :=
+    (summable_mobiusThetaPrimeNormalMajorant p).mul_left c
+  calc
+    ‖∑' k : ℕ, mobiusThetaPrimeNormalTailTerm p m k‖ ≤
+        ∑' k : ℕ, ‖mobiusThetaPrimeNormalTailTerm p m k‖ :=
+      norm_tsum_le_tsum_norm hterms
+    _ ≤ ∑' k : ℕ, c * mobiusThetaPrimeNormalMajorant p k :=
+      hterms.tsum_le_tsum
+        (fun k => norm_mobiusThetaPrimeNormalTailTerm_le_geometricMajorant hp hm k)
+        hscaled
+    _ = c * ∑' k : ℕ, mobiusThetaPrimeNormalMajorant p k := tsum_mul_left
+
+private theorem summable_prime_one_geometricHalf :
+    Summable (fun j : ℕ => ((1 / 2 : ℝ) ^ ((j : ℝ) / 2))) := by
+  have hbase_nonneg : 0 ≤ (1 / 2 : ℝ) ^ (1 / 2 : ℝ) :=
+    Real.rpow_nonneg (by norm_num) _
+  have hbase_lt : (1 / 2 : ℝ) ^ (1 / 2 : ℝ) < 1 :=
+    Real.rpow_lt_one (by norm_num) (by norm_num) (by norm_num)
+  have hgeom := summable_geometric_of_lt_one hbase_nonneg hbase_lt
+  convert hgeom using 1
+  funext j
+  rw [← Real.rpow_natCast, ← Real.rpow_mul (by norm_num : (0 : ℝ) ≤ 1 / 2)]
+  congr 1
+  ring
+
+private theorem summable_norm_mobiusThetaPrimeNormalTail_three :
+    Summable (fun j : ℕ =>
+      ‖∑' k : ℕ, mobiusThetaPrimeNormalTailTerm 1 (j + 3) k‖) := by
+  let C : ℝ := ∑' k : ℕ, mobiusThetaPrimeNormalMajorant 1 k
+  have hmajor : Summable (fun j : ℕ => (1 / 2 : ℝ) ^ ((j : ℝ) / 2) * C) :=
+    summable_prime_one_geometricHalf.mul_right C
+  refine Summable.of_nonneg_of_le (fun j => norm_nonneg _) (fun j => ?_) hmajor
+  simpa [C, Nat.cast_add] using
+    (norm_tsum_mobiusThetaPrimeNormalTailTerm_le_geometricMajorant
+      (p := 1) (m := j + 3) (by omega) (by omega))
+
+private theorem mobiusThetaCompletePhysicalChannel_three_succ_eq_tail_sub (j : ℕ) :
+    mobiusThetaCompletePhysicalChannel 3 (j + 1) =
+      (∑' k : ℕ, mobiusThetaPrimeNormalTailTerm 1 (j + 4) k) -
+        (∑' k : ℕ, mobiusThetaPrimeNormalTailTerm 1 (j + 3) k) := by
+  simp only [mobiusThetaCompletePhysicalChannel, mobiusThetaDirectPhysicalRung,
+    mobiusThetaPrimeNormalResidual]
+  rw [show 3 + j + 1 = j + 4 by omega, show 3 + j = j + 3 by omega]
+  norm_num
+
+/-- **Absolute physical codiagonal.**  The complete source channels based at exponent three are
+`ℓ¹(L²)`.  Thus their codiagonal is an unconditional Banach-space sum, strictly stronger than the
+previous finite telescoping plus strong-limit statement. -/
+theorem summable_norm_mobiusThetaCompletePhysicalChannel_three :
+    Summable (fun j : ℕ => ‖mobiusThetaCompletePhysicalChannel 3 j‖) := by
+  let T : ℕ → MobiusThetaSourceL2 := fun j =>
+    ∑' k : ℕ, mobiusThetaPrimeNormalTailTerm 1 (j + 3) k
+  have hT : Summable (fun j : ℕ => ‖T j‖) :=
+    summable_norm_mobiusThetaPrimeNormalTail_three
+  have hTshift : Summable (fun j : ℕ => ‖T (j + 1)‖) :=
+    (_root_.summable_nat_add_iff 1).2 hT
+  have hupper : Summable (fun j : ℕ => ‖T (j + 1)‖ + ‖T j‖) :=
+    hTshift.add hT
+  have hsucc : Summable
+      (fun j : ℕ => ‖mobiusThetaCompletePhysicalChannel 3 (j + 1)‖) := by
+    refine Summable.of_nonneg_of_le (fun j => norm_nonneg _) (fun j => ?_) hupper
+    rw [mobiusThetaCompletePhysicalChannel_three_succ_eq_tail_sub]
+    exact norm_sub_le _ _
+  exact (_root_.summable_nat_add_iff 1).1 hsucc
+
+theorem summable_mobiusThetaCompletePhysicalChannel_three :
+    Summable (mobiusThetaCompletePhysicalChannel 3) :=
+  Summable.of_norm summable_norm_mobiusThetaCompletePhysicalChannel_three
 
 end RHTower

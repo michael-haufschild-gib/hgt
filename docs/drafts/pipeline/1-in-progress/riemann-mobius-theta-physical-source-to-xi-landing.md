@@ -388,3 +388,6 @@ codiagonal alone.
   scalar complete resolution, and target-fed Xi vector from the missing physical connection.
 - 2026-08-02 — Source definition, weighted landing theorem, physical codiagonal, reflected double,
   zero-fibre corollary, full proof, and hostile audit completed on paper.
+- 2026-08-02 — Lean proved the physical prime-normal strong limit, exact finite codiagonal, and the
+  stronger absolute `ell^1(L2)` channel theorem with explicit geometric tail control in
+  `MobiusThetaPhysicalSourceToXiLanding.lean`.

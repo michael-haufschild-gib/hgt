@@ -3,7 +3,7 @@ import Mathlib.Algebra.TrivSqZeroExt.Basic
 import Mathlib.Algebra.Algebra.Subalgebra.Basic
 import Mathlib.RingTheory.Ideal.Quotient.Operations
 import Mathlib.Tactic.NoncommRing
-import GaloisForLFunctions.HTGeometry.ExteriorOddDerivation
+import GaloisForLFunctions.HTGeometry.SullivanTower
 
 /-!
 # The Milnor quotient of an exterior algebra and the first relative Sullivan layer
@@ -709,7 +709,164 @@ theorem deningerSullivanFirstLayerDifferential_comp_self
   deningerOddDerivation_comp_self _ _ deningerSullivanFirstPhi_involute
     (fun u => deningerSullivanFirstLayerDifferential_kill u.2.2) x
 
+/-- The base of closed generators of the first layer: the old generators. -/
+def deningerSullivanFirstBase (k V : Type*) [CommRing k] [AddCommGroup V] [Module k V] :
+    Submodule k (V × (⋀[k]^2 V)) :=
+  Submodule.prod (⊤ : Submodule k V) (⊥ : Submodule k (⋀[k]^2 V))
+
+theorem deningerSullivanFirstBase_mem (v : V) :
+    ((v, 0) : V × (⋀[k]^2 V)) ∈ deningerSullivanFirstBase k V :=
+  ⟨Submodule.mem_top, Submodule.zero_mem _⟩
+
+/-- The image of the degree-two part lies in the subalgebra of the old generators. -/
+theorem deningerSullivanInclusion_mem_baseSubalgebra {x : ExteriorAlgebra k V}
+    (hx : x ∈ ⋀[k]^2 V) :
+    deningerSullivanInclusion k V (⋀[k]^2 V) x ∈
+      deningerGeneratorSubalgebra (deningerSullivanFirstBase k V) := by
+  have hx' : x ∈ LinearMap.range (ι k : V →ₗ[k] ExteriorAlgebra k V) *
+      LinearMap.range (ι k : V →ₗ[k] ExteriorAlgebra k V) := by
+    rw [← pow_two]
+    exact hx
+  refine Submodule.mul_induction_on hx' ?_ ?_
+  · rintro _ ⟨a, rfl⟩ _ ⟨b, rfl⟩
+    rw [map_mul, deningerSullivanInclusion_ι, deningerSullivanInclusion_ι]
+    exact Subalgebra.mul_mem _
+      (deningerGeneratorSubalgebra_ι (deningerSullivanFirstBase_mem a))
+      (deningerGeneratorSubalgebra_ι (deningerSullivanFirstBase_mem b))
+  · intro p q hp hq
+    rw [map_add]
+    exact Subalgebra.add_mem _ hp hq
+
+variable (k V)
+
+/-- **The first relative Sullivan layer as a Sullivan tower.**  Its one stage sits above the base of
+closed old generators, its differential is the odd derivation of the layer, and lower triangularity
+holds because every new generator differentiates into the subalgebra of the old ones.  In
+particular the tower structure is not vacuous. -/
+noncomputable def deningerSullivanFirstTower :
+    DeningerSullivanTower k (V × (⋀[k]^2 V)) Unit where
+  base := deningerSullivanFirstBase k V
+  filt _ := ⊤
+  base_le _ := le_top
+  mono := fun _ _ _ => le_refl _
+  exhaust := by simp
+  phi := deningerSullivanFirstPhi k V
+  central := deningerSullivanFirstPhi_commute
+  involute := deningerSullivanFirstPhi_involute
+  lower := by
+    intro b u _
+    have hempty : (⨆ b' ∈ {b' : Unit | b' < b}, (⊤ : Submodule k (V × (⋀[k]^2 V)))) = ⊥ := by
+      simp
+    rw [hempty, sup_bot_eq]
+    exact deningerSullivanInclusion_mem_baseSubalgebra u.2.2
+  kill := fun u => deningerSullivanFirstLayerDifferential_kill u.2.2
+
+variable {k V}
+
+@[simp]
+theorem deningerSullivanFirstTower_d :
+    (deningerSullivanFirstTower k V).d = deningerSullivanFirstLayerDifferential k V :=
+  rfl
+
+/-- **The degree-one cocycles of the first layer are exactly the old generators.**  A new generator
+is never closed, so the first layer creates no degree-one cohomology and its degree-one cocycle
+space is the base `V`. -/
+theorem deningerSullivanFirstPhi_ker :
+    LinearMap.ker (deningerSullivanFirstPhi k V) = deningerSullivanFirstBase k V := by
+  refine le_antisymm (fun u hu => ?_) (fun u hu => ?_)
+  · refine ⟨Submodule.mem_top, ?_⟩
+    have h : deningerSullivanInclusion k V (⋀[k]^2 V) ((u.2 : ExteriorAlgebra k V)) = 0 := hu
+    have h0 : ((u.2 : ExteriorAlgebra k V)) = 0 := by
+      have := deningerSullivanInclusion_injective (k := k) (V := V) (W := (⋀[k]^2 V))
+      exact this (by rw [h, map_zero])
+    exact Submodule.mem_bot k |>.mpr (Subtype.ext h0)
+  · have h0 : u.2 = 0 := (Submodule.mem_bot k).mp hu.2
+    show deningerSullivanInclusion k V (⋀[k]^2 V) ((u.2 : ExteriorAlgebra k V)) = 0
+    rw [h0]
+    simp
+
+/-- The first-layer tower is closed exactly on the old generators. -/
+theorem deningerSullivanFirstTower_d_ι_eq_zero_iff (u : V × (⋀[k]^2 V)) :
+    (deningerSullivanFirstTower k V).d (ι k u) = 0 ↔ u ∈ deningerSullivanFirstBase k V := by
+  rw [(deningerSullivanFirstTower k V).d_ι_eq_zero_iff]
+  show u ∈ LinearMap.ker (deningerSullivanFirstPhi k V) ↔ _
+  rw [deningerSullivanFirstPhi_ker]
+
+/-- **The old algebra consists of cocycles.**  The first-layer differential vanishes on the whole
+image of `Λ(V)`, because it vanishes on the old generators and obeys the Leibniz rule. -/
+theorem deningerSullivanFirstLayerDifferential_inl (z : ExteriorAlgebra k V) :
+    deningerSullivanFirstLayerDifferential k V
+      (deningerSullivanInclusion k V (⋀[k]^2 V) z) = 0 := by
+  induction z using ExteriorAlgebra.induction with
+  | algebraMap r =>
+    rw [AlgHom.commutes, deningerSullivanFirstLayerDifferential,
+      deningerOddDerivation_algebraMap]
+  | ι v =>
+    rw [deningerSullivanInclusion_ι, deningerSullivanFirstLayerDifferential_old]
+  | add a b ha hb => rw [map_add, map_add, ha, hb, add_zero]
+  | mul a b ha hb =>
+    rw [map_mul, deningerSullivanFirstLayerDifferential_leibniz, ha, hb]
+    simp
+
 end FirstLayerDifferential
+
+section FirstLayerChainMap
+
+open HTGeometry
+
+variable {k V : Type*} [CommRing k] [AddCommGroup V] [Module k V]
+variable [Module kᵐᵒᵖ V] [IsCentralScalar k V]
+
+variable (k V)
+
+/-- The map of the first layer onto the two-term algebra: the augmentation followed by the Milnor
+projection. -/
+noncomputable def deningerSullivanFirstProjection :
+    ExteriorAlgebra k (V × (⋀[k]^2 V)) →ₐ[k] TrivSqZeroExt k V :=
+  (deningerMilnorEpsilon k V).comp (deningerSullivanAugmentation k V (⋀[k]^2 V))
+
+variable {k V}
+
+@[simp]
+theorem deningerSullivanFirstProjection_inl (z : ExteriorAlgebra k V) :
+    deningerSullivanFirstProjection k V (deningerSullivanInclusion k V (⋀[k]^2 V) z) =
+      deningerMilnorEpsilon k V z := by
+  rw [deningerSullivanFirstProjection, AlgHom.comp_apply]
+  have h := AlgHom.congr_fun
+    (deningerSullivanAugmentation_comp_inclusion (k := k) (V := V) (W := (⋀[k]^2 V))) z
+  rw [AlgHom.comp_apply, AlgHom.id_apply] at h
+  rw [h]
+
+/-- **The projection is a chain map.**  The target carries the zero differential, and the
+projection kills every coboundary of the first layer, so it is a map of differential graded
+algebras. -/
+theorem deningerSullivanFirstProjection_comp_d (x : ExteriorAlgebra k (V × (⋀[k]^2 V))) :
+    deningerSullivanFirstProjection k V
+      (deningerSullivanFirstLayerDifferential k V x) = 0 := by
+  induction x using ExteriorAlgebra.induction with
+  | algebraMap r =>
+    rw [deningerSullivanFirstLayerDifferential, deningerOddDerivation_algebraMap, map_zero]
+  | ι u =>
+    rw [deningerSullivanFirstLayerDifferential, deningerOddDerivation_ι,
+      deningerSullivanFirstPhi_apply, deningerSullivanFirstProjection_inl]
+    exact deningerMilnorIdeal_le_ker (Ideal.subset_span u.2.2)
+  | add a b ha hb => rw [map_add, map_add, ha, hb, add_zero]
+  | mul a b ha hb =>
+    rw [deningerSullivanFirstLayerDifferential_leibniz, map_add, map_mul, map_mul, ha, hb]
+    simp
+
+/-- **Every class of the two-term algebra is represented by a cocycle.**  The old algebra consists
+of cocycles and already surjects onto the target, so the projection is surjective on cohomology. -/
+theorem deningerSullivanFirstProjection_cocycle_surjective (x : TrivSqZeroExt k V) :
+    ∃ z : ExteriorAlgebra k (V × (⋀[k]^2 V)),
+      deningerSullivanFirstLayerDifferential k V z = 0 ∧
+        deningerSullivanFirstProjection k V z = x := by
+  obtain ⟨y, hy⟩ := deningerMilnorEpsilon_surjective (k := k) (V := V) x
+  refine ⟨deningerSullivanInclusion k V (⋀[k]^2 V) y, ?_, ?_⟩
+  · exact deningerSullivanFirstLayerDifferential_inl y
+  · rw [deningerSullivanFirstProjection_inl, hy]
+
+end FirstLayerChainMap
 
 end RHTower
 

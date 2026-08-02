@@ -2,13 +2,20 @@
 
 - **ID:** route-j-hellinger-pure-hodge-residue-transgression
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE + ACTIVE CONSTRUCTION
+- **Type:** SUPERSEDED FINITE CONSTRUCTION (stronger adjacent-grade survivor active)
 - **Parents:** `route-j-pure-hodge-modular-transgression.md`;
   `../3-formalized/new_scientific_knowledge/other/hellinger-beta-calderon-witt-relative-residue-obstruction.md`
 - **RH used:** no
 - **Computation used:** no
 
-## Frozen conjecture — `J-HPHRT`
+## Superseded conjecture — `J-HPHRT`
+
+Updated oriented-source-admission result shows fixed full-residue scaling cannot be the missing
+coface: it stays on one finite incidence line and cannot change the relative admission class.
+Clauses below remain finite algebraic consequences of PHMT, but formalising them alone would be
+busywork.  Active stronger survivor is
+`route-j-hellinger-gamma-residue-pure-hodge-coface.md`, which changes grade, telescopes, and has
+factorially bounded two-sided graph capacity.
 
 Let `r_n != 0` be the exact reflected Hellinger--Beta/co-Poisson residue at
 `s_n=3/2+2n`.  For distinct primes `p,q`, let `Omega_a(p,q)` be the pure-Hodge modular
