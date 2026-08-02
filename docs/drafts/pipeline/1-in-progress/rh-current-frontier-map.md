@@ -5940,3 +5940,165 @@ e_(r;p,q) in K_rho
 
 Existence at every divisor point is RH-equivalent.  This survivor remains
 Route J work and is not reassigned.
+
+Pure incidence supplies one last finite-source survivor, but not the
+completed trace.  For distinct cells, normalized defect--defect and
+packet--packet wedges are nonzero exact incidences annihilated by every
+actual mixed Gamma/Hardy boundary coordinate.  Packet transport acts on
+the latter by the product of both Gamma cell coefficients, so a canonical
+prelanding cofinal sum maps exactly to an actual-admitted pure Hodge pair
+with
+
+```text
+U_n^pure <= 200*289^2,
+pure codiagonal = anchoredTwoScaleEnergy(n).
+```
+
+This is the first source endomorphism in Route J producing both primitive
+Gamma amplitudes internally.  It is Green-fixed and actually admitted for
+every displacement.  Its scalar descent is nevertheless class-completely
+blocked: any exact capacity-bounded readout has gain at least `(5/289)n`,
+and no continuous linear functional on any normed uniform-capacity
+realization can retain all finite codiagonals.  Lean:
+
+```text
+CCMFirstClockPrimitivePromotedPureHodgeCountertransport.lean
+```
+
+Therefore finite actual admission and two-leg landing are no longer open.
+Remaining Route-J producer is specifically coefficient-faithful completed
+admission with unsquared mixed finite trace; pure boundary-silent classes
+cannot supply that trace.
+
+## 2026-08-02 Route L frontier update: Hellinger residue relative obstruction
+
+The oriented source-admission paper does not construct the missing producer.
+Its dense-range/closed-admission theorem assumes exactly the completed Xi
+Hodge admission needed for RH, while proving that scalar Hellinger data cannot
+supply it.  It does, however, force the correct hostile test: compute the
+Hellinger residue in the actual admitted relative boundary, not merely in an
+ambient incidence completion.
+
+That computation is now complete.  The scalar Hellinger correction of the
+critical co-Poisson Mellin vector cancels the old noninitial integer Gamma
+pole lattices but creates common nonzero half-lattice residues
+
+```text
+r_n != 0 at s_n = 3/2 + 2n,  n >= 0.
+```
+
+No nonzero polynomial clears these poles in either Burnol parity.  For
+distinct primes `p,q`, lift the analytic residue by the normalized actual
+incidence coordinate:
+
+```text
+R_(p,q,n) = r_n * w_(p,q).
+```
+
+Then unconditionally:
+
+```text
+R_(p,q,n) != 0,
+normalizedIncidenceCoordinate(R_(p,q,n)) = r_n,
+R_(p,q,n) in actualAdmittedSector(a)  <->  a = 0,
+relativeGammaBoundaryClass_a(R_(p,q,n)) = 0  <->  a = 0.
+```
+
+At every common depth its actual reflection-odd Gamma/Hardy coordinate is
+exactly `r_n` times the physical reflection defect and is nonzero for every
+nonzero modular displacement.
+
+This falsifies the fixed-cross-prime form of the proposed vector Hellinger
+coface repair.  Ambient incidence landing is real but insufficient: nonzero
+residue scaling cannot change admitted-sector membership.  A second structural
+obstruction is now explicit before Haar orientation.  The current
+Calderón--Witt Gamma transport is vector-valued in the packet suspension
+center but diagonal in head/tail polarization—its two channel profiles are
+equal—whereas the odd-Hodge image of the elementary head seed is genuinely
+transverse at every positive source time.
+
+Together with complete finite-cell diagonal rigidity, this removes every
+fixed-witness and finite canonical-cell repair.  Merely completing the same
+coordinatewise diagonal defect cannot help: every physical multiplier is
+nonzero off critical displacement, so an honest closed diagonal graph remains
+injective.  The surviving construction must change the differential itself.
+It must be an adjacent-grade, off-diagonal coface on a source-horizon-graded
+head/tail incidence chain, with the Beta and critical-eta shifts derived
+before scalar orientation.  Its completed Xi primitive must arise as a
+graph-convergent chain at infinity, not as a scalar multiple of an ambient
+incidence witness or an arbitrary closed admission set.
+
+Frozen survivor:
+
+```text
+[COFINAL_HELLINGER_RESIDUE_GRAPH_BOUNDARY]
+Beta coface + prime-power source current produce a labelled infinite
+incidence chain whose reflection-odd boundaries are graph-Cauchy and
+telescoping, and whose graph limit is the completed Xi Green primitive.
+```
+
+Exact falsifiers are failure of the Beta/eta coefficients to obey a
+source-derived adjacent-grade boundary law, or divergence of every such
+label-preserving graph chain.  Constructing and attacking this new
+off-diagonal differential is the live Route L frontier; restating its kernel
+membership is not progress.
+
+Paper cards:
+
+```text
+hellinger-beta-copoisson-resonance-transmutation.md
+hellinger-beta-calderon-witt-relative-residue-obstruction.md
+```
+
+Lean:
+
+```text
+BVCoPoissonHellingerBetaResonanceTransmutation.lean
+DeningerCalderonWittHellingerBetaRelativeResidueTransgression.lean
+```
+
+## 2026-08-02 Route J frontier update: pure-Hodge modular transgression
+
+The current oriented source-admission paper changes Route J's target.  Closed admission containing
+a dense completed source is already the RH conclusion, not an object that can be postulated.
+Orientation--transgression completeness instead requires an exact-boundary-sensitive secondary
+primitive before scalar orientation.
+
+That secondary primitive is now constructed on the surviving pure sector.  For each distinct
+prime/depth cell pair, balanced modular transport on the dual pure Hodge pair satisfies
+
+```text
+H B_a = B_(-a) H.
+```
+
+Its odd transgression is Hodge-anti-fixed, remains actual-admitted incidence for every displacement,
+and its canonical height-weighted Poincare trace equals the actual mixed Gamma/Hardy boundary
+coefficient exactly.  Hence pure primary-boundary silence does not erase the unsquared charge; the
+charge survives in the Hodge--modular commutator.
+
+The completion boundary is also exact.  At fixed prime clocks and cofinal common depth, balanced
+graph capacity is the sum of reciprocal Gamma sewing costs and is uniformly bounded exactly when
+the modular displacement is zero.  This rules out every regular off-critical realization of this
+secondary trace while retaining the finite source object.
+
+Remaining Route-J producer is no longer “find an unsquared trace.”  It is:
+
+```text
+prove completed Xi Green landing in the graph-bounded balanced pure-Hodge
+transgression sector from the prime-power source relation.
+```
+
+If proved, graph-capacity classification forces every divisor displacement to vanish.  Until that
+landing theorem is derived unconditionally, Route J remains open.
+
+Paper card:
+
+```text
+route-j-pure-hodge-modular-transgression.md
+```
+
+Lean:
+
+```text
+CCMFirstClockPrimitivePromotedPureHodgeModularTransgression.lean
+```

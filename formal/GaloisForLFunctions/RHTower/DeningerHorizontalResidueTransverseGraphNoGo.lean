@@ -169,18 +169,21 @@ variable {T : ℝ} [hT : Fact (0 < T)]
 noncomputable def deningerDirichletCoeff (zeta : AddCircle T) (k : ℕ) : ℂ :=
   (starRingEnd ℂ) (fourier (k : ℤ) zeta)
 
+omit hT in
 /-- Every alignment coefficient is unimodular. -/
 theorem deningerDirichletCoeff_norm (zeta : AddCircle T) (k : ℕ) :
     ‖deningerDirichletCoeff zeta k‖ = 1 := by
   rw [deningerDirichletCoeff, RCLike.norm_conj, fourier_apply]
   exact Circle.norm_coe _
 
+omit hT in
 /-- The alignment coefficient cancels its own character value. -/
 theorem deningerDirichletCoeff_mul_fourier (zeta : AddCircle T) (k : ℕ) :
     deningerDirichletCoeff zeta k * fourier (k : ℤ) zeta = 1 := by
   have h : ‖fourier (k : ℤ) zeta‖ = 1 := by
     rw [fourier_apply]; exact Circle.norm_coe _
-  rw [deningerDirichletCoeff, RCLike.conj_mul, h, one_pow]
+  rw [deningerDirichletCoeff, RCLike.conj_mul, h]
+  norm_num
 
 /-- The aligned horizontal Dirichlet kernel, as a finite character sum in `L²`. -/
 noncomputable def deningerDirichletKernelLp (zeta : AddCircle T) (N : ℕ) :
@@ -191,7 +194,7 @@ noncomputable def deningerDirichletKernelLp (zeta : AddCircle T) (N : ℕ) :
 theorem deningerDirichletKernelLp_norm (zeta : AddCircle T) (N : ℕ) :
     ‖deningerDirichletKernelLp zeta N‖ = Real.sqrt N := by
   have horth : Orthonormal ℂ fun k : ℕ => fourierLp (T := T) 2 (k : ℤ) :=
-    (orthonormal_fourier (T := T)).comp (fun k : ℕ => (k : ℤ)) Int.natCast_injective
+    (orthonormal_fourier (T := T)).comp (fun k : ℕ => (k : ℤ)) Nat.cast_injective
   have hinner :
       (inner ℂ (deningerDirichletKernelLp zeta N) (deningerDirichletKernelLp zeta N)) =
         ((N : ℝ) : ℂ) := by
@@ -201,10 +204,11 @@ theorem deningerDirichletKernelLp_norm (zeta : AddCircle T) (N : ℕ) :
         (starRingEnd ℂ) (deningerDirichletCoeff zeta k) * deningerDirichletCoeff zeta k =
           (1 : ℂ) := by
       intro k _
-      rw [RCLike.conj_mul, deningerDirichletCoeff_norm, one_pow]
+      rw [RCLike.conj_mul, deningerDirichletCoeff_norm]
+      norm_num
     rw [Finset.sum_congr rfl this]
     simp
-  rw [norm_eq_sqrt_inner (𝕜 := ℂ), hinner]
+  rw [norm_eq_sqrt_re_inner (𝕜 := ℂ), hinner]
   simp
 
 /-- The normalized aligned horizontal Dirichlet packet, as a continuous function on the circle. -/
@@ -212,13 +216,15 @@ noncomputable def deningerDirichletPacket (zeta : AddCircle T) (N : ℕ) : C(Add
   ((Real.sqrt N : ℝ) : ℂ)⁻¹ •
     ∑ k ∈ Finset.range N, deningerDirichletCoeff zeta k • fourier (k : ℤ)
 
+omit hT in
 /-- **Aligned evaluation.**  The packet takes the value `√N` at its alignment point. -/
 theorem deningerDirichletPacket_eval_self (zeta : AddCircle T) (N : ℕ) :
     deningerDirichletPacket zeta N zeta = ((Real.sqrt N : ℝ) : ℂ) := by
   have hsum : (∑ k ∈ Finset.range N,
       deningerDirichletCoeff zeta k • fourier (k : ℤ) : C(AddCircle T, ℂ)) zeta =
       ((N : ℝ) : ℂ) := by
-    rw [ContinuousMap.finset_sum_apply]
+    simp only [ContinuousMap.coe_sum, Finset.sum_apply, ContinuousMap.smul_apply,
+      smul_eq_mul]
     rw [Finset.sum_congr rfl fun k _ => deningerDirichletCoeff_mul_fourier zeta k]
     simp
   rw [deningerDirichletPacket, ContinuousMap.smul_apply, hsum, smul_eq_mul]
@@ -229,7 +235,7 @@ theorem deningerDirichletPacket_eval_self (zeta : AddCircle T) (N : ℕ) :
     have hsq : ((Real.sqrt N : ℝ) : ℂ) * ((Real.sqrt N : ℝ) : ℂ) = ((N : ℝ) : ℂ) := by
       exact_mod_cast congrArg (fun x : ℝ => (x : ℂ))
         (Real.mul_self_sqrt (Nat.cast_nonneg N))
-    field_simp [← hsq]
+    rw [← hsq, ← mul_assoc, inv_mul_cancel₀ hne, one_mul]
 
 /-- The packet's `L²` class is the normalized Dirichlet kernel. -/
 theorem deningerDirichletPacket_toLp (zeta : AddCircle T) (N : ℕ) :
@@ -260,6 +266,7 @@ noncomputable def deningerTransverseTensor (f : C(AddCircle T, ℂ)) (eta : E) :
     C(AddCircle T, E) :=
   ⟨fun z => f z • eta, f.continuous.smul continuous_const⟩
 
+omit hT in
 @[simp]
 theorem deningerTransverseTensor_apply (f : C(AddCircle T, ℂ)) (eta : E) (z : AddCircle T) :
     deningerTransverseTensor f eta z = f z • eta :=
@@ -297,9 +304,12 @@ theorem deningerTransverseEigen_pow {A : E →L[ℂ] E} {lam : ℂ} {eta : E}
     (heta : A eta = lam • eta) (m : ℕ) : (A ^ m) eta = lam ^ m • eta := by
   induction m with
   | zero => simp
-  | succ m ih => rw [pow_succ, pow_succ, ContinuousLinearMap.mul_apply, ih, map_smul, heta,
-      smul_smul, smul_smul, mul_comm]
+  | succ m ih =>
+    have hstep : (A ^ (m + 1)) eta = (A ^ m) (A eta) := by
+      rw [pow_succ]; rfl
+    rw [hstep, heta, map_smul, ih, smul_smul, pow_succ, mul_comm]
 
+omit hT in
 /-- The transverse generator acts on an elementary tensor through its transverse factor only. -/
 theorem deningerTransverseFieldPower_tensor {A : E →L[ℂ] E} {lam : ℂ} {eta : E}
     (heta : A eta = lam • eta) (m : ℕ) (f : C(AddCircle T, ℂ)) :
@@ -322,6 +332,7 @@ theorem deningerTransverseGraphPower_norm_dirichletPacket
     hetaNorm, one_mul, map_smul, norm_smul, deningerDirichletPacket_norm_toLp hN,
     mul_one, norm_pow]
 
+omit hT in
 /-- **Aligned residue evaluation.**  The same tensor has evaluation norm `√N`. -/
 theorem deningerTransverseTensor_eval_norm_dirichletPacket
     {eta : E} (hetaNorm : ‖eta‖ = 1) (N : ℕ) (zeta : AddCircle T) :

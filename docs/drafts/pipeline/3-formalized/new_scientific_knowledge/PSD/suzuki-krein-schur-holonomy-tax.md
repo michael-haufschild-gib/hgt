@@ -1,11 +1,12 @@
 # Suzuki Krein completion has an exact Schur holonomy tax
 
 - **ID:** `suzuki-krein-schur-holonomy-tax`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3 — formalized and Lean-audited
 - **Type:** exact finite-negative-block reduction / conjecture repair
-- **Status:** `[PROVED] [UNCONDITIONAL] [FRONTIER-SHARPENING]`
+- **Status:** `[PROVED] [LEAN-FORMALIZED] [UNCONDITIONAL] [FRONTIER-SHARPENING]`
 - **Parent:** `suzuki-affine-resolvent-krein-defect.md`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/SuzukiAffineResolventKreinDefect.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/SuzukiAffineResolventKreinDefect.lean`,
+  `formal/GaloisForLFunctions/RHTower/SuzukiKreinSchurBlockCongruence.lean`
 
 ## 1. Problem
 

@@ -373,12 +373,126 @@ No priority claim is made without specialist audit.
 
 ## Lean status
 
-The paper proof is dependency-closed.  The algebraic holonomy laws `(9)`--`(13)` are the first Lean
-target.  The literal integral identity `(4)` requires the logarithmic change-of-variables theorem
-and the existing theta-tail integrability API.  No abstract “Borel boundary” axiom is acceptable.
+The paper proof is dependency-closed and the whole Borel-tail layer is formalized unconditionally in
 
-The scalar sampling identities `(16b)`--`(16g)` are elementary, while the meaningful comparison
-uses Burnol's actual Sonin evaluation spaces and quotient projections, which are not yet in the
-Lean tree.  Formalizing only the scalar exponent equality would duplicate existing modular-charge
-lemmas and would not formalize the new connector.  Lean work is therefore deferred until the
-literal Borel-tail and Burnol interfaces can be placed in one module.
+```text
+formal/GaloisForLFunctions/RHTower/XiHedenmalmThetaBorelHolonomy.lean
+formal/GaloisForLFunctions/RHTower/XiHedenmalmThetaBorelHilbert.lean
+formal/GaloisForLFunctions/RHTower/XiHedenmalmThetaBorelConditionNumber.lean
+formal/GaloisForLFunctions/RHTower/XiHedenmalmThetaBorelCyclic.lean
+```
+
+Every declaration below has `#print axioms` equal to `[propext, Classical.choice, Quot.sound]`.
+
+**Theorem 1, equations `(4)`--`(6)`.**  The chart `q(t)=log(1+t)/2` is realized as
+`hedenmalmBorelChart`; `image_hedenmalmBorelChart` proves it is a bijection from `(0,∞)` onto the
+theta right tail `(x,∞)`, `injOn_hedenmalmBorelChart` and `hasDerivAt_hedenmalmBorelChart` supply the
+substitution data, and `integral_Ioi_eq_integral_hedenmalmBorelChart` /
+`integrableOn_Ioi_iff_hedenmalmBorelChart` are the exact logarithmic change of variables for Bochner
+integrals and for integrability.  The literal factorization
+
+```text
+xiHedenmalmBoundaryEigenfunction_eq_borelTail
+  : XiC alpha = 0 → u alpha x = -∫_{(0,∞)} M alpha t * b x t dt
+```
+
+is proved from the corpus boundary-value module, with no strip assumption beyond the one already
+carried by the completed Fourier--Laplace transform.  Positivity `(5)` is
+`hedenmalmBorelDensity_pos` (from unconditional strict positivity of the theta source) and the mass
+identity is `integral_Ioi_hedenmalmBorelDensity`.
+
+**Theorem 2, equations `(7)`--`(8)`.**  `memLp_hedenmalmBorelHolonomyFun` proves that every tilt
+`M alpha * sqrt(b x)` lies in `L^2((0,∞),dt)` for `|Im alpha| < 1/2`, a range that contains the whole
+centered Xi divisor (`abs_im_lt_half_of_XiC_eq_zero`).  The exact sesquilinear law
+
+```text
+inner_hedenmalmBorelHolonomyVector
+  : ⟪M alpha g_x, M beta g_x⟫ = ∫ M (beta - conj alpha) * b x
+```
+
+specializes to `inner_self_hedenmalmBorelVector` and `norm_sq_hedenmalmBorelVector`
+(`‖g_x‖² = ∫_x^∞ k`), to the matrix coefficient `inner_hedenmalmBorelVector_holonomy`, and to
+
+```text
+inner_hedenmalmBorelVector_eq_neg_eigenfunction
+  : XiC alpha = 0 → ⟪g_x, M alpha g_x⟫ = -u alpha x,
+```
+
+which is `(8)`.  `norm_hedenmalmBorelHolonomyVector_of_im_eq_zero` is the unitarity half.
+Cyclicity of `g_x` is `dense_hedenmalmBorelCyclicSet`: the bounded measurable multiples of the single
+theta-tail vector are dense in the Borel boundary Hilbert space, proved by truncating `v/g_x` and
+dominated convergence.  Hence no unbounded radial multiplier can hide in the source-cyclic carrier.
+
+**Theorem 3, equations `(9)`--`(13)`.**  `hedenmalmBorelCharacter_neg`,
+`conj_hedenmalmBorelCharacter`, and `norm_hedenmalmBorelCharacter` /
+`norm_hedenmalmBorelCharacter_rpow` are `(9)`, `(10)`, `(11)`.  The trichotomy `(12)` is
+`hedenmalmBorelCharacter_norm_le_one_iff` (contraction iff `Im alpha ≥ 0`),
+`hedenmalmBorelCharacter_norm_eq_one_iff` (unitary iff `alpha` real), and
+`hedenmalmBorelCharacter_bounded_reflected_iff` (both reflected multipliers bounded iff `alpha`
+real).  Equation `(13)` is `hedenmalmBorelCharacter_bounded_reflected_iff_re_eq_half`: functional
+reflection equals Hilbert adjunction exactly when `Re rho = 1/2`.
+
+**Theorem 4, equations `(16b)`--`(16e)`, `(16g)`.**  `soninDilationCharacter` is `lambda_r`, and
+`soninDilationCharacter_sqrt_eq_hedenmalmBorelCharacter` is `(16b)`.  `(16c)` is
+`hedenmalmBorelCharacter_geometric_sample`, `(16g)` is
+`norm_sq_hedenmalmBorelCharacter_geometric_sample`, and the radial exponent is
+`norm_hedenmalmBorelCharacter_geometric_sample_rpow`.  The condition number `(16d)` is proved as a
+genuine essential supremum against the positive source measure
+`hedenmalmBorelWeight x = b x dt`: `hedenmalmBorelWeight_ne_zero_of_isOpen` proves full support, so
+
+```text
+essSup_norm_mul_essSup_norm_hedenmalmBorelCharacter
+  : essSup ‖M alpha‖ * essSup ‖M (-alpha)‖ = (1+T)^(|Im alpha|/2)
+```
+
+on `(0,T)`.  Its geometric sample form is
+`essSup_norm_mul_essSup_norm_hedenmalmBorelCharacter_geometric_sample` (`= r^(j|Im alpha|)`), which is
+`(16e)`, and `tendsto_log_condition_number_geometric_sample` gives the aperture-exponent limit
+`|Re rho - 1/2|` in exactly the shape of `(16f)`.
+`essSup_norm_mul_essSup_norm_hedenmalmBorelCharacter_eq_one_iff` proves the condition number is `1`
+exactly on the critical line.
+
+The Burnol side of `(16f)` now has its own module,
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolSoninEvaluationAperture.lean
+```
+
+which formalizes the completed right Mellin evaluator `M f w = gamma(w) integral f(t) t^(-w) dt` on
+`L^2((0,infinity),dt)` together with the constant-aperture-head class, and proves unconditionally the
+ambient off-axis bound with the literal head/tail constant:
+
+```text
+norm_soninMellinEvaluation_le_aperture
+  : 1/2 < Re w < 1 -> ||M f w|| <= ||gamma(w)||(1/||1-w|| + 1/sqrt(2 Re w - 1)) A^(1/2-Re w) ||f||,
+norm_soninMellinEvaluation_le_geometric_sample
+  : the same bound at the apertures a_N = a_0 r^(-N), with growth r^(N |Re w - 1/2|).
+```
+
+The head is evaluated exactly (`integral_Ioo_soninMellinKernel`), the tail is the Cauchy--Schwarz
+factor `(integral_A^infinity t^(-2 Re w) dt)^(1/2)`
+(`integral_Ioi_norm_sq_soninMellinKernel`), and the head amplitude is controlled by
+`||c|| sqrt A <= ||f||` (`norm_head_mul_sqrt_le`).  Thus both exponents compared in `(16f)` --- the
+Borel condition-number exponent and the Sonine evaluator aperture exponent --- are now Lean objects
+with the same value `|Re rho - 1/2|`.  What remains outside the formal tree is only the *lower* half
+of the sibling card's `(12)`, which is supplied by the co-Poisson dilation contractions of the parent
+boundary-transgression theorem, not by this elementary estimate.
+
+The open core `THETA_BOREL_REFLECTED_COMMON_DOMAIN` is untouched: Lean proves that bounded action of
+both reflected holonomies forces `alpha` real, not that it holds.
+
+## Gates
+
+- [x] exact Borel-tail factorization `(4)` proved
+- [x] positivity and mass law `(5)` proved
+- [x] fixed positive generator and matrix coefficient `(8)` proved
+- [x] cyclicity of the theta-tail vector proved
+- [x] reflection / adjunction / radial drift trichotomy `(9)`--`(13)` proved
+- [x] continuous Burnol--Sonin character identification `(16b)`--`(16c)` proved
+- [x] exact two-sided condition number `(16d)`--`(16e)` proved
+- [x] determinant-torsion sample law `(16g)` proved
+- [x] Lean formalization of Theorems 1--4, unconditional
+- [x] Burnol completed-Mellin evaluator and ambient aperture bound in Lean (sibling card `(3)`)
+- [ ] Burnol co-Poisson lower bound `(11)` in Lean (sibling card, parent transgression)
+- [ ] `[OPEN CORE: THETA_BOREL_REFLECTED_COMMON_DOMAIN]`
+- [ ] independent specialist novelty audit

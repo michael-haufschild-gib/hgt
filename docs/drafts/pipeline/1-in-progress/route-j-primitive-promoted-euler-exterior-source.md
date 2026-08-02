@@ -730,3 +730,37 @@ The correction and exact finite-span classification are formalized in
 formal/GaloisForLFunctions/RHTower/
   CCMFirstClockPrimitivePromotedCellHodgeBoundaryRigidity.lean
 ```
+
+### Pure-incidence two-leg correction and terminal readout audit
+
+Finite mixed carriers fail actual admission, but the cell source has a complementary nonzero pure
+sector.  For distinct cells `i,j`, both `d_i wedge d_j` and `w_i wedge w_j` are exact incidence and
+are annihilated by every actual mixed Gamma/Hardy boundary coordinate.  Packet-leg transport acts
+on the second by `c_i c_j`; therefore the forced depth deattenuation constructs a complete
+prelanding cofinal carrier whose source transport lands exactly on
+
+```text
+U_n(p,q,r,s)
+  ((d_(p,r) wedge d_(q,s)) + (w_(p,r) wedge w_(q,s))).
+```
+
+This carrier is actually admitted at every displacement, Green-fixed, fixed by pure exchange, and
+has two-component capacity at most `200*289^2`.  Thus the missing two-leg source transport and
+actual finite admission are genuinely constructed.
+
+They still cannot furnish Route-J residual capacity.  Exact codiagonal has gain at least
+`(5/289)n`.  A generic Lean theorem shows that no continuous linear functional on any complex
+seminormed realization with the uniform carrier bound can retain every finite codiagonal.  This
+closes the pure-Hodge bounded-readout class, including alternative normed completions; changing
+topology can evade the theorem only by losing the stated capacity or scalar descent.
+
+Lean certificate:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  CCMFirstClockPrimitivePromotedPureHodgeCountertransport.lean
+```
+
+The surviving producer is not another finite carrier.  It is the source-derived closed admission
+object with coefficient-faithful unsquared mixed finite trace described in the oriented
+source-admission theorem.

@@ -132,9 +132,9 @@ component of the finite-stage Poincare-residue/evaluation morphism.
   intersecting the existing pro-log Stein nuclear topology with the
   Tate graph scale.  Replacing the source topology by a transverse
   Hilbert graph completion destroys residue before cohomology.
-- **Status:** dependency-closed paper proof; exact scalar Dirichlet
-  mass, evaluation growth, fixed transverse-power profiles, and
-  finite-profile non-domination are ready for Lean formalization.
+- **Status:** dependency-closed paper proof, formalized unconditionally in
+  Lean on the genuine `L²` objects: Dirichlet mass, evaluation growth,
+  fixed transverse-power profiles, and finite-profile non-domination.
 
 ## Hostile scope audit
 
@@ -164,17 +164,64 @@ Milnor cells are continuous; then determine uniform transition
 estimates needed for strict nuclear passage.  Horizontal topology may
 not be discarded during completion.
 
+## Lean status
+
+Formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/DeningerHorizontalResidueTransverseGraphNoGo.lean`.  Axiom
+audit for every declaration: `propext, Classical.choice, Quot.sound`.
+
+The packet `(2)` is built as an actual element of `L²(AddCircle T)`, not as a scalar surrogate:
+
+- `deningerDirichletCoeff`, `deningerDirichletCoeff_norm`, `deningerDirichletCoeff_mul_fourier` —
+  the unimodular alignment coefficients `conj(e_k(ζ))` and the cancellation `conj(e_k(ζ)) e_k(ζ) = 1`.
+- `deningerDirichletKernelLp`, `deningerDirichletKernelLp_norm` — the aligned Dirichlet kernel as a
+  finite character sum in `Lp ℂ 2 haarAddCircle`, with norm exactly `√N`.  This is proved from
+  mathlib's `orthonormal_fourier`, i.e. from genuine orthonormality of the characters, and it is
+  the first identity of `(3)`.
+- `deningerDirichletPacket`, `deningerDirichletPacket_toLp`, `deningerDirichletPacket_norm_toLp` —
+  the normalized packet as a continuous function, its `L²` class, and unit mass for `N > 0`.
+- `deningerDirichletPacket_eval_self` — the second identity of `(3)`: the packet takes the value
+  `√N` at its alignment point.  Point evaluation is taken on the continuous representative, which
+  is exactly the residue component `(1)`.
+
+The transverse factor is an actual eigenvector, and the tensor an actual continuous field:
+
+- `deningerTransverseTensor`, `deningerTransverseTensor_norm_toLp` — the elementary tensor
+  `f ⊗ η` as a `C(AddCircle T, E)` and the factorization `‖f ⊗ η‖₂ = ‖η‖ ‖f‖₂`.
+- `deningerTransverseFieldPower`, `deningerTransverseEigen_pow`,
+  `deningerTransverseFieldPower_tensor` — the transverse graph monomial `Â^m` acting through the
+  transverse factor only, and `Â^m η = λ^m η`.
+- `deningerTransverseGraphPower_norm_dirichletPacket` — **equation `(4)`**:
+  `‖Â^m u_N‖₂ = ‖λ‖^m`, independent of the horizontal aperture `N`.
+- `deningerTransverseTensor_eval_norm_dirichletPacket` — the residue evaluation of the same
+  tensor has norm `√N`.
+- `deningerHorizontalResidue_not_bounded_by_transverseGraph` — **the no-go**: for every constant
+  and every finite family of orders there is an `N` at which the transverse graph profile is
+  dominated by aligned residue evaluation.  Since the fixed prime weight `(log p)²` multiplies
+  every graph seminorm by one constant, it is absorbed into that constant and changes nothing.
+
+The earlier scalar declarations (`deningerHorizontalDirichletMass_eq_one`,
+`deningerHorizontalDirichletEvaluation_eq_sqrt`,
+`deningerHorizontalEvaluation_not_bounded_by_finiteTransverseProfile`,
+`deningerRankCubeSobolevEvaluationRatioSq_tendsto_atTop`) remain as the aperture arithmetic and
+the rank-cube Sobolev degeneration; the `L²` layer above now supplies the objects they describe.
+
 ## Gates
 
 - [x] exact arithmetic residue component identified
 - [x] hostile collision audit
 - [x] complete paper proof
 - [x] positive survivor extracted
-- [ ] Lean formalization
-- [ ] anisotropic finite-stage continuity
+- [x] Lean formalization
+- [ ] anisotropic finite-stage continuity *(successor conjecture, not this theorem)*
 
 ## Log
 
 - 2026-08-01 — Proved transverse graph blindness to horizontal source
   residue and replaced the failed transverse-only descent conjecture by
   an anisotropic pro-log/Tate graph intersection.
+- 2026-08-02 — Lean formalization completed on the genuine objects: the packet
+  is an element of `L²(AddCircle T)` and its unit mass comes from mathlib's
+  orthonormality of the characters, the transverse factor is an actual
+  eigenvector of a bounded operator, and the tensor is an actual continuous
+  field.  Equations `(3)`, `(4)` and the no-go are unconditional.

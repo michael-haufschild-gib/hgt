@@ -1,14 +1,16 @@
 # Order-three elliptic-gamma bottom faces are jointly atomic
 
 - **ID:** `order-three-elliptic-gamma-bottom-face-joint-atomicity`
-- **Stage:** 2-fully-proven / needs independent audit
+- **Stage:** 3-formalized / needs independent audit
 - **Type:** THEOREM (paper) / GRAPH-GLUED DIFFERENTIAL INDEPENDENCE
 - **Date:** 2026-07-10
-- **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` -- conditional on the independently
-  unaudited order-one elliptic-gamma atomic theorem. The abstract graph-gluing theorem is an
-  elementary `[BRIDGE]`; the candidate scientific content is its concrete conclusion that all six
-  parameter-pair faces of a generic order-three multiple elliptic gamma function, including every
-  finite external translate family, are jointly differentially algebraically independent.
+- **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [UNCONDITIONALLY LEAN-FORMALIZED]`
+  -- the abstract graph-gluing theorem is an elementary `[BRIDGE]`; the candidate scientific
+  content is its concrete conclusion that all six parameter-pair faces of a generic order-three
+  multiple elliptic gamma function, including every finite external translate family, are jointly
+  differentially algebraically independent. The order-one atomic parent is itself an unconditional
+  Lean theorem, so the conclusion is no longer conditional; only the independent specialist audit
+  remains.
 - **Parents:**
   `elliptic-gamma-rank-three-da-spectrum`;
   `atomic-defect-full-orbit-differential-matroid`;
@@ -289,10 +291,43 @@ inclusion of each translated finite packet.
 `differentialRank_crossNeutral_of_image_differentialAlgebraic` further discharges that inclusion
 from the direct analytic statement that every translated packet is DA over the original packet.
 `Rank.hasFreeTranslates_of_intHeight` also constructs geometric free translates from an invariant
-integer orbit-height satisfying `height(σ^n x)=height(x)+n`. The only remaining concrete interfaces
-are therefore star differential independence, that explicit height law for the actual face-orbit
-coordinates, and the off-face packetwise DA statement. Those hypotheses are not yet discharged for
-the actual elliptic-gamma functions in Lean, so this card remains in step 2.
+integer orbit-height satisfying `height(σ^n x)=height(x)+n`.
+
+### The concrete conclusion is now unconditional
+
+The remaining special-function interfaces are discharged. The layered face-independence engine
+proves the concrete conclusion for the actual meromorphic multiple elliptic-gamma kernels without
+any hypothesis beyond the card's own genericity assumption:
+
+- `differentialAlgebraicOver_facePacket_of_compl_lt_two`
+  (`MultipleEllipticGammaAllFaceIndependence.lean`) is the off-face packetwise DA statement: every
+  translate of a face retaining fewer than two periods is DA over the constants;
+- `multipleEllipticGammaProperFacePackets_diffIndepOn` (same file) is the joint independence of the
+  external translation packets of *all* faces retaining at least two periods. It is proved by
+  induction on face depth over the boundary of DA faces, which subsumes the star/graph-gluing
+  route rather than instantiating it.
+
+`formal/GaloisForLFunctions/HTGeometry/OrderThreeBottomFaceJointAtomicity.lean` specializes this to
+the card's order-three statement. Writing `PeriodsIntegrallyIndependent τ` for the genericity
+hypothesis on `τ : Fin 4 → ℂ`:
+
+- `orderThreeBottomFaces` is the set of two-element deletions and
+  `orderThreeBottomFaces_card_six` proves there are exactly six of them;
+- `orderThreeBottomFaceOrbitCoordinate τ hτ i j a b` is the orbit coordinate
+  `T_i^a T_j^b A_{ij}` of `(7)`, and `orderThreeBottomFaceOrbitCoordinate_mem` places it in the
+  bottom-face packet union;
+- `orderThreeBottomFaceOrbits_diffIndepOn` and
+  `orderThreeBottomFaceOrbits_diffIndepOn_rationalBase` prove `(8)`: the union of the six external
+  orbits is differentially independent over `ℂ` and over `ℂ(z)`;
+- `orderThreeBottomFaceOrbitCoordinates_differentialIndependent_rationalBase` is the exact
+  finite-family statement `(9)`;
+- `orderThreeBottomFaceGamma` is the translated order-one elliptic gamma function itself,
+  `logDeriv_orderThreeBottomFaceGamma` identifies its logarithmic derivative with the orbit
+  coordinate, and
+  `orderThreeBottomFaceGammas_differentialIndependent_rationalBase` is the multiplicative
+  consequence.
+
+`#print axioms` on each of these returns only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Attacks and boundaries
 
@@ -351,8 +386,9 @@ orbits or in reconstruction of the top primitive, not among the atomic bottom fa
 - [x] multiplicative elliptic-gamma family consequence derived
 - [x] exact/stronger/equivalent literature gate completed provisionally through 2026
 - [x] abstract gluing rank realized by the genuine differential matroid in Lean
-- [ ] actual elliptic-gamma star independence, orbit-height law, and off-face packetwise DA
-  hypotheses discharged in Lean
+- [x] actual elliptic-gamma off-face packetwise DA and joint face-packet independence discharged in
+  Lean; the six bottom-face orbits, the finite-family degree, and the multiplicative family are
+  unconditional theorems
 - [ ] independent proof audit
 - [ ] independent specialist priority audit
 - [ ] independent audit of the order-one atomic parent
@@ -366,3 +402,9 @@ orbits or in reconstruction of the top primitive, not among the atomic bottom fa
   their multiplicative order-one elliptic-gamma functions.
 - 2026-07-10 -- Audited independent-operator Galois results, diagonal and triangular difference
   systems, and the multiple-elliptic-gamma literature; found no equivalent six-face theorem.
+- 2026-08-02 -- Closed the Lean gate. The order-one atomic parent and the off-face packetwise DA
+  statement were already unconditional in the corpus, and the layered engine
+  `multipleEllipticGammaProperFacePackets_diffIndepOn` proves joint independence of every face
+  packet retaining two periods. Added `OrderThreeBottomFaceJointAtomicity.lean` with the six-face
+  specialization, the explicit orbit coordinates, the finite-family degree statement, and the
+  multiplicative family. Promoted to Stage 3.

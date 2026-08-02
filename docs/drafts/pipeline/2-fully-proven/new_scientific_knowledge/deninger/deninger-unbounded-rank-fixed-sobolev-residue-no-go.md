@@ -105,9 +105,9 @@ limit.
   anisotropic Hilbert Sobolev exponent.  Unbounded arithmetic character
   rank forces a genuinely nuclear/projective source topology before
   completion.
-- **Status:** dependency-closed paper proof; scalar exponential versus
-  polynomial ratio formalized in Lean together with preceding
-  Dirichlet-packet obstruction.
+- **Status:** dependency-closed paper proof, formalized unconditionally in
+  Lean on the genuine torus objects: the rank-cube witness, its unit `L²`
+  mass, its evaluation, its Fourier--Sobolev energy, and the no-go.
 
 ## Hostile scope audit
 
@@ -129,17 +129,55 @@ packet evaluation, corestriction, and relative Milnor cells are strict
 for this projective system; then prove the weighted all-prime Green
 forms are summable on every resulting Banach disk.
 
+## Lean status
+
+Formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/DeningerUnboundedRankFixedSobolevResidueNoGo.lean`.  Axiom
+audit for all 32 declarations: `propext, Classical.choice, Quot.sound`.
+
+The witness is an actual function on the rank-`d` unit torus, and the Sobolev norm `(3)` is the
+genuine Fourier expression, anchored to a Hilbert norm:
+
+- `deningerTorusAlignedPacket` — the aligned character packet on a finite frequency set, built
+  from mathlib's multivariate torus characters `mFourier`.
+  `deningerTorusAlignedKernelLp_norm` derives its `L²` norm from `orthonormal_mFourier`, so the
+  unit mass in `(2)` is genuine Parseval, not an assumed identity;
+  `deningerTorusAlignedPacket_eval_self` and `deningerTorusAlignedPacket_norm_toLp` are the two
+  halves of `(2)`.
+- `deningerRankCubeWitness` — the witness `(1)`, defined as the packet on the `{0,1}` frequency
+  cube, and `deningerRankCubeWitness_prod` proves it *equals* the product formula
+  `2^{-d/2} ∏ⱼ (1 + conj(ζⱼ) zⱼ)` of `(1)`, so the cube description and the product description
+  are the same object.  `deningerFrequencyCube_card` gives the `2^d` coefficients.
+- `deningerFrequencyNormSq`, `deningerCharacterSobolevEnergy` — the Fourier--Sobolev energy `(3)`.
+  `deningerCharacterSobolevEnergy_zero` proves that at order zero it *is* the genuine `L²` norm
+  square, so the weight is the Fourier form of a Hilbert norm rather than an arbitrary formula.
+  `deningerTorusSobolevEnergy` gives the same energy for an arbitrary `L²` class through the
+  Fourier--Hilbert basis, and `deningerTorusSobolevEnergy_sum` proves the two agree on
+  trigonometric polynomials.
+- `deningerFrequencyCube_normSq_le` and `deningerRankCubeWitness_sobolevEnergy_le` are `(4)`:
+  every cube frequency has square length at most `d`, hence the order-`s` energy is at most
+  `(1 + d)^s`.
+- `deningerRankCubeWitness_eval_normSq` — the evaluation `|F_d(ζ)|² = 2^d`.
+- `deningerRankCube_no_uniform_sobolev_bound` — **`(5)`--`(6)`**: for every order `s` and every
+  constant there is a rank whose witness violates `|F(ζ)| ≤ C_s ‖F‖_{H^s}`.  The exponential
+  versus polynomial comparison is `deningerRankCubeSobolevEvaluationRatioSq_tendsto_atTop` from
+  the parent module.
+
 ## Gates
 
 - [x] exact pro-rank witness
 - [x] complete paper proof
 - [x] positive survivor extracted
 - [x] internal collision audit
-- [ ] Lean module direct audit
-- [ ] projective graph strictness
+- [x] Lean module direct audit
+- [ ] projective graph strictness *(successor conjecture, not this theorem)*
 
 ## Log
 
 - 2026-08-01 — Proved fixed Sobolev repair fails across unbounded
   pro-log rank and isolated full projective/holomorphic topology as
   mandatory survivor.
+- 2026-08-02 — Formalized unconditionally on the genuine objects: the rank-cube
+  witness on `UnitAddTorus d` with its product formula, unit `L²` mass from
+  multivariate character orthonormality, the Fourier--Sobolev energy anchored to
+  the `L²` norm at order zero, the `(1 + d)^s` bound, and the no-go.

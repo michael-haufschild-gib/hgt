@@ -1,6 +1,6 @@
 # Deninger prime/Kummer coercivity localization
 
-**Status:** fully proved on paper; Lean formalization pending  
+**Status:** fully proved on paper; formalized unconditionally in Lean  
 **Route:** `L`  
 **Exact label:** `DAC_PRIME_KUMMER_COERCIVITY_LOCALIZATION`  
 **Positive survivor:** `DAC_KUMMER_SMALL_DIVISOR_CARRIER_NECESSITY`
@@ -118,6 +118,29 @@ Formalize:
 4. the combined local-gap/global-gapless localization theorem.
 
 All declarations must be unconditional and import existing density rather than reproving it.
+
+## Lean status
+
+All four targets are formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/DeningerPrimeKummerCoercivityLocalization.lean`.  Axiom audit
+for every declaration: `propext, Classical.choice, Quot.sound`.
+
+- Target 1 — `deningerTateCircleModeRate_succ_gap` is the prime-independent gap `2π` of every
+  nonconstant Tate-normalized circle mode; `deningerTatePacketMass`,
+  `deningerTatePacketEnergy` and `deningerTatePacketEnergy_uniform_coercive` are the finite packet
+  energy inequality of clause 1, uniform in prime, aperture and packet dimension.
+- Target 2 — `deningerIncidenceCompression` is the orthogonal compression `g_L = P_L A|_L`;
+  `deningerIncidenceCompression_inner_eq` is the exact pairing identity
+  `⟨g_L x, x⟩ = ⟨A x, x⟩` that carries the whole argument, and
+  `deningerIncidenceCompression_norm_lower` is the lower bound `‖g_L x‖ ≥ κ‖x‖`, uniform in the
+  incidence subspace.  The proof's two further assertions are also formalized:
+  `deningerIncidenceCompression_injective` and `deningerIncidenceCompressionEquiv` give
+  injectivity and invertibility on a finite packet, and
+  `deningerIncidenceCompressionEquiv_symm_norm_le` is the inverse estimate `‖g_L^{-1}‖ ≤ κ^{-1}`.
+- Target 3 — `deningerPrimeLogLattice_no_uniform_positive_gap` imports the existing density result
+  `primeLogLattice_arbitrarily_small_rate` rather than reproving it, exactly as required.
+- Target 4 — `deningerPrimeKummer_gap_localization` is the combined statement: the local Tate
+  modes are uniformly gapped while the signed global Kummer lattice is gapless.
 
 ## Route-L effect
 

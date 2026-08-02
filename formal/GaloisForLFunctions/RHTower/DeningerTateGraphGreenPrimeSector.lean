@@ -229,4 +229,59 @@ theorem deningerTateGraphCrossEnergy_tsum_le_graph
   exact mul_le_mul (Real.sqrt_le_sqrt hsumX) (Real.sqrt_le_sqrt hsumY)
     (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
 
+section GreenCrossForm
+
+variable {ι : Type*}
+
+/-- The unsmoothed oscillatory Green cross term of two complex mode families. -/
+noncomputable def deningerGreenCrossTerm (lam : ι → ℝ) (a b : ι → ℂ) (i : ι) : ℂ :=
+  ((lam i : ℝ) : ℂ) * (starRingEnd ℂ) (a i) * b i
+
+/-- The modulus of a Green cross term is the geometric mean of the two mode energies. -/
+theorem deningerGreenCrossTerm_norm (lam : ι → ℝ) (hlam : ∀ i, 0 ≤ lam i)
+    (a b : ι → ℂ) (i : ι) :
+    ‖deningerGreenCrossTerm lam a b i‖ =
+      Real.sqrt (lam i * ‖a i‖ ^ 2) * Real.sqrt (lam i * ‖b i‖ ^ 2) := by
+  rw [deningerGreenCrossTerm, norm_mul, norm_mul, RCLike.norm_conj, Complex.norm_real,
+    Real.norm_eq_abs, abs_of_nonneg (hlam i), Real.sqrt_mul (hlam i), Real.sqrt_mul (hlam i),
+    Real.sqrt_sq (norm_nonneg _), Real.sqrt_sq (norm_nonneg _),
+    show Real.sqrt (lam i) * ‖a i‖ * (Real.sqrt (lam i) * ‖b i‖) =
+      Real.sqrt (lam i) * Real.sqrt (lam i) * (‖a i‖ * ‖b i‖) by ring,
+    Real.mul_self_sqrt (hlam i), mul_assoc]
+
+/-- **Absolute convergence of the Green cross form.**  Weighted Tate graph summability of both
+mode families makes the unsmoothed sesquilinear Green series absolutely convergent. -/
+theorem deningerGreenCrossTerm_summable {c : ℝ} (hc : 0 < c)
+    (L lam : ι → ℝ) (a b : ι → ℂ)
+    (hcL : ∀ i, c ≤ L i) (hlam : ∀ i, 0 ≤ lam i)
+    (hgraphX : Summable fun i => deningerTateGraphWeight (L i) (lam i) * ‖a i‖ ^ 2)
+    (hgraphY : Summable fun i => deningerTateGraphWeight (L i) (lam i) * ‖b i‖ ^ 2) :
+    Summable fun i => ‖deningerGreenCrossTerm lam a b i‖ := by
+  have hcross := deningerTateGraphCrossEnergy_summable hc L lam
+    (fun i => ‖a i‖ ^ 2) (fun i => ‖b i‖ ^ 2) hcL hlam
+    (fun i => sq_nonneg _) (fun i => sq_nonneg _) hgraphX hgraphY
+  simpa only [deningerGreenCrossTerm_norm lam hlam a b] using hcross
+
+/-- **The uniform graph bound on the Green cross form.**  The sesquilinear Green series is bounded
+by the two weighted Tate graph energies, so the form extends continuously to the graph
+completion. -/
+theorem deningerGreenCrossForm_norm_tsum_le {c : ℝ} (hc : 0 < c)
+    (L lam : ι → ℝ) (a b : ι → ℂ)
+    (hcL : ∀ i, c ≤ L i) (hlam : ∀ i, 0 ≤ lam i)
+    (hgraphX : Summable fun i => deningerTateGraphWeight (L i) (lam i) * ‖a i‖ ^ 2)
+    (hgraphY : Summable fun i => deningerTateGraphWeight (L i) (lam i) * ‖b i‖ ^ 2) :
+    ‖∑' i, deningerGreenCrossTerm lam a b i‖ ≤
+      Real.sqrt (∑' i, (c ^ 2)⁻¹ *
+        deningerTateGraphWeight (L i) (lam i) * ‖a i‖ ^ 2) *
+      Real.sqrt (∑' i, (c ^ 2)⁻¹ *
+        deningerTateGraphWeight (L i) (lam i) * ‖b i‖ ^ 2) := by
+  have hnorm := deningerGreenCrossTerm_summable hc L lam a b hcL hlam hgraphX hgraphY
+  refine (norm_tsum_le_tsum_norm hnorm).trans ?_
+  rw [tsum_congr fun i => deningerGreenCrossTerm_norm lam hlam a b i]
+  exact deningerTateGraphCrossEnergy_tsum_le_graph hc L lam
+    (fun i => ‖a i‖ ^ 2) (fun i => ‖b i‖ ^ 2) hcL hlam
+    (fun i => sq_nonneg _) (fun i => sq_nonneg _) hgraphX hgraphY
+
+end GreenCrossForm
+
 end RHTower

@@ -3207,3 +3207,178 @@ This is not a reassignment or a closure claim.  Existence of such `K_rho` at eve
 is formally equivalent to RH.  Route J remains open until this source-derived admission object is
 constructed or every remaining source-relation class is exhausted with its strongest positive
 survivor.
+
+## 49. Pure-incidence actual admission and bounded-readout no-go
+
+`[PAPER+LEAN-PROVED CONSTRUCTION]`
+`[PAPER+LEAN-PROVED CLASS NO-GO]`
+
+Section 47 classifies the mixed canonical span, not all finite incidence.  The exact complementary
+survivor is source-defined.  For distinct cells `i,j`, put
+
+```text
+D_ij=d_i wedge d_j,
+P_ij=w_i wedge w_j.                                  (182)
+```
+
+The Calderon--Witt cup and every actual boundary coordinate are defect--packet mixed.  Independent
+pure coordinate determinants prove `D_ij,P_ij` nonzero, while
+
+```text
+d1_cell(D_ij)=d1_cell(P_ij)=0,
+partial_a(D_ij)=partial_a(P_ij)=0                    (183)
+```
+
+for every modular displacement `a`.  Thus `D_ij+P_ij` is genuine actual admitted incidence even
+off the critical line.  This corrects any inference that actual admission itself is finite-span
+rigid.
+
+The pure sector also fixes the missing operation order.  Packet-leg Gamma transport satisfies
+
+```text
+T_c(D_ij)=D_ij,
+T_c(P_ij)=c_i c_j P_ij.                              (184)
+```
+
+Both primitive amplitudes are now produced by the source endomorphism.  With the source height/
+phase kernel before amplitudes and the forced critical depth deattenuations, one explicit
+prelanding cofinal carrier maps exactly to
+
+```text
+A_n(p,q,r,s)
+ =U_n(p,q,r,s)(D_(p,r;q,s)+P_(p,r;q,s)).             (185)
+```
+
+Both complete finite sums are actually admitted for every `a`; the landed carrier is fixed by
+cell Green retraction.  Pure exchange swaps `D` and `P`, hence fixes `(185)`.  Its raw two-component
+capacity and one-component codiagonal are
+
+```text
+U_n^pure=2U_n<=200*289^2,
+sum_(p,q,r,s) U_n(p,q,r,s)=R_n.                      (186)
+```
+
+This completes the requested cofinal depth-nonlocal actual-admitted countertransport and its
+uniform capacity.  It still does not close Route J.  Hostile testing is decisive: if a scalar
+consumer controls exact readout by this capacity, then
+
+```text
+R_n <= gain_n sqrt(U_n^pure)
+  -> gain_n >= (5/289)n.                             (187)
+```
+
+No fixed gain works.  More generally, let `x_n` be any realization in a complex seminormed space
+with `||x_n||<=sqrt(U_n^pure)`.  There is no continuous linear functional `L` satisfying
+
+```text
+L(x_n)=R_n                                             (188)
+```
+
+for all sufficiently large source apertures: `||L||` would be a forbidden fixed gain in `(187)`.
+This is class-complete for normed completed scalar descent retaining the uniform capacity and exact
+finite codiagonal.  A topology that makes the codiagonal continuous must charge an unbounded
+carrier norm; a vertical relation does not give a descended scalar output.
+
+Lean certificate:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  CCMFirstClockPrimitivePromotedPureHodgeCountertransport.lean
+```
+
+Strongest positive survivor is the nonzero actual-admitted two-leg source carrier `(185)`.  Its
+bounded scalar-readout program is closed.  Route J remains open on Section 48's unsquared mixed
+finite trace: a source-derived `K_rho` must retain the canonical mixed witness that pure incidence
+necessarily hides.
+
+## 50. Pure-Hodge modular transgression recovers the unsquared mixed trace
+
+`[PAPER+LEAN-PROVED CONSTRUCTION]`
+`[PAPER+LEAN-PROVED TOPOLOGY CLASSIFICATION]`
+`[OPEN COMPLETED-XI GRAPH LANDING]`
+
+Section 49's last sentence was too pessimistic: pure incidence hides the mixed trace from its
+primary Gamma boundary, but not from the source-relative Hodge transgression required by the
+orientation--transgression law.  For a distinct cell pair `i,j`, write
+
+```text
+r_ij=rate(i)+rate(j),
+B_a(D_ij)=exp(-a r_ij)D_ij,
+B_a(P_ij)=exp( a r_ij)P_ij.                         (189)
+```
+
+The balanced orbit obeys the exact Hodge covariance
+
+```text
+H B_a = B_(-a) H.                                   (190)
+```
+
+Therefore its reflection-odd part on the Hodge-fixed pure carrier is
+
+```text
+Omega_a(i,j)
+ =(B_a-B_(-a))(D_ij+P_ij)/2
+ =sinh(a r_ij)(P_ij-D_ij),                          (191)
+```
+
+which is Hodge-anti-fixed.  Since both pure summands are exact incidences annihilated by every
+primary Gamma/Hardy boundary coordinate, `Omega_a(i,j)` is actual-admitted for every auxiliary
+boundary displacement.  This is a vector-valued secondary class, not a mixed carrier inserted
+after scalarization.
+
+Pair its packet--packet coordinate against the defect--defect leg with the source weight
+
+```text
+W_ij=A_0(i)A_0(j)(height(i)-height(j)).               (192)
+```
+
+The definitions of modular current and reflection-odd exterior give, without approximation,
+
+```text
+Tr_ij(Omega_a(i,j))
+ =W_ij (exp(a r_ij)-exp(-a r_ij))/2
+ =gamma_a(i,j)
+ =partial_a(E_ij)(i,j).                              (193)
+```
+
+Here `E_ij=d_i wedge w_j` is the canonical mixed witness.  Thus `(193)` is the missing exact
+unsquared finite trace, reconstructed from a nonzero actual-admitted pure source object through
+the Hodge--modular commutator.  Cell-height injectivity and the existing Gamma zero law imply
+
+```text
+Tr_ij(Omega_a(i,j))=0  <->  a=0.                    (194)
+```
+
+The source-horizon obstruction fixes the completion topology sharply.  At fixed prime clocks
+`p,q` and common depth `n`, the two-component coefficient graph capacity is
+
+```text
+C_a(p,q,n)
+ =exp(-2a r_(p,q,n))+exp(2a r_(p,q,n))
+ =S_a(p,q,n)+S_(-a)(p,q,n),                          (195)
+```
+
+the sum of reciprocal Gamma sewing costs.  Since
+`r_(p,q,n)=-(n+1)(log p+log q)`, one term tends to infinity for every `a!=0`, whereas
+`C_0(p,q,n)=2`.  Consequently
+
+```text
+exists C, forall n, C_a(p,q,n)<=C  <->  a=0.         (196)
+```
+
+This closes the search for an unsquared secondary detector and proves its class-complete
+graph-capacity boundary.  It does not assume or prove that completed Xi source vectors satisfy
+the bounded side of `(196)`.  Exact remaining Route-J producer is now:
+
+```text
+derive, from the prime-power Xi Green source relation, graph-bounded landing
+of its balanced pure-Hodge modular transgression.                         (197)
+```
+
+Assuming `(197)` would be theatre; deriving it would force `a=0` at every divisor coordinate by
+`(196)` and close RH.  Lean certificate:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  CCMFirstClockPrimitivePromotedPureHodgeModularTransgression.lean
+```

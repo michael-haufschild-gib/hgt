@@ -1,9 +1,10 @@
 # Suzuki wall-field light-cone kernel completion
 
 - **ID:** `suzuki-wall-field-light-cone-kernel-completion`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalized and Lean-audited
 - **Type:** SOURCE REALIZATION / FE--XI-REAL BIPOLARIZATION / KERNEL COMPLETION
-- **Scientific status:** `[PAPER-PROVED] [SOURCE-SPECIFIC] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [UNCONDITIONAL] [SOURCE-SPECIFIC]`
+  `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
   `[NOT RH]`
 - **Parents:**
   `suzuki-wall-field-antidiagonal-gram-lift.md`,

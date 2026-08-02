@@ -363,7 +363,9 @@ DAGs without repeating the audits.
 - [ ] `noncompact-period-quotient-facet-escape-law` — theorem/corollary surface inventory pending
 - [ ] `nonlinear-rational-observation-curve-horizon-reconstruction` — theorem/corollary surface inventory pending
 - [ ] `orbifold-tail-holographic-reconstruction` — theorem/corollary surface inventory pending
-- [ ] `order-three-elliptic-gamma-bottom-face-joint-atomicity` — theorem/corollary surface inventory pending
+- [x] `order-three-elliptic-gamma-bottom-face-joint-atomicity` — complete: six-face joint
+  atomicity, finite-family degree, and the multiplicative family formalized unconditionally
+  (`OrderThreeBottomFaceJointAtomicity.lean`)
 - [ ] `order-three-elliptic-gamma-full-structural-differential-matroid` — theorem/corollary surface inventory pending
 - [ ] `order-two-elliptic-gamma-full-structural-differential-matroid` — theorem/corollary surface inventory pending
 - [x] `order-two-multiple-gamma-period-deletion-phase-split` — complete: transverse DA depth, the

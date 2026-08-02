@@ -1,8 +1,9 @@
 # Measure-universal Herglotz maximal HT and its Krein gauge chambers
 
 - **ID:** `herglotz-full-translation-ht-krein-index-orthogonality`
-- **Stage:** 2-fully-proven / needs independent audit
-- **Type:** THEOREM (paper) — `[PROVED HERE] [NOVELTY UNVERIFIED]`
+- **Stage:** 3-formalized / Lean-audited; novelty audit remains open
+- **Type:** THEOREM (paper) — `[PROVED HERE] [LEAN-FORMALIZED] [UNCONDITIONAL]`
+  `[NOVELTY UNVERIFIED]`
 - **Lane:** general hypertranscendence; exact Herglotz positivity; full complex translation orbit
 - **Statement:** For every positive Herglotz measure with infinite support, a comeager set of bounded
   positive reweightings has maximal full-complex-translation differential-algebraic freedom as germs
@@ -657,6 +658,10 @@ Complete unconditional formalization is umbrella-reachable under
 - `HerglotzFiniteAtomicOrbitInvariance` and `HerglotzFiniteAtomicGaugeSlice`: exact finite gauge
   slices, embedded differential-field and differential-matroid equality, pointed generator class
   modulo `C(z)`, and Pick index equal to sign-cube distance;
+- `HerglotzFiniteAtomicExactNegativeSquares`: literal global exact-negative-squares theorem on
+  every finite upper-half-plane packet, attained injective lower witness, fixed-support replacement,
+  complete field/matroid/independence/gauge-slice package, and odd FE-paired chambers with doubled
+  index;
 - `MovingCanonicalProduct`, `MovingCanonicalFullTranslationFreeness`,
   `MovingCanonicalSurgery`, and `MovingCanonicalSurgeryFieldInvariance`: formulae `(5)--(10)`,
   order-one exact divisor, exact `k` negative squares, dense residual full-orbit freeness, and

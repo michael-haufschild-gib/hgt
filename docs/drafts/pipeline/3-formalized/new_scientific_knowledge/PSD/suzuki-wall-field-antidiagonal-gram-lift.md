@@ -1,9 +1,9 @@
 # Suzuki wall-field anti-diagonal Gram lift
 
 - **ID:** `suzuki-wall-field-antidiagonal-gram-lift`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3 — formalized and Lean-audited
 - **Type:** HERMITIAN LIFT / FE-REFLECTED FAR-SOURCE WELD / ROOTED-DEBT CONNECTOR
-- **Scientific status:** `[PAPER-PROVED] [SOURCE-SPECIFIC]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [UNCONDITIONAL] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parents:** `suzuki-critical-wall-field-square-root-weld.md`,
   `suzuki-marked-secant-midpoint-lorentz-completion.md`,

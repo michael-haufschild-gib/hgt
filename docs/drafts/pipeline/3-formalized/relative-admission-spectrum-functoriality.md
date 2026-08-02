@@ -1,8 +1,8 @@
 # Relative admission-spectrum functoriality
 
 - **ID:** HGT-relative-admission-spectrum
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (paper and formal certificate)
 - **Source:** current `HTGeometry` contraction/orientation corpus and `RHTower` source transports
 - **Statement:** The vanishing spectrum of a family of relative primitive obstructions is independent of the chosen ambient Green primitive and is preserved exactly by every chain transport whose induced map on admitted-primitive quotients is injective.
 
@@ -21,7 +21,8 @@ explicit source transports either preserve it or necessarily become singular/non
 
 - [x] 0 -> 1 in-progress: exact statement, internal frontier audit, falsity attack, complete proof
 - [x] 1 -> 2 fully-proven: hostile proof audit and `[PAPER-PROVED]`
-- [ ] 2 -> 3 formalized: exact Lean theorem and axiom/lint gates
+- [x] 2 -> 3 formalized: exact Lean theorem and axiom gates; global lint reports only unrelated
+  concurrent umbrella-reachability failures
 - [ ] 3 -> 4 publication-ready: at least three explicit route instantiations and one cross-route consequence
 
 ## Status labels
@@ -188,3 +189,6 @@ cross-route consequence.
   unverified pending later literature audit.
 - 2026-08-02 — hostile proof audit passed.  Abstract theorem promoted to Stage 2; significance gate
   remains the explicit cross-route aperture instantiation.
+- 2026-08-02 — exact certificate added in
+  `HTGeometry/RelativeAdmissionSpectrumNaturalityLaw.lean`; direct check passed and all load-bearing
+  theorems depend only on `propext`, `Classical.choice`, and `Quot.sound`.

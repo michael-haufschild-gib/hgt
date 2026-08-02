@@ -1,6 +1,6 @@
 # Deninger Kummer normalized-cup small-divisor cancellation
 
-**Status:** fully proved on paper; Lean formalization pending  
+**Status:** fully proved on paper; formalized unconditionally in Lean  
 **Route:** `L`  
 **Exact label:** `DAC_KUMMER_NORMALIZED_CUP_SMALL_DIVISOR_CANCELLATION`  
 **Positive survivor:** `DAC_KUMMER_CUP_HILBERT_EXTENSION`
@@ -123,6 +123,25 @@ Formalize unconditionally:
 2. normalized opposite-mode identity `(3)`;
 3. abstract finite packet form `(4)` and estimate `(5)` for an opposition equivalence and a
    unimodular real sign family.
+
+## Lean status
+
+All three targets are formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/DeningerKummerNormalizedCupSmallDivisorCancellation.lean`.
+Axiom audit for every declaration: `propext, Classical.choice, Quot.sound`.
+
+- Target 1 — `deningerCylinderCup_smul` is the complex bilinearity of the cylinder cup under
+  constant rescaling, proved by moving the two constants through the leafwise wedge and the two
+  integrals.
+- Target 2 — `deningerNormalizedCylinderMode_cup_neg` is `(3)`: the energy normalization `|μ|^{1/2}`
+  cancels the complete small divisor and leaves the unimodular value `i·sgn(μ)`.  It consumes the
+  raw identities `deningerCylinderCup_mode_neg` and `deningerCylinderInner_mode` from
+  `DeningerCylinderModes.lean` rather than reproving them.
+- Target 3 — `deningerNormalizedKummerCupPacket` is the finite packet form `(4)` for an arbitrary
+  opposition equivalence and unimodular real sign family, `deningerNormalizedKummerPacketMass` the
+  squared coefficient mass, and `deningerNormalizedKummerCupPacket_norm_le` the frequency- and
+  rank-independent estimate `(5)`, obtained from the triangle inequality followed by
+  Cauchy--Schwarz and the fact that opposition is a permutation.
 
 ## Route-L effect
 

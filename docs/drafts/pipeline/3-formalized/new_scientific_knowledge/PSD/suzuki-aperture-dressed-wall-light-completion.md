@@ -1,7 +1,7 @@
 # Suzuki aperture-dressed wall light completion
 
 - **ID:** `suzuki-aperture-dressed-wall-light-completion`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3 — formalized and Lean-audited
 - **Type:** PRE-SPLIT HILBERT COMPLETION / LIGHT-CONE TRANSPORT / SHARP NO-GO
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [UNCONDITIONAL] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [EXTERNAL NOVELTY UNVERIFIED] [NOT RH]`
@@ -196,3 +196,5 @@ Xi curvature is positive.
 Formalized in
 `formal/GaloisForLFunctions/RHTower/SuzukiApertureDressedWallLightCompletion.lean`.
 
+Umbrella-reachable through `GaloisForLFunctions.RHTower`. Direct foreground Lean check, final
+module build, standard-axiom audit, and formal lint are recorded in the promotion audit below.

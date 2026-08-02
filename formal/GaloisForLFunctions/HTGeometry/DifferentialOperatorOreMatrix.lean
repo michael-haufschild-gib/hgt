@@ -186,9 +186,6 @@ theorem rowAdd_cancel {i₀ k : ι} (h : i₀ ≠ k) (q : DiffOp K) (P : ι → 
     abel
   · rw [rowAdd_apply_of_ne k (-q) _ j hi, rowAdd_apply_of_ne k q P j hi]
 
-omit [Fintype ι] in
-theorem rowStep_placeholder : True := trivial
-
 /-- One elementary row operation. -/
 def RowStep (P P' : ι → κ → DiffOp K) : Prop :=
   ∃ (i₀ k : ι) (q : DiffOp K), i₀ ≠ k ∧ P' = rowAdd i₀ k q P

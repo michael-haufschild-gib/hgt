@@ -113,15 +113,21 @@ bilinear/sesquilinear Green form, not only diagonal energy.
 
 ## Lean
 
-Added to
-`GaloisForLFunctions.RHTower.DeningerTateGraphGreenPrimeSector`:
+In `GaloisForLFunctions.RHTower.DeningerTateGraphGreenPrimeSector`:
 
-- `deningerTateGraphCrossEnergy_summable`;
-- `deningerTateGraphCrossEnergy_tsum_le`;
-- `deningerTateGraphCrossEnergy_tsum_le_graph`.
+- `deningerTateGraphCrossEnergy_summable`, `deningerTateGraphCrossEnergy_tsum_le`,
+  `deningerTateGraphCrossEnergy_tsum_le_graph` formalize `(4)`, `(8)` and `(5)` for the
+  nonnegative squared amplitudes.
+- `deningerGreenCrossTerm` is the actual sesquilinear Green cross term
+  `λ_i \overline{a_i} b_i` of two complex mode families, and `deningerGreenCrossTerm_norm`
+  proves its modulus is exactly `√(λ_i|a_i|²)·√(λ_i|b_i|²)`, which is the last paragraph of the
+  proof.  `deningerGreenCrossTerm_summable` is therefore the absolute convergence of the Green
+  series, and `deningerGreenCrossForm_norm_tsum_le` is the uniform graph bound
+  `‖∑_i λ_i \overline{a_i} b_i‖ ≤ √(∑ c^{-2}W_i(|a_i|²))·√(∑ c^{-2}W_i(|b_i|²))` — the
+  continuous extension of the form to the weighted Tate graph completion.
 
-The declarations formalize `(4)`, `(8)`, and `(5)` respectively.
-Foreground direct-file `lake env lean` passes.  No full build was run.
+Module builds under `lake build`; axiom audit for all seven declarations:
+`propext, Classical.choice, Quot.sound`.
 
 ## Next exact claim
 
@@ -138,11 +144,15 @@ existing scalar-collapse no-go.
 - [x] exact all-prime bound
 - [x] Lean declarations
 - [x] foreground direct-file check
-- [ ] targeted cached module audit deferred
-- [ ] Milnor-incidence cross form
+- [x] targeted cached module audit
+- [ ] Milnor-incidence cross form *(successor conjecture, not this theorem)*
 
 ## Log
 
 - 2026-08-01 — Upgraded diagonal graph control to absolute
   all-prime cross-form summability and a uniform graph Cauchy--Schwarz
   bound.
+- 2026-08-02 — Formalized the sesquilinear layer the paper proof's last
+  paragraph asserts: the complex Green cross term, the exact identity for its
+  modulus, its absolute summability, and the uniform graph bound on the summed
+  form.  Module built and axiom-audited.

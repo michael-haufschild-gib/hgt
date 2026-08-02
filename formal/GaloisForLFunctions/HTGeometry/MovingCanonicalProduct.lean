@@ -161,7 +161,7 @@ private theorem movingCanonicalZero_linear_term_le
       mul_le_mul_of_nonneg_left hinv (by positivity)
     _ = 4 * r / ((n : ℝ) + 1) := by
       field_simp
-      <;> ring
+      ; ring
 
 private theorem movingCanonicalZero_quadratic_term_le
     (θ : BoundedRealSequence) (r : ℝ) (n : ℕ) :
@@ -188,7 +188,7 @@ private theorem movingCanonicalZero_quadratic_term_le
       mul_le_mul_of_nonneg_left hinv (by positivity)
     _ = 8 * r ^ 2 / ((n : ℝ) + 1) ^ 2 := by
       field_simp
-      <;> ring
+      ; ring
 
 theorem movingCanonicalGrowthSeries_le_orderOneWeight
     (θ : BoundedRealSequence) (z : ℂ) :

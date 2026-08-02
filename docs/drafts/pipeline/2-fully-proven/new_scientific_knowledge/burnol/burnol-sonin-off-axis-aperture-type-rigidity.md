@@ -250,11 +250,46 @@ Primary references:
 
 ## Lean decision
 
-The proof uses the literal extended Sonine space, unitary cosine transform, continuous completed
-Mellin evaluator, and co-Poisson quotient identification.  None is yet represented in the formal
-tree.  Formalizing an abstract geometric-sequence sandwich would duplicate the existing
-two-clock detector and would not formalize the mathematical content of `(3)`.  Lean work is
-deferred until the Burnol analytic interfaces exist.
+The ambient off-axis upper bound `(3)`--`(4)`, which is the analytic content of this card, is now
+formalized unconditionally in
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolSoninEvaluationAperture.lean
+```
+
+on the literal Hilbert space `L^2((0,infinity),dt)`.  The module defines the completed right Mellin
+evaluator
+
+```text
+mellinCompletionFactor w = pi^(-w/2) Gamma(w/2),
+soninMellinKernel w t     = t^(-w),
+soninMellinEvaluation w f = mellinCompletionFactor w * integral_{(0,infinity)} f t * t^(-w) dt,
+```
+
+and the constant-aperture-head class `SoninHeadConstant a f`.  It proves
+
+```text
+norm_head_mul_sqrt_le                    : ||c|| sqrt A <= ||f||                            (5)
+integral_Ioo_soninMellinKernel           : integral_{(0,A)} t^(-w) dt = A^(1-w)/(1-w)       (6)
+integral_Ioi_norm_sq_soninMellinKernel   : integral_{(A,infinity)} t^(-2 sigma) dt
+                                             = A^(1-2 sigma)/(2 sigma - 1)                  (7)
+norm_soninMellinEvaluation_le_aperture   : ||M f w|| <= ||gamma(w)||
+                                             (1/||1-w|| + 1/sqrt(2 sigma - 1))
+                                             A^(1/2-sigma) ||f||                            (3),(4)
+norm_soninMellinEvaluation_le_geometric_sample
+                                         : the same bound at a_N = a_0 r^(-N), with the
+                                           exact factor r^(N(sigma-1/2))                    (14)
+```
+
+for `1/2 < sigma = Re w < 1`.  All `#print axioms` reduce to
+`[propext, Classical.choice, Quot.sound]`.  Note that the upper bound at `sigma > 1/2` needs only
+the constant head, not the full Sonine condition; the Sonine condition enters the paper proof only
+through the functional equation `(8)` used to transfer the estimate to `sigma < 1/2`.
+
+Still outside the formal tree: the unitary cosine transform `F_+` on `L^2(0,infinity)` with the
+completed Mellin functional equation `(8)` (needed for the reflected range `sigma < 1/2`), Burnol's
+orthogonal-complement identification `(10)`, and the co-Poisson dilation contractions giving the
+lower bound `(11)`.  Those are what the two-sided law `(12)` and the limit `(13)` still require.
 
 ## Gates
 
@@ -265,5 +300,7 @@ deferred until the Burnol analytic interfaces exist.
 - [x] generic-estimate route to `(GS24)` closed
 - [x] targeted literature noncollision audit
 - [ ] construct the surviving source anomaly-cancellation comparison
-- [ ] formalize after literal Burnol interfaces exist
+- [x] Lean: completed Mellin evaluator, aperture-head class, ambient bound `(3)`--`(7)`, `(14)`
+- [ ] Lean: unitary cosine transform and completed Mellin functional equation `(8)` (range `sigma < 1/2`)
+- [ ] Lean: orthogonal-complement identification `(10)` and co-Poisson lower bound `(11)`
 

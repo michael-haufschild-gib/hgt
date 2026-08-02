@@ -43,6 +43,23 @@ def twoEndpointBalancedDepthSuccessorTransport
   f u /
     f (1 - (1 + ε / 2) * (1 - (1 + ε / 2) * u))
 
+/-- Exact affine formula (11b) for the composite of the two literal endpoint
+depth steps. -/
+theorem twoEndpointBalancedDepthSuccessor_argument_eq
+    (ε u : ℂ) :
+    1 - (1 + ε / 2) * (1 - (1 + ε / 2) * u) =
+      u + ε * (u - 1 / 2) + ε ^ 2 * u / 4 := by
+  ring
+
+/-- Exact moving-zero expansion (11d) of the two-endpoint composite. -/
+theorem twoEndpointBalancedDepthSuccessor_argument_movingZero_sub
+    (rho z ε : ℂ) :
+    1 - (1 + ε / 2) *
+        (1 - (1 + ε / 2) * (rho + ε * z)) - rho =
+      ε * (z + rho - 1 / 2 +
+        ε * (z + rho / 4) + ε ^ 2 * z / 4) := by
+  ring
+
 /-- The corresponding moving-zero normal layer. -/
 def centeredDepthSuccessorNearbyCycle
     (center rho : ℂ) (m : ℕ) (z : ℂ) : ℂ :=
@@ -373,6 +390,90 @@ theorem denominator_pow_mul_depthSuccessorNearbyCycle
   rw [depthSuccessorNearbyCycle, div_pow]
   field_simp
 
+private theorem analyticOrderAt_sub_self_xiDepthNearby (w : ℂ) :
+    analyticOrderAt (fun z : ℂ => z - w) w = 1 := by
+  have h : AnalyticAt ℂ (fun z : ℂ => z - w) w :=
+    analyticAt_id.sub analyticAt_const
+  have hc := h.analyticOrderAt_eq_natCast (n := 1)
+  rw [Nat.cast_one] at hc
+  rw [hc]
+  exact ⟨fun _ => 1, analyticAt_const, one_ne_zero,
+    by filter_upwards with z using by simp⟩
+
+/-- For a nonzero displacement, the nearby-cycle profile has a zero of
+exact order `m` at `z = 0`. -/
+theorem meromorphicOrderAt_depthSuccessorNearbyCycle_zero
+    {rho : ℂ} (hrho : rho ≠ 0) (m : ℕ) :
+    meromorphicOrderAt (depthSuccessorNearbyCycle rho m) 0 = (m : ℤ) := by
+  let num : ℂ → ℂ := fun z => z ^ m
+  let den : ℂ → ℂ := fun z => (z + rho) ^ m
+  have hnumAn : AnalyticAt ℂ num 0 := by
+    dsimp [num]
+    fun_prop
+  have hdenAn : AnalyticAt ℂ den 0 := by
+    dsimp [den]
+    fun_prop
+  have hnumOrder : analyticOrderAt num 0 = (m : ℕ∞) := by
+    have hbaseAn : AnalyticAt ℂ (fun z : ℂ => z) 0 := analyticAt_id
+    have hpow := analyticOrderAt_pow hbaseAn m
+    have hbaseOrder : analyticOrderAt (fun z : ℂ => z) 0 = 1 := by
+      change analyticOrderAt id 0 = 1
+      exact analyticOrderAt_id
+    rw [hbaseOrder] at hpow
+    rw [show num = (fun z : ℂ => z) ^ m by
+      funext z
+      simp [num]]
+    simpa using hpow
+  have hdenOrder : analyticOrderAt den 0 = 0 := by
+    exact hdenAn.analyticOrderAt_eq_zero.mpr (by
+      simpa [den] using pow_ne_zero m hrho)
+  rw [show depthSuccessorNearbyCycle rho m = num / den by
+    funext z
+    simp [depthSuccessorNearbyCycle, num, den, div_pow]]
+  rw [meromorphicOrderAt_div hnumAn.meromorphicAt hdenAn.meromorphicAt,
+    hnumAn.meromorphicOrderAt_eq, hdenAn.meromorphicOrderAt_eq,
+    hnumOrder, hdenOrder]
+  simp
+
+/-- For a nonzero displacement, the nearby-cycle profile has a pole of
+exact order `m` at `z = -rho`. -/
+theorem meromorphicOrderAt_depthSuccessorNearbyCycle_pole
+    {rho : ℂ} (hrho : rho ≠ 0) (m : ℕ) :
+    meromorphicOrderAt (depthSuccessorNearbyCycle rho m) (-rho) =
+      -(m : ℤ) := by
+  let num : ℂ → ℂ := fun z => z ^ m
+  let den : ℂ → ℂ := fun z => (z + rho) ^ m
+  have hnumAn : AnalyticAt ℂ num (-rho) := by
+    dsimp [num]
+    fun_prop
+  have hdenAn : AnalyticAt ℂ den (-rho) := by
+    dsimp [den]
+    fun_prop
+  have hnumOrder : analyticOrderAt num (-rho) = 0 := by
+    exact hnumAn.analyticOrderAt_eq_zero.mpr
+      (pow_ne_zero m (neg_ne_zero.mpr hrho))
+  have hlinearOrder : analyticOrderAt (fun z : ℂ => z + rho) (-rho) = 1 := by
+    rw [show (fun z : ℂ => z + rho) = fun z => z - (-rho) by
+      funext z
+      ring]
+    exact analyticOrderAt_sub_self_xiDepthNearby (-rho)
+  have hdenOrder : analyticOrderAt den (-rho) = (m : ℕ∞) := by
+    have hbaseAn : AnalyticAt ℂ (fun z : ℂ => z + rho) (-rho) :=
+      analyticAt_id.add analyticAt_const
+    have hpow := analyticOrderAt_pow hbaseAn m
+    rw [hlinearOrder] at hpow
+    rw [show den = (fun z : ℂ => z + rho) ^ m by
+      funext z
+      simp [den]]
+    simpa using hpow
+  rw [show depthSuccessorNearbyCycle rho m = num / den by
+    funext z
+    simp [depthSuccessorNearbyCycle, num, den, div_pow]]
+  rw [meromorphicOrderAt_div hnumAn.meromorphicAt hdenAn.meromorphicAt,
+    hnumAn.meromorphicOrderAt_eq, hdenAn.meromorphicOrderAt_eq,
+    hnumOrder, hdenOrder]
+  simp
+
 /-- The inner nearby cycle matches the outer logarithmic connection. In the
 inverse coordinate `w = 1 / z`, its first outer defect is exactly the
 multiplicity-weighted connection residue `-m * shift`. -/
@@ -473,6 +574,51 @@ theorem re_eq_zero_of_inverse_adjoint_nearbyPole_eq
   simp [depthSuccessorNearbyPole] at hre
   linarith
 
+/-- Equality of the full source-inverse and analytic-adjoint nearby-cycle
+profiles at positive multiplicity already forces the centered displacement
+to be purely imaginary.  This supplies the divisor-equality implication
+used in the paper, rather than assuming equality of encoded pole coordinates. -/
+theorem re_eq_zero_of_inverse_adjoint_nearbyCycle_eq
+    {a : ℂ} {m : ℕ} (hm : 0 < m)
+    (h :
+      depthSuccessorNearbyCycle (-a) m =
+        depthSuccessorNearbyCycle (starRingEnd ℂ a) m) :
+    a.re = 0 := by
+  by_contra hre
+  have ha : a ≠ 0 := by
+    intro ha
+    subst a
+    simp at hre
+  have hden : a + starRingEnd ℂ a ≠ 0 := by
+    intro hzero
+    have hreal := congrArg Complex.re hzero
+    simp at hreal
+    exact hre (by linarith)
+  have hlhs : depthSuccessorNearbyCycle (-a) m a = 0 := by
+    simp [depthSuccessorNearbyCycle, Nat.ne_of_gt hm]
+  have hrhs : depthSuccessorNearbyCycle (starRingEnd ℂ a) m a ≠ 0 := by
+    rw [depthSuccessorNearbyCycle]
+    exact pow_ne_zero _ (div_ne_zero ha hden)
+  have hvalue := congrFun h a
+  rw [hlhs] at hvalue
+  exact hrhs hvalue.symm
+
+/-- Equality of the full inverse/adjoint profiles implies equality of their
+encoded pole divisors when the multiplicity is positive. -/
+theorem inverse_adjoint_nearbyPole_eq_of_nearbyCycle_eq
+    {a : ℂ} {m : ℕ} (hm : 0 < m)
+    (h :
+      depthSuccessorNearbyCycle (-a) m =
+        depthSuccessorNearbyCycle (starRingEnd ℂ a) m) :
+    depthSuccessorNearbyPole (-a) =
+      depthSuccessorNearbyPole (starRingEnd ℂ a) := by
+  have hre := re_eq_zero_of_inverse_adjoint_nearbyCycle_eq hm h
+  have haeq : a = -(starRingEnd ℂ a) := by
+    apply Complex.ext
+    · simp [hre]
+    · simp
+  simpa [depthSuccessorNearbyPole] using haeq
+
 end GaloisForLFunctions.HTGeometry
 
 namespace RHTower
@@ -559,5 +705,59 @@ theorem xiDepthSuccessorNearbyCycle_multiplicity_pos
     {rho : ℂ} (hzero : xi rho = 0) :
     0 < (analyticOrderAt xi rho).toNat :=
   Nat.pos_of_ne_zero (xi_order_toNat_ne_zero hzero)
+
+/-- At an actual Xi zero, the balanced nearby cycle has exact zero order
+equal to the full Xi multiplicity. -/
+theorem meromorphicOrderAt_xiCenteredNearbyCycle_zero
+    {rho : ℂ} (hzero : xi rho = 0) :
+    meromorphicOrderAt
+        (centeredDepthSuccessorNearbyCycle (1 / 2) rho
+          (analyticOrderAt xi rho).toNat) 0 =
+      ((analyticOrderAt xi rho).toNat : ℤ) := by
+  let q : ↥(MeromorphicOn.divisor xi Set.univ).support :=
+    ⟨rho, mem_xi_divisor_support_of_eq_zero hzero⟩
+  have hshift : rho - 1 / 2 ≠ 0 :=
+    sub_ne_zero.mpr (xi_divisor_support_ne_half q)
+  rw [show centeredDepthSuccessorNearbyCycle (1 / 2) rho
+      (analyticOrderAt xi rho).toNat =
+      depthSuccessorNearbyCycle (rho - 1 / 2)
+        (analyticOrderAt xi rho).toNat by rfl]
+  exact meromorphicOrderAt_depthSuccessorNearbyCycle_zero hshift
+    (analyticOrderAt xi rho).toNat
+
+/-- At an actual Xi zero, the balanced nearby cycle has exact pole order
+equal to the negative full Xi multiplicity. -/
+theorem meromorphicOrderAt_xiCenteredNearbyCycle_pole
+    {rho : ℂ} (hzero : xi rho = 0) :
+    meromorphicOrderAt
+        (centeredDepthSuccessorNearbyCycle (1 / 2) rho
+          (analyticOrderAt xi rho).toNat)
+        (-(rho - 1 / 2)) =
+      -((analyticOrderAt xi rho).toNat : ℤ) := by
+  let q : ↥(MeromorphicOn.divisor xi Set.univ).support :=
+    ⟨rho, mem_xi_divisor_support_of_eq_zero hzero⟩
+  have hshift : rho - 1 / 2 ≠ 0 :=
+    sub_ne_zero.mpr (xi_divisor_support_ne_half q)
+  rw [show centeredDepthSuccessorNearbyCycle (1 / 2) rho
+      (analyticOrderAt xi rho).toNat =
+      depthSuccessorNearbyCycle (rho - 1 / 2)
+        (analyticOrderAt xi rho).toNat by rfl]
+  exact meromorphicOrderAt_depthSuccessorNearbyCycle_pole hshift
+    (analyticOrderAt xi rho).toNat
+
+/-- Full-profile form of the nearby-layer RH consumer.  At an actual Xi
+zero, equality of the source-inverse and analytic-adjoint rational cycles
+forces the critical line; equality of their pole coordinates is derived. -/
+theorem criticalLine_of_inverse_adjoint_nearbyCycle_eq
+    {rho : ℂ} (hzero : xi rho = 0)
+    (h :
+      depthSuccessorNearbyCycle (-(rho - 1 / 2))
+          (analyticOrderAt xi rho).toNat =
+        depthSuccessorNearbyCycle (starRingEnd ℂ (rho - 1 / 2))
+          (analyticOrderAt xi rho).toNat) :
+    rho.re = 1 / 2 := by
+  apply criticalLine_of_inverse_adjoint_nearbyPole_eq rho
+  exact inverse_adjoint_nearbyPole_eq_of_nearbyCycle_eq
+    (xiDepthSuccessorNearbyCycle_multiplicity_pos hzero) h
 
 end RHTower

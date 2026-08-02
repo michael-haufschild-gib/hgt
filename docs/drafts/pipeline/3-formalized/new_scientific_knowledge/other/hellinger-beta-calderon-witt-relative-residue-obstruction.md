@@ -1,16 +1,17 @@
 # Hellinger--Beta/Calderón--Witt relative residue obstruction
 
 - **ID:** `hellinger-beta-calderon-witt-relative-residue-obstruction`
-- **Stage:** 2 — fully proven on paper
-- **Type:** THEOREM (paper) + FALSIFIED FIXED-WITNESS VECTOR REPAIR
-- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Stage:** 3 — formalized in Lean 4
+- **Type:** THEOREM (Lean) + FALSIFIED FIXED-WITNESS VECTOR REPAIR
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parents:**
   - `hellinger-beta-copoisson-resonance-transmutation.md`;
   - `../deninger/deninger-calderon-witt-singular-gamma-transgression.md`;
   - `../../../4-publication-ready/riemann-oriented-source-admission/main.tex`.
 - **RH used:** no
 - **Computation used:** no
-- **Lean:** pending
+- **Lean:**
+  `GaloisForLFunctions.RHTower.DeningerCalderonWittHellingerBetaRelativeResidueTransgression`
 
 ## Frontier
 
@@ -143,7 +144,9 @@ vanishes exactly when \(a=0\); together with \(r_n\ne0\), this proves item 5.
   prime-power-cell span.  It must be a genuinely cofinal, cell-mixing chain
   with convergence in the closed defect graph norm before any coordinate or
   Haar scalarization.
-- **Status:** dependency-closed paper proof; exact Lean formalization pending.
+- **Status:** dependency-closed paper proof and unconditional Lean
+  formalization complete. Direct Lean and targeted module build pass; axiom
+  audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Replacement conjecture
 
@@ -195,7 +198,7 @@ Primary sources checked:
 - [x] positive survivor extracted
 - [x] local corpus audit
 - [x] preliminary primary-literature audit
-- [ ] exact Lean formalization
+- [x] exact Lean formalization
 - [ ] graph-boundary replacement conjecture attacked
 
 ## Log

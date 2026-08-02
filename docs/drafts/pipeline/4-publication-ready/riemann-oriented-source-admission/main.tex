@@ -46,9 +46,8 @@
 \newcommand{\Dom}{\operatorname{Dom}}
 \newcommand{\cl}{\operatorname{cl}}
 
-\title{\textbf{Orientation--transgression completeness at the Riemann divisor}\\
-\large A universal law for arithmetic sources, singular transports,
-and zero-exclusion routes}
+\title{\textbf{Relative admission spectra at the Riemann divisor}\\
+\large A conservation law for arithmetic sources and singular proof transports}
 \author{Michael Haufschild}
 \date{}
 
@@ -57,59 +56,56 @@ and zero-exclusion routes}
 \maketitle
 
 \begin{abstract}
-The source problem for the Riemann divisor has split into genuinely
-different arithmetic, analytic, cohomological, probabilistic, spectral,
-and recurrence routes.  Their open statements should not be conflated.
-Some routes still lack an all-prime source estimate; some have a source
-but no source-faithful singular continuation; some reach only a
-positivity, compactness, recurrence, or determinant consumer already
-equivalent to zero exclusion.
+Arithmetic approaches to the Riemann divisor now possess several genuine
+sources and several nonisomorphic transports.  The unresolved problem is
+therefore not the absence of a source, but deciding which part of a source
+survives passage to a zero-excluding boundary condition.  We introduce a
+route invariant which answers this question.
 
-We prove a common law which separates these stages.  The all-prime
-Calder\'on--Witt source is contractible before orientation and has exactly
-one absolute orientation line after adjoining its normalized Haar trace.
-Every linear consumer splits uniquely into its orientation compression
-and a boundary-sensitive Green transgression; the second term vanishes
-exactly for boundary-blind consumers.  For an admitted incidence sector
-\(S\), the remaining middle invariant is the relative class of the
-canonical Green primitive, and
+For a differential \(d:A_0\to A_1\), an admitted primitive sector
+\(S\subset A_0\), a primitive selector \(h\), and a parameterized source
+family \(x_p\), define
 \[
- \boxed{\quad
- \mathfrak o_S(x)=0
- \quad\Longleftrightarrow\quad
- h x\in S .
- \quad}
+ \mathfrak o_S(p)=[h(x_p)]\in A_0/(S+\ker d),\qquad
+ \Sigma_S(x)=\{p:\mathfrak o_S(p)=0\}.
 \]
-Thus every regular observation has a canonical absolute/relative split,
-and every zero-excluding statement requires the relative channel to
-preserve an unsquared oriented primitive.
+We prove the relative admission-spectrum conservation law: the class is
+independent of the primitive selector, its vanishing is equivalent to the
+existence of an admitted primitive, and it is natural under every chain
+transport preserving admitted sectors.  An injective induced quotient
+transport preserves the spectrum exactly.  If a target admits a parameter
+which the source excludes, the transport has killed a specific nonzero
+relative class.  Thus spectral mismatch forces information loss or a
+singular change of domain.
 
-We then prove the completion threshold in route-independent form.  If a
-source transport \(U:E\to H\) has dense range, a closed admission set
-contains \(U(E)\), and one detector has exact trace \(d\in K\iff P\), then
-such an admission exists exactly when \(P\) holds.  For the completed
-Xi-to-Calder\'on--Witt incidence bridge, \(P\) is zero modular
-displacement.  Hence closed admission at a divisor point is equivalent to
-critical-line placement, and global admission is equivalent to the
-Riemann hypothesis.
+The law applies without identifying the underlying route categories.  In
+the all-prime Calder\'on--Witt complex it recovers Green-incidence
+transgression.  In two independently constructed analytic sources it gives
+a sharp fracture: the Hedenmalm Borel reflection family is square
+integrable throughout the centered open half-strip, whereas the polarized
+Euler--Hardy reflection family is square integrable only at zero modular
+displacement.  Consequently no linear map preserving even the one-way
+square-integrable domain can intertwine the two families at a nonzero strip
+parameter.  Any bridge must be domain-singular; bounded-operator completion
+cannot supply it.
 
-This does not prove global admission or the Riemann hypothesis.  It
-locates several independent live routes without collapsing them into the
-completed-incidence route.  We give, for each, the exact first unproved
-producer theorem: singular Hedenmalm boundary form, critical
-M\"obius cancellation, pole-compatible Suzuki continuation,
-principal-relative Julia polarization, completed Hodge graph-domain
-landing, prime-normal domain control, restricted-Weil floor convergence,
-compact positive carrier construction, primitive-current Ward
-continuation, and arithmetic protection of hypertranscendental or
-recurrence relations.
+We also consolidate the constructed source prefix.  Target-free
+M\"obius--theta translates have Fourier--Laplace transform
+\(\zeta(ms)^{-1}\Xi\) on their absolute-convergence domain, while actual
+Hellinger--Beta residues lift to nonzero Calder\'on--Witt incidences whose
+relative Gamma boundary class vanishes exactly at zero displacement.
+These results leave one precise missing producer: a source-derived,
+off-diagonal cofinal boundary transport which carries the physical source
+into the sharp Euler--Hodge admission sector.  We do not prove that landing
+or the Riemann hypothesis; we prove why no regular identification of the
+existing source carriers can replace it.
 \end{abstract}
 
 \medskip
 \noindent\textbf{Keywords.}
-Riemann hypothesis; source transport; closed relations; Green operator;
-Calder\'on--Witt incidence; Gamma/co-Poisson transform; Hodge
-polarization; hypertranscendence; quantum recurrence.
+Riemann hypothesis; admission spectrum; source transport; Green operator;
+Calder\'on--Witt incidence; Hedenmalm space; Gamma/co-Poisson transform;
+Hodge polarization.
 
 \medskip
 \noindent\textbf{2020 Mathematics Subject Classification.}
@@ -119,13 +115,12 @@ Primary 11M26, 11M06; Secondary 46N50, 47A06, 58A14.
 
 The research frontier around a source-based proof of the Riemann
 hypothesis is easily misdescribed as a search for one missing source or
-one missing transport.  Neither singular description is accurate.
-Arithmetic, analytic, cohomological, probabilistic, and recurrence
-sources have been constructed, but not every route possesses the same
-source theorem.  Several carry the completed divisor with multiplicity;
-several retain signed orientation before reflection; several transport a
-vector-valued relation without scalar loss; others stop at a local source
-or at a downstream consumer.
+one missing transport.  Neither description is accurate.  Arithmetic,
+analytic, cohomological, probabilistic, spectral, and recurrence sources
+have been constructed.  They do not have the same finite-energy domain,
+the same primitive sector, or the same notion of faithful continuation.
+Their coexistence creates several live routes, not several names for one
+operator problem.
 
 The apparent multiplicity of proof routes creates a second danger.  An
 RH-equivalent positivity, compactness, self-adjointness, recurrence, or
@@ -134,7 +129,7 @@ growth condition is not by itself an independent route.  It is a
 and transport have already been chosen.  It becomes a proof route only
 when an unconditional producer theorem forces that consumer condition.
 
-The useful route-independent decomposition is therefore
+The useful route-independent decomposition is
 \[
  \boxed{
  \text{source}\ \longrightarrow\
@@ -143,11 +138,15 @@ The useful route-independent decomposition is therefore
  \text{consumer}.}
 \tag{1.1}\label{eq:four-stage}
 \]
-Different constructions stop at different arrows.  This paper does not
-identify their source spaces or claim that one route's missing theorem
-solves another's.  It identifies the conservation law governing every
-successful passage through the middle two arrows.  Their common
-RH-bearing datum is the real modular displacement
+Different constructions stop at different arrows.  The new issue is to
+compare them without pretending that their source spaces coincide.  We do
+so by forgetting the carrier but retaining the set of parameters for which
+its source primitive reaches the route's admitted sector.  This
+\emph{relative admission spectrum} is conserved by every source-faithful
+chain transport.  A mismatch between two spectra is therefore an exact
+obstruction to regular transport, not a failure to guess the right kernel.
+
+The common RH-bearing parameter is the real modular displacement
 \[
                     \delta_\rho
                     =2\left(\Rea\rho-\frac12\right).
@@ -175,26 +174,29 @@ Earlier source laws established three hard boundaries.
 These results say what the terminal arrow in \eqref{eq:four-stage} cannot
 be.  They do not say that transport is absent.
 
-The decisive organizing input is orientation--transgression
-completeness.  The algebraic source has one absolute orientation line;
-every other invariant is the relative escape of a canonical Green
-primitive from a source-selected admitted sector.  This explains why
-regular scalar consumers repeatedly lose the sign and why singular,
+The decisive organizing input is relative admission-spectrum
+conservation.  The algebraic source has one absolute orientation line;
+every other invariant is the relative escape of a Green primitive from a
+source-selected admitted sector.  Primitive choice cannot change the
+class.  Faithful transport cannot change its vanishing set.  This explains
+why regular scalar consumers repeatedly lose the sign and why singular,
 relation-valued, or source-domain constructions recur across otherwise
 different programs.
 
-One route has advanced further.  Finite Xi jets map
-coefficient-faithfully to actual cross-prime Calder\'on--Witt incidence,
-and their completed Green map is continuous, norm preserving, and dense.
-For that route alone, the former completed-carrier problem is closed and
-the remaining issue has a minimal topological formulation: closed source
-landing plus one exact finite oriented trace.  Other routes remain open
-at earlier and different arrows.
+Two recent constructions sharpen this statement.  First, physical
+M\"obius--theta translates now land in the common Xi divisor before a zero
+is selected.  Second, Hellinger--Beta residues now land in actual
+cross-prime Calder\'on--Witt incidence and detect every nonzero modular
+displacement in the relative Gamma boundary.  These close source and
+finite-witness gaps, but their admission spectra do not match under a
+regular Hilbert transport.  The surviving bridge must change domain and
+polarization cofinally.
 
-The paper has one two-part main law.  Sections~\ref{sec:sources}
-and~\ref{sec:transport} inventory constructed producers and transports.
-Section~\ref{sec:admission} proves orientation--transgression
-completeness and its dense-admission completion theorem.
+The paper has one main law and three independent instantiations.
+Sections~\ref{sec:sources} and~\ref{sec:transport} inventory constructed
+producers and transports.  Section~\ref{sec:admission} proves the relative
+admission-spectrum law, the all-prime incidence specialization, and the
+Hedenmalm--Euler fracture.
 Section~\ref{sec:routes} identifies the precise obligation of each
 remaining route.  Sections~\ref{sec:shadows} and~\ref{sec:proof} explain
 why the corpus no-go theorems and positive consumers are shadows of the
@@ -304,30 +306,80 @@ countable normal reader
 At \(s_j=\tfrac12+j\), every finite leading prime block is a nonsingular
 Vandermonde matrix.
 
+\subsection{Physical M\"obius--theta source and Xi landing}
+
+Let \(\Phi\) be the full theta-cusp source, whose Fourier--Laplace
+transform is the centered completed function \(\Xi_C\) on
+\(|\Im w|<1\), and put
+\[
+                         s(w)=\frac12+iw.
+\tag{3.3}\label{eq:centered-parameter}
+\]
+For an integer \(m\ge3\), the power-supported M\"obius source rung is the
+target-free translate sum
+\[
+ \Psi_m(x)=\sum_{n\ge1}
+   a_m(n)n^{-1/2}\Phi(x-\log n),
+ \qquad a_m=\operatorname{mPart}_m(\mu).
+\tag{3.4}\label{eq:physical-mobius-theta}
+\]
+The corresponding series converges in the physical \(L^2\) source.  On
+the joint absolute-convergence domain
+\[
+            |\Im w|<1,\qquad \Rea s(w)>\frac1m,
+\]
+termwise translation and Bochner integration give the exact landing
+\[
+ \int_{\R}e^{-iwx}\Psi_m(x)\,dx
+   =\zeta\!\left(ms(w)\right)^{-1}\Xi_C(w).
+\tag{3.5}\label{eq:physical-xi-landing}
+\]
+The source in \eqref{eq:physical-mobius-theta} contains no spectral point,
+zero, or value of \(\Xi_C\).  The common divisor appears only after the
+source transform is applied.
+
+For \(K\ge3\), define a complete source channel before transform by
+\[
+ C_K(0)=\Psi_K,\qquad
+ C_K(j+1)=\Psi_{K+j+1}-\Psi_{K+j}.
+\tag{3.6}\label{eq:complete-physical-channel}
+\]
+Every coordinate has an actual Fourier--Laplace integral and
+\[
+ \mathcal F_L C_K(j)(w)
+   =M_{K,j}(s(w))\Xi_C(w),
+\tag{3.7}\label{eq:complete-physical-landing}
+\]
+where \(M_{K,j}\) is the head/difference reciprocal-zeta multiplier.
+Thus Route~R now has a physical source-to-Xi producer on its honest
+complex domain.  Its open theorem begins after this landing: the source
+must be transported into a sharp polarized admission domain without
+losing its prime-normal labels.
+
 \subsection{Valuation probability and polarized boundary}
 
 Diagonal Euler activation is
 \[
                           \frac{\zeta(s)}{\zeta(2s)}.
-\tag{3.3}\label{eq:activation}
+\tag{3.8}\label{eq:activation}
 \]
 At \(q=p^{-\sigma}\), its local valuation law is
 \[
  \nu_q(0)=\frac1{1+q},\qquad
  \nu_q(k)=\frac{(1-q)q^k}{1+q}\quad(k\ge1).
-\tag{3.4}\label{eq:valuation-law}
+\tag{3.9}\label{eq:valuation-law}
 \]
 It disintegrates into Bernoulli squarefree occupancy followed by a
 conditional geometric valuation fibre.  On the continuous source
 boundary,
 \[
  h(t)=e^{-t},\qquad \tau(t)=1-e^{-t}.
-\tag{3.5}\label{eq:head-tail}
+\tag{3.10}\label{eq:head-tail}
 \]
 The forced odd Hodge scale
 \[
  q_H(t)^2=\frac{\tau(t)}{h(t)}
-\tag{3.6}\label{eq:hodge-scale}
+\tag{3.11}\label{eq:hodge-scale}
 \]
 is reciprocal Fisher whitening.  Both cross-channels equal
 \(\sqrt{h(t)\tau(t)}\), the Hellinger and KMS/Wightman half-density.
@@ -336,14 +388,14 @@ Its common-test transform is the exact Beta/Gamma column
  -\int_0^\infty e^{-at}\sqrt{h(t)\tau(t)}\,dt
  =-\frac{\Gamma(a+\tfrac12)\Gamma(\tfrac32)}
           {\Gamma(a+2)}.
-\tag{3.7}\label{eq:beta-gamma}
+\tag{3.12}\label{eq:beta-gamma}
 \]
 
 The source also contains a transverse score.  If
 \(S_0(t)=2(1-t)\), the residual
 \[
  X_\perp(t)=\bigl(\tau(t)S_0(t),-h(t)S_0(t)\bigr)
-\tag{3.8}\label{eq:transverse}
+\tag{3.13}\label{eq:transverse}
 \]
 is orthogonal to every diagonal common Laplace test and has squared
 polarized norm \(3\).  The canonical normalization
@@ -362,7 +414,7 @@ Four further sources play distinct roles.
       \[
       D_+T(\log k)-D_-T(\log k)
        =-\frac{2\pi}{\log k}\,k^{-1/2}\Lambda(k),
-      \tag{3.9}\label{eq:ccm-crease}
+      \tag{3.14}\label{eq:ccm-crease}
       \]
       and therefore recovers every von Mangoldt atom.
 \item The theta completed-density source carries, at every Xi zero, an

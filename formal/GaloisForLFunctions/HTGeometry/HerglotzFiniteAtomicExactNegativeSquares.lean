@@ -671,13 +671,13 @@ theorem atomPart_evenPaired_neg {d : ℕ}
   · apply Finset.sum_congr rfl
     intro i hi
     rw [show ((a i : ℂ) + z) =
-      -(-((a i : ℝ) : ℂ) - z) by push_cast; ring,
-      div_neg, neg_div]
+      -(-((a i : ℝ) : ℂ) - z) by ring,
+      div_neg]
   · apply Finset.sum_congr rfl
     intro i hi
     rw [show (-((a i : ℝ) : ℂ) + z) =
-      -((a i : ℂ) - z) by push_cast; ring,
-      div_neg, neg_div]
+      -((a i : ℂ) - z) by ring,
+      div_neg]
 
 theorem evenPaired_replaceFiniteAtoms_hasExactlyNegativeSquares
     {d : ℕ} (ν : Measure ℝ)

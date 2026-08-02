@@ -1,9 +1,9 @@
 # Suzuki rectangular wall-Gram gate
 
 - **ID:** `suzuki-rectangular-wall-gram-gate`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3 — formalized and Lean-audited
 - **Type:** SOURCE-TYPE CORRECTION / SHARP TRACE CELL / POSITIVE OBSTRUCTION SURVIVOR
-- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [UNCONDITIONAL] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Formal module:**
   `GaloisForLFunctions.RHTower.SuzukiRectangularWallGramGate`

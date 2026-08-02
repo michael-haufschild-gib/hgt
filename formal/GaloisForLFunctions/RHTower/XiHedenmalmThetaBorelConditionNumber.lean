@@ -226,4 +226,33 @@ theorem essSup_norm_mul_essSup_norm_hedenmalmBorelCharacter_eq_one_iff
     rw [him]
     simp
 
+
+/-- **The sampled aperture exponent.**  The logarithmic growth rate of the two-sided condition
+number along the geometric Sonin samples is exactly the horizontal displacement of the centered
+zero, so it vanishes exactly on the critical line. -/
+theorem tendsto_log_condition_number_geometric_sample
+    (alpha : ℂ) (x : ℝ) {r : ℝ} (hr : 1 < r) :
+    Tendsto
+      (fun j : ℕ =>
+        Real.log
+            ((essSup (fun t => ENNReal.ofReal ‖hedenmalmBorelCharacter alpha t‖)
+                  ((hedenmalmBorelWeight x).restrict (Ioo 0 (r ^ (2 * j) - 1))) *
+                essSup (fun t => ENNReal.ofReal ‖hedenmalmBorelCharacter (-alpha) t‖)
+                  ((hedenmalmBorelWeight x).restrict (Ioo 0 (r ^ (2 * j) - 1)))).toReal) /
+          ((j : ℝ) * Real.log r))
+      atTop (𝓝 |(1 / 2 + alpha * Complex.I).re - 1 / 2|) := by
+  have hr0 : (0 : ℝ) < r := lt_trans zero_lt_one hr
+  have hlogr : 0 < Real.log r := Real.log_pos hr
+  have hval : |(1 / 2 + alpha * Complex.I).re - 1 / 2| = |alpha.im| := by
+    rw [re_centeredSpectralPoint,
+      show 1 / 2 - alpha.im - 1 / 2 = -alpha.im by ring, abs_neg]
+  rw [hval]
+  refine tendsto_atTop_of_eventually_const (i₀ := 1) ?_
+  intro j hj
+  have hjpos : 0 < j := hj
+  rw [essSup_norm_mul_essSup_norm_hedenmalmBorelCharacter_geometric_sample alpha x hr hjpos,
+    ENNReal.toReal_ofReal (Real.rpow_nonneg hr0.le _), Real.log_rpow hr0]
+  have hjne : (j : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hjpos.ne'
+  field_simp
+
 end RHTower

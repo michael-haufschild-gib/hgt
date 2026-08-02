@@ -247,8 +247,12 @@ Verification:
 - `#print axioms` on the capstone and critical supporting theorems reports
   only `propext`, `Classical.choice`, and `Quot.sound`.
 
-The separate `[VECTOR_HELLINGER_COFACE_RESIDUE_BOUNDARY]` statement remains
-conjectural and is deliberately not asserted by the Lean capstone.
+The fixed-cross-prime form of
+`[VECTOR_HELLINGER_COFACE_RESIDUE_BOUNDARY]` is now falsified by
+`hellinger-beta-calderon-witt-relative-residue-obstruction.md`: its residue
+is ambient incidence but its admitted relative class vanishes exactly at
+zero modular displacement.  Only a new off-diagonal, source-horizon-graded
+graph differential remains viable.
 
 ## Gates
 
@@ -259,4 +263,5 @@ conjectural and is deliberately not asserted by the Lean capstone.
 - [x] internal parent-theory audit
 - [x] preliminary primary-literature audit
 - [x] exact Lean formalization
-- [ ] vector coface residue computation
+- [x] fixed-cross-prime vector coface residue computation — falsified;
+  positive cofinal graph-boundary survivor extracted

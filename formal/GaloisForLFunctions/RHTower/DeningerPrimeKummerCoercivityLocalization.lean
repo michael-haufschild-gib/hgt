@@ -86,6 +86,50 @@ theorem deningerIncidenceCompression_norm_lower
     hq.trans (habs.trans hcs)
   nlinarith
 
+/-- A strictly coercive operator has injective incidence compression. -/
+theorem deningerIncidenceCompression_injective
+    (A : E →ₗ[ℝ] E) (L : Submodule ℝ E) {kappa : ℝ} (hkappa : 0 < kappa)
+    (hcoercive : ∀ x : E, kappa * ‖x‖ ^ 2 ≤ inner ℝ (A x) x) :
+    Function.Injective (deningerIncidenceCompression A L) := by
+  refine (injective_iff_map_eq_zero _).mpr fun x hx => ?_
+  have h := deningerIncidenceCompression_norm_lower A L kappa hcoercive x
+  rw [hx, norm_zero] at h
+  have hle : ‖x‖ ≤ 0 := by nlinarith [norm_nonneg x]
+  exact norm_le_zero_iff.mp hle
+
+/-- On a finite incidence packet the compression of a strictly coercive operator is a linear
+automorphism. -/
+noncomputable def deningerIncidenceCompressionEquiv
+    (A : E →ₗ[ℝ] E) (L : Submodule ℝ E) {kappa : ℝ} (hkappa : 0 < kappa)
+    (hcoercive : ∀ x : E, kappa * ‖x‖ ^ 2 ≤ inner ℝ (A x) x) : L ≃ₗ[ℝ] L :=
+  LinearEquiv.ofBijective (deningerIncidenceCompression A L)
+    ⟨deningerIncidenceCompression_injective A L hkappa hcoercive,
+      LinearMap.injective_iff_surjective.mp
+        (deningerIncidenceCompression_injective A L hkappa hcoercive)⟩
+
+@[simp]
+theorem deningerIncidenceCompressionEquiv_apply
+    (A : E →ₗ[ℝ] E) (L : Submodule ℝ E) {kappa : ℝ} (hkappa : 0 < kappa)
+    (hcoercive : ∀ x : E, kappa * ‖x‖ ^ 2 ≤ inner ℝ (A x) x) (x : L) :
+    deningerIncidenceCompressionEquiv A L hkappa hcoercive x =
+      deningerIncidenceCompression A L x :=
+  rfl
+
+/-- **The inverse estimate.**  The compressed inverse is bounded by `κ⁻¹`, uniformly in the
+incidence subspace. -/
+theorem deningerIncidenceCompressionEquiv_symm_norm_le
+    (A : E →ₗ[ℝ] E) (L : Submodule ℝ E) {kappa : ℝ} (hkappa : 0 < kappa)
+    (hcoercive : ∀ x : E, kappa * ‖x‖ ^ 2 ≤ inner ℝ (A x) x) (y : L) :
+    ‖(deningerIncidenceCompressionEquiv A L hkappa hcoercive).symm y‖ ≤ kappa⁻¹ * ‖y‖ := by
+  have hx : deningerIncidenceCompression A L
+      ((deningerIncidenceCompressionEquiv A L hkappa hcoercive).symm y) = y :=
+    (deningerIncidenceCompressionEquiv A L hkappa hcoercive).apply_symm_apply y
+  have h := deningerIncidenceCompression_norm_lower A L kappa hcoercive
+    ((deningerIncidenceCompressionEquiv A L hkappa hcoercive).symm y)
+  rw [hx] at h
+  rw [inv_mul_eq_div, le_div_iff₀ hkappa]
+  linarith
+
 end Compression
 
 /-- The signed prime-log lattice admits no positive uniform spectral gap. -/

@@ -8,7 +8,7 @@
 - **Formal module:**
   `formal/GaloisForLFunctions/RHTower/XiDepthMobiusGammaOuterInnerWeld.lean`
 - **Parents:**
-  - `../2-fully-proven/new_scientific_knowledge/xi-depth-successor-stokes-normal-layer.md`;
+  - `new_scientific_knowledge/other/xi-depth-successor-stokes-normal-layer.md`;
   - `mobius-gamma-xi-ward-julia-transport.md`;
   - `xi-source-normal-cone-divisor-conservation.md`.
 

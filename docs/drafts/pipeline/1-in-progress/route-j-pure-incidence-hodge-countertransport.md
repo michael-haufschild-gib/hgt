@@ -2,7 +2,7 @@
 
 - **ID:** route-j-pure-incidence-hodge-countertransport
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE + THEOREM (paper)
+- **Type:** FALSIFIED + THEOREM (Lean)
 - **Source:** `route-j-principal-relative-julia-current.md` · Sections 46--48
 - **Statement:** Dual pure defect--defect and packet--packet incidence classes give a nonzero
   source-defined countertransport which is invisible to every mixed Gamma/Hardy reflection
@@ -20,13 +20,13 @@ every completed readout is forced to remain singular.
 ## Gates
 
 - [x] 0 → 1 in-progress: source-pure object, exact attack, Door passport
-- [ ] 1 → 2 fully-proven: completed Poincare readout constructed or class-completely excluded
+- [x] 1 → 2 fully-proven: completed Poincare readout class-completely excluded
 - [ ] 2 → 3 formalized: every dependency-closed theorem in Lean; exact-module audit green
 - [ ] 3 → 4 publication-ready: standalone theorem, proof, Lean certificate, external priority audit
 
 ## Frozen conjecture — pure-polarization transgression
 
-`[CONJECTURE J-PIH]`
+`[FALSIFIED J-PIH]`
 
 Let `d_i` and `w_i` be the normalized Calderon defect and rational-Witt packet generators in a
 prime-power cell `i`.  For distinct cells `i,j`, put
@@ -47,9 +47,10 @@ Physical meaning: two Gamma legs should be transported as two packet legs; their
 supplies orientation and positivity without placing the mixed defect--packet witness outside the
 actual admitted sector.
 
-This is not `closedness` renamed.  It predicts a specific completion of a canonical pure Hodge
-plane and a specific descended functional.  It is falsified if every Hausdorff completion retaining
-finite Poincare coefficients has codiagonal norm diverging with aperture.
+This was not `closedness` renamed.  It predicted a specific completion of a canonical pure Hodge
+plane and a specific descended functional.  The continuous-linear no-go below supplies its stated
+falsifier: every completion retaining the uniform carrier norm and exact finite Poincare
+codiagonals forces divergent readout norm.
 
 ## Unconditional bridge A — pure incidence is a nonzero silent kernel
 
@@ -107,7 +108,15 @@ D(p,r)D(q,s)c_(p,r)c_(q,s)=J_0(p,0)J_0(q,0).          (PIH-4)
 ```
 
 Thus equal spreading over `K(p)K(q)` actual depths produces the previously proved landed profile
-`U_n(p,q,r,s)` without post-transport scalar fitting.
+`U_n(p,q,r,s)` without post-transport scalar fitting.  Concretely, the prelanding carrier has
+defect--defect coefficient `U_n` and packet--packet coefficient
+
+```text
+2 kappa_n(p,q) D(p,r)D(q,s)/(K(p)K(q)),
+```
+
+where `kappa_n` is the source height/phase kernel before both primitive amplitudes.  The actual
+packet-leg source endomorphism sends their full cofinal finite sum exactly to `(PIH-5)`.
 
 ## Unconditional bridge C — actual admission and uniform capacity
 
@@ -132,7 +141,9 @@ U_n^pure
  <= 200 * 289^2.                                     (PIH-6)
 ```
 
-The depth codiagonal of either component still recovers the original two-scale current.
+The depth codiagonal of either component still recovers the original two-scale current.  Both the
+prelanding and landed full finite sums lie in the actual admitted sector for every displacement;
+the landed sum is fixed by the exact cell Green retraction.
 
 ## Hostile audit — exact open core
 
@@ -147,27 +158,47 @@ anchoredTwoScaleEnergy(n)
  -> gain_n >= constant * n.                           (PIH-7)
 ```
 
-Therefore finite pure admission plus uniform coefficient capacity does not close Route J.  The
-scientific frontier is whether source topology changes `(PIH-7)`: construct a completed dual-pure
-Poincare pairing whose coefficient functional is closed and bounded, or prove class-completely
-that every Hausdorff coefficient-faithful completion inherits divergent codiagonal gain.  An
-arbitrary algebraic swap, a finite norm declaration, or a vertical graph with no descended output
-does not count.
+Therefore finite pure admission plus uniform coefficient capacity does not close Route J.  In
+fact `(PIH-7)` is class-complete for bounded linear descent.  If `x_n` are realizations in any
+complex seminormed space with
+
+```text
+||x_n|| <= sqrt(U_n^pure)
+```
+
+and one continuous linear functional `L` has exact finite values
+
+```text
+L(x_n)=anchoredTwoScaleEnergy(n),
+```
+
+then its operator norm supplies one fixed `gain` in `(PIH-7)`, contradiction.  No normed
+coefficient-faithful completion preserving `(PIH-6)` can regularize the codiagonal.  A different
+topology can evade this only by losing the Route-J capacity bound or by leaving the scalar output
+vertical/non-descended.
 
 ## No-go closure
 
-- **Exact killing theorem/mechanism:** Pending completed-readout classification; all existing mixed
-  Gamma/Hardy boundary consumers vanish on the pure sector, while direct finite codiagonal is
-  unbounded.
+- **Exact killing theorem/mechanism:** All existing mixed Gamma/Hardy consumers vanish on the pure
+  sector.  Any exact scalar codiagonal has gain at least `(5/289)n`; the generic continuous-linear
+  theorem excludes every normed completion retaining uniform carrier norm and exact finite
+  readout.
 - **Strongest positive survivor:** Canonical nonzero pure Hodge pair with two-leg source landing,
   actual admission for every displacement, Green fixedness, exact readout, and uniform carrier
   capacity.
 - **New insight:** Actual cell admission is not finite-span rigid.  It decomposes into a detectable
   mixed sector and a boundary-silent dual-pure sector; only a secondary Poincare transgression can
   turn the latter into a Julia current.
-- **Status:** Paper bridge written; Lean module and completed hostile classification in progress.
+- **Status:** Dependency-closed paper proof and unconditional Lean module
+  `CCMFirstClockPrimitivePromotedPureHodgeCountertransport.lean`; final targeted audit pending.
 
 ## Log
 
 - 2026-08-02 — Frozen `J-PIH`; extracted pure-sector survivor from mixed-coordinate rigidity and
   identified coefficient-faithful completed Poincare descent as exact open core.
+- 2026-08-02 — Constructed complete prelanding and landed cofinal pure-Hodge carriers.  Proved
+  exact two-packet Gamma landing, actual admission at every displacement, Green fixedness, exact
+  codiagonal, and capacity `<=200*289^2`.  Falsified `J-PIH`: bounded readout gain grows at least
+  `(5/289)n`, and no continuous linear functional on any normed uniform-capacity realization can
+  retain all finite codiagonals.  Lean declarations are in
+  `CCMFirstClockPrimitivePromotedPureHodgeCountertransport.lean`.
