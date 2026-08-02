@@ -84,4 +84,23 @@ theorem abs_sum_Ioc_inv_sub_log_le {m N : ℕ} (hm : 1 ≤ m) (h : m ≤ N) :
   rw [sum_Ioc_inv_eq_harmonic_sub h]
   exact abs_harmonic_window_sub_log_le hm (le_trans hm h)
 
+
+/-- **Logarithm on a unit index window.**  Between consecutive integers the logarithm moves by at
+most the reciprocal of the smaller one. -/
+theorem abs_log_sub_log_le_inv {n : ℕ} (hn : 1 ≤ n) {x : ℝ}
+    (h1 : (n : ℝ) ≤ x) (h2 : x ≤ (n : ℝ) + 1) :
+    |Real.log x - Real.log n| ≤ 1 / n := by
+  have hnpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+  have hxpos : (0 : ℝ) < x := lt_of_lt_of_le hnpos h1
+  have hlow : Real.log n ≤ Real.log x := Real.log_le_log hnpos h1
+  have hhigh : Real.log x ≤ Real.log ((n : ℝ) + 1) := Real.log_le_log hxpos h2
+  have hgap : Real.log ((n : ℝ) + 1) - Real.log n ≤ 1 / n := by
+    rw [← Real.log_div (by positivity) (ne_of_gt hnpos)]
+    have hx : ((n : ℝ) + 1) / n = 1 + 1 / n := by field_simp
+    rw [hx]
+    have := Real.log_le_sub_one_of_pos (x := 1 + 1 / (n : ℝ)) (by positivity)
+    linarith
+  rw [abs_le]
+  constructor <;> linarith
+
 end HTGeometry

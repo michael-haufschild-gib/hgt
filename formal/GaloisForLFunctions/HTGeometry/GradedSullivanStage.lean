@@ -271,6 +271,56 @@ theorem iterateGenToOmega_deg (choose : ∀ S : DeningerGCAStage k, DeningerGCAA
     | inl y => exact iterateGenToOmega_deg choose S n y
     | inr m => rfl
 
+theorem iterateToOmega_comm (choose : ∀ S : DeningerGCAStage k, DeningerGCAAttachment S)
+    (S : DeningerGCAStage k) (n : ℕ) (x y : (iterate choose S n).gen) :
+    deningerGCAι k (iterateOmegaDeg choose S) (iterateGenToOmega choose S n x) *
+        deningerGCAι k (iterateOmegaDeg choose S) (iterateGenToOmega choose S n y) =
+      ((-1 : k) ^ ((iterate choose S n).deg x * (iterate choose S n).deg y)) •
+        (deningerGCAι k (iterateOmegaDeg choose S) (iterateGenToOmega choose S n y) *
+          deningerGCAι k (iterateOmegaDeg choose S) (iterateGenToOmega choose S n x)) := by
+  rw [deningerGCA_comm, iterateGenToOmega_deg, iterateGenToOmega_deg]
+
+theorem iterateToOmega_sq (choose : ∀ S : DeningerGCAStage k, DeningerGCAAttachment S)
+    (S : DeningerGCAStage k) (n : ℕ) (x : (iterate choose S n).gen)
+    (hx : Odd ((iterate choose S n).deg x)) :
+    deningerGCAι k (iterateOmegaDeg choose S) (iterateGenToOmega choose S n x) *
+      deningerGCAι k (iterateOmegaDeg choose S) (iterateGenToOmega choose S n x) = 0 := by
+  refine deningerGCA_sq_zero k (iterateOmegaDeg choose S) ?_
+  rw [iterateGenToOmega_deg]
+  exact hx
+
+/-- **The map from a stage into the limit algebra.**  Every stage of the tower maps to the algebra
+on the limit generator set, compatibly with the Koszul relations because degrees are preserved. -/
+def iterateToOmega (choose : ∀ S : DeningerGCAStage k, DeningerGCAAttachment S)
+    (S : DeningerGCAStage k) (n : ℕ) :
+    DeningerFreeGCA k (iterate choose S n).gen (iterate choose S n).deg →ₐ[k]
+      DeningerFreeGCA k (iterateOmegaGen choose S) (iterateOmegaDeg choose S) :=
+  deningerGCALift
+    (fun x => deningerGCAι k (iterateOmegaDeg choose S) (iterateGenToOmega choose S n x))
+    (iterateToOmega_comm choose S n) (iterateToOmega_sq choose S n)
+
+@[simp]
+theorem iterateToOmega_ι (choose : ∀ S : DeningerGCAStage k, DeningerGCAAttachment S)
+    (S : DeningerGCAStage k) (n : ℕ) (x : (iterate choose S n).gen) :
+    iterateToOmega choose S n (deningerGCAι k (iterate choose S n).deg x) =
+      deningerGCAι k (iterateOmegaDeg choose S) (iterateGenToOmega choose S n x) :=
+  deningerGCALift_ι _ _ _ x
+
+/-- **The limit maps are compatible with the tower's inclusions.**  Including a stage into the next
+and then into the limit is the same as mapping into the limit directly, so the maps form a cocone
+under the tower. -/
+theorem iterateToOmega_comp_inl (choose : ∀ S : DeningerGCAStage k, DeningerGCAAttachment S)
+    (S : DeningerGCAStage k) (n : ℕ)
+    (z : DeningerFreeGCA k (iterate choose S n).gen (iterate choose S n).deg) :
+    iterateToOmega choose S (n + 1) (iterateInl choose S n z) =
+      iterateToOmega choose S n z := by
+  have h : (iterateToOmega choose S (n + 1)).comp (iterateInl choose S n) =
+      iterateToOmega choose S n := by
+    refine deningerGCA_hom_ext fun x => ?_
+    rw [AlgHom.comp_apply, iterateToOmega_ι]
+    exact deningerGCALift_comp_inl _ _ _ _ _ x
+  exact AlgHom.congr_fun h z
+
 /-- **Every class attached at a stage of the tower dies at the next stage.** -/
 theorem iterate_kills (choose : ∀ S : DeningerGCAStage k, DeningerGCAAttachment S)
     (S : DeningerGCAStage k) (n : ℕ) (m : (choose (iterate choose S n)).newGen) :

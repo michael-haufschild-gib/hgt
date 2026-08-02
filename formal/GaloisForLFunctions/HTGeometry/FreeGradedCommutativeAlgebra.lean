@@ -555,6 +555,18 @@ theorem deningerGCAInl_ι (x : G) :
       deningerGCAι k (deningerGCASuccDeg deg degN) (Sum.inl x) :=
   deningerGCALift_ι _ _ _ x
 
+/-- **Restricting a lift along the inclusion evaluates it on the old generators.**  A map out of
+the extended algebra, precomposed with the inclusion of the previous stage, is determined on
+generators by its values on the left summand. -/
+theorem deningerGCALift_comp_inl {A : Type*} [Ring A] [Algebra k A]
+    (f : G ⊕ N → A)
+    (hcomm : ∀ u v, f u * f v =
+      ((-1 : k) ^ (deningerGCASuccDeg deg degN u * deningerGCASuccDeg deg degN v)) • (f v * f u))
+    (hsq : ∀ u, Odd (deningerGCASuccDeg deg degN u) → f u * f u = 0) (x : G) :
+    deningerGCALift f hcomm hsq (deningerGCAInl (N := N) deg degN (deningerGCAι k deg x)) =
+      f (Sum.inl x) := by
+  rw [deningerGCAInl_ι, deningerGCALift_ι]
+
 /-- **The inclusion commutes with the grading involution.** -/
 theorem deningerGCAInvolute_inl (z : DeningerFreeGCA k G deg) :
     deningerGCAInvolute k (deningerGCASuccDeg deg degN)

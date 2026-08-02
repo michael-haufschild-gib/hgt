@@ -469,6 +469,26 @@ nonzero integral periods approach zero.
 complete controlled germ of the embedded period symbol.  The proposed comparison
 `lambda^k |-> w^k` couples them without pretending that either reconstructs the other.
 
+## Lean status of the filtration comparison
+
+`PhysicalPullbackPeriodIncidenceComparison.lean` builds the comparison asked for in item 1 of the
+next-search list:
+
+- `norm_eval_le_sum_norm_coeff` and `arcEvalVector` -- evaluating an arc-coordinate polynomial at
+  the regularized period symbol is bounded, because the symbol has norm at most one, so it lands in
+  the bounded period-incidence space;
+- `arcEvalVector_X_pow` -- **`lambda^k |-> w^k`**;
+- `arcEvalVector_mem_range_of_X_pow_dvd` -- **the comparison is filtration preserving**: a
+  polynomial divisible by `lambda^k` evaluates into the range of multiplication by `w^k`;
+- `veroneseIdeal_arcEval_mem_poweredRange` -- applied through the physical arc pullback, the whole
+  squarefree degree-`r` annihilator lands in the order-`r` powered incidence scale;
+- `arcEval_physicalArcPullback_prod_X` -- at a coface generator the comparison is exactly the
+  order-`r` symbol scaled by the period product.
+
+So the `lambda`-adic filtration of the physical pullback maps into the powered source-regularity
+filtration, with the coface generators hitting the symbol exactly.  `#print axioms` clean.  What
+remains is the critical completion and the passage from polynomial arcs to the analytic scale.
+
 ## Where to look next
 
 The next search is not for another RH criterion and not for more abstract topology.
@@ -578,7 +598,9 @@ five-way equality `(13)`.  This is preliminary negative evidence, not priority c
 - [x] derive the local length statement `(8)` over the physical formal local ring `C[[lambda]]`
 - [x] zero physical tangency of the squarefree hierarchy `(14a)`--`(14c)` formalized
   unconditionally in Lean (`PhysicalArcContactVeronese.lean`)
-- [ ] construct the filtration-preserving analytic comparison morphism
+- [x] filtration-preserving comparison morphism `lambda^k |-> w^k` constructed in Lean
+  (`PhysicalPullbackPeriodIncidenceComparison.lean`)
+- [ ] extend the comparison to the critical completion and the analytic (non-polynomial) scale
 - [ ] identify the critically completed bounded symbol with `w^r`
 - [ ] prove the Barnes/multiple-sine second realization
 - [ ] realize positive tangency in a natural HT special-function family
@@ -590,3 +612,6 @@ five-way equality `(13)`.  This is preliminary negative evidence, not priority c
   contact order equals the least augmentation degree, so the hierarchy has zero tangency excess.
 - 2026-08-02 -- The `[NO-GO]` discriminator was formalized at the ideal level: an explicit operator
   with the same least augmentation degree has strictly larger physical contact order.
+- 2026-08-02 -- The filtration-preserving comparison morphism was constructed in Lean: bounded
+  evaluation at the period symbol sends `lambda^k` to `w^k` and carries the physical arc filtration
+  of the squarefree annihilator into the powered period-incidence filtration.

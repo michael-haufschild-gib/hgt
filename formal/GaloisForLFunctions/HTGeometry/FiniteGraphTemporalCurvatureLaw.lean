@@ -143,7 +143,7 @@ def finiteInducedGraphTemporalRank
     {V : Type*} [Fintype V] [DecidableEq V]
     (G : SimpleGraph V) (localDimension : V → ℕ)
     (S : Finset V) : ℕ :=
-  finiteGraphTemporalRank
+  @finiteGraphTemporalRank S (Finset.fintypeCoeSort S)
     (SimpleGraph.comap (fun v : S => v.1) G)
     (fun v : S => localDimension v.1)
 
@@ -153,7 +153,6 @@ theorem finiteInducedGraphTemporalRank_singleton
     (v : V) :
     finiteInducedGraphTemporalRank G localDimension {v} =
       localDimension v - 1 := by
-  classical
   letI : Nonempty ({v} : Finset V) :=
     ⟨⟨v, by simp⟩⟩
   unfold finiteInducedGraphTemporalRank
@@ -222,7 +221,6 @@ theorem finiteInducedGraphTemporalRank_pair
         localDimension u * localDimension v - 1
       else
         (localDimension u - 1) + (localDimension v - 1) := by
-  classical
   by_cases hadj : G.Adj u v
   · rw [if_pos hadj]
     letI : Nonempty ({u, v} : Finset V) := ⟨⟨u, by simp⟩⟩
@@ -242,11 +240,15 @@ theorem finiteInducedGraphTemporalRank_pair
     unfold finiteInducedGraphTemporalRank
     rw [induce_pair_eq_bot_of_not_adj hadj,
       finiteGraphTemporalRank_bot]
-    change
-      (∑ x : ({u, v} : Finset V), localDimension x.1 - 1) =
-        (localDimension u - 1) + (localDimension v - 1)
-    rw [Finset.univ_eq_attach, Finset.sum_attach]
-    simp [huv]
+    calc
+      (∑ x : ({u, v} : Finset V), (localDimension x.1 - 1)) =
+          ∑ x ∈ ({u, v} : Finset V), (localDimension x - 1) := by
+        exact (Finset.sum_subtype
+          (p := fun x : V => x ∈ ({u, v} : Finset V))
+          ({u, v} : Finset V) (fun _ => Iff.rfl)
+          (fun x => localDimension x - 1)).symm
+      _ = (localDimension u - 1) + (localDimension v - 1) := by
+        simp [huv]
 
 /-- Pair temporal curvature of the component-factorized rank set
 function. -/
@@ -272,7 +274,6 @@ theorem finiteGraphPairTemporalCurvature_eq
       if G.Adj u v then
         (localDimension u - 1) * (localDimension v - 1)
       else 0 := by
-  classical
   unfold finiteGraphPairTemporalCurvature
   rw [finiteInducedGraphTemporalRank_pair G localDimension huv,
     finiteInducedGraphTemporalRank_singleton,
@@ -303,6 +304,100 @@ theorem adj_iff_finiteGraphPairTemporalCurvature_pos
       (Nat.sub_pos_of_lt (lt_of_lt_of_le Nat.one_lt_two (hlocal u)))
       (Nat.sub_pos_of_lt (lt_of_lt_of_le Nat.one_lt_two (hlocal v)))
   · simp [hadj]
+
+/-- Product-minus-one dominates the sum of the factorwise
+product-minus-one ranks. -/
+theorem sum_sub_one_le_prod_sub_one
+    {I : Type*} [DecidableEq I]
+    (s : Finset I) (dimension : I → ℕ)
+    (hdimension : ∀ i ∈ s, 1 ≤ dimension i) :
+    ∑ i ∈ s, (dimension i - 1) ≤
+      (∏ i ∈ s, dimension i) - 1 := by
+  induction s using Finset.induction_on with
+  | empty => simp
+  | @insert a s ha ih =>
+      have hda : 1 ≤ dimension a := hdimension a (by simp)
+      have hds : ∀ i ∈ s, 1 ≤ dimension i := by
+        intro i hi
+        exact hdimension i (by simp [hi])
+      have hp : 1 ≤ ∏ i ∈ s, dimension i :=
+        Finset.one_le_prod hds
+      rw [Finset.sum_insert ha, Finset.prod_insert ha,
+        temporalRank_merge_components (dimension a)
+          (∏ i ∈ s, dimension i) hda hp]
+      have hi := ih hds
+      omega
+
+/-- The product-minus-one inequality is strict as soon as at least two
+nontrivial factors are present. -/
+theorem sum_sub_one_lt_prod_sub_one_of_one_lt_card
+    {I : Type*} [DecidableEq I]
+    (s : Finset I) (dimension : I → ℕ)
+    (hdimension : ∀ i ∈ s, 2 ≤ dimension i)
+    (hcard : 1 < s.card) :
+    ∑ i ∈ s, (dimension i - 1) <
+      (∏ i ∈ s, dimension i) - 1 := by
+  obtain ⟨a, ha⟩ := s.nonempty_of_ne_empty (by
+    intro hs
+    simp [hs] at hcard)
+  let t := s.erase a
+  have ht : t.Nonempty := by
+    rw [Finset.nonempty_iff_ne_empty]
+    intro ht
+    have hsubset : s ⊆ {a} := by
+      intro i hi
+      by_cases hia : i = a
+      · simp [hia]
+      · have : i ∈ t := by simp [t, hi, hia]
+        simpa [ht] using this
+    have : s.card ≤ 1 := by
+      simpa using Finset.card_le_card hsubset
+    omega
+  have hda : 1 ≤ dimension a :=
+    le_trans (by omega) (hdimension a ha)
+  have hdt : ∀ i ∈ t, 1 ≤ dimension i := by
+    intro i hi
+    exact le_trans (by omega)
+      (hdimension i (Finset.mem_of_mem_erase hi))
+  have hp_one : 1 ≤ ∏ i ∈ t, dimension i :=
+    Finset.one_le_prod hdt
+  obtain ⟨b, hb⟩ := ht
+  have hp_two : 2 ≤ ∏ i ∈ t, dimension i := by
+    have hrest : 1 ≤ ∏ i ∈ t.erase b, dimension i :=
+      Finset.one_le_prod (by
+        intro i hi
+        exact hdt i (Finset.mem_of_mem_erase hi))
+    calc
+      2 = 2 * 1 := by omega
+      _ ≤ dimension b * (∏ i ∈ t.erase b, dimension i) :=
+        Nat.mul_le_mul (hdimension b
+          (Finset.mem_of_mem_erase hb)) hrest
+      _ = ∏ i ∈ t, dimension i := by
+        rw [← Finset.prod_insert (s := t.erase b)
+          (f := dimension) (by simp),
+          Finset.insert_erase hb]
+  have hcoarse := temporalRank_merge_components
+    (dimension a) (∏ i ∈ t, dimension i) hda hp_one
+  have hfine := sum_sub_one_le_prod_sub_one t dimension hdt
+  have hgain :
+      0 < (dimension a - 1) *
+        ((∏ i ∈ t, dimension i) - 1) := by
+    exact Nat.mul_pos
+      (Nat.sub_pos_of_lt (lt_of_lt_of_le Nat.one_lt_two
+        (hdimension a ha)))
+      (Nat.sub_pos_of_lt (lt_of_lt_of_le Nat.one_lt_two hp_two))
+  have hs : insert a t = s := by
+    exact Finset.insert_erase ha
+  rw [← hs, Finset.sum_insert (by simp [t]),
+    Finset.prod_insert (by simp [t]), hcoarse]
+  omega
+
+/-- Tensor-rank weight of a finite set partition. -/
+def finpartitionTensorRank
+    {V : Type*} [DecidableEq V] {S : Finset V}
+    (P : Finpartition S) (localDimension : V → ℕ) : ℕ :=
+  ∑ B ∈ P.parts,
+    ((∏ v ∈ B, localDimension v) - 1)
 
 end
 
