@@ -48,4 +48,47 @@ theorem measure_ge_eq_zero_of_pow_integral_le {nu : Measure ℝ} [IsFiniteMeasur
   rw [div_lt_iff₀ hpos] at hn
   nlinarith [hkn, hn]
 
+/-- A nonzero measure carried strictly between `0` and `R` has every
+successive power moment strictly below `R` times its predecessor. -/
+theorem integral_pow_succ_lt_upper_mul_integral_pow_of_ae_pos_lt
+    {α : Type*} [MeasurableSpace α] {mu : Measure α} [NeZero mu]
+    {f : α → ℝ} {R : ℝ} (n : ℕ)
+    (hn : Integrable (fun x => f x ^ n) mu)
+    (hsucc : Integrable (fun x => f x ^ (n + 1)) mu)
+    (hsupport : ∀ᵐ x ∂mu, 0 < f x ∧ f x < R) :
+    (∫ x, f x ^ (n + 1) ∂mu) <
+      R * ∫ x, f x ^ n ∂mu := by
+  have hlt : ∀ᵐ x ∂mu, f x ^ (n + 1) < R * f x ^ n := by
+    filter_upwards [hsupport] with x hx
+    calc
+      f x ^ (n + 1) = f x ^ n * f x := by rw [pow_succ]
+      _ < f x ^ n * R :=
+        mul_lt_mul_of_pos_left hx.2 (pow_pos hx.1 n)
+      _ = R * f x ^ n := by ring
+  have hleae :
+      (fun x => f x ^ (n + 1)) ≤ᵐ[mu]
+        fun x => R * f x ^ n :=
+    hlt.mono fun _ hx => hx.le
+  have hscaled : Integrable (fun x => R * f x ^ n) mu :=
+    hn.const_mul _
+  have hle :
+      (∫ x, f x ^ (n + 1) ∂mu) ≤
+        ∫ x, R * f x ^ n ∂mu :=
+    integral_mono_ae hsucc hscaled hleae
+  have hne :
+      (∫ x, f x ^ (n + 1) ∂mu) ≠
+        ∫ x, R * f x ^ n ∂mu := by
+    intro heq
+    have hae := (integral_eq_iff_of_ae_le hsucc hscaled hleae).mp heq
+    have hfalse : ∀ᵐ _x ∂mu, False := by
+      filter_upwards [hlt, hae] with x hx hxeq
+      exact (ne_of_lt hx) hxeq
+    exact (Filter.Eventually.exists hfalse).elim fun _ h => h
+  have hstrict :
+      (∫ x, f x ^ (n + 1) ∂mu) <
+        ∫ x, R * f x ^ n ∂mu :=
+    lt_of_le_of_ne hle hne
+  rw [integral_const_mul] at hstrict
+  exact hstrict
+
 end HTGeometry

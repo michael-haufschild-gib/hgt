@@ -5749,3 +5749,53 @@ Item 6 is the single mathematical last mile.  In the established Hodge
 coordinate it is equivalent to vanishing of the purity commutator
 \([\Theta,J]\), hence to RH.  Items 1--5 specify the source and category so
 that item 6 is no longer a vague request for positivity.
+
+## 2026-08-02 Route L frontier update: actual Gamma/co-Poisson Hodge-boundary comparison
+
+The finite-support comparison demanded by item 5 is now constructed, rather
+than postulated by analogy of exponential coefficients.
+
+For labelled source cells \(i,j\), the Calderón--Witt transport selects the
+positive boundary action
+\[
+ t(i,j)=-(r_i+r_j)=2(h_i+h_j)>0.
+\]
+Its undeformed vector-valued exterior amplitude multiplies the actual
+two-channel common test on the Gamma-head/Hardy-tail boundary.  Three
+independent identities prevent this from being fitted coefficient matching:
+
+1. full weighted head/tail pairing against any right-half-plane common test
+   is exactly the unshifted Cauchy response;
+2. differentiating the literal moving Gamma head and translated Hardy tail
+   gives the oriented boundary \((E,-E)\), where \(E\) is precisely the
+   oriented Calderón--Witt Green transport;
+3. the singular Hodge rotation squares to \(-1\) at every source action and
+   exactly exchanges head and tail energy.
+
+At the canonical cross-prime incidence witness, \(E\) is the actual
+confluent Gamma/co-Poisson modular exterior.  More generally, the reflection
+defect read from these two boundary channels equals the previously
+constructed reflection-odd source transport.  Therefore
+\[
+ S_a
+ =\ker(\text{source reflection-odd transport})
+ =\ker(\text{actual Gamma/Hardy boundary reflection defect}).
+\]
+All statements are unconditional and precede Xi-divisor specialization.
+The comparison also retains the suspension-center vector until normalized
+Haar orientation; no early scalar trace is used.
+
+This closes item 5 on the algebraic finite-support source and turns the word
+“admitted” into a concrete boundary-kernel condition.  It does **not** prove
+that a completed Xi-divisor Green primitive belongs to that kernel.  The live
+Route L frontier is now the completed/cofinal continuation plus the theorem
+that its actual boundary defect vanishes.  Merely assuming this membership,
+or proving it equivalent to \([\Theta,J]=0\), purity, or RH, is not progress
+on the remaining scientific core.
+
+Lean:
+
+```text
+DeningerCalderonWittSingularGammaTransgression.lean
+DeningerCalderonWittGammaCoPoissonHodgeBoundaryComparison.lean
+```

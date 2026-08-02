@@ -59,6 +59,37 @@ theorem deningerCalderonWittGammaReflectionSewingCost_zero
   simp
 
 /--
+**Secondary-boundary descent classification.**  The reflection-odd Gamma
+transport annihilates every exact Calderón--Witt incidence boundary exactly
+at zero modular displacement.  One canonical cross-prime boundary detects
+the full obstruction.
+-/
+theorem deningerCalderonWittGammaReflectionOddScalarTransport_eq_zero_iff
+    {p q : Nat.Primes} (hpq : p ≠ q) (a : ℝ) :
+    deningerCalderonWittGammaReflectionOddScalarTransport a = 0 ↔
+      a = 0 := by
+  constructor
+  · intro hzero
+    have hmem :
+        deningerCalderonWittCrossPrimeGammaWitness hpq ∈
+          deningerCalderonWittGammaAdmittedHodgeSector a := by
+      rw [deningerCalderonWittGammaAdmittedHodgeSector,
+        LinearMap.mem_ker, hzero]
+      rfl
+    exact
+      (deningerCalderonWittCrossPrimeGammaWitness_mem_admittedHodgeSector_sameDepth_iff
+        hpq a 0).1 hmem
+  · rintro rfl
+    apply LinearMap.ext
+    intro s
+    funext p' q' e f
+    simp [deningerCalderonWittGammaReflectionOddScalarTransport,
+      deningerCalderonWittGammaReflectionOddVectorTransport,
+      deningerCalderonWittGammaOrientation,
+      deningerCalderonWittWeightedNonlocalExterior_zero,
+      xiGammaEulerPrimitiveReflectionOddExterior_zero]
+
+/--
 **Pointwise singular Green--Hodge admission law.**  A canonical cross-prime
 secondary Green boundary is admitted at the Riemann fracture exactly on the
 critical line.
@@ -74,6 +105,22 @@ theorem
   rw [
     deningerCalderonWittCrossPrimeGammaWitness_mem_admittedHodgeSector_sameDepth_iff
       hpq (xiNearbyPoleDualityAdjunctionFracture rho).re n,
+    xiNearbyPoleDualityAdjunctionFracture_eq_two_re]
+  simp
+  constructor <;> intro h <;> linarith
+
+/--
+At a Riemann boundary point, annihilation of all exact secondary Green
+boundaries is exactly the critical-line condition.
+-/
+theorem
+    deningerCalderonWittGammaReflectionOddScalarTransport_boundaryFracture_eq_zero_iff
+    {p q : Nat.Primes} (hpq : p ≠ q) (rho : ℂ) :
+    deningerCalderonWittGammaReflectionOddScalarTransport
+        (xiNearbyPoleDualityAdjunctionFracture rho).re = 0 ↔
+      rho.re = 1 / 2 := by
+  rw [
+    deningerCalderonWittGammaReflectionOddScalarTransport_eq_zero_iff hpq,
     xiNearbyPoleDualityAdjunctionFracture_eq_two_re]
   simp
   constructor <;> intro h <;> linarith
@@ -166,6 +213,34 @@ theorem xiCanonicalSecondaryGreenHodgeAdmitted_iff_riemannHypothesis
       RiemannHypothesis := by
   rw [xiCanonicalSecondaryGreenHodgeAdmitted_iff_boundaryCharacterNeutral,
     xiBoundaryCharacterNeutral_iff_riemannHypothesis]
+
+/--
+**Global cohomological-descent form.**  The divisor-indexed polarized
+Gamma/co-Poisson reflection defect annihilates the entire exact secondary
+Green boundary space exactly when RH holds.
+-/
+theorem xiGammaReflectionOddSecondaryBoundaryDescent_iff_riemannHypothesis
+    {p q : Nat.Primes} (hpq : p ≠ q) :
+    (∀ rho : XiDivisorSupport,
+      deningerCalderonWittGammaReflectionOddScalarTransport
+          (xiNearbyPoleDualityAdjunctionFracture (rho : ℂ)).re = 0) ↔
+      RiemannHypothesis := by
+  rw [← xiBoundaryCharacterNeutral_iff_riemannHypothesis]
+  constructor
+  · intro h rho
+    apply
+      (xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff
+        (rho : ℂ)).2
+    exact
+      (deningerCalderonWittGammaReflectionOddScalarTransport_boundaryFracture_eq_zero_iff
+        hpq (rho : ℂ)).1 (h rho)
+  · intro h rho
+    apply
+      (deningerCalderonWittGammaReflectionOddScalarTransport_boundaryFracture_eq_zero_iff
+        hpq (rho : ℂ)).2
+    exact
+      (xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff
+        (rho : ℂ)).1 (h rho)
 
 end
 

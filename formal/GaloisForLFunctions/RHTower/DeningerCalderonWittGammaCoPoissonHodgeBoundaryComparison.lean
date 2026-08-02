@@ -21,6 +21,12 @@ Calderón--Witt cross-effect gives a vector-valued polarized boundary
 transport; evaluation recovers the previously constructed singular
 transport exactly.
 
+The comparison is analytic rather than fitted coefficient matching: the
+full weighted head/tail pairing gives the unshifted Cauchy response, and
+differentiating the literal moving Gamma head and translated Hardy tail
+gives the oriented source transport `(E,-E)`.  Thus the source Green
+primitive is the actual moving-horizon boundary Green endpoint.
+
 The scalar singular Hodge rotation on the Gamma-head/Hardy-tail feature is
 lifted to the vector-valued suspension center before normalized Haar
 orientation.  Orientation strictly intertwines the two Hodge rotations.
@@ -73,6 +79,126 @@ def xiGammaEulerPrimitivePolarizedExteriorFeature
   let x :=
     eulerPrimitiveBoundaryPolarizedTest (a : ℂ)
   (fun t => c * x.1 t, fun t => c * x.2 t)
+
+/-- Undeformed oriented two-cell amplitude, before the common test acts. -/
+def xiGammaEulerPrimitiveUndeformedExteriorAmplitude
+    (i j : Nat.Primes × ℕ) : ℂ :=
+  ((xiGammaEulerPrimitiveBoundaryAmplitude 0 i *
+      xiGammaEulerPrimitiveBoundaryAmplitude 0 j *
+      (xiGammaEulerBoundaryHalfHeight i.1 i.2 -
+        xiGammaEulerBoundaryHalfHeight j.1 j.2) : ℝ) : ℂ)
+
+theorem xiGammaEulerPrimitivePolarizedExteriorFeature_eq_smul_test
+    (a : ℝ) (i j : Nat.Primes × ℕ) :
+    xiGammaEulerPrimitivePolarizedExteriorFeature a i j =
+      xiGammaEulerPrimitiveUndeformedExteriorAmplitude i j •
+        eulerPrimitiveBoundaryPolarizedTest (a : ℂ) := by
+  rfl
+
+/-- The actual head/tail pairing is complex-linear in its first input. -/
+theorem eulerPrimitiveBoundaryPolarizedPairing_smul_left
+    (c : ℂ) (x y : EulerPrimitiveBoundaryPolarizedFeature) :
+    eulerPrimitiveBoundaryPolarizedPairing (c • x) y =
+      c * eulerPrimitiveBoundaryPolarizedPairing x y := by
+  simp only [eulerPrimitiveBoundaryPolarizedPairing,
+    Prod.smul_fst, Prod.smul_snd, Pi.smul_apply, smul_eq_mul]
+  rw [mul_add]
+  congr 1
+  · rw [← MeasureTheory.integral_const_mul]
+    apply MeasureTheory.setIntegral_congr_fun measurableSet_Ioi
+    intro t _
+    ring
+  · rw [← MeasureTheory.integral_const_mul]
+    apply MeasureTheory.setIntegral_congr_fun measurableSet_Ioi
+    intro t _
+    ring
+
+/--
+The transported exterior is not merely point-evaluated from an exponential:
+against every right-half-plane common test it has the exact unshifted
+Gamma/Hardy Cauchy response.
+-/
+theorem xiGammaEulerPrimitivePolarizedExteriorFeature_pairing_test
+    {a : ℝ} (ha : 0 < a) {b : ℂ} (hb : 0 < b.re)
+    (i j : Nat.Primes × ℕ) :
+    eulerPrimitiveBoundaryPolarizedPairing
+        (xiGammaEulerPrimitivePolarizedExteriorFeature a i j)
+        (eulerPrimitiveBoundaryPolarizedTest b) =
+      xiGammaEulerPrimitiveUndeformedExteriorAmplitude i j /
+        ((a : ℂ) + star b) := by
+  rw [xiGammaEulerPrimitivePolarizedExteriorFeature_eq_smul_test,
+    eulerPrimitiveBoundaryPolarizedPairing_smul_left,
+    eulerPrimitiveBoundaryPolarizedPairing_test_test
+      (by simpa using ha) hb]
+  rw [mul_one_div]
+
+/--
+At every source action the common test is the literal moving-horizon
+endpoint kernel with symmetric spectral arguments.
+-/
+theorem
+    xiGammaEulerPrimitivePolarizedExteriorFeature_eq_horizonEndpoint
+    (a : ℝ) (i j : Nat.Primes × ℕ) :
+    let t := xiGammaEulerPrimitivePolarizedPairAction i j
+    (xiGammaEulerPrimitivePolarizedExteriorFeature a i j).1 t =
+        xiGammaEulerPrimitiveUndeformedExteriorAmplitude i j *
+          eulerPrimitiveAnalyticHorizonEndpointKernel (t : ℂ)
+            ((a / 2 : ℝ) : ℂ) ((a / 2 : ℝ) : ℂ) ∧
+      (xiGammaEulerPrimitivePolarizedExteriorFeature a i j).2 t =
+        xiGammaEulerPrimitiveUndeformedExteriorAmplitude i j *
+          eulerPrimitiveAnalyticHorizonEndpointKernel (t : ℂ)
+            ((a / 2 : ℝ) : ℂ) ((a / 2 : ℝ) : ℂ) := by
+  dsimp only
+  constructor <;>
+    simp only [xiGammaEulerPrimitivePolarizedExteriorFeature,
+      xiGammaEulerPrimitiveUndeformedExteriorAmplitude,
+      eulerPrimitiveBoundaryPolarizedTest,
+      eulerPrimitiveAnalyticHorizonEndpointKernel,
+      Function.comp_apply, RCLike.star_def, Complex.conj_ofReal]
+  all_goals
+    congr 2
+    push_cast
+    ring
+
+/--
+The two polarized channels are exactly the oriented derivative of the
+actual compact Gamma head and translated Hardy tail.  Their common value is
+the boundary Green primitive, with signs `(E,-E)`.
+-/
+theorem
+    xiGammaEulerPrimitivePolarizedExteriorFeature_movingHorizon_boundary
+    {a : ℝ} (ha : a ≠ 0) (i j : Nat.Primes × ℕ) :
+    let t := xiGammaEulerPrimitivePolarizedPairAction i j
+    let u : ℂ := ((a / 2 : ℝ) : ℂ)
+    let c := xiGammaEulerPrimitiveUndeformedExteriorAmplitude i j
+    HasDerivAt
+        (fun L => c * eulerPrimitiveAnalyticHorizonHeadKernel L u u)
+        ((xiGammaEulerPrimitivePolarizedExteriorFeature a i j).1 t)
+        (t : ℂ) ∧
+      HasDerivAt
+        (fun L => c * eulerPrimitiveAnalyticHorizonTailKernel L u u)
+        (-(xiGammaEulerPrimitivePolarizedExteriorFeature a i j).2 t)
+        (t : ℂ) := by
+  dsimp only
+  have hu :
+      ((a / 2 : ℝ) : ℂ) + star ((a / 2 : ℝ) : ℂ) ≠ 0 := by
+    simpa [RCLike.star_def] using (Complex.ofReal_ne_zero.mpr ha)
+  have hboundary :=
+    xiGammaEulerPrimitivePolarizedExteriorFeature_eq_horizonEndpoint
+      a i j
+  constructor
+  · rw [hboundary.1]
+    exact
+      (hasDerivAt_eulerPrimitiveAnalyticHorizonHeadKernel
+        (L := (xiGammaEulerPrimitivePolarizedPairAction i j : ℂ))
+        (w := ((a / 2 : ℝ) : ℂ)) (v := ((a / 2 : ℝ) : ℂ)) hu).const_mul
+          (xiGammaEulerPrimitiveUndeformedExteriorAmplitude i j)
+  · rw [hboundary.2]
+    simpa only [mul_neg, neg_mul] using
+      (hasDerivAt_eulerPrimitiveAnalyticHorizonTailKernel
+        (L := (xiGammaEulerPrimitivePolarizedPairAction i j : ℂ))
+        (w := ((a / 2 : ℝ) : ℂ)) (v := ((a / 2 : ℝ) : ℂ)) hu).const_mul
+          (xiGammaEulerPrimitiveUndeformedExteriorAmplitude i j)
 
 theorem xiGammaEulerPrimitivePolarizedExteriorFeature_fst_eval
     (a : ℝ) (i j : Nat.Primes × ℕ) :
@@ -416,6 +542,248 @@ def deningerCalderonWittNonlocalExteriorCoefficientMap
     rw [smul_smul]
 
 /--
+Undeformed oriented Calderón--Witt coefficient carried by one labelled
+incidence relation.  The suspension center remains vector-valued until the
+last displayed Haar trace.
+-/
+def deningerCalderonWittGammaUndeformedScalarCoefficient
+    (s : deningerCalderonWittGlobalMilnorIncidence)
+    (p q : Nat.Primes) (e f : ℕ) : ℂ :=
+  deningerCalderonWittAlgebraicCenterTrace q
+    (deningerCalderonWittWeightedNonlocalExterior
+      (xiGammaEulerPrimitiveUndeformedExteriorAmplitude
+        (p, e) (q, f)) p q s.1)
+
+/--
+Before evaluation, the oriented Calderón--Witt boundary transport is
+exactly its source coefficient times the actual two-channel common test.
+-/
+theorem
+    deningerCalderonWittGammaBoundaryVectorOrientation_transport_eq_smul_test
+    (a : ℝ)
+    (s : deningerCalderonWittGlobalMilnorIncidence)
+    (p q : Nat.Primes) (e f : ℕ) :
+    deningerCalderonWittGammaBoundaryVectorOrientation q
+        (deningerCalderonWittGammaPolarizedVectorTransport
+          a s p q e f) =
+      deningerCalderonWittGammaUndeformedScalarCoefficient
+          s p q e f •
+        eulerPrimitiveBoundaryPolarizedTest (a : ℂ) := by
+  unfold deningerCalderonWittGammaBoundaryVectorOrientation
+  apply Prod.ext
+  · funext t
+    simp only [Prod.smul_fst, Pi.smul_apply,
+      eulerPrimitiveBoundaryPolarizedTest, smul_eq_mul]
+    change
+      deningerCalderonWittAlgebraicCenterTrace q
+          ((deningerCalderonWittGammaPolarizedVectorTransport
+            a s p q e f).1 t) =
+        deningerCalderonWittGammaUndeformedScalarCoefficient
+            s p q e f *
+          Complex.exp (-(a : ℂ) * (t : ℂ))
+    change
+      deningerCalderonWittAlgebraicCenterTrace q
+          (deningerCalderonWittWeightedNonlocalExterior
+            ((xiGammaEulerPrimitivePolarizedExteriorFeature
+              a (p, e) (q, f)).1 t) p q s.1) =
+        deningerCalderonWittGammaUndeformedScalarCoefficient
+            s p q e f *
+          Complex.exp (-(a : ℂ) * (t : ℂ))
+    rw [xiGammaEulerPrimitivePolarizedExteriorFeature_eq_smul_test]
+    simp only [Prod.smul_fst, Pi.smul_apply,
+      eulerPrimitiveBoundaryPolarizedTest, smul_eq_mul]
+    change
+      deningerCalderonWittAlgebraicCenterTrace q
+          ((deningerCalderonWittNonlocalExteriorCoefficientMap p q
+            (xiGammaEulerPrimitiveUndeformedExteriorAmplitude
+                (p, e) (q, f) *
+              Complex.exp (-(a : ℂ) * (t : ℂ)))) s.1) = _
+    rw [show
+      xiGammaEulerPrimitiveUndeformedExteriorAmplitude
+              (p, e) (q, f) *
+            Complex.exp (-(a : ℂ) * (t : ℂ)) =
+        Complex.exp (-(a : ℂ) * (t : ℂ)) •
+          xiGammaEulerPrimitiveUndeformedExteriorAmplitude
+            (p, e) (q, f) by
+          simp only [smul_eq_mul]
+          ring]
+    rw [map_smul, LinearMap.smul_apply, map_smul]
+    simp only [deningerCalderonWittGammaUndeformedScalarCoefficient,
+      smul_eq_mul]
+    change
+      Complex.exp (-(a : ℂ) * (t : ℂ)) *
+          deningerCalderonWittAlgebraicCenterTrace q
+            (deningerCalderonWittWeightedNonlocalExterior
+              (xiGammaEulerPrimitiveUndeformedExteriorAmplitude
+                (p, e) (q, f)) p q s.1) =
+        deningerCalderonWittAlgebraicCenterTrace q
+            (deningerCalderonWittWeightedNonlocalExterior
+              (xiGammaEulerPrimitiveUndeformedExteriorAmplitude
+                (p, e) (q, f)) p q s.1) *
+          Complex.exp (-(a : ℂ) * (t : ℂ))
+    ring
+  · funext t
+    simp only [Prod.smul_snd, Pi.smul_apply,
+      eulerPrimitiveBoundaryPolarizedTest, smul_eq_mul]
+    change
+      deningerCalderonWittAlgebraicCenterTrace q
+          ((deningerCalderonWittGammaPolarizedVectorTransport
+            a s p q e f).2 t) =
+        deningerCalderonWittGammaUndeformedScalarCoefficient
+            s p q e f *
+          Complex.exp (-(a : ℂ) * (t : ℂ))
+    change
+      deningerCalderonWittAlgebraicCenterTrace q
+          (deningerCalderonWittWeightedNonlocalExterior
+            ((xiGammaEulerPrimitivePolarizedExteriorFeature
+              a (p, e) (q, f)).2 t) p q s.1) =
+        deningerCalderonWittGammaUndeformedScalarCoefficient
+            s p q e f *
+          Complex.exp (-(a : ℂ) * (t : ℂ))
+    rw [xiGammaEulerPrimitivePolarizedExteriorFeature_eq_smul_test]
+    simp only [Prod.smul_snd, Pi.smul_apply,
+      eulerPrimitiveBoundaryPolarizedTest, smul_eq_mul]
+    change
+      deningerCalderonWittAlgebraicCenterTrace q
+          ((deningerCalderonWittNonlocalExteriorCoefficientMap p q
+            (xiGammaEulerPrimitiveUndeformedExteriorAmplitude
+                (p, e) (q, f) *
+              Complex.exp (-(a : ℂ) * (t : ℂ)))) s.1) = _
+    rw [show
+      xiGammaEulerPrimitiveUndeformedExteriorAmplitude
+              (p, e) (q, f) *
+            Complex.exp (-(a : ℂ) * (t : ℂ)) =
+        Complex.exp (-(a : ℂ) * (t : ℂ)) •
+          xiGammaEulerPrimitiveUndeformedExteriorAmplitude
+            (p, e) (q, f) by
+          simp only [smul_eq_mul]
+          ring]
+    rw [map_smul, LinearMap.smul_apply, map_smul]
+    simp only [deningerCalderonWittGammaUndeformedScalarCoefficient,
+      smul_eq_mul]
+    change
+      Complex.exp (-(a : ℂ) * (t : ℂ)) *
+          deningerCalderonWittAlgebraicCenterTrace q
+            (deningerCalderonWittWeightedNonlocalExterior
+              (xiGammaEulerPrimitiveUndeformedExteriorAmplitude
+                (p, e) (q, f)) p q s.1) =
+        deningerCalderonWittAlgebraicCenterTrace q
+            (deningerCalderonWittWeightedNonlocalExterior
+              (xiGammaEulerPrimitiveUndeformedExteriorAmplitude
+                (p, e) (q, f)) p q s.1) *
+          Complex.exp (-(a : ℂ) * (t : ℂ))
+    ring
+
+/--
+The full source transport has the exact Gamma/Hardy Cauchy response.  This
+is the weighted boundary pairing, not evaluation at a fitted source time.
+-/
+theorem
+    deningerCalderonWittGammaBoundaryVectorOrientation_transport_pairing_test
+    {a : ℝ} (ha : 0 < a) {b : ℂ} (hb : 0 < b.re)
+    (s : deningerCalderonWittGlobalMilnorIncidence)
+    (p q : Nat.Primes) (e f : ℕ) :
+    eulerPrimitiveBoundaryPolarizedPairing
+        (deningerCalderonWittGammaBoundaryVectorOrientation q
+          (deningerCalderonWittGammaPolarizedVectorTransport
+            a s p q e f))
+        (eulerPrimitiveBoundaryPolarizedTest b) =
+      deningerCalderonWittGammaUndeformedScalarCoefficient s p q e f /
+        ((a : ℂ) + star b) := by
+  rw [
+    deningerCalderonWittGammaBoundaryVectorOrientation_transport_eq_smul_test,
+    eulerPrimitiveBoundaryPolarizedPairing_smul_left,
+    eulerPrimitiveBoundaryPolarizedPairing_test_test
+      (by simpa using ha) hb,
+    mul_one_div]
+
+/--
+The oriented source transport is itself the Green endpoint of the genuine
+moving Gamma-head/Hardy-tail boundary.
+-/
+theorem
+    deningerCalderonWittGammaBoundaryVectorOrientation_transport_movingHorizon
+    {a : ℝ} (ha : a ≠ 0)
+    (s : deningerCalderonWittGlobalMilnorIncidence)
+    (p q : Nat.Primes) (e f : ℕ) :
+    let t := xiGammaEulerPrimitivePolarizedPairAction (p, e) (q, f)
+    let u : ℂ := ((a / 2 : ℝ) : ℂ)
+    let c :=
+      deningerCalderonWittGammaUndeformedScalarCoefficient s p q e f
+    HasDerivAt
+        (fun L => c * eulerPrimitiveAnalyticHorizonHeadKernel L u u)
+        ((deningerCalderonWittGammaBoundaryVectorOrientation q
+          (deningerCalderonWittGammaPolarizedVectorTransport
+            a s p q e f)).1 t)
+        (t : ℂ) ∧
+      HasDerivAt
+        (fun L => c * eulerPrimitiveAnalyticHorizonTailKernel L u u)
+        (-((deningerCalderonWittGammaBoundaryVectorOrientation q
+          (deningerCalderonWittGammaPolarizedVectorTransport
+            a s p q e f)).2 t))
+        (t : ℂ) := by
+  dsimp only
+  have hu :
+      ((a / 2 : ℝ) : ℂ) + star ((a / 2 : ℝ) : ℂ) ≠ 0 := by
+    simpa [RCLike.star_def] using (Complex.ofReal_ne_zero.mpr ha)
+  have hfeature :=
+    deningerCalderonWittGammaBoundaryVectorOrientation_transport_eq_smul_test
+      a s p q e f
+  have hhead :
+      (deningerCalderonWittGammaBoundaryVectorOrientation q
+          (deningerCalderonWittGammaPolarizedVectorTransport
+            a s p q e f)).1
+          (xiGammaEulerPrimitivePolarizedPairAction (p, e) (q, f)) =
+        deningerCalderonWittGammaUndeformedScalarCoefficient s p q e f *
+          eulerPrimitiveAnalyticHorizonEndpointKernel
+            (xiGammaEulerPrimitivePolarizedPairAction
+              (p, e) (q, f) : ℂ)
+            ((a / 2 : ℝ) : ℂ) ((a / 2 : ℝ) : ℂ) := by
+    rw [hfeature]
+    simp only [Prod.smul_fst, Pi.smul_apply,
+      eulerPrimitiveBoundaryPolarizedTest, smul_eq_mul,
+      eulerPrimitiveAnalyticHorizonEndpointKernel,
+      Function.comp_apply, RCLike.star_def, Complex.conj_ofReal]
+    congr 2
+    push_cast
+    ring
+  have htail :
+      (deningerCalderonWittGammaBoundaryVectorOrientation q
+          (deningerCalderonWittGammaPolarizedVectorTransport
+            a s p q e f)).2
+          (xiGammaEulerPrimitivePolarizedPairAction (p, e) (q, f)) =
+        deningerCalderonWittGammaUndeformedScalarCoefficient s p q e f *
+          eulerPrimitiveAnalyticHorizonEndpointKernel
+            (xiGammaEulerPrimitivePolarizedPairAction
+              (p, e) (q, f) : ℂ)
+            ((a / 2 : ℝ) : ℂ) ((a / 2 : ℝ) : ℂ) := by
+    rw [hfeature]
+    simp only [Prod.smul_snd, Pi.smul_apply,
+      eulerPrimitiveBoundaryPolarizedTest, smul_eq_mul,
+      eulerPrimitiveAnalyticHorizonEndpointKernel,
+      Function.comp_apply, RCLike.star_def, Complex.conj_ofReal]
+    congr 2
+    push_cast
+    ring
+  constructor
+  · rw [hhead]
+    exact
+      (hasDerivAt_eulerPrimitiveAnalyticHorizonHeadKernel
+        (L := (xiGammaEulerPrimitivePolarizedPairAction
+          (p, e) (q, f) : ℂ))
+        (w := ((a / 2 : ℝ) : ℂ)) (v := ((a / 2 : ℝ) : ℂ)) hu).const_mul
+          (deningerCalderonWittGammaUndeformedScalarCoefficient
+            s p q e f)
+  · rw [htail]
+    simpa only [mul_neg, neg_mul] using
+      (hasDerivAt_eulerPrimitiveAnalyticHorizonTailKernel
+        (L := (xiGammaEulerPrimitivePolarizedPairAction
+          (p, e) (q, f) : ℂ))
+        (w := ((a / 2 : ℝ) : ℂ)) (v := ((a / 2 : ℝ) : ℂ)) hu).const_mul
+          (deningerCalderonWittGammaUndeformedScalarCoefficient
+            s p q e f)
+
+/--
 Reflection defect read from the oriented head and reflected tail of the
 actual polarized boundary feature.
 -/
@@ -570,6 +938,61 @@ def deningerCalderonWittGammaPolarizedGreenTransport
       DeningerCalderonWittGammaHodgeBoundaryVectorProfile :=
   (deningerCalderonWittGammaPolarizedVectorTransport a).comp
     deningerCalderonWittGlobalMilnorGreenRetraction
+
+/--
+The canonical source Green primitive is carried to the genuine
+moving-horizon Gamma/Hardy boundary.  Head derivative is its oriented
+transport and tail derivative is its negative.
+-/
+theorem deningerCalderonWittGammaPolarizedGreenTransport_movingHorizon
+    {a : ℝ} (ha : a ≠ 0)
+    (w : ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+    (p q : Nat.Primes) (e f : ℕ) :
+    let s := deningerCalderonWittGlobalMilnorGreenRetraction w
+    let t := xiGammaEulerPrimitivePolarizedPairAction (p, e) (q, f)
+    let u : ℂ := ((a / 2 : ℝ) : ℂ)
+    let c :=
+      deningerCalderonWittGammaUndeformedScalarCoefficient s p q e f
+    HasDerivAt
+        (fun L => c * eulerPrimitiveAnalyticHorizonHeadKernel L u u)
+        ((deningerCalderonWittGammaBoundaryVectorOrientation q
+          (deningerCalderonWittGammaPolarizedGreenTransport
+            a w p q e f)).1 t)
+        (t : ℂ) ∧
+      HasDerivAt
+        (fun L => c * eulerPrimitiveAnalyticHorizonTailKernel L u u)
+        (-((deningerCalderonWittGammaBoundaryVectorOrientation q
+          (deningerCalderonWittGammaPolarizedGreenTransport
+            a w p q e f)).2 t))
+        (t : ℂ) := by
+  simpa only [deningerCalderonWittGammaPolarizedGreenTransport,
+    LinearMap.comp_apply] using
+    deningerCalderonWittGammaBoundaryVectorOrientation_transport_movingHorizon
+      ha (deningerCalderonWittGlobalMilnorGreenRetraction w) p q e f
+
+/--
+On every labelled source Green primitive, the singular Hodge rotation
+exactly exchanges Gamma-head and Hardy-tail energy at the positive source
+action.
+-/
+theorem deningerCalderonWittGammaPolarizedGreenTransport_hodge_energy
+    (a : ℝ)
+    (w : ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+    (p q : Nat.Primes) (e f : ℕ) :
+    let t := xiGammaEulerPrimitivePolarizedPairAction (p, e) (q, f)
+    let x :=
+      deningerCalderonWittGammaBoundaryVectorOrientation q
+        (deningerCalderonWittGammaPolarizedGreenTransport
+          a w p q e f)
+    eulerPrimitiveBoundaryHeadWeight t *
+          Complex.normSq ((eulerPrimitiveBoundaryOddHodge x).1 t) +
+        eulerPrimitiveBoundaryTailWeight t *
+          Complex.normSq ((eulerPrimitiveBoundaryOddHodge x).2 t) =
+      eulerPrimitiveBoundaryTailWeight t * Complex.normSq (x.2 t) +
+        eulerPrimitiveBoundaryHeadWeight t * Complex.normSq (x.1 t) := by
+  dsimp only
+  exact eulerPrimitiveBoundaryOddHodge_pointwise_energy _
+    (xiGammaEulerPrimitivePolarizedPairAction_pos (p, e) (q, f))
 
 /-- The Green comparison restricts to the boundary transport on incidence. -/
 theorem deningerCalderonWittGammaPolarizedGreenTransport_incidence
