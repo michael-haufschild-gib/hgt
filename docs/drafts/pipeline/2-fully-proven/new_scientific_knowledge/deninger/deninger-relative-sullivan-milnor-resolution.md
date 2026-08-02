@@ -519,6 +519,20 @@ entering only through the universal property.
 - `deningerGCA_comm_of_even` — generators of even degree commute with everything, which is the
   reason a degree-`n` generator with `n` even can be attached to kill a class in degree `n + 1`.
 
+### The grading involution on mixed degrees
+
+The sign rule that the whole derivation machinery runs on is now available on the mixed-degree
+algebra.  Axiom audit for all 7 declarations: `propext, Quot.sound` for the relation checks, with
+`Classical.choice` entering only through the universal property.
+
+- `deningerGCAInvolute_comm`, `deningerGCAInvolute_sq` — the assignment `x ↦ (-1)^{|x|} x` respects
+  the Koszul relations, so it defines an algebra map.
+- `deningerGCAInvolute`, `deningerGCAInvolute_ι`, `deningerGCAInvolute_involute` — **the grading
+  involution** of the free graded-commutative algebra and the proof that it squares to the
+  identity.
+- `deningerGCAInvolute_ι_degreeOne`, `_ι_of_even` — it negates degree-one generators, matching the
+  exterior algebra, and fixes even generators.
+
 ### What is still missing, and why
 
 The theorem's proof is a factorization in the model category of nonnegatively graded commutative
@@ -612,3 +626,6 @@ the limit-stage comparison of step 3.
 - 2026-08-02 — Built the free graded-commutative algebra on generators of mixed degree with its
   universal property, recovering the exterior algebra as the degree-one case.  This is the object
   the general statement needs; redoing the tower over it is the remaining work.
+- 2026-08-02 — Built the grading involution on the mixed-degree algebra, agreeing with the exterior
+  one in degree one.  This is the sign rule the odd-derivation construction runs on, so the
+  derivation can now be redone over the general algebra.

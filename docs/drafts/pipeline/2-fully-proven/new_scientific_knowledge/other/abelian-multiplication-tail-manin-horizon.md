@@ -204,3 +204,16 @@ This narrows the viable RH route but proves no RH claim.
 
 - 2026-07-15 -- [PROVED HERE] Stable multiplication tail identified with `A^sharp` invariants and
   the Manin map; universal rank-`g` abstract tail and full abelian no-hair corollary proved.
+- 2026-08-02 -- Lean dependency closure advanced without placeholder axioms:
+  `FunctionFieldPullback.lean` constructs contravariant generic-point pullback;
+  `AbelianVariety.lean` constructs `[m]`, its iterates, literal ground-field pullback, rational
+  translation action on `K(A)`, finite and primary torsion deck groups, fiber-orbit
+  classification, scheme-theoretic torsion kernels, and the unconditional inclusion
+  `Tail_m(A) ≤ K(A)^{A[m^∞]}` (assuming only the still-undischarged standard dominance of `[m]`).
+  `DeckClosureStableCore.lean` now derives exact fixed-field equality from inclusion plus matching
+  quotient degree and deck cardinality.  Remaining dependency-closed cores are: prove in Lean that
+  nonzero multiplication on an abelian variety in characteristic zero is finite étale surjective
+  of degree `|m|^(2g)` with its torsion translations the full function-field deck group; then build
+  universal vectorial extensions/algebraic `D`-groups and prove the Manin-kernel density and
+  Manin-map quotient-coordinate theorems.  Card intentionally remains here until those cores are
+  discharged and the exact equalities (2)--(9) pass the formal audit.

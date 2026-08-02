@@ -171,29 +171,35 @@ omit [Fintype ι] in
 /-- Left division against a pivot lowers every other entry of a row below the pivot order. -/
 theorem exists_reduce_row [Fintype κ] (i₀ : ι) (j₀ : κ) (P : ι → κ → DiffOp K)
     (hpiv : P i₀ j₀ ≠ 0) :
-    ∃ P' : ι → κ → DiffOp K, ColEquiv P P' ∧ P' i₀ j₀ = P i₀ j₀ ∧
+    ∃ P' : ι → κ → DiffOp K, ColEquiv P P' ∧ (∀ i, P' i j₀ = P i j₀) ∧
       ∀ j, j ≠ j₀ → (P' i₀ j = 0 ∨ degree (P' i₀ j) < degree (P i₀ j₀)) := by
   classical
   have key : ∀ T : Finset κ, j₀ ∉ T →
-      ∃ P' : ι → κ → DiffOp K, ColEquiv P P' ∧ (∀ j, j ∉ T → P' i₀ j = P i₀ j) ∧
+      ∃ P' : ι → κ → DiffOp K, ColEquiv P P' ∧ (∀ i, P' i j₀ = P i j₀) ∧
+        (∀ j, j ∉ T → ∀ i, P' i j = P i j) ∧
         ∀ j ∈ T, (P' i₀ j = 0 ∨ degree (P' i₀ j) < degree (P i₀ j₀)) := by
     intro T
     induction T using Finset.induction_on with
-    | empty => exact fun _ => ⟨P, ColEquiv.refl P, fun _ _ => rfl, fun j hj => absurd hj (by simp)⟩
+    | empty =>
+      exact fun _ => ⟨P, ColEquiv.refl P, fun _ => rfl, fun _ _ _ => rfl,
+        fun j hj => absurd hj (by simp)⟩
     | insert a T ha ih =>
       intro hnot
       have hj₀T : j₀ ∉ T := fun h => hnot (Finset.mem_insert_of_mem h)
       have haj₀ : a ≠ j₀ := fun h => hnot (h ▸ Finset.mem_insert_self a T)
-      obtain ⟨P₁, hequiv, hout, hin⟩ := ih hj₀T
-      have hpiv₁ : P₁ i₀ j₀ = P i₀ j₀ := hout j₀ hj₀T
+      obtain ⟨P₁, hequiv, hcolfix, hout, hin⟩ := ih hj₀T
+      have hpiv₁ : P₁ i₀ j₀ = P i₀ j₀ := hcolfix i₀
       obtain ⟨q, r, hqr, hr⟩ := exists_left_div (b := P₁ i₀ j₀) (by rw [hpiv₁]; exact hpiv)
         (P₁ i₀ a)
-      refine ⟨colAdd a j₀ (-q) P₁, hequiv.tail ⟨a, j₀, -q, haj₀, rfl⟩, ?_, ?_⟩
-      · intro j hj
+      refine ⟨colAdd a j₀ (-q) P₁, hequiv.tail ⟨a, j₀, -q, haj₀, rfl⟩, ?_, ?_, ?_⟩
+      · intro i
+        rw [colAdd_apply_of_ne j₀ (-q) P₁ i (Ne.symm haj₀)]
+        exact hcolfix i
+      · intro j hj i
         have hja : j ≠ a := fun h => hj (h ▸ Finset.mem_insert_self a T)
         have hjT : j ∉ T := fun h => hj (Finset.mem_insert_of_mem h)
-        rw [colAdd_apply_of_ne j₀ (-q) P₁ i₀ hja]
-        exact hout j hjT
+        rw [colAdd_apply_of_ne j₀ (-q) P₁ i hja]
+        exact hout j hjT i
       · intro j hj
         by_cases hja : j = a
         · subst hja
@@ -205,8 +211,8 @@ theorem exists_reduce_row [Fintype κ] (i₀ : ι) (j₀ : κ) (P : ι → κ �
         · have hjT : j ∈ T := (Finset.mem_insert.mp hj).resolve_left hja
           rw [colAdd_apply_of_ne j₀ (-q) P₁ i₀ hja]
           exact hin j hjT
-  obtain ⟨P', hequiv, hout, hin⟩ := key (Finset.univ.erase j₀) (Finset.notMem_erase j₀ _)
-  refine ⟨P', hequiv, hout j₀ (Finset.notMem_erase j₀ _), fun j hj => hin j ?_⟩
+  obtain ⟨P', hequiv, hcolfix, -, hin⟩ := key (Finset.univ.erase j₀) (Finset.notMem_erase j₀ _)
+  refine ⟨P', hequiv, hcolfix, fun j hj => hin j ?_⟩
   exact Finset.mem_erase.mpr ⟨hj, Finset.mem_univ j⟩
 
 omit [Fintype ι] in
@@ -221,7 +227,7 @@ theorem exists_pivot_clear_row [Fintype κ] (i₀ : ι) :
     intro P j₀ hpiv hdeg
     obtain ⟨P₁, hequiv, hfix, hlow⟩ := exists_reduce_row i₀ j₀ P hpiv
     by_cases hall : ∀ j, j ≠ j₀ → P₁ i₀ j = 0
-    · exact ⟨P₁, j₀, hequiv, by rw [hfix]; exact hpiv, hall⟩
+    · exact ⟨P₁, j₀, hequiv, by rw [hfix i₀]; exact hpiv, hall⟩
     · obtain ⟨k, hkj₀, hknz⟩ : ∃ k, k ≠ j₀ ∧ P₁ i₀ k ≠ 0 := by
         by_contra hcon
         exact hall fun j hj => by

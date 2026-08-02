@@ -58,4 +58,78 @@ theorem soninHeadConstant_burnolCoPoissonSource_seed {b : ℝ} (g : BurnolCoPois
     SoninHeadConstant b (burnolCoPoissonRightSum g.seed) :=
   soninHeadConstant_burnolCoPoissonRightSum g.seed_support
 
+
+/-! ## The co-Poisson sum is locally finite -/
+
+/-- **Only finitely many co-Poisson terms are nonzero.**  A seed supported above `b` contributes at
+`t` only through indices `n` with `n b ≤ |t|`, of which there are finitely many. -/
+theorem burnolCoPoissonRightSum_hasFiniteSupport {b : ℝ} (hb : 0 < b) {g : ℝ → ℂ}
+    (hsupp : Function.support g ⊆ Icc b b⁻¹) (t : ℝ) :
+    Function.HasFiniteSupport
+      (fun n : ℕ => (((n + 1 : ℕ) : ℝ) : ℂ)⁻¹ * g (|t| / ((n + 1 : ℕ) : ℝ))) := by
+  refine Set.Finite.subset (Set.finite_Iio ⌈|t| / b⌉₊) ?_
+  intro n hn
+  have hterm : (((n + 1 : ℕ) : ℝ) : ℂ)⁻¹ * g (|t| / ((n + 1 : ℕ) : ℝ)) ≠ 0 :=
+    Function.mem_support.mp hn
+  have hne : g (|t| / ((n + 1 : ℕ) : ℝ)) ≠ 0 := by
+    intro h
+    exact hterm (by rw [h, mul_zero])
+  have hmem : |t| / ((n + 1 : ℕ) : ℝ) ∈ Icc b b⁻¹ :=
+    hsupp (Function.mem_support.mpr hne)
+  have hnpos : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
+  have hle : b ≤ |t| / ((n + 1 : ℕ) : ℝ) := hmem.1
+  have hmul : ((n + 1 : ℕ) : ℝ) * b ≤ |t| := by
+    rw [mul_comm]
+    exact (le_div_iff₀ hnpos).mp hle
+  have hbound : ((n + 1 : ℕ) : ℝ) ≤ |t| / b := (le_div_iff₀ hb).mpr hmul
+  have hceil : ((n + 1 : ℕ) : ℝ) ≤ (⌈|t| / b⌉₊ : ℝ) := le_trans hbound (Nat.le_ceil _)
+  have hnat : n + 1 ≤ ⌈|t| / b⌉₊ := by exact_mod_cast hceil
+  exact Set.mem_Iio.mpr (by omega)
+
+theorem burnolCoPoissonRightSum_summable {b : ℝ} (hb : 0 < b) {g : ℝ → ℂ}
+    (hsupp : Function.support g ⊆ Icc b b⁻¹) (t : ℝ) :
+    Summable fun n : ℕ => (((n + 1 : ℕ) : ℝ) : ℂ)⁻¹ * g (|t| / ((n + 1 : ℕ) : ℝ)) :=
+  summable_of_hasFiniteSupport (burnolCoPoissonRightSum_hasFiniteSupport hb hsupp t)
+
+theorem burnolCoPoissonRightSum_summable_source {b : ℝ} (hb : 0 < b)
+    (g : BurnolCoPoissonSource b) (t : ℝ) :
+    Summable fun n : ℕ => (((n + 1 : ℕ) : ℝ) : ℂ)⁻¹ * g.seed (|t| / ((n + 1 : ℕ) : ℝ)) :=
+  burnolCoPoissonRightSum_summable hb g.seed_support t
+
+
+/-- **Lower index bound.**  A contributing index also lies above `|t| b`, so the contributing
+indices of the co-Poisson sum at `t` fill exactly the window `[|t| b, |t| / b]`. -/
+theorem burnolCoPoissonRightSum_index_lower {b : ℝ} (hb : 0 < b) {g : ℝ → ℂ}
+    (hsupp : Function.support g ⊆ Icc b b⁻¹) {t : ℝ} {n : ℕ}
+    (hn : g (|t| / ((n + 1 : ℕ) : ℝ)) ≠ 0) :
+    |t| * b ≤ ((n + 1 : ℕ) : ℝ) := by
+  have hmem : |t| / ((n + 1 : ℕ) : ℝ) ∈ Icc b b⁻¹ :=
+    hsupp (Function.mem_support.mpr hn)
+  have hnpos : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
+  have hup : |t| / ((n + 1 : ℕ) : ℝ) ≤ b⁻¹ := hmem.2
+  have hle : |t| ≤ b⁻¹ * ((n + 1 : ℕ) : ℝ) := by
+    rw [div_le_iff₀ hnpos] at hup
+    linarith
+  have hprod := mul_le_mul_of_nonneg_right hle hb.le
+  have hcancel : b⁻¹ * ((n + 1 : ℕ) : ℝ) * b = ((n + 1 : ℕ) : ℝ) := by
+    field_simp
+  rw [hcancel] at hprod
+  exact hprod
+
+/-- **The contributing window.**  At `t` the co-Poisson sum is supported on the indices `n` with
+`|t| b ≤ n ≤ |t| / b`, a window of length `|t| (b⁻¹ - b)` at height `|t|`.  This is the localization
+that turns the sum into a Riemann sum of mesh `1/|t|` for the correction integral. -/
+theorem burnolCoPoissonRightSum_index_window {b : ℝ} (hb : 0 < b) {g : ℝ → ℂ}
+    (hsupp : Function.support g ⊆ Icc b b⁻¹) {t : ℝ} {n : ℕ}
+    (hn : g (|t| / ((n + 1 : ℕ) : ℝ)) ≠ 0) :
+    |t| * b ≤ ((n + 1 : ℕ) : ℝ) ∧ ((n + 1 : ℕ) : ℝ) ≤ |t| / b := by
+  refine ⟨burnolCoPoissonRightSum_index_lower hb hsupp hn, ?_⟩
+  have hmem : |t| / ((n + 1 : ℕ) : ℝ) ∈ Icc b b⁻¹ :=
+    hsupp (Function.mem_support.mpr hn)
+  have hnpos : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
+  have hmul : ((n + 1 : ℕ) : ℝ) * b ≤ |t| := by
+    rw [mul_comm]
+    exact (le_div_iff₀ hnpos).mp hmem.1
+  exact (le_div_iff₀ hb).mpr hmul
+
 end RHTower

@@ -793,3 +793,21 @@ Both halves of the Jacobson reduction step are now available: `exists_pivot_clea
 with row operations and `exists_pivot_clear_row` clears a row with column operations.  What remains
 is the interleaving (clearing a row may spoil the column, so the descent must run on the minimal
 order of the whole matrix) and then the recursion on the complementary submatrix.
+
+### The reduction step
+
+`DifferentialOperatorOreReduction.lean`:
+
+- `RowColStep`, `RowColEquiv`, with `RowColEquiv.of_rowEquiv`, `of_colEquiv` and `rowIndep`;
+- **`exists_pivot_clear_both`** — every matrix with a nonzero entry is equivalent, under row and
+  column operations, to one having a pivot which is the only nonzero entry of its row and of its
+  column.
+
+The descent runs on the order of the pivot.  One round of right division clears the pivot column;
+one round of left division then clears the pivot row and, crucially, leaves the pivot column
+untouched, because a column operation modifies only columns other than the pivot one — this is why
+`exists_reduce_row` was strengthened to report that the whole pivot column is unchanged.  Whatever
+survives has strictly smaller order and becomes the next pivot.
+
+This is the induction step of the Jacobson diagonal reduction; iterating it on the complementary
+submatrix gives the diagonal form.

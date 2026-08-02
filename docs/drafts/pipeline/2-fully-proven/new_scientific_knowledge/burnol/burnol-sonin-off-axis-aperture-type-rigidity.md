@@ -589,9 +589,42 @@ The mechanism is exactly Burnol's and is elementary: for `|t| < b` and `n >= 1` 
 is again below `b`, so the sum is *empty* on the aperture head and only the correction term
 survives.  No analytic hypothesis beyond the support condition is used.
 
-What an inhabitant of `BurnolCoPoissonSource b` still needs is therefore only: square-integrability
-of the co-Poisson sum, and the cosine-side condition, for which Burnol's intertwining
-`F(E phi) = E(F phi)` is the intended route.  Note the symmetrization shortcut does not bypass this:
+The same module also proves that the sum is locally finite:
+
+```text
+burnolCoPoissonRightSum_hasFiniteSupport
+  : at each t only indices with n b <= |t| contribute, finitely many,
+burnolCoPoissonRightSum_summable
+  : hence the co-Poisson family is summable at every point, unconditionally.
+```
+
+So the co-Poisson value is a genuine finite sum at each point; no convergence hypothesis is needed
+to define it.  Both ends of the contributing window are proved:
+
+```text
+burnolCoPoissonRightSum_index_window
+  : a contributing index n satisfies |t| b <= n <= |t| / b.
+```
+
+That is the localization which turns the sum into a Riemann sum of mesh `1/|t|` for the correction
+integral: substituting `n = |t| v` sends the window to the fixed interval `[b, b^(-1)]` and the
+correction constant is exactly `integral_{[b,b^(-1)]} g(1/v) dv/v`.  Square integrability of the
+co-Poisson sum is therefore the statement that this Riemann sum converges at rate `1/|t|`, which
+holds for a seed of bounded variation.
+
+An explicit candidate seed is available: `g = indicator (Icc b b^(-1))`.  Then the co-Poisson sum is
+the completely explicit function
+
+```text
+P(t) = sum over n in [|t| b, |t|/b] of 1/n   -   ( -2 log b ),
+```
+
+whose profile `1/u` is monotone, so the Riemann-sum error is the classical harmonic-sum-versus-log
+comparison and the `1/|t|` decay follows by monotone comparison rather than by Euler--Maclaurin.
+
+What an inhabitant of `BurnolCoPoissonSource b` still needs is therefore only: that
+`1/|t|`-decay estimate giving square-integrability, and the cosine-side condition, for which
+Burnol's intertwining `F(E phi) = E(F phi)` is the intended route.  Note the symmetrization shortcut does not bypass this:
 `E phi + F(E phi) = E phi + E(F phi)`, and the second summand is head-constant only when `F phi` is
 again supported above the aperture.
 
@@ -624,6 +657,7 @@ symmetrized witness --- and the transfer of the two-sided law to the co-Poisson 
 - [x] Lean: the eigen-condition is free (symmetrization), leaving one condition
 - [x] Lean: inhabitation audit of the co-Poisson source layer (currently vacuous)
 - [x] Lean: constant aperture head of the co-Poisson sum (first Sonine condition, unconditional)
+- [x] Lean: local finiteness, pointwise summability, and the contributing index window
 - [ ] Lean: an inhabitant of `BurnolCoPoissonSource`, i.e. one even `u` with `u + F u` constant on an aperture head and nonvanishing evaluation
 - [ ] Lean: transfer of `(12)`,`(13)` to the co-Poisson quotient vectors `y_{rho,N}`
 

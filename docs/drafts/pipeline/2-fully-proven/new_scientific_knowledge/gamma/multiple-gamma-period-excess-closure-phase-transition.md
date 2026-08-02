@@ -290,11 +290,24 @@ is negative search evidence, not priority certification.
 The new declarations are `not_discrete_intSpan_fin_of_three_le` and
 `finiteIndependentPeriodIncidenceCanonicalTrichotomy`.  Applied to the `r+2` periods of the generic
 order-`r` family, the latter covers every `r>=1` topological phase in the statement, rather than
-only a selected rank-three subfamily.  The card remains in stage 2 because the source-specific
-identity `d_DA(Psi_r)=r` is still paper-level.
+only a selected rank-three subfamily.
 
-The Lean theorem is source-independent.  The source-specific equality `(4)` uses the paper theorem
-`Ann_DA(Psi_r)=I_r`; that analytic identification is not inserted into Lean as an axiom.
+### The source-specific inputs are now unconditional Lean
+
+Both analytic identifications the card previously left at paper level are unconditional Lean
+theorems, under the card's own genericity hypothesis `PeriodsIntegrallyIndependent tau`:
+
+- `differentialAlgebraicOver_xApply_iff_mem_veroneseIdeal`
+  (`MultipleGammaAnnihilatorExact.lean`) is the exact annihilator `Ann_DA(Psi_r) = I_r` for
+  arbitrary constant-coefficient difference operators;
+- `multipleEllipticGammaTransverseDADepth_eq_card_sub_one` and its order-`r` form
+  `multipleEllipticGammaTransverseDADepth_eq_order`
+  (`MultipleGammaTransverseDepthValue.lean`) prove `d_DA(Psi_r) = r`: a deleted face is
+  differentially algebraic exactly when at most one period survives, so the least admissible
+  deletion is the complement of a single period.
+
+Their supporting steps are `differentialAlgebraicOver_face_compl_singleton` and
+`not_differentialAlgebraicOver_face_of_two_survivors`.  `#print axioms` clean.
 
 ## Gates
 
@@ -307,8 +320,12 @@ The Lean theorem is source-independent.  The source-specific equality `(4)` uses
 - [x] preliminary external novelty search completed
 - [x] unconditional operator core formalized in Lean
 - [x] all finite rationally independent period ranks `>=3` connected to the operator trichotomy
+- [x] multiple-Gamma annihilator classification and the depth identity `d_DA(Psi_r)=r` formalized
+  unconditionally in Lean
 - [ ] independently audit the multiple-Gamma annihilator classification
 - [ ] construct source polarization on the topologized corona
 - [ ] prove two independent realizations preserve the same radical action
 - [ ] derive a non-arbitrary coercive topology or canonical radical quotient
 - [ ] obtain independent specialist novelty and significance audit
+- 2026-08-02 -- the two source-specific analytic inputs became unconditional Lean: the exact
+  annihilator `Ann_DA(Psi_r)=I_r` and the transverse depth identity `d_DA(Psi_r)=r`.
