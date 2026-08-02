@@ -1567,3 +1567,100 @@ series `∑ₙ|Zf(nx)|` is of size `1/x` even though `f` is bounded, so the canc
 `μ` is essential.
 
 - 2026-08-02 — **The Mellin symbol of the Poisson operator is `ζ`.**
+
+### Lean: the image of `Z` vanishes on the zeros of `ζ`, and the cokernel `(4)` `[PROVED HERE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerPoissonZeroDivisor.lean` (14 declarations) and
+`DeningerPoissonCokernel.lean` (19); axiom audit `propext, Classical.choice, Quot.sound`.
+
+- `isBigO_deningerPoissonValue_atTop`, `_zero` — the two-ended decay of `Zf` in `O`-form (any
+  power at infinity, any power at the origin, by choosing the decay index).
+- `differentiableAt_mellin_deningerPoissonValue` — **`M(Zf)` is entire**; and
+  `differentiableAt_mellin_schwartz` gives holomorphy of `M(f)` on `Re s > 0`.
+- `mellin_deningerPoissonValue_eq_zeta_mul` — the factorization `M(Zf) = ζ·M(f)` propagates from
+  `Re s > 1` to the whole half plane minus the pole, by the identity theorem on
+  `{0 < Re, 0 < Im} ∪ {1 < Re}` (two convex opens with nonempty intersection, so preconnected, and
+  `1` is in neither).
+- `mellin_deningerPoissonValue_eq_zero_of_zeta_eq_zero` — **`M(Zf)(ρ) = 0` at every non-real zero
+  `ρ` of `ζ` with `Re ρ > 0`.**
+- `norm_deningerRadialValue_le`, `mellinConvergent_deningerRadialValue` — every member of `ℋ_−` is
+  `O(x^{−s})` at both ends for *every* integer `s` (its `s`-th weight is Schwartz), so its
+  multiplicative Mellin transform converges everywhere; hence the transform is additive and
+  homogeneous on `ℋ_−`.
+- `DeningerMZeta`, `deningerMZetaMk`, `deningerPoisson_exact` — **the cokernel `M_ζ` and exactness
+  at `ℋ_−`**; with `deningerPoissonLM_injective` this is the algebraic exactness of `(4)`.
+- `deningerZetaZeroSubspace`, `deningerPoisson_range_le_zetaZero` — **the range of `Z` lies in the
+  subspace of `ℋ_−` cut out by the non-real zeros of `ζ` in the right half plane.**  This is the
+  mechanism the card's `M_ζ` is named for: the cokernel records the zero divisor of `ζ`.
+
+What is still open on the card: the *topological* half of `(3)`–`(4)` — strictness/closed range
+(Meyer's zeta estimate, which needs quantitative lower bounds for `ζ` on vertical lines), and
+nuclearity of the quotient `M_ζ` (Grothendieck's quotient permanence, not yet in the corpus's
+seminorm framework).  Sections 2–3 additionally need completed projective tensor products and a
+topological singular-chain cosheaf.
+
+- 2026-08-02 — **The zero divisor of `ζ` in the image of `Z`, and the cokernel sequence.**
+
+### Lean: quotient seminorms and the quotient criterion for nuclearity
+
+`formal/GaloisForLFunctions/RHTower/DeningerQuotientSeminorm.lean` (12 declarations) and
+`DeningerQuotientProjection.lean` (8); axiom audit `propext, Classical.choice, Quot.sound`.
+
+Towards the nuclearity of `M_ζ` (the last permanence property the card's `(4)` needs, and the one
+the corpus did not have):
+
+- `deningerQuotientSeminorm` — the infimum of a seminorm over the representatives of a class, built
+  as a genuine `Seminorm` on `E ⧸ N` (approximate infima give subadditivity; multiplication by a
+  nonzero scalar is a bijection of representative sets, which gives homogeneity).
+- `deningerQuotientSeminorm_mk_le`, `_exists_lt`, `_le_of_le` — the three facts everything else
+  uses, including that a domination `p ≤ Cq` descends to `p̄ ≤ Cq̄`.
+- `deningerQuotientProjection`, `_square`, `deningerQuotientProjectionC`, `_square` — the
+  norm-decreasing surjection `E_p → (E/N)_p̄` of seminorm spaces, its commutation with the
+  comparison maps, and both after completion.
+- `deningerIsNuclearSpaceC_quotient_of_rightInverse` — **the criterion**: if each completed
+  projection has a bounded section then nuclearity descends to the quotient, because
+  `T̄ = π ∘ T ∘ σ` is then a nuclear map conjugated by bounded maps.  This mirrors the corpus's
+  subspace criterion (`..._subspace_of_leftInverse`) with sections in place of retractions.
+
+What remains for quotient nuclearity: the Hilbertian supply of the section.  For `p = ‖A ·‖` with
+`A : E → ℓ²`, the quotient seminorm is `‖P_{Mᗮ}A·‖` with `M` the closure of `A(N)`, so the completed
+quotient embeds isometrically in `ℓ²` with range inside both `Mᗮ` and the range of the ambient
+embedding — and that inclusion *is* the section.  This is the same orthogonal-projection mechanism
+the corpus already uses for subspaces, run in the other direction.
+
+- 2026-08-02 — Quotient seminorms, the completed quotient square, and the section criterion.
+
+### Lean: quotients of nuclear spaces are nuclear, and `M_ζ` is nuclear `[PROVED HERE]`
+
+`formal/GaloisForLFunctions/RHTower/DeningerQuotientHilbertian.lean` (9 declarations),
+`DeningerQuotientNuclear.lean` (10), `DeningerQuotientNuclearCompleted.lean` (3) and
+`DeningerMZetaNuclear.lean` (2); axiom audit `propext, Classical.choice, Quot.sound`.
+
+Grothendieck's quotient permanence, which the corpus did not have, is now proved — by the same
+Hilbertian mechanism the corpus uses for subspaces, run in the other direction:
+
+- `deningerQuotientSeminorm_eq_norm_sub_starProjection` — for `p = ‖A·‖` the quotient seminorm by
+  `N` is the distance in `ℓ²` from `A x` to the closure `M` of `A(N)`, i.e. `‖A x − P_M(A x)‖`
+  (representatives ↔ the coset `A x − A(N)`, `infDist_closure`, and the minimality of the
+  orthogonal projection).
+- `deningerQuotient_hilbertian` — **the quotient of a Hilbertian seminorm is Hilbertian**, realized
+  in the *same* `ℓ²` by the complementary projection; no Hilbert basis is needed.
+- `deningerQuotientEmbeddingC_range_le`, `_mem_orthogonal` — the completed quotient realization
+  lands inside the ambient range (the projection moves `A x` by an element of `M`, already there)
+  and inside `Mᗮ`.
+- `deningerQuotientSection`, `deningerQuotientSection_projection` — **the bounded section**: invert
+  the ambient realization on its range.  Feeding it to the criterion gives
+  `deningerIsNuclearSpaceC_quotient_of_hilbertian` and, via the Hilbertian refinement,
+  `deningerIsNuclearSpaceC_quotient` — **quotients of nuclear spaces are nuclear.**
+- `deningerNuclear_hilbertian_refinementC`, `_familyC`, `deningerIsNuclearSpaceC_quotient_of_C` —
+  the same for the *completed* formulation, which is the one subspace permanence produces and
+  therefore the one `ℋ_−` carries.
+- `deningerIsNuclearSpaceC_mZeta` — **the cokernel `M_ζ` of the Poisson operator is a nuclear
+  space**, as the quotient of the nuclear radial space by the range of `Z`.
+
+So of the card's `(4)`, everything except *strictness* is now proved in Lean: the three spaces are
+nuclear, `Z` is continuous and injective, the sequence is exact, and the image is cut out by the
+zero divisor of `ζ`.  Strictness (equivalently, closed range plus the reverse estimate) remains the
+single open analytic input, and it is exactly Meyer's zeta estimate.
+
+- 2026-08-02 — **Quotient permanence for nuclearity, and `M_ζ` is nuclear.**

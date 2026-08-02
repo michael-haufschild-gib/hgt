@@ -2651,3 +2651,70 @@ Remaining hard theorem: derive the exact higher-Euler critical-residual growth, 
 all orders share and resum on `(137)`, propagate the boundary layer through finite-prime
 orthogonalization, and realize or eliminate the resulting infinite-label singular carrier through
 the Sonin corner.
+
+## 41. J-SF5 second Euler order confirms the `p^2` boundary
+
+`[PAPER+LEAN-PROVED SOURCE-LOCAL THEOREM]`
+`[CANDIDATE SOURCE-SPECIFIC NEW SCIENTIFIC KNOWLEDGE]`
+
+Write the positive one-prime Jacobi radius as
+
+```text
+a_n(q)=r_n+u_nq+v_nq^2+O(q^3)
+```
+
+and let `K_k` be the `q^2` coefficient of four-radius critical residual `(128)`. Published
+squared-radius coefficient contains
+
+```text
+Y_n={}_2F_1(1,n+1/2;n+1;-1).
+```
+
+New proof constructs `Y_n` as an actual normalized alternating central-binomial tail and proves
+
+```text
+1/2 <= Y_n <= 1/2+1/(4n+4).                            (138)
+```
+
+Literal published bracket then cancels to give
+
+```text
+[q^2]a_n(q)^2/(n+1) -> 16/pi,
+u_n^2/(n+1) -> 8/pi,
+v_n -> 4/pi.                                           (139)
+```
+
+In four-radius weld, all six terms linear in `v_n` cancel at degree scale. First jets alternate
+and have squared normalized amplitude `8/pi`; two cross-products and two squares therefore
+contribute four copies of `-8/pi`. Thus
+
+```text
+K_(n+1)/(2(n+1)) -> -32/pi.                            (140)
+```
+
+Together with `(134)`, both proved Euler orders become order one at same scale:
+
+```text
+q sqrt(n) asymp 1,   q^2 n asymp 1,
+n asymp p^2 for q=p^(-1).                              (141)
+```
+
+This is new critical-residual information, not a restatement of published `q^2` anomaly. It proves
+persistence through order two only. It does not justify all-orders law or resummation, and it does
+not construct a global carrier. Fixed-prime data remain quotient-zero; complete shell
+finite-support rigidity rules out promotion by ordinary differential-field completion.
+
+Dependency-closed certificate:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+  route-j-semilocal-prolate-second-euler-critical-boundary.md
+
+formal/GaloisForLFunctions/RHTower/
+  SemilocalProlateSecondEulerCriticalJet.lean
+```
+
+Route J remains open. Immediate hard frontier: extract literal `q^3` squared-radius coefficient,
+determine whether critical `q^3` weld has `n^(3/2)` growth, then attack fixed-order induction or
+boundary-layer resummation. After that, finite-prime orthogonalization and genuine infinite-label
+singular carrier remain unavoidable.

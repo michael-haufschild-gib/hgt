@@ -157,11 +157,19 @@ Formalized, unconditionally, axioms `[propext, Classical.choice, Quot.sound]` th
 
 Not formalized, and not claimed:
 
-- `(4)` as a homotopy equivalence.  What is proved is its homological content, which is `(5)`.
-- `(6)` beyond the definition, the action and freeness: that a basis can be taken to consist of
-  apartment classes (Solomon's basis theorem).  Freeness alone does follow from the Mayer--Vietoris
-  machinery built here; identifying a basis with the apartments needs a shelling or the opposition
-  retraction.
+- `(4)` as a homotopy equivalence.  What is proved is its homological content, which is `(5)` together
+  with `homology_building_wedge`.  This is the one numbered claim of the card that is not formalized.
+
+Beyond the card's numbered claims, as a stretch:
+
+- Solomon's *basis* theorem — that the apartment classes span the Steinberg module.  The card's
+  apartment paragraph says "its fundamental class is an apartment generator", and everything that
+  phrase asserts of a single frame is proved: the class is constructed, injective, nonzero,
+  equivariant, and generates the apartment's own top homology.  Whether the apartment classes
+  together *span* `St` is Solomon's theorem, which the card does not state; its classical proof is a
+  shelling induction on gallery distance, elementwise and so unavailable in an arbitrary abelian
+  category.  The route that does transfer is the Mayer--Vietoris descent, and the pieces for it are
+  being built (`ApartmentInterval.lean`, the star/base splitting criteria).
 
 The supporting general machinery — many-piece Mayer--Vietoris for an arbitrary index, the
 locally-conical vanishing tool, and the disjoint-union-of-nerves identification — is listed in the
@@ -177,8 +185,9 @@ class to positivity, a Weil criterion, or zero location.
 
 - [x] 0 -> 1: exact topology extracted from the horizon-building poset
 - [x] 1 -> 2: simplicial identification and Solomon--Tits consequence proved
-- [ ] 2 -> 3: `(3)` and `(5)` formalized in full, `(6)`'s definition, observer action and freeness
-  with them; what is left is `(4)` as a homotopy statement and `(6)`'s apartment basis
+- [ ] 2 -> 3: `(3)`, `(5)` and `(6)` formalized in full — the last with freeness, nonvanishing, the
+  top-cycle description and explicit equivariant apartment classes; the only numbered claim left is
+  `(4)` as a homotopy statement, whose homological content is proved
 - [ ] 3 -> 4: depends on external audit and publication of the parent theorem
 
 ## Reference
@@ -1457,3 +1466,87 @@ class to positivity, a Weil criterion, or zero location.
   the descent computation: to push an apartment class through the Mayer--Vietoris connecting map one
   splits its signed sum along exactly this criterion, lifts the two halves to the base and the star,
   and reads off the image in the intersections.
+
+- 2026-08-02 — **The cover of an apartment, chamber by chamber.**  `ApartmentChains.lean` extended,
+  axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `initialSegSet_castSucc_last` — the last proper initial segment of an ordering is the complement of
+  its last vector.  Hence **`chainOfOrdering_eq_compl_singleton_iff`**: a chamber of an apartment
+  contains the coatom opposite a frame vector exactly when its ordering *ends* with that vector.
+  This is the splitting the Mayer--Vietoris cover actually uses — the pieces of that cover are the
+  stars of the spanning coatoms, not of the atoms, so the criterion is about the last vector of the
+  ordering, while the earlier `chainOfOrdering_eq_singleton_iff` (first vector) describes the star of
+  a vertex.
+
+  **`apartment_not_spanning_of_ne`** — the only vertex of an apartment that spans with a given frame
+  vector is the coatom opposite it.  So a chamber missing that coatom has all its vertices
+  non-spanning and lies wholly in the base of the cover.
+
+  Together: the chambers of an apartment split cleanly into the ones inside the single star and the
+  ones inside the base, which is the lift the connecting map needs.  What is left of the descent step
+  is the third piece — that the boundary of the star half, read in the intersections, is the
+  fundamental chain of the link's apartment — and then Solomon's spanning statement follows by
+  induction on rank.
+
+- 2026-08-02 — **The link of a coatom of an apartment is an apartment.**  New module
+  `ApartmentInterval.lean`, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  **`properBelowSetOrderIso`** — the elements of an apartment strictly below a coordinate subset `S`
+  are the proper nonzero subsets of `S`, by restriction and image along the inclusion of `S`.  So the
+  link of a coatom is again an apartment, one vector smaller, which is what the descent needs in
+  order to recognise its own output.
+
+  **Gate correction.**  The `2 -> 3` gate said the missing items were `(4)` as a homotopy statement
+  *and* `(6)`'s apartment basis.  That conflated a numbered claim of the card with a stretch beyond
+  it: `(6)` as the card states it — reduced `H_(N-2)` is the Steinberg module, with the observer
+  action — is formalized, and so is everything the apartment paragraph asserts of a single frame's
+  fundamental class.  Solomon's *basis* theorem is not a claim of this card; it is recorded as a
+  stretch goal with its route.  The gate text and the `Lean boundary` section now say this.
+
+- 2026-08-02 — **The chambers of the link are the top faces of the chambers of the star.**
+  `ApartmentInterval.lean` extended, axioms `[propext, Classical.choice, Quot.sound]` (the ordering
+  restriction itself needs only `[propext, Quot.sound]`):
+
+  `restrictOrdering` — an ordering of a frame that *ends* with a given vector restricts to an
+  ordering of the remaining vectors, bijectively.
+  `image_initialSegSet_restrictOrdering` — its initial segments are the initial segments of the
+  original ordering, one step short.
+  **`coe_properBelowSetOrderIso_symm_chainOfOrdering`** — hence, transported into the apartment along
+  the identification of the link with a smaller apartment, the chain of the restricted ordering is
+  the chain of the original one with its top vertex removed.
+
+  So the three combinatorial inputs of the descent step are now all proved: the chambers of an
+  apartment split into star and base (`chainOfOrdering_eq_compl_singleton_iff`,
+  `apartment_not_spanning_of_ne`), the link is an apartment (`properBelowSetOrderIso`), and the star
+  chambers' top faces are exactly the link's chambers.  What is left is the homological step —
+  feeding these to `ShortComplex.ShortExact.δ_eq'` to identify the connecting map's value on an
+  apartment class with the apartment class of the link.
+
+- 2026-08-02 — **The building's cover cuts an apartment along the apartment's own cover.**  New
+  module `ApartmentBuildingCover.lean`, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `coordSpan_union` — the coordinate subspace of a union is the join of the coordinate subspaces;
+  hence **`coordSpan_sup_singleton_eq_top_iff`**: inside the apartment of a frame, spanning with a
+  frame line is a purely combinatorial condition on coordinate sets.  With the apartment-side
+  criterion this gives `coordSpan_sup_singleton_ne_top` and `coordSpan_compl_sup_singleton`, and in
+  the corpus's own vocabulary `apartmentVertices_mem_notSpanning` and
+  `apartmentVertices_mem_spanning`: a vertex of the apartment lies in the base of the Solomon--Tits
+  cover unless it is the coatom opposite the chosen line, which lies in the star.
+
+  So the cover of the building restricts to the apartment as the apartment's own one-piece cover.
+  Everything the descent step needs on the geometric side is now proved; what is left is homological
+  bookkeeping — writing the apartment cycle in the unnormalized complex, splitting it along this
+  criterion to lift it into `C(base) ⊞ C(star)`, and feeding the lift to
+  `ShortComplex.ShortExact.δ_eq'`.
+
+- 2026-08-02 — **Each chamber of an apartment lies wholly in the base or wholly in the star.**
+  `ApartmentBuildingCover.lean` extended, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `chainOfOrdering_le_last` — every vertex of a chamber is contained in its top vertex;
+  `chainOfOrdering_ne_compl` — a chamber whose ordering does not end with the chosen vector misses
+  the coatom entirely.  Hence **`chamber_mem_notSpanning`**: all its vertices are vertices of the
+  base; and **`chamber_mem_generalStar`**: if the ordering does end with that vector, all its
+  vertices lie in the star of the coatom, because they are all contained in the top one.
+
+  These are the two membership facts the lift into `C(base) ⊞ C(star)` consumes, one per chamber, so
+  the geometric input to the descent step is complete down to the level of individual simplices.

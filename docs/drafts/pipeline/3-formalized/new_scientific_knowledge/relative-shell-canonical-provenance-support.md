@@ -426,8 +426,67 @@ forbids unless every \(a_n=0\).  Therefore
 \]
 Thus replacing the discontinuous \(0/1\) gauge by any finite-rank homogeneous coefficient packet
 cannot preserve even its zero set.  Exact linear kernel detection forces infinite coefficient
-rank.  This remains a no-go, not a construction of the required infinite-dimensional arithmetic
-target.
+rank.  Statement (36) alone is a no-go; the following quotient realizes its exact algebraic
+survivor, not the required arithmetic topology.
+
+There is nevertheless a canonical algebraic positive survivor.  Regard
+\(\mathcal F_{\widehat m}\) as a complex submodule of \(\mathcal F_\Lambda\) and set
+\[
+ Q_m:=\mathcal F_\Lambda/\mathcal F_{\widehat m},
+ \qquad
+ \pi_m:\mathcal F_\Lambda\longrightarrow_{\mathbb C}Q_m.
+\]
+Then
+\[
+ \boxed{\quad
+ \pi_m(x)=0\Longleftrightarrow p_m(x)=0,
+ \qquad
+ \dim_{\mathbb C}Q_m=\infty,
+ \quad}
+ \tag{37}
+\]
+and \(\pi_m(H_m),\pi_m(H_m^2),\ldots\) is the independent family in (35).  Taking all labels gives
+the canonical complex-linear product coefficient map
+\[
+ \Pi=(\pi_m)_m:
+ \mathcal F_\Lambda\longrightarrow_{\mathbb C}\prod_{m\in\Lambda}Q_m
+\]
+with exact joint kernel
+\[
+ \boxed{\quad
+ \Pi(x)=0
+ \Longleftrightarrow
+ x\in\mathcal F_\varnothing.
+ \quad}
+ \tag{38}
+\]
+Unlike the nonlinear \(0/1\) support vector, \(\Pi\) is homogeneous and additive.  Unlike a
+fabricated target, every factor is forced canonically by the exact deletion field.  It is still
+only an algebraic coefficient product: no topology, completion, Meyer realization, cup/trace
+map, or Hodge positivity has been placed on it.
+
+The differential rank is sharper still.  Splitting the complete independent jet family into the
+jets of label \(m\) and the jets of zeta plus all other labels, then changing the coefficient
+field to the latter differential field, gives
+\[
+ \boxed{\quad
+ \bigl(H_m,H_m',H_m'',\ldots\bigr)
+ \text{ is algebraically independent over }
+ \mathcal F_{\widehat m}.
+ \quad}
+ \tag{39}
+\]
+Consequently the exact quotient coefficient carries an independent jet tower:
+\[
+ \boxed{\quad
+ \bigl(\pi_m(H_m),\pi_m(H_m'),\pi_m(H_m''),\ldots\bigr)
+ \text{ is complex-linearly independent.}
+ \quad}
+ \tag{40}
+\]
+Thus Route L needs infinite differential rank for every private label, not merely infinite
+dimension supplied by order-zero powers.  A comparison which keeps \(H_m\) but collapses all
+higher jets still destroys exact source information.
 
 ## 9. Route L consequence
 
@@ -479,8 +538,14 @@ comparison must transport algebraically, not install as continuous complex semin
   algebraic stratification, not homogeneous analytic seminorms.
 - **No coefficient-rank overclaim.** Private hypertranscendence proves that every exact-kernel
   complex-linear realization has an infinite independent power image.  It excludes all
-  finite-dimensional targets, but neither constructs nor classifies infinite-dimensional
-  coefficient realizations.
+  finite-dimensional targets.  The canonical quotient constructs one algebraic
+  infinite-dimensional realization but does not classify all such realizations.
+- **Canonical quotient is not the relevant complex.** The product \(\prod_mQ_m\) realizes exact
+  homogeneous label separation algebraically.  No claim identifies it with Deninger
+  cohomology, supplies the required nuclear topology, or proves a Meyer/Hodge comparison.
+- **Jet rank is not formal dimension counting.** Algebraic independence in (39) is over the
+  full deletion differential field, not merely over \(\mathbb C\); (40) is then forced inside
+  the exact quotient rather than asserted from an abstract infinite-dimensional target.
 - **Coordinatewise null does not mean erased.** Every cofinal atom has a different exact active
   coordinate and is nonzero, even though every fixed coordinate eventually vanishes.
 - **Cofinal escape is literal.** The non-discrete norm contains an explicit sequence of nonzero
@@ -520,7 +585,12 @@ their combination:
 17. no complex-linear scalar coefficient has zero set equal to exact absence of label \(m\) (34);
 18. every exact-kernel complex-linear comparison has a linearly independent positive power
     image (35);
-19. hence every finite-dimensional complex coefficient target fails exact label detection (36).
+19. hence every finite-dimensional complex coefficient target fails exact label detection (36);
+20. the canonical deletion quotient has exact label kernel and infinite dimension (37);
+21. the product of all deletion quotients is a complex-linear map whose joint kernel is exactly
+    the common zeta field (38);
+22. the full private jet tower is algebraically independent over its deletion field (39);
+23. its exact quotient image has infinite complex linear differential rank (40).
 
 Repository search found no prior canonical least-support construction for these complete Riemann
 shell fields.  The underlying lattice principle is elementary; priority claim is restricted to
@@ -538,6 +608,8 @@ Formalized unconditionally in:
 - `GaloisForLFunctions/RHTower/RelativeShellProvenanceCoordinateTopology.lean`.
 - `GaloisForLFunctions/RHTower/RelativeShellProvenanceScalarHomogeneityWall.lean`.
 - `GaloisForLFunctions/RHTower/RelativeShellPrivateHypertranscendenceCoefficientWall.lean`.
+- `GaloisForLFunctions/RHTower/RelativeShellPrivateCoefficientQuotient.lean`.
+- `GaloisForLFunctions/RHTower/RelativeShellPrivateJetCoefficientRank.lean`.
 
 Capstones:
 
@@ -580,7 +652,13 @@ Capstones:
 37. `relativeShellMultiplier_quadraticDefect_not_mem_complement`;
 38. `no_complexLinearFunctional_exact_relativeShellLabelKernel`;
 39. `relativeShellLabel_exactKernel_powerImages_linearIndependent`;
-40. `no_finiteDimensional_complexLinearMap_exact_relativeShellLabelKernel`.
+40. `no_finiteDimensional_complexLinearMap_exact_relativeShellLabelKernel`;
+41. `relativeShellLabelCoefficientMap_eq_zero_iff`;
+42. `relativeShellLabelCoefficient_powerImages_linearIndependent`;
+43. `relativeShellLabelCoefficientQuotient_not_finiteDimensional`;
+44. `relativeShellAllLabelCoefficientMap_eq_zero_iff`;
+45. `relativeShellMultiplierJets_algebraicIndependent_over_complement`;
+46. `relativeShellLabelCoefficient_jetImages_linearIndependent`.
 
 Direct `lake env lean` and targeted module build pass.  Axiom audit reports only
 `propext`, `Classical.choice`, and `Quot.sound`.  No `sorry`, `admit`, project `axiom`,
@@ -588,16 +666,16 @@ Direct `lake env lean` and targeted module build pass.  Axiom audit reports only
 
 ## 13. Exact survivor
 
-Construct the actual relevant coefficient complex and prove that its arithmetic source
-restriction preserves canonical provenance support through the finite rational-Witt stages,
-secondary regulator, cup/trace maps, and literal Meyer realization.  Support preservation must be
-an algebraic stratification theorem, because the exact support gauges cannot be continuous in a
-complex topological vector space.  Independently construct complete nuclear homogeneous
-coefficient/Meyer/Hodge seminorms, prove their common analytic radical equals the actual closed
-middle-boundary space, and prove the comparison never maps an active algebraic support stratum
-into that radical.  The target cannot be finite-dimensional if one coefficient map is required
-to have an exact deletion kernel: it must carry the infinite independent power family (35).
-Its coefficient structure must retain enough multiplicative information to distinguish the
-polynomial cancellation families behind (33)--(36).  The topology must remain compatible with
-cofinal attenuation and literal-Meyer Xi decay.  Mere pointwise Xi nonerasure or injectivity on a
-chosen presentation is insufficient.
+Construct the actual relevant coefficient complex and a comparison from the now-canonical
+infinite-rank product \(\prod_mQ_m\); prove that its arithmetic source restriction preserves
+canonical provenance through the finite rational-Witt stages, secondary regulator, cup/trace
+maps, and literal Meyer realization.  Support preservation must be an algebraic stratification
+theorem, because the exact support gauges cannot be continuous in a complex topological vector
+space.  Prove the arithmetic comparison is faithful on each independent power orbit (35), rather
+than merely nonzero on \(H_m\), and on each independent jet tower (40), rather than collapsing
+differential source order.  Prove its joint kernel descends from (38) to exactly the closed
+middle-boundary space.  Independently construct complete nuclear homogeneous
+coefficient/Meyer/Hodge seminorms and prove every active algebraic support stratum avoids their
+common analytic radical.  The topology must remain compatible with cofinal attenuation and
+literal-Meyer Xi decay.  Mere pointwise Xi nonerasure, finite-dimensional label packets, or
+injectivity on a chosen presentation is insufficient.

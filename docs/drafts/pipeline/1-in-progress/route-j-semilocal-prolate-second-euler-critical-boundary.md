@@ -1,6 +1,6 @@
 # Route J semilocal prolate second-Euler critical boundary
 
-**Status:** `[ACTIVE FRONTIER] [CONJECTURE UNDER HOSTILE ATTACK]`
+**Status:** `[PROVED; FORMALIZED]`
 
 ## Target
 
@@ -19,7 +19,7 @@ a_n(q)=r_n+u_n q+v_n q^2+O(q^3),
 K_k=[q^2]R_k(q).
 ```
 
-Active conjecture:
+The conjecture is now proved unconditionally:
 
 ```text
 K_(n+1)/(2(n+1)) -> -32/pi.                            (C1)
@@ -124,7 +124,7 @@ Thus the four quadratic terms in `(C6)` each contribute `-8/pi`, giving `(C1)`.
 5. Fixed-prime data remain zero in the global prime-clock quotient. Complete shell finite-support
    rigidity forbids turning `(C1)` into a global current by ordinary field completion.
 
-## Lean target
+## Lean certificate
 
 ```text
 formal/GaloisForLFunctions/RHTower/
@@ -142,3 +142,13 @@ tendsto_criticalResidualSecondCoefficient_div_boundary
 
 No assumptions, computations, `sorry`, `admit`, project axioms, opaque constants, or unsafe
 declarations.
+
+Canonical dependency-closed certificate:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+  route-j-semilocal-prolate-second-euler-critical-boundary.md
+```
+
+Direct `lake env lean` validation and exact-target module build pass. `#print axioms` reports only
+`propext`, `Classical.choice`, and `Quot.sound`.

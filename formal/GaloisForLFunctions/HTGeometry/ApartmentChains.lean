@@ -203,6 +203,28 @@ theorem chainOfOrdering_injective {n : ℕ} :
   | zero => exact ordering_eq_zero_of_seg e' e (hseg 0)
   | succ j _ => exact ordering_eq_succ_of_segs e' e j (hseg _) (hseg _)
 
+/-- The last proper initial segment of an ordering is the complement of its last vector. -/
+theorem initialSegSet_castSucc_last {n : ℕ} (e : Fin (n + 2) ≃ ι) :
+    initialSegSet e (Fin.last n).castSucc = Set.univ \ {e (Fin.last (n + 1))} := by
+  ext x
+  simp only [initialSegSet, Set.mem_image, Set.mem_setOf_eq, Set.mem_sdiff, Set.mem_univ,
+    Set.mem_singleton_iff, true_and]
+  constructor
+  · rintro ⟨j, hj, rfl⟩
+    intro hcon
+    have hjl : j = Fin.last (n + 1) := e.injective hcon
+    rw [hjl, Fin.le_def] at hj
+    simp only [Fin.val_last, Fin.val_castSucc] at hj
+    omega
+  · intro hx
+    refine ⟨e.symm x, ?_, by simp⟩
+    rw [Fin.le_def]
+    simp only [Fin.val_castSucc, Fin.val_last]
+    have hne : e.symm x ≠ Fin.last (n + 1) := fun hcon => hx (by rw [← hcon]; simp)
+    have := (e.symm x).isLt
+    have hval : (e.symm x : ℕ) ≠ n + 1 := fun hcon => hne (Fin.ext (by simpa using hcon))
+    omega
+
 /-! ## Bijections that agree off a pair -/
 
 /-- **Two bijections that agree outside a two-element set are equal or differ by the transposition
@@ -466,6 +488,53 @@ theorem chainOfOrdering_eq_singleton_iff {n : ℕ} [Finite ι] (e : Fin (n + 2) 
     rw [this]
     show initialSegSet e 0 = {e 0}
     exact initialSegSet_zero e
+
+/-- **A chamber of an apartment contains the coatom opposite a frame vector exactly when its
+ordering ends with that vector.**  This is the splitting of the chambers of an apartment into those
+inside the star of the spanning coatom and those outside it. -/
+theorem chainOfOrdering_eq_compl_singleton_iff {n : ℕ} [Finite ι] (hN : Nat.card ι = n + 2)
+    (e : Fin (n + 2) ≃ ι) (a : ι) (i : Fin (n + 1)) :
+    ((chainOfOrdering e i : properPart (Set ι)) : Set ι) = Set.univ \ {a}
+      ↔ ((i : ℕ) = n ∧ e (Fin.last (n + 1)) = a) := by
+  have hcompl : (Set.univ \ {a} : Set ι).ncard = n + 1 := by
+    rw [Set.ncard_sdiff_singleton_of_mem (Set.mem_univ a), Set.ncard_univ, hN]
+    omega
+  have hlast : ∀ e' : Fin (n + 2) ≃ ι,
+      ((chainOfOrdering e' (Fin.last n) : properPart (Set ι)) : Set ι)
+        = Set.univ \ {e' (Fin.last (n + 1))} := fun e' => initialSegSet_castSucc_last e'
+  constructor
+  · intro h
+    have hcard := ncard_chainOfOrdering e i
+    rw [h, hcompl] at hcard
+    have hi : (i : ℕ) = n := by omega
+    refine ⟨hi, ?_⟩
+    have hie : i = Fin.last n := Fin.ext (by simpa using hi)
+    rw [hie, hlast e] at h
+    by_contra hne
+    have hmem : a ∈ Set.univ \ ({e (Fin.last (n + 1))} : Set ι) :=
+      ⟨Set.mem_univ a, fun hcon => hne (Set.mem_singleton_iff.1 hcon).symm⟩
+    rw [h] at hmem
+    exact hmem.2 rfl
+  · rintro ⟨hi, rfl⟩
+    have hie : i = Fin.last n := Fin.ext (by simpa using hi)
+    rw [hie]
+    exact hlast e
+
+/-- **The only vertex of an apartment that spans with a frame vector is the coatom opposite it.**
+So every vertex of a chamber that misses that coatom is a non-spanning vertex, and such a chamber
+lies in the base of the cover. -/
+theorem apartment_not_spanning_of_ne {a : ι} (U : properPart (Set ι))
+    (h : (U : Set ι) ≠ Set.univ \ {a}) : (U : Set ι) ∪ {a} ≠ Set.univ := by
+  intro hcon
+  refine h (Set.Subset.antisymm (fun x hx => ⟨Set.mem_univ x, fun hxa => ?_⟩) fun x hx => ?_)
+  · refine absurd (Set.Subset.antisymm (Set.subset_univ _) fun y _ => ?_) (ne_of_lt U.2.2)
+    have hy : y ∈ (U : Set ι) ∪ {a} := by rw [hcon]; trivial
+    rcases hy with hy | hy
+    · exact hy
+    · rw [Set.mem_singleton_iff.1 hy, ← Set.mem_singleton_iff.1 hxa]
+      exact hx
+  · have hxu : x ∈ (U : Set ι) ∪ {a} := by rw [hcon]; exact Set.mem_univ x
+    exact hxu.resolve_right hx.2
 
 section Coefficients
 

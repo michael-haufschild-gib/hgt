@@ -840,9 +840,62 @@ whose unit-shift defect is elementary:
 > **`norm_digamma_sub_log_add_half_inv_le`**: therefore
 > `‖ψ(σ+it) − log(σ+it) + 1/(2(σ+it))‖ ≤ (20/3)/t²` for every `σ > 0` and `t ≥ 2`.
 
-Each further order repeats this with one more Taylor coefficient: the defect of the next truncated
-remainder is again elementary in `w = 1/z`, its leading coefficient fixes the new expansion
-coefficient, and the engine converts the resulting order `p` defect into an order `p-1` remainder.
+Each further order repeats this with one more Taylor coefficient, and the general step has a clean
+formal shape.  For a polynomial `P` put `A_P(z) := log z + P(1/z)`; the defect is then a single
+analytic function of `w = 1/z`,
+
+```text
+G_P(w) = w - log(1+w) - P(w/(1+w)) + P(w),
+```
+
+since `1/(z+1) = w/(1+w)`.  The induction carries `∃ P, G_P = O(w^{N+2})`: writing
+`G_P(w) = c·w^{N+2} + O(w^{N+3})` and replacing `P` by `P - (c/(N+1))·X^{N+1}` cancels that
+coefficient, because `-a·w^{N+1}((1+w)^{-(N+1)} - 1) = a(N+1)w^{N+2} + O(w^{N+3})`.  Vanishing Taylor
+coefficients give `‖G_P(w)‖ ≤ C‖w‖^{N+2}` on a small disc, i.e. `C/‖z‖^{N+2}` beyond a height, and
+the engine turns that into `C'/t^{N+1}`.
+
+That whole induction is now Lean (`HTGeometry/DigammaExpansionDefect.lean`):
+
+> **`shiftDefect`** is `G_P`; **`invGeom`** is the geometric factor of the monomial law
+> **`sub_div_pow_eq`**: `w^{n+1} − (w/(1+w))^{n+1} = w^{n+2}·h_n(w)` with `h_n(0) = n+1`, proved from
+> `(1+w)^{n+1} − 1 = w·∑_{i≤n}(1+w)^i`;
+> **`analyticAt_shiftDefect`**, **`shiftDefect_add_monomial`** — the defect is analytic at the origin
+> and affine in the polynomial;
+> **`exists_factor_of_analytic`** — an analytic function vanishing at `0` factors as `w·g`, via
+> mathlib's `analyticOrderAt`;
+> **`exists_shiftDefect_factor`**: for every `N` there is a polynomial `P` with `P(0) = 0` and an
+> analytic `g` with `G_P(w) = w^{N+2}·g(w)` near `0` — the induction, whose step picks
+> `a = −g(0)/(N+1)`;
+> **`exists_bound_of_shiftDefect_factor`**, **`digamma_shiftDefect_eq`** — the resulting bound near
+> the origin and the identification of the analytic defect with the shift defect of
+> `ψ − log − P(1/·)`;
+> **`exists_digamma_expansion`** — **for every `N`**, `ψ(σ+it) = log(σ+it) + P(1/(σ+it)) +
+> O(t^{−(N+1)})`, uniformly for `σ > 0`.
+
+`#print axioms` clean.  The induction is stated for a general analytic seed
+(**`genDefect`**, **`exists_genDefect_factor`**), so each jet reuses it: the differentiated
+recurrence `ψ′(z+1) − ψ′(z) = −1/z²` makes the seed the monomial `−w²`, which already vanishes to
+second order.  `HTGeometry/TrigammaExpansionVertical.lean` runs that instance:
+
+> **`deriv_digamma_genDefect_eq`**: the trigamma defect of `Q(1/z)` is `genDefect (−w²) Q (1/z)`;
+> **`exists_deriv_digamma_expansion`**: for every `N` there is a polynomial `Q` with `Q(0) = 0` and
+> `‖ψ′(σ+it) − Q(1/(σ+it))‖ ≤ C/t^{N+1}` for all `σ > 0`, `t ≥ T`.
+
+The corpus's differentiated recurrence and far-field decay (`RHTower/TrigammaVertical`) supply the
+two analytic inputs for the first jet, and `HTGeometry/PolygammaExpansionVertical.lean` does all the
+others at once:
+
+> **`iteratedDeriv_succ_digamma_add_nat_tendsto`**: every positive-order jet tends to zero along a
+> horizontal shift orbit — the digamma shift bound gives `O(1/N)` on a disc of radius `1/2` about
+> `z+N`, and Cauchy's estimate for the `j`-th derivative on the radius-`1/4` circle transfers it;
+> **`exists_iteratedDeriv_digamma_expansion`**: for every jet order `j+1` and every `N` a polynomial
+> `Q` with `Q(0) = 0` satisfies `‖ψ⁽ʲ⁺¹⁾(σ+it) − Q(1/(σ+it))‖ ≤ C/t^{N+1}` for all `σ > 0`, `t ≥ T`.
+
+The seed here is the monomial `(−1)^{j+1}(j+1)!·w^{j+2}` coming from the corpus's all-order shift law
+`HTGeometry/PolygammaShift`, so the general induction applies verbatim.
+
+What is left of `(10)`--`(11)` is the shifted arguments `ψ(s+λ)` re-expanded in powers of `1/s`, the
+formal Stirling field with its shift, and the injection of `L_E` into it.
 
 Downstream of `(11)` the chain is already Lean: the signature ordering `(16)`, the datum `(4)`, the
 projective boundary `(6)`, the finite phase law `(19)` and its consequences `(21)`, `(25)`.
@@ -896,3 +949,12 @@ projective boundary `(6)`, the finite phase law `(19)` and its consequences `(21
 - 2026-08-02 -- first order of the expansion: `psi(sigma+it) = log(sigma+it) - 1/(2(sigma+it)) +
   O(t^-2)` uniformly in the abscissa (`DigammaSecondOrderVertical`), via the telescoping engine and
   the elementary third-order defect.
+- 2026-08-02 -- all orders of the digamma expansion on vertical lines: the defect induction and its
+  analytic bound (`DigammaExpansionDefect`), giving for every N a polynomial P with
+  `psi(sigma+it) = log(sigma+it) + P(1/(sigma+it)) + O(t^-(N+1))` uniformly in the abscissa.
+- 2026-08-02 -- the expansion induction generalized to an arbitrary analytic seed (`genDefect`,
+  `exists_genDefect_factor`) and instantiated at the first jet: trigamma expansion to all orders
+  (`TrigammaExpansionVertical`).
+- 2026-08-02 -- all positive-order digamma jets expanded to every order on vertical lines
+  (`PolygammaExpansionVertical`), with their horizontal far-field decay proved by Cauchy's estimate
+  from the corpus's digamma shift bound.
