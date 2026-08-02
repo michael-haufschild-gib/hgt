@@ -86,6 +86,9 @@ theorem span_congr {T' : L} {F' : LatticeFrame L ι T'} (h : ∀ i, F.atom i = F
     (S : Set ι) : F.span S = F'.span S :=
   iSup_congr fun i => iSup_congr fun _ => h i
 
+theorem span_singleton (i : ι) : F.span {i} = F.atom i :=
+  le_antisymm (iSup₂_le fun _ hj => le_of_eq (congrArg F.atom hj)) (le_biSup _ rfl)
+
 theorem atom_le_top (i : ι) : F.atom i ≤ T := by
   have h := le_iSup (fun j => F.atom j) i
   rwa [F.sup_eq] at h

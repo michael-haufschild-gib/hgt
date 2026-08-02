@@ -60,7 +60,7 @@ variable {K V : Type u} [DivisionRing K] [AddCommGroup V] [Module K V] [FiniteDi
 variable {κ : Type u} {W p : κ → Submodule K V}
 
 /-- **A coatom of the cover has dimension one less than its component.** -/
-theorem finrank_famCoverTop (hp : ∀ a, IsAtom (p a)) (c : famCoverIndex W p) :
+theorem finrank_famCoverTop_succ (hp : ∀ a, IsAtom (p a)) (c : famCoverIndex W p) :
     finrank K ↥(famCoverTop c) + 1 = finrank K ↥(W (Subtype.val c).1) := by
   have hspan : famCoverTop c ⊔ p (Subtype.val c).1 = W (Subtype.val c).1 := c.2.2
   have hlt : famCoverTop c < W (Subtype.val c).1 := c.2.1

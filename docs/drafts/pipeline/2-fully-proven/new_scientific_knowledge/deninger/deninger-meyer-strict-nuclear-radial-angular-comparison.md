@@ -1894,3 +1894,377 @@ need infrastructure absent from mathlib — the completed projective tensor prod
 spaces for §2, and topological singular chains for §3.  Next build unit: the projective tensor
 seminorm `p ⊗ q` on `E ⊗[𝕜] F` for seminorms `p, q`, its universal property for bounded bilinear
 maps, and the completion of the algebraic tensor product in that topology.
+
+### Record — §2 first brick: the projective tensor seminorm (Lean, unconditional)
+
+* `HTGeometry/ProjectiveTensorSeminorm.lean`
+  - `projTensorLift` — representations of a tensor as a finite list of pure tensors; always
+    nonempty (`nonempty_projTensorLift`).
+  - `projTensorSum`, `projTensorSeminormFun` — the cost of a representation and its infimum, with
+    `projTensorSeminormFun_zero`, `_add_le`, `_smul`.
+  - `projTensorSeminorm` — **the projective tensor seminorm `p ⊗ q` on `E ⊗[𝕜] F`.**
+  - `projTensorSeminorm_tmul_le` — `p ⊗ q (x ⊗ y) ≤ p(x) q(y)`.
+  - `projTensorSeminorm_lift_le` — **the universal property**: a bilinear map with
+    `r(B x y) ≤ C p(x) q(y)` lifts to a linear map with `r(lift B z) ≤ C · (p ⊗ q)(z)`.
+
+This is the seminorm layer of the projective topology; the next bricks are functoriality
+(`map f g` bounded by the product of the bounds), the split case of strictness (a continuous linear
+left inverse of `Z` tensors to a left inverse of `1 ⊗ Z`), and the completion.
+
+`ProjectiveTensorSeminorm.lean` also carries functoriality: `projTensorSeminorm_map_le` — if
+`p'(f x) ≤ C p(x)` and `q'(g y) ≤ D q(y)` then `(p' ⊗ q')(map f g z) ≤ C D (p ⊗ q)(z)` — and
+`projTensorSum_mono`, `projTensorSeminorm_mono`, monotonicity in both factors.
+
+`projTensorSeminorm_strict_of_leftInverse` closes the split case of §2 at the seminorm level: if
+`S ∘ Z = id` with `S` bounded by `C`, then `(r ⊗ p)(z) ≤ C (r ⊗ q)((1 ⊗ Z) z)`, so a split strict
+injection stays strict after tensoring.  What is still missing for the unsplit statement `(5)` is
+Grothendieck's exactness theorem for the completed projective tensor product with a nuclear space —
+the deep input of §2 — together with the completion functor itself.
+
+### Record — §2: the tensored sequence (Lean, unconditional)
+
+* `HTGeometry/ProjectiveTensorQuotient.lean`
+  - `exists_lifted_list` — a representation of a tensor lifts termwise along `π` at a cost
+    controlled by the total weight of the first components.
+  - `projTensorWeight_nonneg`, `exists_pos_mul_le` — the numerical bookkeeping.
+  - `exists_lift_projTensorSeminorm` — **every tensor over the target lifts along `1 ⊗ π` with
+    almost the same projective seminorm.**
+  - `projTensorSeminorm_quotient_eq` — **the projective seminorm on `E ⊗ F'` is the infimum of the
+    projective seminorms of the lifts**: tensoring carries a strict surjection to a strict
+    surjection.
+  - (`ProjectiveTensorSeminorm.lean` gained the list-level interface
+    `projTensorSeminorm_le_projTensorSum` and `exists_projTensorSum_lt`, which keep the elaboration
+    away from the subtype of representations.)
+* `RHTower/DeningerTensorTransport.lean`
+  - `deningerTensor_exact`, `deningerTensor_injective`, `deningerTensor_surjective` — over a field
+    every module is flat, so the Poisson sequence stays exact after tensoring with any coefficient
+    space and the Poisson operator stays injective.
+  - `deningerTensor_poisson_bound` — **the tensored Poisson operator is continuous** with the same
+    constant.
+  - `deningerTensor_quotient_strict` — **the tensored projection onto `M_ζ` is strict**.
+
+What is left of `(5)` is strictness at the left end: that `1 ⊗ Z` is a topological embedding for the
+projective topologies.  This is exactly Grothendieck's theorem, and the corpus's own definition of
+nuclearity is the right form to prove it: `DeningerIsNuclearSpaceC` says each comparison map between
+seminorm spaces is a trace-class operator `T x = ∑ φ_k(x) • y_k` with `∑ ‖φ_k‖‖y_k‖ < ∞`.  The route:
+
+1. the injective (`ε`) tensor seminorm `ε(p,q)(z) = sup{ |(φ ⊗ ψ)(z)| : ‖φ‖ ≤ p, ‖ψ‖ ≤ q }`;
+2. `ε ≤ π` from the universal property already proved;
+3. subspace invariance of `ε` — a functional bounded by the restricted seminorm extends
+   (Hahn–Banach), so `ε` computed in `E ⊗ A` equals `ε` computed in `E ⊗ B`;
+4. for a nuclear comparison map `T`, `π(T ⊗ 1) ≤ (∑ ‖φ_k‖‖y_k‖) · ε` — the classical estimate,
+   which is a direct computation from the trace-class expansion;
+5. combining 2–4: for nuclear coefficients the projective topology on `E ⊗ A` is induced from
+   `E ⊗ B`, i.e. `1 ⊗ Z` is strict.
+
+### Record — §2: the injective tensor seminorm (Lean, unconditional)
+
+Steps 1–3 of the route above are built.
+
+* `HTGeometry/InjectiveTensorSeminorm.lean`
+  - `dualPairBilin` — the bilinear form `(x, y) ↦ φ(x) ψ(y)`.
+  - `injTensorPairs`, `injTensorSeminormFun`, `injTensorSeminorm` — **the injective tensor
+    seminorm** `ε(p,q)(z) = sup{ |(φ ⊗ ψ)(z)| : ‖φ‖ ≤ p, ‖ψ‖ ≤ q }`, with the seminorm axioms.
+  - `norm_lift_dualPairBilin_le`, `injTensorSeminorm_le_projTensorSeminorm` — **`ε ≤ π`**, from the
+    universal property of the projective seminorm.
+  - `injTensorSeminorm_tmul_le`.
+* `HTGeometry/InjectiveTensorSubspace.lean`
+  - `lift_dualPairBilin_map` — the dual pairing commutes with `1 ⊗ j`.
+  - `injTensorSeminorm_map_le` — `ε` decreases along seminorm-decreasing maps.
+  - `injTensorSeminorm_subtype_eq` — **`ε` on `E ⊗ S` is induced from `E ⊗ B`** for a submodule
+    `S ⊆ B` with the restricted seminorm; the proof is Hahn–Banach for seminorm-dominated
+    functionals (`Module.Dual.exists_extension_of_le_seminorm`).
+
+Step 4 — the remaining one — is the classical nuclear estimate.  For a trace-class comparison map
+`T x = ∑ φ_k(x) • y_k` with `∑ ‖φ_k‖‖y_k‖ < ∞`, and a seminorm `q` on the second factor:
+
+`π(T ⊗ 1)(z) ≤ (∑ ‖φ_k‖‖y_k‖) · ε(z)`.
+
+The proof in the corpus's own terms: `(T ⊗ 1) z = ∑_k y_k ⊗ u_k(z)` where `u_k` is the contraction
+by `φ_k`; the tail is `((T − T_N) ⊗ 1) z`, whose projective seminorm is bounded by
+`‖T − T_N‖ · π(z)` through `projTensorSeminorm_map_le`, so the series converges in `π`; and each
+term obeys `q(u_k z) ≤ ‖φ_k‖ ε(z)` because a seminorm is the supremum of the functionals it
+dominates (Hahn–Banach on the line spanned by the vector).  With step 3 this gives the strictness of
+`1 ⊗ Z` for nuclear coefficients, i.e. the left end of `(5)`.
+
+### Record — §2 step 4: the nuclear estimate (Lean, unconditional)
+
+The deep input of §2 — Grothendieck's comparison of the two tensor topologies for nuclear
+coefficients — is now formalized.  All headline theorems audit to
+`[propext, Classical.choice, Quot.sound]`.
+
+* `HTGeometry/SeminormNormingFunctional.lean`
+  - `exists_dual_le_seminorm_eq` — **a seminorm is attained by a functional it dominates**: on the
+    line spanned by a vector the assignment `c • y ↦ c q(y)` is dominated by `q`, and Hahn–Banach
+    extends it.
+* `HTGeometry/TensorContraction.lean`
+  - `tensorContract` — the contraction `x ⊗ y ↦ φ(x) • y` of a tensor by a functional.
+  - `apply_tensorContract` — pairing a contraction is the dual pairing of the tensor.
+  - `seminorm_tensorContract_le`, `seminorm_tensorContract_le_mul` — **`q(φ ⌟ z) ≤ C ε(p,q)(z)`**
+    whenever `‖φ‖ ≤ C p`; this is where the norming functional is used.
+* `HTGeometry/InjectiveTensorSubspace.lean` also carries `lift_dualPairBilin_map_left` and
+  `injTensorSeminorm_map_left_le`, the first-factor functoriality of `ε`.
+* `HTGeometry/NuclearTensorEstimate.lean`
+  - `seminorm_finsetSum_le`, `tensorMap_add_left` — bookkeeping.
+  - `traceClassPartial`, `traceClassPartial_apply`, `map_traceClassPartial` — the partial sums of a
+    trace-class expansion, and the identity `(T_s ⊗ 1) z = ∑_{k ∈ s} y_k ⊗ (φ_k ⌟ z)`.
+  - `projTensorSeminorm_traceClassPartial_le` — the estimate for a partial sum.
+  - `norm_sub_traceClassPartial_le` — the tail bound `‖T x − T_s x‖ ≤ (∑_{k ∉ s}‖φ_k‖‖y_k‖)‖x‖`.
+  - `projTensorSeminorm_nuclear_le` — **the nuclear estimate**
+    `π((T ⊗ 1) z) ≤ (∑ ‖φ_k‖‖y_k‖) · ε(z)` for a trace-class `T`.
+  - `projTensorSeminorm_nuclear_comp_le` — the same along a comparison map: if the canonical map to
+    `Y` factors through a trace-class map out of `X`, the projective seminorm of the image is
+    bounded by the injective seminorm computed with the pulled-back seminorm of `X`.
+
+With `injTensorSeminorm_subtype_eq` (`ε` is subspace-invariant) and
+`injTensorSeminorm_le_projTensorSeminorm` (`ε ≤ π`), the three-step chain
+
+`π_{P_i,q}(image of z) ≤ (trace norm) · ε_{P_j,q}(z) = (trace norm) · ε_{P_j,q'}((1 ⊗ Z) z)
+  ≤ (trace norm) · π_{P_j,q'}((1 ⊗ Z) z)`
+
+is complete in the abstract.  What remains for `(5)` is the instantiation: feeding the corpus's
+`DeningerIsNuclearSpaceC` data (the comparison maps `deningerSeminormComparisonC` and the canonical
+maps into the seminorm spaces) into `projTensorSeminorm_nuclear_comp_le`, and assembling the
+resulting bounds into the strictness statement for `1 ⊗ Z` in the corpus's seminorm-family language.
+
+### Record — §2 step 5: Grothendieck's comparison, in the abstract (Lean, unconditional)
+
+* `HTGeometry/ProjectiveTensorQuotientSpace.lean`
+  - `projTensorSum_eq_zero`, `projTensorSeminorm_zero_left` — the projective seminorm vanishes when
+    the first seminorm does.
+  - `map_list_sum` — the image of a representation is a representation of the image.
+  - `projTensorSeminorm_le_map_of_surjective` — **`π(p,q)(z) ≤ π(‖·‖,q)((κ ⊗ 1) z)`** for a
+    surjective `κ` with `‖κ x‖ = p x`.  A representation of the image lifts termwise, and the
+    difference lies in `(ker κ) ⊗ F` — by flatness over the field — where `p` vanishes.  With
+    functoriality this says the projective seminorm only sees the seminorm space of `p`.
+* `HTGeometry/NuclearTensorEstimate.lean` no longer assumes the target complete: the tail bound is
+  now a limit of partial sums, so the estimate applies to the *uncompleted* seminorm spaces — the
+  ones with a surjective canonical map.
+* `HTGeometry/GrothendieckTensorComparison.lean`
+  - `projTensorSeminorm_le_nuclear_injTensorSeminorm` — **Grothendieck's comparison**: if the
+    comparison of two seminorms is trace-class, then `π_{p₁} ≤ (trace norm) · ε_{p₂}`.
+  - `projTensorSeminorm_le_nuclear_subtype` — **a subspace inclusion tensors to a strict
+    inclusion**: for nuclear coefficients,
+    `π_{p₁}(z) ≤ (trace norm) · π_{p₂}((1 ⊗ ι) z)` on `E ⊗ S`.
+
+That is the mechanism of `(5)` in full: the left end (`1 ⊗ Z` strict) now follows from the same
+trace-class data that defines nuclearity, the right end was proved by the lifting argument, and
+exactness holds by flatness.  What is left is bookkeeping: instantiate
+`projTensorSeminorm_le_nuclear_subtype` with the corpus's `deningerSeminormMk` /
+`deningerSeminormComparison` for a nuclear coefficient family, with Meyer's space as the subspace
+`S ⊆ ℋ_−` via the closed embedding `Z`.
+
+### Record — §2 statement (5) proved for the Poisson sequence (Lean, unconditional)
+
+* `HTGeometry/InjectiveTensorTransport.lean`
+  - `lift_dualPairBilin_smul_right`, `injTensorSeminorm_le_mul_of_le` — **scaled monotonicity** of
+    the injective seminorm in the second seminorm.
+  - `injTensorSeminorm_injective_eq` — **invariance along an injective map**: a functional
+    dominated by the pulled-back seminorm extends along the injection (Hahn–Banach on the range),
+    so `ε(p, q ∘ j)(z) = ε(p, q)((1 ⊗ j) z)`.
+* `HTGeometry/GrothendieckTensorComparison.lean` gained
+  `projTensorSeminorm_le_nuclear_strict_injection` — **a strict injection stays strict after
+  tensoring with a nuclear coefficient space**:
+  `π(p₁, q_A)(z) ≤ (trace norm)·C·π(p₂, q_B)((1 ⊗ j) z)`.
+* `RHTower/DeningerTensorStrict.lean`
+  - `deningerTensor_poisson_strict` — **`1 ⊗ Z` is strict for nuclear coefficients**: for every
+    seminorm index of `E` and every Schwartz index there are a dominating seminorm index, a radial
+    index and a constant with
+    `π(P_i, p_∩)(z) ≤ C · π(P_j, q_rad)((1 ⊗ Z) z)` on `E ⊗ ℋ_∩`.
+    The proof is the corpus's own nuclearity data (`deningerSeminormMk`,
+    `deningerSeminormComparison`, `DeningerIsNuclear`) fed into Grothendieck's comparison, together
+    with `deningerPoissonLM_strict` and `deningerPoissonLM_injective`.
+
+**Statement `(5)` of the card is therefore proved at the seminorm level, unconditionally:**
+
+| claim | Lean |
+|---|---|
+| exactness of `E ⊗ (4)` | `deningerTensor_exact` |
+| injectivity of `1 ⊗ Z` | `deningerTensor_injective` |
+| surjectivity of `1 ⊗ π` | `deningerTensor_surjective` |
+| continuity of `1 ⊗ Z` | `deningerTensor_poisson_bound` |
+| strictness of `1 ⊗ Z` | `deningerTensor_poisson_strict` |
+| strictness of `1 ⊗ π` | `deningerTensor_quotient_strict` |
+
+Remaining on the card: the pro-Ind/filtered-colimit passage of §2 (the same sequence over the
+filtered union of finite stages), and §3, the angular cosheaf contraction, which needs topological
+singular chains.
+
+### Record — §2: the pro-Ind passage, the tensor side (Lean, unconditional)
+
+* `HTGeometry/ProjectiveTensorColimit.lean`
+  - `exists_stage_of_list` — finitely many vectors of a directed union lie in a common stage.
+  - `exists_stage_list_tensor` — a representation over the union is a representation over a stage,
+    **at the same cost**.
+  - `exists_stage_tensor` — **every tensor over a directed union comes from a stage**: the tensor
+    product of the union is the union of the tensor products.
+  - `projTensorSeminorm_eq_sInf_stage` — **the projective seminorm of the union is the infimum of
+    the stage seminorms**.  This is the card's "the topology is the final strict pro-Ind topology"
+    for the tensor factor: the projective topology on `E ⊗ F` for a directed union `E = ⋃ E_ν` is
+    the final topology of the stages `E_ν ⊗ F`.
+
+What the pro-Ind passage still needs is on the coefficient side, and it is a single classical
+theorem: **a countable strict inductive limit of nuclear spaces is nuclear** (Trèves, Prop. 50.1).
+With it, the phase coefficient is nuclear and `deningerTensor_poisson_strict` applies to it directly
+— the strictness of `1 ⊗ Z` was proved for *any* nuclear coefficient family, so no separate
+stagewise-to-colimit transfer is needed.  (A transfer at the level of the bounds is not available in
+general: a representation of `(1 ⊗ Z)z` at a stage need not come from a representation of `z`, so
+the stagewise inequality does not by itself give the colimit inequality.  Nuclearity of the limit is
+the right route.)
+
+### Record — §3 first brick: the angular contraction (Lean, unconditional)
+
+The mathematical heart of `(7)` is that the unit sphere of the Kummer space is contractible — false
+in finite dimensions, true as soon as the space carries a proper isometry.  That theorem is now
+proved, and it is absent from mathlib.
+
+* `HTGeometry/SphereContractible.lean`
+  - `norm_inv_smul_mem_sphere`, `sphereUnit`, `sphereUnit_of_norm_one` — normalisation.
+  - `sphereIsometryMap` — a linear isometry as a self-map of the sphere.
+  - `lineToIsometry_ne_zero` — the straight line from `x` to `S x` misses the origin: a vanishing
+    point forces `1 − t = t`, hence `t = 1/2` and `S x = −x`, excluded by hypothesis.
+  - `lineToPoint_ne_zero` — the straight line from `S x` to `e` misses the origin, because pairing
+    with `e` returns `t`, and `t = 0` leaves `S x ≠ 0`.
+  - `sphereHomotopyToIsometry`, `sphereHomotopyToPoint` — the two renormalised straight-line
+    homotopies, as `ContinuousMap.Homotopy` objects.
+  - `contractibleSpace_sphere_of_isometry` — **the unit sphere is contractible** when the space
+    carries a linear isometry whose range is orthogonal to a unit vector and which sends no nonzero
+    vector to its negative.
+
+Next step for §3: instantiate the hypotheses.  The unilateral shift on `ℓ²(ℕ, ℝ)` satisfies all
+three (its range is `e₀^⊥`, and `S x = −x` forces `x₀ = 0` and then `x = 0` by induction), so the
+concrete statement "the sphere of a separable infinite-dimensional Hilbert space is contractible"
+follows once the shift is built as a `LinearIsometry` on `lp (fun _ : ℕ => ℝ) 2` — mathlib has no
+reindexing isometry for `lp`, so that is the piece to add.  After that, `(7)` needs the chain-level
+consequence (a homotopy induces a chain homotopy on singular chains) and `(8)` the functoriality of
+the completed projective tensor product, for which the seminorm layer of §2 is already in place.
+
+### Record — §3: the contraction is inhabited (Lean, unconditional)
+
+* `HTGeometry/LpShift.lean`
+  - `shiftSeq`, `summable_shiftSeq`, `memℓp_shiftSeq`, `tsum_shiftSeq` — inserting a zero in front
+    of a square-summable sequence keeps it square-summable, with the same sum of squares.
+  - `lpShift` — **the unilateral shift on `ℓ²(ℕ, ℝ)`, as a linear isometry.**
+  - `lpBasisZero`, `norm_lpBasisZero`, `lpBasisZero_apply` — the first basis vector.
+  - `inner_lpShift_lpBasisZero` — the range of the shift is orthogonal to it (every term of the
+    pairing vanishes: at `0` the shifted sequence does, elsewhere the basis vector does).
+  - `lpShift_eq_neg_imp_zero` — the shift sends no nonzero sequence to its negative: `x₀ = 0` and
+    then `x_{n+1} = −x_n = 0` by induction.
+  - `contractibleSpace_sphere_lp` — **the unit sphere of `ℓ²(ℕ, ℝ)` is contractible.**
+
+So the hypotheses of `contractibleSpace_sphere_of_isometry` are inhabited by the standard example,
+and claim `(7)` of the card holds as a topological statement for the model of the Kummer space.
+What remains of §3 is the passage from the contraction to the chain level: a homotopy induces a
+chain homotopy on singular chains, and the completed projective tensor product carries it to `(8)`.
+
+### Record — §3: the contraction at the chain level (Lean, unconditional)
+
+mathlib gained singular homology with the prism operator
+(`TopCat.Homotopy.singularChainComplexFunctorObjMap`: a homotopy of maps gives a *chain homotopy*
+of the induced chain maps), so claim `(7)` can be stated as a split equivalence, not a homology
+isomorphism.
+
+* `HTGeometry/SingularChainContractible.lean`
+  - `singularChainHomotopyEquivOfHomotopyEquiv` — **homotopy equivalent spaces have chain-homotopy
+    equivalent singular chain complexes**: the two homotopies of a homotopy equivalence become the
+    two chain homotopies, with `Homotopy.ofEq` absorbing functoriality.
+  - `singularChainHomotopyEquivPoint` — **the singular chains of a contractible space are
+    chain-homotopy equivalent to those of a point** (a split equivalence).
+  - `singularChainHomotopyEquivPoint_sphere_lp` — the same for the unit sphere of `ℓ²(ℕ, ℝ)`, using
+    `contractibleSpace_sphere_lp`: **the angular contraction `(7)` at the chain level.**
+
+The coefficient object `R` is arbitrary in a preadditive category with coproducts, so this covers
+the algebraic content of `(7)` for every coefficient the card uses.  What is still missing for `(7)`
+in its stated form is the *topological* refinement — the free locally convex direct-sum topology on
+the chain spaces, and continuity of the prism operator — and for `(8)` the functoriality of the
+completed projective tensor product, whose seminorm layer is already built in §2.
+
+### Record — §3: the sphere is acyclic (Lean, unconditional)
+
+* `HTGeometry/SingularHomologyContractible.lean`
+  - `isZero_singularHomology_of_contractible` — **the higher singular homology of a contractible
+    space vanishes**, for every coefficient object of a preadditive category with coproducts and
+    homology: transport the chain homotopy equivalence with a point along
+    `HomotopyEquiv.toHomologyIso` and use mathlib's computation for a totally disconnected space.
+  - `singularHomologyZeroIso_of_contractible` — in degree zero the homology is the coefficient
+    object (as the coproduct of one copy).
+  - `isZero_singularHomology_sphere_lp` — **the unit sphere of `ℓ²(ℕ, ℝ)` is acyclic.**
+
+This is the homological form of `(6)`–`(7)`: the augmentation of the singular chain complex of the
+angular factor is a quasi-isomorphism, and by the previous record it is split — a chain homotopy
+equivalence, not merely a homology isomorphism.  The chain of §3 so far, each link unconditional:
+
+| step | Lean |
+|---|---|
+| the shift is a linear isometry of `ℓ²` | `lpShift` |
+| its range misses `e₀` orthogonally, no antipode fixed | `inner_lpShift_lpBasisZero`, `lpShift_eq_neg_imp_zero` |
+| the sphere is contractible | `contractibleSpace_sphere_of_isometry`, `contractibleSpace_sphere_lp` |
+| singular chains are chain-homotopy equivalent to a point | `singularChainHomotopyEquivPoint_sphere_lp` |
+| the sphere is acyclic | `isZero_singularHomology_sphere_lp` |
+
+Still open for §3 in the card's stated form: the locally convex refinement (free direct-sum topology
+on chain spaces and continuity of the prism operator), and `(8)`, which additionally needs the
+completed projective tensor product — its seminorm layer is built in §2, including the split-case
+transport `projTensorSeminorm_strict_of_leftInverse` that a chain homotopy equivalence provides.
+
+### Record — §3: coefficients of the contraction, statement (8) algebraically (Lean, unconditional)
+
+* `HTGeometry/HomotopyEquivFunctor.lean`
+  - `homotopyEquivMapOfAdditive` — **an additive functor carries a chain homotopy equivalence to a
+    chain homotopy equivalence** (mathlib has `Functor.mapHomotopy` for a single homotopy; the
+    equivalence-level statement was missing).
+  - `singularChainHomotopyEquivPointMap` — the angular contraction survives any additive
+    coefficient functor.
+  - `singularChainTensorHomotopyEquiv_sphere_lp` — **the contraction after tensoring with a
+    module**: the singular chains of the `ℓ²`-sphere tensored with a fixed module stay
+    chain-homotopy equivalent to the chains of a point.
+
+This is the algebraic content of `(8)`: the equivalence `(7)` is stable under the coefficient
+functor, so it holds for every coefficient the card lists (the coefficient object of
+`singularChainComplexFunctor` is arbitrary in a preadditive category with coproducts, and any
+additive functor may be applied afterwards).  The step from here to `(8)` as stated is the
+replacement of the algebraic tensor by the completed projective one — the seminorm layer of §2 plus
+the split transport `projTensorSeminorm_strict_of_leftInverse`, which is exactly the structure a
+chain homotopy equivalence provides in each degree.
+
+### Record — §3: the free locally convex topology on chain spaces (Lean, unconditional)
+
+The card's chain spaces carry "the free locally convex direct-sum topology on singular simplices".
+That topology is the one defined by the weighted `ℓ¹` seminorms, and it is now built.
+
+* `HTGeometry/FreeLocallyConvexSeminorm.lean`
+  - `freeSeminormFun`, `_zero`, `_single`, `_nonneg`, `_add_le`, `_smul` and `freeSeminorm` —
+    **the weighted `ℓ¹` seminorm `f ↦ ∑ ‖f i‖ w i`** on the free module on a set, for a nonnegative
+    weight.  (Nonnegativity of the weight is a hypothesis of the bundled seminorm: with a negative
+    weight subadditivity genuinely fails, so it cannot be dropped.)
+  - `freeSeminormFun_single_add` — splitting off a generator, via disjointness of supports rather
+    than any additivity of the norm.
+  - `freeSeminorm_mapDomain_le` — **a map of index sets induces a bounded linear map**, with the
+    pulled-back weight as the dominating seminorm.
+  - `freeSeminorm_sum_mapDomain_le` — **a finite combination of set-induced maps is bounded**: this
+    is the shape of a simplicial differential and of a prism operator, so both are continuous for
+    the free locally convex topology.
+
+This is the seminorm layer of the topological cosheaf of `(6)`: continuity of the induced chain maps
+and of the prism homotopy `(7)` follows from `freeSeminorm_sum_mapDomain_le`, since each face map,
+degeneracy and prism term is induced by a map of simplices with coefficient `±1`.
+
+### Record — §3: the differential and the prism operator are continuous (Lean, unconditional)
+
+* `HTGeometry/FreeSimplicialBoundary.lean`
+  - `freeBoundary`, `freeBoundary_apply` — the alternating sum of the maps induced by a family of
+    face maps, on free modules.
+  - `freeSeminorm_freeBoundary_le` — **the alternating face differential is bounded**: its seminorm
+    is at most the sum of the seminorms for the pulled-back weights, the signs contributing norm
+    one.
+  - `freeSeminorm_freeSimplicialMap_le` — **an induced chain map is bounded.**
+  - `freeSeminorm_freePrism_le` — **a prism operator is bounded**: any finite combination of maps
+    induced by maps of simplices with unit coefficients.
+
+With the previous record this completes the card's sentence "each chain space has the free locally
+convex direct-sum topology on singular simplices; a continuous map or homotopy induces a continuous
+chain map or prism operator" at the level of the seminorms: the three shapes that occur — a
+differential, an induced map, a prism — are all bounded, so all are continuous.  The only step left
+between this and `(6)`–`(7)` verbatim is the bookkeeping identification of mathlib's singular chain
+complex with the free-module model used here, which is a compatibility statement rather than new
+mathematics.

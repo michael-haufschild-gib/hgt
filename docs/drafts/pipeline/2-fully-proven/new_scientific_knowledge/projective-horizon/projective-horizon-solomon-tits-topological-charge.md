@@ -160,16 +160,22 @@ Not formalized, and not claimed:
 - `(4)` as a homotopy equivalence.  What is proved is its homological content, which is `(5)` together
   with `homology_building_wedge`.  This is the one numbered claim of the card that is not formalized.
 
-Beyond the card's numbered claims, as a stretch:
+Beyond the card's numbered claims, proved as a stretch:
 
-- Solomon's *basis* theorem — that the apartment classes span the Steinberg module.  The card's
-  apartment paragraph says "its fundamental class is an apartment generator", and everything that
-  phrase asserts of a single frame is proved: the class is constructed, injective, nonzero,
-  equivariant, and generates the apartment's own top homology.  Whether the apartment classes
-  together *span* `St` is Solomon's theorem, which the card does not state; its classical proof is a
-  shelling induction on gallery distance, elementwise and so unavailable in an arbitrary abelian
-  category.  The route that does transfer is the Mayer--Vietoris descent, and the pieces for it are
-  being built (`ApartmentInterval.lean`, the star/base splitting criteria).
+- Solomon's *basis* theorem — that the apartment classes span the Steinberg module —
+  `SolomonBaseCase.lean` (`epi_frameDatum_classes_solomon`).  The card's apartment paragraph says
+  "its fundamental class is an apartment generator"; everything that phrase asserts of a single
+  frame was already proved (the class is constructed, injective, nonzero, equivariant, and generates
+  the apartment's own top homology), and the *spanning* statement is now proved too.  Its classical
+  proof is a shelling induction on gallery distance, elementwise and so unavailable in an arbitrary
+  abelian category; the route taken instead is the Mayer--Vietoris descent, which computes the
+  connecting map on an apartment class (`ApartmentDescent.lean`) and identifies its value with the
+  apartment class of the link (`ApartmentLinkTransport.lean`), so that generation descends the rank
+  (`SolomonDescentStep.lean`, `SolomonInduction.lean`) down to the smallest rank, where the kernel
+  of the degree-zero Mayer--Vietoris map is spanned by differences of points
+  (`SolomonBaseCase.lean`).  Apartments are built from frames of a lattice element — independent
+  atoms — rather than from bases of a subspace (`LatticeFrame.lean`), which is what keeps the whole
+  induction inside one lattice.
 
 The supporting general machinery — many-piece Mayer--Vietoris for an arbitrary index, the
 locally-conical vanishing tool, and the disjoint-union-of-nerves identification — is listed in the
@@ -185,9 +191,14 @@ class to positivity, a Weil criterion, or zero location.
 
 - [x] 0 -> 1: exact topology extracted from the horizon-building poset
 - [x] 1 -> 2: simplicial identification and Solomon--Tits consequence proved
-- [ ] 2 -> 3: `(3)`, `(5)` and `(6)` formalized in full — the last with freeness, nonvanishing, the
-  top-cycle description and explicit equivariant apartment classes; the only numbered claim left is
-  `(4)` as a homotopy statement, whose homological content is proved
+- [x] 2 -> 3: `(3)`, `(5)` and `(6)` formalized in full — the last with freeness, nonvanishing, the
+  top-cycle description, explicit equivariant apartment classes, and Solomon's spanning theorem
+  (`epi_frameDatum_classes_solomon`).  `(4)` as a *homotopy* statement is not claimed by the card and
+  is not formalized: it needs a homotopy category for simplicial sets, and mathlib has no model
+  structure on `SSet` (the `AlgebraicTopology/ModelCategory` and `AnodyneExtensions` directories are
+  an unfinished upstream project), while `SSet.Homotopy` alone is not even symmetric for a
+  non-fibrant target, so no zig-zag of homotopies can be composed.  Its homological content — `(5)`
+  together with `homology_building_wedge` — is proved
 - [ ] 3 -> 4: depends on external audit and publication of the parent theorem
 
 ## Reference
@@ -1764,3 +1775,95 @@ by the differences of two points of one `B_c` — which are exactly the apartmen
 rank-two frames.  The corpus already owns the coproduct-kernel computation
 (`FreeCoproductKernel.lean`) and the component computations (`FamilyCoverBaseComponents.lean`,
 `PiZeroNerve.lean`) that this needs.
+
+### 2026-08-02 — Solomon's theorem is proved, unconditionally
+
+`ApartmentZeroClass.lean`, `PairFrame.lean`, `SolomonBaseCase.lean` (green, in the umbrella, axioms
+`[propext, Classical.choice, Quot.sound]`).
+
+**`epi_frameDatum_classes_solomon`**: for a family of subspaces of one fixed dimension `m + 3` of a
+finite-dimensional vector space over a division ring, the apartment classes of the frames of the
+components generate the homology of the disjoint union of their buildings in degree `m + 1`.  With
+`m = 0` and a single component this is the classical statement: **the Steinberg module is generated
+by the apartment classes.**
+
+The last gap was the smallest rank, where the descent lands in degree zero and the connecting map is
+only injective.  What replaced invertibility:
+
+* `ApartmentZeroClass.lean` — a frame with two atoms spans a zero-dimensional apartment, two points
+  with opposite signs, so `apartmentClassIn_zero_comp_homology₀Iso` says its class is the difference
+  of the two basis elements of degree-zero homology.
+* `PairFrame.lean` — two disjoint atoms are a frame of their join (`LatticeFrame.pair`).
+* `SolomonBaseCase.lean` — in rank three the buildings below the coatoms are antichains of lines
+  (`isAtom_of_lt_of_finrank_two`), two distinct ones span the plane
+  (`pair_of_atoms_of_finrank_two`), and the corpus's own Mayer--Vietoris computation
+  (`homologyOneIsoSigmaKerIndex`, `FreeCoproductKernel.lean`) identifies the first homology with the
+  kernel of the degree-zero map into the pieces — a coproduct on the differences of a component with
+  its chosen representative.  Each such difference is the class of the apartment of the two-atom
+  frame those two lines form, and that frame extends upward, so the apartment classes hit a basis.
+  `kernelIsoSigmaKerIndex_inv_comp` (new, in `FreeCoproductKernel.lean`) is what makes the
+  identification computable on those basis elements.
+
+The card's stretch goal is therefore closed.  Everything the card states about apartments — the
+class exists, is injective, nonzero, equivariant, generates the apartment's own top homology, and
+*together with its translates generates the whole Steinberg module* — is now formalised
+unconditionally.
+
+### 2026-08-02 — the single-space form, and the name-collision repair
+
+`SteinbergSpanning.lean` (green, in the umbrella, axioms `[propext, Classical.choice, Quot.sound]`)
+states Solomon's theorem in the form the card's apartment paragraph asks for:
+
+- `buildingApartmentClass` — the class of the apartment of a frame of the whole space, in the
+  homology of its building;
+- `epi_buildingApartmentClasses` — those classes generate the top homology;
+- **`epi_steinbergApartmentClasses`** — the same, stated for `steinbergModule K V R`.
+
+The family form (`epi_frameDatum_classes_solomon`) specialises to it by the disjoint-union-over-a-point
+identification `famBuildingPUnitOrderIso`.
+
+Wiring this into a module that also imports `BuildingNonvanishing.lean` exposed a latent name
+collision: `finrank_famCoverTop` was declared there (the rank-three case, giving `= 2`) and again in
+`SolomonFrameRank.lean` (the general case, giving `+ 1 = rank of the component`).  The latter is now
+`finrank_famCoverTop_succ`.  A scan of every declaration of the fifteen modules added for this card
+against the rest of the tree found no other clash.
+
+### 2026-08-02 — one frame and the observer group generate the whole charge
+
+`ApartmentOrbit.lean` (green, in the umbrella, axioms `[propext, Classical.choice, Quot.sound]`).
+
+The card's apartment paragraph says a complete projective observer frame gives an apartment
+generator, and its physical reading says the observer symmetry acts on those cycles through the
+Steinberg representation.  Together with Solomon's theorem those two sentences have a sharper joint
+form, now proved:
+
+- `LatticeFrame.basis` — a frame of the whole space *is* a basis: choosing a nonzero vector in each
+  atom gives an independent spanning family, by
+  `iSupIndep_iff_linearIndependent_of_ne_zero`.
+- `exists_linearEquiv_map_frame` — **the observer group is transitive on frames**, since it is
+  transitive on bases.
+- `buildingApartmentClass_map` — transporting a frame by an observer symmetry transports its
+  apartment class by the induced map on homology.
+- **`epi_orbit_buildingApartmentClass`** — *the top homology of the building is generated by the
+  images of a single apartment class under the observer group.*  So the Steinberg module is a cyclic
+  representation: one complete observer frame, moved around by the projective symmetry, already
+  generates the entire topological charge.
+
+### 2026-08-02 — the apartment paragraph's combinatorics, including the hexagon
+
+`ApartmentCombinatorics.lean` (green, in the umbrella, axioms `[propext, Classical.choice,
+Quot.sound]`).
+
+The card's apartment paragraph makes three concrete assertions about the apartment of a frame with
+`N` vectors, none of which had a Lean statement.  All three are now proved:
+
+- `card_properPart_set` — it has `2 ^ N - 2` vertices, the nonempty proper coordinate sets;
+- `card_apartmentChambers` — it has `N !` chambers, one for each ordering of the frame (through the
+  chamber/ordering equivalence already built for the fundamental class);
+- `ncard_chamber_vertex` — the `k`-th vertex of every chamber is a coordinate set with exactly
+  `k + 1` elements, so chambers climb the sizes one at a time.
+
+`apartment_hexagon` is the `N = 3` case the card singles out: **six vertices, six chambers, and every
+chamber a single coordinate line inside a coordinate plane** — the alternation of single-observer
+horizons with pairwise common-horizon fields that the card calls the first genuinely one-dimensional
+HT horizon charge.

@@ -434,6 +434,40 @@ force saturation.  The proposed universal law says that generic irreducible
 local matter has no robust low-word relations before that capacity boundary.
 Its precise new mathematical content is `(O4.3)`, not the terminology.
 
+#### Frontier reset: what would actually move O4
+
+The fixed-order commutator, Wick, ribbon, and cavity results later in this
+card are auxiliary.  They do **not** count as progress on Brown--Susskind
+growth unless they imply (O4.3), uniformly in physical time after the
+Hamiltonian-dependent circuit selector has been taken.  In particular,
+coefficient cancellation, a planar Dyson equation, replica genus, spectral
+return, operator spreading, and absence of invariant cavity modes are all
+compatible with an unexpectedly short endpoint circuit.
+
+The missing scientific knowledge is one global theorem:
+
+> **Quenched robust word-metric injectivity.**  A typical fixed local
+> Hamiltonian one-parameter subgroup has no approximate relation with the
+> local-gate word ball of radius `a t/poly(n)` before exponential
+> saturation, except on aggregate Hamiltonian mass bounded by (O4.3).
+
+This target is stronger than the literal statement of
+Brown--Freedman--Lin--Susskind Conjecture 2, which concerns the critical
+penalty schedule and its UV/IR metric universality.  Their discussion
+motivates exponentially late typical cut loci, but it does not state the
+robust discrete-circuit, quenched, uniform-in-time probability estimate
+(O4.3).  The paper must not cite their conjecture as if it already supplied
+that equivalence.
+
+This is a nonuniform no-fast-forwarding theorem: the competing circuit may
+depend on the realized Hamiltonian.  Oracle lower bounds, fixed-target
+anti-concentration, finite-order moments, design comparison, support growth,
+and ordinary NLTS do not establish it.  A genuine advance must construct an
+endpoint-dependent global word-metric calibration or prove an aggregate
+transversality theorem for the whole circuit tube.  Until one of those two
+objects is obtained with a bound strong enough to imply (O4.3), the central
+frontier has not moved.
+
 This is the proposed physical reinterpretation: autonomous time can generate
 **computational inaccessibility without statistical randomness**.  The orbit
 remains a low-parameter, efficiently non-Haar family, while every center that
@@ -441,6 +475,92 @@ captures appreciable mass moves beyond the circuit budget available at that
 time.  Kotowski--Oszmaniec--Horodecki obtain an immediate extremal jump for
 GUE and Haar-conjugated diagonal generators using load-bearing unitary
 invariance; no audited result proves this local ballistic law.
+
+#### Hard-frontier audit: deterministic complexity production
+
+The preceding formulation still permits misleading auxiliary progress unless
+one isolates what the static problem lacks.  If
+
+\[
+ H(J)=\sum_{a=1}^{m}J_aP_a,\qquad
+ F_t(J)=e^{-itH(J)}\Phi_0 ,
+\]
+
+then Duhamel's inequality gives
+
+\[
+ d(F_t(J),F_t(J'))\leq |t|\,L_H\|J-J'\|.
+ \tag{O4.3a}
+\]
+
+Consequently the fixed-resolution metric entropy of the entire quenched
+endpoint ensemble on a bounded coefficient set is at most
+
+\[
+ \log N_\varepsilon(F_t(K))
+ \leq
+ m\log\!\left(1+{C|t|\over\varepsilon}\right).
+ \tag{O4.3b}
+\]
+
+Thus a static `m`-parameter law supplies only `O(m log t)` newly resolvable
+coefficient bits by time `t`.  A lower bound of order `t` cannot be an
+information-theoretic consequence of fresh disorder, ensemble dimension,
+Haar volume, or parameter anti-concentration.  It must prove that a
+short-description autonomous law **deterministically expands** those few
+resolved bits into an endpoint having word complexity of order `t`.  This is
+the quantum-circuit analogue of proving a pseudorandom generator hard against
+nonuniform distinguishers; it is precisely the step absent from current
+static-Hamiltonian methods.
+
+The approximate-centralizer reformulation does not reduce this difficulty.
+Every `epsilon`-approximant `V` to `e^{-itH}` satisfies
+
+\[
+ \|[H,V]\|\leq2\epsilon\|H\|,
+ \tag{O4.3c}
+\]
+
+but the exact commutant of a simple-spectrum `H` already contains every
+spectral function `f(H)`, including `e^{-itH}` itself.  Therefore a
+"low-circuit approximate-centralizer rigidity" theorem strong enough to
+exclude `V` must lower-bound the circuit complexity of nontrivial spectral
+functions of `H`; that is O4 again, not a bridge to it.  The identity also
+shows that small commutator alone contains no time information.
+
+Likewise, word-height Diophantine extremality can at most explain the
+completed plateau.  At fixed resolution it compares the word ball with a
+low-dimensional analytic endpoint manifold and can force generic avoidance
+near ambient capacity.  It cannot produce the pre-saturation slope: direct
+Hamiltonian simulation places `F_t(K)` inside a word tube of radius
+`O(t poly(n))`, while the constants measuring finite-time nondegeneracy of
+that manifold necessarily collapse at exactly the rate whose lower bound O4
+asks for.  Any claimed dynamic consequence that leaves those constants
+uncontrolled is circular.
+
+The 2025 spacetime-complexity construction of Du--Liu--Ma is an important
+boundary case, not a solution.  It writes a depth-`T` random circuit into
+`Theta(T)` spatial columns of a commuting two-dimensional Hamiltonian and
+obtains a hard projected endpoint after constant physical time.  The fresh
+random description and circuit volume are spatial.  It proves that static
+local evolution can *read* extensive complexity already stored across the
+Hamiltonian, but not that one fixed finite system produces new word
+complexity linearly for exponentially long time.
+
+Hence the actual frontier is narrower and harder than "static chaos":
+
+> **Static seed-expansion theorem.**  Prove that exponentiation of a
+> polynomial-description, fixed-locality Hamiltonian is an unconditional
+> robust word-metric expander along its own one-parameter orbit, despite zero
+> fresh disorder, a Hamiltonian-dependent circuit selector, and exact
+> quasiperiodicity.
+
+For a concrete Gaussian ensemble this theorem must be stated as (O4.3).
+Spectral ramps, maximal rational rank, designs of fixed order, operator
+spreading, NLTS, local distinguishability, commutant rigidity without a
+quantitative word bound, and space-for-time encodings do not prove it.  Any
+further route is rejected unless its headline estimate already contains the
+Hamiltonian-dependent circuit infimum at fixed error.
 
 #### Dynamical NLTS equivalence
 
@@ -1124,7 +1244,7 @@ First consider a bipartite graph with vertex classes `L,R`, `|L|=l`,
  f(y),
 \]
 
-where `alpha,beta` are arbitrary binary linear forms.  On the uniform
+where `alpha,beta` are arbitrary binary-valued functions.  On the uniform
 `L^2` spaces of the `3^r` and `3^l` nonzero-letter assignments,
 
 \[
@@ -1141,8 +1261,8 @@ character.  To prove it, first allow zero Pauli labels.  The resulting
 Its binary rank is `2rho`.  Character orthogonality gives unnormalized
 operator norm exactly `2^(l+r-rho)`.  Restricting rows and columns to
 nonzero labels cannot increase Euclidean operator norm, and conversion to
-uniform `L^2` divides by `3^((l+r)/2)`.  Linear forms only multiply rows and
-columns by signs.  This proves (O4.12q).
+uniform `L^2` divides by `3^((l+r)/2)`.  The functions `alpha,beta` only
+multiply rows and columns by signs.  This proves (O4.12q).
 
 For a fixed support assignment of a paired word, apply (O4.12q) at every
 physical site.  If `d_i` chord labels are active at site `i`, and `rho_i`
@@ -1218,54 +1338,871 @@ In particular, if `bq/n>=64`, then `lr/(b(b-1))>=1/4` and
  \mathbb ER\ge {63\over256}Q.
 \]
 
-Exposing the uniform `L/R` permutation and the independent supports gives a
-bounded-difference martingale.  Replacing one support changes `R` by at most
-`4q`; transposing two positions changes it by at most `8q`.  Hence the usual
-permutation-exposure proof of bounded differences gives an absolute
-`c_0>0` such that
+That bare crossing estimate must still survive the nonzero-commutator
+conditions; omitting them would make the result inapplicable to (O4.12d).
+Use the equivalent form (O4.12): one first-occurrence constraint and one
+even crossing-parity constraint per chord.  Walsh-expand the parity
+constraints with bits `xi_a` and the first-occurrence constraints with bits
+`eta_a`.  Across the bridge cut `L|R`, all first endpoints in `L` precede
+all first endpoints in `R`, and no bridge chord has closed yet.  Hence at
+site `i` the complete quadratic cut matrix is
 
 \[
- \Pr\!\left\{R<{15\over64}Q\mid b\right\}
- \le 4e^{-c_0b}.                                                    \tag{O4.12v}
+ B_i^{\xi,\eta}(u,v)
+ =A_i(u,v)(1+\xi_u+\xi_v)+\eta_v,
+ \qquad u\in L_i,\ v\in R_i.                                      \tag{O4.12v}
+\]
+
+The first term is the direct sum of the two Ferrers matrices induced by
+the `xi=0` and `xi=1` vertices.  The second term has rank at most one.
+All conditioned nonbridge labels, all within-side interactions, and the
+seed contribute only row or column signs in (O4.12q).
+
+Let `R_xi` be the sum over sites of the ranks of those two induced Ferrers
+matrices before the rank-one perturbation.  Filtering a retained word by
+the two independent `xi` colors gives
+
+\[
+ \mathbb E R_\xi
+ =n{lr\over b(b-1)}
+ \left({bq\over n}-2+
+       2(1-q/(2n))^b\right).
+\]
+
+Indeed the two color subsequences have respective retention probability
+`p/2`, and their total expected number of adjacent pairs is
+`bp-2+2(1-p/2)^b`.  If `bq/n>=256`, then
+
+\[
+ \mathbb ER_\xi\ge {127\over512}Q,
+ \qquad
+ \sum_i\operatorname{rank}B_i^{\xi,\eta}
+ \ge R_\xi-n
+ \quad\hbox{for every }\eta .
+\]
+
+Exposing `xi`, the uniform `L/R` permutation, and the independent supports
+gives a bounded-difference martingale.  Changing one `xi` bit changes
+`R_xi` by at most `4q`; replacing one support changes it by at most `4q`;
+transposing two positions changes it by at most `8q`.  The usual
+permutation-exposure proof of bounded differences therefore gives an
+absolute `c_0>0` such that
+
+\[
+ \Pr\!\left\{
+   \sum_i\operatorname{rank}B_i^{\xi,\eta}
+   <{15\over64}Q
+   \text{ for some }\eta
+   \,\middle|\, b\right\}
+ \le 4e^{-c_0b}.                                                    \tag{O4.12w}
 \]
 
 No independence between physical sites is used.  A second
 bounded-difference exposure of the random matching gives
 `Pr{b<k/3}<=2e^{-c_1k}` for an absolute `c_1>0`.  Therefore, for
-`k>=192n/q`, outside probability `O(e^{-c k})`,
+`k>=768n/q`, averaging the two exact Walsh projectors and using
+(O4.12q) gives
 
 \[
- \|T_{\rm angular}\|_{2\to2}
+ \|\mathcal W_{\pi,\rm angular}\|_{\rm branch}
  \le
  2^{-\eta qk/3},\qquad
- \eta={15\over64}-\log_2(2/\sqrt3)>0.                              \tag{O4.12w}
+ \eta={15\over64}-\log_2(2/\sqrt3)>0,                              \tag{O4.12x}
 \]
+
+outside total pairing/support/Walsh mass `O(e^{-ck})`.  This is a bound on
+the full admissible signed coefficient (O4.12d), conditional on a fixed
+Pauli boundary branch, not merely on its bare crossing phase.
 
 The gate tariff is equally explicit.  In the normalized Pauli basis, the
 transfer matrix of a `d`-qubit unitary conjugation is real orthogonal.
 Every column therefore has `l^1` norm at most
 `sqrt(4^d)=2^d`.  On `r` replicas a two-qubit gate has branch variation at
-most `4^r`, and `s` gates have variation at most `4^(rs)`.  Each Pauli
-branch changes only the linear forms in (O4.12q), because commutation with a
-fixed boundary Pauli is a symplectic character.  Combining with
-(O4.12w), the uniform-pairing-normalized, gate-expanded signed factor
-satisfies
+most `4^r`, and `s` gates have variation at most `4^(rs)`.
+
+For one replica, each Pauli branch changes only row or column sign functions
+in (O4.12q), because commutation with a fixed boundary Pauli is a symplectic
+character.  Combining with (O4.12x), the
+uniform-pairing-normalized, gate-expanded signed factor satisfies
 
 \[
  \boxed{\quad
  \text{normalized paired signed factor at order }2k
  \ \le\
- 2^{2rs}\!\left(2^{-\eta qk/3}+O(e^{-ck})\right)
- \quad}                                                            \tag{O4.12x}
+ 4^s\!\left(2^{-\eta qk/3}+O(e^{-ck})\right)
+ \quad}                                                            \tag{O4.12y}
 \]
 
-relative to its incoming Pauli-branch norm, whenever `k>=192n/q`.
-Thus paired angular order beats an arbitrary `s`-gate, `r`-replica boundary
+relative to its incoming Pauli-branch norm, whenever `k>=768n/q`.
+Thus paired angular order beats an arbitrary `s`-gate boundary
 exponentially once
 
 \[
- k>\max\!\left\{{6\over\eta q},{2\log 4\over c}\right\}rs .
+ k>\max\!\left\{{6\over\eta q},{2\log 4\over c}\right\}s .
 \]
+
+This bound is uniform for each fixed circuit word.  It does not commute the
+Hamiltonian-dependent circuit supremum with ensemble expectation.  Closing
+that nonlinear Bellman step, rather than applying a circuitwise union bound,
+is part of (O4.12z0).
+
+The `r`-replica Pauli branch tariff `4^(rs)` is exact, but (O4.12y) must not
+yet be asserted for the full replicated Wick sum.  Pairings joining
+occurrences on different replica legs form multi-backbone diagrams; their
+sign matrix is not the one-circle crossing matrix used above.  The estimate
+tensorizes over replica-factorized pairing sectors, but cross-replica sectors
+require a separate multi-backbone cut-rank theorem.  That requirement is
+closed below by the ribbon-genus, forest-contraction, and fixed-weight
+elimination theorems (O4.12z1)--(O4.12z10); this paragraph records why those
+steps were necessary.
+
+Logically, a replica extension is not necessary if one can directly control
+the positive Bellman support function.  Set `r=1` in (O4.12i) and
+(O4.12n).  If a genuinely nonlinear single-replica estimate proves
+
+\[
+ \mathbb E F_s(t)
+ \le e^{\kappa s-\gamma\Lambda(H)t/\operatorname{poly}(n)}
+    +\left({A tm\over\varepsilon}\right)^{-cm},                    \tag{O4.12z0}
+\]
+
+then Markov's inequality gives
+
+\[
+ \Pr\{C_\varepsilon(\Phi_H(t))\le s\}
+ \le {1\over1-\varepsilon^2}\,\mathbb EF_s(t).
+\]
+
+For `s<=gamma Lambda(H)t/(2 kappa poly(n))`, the first term is
+exponentially small in normalized time and is absorbed by the second after
+an explicit threshold.  Thus (O4.12z0) implies (O4.3) without any
+multi-backbone estimate.  Replicas may sharpen constants later; they must
+not block the theorem.
+
+But the route from the signed cut-rank coefficient bound to (O4.12z0) at
+first moment is **falsified**.  For a probability space `Omega`, a vector
+space `V`, a compact body `K`, and an integrable random vector `X`, signed
+transfer estimates control linear functionals of `E X`, whereas the desired
+quantity is
+
+\[
+ \mathbb E h_K(X)
+ =\mathbb E\sup_{y\in K}\langle X,y\rangle .
+\]
+
+There is no inequality bounding the latter by cancellation in `E X`.
+Already for `V=R`, `K={-1,1}`, and a symmetric Rademacher `X`,
+`E X=0` while `E h_K(X)=1`.  Convexifying `K` does not change the example.
+In the Hamiltonian problem the maximizing circuit is likewise allowed to
+depend on `H`; a fixed-boundary signed Wick estimate cannot commute that
+selector through ensemble expectation.  Therefore (O4.12q)--(O4.12y) do
+not imply (O4.12z0).
+
+The strongest positive survivor is exact: any proof using the present
+signed-transfer representation must control either
+
+1. the positive nonlinear Bellman norm `E h_(s,1)(X_H)` directly, or
+2. sufficiently high replicated moments before taking the circuit
+   supremum.
+
+The second alternative makes the multi-backbone Wick topology
+load-bearing, not optional.  A replacement theorem must also isolate the
+common recurrence mass before moment amplification: a rare event of
+probability `delta_t` contributes `delta_t` to every positive moment, not
+`delta_t^r`.  Paying that mass once is the exact mathematical distinction
+between an aggregate theorem and the retired circuitwise union bound.
+
+#### Replica ribbon genus: the exact multi-backbone cancellation invariant
+
+The multi-backbone object has a canonical topological representation.
+This is a proved bridge, not yet the required probabilistic estimate.
+Take the `2k` commutator occurrences on `r` oriented replica backbones.
+Let `sigma` be the permutation whose cycles are the cyclic orders on the
+nonempty backbones, and let `alpha` be the fixed-point-free involution
+pairing equal Gaussian occurrences.  Thicken each backbone to a vertex disc
+and each pair to an untwisted ribbon.  Write
+
+\[
+ c=\#\langle\sigma,\alpha\rangle\text{-orbits},\qquad
+ f=\#\operatorname{cycles}(\sigma\alpha).
+\]
+
+The resulting orientable ribbon surface has `r` vertices, `k` edges, `c`
+connected components, `f` boundary components, and total genus
+
+\[
+ \boxed{\qquad
+ 2g=k-r+2c-f .
+ \qquad}                                                          \tag{O4.12z1}
+\]
+
+This is Euler's identity twice: the surface retracts to the ribbon graph,
+so `chi=r-k`, while an orientable surface with those components has
+`chi=2c-2g-f`.
+
+The same number is exactly the rank relevant to Pauli cancellation.  At one
+physical site, first allow zero letters.  A label assignment is a
+`F_2^2`-valued edge 1-chain.  Returning every replica backbone to its
+endpoint Pauli label imposes zero boundary at every vertex, so the allowed
+assignments are
+
+\[
+ Z_1(G;\mathbb F_2)\otimes\mathbb F_2^2 .
+\]
+
+Reordering paired Pauli occurrences records the mod-two intersection
+pairing of the corresponding cycles in the thickened surface.  The
+intersection form on `H_1` has radical generated by the boundary curves,
+with one relation per connected component.  Since
+
+\[
+\begin{aligned}
+ \dim H_1(G;\mathbb F_2)&=k-r+c,\\
+ \dim\operatorname{rad}&=f-c,
+\end{aligned}
+\]
+
+its rank is
+
+\[
+ (k-r+c)-(f-c)=k-r+2c-f=2g.                                      \tag{O4.12z2}
+\]
+
+Equivalently, choose a spanning forest, close each remaining ribbon edge
+to a cycle, and record Pauli swaps in that cycle basis.  Every swap is one
+transverse intersection; changing the forest performs a congruence and
+does not change rank.  Thus the quadratic Gauss cancellation of the full
+alphabet depends only on replica ribbon genus, not on a chosen linear order
+or a diagram drawing.
+
+There is also an exact Gauss-sum form.  Put
+`h=dim H_1(G;F_2)=k-r+c`.  After endpoint conservation, a full-alphabet
+Pauli assignment is a pair of binary cycles, hence an element of
+`H_1(G;F_2)\otimes F_2^2`, up to the vertex-boundary gauge already removed
+by the spanning forest.  Its sign quadratic form has polar matrix equal to
+the surface intersection matrix tensored with the nonsingular one-qubit
+symplectic matrix.  The polar rank is therefore `4g`.  Character
+orthogonality for a quadratic Gauss sum gives, for every added linear
+boundary character,
+
+\[
+ \left|
+ 4^{-h}\!\!
+ \sum_{a\in H_1(G;\mathbb F_2)\otimes\mathbb F_2^2}
+ (-1)^{q_\Sigma(a)+\ell(a)}
+ \right|
+ \in\{0,\,2^{-2g}\}.                                               \tag{O4.12z2a}
+\]
+
+The value is zero exactly when the linear character is incompatible with
+the radical; otherwise its magnitude is `2^(-2g)`.  Thus every replica
+handle costs exactly a factor `1/4` before the nonzero-letter restriction,
+and every direction not cancelled by handle genus lies in the boundary
+radical.
+
+Random multi-backbone topology is already controllable.  Assume every
+backbone contains at least two occurrences, so `sigma` has no fixed point,
+and let `alpha` be a uniform fixed-point-free involution on `2k` symbols.
+Loth and Rattan's conjugacy-class product theorem gives
+
+\[
+ \mathbb E f
+ =\mathbb E\,\#\operatorname{cycles}(\sigma\alpha)
+ \le H_{2k}+1.                                                     \tag{O4.12z2b}
+\]
+
+This is a literature input, not our novelty
+([Loth--Rattan, arXiv:2310.06659](https://arxiv.org/abs/2310.06659)).
+Their theorem applies because the law of `sigma alpha` depends only on the
+fixed-point-free conjugacy types of `sigma` and `alpha`.
+
+The required exponential tail follows elementarily.  Switching two matched
+edges of `alpha` changes `sigma alpha` by a permutation supported on at most
+four symbols and changes its number of cycles by at most two.  Generate the
+uniform matching from a uniform random permutation paired in consecutive
+positions and expose that permutation.  The bounded-difference inequality
+for random permutations therefore gives, with a deliberately nonoptimal
+constant,
+
+\[
+ \Pr\{f-\mathbb Ef\ge u\}
+ \le \exp\!\left(-{u^2\over64k}\right).                            \tag{O4.12z2c}
+\]
+
+For `k>=256`, `H_(2k)+1<=k/16`; taking `u=k/16` shows
+`f<=k/8` outside `e^(-k/16384)`.  If also `k>=8r`, Euler's law then gives
+
+\[
+ 2g=k-r+2c-f\ge {3k\over4},
+\]
+
+and the exact full-alphabet Gauss factor (O4.12z2a) is at most
+`2^(-3k/4)` on that event.  Thus the random replica topology itself is not
+the open problem: it creates extensive genus with an exponential tail.
+Backbones of occurrence count zero are omitted; singleton backbones form a
+separate occupancy event and cost at most one incident ribbon each when
+passing to the replica-incidence 2-core.
+
+For one backbone, (O4.12z2) reduces to the familiar rank of the chord
+interlacement matrix.  For several replicas it supplies the missing
+coordinate-free replacement: tree-like replica connections have genus zero
+and cannot cancel, while every handle contributes two independent binary
+intersection directions.  The boundary radical `f-c` is the precise
+topological carrier of the replica-collision memory that survives signed
+bulk cancellation.
+
+`[FALSIFIED — FIRST REPLICA GENUS TRANSPORT LAW.]`  The first formulation
+asserted that, in the fixed-`q` angular
+Pauli ensemble, after the exact nonzero-letter and first-commutator
+projections, a replicated Wick ribbon graph with `k` pairs on `r`
+nonempty backbones and `kq >= Cnr` retains site-summed effective
+intersection rank
+
+\[
+ R_{\rm eff}\ge
+ \left(\log_2(2/\sqrt3)+\delta_q\right)(qk-C_qnr)
+                                                                    \tag{O4.12z3}
+\]
+
+outside mass `e^{-c_q(k-C_qr)}`, uniformly in every Walsh field and circuit
+boundary tensor.  The complementary genus-zero/boundary-radical sector
+admits a positive decomposition whose total spherical-time contribution is
+the common recurrence mass, paid once rather than once per circuit word or
+replica.
+
+The recurrence identification is false.  Already for one backbone,
+noncrossing pairings have genus zero but carry the order-one Catalan
+self-energy governed by (O4.13); they describe ordinary bulk propagation,
+not rare recurrence.  Boundary radical likewise records degeneracy of the
+intersection form, not by itself a late-time spectral return.  The corrected
+scale loss in (O4.12z3) is `O(nr)`, because an admissibility perturbation may
+lose `O(r)` rank at each of `n` sites, rather than `O(qr)`.
+
+The positive survivor is (O4.12z1)--(O4.12z2): replica genus is exactly the
+signed cancellation rank, while the radical classifies the directions that
+need a separate resummation.  Based on what killed the first statement, the
+stronger active conjecture is:
+
+The one-boundary planar resummation is already exact at operator level.
+Write `A_p=ad_(P_p)` on the finite Hilbert--Schmidt operator space and define
+the covariance map
+
+\[
+ \boldsymbol\eta(X)=\sum_p v_p A_pXA_p .
+\]
+
+Let `M_(2k)^(0)` be the sum of all noncrossing Wick words of length `2k`,
+with `M_0^(0)=I` and odd moments zero.  Rooting at the partner of the first
+occurrence gives the dependency-closed recursion
+
+\[
+ M_{2k}^{(0)}
+ =\sum_{j=0}^{k-1}
+   \boldsymbol\eta(M_{2j}^{(0)})
+   M_{2(k-1-j)}^{(0)}.                                             \tag{O4.12z4}
+\]
+
+Indeed the rooted label `p` surrounds the `2j` occurrences inside its
+chord, producing `A_p M_(2j)^(0) A_p`, and the remaining word follows on
+the right.  Therefore the formal operator-valued Cauchy series
+
+\[
+ \mathbf G(z)
+ =\sum_{k\ge0}M_{2k}^{(0)}z^{-2k-1}
+\]
+
+satisfies
+
+\[
+ z\mathbf G(z)
+ =I+\boldsymbol\eta(\mathbf G(z))\mathbf G(z),\qquad
+ \mathbf G(z)
+ =\left(zI-\boldsymbol\eta(\mathbf G(z))\right)^{-1}               \tag{O4.12z5}
+\]
+
+whenever the formal inverse is interpreted coefficientwise (and
+analytically wherever it exists).  Equation (O4.13) below is the diagonal
+Pauli-coordinate shadow of (O4.12z4).  Thus the active conjecture does not
+need to invent a planar reference; it must extend this exact Dyson object to
+several boundary components and prove compatibility with the Bellman
+support norm.
+
+That first extension is combinatorial and can be closed exactly.  It is
+useful to retain connected components and genus rather than immediately
+summing them away.  Let
+`\mathfrak C_(g,r)(C_1,\ldots,C_r)` be the formal sum of connected Wick
+ribbon pairings of total genus `g` on `r` nonempty cyclic backbones
+`C_1,\ldots,C_r`, with one half-edge `a` of `C_1` marked.  Coefficients may
+take values in any tensor category in which disjoint union is a tensor
+product and a paired edge is evaluated by the covariance contraction
+
+\[
+ \mathcal E_{a,b}
+ =\sum_p v_p\,\mathcal A_p^{(a)}\mathcal A_p^{(b)} .
+\]
+
+For the admissible Pauli expansion, the object carried by a cut boundary
+also records its exposed Pauli seed and Walsh projector bits.  With that
+state retained, (O4.12d) supplies precisely such a local edge-contraction
+weight; forgetting the state before gluing would be invalid.
+
+Pair `a` with a half-edge `b`.  If `b` lies on a different backbone `C_j`,
+contracting the ribbon joins the two cyclic words in the unique
+orientation-preserving order, denoted `C_1#_(a,b)C_j`, and preserves genus.
+If `b` lies on `C_1`, cut the cyclic word at `a,b` into the two cyclic words
+`U_b,V_b`.  The root ribbon is either separating, in which case the other
+backbones split into a subset `S` and its complement and the two genera add
+to `g`, or nonseparating, in which case cutting it leaves one connected
+surface of genus `g-1` with the two new backbones `U_b,V_b`.  Consequently
+the connected Wick sums obey the exact rooted join--split identity
+
+\[
+\boxed{\begin{aligned}
+ \mathfrak C_{g,r}(\mathbf C)
+ ={}&
+ \sum_{\substack{b\in C_j\\j>1}}
+ \mathcal E_{a,b}\,
+ \mathfrak C_{g,r-1}
+ \bigl(C_1\#_{a,b}C_j,\mathbf C_{\widehat{1,j}}\bigr)\\
+ &+\sum_{b\in C_1\setminus\{a\}}\mathcal E_{a,b}
+ \Bigg[
+ \sum_{\substack{S\subseteq\{2,\ldots,r\}\\g_1+g_2=g}}
+ \mathfrak C_{g_1,1+|S|}(U_b,\mathbf C_S)
+ \otimes
+ \mathfrak C_{g_2,r-|S|}(V_b,\mathbf C_{S^c})\\
+ &\hspace{50mm}
+ +\mathbf1_{g\ge1}\,
+ \mathfrak C_{g-1,r+1}(U_b,V_b,\mathbf C_{\widehat1})
+ \Bigg].
+\end{aligned}}                                                   \tag{O4.12z6}
+\]
+
+Empty arcs use the tensor unit, and unstable empty connected factors are
+omitted.  The full, not necessarily connected, Wick sum is recovered by
+the ordinary set-partition formula over backbone labels.
+
+**Proof.**  The partner `b` of the marked half-edge is unique.  A ribbon
+between distinct vertex discs may be contracted; this decreases both
+vertices and edges by one and changes neither component count, faces, nor
+genus.  A ribbon whose ends lie on the marked disc becomes, after capping
+the boundary curves, a simple closed curve.  On an orientable surface it is
+either separating or nonseparating.  In the separating case its two sides
+determine `S` uniquely and restriction gives the displayed tensor product.
+In the nonseparating case cutting along it raises Euler characteristic by
+two and therefore lowers genus by one.  These operations are reversible by
+gluing the root ribbon, so the cases are disjoint and exhaustive.  Edge
+labels and the carried boundary state are contracted only when the ribbon
+is glued, hence the same bijection is weight preserving.
+
+At `g=0,r=1` only the separating line survives and gives (O4.12z4).
+At `g=0,r>1`, (O4.12z6) is the required multi-backbone planar
+Schwinger--Dyson hierarchy.  At positive genus it says something sharper
+than the polymer language above: every handle is created by an explicit
+nonseparating self-gluing operation.  Thus multi-boundary planar
+resummation itself is no longer conjectural.  The still-open step is
+analytic: prove that the solution of this hierarchy, with its exposed
+boundary states, is bounded in a norm stable under the Bellman maximum.
+
+There is no need to conjecture the algebraic part of that norm.  For an
+`r`-replica Hermitian tensor define the absolute Bellman crossnorm
+
+\[
+ \|X\|^\sharp_{s,r}
+ =\sup_{C\in\mathcal C_s}
+   \left|\operatorname{Tr}\!\left(
+      X(C\rho_0C^\dagger)^{\otimes r}\right)\right|.
+\]
+
+It has the two exact properties needed by the join--split hierarchy:
+
+\[
+\begin{aligned}
+ \|X\otimes Z\|^\sharp_{s,r_1+r_2}
+ &\le \|X\|^\sharp_{s,r_1}\|Z\|^\sharp_{s,r_2},\\
+ \|X\|^\sharp_{s+1,r}
+ &=\max_{G\in\mathcal G_n}
+   \left\|(G^\dagger)^{\otimes r}XG^{\otimes r}
+   \right\|^\sharp_{s,r}.                                         \tag{O4.12z7}
+\end{aligned}
+\]
+
+The first line follows because evaluation of a tensor product on the same
+replicated circuit target factors, and the supremum of a product is at most
+the product of the two suprema.  The second is the absolute version of
+(O4.12n).  Triangle inequality is immediate, so `\|\cdot\|^\sharp` is a
+seminorm (a norm after quotienting the annihilator of the circuit body).
+Therefore every separating term of (O4.12z6) is submultiplicative and every
+Bellman insertion is represented exactly, without selecting a circuit
+before ensemble averaging.  What remains is quantitative rather than
+foundational: establish a strict normalized contraction for the joined
+cavity and handle operators in this crossnorm.
+
+Replica topology can also be reduced exactly to the already understood
+one-backbone geometry.  Let a connected ribbon graph have `r` backbone
+vertices and `k` paired ribbons, and choose a spanning tree `T` of its
+backbone-incidence multigraph.  Contracting the `r-1` ribbons in `T` merges
+the vertex discs into one disc.  The result is a one-vertex chord diagram
+with
+
+\[
+ K=k-r+1
+\]
+
+chords, the same boundary curves, and the same genus.  Its chord
+interlacement form is the surface intersection form in the fundamental
+cycle basis determined by `T`.  This is not merely a rank comparison: it is
+a congruent matrix presentation of the same form.
+
+The reduction is compatible with the random matching before the
+fixed-weight coefficient extraction.  Fix `T` as a set of `r-1` disjoint
+pairs of occurrence positions.  Conditional on `T` being contained in a
+uniform matching of `2k` positions, the residual pairs form a uniform
+matching of the remaining `2K` positions.  After contracting `T`, they are
+therefore an ordinary uniform one-backbone chord diagram.  If backbone `j`
+has `d_j` occurrences, the number of possible occurrence-level spanning
+trees is at most
+
+\[
+ (2k)^{r-2}\prod_{j=1}^r d_j,
+\]
+
+by the weighted Cayley identity
+`\sum_T\prod_j d_j^{\deg_T(j)}
+=(\sum_jd_j)^{r-2}\prod_jd_j`; choices reusing one occurrence only make
+this an overcount.  A specified set of tree pairs occurs in a uniform
+matching with probability
+`\prod_{\ell=0}^{r-2}(2k-(2\ell+1))^{-1}`.  Hence its total marked mass in
+the normalized pairing average is at most
+
+\[
+ {\displaystyle(2k)^{r-2}\prod_jd_j\over
+  \displaystyle\prod_{\ell=0}^{r-2}(2k-(2\ell+1))}
+ \le {1\over4k}\left({4k\over r}\right)^r
+ \quad (r\le k/2),                                                 \tag{O4.12z8}
+\]
+
+where the last inequality uses
+`\prod_jd_j\le(2k/r)^r` and bounds every denominator factor below by
+`k`.  Thus marking a contraction tree has explicit
+`O(r\log(k/r))` entropy when `k/r` is bounded below, rather than an
+uncontrolled replica-diagram entropy.
+
+There is an exact rank statement for the boundary constraints introduced
+when the tree variables are removed.  At one site and for one binary
+coordinate, write the polar matrix of a quadratic Walsh phase, with the
+tree variable first, as
+
+\[
+ \begin{pmatrix}0&u^\mathsf T\\u&B\end{pmatrix}.
+\]
+
+An affine vertex-conservation equation has the form
+`x_0=c+\ell^\mathsf Tx`.  Substitution changes the residual polar matrix
+from `B` to
+
+\[
+ B+u\ell^\mathsf T+\ell u^\mathsf T,
+\]
+
+a perturbation of rank at most two.  Eliminating the two binary Pauli
+coordinates of every tree ribbon therefore loses at most four binary polar
+directions per contracted ribbon and site.  For `c` connected components,
+forest contraction costs at most
+
+\[
+ 4n(r-c)                                                        \tag{O4.12z9}
+\]
+
+in the site-summed binary polar rank.  This proves the previously asserted
+`O(nr)` scale at the quadratic-form level and explains it: it is the exact
+cost of solving replica-tree flow, not a genus defect.
+
+The apparent fixed-weight obstruction can also be closed.  Let `\mu_q` be
+uniform probability measure on weight-`q` Pauli words in
+`A^n=(\mathbb F_2^2)^n`.  Solving one tree-flow equation replaces its
+independent tree label by an affine function `Lx+c` of the residual cycle
+labels and inserts the exact density `\mu_q(Lx+c)`.  Fourier inversion gives
+
+\[
+ \mu_q(Lx+c)
+ =4^{-n}\sum_{\chi\in\widehat{A^n}}
+   \widehat\mu_q(\chi)\chi(c)\chi(Lx),
+ \qquad |\widehat\mu_q(\chi)|\le1.
+\]
+
+The total absolute coefficient of this expansion is at most one.  Products
+of solved tree-label densities retain that bound.  Thus exact weight `q`
+does not introduce an exponential coefficient-extraction loss at all; it
+only averages the residual transfer over additional linear characters,
+against which (O4.12w) is uniform.
+
+The quadratic perturbation (O4.12z9) has a separate explicit cost.  A
+binary quadratic phase whose polar perturbation has rank `R` is, after a
+linear change of variables, a function of at most `R` essential coordinates
+times one linear character.  Fourier expanding those coordinates has total
+absolute coefficient at most `2^R`.  Combining this observation with
+(O4.12z8)--(O4.12z9) and the one-backbone bound (O4.12x) proves the
+following connected-sector transfer theorem.  Put `K=k-r+1`, assume
+`r\le k/2` and `K\ge768n/q`, and retain arbitrary affine replica-boundary
+data and all commutator Walsh projectors.  Then the normalized paired
+angular contribution of the connected `r`-backbone sector, after an
+arbitrary `s`-gate boundary, is at most
+
+\[
+\boxed{
+ {1\over4k}\left({4k\over r}\right)^r
+ 2^{\,4n(r-1)}4^{rs}
+ \left(2^{-\eta qK/3}+O(e^{-cK})\right),
+ \qquad
+ \eta={15\over64}-\log_2(2/\sqrt3)>0 .
+}                                                                  \tag{O4.12z10}
+\]
+
+Indeed mark and condition on a spanning tree, contract it, solve its
+sitewise flow variables, Fourier-expand their exact weight densities and
+the rank-`4n(r-1)` perturbation, and then apply (O4.12x) to the resulting
+uniform residual one-circle matching.  Summing the marked-tree overcount
+gives (O4.12z8); the circuit boundary gives `4^(rs)`.  Every step is an
+inequality in absolute value, so multiple possible spanning trees only
+overcount and cannot invalidate the estimate.
+
+Thus the fixed-weight forest-elimination conjecture is proved, with explicit
+constants.  In particular the normalized paired factor beats the replica
+and circuit boundary tariffs at that fixed order whenever
+
+\[
+ \min\!\left\{{\eta q\over3},{c\over\log 2}\right\}(k-r+1)
+ >
+ 4n(r-1)+2rs
+ +r\log_2(4k/r)+O(1),
+                                                                    \tag{O4.12z11}
+\]
+
+where the absolute `O(1)` absorbs the constant in the exceptional matching
+term.  Topology, cross-replica pairing, fixed Pauli weight, and the circuit
+selector tariff are therefore no longer separate open problems at the
+normalized-pairing level.  This does not yet bound the physical series:
+restoring the pairing multiplicity (O4.12z) can amplify the exceptional
+low-interlacement sector.  Its leading contribution is precisely the planar
+cavity governed by (O4.12z6), and it must be resummed before applying
+(O4.12z10).
+
+The planar cavity has an exact norm-stable real-time realization.  This
+closes item 3 below for one boundary, and for the collective replica
+Liouvillian before resolving it into separate backbone boundaries.  Let
+`\mathcal V_r` be the `r`-replica Hilbert--Schmidt operator space and put
+
+\[
+ A_p^{(r)}
+ =\sum_{\ell=1}^r
+  I^{\otimes(\ell-1)}\otimes\operatorname{ad}_{P_p}
+  \otimes I^{\otimes(r-\ell)} .
+\]
+
+On the full Fock space
+`\mathcal F(\mathbb C^m)\otimes\mathcal V_r`, with left creation operators
+`\ell_p` and vacuum `\Omega`, define the bounded self-adjoint operator
+
+\[
+ S_r=\sum_p\sqrt{v_p}\,
+  (\ell_p+\ell_p^\dagger)\otimes A_p^{(r)} .
+\]
+
+Vacuum compression `E_\Omega` is unital completely positive.  The relations
+`\ell_p^\dagger\ell_q=\delta_{pq}I` show by the usual stack reduction,
+without an asymptotic limit, that
+
+\[
+ E_\Omega(S_r^{2k})=M_{2k,r}^{(0)},\qquad
+ E_\Omega(S_r^{2k+1})=0,
+\]
+
+where `M_(2k,r)^(0)` is the exact sum of globally noncrossing Wick pairings
+for the collective replicated covariance
+
+\[
+ \boldsymbol\eta_r(X)=\sum_pv_pA_p^{(r)}XA_p^{(r)} .
+\]
+
+Consequently the planar real-time series converges in operator norm for
+every real `t` and equals
+
+\[
+ U_{0,r}(t)
+ =\sum_{k\ge0}{(-1)^kt^{2k}\over(2k)!}M_{2k,r}^{(0)}
+ =E_\Omega(e^{-itS_r}),\qquad
+ \boxed{\ \|U_{0,r}(t)\|_{\rm op}\le1\ }.                           \tag{O4.12z12}
+\]
+
+Self-adjointness uses self-adjointness of every Pauli commutator on
+Hilbert--Schmidt space; contractivity follows because vacuum compression is
+unital completely positive and `e^(-itS_r)` is unitary.  Also
+`\|S_r\|\le2\|\boldsymbol\eta_r(I)\|^{1/2}`, so no formal-series radius is
+being hidden.  Applying `U_(0,r)(t)` to a unit Hilbert--Schmidt endpoint and
+testing against a pure replicated circuit target gives absolute overlap at
+most one, uniformly in `s,r,t`.
+
+This theorem prevents the Catalan multiplicity from blowing up after time
+resummation.  It does not yet assert decay: a completely positive
+contraction may have an invariant subspace.  Nor does the single collective
+ordering by itself sum every annular/multi-boundary planar component in
+(O4.12z6).  The remaining planar question is now spectral and explicit:
+classify the fixed space of the cavity channel and prove decay on the
+traceless Bellman-visible quotient, while solving the cross-boundary join
+terms of (O4.12z6).
+
+The fixed space can be classified exactly, and it is larger than the scalar
+sector for replicas.  For every `r`,
+
+\[
+ \boxed{
+ \{v:U_{0,r}(t)v=v\ {\rm for\ all}\ t\}
+ =\bigcap_p\ker A_p^{(r)} .
+ }                                                                  \tag{O4.12z13}
+\]
+
+One inclusion is immediate because `S_r(\Omega\otimes v)=0` on the common
+kernel.  Conversely, differentiating `U_(0,r)(t)v=v` twice at zero gives
+
+\[
+ 0=M_{2,r}^{(0)}v
+   =\left(\sum_pv_p(A_p^{(r)})^2\right)v .
+\]
+
+Taking the Hilbert--Schmidt inner product with `v` yields
+`\sum_pv_p\|A_p^{(r)}v\|^2=0`, hence every summand vanishes.
+
+Suppose now that the Hamiltonian Pauli family generates the full unitary Lie
+algebra on the physical Hilbert space under linear combinations and
+commutators.  Under
+`\mathcal V_r\cong\operatorname{HS}(\mathcal H^{\otimes r})`,
+`A_p^(r)` is the infinitesimal diagonal-conjugation action.  Its common
+kernel is therefore the commutant of `U^{\otimes r}` for all physical
+unitaries `U`.  Schur--Weyl duality gives
+
+\[
+ \bigcap_p\ker A_p^{(r)}
+ =\operatorname{span}\{W_\pi:\pi\in S_r\}
+ \quad (\dim\mathcal H\ge r),                                      \tag{O4.12z14}
+\]
+
+where `W_\pi` permutes replica tensor factors.  In particular the
+one-replica fixed space is exactly the scalar identity, but the replicated
+fixed space contains the whole permutation algebra.
+
+This corrects the target quotient.  “Traceless” is sufficient only at
+`r=1`; high-moment decay must be proved modulo the replica-permutation
+algebra.  These modes are not a recurrence remainder.  They are universal
+purity moments:
+`\operatorname{Tr}(W_\pi\sigma^{\otimes r})
+=\prod_{c\in\operatorname{cycles}(\pi)}\operatorname{Tr}(\sigma^{|c|})`,
+which equals one for every pure circuit target.  They can therefore be
+subtracted as a target-independent baseline before the Bellman maximum.
+The genuinely selector-sensitive planar problem lives on the orthogonal
+complement of (O4.12z14).
+
+`[LITERATURE BOUNDARY.]`  Operator-valued semicircular realization and the
+Dyson equation are standard; see Helton--Rashidi Far--Speicher,
+[arXiv:math/0703510](https://arxiv.org/abs/math/0703510).  General matrix
+Dyson-equation regularity theorems give absolutely continuous densities only
+under additional flatness/primitivity assumptions; see Alt--Erdos--Krueger,
+[arXiv:1804.07752](https://arxiv.org/abs/1804.07752).  Such assumptions
+cannot be quoted here without proof because (O4.12z14) makes the replicated
+covariance nonfaithful on the full space.  Matrix-valued semicircular laws
+can in fact have atoms for degenerate covariance
+([Soltanifar, arXiv:1109.4973](https://arxiv.org/abs/1109.4973)).
+Therefore atom-free decay on the permutation quotient is a genuine
+model-specific frontier; (O4.12z13) alone does not establish it.
+
+There is nevertheless an unconditional quantitative consequence.  Let
+`Q_r` be Hilbert--Schmidt projection onto the orthogonal complement of the
+permutation algebra and define the replica Casimir gap
+
+\[
+ \lambda_r
+ =\lambda_{\min}^{+}\!\left(
+   \sum_pv_p(A_p^{(r)})^2\right)>0,\qquad
+ R_r=\|S_r\|.
+\]
+
+Positivity of `\lambda_r` follows from (O4.12z13)--(O4.12z14) and finite
+dimension.  Hence
+
+\[
+ \sum_pv_p(A_p^{(r)})^2\ge\lambda_rQ_r .                           \tag{O4.12z15}
+\]
+
+For one replica this gap is explicit in the Pauli basis:
+
+\[
+ \lambda_1
+ =4\min_{z\ne0}\sum_{\omega(p,z)=1}v_p .
+\]
+
+If all weight-one Pauli directions occur with variance at least `v_min`,
+then `\lambda_1\ge8v_min`, because a nonidentity Pauli word anticommutes
+with two one-site letters at any site in its support.
+
+The gap gives a strict, fully controlled short-time cavity contraction.
+Odd vacuum moments vanish, so
+
+\[
+ U_{0,r}(t)
+ =I-\frac{t^2}{2}\sum_pv_p(A_p^{(r)})^2+\mathcal R_4(t),\qquad
+ \|\mathcal R_4(t)\|
+ \le{(R_r|t|)^4\cosh(R_r|t|)\over24}.
+\]
+
+Since `U_(0,r)(t)` is self-adjoint, fixes the permutation algebra, and is a
+contraction, (O4.12z15) implies
+
+\[
+ \boxed{\quad
+ \|Q_rU_{0,r}(t)Q_r\|
+ \le1-{\lambda_rt^2\over4}
+ \quad}                                                            \tag{O4.12z16}
+\]
+
+whenever
+
+\[
+ R_r|t|\le\tfrac12,\qquad
+ t^2\le {6\lambda_r\over R_r^4\cosh(1/2)} .
+\]
+
+The first condition also keeps the spectrum of `U_(0,r)(t)` positive, so
+the displayed upper spectral bound is an operator-norm bound.  This proves
+genuine loss of every selector-sensitive planar mode at the first
+interaction timescale.  It does not prove long-time decay because vacuum
+compression is not a semigroup; iterating (O4.12z16) would silently replace
+the static Hamiltonian by fresh noise.
+
+`[CONJECTURE — PLANAR-RENORMALIZED REPLICA GENUS LAW.]`  Exactly resum every
+genus-zero component of the full admissible replica ribbon expansion into a
+positive matrix-valued cavity propagator.  In the connected polymer
+expansion relative to that propagator:
+
+1. use the fixed-order contraction (O4.12z10) after, rather than before,
+   exact planar dressing, so pairing multiplicity is paid only by the
+   cavity propagator;
+2. prove the dressed handle polymers are contractive in the Bellman
+   crossnorm (O4.12z7);
+3. extend the exact collective contraction (O4.12z12) to the joined
+   multi-boundary hierarchy and prove decay on the orthogonal complement of
+   the exact permutation fixed algebra (O4.12z14); and
+4. show the remainder not captured at any finite genus, rather than the planar
+   sector, is precisely where the common nonperturbative recurrence mass
+   enters and is paid once.
+
+This replacement survives the killing example because it retains the whole
+noncrossing Catalan sector in the reference propagator instead of calling it
+exceptional.  It is stronger than a coefficient estimate: it asserts a
+positive decomposition compatible with the Hamiltonian-dependent circuit
+selector.  Its former first open implication, the multi-backbone
+Schwinger--Dyson loop identity, is now (O4.12z6).  The first open implication
+is therefore a strict normalized cavity/handle contraction in the exact
+Bellman crossnorm (O4.12z7) after exact planar dressing.  The fixed-`q`
+multi-backbone estimate needed at that point is already (O4.12z10).
 
 This statement does not silently normalize away the number of Wick
 pairings.  If the coefficient dictionary has size `m`, conversion from the
@@ -1274,25 +2211,24 @@ the exact scalar factor
 
 \[
  a_{m,k}
- ={m^k(2k-1)!!\over m(m+2)\cdots(m+2k-2)}.                         \tag{O4.12y}
+ ={m^k(2k-1)!!\over m(m+2)\cdots(m+2k-2)}.                         \tag{O4.12z}
 \]
 
 It is obtained by summing the normalized label average over `m^k` block
 labels and the normalized pairing average over `(2k-1)!!` pairings, then
 dividing by the angular moment denominator (O4.12f).  The common commutator
 amplitude and the chosen interaction-rate normalization must also remain in
-the polynomial coefficient.  Thus (O4.12x) is a genuine exponential
+the polynomial coefficient.  Thus (O4.12y) is a genuine exponential
 contraction of the signed combinatorial factor, but not yet a bound on the
 resummed unitary propagator.
 
-Equations (O4.12q)--(O4.12x) move the open core from “find a transfer norm”
-to one precise analytic step: resum the exact finite-order cut-rank
-contraction into normalized autonomous time while separating the
-coefficient tubes forced by (O4.1).  Absolute Taylor summation is forbidden:
-it destroys the unitary cancellations and introduces an artificial
-`e^(t\|\mathcal L\|)` loss.  The remaining proof must use a norm-stable
-spectral or orthogonal-polynomial resummation of (O4.12x), not weaken the
-finite-order theorem.
+Equations (O4.12q)--(O4.12z14) move the open core through the fixed-order
+multi-backbone and selector geometry.  The exact remaining analytic task is
+to solve the joined planar hierarchy on the complement of its permutation
+fixed algebra, dress (O4.12z10) by that solution, and isolate the common
+nonperturbative recurrence core once before the spherical/time transform.
+Absolute Taylor summation is forbidden: it destroys the unitary
+cancellations and introduces an artificial `e^(t\|\mathcal L\|)` loss.
 
 That nested sector can be resummed exactly.  Let `N_k(z)` be the coefficient
 of `P_z` obtained by summing the `2k`-th Wick expansion over noncrossing

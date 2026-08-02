@@ -2,187 +2,179 @@
 
 ## Recommendation
 
-**Submit after independent expert priority check.**
+**Potentially publishable in a strong broad mathematics journal after independent priority and
+analytic-detail review. Not a flagship general-science result and not an RH proof.**
 
-Paper clears threshold for a broad research mathematics journal. It does not clear a
-*Nature*/*Science*-style significance threshold, and it is not an RH proof. Those stronger claims
-would be dishonest.
+The paper now has one theorem rather than a collage:
 
-Publishable contribution is concrete:
+> A positive divisor-faithful Riemann source is injective at every finite stage and collapses
+> cofinally to one \(\ell^1\) point. Exact Möbius peeling internally recovers every prime-normal
+> character \(q^{1/2-s}\). If a product-topology closed linear relation retains the countable
+> reader relative to any proposed horizon value, then
+> \[
+> \operatorname{mul}\mathcal R=\mathbb C^\mathbb N,\qquad
+> \mathcal R=\operatorname{dom}\mathcal R\times\mathbb C^\mathbb N.
+> \]
 
-1. a partition of positive integers into disjoint \(0/1\)-coefficient Dirichlet channels, every
-   channel carrying exactly zeta's zero divisor on \(\operatorname{Re}s>1/2\);
-2. a complete relative Boolean algebra of explicit Riemann shell differential fields;
-3. a finite-support/no-infinitary-ghost theorem for every field observable;
-4. exact private-sector linear disjointness and irreducibility of the common zeta current;
-5. an exact source-level signed charge transported to the centered Xi residue;
-6. a finite-faithful/cofinally-collapsing source law: divisor-faithful embeddings converge to one
-   \(\ell^1\) atom, every uniformly Lipschitz nonlinear observer loses spectral separation, and
-   inverse conditioning diverges;
-7. a canonical two-clock projective blow-up which resolves that collapse and retains the full
-   complex spectral coordinate.
+This is substantially stronger than the previous two-clock or “unbounded rank” version:
+retention does not yield a useful singular carrier. It yields a maximally vertical,
+information-free relation.
 
-This is substantially stronger than an RH equivalence or a repackaged positivity criterion.
-
-## Criterion verdict
+## Criteria
 
 | Criterion | Verdict | Reason |
 |---|---|---|
-| Only unconditional mathematical claims | **Pass** | Every theorem-level claim is traced to a checked declaration. New arbitrary meet/join, finite-support, complement, and private-tensor capstones build and print only standard foundational axioms. Manuscript makes no computational or conditional inference. |
-| Genuine RH progress or novel route | **Pass, route/progress branch** | Paper does not exclude zeros. It constructs a positive isodivisorial source, proves finite-stage divisor fidelity and cofinal norm collapse, rules out every uniformly Lipschitz nonlinear cofinal consumer, and constructs the projective normal chart where the full spectral coordinate survives. This is a concrete singular pre-divisor route, not a proof. |
-| General-journal quality | **Pass for broad mathematics; fail for flagship general science** | Result is explicit, surprising, reusable, and connected to several current RH programs. Proof burden, novelty boundary, hypotheses, and failure classes are stated. Nature-level impact would require zero exclusion or adoption by independent experts. |
-| No dangling mathematical question inside claimed scope | **Pass** | Paper answers its stated classification problem. Existence of an RH-forcing descent is identified as the external frontier, not assumed as a lemma and not needed by any result. RH remains open, as explicitly stated. |
+| Only unconditional claims | **Pass** | Every mathematical claim is traced to a checked theorem; new maximal-vertical chain has only standard foundational axioms. |
+| Genuine RH progress or novel route/no-go | **Pass narrowly as structural no-go/progress** | It closes complete single-valued and ungraded closed-relation transport in the canonical finite-prime/product topology. It does not exclude topology-changing or graded constructions. |
+| General-journal quality | **Pass for broad mathematics, pending priority** | One explicit object, one sharp theorem, complete proof, clear hypotheses, and current spectral context. |
+| Flagship Nature/Science significance | **Fail at present** | No zero exclusion, new zero-free region, prime-distribution consequence, or independent adoption. Marketing it otherwise would be dishonest. |
+| No dangling question in claimed scope | **Pass** | The classification problem for closed product-topology retention is completely answered: the relation is exactly domain times target. RH remains external to the theorem. |
 
 ## Strongest hostile attacks
 
-### 1. “The partition is elementary telescoping.”
+### 1. “The abstract theorem is one line.”
 
-Correct in isolation. Largest-exponent partition and \(m\)-free Euler products are classical and
-receive no novelty credit. Novelty begins only after simultaneous imposition of:
+Correct. If \((u_n,v)\in\mathcal R\), \(u_n\to0\), and \(\mathcal R\) is closed, then
+\((0,v)\in\mathcal R\). This is classical linear-relation machinery and receives no novelty
+credit.
 
-- positive pairwise-disjoint \(0/1\) coefficient supports;
-- exact replication of one zeta divisor;
-- joint differential independence of all quotient labels over the zeta field;
-- reciprocal hypertranscendence of zeta and its logarithmic current over the complete label frame;
-- exact arbitrary field meets, joins, complements, and private tensor injectivity.
+The arithmetic burden is to produce, from one explicit divisor-faithful source:
 
-Rejecting the full object as “telescoping” would ignore its hard simultaneous constraints.
+- collapsing representatives;
+- every prime-normal output \(q^{1/2-s}\);
+- affine-centre-independent full rank at every finite level;
+- a countable packet whose finite surjectivity forces maximal verticality.
 
-### 2. “Shared zeros are decorative: multiply zeta by any zero-free function.”
+Rejecting the paper solely because the final closure step is short would ignore the construction
+that makes its hypothesis true.
 
-That objection fails against coefficient support. Arbitrary multiplication does not produce a
-partition of \(\mathbb N\) into disjoint positive indicator series whose quotient labels realize
-the full source power set exactly. It also does not give common-current irreducibility or private
-linear disjointness.
+### 2. “Finite Möbius peeling is obvious.”
 
-The paper still does **not** infer zero location from divisor replication. It uses replication to
-separate common divisor information from transverse source information.
+Correct in isolation. The first remaining coefficient below a prime is \(-q^{-s}\).
 
-### 3. “The Boolean-field theorem is generic rational-function folklore.”
+The paper does not claim that observation as the discovery. It uses a quantitative bound to
+prove all-prime shell transfer, identifies the characters as an internal reader on the actual
+complete-source image, and derives a global completion theorem.
 
-Generic finite free-field intersections are folklore. Manuscript says so. Specific Riemann
-content is the proven complete differential independence of the explicit \(H_m\) frame over
-\(\mathbb C(s)\langle\zeta\rangle\), followed by exact realization of every shell subset.
+### 3. “The retention condition is engineered.”
 
-Arbitrary intersections were a genuine gap: binary laws alone permit concern about an
-infinitary common observable. Finite shell support now closes that gap and proves
-\[
-\bigcap_i\mathcal F_{A_i}=\mathcal F_{\cap_iA_i}
-\]
-for every nonempty family. No infinitary ghost survives.
+This is the most serious conceptual attack.
 
-### 4. “This still does not prove RH.”
+Response: retention is the exact graph statement for a completion claiming to transport the
+countable reader. Earlier versions fixed reader value \(0\) at the horizon and were vulnerable
+to a centering objection. The affine theorem now quantifies over every proposed horizon value
+\(y\). The augmented Vandermonde node \(1\) proves that no affine renormalization reduces rank.
 
-Correct. Paper says this in abstract, introduction, theorem interpretation, and conclusion.
-Contribution is a new source object and a typed frontier:
+Remaining limitation: the theorem does not force an arbitrary spectral program to retain this
+reader. It classifies those that do.
 
-- source labels retain signed horizontal position;
-- bounded label-blind descent kills it;
-- every uniformly Lipschitz cofinal descent loses it, even if nonlinear and label-sensitive;
-- the explicit two-clock projective blow-up recovers the full spectral coordinate;
-- reciprocal-quadratic positive descent retains only curvature;
-- norm-conservative equivariance selects the neutral line if non-erasing;
-- finite-Rees sewing cannot join reflected valuation sectors.
+### 4. “Product topology is too weak; full verticality is automatic.”
 
-This narrows possible proof mechanisms but does not create the missing descent.
+Product topology is weak, and finite-surjectivity-to-density is standard. That step is not the
+novelty.
 
-### 5. “The no-go claims overreach Hilbert–Pólya, CCM, Hedenmalm, Sonin, or Ward.”
+It is also the correct topology for the stated question: it is the initial topology of all
+finite-prime observations. Therefore the theorem says that a completion compatible with every
+finite prime observer but carrying no stronger cross-prime control predicts every countable
+output. Stronger weighted, graded, Rees, nuclear, or Hilbert topologies are outside scope and are
+precisely where further research must occur.
 
-They would overreach if stated route-wide. They are not. Each conclusion is restricted to its
-displayed class: bounded label-blind maps, reciprocal two-mode invariant quadratic forms,
-norm-conservative equivariant maps, uniformly Lipschitz cofinal maps, or finite-Rees-moderate
-sewing. The paper does not claim every nonlinear construction fails: non-Lipschitz,
-relation-valued, and topology-changing realizations remain outside the no-go.
+### 5. “The source reader is external because it uses \(s\).”
 
-### 6. “Cofinal collapse is an elementary tail estimate.”
+At each finite shell base, the source embedding is injective, so \(s\) is a function of the
+source-image point. More concretely, telescoping source coordinates reconstruct
+\(\zeta(ns)^{-1}\); subtracting the explicit finite Möbius prefix and taking adjacent transfers
+recovers \(q^{1/2-s}\). The reader is defined on the actual source image, not on a separately
+supplied zero label.
 
-Correct abstractly. Translated tails of an absolutely summable sequence vanish, and a uniform
-Lipschitz estimate cannot separate collapsing pairs. Neither fact receives novelty credit.
-Candidate novelty is their exact simultaneous Riemann realization: every finite source map is
-injective and divisor-faithful, the complete source nevertheless collapses cofinally, every
-uniformly Lipschitz nonlinear consumer becomes blind, and an explicit two-prime projective chart
-recovers the full spectral parameter but provably admits no shell-independent Lipschitz bound
-even on one distinct pair. No exact prior instance was found, but priority remains subject to
-independent expert review.
+### 6. “Divisor replication is decorative.”
 
-### 7. “The paper is a collage of unrelated theorems.”
+Multiplying zeta by an arbitrary zero-free factor would be decorative. Here the factors
+simultaneously:
 
-Earlier versions deserved this criticism. Current version has one hierarchy:
+- arise from disjoint \(0/1\)-coefficient supports partitioning the integers;
+- sum as an \(\ell^1\) partition of unity;
+- give an injective spectral source;
+- admit all-prime internal normal extraction;
+- undergo one common cofinal collapse.
 
-1. faithful source realization;
-2. cofinal collapse and projective recovery;
-3. transport of one modular charge;
-4. classified loss under explicit consumers.
+The paper still does not infer zero location from divisor sharing.
 
-Complete Boolean fields, positive divisor channels, common-current irreducibility, and the
-finite-support law all belong to the first clause. Metric collapse and the two-clock normal chart
-belong to the second. Charge identities belong to the third. Observer, positivity, conservative,
-and Rees statements belong to the fourth. Later named programs
-are declared specializations with their own hypotheses, not additional main theorems.
+### 7. “This is not RH progress because it proves no zero exclusion.”
 
-Remaining editorial risk: a pure analytic-number-theory referee may prefer consumer applications
-shortened or moved to a sequel. That is venue fit, not a correctness defect.
+Correct that it proves no zero exclusion.
 
-## Novelty and priority audit
+The progress claim is narrower: it eliminates a broad architecture that looked viable after the
+two-clock result. Merely allowing multivalued closed relations does not preserve useful output
+information; complete prime retention saturates the target. A viable construction must add
+cross-prime growth/grade before closure. Whether that restriction is important enough for a
+particular journal is a significance judgment, not a correctness issue.
 
-Exact-formula and theorem-level searches found no prior Riemann realization of:
+### 8. “The recurrence, Hedenmalm, Wold, Calkin, and Ward paragraph is still collage.”
 
-- the positive coefficient-disjoint divisor-replicating partition;
-- the complete shell-field Boolean algebra;
-- arbitrary shell-field meet equality plus finite-support/no-ghost rigidity;
-- private tensor independence over exact common shell fields;
-- common-current hypertranscendence over the complete zero-free shell frame;
-- simultaneous finite-stage divisor fidelity and cofinal metric collapse;
-- uniformly Lipschitz nonlinear blindness together with an injective two-prime projective chart
-  whose recovery is necessarily singular.
+The paper gives them one short comparison section and explicitly denies equivalence. They are
+not additional main theorems. Their role is to locate where observable rank goes:
 
-Search failure is not proof of priority. Generic ingredients—largest-exponent densities,
-free-field lattice algebra, label-blind factorization, reciprocal boosts, Fisher information, and
-Weil positivity—are classical and are not claimed as discoveries. Independent specialists should
-compare the exact statements with Niven, Shapiro–Sparer, Pong, Ostrowski-type differential
-independence, and recent zeta–Gamma independence literature before acceptance.
+- recurrence: future fibre;
+- theta-null completion: nonclosed radical;
+- Riemann product completion: full multivalued fibre;
+- Calkin/Ward scalar consumer: rank discarded or squared.
 
-## Verification audit
+A pure analytic-number-theory referee may still demand deleting this comparison. That deletion
+would not affect the main theorem.
 
-- Direct foreground check of
-  `GaloisForLFunctions/RHTower/RelativeShellExactCommonCore.lean`: passed without warnings.
-- Final targeted build
-  `lake build GaloisForLFunctions.RHTower.RelativeShellExactCommonCore`: passed.
-- New arbitrary meet/join, finite-support, complement, inclusion, and private-tensor theorems
-  depend only on `propext`, `Classical.choice`, and `Quot.sound`.
-- Cofinal collapse, nonlinear observer blindness, two-clock blow-up, and pairwise inevitable
-  singularity are traced to `CompleteResolutionCofinalConditioningLaw.lean`; final foreground
-  check and axiom audit remain required after a competing dependency build releases the module.
-- PDF compiles to 24 A4 pages with no overfull boxes, undefined references, or duplicate
-  labels/tags.
+## Novelty verdict
+
+No exact collision found for the simultaneous source and maximal-vertical theorem.
+
+Generic ingredients known:
+
+- reciprocal-zeta Möbius series;
+- integral tail bounds;
+- Vandermonde interpolation;
+- closed linear relations and multivalued parts;
+- product-topology density.
+
+Priority candidate:
+
+- one positive divisor-faithful complete Riemann source;
+- exact all-prime internal normal reader;
+- finite-faithful/cofinally-collapsing geometry;
+- affine-centre-independent maximal verticality;
+- exact domain-product classification.
+
+Independent specialists must verify priority before submission.
+
+## Verification
+
+- Foreground check of
+  `GaloisForLFunctions/RHTower/CompleteResolutionCofinalConditioningLaw.lean`: passed, no warnings.
+- Axiom prints for all new headline theorems: only `propext`, `Classical.choice`, `Quot.sound`.
+- Preview PDF: 11 A4 pages.
+- TeX log: no warnings, overfull/underfull boxes, undefined references, or duplicate labels.
+- Every rendered page visually inspected.
 - Manuscript contains no mention of formalization.
-- Repository-wide lint remains nonzero only because seven pre-existing modules are unreachable
-  from their theorem-area umbrellas; no forbidden declaration occurs in this work.
+- Final targeted module build is reserved for manuscript freeze.
 
 ## Expected referee demands
 
-1. Verify priority of the exact complete-shell and common-current theorems independently.
-2. Check the analytic continuation and zero-free estimates behind every \(H_m\) channel.
-3. Separate clearly classical largest-exponent facts from new simultaneous structure.
-4. Preserve current narrow quantifiers on all consumer no-go statements.
-5. Do not market the work as RH proof, zero-free region, or universal Hilbert–Pólya obstruction.
-
-Manuscript already addresses demands 2–5. Demand 1 necessarily requires independent human
-expertise.
+1. Independent priority check for the exact combined theorem.
+2. Expand or cite the zero-free proof for every difference factor \(\Phi_j^K\).
+3. Justify product topology as finite-prime observability topology early, not only defensively.
+4. Keep the quantifier “relations retaining the complete reader”; do not generalize to all
+   Hilbert--Pólya or spectral approaches.
+5. Either shorten the recurrence/consumer comparison or supply a separate bridge paper.
+6. Do not claim Nature-level or RH-proof significance.
 
 ## Final assessment
 
-Strongest honest claim:
+The paper is mathematically coherent, unconditional, and no longer collage-prone. Its strongest
+sentence is:
 
-> Explicit positive Riemann channels with disjoint arithmetic support can share one complete
-> divisor while their zero-free labels retain the entire source power set as a complete relative
-> Boolean algebra of differential fields, with finite support, exact common cores, and
-> torsion-free private composition. Those finite divisor-faithful embeddings collapse
-> cofinally to one metric atom, while an explicit two-prime projective normal chart retains the
-> full spectral coordinate and cannot satisfy any uniform Lipschitz estimate. Signed horizontal
-> position survives in this singular labeled geometry but is erased or squared by the regular
-> consumer classes classified in the paper.
+> Complete prime-normal retention across the canonical Riemann source horizon is impossible as
+> useful closed transport: every proposed affine horizon value forces the entire countable
+> target into the multivalued fibre, so the relation factorizes as domain times target.
 
-That is new scientific knowledge if priority survives independent review. It is interesting
-because it replaces a vague “missing positivity” narrative by an explicit source object, a
-complete conservation law, and a sharply delimited transport problem. It is not RH.
+That is a publishable candidate if priority survives. It is not yet the “Nature-level universal
+law” requested by the broader project, because it closes a transport category without supplying
+zero exclusion or a working graded replacement.

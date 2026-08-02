@@ -15,7 +15,7 @@
   linkcolor=blue!55!black,
   citecolor=blue!55!black,
   urlcolor=blue!55!black,
-  pdftitle={Rank transmutation at the Riemann source horizon},
+  pdftitle={Rank transmutation at the Riemann source horizon: a maximally vertical prime-normal boundary},
   pdfauthor={Michael Haufschild}
 }
 
@@ -40,7 +40,7 @@
 \newcommand{\pr}{\operatorname{pr}}
 
 \title{\textbf{Rank transmutation at the Riemann source horizon}\\
-\large An unbounded prime-normal boundary}
+\large A maximally vertical prime-normal boundary}
 \author{Michael Haufschild}
 \date{}
 
@@ -79,14 +79,19 @@ minor is Vandermonde and nonsingular.
 We prove a general rank-transmutation law: if source representatives converge
 to zero while a closed linear relation retains their output span, that span
 becomes part of the multivalued fibre over zero.  Applied to the complete
-Riemann source, one closed relation retaining the countable reader has
-surjective multivalued projection onto the first \(r\) prime coordinates for
-every \(r\).  Hence its vertical rank is unbounded, and no closable
-single-valued operator can retain even all finite prime-normal sectors at the
-cofinal horizon.  This identifies a sharp boundary for spectral approaches to
-the Riemann hypothesis: the signed coordinate is already present before
-divisor scalarization, but its complete transport is necessarily singular and
-relation-valued.  No zero-exclusion statement is assumed or obtained.
+Riemann source, every leading finite projection of that fibre is surjective,
+independently of the value assigned to the reader at the collapsed point.
+Product-topology density and closedness then force
+\[
+                    \mul\cR=\C^\N,\qquad
+                    \cR=\operatorname{dom}\cR\times\C^\N.
+\]
+Thus complete retention produces a maximally vertical relation which imposes
+no output constraint at all; it cannot be a closable single-valued operator.
+This identifies a sharp boundary for spectral approaches to the Riemann
+hypothesis: the signed coordinate is already present before divisor
+scalarization, but its complete transport in the canonical topology is
+information-free.  No zero-exclusion statement is assumed or obtained.
 \end{abstract}
 
 \medskip
@@ -157,7 +162,7 @@ relation theory \cite{Arens1961,HassiDeSnooSzafraniec2009}.  It is not claimed
 as a new operator-theoretic fact.  The arithmetic content is the exact
 Riemann realization: all prime-normal characters arise internally from one
 positive divisor-faithful source, their canonical sample matrix has every
-finite rank, and one cofinal collapse forces unbounded multivalued rank.
+finite rank, and one cofinal collapse forces maximal verticality.
 
 \subsection*{Main result}
 
@@ -174,14 +179,15 @@ Its multivalued part is
                  \mul\cR=\{v\in\C^\N:(0,v)\in\cR\}.
 \tag{1.5}\label{eq:mul}
 \]
-We say that \(\cR\) retains the centered prime-normal reader if
+For a proposed horizon value \(y\in\C^\N\), we say that \(\cR\) retains the
+centered prime-normal reader relative to \(y\) if
 \[
-                 (E_K(s_j)-e_0,P_j)\in\cR
+                 (E_K(s_j)-e_0,P_j-y)\in\cR
                  \qquad(K,j\in\N).
 \tag{1.6}\label{eq:retention}
 \]
 
-\begin{theorem}[Unbounded prime-normal boundary]\label{thm:main}
+\begin{theorem}[Maximally vertical prime-normal boundary]\label{thm:main}
 The source \(E_K\) has the following properties.
 \begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em]
 \item For \(K\geq12\), its coordinates form a positive
@@ -192,16 +198,17 @@ The source \(E_K\) has the following properties.
       \(s\) in that half-plane.
 \item For every prime \(q\), a source-internal peeled-shell transfer converges
       to \(q^{1/2-s}\).
-\item If a closed linear relation \(\cR\) satisfies
-      \eqref{eq:retention}, then for every \(r\geq0\),
+\item For every proposed horizon value \(y\), if a closed linear relation
+      \(\cR\) satisfies \eqref{eq:retention}, then
       \[
-          \pr_r(\mul\cR)=\C^r,
-          \qquad
-          \pr_r(v)=(v_0,\ldots,v_{r-1}).
+          \mul\cR=\C^\N,\qquad
+          \cR=\operatorname{dom}\cR\times\C^\N,
       \tag{1.7}\label{eq:projectively-full}
       \]
-      In particular, \(\cR\) is not the graph of a single-valued operator,
-      and its multivalued part has no finite rank bound.
+      where
+      \(\operatorname{dom}\cR=\{x:\exists v,\ (x,v)\in\cR\}\).
+      In particular, \(\cR\) imposes no output constraint at any source in
+      its domain and is not the graph of a single-valued operator.
 \end{enumerate}
 \end{theorem}
 
@@ -209,8 +216,8 @@ Unlike an RH equivalence, \Cref{thm:main} does not replace zero location by
 another unproved assertion.  It proves an unconditional classification of the
 source horizon.  It rules out a complete prime-normal realization by a
 closable single-valued graph in the canonical source topology.  Relation-valued
-or topology-changing constructions remain possible; the theorem says that
-their singularity is forced rather than optional.
+or topology-changing constructions remain possible, but an ordinary closed
+relation retaining the complete reader is already information-free.
 
 \subsection*{Novelty boundary}
 
@@ -353,9 +360,17 @@ Equation \eqref{eq:mass-one} follows from \eqref{eq:telescoping} and
 \(\zeta(Ns)^{-1}\to1\).  Absolute summability follows from the standard
 zeta tail estimate after dilation.  For \(K\geq12\) and
 \(\Rea s>\tfrac12\), every dilated argument in \eqref{eq:complete-source}
-lies in the zero-free half-plane \(\Rea w>1\); the difference factors are
-nonzero there.  Multiplication by a holomorphic nonvanishing factor
-preserves analytic order.
+lies in the zero-free half-plane \(\Rea w>1\).  For the difference factor,
+write
+\[
+ \zeta(ms)-\zeta((m+1)s)
+   =\sum_{n\ge2}\bigl(n^{-ms}-n^{-(m+1)s}\bigr).
+\]
+After normalization by \(2^{-m\Rea s}\), the \(n=2\) term has modulus at
+least \(29/100\), while for \(m\Rea s>6\) the full \(n\ge3\) tail has
+modulus less than \(21/100\).  Hence the difference is nonzero for
+\(m\ge12\).  Multiplication by a holomorphic nonvanishing factor preserves
+analytic order.
 \end{proof}
 
 \begin{proposition}[Finite fidelity and cofinal collapse]\label{prop:collapse}
@@ -513,7 +528,7 @@ Thus the logarithmic normal coordinate
 \]
 is independent of \(i\) and retains its sign.
 
-\section{The unbounded boundary theorem}
+\section{The maximal boundary theorem}
 
 At \(s_j=\tfrac12+j\),
 \[
@@ -542,28 +557,73 @@ The matrix is the Vandermonde matrix at the distinct nodes
 \(p_0^{-1},\ldots,p_{r-1}^{-1}\).
 \end{proof}
 
+\begin{lemma}[Affine-centre independence]\label{lem:affine-vandermonde}
+Let \(y,w\in\C^r\).  There are
+\(a_0,\ldots,a_r\in\C\) such that
+\[
+       \sum_{j=0}^{r}a_j=0,\qquad
+       w=\sum_{j=0}^{r}a_j\bigl(\pr_r(P_j)-y\bigr).
+\tag{5.4}\label{eq:affine-span}
+\]
+Thus \(P_0-y,\ldots,P_r-y\) span every leading \(r\)-coordinate target,
+for every proposed horizon value \(y\).
+\end{lemma}
+
+\begin{proof}
+Augment the \(r\) inverse-prime nodes by the node \(1\).  The matrix
+\[
+ \begin{pmatrix}
+  1&p_0^{-1}&\cdots&p_0^{-r}\\
+  \vdots&\vdots&&\vdots\\
+  1&p_{r-1}^{-1}&\cdots&p_{r-1}^{-r}\\
+  1&1&\cdots&1
+ \end{pmatrix}
+\]
+is Vandermonde at the distinct nodes
+\(p_0^{-1},\ldots,p_{r-1}^{-1},1\), hence invertible.  Solve the system
+whose first \(r\) outputs are \(w\) and whose final output is zero.  The
+last row gives \(\sum_ja_j=0\); therefore subtraction of \(y\) does not
+change the first \(r\) outputs.
+\end{proof}
+
 \begin{proof}[Proof of \Cref{thm:main}]
 Clause (i) is \Cref{prop:positive-source}; clause (ii) is
 \Cref{prop:collapse}; clause (iii) is
 \Cref{thm:prime-extraction}.
 
-Assume \(\cR\) satisfies \eqref{eq:retention}.  By
+Fix an arbitrary proposed horizon value \(y\) and assume \(\cR\) satisfies
+\eqref{eq:retention}.  By
 \eqref{eq:collapse},
 \[
                     E_K(s_j)-e_0\longrightarrow0
                     \qquad(K\to\infty).
 \]
-\Cref{thm:abstract} gives \(P_j\in\mul\cR\) for every \(j\).
-Fix \(r\) and \(w\in\C^r\).  By \Cref{lem:vandermonde}, there are
-\(a_0,\ldots,a_{r-1}\in\C\) such that
+\Cref{thm:abstract} gives \(P_j-y\in\mul\cR\) for every \(j\).
+\Cref{lem:affine-vandermonde} therefore implies
 \[
-                w=\sum_{j=0}^{r-1}a_j\,\pr_r(P_j).
+                         \pr_r(\mul\cR)=\C^r
+                         \qquad(r\geq0).
+\tag{5.5}\label{eq:finite-surjectivity}
 \]
-Set \(v=\sum_{j=0}^{r-1}a_jP_j\).  Then
-\(v\in\mul\cR\) and \(\pr_r(v)=w\).  Hence
-\(\pr_r(\mul\cR)=\C^r\).  Since this holds for every \(r\), the vertical
-rank has no finite bound.  Equation \eqref{eq:single-valued} excludes an
-operator graph.
+
+Now fix \(z\in\C^\N\).  For every \(r\), choose
+\(v^{(r)}\in\mul\cR\) whose first \(r\) coordinates agree with \(z\).
+For each fixed coordinate \(i\), one has
+\(v^{(r)}_i=z_i\) for all \(r>i\).  Hence
+\[
+                         v^{(r)}\longrightarrow z
+\]
+in the product topology.  The multivalued part is closed: it is the inverse
+image of the closed relation \(\cR\) under \(v\mapsto(0,v)\).
+Thus \(z\in\mul\cR\).  Since \(z\) was arbitrary,
+\[
+                              \mul\cR=\C^\N.
+\]
+
+Finally, let \(x\in\operatorname{dom}\cR\), choose
+\((x,v_0)\in\cR\), and let \(v\in\C^\N\).  Full verticality gives
+\((0,v-v_0)\in\cR\); addition gives \((x,v)\in\cR\).  Therefore
+\(\cR=\operatorname{dom}\cR\times\C^\N\).
 \end{proof}
 
 \begin{corollary}[No complete closable prime-normal observer]
@@ -574,20 +634,21 @@ contains every pair in \eqref{eq:retention}.
 
 \begin{proof}
 The closure of a closable operator graph has trivial multivalued part, while
-\Cref{thm:main} forces all its finite coordinate projections to be
-surjective.
+\Cref{thm:main} forces the whole output space into that part.
 \end{proof}
 
-\begin{corollary}[Every finite-rank truncation is maximal]
+\begin{corollary}[Every finite-rank truncation is affine-maximal]
 \label{cor:finite-maximal}
 Choose any \(r\) distinct primes \(q_0,\ldots,q_{r-1}\).  A closed linear
-relation retaining their normal characters at the \(r\) canonical samples
-has the whole \(\C^r\) as its vertical fibre.
+relation retaining their normal characters relative to any proposed horizon
+value at the first \(r+1\) canonical samples has the whole \(\C^r\) as its
+vertical fibre.
 \end{corollary}
 
 \begin{proof}
 Replace the nodes \(p_i^{-1}\) in \Cref{lem:vandermonde} by the distinct
-nodes \(q_i^{-1}\) and repeat the proof of \Cref{thm:main}.
+nodes \(q_i^{-1}\), augment by \(1\), and apply
+\Cref{lem:affine-vandermonde}.
 \end{proof}
 
 \section{What the law changes for the Riemann problem}
@@ -609,7 +670,8 @@ the pre-divisor arithmetic object.
 What fails is a regular passage to a completed operator.  A bounded or
 uniformly Lipschitz observer loses fixed distinctions by
 \Cref{cor:lipschitz}; a closed linear completion retaining the full normal
-reader acquires unbounded vertical rank by \Cref{thm:main}.  This gives a
+reader acquires the whole output space as its vertical fibre and becomes
+information-free by \Cref{thm:main}.  This gives a
 complete dichotomy inside the stated category:
 \[
 \boxed{
@@ -617,7 +679,7 @@ complete dichotomy inside the stated category:
 \text{single-valued regular completion}
    &\Longrightarrow& \text{normal-rank loss},\\[2mm]
 \text{normal-rank retention}
-   &\Longrightarrow& \text{multivalued singular completion}.
+   &\Longrightarrow& \text{maximally vertical, output-free relation}.
 \end{array}}
 \tag{6.2}\label{eq:completion-dichotomy}
 \]
@@ -625,8 +687,10 @@ complete dichotomy inside the stated category:
 This is not a no-go theorem for Hilbert--P\'olya, Connes--Consani,
 Hedenmalm, Suzuki, or any named program as a whole.  It excludes only
 realizations that use the canonical \(\ell^1\) source topology and demand a
-closable single-valued carrier for the complete prime-normal packet.
-Changing topology, using a relation, or discarding part of the packet lies
+closed carrier for the complete prime-normal packet.  Merely replacing an
+operator by an ordinary closed relation does not evade the theorem: that
+relation factorizes as domain times target.  Changing topology, retaining a
+graded rather than product completion, or discarding part of the packet lies
 outside the exclusion.
 
 \subsection{Why positivity loses the needed sign}
@@ -653,8 +717,8 @@ kernel; rank--nullity conserves their sum.  When finite-horizon data converge
 while distinct completed futures persist, the future span is not destroyed:
 it becomes a vertical future fibre.  The arithmetic theorem is stronger in
 one respect.  It supplies an explicit countable normal spectrum and proves
-that a single completed vertical fibre has surjective projection at every
-finite rank.
+that surjectivity at every finite rank saturates one completed vertical fibre
+to the whole countable target.
 
 This comparison gives one precise dictionary:
 \begin{center}
@@ -697,18 +761,21 @@ source object:
       is selected;
 \item they are internal to a positive divisor-faithful arithmetic source;
 \item their rank survives every finite prime truncation;
-\item complete retention forces one relation with unbounded vertical rank;
+\item complete retention forces
+      \(\cR=\operatorname{dom}\cR\times\C^\N\);
 \item therefore the missing RH mechanism cannot be another bounded
-      single-valued recovery map on the canonical source completion.
+      single-valued recovery map or ordinary closed relation on the canonical
+      source completion.
 \end{enumerate}
 
-The result changes the target of a spectral proof.  The relevant completed
-object is not an operator with a hidden eigenvalue list, but a singular
-relation whose vertical boundary already carries the signed prime-normal
-spectrum.  Any subsequent zero-exclusion mechanism must act on that boundary
-before reflection-even scalarization.  This is a restriction on proof
-architecture, not an assertion that the required selection has been
-constructed.
+The result changes the target of a spectral proof.  Neither an operator with
+a hidden eigenvalue list nor an ungraded closed relation can transport the
+complete packet through this horizon: the former loses rank, while the latter
+loses every output constraint.  Any zero-exclusion mechanism must act in a
+graded or topology-changing boundary construction before product-topology
+closure and before reflection-even scalarization.  This is a restriction on
+proof architecture, not an assertion that the required construction has been
+made.
 
 \section{Discussion}
 
@@ -724,7 +791,8 @@ arithmetic content is the simultaneous coexistence of:
 \item cofinal collapse to one point;
 \item internal extraction of every prime character \(q^{1/2-s}\);
 \item nonsingular finite prime packets at every rank;
-\item one closed completion with unbounded vertical quotient rank.
+\item affine-centre independence and maximal vertical saturation of every
+      closed completion retaining the packet.
 \end{enumerate}
 
 Removing any one of these conditions makes the construction routine.
@@ -741,9 +809,9 @@ already determines \(s\), but a two-dimensional chart leaves open the
 possibility that the singularity is an artifact of one chosen coordinate
 system.  \Cref{thm:prime-extraction} removes that ambiguity.  Every prime is
 an exact normal atom after a finite arithmetic peeling, and
-\Cref{thm:main} shows that no finite vertical multiplicity can contain the
-complete boundary.  The two-clock chart is only the first nontrivial minor of
-the countable law.
+\Cref{thm:main} shows that the complete boundary saturates the whole product
+target, independently of the proposed horizon value.  The two-clock chart is
+only the first nontrivial minor of the countable law.
 
 \subsection{Sharpness}
 
@@ -774,25 +842,32 @@ spectrum:
 \]
 At the samples \(s_j=\tfrac12+j\), every finite prime block is
 Vandermonde.  Consequently observable rank cannot disappear in a closed
-completion.  It transmutes into the multivalued fibre, whose projection onto
-every finite prime block is surjective.
+completion.  It first transmutes into the multivalued fibre; product-topology
+closedness then saturates that fibre:
+\[
+              \mul\cR=\C^\N,\qquad
+              \cR=\operatorname{dom}\cR\times\C^\N.
+\]
 
 This gives the universal answer within the paper's scope:
 \begin{center}
 \fbox{\begin{minipage}{0.78\textwidth}
 \centering
 Horizontal distinguishability may collapse, but retained rank must
-reappear as radical or vertical multiplicity.
+reappear vertically; complete prime rank saturates the fibre and erases every
+output constraint.
 \end{minipage}}
 \end{center}
-For the Riemann source, the vertical alternative is unbounded.  Positive or
-bounded scalar consumers can erase or square the signed coordinate, but they
-cannot provide a regular complete carrier for it.  The theorem therefore
-opens a singular relation-valued route to the Riemann problem and closes the
-regular single-valued version of that route.  It makes no claim of zero
-exclusion.
+For the Riemann source, the vertical alternative is maximal, not merely
+unbounded.  Positive or bounded scalar consumers can erase or square the
+signed coordinate, while an ordinary closed relation retaining all prime
+coordinates becomes information-free.  The theorem closes both regular
+single-valued and ungraded relation-valued versions of this route.  A viable
+construction must change or grade the topology before closure.  No claim of
+zero exclusion is made.
 
 \begin{thebibliography}{99}
+\small
 
 \bibitem{Arens1961}
 R.~Arens,
@@ -851,5 +926,6 @@ E.~C. Titchmarsh,
 Oxford University Press, 1986.
 
 \end{thebibliography}
+\normalsize
 
 \end{document}

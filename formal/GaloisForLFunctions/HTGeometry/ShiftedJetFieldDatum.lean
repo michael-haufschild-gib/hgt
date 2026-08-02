@@ -53,8 +53,8 @@ theorem norm_shape_neg_natCast (σ : ℝ) {t : ℝ} (ht : 0 < t) (N : ℕ) :
 /-- **A function with logarithmic rational approximants is negligible or has a boundary datum.** -/
 theorem exists_hasShiftTubeDatum_of_logRatApprox {f : ℂ → ℂ} (hf : HasLogRatApprox f)
     (hnn : ¬ IsVerticallyNegligible f) {M : ℝ} (hM : 0 < M) :
-    ∃ (ω : ℝ) (b : ℤ) (c : ℂ), c ≠ 0 ∧
-      HasShiftTubeDatum M 0 (fun σ t => f ((σ : ℂ) + (t : ℂ) * Complex.I)) 0 ω b c := by
+    ∃ (a b : ℤ) (c : ℂ), c ≠ 0 ∧
+      HasShiftTubeDatum M 0 (fun σ t => f ((σ : ℂ) + (t : ℂ) * Complex.I)) 0 ((a : ℝ)) b c := by
   classical
   obtain ⟨M₀, N, hM₀, hnot⟩ := exists_not_isTubeBigO hnn
   set M' : ℝ := max M M₀ with hM'
@@ -179,7 +179,13 @@ theorem exists_hasShiftTubeDatum_of_logRatApprox {f : ℂ → ℂ} (hf : HasLogR
     exact div_le_div_of_nonneg_right (le_trans h1 hlow) (norm_nonneg _)
   have hsum := hdat.2.add herr
   rw [add_zero] at hsum
-  refine ⟨ω, b, c, hdat.1, HasShiftTubeDatum.mono_tube hMM' ⟨hdat.1, ?_⟩⟩
+  have hcast : ((((A.coeff k).natDegree : ℤ) - (q.natDegree : ℤ) : ℤ) : ℝ) = ω := by
+    rw [hω]
+    push_cast
+    ring
+  refine ⟨((A.coeff k).natDegree : ℤ) - (q.natDegree : ℤ), b, c, hdat.1, ?_⟩
+  rw [hcast]
+  refine HasShiftTubeDatum.mono_tube hMM' ⟨hdat.1, ?_⟩
   refine hsum.congr (T₀ := 3) fun σ t hσ hσM ht => ?_
   have hshape : gammaShiftShape 0 σ 0 ω b t ≠ 0 :=
     gammaShiftShape_ne_zero (by linarith) ht _ _ _
@@ -258,9 +264,9 @@ theorem exists_hasShiftTubeDatum_jetFieldPolyFun (lam : Fin r → ℝ) (hlam : �
     (hincong : ∀ i i', i ≠ i' → ∀ n : ℤ, ((lam i : ℝ) : ℂ) - ((lam i' : ℝ) : ℂ) ≠ (n : ℂ))
     {Mm : ℕ} (idx : Fin Mm → Fin r × ℕ) (hinj : Function.Injective idx)
     {P : MvPolynomial (Fin Mm) (Polynomial ℂ)} (hP : P ≠ 0) {M : ℝ} (hM : 0 < M) :
-    ∃ (ω : ℝ) (b : ℤ) (c : ℂ), c ≠ 0 ∧
+    ∃ (a b : ℤ) (c : ℂ), c ≠ 0 ∧
       HasShiftTubeDatum M 0
-        (fun σ t => jetFieldPolyFun lam idx P ((σ : ℂ) + (t : ℂ) * Complex.I)) 0 ω b c := by
+        (fun σ t => jetFieldPolyFun lam idx P ((σ : ℂ) + (t : ℂ) * Complex.I)) 0 ((a : ℝ)) b c := by
   classical
   have hPmap : MvPolynomial.map (algebraMap (Polynomial ℂ) (RatFunc ℂ)) P ≠ 0 := by
     intro h0

@@ -25,7 +25,7 @@ on \(\operatorname{Re}s>0\), not any zero location or RH-equivalent premise.
 
 - [x] 0 → 1 in-progress: well-posed, source-pure, attack and non-circularity audited
 - [x] 1 → 2 fully-proven: dependency-closed paper proof below
-- [ ] 2 → 3 formalized: promote scratch theorem module and audit axioms
+- [x] 2 → 3 formalized: canonical module compiles and headline axioms audited
 - [ ] 3 → 4 publication-ready: integrate as sole conditioning addition to the conservation law and pass hostile review
 
 ## Theorem
@@ -98,6 +98,16 @@ Let \(X=\ell^1(\mathbb N_0;\mathbb C)\), let \(e_0=(1,0,\ldots)\), and let
     relation containing these cofinal graph directions has full vertical fibre
     \(\{0\}\times\mathbb C^2\), and no such relation is single-valued at the collapsed source
     point.
+12. Countable maximal-vertical boundary.  Exact finite Möbius peeling recovers
+    \(q^{1/2-s}\) for every prime \(q\).  At \(s_j=1/2+j\), the countable output packets are
+    \(P_j=(p_i^{-j})_{i\ge0}\).  For every proposed horizon value \(y\), the first \(r+1\)
+    affine differences \(P_j-y\) span every leading \(\mathbb C^r\) block.  Hence any
+    product-topology closed relation retaining these differences has
+    \[
+      \operatorname{mul}\mathcal R=\mathbb C^\mathbb N,\qquad
+      \mathcal R=\operatorname{dom}\mathcal R\times\mathbb C^\mathbb N.
+    \]
+    Complete retention is therefore information-free, not merely unboundedly multivalued.
 
 ## Proof
 
@@ -144,6 +154,13 @@ For (11), the displayed character values follow by evaluating
 \((2^{1/2-s},3^{1/2-s})\) at \(s_0,s_1,s_2\).  Closedness sends each convergent graph sequence
 \((E_K(s_j)-E_K(s_0),v_j)\) to \((0,v_j)\).  Linearity then puts every linear combination of
 \(v_1,v_2\) in the vertical fibre.
+For (12), the reciprocal-zeta Dirichlet series after subtraction of every coefficient below
+\(q\) begins with \(-q^{-s}\); an integral tail bound gives the arbitrary-prime shell transfer.
+The finite sample matrices are Vandermonde.  Augmenting the inverse-prime nodes by \(1\) proves
+affine-centre independence.  Closedness puts every affine packet in the vertical fibre.
+Surjectivity of each leading finite projection gives product-topology density; closedness makes
+the vertical fibre all of \(\mathbb C^\mathbb N\).  Full verticality then gives the
+domain-product factorization.
 
 ## New scientific knowledge
 
@@ -161,12 +178,13 @@ This replaces the vague instruction “use a singular consumer” by an explicit
 singular resolution, and proves that singularity is unavoidable rather than a feature of one
 chosen formula.
 
-The maximal-vertical theorem is the exact topological form: at cofinal depth, spectral rank is not
-destroyed but converted from horizontal source separation into multivalued graph rank.  It
+The countable maximal-vertical theorem is the exact topological form: at cofinal depth, spectral
+rank is not destroyed but converted from horizontal source separation into the entire
+multivalued target.  It
 connects the complete source to the corpus's actual-prime first-trace graph closure, Hedenmalm
 dense radical, nonclosable shell codiagonal, and finite-Rees fracture.  Abstract closed-linear-
-relation theory is prior art; candidate novelty is the explicit two-clock Riemann source whose
-entire target becomes the forced vertical fibre.
+relation theory is prior art; candidate novelty is the explicit all-prime Riemann source whose
+entire countable target becomes the forced vertical fibre, independently of affine centering.
 
 The law strengthens the paper's current consumer classification:
 
@@ -221,3 +239,44 @@ that singularity, not existence or sign.
   umbrella build temporarily removed a required dependency object.
 - 2026-08-02 — derived maximal two-clock vertical boundary and generic closed-relation
   specialization; proof written in scratch, same dependency-build check pending.
+- 2026-08-02 — generalized peeling to every prime, proved arbitrary finite Vandermonde rank,
+  and assembled one countable prime-normal reader.
+- 2026-08-02 — removed dependence on horizon centering via an augmented Vandermonde node at
+  \(1\); proved leading-block surjectivity for every proposed affine horizon value.
+- 2026-08-02 — completed maximal-vertical closure:
+  \(\operatorname{mul}\mathcal R=\mathbb C^\mathbb N\) and
+  \(\mathcal R=\operatorname{dom}\mathcal R\times\mathbb C^\mathbb N\).
+  Canonical module compiles; axiom audit reports only standard foundational axioms.
+- 2026-08-02 — proved the complete topology alternative.  For every topology \(t\) finer than
+  finite-coordinate product observation, either the affine prime-packet radical remains dense
+  and every closed retaining relation equals
+  \(\operatorname{dom}\mathcal R\times\mathbb C^\mathbb N\), or \(t\) is strictly finer than
+  product topology.  Hence every informative completion is genuinely infinite-prime nonlocal.
+- 2026-08-02 — proved the nonlocal--singular capstone.  If an informative completion also sews
+  reflected prime-valuation Hellinger sectors, its topology is strictly nonproduct and its sewing
+  operator norm dominates every inverse finite Wold--Rees power.  At an actual right-half Xi zero,
+  the same theorem retains the unsquared completed-current residue and identifies source entropy
+  with minus twice the positive horizontal divisor charge.  New modules compile; axiom audit of
+  the topology half and generic capstone reports only `propext`, `Classical.choice`, `Quot.sound`.
+
+## Active stronger conjecture — uniform prime corona classification
+
+Let \(P_j=(p_i^{-j})_{i\ge0}\in\ell^\infty\), \(P_0=\mathbf1\), and let \(y\in\ell^\infty\).
+The next positive theorem should identify the exact uniform closure
+\[
+ \overline{\operatorname{span}}^{\|\cdot\|_\infty}\{P_j-y:j\ge0\}
+   = c_0+\operatorname{span}\{\mathbf1,y\}.
+\]
+For \(y\in c\), this is exactly \(c\), so the information retained beyond every prime-normal
+packet is the canonical corona \(\ell^\infty/c\).
+
+Paper proof: \(P_j\to0\) uniformly as \(j\to\infty\), since
+\(\|P_j\|_\infty=2^{-j}\); hence \(-y\) and then every \(P_j\) lie in the affine closure.
+The inverse-prime nodes are distinct and accumulate only at \(0\).  Stone--Weierstrass on
+\(\{0\}\cup\{p_i^{-1}\}\) makes the polynomial packets dense in \(c\).  Conversely every affine
+packet lies in \(c+\operatorname{span}\{y\}\), a closed finite-dimensional extension of \(c\).
+
+This is not yet a manuscript claim.  Formalization is in progress; a concurrent umbrella build
+currently saturates Lean resources.  If certified, it upgrades “some strictly finer topology”
+to the exact positive survivor and explains why Sonin/Calkin/corona constructions see the only
+bounded quotient left after complete prime-normal retention.

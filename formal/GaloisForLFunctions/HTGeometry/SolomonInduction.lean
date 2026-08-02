@@ -70,7 +70,7 @@ theorem epi_frameDatum_classes (hbase : SolomonBase.{v} K V C) (m : ℕ) :
       · rw [card_univ_diff_singleton, hN]
         omega
       · intro c
-        have h := finrank_famCoverTop hp c
+        have h := finrank_famCoverTop_succ hp c
         rw [hrank (Subtype.val c).1] at h
         omega
 

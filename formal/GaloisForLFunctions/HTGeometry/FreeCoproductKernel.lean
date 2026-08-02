@@ -189,6 +189,14 @@ noncomputable def kernelIsoSigmaKerIndex {Z : C} (k : Z ⟶ ∐ fun _ : A => R)
     Z ≅ ∐ fun _ : sigmaKerIndex u => R :=
   IsLimit.conePointUniqueUpToIso hk (isLimitKernelForkSigmaKerIncl u R)
 
+/-- **The identification of a kernel with the coproduct over the kernel index carries a basis
+element to the difference of its component with the chosen representative.** -/
+theorem kernelIsoSigmaKerIndex_inv_comp {Z : C} (k : Z ⟶ ∐ fun _ : A => R)
+    (w : k ≫ sigmaMapFun u R = 0) (hk : IsLimit (KernelFork.ofι k w)) :
+    (kernelIsoSigmaKerIndex u R k w hk).inv ≫ k = sigmaKerIncl u R :=
+  IsLimit.conePointUniqueUpToIso_inv_comp hk (isLimitKernelForkSigmaKerIncl u R)
+    WalkingParallelPair.zero
+
 /-- **The kernel of a map induced by a function of index types is free.**  Any object equipped with a
 kernel structure for that map is a coproduct of copies of `R`. -/
 theorem isFreeOver_of_isLimit_kernelFork {Z : C} (k : Z ⟶ ∐ fun _ : A => R)

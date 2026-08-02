@@ -198,18 +198,18 @@ Closed here:
 - arbitrary primitive-root choices are absorbed by a forced affine packet gauge;
 - exact failure of the old untwisted pullback is classified.
 
-Still open and now sharply localized:
+The global affine packet problem in items 1--2 and Haar transport in item 3 are now closed by
+`deninger-rational-witt-packet-gauge-limit`.  The exact remaining frontier is:
 
-1. form the inverse limit of the affine packet system \((Q_s,\kappa_{s,t})\);
-2. prove it is a translation torsor for, and noncanonically Haar-homeomorphic to, Deninger's
-   standard profinite packet;
-3. transport the finite-stage maps to Haar \(L^2\) and prove compatibility of the tensorized
-   Calderón first-suspension cross-effect;
-4. encode that operation as the secondary attachment in the relevant three-term complex;
-5. prove nuclear continuity, strict/closed middle boundaries, cup/Hodge positivity, and Xi
-   spectral transport.
+1. prove compatibility of the tensorized Calderón first-suspension cross-effect with the global
+   affine gauge limit;
+2. encode that operation as a closed relation-valued secondary attachment in the relevant
+   three-term complex;
+3. identify its vertical multivalued part and closed middle boundary;
+4. prove nuclear continuity, cup/Hodge positivity, and Xi spectral transport.
 
-The next hard frontier is item 2, not another finite-stage density theorem.
+The updated source-horizon theorem excludes replacing item 2 by another closable single-valued
+operator on the canonical collapsing source topology.
 
 ## 8. Hostile theatre audit
 
@@ -246,7 +246,7 @@ source-to-packet gauge descent.  External priority remains provisional.
 - [x] paper proof of strict affine packet functor
 - [x] exact obstruction to old untwisted pullback
 - [x] unconditional Lean formalization
-- [ ] affine inverse-limit torsor and Haar comparison
+- [x] affine inverse-limit torsor and Haar comparison
 - [ ] tensorized Calderón descent on resulting global packet
 
 ## 11. Lean realization

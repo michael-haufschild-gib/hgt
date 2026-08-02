@@ -1109,7 +1109,24 @@ a nonzero one does not vanish asymptotically.
 > monomial has a datum**, with no hypothesis at all: `(11)` supplies the coefficient's residue and
 > `(16)` the Gamma part, and a single term cannot cancel.
 
-`#print axioms` clean.
+The residue hypothesis on a *sum* is then removed outright.  `(11)` returns an **integer** argument
+exponent — it is a difference of polynomial degrees — so two terms of a normal-form sum share a
+signature only if `∑(e_i − e_β)·λ` is an integer.  For shifts admitting no integer relation that
+forces `e_i = e_β`, hence `i = β`: the dominant class is a single term.
+`HTGeometry/GammaJetNormalFormDatum.lean`:
+
+> **`NoIntegerRelation`** — no nonzero integer combination of the shifts is an integer;
+> **`exists_hasShiftTubeDatum_jetGammaNormalForm`** — **the boundary datum of a normal-form Gamma sum
+> with shifted polygamma coefficients, with no hypothesis on the residues**;
+> **`noIntegerRelation_pow_of_transcendental`**, **`exists_noIntegerRelation`** — the hypothesis is
+> inhabited at every rank: the powers of a Liouville number admit no integer relation, since one
+> would exhibit it as a root of a nonzero integer polynomial;
+> **`exists_incongruent_shifts`** — and so is the jet-shift hypothesis, by equally spaced shifts;
+> **`exists_hasShiftTubeDatum_jetGammaQuotient`** — **the datum of an arbitrary element of the
+> shifted Gamma field**, an element being a quotient of two normal-form sums, since data divide.
+
+`#print axioms` clean.  With this the analytic chain of the card is closed end to end: `(8)` → the
+Hölder elimination → `(11)` → the datum of an arbitrary element of `K_E`.
 
 Downstream of `(11)` the chain is already Lean: the signature ordering `(16)`, the datum `(4)`, the
 projective boundary `(6)`, the finite phase law `(19)` and its consequences `(21)`, `(25)`.
@@ -1126,7 +1143,7 @@ projective boundary `(6)`, the finite phase law `(19)` and its consequences `(21
 - [x] translation-saturated prime-log consequence proved
 - [x] local orbit-residue and prime-log inputs connected to axiom-clean Lean
 - [ ] exact adjacent 2024--2025 full texts compared before publication
-- [ ] full formal-transseries and almost-periodic limit proof formalized in Lean (almost-periodic limit done: `GammaShiftShape/Datum/FinitePhase/Zeta`; Theorem A done unconditionally: `ShiftedDigammaFamilyIncrement/Independence`; Theorem B done unconditionally: `MultiplicativeShiftIndependence`, `RationalMultiplicativeShiftOrbit`, `JetTranslateLeadingTerm`, `ShiftedGammaMultiplicativeCoboundary`, `ShiftedGammaFieldIndependence`; the transseries injection (10)--(11) done unconditionally and without the formal Stirling field: `JetNonNegligible` replaces (10), `ShiftedJetFieldDatum` proves (11); the normal-form sum with polygamma coefficients is `GammaJetSumDatum`, unconditional for a single monomial and modulo the class-residue hypothesis for a sum)
+- [x] full formal-transseries and almost-periodic limit proof formalized in Lean (almost-periodic limit: `GammaShiftShape/Datum/FinitePhase/Zeta`; Theorem A: `ShiftedDigammaFamilyIncrement/Independence`; Theorem B: `MultiplicativeShiftIndependence`, `RationalMultiplicativeShiftOrbit`, `JetTranslateLeadingTerm`, `ShiftedGammaMultiplicativeCoboundary`, `ShiftedGammaFieldIndependence`; the transseries injection (10)--(11) without the formal Stirling field: `JetNonNegligible` replaces (10), `ShiftedJetFieldDatum` proves (11); the datum of an arbitrary element of `K_E`: `GammaJetSumDatum`, `GammaJetNormalFormDatum`, whose two shift hypotheses are proved inhabited at every rank -- all `#print axioms` clean)
 
 ## Log
 
@@ -1204,3 +1221,10 @@ projective boundary `(6)`, the finite phase law `(19)` and its consequences `(21
 - 2026-08-02 -- (11) fed into the datum layer (`GammaJetSumDatum`): a nonzero shifted jet polynomial
   times a Gamma monomial has a boundary datum unconditionally, and a normal-form sum has one as soon
   as its dominant class does not cancel.
+- 2026-08-02 -- the residue hypothesis removed (`GammaJetNormalFormDatum`): the argument exponent of
+  (11) is an integer, so under NoIntegerRelation distinct exponent vectors have distinct signatures
+  and the dominant class of a normal-form sum is a single term. Both shift hypotheses shown
+  inhabited at every rank (Liouville powers; equally spaced shifts).
+- 2026-08-02 -- the Lean gate closed: an arbitrary element of the shifted Gamma field, presented as a
+  quotient of normal-form sums, has a boundary datum (`exists_hasShiftTubeDatum_jetGammaQuotient`).
+  The only gate left on this card is the literature comparison before publication.

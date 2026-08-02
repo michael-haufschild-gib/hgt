@@ -358,3 +358,200 @@ Thus the associated graded is class-complete: only the resummed single-trace Leg
 survive at `p^(4/3)`. Higher determinant traces cannot repair its oscillating sign at symbol
 level. Remaining hard step is a uniform lift from associated graded to exact `(A3)` and exact
 finite-section determinant quotients; without that lift `(A12)` is not yet a no-go for J-SF5.
+
+## 2026-08-02 frontier advance: exact uniform one-trace lift
+
+`[PAPER-PROVED EXACT K=1 LIFT]`
+`[SOURCE-SPECIFIC CANDIDATE NEW]`
+`[CLASSICAL DARBOUX INPUT]`
+`[HIGHER EXACT TRACES OPEN]`
+
+The associated-graded `k=1` prediction admits a full uniform lift.  Put
+
+```text
+rho_n=sqrt((n+1/2)(n+1)),
+alpha(s)=atan(s),
+x(s)=2s/(1+s^2),
+D_n(s)=P_(2n+2)(x(s))-P_(2n)(x(s)).
+```
+
+The classical Laplace--Darboux formula for Legendre polynomials is uniform when the angular
+variable stays in a compact subinterval of `(0,pi)`.  Since
+
+```text
+acos(x(s))=pi/2-2alpha(s),
+```
+
+it gives, uniformly for `0<=s<=s_0<1`,
+
+```text
+D_n(s)
+ =(-1)^(n+1) 2sqrt(cos(2alpha(s)))/(sqrt(pi n))
+    cos((4n+3)alpha(s))
+  +O(n^(-3/2)).                                        (A13)
+```
+
+This is a classical asymptotic input, not a novelty claim.  The phase and amplitude in `(A13)`
+come from applying the standard formula separately to degrees `2n` and `2n+2`:
+
+```text
+P_(2n)(x(s))
+ =(-1)^n cos((4n+1)alpha(s))
+    /sqrt(pi n cos(2alpha(s)))+O(n^(-3/2)),
+
+P_(2n+2)(x(s))
+ =(-1)^(n+1) cos((4n+5)alpha(s))
+    /sqrt(pi (n+1) cos(2alpha(s)))+O(n^(-3/2)).
+```
+
+Replacing `(n+1)^(-1/2)` by `n^(-1/2)` costs only `O(n^(-3/2))`; the cosine sum then supplies
+the factor `2cos(2alpha)`.  A standard source is Szego, *Orthogonal Polynomials*,
+Theorem 8.21.2; the corresponding uniform-asymptotic reference is
+<https://dlmf.nist.gov/14.15>.
+
+Define
+
+```text
+A=2sqrt(2/pi),
+a(s)=s sqrt(1-s^2)/(1+s^2),
+lambda_n=rho_n/sqrt(n).
+```
+
+Substitution of `(A13)` into the exact Lambert--Legendre identity `(A4''')` yields
+
+```text
+(-1)^n W_n(q)
+ =-A lambda_n sum_(r>=1)
+    a(q^r) cos((4n+3)alpha(q^r))
+  +O(q/sqrt(n)),                                       (A14)
+```
+
+uniformly for `0<q<=q_0<1`.  The error is genuinely uniform over the complete Lambert tower:
+
+```text
+rho_n n^(-3/2) sum_(r>=1) q^r/sqrt(1+q^(2r))
+ =O(q/sqrt(n)).
+```
+
+No fixed-Euler truncation or formal interchange remains in `(A14)`.
+
+For a sequence `h_n`, use the literal alternating four-radius linear stencil
+
+```text
+S_m(h)
+ =rho_(m+1)h_m-rho_m h_(m+1)+2rho_(m+1)h_(m+1)
+  -2rho_(m+2)h_(m+2)+rho_(m+3)h_(m+2)-rho_(m+2)h_(m+3).
+                                                               (A15)
+```
+
+For fixed `j in {0,1,2,3}`,
+
+```text
+rho_(m+j)=m+O(1),          lambda_(m+j)=sqrt(m)+O(m^(-1/2)).
+```
+
+Consequently the four coefficients after inserting `(A14)`, divided by `m^(3/2)`, are
+
+```text
+1+O(1/m), 1+O(1/m), -1+O(1/m), -1+O(1/m).             (A16)
+```
+
+The exact trigonometric cancellation is
+
+```text
+ cos(phi)+cos(phi+4alpha)-cos(phi+8alpha)-cos(phi+12alpha)
+ =4cos(2alpha)sin(4alpha)sin(phi+6alpha).              (A17)
+```
+
+Since
+
+```text
+a(s)cos(2alpha(s))sin(4alpha(s))
+ =4s^2(1-s^2)^(5/2)/(1+s^2)^4,                        (A18)
+```
+
+equations `(A14)`--`(A18)` prove the exact uniform stencil theorem:
+
+```text
+S_m(((-1)^n W_n(q))_n)/(q^2 m^(3/2))
+ =-32sqrt(2/pi) sin((4m+9)atan(q))+o(1)                (A19)
+```
+
+whenever
+
+```text
+q->0,      m->infinity,      mq->infinity.             (A20)
+```
+
+The formerly imposed condition `mq^2->0` is unnecessary.  Indeed:
+
+1. coefficient and Darboux errors in `(A15)` are `O(q sqrt(m))`, which becomes
+   `O((mq)^(-1))` after normalization in `(A19)`;
+2. the `r=1` factor in `(A18)`, divided by `q^2`, tends to `4`;
+3. all Lambert repetitions `r>=2` contribute
+
+```text
+O(m^(3/2) sum_(r>=2) q^(2r))
+ =O(q^4 m^(3/2)),
+```
+
+which is `O(q^2)` after the same normalization.
+
+Thus `(A19)` is a uniform lift of the complete resummed `k=1` source, not merely its associated
+graded.
+
+### Exact prime-by-prime sign obstruction
+
+Let `q=1/p` with `p` prime and let `p->infinity`.  For each such `q`, choose even integers
+`m_+(q),m_-(q)` within `O(q^(-1))` of `q^(-4/3)` so that
+
+```text
+sin((4m_+(q)+9)atan(q))->1,
+sin((4m_-(q)+9)atan(q))->-1.                           (A21)
+```
+
+This is possible because consecutive even indices change the phase by `8atan(q)->0`, while an
+interval of `O(q^(-1))` indices covers a full turn.  The adjustment is negligible relative to
+`q^(-4/3)`:
+
+```text
+m_+(q)/q^(-4/3)->1,       m_-(q)/q^(-4/3)->1.
+```
+
+Hence both sequences satisfy `(A20)` and
+
+```text
+q^2 m_+(q)^(3/2)->1,      q^2 m_-(q)^(3/2)->1.
+```
+
+Equation `(A19)` therefore gives opposite nonzero limits:
+
+```text
+S_(m_+(q)) -> -32sqrt(2/pi),
+S_(m_-(q)) ->  32sqrt(2/pi).                           (A22)
+```
+
+The exact resummed trace-linear semilocal current is not eventually sign-definite at its genuine
+critical scale.  This is a source-specific, prime-by-prime, uniform no-go for the `k=1` survivor.
+It does not use a numerical experiment, fixed-order Euler truncation, or target-selected phase.
+
+### Anti-theatre boundary
+
+What is now closed:
+
+1. every odd harmonic and every Lambert repetition in the trace-linear radius are included;
+2. the passage through the literal four-radius stencil is uniform;
+3. the true `p^(4/3)` scale and coefficient `32sqrt(2/pi)` are exact;
+4. both signs occur on nearby even source indices for every sufficiently large prime.
+
+What remains genuinely open:
+
+1. uniform exact bounds for `Tr(A_n(q)^k)`, `k>=2`, after the finite-section determinant
+   logarithm and stencil;
+2. proof that determinant-log and square-root remainders are `o(1)` on the indices in `(A21)`,
+   or computation of their nonzero limiting kernel;
+3. only after that exact lift, limit-point/limit-circle extension selection, finite-prime
+   orthogonalization, Sonin transport, and global singular-carrier descent.
+
+Route J remains open.  The surviving hard core has narrowed from the entire Lambert--harmonic
+tower to exact higher finite-section determinant traces.

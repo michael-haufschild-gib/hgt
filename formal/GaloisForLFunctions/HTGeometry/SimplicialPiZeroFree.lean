@@ -76,6 +76,16 @@ noncomputable def kernelIsoSigmaKerIndexHomologyZero (f : X ⟶ Y) {Z : C}
   exact IsKernel.ofIso _ hk (KernelFork.ofι (k ≫ (X.homology₀Iso R).hom) hw)
     (X.homology₀Iso R) (Y.homology₀Iso R) (Iso.refl _) hcomm (Category.id_comp _)
 
+/-- **The identification of the kernel with the coproduct over its index carries the basis element
+of a component to the difference of that component with its chosen representative.** -/
+theorem kernelIsoSigmaKerIndexHomologyZero_inv_comp (f : X ⟶ Y) {Z : C}
+    (k : Z ⟶ X.homology R 0) (w : k ≫ SSet.homologyMap f R 0 = 0)
+    (hk : IsLimit (KernelFork.ofι k w)) :
+    (kernelIsoSigmaKerIndexHomologyZero R f k w hk).inv ≫ k ≫ (X.homology₀Iso R).hom
+      = sigmaKerIncl (SSet.mapπ₀ f) R := by
+  rw [kernelIsoSigmaKerIndexHomologyZero]
+  exact kernelIsoSigmaKerIndex_inv_comp (SSet.mapπ₀ f) R _ _ _
+
 /-- **The kernel of a map induced in degree-zero homology is free.**  It is the kernel of the map of
 coproducts attached to the induced map of components. -/
 theorem isFreeOver_of_isLimit_kernelFork_homologyMap_zero (f : X ⟶ Y) {Z : C}

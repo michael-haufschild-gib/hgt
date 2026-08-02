@@ -102,16 +102,12 @@ theorem isIso_ι_famCoverSup :
   rw [h]
   exact inferInstanceAs (IsIso (SSet.Subcomplex.topIso (nerve (famBuilding W))).hom)
 
-/-- **The induction step, in the shape the induction consumes**: the same statement about the family
-below the coatoms gives the statement about the family above. -/
-theorem epi_frameDatum_classes_of_epi (hN : Nat.card ι = n + 3) (e₀ : Fin (n + 3) ≃ ι)
-    (hp : ∀ a, IsAtom (p a)) (hpW : ∀ a, p a ≤ W a) [Nonempty (famCoverIndex W p)] (R : C)
-    (hn : 1 ≤ n)
-    (hIH : Epi (Limits.Sigma.desc (fun Q' : FrameDatum
-        (fun c : famCoverIndex W p => famCoverTop c)
-        ↥(Set.univ \ {e₀ (Fin.last (n + 2))} : Set ι) =>
-      apartmentClassIn (restrictOrdering (rfl : e₀ (Fin.last (n + 2)) = e₀ (Fin.last (n + 2))))
-        (orderHomNerveMap Q'.vertices) R))) :
+omit [IsModularLattice L] [Finite ι] in
+/-- **From the frames containing the chosen atom to all frames, and from the union of the cover to
+the order complex**: both passages are compositions with isomorphisms. -/
+theorem epi_frameDatum_classes_of_epi_pointed (e₀ : Fin (n + 3) ≃ ι) (R : C)
+    (h : Epi (Limits.Sigma.desc (fun Q : PointedFrameAt W p ι (e₀ (Fin.last (n + 2))) =>
+      apartmentClassIn e₀ (apartmentSupMap (W := W) (p := p) Q.1.vertices) R))) :
     Epi (Limits.Sigma.desc (fun D : FrameDatum W ι =>
       apartmentClassIn e₀ (orderHomNerveMap D.vertices) R)) := by
   haveI hi := isIso_ι_famCoverSup (W := W) (p := p)
@@ -130,7 +126,21 @@ theorem epi_frameDatum_classes_of_epi (hN : Nat.card ι = n + 3) (e₀ : Fin (n 
   rw [hpt]
   refine epi_sigmaDesc_comp_iso _ _ hiso ?_
   exact epi_sigmaDesc_of_epi_comp _
-    (fun Q : PointedFrameAt W p ι (e₀ (Fin.last (n + 2))) => Q.1)
+    (fun Q : PointedFrameAt W p ι (e₀ (Fin.last (n + 2))) => Q.1) h
+
+/-- **The induction step, in the shape the induction consumes**: the same statement about the family
+below the coatoms gives the statement about the family above. -/
+theorem epi_frameDatum_classes_of_epi (hN : Nat.card ι = n + 3) (e₀ : Fin (n + 3) ≃ ι)
+    (hp : ∀ a, IsAtom (p a)) (hpW : ∀ a, p a ≤ W a) [Nonempty (famCoverIndex W p)] (R : C)
+    (hn : 1 ≤ n)
+    (hIH : Epi (Limits.Sigma.desc (fun Q' : FrameDatum
+        (fun c : famCoverIndex W p => famCoverTop c)
+        ↥(Set.univ \ {e₀ (Fin.last (n + 2))} : Set ι) =>
+      apartmentClassIn (restrictOrdering (rfl : e₀ (Fin.last (n + 2)) = e₀ (Fin.last (n + 2))))
+        (orderHomNerveMap Q'.vertices) R))) :
+    Epi (Limits.Sigma.desc (fun D : FrameDatum W ι =>
+      apartmentClassIn e₀ (orderHomNerveMap D.vertices) R)) :=
+  epi_frameDatum_classes_of_epi_pointed e₀ R
     (epi_pointedFrame_classes_of_epi hN e₀ hp hpW R hn hIH)
 
 end Step

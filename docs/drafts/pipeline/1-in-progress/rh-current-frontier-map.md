@@ -5431,3 +5431,110 @@ Paper:
 `../3-formalized/new_scientific_knowledge/deninger/deninger-rational-witt-packet-gauge-descent.md`.
 Lean:
 `DeningerRationalWittPacketGaugeDescent.lean`.
+
+## 2026-08-02 Route L frontier update: global affine packet gauge torsor
+
+The finite rational-Witt gauge system is now globalized without pretending its affine
+transitions are group homomorphisms.
+
+First, the literal packet's independently assembled CRT reductions satisfy the missing canonical
+transition law
+
+```text
+canonicalReduction_(s,t)(packetReduction_t(x)) = packetReduction_s(x).
+```
+
+Thus the earlier choice-defined finite quotient factor equals canonical Frobenius quotient
+reduction. Compactness, finite-stage surjectivity, and joint injectivity then give an actual
+homeomorphism
+
+```text
+DeningerPacket_p ≃ inverseLimit_s Q_s.
+```
+
+For forced affine transitions
+
+```text
+kappa_(s,t)(q) = [a_(s,t)] * canonicalReduction_(s,t)(q),
+```
+
+the coherent-family limit `A_p` is nonempty. The standard packet limit acts coordinatewise on
+`A_p`, and for affine points `a,b`, their coordinatewise difference `a⁻¹b` is a coherent standard
+packet because the common gauge translation cancels. This proves a simply transitive action:
+
+```text
+A_p is a torsor under DeningerPacket_p.
+```
+
+Choosing one coherent affine point yields a homeomorphism from the actual packet to `A_p`.
+Normalized full-support Haar probability transports across it, and continuous real affine
+packet functions inject into transported Haar `L²`.
+
+This closes the global packet ambiguity. Standard inverse-limit compactness and Haar transport
+receive no novelty credit; source-specific content is exact CRT naturality and classification of
+the forced rational-Witt affine limit as an actual-packet torsor.
+
+The strengthened source-horizon theorem changes the Route L target more sharply than the earlier
+unbounded-rank version. Complete orientation transport cannot be another closable single-valued
+operator, but it also cannot be rescued by an ordinary ungraded closed relation in the canonical
+product topology. Any such relation retaining the complete reader is maximally vertical:
+
+```text
+R = dom(R) × C^N.
+```
+
+It imposes no output constraint, independently of the proposed horizon value. The previous
+relation-valued secondary-Cauchy target is therefore retired.
+
+Tensorized Calderón descent to the affine limit is now closed. Every finite-stage function pulls
+back injectively to continuous functions and complex Haar `L²` on the affine gauge limit.
+Gauge-corrected refinement gives literal equality of those pullbacks, their first-suspension
+vectors, and their tensorized Calderón cross-effects. Every nonzero finite packet coefficient has
+one arithmetic-Frobenius-fixed rational-Witt witness whose entire cofinal refinement family maps
+to one nonzero global tensor class. This removes the externally frozen-packet ambiguity without
+discarding primitive-root gauge.
+
+The next hard theorem is now a grade-preserving all-prime secondary attachment before closure.
+Its topology must not be the canonical ungraded prime-normal product topology. It must retain
+rational-Witt stage, suspension, prime graph-energy, and unbounded source-horizon sample grades,
+be compatible with the actual arithmetic middle differential, and have closed radical exactly
+the genuine middle-boundary space. Only after that can Paugam cup/trace and positive Hodge
+transport move the RH frontier.
+
+Paper:
+`../3-formalized/new_scientific_knowledge/deninger/deninger-rational-witt-packet-gauge-limit.md`.
+
+Lean:
+
+```text
+DeningerPrimeFiniteCyclotomicTransitionNaturality.lean
+DeningerPrimeFinitePacketInverseLimit.lean
+DeningerRationalWittPacketGaugeLimit.lean
+DeningerRationalWittGaugeFirstSuspensionDescent.lean
+```
+
+New paper and audit:
+`../3-formalized/new_scientific_knowledge/deninger/deninger-affine-gauge-first-suspension-descent.md`.
+
+The next topology audit is now paper-proved and formalised unconditionally in Lean. The
+source-horizon packets
+\(P_j=(p_i^{-j})_i\), \(j\ge1\), remain Hilbert-cyclic along every infinite subset of sample
+indices. Therefore a graded closed relation still saturates an entire Hilbert grade whenever
+infinitely many canonical samples are placed in that grade. A grading avoids forced saturation
+in every grade exactly when every grade fibre is finite. In particular first-suspension degree,
+parity, any finite Postnikov grading, and any other finite grading are insufficient. Route L now
+requires an unbounded source-horizon sample grade in addition to cohomological/suspension degree;
+forgetting it before closed-boundary formation recreates maximal verticality. The Lean theorem
+constructs the closed finite-fibre product carrier and proves the converse: existence of any
+closed gradewise-proper carrier retaining the source-defined affine packet forces every grade
+fibre to be finite.
+
+Paper:
+`../3-formalized/new_scientific_knowledge/deninger/deninger-prime-normal-finite-fibre-grading-law.md`.
+
+Lean:
+
+```text
+CompleteResolutionPrimeNormalHilbertSaturation.lean
+CompleteResolutionPrimeNormalFiniteFibreGrading.lean
+```

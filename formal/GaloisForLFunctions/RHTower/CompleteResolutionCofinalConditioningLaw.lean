@@ -1444,6 +1444,444 @@ theorem completeResolution_closedLinearRelation_countablePrime_projectivelyFull
     completeResolutionNthPrimePacket,
     finitePrimeNormalSpectrum_samplePoint]
 
+/-- The inverse-prime nodes augmented by the proposed horizon node `1`. -/
+def completeResolutionAffinePrimeNode
+    {r : ℕ} : Fin (r + 1) → ℂ :=
+  fun i =>
+    Fin.lastCases 1
+      (fun j : Fin r =>
+        ((Nat.nth Nat.Prime j.1 : ℂ)⁻¹)) i
+
+theorem completeResolutionAffinePrimeNode_injective
+    {r : ℕ} :
+    Function.Injective
+      (completeResolutionAffinePrimeNode (r := r)) := by
+  intro i j hij
+  induction i using Fin.lastCases with
+  | last =>
+      induction j using Fin.lastCases with
+      | last => rfl
+      | cast j =>
+          exfalso
+          simp only [completeResolutionAffinePrimeNode,
+            Fin.lastCases_last, Fin.lastCases_castSucc] at hij
+          have hne : ((Nat.nth Nat.Prime j.1 : ℂ)⁻¹) ≠ 1 := by
+            intro h
+            have hcast : (Nat.nth Nat.Prime j.1 : ℂ) = 1 :=
+              inv_eq_one.mp h
+            have hnat : Nat.nth Nat.Prime j.1 = 1 := by
+              exact_mod_cast hcast
+            have hge := Nat.add_two_le_nth_prime j.1
+            omega
+          exact hne hij.symm
+  | cast i =>
+      induction j using Fin.lastCases with
+      | last =>
+          exfalso
+          simp only [completeResolutionAffinePrimeNode,
+            Fin.lastCases_last, Fin.lastCases_castSucc] at hij
+          have hne : ((Nat.nth Nat.Prime i.1 : ℂ)⁻¹) ≠ 1 := by
+            intro h
+            have hcast : (Nat.nth Nat.Prime i.1 : ℂ) = 1 :=
+              inv_eq_one.mp h
+            have hnat : Nat.nth Nat.Prime i.1 = 1 := by
+              exact_mod_cast hcast
+            have hge := Nat.add_two_le_nth_prime i.1
+            omega
+          exact hne hij
+      | cast j =>
+          simp only [completeResolutionAffinePrimeNode,
+            Fin.lastCases_castSucc] at hij
+          apply Fin.castSucc_injective
+          apply Fin.ext
+          apply Nat.nth_injective Nat.infinite_setOf_prime
+          have hc :
+              (Nat.nth Nat.Prime i.1 : ℂ) =
+                (Nat.nth Nat.Prime j.1 : ℂ) := by
+            apply inv_injective
+            exact hij
+          exact_mod_cast hc
+
+/-- Extend an `r`-coordinate target by a final zero coordinate. -/
+def completeResolutionAffineExtendedTarget
+    {r : ℕ} (w : Fin r → ℂ) : Fin (r + 1) → ℂ :=
+  fun i => Fin.lastCases 0 w i
+
+/-- The first `r+1` countable prime packets span every finite target after
+subtraction of an arbitrary proposed horizon value.  Thus vertical rank is
+independent of the choice of affine centering at the collapsed point. -/
+theorem completeResolutionCountablePrimeOutput_affine_span
+    {r : ℕ} (y w : Fin r → ℂ) :
+    ∃ a : Fin (r + 1) → ℂ,
+      w = ∑ j, a j •
+        (fun i : Fin r =>
+          completeResolutionCountablePrimeOutput j.1 i.1 - y i) := by
+  let node : Fin (r + 1) → ℂ :=
+    completeResolutionAffinePrimeNode
+  let M : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ :=
+    Matrix.vandermonde node
+  have hdet : M.det ≠ 0 := by
+    exact Matrix.det_vandermonde_ne_zero_iff.mpr
+      completeResolutionAffinePrimeNode_injective
+  have hunit : IsUnit M :=
+    (Matrix.isUnit_iff_isUnit_det M).mpr
+      (isUnit_iff_ne_zero.mpr hdet)
+  obtain ⟨a, ha⟩ :=
+    (Matrix.mulVec_surjective_iff_isUnit.mpr hunit)
+      (completeResolutionAffineExtendedTarget w)
+  refine ⟨a, ?_⟩
+  have hsum : ∑ j, a j = 0 := by
+    have hlast := congrFun ha (Fin.last r)
+    simpa [M, node, Matrix.mulVec, dotProduct,
+      completeResolutionAffineExtendedTarget,
+      completeResolutionAffinePrimeNode] using hlast
+  funext i
+  have hi := congrFun ha i.castSucc
+  simp only [completeResolutionAffineExtendedTarget,
+    Fin.lastCases_castSucc] at hi
+  rw [← hi]
+  simp only [M, node, Matrix.mulVec, dotProduct,
+    Matrix.vandermonde_apply,
+    completeResolutionAffinePrimeNode,
+    Fin.lastCases_castSucc, Finset.sum_apply,
+    Pi.smul_apply, smul_eq_mul,
+    completeResolutionCountablePrimeOutput]
+  have hrhs :
+      (∑ j : Fin (r + 1),
+          a j *
+            (((Nat.nth Nat.Prime i.1 : ℂ)⁻¹) ^ j.1 - y i)) =
+        (∑ j : Fin (r + 1),
+          ((Nat.nth Nat.Prime i.1 : ℂ)⁻¹) ^ j.1 * a j) -
+            (∑ j : Fin (r + 1), a j) * y i := by
+    calc
+      (∑ j : Fin (r + 1),
+          a j *
+            (((Nat.nth Nat.Prime i.1 : ℂ)⁻¹) ^ j.1 - y i)) =
+          ∑ j : Fin (r + 1),
+            (((Nat.nth Nat.Prime i.1 : ℂ)⁻¹) ^ j.1 * a j -
+              a j * y i) := by
+                apply Finset.sum_congr rfl
+                intro j hj
+                ring
+      _ = (∑ j : Fin (r + 1),
+            ((Nat.nth Nat.Prime i.1 : ℂ)⁻¹) ^ j.1 * a j) -
+          ∑ j : Fin (r + 1), a j * y i := by
+            rw [Finset.sum_sub_distrib]
+      _ = (∑ j : Fin (r + 1),
+            ((Nat.nth Nat.Prime i.1 : ℂ)⁻¹) ^ j.1 * a j) -
+          (∑ j : Fin (r + 1), a j) * y i := by
+            rw [Finset.sum_mul]
+  rw [hrhs, hsum]
+  ring
+
+/-- **Affine-center-independent single-horizon law.** No proposed value of
+the countable reader at the collapsed source point reduces the boundary:
+if a closed relation retains reader displacements relative to that value,
+every finite coordinate projection of its vertical fibre is surjective. -/
+theorem completeResolution_closedLinearRelation_countablePrime_affine_projectivelyFull
+    (R : Submodule ℂ
+      (CompleteResolutionSourceSpace × (ℕ → ℂ)))
+    (hclosed : IsClosed
+      (R : Set (CompleteResolutionSourceSpace × (ℕ → ℂ))))
+    (y : ℕ → ℂ)
+    (hgraph : ∀ (K j : ℕ),
+      (completeResolutionCountablePrimeInput K j,
+        completeResolutionCountablePrimeOutput j - y) ∈ R)
+    (r : ℕ) (w : Fin r → ℂ) :
+    ∃ v : ℕ → ℂ,
+      v ∈ linearRelationVerticalFiber R ∧
+      ∀ i : Fin r, v i.1 = w i := by
+  have hvertical : ∀ j : ℕ,
+      completeResolutionCountablePrimeOutput j - y ∈
+        linearRelationVerticalFiber R := by
+    intro j
+    exact closedLinearRelation_mem_vertical_of_tendsto_zero
+      R hclosed
+      (fun K : ℕ => completeResolutionCountablePrimeInput K j)
+      (completeResolutionCountablePrimeOutput j - y)
+      (tendsto_completeResolutionCountablePrimeInput_zero j)
+      (fun K => hgraph K j)
+  obtain ⟨a, hw⟩ :=
+    completeResolutionCountablePrimeOutput_affine_span
+      (fun i : Fin r => y i.1) w
+  let v : ℕ → ℂ :=
+    ∑ j : Fin (r + 1),
+      a j • (completeResolutionCountablePrimeOutput j.1 - y)
+  have hv : v ∈ linearRelationVerticalFiber R := by
+    exact
+      Submodule.sum_mem (linearRelationVerticalFiber R) fun j _ =>
+        Submodule.smul_mem (linearRelationVerticalFiber R)
+          (a j) (hvertical j.1)
+  refine ⟨v, hv, ?_⟩
+  intro i
+  have hi := congrFun hw i
+  rw [hi]
+  simp only [v, Finset.sum_apply, Pi.smul_apply,
+    Pi.sub_apply, smul_eq_mul]
+
+/-- **Maximal verticality.** In the product topology, surjectivity of every
+leading finite coordinate projection makes the vertical fibre dense.  Since
+the relation is closed, the fibre is the whole countable target. -/
+theorem completeResolution_closedLinearRelation_countablePrime_affine_fullVertical
+    (R : Submodule ℂ
+      (CompleteResolutionSourceSpace × (ℕ → ℂ)))
+    (hclosed : IsClosed
+      (R : Set (CompleteResolutionSourceSpace × (ℕ → ℂ))))
+    (y : ℕ → ℂ)
+    (hgraph : ∀ (K j : ℕ),
+      (completeResolutionCountablePrimeInput K j,
+        completeResolutionCountablePrimeOutput j - y) ∈ R)
+    (z : ℕ → ℂ) :
+    ((0 : CompleteResolutionSourceSpace), z) ∈ R := by
+  have hfinite : ∀ r : ℕ, ∃ v : ℕ → ℂ,
+      v ∈ linearRelationVerticalFiber R ∧
+      ∀ i : Fin r, v i.1 = z i.1 := by
+    intro r
+    exact
+      completeResolution_closedLinearRelation_countablePrime_affine_projectivelyFull
+        R hclosed y hgraph r (fun i : Fin r => z i.1)
+  choose v hv hcoord using hfinite
+  have hvtend : Tendsto v atTop (nhds z) := by
+    apply tendsto_pi_nhds.2
+    intro i
+    apply tendsto_const_nhds.congr'
+    filter_upwards [eventually_ge_atTop (i + 1)] with r hr
+    have hir : i < r :=
+      (Nat.lt_succ_self i).trans_le hr
+    exact (hcoord r ⟨i, hir⟩).symm
+  apply hclosed.mem_of_tendsto
+    (tendsto_const_nhds.prodMk_nhds hvtend)
+  exact Filter.Eventually.of_forall fun r => hv r
+
+/-- Domain of a linear relation. -/
+def linearRelationDomain
+    {𝕜 X Y : Type*} [Semiring 𝕜]
+    [AddCommMonoid X] [Module 𝕜 X]
+    [AddCommMonoid Y] [Module 𝕜 Y]
+    (R : Submodule 𝕜 (X × Y)) : Set X :=
+  {x | ∃ y : Y, (x, y) ∈ R}
+
+/-- **Complete output-information collapse.** Once the countable prime
+reader is retained across the source horizon, the relation is exactly its
+domain times the full countable output space.  It imposes no output
+constraint at any source point in its domain. -/
+theorem completeResolution_closedLinearRelation_countablePrime_affine_eq_domain_prod
+    (R : Submodule ℂ
+      (CompleteResolutionSourceSpace × (ℕ → ℂ)))
+    (hclosed : IsClosed
+      (R : Set (CompleteResolutionSourceSpace × (ℕ → ℂ))))
+    (y : ℕ → ℂ)
+    (hgraph : ∀ (K j : ℕ),
+      (completeResolutionCountablePrimeInput K j,
+        completeResolutionCountablePrimeOutput j - y) ∈ R) :
+    (R : Set (CompleteResolutionSourceSpace × (ℕ → ℂ))) =
+      linearRelationDomain R ×ˢ Set.univ := by
+  ext p
+  constructor
+  · intro hp
+    exact ⟨⟨p.2, hp⟩, Set.mem_univ _⟩
+  · rintro ⟨⟨y₀, hy₀⟩, hp₂⟩
+    have hv :
+        ((0 : CompleteResolutionSourceSpace), p.2 - y₀) ∈ R :=
+      completeResolution_closedLinearRelation_countablePrime_affine_fullVertical
+        R hclosed y hgraph (p.2 - y₀)
+    have hadd := Submodule.add_mem R hy₀ hv
+    simpa using hadd
+
+/-! ### Topology classification of the countable prime boundary -/
+
+/-- Algebraic span of all countable prime-normal packets after subtraction
+of an arbitrary proposed value at the collapsed source point. -/
+def completeResolutionAffinePrimePacketSpan
+    (y : ℕ → ℂ) : Submodule ℂ (ℕ → ℂ) :=
+  Submodule.span ℂ
+    (Set.range fun j : ℕ =>
+      completeResolutionCountablePrimeOutput j - y)
+
+/-- Every leading finite coordinate block is attained inside the affine
+prime-packet span.  This statement is algebraic and therefore independent
+of any topology later imposed on the countable target. -/
+theorem completeResolutionAffinePrimePacketSpan_finiteProjection
+    (y : ℕ → ℂ) (r : ℕ) (w : Fin r → ℂ) :
+    ∃ v : ℕ → ℂ,
+      v ∈ completeResolutionAffinePrimePacketSpan y ∧
+      ∀ i : Fin r, v i.1 = w i := by
+  obtain ⟨a, hw⟩ :=
+    completeResolutionCountablePrimeOutput_affine_span
+      (fun i : Fin r => y i.1) w
+  let v : ℕ → ℂ :=
+    ∑ j : Fin (r + 1),
+      a j • (completeResolutionCountablePrimeOutput j.1 - y)
+  have hv : v ∈ completeResolutionAffinePrimePacketSpan y := by
+    exact
+      Submodule.sum_mem (completeResolutionAffinePrimePacketSpan y) fun j _ =>
+        Submodule.smul_mem (completeResolutionAffinePrimePacketSpan y) (a j)
+          (Submodule.subset_span (Set.mem_range_self j.1))
+  refine ⟨v, hv, ?_⟩
+  intro i
+  have hi := congrFun hw i
+  rw [hi]
+  simp only [v, Finset.sum_apply, Pi.smul_apply,
+    Pi.sub_apply, smul_eq_mul]
+
+/-- The affine prime-packet span is dense for the product topology, for
+every proposed value at the collapsed source point.  The proof constructs
+a sequence which agrees with an arbitrary target on successively longer
+leading coordinate blocks. -/
+theorem completeResolutionAffinePrimePacketSpan_dense_product
+    (y : ℕ → ℂ) :
+    Dense
+      (completeResolutionAffinePrimePacketSpan y : Set (ℕ → ℂ)) := by
+  rw [dense_iff_closure_eq]
+  apply Set.eq_univ_of_forall
+  intro z
+  have hfinite : ∀ r : ℕ, ∃ v : ℕ → ℂ,
+      v ∈ completeResolutionAffinePrimePacketSpan y ∧
+      ∀ i : Fin r, v i.1 = z i.1 := by
+    intro r
+    exact
+      completeResolutionAffinePrimePacketSpan_finiteProjection y r
+        (fun i : Fin r => z i.1)
+  choose v hv hcoord using hfinite
+  have hvtend : Tendsto v atTop (nhds z) := by
+    apply tendsto_pi_nhds.2
+    intro i
+    apply tendsto_const_nhds.congr'
+    filter_upwards [eventually_ge_atTop (i + 1)] with r hr
+    have hir : i < r :=
+      (Nat.lt_succ_self i).trans_le hr
+    exact (hcoord r ⟨i, hir⟩).symm
+  exact mem_closure_of_tendsto hvtend
+    (Filter.Eventually.of_forall hv)
+
+/-- Canonical product topology of finite-coordinate prime observation. -/
+@[reducible] def completeResolutionCountablePrimeProductTopology :
+    TopologicalSpace (ℕ → ℂ) :=
+  inferInstance
+
+/-- **Complete topology alternative.** Let `t` be any topology finer than
+finite-coordinate product observation.  A closed relation retaining the
+complete prime-normal source has exactly two possibilities.
+
+* If the affine prime-packet radical remains dense in `t`, the relation is
+  maximally vertical and equals its domain times the whole output space.
+* If it is not dense, then `t` is strictly finer than the product topology.
+
+Thus an output-informative closed completion must introduce genuinely
+infinite-prime open sets; no topology equal to finite-coordinate observation
+can retain output information. -/
+theorem completeResolution_countablePrime_topologyAlternative
+    (t : TopologicalSpace (ℕ → ℂ))
+    (ht : t ≤ completeResolutionCountablePrimeProductTopology) :
+    letI : TopologicalSpace (ℕ → ℂ) := t
+    ∀ (R : Submodule ℂ
+        (CompleteResolutionSourceSpace × (ℕ → ℂ))),
+      IsClosed
+          (R : Set (CompleteResolutionSourceSpace × (ℕ → ℂ))) →
+      ∀ y : ℕ → ℂ,
+      (∀ (K j : ℕ),
+        (completeResolutionCountablePrimeInput K j,
+          completeResolutionCountablePrimeOutput j - y) ∈ R) →
+      (Dense
+          (completeResolutionAffinePrimePacketSpan y : Set (ℕ → ℂ)) ∧
+        (R : Set (CompleteResolutionSourceSpace × (ℕ → ℂ))) =
+          linearRelationDomain R ×ˢ Set.univ) ∨
+      (¬ Dense
+          (completeResolutionAffinePrimePacketSpan y : Set (ℕ → ℂ)) ∧
+        t < completeResolutionCountablePrimeProductTopology) := by
+  letI : TopologicalSpace (ℕ → ℂ) := t
+  intro R hclosed y hgraph
+  by_cases hdense :
+      Dense
+        (completeResolutionAffinePrimePacketSpan y : Set (ℕ → ℂ))
+  · left
+    refine ⟨hdense, ?_⟩
+    have hvertical : ∀ j : ℕ,
+        completeResolutionCountablePrimeOutput j - y ∈
+          linearRelationVerticalFiber R := by
+      intro j
+      exact closedLinearRelation_mem_vertical_of_tendsto_zero
+        R hclosed
+        (fun K : ℕ => completeResolutionCountablePrimeInput K j)
+        (completeResolutionCountablePrimeOutput j - y)
+        (tendsto_completeResolutionCountablePrimeInput_zero j)
+        (fun K => hgraph K j)
+    have hspan :
+        completeResolutionAffinePrimePacketSpan y ≤
+          linearRelationVerticalFiber R := by
+      rw [completeResolutionAffinePrimePacketSpan]
+      apply Submodule.span_le.2
+      rintro _ ⟨j, rfl⟩
+      exact hvertical j
+    have hverticalClosed :
+        IsClosed
+          (linearRelationVerticalFiber R : Set (ℕ → ℂ)) := by
+      exact hclosed.preimage
+        (continuous_const.prodMk continuous_id)
+    have hclosure :
+        closure
+            (completeResolutionAffinePrimePacketSpan y : Set (ℕ → ℂ)) ⊆
+          (linearRelationVerticalFiber R : Set (ℕ → ℂ)) :=
+      closure_minimal hspan hverticalClosed
+    have hverticalUniv :
+        (linearRelationVerticalFiber R : Set (ℕ → ℂ)) =
+          Set.univ := by
+      apply Set.eq_univ_of_forall
+      intro z
+      have hz :
+          z ∈ closure
+            (completeResolutionAffinePrimePacketSpan y :
+              Set (ℕ → ℂ)) := by
+        rw [hdense.closure_eq]
+        exact Set.mem_univ z
+      exact hclosure hz
+    ext p
+    constructor
+    · intro hp
+      exact ⟨⟨p.2, hp⟩, Set.mem_univ _⟩
+    · rintro ⟨⟨y₀, hy₀⟩, _⟩
+      have hv :
+          p.2 - y₀ ∈ linearRelationVerticalFiber R := by
+        change p.2 - y₀ ∈
+          (linearRelationVerticalFiber R : Set (ℕ → ℂ))
+        rw [hverticalUniv]
+        exact Set.mem_univ _
+      have hadd := Submodule.add_mem R hy₀ hv
+      simpa [linearRelationVerticalFiber] using hadd
+  · right
+    refine ⟨hdense, lt_of_le_of_ne ht ?_⟩
+    intro heq
+    apply hdense
+    change @Dense (ℕ → ℂ) t
+      (completeResolutionAffinePrimePacketSpan y : Set (ℕ → ℂ))
+    rw [heq]
+    exact completeResolutionAffinePrimePacketSpan_dense_product y
+
+/-- An output-informative closed completion of the countable prime-normal
+source necessarily uses a topology strictly finer than finite-coordinate
+product observation. -/
+theorem completeResolution_countablePrime_informative_forces_strictTopology
+    (t : TopologicalSpace (ℕ → ℂ))
+    (ht : t ≤ completeResolutionCountablePrimeProductTopology) :
+    letI : TopologicalSpace (ℕ → ℂ) := t
+    ∀ (R : Submodule ℂ
+        (CompleteResolutionSourceSpace × (ℕ → ℂ))),
+      IsClosed
+          (R : Set (CompleteResolutionSourceSpace × (ℕ → ℂ))) →
+      ∀ y : ℕ → ℂ,
+      (∀ (K j : ℕ),
+        (completeResolutionCountablePrimeInput K j,
+          completeResolutionCountablePrimeOutput j - y) ∈ R) →
+      (R : Set (CompleteResolutionSourceSpace × (ℕ → ℂ))) ≠
+          linearRelationDomain R ×ˢ Set.univ →
+      t < completeResolutionCountablePrimeProductTopology := by
+  letI : TopologicalSpace (ℕ → ℂ) := t
+  intro R hclosed y hgraph hinfo
+  rcases completeResolution_countablePrime_topologyAlternative
+      t ht R hclosed y hgraph with hfull | hstrict
+  · exact (hinfo hfull.2).elim
+  · exact hstrict.2
+
 end
 
 end RHTower

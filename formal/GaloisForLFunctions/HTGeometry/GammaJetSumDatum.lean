@@ -82,15 +82,14 @@ theorem exists_hasShiftTubeDatum_jetGammaMonomial {M : ℝ} (hM : 0 < M) {rr : �
     (hincong : ∀ i i', i ≠ i' → ∀ n : ℤ, ((lam i : ℝ) : ℂ) - ((lam i' : ℝ) : ℂ) ≠ (n : ℂ))
     {Mm : ℕ} (idx : Fin Mm → Fin r × ℕ) (hinj : Function.Injective idx)
     {P : MvPolynomial (Fin Mm) (Polynomial ℂ)} (hP : P ≠ 0) :
-    ∃ (ω : ℝ) (b : ℤ) (c : ℂ), c ≠ 0 ∧
+    ∃ (a b : ℤ) (c : ℂ), c ≠ 0 ∧
       HasShiftTubeDatum M 0
         (fun σ t => jetFieldPolyFun lam idx P ((σ : ℂ) + (t : ℂ) * Complex.I)
           * ∏ k : Fin rr, gammaLine (σ + lamf k) t ^ e k)
-        (∑ k : Fin rr, (e k : ℤ)) ω b c := by
-  obtain ⟨ω, b, c, hc, hdat⟩ :=
+        (∑ k : Fin rr, (e k : ℤ)) ((a : ℝ) + ∑ k : Fin rr, (e k : ℝ) * lamf k) b c := by
+  obtain ⟨a, b, c, hc, hdat⟩ :=
     exists_hasShiftTubeDatum_jetFieldPolyFun lam hlam hincong idx hinj hP hM
-  exact ⟨ω + ∑ k : Fin rr, (e k : ℝ) * lamf k, b, c, hc,
-    hdat.mul_gammaProd hM lamf hlamf e⟩
+  exact ⟨a, b, c, hc, hdat.mul_gammaProd hM lamf hlamf e⟩
 
 end
 
