@@ -76,6 +76,13 @@ theorem iteratedTransverseDifferenceMero_eq_face
         multipleEllipticGammaLogDerivFaceMero_addTranslation_sub τ hτ l.toFinset j hjfin,
         List.toFinset_cons]
 
+/-- A single structural transverse difference deletes exactly its own parameter. -/
+theorem transverseDifferenceMero_multipleEllipticGammaLogDerivMero
+    (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (j : ι) :
+    transverseDifferenceMero (τ j) (multipleEllipticGammaLogDerivMero τ hτ) =
+      multipleEllipticGammaLogDerivFaceMero τ hτ {j} := by
+  simpa using iteratedTransverseDifferenceMero_eq_face τ hτ [j] (by simp)
+
 /-! ## Face tests through the exact period-rank dichotomy -/
 
 /-- A face is differentially algebraic exactly when its surviving period family has no rank-three

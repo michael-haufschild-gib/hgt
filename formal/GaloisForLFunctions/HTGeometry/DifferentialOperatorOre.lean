@@ -1,5 +1,8 @@
 import Mathlib.RingTheory.Derivation.DifferentialRing
-import Mathlib.Tactic
+import Mathlib.Algebra.BigOperators.Finsupp.Basic
+import Mathlib.Data.Finsupp.Basic
+import Mathlib.Tactic.Abel
+import Mathlib.Tactic.Ring
 
 /-!
 # The Ore ring of linear differential operators
@@ -353,6 +356,210 @@ theorem X_pow_eq_mono (n : ℕ) : (X : DiffOp K) ^ n = mono n 1 := by
 theorem mono_eq_C_mul_X_pow (n : ℕ) (a : K) :
     mono n a = C a * (X : DiffOp K) ^ n := by
   rw [C_mul, X_pow_eq_mono, smul_mono, mul_one]
+
+end
+
+end DiffOp
+
+namespace DiffOp
+
+noncomputable section
+
+variable {K : Type u} [CommRing K] [Differential K]
+
+/-- Coefficient extraction, as an additive homomorphism. -/
+def coeffAddHom (n : ℕ) : DiffOp K →+ K where
+  toFun p := coeff p n
+  map_zero' := coeff_zero n
+  map_add' p q := coeff_add p q n
+
+@[simp] theorem coeffAddHom_apply (n : ℕ) (p : DiffOp K) : coeffAddHom n p = coeff p n := rfl
+
+theorem mul_eq_sum (p q : DiffOp K) :
+    p * q = ∑ n ∈ (toFinsupp p).support, coeff p n • dpartial^[n] q := by
+  rw [mul_def, Finsupp.liftAddHom_apply]
+  rfl
+
+theorem coeff_mul (p q : DiffOp K) (N : ℕ) :
+    coeff (p * q) N = ∑ n ∈ (toFinsupp p).support, coeff p n * coeff (dpartial^[n] q) N := by
+  rw [mul_eq_sum]
+  rw [← coeffAddHom_apply N, map_sum]
+  simp
+
+/-- The order of an operator.  The zero operator is given order `0`, so that `degree` is the
+truncated order `max (0, ord)` used in two-sided comparison estimates. -/
+def degree (p : DiffOp K) : ℕ := (toFinsupp p).support.sup id
+
+theorem degree_le_iff {p : DiffOp K} {n : ℕ} :
+    degree p ≤ n ↔ ∀ m, n < m → coeff p m = 0 := by
+  constructor
+  · intro h m hm
+    by_contra hc
+    have hmem : m ∈ (toFinsupp p).support := Finsupp.mem_support_iff.mpr hc
+    have : m ≤ degree p := Finset.le_sup (f := id) hmem
+    omega
+  · intro h
+    refine Finset.sup_le ?_
+    intro m hm
+    by_contra hc
+    exact (Finsupp.mem_support_iff.mp hm) (h m (by simpa using Nat.lt_of_not_le hc))
+
+theorem coeff_eq_zero_of_degree_lt {p : DiffOp K} {n : ℕ} (h : degree p < n) :
+    coeff p n = 0 :=
+  degree_le_iff.mp le_rfl n h
+
+theorem le_degree {p : DiffOp K} {n : ℕ} (h : coeff p n ≠ 0) : n ≤ degree p :=
+  Finset.le_sup (f := id) (Finsupp.mem_support_iff.mpr h)
+
+/-- The leading coefficient of an operator. -/
+def leadCoeff (p : DiffOp K) : K := coeff p (degree p)
+
+theorem leadCoeff_ne_zero {p : DiffOp K} (hp : p ≠ 0) : leadCoeff p ≠ 0 := by
+  have hne : (toFinsupp p).support.Nonempty := by
+    rw [Finsupp.support_nonempty_iff]
+    intro h
+    exact hp h
+  have hmem : degree p ∈ (toFinsupp p).support := by
+    have hmm := Finset.max'_mem (toFinsupp p).support hne
+    have hmax : (toFinsupp p).support.max' hne = degree p := by
+      rw [degree, Finset.max'_eq_sup', Finset.sup'_eq_sup]
+    rwa [hmax] at hmm
+  exact Finsupp.mem_support_iff.mp hmem
+
+@[simp] theorem degree_zero : degree (0 : DiffOp K) = 0 := by
+  simp [degree]
+
+theorem degree_mono_le (n : ℕ) (a : K) : degree (mono n a) ≤ n := by
+  refine degree_le_iff.mpr ?_
+  intro m hm
+  exact coeff_mono_of_ne a (by omega)
+
+theorem degree_add_le (p q : DiffOp K) :
+    degree (p + q) ≤ max (degree p) (degree q) := by
+  refine degree_le_iff.mpr ?_
+  intro m hm
+  rw [coeff_add, coeff_eq_zero_of_degree_lt (lt_of_le_of_lt (le_max_left _ _) hm),
+    coeff_eq_zero_of_degree_lt (lt_of_le_of_lt (le_max_right _ _) hm), add_zero]
+
+theorem degree_neg (p : DiffOp K) : degree (-p) = degree p := by
+  refine le_antisymm (degree_le_iff.mpr fun m hm => ?_) (degree_le_iff.mpr fun m hm => ?_)
+  · rw [coeff_neg, coeff_eq_zero_of_degree_lt hm, neg_zero]
+  · have h := coeff_eq_zero_of_degree_lt (p := -p) hm
+    rw [coeff_neg, neg_eq_zero] at h
+    exact h
+
+theorem degree_sub_le (p q : DiffOp K) :
+    degree (p - q) ≤ max (degree p) (degree q) := by
+  rw [sub_eq_add_neg]
+  refine le_trans (degree_add_le p (-q)) ?_
+  rw [degree_neg]
+
+theorem degree_smul_le (a : K) (p : DiffOp K) : degree (a • p) ≤ degree p := by
+  refine degree_le_iff.mpr ?_
+  intro m hm
+  rw [coeff_smul, coeff_eq_zero_of_degree_lt hm, mul_zero]
+
+theorem degree_dpartial_le (p : DiffOp K) : degree (dpartial p) ≤ degree p + 1 := by
+  refine degree_le_iff.mpr ?_
+  intro m hm
+  cases m with
+  | zero => omega
+  | succ m =>
+    rw [coeff_dpartial_succ, coeff_eq_zero_of_degree_lt (by omega),
+      coeff_eq_zero_of_degree_lt (by omega)]
+    simp
+
+theorem degree_dpartial_iterate_le (n : ℕ) (p : DiffOp K) :
+    degree (dpartial^[n] p) ≤ degree p + n := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    rw [Function.iterate_succ_apply']
+    exact le_trans (degree_dpartial_le _) (by omega)
+
+theorem coeff_dpartial_iterate_top (n : ℕ) (q : DiffOp K) :
+    coeff (dpartial^[n] q) (degree q + n) = leadCoeff q := by
+  induction n with
+  | zero => simp [leadCoeff]
+  | succ n ih =>
+    rw [Function.iterate_succ_apply']
+    have hzero : coeff (dpartial^[n] q) (degree q + n + 1) = 0 :=
+      coeff_eq_zero_of_degree_lt
+        (lt_of_le_of_lt (degree_dpartial_iterate_le n q) (by omega))
+    have hidx : degree q + (n + 1) = (degree q + n) + 1 := by omega
+    rw [hidx, coeff_dpartial_succ, ih, hzero]
+    simp
+
+theorem degree_mul_le (p q : DiffOp K) : degree (p * q) ≤ degree p + degree q := by
+  refine degree_le_iff.mpr ?_
+  intro N hN
+  rw [coeff_mul]
+  refine Finset.sum_eq_zero ?_
+  intro n hn
+  have hnle : n ≤ degree p := Finset.le_sup (f := id) hn
+  have hlt : degree (dpartial^[n] q) < N :=
+    lt_of_le_of_lt (degree_dpartial_iterate_le n q) (by omega)
+  rw [coeff_eq_zero_of_degree_lt hlt, mul_zero]
+
+theorem coeff_mul_top (p q : DiffOp K) :
+    coeff (p * q) (degree p + degree q) = leadCoeff p * leadCoeff q := by
+  by_cases hp : p = 0
+  · subst hp
+    simp [leadCoeff]
+  have hmem : degree p ∈ (toFinsupp p).support :=
+    Finsupp.mem_support_iff.mpr (leadCoeff_ne_zero hp)
+  rw [coeff_mul]
+  refine (Finset.sum_eq_single_of_mem (degree p) hmem ?_).trans ?_
+  · intro n hn hne'
+    have hnle : n ≤ degree p := Finset.le_sup (f := id) hn
+    have hlt : degree (dpartial^[n] q) < degree p + degree q :=
+      lt_of_le_of_lt (degree_dpartial_iterate_le n q) (by omega)
+    rw [coeff_eq_zero_of_degree_lt hlt, mul_zero]
+  · have hcomm : degree p + degree q = degree q + degree p := by omega
+    rw [hcomm, coeff_dpartial_iterate_top]
+    rfl
+
+section Domain
+
+variable [NoZeroDivisors K]
+
+theorem leadCoeff_mul_and_degree_mul {p q : DiffOp K} (hp : p ≠ 0) (hq : q ≠ 0) :
+    leadCoeff (p * q) = leadCoeff p * leadCoeff q ∧ degree (p * q) = degree p + degree q := by
+  have htop : coeff (p * q) (degree p + degree q) = leadCoeff p * leadCoeff q :=
+    coeff_mul_top p q
+  have hne : leadCoeff p * leadCoeff q ≠ 0 :=
+    mul_ne_zero (leadCoeff_ne_zero hp) (leadCoeff_ne_zero hq)
+  have hdeg : degree (p * q) = degree p + degree q :=
+    le_antisymm (degree_mul_le p q) (le_degree (by rw [htop]; exact hne))
+  exact ⟨by rw [leadCoeff, hdeg, htop], hdeg⟩
+
+theorem degree_mul {p q : DiffOp K} (hp : p ≠ 0) (hq : q ≠ 0) :
+    degree (p * q) = degree p + degree q := (leadCoeff_mul_and_degree_mul hp hq).2
+
+theorem leadCoeff_mul {p q : DiffOp K} (hp : p ≠ 0) (hq : q ≠ 0) :
+    leadCoeff (p * q) = leadCoeff p * leadCoeff q := (leadCoeff_mul_and_degree_mul hp hq).1
+
+theorem mul_ne_zero' {p q : DiffOp K} (hp : p ≠ 0) (hq : q ≠ 0) : p * q ≠ 0 := by
+  intro h
+  have hlead := (leadCoeff_mul_and_degree_mul hp hq).1
+  rw [h] at hlead
+  simp only [leadCoeff, coeff_zero] at hlead
+  exact (mul_ne_zero (leadCoeff_ne_zero hp) (leadCoeff_ne_zero hq)) hlead.symm
+
+instance : NoZeroDivisors (DiffOp K) where
+  eq_zero_or_eq_zero_of_mul_eq_zero := by
+    intro a b hab
+    by_contra hc
+    exact mul_ne_zero' (fun h => hc (Or.inl h)) (fun h => hc (Or.inr h)) hab
+
+end Domain
+
+instance [Nontrivial K] : Nontrivial (DiffOp K) where
+  exists_pair_ne := by
+    refine ⟨0, 1, ?_⟩
+    intro h
+    have hc := congrArg (fun p => coeff p 0) h
+    simp [one_def] at hc
 
 end
 

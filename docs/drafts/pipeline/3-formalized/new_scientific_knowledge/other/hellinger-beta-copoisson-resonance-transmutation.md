@@ -1,15 +1,16 @@
 # Hellinger--Beta/co-Poisson resonance transmutation
 
 - **ID:** `hellinger-beta-copoisson-resonance-transmutation`
-- **Stage:** 2 — fully proven on paper
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** EXACT SCALAR REPAIR NO-GO + VECTOR-COFACE SURVIVOR
-- **Scientific status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Scientific status:** `[LEAN-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parents:**
   - `../2-fully-proven/new_scientific_knowledge/suzuki/bv-copoisson-sharp-critical-half-weight-log-flux.md`;
   - `../4-publication-ready/riemann-hellinger-hodge-green-descent/main.tex`.
 - **RH used:** no
 - **Computation used:** no
-- **Lean:** not yet formalized
+- **Lean:** fully formalized unconditionally in
+  `formal/GaloisForLFunctions/RHTower/BVCoPoissonHellingerBetaResonanceTransmutation.lean`
 
 ## Frontier and failed conjecture
 
@@ -65,7 +66,7 @@ normalization.  Define
 \tag{4}
 \]
 
-`[PAPER-PROVED] [HELLINGER_BETA_COPOISSON_RESONANCE_TRANSMUTATION]`
+`[LEAN-PROVED] [HELLINGER_BETA_COPOISSON_RESONANCE_TRANSMUTATION]`
 
 1. For every \(n\ge1\), the zero of \(H(1-s)\) at \(s=1+2n\)
    cancels the simple pole of \(\chi_+\).  Only the initial integer pole
@@ -206,6 +207,49 @@ residue at \(s=3/2\).  Nonzero quotient class kills the conjecture; exact
 incidence boundary gives the first source-native mechanism capable of
 entering Burnol's graph without assuming RH.
 
+## Lean formalization
+
+The scalar theorem and its positive Beta-recurrence survivor are formalized
+without mathematical hypotheses beyond the explicit regular-point
+conditions of the Gamma shift identity.  Main theorem:
+
+- `hellingerBetaCoPoisson_resonanceTransmutation` — capstone packaging the
+  recurrence, both old integer-pole cancellations, exact nonzero residues on
+  the full common half-lattice, and both finite-exception polynomial no-go
+  statements.
+
+Supporting exact statements include:
+
+- `hellingerHodgeBetaColumnComplex_add_one` and
+  `hellingerHodgeBetaColumnComplex_real_add_one` — formula `(9)`;
+- `hellingerBetaReflectedResidue_eq_card_formula` — formula `(6)` exactly in
+  eta/factorial/Gamma form;
+- `tendsto_hellingerBetaEvenReflectedMellin_oldPole` and
+  `tendsto_hellingerBetaOddReflectedMellin_oldPole` — finite punctured limits
+  at every old integer pole after the initial point;
+- `hellingerBetaEvenIntegerCancellationValue_ne_zero` and
+  `hellingerBetaOddIntegerCancellationValue_ne_zero` — exact nonzero
+  cancellation values;
+- `tendsto_hellingerBetaEvenReflectedMellin_residue` and
+  `tendsto_hellingerBetaOddReflectedMellin_residue` — normalized limits at
+  every point `(5)`;
+- `hellingerBetaEvenReflectedResidue_ne_zero` and
+  `hellingerBetaOddReflectedResidue_ne_zero` — nonvanishing in both parities;
+- `polynomial_eq_zero_of_cancels_hellingerBeta_even_half_residues_off_finset`
+  and
+  `polynomial_eq_zero_of_cancels_hellingerBeta_odd_half_residues_off_finset`
+  — exact “outside a finite set” form of item 4.
+
+Verification:
+
+- `lake env lean GaloisForLFunctions/RHTower/BVCoPoissonHellingerBetaResonanceTransmutation.lean`;
+- `lake build GaloisForLFunctions.RHTower.BVCoPoissonHellingerBetaResonanceTransmutation`;
+- `#print axioms` on the capstone and critical supporting theorems reports
+  only `propext`, `Classical.choice`, and `Quot.sound`.
+
+The separate `[VECTOR_HELLINGER_COFACE_RESIDUE_BOUNDARY]` statement remains
+conjectural and is deliberately not asserted by the Lean capstone.
+
 ## Gates
 
 - [x] exact scalar conjecture stated
@@ -214,5 +258,5 @@ entering Burnol's graph without assuming RH.
 - [x] dependency-closed paper proof
 - [x] internal parent-theory audit
 - [x] preliminary primary-literature audit
-- [ ] exact Lean formalization
+- [x] exact Lean formalization
 - [ ] vector coface residue computation

@@ -119,9 +119,7 @@ theorem deningerResidue_comp_logSection :
 /-- The Poincaré residue is a surjection, split by the normal-form section. -/
 theorem deningerResidue_surjective :
     Function.Surjective (deningerResidue (D := D) (V := V)) := fun γ =>
-  ⟨deningerLogSection γ,
-    congrArg (fun T : DeningerBoundaryForms D V →L[ℂ] DeningerBoundaryForms D V => T γ)
-      deningerResidue_comp_logSection⟩
+  ⟨deningerLogSection γ, DFunLike.congr_fun deningerResidue_comp_logSection γ⟩
 
 end SplitChart
 
@@ -204,11 +202,7 @@ theorem deningerLogSection_graphSeminorm_le_iff {γ : DeningerBoundaryForms D V}
     (m : ℕ) (K : Set (D × ℂ)) (C : ℝ) :
     (∀ p ∈ K, ‖(A ^ m) ((deningerLogSection γ).2 p)‖ ≤ C) ↔
       ∀ x ∈ Prod.fst '' K, ‖(A ^ m) (γ x)‖ ≤ C := by
-  constructor
-  · rintro h x ⟨p, hp, rfl⟩
-    exact h p hp
-  · intro h p hp
-    exact h p.1 ⟨p, hp, rfl⟩
+  exact ⟨fun h _ ⟨p, hp, hx⟩ => hx ▸ h p hp, fun h p hp => h p.1 ⟨p, hp, rfl⟩⟩
 
 /-- Every graph seminorm of the residue is bounded by the source graph seminorm on the normal zero
 locus, with the same constant. -/
@@ -239,12 +233,11 @@ theorem deningerResidue_splitStrict_graphCore {γ : DeningerBoundaryForms D V}
           (∀ p ∈ K, ‖(A ^ m) (ω.2 p)‖ ≤ C) ↔ ∀ x ∈ Prod.fst '' K, ‖(A ^ m) (γ x)‖ ≤ C) ∧
         ∀ (x : D) {j : ℕ}, j ≠ 0 → ∀ z : ℂ,
           iteratedDeriv j (fun w : ℂ => ω.2 (x, w)) z = 0 := by
-  refine ⟨deningerLogSection γ, (deningerLogSection_transverseCore h).1,
-    (deningerLogSection_transverseCore h).2, ?_,
+  exact ⟨deningerLogSection γ, (deningerLogSection_transverseCore h).1,
+    (deningerLogSection_transverseCore h).2,
+    DFunLike.congr_fun deningerResidue_comp_logSection γ,
     fun m K C => deningerLogSection_graphSeminorm_le_iff m K C,
     fun x _ hj z => deningerLogSection_iteratedDeriv_normal γ x hj z⟩
-  exact congrArg (fun T : DeningerBoundaryForms D V →L[ℂ] DeningerBoundaryForms D V => T γ)
-    deningerResidue_comp_logSection
 
 end ResidueGraphCompatibility
 
@@ -261,10 +254,8 @@ theorem deningerNormalCircle_iteratedDeriv_le {g : C(D × ℂ, V)}
     (x : D) (j : ℕ) {r C : ℝ} (hr : 0 < r)
     (hC : ∀ z : ℂ, ‖z‖ = r → ‖g (x, z)‖ ≤ C) :
     ‖iteratedDeriv j (fun z : ℂ => g (x, z)) 0‖ ≤ j.factorial * C / r ^ j := by
-  refine Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le j hr
-    ((hg x).diffContOnCl) ?_
-  intro z hz
-  exact hC z (by simpa [Complex.dist_eq] using mem_sphere_iff_norm.mp hz)
+  exact Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le j hr (hg x).diffContOnCl
+    fun z hz => hC z (by simpa using mem_sphere_iff_norm.mp hz)
 
 /-- The transverse graph core together with normal holomorphy of every transverse monomial: the
 analytic domain of the seminorms `p_{K,j,m}(ω) = sup_K ‖∂_z^j A^m ω‖`. -/
@@ -372,15 +363,13 @@ theorem deningerPacketRestriction_comp_section (Y : Finset D) :
     rfl
   · intro y' _ hne
     rw [deningerPacketIdempotent_of_ne Y y' y.2 (fun h => hne (Subtype.ext h.symm)), mul_zero]
-  · intro h
-    exact absurd (Finset.mem_univ y) h
+  · simp
 
 /-- Finite packet evaluation is a continuous surjection onto `Map(Y, ℂ)`. -/
 theorem deningerPacketRestriction_surjective (Y : Finset D) :
     Function.Surjective (deningerPacketRestriction Y) := fun c =>
   ⟨deningerPacketSection Y c,
-    congrArg (fun T : (↥Y → ℂ) →L[ℂ] (↥Y → ℂ) => T c)
-      (deningerPacketRestriction_comp_section Y)⟩
+    DFunLike.congr_fun (deningerPacketRestriction_comp_section Y) c⟩
 
 end FinitePacket
 
@@ -398,9 +387,8 @@ theorem deningerSplitSurjection_prodMap
     {T : E →L[ℂ] F} {S : F →L[ℂ] E} (h : T.comp S = ContinuousLinearMap.id ℂ F)
     {T' : E' →L[ℂ] F'} {S' : F' →L[ℂ] E'} (h' : T'.comp S' = ContinuousLinearMap.id ℂ F') :
     (T.prodMap T').comp (S.prodMap S') = ContinuousLinearMap.id ℂ (F × F') := by
-  refine ContinuousLinearMap.ext fun w => Prod.ext ?_ ?_
-  · exact congrArg (fun U : F →L[ℂ] F => U w.1) h
-  · exact congrArg (fun U : F' →L[ℂ] F' => U w.2) h'
+  exact ContinuousLinearMap.ext fun w =>
+    Prod.ext (DFunLike.congr_fun h w.1) (DFunLike.congr_fun h' w.2)
 
 end FiniteCell
 

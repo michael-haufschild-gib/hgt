@@ -241,8 +241,10 @@ Cartier function.”  It is:
 
 - [x] 0 → 1 in-progress: finite-stage pro-log statement isolated
 - [x] 1 → 2 fully-proven: stalk, colimit, pullback, and power proof
-- [ ] 2 → 3 formalized: finite-support valuation resolution and
-  Tate-normalized power compatibility remain to be encoded in Lean
+- [x] finite-support valuation resolution encoded in Lean
+- [x] Tate-normalized power compatibility encoded in Lean
+- [ ] 2 → 3 formalized: blocked only by the log-geometric layer, which
+  mathlib cannot yet express (see Lean status)
 - [ ] 3 → 4 publication-ready: integrate with source analytic purity
 
 ## References
@@ -260,6 +262,13 @@ Cartier function.”  It is:
 - 2026-07-27 — replaced unsupported ordinary analytic Cartier
   conjecture for \([p]\) by finite divisorial log stages and their
   exact generalized-prime Kummer resolution.
+- 2026-08-02 — §4 formalized unconditionally in
+  `DeningerTateNormalizedPowerCompatibility.lean`: integral power
+  compatibility of divisors, the rational power correspondence with the
+  proof that it really is exponentiation, equation `(10)`, equation
+  `(11)`, and the rigidity theorem that weight `-1` is the only twist
+  producing invariance.  Both named sub-items of the `2 → 3` gate are
+  now encoded; only the log-geometric layer remains.
 
 ## Lean status
 
@@ -289,6 +298,34 @@ machinery in `DeningerSUnitEndpointPage.lean` and the finite-support lemma in
   `S` is realized.
 - The identification of the `S`-units with the free abelian group on `S`, which is `(6)` in
   coordinates, is `deningerSUnitsEquiv` in `DeningerSUnitEndpointPage.lean`.
+
+### Rational powers and the Tate normalization landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerTateNormalizedPowerCompatibility.lean` encodes §4,
+equations `(10)`--`(11)`.  Axiom audit for all 23 declarations:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerDivisor_one`, `deningerDivisor_inv`, `deningerDivisor_pow`, `deningerDivisor_zpow` —
+  **exponentiation multiplies divisors**, `div(u^n) = n · div(u)` for every integer `n`.  This is
+  the characteristic-group form of Deninger's `F_q^*[β] = [β]^q`.
+- `DeningerRationalCharacter`, `deningerRationalDivisor`, `deningerOrd` — the Kummer
+  groupification `M_P^{gp} ⊗ ℚ` in prime coordinates, the Kummer map into it, and the residue
+  functional `ord_p`.  `deningerOrd_rationalDivisor_primeUnit` is the multiplicity-one
+  normalization `ord_p(p) = 1` in that language.
+- `deningerRationalPower`, `deningerRationalPower_mul`, `deningerRationalPower_one` — the
+  rational power correspondence `F_q` as an action on the characteristic group, and
+  `deningerRationalPower_zpow_kummer` proves this scaling *is* exponentiation: on an integral
+  exponent it carries the Kummer class of `u` to that of `u^n`, so the action is not an arbitrary
+  normalization.
+- `deningerOrd_rationalPower`, `deningerOrd_comp_rationalPower` — **equation `(10)`**:
+  `F_q^*(ord_p) = q · ord_p`.
+- `deningerTateLineAction`, `deningerTateLineAction_mul`, `deningerTateResidue`,
+  `deningerTateResidue_invariant` — **equation `(11)`**: the Tate line is the line on which `F_q`
+  acts by `q^{-1}`, and the residue valued in the Tate-twisted target is invariant under the whole
+  correspondence.
+- `deningerTateWeight_unique` — **weight rigidity**: a scalar twist `χ` of the residue target makes
+  the Kummer boundary invariant for every nonzero exponent *exactly when* `χ(q) = q^{-1}`.  So the
+  Tate normalization is forced, not chosen; multiplicity one at the prime supplies the test vector.
 
 ### What cannot be stated in Lean, and why
 

@@ -1,10 +1,10 @@
 # Order-two multiple Gamma has a rational period-deletion depth phase split
 
 - **ID:** `order-two-multiple-gamma-period-deletion-phase-split`
-- **Stage:** 2-fully-proven / needs independent audit
+- **Stage:** 3-formalized / needs independent audit
 - **Type:** THEOREM (paper) / NATURAL NONPRODUCT JOINT-REALIZATION LAW
 - **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [PAPER-PROVED]`
-  `[UNCONDITIONAL LEAN PROOF OPEN AT THE ORDER-ONE ANALYTIC PARENT] [NOT AN RH RESULT]`
+  `[UNCONDITIONALLY LEAN-FORMALIZED] [NOT AN RH RESULT]`
 - **Parents:**
   `elliptic-gamma-rank-three-da-spectrum`;
   `multiple-elliptic-gamma-transverse-constraint-depth`;
@@ -230,11 +230,16 @@ Primary sources:
   Period*, Funkcialaj Ekvacioj 64 (2021), 225--235,
   `https://doi.org/10.1619/fesi.64.225`.
 
-## Unconditional Lean boundary
+## Unconditional Lean formalization
 
-`formal/GaloisForLFunctions/HTGeometry/OrderTwoPeriodDeletionPhaseSplit.lean` now formalizes the
-complete unconditional rational-period geometry used by `(7)` and by the labelled-deletion part of
-`(8)`.  In particular:
+Both `(7)` and `(8)` are now unconditional Lean theorems.  Nothing is assumed: no axiom, no
+hypothesis, no `Prop` interface stands between the statements below and `#print axioms`
+returning only `propext`, `Classical.choice`, `Quot.sound`.
+
+### Rational period geometry `(7)`
+
+`formal/GaloisForLFunctions/HTGeometry/OrderTwoPeriodDeletionPhaseSplit.lean` formalizes the
+labelled rational-period geometry:
 
 - `orderTwoCircuitPeriodFrame_rationalPeriodRank` and
   `orderTwoColoopPeriodFrame_rationalPeriodRank` prove that both four-entry frames have rational
@@ -246,12 +251,63 @@ complete unconditional rational-period geometry used by `(7)` and by the labelle
 - `orderTwo_equal_totalRank_distinct_labelledDeletionProfile` packages the nonproduct conclusion:
   equal total rational rank coexists with distinct complete labelled deletion profiles.
 
-No Lean theorem is yet claimed for the special-function depth values in `(8)`.  The hierarchy
-identities for the project's actual meromorphic multiple-elliptic-gamma kernels and the squarefree
-combinatorial ideal core already exist, but the load-bearing analytic input remains the
-unconditional Lean formalization of the exact order-one non-rational elliptic-gamma HT/defect
-theorem.  Introducing that result as an axiom or as a hypothesis would violate the project
-standard, so this card remains Stage 2.
+### The order-one analytic parent
+
+The load-bearing analytic input is the exact period-rank dichotomy of the parent card
+`../../../3-formalized/all-parameter-multiple-elliptic-gamma-dichotomy.md`, formalized without
+hypotheses in
+`formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaPeriodRankDichotomy.lean`:
+
+- `differentialAlgebraicOver_multipleEllipticGammaLogDerivMero_iff_not_rankThreeMinor` — a finite
+  nonempty upper-half-plane period family has differentially algebraic logarithmic derivative
+  exactly when no two of its periods are rationally independent together with `1`;
+- `hypertranscendentalOver_multipleEllipticGammaLogDerivMero_iff_rankThreeMinor` — the
+  complementary hypertranscendental phase.
+
+This subsumes both external inputs used in the paper proof.  The HT half supplies the exact
+order-one non-rational elliptic-gamma theorem used in steps 2 and 3, and the DA half is strictly
+stronger than the Kato rational-period theorem invoked for `(10)`: it needs only a rational affine
+line, not a rational ray.  No citation is therefore load-bearing in the Lean layer.
+
+### Transverse depth `(1)`, the hierarchy relation `(2)`, and `(8)`
+
+`formal/GaloisForLFunctions/HTGeometry/MultipleEllipticGammaTransverseDADepth.lean` builds the
+depth invariant for an arbitrary finite period family:
+
+- `transverseDifferenceMero a f = T_a f - f` is the structural difference operator, and
+  `iteratedTransverseDifferenceMero` composes it along a list of labels;
+- `iteratedTransverseDifferenceMero_eq_face` is the hierarchy relation `(2)`: composing the
+  transverse differences indexed by a duplicate-free list deletes exactly those parameters from the
+  genuine multiple-elliptic-gamma logarithmic derivative, so the composite depends only on the
+  underlying face and no deletion order is chosen;
+- `multipleEllipticGammaTransverseDADepth` is definition `(1)`, the least cardinality of a deleted
+  face whose coordinate is differentially algebraic over `C(z)`, and
+  `multipleEllipticGammaTransverseDADepth_eq_sInf_nodupLists` proves it equals the least length of
+  a duplicate-free list of distinct structural directions whose composite difference is
+  differentially algebraic;
+- `differentialAlgebraicOver_multipleEllipticGammaLogDerivFaceMero_iff_not_rankThreeMinor`,
+  `..._of_no_independentPair`, `..._of_unique_survivor`, and
+  `not_differentialAlgebraicOver_multipleEllipticGammaLogDerivFaceMero_of_independentPair` turn
+  each face test into the purely rational statement about the surviving labels.
+
+`formal/GaloisForLFunctions/HTGeometry/OrderTwoPeriodDeletionDADepth.lean` instantiates this at the
+two frames `(3)` and `(4)`, carried by `orderTwoCircuitPeriods` and `orderTwoColoopPeriods`:
+
+- `orderTwoCircuitPeriods_pair_linearIndependent` — every surviving circuit-frame pair is
+  rationally independent with `1`;
+- `orderTwoColoopPeriods_commensurable_pair_not_linearIndependent` — the coloop pair `(i, 2i)` is
+  not;
+- the three "more precisely" steps are named separately:
+  `orderTwoCircuit_singleton_difference_hypertranscendental` (every circuit singleton difference is
+  HT), `orderTwoColoop_lastDifference_differentialAlgebraic` (equation `(10)`), and
+  `orderTwoCircuit_source_hypertranscendental` / `orderTwoColoop_source_hypertranscendental` (both
+  sources are HT);
+- `orderTwoCircuit_transverseDADepth : ... = 2` and
+  `orderTwoColoop_transverseDADepth : ... = 1` are exactly the two values of `(8)`;
+- `orderTwoCircuitPeriods_augmentedPeriodRank` and `orderTwoColoopPeriods_augmentedPeriodRank`
+  give the common augmented rank three of `(7)`;
+- `orderTwo_equalRank_distinct_transverseDADepth` packages the phase split: equal augmented
+  rational period rank, distinct transverse differential-algebraic depths.
 
 ## Gates
 
@@ -264,9 +320,10 @@ standard, so this card remains Stage 2.
 - [x] both explicit total rational ranks formalized unconditionally in Lean
 - [x] complete labelled deletion-rank profiles formalized unconditionally in Lean
 - [x] equal-rank/distinct-deletion-profile nonproduct core formalized unconditionally in Lean
+- [x] unconditional Lean proof of the exact order-one analytic parent
+- [x] transverse DA depth `(1)` and hierarchy relation `(2)` formalized unconditionally in Lean
+- [x] unconditional Lean formalization of `(8)`
 - [ ] independent specialist proof and priority audit
-- [ ] unconditional Lean proof of the exact order-one analytic parent
-- [ ] unconditional Lean formalization of `(8)`
 
 ## Log
 
@@ -274,3 +331,7 @@ standard, so this card remains Stage 2.
   Gale--Kolchin control law failed on a natural order-two multiple-Gamma frame.
 - 2026-07-17 — Proved the equal-rank/different-depth phase split and promoted it to Stage 2; isolated
   the all-order rational period-deletion annihilator as the successor.
+- 2026-08-02 — Closed the Lean gate.  The order-one analytic parent was already unconditional in
+  `MultipleEllipticGammaPeriodRankDichotomy.lean`, so the recorded blocker was stale.  Built the
+  transverse-difference depth invariant and the hierarchy relation for arbitrary finite period
+  families, then proved both depth values of `(8)` axiom-clean.  Promoted to Stage 3.

@@ -1,0 +1,50 @@
+import GaloisForLFunctions.RHTower.DeningerArithmeticTimeDistribution
+import Mathlib.Analysis.BoundedVariation
+
+open Complex Filter Function MeasureTheory Set TopologicalSpace
+open scoped BigOperators Distributions ENNReal
+
+#check Measurable.tsum
+#check Measurable.piecewise
+#check IsCompact.bddAbove
+#check bddAbove_def
+#check norm_tsum_le_tsum_norm
+#check tsum_le_tsum
+#check Integrable.mono
+#check integrableOn_const
+#check MeasureTheory.locallyIntegrableOn_iff
+#check IsOpen.isLocallyClosed
+#check HasCompactSupport.integral_Iic_deriv_eq
+#check ContDiff.deriv
+#check HasCompactSupport.mul_left
+#check HasCompactSupport.mul_right
+#check HasCompactSupport.comp_left
+#check HasCompactSupport.congr
+#check Summable.integral_tsum
+#check MeasureTheory.integral_tsum
+#check MeasureTheory.integral_tsum_of_summable_integral_norm
+#check MeasureTheory.integral_tsum_of_summable_norm
+#check Summable.tsum_le_tsum
+#check Summable.norm
+#check summable_norm_iff
+#check Summable.of_norm_bounded
+#check Summable.integral
+#check HasCompactSupport.integrable
+#check ContDiff.mul
+#check ContDiff.cexp
+#check ContDiff.ofReal_comp
+#check ContDiff.const_mul
+#check Continuous.bddAbove_range
+#check HasCompactSupport.isBounded
+#check HasCompactSupport.bounded
+#check Bornology.IsBounded
+#check ContinuousMap.bounded
+#check TestFunction.toBoundedContinuousFunction
+#check ContDiffMapSupportedIn.toBoundedContinuousFunction
+#check ae_restrict_mem
+#check ae_iff
+#check Set.Countable.measure_zero
+#check Set.countable_range
+#check Integrable.integrableOn
+#check Integrable.indicator
+#check MeasurableSet.indicator

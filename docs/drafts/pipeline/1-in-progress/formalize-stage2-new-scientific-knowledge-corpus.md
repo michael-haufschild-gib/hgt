@@ -366,7 +366,9 @@ DAGs without repeating the audits.
 - [ ] `order-three-elliptic-gamma-bottom-face-joint-atomicity` — theorem/corollary surface inventory pending
 - [ ] `order-three-elliptic-gamma-full-structural-differential-matroid` — theorem/corollary surface inventory pending
 - [ ] `order-two-elliptic-gamma-full-structural-differential-matroid` — theorem/corollary surface inventory pending
-- [ ] `order-two-multiple-gamma-period-deletion-phase-split` — theorem/corollary surface inventory pending
+- [x] `order-two-multiple-gamma-period-deletion-phase-split` — complete: transverse DA depth, the
+  hierarchy relation, and both depth values formalized unconditionally
+  (`MultipleEllipticGammaTransverseDADepth.lean`, `OrderTwoPeriodDeletionDADepth.lean`)
 - [ ] `periodic-pencil-intrinsic-ht-dimension-two` — theorem/corollary surface inventory pending
 - [ ] `phase-holomorphic-autonomous-ade-frequency-rank` — theorem/corollary surface inventory pending
 - [ ] `prescribed-gap-process-order-one-maximal-ht-profield` — theorem/corollary surface inventory pending

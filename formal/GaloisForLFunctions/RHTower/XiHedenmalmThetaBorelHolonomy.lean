@@ -96,6 +96,12 @@ theorem hasDerivAt_hedenmalmBorelChart (x : ℝ) {t : ℝ} (ht : -1 < t) :
     simpa using hlin.log hne
   simpa [hedenmalmBorelChart] using (hlog.div_const 2).const_add x
 
+/-- The chart Jacobian in the normalized form used by the source density. -/
+theorem abs_hedenmalmBorelChartJacobian (t : ℝ) (ht : 0 < t) :
+    |1 / (1 + t) / 2| = 1 / (2 * (1 + t)) := by
+  have ht' : (0 : ℝ) < 1 / (1 + t) / 2 := by positivity
+  rw [abs_of_pos ht', div_div, mul_comm]
+
 /-- **Exact logarithmic change of variables on the theta right tail.**  Every Bochner integral over
 the tail `(x,∞)` becomes an integral over the fixed Borel ray `(0,∞)` with Jacobian
 `1 / (2 (1 + t))`. -/
@@ -115,14 +121,7 @@ theorem integral_Ioi_eq_integral_hedenmalmBorelChart
   rw [h]
   refine setIntegral_congr_fun measurableSet_Ioi ?_
   intro t ht
-  have hpos : (0 : ℝ) < 1 / (1 + t) / 2 := by
-    have := mem_Ioi.mp ht
-    positivity
-  have habs : |1 / (1 + t) / 2| = 1 / (2 * (1 + t)) := by
-    rw [abs_of_pos hpos]
-    have : (1 : ℝ) + t ≠ 0 := by have := mem_Ioi.mp ht; linarith
-    field_simp
-  simp only [habs]
+  simp only [abs_hedenmalmBorelChartJacobian t (mem_Ioi.mp ht)]
 
 /-! ## The Borel character and the positive source density -/
 
@@ -216,12 +215,7 @@ theorem integral_Ioi_thetaCuspFourierLaplaceIntegrand_eq_borel
   rw [integral_Ioi_eq_integral_hedenmalmBorelChart x
     (thetaCuspFourierLaplaceIntegrand (-alpha)), ← integral_const_mul]
   refine setIntegral_congr_fun measurableSet_Ioi ?_
-  intro t ht
-  have ht' : (0 : ℝ) < 1 + t := by have := mem_Ioi.mp ht; linarith
-  have hne : ((1 : ℂ) + (t : ℂ)) ≠ 0 := by
-    have h := Complex.ofReal_ne_zero.mpr (ne_of_gt ht')
-    push_cast at h
-    exact h
+  intro t _
   have hexp :
       Complex.exp (-Complex.I * (-alpha) * ((x + hedenmalmBorelChart t : ℝ) : ℂ)) =
         Complex.exp (Complex.I * alpha * (x : ℂ)) *
@@ -236,9 +230,10 @@ theorem integral_Ioi_thetaCuspFourierLaplaceIntegrand_eq_borel
     unfold thetaCuspFourierLaplaceIntegrand
     rw [hexp]
   dsimp only
-  rw [hint, hedenmalmBorelDensity, Complex.real_smul]
-  push_cast
-  field_simp
+  rw [hint, hedenmalmBorelDensity,
+    div_eq_mul_one_div (thetaCuspFullSource (x + hedenmalmBorelChart t)) (2 * (1 + t)),
+    Complex.ofReal_mul, Complex.real_smul]
+  ring
 
 /-- **Theorem 1 (exact Borel-tail factorization).**  At every zero of the centered completed Xi
 function, the Hedenmalm two-ended eigenfunction is the negative of one universal complex dilation
@@ -313,7 +308,9 @@ theorem norm_hedenmalmBorelCharacter (alpha : ℂ) (t : ℝ) :
       Real.exp (-alpha.im * hedenmalmBorelChart t) := by
   rw [hedenmalmBorelCharacter, Complex.norm_exp]
   congr 1
-  simp [Complex.mul_re, Complex.mul_im]
+  simp only [Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im,
+    Complex.ofReal_re, Complex.ofReal_im]
+  ring
 
 theorem norm_hedenmalmBorelCharacter_rpow (alpha : ℂ) {t : ℝ} (ht : -1 < t) :
     ‖hedenmalmBorelCharacter alpha t‖ = (1 + t) ^ (-alpha.im / 2) := by
@@ -512,6 +509,88 @@ theorem norm_hedenmalmBorelCharacter_geometric_sample_rpow
     ring
   rw [norm_hedenmalmBorelCharacter, hchart, Real.rpow_def_of_pos hr]
   congr 1
+  ring
+
+
+/-- Integrability transfers along the Borel chart. -/
+theorem integrableOn_Ioi_iff_hedenmalmBorelChart
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] (x : ℝ) (g : ℝ → F) :
+    IntegrableOn g (Ioi x) ↔
+      IntegrableOn
+        (fun t : ℝ => (1 / (2 * (1 + t))) • g (x + hedenmalmBorelChart t)) (Ioi 0) := by
+  have hderiv : ∀ t ∈ Ioi (0 : ℝ),
+      HasDerivWithinAt (fun s : ℝ => x + hedenmalmBorelChart s)
+        (1 / (1 + t) / 2) (Ioi 0) t := by
+    intro t ht
+    exact (hasDerivAt_hedenmalmBorelChart x
+      (by have := mem_Ioi.mp ht; linarith)).hasDerivWithinAt
+  have h := MeasureTheory.integrableOn_image_iff_integrableOn_abs_deriv_smul
+    measurableSet_Ioi hderiv (injOn_hedenmalmBorelChart x) g
+  rw [image_hedenmalmBorelChart] at h
+  rw [h]
+  constructor
+  · intro hI
+    refine hI.congr_fun ?_ measurableSet_Ioi
+    intro t ht
+    dsimp only
+    rw [abs_hedenmalmBorelChartJacobian t (mem_Ioi.mp ht)]
+  · intro hI
+    refine hI.congr_fun ?_ measurableSet_Ioi
+    intro t ht
+    dsimp only
+    rw [abs_hedenmalmBorelChartJacobian t (mem_Ioi.mp ht)]
+
+/-- The exponentially tilted theta source is integrable throughout the completed strip. -/
+theorem integrable_exp_mul_thetaCuspFullSource {c : ℝ} (hc : |c| < 1) :
+    Integrable (fun y : ℝ => Real.exp (c * y) * thetaCuspFullSource y) := by
+  have hw : |((c : ℂ) * Complex.I).im| < 1 := by simpa using hc
+  have hint := integrable_thetaCuspFourierLaplaceIntegrand hw
+  refine hint.norm.congr ?_
+  filter_upwards with y
+  have hrw : -Complex.I * ((c : ℂ) * Complex.I) * (y : ℂ) = ((c * y : ℝ) : ℂ) := by
+    push_cast
+    have hI : Complex.I * Complex.I = -1 := Complex.I_mul_I
+    linear_combination (-(c : ℂ) * (y : ℂ)) * hI
+  unfold thetaCuspFourierLaplaceIntegrand
+  rw [norm_mul, hrw, Complex.norm_exp, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_pos (thetaCuspFullSource_pos_all y), Complex.ofReal_re]
+
+/-- **The Borel holonomy is square integrable against the source density.**  For every centered
+parameter in the open half strip the radially tilted theta tail has finite mass. -/
+theorem integrableOn_norm_sq_hedenmalmBorelCharacter_mul_density
+    {alpha : ℂ} (halpha : |alpha.im| < 1 / 2) (x : ℝ) :
+    IntegrableOn
+      (fun t : ℝ =>
+        ‖hedenmalmBorelCharacter alpha t‖ ^ 2 * hedenmalmBorelDensity x t) (Ioi 0) := by
+  set c : ℝ := -2 * alpha.im with hc
+  have hcabs : |c| < 1 := by
+    rw [hc, abs_mul]
+    have : |(-2 : ℝ)| = 2 := by norm_num
+    rw [this]
+    linarith [halpha]
+  have hbase : Integrable (fun y : ℝ => Real.exp (c * y) * thetaCuspFullSource y) :=
+    integrable_exp_mul_thetaCuspFullSource hcabs
+  have hshift : Integrable (fun y : ℝ => Real.exp (c * (y - x)) * thetaCuspFullSource y) := by
+    refine (hbase.const_mul (Real.exp (-(c * x)))).congr ?_
+    filter_upwards with y
+    rw [← mul_assoc, ← Real.exp_add]
+    have hsum : -(c * x) + c * y = c * (y - x) := by ring
+    rw [hsum]
+  have hiff := (integrableOn_Ioi_iff_hedenmalmBorelChart x
+    (fun y : ℝ => Real.exp (c * (y - x)) * thetaCuspFullSource y)).mp hshift.integrableOn
+  refine hiff.congr_fun ?_ measurableSet_Ioi
+  intro t ht
+  have ht' : (0 : ℝ) < 1 + t := by have := mem_Ioi.mp ht; linarith
+  have hnorm : ‖hedenmalmBorelCharacter alpha t‖ ^ 2 =
+      Real.exp (c * hedenmalmBorelChart t) := by
+    rw [norm_hedenmalmBorelCharacter, ← Real.exp_nat_mul]
+    congr 1
+    rw [hc]
+    push_cast
+    ring
+  have harg : x + hedenmalmBorelChart t - x = hedenmalmBorelChart t := by ring
+  dsimp only
+  rw [smul_eq_mul, hnorm, hedenmalmBorelDensity, harg]
   ring
 
 end RHTower

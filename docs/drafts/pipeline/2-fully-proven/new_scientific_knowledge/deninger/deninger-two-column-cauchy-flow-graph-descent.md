@@ -155,17 +155,60 @@ and higher syzygy maps are uniformly bounded in the all-place
 ((\log p)^2)-weighted graph system.  A failure of uniformity is a
 genuine obstruction to strict nuclear descent.
 
+## Lean status
+
+All three clauses are formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/DeningerTwoColumnCauchyFlowGraphDescent.lean`.  Axiom audit
+for every declaration: `propext, Classical.choice, Quot.sound` (the two structures use only
+`propext, Quot.sound`).
+
+**Clause 1, equation `(4)`.**  `DeningerTwoColumnSignatureFlowData` bundles one
+Rost--Schmid/signature column with its five component generators
+`θ_{00}, θ_{10}, θ_{01}, θ_{11}, θ_S` and the six squares making them a flow, and its `.flow`
+is the three-term totalization `(1)`.  `DeningerTwoColumnCauchyFlowRestriction` carries the five
+component restrictions `(2)`, the six Rost--Schmid/signature naturality squares, and exactly the
+five new flow squares `(3)` — nothing else is assumed.  `.chainMap` assembles the six naturality
+squares into a chain map of totalizations, and `.flowChainMap` upgrades it with the five flow
+squares to a `DeningerArithmeticThreeTermFlowChainMap`, which *is* `(4)`:
+`R^q Θ_A^q = Θ_B^q R^q` for `q = 0, 1, 2`, with `Θ^1 = θ_{10} ⊕ θ_{01}` and `Θ^2 = θ_{11} ⊕ θ_S`.
+The degree-one and degree-two squares come from `deningerTwoColumnComponentMap_intertwines`, the
+componentwise-to-product assembly.
+
+**Clause 2, equation `(5)`.**  `flowChainMap_mapH0_comp_thetaH0`,
+`flowChainMap_mapH1_comp_thetaH1`, `flowChainMap_mapH2_comp_thetaH2` state the descent of `(4)`
+to `H⁰`, `H¹`, `H²` on the concrete two-column object.  They specialize the general subtype /
+quotient functoriality proofs `DeningerArithmeticThreeTermFlowChainMap.mapH{0,1,2}_comp_theta{H0,H1,H2}`;
+no splitting, complement, harmonic representative, or closed-range premise appears anywhere in
+that chain.
+
+**Clause 3, equations `(6)`--`(8)`.**  `DeningerGraphIntertwining` records the domain-preservation
+and intertwining hypotheses `(6)` for two families of partially defined graph monomials;
+`deningerGraphCore_map_mem_of_intertwining` proves the common graph core maps into the common
+graph core; `deningerGraphSeminorm_map_le` proves `(8)` from the ambient bound `(7)` with the same
+constant; `deningerGraphCoreMap`, `deningerGraphCoreMap_comp_rightInverse` and
+`deningerGraphCoreMap_surjective_of_rightInverse` carry a right inverse and its surjectivity onto
+the cores.
+
+As the hostile audit demands, the analytic premises `(6)`--`(7)` remain explicit hypotheses; the
+module proves the exact conclusion obtained once they are discharged, and proves nothing about the
+literal residue, corestriction, orientation, Milnor attaching, or Meyer maps.
+
 ## Gates
 
 - [x] source maps and exact statement frozen
 - [x] internal collision audit
 - [x] complete paper proof
 - [x] hostile scope audit
-- [ ] Lean formalization
-- [ ] arithmetic local naturality estimates
+- [x] Lean formalization
+- [ ] arithmetic local naturality estimates *(successor conjecture, not this theorem)*
 
 ## Log
 
 - 2026-08-01 — Proved component-to-totalization and
   chain-to-cohomology flow descent, plus the cross-space graph-core
   preservation theorem; isolated actual domain and boundedness debts.
+- 2026-08-02 — Lean formalization completed.  The missing piece was the
+  five-component assembler: `DeningerTwoColumnSignatureFlowData`,
+  `DeningerTwoColumnCauchyFlowRestriction`, `.chainMap`, `.flowChainMap` and the
+  three cohomological descent theorems now realize clauses 1 and 2 on the actual
+  two-column/signature source maps; clauses `(6)`--`(8)` were already in the module.

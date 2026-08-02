@@ -6,7 +6,7 @@
 \usepackage{amsmath,amssymb,amsthm,mathtools}
 \usepackage{microtype}
 \usepackage{enumitem}
-\usepackage{booktabs,array,tabularx}
+\usepackage{booktabs,array,tabularx,longtable}
 \usepackage{xcolor}
 \usepackage[colorlinks=true,linkcolor=blue!48!black,
   citecolor=blue!48!black,urlcolor=blue!55!black]{hyperref}
@@ -68,9 +68,11 @@ equivalent to zero exclusion.
 We prove a common law which separates these stages.  The all-prime
 Calder\'on--Witt source is contractible before orientation and has exactly
 one absolute orientation line after adjoining its normalized Haar trace.
-Every boundary-blind linear consumer factors uniquely through that line.
-For an admitted incidence sector \(S\), every additional invariant is the
-relative class of the canonical Green primitive, and
+Every linear consumer splits uniquely into its orientation compression
+and a boundary-sensitive Green transgression; the second term vanishes
+exactly for boundary-blind consumers.  For an admitted incidence sector
+\(S\), the remaining middle invariant is the relative class of the
+canonical Green primitive, and
 \[
  \boxed{\quad
  \mathfrak o_S(x)=0
@@ -78,9 +80,9 @@ relative class of the canonical Green primitive, and
  h x\in S .
  \quad}
 \]
-Thus absolute source data have one regular scalar shadow; every
-zero-excluding statement requires a source-relative transgression which
-preserves an unsquared oriented primitive.
+Thus every regular observation has a canonical absolute/relative split,
+and every zero-excluding statement requires the relative channel to
+preserve an unsquared oriented primitive.
 
 We then prove the completion threshold in route-independent form.  If a
 source transport \(U:E\to H\) has dense range, a closed admission set
@@ -281,7 +283,7 @@ The corpus supplies several nonisomorphic sources.  Their coexistence is
 important: a source failure in one category does not imply absence of
 arithmetic data.
 
-\subsection{Positive prime-normal resolution}
+\subsection{Mass-one prime-normal resolution}
 
 For \(K\ge12\), define
 \[
@@ -290,7 +292,7 @@ For \(K\ge12\), define
    \zeta((K+j+1)s)^{-1}-\zeta((K+j)s)^{-1}.
 \tag{3.1}\label{eq:positive-resolution}
 \]
-The vector \(E_K(s)=(\Phi^K_j(s))_{j\ge0}\) is a positive,
+The vector \(E_K(s)=(\Phi^K_j(s))_{j\ge0}\) is a mass-one,
 coefficient-disjoint, divisor-faithful source on
 \(\Rea s>\tfrac12\).  It is injective for every finite \(K\), while
 \(E_K(s)\to e_0\) in \(\ell^1\).  Exact shell peeling recovers the
@@ -367,9 +369,9 @@ Four further sources play distinct roles.
       exact reflected zero relation.  A Hurwitz functional-equation pair
       carries the corresponding differential circuit exactly on the
       critical line.
-\item Facet sources built from hypertranscendental functions retain
-      arbitrary finite topological and residue-orientation data while
-      remaining differentially independent.  Projective recurrence
+\item Universal facet sources are differentially independent, have a
+      countable point-finite differential matroid, and carry summable
+      residue-orientation weights.  Projective recurrence
       sources encode exact balanced spectral relations as the kernel of
       one energy detuning map.
 \end{enumerate}
@@ -449,7 +451,7 @@ On finite jets, \(U_{p,q}\) is the already constructed oriented
 Calder\'on--Witt Green reflection.  Hence it is not a formal Hilbert copy
 or a quotient that forgets coefficients.
 
-Equations \eqref{eq:completed-green}--\eqref{eq:finite-incidence} close the
+Equations \eqref{eq:finite-incidence}--\eqref{eq:completed-green} close the
 completed transport problem.  They do not define the correct closed
 Gamma/Hodge admission at a divisor fibre.
 
@@ -478,16 +480,25 @@ one-dimensional.
 
 \begin{theorem}[Orientation--transgression completeness]
 \label{thm:main}
-The all-prime oriented source has the following two universal
+The all-prime oriented source has the following three universal
 properties.
 \begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em]
-\item For every complex vector space \(V\) and every linear consumer
-      \(F:A^2\oplus\C\to V\),
+\item Every linear consumer \(F:A^2\oplus\C\to V\) has a canonical
+      decomposition
       \[
-      F\circ D=0
+                         F=F_{\mathrm{abs}}+F_{\partial},
+      \tag{5.2}\label{eq:observer-splitting}
+      \]
+      where \(F_{\mathrm{abs}}\) is boundary-blind and
+      \(F_{\partial}\) vanishes on the orientation line.  This is the
+      unique decomposition with those two properties.
+\item The following are equivalent:
+      \[
+      F_{\partial}=0
+      \quad\Longleftrightarrow\quad F\circ D=0
       \quad\Longleftrightarrow\quad
       \exists!\,\phi:\C\to V\ \text{such that}\ F=\phi\circ T.
-      \tag{5.2}\label{eq:observer-factorization}
+      \tag{5.3}\label{eq:observer-factorization}
       \]
 \item Let \(S\subset I\) be any admitted incidence sector and let
       \(x\in\Lambda^2A^1\) satisfy \(\smile x=0\).  Its relative
@@ -501,7 +512,7 @@ properties.
                          \mathfrak o_S(x)=0
                          \quad\Longleftrightarrow\quad
                          h x\in S.
-      \tag{5.3}\label{eq:relative-transgression}
+      \tag{5.4}\label{eq:relative-transgression}
       \]
 \end{enumerate}
 \end{theorem}
@@ -511,17 +522,22 @@ The Green decomposition of every top cochain is
 \[
                        z=D(H z)+\jmath(Tz).
 \]
-If \(F\circ D=0\), applying \(F\) gives
-\(F(z)=F(\jmath(Tz))\), so \(F\) factors through \(T\).  The identity
-\(T\circ\jmath=1\) gives uniqueness; the converse is immediate from
-\(T\circ D=0\).  For (ii), the contraction identifies the complete
-relative obstruction with the class of \(hx\).  Since \(\iota\) is
-injective, \(\ker\iota=0\), so this class vanishes exactly when
-\(hx\in S\).
+Applying \(F\) defines
+\(F_{\partial}(z)=F(D(H z))\) and
+\(F_{\mathrm{abs}}(z)=F(\jmath(Tz))\), proving the split.  Its vanishing
+laws and the Green decomposition give uniqueness.  If \(F\circ D=0\),
+then \(F_{\partial}=0\) and \(F(z)=F(\jmath(Tz))\), so \(F\) factors
+through \(T\).  The identity \(T\circ\jmath=1\) gives uniqueness; the
+converse follows from \(T\circ D=0\).  Finally, the contraction identifies
+the complete relative obstruction with the class of \(hx\).  Since
+\(\iota\) is injective, \(\ker\iota=0\), so this class vanishes exactly
+when \(hx\in S\).
 \end{proof}
 
-Equation~\eqref{eq:observer-factorization} is the absolute law: there is
-no second regular scalar source channel.  Equation
+Equations~\eqref{eq:observer-splitting}--\eqref{eq:observer-factorization}
+are the absolute/relative observation law: every regular consumer has one
+orientation compression and one exact boundary-sensitive remainder.
+Equation
 \eqref{eq:relative-transgression} is the relative law: every further
 invariant is sector-sensitive primitive escape.  It does not identify
 the admitted sectors of different routes.  It states exactly what each
@@ -536,7 +552,7 @@ Let \(U:E\to H\) have dense range in a topological space \(H\), let
 closed admission realization to be a closed set \(K\subset H\) satisfying
 \[
                 U(E)\subset K,\qquad d\in K\Longleftrightarrow P.
-\tag{5.4}\label{eq:abstract-admission}
+\tag{5.5}\label{eq:abstract-admission}
 \]
 Then a closed admission realization exists if and only if \(P\) holds.
 \end{theorem}
@@ -557,12 +573,12 @@ Fix a divisor coordinate \(r\) and define
 \[
  e_{r;p,q}:=U^{\mathrm{jet}}_{p,q}(\mathbf1_r)
              \in\widehat{\cI}_{p,q},
-\tag{5.5}\label{eq:canonical-vector}
+\tag{5.6}\label{eq:canonical-vector}
 \]
 where \(\mathbf1_r\) is the unit finite jet.  Decoding at \(r\) gives
 \[
                   \operatorname{ev}_r(e_{r;p,q})=w_{p,q}.
-\tag{5.6}\label{eq:canonical-decodes}
+\tag{5.7}\label{eq:canonical-decodes}
 \]
 
 Let \(\cA_\delta\) be the algebraic Gamma/co-Poisson Hodge-admitted
@@ -572,7 +588,7 @@ canonical witness detects displacement:
                        w_{p,q}\in\cA_\delta
                        \quad\Longleftrightarrow\quad
                        \delta=0.
-\tag{5.7}\label{eq:witness-detects}
+\tag{5.8}\label{eq:witness-detects}
 \]
 
 \begin{definition}[Completed-incidence admission]
@@ -581,14 +597,14 @@ A completed-incidence admission at displacement \(\delta\) is a closed
 set \(K_\delta\subset\widehat{\cI}_{p,q}\) such that
 \[
  U_{p,q}(H^1_{\!c})\subset K_\delta
-\tag{5.8}\label{eq:source-landing}
+\tag{5.9}\label{eq:source-landing}
 \]
 and whose one-coordinate finite trace is exact:
 \[
  e_{r;p,q}\in K_\delta
  \quad\Longleftrightarrow\quad
  w_{p,q}\in\cA_\delta.
-\tag{5.9}\label{eq:finite-trace}
+\tag{5.10}\label{eq:finite-trace}
 \]
 \end{definition}
 
@@ -628,7 +644,6 @@ separates one completed route from these different earlier obstructions;
 it does not erase them.
 \end{remark}
 
-\clearpage
 \section{Route atlas: distinct open cores under one law}
 \label{sec:routes}
 
@@ -637,18 +652,29 @@ completed-incidence model.  It says that a route must preserve a
 source-relative Green primitive before its scalar consumer.  The
 following atlas records where each route currently stops.
 
-\begin{center}
+\begingroup
 \footnotesize
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.18}
-\begin{tabularx}{0.98\linewidth}{
-  >{\raggedright\arraybackslash}p{0.12\linewidth}
-  >{\raggedright\arraybackslash}p{0.30\linewidth}
-  >{\raggedright\arraybackslash}X}
+\begin{longtable}{
+  >{\raggedright\arraybackslash}p{0.16\linewidth}
+  >{\raggedright\arraybackslash}p{0.28\linewidth}
+  >{\raggedright\arraybackslash}p{0.50\linewidth}}
 \toprule
 \textbf{Route} & \textbf{Unconditional prefix} &
 \textbf{First unproved producer theorem}\\
 \midrule
+\endfirsthead
+\toprule
+\textbf{Route} & \textbf{Unconditional prefix} &
+\textbf{First unproved producer theorem}\\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\emph{Continued on next page}}\\
+\endfoot
+\bottomrule
+\endlastfoot
 C1: singular Hedenmalm
 & Theta eigenfamily; full-source positive-form classification; dense
   nonclosed radical and ordinary-\(L^2\) closed-graph exclusion
@@ -685,22 +711,7 @@ N: prime-normal domain
   reflected radial energy
 & Prove uniform sub-\((\log X)^2\) estimate on the closed theta Grushin
   source domain with full Jordan tower\\
-\bottomrule
-\end{tabularx}
-\end{center}
 
-\begin{center}
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{1.18}
-\begin{tabularx}{0.98\linewidth}{
-  >{\raggedright\arraybackslash}p{0.12\linewidth}
-  >{\raggedright\arraybackslash}p{0.30\linewidth}
-  >{\raggedright\arraybackslash}X}
-\toprule
-\textbf{Route} & \textbf{Unconditional prefix} &
-\textbf{First unproved producer theorem}\\
-\midrule
 O: Connes/CCM
 & Literal restricted-Weil matrices; exact symmetry and clock
   displacement; prolate Rayleigh ground-lock classification
@@ -735,9 +746,8 @@ HT/recurrence
   relation lattice with exact rank laws
 & Construct arithmetic divisor reporter and prove relation protection
   under the source-allowed gauge or perturbation class\\
-\bottomrule
-\end{tabularx}
-\end{center}
+\end{longtable}
+\endgroup
 
 \subsection{Why these remain different routes}
 
@@ -841,10 +851,11 @@ All these shadows can be summarized without identifying their categories:
 \boxed{
 \begin{minipage}{0.84\linewidth}
 \centering
-Regular boundary-blind observation has one absolute output: source
-orientation.  Every further invariant is a relative Green primitive.
-Zero exclusion requires a source-faithful transport which preserves that
-primitive in an oriented admitted sector before scalar consumption.
+Every regular source observer splits uniquely into orientation compression
+and boundary Green transgression.  After restriction to an admitted sector,
+the relative class vanishes exactly when the Green primitive is admitted.
+Zero exclusion requires preservation of that unsquared primitive before
+scalar consumption.
 \end{minipage}}
 \tag{7.1}\label{eq:universal-law}
 \]
@@ -864,7 +875,7 @@ single route uses all of them.
 \begin{enumerate}[leftmargin=2.2em]
 \item The signed divisor displacement and full multiplicity-weighted
       outer charge have source realizations.
-\item Positive prime-normal, valuation, CCM crease, Xi jet, theta
+\item Mass-one prime-normal, valuation, CCM crease, Xi jet, theta
       relation, hypertranscendental, and recurrence sources exist.
 \item The Hellinger/KMS polarization, Beta/Gamma transform, transverse
       four-unit source vector, finite Gamma/co-Poisson transport,
@@ -988,11 +999,11 @@ The universal law is:
 \boxed{
 \begin{minipage}{0.84\linewidth}
 \centering
-Absolute boundary-blind source information is the unique orientation
-trace.  Every additional invariant is a relative Green primitive escaping
-an admitted sector.  A zero-exclusion route succeeds only by transporting
-that primitive, with unsquared orientation, into its own admitted target
-before scalar consumption.
+Every regular source observer splits uniquely into orientation trace and
+boundary Green transgression.  After sector restriction, the relative
+class vanishes exactly when the Green primitive is admitted.  A
+zero-exclusion route succeeds only by transporting that primitive, with
+unsquared orientation, before scalar consumption.
 \end{minipage}}
 \tag{9.1}\label{eq:conclusion-law}
 \]

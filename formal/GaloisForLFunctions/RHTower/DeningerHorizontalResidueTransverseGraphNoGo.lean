@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.DeningerTateGraphGreenPrimeSector
+import Mathlib.Analysis.Fourier.AddCircle
 
 /-!
 # Horizontal residue is invisible to transverse-only graph control
@@ -157,5 +158,197 @@ theorem deningerRankCubeSobolevEvaluationRatioSq_tendsto_atTop
     rw [deningerRankCubeSobolevEvaluationRatioSq]
     dsimp [small]
     rw [inv_div]
+
+section HorizontalCirclePacket
+
+open MeasureTheory AddCircle
+
+variable {T : ℝ} [hT : Fact (0 < T)]
+
+/-- Alignment coefficient of the horizontal Dirichlet packet at a character point. -/
+noncomputable def deningerDirichletCoeff (zeta : AddCircle T) (k : ℕ) : ℂ :=
+  (starRingEnd ℂ) (fourier (k : ℤ) zeta)
+
+/-- Every alignment coefficient is unimodular. -/
+theorem deningerDirichletCoeff_norm (zeta : AddCircle T) (k : ℕ) :
+    ‖deningerDirichletCoeff zeta k‖ = 1 := by
+  rw [deningerDirichletCoeff, RCLike.norm_conj, fourier_apply]
+  exact Circle.norm_coe _
+
+/-- The alignment coefficient cancels its own character value. -/
+theorem deningerDirichletCoeff_mul_fourier (zeta : AddCircle T) (k : ℕ) :
+    deningerDirichletCoeff zeta k * fourier (k : ℤ) zeta = 1 := by
+  have h : ‖fourier (k : ℤ) zeta‖ = 1 := by
+    rw [fourier_apply]; exact Circle.norm_coe _
+  rw [deningerDirichletCoeff, RCLike.conj_mul, h, one_pow]
+
+/-- The aligned horizontal Dirichlet kernel, as a finite character sum in `L²`. -/
+noncomputable def deningerDirichletKernelLp (zeta : AddCircle T) (N : ℕ) :
+    Lp ℂ 2 (haarAddCircle (T := T)) :=
+  ∑ k ∈ Finset.range N, deningerDirichletCoeff zeta k • fourierLp 2 (k : ℤ)
+
+/-- Orthonormality of the characters gives the kernel the exact `L²` norm `√N`. -/
+theorem deningerDirichletKernelLp_norm (zeta : AddCircle T) (N : ℕ) :
+    ‖deningerDirichletKernelLp zeta N‖ = Real.sqrt N := by
+  have horth : Orthonormal ℂ fun k : ℕ => fourierLp (T := T) 2 (k : ℤ) :=
+    (orthonormal_fourier (T := T)).comp (fun k : ℕ => (k : ℤ)) Int.natCast_injective
+  have hinner :
+      (inner ℂ (deningerDirichletKernelLp zeta N) (deningerDirichletKernelLp zeta N)) =
+        ((N : ℝ) : ℂ) := by
+    rw [deningerDirichletKernelLp,
+      horth.inner_sum (deningerDirichletCoeff zeta) (deningerDirichletCoeff zeta)]
+    have : ∀ k ∈ Finset.range N,
+        (starRingEnd ℂ) (deningerDirichletCoeff zeta k) * deningerDirichletCoeff zeta k =
+          (1 : ℂ) := by
+      intro k _
+      rw [RCLike.conj_mul, deningerDirichletCoeff_norm, one_pow]
+    rw [Finset.sum_congr rfl this]
+    simp
+  rw [norm_eq_sqrt_inner (𝕜 := ℂ), hinner]
+  simp
+
+/-- The normalized aligned horizontal Dirichlet packet, as a continuous function on the circle. -/
+noncomputable def deningerDirichletPacket (zeta : AddCircle T) (N : ℕ) : C(AddCircle T, ℂ) :=
+  ((Real.sqrt N : ℝ) : ℂ)⁻¹ •
+    ∑ k ∈ Finset.range N, deningerDirichletCoeff zeta k • fourier (k : ℤ)
+
+/-- **Aligned evaluation.**  The packet takes the value `√N` at its alignment point. -/
+theorem deningerDirichletPacket_eval_self (zeta : AddCircle T) (N : ℕ) :
+    deningerDirichletPacket zeta N zeta = ((Real.sqrt N : ℝ) : ℂ) := by
+  have hsum : (∑ k ∈ Finset.range N,
+      deningerDirichletCoeff zeta k • fourier (k : ℤ) : C(AddCircle T, ℂ)) zeta =
+      ((N : ℝ) : ℂ) := by
+    rw [ContinuousMap.finset_sum_apply]
+    rw [Finset.sum_congr rfl fun k _ => deningerDirichletCoeff_mul_fourier zeta k]
+    simp
+  rw [deningerDirichletPacket, ContinuousMap.smul_apply, hsum, smul_eq_mul]
+  rcases N.eq_zero_or_pos with rfl | hN
+  · simp
+  · have hpos : (0 : ℝ) < Real.sqrt N := Real.sqrt_pos.mpr (Nat.cast_pos.mpr hN)
+    have hne : ((Real.sqrt N : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hpos.ne'
+    have hsq : ((Real.sqrt N : ℝ) : ℂ) * ((Real.sqrt N : ℝ) : ℂ) = ((N : ℝ) : ℂ) := by
+      exact_mod_cast congrArg (fun x : ℝ => (x : ℂ))
+        (Real.mul_self_sqrt (Nat.cast_nonneg N))
+    field_simp [← hsq]
+
+/-- The packet's `L²` class is the normalized Dirichlet kernel. -/
+theorem deningerDirichletPacket_toLp (zeta : AddCircle T) (N : ℕ) :
+    ContinuousMap.toLp 2 (haarAddCircle (T := T)) ℂ (deningerDirichletPacket zeta N) =
+      ((Real.sqrt N : ℝ) : ℂ)⁻¹ • deningerDirichletKernelLp zeta N := by
+  rw [deningerDirichletPacket, deningerDirichletKernelLp, map_smul, map_sum]
+  exact congrArg _ (Finset.sum_congr rfl fun k _ => map_smul _ _ _)
+
+/-- **Unit mass.**  Nonempty normalized horizontal Dirichlet packets are `L²`-unit vectors. -/
+theorem deningerDirichletPacket_norm_toLp {N : ℕ} (hN : 0 < N) (zeta : AddCircle T) :
+    ‖ContinuousMap.toLp 2 (haarAddCircle (T := T)) ℂ (deningerDirichletPacket zeta N)‖ = 1 := by
+  have hpos : (0 : ℝ) < Real.sqrt N := Real.sqrt_pos.mpr (Nat.cast_pos.mpr hN)
+  rw [deningerDirichletPacket_toLp, norm_smul, deningerDirichletKernelLp_norm,
+    norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hpos,
+    inv_mul_cancel₀ hpos.ne']
+
+end HorizontalCirclePacket
+
+section TransverseTensorGraph
+
+open MeasureTheory AddCircle
+
+variable {T : ℝ} [hT : Fact (0 < T)]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
+
+/-- The elementary tensor of a horizontal function with one fixed transverse mode. -/
+noncomputable def deningerTransverseTensor (f : C(AddCircle T, ℂ)) (eta : E) :
+    C(AddCircle T, E) :=
+  ⟨fun z => f z • eta, f.continuous.smul continuous_const⟩
+
+@[simp]
+theorem deningerTransverseTensor_apply (f : C(AddCircle T, ℂ)) (eta : E) (z : AddCircle T) :
+    deningerTransverseTensor f eta z = f z • eta :=
+  rfl
+
+/-- The `L²` norm of a continuous field is the `L²` norm of its class. -/
+theorem deningerToLp_norm (g : C(AddCircle T, E)) :
+    ‖ContinuousMap.toLp 2 (haarAddCircle (T := T)) ℂ g‖ =
+      (eLpNorm g 2 (haarAddCircle (T := T))).toReal := by
+  rw [Lp.norm_def]
+  exact congrArg ENNReal.toReal
+    (eLpNorm_congr_ae (ContinuousMap.coeFn_toLp (haarAddCircle (T := T)) g))
+
+/-- An elementary tensor factorizes its `L²` norm. -/
+theorem deningerTransverseTensor_norm_toLp (f : C(AddCircle T, ℂ)) (eta : E) :
+    ‖ContinuousMap.toLp 2 (haarAddCircle (T := T)) ℂ (deningerTransverseTensor f eta)‖ =
+      ‖eta‖ * ‖ContinuousMap.toLp 2 (haarAddCircle (T := T)) ℂ f‖ := by
+  have hnorm : eLpNorm (fun z => f z • eta) 2 (haarAddCircle (T := T)) =
+      eLpNorm ((‖eta‖ : ℝ) • fun z => f z) 2 (haarAddCircle (T := T)) := by
+    refine eLpNorm_congr_norm_ae (Filter.Eventually.of_forall fun z => ?_)
+    rw [norm_smul, Pi.smul_apply, norm_smul, Real.norm_eq_abs, abs_of_nonneg (norm_nonneg eta),
+      mul_comm]
+  rw [deningerToLp_norm, deningerToLp_norm]
+  show (eLpNorm (fun z => f z • eta) 2 (haarAddCircle (T := T))).toReal = _
+  rw [hnorm, eLpNorm_const_smul, ENNReal.toReal_mul]
+  simp
+
+/-- The transverse graph monomial acting on a continuous field. -/
+noncomputable def deningerTransverseFieldPower (A : E →L[ℂ] E) (m : ℕ)
+    (u : C(AddCircle T, E)) : C(AddCircle T, E) :=
+  ⟨fun z => (A ^ m) (u z), (A ^ m).continuous.comp u.continuous⟩
+
+/-- A transverse eigenvector stays an eigenvector of every graph monomial. -/
+theorem deningerTransverseEigen_pow {A : E →L[ℂ] E} {lam : ℂ} {eta : E}
+    (heta : A eta = lam • eta) (m : ℕ) : (A ^ m) eta = lam ^ m • eta := by
+  induction m with
+  | zero => simp
+  | succ m ih => rw [pow_succ, pow_succ, ContinuousLinearMap.mul_apply, ih, map_smul, heta,
+      smul_smul, smul_smul, mul_comm]
+
+/-- The transverse generator acts on an elementary tensor through its transverse factor only. -/
+theorem deningerTransverseFieldPower_tensor {A : E →L[ℂ] E} {lam : ℂ} {eta : E}
+    (heta : A eta = lam • eta) (m : ℕ) (f : C(AddCircle T, ℂ)) :
+    deningerTransverseFieldPower A m (deningerTransverseTensor f eta) =
+      deningerTransverseTensor (lam ^ m • f) eta := by
+  refine ContinuousMap.ext fun z => ?_
+  show (A ^ m) (f z • eta) = (lam ^ m * f z) • eta
+  rw [map_smul, deningerTransverseEigen_pow heta, smul_smul, mul_comm]
+
+/-- **Transverse graph blindness.**  Every transverse graph-power mass of the aligned packet
+tensor is independent of the horizontal aperture `N`. -/
+theorem deningerTransverseGraphPower_norm_dirichletPacket
+    {A : E →L[ℂ] E} {lam : ℂ} {eta : E} (heta : A eta = lam • eta) (hetaNorm : ‖eta‖ = 1)
+    (m : ℕ) {N : ℕ} (hN : 0 < N) (zeta : AddCircle T) :
+    ‖ContinuousMap.toLp 2 (haarAddCircle (T := T)) ℂ
+        (deningerTransverseFieldPower A m
+          (deningerTransverseTensor (deningerDirichletPacket zeta N) eta))‖ =
+      ‖lam‖ ^ m := by
+  rw [deningerTransverseFieldPower_tensor heta, deningerTransverseTensor_norm_toLp,
+    hetaNorm, one_mul, map_smul, norm_smul, deningerDirichletPacket_norm_toLp hN,
+    mul_one, norm_pow]
+
+/-- **Aligned residue evaluation.**  The same tensor has evaluation norm `√N`. -/
+theorem deningerTransverseTensor_eval_norm_dirichletPacket
+    {eta : E} (hetaNorm : ‖eta‖ = 1) (N : ℕ) (zeta : AddCircle T) :
+    ‖deningerTransverseTensor (deningerDirichletPacket zeta N) eta zeta‖ = Real.sqrt N := by
+  rw [deningerTransverseTensor_apply, norm_smul, hetaNorm, mul_one,
+    deningerDirichletPacket_eval_self, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (Real.sqrt_nonneg _)]
+
+/-- **The no-go.**  No constant multiple of any finite family of transverse graph-power
+seminorms dominates aligned horizontal residue evaluation. -/
+theorem deningerHorizontalResidue_not_bounded_by_transverseGraph
+    {A : E →L[ℂ] E} {lam : ℂ} {eta : E} (heta : A eta = lam • eta) (hetaNorm : ‖eta‖ = 1)
+    (C : ℝ) (orders : Finset ℕ) (zeta : AddCircle T) :
+    ∃ N : ℕ, 0 < N ∧
+      C * ∑ m ∈ orders,
+          ‖ContinuousMap.toLp 2 (haarAddCircle (T := T)) ℂ
+            (deningerTransverseFieldPower A m
+              (deningerTransverseTensor (deningerDirichletPacket zeta N) eta))‖ <
+        ‖deningerTransverseTensor (deningerDirichletPacket zeta N) eta zeta‖ := by
+  obtain ⟨N, hN, hlarge, -⟩ :=
+    deningerHorizontalDirichletEvaluation_unbounded (C * ∑ m ∈ orders, ‖lam‖ ^ m)
+  refine ⟨N, hN, ?_⟩
+  rw [deningerTransverseTensor_eval_norm_dirichletPacket hetaNorm,
+    Finset.sum_congr rfl fun m _ =>
+      deningerTransverseGraphPower_norm_dirichletPacket heta hetaNorm m hN zeta]
+  rwa [deningerHorizontalDirichletEvaluation_eq_sqrt] at hlarge
+
+end TransverseTensorGraph
 
 end RHTower

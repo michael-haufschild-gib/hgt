@@ -40,16 +40,19 @@ theorem riemannOrientationTransgressionPaperCore
       deningerCalderonWittAlgebraicGlobalExteriorCup w = 0)
     (p q : Nat.Primes) (hpq : p ≠ q)
     (r : XiZeroCopy) (a : ℝ) :
-    ((∃! phi : ℂ →ₗ[ℂ] W,
-        F = phi.comp deningerCalderonWittGlobalOrientedTrace) ∧
-      (deningerCalderonWittGlobalRelativeBoundaryClass S w = 0 ↔
-        deningerCalderonWittGlobalMilnorGreenRetraction w ∈ S)) ∧
+    ((deningerCalderonWittGlobalOrientationConsumerPrimary F +
+          deningerCalderonWittGlobalOrientationConsumerSecondary F = F) ∧
+      ((∃! phi : ℂ →ₗ[ℂ] W,
+          F = phi.comp deningerCalderonWittGlobalOrientedTrace) ∧
+        (deningerCalderonWittGlobalRelativeBoundaryClass S w = 0 ↔
+          deningerCalderonWittGlobalMilnorGreenRetraction w ∈ S))) ∧
       (Nonempty
           (DeningerCompletedXiClosedHodgeAdmission p q hpq r a) ↔
         a = 0) := by
   exact
-    ⟨deningerCalderonWittGlobalOrientationTransgressionCompleteness
-        F hregular S w hcocycle,
+    ⟨⟨deningerCalderonWittGlobalOrientationConsumer_primary_add_secondary F,
+        deningerCalderonWittGlobalOrientationTransgressionCompleteness
+          F hregular S w hcocycle⟩,
       exists_deningerCompletedXiClosedHodgeAdmission_iff p q hpq r a⟩
 
 end
