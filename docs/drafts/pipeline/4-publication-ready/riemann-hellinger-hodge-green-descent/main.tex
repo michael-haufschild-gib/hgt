@@ -37,10 +37,11 @@
 \newcommand{\mul}{\operatorname{mul}}
 \newcommand{\dom}{\operatorname{dom}}
 \newcommand{\Div}{\operatorname{Div}}
+\newcommand{\Spec}{\operatorname{Spec}}
 
-\title{\textbf{Transverse information at singular descent}\\
-\large A source--boundary conservation law and the exact positive
-admission frontier for the Riemann hypothesis}
+\title{\textbf{Pointed tempered descent for the Riemann divisor}\\
+\large A universal source--boundary law and the exact arithmetic
+admission frontier}
 \author{Michael Haufschild}
 \date{}
 
@@ -49,9 +50,17 @@ admission frontier for the Riemann hypothesis}
 \maketitle
 
 \begin{abstract}
-We identify one invariant which is present throughout several apparently
-different source, cohomological, and positivity constructions for the
-completed Riemann divisor.  For a spectral parameter \(s\), put
+We formulate a pointed tempered-descent law for source-generated spectral
+characters.  Algebraic source constructions determine an extension class
+and its character; positive analytic constructions test whether that
+character is tempered, meaning finitely controlled by invariant source
+geometry.  The character's real modular rate is functorial under
+non-erasing equivariant transport.  Regular descent erases a nonzero
+transverse class, closed ungraded retention makes it maximally vertical,
+strict grading retains it singularly, and finite positive invariant
+admission is possible exactly at zero real rate.
+
+For the completed Riemann divisor, put
 \(\kappa(s)=2(\Rea s-\tfrac12)\).  The same signed quantity occurs as the
 reflected entropy of the cofinal prime-shell source, the real part of a
 multiplicity-weighted Xi residue, the outer charge of a rational nearby
@@ -103,18 +112,20 @@ if its zero lies on the critical line.  Consequently RH is equivalent to
 continuity of all actual Xi evaluations in this canonical topology.
 More generally, a finite invariant gauge can dominate a nonzero character
 exactly when its real rate vanishes.  Thus the missing object is no longer
-a source, transport, orientation, gauge, or completion: it is the
-arithmetic admission estimate putting every actual Xi evaluation into the
-continuous spectrum of the already constructed half-density completion.
+a source, transport, orientation, gauge, or completion.  The target-free
+logarithmic Gaussian \(e^{-\pi t^2}\) is one Meyer class on which every
+actual Xi evaluation is nonzero, and RH is equivalent to boundedness of
+all its centered evaluation orbits.  This is the smallest remaining
+estimate; universal half-density admission is a canonical stronger form.
 We prove all structural and selector statements unconditionally; we do not
-assert this final admission estimate or the Riemann hypothesis.
+assert either final bound or the Riemann hypothesis.
 \end{abstract}
 
 \medskip
 \noindent\textbf{Keywords.}
 Riemann hypothesis; modular character; co-Poisson transform; Meyer
 cohomology; hyperbolic representation; Hodge polarization; singular
-descent; invariant gauge; spectral synthesis.
+descent; tempered spectrum; invariant gauge; spectral synthesis.
 
 \medskip
 \noindent\textbf{2020 Mathematics Subject Classification.}
@@ -156,18 +167,44 @@ The results of this paper answer four questions.
       erases the normal coordinate; ungraded closed retention becomes
       maximally multivalued.
 \item \emph{What theorem remains?}
-      Prove from the arithmetic source that every already existing Xi
-      eigenfunctional is bounded by the canonical half-density quotient
-      seminorm.
+      Prove that the centered evaluation orbit of the target-free
+      logarithmic Gaussian class is bounded at every actual divisor
+      point.  A stronger target is boundedness of every
+      evaluation by the half-density quotient seminorm.
 \end{enumerate}
 
 The last statement is narrower not only than global spectral synthesis but
 also than Hilbert--P\'olya.  The positive isometric completion has already
 been constructed.  Its continuous Xi spectrum is exactly the critical-line
-part of the divisor.  What remains is an arithmetic theorem that all actual
-Xi evaluations belong to that continuous spectrum.
+part of the divisor.  But even its universal continuity assertion is
+stronger than logically necessary: a bounded scalar orbit of the explicit
+Gaussian witness at each divisor point already forces RH.
 
-\section{The conservation law}
+\section{The pointed tempered-descent law}
+
+\subsection{Pointed spectral systems}
+
+A pointed spectral system consists of a vector space \(H\), a real
+one-parameter linear flow \(V_c\), a source class \(u_\ast\), and nonzero
+linear functionals \(E_z\) satisfying
+\[
+                     E_z(V_cu)=e^{cz}E_z(u).
+\tag{2.1}\label{eq:pointed-character}
+\]
+The real number \(\mu(z)=\Rea z\) is its modular rate.  We call the
+character \emph{temperately admitted} if \(E_z\) is dominated by a finite
+nonnegative \(V_c\)-invariant gauge.  This definition deliberately asks
+for less than a Hilbert realization.  It separates two problems:
+
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2em]
+\item source exactness: whether the algebraic character and a nonzero
+      source witness exist; and
+\item tempered admission: whether positive invariant geometry controls
+      that already existing character.
+\end{enumerate}
+
+The Riemann corpus has solved the first problem in several inequivalent
+ways.  Its remaining zero-exclusion problem is the second.
 
 \subsection{Algebraic descent}
 
@@ -176,13 +213,13 @@ Let \(X,Y,Z\) be modules, let \(C,B,A\) be endomorphisms, and let
 defects
 \[
        \partial r=Br-rC,\qquad \partial j=Aj-jB
-\tag{2.1}\label{eq:factor-defects}
+\tag{2.2}\label{eq:factor-defects}
 \]
 and the resolved composite defect
 \[
  \Delta_{j,r}(x)=
  \left((\partial j)(rx),\,j((\partial r)x)\right)\in Z\oplus Z.
-\tag{2.2}\label{eq:resolved}
+\tag{2.3}\label{eq:resolved}
 \]
 Write \(\Sigma(u,v)=u+v\).
 
@@ -191,13 +228,13 @@ Write \(\Sigma(u,v)=u+v\).
 For every \(x\in X\),
 \[
                   A(jr)x-(jr)Cx=\Sigma\Delta_{j,r}(x).
-\tag{2.3}\label{eq:defect-conservation}
+\tag{2.4}\label{eq:defect-conservation}
 \]
 Moreover,
 \[
  0\longrightarrow Z\xrightarrow{z\mapsto(z,-z)}Z\oplus Z
  \xrightarrow{\Sigma} Z\longrightarrow0
-\tag{2.4}\label{eq:augmentation}
+\tag{2.5}\label{eq:augmentation}
 \]
 is exact.  If the two coordinates of \(\Delta_{j,r}\) lie in submodules
 \(P,Q\subset Z\) with \(P\cap Q=0\), then covariance of the composite
@@ -237,7 +274,7 @@ Let \(X,Y\) be Hausdorff topological vector spaces and let
       \(\mul\cR=Y\) and
       \[
                         \cR=\dom\cR\times Y.
-      \tag{2.5}\label{eq:vertical}
+      \tag{2.6}\label{eq:vertical}
       \]
 \end{enumerate}
 \end{proposition}
@@ -264,14 +301,17 @@ Propositions~\ref{prop:resolved} and \ref{prop:closed-retention} have one
 content:
 
 \begin{quote}
-\emph{A nonzero transverse class cannot be generated after descent.  It
-must be retained before the limiting operation in a strict associated
-grade.  Regular deterministic descent erases it; closed ungraded
-relational descent retains it only as vertical multivaluedness.}
+\emph{A source-generated modular class cannot be improved downstream.
+Before descent it is retained in resolved or strictly graded data.
+Regular deterministic descent erases it; closed ungraded relational
+descent retains it only as vertical multivaluedness; positive finite
+invariant admission retains a nonzero character exactly when its modular
+rate vanishes.}
 \end{quote}
 
-The remaining sections prove that the Riemann source realizes every part
-of this statement sharply.
+The remaining sections prove that the Riemann sources realize every branch
+of this law sharply.  Algebraic Xi spectrum is abundant; tempered Xi
+spectrum is exactly the critical-line sector.
 
 \section{The complete source and its normal cone}
 
@@ -423,7 +463,38 @@ Fisher whitening necessarily amplifies rare prime events.  The resulting
 Gamma normalization is an inverse-conditioned normal coordinate, not a
 missing arithmetic source.
 
-\section{Source--boundary hyperbolic rigidity}
+\paragraph{Prime dilation and the Gamma/co-Poisson cell.}
+The half-density prime character
+\[
+                         b_p(s)=p^{\,s-1/2}
+\]
+is the common local transport behind the Burnol and Gamma descriptions.
+Its removable divided difference is exactly the finite-log
+Gamma/co-Poisson interval cell:
+\[
+ \frac{b_p(s)-b_p(\rho)}{s-\rho}
+   =\Gamma_{\log p}(s,\rho),
+\tag{3.8}\label{eq:prime-gamma-cell}
+\]
+with the derivative value at \(s=\rho\).  At any zero \(\rho\) of a
+holomorphic function \(Z\), the exact resolvent identity is
+\[
+ \bigl(b_p(s)-b_p(\rho)\bigr)
+       \frac{Z(s)-Z(\rho)}{s-\rho}
+ =Z(s)\Gamma_{\log p}(s,\rho).
+\tag{3.9}\label{eq:prime-resolvent}
+\]
+The reflected scale-seam charge is likewise
+\[
+ \frac{\log p}{\sqrt p}
+ \left(b_p(1-\overline\rho)-b_p(\rho)\right).
+\tag{3.10}\label{eq:prime-seam}
+\]
+Thus Gamma/co-Poisson transport, prime dilation, and reflected orientation
+are not parallel ingredients: they are divided, transported, and reflected
+forms of one half-density character.
+
+\section{Arithmetic realization of the modular rate}
 
 \subsection{Exact orientation conservation}
 
@@ -447,7 +518,7 @@ Let \(\Xi\) denote the completed Riemann function.  If
 \tag{4.3}\label{eq:charge}
 \]
 
-\begin{theorem}[Source--boundary hyperbolic rigidity]
+\begin{theorem}[Pointed tempered-descent rigidity]
 \label{thm:main}
 The following statements hold unconditionally.
 
@@ -669,12 +740,40 @@ It is equivalent to injectivity of the canonical comparison from
 for the minimal RH implication below, because one-way inclusion and
 nonvanishing of every actual Xi evaluation are already proved.
 
+\subsection{Archimedean completion and the common-source resolvent}
+
+There is also a literal Hilbert-space realization before quotient.  Let
+\[
+ \lambda_\rho=-i\left(\rho-\frac12\right),\qquad
+ F(x)=\Xi\!\left(\frac12+ix\right),
+\]
+let \(A\) be multiplication by the real coordinate on its maximal
+\(L^2(\R)\) domain, and let \(q_\rho\) be the removable first divided Xi
+function.  Then \(A\) is symmetric, \(F\ne0\), and for every actual Xi
+divisor point,
+\[
+ q_\rho\ne0,\qquad q_\rho\in\dom A,\qquad
+                       Aq_\rho=\lambda_\rho q_\rho+F.
+\tag{5.4}\label{eq:common-source-resolvent}
+\]
+The same nonzero vector \(F\) is the defect for every divisor point.
+Moreover its full real phase orbit has dense span in \(L^2(\R)\), as does
+the translation orbit of the physical theta source.
+
+Equation \eqref{eq:common-source-resolvent} is not a Hilbert--P\'olya
+eigenvalue equation.  It is an affine common-source resolvent equation.
+Killing \(F\) formally creates all desired eigenvectors, but any closed
+phase-invariant radical containing \(F\) contains its dense orbit.  This is
+the exact Hedenmalm dense-radical shadow of the singular-descent law: the
+source defect is universal, while regular quotienting of that defect
+collapses the carrier.
+
 \subsection{Reciprocal flow and weight-one pairing}
 
 The reciprocal operator
 \[
                            (Jg)(x)=x^{-1}g(x^{-1})
-\tag{5.4}\label{eq:paugam-j}
+\tag{5.5}\label{eq:paugam-j}
 \]
 preserves the all-weight source, carries literal Poisson boundaries to
 boundaries, and descends to an involution on \(\cH_{\mathrm M}\).
@@ -687,13 +786,13 @@ not the top-jet determinant.  It is the complementary-jet block
  E_{\rho,j}(u)E_{\rho,n-j}(Jv)
 -E_{\rho,j}(v)E_{\rho,n-j}(Ju)
 \right).
-\tag{5.5}\label{eq:paugam-pairing}
+\tag{5.6}\label{eq:paugam-pairing}
 \]
 It is alternating, anti-invariant under simultaneous \(J\), and obeys
 the exact weight-one dilation law
 \[
  \Psi_{\rho,n}(U_cu,U_cv)=e^c\Psi_{\rho,n}(u,v).
-\tag{5.6}\label{eq:weight-one}
+\tag{5.7}\label{eq:weight-one}
 \]
 The binomial completion is forced by the triangular translation of
 generalized jets.
@@ -707,7 +806,7 @@ quotient there is an anti-linear operator squaring to \(-1\), and its
 cup--Hodge diagonal is exactly
 \[
                           |z_+|^2+|z_-|^2.
-\tag{5.7}\label{eq:local-positive}
+\tag{5.8}\label{eq:local-positive}
 \]
 This form is positive and has zero radical.
 
@@ -729,7 +828,7 @@ the completed Mellin evaluation kernels have dense linear span.  Hence,
 for a positive operator supported on that quotient, its Berezin diagonal
 \[
                          \cB_T(w)=\langle k_w,Tk_w\rangle
-\tag{5.8}\label{eq:berezin}
+\tag{5.9}\label{eq:berezin}
 \]
 is faithful: if \(\cB_T(w)=0\) throughout the strip, then \(T=0\).
 Cosine reflection transports the left evaluation kernel to the right
@@ -742,13 +841,14 @@ co-Poisson annihilator point has the exact normalized value
  \frac{\Rea\cB_T(w)}{\|k_w\|^2}
    =r^{\,2\Rea w-1}-r^{\,1-2\Rea w}
    =2\sinh\!\left(\log r\,\kappa(w)\right).
-\tag{5.9}\label{eq:burnol-hyperbolic}
+\tag{5.10}\label{eq:burnol-hyperbolic}
 \]
 Thus the Sonin--Burnol positive consumer does not introduce a new
 orientation law.  It reads the same transverse character through its
 hyperbolic sine.  Faithfulness says positivity can detect a surviving
 operator; reflection oddness says the oriented reader remains signed.
 
+\clearpage
 \section{One law, many shadows}
 
 The corpus-wide results now organize by the fate of the same transverse
@@ -783,12 +883,15 @@ Meyer--Poisson cohomology
 Meyer half-density
  & canonical centered-flow-invariant quotient seminorm and Banach completion
  & its continuous Xi spectrum is exactly the neutral sector\\
+Meyer log-Gaussian
+ & one target-free class with everywhere nonzero entire Mellin transform
+ & bounded centered evaluation orbits are exactly the neutral sector\\
 Paugam polarization
  & alternating complementary-jet form of weight one
  & positive local regulator form vanishes on genuine middle cycles\\
 Hedenmalm / dense radical
- & finite source evaluations
- & completion turns unresolved dense normal data into radical or vertical fibre\\
+ & one symmetric coordinate domain, nonzero common-source resolvents, cyclic theta source
+ & killing the common defect in a regular invariant quotient produces dense radical collapse\\
 Wold--Poisson
  & conjugate depth/time characters
  & independent quadrant boundedness holds exactly at zero real rate\\
@@ -812,9 +915,9 @@ The positive results show that the character is present and transported.
 The no-go results locate the descent at which it is erased, verticalized,
 or confined to the wrong cohomological degree.
 
-\section{The exact RH frontier}
+\section{The exact RH frontier: temperedness}
 
-\subsection{Pointwise invariant-gauge criterion}
+\subsection{Minimal pointed criterion}
 
 Let \(U_c\) be dilation on \(\cH_{\mathrm M}\) and define the centered
 flow
@@ -824,6 +927,45 @@ flow
 \]
 At a Xi divisor point, the zero-order functional transforms by the
 character \(e^{c(\rho-1/2)}\).
+
+\begin{theorem}[Target-free Gaussian frontier]
+\label{thm:fixed-source}
+The logarithmic Gaussian
+\[
+                 g_\ast(t)=e^{-\pi t^2}
+\]
+satisfies the full all-weight Meyer source condition and has entire Mellin
+transform
+\[
+                 M_{g_\ast}(s)=e^{s^2/(4\pi)}\ne0.
+\]
+Hence its class \(u_\ast=[g_\ast]\in\cH_{\mathrm M}\) satisfies
+\[
+                         E_{\rho,0}(u_\ast)\ne0
+\]
+for every actual Xi divisor point.  For this one class,
+\[
+\left[
+ \forall\rho\in\Div(\Xi)\;\exists C_\rho\in\R\;
+ \forall c\in\R,\quad |E_{\rho,0}(V_cu_\ast)|\le C_\rho
+\right]
+\quad\Longleftrightarrow\quad\mathrm{RH}.
+\tag{7.2}\label{eq:fixed-source-rh}
+\]
+\end{theorem}
+
+\begin{proof}
+The Gaussian transform is an exponential and therefore has no zero; the
+Meyer evaluation identity gives nonvanishing under every actual zeroth
+evaluation.  Its centered orbit satisfies
+\[
+ |E_{\rho,0}(V_cu_\ast)|
+ =e^{c(\Rea\rho-1/2)}|E_{\rho,0}(u_\ast)|.
+\]
+If the orbit is bounded for both signs of \(c\), its nonzero initial value
+forces \(\Rea\rho=\tfrac12\).  Conversely, on the critical line the orbit
+has constant modulus.  Apply this pointwise to the entire Xi divisor.
+\end{proof}
 
 \begin{definition}[Pointwise invariant evaluation gauge]
 \label{def:gauge}
@@ -835,12 +977,12 @@ such that, for some \(C_\rho\ge0\),
 \[
  g_\rho(V_cu)=g_\rho(u),\qquad
  |E_{\rho,0}(u)|\le C_\rho g_\rho(u)
-\tag{7.2}\label{eq:gauge}
+\tag{7.3}\label{eq:gauge}
 \]
 for every \(c\in\R\) and \(u\in\cH_{\mathrm M}\).
 \end{definition}
 
-\begin{theorem}[Exact pointwise admission frontier]
+\begin{theorem}[Exact pointwise tempered-admission frontier]
 \label{cor:rh}
 For an actual Xi divisor point \(\rho\), an admissible gauge exists if
 and only if \(\Rea\rho=\tfrac12\).  Consequently,
@@ -848,7 +990,7 @@ and only if \(\Rea\rho=\tfrac12\).  Consequently,
  \bigl(\forall\rho\in\Div(\Xi)\;\exists g_\rho
        \text{ satisfying \eqref{eq:gauge}}\bigr)
  \quad\Longleftrightarrow\quad \mathrm{RH}.
-\tag{7.3}\label{eq:gauge-rh}
+\tag{7.4}\label{eq:gauge-rh}
 \]
 \end{theorem}
 
@@ -865,18 +1007,18 @@ invariant, with \(C_\rho=1\).  The global equivalence follows because the
 Meyer quotient contains every actual Xi zero.
 \end{proof}
 
-\subsection{Canonical half-density positive geometry}
+\subsection{Canonical half-density tempered geometry}
 
 For \(g\in\cS_{\mathrm M}\), define
 \[
  p_{1/2}(g)=\int_{\R}e^{t/2}|g(t)|\,dt
-\tag{7.4}\label{eq:half-density}
+\tag{7.5}\label{eq:half-density}
 \]
 and descend it through the literal Poisson boundary by
 \[
  \overline p_{1/2}([g])
    =\inf_{b\in\cB_{\mathrm P}}p_{1/2}(g+b).
-\tag{7.5}\label{eq:quotient-half-density}
+\tag{7.6}\label{eq:quotient-half-density}
 \]
 
 \begin{theorem}[Exact half-density continuity selector]
@@ -898,7 +1040,7 @@ The following statements hold unconditionally.
       E_{\rho,0}\text{ is bounded by }\overline p_{1/2}
       \quad\Longleftrightarrow\quad
       \Rea\rho=\frac12.
-      \tag{7.6}\label{eq:selector}
+      \tag{7.7}\label{eq:selector}
       \]
       On the critical line the bound is contractive.
 \item Consequently,
@@ -907,7 +1049,7 @@ The following statements hold unconditionally.
       \quad\Longleftrightarrow\quad
       \text{every actual \(E_{\rho,0}\) is
       \(\overline p_{1/2}\)-bounded}.
-      \tag{7.7}\label{eq:canonical-rh}
+      \tag{7.8}\label{eq:canonical-rh}
       \]
 \end{enumerate}
 \end{theorem}
@@ -938,6 +1080,29 @@ gauge in Definition~\ref{def:gauge}, so Theorem~\ref{cor:rh} forces
 every actual Xi point gives \eqref{eq:canonical-rh}.
 \end{proof}
 
+\begin{corollary}[Algebraic--tempered spectral split]
+\label{cor:spectral-split}
+Let
+\[
+\Spec_{\rm alg}^{\Xi}(\cH_{\mathrm M})=\Div(\Xi),\qquad
+\Spec_{\rm temp}^{\Xi}(\cH_{\mathrm M})
+=\{\rho\in\Div(\Xi):E_{\rho,0}
+  \text{ is }\overline p_{1/2}\text{-bounded}\}.
+\]
+Then
+\[
+\Spec_{\rm temp}^{\Xi}(\cH_{\mathrm M})
+=\Div(\Xi)\cap\{\Rea s=\tfrac12\},
+\qquad
+\mathrm{RH}\Longleftrightarrow
+\Spec_{\rm alg}^{\Xi}=\Spec_{\rm temp}^{\Xi}.
+\]
+\end{corollary}
+
+\begin{proof}
+This is Theorem~\ref{thm:half-density}(iv)--(v).
+\end{proof}
+
 \subsection{What has and has not been reduced}
 
 Theorem~\ref{cor:rh} removes assumptions previously mistaken for the
@@ -948,9 +1113,9 @@ each already existing nonzero evaluation.  Theorem~\ref{thm:half-density}
 then supplies one canonical common seminorm and its positive isometric
 completion.
 
-The selector is exact, so asserting universal boundedness is equivalent to
-RH.  Its research content is diagnostic rather than a disguised proof:
-the missing proof must derive universal boundedness from arithmetic source
+Both selectors are exact, so asserting their missing boundedness direction
+is equivalent to RH.  Their research content is diagnostic rather than a
+disguised proof: any proof must derive boundedness from arithmetic source
 structure, not from the unknown locations of zeros.  The corpus has fixed
 every surrounding ingredient:
 
@@ -964,17 +1129,20 @@ every surrounding ingredient:
 \item Theorem~\ref{thm:finite-fibre} gives an exact topology constraint.
 \end{enumerate}
 
-The unresolved mathematical step is therefore not construction of a
-positive completion.  It is the arithmetic admission theorem
+The smallest unresolved mathematical step is therefore not construction
+of a positive completion.  It is the fixed-source orbit estimate on the
+left side of \eqref{eq:fixed-source-rh}.  A stronger canonical target,
+which uses the entire source geometry rather than one witness, is the
+half-density arithmetic admission theorem
 \[
   \forall\rho\in\Div(\Xi),\quad
   |E_{\rho,0}(u)|\le C_\rho\overline p_{1/2}(u)
   \quad(u\in\cH_{\mathrm M}),
-\tag{7.8}\label{eq:missing-admission}
+\tag{7.9}\label{eq:missing-admission}
 \]
 with finite \(C_\rho\), proved from the source without assuming
-\(\Rea\rho=\tfrac12\).  By \eqref{eq:canonical-rh}, this is exactly the
-RH-bearing step.
+\(\Rea\rho=\tfrac12\).  Either theorem closes RH; the latter additionally
+places the complete actual Xi divisor in one canonical continuous dual.
 
 The following substitutes are now excluded.
 
@@ -995,9 +1163,10 @@ The following substitutes are now excluded.
 
 Global spectral synthesis \eqref{eq:synthesis} is a natural stronger
 theorem: it would identify all of compact-open Xi cohomology with the
-Meyer quotient.  It is not required for Theorem~\ref{cor:rh}.  The
-minimal frontier is the concrete half-density admission estimate
-\eqref{eq:missing-admission} for the already proved one-way Xi spectral
+Meyer quotient.  It is not required for
+Theorem~\ref{thm:fixed-source} or Theorem~\ref{cor:rh}.  The literal minimal
+frontier is the fixed-source orbit bound; \eqref{eq:missing-admission} is
+the source-geometric frontier for the already proved one-way Xi spectral
 inclusion.
 
 \subsection{Why several routes converge here}
@@ -1021,9 +1190,10 @@ artificial chain.
 Their common conclusion is not another bridge between arbitrary
 marginals.  It is that all source and transport data required before
 positive admission already exist.  The missing estimate must act on
-genuine Meyer middle cohomology and prove that every actual Xi evaluation
-is continuous for \(\overline p_{1/2}\).  The required positive geometry
-is no longer hypothetical.
+the centered orbit of the target-free Gaussian Meyer class; the canonical
+stronger version proves that every actual Xi evaluation is continuous for
+\(\overline p_{1/2}\).  Required source and positive geometry are no longer
+hypothetical.
 
 \section{Discussion}
 
@@ -1034,7 +1204,8 @@ rate is conserved on resolved or normally graded source data; regular
 descent erases it, ungraded closed retention verticalizes it, and positive
 finite invariant admission retains a nonzero character exactly at zero
 real rate.  Source entropy, Xi residue, nearby-cycle charge, Green defect,
-Rees type, and Meyer continuity are its coordinate realizations.
+prime divided difference, the Hedenmalm common-source resolvent, Rees type,
+Burnol holonomy, and Meyer continuity are its coordinate realizations.
 
 The law separates three questions often conflated in RH research.
 
@@ -1046,10 +1217,11 @@ The law separates three questions often conflated in RH research.
       \(\kappa\) is an explicit projective source character, residue,
       nearby-cycle charge, and resolved Green defect.
 \item \emph{Why must the orientation vanish?}  This is the remaining
-      problem.  Vanishing is equivalent to continuity of every Xi
-      evaluation for the canonical half-density quotient seminorm, but
-      does not follow from hyperbolic conservation, scalar covariance,
-      local positivity, or regular completion.
+      problem.  Vanishing is equivalent already to boundedness of every
+      centered evaluation orbit of the target-free Gaussian source class.
+      Continuity for the canonical half-density quotient seminorm is a
+      stronger equivalent.  Neither follows from hyperbolic conservation,
+      scalar covariance, local positivity, or regular completion.
 \end{enumerate}
 
 This explains why increasingly exact divisor reconstructions did not move
@@ -1060,9 +1232,9 @@ correct cohomological degree and topology.
 \subsection{Scope}
 
 All theorems stated as results in this paper are unconditional.  The
-source-derived invariant bounds required simultaneously at every actual
-Xi point are not claimed.  The paper does not prove RH, simplicity of
-zeros, a trace formula, or global Meyer--Xi spectral synthesis.
+source-derived fixed-orbit bound, or the stronger universal half-density
+admission bound, is not claimed.  The paper does not prove RH, simplicity
+of zeros, a trace formula, or global Meyer--Xi spectral synthesis.
 
 The universal algebraic and representation-theoretic identities are
 elementary in isolation.  Their significance lies in the sharp arithmetic
@@ -1098,10 +1270,13 @@ The frontier is therefore exact and smaller than previously stated.  The
 canonical half-density quotient seminorm and its positive isometric Banach
 completion already exist.  An actual Xi evaluation is continuous for this
 topology exactly when its zero is critical.  What remains is one
-source-derived arithmetic admission theorem proving continuity for every
-actual Xi evaluation.  The source--boundary conservation law identifies
-the controlled character; the singular-descent and grading laws explain
-why scalar, local, ungraded, and finite-Rees substitutes fail to control
-it.
+source-derived scalar estimate: boundedness, at every actual divisor
+point, of the centered evaluation orbit of the target-free logarithmic
+Gaussian, whose Mellin transform is everywhere nonzero.  Universal
+half-density admission is a canonical stronger target.  The
+source--boundary conservation law
+identifies the controlled character; the singular-descent and grading laws
+explain why scalar-after-descent, local, ungraded, and finite-Rees
+substitutes fail to control it.
 
 \end{document}

@@ -150,11 +150,14 @@ topology.
 - [x] quotient-by-kernel Banach completion;
 - [x] completed centered flow is a surjective linear isometry;
 - [x] critical Xi evaluations extend continuously and remain nonzero;
+- [x] extended Xi evaluations retain the exact centered eigencharacter on the completion;
 - [ ] Poisson-boundary closedness / faithful embedding (open core);
 - [ ] source arithmetic admission for every Xi divisor point (RH-bearing open core).
 
 Formal module:
 `formal/GaloisForLFunctions/RHTower/DeningerMeyerHalfDensityL1Completion.lean`.
 
-Verification: direct `lake env lean`, targeted module build, global formal lint, and axiom audit all
-pass. Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
+Verification: direct `lake env lean`, targeted module build, and axiom audit pass. Axiom audit
+reports only `propext`, `Classical.choice`, and `Quot.sound`. The latest global lint reaches an
+unrelated shared-worktree failure: `CriticalHalfDensityPrimeTailResolventLaw` is not imported by the
+`RHTower` umbrella. This module itself is imported there and contains no banned declaration.

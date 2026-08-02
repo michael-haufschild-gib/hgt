@@ -26,6 +26,11 @@ namespace GaloisForLFunctions.HTGeometry
 def depthSuccessorNearbyCycle (rho : ℂ) (m : ℕ) (z : ℂ) : ℂ :=
   (z / (z + rho)) ^ m
 
+/-- Literal defect of one depth-successor transport. -/
+def depthSuccessorTransportDefect
+    (f : ℂ → ℂ) (ε u : ℂ) : ℂ :=
+  depthSuccessorTransport f ε u - 1
+
 /-- Depth transport after centering the dilation at `center`. -/
 def centeredDepthSuccessorTransport
     (center : ℂ) (f : ℂ → ℂ) (ε u : ℂ) : ℂ :=
@@ -209,6 +214,38 @@ theorem tendsto_depthSuccessorTransport_movingZero
         ε * (z + rho + ε * z) := by ring
   rw [hnum, hden]
   exact factorized_depth_ratio hε hs hg1
+
+/-- The literal depth defect has nearby layer `P_{rho,m} - 1` at a moving
+order-`m` zero. -/
+theorem tendsto_depthSuccessorTransportDefect_movingZero
+    {f g : ℂ → ℂ} {rho z : ℂ} {m : ℕ}
+    (hfac :
+      f =ᶠ[𝓝 rho] fun w => (w - rho) ^ m * g w)
+    (hg : ContinuousAt g rho) (hg0 : g rho ≠ 0)
+    (hz : z + rho ≠ 0) :
+    Tendsto
+      (fun ε : ℂ =>
+        depthSuccessorTransportDefect f ε (rho + ε * z))
+      (𝓝[≠] 0)
+      (𝓝 (depthSuccessorNearbyCycle rho m z - 1)) := by
+  simpa only [depthSuccessorTransportDefect] using
+    (tendsto_depthSuccessorTransport_movingZero
+      hfac hg hg0 hz).sub_const 1
+
+/-- At a fixed nonzero carrier value, the literal depth defect divided by its
+aperture converges to the Euler logarithmic current. -/
+theorem tendsto_depthSuccessorTransportDefect_differenceQuotient
+    {f : ℂ → ℂ} {u : ℂ} (hf : DifferentiableAt ℂ f u)
+    (hfu : f u ≠ 0) :
+    Tendsto
+      (fun ε : ℂ => ε⁻¹ * depthSuccessorTransportDefect f ε u)
+      (𝓝[≠] 0)
+      (𝓝 (-u * logDeriv f u)) := by
+  have hzero : depthSuccessorTransport f 0 u = 1 := by
+    simp [depthSuccessorTransport, hfu]
+  simpa only [depthSuccessorTransportDefect, hzero,
+    zero_add, smul_eq_mul] using
+    (hasDerivAt_depthSuccessorTransport_zero hf hfu).tendsto_slope_zero
 
 /-- Centering changes the normal-layer displacement from `rho` to `rho - center`. -/
 theorem tendsto_centeredDepthSuccessorTransport_movingZero
@@ -656,6 +693,32 @@ theorem tendsto_xiDepthSuccessorTransport_movingZero
   simpa only [xiDepthSuccessorTransport] using
     tendsto_depthSuccessorTransport_movingZero
       hfac' hgan.continuousAt hg0 hz
+
+/-- At an actual Xi zero, the literal unrenormalized depth defect converges
+on the moving scale to the rational nearby cycle minus one. -/
+theorem tendsto_xiDepthSuccessorTransportDefect_movingZero
+    {rho z : ℂ} (hzero : xi rho = 0) (hz : z + rho ≠ 0) :
+    Tendsto
+      (fun ε : ℂ =>
+        depthSuccessorTransportDefect xi ε (rho + ε * z))
+      (𝓝[≠] 0)
+      (𝓝 (depthSuccessorNearbyCycle rho
+        (analyticOrderAt xi rho).toNat z - 1)) := by
+  simpa only [depthSuccessorTransportDefect,
+    xiDepthSuccessorTransport] using
+    (tendsto_xiDepthSuccessorTransport_movingZero hzero hz).sub_const 1
+
+/-- Away from the Xi divisor, the same literal defect has the outer
+fixed-spectral-point limit `-u * Xi'/Xi`. -/
+theorem tendsto_xiDepthSuccessorTransportDefect_differenceQuotient
+    {u : ℂ} (hu : xi u ≠ 0) :
+    Tendsto
+      (fun ε : ℂ =>
+        ε⁻¹ * depthSuccessorTransportDefect xi ε u)
+      (𝓝[≠] 0)
+      (𝓝 (-u * logDeriv xi u)) := by
+  exact tendsto_depthSuccessorTransportDefect_differenceQuotient
+    (xi_differentiable u) hu
 
 /-- The balanced Xi depth successor exposes the centered displacement
 `rho - 1/2` as its exact moving-zero normal profile. -/

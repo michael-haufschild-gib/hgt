@@ -627,4 +627,97 @@ theorem fourier_comp_mul_left {c : ℝ} (hc : 0 < c) (f : ℝ → ℂ) (w : ℝ)
       (fun u : ℝ => Real.fourierChar (-(inner ℝ u (w / c))) • f u) c,
     abs_of_pos (inv_pos.mpr hc), Complex.real_smul, Complex.ofReal_inv, smul_eq_mul]
 
+
+/-! ## Dilated even Poisson summation -/
+
+/-- Scalar dilation of the line as a continuous linear equivalence. -/
+def realDilationEquiv {c : ℝ} (hc : c ≠ 0) : ℝ ≃L[ℝ] ℝ where
+  toFun v := c * v
+  invFun v := c⁻¹ * v
+  map_add' x y := by ring
+  map_smul' m x := by
+    simp only [smul_eq_mul, RingHom.id_apply]
+    ring
+  left_inv v := by
+    field_simp
+  right_inv v := by
+    field_simp
+  continuous_toFun := by fun_prop
+  continuous_invFun := by fun_prop
+
+@[simp] theorem realDilationEquiv_apply {c : ℝ} (hc : c ≠ 0) (v : ℝ) :
+    realDilationEquiv hc v = c * v := rfl
+
+/-- The dilated Schwartz function `v ↦ f (c v)`. -/
+def schwartzDilate (f : SchwartzMap ℝ ℂ) {c : ℝ} (hc : c ≠ 0) : SchwartzMap ℝ ℂ :=
+  SchwartzMap.compCLMOfContinuousLinearEquiv ℂ (realDilationEquiv hc) f
+
+@[simp] theorem schwartzDilate_apply (f : SchwartzMap ℝ ℂ) {c : ℝ} (hc : c ≠ 0) (v : ℝ) :
+    schwartzDilate f hc v = f (c * v) := rfl
+
+/-- **Dilated even Poisson summation.**  Carrying the scale through the folded identity gives the
+multiplicative form used by the co-Poisson intertwining. -/
+theorem even_poisson_summation_dilate (f : SchwartzMap ℝ ℂ)
+    (heven : ∀ x : ℝ, f (-x) = f x) {c : ℝ} (hc : 0 < c)
+    (hsum : Summable fun n : ℕ => f (c * ((n : ℝ) + 1)))
+    (hsumF : Summable fun n : ℕ => (𝓕 (f : ℝ → ℂ)) (((n : ℝ) + 1) / c)) :
+    f 0 + 2 * ∑' n : ℕ, f (c * ((n : ℝ) + 1)) =
+      (c : ℂ)⁻¹ *
+        ((𝓕 (f : ℝ → ℂ)) 0 + 2 * ∑' n : ℕ, (𝓕 (f : ℝ → ℂ)) (((n : ℝ) + 1) / c)) := by
+  have hcne : c ≠ 0 := ne_of_gt hc
+  set g : SchwartzMap ℝ ℂ := schwartzDilate f hcne with hg
+  have hgcoe : (g : ℝ → ℂ) = fun v : ℝ => f (c * v) := rfl
+  have hgeven : ∀ x : ℝ, g (-x) = g x := by
+    intro x
+    show f (c * -x) = f (c * x)
+    rw [show c * -x = -(c * x) from by ring, heven]
+  have hgfourier : ∀ w : ℝ, (𝓕 (g : ℝ → ℂ)) w = (c : ℂ)⁻¹ * (𝓕 (f : ℝ → ℂ)) (w / c) := by
+    intro w
+    rw [hgcoe, fourier_comp_mul_left hc, smul_eq_mul]
+  have hgsum : Summable fun n : ℕ => g ((n : ℝ) + 1) := hsum
+  have hgsumF : Summable fun n : ℕ => (𝓕 (g : ℝ → ℂ)) ((n : ℝ) + 1) := by
+    refine (hsumF.mul_left ((c : ℂ)⁻¹)).congr fun n => ?_
+    rw [hgfourier]
+  have hmain := even_poisson_summation g hgeven hgsum hgsumF
+  have hg0 : g 0 = f 0 := by
+    show f (c * 0) = f 0
+    rw [mul_zero]
+  have hgf0 : (𝓕 (g : ℝ → ℂ)) 0 = (c : ℂ)⁻¹ * (𝓕 (f : ℝ → ℂ)) 0 := by
+    rw [hgfourier, zero_div]
+  have hgtsum : (∑' n : ℕ, (𝓕 (g : ℝ → ℂ)) ((n : ℝ) + 1)) =
+      (c : ℂ)⁻¹ * ∑' n : ℕ, (𝓕 (f : ℝ → ℂ)) (((n : ℝ) + 1) / c) := by
+    rw [← tsum_mul_left]
+    exact tsum_congr fun n => hgfourier _
+  have hgtsumL : (∑' n : ℕ, g ((n : ℝ) + 1)) = ∑' n : ℕ, f (c * ((n : ℝ) + 1)) := rfl
+  rw [hg0, hgf0, hgtsum, hgtsumL] at hmain
+  rw [hmain]
+  ring
+
+
+/-! ## The co-Poisson intertwining -/
+
+/-- The corrected co-Poisson sum of a Schwartz function at scale `c`: the multiplicative sum with
+its two archimedean correction terms. -/
+def coPoissonCorrected (f : SchwartzMap ℝ ℂ) (c : ℝ) : ℂ :=
+  (∑' n : ℕ, f (c * ((n : ℝ) + 1))) + f 0 / 2 - (𝓕 (f : ℝ → ℂ)) 0 / (2 * c)
+
+/-- **Co-Poisson intertwining.**  The corrected co-Poisson sum of `f` at scale `c`, rescaled by `c`,
+is the uncorrected co-Poisson sum of the Fourier transform at the reciprocal scale.  This is the
+exact form in which Poisson summation intertwines the multiplicative sum with the Fourier
+transform. -/
+theorem coPoisson_intertwine (f : SchwartzMap ℝ ℂ)
+    (heven : ∀ x : ℝ, f (-x) = f x) {c : ℝ} (hc : 0 < c)
+    (hsum : Summable fun n : ℕ => f (c * ((n : ℝ) + 1)))
+    (hsumF : Summable fun n : ℕ => (𝓕 (f : ℝ → ℂ)) (((n : ℝ) + 1) / c)) :
+    (c : ℂ) * coPoissonCorrected f c =
+      ∑' k : ℕ, (𝓕 (f : ℝ → ℂ)) (((k : ℝ) + 1) / c) := by
+  have hcne : (c : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hc)
+  have hdilate := even_poisson_summation_dilate f heven hc hsum hsumF
+  have hd : (c : ℂ) * (f 0 + 2 * ∑' n : ℕ, f (c * ((n : ℝ) + 1))) =
+      (𝓕 (f : ℝ → ℂ)) 0 + 2 * ∑' n : ℕ, (𝓕 (f : ℝ → ℂ)) (((n : ℝ) + 1) / c) := by
+    rw [hdilate, ← mul_assoc, mul_inv_cancel₀ hcne, one_mul]
+  rw [coPoissonCorrected]
+  field_simp
+  linear_combination hd
+
 end RHTower

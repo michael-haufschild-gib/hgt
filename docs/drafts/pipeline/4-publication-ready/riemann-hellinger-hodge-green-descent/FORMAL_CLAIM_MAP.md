@@ -1,6 +1,6 @@
 # Formal claim map
 
-Paper: `Transverse information at singular descent`  
+Paper: `Pointed tempered descent for the Riemann divisor`
 Scope: load-bearing mathematical claims only.  Manuscript contains no mention of formalization.
 
 | Manuscript result | Unconditional theorem/module |
@@ -16,6 +16,7 @@ Scope: load-bearing mathematical claims only.  Manuscript contains no mention of
 | Physical internally promoted theta source lands in Xi jets | `MobiusThetaInternalJetPhysicalGraph.lean`: `fourier_xiThetaInternalJetSchwartzSource`, `tendsto_fourier_sum_range_mobiusThetaInternalJetCompletePhysicalChannel` |
 | Local Xi multiplicity matrix is nonsingular | `MobiusThetaInternalJetSourceLocalSpanning.lean`: local matrix diagonal/full-rank theorems |
 | Euler valuation disintegration and Fisher variance | `EulerActivationSquarefreeDisintegration.lean`: local valuation-law, conditional-geometric, and parity-variance theorems |
+| Burnol prime dilation character has Gamma/co-Poisson interval cell as its divided difference | `BurnolPrimeDilationCoPoissonQuotient.lean`: `dslope_burnolPrimeCharacter_eq_gammaCoPoissonIntervalCell`, `burnolPrime_resolvent_quotient_identity`, `orbitwiseScaleSeamCharge_eq_burnolPrimeCharacter_reflection` |
 | Reflected shell entropy equals signed horizontal displacement | `XiSourceBoundaryOrientationConservation.lean`: `reflectedShellTailLogRatio_eq_centeredHorizontalDisplacement`, `riemannReflectedSourceEntropy_eq_neg_sourceCayleyRate` |
 | Source entropy equals multiplicity-weighted Xi charge | same module: `centeredDivisorCharge_real_eq_reflectedShellTailLogRatio` |
 | Nearby-cycle outer charge equals completed Xi affine residue | `XiDepthMobiusGammaOuterInnerWeld.lean`: `xiDepthNearby_outerCharge_and_affineResidue_match` |
@@ -25,6 +26,9 @@ Scope: load-bearing mathematical claims only.  Manuscript contains no mention of
 | Green factor defects are exact antidiagonal partners; resolved vanishing iff critical line/RH | `DeningerGreenResolvedDefectLaw.lean`: resolved Green defect theorems and global RH equivalence |
 | No finite-Rees sewing; exact sewing cost beyond every order | `XiSourceModularTypeSuperselectionLaw.lean`: `no_finiteReesOperator_sews_xiRightModularSectors`, `xiRightModularSewingOperatorNorm_beyondEveryReesOrder` |
 | Every Xi zero occurs in Meyer dual flow with full multiplicity | `DeningerMeyerXiSpectralInclusion.lean`: `deningerMeyerXiSupportJetEvaluationLM_linearIndependent`, `deningerMeyer_every_xiDivisor_is_flowEigenvalue` |
+| Every Xi zero has a nonzero first divided vector in one symmetric maximal-coordinate domain with one common nonzero source defect | `BurnolHedenmalmCompletionDomain.lean`: `maximalRealCoordinate_formalSelfAdjoint`, `burnolHedenmalm_archimedeanCompletion_domain_radicalExchange` |
+| Completed theta source has dense phase orbit and physical translation orbit in ordinary L2 | `XiThetaL2Cyclicity.lean`: `isCyclicFamily_xiThetaFourierPhaseOrbit`, `isCyclicFamily_xiThetaTranslationOrbit` |
+| Closed invariant radical containing a cyclic source orbit is the whole space | `CyclicRadicalCollapse.lean`: `closedSubmodule_eq_top_of_isCyclicOrbit`, `cyclicOrbit_forces_nonclosed_properSubmodule` |
 | Every finite family of actual Xi jets is a surjective Meyer quotient | `DeningerMeyerFiniteXiJetPacket.lean`: `deningerMeyerFiniteXiJetPacketLM_surjective` |
 | Full unrestricted Xi jet product is not source-admissible | `DeningerMeyerFullXiJetAdmissionBoundary.lean`: `deningerMeyerFullXiJetUnitPacket_not_mem_range`, `deningerMeyerFullXiJetPacketLM_not_surjective` |
 | Escaping actual divisor sequence and vertical decay | same module: `deningerMeyerXiVerticalEscape_abs_im_tendsto_atTop`, `deningerMeyerStrongLogMellin_tendsto_zero_on_xiVerticalEscape` |
@@ -41,19 +45,29 @@ Scope: load-bearing mathematical claims only.  Manuscript contains no mention of
 | Half-density seminorm completion carries a surjective isometric centered flow | same module: `deningerMeyerHalfDensityCompletedFlow_norm`, `deningerMeyerHalfDensityCompletedFlow_surjective` |
 | Actual Xi evaluation is half-density bounded iff its zero is critical | same module: `deningerMeyerHalfDensityXiEvaluationBounded_iff` |
 | RH iff every actual Xi evaluation is continuous for canonical half-density topology | same module: `riemannHypothesis_iff_deningerMeyerHalfDensityXiEvaluationsBounded` |
+| Target-free log-Gaussian is an all-weight Meyer source with everywhere nonzero entire Mellin transform | `DeningerMeyerLogGaussianUniversalOrbitCriterion.lean`: `deningerMeyerLogGaussianProfile_strongLogDecay`, `deningerMeyerLogGaussianSource_mellin`, `deningerMeyerLogGaussianSource_mellin_ne_zero` |
+| Gaussian Meyer class is nonzero under every actual Xi evaluation; all centered evaluation orbits bounded iff RH | same module: `deningerMeyerLogGaussianCohomologyClass_evaluation_ne_zero`, `deningerMeyerLogGaussianCenteredOrbitBounded_iff_riemannHypothesis` |
+| Right-strip co-Poisson Mellin kernels have dense span and faithful positive Berezin diagonal | `BurnolCoPoissonBerezinFaithful.lean`: `isCyclicFamily_burnolCoPoissonQuotientEvaluationFamily`, `burnolCoPoissonBerezin_faithful_of_quotientSupported` |
+| Reflected Berezin reader is odd and finite holonomy reads the same hyperbolic rate | `BurnolCoPoissonBerezinReflection.lean`: `burnolCoPoissonReflectedBerezin_eq_neg`, `burnolCoPoissonNormalizedHolonomy_eq_two_sinh_of_annihilator` |
 
 ## Unproved statement, explicitly labeled in manuscript
 
-The canonical half-density quotient seminorm, Hausdorff seminorm completion, and surjective
-isometric centered flow are proved.  What is not proved is universal arithmetic admission:
-boundedness of every actual Xi evaluation for that seminorm.  By
-`riemannHypothesis_iff_deningerMeyerHalfDensityXiEvaluationsBounded`, this statement is exactly
-equivalent to RH.
+The canonical half-density quotient seminorm, Hausdorff seminorm completion, surjective
+isometric centered flow, and target-free log-Gaussian witness are proved.  What is not proved is
+the bounded centered-orbit estimate for that Gaussian at every actual Xi point.  By
+`deningerMeyerLogGaussianCenteredOrbitBounded_iff_riemannHypothesis`, this is exactly equivalent
+to RH.  Universal half-density admission is a stronger equivalent criterion.
 
 ## Verification status
 
-- Paper proof audit: complete through canonical half-density selector.
-- Direct Lean checks: new gauge dichotomy and half-density completion pass; dependency batch passed.
-- Targeted module builds: pending final audit.
-- Axiom audit: pending final audit.
+- Paper proof audit: complete through canonical half-density selector and target-free Gaussian criterion.
+- Direct Lean checks: gauge dichotomy, half-density completion, Gaussian criterion, Burnol quotient,
+  Hedenmalm domain, and Berezin modules pass in foreground.
+- Targeted module build: `GaloisForLFunctions.RHTower.TransverseInformationInvariantGaugeDichotomy`
+  passed, including its imported source-boundary dependencies.
+- Axiom audit: all load-bearing theorem printouts use only `propext`, `Classical.choice`, and
+  `Quot.sound`.
+- Repository lint: load-bearing files are clean.  Whole-tree lint is temporarily red only because
+  two concurrently added, out-of-scope modules are not yet imported by an umbrella module:
+  `CriticalHalfDensityPrimeTailResolventLaw` and `DisconnectedProjectiveGapModuleLaw`.
 - External novelty/priority audit: intentionally deferred; `[NOVELTY UNVERIFIED]`.

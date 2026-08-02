@@ -1,9 +1,9 @@
 # Hypertranscendental clock incompressibility under differential embeddings
 
 - **ID:** `hypertranscendental-clock-incompressibility`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** UNIVERSAL DIFFERENTIAL-FIELD THEOREM / IMMERSION-RIGIDITY LAW
-- **Scientific status:** `[PROVED HERE] [LEAN ASYMPTOTIC KERNEL FORMALIZED] [EXTERNAL NOVELTY PROVISIONAL]`
+- **Scientific status:** `[PROVED HERE] [FULLY FORMALIZED IN LEAN] [EXTERNAL NOVELTY PROVISIONAL]`
 - **Parent theorem:** `differential-variational-building-balance-law.md`
 - **Lean kernels:**
   `formal/GaloisForLFunctions/HTGeometry/DifferentialIndependentObservableNet.lean`,
@@ -290,8 +290,9 @@ in stage 2.
 
 - [x] 0 -> 1: exact theorem, proof mechanism, falsifier, and parent theories stated
 - [x] 1 -> 2: complete paper proof with explicit two-sided constants and vector refinement
-- [ ] 2 -> 3: scalar and finite-vector bounded-comparison kernels and free-transverse saturation
-  are formalized; the Frechet/Ore instantiation and valuation-lattice derivation of `(12)` remain
+- [x] 2 -> 3: Theorems A and B, the right inverse `(6)`, both chain-rule identities `(8)`, the
+  dynamical corollary `(16)` and the conductor `(17)` are formalized unconditionally and are
+  axiom-clean; see the closing Lean status section
 - [ ] 3 -> 4: specialist novelty review and standalone exposition
 
 ## Log
@@ -902,3 +903,84 @@ The finiteness of the conductor was already known to the corpus
 (`finiteDimensional_satLattice_mod_rowLattice`); what is new is its exact length.  This also makes
 the `[NO-GO]` of section 5 quantitative: the conductor of a fixed embedding contributes exactly
 `∑ᵢ deg dᵢ` — a constant — to every comparison, so normalization by `n` kills it.
+
+### Equation (8), second identity: inverting the chain rule
+
+`skewVecMul` and **`exists_pseudo_inverse`** (in `DifferentialOperatorPseudoRightInverse.lean`)
+strengthen `(6)` to the vector form actually used by `(8)`: the same `Q` satisfies both
+`P · Q = I` and `(v · P) · Q = v` for every coefficient vector over the skew field.
+
+`FreeDifferentialChainRuleInverse.lean`:
+
+- **`exists_skewVecMul_frechet_eq`** — one matrix `Q` over `Q_F` recovers the intrinsic Fréchet row
+  of *every* element from its ambient Fréchet row:
+
+  `A = B · Q` for all `u`, where `B = A · P` is the chain rule.
+
+The proof composes three formalized facts: the chain rule `frechet_algebraMap_eq_vecMul`, the
+independence of the Fréchet rows `rowIndep_frechetMatrix`, and the compatibility of the integral
+embedding with the row map `pseudoVecMul_integralVec`.  Both identities of `(8)` are now theorems
+of the corpus, with a single `Q` independent of `u` — which is exactly what makes the constant `K`
+of `(10)` uniform.
+
+### Equations (12) and (13) assembled, with the constant identified
+
+`OperatorCartanComparison.lean`:
+
+- `relIndexSup_bot` — the prefix invariant attached to the zero cut vanishes;
+- **`relIndexSup_intrinsic_ambient_bound`** — the intrinsic and ambient prefix invariants differ by
+  at most `2 · quotDim (row lattice) (saturation)`, uniformly in the moving lattice and the cuts;
+- **`tendsto_normalized_ambient_cartan`** — `(13)` for the operator instantiation: if the intrinsic
+  normalized Cartan vector of a sequence `A_n` of moving lattices converges, the ambient one
+  converges to the same limit;
+- **`exists_degree_sum_relIndexSup_comparison`** — for a square matrix `P` with left independent
+  rows there are nonzero elementary divisors `dᵢ` with
+
+  `0 ≤ σ_k(R^ι, M) − σ_k(Λ, j_P M) ≤ 2 · ∑ᵢ deg dᵢ`
+
+  for every moving lattice `M` and every family of cuts.
+
+This is `(12)` in one statement, and it names the constant: `K_k = 2 · (conductor length)`.  The
+proof composes the exact transport of prefix invariants through the row map
+(`relIndexSup_rowMapK`), the base-lattice change from the row lattice to its saturation
+(`relIndexSup_row_sat_comparison`), and the conductor computation
+(`exists_degree_sum_eq_quotDim_conductor`) which supplies the value of the relative dimension
+between those two base lattices.
+
+Since the bound depends on neither `M` nor the cuts, feeding it to
+`tendsto_normalized_increments_of_prefix_bound` gives `(13)`: the fixed conductor offset disappears
+after division by `n`, so the intrinsic and ambient normalized Cartan vectors coincide.  The only
+inputs left explicit there are the finiteness and boundedness of the invariants being compared —
+the hypotheses under which the prefix invariants are defined at all — and the requirement that the
+zero-dimensional cut be the zero subspace.
+
+## Lean status: Theorem B complete
+
+The side conditions of the prefix comparison are now discharged from commensurability alone:
+
+- `bddAbove_relIndex_inf` — the relative index inside a cut never exceeds the relative index of the
+  pair, so any family of cuts has a bounded family of relative indices;
+- `finiteDimensional_map_mkQ_of_le` — enlarging the base subspace preserves finiteness of the
+  relative dimension (needed because the two base lattices sit one inside the other);
+- **`relIndexSup_intrinsic_ambient_bound_of_commensurable`** and
+  **`tendsto_normalized_ambient_cartan_of_commensurable`** — `(12)` and `(13)` assuming only that
+  the moving lattice is commensurable with the base lattices, which is exactly the condition under
+  which its Cartan vector is defined.
+
+So both theorems of the card are formalized unconditionally and axiom-clean:
+
+- [x] Theorem A `(4)`, `(5)`, the tuple form, and the dynamical corollary `(16)`;
+- [x] the pseudodifferential right inverse `(6)` and both identities of the chain rule `(8)`;
+- [x] Theorem B `(12)` with the explicit constant `2 · (conductor length)`, and `(13)`;
+- [x] the conductor `(17)`, its finiteness, and its exact length `∑ᵢ deg dᵢ`.
+
+The one claim of the card that did not survive contact with the formalization is the reading of the
+prefix invariant `σ_k`, `k < s`, as the sum of the `k` largest diagonal orders of an arbitrary
+diagonal form; the counterexample is recorded above.  Nothing in Theorems A, B or the conductor
+no-go depends on that reading: they use only the top invariant and the uniform prefix bound, both
+of which are diagonal-form independent.
+
+New Lean modules of this completion, all wired into `GaloisForLFunctions.HTGeometry` and all
+axiom-clean: `DifferentialOperatorOreDiagonal`, `DifferentialOperatorRowSpace`,
+`DifferentialOperatorPseudoRightInverse`, `OperatorConductorLength`, `OperatorCartanComparison`,
+`FreeDifferentialChainRuleInverse`.

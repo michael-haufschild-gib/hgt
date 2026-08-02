@@ -523,6 +523,39 @@ theorem deningerMeyerHalfDensityXiEvaluationCLM_ne_zero
   rw [deningerMeyerHalfDensityXiEvaluationCLM_mk] at h
   simpa using h
 
+/-- The critical Xi extension retains its exact centered eigencharacter on the completed source. -/
+theorem deningerMeyerHalfDensityXiEvaluationCLM_centeredFlow
+    (rho : XiDivisorSupport) (hrho : (rho : ℂ).re = 1 / 2)
+    (c : ℝ) (z : DeningerMeyerHalfDensityCompletion) :
+    deningerMeyerHalfDensityXiEvaluationCLM rho hrho
+        (deningerMeyerHalfDensityCompletedFlow c z) =
+      Complex.exp ((c : ℂ) * ((rho : ℂ) - 1 / 2)) *
+        deningerMeyerHalfDensityXiEvaluationCLM rho hrho z := by
+  let F : DeningerMeyerHalfDensityCompletion →L[ℂ] ℂ :=
+    (deningerMeyerHalfDensityXiEvaluationCLM rho hrho).comp
+      (deningerMeyerHalfDensityCompletedFlow c)
+  let G : DeningerMeyerHalfDensityCompletion →L[ℂ] ℂ :=
+    Complex.exp ((c : ℂ) * ((rho : ℂ) - 1 / 2)) •
+      deningerMeyerHalfDensityXiEvaluationCLM rho hrho
+  have hFG : F = G := by
+    refine DFunLike.coe_injective ?_
+    refine (deningerSeminormMkC_denseRange
+      deningerMeyerHalfDensityCohomologySeminorm).equalizer
+        F.continuous G.continuous ?_
+    funext u
+    change
+      deningerMeyerHalfDensityXiEvaluationCLM rho hrho
+          (deningerMeyerHalfDensityCompletedFlow c
+            (deningerMeyerHalfDensityCompletionMk u)) =
+        Complex.exp ((c : ℂ) * ((rho : ℂ) - 1 / 2)) *
+          deningerMeyerHalfDensityXiEvaluationCLM rho hrho
+            (deningerMeyerHalfDensityCompletionMk u)
+    rw [deningerMeyerHalfDensityCompletedFlow_mk,
+      deningerMeyerHalfDensityXiEvaluationCLM_mk,
+      deningerMeyerHalfDensityXiEvaluationCLM_mk,
+      deningerMeyerXiSupportEvaluationLM_centeredFlow]
+  exact DFunLike.congr_fun hFG z
+
 end
 
 end RHTower

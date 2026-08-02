@@ -341,7 +341,9 @@ DAGs without repeating the audits.
 - [ ] `herglotz-full-translation-ht-krein-index-orthogonality` — theorem/corollary surface inventory pending
 - [ ] `ht-period-rank-one-scalar-stanley-reisner-principalization` — theorem/corollary surface inventory pending
 - [ ] `ht-tail-no-hair-and-embedded-reconstruction-boundary` — theorem/corollary surface inventory pending
-- [ ] `hypertranscendental-clock-incompressibility` — theorem/corollary surface inventory pending
+- [x] `hypertranscendental-clock-incompressibility` — formalized in full (Theorems A and B, the
+  right inverse, both chain-rule identities, the dynamical corollary and the conductor length);
+  card moved to `3-formalized/new_scientific_knowledge/ht/`
 - [ ] `hypertranscendental-hochster-source-coherence-duality` — theorem/corollary surface inventory pending
 - [ ] `hypertranscendental-pair-localization-noncompression` — theorem/corollary surface inventory pending
 - [ ] `infinite-bohr-ht-boundary-maximal-ht-outer-orbit` — theorem/corollary surface inventory pending

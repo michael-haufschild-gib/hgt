@@ -5,7 +5,7 @@
 - **Type:** MEDAL-SCALE CONJECTURE / UNIFIED HT FIELD THEORY
 - **Scientific status:** `[CONJECTURE] [INTRINSIC VARIATIONAL BUILDING PROVED] [STABLE-TAIL DESCENT OPEN]`
 - **Parent theorems:** `../2-fully-proven/new_scientific_knowledge/differential-variational-building-balance-law.md`,
-  `../2-fully-proven/new_scientific_knowledge/hypertranscendental-clock-incompressibility.md`,
+  `../3-formalized/new_scientific_knowledge/ht/hypertranscendental-clock-incompressibility.md`,
   `../3-formalized/hypertranscendental-clock-shear-rank-threshold.md`
 - **Unified obstruction object:** `derived-self-dual-clock-splitting-stack.md`
 - **Statement:** Every finitely generated embedded HT stable core should carry a canonical

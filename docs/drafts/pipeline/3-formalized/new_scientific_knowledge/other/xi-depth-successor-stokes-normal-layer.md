@@ -266,6 +266,8 @@ content is strict cross-landing and same-fibre dagger.
 The formal module proves unconditionally:
 
 - generic moving-zero limit `(5)`;
+- literal depth-defect moving-zero limit `(8)` and its outer
+  fixed-spectral-point difference quotient `(2)`;
 - centered limit `(11)`;
 - literal two-endpoint source factorization `(11a)`--`(11c)`, exact affine
   identity `(11b)`, exact moving-zero expansion `(11d)`, and its moving-zero
@@ -281,6 +283,10 @@ The formal module proves unconditionally:
 
 Exact new closure theorems are:
 
+- `tendsto_depthSuccessorTransportDefect_movingZero`;
+- `tendsto_depthSuccessorTransportDefect_differenceQuotient`;
+- `tendsto_xiDepthSuccessorTransportDefect_movingZero`;
+- `tendsto_xiDepthSuccessorTransportDefect_differenceQuotient`;
 - `twoEndpointBalancedDepthSuccessor_argument_eq`;
 - `twoEndpointBalancedDepthSuccessor_argument_movingZero_sub`;
 - `meromorphicOrderAt_depthSuccessorNearbyCycle_zero`;

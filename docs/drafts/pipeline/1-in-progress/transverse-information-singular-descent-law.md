@@ -110,6 +110,13 @@ ordinary completion.
     literal Meyer cohomology, is exactly invariant under centered dilation, and yields a
     Hausdorff Banach completion with surjective isometric flow.  An actual Xi evaluation is
     bounded for this quotient seminorm exactly when its zero is on the critical line.
+11. The target-free logarithmic Gaussian `exp(-πt²)` is an all-weight Meyer source with
+    Mellin transform `exp(s²/(4π))`, hence is nonzero under every actual Xi
+    zeroth-evaluation.  Boundedness of all its centered evaluation orbits is equivalent to
+    RH; no completion, topology, or zero-dependent source selection is required.
+12. Burnol right-strip quotient kernels have dense span, making the Berezin diagonal
+    faithful on positive quotient-supported operators.  Finite bilateral holonomy reads
+    the same rate as `2 sinh(log(r) * kappa)`.
 
 ## Corrected frontier
 
@@ -122,14 +129,19 @@ the half-density quotient seminorm and its surjective isometric Banach completio
 unconditionally.  Faithfulness of the map from algebraic Meyer cohomology is not proved,
 but is not needed for the exact continuity selector.
 
-The minimal remaining RH theorem is now the **canonical half-density arithmetic admission
-estimate**
+The literal minimal remaining RH theorem is the **Gaussian orbit estimate**
+
+`∀ rho, ∃ C_rho < ∞, ∀ c, |E_{rho,0}(V_c u_*)| ≤ C_rho`,
+
+where `u_*=[e^{-πt²}]` is target-free and already proved nonzero under every actual Xi
+evaluation.  A stronger source-geometric target is the **canonical half-density arithmetic
+admission estimate**
 
 `∀ rho, ∃ C_rho < ∞, ∀ u, |E_{rho,0}(u)| ≤ C_rho pbar_{1/2}(u)`.
 
-The exact selector proves this statement equivalent to RH.  It must therefore be obtained
-from a new arithmetic identity or inequality on the co-Poisson/Gamma source, not from
-generic functional analysis or a topology chosen after inspecting the zeros.
+Both exact selectors prove their missing boundedness statements equivalent to RH.  They must
+therefore be obtained from a new arithmetic identity or inequality on the co-Poisson/Gamma
+source, not from generic functional analysis or a topology chosen after inspecting the zeros.
 
 Global spectral synthesis remains a stronger problem: vanishing of every
 multiplicity-bounded Xi jet would have to force a class into the literal Poisson boundary.
@@ -169,3 +181,6 @@ It is not logically required for zero exclusion.
 - `RHTower/DeningerMeyerInvariantEvaluationGaugeFrontier.lean`
 - `RHTower/TransverseInformationInvariantGaugeDichotomy.lean`
 - `RHTower/DeningerMeyerHalfDensityL1Completion.lean`
+- `RHTower/DeningerMeyerLogGaussianUniversalOrbitCriterion.lean`
+- `RHTower/BurnolCoPoissonBerezinFaithful.lean`
+- `RHTower/BurnolCoPoissonBerezinReflection.lean`

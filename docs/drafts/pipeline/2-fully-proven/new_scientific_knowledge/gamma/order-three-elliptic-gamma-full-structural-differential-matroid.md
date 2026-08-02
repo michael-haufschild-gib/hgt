@@ -480,10 +480,29 @@ different: it contains six atoms on different elliptic curves, four external orb
 primitives, and the top primitive. The theorem proves exact nonlinear independence through all
 three layers.
 
-It does not prove the all-order conjecture. At order four, bottom order-one faces have
-three-dimensional external orbits indexed by hyperedges, and the graph-star proof no longer
-automatically supplies joint atomicity. Intermediate faces also form more than one nontrivial
-filtration layer. A hypergraph elimination order or a different residue invariant is required.
+The graph-star proof does stop at order three: at order four the bottom order-one faces have
+three-dimensional external orbits indexed by hyperedges, and intermediate faces form more than one
+nontrivial filtration layer.  The obstruction is to that *proof*, not to the statement.  The
+corpus's layered face-independence engine supplies the different invariant the paragraph asks for:
+`multipleEllipticGammaProperFacePackets_diffIndepOn` glues by induction on face depth against the
+differentially algebraic boundary, so joint atomicity holds at every order with no elimination
+order.
+
+`OrderFourStructuralDifferentialMatroid.lean` records the order-four instance:
+
+> **`orderFourDeepFaces`**, **`orderFourFaceLayer_cards`** -- the four filtration layers of the
+> five-period family: the top primitive, five order-three faces, ten order-two faces and ten bottom
+> faces, all retaining at least two periods;
+> **`orderFourFaceOrbits_diffIndepOn`** and its rational-base form -- **all four layers are jointly
+> differentially independent at once**;
+> **`orderFourStructural_differentialMatroid`** -- the operator-row matroid on any faithful finite
+> selection from those layers;
+> **`orderFour_differentialAlgebraicOver_xApply_iff`** -- the exact order-four annihilator;
+> **`orderFour_transverseDADepth`** -- the depth value `4`;
+> **`orderFour_differentialAlgebraicOver_translateGammaProduct_iff`** -- the order-four
+> multiplicative classification.
+
+All of these are instances of all-order theorems, so the same statements hold at every order.
 
 ## Parent-theory and literature attack
 
@@ -544,7 +563,9 @@ three.
 - [ ] independent proof audit
 - [ ] independent specialist priority audit
 - [ ] independent audit of the order-one atomic parent
-- [ ] order-four hypergraph face-filtration theorem
+- [x] order-four face-filtration theorem: all four layers proved jointly independent, with the
+  exact annihilator, depth and multiplicative classification, by the all-order layered engine
+  (`OrderFourStructuralDifferentialMatroid.lean`)
 
 ## Log
 
@@ -562,3 +583,7 @@ three.
   structural translate in that span, differential algebraicity of the boundary span, and the
   resulting deep-span decomposition; then the faithful `(face, shift)` coordinate and the
   operator-row matroid and rank laws on any faithful deep selection.
+- 2026-08-02 -- Order four settled without a hypergraph elimination order: the layered
+  face-independence engine gives joint atomicity of all four filtration layers, and the exact
+  annihilator, transverse depth and multiplicative classification specialize from their all-order
+  Lean forms.

@@ -196,6 +196,71 @@ theorem activeQuotient_injective_of_fullOrbitFree_of_properKernelFunctionField
     hfinite embedAlg hembed (compactOrbit k) (fun n : ℤ => orbit (n • k))
     (hfactor k hkq hkne)
 
+/-- **Concrete Abelian-kernel active-quotient theorem.**  Every killed lattice direction is
+represented by literal powers of a rational point of one Abelian variety, acting through the
+actual scheme-theoretic translation pullback on its function field.  Consequently complete orbit
+freedom forces active-quotient faithfulness. -/
+theorem activeQuotient_injective_of_fullOrbitFree_of_abelianKernelTranslations
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    {M L Q : Type u} [Field M]
+    [Algebra (Spec (.of K)).functionField M] [Differential M]
+    [AddCommGroup L] [AddCommGroup Q]
+    (embed : A.left.functionField →+* M)
+    (hembed : Function.Injective embed)
+    (hembed_base : ∀ r : (Spec (.of K)).functionField,
+      embed (A.hom.functionFieldPullback r) =
+        algebraMap (Spec (.of K)).functionField M r)
+    (kernelPoint : L → (𝟙_ (Over (Spec (.of K))) ⟶ A))
+    (z : A.left.functionField)
+    (orbit : L → M)
+    (horbit : DifferentialIndependent (Spec (.of K)).functionField orbit)
+    (q : L →+ Q)
+    (hcyclic : ∀ k : L, k ≠ 0 → Function.Injective (fun n : ℤ => n • k))
+    (hfactor : ∀ k : L, q k = 0 → k ≠ 0 → ∀ n : ℤ,
+      orbit (n • k) = embed
+        ((abelianVarietyTranslationSchemeIso A
+          ((kernelPoint k) ^ n)).hom.functionFieldPullback z)) :
+    Function.Injective q := by
+  apply activeQuotient_injective_of_fullOrbitFree_of_properKernelFunctionField
+    A.hom embed hembed hembed_base
+    (fun k n =>
+      (abelianVarietyTranslationSchemeIso A
+        ((kernelPoint k) ^ n)).hom.functionFieldPullback z)
+    orbit horbit q hcyclic
+  exact hfactor
+
+/-- **Active quasi-Abelian facet-palette necessity.**  For one finite facet `F`, complete
+differential freedom of its literal integral lattice orbit forces the lattice class in the active
+quotient to be injective whenever every killed direction is realized by the compact Abelian
+translation described above.  Torsion-freeness of `ℤ^F` is discharged internally. -/
+theorem activeQuasiAbelianFacetLattice_injective_of_abelianKernelTranslations
+    {α : Type u} [DecidableEq α] (F : Finset α)
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    {M Q : Type u} [Field M]
+    [Algebra (Spec (.of K)).functionField M] [Differential M]
+    [AddCommGroup Q]
+    (embed : A.left.functionField →+* M)
+    (hembed : Function.Injective embed)
+    (hembed_base : ∀ r : (Spec (.of K)).functionField,
+      embed (A.hom.functionFieldPullback r) =
+        algebraMap (Spec (.of K)).functionField M r)
+    (kernelPoint : (F → ℤ) → (𝟙_ (Over (Spec (.of K))) ⟶ A))
+    (z : A.left.functionField)
+    (orbit : (F → ℤ) → M)
+    (horbit : DifferentialIndependent (Spec (.of K)).functionField orbit)
+    (activeClass : (F → ℤ) →+ Q)
+    (hfactor : ∀ k : F → ℤ, activeClass k = 0 → k ≠ 0 → ∀ n : ℤ,
+      orbit (n • k) = embed
+        ((abelianVarietyTranslationSchemeIso A
+          ((kernelPoint k) ^ n)).hom.functionFieldPullback z)) :
+    Function.Injective activeClass := by
+  apply activeQuotient_injective_of_fullOrbitFree_of_abelianKernelTranslations
+    A embed hembed hembed_base kernelPoint z orbit horbit activeClass
+    (fun k hk => smul_left_injective ℤ hk)
+  exact hfactor
+
 /-- Least-dimension consequence of active-palette extraction: every full HT realization supplies
 an active quasi-Abelian palette in the same ambient dimension. -/
 theorem activeQuasiAbelianDimension_le_hypertranscendenceDimension

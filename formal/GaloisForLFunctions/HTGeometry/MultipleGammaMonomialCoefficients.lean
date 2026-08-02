@@ -157,17 +157,17 @@ theorem hypertranscendentalOver_natSynth (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ
 /-! ## The two structural steps -/
 
 /-- Exponent increment in one direction. -/
-def expShift (j : ι) (n : ι →₀ ℕ) : ι →₀ ℕ := n + Finsupp.single j 1
+def monomialExpShift (j : ι) (n : ι →₀ ℕ) : ι →₀ ℕ := n + Finsupp.single j 1
 
 omit [Fintype ι] [DecidableEq ι] in
-theorem expShift_injective (j : ι) : Function.Injective (expShift (ι := ι) j) :=
+theorem monomialExpShift_injective (j : ι) : Function.Injective (monomialExpShift (ι := ι) j) :=
   fun _ _ hab => add_right_cancel hab
 
-theorem faceTranslate_expShift (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (S : Finset ι)
+theorem faceTranslate_monomialExpShift (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (S : Finset ι)
     (j : ι) (n : ι →₀ ℕ) :
-    faceTranslate τ hτ S (expShift j n) =
+    faceTranslate τ hτ S (monomialExpShift j n) =
       addTranslationMeroEquiv (τ j) (faceTranslate τ hτ S n) := by
-  rw [faceTranslate, faceTranslate, addTranslationMeroEquiv_add, expShift,
+  rw [faceTranslate, faceTranslate, addTranslationMeroEquiv_add, monomialExpShift,
     natShift_add_single, add_comm]
 
 /-- **Face-preserving step.**  A difference in an already deleted direction is the exponent shift
@@ -175,17 +175,17 @@ minus the identity on coefficients. -/
 theorem meroShiftDiff_natSynth (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) (S : Finset ι)
     (j : ι) (c : (ι →₀ ℕ) →₀ ℂ) :
     meroShiftDiff (τ j) (natSynth τ hτ S c) =
-      natSynth τ hτ S (Finsupp.mapDomain (expShift j) c - c) := by
+      natSynth τ hτ S (Finsupp.mapDomain (monomialExpShift j) c - c) := by
   classical
-  have hsupp : (Finsupp.mapDomain (expShift j) c).support = c.support.image (expShift j) :=
-    Finsupp.mapDomain_support_of_injective (expShift_injective j) c
+  have hsupp : (Finsupp.mapDomain (monomialExpShift j) c).support = c.support.image (monomialExpShift j) :=
+    Finsupp.mapDomain_support_of_injective (monomialExpShift_injective j) c
   have htrans : addTranslationMeroEquiv (τ j) (natSynth τ hτ S c) =
-      natSynth τ hτ S (Finsupp.mapDomain (expShift j) c) := by
+      natSynth τ hτ S (Finsupp.mapDomain (monomialExpShift j) c) := by
     rw [natSynth_eq_sum, natSynth_eq_sum, hsupp, map_sum,
-      Finset.sum_image fun a _ b _ h => expShift_injective j h]
+      Finset.sum_image fun a _ b _ h => monomialExpShift_injective j h]
     refine Finset.sum_congr rfl fun n _ => ?_
     rw [map_mul, addTranslationMeroEquiv_algebraMap_complex,
-      Finsupp.mapDomain_apply (expShift_injective j), faceTranslate_expShift]
+      Finsupp.mapDomain_apply (monomialExpShift_injective j), faceTranslate_monomialExpShift]
   rw [meroShiftDiff, natSynth_sub, htrans]
 
 /-- **Face-growing step.**  A difference in a surviving direction deletes that direction and leaves
@@ -207,13 +207,13 @@ theorem carriedBy_mono {S T : Finset ι} (hST : S ⊆ T) {c : (ι →₀ ℕ) �
     (hc : CarriedBy S c) : CarriedBy T c := fun n hn => (hc n hn).trans hST
 
 omit [Fintype ι] in
-theorem carriedBy_mapDomain_expShift {S : Finset ι} {j : ι} (hj : j ∈ S)
+theorem carriedBy_mapDomain_monomialExpShift {S : Finset ι} {j : ι} (hj : j ∈ S)
     {c : (ι →₀ ℕ) →₀ ℂ} (hc : CarriedBy S c) :
-    CarriedBy S (Finsupp.mapDomain (expShift j) c - c) := by
+    CarriedBy S (Finsupp.mapDomain (monomialExpShift j) c - c) := by
   classical
   intro n hn
   rcases Finset.mem_union.mp (Finsupp.support_sub hn) with h | h
-  · rw [Finsupp.mapDomain_support_of_injective (expShift_injective j)] at h
+  · rw [Finsupp.mapDomain_support_of_injective (monomialExpShift_injective j)] at h
     obtain ⟨m, hm, rfl⟩ := Finset.mem_image.mp h
     intro i hi
     rcases Finset.mem_union.mp (Finsupp.support_add hi) with h' | h'
@@ -240,13 +240,13 @@ theorem carriedBy_single_zero (S : Finset ι) :
 def listCoeff : List ι → ((ι →₀ ℕ) →₀ ℂ)
   | [] => Finsupp.single 0 1
   | j :: l =>
-      if j ∈ l.toFinset then Finsupp.mapDomain (expShift j) (listCoeff l) - listCoeff l
+      if j ∈ l.toFinset then Finsupp.mapDomain (monomialExpShift j) (listCoeff l) - listCoeff l
       else listCoeff l
 
 /-- The accumulated top exponent of an iterated difference along a list. -/
 def listTop : List ι → (ι →₀ ℕ)
   | [] => 0
-  | j :: l => if j ∈ l.toFinset then expShift j (listTop l) else listTop l
+  | j :: l => if j ∈ l.toFinset then monomialExpShift j (listTop l) else listTop l
 
 theorem listShiftDiff_eq_natSynth (τ : ι → ℂ) (hτ : ∀ i, 0 < (τ i).im) :
     ∀ l : List ι,
@@ -274,7 +274,7 @@ theorem carriedBy_listCoeff : ∀ l : List ι, CarriedBy l.toFinset (listCoeff l
       rw [List.toFinset_cons, listCoeff]
       by_cases hj : j ∈ l.toFinset
       · rw [if_pos hj, Finset.insert_eq_self.mpr hj]
-        exact carriedBy_mapDomain_expShift hj ih
+        exact carriedBy_mapDomain_monomialExpShift hj ih
       · rw [if_neg hj]
         exact carriedBy_mono (Finset.subset_insert j l.toFinset) ih
 
@@ -297,15 +297,15 @@ theorem listCoeff_support_le :
       by_cases hj : j ∈ l.toFinset
       · rw [if_pos hj] at hn ⊢
         rcases Finset.mem_union.mp (Finsupp.support_sub hn) with h | h
-        · rw [Finsupp.mapDomain_support_of_injective (expShift_injective j)] at h
+        · rw [Finsupp.mapDomain_support_of_injective (monomialExpShift_injective j)] at h
           obtain ⟨m, hm, rfl⟩ := Finset.mem_image.mp h
           refine Finsupp.le_def.mpr fun i => ?_
           have hmi := Finsupp.le_def.mp (ih hm) i
-          simp only [expShift, Finsupp.add_apply]
+          simp only [monomialExpShift, Finsupp.add_apply]
           omega
         · refine Finsupp.le_def.mpr fun i => ?_
           have hni := Finsupp.le_def.mp (ih h) i
-          simp only [expShift, Finsupp.add_apply]
+          simp only [monomialExpShift, Finsupp.add_apply]
           omega
       · rw [if_neg hj] at hn ⊢
         exact ih hn
@@ -320,12 +320,12 @@ theorem listCoeff_top : ∀ l : List ι, listCoeff l (listTop l) = 1 := by
       rw [listCoeff, listTop]
       by_cases hj : j ∈ l.toFinset
       · rw [if_pos hj, if_pos hj]
-        have hnotmem : expShift j (listTop l) ∉ (listCoeff l).support := by
+        have hnotmem : monomialExpShift j (listTop l) ∉ (listCoeff l).support := by
           intro hmem
           have hjle := Finsupp.le_def.mp (listCoeff_support_le l hmem) j
-          simp only [expShift, Finsupp.add_apply, Finsupp.single_eq_same] at hjle
+          simp only [monomialExpShift, Finsupp.add_apply, Finsupp.single_eq_same] at hjle
           omega
-        rw [Finsupp.sub_apply, Finsupp.mapDomain_apply (expShift_injective j),
+        rw [Finsupp.sub_apply, Finsupp.mapDomain_apply (monomialExpShift_injective j),
           Finsupp.notMem_support_iff.mp hnotmem, ih, sub_zero]
       · rw [if_neg hj, if_neg hj]
         exact ih
@@ -405,12 +405,12 @@ theorem listTop_apply : ∀ (l : List ι) (i : ι), listTop l i = l.count i - 1 
           have hcount : 1 ≤ l.count i := by
             have := List.mem_toFinset.mp hj
             exact List.one_le_count_iff.mpr this
-          have hval : (expShift i (listTop l)) i = listTop l i + 1 := by
-            simp [expShift, Finsupp.add_apply]
+          have hval : (monomialExpShift i (listTop l)) i = listTop l i + 1 := by
+            simp [monomialExpShift, Finsupp.add_apply]
           rw [hval, ih i, List.count_cons_self]
           omega
-        · have hval : (expShift j (listTop l)) i = listTop l i := by
-            simp [expShift, Finsupp.add_apply, Ne.symm hij]
+        · have hval : (monomialExpShift j (listTop l)) i = listTop l i := by
+            simp [monomialExpShift, Finsupp.add_apply, Ne.symm hij]
           rw [hval, ih i, List.count_cons_of_ne (Ne.symm hij)]
       · rw [if_neg hj]
         by_cases hij : i = j

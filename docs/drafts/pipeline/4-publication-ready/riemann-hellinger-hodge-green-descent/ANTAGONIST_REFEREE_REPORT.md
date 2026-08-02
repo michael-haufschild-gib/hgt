@@ -1,12 +1,13 @@
-# Antagonist referee report: Transverse information at singular descent
+# Antagonist referee report: Pointed tempered descent for the Riemann divisor
 
 ## Verdict
 
 Major revision; scientifically coherent, not submission-ready.  Manuscript now has one actual
 theorem spine and corrects previous frontier localization.  It does not prove RH.
 
-Central contribution is no longer elementary defect bookkeeping.  It is combined arithmetic
-realization of one signed modular character:
+Central contribution is one pointed tempered-descent law.  Source constructions solve algebraic
+extension and character realization; positive constructions test tempered admission.  Its
+arithmetic realization has these shadows:
 
 1. complete source collapses in ordinary norm while an injective two-prime projective normal
    chart retains entire complex spectral coordinate;
@@ -21,9 +22,17 @@ realization of one signed modular character:
    all fail in sharply classified ways; and
 6. the canonical half-density quotient seminorm is centered-flow invariant, its Hausdorff
    seminorm completion carries a surjective isometric flow, and its continuous actual-Xi spectrum
-   is exactly the critical-line sector.
+   is exactly the critical-line sector; and
+7. the target-free log-Gaussian is an all-weight Meyer class with everywhere nonzero Mellin
+   transform, while Burnol quotient kernels give a dense, faithful positive Berezin reader whose
+   finite holonomy reads the same hyperbolic rate.
 
 This is materially stronger than previous manuscript.
+
+The high-level result is not any one source module: algebraic Xi spectrum is already abundant,
+while tempered Xi spectrum is exactly the critical-line sector.  Regular quotients erase a
+non-tempered transverse class, closed ungraded relations verticalize it, strict grades retain it
+singularly, and finite positive invariant admission retains it only at zero modular rate.
 
 ## Correct frontier
 
@@ -31,22 +40,24 @@ Earlier “joint Möbius--theta/Hellinger incidence bridge” was not terminal f
 contains literal Meyer source quotient, one-way inclusion of every actual Xi zero with full
 multiplicity, reciprocal flow, and exact weight-one complementary-jet Paugam form.
 
-Earlier “construct a positive admissible completion” is also no longer the frontier.  That
-completion now exists canonically after quotienting the half-density seminorm kernel.  Minimal
-missing theorem is:
+Earlier “construct a positive admissible completion” is also no longer the frontier.  A canonical
+isometric seminorm completion now exists after quotienting the half-density kernel.  The literal
+minimal missing theorem is:
 
-> Prove, from source arithmetic and without assuming zero locations, that every actual Xi
-> zeroth-evaluation is bounded by the canonical quotient seminorm
-> \(\overline p_{1/2}([g])=\inf_{b\in\mathcal B_P}\int e^{t/2}|g(t)+b(t)|dt\).
+> Prove, from source arithmetic and without assuming zero locations, that at every actual Xi
+> point the centered evaluation orbit of the target-free log-Gaussian Meyer class is bounded for
+> all real flow times.
 
-This statement is exactly equivalent to RH.  Global Meyer--Xi spectral synthesis, a common Hilbert
-norm, and faithful embedding of all algebraic middle cohomology are stronger and not logically
-needed for zero exclusion.
+This statement is exactly equivalent to RH.  Universal continuity for the canonical half-density
+seminorm is a stronger equivalent target.  Global Meyer--Xi spectral synthesis, a common Hilbert
+norm, and faithful embedding of all algebraic middle cohomology are still stronger and not
+logically needed for zero exclusion.
 
 ## Why this is not yet RH
 
-Universal half-density admission is unproved.  Existing results construct topology and classify
-its actual-Xi continuity spectrum, but do not place every zero-evaluation in it:
+Fixed-source orbit boundedness and universal half-density admission are unproved.  Existing results
+construct topology, classify its actual-Xi continuity spectrum, and produce the Gaussian witness
+nonzero at all complex parameters, but do not bound its centered orbits:
 
 - ordinary complete-source topology collapses spectral separation;
 - regular pointwise-nonerasing comparison can erase every reflection displacement;
@@ -59,8 +70,8 @@ its actual-Xi continuity spectrum, but do not place every zero-evaluation in it:
   middle cycles.
 
 Manuscript now supplies a canonical positive seminorm and isometric Banach completion.  It does
-not supply the arithmetic estimate asserting continuity of all actual Xi evaluations.  By its own
-selector theorem, that estimate is RH-strength.
+not supply the smaller arithmetic estimate asserting boundedness of the Gaussian witness's evaluation
+orbits.  By its own selector theorem, that estimate is RH-strength.
 
 ## Strongest positive assessment
 
@@ -69,6 +80,7 @@ Paper answers question corpus had repeatedly obscured:
 - divisor representation is solved;
 - signed source-to-divisor orientation transport is solved;
 - canonical positive norm-conservative source geometry is solved after quotient by its kernel;
+- a single explicit source class simultaneously witnesses every actual Xi point;
 - arithmetic admission of every actual Xi evaluation to that geometry is not solved.
 
 It also proves topology cannot be selected arbitrarily.  Locally finite grading is exact escape
@@ -77,11 +89,11 @@ not a stylistic preference.
 
 ## Strongest objections
 
-1. **The final criterion is an exact RH reformulation, not progress toward proving its hard
-   direction.**  The explicit half-density topology is better than a postulated Hilbert space, but
-   “all Xi evaluations are continuous” is proved equivalent to RH.  High-impact significance now
-   depends on a new arithmetic mechanism that establishes those bounds, or on independent novelty
-   of the selector and singular-descent laws.
+1. **The final criteria are exact RH reformulations, not progress toward proving their hard
+   direction.**  The target-free Gaussian witness and explicit half-density topology are better than a
+   postulated Hilbert space, but boundedness is proved equivalent to RH by an exponential-character
+   calculation.  High-impact significance now depends on a new arithmetic mechanism establishing
+   the bound, or on independent novelty of the selector and singular-descent laws.
 2. **External priority is unassessed.**  No novelty claim can be accepted until comparison against
    Meyer, Deninger, Paugam, co-Poisson, de Branges/Hilbert--Pólya, LF/Köthe completion, and closed
    linear-relation literature.
@@ -103,21 +115,19 @@ not a stylistic preference.
 ## Formal-evidence audit
 
 Load-bearing claims have explicit theorem map in FORMAL_CLAIM_MAP.md.  No manuscript theorem
-depends on numerical computation.  Direct checks of gauge and half-density modules pass.  Pending
-final audit:
-
-- direct foreground checks of changed/load-bearing modules;
-- targeted leaf builds;
-- axiom printout;
-- confirmation latest concurrent edits did not invalidate imported modules.
+depends on numerical computation.  Direct foreground checks of gauge, half-density, Gaussian,
+Burnol, Hedenmalm, and Berezin modules pass.  Targeted capstone build passes.  Axiom printouts for
+load-bearing results use only standard quotient/classical principles.  Whole-tree lint remains red
+only because two concurrent out-of-scope files are not yet imported by an umbrella module; this is
+a repository-integration failure, not evidence for a mathematical gap in this paper.
 
 ## Decision against requested completion gate
 
 Goal not met.  Paper now states strongest honest corpus-wide law and locates minimal RH frontier
 correctly.  Honest general-journal review still rejects until:
 
-1. universal half-density admission is proved, or paper's unconditional selector,
-   finite-fibre, and source-boundary results pass external novelty/significance review as
+1. Gaussian-orbit boundedness is proved, or paper's unconditional selectors, finite-fibre,
+   Burnol-faithfulness, and source-boundary results pass external novelty/significance review as
    standalone mathematics;
 2. manuscript becomes self-contained and conventionally sourced; and
-3. final formal and adversarial audits pass.
+3. out-of-scope repository integration is restored and whole-tree lint passes.

@@ -308,10 +308,17 @@ eigenvector and its two-mode `h_2-h_6` seed as literal `lp 2` vectors and proves
 of the two squared normalized distances (the two sign choices) tends to zero.  The offset-Fuchs
 ordering, root location, square-summability of the secular vector, nonvanishing, head alignment,
 and `λ·d_6/(d_10-d_6) → 0` tail collapse are all discharged.  Only the same explicit true-prolate
-coordinate hypotheses remain.  The qualitative normalized-distance form is therefore complete;
-the stronger quantitative `O(λ^{-7})` rate still requires quantitative prolate-to-Hermite error
-bounds, not merely the coordinate limits currently available.  The card remains in stage 2
-pending those true-operator inputs.
+coordinate hypotheses remain.
+
+The stronger quantitative rate is now formalized in
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateFullDistanceRate.lean`.
+`ccmNegative_normalized_ground_distance_eventually_le` gives an explicit pointwise constant, and
+`ccmNegative_normalized_ground_distance_isBigO` proves the literal unsquared sign-optimized
+normalized `lp 2` distance is `O(λ^{-7})`.  This comparison is with the same-aperture two-mode
+`h_2-h_6` seed, so no quantitative prolate-to-Hermite error is required; the coordinate limits are
+used only for eventual nonvanishing and a fixed head floor.  The theorem is axiom-clean (only
+`propext`, `Classical.choice`, and `Quot.sound`).  The card remains in stage 2 pending the listed
+true-operator identifications.
 
 ## Gates
 
@@ -329,7 +336,9 @@ pending those true-operator inputs.
   collapse `(9)`, and sharp `lambda^4` coefficient `(8)` formalized in Lean for the Fuchs-rate
   model (ℓ-side inputs as explicit hypotheses)
 - [x] normalized full-`ℓ²` negative-sector eigenvector convergence up to sign formalized in Lean
-- [ ] quantitative `O(lambda^(-7))` normalized eigenvector rate in Lean
+- [x] quantitative `O(lambda^(-7))` unsquared normalized eigenvector rate in Lean, with an explicit
+  eventual constant (`ccmNegative_normalized_ground_distance_eventually_le` and
+  `ccmNegative_normalized_ground_distance_isBigO`)
 - [ ] true-operator ℓ-side inputs (Bessel bound, prolate-to-Hermite limits) and Fuchs
   identification in Lean
 - [ ] independent proof audit

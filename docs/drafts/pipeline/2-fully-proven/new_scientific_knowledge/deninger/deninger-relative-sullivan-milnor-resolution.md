@@ -634,6 +634,100 @@ The tower construction now exists over generators of arbitrary degree, so the de
 the exterior model is gone: at each stage a generator of degree `n` may be attached to kill a class
 in degree `n + 1`.
 
+### The base stage on mixed degrees
+
+- `DeningerGCAStage.base`, `base_gen`, `base_phi` — **the base stage**: generators of prescribed
+  degrees with vanishing differential.  This is the algebra `P` with `d_P = 0` from which a relative
+  Sullivan tower starts, now for arbitrary degrees.
+- `DeningerGCAStage.baseDegreeOne`, `baseDegreeOne_anticomm` — **the degree-one base stage**, whose
+  generators anticommute: the underlying algebra is the exterior algebra, so this is literally the
+  statement's `P = Λ(V)`, `d_P = 0`.  The mixed-degree tower therefore starts from the same place
+  the exterior one did and continues past degree two.
+
+### The tower as a chain of differential extensions
+
+- `DeningerGCAStage.iterateInl` — the inclusion of a stage of the mixed-degree tower into the next.
+- `DeningerGCAStage.iterate_d_inl` — **each stage includes into the next compatibly with the
+  differentials**, so the tower is a chain of differential extensions rather than a sequence of
+  unrelated stages.  With `iterate_kills` this is the full induction step of the transfinite
+  argument, in every degree.
+
+### The two models compared
+
+- `deningerGCAToExterior_comm`, `deningerGCAToExterior_sq`, `deningerGCAToExterior`,
+  `deningerGCAToExterior_ι` — **the comparison map** from the degree-one free graded-commutative
+  algebra to an exterior algebra, sending each generator to a chosen vector.  The Koszul relations
+  in degree one are exactly the exterior ones, so the map exists by the universal property.
+- `deningerGCAToExterior_involute` — **it intertwines the two grading involutions**.  Both negate
+  degree-one generators, so the identification of the two models is compatible with the sign rule
+  the differentials run on.
+
+This links the two lines of work: the exterior model carrying the concrete results on the card's own
+`K = k ⊕ V` is the degree-one case of the general algebra carrying the unrestricted tower.
+
+- `deningerGCAToExterior_surjective` — **the comparison map is surjective when the generators
+  span**: every exterior generator is in the range, and the generators generate the exterior
+  algebra.  So the exterior model is a quotient of the degree-one free graded-commutative algebra,
+  compatibly with the involutions.
+
+### Squares of general vectors
+
+- `deningerAnticommSum_sq_zero` — **a sum of pairwise anticommuting square-zero elements squares to
+  zero**, proved by induction on the index set: the diagonal terms vanish by the square-zero
+  hypothesis and the cross terms cancel in pairs by anticommutation.
+- `deningerAnticommSmulSum_sq_zero` — the same for an arbitrary scalar combination.
+
+This is the missing ingredient for the inverse comparison map: `ExteriorAlgebra.lift` requires the
+square-zero condition for *every* vector, not merely for basis elements, and mathlib has no
+spanning-set variant.
+
+### The inverse comparison, and injectivity
+
+- `deningerExteriorToGCAMap`, `_basis`, `_sq` — the linear map sending each basis vector to its
+  generator, and the proof that **every vector squares to zero** under it, using the anticommuting
+  sum lemma.  This is the hypothesis `ExteriorAlgebra.lift` demands.
+- `deningerExteriorToGCA`, `_ι` — **the inverse comparison map**, from the exterior algebra on a
+  based module to the degree-one free graded-commutative algebra on the basis.
+- `deningerExteriorToGCA_comp_toExterior` — **one composite is the identity**, so the degree-one
+  free graded-commutative algebra is a retract of the exterior algebra.
+- `deningerGCAToExterior_injective` — hence the comparison map is injective; with the surjectivity
+  above, the two models agree on a based module.
+
+### The two models are isomorphic
+
+- `deningerGCAToExterior_comp_exteriorToGCA` — the second composite is the identity, proved by
+  expanding a vector in its basis coordinates and reassembling it.
+- `deningerGCAExteriorEquiv`, `_ι` — **the isomorphism**: on a module with a basis, the exterior
+  algebra *is* the degree-one free graded-commutative algebra on that basis, matching generators
+  with basis vectors.
+
+So the exterior model in which the concrete results on the card's `K = k ⊕ V` were proved and the
+general mixed-degree algebra in which the unrestricted tower lives are the same object in degree
+one.  The exterior development is a special case of the general one, not a parallel track.
+
+### The tower's inclusion chain
+
+- `DeningerGCAStage.iterateInlAdd` — the inclusion of a stage into any later stage, by composing the
+  successor inclusions.
+- `iterate_d_inlAdd` — **the differential is compatible with every inclusion along the tower**, so
+  each stage embeds as a differential subalgebra of every later one.  This is the structure a
+  colimit of the tower is built from.
+- `iterate_cocycle_inlAdd`, `iterate_coboundary_inlAdd` — cocycles and coboundaries persist along
+  the tower.
+
+### The limit generator set
+
+- `iterateNewGen`, `iterateOmegaGen`, `iterateOmegaDeg` — **the generator set of the limit stage**:
+  the original generators together with every generator attached anywhere along the tower, each
+  keeping its degree.
+- `iterateGenToOmega` — the inclusion of a stage's generators into the limit set, defined by
+  recursion along the tower.
+- `iterateGenToOmega_deg` — **degrees are preserved**: a generator of a stage keeps its degree in
+  the limit, so the limit algebra can extend every stage compatibly with the grading.
+
+Because a stage's generator set is a left-nested sum, the limit set is a single sum of the original
+generators with a sigma-type over the attachments, which avoids constructing a colimit of modules.
+
 ### What is still missing, and why
 
 The theorem's proof is a factorization in the model category of nonnegatively graded commutative
@@ -748,3 +842,28 @@ the limit-stage comparison of step 3.
   is bundling stages and iterating over the general algebra.
 - 2026-08-02 — Bundled and iterated the mixed-degree stage: a Sullivan stage, its attachment data,
   its successor, and the tower.  The construction now reaches every degree, not only two.
+- 2026-08-02 — Built the base stage on mixed degrees and its degree-one specialization, which is
+  the statement's `P = Λ(V)` with `d_P = 0`.  The mixed-degree tower starts from the same place as
+  the exterior one.
+- 2026-08-02 — Made the mixed-degree tower a chain of differential extensions: each stage includes
+  into the next compatibly with the differentials, matching the exterior tower.
+- 2026-08-02 — Built the comparison map from the degree-one free graded-commutative algebra to an
+  exterior algebra, intertwining the two grading involutions.  The concrete exterior results and
+  the general mixed-degree tower are now linked at the level of the underlying algebras.
+- 2026-08-02 — Proved the comparison map surjective when the generators span, so the exterior model
+  is a quotient of the degree-one free graded-commutative algebra.
+- 2026-08-02 — Proved that a scalar combination of pairwise anticommuting square-zero elements
+  squares to zero, which is what `ExteriorAlgebra.lift` needs for a general vector and hence the
+  missing ingredient for the inverse comparison map.
+- 2026-08-02 — Built the inverse comparison map from a basis, proved one composite is the identity,
+  and deduced injectivity of the comparison.  With the earlier surjectivity, the exterior model and
+  the degree-one free graded-commutative algebra agree on a based module.
+- 2026-08-02 — Completed the isomorphism between the exterior algebra on a based module and the
+  degree-one free graded-commutative algebra on its basis.  The exterior development is a special
+  case of the mixed-degree one.
+- 2026-08-02 — Built the tower's inclusion chain: each stage embeds as a differential subalgebra of
+  every later stage, with cocycles and coboundaries persisting.  This is the data a colimit of the
+  tower requires.
+- 2026-08-02 — Built the limit generator set of the tower with its degrees and the degree-preserving
+  inclusion from each stage, sidestepping a colimit of modules by using a sigma type over the
+  attachments.

@@ -434,11 +434,36 @@ used in.
 
 `formal/GaloisForLFunctions/RHTower/RadialLeakageWeakConvergence.lean` pins the limiting object
 down exactly: it names the density `nuInfinityDensity = (8/(11 pi)) radialLeakageDensity` and
-proves its integrability and its exact total mass `4/11`.  It records NO conditional form of the
-convergence: the general Scheffe reduction is available in
-`formal/GaloisForLFunctions/HTGeometry/ScheffeLemma.lean` and can be applied once the density
-asymptotics are proved, but the asymptotics do not exist in the tree, so no statement here assumes
-them.  All axiom-clean.
+proves its integrability and its exact total mass `4/11`.  The concrete finite density and exact
+convergence interface now live in
+`formal/GaloisForLFunctions/RHTower/RadialLeakageWeakConvergenceTransfer.lean`:
+`nuLambdaDensity λ d q x = λ‖q(λx)‖²/d` is literally `(4)`,
+`nuLambdaDensity_tendsto_L1` upgrades a.e. density convergence plus total-mass convergence to
+`L¹`, and `nuLambdaDensity_tendsto_bounded_test` gives convergence against every bounded measurable
+test.  `integral_Ioi_nuInfinityDensity` evaluates every normalized tail, while
+`nuLambdaDensity_tendsto_indicator_tail` specializes the bounded-test result to every `Ioi k` and
+`nuLambdaDensity_tendsto_radialGramDiagonal` includes the exact `1/k` dilation factor to yield
+`8 arcsin(1/k)/(11 pi k)`, the right side of `(22)`.  Thus the complete unconditional
+a.e.-density-plus-mass implication through the literal finite density to the diagonal limit is in
+Lean.  Weak convergence itself is not assumed; remaining inputs are exactly the PSWF pointwise
+density asymptotic and mass convergence.  All axiom-clean.
+
+Two further pieces of the radial asymptotic argument are now formalized.  In
+`formal/GaloisForLFunctions/RHTower/DunsterSigmaComparisonLimits.lean`,
+`radialPSWFTurningPhase_div_free_tendsto_one` and
+`radialPSWFAmplitudePow4_turning_ratio_tendsto_one` prove the two fixed-`x` limits `(10)` directly
+from the exact turning-point-uniform comparison whenever `sigma -> 0`; the bundled theorem is
+`radialPSWFTurning_liouville_data_tendsto_free`.  No PSWF solution asymptotic is assumed.
+
+`formal/GaloisForLFunctions/RHTower/RadialPSWFLocalWeakLimit.lean` proves the compact-interval
+oscillatory averaging step used between `(11)` and `(12)`.  For every `C^1` weight, arbitrary
+constant phase shift, any turning-parameter family in `[0,1]`, and every bandwidth tending to
+infinity, `tendsto_integral_weight_mul_cos_sq_radialPhase_add` proves that the exact radial
+Liouville `cos^2` factor averages to `1/2`; its pointwise predecessor records the explicit
+variation-budget-over-bandwidth error.  Thus compact nonstationary averaging is closed.  Remaining
+analytic gap is transfer from the actual radial PSWF solution to this leading oscillatory model,
+together with uniform endpoint/far-tail tightness.  Axiom audits of both modules contain only
+`propext`, `Classical.choice`, and `Quot.sound`.
 
 What is still not formalized is the **weak convergence** `(4)` of the finite-aperture measures
 `nu_lambda` to this limit, and the off-diagonal vanishing `(23)`.
@@ -465,6 +490,12 @@ work fixes the target of that convergence exactly; it does not prove the converg
 - [x] arcsine tail law `(21)` and total mass `(18)` formalized in Lean for every `a >= 1`
 - [x] exact total mass `nu_infinity([1,infinity)) = 4/11` formalized in Lean
 - [x] diagonal spectrum `(22)` identified in Lean with the `1/k`-scaled measure tail
+- [x] fixed-radius phase and Liouville--Green amplitude limits `(10)` formalized in Lean
+- [x] compact-interval `cos^2` weak averaging for exact radial Liouville phase formalized in Lean,
+  uniformly over turning parameters in `[0,1]`
+- [x] finite-aperture density `(4)` defined and exact a.e.+mass-to-`L¹`/bounded-test transfer
+  formalized in Lean
+- [x] exact bounded-test-to-tail and `1/k`-scaled diagonal-limit `(22)` transfer formalized in Lean
 - [ ] weak convergence `nu_lambda -> nu_infinity` `(4)` in Lean
 - [ ] fixed off-diagonal vanishing `(23)` in Lean
 - [x] simultaneous weighted off-diagonal limit — **completed elsewhere**, in

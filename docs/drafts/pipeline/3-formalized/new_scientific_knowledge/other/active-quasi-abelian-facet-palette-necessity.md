@@ -1,12 +1,14 @@
 # Every full HT facet lattice is faithful on its active quasi-Abelian quotient
 
 - **ID:** `active-quasi-abelian-facet-palette-necessity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / NECESSARY ACTION-RELATIVE SOURCE GEOMETRY
-- **Scientific status:** `[PROVED HERE] [FORMALIZED ALGEBRAIC CORE] [NOVELTY UNVERIFIED]`
+- **Scientific status:** `[LEAN-PROVED] [NOVELTY UNVERIFIED]`
 - **Statement:** In every finite full Stanley--Reisner HT differential-matroid realization, the
   complete integral lattice of each facet embeds in the period quotient after its maximal compact
   complex subtorus is removed.
+- **Formal module:**
+  `formal/GaloisForLFunctions/HTGeometry/CompactKernelFunctionFieldCapacity.lean`.
 
 ## Setup
 
@@ -99,20 +101,42 @@ action-relative law constraining hypertranscendental functions:
 This converts the elliptic-shadow no-go into a universal positive restriction on every facet of a
 finite full HT constraint geometry.
 
-## Lean boundary
+## Lean status
 
-The analytic proper-fibration theorem is paper mathematics.  Its exact use in the lattice argument
-is formalized in
-`formal/GaloisForLFunctions/HTGeometry/FiniteShadowCapacity.lean`:
+The relative function-field source and the complete facet theorem are now formalized directly.
+`CompactKernelFunctionFieldCapacity.lean` proves:
 
 ```text
-activeQuotient_injective_of_fullOrbitFree_of_kernelCyclic_not
+Scheme.Hom.functionFieldPullback_essFiniteType
+Scheme.Hom.functionField_trdeg_lt_aleph0
+properRelativeFunctionField_int_not_differentialIndependent
+abelianVarietyTranslationFunctionField_intOrbit_not_differentialIndependent
+activeQuotient_injective_of_fullOrbitFree_of_properKernelFunctionField
+activeQuotient_injective_of_fullOrbitFree_of_abelianKernelTranslations
+activeQuasiAbelianFacetLattice_injective_of_abelianKernelTranslations
+activeQuasiAbelianDimension_le_hypertranscendenceDimension
 ```
 
-The theorem assumes the compact-kernel cyclic family is not differentially independent and proves
-injectivity of the active quotient map from complete orbit freedom and torsion-free cyclic
-embedding.  The finite-shadow source of the analytic hypothesis is formalized by the exact matrix
-rank theorems in the same module.  No compact-kernel analytic statement is installed as an axiom.
+The generic-stalk proof derives essential finite type from `LocallyOfFiniteType.stalkMap`, then
+derives finite relative transcendence degree.  Differential independence would imply countable
+algebraic independence of zero-jets, contradicting that finite bound.  The Abelian specialization
+uses literal powers of a rational point and the actual scheme-translation pullback on the function
+field.  The final facet theorem specializes the lattice to `Z^F` and proves its torsion-free cyclic
+embedding internally; compact-kernel cyclic non-independence is no longer a hypothesis.
+
+No compact-kernel statement is installed as an axiom, and the module contains no `sorry`, `admit`,
+`axiom`, `opaque`, or `unsafe` declaration.
+
+Verification on 2026-08-02:
+
+- direct `lake env lean GaloisForLFunctions/HTGeometry/CompactKernelFunctionFieldCapacity.lean`
+  passed;
+- `lake build GaloisForLFunctions.HTGeometry.CompactKernelFunctionFieldCapacity` passed;
+- `#print axioms` for every theorem listed above reports only `propext`, `Classical.choice`, and
+  `Quot.sound` (the dimension inequality uses none);
+- module is imported by `GaloisForLFunctions.HTGeometry`;
+- repository lint finds no debt in this module; its sole current error is an unrelated unreachable
+  RHTower module, `CriticalHalfDensityPrimeTailResolventLaw`.
 
 ## Parent and novelty boundary
 
@@ -132,5 +156,7 @@ capacity theorem.  Novelty remains unverified pending specialist audit.
 - [x] algebraic implication formalized in Lean
 - [ ] independent complex-geometric proof audit
 - [ ] exact-formulation literature audit
-- [ ] promote to Stage 3 only after the relative analytic theorem has a direct Lean formalization
-
+- [x] relative function-field theorem directly formalized
+- [x] literal Abelian translation orbit directly formalized
+- [x] complete active facet lattice theorem directly formalized
+- [x] promoted to Stage 3

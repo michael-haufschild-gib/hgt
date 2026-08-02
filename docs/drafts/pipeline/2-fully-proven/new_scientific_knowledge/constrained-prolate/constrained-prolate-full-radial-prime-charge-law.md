@@ -186,8 +186,12 @@ The *value* appearing in the diagonal limit `(4)` is now formalized in
 `1/k`-scaled `k`-tail of the limiting radial leakage density.  So the right-hand side of `(4)` is
 pinned to an exact measure tail rather than a quoted constant.
 
-The *convergence* in `(4)` itself, and the off-diagonal estimates `(7)`--`(8a)`, are still not in
-Lean, so the cofinal limit `(9)` is not yet formalized.  The card remains at stage 2.
+The exact downstream convergence bridge is now also formalized in
+`GaloisForLFunctions/RHTower/RadialLeakageWeakConvergenceTransfer.lean`.
+`RHTower.nuLambdaDensity_tendsto_radialGramDiagonal` derives `(4)`, with its literal `1/k` factor
+and exact arcsine target, from a.e. convergence of the finite density and convergence of its total
+mass.  Those two PSWF analytic inputs themselves, and the off-diagonal estimates `(7)`--`(8a)`, are
+still not in Lean, so the cofinal limit `(9)` is not yet formalized.  The card remains at stage 2.
 
 ## Gates
 
@@ -201,6 +205,7 @@ Lean, so the cofinal limit `(9)` is not yet formalized.  The card remains at sta
   unconditionally in Lean
 - [x] primary formula search found no parent statement
 - [x] the arcsine value in the diagonal limit `(4)` formalized in Lean as an exact measure tail
+- [x] exact a.e.-density-plus-mass implication to diagonal convergence `(4)` formalized in Lean
 - [ ] the diagonal convergence `(4)` itself in Lean
 - [ ] independent normalization and sign audit
 - [ ] combine with central correction and archimedean form

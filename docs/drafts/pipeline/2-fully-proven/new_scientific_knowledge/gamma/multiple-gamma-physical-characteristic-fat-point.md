@@ -247,6 +247,38 @@ height survives physical realization unchanged.  The multiple-Gamma coface hiera
 class because every relevant initial form is a monomial nonzero at a period vector with no zero
 coordinate.
 
+### `(14a)`--`(14c)` for the squarefree hierarchy are unconditional Lean
+
+`PhysicalArcContactVeronese.lean` computes the contact order of the squarefree annihilator along
+the physical exponential arc `X_j -> tau_j lambda`:
+
+- `physicalArcPullback`, `physicalArcPullback_monomial`, `physicalArcPullback_prod_X` -- the arc
+  pullback and its value on monomials and coface generators;
+- `pow_dvd_physicalArcPullback_of_monoWide` and
+  `pow_dvd_physicalArcPullback_of_mem_veroneseIdeal` -- **`mu_phys(I_r,tau) >= r`**: every element
+  of the ideal is monomial-wide of width `r`, so its pullback is divisible by `lambda^r`;
+- `physicalArcPullback_generator_ne_zero` -- **the bound is attained**: with no vanishing period a
+  coface generator pulls back to a nonzero constant times `lambda^r` and is not divisible by
+  `lambda^{r+1}`;
+- `veroneseIdeal_physicalArcContact` -- **`mu_phys(I_r,tau) = r = h(I_r)`, that is
+  `tang_phys(I_r,tau) = 0`.**
+
+So the multiple-Gamma coface hierarchy provably lies in the zero-tangency class.
+
+The discriminator itself is also formalized.  `positiveTangencyWitness` is an explicit operator
+whose linear part cancels along the arc:
+
+```text
+g  = X_0 - X_1 + X_0^2,   tau = (1,1),   pullback = lambda^2,
+g' = X_0,                 tau = (1,1),   pullback = lambda.
+```
+
+`physicalContact_not_determined_by_leastDegree` proves that both have a nonzero linear
+coefficient — the same least augmentation degree — while `g'` has contact one and `g` has contact
+two.  Hence source height alone does not determine physical obstruction multiplicity, which is the
+`[NO-GO]` of this section, and zero tangency is a genuine restriction rather than an automatic
+consequence.  `#print axioms` clean.
+
 The positive-tangency test is now exact at source-geometric level.  For the Hankel conic on the
 rank-three source `(1,alpha,alpha^2)`, Lean proves source height two and physical contact order three.
 It also proves that the same nondiscrete source supports another quadratic constraint of contact
@@ -544,9 +576,17 @@ five-way equality `(13)`.  This is preliminary negative evidence, not priority c
 - [x] formalize the Koszul-chain transport induced by `unitScaledCofaceRowEquiv`
 - [x] instantiate the physical exponential arc and prove its ideal is `(X^r)` in `C[[lambda]]`
 - [x] derive the local length statement `(8)` over the physical formal local ring `C[[lambda]]`
+- [x] zero physical tangency of the squarefree hierarchy `(14a)`--`(14c)` formalized
+  unconditionally in Lean (`PhysicalArcContactVeronese.lean`)
 - [ ] construct the filtration-preserving analytic comparison morphism
 - [ ] identify the critically completed bounded symbol with `w^r`
 - [ ] prove the Barnes/multiple-sine second realization
 - [ ] realize positive tangency in a natural HT special-function family
+- [x] ideal-level discriminator: an explicit positive-tangency operator exists, so least
+  augmentation degree does not determine contact (`PhysicalArcContactVeronese.lean`)
 - [ ] construct a natural positive-tangency HT source or prove rigidity of zero tangency
 - [ ] obtain independent specialist novelty and significance audit
+- 2026-08-02 -- The physical arc-contact order of the squarefree annihilator was computed in Lean:
+  contact order equals the least augmentation degree, so the hierarchy has zero tangency excess.
+- 2026-08-02 -- The `[NO-GO]` discriminator was formalized at the ideal level: an explicit operator
+  with the same least augmentation degree has strictly larger physical contact order.

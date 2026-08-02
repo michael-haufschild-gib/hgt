@@ -6284,6 +6284,22 @@ and remains nonzero.  This is the Deninger-specific contribution: a topology bui
 Meyer source, not divisor-labelled downstream data, whose continuous Xi spectrum is exactly the
 critical spectrum.
 
+`DeningerMeyerHalfDensityXiGraphClosure.lean` now proves the stronger closed-relation
+classification.  For an off-line actual Xi point, put `a = Re(rho)-1/2`, take the target-free
+log-Gaussian class `u_*`, and set
+
+```text
+u_n = exp (-(n*a)*(rho-1/2)) * V_(n*a) u_*.
+```
+
+Then `completionMk(u_n) -> 0` at the exact rate `exp(-n*a^2)`, while
+`E_rho(u_n) = E_rho(u_*) != 0`.  Consequently every scalar `(0,y)` lies in the closed Xi graph
+relation.  Every closed linear relation containing the full off-line source graph is therefore
+maximally vertical, and no closed single-valued extension exists.  On line the vertical fibre is
+zero, and sequential closability is equivalent to `Re(rho)=1/2`.  This removes another false
+escape: source admission cannot be repaired by declaring the algebraic evaluation to be an
+unbounded closed operator after half-density completion.
+
 The hard scientific frontier is now two exact source theorems.  First, prove Hausdorff faithfulness:
 `q_half([g]) = 0` must force `[g] = 0` in literal Meyer cohomology, equivalently the actual Poisson
 boundary range must be closed in the half-density `L1` geometry.  Second, prove arithmetic
@@ -6291,4 +6307,7 @@ admission of every actual Xi evaluation from Gamma/co-Poisson source transport. 
 that the second statement is already equivalent to RH, so generic functional analysis, another
 completion shell, or another local positive block cannot supply it.  A source middle-Hodge
 polarization or faithful harmonic full-Cauchy comparison remains a viable mechanism only if it
-proves these two named obligations for `q_half` rather than replacing the literal quotient.
+proves these two named obligations for `q_half` rather than replacing the literal quotient.  Any
+singular Gamma/Hellinger producer must now define a proper source domain before completion and
+prove, without reading `rho`, why that domain excludes the explicit Gaussian graph-null sequence
+off line while retaining every source-generated Xi fibre.

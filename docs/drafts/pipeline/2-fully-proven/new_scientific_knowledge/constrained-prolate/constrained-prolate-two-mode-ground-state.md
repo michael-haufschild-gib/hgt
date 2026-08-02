@@ -496,11 +496,11 @@ Fuchs family `d_j = A_j λ^{8j+1}e^{−4πλ²}` (`fuchsRate_radial_struct`,
 `fuchsRate_radial_tail_ratio_tendsto_zero`, `ccm_fuchsModel_infiniteSecularRoot_*`), assuming only
 `A_j > 0` and the tempered growth `A_2 ≤ C^j A_{j+2}`.  All of this is axiom-clean.
 
-What remains unformalized of `(4)`--`(7)`: the eigenvector convergence `(4)` (coordinates
-`(13)`/`(20)`--`(22)`), and — for the *true prolate operator* rather than the Fuchs model — the
-classical inputs: the identification of the positive signed modes with the `4j` numbering, Fuchs
-fixed-index asymptotics for the actual `χ_n(λ)`, prolate-to-Hermite convergence `ℓ_j → a_j`, and
-the Bessel bound `(2)` from the concrete operator layer.
+The exact secular/Fuchs-model statements `(4)`--`(7)`, including the quantitative eigenvector rate,
+are now formalized below.  What remains for the *true prolate operator* is the classical
+identification layer: positive signed modes with the `4j` numbering, Fuchs fixed-index asymptotics
+for the actual `χ_n(λ)`, and prolate-to-Hermite convergence `ℓ_j → a_j`.  The concrete Bessel bound
+`(2)` is already discharged.
 
 The sign-choice/metric form of `(4)` is now formalized.  The general geometry lives in
 `formal/GaloisForLFunctions/HTGeometry/SignChoiceNormalizedDistance.lean`: for unit vectors
@@ -518,6 +518,21 @@ giving the factorization
 `⟪V,G⟫²/(‖V‖²‖G‖²) = [⟪H,G⟫²/(‖H‖²‖G‖²)]·[‖H‖²/(‖H‖²+T)]`;
 the first bracket tends to one by the head-defect collapse, the second by the tail-fraction
 collapse together with `‖H‖² ≥ v₀²`.  All of this is axiom-clean.
+
+The quantitative statement `(4)` is now formalized in
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateFullDistanceRate.lean`.
+`secular_defect_tail_bounds` proves simultaneously that the normalized head defect is at most
+`(16/a₀⁴)(λd₁/(d₂-d₁))²` and the squared tail/head fraction is at most
+`(4/a₀²)(λd₁/(d₂-d₁))²`.  `full_normalized_alignment_ge` transfers these literal infinite-vector
+bounds to full `lp 2` alignment, and `min_norm_sub_normalize_le_of_inner_sq` converts the squared
+alignment loss to the unsquared sign-optimized norm distance.  Finally
+`fuchsRate_step4_tail_ratio_eventually_le` supplies the pointwise bound
+`|λd₁/(d₂-d₁)| ≤ 2(A₁/A₂)λ⁻⁷`.  The capstone
+`ccm_normalized_ground_distance_isBigO` therefore proves exactly
+`min_σ ‖v̂_λ-σĝ_λ‖ = O(λ⁻⁷)` for the literal secular vector and same-aperture two-mode seed.
+No quantitative prolate-to-Hermite convergence rate is used: the coordinate limits only provide
+eventual nonvanishing and a fixed head floor.  Axiom audit: only `propext`, `Classical.choice`, and
+`Quot.sound`.
 
 ## Gates
 
@@ -552,6 +567,9 @@ collapse together with `‖H‖² ≥ v₀²`.  All of this is axiom-clean.
   structural, tail-ratio, nonvanishing, membership and summability hypotheses are all DISCHARGED
   from the family data `A`.  Only `hsum`/`hbessel` and the coordinate limits `hl0`/`hl1` remain,
   the latter being the open prolate-to-Hermite gate below.  Axiom-clean
+- [x] quantitative eigenvector rate `(4)` formalized without strengthening the coordinate inputs:
+  `ccm_normalized_ground_distance_isBigO` proves the literal unsquared normalized distance is
+  `O(lambda^(-7))`; `ccm_normalized_ground_distance_eventually_le` records an explicit constant
 - [ ] remaining true-operator inputs in Lean: mode identification, Fuchs asymptotics,
   prolate-to-Hermite limits.  **Evaluation identity `(1)` is now formalized**, axiom-clean, in
   `formal/GaloisForLFunctions/RHTower/ConstrainedProlateEvaluationIdentity.lean`:

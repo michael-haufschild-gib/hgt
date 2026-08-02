@@ -326,9 +326,63 @@ Lean formalizes the unconditional algebraic skeleton:
 - compatible observations have a common representative exactly when the defect vanishes;
 - three abelian channels can have a nonzero higher interaction quotient.
 
-The analytic theorem `(11)`--`(13)` is not Lean-formalized.  Formalizing it requires the
-group--Cech gamma-gerbe complex, fibrewise DA coefficient subcomplex, the irrational elliptic-gamma
-HT theorem, and the DD generator computation.  No analytic claim is inserted as an axiom.
+### The pointed incidence phase `(14a)`--`(14b)` is unconditional Lean
+
+`EllipticGammaPointedIncidencePhase.lean` formalizes the fibre calculation, with no axiom and no
+gerbe machinery:
+
+- `ellipticGammaBoundarySolutions` is the structural boundary problem: the unit period together
+  with the two structural difference equations of the source `F`;
+- `exists_constant_of_mem_boundarySolutions` and `boundarySolutions_eq_constantCoset` -- **every
+  solution differs from `F` by a constant, so the solution set is exactly `F + C`**, by the
+  rank-three generator joint-fixed collapse;
+- `not_differentialAlgebraicOver_of_mem_boundarySolutions` -- **the differentially algebraic
+  incidence fibre is empty**, since a DA solution would make `F` differentially algebraic against
+  the exact period-rank dichotomy;
+- `boundarySolutions_constantTorsor` -- **the ambient fibre is a constant torsor**: adding a
+  constant is a bijection from `C` onto the solution set, so any pointing singles out `F`.
+
+This is `(14b)` for the genuine meromorphic source.  `#print axioms` clean.
+
+### Parent input II, the DA translation anomaly `(9)`--`(10)`, is unconditional Lean
+
+`EllipticGammaTranslationAnomalyRationalBase.lean` proves it over the natural coefficient field:
+
+- `differentialAlgebraicOver_compositum_of_ratFunc` -- differential algebraicity over `C(z)`
+  implies it over the paired elliptic compositum, since the compositum contains the constants;
+- `differentialAlgebraicOver_ratFunc_ellipticGammaExternalQuotientMero_iff_resonant` and its
+  hypertranscendence form -- **the exact DA spectrum `(9)`: a shift quotient
+  `Gamma(z+h)/Gamma(z)` is DA over `C(z)` exactly for `h` in the rank-three integer period
+  group**;
+- `hypertranscendentalOver_ratFunc_ellipticGammaMero` -- **`Gamma` is hypertranscendental over
+  `C(z)`**;
+- `ellipticGamma_translationAnomaly` -- **`(13)` without gerbe language**: the class of `Gamma`
+  modulo the differentially algebraic sector is fixed by the whole period group, every off-spectrum
+  quotient is hypertranscendental, and `Gamma` itself is not differentially algebraic, so the
+  connecting cocycle of that class is nontrivial.
+
+`#print axioms` clean.
+
+`EllipticGammaTranslationCocycleAnomaly.lean` upgrades this from an elementwise statement to the
+cocycle statement `(10)` asserts:
+
+- `ellipticGammaExternalQuotientMero_eq_coboundary` -- the shift cocycle is the ambient coboundary
+  of `Gamma`;
+- `addTranslationMeroEquiv_div_eq_of_coboundary` -- a trivializer makes the ratio of `Gamma` by it
+  translation-fixed;
+- `ellipticGammaShiftCocycle_not_differentialAlgebraic_coboundary` -- **there is no differentially
+  algebraic trivializer**: the ratio would be fixed by all three source generators, hence constant
+  by the rank-three generator collapse, hence would make `Gamma` differentially algebraic;
+- `ellipticGamma_translationCocycle_anomaly` -- **the exact anomaly phase**: differentially
+  algebraic values on the whole period group, ambient coboundary of `Gamma`, and no differentially
+  algebraic trivializer.
+
+That is `(10)`'s assertion that the cocycle is nontrivial in the differentially algebraic
+coefficient group while becoming a coboundary in the ambient one.
+
+What is still unformalized is the gerbe half `(11)`--`(12)`: the group--Cech gamma-gerbe cochain
+`(4)`, its coboundary lying in the intersection sector `(7)`, and the Dixmier--Douady generator
+`(8)`.  No analytic claim is inserted as an axiom.
 
 ## Gates
 
@@ -346,7 +400,11 @@ HT theorem, and the DD generator computation.  No analytic claim is inserted as 
 - [x] parent and anti-theatre boundaries explicit
 - [ ] independent specialist proof and novelty audit
 - [x] group--Cech and DA coefficient complexes formalized in Lean
-- [ ] analytic theorem formalized without axioms
+- [x] pointed incidence phase `(14a)`--`(14b)` formalized without axioms
+  (`EllipticGammaPointedIncidencePhase.lean`)
+- [x] DA translation anomaly `(9)`--`(10)` and the pointed class `(13)` formalized without axioms
+  (`EllipticGammaTranslationAnomalyRationalBase.lean`)
+- [ ] gerbe half `(11)`--`(12)` formalized without axioms
 
 ## Lean route for the pointed incidence phase (14b)
 
@@ -672,3 +730,15 @@ direction, by the triviality just cited.  The gate stays open and no analytic cl
 an axiom.
 
 - 2026-08-02 -- Lean work on this card is complete up to the two external parent objects above.
+
+## Log
+
+- 2026-08-02 -- The pointed incidence phase became unconditional Lean: the structural boundary
+  solution set is the constant coset of the source, its differentially algebraic fibre is empty,
+  and its ambient fibre is a constant torsor.
+- 2026-08-02 -- Parent input II became unconditional Lean over `C(z)`: the exact DA spectrum of the
+  shift quotients, hypertranscendence of the gamma function, and the resulting nontrivial
+  translation class.
+- 2026-08-02 -- The translation anomaly was upgraded to the cocycle statement: the elliptic-gamma
+  shift cocycle admits no differentially algebraic trivializer, while being the ambient coboundary
+  of the gamma function.

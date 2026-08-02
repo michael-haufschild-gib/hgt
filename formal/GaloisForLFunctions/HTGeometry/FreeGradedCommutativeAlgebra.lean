@@ -672,4 +672,41 @@ theorem deningerGCASuccDerivation_comp_self
 
 end Successor
 
+section AnticommSum
+
+variable {A : Type*} [Ring A] {ι : Type*}
+
+/-- **A sum of pairwise anticommuting square-zero elements squares to zero.**  This is the
+computation that makes an arbitrary vector, and not only a basis element, square to zero in an
+exterior-type algebra. -/
+theorem deningerAnticommSum_sq_zero (S : Finset ι) (a : ι → A)
+    (hsq : ∀ i, a i * a i = 0) (hanti : ∀ i j, a i * a j = -(a j * a i)) :
+    (∑ i ∈ S, a i) * (∑ i ∈ S, a i) = 0 := by
+  classical
+  induction S using Finset.induction_on with
+  | empty => simp
+  | @insert x S hx ih =>
+    have hcross : a x * (∑ i ∈ S, a i) + (∑ i ∈ S, a i) * a x = 0 := by
+      rw [Finset.mul_sum, Finset.sum_mul, ← Finset.sum_add_distrib]
+      refine Finset.sum_eq_zero fun j _ => ?_
+      rw [hanti x j, neg_add_cancel]
+    have expand : (a x + ∑ i ∈ S, a i) * (a x + ∑ i ∈ S, a i) =
+        a x * a x + (a x * (∑ i ∈ S, a i) + (∑ i ∈ S, a i) * a x) +
+          (∑ i ∈ S, a i) * (∑ i ∈ S, a i) := by
+      noncomm_ring
+    rw [Finset.sum_insert hx, expand, hsq, hcross, ih]
+    simp
+
+variable {k : Type*} [CommRing k] [Algebra k A]
+
+/-- **A scalar combination of pairwise anticommuting square-zero elements squares to zero.** -/
+theorem deningerAnticommSmulSum_sq_zero (S : Finset ι) (c : ι → k) (a : ι → A)
+    (hsq : ∀ i, a i * a i = 0) (hanti : ∀ i j, a i * a j = -(a j * a i)) :
+    (∑ i ∈ S, c i • a i) * (∑ i ∈ S, c i • a i) = 0 := by
+  refine deningerAnticommSum_sq_zero S (fun i => c i • a i) (fun i => ?_) (fun i j => ?_)
+  · rw [smul_mul_smul_comm, hsq, smul_zero]
+  · rw [smul_mul_smul_comm, smul_mul_smul_comm, hanti i j, smul_neg, mul_comm (c j) (c i)]
+
+end AnticommSum
+
 end HTGeometry

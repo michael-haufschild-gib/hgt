@@ -664,15 +664,84 @@ fourier_comp_mul_left
   : for c > 0,  F (fun v => f (c v)) w = c^(-1) F f (w / c).
 ```
 
-Combining the two gives the dilated even Poisson identity
+Combining the two gives the dilated even Poisson identity, now itself a theorem:
 
 ```text
-f(0) + 2 sum_{n>=1} f(n x) = x^(-1) [ (F f)(0) + 2 sum_{k>=1} (F f)(k / x) ],
+realDilationEquiv / schwartzDilate
+  : scalar dilation as a continuous linear equivalence, and the dilated Schwartz function,
+even_poisson_summation_dilate
+  : f(0) + 2 sum_{n>=1} f(c n) = c^(-1) [ (F f)(0) + 2 sum_{k>=1} (F f)(k / c) ].
 ```
 
-which is the co-Poisson intertwining `F(E phi) = E(F phi)` after collecting the correction terms.
-The remaining cosine-side condition is therefore bookkeeping on top of two proved identities rather
-than a fresh analytic theorem.
+Collecting the two correction terms completes the intertwining, which is now a theorem:
+
+```text
+coPoissonCorrected f c
+  = sum_{n>=1} f(c n) + f(0)/2 - (F f)(0)/(2c),
+coPoisson_intertwine
+  : c * coPoissonCorrected f c = sum_{k>=1} (F f)(k / c).
+```
+
+That is Burnol's intertwining in usable form: the corrected multiplicative sum of `f` at scale `c`,
+rescaled by `c`, is the *uncorrected* multiplicative sum of `F f` at the reciprocal scale.  The two
+archimedean corrections `f(0)/2` and `(F f)(0)/(2c)` are exactly what the folded Poisson identity
+produces, and applying the statement twice returns the involution.
+
+So the cosine-side condition of the landing statement rests on a proved identity: the co-Poisson sum
+of a seed and the co-Poisson sum of its transform are exchanged by scale inversion, which is what
+makes both of them constant on the aperture head when the seed is supported above it.
+
+The dictionary between the literal co-Poisson sum of the source structure and this multiplicative
+form is proved too:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonHeadConstant.lean
+
+coPoissonReciprocalSeed g v = g(1/v)/v,
+coPoissonRightSum_term_eq  : each term (1/n) g(t/n) is t^(-1) times the term
+                             of the plain multiplicative sum of the reciprocal seed at scale 1/t,
+burnolCoPoissonRightSum_eq_multiplicative
+  : for t > 0, the literal co-Poisson value equals
+    t^(-1) sum_{n>=1} G(n/t) - integral_{(0,infinity)} G,   with G the reciprocal seed.
+```
+
+The weight `1/n` and the correction `integral y^(-1) g(y^(-1)) dy` of the source definition are
+therefore exactly the plain multiplicative sum and half-line mass of `G`, which is the shape
+`coPoisson_intertwine` consumes.  No further translation is needed between the two presentations.
+
+The same module also gives the uniform truncation needed to treat the sum as an ordinary function:
+
+```text
+burnolCoPoissonRightSum_eq_finset_sum
+  : for |t| <= R the co-Poisson sum equals the fixed finite sum over Finset.range (ceil (R / b)).
+```
+
+So on every bounded region the co-Poisson sum *is* a finite sum of translates of the seed, with an
+index bound depending only on the region.  Measurability is read off that representation:
+
+```text
+measurable_burnolCoPoissonRightSum
+  : g measurable and supported in Icc b b^(-1) -> the co-Poisson sum is measurable.
+```
+
+The partial sums are finite sums of dilated copies of the seed, hence measurable, and they converge
+pointwise by the summability above, so the limit is measurable.  This matters because mathlib has no
+usable measurability lemma for a Banach-valued `tsum`; the finite/partial-sum representation avoids
+needing one.
+
+The same representation gives the uniform size bound:
+
+```text
+norm_burnolCoPoissonSum_le
+  : for a seed bounded by M and supported in Icc b b^(-1), and t /= 0,
+    || sum_{n>=1} (1/n) g(|t|/n) || <= ceil(|t|/b) * M / (|t| b).
+```
+
+Every contributing index exceeds `|t| b`, so each term is at most `M/(|t| b)`, and there are at most
+`ceil(|t|/b)` of them; the product is bounded uniformly in `t`.  So the co-Poisson sum of a bounded
+seed is a bounded measurable function, and what the `L^2` statement still needs is only the sharper
+`1/|t|` decay of the *difference* from the correction constant, which is the harmonic-window
+comparison already proved.
 
 Still outside the formal tree: an inhabitant of `BurnolCoPoissonSource` --- equivalently the single
 symmetrized witness --- and the transfer of the two-sided law to the co-Poisson quotient vectors
@@ -705,7 +774,11 @@ symmetrized witness --- and the transfer of the two-sided law to the co-Poisson 
 - [x] Lean: constant aperture head of the co-Poisson sum (first Sonine condition, unconditional)
 - [x] Lean: local finiteness, pointwise summability, and the contributing index window
 - [x] Lean: sharp harmonic-versus-logarithm window comparison (the `1/|t|` decay rate)
-- [x] Lean: even Poisson summation and the Fourier dilation rule (both inputs to the intertwining)
+- [x] Lean: even Poisson summation, the Fourier dilation rule, and the dilated multiplicative identity
+- [x] Lean: the co-Poisson intertwining `c * (corrected sum of f at c) = (sum of F f at 1/c)`
+- [x] Lean: dictionary between the literal co-Poisson sum and the multiplicative Poisson form
+- [x] Lean: uniform finite truncation of the co-Poisson sum on bounded regions
+- [x] Lean: measurability and uniform boundedness of the co-Poisson sum
 - [ ] Lean: an inhabitant of `BurnolCoPoissonSource`, i.e. one even `u` with `u + F u` constant on an aperture head and nonvanishing evaluation
 - [ ] Lean: transfer of `(12)`,`(13)` to the co-Poisson quotient vectors `y_{rho,N}`
 

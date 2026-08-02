@@ -1,3 +1,4 @@
+import Mathlib.NumberTheory.Harmonic.Bounds
 import Mathlib.NumberTheory.Harmonic.EulerMascheroni
 
 /-!
@@ -57,5 +58,30 @@ theorem abs_harmonic_window_sub_log_le {m N : ℕ} (hm : 1 ≤ m) (hN : 1 ≤ N)
     ring
   rw [hsplit]
   exact le_trans (abs_sub _ _) (add_le_add h1 h2)
+
+
+/-! ## Window sums of reciprocals -/
+
+theorem harmonic_eq_sum_Ioc (n : ℕ) :
+    (harmonic n : ℝ) = ∑ i ∈ Finset.Ioc 0 n, ((i : ℝ))⁻¹ := by
+  have hset : Finset.Ioc 0 n = Finset.Icc 1 n := rfl
+  rw [hset, harmonic_eq_sum_Icc, Rat.cast_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  push_cast
+  ring
+
+/-- A window sum of reciprocals is a difference of harmonic numbers. -/
+theorem sum_Ioc_inv_eq_harmonic_sub {m N : ℕ} (h : m ≤ N) :
+    ∑ n ∈ Finset.Ioc m N, ((n : ℝ))⁻¹ = (harmonic N : ℝ) - harmonic m := by
+  have hsplit := Finset.sum_Ioc_consecutive (fun i : ℕ => ((i : ℝ))⁻¹) (Nat.zero_le m) h
+  rw [harmonic_eq_sum_Ioc, harmonic_eq_sum_Ioc]
+  linarith [hsplit]
+
+/-- **Window sum versus logarithm.**  A sum of reciprocals over `(m, N]` differs from the logarithm
+of the endpoint ratio by at most the sum of the reciprocals of the endpoints. -/
+theorem abs_sum_Ioc_inv_sub_log_le {m N : ℕ} (hm : 1 ≤ m) (h : m ≤ N) :
+    |(∑ n ∈ Finset.Ioc m N, ((n : ℝ))⁻¹) - (Real.log N - Real.log m)| ≤ 1 / N + 1 / m := by
+  rw [sum_Ioc_inv_eq_harmonic_sub h]
+  exact abs_harmonic_window_sub_log_le hm (le_trans hm h)
 
 end HTGeometry

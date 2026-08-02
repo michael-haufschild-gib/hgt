@@ -5,7 +5,7 @@
 - **Type:** MEDAL-SCALE CONJECTURE / UNIFIED HT OBSTRUCTION OBJECT
 - **Scientific status:** `[CONJECTURE] [FINITE-STAGE ACYCLICITY PROVED] [CAPACITY-FIELD REALIZATION/COVARIANCE PROVED] [POSITIVE-SCALE RIGIDITY FORMALIZED] [NOT AN RH RESULT]`
 - **Parent theorems:**
-  `../2-fully-proven/new_scientific_knowledge/hypertranscendental-clock-incompressibility.md`,
+  `../3-formalized/new_scientific_knowledge/ht/hypertranscendental-clock-incompressibility.md`,
   `../2-fully-proven/new_scientific_knowledge/differential-variational-building-balance-law.md`
 - **Statement:** The universal positive linearized object of a hypertranscendental realization is
   its scale-valued capacity field: the building-valued clock-capacity path descended over the
