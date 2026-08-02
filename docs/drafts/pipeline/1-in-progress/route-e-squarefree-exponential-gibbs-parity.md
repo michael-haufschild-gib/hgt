@@ -905,48 +905,78 @@ Put
 M_fri(X,Y)=sum_(n<=X, P+(n)<=Y) mu(n).
 ```
 
-`[PUBLISHED THEOREM; PROJECT BRIDGE]` Fix a noninteger `u>1` and set `Y=X^(1/u)`.
-Corollary 1.3(i) of de la Bretèche--Tenenbaum, applied to `f=mu` and zeta exponent
-`z=-1`, gives
+`[PUBLISHED THEOREM; CORRECTED PROJECT EXTRACTION]` Fix `1<u<2` and set
+`Y=X^(1/u)`.  For `f=mu`, the zeta exponent in de la Bretèche--Tenenbaum is `z=-1`,
+so their parameters are `m=1`, `m_z=-1`, and `theta_z=0`.  Crucially, their
+Definition (1.28) makes the leading profile
 
 ```text
-M_fri(X,Y) = X/(log Y)^2 {phi_(-1)(u)+O_u(1/log Y)}.       (G46j)
+psi_(-1)=phi_(-1)^(m+1)=phi_(-1)'',
 ```
 
-Here `phi_(-1)` is the right-continuous delay solution
+not `phi_(-1)` itself.  Theorem 1.2 and Corollary 1.3(i) therefore give
+
+```text
+M_fri(X,Y) = X/(log Y)^2 {psi_(-1)(u)+O(1/log Y)}.         (G46j)
+```
+
+The delay solution obeys
 
 ```text
 v phi_(-1)'(v)=phi_(-1)(v-1),   phi_(-1)(v)=1 on 0<v<=1. (G46k)
 ```
 
-It is strictly positive: positivity on `(0,1]` and `(G46k)` propagate inductively across every
-unit interval.  Consequently
+For `1<u<2`, this gives
 
 ```text
-                    M_fri(X,X^(1/u)) asymp_u X/log^2 X,   (G46l)
+phi_(-1)(u)=1+log u,     psi_(-1)(u)=phi_(-1)''(u)=-1/u^2.
 ```
 
-with positive leading sign.  This is far larger than `X^(1/2+epsilon)` for every fixed
-`epsilon<1/2`.  The hypotheses of the cited theorem are literal here:
+Also `a_0(mu)=1`, since
+`s^(-1)/((1+s)zeta(1+s))=1+O(s)`.  Since `log Y=log X/u`, the aperture dependence
+cancels exactly:
+
+```text
+M_fri(X,X^(1/u))
+  = -X/log^2 X + O(X/log^3 X).                            (G46l)
+```
+
+The expansion remains uniform on the Route E approach `u->2-`: below `2`, the previous integer
+delay is `1`, so the theorem's distance condition stays bounded away from zero.  The hypotheses
+of the cited theorem are literal here:
 `sum mu(n)n^(-s)=zeta(s)^(-1)` has analytic factor `B(s)=1`, and `mu^2` admits a standard
-positive divisor-function majorant.  Fixed noninteger `u` eventually lies away from the theorem's
-integer-delay exceptional neighborhoods.
+positive divisor-function majorant.
+
+The profile itself has a quantized seam jump.  On `2<u<3`,
+
+```text
+phi_(-1)'(u)=(1+log(u-1))/u,
+```
+
+so `psi_(-1)(2-)=-1/4` and `psi_(-1)(2+)=+1/4`.  Thus the raw profile jump is
+`1/2`, while the normalized profile `u^2 psi_(-1)(u)` jumps from `-1` to `+1`.
+At `u=2` the published expansion includes its explicit `U_J` boundary correction; this is a
+profile jump, not a claimed discontinuity of the arithmetic sum.
 
 Source: [de la Bretèche--Tenenbaum, *Friable averages of complex arithmetic functions*,
-Corollary 1.3](https://tenenb.perso.math.cnrs.fr/PPP/Friable-complex.pdf).
+Theorem 1.2 and Corollary 1.3](https://arxiv.org/abs/2305.06486).
+Full corrected extraction:
+`../2-fully-proven/new_scientific_knowledge/route-e-mobius-friable-u2-seam-charge.md`.
+Lean formalizes the elementary profile identities in
+`MobiusFriableIntegerSeamProfile.lean`.
 
 `[FALSIFIED: FRIABLE-SIFTED SPLIT SOURCE]` No proof may assign the fixed-power friable sector an
 independent strict-half bound and then transport only the rough complement.  The friable sector
-has a deterministic near-linear signed bias.  Any successful source must cancel that bias against
-non-friable mass across macroscopic edges, or exploit the full integer-delay seam before taking
-absolute values.
+has the deterministic negative near-linear bias `(G46l)`.  Any successful source must cancel
+that bias against the positive non-friable mass across macroscopic edges, or exploit the full
+integer-delay seam before taking absolute values.
 
 This identifies the next exact hard object.  The critical Route E aperture has
-`log N/log z=2-o(1)`, so it approaches the integer seam `u=2`, precisely where the uniform
-expansion `(G46j)` acquires boundary correction terms.  The zero/one-large-prime comparison is
-therefore not a sum of two independently small sectors: it is the seam cancellation between the
-positive friable delay profile and its one-large-prime correction.  PNT-scale theory cancels the
-algebraic main profile but leaves a zero-free-region remainder far above `N^(1/2+epsilon)`.
+`log N/log z=2-o(1)`, so it approaches the integer seam `u=2` from the left.  The
+zero/one-large-prime comparison is not a sum of two independently small sectors: it is the seam
+cancellation between the universal charge `-N/log^2 N` and its positive one-large-prime
+correction.  PNT-scale theory cancels these algebraic main charges but leaves a
+zero-free-region remainder far above `N^(1/2+epsilon)`.
 Square-root control of this beyond-all-orders seam remainder remains `OPEN-SOURCE-001`; renaming
 it “friable cancellation” would be theatre.
 
@@ -1136,6 +1166,35 @@ first-breadth phenomenon: the divisor transform of `mu(n) omega(n)` is supported
 and the corresponding `1/n` series has PNT-level cancellation.  That theorem controls one Wold
 normal derivative, not the singular unit response across all breadths required here.  It therefore
 supports the axis diagnosis but does not supply the conjectured orientation.
+
+#### Updated source-category audit: scalar phase nodes cannot carry the hard face
+
+`[PAPER- AND LEAN-PROVED NO-GO]`  The updated modular-superselection paper closes the formerly
+surviving infinite one-prime phase-node tower in the global prime-clock quotient.  Combining that
+result with `(G46x)` gives a sharper Route E theorem.  The canonical hard-face profile is
+
+```text
+d(p,e)=p^(-1/2)  if e=0,
+d(p,e)=0         if e>=1.                               (G46y)
+```
+
+Every rational-prime ray is active, so its class is nonzero modulo finite-prime Euler profiles.
+At any nonzero carrier frequency, however, prime-logarithm independence forces every prime-power
+phase-node profile to have active prime-base support of cardinality at most one; the updated
+quotient theorem then makes its global class zero.  Therefore `(G46y)` cannot be realized by a
+scalar phase-node multiplier.  This uses no boundedness, finite-depth, or finite-Rees hypothesis:
+an infinite one-prime tower is still local Euler data and cannot orient Route E's all-prime
+breadth current.
+
+The exact survivor is narrower than the preceding conjecture: a valid source must couple
+infinitely many prime rays outside scalar prime-power phase-node screening, through
+non-prime-power singular support, a relation-valued breadth correspondence, reflection-breaking
+pre-scalar transport, or an ordinary-lattice/co-Poisson global law.
+
+Full proof:
+`../2-fully-proven/new_scientific_knowledge/route-e-depth-zero-prime-clock-phase-node-no-go.md`.
+Lean:
+`MobiusDepthZeroPrimeClockPhaseNodeNoGo.lean`.
 
 #### Beurling firewall: local prime geometry is not enough
 
@@ -1573,12 +1632,13 @@ Lean modules:
   `z^(1+o(1))=N^(1/2+o(1))` support.  The exact gap law is the positive survivor; Route E remains
   open and any replacement transport must permit macroscopic friable edges or provide an
   independent signed friable cancellation theorem.
-- 2026-08-01 — rejected the latter sectorwise repair.  De la Bretèche--Tenenbaum's complex
-  friable-average expansion at zeta exponent `-1` gives a positive
-  `X/(log Y)^2 phi_(-1)(u)` main term for the `Y=X^(1/u)`-smooth Möbius sum at fixed
-  noninteger `u`.  Friable bias must be cancelled across the smooth/rough seam, not bounded
-  separately.  Critical aperture approaches the integer seam `u=2`; strict-half control of its
-  beyond-all-orders zero/one-sector remainder is still literal `OPEN-SOURCE-001`.
+- 2026-08-01 — rejected the latter sectorwise repair.  A primary-source re-audit corrected the
+  specialization of de la Bretèche--Tenenbaum at zeta exponent `-1`: their leading profile is
+  `psi_(-1)=phi_(-1)''`, not `phi_(-1)`.  For `1<u<2` it gives the universal negative main
+  charge `-X/log^2 X`, exactly independent of `u`; its normalized profile jumps from `-1` to
+  `+1` at the integer seam.  This charge must be cancelled against the positive one-large-prime
+  sector, not bounded separately.  Strict-half control of the localized zero/one-sector
+  remainder is still literal `OPEN-SOURCE-001`.
 - 2026-08-01 — completed the first exact provider bridge from Route E to the supplied
   Gamma/co-Poisson source.  Adjoining every higher prime power with coefficient `1/k` changes the
   zero/one boundary by at most `1/(xz)=O(x^(-1/2))` on the critical aperture, hence preserves the
@@ -2017,16 +2077,17 @@ This pointwise observation is not yet `(G64)`.  Four hard gates remain.
    repeated use of one target is charged by \(q(n)\le1\).
 3. Integers with a bounded token, and the thin upper strip where a replacement crosses the
    truncation, need a separate first-order or absolute residual of strict-half size.
-4. The deterministic positive friable bias forbids covering the friable sector by internal
+4. The deterministic negative friable charge forbids covering the friable sector by internal
    rectangles alone.  The cover must include rectangles crossing the zero/one-large-prime seam;
-   otherwise it would contradict `(F2)`.
+   otherwise it would contradict `(G46j)`--`(G46l)`.
 
 `[CONJECTURE: SECOND-ORDER-WOLD-RECTANGLE-CAPACITY]`  On the critical Route E schedule, the fixed
 hypergraph generated by two independent square-root-scale \(E_3/E_4\) token replacements has
 nonnegative rectangle weights with vertex load at most one for which the right side of `(G64)` is
 \(O_\varepsilon(N^{1/2+\varepsilon})\).  Rectangle admission must be defined before inspecting
 the signed total, must retain literal factor coprimality and the zero/one-large-prime boundary,
-and must carry the positive friable delay profile across that seam.
+and must carry the negative zero-large-prime charge and positive one-large-prime charge across
+that seam before cancellation.
 
 This is a concrete realization of `DEPTH-ZERO-WOLD-BREADTH-SEAM-ORIENTATION`: each rectangle is
 a second exterior difference across two Wold labels, and cofinal capacity uses unbounded breadth
@@ -2042,7 +2103,8 @@ Hostile audit:
   mandatory.
 - Pointwise \(E_3/E_4\) existence is not a capacity theorem.  A valid proof must control both
   row supply and corner co-degree.
-- Sectorwise friable rectangle coverage is false by `(F2)`; cross-seam capacity is mandatory.
+- Sectorwise friable rectangle coverage is false by `(G46j)`--`(G46l)`; cross-seam capacity is
+  mandatory.
 - No literature collision was found for multiplicative Möbius rectangle transport with the
   mixed exponential cost `(G62)` or its Route E square-root token coupling.  Mixed finite
   differences and almost-prime short-interval supply are classical ingredients; the combined
@@ -2118,8 +2180,9 @@ J_{k,X}(R)=
 \]
 
 Equation `(G69)` makes this exactly minus the complementary outside-corner sum.  After weighting
-and aggregation, \(J_{0,X}\) must reproduce the positive friable delay profile and \(J_{1,X}\)
-its negative one-large-prime correction; only their sum receives the mixed second-order bound.
+and aggregation, \(J_{0,X}\) must reproduce the normalized friable charge \(-1\) and
+\(J_{1,X}\) the one-large-prime charge \(+1\); only their sum receives the mixed second-order
+bound.
 This identifies a new mandatory gate:
 
 `[CONJECTURE: CO-MOVING-RECTANGLE-SEAM-FLUX]` Construct a source-fixed, capacity-bounded family
@@ -3160,11 +3223,20 @@ x\cdot O(X)\cdot H=O(H)=X^{1/2+o(1)}.
 \]
 
 Thus the prime anchor was not an isolated sparse victory: every fixed lower deviation from normal
-Wold breadth is now unconditionally transported.  The remaining physical cube-capacity source
-is confined to
+Wold breadth is now unconditionally transported.  A symmetric Chernoff audit also removes every
+fixed upper deviation.  For fixed \(c_+>1\), Shiu applied to
+\(c_+^{\omega(n)}\) gives
 \[
-\omega(n)\ge c\log\log n
-\quad\text{for every fixed }c<1,
+\#\{X<n\le X+H:\omega(n)\ge c_+\log\log X\}
+\ll_{c_+}H(\log X)^{-I(c_+)},
+\quad I(c_+)=1-c_++c_+\log c_+>0.
+\tag{G139a}
+\]
+The same \(H/\log\log X\) opposite-sign reservoirs therefore transport the union of any fixed
+lower and upper breadth tails.  The remaining physical cube-capacity source is confined to exact
+normal order:
+\[
+\frac{\omega(n)}{\log\log n}\longrightarrow1
 \tag{G141}
 \]
 plus the sectorwise co-moving seam flux.  It is still positive density and is not
@@ -3172,6 +3244,10 @@ plus the sectorwise co-moving seam flux.  It is still positive density and is no
 
 Full dependency-closed proof and novelty audit:
 `../2-fully-proven/new_scientific_knowledge/route-e-growing-reciprocal-marker-low-breadth-transport.md`.
+Two-sided extension:
+`../2-fully-proven/new_scientific_knowledge/route-e-two-sided-off-normal-wold-breadth-transport.md`.
+Lean rate certificate:
+`MobiusWoldBreadthTwoSidedDeviationRate.lean`.
 
 - 2026-08-01 — removed the fixed-block ceiling from reciprocal-marker transport.  The exact
   \(4^k\) fibre growth cancels against the \(2^{-k}\) cofactor-scale exceptional count, giving
@@ -3179,3 +3255,129 @@ Full dependency-closed proof and novelty audit:
   \(H/\log\log X\).  Combining it with Shiu's optimized lower-tail law closes every
   \(\omega(n)\le c\log\log n\), \(c<1\), sector at strict-half cost.  Remaining capacity is now
   normal-order/high Wold breadth, not all composites.
+- 2026-08-01 — applied the same fixed-tilt Shiu argument above normal order.  Both fixed breadth
+  tails are \(o(H/\log\log X)\), so the reciprocal-marker reservoir transports their union.
+  Remaining physical capacity is confined to \(\omega(n)/\log\log n\to1\), not the upper tail.
+
+## Central normal-order audit: fixed Wold moments are parity-blind
+
+`[PAPER- AND LEAN-PROVED NO-GO / POSITIVE CLASSIFICATION]`  The two-sided marker theorem leaves
+only \(\omega(n)/\log\log n\to1\).  Finite Wold-moment closure nevertheless cannot orient this
+central band.  For fixed \(d\), put \(n=d+1\), choose any central layer \(r\), and define
+\[
+c_k=(-1)^{n-k}\binom nk,\qquad 0\le k\le n.             \tag{G142}
+\]
+For every polynomial \(P\) with \(\deg P\le d\),
+\[
+\sum_{k=0}^n c_kP(r+k)=0,                              \tag{G143}
+\]
+because this is \(\Delta^nP(r)\).  Möbius parity behaves oppositely:
+\[
+\sum_{k=0}^n c_k(-1)^{r+k}
+=(-1)^{n+r}2^n\ne0.                                   \tag{G144}
+\]
+Splitting positive and negative coefficients and normalizing by \(2^{n-1}\) gives two positive
+probability measures on the same \(n+1\) adjacent breadth layers.  They have identical moments
+through degree \(d\), but their parity expectations are exactly \(+1\) and \(-1\).
+
+Taking \(P=1\) in `(G143)` gives zero total packet mass.  The source-horizon paper's bounded
+label-blind factorization law therefore kills this packet after breadth fusion, whereas `(G144)`
+detects it maximally.  This is a literal Route E separation defect, not an analogy: parity must be
+read while adjacent Wold labels remain distinct.
+
+This obstruction is sharp in polynomial order.  Any polynomial agreeing with parity on
+\(n+1\) consecutive layers has degree at least \(n\), since otherwise `(G143)` would make its
+packet response zero while `(G144)` makes it nonzero.  Lagrange interpolation supplies degree at
+most \(n\).  Exact polynomial parity reading therefore costs order exactly equal to resolved
+breadth width.  Moreover
+\[
+\sum_{k=0}^n c_k(r+k)^n=n!,                            \tag{G145}
+\]
+so after normalizing the two sign measures and the breadth coordinate by \(L\), any degree-\(n\)
+reader returning parity must have leading coefficient
+\[
+|a_n|={2^nL^n\over n!}\ge2^n\qquad(n\le L).             \tag{G146}
+\]
+The surviving growing-order moment source is therefore exponentially ill-conditioned in breadth
+resolution, exactly the singular/nonclosable category selected by the updated source law.  But it
+is not over budget.  For a diagonal central window \(n=o(L)\), Stirling gives
+\[
+\log {2^nL^n\over n!}
+=n\log {2eL\over n}+O(\log n)=o(L),
+\tag{G147}
+\]
+so the exact conditioning is \((\log X)^{o(1)}=X^{o(1)}\).  A cofinally growing Wold reader is
+therefore topologically singular yet quantitatively compatible with strict-half Gibbs capacity.
+Conditioning alone cannot retire this survivor.  But its first breadth seam is rigid.  If a
+degree-\(n\) polynomial \(Q\) agrees with parity on \(r,\ldots,r+n\), then
+\[
+Q(r+n+1)
+=(-1)^{r+n+1}(1-2^{n+1}),                              \tag{G148}
+\]
+so its adjacent-layer error is exactly
+\(-(-1)^{r+n+1}2^{n+1}\).  A single global moment interpolant is therefore closed.  Local patching,
+however, has no interior scalar seam: \(Q_r\) and \(Q_{r+1}\) both equal parity on their \(n\)
+common integral layers.  Their polynomial extensions differ exactly by the rank-one channel
+\[
+Q_{r+1}(t)-Q_r(t)
+={(-1)^{r+n+1}2^{n+1}\over n!}
+  \prod_{j=1}^n(t-r-j).                                \tag{G149}
+\]
+On integral exterior layers,
+\[
+\prod_{j=1}^n(t-r-j)
+=n!\binom{t-r-1}{n},                                  \tag{G150}
+\]
+Moreover adjacent transitions form an exact additive coboundary:
+\[
+\sum_{j=0}^{m-1}\bigl(Q_{r+j+1}-Q_{r+j}\bigr)
+=Q_{r+m}-Q_r.                                          \tag{G151}
+\]
+Every internal scalar seam therefore cancels algebraically; only endpoint readers survive a
+finite patch chain.  This corrects the earlier conjectural status of seam cancellation.
+Equation `(G150)` interfaces with the existing binomial incidence lift, but representation labels
+still cannot increase physical Hall capacity.  Remaining problem is not polynomial gluing: it is
+realization of retained labels by a physical ordinary-integer relation, together with the
+independent integer-delay cutoff flux.
+
+`[CONJECTURE: SOURCE-POINTED-BIFILTERED-CENTRAL-HALL]`  Let
+\(L=\log\log X\).  Choose source-defined breadth patches of width \(n(X)=o(L)\) covering the
+remaining \(\omega=(1+o(1))L\) sector, with a nonnegative partition of unity supported inside the
+patches.  Retain the paired source grade
+\[
+\bigl(\omega(n),\,M(n)=\max_pv_p(n)\bigr)
+\]
+and the physical integer identifier throughout; neither marginal multiset nor any one-parameter
+additive compression is admissible under the updated source-horizon rank-two theorem.  On each
+patch use the unique degree-\(n\) parity reader and the proved coboundary `(G151)`.  Construct,
+from ordinary factorization/additive/co-Poisson data fixed before any partial sum or divisor is
+observed, a physical fractional cube relation \(R_X\) such that:
+
+1. integer row load and incoming corner co-degree are at most one after normalization;
+2. for every \(H=X^{1/2+o(1)}\) cell and every integer interval
+   \(I=[a,b]\) inside it, central unmatched source load in \(I\) is at most capacity of its
+   **physical** opposite-parity neighbor set in \((a,b+H]\), i.e. exact interval Hall criterion
+   `(G100)` holds for \(R_X\);
+3. the same source-pointed relation realizes the normalized friable/one-large-prime cutoff flux
+   `(G71)` rather than conserving both sectors separately;
+4. outer breadth-patch endpoints land in fixed off-normal sectors already covered by
+   `(G139)`--`(G140)`, and total mixed displacement has Gibbs cost \(X^{1/2+o(1)}\).
+
+Condition 2 is a concrete expansion theorem for a predeclared physical relation, not the
+RH-bearing prefix-energy bridge `(G114)` and not a restatement in terms of \(M(x)\).  The
+conjecture is false if incidence labels are counted without physical normalization, if two source
+grades are unpaired, if one global interpolant is used, or if `(G151)` is replaced by
+absolute-value seam counting.  Its new content is local Hall anti-concentration for actual
+central ordinary integers jointly with the integer-delay cutoff seam; polynomial patch
+compatibility is now proved.
+
+Thus no fixed finite panel of polynomial Wold statistics can distinguish the literal squarefree
+Möbius sign, even after localization to consecutive normal-order layers.  A surviving breadth
+source must have order growing cofinally with the aperture, retain an exact non-polynomial parity
+coordinate, or be singular/relation-valued before scalarization.  This theorem is an
+information-source no-go, not an arithmetic cancellation estimate.
+
+Full proof:
+`../2-fully-proven/new_scientific_knowledge/route-e-central-wold-finite-moment-parity-blindness.md`.
+Lean:
+`MobiusWoldFiniteMomentParityBlindness.lean`.

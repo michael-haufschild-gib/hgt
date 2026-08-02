@@ -291,9 +291,10 @@ bound.  This proves the transport claim.
 
 ## Hostile audit
 
-1. **This does not prove RH.**  The matching covers only the strict
-   lower-tail breadth sector `(9)`.  The normal-order and upper-tail sector
-   still has positive density.
+1. **This does not prove RH.**  The matching proved on this card covers the strict
+   lower-tail breadth sector `(9)`.  The later two-sided extension
+   `route-e-two-sided-off-normal-wold-breadth-transport.md` also removes fixed upper deviations,
+   but the central normal-order sector still has positive density.
 2. **Growing fibres were charged.**  The map
    \(p\mapsto\lfloor X/p\rfloor\) has size \(O(4^k)\), not \(O(1)\), in a
    growing block.  Equation `(27)` is the required cancellation with the
@@ -328,4 +329,3 @@ consequence `(34)`--`(36)`.
 Inputs are classical or published; their combination and Route E extraction
 appear new.  External priority is unverified.  The result is recorded as new
 scientific synthesis, not as a closure of `OPEN-SOURCE-001`.
-

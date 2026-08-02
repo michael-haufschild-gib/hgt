@@ -720,23 +720,24 @@ proposed `z^(1+o(1))=N^(1/2+o(1))` support cannot work.  The exact gap theorem i
 paper- and Lean-proved on the Route E card; the density input is a published friable-number
 asymptotic, not a Möbius cancellation assumption.
 
-A separate friable-sector repair is also impossible.  De la Bretèche--Tenenbaum's friable
-Selberg--Delange theorem, specialized to `f=mu`, proves for fixed noninteger `u>1` and
-`Y=X^(1/u)` that
+A separate friable-sector repair is also impossible.  A primary-source re-audit of
+de la Bretèche--Tenenbaum's friable Selberg--Delange theorem corrects the specialization to
+`f=mu`: for `1<u<2`, `Y=X^(1/u)`, their leading profile is
+`psi_(-1)=phi_(-1)''`, not `phi_(-1)`, and
 
 ```text
 sum_(n<=X, P+(n)<=Y) mu(n)
-= X/(log Y)^2 {phi_(-1)(u)+O_u(1/log Y)},
+= -X/log^2 X + O_u(X/log^3 X).
 ```
 
-where `v phi_(-1)'(v)=phi_(-1)(v-1)` and `phi_(-1)=1` on `(0,1]`; hence the leading
-profile is positive.  The power-smooth signed sector therefore has size
-`asymp_u X/log^2 X`, not strict-half size.  Any successful source must cancel this
-deterministic bias against non-friable mass across a macroscopic seam.  Critical Route E has
-`log N/log z=2-o(1)`, an integer-delay boundary where the one-large-prime term supplies the
-necessary profile correction.  Existing PNT/zero-free-region estimates control that seam only
-far above square-root scale; its beyond-all-orders strict-half remainder is still
-`OPEN-SOURCE-001`.
+Indeed `phi_(-1)(u)=1+log u` and `psi_(-1)(u)=-1/u^2`; the relation
+`log Y=log X/u` cancels the aperture dependence exactly.  The normalized profile jumps from
+`-1` to `+1` at `u=2`.  The power-smooth signed sector therefore has universal negative
+charge `-X/log^2 X`, not strict-half size.  Any successful source must cancel it against the
+positive one-large-prime charge across a macroscopic seam.  Critical Route E has
+`log N/log z=2-o(1)` and approaches that boundary from the left.  Existing
+PNT/zero-free-region estimates control the cancellation only far above square-root scale; its
+localized strict-half remainder is still `OPEN-SOURCE-001`.
 
 The corresponding largest-prime renewal has a sharp exponent barrier.  For fixed `1<u<2`,
 `Y=X^(1/u)`, its positive operator on an `X^alpha` weighted sup norm has exact norm
@@ -782,6 +783,18 @@ breadth on the depth-zero prime face, before its unit codiagonal is scalarized.
 `MobiusGammaCoPoissonDepthZeroReduction.lean` proves this axis separation unconditionally.  The
 publication-ready superselection paper supplies finite source decomposition and the
 Gamma/co-Poisson comparison, but explicitly does not supply the remaining breadth orientation.
+
+The updated superselection theorem now removes one singular scalar escape from Route E as well.
+The canonical depth-zero profile is `d(p,0)=p^(-1/2)` on every prime ray and zero at positive
+depth, so it is nonzero modulo finite-prime Euler profiles.  A nonzero-frequency phase-node
+prime-power profile has active prime-base support at most one and is quotient-zero even when that
+one tower has infinite valuation depth and unbounded norm.  Hence scalar phase-node screening
+cannot carry the hard all-prime Route E face.  The surviving provider must use non-prime-power
+singular support, a relation-valued breadth channel, reflection-breaking pre-scalar transport, or
+an ordinary-lattice/co-Poisson law coupling infinitely many prime rays.
+Paper proof:
+`../2-fully-proven/new_scientific_knowledge/route-e-depth-zero-prime-clock-phase-node-no-go.md`.
+Lean: `MobiusDepthZeroPrimeClockPhaseNodeNoGo.lean`.
 
 A new Beurling firewall now rules out treating that breadth orientation as a consequence of local
 prime geometry.  Diamond--Montgomery--Vorhauer's discrete generalized-prime system retains
@@ -871,7 +884,7 @@ delays and hides `OPEN-SOURCE-001` at the critical delay.
 
 The surviving target is `CO-MOVING-RECTANGLE-SEAM-FLUX`: rectangles live on an extended physical
 window, their sectorwise opposite-sign pairs cross the moving cutoff, and the induced cutoff
-fluxes realize the positive friable delay profile and negative one-large correction before their
+fluxes realize the normalized friable charge `-1` and one-large-prime charge `+1` before their
 sum receives the mixed bound.  Pointwise almost-prime supply does not construct that flux or
 control corner co-degree.
 
@@ -1666,14 +1679,98 @@ integral_(lambda_1)^(lambda_2)
  >log(R_Xi)-L_a(lambda_1).                              (G.0o)
 ```
 
+When both interval endpoints are below the Xi wall and an interior point is above it, the
+transport has a forced ordered turning pattern. There are
+`lambda_up<lambda_max<lambda_down` in the interval with
+
+```text
+D_a(lambda_up)<C_a(lambda_up),
+D_a(lambda_max)=C_a(lambda_max),
+C_a(lambda_down)<D_a(lambda_down),
+kappa_Xi<kappa_a(lambda_max).                           (G.0p)
+```
+
+This follows from the exact positive-factor law
+
+```text
+kappa_a'
+ =2E_a O_a/(E_a+O_a)^2 *
+   [E_a'/E_a-O_a'/O_a],                                (G.0q)
+```
+
+the extreme-value theorem, Fermat's theorem, and the mean-value theorem. Thus a genuine
+two-sub-target-endpoint excursion cannot have one-signed hazard: it must pass from credit
+domination through exact credit/debt balance to debt domination. Paper proof and unconditional
+Lean are in `SuzukiInteriorExcursionSpectralTurningPoint.lean`.
+
+The same `lambda_max` satisfies a third-resolvent wall. Let `pi_+` and `pi_-` be the probability
+measures obtained by tilting the literal parity measures by
+`1/(node-lambda_max)` and normalizing by `E_a(lambda_max)` and `O_a(lambda_max)`;
+write `X(u)=1/(u-lambda_max)`. Then
+
+```text
+E_a(lambda_max)/O_a(lambda_max)>R_Xi>81/4,
+E_a'(lambda_max)/E_a(lambda_max)
+ =O_a'(lambda_max)/O_a(lambda_max),
+Var_pi+(X)<=Var_pi-(X).                                 (G.0r)
+```
+
+Indeed, at normalized-mean balance,
+
+```text
+kappa_a''(lambda_max)
+ =4E_a O_a/(E_a+O_a)^2 *
+   [Var_pi+(X)-Var_pi-(X)] <= 0.                        (G.0s)
+```
+
+Thus an interior source proof must create a high-ratio stationary parity pair with equal tilted
+inverse-gap means and ordered dispersion, not merely positive integrated credit. The
+log-transform variance identity is classical; candidate novelty is its forced Suzuki/Xi
+incidence at the same literal credit/debt balance point. Paper proof and unconditional Lean are
+in `suzuki-parity-resolvent-transport-budget.md` and
+`SuzukiInteriorExcursionSpectralTurningPoint.lean`.
+
 This is measure-level, not a finite truncation. The four first/squared-resolvent integrability
 hypotheses imply integrability of the pair kernel. The named live source statement
 `SUZUKI-PARITY-SPECTRAL-TRANSPORT` is that cofinally either the bottom reflection cone (G.0c)
-holds or one literal interval pays (G.0o). It is an exact reformulation of the surviving source
+holds or one literal interval pays (G.0o). It is the exact within-Suzuki-carrier admission
 obligation, not its proof and not a new route. Paper proof and unconditional Lean are in
 `suzuki-parity-resolvent-transport-budget.md`,
 `SuzukiParityResolventTransportBudget.lean`, and
-`SuzukiParitySpectralPairTransport.lean`.
+`SuzukiParitySpectralPairTransport.lean`, with the forced turning law in
+`SuzukiInteriorExcursionSpectralTurningPoint.lean`.
+
+The source-horizon law adds a separate provenance gate. Let `E_src(rho)` be the injective
+mass-one high-exponent source and let `T_lambda` be any bounded linear source-to-parity family.
+If every `T_lambda` is label-blind, its full shift profiles at `rho` and `1-conj(rho)` are equal.
+No nonlinear downstream operation on those profiles—including hazard ratios, Jordan
+credit/debt, maxima, or (G.0o)—can recover the reflection distinction. Hence any bounded
+reflection-separating Suzuki carrier must be label-sensitive at some shift; otherwise the
+producer must leave the bounded category through singular, nonclosable, or relation-valued
+transport. This does not assert that Suzuki's literal source map factors through the shell frame,
+and does not exclude a genuinely nonlinear producer.
+
+The literal position torque now passes the faithful side of this gate. Its prime coefficient
+stream is exactly
+
+```text
+F_T(n)=n^(1/2) log(n) Lambda(n)(1-n^(-2))
+      =Lambda(n)log(n)[sqrt(n)-n^(-3/2)].               (G.0t)
+```
+
+It is supported on positive prime powers and is nonzero at every `p^(e+1)`, for every prime `p`
+and every depth `e`. The updated exact prime-clock theorem therefore makes its upper-end carrier
+hypertranscendental over every field obtained by adjoining the genuine coordinate, all
+finite-prime Euler germs, every finite-alphabet residue--valuation fusion carrier at every depth,
+and all their differential jets. Thus the position commutator is irreducibly global source data,
+not a local-Euler or post-fusion target fit. This authenticates torque provenance but supplies no
+missing parity sign: away from `E=O`, fixed `E,O,alpha-beta` still leaves the Hankel gate
+surjective onto `R`.
+
+Call the full conjunction `SUZUKI-SOURCE-POINTED-PARITY-TRANSPORT`: construct the parity profile
+from a predeclared arithmetic source, prove reflection separation before scalarization by a
+label-sensitive or singular mechanism, and prove the ground cone or (G.0o). A freely inhabited
+scalar parity profile, even one satisfying (G.0o), is source-provenance theatre.
 
 Paper proof and unconditional Lean are in
 `suzuki-ground-residue-polarization-selection.md` and
@@ -1714,6 +1811,12 @@ position produces the logarithmically weighted Mangoldt torque; its completed te
 an exact difference of Xi logarithmic curvatures, and the full source torque changes strict sign
 cofinally in both directions. A resolvent expansion promotes this observable to the actual
 deficiency anomaly for fixed aperture and sufficiently negative admissible shift.
+
+Moreover, the exact prime numerator is the source `(G.0t)`. Every prime ray is active at every
+valuation depth, so exact source--analytic correspondence proves its carrier hypertranscendental
+over complete local-Euler residue--valuation fusion. The torque is therefore a faithful global
+prime-clock observable. What fails below is not provenance but information content: one scalar
+commutator coordinate cannot determine the two independent parity tilt moments.
 
 This does not close (G.1). The exact source decomposition is
 
@@ -1816,8 +1919,13 @@ the Xi limit. It is
 
 ```text
 SUZUKI-SOURCE-SELECTION-AND-TRANSFER:
-on one cofinal aperture family, prove either the restricted-Weil bottom-reflection cone (G.0c)
-or the exact literal measure-level parity credit/debt budget (G.0o);
+on one cofinal aperture family, construct a predeclared source-pointed parity profile that
+separates reflection before invariant scalarization and is therefore label-sensitive or singular
+in every bounded linear realization;
+prove either the restricted-Weil bottom-reflection cone (G.0c)
+or the exact literal measure-level parity credit/debt budget (G.0o), with the forced
+credit--balance--debt turning pattern (G.0p) and stationary mean/variance wall
+(G.0r)--(G.0s) whenever both endpoints are sub-Xi;
 use its canonical greatest shifts to obtain source-admitted two-angle carriers;
 prove their first/second jets and meromorphic quotient converge to the Xi/de Branges target,
 thereby transporting the automatic finite wall g<=1 to AC-B^2>=0;
@@ -1830,7 +1938,9 @@ Paper proof and unconditional Lean are in `suzuki-two-jet-shifted-hankel-gate.md
 `SuzukiPositiveResolventParityNoGo.lean`, and
 `SuzukiPositiveSpectralResponseNoGo.lean`. The source torque and its resolvent promotion are in
 `suzuki-weil-position-torque-recurrence.md`, `SuzukiWeilPositionTorqueCurvature.lean`, and
-`SuzukiResolventPositionTorquePromotion.lean`.
+`SuzukiResolventPositionTorquePromotion.lean`. Its exact source-horizon irreducibility is in
+`suzuki-position-torque-prime-clock-irreducibility.md` and
+`SuzukiPositionTorquePrimeClockIrreducibility.lean`.
 
 None of this implies that every bounded functional of Suzuki's scalar screw data loses source
 orientation: scalar data can recover von Mangoldt coefficients and encode completed divisor.
@@ -1865,11 +1975,14 @@ therefore keeps Route G open.
 compact-limit program is dead, but the pole-compatible two-angle Livšic/Hermite--Biehler producer
 survives. BV/co-Poisson closure and polynomially conditioned finite-Rees reflected sewing are
 additional failed provider/source-realization subclasses. Any survivor must now stay in the strict
-Xi first-defect cone, prove cofinal source selection through either bottom-reflection fidelity
-(G.0c) or an interior excursion paying the exact signed pair budget (G.0o), retain a positive
-ground-leakage floor, and transport the automatic finite `g<=1` wall through a source-selected
-two-angle meromorphic limit to the exact safe-shift Hankel gate. Generic positive-resolvent parity
-or positive position-spectral response cannot supply the source projection or convergence.
+Xi first-defect cone, construct source-pointed reflection separation before scalarization, prove
+cofinal selection through either bottom-reflection fidelity (G.0c) or an interior excursion paying
+the exact signed pair budget (G.0o) and necessarily crossing the balance wall (G.0p), retain a
+positive ground-leakage floor, satisfy the high-ratio stationary mean/variance wall
+(G.0r)--(G.0s), and transport the automatic finite `g<=1` wall through a
+source-selected two-angle meromorphic limit to the exact safe-shift Hankel gate. Generic
+positive-resolvent parity, positive position-spectral response, or nonlinear postprocessing after
+bounded label-blind source transport cannot supply the source projection or convergence.
 Full closure requires either an unconditional source-selected two-angle limit and Xi/de Branges
 identification or a genuinely class-complete no-go for that meromorphic producer.
 
@@ -1899,7 +2012,8 @@ squared-distance bound `<16/85`; class-complete greatest-root selection from any
 interior excursion with non-target endpoints; exact integrated parity-resolvent hazard budget
 with threshold `R_Xi>81/4`; exact Suzuki
 second-jet/safe-shift-Hankel identification; cofinally two-signed literal position torque with
-deficiency-level promotion; sharp fixed-torque fiber classification; sharp normalized
+deficiency-level promotion and hypertranscendental prime-clock carrier beyond complete local-Euler
+residue--valuation fusion; sharp fixed-torque fiber classification; sharp normalized
 relative-tilt window `0<g<=1`; reciprocal-radial concavity calibration; the exact positive
 exponential spectral-response countermodel; and universal Gamma--Gaussian property-S completion.
 None proves either cofinal restricted-Weil selector branch, source-selected meromorphic
@@ -3150,6 +3264,43 @@ middle Hodge form. Remaining cup gate is now precise: construct Paugam pairing o
 one-collar endpoint-global cycle quotient by Meyer boundaries, then prove arithmetic/sheaf
 comparison, continuity, weight-one flow compatibility, nuclear closed-range descent, and zero
 middle radical.
+The literal Meyer spectral endpoint is now dependency-closed at every finite actual Xi divisor
+packet. Evaluation of all jets below the analytic multiplicities is jointly surjective for every
+finite set of distinct Xi points; its quotient flow is the exact direct sum of the corresponding
+Jordan packet flows. This is proved from a confluent Wronskian on literal all-weight Meyer
+sources, not from a divisor-indexed ambient space. The unrestricted full product of all Xi jets
+is nevertheless not source-admissible. Uniform closed-strip Fourier integration by parts gives
+\[
+ |\tau|\,|{\cal M}g(\sigma+i\tau)|
+ \le \int_{\mathbb R}e^{|t|}(|g(t)|+|g'(t)|)\,dt
+ \qquad(0\le\sigma\le1),
+\]
+so every positive superlevel of the zeroth-jet trace on actual Xi support is finite. In
+particular the constant full unit packet is not in the image. Repeated integration by parts gives
+the sharper all-orders law
+\[
+ |\tau|^n|{\cal M}g(\sigma+i\tau)|
+ \le\int_{\mathbb R}
+   \left|\partial_t^n(e^{\sigma t}g(t))\right|\,dt .
+\]
+Along actual Xi points with \(|\Im\rho_j|>j+1\), finite surjectivity supplies unit interpolants,
+but every such interpolant has order-\(n\) source cost \(>(j+1)^n\) for every \(n>0\).
+Thus finite synthesis is exact while every cofinal inverse-limit section is singular to every
+positive differential order. The full comparison target must be a decay-compatible
+nuclear/Fréchet packet image, not the raw divisor product. This matches the updated prime-source
+conservation theorem: a nonerasing conservative equivariant descent must retain source labels or
+be singular relative to canonical source norms. Meyer spectral multiplicity and
+Bondarenko--Radchenko--Seip global zeta-zero interpolation are credited prior art; novelty is
+restricted to the quantitative literal-Meyer cofinal cost wall and its exact finite/full
+admission synthesis. Lean modules:
+`DeningerMeyerXiSpectralInclusion`,
+`DeningerMeyerXiJetPacketSurjectivity`,
+`DeningerMeyerFiniteXiJetPacket`,
+`DeningerMeyerFullXiJetAdmissionBoundary`, and
+`DeningerMeyerXiCofinalSynthesisSingularity`; paper and audit:
+`pipeline/3-formalized/new_scientific_knowledge/deninger-meyer-finite-synthesis-cofinal-singularity-wall.md`.
+This closes the literal Meyer packetwise Xi-inclusion item, not the arithmetic source comparison
+or positive Hodge gate.
 Separately, an abstract
 symbol additive in every entry over a torsion group is torsion; a group generated by such symbols has
 zero real tensor product. This is not an instantiation of Milnor K-theory over an algebraic closure
@@ -3172,12 +3323,14 @@ closed range,
 continuity/sheaf compatibility of the all-degree
 pointwise Čech
 homotopy and its arithmetic-coefficient instantiation, a topology stronger than the escaping
-positive-time Poisson-energy product topology, an arithmetic bounded comparison into the completed
+positive-time Poisson-energy product topology and compatible with the now-proved all-orders
+literal-Meyer Xi trace decay, an arithmetic source comparison into the completed
 orthogonal Tate graph prime model with kernel exactly the closed middle boundaries, identification
 of the generic maximal diagonal phase generator with the
 arithmetic flow, strong continuity and generator identification for the Poisson semigroup, arithmetic
 cup/trace/flow/Hodge transport, nuclear almost-idempotence, middle-kernel vanishing, and
-source-to-Xi spectrum inclusion.
+identification of the already-closed literal Meyer Xi spectrum inclusion with the image of that
+arithmetic comparison.
 
 The generic contraction hypotheses are now instantiated unconditionally on
 `ℓ²(ℕ,ℝ)`: the unilateral shift is an eigenvector-free linear isometry, its range is
@@ -4612,6 +4765,90 @@ For \(h=\exp(\log X/\log\log X)\), this is
 \(O_c(H(\log X)^{-I(c)})\), so all such vertices admit disjoint opposite-sign first-order
 transport at total strict-half Gibbs cost.
 
-Route E's capacity frontier is now confined to normal-order and upper-tail breadth
-\(\omega(n)\ge(1-o(1))\log\log n\), plus the co-moving seam energy.  Full proof:
+The same fixed-tilt argument for every \(c>1\) gives the upper-tail bound with the identical
+positive rate \(I(c)=1-c+c\log c\).  Hence both fixed deviations are transported.  Route E's
+capacity frontier is now confined to exact normal order
+\(\omega(n)/\log\log n\to1\), plus co-moving seam energy.  No moving-tilt uniformity or
+quantitative Erdős--Kac window is claimed.  Full proofs:
 `../2-fully-proven/new_scientific_knowledge/route-e-growing-reciprocal-marker-low-breadth-transport.md`.
+`../2-fully-proven/new_scientific_knowledge/route-e-two-sided-off-normal-wold-breadth-transport.md`.
+Lean rate certificate: `MobiusWoldBreadthTwoSidedDeviationRate.lean`.
+
+## 2026-08-01 Route E frontier update: central Wold moment blindness
+
+Once both fixed breadth tails are transported, fixed-order Wold statistics still cannot orient
+the central survivor.  For any \(d\), the adjacent-layer packet
+\[
+c_k=(-1)^{d+1-k}\binom{d+1}{k}
+\]
+annihilates every polynomial in \(\omega\) of degree at most \(d\), while its literal
+squarefree-parity response is \((-1)^{d+1+r}2^{d+1}\).  Positive/negative splitting yields two
+probability laws on the same \(d+2\) consecutive normal-order layers with identical reported
+moments and opposite deterministic Möbius signs.
+
+Therefore every fixed finite Wold-moment producer is closed.  Remaining Route E source must use
+cofinally growing breadth order, an exact non-polynomial parity coordinate, non-prime-power
+singular support, or relation-valued pre-scalar transport.  The growing-order branch survives the
+budget audit sharply: on a central width \(n=o(L)\), \(L=\log\log X\), its exact leading
+conditioning \(2^nL^n/n!\) is \(\exp(o(L))=X^{o(1)}\).  It is nonclosable in source topology but
+affordable at strict-half scale.  Its first patch seam is nevertheless forced: a degree-\(n\)
+parity interpolant on \(n+1\) consecutive layers misses parity at the next layer by exactly
+\(2^{n+1}\).  Since that adjacent layer remains normal-order, one global interpolant is closed.
+Live source is now a co-moving, overlapping breadth-patch relation cancelling these seam charges
+before scalarization.  This is a source-information classification, not a Möbius bound.
+Paper:
+`../2-fully-proven/new_scientific_knowledge/route-e-central-wold-finite-moment-parity-blindness.md`.
+Lean: `MobiusWoldFiniteMomentParityBlindness.lean`.
+
+## 2026-08-01 Route J frontier update: phase-node local-Euler quotient closure
+
+The prime-power phase-node branch is now closed in the scalar global-source category.  Earlier
+arithmetic rigidity forced every nonzero-frequency phase-node multiplier onto at most one prime
+ray.  The exact source-resolution quotient kills every finite-prime-ray profile, so even an
+infinite one-prime tower satisfies
+
+\[
+[A]=0\quad\text{in}\quad
+\{\text{prime-power profiles}\}/\{\text{finite-prime-ray profiles}\}.
+\]
+
+For every finite-abscissa positive-prime-power profile, its Dirichlet carrier already belongs to
+the analytic field generated by the rational coordinate and all finite-prime Euler germs.  Thus
+the one-prime tower is literal local data, not a new global relative current.  No boundedness,
+finite-depth, finite valuation order, or finite-Rees hypothesis is used.
+
+Route J remains open on non-prime-power singular boundaries, reflection-breaking regular
+profiles, variable/nonidentical/higher-arity exact-four-change sources, and relation-valued or
+non-scalar pre-fusion carriers.  Paper:
+`../3-formalized/new_scientific_knowledge/route-j-phase-node-local-euler-quotient-no-go.md`.
+Lean:
+`XiCTaylorSignedPrimePhaseNodeLocalEulerNoGo.lean`.
+
+## 2026-08-02 Route J frontier update: prime-resolved semilocal grading profile
+
+The literal one-prime semilocal grading coefficient is now known beyond two-sided
+`k^(-3/4)` order. Along every geometric degree subsequence `k_j=c p^(2j)`, its intrinsically
+normalized absolute coefficient converges to the positive bilateral profile
+
+\[
+ F_p(c)=\sum_{z\in\mathbb Z}
+ \sqrt{2c}\,p^{-z}\exp(-4c\,p^{-2z}),
+ \qquad F_p(cp^2)=F_p(c).
+\]
+
+Positive and negative frequency offsets have independent summable geometric majorants, so the
+limit follows from Tannery's theorem and an exact finite-head/infinite-tail reindexing. Lean proves
+the atom limits, both dominations, full series limit, positivity, literal coefficient
+normalization, and discrete-scale invariance unconditionally.
+
+This is source-local input, not global closure. The updated exact source--analytic correspondence
+puts every fixed finite-prime family in the local-Euler quotient-zero class. Hence a global
+`J-SF5` survivor must retain these prime-labeled profiles through a cofinal infinite-label
+orthogonalization or use singular topology. Remaining hard step is to transfer the profiles into
+the cofinal Jacobi radii, evaluate Route J's exact critical residual, and derive or eliminate the
+source-selected Sonin boundary.
+
+Paper:
+`../3-formalized/new_scientific_knowledge/route-j-one-prime-geometric-grading-profile.md`.
+Lean:
+`SoninSemilocalGradingGeometricProfile.lean`.

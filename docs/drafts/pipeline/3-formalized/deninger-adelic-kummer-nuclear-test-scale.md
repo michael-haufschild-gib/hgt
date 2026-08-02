@@ -1,7 +1,7 @@
 # Adelic Kummer nuclear test scale
 
 - **ID:** `deninger-adelic-kummer-nuclear-test-scale`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Label:** `DAC_ADELIC_KUMMER_NUCLEAR_TEST_SCALE`
 - **Parent:** `deninger-adelic-kummer-gelfand-triple`
@@ -1604,3 +1604,201 @@ audit `propext, Classical.choice, Quot.sound`).
 
 - 2026-08-02 — The translation and rational-shift half of the card's `(6)` operator claim, proved
   in the sharp form: these operators are contractions, indeed isometries on the smooth factor.
+
+### The last operator of `(6)`: convolution by a test function
+
+`formal/GaloisForLFunctions/RHTower/DeningerSuspensionConvolution.lean` (11 declarations, axiom
+audit `propext, Classical.choice, Quot.sound`).
+
+- `deningerConvolve`, `_apply`, `_periodic`, `_contDiff` — convolution by a compactly supported
+  smooth function maps smooth periodic functions to smooth periodic functions: periodicity passes
+  through the integral, and smoothness is differentiation under the integral sign
+  (`HasCompactSupport.contDiff_convolution_left`).
+- `deningerConvolveOp`, `_apply` — convolution as a `ℂ`-linear operator on the smooth periodic test
+  space; additivity uses that the convolution integral exists (compact support against a locally
+  integrable function).
+- `deningerConvolve_coeff` — **the multiplier identity**: the `n`-th Fourier coefficient of the
+  convolution is `(∫ φ(s) e^{−2πins/T} ds)` times the `n`-th coefficient.  The proof is Fubini on
+  the product of the period interval with the line: the integrand is continuous and vanishes
+  outside the compact box `[0,T] × supp φ`, so it is integrable, and after the swap the inner
+  integral is the coefficient of a translate, which the translation law evaluates.
+- `deningerConvolve_multiplier_norm_le` — the multiplier is bounded by the `L¹` norm of `φ`, since
+  the kernel has modulus one.
+- `deningerSmoothSeminorm_convolve_le` — **convolution is bounded by `‖φ‖₁` on every coefficient
+  seminorm.**
+- `deningerSuspensionConvolve_bounded` — **convolution acts continuously on the suspension `(6)`**,
+  with norm at most `‖φ‖₁`, through the functoriality of the projective tensor seminorm.
+
+With the translation module, every operator the card lists on `(6)` — translation in `t`, the
+rational shifts `t ↦ t − log q`, and convolution by a compactly supported smooth test function —
+is now a proved bounded operator on the suspension.
+
+- 2026-08-02 — `(6)` is complete: the suspension is nuclear and all three of its declared operator
+  families act continuously on it.
+
+### Statement `(5)`, Galois half: automorphisms permute the places and preserve the scale
+
+`formal/GaloisForLFunctions/RHTower/DeningerGaloisPlaceAction.lean` (12 declarations) and
+`formal/GaloisForLFunctions/RHTower/DeningerGaloisInvariance.lean` (14 declarations), axiom audit
+`propext, Classical.choice, Quot.sound` throughout.
+
+Mathlib has the Galois action on the *infinite* places only.  The finite half is built here from
+the adic valuation upwards.
+
+- `deningerIdeal_map_symm`, `deningerIdeal_map_dvd`, `_iff` — an automorphism of a ring preserves
+  divisibility of ideals in both directions.
+- `deningerSpectrumComap`, `_asIdeal`, `_map` — the height-one prime pulled back along a ring
+  automorphism of a Dedekind domain.
+- `deningerIntValuation_comap` — **the adic valuation is transported**: `v_{σ⁻¹P}(r) = v_P(σ r)`.
+  The proof is the divisibility characterization `intValuation_le_pow_iff_dvd` applied at every
+  exponent, plus the fact that both values are of the form `exp(−n)`, so the two agree.
+- `deningerValuation_comap` — the same on the fraction field, by writing an element as a quotient.
+- `deningerAbsNorm_comap` — the absolute norm is invariant, because an automorphism induces an
+  isomorphism of the quotient rings; this is what makes the two adic absolute values share a base.
+- `deningerIntegerAut`, `deningerFinitePlaceComap`, `_apply` — **a field automorphism permutes the
+  finite places**, and the pulled back place is the composite `w ∘ τ`.
+- `deningerMult_comap` — the multiplicity of an infinite place is unchanged (`isReal_comap_iff`).
+- `deningerPlaceComap`, `deningerPlaceEquiv` — **a field automorphism permutes the place space of
+  the card**, infinite and finite parts together.
+- `deningerKummerFun_comap` — **the Kummer functions are Galois equivariant**:
+  `f_{τα} = f_α ∘ τ*`.
+- `deningerPlaceSum_comap` — hence every sum over the place space is invariant under the induced
+  permutation, so the mass of a test function is Galois invariant and the mass-zero condition `(5)`
+  is preserved.
+- `deningerHeightSum_galois`, `deningerL1Seminorm_galois` — **the Weil height and the `ℓ¹`, that is
+  the Kummer, norm are Galois invariant**, so the Galois maps act isometrically on the Banach step
+  of the scale.
+- `deningerLogHeight_galois` — the same for mathlib's `Height.logHeight₁`, a statement about
+  mathlib's own height that mathlib does not have.
+- `deningerKummerTest_galois` — the Kummer subspace `𝒮_Kum` is Galois stable.
+
+- 2026-08-02 — The Galois half of `(5)`: the action on the place space built from the adic
+  valuation up, and the invariance of the mass, the height and the Kummer norm.
+
+### Statement `(5)`, projection half: the field-norm projection
+
+`formal/GaloisForLFunctions/RHTower/DeningerTestPushforward.lean` (10 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `deningerPushFun`, `_eq_sum`, `_support`, `_mem`, `deningerPush`, `_apply` — **the fibrewise
+  projection of test functions along a map of discrete spaces**: the fibre sum of a test function
+  is a test function, and the projection is linear.  The fibre sums are finite sums because the
+  support is finite, and the support of the projection lies in the image of the support.
+- `deningerPush_mass` — **the projection preserves the mass**, by grouping a finite sum along the
+  fibres of the map (`Finset.sum_fiberwise_of_maps_to`).
+- `deningerPlaceRestrict`, `deningerPlacePush` — the arithmetic instance: restriction of places
+  along an extension of number fields, infinite places by composition with the structure map and
+  finite places by the prime below, and the induced projection of test spaces.  Divided by
+  `[L : K]` this is the card's normalized field-norm projection.
+- `deningerPlacePush_sum`, `deningerPlacePush_ker` — **the projection preserves the place sum**,
+  hence maps the mass-zero condition `(5)` of the larger place space into that of the smaller one.
+
+Together with the Galois section and the power law of the Kummer homomorphism, all three operator
+families the card names in `(5)` — Galois maps, normalized field-norm projections, Tate-twisted
+power maps — are now proved to act on the test scale and to preserve `(5)`.
+
+- 2026-08-02 — The projection half of `(5)`: the fibrewise projection along the restriction of
+  places, mass preserving.
+
+### The tower: transition maps, the Kummer direct system, and the cocycle condition
+
+`formal/GaloisForLFunctions/RHTower/DeningerTowerTransition.lean` (16 declarations) and
+`formal/GaloisForLFunctions/RHTower/DeningerTowerCocycle.lean` (7 declarations), axiom audit
+`propext, Classical.choice, Quot.sound` throughout.
+
+The Allcock–Vaaler space is the limit of the place spaces of a tower of number fields.  Its
+transition maps are the pullbacks weighted by the local degree; these modules build them and prove
+the two facts that make the tower a direct system.
+
+- `deningerArchDegreeOver`, `deningerArchMult_dvd`, `deningerArchDegree_mul` — the local degree of
+  an infinite place over its restriction is the ratio of the multiplicities: `2` exactly when a
+  real place becomes complex.
+- `deningerArchMult_fibre_sum` — **the multiplicities of the infinite places above a place add up
+  to `[L : K]` times the multiplicity below.**  Both sides count the complex embeddings of `L`
+  whose restriction induces the place below: fibrewise over `mk` on one side, fibrewise over
+  restriction of embeddings on the other, where every fibre has exactly `[L : K]` elements.  This
+  is the archimedean analogue of `∑ e·f = [L : K]` and is not in mathlib.
+- `deningerArchDegree_fibre_sum`, `deningerFiniteDegreeOver`, `deningerFiniteDegree_fibre_sum` —
+  **the local degrees above a place add up to `[L : K]`**, archimedean and non-archimedean.
+- `deningerPlaceRestrict_preimage_finite` — the fibres of the restriction of places are finite, so
+  the weighted pullback of a test function is a test function.
+- `deningerTowerPullFun`, `deningerTowerPull` — **the transition map of the tower**: the pullback
+  along restriction of places, weighted by the local degree.
+- `deningerKummerFun_tower` — **the logarithmic Kummer functions form a direct system**: the
+  Kummer function of an element of the base, computed over the extension, is the weighted pullback
+  of the Kummer function computed over the base.  Finite places by the value law `‖x‖_w =
+  ‖x‖_v^{e·f}`, infinite places by the multiplicity ratio.
+- `deningerPlaceDegree_fibre_sum`, `deningerPush_towerPull`, `deningerTowerPull_sum` — **the
+  transition map multiplies the mass by `[L : K]`**, which is exactly why the mass divided by the
+  absolute degree is the invariant of the tower.
+- `deningerInfinitePlaceRestrict_trans`, `deningerRestrictPlace_trans`,
+  `deningerPlaceRestrict_trans` — restriction of places is transitive in a tower.
+- `deningerArchDegree_tower`, `deningerFiniteDegree_tower`, `deningerPlaceDegreeOver_tower` — **the
+  local degrees are multiplicative in a tower** (the archimedean case by cancelling multiplicities,
+  the non-archimedean case by `deningerLocalDegree_tower`).
+- `deningerTowerPull_trans` — **the cocycle condition: the transition maps compose.**  So the test
+  spaces of the place spaces of a tower of number fields, with these transition maps, form a
+  genuine direct system, and the Kummer functions are a compatible family in it.
+
+- 2026-08-02 — The tower layer: transition maps, the Kummer direct system, the degree scaling of
+  the mass, and the cocycle condition.
+
+### Every level of the tower embeds in the next
+
+`formal/GaloisForLFunctions/RHTower/DeningerTowerInjective.lean` (6 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `deningerArchDegreeOver_pos`, `deningerFiniteDegreeOver_pos`, `deningerPlaceDegreeOver_pos` — the
+  local degrees are positive.
+- `deningerRelativeFinrank_pos` — a relative degree of number fields is positive, by the tower law
+  over `ℚ`.
+- `deningerPlaceRestrict_surjective` — **every place of the base is the restriction of a place of
+  the extension.**  If a fibre were empty its degree sum would be zero, but the degree sums are
+  `[L : K] > 0`; so surjectivity is a corollary of the fibre-sum laws rather than a separate
+  existence theorem.
+- `deningerTowerPull_injective` — **the transition maps of the tower are injective**: since the
+  degrees are nonzero and every place of the base is hit, a test function is determined by its
+  weighted pullback.  So each level of the tower embeds into the direct limit and nothing is lost
+  when the field of definition grows.
+
+Remaining for this card: only the direct limit object itself — assembling `Module.DirectLimit` over
+a directed family of number fields with `deningerTowerPull` as the maps.  Both hypotheses that
+construction needs are now proved: the cocycle condition `deningerTowerPull_trans` and the
+injectivity above.
+
+- 2026-08-02 — Injectivity of the tower transitions; the direct system is complete except for the
+  colimit object.
+
+### The colimit: the test space of the Allcock–Vaaler space of a tower
+
+`formal/GaloisForLFunctions/RHTower/DeningerTowerDirectLimit.lean` (8 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `deningerTowerPullHom` — the transition map attached to an *embedding* of number fields, not to a
+  chosen algebra structure: the algebra instance is produced from the ring homomorphism inside the
+  definition, so the maps compose along a diagram of embeddings.
+- `deningerTowerPullHom_id` — **the identity embedding gives the identity map.**  The restriction
+  of places along the identity is the identity, and the local degrees over the identity are one:
+  positive with fibre sum `[K : K] = 1`, so each is one.
+- `deningerTowerPullHom_comp` — **the transition maps compose** (the cocycle condition, transported
+  to embeddings by building the scalar tower from `τ ∘ σ = ` the composite embedding).
+- `deningerKummerTest_towerPull` — the transition map carries the Kummer function of an element to
+  the Kummer function of its image.
+- `deningerTowerSystem`, `deningerTowerSystem_directed` — **a tower of number fields is a directed
+  system of test spaces** in the sense of mathlib's `DirectedSystem`, for any index preorder and
+  any compatible family of embeddings.
+- `DeningerTowerLimit` — **the direct limit `𝒟(Y)`**: the test space of the place space of the
+  union of the tower, that is of the Allcock–Vaaler space, as `Module.DirectLimit` of the levels.
+- `deningerKummer_limit_compatible` — **the logarithmic Kummer functions define a single element of
+  the limit**: computing `f_α` in a larger field of definition gives the same element of `𝒟(Y)`.
+  This is the card's Setup made literal — `𝒮_Kum` lives on the Allcock–Vaaler space, not on any one
+  level.
+
+With this the card is closed: `(1)`–`(6)` are Lean theorems, the arithmetic realization over a
+number field is complete (places, Kummer homomorphism with kernel the roots of unity, product
+formula, height = half the `ℓ¹` norm, the nuclear/Banach/Hilbert scale and its dual, the Galois,
+projection and power operators), and the tower layer now carries it to the Allcock–Vaaler space
+itself: transition maps, cocycle, injectivity, the direct limit, and the Kummer family in it.
+
+- 2026-08-02 — The colimit object built; the card's `Y` is a Lean object and the Kummer functions
+  live on it.

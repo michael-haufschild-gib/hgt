@@ -174,6 +174,19 @@ transition, raw dilation, Euler metric, and formal prolate objects:
     changing a parity-preserving extension changes the full resolvent by rank at most two. Schatten
     membership is therefore boundary-independent up to finite rank, but determinant scalars can vary.
     The remaining extension problem is canonical Sonin-compatible selection, not existence.
+19. The archimedean alternative is now exact.  The bridge card
+    `archimedean-prolate-jacobi-limit-circle-transition.md` applies the exceptional double-root
+    power-asymptotic classification to both explicit prolate parity matrices.  At every positive
+    prolate parameter, each block is limit-circle with deficiency `(1,1)`; at parameter zero each is
+    limit-point.  Thus the transported control genuinely carries two boundary angles, rather than
+    inheriting essential self-adjointness from its formal Jacobi expression.  The new Lean module
+    `SemilocalProlateCriticalPotential.lean` proves the exact four-radius identity
+
+    `2R = Delta(a^2) - [(Delta a)^2+(Delta a)^2]`
+
+    and its metaplectic-anomaly form.  This reduces the unresolved semilocal classification to the
+    high-degree source asymptotics of one explicit critical potential; quadratic coefficient
+    comparability alone cannot decide it.
 
 For any cutoff-compatible place transition `J_{T,S}`, Lean now proves the exact structural identity
 
@@ -324,3 +337,21 @@ a non-trace-ideal corner, determinant compatibility, or decomposition into one-p
 
 provides the source-respecting smoothing. The next test is whether this relative resolvent is trace
 class and yields a canonical perturbation determinant; failure retires the smoothing variant.
+
+## 2026-08-02 prime-resolved asymptotic input
+
+`[PAPER+LEAN-PROVED]` The one-prime grading coefficient now has an exact geometric-subsequence
+profile, not only `k^(-3/4)` bounds. For `k_j=c p^(2j)`, the intrinsically normalized literal
+coefficient converges to
+
+```text
+F_p(c)=sum_(z in Z) sqrt(2c) p^(-z) exp(-4c p^(-2z)) > 0,
+F_p(c p^2)=F_p(c).
+```
+
+This is a genuine prime-label signature. By the updated source-clock theorem it is nevertheless
+local Euler data for every fixed prime or finite prime set, so it cannot itself be promoted to a
+global determinant boundary. The next admissible analytic step is cofinal: propagate the
+prime-resolved profiles through finite-set orthogonalization and determine whether the exact
+critical potential has a source-stable limit or a nontrivial infinite-label boundary relation.
+Replacing that step by one-prime scalarization would erase the source class.

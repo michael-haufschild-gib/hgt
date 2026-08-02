@@ -145,7 +145,9 @@ positivity map or zero-location mechanism is known.
 - [x] all-depth poset decomposition proved
 - [x] deformation retraction and Solomon--Tits homology deduced
 - [x] formal order-complex topology — `(4)` and the homology half of `(6)`
-- [ ] Solomon--Tits: the building's own homotopy type `(5)` and the Steinberg identification
+- [ ] Solomon--Tits: the building's own homology is now proved concentrated off degree `N - 2`
+  (`isZero_cuspHomology_of_ne`), so what is left here is the homotopy type `(5)` as a statement
+  about homotopy types, and the Steinberg identification beyond definition and observer action
 - [ ] independent specialist audit
 
 ## Log
@@ -815,3 +817,31 @@ positivity map or zero-location mechanism is known.
   link with a smaller building.  All are general tools, none is specific to this route, and the
   card's own content — `(4)`, the homology transfer, `H_j = 0` for `j ≥ N-1`, `H_0`, cusp
   contractibility, and the complete `N = 3` case — stands proved.
+
+- 2026-08-02 — **`(6)`'s vanishing half is proved for the all-depth complex.**
+  `formal/GaloisForLFunctions/HTGeometry/CuspedHomologyConcentration.lean`, wired into the
+  `HTGeometry` umbrella, axioms `[propext, Classical.choice, Quot.sound]`; umbrella green at 13120
+  jobs:
+
+  ```text
+  isZero_cuspHomology_of_ne :
+    1 ≤ i → i ≠ N - 2 → H_i(Δ_∞(V); R) = 0
+  ```
+
+  This is the open half of the fifth gate, and it needed no new work on this card: the deformation
+  retraction of the cusps onto the building was already formalized here
+  (`cuspBuildingDeformationRetract`, `cuspBuildingHomologyIso`), and the missing input — that the
+  building's own homology vanishes off the top degree — was proved today on the parent card
+  (`isZero_homology_building_of_ne`, from the Solomon--Tits induction built in this corpus).
+  Composing the two is one line.
+
+  So the card's claim that adding an infinite private tail to every elementary horizon changes no
+  homology is now a theorem in both halves: the cusps retract away (already proved), and what is
+  left has homology only in degree `N - 2` and degree `0` (proved now), for any coefficients, even
+  though `Δ_∞(V)` is itself infinite dimensional.
+
+  What is still not proved, and is not claimed: the *homotopy* equivalence `(5)` as a statement
+  about homotopy types rather than homology, and the identification of the top homology with the
+  integral Steinberg module beyond its definition and the observer action.  Degree zero is the
+  reduced statement's remaining piece and follows from connectedness, which is recorded on the
+  parent card.

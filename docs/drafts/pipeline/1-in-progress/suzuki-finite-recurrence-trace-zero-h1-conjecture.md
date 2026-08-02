@@ -44,13 +44,15 @@ paired local Gamma/logistic normal form;                 [PROVED]
 differentiated primitive-flux graph after adapted cutoff;[PAPER-PROVED]
 weighted uniqueness inside the flux graph;               [PAPER-PROVED]
 zero-charge flat solution enters weighted value/flux;    [PAPER-PROVED]
-weighted flux controls physical root derivative;         [OPEN]
+complementary flux controls physical root derivative;    [PAPER-PROVED]
 finite-recurrence trace-zero H1_0 theorem;               [CONJECTURE].        (0)
 ```
 
-The live replacement is `SUZUKI-ROOT-PRIMITIVE-DERIVATIVE-PROPAGATION`: charge-free flat
-tempered solutions now enter weighted value/flux space by Volterra Liouville. One must propagate
-that control through the finite-range rough prime primitive to the physical root derivative.
+The live replacement is source-side:
+`SUZUKI-LITERAL-PAIRED-ASSEMBLY-AND-ROOT-FLUX-MATCHING`. Complementary primitive flux propagates
+weighted control through the rough prime cutoff without differentiating it. One must construct the
+literal completed-source equation, verify its physical-root value/dipole flux charges, and cover
+the compact middle.
 
 ## 1. Conjectured result
 
@@ -328,9 +330,9 @@ Y'=(2I-Z)(MF)-H_cut.                                    (22c)
 
 At finite recurrence type, \(G_{\rm cut}\) and \(H_{\rm cut}\) have the required weighted
 zero-order norms. The weighted graph estimate for `(22c)` uses only \(\|B\|\), even when \(B\) is
-nonnormal. What remains open is not construction of the flux law: it is the Liouville upgrade from
-the known flat tempered class into the weighted flux graph, followed by root-derivative
-propagation.
+nonnormal. Volterra Liouville supplies the flat value/flux upgrade, and complementary
+\(M\)/\(I-M\) fluxes recover the weighted derivative. Remaining work is literal source assembly
+and physical-root flux matching.
 
 ## 7. Conditional value and dipole matching
 
@@ -469,15 +471,16 @@ finite prime-log recurrence
  -> trace-zero H1_0.                                    (28)
 ```
 
-The augmented primitive-flux equation, weighted graph estimate, and flat value/flux upgrade are
-proved. Propagation from flux control to the root derivative is not. Therefore theorem `(3)`
-remains open.
+The augmented primitive-flux equation, weighted graph estimate, flat value/flux upgrade, and
+complementary derivative recovery are proved. Literal source assembly, physical-root flux
+matching, and compact-middle coverage are not. Therefore theorem `(3)` remains open.
 
 ## 13. Lean decision
 
 The dependency-closed cutoff-covariance no-go, primitive identity, exponential flux cancellation,
-and absorption inequality are formalized. The analytic Volterra theorem is paper-proved but not
-yet formalized. No wrapper may assume root-derivative propagation, `(25)`, or theorem `(3)`.
+absorption inequality, and complementary flux cancellation are formalized. The analytic Volterra
+and weak derivative theorems are paper-proved but not yet formalized. No wrapper may assume source
+assembly, physical-root matching, `(25)`, or theorem `(3)`.
 
 ## Gates
 
@@ -492,7 +495,7 @@ yet formalized. No wrapper may assume root-derivative propagation, `(25)`, or th
 - [x] construct exact primitive global flux relation
 - [x] prove arbitrary-nonnormal weighted graph uniqueness for that flux
 - [x] prove flat-tempered primitive-flux Volterra Liouville
-- [ ] propagate weighted flux control to physical root derivative
+- [x] prove complementary primitive-flux root derivative recovery
 - [ ] derive literal infinite paired-orbit normal equation on the completed source
 - [ ] prove physical-root source moment matching in that exact equation
 - [ ] obtain spatial endpoint \(H^1\) for some `sigma>1/2`

@@ -105,4 +105,35 @@ theorem primitiveFlux_absorption_div
     v ≤ (σ * g + h) / (σ * c - d) := by
   exact (le_div_iff₀ hgap).2 (by simpa [mul_comm] using hbound)
 
+/-- Complementary coordinate cutoff. -/
+def cutoffComplement {V : Type*} [AddCommGroup V] [Module ℝ V]
+    (M : Module.End ℝ V) : Module.End ℝ V :=
+  LinearMap.id - M
+
+/-- The primitive-subtracted cutoff flux is exactly the cutoff of the uncut flux:
+`(2L + C)(MF) - [C,M]F = M(2L + C)F`. -/
+theorem primitiveFlux_eq_cut_flux
+    {V : Type*} [AddCommGroup V] [Module ℝ V]
+    (L : ℝ) (C M : Module.End ℝ V) (F : V) :
+    twoLPlus L C (M F) - linearCommutator C M F =
+      M (twoLPlus L C F) := by
+  change
+    ((2 * L) • M F + C (M F)) - (C (M F) - M (C F)) =
+      M ((2 * L) • F + C F)
+  rw [map_add, map_smul]
+  module
+
+/-- The fluxes associated to a cutoff and its complement sum to the complete uncut flux. The two
+rough commutator primitives cancel before any derivative estimate. -/
+theorem primitiveFlux_cutoffComplement_sum
+    {V : Type*} [AddCommGroup V] [Module ℝ V]
+    (L : ℝ) (C M : Module.End ℝ V) (F : V) :
+    (twoLPlus L C (M F) - linearCommutator C M F) +
+        (twoLPlus L C (cutoffComplement M F) -
+          linearCommutator C (cutoffComplement M) F) =
+      twoLPlus L C F := by
+  rw [primitiveFlux_eq_cut_flux, primitiveFlux_eq_cut_flux]
+  simp only [cutoffComplement, LinearMap.sub_apply, LinearMap.id_coe, id_eq]
+  module
+
 end GaloisForLFunctions.RHTower

@@ -148,6 +148,97 @@ Multiply by source weights and integrate against `mu_+ product mu_-`. Fubini tur
 integrals into `E'O` and `EO'`. The positive/negative-part decomposition of an integrable real
 kernel proves (5c)--(5d). No ordering of the two spectra is used.
 
+## Theorem 1c: every genuine interior excursion crosses the credit/debt wall
+
+Suppose `lambda_L<lambda_M<lambda_R`, both endpoint angles lie below a target `kappa_*`, and
+the middle angle lies above it:
+
+```text
+kappa(lambda_L)<kappa_*<kappa(lambda_M),
+kappa(lambda_R)<kappa_*.                                (5f)
+```
+
+Under the same positivity, continuity, differentiation, and product-integrability hypotheses,
+there are ordered points
+
+```text
+lambda_L<lambda_up<lambda_max<lambda_down<lambda_R       (5g)
+```
+
+such that `kappa(lambda_max)>kappa_*` and
+
+```text
+D(lambda_up)<C(lambda_up),
+D(lambda_max)=C(lambda_max),
+C(lambda_down)<D(lambda_down).                          (5h)
+```
+
+### Proof
+
+The defect-angle derivative factors exactly as
+
+```text
+kappa'(lambda)
+ =2E(lambda)O(lambda)/(E(lambda)+O(lambda))^2 * H(lambda). (5i)
+```
+
+The prefactor is strictly positive. The continuous angle attains a global maximum on
+`[lambda_L,lambda_R]`; (5f) forces that maximum into the open interval and above `kappa_*`.
+Fermat's theorem gives `H(lambda_max)=0`. Applying the mean-value theorem on the intervals from
+the left endpoint to `lambda_max` and from `lambda_max` to the right endpoint gives, respectively,
+a positive and a negative value of `H`. Equation (5d), together with its zero and negative
+counterparts, yields (5h).
+
+This is stronger than saying the integrated budget may tolerate sign changes. When both
+endpoints are sub-target, a sign change and an exact credit/debt balance point are necessary.
+Every globally one-signed hazard account is therefore impossible for a genuine interior loop.
+
+## Theorem 1d: stationary above-Xi mean/variance wall
+
+Assume in addition that the squared-resolvent responses are differentiable with
+
+```text
+E''(lambda)=2E_3(lambda),   O''(lambda)=2O_3(lambda),
+E_3(lambda)=integral (t-lambda)^(-3) dmu_+(t),
+O_3(lambda)=integral (s-lambda)^(-3) dmu_-(s).           (5j)
+```
+
+At the same maximizing point `lambda_max` from Theorem 1c, define the resolvent-tilted
+probability laws and inverse-gap observable
+
+```text
+dpi_+(t)=dmu_+(t)/[E(lambda_max)(t-lambda_max)],
+dpi_-(s)=dmu_-(s)/[O(lambda_max)(s-lambda_max)],
+X(u)=1/(u-lambda_max).                                  (5k)
+```
+
+Then simultaneously
+
+```text
+E(lambda_max)/O(lambda_max)>R_Xi>81/4,
+E'(lambda_max)/E(lambda_max)
+  =O'(lambda_max)/O(lambda_max),                         (5l)
+
+Var_pi+(X) <= Var_pi-(X).                               (5m)
+```
+
+### Proof
+
+The first equality in (5l) is the zero-hazard/credit-debt balance already forced at the
+maximum. The second derivative identity at that stationary point is
+
+```text
+kappa''(lambda_max)
+ =4E O/(E+O)^2 * [Var_pi+(X)-Var_pi-(X)].
+```
+
+The prefactor is positive and a twice differentiable local maximum has nonpositive second
+derivative, proving (5m). Equation (8) gives the exact ratio threshold in (5l).
+
+Thus the balance point is not arbitrary. It is a high-ratio stationary resolvent wall with equal
+tilted inverse-gap means and ordered dispersions. Any source proof of the interior Suzuki branch
+must produce this three-moment configuration in the literal restricted-Weil parity measures.
+
 ## Theorem 2: unconditional Xi transport cost
 
 Define the exact Xi even/odd threshold
@@ -252,6 +343,42 @@ We call the cofinal source statement consisting of either the ground reflection 
 `SUZUKI-PARITY-SPECTRAL-TRANSPORT`. This name records the exact surviving source theorem; it is
 not a proof of it and is not an additional route.
 
+## Source-horizon provenance gate
+
+The scalar pair budget is a terminal Suzuki consumer unless the pair-measure profile is proved to
+come from a predeclared arithmetic source map. Let `E_src(rho)` be the injective mass-one
+high-exponent source vector from
+`source-horizon-riemann-divisor/main.tex`, and let
+
+```text
+T_lambda : source l1 -> F
+```
+
+be a bounded linear source-to-parity carrier. If every `T_lambda` is label-blind, the exact
+bounded-observer theorem gives
+
+```text
+T_lambda E_src(rho)
+ =T_lambda E_src(1-conj(rho))                            (14)
+```
+
+for every shift. Consequently *every* downstream function of the complete shift profile has the
+same value on the reflected pair. This includes nonlinear hazard ratios, Jordan credit/debt
+splitting, maximization, and the integrated budget. Therefore any bounded linear carrier whose
+downstream Suzuki statistic separates a strict-right source point from its reflection must be
+label-sensitive at some shift. A singular, nonclosable, or relation-valued producer is outside
+this bounded-map theorem and remains live.
+
+This does not prove that Suzuki's literal restricted-Weil source map factors through the
+high-exponent frame, nor does it exclude a genuinely nonlinear source producer. It closes the
+theatre loophole: satisfying (13) on freely chosen parity measures is not a source theorem.
+
+`SUZUKI-PARITY-SPECTRAL-TRANSPORT` remains the exact within-carrier admission gate. Full Route G
+requires the strengthened conjunction
+`SUZUKI-SOURCE-POINTED-PARITY-TRANSPORT`: construct the literal parity carrier from a predeclared
+arithmetic source, prove reflection separation before scalarization by a label-sensitive or
+singular mechanism, and then prove the ground cone or the exact credit/debt budget.
+
 ## Hostile falsification audit
 
 - Pointwise `H>0` is neither necessary nor sufficient by itself; exact integrated magnitude in
@@ -270,10 +397,20 @@ not a proof of it and is not an additional route.
   occurs only when integrated credit minus debt cannot pay (13).
 - Pointwise `C_a>D_a` on an entire interval is sufficient but not necessary. The exact criterion
   is the signed integrated budget (13), so hazard may change sign.
+- If both ends of the selected interval are below the Xi wall and its interior is above, hazard
+  must change sign: credit dominates on the rise, credit equals debt at an interior maximum, and
+  debt dominates on the fall. A globally nonnegative or globally nonpositive hazard cannot
+  realize that loop.
+- At that same above-Xi balance maximum, the two tilted inverse-gap means are equal while the
+  even-channel inverse-gap variance cannot exceed the odd-channel variance. A scalar excursion
+  failing this third-resolvent wall is impossible.
 - A finite spectral truncation is not evidence for the literal operator. The measure-level theorem
   requires and records the four resolvent integrability hypotheses before using Fubini.
 - Replacing Suzuki's literal spectral measures by arbitrary positive measures would replay an
   interface and prove no arithmetic admission.
+- Even the literal scalar credit/debt profile is not yet a reflection-oriented source theorem
+  unless its construction is shown source-pointed before invariant scalarization. Bounded
+  label-blind linear transport cannot be repaired by nonlinear downstream processing.
 
 ## Strongest positive conclusion
 
@@ -287,17 +424,40 @@ source-visible parity spectra rule out both global two-valued likelihood orienta
 successful proof must prove the source-literal credit/debt inequality (13), allowing local
 reversals while winning the integrated budget.
 
+If both endpoint branches are below Xi, the successful profile has a forced ordered topology:
+credit domination, exact balance at an above-Xi maximum, then debt domination. The new balance
+point is a sharper attack surface than an arbitrary positive-budget interval: it has ratio
+`>R_Xi>81/4`, equal normalized squared-resolvent responses, and ordered third-resolvent
+dispersion.
+
+Source-horizon conservation adds an independent provenance obligation. A scalar Suzuki profile
+can judge transported orientation, but it cannot create orientation after bounded label-blind
+fusion. Full Route G therefore needs source-pointed parity transport, not only a scalar excursion.
+
+The literal position torque now passes the faithful-source half of this obligation. Its coefficient
+`Lambda(n)log(n)[sqrt(n)-n^(-3/2)]` is supported on positive prime powers and nonzero at every
+prime and every valuation depth. Exact prime-source correspondence makes its analytic carrier
+hypertranscendental over complete local-Euler residue--valuation fusion. Therefore the torque is
+genuine global source data. The fixed-torque fibre theorem remains decisive: source authenticity
+does not upgrade one commutator coordinate into the missing two-moment parity inequality.
+
 ## Novelty audit
 
 The logarithmic derivative, Fubini product identity, Jordan decomposition, fundamental theorem of
-calculus, and resolvent differentiation are classical and are not claimed as new. General
+calculus, resolvent differentiation, and log-transform cumulant/variance identity are classical
+and are not claimed as new. General
 Laplace/Stieltjes-transform ratio-monotonicity literature contains related kernel arguments.
 Candidate new knowledge is restricted to exact Suzuki/Xi calibration: the source selector is
 equivalent to accumulated product-measure credit minus spectral-inversion debt with exact threshold
-`R_Xi`, unconditional floor `R_Xi>81/4`, and cofinal free baseline (11). Targeted corpus and arXiv
-searches found general transform-ratio rules and Suzuki's screw-function operator, but not this
-restricted-Weil/Xi credit-debt budget. Search absence does not establish priority; specialist
-review remains required.
+`R_Xi`, unconditional floor `R_Xi>81/4`, cofinal free baseline (11), and the forced ordered
+credit--balance--debt reversal for a two-sub-target-endpoint excursion, together with the
+equal-mean/ordered-variance law at its same above-Xi maximum. The source-provenance
+corollary is an exact composition of the independently proved complete-source label-blindness
+theorem with arbitrary downstream processing; its generic functional logic is not claimed as new.
+Candidate novelty is its Suzuki/Xi incidence and the sharpened source-pointed transport
+specification. Targeted corpus and arXiv searches found general transform-ratio rules and Suzuki's
+screw-function operator, but not this restricted-Weil/Xi credit-debt budget. Search absence does
+not establish priority; specialist review remains required.
 
 ## Lean certificate
 
@@ -306,6 +466,7 @@ Module:
 ```text
 formal/GaloisForLFunctions/RHTower/SuzukiParityResolventTransportBudget.lean
 formal/GaloisForLFunctions/RHTower/SuzukiParitySpectralPairTransport.lean
+formal/GaloisForLFunctions/RHTower/SuzukiInteriorExcursionSpectralTurningPoint.lean
 ```
 
 Capstone declarations:
@@ -334,6 +495,21 @@ integrable_suzukiParitySpectralCrossGapKernel
 suzukiParitySpectral_hazardGap_eq_crossGapMass_div
 suzukiParitySpectralCrossGapMass_eq_credit_sub_inversionDebt
 suzukiParitySpectral_hazardGap_pos_iff_inversionDebt_lt_credit
+suzukiParitySpectral_hazardGap_eq_zero_iff_inversionDebt_eq_credit
+suzukiParitySpectral_hazardGap_neg_iff_credit_lt_inversionDebt
+exists_rise_peak_fall_of_strict_interior_excursion
+suzukiSecondDeriv_nonpos_of_isLocalMax
+suzukiDefectAngleTiltVelocity_eq_hazardFactor
+hasDerivAt_suzukiShiftResolventKernel_sq
+hasDerivAt_integral_weighted_suzukiShiftResolventKernel_sq
+suzukiParityCubedSpectralEnergy
+suzukiParityTiltedInverseGapVariance
+hasDerivAt_suzukiDefectAngleTiltVelocity_of_balance
+suzukiStationaryAngleAcceleration_eq_tiltedVarianceDifference
+suzukiParitySpectral_interiorExcursion_forces_creditBalanceDebt
+suzukiLabelBlindParityCarrier_reflectionProfiles_eq
+suzukiLabelBlindParityCarrier_postprocessing_reflectionBlind
+suzukiReflectionSeparatingPostprocessing_forces_labelSensitive
 ```
 
 The squared-resolvent derivative connector used in (2) is already formal as

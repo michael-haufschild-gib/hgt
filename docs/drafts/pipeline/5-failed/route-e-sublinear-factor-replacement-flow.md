@@ -75,18 +75,20 @@ quoted Ivić--Tenenbaum asymptotic.
 
 ## Hostile second pass: can the friable sector be removed?
 
-No.  For fixed noninteger `u>1`, `Y=X^(1/u)`, de la Bretèche--Tenenbaum's complex
-friable-average theorem specialized to `f=mu` gives
+No.  For fixed `1<u<2`, `Y=X^(1/u)`, de la Bretèche--Tenenbaum's complex
+friable-average theorem specialized to `f=mu` has leading profile
+`psi_(-1)=phi_(-1)''`, not `phi_(-1)`.  It gives
 
 ```text
 sum_(n<=X, P+(n)<=Y) mu(n)
-= X/(log Y)^2 {phi_(-1)(u)+O_u(1/log Y)}.                (F2)
+= -X/log^2 X + O_u(X/log^3 X).                          (F2)
 ```
 
-The delay solution satisfies `v phi_(-1)'(v)=phi_(-1)(v-1)` and equals one on `(0,1]`;
-therefore it is positive.  The friable sector has deterministic signed bias
-`asymp_u X/log^2 X`, so assigning it an independent strict-half bound is false.  Source:
-[de la Bretèche--Tenenbaum, Corollary 1.3](https://tenenb.perso.math.cnrs.fr/PPP/Friable-complex.pdf).
+Indeed, the delay equation gives `phi_(-1)(u)=1+log u` and
+`psi_(-1)(u)=-1/u^2` on `(1,2)`; `log Y=log X/u` cancels `u` exactly.  The friable
+sector has deterministic negative signed bias of size `X/log^2 X`, so assigning it an
+independent strict-half bound is false.  Source:
+[de la Bretèche--Tenenbaum, Theorem 1.2 and Corollary 1.3](https://arxiv.org/abs/2305.06486).
 
 Scalar largest-prime renewal also cannot bootstrap this bias away.  In an `X^alpha` weighted
 sup norm its positive operator norm is
@@ -104,12 +106,13 @@ extend to any fixed power-saving norm.
 - **Exact killing theorem/mechanism:** `(F1)` plus positive-density squarefree friable numbers
   forces linear isolated capacity in every uniformly sublinear window.
 - **Strongest positive survivor:** the exact macroscopic-gap law `(F1)`, with sharp exponent four
-  forced by the largest permitted replacement token; and the positive friable signed profile
-  `(F2)`.
+  forced by the largest permitted replacement token; and the corrected universal negative
+  friable charge `(F2)`.
 - **New insight:** power-smooth bulk is neither geometrically local nor signed-negligible.  Any
-  viable Route E transport must carry deterministic friable bias across macroscopic smooth/rough
-  seams.  Critical aperture approaches integer delay seam `u=2`; its beyond-all-orders
-  zero/one-sector remainder, not short-interval incidence, is the literal open source.
+  viable Route E transport must carry the deterministic charge pair
+  `(-X/log^2 X,+X/log^2 X)` across macroscopic smooth/rough seams.  Critical aperture
+  approaches integer delay seam `u=2`; its beyond-all-orders zero/one-sector remainder, not
+  short-interval incidence, is the literal open source.
 - **Status:** `(F1)` paper- and Lean-proved.  Lean theorems:
   `le_pow_four_mul_dist_of_boundaryFactorReplacementAdjacent_of_primeFactors_le` and
   `not_boundaryFactorReplacementWindowAdjacent_of_primeFactors_le_of_pow_mul_lt` in

@@ -770,3 +770,204 @@ calibrated, and it makes the permanence theorems of the nuclear test scale non-v
 have an infinite dimensional space to act on.
 
 - 2026-08-02 — The nuclear test scale has an infinite dimensional model in Lean.
+
+## Lean: corpus survey before starting (2026-08-02)
+
+Survey of what the formal tree already provides for this card, so the work starts at the real gap.
+
+Already built and usable (`formal/GaloisForLFunctions/RHTower/`):
+
+- `DeningerNuclearOperator` — `DeningerIsNuclear` (rank-one series), sums of nuclear maps.
+- `DeningerSeminormQuotient`, `DeningerNuclearSpaceCompleted` — `DeningerIsNuclearSpace`,
+  `DeningerIsNuclearSpaceC` and the comparison-map presentation of nuclearity for a seminorm
+  family.
+- `DeningerNuclearProduct` — **`deningerIsNuclearSpace_pi`: a product of nuclear spaces is
+  nuclear**, exactly the permanence the card's proof of `(1)` invokes.
+- `DeningerNuclearSubspaceHilbertian`, `DeningerNuclearCompletedInvariance`,
+  `DeningerFinestSubspaceNuclear` — **subspaces of nuclear spaces are nuclear**, the other
+  permanence the card invokes.
+- `DeningerKotheSpace` — Köthe spaces and the Grothendieck–Pietsch criterion
+  (`deningerKothe_isNuclearSpace`).
+- `DeningerRapidSequenceNuclear` — the space of rapidly decreasing sequences is nuclear.
+- `DeningerNuclearTransport(C)` — nuclearity transports along a linear equivalence matching the
+  seminorms; `DeningerTensorNuclear` — projective tensor products of nuclear spaces are nuclear.
+
+The real gap for this card: **nuclearity of the Schwartz space itself**, which mathlib does not
+have.  The route through the existing toolkit is the classical one: the Hermite coefficient map
+identifies `𝒮(ℝ)` with a subspace of the rapidly decreasing sequences, matching the seminorms, so
+`deningerRapid_isNuclearSpace` plus subspace permanence plus `deningerIsNuclearSpace_of_linearEquiv`
+give it.  What must be built is the Hermite expansion with its two-sided seminorm estimates.
+
+After that, `(2)` is a closed subspace (two continuous functionals) and `(1)` is a countable
+product-and-subspace, both by the permanence lemmas above; then the Poisson operator `Z`, its
+strictness, and the exact sequence `(4)`.
+
+### Lean: the oscillator number operator and the decay of Hermite coefficients
+
+`formal/GaloisForLFunctions/HTGeometry/HermiteNumberOperator.lean` (7 declarations) and
+`formal/GaloisForLFunctions/HTGeometry/HermiteCoefficientDecay.lean` (3 declarations), axiom audit
+`propext, Classical.choice, Quot.sound`.
+
+The corpus already owned the oscillator algebra on `𝓢(ℝ,ℂ)` — creation and annihilation operators,
+their commutator, the raising and lowering relations on the Hermite functions, the adjointness of
+`A` and `B` for the bilinear pairing, and the orthonormality of the Hermite family in `L²`.  These
+two modules add the piece the nuclearity argument runs on.
+
+- `numberCLM` — the number operator `N = A B`.
+- `numberCLM_hermiteSchwartz` — **the Hermite functions are its eigenfunctions with eigenvalue
+  `4πn`**: `B` lowers with factor `2n`, `A` raises back with factor `2π`.
+- `schwartzPair_numberCLM` — **`N` is symmetric for the bilinear pairing**, since `A` and `B` are
+  adjoint to each other; hence `⟨Nᵏf, g⟩ = ⟨f, Nᵏg⟩`.
+- `numberCLM_iterate_hermiteSchwartz`, `schwartzPair_hermiteSchwartz_numberCLM_iterate` — **the
+  `n`-th Hermite coefficient of `Nᵏf` is `(4πn)ᵏ` times that of `f`.**
+- `schwartzPair_eq_inner_toLp`, `norm_schwartzPair_hermiteSchwartz_le` — the pairing against a
+  Hermite function is an `L²` inner product (the Hermite functions are real valued), so
+  Cauchy–Schwarz applies.
+- `schwartzPair_hermiteSchwartz_decay` — **`(4πn)ᵏ ‖⟨f, hₙ⟩‖ ≤ ‖hₙ‖₂ ‖Nᵏf‖₂`**: the Hermite
+  coefficients of a Schwartz function decay faster than any power, with an explicit constant at
+  every order.
+
+Remaining chain to `𝒮(ℝ)` nuclear, in order: completeness of the Hermite system in `L²`; the
+two-sided comparison between the Schwartz seminorms and the number-operator seminorms
+`qₖ(f) = ‖Nᵏf‖₂` (the easy direction is a temperate-growth estimate, the other is the
+one-dimensional Sobolev bound `‖g‖∞² ≤ 2‖g‖₂‖g'‖₂` plus the oscillator algebra); then transport
+onto the rapidly decreasing sequence space, which the corpus already knows is nuclear, by
+`deningerIsNuclearSpace_of_linearEquiv` and subspace permanence.
+
+- 2026-08-02 — Number operator, its eigenrelation and symmetry, and the rapid decay of Hermite
+  coefficients: the engine of the Schwartz nuclearity proof.
+
+### Lean: the Hamiltonian, its seminorms, and the easy comparison
+
+`formal/GaloisForLFunctions/HTGeometry/HermiteHamiltonian.lean` (13 declarations) and
+`formal/GaloisForLFunctions/HTGeometry/HermiteOscillatorContinuity.lean` (4 declarations), axiom
+audit `propext, Classical.choice, Quot.sound`.
+
+- `schwartzPair_add_right`, `_add_left` — additivity of the bilinear pairing in each slot.
+- `hamiltonianCLM`, `hamiltonianCLM_two_smul` — the **oscillator Hamiltonian** `H = A B + 2π`,
+  shown to be the symmetric combination `(A B + B A)/2` by the commutation relation.
+- `hamiltonianCLM_hermiteSchwartz` — **eigenvalue `2π(2n+1)`**, which never vanishes; unlike the
+  number operator, the Hamiltonian gives an estimate that is meaningful at the ground state too.
+- `schwartzPair_hamiltonianCLM`, `schwartzPair_hamiltonianCLM_iterate` — the Hamiltonian and all
+  its powers are symmetric for the bilinear pairing.
+- `hamiltonianCLM_iterate_hermiteSchwartz`, `schwartzPair_hermiteSchwartz_hamiltonian_iterate`,
+  `schwartzPair_hermiteSchwartz_hamiltonian_decay` — **`(2π(2n+1))ᵏ ‖⟨f, hₙ⟩‖ ≤ ‖hₙ‖₂ ‖Hᵏf‖₂`.**
+- `hamiltonianPowCLM`, `oscillatorSeminorm`, `_apply` — **the oscillator seminorms**
+  `qₖ(f) = ‖Hᵏf‖₂` as `Seminorm` objects on the Schwartz space, the Hilbertian family in which the
+  nuclear structure will be visible; the Hermite functions diagonalize every one of them.
+- `oscillatorSeminormFamily`, `oscillatorSeminorm_continuous`,
+  `oscillatorSeminorm_le_schwartzSeminorm` — **each oscillator seminorm is continuous, hence
+  bounded by finitely many Schwartz seminorms** (`Seminorm.bound_of_continuous` against
+  `schwartz_withSeminorms`).  That is one of the two comparisons needed to identify the oscillator
+  presentation of the Schwartz topology with the standard one.
+
+Next: the reverse comparison (a Schwartz seminorm bounded by an oscillator seminorm) and
+completeness of the Hermite system in `L²`, after which the nuclearity of `𝒮(ℝ)` follows from the
+corpus's Köthe/rapid-sequence nuclearity by transport.
+
+- 2026-08-02 — Hamiltonian, its spectrum on the Hermite functions, the oscillator seminorms, and
+  the easy half of the seminorm comparison.
+
+### Lean: the Hermite polynomials span, and the vanishing of Gaussian moments
+
+`formal/GaloisForLFunctions/HTGeometry/HermitePolynomialSpan.lean` (11 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `hermitePoly_degree_leadingCoeff`, `_degree`, `_leadingCoeff`, `_coeff_self`,
+  `_coeff_eq_zero` — **the `n`-th Hermite polynomial has degree `n` and leading coefficient `2ⁿ`.**
+  Each recursion step multiplies by `2X` and subtracts a multiple of the derivative, whose degree
+  is strictly smaller, so the top term is untouched.
+- `mem_span_hermitePoly_of_degree_lt`, `hermitePoly_span_eq_top` — **the Hermite polynomials span
+  the polynomial ring**, by the triangular argument: subtracting the right multiple of the `n`-th
+  Hermite polynomial lowers the degree, and one descends on the degree.
+- `polyGaussSchwartz_add`, `_smul`, `polyGaussLM` — the Gaussian multiples of polynomials as an
+  `ℝ`-linear map into the Schwartz space.
+- `schwartzPair_polyGauss_eq_zero` — **a Schwartz function orthogonal to every Hermite function is
+  orthogonal to every polynomial multiple of the Gaussian**: all of its Gaussian moments vanish.
+  Proved by span induction, so it needs no coordinates.
+
+This is the first step of the completeness of the Hermite system.  What remains for completeness:
+the vanishing of all moments of the integrable function `f·e^{−πx²}` forces its Fourier transform
+to vanish (its power series at the origin is identically zero and it is entire, since the Gaussian
+weight makes every moment bound factorially small), and a function with vanishing Fourier transform
+is zero.
+
+- 2026-08-02 — The Hermite polynomials span; orthogonality to the Hermite family kills every
+  Gaussian moment.
+
+### Lean: vanishing moments kill every exponential integral
+
+`formal/GaloisForLFunctions/HTGeometry/HermiteGaussianExponential.lean` (5 declarations, axiom
+audit `propext, Classical.choice, Quot.sound`).
+
+- `complex_hasSum_exp`, `real_hasSum_exp` — the exponential series in `HasSum` form, over `ℂ` and
+  over `ℝ`.
+- `gauss_mul_exp_abs_le` — **the Gaussian dominates every exponential**:
+  `e^{−πx²}e^{|a||x|} ≤ e^{a²/π} e^{−3πx²/4}`, from `4π|a||x| ≤ 4a² + π²x²`, that is from
+  `(2|a| − π|x|)² ≥ 0`.
+- `integrable_gauss_mul_exp_abs` — hence the dominating function is integrable.
+- `integral_gaussMul_exp_eq_zero` — **a Schwartz function orthogonal to every Hermite function
+  integrates to zero against the Gaussian times any complex exponential**:
+  `∫ f(x) e^{−πx²} e^{cx} dx = 0` for every `c ∈ ℂ`.  The exponential is expanded into its power
+  series and integrated term by term — legitimate by dominated convergence with the bound above —
+  and every term is a Gaussian moment, which vanishes by the span step.
+
+Taking `c = −2πit` this says the Fourier transform of `f·e^{−πx²}` vanishes identically.  What
+remains for completeness of the Hermite system is the Fourier uniqueness step: an integrable
+continuous function whose Fourier transform vanishes is zero, whence `f = 0`.
+
+- 2026-08-02 — Every exponential integral of a Hermite-orthogonal Schwartz function vanishes; only
+  Fourier uniqueness is left before completeness.
+
+### Lean: completeness of the Hermite system on the Schwartz space
+
+`formal/GaloisForLFunctions/HTGeometry/HermiteCompleteness.lean` (4 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `gaussMul`, `gaussMul_apply` — the Gaussian multiple of a Schwartz function, itself Schwartz.
+- `fourier_gaussMul_eq_zero` — **the Fourier transform of `f·e^{−πx²}` vanishes identically** for a
+  Schwartz `f` orthogonal to every Hermite function: it is the exponential integral of the previous
+  module at the imaginary exponent `c = −2πit`.
+- `hermiteSchwartz_complete` — **a Schwartz function orthogonal to every Hermite function is
+  zero.**  Fourier inversion (`Continuous.fourierInv_fourier_eq`) turns the vanishing transform
+  into the vanishing of `f·e^{−πx²}`, and the Gaussian never vanishes.
+
+So the Hermite coefficient map is injective on `𝒮(ℝ)`: the Hermite system is complete there.  This
+was the remaining blocker; it is the injectivity the nuclearity transport consumes.
+
+What is left for `𝒮(ℝ)` nuclear: the reverse seminorm comparison — a Schwartz seminorm bounded by
+an oscillator seminorm `qₖ(f) = ‖Hᵏf‖₂` — after which the coefficient map identifies `𝒮(ℝ)` with a
+subspace of the rapidly decreasing sequence space, matching the seminorms, and the corpus's
+`deningerRapid_isNuclearSpace` plus subspace permanence and
+`deningerIsNuclearSpace_of_linearEquiv` finish it.
+
+- 2026-08-02 — Hermite completeness on the Schwartz space: the coefficient map is injective.
+
+### Lean: `L²` bounds for the oscillator operators
+
+`formal/GaloisForLFunctions/HTGeometry/SchwartzOscillatorL2Bound.lean` (12 declarations, axiom
+audit `propext, Classical.choice, Quot.sound`).
+
+The reverse seminorm comparison needs the creation and annihilation operators to be controlled in
+`L²` by the number operator.  That is what this module proves, working with the corpus's
+conjugation operator `SchwartzMap.conjSLM`.
+
+- `conjSLM_conjSLM`, `schwartzPair_eq_inner`, `norm_toLp_conjSLM`, `norm_schwartzPair_le` — **the
+  bilinear pairing is the `L²` inner product against the conjugate**, conjugation is an `L²`
+  isometry, and hence **Cauchy–Schwarz holds for the pairing**:
+  `‖⟨u, v⟩‖ ≤ ‖u‖₂‖v‖₂`.
+- `norm_schwartzPair_conj_self` — the pairing of the conjugate against the function is the square
+  of the `L²` norm.
+- `conjSLM_derivSCLM`, `conjSLM_mulXCLM`, `conjSLM_creationCLM`, `conjSLM_annihilationCLM` —
+  **conjugation commutes with all four operators** (their coefficients are real); the derivative
+  case is the chain rule through the `ℝ`-linear conjugation.
+- `norm_toLp_creationCLM_sq_le` — **`‖Ag‖₂² ≤ ‖g‖₂‖(N + 4π)g‖₂`**, from adjointness `⟨Ag,h⟩ =
+  ⟨g,Bh⟩` and the commutation relation `B A = N + 4π`.
+- `norm_toLp_annihilationCLM_sq_le` — **`‖Bg‖₂² ≤ ‖g‖₂‖Ng‖₂`**, likewise with `A B = N`.
+
+Since `x = (A+B)/4π` and `d/dx = (B−A)/2`, iterating these two bounds controls every
+`‖x^k ∂^n f‖₂` by oscillator seminorms; combined with the one-dimensional Sobolev estimate
+`‖g‖∞² ≤ 2‖g‖₂‖g′‖₂` this will give the reverse comparison and finish the nuclearity of `𝒮(ℝ)`.
+
+- 2026-08-02 — Cauchy–Schwarz for the pairing, conjugation compatibility, and the `L²` bounds for
+  the creation and annihilation operators.

@@ -277,8 +277,276 @@ The pole-orbit input is formalized axiom-clean in
 `GaloisForLFunctions.PrincipalPartDifferentialOperator` as
 `simplePoleDifferentialOperatorFamily_ne_finiteOrbitCoboundary`. Prime-log separation modulo one
 is formalized in `GaloisForLFunctions.RHTower.WeldCircleFaithfulness` as
-`primeLog_indep_mod_one`. The full formal-transseries projective boundary and recurrence limit are
-paper-proved.
+`primeLog_indep_mod_one`.
+
+### The boundary shape and its finite ordering (eq. (4), eq. (16))
+
+`HTGeometry/GammaShiftShape.lean` carries the shape of eq. (4) in Lean.  The only new feature against
+the one-Gamma law is that the argument exponent `ω` is *real* — it lives in `Zλ_1+…+Zλ_r+Z` — so the
+argument factor is a complex power `s^ω` rather than an integer power:
+
+> **`gammaShiftShape lam σ d ω b t = Γ((σ+λ)+it)^d · ((σ+it)^ω) · (log s)^b`**, with `d, b ∈ ℤ` and
+> `ω ∈ ℝ`.
+
+Its algebra is unconditional: **`gammaShiftShape_ne_zero`** beyond a fixed height when `σ+λ > 0`,
+**`gammaShiftShape_mul`** (all three exponents add) and **`gammaShiftShape_div`** (all three
+subtract), the last two through `Complex.cpow_add` on a nonvanishing base.
+
+The three decay mechanisms of the ordering `(16)` are proved with `rpow` in place of `zpow`:
+
+- **`tendsto_gammaShiftShape_zero_of_gamma_pos`** — a positive `Γ`-degree wins, because the argument
+  and logarithm factors have polynomial growth even with a real exponent
+  (**`hasPolyGrowthLine_cpow_mul_vertLog`**: `‖s^ω‖ = ‖s‖^ω ≤ ((|σ|+1)t)^⌈ω⌉` and
+  `‖(log s)^b‖ ≤ (3t)^{b⁺}`), which the corpus's `tendsto_gammaLine_pow_mul` consumes;
+- **`tendsto_gammaShiftShape_zero_of_arg_neg`** — at `Γ`-degree zero a negative real `ω` wins, with
+  the logarithm power absorbed through mathlib's `isLittleO_log_rpow_rpow_atTop`
+  (`(log t)^q · t^ω → 0` for every `ω < 0`, which the integer-exponent argument could not supply);
+- **`tendsto_gammaShiftShape_zero_of_log_neg`** — at `Γ`-degree and argument exponent zero a negative
+  logarithm exponent wins.
+
+Hence the order itself: **`ShiftShapeDominates`**, **`tendsto_gammaShiftShape_ratio_zero`** (a
+dominated shape is negligible against the dominating one) and **`exists_dominant_shiftShape_index`**
+(every finite family has a dominant member, by minimizing in `ℤ ×ₗ (ℝ ×ₗ ℤ)`).  This is exactly the
+finite total order eq. (16) asks for, and it is what the tuple boundary `(6)` consumes once the
+transseries injection supplies each element's datum.
+
+### The datum's uniqueness and the tuple boundary (eq. (3), eq. (6))
+
+`HTGeometry/GammaShiftDatum.lean` turns the ordering into the two statements the law needs.
+
+Uniqueness first.  **`shiftShape_trichotomy`** says two data are equal or one dominates, and
+**`shiftShape_datum_unique`** rules the second case out: a function with nonzero residues against two
+shapes forces the ratio of the two shapes to converge to a nonzero constant in one direction and to
+zero in the other.  So the quadruple `(d, ω, b, c)` of eq. (3) is determined by the function — the
+real exponent `ω` included, which is the clause eq. (3) singles out ("the representation of `ω` by
+the shifts need not be unique; the real exponent value is unique").
+
+Then the tuple boundary:
+
+> **`exists_dominant_shiftShape_ratio`**: for a finite family of line functions with data, some index
+> `β` has dominant datum, and every ratio `F_α/F_β` converges — to `c_α/c_β` when the data tie and to
+> `0` otherwise, with `F_β/F_β → 1`.
+
+That is eq. (6) proved from the data alone: no further analytic input is used beyond the three decay
+mechanisms above.  What the transseries injection still owes is the *existence* of the datum for each
+element of `K_E`; once that is supplied, `(6)` follows by this theorem.
+
+### The recurrence limit and the zeta consequence (eq. (19), eq. (21))
+
+The abstract collapse of the corpus consumes exactly what the previous theorem produces — coefficient
+ratios converging along the line, plus an eventually nonzero normalizer — so the shifted law inherits
+it:
+
+> **`rank_finite_of_gammaShift_data`** (`HTGeometry/GammaShiftFinitePhase.lean`): a strip almost
+> periodic holomorphic solution of a relation whose coefficients have shifted data has finite
+> rational Bohr frequency rank.
+
+That is eq. (19).  Its contrapositive is **`no_gammaShift_relation_of_infinite_rank`**, and combining
+it with the corpus's Dirichlet frequency machinery gives
+**`dirichlet_no_gammaShift_relation`**: a Dirichlet series with arbitrarily large `ℤ`-independent
+frequency packets satisfies no such relation.  Specializing to `ζ`, whose packets are the prime
+logarithms:
+
+> **`zeta_no_gammaShift_relation`** (`HTGeometry/GammaShiftZeta.lean`): on a vertical strip inside
+> `Re s > 1`, `ζ` satisfies no nontrivial differential relation whose coefficients have data against
+> the shifted boundary shapes.
+
+This is eq. (21) with the coefficients presented by their data — the same shape the one-Gamma law's
+`finite_phase_law_of_coefficient_datum` has, and it needs the transseries injection only to convert
+"coefficients in `K_E`" into "coefficients with data".
+
+### The datum's algebra, and an inhabited class
+
+`HTGeometry/GammaShiftDatumAlgebra.lean` records the datum as a predicate — **`HasShiftDatum`** — and
+proves the signature arithmetic of eq. (16): **`HasShiftDatum.mul`** (all three exponents add and the
+residues multiply), **`HasShiftDatum.inv`**, **`HasShiftDatum.div`**.  The generators have explicit
+data:
+
+- `hasShiftDatum_const` — a nonzero constant, datum `(0, 0, 0)`;
+- `hasShiftDatum_gammaPow` — `Γ(s+λ)^n`, datum `(n, 0, 0)` with residue `1`;
+- `hasShiftDatum_vertLogPow` — `(log s)^b`, datum `(0, 0, b)`;
+- **`hasShiftDatum_poly`** — a nonzero polynomial, datum `(0, deg q, 0)` with residue its leading
+  coefficient, which is where the real exponent first becomes a *degree*.
+
+Combining them gives **`hasShiftDatum_monomial`**: every `c·Γ(s+λ)^n·(q/p)·(log s)^b` with `c ≠ 0`
+and `q, p ≠ 0` has datum `(n, deg q − deg p, b)` and residue `c·lc(q)/lc(p)`.
+
+So the hypothesis that carries `(6)`, `(19)` and `(21)` — "the coefficients have shifted data" — is
+satisfied by an explicit family, and those theorems are not vacuous.  What the transseries injection
+still owes is that *every* element of `K_E`, not only these monomials, has a datum.
+
+### Sums with distinct signatures, and the law with explicit coefficients
+
+Equation (15) writes an element as a sum of monomials, each with the signature `(16)`.  When the
+signatures are pairwise *distinct* the sum's datum needs no independence input at all — every other
+summand is negligible against the dominant shape, so nothing can cancel the leading constant:
+
+> **`hasShiftDatum_sum_of_distinct`** (`HTGeometry/GammaShiftDatumSum.lean`): a finite sum of line
+> functions with pairwise distinct data has the dominant summand's datum,
+
+and with the monomial data of the previous section, **`exists_hasShiftDatum_monomialSum`**: a finite
+sum of shifted Gamma monomials with pairwise distinct signatures has a datum, read off the dominant
+monomial's degrees and leading coefficients.  The tie-breaking case — several monomials sharing a
+signature — is exactly what the formal transseries injection is for, and is the only part of eq. (16)
+still on paper.
+
+Feeding that into the law removes the abstract datum hypothesis altogether
+(`HTGeometry/GammaShiftMonomialLaw.lean`):
+
+> **`rank_finite_of_gammaShiftMonomial`** — eq. (19) for coefficients written as monomial sums with
+> distinct signatures;
+> **`zeta_no_gammaShiftMonomial_relation`** — eq. (21) in the same terms: `ζ` satisfies no
+> nontrivial differential relation whose coefficients are finite sums of shifted Gamma monomials with
+> pairwise distinct signatures.
+
+That last statement has no analytic hypothesis left beyond the strip data: the coefficients' data are
+computed from their degrees and leading coefficients.
+
+### Toward eq. (14): the shift is an integrated digamma
+
+Comparing two translates is what eq. (14) does, and the exact identity behind it is now in Lean
+(`HTGeometry/GammaShiftExpIntegral.lean`):
+
+> **`gamma_shift_exp_integral`**: for `Re z > 0` and `λ ≥ 0`,
+> `Γ(z + λ) = Γ(z)·exp(∫₀^λ ψ(z+u) du)`.
+
+It is `Γ′ = Γ·ψ` integrated along the segment: `u ↦ Γ(z+u)·exp(−∫₀^u ψ)` has zero derivative, so it is
+constant.  The supporting facts are proved from mathlib's `Complex.digamma = logDeriv Γ`:
+**`deriv_gamma_eq`** (`Γ′ = Γ·ψ` on the right half plane), `gamma_ne_zero_of_re_pos`,
+**`continuousOn_digamma_rePos`** (the digamma is continuous there, via `AnalyticOnNhd.deriv`), and
+`continuousOn_digamma_shift` for the real segment.  mathlib has no complex Stirling and no Gamma-ratio
+asymptotic, so this identity is the corpus's own entry point to eq. (14).
+
+### Equation (14) itself
+
+`HTGeometry/GammaShiftRatioAsymptotic.lean` completes the assembly:
+
+> **`tendsto_gammaShift_ratio`**: for `σ > 0` and `λ ≥ 0`,
+> `Γ((σ+λ)+it) / (Γ(σ+it)·(σ+it)^λ) → 1` as `t → ∞`.
+
+The integral of the digamma is compared with `λ·log s` in two steps.  The uniform bound
+`exists_uniform_bound_digamma_sub_vertLog` controls `ψ((σ+u)+it) − vertLog t` by `C/t` for every
+`u ∈ [0, λ]` at once — this is where the tube-uniform form is needed, since the abscissa moves with
+`u` — and `intervalIntegral.norm_integral_le_of_norm_le_const` turns that into a bound on the
+integral.  The remaining comparison `vertLog t − log(σ+it) → 0` is proved from scratch:
+**`tendsto_norm_vertical_div`** (`‖σ+it‖/t → 1`, hence `tendsto_log_norm_vertical_sub` for the real
+part) and **`tendsto_arg_vertical`** (`arg(σ+it) → π/2`, by writing `σ+it = t·(σ/t + i)` and using
+continuity of `arg` at `i`), assembled into **`tendsto_log_vertical_sub_vertLog`**.
+
+In datum form this is **`hasShiftDatum_gammaShift`**: the shifted Gamma has datum `(1, λ, 0)` with
+residue `1` against the unshifted reference shape.  So a translate `Γ(s+λ)` can now be compared with
+the reference `Γ(s)` inside one and the same shape family — the second coordinate of the signature
+`(16)`, `∑ e_i(λ_i − λ_1) + a`, is exactly what this contributes.
+
+### The multi-translate signature (16), computed
+
+With eq. (14) in hand every translate sits in one reference shape, so monomials in *several*
+translates can be compared.  `HTGeometry/GammaShiftMultiDatum.lean` computes their data:
+**`HasShiftDatum.pow`** (a power multiplies a datum), **`hasShiftDatum_prod`** (a finite product adds
+the exponents and multiplies the residues), hence **`hasShiftDatum_gammaShiftProd`** — the product
+`∏ Γ(s+λ_i)^{e_i}` has `Γ`-degree `∑ e_i` and argument exponent `∑ e_i λ_i` — and finally
+
+> **`hasShiftDatum_multiMonomial`**: `c·∏ Γ(s+λ_i)^{e_i}·(q/p)·(log s)^b` has datum
+> `(∑ e_i, ∑ e_i λ_i + deg q − deg p, b)` with residue `c·lc(q)/lc(p)`.
+
+That is the signature `(16)` of the shifted law, computed rather than assumed: total `Γ` degree,
+then the real power `∑ e_i(λ_i − λ_1) + a` (here with reference `λ_1 = 0`), then the logarithmic
+power.  Combined with `hasShiftDatum_sum_of_distinct` it gives the datum of any finite sum of such
+monomials with pairwise distinct signatures, and hence — through the law — the boundary, the finite
+phase theorem and the zeta exclusion for genuinely multi-translate coefficients.
+
+### The law in the card's own setting: several translates at once
+
+`HTGeometry/GammaShiftMultiLaw.lean` closes the loop.  `multiMonomialSum` names the line function of
+a sum of multi-translate monomials, `multiDegree` and `multiExponent` name the first two coordinates
+of its signature, and
+
+> **`exists_hasShiftDatum_multiMonomialSum`** — a sum of multi-translate monomials with pairwise
+> distinct signatures has a datum;
+> **`rank_finite_of_gammaShiftMulti`** — eq. (19) for coefficients of that shape: a strip almost
+> periodic holomorphic solution has finite rational Bohr frequency rank;
+> **`zeta_no_gammaShiftMulti_relation`** — eq. (21) in the card's stated generality: `ζ` satisfies no
+> nontrivial differential relation whose coefficients are built from *any* finite family of
+> nonnegative real translates, provided the monomial signatures inside each coefficient are pairwise
+> distinct.
+
+The hypothesis that remains — pairwise distinct signatures — is exactly the tie-breaking case of
+eq. (16), which the formal transseries injection settles on paper.  Everything else in the chain
+`(14) → (16) → (6) → (19) → (21)` is now Lean, for several translates and not only one.
+
+### Shifts of either sign
+
+The card's `E` is an arbitrary finite set of reals, so the chain must not be restricted to
+nonnegative shifts.  `HTGeometry/GammaShiftRatioGeneral.lean` removes that restriction:
+
+> **`tendsto_gammaShift_ratio_general`**: for `σ > 0` and any real `λ` with `σ + λ > 0`,
+> `Γ((σ+λ)+it) / (Γ(σ+it)·(σ+it)^λ) → 1`.
+
+For `λ < 0` the positive case is applied at the abscissa `σ + λ` with shift `−λ` and inverted; what is
+left over is the ratio of the same real power taken on two different vertical lines, and
+**`tendsto_cpow_vertical_ratio`** shows that tends to `1` because both logarithms are
+`log t + iπ/2 + o(1)`.  In datum form: **`hasShiftDatum_gammaShift_general`**.
+
+The multi-translate layer now carries the weaker hypothesis `0 < σ + λ_k` in place of `0 ≤ λ_k`, so
+`hasShiftDatum_multiMonomial`, `rank_finite_of_gammaShiftMulti` and
+`zeta_no_gammaShiftMulti_relation` apply to any finite family of real shifts whose lines lie in the
+half plane — the card's setting exactly.
+
+### Equation (25): the translation-saturated prime-log consequence
+
+`HTGeometry/GammaShiftPrimeLog.lean` specializes the chain to the saturated field.  Hypothesis `(1)`
+holds automatically for shifts from the prime-log lattice:
+
+> **`primeLogShift_incongruent`**: two distinct elements of `Λ = ⊕_p ℤ·log p` differ by an irrational
+> amount — via the corpus's `primeLog_indep_mod_one` (transcendence of `e` plus unique
+> factorization).
+
+And the exclusion itself:
+
+> **`zeta_no_primeLogShift_relation`** — eq. (25): `ζ` satisfies no differential relation whose
+> coefficients are built from translates drawn from `Λ`.
+
+The card's reduction "every relation over `K_{Γ,Λ}` uses only finitely many translates, hence lies in
+some `K_E`" is built into the statement: the family of shifts is a finite `Fin r → Λ`, so the
+finite-family exclusion of eq. (21) applies directly.
+
+### Normal form: signatures may repeat
+
+Equation (15) is written after collecting monomials with equal exponents, so requiring *pairwise
+distinct* signatures was stronger than the card asks.  `HTGeometry/GammaShiftDatumClass.lean` weakens
+it to the card's own hypothesis:
+
+> **`hasShiftDatum_sum_class`**: a finite sum with data has the dominant datum, with residue the sum
+> of the residues over the dominant signature class — provided that sum is nonzero;
+> **`exists_hasShiftDatum_sum_class`** picks the dominant class by the order of eq. (16).
+
+Members outside the dominant class are negligible against its shape, so only cancellation *inside*
+the class can destroy the datum — which is exactly the condition the card's normal form imposes.
+`HTGeometry/GammaShiftClassLaw.lean` carries this through the chain: `multiClass` names the class,
+and
+
+> **`exists_hasShiftDatum_multiMonomialSum_class`**, **`rank_finite_of_gammaShiftClass`**,
+> **`zeta_no_gammaShiftClass_relation`**
+
+are eq. (16), eq. (19) and eq. (21) with repeated signatures allowed.  The pairwise-distinct versions
+are the special case of singleton classes.
+
+### The law is inhabited, with a genuinely shifted coefficient
+
+A law is only as good as its hypothesis class.  `HTGeometry/GammaShiftLawWitness.lean` exhibits an
+instance:
+
+> **`gammaShift_law_witness`**: for every `σ > 0`, every shift `λ` with `σ + λ > 0` and every
+> `μ ≠ 0`, the exponential `e^{μ z}` satisfies `Γ(s+λ)·Φ′ − μΓ(s+λ)·Φ = 0`, whose two coefficients
+> are shifted Gamma monomials, and the law returns a rank between `1` and a finite bound.
+
+Every hypothesis of `rank_finite_of_gammaShiftClass` is discharged explicitly — the coefficients'
+normal form, the nonvanishing of the dominant class, the pointwise relation, the strip data — so the
+shifted law is a statement about a nonempty class, and one whose coefficients are not constants.
+
+`#print axioms` clean.  What remains paper-proved is the formal-transseries injection — Theorems A
+and B — which supplies the *existence* of the datum for each element of `K_E`; everything downstream
+of that existence, `(6)`, `(19)`, `(21)` and `(25)`, is now Lean.
 
 ## Gates
 
@@ -292,10 +560,14 @@ paper-proved.
 - [x] translation-saturated prime-log consequence proved
 - [x] local orbit-residue and prime-log inputs connected to axiom-clean Lean
 - [ ] exact adjacent 2024--2025 full texts compared before publication
-- [ ] full formal-transseries and almost-periodic limit proof formalized in Lean
+- [ ] full formal-transseries and almost-periodic limit proof formalized in Lean (almost-periodic limit done: `GammaShiftShape/Datum/FinitePhase/Zeta`; transseries injection open)
 
 ## Log
 
+- 2026-08-02 -- formalized the real-exponent boundary shape, its algebra and the three decay
+  mechanisms of the finite ordering (16), with the dominant-member selection for finite families;
+  then the datum's uniqueness (3), the tuple projective boundary (6), the recurrent finite-phase law
+  (19) and the zeta consequence (21), all from the data.
 - 2026-07-11 -- extracted the finite real-shift extension of the one-Gamma projective boundary;
   proved the formal orbit-residue injection, finite transseries ordering, recurrent finite-phase
   law, and translation-saturated prime-log zeta consequence.

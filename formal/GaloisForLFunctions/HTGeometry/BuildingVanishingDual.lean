@@ -21,6 +21,14 @@ universe v u
 
 variable {L : Type u} [Lattice L] [BoundedOrder L]
 
+/-- The proper part, in the `≠ ⊥ ∧ ≠ ⊤` presentation used by the horizon work. -/
+def properPartNeOrderIso : properPart L ≃o {S : L // S ≠ ⊥ ∧ S ≠ ⊤} where
+  toFun x := ⟨(x : L), ne_of_gt x.2.1, ne_of_lt x.2.2⟩
+  invFun y := ⟨(y : L), lt_of_le_of_ne bot_le (Ne.symm y.2.1), lt_of_le_of_ne le_top y.2.2⟩
+  left_inv _ := rfl
+  right_inv _ := rfl
+  map_rel_iff' := Iff.rfl
+
 /-- **The proper part of the dual lattice is the dual of the proper part.** -/
 def properPartDualOrderIso : properPart Lᵒᵈ ≃o (properPart L)ᵒᵈ where
   toFun x := OrderDual.toDual ⟨OrderDual.ofDual (x : Lᵒᵈ), x.2.2, x.2.1⟩

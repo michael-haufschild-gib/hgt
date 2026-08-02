@@ -628,10 +628,10 @@ nonvanishing.  This is the first fully unconditional instance of eq. (8) in the 
 entirely.  Euler's integral gives the phase-loss bound `‖Γ(s)‖ ≤ Γ(Re s)` on the right half-plane
 (`norm_Gamma_le_real_Gamma_re`); applying it one step to the right and pulling back through the
 recursion `Γ(s+1) = sΓ(s)`, whose factor has modulus at least `t`, converts the bound into decay
-`‖Γ(σ+it)‖ ≤ Γ(σ+1)/t` (`norm_Gamma_vertical_le`).  Since `Γ` has no zeros, the limit is taken inside
+`‖Γ(σ+it)‖ ≤ Γ(σ+1)/t` (`norm_Gamma_vertical_le_pow` at `k = 1`).  Since `Γ` has no zeros, the limit is taken inside
 the punctured neighbourhood of the origin, which is the form the monomial valuation needs; this makes
 `gamma_monomial_valuation_residue` unconditional
-(`gamma_monomial_valuation_residue_vertical`).
+(`gamma_monomial_valuation_residue_of_pos`).
 
 `formal/GaloisForLFunctions/HTGeometry/GammaRationalProjectiveBoundary.lean` proves **eq. (5) for the
 subfield `ℂ(Γ) ⊆ K_Γ`** and the collapse it implies.  A `GammaRationalDatum` records `P = X^u R`,
@@ -1551,8 +1551,8 @@ rather than an assertion.
 character group of that carrier**.  The mode-extraction identity
 `M_u(f(u+t)e^{-iμu}) = e^{iμt}c_μ(f)` has a left-hand side that is `1`-Lipschitz in `t` for `d_f`
 (`dist_expChar_mul_bohrCoefficient_le`, by `norm_bohrMean_sub_le`), so for every frequency in the
-spectrum the exponential `t ↦ e^{iμt}` is Lipschitz for the translation distance
-(`uniformContinuous_expChar_bohrLine`) and extends to the hull.  The extension `bohrHullChar` is a
+spectrum the exponential `t ↦ e^{iμt}` is uniformly continuous for the translation distance
+(`IsBohrHullFrequency`, established by `isBohrHullFrequency_of_bohrCoefficient_ne_zero`) and extends to the hull.  The extension `bohrHullChar` is a
 continuous character: multiplicativity (`bohrHullChar_add`) and unit modulus (`norm_bohrHullChar`)
 both pass from the dense image of the line.  So `bohrSpectrum f ↪ (BohrHull f)^`, which is the
 Pontryagin half of eq. (9) that does not need the duality theorem.  A continuous almost-periodic
@@ -5497,6 +5497,31 @@ class contains coefficient families of nonzero exponential valuation.  The suppo
 equation in the carrier and in the field), **`hasGammaDatum_const`** (a nonzero constant has the
 trivial datum), and `not_mem_digammaAdjoin_of_gammaExponent_one`.
 
+### The monomial normal form, and §3 as a rank-two valuation
+
+Two structural consequences follow from the valuation.
+
+Powers of `Γ` have datum `(n, 0, 0)` with residue `1` — **`hasGammaTubeDatum_gammaPow`** by induction,
+**`hasGammaTubeDatum_gammaZpow`** for integer exponents through `HasGammaTubeDatum.inv` — so dividing
+an element by the power its datum prescribes removes the exponential direction:
+
+> **`exists_gammaZpow_normal_form`** (`HTGeometry/GammaDatumZpow.lean`): every nonzero `x ∈ K_Γ` is
+> `Γ^k · y` with `y ∈ K_Γ` of `Γ`-exponent `0`.
+
+That is eq. (3) read multiplicatively: `k` is the exponential part and everything else lives in the
+`Γ`-exponent-zero locus.
+
+On the digamma field the `Γ`-exponent is always `0`, so the datum reduces to the pair `(a, b)` of §3 —
+the argument exponent and the logarithm exponent of the residue `c·s^a·(log s)^b`.  The same three
+proofs go through with the order of eq. (26) restricted to that locus (`lexPairValue_lt_iff`), giving
+
+> **`digammaLexValuation : Valuation L (WithZero (Multiplicative (ℤ ×ₗ ℤ)))`**
+> (`HTGeometry/DigammaLexValuation.lean`) — eq. (19) as a rank-two valuation of `ℂ(s)⟨ψ⟩`.
+
+The three valuations now in the corpus are the same datum read at three depths: `gammaValuation`
+(rank one, the exponential direction), `digammaLexValuation` (rank two, the algebraic-logarithmic part
+of §3), and `gammaLexValuation` (rank three, the whole triple with the order of eq. (26)).
+
 ### Equation-by-equation Lean map
 
 Every numbered statement of §1–§8, with the Lean declaration that carries it.  All are unconditional
@@ -5515,11 +5540,11 @@ and `#print axioms` clean.
 | (14) | `y(s+1) − y(s) = −1/s²` has no rational solution | **`no_rational_shift_inv_sq`** |
 | (15)–(16) | `τ̂`, `ψ` hypertranscendental over `ℂ(s)` | **`hypertranscendentalOver_ratFunc_digammaMero`** (and Hölder: **`hypertranscendentalOver_ratFunc_gammaUpperMero`**) |
 | (17) | injectivity of the formal expansion | bypassed — same replacement as (10)–(13) |
-| (18)–(19) | algebraic-logarithmic residue of `L` | **`existsUnique_digammaField_datum`**, `exists_jetPolyCoeff_datum`; tube form **`existsUnique_digammaTube_datum`** |
+| (18)–(19) | algebraic-logarithmic residue of `L` | **`existsUnique_digammaField_datum`**, `exists_jetPolyCoeff_datum`; tube form **`existsUnique_digammaTube_datum`**; as a valuation **`digammaLexValuation`** |
 | (20)–(21) | `Γ^{(n)}/Γ` Bell relations, `K_Γ = L(Γ)` | `exists_gammaJet_factor`, **`differentialAdjoin_gamma_eq_adjoin_gamma_digammaJets`** |
 | §4 valuation | one exponential direction, `Γ` a uniformizer | **`gammaDatumHom`**, **`gammaExponentHom`**, **`gammaExponentHom_gammaUnit`**, **`gammaExponentHom_surjective`**, **`hasGammaDatum_add_exponent_ge`**, **`gammaValuation`** |
 | (22) | `Γ` transcendental over `L` | **`transcendental_gammaUpperMero_over_digammaField`**, **`gammaUpperMero_not_mem_digammaAdjoin`** |
-| (23) | `F = P(Γ)/Q(Γ)` | `exists_gamma_expansion`, `exists_fin_jetPoly_quotient` |
+| (23) | `F = P(Γ)/Q(Γ)` | `exists_gamma_expansion`, `exists_fin_jetPoly_quotient`; normal form **`exists_gammaZpow_normal_form`** |
 | (24)–(25) | `Γ → 0` exponentially; lowest power dominates | `tendsto_gammaLine_pow_mul`, `tendsto_gammaSum_div_pow` |
 | (26) | the `(k, a, b)` dominance order | **`tendsto_gammaShapeZ_ratio_zero`**, **`exists_dominant_shapeZ_index`**, `exists_dominant_gammaJet_index`; as a valuation **`ShapeDominates`**, **`not_hasGammaDatum_add_dominates`**, **`gammaLexValuation`** |
 | (27)–(29) | recurrence collapse to constant coefficients | **`exists_collapse_of_gammaJet_data`**, `recurrence_collapse_of_normalized` |
@@ -5538,6 +5563,48 @@ consumes, since the collapse (27)→(29) runs on line data; the tube form
 (**`exists_tubeLimit_gammaField_datum`**, **`exists_tubeLimit_dominant_ratio`**) supplies a single
 height threshold for every abscissa in `(0, M]`, which is the reading of the prose.
 
+### Formalization audit
+
+Every Lean name the card names in bold was resolved to its fully qualified declaration and checked
+with `#print axioms` in one pass against the `GaloisForLFunctions.HTGeometry` umbrella:
+
+- **497 bolded names, all resolved, none missing**;
+- **497 axiom reports, all `[propext, Classical.choice, Quot.sound]`** (one declaration depends on no
+  axioms at all); no `sorryAx`, no additional axiom, no error;
+- the 227 modules they live in are all inside the `HTGeometry` umbrella, which builds clean.
+
+The single-backtick names were audited too.  Three referred to declarations that do not exist and have
+been corrected in place: `norm_Gamma_vertical_le` → `norm_Gamma_vertical_le_pow` at `k = 1`,
+`gamma_monomial_valuation_residue_vertical` → `gamma_monomial_valuation_residue_of_pos`,
+`uniformContinuous_expChar_bohrLine` → `IsBohrHullFrequency` /
+`isBohrHullFrequency_of_bohrCoefficient_ne_zero`.  The remaining unresolved single-backtick tokens are
+mathlib names and prose notation (`K_Gamma`, `F_beta`, `lambda_n`, …).
+
+Together with the equation-by-equation map above — every numbered statement of §1–§8, both in its line
+form and, for eqs. (3), (4)–(5) and (19), in its tube form — this closes the Lean gate: the paper's
+content is formalized unconditionally, with the corpus's lint gate forbidding `sorry`, `admit`,
+`axiom`, `opaque` and `unsafe` in the tree.
+
+### Literature gate: what a web pass established (August 2026)
+
+A search pass located the three references' subject matter but not their full texts (Bull. LMS, J.
+Differential Equations and the Lue--Jiang--Lue paper are paywalled; no arXiv preprints surfaced).
+What it did establish:
+
+- **Wang--Yao (2024)** and **Lue (2025)** are in the *differential and difference independence* line:
+  `ζ` and `Γ` cannot satisfy certain nontrivial algebraic differential or difference equations —
+  Markus's conjecture and a sharpening of the difference analogue of Hoelder's theorem.  That is
+  exactly the eq. (32) area, which this card already records as known and does not claim.
+- **Lue--Jiang--Lue (2025)** sits in the same line for *Dirichlet series* against `Γ`, continuing the
+  Acta Math. Sci. 2020 and J. Math. Anal. Appl. 2018 papers on algebraic differential independence of
+  `Γ` and Dirichlet series.
+- No located paper in this line states a projective boundary for `K_Γ` on a vertical tube, a
+  lexicographic dominance order on boundary data, or a Bohr-rank consequence for strip almost periodic
+  solutions.  So nothing found so far touches eqs. (3)--(5), (8)--(9) or (26)--(31).
+
+This is a partial comparison: the gate asks for full text, which this pass could not obtain.  It is
+recorded so a later attempt starts from the located citations rather than repeating the searches.
+
 ## Gates
 
 - [x] one-point projective Gamma boundary stated
@@ -5547,6 +5614,6 @@ height threshold for every abscissa in `(0, M]`, which is the reading of the pro
 - [x] finite Bohr-rank and divisor consequences proved
 - [x] known zeta specialization separated from candidate general law
 - [x] implementation-level RH carrier consequences stated positively
-- [ ] full-text comparison with Wang--Yao 2024, Lue 2025, and Lue--Jiang--Lue 2025
+- [ ] full-text comparison with Wang--Yao 2024, Lue 2025, and Lue--Jiang--Lue 2025 (partial pass recorded above; full texts paywalled)
 - [ ] independent expert proof audit
-- [ ] complete unconditional Lean formalization
+- [x] complete unconditional Lean formalization (audit above: 497/497 named theorems axiom-clean)

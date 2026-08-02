@@ -5,6 +5,7 @@
 - **Type:** EXACT COMPLEMENTARY-FLUX CANCELLATION / WEAK DERIVATIVE THEOREM
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Route:** completed Evans/logarithmic-seam branch of Connes/CCM
+- **Lean:** `GaloisForLFunctions.RHTower.SuzukiPrimitiveFluxNonnormalGraphReduction`
 - **Inputs:** `suzuki-coordinate-cutoff-primitive-flux-identity.md`,
   `suzuki-flat-primitive-flux-volterra-liouville.md`,
   `suzuki-gamma-weighted-tail-coercivity.md`
@@ -297,11 +298,18 @@ Y_M'+Y_Q'=(AF)'
 
 External priority remains unaudited.
 
-## 9. Lean target
+## 9. Lean status
 
-The pointwise complementary-flux identities and their sum should be formalized immediately. The
-weak Bochner derivative theorem reuses the still-unformalized concrete Gamma block/Volterra
-infrastructure and should be formalized with it, not as an abstract wrapper.
+The existing primitive-flux module now proves:
+
+```text
+primitiveFlux_eq_cut_flux;
+primitiveFlux_cutoffComplement_sum.
+```
+
+These are the exact algebraic identities `(5)`--`(6)`. The weak Bochner derivative theorem reuses
+the still-unformalized concrete Gamma block/Volterra infrastructure and should be formalized with
+it, not as an abstract wrapper.
 
 ## Gates
 
@@ -310,7 +318,7 @@ infrastructure and should be formalized with it, not as an abstract wrapper.
 - [x] prove full-flux derivative recovery
 - [x] prove pre-event complement recurrence summability
 - [x] prove arbitrary-nonnormal weak derivative coercivity
-- [ ] formalize complementary-flux algebra in Lean
+- [x] formalize complementary-flux algebra in Lean
 - [ ] construct literal infinite paired-orbit source equation
 - [ ] verify physical-root value/dipole flux matching
 - [ ] prove finite paired-chart/small-aperture interior coverage

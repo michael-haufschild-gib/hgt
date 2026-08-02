@@ -115,10 +115,43 @@ parent horizon-building theorem.
 
 ## Lean boundary
 
-The two-chart reconstruction supporting the building's complementary vertices is formalized in
-`formal/GaloisForLFunctions/HTGeometry/ProjectiveHorizonBuilding.lean`. Mathlib currently provides
-no local formal surface for the full Solomon--Tits theorem used here, so `(3)--(6)` are not encoded
-as assumptions or placeholders.
+This section was written before the formalisation and is superseded by the Log; it is rewritten
+here to match what the tree now contains.
+
+Formalized, unconditionally, axioms `[propext, Classical.choice, Quot.sound]` throughout:
+
+- `(3)` the simplicial identification — `HorizonComplexIso.lean` (`horizonComplexIso`), on the two
+  hypotheses the parent theorem owes: the stabiliser assignment is monotone and order-reflecting.
+- `(5)` in full — `BuildingHomologyConcentration.lean` (`isZero_homology_building_of_ne`): the
+  homology of the building vanishes in every degree except `0` and `N - 2`, for any coefficients;
+  and `BuildingConnected.lean` (`homologyZeroIsoBuilding`) supplies degree zero, where the homology
+  is a single copy of the coefficients because the complex is connected — so the *reduced* homology
+  vanishes off `N - 2`, which is what `(5)` asserts.
+  Its two halves are the Solomon--Tits induction proved in this corpus
+  (`FamilyBuildingVanishing.lean`, `BuildingVanishingSubmodule.lean`,
+  `BuildingVanishingDual.lean`) and the dimension bound `buildingHasDimensionLT`.
+- `(6)`'s definitional half and the observer action — `BuildingAutomorphismAction.lean`
+  (`steinbergModule`, `steinbergAction`).
+- `(6)`'s freeness — `BuildingFreeSubmodule.lean` (`Steinberg.isFreeOver_steinbergModule`): the
+  Steinberg module is a coproduct of copies of the coefficients.  It rests on
+  `isFreeOver_homology_famBuilding`, which gives freeness of the homology of a disjoint union of
+  interval buildings in every positive degree, for any bounded modular lattice with atoms below
+  every nonzero element, with no rank hypothesis.
+- Extra structure the card did not state: the top homology of a building of rank `r` is
+  *isomorphic* to that of the disjoint union of the buildings of rank `r - 1` below the coatoms
+  (`FamilyTopHomologyEmbedding.lean`, `isIso_famTopEmbedding`).
+
+Not formalized, and not claimed:
+
+- `(4)` as a homotopy equivalence.  What is proved is its homological content, which is `(5)`.
+- `(6)` beyond the definition, the action and freeness: that a basis can be taken to consist of
+  apartment classes (Solomon's basis theorem).  Freeness alone does follow from the Mayer--Vietoris
+  machinery built here; identifying a basis with the apartments needs a shelling or the opposition
+  retraction.
+
+The supporting general machinery — many-piece Mayer--Vietoris for an arbitrary index, the
+locally-conical vanishing tool, and the disjoint-union-of-nerves identification — is listed in the
+Log entries of 2026-08-02 and is reusable for any order complex.
 
 ## RH impact audit
 
@@ -130,7 +163,8 @@ class to positivity, a Weil criterion, or zero location.
 
 - [x] 0 -> 1: exact topology extracted from the horizon-building poset
 - [x] 1 -> 2: simplicial identification and Solomon--Tits consequence proved
-- [ ] 2 -> 3: parent two-chart core formalized; full building topology unavailable in local Lean
+- [ ] 2 -> 3: `(3)` and `(5)` formalized in full, `(6)`'s definition, observer action and freeness
+  with them; what is left is `(4)` as a homotopy statement and `(6)`'s apartment basis
 - [ ] 3 -> 4: depends on external audit and publication of the parent theorem
 
 ## Reference
@@ -947,3 +981,125 @@ class to positivity, a Weil criterion, or zero location.
   the dual rank is the codimension — whose covering increments are the same — and the atoms of the
   dual are the hyperplanes, which every proper subspace lies in.  So `(5)` now holds on the object
   the card actually names, not only on its opposite.
+
+- 2026-08-02 — **`(5)` complete: the homology is concentrated in one degree.**
+  `formal/GaloisForLFunctions/HTGeometry/BuildingHomologyConcentration.lean`, wired into the
+  `HTGeometry` umbrella, axioms `[propext, Classical.choice, Quot.sound]`; umbrella green at 13116
+  jobs:
+
+  ```text
+  properPartNeOrderIso  (in BuildingVanishingDual.lean)
+  isZero_homology_building_of_ne :
+    1 ≤ i → i ≠ N - 2 → H_i(Δ_Tits; R) = 0
+  ```
+
+  stated on the very poset the horizon work uses — `({S : Submodule K V // S ≠ ⊥ ∧ S ≠ ⊤})ᵒᵈ` — and
+  for arbitrary coefficients.  Two vanishing statements meet in it: below the top degree the
+  Solomon--Tits induction proved here, above it the dimension bound `buildingHasDimensionLT` that
+  was already in the corpus, because a strict chain of proper nonzero subspaces has at most `N - 1`
+  members.  Degree zero is the connectedness already recorded (`horizonComplexHomologyZeroIso`).
+
+  So `(5)` is now a theorem in full: the homology of `Δ_HT(V)` vanishes in every degree except `0`
+  and `N - 2`.  This is the homological content of `(4)` — everything in the wedge statement that
+  does not mention homotopy types.  What `(4)` asserts beyond it (an actual homotopy equivalence)
+  and what `(6)` asserts beyond the definition and the group action (freeness with an apartment
+  basis) remain outside what is proved here.
+
+- 2026-08-02 — **The apartment of an observer frame, and the card's stale Lean-boundary text.**
+  `formal/GaloisForLFunctions/HTGeometry/ApartmentOrderIso.lean`, wired into the `HTGeometry`
+  umbrella, axioms `[propext, Classical.choice, Quot.sound]`; umbrella green at 13119 jobs:
+
+  ```text
+  coordSpan, coordSpan_mono, coordSpan_le_iff :
+    a frame's coordinate subspaces embed the lattice of subsets, order-reflectingly
+  apartmentEmbedding, coordSpan_empty, coordSpan_univ, coordSpan_injective,
+  coordSpan_ne_bot, coordSpan_ne_top, apartmentVertices, apartmentVertices_le_iff :
+    the vertices of the apartment are the proper part of that Boolean lattice
+  ncard_of_covBy :  subsets are graded by cardinality
+  isZero_homology_properPart_set :
+    1 ≤ i → i + 3 ≤ |ι| → H_i(order complex of the proper subsets; R) = 0
+  ```
+
+  This formalizes the card's "Apartments and observer frames" paragraph.  A basis is a projective
+  observer frame; the map `s ↦ span (b '' s)` is monotone and reflects inclusion, because a frame
+  vector outside a set is not in that set's span — so the coordinate subspaces are a copy of the
+  Boolean lattice inside the subspace lattice, and the apartment's vertices are its proper part.
+
+  The last item is the card's "the order complex is the Coxeter sphere `S^(N-2)`", in the form this
+  corpus can prove: the Boolean lattice is modular, atomic and graded by cardinality, so the
+  Solomon--Tits vanishing proved here applies to it verbatim and the apartment has no homology below
+  its top degree.  That the top homology is a single copy of the coefficients — the actual sphere
+  statement — is not proved; it is the one place where a genuine computation, rather than a
+  vanishing, is needed.
+
+  **Card correction.**  The `Lean boundary` section still said that `(3)--(6)` "are not encoded",
+  which the Log has contradicted since this morning.  It is rewritten to state exactly what is
+  formalized (`(3)`, `(5)` in full, `(6)`'s definition and observer action, plus the descent
+  isomorphism) and what is not (`(4)` as homotopy, `(6)`'s freeness), and the `2 -> 3` gate now says
+  the same.  The gate stays unticked: two of the card's six numbered claims are still unformalized.
+
+- 2026-08-02 — **`(6)`'s freeness is proved: the Steinberg module is a coproduct of copies of the
+  coefficients.**  Six new modules, all axioms `[propext, Classical.choice, Quot.sound]`:
+
+  `FreeCoproductKernel.lean` — `IsFreeOver R Z` ("`Z` is a coproduct of copies of `R`") and the
+  algebra behind it: for any function `u : A → B` of index types, `sigmaKerIncl` is a kernel of the
+  induced map `∐_A R → ∐_B R`, so `isFreeOver_of_isLimit_kernelFork` says that kernel is free.  The
+  splitting is written down explicitly — choose one preimage in every nonempty fibre — so no
+  exactness of coproducts (AB4) is used.
+
+  `SimplicialPiZeroFree.lean` — `homologyMap_zero_comp_homology₀Iso`: degree-zero homology carries a
+  map of simplicial sets to the map of coproducts induced by the map of components.  Hence
+  `isFreeOver_homology_zero` (degree-zero homology is always free) and
+  `isFreeOver_of_isLimit_kernelFork_homologyMap_zero` (a kernel of a degree-zero induced map is
+  free).  `isKernelOfCompMono`: a kernel of `g ≫ m` with `m` mono is a kernel of `g`.
+
+  `FamilyDegreeOneFree.lean` — the Mayer--Vietoris consequence.  For a base and a family of pieces
+  meeting only inside the base, with no homology in degree one on the base or on the disjoint union
+  of the pieces, `isFreeOver_homology_famSup_one` gives that the first homology of the union is free.
+  The mechanism: the connecting map is a kernel of the degree-zero map into the biproduct, and that
+  map factors as (map into the pieces) ≫ (a split monomorphism), because the component of an
+  intersection inside the base is determined by its component inside the pieces.
+
+  `FamilyCoverBaseComponents.lean` — that determination, for the building cover: `pi0_base_eq_atom`.
+  Inside the base every element is joined to the atom of its own component by two comparabilities
+  (it lies under its join with the atom, and so does the atom), so the base component is a function
+  of the piece.
+
+  `FamilyBuildingFree.lean` — `isFreeOver_homology_famBuilding`: for a bounded modular lattice with
+  an atom below every nonzero element, the homology of the disjoint union of the interval buildings
+  of any family is free **in every positive degree**, with no rank hypothesis at all.  The descent is
+  `isIso_famTopEmbedding` down to degree one, where the kernel computation above applies.
+  `isFreeOver_homology_properPart` is the one-component case.
+
+  `BuildingFreeSubmodule.lean` — `isFreeOver_homology_properPart_submodule`,
+  `isFreeOver_homology_building` (the horizon presentation, order reversed), and
+  `Steinberg.isFreeOver_steinbergModule`: **the Steinberg module of a vector space is free.**
+
+  So `(6)` now has its module structure and not only its definition: `H_(N-2)` is the Steinberg
+  module by definition, it carries the observer action, and it is a free object.  What is still not
+  proved is that a basis can be taken to consist of apartment classes — Solomon's basis theorem — and
+  `(4)` as a homotopy equivalence.
+
+  **Card correction.**  The `Lean boundary` section said freeness "needs a shelling or the opposition
+  retraction; neither follows from the Mayer--Vietoris machinery built here".  That is now false as
+  stated: freeness does follow from that machinery, once degree-zero homology is read through `π₀`.
+  Only the apartment basis needs the extra geometry.  The section and the `2 -> 3` gate are corrected.
+
+- 2026-08-02 — **`(5)` is now complete, degree zero included.**
+  `formal/GaloisForLFunctions/HTGeometry/BuildingConnected.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`:
+
+  `(5)` is a statement about *reduced* homology, so it asserts something in degree zero too: the
+  building is connected.  That half was missing — `isZero_homology_building_of_ne` only speaks for
+  `1 ≤ i`.  It is now proved:
+
+  `reflTransGen_comparable_properPart_submodule` — any two nonzero proper subspaces of a space of
+  dimension at least three are joined by a chain of inclusions: each contains a line, and two lines
+  span a subspace of dimension at most two, which is still proper;
+  `isConnected_nerve_properPart_submodule` and its order-dual form — hence the order complex is
+  connected, in both the subspace order and the reversed order the horizon complex uses;
+  `homologyZeroIsoProperPartSubmodule`, `homologyZeroIsoBuilding` — hence degree-zero homology is a
+  single copy of the coefficients, which is exactly `reduced H_0 = 0`.
+
+  With the vanishing above degree zero, `(5)` now holds in the sense the card states it: for
+  `N ≥ 3` the reduced homology of `Δ_HT(V)` vanishes in every degree except `N - 2`.

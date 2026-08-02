@@ -768,3 +768,21 @@ receive a new title and an independent significance audit.
   law.  Axiom audit of the packing, cardinal, fixed-radius recurrence, and
   circuit-hard capstones reports only `propext`, `Classical.choice`, and
   `Quot.sound`.
+- 2026-08-02 -- Strengthened O6 from the earlier inverse-dictionary-squared
+  compression surrogate to the physical dimension-linear scale.
+  `ConservedLocalTwoQuerySignalLaw.lean` proves the exact lower bound
+  `3^(-q)/M`, hence `1/(12^q n)` for a one-dimensional fixed-`q` dictionary
+  and `1/(12n)^q` all-to-all. `ProductStabilizerPauliTwirlLaw.lean` proves the
+  six-state single-qubit twirl, its independent product factorization, exact
+  cancellation of distinct Pauli strings, and equality of the operational
+  two-copy protocol correlation with that weighted coefficient signal.
+  `FiniteUnitaryHaarMeasureLaw.lean` constructs normalized Haar probability
+  on every finite complex unitary group and proves the invariance, column
+  normalization, permutation symmetry, and explicit coordinate mixers needed
+  for the remaining Haar fourth-moment benchmark. All three modules compile
+  individually with `lake env lean`; no forbidden declarations occur.
+  O6 now lacks only completion of the exact Haar fourth-moment identity and
+  dictionary-cardinality instantiation. O4 remains the master open core:
+  a maximally hard endpoint by normalized time `O(2^n/poly(n))`, which the
+  already compiled autonomous cone converts into the full initial linear
+  growth ramp.

@@ -946,9 +946,15 @@ Coordinatewise event cutoffs also create a raw first-order commutator, classifie
 so finite logarithmic recurrence controls the correct primitive-plus-zero-order base source without
 assuming \(F'\). The augmented flux system then removes the primitive derivative, gives
 arbitrary-nonnormal weighted graph uniqueness, and Volterra Liouville gives exponential value/flux
-decay. Remaining core is root-derivative propagation, literal paired assembly, and exact physical
-root dipole/flux matching. Degree-\(m\) moments and
+decay. At that stage the remaining core was root-derivative propagation, literal paired assembly,
+and exact physical root dipole/flux matching. Degree-\(m\) moments and
 biweighted dichotomy remain alternative obligations of the direct Hardy architecture.
+
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-complementary-primitive-flux-derivative-recovery.md`
+now closes root-derivative propagation. The \(M\) and \(I-M\) primitive fluxes are exactly the two
+cutoffs of the uncut flux, so their rough prime primitives cancel before weak derivative
+coercivity. The remaining finite-type source gates are literal paired assembly, physical-root
+dipole/flux matching, and compact-middle coverage.
 
 ## 7. Lean decision
 
@@ -1041,8 +1047,8 @@ paper mathematics; abstract formalization would not certify source-specific anal
 - [x] prove coordinate-cutoff covariance obstruction and primitive-flux survivor
 - [x] prove primitive-flux arbitrary-nonnormal weighted graph reduction
 - [x] prove flat-tempered primitive-flux Volterra Liouville
+- [x] prove complementary primitive-flux root derivative recovery
 - [ ] prove `SUZUKI-POLYNOMIAL-ORBIT-NORMAL-IDENTITY`
-- [ ] propagate weighted flux regularity to physical root derivative
 - [ ] prove degree-m source moments or biweighted Evans dichotomy only if direct Hardy is retained
 - [ ] verify zero dipole source moment in the literal assembled equation
 - [ ] pass recurrence-infinite apertures

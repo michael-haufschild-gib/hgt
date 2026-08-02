@@ -302,6 +302,71 @@ theorem suzukiParitySpectral_hazardGap_pos_iff_inversionDebt_lt_credit
   · intro h
     exact Or.inl ⟨sub_pos.mpr h, mul_pos hevenPos hoddPos⟩
 
+/-- Vanishing transport is exactly balance of lower-pair credit and inversion debt. -/
+theorem suzukiParitySpectral_hazardGap_eq_zero_iff_inversionDebt_eq_credit
+    {μ : Measure α} {ν : Measure β} [SFinite μ] [SFinite ν]
+    (evenNode evenWeight : α → ℝ) (oddNode oddWeight : β → ℝ)
+    (lambda : ℝ)
+    (heven : Integrable
+      (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x) μ)
+    (hevenSq : Integrable
+      (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ 2) μ)
+    (hodd : Integrable
+      (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y) ν)
+    (hoddSq : Integrable
+      (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ 2) ν)
+    (hevenPos : 0 < suzukiParitySpectralEnergy μ evenNode evenWeight lambda)
+    (hoddPos : 0 < suzukiParitySpectralEnergy ν oddNode oddWeight lambda) :
+    suzukiParitySpectralHazardGap
+          μ ν evenNode evenWeight oddNode oddWeight lambda = 0 ↔
+      suzukiParitySpectralInversionDebt
+          μ ν evenNode evenWeight oddNode oddWeight lambda =
+        suzukiParitySpectralLowerPairCredit
+          μ ν evenNode evenWeight oddNode oddWeight lambda := by
+  rw [suzukiParitySpectral_hazardGap_eq_crossGapMass_div
+    evenNode evenWeight oddNode oddWeight lambda heven hevenSq hodd hoddSq
+    hevenPos.ne' hoddPos.ne']
+  rw [div_eq_zero_iff]
+  simp only [mul_eq_zero, hevenPos.ne', hoddPos.ne', or_false]
+  rw [suzukiParitySpectralCrossGapMass_eq_credit_sub_inversionDebt
+    evenNode evenWeight oddNode oddWeight lambda heven hevenSq hodd hoddSq]
+  exact sub_eq_zero.trans eq_comm
+
+/-- Negative transport is exactly strict domination of lower-pair credit by inversion debt. -/
+theorem suzukiParitySpectral_hazardGap_neg_iff_credit_lt_inversionDebt
+    {μ : Measure α} {ν : Measure β} [SFinite μ] [SFinite ν]
+    (evenNode evenWeight : α → ℝ) (oddNode oddWeight : β → ℝ)
+    (lambda : ℝ)
+    (heven : Integrable
+      (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x) μ)
+    (hevenSq : Integrable
+      (fun x => evenWeight x * suzukiShiftResolventKernel evenNode lambda x ^ 2) μ)
+    (hodd : Integrable
+      (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y) ν)
+    (hoddSq : Integrable
+      (fun y => oddWeight y * suzukiShiftResolventKernel oddNode lambda y ^ 2) ν)
+    (hevenPos : 0 < suzukiParitySpectralEnergy μ evenNode evenWeight lambda)
+    (hoddPos : 0 < suzukiParitySpectralEnergy ν oddNode oddWeight lambda) :
+    suzukiParitySpectralHazardGap
+          μ ν evenNode evenWeight oddNode oddWeight lambda < 0 ↔
+      suzukiParitySpectralLowerPairCredit
+          μ ν evenNode evenWeight oddNode oddWeight lambda <
+        suzukiParitySpectralInversionDebt
+          μ ν evenNode evenWeight oddNode oddWeight lambda := by
+  rw [suzukiParitySpectral_hazardGap_eq_crossGapMass_div
+    evenNode evenWeight oddNode oddWeight lambda heven hevenSq hodd hoddSq
+    hevenPos.ne' hoddPos.ne']
+  rw [div_neg_iff]
+  rw [suzukiParitySpectralCrossGapMass_eq_credit_sub_inversionDebt
+    evenNode evenWeight oddNode oddWeight lambda heven hevenSq hodd hoddSq]
+  constructor
+  · intro h
+    rcases h with h | h
+    · exact False.elim ((not_lt_of_ge (mul_pos hevenPos hoddPos).le) h.2)
+    · exact sub_neg.mp h.1
+  · intro h
+    exact Or.inr ⟨sub_neg.mpr h, mul_pos hevenPos hoddPos⟩
+
 end
 
 end RHTower

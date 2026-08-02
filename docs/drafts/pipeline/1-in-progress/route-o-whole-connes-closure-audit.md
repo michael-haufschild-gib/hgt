@@ -633,9 +633,23 @@ Thus the cutoff defect belongs to a primitive-plus-zero-order Gamma source class
 uncontrolled derivative after the full product rule. The subsequent flux reduction removes the
 derivative of that primitive from the augmented equation and gives arbitrary-nonnormal weighted
 graph uniqueness. At finite logarithmic type its base weighted source norm is paper-closed.
-Remaining core is root-derivative propagation, exact physical-root flux matching, total
-antisymmetric matching, and literal paired assembly. Degree-\(m\) moments are required only if the
-direct polynomial-group Hardy path is retained.
+At the value/flux stage, remaining core was root-derivative propagation, exact physical-root flux
+matching, total antisymmetric matching, and literal paired assembly. Degree-\(m\) moments are
+required only if the direct polynomial-group Hardy path is retained.
+
+Root-derivative propagation is now closed by
+`suzuki-complementary-primitive-flux-derivative-recovery.md`. For \(Q=I-M\),
+
+```text
+A(MF)-[C,M]F=MAF,
+A(QF)-[C,Q]F=QAF.
+```
+
+The rough primitives are opposite and the two flux derivatives sum to \((AF)'\). The terminal
+\(M\)-branch is controlled by Volterra Liouville; the pre-event \(Q\)-branch pays the finite
+recurrence budget directly. Shifted Gamma numerical-range coercivity then gives weighted \(F'\)
+with arbitrary bounded nonnormal \(B\). Remaining finite-type gates are literal paired source
+assembly, physical-root value/dipole flux matching, and compact-middle coverage.
 
 Hostile verdict: `SURVIVES PRELIMINARY ATTACK`. Generic logarithmic ellipticity is insufficient,
 whole-packet inverse-log grading is false, and the completed domain has a genuine corona. The
@@ -703,9 +717,9 @@ all-orders source-specific expansion or flatness-to-`H1_0` theorem.
 - [x] extract exact primitive cutoff flux identity
 - [x] derive primitive-flux graph system and arbitrary-nonnormal weighted uniqueness estimate
 - [x] prove flat primitive-flux Volterra Liouville for arbitrary bounded prime transport
+- [x] prove complementary primitive-flux derivative recovery
 - [ ] prove polynomial-carrier boundary-log normal identity at finite logarithmic type
 - [ ] prove degree-m source moments, or replace direct Hardy by primitive-flux Liouville
-- [ ] prove root-derivative propagation from the primitive-flux graph
 - [ ] prove nonnormal exponential-dichotomy matching only if the direct Hardy path is retained
 - [ ] prove arbitrary finite-order expansion for completed modes
 - [ ] verify the exact zero-dipole source moment after marked-descendant subtraction
