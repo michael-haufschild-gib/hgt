@@ -349,6 +349,40 @@ commuting all-prime Wold sieve, with full \(\omega(n)\)-stratification
 and sharp Hilbert--Schmidt wall.  This is provisional noncollision
 evidence, not a priority certificate.
 
+## Lean status
+
+The dependency-closed source theorem is formalized unconditionally in:
+
+```text
+formal/GaloisForLFunctions/RHTower/WoldSieveNormalConeVonMangoldt.lean
+formal/GaloisForLFunctions/RHTower/WoldSieveNormalConeVonMangoldtCompletion.lean
+```
+
+Exact capstones include:
+
+```text
+hasDerivAt_woldIncidenceNormalFactor
+iteratedDeriv_woldIncidenceNormalFactor_zero_of_lt_omega
+iteratedDeriv_woldIncidenceNormalFactor_omega
+tendsto_woldFiniteNormalCoefficient_atTop
+tendsto_hsNorm_woldFiniteWeightedOperator_sub_atTop
+isHS_woldVonMangoldtWeightedKernel_iff
+not_isHS_woldVonMangoldtCriticalKernel
+opTrace_woldJetTraceOperator_eq_zeta_logDeriv
+```
+
+The completion constructs literal diagonal operators on `ℓ²(ℕ)`, proves their basis action,
+Hilbert--Schmidt convergence and compactness for \(\sigma>1/2\), proves the sharp failure at and
+below \(1/2\) from Euler's divergent prime-harmonic series, and realizes the absolutely convergent
+Euler logarithmic derivative as an operator trace.  Both modules are wired into the `RHTower`
+umbrella.  Direct `lake env lean` verification and targeted module build pass.  Scratch
+`#print axioms` audits of all capstones report only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+This closes equations `(1)`--`(16)` and the dependency-closed source theorem.  The explicitly
+labelled critical Gamma/co-Poisson weld, bilateral temperedness, and RH remain open and are not
+claimed by the Lean formalization.
+
 ## Gates
 
 - [x] finite parameterized Wold sieve constructed
@@ -361,7 +395,7 @@ evidence, not a priority certificate.
 - [x] corpus collision audit
 - [x] preliminary external novelty search
 - [ ] independent specialist novelty audit
-- [ ] Lean formalization of dependency-closed scalar/finite-prime core
+- [x] Lean formalization of dependency-closed scalar/finite-prime core
 - [ ] critical Wold-jet Gamma/co-Poisson weld
 - [ ] bilateral temperedness of completed Xi conormal
 - [ ] RH
@@ -375,3 +409,8 @@ evidence, not a priority certificate.
   Hilbert--Schmidt wall at the critical exponent \(1/2\).  Isolated the
   critical Wold-jet Gamma/co-Poisson weld as the remaining source
   theorem.
+- 2026-08-02 — Completed unconditional Lean formalization of the full proven source theorem:
+  all \(\omega(n)\)-jets, cofinal current stabilization, literal weighted diagonal operators,
+  Hilbert--Schmidt convergence, sharp critical wall, compactness, and Euler logarithmic trace.
+  Added and umbrella-wired `WoldSieveNormalConeVonMangoldtCompletion.lean`; direct Lean check,
+  targeted build, and capstone axiom audit pass.

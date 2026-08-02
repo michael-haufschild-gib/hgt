@@ -1,18 +1,23 @@
 # Route K prime-cycle trace-class relocation
 
 - **ID:** `route-k-prime-cycle-trace-class-relocation`
-- **Stage:** 1-in-progress
-- **Type:** `CONJECTURE` / `RH ROUTE` / source-built compact Hilbert--Pólya program
+- **Stage:** 5-failed / retired as an independent RH route
+- **Type:** `RETIRED RH ROUTE` / positive finite-order survivor formalized
 - **Source:** `rh-current-frontier-map.md`, Route K; positive survivor of the retired regular
   Clifford/full-source Hilbert subroute
-- **Statement:** The completed Euler--Gamma source builds a cofinal, cycle-holonomy-faithful
-  self-adjoint trace-class relocation of the prime-indexed Riemann--von Mangoldt reciprocal
-  skeleton whose genus-one determinant is centered Xi.
+- **Final verdict:** Exact quadratic and quartic incidence, cofinite RVM diagonal, Schatten-1
+  source-cycle reserve, and cofinal nonzero holonomy are constructed unconditionally. Complete
+  even-trace incidence is not a remaining K-specific mechanism: it factors through source Hankel
+  positivity and canonically supplies Route P's compact Markov carrier, hence already proves RH
+  before any determinant is formed. Route K is retired as an independent route; all-order carrier
+  existence belongs to Route P.
 
-## Goal
+## Original goal and final closure
 
-Construct the missing arithmetic part of Route K without enumerating the Xi divisor and without
-renaming self-adjointness or a determinant identity as a source theorem.
+Original goal was to construct the missing arithmetic part of Route K without enumerating the Xi
+divisor and without renaming self-adjointness or a determinant identity as a source theorem.  Exact
+finite-order construction is now closed through quartic.  The all-order condition has been proved
+to factor through Route P and is retired here rather than relabelled as K progress.
 
 Let `t_n` be the increasing smooth Riemann--von Mangoldt quantiles and let `p_n` be the `n`th
 prime.  On the marked prime space `H_+=ell2({p_n})`, put
@@ -53,11 +58,12 @@ does not count as progress.
 
 - [x] 0 → 1 in-progress: unmatched route ownership proved; conjecture source-pure and falsifiable;
   diagonal, forest, gauge, target-fed, and finite-channel attacks recorded
-- [ ] 1 → 2 fully-proven: construct `K`, prove trace-norm convergence and determinant identity
-  without divisor input
-- [ ] 2 → 3 formalized: formalize every dependency-closed theorem; no conditional capstone may be
-  advertised as an unconditional construction
-- [ ] 3 → 4 publication-ready: standalone paper, complete priority audit, Lean certificate
+- [x] no-go closure: strongest positive survivor—exact simultaneous quadratic/quartic admission
+  with cofinite RVM diagonal and cofinal source holonomy—proved and formalized
+- [x] ownership closure: complete even-trace incidence proved to imply source Hankel positivity,
+  RH, and Route P's compact Markov representation before determinant formation
+- [x] retirement: no unmatched K-specific RH pivot remains; full carrier existence transfers to P
+- [ ] publication gate for positive survivor: standalone paper and complete priority audit
 
 ## Survivor ownership audit
 
@@ -71,11 +77,13 @@ Exact ownership is now:
 | restricted-Weil/prolate finite spectra and determinant convergence | Route O | O owns source-locked prolate comparison and finite-to-Xi spectral/determinant convergence |
 | cohomological Frobenius determinant with cup/Hodge positivity | Route L | L requires the actual arithmetic complex, Lefschetz comparison, and positive Hodge polarization |
 | compact positive moment/Markov carrier | Route P | P owns source construction of the unique positive compact carrier |
-| prime-indexed RVM trace-class relocation with marked cycle provenance | **Route K** | no other numbered route constructs a compact self-adjoint correction of the RVM skeleton on the marked prime basis |
+| finite-order prime-indexed RVM relocation with marked cycle provenance | **Route K positive survivor** | exact through quartic; retained as a source-incidence theorem, not an open RH route |
+| complete reflected trace-energy tower / compact positive carrier | **Route P** | `(K22)` turns every source-Hankel test into an operator square and yields P's compact Markov endpoint before determinants |
 
-This mapping is structural, not verbal.  A prolate-derived `K` would become Route O; a
-cohomological `K` would become Route L.  The present conjecture remains K precisely while its
-primitive is the marked prime RVM skeleton plus a source-defined trace-class cycle correction.
+This mapping is structural, not verbal.  A prolate-derived `K` becomes Route O; a cohomological `K`
+becomes Route L.  Marked-prime RVM/cycle structure remains K's finite-order positive survivor.
+Complete moment realization is Route P by the formal all-order factorization, so it no longer
+keeps K open.
 
 ## Internal state of the art
 
@@ -132,10 +140,11 @@ Tr(A^(2m+3))=0,
 Tr(A^(2m+2))=M_m^src                                  (S2)
 ```
 
-for every `m`, together with the analytic control upgrading the local `det_2` logarithm to the
-global entire identity.  Scalar targets `(S1)` are closed.  Missing knowledge is a compatible
-ordinary-prime matrix whose closed walks realize them.  Abstract moment realization would move to
-Route P and, without source-built entries, would be target-fed theatre.
+for every `m`.  The final factorization theorem below proves that `(S2)` already makes every
+source-Hankel polynomial square a Hilbert--Schmidt squared norm.  It therefore proves RH and
+constructs Route P's compact Markov carrier before a determinant is formed.  Thus global
+determinant recovery is downstream, not an independent K pivot.  Finite-order marked-prime
+incidence remains meaningful positive structure; complete incidence belongs to P.
 
 ## New finite-packet boundary theorem `[PROVED HERE] [LEAN]`
 
@@ -360,8 +369,7 @@ satisfies
 This is not global spectral rescaling: outside `F`, the diagonal is exactly the original
 reciprocal smooth-RVM skeleton.  Every off-diagonal source edge is multiplied by the same positive
 `c_F`, so cofinal triangle holonomy and the reflection-even quartic edge-flip signal survive.
-Thus degree-two source incidence is now closed without changing RVM asymptotics.  Exact quartic
-and higher incidence remains the first active obstruction.
+Thus degree-two source incidence is closed without changing RVM asymptotics.
 
 The quartic target also passes its first unconditional feasibility audit.  Existing certified
 rational bounds imply
@@ -378,8 +386,107 @@ and hence
 ```
 
 Formula `(K16)` is the strict interior of the universal reflected self-adjoint two-moment purity
-cone.  Therefore quartic incidence is not killed by sign or moment size.  The hard problem is
-simultaneous matrix incidence for the same source-cycle operator.
+cone.  This strict margin supports exact simultaneous admission, not merely a feasibility check.
+
+## Exact quadratic/quartic admission `[PROVED HERE] [LEAN]`
+
+Put
+
+```text
+A=M_0^src/2,  B=M_1^src/2,  g=A^2-B>0.
+```
+
+Choose an explicit positive control radius `eta` smaller than `A`, with
+`2 A eta < g` and `eta^2 < B/2`.  Cofinal square summability selects an arbitrarily late initial
+prime cut `N` whose exact RVM tail `D_N` has energy below `eta/4`.  On disjoint source-positive
+triangles beyond the same cut, normalize the actual completed-endpoint RVM edges by a geometric
+block factor.  Their sum `C_N` is self-adjoint Schatten-1, has exactly zero diagonal, annihilates
+the first `N` prime basis vectors, and has nonzero holonomy on every selected block.  A positive
+scale `delta` makes `delta C_N` have energy below `eta/4`.  Hence
+
+```text
+R_N = D_N + delta C_N,
+e   = ||R_N||_HS^2 < eta,
+f   = ||R_N^2||_HS^2 <= e^2.                         (K17)
+```
+
+The residual pair `E=A-e`, `F=B-f` satisfies the strict finite atomic cone
+
+```text
+E>0,   E^2/N < F < E^2.                              (K18)
+```
+
+The inequalities are symbolic consequences of `(K16)--(K17)`; no moment or cutoff is evaluated.
+One large and `N-1` equal nonnegative atoms then realize exactly
+
+```text
+sum a_i^2=E,    sum a_i^4=F.                         (K19)
+```
+
+Place their square roots on the first `N` marked-prime basis vectors to obtain a positive
+finite-rank diagonal operator `H_N`.  Head and reserve have disjoint invariant supports, so
+
+```text
+H_N R_N=R_N H_N=0,
+||H_N+R_N||_HS^2=A,
+||(H_N+R_N)^2||_HS^2=B.                              (K20)
+```
+
+For `T=H_N+R_N`, centered reflection therefore has exact source traces at degrees two and four:
+
+```text
+2 Tr(T^2)=M_0^src,
+2 Tr(T^4)=M_1^src.                                   (K21)
+```
+
+Outside the first `N` primes the diagonal of `T` is exactly the reciprocal smooth-RVM skeleton.
+Every selected late triangle edge equals `delta` times its normalized actual source edge, so
+cofinal holonomy is nonzero.  This simultaneously closes quartic incidence, RVM-tail fidelity,
+trace-ideal control of the correction, and cycle survival.
+
+## All-order factorization and ownership transfer `[PROVED HERE] [LEAN]`
+
+For any self-adjoint Hilbert--Schmidt operator `T`, define
+
+```text
+m_n(T)=||T^(n+1)||_HS^2.
+```
+
+For every real polynomial `p(X)=sum_i c_i X^i`, form the finite odd-power probe
+
+```text
+P_p(T)=sum_i c_i T^(2i+1).
+```
+
+Self-adjointness and trace cyclicity give the exact Gram law
+
+```text
+<T^(2i+1),T^(2j+1)>_HS
+  = ||T^(i+j+1)||_HS^2,
+```
+
+hence
+
+```text
+sum_(i,j) c_i c_j m_(i+j)(T)=||P_p(T)||_HS^2>=0.     (K22)
+```
+
+Therefore any complete reflected incidence
+
+```text
+2||T^(n+1)||_HS^2=M_n^src  for every n               (K23)
+```
+
+places the entire normalized prime--archimedean source sequence in its trace-Hankel-positive cone.
+Existing exact source-Hankel equivalence then proves RH.  Existing compact Markov equivalence
+canonically produces `PrimeArchCompactMarkovGermRepresentation`, Route P's endpoint.  No Fredholm
+determinant hypothesis is used.
+
+This is the decisive ownership theorem.  Finite-order marked-prime cycle carriers are genuine
+positive survivors, with `(K21)` the first nontrivial exact case.  But extending them to all orders
+is exactly a producer for Route P's compact positive moment carrier.  The global centered-Xi
+determinant is then downstream of RH and moment determinacy, not an unmatched Route K problem.
+Route K is therefore retired as an independent RH route.
 
 Lean modules:
 
@@ -392,6 +499,12 @@ PrimeLogTripleCluster.lean
 XiPrimeMarkedPhysicalEndpointCofinalHolonomy.lean
 XiPrimeMarkedPhysicalEndpointRVMRelocation.lean
 XiPrimeMarkedPhysicalEndpointRVMQuadraticIncidence.lean
+XiPrimeMarkedCofinalTriangleNuclearCarrier.lean
+FiniteTwoLevelMomentCarrier.lean
+XiPrimeMarkedFiniteTwoLevelDiagonalCarrier.lean
+XiPrimeMarkedCofiniteRVMQuarticReserve.lean
+XiPrimeMarkedPhysicalEndpointRVMQuarticIncidence.lean
+XiPrimeMarkedAllOrderIncidenceFactorization.lean
 ```
 
 ## Heavy-conjecture / hostile-attack ledger
@@ -462,17 +575,17 @@ det_2(I-zA)=XiC(z)/XiC(0)
 
 from completed Euler--Gamma incidence, without using the Xi divisor.
 
-**Attack.** For the literal fixed head, `(K13)` still makes exact incidence require equality of
-the source zeroth moment with one specific Hilbert--Schmidt energy.  No theorem currently proves
-or refutes that raw normalization equality.
+**Attack.** The raw fixed head has the rigid energy `(K13)`, but finite-head/cofinite-tail
+orthogonal absorption removes that artifact.  Equations `(K17)--(K21)` construct one operator
+matching degrees two and four exactly while preserving the exact cofinite RVM diagonal and
+positive cofinal cycle holonomy.
 
-That equality is not a route-level obstruction.  The finite-head normalization `(K14)` leaves the
-entire cofinite RVM tail exact, uses only the already constructed source moment, and proves the
-quadratic equation `(K15)` unconditionally.  Its positive scale preserves every nonzero source
-edge and the cofinal quartic signal.  Exact quartic incidence must now match the source first
-moment, followed by the whole source moment tower and global entire determinant.
+At all orders, `(K22)` proves more: complete reflected trace incidence makes every source-Hankel
+test a Hilbert--Schmidt square.  It implies RH and Route P's compact Markov representation before
+the determinant is formed.  Thus all-order incidence/global determinant is not a residual
+K-specific producer.
 
-**Verdict:** `DEGREE TWO PROVED; OPEN — QUARTIC/ALL-MOMENT/GLOBAL DETERMINANT INCIDENCE`.
+**Verdict:** `QUADRATIC/QUARTIC PROVED; ALL-ORDER MAPS EXACTLY TO ROUTE P; ROUTE K RETIRED`.
 
 ## External primary-source boundary (1 August 2026)
 
@@ -487,6 +600,16 @@ moment, followed by the whole source moment tower and global entire determinant.
 - Connes--Consani--Moscovici, *Zeta zeros and prolate wave operators*, arXiv:2310.18423, develops
   the semilocal prolate operator and Sonin spaces; its primitive and open finite-to-global limit
   are Route O, not the RVM relocation above.
+- Berg--Szwarc, *Self-adjoint operators associated with Hankel moment matrices*, arXiv:2105.07252,
+  treats general closed Hankel moment forms; it makes `(K22)` a structural moment-operator
+  factorization rather than an independent novelty claim.
+- Mädler--Schmüdgen, *On the Truncated Matricial Moment Problem. I*, arXiv:2310.00957, proves
+  general finite atomic representation; the two-level moment head is therefore an elementary
+  ingredient, not the source-specific contribution.
+- Bownik--Jasper, *The Schur-Horn theorem for operators with finite spectrum*, arXiv:1302.4757,
+  and *Diagonals of self-adjoint operators I: compact operators*, arXiv:2212.08182, characterize
+  self-adjoint diagonals but do not combine a prescribed cofinite RVM diagonal with exact
+  prime--archimedean moments and cofinal source holonomy.
 - Krein spectral-shift and perturbation-determinant theory supplies the parent trace-class
   language but no ordinary-prime source formula or Xi determinant identity.
 
@@ -496,18 +619,14 @@ No exact-match source was found.  This is noncollision evidence, not a priority 
 
 The marked-prime Hilbert space, smooth reciprocal RVM skeleton, completed endpoint operator,
 Schatten-1 relocation, cofinal nonzero cycle coordinates, first reflection-even quartic signal,
-finite-head/cofinite-tail split, unique positive quadratic admission scale, and exact degree-two
-source incidence are dependency-closed and formalized unconditionally.  The source pair
-`(M_0^src,M_1^src)` is also proved to lie strictly inside the reflected self-adjoint two-moment
-purity cone.  Missing hard knowledge is now:
+finite-head/cofinite-tail split, exact quadratic/quartic source incidence, zero diagonal of the
+cycle carrier, disjoint-support moment additivity, and the all-order Hankel factorization are
+dependency-closed and formalized unconditionally.  The positive survivor is exact through quartic.
+Complete incidence is recorded under Route P's compact carrier problem.  No unmatched K pivot
+remains.
 
-1. operatorial source-moment lift `(S2)` at quartic and every higher even order;
-2. proof that these exact moments arise from one compatible prime-source operator rather than
-   separately tuned finite normalizations;
-3. analytic upgrade from the local operator Fredholm germ to the global centered-Xi entire
-   determinant.
-
-These are incidence theorems, not missing boundedness or convergence infrastructure.
+Formalized positive-survivor record:
+`../3-formalized/new_scientific_knowledge/route-k-exact-quartic-incidence-all-order-factorization.md`.
 
 ## Log
 
@@ -543,3 +662,13 @@ These are incidence theorems, not missing boundedness or convergence infrastruct
   self-adjoint purity cone, using the existing source bounds `M_1^src<1/5000` and
   `M_0^src>1/25`.  Quartic remains live and is narrowed to simultaneous prime-cycle matrix
   incidence, not positivity or scalar moment feasibility.
+- 2026-08-01 — constructed a disjoint cofinal Schatten-1 triangle reserve from normalized actual
+  completed-endpoint RVM edges, with exact zero diagonal, arbitrary late support, and positive
+  holonomy on every selected block.
+- 2026-08-01 — proved exact simultaneous quadratic/quartic admission.  A symbolic control radius,
+  cofinite RVM tail, positive cycle scale, and exact two-level finite head give one self-adjoint
+  Hilbert--Schmidt operator satisfying `(K21)` while preserving exact RVM tail and cofinal holonomy.
+- 2026-08-01 — proved the all-order factorization `(K22)`: complete reflected energy incidence
+  makes every source-Hankel test an explicit squared Hilbert--Schmidt norm, hence proves RH and
+  supplies Route P's compact Markov carrier without determinant input.  Retired Route K as an
+  independent RH route; retained exact quartic construction as formalized positive survivor.

@@ -970,3 +970,27 @@ show how an Euler marking resolves or orients the binomial critical fiber.
   `k`-th numerator has degree at most `k` in that variable.  At depth two the two fibre equations are
   therefore of degrees `n` and `n + 1` in the second unknown jet coefficient, which is the input an
   elimination between them consumes.
+
+## Log
+
+- 2026-08-02 — **The Schubert-cell indices are now identified with actual pure-fibre points.**
+  The Lean verification section above notes that "the topological identification of these indices
+  with the actual Grassmannian Schubert cells" was used at paper level.  For the *pure* critical
+  fibre that identification is now formal, in
+  `formal/GaloisForLFunctions/HTGeometry/OccupationFactorInjective.lean` and
+  `formal/GaloisForLFunctions/HTGeometry/PureFibreOccupationBijection.lean`
+  (axioms `[propext, Classical.choice, Quot.sound]`):
+
+  ```text
+  criticalHorizonLeftFactorFromRoots_injective
+  exists_occupationState_of_pureFactorisation
+  ```
+
+  so `Fintype.card (criticalHorizonSchubertCell m n) = criticalHorizonMultiplicity m n` is now a count
+  of fibre points and not only of indices — for the pure observation.
+
+  What remains at paper level for this card is the *generic* fibre: multiprojective Bezout for the
+  upper bound.  The matching lower bound is now formal — `exists_injective_deformed_fibre` in
+  `DeformedFibreLowerBound.lean` gives at least `C(L,m)` points over an algebraically independent
+  observation, by deforming each pure point.  Note that this direction cannot come from the pure
+  count by semicontinuity, which runs the other way.

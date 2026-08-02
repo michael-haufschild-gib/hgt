@@ -278,8 +278,15 @@ function of `Lambda` vanishing at every `Lambda_j(theta)`.  At the pole `Lambda=
 coordinates based at `x_p` contribute, and their principal parts force all coefficients to vanish.
 The real jet span is therefore full.  The same codimension and transversality proof applies.
 
-Now choose `2k` positive zeros `a_ell,b_ell` and nonreal points `t_ell` in the upper half-plane with
-nonzero real part.  The even Schwarz-real surgery
+Now choose `2k` positive zeros `a_ell,b_ell` and nonreal points `t_ell` in the upper half-plane
+such that the full upper-pole family
+
+`{t_ell,-conj(t_ell):1<=ell<=k}`
+
+is pairwise distinct.  In particular every `t_ell` has nonzero real part.  This full separation,
+not merely pairwise distinctness of the `t_ell`, is necessary: a collision
+`t_i=-conj(t_j)` would identify two claimed upper poles and lower the index.  The even Schwarz-real
+surgery
 
 `E_(theta,k)(z)=E_theta(z) prod_(ell=1)^k`
 
@@ -639,32 +646,39 @@ remain required.
 
 ## Lean status
 
-The current Lean tree formalizes the finite pairability/index side (`OmegaComplexStructure`,
-`SeamPolarizationWeld`, `SeamSpectralFlow`, `CarrierCauchy`), the measured-index blindness side, the
-forward infinite positive-measure Herglotz/Pick theorem in `MeasureCarrier.lean`, and the abstract
-countable Baire-avoidance backbone.  `HTGeometry.CauchyJetControllability` now proves the complete
-finite-dimensional real Cauchy-jet surjectivity theorem for every infinite injective real support,
-including the actual prime-log specialization.  For that discrete source,
-`HTGeometry.PolynomialJetEscape`, `PrimeLogGaugePerturbation`,
-`PolynomialRelationDetector`, and `PrimeLogPolynomialJetEscape` prove positivity-preserving
-polynomial avoidance inside arbitrarily small bounded-gauge balls, including nonzero specialization
-of polynomial-coefficient relations at distinct upper-half-plane nodes.  `DiscreteCauchyJetPacket`,
-`DiscreteCauchyJetDerivatives`, and `JetFactorialScale` identify those coordinates exactly with the
-actual iterated derivatives and transfer avoidance across the factorial diagonal.  `HTGeometry.RegularizedHerglotzTransform` now closes the
-regularized infinite-measure reweighting layer: the (H0) transform is an invertible rational gauge
-of the Cauchy transform of a probability measure, and `HTGeometry.MeasureCauchyJetDetection`
-replaces the discrete separated-point detector by almost-everywhere vanishing against any measure
-of infinite support.  The tree does not yet
-contain the corresponding `L^infinity(mu)` measure-level surjectivity theorem for arbitrary
-nondiscrete support, infinite **signed** Cauchy-kernel index, algebraic rank-defect codimension,
-or full parametric transversality.  Those missing layers carry the
-complete measure-universal claim, so no partial theorem is promoted to stage 3.
+Complete unconditional formalization is umbrella-reachable under
+`GaloisForLFunctions.HTGeometry`.  Main capstones:
+
+- `HerglotzFullTranslationRegularizedFreeness` and
+  `HerglotzFullTranslationAffineFreeness`: arbitrary infinite-support H0 measures, dense residual
+  bounded phases, every finite tuple of distinct complex translations, and the literal
+  `alpha + beta*z` Herglotz presentation;
+- `HerglotzDiscreteSupportFreeness`: exact `ell^infinity` discrete-support series corollary;
+- `HerglotzFiniteAtomicOrbitInvariance` and `HerglotzFiniteAtomicGaugeSlice`: exact finite gauge
+  slices, embedded differential-field and differential-matroid equality, pointed generator class
+  modulo `C(z)`, and Pick index equal to sign-cube distance;
+- `MovingCanonicalProduct`, `MovingCanonicalFullTranslationFreeness`,
+  `MovingCanonicalSurgery`, and `MovingCanonicalSurgeryFieldInvariance`: formulae `(5)--(10)`,
+  order-one exact divisor, exact `k` negative squares, dense residual full-orbit freeness, and
+  field/matroid invariance;
+- `MovingEvenCanonicalProduct`, `MovingEvenCanonicalFullTranslationFreeness`, and
+  `MovingEvenCanonicalSurgery`: formulae `(11)--(13)`, even and Schwarz-real exact divisor,
+  exact `2k` negative squares under the necessary full upper-pole separation, and unchanged
+  field/matroid;
+- `MovingCanonicalSurgeryPointedCarrier`: ordinary and even surgery preserve every translated
+  generator class modulo `C(z)` and no selector on that class recovers surgery count/index;
+- `FreeDifferentialFamilyScale`: simultaneous nonzero scalar rescaling of any freely generated
+  differential family extends to a derivation-preserving field automorphism, commutes with
+  compatible translation automorphisms, and forces every invariant complex sesquilinear form to
+  vanish.
+
+All statements are proved without `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.
 
 ## Gates
 
 - [x] 0 -> 1: exact law and measure-jet, transversality, chamber, and canonical-product cores isolated
 - [x] 1 -> 2: complete unconditional paper proof
-- [ ] 2 -> 3: complete unconditional theorem formalized in Lean
+- [x] 2 -> 3: complete unconditional theorem formalized in Lean and wired into the umbrella
 - [ ] 3 -> 4: publication-ready preprint and independent novelty audit
 
 ## Log

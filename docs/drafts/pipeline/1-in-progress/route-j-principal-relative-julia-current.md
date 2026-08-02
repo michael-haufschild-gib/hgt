@@ -537,15 +537,80 @@ Their semilocal Poisson/Weil program remains explicitly conjectural.  Hence regu
 compression is closed, but singular semilocal source coupling remains live and belongs to this
 Route-J audit.
 
-### `J-SF6` — Xi Taylor theta-tail oriented current `[OPEN INPUT]`
+### `J-SF6` — Xi Taylor theta-tail oriented current
+`[POINTWISE CLASSIFIED; REFLECTION-EQUIVARIANT CONVERGENT TWO-ACTIVE-ATOM SCALAR CLASS CLOSED;
+CANONICAL TWO-SIDED THETA COMPLETION CLOSED;
+EXPLICIT THREE-ATOM REFLECTION-COHERENT UNIT-CHARGE SURVIVOR CONSTRUCTED;
+THREE-ATOM LITERAL SAME-PROFILE CLASS CLOSED;
+EXPLICIT FOUR-ATOM LITERAL REFLECTED UNIT-CHARGE SURVIVOR CONSTRUCTED;
+FOUR-ATOM LITERAL EQUAL-CHARGE CLASS COMPLETELY CLASSIFIED AND ONE-ORBIT RIGID;
+ACTUAL NON-ATOMIC AT-MOST-THREE-PHASE-WEIGHTED-SIGN-CHANGE CLASS CLOSED;
+EXPLICIT EXACT-FOUR-CHANGE REGULAR SURVIVOR CONSTRUCTED;
+FIXED-SPACING IDENTICAL-FIVE-TRANSLATE REGULAR CLASS COMPLETELY CLASSIFIED AND
+ONE-POSITIVE-DAMPING RIGID;
+UNCENSORED MULTI-PRIME PRIME-POWER PHASE-NODE SOURCE CLOSED;
+SOURCE-LIFT/SINGULAR/RELATION SURVIVOR OPEN]`
 
 The finite theta-tail source has an exact signed current and a fully arithmetic two-term remainder
 bridge.  Its remaining joint sublinear bound is equivalent to RH, so it cannot be imported as an
 estimate.  It is nevertheless a source-defined odd current before scalar fusion, and the
 full-density decomposition proves that all unresolved positive contribution lies in one canonical
-finite-truncation transfer current.  Route J must test an exact transgression from that transfer
-current to `(2)`, or prove that no Julia/Gamma/co-Poisson transgression preserves its sign.  Merely
-calling the Taylor current a different route would leave a source-current survivor unexamined.
+finite-truncation transfer current.  Fixed meromorphic transgressions were already classified by
+local divisor order.  Section 24 now closes the genuinely moving positive-completion class:
+arbitrary nonnegative source densities, phase-lag schedules, and positive theta-packet depth
+schedules have zero anisotropic divisor charge, even without a normal-family limit.  They cannot
+screen the exact finite-Taylor multiplicity.  The surviving transgression must leave the positive
+completion cone through one coherent divisor-independent signed density family, a singular
+boundary term, or a relation-valued channel without a scalar logarithmic derivative.  Section 25
+proves arbitrary pointwise signed interpolation is universal and hence nonselective.  Merely
+calling the coherent survivor a different route would leave a source-current survivor unexamined.
+Section 26 proves the first cross-mesh exclusion in the quarter-turn palette: scalar charge
+uniquely collapses to two even atoms, its normalized weights determine the Xi fibre radius, and a
+common reflection-equivariant nonzero profile at `sigma` and `1-conj(sigma)` forces
+`Re sigma=1/2`. Section 28 removes that support choice. Every distinct two-active-atom scalar jet
+phase-locks both arbitrary support times to half turns; its limiting value and derivative
+fingerprints then force every reflection-projectively coherent nonzero charge profile onto the
+critical line. A projective survivor must use at least three asymptotically active atoms. Section
+30 proves that one literal coefficient profile with equal reflected charge needs at least four:
+three atoms force zero charge, while an explicit four-atom polynomial gives one common exact
+unit-charge profile. Section 31 proves every such four-atom equal-charge vector lies on that
+canonical ray, and one nonzero vector can serve only one reciprocal transverse orbit. Thus the
+minimal survivor is target-informative, not a divisor-independent source law.
+Section 32 restores the Fourier phase required by a genuine non-atomic physical-time source. For
+an arbitrary atomless reference measure and unbounded positive support, the imaginary-value and
+real-derivative rows at both reflected fibres reduce to orthogonality of
+`cosh(c t) sin(u t)h(t)` against `1`, `t`, and `tanh(c t)`. Strict concavity kills every source
+whose phase-weighted density `sin(u t)h(t)` has at most two sign changes. On one open phase
+chamber these are exactly changes of `h`; the finite full-turn survivor sits on sine nodes and is
+therefore a singular escape, not an atomless extremizer.
+Section 33 uses the fourth, previously discarded derivative-row combination. The resulting
+exponential-Hermite system kills every source with at most three phase-weighted sign changes.
+Section 34 proves this threshold exact by an explicit five-bump Lebesgue source. Its reciprocal
+double-root mask annihilates all four rows and has exactly four changes in one sine chamber.
+Section 35 classifies the entire arbitrary-coefficient fixed-spacing identical-five-bump class:
+the four physical rows force precisely the reciprocal double-root coefficient ray, and one
+nonzero physical mask serves only one positive damping. Thus the sharp extremizer is necessarily
+target-informative. Variable support geometry, nonidentical or higher-arity translates, general
+atomless densities with at least four phase-weighted changes, phase-node mass, singular
+boundaries, broken leading reflection, and relation-valued channels remain live.
+Section 36 attacks phase-node mass with literal arithmetic provenance. At every nonzero carrier,
+prime-power delays from two distinct prime bases cannot both be sine nodes: the two node equations
+would give a nontrivial integer relation between the two prime logarithms. Hence every phase-node
+multiplier on the prime-power wall has active prime-base support of cardinality at most one. The
+literal Suzuki/von-Mangoldt far-hinge source is positive on every prime-power atom, so it cannot
+inhabit the phase-node class. One-prime towers and non-prime-power singular sources remain live.
+Section 27 also closes the literal canonical reflected theta pair:
+`A(z)+A(-z)` is an analytic unit at every Xi divisor by its exact crossed source identity, so it
+preserves rather than screens the full anisotropic multiplicity.
+Section 29 proves the two-atom arity bound sharp. Three full-turn atoms carry an explicit nonzero
+common reflected value-kernel ray; bounded exact corrections give unit anisotropic
+source-connection charge at both off-center fibres, with projectively equal normalized weights.
+Section 30 shows why this is not yet one literal source law: the reflected three-atom
+representative is rescaled by `r^3`. That stronger same-profile constraint kills three atoms, but
+four atoms survive with one coefficient vector at both fibres. The remaining scalar obligation is
+now concrete: Section 31 shows its coefficient ray itself encodes the chosen reciprocal orbit.
+Route J must exclude this target-informative ray from the canonical theta/prime--Gamma source law,
+or derive its unique orbit source-faithfully without divisor data.
 
 ## 15. Post-manuscript exact open core
 
@@ -1194,3 +1259,1107 @@ bounded by the squared height diameter, the exact first-clock arithmetic ceiling
 operator-level strict same-block failure against the bad-mass square.  Thus the Lean theorem no
 longer reasons through an unattached scalar surrogate.  No computation, RH input, `sorry`,
 `admit`, `axiom`, `opaque`, or `unsafe` declaration occurs.
+
+## 24. Moving positive-completion gauge rigidity
+`[PAPER+LEAN-PROVED CLASS NO-GO] [NEW SOURCE-SPECIFIC UNIFORMITY]`
+
+The fixed-meromorphic-gauge theorem does not by itself exclude a theta, Julia, Gamma, or
+co-Poisson gauge which changes at every anisotropic mesh point.  This is not reassigned: it is the
+moving part of `J-SF6`.
+
+For the centered anisotropic mesh write
+
+```text
+z_n = xiCTaylorAnisotropicCenteredPoint sigma n,
+x_n = xiTaylorAnisotropicHorizontalStep sigma n.
+```
+
+At each `n`, independently, let `h_n>=0` on the positive half-line and define
+
+```text
+G_n  = integral h_n(t)(1-exp(i t z_n)) dt,
+G'_n = integral h_n(t)(-i t exp(i t z_n)) dt.
+```
+
+Suppose only that both integrals exist and that source value/derivative data `F_n,D_n` obey
+
+```text
+G_n  = -i z_n F_n,
+G'_n = -i(F_n+z_n D_n),
+F_n != 0.                                                 (56)
+```
+
+The density, total mass, moments, source depth, and phase lag may all vary without bound and need
+not converge.  Positivity gives
+
+```text
+||G'_n|| <= Re(G_n)/Im(z_n) <= ||G_n||/Im(z_n).
+```
+
+Since `||z_n||>=Im(z_n)`, `(56)` and the triangle inequality imply the schedule-uniform bound
+
+```text
+|Im(D_n/F_n)| <= ||D_n/F_n|| <= 2/Im(z_n).               (57)
+```
+
+For `sigma.re<1/2`, `Im(z_n)` tends to the positive number `1/2-sigma.re`, while `x_n->0`.
+Therefore
+
+```text
+x_n Im(D_n/F_n) -> 0.                                    (58)
+```
+
+Every superaccurate finite Xi Taylor schedule has exact mesh charge
+
+```text
+x_n Im(P'_n/P_n) -> m,
+m=analyticOrderAt(xi,sigma).toNat.
+```
+
+Subtracting `(58)` yields
+
+```text
+x_n [Im(P'_n/P_n)-Im(D_n/F_n)] -> m.                     (59)
+```
+
+Thus an arbitrary moving positive-completion gauge screens exactly when `m=0`, equivalently
+`xi(sigma)!=0`; at every hypothetical Xi zero it preserves the full positive multiplicity.
+
+This applies literally to arbitrary simultaneous schedules
+
+```text
+L_n >= 0,  N_n > 0,
+F_n = criticalLogPhaseTailPacketValue L_n N_n z_n,
+D_n = criticalLogPhaseTailPacketDerivative L_n N_n z_n.
+```
+
+The negative derivative of each translated theta profile is positive, the two exact
+integration-by-parts identities give `(56)`, and strict right-half-plane completion proves
+`F_n!=0`.  Hence increasing positive theta/Prouhet/Haar depth at any rate cannot create the
+mesh-scale phase velocity needed to transgress the divisor current.  This closes the
+non-normal-moving positive-source escape left by fixed-gauge order quantization.
+
+Classical parent facts are the positive-real derivative contraction and logarithmic-current
+algebra.  New project content is their uniform application to arbitrary moving literal theta
+packets on the exact Xi anisotropic divisor mesh.  Targeted primary-source searches found no
+statement with this conjunction; external priority remains unverified.
+
+Dependency-closed paper certificate:
+
+```text
+docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/
+  route-j-moving-positive-completion-gauge-rigidity.md
+```
+
+Unconditional Lean certificate:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  XiCTaylorMovingPositiveCompletionGaugeNoGo.lean
+```
+
+The remaining `J-SF6` object is sharply smaller but still live: it must use an indefinite signed
+source density, a singular boundary term invalidating `(56)`, or a relation-valued pre-scalar
+channel.  Any scalar moving gauge which succeeds must carry positive mesh charge
+`x_n Im(D_n/F_n)->m`; mere growth of a positive source index cannot provide it.
+
+The signed-density escape has a further exact quantitative obstruction.  For real `h`, define its
+absolute completion mass
+
+```text
+V_h(z)=Re integral_0^infinity |h(t)|(1-exp(i t z))dt.
+```
+
+Direct integration of the same half-plane kernel gives
+
+```text
+||G'_h(z)|| <= V_h(z)/Im z.
+```
+
+For nonzero signed completion define the exact condition number
+
+```text
+kappa_h(z)=V_h(z)/||G_h(z)||.
+```
+
+Then `(56)` implies
+
+```text
+|Im(D/F)| <= (kappa_h(z)+1)/Im z.                        (60)
+```
+
+Here `kappa_h(z)` is source-visible cancellation conditioning: it compares total absolute completion
+mass with the surviving signed completion before logarithmic division.  Positive densities have
+`kappa<=1`; large `kappa` means positive and negative completion vectors nearly cancel.
+
+At a hypothetical Xi zero of multiplicity `m`, exact screening forces gauge charge to tend to
+`m`.  Put `eta=1/2-Re(sigma)>0`.  Combining `(60)` with the exact mesh bound
+`x_n<2/(n+1)` proves
+
+```text
+(m eta/8)(n+1) < kappa_(h_n)(z_n)+1                   eventually.   (61)
+```
+
+Thus bounded, sublinear, or merely non-normal signed conditioning cannot screen a divisor.  Every
+successful scalar signed-density transgression must be at least linearly ill-conditioned on the
+literal `1/n` anisotropic mesh.  This moves the survivor again: it is now a linearly cancelling
+signed source, a singular boundary term, or a relation-valued channel.
+
+Unconditional Lean certificate:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  XiCTaylorMovingSignedCompletionConditioningNoGo.lean
+```
+
+It proves the signed variation inequality, the conditioned logarithmic-current bound, exact
+transfer of a screened Taylor charge to the gauge, and the eventual linear lower bound `(61)` for
+the intrinsic ratio itself—not an arbitrarily inflated majorant.
+
+## 25. Pointwise signed transgression is jet-universal
+
+The conditioning obstruction is the end of the generic pointwise no-go, not the beginning of an
+iteration with larger constants.  Put
+
+```text
+z=u+iy,  u>0,  T=pi/(2u),  r=exp(-Ty).
+```
+
+For real weights `a_1,...,a_4`, take signed completion atoms at
+`T,2T,3T,4T`.  Their completion value `G` and derivative `H` obey
+
+```text
+| Re G |   |  1   1+r^2      1    1-r^4 | | a_1 |
+| Im G | = | -r      0      r^3      0   | | a_2 |
+| Re H |   | Tr      0    -3Tr^3     0   | | a_3 |
+| Im H |   |  0    2Tr^2      0   -4Tr^4 | | a_4 |.       (62)
+```
+
+The determinant is
+
+```text
+4 T^2 r^6 (1+r^2)^2>0.                                  (63)
+```
+
+Hence four signed atoms interpolate every `(G,H) in C^2`.  With
+
+```text
+F=iG/z,  D=(iH-F)/z,
+G=1,     H=i(m/delta+Im(1/z)),   delta>0,
+```
+
+the exact source connections hold and
+
+```text
+delta Im(D/F)=m.                                         (64)
+```
+
+Thus arbitrary pointwise moving signed or singular completions can reproduce any requested
+divisor charge exactly.  This does **not** solve Route J: `(64)` places the target multiplicity in
+the interpolated jet and is therefore a certified theatrical witness.  Its mathematical force is
+classification.  No further theorem using only pointwise integrability, finite support, the two
+source connections, or existence of a scalar logarithmic derivative can close the signed class.
+
+Moreover the explicit inverse shows the linear conditioning law is sharp.  On any compact family
+of points with `Re z>0`, choosing `delta->0` in `(64)` makes `H=O(1/delta)`, every weight in the
+inverse of `(62)` is `O(1/delta)`, and `G=1`.  Hence the intrinsic absolute-mass condition number
+is `O(1/delta)`, matching the already proved `Omega(1/delta)` screening lower bound.  No generic
+pointwise argument can strengthen the linear obstruction to a superlinear one.
+
+The surviving `J-SF6` hypothesis must now be global and source-bearing: one coherent
+divisor-independent Gamma/theta/co-Poisson law must generate all mesh jets without receiving
+`sigma`, its zero status, or its multiplicity as coefficient data.  Equivalently, any no-go must
+use cross-mesh coherence or source independence; arbitrary per-mesh signed interpolation is
+algebraically universal and receives no source-construction credit.
+
+Dependency-closed paper certificate:
+
+```text
+docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/
+  route-j-signed-quarter-turn-jet-controllability.md
+```
+
+Unconditional Lean certificate:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  XiCTaylorSignedAtomicJetControllability.lean
+```
+
+## 26. Scalar charge has a unique ray and reflection coherence selects the critical line
+
+The four-atom theorem overstates the arity needed by the scalar charge target.  If `G=1` and
+`H=iq`, the odd equations in `(62)` force `a_1=a_3=0`.  The remaining two weights are uniquely
+
+```text
+a_4=[1-(1+r^2)q/(2Tr^2)]/(1+r^2)^2,
+a_2=q/(2Tr^2)+2r^2a_4.                                 (65)
+```
+
+Thus exact horizontal charge uses only atoms at `2T` and `4T`; multiplicity enters one affine
+amplitude.  The value equation gives an exact cross-mesh fingerprint:
+
+```text
+delta a_2+(1-r^2)delta a_4=delta/(1+r^2).               (66)
+```
+
+If `delta_n->0`, `r_n->r_0>0`, and the normalized weights converge to `(b_2,b_4)`, then
+
+```text
+b_2+(1-r_0^2)b_4=0.                                    (67)
+```
+
+For the exact charge `q_n=m/delta_n+c_n`, with bounded connection correction and convergent
+positive geometry,
+
+```text
+delta_n a_(4,n)
+  -> -m/[2T_0 r_0^2(1+r_0^2)].                         (68)
+```
+
+This is nonzero when `m!=0`.  Therefore a common projective source direction at two fibres forces
+their radii to agree, even when the normalized representatives differ by mesh scale.
+
+On the Xi anisotropic mesh the radius is
+
+```text
+r(sigma)=exp[-pi(1/2-Re sigma)/(2 Im sigma)].           (69)
+```
+
+The functional-equation mate `1-conj(sigma)` has the reciprocal radius.  Consequently one
+reflection-invariant coherent signed two-atom projective direction, common at both fibres and
+carrying a nonzero charge, forces
+
+```text
+Re sigma=1/2.                                           (70)
+```
+
+This is not an RH proof and not a target-fitted construction.  It is a cross-fibre
+superselection theorem: an off-line signed screen must break functional-equation reflection
+equivariance in its leading normalized source weights, change support geometry, become singular,
+or become relation-valued.  Those survivors remain Route J work; none is reassigned elsewhere.
+
+Dependency-closed certificate:
+
+```text
+docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/
+  route-j-signed-charge-ray-reflection-rigidity.md
+```
+
+The same unconditional Lean module proves scalar-jet uniqueness, `(66)`--`(70)`, the exact limit
+`(68)`, and its nonvanishing.
+
+## 27. Literal two-sided theta completion is an analytic unit at every Xi divisor
+
+The canonical signed reflection escape is not generic.  Put
+
+```text
+A(z)=thetaCuspTailSecondDensityPhaseValue(z),
+B(z)=A(z)+A(-z).
+```
+
+The already source-proved two-sided completion identity is
+
+```text
+(z^2+1/4)B(z)=1/2+4z^2 XiC(z).                         (71)
+```
+
+At an Xi divisor this becomes
+
+```text
+(z^2+1/4)B(z)=1/2.                                     (72)
+```
+
+Therefore `B(z)!=0`.  The new Lean module proves `B` is analytic throughout the open theta
+Fourier--Laplace strip, so its local meromorphic order at every centered critical-strip Xi zero
+is exactly zero.  The fixed-gauge charge classification then gives, for every source-selected
+superaccurate Taylor schedule,
+
+```text
+transferred horizontal charge -> ord_sigma(xi),         (73)
+```
+
+not zero.  Hence the literal source-defined two-sided theta density cannot screen any nonzero Xi
+divisor.  This is distinct from the positive one-sided no-go: `B` contains the reflected growing
+channel, and `(72)`, not positivity, makes it a divisor unit.
+
+Formalized certificate:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+  route-j-two-sided-theta-completion-unit-no-go.md
+
+formal/GaloisForLFunctions/RHTower/
+  XiCTaylorThetaTailTwoSidedCompletionNoGo.lean
+```
+
+The surviving `J-SF6` signed class must now deform the canonical density/support law enough to
+escape `(71)`, introduce a singular boundary term, or become relation-valued.  These are still
+Route J survivors.
+
+## 28. Arbitrary two-active-atom scalar screens phase-lock and reflect rigidly
+
+Quarter-turn spacing is not responsible for the Section 26 critical-line selector.  For arbitrary
+distinct positive support times `t_1,t_2` and nonzero real weights, write at `z=u+iy`
+
+```text
+G=sum_j a_j(1-exp(i t_j z)),
+H=sum_j a_j(-i t_j)exp(i t_j z).
+```
+
+The scalar jet conditions `G=1`, `H=iq` have imaginary-value and real-derivative equations
+
+```text
+a_1 exp(-t_1 y)sin(t_1 u)+a_2 exp(-t_2 y)sin(t_2 u)=0,
+a_1 t_1 exp(-t_1 y)sin(t_1 u)
+  +a_2 t_2 exp(-t_2 y)sin(t_2 u)=0.                    (74)
+```
+
+Their determinant is the nonzero factor
+`a_1 a_2 exp(-(t_1+t_2)y)(t_1-t_2)`, so
+
+```text
+sin(t_1 u)=sin(t_2 u)=0.                               (75)
+```
+
+Thus every genuinely two-active scalar screen, not only the quarter-turn inverse, lies on the
+half-turn lattice.
+
+Define the value and imaginary-derivative rows
+
+```text
+g_t(u,y)=1-exp(-ty)cos(tu),
+d_t(u,y)=-t exp(-ty)cos(tu).                           (76)
+```
+
+If `delta a_j -> b_j` and `delta q -> m!=0`, exact mesh equations give
+
+```text
+g_(t_1)(u,y)b_1+g_(t_2)(u,y)b_2=0,
+d_(t_1)(u,y)b_1+d_(t_2)(u,y)b_2=m.                    (77)
+```
+
+The second equation forces `(b_1,b_2)` nonzero.  At a reflected fibre,
+
+```text
+g_t(u,-y)=-cos(tu)exp(ty)g_t(u,y).                     (78)
+```
+
+Away from `y=0`, both value coefficients are nonzero.  If nonzero normalized rays at `y` and
+`-y` are projectively equal, their two value rows are proportional.  Equation `(78)` then gives
+
+```text
+cos(t_1u)exp(t_1y)=cos(t_2u)exp(t_2y).
+```
+
+Squaring, using `(75)`, and using injectivity of `exp` yields
+`(t_1-t_2)y=0`; distinct limiting support times force `y=0`.  On the Xi fibre
+`y=1/2-Re sigma`, hence
+
+```text
+Re sigma=1/2.                                          (79)
+```
+
+This closes the complete convergent, separated, two-active-atom, reflection-projectively coherent
+scalar class. It is a genuine support-independent advance over Section 26. It does not close
+three-or-more active atoms, coalescing/escaping/nonconvergent support, projective symmetry
+breaking, singular boundaries, or relation-valued channels. Those remain Route J work.
+
+Dependency-closed formalized certificate:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+  route-j-arbitrary-two-atom-reflection-rigidity.md
+
+formal/GaloisForLFunctions/RHTower/
+  XiCTaylorSignedTwoAtomReflectionRigidity.lean
+```
+
+## 29. Three atoms are the sharp reflection-coherent scalar escape
+
+The Section 28 arity threshold is exact.  At
+
+```text
+z_+=2*pi/T+iy,     z_-=2*pi/T-iy,     r=exp(-Ty),
+```
+
+the three source times `T,2T,3T` have phases `r,r^2,r^3` and their reciprocals. Define
+
+```text
+B(r)=(-(1-r^3), 1-r^3, -r(1-r)).                      (80)
+```
+
+If `g_j(r)=1-r^j`, direct factorization gives
+
+```text
+g(r).B(r)=0,       g(1/r).B(r)=0.                     (81)
+```
+
+Unlike the two-atom case, the two reflected value rows have a common line. Its derivative charge
+is
+
+```text
+M(T,r)=T r(1-r)^2(1-r^2),                             (82)
+```
+
+which is nonzero for `T>0`, `r>0`, `r!=1`. Moreover
+
+```text
+d(r).B(r)=M(T,r),
+d(1/r).(r^3 B(r))=M(T,r).                             (83)
+```
+
+Normalize `b=B/M` and `c=r^3B/M`.  Both carry unit leading derivative charge, lie in their
+respective value kernels, and are projectively equal.  The first two atom columns have correction
+determinant
+
+```text
+Delta(T,r)=T r(1-r)^2!=0.
+```
+
+Solving those two columns adds bounded corrections which make the completion value exactly one
+and its derivative exactly
+
+```text
+H_+=i(1/delta+Im(1/z_+)),
+H_-=i(1/delta+Im(1/z_-)).
+```
+
+The source connections then give, for every `delta>0`,
+
+```text
+delta Im(D_+/F_+)=1,
+delta Im(D_-/F_-)=1.                                  (84)
+```
+
+The normalized exact weights converge to `b` and `c=r^3b`, so all three projective minors vanish
+off the centered line.  Thus reflection-projective coherence by itself is not selective once
+three atoms are active.
+
+This is an actual positive survivor, not permission to stop.  It does not insert an Xi zero or
+target multiplicity, but it is not yet the canonical theta/prime--Gamma density.  Route J must
+now prove that `(80)` cannot occur under that source law, or construct its source-faithful lift
+and then solve the multiplicity/global-budget gates.  Calling this survivor another route would
+leave `J-SF6` open.
+
+Formalized certificate:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+  route-j-three-atom-reflection-coherence-escape.md
+
+formal/GaloisForLFunctions/RHTower/
+  XiCTaylorSignedThreeAtomReflectionEscape.lean
+```
+
+## 30. Literal reflected source profiles have a sharp four-atom threshold
+
+Projective equality is weaker than one source law. A literal finite signed multiplier has one
+coefficient vector at both reflected fibres; it cannot replace that vector by `r^3` times itself.
+For weights `a_1,...,a_N`, encode the full-turn rows by
+
+```text
+Phi_a(X)=sum_(j=1)^N a_j(1-X^j).                       (85)
+```
+
+Then `Phi_a(1)=0`. At reciprocal damping radii `r` and `q=1/r`, equal reflected leading charge
+`m` means
+
+```text
+Phi_a(r)=Phi_a(q)=0,
+T r Phi_a'(r)=T q Phi_a'(q)=m.                         (86)
+```
+
+For `N<=2`, the three distinct roots `1,r,q` force `Phi_a=0`. For `N=3`,
+
+```text
+Phi_a(X)=C(X-1)(X-r)(X-q).
+```
+
+The derivative equality in `(86)` becomes
+
+```text
+C(r-1)(r-q)(r-r^(-2))=0.                              (87)
+```
+
+When `r>0` and `r!=1`, every displayed factor except `C` is nonzero. Thus `C=0` and `m=0`.
+This kills the Section 29 ray under the literal same-profile requirement.
+
+The obstruction is sharp. Define
+
+```text
+s(r)=(1-r^5)/[r(1-r^3)]
+    =(1+r+r^2+r^3+r^4)/[r(1+r+r^2)],
+
+P_r(X)=(X-1)(X-r)(X-r^(-1))(X-s(r)).                  (88)
+```
+
+All four roots are distinct, since
+
+```text
+s-r=(1+r)/[r(1+r+r^2)],
+s-r^(-1)=r^2(1+r)/(1+r+r^2),
+s-1=(1+r^4)/[r(1+r+r^2)].                             (89)
+```
+
+The defining formula for `s` is exactly the weighted derivative identity
+
+```text
+r P_r'(r)=r^(-1)P_r'(r^(-1)).
+```
+
+Its common charge is
+
+```text
+M(T,r)=T r P_r'(r)
+      =-T(r-1)^2(r+1)^2/[r(1+r+r^2)] != 0.            (90)
+```
+
+Writing `P_r=Phi_B` and normalizing `b=B/M` gives one common vector satisfying both value-kernel
+conditions and unit derivative charge. A real Hermite interpolant `Q`, uniquely determined by
+
+```text
+Q(1)=0,
+Q(r)=Q(r^(-1))=1,
+T r Q'(r)=eta_+,
+T r^(-1)Q'(r^(-1))=eta_-,                             (91)
+```
+
+has degree at most four: the homogeneous kernel would have the five roots counted with
+multiplicity `1,2,2`. Encoding `Q=Phi_v` and putting
+
+```text
+a(delta)=b/delta+v
+```
+
+therefore gives one and the same four-vector at both fibres, with exact source-connection data
+
+```text
+G_+=G_-=1,
+H_+=i(1/delta+Im(1/z_+)),
+H_-=i(1/delta+Im(1/z_-)),
+delta Im(D_+/F_+)=delta Im(D_-/F_-)=1.                (92)
+```
+
+Coordinatewise, `delta a(delta)->b`. Hence the sharp thresholds differ:
+
+```text
+projective reflected coherence: three atoms;
+one literal equal-charge reflected source profile: four atoms. (93)
+```
+
+This is a real survivor, not Route-J closure. `T,y` still choose one full-turn pair, and no
+canonical theta/prime--Gamma law or global Julia budget has been proved. The next scalar attack
+must use canonical source coefficients across the whole Xi mesh; three-atom projective geometry
+is no longer the open core.
+
+Dependency-closed formalized certificate:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+  route-j-literal-reflection-profile-four-atom-threshold.md
+
+formal/GaloisForLFunctions/RHTower/
+  XiCTaylorSignedFourAtomLiteralReflectionEscape.lean
+```
+
+## 31. The four-atom profile encodes exactly one transverse orbit
+
+`[PAPER+LEAN-PROVED CLASSIFICATION] [CANDIDATE SOURCE-SPECIFIC NEW KNOWLEDGE]`
+
+The arity-four survivor is not a free reflection-symmetric source profile. Write
+
+```text
+Phi_a(X)=sum_(j=1)^4 a_j(1-X^j),   x=r+r^(-1).
+```
+
+For `T!=0`, `r>0`, and `r!=1`, suppose
+
+```text
+Phi_a(r)=Phi_a(r^(-1))=0,
+T r Phi_a'(r)=T r^(-1) Phi_a'(r^(-1)).
+```
+
+Direct symmetric coefficient elimination proves that the complete solution space, including the
+zero vector, is the line
+
+```text
+a1=-a4 B1(r),   a2=-a4 B2(r),   a3=-a4 B3(r),
+
+B1(r)=x(1+x),   B2(r)=-x(x+2),
+B3(r)=x(2x+3)/(1+x),   B4(r)=-1.                       (94)
+```
+
+The classification is stronger than the existence theorem: no nonzero-charge hypothesis is
+needed to put the vector on the canonical line. Moreover
+
+```text
+B3(r)-B3(t)
+ = (x-y) (2 + 1/((1+x)(1+y))),   y=t+t^(-1).           (95)
+```
+
+For positive radii the second factor is positive. Hence equality of the third canonical
+coordinate gives `r+r^(-1)=t+t^(-1)`, equivalently
+
+```text
+(r-t)(rt-1)=0.                                         (96)
+```
+
+Therefore one literal four-atom vector carrying nonzero equal charge at `r` cannot even satisfy
+the zero-value/equal-charge rows at a second positive off-center radius unless
+`t=r` or `t=r^(-1)`. The support records `T`, while the coefficient ray records
+`{r,r^(-1)}` and therefore `|y|` when `r=exp(-Ty)`.
+
+This is genuine source-provenance progress, not Route-J closure. Minimal finite support now has
+transverse information capacity exactly one: a canonical source construction must predict the
+orbit rather than fit it from the divisor. The remaining open scalar mechanisms are
+larger/unbounded support, non-atomic or singular carriers, broken leading reflection, and
+relation-valued channels; all remain Route J until constructed or eliminated class-completely.
+
+Dependency-closed formalized certificate:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+  route-j-four-atom-transverse-orbit-rigidity.md
+
+formal/GaloisForLFunctions/RHTower/
+  XiCTaylorSignedFourAtomTransverseOrbitRigidity.lean
+```
+
+## 32. Actual continuum phase rows require three phase-weighted sign changes
+
+`[PAPER+LEAN-PROVED NO-GO] [CANDIDATE SOURCE-SPECIFIC NEW KNOWLEDGE]`
+
+The full-turn polynomial reduction does not extend directly to a non-atomic physical-time
+density: away from the discrete phase lattice, the Fourier carrier `sin(u t)` is nonzero. Let
+`mu` be atomless, let `h` be real, and fix `c>0` and a real carrier frequency `u`. Assume
+almost every nonzero source point has `t>0` and `sin(u t)!=0`. The actual imaginary-value and
+real-derivative rows at the two reflected fibres are
+
+```text
+S_q(t)=h(t)exp(q t)sin(u t),
+R_q(t)=t h(t)exp(q t)sin(u t),       q=+c,-c.
+```
+
+Assume all four are integrable and
+
+```text
+integral S_c dmu = integral S_(-c) dmu = 0,
+integral R_c dmu = integral R_(-c) dmu = 0.
+```
+
+These equations are necessary for a literal scalar leading jet: they are respectively its
+imaginary-value and real-derivative components at the two fibres. Put
+
+```text
+v(t)=cosh(c t)sin(u t)h(t).
+```
+
+Sums of the two value and derivative rows, followed by the value-row difference, prove
+
+```text
+integral v dmu = integral t v dmu
+               = integral tanh(c t)v(t) dmu = 0.       (97)
+```
+
+The last identity uses the exact physical source reduction
+
+```text
+tanh(c t)cosh(c t)=sinh(c t).                          (98)
+```
+
+Suppose the phase-weighted source has at most two sign changes: for some `0<a<b`, either
+`(t-a)(t-b)sin(u t)h(t)>=0` almost everywhere or the reversed inequality holds. The function
+`g(t)=tanh(c t)` is strictly concave on the positive half-line. Its chord residual has signs
+`-,+,-`, opposite to the first orientation of `sin(u t)h(t)`; the reversed orientation is handled
+by `-v`. Equation (97) makes the residual-weighted integral zero while its integrand has one weak
+sign. Strict chord separation and atomlessness remove the two endpoints, giving `v=0` almost
+everywhere. Positivity of `cosh` and exclusion of sine nodes then give
+
+```text
+h=0  mu-almost everywhere.                             (99)
+```
+
+Thus this three-row reduction proves that every nonzero actual non-atomic reflected scalar source
+needs at least three alternating sign changes in `sin(u t)h(t)`, even with unbounded support. On one open half-turn chamber the
+sine has constant sign, so these are changes of `h`. The finite full-turn survivor lies exactly
+on sine nodes; it is a phase-node singular escape, not an atomless sharpness witness. Section 33
+uses the fourth row to close the three-change regular class. Phase-node/singular measures remain
+Route J.
+
+The general Chebyshev-system sign-change principle and strict-concavity chord argument are
+classical. Candidate new content is only the exact physical reflected-row reduction to
+`span{1,t,tanh(c t)}`, the carrier-weighted invariant, and the phase-node singularity boundary.
+Targeted internal and external audits found the general theory but not this source-row
+conjunction. An earlier radial draft suppressing `sin(u t)` is explicitly withdrawn as a claim
+about non-atomic physical time; its Lean result remains only the analytic core used here.
+
+Dependency-closed formalized certificate:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+  route-j-continuum-three-sign-change-obstruction.md
+
+formal/GaloisForLFunctions/RHTower/
+  XiCTaylorSignedContinuumSignComplexityNoGo.lean
+```
+
+## 33. All four continuum rows require four phase-weighted sign changes
+
+`[PAPER+LEAN-PROVED NO-GO] [CANDIDATE SOURCE-SPECIFIC NEW KNOWLEDGE]`
+
+Section 32 discarded one linear combination of the four physical rows and therefore did not
+reach the full source constraint. Write
+
+```text
+p(t)=sin(u t)h(t).
+```
+
+The four reflected imaginary-value and real-derivative equations are exactly
+
+```text
+integral exp(c t)p(t) dmu = integral t exp(c t)p(t) dmu = 0,
+integral exp(-c t)p(t) dmu = integral t exp(-c t)p(t) dmu = 0.   (100)
+```
+
+For arbitrary proposed change points `0<a<b<d`, consider
+
+```text
+J(t)=(A+B t)exp(2c t)+C+D t.                            (101)
+```
+
+Evaluation at `a,b,d` maps four coefficients to three values, so rank-nullity supplies a nonzero
+`J` vanishing at all three points. It cannot have a fourth distinct root. Four roots of `J` would
+give three roots of `J'` by Rolle and then two distinct roots of
+
+```text
+J''(t)=exp(2c t)
+  (4c B+4c^2(A+B t)).                                   (102)
+```
+
+The affine factor in `(102)` cannot have two distinct roots unless `A=B=0`; two original roots
+then force `C=D=0`, contradiction. A strengthened two-interval Rolle argument also shows
+`J'(a),J'(b),J'(d)` are nonzero. Hence these are the complete zero set and `J` alternates at each
+root. Globally on `t>0`, either
+
+```text
+(t-a)(t-b)(t-d)J(t)>=0                                  (103a)
+```
+
+or the reversed inequality `(103b)` holds.
+
+Now set
+
+```text
+W(t)=J(t)exp(-c t)p(t).
+```
+
+Exact expansion gives
+
+```text
+W(t)=A exp(c t)p(t)+B t exp(c t)p(t)
+    +C exp(-c t)p(t)+D t exp(-c t)p(t).                 (104)
+```
+
+Thus `(100)` makes `W` integrable with zero integral. If `p` has at most three alternating sign
+changes at `a,b,d`, its cubic sign certificate combined with `(103)` makes `W` one-signed.
+Therefore `W=0` almost everywhere. Atomlessness removes `a,b,d`; the test has no other roots;
+the exponential is positive; and source support excludes carrier nodes. Consequently
+
+```text
+h=0  mu-almost everywhere.                              (105)
+```
+
+Every nonzero regular atomless reflected source must therefore have at least four changes in
+`sin(u t)h(t)`. On a single open half-turn chamber it must have at least four changes of `h`.
+Support may be unbounded.
+
+This is genuine frontier movement over Section 32: the unused derivative-row difference closes
+the entire three-change class. It does not close Route J. Four-or-more phase-weighted changes,
+phase-node mass, singular measures, coalescing/escaping/nonconvergent atoms, broken reflection,
+and relation-valued carriers remain live and stay on this card.
+
+General exponential-polynomial Chebyshev and sign-change theory is classical. Candidate new
+content is only the exact four-row Route-J reduction `(100)--(104)` and its source-specific
+four-alternation consequence. Internal corpus search found no such four-row result; targeted
+external searches found only general ECT/sign-change theorems. No claim is made that rank-nullity,
+Rolle rigidity, or the abstract Chebyshev principle is new.
+
+Dependency-closed formalized certificate:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+  route-j-continuum-four-phase-variation-obstruction.md
+
+formal/GaloisForLFunctions/RHTower/
+  XiCTaylorSignedContinuumFourVariationNoGo.lean
+```
+
+## 34. The four-change regular boundary is attained exactly
+
+`[PAPER+LEAN-PROVED SURVIVOR] [CANDIDATE SOURCE-SPECIFIC NEW KNOWLEDGE]`
+
+The Section 33 lower bound is exact, so stronger row-only sign-variation conjectures are false.
+For arbitrary `c,u>0`, set
+
+```text
+L=pi/(6u),   r=exp(cL),
+I_j=(L/4+jL,3L/4+jL],   j=0,...,4.                    (106)
+```
+
+All five intervals are disjoint and lie in one open sine chamber because
+`u(5L)=5pi/6<pi`. Let `b_j` be their indicator functions and use the reciprocal double-root
+polynomial
+
+```text
+A(X)=(X-r)^2(X-r^(-1))^2
+    =sum_(j=0)^4 a_j X^j,                              (107)
+```
+
+with
+
+```text
+(a_0,...,a_4)
+=(1,-2(r+r^(-1)),r^2+r^(-2)+4,-2(r+r^(-1)),1).        (108)
+```
+
+Define
+
+```text
+p(t)=sum_(j=0)^4 a_j b_j(t),
+h(t)=p(t)/sin(ut) on the chamber, zero at sine nodes.  (109)
+```
+
+The source is nonzero on the positive-length interval `I_0`, compactly supported, and carries no
+phase-node mass. If
+
+```text
+V(q)=integral exp(qt)b_0(t)dt,
+T(q)=integral t exp(qt)b_0(t)dt,
+```
+
+translation invariance gives
+
+```text
+integral exp(qt)p(t)dt
+ =V(q)A(exp(qL)),
+
+integral t exp(qt)p(t)dt
+ =T(q)A(exp(qL))
+  +L V(q)exp(qL)A'(exp(qL)).                           (110)
+```
+
+At `q=c,-c`, the argument of `A` is respectively `r,r^(-1)`. Both are double roots, so all four
+physical value/derivative rows vanish exactly.
+
+The coefficients in `(108)` alternate `+,-,+,-,+`. The quartic with roots between the bumps has
+the same pattern:
+
+```text
+(t-L)(t-2L)(t-3L)(t-4L) sin(ut)h(t)>=0
+for every real t.                                      (111)
+```
+
+Thus the source has at most four phase-weighted changes. It has no cubic certificate: Section 33
+would then force `h=0` almost everywhere, contradicting positivity on `I_0`. Hence it has exactly
+four.
+
+This survivor creates a hard boundary, not closure. Local reflected rows, atomlessness,
+integrability, compact support, exclusion of sine nodes, and sign complexity are now exhausted:
+they permit an exact regular source. The next theorem must use cross-mesh source provenance. The
+mask `(107)` depends on local `c,u`, so it is not a divisor-independent theta/prime--Gamma law and
+receives no RH-construction credit. Route J must either produce this or another exact-four-change
+family from one pre-divisor source law, or exclude every such coherent family class-completely.
+Phase-node/singular and relation-valued carriers remain live in parallel.
+
+Exponential vanishing-moment translate masks are classical wavelet technology. Candidate new
+content is only the exact weld of the reciprocal double roots, both reflected physical fibres,
+one Fourier sine chamber, and the already proved Route-J variation lower bound. Internal audit
+found no compact atomless extremizer; external audit found general exponential-moment wavelets,
+not this source-specific conjunction.
+
+Dependency-closed formalized certificate:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+  route-j-continuum-four-variation-sharpness.md
+
+formal/GaloisForLFunctions/RHTower/
+  XiCTaylorSignedContinuumFourVariationEscape.lean
+```
+
+## 35. The sharp five-translate regular class is one-damping rigid
+
+`[PAPER+LEAN-PROVED NO-GO] [CANDIDATE SOURCE-SPECIFIC NEW KNOWLEDGE]`
+
+Section 34 exhibited one five-bump mask fitted to the local radius. This section classifies every
+coefficient vector on that fixed support geometry. Let
+
+```text
+p_a(t)=sum_(j=0)^4 a_j b(t-jL),
+A_a(X)=sum_(j=0)^4 a_j X^j,                            (112)
+```
+
+where `L>0` and `b=1_((L/4,3L/4])`. For
+
+```text
+V(q)=integral exp(qt)b(t)dt,
+T(q)=integral t exp(qt)b(t)dt,
+```
+
+translation gives, for arbitrary `a`,
+
+```text
+integral exp(qt)p_a(t)dt
+  =V(q)A_a(exp(qL)),
+
+integral t exp(qt)p_a(t)dt
+  =T(q)A_a(exp(qL))
+   +L V(q)exp(qL)A_a'(exp(qL)).                        (113)
+```
+
+The base transform is strictly positive for every real `q`. Therefore, with
+`r=exp(cL)>1`, the four reflected physical value/first-moment rows vanish if and only if
+
+```text
+A_a(r)=A_a'(r)=A_a(r^(-1))=A_a'(r^(-1))=0.            (114)
+```
+
+The two radii are distinct and `deg A_a<=4`, so the entire coefficient kernel is the single ray
+
+```text
+A_a(X)=a_4 (X-r)^2(X-r^(-1))^2.                       (115)
+```
+
+Equivalently,
+
+```text
+(a_0,...,a_4)
+=a_4(1,-2(r+r^(-1)),r^2+r^(-2)+4,-2(r+r^(-1)),1).     (116)
+```
+
+This is not merely a classification of the displayed survivor: `(113)--(116)` begin with an
+arbitrary real five-vector and prove there are no other physical masks.
+
+If the same nonzero coefficient vector also serves a second positive noncentral radius `s`,
+comparison of `(116)` at `r` and `s` gives
+
+```text
+r+r^(-1)=s+s^(-1),
+(r-s)(rs-1)=0.                                         (117)
+```
+
+Hence `s=r` or `s=r^(-1)`. On the physical branch `r,s>1`, only `s=r` survives. At fixed
+positive spacing, if one nonzero five-bump source cancels the rows at positive dampings `c,d`,
+then
+
+```text
+exp(cL)=exp(dL),  hence c=d.                            (118)
+```
+
+Thus the sharp regular extremizer is necessarily target-informative: its support spacing fixes
+the carrier scale and its coefficient ray fixes the damping orbit. A catalogue that rebuilds
+`(116)` from each divisor is not one pre-divisor source law.
+
+This closes only the fixed-spacing, identical-five-translate class. It does not close Route J.
+Variable support geometry, nonidentical bumps, six-or-more translate masks, arbitrary four-change
+densities, one-prime phase-node towers, other singular measures, reflection-breaking profiles,
+and relation-valued carriers remain researchable and stay on this card.
+
+Exponential finite differences, exponential-spline cancellation operators, and prescribed-root
+factorization are classical. Candidate new content is only their exact physical Route-J weld:
+both reflected Fourier--Laplace value/first-moment rows, complete minimal-kernel classification,
+and the one-positive-damping source-provenance consequence.
+
+Dependency-closed formalized certificate:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+  route-j-five-translate-source-provenance-rigidity.md
+
+formal/GaloisForLFunctions/RHTower/
+  XiCTaylorSignedContinuumFiveTranslateRigidity.lean
+  XiCTaylorSignedContinuumFiveTranslatePhysicalRigidity.lean
+```
+
+## 36. Prime-power phase-node sources have arithmetic rank one
+
+`[PAPER+LEAN-PROVED CLASSIFICATION] [CANDIDATE SOURCE-SPECIFIC NEW KNOWLEDGE]`
+
+The full-turn survivor suppresses the sine rows by placing every active delay on a phase node.
+Literal prime--Gamma provenance makes this arithmetic. Let `u!=0`, let `p!=q` be primes, and let
+`a,b>0` be integers. If
+
+```text
+sin(u a log p)=sin(u b log q)=0,
+```
+
+then integers `m,n` satisfy
+
+```text
+m pi=u a log p,   n pi=u b log q.                      (119)
+```
+
+Cross-multiplication gives
+
+```text
+u(a n log p-b m log q)=0.                              (120)
+```
+
+Since `u!=0`, unique factorization makes the two integer coefficients vanish:
+
+```text
+a n=0,   b m=0.
+```
+
+Thus `m=n=0`, and `(119)` contradicts `u a log p!=0`. Therefore prime-power delays from distinct
+prime bases cannot both be phase nodes at one nonzero carrier.
+
+For an arbitrary real multiplier `A(p,e)` on delays
+
+```text
+log(p^(e+1))=(e+1)log p,
+```
+
+let
+
+```text
+P(A)={p : exists e, A(p,e)!=0}.
+```
+
+If every active atom of `A` is a phase node, the two-prime theorem gives the exact classification
+
+```text
+P(A) is subsingleton.                                  (121)
+```
+
+Equivalently, every phase-node multiplier must censor at least one atom from every pair of
+distinct prime bases. The literal Suzuki/von-Mangoldt far-hinge source has weight
+
+```text
+w(p,e)=Lambda(p^(e+1))/sqrt(p^(e+1))
+      =log(p)/sqrt(p^(e+1))>0                          (122)
+```
+
+at every prime power. Its prime-two and prime-three depth-zero atoms are both active, contradicting
+`(121)`. Hence the updated manuscript's uncensored far-hinge source cannot realize the Route-J
+phase-node singular escape at any nonzero carrier.
+
+This is a real source-provenance no-go, not full singular closure. One-prime towers are sharp
+survivors because all their delays are commensurate. Arbitrary singular boundary measures,
+non-prime-power singular support, broken reflection, and relation-valued channels remain live.
+
+Prime-log independence and sine-node arithmetic are classical. Candidate new content is only the
+exact Route-J rank-one source classification `(121)` and its application `(122)` to the literal
+Suzuki/von-Mangoldt far-hinge source. Targeted literature search found semilocal finite-place and
+single-prime moment theory, but not this source-specific obstruction.
+
+Dependency-closed formalized certificate:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+  route-j-prime-power-phase-node-source-rigidity.md
+
+formal/GaloisForLFunctions/RHTower/
+  XiCTaylorSignedPrimePhaseNodeSourceNoGo.lean
+```

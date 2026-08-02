@@ -337,3 +337,112 @@ The stronger response packet is also now formalized in
 
 The module passes
 `lake env lean GaloisForLFunctions/HTGeometry/AllVertexEndpointResponse.lean`.
+
+## Formal progress — 2026-08-01: global physical activation
+
+Dependency item 4 and the perturbative core of items 1 and 5 are now
+formalized for **every finite new local dimension**, not only two layers.
+
+New modules:
+
+- `formal/GaloisForLFunctions/HTGeometry/AllVertexEndpointSimultaneousResponse.lean`;
+- `formal/GaloisForLFunctions/HTGeometry/AllVertexEndpointPhysicalActivation.lean`;
+- `formal/GaloisForLFunctions/HTGeometry/AllLayerEndpointSimultaneousResponse.lean`;
+- `formal/GaloisForLFunctions/HTGeometry/AllLayerEndpointPhysicalActivation.lean`.
+
+The proved chain is:
+
+1. `exists_natCast_all_twoStepEndpointPacketResponses_ne_zero` clears every
+   prescribed old-observer response and every product collision factor into
+   one nonzero polynomial. One nonnegative integer two-layer shift avoids
+   all collisions and all response zeros simultaneously.
+2. `exists_eventually_all_twoLayerCrossSesquilinearProbes_ne_zero` constructs
+   the labelled eigenbranches and proves that one real-symmetric two-layer
+   edge direction makes every prescribed physical bra--ket amplitude
+   nonzero on one common punctured real coupling interval.
+3. `exists_codedIntegerLayerShift_all_responses_ne_zero` replaces pairwise
+   layer tuning by one global shift vector for an arbitrary finite alphabet
+   \(\rho\). The construction uses the injective finite-layer code
+   \[
+     s_r(n)=n\bigl(c(r)-c(r_0)\bigr).
+   \]
+   One integer \(n\) simultaneously makes the complete product spectrum
+   simple and keeps every prescribed response packet nonzero at its actual
+   layer difference.
+4. `allLayerCrossMatrixProbe_deriv_eq_twoStepSums` proves that, under the
+   single anchor-star layer edge, all unselected layers disappear exactly
+   from the first derivative. The remaining derivative is precisely `(5)`
+   times the two nonzero adjugate normalization factors.
+5. `exists_eventually_allLayerCrossSesquilinearProbes_ne_zero` combines the
+   coded shift vector, one real-symmetric anchor-star edge matrix, all
+   labelled eigenbranches, and the Hermitian reality bridge. For every
+   finite collection of old observers and assigned nonanchor layers, all
+   required physical sesquilinear transitions are nonzero throughout one
+   common punctured real coupling interval.
+
+All four modules pass foreground `lake env lean <file>` checks. Axiom audits
+of the exported capstones report only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+This is stronger than the original dependency request: it gives an explicit
+one-parameter physical witness family rather than merely invoking the
+complement of finitely many real-analytic zero sets.
+
+Still open before promotion:
+
+1. package persistence of the finitely selected within-layer spanning
+   graphs and odd cycles together with the new cross-layer edges into a
+   graph-level all-vertex-good leaf-extension theorem;
+2. combine that witness theorem with the existing local-extension
+   relation-erasure and genericity engines;
+3. discharge heterogeneous graph induction, disconnected upper bound, and
+   mutually transverse sharpness at the final interaction-graph level.
+
+## Formal progress — 2026-08-01: new-leaf graph closure
+
+The endpoint side of the induction is now formalized rather than assumed.
+
+New modules:
+
+- `formal/GaloisForLFunctions/HTGeometry/AnchoredReplicaGraph.lean`;
+- `formal/GaloisForLFunctions/HTGeometry/EigenbranchProbeSupportGraph.lean`.
+
+Additional capstones:
+
+1. `exists_hermitianNewLayerProbe_sameLayer_deriv_ne_zero` strengthens the
+   prior same-layer response result. It returns the Hermitian matrix \(B\)
+   on the **new local factor itself** and proves nonzero response for the
+   lifted observable \(I\otimes B\). The previous conclusion exposed only a
+   Hermitian matrix on the full product space and therefore did not certify
+   strict locality of the probe.
+2. `exists_eventually_all_hermitianNewLayerSesquilinearProbes_ne_zero`
+   performs this construction for every selected old transition and every
+   new layer simultaneously, on one coupling interval.
+3. `anchoredReplicaGraph_preconnected` and
+   `anchoredReplicaGraph_not_isBipartite` prove the exact graph assembly:
+   connected layer copies plus one bridge from each nonanchor layer form a
+   connected graph, and one nonbipartite layer copy makes the whole graph
+   nonbipartite.
+4. `exists_eventually_newLayerProbeSupportGraph_good` applies the physical
+   bra--ket amplitudes to that graph skeleton. If the attachment matrix has
+   connected, nonbipartite transition support, then for every finite new
+   local alphabet with at least two labels there is a finite family of
+   Hermitian probes acting only on the new site whose physical eigenbranch
+   support graph is connected and nonbipartite throughout one common
+   punctured real coupling interval.
+5. `exists_eventually_allLayerCrossAndPersistentProbes_ne_zero` proves the
+   complementary old-site assembly: all newly required cross-layer
+   transitions are born while every finitely prescribed previously nonzero
+   transition persists, using the same onsite vector, edge direction, and
+   coupling interval.
+
+Foreground compilation, exported-theorem axiom audits, and
+`python3 scripts/formal_tools.py lint` all pass. Axiom output contains only
+`propext`, `Classical.choice`, and `Quot.sound`; no stale Lean process
+remains.
+
+The remaining step is no longer perturbative analysis. It is packaging:
+index the finite old-site spanning graphs and odd cycles, instantiate the
+birth-and-persistence theorem at every old vertex, combine with the
+new-leaf capstone above, and feed the resulting all-vertex-good witness into
+the already formal local-extension relation-erasure/genericity engine.

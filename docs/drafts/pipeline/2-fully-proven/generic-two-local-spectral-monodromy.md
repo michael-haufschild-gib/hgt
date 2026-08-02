@@ -3,8 +3,10 @@
 - **ID:** generic-two-local-spectral-monodromy
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM
-- **Status:** `[PARTIALLY FORMALIZED]`; exact local transposition complete,
-  common-base transport and real-slice genericity pending
+- **Status:** `[PARTIALLY FORMALIZED]`; exact full common-base symmetric
+  monodromy, monodromy relation rigidity, and characteristic-polynomial
+  irreducibility over both parameter ring and rational-function field
+  complete; real-slice all-order genericity pending
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`, obligation O2
 
 ## Statement
@@ -231,16 +233,31 @@ the paper still requires a citation-graph and expert collision audit.
    transpositions.
 5. [x] Formalize the full-symmetry linear-relation rigidity and centered trace
    classification.
-6. [partial] Local capstones pass `#print axioms` with only `propext`,
-   `Classical.choice`, and `Quot.sound`; modules are wired into the HTGeometry
-   umbrella.  Full common-base monodromy and probability-zero transfer remain
-   before promotion to stage 3.
+6. [x] Realize every edge of every finite Boolean cube as an exact closed
+   simple-spectrum parameter loop in one universal all-qubit two-local
+   polynomial family, including arbitrary coordinate relabeling.
+7. [x] Prove the missing global continuation theorem: characteristic roots
+   over every continuous finite-matrix simple-spectrum path form a covering
+   and every chosen initial root has a continuous global lift.
+8. [x] Construct label-controlled common-base anchoring and prove that every
+   permutation is realized by an exact closed simple-spectrum loop at one
+   fixed diagonal Hamiltonian.
+9. [x] Prove that factor-root membership is clopen along every labelled
+   simple-spectrum path.  Full symmetric monodromy then proves irreducibility
+   of the universal two-local characteristic polynomial over both the full
+   parameter ring and its rational-function field.
+10. [partial] Capstones pass `#print axioms` with only `propext`,
+    `Classical.choice`, and `Quot.sound`; modules are wired into the
+    HTGeometry umbrella.  The probability-zero real-slice transfer remains
+    before promotion to stage 3.
 
-Lean now certifies the complete local Hamiltonian branch loop, its exact
-single-transposition endpoint permutation, steps 4 and 5, and the local axiom
-audit.  It does not yet certify transport of all local loops to one common
-simple-spectrum base or the real-slice almost-sure conclusion.  This card may
-not move to stage 3 or be cited in the paper until those dependencies close.
+Lean now certifies the complete local Hamiltonian branch loop, every named
+hypercube-edge transposition at one common base, the full symmetric
+monodromy group, global simple-spectrum root continuation, trace-only
+monodromy-invariant linear relations, and irreducibility over the parameter
+ring and rational-function field.  It does not yet certify the real-slice
+almost-sure all-order nonresonance conclusion.  This card may not move to
+stage 3 or be cited for that conclusion until the remaining transfer closes.
 
 ## Log
 
@@ -278,3 +295,36 @@ not move to stage 3 or be cited in the paper until those dependencies close.
   `twoLocalSelectedEdgeSwap`.  The remaining frontier is transport of these
   loops to one common base in the complex discriminant complement, then
   real-slice null-set transfer.
+- 2026-08-01 -- Extended the construction from one selected star edge to
+  every edge of every finite Boolean cube in
+  `HTGeometry/TwoLocalHypercubeCoordinateRelabel.lean` and
+  `HTGeometry/TwoLocalUniversalEdgeMonodromy.lean`.  Each edge now has an
+  exact closed parameter loop in the same universal all-qubit two-local
+  polynomial family, a complete injective root packet, and precisely that
+  edge transposition as endpoint permutation.
+- 2026-08-01 -- Closed the previously implicit global-continuation gap in
+  `HTGeometry/SpectralPathCovering.lean`: the characteristic-root incidence
+  space over a continuous simple-spectrum finite-matrix path is a covering of
+  the interval, hence every initial root admits a global continuous lift.
+  The proof obtains compactness from a uniform Cauchy root bound and local
+  triviality from the complex implicit-function theorem.
+- 2026-08-01 -- Antagonistic audit rejected the tempting inference from
+  simple-spectrum path connectedness to named common-base generators.
+  Transport along an uncontrolled connector conjugates a local transposition
+  by an unknown permutation; the resulting transposition graph need not be
+  connected.  New frontier theorem: construct a controlled deformation from
+  each local branch loop to a simple diagonal two-local Hamiltonian, track
+  every signed root algebraically, and only then use the diagonal
+  discriminant complement, where computational labels are global.
+- 2026-08-01 -- Closed common-base anchoring and the first algebraic
+  Galois-level consequence.  `HTGeometry/TwoLocalCommonBaseEdgeMonodromy.lean`
+  realizes every permutation at one fixed diagonal base.
+  `HTGeometry/TwoLocalMonodromyRelationRigidity.lean` proves that only the
+  trace direction survives all exact continuations.
+  `HTGeometry/TwoLocalCharacteristicIrreducibility.lean` proves a new
+  factor-membership transport law: a root cannot switch polynomial factors
+  along any labelled simple-spectrum path.  Full symmetric monodromy then
+  forces the universal two-local characteristic polynomial to be
+  irreducible over both its multivariate parameter ring and its
+  rational-function field.  Foreground compilation and axiom audits pass
+  with only `propext`, `Classical.choice`, and `Quot.sound`.

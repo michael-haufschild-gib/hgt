@@ -71,6 +71,16 @@ A_a^prime
 T_a=P_a^S A_a^prime P_a^S.                              (7)
 ```
 
+The sign in `(6)` is already Suzuki's negative prime sign.  In formulas written in normalized
+Gamma form as `scalar Gamma operator - T_a^Gamma`, the positive adjacency is
+
+```text
+T_a^Gamma=-T_a.                                         (7a)
+```
+
+Both operators are bounded and self-adjoint.  Confusing `T_a` with `T_a^Gamma` reverses the
+literal prime term.
+
 ### Theorem
 
 `[PROVED]` The operators `(6)` and `(7)` are bounded and self-adjoint.  Moreover
@@ -150,10 +160,13 @@ that the remaining completed-domain state is in
    whose independence comes from opposite one-sided restrictions, not from spatial separation.
 2. **No source-domain smuggling.**  `(2)` constructs the exact Hilbert carrier for a
    square-summable oriented coefficient state.  It does not assert that every vector in Suzuki's
-   completed form domain already has such a state.  That realization is the next analytic gate.
+   completed form domain already has such a state.  The subsequent evaluation-rigging theorem
+   sharpens this warning: unit-phase scalar evaluation is unbounded on every infinite `ell2`
+   seam sector.  A literal realization must land in `ell1 subset ell2` (or an equivalent nuclear
+   rigging), not merely in `ell2`.
 3. **No positivity claim.**  The minus sign in `(5)` is retained.  Self-adjointness gives skew
    radial transport after Fourier differentiation; it gives no positivity of the restricted Weil
-   form.
+   form.  Gamma-normalized formulas use `T_a^Gamma=-T_a`, not `T_a`.
 4. **No unpruned path substitution.**  Formula `(9)` inserts the support projection at every step.
    The unrestricted Laurent convolution and the pruned graph agree only on paths that remain
    admissible throughout.
@@ -171,13 +184,16 @@ The remaining RH-bearing seam is now exact:
 
 ```text
 completed Suzuki zero mode with beta_left=beta_right=0
-  -> construct its H_a-valued logarithmic tail in L2(dL)
+  -> construct its ell1(S_a)-valued logarithmic tail, hence an H_a-valued L2 tail
+  -> reconstruct the scalar mode through bounded ell1 phase evaluation
   -> Gamma-current Liouville kills homogeneous component
   -> prove forced component has strip width sigma>1/2
   -> H1_0 connector.                                    (11)
 ```
 
-No claim in `(11)` after the first arrow is proved here.
+No claim in `(11)` after the first arrow is proved here.  The impossibility of replacing the
+first two arrows by a bounded `ell2 -> scalar` evaluation is proved in
+`suzuki-support-pruned-evaluation-rigging-fracture.md`.
 
 ## 5. Lean decision
 
@@ -191,4 +207,3 @@ formal/GaloisForLFunctions/RHTower/
 
 Lean deliberately does not contain a theorem asserting the unproved completed-domain arrow in
 `(11)`.
-

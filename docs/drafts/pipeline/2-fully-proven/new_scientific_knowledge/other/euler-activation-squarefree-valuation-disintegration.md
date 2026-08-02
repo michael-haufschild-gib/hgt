@@ -4,7 +4,9 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper), `[PROVED HERE] [EXACT SOURCE UNIFICATION] [NOT RH]`
 - **Scientific status:** `[CORPUS-NEW SYNTHESIS] [EXTERNAL NOVELTY PRELIMINARY]`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/EulerActivationSquarefreeDisintegration.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/EulerActivationSquarefreeDisintegration.lean`;
+  `formal/GaloisForLFunctions/RHTower/EulerActivationSquarefreeProbability.lean`;
+  `formal/GaloisForLFunctions/RHTower/CriticalActivationReesSourceLaw.lean`
 - **Parents:**
   - `../wold-shell-euler-activation-square.md`;
   - `../mobius-fixed-current-von-mangoldt-critical-transport-weld.md`;
@@ -454,6 +456,11 @@ Primary references:
 - [x] preliminary external collision audit
 - [x] Lean formalization of diagonal source, local mass, normalization, occupancy Fisher,
       Möbius atom, Gamma damping, and completed-current identities
+- [x] Lean formalization of finite squarefree Gibbs pushforward, canonical local and critical
+      Kolmogorov product measures, exact score moments, orthogonal Fisher decomposition, reciprocal
+      prime divergence, and almost-sure infinite critical occupancy
+- [x] Lean formalization of the divisor grade drop, inverse-square Fisher ratio, positive Gram
+      cross bound, and impossibility of a uniformly bounded ordinary positive completion
 - [ ] construct exceptional Gamma/co-Poisson disintegration
 - [ ] prove complete contractivity on the Xi boundary graph
 - [ ] four-unit relative-trace estimate

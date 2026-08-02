@@ -24,8 +24,13 @@ positivity statement equivalent to RH.
 ## Gates
 
 - [x] 0 → 1  in-progress: exact representation, bridge theorem, falsifiers, and open core stated
-- [ ] 1 → 2  fully-proven: construct Suzuki endpoint Hardy amplitudes on the completed form domain
-  and prove the two-port boundary return kernel is zero for every aperture
+- [x] construct Suzuki endpoint `L2` Hardy amplitudes and high-frequency rigged Wiener carrier on
+  the completed form domain
+- [x] upgrade high-frequency carrier from `L2(ell1)` to `ell1_seams(L2_position)`
+- [x] identify exact `dr` versus physical boundary `dr/r` measure fracture
+- [x] prove high-tail physical-log realization is locked to low-frequency endpoint moments
+- [x] compress low band to two endpoint counterterms plus Gamma-subcritical remainder
+- [ ] 1 → 2  fully-proven: prove the two-port boundary return kernel is zero for every aperture
 - [ ] 2 → 3  formalized: formalize only after the concrete logarithmic multiplier and completed
   form domain exist in Lean
 - [ ] 3 → 4  publication-ready: standalone theorem, proof, source-normalization audit, Lean
@@ -84,9 +89,17 @@ M_a = ||t_a||_W
     = 2 sum_(p^j<=exp(2a)) (log p)/p^(j/2) < infinity.   (6)
 ```
 
-Formula `(4)` is the exact source connector that an abstract almost-periodic model lacks.  Its
-normalization still has to be copied line by line from Suzuki when the analytic realization is
-built; no argument below depends on a guessed value of `kappa`.
+Formula `(4)` is the exact source connector that an abstract almost-periodic model lacks.  The
+normalization has now been copied line by line from Suzuki (2.7) in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-exterior-residual-rigged-wiener-realization.md`:
+
+```text
+kappa=1,
+q_a(xi)=Re psi(1/4+i xi/2)-log<xi>-log pi
+        +Fourier(r_(0,a)'')(xi),
+```
+
+and \(q_a\) is bounded by the digamma asymptotic and compact-kernel Fourier bound.
 
 ## 3. `[PROVED HERE]` valuation-Wiener resolvent theorem
 
@@ -183,9 +196,11 @@ p_a(xi)vhat(xi)
 ```
 
 Here `B_-` and `B_+` are boundary values of opposite half-plane distributional Hardy classes when
-the source has the corresponding `L2` regularity.  Formula `(16)` itself needs only temperedness
-and the support split.  For sufficiently large `|xi|`, `(9)` makes `p_a(xi)` nonzero, so `(17)`
-may there be divided by `p_a`; no global nonvanishing is assumed.
+the source has the corresponding `L2` regularity.  That qualification is now closed for every
+completed eigenmode: completed eigenmodes are bounded, and their exterior logarithmic residual has
+only \(O(\log(1/r))\) boundary growth, hence lies in `L2`.  Therefore both amplitudes are ordinary
+`L2` Hardy boundary values.  For sufficiently large `|xi|`, `(9)` makes `p_a(xi)` nonzero, so
+`(17)` may there be divided by `p_a`; no global nonvanishing is assumed.
 
 Apply `(8)` in the two-root module
 
@@ -194,9 +209,12 @@ M_a = W_a e_- direct-sum W_a e_+.                       (18)
 ```
 
 Then every prime seam descendant is slaved to the two amplitudes `(B_-,B_+)`, with absolute
-coefficient convergence and bound `(9)`.  At resonant apertures the evaluated physical phases of
-the two roots may coincide, but they remain distinct in `M_a`; their opposite one-sided boundary
-orientations recover the labels.  Thus there is no countable family of independent seam data.
+coefficient convergence and bound `(9)`.  The resulting carrier belongs to
+`L2_frequency(ell1)`, hence also `L2_frequency(ell2)`, and absolute phase evaluation reconstructs
+the completed mode exactly above the finite inversion threshold.  At resonant apertures the
+evaluated physical phases of the two roots may coincide, but they remain distinct in `M_a`; their
+opposite one-sided boundary orientations recover the labels.  Thus there is no countable family
+of independent seam data.
 
 ### Proof
 
@@ -295,8 +313,20 @@ argument is standard.  Therefore:
 
 ```text
 weighted Wiener inverse theorem                  [BRIDGE]
-Suzuki finite-aperture identification (4)--(6)  [BRIDGE; SOURCE CHECK PENDING]
-two-root valuation reduction (15)--(20)         [NOVELTY UNVERIFIED]
+Suzuki finite-aperture identification (4)--(6)  [PROVED; SOURCE NORMALIZED]
+completed-source exterior L2 Hardy amplitudes   [PROVED HERE]
+high-frequency L2(ell1) two-root realization    [PROVED HERE]
+high-frequency ell1_seams(L2_position) upgrade [PROVED HERE]
+free high-tail ell1_seams(L2(dr/r)) upgrade     [FALSIFIED]
+low/high endpoint-moment lock                   [PROVED; LEAN]
+low-band two-counterterm compression            [PROVED; LEAN CORE]
+all-grade prime normal carrier                   [EXACT BINOMIAL RESOLVENT]
+prime--Gamma homogeneous corona coupling         [CLOSED MOD PHYSICAL L2]
+root-retained strict-interior forced carrier      [UNWEIGHTED H1(dL)/L2(dL)]
+Gamma delay + root first-grade observation         [EXACT; LEAN INJECTIVITY CORE]
+polar/scalar normal residual                        [GAMMA-SUBCRITICAL / HOMOGENEOUS]
+completed-source normal-family intertwiner        [OPEN COUPLED RETURN THEOREM]
+two-port return problem (20)                    [NOVELTY UNVERIFIED]
 two-port return injectivity                     [CONJECTURE; RH-EQUIVALENT]
 ```
 
@@ -315,3 +345,32 @@ only `(8)` would certify a standard bridge while leaving every RH-bearing connec
   source chain reaches causal entry-wall light completion and rectangular Ward assembly directly.
   Main live card is `suzuki-coherent-fusion-gamma-weld.md`; no claim in this card proves its trace
   identity or Ward lower bound.
+- 2026-08-01 — source normalization closed with `kappa=1`.  Bounded completed eigenmodes have
+  `L2` exterior residuals, producing ordinary two-port Hardy amplitudes and an exact
+  high-frequency `L2(ell1) subset L2(ell2)` carrier.  Remaining gap is the
+  global-to-support-pruned logarithmic intertwiner and low-frequency return kernel.
+- 2026-08-01 — Wordwise majorization strengthens the carrier to
+  `ell1_seams(L2_position)`.  This does not give physical log `L2`: after
+  `r=exp(-L)` the required measure is `dr/r`.  Exact exterior elimination also inserts a positive
+  Feshbach return before support pruning.  Both corrections are now part of the live intertwiner.
+- 2026-08-01 — Physical-log integrability of the high part was proved to force explicit
+  low-frequency endpoint moments.  Boundary-flat smooth profiles do not satisfy these moments
+  automatically.  High-tail carrier realization and two-port return must therefore be solved as
+  one matched problem.
+- 2026-08-01 — Low band was reduced exactly to two endpoint counterterms.  After counterterm
+  matching, its remaining boundary germ has rate `exp(-L)` and is harmless in every Gamma strip
+  below the first pole.
+- 2026-08-01 — Dense prime breadth was summed exactly by the binomial resolvent
+  `(L I-T/2)^(-1/2)`.  Literal Gamma transport changes this representative only by physical
+  `L2(dL)`, so the remaining coupled-return theorem is solely the source-defined
+  exterior/Feshbach forcing plus cutoff identity.
+- 2026-08-01 — Replaced pre-log Feshbach elimination by an exact root-retained dilation.  Endpoint
+  trace remains in `Q`; strict-interior projection lies in unweighted
+  `H1(dL) intersect L2(dL)` and is forced by `PTQ(QF)' in L2`, with every exterior return still
+  present.  Spatial `H1(dr)` remains the weighted trace-zero gate.
+- 2026-08-01 — Proved literal Gamma phase is delayed to grade three.  First interior prime
+  coefficient remains exactly `(1/4)PT beta`; its root-port Gram is positive for
+  `a>(log 2)/2`, and strict-step coordinate injectivity is formalized unconditionally.
+- 2026-08-01 — Proved exact polar remainder has locally Lipschitz second derivative, making its
+  differentiated log forcing `O(exp(-L))`.  Scalar/eigenvalue potential is homogeneous diagonal
+  transport.  Neither remains a possible inverse-log-flat source.

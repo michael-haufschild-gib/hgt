@@ -316,3 +316,634 @@ class to positivity, a Weil criterion, or zero location.
 
   Supporting general lemma: `orderIsoRange`, a monotone order-reflecting map is an order isomorphism
   onto its range.
+
+- 2026-08-02 — **The induction engine for Solomon--Tits: the link of a vertex is the building of the
+  quotient.**  `formal/GaloisForLFunctions/HTGeometry/BuildingLinkQuotient.lean`, wired into the
+  `HTGeometry` umbrella, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  OrderIso.subtypeCongr :   restrict an order isomorphism to matching subtypes
+  linkQuotientOrderIso :
+    {W : proper nonzero subspace of M ⧸ p}  ≃o  {U : p < U < ⊤}
+  ```
+
+  The proper subspaces strictly above `p` are order isomorphic to the proper nonzero subspaces of the
+  quotient by `p`, by the submodule correspondence theorem (`Submodule.comapMkQRelIso`) restricted to
+  the strict range.  Composed with `orderIsoNerveIso` this identifies the *nerve* of the link with the
+  nerve of the building of a space of smaller dimension, which is what an induction on dimension
+  needs.
+
+  This is the piece the middle-range vanishing `1 <= j <= N - 3` will be built on; the star of a
+  vertex is already known contractible here (`isZero_homology_star`), so what remains is the gluing —
+  and the earlier finding stands that the naive star/complement Mayer--Vietoris cover cannot do it,
+  since the complement of a star is not acyclic.
+
+- 2026-08-02 — **The contractible piece of the Solomon--Tits decomposition.**
+  `formal/GaloisForLFunctions/HTGeometry/BuildingNotSpanning.lean`, wired into the `HTGeometry`
+  umbrella, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  notSpanningPoset p :  the nonzero subspaces U with U ⊔ p still proper
+  notSpanningJoin :     joining with p stays inside that family
+  isZero_homology_notSpanningPoset :  it has no homology in positive degrees
+  ```
+
+  Fix a nonzero proper `p`.  Everything that fails to span together with `p` retracts onto `p`: the
+  monotone map `U |-> U ⊔ p` stays inside the family — because `(U ⊔ p) ⊔ p = U ⊔ p` — dominates the
+  identity and dominates the constant `p`, which is conical contractibility in the form
+  `isZero_homology_of_conical` already consumes.
+
+  With the link identification of the previous entry the two halves of the Solomon--Tits induction
+  are now in place: the piece that does not span with `p` is contractible, and the link of `p` is the
+  building of the quotient.  What is still missing is the gluing — the building is the union of this
+  contractible piece with the stars of the hyperplanes avoiding `p`, and that is a cover with many
+  pieces rather than the two a plain Mayer--Vietoris handles.
+
+- 2026-08-02 — **The induction step in homological form.**
+  `formal/GaloisForLFunctions/HTGeometry/BuildingLinkHomology.lean`, wired into the `HTGeometry`
+  umbrella, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  homologyIsoOfIso :   an isomorphism of simplicial sets induces one on homology
+  linkHomologyIso :
+    H_n(link of p)  ≅  H_n(building of M ⧸ p),  for any coefficients
+  ```
+
+  The order isomorphism of the previous entry, transported along the nerve and then along homology.
+  This is the shape a dimension induction consumes directly: the link of a vertex contributes the
+  homology of a building one dimension down.
+
+  Current state of the Solomon--Tits attack in this corpus, all unconditional: stars of vertices are
+  contractible; the non-spanning family of a vertex is contractible; the link of a vertex has the
+  homology of the quotient building; cutting at a *minimal* element is available as
+  `isZero_homology_nerve_of_minimal_mono`, whose remaining hypothesis is the vanishing for the
+  complement of the star.  That complement — the subspaces not containing `p` — is where the argument
+  still stops, and the earlier no-go stands: it is not acyclic, so the two-piece cut cannot close the
+  induction on its own.  The classical proofs cover the building by the stars of the hyperplanes
+  avoiding `p`, which is a many-piece cover.
+
+- 2026-08-02 — **An order complex can be cut at *any* vertex, not only a minimal one.**
+  `formal/GaloisForLFunctions/HTGeometry/NerveVertexRemoval.lean`, wired into the `HTGeometry`
+  umbrella, axioms `[propext, Classical.choice, Quot.sound]`:
+
+  ```text
+  generalStar p :  the elements comparable to p
+  generalStarCone, isZero_homology_generalStar :  that star is contractible, for any p
+  nerveSubcomplex_generalStar_sup_compl :  the star and the complement of p cover
+  isZero_homology_nerve_of_vertex :  hence the cut, at an arbitrary vertex
+  ```
+
+  The earlier cut in `NerveMayerVietoris` assumed `p` minimal, and used minimality twice: to make the
+  star a cone and to make the two pieces cover.  Neither needs it.  The star of any element is
+  conically contractible by the fold `q |-> if q <= p then p else q`, which is monotone on the star
+  precisely because every element there is comparable to `p`; and the cover holds because a chain
+  containing `p` has all its members comparable to `p`.
+
+  For a building this matters: the vertex removed can be a hyperplane or any intermediate subspace,
+  not only a point, and the intersection term becomes the *punctured* star — the elements strictly
+  below joined to those strictly above — rather than only the upper link.
+
+  Build note: the umbrella did not build at the end of this entry, the failure being in
+  `CrossLayerLiftParityRigidity.lean`, a file another agent was editing at that moment (mtime 21
+  seconds before the check).  The module logged here builds and audits clean on its own.
+
+- 2026-08-02 — **The lower link, and the punctured star as the union of the two links.**
+  `formal/GaloisForLFunctions/HTGeometry/BuildingLowerLink.lean`, wired into the `HTGeometry`
+  umbrella, axioms `[propext, Classical.choice, Quot.sound]` (the set identity needs only
+  `[propext, Quot.sound]`):
+
+  ```text
+  generalStar_inter_compl_eq :             punctured star  =  lower link  ∪  upper link
+  generalStar_inter_compl_eq_of_maximal :  at a maximal element, the lower link alone
+  lowerLinkOrderIso :   {W proper nonzero in p}  ≃o  {U : ⊥ < U < p}
+  lowerLinkHomologyIso : and the same homology
+  ```
+
+  Dual to the upper-link identification: the proper nonzero subspaces strictly below `p` are the
+  proper nonzero subspaces of `p` itself, by `Submodule.mapIic`.  So the local picture at a vertex of
+  a building is now complete in both directions — removing a vertex leaves the building of that
+  vertex below it and the building of the quotient above it, and the term the Mayer--Vietoris
+  sequence sees is the union of the two.
+
+  At a **hyperplane** this specialises usefully: a hyperplane is maximal, so its punctured star is
+  just the building of the hyperplane, one dimension down.  That is a cut whose intersection term is
+  a smaller building with no join to analyse.
+
+  Build note: the umbrella did not build at the end of this entry, first with a missing object file
+  and then with a compile error, both in `ParityCompleteLocalExtensionRelationEscape.lean` — another
+  agent's file, mtime four seconds before the check.  The module logged here builds and audits clean
+  on its own.
+
+- 2026-08-02 — **The cut at a hyperplane, and why the naive induction still does not close.**
+  `formal/GaloisForLFunctions/HTGeometry/NerveMaximalCut.lean`, wired into the `HTGeometry`
+  umbrella, axioms `[propext, Classical.choice, Quot.sound]`; umbrella green at 13015 jobs:
+
+  ```text
+  isZero_homology_nerve_of_maximal :
+    at a maximal vertex the cut needs only the complement and the lower link
+  buildingPoset R M, isMaximal_hyperplane :  a hyperplane is a maximal vertex of the building
+  ```
+
+  Combined with the lower-link identification this is the cleanest cut available: removing a
+  hyperplane `H` leaves the complement and, as the Mayer--Vietoris term, the building of `H` — one
+  dimension down, exactly what an induction wants.
+
+  A negative finding, recorded so the route is not re-attempted.  Iterating that cut does **not**
+  close the vanishing.  Removing all hyperplanes one at a time is fine — for distinct hyperplanes
+  `H'` is never below `H`, so each star is unchanged and each intersection term is a smaller building
+  — but the process must continue into lower dimensions, and removing a `d`-dimensional vertex
+  contributes `H_(i-1)` of a `d`-dimensional building, which vanishes only for `d >= i + 2`.  Stopping
+  at that bound leaves the poset of subspaces of dimension at most `i + 1`, whose order complex has
+  dimension exactly `i`, so `H_i` is its top homology and is not zero.  The vertex-by-vertex descent
+  therefore cannot reach the middle range on its own; the classical proofs use a shelling of the
+  apartments or a many-piece cover, and one of those is what is still missing.
+
+- 2026-08-02 — **The missing infrastructure, first half: Mayer--Vietoris over the union.**
+  `formal/GaloisForLFunctions/HTGeometry/CoproductMayerVietorisSup.lean`, wired into the
+  `HTGeometry` umbrella, axioms `[propext, Classical.choice, Quot.sound]`; umbrella green at 13018
+  jobs:
+
+  ```text
+  mvSupSnd, mvSupShortComplex, mvSupSection, mvSupSplitting
+  mvSupShortExact :
+    0 → coprod(S₁ ∩ S₂) → coprod S₁ ⊞ coprod S₂ → coprod(S₁ ∪ S₂) → 0  is split exact
+  ```
+
+  The previous coproduct Mayer--Vietoris landed in the coproduct over the *whole ambient type* and so
+  needed a covering hypothesis; this one lands in the coproduct over the union and needs none — the
+  union covers itself.  The proof mirrors the old one with the restriction `restr R (S₁ ∪ S₂) S` in
+  place of `restrFull R S` and `inclCop` in place of `inclFull`, and the case analysis uses `x.2`
+  where the old one used the cover.
+
+  This is the half of the missing machinery that the previous entry identified: an iterated cover
+  needs Mayer--Vietoris concluding about `A ⊔ B` rather than about the ambient simplicial set, and
+  every route to a many-piece cover reduces to it.  What remains is to lift it from coproducts to
+  chain complexes of subcomplexes, which is the same mirroring one level up.
+
+- 2026-08-02 — **The missing infrastructure, second half: Mayer--Vietoris for subcomplexes over the
+  union.**  `formal/GaloisForLFunctions/HTGeometry/SimplicialMayerVietorisSup.lean`, wired into the
+  `HTGeometry` umbrella, axioms `[propext, Classical.choice, Quot.sound]`; umbrella green at 13020
+  jobs:
+
+  ```text
+  homOfLE_comp_homOfLE_eq, mvSupChainSnd, mvSupChainShortComplex, mvSupChainShortComplexIso
+  mvSupChainShortExact :
+    0 → chains(A ⊓ B) → chains A ⊞ chains B → chains(A ⊔ B) → 0   short exact, no cover needed
+  isZero_homology_of_mayerVietoris_sup :
+    both pieces acyclic in degree i, intersection acyclic in degree i - 1
+      ⟹  the union is acyclic in degree i
+  ```
+
+  The gap identified two entries ago is now closed.  The degreewise input is the split exactness over
+  the union proved in the previous entry, and the identification is again the identity on both ends,
+  because the chain group of `A ⊔ B` in degree `n` is definitionally the coproduct over
+  `A.obj n ∪ B.obj n`.
+
+  With this, a many-piece cover can be folded one piece at a time: the union of a finite family is
+  built up by repeated application, each step needing only that the new piece is acyclic and that its
+  intersection with the partial union is acyclic one degree down.  That is the shape the Solomon--Tits
+  cover by the stars of the hyperplanes avoiding a point requires.
+
+- 2026-08-02 — **The many-piece cover, folded.**
+  `formal/GaloisForLFunctions/HTGeometry/SimplicialMayerVietorisFold.lean`, wired into the
+  `HTGeometry` umbrella, axioms `[propext, Classical.choice, Quot.sound]`; umbrella green at 13021
+  jobs:
+
+  ```text
+  isZero_homology_finsetSup :
+    every piece acyclic in degree i,  every A a ⊓ (partial union) acyclic in degree i - 1
+      ⟹  the union over any nonempty finite family is acyclic in degree i
+  ```
+
+  Induction over nonempty finsets by `Finset.Nonempty.cons_induction`, each step a single use of the
+  two-piece Mayer--Vietoris over the union.  Using the nonempty induction avoids having to say
+  anything about the empty subcomplex.
+
+  The machinery the last three entries were after is now complete: a finite cover of an order complex
+  by acyclic pieces with acyclic partial intersections gives vanishing.  For Solomon--Tits over a
+  finite field this is directly applicable — the building is covered by the star of a point together
+  with the stars of the hyperplanes avoiding it, all of them contractible by
+  `isZero_homology_generalStar` — and what has to be computed next is the partial intersections of
+  those stars.
+
+- 2026-08-02 — **Mayer--Vietoris in the bottom degree, and the fold over a cover with a base.**
+  Five modules, all wired into the `HTGeometry` umbrella, all
+  `[propext, Classical.choice, Quot.sound]`; umbrella green at 13037 jobs:
+
+  ```text
+  ConstHomologyMono.lean
+    homologyMap_const_eq_id_of_conical :  a conical nerve is homologically constant, in every degree
+    isSplitMono_homologyMap_of_homologyMap_const_id, mono_homologyMap_of_homologyMap_const_id :
+      a homologically constant simplicial set is a homology retract of everything it maps into
+    homologyMap_const_eq_id_of_vertex :   the vertex does not matter
+    homologyMap_const_eq_id_of_iso :      and the property transports along isomorphisms
+  SimplicialMayerVietorisMono.lean
+    isZero_homology_of_mayerVietoris_sup_mono :   vanishing over the union under injectivity
+    mono_homologyMap_mvChainFst_of_right :        injectivity on one side suffices
+    isZero_homology_of_mayerVietoris_sup_of_const : and contractibility of the intersection supplies it
+  SimplicialMayerVietorisConnected.lean
+    epi_homologyMap_mvSupChainSnd_zero :   in degree zero the map onto the union is epi on homology
+    homologyMap_const_eq_id_of_sup :       connectedness passes to a union along a vertex
+  SubcomplexDistrib.lean
+    Subcomplex.sup_inf_right, finsetSup_inf_le :  the distributive law and its finite form
+  SimplicialMayerVietorisBase.lean
+    base_sup_inf_eq :                a piece meets the partial union exactly where it meets the base
+    isZero_homology_base_finsetSup : vanishing, folded over a cover with a base
+    exists_homologyMap_const_eq_id_base_finsetSup : connectedness, folded the same way
+  ```
+
+  The fold of the previous entry cannot run the Solomon--Tits induction as it stands, because in
+  degree one the Mayer--Vietoris term is the degree-zero homology of the intersection, which never
+  vanishes for a nonempty intersection.  What the sequence actually needs there is that this homology
+  *injects*, and that is what the first three modules supply: the connecting map is zero as soon as
+  the map out of the intersection is a monomorphism, a monomorphism follows from the intersection
+  being homologically constant at a vertex, and conical contractibility gives that in every degree —
+  including degree zero, where the positive-degree conclusion was previously thrown away.
+
+  The last two modules fold a cover of a new shape.  In the Solomon--Tits cover the pieces are stars
+  of vertices which meet each other only inside a fixed contractible base, and then the intersection
+  of a piece with any partial union is its intersection with the base alone
+  (`base_sup_inf_eq`, by the distributive law).  So the induction needs exactly one hypothesis per
+  piece, in both the vanishing and the connectedness form, and neither hypothesis grows with the fold.
+
+  What this does not yet reach: the cover of a building over an infinite field has infinitely many
+  pieces — one for every hyperplane avoiding a fixed point — while the fold is over a finite family.
+  The finite fold proves the vanishing for every finite partial union.  Closing the gap needs the
+  Mayer--Vietoris sequence for a base together with an arbitrary family of pieces meeting pairwise
+  inside the base, which is short exact degreewise for any index set because the pieces are disjoint
+  outside the base.  That sequence, not a colimit argument, is the next module.
+
+- 2026-08-02 — **The infinite cover: Mayer--Vietoris for a base and arbitrarily many pieces.**
+  Three modules, wired into the `HTGeometry` umbrella, axioms `[propext, Classical.choice,
+  Quot.sound]`; umbrella green at 13047 jobs:
+
+  ```text
+  CoproductMayerVietorisFamily.lean
+    famBaseIncl, famPieceIncl, famFst, famIncl, famSnd, famTrunc, famRetraction, famSection
+    famSplitting, famShortExact, famShortExact' :
+      0 → ∐ₐ ∐_{S₀ ∩ S a} R → (∐_{S₀} R) ⊞ ∐ₐ ∐_{S a} R → ∐_W R → 0   split, any index type
+  FamilySimplicialSet.lean
+    famSSet :          the disjoint union of a family of subcomplexes, as a simplicial set
+    famSSetHom, famSSetMap, chainComplexMap_famSSetHom_f, chainComplexMap_famSSetMap_f
+    iSup_obj, mem_base_iSup_obj
+  SimplicialMayerVietorisFamily.lean
+    mvFamChainFst, mvFamChainSnd, mvFamChainShortComplexIso
+    mvFamChainShortExact :
+      0 → chains(⨿ₐ (A₀ ⊓ A a)) → chains(A₀) ⊞ chains(⨿ₐ A a) → chains(A₀ ⊔ ⨆ₐ A a) → 0
+    mono_homologyMap_mvFamChainFst_of_right
+    isZero_homology_famSup :  the vanishing statement the infinite cover consumes
+  ```
+
+  The previous entry's fold proves the vanishing for every *finite* partial union, and the cover of a
+  building over an infinite field has one piece for every hyperplane avoiding a fixed point.  The gap
+  is not closed by a colimit argument but by attaching all the pieces at once: the sequence above is
+  short exact for **any** index type, because pieces that meet each other only inside the base are
+  disjoint outside it, so an element of the covered set lies in the base or in exactly one piece.
+  That dichotomy is the section; the retraction keeps what lies in the base; the splitting identity is
+  a two-case check on basis elements.
+
+  The chain-level form needs the disjoint union of the pieces, which is not a subcomplex — the pieces
+  overlap.  `famSSet` makes it a simplicial set in its own right, degreewise the disjoint union of
+  the pieces' simplices, so that its chains in degree `n` are *definitionally* the coproduct over
+  that disjoint union.  With that the degreewise identification is the same one the two-piece
+  sequence uses, and the short exactness transports through `shortExact_of_degreewise_shortExact`.
+
+  So the Solomon--Tits cover is now formalizable as it actually is: base = the subspaces that do not
+  span with a fixed point (contractible, already proved), pieces = the stars of the hyperplanes
+  avoiding that point (each a cone), pairwise intersections = subspaces of two hyperplanes, which
+  already lie in the base.  What remains is to instantiate the three hypotheses for that cover and to
+  identify the intersection term as the building of a hyperplane — one dimension down, which is what
+  the induction consumes.
+
+- 2026-08-02 — **The Solomon--Tits cover itself, at the level of a modular lattice.**
+  `formal/GaloisForLFunctions/HTGeometry/BuildingSpanningCover.lean`, wired into the `HTGeometry`
+  umbrella, axioms `[propext, Classical.choice, Quot.sound]`; umbrella green at 13050 jobs:
+
+  ```text
+  properPart L, notSpanning p, spanning p
+  isCoatom_of_spanning :               an element spanning with an atom is a coatom
+  le_of_mem_generalStar_spanning :     and everything comparable to it lies below it
+  star_inter_star_subset_notSpanning : two distinct pieces meet only inside the base
+  notSpanning_inter_star :             notSpanning p ∩ star V = {U | U < V}
+  chain_mem_base_or_star :             every chain lies in the base or in a single star
+  nerveSubcomplex_sup_iSup_eq_top, nerveSubcomplex_notSpanning_sup_iSup_star :
+    the base and the stars cover the order complex
+  ```
+
+  All three hypotheses of the many-piece Mayer--Vietoris sequence are now theorems for the cover the
+  classical proof uses, and at the generality where they are true: a bounded **modular** lattice and
+  an atom `p`, with no vector space in sight.  Modularity enters exactly twice, in the two facts that
+  make the cover good.  An element spanning with an atom is a coatom: if `V < W` then
+  `W = (V ⊔ p) ⊓ W = V ⊔ (p ⊓ W)`, and `p ⊓ W` is `⊥` — giving `W = V` — or `p`, giving `W = ⊤`.  And
+  an element strictly below such a coatom cannot itself span, by the same identity read the other way.
+
+  The intersection term is `{U | U < V}`, the proper part of the interval below a coatom — a building
+  one step smaller, which is what an induction on length consumes.  The cover statement itself needs
+  no modularity at all: a chain containing a spanning element has all its members comparable to it.
+
+  What remains for the vanishing is the homology of the *disjoint union* of the stars, which is the
+  middle term of the sequence.  Each star is a cone, so the disjoint union retracts onto the discrete
+  set of cone points; its order complex has dimension zero, so the homology vanishes above degree
+  zero — by `hasDimensionLT_nerve_of_chain_bound` and `isZero_homology_of_hasDimensionLT`, both
+  already in the corpus.  Making that argument available needs one identification: the disjoint union
+  of the nerves of subposets is the nerve of their disjoint union poset.
+
+- 2026-08-02 — **The Solomon--Tits induction step is a theorem.**  Four further modules, wired into
+  the `HTGeometry` umbrella, axioms `[propext, Classical.choice, Quot.sound]`; umbrella green at
+  13060 jobs:
+
+  ```text
+  FamilyPosetNerve.lean
+    famPoset S, famPoset_le_iff, famPoset_index_eq
+    famPosetNerveIso :  ⨿ₐ (full subcomplex on S a)  ≅  nerve (disjoint union poset)
+    famPosetHomologyIso
+  LocallyConicalPoset.lean
+    discretePoset, hasDimensionLT_nerve_discretePoset, isZero_homology_nerve_discretePoset
+    isZero_homology_of_locally_conical :
+      a fold dominating the identity and a map constant on comparable pairs kills all
+      positive-degree homology
+  FamilyStarVanishing.lean
+    famStarCone, famStarCentre
+    isZero_homology_famSSet_generalStar :  a disjoint union of stars has no homology above degree 0
+  BuildingCoverVanishing.lean
+    spanningIndex, coverBase, coverPiece, coverBase_sup_iSup_coverPiece
+    coverPiece_inter_le_coverBase, coverBase_inter_coverPiece
+    notSpanningJoinAtom, isZero_homology_coverBase, isZero_homology_famSSet_coverPiece
+    isZero_homology_nerve_properPart :  THE INDUCTION STEP
+  ```
+
+  `isZero_homology_nerve_properPart` says: for a bounded modular lattice `L` and an atom `p < ⊤`, if
+  the map out of the disjoint union of the order complexes of the intervals below the coatoms
+  complementary to `p` is injective on homology in degree `i - 1`, then `H_i(Δ(L)) = 0`.  Everything
+  else in the step is discharged unconditionally — the cover, the contractibility of the base, the
+  vanishing for the disjoint union of the stars, and the disjointness of the pieces outside the base.
+
+  Two general tools came out of it, both worth more than this application.
+  `isZero_homology_of_locally_conical` weakens conical contractibility to its componentwise form: a
+  monotone fold dominating the identity and a map that is *constant on comparable pairs* — rather
+  than globally constant — still kills all positive-degree homology, because the second map factors
+  through the same poset with the discrete order, whose order complex is zero-dimensional.  That is
+  the exact statement that a disjoint union of cones is homologically trivial above degree zero, and
+  it needs no exactness axiom on the coefficient category: no coproduct of homologies is ever formed.
+  And `famPosetNerveIso` identifies the disjoint union of full subcomplexes with the order complex of
+  the disjoint union poset, which is what lets a family of cones be treated as one poset.
+
+  What remains for `(5)` in the middle range is the induction bookkeeping: the intersection term is a
+  disjoint union of buildings of the intervals below the coatoms, so the induction hypothesis has to
+  be stated for arbitrary *families* of such intervals, graded by length.  With the family form of
+  the statement, the degree-`i - 1` input is supplied by the induction for `i ≥ 2`, and by
+  connectedness of the smaller buildings for `i = 1` (`homologyMap_const_eq_id_of_sup`,
+  `mono_homologyMap_of_homologyMap_const_id`).
+
+- 2026-08-02 — **The cover, relative to an interval.**
+  `formal/GaloisForLFunctions/HTGeometry/IntervalSpanningCover.lean`, wired into the `HTGeometry`
+  umbrella, axioms `[propext, Classical.choice, Quot.sound]`; umbrella green at 13063 jobs:
+
+  ```text
+  properBelow V, notSpanningBelow V p, spanningBelow V p, properBelow_top
+  eq_of_lt_of_spanningBelow :          spanning an interval with an atom means being its coatom
+  le_of_mem_generalStar_spanningBelow
+  starBelow_inter_starBelow :          two pieces meet only inside the base
+  notSpanningBelow_inter_star :        notSpanningBelow V p ∩ star U = properBelow U
+  chain_below_mem_base_or_star :       every chain of the interval lies in the base or one piece
+  ```
+
+  The same cover, stated relative to an element `V` instead of the top.  This is the form the
+  induction needs, and the reason is structural: the intersection term of the cover of `properBelow V`
+  is `properBelow U` for a coatom `U` of the interval, so the smaller buildings the induction produces
+  are **intervals of the same lattice**, not proper parts of new lattices.  The induction therefore
+  never leaves `L`, and the family it ranges over is a family of elements of `L`.
+
+  The remaining gap is now purely bookkeeping, and its shape is fixed: run the cover on the disjoint
+  union poset `famPoset (fun a => properBelow (W a))` — which is an order complex by
+  `famPosetNerveIso` — with a chosen atom per component; the base and the pieces are locally conical,
+  so both vanish above degree zero by `isZero_homology_of_locally_conical`; and the intersection term
+  is again a disjoint union of intervals, one coatom step down, which is the induction hypothesis.
+  Grading by the length of the intervals gives the range `1 ≤ i ≤ N - 3`.
+
+- 2026-08-02 — **The induction step for a family of intervals, and the degree-zero inputs.**
+  Six modules (four new, two extended), wired into the `HTGeometry` umbrella, axioms
+  `[propext, Classical.choice, Quot.sound]`; umbrella green at 13090 jobs:
+
+  ```text
+  FamilyIntervalCover.lean
+    famBuilding W, famCoverIndex, famCoverCentre, famCoverBase
+    famChain_mem_base_or_star, famCoverPiece_inter_subset_base, famCoverBase_inter_piece
+  FamilyCoverBaseVanishing.lean
+    famBaseJoin, famBaseCentre, isZero_homology_famCoverBase
+  FamilyCoverIntersection.lean
+    famCoverInterOrderIso, famCoverInterNerveIso :
+      the disjoint union of the intersections IS the disjoint union of the interval
+      buildings below the coatoms
+  FamilyBuildingStep.lean
+    isZero_homology_famBuilding_of_isZero :  THE STEP, hypothesis and conclusion the same statement
+  FamilyPosetNerve.lean (extended)
+    famPosetProj, famPosetMap, famPosetNerveIso_inv_comp_famSSetHom,
+    famPosetNerveIso_inv_comp_famSSetMap
+  LocallyConicalPoset.lean (extended)
+    homologyMap_nerve_eq_id_of_dominated :  a dominated map is the identity on homology, every degree
+  SimplicialMayerVietorisFamily.lean (extended)
+    epi_homologyMap_mvFamChainSnd_zero
+  FamilyCoverConnected.lean
+    famAtomCentre, piecesToCentre, piecesToChosen, piecesToJoin and their four comparisons
+    homologyMap_base_atom, homologyMap_pieces_atom
+  ```
+
+  `isZero_homology_famBuilding_of_isZero` is the induction step in closed form: for a family of
+  intervals of a bounded modular lattice, each with a chosen atom, if the disjoint union of the
+  interval buildings **below the coatoms** has no homology in degree `i - 1`, then the disjoint union
+  one step up has none in degree `i`.  Hypothesis and conclusion are the same statement about a
+  family, so the step composes with itself.
+
+  Why the statement had to be about families: the Mayer--Vietoris term of the cover of a single
+  building is a disjoint union of smaller buildings, and its homology cannot be split into the
+  components' without assuming coproducts are exact.  Keeping the whole disjoint union as one poset
+  avoids that entirely — `famCoverInterOrderIso` says the term is again an object of the same kind.
+
+  The degree-one case of the step needs, instead of vanishing, that degree-zero homology injects, and
+  that is componentwise connectedness.  Both halves of its proof are now theorems.
+  `homologyMap_base_atom`: on the base the atom map is the identity on homology, because the base
+  folds onto the atoms.  `homologyMap_pieces_atom`: on the pieces it is too, by a chain of four
+  comparisons of monotone maps — an element of a star lies below the star's centre, the centre lies
+  above the chosen element of the intersection, that element joins with the atom **inside** the
+  interval because it does not span, and the atom lies below that join.  What remains is to feed the
+  two into the degree-zero Mayer--Vietoris epimorphism (`epi_homologyMap_mvFamChainSnd_zero`, also
+  proved here) and then run the induction on rank.
+
+- 2026-08-02 — **Componentwise connectedness is a theorem.**
+  `formal/GaloisForLFunctions/HTGeometry/FamilyCoverConnected.lean`, axioms
+  `[propext, Classical.choice, Quot.sound]`; umbrella green at 13097 jobs:
+
+  ```text
+  famAtomCentre, famAtomMap :   send every element to the atom of its own component
+  homologyMap_famAtomMap_eq_id :
+    that map is the identity on degree-zero homology of the disjoint union of interval buildings
+  ```
+
+  This is the degree-one input the induction needs, and it is now unconditional.  The proof is the
+  degree-zero Mayer--Vietoris epimorphism together with the two component identities proved in the
+  previous entry: on the base the atom map is the identity on homology because the base folds onto
+  the atoms, and on the pieces it is by the four-step comparison chain.  The only hypothesis is that
+  each coatom has something strictly below it — i.e. that the intersections of the cover are
+  nonempty — which is what supplies the middle element of that chain.
+
+  A note for anyone continuing this: `nerve P` and `nerveFunctor.obj (Cat.of P)` are definitionally
+  equal but not syntactically, and `rw`/`simp` work below the transparency that identifies them.  A
+  composite that mixes the two elaborates fine and then refuses every rewrite.  The fix used here is
+  to name the map with its intended type (`famAtomMap`), which pins the written form of the objects
+  and makes the whole Mayer--Vietoris computation go through.
+
+  Remaining for `(5)` in the middle range, both mechanical: transport the connectedness statement
+  through `famPosetNerveIso` to get the degree-zero injectivity in the form
+  `mono_homologyMap_mvFamChainFst_of_right` consumes; then run the induction on rank, whose step is
+  `isZero_homology_famBuilding_of_isZero` for `i ≥ 2` and the injectivity form for `i = 1`.
+
+- 2026-08-02 — **The injectivity transport.**
+  `formal/GaloisForLFunctions/HTGeometry/FamilySSetMapMono.lean`, wired into the `HTGeometry`
+  umbrella, axioms `[propext, Classical.choice, Quot.sound]`; umbrella green at 13100 jobs:
+
+  ```text
+  famPosetNerveMap :                       the map of order complexes induced by a family inclusion
+  mono_homologyMap_nerve_of_comp_id :      a retraction up to homology gives injectivity
+  homologyMap_nerve_eq_id_of_comp :        a map absorbed by a homologically trivial one is trivial
+  mono_homologyMap_famSSetMap_congr :      injectivity depends only on the family, not its description
+  mono_homologyMap_famSSetMap_of_nerve :
+    injectivity for a map of disjoint unions reduces to the order-complex picture
+  ```
+
+  These four are what carry the connectedness statement, which lives on posets, to the injectivity
+  hypothesis of the Mayer--Vietoris step, which lives on disjoint unions of subcomplexes.  The last
+  one is the transport along `famPosetNerveIso`; the third is the bookkeeping that lets it apply at
+  all, since the subcomplexes in the sequence are meets rather than full subcomplexes on the nose,
+  and the two agree as an equality of families (`subst`) rather than definitionally.
+
+  A second toolchain note, recorded because it cost real time: `nerveFunctor` is not reducible, so
+  `nerveFunctor.map f ≫ nerveFunctor.map g = nerveFunctor.map (f ≫ g)` is **not** definitional and a
+  proof that assumes it is loops in `isDefEq` until the heartbeat limit rather than failing.  Every
+  composition of induced maps has to go through `nerveFunctor.map_comp` explicitly.
+
+- 2026-08-02 — **`(5)` IS PROVED IN THE MIDDLE RANGE.  The Solomon--Tits vanishing theorem is
+  formalized, unconditionally.**  Three modules, wired into the `HTGeometry` umbrella, axioms
+  `[propext, Classical.choice, Quot.sound]`; umbrella green at 13107 jobs:
+
+  ```text
+  FamilyStepDegreeOne.lean
+    famPieceCollapse, mono_homologyMap_mvFamChainFst_zero,
+    homologyMap_famPieceCollapse_eq_id, isZero_homology_famBuilding_one
+  FamilyBuildingVanishing.lean
+    covBy_famCoverTop, rank_atom_eq_one, exists_properBelow, famBuildingPUnitOrderIso
+    isZero_homology_famBuilding_of_rank :   the induction, for a family of intervals at once
+    isZero_homology_properPart_of_rank :    for one bounded modular lattice
+  BuildingVanishingSubmodule.lean
+    finrank_of_covBy
+    isZero_homology_properPart_submodule :
+      1 ≤ i → i + 3 ≤ dim V → H_i(Δ(proper nonzero subspaces of V); R) = 0
+  ```
+
+  The last statement is the card's `(5)` in the range that was open — for **any** coefficient object
+  of any abelian category with coproducts, any division ring, any finite dimension, with no
+  finiteness assumption on the field and no exactness axiom on the coefficients.  Together with the
+  two ends already proved (`isZero_horizonComplexHomology` above the dimension,
+  `horizonComplexHomologyZeroIso` in degree zero) this closes `(5)` for the building, hence — through
+  the simplicial isomorphism `(3)` — for `Δ_HT(V)`.
+
+  The induction is on rank, over families, with the degree dropping by one at each step.  Its two
+  ends are the two forms of the Mayer--Vietoris conclusion: for `i ≥ 2` the vanishing form, fed by
+  the induction hypothesis; for `i = 1` the injectivity form, fed by componentwise connectedness.  A
+  component whose cover has no pieces — nothing spans with the chosen atom, which is what happens in
+  a chain — is handled separately and needs no rank at all: its cover is its base, which is locally
+  conical.
+
+  The rank function is asked only to vanish at the bottom and to increase by one across a covering.
+  `Module.finrank` is such a function on subspaces, which is `finrank_of_covBy`: a covering pair
+  differs by one because adjoining one vector to the smaller already lands strictly between unless it
+  reaches the larger.
+
+  What remains on this card is `(6)`, the identification of the top homology with the Steinberg
+  module, and the statement that the homotopy type is a wedge — neither of which is a vanishing
+  statement.  `(4)`'s homotopy-theoretic form is likewise not claimed here; what is claimed and
+  proved is its homological content, which is what `(5)` asserts.
+
+- 2026-08-02 — **The Steinberg module and its observer action.**
+  `formal/GaloisForLFunctions/HTGeometry/BuildingAutomorphismAction.lean`, wired into the
+  `HTGeometry` umbrella, axioms `[propext, Classical.choice, Quot.sound]`; umbrella green at 13110
+  jobs:
+
+  ```text
+  properPartCongr, properPartCongr_refl, properPartCongr_trans :
+    an order isomorphism restricts to the proper parts, functorially
+  orderIsoCatIso_refl, orderIsoCatIso_trans, properPartNerveIso
+  buildingHomologyAut :
+    (L ≃o L) →* Aut (H_i(Δ(L); R))   —  the lattice's automorphisms act on every homology object
+  submoduleAutHom :  (V ≃ₗ[K] V) →* (Submodule K V ≃o Submodule K V)
+  steinbergModule K V R :  H_{dim V - 2}(Δ(proper nonzero subspaces); R)
+  steinbergAction :  (V ≃ₗ[K] V) →* Aut (steinbergModule K V R)
+  ```
+
+  This is the formalizable content of `(6)`.  The card says it itself: the Steinberg module *is*
+  defined as the top homology of the building, so that half is a definition — what is a theorem is
+  that the observer group acts on it, and that is now proved, as a group homomorphism into the
+  automorphisms of the homology object, for any coefficients.
+
+  Note on scope, stated plainly.  `(6)` as written also asserts that this module is *the* integral
+  Steinberg module in the classical sense — that it is free of the expected rank, with the apartment
+  classes as a basis.  That is a further theorem (Solomon's basis theorem), not a definition, and it
+  is not claimed here.  Likewise `(4)`'s homotopy-equivalence statement is not claimed: what is
+  proved is its homological shadow, `(5)`, together with the group action.
+
+  A toolchain note: `Group (α ≃o α)` lives in `Mathlib.Algebra.Order.Group.End`, which is not in the
+  import cone of the simplicial machinery.  A missing instance here presents as a bare
+  "failed to synthesize" on the *statement* of a `MonoidHom`, with nothing wrong in the proof.
+
+- 2026-08-02 — **The top homology embeds one rank down.**
+  `formal/GaloisForLFunctions/HTGeometry/FamilyTopHomologyEmbedding.lean`, wired into the
+  `HTGeometry` umbrella, axioms `[propext, Classical.choice, Quot.sound]`; umbrella green at 13113
+  jobs:
+
+  ```text
+  famSupHomologyIso
+  famTopEmbedding :   H_i(⨿ buildings)  ⟶  H_{i-1}(⨿ buildings below the coatoms)
+  mono_famTopEmbedding :  it is a monomorphism, for every i ≥ 1
+  ```
+
+  This is what the Mayer--Vietoris sequence still says in the degree where the vanishing theorem
+  stops.  Above degree zero the base and the disjoint union of the pieces have no homology at all,
+  so the connecting map has zero coming into it and is therefore injective.  Below the top degree
+  the statement is empty — both sides vanish by the theorem already proved — so its content is
+  exactly at the top: **the top homology of a building of rank `r` embeds into the top homology of
+  the disjoint union of the buildings of rank `r - 1` indexed by the coatoms.**
+
+  That is the inductive skeleton of Solomon's rank formula, which is the remaining classical content
+  of `(6)`: iterating the embedding is how the rank of the Steinberg module gets multiplied by the
+  number of coatoms at each step.  What the embedding does not give on its own is surjectivity onto
+  the relevant subobject — that is where the apartment classes and the opposition retraction enter,
+  and neither is built here.
+
+- 2026-08-02 — **The descent is an isomorphism, and the vanishing holds in the horizon complex's own
+  order.**  Two additions, wired into the `HTGeometry` umbrella, axioms
+  `[propext, Classical.choice, Quot.sound]`; umbrella green at 13115 jobs:
+
+  ```text
+  FamilyTopHomologyEmbedding.lean (extended)
+    isIso_famTopEmbedding :  for i, j ≥ 1 with i = j + 1, the connecting map is an ISOMORPHISM
+  BuildingVanishingDual.lean
+    properPartDualOrderIso :  the proper part of the dual lattice is the dual of the proper part
+    isZero_homology_properPart_submodule_dual
+    isZero_homology_properPart_submodule_orderDual :
+      1 ≤ i → i + 3 ≤ dim V → H_i(Δ(proper nonzero subspaces, order reversed); R) = 0
+  ```
+
+  The first upgrades the previous entry: both ends of the Mayer--Vietoris sequence around the
+  connecting map vanish above degree zero — the base and the disjoint union of the stars have no
+  homology there at all — so the map is not just injective but bijective.  The homology of a family
+  of buildings in degree `i` **is** the homology of the family below the coatoms in degree `i - 1`,
+  whenever both degrees are positive.  Iterating it carries the top homology down to degree one, and
+  that is exactly how the rank of the Steinberg module is built up in Solomon's formula.
+
+  The second is a scope correction that matters for this card.  The horizon assignment `S ↦ I_S` is
+  order-**reversing**, so `Δ_HT(V)` is the order complex of the proper nonzero subspaces with the
+  order reversed, and the vanishing theorem has to be read there.  It transfers at no cost: the dual
+  of a bounded modular lattice is one, the proper part of the dual is the dual of the proper part,
+  the dual rank is the codimension — whose covering increments are the same — and the atoms of the
+  dual are the hyperplanes, which every proper subspace lies in.  So `(5)` now holds on the object
+  the card actually names, not only on its opposite.

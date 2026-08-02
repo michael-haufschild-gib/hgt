@@ -54,6 +54,18 @@ theorem X_mem_tailAdjoin {i k : ℕ} (h : i < k) : MvPolynomial.X i ∈ tailAdjo
 theorem tailAdjoin_mono {k l : ℕ} (h : k ≤ l) : tailAdjoin K k ≤ tailAdjoin K l :=
   Algebra.adjoin_mono (Set.image_mono (fun _ hi => lt_of_lt_of_le hi h))
 
+/-- **The convolution recursion for the coefficients of the powers of the tail.**  This is the
+engine of every induction on the power, and the bridge between the tail's powers and the recursion
+defining the numerators of the truncated inverse. -/
+theorem coeff_triangularTailPoly_pow_succ (n m j : ℕ) :
+    ((triangularTailPoly K n) ^ (m + 1)).coeff j
+      = ∑ p ∈ Finset.antidiagonal j,
+          (if p.1 < n then MvPolynomial.X p.1 else 0)
+            * ((triangularTailPoly K n) ^ m).coeff p.2 := by
+  classical
+  rw [pow_succ, mul_comm, coeff_mul]
+  exact Finset.sum_congr rfl (fun p _ => by rw [coeff_triangularTailPoly])
+
 /-- **The coefficient of `t^b` in `R^m` involves only the first `b + 1` parameters.** -/
 theorem coeff_triangularTailPoly_pow_mem (n : ℕ) : ∀ (m b : ℕ),
     ((triangularTailPoly K n) ^ m).coeff b ∈ tailAdjoin K (b + 1) := by

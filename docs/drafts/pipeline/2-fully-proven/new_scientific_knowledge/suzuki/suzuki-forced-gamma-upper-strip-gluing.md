@@ -214,7 +214,7 @@ This proves `(15)`.  Fourier translation and Plancherel give `(16)`. `QED`
 Condition `(14)` is sufficient, not claimed necessary.  It is the first exact non-circular
 source norm found for the forced Gamma seam.
 
-## 5. Suzuki consequence and new open core
+## 5. Suzuki consequence and supersession of the weighted-moment gate
 
 For a logarithmic tail cutoff, finite prime translations produce compactly supported commutator
 forcing.  The literal Gamma jump commutator has physical tails \(O(e^{-|L|})\), because a point at
@@ -228,43 +228,50 @@ Therefore its Fourier transform is holomorphic for \(|\operatorname{Im}z|<1\), a
 applies once the completed seam state and cutoff equation are constructed.  This closes the
 **analytic-continuation** part of the forced Gamma-strip problem.
 
-It does not yet prove `(14)`.  Exponential physical localization gives an \(L^2\) shifted Fourier
-line, but `(14)` asks for the additional weighted frequency moment needed by the first-order
-variation operator.  In source variables this is a precise finite regularity statement for the
-cutoff commutator, not a vague “smooth forcing” premise:
+Condition `(14)` is not the literal source frontier.  The later block theorem in
+`suzuki-gamma-wall-block-hardy-and-derivative-scattering.md` uses the physical norm
 
 ```text
-SUZUKI-FORCED-HARDY-MOMENT:
-for some sigma in (1/2,1), the completed cutoff forcing obeys (14). (19)
+N_sigma(G)
+ =sum_(m in Z) exp(max(0,-m))
+   ||exp(sigma L)G||_(L2([m,m+1]))
 ```
 
-If `(19)` holds, Theorem 3 gives physical \(e^{-\sigma L}\) decay.  Since
+and proves shifted \(L^2\) directly from the exact \(O(e^{-|L|})\) Gamma wall.  No weighted
+frequency-\(L^1\) moment is needed.  Strip \(L^2\) still does not itself imply the derivative:
+the homogeneous derivative carrier is nonintegrable throughout \(\sigma<1\).  The two resulting
+scattering charges are subsequently forced to vanish on a physical tail by
+`suzuki-gamma-weighted-tail-coercivity.md`, using the exact lower numerical range of
+\(r(x+i\sigma)\) and the growing coefficient \(2L\).
+
+Thus, after literal carrier realization,
 
 ```text
 u_r(exp(-L))=-exp(L)F'(L),
 ```
 
-the exponent \(\sigma>1/2\) is exactly what puts the original derivative in \(L^2(dr)\), closing
-the trace-zero \(H^1_0\) connector.
+and any \(1/2<\sigma<1\) puts the original derivative in \(L^2(dr)\).  The live gate is the
+completed-domain carrier map/intertwiner, not `(14)`.
 
 ## 6. Hostile audit
 
 1. **No Hardy theatre.**  Holomorphy with polynomial growth yields `(13)`, not `(16)`.
-   The weighted moment `(14)` is stated and retained.
+   Theorem 3 retains a valid sufficient criterion, while the later physical block theorem proves
+   `(16)` for the literal wall without pretending that `(14)` follows.
 2. **No endpoint-source deletion.**  Forcing enters through the explicit particular integral
    `(7)`.  Its branch cancellation is proved, not assumed.
 3. **No guessed exponent.**  Strip endpoint one is the first pole of the exact Gamma quotient.
 4. **No generic ellipticity shortcut.**  The half-log scattering map `(10)` and upper boundary
    factor \(-i\) come from the regular singularity of the literal Gamma equation.
 5. **No completed-domain smuggling.**  Source must still construct its carrier-valued cutoff
-   forcing and prove `(19)`.
+   forcing and exact intertwiner.
 6. **No RH claim.**  Even after trace-zero \(H^1_0\), raw Evans positivity and nonzero-trace
    corona no-return remain.
 
 ## 7. Novelty and Lean decision
 
 Corpus and targeted external searches found no prior forced Gamma half-log gluing law of
-`(7)`--`(19)` for Suzuki's restricted-Weil boundary equation.  The ingredients are standard;
+`(7)`--`(18)` for Suzuki's restricted-Weil boundary equation.  The ingredients are standard;
 their exact source conjunction appears new, with priority unverified.
 
 Formalization must include the branch-cancelling particular solution and weighted Bochner-tail

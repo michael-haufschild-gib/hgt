@@ -361,3 +361,38 @@ transport.
   pro-log collar completion; proved the completed finite-plus-real
   residue image is the Arakelov trace kernel, hence the shifted fibre
   has \(H^2=\mathbb R(-1)\).
+
+## Lean status
+
+### The assembled complex and its endpoints
+
+`formal/GaloisForLFunctions/RHTower/DeningerArithmeticThreeTermAssembly.lean` (5 declarations,
+axiom audit `propext, Classical.choice, Quot.sound` or less) puts together the pieces that the
+sub-cards already contribute:
+
+- `deningerArithmeticFiberComplex` — **`(9)`**: the two-term generic source in degrees zero and
+  one, with the finite-plus-real boundary object in degree two, the residue differential being the
+  collar Arakelov boundary of `DAC_COMPLETED_ARAKELOV_TRACE_KERNEL`.
+- `deningerArithmeticFiber_H0_eq`, `_H1_cycles_eq`, `_H2_boundaries_eq` — **`(11)`**: degree zero
+  is the kernel of the generic differential, degree-one cocycles are the residue kernel, and
+  degree-two boundaries are the residue image.  Since the complex has no terms outside degrees
+  `0, 1, 2`, this is also `(10)`.
+- `deningerArithmeticFiber_H2Equiv` — **clause 6's `H² = R(-1)`**: the Arakelov trace is onto with
+  kernel exactly the residue image, so the top group is the real orientation line.
+
+The contributing modules, all already in the tree: `DeningerShiftedFiberTotalization.lean` (the
+shifted fibre and its global sections), `DeningerArakelovTraceKernel.lean` (the boundary, the
+trace and their exactness), `DeningerFiniteResidueSquare.lean` (the finite residue square and its
+square-zero lift), `DeningerRationalDivisorSequence.lean` (the divisor normalization of clause 2),
+`DeningerAmalgamationUniversalDescent.lean` (the Steinberg descent of clause 3),
+`DeningerRestrictedPrimeGluing.lean` (the strict boundary sheaf of clause 4),
+`DeningerArithmeticCofiniteOpenBaseChange.lean` and `DeningerInvariantRestriction.lean` (the source
+locality of clause 1).
+
+### What cannot be stated in Lean, and why
+
+The sheaf morphism `(5)` and the fibre `(6)` live in a derived category of complete locally convex
+sheaves; mathlib has neither.  Clause 5's amplitude statements need pro-Stein and profinite leaf
+analysis, and clause 7's operations need the equivariant sheaf structure.  What is formalized is
+the algebraic skeleton those clauses produce — the three-term complex, its cohomology in the three
+degrees, and the orientation-line endpoint — so the card stays at stage 2.

@@ -62,10 +62,13 @@ formal/GaloisForLFunctions/RHTower/XiPrimeMarkedPhysicalEndpointRVMQuadraticInci
 formal/GaloisForLFunctions/RHTower/SchattenDoubleCommutatorRelocation.lean
 ```
 
-## Remaining Route K frontier
+## Superseded frontier
 
-Exact quartic source incidence for the same quadratically admitted operator, followed by
-all-order source-moment incidence and global entire determinant comparison.  These are RH-bearing
-and remain open.  The literal unmodified finite head `Q+K_RVM` still has an unresolved raw
-normalization equality, but it is no longer a Route K obstruction because finite-head
-renormalization preserves the exact cofinite RVM tail.
+Exact quartic source incidence is now solved by a finite-head/cofinite-reserve construction that
+preserves the exact reciprocal RVM tail and cofinal source holonomy.  The all-order Hilbert--Schmidt
+Gram factorization proves that every complete reflected incidence carrier canonically lands in
+Route P's compact positive Markov endpoint before determinant formation.  Route K is therefore
+retired as an independent RH route; its exact quartic construction remains the positive survivor.
+
+Closure certificate:
+`route-k-exact-quartic-incidence-all-order-factorization.md`.

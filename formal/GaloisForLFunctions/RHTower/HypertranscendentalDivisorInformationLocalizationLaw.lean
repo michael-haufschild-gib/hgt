@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiHypertranscendentalModularResidueTransgression
 import GaloisForLFunctions.RHTower.HighExponentShellManuscriptCapstone
 import GaloisForLFunctions.RHTower.HighExponentShellOrthogonalDivisorReplication
+import GaloisForLFunctions.RHTower.RelativeShellCommonDivisorHypertranscendence
 
 /-!
 # Hypertranscendental divisor information-localization law
@@ -34,6 +35,12 @@ noncomputable section
 location data occupy different levels of the positive shell frame. -/
 structure HypertranscendentalDivisorInformationLocalizationCertificate :
     Prop where
+  commonDivisorRelativeHypertranscendence :
+    HypertranscendentalOver
+      (differentialAdjoin upperEndRationalCoordinateField
+        (Set.range (fun m : {m : ℕ // 12 ≤ m} =>
+          relativeShellMultiplierUpperEndCarrier m.1)))
+      zetaUpperEndMero
   relativeDifferentialIndependence :
     DifferentialIndependent zetaUpperEndDifferentialField
       (fun m : {m : ℕ // 2 ≤ m} =>
@@ -131,6 +138,8 @@ theorem hypertranscendentalDivisorInformationLocalization_law :
   have horth :=
     highExponentShell_orthogonalDivisorReplication_scalarNoGo
   exact {
+    commonDivisorRelativeHypertranscendence :=
+      zetaUpperEndMero_hypertranscendentalOver_relativeShellMultipliers
     relativeDifferentialIndependence := hframe.1
     zeroFreeTransverse := hframe.2.1
     divisorReplication := horth.2.1

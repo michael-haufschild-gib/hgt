@@ -343,10 +343,12 @@ For the support-pruned carrier from
 
 ```text
 X=H_a,
-T=T_a.
+T=T_a^Gamma=-T_a.
 ```
 
-Bounded self-adjointness is now unconditional, so Theorems 1--3 close the formerly open abstract
+Here `T_a` denotes the already-negative Suzuki adjacency in that card; the sign is load-bearing
+because equation `(5)` is written as `scalar Gamma operator - T`.  Bounded self-adjointness is now
+unconditional, so Theorems 1--3 close the formerly open abstract
 implication
 
 ```text
@@ -386,9 +388,17 @@ Gamma-ratio half-log scattering classification.  Priority remains unverified.
 
 ## 8. Lean decision
 
-The unconditional algebraic part—regular-singular current, two frequency channels, exact
-trace-combination map, and cancellation-to-integrable power law—should be formalized only together
-with the oscillatory-integral estimate `(20)`.  Formalizing merely `(21)` would be theorem theatre.
-The current formal tree has Bochner integration and improper-integral estimates but no packaged
-Hilbert-valued Watson lemma with the operator-valued Gamma propagator.  That infrastructure is now
-the exact Lean target; no proposition equivalent to `(13)` will be assumed.
+The load-bearing shifted-line norm is formalized unconditionally in
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  SuzukiGammaStripCarrierIntegrability.lean
+```
+
+It proves directly from the existing vertical Gamma-ratio theorem that the exact squared scalar
+carrier is asymptotic to \(|x|^{-1-2\sigma}\) and integrable for every \(0<\sigma<1\).  This is
+not a wrapper around `(25)`.
+
+The remaining formal debt is the Hilbert-valued oscillatory Fourier/Paley--Wiener connector and
+the branch-gluing implication from `(21)` to the shifted carrier.  Formalizing merely `(21)` would
+be theorem theatre, so no proposition equivalent to `(25)` is assumed.

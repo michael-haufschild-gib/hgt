@@ -90,10 +90,10 @@ domain.
 plus an exact Xi determinant would itself force all Xi zeros onto the real spectral axis.  No
 independent source identity currently constructs the correction or proves determinant convergence.
 
-**Verdict:** `ACTIVE ROUTE K PIVOT`.  No other numbered route owns a source-built trace-class
-relocation of the prime-indexed Riemann--von Mangoldt skeleton.  It remains an explicit hard
-problem and must not be relabeled as an achieved Clifford operator proof.  Active card:
-`../../1-in-progress/route-k-prime-cycle-trace-class-relocation.md`.
+**Historical verdict:** this was the active Route K pivot.  The relocation has since been
+constructed through exact quartic source incidence, and its complete all-order extension has been
+proved to land in Route P.  Retired closure card:
+`../../5-failed/route-k-prime-cycle-trace-class-relocation.md`.
 
 ## Boundary-carrier collapse theorem `[PROVED HERE]`
 
@@ -126,8 +126,8 @@ linearity step with no analytic approximation hidden in the Lean statement.
 - **New insight:** the regular Clifford/full-source Route K subroute cannot be a conventional
   Hausdorff completion plus
   continuous boundary quotient.  It must be an essential-boundary relation or a prime-marked
-  infinite-rank determinant.  The former maps to Route C1; the unmatched latter is the active
-  Route K pivot, and its source determinant incidence remains the RH-bearing core.
+  infinite-rank determinant.  The former maps to Route C1.  Later work constructed the latter
+  through exact quartic incidence and proved its complete all-order extension belongs to Route P.
 - **Status:** `[PROVED HERE] [FORMALIZED]`; generic and theta-source statements are unconditional.
 
 ## Lean certificate
@@ -163,3 +163,5 @@ arbitrary-Hilbert-target closed-graph theorem
   audit passed; promoted to `3-formalized/not_new_scientific_knowledge`.
 - 2026-08-01 — scope corrected: K2 maps to Route C1, while K4 has no other route owner and is the
   active Route K prime-cycle trace-class relocation pivot.
+- 2026-08-01 — later closure: K4 was constructed through exact quartic incidence; its complete
+  all-order extension maps to Route P, so no unmatched Route K pivot remains.

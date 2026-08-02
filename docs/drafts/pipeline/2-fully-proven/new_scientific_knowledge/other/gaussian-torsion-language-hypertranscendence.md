@@ -249,37 +249,29 @@ differential memory even at the critical Gaussian scale.
 
 ## Lean status
 
-The finite torsion-language layer is formalized in
-`HTGeometry/TorsionLanguageUniversalPhase.lean`: `TorsionLanguageUniversal` states cofinal exact
-occurrence of every finite torsion word, and
-`TorsionLanguageUniversal.exists_strictMono_occurrences` extracts a cofinal strictly increasing
-sequence of exact occurrences. The finite-character layer is formalized in
-`HTGeometry/TorsionLanguageFaceExactification.lean`:
-`face_weights_eq_zero_of_torsionLanguageUniversal` turns asymptotic cancellation of a finite ADE
-face into exact vanishing of every limiting weight, with finite Fourier inversion supplied by
-`face_fin_weights_eq_zero`.
+The complete unconditional theorem chain is formalized in
+`formal/GaloisForLFunctions/HTGeometry/GaussianTorsionLanguageTailLock.lean`.  In particular:
 
-The ambient lattice-Gaussian summability input is formalized in
-`HTGeometry/FinitePiProductSummability.lean`. The theorem
-`summable_fintype_pi_polynomialGaussian` proves summability on every finite integer lattice for
-arbitrary positive coordinate decay rates and coordinatewise factors
-`(1+|r_i|)^(A_i)`; its one-dimensional natural and integer forms are
-`summable_pow_mul_exp_neg_nat_sq`, `summable_one_add_pow_mul_exp_neg_nat_sq`, and
-`summable_one_add_natAbs_pow_mul_exp_neg_int_sq`. The finite boxes `[-R,R]^D` are formalized by
-`integerLatticeBox`; `integerLatticeBox_tendsto_atTop` proves that they exhaust the lattice, and
-`tendsto_polynomialGaussian_tsum_outside_box_zero` proves that the corresponding ambient
-polynomial-Gaussian tail tends to zero.
+```text
+false_of_integerADE_gaussian_torsionLanguageUniversal
+hypertranscendental_of_gaussian_torsionLanguageUniversal
+hypertranscendental_gaussianPhaseFunction
+hypertranscendental_universalUnit_gaussianPhaseFunction
+exists_entire_hypertranscendental_gaussian_torsionLanguageUniversal
+```
 
-The remaining unconditional formalization is the Gaussian analytic chain before that theorem:
-Mahler normalization, generic ADE coefficient extraction, Gaussian degree/source-shift face
-extraction, the uniform grouped-weight bound, the comparison from the constrained max-weight in
-(10) to the coordinatewise ambient majorant, and the passage from the full Gaussian face to the
-finite asymptotically cancelling face accepted by
-`face_weights_eq_zero_of_torsionLanguageUniversal`. The phase-existence input is now complete:
-`universalTorsionPhase_torsionLanguageUniversal` proves that the concatenated enumeration of all
-finite root-of-unity words is torsion-language-universal, and
-`exists_torsionLanguageUniversal` supplies the existential form. The card cannot enter stage 3
-until the remaining Gaussian analytic theorem surface is formalized.
+The module constructs internally the least active top-degree ADE face, stable maximal polynomial
+weight, nonzero leading pattern, full Gaussian exterior majorant, finite torsion-window
+exactification, and resulting contradiction.  It also proves infinite convergence radius, entire
+analyticity, exact Taylor coefficients, full support, explicit universal torsion-language phase,
+and the stated existence theorem for every `B > 0`.  No analytic parent from the paper proof is
+passed as a capstone hypothesis.
+
+The leaf module is umbrella-reachable through
+`formal/GaloisForLFunctions/HTGeometry.lean`; direct Lean verification and the final targeted
+module build pass.  Combined scratch `#print axioms` checks of the public capstones report only
+`propext`, `Classical.choice`, and `Quot.sound`.  Stage-3 certificate:
+`../../3-formalized/new_scientific_knowledge/gaussian-torsion-language-hypertranscendence.md`.
 
 ## Gates
 
@@ -291,9 +283,13 @@ until the remaining Gaussian analytic theorem surface is formalized.
 - [x] Finite-box polynomial-Gaussian tail convergence formalized in Lean.
 - [ ] Parent-theory and exact literature novelty audit.
 - [ ] Independent proof audit.
-- [ ] Whole theorem formalized unconditionally in Lean.
+- [x] Whole theorem formalized unconditionally in Lean.
+- [x] 2 -> 3: exact capstones are umbrella-reachable, build-verified, axiom-audited, and certified.
 
 ## Log
 
 - 2026-07-11 — Replaced failed bounded confinement at `beta=2` by the complete summable
   discrete-Gaussian ADE face and proved torsion-language-universal Gaussian HT.
+- 2026-08-02 — Verified the existing dependency-closed Gaussian tail-lock compiler, exact
+  entire-series realization, and explicit HT existence capstone; closed Stage 3 after targeted
+  build and combined axiom audit.

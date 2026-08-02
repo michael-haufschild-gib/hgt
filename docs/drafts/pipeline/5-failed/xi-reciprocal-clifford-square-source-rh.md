@@ -244,13 +244,14 @@ audited above.
 
 ## 2026-08-01 scope correction
 
-This card retires one Route K subroute, not Route K as a whole.  Its singular/partial Hedenmalm
-boundary survivor maps exactly to Route C1.  Its source-built infinite-rank determinant survivor
-does not map to another numbered route and is therefore the active Route K pivot:
-`../1-in-progress/route-k-prime-cycle-trace-class-relocation.md`.
+This card originally retired one Route K subroute, not Route K as a whole.  Its singular/partial
+Hedenmalm boundary survivor maps exactly to Route C1.  Later work constructed the source-built
+infinite-rank relocation through exact quartic incidence and proved that every complete all-order
+extension maps to Route P.  Route K's final closure is recorded in
+`route-k-prime-cycle-trace-class-relocation.md`.
 
-The pivot is narrower than the failed Clifford proposal: a trace-class relocation of the
+That pivot was narrower than the failed Clifford proposal: a trace-class relocation of the
 prime-indexed Riemann--von Mangoldt reciprocal skeleton whose first determinant-visible source
 coordinates are compatible closed prime--Gamma cycle holonomies.  Nothing proved on this card
-refutes that construction.  Blanket Route K retirement was therefore an ownership error; this
-failed card remains valid with the scoped status above.
+refutes that construction.  The later closure corrects the former ownership gap while leaving this
+failed Clifford card valid with the scoped status above.

@@ -259,3 +259,514 @@ middle complex with `(4)`, and prove cup/trace compatibility.
 - 2026-07-27 — Proved nuclearity and strict tensor stability of
   Meyer's Poisson complex and upgraded Hilbert--Kummer angular
   contractibility to an explicit strict cosheaf chain contraction.
+
+## Lean status
+
+### What landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerMeyerRadialEndpoints.lean`, 16 declarations, axiom
+audit for every one of them: `propext, Classical.choice, Quot.sound`.
+
+**`(2)` and `(10)`, Meyer's space and the two endpoint functionals.**  mathlib has the Schwartz
+space and the Fourier transform on it, so this part of the card is buildable on the actual
+objects rather than on a shadow.
+
+- `deningerSchwartzEval` — **evaluation of a Schwartz function as a continuous functional**, built
+  through the bounded-continuous-function realization; `deningerFourierEval` — evaluation of the
+  Fourier transform at the origin, likewise continuous.  These are the two boundary maps `(10)`.
+- `deningerEvenSchwartz`, `_mem_iff`, `_isClosed` — the even Schwartz functions, cut out as the
+  intersection over all `x` of the kernels of `f ↦ f(-x) - f(x)`, hence closed.
+- `DeningerMeyerCap`, `deningerMeyerCap_mem_iff` — **`(2)`**: `ℋ_∩` is exactly the even Schwartz
+  functions with `f(0) = 0` and `f̂(0) = 0`.
+- `deningerMeyerCap_isClosed` — **`ℋ_∩` is a closed subspace of the Schwartz space**, which is the
+  card's own argument that it is "the common kernel of two continuous functionals" inside the
+  closed even subspace.  This is the whole content of `(2)` that does not mention nuclearity.
+- `deningerFourierEndpoint`, `_ker`, `deningerMeyerCap_eq_endpoints` — **§4's conclusion**: the
+  normalization `π/2` of the second endpoint map does not change the subspace it cuts out, so the
+  relative common kernel of the two boundary maps of `(10)` is exactly `ℋ_∩` and no extra Fourier
+  boundary point survives.
+
+**Two structural ingredients.**
+
+- `deningerIInf_real_eq_int` — **"it is enough to intersect over `s ∈ ℤ`"** in `(1)`: if every real
+  weight is dominated by its two neighbouring integer weights, the real-indexed intersection equals
+  the integer-indexed one.
+- `deningerNormalize_smul` — **the positive rational flow fixes `h/‖h‖`**, the sentence in §3 that
+  makes `(8)` commute with every Poisson dilation.
+
+### What cannot be stated in Lean, and why
+
+Every claim of this card that contains the word *nuclear*, *Fréchet* or *strict* is out of reach,
+and so is the Poisson operator itself:
+
+- mathlib has no locally convex spaces beyond normed spaces, hence no nuclear spaces, no Fréchet
+  spaces as a class, no strict morphisms, no strict exact sequences and no completed projective
+  tensor product.  So `(1)`'s nuclear Fréchet structure, the strictness and closed range of `(3)`,
+  the strict exact sequence `(4)`, the tensor transport `(5)` and the tensored contraction `(8)`
+  cannot be written down.
+- `𝓗_-`, the intersection of the weighted Schwartz spaces on `ℝ_{>0}^×`, is not in mathlib: only
+  the unweighted Schwartz space on a normed space is.  `deningerIInf_real_eq_int` is the
+  index-reduction step of its construction, stated for an arbitrary family of subspaces.
+- §3's cosheaf of topological singular chains with the free locally convex direct-sum topology, and
+  the continuous prism homotopy `(7)`, need locally convex direct sums and a topological singular
+  chain complex; mathlib has neither.
+
+So the card stays at stage 2.  What is formalized is the part of the theorem that lives inside the
+Schwartz space: the two endpoint functionals of `(10)`, the identification of `ℋ_∩` as their common
+kernel among even functions, its closedness, the irrelevance of the `π/2` normalization, and the
+two structural lemmas used in `(1)` and §3.
+
+### Log
+
+- 2026-08-02 — Formalized `(2)` and `(10)` on mathlib's Schwartz space, together with the
+  integer-weight reduction of `(1)` and the flow-invariance of the normalization used in §3.
+
+### Nuclear operators, built
+
+The blocker recorded above says nuclearity cannot be stated because mathlib has no nuclear space
+theory.  The first missing piece is now built:
+`formal/GaloisForLFunctions/RHTower/DeningerNuclearOperator.lean` (11 declarations, axiom audit
+`propext, Classical.choice, Quot.sound` throughout) defines nuclear *operators* between normed
+spaces, which mathlib does not have in any form.
+
+- `DeningerIsNuclear T` — `T` is a sum of rank-one maps `x ↦ φ_i(x) • y_i` with `∑ ‖φ_i‖‖y_i‖`
+  summable.  The index type is arbitrary, which is equivalent to the usual sequential definition
+  because a summable family has countable support, and makes the ideal proofs direct.
+- `deningerIsNuclear_zero`, `deningerIsNuclear_smulRight`, `DeningerIsNuclear.add`, `.smul` — the
+  nuclear maps form a submodule containing the rank-one maps.
+- `DeningerIsNuclear.compL`, `.compR` — **nuclear maps are a two-sided ideal**: composing with any
+  bounded map on either side preserves nuclearity.
+- `DeningerIsNuclear.hasSum_smulRight` — **a nuclear map is the sum of its rank-one terms in the
+  operator norm**, not merely pointwise; and `.norm_le` bounds the operator norm by the nuclear
+  sum `∑ ‖φ_i‖‖y_i‖`.
+- `deningerSmulRight_isCompactOperator`, `DeningerIsNuclear.isCompactOperator` — **a nuclear map
+  is compact**, obtained by exhibiting it as an operator-norm limit of finite sums of rank-one
+  maps, each compact because the image of a ball lies in the image of a compact ball of scalars
+  under scaling by a fixed vector.
+
+This is the operator-level half of nuclearity.  What still does not exist is the space-level
+notion: a locally convex space is nuclear when for every continuous seminorm there is a dominating
+one whose induced map between the associated normed quotients is nuclear.  mathlib has
+`LocallyConvexSpace` and `WithSeminorms` but no seminormed quotients and no completed projective
+tensor product, so the LF and Fréchet claims of this card remain out of reach; the operator input
+they rest on is now available.
+
+- 2026-08-02 — Built nuclear operators between normed spaces, the operator-level half of the
+  nuclearity gate.
+
+### Nuclear spaces, defined
+
+The space-level half is now built too:
+`formal/GaloisForLFunctions/RHTower/DeningerSeminormQuotient.lean` (19 declarations, axiom audit
+`propext, Classical.choice, Quot.sound` throughout).  mathlib has `Seminorm`, `WithSeminorms` and
+`LocallyConvexSpace`, but it has no normed space attached to a seminorm, so the definition of a
+nuclear space could not even be written; that gap is closed.
+
+- `deningerSeminormKer` — the kernel of a seminorm as a submodule, and
+  `deningerSeminorm_eq_of_sub_mem`: a seminorm is constant on its cosets.
+- `DeningerSeminormSpace p` — **the normed space attached to a seminorm**, the quotient by the
+  kernel, with its `NormedAddCommGroup` and `NormedSpace` instances built from an `AddGroupNorm`
+  so that no competing norm is introduced.  `deningerSeminormMk_norm` says the norm of a class is
+  the seminorm of a representative, by definition.
+- `deningerSeminormComparison` — **the comparison map** induced by a domination `p ≤ C q`, with
+  `_norm_le` bounding its operator norm by `C`.
+- `DeningerIsNuclearSpace P` — **a nuclear locally convex space**: every defining seminorm is
+  dominated by one whose comparison map is a nuclear operator, in the sense of
+  `DeningerNuclearOperator`.
+- `deningerIsNuclear_of_finiteDimensional` — **a map out of a finite-dimensional space is
+  nuclear**, expanded over `Module.finBasis` as a finite sum of rank-one maps; hence
+  `deningerIsNuclearSpace_of_finiteDimensional`: a space whose seminorm quotients are finite
+  dimensional is nuclear.  That is exactly the card's "each finite stage is finite-dimensional and
+  nuclear".
+
+What remains between this and the card's claims is the permanence theory — closed subspaces,
+countable products and projective limits of nuclear spaces are nuclear — and the completed
+projective tensor product, neither of which exists yet.
+
+- 2026-08-02 — Built the normed space attached to a seminorm and the definition of a nuclear
+  space, with the finite-dimensional case proved.
+
+### Nuclearity is independent of the defining family
+
+`formal/GaloisForLFunctions/RHTower/DeningerNuclearSpaceInvariance.lean` (7 declarations, axiom
+audit `propext, Classical.choice, Quot.sound` throughout) makes the definition usable by proving
+it is an invariant of the topology rather than of the chosen seminorms.
+
+- `deningerSeminormComparison_ext` — a map out of a seminorm quotient is determined by its effect
+  on classes of vectors; `_congr` — the comparison map does not depend on the domination constant;
+  `_trans` — a chain of dominations gives the composite of the comparison maps.
+- `deningerIsNuclearSpace_of_dominating` — **if two seminorm families dominate each other, one is
+  nuclear exactly when the other is.**  A comparison map of the second family factors as
+  `bounded ∘ nuclear ∘ bounded` through a comparison map of the first, and the ideal property of
+  nuclear operators finishes it.
+- `deningerIsNuclearSpace_comp` — **nuclearity may be tested on a cofinal subfamily**, the
+  nuclearity counterpart of the statement that the test topology does not depend on the chosen
+  cofinal exhaustion.
+
+- 2026-08-02 — Proved that nuclearity does not depend on the defining seminorm family and may
+  be tested on a cofinal subfamily.
+
+### Bridge to the corpus trace-class theory
+
+`formal/GaloisForLFunctions/RHTower/DeningerNuclearSchattenBridge.lean` (2 declarations, axiom
+audit `propext, Classical.choice, Quot.sound`) connects the new general notion to the Schatten
+machinery the corpus already owns.
+
+- `deningerSmulRight_hasRankLE_one` — a rank-one map has rank at most one in the
+  approximation-number sense, its image lying in the line spanned by its vector.
+- `DeningerIsNuclear.memSchattenClass_one` — **a nuclear operator on a Hilbert space is trace
+  class**.  The operator-norm expansion `DeningerIsNuclear.hasSum_smulRight` is exactly the
+  hypothesis of the corpus criterion `memSchattenClass_one_tsum_rankOneTerms_of_summable_norm`,
+  which takes an arbitrary index type and needs no enumeration.
+
+So on Hilbert spaces the general definition agrees with the corpus trace class, and the trace
+norm, the ideal bounds and the additivity of the Schatten 1-class are available to it.
+
+- 2026-08-02 — Bridged nuclear operators to the corpus Schatten 1-class on Hilbert spaces.
+
+### Products of nuclear spaces
+
+`formal/GaloisForLFunctions/RHTower/DeningerNuclearProduct.lean` (12 declarations, axiom audit
+`propext, Classical.choice, Quot.sound` throughout) proves the first permanence property.
+
+- `deningerSeminormInduced` — **the map of normed spaces induced by a bounded linear map**, a
+  linear map carrying one seminorm into a multiple of another.  The comparison map of two
+  seminorms on one space is the case of the identity; the coordinate projections and the
+  coordinate inclusions of a product are the other cases.
+- `DeningerIsNuclear.sum` — a finite sum of nuclear maps is nuclear.
+- `deningerPiSeminorm`, `deningerPiFamily` — the product presented by the seminorms that add
+  finitely many coordinate seminorms, with `_proj_le` and `_single_eq_of_mem` relating it to the
+  coordinates.
+- `deningerIsNuclearSpace_pi` — **an arbitrary product of nuclear spaces is nuclear**, in
+  particular a countable product.  The comparison map of two product seminorms is shown to be the
+  finite sum, over the coordinates involved, of the coordinate comparison maps conjugated by the
+  projection and the inclusion; each summand is nuclear by the ideal property and the sum by
+  `DeningerIsNuclear.sum`.  The identification of that sum with the honest comparison map is the
+  observation that a vector and the sum of its coordinate components differ by something the
+  product seminorm does not see.
+
+What is still missing for the cards is the other permanence property, closed subspaces.  That one
+is not a formal consequence of the ideal property: the vectors of a nuclear representation of a
+comparison map need not lie in the subspace, and the classical proof goes through the
+Hilbert--Schmidt characterization, where subspaces are complemented.
+
+- 2026-08-02 — Proved that products of nuclear spaces are nuclear.
+
+### Hilbert--Schmidt composites are nuclear
+
+`formal/GaloisForLFunctions/RHTower/DeningerHilbertSchmidtNuclear.lean` (4 declarations, axiom
+audit `propext, Classical.choice, Quot.sound` throughout) supplies the bridge on which the
+remaining permanence theory rests.
+
+- `DeningerIsHilbertSchmidtOn` — the Hilbert--Schmidt condition relative to a Hilbert basis: the
+  images of the basis vectors are square-summable.
+- `deningerSummable_mul_of_sq` — a product of square-summable nonnegative families is summable, by
+  the arithmetic-geometric mean inequality.  Only summability is needed, so no Cauchy--Schwarz.
+- `deningerIsNuclear_comp_of_hilbertSchmidt` — **a composite of Hilbert--Schmidt maps is
+  nuclear**.  Expanding a vector in a Hilbert basis `c` of the middle space writes
+  `B (A x) = ∑ⱼ ⟨A* cⱼ, x⟩ · B cⱼ`, so the rank-one data is the adjoint of the first factor against
+  the images of the second, and the norms `‖A* cⱼ‖ ‖B cⱼ‖` are summable by the previous lemma.
+- `deningerMemSchattenClass_one_comp_of_hilbertSchmidt` — the same statement in the corpus
+  Schatten language: a composite of Hilbert--Schmidt operators is trace class.
+
+This is the classical route to the permanence properties that remain: subspaces of nuclear spaces
+are nuclear because a nuclear map factors through Hilbert spaces, where subspaces are complemented
+by orthogonal projection.  Still to build for that: the Hilbertian-seminorm refinement of a
+nuclear space, and the converse factorization of a nuclear map through Hilbert--Schmidt maps.
+
+- 2026-08-02 — Proved that a composite of Hilbert--Schmidt maps is nuclear.
+
+### Parseval, and the Hilbert--Schmidt condition is intrinsic
+
+`formal/GaloisForLFunctions/RHTower/DeningerHilbertSchmidtAdjoint.lean` (7 declarations, axiom
+audit `propext, Classical.choice, Quot.sound` throughout) removes the basis from the previous
+module's hypothesis.
+
+- `deningerParseval_summable`, `deningerParseval` — **Parseval for a Hilbert basis**: the
+  coefficients of a vector are square-summable with sum the squared norm.  mathlib has the
+  Hilbert-basis isometry onto `ℓ²` but not this identity; it is read off from
+  `lp.norm_rpow_eq_tsum` and `Memℓp.summable`.
+- `deningerHilbertSchmidt_tsum_eq_adjoint` — **the Hilbert--Schmidt sum of a map equals that of
+  its adjoint**.  Both are the sum of the squared absolute values of the matrix coefficients, in
+  the two possible orders; the exchange is `ENNReal.tsum_comm`, which needs no summability
+  hypothesis, so the statement is unconditional and holds with both sides infinite.
+- `deningerIsHilbertSchmidtOn_adjoint_iff`, `deningerIsHilbertSchmidtOn_basis_independent` — the
+  Hilbert--Schmidt condition transfers to the adjoint and **does not depend on the chosen basis**,
+  so it is a property of the map alone.
+
+Together with the previous module this gives the classical statement "a composite of
+Hilbert--Schmidt maps is nuclear" with Hilbert--Schmidt in its usual, intrinsic sense.
+
+- 2026-08-02 — Proved Parseval and the basis-independence of the Hilbert--Schmidt condition.
+
+### Nuclear implies Hilbert--Schmidt
+
+`formal/GaloisForLFunctions/RHTower/DeningerNuclearHilbertSchmidt.lean` (2 declarations, axiom
+audit `propext, Classical.choice, Quot.sound`) closes the converse direction on Hilbert spaces.
+
+- `deningerInner_adjoint_comp` — pairing `T* T` against a vector gives the squared norm of its
+  image.
+- `DeningerIsNuclear.isHilbertSchmidtOn` — **a nuclear operator on a Hilbert space is
+  Hilbert--Schmidt**.  If `T` is nuclear so is `T* T`, by the ideal property, hence it is trace
+  class and compact; the corpus's Horn-type majorization `sum_norm_inner_le_traceNorm` then bounds
+  every finite partial sum of `‖T bₙ‖²` by the trace norm of `T* T`, which is summability.
+
+With the previous two modules this places the nuclear operators inside the Hilbert--Schmidt ones
+on Hilbert spaces, in both directions of the classical comparison.
+
+- 2026-08-02 — Proved that a nuclear operator on a Hilbert space is Hilbert--Schmidt.
+
+### Finite-rank maps and the usable nuclearity criterion
+
+`formal/GaloisForLFunctions/RHTower/DeningerNuclearFiniteRank.lean` (2 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `deningerIsNuclear_of_finiteRank` — **a map with finite-dimensional range is nuclear**.  The
+  corestriction to the range, expanded over a basis of the range, is a finite sum of rank-one
+  maps.  This is the complement of the earlier finite-dimensional-source case: there the basis is
+  taken upstairs, here downstairs.
+- `deningerIsNuclearSpace_of_finiteRank` — **a space whose comparison maps have finite rank is
+  nuclear**.  This is the criterion one actually applies: no nuclear representation need be
+  exhibited, only a dominating seminorm whose comparison map has finite-dimensional range.  It
+  covers the finite stages of a test space directly, without passing through finite
+  dimensionality of the whole stage.
+
+- 2026-08-02 — Proved that finite-rank maps are nuclear, giving the finite-rank criterion for
+  nuclear spaces.
+
+### Nuclearity passes to the completions
+
+`formal/GaloisForLFunctions/RHTower/DeningerNuclearCompletion.lean` (4 declarations, axiom audit
+`propext, Classical.choice, Quot.sound` throughout).
+
+- `deningerCompletionFunctional`, `_coe`, `_norm_le` — **the extension of a continuous functional
+  to the completion**, agreeing with the original on the image and with no larger norm.
+- `DeningerIsNuclear.exists_completion` — **a nuclear map extends to a nuclear map of the
+  completions**, agreeing with the original on the image of the source.
+
+The extension is built rather than characterized: the functionals of a nuclear representation are
+extended, the vectors are pushed into the completion of the target, and the resulting rank-one
+family — whose norms are still summable, since extension does not increase functional norms — is
+summed in the operator norm.  The extension is therefore nuclear by construction, which avoids
+having to re-prove nuclearity for a map obtained by an abstract extension theorem.
+
+This is the step that makes nuclearity of a locally convex space a statement about the *completed*
+seminorm quotients, which is the classical definition and the one the permanence theory for closed
+subspaces is formulated against.
+
+- 2026-08-02 — Proved that a nuclear map extends to a nuclear map of completions.
+
+### Subspaces, and the exact point where they are not formal
+
+`formal/GaloisForLFunctions/RHTower/DeningerNuclearSubspace.lean` (6 declarations, axiom audit
+`propext, Classical.choice, Quot.sound` throughout).
+
+- `DeningerIsNuclear.of_comp_left_inverse` — if the left factor of a nuclear composite has a
+  bounded left inverse, the right factor is nuclear.
+- `deningerRestrictSeminorm`, `deningerSubspaceEmbedding` — the restriction of a seminorm to a
+  subspace, and the induced embedding of quotients, which is isometric because the subspace
+  seminorm *is* the restriction.
+- `deningerIsNuclearSpace_subspace_of_leftInverse` — **a subspace whose quotient embeddings admit
+  bounded left inverses is nuclear**.  The subspace comparison map followed by the embedding equals
+  the ambient comparison map preceded by the embedding, which is nuclear by the ideal property;
+  the left inverse brings it back.
+
+This isolates the remaining analytic input precisely.  Everything about subspaces is now formal
+*except* the complementation of the embedded quotient, and that is genuinely not formal: a nuclear
+representation of the composite has its vectors in the ambient quotient, not in the subspace one.
+Classically it is supplied by refining the presenting seminorms to Hilbertian ones, where a closed
+subspace is complemented by orthogonal projection; that refinement is Grothendieck's factorization
+of a nuclear map through a Hilbert space, and is what remains to be built.
+
+- 2026-08-02 — Proved subspace permanence modulo complementation of the quotient embeddings,
+  isolating the one remaining analytic input.
+
+### Balancing a nuclear representation
+
+`formal/GaloisForLFunctions/RHTower/DeningerNuclearBalanced.lean` (2 declarations, axiom audit
+`propext, Classical.choice, Quot.sound`).
+
+- `DeningerIsNuclear.exists_balanced` — **a nuclear map has a representation in which every
+  functional has the same norm as its vector**.  Each rank-one term is rescaled by a real scalar
+  and its reciprocal, which changes neither the term nor the product of the two norms; terms where
+  one factor vanishes are replaced by zero.
+- `DeningerIsNuclear.exists_balanced_summable_sq` — in such a representation the *squares* of the
+  functional norms are summable, since they are the terms of the original convergent series.
+
+This is the normalization step of the factorization of a nuclear map through a Hilbert space: with
+a balanced representation the coefficient map `x ↦ (φₐ x)ₐ` lands in `ℓ²` with norm at most
+`(∑ ‖φₐ‖²)^{1/2} ‖x‖`, and the map is dominated by the resulting Hilbertian seminorm.
+
+The rescaling needs real scalars to act, so it is stated over `RCLike` fields.  That is not an
+artefact: over a field whose value group is discrete the norms of scalars cannot be adjusted
+continuously, and exact balancing genuinely fails.
+
+- 2026-08-02 — Proved that a nuclear representation can be balanced, with square-summable
+  functional norms.
+
+### The Hilbertian domination of a nuclear map
+
+`formal/GaloisForLFunctions/RHTower/DeningerNuclearHilbertFactor.lean` (2 declarations, axiom
+audit `propext, Classical.choice, Quot.sound`).
+
+- `deningerTsum_mul_le_sqrt` — **Cauchy--Schwarz for sums**: for nonnegative square-summable
+  families, `∑ f g ≤ (∑ f²)^{1/2} (∑ g²)^{1/2}`.  mathlib has the finite version
+  `Finset.sum_mul_sq_le_sq_mul_sq` but not the summable one; it is obtained by bounding every
+  partial sum.
+- `DeningerIsNuclear.exists_hilbert_factor` — **a nuclear map is dominated by a Hilbertian
+  seminorm**.  From a balanced representation the coefficient map `x ↦ (φₐ x)ₐ` lands in `ℓ²`, is
+  bounded by `(∑ ‖φₐ‖²)^{1/2} ‖x‖`, and dominates the map: `‖T x‖ ≤ (∑ ‖φₐ‖²)^{1/2} ‖A x‖`.
+
+Both inequalities are what the permanence theory needs.  The first says the Hilbertian seminorm
+`x ↦ ‖A x‖` is continuous, so it may be inserted into a presenting family; the second says the
+original comparison map factors through it.  Iterating this refinement makes a presenting family
+Hilbertian, at which point the quotients are pre-Hilbert spaces and the embedding of a subspace
+quotient is complemented — the hypothesis of
+`deningerIsNuclearSpace_subspace_of_leftInverse`.
+
+- 2026-08-02 — Proved that a nuclear map is dominated by a Hilbertian seminorm, with
+  Cauchy--Schwarz for summable families.
+
+### A nuclear space is presented by Hilbertian seminorms
+
+`formal/GaloisForLFunctions/RHTower/DeningerHilbertianRefinement.lean` (3 declarations, axiom
+audit `propext, Classical.choice, Quot.sound`).
+
+- `DeningerIsHilbertianSeminorm` — a seminorm given by the norm of a linear map into an `ℓ²`
+  space.
+- `deningerNuclear_hilbertian_refinement` — **every seminorm of a nuclear space is squeezed by a
+  Hilbertian one**: the comparison map is dominated by the norm of its `ℓ²` coefficient map, which
+  is in turn dominated by the dominating seminorm.
+- `deningerNuclear_exists_hilbertian_family` — **a nuclear space has a nuclear Hilbertian
+  presentation**.  Choosing one squeeze per index gives a family that mutually dominates the
+  original, and nuclearity transfers by the invariance theorem.
+
+What remains for closed subspaces is a formulation issue rather than a missing theorem.  With a
+Hilbertian presentation the seminorm quotients are pre-Hilbert, and the image of a subspace
+quotient inside `ℓ²` is complemented by orthogonal projection onto its *closure* — so the left
+inverse required by `deningerIsNuclearSpace_subspace_of_leftInverse` exists into the completion of
+the subspace quotient, not into the quotient itself.  Closing the argument therefore means
+restating nuclearity against the completed quotients, for which
+`DeningerIsNuclear.exists_completion` already provides the transfer of nuclear maps.
+
+- 2026-08-02 — Proved that a nuclear space has a nuclear Hilbertian presentation.
+
+### The completed formulation
+
+`formal/GaloisForLFunctions/RHTower/DeningerNuclearSpaceCompleted.lean` (9 declarations, axiom
+audit `propext, Classical.choice, Quot.sound` throughout).
+
+- `DeningerSeminormCompletion`, `deningerSeminormMkC`, `_norm` — the Banach space attached to a
+  seminorm, and the canonical map into it, whose norm is the seminorm.
+- `deningerSeminormComparisonC`, `_coe` — **the completed comparison map**, defined as the
+  extension of the composite `E_q → E_p → Ê_p` along the dense isometric embedding of `E_q`, and
+  agreeing with the uncompleted comparison map on the image.
+- `DeningerIsNuclearSpaceC` — **nuclearity in the classical, completed sense**.
+- `DeningerIsNuclearSpace.toC` — **it follows from the uncompleted notion**.  The extension of the
+  nuclear comparison map provided by `DeningerIsNuclear.exists_completion` agrees with the
+  canonical completed comparison map on a dense set, hence equals it, so the canonical map is
+  nuclear.
+
+This is the formulation the closed-subspace argument is stated against: with the Hilbertian
+presentation of the previous module, the completed quotients are Hilbert spaces, and the image of a
+completed subspace quotient is a *closed* subspace of one, hence complemented by orthogonal
+projection.
+
+- 2026-08-02 — Built the completed formulation of nuclearity and derived it from the
+  uncompleted one.
+
+### Subspaces in the completed formulation
+
+`formal/GaloisForLFunctions/RHTower/DeningerNuclearSubspaceCompleted.lean` (5 declarations, axiom
+audit `propext, Classical.choice, Quot.sound` throughout).
+
+- `deningerSubspaceEmbedding_square` — the comparison square of a subspace before completion.
+- `deningerSubspaceEmbeddingC`, `_coe`, `_square` — **the completed embedding of a subspace
+  quotient and the completed comparison square**.  Commutativity after completion is inherited:
+  both composites are continuous and agree on the dense image of the uncompleted quotient.
+- `deningerIsNuclearSpaceC_subspace_of_leftInverse` — **a subspace whose completed quotient
+  embeddings admit bounded left inverses is nuclear in the completed sense.**
+
+At the completed level the left-inverse hypothesis is the honest one.  With the Hilbertian
+presentation the completed quotients are Hilbert spaces and the image of a completed subspace
+quotient is a *closed* subspace, hence complemented by orthogonal projection — whereas before
+completion only the closure of the image is complemented, which is exactly why the uncompleted
+version of this theorem could not be discharged.
+
+- 2026-08-02 — Proved completed subspace permanence modulo the complementation hypothesis,
+  now stated where it is actually satisfiable.
+
+### The `ℓ²` embedding of a Hilbertian quotient
+
+`formal/GaloisForLFunctions/RHTower/DeningerHilbertianEmbedding.lean` (10 declarations, axiom
+audit `propext, Classical.choice, Quot.sound` throughout).
+
+- `deningerHilbertianEmbedding`, `_norm`, `_isometry` — a Hilbertian seminorm's defining map kills
+  the kernel of the seminorm, so it induces an **isometric embedding of the seminorm quotient into
+  `ℓ²`**.
+- `deningerHilbertianEmbeddingC`, `_coe`, `_norm`, `_isometry` — the extension to the completion,
+  still isometric: the two continuous functions `‖J w‖` and `‖w‖` agree on the dense image.
+- `deningerHilbertianEmbeddingC_isClosed_range` — **the extended embedding has closed range**,
+  since an isometry out of a complete space has complete, hence closed, range.
+
+A closed subspace of `ℓ²` is complemented by orthogonal projection, so this is the last structural
+ingredient of the bounded left inverse that
+`deningerIsNuclearSpaceC_subspace_of_leftInverse` requires.
+
+- 2026-08-02 — Built the isometric `ℓ²` embedding of a Hilbertian seminorm quotient and its
+  completion, with closed range.
+
+### Subspaces of a Hilbertian nuclear space are nuclear
+
+`formal/GaloisForLFunctions/RHTower/DeningerNuclearSubspaceHilbertian.lean` (16 declarations,
+axiom audit `propext, Classical.choice, Quot.sound` throughout).
+
+`deningerIsNuclearSpaceC_subspace_of_hilbertian` and
+`deningerIsNuclearSpace_subspace_of_hilbertian`: **a subspace of a nuclear space presented by
+Hilbertian seminorms is nuclear.**  The bounded left inverse required by
+`deningerIsNuclearSpaceC_subspace_of_leftInverse` is constructed rather than assumed —
+`deningerSubspaceLeftInverse` composes the ambient `ℓ²` embedding, the orthogonal projection onto
+the closed image `deningerSubspaceRange` of the completed subspace quotient, and the inverse
+`deningerSubspaceRangeEquiv` of the corestricted isometry; the compatibility
+`deningerHilbertianEmbeddingC_subspace` places the image of a subspace class inside that closed
+subspace, where the projection acts as the identity.
+
+This is the permanence property the radial–angular comparison of this card needs: the strict
+inductive limit's steps are subspaces of the ambient test space, and their nuclearity no longer
+has to be assumed.  It does not by itself finish the card, whose open ingredient remains the
+nuclearity of the Schwartz space (the Hermite-coefficient characterisation).
+
+- 2026-08-02 — Subspace permanence for Hilbertian nuclear spaces is unconditional in Lean.
+
+### Permanence under subspaces, for any presentation
+
+`formal/GaloisForLFunctions/RHTower/DeningerNuclearCompletedInvariance.lean` (6 declarations,
+axiom audit `propext, Classical.choice, Quot.sound` throughout).
+
+`deningerIsNuclearSpaceC_subspace`: **every subspace of a nuclear space is nuclear**, with no
+hypothesis on the presenting family.  The Hilbertian case is transferred along the two dominations
+of `deningerNuclear_exists_hilbertian_family` using
+`deningerIsNuclearSpaceC_of_dominating`, itself resting on the calculus
+`deningerSeminormComparisonC_ext`/`_congr`/`_trans` of completed comparison maps — proved by
+density on the classes of vectors.
+
+- 2026-08-02 — Subspace permanence holds for an arbitrary nuclear presentation.
+
+### A nuclear space that is not finite dimensional
+
+`formal/GaloisForLFunctions/RHTower/DeningerRapidSequenceSpace.lean` and
+`.../DeningerRapidSequenceNuclear.lean` (25 declarations together, axiom audit `propext,
+Classical.choice, Quot.sound`).
+
+`deningerRapid_isNuclearSpace`: **the rapidly decreasing sequences form a nuclear space**, and
+`deningerRapid_not_finiteDimensional`: it is not finite dimensional.  The comparison map between
+consecutive weighted `ℓ²` seminorms is written as the series of rank one maps given by the
+coordinate functionals `deningerRapidCoeff` and the basis classes, with
+`‖φ_n‖ ‖[e_n]‖ ≤ (n+1)^{-2}`; the convergence statement `deningerRapid_hasSum_basis` comes from
+`lp.hasSum_single` through the isometric `ℓ²` embedding of a Hilbertian quotient.
+
+This supplies the model against which the radial–angular comparison of this card is to be
+calibrated, and it makes the permanence theorems of the nuclear test scale non-vacuous: they now
+have an infinite dimensional space to act on.
+
+- 2026-08-02 — The nuclear test scale has an infinite dimensional model in Lean.

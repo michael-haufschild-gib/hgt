@@ -3,7 +3,7 @@
 - **ID:** `route-k-prime-cycle-reflection-paired-determinant-law`
 - **Stage:** 3-formalized
 - **Type:** `THEOREM` / `[NOT NEW SCIENTIFIC KNOWLEDGE]` / Route K guardrail
-- **Source:** `../../1-in-progress/route-k-prime-cycle-trace-class-relocation.md`
+- **Source:** `../../5-failed/route-k-prime-cycle-trace-class-relocation.md`
 - **Statement:** Every closed-walk-flat sign field on a finite connected support graph is a
   determinant-blind diagonal gauge.  On a positive three-label background, a nonzero triangle is
   detected by the centered reflection-paired determinant and first survives its trace cumulants at
@@ -11,7 +11,7 @@
 
 ## Gates
 
-- [x] 0 → 1: source role and falsified alternatives recorded on active Route K card
+- [x] 0 → 1: source role and falsified alternatives recorded on Route K card
 - [x] 1 → 2: exact determinant identities and detection proof dependency-closed on paper
 - [x] 2 → 3: unconditional Lean proof, umbrella import, target build, standard-axiom audit
 - [ ] 3 → 4: no publication claim; elementary parent identity

@@ -121,6 +121,14 @@ def suzukiSupportPrunedPrimeAdjacency
   let P := lpCoordinateProjection (suzukiAdmissibleSeamVertices a)
   P ∘L suzukiFinitePrimeAdjacency steps weight s ∘L P
 
+/-- Gamma-normalized positive adjacency.  `suzukiSupportPrunedPrimeAdjacency` already contains
+Suzuki's negative prime-symbol sign, while the Gamma equation is written as `scalar - T`. -/
+def suzukiGammaPositivePrimeAdjacency
+    {ι : Type*} (a : ℝ) (steps : ι → SuzukiSeamValuation)
+    (weight : ι → ℝ) (s : Finset ι) :
+    SuzukiSeamHilbert →L[ℂ] SuzukiSeamHilbert :=
+  -suzukiSupportPrunedPrimeAdjacency a steps weight s
+
 /-- Orthogonal support pruning preserves self-adjointness of exact finite prime transport. -/
 theorem suzukiSupportPrunedPrimeAdjacency_isSelfAdjoint
     {ι : Type*} (a : ℝ) (steps : ι → SuzukiSeamValuation)
@@ -132,6 +140,14 @@ theorem suzukiSupportPrunedPrimeAdjacency_isSelfAdjoint
   have hA :=
     (suzukiFinitePrimeAdjacency_isSelfAdjoint steps weight s).conj_adjoint P
   simpa only [suzukiSupportPrunedPrimeAdjacency, P, hP] using hA
+
+/-- Negating the already-negative Suzuki adjacency gives the sign-correct bounded self-adjoint
+coupling in a Gamma equation normalized as `scalar - T`. -/
+theorem suzukiGammaPositivePrimeAdjacency_isSelfAdjoint
+    {ι : Type*} (a : ℝ) (steps : ι → SuzukiSeamValuation)
+    (weight : ι → ℝ) (s : Finset ι) :
+    IsSelfAdjoint (suzukiGammaPositivePrimeAdjacency a steps weight s) := by
+  exact (suzukiSupportPrunedPrimeAdjacency_isSelfAdjoint a steps weight s).neg
 
 /-- Left endpoint root is forcing data, not a homogeneous strict-interior coordinate. -/
 theorem suzukiSeamRoot_left_not_admissible (a : ℝ) (ha : 0 < a) :

@@ -250,4 +250,87 @@ theorem natDegree_coeff_invNumerator_le (u : ℕ → K[X]) (h1 : (u 1).natDegree
 
 end SecondUnknown
 
+/-! ## The closed form of the numerators
+
+When the coefficients of the jet are read off a single polynomial `T` — the `i`-th coefficient of
+the jet being the `i`-th coefficient of `T` — the recursion solves in closed form: the `m`-th
+coefficient of the `k`-th numerator is, up to sign, the `m`-th coefficient of the `(k - m)`-th power
+of `T`.  This is the polynomial shadow of the geometric series `1 / (1 + T) = ∑ (-T)^e`.
+-/
+
+section ClosedForm
+
+variable {A : Type*} [CommRing A]
+
+/-- **The closed form of the numerators of the inverse jet.**  For the jet read off a polynomial
+`T`, the `m`-th coefficient of the `k`-th numerator is `(-1)^(k - m)` times the `m`-th coefficient
+of `T ^ (k - m)`.
+
+The proof is a strong induction on `k`: the defining recursion expresses the `m`-th coefficient of
+the next numerator as a convolution of the coefficients of `T` against those of the previous
+numerators, and the inductive hypothesis turns that convolution into the coefficient of one higher
+power of `T`. -/
+theorem coeff_invNumerator (T : A[X]) :
+    ∀ k m : ℕ, (invNumerator (fun i => T.coeff (i - 1)) k).coeff m
+      = (-1 : A) ^ (k - m) * (T ^ (k - m)).coeff m := by
+  intro k
+  induction k using Nat.strong_induction_on with
+  | _ k ih =>
+    match k with
+    | 0 =>
+        intro m
+        rw [invNumerator_zero, Nat.zero_sub, pow_zero, pow_zero, one_mul]
+    | (k + 1) =>
+        intro m
+        by_cases hm : m ≤ k
+        · have hkm : k + 1 - m = (k - m) + 1 := by omega
+          rw [invNumerator_succ, Polynomial.coeff_neg, Polynomial.finsetSum_coeff]
+          have hterm : ∀ i ∈ Finset.range (k + 1),
+              (C ((fun i => T.coeff (i - 1)) (i + 1)) * X ^ i
+                  * invNumerator (fun i => T.coeff (i - 1)) (k - i)).coeff m
+                = if i ≤ m then
+                    (-1 : A) ^ (k - m) * (T.coeff i * (T ^ (k - m)).coeff (m - i)) else 0 := by
+            intro i _
+            have hcomm : (C ((fun i => T.coeff (i - 1)) (i + 1)) * X ^ i
+                * invNumerator (fun i => T.coeff (i - 1)) (k - i))
+                = (C (T.coeff i) * invNumerator (fun i => T.coeff (i - 1)) (k - i)) * X ^ i := by
+              simp only [Nat.add_sub_cancel]
+              ring
+            rw [hcomm, Polynomial.coeff_mul_X_pow']
+            by_cases hik : i ≤ m
+            · rw [if_pos hik, if_pos hik, Polynomial.coeff_C_mul,
+                ih (k - i) (by omega) (m - i)]
+              have hsub : k - i - (m - i) = k - m := by omega
+              rw [hsub]
+              ring
+            · rw [if_neg hik, if_neg hik]
+          rw [Finset.sum_congr rfl hterm,
+            ← Finset.sum_subset
+              (fun i hi => Finset.mem_range.2
+                (lt_of_lt_of_le (Finset.mem_range.1 hi) (by omega : m + 1 ≤ k + 1)))
+              (fun i _ hi => if_neg (by
+                simp only [Finset.mem_range, not_lt] at hi
+                omega))]
+          have hin : ∀ i ∈ Finset.range (m + 1),
+              (if i ≤ m then
+                  (-1 : A) ^ (k - m) * (T.coeff i * (T ^ (k - m)).coeff (m - i)) else 0)
+                = (-1 : A) ^ (k - m) * (T.coeff i * (T ^ (k - m)).coeff (m - i)) := by
+            intro i hi
+            exact if_pos (by simpa [Nat.lt_succ_iff] using hi)
+          rw [Finset.sum_congr rfl hin, ← Finset.mul_sum]
+          have hconv : ∑ i ∈ Finset.range (m + 1),
+              T.coeff i * (T ^ (k - m)).coeff (m - i) = (T ^ ((k - m) + 1)).coeff m := by
+            rw [pow_succ, mul_comm, Polynomial.coeff_mul,
+              Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
+          rw [hconv, hkm]
+          ring
+        · have hmk : k + 1 - m = 0 := by omega
+          have hzero : (invNumerator (fun i => T.coeff (i - 1)) (k + 1)).coeff m = 0 :=
+            Polynomial.coeff_eq_zero_of_natDegree_lt
+              (lt_of_le_of_lt (natDegree_invNumerator_succ_le _ k) (by omega))
+          rw [hzero, hmk, pow_zero, pow_zero, one_mul, Polynomial.coeff_one,
+            if_neg (by omega)]
+
+end ClosedForm
+
 end GaloisForLFunctions.HTGeometry

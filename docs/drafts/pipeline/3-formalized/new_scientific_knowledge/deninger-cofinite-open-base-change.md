@@ -1,7 +1,7 @@
 # Deninger cofinite-open base change
 
 - **ID:** `deninger-cofinite-open-base-change`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper)
 - **Label:** `DAC_DENINGER_COFINITE_OPEN_BASE_CHANGE`
 - **Parent:** `deninger-arithmetic-projection-leray-rost-schmid-resolution`
@@ -13,7 +13,11 @@
   (the quotient/saturated-open topology of clause 3),
   `GaloisForLFunctions.RHTower.DeningerInvariantRestriction` (the invariant restriction `(5)`),
   `GaloisForLFunctions.RHTower.DeningerCharacterProjectionOpen` (the projection-level content of
-  clauses 1--2)
+  clauses 1--2),
+  `GaloisForLFunctions.RHTower.DeningerSchemeCharacterSpace` (the character space itself, with
+  Lemmas 7.1--7.3),
+  `GaloisForLFunctions.RHTower.DeningerFrobeniusColimitSpace` (the Frobenius colimit,
+  Proposition 7.4, and the colimit-level open embedding of clause 2)
 
 ## Goal
 
@@ -276,8 +280,13 @@ construction card rather than further work here.
   (`GaloisForLFunctions.RHTower.DeningerInvariantRestriction`)
 - [x] 2 → 3 formalized, clauses 1--2, projection-level content
   (`GaloisForLFunctions.RHTower.DeningerCharacterProjectionOpen`)
-- [ ] 2 → 3 formalized, clauses 1--2, identification of Deninger's character space with such a
-  projection: still blocked on that space not being constructed in the corpus
+- [x] 2 → 3 formalized, clauses 1--2, the character space itself, constructed with such a
+  projection, together with Lemmas 7.1--7.3 for it
+  (`GaloisForLFunctions.RHTower.DeningerSchemeCharacterSpace`)
+- [x] 2 → 3 formalized, clause 2, the Frobenius colimit and Proposition 7.4
+  (`GaloisForLFunctions.RHTower.DeningerFrobeniusColimitSpace`)
+- [x] 2 → 3 formalized, clause 2, the colimit-level open embedding `Ǔ_N(ℂ) ↪ Š(ℂ)` with image
+  `p̌r⁻¹(U_N)` (`GaloisForLFunctions.RHTower.DeningerFrobeniusColimitSpace`)
 - [ ] 3 → 4 publication-ready: integrate with analytic purity proof
 
 ## References
@@ -329,3 +338,107 @@ everything in clauses 1--2 that does not mention the internal structure of the c
 What is still quoted from Deninger is only the identification of his `Ṡ(ℂ)` with a space carrying
 such a projection — Lemmas 7.1--7.3 and Proposition 7.4 — which needs that space to be constructed
 in the corpus first.
+
+### The character space, constructed
+
+The earlier note that "no character-space object exists anywhere in the formal tree, so this needs
+its own construction card" is superseded: the space is now built.
+
+`formal/GaloisForLFunctions/RHTower/DeningerSchemeCharacterSpace.lean` (27 declarations, axiom
+audit `propext, Classical.choice, Quot.sound` throughout) defines
+
+- `DeningerCharacterSpace X` — a point is a point of the scheme together with a character of the
+  multiplicative group of its residue field, `Hom(κ(x)^×, ℂ^×)`;
+- `deningerCharacterPr` — the arithmetic projection, forgetting the character;
+- `deningerCharacterMap f` — functoriality, pulling a character back along
+  `Scheme.Hom.residueFieldMap`.
+
+For an open immersion the residue field map is an isomorphism (mathlib's
+`IsIso (f.residueFieldMap x)`), which is what makes the following true:
+
+- `deningerCharacterMap_injective`, `deningerCharacterMap_range` — **Lemma 7.1**: the character
+  space of an open subscheme is exactly the part of the character space lying over that open,
+  `pr⁻¹(range f)`, phrased against the existing `deningerCharacterOver`;
+- `deningerCharacterMap_range_opens` — the same for `U : X.Opens`, giving `(3)` on the nose;
+- `deningerCharacterMap_isOpenEmbedding` — **Lemmas 7.2--7.3**: the induced map is an open
+  embedding.  The topology used is the arithmetic topology `instTopologicalSpace`, the coarsest
+  one for which the projection is continuous; the inducing step is
+  `deningerCharacterMap_isInducing`, which is where the open-embedding property of the scheme
+  morphism on points enters;
+- `deningerCharacterFrobenius n` — the Frobenius maps, raising a character to its `n`-th power.
+  `deningerCharacterFrobenius_pr` is **`(7)`**, `_comp` and `_one` are the monoid law of the
+  Frobenius diagram, `deningerCharacterMap_frobenius` is the commutation of the open embeddings
+  with that diagram, and `deningerCharacterFrobenius_characterOver_mem` is the `F_q`-invariance
+  asserted in clause 2.
+
+### The Frobenius colimit, constructed
+
+`formal/GaloisForLFunctions/RHTower/DeningerFrobeniusColimitSpace.lean` (25 declarations, same
+axiom audit) builds `Š(ℂ)`:
+
+- `DeningerFrobeniusColimit X` — the quotient of one copy of the character space per Frobenius
+  stage, where a point at stage `μ` and one at stage `ν` are identified when a pair of Frobenius
+  maps with matching stage cofactors makes them equal.  Transitivity of that relation is the
+  filtered-colimit computation `μ(ks) = ρ(lt)`, done in `deningerFrobeniusRel_trans`;
+- `deningerColimit_topology` — **the colimit carries the inductive-limit topology of its charts**,
+  which is exactly the hypothesis `deningerColimitCharacterOver_isOpen` was stated against.  That
+  abstract lemma is now instantiated: `deningerColimitCharacterOver_isOpen'` is the openness of
+  the character space over an arithmetic open in the actual colimit;
+- `deningerColimitPr` — the arithmetic projection descends, because every Frobenius map fixes the
+  underlying scheme point;
+- `deningerColimitFrobeniusHomeomorph` — **Proposition 7.4**: every Frobenius map is a
+  homeomorphism of the colimit.  On the character space itself `F_q` is not injective, since the
+  `q`-th power map of `ℂ^×` is not; on the colimit its inverse is the map that advances the stage
+  instead of raising the character to a power, and the two composites are the identity by a
+  one-line cofactor computation;
+- `deningerColimitFrobenius_pr` and `deningerColimitFrobenius_characterOver_mem` — `(7)` and the
+  `F_q`-invariance of the character space over an open, now at colimit level.
+
+### What is still not formalized
+
+Clause 2 asserts that `Ǔ_N(ℂ) → Š(ℂ)` is an *open embedding*.  Its image is computed and shown to
+be open, and the chart-level map is an open embedding; the colimit-level inducing and open-map
+refinement is not proved.  That is a statement about images of opens under a filtered colimit of
+open embeddings and is the one remaining `2 → 3` gate.
+
+Clause 3's quotient lemma and clause 4's invariant restriction `(5)` were already formalized in
+`DeningerArithmeticCofiniteOpenBaseChange` and `DeningerInvariantRestriction`, and are unchanged.
+
+### Log
+
+- 2026-08-02 — Constructed the character space of a scheme and its Frobenius colimit, discharging
+  the blocker recorded on 2026-08-01.  Lemmas 7.1--7.3 and Proposition 7.4 are now proved for the
+  constructed object rather than quoted.
+
+### The colimit-level open embedding
+
+The gate left open above is now closed.  `DeningerFrobeniusColimitSpace.lean` (36 declarations,
+axiom audit `propext, Classical.choice, Quot.sound` throughout) adds:
+
+- `deningerColimit_isOpen_iff` — a subset of the colimit is open exactly when its preimage in
+  every chart is open, the working form of the inductive-limit topology;
+- `deningerColimitMap f` — the map of Frobenius colimits induced by a scheme morphism, well
+  defined because the functorial map commutes with the Frobenius maps;
+- `deningerColimitPr_map` — naturality of the arithmetic projection;
+- `deningerColimitMap_injective` — injectivity, which reduces to injectivity on a chart because
+  the Frobenius identification of the source is the restriction of that of the target;
+- `deningerColimitMap_range`, `deningerColimitMap_opens_range` — **the image is
+  `p̌r⁻¹(U_N)`**, exactly as clause 2 asserts;
+- `deningerColimitMap_isOpenMap` — the map is open.  The computation behind it is that a chart
+  point `z` at stage `n` lies in the image of an open set `O` exactly when, for some `l`, the
+  `l`-th Frobenius power of `z` is the image of a point of `O` sitting at stage `n·l`.  Writing
+  the preimage as that union over `l` turns it into a union of sets of the form
+  `F_l⁻¹(ι(chart_{n·l}⁻¹(O)))`, each open because `F_l` and the charts are continuous and `ι` is
+  an open map on the character space;
+- `deningerColimitMap_isOpenEmbedding`, `deningerColimitMap_opens_isOpenEmbedding` — **clause 2**:
+  `Ǔ_N(ℂ) → Š(ℂ)` is an open embedding.
+
+The reindexing identity that makes the union work is that a point at stage `μ` equals the `k`-th
+Frobenius power of itself at stage `μ·k`; it is the same cofactor computation that makes each
+`F_q` invertible on the colimit.
+
+All `2 → 3` gates of this card are now closed.
+
+### Log
+
+- 2026-08-02 — Proved the colimit-level open embedding, closing the last formalization gate.

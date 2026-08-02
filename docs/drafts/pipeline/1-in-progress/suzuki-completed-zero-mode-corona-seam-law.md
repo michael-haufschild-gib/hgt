@@ -312,10 +312,12 @@ predicted first transported layer is
 
 ```text
 v(x)=c_(+,n)(-log|x-(a-log n)|)^(-3/2)+smoother,
-c_(+,n)=C_a Lambda(n)/sqrt(n) c_+,                        (18)
+c_(+,n)=1/4 Lambda(n)/sqrt(n) c_+,                        (18)
 ```
 
-with nonzero universal `C_a` fixed by the logarithmic parametrix. Iterated seams occur at
+in the unit-normalized source convention of `(15c)`.  The exact factor `1/4` is
+`alpha/(2alpha+1)` at `alpha=1/2`; Suzuki's displayed minus prime term is moved to the other side
+of the zero equation. Iterated seams occur at
 additive sums of `log n`, and each propagation raises the log order.
 
 ### Log-conormal order-raising theorem
@@ -347,6 +349,25 @@ Indeed `(18c)` follows by division of `(18a)` by `(18b)`; the one-sided slowly v
 Abelian law identifies it with a spatial germ of exponent `alpha+1`. The bounded oscillatory
 prime--Gamma remainder changes only subsequent inverse-log orders. Thus the direct coefficient in
 `(18)` is nonzero whenever `Lambda(n)c_+` is nonzero.
+
+The exact physical Volterra recurrence is stronger.  A source coefficient \(A L^{-\alpha}\)
+produces
+
+```text
+alpha/(2alpha+1) A L^(-alpha-1).
+```
+
+At successive grades the product is
+
+```text
+theta_k=binom(2k,k)/8^k<=2^(-k).                         (18c1)
+```
+
+Hence total absolute grade-\(k\) mass is at most
+`theta_k M_a^k<=(M_a/2)^k`.  The resulting profiles are nuclear directly in physical
+`L2(dL)` on every tail `L_0>M_a/2`; this is proved in
+`suzuki-physical-log-grade-nuclear-summability.md`.  Exact recurrence and nonvanishing are
+formalized in `SuzukiVolterraLogGradeRecurrence.lean`.
 
 For seams emitted from one fixed endpoint, distinct integers give distinct locations. Opposite-end
 direct seams can collide:
@@ -603,9 +624,331 @@ bounded self-adjoint prime-seam adjacency into a skew frequency generator, so
 
 is conserved. Hence every homogeneous seam state in `L2(dL)` is zero, including rapidly
 oscillating inverse-log-flat states outside all conormal classes. The remaining trace-zero gate is
-now the literal completed-carrier connector: build the support-pruned self-adjoint Hilbert seam
-state, prove trace zero places its homogeneous part in `L2(dL)`, and show the forced part inherits
-Gamma-strip decay of physical order greater than `1/2`.
+now the literal completed-carrier connector.  The abstract carrier itself is constructed in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-support-pruned-selfadjoint-seam-carrier.md`:
+it is the exact orthogonal compression of the visible real Laurent adjacency and is bounded
+self-adjoint after support pruning.
+
+The analytic part after realization is also closed.  The physical Gamma wall lies in a block
+Hardy source space throughout `0<sigma<1`, giving shifted `L2`; the sharp derivative carrier is
+not integrable anywhere below the first pole, exposing two high-frequency scattering charges.
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-gamma-weighted-tail-coercivity.md`
+then uses the exact lower numerical range of `r(x+i sigma)` and the growing physical coefficient
+`2L` to force both charges to vanish on any realized source-supported tail.  Thus the only live
+trace-zero connector is no longer a regularity estimate.
+
+The bare Hilbert-map formulation is itself too strong.  On every infinite valuation sector,
+physical phase evaluation has unit-modulus response on all seam basis vectors, hence is unbounded
+and nonclosable on `ell2`; this is proved source-specifically in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-support-pruned-evaluation-rigging-fracture.md`.
+The corrected connector is rigged: construct the actual completed-domain state in
+`ell1(S_a) subset ell2(S_a)`, reconstruct the scalar mode by bounded `ell1` evaluation, and prove
+the cutoff equation intertwines in the middle self-adjoint `ell2` space.
+
+The high-frequency global part of this corrected connector is now constructed in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-exterior-residual-rigged-wiener-realization.md`.
+Every bounded completed eigenmode has an `L2` exterior residual and two ordinary `L2` Hardy
+amplitudes.  Suzuki's source-normalized multiplier has leading coefficient `kappa=1`; its exact
+valuation-Wiener inverse gives an
+`L2_frequency(ell1) subset L2_frequency(ell2)` two-root state whose absolute evaluation recovers
+the mode above a finite frequency threshold.
+
+The literal pruning map has now been corrected. Exact exterior elimination contributes the
+nonzero positive Feshbach self-energy
+`P T Q(alpha Q+Q T Q)^(-1)Q T P`; plain compressed adjacency omits every path that leaves and
+returns.  A second theorem upgrades the Neumann carrier to
+`ell1_seams(L2_position)`, but its unitary boundary-log chart controls only the weighted measure
+`exp(-L)dL`.  Physical Gamma analysis requires unweighted `dL`, equivalently nuclear
+`L2(dr/r)`.
+
+The apparent standalone measure upgrade has now been falsified.  For any continuous Dirichlet
+profile split into low and high Fourier parts, physical `L2(dr/r)` of the high part forces the
+low-frequency endpoint moment to vanish.  Even a boundary-flat `C_c^\infty` full profile can have
+a nonzero low moment, hence a high part with infinite `dr/r` mass.
+`suzuki-physical-log-low-frequency-boundary-lock.md` proves this exact lock, and
+`SuzukiPhysicalLogBoundaryMomentLock.lean` formalizes its analytic core.  Nuclear valuation
+control is stronger than scalar control and therefore cannot evade it by cancellation.
+
+Remaining carrier gate is the **coupled** low/high two-port return with its two endpoint moments,
+followed by exact boundary-log transport of the matched full exterior/Feshbach system and cutoff
+identity.  High-frequency physical realization and low-frequency Evans matching cannot be proved
+in sequence.
+
+`suzuki-low-frequency-boundary-counterterm-renormalization.md` proves that these two moments
+exhaust the singular low-band data.  Adding `m_+` and `m_-` to the two high endpoint profiles
+restores the Dirichlet boundary value; the remaining low-band germs and all finite derivatives are
+`O(exp(-L))`, hence lie in every exact Gamma strip below the first pole.  The open carrier does not
+need an infinite low-frequency valuation state.
+
+The exact scalar benchmark is now complete:
+`suzuki-scalar-analytic-forcing-trace-zero-h1.md` proves that a trace-zero solution of the literal
+Gamma normal equation with analytic-in-`r` forcing lies in weighted `H1` for every strip below the
+first Gamma pole.  Hence it is physical `H1` as soon as the forcing exponent exceeds `1/2`.
+Square-Evans exponential-polynomial data pass this test.  Remaining scale-gap issue is exclusively
+the source theorem that recursively exposed prime-seam/Feshbach forcing is Gamma-subcritical.
+
+Dense prime breadth and homogeneous Gamma coupling are no longer open.  The exact solution
+
+```text
+F_beta(L)=(L I-T/2)^(-1/2)beta
+```
+
+in `suzuki-prime-normal-binomial-resolvent.md` sums every prime valuation word with coefficient
+`binom(2k,k)/8^k`.  Then `suzuki-gamma-prime-normal-corona-equivalence.md` proves that every
+literal Gamma homogeneous solution differs from this prime representative with the same trace by
+`O(L^-1)`, hence by a physical `L2(dL)` correction.  Thus the singular homogeneous corona is
+exactly the half-log trace space; the remaining scale gap is the concrete completed
+exterior/Feshbach forcing and cutoff intertwiner, not dense prime summability or homogeneous
+prime--Gamma transport.
+
+The exterior forcing now has a completion-safe model.  Instead of eliminating the two endpoint
+roots before the nonlinear boundary-log chart, `suzuki-root-retained-exterior-dilation.md` retains
+the full self-adjoint carrier.  Endpoint trace lies entirely in the exterior projection \(Q\), so
+the strict-interior projection begins at grade one, belongs to unweighted
+`H1(dL) intersect L2(dL)`, and
+obeys the exact forced equation
+
+```text
+(2L I+R-P T P)(P F)'+P F=P T Q(Q F)'.
+```
+
+The right side is `L2(dL)`; every exterior excursion remains in `T^k`.  This bypasses the former
+Feshbach--log conjugation gate without replacing the positive self-energy by plain compression.
+Live source gap is exact identification of an actual completed zero mode with this root-retained
+normal family and its global cutoff equation.  Unweighted `H1(dL)` is not spatial `H1(dr)`:
+the latter still requires the trace-zero weighted Gamma upgrade with exponent `sigma>1/2`.
+
+The first nonzero corona grade can no longer be hidden by Gamma scattering.
+`suzuki-gamma-three-grade-delay-root-observability.md` sharpens the complete homogeneous
+asymptotic to
+
+```text
+F_Gamma
+ =L^(-1/2)beta+(1/4)L^(-3/2)T beta
+  +(3/32)L^(-5/2)T^2 beta+O(L^-7/2).
+```
+
+The Gamma phase has a cubic zero and first contributes at grade three.  The grade-one
+strict-interior observation has exact Gram
+
+```text
+sum_(p^j<exp(2a)) (log p)^2/p^j,
+```
+
+times the squared two-root trace norm, so it is injective once `a>(log 2)/2`.  This is immune to
+opposite-end spatial resonance because oriented root labels remain orthogonal.  Lean formalizes
+the strict-step coordinate injectivity in `SuzukiRootPortFirstGradeObservability.lean`.
+
+The non-prime forcing has also lost its flat escape.
+`suzuki-polar-remainder-lipschitz-gamma-subcriticality.md` proves from Suzuki's exact displayed
+kernel that `r''` is locally Lipschitz, not merely continuous.  Hence the completed polar
+convolution maps `L2` to `C^(0,1)` and its differentiated oriented boundary profile is
+`O(exp(-L))`, inside every Gamma strip below the first pole.  The eigenvalue and scalar potential
+are diagonal components of the homogeneous \(T\).  After the two low counterterms, every
+non-prime source term is therefore Gamma-subcritical.  Remaining trace-zero obstruction is solely
+the actual completed-mode-to-valuation-normal-family intertwiner.
+
+That intertwiner cannot be a bounded localized orbit map.
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-localized-orbit-lift-selfadjointness-trilemma.md`
+proves that a lift with coordinates `w_nu u(.-ell(nu))` is square summable only with
+`w in ell2`, whereas projective prime-translation covariance forces `|w|` constant on each
+connected valuation component.  The same condition follows if a diagonal decay is required to
+preserve the literal constant-coefficient self-adjoint adjacency.  Infinite valuation components
+therefore admit no nonzero bounded lift with all three properties.  This is the analysis-side dual
+of the already proved nonclosable physical codiagonal.
+
+The global Wiener state is not contradicted: its decaying entries are source-dependent parametrix
+coefficients, not duplicated physical translates.  But it is delocalized, and componentwise
+interval cutoff creates exactly the boundary commutator omitted by a naive global-to-log
+identification.  The corrected E1 target is consequently a closed rigged relation, not a bounded
+operator:
+
+```text
+completed source
+  <-> graph-closed ell1 subset ell2 coefficient state,
+with cutoff commutator retained in the graph norm.
+```
+
+Its `ell1` evaluation must reconstruct the scalar mode; self-adjoint Gamma analysis occurs in the
+middle `ell2` space before evaluation.  The invariant-modulus core is formalized in
+`SuzukiLocalizedOrbitLiftTrilemma.lean`.
+
+The source relation itself is now constructed in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-wiener-cutoff-closed-graph-relation.md`.
+On the closed graph domain of Suzuki's literal multiplier, the high-frequency Wiener inverse maps
+the exterior residual boundedly into `L2(ell1) subset L2(ell2)` and absolute evaluation recovers
+the high physical mode.  If `P` is interval cutoff, its localized state satisfies exactly
+
+```text
+(a_a(D)+T_a)Pc
+ =P chi_a(D)S b+[a_a(D),P]c.
+```
+
+The low source term is bandlimited analytic, prime adjacency commutes with `P`, polar forcing is
+Gamma-subcritical, and scalar/eigenvalue transport is homogeneous diagonal.  The entire missing
+cutoff source is the cross-boundary operator
+
+```text
+P[a_a(D),P]c=-P a_a(D)(1-P)c.
+```
+
+Its principal log kernel is Carleman `1/(s+t)`, so ordinary `L2` boundedness closes the graph
+relation.  The remaining E1/E2 statement is strictly weighted: zero physical half-log trace must
+place this Carleman port in a Gamma strip of exponent `sigma>1/2`.  That is now the exact content
+of `SUZUKI-TRACE-ZERO-H1`.
+
+The proposed trace-only form of that statement is false.
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-carleman-flat-port-weighted-strip-barrier.md`
+uses `F(L)=exp(-sqrt L)`, which has zero half-log trace but is not spatial `H1`.  For the literal
+Carleman cross block, after subtracting its unique endpoint constant,
+
+```text
+d/dL S(F)(exp(-L))=exp(-sqrt L)(1+o(1)).
+```
+
+It belongs to no positive Gamma strip.  Thus no combination of trace zero, ordinary Carleman
+boundedness, graph closedness, or the two low counterterms proves the weighted upgrade.  The
+counterexample is not a completed zero mode; it proves that the omitted completed-source
+return equation is indispensable.
+
+The proposed `SUZUKI-CLOSED-TWO-PORT-RETURN` strengthening has now been audited and retired in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-two-port-return-redundancy-and-interior-null-core.md`.
+On the exact relation,
+
+```text
+Ev(c)+u_low=u,
+```
+
+so exterior evaluation is exactly the support condition already built into the multiplier graph
+domain.  Also `Pb=0` is exactly `P p_a(D)u=0`.  Hence the purported coupled class is just the
+original supported completed nullspace.
+
+This is not merely a formal observation.  The flat profile is compactly supported BV, therefore
+belongs to `H^s` for every `s<1/2`; since `log<xi>` is dominated by every positive Sobolev power,
+it lies in the full logarithmic multiplier graph domain and satisfies the exact high/low exterior
+reconstruction.  Only the literal interior zero equation is absent.
+
+The valid trace-zero target is therefore again, sharply and without carrier rhetoric,
+
+```text
+Pu=u,
+P p_a(D)u=0,
+beta_+(u)=beta_-(u)=0
+ -> u in H1_0.                                           (30)
+```
+
+Any proof of `(30)` must extract new information from Suzuki's exact interior operator.  Graph
+closedness, exterior support, counterterm matching, and Feshbach/Carleman decompositions are now
+proved insufficient as a class.  The nonzero-trace two-port Evans return remains a separate
+RH-bearing problem.
+
+The interior equation now has a new exact carrier candidate.
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-tempered-orbit-carrier-aperture-recurrence-dichotomy.md`
+uses the physical translates themselves with exponential valuation weight
+`rho^|nu|_1`.  The lift is bounded into `ell2`, the scalar mode is its root coordinate, and prime
+translation intertwines exactly with a bounded nonselfadjoint adjacency.  The loss of ordinary
+self-adjointness is harmless for terminal Gamma coercivity, which needs only a numerical-range
+bound by the operator norm.
+
+The sharp admission invariant is
+
+```text
+R(a)=limsup_(|nu|->infinity)
+ [-log|2a-sum_p nu_p log p|]_+/|nu|_1.                  (31)
+```
+
+For `R(a)<infinity`, one can choose the exponential weight so every nonresonant near-opposite-end
+activation is square summable in any prescribed Gamma strip `sigma<1`.  Almost every aperture has
+`R(a)=0`.  Dense relative-Liouville apertures have `R(a)=infinity`, and every tempered orbit
+weight with bounded generator ratios fails there.  The precise next theorem is therefore
+`SUZUKI-TEMPERED-ORBIT-NORMAL-IDENTITY` at finite recurrence type, followed by a continuity or
+nontempered passage across the exceptional set.
+
+The local Carleman defect in that identity is now closed by
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-paired-seam-carleman-logistic-normal-form.md`.
+At an interior center retain both punctured orientations.  Their exact normal equations have
+diagonal `2L+Gamma` blocks and one cross Carleman response.  Differentiation turns the latter into
+logistic convolution
+
+```text
+k(t)=1/[4 cosh(t/2)^2],
+||K||_(exp(sigma L)L2)
+ <=pi sigma/sin(pi sigma),       |sigma|<1.             (32)
+```
+
+Thus it is a bounded zero-order coupling, not uncontrolled forcing.  A physical endpoint is the
+special case whose opposite orientation is the actual zero exterior.  Infinite weighted
+assembly and root-only trace support are the remaining finite-type gates.
+
+Finite-grade root support is now closed in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-interior-seam-indicial-dipole-exclusion.md`.
+For an interior paired order `L^(-tau)`, `0<tau<1`, the indicial matrix
+
+```text
+[(1-2tau)I-J]/(1-tau)
+```
+
+is invertible.  Hence the physical half-log root cannot occur independently at an interior seam.
+At `tau=1`, boundedness leaves only an antisymmetric logarithmic dipole; the principal
+`2log|xi|` multiplier turns it into a nonzero step jump, which continuity of the full Suzuki
+forcing excludes.  Thus every finite conormal interior singularity is a marked forced descendant
+of grade at least one.  Remaining trace-support issue is exclusively the all-orders-flat,
+nonconormal sector.
+
+The local regular-singular flat-sector calculation survives, but arbitrary bounded-nonnormal Hardy
+transfer has been retracted to
+`suzuki-paired-gamma-logistic-flat-sector-conjecture.md`.
+The paired frequency ODE has regular-singular residue
+
+```text
+-(I+J)/2=-P_sym.
+```
+
+Its symmetric pole is the subtracted common seam value. Its antisymmetric logarithm is the
+`1/log` dipole, and zero physical source jump is the compatibility that removes it. Local
+holomorphic gluing through `|Im z|<1` is valid. Quantitative block Hardy requires polynomial
+two-sided growth of `exp(-ixB/2)`, not merely boundedness of nonnormal \(B\).
+
+The radial exponential valuation carrier has a Hatano--Nelson positive-orthant limit with complex
+elliptic spectrum, so its group grows exponentially on one frequency tail. This inserts a genuine
+stable/unstable Evans matching gate for the direct frequency proof.
+
+The primitive-forced equation has a second formulation, proved in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-primitive-flux-nonnormal-graph-reduction.md`.
+With \(Y=(2L+R-B)F-G\), it becomes a first-order graph system whose weighted a priori estimate
+uses only \(\|B\|\), not the group \(\exp(-ixB/2)\). The flat-tempered theorem in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-flat-primitive-flux-volterra-liouville.md`
+then proves exponential value/flux decay from zero finite charge. Hatano--Nelson is not an
+intrinsic no-go for the equation. Remaining problem is propagation of weighted flux regularity to
+the physical root derivative.
+
+The corrected positive class is proved in
+`../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-log-recurrence-polynomial-carrier-trichotomy.md`.
+For
+
+```text
+T_log(a)=limsup tau(nu)/log(2+|nu|_1)<infinity,
+```
+
+a polynomial valuation weight absorbs all Gamma events and makes prime evolution polynomially
+bounded. This holds for almost every aperture; logarithmic-Liouville exceptions are dense.
+Polynomial growth of degree \(m\) requires matching degree-\(m\) source moments, which are not yet
+available from the base Gamma commutator theorem.
+
+Coordinatewise event cutoffs also create a raw first-order commutator, classified in
+`suzuki-coordinate-cutoff-covariance-classification.md`. Its exact positive survivor
+`suzuki-coordinate-cutoff-primitive-flux-identity.md` rewrites the complete defect as
+
+```text
+([R-B,M]F)'+M'(2L+R-B)F,
+```
+
+so finite logarithmic recurrence controls the correct primitive-plus-zero-order base source without
+assuming \(F'\). The augmented flux system then removes the primitive derivative, gives
+arbitrary-nonnormal weighted graph uniqueness, and Volterra Liouville gives exponential value/flux
+decay. Remaining core is root-derivative propagation, literal paired assembly, and exact physical
+root dipole/flux matching. Degree-\(m\) moments and
+biweighted dichotomy remain alternative obligations of the direct Hardy architecture.
 
 ## 7. Lean decision
 
@@ -655,9 +998,56 @@ paper mathematics; abstract formalization would not certify source-specific anal
 - [x] prove both signed endpoint traces exist for every completed zero mode
 - [x] prove exact Gamma-skew frequency current for the literal nonlocal remainder
 - [x] exclude homogeneous nonconormal `L2(dL)` seam coronas under self-adjoint coupling
-- [ ] construct the literal support-pruned self-adjoint Hilbert seam carrier
-- [ ] prove trace-zero homogeneous component belongs to `L2(dL)`
-- [ ] prove forced Gamma-strip decay with physical exponent greater than `1/2`
+- [x] construct the abstract support-pruned self-adjoint Hilbert seam carrier
+- [x] prove trace-zero homogeneous component belongs to `L2(dL)` after exact carrier realization
+- [x] prove forced Gamma-strip decay with physical exponent greater than `1/2` after realization
+- [x] prove physical-tail coercivity annihilates both derivative scattering charges after realization
+- [x] rule out bounded physical evaluation from the bare infinite `ell2` carrier
+- [x] extract the `ell1 subset ell2` rigged-carrier survivor
+- [x] construct the high-frequency completed-domain map into the global rigged carrier
+- [x] classify and formalize the positive exterior Feshbach return correction
+- [x] upgrade the carrier to `ell1_seams(L2_position)`
+- [x] prove free-standing high-tail `L2(dr/r)` control is false
+- [x] identify and formalize the low-frequency boundary-moment lock
+- [x] reduce low band to two counterterms plus Gamma-subcritical forcing
+- [x] close scalar analytic-forcing trace-zero `H1` benchmark
+- [x] compute exact grade factor `binom(2k,k)/8^k` and physical nuclear threshold `L_0>M_a/2`
+- [x] sum every prime valuation grade in the exact binomial resolvent
+- [x] identify the literal Gamma homogeneous corona with the prime-normal corona modulo `L2(dL)`
+- [x] retain exterior endpoint roots and prove strict-interior carrier lies in `H1(dL) intersect L2(dL)`
+- [x] derive exact unweighted `L2(dL)` exterior source while retaining all Feshbach return paths
+- [x] prove Gamma leaves prime grades one and two unchanged and first enters at grade three
+- [x] prove and formalize strict-step root-port first-grade injectivity
+- [x] prove exact polar kernel is locally Lipschitz and Gamma-subcritical after differentiation
+- [x] move eigenvalue/scalar term into homogeneous diagonal transport
+- [x] prove/formalize bounded localized orbit-lift covariance/self-adjointness trilemma
+- [x] replace bounded global-to-local intertwiner by a closed rigged-relation target
+- [x] retire the proposed coupled exterior-return condition as redundant
+- [x] construct the global-Wiener/support-pruned closed rigged relation
+- [x] prove its exact cutoff-commutator graph identity and closedness
+- [x] disprove trace-only Gamma-strip decay for the literal Carleman cutoff port
+- [x] prove exact exterior evaluation is redundant with supported high/low reconstruction
+- [x] prove the flat obstruction lies in the complete logarithmic multiplier graph domain
+- [x] retire `SUZUKI-CLOSED-TWO-PORT-RETURN` as a false strengthening
+- [x] construct the bounded nonselfadjoint weighted physical-orbit carrier
+- [x] prove exact root reconstruction and prime intertwining
+- [x] classify the carrier by the aperture recurrence exponent
+- [x] derive the paired seam normal form and exact logistic strip bound
+- [x] prove finite-grade conormal trace is supported only at physical roots
+- [x] exclude the interior borderline logarithmic dipole
+- [x] classify paired regular-singular value/dipole charges
+- [x] retract arbitrary bounded-nonnormal Hardy transfer
+- [x] prove logarithmic-recurrence polynomial-carrier trichotomy
+- [x] prove coordinate-cutoff covariance obstruction and primitive-flux survivor
+- [x] prove primitive-flux arbitrary-nonnormal weighted graph reduction
+- [x] prove flat-tempered primitive-flux Volterra Liouville
+- [ ] prove `SUZUKI-POLYNOMIAL-ORBIT-NORMAL-IDENTITY`
+- [ ] propagate weighted flux regularity to physical root derivative
+- [ ] prove degree-m source moments or biweighted Evans dichotomy only if direct Hardy is retained
+- [ ] verify zero dipole source moment in the literal assembled equation
+- [ ] pass recurrence-infinite apertures
+- [ ] extract a new source-specific consequence from `P p_a(D)u=0`
+- [ ] prove the literal trace-zero supported-nullspace theorem `(30)`
 - [ ] prove inverse-log-flat zero modes lie in `H1_0`
 - [ ] identify the trace-zero square-Evans kernel with the raw Evans kernel
 - [ ] prove corona separation for the finite square-Evans characteristic packet
@@ -679,3 +1069,44 @@ paper mathematics; abstract formalization would not certify source-specific anal
 - 2026-08-01 — Retaining the exact Gamma multiplier gives conserved frequency current
   `|eta| ||Fhat||^2`; no homogeneous `L2(dL)` seam corona survives, even with nonconormal
   high-frequency oscillation. Source-carrier realization and forced Gamma-strip decay remain.
+- 2026-08-01 — Physical Gamma-wall block Hardy transfer closes shifted `L2` after carrier
+  realization.  A sharp derivative-tail theorem exposes two scattering charges, while the exact
+  shifted-Gamma numerical-range bound plus `2L` tail coercivity forces both to vanish.  Only the
+  literal completed-domain carrier map/intertwiner remains in the trace-zero regularity gate.
+- 2026-08-01 — Bare `ell2` carrier evaluation was falsified: the unit-phase codiagonal is
+  nonclosable on every infinite seam sector.  Exact survivor is a rigged
+  `ell1 subset ell2 subset ellInfinity` carrier; completed-domain `ell1` realization is now the
+  precise E1 theorem.
+- 2026-08-01 — Bounded completed modes have `L2` exterior residuals.  Exact source normalization
+  `kappa=1` and the valuation-Wiener inverse construct their high-frequency
+  `L2(ell1) subset L2(ell2)` two-root carrier.  E1 is narrowed to the global-to-logarithmic
+  support-pruned intertwiner.
+- 2026-08-01 — Hostile carrier audit proved plain support pruning misses a nonzero positive
+  exterior Feshbach return.  Wordwise Neumann majorization gives
+  `ell1_seams(L2_position)`, but physical log measure is `dr/r`, not `dr`; E1 now turns on that
+  sharp nuclear measure upgrade and the corrected boundary-log intertwiner.
+- 2026-08-01 — Proved the proposed standalone measure upgrade structurally false.  Physical-log
+  mass of the high tail forces low-frequency endpoint moments; a boundary-flat smooth full profile
+  need not satisfy them.  E1 carrier realization and E3 low-frequency return are now one coupled
+  source problem.
+- 2026-08-01 — Proved the positive counterterm survivor: low band contributes only two endpoint
+  constants to the singular carrier; after subtracting them its log-boundary germ is
+  `O(exp(-L))` throughout every subcritical Gamma strip.
+- 2026-08-01 — Closed exact scalar scale gap: analytic-in-boundary forcing plus zero half-log
+  trace implies weighted `H1` below the first Gamma pole.  Live gap is now only dense
+  prime-seam/Feshbach forcing.
+- 2026-08-01 — Exact Volterra coefficient replaces the unspecified first-seam constant by `1/4`.
+  Grade `k` carries `binom(2k,k)/8^k`, so a uniform word expansion is nuclear directly in
+  physical `L2(dL)` once `L_0>M_a/2`.
+- 2026-08-01 — Summed all dense prime words as `(L I-T/2)^(-1/2)beta`.  Exact Gamma scattering
+  differs from that representative by `O(L^-1)`, proving both flows have the same non-`L2`
+  corona and moving the live gate to the completed exterior/Feshbach forced domain.
+- 2026-08-01 — Retaining endpoint roots through Gamma transport makes strict-interior projection
+  unweighted `H1(dL) intersect L2(dL)` with exact source `PTQ(QF)'`.  Positive Feshbach return is
+  retained pathwise; spatial `H1(dr)` still requires the weighted trace-zero Gamma gate.
+- 2026-08-01 — Sharpened Gamma/prime comparison from `O(L^-1)` to `O(L^-7/2)`: Gamma first enters
+  at grade three.  Exact first-grade root Gram proves every nonzero two-port trace is observable
+  for `a>(log 2)/2`; strict-step injectivity is kernel-checked in Lean.
+- 2026-08-01 — Exact polar formula upgrades Suzuki's stated `C^2` remainder to locally Lipschitz
+  second derivative.  Polar convolution has differentiated rate `exp(-L)` in every subcritical
+  Gamma strip; scalar/eigenvalue potential belongs in homogeneous diagonal transport.

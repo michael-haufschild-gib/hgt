@@ -152,3 +152,69 @@ carry extra nonnegative information.  Quadratic data must be placed in
 twisted arithmetic descent rather than in the local geometric stalk.
 
 **Verdict:** `FULLY PROVEN ON PAPER`.
+
+## Lean status
+
+### What landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerQuadraticallyClosedRankCollapse.lean`, 44
+declarations, axiom audit for every one of them within
+`propext, Classical.choice, Quot.sound` (several need only `propext, Quot.sound`).
+
+**The degree-zero half of `(2)`, completely: `K_0^{MW}(F) = GW(F) ≅ ℤ` by rank.**  The proof input
+the card uses is that every unit of `F` is a square; that hypothesis, and nothing about algebraic
+closure, is what the formalization carries.
+
+- `deningerIsometryEquivSumSquares`, `deningerIsometryEquivSumSquaresUnits` — the sum-of-squares
+  normalization over a field in which every element is a square.  mathlib had this only for
+  `IsAlgClosed` fields, with an explicit `TODO: generalize to quadratically closed field` in
+  `Mathlib/LinearAlgebra/QuadraticForm/AlgClosed.lean`; that generalization is what these two
+  declarations are.
+- `deningerEquivalent_standardForm` — every nondegenerate form on a finite-dimensional space is
+  isometric to the standard sum of squares of its rank.
+- `deningerEquivalent_iff_finrank_eq` — **rank is a complete isometry invariant**, which is the
+  card's "all one-dimensional forms are isometric and rank is the only Grothendieck--Witt
+  invariant".
+- `deningerStandardForm_sum` — orthogonal sum adds ranks; `deningerFormPlus_separatingLeft` — the
+  orthogonal sum of nondegenerate forms is nondegenerate.
+- `DeningerWittClass`, `deningerClassRank`, `deningerClassRank_bijective` — **the monoid of
+  isometry classes of nondegenerate forms is the natural numbers**, with rank as the bijection and
+  orthogonal sum as the addition (`deningerClassRank_plus`).
+- `deningerGrothendieckWittRank_universal` — **the group completion is `ℤ` with rank as the
+  isomorphism**: every additive invariant of nondegenerate forms factors uniquely through the rank
+  by a homomorphism from `ℤ`.  This is `F_0 : GW(F) ≅ ℤ = K_0^M(F)`, stated by the universal
+  property so that no separate construction of the Grothendieck group is needed.
+- `deningerRealificationCongr`, `deningerTorsionQuotientCongr` — **consequence 1**: an isomorphism
+  of abelian groups survives tensoring with `ℝ` and survives the quotient by torsion.
+
+Supporting infrastructure that mathlib did not have:
+
+- `deningerSeparatingLeft_iff_polar` — nondegeneracy expressed through the polar form.  This is the
+  working form throughout: mathlib's `associated_apply` puts `⅟2` in the endomorphism ring of the
+  target, which blocks the ordinary cancellation lemmas, whereas `two_nsmul_associated` moves
+  everything to the polar form where two is an honest field element.
+- `deningerWeightedSumSquares_separatingLeft` — a weighted sum of squares with nonzero weights is
+  nondegenerate.
+- `deningerSeparatingLeft_of_equivalent` — nondegeneracy is an isometry invariant.
+
+### What is still missing, and why
+
+- The positive-degree half of `(1)`--`(2)`, `K_n^{MW}(F) ≅ K_n^M(F)` for `n > 0`, needs
+  Milnor--Witt K-theory: the graded ring on generators `[u]` and `η` with the Steinberg and
+  commutation relations, its fundamental cartesian square `(5)` with the Witt ring and the powers
+  of the fundamental ideal, and the forgetful morphism.  mathlib has neither Milnor K-theory nor
+  the Witt ring of a field, so `(5)`, `(6)` and Déglise's Example 2.1.13 cannot be stated.  What is
+  formalized is the degree-zero corner of `(5)`, which is exactly where the card's own proof does
+  the quadratic work.
+- Consequences 2, 3 and 4 are statements about connective spectra, `E_∞`-algebra base change and
+  derived tensor products.  mathlib has no spectra, no `E_∞`-algebras and no derived categories, so
+  `(3)` and `(4)` cannot be stated.
+
+So the card stays at stage 2.  What is formalized is the quadratic-form content on which the whole
+architectural conclusion rests: on a quadratically closed chart the only invariant of a
+nondegenerate form is its rank, so the Grothendieck--Witt group carries no information beyond `ℤ`.
+
+### Log
+
+- 2026-08-02 — Formalized the degree-zero rank isomorphism and consequence 1, generalizing
+  mathlib's algebraically-closed sum-of-squares classification to quadratically closed fields.
