@@ -743,9 +743,388 @@ seed is a bounded measurable function, and what the `L^2` statement still needs 
 `1/|t|` decay of the *difference* from the correction constant, which is the harmonic-window
 comparison already proved.
 
-Still outside the formal tree: an inhabitant of `BurnolCoPoissonSource` --- equivalently the single
-symmetrized witness --- and the transfer of the two-sided law to the co-Poisson quotient vectors
-`y_{rho,N}` of the parent boundary-transgression theorem.
+That sharper decay is now proved for an explicit seed.  The simplest seed supported in the
+multiplicative window is its indicator, and for it every step is computable:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonIndicatorSeed.lean
+
+coPoissonIndicatorSeed b            = indicator of Icc b b^(-1),
+coPoissonIndicatorSeed_correction   : the correction constant is 2 log(1/b),
+                                      the logarithmic length of the window,
+coPoissonIndicatorSum_eq_finset_sum : the co-Poisson sum is the pure window sum
+                                      sum_{ceil(t b) <= k <= floor(t/b)} 1/k,
+coPoissonIndicatorSum_eq_harmonic   : that window sum is harmonic(floor(t/b)) - harmonic(ceil(t b) - 1),
+norm_burnolCoPoissonRightSum_coPoissonIndicatorSeed_le
+  : for t >= 2/b,  |co-Poisson value| <= (4 b + 4/b) / t.
+```
+
+The decay proof uses no expansion.  For every positive `t` the correction constant is itself a
+logarithmic difference of the two window ends, `2 log(1/b) = log(t/b) - log(t b)`, so the co-Poisson
+value splits into three comparisons each of which is a single reciprocal endpoint: the harmonic
+window comparison at the two integer ends, and the two floor/ceiling corrections.  Both ends are
+comparable to `t`, which gives the constant above.
+
+The window-sum side of that identity is a general fact recorded once:
+
+```text
+formal/GaloisForLFunctions/HTGeometry/HarmonicLogWindow.lean
+
+sum_Ioc_inv_eq_harmonic_sub  : sum_{m < n <= N} 1/n = harmonic N - harmonic m,
+abs_sum_Ioc_inv_sub_log_le   : that window sum differs from log(N/m) by at most 1/N + 1/m,
+abs_log_sub_log_le_inv       : between consecutive integers the logarithm moves by at most 1/n.
+```
+
+Decay plus a crude local bound gives square integrability, through a reusable profile:
+
+```text
+formal/GaloisForLFunctions/HTGeometry/L2DecayProfile.lean
+
+memLp_two_decayProfile        : (1 + |t|)^(-1) is in L^2 of the line,
+memLp_two_of_decayProfile     : a measurable function dominated by a multiple of that profile is L^2.
+```
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonIndicatorSeed.lean
+
+norm_coPoissonIndicatorSum_le_scale
+  : the window sum is at most t/b (every term at most one, at most t/b indices),
+norm_burnolCoPoissonRightSum_coPoissonIndicatorSeed_le_profile
+  : the co-Poisson value is dominated by a constant times (1 + |t|)^(-1),
+memLp_two_burnolCoPoissonRightSum_coPoissonIndicatorSeed
+  : hence it is square integrable on the line.
+```
+
+The vector itself is then built and its first Sonine condition discharged:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonIndicatorVector.lean
+
+memLp_toLp_mem_evenSubspace          : an a.e. even L^2 function is a vector of the even carrier,
+coPoissonIndicatorEven               : the indicator co-Poisson vector in that carrier,
+soninHeadConstant_coPoissonIndicatorEven
+  : its aperture head is constant,
+coPoissonIndicatorSource             : with the cosine head condition, a full BurnolCoPoissonSource b,
+nonempty_burnolCoPoissonSource_of_cosineHead
+  : so the co-Poisson layer is inhabited as soon as that one condition holds.
+```
+
+This is the sharp form of the inhabitation question.  Integrability, compact multiplicative support,
+square integrability, evenness, constancy of the aperture head, and the almost-everywhere
+identification of the vector with the literal co-Poisson sum are all unconditional for the indicator
+seed.  What remains is exactly one analytic statement: that the cosine transform of the indicator
+co-Poisson vector is also almost everywhere constant on `(0, b)`.
+
+That one condition can be named exactly.  The reciprocal seed `G(v) = g(1/v)/v` of a window seed is
+again a window seed, and the assignment is an involution:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonIndicatorSeed.lean
+
+support_coPoissonReciprocalSeed      : the reciprocal seed is supported in the same window,
+coPoissonReciprocalSeed_involutive   : taking the reciprocal seed twice returns the seed,
+coPoissonReciprocalSeed_coPoissonIndicatorSeed
+  : the reciprocal of the indicator seed is v |-> 1/v on the window.
+```
+
+Burnol's intertwining says the cosine transform of a co-Poisson sum is the co-Poisson sum of the
+reciprocal seed.  On Mellin transforms that is exactly the functional equation of zeta: the
+co-Poisson sum of `g` has Mellin transform `zeta(1-s) M g(s)`, the reciprocal seed satisfies
+`M G(s) = M g(1-s)`, and the cosine kernel contributes the archimedean factor, so the identity
+`chi(s) zeta(s) = zeta(1-s)` is precisely what makes the two sides agree.  Granting it, the second
+Sonine condition is the first one applied to the reciprocal seed:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonIndicatorVector.lean
+
+soninHeadConstant_cosine_coPoissonIndicatorEven_of_intertwine
+  : the intertwining identity gives the cosine head condition,
+nonempty_burnolCoPoissonSource_of_intertwine
+  : and hence inhabits BurnolCoPoissonSource b.
+```
+
+So the whole co-Poisson layer now rests on one almost-everywhere identity between two explicit
+functions of the line, with every other input discharged unconditionally.
+
+A naive term-by-term proof of that identity fails, and the reason is worth recording.  Poisson
+summation gives the co-Poisson sum as a plain sum of dilates, `P_g(t) = sum_{k>=1} (F G_e)(k t)`
+with `G_e` the even extension of the reciprocal seed; transforming that series term by term yields
+`sum_{k>=1} (1/k) G_e(xi/k)`, which tends to `integral_0^infinity g` rather than to zero and so is
+not square integrable unless the seed has zero mass.  The missing correction is exactly the constant
+subtracted in the co-Poisson definition, and it is invisible to termwise transformation because the
+series `sum_k (F G_e)(k .)` is not convergent in `L^2` --- its terms have norms `k^(-1/2) ||F G_e||`.
+The identity is therefore a genuine Mellin--Plancherel statement, not a rearrangement.
+
+The Mellin--Plancherel content is being built directly, in the test-function picture, where the
+identity becomes an equality of pairings against Schwartz functions.  Two ingredients are proved.
+
+First, the constants.  The correction of a co-Poisson sum is the logarithmic mass of its seed, and
+the correction of the reciprocal seed is the plain half-line mass:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonCorrectionConstant.lean
+
+coPoissonCorrectionConstant_eq_logMass
+  : integral_0^infinity g(1/y) dy/y = integral_0^infinity g(y) dy/y,
+coPoissonCorrectionConstant_reciprocalSeed
+  : the correction constant of the reciprocal seed is integral_0^infinity g.
+```
+
+These are the two constants that cancel in the intertwining: the logarithmic mass against the
+correction of the seed, the plain mass against the correction of the reciprocal seed.
+
+Second, the Fubini step.  Quadratic decay makes the dilated sums of a Schwartz function absolutely
+convergent, uniformly in the scale:
+
+```text
+formal/GaloisForLFunctions/HTGeometry/SchwartzDilateSummability.lean
+
+exists_sq_norm_bound             : quadratic decay of a Schwartz function,
+summable_norm_schwartzDilate     : sum_{n>=1} ||f(u n)|| converges for every positive scale,
+exists_tsum_norm_schwartzDilate_le
+  : and is bounded by a fixed multiple of 1/u^2.
+```
+
+With that, the sum and the integral can be exchanged, and the multiplicative sum over the seed
+becomes a sum of dilates of the test function:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonPairing.lean
+
+integral_coPoissonTerm_eq        : one term pairs as a dilated pairing of the seed,
+integral_norm_seed_mul_schwartzDilate_le
+  : the seed lives above the aperture, so the k-th pairing is O(1/k^2),
+integral_coPoissonSum_mul_eq
+  : integral_0^infinity (sum_{n>=1} g(t/n)/n) w(t) dt
+      = integral_0^infinity g(u) (sum_{n>=1} w(n u)) du.
+```
+
+The right-hand side is exactly the shape Poisson summation acts on: replacing `sum_{n>=1} w(n u)`
+by the transformed sum at scale `1/u` is what converts the seed into its reciprocal seed and
+produces the second co-Poisson sum.
+
+Both are now proved, and with them the intertwining itself in pairing form:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonIntertwining.lean
+
+integral_seed_inv_mul_dilate     : inverting the ray exchanges g with its reciprocal seed,
+integral_tsum_seed_inv_dilate_eq : and does so for the whole contracted sum, term by term,
+tsum_schwartzDilate_poisson      : Poisson summation, in the form the co-Poisson sum consumes,
+integral_Ioi_fourier_eq          : Fourier inversion at the origin, giving the half-line mass,
+integral_seed_mul_tsum_schwartzDilate_split
+  : the three pieces of the transformed pairing,
+integral_Ioi_burnolCoPoisson_mul_eq_fourier
+  : integral_0^infinity P_g(t) w(t) dt = integral_0^infinity P_G(t) (F w)(t) dt
+    for every even Schwartz w.
+```
+
+The two constants cancel exactly, and that is the whole content of the identity.  The Poisson step
+produces a term `(F w)(0)/2` times the logarithmic mass of the seed; the logarithmic mass is the
+correction constant of `P_g`, and `(F w)(0)/2` is the half-line mass of `w`, so that term is exactly
+the correction subtracted on the left.  On the other side the ray inversion produces the plain mass
+of the seed, which is the correction constant of `P_G`, times `w(0)/2`, which by Fourier inversion
+is the half-line mass of `F w` --- exactly the correction subtracted on the right.  Nothing is left
+over.
+
+The measurability that a direct argument would need is supplied by the exchange theorem itself: the
+contracted sum is never differentiated from its terms, only resummed after each term has been
+inverted, so the interchange and the change of variables never meet.
+
+The pairing identity extends to the line and then to the `L^2` vectors themselves.  Both co-Poisson
+sums are even, so only the even part of a test function contributes, and the Fourier transform
+commutes with taking even parts:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonIntertwiningLine.lean
+
+schwartzEvenPart, fourier_schwartzEvenPart
+  : the even part of a Schwartz function, and its commutation with the transform,
+integral_mul_eq_evenPart
+  : only the even part of a test function pairs with an even function,
+integral_line_burnolCoPoisson_mul_eq_fourier
+  : the intertwining pairing for every Schwartz test function on the line.
+```
+
+A vector of `L^2` is determined by its pairings against Schwartz functions, and the `L^2` Fourier
+transform sends the class of a Schwartz function to the class of its transform, so the pairing
+identity *is* the operator identity:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonIntertwiningL2.lean
+
+inner_toLp_eq_integral            : the inner product against a Schwartz class as an integral,
+fourierUnitary_eq_of_schwartz_pairing
+  : a Schwartz pairing identity determines the L^2 Fourier transform,
+fourierUnitary_coPoissonVector
+  : the L^2 Fourier transform of the co-Poisson vector of a window seed is the co-Poisson
+    vector of the reciprocal seed.
+```
+
+The density is the one the corpus already used for reflection: Schwartz classes are dense in `L^2`,
+and the Fourier unitary is a homeomorphism, so their images are dense as well; the functional
+`z |-> <d, z>` is continuous and vanishes on that dense family, hence identically, hence `d = 0`.
+
+The size data for the reciprocal seed is elementary, and it is proved.  The reciprocal seed is
+`v |-> 1/v` on the window, so every contributing term of its co-Poisson sum is exactly `1/t` and the
+sum is the number of window indices divided by `t`, minus the plain mass `1/b - b`.  The index count
+is `t(1/b - b)` up to one unit, so the value is `O(1/t)` with no harmonic comparison at all:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonIndicatorReciprocal.lean
+
+coPoissonReciprocalIndicator_term      : each term is 1/t on the window,
+coPoissonReciprocalIndicatorSum_eq_card: the sum is the window cardinality over t,
+coPoissonReciprocalIndicator_correction: the correction is the window length 1/b - b,
+burnolCoPoissonRightSum_reciprocalIndicator_eq_card
+  : exact pointwise formula, card/t - (1/b - b),
+norm_burnolCoPoissonRightSum_reciprocalIndicator_le        : O(1/t) beyond 2/b,
+norm_burnolCoPoissonRightSum_reciprocalIndicator_le_local  : a uniform local bound,
+memLp_two_burnolCoPoissonRightSum_reciprocalIndicator      : hence L^2,
+star_burnolCoPoissonRightSum_coPoissonIndicatorSeed,
+star_burnolCoPoissonRightSum_reciprocalIndicator           : both values are real.
+```
+
+With those, every hypothesis of the `L^2` intertwining is discharged for the indicator seed, and the
+outstanding condition falls:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonIndicatorSource.lean
+
+coeFn_soninCosineUnitary_coPoissonIndicatorEven
+  : the cosine transform of the indicator co-Poisson vector is the co-Poisson
+    vector of the reciprocal seed,
+soninHeadConstant_cosine_coPoissonIndicatorEven
+  : hence its aperture head is constant --- the second Sonine condition,
+burnolCoPoissonIndicatorSource   : a literal BurnolCoPoissonSource b,
+nonempty_burnolCoPoissonSource   : the co-Poisson source layer is inhabited for
+                                   every aperture 0 < b <= 1.
+```
+
+**The vacuity recorded by the inhabitation audit is resolved.**  The collapse theorems
+(`burnolCoPoissonSourceSpace_eq_bot_of_isEmpty` and its companions) no longer apply at any aperture
+in `(0, 1]`: the generator set is nonempty, the source space is not `bot`, and the quotient space is
+a proper subspace of the extended Sonine space.  Every statement about the source projection and the
+quotient kernel is now contentful.
+
+The inhabitant is not an abstract object: it is the classical fractional-part kernel.  Counting the
+integers in the window `[t b, t / b]` exactly --- its length corrected by the two endpoint
+fractional parts --- and dividing by `t` gives
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonFractionalKernel.lean
+
+windowCard_eq_fract
+  : card = t (1/b - b) + fract(t b) - fract(t / b),
+burnolCoPoissonRightSum_reciprocalIndicator_eq_fract
+  : the reciprocal-indicator co-Poisson value is (fract(t b) - fract(t / b)) / t,
+measure_zero_fract_eq_zero
+  : the exceptional scales, where t b is an integer, form a null set,
+burnolCoPoissonRightSum_reciprocalIndicator_ae_fract
+  : so the identity holds almost everywhere on the positive ray.
+```
+
+The window mass `1/b - b` is exactly the length term, so it cancels and only the two fractional
+parts survive.  This is the bridge to zeta inside the critical strip: on `0 < Re w < 1` the Mellin
+transform of `fract` is `integral_0^infinity fract(u) u^(-1-w) du = -zeta(w)/w`, and dilation by `b`
+and by `1/b` gives
+
+`integral_0^infinity P_G(t) t^(-w) dt = (b^(-w) - b^w) zeta(w) / w`,
+
+so the completed Mellin evaluation of the inhabitant is nonzero at every `w` of the strip at which
+zeta does not vanish.  The remaining formal work is that Mellin computation, which is a statement
+about the fractional part alone and no longer mentions the Sonine space.
+
+The zeta half of that computation is now formal, on the whole right half-plane:
+
+```text
+formal/GaloisForLFunctions/RHTower/FractionalPartZeta.lean
+
+riemannZeta_eq_mul_integral_floor
+  : on Re s > 1, zeta(s) = s * integral_1^infinity floor(t) t^(-s-1) dt   (Abel summation),
+integral_Ioi_one_fract_cpow
+  : hence integral_1^infinity fract(t) t^(-s-1) dt = 1/(s-1) - zeta(s)/s there,
+differentiableAt_mellin_fractTailKernel
+  : the left-hand side is a Mellin transform of a bounded kernel vanishing near zero,
+    so it is holomorphic on the whole half-plane Re s > 0,
+isPreconnected_puncturedRightHalfPlane
+  : the right half-plane with the pole removed is connected,
+integral_Ioi_one_fract_cpow_of_re_pos
+  : so the formula holds for every s with Re s > 0 and s /= 1.
+```
+
+Only the elementary half of Abel summation is needed: replacing `floor t` by `t - fract t` splits
+the integral into `integral_1^infinity t^(-s)`, which is `1/(s-1)`, and the fractional-part integral.
+The fractional part is bounded and vanishes below `1`, so its Mellin transform converges and is
+holomorphic on all of `Re s > 0`, while the right-hand side is holomorphic away from the pole; the
+two agree on `Re s > 1`, and the punctured half-plane is connected because it is the union of four
+convex half-plane intersections chained through `1/2 + i`, `1/2 - i` and `2 + i`.
+
+That passage is now complete.  On `(0,1)` the fractional part is the identity, so the near end of
+the integral is `1/(1-w)`; it cancels the pole of the far end exactly, and the two dilations
+contribute `b^w` and `b^(-w)`:
+
+```text
+formal/GaloisForLFunctions/RHTower/FractionalPartZeta.lean
+
+integral_Ioc_zero_one_fract_cpow  : the near end is 1/(1-w),
+integral_Ioi_zero_fract_cpow      : hence integral_0^infinity fract(u) u^(-w-1) du = -zeta(w)/w
+                                    on the strip 0 < Re w < 1,
+integral_Ioi_zero_fract_dilate_cpow
+  : dilating the argument by c multiplies that integral by c^w.
+```
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonMellinZeta.lean
+
+integral_Ioi_burnolCoPoisson_reciprocalIndicator_cpow
+  : integral_0^infinity P_G(t) t^(-w) dt = (b^(-w) - b^w) zeta(w) / w
+    for every w with 0 < Re w < 1.
+```
+
+So the inhabitant's Mellin transform is computed in closed form on the whole critical strip, and it
+vanishes exactly where `zeta` does (the window factor `b^(-w) - b^w` is nonzero for `0 < b < 1` and
+`Re w > 0`, since `b^(-2w) = 1` would force `Re w = 0`).
+
+This also isolates precisely what cannot come from the co-Poisson side.  Every co-Poisson Mellin
+transform carries the factor `zeta(w)`, so at a hypothetical zero in the strip the witness must come
+from *outside* the co-Poisson subspace --- which is exactly where Burnol's dimension count for the
+quotient lives.  What is unconditionally reachable, and what these modules deliver, is the
+implication `zeta(w) /= 0 -> k_{w,a} /= 0`, which makes the exponent law `(13)` unconditional off the
+zero set.
+
+That implication is now proved, and with it the exponent law itself:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonMellinNonvanishing.lean
+
+mellinCompletionFactor_ne_zero  : pi^(-w/2) Gamma(w/2) /= 0 on Re w > 0,
+windowFactor_ne_zero            : b^(-w) - b^w /= 0 for 0 < b < 1 and Re w > 0,
+coPoissonIndicatorSoninCosine   : the inhabitant as a vector of the extended Sonine space,
+soninMellinEvaluation_coPoissonIndicatorSoninCosine
+  : its completed Mellin evaluation is
+    pi^(-w/2) Gamma(w/2) * (b^(-w) - b^w) * zeta(w)/w,
+burnolExtendedSoninEvaluationVector_ne_zero_of_riemannZeta_ne_zero
+  : hence k_{w,a} /= 0 whenever zeta(w) /= 0,
+tendsto_log_norm_burnolExtendedSoninEvaluationVector_of_riemannZeta_ne_zero
+  : and the aperture-type limit (13) holds with exponent |Re w - 1/2|,
+    unconditionally off the zero set of zeta.
+```
+
+The window factor is nonzero for a purely metric reason: `|b^(-w)| = b^(-Re w)` and
+`|b^w| = b^(Re w)`, and for `0 < b < 1` the map `x |-> b^x` is strictly decreasing, so the two
+moduli agree only when `Re w = 0`.
+
+**Status of `(10)`.**  The nonvanishing hypothesis is now discharged at every point of the strip
+outside the zero set of zeta, so `(13)` is unconditional there.  At a hypothetical zero it cannot be
+discharged from the co-Poisson side at all --- every co-Poisson Mellin transform carries the factor
+`zeta(w)` --- and a witness would have to come from the orthogonal complement of the co-Poisson
+subspace, which is where Burnol's dimension count for the quotient lives.  That is the honest
+boundary of the present construction.
+
+Still outside the formal tree: a witness at a hypothetical zero (equivalently, the dimension count
+for the co-Poisson quotient), and the transfer of the two-sided law to the co-Poisson quotient
+vectors `y_{rho,N}` of the parent boundary-transgression theorem.
 
 ## Gates
 
@@ -779,6 +1158,19 @@ symmetrized witness --- and the transfer of the two-sided law to the co-Poisson 
 - [x] Lean: dictionary between the literal co-Poisson sum and the multiplicative Poisson form
 - [x] Lean: uniform finite truncation of the co-Poisson sum on bounded regions
 - [x] Lean: measurability and uniform boundedness of the co-Poisson sum
-- [ ] Lean: an inhabitant of `BurnolCoPoissonSource`, i.e. one even `u` with `u + F u` constant on an aperture head and nonvanishing evaluation
+- [x] Lean: the explicit indicator seed — window sum, correction constant `2 log(1/b)`, harmonic form
+- [x] Lean: `O(1/|t|)` decay of the indicator co-Poisson value beyond the scale `2/b`
+- [x] Lean: square integrability of the indicator co-Poisson sum, and its even carrier vector
+- [x] Lean: constancy of its aperture head — every source field except the cosine head condition
+- [x] Lean: Burnol's co-Poisson intertwining --- pairing form, line form, and `L^2` operator form
+- [x] Lean: size data for the reciprocal indicator seed (exact cardinality formula, `O(1/t)`, `L^2`, reality)
+- [x] Lean: constancy of the aperture head of the **cosine transform** of the indicator co-Poisson vector
+- [x] Lean: an inhabitant of `BurnolCoPoissonSource b` for every aperture `0 < b <= 1`
+- [x] Lean: the inhabitant in closed form --- the fractional-part kernel `(fract(t b) - fract(t/b))/t`
+- [x] Lean: Abel summation and the fractional-part formula for zeta on `Re s > 0`
+- [x] Lean: the Mellin transform of the co-Poisson value, `(b^(-w) - b^w) zeta(w)/w` on the strip
+- [x] Lean: nonvanishing of the completed Mellin evaluation on that inhabitant, off the zero set of zeta
+- [x] Lean: the aperture-type exponent law `(13)`, unconditional off the zero set of zeta
+- [ ] Lean: a witness at a hypothetical zero (the co-Poisson quotient dimension count)
 - [ ] Lean: transfer of `(12)`,`(13)` to the co-Poisson quotient vectors `y_{rho,N}`
 

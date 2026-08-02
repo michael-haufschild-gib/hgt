@@ -321,9 +321,19 @@ is a direct positive-axis estimate, not an inference from zeros alone: at radius
 first `N` positive factors are each at least `2`, so the determinant norm is at least `2^N`.  Both
 capstones are axiom-clean (`propext`, `Classical.choice`, `Quot.sound` only).
 
-What remains for the full Lean statement of this card is therefore narrower but still substantive:
-discharge actual PSWF hypothesis `(3)` and prove determinant continuity for the general
-nondiagonal trace-norm-convergent stages.  The card remains at stage 2.
+`GaloisForLFunctions.RHTower.ArithmeticDilationStageDeterminant.lean` closes the remaining
+nondiagonal determinant-continuity gate without replacing stages by diagonal or finite-rank
+models.  It proves `|sgVal_n(S)|=s_n(S)`, upgrades trace-norm convergence to `ell^1` convergence
+of full signed spectra using counting-measure Scheffe plus the sharp negative-mass estimate, and
+passes an explicit finite-product Lipschitz bound to the infinite products.  Consequently
+`RHTower.arithmeticDilationStageFredholmDeterminant_tendstoUniformlyOn` proves `(16)` uniformly on
+every compact subset of `C` for the literal nondiagonal arithmetic operators under the card's
+weighted projective hypothesis, Gram symmetry, and exact `kappa` identification.  The limit
+signed-greedy product is proved equal to the existing global arithmetic determinant.  Axiom audit
+contains only `propext`, `Classical.choice`, and `Quot.sound`.
+
+What remains for the full Lean statement of this card is the substantive analytic input: discharge
+the actual PSWF weighted projective hypothesis `(3)`.  The card remains at stage 2.
 
 ## Gates
 
@@ -343,7 +353,7 @@ nondiagonal trace-norm-convergent stages.  The card remains at stage 2.
 - [x] trace-class operator realization and projective-norm-to-trace-norm interface in Lean
 - [x] limiting positive arithmetic operator, exact trace, and compact-uniform Fredholm product in Lean
 - [x] vanishing full negative spectral mass from trace-norm convergence to the positive limit in Lean
-- [ ] nondiagonal stage determinant convergence in Lean
+- [x] nondiagonal stage determinant convergence in Lean
 - [x] exact determinant zero set, unique indexing, and simple multiplicity in Lean
 - [x] determinant proved entire in Lean
 - [x] exact zero exponent of convergence `1/2` in Lean

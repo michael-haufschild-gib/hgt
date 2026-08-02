@@ -357,7 +357,13 @@ DAGs without repeating the audits.
 - [ ] `multiple-elliptic-gamma-transverse-constraint-depth` — theorem/corollary surface inventory pending
 - [ ] `multiple-gamma-effective-fracture-descent-orthogonality` — theorem/corollary surface inventory pending
 - [ ] `multiple-gamma-period-excess-closure-phase-transition` — theorem/corollary surface inventory pending
-- [ ] `multiple-gamma-physical-characteristic-fat-point` — theorem/corollary surface inventory pending
+- [ ] `multiple-gamma-physical-characteristic-fat-point` — the five-way order law `(13)` is now one
+  unconditional Lean theorem (`multipleGamma_physicalOrderLaw`): DA depth, source height, arc
+  contact order, convergent fat-point length and powered period-incidence level all equal `r`.
+  New infrastructure: `PhysicalArcCriticalCompletion` (critical completion, order detection, exact
+  two-way filtration comparison, genuine exponential clock), `ConvergentGermPhysicalArc`
+  (`C{lambda}` built and proved a discrete valuation ring), `VeroneseSourceHeightIncidence`
+  (source height).  Remaining: canonicity of the comparison for a pointed polarized source
 - [ ] `nonautonomous-ht-tail-projective-time-law` — theorem/corollary surface inventory pending
 - [ ] `nonautonomous-isogeny-tail-time-splitting` — theorem/corollary surface inventory pending
 - [ ] `nonautonomous-rational-complete-tail-orbifold-classification` — theorem/corollary surface inventory pending

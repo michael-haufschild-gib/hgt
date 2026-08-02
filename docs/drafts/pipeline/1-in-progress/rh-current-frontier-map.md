@@ -3619,6 +3619,46 @@ symbol additive in every entry over a torsion group is torsion; a group generate
 zero real tensor product. This is not an instantiation of Milnor K-theory over an algebraic closure
 of a finite field or of the arithmetic relevant complex.
 
+The literal Meyer completion now has an explicit source-native Green obstruction rather than only
+a continuity criterion. Paper proof shows that the all-weight logarithmic Meyer source is a
+nonunital convolution algebra and that the literal Poisson boundary is a two-sided convolution
+ideal. Half-density conjugation identifies its quotient seminorm with an `L1` algebra seminorm.
+For horizontal Cartan displacement `a = Re(ρ) − 1/2 ≠ 0`, the completed Gaussian Neumann
+primitive is
+\[
+ G_a(t)=\sum_{n\ge1}e^{-na^2/(4\pi)}n^{-1/2}e^{-\pi t^2/n}.
+\]
+Its ordinary half-density mass is finite, but the `a`-tilted moment of every summand is exactly
+one. More generally, for every real `b`,
+\[
+ \int_{\mathbb R}e^{bt}e^{-na^2/(4\pi)}n^{-1/2}e^{-\pi t^2/n}\,dt
+ =e^{n(b^2-a^2)/(4\pi)}.
+\]
+Hence the infinite transform is the exact geometric resolvent
+\[
+ \int e^{bt}G_a(t)\,dt
+ =\frac{e^{(b^2-a^2)/(4\pi)}}{1-e^{(b^2-a^2)/(4\pi)}}
+ \quad(b^2<a^2),
+\]
+while finite moments diverge for `b² ≥ a²`, with lower bound `N` after `N` terms. Thus
+`|a|` is the exact Cartan moment abscissa of the completed Green vector. At Xi height `τ`,
+undoing half-density and phase gives a concrete raw source whose Mellin value at
+`1/2+a+iτ` is exactly `N`. This is formally proved in
+`DeningerMeyerGaussianGreenPrimitive`, including arbitrary tilts, the infinite interior transform,
+the exact moment-wall dichotomy, and a saddle-ray identity; direct Lean, targeted leaf build, and
+axiom audit pass. The stronger paper theorem identifies same `|a|` as two-sided
+pointwise logarithmic tail exponent.
+
+This computation sharpens the missing arithmetic comparison. Regular half-density completion
+constructs the Green primitive precisely by discarding the boundary moment needed by the Xi
+character. An ordinary algebraic Poisson-boundary correction cannot repair a finite approximant:
+its Mellin value at an actual Xi zero is zero, whereas the Green approximant has value `N`.
+The remaining comparison must therefore construct a source-defined singular/cofinal Poisson
+transport which cancels the entire Cartan moment wall before ordinary Meyer descent, uniformly
+without reading an individual divisor. Landing that corrected primitive in the algebraic Meyer
+quotient would make the Gaussian resolvent algebraically invertible and exclude every off-line
+actual Xi zero. Card: `deninger-meyer-gaussian-green-resolvent.md`.
+
 **Open core.** Construct the actual relevant coefficient complex on Deninger's now-instantiated
 rational-Witt geometry for the identified arithmetic multiplicative mapping torus; prove that its
 source-to-packet restriction contains the now-cofinal Frobenius-fixed rational-Witt finite stages;
@@ -3660,7 +3700,10 @@ of the generic maximal diagonal phase generator with the
 arithmetic flow, strong continuity and generator identification for the Poisson semigroup, arithmetic
 cup/trace/flow/Hodge transport, nuclear almost-idempotence, middle-kernel vanishing, and
 identification of the already-closed literal Meyer Xi spectrum inclusion with the image of that
-arithmetic comparison.
+arithmetic comparison; construct the source-defined singular/cofinal Poisson correction which
+cancels the now-exact Gaussian Cartan moment wall before regular half-density descent, preserves
+the Poisson quotient class and Paugam reflection, and lands the corrected completed Green primitive
+in the algebraic all-weight Meyer quotient without divisor-indexed subtraction.
 
 The generic contraction hypotheses are now instantiated unconditionally on
 `ℓ²(ℕ,ℝ)`: the unilateral shift is an eigenvector-free linear isometry, its range is
@@ -6311,3 +6354,80 @@ proves these two named obligations for `q_half` rather than replacing the litera
 singular Gamma/Hellinger producer must now define a proper source domain before completion and
 prove, without reading `rho`, why that domain excludes the explicit Gaussian graph-null sequence
 off line while retaining every source-generated Xi fibre.
+
+## 2026-08-02 Route L frontier update: Möbius--Gaussian source and successor residue
+
+The updated Hellinger--Hodge--Green paper confirms that Route L must contribute source-native Meyer
+transport, not another Gamma/Hodge carrier.  The earlier statement above also overcounted
+Hausdorff faithfulness of `q_half` as a prerequisite for the minimal RH implication.  Faithfulness
+remains a natural structural theorem, but the paper's fixed-Gaussian criterion needs one arithmetic
+admission/continuation theorem, not full Meyer spectral synthesis.
+
+The missing source is now constructed on a nonempty absolute-convergence chamber.  For
+
+```text
+chi_c(s) = exp((s-c)^2/(4*pi)),
+D_(c,r)(s) = chi_c(r) - chi_c(s),
+q_(c,r)(s) = chi_c(s) / chi_c(r),
+```
+
+define the universal two-variable lift
+
+```text
+F_(c,r)(s) = 1 / (zeta(s) * D_(c,r)(s)).
+```
+
+When `Re(s)>1` and `norm(q_(c,r)(s))<1`, it is not a formal reciprocal: the literal
+`mPart_1` Möbius source and Gaussian convolution depths give the convergent expansion
+
+```text
+F_(c,r)(s)
+= sum_(k>=0) L(mPart_1(mu),s) * chi_c(r)^(-1) * q_(c,r)(s)^k.
+```
+
+Thus ordinary-prime Möbius data and the completed Gaussian Green transport already form one
+concrete source object before continuation.
+
+Its zero-fibre law is exact.  If `rho` is an off-line Xi zero, choose
+`c=1/2+i*Im(rho)` and let `m=ord_rho(Xi)`.  Then
+
+```text
+ord_rho D_(c,rho) = 1,
+ord_rho F_(c,rho) = -(m+1),
+zeta * F_(c,rho) = D_(c,rho)^(-1)              (punctured germ),
+Xi * F_(c,rho) = archFactor * D_(c,rho)^(-1),
+ord_rho (Xi * F_(c,rho)) = -1,
+res_rho (Xi * F_(c,rho))
+  = -2*pi*archFactor(rho)/(chi_c(rho)*(rho-c)) != 0.
+```
+
+This is the precise Deninger-to-Gamma comparison.  Meyer singular transport retains one more pole
+level than Xi multiplicity; completed Xi cancels the `m` arithmetic levels and exposes one universal
+simple Gaussian residue to the actual Gamma boundary.  A separately fitted Hodge coface is neither
+needed nor allowed.
+
+Route L remains open at a strictly sharper theorem:
+
+```text
+Continue the coefficient-faithful two-variable Möbius--Gaussian source from its safe chamber into
+one source-pointed Hausdorff Meyer/Gamma graph completion; only then restrict r to the Xi divisor.
+At every zero fibre the continuation must retain the forced successor principal part and land,
+after Xi transport, in the actual Gamma/co-Poisson incidence domain with its simple Green residue.
+```
+
+Divisor-by-divisor Mittag--Leffler subtraction does not close this gate because it discards source
+provenance.  Ordinary bounded closure cannot close it because the existing off-line Xi graph is
+maximally vertical and the explicit Green partials have bounded half-density mass but divergent
+critical moment.
+
+Paper card:
+`deninger-meyer-gaussian-green-resolvent.md`.
+
+Lean:
+
+```text
+DeningerMeyerGaussianGreenPrimitive.lean
+DeningerMeyerXiGaussianSingularPoissonLift.lean
+DeningerMeyerXiGaussianGammaResidue.lean
+DeningerMeyerMobiusGaussianNeumannSource.lean
+```

@@ -79,6 +79,31 @@ theorem exists_mvPolynomial_multiIndexJetEvalCLM_eq_arbitrary
     hP i (Fintype.card (MultiIndexSlot a)) (multiIndexWord a)
       (by simpa [wordMultiplicity_multiIndexWord] using ha)
 
+/-- Local uniform convergence of line-entire sources is convergence in the compact-open
+`MultivariateEntire` topology. -/
+theorem tendsto_multivariateEntire_of_locallyUniform
+    {T : Type*} {l : Filter T} {d : ℕ}
+    {F : T → MultivariateEntire d} {f : MultivariateEntire d}
+    (h : TendstoLocallyUniformly (fun t => (F t).1) f.1 l) :
+    Filter.Tendsto F l (nhds f) := by
+  rw [tendsto_subtype_rng]
+  exact ContinuousMap.tendsto_iff_tendstoLocallyUniformly.mpr h
+
+/-- Consequently every fixed mixed jet converges under local uniform convergence. This is the
+Cauchy-estimate bridge used for all derivative orders of a damped Poincare complement. -/
+theorem tendsto_multiIndexJetEvalCLM_of_locallyUniform
+    {T : Type*} {l : Filter T} {d : ℕ}
+    {F : T → MultivariateEntire d} {f : MultivariateEntire d}
+    (h : TendstoLocallyUniformly (fun t => (F t).1) f.1 l)
+    (x : Fin d → ℂ) (a : Fin d →₀ ℕ) :
+    Filter.Tendsto (fun t => multiIndexJetEvalCLM x a (F t)) l
+      (nhds (multiIndexJetEvalCLM x a f)) := by
+  have heval : Filter.Tendsto (fun g : MultivariateEntire d =>
+      multiIndexJetEvalCLM x a g) (nhds f)
+      (nhds (multiIndexJetEvalCLM x a f)) :=
+    (multiIndexJetEvalCLM x a).continuous.continuousAt
+  exact heval.comp (tendsto_multivariateEntire_of_locallyUniform h)
+
 end
 
 end GaloisForLFunctions.HTGeometry

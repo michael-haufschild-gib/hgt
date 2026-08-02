@@ -79,6 +79,7 @@ import GaloisForLFunctions.U0.U0ParameterSpace
 import GaloisForLFunctions.U0.U0PhiMStep
 import GaloisForLFunctions.U0.U0MStepInstances
 import GaloisForLFunctions.U0.U0KummerBranch
+import GaloisForLFunctions.RHTower.BurnolFormalizedCards
 
 noncomputable section
 

@@ -26,7 +26,7 @@
 - [x] `finite-contraction-temporal-boundary-law.md`
 - [ ] `finite-horizon-observer-temporal-profile-stability.md`
 - [x] `finite-multiset-transformation-moment-universality-law.md`
-- [ ] `finite-observer-generated-time-law.md`
+- [x] `finite-observer-generated-time-law.md` — fully formalized; moved to `3-formalized`
 - [x] `finite-satake-reality-torelli-universality-law.md`
 - [ ] `finite-window-replica-collision-resolution-law.md`
 - [ ] `generic-two-local-spectral-monodromy.md`

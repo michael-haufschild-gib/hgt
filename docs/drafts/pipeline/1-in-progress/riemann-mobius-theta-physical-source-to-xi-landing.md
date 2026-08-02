@@ -4,7 +4,7 @@
 - **Stage:** 1-in-progress
 - **Type:** THEOREM (paper)
 - **Source:** `rh-current-frontier-map.md` · Route R
-- **Statement:** The complete high-exponent Möbius resolution has a target-free realization by logarithmic translates of the canonical theta-cusp source; its Fourier--Laplace transform is the common Xi divisor times the complete reciprocal-zeta multiplier, and its countable channel codiagonal converges back to the theta source.
+- **Statement:** The complete high-exponent Möbius resolution has a target-free realization by logarithmic translates of the canonical theta-cusp source; its Fourier--Laplace transform is the common Xi divisor times the complete reciprocal-zeta multiplier, and every internally promoted multiplicity-jet codiagonal converges on the honest complex strip to the corresponding Xi jet.
 
 ## Goal
 
@@ -331,6 +331,112 @@ reflected factor lies in its absolute-convergence half-plane and (R-MT.12) appli
 
 This completes the proof.  No RH-equivalent assertion occurs in any hypothesis.
 
+## Cofinal complex internal-jet strengthening `[PROVED HERE]`
+
+For every internal jet order `k`, base exponent `K`, and complex frequency `w` with
+
+```text
+|Im w| < 1,                  Re s(w) > 0,
+s(w) = 1/2 + i w,
+```
+
+the physical internally promoted rungs satisfy
+
+```text
+FL(Psi_[k,K+N])(w) -> iteratedDeriv k XiC(w).                 (R-MT.23)
+```
+
+The completed Hellinger--Beta coface is source-defined before evaluation and telescopes exactly,
+so the stronger chain statement is
+
+```text
+sum_(j=0)^N FL(C_[k,K](j))(w)
+  -> iteratedDeriv k XiC(w).                                  (R-MT.24)
+```
+
+### Proof
+
+Put `s=s(w)`.  Since `Re s>0`, integral dilation sends `Re((K+N)s)` to infinity and
+
+```text
+zeta((K+N)s)^(-1) -> 1.                                      (R-MT.25)
+```
+
+Eventually `K+N` is nonzero and `1/(K+N)<Re s`.  On that tail, the already proved physical
+Fourier--Laplace identity applies:
+
+```text
+FL(Psi_[k,K+N])(w)
+  = zeta((K+N)s)^(-1) * iteratedDeriv k XiC(w).               (R-MT.26)
+```
+
+Multiplying (R-MT.25) by the fixed jet proves (R-MT.23).  Exact finite source telescoping gives
+
+```text
+sum_(j=0)^N C_[k,K](j) = Psi_[k,K+N],                         (R-MT.27)
+```
+
+and its exact Fourier--Laplace counterpart gives (R-MT.24).
+
+For every actual divisor support `rho`, the centered coordinate
+
+```text
+w_rho = (rho-1/2)(-i)
+```
+
+obeys `s(w_rho)=rho`, `|Im w_rho|<1`, and `Re rho>0`.  Therefore (R-MT.23)--(R-MT.24) apply
+at every actual divisor coordinate without RH.  At `k=xiSupportMultiplicity rho`, the limit is
+the first nonzero Xi jet.  This closes complex analytic landing and all-order multiplicity
+retention.  It does not imply half-density or Hellinger graph-norm convergence: the updated
+closed-graph theorem shows that any ungraded completion retaining an off-line evaluation becomes
+vertical.  Arithmetic graph-norm admission remains the Ward/RH-bearing step.
+
+## Division-free conormal source graph `[PROVED HERE]`
+
+For adjacent internal orders define the source-built pair
+
+```text
+G_[k,m](w) = (FL(Psi_[k,m])(w), FL(Psi_[k+1,m])(w)).          (R-MT.28)
+```
+
+On every honest finite-rung domain, both coordinates have the same nonzero reciprocal-zeta
+multiplier:
+
+```text
+G_[k,m](w)
+  = zeta(m s(w))^(-1) * (XiC^(k)(w), XiC^(k+1)(w)).            (R-MT.29)
+```
+
+Hence at a regular point the zeroth projective slope is exactly
+
+```text
+G_[0,m](w).2 / G_[0,m](w).1 = XiC'(w) / XiC(w).               (R-MT.30)
+```
+
+No target quotient occurs in the definition; division is performed only after source landing on
+the regular locus.  Cofinal complex landing in each coordinate gives
+
+```text
+G_[k,K+N](w) -> (XiC^(k)(w), XiC^(k+1)(w)).                   (R-MT.31)
+```
+
+If `rho` is an actual divisor point of multiplicity `r>0`, put
+`w_rho=(rho-1/2)(-i)`.  Exact multiplicity gives
+
+```text
+XiC^(r-1)(w_rho)=0,                 XiC^r(w_rho) != 0,
+G_[r-1,K+N](w_rho) -> (0, XiC^r(w_rho)).                       (R-MT.32)
+```
+
+Thus the singular Ward logarithmic derivative is the projectivization of one unconditional
+source conormal graph, and every zero fibre lands as a genuine nonzero vertical conormal rather
+than a totalized quotient.  Equations (R-MT.29)--(R-MT.32) follow immediately from the common
+multiplier landing, its nonvanishing on the honest domain, the two coordinatewise cofinal limits,
+and the exact multiplicity-jet classification.  This closes analytic source-to-Ward continuation.
+It still does not give the positive four-unit bound: a norm on these vertical conormals that is
+source-derived, grade-sensitive, and finite at every actual divisor is exactly arithmetic
+zero-Cartan admission and remains RH-bearing.
+
 ## Hostile audit
 
 ### Circularity attacks
@@ -391,3 +497,7 @@ codiagonal alone.
 - 2026-08-02 — Lean proved the physical prime-normal strong limit, exact finite codiagonal, and the
   stronger absolute `ell^1(L2)` channel theorem with explicit geometric tail control in
   `MobiusThetaPhysicalSourceToXiLanding.lean`.
+- 2026-08-02 — Lean proved the cofinal complex-strip landing for every internal jet, the completed
+  coface codiagonal landing at every actual Xi divisor, and nonzero leading-multiplicity retention
+  in `MobiusThetaInternalJetCofinalComplexLanding.lean`.  Targeted module build passed; axiom audit
+  is exactly `[propext, Classical.choice, Quot.sound]`.

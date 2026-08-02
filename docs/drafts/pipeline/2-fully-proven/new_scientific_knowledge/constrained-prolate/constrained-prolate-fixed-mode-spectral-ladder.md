@@ -511,6 +511,31 @@ under the depth-`k` transfer hypotheses (ordered head, Bessel bound `Σℓ² ≤
 coordinates as exactly `theta_k = Q_k/Q_(k+1)` — equation `(8)` for the exact constrained
 spectrum, with no truncation.  All axiom-clean.
 
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateLadderPrimeScale.lean` now proves the
+finite-prime reparametrization for these same infinite-dimensional roots, rather than only citing
+it after the two-mode calculation.  The generic theorem
+`tendsto_div_pow_four_comp_sqrt_of_div_pow_eight` transports any `lambda^8`-normalized limit along
+`X = lambda^2`; `ccm_fuchsModel_ladder_adjacent_primeScale_tendsto` applies it to the exact depth
+roots and proves literally
+
+```text
+(mu_(k+1)(sqrt X)/mu_k(sqrt X))/X^4
+  -> (theta_(k+1)/theta_k) * (A_(k+2)/A_(k+1)).
+```
+
+Thus the `c^4` statement is an unconditional Lean theorem about the exact Fuchs secular ladder,
+not a prose corollary or a two-mode replacement.  Its remaining hypotheses are precisely the
+named constraint-coordinate inputs of the exact-root theorem.
+
+The concrete source regularity needed to state those inputs on actual modes is now axiom-clean in
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlatePointwiseRepresentative.lean`: every fixed
+signed value is eventually nonzero; the resulting actual mode is unit-normalized and has a
+canonical even compact source whose Fourier representative is globally `C^∞` and whose literal
+interior source is `C^∞`.  All iterated derivatives are identified with exact compact Fourier
+moments, and the exterior mass is exactly `1 - σ_n(a)²`.  This closes source choice, pointwise
+representative, smoothness, normalization, and leakage bookkeeping.  It does not replace the
+remaining prolate ODE numbering or Fuchs asymptotic proof.
+
 The remaining gate for the true prolate operator is the concrete analytic inputs — Fuchs
 fixed-index asymptotics for the true leakages and normalized prolate-to-Hermite convergence
 `ell_j -> a_j` — plus the Fuchs-model depth-`k` discharge and the exact-root `lambda^8`
@@ -529,7 +554,8 @@ adjacent law `(9)` (its two-mode and leakage-side forms are already formalized i
 - [x] quantified eventual lower bound for every constant below the all-depth Fuchs gap limit
 - [x] adjacent-level law `(9)` formalized in Lean with explicit constant
   `[Q_(k+1)^2/(Q_k Q_(k+2))]·(A_(k+2)/A_(k+1))`
-- [x] `lambda^8` (equivalently `c^4`) adjacent scale separation formalized in Lean
+- [x] `lambda^8` and the literal `X=lambda^2`, `X^4` adjacent scale separation for the exact
+  infinite-dimensional roots formalized in Lean (`ConstrainedProlateLadderPrimeScale`)
 - [x] first excited coefficient `242/211` of `(13)` formalized in Lean
 - [x] exact infinite-dimensional constrained root in EVERY spectral gap: existence, uniqueness,
   bracket, and the all-depth law `mu_k/d_(k+1) -> theta_k` `(8)` formalized in Lean via the

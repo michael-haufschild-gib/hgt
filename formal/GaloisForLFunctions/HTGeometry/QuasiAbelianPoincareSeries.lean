@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.QuasiAbelianAutomorphicForms
+import GaloisForLFunctions.HTGeometry.MultivariateEntireVanishingPower
 import Mathlib.Topology.Algebra.InfiniteSum.TsumUniformlyOn
 import Mathlib.Topology.UniformSpace.UniformApproximation
 
@@ -55,6 +56,87 @@ def poincareTermEntire {d : ℕ} {Γ : AddSubgroup (Fin d → ℂ)}
     MultivariateEntire d :=
   ⟨⟨poincareTerm ψ seed γ, continuous_poincareTerm ψ seed γ⟩,
     lineEntire_poincareTerm ψ seed γ⟩
+
+/-- Translation of a line-entire source by an arbitrary vector. -/
+def multivariateEntireTranslate {d : ℕ} (f : MultivariateEntire d)
+    (y : Fin d → ℂ) : MultivariateEntire d :=
+  ⟨⟨fun x ↦ f.1 (x + y), f.1.continuous.comp (continuous_id.add continuous_const)⟩,
+    fun x v ↦ by
+      change Differentiable ℂ (fun z : ℂ ↦ f.1 ((x + z • v) + y))
+      simpa only [add_assoc, add_left_comm, add_comm] using f.property (x + y) v⟩
+
+@[simp]
+theorem multivariateEntireTranslate_apply {d : ℕ} (f : MultivariateEntire d)
+    (y x : Fin d → ℂ) :
+    (multivariateEntireTranslate f y).1 x = f.1 (x + y) :=
+  rfl
+
+/-- The reciprocal of one nowhere-zero automorphic-factor term is again line-entire. -/
+def automorphicFactorInverseEntire {d : ℕ} {Γ : AddSubgroup (Fin d → ℂ)}
+    (ψ : AutomorphicFactor d Γ) (γ : Γ) : MultivariateEntire d :=
+  ⟨⟨fun x ↦ ((ψ.factor γ).1 x)⁻¹,
+      (ψ.factor γ).1.continuous.inv₀ (ψ.nowhereZero γ)⟩,
+    fun x v ↦ (ψ.factor γ).property x v |>.inv
+      (fun z ↦ ψ.nowhereZero γ (x + z • v))⟩
+
+@[simp]
+theorem automorphicFactorInverseEntire_apply {d : ℕ}
+    {Γ : AddSubgroup (Fin d → ℂ)} (ψ : AutomorphicFactor d Γ)
+    (γ : Γ) (x : Fin d → ℂ) :
+    (automorphicFactorInverseEntire ψ γ).1 x = ((ψ.factor γ).1 x)⁻¹ :=
+  rfl
+
+/-- A Poincare term is literally reciprocal factor times translated seed. -/
+theorem poincareTermEntire_eq_mul_translate {d : ℕ}
+    {Γ : AddSubgroup (Fin d → ℂ)} (ψ : AutomorphicFactor d Γ)
+    (seed : MultivariateEntire d) (γ : Γ) :
+    poincareTermEntire ψ seed γ =
+      multivariateEntireMul (automorphicFactorInverseEntire ψ γ)
+        (multivariateEntireTranslate seed γ.1) := by
+  ext x
+  rfl
+
+/-- The zero-index Poincare term is exactly the seed, by normalization of the factor. -/
+@[simp]
+theorem poincareTermEntire_zero {d : ℕ}
+    {Γ : AddSubgroup (Fin d → ℂ)} (ψ : AutomorphicFactor d Γ)
+    (seed : MultivariateEntire d) :
+    poincareTermEntire ψ seed 0 = seed := by
+  ext x
+  change ((ψ.factor 0).1 x)⁻¹ * seed.1 (x + (0 : Γ).1) = seed.1 x
+  rw [ψ.normalized]
+  simp
+
+/-- A power-zero built into a seed survives translation and reciprocal-factor multiplication:
+every lower mixed jet of the corresponding Poincare term still vanishes. -/
+theorem multiIndexJetEvalCLM_poincareTermEntire_eq_zero_of_seed_power
+    {d m : ℕ} {Γ : AddSubgroup (Fin d → ℂ)}
+    (ψ : AutomorphicFactor d Γ) (seed h g : MultivariateEntire d)
+    (γ : Γ) (x : Fin d → ℂ)
+    (hseed : seed = multivariateEntireMul (multivariateEntirePow h m) g)
+    (hh : h.1 (x + γ.1) = 0) (a : Fin d →₀ ℕ)
+    (ha : Finsupp.degree a < m) :
+    multiIndexJetEvalCLM x a (poincareTermEntire ψ seed γ) = 0 := by
+  let ht := multivariateEntireTranslate h γ.1
+  let gt := multivariateEntireTranslate g γ.1
+  have hterm : poincareTermEntire ψ seed γ =
+      multivariateEntireMul (multivariateEntirePow ht m)
+        (multivariateEntireMul (automorphicFactorInverseEntire ψ γ) gt) := by
+    ext y
+    rw [poincareTermEntire_eq_mul_translate, multivariateEntireMul_apply,
+      multivariateEntireMul_apply, multivariateEntirePow_apply,
+      automorphicFactorInverseEntire_apply]
+    change ((ψ.factor γ).1 y)⁻¹ * seed.1 (y + γ.1) =
+      h.1 (y + γ.1) ^ m *
+        (((ψ.factor γ).1 y)⁻¹ * g.1 (y + γ.1))
+    rw [hseed]
+    change ((ψ.factor γ).1 y)⁻¹ *
+        (h.1 (y + γ.1) ^ m * g.1 (y + γ.1)) = _
+    ring
+  rw [hterm]
+  exact multiIndexJetEvalCLM_mul_pow_eq_zero_of_degree_lt ht
+    (multivariateEntireMul (automorphicFactorInverseEntire ψ γ) gt)
+    x hh a ha
 
 /-- Pointwise Poincare sum over the complete translation lattice. -/
 def poincareSeries {d : ℕ} {Γ : AddSubgroup (Fin d → ℂ)}
@@ -134,6 +216,71 @@ def poincareSeriesEntire {d : ℕ} {Γ : AddSubgroup (Fin d → ℂ)}
   ⟨⟨poincareSeries ψ seed,
       continuous_poincareSeries_of_summableLocallyUniformly ψ seed hnormal⟩,
     lineEntire_poincareSeries_of_summableLocallyUniformly ψ seed hnormal⟩
+
+/-- Local normal convergence is convergence of the Poincare series inside the compact-open
+`MultivariateEntire` source space.  This packages the analytic theorem in the form consumed by
+every continuous mixed-jet observation. -/
+theorem hasSum_poincareTermEntire_of_summableLocallyUniformly
+    {d : ℕ} {Γ : AddSubgroup (Fin d → ℂ)}
+    (ψ : AutomorphicFactor d Γ) (seed : MultivariateEntire d)
+    (hnormal : SummableLocallyUniformlyOn
+      (fun γ => poincareTerm ψ seed γ) Set.univ) :
+    HasSum (fun γ => poincareTermEntire ψ seed γ)
+      (poincareSeriesEntire ψ seed hnormal) := by
+  change Tendsto
+    (fun s : Finset Γ => ∑ γ ∈ s, poincareTermEntire ψ seed γ) atTop
+    (nhds (poincareSeriesEntire ψ seed hnormal))
+  apply tendsto_multivariateEntire_of_locallyUniform
+  rw [← tendstoLocallyUniformlyOn_univ]
+  have hnormal' : TendstoLocallyUniformlyOn
+      (fun s : Finset Γ => fun x => ∑ γ ∈ s, poincareTerm ψ seed γ x)
+      (fun x => ∑' γ, poincareTerm ψ seed γ x) atTop Set.univ :=
+    hasSumLocallyUniformlyOn_iff_tendstoLocallyUniformlyOn.mp
+      hnormal.hasSumLocallyUniformlyOn
+  convert hnormal' using 1
+  · ext s x
+    simp [poincareTermEntire]
+  · ext x
+    simp [poincareSeriesEntire, poincareSeries]
+
+/-- Every mixed jet of a locally normally convergent Poincare series is the sum of the
+corresponding mixed jets of its actual terms. -/
+theorem hasSum_multiIndexJetEvalCLM_poincareTermEntire
+    {d : ℕ} {Γ : AddSubgroup (Fin d → ℂ)}
+    (ψ : AutomorphicFactor d Γ) (seed : MultivariateEntire d)
+    (hnormal : SummableLocallyUniformlyOn
+      (fun γ => poincareTerm ψ seed γ) Set.univ)
+    (x : Fin d → ℂ) (a : Fin d →₀ ℕ) :
+    HasSum (fun γ => multiIndexJetEvalCLM x a (poincareTermEntire ψ seed γ))
+      (multiIndexJetEvalCLM x a (poincareSeriesEntire ψ seed hnormal)) :=
+  (multiIndexJetEvalCLM x a).hasSum
+    (hasSum_poincareTermEntire_of_summableLocallyUniformly ψ seed hnormal)
+
+/-- If a normally summable seed contains an order-`m` power zero at every nonzero translate of
+`x`, then its Poincare sum has exactly the same complete mixed jet below order `m` as the seed.
+This is the rigorous single-surviving-term step in Abe's integer-lattice base construction. -/
+theorem multiIndexJetEvalCLM_poincareSeriesEntire_eq_seed_of_powerZeros
+    {d m : ℕ} {Γ : AddSubgroup (Fin d → ℂ)}
+    (ψ : AutomorphicFactor d Γ) (seed h g : MultivariateEntire d)
+    (hnormal : SummableLocallyUniformlyOn
+      (fun γ ↦ poincareTerm ψ seed γ) Set.univ)
+    (hseed : seed = multivariateEntireMul (multivariateEntirePow h m) g)
+    (x : Fin d → ℂ) (hzero : ∀ γ : Γ, γ ≠ 0 → h.1 (x + γ.1) = 0)
+    (a : Fin d →₀ ℕ) (ha : Finsupp.degree a < m) :
+    multiIndexJetEvalCLM x a (poincareSeriesEntire ψ seed hnormal) =
+      multiIndexJetEvalCLM x a seed := by
+  have hsum := hasSum_multiIndexJetEvalCLM_poincareTermEntire
+    ψ seed hnormal x a
+  calc
+    multiIndexJetEvalCLM x a (poincareSeriesEntire ψ seed hnormal) =
+        ∑' γ : Γ, multiIndexJetEvalCLM x a (poincareTermEntire ψ seed γ) :=
+      hsum.tsum_eq.symm
+    _ = multiIndexJetEvalCLM x a (poincareTermEntire ψ seed 0) := by
+      apply tsum_eq_single 0
+      intro γ hγ
+      exact multiIndexJetEvalCLM_poincareTermEntire_eq_zero_of_seed_power
+        ψ seed h g γ x hseed (hzero γ hγ) a ha
+    _ = multiIndexJetEvalCLM x a seed := by rw [poincareTermEntire_zero]
 
 /-- **Poincare construction.** Every locally normally convergent Poincare series belongs to the
 fixed automorphic-factor section space. -/

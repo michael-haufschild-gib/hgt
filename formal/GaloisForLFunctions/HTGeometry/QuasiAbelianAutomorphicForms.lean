@@ -48,6 +48,25 @@ def AutomorphicFactor.forms {d : ℕ} {Γ : AddSubgroup (Fin d → ℂ)}
     rw [hf γ x]
     ring
 
+/-- A fixed-factor section space inherits additive inverses from the entire-source space. -/
+noncomputable instance AutomorphicFactor.formsAddCommGroup {d : ℕ}
+    {Γ : AddSubgroup (Fin d → ℂ)} (ψ : AutomorphicFactor d Γ) :
+    AddCommGroup ψ.forms :=
+  @Submodule.addCommGroup ℂ (MultivariateEntire d)
+    inferInstance inferInstance inferInstance ψ.forms
+
+/-- Addition is continuous on the fixed-factor compact-open subspace. -/
+noncomputable instance AutomorphicFactor.formsContinuousAdd {d : ℕ}
+    {Γ : AddSubgroup (Fin d → ℂ)} (ψ : AutomorphicFactor d Γ) :
+    ContinuousAdd ψ.forms :=
+  continuousAdd_induced ψ.forms.subtype
+
+/-- Complex scalar multiplication is continuous on the fixed-factor compact-open subspace. -/
+noncomputable instance AutomorphicFactor.formsContinuousSMul {d : ℕ}
+    {Γ : AddSubgroup (Fin d → ℂ)} (ψ : AutomorphicFactor d Γ) :
+    ContinuousSMul ℂ ψ.forms :=
+  continuousSMul_induced ψ.forms.subtype
+
 @[simp]
 theorem AutomorphicFactor.mem_forms_iff {d : ℕ}
     {Γ : AddSubgroup (Fin d → ℂ)} (ψ : AutomorphicFactor d Γ)

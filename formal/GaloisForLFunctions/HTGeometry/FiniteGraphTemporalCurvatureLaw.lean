@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.DisconnectedProjectiveGapModuleLaw
 import Mathlib.Combinatorics.SimpleGraph.Acyclic
 import Mathlib.Combinatorics.SimpleGraph.Connectivity.Finite
+import Mathlib.Order.Partition.Finpartition
 
 /-!
 # Finite graph temporal curvature
@@ -349,7 +350,7 @@ theorem sum_sub_one_lt_prod_sub_one_of_one_lt_card
       by_cases hia : i = a
       · simp [hia]
       · have : i ∈ t := by simp [t, hi, hia]
-        simpa [ht] using this
+        simp [ht] at this
     have : s.card ≤ 1 := by
       simpa using Finset.card_le_card hsubset
     omega
@@ -398,6 +399,756 @@ def finpartitionTensorRank
     (P : Finpartition S) (localDimension : V → ℕ) : ℕ :=
   ∑ B ∈ P.parts,
     ((∏ v ∈ B, localDimension v) - 1)
+
+private theorem two_le_prod_of_nonempty
+    {I : Type*} [DecidableEq I]
+    (s : Finset I) (dimension : I → ℕ)
+    (hdimension : ∀ i ∈ s, 2 ≤ dimension i)
+    (hs : s.Nonempty) :
+    2 ≤ ∏ i ∈ s, dimension i := by
+  obtain ⟨a, ha⟩ := hs
+  have hrest : 1 ≤ ∏ i ∈ s.erase a, dimension i :=
+    Finset.one_le_prod (by
+      intro i hi
+      exact le_trans (by omega)
+        (hdimension i (Finset.mem_of_mem_erase hi)))
+  calc
+    2 = 2 * 1 := by omega
+    _ ≤ dimension a * (∏ i ∈ s.erase a, dimension i) :=
+      Nat.mul_le_mul (hdimension a ha) hrest
+    _ = ∏ i ∈ s, dimension i := by
+      rw [← Finset.prod_insert (s := s.erase a)
+        (f := dimension) (by simp), Finset.insert_erase ha]
+
+private theorem finpartition_product_parts
+    {V : Type*} [DecidableEq V] {S : Finset V}
+    (P : Finpartition S) (localDimension : V → ℕ) :
+    ∏ v ∈ S, localDimension v =
+      ∏ B ∈ P.parts, (∏ v ∈ B, localDimension v) := by
+  calc
+    (∏ v ∈ S, localDimension v) =
+        ∏ v ∈ P.parts.biUnion id, localDimension v := by
+      exact (congrArg (fun T : Finset V =>
+        ∏ v ∈ T, localDimension v) P.biUnion_parts).symm
+    _ = ∏ B ∈ P.parts, (∏ v ∈ B, localDimension v) :=
+      Finset.prod_biUnion P.disjoint
+
+/-- Refining a nonempty tensor block into subblocks cannot increase its
+component-factorized temporal rank. -/
+theorem finpartitionTensorRank_le
+    {V : Type*} [DecidableEq V] {S : Finset V}
+    (P : Finpartition S) (localDimension : V → ℕ)
+    (hlocal : ∀ v ∈ S, 2 ≤ localDimension v) :
+    finpartitionTensorRank P localDimension ≤
+      (∏ v ∈ S, localDimension v) - 1 := by
+  unfold finpartitionTensorRank
+  rw [finpartition_product_parts P localDimension]
+  apply sum_sub_one_le_prod_sub_one P.parts
+    (fun B => ∏ v ∈ B, localDimension v)
+  intro B hB
+  exact le_trans (by omega) (two_le_prod_of_nonempty B localDimension
+    (fun v hv => hlocal v (P.subset hB hv))
+    (P.nonempty_of_mem_parts hB))
+
+/-- The refinement inequality is strict exactly when a tensor block is
+split into at least two nonempty parts. -/
+theorem finpartitionTensorRank_lt_of_one_lt_card
+    {V : Type*} [DecidableEq V] {S : Finset V}
+    (P : Finpartition S) (localDimension : V → ℕ)
+    (hlocal : ∀ v ∈ S, 2 ≤ localDimension v)
+    (hcard : 1 < P.parts.card) :
+    finpartitionTensorRank P localDimension <
+      (∏ v ∈ S, localDimension v) - 1 := by
+  unfold finpartitionTensorRank
+  rw [finpartition_product_parts P localDimension]
+  apply sum_sub_one_lt_prod_sub_one_of_one_lt_card P.parts
+    (fun B => ∏ v ∈ B, localDimension v) _ hcard
+  intro B hB
+  exact two_le_prod_of_nonempty B localDimension
+    (fun v hv => hlocal v (P.subset hB hv))
+    (P.nonempty_of_mem_parts hB)
+
+/-- Equality in the refinement inequality occurs exactly for a one-part
+partition. -/
+theorem finpartitionTensorRank_eq_iff_card_parts_eq_one
+    {V : Type*} [DecidableEq V] {S : Finset V}
+    (P : Finpartition S) (localDimension : V → ℕ)
+    (hS : S.Nonempty)
+    (hlocal : ∀ v ∈ S, 2 ≤ localDimension v) :
+    finpartitionTensorRank P localDimension =
+        (∏ v ∈ S, localDimension v) - 1 ↔
+      P.parts.card = 1 := by
+  constructor
+  · intro heq
+    have hparts : P.parts.Nonempty :=
+      P.parts_nonempty (by simpa using hS.ne_empty)
+    have hcard_one : 1 ≤ P.parts.card :=
+      Finset.one_le_card.mpr hparts
+    by_contra hne
+    have hcard : 1 < P.parts.card := by omega
+    have hlt := finpartitionTensorRank_lt_of_one_lt_card
+      P localDimension hlocal hcard
+    omega
+  · intro hcard
+    obtain ⟨B, hparts⟩ := Finset.card_eq_one.mp hcard
+    have hBS : B = S := by
+      have hcover := P.biUnion_parts
+      simpa [hparts] using hcover
+    simp [finpartitionTensorRank, hparts, hBS]
+
+/-- Finite partition of the vertex set into graph connected components. -/
+noncomputable def graphConnectedFinpartition
+    {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) : Finpartition (Finset.univ : Finset V) := by
+  classical
+  exact Finpartition.ofSetoid G.reachableSetoid
+
+/-- The part containing a vertex is exactly the support of its connected
+component. -/
+theorem graphConnectedFinpartition_part_eq_support
+    {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) (v : V) :
+    (graphConnectedFinpartition G).part v =
+      (G.connectedComponentMk v).supp.toFinite.toFinset := by
+  classical
+  ext w
+  rw [graphConnectedFinpartition,
+    Finpartition.mem_part_ofSetoid_iff_rel]
+  rw [(G.connectedComponentMk v).supp.toFinite.mem_toFinset,
+    ConnectedComponent.mem_supp_iff]
+  rw [ConnectedComponent.eq, G.reachable_comm]
+  change G.Reachable v w ↔ G.Reachable v w
+  rfl
+
+/-- Connected components are canonically equivalent to parts of the
+connected-component finpartition. -/
+noncomputable def connectedComponentEquivGraphPartitionPart
+    {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) :
+    G.ConnectedComponent ≃ (graphConnectedFinpartition G).parts := by
+  classical
+  let toPart : G.ConnectedComponent →
+      (graphConnectedFinpartition G).parts := fun C =>
+    ⟨C.supp.toFinite.toFinset, by
+      induction C using ConnectedComponent.ind with
+      | _ v =>
+          rw [← graphConnectedFinpartition_part_eq_support G v]
+          exact (graphConnectedFinpartition G).part_mem.mpr
+            (Finset.mem_univ v)⟩
+  apply Equiv.ofBijective toPart
+  constructor
+  · intro C D hCD
+    induction C using ConnectedComponent.ind with
+    | _ v =>
+      have hfin :
+          (G.connectedComponentMk v).supp.toFinite.toFinset =
+            D.supp.toFinite.toFinset := by
+        have := congrArg Subtype.val hCD
+        simpa [toPart] using this
+      have hv : v ∈ D.supp.toFinite.toFinset := by
+        have hvself :
+            v ∈ (G.connectedComponentMk v).supp.toFinite.toFinset := by
+          rw [(G.connectedComponentMk v).supp.toFinite.mem_toFinset,
+            ConnectedComponent.mem_supp_iff]
+        rwa [← hfin]
+      exact (ConnectedComponent.mem_supp_iff D v).mp
+        (D.supp.toFinite.mem_toFinset.mp hv)
+  · intro B
+    obtain ⟨v, hv⟩ :=
+      (graphConnectedFinpartition G).nonempty_of_mem_parts B.2
+    refine ⟨G.connectedComponentMk v, ?_⟩
+    apply Subtype.ext
+    change (G.connectedComponentMk v).supp.toFinite.toFinset = B.1
+    rw [← graphConnectedFinpartition_part_eq_support G v]
+    exact (graphConnectedFinpartition G).part_eq_of_mem B.2 hv
+
+/-- The connected-component formula is exactly the tensor-rank weight of
+the connected-component partition. -/
+theorem finiteGraphTemporalRank_eq_finpartitionTensorRank
+    {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) (localDimension : V → ℕ) :
+    finiteGraphTemporalRank G localDimension =
+      finpartitionTensorRank
+        (graphConnectedFinpartition G) localDimension := by
+  classical
+  letI : Fintype G.ConnectedComponent := SetLike.instFintype
+  let P := graphConnectedFinpartition G
+  let e := connectedComponentEquivGraphPartitionPart G
+  have hsum :
+      (∑ C : G.ConnectedComponent,
+        (finiteGraphComponentDimension G localDimension C - 1)) =
+      ∑ B : P.parts,
+        ((∏ v ∈ B.1, localDimension v) - 1) := by
+    apply Fintype.sum_equiv e
+    intro C
+    rfl
+  unfold finiteGraphTemporalRank finpartitionTensorRank
+  change
+    (∑ C : G.ConnectedComponent,
+      (finiteGraphComponentDimension G localDimension C - 1)) =
+    ∑ B ∈ P.parts,
+      ((∏ v ∈ B, localDimension v) - 1)
+  calc
+    _ = ∑ B : P.parts,
+        ((∏ v ∈ B.1, localDimension v) - 1) := hsum
+    _ = ∑ B ∈ P.parts,
+        ((∏ v ∈ B, localDimension v) - 1) := by
+      rw [Finset.univ_eq_attach]
+      exact Finset.sum_attach P.parts
+        (fun B => ((∏ v ∈ B, localDimension v) - 1))
+
+private theorem bind_restrict_eq_of_le
+    {V : Type*} [DecidableEq V] {S : Finset V}
+    {P Q : Finpartition S} (hPQ : P ≤ Q) :
+    Q.bind (fun _ hB => P.restrict (Q.subset hB)) = P := by
+  ext X
+  rw [Finpartition.mem_bind]
+  constructor
+  · rintro ⟨B, hB, hX⟩
+    change X ∈ (P.parts.image (· ∩ B)).erase ∅ at hX
+    have hXne : X ≠ ∅ := (Finset.mem_erase.mp hX).1
+    obtain ⟨A, hA, rfl⟩ :=
+      Finset.mem_image.mp (Finset.mem_erase.mp hX).2
+    obtain ⟨C, hC, hAC⟩ := hPQ hA
+    obtain ⟨x, hx⟩ := Finset.nonempty_iff_ne_empty.mpr hXne
+    have hxA : x ∈ A := (Finset.mem_inter.mp hx).1
+    have hxB : x ∈ B := (Finset.mem_inter.mp hx).2
+    have hCB : C = B :=
+      Q.eq_of_mem_parts hC hB (hAC hxA) hxB
+    have hAB : A ⊆ B := by simpa [hCB] using hAC
+    simpa [Finset.inter_eq_left.mpr hAB] using hA
+  · intro hX
+    obtain ⟨B, hB, hXB⟩ := hPQ hX
+    refine ⟨B, hB, ?_⟩
+    change X ∈ (P.parts.image (· ∩ B)).erase ∅
+    apply Finset.mem_erase.mpr
+    constructor
+    · exact P.ne_empty hX
+    · exact Finset.mem_image.mpr ⟨X, hX,
+        Finset.inter_eq_left.mpr hXB⟩
+
+private theorem finpartition_parts_eq_singleton_self_of_card_eq_one
+    {V : Type*} [DecidableEq V] {S : Finset V}
+    (P : Finpartition S) (hcard : P.parts.card = 1) :
+    P.parts = {S} := by
+  obtain ⟨B, hparts⟩ := Finset.card_eq_one.mp hcard
+  have hBS : B = S := by
+    have hcover := P.biUnion_parts
+    simpa [hparts] using hcover
+  simpa [hBS] using hparts
+
+private theorem restrictParts_pairwiseDisjoint
+    {V : Type*} [DecidableEq V] {S : Finset V}
+    (P Q : Finpartition S) :
+    ((Q.parts.attach : Finset Q.parts) : Set Q.parts).PairwiseDisjoint
+      (fun B => (P.restrict (Q.subset B.2)).parts) := by
+  intro B _ C _ hBC
+  change Disjoint
+    (P.restrict (Q.subset B.2)).parts
+    (P.restrict (Q.subset C.2)).parts
+  rw [Finset.disjoint_left]
+  intro X hXB hXC
+  obtain ⟨x, hxX⟩ :=
+    (P.restrict (Q.subset B.2)).nonempty_of_mem_parts hXB
+  have hxB : x ∈ B.1 :=
+    (P.restrict (Q.subset B.2)).subset hXB hxX
+  have hxC : x ∈ C.1 :=
+    (P.restrict (Q.subset C.2)).subset hXC hxX
+  have hval : B.1 ≠ C.1 := fun h => hBC (Subtype.ext h)
+  exact (Finset.disjoint_left.mp
+    (Q.disjoint B.2 C.2 hval)) hxB hxC
+
+/-- A refinement rank is the sum of the ranks of its restrictions to the
+coarse blocks. -/
+theorem finpartitionTensorRank_eq_sum_restrict
+    {V : Type*} [DecidableEq V] {S : Finset V}
+    (P Q : Finpartition S) (hPQ : P ≤ Q)
+    (localDimension : V → ℕ) :
+    finpartitionTensorRank P localDimension =
+      ∑ B ∈ Q.parts.attach,
+        finpartitionTensorRank
+          (P.restrict (Q.subset B.2)) localDimension := by
+  calc
+    finpartitionTensorRank P localDimension =
+        finpartitionTensorRank
+          (Q.bind (fun B hB => P.restrict (Q.subset hB)))
+          localDimension := by
+      exact congrArg (fun R => finpartitionTensorRank R localDimension)
+        (bind_restrict_eq_of_le hPQ).symm
+    _ = ∑ B ∈ Q.parts.attach,
+          finpartitionTensorRank
+            (P.restrict (Q.subset B.2)) localDimension := by
+      unfold finpartitionTensorRank
+      rw [Finpartition.bind_parts]
+      exact Finset.sum_biUnion
+        (f := fun X : Finset V =>
+          ((∏ v ∈ X, localDimension v) - 1))
+        (restrictParts_pairwiseDisjoint P Q)
+
+/-- Tensor-rank weight is monotone under coarsening of finite
+partitions. -/
+theorem finpartitionTensorRank_mono
+    {V : Type*} [DecidableEq V] {S : Finset V}
+    {P Q : Finpartition S} (hPQ : P ≤ Q)
+    (localDimension : V → ℕ)
+    (hlocal : ∀ v ∈ S, 2 ≤ localDimension v) :
+    finpartitionTensorRank P localDimension ≤
+      finpartitionTensorRank Q localDimension := by
+  rw [finpartitionTensorRank_eq_sum_restrict P Q hPQ]
+  unfold finpartitionTensorRank
+  rw [← Finset.sum_attach Q.parts
+    (fun B => ((∏ v ∈ B, localDimension v) - 1))]
+  apply Finset.sum_le_sum
+  intro B _
+  exact finpartitionTensorRank_le
+    (P.restrict (Q.subset B.2)) localDimension
+    (fun v hv => hlocal v (Q.subset B.2 hv))
+
+private theorem exists_restrict_card_gt_one_of_lt
+    {V : Type*} [DecidableEq V] {S : Finset V}
+    {P Q : Finpartition S} (hPQ : P ≤ Q) (hne : P ≠ Q) :
+    ∃ B ∈ Q.parts.attach,
+      1 < (P.restrict (Q.subset B.2)).parts.card := by
+  by_contra hnot
+  push Not at hnot
+  have hone : ∀ B : Q.parts,
+      (P.restrict (Q.subset B.2)).parts = {B.1} := by
+    intro B
+    have hnonempty :
+        (P.restrict (Q.subset B.2)).parts.Nonempty :=
+      (P.restrict (Q.subset B.2)).parts_nonempty
+        (Q.ne_empty B.2)
+    have hcardLower : 1 ≤
+        (P.restrict (Q.subset B.2)).parts.card :=
+      Finset.one_le_card.mpr hnonempty
+    have hcard :
+        (P.restrict (Q.subset B.2)).parts.card = 1 := by
+      have := hnot B (Finset.mem_attach Q.parts B)
+      omega
+    exact finpartition_parts_eq_singleton_self_of_card_eq_one
+      (P.restrict (Q.subset B.2)) hcard
+  have hbind :
+      Q.bind (fun B hB => P.restrict (Q.subset hB)) = Q := by
+    ext X
+    rw [Finpartition.mem_bind]
+    constructor
+    · rintro ⟨B, hB, hX⟩
+      have hs := hone ⟨B, hB⟩
+      have hXB : X = B := by simpa [hs] using hX
+      simpa [hXB] using hB
+    · intro hX
+      refine ⟨X, hX, ?_⟩
+      have hs := hone ⟨X, hX⟩
+      simp [hs]
+  exact hne ((bind_restrict_eq_of_le hPQ).symm.trans hbind)
+
+/-- Coarsening is strictly rank-increasing unless the two partitions are
+identical. -/
+theorem finpartitionTensorRank_strictMono
+    {V : Type*} [DecidableEq V] {S : Finset V}
+    {P Q : Finpartition S} (hPQ : P ≤ Q) (hne : P ≠ Q)
+    (localDimension : V → ℕ)
+    (hlocal : ∀ v ∈ S, 2 ≤ localDimension v) :
+    finpartitionTensorRank P localDimension <
+      finpartitionTensorRank Q localDimension := by
+  rw [finpartitionTensorRank_eq_sum_restrict P Q hPQ]
+  unfold finpartitionTensorRank
+  rw [← Finset.sum_attach Q.parts
+    (fun B => ((∏ v ∈ B, localDimension v) - 1))]
+  apply Finset.sum_lt_sum
+  · intro B _
+    exact finpartitionTensorRank_le
+      (P.restrict (Q.subset B.2)) localDimension
+      (fun v hv => hlocal v (Q.subset B.2 hv))
+  · obtain ⟨B, hB, hcard⟩ :=
+      exists_restrict_card_gt_one_of_lt hPQ hne
+    refine ⟨B, hB, ?_⟩
+    exact finpartitionTensorRank_lt_of_one_lt_card
+      (P.restrict (Q.subset B.2)) localDimension
+      (fun v hv => hlocal v (Q.subset B.2 hv)) hcard
+
+theorem mem_graphConnectedFinpartition_part_iff_reachable
+    {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) (u v : V) :
+    v ∈ (graphConnectedFinpartition G).part u ↔ G.Reachable u v := by
+  classical
+  rw [graphConnectedFinpartition,
+    Finpartition.mem_part_ofSetoid_iff_rel]
+  rfl
+
+/-- Adding graph edges coarsens the connected-component partition. -/
+theorem graphConnectedFinpartition_mono
+    {V : Type*} [Fintype V] [DecidableEq V]
+    {G H : SimpleGraph V} (hGH : G ≤ H) :
+    graphConnectedFinpartition G ≤
+      graphConnectedFinpartition H := by
+  classical
+  intro B hB
+  obtain ⟨v, hv⟩ :=
+    (graphConnectedFinpartition G).nonempty_of_mem_parts hB
+  refine ⟨(graphConnectedFinpartition H).part v,
+    (graphConnectedFinpartition H).part_mem.mpr (Finset.mem_univ v), ?_⟩
+  intro w hw
+  have hwPart : w ∈ (graphConnectedFinpartition G).part v := by
+    rw [(graphConnectedFinpartition G).part_eq_of_mem hB hv]
+    exact hw
+  apply (mem_graphConnectedFinpartition_part_iff_reachable H v w).mpr
+  exact (mem_graphConnectedFinpartition_part_iff_reachable G v w).mp
+    hwPart |>.mono hGH
+
+/-- Delete exactly those edges whose endpoints lie in different blocks of
+a supplied vertex partition. -/
+def finpartitionRestrictedGraph
+    {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V)
+    (P : Finpartition (Finset.univ : Finset V)) : SimpleGraph V :=
+  G ⊓ SimpleGraph.fromRel (fun u v => P.part u = P.part v)
+
+@[simp]
+theorem finpartitionRestrictedGraph_adj
+    {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V)
+    (P : Finpartition (Finset.univ : Finset V))
+    (u v : V) :
+    (finpartitionRestrictedGraph G P).Adj u v ↔
+      G.Adj u v ∧ P.part u = P.part v := by
+  unfold finpartitionRestrictedGraph
+  rw [SimpleGraph.inf_adj, SimpleGraph.fromRel_adj]
+  constructor
+  · rintro ⟨huv, _, hpart | hpart⟩
+    · exact ⟨huv, hpart⟩
+    · exact ⟨huv, hpart.symm⟩
+  · rintro ⟨huv, hpart⟩
+    exact ⟨huv, G.ne_of_adj huv, Or.inl hpart⟩
+
+private theorem reachable_finpartitionRestrictedGraph_part_eq
+    {V : Type*} [Fintype V] [DecidableEq V]
+    {G : SimpleGraph V}
+    {P : Finpartition (Finset.univ : Finset V)}
+    {u v : V}
+    (h : (finpartitionRestrictedGraph G P).Reachable u v) :
+    P.part u = P.part v := by
+  have hwalk : ∀ {a b : V}
+      (p : (finpartitionRestrictedGraph G P).Walk a b),
+      P.part a = P.part b := by
+    intro a b p
+    induction p with
+    | nil => rfl
+    | cons hadj p ih =>
+        exact (finpartitionRestrictedGraph_adj G P _ _).mp hadj |>.2.trans ih
+  exact h.elim hwalk
+
+/-- Every connected component left after cross-block edge deletion lies in
+one supplied partition block. -/
+theorem graphConnectedFinpartition_restricted_le
+    {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V)
+    (P : Finpartition (Finset.univ : Finset V)) :
+    graphConnectedFinpartition (finpartitionRestrictedGraph G P) ≤ P := by
+  classical
+  intro B hB
+  obtain ⟨v, hv⟩ :=
+    (graphConnectedFinpartition
+      (finpartitionRestrictedGraph G P)).nonempty_of_mem_parts hB
+  refine ⟨P.part v, P.part_mem.mpr (Finset.mem_univ v), ?_⟩
+  intro w hw
+  have hwPart : w ∈
+      (graphConnectedFinpartition
+        (finpartitionRestrictedGraph G P)).part v := by
+    rw [(graphConnectedFinpartition
+      (finpartitionRestrictedGraph G P)).part_eq_of_mem hB hv]
+    exact hw
+  have hreach :=
+    (mem_graphConnectedFinpartition_part_iff_reachable
+      (finpartitionRestrictedGraph G P) v w).mp hwPart
+  have hpart := reachable_finpartitionRestrictedGraph_part_eq hreach
+  rw [hpart]
+  exact P.mem_part_self.mpr (Finset.mem_univ w)
+
+/-- Within one supplied block, cross-block restriction retains exactly the
+original induced edges. -/
+theorem finpartitionRestrictedGraph_adj_iff_of_mem
+    {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V)
+    (P : Finpartition (Finset.univ : Finset V))
+    {B : Finset V} (hB : B ∈ P.parts)
+    {u v : V} (hu : u ∈ B) (hv : v ∈ B) :
+    (finpartitionRestrictedGraph G P).Adj u v ↔ G.Adj u v := by
+  rw [finpartitionRestrictedGraph_adj]
+  have hpartu : P.part u = B := P.part_eq_of_mem hB hu
+  have hpartv : P.part v = B := P.part_eq_of_mem hB hv
+  simp [hpartu, hpartv]
+
+/-- Cross-block deletion preserves the connected-component partition
+exactly when no original component is split by the supplied partition. -/
+theorem graphConnectedFinpartition_restricted_eq_iff
+    {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V)
+    (P : Finpartition (Finset.univ : Finset V)) :
+    graphConnectedFinpartition (finpartitionRestrictedGraph G P) =
+        graphConnectedFinpartition G ↔
+      graphConnectedFinpartition G ≤ P := by
+  classical
+  constructor
+  · intro heq
+    rw [← heq]
+    exact graphConnectedFinpartition_restricted_le G P
+  · intro hcomponent
+    have hgraph : finpartitionRestrictedGraph G P = G := by
+      apply le_antisymm
+      · exact inf_le_left
+      · intro u v huv
+        have hu : u ∈ (graphConnectedFinpartition G).part u :=
+          (graphConnectedFinpartition G).mem_part_self.mpr
+            (Finset.mem_univ u)
+        have hv : v ∈ (graphConnectedFinpartition G).part u :=
+          (mem_graphConnectedFinpartition_part_iff_reachable G u v).mpr
+            huv.reachable
+        obtain ⟨B, hB, hsub⟩ := hcomponent
+          ((graphConnectedFinpartition G).part_mem.mpr
+            (Finset.mem_univ u))
+        have huB := hsub hu
+        have hvB := hsub hv
+        have hpartu : P.part u = B := P.part_eq_of_mem hB huB
+        have hpartv : P.part v = B := P.part_eq_of_mem hB hvB
+        exact (finpartitionRestrictedGraph_adj G P u v).mpr
+          ⟨huv, hpartu.trans hpartv.symm⟩
+    rw [hgraph]
+
+/-- Exact partition curvature: rank lost when all edges crossing supplied
+partition blocks are deleted. -/
+def finiteGraphPartitionTemporalCurvature
+    {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) (localDimension : V → ℕ)
+    (P : Finpartition (Finset.univ : Finset V)) : ℕ :=
+  finiteGraphTemporalRank G localDimension -
+    finiteGraphTemporalRank (finpartitionRestrictedGraph G P)
+      localDimension
+
+/-- Rank of one supplied block, computed by the connected fragments of the
+cross-block-restricted graph.  Inside the block this graph has exactly the
+original induced edges. -/
+def finiteGraphPartitionBlockTemporalRank
+    {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) (localDimension : V → ℕ)
+    (P : Finpartition (Finset.univ : Finset V))
+    (B : P.parts) : ℕ :=
+  finpartitionTensorRank
+    ((graphConnectedFinpartition (finpartitionRestrictedGraph G P)).restrict
+      (P.subset B.2)) localDimension
+
+/-- Sum of induced-fragment temporal ranks over every supplied partition
+block. -/
+def finiteGraphPartitionBlockRankSum
+    {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) (localDimension : V → ℕ)
+    (P : Finpartition (Finset.univ : Finset V)) : ℕ :=
+  ∑ B ∈ P.parts.attach,
+    finiteGraphPartitionBlockTemporalRank G localDimension P B
+
+/-- The rank of the graph after cross-block deletion is exactly the sum of
+the connected-fragment ranks of all blocks. -/
+theorem finiteGraphTemporalRank_restricted_eq_blockRankSum
+    {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) (localDimension : V → ℕ)
+    (P : Finpartition (Finset.univ : Finset V)) :
+    finiteGraphTemporalRank (finpartitionRestrictedGraph G P)
+        localDimension =
+      finiteGraphPartitionBlockRankSum G localDimension P := by
+  rw [finiteGraphTemporalRank_eq_finpartitionTensorRank]
+  exact finpartitionTensorRank_eq_sum_restrict
+    (graphConnectedFinpartition (finpartitionRestrictedGraph G P))
+    P (graphConnectedFinpartition_restricted_le G P) localDimension
+
+/-- Card formula `K_P = τ(V) - Σ_{B∈P}τ(B)` in exact block-fragment
+form. -/
+theorem finiteGraphPartitionTemporalCurvature_eq_rank_sub_blockRankSum
+    {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) (localDimension : V → ℕ)
+    (P : Finpartition (Finset.univ : Finset V)) :
+    finiteGraphPartitionTemporalCurvature G localDimension P =
+      finiteGraphTemporalRank G localDimension -
+        finiteGraphPartitionBlockRankSum G localDimension P := by
+  unfold finiteGraphPartitionTemporalCurvature
+  rw [finiteGraphTemporalRank_restricted_eq_blockRankSum]
+
+/-- Deleting cross-block interactions cannot increase generic temporal
+rank. -/
+theorem finiteGraphTemporalRank_restricted_le
+    {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) (localDimension : V → ℕ)
+    (P : Finpartition (Finset.univ : Finset V))
+    (hlocal : ∀ v, 2 ≤ localDimension v) :
+    finiteGraphTemporalRank (finpartitionRestrictedGraph G P)
+        localDimension ≤
+      finiteGraphTemporalRank G localDimension := by
+  rw [finiteGraphTemporalRank_eq_finpartitionTensorRank,
+    finiteGraphTemporalRank_eq_finpartitionTensorRank]
+  apply finpartitionTensorRank_mono
+    (graphConnectedFinpartition_mono (G :=
+      finpartitionRestrictedGraph G P) (H := G) inf_le_left)
+  intro v _
+  exact hlocal v
+
+/-- Exact non-truncation inequality behind nonnegative partition
+curvature. -/
+theorem finiteGraphPartitionBlockRankSum_le
+    {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) (localDimension : V → ℕ)
+    (P : Finpartition (Finset.univ : Finset V))
+    (hlocal : ∀ v, 2 ≤ localDimension v) :
+    finiteGraphPartitionBlockRankSum G localDimension P ≤
+      finiteGraphTemporalRank G localDimension := by
+  rw [← finiteGraphTemporalRank_restricted_eq_blockRankSum]
+  exact finiteGraphTemporalRank_restricted_le
+    G localDimension P hlocal
+
+/-- **Exact partition-curvature classifier.** Curvature vanishes exactly
+when every original connected component lies in one supplied block. -/
+theorem finiteGraphPartitionTemporalCurvature_eq_zero_iff
+    {V : Type*} [Fintype V] [DecidableEq V]
+    (G : SimpleGraph V) (localDimension : V → ℕ)
+    (P : Finpartition (Finset.univ : Finset V))
+    (hlocal : ∀ v, 2 ≤ localDimension v) :
+    finiteGraphPartitionTemporalCurvature G localDimension P = 0 ↔
+      graphConnectedFinpartition G ≤ P := by
+  let R := graphConnectedFinpartition (finpartitionRestrictedGraph G P)
+  let Q := graphConnectedFinpartition G
+  have hRQ : R ≤ Q :=
+    graphConnectedFinpartition_mono (G :=
+      finpartitionRestrictedGraph G P) (H := G) inf_le_left
+  have hrank :
+      finiteGraphTemporalRank (finpartitionRestrictedGraph G P)
+          localDimension ≤
+        finiteGraphTemporalRank G localDimension :=
+    finiteGraphTemporalRank_restricted_le G localDimension P hlocal
+  constructor
+  · intro hzero
+    have hreverse :
+        finiteGraphTemporalRank G localDimension ≤
+          finiteGraphTemporalRank (finpartitionRestrictedGraph G P)
+            localDimension := by
+      exact Nat.sub_eq_zero_iff_le.mp hzero
+    have hpart : R = Q := by
+      by_contra hne
+      have hstrict := finpartitionTensorRank_strictMono
+        hRQ hne localDimension (fun v _ => hlocal v)
+      rw [← finiteGraphTemporalRank_eq_finpartitionTensorRank,
+        ← finiteGraphTemporalRank_eq_finpartitionTensorRank] at hstrict
+      exact (not_lt_of_ge hreverse) hstrict
+    exact (graphConnectedFinpartition_restricted_eq_iff G P).mp hpart
+  · intro hcomponent
+    have hpart :=
+      (graphConnectedFinpartition_restricted_eq_iff G P).mpr hcomponent
+    unfold finiteGraphPartitionTemporalCurvature
+    rw [finiteGraphTemporalRank_eq_finpartitionTensorRank,
+      finiteGraphTemporalRank_eq_finpartitionTensorRank, hpart,
+      Nat.sub_self]
+
+/-- A nonempty finite graph is connected exactly when its component
+finpartition has one part. -/
+theorem connected_iff_graphConnectedFinpartition_card_eq_one
+    {V : Type*} [Fintype V] [DecidableEq V] [Nonempty V]
+    (G : SimpleGraph V) :
+    G.Connected ↔ (graphConnectedFinpartition G).parts.card = 1 := by
+  classical
+  constructor
+  · intro hG
+    let root : V := Classical.arbitrary V
+    have hpart : (graphConnectedFinpartition G).part root = Finset.univ := by
+      ext v
+      rw [mem_graphConnectedFinpartition_part_iff_reachable]
+      simp [hG.preconnected root v]
+    apply Finset.card_eq_one.mpr
+    refine ⟨Finset.univ, ?_⟩
+    apply Finset.Subset.antisymm
+    · intro B hB
+      obtain ⟨v, hv⟩ :=
+        (graphConnectedFinpartition G).nonempty_of_mem_parts hB
+      have hBpart :=
+        (graphConnectedFinpartition G).part_eq_of_mem hB hv
+      have hvroot : G.Reachable root v := hG.preconnected root v
+      have hpartsame :
+          (graphConnectedFinpartition G).part root =
+            (graphConnectedFinpartition G).part v := by
+        apply (graphConnectedFinpartition G).eq_of_mem_parts
+          ((graphConnectedFinpartition G).part_mem.mpr (Finset.mem_univ root))
+          ((graphConnectedFinpartition G).part_mem.mpr (Finset.mem_univ v))
+          ((graphConnectedFinpartition G).mem_part_self.mpr (Finset.mem_univ root))
+        exact (mem_graphConnectedFinpartition_part_iff_reachable G v root).mpr
+          hvroot.symm
+      have : B = Finset.univ := by
+        rw [← hBpart, ← hpartsame, hpart]
+      simp [this]
+    · intro B hB
+      have hBuniv : B = Finset.univ := by simpa using hB
+      subst B
+      have hm := (graphConnectedFinpartition G).part_mem.mpr
+        (Finset.mem_univ root)
+      simpa only [hpart] using hm
+  · intro hcard
+    obtain ⟨B, hparts⟩ := Finset.card_eq_one.mp hcard
+    have hB : B = Finset.univ := by
+      have hcover := (graphConnectedFinpartition G).biUnion_parts
+      simpa [hparts] using hcover
+    refine ⟨?_⟩
+    intro u v
+    apply (mem_graphConnectedFinpartition_part_iff_reachable G u v).mp
+    have hpartMem :
+        (graphConnectedFinpartition G).part u ∈
+          (graphConnectedFinpartition G).parts :=
+      (graphConnectedFinpartition G).part_mem.mpr (Finset.mem_univ u)
+    have hpartEq : (graphConnectedFinpartition G).part u = B := by
+      simpa [hparts] using hpartMem
+    rw [hpartEq, hB]
+    simp
+
+/-- **Connectedness by positive partition curvature.** A nonempty graph is
+connected exactly when every partition into at least two blocks has
+strictly positive temporal curvature. -/
+theorem connected_iff_all_nontrivial_partitionTemporalCurvature_pos
+    {V : Type*} [Fintype V] [DecidableEq V] [Nonempty V]
+    (G : SimpleGraph V) (localDimension : V → ℕ)
+    (hlocal : ∀ v, 2 ≤ localDimension v) :
+    G.Connected ↔
+      ∀ P : Finpartition (Finset.univ : Finset V),
+        1 < P.parts.card →
+          0 < finiteGraphPartitionTemporalCurvature
+            G localDimension P := by
+  constructor
+  · intro hG P hP
+    have hcomponentCard :
+        (graphConnectedFinpartition G).parts.card = 1 :=
+      (connected_iff_graphConnectedFinpartition_card_eq_one G).mp hG
+    have hnotle : ¬ graphConnectedFinpartition G ≤ P := by
+      intro hle
+      have hcard := Finpartition.card_mono hle
+      omega
+    have hne :
+        finiteGraphPartitionTemporalCurvature
+          G localDimension P ≠ 0 := by
+      intro hz
+      exact hnotle
+        ((finiteGraphPartitionTemporalCurvature_eq_zero_iff
+          G localDimension P hlocal).mp hz)
+    omega
+  · intro hall
+    apply (connected_iff_graphConnectedFinpartition_card_eq_one G).mpr
+    by_contra hcard
+    have hpartsNonempty :
+        (graphConnectedFinpartition G).parts.Nonempty :=
+      (graphConnectedFinpartition G).parts_nonempty
+        Finset.univ_nonempty.ne_empty
+    have hpartsOne : 1 ≤
+        (graphConnectedFinpartition G).parts.card :=
+      Finset.one_le_card.mpr hpartsNonempty
+    have hpartsTwo : 1 <
+        (graphConnectedFinpartition G).parts.card := by omega
+    have hpos := hall (graphConnectedFinpartition G) hpartsTwo
+    have hzero :=
+      (finiteGraphPartitionTemporalCurvature_eq_zero_iff
+        G localDimension (graphConnectedFinpartition G) hlocal).mpr le_rfl
+    omega
 
 end
 

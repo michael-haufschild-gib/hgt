@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.CCMShiftedXiNormalConvergence
 import GaloisForLFunctions.RHTower.CCMShiftedXiPoleJet
+import GaloisForLFunctions.HTGeometry.QuasiAbelianPoincareGaussianMajorant
 
 /-!
 # Global multiplicity order of the Xi-cancelled rectangular carrier
@@ -25,22 +26,9 @@ theorem SummableLocallyUniformlyOn.comp_injective_local
     {f : iota → beta → alpha} {U : Set beta}
     (hU : IsOpen U) (h : SummableLocallyUniformlyOn f U)
     {e : kappa → iota} (he : Injective e) :
-    SummableLocallyUniformlyOn (fun k => f (e k)) U := by
-  apply summableLocallyUniformlyOn_of_of_forall_exists_nhds
-  intro x hx
-  obtain ⟨K, ⟨hKnhds, hKcompact⟩, hKU⟩ :=
-    (compact_basis_nhds x).mem_iff.mp (hU.mem_nhds hx)
-  refine ⟨K, nhdsWithin_le_nhds hKnhds, ?_⟩
-  have hcanon := h.hasSumLocallyUniformlyOn
-  have hloc : TendstoUniformlyOn
-      (fun t : Finset iota => fun y => ∑ i ∈ t, f i y)
-      (fun y => ∑' i, f i y) atTop K :=
-    (tendstoLocallyUniformlyOn_iff_forall_isCompact hU).mp hcanon
-      K hKU hKcompact
-  have huni : HasSumUniformlyOn f (fun y => ∑' i, f i y) K :=
-    hasSumUniformlyOn_iff_tendstoUniformlyOn.mpr hloc
-  change Summable (UniformOnFun.ofFun {K} ∘ fun k => f (e k))
-  exact huni.summableUniformlyOn.comp_injective he
+    SummableLocallyUniformlyOn (fun k => f (e k)) U :=
+  GaloisForLFunctions.HTGeometry.SummableLocallyUniformlyOn.comp_injective_open
+    hU h he
 
 /-- A locally normal sum of analytic functions preserves every common finite
 vanishing-order floor. -/

@@ -56,4 +56,31 @@ theorem iInf_span_singleton_of_pairwise_isRelPrime {R : Type*} [CommRing R]
   simp only [Submodule.mem_iInf, Ideal.mem_span_singleton]
   rw [prod_dvd_iff_forall_dvd_of_pairwise_isRelPrime h]
 
+/-- **Mixed-difference threshold.**  For a finite family of pairwise-coprime non-unit factors, the
+squarefree product divides a product of powers exactly when every exponent is positive.  This is
+the Barnes threshold `x_1^{a_1} ⋯ x_N^{a_N} Ψ_N` is DA iff every `a_j ≥ 1`: repetition inside a
+proper subset of the structural directions never reaches the annihilator, while one use of every
+direction already does, whatever the further repetition. -/
+theorem prod_dvd_prod_pow_iff_forall_one_le {R : Type*} [CommMonoidWithZero R]
+    [DecompositionMonoid R] {ι : Type*} [DecidableEq ι] (s : Finset ι) (f : ι → R) (a : ι → ℕ)
+    (h : (s : Set ι).Pairwise (Function.onFun IsRelPrime f))
+    (hunit : ∀ i ∈ s, ¬ IsUnit (f i)) :
+    (∏ i ∈ s, f i) ∣ (∏ i ∈ s, f i ^ a i) ↔ ∀ i ∈ s, 1 ≤ a i := by
+  constructor
+  · intro hdvd i hi
+    by_contra hai
+    have ha0 : a i = 0 := by omega
+    have hsplit : (∏ k ∈ s, f k ^ a k) = ∏ k ∈ s.erase i, f k ^ a k := by
+      rw [← Finset.prod_erase_mul _ _ hi, ha0, pow_zero, mul_one]
+    have hfi : f i ∣ ∏ k ∈ s.erase i, f k ^ a k := by
+      rw [← hsplit]
+      exact (Finset.dvd_prod_of_mem f hi).trans hdvd
+    have hrel : IsRelPrime (f i) (∏ k ∈ s.erase i, f k ^ a k) := by
+      refine IsRelPrime.prod_right fun k hk => IsRelPrime.pow_right ?_
+      exact h hi (Finset.mem_of_mem_erase hk) (Finset.ne_of_mem_erase hk).symm
+    exact hunit i hi (hrel dvd_rfl hfi)
+  · intro hall
+    exact Finset.prod_dvd_prod_of_dvd _ _ fun i hi =>
+      dvd_pow_self _ (Nat.one_le_iff_ne_zero.mp (hall i hi))
+
 end GaloisForLFunctions

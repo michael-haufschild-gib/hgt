@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteShadowCapacity
+import GaloisForLFunctions.HTGeometry.MultivariateMultiIndexJet
 import Mathlib.Topology.Instances.Matrix
 
 /-!
@@ -84,6 +85,27 @@ theorem finiteJetPacketPeeling_surjective
     (fun t => Matrix.of fun i j => ev (sections t j) i) A B D hsections hA hD
   obtain ⟨t, ht⟩ := heventually.exists
   exact linearMap_surjective_of_evaluationMatrix_det_ne_zero ev (sections t) ht
+
+/-- Local uniform convergence of finitely many entire columns implies convergence of every finite
+mixed-jet evaluation matrix.  This is the exact analytic-to-algebraic handoff used before
+`finiteJetPacketPeeling_surjective`: no derivative-limit hypothesis is needed separately. -/
+theorem tendsto_multiIndexJetEvaluationMatrix_of_locallyUniform
+    {T Row Col : Type*} {l : Filter T} {d : ℕ}
+    [Fintype Row] [Fintype Col]
+    (F : T → Col → MultivariateEntire d) (G : Col → MultivariateEntire d)
+    (point : Row → Fin d → ℂ) (index : Row → Fin d →₀ ℕ)
+    (hF : ∀ j, TendstoLocallyUniformly (fun t => (F t j).1) (G j).1 l) :
+    Tendsto
+      (fun t => Matrix.of fun i j => multiIndexJetEvalCLM (point i) (index i) (F t j)) l
+      (nhds (Matrix.of fun i j => multiIndexJetEvalCLM (point i) (index i) (G j))) := by
+  apply tendsto_pi_nhds.mpr
+  intro i
+  apply tendsto_pi_nhds.mpr
+  intro j
+  have hFG : Tendsto (fun t => F t j) l (nhds (G j)) := by
+    rw [tendsto_subtype_rng]
+    exact ContinuousMap.tendsto_iff_tendstoLocallyUniformly.mpr (hF j)
+  exact (multiIndexJetEvalCLM (point i) (index i)).continuous.continuousAt.tendsto.comp hFG
 
 end
 

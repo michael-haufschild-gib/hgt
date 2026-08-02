@@ -496,6 +496,17 @@ Fuchs family `d_j = A_j λ^{8j+1}e^{−4πλ²}` (`fuchsRate_radial_struct`,
 `fuchsRate_radial_tail_ratio_tendsto_zero`, `ccm_fuchsModel_infiniteSecularRoot_*`), assuming only
 `A_j > 0` and the tempered growth `A_2 ≤ C^j A_{j+2}`.  All of this is axiom-clean.
 
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlatePointwiseRepresentative.lean` now supplies
+the missing source-side regularity interface for the **actual signed modes**, not a model family.
+Every fixed signed value is eventually nonzero; its greedy mode then has norm exactly one and has a
+canonical even compactly supported pointwise source.  The source is `C^∞` on the open aperture, its
+Fourier representative is globally `C^∞`, and every iterated derivative is the exact Fourier
+transform of the corresponding compact moment.  Lean also proves the literal normalization
+`∫ ‖q_n‖² = 1` and exterior-energy identity
+`∫_{(-∞,-a]∪(a,∞)} ‖Fq_n‖² = 1 - σ_n(a)²`.  These theorems remove all a.e., smoothness, and
+normalization ambiguity before the remaining ODE/mode-identification argument.  They are
+unconditional and axiom-clean.
+
 The exact secular/Fuchs-model statements `(4)`--`(7)`, including the quantitative eigenvector rate,
 are now formalized below.  What remains for the *true prolate operator* is the classical
 identification layer: positive signed modes with the `4j` numbering, Fuchs fixed-index asymptotics

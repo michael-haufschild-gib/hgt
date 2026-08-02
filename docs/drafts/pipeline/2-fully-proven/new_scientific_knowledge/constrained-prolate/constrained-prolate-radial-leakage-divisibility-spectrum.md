@@ -445,8 +445,21 @@ test.  `integral_Ioi_nuInfinityDensity` evaluates every normalized tail, while
 `nuLambdaDensity_tendsto_radialGramDiagonal` includes the exact `1/k` dilation factor to yield
 `8 arcsin(1/k)/(11 pi k)`, the right side of `(22)`.  Thus the complete unconditional
 a.e.-density-plus-mass implication through the literal finite density to the diagonal limit is in
-Lean.  Weak convergence itself is not assumed; remaining inputs are exactly the PSWF pointwise
-density asymptotic and mass convergence.  All axiom-clean.
+Lean.  `formal/GaloisForLFunctions/RHTower/RadialLeakageMassNormalization.lean` now discharges
+the mass input exactly: positive dilation and evenness identify the positive radial mass with one
+half of the normalized exterior leakage, so `delta_lambda/d_1 -> 8/11` gives `4/11` without any
+PSWF asymptotic.  Its capstone `nuLambdaDensity_tendsto_L1_of_exterior_ratio` leaves only the
+actual PSWF pointwise density asymptotic.  Weak convergence itself is not assumed.  All
+axiom-clean.
+
+The actual-mode normalization feeding that mass transfer is now also formalized in
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlatePointwiseRepresentative.lean`.  For every
+nonzero actual signed prolate value, Lean constructs the canonical even compact source, proves
+unit total `L²` mass, global `C^∞` regularity of its Fourier representative, interior `C^∞`
+regularity of the literal source, exact all-order Fourier-moment derivative formulas, and the
+exact exterior identity `mass_outside[-a,a] = 1 - σ_n(a)²`.  Thus the remaining weak-limit gate is
+the genuine Dunster/Fuchs asymptotic comparison, not representative choice, regularity, or mass
+normalization.
 
 Two further pieces of the radial asymptotic argument are now formalized.  In
 `formal/GaloisForLFunctions/RHTower/DunsterSigmaComparisonLimits.lean`,
@@ -461,9 +474,28 @@ constant phase shift, any turning-parameter family in `[0,1]`, and every bandwid
 infinity, `tendsto_integral_weight_mul_cos_sq_radialPhase_add` proves that the exact radial
 Liouville `cos^2` factor averages to `1/2`; its pointwise predecessor records the explicit
 variation-budget-over-bandwidth error.  Thus compact nonstationary averaging is closed.  Remaining
-analytic gap is transfer from the actual radial PSWF solution to this leading oscillatory model,
-together with uniform endpoint/far-tail tightness.  Axiom audits of both modules contain only
-`propext`, `Classical.choice`, and `Quot.sound`.
+analytic gap is transfer from the actual radial PSWF solution to this leading oscillatory model.
+Axiom audits of both modules contain only `propext`, `Classical.choice`, and `Quot.sound`.
+
+`formal/GaloisForLFunctions/RHTower/RadialPSWFLeadingTightness.lean` now constructs the exact
+leading squared-Bessel density after the nonsingular arclength substitution
+`t = sqrt(x^2-1)`.  Its phase is proved equal to Dunster's turning-point-anchored phase, its speed
+has the exact positive derivative, and the density is globally integrable.  Whenever
+`sigma^2 <= 3/4`, `radialPSWFLeadingArclengthDensity_le_integrableEnvelope` gives the uniform
+integrable majorant `4/(pi(1+t^2))`; the resulting endpoint and tail bounds are formalized as
+`integral_Ioc_radialPSWFLeadingArclengthDensity_le` (`O(eta)`) and
+`integral_Ioi_radialPSWFLeadingArclengthDensity_le` (the exact arctangent tail).  Thus endpoint and
+far-tail tightness are closed for the literal leading Dunster model.  The compact weak limit now
+also includes its varying Liouville amplitude:
+`tendsto_integral_weight_mul_radialPSWFLeadingArclengthDensity` proves convergence against every
+`C^1` weight on `[a,b]` to `pi^(-1) dt/(1+t^2)`, while
+`abs_integral_weight_mul_leadingArclengthDensity_sub_free_le` gives the explicit `O(sigma^2)`
+amplitude-freezing error.  Finally,
+`tendsto_integral_Ioi_weight_mul_radialPSWFLeadingArclengthDensity` glues compact convergence to
+the exact endpoint/tail envelope and proves the full-ray weak limit against every globally bounded
+`C^1` test.  Tightness and weak convergence are therefore unconditional for the literal leading
+Dunster model; remaining input is only uniform error transfer from the actual PSWF solution to that
+model.
 
 What is still not formalized is the **weak convergence** `(4)` of the finite-aperture measures
 `nu_lambda` to this limit, and the off-diagonal vanishing `(23)`.
@@ -493,8 +525,14 @@ work fixes the target of that convergence exactly; it does not prove the converg
 - [x] fixed-radius phase and Liouville--Green amplitude limits `(10)` formalized in Lean
 - [x] compact-interval `cos^2` weak averaging for exact radial Liouville phase formalized in Lean,
   uniformly over turning parameters in `[0,1]`
+- [x] exact leading squared-Bessel density in nonsingular arclength coordinates, with uniform
+  integrable envelope and explicit endpoint/far-tail tightness, formalized in Lean
+- [x] full-ray bounded-`C^1` weak convergence of the literal leading Dunster density formalized in
+  Lean by compact averaging plus its exact uniform tail envelope
 - [x] finite-aperture density `(4)` defined and exact a.e.+mass-to-`L¹`/bounded-test transfer
   formalized in Lean
+- [x] finite radial mass convergence to `4/11` reduced exactly to evenness and the normalized
+  exterior-leakage ratio, with no PSWF asymptotic input
 - [x] exact bounded-test-to-tail and `1/k`-scaled diagonal-limit `(22)` transfer formalized in Lean
 - [ ] weak convergence `nu_lambda -> nu_infinity` `(4)` in Lean
 - [ ] fixed off-diagonal vanishing `(23)` in Lean

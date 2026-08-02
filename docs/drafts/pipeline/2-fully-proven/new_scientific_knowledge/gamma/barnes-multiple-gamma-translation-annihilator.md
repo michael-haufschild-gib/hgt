@@ -355,6 +355,19 @@ the ideal-membership step of the reverse inclusion; the ring-specific input is t
 coprimality of the `T_j - 1`, and the analytic input is the hypertranscendence making `Q phi_j`
 non-DA.
 
+The same module now also carries the **mixed-difference threshold** in its algebraic form:
+
+```text
+prod_dvd_prod_pow_iff_forall_one_le :
+  (prod_j f j) | (prod_j f j ^ a j)  <->  forall j, 1 <= a j
+```
+
+for pairwise `IsRelPrime` **non-unit** factors.  This is exactly the statement that
+`x_1^{a_1} ... x_N^{a_N} Psi_N` is DA iff every `a_j` is positive: repetition inside a proper subset
+of the structural directions never reaches the annihilator, while one use of every direction
+already does, whatever the further repetition.  The non-unit hypothesis is what the ladder
+operators supply.  `#print axioms` clean.
+
 ### Formalization of the differential boundary consequences
 
 `GaloisForLFunctions.HTGeometry.DifferentialOrbitMarkerLocalization` formalizes the algebraic
@@ -375,9 +388,129 @@ finite marker is detected at some depth, and the ordinary divisor shadow has ker
 positive differential tail.  Lean also proves that the regular entire gauge on an oriented
 rank-two period lattice is scalar and that one pointing kills it.  The general normalized
 simplex-block contraction underlying the all-face proof is already formalized by
-`standardSimplexNormalizedCoproduct_exactAt_succ`.  The special-function identification `(A)` and
-the assembly of those blocks into the concrete localized Barnes complex remain paper theorems;
-neither is inserted into Lean as an analytic axiom.
+`standardSimplexNormalizedCoproduct_exactAt_succ`.
+
+The **descent half of `(C)` is now concrete Lean** rather than abstract blocks.
+`GaloisForLFunctions.HTGeometry.MonomialFaceIdeal` works in the ring
+`MvPolynomial sigma R` -- with `R = C[delta]` and `sigma = {1..N}` this is exactly the operator ring
+of `(C)` before localization, which is the reduction the paper proof performs -- and proves:
+
+```text
+mem_faceIdeal_iff       : P in (X_j : j in S)  <->  every monomial of P uses some direction of S;
+iInf_faceIdeal_singleton: (intersection_j (X_j)) = (prod_j X_j);
+iInf_faceIdeal_pair     : (intersection_j (X_n, X_j)) = (X_n) + (prod_j X_j);
+exists_glue             : pairwise-compatible atomic data have a global lift.
+```
+
+The first is the monomial description of every face ideal.  The second is exactness at `M_N`, that
+is uniqueness of the global boundary class.  The third is the distributivity of the face lattice
+along a vertex, and it is exactly what powers the fourth: `exists_glue` is exactness at the atomic
+term, that is existence.  Together they are
+
+```text
+0 -> A/(prod_j X_j) -> direct_sum_j A/(X_j) -> direct_sum_{j,k} A/(X_j,X_k)
+```
+
+exact, which is the stated consequence of `(C)`: compatible differential data on the individual
+Barnes source faces glue to a unique global HT/DA orbit class.  `#print axioms` clean.
+
+The **higher degrees of `(C)` are now Lean too**, in the same concrete model.
+`GaloisForLFunctions.HTGeometry.MonomialFaceComplexExactness` gives the complex an explicit cochain
+form: a degree-`c` cochain sends every `c`-element direction set `S` to a polynomial none of whose
+monomials uses a direction of `S`, that is a representative of a class of `A/(X_j : j in S)`, and
+`faceCoboundary` is the signed face sum followed by deletion of the monomials that meet the new
+direction.
+
+```text
+faceCoboundary_faceCoboundary      : the differential squares to zero;
+faceComplex_augmentation_kernel    : a degree-zero cocycle lies in (prod_j X_j) -- exactness at M_N;
+faceComplex_exact                  : every cocycle of degree c+1 is a coboundary of degree c.
+```
+
+The proof is the paper argument made literal.  `coeff_faceCoboundary` shows that taking the
+coefficient of a fixed monomial turns the differential into the reduced simplicial coboundary on
+the vertex set `unusedDirections d` of directions that monomial does not use; that vertex set is
+nonempty whenever the coefficient is nonzero, so the corpus cone contraction
+`simplicialCoboundary_simplicialCone_of_subset` applies to each block, and the finitely many block
+primitives reassemble into a polynomial primitive with the same avoidance property.  Complex `(C)`
+is therefore exact in every degree, unconditionally, with no analytic input.  `#print axioms` clean.
+
+### The algebraic steps of `(A)` are Lean
+
+Three of the four steps of the reverse inclusion of `(A)` are formalized, leaving only the analytic
+input.
+
+1. **Choice of a missing ladder factor.**  `mem_span_prod_iff_forall_dvd_of_pairwise_isRelPrime`
+   above: if the squarefree product does not divide `P`, some `x_j` does not.
+2. **Face splitting `P = Q + x_j S`.**  `GaloisForLFunctions.FaceIdeal.sub_faceTruncate_mem_faceIdeal`
+   proves `P - P|_{x_j = 0} in (x_j)`, with `faceTruncate` the restriction that deletes the
+   monomials using the deleted direction.  Uniform in the face, so it covers the whole
+   `D_j = prod_{k != j} x_k` step at once.
+3. **Triangular differential freeness.**  The step "a nonzero constant-coefficient
+   differential-linear form in differentially independent elements is differentially transcendental"
+   is `hypertranscendentalOver_differentialOperatorRow_of_ne_zero`
+   (`GaloisForLFunctions.HTGeometry.DifferentialOperatorRowHypertranscendence`), proved by the
+   operator-row independence criterion rather than by an ad hoc jet induction; its degree-zero
+   specialization `hypertranscendentalOver_linearCombination_of_ne_zero` is the pure-translation
+   case used in the scalar annihilator theorem.  Axiom-clean.
+4. **Atomic differential independence of the scaled-digamma translates.**  This is the remaining
+   analytic input (Hardouin--Singer plus discrete residues) and is not in Lean.
+
+So `(A)` reduces in Lean to constructing the Barnes source itself and proving its ladder relation
+and atomic independence.
+
+### First brick of the Barnes analytic construction
+
+`GaloisForLFunctions.HTGeometry.ConePeriodSummability` supplies the convergence foundation that
+every construction of the Barnes source needs.  For a frame in a common open half-plane,
+`mul_sum_le_norm_conePeriod` proves that the cone value `|sum_i n_i omega_i|` is at least a fixed
+positive multiple of the total degree, and `summable_conePeriod_inv_pow` proves
+
+```text
+sum_{n in N^N, n != 0} |sum_i n_i omega_i|^{-(N+1)} < infinity,
+```
+
+the critical exponent: the `N`-fold subtraction of the expansion of `1/(z+w)` in powers of `1/w`
+leaves a term of size `|z|^N/|w|^{N+1}`, so this is exactly the summability that makes the
+regularized Barnes series converge, and equally the summability that makes the genus-`N`
+Weierstrass product for `1/Gamma_N` converge.  The proof compares with a finite product of
+`p`-series at `p = 1 + 1/N` through `prod_succ_le_pow`, using the corpus lemma
+`summable_fintype_pi_product_of_nonneg`.  `#print axioms` clean.
+
+### Second brick: the Weierstrass factor of arbitrary genus
+
+`GaloisForLFunctions.HTGeometry.WeierstrassGenusFactor` builds the other half of the convergence
+input.  For every genus `p` it defines the truncated logarithm and the elementary factor
+
+```text
+E_p(w) = (1 - w) exp(w + w^2/2 + ... + w^p/p),
+```
+
+and proves the collapsed derivative
+
+```text
+hasDerivAt_weierstrassFactor : E_p'(w) = -w^p exp(w + ... + w^p/p),
+```
+
+which is the geometric telescoping `(1-w)(1 + w + ... + w^{p-1}) = 1 - w^p` and nothing else.  Since
+`E_p(0) = 1`, the mean-value inequality on the segment then gives the defining genus estimate
+
+```text
+norm_weierstrassFactor_sub_one_le :
+  |w| <= 1/2  ->  |E_p(w) - 1| <= exp(B_p) |w|^{p+1},
+```
+
+with `B_p = weierstrassLogBound p` an explicit symbolic constant.  Mathlib has only the genus-one
+case (through the reciprocal-Gamma product); arbitrary genus is corpus-new.
+
+The two bricks meet in `norm_weierstrassFactor_conePeriod_sub_one_le`: outside the finitely many
+small cone values, the factor at `-z/w_n` deviates from one by at most a constant times
+`|w_n|^{-(N+1)}`, which `summable_conePeriod_inv_pow` sums.  That is exactly the local majorant
+that makes the genus-`N` Weierstrass product over the period cone converge, hence makes
+`1/Gamma_N` entire and puts `Psi_N` in the meromorphic differential field.  `#print axioms` clean.
+
+Only the special-function identification `(A)` remains a paper theorem; it is not inserted into
+Lean as an analytic axiom.
 
 `GaloisForLFunctions.HTGeometry.NormalCrossingFaceMatrixFactorization` formalizes the local
 derived-fracture algebra over every commutative domain:
@@ -519,6 +652,20 @@ specialist review.
 - [x] Degenerate equal-period and dependent-period cases separated.
 - [x] Ogawara equal-step differential-independence parent separated from the rationally-independent
       Barnes statement.
+- [x] Mixed-difference threshold formalized in its algebraic form.
+- [x] Descent half of the all-face complex `(C)` formalized concretely: monomial description of the
+      face ideals, atomic intersection, vertex distributivity, and the gluing theorem.
+- [x] Higher-degree exactness of `(C)` in the same concrete monomial model, together with
+      `delta^2 = 0` and exactness at the augmentation.
+- [x] Algebraic steps 1--3 of the reverse inclusion of `(A)` formalized (missing ladder factor,
+      face splitting, triangular differential freeness).
+- [x] Cone summability at the critical exponent formalized, the convergence foundation of the
+      Barnes source construction.
+- [x] Genus-`p` Weierstrass elementary factor, its collapsed derivative and its half-disc estimate,
+      together with the cone majorant that couples it to the summability brick.
+- [ ] Barnes source object in Lean: local uniform convergence of the cone product, entirety of
+      `1/Gamma_N`, the ladder relation, and the atomic differential independence of the
+      scaled-digamma translates.
 - [ ] Full-text audit of Nishizawa's 2001 Barnes paper.
 - [ ] Equivalent/stronger-result audit across difference Galois theory and Barnes product identities.
 - [ ] Routine-parent and significance verdict from independent experts.
@@ -535,3 +682,17 @@ specialist review.
 - 2026-07-17 — Identified the resulting module as a free differential cylinder over the reduced squarefree source boundary and proved its augmented all-face complex exact.
 - 2026-07-17 — Proved the rank-two reconstruction transition: full logarithmic principal parts plus one pointing kill the common Barnes gauge, while rank-one Gamma retains regular periodic inertia.
 - 2026-07-17 — Targeted Ogawara and Perez-Marco checks found the differential-independence and normalization parents but not the combined annihilator, descent, and reconstruction theorem; novelty remains provisional pending independent audit.
+- 2026-08-03 — Formalized the mixed-difference threshold algebraically, and the descent half of the
+  all-face complex concretely in the monomial model: face-ideal monomial description, atomic
+  intersection, vertex distributivity of the face lattice, and the gluing theorem.  Axiom-clean.
+- 2026-08-03 — Closed complex `(C)` in Lean in every degree: explicit cochain model, `delta^2 = 0`,
+  exactness at the augmentation, and exactness in every positive degree by the monomial-blockwise
+  cone contraction.  The only remaining paper step is the special-function identification `(A)`.
+- 2026-08-03 — Audited `(A)` step by step: the triangular-freeness step turned out to be already
+  Lean in `DifferentialOperatorRowHypertranscendence`, the face splitting is now Lean, and the
+  cone summability at the critical exponent — the convergence foundation of the Barnes source
+  itself — is now Lean.  What is left of `(A)` is the source object and its ladder.
+- 2026-08-03 — Built the genus-`p` Weierstrass elementary factor with its collapsed derivative and
+  half-disc estimate (mathlib has only genus one), and coupled it to the cone summability by the
+  majorant `|E_N(-z/w_n) - 1| <= C |w_n|^{-(N+1)}`.  The convergence input of the Barnes product is
+  now complete; what remains is the product itself and the ladder.

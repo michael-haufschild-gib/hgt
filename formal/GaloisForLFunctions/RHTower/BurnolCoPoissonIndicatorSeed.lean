@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.BurnolCoPoissonHeadConstant
 import GaloisForLFunctions.HTGeometry.HarmonicLogWindow
+import GaloisForLFunctions.HTGeometry.L2DecayProfile
 
 /-!
 # The explicit indicator seed of the co-Poisson sum
@@ -116,23 +117,23 @@ theorem coPoissonIndicatorSeed_scale_mem {b t : ℝ} (hb : 0 < b) {k : ℕ} (hk 
   · rw [div_le_iff₀ hkpos, inv_mul_eq_div, le_div_iff₀ hb]
     exact h1
 
-/-- **The co-Poisson sum of the indicator seed is a window sum of reciprocals.** -/
-theorem coPoissonIndicatorSum_eq_finset_sum {b t : ℝ} (hb : 0 < b) (ht : 0 < t) :
-    (∑' n : ℕ, (((n + 1 : ℕ) : ℝ) : ℂ)⁻¹ *
-        coPoissonIndicatorSeed b (t / ((n + 1 : ℕ) : ℝ))) =
-      ∑ k ∈ Finset.Icc ⌈t * b⌉₊ ⌊t / b⌋₊, (((k : ℕ) : ℝ) : ℂ)⁻¹ := by
+/-- **The co-Poisson sum of a window seed is a finite window sum.**  Only the indices between
+`t b` and `t / b` contribute. -/
+theorem coPoissonSum_eq_window_finset_sum {b t : ℝ} (hb : 0 < b) (ht : 0 < t) {h : ℝ → ℂ}
+    (hsupp : Function.support h ⊆ Icc b b⁻¹) :
+    (∑' n : ℕ, (((n + 1 : ℕ) : ℝ) : ℂ)⁻¹ * h (t / ((n + 1 : ℕ) : ℝ))) =
+      ∑ k ∈ Finset.Icc ⌈t * b⌉₊ ⌊t / b⌋₊, (((k : ℕ) : ℝ) : ℂ)⁻¹ * h (t / ((k : ℕ) : ℝ)) := by
   set m : ℕ := ⌈t * b⌉₊ with hm
   set N : ℕ := ⌊t / b⌋₊ with hN
   have hmpos : 1 ≤ m := Nat.one_le_ceil_iff.mpr (by positivity)
-  -- Every contributing index lies below `N`.
   have hvanish : ∀ n : ℕ, n ∉ Finset.range N →
-      (((n + 1 : ℕ) : ℝ) : ℂ)⁻¹ * coPoissonIndicatorSeed b (t / ((n + 1 : ℕ) : ℝ)) = 0 := by
+      (((n + 1 : ℕ) : ℝ) : ℂ)⁻¹ * h (t / ((n + 1 : ℕ) : ℝ)) = 0 := by
     intro n hn
-    by_cases hz : coPoissonIndicatorSeed b (t / ((n + 1 : ℕ) : ℝ)) = 0
+    by_cases hz : h (t / ((n + 1 : ℕ) : ℝ)) = 0
     · rw [hz, mul_zero]
     · exfalso
       have hmem : t / ((n + 1 : ℕ) : ℝ) ∈ Icc b b⁻¹ :=
-        support_coPoissonIndicatorSeed b (Function.mem_support.mpr hz)
+        hsupp (Function.mem_support.mpr hz)
       have hnpos : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
       have hlow : b ≤ t / ((n + 1 : ℕ) : ℝ) := hmem.1
       rw [le_div_iff₀ hnpos] at hlow
@@ -142,16 +143,14 @@ theorem coPoissonIndicatorSum_eq_finset_sum {b t : ℝ} (hb : 0 < b) (ht : 0 < t
       have : n + 1 ≤ N := Nat.le_floor hle
       exact (Finset.mem_range.not.mp hn) (by omega)
   rw [tsum_eq_sum hvanish]
-  -- Reindex `range N` as `Icc 1 N`.
   have hreindex : ∀ f : ℕ → ℂ, ∑ n ∈ Finset.range N, f (n + 1) = ∑ k ∈ Finset.Icc 1 N, f k := by
     intro f
     rw [Finset.range_eq_Ico, Finset.sum_Ico_add' f 0 N (c := 1)]
     simp only [Finset.Ico_add_one_right_eq_Icc, zero_add]
-  rw [hreindex (fun k => (((k : ℕ) : ℝ) : ℂ)⁻¹ * coPoissonIndicatorSeed b (t / ((k : ℕ) : ℝ)))]
-  -- The window `Icc m N` carries the whole sum.
+  rw [hreindex (fun k => (((k : ℕ) : ℝ) : ℂ)⁻¹ * h (t / ((k : ℕ) : ℝ)))]
   have hsubset : Finset.Icc m N ⊆ Finset.Icc 1 N := Finset.Icc_subset_Icc_left hmpos
   have houtside : ∀ k ∈ Finset.Icc 1 N, k ∉ Finset.Icc m N →
-      (((k : ℕ) : ℝ) : ℂ)⁻¹ * coPoissonIndicatorSeed b (t / ((k : ℕ) : ℝ)) = 0 := by
+      (((k : ℕ) : ℝ) : ℂ)⁻¹ * h (t / ((k : ℕ) : ℝ)) = 0 := by
     intro k hk hkn
     have hk1 : 1 ≤ k := (Finset.mem_Icc.mp hk).1
     have hkN : k ≤ N := (Finset.mem_Icc.mp hk).2
@@ -164,15 +163,25 @@ theorem coPoissonIndicatorSum_eq_finset_sum {b t : ℝ} (hb : 0 < b) (ht : 0 < t
       rintro ⟨-, h2⟩
       rw [div_le_iff₀ hkpos, inv_mul_eq_div, le_div_iff₀ hb] at h2
       linarith
-    rw [coPoissonIndicatorSeed_of_notMem hout, mul_zero]
-  rw [← Finset.sum_subset hsubset houtside]
+    have hz : h (t / ((k : ℕ) : ℝ)) = 0 := by
+      by_contra hne
+      exact hout (hsupp (Function.mem_support.mpr hne))
+    rw [hz, mul_zero]
+  exact (Finset.sum_subset hsubset houtside).symm
+
+/-- **The co-Poisson sum of the indicator seed is a window sum of reciprocals.** -/
+theorem coPoissonIndicatorSum_eq_finset_sum {b t : ℝ} (hb : 0 < b) (ht : 0 < t) :
+    (∑' n : ℕ, (((n + 1 : ℕ) : ℝ) : ℂ)⁻¹ *
+        coPoissonIndicatorSeed b (t / ((n + 1 : ℕ) : ℝ))) =
+      ∑ k ∈ Finset.Icc ⌈t * b⌉₊ ⌊t / b⌋₊, (((k : ℕ) : ℝ) : ℂ)⁻¹ := by
+  rw [coPoissonSum_eq_window_finset_sum hb ht (support_coPoissonIndicatorSeed b)]
   refine Finset.sum_congr rfl fun k hk => ?_
   obtain ⟨hk1, hk2⟩ := Finset.mem_Icc.mp hk
+  have hmpos : 1 ≤ ⌈t * b⌉₊ := Nat.one_le_ceil_iff.mpr (by positivity)
   have hkpos : 0 < k := lt_of_lt_of_le hmpos hk1
   have hlow : t * b ≤ (k : ℝ) := le_trans (Nat.le_ceil _) (by exact_mod_cast hk1)
   have hhigh : (k : ℝ) ≤ t / b := le_trans (by exact_mod_cast hk2) (Nat.floor_le (by positivity))
   rw [coPoissonIndicatorSeed_of_mem (coPoissonIndicatorSeed_scale_mem hb hkpos hlow hhigh), mul_one]
-
 
 
 /-! ## Harmonic form -/
@@ -291,6 +300,163 @@ theorem norm_burnolCoPoissonRightSum_coPoissonIndicatorSeed_le
   rw [abs_le] at hA hB hC ⊢
   constructor <;> [linarith [hA.1, hA.2, hB.1, hB.2, hC.1, hC.2];
     linarith [hA.1, hA.2, hB.1, hB.2, hC.1, hC.2]]
+
+
+
+/-! ## Local bound and square integrability -/
+
+theorem coPoissonIndicatorSeed_zero {b : ℝ} (hb : 0 < b) : coPoissonIndicatorSeed b 0 = 0 := by
+  refine coPoissonIndicatorSeed_of_notMem ?_
+  rintro ⟨h1, -⟩
+  linarith
+
+/-- **Crude bound on the window sum.**  Every window term is at most one and the window has at most
+`t / b` indices. -/
+theorem norm_coPoissonIndicatorSum_le_scale {b t : ℝ} (hb : 0 < b) (ht : 0 ≤ t) :
+    ‖∑' n : ℕ, (((n + 1 : ℕ) : ℝ) : ℂ)⁻¹ *
+        coPoissonIndicatorSeed b (t / ((n + 1 : ℕ) : ℝ))‖ ≤ t / b := by
+  rcases eq_or_lt_of_le ht with h | h
+  · have hz : ∀ n : ℕ, (((n + 1 : ℕ) : ℝ) : ℂ)⁻¹ *
+        coPoissonIndicatorSeed b (t / ((n + 1 : ℕ) : ℝ)) = 0 := by
+      intro n
+      rw [← h, zero_div, coPoissonIndicatorSeed_zero hb, mul_zero]
+    rw [tsum_congr hz, tsum_zero, norm_zero, ← h, zero_div]
+  · rw [coPoissonIndicatorSum_eq_finset_sum hb h]
+    refine le_trans (norm_sum_le _ _) ?_
+    have hmpos : 1 ≤ ⌈t * b⌉₊ := Nat.one_le_ceil_iff.mpr (by positivity)
+    have hterm : ∀ k ∈ Finset.Icc ⌈t * b⌉₊ ⌊t / b⌋₊, ‖(((k : ℕ) : ℝ) : ℂ)⁻¹‖ ≤ 1 := by
+      intro k hk
+      have hk1 : 1 ≤ k := le_trans hmpos (Finset.mem_Icc.mp hk).1
+      have hkreal : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk1
+      rw [norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith)]
+      exact inv_le_one_of_one_le₀ hkreal
+    refine le_trans (Finset.sum_le_card_nsmul _ _ 1 hterm) ?_
+    rw [nsmul_eq_mul, mul_one, Nat.card_Icc]
+    have hcard : (⌊t / b⌋₊ + 1 - ⌈t * b⌉₊ : ℕ) ≤ ⌊t / b⌋₊ := by omega
+    calc ((⌊t / b⌋₊ + 1 - ⌈t * b⌉₊ : ℕ) : ℝ) ≤ ((⌊t / b⌋₊ : ℕ) : ℝ) := by exact_mod_cast hcard
+      _ ≤ t / b := Nat.floor_le (by positivity)
+
+theorem two_log_inv_nonneg {b : ℝ} (hb : 0 < b) (hb1 : b ≤ 1) : 0 ≤ 2 * Real.log b⁻¹ := by
+  have h1 : (1 : ℝ) ≤ b⁻¹ := by
+    rw [le_inv_comm₀ one_pos hb]
+    simpa using hb1
+  have := Real.log_nonneg h1
+  linarith
+
+/-- **Local bound on the co-Poisson value.**  The window sum grows at most linearly and the
+correction is a fixed constant. -/
+theorem norm_burnolCoPoissonRightSum_coPoissonIndicatorSeed_le_local
+    {b : ℝ} (hb : 0 < b) (hb1 : b ≤ 1) (t : ℝ) :
+    ‖burnolCoPoissonRightSum (coPoissonIndicatorSeed b) t‖ ≤ |t| / b + 2 * Real.log b⁻¹ := by
+  rw [burnolCoPoissonRightSum, coPoissonIndicatorSeed_correction hb hb1]
+  refine le_trans (norm_sub_le _ _) (add_le_add
+    (norm_coPoissonIndicatorSum_le_scale hb (abs_nonneg t)) ?_)
+  rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (two_log_inv_nonneg hb hb1)]
+
+/-- **A square-integrable decay profile for the indicator seed.**  Near the origin the co-Poisson
+value is bounded by a fixed constant, and beyond `2 / b` it decays like `1 / |t|`; both regimes are
+dominated by a multiple of `(1 + |t|)⁻¹`. -/
+theorem norm_burnolCoPoissonRightSum_coPoissonIndicatorSeed_le_profile
+    {b : ℝ} (hb : 0 < b) (hb1 : b ≤ 1) (t : ℝ) :
+    ‖burnolCoPoissonRightSum (coPoissonIndicatorSeed b) t‖ ≤
+      (2 * (4 * b + 4 / b) + (2 / b ^ 2 + 2 * Real.log b⁻¹) * (1 + 2 / b)) * (1 + |t|)⁻¹ := by
+  have hlog := two_log_inv_nonneg hb hb1
+  have hb2 : b * b ≤ 1 := by nlinarith
+  have h2b : (2 : ℝ) ≤ 2 / b := by
+    rw [le_div_iff₀ hb]; nlinarith
+  have hK1 : (0 : ℝ) ≤ 2 * (4 * b + 4 / b) := by positivity
+  have hK2 : (0 : ℝ) ≤ (2 / b ^ 2 + 2 * Real.log b⁻¹) * (1 + 2 / b) := by positivity
+  have hden : (0 : ℝ) < 1 + |t| := by positivity
+  have habs : burnolCoPoissonRightSum (coPoissonIndicatorSeed b) t =
+      burnolCoPoissonRightSum (coPoissonIndicatorSeed b) |t| := by
+    simp only [burnolCoPoissonRightSum, abs_abs]
+  rw [← div_eq_mul_inv, le_div_iff₀ hden]
+  rcases le_or_gt (2 / b) |t| with hfar | hnear
+  · have hA := norm_burnolCoPoissonRightSum_coPoissonIndicatorSeed_le hb hb1 hfar
+    rw [← habs] at hA
+    have htpos : (0 : ℝ) < |t| := lt_of_lt_of_le (by norm_num) (le_trans h2b hfar)
+    have ht1 : (1 : ℝ) ≤ |t| := le_trans (by linarith) hfar
+    have hnn : (0 : ℝ) ≤ (4 * b + 4 / b) / |t| := by positivity
+    have hchain : (4 * b + 4 / b) / |t| * (1 + |t|) ≤ 2 * (4 * b + 4 / b) := by
+      have hstep : (4 * b + 4 / b) / |t| * (1 + |t|) ≤ (4 * b + 4 / b) / |t| * (2 * |t|) := by
+        nlinarith
+      have hval : (4 * b + 4 / b) / |t| * (2 * |t|) = 2 * (4 * b + 4 / b) := by
+        field_simp
+      linarith [hstep, hval.le, hval.ge]
+    nlinarith [norm_nonneg (burnolCoPoissonRightSum (coPoissonIndicatorSeed b) t)]
+  · have hB := norm_burnolCoPoissonRightSum_coPoissonIndicatorSeed_le_local hb hb1 t
+    have hsq : |t| / b ≤ 2 / b ^ 2 := by
+      have h1 : |t| / b ≤ (2 / b) / b := div_le_div_of_nonneg_right hnear.le hb.le
+      have h2 : (2 / b) / b = 2 / b ^ 2 := by
+        rw [div_div, sq]
+      linarith
+    have hC0 : ‖burnolCoPoissonRightSum (coPoissonIndicatorSeed b) t‖ ≤
+        2 / b ^ 2 + 2 * Real.log b⁻¹ := by linarith
+    have h1t : 1 + |t| ≤ 1 + 2 / b := by linarith
+    have hnn : (0 : ℝ) ≤ 2 / b ^ 2 + 2 * Real.log b⁻¹ := by positivity
+    nlinarith [norm_nonneg (burnolCoPoissonRightSum (coPoissonIndicatorSeed b) t)]
+
+/-- **The co-Poisson sum of the indicator seed is square integrable.** -/
+theorem memLp_two_burnolCoPoissonRightSum_coPoissonIndicatorSeed
+    {b : ℝ} (hb : 0 < b) (hb1 : b ≤ 1) :
+    MemLp (burnolCoPoissonRightSum (coPoissonIndicatorSeed b)) 2 volume :=
+  HTGeometry.memLp_two_of_decayProfile
+    (measurable_burnolCoPoissonRightSum hb (measurable_coPoissonIndicatorSeed b)
+      (support_coPoissonIndicatorSeed b)).aestronglyMeasurable
+    (norm_burnolCoPoissonRightSum_coPoissonIndicatorSeed_le_profile hb hb1)
+
+
+
+/-! ## The reciprocal seed -/
+
+/-- **The reciprocal seed of a window seed is again a window seed.**  The multiplicative window is
+stable under inversion, and the reciprocal seed is supported where the seed is, read through that
+inversion. -/
+theorem support_coPoissonReciprocalSeed {b : ℝ} (hb : 0 < b) {g : ℝ → ℂ}
+    (hsupp : Function.support g ⊆ Icc b b⁻¹) :
+    Function.support (coPoissonReciprocalSeed g) ⊆ Icc b b⁻¹ := by
+  intro v hv
+  have hg : g v⁻¹ ≠ 0 := by
+    intro h
+    exact hv (by rw [coPoissonReciprocalSeed, h, mul_zero])
+  have hmem : v⁻¹ ∈ Icc b b⁻¹ := hsupp (Function.mem_support.mpr hg)
+  have hvpos : (0 : ℝ) < v := inv_pos.mp (lt_of_lt_of_le hb hmem.1)
+  exact (inv_mem_windowIcc_iff hb hvpos).mp hmem
+
+theorem eq_zero_of_support_windowIcc {b : ℝ} (hb : 0 < b) {g : ℝ → ℂ}
+    (hsupp : Function.support g ⊆ Icc b b⁻¹) : g 0 = 0 := by
+  by_contra h
+  have hmem := hsupp (Function.mem_support.mpr h)
+  exact absurd hmem.1 (by simpa using hb)
+
+/-- **The reciprocal seed is an involution on window seeds.** -/
+theorem coPoissonReciprocalSeed_involutive {b : ℝ} (hb : 0 < b) {g : ℝ → ℂ}
+    (hsupp : Function.support g ⊆ Icc b b⁻¹) :
+    coPoissonReciprocalSeed (coPoissonReciprocalSeed g) = g := by
+  funext v
+  rcases eq_or_ne v 0 with rfl | hv
+  · rw [coPoissonReciprocalSeed, Complex.ofReal_zero, inv_zero, zero_mul,
+      eq_zero_of_support_windowIcc hb hsupp]
+  · have hvc : ((v : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hv
+    rw [coPoissonReciprocalSeed, coPoissonReciprocalSeed, inv_inv, Complex.ofReal_inv,
+      inv_inv, ← mul_assoc, inv_mul_cancel₀ hvc, one_mul]
+
+/-- The reciprocal of the indicator seed is the reciprocal function on the window. -/
+theorem coPoissonReciprocalSeed_coPoissonIndicatorSeed {b : ℝ} (hb : 0 < b) (v : ℝ) :
+    coPoissonReciprocalSeed (coPoissonIndicatorSeed b) v =
+      Set.indicator (Icc b b⁻¹) (fun v : ℝ => ((v : ℝ) : ℂ)⁻¹) v := by
+  rcases le_or_gt v 0 with hv | hv
+  · have hout : v ∉ Icc b b⁻¹ := fun hc => absurd (lt_of_lt_of_le hb hc.1) (not_lt.mpr hv)
+    have hout' : v⁻¹ ∉ Icc b b⁻¹ := fun hc =>
+      absurd (inv_pos.mp (lt_of_lt_of_le hb hc.1)) (not_lt.mpr hv)
+    rw [Set.indicator_of_notMem hout, coPoissonReciprocalSeed,
+      coPoissonIndicatorSeed_of_notMem hout', mul_zero]
+  · by_cases h : v ∈ Icc b b⁻¹
+    · rw [Set.indicator_of_mem h, coPoissonReciprocalSeed,
+        coPoissonIndicatorSeed_of_mem ((inv_mem_windowIcc_iff hb hv).mpr h), mul_one]
+    · rw [Set.indicator_of_notMem h, coPoissonReciprocalSeed,
+        coPoissonIndicatorSeed_of_notMem (fun hc => h ((inv_mem_windowIcc_iff hb hv).mp hc)),
+        mul_zero]
 
 end RHTower
 

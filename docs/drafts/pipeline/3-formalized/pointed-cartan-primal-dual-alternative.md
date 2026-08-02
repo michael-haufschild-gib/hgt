@@ -46,6 +46,25 @@ gauge dominates `E_z` if and only if `mu=0`.  On the reciprocal real plane of sl
 every invariant symmetric form is a multiple of the cross form when `mu!=0`, and every invariant
 positive-semidefinite form is zero.
 
+There is a stronger dual-source form.  If `p(V_t u)=p(u)` and
+`L(V_t u)=exp(t z)L(u)`, set `t_n=n Re z` and
+
+\[
+ u_n=\exp(-t_nz)V_{t_n}u.
+\]
+
+Then
+
+\[
+ L(u_n)=L(u),\qquad
+ p(u_n)=\exp\!\left(-n(\Re z)^2\right)p(u).
+\]
+
+When `Re z != 0`, this is an explicit graph-null sequence with fixed nonzero output.  Consequently
+the closed graph relation has a nonzero vertical fibre; over a scalar target, scaling makes that
+fibre the whole target.  This is the abstract mechanism behind the exact Meyer Xi graph-closure
+phase transition.
+
 ## Complete paper proof
 
 Absolute homogeneity of a complex seminorm and `|exp(tz)|=exp(t Re z)` give `(1)`.  Applying `(1)`
@@ -64,6 +83,10 @@ For the dual claim, choose `u` with `E_z(u)!=0`.  Invariance of a dominating gau
 `a x^2+2bxy+c y^2` under `(x,y) -> (e^{t mu}x,e^{-t mu}y)` forces `a=c=0`; positivity at `(1,1)`
 and `(1,-1)` then forces `b=0`.
 
+For the graph-null sequence, linearity and the dual character law cancel the two exponential
+factors, so `L(u_n)=L(u)`.  Absolute homogeneity and invariance of `p` give
+`p(u_n)=exp(-t_n Re z)p(u)=exp(-n(Re z)^2)p(u)`, which tends to zero when the real slope is nonzero.
+
 No implication uses RH, a divisor, a completion, numerical evidence, or a target selected from a
 spectrum.
 
@@ -71,6 +94,7 @@ spectrum.
 
 1. Complete-source collapse plus projective blow-up: `(2)` is inverse-conditioning growth.
 2. Hedenmalm/Meyer dense radicals: `(3)` is the primal radical branch.
+   The scaled dual-source sequence gives the stronger exact off-line graph verticality.
 3. Half-density completion: zero Cartan slope is exactly its continuous actual-Xi spectrum.
 4. Burnol--Sonin aperture vectors and Hedenmalm Borel tails: their logarithmic norm/condition
    exponent is `|mu|`, the scalar in `(2)`.
@@ -117,3 +141,6 @@ while its presentation-independent infinite arithmetic mate remains open.
 - 2026-08-02 — formalized exact reflected conditioning and invariant-seminorm radical alternative
   in `formal/GaloisForLFunctions/RHTower/PointedCartanSeminormConservationLaw.lean`; direct
   `lake env lean` verification passed.
+- 2026-08-02 — strengthened the law after the live-corpus graph-closure result: formalized the
+  universal dual-source graph-null sequence with fixed reporter output and exact
+  `exp (-n (Re z)^2)` invariant-capacity decay.

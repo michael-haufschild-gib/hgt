@@ -393,5 +393,195 @@ The axiom audit reports only `propext`, `Classical.choice`, and
 - [ ] primary-source collision audit
 - [ ] upper crossover theorem
 - [ ] bounded-degree local maximality
-- [ ] Hausdorff/covering-profile formalization
+- [x] Hausdorff/covering-profile formalization
 - [ ] completed-orbit dimension formalization
+
+
+## Lean status: Theorem A and Corollary A
+
+`formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtOperatorBound.lean`:
+
+- `matVec`, `hsNorm` — the Hilbert–Schmidt norm of a matrix as the Euclidean norm of its entry
+  vector, so all norm axioms are inherited;
+- **`hsNorm_mul_le`**, **`hsNorm_mul_le'`** — multiplying on either side costs at most the operator
+  norm of the multiplier (proved column by column, and by transposition for the other side); this
+  mixed inequality is not in Mathlib;
+- **`hsNorm_conjugation_sub_le`** — `‖U X U* − V X V*‖_HS ≤ 2‖U−V‖_op ‖X‖_HS`, which is `(11)`.
+
+`formal/GaloisForLFunctions/HTGeometry/ObserverProfileStability.lean`:
+
+- `unitaryEvolution`, `observedOrbit`, `reporterScale` — the weighted reporter tuple observed at
+  time `t`, living in the Euclidean space of reporter × matrix entries, and the scale `B_O` of
+  `(1)`;
+- **`dist_observedOrbit_le`** — `(12)`: `‖Φ_H(t) − Φ_K(t)‖_O ≤ 2|t| δ B_O`, obtained by weighting
+  and summing the Hilbert–Schmidt bound and composing with the corpus C⋆ Duhamel estimate;
+- **`hausdorffDist_orbitSegment_le`** — `(6)`: the finite-horizon orbit segments are within
+  `2 T δ B_O` in Hausdorff distance;
+- `isCover_of_forall_exists_dist_le`, `externalCoveringNumber_le_of_forall_exists_dist_le` — a cover
+  transfers to a nearby set with the radius shifted by the closeness (stated for Mathlib's
+  `Metric.externalCoveringNumber`, whose covers are by closed balls);
+- **`externalCoveringNumber_orbitSegment_le`** — `(7)`: `N_{ε+r}(X_K(T)) ≤ N_ε(X_H(T))` whenever
+  `r ≥ 2 T δ B_O`, and symmetrically; `(9)` is the instance `r ≤ ε/2`;
+- `rootDisplacement`, **`abs_rootDisplacement_sub_le`** — `(14)`;
+- `returnSet`, **`returnSet_subset`** — `(15)`: the finite-window return sets are sandwiched by
+  shifting the radius by the perturbation radius.
+
+All axiom-clean.  What remains on this card is the completed-orbit dimension theorem `(17)`–`(21)`,
+which needs Minkowski dimension: Mathlib has covering numbers and Hausdorff dimension, but no box
+dimension, so that layer has to be built.
+
+## Lean status: the box-dimension layer for Theorem B
+
+Mathlib has covering numbers and Hausdorff dimension but no Minkowski (box) dimension, so the
+layer that `(17)`–`(21)` need is being built in
+`formal/GaloisForLFunctions/HTGeometry/BoxDimension.lean`:
+
+- `coveringCard`, `HasBoxDim` — the real-valued covering number and the box-dimension predicate
+  `log N_ε / log(1/ε) → k`;
+- **`externalCoveringNumber_image_le`** — a Lipschitz image needs no more balls than its source at
+  the rescaled resolution (the upper half of a dimension comparison);
+- **`le_encard_of_isCover_of_measure_le`** — the mass distribution principle: if every closed
+  `ε`-ball has measure at most `m`, every `ε`-cover of `A` has at least `μ A / m` elements (the
+  lower half).
+
+Both are axiom-clean.  With the small-ball law `finiteTorusHaarProbabilityMeasure_ball` already
+proved on the phase torus, these give the two-sided covering estimate for a torus; what remains for
+`(17)` is the bi-Lipschitz comparison between the completed reporter orbit and the presenting
+torus, i.e. the differential computation `(22)` and its compactness argument.
+
+### Covering numbers of the phase torus
+
+`formal/GaloisForLFunctions/HTGeometry/TorusCoveringNumbers.lean`:
+
+- `torusGrid`, `encard_torusGrid_le`, `exists_circleGrid_close` — the grid of `n`-th roots, of
+  cardinality at most `n^k`, and the fact that every circle point lies within `1/(2n)` of it
+  (through the rounding of `n u` and the reduction of that integer modulo `n`);
+- **`isCover_torusGrid`** and **`externalCoveringNumber_torus_le`** — the grid is a `1/(2n)`-cover,
+  so the torus needs at most `n^k` balls at that resolution;
+- **`one_le_encard_mul_of_isCover_torus`** — Haar measure forces the converse: every `ε`-cover with
+  `ε ≤ 1/4` has at least `(4ε)^{-k}` elements, because a closed `ε`-ball sits inside an open
+  `2ε`-ball, whose measure is `(4ε)^k` by the small-ball law.
+
+Both directions are axiom-clean.  Together with `BoxDimension.lean` they give the two-sided
+covering estimate `c₁ ε^{-k} ≤ N_ε(𝕋^k) ≤ c₂ ε^{-k}` which pins the box dimension of a phase torus
+to its dimension — the model case of `(17)`.
+
+### The box dimension of a phase torus
+
+`BoxDimension.lean` gained the analytic step, and `TorusBoxDimension.lean` the model case:
+
+- **`hasBoxDim_of_covering_bounds`** — a set whose covering numbers satisfy
+  `c₁ ε^{-k} ≤ N_ε ≤ c₂ ε^{-k}` for all small `ε` has box dimension `k`.  The proof squeezes
+  `log N_ε / log(1/ε)` between `log c₁ / log(1/ε) + k` and `log c₂ / log(1/ε) + k`, both of which
+  converge to `k` because `log(1/ε) → ∞`;
+- `exists_isCover_encard_eq` — a finite external covering number is attained by an actual cover
+  (needed because a lower bound on an infimum has to be checked on the minimiser);
+- `coveringCard_torus_le`, `le_coveringCard_torus` — the two-sided estimate for the phase torus,
+  with the explicit constants `2^k` and `4^{-k}` obtained from the grid `⌈1/ε⌉`-cover and from the
+  Haar small-ball bound;
+- **`hasBoxDim_torus`** — the box dimension of the `k`-dimensional phase torus is `k`.
+
+Mathlib has no box dimension at all, so this layer — definition, squeeze theorem, mass
+distribution principle, Lipschitz transfer, and the torus computation — is new corpus
+infrastructure.  It is the model case of `(17)`: what remains is to transfer it along the
+continuous injective map from the presenting torus onto the completed reporter orbit.
+
+### Box dimension is a bi-Lipschitz invariant, and the torus image case
+
+`BoxDimensionBiLipschitz.lean`:
+
+- **`externalCoveringNumber_le_of_antilipschitz`** — a cover of the image pulls back to a cover of
+  the source at the inversely rescaled radius: for each cover point one picks a source point whose
+  image is within `ε` of it, and the antilipschitz bound turns the resulting `2ε` in the target into
+  `2Kε` in the source;
+- `coveringCard_mono_of_le` — transporting an `ℕ∞`-level comparison to the real covering numbers;
+- **`hasBoxDim_image_of_covering_bounds`** — two-sided covering bounds on a set give its
+  bi-Lipschitz image the same box dimension, with constants `c₁ (2K)^{-k}` and `c₂ L^k`.
+
+`OrbitBoxDimension.lean`:
+
+- `externalCoveringNumber_torus_finite` — the phase torus has finite covering numbers at every
+  resolution;
+- **`hasBoxDim_range_of_biLipschitz`** — *every bi-Lipschitz image of a `k`-dimensional phase torus
+  has box dimension `k`*.
+
+That is the geometric half of `(17)` in full generality.  What remains is the analytic half for the
+specific reporter map: that the map from the presenting torus to the reporter tuple space is
+Lipschitz (immediate from the trigonometric form) and antilipschitz (the differential computation
+`(22)` together with compactness).  Once that map is exhibited with those two constants, `(17)`
+follows by `hasBoxDim_range_of_biLipschitz`.
+
+### The analytic half: the circle embeds bi-Lipschitzly
+
+`CircleEmbeddingBiLipschitz.lean`:
+
+- `circleEmbed x = e^{2πix}`, with `norm_exp_two_pi_sub_one` — the chord `|e^{2πiu} − 1|` equals
+  `2|sin(πu)|`, obtained by factoring `e^{2πiu} − 1 = e^{πiu}(e^{πiu} − e^{−πiu})`;
+- **`norm_circleEmbed_sub_one_bounds`** — `4‖x‖ ≤ ‖ι(x) − 1‖ ≤ 2π‖x‖`, from `Real.mul_le_sin` on
+  the representative in `[−1/2, 1/2]` in the lower direction and `|sin t| ≤ |t|` in the upper one;
+- **`lipschitzWith_circleEmbed`** / **`antilipschitzWith_circleEmbed`** and their coordinatewise
+  versions **`lipschitzWith_torusEmbed`** / **`antilipschitzWith_torusEmbed`** — the phase torus
+  embeds in the space of complex phase tuples with distortion at most `2π` and at least `1/4`.
+
+`PhaseTorusEmbeddingDimension.lean`:
+
+- **`hasBoxDim_range_torusEmbed`** — the embedded phase torus has box dimension equal to its number
+  of phases.
+
+This is `(17)` for the phase carrier itself.  The reporter version needs one more composition: the
+presenting homomorphism of tori (injective, hence bi-Lipschitz — the remaining lemma) followed by
+the linear reporter map.
+
+### Injective torus homomorphisms are bi-Lipschitz, and the completed time has the right dimension
+
+`TorusHomBiLipschitz.lean`:
+
+- `integerLinearMap` — the linear lift of the integer matrix to the universal cover, and
+  `torusIntegerHom_coe`, which says the torus homomorphism is its reduction;
+- `norm_coe_eq_abs`, `norm_coe_torus_eq`, `exists_lift_norm_eq` — below half a period the torus
+  norm is the norm of the lift, and every torus point lifts with the same norm;
+- **`lipschitzWith_torusIntegerHom`** — Lipschitz with the entrywise size of the matrix;
+- **`injective_integerLinearMap_of_injective`** — an injective torus homomorphism has injective
+  linear lift (a nonzero kernel vector would give a nonzero torus point in the kernel);
+- **`exists_antilipschitzWith_torusIntegerHom`** — *an injective torus homomorphism is
+  antilipschitz*.  Near the identity this is `LinearMap.exists_antilipschitzWith` applied to the
+  lift, because there the torus norm is the norm of the lift; away from the identity the set
+  `{‖z‖ ≥ δ}` is compact and misses the kernel, so the continuous function `‖Ψ z‖` has a positive
+  minimum there.
+
+`PhaseTorusEmbeddingDimension.lean` and `CompletedTimeBoxDimension.lean`:
+
+- **`hasBoxDim_range_torusEmbed_comp`** — the embedded image of a presenting torus under an
+  injective integer homomorphism has box dimension the rank of the presentation;
+- **`exists_hasBoxDim_embedded_completedTime`** — for every finite frequency packet, the embedded
+  completed time `ι(closure(range φ_ω))` has Minkowski dimension exactly
+  `dim_ℚ span_ℚ (range ω)`.
+
+That is `(17)` for the phase carrier, in terms of the frequency packet itself.  The reporter version
+`(17)` is now one composition away: the reporter tuple is obtained from the phase tuple by a fixed
+*diagonal* linear map whose nonzero coordinates are exactly the visible gaps, so it is bi-Lipschitz
+onto its image and the same dimension transfers.
+
+### Diagonal readouts keep the dimension
+
+`DiagonalScalingBiLipschitz.lean`:
+
+- `diagScale c` — coordinatewise multiplication by a fixed tuple, with
+  **`lipschitzWith_diagScale`**, **`antilipschitzWith_diagScale`** and
+  **`exists_antilipschitzWith_diagScale`** (nonzero entries, constant the reciprocal of the smallest
+  modulus);
+- **`hasBoxDim_range_diagScale_comp`** — a diagonally rescaled embedded torus, presented through an
+  injective integer homomorphism, has box dimension the rank of the presentation.
+
+`CompletedTimeBoxDimension.lean` adds:
+
+- **`exists_hasBoxDim_scaled_completedTime`** — reading the completed time of a frequency packet
+  through any fixed nonzero diagonal rescaling leaves its Minkowski dimension equal to the rational
+  rank of the packet.
+
+A weighted reporter family acts on the phase tuple exactly like such a rescaling: in the eigenbasis
+of the Hamiltonian the `(i,j)` entry of the evolved reporter is its initial entry times the phase of
+the gap `E_i − E_j`, and the visible gaps are precisely the coordinates with nonzero entry.  The
+last step for the reporter form of `(17)` is therefore the spectral rewriting of `observedOrbit` in
+the eigenbasis — conjugation by the fixed eigenvector unitary, which is a Hilbert–Schmidt isometry —
+after which `exists_hasBoxDim_scaled_completedTime` applies verbatim on the visible coordinates.

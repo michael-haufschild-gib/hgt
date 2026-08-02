@@ -13,7 +13,7 @@ eigenfunctionals.  It does not assume a topology, completeness, a divisor,
 or the Riemann hypothesis.
 -/
 
-open Complex Real
+open Complex Real Filter Topology
 
 namespace RHTower
 
@@ -103,6 +103,77 @@ theorem invariantSeminorm_eigenvector_mem_radical_of_nonzeroCartan
     p x = 0 := by
   exact (invariantSeminorm_eigenvector_radical_or_zeroCartan
     p V x z hchar hinv).resolve_right hz
+
+/-- Rescaled source transport along the dual Cartan direction.  The time
+`n * Re z` makes its invariant capacity decay quadratically in the slope,
+while a dual character of exponent `z` has constant output. -/
+def dualCartanGraphNullSequence
+    (V : ℝ → E →ₗ[ℂ] E) (x : E) (z : ℂ) (n : ℕ) : E :=
+  Complex.exp
+      (-((((n : ℝ) * z.re : ℝ) : ℂ) * z)) •
+    V ((n : ℝ) * z.re) x
+
+/-- Every dual exponential character is constant on its Cartan graph-null
+sequence. -/
+theorem dualCartanGraphNullSequence_evaluation
+    (L : E →ₗ[ℂ] ℂ) (V : ℝ → E →ₗ[ℂ] E) (x : E) (z : ℂ)
+    (hchar : ∀ (t : ℝ) (u : E),
+      L (V t u) = Complex.exp ((t : ℂ) * z) * L u)
+    (n : ℕ) :
+    L (dualCartanGraphNullSequence V x z n) = L x := by
+  rw [dualCartanGraphNullSequence, map_smul, hchar]
+  change Complex.exp (-((((n : ℝ) * z.re : ℝ) : ℂ) * z)) *
+      (Complex.exp (((((n : ℝ) * z.re : ℝ) : ℂ)) * z) * L x) = L x
+  rw [← mul_assoc, ← Complex.exp_add]
+  have hzero :
+      -((((n : ℝ) * z.re : ℝ) : ℂ) * z) +
+          ((((n : ℝ) * z.re : ℝ) : ℂ) * z) = 0 := by ring
+  rw [hzero, Complex.exp_zero, one_mul]
+
+/-- Exact invariant-capacity decay of the Cartan graph-null sequence. -/
+theorem seminorm_dualCartanGraphNullSequence
+    (p : Seminorm ℂ E) (V : ℝ → E →ₗ[ℂ] E) (x : E) (z : ℂ)
+    (hinv : ∀ (t : ℝ) (u : E), p (V t u) = p u)
+    (n : ℕ) :
+    p (dualCartanGraphNullSequence V x z n) =
+      Real.exp (-((n : ℝ) * z.re ^ 2)) * p x := by
+  rw [dualCartanGraphNullSequence]
+  calc
+    p (Complex.exp (-((((n : ℝ) * z.re : ℝ) : ℂ) * z)) •
+        V ((n : ℝ) * z.re) x) =
+        ‖Complex.exp (-((((n : ℝ) * z.re : ℝ) : ℂ) * z))‖ *
+          p (V ((n : ℝ) * z.re) x) := p.smul' _ _
+    _ = Real.exp (-((n : ℝ) * z.re ^ 2)) * p x := by
+      rw [hinv, Complex.norm_exp]
+      congr 2
+      simp only [Complex.neg_re, Complex.mul_re, Complex.ofReal_re,
+        Complex.ofReal_im, zero_mul, sub_zero]
+      ring
+
+/-- A nonzero dual Cartan slope produces an explicit source sequence whose
+invariant capacity tends to zero while its dual-character output stays
+fixed.  This is the universal mechanism behind off-axis graph
+verticalization. -/
+theorem seminorm_dualCartanGraphNullSequence_tendsto_zero
+    (p : Seminorm ℂ E) (V : ℝ → E →ₗ[ℂ] E) (x : E) (z : ℂ)
+    (hinv : ∀ (t : ℝ) (u : E), p (V t u) = p u)
+    (hz : z.re ≠ 0) :
+    Filter.Tendsto (fun n => p (dualCartanGraphNullSequence V x z n))
+      Filter.atTop (nhds 0) := by
+  have hsq : 0 < z.re ^ 2 := sq_pos_of_ne_zero hz
+  have htop :
+      Filter.Tendsto (fun n : ℕ => (n : ℝ) * z.re ^ 2)
+        Filter.atTop Filter.atTop :=
+    tendsto_natCast_atTop_atTop.atTop_mul_const hsq
+  have hdecay :
+      Filter.Tendsto
+        (fun n : ℕ => Real.exp (-((n : ℝ) * z.re ^ 2)))
+        Filter.atTop (𝓝 0) :=
+    Real.tendsto_exp_atBot.comp
+      (tendsto_neg_atTop_atBot.comp htop)
+  have hmul := hdecay.const_mul (p x)
+  simpa only [seminorm_dualCartanGraphNullSequence p V x z hinv,
+    mul_zero, zero_mul, mul_comm] using hmul
 
 end
 

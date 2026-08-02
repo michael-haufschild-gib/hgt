@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.BaireGenericAvoidance
 import GaloisForLFunctions.HTGeometry.PolynomialJetEscape
 
 /-!
@@ -72,6 +73,18 @@ theorem interior_continuousLinearMap_mvPolynomial_zero_eq_empty_of_witness
     simp
   rw [hset]
   exact dense_continuousLinearMap_mvPolynomial_ne_zero_of_witness L P h hh
+
+/-- A polynomial defect pulled back through continuous linear observations is nowhere dense as
+soon as one source escapes it. -/
+theorem isNowhereDense_continuousLinearMap_mvPolynomial_zero_of_witness
+    {X σ : Type*} [TopologicalSpace X] [AddCommGroup X] [Module ℂ X]
+    [ContinuousAdd X] [ContinuousSMul ℂ X]
+    (L : X →L[ℂ] (σ → ℂ)) (P : MvPolynomial σ ℂ)
+    (h : X) (hh : MvPolynomial.eval (L h) P ≠ 0) :
+    IsNowhereDense {x : X | MvPolynomial.eval (L x) P = 0} := by
+  exact GaloisForLFunctions.isNowhereDense_of_isClosed_of_interior_eq_empty
+    (isClosed_continuousLinearMap_mvPolynomial_zero L P)
+    (interior_continuousLinearMap_mvPolynomial_zero_eq_empty_of_witness L P h hh)
 
 end
 

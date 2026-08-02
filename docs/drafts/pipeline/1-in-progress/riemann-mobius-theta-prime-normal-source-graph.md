@@ -211,8 +211,152 @@ the remaining scientific theorem after physical landing and singular graph const
       `tendsto_sum_range_mobiusThetaCompletePhysicalChannel`.  The quantitative refinement
       `summable_norm_mobiusThetaCompletePhysicalChannel_three` proves the codiagonal is actually
       `ell^1(L2)`, using an explicit geometric prime-normal envelope.
-- [ ] Prove the Fourier--Laplace formula (R-PN.6) on its honest domain.
-- [ ] Formalize reflected cocycle (R-PN.7)--(R-PN.8).
+- [x] Prove the Fourier--Laplace formula (R-PN.6) on its honest domain, including exact
+      integral--series interchange for every coefficient `n >= p`.
+- [x] Formalize reflected cocycle (R-PN.7)--(R-PN.8).
 - [ ] Package the single-valued closed graph and zero multivalued fibre.
 - [ ] Prove zero-normal analytic-order retention and projective multiplier extraction.
 - [ ] Attack Conjecture R-PN-Ward directly; do not replace it by its RH-equivalent consumer.
+
+## 2026-08-02 internal-jet complex normal graph update `[FORMALIZED]`
+
+The source/normal/reflection weld is now proved for every internal Xi jet order, not only for the
+zeroth physical vector.  Define the raw translated `p`-head before recentering by
+
+```text
+H_[k,p,m](x)
+ = mu(p) p^(-m/2)
+   (-i(x-m log p))^k Phi(x-m log p).                         (R-PN.11)
+```
+
+Direct Fourier--Laplace integration on the honest theta strip gives
+
+```text
+FL(H_[k,p,m])(w)
+ = L_p(m s(w)) XiC^(k)(w),
+L_p(z)=mu(p)p^(-z),  s(w)=1/2+iw.                            (R-PN.12)
+```
+
+This is a source theorem: the left side is the integral of (R-PN.11), and `XiC` enters only after
+the integral is evaluated.  The singular normal reader is also exact before transform:
+
+```text
+p^(m/2) H_[k,p,m](x+m log p)
+ = mu(p)(-ix)^k Phi(x).                                      (R-PN.13)
+```
+
+For prime `p`, `L_p(ms)` never vanishes and its reflected modulus quotient and odd profile are
+
+```text
+|L_p(m(1-s))| / |L_p(ms)| = p^(m(2 Re(s)-1)),                (R-PN.14)
+
+quotient(s)-quotient(1-s)
+ = exp(delta m log p)-exp(-delta m log p),
+delta=2 Re(s)-1.                                              (R-PN.15)
+```
+
+Finally, if `rho` has Xi multiplicity `r`, the adjacent raw-head conormal lands exactly as
+
+```text
+(FL(H_[r-1,p,m])(w_rho), FL(H_[r,p,m])(w_rho))
+ = (0, L_p(m rho) XiC^(r)(w_rho)),                            (R-PN.16)
+```
+
+and the second coordinate is nonzero.  Hence the same target-free source head simultaneously
+retains prime label, unsquared reflected orientation, and arbitrary divisor multiplicity.  This
+removes the prior logical gap between physical prime-normal extraction and the divisor conormal;
+no quotient by `XiC`, target-selected coefficient, or scalar postulate is used.
+
+Lean module:
+`RHTower/MobiusThetaInternalJetPrimeNormalComplexGraph.lean`.  The exact declarations are
+`mobiusThetaInternalJetRawHeadFourierLaplace_eq`,
+`mobiusThetaInternalJetRawHeadNormalReader_eq`,
+`mobiusThetaPrimeRawAmplitude_reflectionOddProfile`, and
+`mobiusThetaInternalJetRawHeadConormalPair_at_divisor`.
+
+### Updated open core
+
+The source graph itself, its complex Xi landing, its reflection character, and its multiplicity
+conormal are no longer open.  Remaining RH-bearing theorem is not another landing formula.  It is
+arithmetic admission of this labelled conormal graph into a source-derived Gamma/co-Poisson
+sector transverse to the codiagonal kernel, equivalently the R-PN-Ward energy bound (R-PN.10).
+The updated Hellinger--Hodge Gaussian countertransport theorem shows why uniform half-density
+capacity alone cannot prove this: off-line evaluation can diverge on a uniformly
+capacity-bounded reflected family.  Required estimate must therefore use the Möbius/ordinary-prime
+incidence retained by (R-PN.11)--(R-PN.16), not regular completion or scalar closure.
+
+## 2026-08-02 complete residual complex landing update `[FORMALIZED]`
+
+The raw head is no longer used as a surrogate for the full source.  For each `j >= 0`, set
+`n=p+j` and form the recentered source packet
+
+```text
+N_[k,p,m,j](x)
+ = p^(m/2) mu(n)n^(-m/2)
+   (-i(x-m(log n-log p)))^k Phi(x-m(log n-log p)).            (R-PN.17)
+```
+
+The complete residual source is the source-side sum
+`N_[k,p,m]=sum_(j>=0) N_[k,p,m,j]`.  On the honest domain
+`|Im(w)|<1` and `1/m<Re(s(w))`, absolute integral-norm summability proves the unconditional
+interchange
+
+```text
+FL(N_[k,p,m])(w)
+ = [sum_(n>=p) mu(n)(p/n)^(m s(w))] XiC^(k)(w).              (R-PN.18)
+```
+
+This is exactly (R-PN.6) for every internal jet order.  No tail coefficient is dropped, and the
+left side is synthesized before either transform evaluation or divisor selection.
+
+Write the bracketed multiplier as `M_[p,m](w)`.  Splitting its first coefficient gives
+
+```text
+M_[p,m](w) = mu(p) + sum_(n>p) mu(n)(p/n)^(m s(w)).           (R-PN.19)
+```
+
+For every fixed `Re(s(w))>0`, the strict tail tends to zero.  The proof is a complex Tannery
+argument with exact norm
+
+```text
+|mu(n)(p/n)^(m s(w))| = |mu(n)|(p/n)^(m Re(s(w)))
+```
+
+and the summable exponent-independent majorant `(p/n)^(3/2)` once
+`m Re(s(w)) >= 3/2`.  Consequently
+
+```text
+M_[p,m](w) -> mu(p).                                         (R-PN.20)
+```
+
+For prime `p`, `mu(p)=-1`, so (R-PN.20) yields eventual nonvanishing of the *complete* residual
+multiplier; this is derived rather than postulated.  If `rho` has Xi multiplicity `r`, then for
+all sufficiently large `m` the complete adjacent source pair satisfies
+
+```text
+(FL(N_[r-1,p,m])(w_rho), FL(N_[r,p,m])(w_rho))
+ = (0, M_[p,m](w_rho) XiC^(r)(w_rho)),                       (R-PN.21)
+```
+
+with nonzero second coordinate.  This closes the head-only gap in the previous update: complete
+arithmetic retention, prime isolation, and arbitrary multiplicity now coexist in one target-free,
+division-free source graph.
+
+Lean declarations in
+`RHTower/MobiusThetaInternalJetPrimeNormalComplexGraph.lean`:
+
+- `mobiusThetaInternalJetPrimeNormalResidualFourierLaplace_eq` proves (R-PN.18).
+- `tendsto_mobiusThetaPrimeNormalResidualMultiplier` proves (R-PN.20).
+- `eventually_mobiusThetaPrimeNormalResidualMultiplier_ne_zero_of_prime` derives complete
+  residual nonannihilation.
+- `eventually_mobiusThetaInternalJetPrimeNormalResidualConormalPair_at_divisor` proves
+  (R-PN.21).
+
+### Frontier after complete residual landing
+
+Fourier--Laplace landing and divisor nonannihilation are closed for the actual infinite residual,
+not only its head.  Remaining RH-bearing obstruction is source-derived Gamma/co-Poisson admission:
+prove that this labelled complete residual graph lies in an arithmetic sector transverse to the
+codiagonal kernel, or equivalently establish R-PN-Ward (R-PN.10).  Uniform capacity, ordinary
+closed-graph completion, and ungraded product topology remain ruled out by the updated
+Hellinger--Hodge countertransport results.

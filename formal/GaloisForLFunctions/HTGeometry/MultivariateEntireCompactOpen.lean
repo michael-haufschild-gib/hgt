@@ -55,6 +55,22 @@ def multivariateEntireSubmodule (d : ℕ) :
 /-- Compact-open multivariate entire sources, in the coordinate-line model. -/
 abbrev MultivariateEntire (d : ℕ) := multivariateEntireSubmodule d
 
+/-- Line-entire sources inherit additive inverses from the ambient continuous-map space. -/
+noncomputable instance multivariateEntire_addCommGroup (d : ℕ) :
+    AddCommGroup (MultivariateEntire d) :=
+  @Submodule.addCommGroup ℂ C(Fin d → ℂ, ℂ)
+    inferInstance inferInstance inferInstance (multivariateEntireSubmodule d)
+
+/-- Addition is continuous for the compact-open subspace topology on line-entire sources. -/
+noncomputable instance multivariateEntire_continuousAdd (d : ℕ) :
+    ContinuousAdd (MultivariateEntire d) :=
+  continuousAdd_induced (multivariateEntireSubmodule d).subtype
+
+/-- Complex scalar multiplication is continuous for the compact-open subspace topology. -/
+noncomputable instance multivariateEntire_continuousSMul (d : ℕ) :
+    ContinuousSMul ℂ (MultivariateEntire d) :=
+  continuousSMul_induced (multivariateEntireSubmodule d).subtype
+
 theorem differentiable_affineComplexLine {d : ℕ}
     (x v : Fin d → ℂ) :
     Differentiable ℂ (affineComplexLine x v) := by

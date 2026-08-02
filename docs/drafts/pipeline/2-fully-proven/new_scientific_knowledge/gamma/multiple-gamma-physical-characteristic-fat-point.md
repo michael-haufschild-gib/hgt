@@ -1,8 +1,10 @@
 # The physical multiple-Gamma characteristic pullback is a central fat point of order `r`
 
 - **ID:** `multiple-gamma-physical-characteristic-fat-point`
-- **Stage:** 2-fully-proven / complete formal-power-series physical fat-point and Koszul cores
-  Lean-formalized; convergent-germ instantiation and five-way special-function identity remain open
+- **Stage:** 2-fully-proven / complete formal-power-series **and convergent-germ** physical
+  fat-point and Koszul cores Lean-formalized, together with the exact two-way comparison between
+  the arc-contact filtration and the powered period-incidence scale and the numerical half of the
+  five-way law `(13)`; what remains is canonicity for a pointed polarized source
 - **Type:** THEOREM / PHYSICAL CHARACTERISTIC PULLBACK / DERIVED INCIDENCE SEAM
 - **Scientific status:** `[PAPER PROOF COMPLETE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE — PROVISIONAL]`
   `[PARENT COMPONENTS SEPARATED] [NOT AN RH RESULT]`
@@ -24,6 +26,22 @@
   `formal/GaloisForLFunctions/HTGeometry/PeriodIncidenceUniformEffectivity.lean`
 - **Lean powered-incidence phase law:**
   `formal/GaloisForLFunctions/HTGeometry/PeriodIncidenceMultiplier.lean`
+- **Lean filtration comparison and critical completion:**
+  - `formal/GaloisForLFunctions/HTGeometry/PhysicalPullbackPeriodIncidenceComparison.lean`
+  - `formal/GaloisForLFunctions/HTGeometry/PhysicalArcCriticalCompletion.lean`
+- **Lean convergent-germ ring `C{lambda}`:**
+  `formal/GaloisForLFunctions/HTGeometry/ConvergentGermPhysicalArc.lean`
+- **Lean source height and the order law:**
+  - `formal/GaloisForLFunctions/HTGeometry/VeroneseSourceHeightIncidence.lean`
+  - `formal/GaloisForLFunctions/HTGeometry/MultipleGammaPhysicalOrderLaw.lean`
+- **Lean natural positive-tangency realization:**
+  `formal/GaloisForLFunctions/HTGeometry/PhysicalTangencyNaturalSource.lean`
+- **Lean canonicity of the comparison:**
+  `formal/GaloisForLFunctions/HTGeometry/PhysicalArcComparisonCanonicity.lean`
+- **Lean realization independence:**
+  `formal/GaloisForLFunctions/HTGeometry/MultiplicativeRealizationComparison.lean`
+- **Lean transport and frame blindness:**
+  `formal/GaloisForLFunctions/HTGeometry/NormalCrossingSourceTransport.lean`
 - **Lean osculation/effectivity discriminator:**
   - `formal/GaloisForLFunctions/HTGeometry/QuadraticPhysicalCharacterOsculation.lean`
   - `formal/GaloisForLFunctions/HTGeometry/PhysicalOsculationEffectivityFracture.lean`
@@ -117,10 +135,29 @@ axiom audit pass from the existing cache; the audited theorems use only `propext
 `Classical.choice`, and `Quot.sound`.
 
 This closes both the abstract unit-scaled chain-transport gap and the formal-power-series
-exponential instantiation.  The card remains in step 2 because Lean does not yet prove the same
-factorization in the convergent-germ ring `C{lambda}` or the parent special-function identities
-`d_DA(Psi_r)=ht_src(Psi_r)=r` entering the five-way law `(13)`.  Moving the whole card would
-therefore overstate its formal status.
+exponential instantiation.
+
+The convergent instantiation `A=C{lambda}` is now Lean as well.
+`ConvergentGermPhysicalArc.lean` realizes `C{lambda}` as the subring of `Germ (nhds 0) C` whose
+elements have an analytic representative, proves that a germ with nonzero value at the origin is a
+unit, and instantiates the genuine exponential clock: `expArcGerm_eq_coordinate_mul` is
+`exp(t lambda)-1 = lambda U_t` with `U_t(0)=t`, so `isUnit_expArcUnitGerm` makes every nonzero
+period contribute a unit.  Hence `convergentCofaceIdeal_eq_span_pow` is exactly `(3)` over
+`C{lambda}`, and `convergentCofaceKoszulRowEquiv_functional` and
+`convergentCofaceKoszulChainEquiv_commutes` transport the actual Koszul complex to
+`(lambda^r,0,...,0)`, giving `(5)` there.  `convergentGerm_rowReducedPhysicalKoszulHomology_length`
+and `..._totalLength` then compute `(6)`--`(8)` over `C{lambda}`: degree-`k` length
+`r choose(r,k)` and total length `r 2^r`, the same integers as over `C[[lambda]]`.
+
+The ring theory needed for `(4)` is proved rather than assumed:
+`exists_pow_mul_isUnit` shows every nonzero convergent germ is `lambda^n` times a unit (from the
+mathlib isolated-zeros factorization), the ring is proved to be a domain,
+`irreducible_convergentCoordinate` proves the coordinate irreducible, and
+`IsDiscreteValuationRing ConvergentGerm` follows.  Therefore
+`convergentCofaceIdeal_quotient_length` computes `length_(C{lambda}) (C{lambda}/Phi_tau^* I_r)=r`,
+which is the fourth integer of `(13)` over the convergent local ring.  The first integer
+`d_DA(Psi_r)=r` is `multipleEllipticGammaTransverseDADepth_eq_order`, and the second integer is now
+Lean as well, so `(13)` is proved as a single theorem; see the order-law section below.
 
 Hence
 
@@ -201,6 +238,33 @@ The equality is not a numerical coincidence produced by one definition: its term
 differential algebra, filtered source algebra, topological group embedding, local intersection
 theory, and Koszul homology.
 
+### `(12)`--`(13)` are one unconditional Lean theorem
+
+`VeroneseSourceHeightIncidence.lean` computes the source height.  `MonoWide` bounds total degree
+from below (`le_totalDegree_of_monoWide`), a coface generator attains the bound
+(`totalDegree_prod_X`), so `isLeast_sourceDegrees` is `h(I_r)=r` as an `IsLeast` statement, not an
+infimum that might be unattained.  Composed with the annihilator theorem
+`daTranslationAnnihilator_eq_veroneseIdeal`, `isLeast_sourceDegrees_daTranslationAnnihilator` is
+**`ht_src(Psi_r)=r` for the genuine source**: the least total degree of a nonzero difference
+operator carrying the order-`r` logarithmic derivative into the differentially algebraic locus is
+exactly `r`.
+
+`MultipleGammaPhysicalOrderLaw.lean` then states `(13)` as one theorem.
+`multipleGamma_physicalOrderLaw` proves, for a generic order-`r` family and a nondiscrete integral
+period source, that all of
+
+```text
+d_DA(Psi_r),
+ht_src(Psi_r),
+ord_lambda(Phi_tau^* Ann_DA(Psi_r)),
+length_(C{lambda}) (C{lambda}/Phi_tau^* Ann_DA(Psi_r)),
+the powered period-incidence level detecting the arc image
+```
+
+equal `r`, with the contact and incidence statements sharp in both directions (level `r` attained,
+level `r+1` provably missed).  The derived amplitude of `(12)` is the same integer in its complex
+form, carried by the Koszul chain equivalences rather than by a number.  `#print axioms` clean.
+
 The original normal-crossing derived critical locus has amplitude `r-1`, while its physical
 pullback has amplitude `r`.  This absorbs the previously unexplained formula
 
@@ -278,6 +342,36 @@ coefficient — the same least augmentation degree — while `g'` has contact on
 two.  Hence source height alone does not determine physical obstruction multiplicity, which is the
 `[NO-GO]` of this section, and zero tangency is a genuine restriction rather than an automatic
 consequence.  `#print axioms` clean.
+
+### Positive tangency is realized by an actual special function
+
+`PhysicalTangencyNaturalSource.lean` replaces the engineered witness by a genuine multiple elliptic
+gamma.  It first makes `(14a)`--`(14c)` exact at the level of augmentation degree: `augDegree` is
+the least total degree of a monomial occurring in an operator,
+`pow_augDegree_dvd_physicalArcPullback` is `(14b)` (`mu_phys >= h`), and
+`isLeast_augDegrees_veroneseIdeal` is `h(I_r)=r` in that reading, matching the total-degree form.
+
+The natural realization is the additive resonance `tau_c = tau_a + tau_b`.  The group identity
+`T_c = T_a T_b` makes
+
+```text
+Q = (1 + x_a)(1 + x_b) - (1 + x_c)
+```
+
+annihilate every germ (`xApply_resonanceOperator`), hence lie in the differential-algebraic
+translation annihilator of the actual logarithmic derivative.  Lean proves
+`augDegree Q = 1` and `Phi_tau^* Q = tau_a tau_b lambda^2` with contact order exactly two
+(`augDegree_resonanceOperator`, `physicalArcContact_resonanceOperator`), so
+`resonantSource_positiveTangency` gives `tang_phys = 1` for a genuine source rather than a
+constructed constraint.  `resonantFrame_positiveTangency` instantiates it at the explicit frame
+`(i, 2i, 3i)`.
+
+The same computation shows the independence hypothesis of the annihilator theorem is not
+removable: `resonanceOperator_not_mem_veroneseIdeal` proves `Q` is outside `I_r` for `r >= 2`
+because `I_r` has augmentation degree `r`, so
+`resonantSource_annihilator_strictly_larger` proves that on a resonant frame the annihilator
+strictly contains `I_r` and its extra element has positive tangency.  Integral independence is
+therefore exactly what forces the zero-tangency class.  `#print axioms` clean.
 
 The positive-tangency test is now exact at source-geometric level.  For the Hankel conic on the
 rank-three source `(1,alpha,alpha^2)`, Lean proves source height two and physical contact order three.
@@ -416,16 +510,52 @@ The conjecture is stronger than the topological-radical proposal.  Two systems m
 reduced characteristic support and the same non-Hausdorff period quotient while having different
 fat-point order or derived homology.  Such systems must have different obstruction theories.
 
-`[OPEN CORE]` Construct a source-natural comparison morphism between the fat-point filtration
+`[OPEN CORE — FILTRATION HALF NOW CLOSED]` The comparison morphism between the fat-point
+filtration
 
 ```text
 A superset (lambda) superset ... superset (lambda^r)       (18)
 ```
 
-and the analytic small-period scale of `(15)`, prove that `lambda^k` realizes as the powered
-multiplier `w^k`, and prove that the order-`r` central source class produces the half-density
-`|w|^(r/2)` in `(16a)`.  Equality of the five integers in `(13)` is not enough; a real unified
-theory must preserve the actual filtration, polarization, and source pointing.
+and the analytic small-period scale of `(15)` is constructed and proved exact in
+`PhysicalArcCriticalCompletion.lean`: `lambda^k` realizes as the powered multiplier `w^k`, the
+`lambda`-adic Rees filtration is exactly the preimage of the powered incidence filtration, and the
+order-`r` central source class produces the closure-only half-density `|w|^(r/2)` of `(16a)`.
+
+Canonicity is proved too.  `PhysicalArcComparisonCanonicity.lean` upgrades the comparison to a
+homomorphism of `C`-algebras `arcEvalHom` into the bounded incidence space, and since the
+arc-coordinate scale is free on the arc coordinate, `arcEvalHom_unique` proves it is the **only**
+algebra map with the normalization `lambda -> w`.  Hence `arcEval_canonical`: pointing `1 -> 1`,
+every power `lambda^k -> w^k`, and therefore the whole exact filtration comparison
+(`arcEvalHom_mem_poweredRange_iff`) are forced by that single normalization rather than chosen; and
+the polarization exponent is the unique fixed point of the source-condition duality.  `#print
+axioms` clean.
+
+A second analytic realization of the same source syntax reproduces the comparison unchanged.
+`MultiplicativeRealizationComparison.lean` uses the multiplicative form -- finite products of
+integer powers of structural translates rather than difference operators on the logarithmic
+derivative.  `mem_multiplicativeDaAnnihilator_iff` proves the two realizations have literally the
+same annihilator, `multiplicativeRealization_comparison` proves that a differentially algebraic
+translate product has the same arc-contact order, the same powered period-incidence level and the
+same closure-only half-density, and `realizationIndependent_canonicalComparison` combines this with
+uniqueness of the normalized algebra map.  So the pointed polarized comparison is an invariant of
+the source syntax, not of one realization of it.
+
+The transport question of item 6 is settled in general rather than family by family.
+`NormalCrossingSourceTransport.lean` defines a source realization of order `r` to be one whose
+differential-algebraic translation annihilator is the squarefree degree-`r` ideal, and
+`physicalPackage_of_isNormalCrossingSource` proves that the whole physical package -- source
+height, arc-contact order with its sharp upper bound, powered period-incidence level with its sharp
+upper bound, and the closure-only half-density -- is computed from `r` alone.  So any two
+realizations with the same normal-crossing ideal have literally the same package, and the
+Barnes/multiple-sine comparison follows from the classical ideal computation with no further
+analytic input.  `isNormalCrossingSource_daTranslationAnnihilator` and
+`multiplicativeDaAnnihilator_eq_preimage` record the two realizations already built.
+
+What is left is the Lean construction of the Barnes/multiple-sine object itself, which is not a
+theorem of this card.  Its convergent route is the genus-`r` Weierstrass product over the cone
+`N^r`; the required cone summability reduces to `summable_fintype_pi_product_of_nonneg` and the
+factor estimate to the closed form `E_r'(u) = (-1)^r u^r exp(S_r(u))`.
 
 ## No-gos and positive successors
 
@@ -460,6 +590,19 @@ scientific content.
 **Positive successor:** an admissible completion must be reconstructed from `(18)` and preserved by
 a second independent source realization.
 
+### Package no-go: the physical package is blind to the frame
+
+`physicalPackage_frame_blind` proves that any two nonvanishing period frames of the same order give
+the same arc-contact order, the same sharp non-divisibility at the next level, and the same
+convergent fat-point length.  The package therefore carries no information beyond `r`, and cannot
+separate two source families that share the normal-crossing ideal.
+
+**Positive successor:** what the package discards, the bounded symbol spectrum retains.
+`physicalPackage_blind_symbolSpectrum_separates` pairs the blindness statement with
+`regularizedPeriodSpectrum_eq_iff`: the unordered symbol spectrum determines the embedded period
+module exactly.  The conservative invariant is the pair, never the package alone.  This is the
+sharpened form of the fat-point completeness no-go below.
+
 ### Fat-point completeness no-go
 
 The local scheme `A/(lambda^r)` fixes multiplicity and derived coherence but not the rate at which
@@ -486,8 +629,62 @@ next-search list:
   order-`r` symbol scaled by the period product.
 
 So the `lambda`-adic filtration of the physical pullback maps into the powered source-regularity
-filtration, with the coface generators hitting the symbol exactly.  `#print axioms` clean.  What
-remains is the critical completion and the passage from polynomial arcs to the analytic scale.
+filtration, with the coface generators hitting the symbol exactly.
+
+The ideal-level Rees filtration asked for in item 5 is built in the same module:
+
+- `arcContactFiltration` -- operators of physical contact order at least `k`, as the comap of
+  `(lambda^k)` along the arc pullback, hence an ideal;
+- `arcContactFiltration_antitone`, `arcContactFiltration_zero` and
+  `arcContactFiltration_mul_le` -- it is a descending multiplicative (Rees) filtration: contact
+  orders add under multiplication;
+- `veroneseIdeal_le_arcContactFiltration` and
+  `veroneseIdeal_not_le_arcContactFiltration_succ` -- **the squarefree annihilator sits exactly at
+  level `r`**, no higher;
+- `arcContactFiltration_arcEval_mem_poweredRange` -- **the source-natural comparison**: level `k`
+  of the Rees filtration evaluates into the range of the order-`k` powered period-incidence
+  multiplier.
+
+`#print axioms` clean.
+
+### The critical completion makes the comparison exact
+
+`PhysicalArcCriticalCompletion.lean` closes the passage from polynomial arcs to the analytic scale
+and upgrades the comparison from preserving to exact.
+
+The completion is the scale of germs holomorphic on a disc of radius larger than one; it is the
+completion adapted to the symbol, because `|w|<1` always and the critical value one is approached
+only along periods of unbounded size.  `discEvalVector` evaluates such a germ at the period
+symbols, `exists_bound_on_closedUnitBall` supplies its boundedness, and
+`discEvalVector_polynomial` identifies the polynomial arc scale as a subscale.
+
+- `exists_nonzeroPeriod_weight_tendsto_zero` -- for a nondiscrete period group the symbols of
+  nonzero periods accumulate at zero;
+- `X_pow_dvd_of_eval_bound` and `exists_differentiableOn_pow_factor_of_bound` -- **order
+  detection**: a bound `|f(w_i)| <= C|w_i|^n` along a vanishing sequence forces divisibility by
+  `lambda^n`, respectively a holomorphic factorization `f=z^n g`.  The holomorphic half peels one
+  power at a time through the removable-singularity form of `dslope`;
+- `discEvalVector_mem_poweredRange_iff` -- **the comparison is exact on the critical completion**:
+  the evaluation lies in the range of the order-`n` powered multiplier exactly when the germ has
+  contact order at least `n`;
+- `arcEvalVector_mem_poweredRange_iff` -- the same for the polynomial scale;
+- `mem_arcContactFiltration_iff_arcEval_mem_poweredRange` -- **the arc-contact Rees filtration is
+  exactly the preimage of the powered period-incidence filtration**, not merely mapped into it;
+- `veroneseIdeal_arcEval_poweredRange_exact` -- the squarefree annihilator is detected at level
+  exactly `r`: its whole arc image is in the order-`r` range, and a coface generator is provably
+  outside the order-`r+1` range;
+- `veroneseIdeal_criticalComparison` -- the order-`r` package: exact level, the exact target `w^r`,
+  and the source-produced closure-only half-density `|w|^(r/2)` of `(16a)`.
+
+The genuine analytic clock, not only its linearization, lives on the same completion:
+`expArcUnit` is the holomorphic unit factor of `exp(t z)-1`, `mul_expArcUnit` and `expArcUnit_zero`
+prove `exp(t z)-1 = z U_t(z)` with `U_t(0)=t`, `exponentialCofaceProduct_eq` factors a coface
+product of `r` genuine clock factors as `z^r` times a nonvanishing unit, and
+`exponentialCofaceProduct_poweredRange_exact` proves that its incidence image sits at level `r` of
+the powered scale and provably not at level `r+1`.  So the nonlinear physical clock has the same
+exact contact order as the linear arc, which is the analytic-scale form of zero tangency.
+
+`#print axioms` clean.
 
 ## Where to look next
 
@@ -509,11 +706,13 @@ The next search is not for another RH criterion and not for more abstract topolo
 4. **Rigidity test.**  Find a source with the same reduced pair arrangement but a different physical
    pullback multiplicity.  If the predicted obstruction phases do not change, `(17)` is too rich;
    if they do, reduced-support theories are conclusively nonconservative.
-5. **Tangency/effectivity interaction.**  The exact conic source model with `tang_phys=1` is now
-   formalized, as is its independence from the nondiscrete effectivity phase.  Construct the
-   ideal-level physical arc-contact Rees filtration and compare it source-naturally with the
-   powered period-incidence filtration.  Then realize positive tangency in a natural HT special
-   function rather than only in the universal constraint source.
+5. **Tangency/effectivity interaction.**  The exact conic source model with `tang_phys=1` is
+   formalized, as is its independence from the nondiscrete effectivity phase, the ideal-level
+   arc-contact Rees filtration, and its exact comparison with the powered period-incidence
+   filtration on both the polynomial and the analytic scale.  Positive tangency is now realized in
+   a genuine multiple elliptic gamma with a resonant period frame, not only in the universal
+   constraint source, and the same operator shows that integral independence is necessary for the
+   annihilator theorem.  This item is closed.
 6. **Barnes/multiple-sine realization.**  After the meromorphic comparison, perform the same
    physical pullback for the Barnes/multiple-sine source, whose classical normal-crossing ideal is
    already known to agree, and test whether the complete derived and half-density data agree.
@@ -582,6 +781,29 @@ five-way equality `(13)`.  This is preliminary negative evidence, not priority c
 - [x] same-source osculation/effectivity independence formalized
 - [x] finish Lean formalization of the pullback ideal core
 - [x] formalize the invertible row reduction to `(lambda^r,0,...,0)`
+- [x] ideal-level physical arc-contact Rees filtration constructed and compared source-naturally
+      with the powered period-incidence filtration
+- [x] the comparison proved exact in both directions on the polynomial arc scale
+- [x] critical completion constructed and the comparison proved exact on the analytic
+      (non-polynomial) scale
+- [x] the genuine exponential clock, not only its linearization, proved to have contact order
+      exactly `r` on the critical completion
+- [x] convergent-germ ring `C{lambda}` constructed, proved a discrete valuation ring, and the
+      physical pullback ideal computed there as `(lambda^r)` with quotient length `r`
+- [x] the source-height identity `ht_src(Psi_r)=r` of `(13)` in Lean
+- [x] the five-way law `(13)` stated and proved as a single unconditional Lean theorem
+- [x] `(6)`--`(8)` computed over the convergent local ring as well as the formal one
+- [x] `(14b)` and `h(I_r)=r` formalized in the augmentation-degree reading
+- [x] positive physical tangency realized in a genuine multiple elliptic gamma (resonant frame),
+      with the resulting proof that integral independence is necessary for the annihilator theorem
+- [x] canonicity of the comparison for a pointed polarized source
+- [x] a second analytic realization (multiplicative translate products) reproducing the same
+      pointed polarized comparison
+- [x] transport proved in general: the whole physical package is a function of the annihilator
+      ideal alone, so agreement of the classical normal-crossing ideal already forces agreement of
+      the derived and half-density data
+- [x] the resulting blindness no-go isolated and paired with the symbol-spectrum successor
+- [ ] Lean construction of the Barnes/multiple-sine object itself (not a theorem of this card)
 - [x] formalize the row-reduced physical Koszul differential and its square-zero law
 - [x] formalize its exact cycle and boundary coefficient normal forms
 - [x] formalize the surviving `choose(r,k)` basis multiplicity
@@ -600,6 +822,8 @@ five-way equality `(13)`.  This is preliminary negative evidence, not priority c
   unconditionally in Lean (`PhysicalArcContactVeronese.lean`)
 - [x] filtration-preserving comparison morphism `lambda^k |-> w^k` constructed in Lean
   (`PhysicalPullbackPeriodIncidenceComparison.lean`)
+- [x] ideal-level physical arc-contact Rees filtration constructed and compared source-naturally
+  with the powered period-incidence filtration (`PhysicalPullbackPeriodIncidenceComparison.lean`)
 - [ ] extend the comparison to the critical completion and the analytic (non-polynomial) scale
 - [ ] identify the critically completed bounded symbol with `w^r`
 - [ ] prove the Barnes/multiple-sine second realization
@@ -615,3 +839,6 @@ five-way equality `(13)`.  This is preliminary negative evidence, not priority c
 - 2026-08-02 -- The filtration-preserving comparison morphism was constructed in Lean: bounded
   evaluation at the period symbol sends `lambda^k` to `w^k` and carries the physical arc filtration
   of the squarefree annihilator into the powered period-incidence filtration.
+- 2026-08-02 -- The ideal-level arc-contact Rees filtration was constructed in Lean, shown
+  multiplicative and descending, located the squarefree annihilator exactly at level `r`, and
+  compared source-naturally with the powered period-incidence filtration.
