@@ -1,6 +1,14 @@
 import GaloisForLFunctions.RHTower.GammaCoPoissonIntervalFactorialBridge
 import GaloisForLFunctions.RHTower.XiPrimeSeamCoherenceCollapse
 
+/-!
+# Burnol prime dilation and co-Poisson divided quotient
+
+Exact half-density prime character, its removable finite-log divided difference, the zeta-zero
+resolvent identity valid on and off confluence, and its FE--Schwarz seam normalization.  The
+finite-log cell is the existing Gamma/co-Poisson interval source, including all confluent jets.
+-/
+
 open Complex
 
 namespace RHTower

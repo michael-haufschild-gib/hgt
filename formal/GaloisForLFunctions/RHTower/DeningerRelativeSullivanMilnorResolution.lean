@@ -3,6 +3,7 @@ import Mathlib.Algebra.TrivSqZeroExt.Basic
 import Mathlib.Algebra.Algebra.Subalgebra.Basic
 import Mathlib.RingTheory.Ideal.Quotient.Operations
 import Mathlib.Tactic.NoncommRing
+import GaloisForLFunctions.HTGeometry.ExteriorOddDerivation
 
 /-!
 # The Milnor quotient of an exterior algebra and the first relative Sullivan layer
@@ -575,6 +576,140 @@ theorem deningerSullivanFirstLayerProjection_surjective :
 end Projection
 
 end FirstLayer
+
+section FirstLayerDifferential
+
+open HTGeometry
+
+variable {k V : Type*} [CommRing k] [AddCommGroup V] [Module k V]
+
+/-- The grading involution is the identity on the degree-two part. -/
+theorem deningerExteriorInvolute_exteriorTwo {U : Type*} [AddCommGroup U] [Module k U]
+    {x : ExteriorAlgebra k U} (hx : x ∈ ⋀[k]^2 U) :
+    deningerExteriorInvolute k U x = x := by
+  have hx' : x ∈ LinearMap.range (ι k : U →ₗ[k] ExteriorAlgebra k U) *
+      LinearMap.range (ι k : U →ₗ[k] ExteriorAlgebra k U) := by
+    rw [← pow_two]
+    exact hx
+  refine Submodule.mul_induction_on hx' ?_ ?_
+  · rintro _ ⟨a, rfl⟩ _ ⟨b, rfl⟩
+    rw [map_mul, deningerExteriorInvolute_ι, deningerExteriorInvolute_ι, neg_mul_neg]
+  · intro p q hp hq
+    rw [map_add, hp, hq]
+
+/-- The relative inclusion carries the degree-two part into the degree-two part. -/
+theorem deningerSullivanInclusion_exteriorTwo (W : Type*) [AddCommGroup W] [Module k W]
+    {x : ExteriorAlgebra k V} (hx : x ∈ ⋀[k]^2 V) :
+    deningerSullivanInclusion k V W x ∈ ⋀[k]^2 (V × W) := by
+  have hx' : x ∈ LinearMap.range (ι k : V →ₗ[k] ExteriorAlgebra k V) *
+      LinearMap.range (ι k : V →ₗ[k] ExteriorAlgebra k V) := by
+    rw [← pow_two]
+    exact hx
+  refine Submodule.mul_induction_on hx' ?_ ?_
+  · rintro _ ⟨a, rfl⟩ _ ⟨b, rfl⟩
+    rw [map_mul, deningerSullivanInclusion_ι, deningerSullivanInclusion_ι]
+    exact deningerExteriorTwo_mem _ _
+  · intro p q hp hq
+    rw [map_add]
+    exact Submodule.add_mem _ hp hq
+
+variable (k V)
+
+/-- The generator assignment of the first Sullivan layer on the whole generator space: the old
+generators are closed and every new generator maps to the degree-two element it kills. -/
+noncomputable def deningerSullivanFirstPhi :
+    (V × (⋀[k]^2 V)) →ₗ[k] ExteriorAlgebra k (V × (⋀[k]^2 V)) :=
+  (deningerSullivanFirstDifferential k V).comp (LinearMap.snd k V (⋀[k]^2 V))
+
+@[simp]
+theorem deningerSullivanFirstPhi_apply (u : V × (⋀[k]^2 V)) :
+    deningerSullivanFirstPhi k V u =
+      deningerSullivanInclusion k V (⋀[k]^2 V) ((u.2 : ExteriorAlgebra k V)) :=
+  rfl
+
+variable {k V}
+
+/-- Every generator value of the first layer lies in the degree-two part. -/
+theorem deningerSullivanFirstPhi_mem (u : V × (⋀[k]^2 V)) :
+    deningerSullivanFirstPhi k V u ∈ ⋀[k]^2 (V × (⋀[k]^2 V)) :=
+  deningerSullivanInclusion_exteriorTwo _ u.2.2
+
+/-- The generator values of the first layer are central, so they determine an odd derivation. -/
+theorem deningerSullivanFirstPhi_commute (u : V × (⋀[k]^2 V))
+    (x : ExteriorAlgebra k (V × (⋀[k]^2 V))) :
+    Commute (deningerSullivanFirstPhi k V u) x :=
+  deningerExteriorPowerTwo_central (deningerSullivanFirstPhi_mem u) x
+
+/-- The generator values of the first layer are invariant under the grading involution. -/
+theorem deningerSullivanFirstPhi_involute (u : V × (⋀[k]^2 V)) :
+    deningerExteriorInvolute k (V × (⋀[k]^2 V)) (deningerSullivanFirstPhi k V u) =
+      deningerSullivanFirstPhi k V u :=
+  deningerExteriorInvolute_exteriorTwo (deningerSullivanFirstPhi_mem u)
+
+variable (k V)
+
+/-- **The differential of the first relative Sullivan layer**, as an odd derivation of the whole
+extension algebra. -/
+noncomputable def deningerSullivanFirstLayerDifferential :
+    ExteriorAlgebra k (V × (⋀[k]^2 V)) →ₗ[k] ExteriorAlgebra k (V × (⋀[k]^2 V)) :=
+  deningerOddDerivation (deningerSullivanFirstPhi k V) deningerSullivanFirstPhi_commute
+
+variable {k V}
+
+/-- The old generators are closed. -/
+@[simp]
+theorem deningerSullivanFirstLayerDifferential_old (v : V) :
+    deningerSullivanFirstLayerDifferential k V (ι k ((v, 0) : V × (⋀[k]^2 V))) = 0 := by
+  rw [deningerSullivanFirstLayerDifferential, deningerOddDerivation_ι,
+    deningerSullivanFirstPhi_apply]
+  simp
+
+/-- Every new generator has the degree-two element it kills as differential. -/
+@[simp]
+theorem deningerSullivanFirstLayerDifferential_new (w : ⋀[k]^2 V) :
+    deningerSullivanFirstLayerDifferential k V (ι k ((0, w) : V × (⋀[k]^2 V))) =
+      deningerSullivanInclusion k V (⋀[k]^2 V) (w : ExteriorAlgebra k V) := by
+  rw [deningerSullivanFirstLayerDifferential, deningerOddDerivation_ι,
+    deningerSullivanFirstPhi_apply]
+
+/-- **The graded Leibniz rule for the first-layer differential.** -/
+theorem deningerSullivanFirstLayerDifferential_leibniz
+    (x y : ExteriorAlgebra k (V × (⋀[k]^2 V))) :
+    deningerSullivanFirstLayerDifferential k V (x * y) =
+      deningerExteriorInvolute k (V × (⋀[k]^2 V)) x *
+          deningerSullivanFirstLayerDifferential k V y +
+        deningerSullivanFirstLayerDifferential k V x * y :=
+  deningerOddDerivation_leibniz _ _ x y
+
+/-- The first-layer differential kills the image of the degree-two part. -/
+theorem deningerSullivanFirstLayerDifferential_kill {x : ExteriorAlgebra k V}
+    (hx : x ∈ ⋀[k]^2 V) :
+    deningerSullivanFirstLayerDifferential k V
+      (deningerSullivanInclusion k V (⋀[k]^2 V) x) = 0 := by
+  have hx' : x ∈ LinearMap.range (ι k : V →ₗ[k] ExteriorAlgebra k V) *
+      LinearMap.range (ι k : V →ₗ[k] ExteriorAlgebra k V) := by
+    rw [← pow_two]
+    exact hx
+  refine Submodule.mul_induction_on hx' ?_ ?_
+  · rintro _ ⟨a, rfl⟩ _ ⟨b, rfl⟩
+    rw [map_mul, deningerSullivanInclusion_ι, deningerSullivanInclusion_ι,
+      deningerSullivanFirstLayerDifferential_leibniz,
+      deningerSullivanFirstLayerDifferential_old,
+      deningerSullivanFirstLayerDifferential_old]
+    simp
+  · intro p q hp hq
+    rw [map_add, map_add, hp, hq, add_zero]
+
+/-- **The first-layer differential squares to zero**, so the first relative Sullivan layer is an
+honest differential graded algebra. -/
+theorem deningerSullivanFirstLayerDifferential_comp_self
+    (x : ExteriorAlgebra k (V × (⋀[k]^2 V))) :
+    deningerSullivanFirstLayerDifferential k V
+      (deningerSullivanFirstLayerDifferential k V x) = 0 :=
+  deningerOddDerivation_comp_self _ _ deningerSullivanFirstPhi_involute
+    (fun u => deningerSullivanFirstLayerDifferential_kill u.2.2) x
+
+end FirstLayerDifferential
 
 end RHTower
 

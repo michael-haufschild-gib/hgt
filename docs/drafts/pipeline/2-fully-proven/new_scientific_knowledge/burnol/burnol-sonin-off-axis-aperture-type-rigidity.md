@@ -315,9 +315,33 @@ The last item is the entire right-hand side of the reflected estimate: once the 
 functional equation `(8)` is available, the `sigma < 1/2` case of `(3)` is immediate from it, because
 `F_+` is norm preserving and `L_a` is cosine invariant.
 
-Still outside the formal tree: the completed Mellin--cosine functional equation `(8)`
-`M f(w) = M(F_+ f)(1-w)`, which is the archimedean local functional equation for even test
-functions; Burnol's orthogonal-complement identification `(10)`; and the co-Poisson dilation
+The functional equation `(8)` is being built in
+
+```text
+formal/GaloisForLFunctions/RHTower/ArchimedeanMellinFourier.lean
+```
+
+along the Gaussian-resolution route, which reduces `(8)` to two identities about the Gaussian
+smoothing family `G f u = integral_R f(t) exp(-pi u t^2) dt`.  Both are now proved unconditionally:
+
+```text
+integral_Ioi_gaussianPower
+  : 0 < Re w -> 0 < t
+    -> integral_{(0,infinity)} u^(w/2-1) exp(-pi u t^2) du
+         = pi^(-w/2) Gamma(w/2) t^(-w)                                (Gamma resolution)
+gaussianSmoothing_fourier
+  : f integrable, 0 < u -> G (Fourier f) u = u^(-1/2) G f (1/u)        (multiplication formula)
+gaussianSmoothing_of_even
+  : f even and integrable -> G f u = 2 * half-line smoothing
+```
+
+The first is the Gamma integral applied to the Gaussian at rate `pi t^2`; the second is mathlib's
+self-adjointness of the Fourier integral tested against the self-dual Gaussian, whose transform
+supplies exactly the factor `u^(-1/2)` and the reciprocal scale.  Chaining them by Fubini and the
+inversion substitution `u -> 1/u` yields `(8)`; those two remaining steps are the current front.
+
+Still outside the formal tree: the Fubini interchange and the inversion substitution completing
+`(8)`; Burnol's orthogonal-complement identification `(10)`; and the co-Poisson dilation
 contractions giving the lower bound `(11)`.  Those are what the two-sided law `(12)` and the limit
 `(13)` still require.
 
@@ -332,6 +356,7 @@ contractions giving the lower bound `(11)`.  Those are what the two-sided law `(
 - [ ] construct the surviving source anomaly-cancellation comparison
 - [x] Lean: completed Mellin evaluator, aperture-head class, ambient bound `(3)`--`(7)`, `(14)`
 - [x] Lean: unitary cosine transform `F_+`, extended Sonine space `L_a`, cosine invariance
-- [ ] Lean: completed Mellin functional equation `(8)` (range `sigma < 1/2`)
+- [x] Lean: Gamma resolution of the completed power weight and the Gaussian multiplication formula
+- [ ] Lean: Fubini interchange and inversion substitution completing `(8)`
 - [ ] Lean: orthogonal-complement identification `(10)` and co-Poisson lower bound `(11)`
 

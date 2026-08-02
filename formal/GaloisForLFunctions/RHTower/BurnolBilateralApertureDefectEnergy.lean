@@ -73,7 +73,6 @@ theorem norm_sq_burnolApertureDefectMinus (a r : ℝ) (hr : 1 < r) (z za : evenS
   nlinarith [norm_nonneg lam⁻¹, norm_nonneg za]
 
 theorem burnol_bilateralApertureDefectEnergy (a r : ℝ) (hr : 1 < r) (z za : evenSubspace) (lam : ℂ)
-    (hlam : lam ≠ 0)
     (hplus : evenCentralSoninProjection a
       (ContinuousLinearMap.adjoint (evenDilationCLM r (zero_lt_one.trans hr)) z) =
         star lam • za)
@@ -112,10 +111,8 @@ theorem burnol_bilateralApertureDefectEnergy_eq_rpow (a r : ℝ) (hr : 1 < r) (w
       (evenDilationCLM r (zero_lt_one.trans hr) z) = star ((burnolMellinDilationCharacter r w)⁻¹) • za) :
     ‖burnolApertureDefectMinus a r hr z‖ ^ 2 - ‖burnolApertureDefectPlus a r hr z‖ ^ 2 =
       (r ^ (2 * w.re - 1) - r ^ (1 - 2 * w.re)) * ‖za‖ ^ 2 := by
-  have hs := burnol_bilateralApertureDefectEnergy a r hr z za (burnolMellinDilationCharacter r w)
-    (Complex.cpow_ne_zero_iff.mpr
-      (Or.inl (by exact_mod_cast (zero_lt_one.trans hr).ne')))
-    hplus hminus
+  have hs := burnol_bilateralApertureDefectEnergy a r hr z za
+    (burnolMellinDilationCharacter r w) hplus hminus
   rw [hs, norm_burnolMellinDilationCharacter_sq r (zero_lt_one.trans hr) w,
     norm_burnolMellinDilationCharacter_inv_sq r (zero_lt_one.trans hr) w]
 
@@ -245,6 +242,31 @@ theorem burnol_bilateralApertureDefects_oriented_right_iff (a r : ℝ) (hr : 1 <
       rw [hs]
       positivity
     nlinarith [norm_nonneg (burnolApertureDefectMinus a r hr z), norm_nonneg (burnolApertureDefectPlus a r hr z)]
+
+theorem burnol_bilateralApertureDefects_oriented_left_iff (a r : ℝ) (hr : 1 < r) (w : ℂ)
+    (z za : evenSubspace) (hza : za ≠ 0)
+    (hplus : evenCentralSoninProjection a
+      (ContinuousLinearMap.adjoint (evenDilationCLM r (zero_lt_one.trans hr)) z) =
+        star (burnolMellinDilationCharacter r w) • za)
+    (hminus : evenCentralSoninProjection a
+      (evenDilationCLM r (zero_lt_one.trans hr) z) =
+        star ((burnolMellinDilationCharacter r w)⁻¹) • za) :
+    ‖burnolApertureDefectMinus a r hr z‖ < ‖burnolApertureDefectPlus a r hr z‖ ↔ w.re < 1 / 2 := by
+  have hs := burnol_bilateralApertureDefectEnergy_eq_rpow a r hr w z za hplus hminus
+  have hzanorm : 0 < ‖za‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hza)
+  rw [← burnol_rpowOrientation_neg_iff r w.re hr]
+  constructor <;> intro h
+  · have hsq : ‖burnolApertureDefectMinus a r hr z‖ ^ 2 -
+        ‖burnolApertureDefectPlus a r hr z‖ ^ 2 < 0 := by
+      nlinarith [norm_nonneg (burnolApertureDefectMinus a r hr z),
+        norm_nonneg (burnolApertureDefectPlus a r hr z)]
+    nlinarith [hs]
+  · have hsq : ‖burnolApertureDefectMinus a r hr z‖ ^ 2 -
+        ‖burnolApertureDefectPlus a r hr z‖ ^ 2 < 0 := by
+      rw [hs]
+      exact mul_neg_of_neg_of_pos h hzanorm
+    nlinarith [norm_nonneg (burnolApertureDefectMinus a r hr z),
+      norm_nonneg (burnolApertureDefectPlus a r hr z)]
 
 end
 end RHTower

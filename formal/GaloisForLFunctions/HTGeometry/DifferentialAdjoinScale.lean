@@ -149,6 +149,7 @@ theorem coe_differentialIndependentAdjoinScaleDifferentialAlgEquiv_apply
   exact congrArg Subtype.val
     (differentialIndependentAdjoinScaleDifferentialAlgEquiv_apply x hx u i)
 
+omit [Differential F] in
 /-- Two differential algebra homomorphisms out of a differentially generated field are determined
 by the order-zero generators. -/
 theorem differentialAlgHom_ext_of_differentialAdjoin_eq_top
@@ -172,16 +173,30 @@ theorem differentialAlgHom_ext_of_differentialAdjoin_eq_top
   refine IntermediateField.adjoin_induction F (p := p) ?_ ?_ ?_ ?_ ?_ hz
   · rintro y ⟨w, ⟨i, rfl⟩, n, rfl⟩
     induction n with
-    | zero => simpa only [differentialJet_zero] using hx i
+    | zero =>
+        change f (differentialJet 0 (x i)) = g (differentialJet 0 (x i))
+        simpa only [differentialJet_zero] using hx i
     | succ n ih =>
+        change f (differentialJet (n + 1) (x i)) =
+          g (differentialJet (n + 1) (x i))
+        change f (differentialJet n (x i)) = g (differentialJet n (x i)) at ih
         rw [differentialJet_succ, hfderiv, hgderiv, ih]
   · intro c
+    change f (algebraMap F E c) = g (algebraMap F E c)
     exact f.commutes c |>.trans (g.commutes c).symm
   · intro a b ha hb hfa hfb
+    change f (a + b) = g (a + b)
+    change f a = g a at hfa
+    change f b = g b at hfb
     simpa only [map_add] using congrArg₂ (· + ·) hfa hfb
   · intro a ha hfa
+    change f a⁻¹ = g a⁻¹
+    change f a = g a at hfa
     simpa only [map_inv₀] using congrArg Inv.inv hfa
   · intro a b ha hb hfa hfb
+    change f (a * b) = g (a * b)
+    change f a = g a at hfa
+    change f b = g b at hfb
     simpa only [map_mul] using congrArg₂ (· * ·) hfa hfb
 
 /-- Canonical equivalence between two free differential horizons conjugates their simultaneous

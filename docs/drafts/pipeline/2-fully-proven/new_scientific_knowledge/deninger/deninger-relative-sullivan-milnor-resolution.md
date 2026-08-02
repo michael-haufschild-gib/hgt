@@ -227,6 +227,26 @@ the tower needs, without any graded tensor product.  Axiom audit for all 23 decl
   induction on the algebra.  For the first Sullivan layer the generator values lie in `Λ²V` and `D`
   vanishes on `V`, so this hypothesis is exactly the layer's own lower-triangularity.
 
+### The first layer as an honest differential graded algebra
+
+The general derivation is instantiated on the card's own object in
+`DeningerRelativeSullivanMilnorResolution.lean`.  Axiom audit for all 13 new declarations:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerExteriorInvolute_exteriorTwo` — the grading involution is the identity on the degree-two
+  part, so the first layer's generator values are involution-invariant.
+- `deningerSullivanInclusion_exteriorTwo` — the relative inclusion carries `⋀²V` into `⋀²(V ⊕ W)`,
+  which with `deningerExteriorPowerTwo_central` gives `deningerSullivanFirstPhi_commute`: the
+  generator values are central, exactly the hypothesis the odd derivation needs.
+- `deningerSullivanFirstLayerDifferential` — **the differential of step 1 as an odd derivation of
+  the whole extension algebra** `Λ(V ⊕ ⋀²V)`, not merely a map on generators.
+  `deningerSullivanFirstLayerDifferential_old` and `_new` are its defining values: the old
+  generators are closed and `d w_{a,b} = a ∧ b`.
+- `deningerSullivanFirstLayerDifferential_leibniz` — the graded Leibniz rule on the whole algebra.
+- `deningerSullivanFirstLayerDifferential_kill`, `_comp_self` — the differential annihilates the
+  image of `⋀²V`, hence **`d² = 0`**.  The first relative Sullivan layer is therefore a genuine
+  differential graded algebra, and its cohomology is a statable object via the cochain layer above.
+
 ### What is still missing, and why
 
 The theorem's proof is a factorization in the model category of nonnegatively graded commutative
@@ -236,9 +256,8 @@ DGAs.  mathlib has no model category structures and no small-object argument, so
   category.
 - the transfinite induction of steps 2 and 4 — attaching further generators at successor stages
   and terminating by the small-object argument — cannot be run.  `DeningerRelativeSullivan`
-  records what such a tower would have to satisfy, the first layer is built, and the graded
-  differential the tower runs on now exists; what is absent is the ordinal-indexed factorization
-  itself.
+  records what such a tower would have to satisfy, the first layer is built and is now an honest
+  differential graded algebra; what is absent is the ordinal-indexed factorization itself.
 - consequently clause 3's quasi-isomorphism, though now statable, is not yet *proved*: the first
   layer alone is not a quasi-isomorphism, and the proof of the quasi-isomorphism is exactly the
   transfinite argument above.  Only its surjectivity half is formalized
@@ -262,3 +281,6 @@ the limit-stage comparison of step 3.
   extension carrying the Koszul sign, the odd derivation determined by central generator
   values, its graded Leibniz rule, its anticommutation with the involution, and `D² = 0`.
   The remaining gap is the ordinal-indexed model-category factorization.
+- 2026-08-02 — Instantiated the derivation on the card's own object: the first relative Sullivan
+  layer now carries an odd derivation of the whole algebra `Λ(V ⊕ ⋀²V)` with the prescribed
+  generator values, the graded Leibniz rule, and `d² = 0`.

@@ -131,4 +131,63 @@ theorem integral_Ioi_gaussianPower {w : ℂ} (hw : 0 < w.re) {t : ℝ} (ht : 0 <
       ((1 / (Real.pi * t ^ 2 : ℝ) : ℝ) : ℂ) from by push_cast; ring, hstep]
   ring
 
+
+/-! ## Even carriers -/
+
+theorem gaussianKernel_ofReal (u t : ℝ) :
+    Complex.exp (-(Real.pi : ℂ) * (u : ℂ) * (t : ℂ) ^ 2) =
+      ((Real.exp (-(Real.pi * u * t ^ 2)) : ℝ) : ℂ) := by
+  rw [show (-(Real.pi : ℂ) * (u : ℂ) * (t : ℂ) ^ 2)
+      = ((-(Real.pi * u * t ^ 2) : ℝ) : ℂ) from by push_cast; ring,
+    ← Complex.ofReal_exp]
+
+theorem norm_gaussianKernel_le_one {u : ℝ} (hu : 0 ≤ u) (t : ℝ) :
+    ‖Complex.exp (-(Real.pi : ℂ) * (u : ℂ) * (t : ℂ) ^ 2)‖ ≤ 1 := by
+  rw [gaussianKernel_ofReal, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_pos (Real.exp_pos _)]
+  refine Real.exp_le_one_iff.mpr ?_
+  have : 0 ≤ Real.pi * u * t ^ 2 := by positivity
+  linarith
+
+theorem integrable_mul_gaussianKernel {f : ℝ → ℂ} (hf : Integrable f) {u : ℝ} (hu : 0 ≤ u) :
+    Integrable fun t : ℝ => f t * Complex.exp (-(Real.pi : ℂ) * (u : ℂ) * (t : ℂ) ^ 2) := by
+  refine hf.norm.mono' ?_ ?_
+  · exact hf.aestronglyMeasurable.mul
+      (Complex.continuous_exp.comp (by fun_prop)).aestronglyMeasurable
+  · filter_upwards with t
+    rw [norm_mul]
+    calc ‖f t‖ * ‖Complex.exp (-(Real.pi : ℂ) * (u : ℂ) * (t : ℂ) ^ 2)‖
+        ≤ ‖f t‖ * 1 := by
+          exact mul_le_mul_of_nonneg_left (norm_gaussianKernel_le_one hu t) (norm_nonneg _)
+      _ = ‖f t‖ := mul_one _
+
+/-- On an even carrier the Gaussian smoothing is twice its half-line smoothing. -/
+theorem gaussianSmoothing_of_even {f : ℝ → ℂ} (hf : Integrable f)
+    (heven : ∀ t : ℝ, f (-t) = f t) {u : ℝ} (hu : 0 ≤ u) :
+    gaussianSmoothing f u =
+      2 * ∫ t in Ioi (0 : ℝ), f t * Complex.exp (-(Real.pi : ℂ) * (u : ℂ) * (t : ℂ) ^ 2) := by
+  set h : ℝ → ℂ :=
+    fun t => f t * Complex.exp (-(Real.pi : ℂ) * (u : ℂ) * (t : ℂ) ^ 2) with hh
+  have hheven : ∀ t : ℝ, h (-t) = h t := by
+    intro t
+    simp only [hh, heven t]
+    congr 2
+    push_cast
+    ring
+  have hint : Integrable h := integrable_mul_gaussianKernel hf hu
+  have hsplit := integral_add_compl (measurableSet_Iio (a := (0 : ℝ))) hint
+  rw [compl_Iio, integral_Ici_eq_integral_Ioi] at hsplit
+  have hrefl : (∫ x in Iio (0 : ℝ), h x) = ∫ x in Ioi (0 : ℝ), h x := by
+    have hpre : (Neg.neg : ℝ → ℝ) ⁻¹' (Ioi (0 : ℝ)) = Iio 0 := by
+      ext x
+      simp
+    have hmp := (Measure.measurePreserving_neg (volume : Measure ℝ)).setIntegral_preimage_emb
+      measurableEmbedding_neg h (Ioi (0 : ℝ))
+    rw [hpre] at hmp
+    rw [← hmp]
+    exact setIntegral_congr_fun measurableSet_Iio fun x _ => (hheven x).symm
+  rw [hrefl] at hsplit
+  rw [gaussianSmoothing, ← hsplit]
+  ring
+
 end RHTower
