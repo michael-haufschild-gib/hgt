@@ -562,6 +562,96 @@ quantitative word bound, and space-for-time encodings do not prove it.  Any
 further route is rejected unless its headline estimate already contains the
 Hamiltonian-dependent circuit infimum at fixed error.
 
+#### Radial shortcut-codimension equivalence
+
+There is an exact representation of the remaining theorem in which physical
+time is no longer a separate variable.  Assume the Hamiltonian map is linear,
+write `H(x)=sum_a x_a P_a`, and let `Lambda` be the homogeneous simulation
+cost.  Define the fixed radial shortcut locus
+
+\[
+ \mathfrak S_{\varepsilon,a}
+ =
+ \left\{x\in\mathbb R^m:
+ C_\varepsilon(e^{-iH(x)}\Phi_0)
+ \leq {a\Lambda(H(x))\over\operatorname{poly}(n)}
+ \right\}.
+ \tag{O4.3d}
+\]
+
+For every coefficient direction `J` and every `t>0`, linearity and
+homogeneity give the exact identities
+
+\[
+ e^{-itH(J)}=e^{-iH(tJ)},\qquad
+ t\Lambda(H(J))=\Lambda(H(tJ)).
+ \tag{O4.3e}
+\]
+
+Hence, on a fixed energy shell with normalized angular measure `sigma`,
+(O4.3) is exactly the spherical estimate
+
+\[
+ \sigma\{\theta:t\theta\in\mathfrak S_{\varepsilon,a}\}
+ \leq C t^{-\kappa},
+ \qquad \kappa=cm ,
+ \tag{O4.3f}
+\]
+
+through the pre-saturation radial range.  The Brown--Susskind cut problem is
+therefore a statement that the robust low-relative-word locus loses a fixed
+fraction of the local-Hamiltonian parameter dimension at infinity.
+
+For the unconditioned centered Gaussian ensemble the equivalence is a volume
+theorem.  Let `gamma_m` be standard Gaussian measure and let `B` be any
+measurable subset of `R^m`.  For `0<kappa<m`, the following two estimates are
+equivalent up to constants depending only on `m,kappa`:
+
+\[
+ \gamma_m\{J:tJ\in B\}\leq Kt^{-\kappa}
+ \quad(t\geq1),                                        \tag{O4.3g}
+\]
+
+and
+
+\[
+ \operatorname{vol}(B\cap B_R)
+ \leq K'R^{m-\kappa}
+ \quad(R\geq1).                                        \tag{O4.3h}
+\]
+
+Indeed, `(O4.3g)` at `t=R` and the lower bound
+
+\[
+ (2\pi R^2)^{-m/2}e^{-1/2}
+\]
+
+for the `N(0,R^2I_m)` density on `B_R` prove `(O4.3h)`.  Conversely, split
+`B` into `B_t` and the dyadic annuli
+`B_{2^{j+1}t}\setminus B_{2^jt}`.  On the `j`th annulus the scaled Gaussian
+density is at most
+
+\[
+ (2\pi t^2)^{-m/2}e^{-2^{2j-1}},
+\]
+
+while `(O4.3h)` bounds its volume by
+`K'(2^{j+1}t)^{m-\kappa}`.  The resulting series converges and gives
+`(O4.3g)`.
+
+Applied to `B=mathfrak S_(epsilon,a)`, this proves:
+
+> **Radial shortcut-codimension theorem.**  Aggregate quenched linear
+> complexity growth with failure `t^(-kappa)` is equivalent to polynomial
+> volume growth of the complete Hamiltonian-dependent shortcut locus with
+> dimension at most `m-kappa`.
+
+This is stronger than saying each fixed circuit has a transverse preimage.
+The union over all words whose permitted length grows radially is already
+inside `mathfrak S_(epsilon,a)`.  Thus the exact remaining mathematical task
+is to prove positive codimension for that single global set.  Word-by-word
+transversality, even if sharp, does not imply `(O4.3h)`.
+
 #### Dynamical NLTS equivalence
 
 Fix a trivial gapped parent Hamiltonian `K_0` with unique product ground state

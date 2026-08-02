@@ -347,3 +347,56 @@ HT theorem, and the DD generator computation.  No analytic claim is inserted as 
 - [ ] independent specialist proof and novelty audit
 - [ ] group--Cech and DA coefficient complexes formalized in Lean
 - [ ] analytic theorem formalized without axioms
+
+## Lean route for the pointed incidence phase (14b)
+
+The abstract gerbe/Cech layer is not the cheapest entry point.  The *pointed incidence phase* is,
+and the corpus already owns every input:
+
+- **`exists_nonconstant_fixed_iff_discretePeriodSource`**
+  (`HTGeometry/DiscretePeriodGaugeClassification`) -- a global meromorphic element fixed by an
+  integral period source is constant exactly when that source is non-discrete.  Contrapositive: for
+  a non-discrete source, *every* fixed element is a constant.  This is the "joint-fixed function is
+  constant" step of `(14b)`, already unconditional.
+- **`not_discrete_intSpan_fin_three`**, **`irrationalPeriodGroup_not_discrete`**
+  (`HTGeometry/GalePeriodClosureFracture`) -- three rationally independent periods span a
+  non-discrete group.  With `1, tau, sigma` this is exactly the irrationality hypothesis `(1)`.
+- **`multipleEllipticGamma_exactPeriodRankDichotomy`** and the rank-three minor interface -- the HT
+  half of `Inc_B = empty`.
+- `addTranslationMeroEquiv` and the meromorphic differential field -- the ambient sector `M`.
+
+So the remaining Lean work is the assembly:
+
+1. a bridge lemma `constant_of_fixed_of_not_discrete` (one contrapositive of the classification);
+2. the two-shift boundary of the elliptic-gamma logarithmic derivative, as an element of the
+   meromorphic field;
+3. `Inc_M(b, F(z_*)) = {F}` -- uniqueness from 1 plus the pointing;
+4. `Inc_B(b, F(z_*)) = empty` -- a DA primitive would equal `F` by 3, contradicting HT.
+
+## Log addendum
+
+- 2026-08-02 -- located the corpus assets for the pointed incidence phase; the joint-fixed
+  constancy and the non-discreteness of a rationally independent period triple are already
+  unconditional Lean, so `(14b)` is an assembly rather than a construction.
+
+## Lean status of the pointed incidence phase
+
+Step 1 of the route is done, unconditionally, in `HTGeometry/PointedIncidenceConstancy.lean`:
+
+> **`exists_const_of_fixed_of_not_discrete`** -- a global meromorphic element fixed by a
+> non-discrete integral period source is a constant, by contraposing the exact gauge
+> classification;
+> **`fixed_span_of_fixed_generators`** -- fixing the three generators is enough: the fixed periods
+> form an integral submodule, so the whole span fixes the element;
+> **`exists_const_of_fixed_rankThree`** -- **for a rationally independent triple `1, sigma, tau`,
+> every jointly fixed meromorphic element is constant.**  Irrationality enters exactly once, as
+> non-discreteness of the span;
+> **`eq_of_fixed_rankThree_of_sub_const`** -- the pointed form: two elements whose difference is
+> jointly fixed and whose separating evaluation agrees are equal.  This is the "source pointing
+> removes the constant kernel" clause of `(14c)`.
+
+`#print axioms` clean.  What remains for `(14b)` is the analytic identification: the two-shift
+boundary of the elliptic-gamma logarithmic derivative, and the reading of `Inc_B = empty` off the
+hypertranscendence theorem.
+
+- 2026-08-02 -- the constancy and pointing steps of `(14b)` are unconditional Lean.

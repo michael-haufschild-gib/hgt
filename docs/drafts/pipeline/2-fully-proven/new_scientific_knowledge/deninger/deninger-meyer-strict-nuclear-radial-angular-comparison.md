@@ -2268,3 +2268,25 @@ differential, an induced map, a prism — are all bounded, so all are continuous
 between this and `(6)`–`(7)` verbatim is the bookkeeping identification of mathlib's singular chain
 complex with the free-module model used here, which is a compatibility statement rather than new
 mathematics.
+
+### Record — §3 statement `(8)`: the contraction with coefficients (Lean, unconditional)
+
+* `HTGeometry/SingularChainSingle.lean`
+  - `singularChainHomotopyEquivSingleOfPoint` — the singular chains of a point are chain homotopy
+    equivalent to the coefficient object in degree zero; the chains of a point are the alternating
+    constant complex on the coproduct of one copy of the coefficient object, and that complex is
+    homotopy equivalent to the degree-zero complex.
+  - `singularChainHomotopyEquivSingle` — **the singular chains of a contractible space are chain
+    homotopy equivalent to the coefficient object placed in degree zero.**  This is the sharp form
+    of `(7)`: a split chain homotopy equivalence, with the augmentation as the equivalence.
+  - `singularChainHomotopyEquivSingle_sphere_lp` — the same for the unit sphere of `ℓ²(ℕ, ℝ)`.
+  - `singularChainCoeffHomotopyEquivSingle` — **the contraction survives every additive coefficient
+    functor**, because such a functor commutes with the degree-zero complex.
+  - `singularChainTensorHomotopyEquivSingle_sphere_lp` — the chains of the sphere with coefficients
+    `R`, tensored with `A`, are `R ⊗ A` in degree zero.
+  - `singularChainUnitTensorHomotopyEquiv_sphere_lp` — **statement `(8)`**:
+    `C_•(S(H)) ⊗ A ≃ A` for the sphere of `ℓ²(ℕ, ℝ)` and any coefficient module `A`, as a chain
+    homotopy equivalence and not merely a homology isomorphism.
+
+Together with the boundedness of the differential, of an induced chain map and of a prism operator
+for the free locally convex seminorms, this closes `(6)`–`(8)` of §3.

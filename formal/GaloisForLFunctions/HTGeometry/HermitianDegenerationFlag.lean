@@ -73,7 +73,7 @@ theorem eigenSum_smul {r : ℝ} (hr : 0 < r) (c : ℝ) :
         = Module.End.eigenspace ((r : ℂ) • T) ((r * μ : ℝ) : ℂ) :=
       (eigenspace_smul (T := T) (ne_of_gt hr) μ).symm
     rw [hkey]
-    exact eigenspace_le_eigenSum (by exact (mul_lt_mul_left hr).2 hμ)
+    exact eigenspace_le_eigenSum (mul_lt_mul_of_pos_left hμ hr)
 
 theorem eigenspace_add_smul_id (a μ : ℝ) :
     Module.End.eigenspace (T + (a : ℂ) • LinearMap.id) ((μ + a : ℝ) : ℂ)
