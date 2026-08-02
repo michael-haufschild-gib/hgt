@@ -2290,3 +2290,85 @@ mathematics.
 
 Together with the boundedness of the differential, of an induced chain map and of a prism operator
 for the free locally convex seminorms, this closes `(6)`–`(8)` of §3.
+
+### Record — §4: the apex `(9)` and the two endpoint maps `(10)` (Lean, unconditional)
+
+* `HTGeometry/PuncturedContractible.lean` — statement `(9)`, the apex.
+  - `puncturedIsometryMap`, `puncturedLineToIsometry_ne_zero`, `puncturedLineToPoint_ne_zero` — the
+    two straight-line families used for the sphere never vanish on any nonzero vector, so no
+    renormalisation is needed off the sphere.
+  - `contractibleSpace_punctured_of_isometry` — **the punctured space `H ∖ {0}` is contractible**
+    whenever `H` carries a linear isometry whose range misses a unit vector orthogonally and which
+    fixes no antipode.
+  - `contractibleSpace_punctured_lp` — the punctured `ℓ²(ℕ, ℝ)` is contractible.  Fibrewise
+    adjoining `h = 0` is therefore the cone on a contractible base: the radial coordinate carries no
+    topology and nothing is created at the apex, which is exactly what `(9)` asserts.
+
+* `RHTower/DeningerEndpointCodimension.lean` — statement `(10)`, sharpened.
+  - `hermitePoly_two_eval_zero`, `hermiteSchwartz_two_zero_ne_zero` — the second Hermite function
+    does not vanish at the origin; its value there is `-(1/π)` times the Gaussian.
+  - `deningerFourierEval_hermiteSchwartz` — the endpoint value of a Hermite function is its value at
+    the origin times the Fourier eigenvalue `(-i)ⁿ`.
+  - `exists_even_endpoint_values` — **every pair of endpoint values is realized by an even Schwartz
+    function**: `h₀` and `h₂` are even with the opposite Fourier eigenvalues `+1` and `−1`, so the
+    two endpoint functionals are already independent on their span.
+  - `deningerEndpointPair`, `deningerEndpointPair_surjective`, `ker_deningerEndpointPair` — the pair
+    of endpoint maps is a surjection of the even Schwartz functions onto `ℂ²` whose kernel is
+    exactly Meyer's space.
+  - `deningerEndpointQuotientEquiv`, `deningerMeyerCap_finrank_quotient` — **Meyer's space has
+    codimension exactly two in the even Schwartz functions.**
+
+  The card's `(10)` — that the relative common kernel is exactly `ℋ_∩` — was already recorded as
+  `deningerMeyerCap_eq_endpoints`.  What is added here is its sharp complement: the two endpoint
+  maps are independent and the codimension is exactly two, so no third boundary functional and no
+  extra "Fourier boundary point" survives.  This is the statement the card asserts and it is now
+  proved rather than asserted.
+
+### Record — §3: Galois descent by normalized averaging (Lean, unconditional)
+
+* `HTGeometry/HaarAveragingExactness.lean`
+  - `invariantsMap`, `invariantsMap_coe`, `invariantsMap_injective` — the map induced on invariants
+    by an equivariant map; invariants always preserve injections.
+  - `averageMap_apply` — the averaging projector written as the normalized sum over the group.
+  - `map_averageMap` — **the averaging projector is natural in the representation**: being a fixed
+    linear combination of the group elements, it commutes with every equivariant map.  This is the
+    only fact needed, and it is exactly what "normalized Haar averaging" contributes.
+  - `invariantsMap_surjective` — **invariants preserve surjections**: the projector produces an
+    invariant preimage of an invariant element.
+  - `range_invariantsMap` — **invariants preserve exactness.**
+  - `invariants_shortExact` — **a short exact sequence of representations stays short exact after
+    invariants.**
+
+This is the card's sentence "continuous invariants are exact on the complete coefficient modules
+used here by normalized Haar averaging.  Applying invariants to `(6)` therefore preserves its strict
+quasi-isomorphism", proved for a compact group acting through a finite quotient — the case in which
+the normalized Haar measure is the normalized counting measure and the argument has content.
+mathlib had the averaging projector and its two projector properties but not its naturality, and
+therefore not the exactness of the invariants functor; both are proved here.
+
+### Record — §2 pro-Ind, first brick: nuclear maps with controlled mass (Lean, unconditional)
+
+The remaining classical input of the pro-Ind passage is that a countable inductive limit of nuclear
+spaces is nuclear.  The route taken here is the one that uses the corpus's own permanence theorems:
+an inductive limit is a quotient of the direct sum, quotients of nuclear spaces are already proved
+nuclear, so what has to be built is the direct sum.  For a direct sum the comparison map of two
+seminorms is an *infinite* sum of coordinate comparison maps, so the existing finite-sum lemma is
+not enough: the masses of the rank-one representations must be tracked and made summable.
+
+* `RHTower/DeningerNuclearTsum.lean`
+  - `DeningerIsNuclearLe T M` — nuclearity with a bound on the mass of the representation.
+  - `DeningerIsNuclearLe.isNuclear`, `.mono`, `DeningerIsNuclear.exists_nuclearLe` — the bounded
+    notion refines the plain one and every nuclear map has some finite mass.
+  - `DeningerIsNuclearLe.compR`, `.compL` — **the quantitative ideal property**: composing on either
+    side multiplies the mass by the norm of the factor.  This is what lets a coordinate comparison
+    map be rescaled to have arbitrarily small mass, by enlarging the dominating seminorm on that
+    coordinate.
+  - `DeningerIsNuclearLe.tsum` — **a pointwise convergent family of nuclear maps with summable
+    masses has a nuclear sum**, of mass at most the sum of the masses: concatenate the rank-one
+    representations over the disjoint union of their index sets, using `summable_sigma_of_nonneg`
+    for the masses and norm-comparison for the vectors.
+
+The remaining steps of the pro-Ind passage are: the direct-sum seminorm family (weighted sums of
+coordinate seminorms), the identification of its comparison map with the sum of the coordinate
+comparison maps conjugated by inclusion and projection, and the choice of weights `2ⁿ(1 + Mₙ)` that
+makes the masses summable.  Then quotient permanence gives the inductive limit.

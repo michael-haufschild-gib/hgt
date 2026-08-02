@@ -240,3 +240,52 @@ from that boundary to Weil positivity, the critical line, or zero exclusion is k
   frame gives an apartment with `N!` chambers.  The remaining content of `(3)` is the identification
   of the Tits boundary of `SL_N(C)/SU(N)` with the building of parabolic subgroups, for which the
   toolchain still has no symmetric-space library.
+
+- 2026-08-02 — **The metric-degeneration description `(4)` is formalized, in both directions.**
+  Four new modules, all wired into the `HTGeometry` umbrella, all axioms
+  `[propext, Classical.choice, Quot.sound]`:
+  `HermitianDegenerationFlag.lean`, `HermitianFlagSimplex.lean`, `HermitianFlagRealization.lean`,
+  `HermitianApartment.lean`.
+
+  The card's section "Metric-degeneration description" says a traceless Hermitian direction `A`
+  determines a flag of eigenspace sums, that distinct eigenvalues give a chamber and repeated ones a
+  face, that commuting directions give one apartment, and that every horizon flag arises this way.
+  All four are now theorems.
+
+  The flag of a direction is `eigenSum A c = ⨆_{μ > c} eigenspace A μ`.  It is a chain
+  (`eigenSum_antitone`, `isChain_range_eigenSum`) and it depends only on the *direction*: positive
+  rescaling of `A` moves nothing (`eigenSum_smul`), and neither does adding a scalar
+  (`eigenSum_add_smul_id`) — so the traceless, determinant-one normalization of the card costs
+  nothing.  Through the eigenvector basis the flag is explicit (`eigenSum_eq_span`) and its members
+  have the expected dimensions (`finrank_eigenSum`: the number of eigenvalues above the threshold).
+
+  - **Simplex.** Every proper nonzero member is a vertex of the building
+    (`eigenSum_mem_properPart`), and the flag is a nondegenerate simplex of the building's order
+    complex of dimension two less than the number of distinct eigenvalues (`exists_flag_simplex`,
+    `exists_nonDegenerate_flag`).
+  - **Chamber.** With `N` distinct eigenvalues the flag is a complete flag — one subspace of every
+    intermediate dimension — hence a chamber, a nondegenerate simplex in the top dimension `N - 2`
+    (`exists_chamber_of_injective_eigenvalues`, `exists_nonDegenerate_chamber`).  Repeated
+    eigenvalues drop the dimension, so they give a face, exactly as the card states.
+  - **Apartment.** The eigenlines of a direction are a frame, and every member of its flag is the
+    span of a subfamily (`exists_frame_eigenSum_span`): the flag lies in one apartment.  Two
+    *commuting* directions have a joint eigenbasis (`exists_joint_eigenbasis` — the eigenspaces of
+    one are invariant under the other, and diagonalizing inside each gives one frame), so their
+    flags lie in a **single** apartment (`exists_frame_eigenSum_span_commuting`).  That is the
+    card's "commuting choices of `A` lie in one maximal flat and give one apartment".
+  - **Every horizon flag arises.**  The converse, `exists_isSymmetric_eigenSum_eq`: given any chain
+    of proper nonzero subspaces there is a Hermitian operator whose degeneration flag is that chain.
+    The construction is the orthogonal graded decomposition of the chain
+    (`gradedPiece`, `iSup_gradedPiece_eq`) carrying the operator that is a distinct real scalar on
+    each piece (`pieceOperator`), whose flag is computed unconditionally
+    (`eigenSum_pieceOperator`, `eigenSum_pieceOperator_filtration`).
+
+  So the degeneration flags of Hermitian directions are **exactly** the simplices of the building,
+  with the chamber/face dichotomy of the card and the apartment structure of commuting directions.
+
+  What is still missing for `(3)` is unchanged and is not asserted: the Tits boundary of
+  `SL_N(C)/SU(N)` as a metric object — the symmetric-space metric, its geodesic rays, asymptote
+  classes and the Tits distance — for which the toolchain has no library.  What is now formalized is
+  the whole content of `(4)` that lives in linear algebra: the map from Hermitian directions to
+  simplices of the building, its surjectivity, and the two structural facts (chamber criterion,
+  common apartment for commuting directions) that make it a boundary-at-infinity dictionary.

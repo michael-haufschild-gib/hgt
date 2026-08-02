@@ -400,3 +400,146 @@ boundary of the elliptic-gamma logarithmic derivative, and the reading of `Inc_B
 hypertranscendence theorem.
 
 - 2026-08-02 -- the constancy and pointing steps of `(14b)` are unconditional Lean.
+
+## Lean status of `(14b)`
+
+`HTGeometry/PointedShiftIncidence.lean` proves the incidence phase in the ambient meromorphic
+differential field, for an arbitrary hypertranscendental primitive:
+
+> **`meroConstant`**, **`ConstantPointing`** -- the embedded constants and a constant-separating
+> evaluation, i.e. the source pointing of `(14c)`;
+> **`shiftIncidence`** -- the pointed primitives of a two-shift boundary inside a sector: the same
+> two shift differences, fixity under the retained unit period, and the prescribed pointing;
+> **`daSector`** -- the differentially algebraic sector `B`;
+> **`shiftIncidence_subsingleton`** -- **two pointed primitives coincide**: their difference is
+> fixed by all three periods, hence constant by `exists_const_of_fixed_rankThree`, and the pointing
+> kills that constant;
+> **`shiftIncidence_ambient_eq_singleton`** -- **`Inc_M(b, F(z_*)) = {F}`**;
+> **`shiftIncidence_da_eq_empty`** -- **`Inc_B(b, F(z_*)) = empty`** for a hypertranscendental `F`:
+> a differentially algebraic pointed primitive would coincide with `F`;
+> **`nonempty_constantPointing`** -- the pointing exists, so neither statement is vacuous: the
+> constants are a rational subspace of the ambient field and any rational left inverse of that
+> embedding separates them.
+
+`#print axioms` clean.  Both fibres of `(14b)` are therefore unconditional Lean, for any
+hypertranscendental primitive of a rationally independent two-shift boundary.
+
+`HTGeometry/EllipticGammaPointedIncidence.lean` instantiates them at the card's own
+`F = d/dz log Gamma(z; tau, sigma)`:
+
+> **`ellipticPeriodPair`**, **`ellipticLogDerivMero`** -- the two-period family and the logarithmic
+> derivative as an element of the meromorphic differential field;
+> **`unitPeriod_defect_ellipticLogDerivMero`** -- the retained unit period, from the corpus's
+> `addTranslationMeroEquiv_one_multipleEllipticGammaLogDerivMero`;
+> **`rankThreeMinor_ellipticPeriodPair`**, **`hypertranscendental_ellipticLogDerivMero`** -- the
+> irrationality hypothesis `(1)` is exactly a rank-three minor, so the dichotomy gives
+> hypertranscendence;
+> **`ellipticLogDeriv_ambient_incidence`** -- **`Inc_M(b, F(z_*)) = {F}`**;
+> **`ellipticLogDeriv_da_incidence`** -- **`Inc_B(b, F(z_*)) = empty`**;
+> **`ellipticLogDeriv_pointed_incidence_phase`** -- **the pointed incidence phase `(14b)` for the
+> elliptic gamma, unconditionally.**
+
+`#print axioms` clean.  The card's `[PROVED]` incidence phase is now fully Lean; the remaining Lean
+gate concerns the group--Cech gerbe layer `(11)`--`(13)`, not this phase.
+
+- 2026-08-02 -- `(14b)` proved in the abstract: singleton ambient fibre, empty DA fibre, inhabited
+  pointing.
+- 2026-08-02 -- (14b) instantiated at the elliptic gamma logarithmic derivative: empty pointed DA
+  fibre, singleton pointed ambient fibre, both unconditional.
+
+## Lean status of the DA edge `(13)`
+
+The nontriviality asserted by `(13)` -- that the translation cocycle `(10)` is not a coboundary in
+the differentially algebraic coefficient group -- is unconditional Lean in
+`HTGeometry/TranslationCocycleAnomaly.lean`:
+
+> **`cocycle_not_coboundary_of_notMem`** -- **the general mechanism**: if the cocycle
+> `q ↦ sigma_q(G)/G` were the coboundary of a sector element `b` over a non-discrete period group,
+> then `G/b` would be fixed by that group, hence constant, and `G` would lie in the sector.  So an
+> element outside a constant-stable sector has a genuinely anomalous cocycle;
+> **`daSector_const_mul`** -- the differentially algebraic sector is constant-stable, since the
+> constants are in the image of the coordinate field and differential algebraicity is closed under
+> products;
+> **`ellipticGamma_cocycle_not_daCoboundary`** -- **the elliptic gamma instance**: for rationally
+> independent periods no differentially algebraic element presents its translation cocycle as a
+> coboundary over the rank-three period group.  Since a coboundary over the larger group `H` of
+> `(9)` restricts to one over that lattice, this is exactly the nonvanishing claimed by `(13)`.
+
+`#print axioms` clean.  Note the shared mechanism: the same "fixed by a non-discrete group implies
+constant" step drives the empty differentially algebraic incidence fibre `(14b)` and the nonzero
+differentially algebraic edge `(13)`.  The additive and multiplicative anomalies of the card are one
+statement about constants.
+
+- 2026-08-02 -- the DA edge `(13)` nontriviality is unconditional Lean, via the same constancy
+  mechanism as `(14b)`.
+
+## Lean status of the cochain layer
+
+`HTGeometry/TwoShiftKoszulCochain.lean` builds the degree-one/two cochain layer of the two-shift
+group in the ambient meromorphic field.  For a free rank-two translation group the multiplicative
+cochain complex is the Koszul complex, so no general group-cohomology machinery is needed:
+
+> **`shiftQuotient`** -- one component of the canonical degree-one cochain of an element;
+> **`koszulCoboundary`** -- the degree-two coboundary of a degree-one cochain, the mixed quotient of
+> its two entries;
+> **`koszulCoboundary_shiftQuotient`** -- **the canonical cochain is a cocycle**, because the two
+> translations commute.  This is the algebraic content of `(11)`: the class is a cocycle *before*
+> any coefficient quotient is taken;
+> **`koszulCoboundary_shiftQuotient_mem_of_one_mem`** -- hence its image in every coefficient
+> quotient is a cocycle too;
+> **`ellipticGamma_koszul_cocycle_not_daCoboundary`** -- **the elliptic gamma cochain is a cocycle
+> whose class is not a differentially algebraic coboundary**: the pointed degree-one anomaly in
+> cochain form.
+
+`#print axioms` clean.
+
+What is still outside Lean on this card is the degree-two *nonvanishing* `(12)`: that the connecting
+class is nonzero in `H^2(C_A)`.
+
+**Correction (2026-08-02).**  An earlier note here proposed a route to `(12)` avoiding the
+Dixmier--Douady generator: assume the cocycle is a differentially algebraic coboundary, subtract it,
+use ambient effectivity, and conclude that the elliptic gamma is differentially algebraic.  That
+route does not close.  Undoing the coboundary only shows that the shift quotients of a corrected
+element are differentially algebraic, and *that does not imply the element is* -- the elliptic gamma
+is itself the counterexample, since its shift quotients are theta functions, which are differential
+algebraic, while the gamma function is hypertranscendental.  This is exactly the content of `(9)`.
+
+Two structural facts explain why the degree-one work does not extend:
+
+- in the pure translation direction the coboundary of the gamma cochain is *trivial*
+  (`koszulCoboundary_shiftQuotient`), because the two translations commute.  The anomaly `phi` of
+  `(5)` therefore lives in the mixed Cech-times-group bidegree of the total complex `(2)`, not in
+  the group direction alone;
+- the differentially algebraic sector separates the two anomalies: the degree-one edge is nonzero
+  because a coboundary presentation would put the gamma function itself into the sector, whereas
+  the degree-two class is nonzero for a topological reason, the Dixmier--Douady generator `(8)`.
+
+So `(12)` is gated behind the two external parent inputs, FHRZ's cochain `(4)`--`(5)` and the
+Dixmier--Douady computation `(8)`.  Formalizing it means formalizing those, which is a distinct
+project from everything above: the wedge cover, the total complex, the FHRZ cochain, and the
+degree-three integral cohomology of the triptic fibre.  Nothing here is inserted as an axiom.
+
+- 2026-08-02 -- the two-shift Koszul cochain layer is unconditional Lean; `(11)` holds in it, and
+  the degree-one anomaly is stated in cochain form.
+- 2026-08-02 -- corrected a wrong route note: the degree-two nonvanishing cannot be reduced to the
+  degree-one mechanism, because differentially algebraic shift quotients do not force the element to
+  be differentially algebraic -- the elliptic gamma is the counterexample.
+
+## Next Lean step: translation stability of the DA sector
+
+The remaining tractable item of the "DA coefficient complexes" gate is that the differentially
+algebraic sector is stable under the translations, which is what makes `(3)` a *subcomplex* rather
+than a graded subgroup.  All ingredients are in the corpus:
+
+- **`addTranslationMeroEquiv_deriv`** -- translation commutes with the derivation, so it takes
+  differential jets to differential jets;
+- **`addTranslationMeroEquiv_ratfuncToMero`** -- translation carries the coordinate base into
+  itself, so it covers an automorphism of the base field rather than fixing it;
+- `differentialAlgebraicOver_mul`, `_inv`, `_add`, `_neg`, `_algebraMap` -- the sector is already
+  known to be a field containing the base.
+
+The transport is then the standard one: a nonzero relation `P` over the base satisfied by the jets
+of `x` maps, under the base automorphism, to a nonzero relation satisfied by the jets of the
+translate.  With that lemma the degreewise sector `C_A` of `(3)` is closed under the group
+differential, and the multiplicative Koszul layer already built becomes a genuine complex of
+sectors rather than of sets.

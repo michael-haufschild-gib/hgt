@@ -564,10 +564,10 @@ Hamiltonian-dependent circuit infimum at fixed error.
 
 #### Radial shortcut-codimension equivalence
 
-There is an exact representation of the remaining theorem in which physical
-time is no longer a separate variable.  Assume the Hamiltonian map is linear,
-write `H(x)=sum_a x_a P_a`, and let `Lambda` be the homogeneous simulation
-cost.  Define the fixed radial shortcut locus
+`[BRIDGE] [PAPER-PROVED]` There is an exact representation of the remaining
+theorem in which physical time is no longer a separate variable.  Assume the
+Hamiltonian map is linear, write `H(x)=sum_a x_a P_a`, and let `Lambda` be the
+homogeneous simulation cost.  Define the fixed radial shortcut locus
 
 \[
  \mathfrak S_{\varepsilon,a}
@@ -600,7 +600,8 @@ Hence, on a fixed energy shell with normalized angular measure `sigma`,
 
 through the pre-saturation radial range.  The Brown--Susskind cut problem is
 therefore a statement that the robust low-relative-word locus loses a fixed
-fraction of the local-Hamiltonian parameter dimension at infinity.
+fraction of the **volume-growth exponent** of local-Hamiltonian parameter
+space at infinity.
 
 For the unconditioned centered Gaussian ensemble the equivalence is a volume
 theorem.  Let `gamma_m` be standard Gaussian measure and let `B` be any
@@ -644,13 +645,39 @@ Applied to `B=mathfrak S_(epsilon,a)`, this proves:
 > **Radial shortcut-codimension theorem.**  Aggregate quenched linear
 > complexity growth with failure `t^(-kappa)` is equivalent to polynomial
 > volume growth of the complete Hamiltonian-dependent shortcut locus with
-> dimension at most `m-kappa`.
+> upper radial volume-growth exponent at most `m-kappa`.
+
+`[FALSIFIED]` This is not a Hausdorff-, Minkowski-, semialgebraic-, or
+local-dimension statement.  At strict error tolerance, the preimage of one
+circuit ball is open whenever nonempty, so `mathfrak S_(epsilon,a)` can have
+ordinary local dimension `m` even when `(O4.3h)` holds with a large exponent
+deficit.  The required invariant measures the sparse number and total volume
+of open shortcut islands encountered as the coefficient radius grows.
+Consequently an algebraic-codimension or transversality argument that only
+proves each exact-relation locus has positive codimension cannot establish
+O4.
 
 This is stronger than saying each fixed circuit has a transverse preimage.
 The union over all words whose permitted length grows radially is already
 inside `mathfrak S_(epsilon,a)`.  Thus the exact remaining mathematical task
-is to prove positive codimension for that single global set.  Word-by-word
-transversality, even if sharp, does not imply `(O4.3h)`.
+is to prove a deficit in the radial volume-growth exponent of that single
+global set.  Word-by-word transversality, even if sharp, does not imply
+`(O4.3h)`.
+
+`[OPEN CORE]` Prove the annular form
+
+\[
+ \operatorname{vol}\!\left(
+ \mathfrak S_{\varepsilon,a}\cap
+ \{x:R\leq\|x\|\leq2R\}\right)
+ \leq C R^{m-\kappa}
+ \tag{O4.3i}
+\]
+
+uniformly before the circuit-capacity radius.  Because the left side is a
+union of full-dimensional open islands and already contains the
+Hamiltonian-dependent word selector, `(O4.3i)` is the first claim in this
+section whose proof would cross the Brown--Susskind frontier.
 
 #### Dynamical NLTS equivalence
 

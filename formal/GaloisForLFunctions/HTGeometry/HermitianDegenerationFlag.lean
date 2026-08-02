@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.SimpleSpectrumEigenline
 import Mathlib.Analysis.InnerProductSpace.Spectrum
 
 /-!
@@ -104,56 +105,67 @@ theorem eigenSum_add_smul_id (a c : ℝ) :
     rw [hkey]
     exact eigenspace_le_eigenSum (by linarith)
 
-/-! ## The flag through an eigenvector basis -/
+/-! ## The flag through an eigenbasis -/
+
+/-- **An eigenspace is spanned by the eigenbasis vectors carrying that eigenvalue.** -/
+theorem eigenspace_eq_span_of_eigenbasis {ι : Type*} [Fintype ι] [DecidableEq ι] (b : Basis ι ℂ E)
+    {w : ι → ℝ} (hd : ∀ i, T (b i) = (w i : ℂ) • b i) (μ : ℝ) :
+    Module.End.eigenspace T (μ : ℂ) = Submodule.span ℂ (b '' {i | w i = μ}) := by
+  refine le_antisymm (fun x hx => ?_) ?_
+  · have hTx : T x = (μ : ℂ) • x := mem_eigenspace_iff.1 hx
+    rw [← b.sum_repr x]
+    refine Submodule.sum_mem _ fun i _ => ?_
+    by_cases hi : w i = μ
+    · exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, hi, rfl⟩)
+    · have hne : ((w i : ℝ) : ℂ) ≠ (μ : ℂ) := fun hcon => hi (by exact_mod_cast hcon)
+      rw [repr_eq_zero_of_eigenvalue_ne b (T := T) (μ := fun i => ((w i : ℝ) : ℂ)) hd hTx hne,
+        zero_smul]
+      exact Submodule.zero_mem _
+  · rw [Submodule.span_le]
+    rintro _ ⟨i, hi, rfl⟩
+    refine mem_eigenspace_iff.2 ?_
+    rw [hd i, show ((w i : ℝ) : ℂ) = (μ : ℂ) from congrArg _ (show w i = μ from hi)]
+
+/-- **The degeneration flag through an eigenbasis**: the subspace at threshold `c` is spanned by the
+eigenbasis vectors whose eigenvalue is above `c`. -/
+theorem eigenSum_eq_span_of_eigenbasis {ι : Type*} [Fintype ι] [DecidableEq ι] (b : Basis ι ℂ E)
+    {w : ι → ℝ} (hd : ∀ i, T (b i) = (w i : ℂ) • b i) (c : ℝ) :
+    eigenSum T c = Submodule.span ℂ (b '' {i | c < w i}) := by
+  refine le_antisymm (iSup₂_le fun μ hμ => ?_) ?_
+  · rw [eigenspace_eq_span_of_eigenbasis b hd μ]
+    refine Submodule.span_mono ?_
+    rintro _ ⟨i, hi, rfl⟩
+    exact ⟨i, by simp only [Set.mem_setOf_eq] at hi ⊢; rw [hi]; exact hμ, rfl⟩
+  · rw [Submodule.span_le]
+    rintro _ ⟨i, hi, rfl⟩
+    exact eigenspace_le_eigenSum hi (mem_eigenspace_iff.2 (hd i))
+
+/-! ## The flag through the eigenvector basis of a symmetric operator -/
 
 variable [FiniteDimensional ℂ E]
 
-theorem repr_eq_zero_of_eigenvalue_ne (hT : T.IsSymmetric) (hn : finrank ℂ E = n) {μ : ℝ} {x : E}
-    (hx : x ∈ Module.End.eigenspace T (μ : ℂ)) {i : Fin n} (hi : hT.eigenvalues hn i ≠ μ) :
-    (hT.eigenvectorBasis hn).repr x i = 0 := by
-  have hTx : T x = (μ : ℂ) • x := mem_eigenspace_iff.1 hx
-  have h := hT.eigenvectorBasis_apply_self_apply hn x i
-  rw [hTx, map_smul] at h
-  have h' : ((μ : ℂ) - (hT.eigenvalues hn i : ℂ)) * (hT.eigenvectorBasis hn).repr x i = 0 := by
-    have h2 : (μ : ℂ) * (hT.eigenvectorBasis hn).repr x i
-        = (hT.eigenvalues hn i : ℂ) * (hT.eigenvectorBasis hn).repr x i := by
-      simpa using h
-    rw [sub_mul, h2, sub_self]
-  have hne : ((μ : ℂ) - (hT.eigenvalues hn i : ℂ)) ≠ 0 := by
-    simp only [sub_ne_zero]
-    exact fun hcon => hi (by exact_mod_cast hcon.symm)
-  exact (mul_eq_zero.1 h').resolve_left hne
+theorem apply_toBasis_eigenvectorBasis (hT : T.IsSymmetric) (hn : finrank ℂ E = n) (i : Fin n) :
+    T ((hT.eigenvectorBasis hn).toBasis i) = ((hT.eigenvalues hn i : ℝ) : ℂ)
+      • (hT.eigenvectorBasis hn).toBasis i := by
+  rw [OrthonormalBasis.coe_toBasis]
+  exact hT.apply_eigenvectorBasis hn i
 
 /-- **An eigenspace is spanned by the eigenvectors of the basis with that eigenvalue.** -/
 theorem eigenspace_eq_span (hT : T.IsSymmetric) (hn : finrank ℂ E = n) (μ : ℝ) :
     Module.End.eigenspace T (μ : ℂ)
       = Submodule.span ℂ (hT.eigenvectorBasis hn '' {i | hT.eigenvalues hn i = μ}) := by
-  refine le_antisymm (fun x hx => ?_) ?_
-  · rw [← (hT.eigenvectorBasis hn).sum_repr x]
-    refine Submodule.sum_mem _ fun i _ => ?_
-    by_cases hi : hT.eigenvalues hn i = μ
-    · exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, hi, rfl⟩)
-    · rw [repr_eq_zero_of_eigenvalue_ne hT hn hx hi, zero_smul]
-      exact Submodule.zero_mem _
-  · rw [Submodule.span_le]
-    rintro _ ⟨i, hi, rfl⟩
-    have h := (hT.hasEigenvector_eigenvectorBasis hn i).1
-    rw [show hT.eigenvalues hn i = μ from hi] at h
-    exact h
+  classical
+  rw [eigenspace_eq_span_of_eigenbasis (hT.eigenvectorBasis hn).toBasis
+    (apply_toBasis_eigenvectorBasis hT hn) μ, OrthonormalBasis.coe_toBasis]
 
 /-- **The degeneration flag through the eigenvector basis**: the subspace at threshold `c` is
 spanned by the eigenvectors whose eigenvalue is above `c`. -/
 theorem eigenSum_eq_span (hT : T.IsSymmetric) (hn : finrank ℂ E = n) (c : ℝ) :
     eigenSum T c
       = Submodule.span ℂ (hT.eigenvectorBasis hn '' {i | c < hT.eigenvalues hn i}) := by
-  refine le_antisymm (iSup₂_le fun μ hμ => ?_) ?_
-  · rw [eigenspace_eq_span hT hn μ]
-    refine Submodule.span_mono ?_
-    rintro _ ⟨i, hi, rfl⟩
-    exact ⟨i, by simp only [Set.mem_setOf_eq] at hi ⊢; rw [hi]; exact hμ, rfl⟩
-  · rw [Submodule.span_le]
-    rintro _ ⟨i, hi, rfl⟩
-    exact eigenspace_le_eigenSum hi (hT.hasEigenvector_eigenvectorBasis hn i).1
+  classical
+  rw [eigenSum_eq_span_of_eigenbasis (hT.eigenvectorBasis hn).toBasis
+    (apply_toBasis_eigenvectorBasis hT hn) c, OrthonormalBasis.coe_toBasis]
 
 /-- **The dimension of a member of the flag counts the eigenvalues above the threshold.** -/
 theorem finrank_eigenSum (hT : T.IsSymmetric) (hn : finrank ℂ E = n) (c : ℝ) :
