@@ -436,3 +436,202 @@ Both modules are wired into `RHTower.lean`. Direct `lake env lean` checks pass. 
   reflection-odd Gamma coefficient at every nonzero modular displacement. Thus required
   countertransport must be depth-nonlocal inside each prime; cross-prime sewing alone cannot work.
   Remaining survivor is cofinal sector preservation and Hodge-positive uniform budget.
+
+## Cofinal source-normal depth countertransport
+
+### Competing constructions and hostile elimination
+
+Three superficially plausible completions were tested before fixing a source object.
+
+1. The ambidextrous Sonin corner and its adjoint are contractions, but their cofinal
+   compositions preserve the source Gram matrix.  They cannot cancel the linear floor in
+   `(PPES-7)` or create the missing Hodge column.
+2. Orthogonally projecting onto the kernel of the reflection-odd Gamma functional would preserve
+   that kernel with norm one, but this is tautological: it starts from the desired admitted
+   sector, changes the finite current, and gives no arithmetic aperture compatibility.
+3. Uniformly averaging unrenormalized deeper Euler cells loses the depth-zero primitive by the
+   factor `p^(-r/2)`.  Restoring that primitive forces the unique source-normal
+   deattenuation described below.  This is the only candidate of the three which retains the
+   literal finite current.
+
+Write
+
+```text
+A(p,r)=J_0(p,r)=log(p)/sqrt(p^(r+1)),
+K(p)=ceil(log p).
+```
+
+For every prime and realization depth `r`, define the forced critical deattenuation
+
+```text
+D(p,r)=A(p,0)/A(p,r).                                  (PPES-18)
+```
+
+Positivity of `A` and the exact primitive-amplitude square law give
+
+```text
+D(p,r)^2=p^r,
+A(p,r)D(p,r)=A(p,0).                                  (PPES-19)
+```
+
+Thus `(PPES-18)` is the primitive gauge `p^(r/2)` already forced by the source law; it is not an
+adjustable normalization.  The prime-dependent depth count is also forced at sharp logarithmic
+order.  Since `K(p)>=log p`, spreading the landed cell equally over the actual depths
+`0<=r<K(p)` changes its squared source-normal cost from
+
+```text
+A(p,0)^2=log(p)^2/p
+```
+
+to
+
+```text
+sum_(r<K(p)) (A(p,r)D(p,r)/K(p))^2
+  =A(p,0)^2/K(p)
+  <=log(p)/p.                                          (PPES-20)
+```
+
+A bounded number of depths would retain the logarithmically divergent block cost, so logarithmic
+depth is the first possible equal-spreading order.  Larger schedules work but add no information.
+
+### Vector-valued two-scale countertransport
+
+For a low/high pair in the two-scale source, put
+
+```text
+Q_n(p,q)=anchoredCrossPair(n,p,q).
+```
+
+Retain the original source record `(n,p,q)` and realize it at every actual depth rectangle
+
+```text
+0<=r<K(p), 0<=s<K(q).
+```
+
+Before physical Gamma landing, multiply the shifted cell carrier by
+
+```text
+2 D(p,r)D(q,s)/(K(p)K(q))
+```
+
+and retain the original squared-height/phase factor in `Q_n(p,q)`.  After landing, every
+coordinate has the constant coefficient
+
+```text
+U_n(p,q,r,s)=2Q_n(p,q)/(K(p)K(q)).                    (PPES-21)
+```
+
+This is genuinely depth-nonlocal within both primes.  It is also a chain-level object: each
+shifted cross-prime exterior carrier is in cell Milnor incidence and is its own Green primitive,
+so their finite source-weighted sum has the same two properties.
+
+The singular depth codiagonal recovers the finite current term by term:
+
+```text
+sum_(r<K(p)) sum_(s<K(q)) U_n(p,q,r,s)=2Q_n(p,q),
+
+sum_(p,q,r,s) U_n(p,q,r,s)=R_n.                       (PPES-22)
+```
+
+No scalar normalization of `R_n` occurs.  The amplitude is transported into depth before the
+singular codiagonal is read.
+
+### Reflected Hodge-sector preservation
+
+On the doubled ordered-pair realization, reflected Hodge acts by exchanging the exterior legs,
+reversing each finite depth interval, and applying the orientation sign:
+
+```text
+(p,q,r,s) |-> (q,p,K(q)-1-s,K(p)-1-r).                (PPES-23)
+```
+
+The scalar kernel is symmetric:
+
+```text
+Q_n(q,p)=Q_n(p,q),
+```
+
+because both the squared-height difference and sine phase change sign under exchange.  The
+profile `(PPES-21)` is constant on each depth rectangle.  Hence `(PPES-23)` fixes the landed
+profile; the exterior swap sign is exactly cancelled by the odd orientation local system.
+Therefore the countertransport commutes with reflected Hodge and preserves both its fixed and
+antifixed sectors.  This is an explicit permutation/intertwining law, not membership installed by
+projection.
+
+### Uniform source-normal carrier capacity
+
+Define the pretrace carrier capacity
+
+```text
+U_n =
+ sum_(p in P_n) sum_(q in P_(K n))
+ sum_(r<K(p)) sum_(s<K(q))
+   U_n(p,q,r,s)^2.                                     (PPES-24)
+```
+
+The low/high height ranges already proved in Lean give
+
+```text
+0<=relativeHeight(n,p)<=1,
+8<=relativeHeight(n,q)<=17.
+```
+
+Consequently
+
+```text
+0<=Q_n(p,q)<=289 A(p,0)A(q,0).                        (PPES-25)
+```
+
+For either fivefold prime block `P_x`, the Chebyshev upper bound and `p>2x` give
+
+```text
+sum_(p in P_x) A(p,0)^2/K(p)
+ <=sum_(p in P_x) log(p)/p
+ <=(1/(2x))sum_(p in P_x)log p
+ <=5.                                                   (PPES-26)
+```
+
+Using `(PPES-21)`, finite Fubini, `(PPES-25)`, and `(PPES-26)` yields the unconditional,
+aperture-independent bound
+
+```text
+0<=U_n
+ =4 sum_(p,q) Q_n(p,q)^2/(K(p)K(q))
+ <=100*289^2.                                           (PPES-27)
+```
+
+Thus the requested cofinal depth-nonlocal countertransport exists, preserves the reflected Hodge
+sector, retains the exact finite two-scale readout, and has uniform source-normal carrier
+capacity.
+
+### Anti-theatre boundary: carrier capacity is not yet Route-J residual capacity
+
+Equation `(PPES-27)` must not be substituted for `J-PPES2`.  The codiagonal in `(PPES-22)` is
+necessarily singular.  Indeed, on the moving source carrier its operator norm obeys
+
+```text
+||Sigma_n|| >= R_n/sqrt(U_n)
+             >= (10/289)n                              (PPES-28)
+```
+
+once `(PPES-7)` applies.  Uniform carrier capacity and unbounded finite readout coexist precisely
+because scalar fusion is nonclosable.  This is the demanded beyond-finite-Rees behavior, but it
+does not by itself prove
+
+```text
+C_x(L)<0 -> C_x(L)^2 <= R_x(L)
+```
+
+with the bounded carrier capacity on the right.  The new hard frontier is exact: construct the
+source Hodge polarization which compares the negative first-clock excursion directly with
+`(PPES-24)` before the singular codiagonal, or prove that every such pretrace comparison has the
+same norm-growth obstruction as `(PPES-28)`.
+
+### Literature boundary
+
+Burnol's co-Poisson/Sonine work supplies support-intertwining and complete/minimal zero systems
+(`arXiv:math/0407443`, `arXiv:math/0203120`).  Connes--Consani's scaling Hamiltonian supplies
+the semilocal Sonine/scaling setting (`arXiv:1910.14368`).  The targeted audit found no theorem
+constructing the source-specific ratio `(PPES-18)`, logarithmic prime-dependent actual-depth
+spread, reflected exterior intertwining, and uniform block capacity `(PPES-27)` together.
+Novelty is claimed only for that conjunction and remains provisional.

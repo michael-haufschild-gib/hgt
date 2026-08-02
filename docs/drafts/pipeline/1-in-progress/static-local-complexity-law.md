@@ -581,6 +581,94 @@ upgraded to the quenched annular law (O4.3i).  Any weaker simulator,
 fixed-target, moment, design, spreading, or spatial direct-sum theorem leaves
 the frontier unchanged.
 
+#### Orientation--transgression transfer audit
+
+`[PAPER-PROVED NO-GO]`  The abstract factorization law in
+`riemann-source-orientation-transgression` has one exact quantum-complexity
+consequence, but it is negative.  Let `Herm(H)` be the real vector space of
+Hermitian operators on an `N`-qubit Hilbert space and consider the split
+complex
+
+\[
+ \operatorname{Herm}_0(\mathcal H)
+ \xrightarrow{\ \iota\ }
+ \operatorname{Herm}(\mathcal H)
+ \xrightarrow{\ \operatorname{Tr}\ }
+ \mathbb R,                                                        \tag{O4.3o}
+\]
+
+where `Herm_0` is the traceless subspace.  With
+
+\[
+ \jmath(c)={c\over2^N}I,\qquad
+ \mathsf H(X)=X-{\operatorname{Tr}X\over2^N}I,
+\]
+
+one has
+
+\[
+ \iota\mathsf H+\jmath\operatorname{Tr}=\operatorname{id},\qquad
+ \operatorname{Tr}\iota=0,\qquad
+ \operatorname{Tr}\jmath=\operatorname{id}.                       \tag{O4.3p}
+\]
+
+Therefore every real-linear functional `F` that kills all traceless
+variations is a scalar multiple of trace.
+
+The circuit-selector version is already forced at linear gate budget.
+Assume the circuit class can prepare, independently on every qubit, the four
+states
+
+\[
+ |0\rangle,\quad |1\rangle,\quad |+\rangle,\quad |+i\rangle
+                                                                    \tag{O4.3q}
+\]
+
+using at most `c_0N` gates in total.  Let `T_N` be the resulting `4^N`
+product-state projectors.  The four one-qubit projectors span
+`Herm(C^2)`, since
+
+\[
+\begin{aligned}
+ I&=P_0+P_1,& Z&=P_0-P_1,\\
+ X&=2P_+-I,& Y&=2P_{+i}-I .
+\end{aligned}
+\]
+
+Tensoring shows that `T_N` spans `Herm(H)`.  Every member has trace one, so
+for any fixed `sigma_0 in T_N`,
+
+\[
+ \operatorname{span}\{\sigma-\sigma_0:\sigma\in T_N\}
+ =\operatorname{Herm}_0(\mathcal H).                              \tag{O4.3r}
+\]
+
+Indeed, write a traceless `X` as `sum_sigma a_sigma sigma`.  Taking traces
+gives `sum_sigma a_sigma=0`, and hence
+`X=sum_sigma a_sigma(sigma-sigma_0)`.
+
+It follows that if a linear observable `F` is insensitive to which
+`c_0N`-gate target the adaptive circuit selector chooses,
+
+\[
+ F(\sigma)=F(\sigma_0)\qquad(\sigma\in T_N),
+\]
+
+then `F` kills (O4.3r), factors through trace by (O4.3p), and is constant on
+**every** density matrix.  Thus no selector-independent linear statistic can
+separate an evolved state from all short-circuit states beyond the first
+tomographically complete gate budget.
+
+This is the valid transfer of the orientation--transgression law: labels
+must be retained through a nonlinear or relative construction before the
+final scalar trace.  Replica powers do this algebraically, but the Riemann
+source theorem supplies neither their positive Bellman bound nor the radial
+shortcut estimate (O4.3i).  Its Green primitive cannot be imported as a
+word-metric calibration without first constructing a circuit-boundary
+complex and proving that its relative primitive escape is quantitatively
+equivalent to robust gate distance.  Naming that missing complex would only
+rename O4.
+
 #### Hard-frontier audit: deterministic complexity production
 
 The preceding formulation still permits misleading auxiliary progress unless
