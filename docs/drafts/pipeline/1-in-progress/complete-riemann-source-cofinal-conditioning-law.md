@@ -88,6 +88,16 @@ Let \(X=\ell^1(\mathbb N_0;\mathbb C)\), let \(e_0=(1,0,\ldots)\), and let
     \(d(N_KE_K(s),N_KE_K(t))\) is a positive constant while
     \(\|E_K(s)-E_K(t)\|_1\to0\), so this infinite source reader admits no shell-independent
     Lipschitz bound.
+11. Maximal vertical boundary.  Relative to \(s_0=1/2\), the points \(s_1=3/2\) and \(s_2=5/2\)
+    give two source differences tending to zero, while their exact two-clock reader differences
+    are
+    \[
+    v_1=(-1/2,-2/3),\qquad v_2=(-3/4,-8/9),
+    \]
+    with determinant \(-1/18\).  Thus \(v_1,v_2\) span \(\mathbb C^2\).  Every closed linear
+    relation containing these cofinal graph directions has full vertical fibre
+    \(\{0\}\times\mathbb C^2\), and no such relation is single-valued at the collapsed source
+    point.
 
 ## Proof
 
@@ -130,6 +140,10 @@ For (10), finite-stage injectivity gives a unique spectral preimage for each \(x
 \(N_K\) is well-defined and injective.  The prime-two and prime-three shell asymptotics identify
 its two coordinates with internal tail ratios.  The final singularity statement follows from
 constant positive reader separation and cofinal source collapse.
+For (11), the displayed character values follow by evaluating
+\((2^{1/2-s},3^{1/2-s})\) at \(s_0,s_1,s_2\).  Closedness sends each convergent graph sequence
+\((E_K(s_j)-E_K(s_0),v_j)\) to \((0,v_j)\).  Linearity then puts every linear combination of
+\(v_1,v_2\) in the vertical fibre.
 
 ## New scientific knowledge
 
@@ -146,6 +160,13 @@ source, but its first two prime normal directions retain the full complex spectr
 This replaces the vague instruction “use a singular consumer” by an explicit, source-defined
 singular resolution, and proves that singularity is unavoidable rather than a feature of one
 chosen formula.
+
+The maximal-vertical theorem is the exact topological form: at cofinal depth, spectral rank is not
+destroyed but converted from horizontal source separation into multivalued graph rank.  It
+connects the complete source to the corpus's actual-prime first-trace graph closure, Hedenmalm
+dense radical, nonclosable shell codiagonal, and finite-Rees fracture.  Abstract closed-linear-
+relation theory is prior art; candidate novelty is the explicit two-clock Riemann source whose
+entire target becomes the forced vertical fibre.
 
 The law strengthens the paper's current consumer classification:
 
@@ -198,3 +219,5 @@ that singularity, not existence or sign.
 - 2026-08-02 — strengthened the chart to an infinite source-pointed normal reader on the actual
   source image. Proof is written in scratch; foreground check is pending because another agent's
   umbrella build temporarily removed a required dependency object.
+- 2026-08-02 — derived maximal two-clock vertical boundary and generic closed-relation
+  specialization; proof written in scratch, same dependency-build check pending.

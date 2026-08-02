@@ -209,41 +209,63 @@ section Class
 
 variable {C : Type u} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
 
-/-- The apartment cycle, in the unnormalized chains of any simplicial set the apartment maps to. -/
-noncomputable def apartmentCycleIn {n : ℕ} (e₀ : Fin (n + 3) ≃ ι) {X : SSet.{u}}
+/-- The apartment chain is a cycle in every degree the differential can leave. -/
+theorem apartmentChainIn_univ_comp_d_eq_zero {m j : ℕ} (e₀ : Fin (m + 2) ≃ ι) {X : SSet.{u}}
     (g : nerve (properPart (Set ι)) ⟶ X) (R : C) :
-    R ⟶ (X.chainComplex R).cycles (n + 1) :=
-  (X.chainComplex R).liftCycles (apartmentChainIn e₀ g R Finset.univ) n (by simp)
-    (apartmentChainIn_univ_comp_d e₀ g R)
+    apartmentChainIn e₀ g R Finset.univ ≫ (X.chainComplex R).d m j = 0 := by
+  match m, e₀ with
+  | 0, e₀ =>
+      rw [(X.chainComplex R).shape 0 j (by simp), comp_zero]
+  | (k + 1), e₀ =>
+      by_cases hj : j = k
+      · subst hj
+        exact apartmentChainIn_univ_comp_d e₀ g R
+      · rw [(X.chainComplex R).shape (k + 1) j (by simp; omega), comp_zero]
 
-theorem apartmentCycleIn_i {n : ℕ} (e₀ : Fin (n + 3) ≃ ι) {X : SSet.{u}}
+/-- The apartment cycle, in the unnormalized chains of any simplicial set the apartment maps to. -/
+noncomputable def apartmentCycleIn {m : ℕ} (e₀ : Fin (m + 2) ≃ ι) {X : SSet.{u}}
     (g : nerve (properPart (Set ι)) ⟶ X) (R : C) :
-    apartmentCycleIn e₀ g R ≫ (X.chainComplex R).iCycles (n + 1)
+    R ⟶ (X.chainComplex R).cycles m :=
+  (X.chainComplex R).liftCycles (apartmentChainIn e₀ g R Finset.univ)
+    ((ComplexShape.down ℕ).next m) rfl (apartmentChainIn_univ_comp_d_eq_zero e₀ g R)
+
+theorem apartmentCycleIn_i {m : ℕ} (e₀ : Fin (m + 2) ≃ ι) {X : SSet.{u}}
+    (g : nerve (properPart (Set ι)) ⟶ X) (R : C) :
+    apartmentCycleIn e₀ g R ≫ (X.chainComplex R).iCycles m
       = apartmentChainIn e₀ g R Finset.univ :=
   HomologicalComplex.liftCycles_i _ _ _ _ _
 
-/-- **The apartment class**, in the homology of any simplicial set the apartment maps to. -/
-noncomputable def apartmentClassIn {n : ℕ} (e₀ : Fin (n + 3) ≃ ι) {X : SSet.{u}}
-    (g : nerve (properPart (Set ι)) ⟶ X) (R : C) : R ⟶ X.homology R (n + 1) :=
-  apartmentCycleIn e₀ g R ≫ (X.chainComplex R).homologyπ (n + 1)
+/-- Any lift of the apartment chain to the cycles is the apartment cycle. -/
+theorem liftCycles_eq_apartmentCycleIn {m j : ℕ} (e₀ : Fin (m + 2) ≃ ι) {X : SSet.{u}}
+    (g : nerve (properPart (Set ι)) ⟶ X) (R : C) (hj : (ComplexShape.down ℕ).next m = j)
+    (hx : apartmentChainIn e₀ g R Finset.univ ≫ (X.chainComplex R).d m j = 0) :
+    (X.chainComplex R).liftCycles (apartmentChainIn e₀ g R Finset.univ) j hj hx
+      = apartmentCycleIn e₀ g R := by
+  rw [← cancel_mono ((X.chainComplex R).iCycles m), HomologicalComplex.liftCycles_i,
+    apartmentCycleIn_i]
 
-theorem apartmentCycleIn_comp_cyclesMap {n : ℕ} (e₀ : Fin (n + 3) ≃ ι) {X Y : SSet.{u}}
+/-- **The apartment class**, in the homology of any simplicial set the apartment maps to. -/
+noncomputable def apartmentClassIn {m : ℕ} (e₀ : Fin (m + 2) ≃ ι) {X : SSet.{u}}
+    (g : nerve (properPart (Set ι)) ⟶ X) (R : C) : R ⟶ X.homology R m :=
+  apartmentCycleIn e₀ g R ≫ (X.chainComplex R).homologyπ m
+
+theorem apartmentCycleIn_comp_cyclesMap {m : ℕ} (e₀ : Fin (m + 2) ≃ ι) {X Y : SSet.{u}}
     (g : nerve (properPart (Set ι)) ⟶ X) (h : X ⟶ Y) (R : C) :
     apartmentCycleIn e₀ g R
-        ≫ HomologicalComplex.cyclesMap (SSet.chainComplexMap h R) (n + 1)
+        ≫ HomologicalComplex.cyclesMap (SSet.chainComplexMap h R) m
       = apartmentCycleIn e₀ (g ≫ h) R := by
-  rw [← cancel_mono ((Y.chainComplex R).iCycles (n + 1)), Category.assoc,
+  rw [← cancel_mono ((Y.chainComplex R).iCycles m), Category.assoc,
     HomologicalComplex.cyclesMap_i, ← Category.assoc, apartmentCycleIn_i, apartmentCycleIn_i,
     apartmentChainIn_comp_chainComplexMap]
 
 /-- **The apartment class is carried along a map of simplicial sets.** -/
-theorem apartmentClassIn_comp_homologyMap {n : ℕ} (e₀ : Fin (n + 3) ≃ ι) {X Y : SSet.{u}}
+theorem apartmentClassIn_comp_homologyMap {m : ℕ} (e₀ : Fin (m + 2) ≃ ι) {X Y : SSet.{u}}
     (g : nerve (properPart (Set ι)) ⟶ X) (h : X ⟶ Y) (R : C) :
-    apartmentClassIn e₀ g R ≫ SSet.homologyMap h R (n + 1)
+    apartmentClassIn e₀ g R ≫ SSet.homologyMap h R m
       = apartmentClassIn e₀ (g ≫ h) R := by
   rw [apartmentClassIn, apartmentClassIn, Category.assoc,
-    show SSet.homologyMap h R (n + 1)
-      = HomologicalComplex.homologyMap (SSet.chainComplexMap h R) (n + 1) from rfl,
+    show SSet.homologyMap h R m
+      = HomologicalComplex.homologyMap (SSet.chainComplexMap h R) m from rfl,
     HomologicalComplex.homologyπ_naturality, ← Category.assoc,
     apartmentCycleIn_comp_cyclesMap]
 

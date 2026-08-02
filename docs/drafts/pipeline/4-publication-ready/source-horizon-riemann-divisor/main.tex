@@ -1,13 +1,11 @@
 \documentclass[11pt]{article}
 
 \usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
 \usepackage{amsmath,amssymb,amsthm,mathtools}
 \usepackage{microtype}
 \usepackage[a4paper,margin=29mm]{geometry}
 \usepackage{enumitem}
-\usepackage{booktabs}
-\usepackage{longtable}
+\usepackage{booktabs,array}
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage[nameinlink,noabbrev]{cleveref}
@@ -17,7 +15,7 @@
   linkcolor=blue!55!black,
   citecolor=blue!55!black,
   urlcolor=blue!55!black,
-  pdftitle={A divisor-replicating Riemann source: exact conservation and inevitable singularity},
+  pdftitle={Rank transmutation at the Riemann source horizon},
   pdfauthor={Michael Haufschild}
 }
 
@@ -34,17 +32,15 @@
 \newcommand{\R}{\mathbb R}
 \newcommand{\N}{\mathbb N}
 \newcommand{\cE}{\mathcal E}
-\newcommand{\cH}{\mathcal H}
-\newcommand{\cM}{\mathcal M}
-\newcommand{\cZ}{\mathcal Z}
-\newcommand{\cW}{\mathcal W}
-\newcommand{\dd}{\,\mathrm d}
-\newcommand{\Ima}{\operatorname{Im}}
+\newcommand{\cR}{\mathcal R}
+\newcommand{\cB}{\mathcal B}
 \newcommand{\Rea}{\operatorname{Re}}
+\newcommand{\mul}{\operatorname{mul}}
 \newcommand{\Span}{\operatorname{span}}
+\newcommand{\pr}{\operatorname{pr}}
 
-\title{\textbf{A divisor-replicating Riemann source}\\
-\large Exact conservation and inevitable singularity}
+\title{\textbf{Rank transmutation at the Riemann source horizon}\\
+\large An unbounded prime-normal boundary}
 \author{Michael Haufschild}
 \date{}
 
@@ -53,1700 +49,763 @@
 \maketitle
 
 \begin{abstract}
-For \(K\geq12\), define
+We exhibit a countable normal spectrum hidden in a positive, divisor-faithful
+resolution of the Riemann zeta function.  Let
 \[
  \Phi^K_0(s)=\zeta(Ks)^{-1},\qquad
- \Phi^K_{j+1}(s)=\zeta((K+j+1)s)^{-1}-\zeta((K+j)s)^{-1}.
+ \Phi^K_{j+1}(s)=\zeta((K+j+1)s)^{-1}-\zeta((K+j)s)^{-1},
 \]
-Put \(H_m=\Phi^K_{m-K+1}\), \(I_K=\{m\geq K\}\), and
-\(\mathcal F_S=\C(s)\langle\zeta,H_m:m\in S\rangle\) for \(S\subset I_K\).
-There is a partition \(\N_{\geq1}=\bigsqcup_{j\geq0}A_j\) such that
+and \(E_K(s)=(\Phi^K_j(s))_{j\geq0}\).  For \(K\geq12\), multiplication by
+\(\zeta(s)\) turns the coordinates into Dirichlet series with disjoint
+\(0/1\)-coefficient supports, while every coordinate carries the zeta zero
+divisor on \(\Rea s>\tfrac12\).  Each finite-stage map \(E_K\) is injective,
+but
 \[
- \zeta(s)\Phi^K_j(s)=\sum_{n\in A_j}n^{-s}.
+                         E_K(s)\longrightarrow e_0\quad(K\to\infty)
 \]
-Thus the channels have disjoint \(0/1\)-coefficient supports; nevertheless every channel has
-exactly the zeta zero divisor, with multiplicity, on \(\Rea s>\tfrac12\).  We prove that the
-complete Boolean algebra of their zero-free quotient labels survives analytic realization
-exactly.  Binary operations satisfy
-\[
-\mathcal F_S\cap\mathcal F_T=\mathcal F_{S\cap T},\qquad
-\mathcal F_S\vee\mathcal F_T=\mathcal F_{S\cup T},\qquad
-\mathcal F_S\subseteq\mathcal F_T\Longleftrightarrow S\subseteq T.
-\]
-For every nonempty family \((S_i)\),
-\[
- \bigcap_i\mathcal F_{S_i}=\mathcal F_{\cap_iS_i},
- \qquad
- \bigvee_i\mathcal F_{S_i}=\mathcal F_{\cup_iS_i};
-\]
-complements are exact relative to the common-zeta bottom and full-shell top.  Every field
-observable has finite shell support, so there is no infinitary common ``ghost'' absent from the
-source intersection.
-The private extensions are linearly disjoint over \(\mathcal F_{S\cap T}\); hence these are
-simultaneously exact intersection and torsion-free compositum squares.  This realizes the entire
-power-set source lattice inside the differential fields of explicit Euler products.  In
-particular, two disjoint infinite shell resolutions meet in exactly
-\(\C(s)\langle\zeta\rangle\), and \(\zeta'/\zeta\) remains hypertranscendental over the complete
-zero-free transverse frame.
+in \(\ell^1\), for every fixed \(\Rea s>0\).
 
-This field law is the faithful side of a source/consumer dichotomy.  The vector
-\(E_K=(\Phi^K_j)_{j\geq0}\) is an injective \(\ell^1\)-valued partition of unity whose channels
-have disjoint \(0/1\)-coefficient supports and the common zeta divisor.  Cofinal ratios recover
-\(q^{1/2-s}\) for \(q=2,3\), and the signed modular charge
-\(\nu(s)=2\Rea s-1\) is exactly the reflected tail entropy, the exponential rate of the
-canonical Poisson jet packet, and the normalized horizontal residue of
-\(-(s-\tfrac12)\xi'/\xi\).  Yet every bounded label-blind map \(T:\ell^1\to F\) factors through total mass,
-\(Tx=(\Sigma x)Te_0\), and therefore annihilates every nonzero off-line source displacement.
-More generally, \(E_K(s)\to e_0\) in \(\ell^1\) for every fixed
-\(\Rea s>0\), although every finite-\(K\) map \(s\mapsto E_K(s)\) remains injective and
-divisor-faithful.  Hence inverse sensitivity between any two distinct spectral points diverges,
-and every uniformly Lipschitz family of observers---without linearity, positivity, or label
-symmetry---loses their separation cofinally.  The collapse is not information destruction:
-the canonical projective ratios of the first two prime asymptotic layers converge to
-\((2^{1/2-s},3^{1/2-s})\), an injective chart of the entire complex spectral coordinate.
-For every distinct pair of spectral points, chart separation converges to a positive limit while
-source separation converges to zero; consequently no shell-independent Lipschitz bound can
-realize this chart on the source image.
-Reflection-positive regularization retains only the square of the charge.  For every off-line
-reflected valuation pair, one sector is flat beyond every Rees order and its partner is
-half-normal; every exact sewing operator therefore has norm larger than every finite inverse
-Rees power.  A non-erasing norm-conservative equivariant descent would
-force \(\nu=0\), but its existence is not proved.  The results are unconditional and do not
-prove the Riemann hypothesis.  They show that zero exclusion cannot come from a post-divisor
-fusion of any bounded label-blind, uniformly Lipschitz cofinal, reflection-even positive,
-norm-conservative equivariant, or finite-Rees type classified here.  A viable descent must have
-unbounded cofinal conditioning or use a topology singular relative to the canonical source norms.
+The collapse does not destroy the spectral coordinate.  For every prime \(q\),
+exact subtraction of the finite M\"obius prefix below \(q\) produces a shell
+whose normalized adjacent transfer converges to
+\[
+                              q^{1/2-s}.
+\]
+Thus the source carries the countable prime-normal reader
+\(\cB(s)=(p_i^{1/2-s})_{i\geq0}\).  At the canonical samples
+\(s_j=\tfrac12+j\), its matrix is \((p_i^{-j})\), so every finite leading
+minor is Vandermonde and nonsingular.
+
+We prove a general rank-transmutation law: if source representatives converge
+to zero while a closed linear relation retains their output span, that span
+becomes part of the multivalued fibre over zero.  Applied to the complete
+Riemann source, one closed relation retaining the countable reader has
+surjective multivalued projection onto the first \(r\) prime coordinates for
+every \(r\).  Hence its vertical rank is unbounded, and no closable
+single-valued operator can retain even all finite prime-normal sectors at the
+cofinal horizon.  This identifies a sharp boundary for spectral approaches to
+the Riemann hypothesis: the signed coordinate is already present before
+divisor scalarization, but its complete transport is necessarily singular and
+relation-valued.  No zero-exclusion statement is assumed or obtained.
 \end{abstract}
 
 \medskip
 \noindent\textbf{Keywords.}
-Riemann hypothesis; hypertranscendence; Dirichlet series; reflection positivity;
-modular character; Weil quadratic form; Fisher information.
+Riemann zeta function; linear relations; M\"obius function; singular
+completion; spectral realization; Riemann hypothesis.
 
 \medskip
 \noindent\textbf{2020 Mathematics Subject Classification.}
-Primary 11M26, 30D30; Secondary 46C20, 46E22, 47B32.
+Primary 11M26, 47A06; Secondary 30B50, 46A45.
 
 \section{Introduction}
 
-Reflection approaches to the Riemann hypothesis face an information-placement problem.
-Functional-equation symmetry pairs a putative off-line zero with its reciprocal partner, while
-positive Hilbert, moment, and explicit-formula constructions naturally combine the pair.
-That combination is even in horizontal displacement.  The sign distinguishing the two sides of
-the critical line is then absent from the scalar output.
+Many approaches to the Riemann hypothesis seek an operator, positive form, or
+spectral completion whose geometry forces the nontrivial zeros of
+\(\zeta\) onto \(\Rea s=\tfrac12\).  The persistent difficulty is not merely
+to encode the zeros.  Spectral realizations, explicit formulas, and positive
+criteria already do that in several ways
+\cite{Connes1999,Meyer2005,ConnesConsani2021,Hedenmalm2026,Suzuki2026}.
+The difficulty is to transport the \emph{orientation}
+\[
+                              \Rea s-\tfrac12
+\]
+without averaging it with the reflected point \(1-\overline{s}\).
 
-The missing distinction is already present before the divisor is scalarized.  Prime-power
-coefficients carry a logarithmic clock module, and the high-exponent resolution gives a
-holomorphic \(\ell^1\)-valued partition of unity \(E_K(s)\).  Analytic realization is faithful
-on the clock module after finite Euler data are quotiented out.  Meanwhile \(E_K\) is injective
-although its coordinate sum is identically one.  Hence source relations survive analytically,
-whereas spectral position is transverse to total mass.
+The construction below separates two questions that are usually conflated:
 
-This forces one law rather than a collection of criteria.
-
-\begin{quote}
-\emph{Prime-source conservation law.}
-Faithful analytic realization preserves source relations, quotients, intersections, composita,
-complements, and private tensor independence, including arbitrary nonempty meets and joins;
-finite analytic expressions have finite source support, so no infinitary distinction is created
-by completion.  The consumer classes analyzed below either erase, square, or singularize the
-resulting distinctions.  The Riemann
-source stores spectral position in a labeled zero-mass radical and transports one signed modular
-charge from prime tail to divisor residue.  Label-blind descent erases that radical, positive
-descent squares the charge, norm-conservative equivariant descent can retain it only at the
-neutral fixed point, and reflected Rees sewing is necessarily singular beyond every finite
-order.  At the same time the finite-stage source embeddings converge to one universal atom, so
-every uniformly regular cofinal descent erases even label-sensitive nonlinear distinctions.
-Their two-clock projective normal blow-up remains injective, identifying the exact singular
-geometry in which those distinctions survive.
-\end{quote}
-
-The law has a concrete conserved quantity:
-\[
- \nu(s)=2\Rea s-1.
-\]
-Before any zero is selected, \(\nu\) is the reflected logarithmic modulus of the cofinal prime
-tail.  Under canonical residue transport it is the exponential rate of a Poisson order packet.
-At a zero \(\rho\) of multiplicity \(m_\rho\), it is the normalized horizontal residue of
-\(-(s-\tfrac12)\xi'(s)/\xi(s)\).  These are not analogous criteria but exact representations of
-one charge.
-
-\Cref{thm:common-mode-law} is the sole main theorem.  Its main new consequence is not another RH
-equivalence.  It gives an exact source classifier, proves irreducibility of the divisor
-connection over two complete Euler-source frames, embeds the full Boolean shell lattice into
-differential fields as a complete relative Boolean algebra with no infinitary ghosts, identifies
-the longitudinal zeta field as the exact meet of disjoint
-infinite shell frames, and classifies the stated consumer classes of the conserved charge.
-The nonlinear conclusion is class-complete for uniformly Lipschitz cofinal families; no statement
-is made about non-Lipschitz or relation-valued realizations.
-The remaining RH-bearing statement is sharply typed: construct a
-source-faithful norm-conservative equivariant descent of the already existing primitive current.
-The paper does not assert such a construction.
-
-\subsection*{Relation to established work}
-
-The largest exponent in prime factorization and its zeta-density distribution go back at least
-to Niven \cite{Niven1969}; neither that statistic nor the elementary shell partition is claimed
-as new.
-Differential-algebraic independence of Dirichlet series has a substantial literature
-\cite{ShapiroSparer1986,Pong2015,AmouKatsurada2001}; our proof uses prime-valuation echelon
-arguments in that tradition.  Those results provide powerful sufficient criteria, but not the
-analytic if-and-only-if clock quotient below, its arbitrary relative form, the exact common-field
-Boolean lattice for divisor-sharing shell tests, or the common-current irreducibility theorem for the
-complete shell frame.  Reciprocal symplectic coordinates and spectral realizations are
-central to Paugam, Connes--Consani, and Deninger
-\cite{Paugam2008,ConnesConsani2021,Deninger1992}.  Weil and Li-type criteria already translate RH
-into positivity \cite{Weil1952,Li1997,BombieriLagarias1999}, while Hedenmalm and Suzuki provide
-modern spectral and screw-function settings \cite{Hedenmalm2026,Suzuki2022,Suzuki2026}.
-No generic Jacobian criterion, reciprocal boost, Fisher metric, or zero-side positivity
-criterion is claimed as new.
-
-The new contribution is the exact conservation law on one arithmetic source: an iff classifier
-for analytic differential relations modulo finite Euler rays; an exact Boolean-lattice and
-private-tensor theorem, including arbitrary nonempty meets and joins and finite support of every
-observable, for free
-common/private differential fields; a positive coefficient-disjoint partition of unity giving
-an injective \(\ell^1\) spectral embedding; a common divisor field equal to the intersection of
-all shell-test fields and a common current irreducible over the complete transverse frame;
-equality of prime-tail, Poisson, and divisor charges; and an exact classification of bounded
-label-blind observers and reflected sewing singularity.  Targeted theorem-level searches found
-no prior occurrence of the exact clock quotient, the Riemann shell common-core theorem, or their
-joint modular-type consequence.  This is a priority statement, not a claim that the classical
-ingredients are new.
-
-\section{The prime-source conservation law}
-
-Let \(K=\C(s)\), with derivation \(\partial_s\), and write
-\(K\langle f_i:i\in I\rangle\) for differential-field generation.  For \(n>1\), let
-\(M(n)=\max_pv_p(n)\), and put
-\[
- S_m(s)=\sum_{\substack{n>1\\M(n)=m}}n^{-s},\qquad
- H_m(s)=\frac1{\zeta((m+1)s)}-\frac1{\zeta(ms)}.
-\]
-Fix an integer \(K_0\geq12\) and define the complete multiplier resolution
-\[
- \Phi_0(s)=\frac1{\zeta(K_0s)},\qquad
- \Phi_{j+1}(s)=H_{K_0+j}(s)\quad(j\geq0).
-\]
-Let \(\Sigma:\ell^1(\N_0)\to\C\) be the norm-one codiagonal
-\(\Sigma x=\sum_jx_j\), let \(e_j\) be the coordinate vectors, and set
-\[
- E(s)=(\Phi_j(s))_{j\geq0},\qquad
- E^\circ(s)=E(s)-e_0 .
-\]
-The identities below are first established in their half-planes of absolute convergence and
-then continued analytically.
-
-For the exact source statement, let \(\mathcal A\) be the vector space of complex profiles
-\(a(p,e)\) on prime powers \(p^{e+1}\), let \(\mathcal A_{\rm fin}\) be the subspace supported
-on finitely many prime rays, and set
-\[
- \mathcal Q=\mathcal A/\mathcal A_{\rm fin},\qquad
- (Xa)(p,e)=-(e+1)\log p\,a(p,e).
-\tag{2.1}\label{eq:source-clock}
-\]
-Changing the sign of \(X\) only changes the chosen upper-end coordinate.  For a source family
-\(c=(c_i)\), put
-\[
- W(c)=\Span_\C\{X^k[c_i]:i\in I,\ k\geq0\}\subset\mathcal Q.
-\tag{2.2}\label{eq:old-clock}
-\]
-Let \(\mathcal K_{\rm loc}\) be the differential field generated by \(K=\C(s)\) and every
-finite-abscissa Euler germ supported on finitely many prime rays.  If \(f\) is supported on
-positive prime powers, write \(\mathcal Lf(s)=\sum_n f(n)n^{-s}\) in its convergence half-plane.
-Here \(\operatorname{DiffInd}\) denotes joint differential-algebraic independence and
-\(K\langle a\rangle\) denotes differential-field generation by every member of the family \(a\).
-
-\begin{theorem}[Prime-source conservation, collapse, and blow-up law]\label{thm:common-mode-law}
-Clause \textup{I} gives faithful source realization, Clause \textup{II} transports its
-continuous charge, and Clause \textup{III} gives the regular-descent boundary.
-
-\begin{enumerate}[label=\textup{\Roman*.},leftmargin=2.6em]
-\item \textbf{Faithful realization.}
-\begin{enumerate}[label=\textup{(\alph*)},leftmargin=2.2em]
-\item \textbf{Exact source--analytic correspondence.}
-For every family \(f=(f_i)_{i\in I}\) of finite-abscissa positive-prime-power sources,
-\[
-\begin{aligned}
- \operatorname{DiffInd}_{\mathcal K_{\rm loc}}
-       \{\mathcal Lf_i:i\in I\}
- &\Longleftrightarrow\\[-2pt]
- &\quad \{X^k[f_i]:i\in I,\ k\geq0\}
- \text{ is linearly independent in }\mathcal Q.
-\end{aligned}
-\tag{2.3}\label{eq:exact-clock}
-\]
-If \(c\) has free clock orbit, then for every new family \(g=(g_h)\),
-\[
-\begin{aligned}
- &\operatorname{DiffInd}_{\mathcal K_{\rm loc}
-      \langle\mathcal Lc_i:i\in I\rangle}
-       \{\mathcal Lg_h:h\in H\}\\
- &\qquad\Longleftrightarrow\
- \{X^k[g_h]+W(c):h\in H,\ k\geq0\}
- \text{ is linearly independent in }\mathcal Q/W(c).
-\end{aligned}
-\tag{2.4}\label{eq:relative-clock}
-\]
-Thus analytic realization neither creates nor destroys a source-clock relation after all
-finite-prime Euler data have been removed.
-
-The corresponding meet statement is source-independent.  Over any differential field \(L\),
-let \(a,b,c\) be analytic families for which \(a\sqcup b\sqcup c\) is jointly differentially
-independent.  Then
-\[
- L\langle a,b\rangle\cap L\langle a,c\rangle
- =L\langle a\rangle .
-\tag{2.5}\label{eq:exact-meet}
-\]
-Moreover, the two private extensions are linearly disjoint over \(L\langle a\rangle\).
-Equivalently, their multiplication map over the common field has zero kernel.  Thus independent
-private source directions introduce neither a hidden common observable nor tensor torsion.
-
-\item \textbf{Complete positive divisor resolution.}
-There are arithmetic indicators \(a_j:\N\to\{0,1\}\) with pairwise disjoint supports and
-\(\sum_ja_j(n)=1\) such that, for \(\Rea s>1\),
-\[
- \zeta(s)\Phi_j(s)=\sum_{n\geq1}a_j(n)n^{-s}.
-\]
-The head \(a_0\) selects the \(K_0\)-free integers, and \(a_{j+1}\) selects
-\(M(n)=K_0+j\).  For every \(\Rea s>0\),
-\[
-                 E(s)\in\ell^1,\qquad \Sigma E(s)=1.
-\]
-Every \(\Phi_j\) is holomorphic and nonzero on
-\(U=\{s:\Rea s>\tfrac12\}\), and, away from \(s=1\),
-\[
- \operatorname{ord}_s\!\bigl(\zeta\Phi_j\bigr)
- =\operatorname{ord}_s\zeta .
-\]
-On the boundary \(\Rea s=\tfrac12\), the multiplier vector remains absolutely summable with
-sum one and at least one analytic channel preserves the exact order of the completed function.
-In particular, for \(m\geq12\),
-\[
- S_m=\zeta H_m ,
-\]
-with the stated positive pairwise-disjoint support.
-
-\item \textbf{Irreducible common current and primitive Xi shift.}
-The complete family \((\Phi_j)_{j\geq0}\) is jointly differentially independent over
-\(K\langle\zeta\rangle\).  Conversely,
-\[
- \zeta\ \text{is hypertranscendental over}\
- K\langle H_{K_0+j}:j\geq0\rangle .
-\]
-More sharply, its logarithmic current
-\[
-                   J_\zeta=\frac{\zeta'}{\zeta}
-\]
-is hypertranscendental over the same complete transverse field.  Wherever the factors are
-nonzero,
-\[
- \frac{(\zeta H_m)'}{\zeta H_m}-\frac{H_m'}{H_m}=J_\zeta
- \qquad(m\geq12).
-\tag{2.6}\label{eq:relative-connection}
-\]
-Put \(\mathcal I=\{m\in\N:m\geq12\}\) and, for every \(A\subseteq\mathcal I\),
-\[
- \mathcal F_A=K\langle\zeta,H_m:m\in A\rangle,\qquad
- \mathcal F_\parallel=\mathcal F_\varnothing=K\langle\zeta\rangle .
-\]
-Then for arbitrary \(A,B\subseteq\mathcal I\),
-\[
-\boxed{\quad
- \mathcal F_A\cap\mathcal F_B=\mathcal F_{A\cap B},\qquad
- \mathcal F_A\vee\mathcal F_B=\mathcal F_{A\cup B},\qquad
-\mathcal F_A\subseteq\mathcal F_B\Longleftrightarrow A\subseteq B .
-\quad}
-\tag{2.7}\label{eq:shell-lattice}
-\]
-For every nonempty family \((A_i)_{i\in I}\) of shell sets,
-\[
- \boxed{\qquad
- \bigcap_{i\in I}\mathcal F_{A_i}
-    =\mathcal F_{\cap_{i\in I}A_i},
- \qquad
- \bigvee_{i\in I}\mathcal F_{A_i}
-    =\mathcal F_{\cup_{i\in I}A_i}.
- \qquad}
-\tag{2.7a}\label{eq:shell-complete-lattice}
-\]
-Moreover every \(x\in\mathcal F_A\) has finite source support:
-\[
- \exists\,C\subseteq A,\quad |C|<\infty,\qquad x\in\mathcal F_C.
-\tag{2.7b}\label{eq:shell-finite-support}
-\]
-Source complements are exact relative complements:
-\[
- \mathcal F_A\cap\mathcal F_{\mathcal I\setminus A}=\mathcal F_\varnothing,
- \qquad
- \mathcal F_A\vee\mathcal F_{\mathcal I\setminus A}=\mathcal F_{\mathcal I}.
-\tag{2.7c}\label{eq:shell-complement}
-\]
-The private extensions generated by \(A\setminus B\) and \(B\setminus A\) are linearly disjoint
-over \(\mathcal F_{A\cap B}\).  Thus \(A\mapsto\mathcal F_A\) is a faithful distributive-lattice
-embedding and a complete Boolean-algebra realization between its intrinsic bottom
-\(\mathcal F_\varnothing\) and top \(\mathcal F_{\mathcal I}\), not merely a family of
-pairwise-independent functions.  In particular, writing
-\(\mathcal F_m=\mathcal F_{\{m\}}=
-K\langle\zeta H_m,H_m\rangle\), distinct \(m,n\geq12\) satisfy
-\[
- \mathcal F_m\cap\mathcal F_n=\mathcal F_\parallel,\qquad
- \bigcap_{m\geq12}\mathcal F_m=\mathcal F_\parallel .
-\tag{2.7d}\label{eq:shell-common-core}
-\]
-The same conclusion holds for any two disjoint, including infinite, shell sets.  Hence the
-longitudinal zeta field is the intrinsic common core of independent shell resolutions, while
-the full zero-free transverse frame cannot manufacture either that mode or its logarithmic
-current by a finite differential-algebraic expression.
-
-There is a second, independent completeness test.  Let finite pointed residue alphabets be
-sampled cofinally on every prime tail, and adjoin all resulting residue carriers at every
-valuation depth, all their differential jets, and \(\mathcal K_{\rm loc}\).  If a
-positive-prime-power source is nonzero at every prime on infinitely many depths, its Dirichlet
-carrier remains hypertranscendental over this full fusion field.  In particular
-\[
- f_\Lambda(n)=\Lambda(n)(1-n^{-2})
-\tag{2.8}\label{eq:filtered-vm}
-\]
-has this property, and the uncorrected completed shift
-\[
- \mathcal J_2(s)=\frac{\xi'(s+2)}{\xi(s+2)}-\frac{\xi'(s)}{\xi(s)}
-\tag{2.9}\label{eq:xi-shift}
-\]
-is hypertranscendental over every such local-Euler residue--valuation completion.
-
+\begin{enumerate}[leftmargin=2.1em]
+\item Is the signed spectral coordinate present in an arithmetic source before
+      a zero is selected?
+\item In what category can that coordinate survive completion?
 \end{enumerate}
 
-\item \textbf{Conserved charge.}
-The maps
+The answer to the first question is yes.  A positive partition of the integers
+gives an \(\ell^1\)-valued Riemann source \(E_K(s)\).  It carries the zeta
+divisor, and an internal prime-by-prime peeling operation recovers
 \[
- E:\{\Rea s>0\}\longrightarrow\{x\in\ell^1:\Sigma x=1\},
- \qquad
- E^\circ:\{\Rea s>0\}\longrightarrow\ker\Sigma
+                              q^{1/2-s}
+\tag{1.1}\label{eq:normal-character}
 \]
-are injective.  For \(0<\Rea s<1\), write \(\sigma s=1-\bar s\) and
-\(\Delta(s)=E(s)-E(\sigma s)\).  Then
+for every prime \(q\).  Its modulus is
 \[
-       \Delta(s)=0\quad\Longleftrightarrow\quad\Rea s=\frac12,
-       \qquad \Sigma\Delta(s)=0 .
+                    |q^{1/2-s}|=q^{1/2-\Rea s},
+\tag{1.2}\label{eq:orientation-modulus}
 \]
-Moreover, for every \(\Rea s>0\),
-\[
- \sqrt2\,\frac{\Phi_{m+2}(s)}{\Phi_{m+1}(s)}
- \longrightarrow U_2(s):=2^{1/2-s}.
-\]
-After subtracting the prime-two atom, the corresponding adjacent ratio converges to
-\(U_3(s):=3^{1/2-s}\).  The map \(s\mapsto(U_2(s),U_3(s))\) is injective, and
-\[
- \frac{\log|U_q(s)|}{\log q}=\frac12-\Rea s,\qquad
- U_q(s)\overline{U_q(1-\bar s)}=1
- \quad(q=2,3).
-\]
-Define
-\[
- \nu(s)=2\Rea s-1
- =-\frac{\log|U_q(s)|-\log|U_q(1-\bar s)|}{\log q}
- \qquad(q=2,3).
-\tag{2.10}\label{eq:charge}
-\]
-For a pole mode of residue \(m\) at \(\rho\), canonical observation time gives the exact
-order packet
-\[
- |m|^2e^{\nu(\rho)\tau}\,
-       e^{-\tau}\frac{\tau^r}{r!},
- \qquad r\in\N_0,\quad \tau\geq0.
-\tag{2.11}\label{eq:poisson-packet}
-\]
-If \(\rho\) is a zero of \(\xi\) of multiplicity \(m_\rho\), then
-\[
- \operatorname*{Res}_{s=\rho}
-   \left[-(s-\tfrac12)\frac{\xi'(s)}{\xi(s)}\right]
- =-m_\rho(\rho-\tfrac12),
-\qquad
- \nu(\rho)=-\frac2{m_\rho}\Rea
-   \operatorname*{Res}_{s=\rho}
-   \left[-(s-\tfrac12)\frac{\xi'}{\xi}\right].
-\tag{2.12}\label{eq:charge-residue}
-\]
-The depth-successor nearby cycle
-\[
- N_{\rho,m}(z)=
- \left(\frac{z}{z+\rho-\tfrac12}\right)^m
-\]
-carries the full complex charge before taking real parts:
-\[
- \lim_{\substack{w\to0\\w\ne0}}
- w^{-1}\bigl(N_{\rho,m}(w^{-1})-1\bigr)
- =-m(\rho-\tfrac12).
-\tag{2.13}\label{eq:nearby-charge}
-\]
-The same divisor point has a coherent dyadic ramification character
-\[
- \kappa_k(\rho)=
- \exp\!\left(\frac{2\pi i\,m_\rho}{2^k}\right),\qquad
- \kappa_{k+1}(\rho)^2=\kappa_k(\rho),\qquad
- \kappa_k(\rho)=1\Longleftrightarrow 2^k\mid m_\rho .
-\tag{2.14}\label{eq:deck-charge}
-\]
-Thus tail entropy, Poisson escape rate, nearby-cycle transport, and completed-divisor
-orientation are exact representations of one continuous charge, while
-\eqref{eq:deck-charge} retains its independent ramification coordinate.  Their infinitesimal
-coupling is precisely the product \(-m_\rho(\rho-\tfrac12)\) in
-\eqref{eq:nearby-charge} and \eqref{eq:charge-residue}.
+so the side of the critical line is present before reflection or positivity is
+applied.
 
-\item \textbf{Regular-descent boundary.}
-\begin{enumerate}[label=\textup{(\alph*)},leftmargin=2.2em]
-\item \textbf{Cofinal conditioning and exact bounded-observer blindness.}
-Let \(F\) be any normed complex vector space and
-\(T:\ell^1(\N_0)\to F\) any bounded linear map.  If \(Te_i=Te_j\) for all \(i,j\), then
-\[
-                         Tx=(\Sigma x)\,Te_0
-                         \qquad(x\in\ell^1).
-\]
-Equivalently, label blindness is exactly annihilation of \(\ker\Sigma\).  Consequently
-\[
-       T(E(s))=T(E(t))\quad(\Rea s,\Rea t>0),\qquad
-       T\Delta(s)=0 .
-\]
-Thus when \(\Rea s\ne\tfrac12\), the actual source displacement \(\Delta(s)\) is nonzero but
-invisible to every bounded label-blind linear consumer.
+The answer to the second question is rigid.  Every fixed \(E_K\) is faithful,
+yet all its values converge to the same point as \(K\to\infty\).  The complete
+prime-normal spectrum survives this collapse with every finite rank.  Closed
+graph completion therefore cannot remain an operator: all retained normal
+rank reappears in the multivalued fibre.
 
-This exact finite-stage blindness is one face of a stronger cofinal law.  For every
-\(M\geq1\), set
+This is the paper's single organizing law:
 \[
- E_M(s)=\bigl(\zeta(Ms)^{-1},H_M(s),H_{M+1}(s),\ldots\bigr),
- \qquad e_0=(1,0,\ldots).
+\boxed{
+\begin{gathered}
+\text{persistent observable rank}
+   +\text{ collapsing source representatives}\\
+\Longrightarrow
+\text{vertical rank in every closed completion}.
+\end{gathered}}
+\tag{1.3}\label{eq:rank-transmutation}
 \]
-Then, for every fixed \(\Rea s>0\),
+The abstract implication is elementary and belongs to classical linear
+relation theory \cite{Arens1961,HassiDeSnooSzafraniec2009}.  It is not claimed
+as a new operator-theoretic fact.  The arithmetic content is the exact
+Riemann realization: all prime-normal characters arise internally from one
+positive divisor-faithful source, their canonical sample matrix has every
+finite rank, and one cofinal collapse forces unbounded multivalued rank.
+
+\subsection*{Main result}
+
+Write \(p_0=2,p_1=3,\ldots\) for the primes and give \(\C^\N\) its product
+topology.  Define
 \[
- E_M(s)\longrightarrow e_0\quad\hbox{in }\ell^1
- \qquad(M\to\infty),                                      \tag{2.14a}
-\label{eq:cofinal-collapse}
+  s_j=\tfrac12+j,\qquad
+  P_j=(p_i^{-j})_{i\geq0}.
+\tag{1.4}\label{eq:sample-packets}
 \]
-although \(s\mapsto E_M(s)\) is injective for every finite \(M\).  Consequently, for distinct
-\(s,t\) in the right half-plane,
+Let \(\cR\subset \ell^1(\N_0)\times\C^\N\) be a closed linear relation.
+Its multivalued part is
 \[
- \|E_M(s)-E_M(t)\|\longrightarrow0,\qquad
- \|E_M(s)-E_M(t)\|^{-1}\longrightarrow\infty.              \tag{2.14b}
-\label{eq:inverse-conditioning}
+                 \mul\cR=\{v\in\C^\N:(0,v)\in\cR\}.
+\tag{1.5}\label{eq:mul}
 \]
-Let \((Y,d)\) be any metric space and let \(T_M:\ell^1\to Y\) be arbitrary maps satisfying one
-uniform Lipschitz estimate
+We say that \(\cR\) retains the centered prime-normal reader if
 \[
- d(T_Mx,T_My)\leq C\|x-y\|\qquad(M\geq1,\ x,y\in\ell^1).
+                 (E_K(s_j)-e_0,P_j)\in\cR
+                 \qquad(K,j\in\N).
+\tag{1.6}\label{eq:retention}
 \]
-No linearity, positivity, additivity, or label symmetry is assumed.  Then
+
+\begin{theorem}[Unbounded prime-normal boundary]\label{thm:main}
+The source \(E_K\) has the following properties.
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em]
+\item For \(K\geq12\), its coordinates form a positive
+      coefficient-disjoint resolution of the zeta divisor on
+      \(\Rea s>\tfrac12\).
+\item For every \(K\), the map \(s\mapsto E_K(s)\) is injective on
+      \(\Rea s>0\), while \(E_K(s)\to e_0\) in \(\ell^1\) for every fixed
+      \(s\) in that half-plane.
+\item For every prime \(q\), a source-internal peeled-shell transfer converges
+      to \(q^{1/2-s}\).
+\item If a closed linear relation \(\cR\) satisfies
+      \eqref{eq:retention}, then for every \(r\geq0\),
+      \[
+          \pr_r(\mul\cR)=\C^r,
+          \qquad
+          \pr_r(v)=(v_0,\ldots,v_{r-1}).
+      \tag{1.7}\label{eq:projectively-full}
+      \]
+      In particular, \(\cR\) is not the graph of a single-valued operator,
+      and its multivalued part has no finite rank bound.
+\end{enumerate}
+\end{theorem}
+
+Unlike an RH equivalence, \Cref{thm:main} does not replace zero location by
+another unproved assertion.  It proves an unconditional classification of the
+source horizon.  It rules out a complete prime-normal realization by a
+closable single-valued graph in the canonical source topology.  Relation-valued
+or topology-changing constructions remain possible; the theorem says that
+their singularity is forced rather than optional.
+
+\subsection*{Novelty boundary}
+
+Several ingredients are classical and receive no novelty credit:
+\(\zeta^{-1}(s)=\sum\mu(n)n^{-s}\) on \(\Rea s>1\), tail estimates for
+Dirichlet series, Vandermonde determinants, the largest exponent in an
+integer factorization, and the multivalued part of a closed linear relation
+\cite{Titchmarsh1986,Niven1969,Arens1961}.  The paper's candidate new result
+is their simultaneous exact realization in \Cref{thm:main}.  Theorem-level
+searches found no prior construction in which a positive divisor-replicating
+Riemann source collapses to one \(\ell^1\) point while internally retaining a
+countable prime-normal spectrum with surjective vertical projection at every
+finite rank.  This is a priority statement subject to independent expert
+verification, not a claim that the classical components are new.
+
+\section{The universal rank-transmutation law}
+
+Let \(X\) and \(Y\) be Hausdorff topological vector spaces over \(\C\).
+A linear relation from \(X\) to \(Y\) is a linear subspace
+\(\cR\subset X\times Y\).  It is an operator graph exactly when each source
+has at most one output.  In particular,
 \[
- d\bigl(T_ME_M(s),T_ME_M(t)\bigr)\longrightarrow0.         \tag{2.14c}
-\label{eq:lipschitz-collapse}
+               \cR\text{ is single-valued}
+               \quad\Longleftrightarrow\quad
+               \mul\cR=\{0\}.
+\tag{2.1}\label{eq:single-valued}
 \]
-Thus no uniformly Lipschitz cofinal observer retains a fixed positive spectral separation.
-The collapse has a canonical singular resolution.  Put
+This is standard terminology \cite{Arens1961,HassiDeSnooSzafraniec2009}.
+
+\begin{theorem}[Cofinal rank transmutation]\label{thm:abstract}
+Let \(\cR\subset X\times Y\) be a closed linear relation.  Let
+\(\mathcal V\subset Y\).  Suppose that for every \(v\in\mathcal V\) there is
+a sequence \(u_n(v)\in X\) such that
 \[
- \widetilde H_M(s)=H_M(s)-2^{-Ms}(1-2^{-s})
-\]
-and form the projective normal chart
-\[
- B_M(s)=
- \left(
- \sqrt2\,\frac{H_{M+1}(s)}{H_M(s)},\
- \sqrt3\,\frac{\widetilde H_{M+1}(s)}{\widetilde H_M(s)}
- \right).
+             u_n(v)\longrightarrow0,
+             \qquad (u_n(v),v)\in\cR\quad(n\geq0).
+\tag{2.2}\label{eq:collapse-hyp}
 \]
 Then
 \[
- B_M(s)\longrightarrow
- \bigl(2^{1/2-s},3^{1/2-s}\bigr),                       \tag{2.14d}
-\label{eq:blowup-chart}
+                         \Span_\C\mathcal V\subset\mul\cR.
+\tag{2.3}\label{eq:span-mul}
 \]
-and the limiting map is injective.  Thus the ordinary source converges to one point while its
-canonical two-clock blow-up retains the entire complex spectral coordinate.
-More precisely, for \(s\ne t\) there is no finite \(C\) such that
-\[
- d\bigl(B_M(s),B_M(t)\bigr)
- \leq C\|E_M(s)-E_M(t)\|_1
- \qquad\hbox{for every }M.                              \tag{2.14e}
-\label{eq:inevitable-singularity}
-\]
-Thus faithful cofinal recovery is necessarily singular relative to the canonical source norm,
-even when required only on one fixed pair.
-For \(0<\Rea s<1\), the reflected displacement
-\(\Delta_M(s)=E_M(s)-E_M(1-\bar s)\) is nonzero at every finite \(M\) exactly off the critical
-line, but \(\Delta_M(s)\to0\); off line,
-\(\|\Delta_M(s)\|^{-1}\to\infty\).
-
-\item \textbf{Reflection trichotomy and the conservative gate.}
-Let \(d=1-2\Rea\rho\) and
-\[
- a_\rho=-i(\rho-\tfrac12),\qquad
- c_\rho=-\frac{\Rea a_\rho}{|a_\rho|^4}.
-\]
-Then
-\[
- \eta_\rho:=\Ima(a_\rho^{-2})=c_\rho d.
-\]
-For the reciprocal boost
-\[
- B_d(t)(u,v)=(e^{dt}u,e^{-dt}v),
-\]
-every reflection-symmetric real quadratic form is
-\[
- Q_{\alpha,\beta}(u,v)=\alpha(u^2+v^2)+2\beta uv.
-\]
-If \(d\ne0\), simultaneous positivity and \(B_d\)-conservation force
-\(\alpha=\beta=0\).  The nonzero conservative forms are therefore indefinite cross forms.
-For the balanced score \(\dot v=(c_\rho d,-c_\rho d)\),
-\[
- -\frac12Q_{0,1}(\dot v)
- =c_\rho^2 I_{\rm F}(d)
- =\frac18\left.\frac{\dd^2}{\dd t^2}
-       Q_{1,\beta}(B_d(t)(c_\rho,c_\rho))\right|_{t=0}
- =\eta_\rho^2,
-\]
-where \(I_{\rm F}(d)=d^2\) is the Fisher information at the balanced point of the reflected
-Bernoulli family.  Thus positive reflection in this reciprocal two-mode quadratic class changes
-signed first-order orientation into second-order curvature.
-
-In addition, let \(\nu=2\Rea\rho-1=-d\), let \(V:F\to F\) be norm-conservative, and let
-\(A:\ell^1\to F\) be bounded linear.  Then
-\[
- |e^\nu-1|\,\|AE(\rho)\|
- \leq
- \bigl\|A(e^\nu E(\rho))-V(AE(\rho))\bigr\|.
-\]
-Exact equivariance therefore implies \(AE(\rho)=0\) or
-\(\Rea\rho=\tfrac12\).  More generally, no uniformly source-faithful sequence of
-norm-conservative consumers can approach equivariance off the critical line.
-\end{enumerate}
-\end{enumerate}
-
-For the completed Riemann divisor, the sum of the orientation atoms in
-\textup{III(b)} is finite.  It is
-simultaneously the Fisher mass of the reflected source character, one eighth of its positive
-polarization curvature, the negative of a conservative Weil square, and the mass of the
-positive Cauchy measure in \Cref{thm:universal-law}.
 \end{theorem}
 
 \begin{proof}
-For \textup{I(a)}, differentiation multiplies the coefficient at \(p^{e+1}\) by
-\(-(e+1)\log p\), hence realizes \(X\).  If the clock classes are independent, every finite jet
-rectangle has a separated-prime Jacobian of full rank after deletion of finitely many prime
-rays.  The arithmetic jet columns are therefore algebraically independent over the
-finite-prime coefficient field.  Faithfulness of finite-abscissa Dirichlet realization, followed
-by adjoining the genuine coordinate, transfers this independence to analytic germs.
-
-Conversely, a clock dependence has finite support:
-\[
- \sum_{(i,k)\in R}\alpha_{ik}X^k[f_i]=0\quad\text{in }\mathcal Q.
-\]
-Thus the coefficient source
-\(\sum_{(i,k)\in R}\alpha_{ik}D^kf_i\), where
-\((Da)(n)=-(\log n)a(n)\), is supported on finitely many prime rays, so its analytic
-Dirichlet germ belongs to \(\mathcal K_{\rm loc}\).  Linearity of realization produces a
-nonzero linear differential polynomial in the \(\mathcal Lf_i\) which vanishes.  This proves
-\eqref{eq:exact-clock}.  Splitting a free family into old and new blocks and applying the
-elementary equivalence
-\[
- \operatorname{LI}(u\sqcup v)
- \Longleftrightarrow
- \operatorname{LI}(u)\ \text{and}\
-\operatorname{LI}(v+\Span u\text{ in }V/\Span u)
-\]
-gives \eqref{eq:relative-clock}.
-For \eqref{eq:exact-meet}, take all differential jets of \(a,b,c\).  They are algebraically
-independent.  The private \(b\)- and \(c\)-jet fields are therefore linearly disjoint over the
-field generated by the common \(a\)-jets.  Two linearly disjoint subfields meet in their base,
-which is exactly \(L\langle a\rangle\).
-
-For \textup{I(b)}, the \(K_0\)-free head and exact largest-exponent shells partition the positive
-integers.  Their Dirichlet series give the displayed channels.  The multiplier sum telescopes:
-\[
- \Phi_0+\sum_{j=0}^{N}\Phi_{j+1}
- =\zeta((K_0+N+1)s)^{-1}\longrightarrow1.
-\]
-The shell asymptotics give absolute convergence in \(\ell^1\); zero-free reciprocal-zeta
-estimates give the divisor assertions.  On the boundary, absolute summability and total mass one
-prevent collective annihilation, so one nonzero analytic multiplier preserves order.
-
-For \textup{I(c)}, prime-valuation leading terms form an echelon system for every finite jet
-rectangle.  This gives
-joint differential independence of the complete multiplier family over the zeta differential
-field.  The joint independence of \(\zeta\) with all \(H_m\), followed by differential-field
-base change, gives the reciprocal assertion.  If \(J_\zeta\) were differentially algebraic over
-the transverse field, the equation \(\zeta'=J_\zeta\zeta\) would make \(\zeta\)
-differentially algebraic there, a contradiction.  The product rule gives
-\eqref{eq:relative-connection}.  For arbitrary \(A,B\), partition the jointly free shell frame
-into the common block
-\(\zeta\sqcup(H_m)_{m\in A\cap B}\) and the private blocks indexed by
-\(A\setminus B\) and \(B\setminus A\).  Equation \eqref{eq:exact-meet} gives the intersection
-identity in \eqref{eq:shell-lattice}, and its linear-disjointness statement gives the private
-tensor assertion.  Differential adjunction of two source sets is adjunction of their union,
-which gives the compositum identity.  Inclusion for \(A\subseteq B\) is immediate.  Conversely,
-if \(m\in A\setminus B\), joint differential independence makes \(H_m\)
-hypertranscendental over \(\mathcal F_B\), so \(\mathcal F_A\not\subseteq\mathcal F_B\).
-This proves order reflection and hence the full lattice law.
-
-For an arbitrary nonempty family, the compositum is generated by the union because every source
-generator belongs to one member and an arbitrary compositum of differential fields is again
-derivation-closed.  Conversely every element of \(\mathcal F_A\) belongs to a field generated by
-finitely many shell labels: compact generation of the intermediate-field lattice reduces the
-element to finitely many adjunctions, and each adjunction carries one shell label.  If an element
-belongs to every \(\mathcal F_{A_i}\), choose such a finite support \(C\) in one member.  For each
-\(m\in C\setminus\cap_iA_i\), select one \(A_i\) omitting \(m\) and apply the binary meet law.
-After finitely many steps the element lies in a field supported inside \(\cap_iA_i\).  This proves
-\eqref{eq:shell-complete-lattice} and \eqref{eq:shell-finite-support}.  Applying the binary laws to
-\(A\) and \(\mathcal I\setminus A\) gives \eqref{eq:shell-complement}.
-
-Also \(H_m\ne0\) and \(\zeta=(\zeta H_m)H_m^{-1}\), which proves the two presentations of
-\(\mathcal F_m\).  Taking disjoint singletons gives the first identity in
-\eqref{eq:shell-common-core}.  The common zeta field is contained in every \(\mathcal F_m\);
-the full intersection is contained in the meet of any two distinct test fields, proving the
-second identity.
-
-For the residue--valuation statement, every proposed differential relation uses finitely many
-old depth labels.  Choose a nonvanishing depth of the new source outside that finite set.
-All old carriers vanish on this private layer.  Evaluation at distinct primes leaves a
-Vandermonde system in \(\log p\), forcing every new-source jet coefficient to vanish; tail
-density then kills the remaining old coefficients.  This proves relative clock freeness, and
-\eqref{eq:relative-clock} transfers it to analytic hypertranscendence.  The source
-\eqref{eq:filtered-vm} is nonzero at every \(p^{e+1}\).  Its Dirichlet carrier differs from
-\eqref{eq:xi-shift} only by
-\[
- \frac1{s+2}+\frac1{s+1}-\frac1{s-1},
-\]
-whose complete jet lies in the coordinate field; this rational gauge cannot change
-hypertranscendence.
-
-For \textup{II}, the first two nontrivial atoms in the reciprocal-zeta Dirichlet series are
-\(-2^{-w}\) and \(-3^{-w}\).  Uniform tail estimates after each extraction give
-\[
- 2^{ms}H_m(s)\to1-2^{-s},\qquad
- 3^{ms}R_m(s)\to1-3^{-s},
-\]
-and the transfer limits follow by taking adjacent ratios.  The square root of the adjacent
-shell source-mass ratio tends to \(\sqrt2\), supplying the half-density normalization.  Equality
-of both transfer characters first fixes the real part by
-their moduli and then fixes the imaginary part because \(\log3/\log2\) is irrational.
-The same two limits show that equality of two complete source vectors forces equality of both
-characters; hence \(E\) and \(E^\circ\) are injective.  Reflection fixed points then give the
-criterion for \(\Delta(s)\).
-
-Taking logarithmic moduli proves \eqref{eq:charge}.  For the pole mode
-\(m\exp(x/(s-1))\), factorial jet normalization and the unique canonical time
-\(x=|\rho-1|^2\tau\) give \eqref{eq:poisson-packet}.  Finally a zero of multiplicity
-\(m_\rho\) gives residue \(m_\rho\) to \(\xi'/\xi\); multiplication by
-\(-(s-\tfrac12)\) proves \eqref{eq:charge-residue}.  Expanding
-\((1+(\rho-\tfrac12)w)^{-m}\) at \(w=0\) proves \eqref{eq:nearby-charge}.
-The exponential definition of \(\kappa_k\) gives
-\(\kappa_k^{2^k}=1\) and \(\kappa_{k+1}^2=\kappa_k\); the elementary
-\(e^{2\pi i x}=1\) criterion gives the divisibility equivalence in
-\eqref{eq:deck-charge}.
-
-For \textup{III(a)}, finite-support vectors are dense in \(\ell^1\).  Label blindness makes \(T\)
-agree with \(x\mapsto(\Sigma x)Te_0\) on every coordinate vector and hence on their dense span.
-Continuity gives equality everywhere.  Since \(\Sigma E(s)=1\), all stated blindness conclusions
-follow.
-
-For the cofinal statement, the norm has the exact decomposition
-\[
- \|E_M(s)-e_0\|_1
- =
- \bigl|\zeta(Ms)^{-1}-1\bigr|
- +\sum_{j\geq0}|H_{M+j}(s)|.
-\]
-The first term tends to zero because \(\zeta(Ms)\to1\) on every ray
-\(\Rea s>0\).  The shell sequence \((H_m(s))_{m\geq0}\) is absolutely summable there, so its
-translated tails tend to zero.  This proves \eqref{eq:cofinal-collapse}.  Finite-\(M\)
-injectivity was proved in \textup{II}; hence the distance between two distinct points is positive
-at every finite stage, tends to zero, and has reciprocal tending to infinity.  Finally
-\[
- 0\leq d(T_ME_M(s),T_ME_M(t))
- \leq C\|E_M(s)-E_M(t)\|\longrightarrow0
-\]
-proves \eqref{eq:lipschitz-collapse}.  Applying the same argument to
-\((s,1-\bar s)\), together with the reflection fixed-point law in \textup{II}, gives the reflected
-conditioning statement.  Finally, the least-atom shell asymptotics give
-\[
- \sqrt2\,H_{M+1}/H_M\to2^{1/2-s}.
-\]
-After exact subtraction of that prime-two atom, the prime-three asymptotic gives
-\(\sqrt3\,\widetilde H_{M+1}/\widetilde H_M\to3^{1/2-s}\).  The two-prime injectivity proved in
-\textup{II} yields \eqref{eq:blowup-chart}.  If \(s\ne t\), continuity of distance and injectivity
-give
-\[
- d(B_M(s),B_M(t))\longrightarrow
- d\!\left((2^{1/2-s},3^{1/2-s}),(2^{1/2-t},3^{1/2-t})\right)>0.
-\]
-The right-hand side of the proposed estimate in \eqref{eq:inevitable-singularity} tends to zero
-by \eqref{eq:inverse-conditioning}, a contradiction.  Hence the projective normal chart is the
-explicit necessarily singular inverse retained by the collapsing source.
-
-The first half of \textup{III(b)} is the complete classification of a quadratic form invariant under channel
-exchange and reciprocal boost.  Boost invariance at nonzero rate kills the diagonal coefficient;
-positivity then kills the cross coefficient.  Direct differentiation of the positive balanced
-energy and the two-channel log likelihood gives the displayed identity.
-
-For the quantitative gate, apply the reverse triangle inequality to the source-character image
-and the norm-conservative target image.  Linearity of \(A\) gives the factor \(e^\nu\).
-Equality at zero defect forces \(e^\nu=1\) unless the source vector is erased.  The Riemann
-divisor identifications are proved in \Cref{thm:xi-law}.
+For fixed \(v\in\mathcal V\), the pairs
+\((u_n(v),v)\) converge to \((0,v)\).  Closedness gives
+\((0,v)\in\cR\), hence \(v\in\mul\cR\).  The multivalued part is a linear
+subspace, so it contains the span.
 \end{proof}
 
-\begin{corollary}[Prime-power phase nodes are local Euler data]
-\label{cor:phase-node-local}
-Let \(f\in\mathcal A\) be a finite-abscissa source supported on positive prime powers, and let
-\(u\in\R\setminus\{0\}\).  Suppose
-\[
- f(p,e)\ne0\quad\Longrightarrow\quad
- \sin\!\bigl(u(e+1)\log p\bigr)=0                       \tag{2.15}
-\label{eq:phase-node-local}
-\]
-for every prime \(p\) and \(e\geq0\).  Then \(f\in\mathcal A_{\rm fin}\), so
-\[
- [f]=0\quad\hbox{in }\mathcal Q,\qquad
- \mathcal Lf\in\mathcal K_{\rm loc}.
-\]
-In particular, even an infinite one-prime valuation tower supplies no nonzero global relative
-prime-clock class.
-\end{corollary}
-
-\begin{proof}
-If distinct prime rays \(p\ne q\) were active at depths \(e,d\), the two sine-node equations
-would give integers \(m,n\) with
-\[
- u(e+1)\log p=m\pi,\qquad u(d+1)\log q=n\pi.
-\]
-Cross-multiplication and \(u\ne0\) would give
-\((e+1)n\log p-(d+1)m\log q=0\).  Integer-linear independence of the logarithms of distinct
-primes forces \((e+1)n=(d+1)m=0\), hence \(m=n=0\), contradicting
-\(u(e+1)\log p\ne0\).  Thus at most one prime ray is active.  The profile is therefore in
-\(\mathcal A_{\rm fin}\), its quotient class is zero, and its finite-abscissa analytic carrier
-belongs to the finite-prime Euler coordinate field by the exact source--analytic correspondence.
-\end{proof}
-
-\begin{corollary}[Suzuki position torque remains beyond local fusion]
-\label{cor:suzuki-torque-global}
-Let
-\[
- f_T(n)=n^{1/2}\log n\,\Lambda(n)(1-n^{-2})
-       =\Lambda(n)\log n\bigl(\sqrt n-n^{-3/2}\bigr).
-\tag{2.16}\label{eq:suzuki-torque-source}
-\]
-This is a finite-abscissa positive-prime-power source, and its Dirichlet carrier is the prime
-numerator in the Euler-half-plane transform of the restricted-Weil position commutator:
-\[
- \mathcal Lf_T(s)
- =\mathcal L\!\left(\log(\,\cdot\,)\Lambda(\,\cdot\,)
-       (1-(\,\cdot\,)^{-2})\right)(s-\tfrac12).
-\tag{2.17}\label{eq:suzuki-torque-shift}
-\]
-For every finite pointed residue system sampled cofinally on prime tails,
-\(\mathcal Lf_T\) is hypertranscendental over the differential field generated jointly by
-\(\mathcal K_{\rm loc}\), all depths of the resulting residue--valuation fusion carriers, and all
-their differential jets.
-\end{corollary}
-
-\begin{proof}
-Log weighting and Dirichlet shifting preserve positive-prime-power support and finite abscissa.
-At every prime \(p\) and depth \(e\geq0\),
-\[
- f_T(p^{e+1})
- =p^{(e+1)/2}(e+1)(\log p)^2
-       \bigl(1-p^{-2(e+1)}\bigr)\ne0.
-\]
-Thus every valuation depth is nowhere vanishing.  The local-Euler residue--valuation primitive
-boundary in \Cref{thm:common-mode-law}\textup{(C)} applies.  The Dirichlet shift identity and
-coefficient differentiation give \eqref{eq:suzuki-torque-shift}.
-\end{proof}
-
-\begin{remark}[What is and is not universal]
-The factorization of a symmetric bounded observer on \(\ell^1\), the quadratic boost algebra,
-and the Dirichlet-series Jacobian method are elementary or classical ingredients.  Universal
-content is the source-lattice statement: free realization preserves relation quotients and
-exact intersection/compositum squares, whereas each post-realization class treated here cannot
-create a lost source
-class, character weight, or asymptotic type.  New arithmetic content is that one explicit
-Riemann source realizes all three levels: exact common divisor field, labeled modular charge,
-and reflected Rees-type fracture.  The theorem does not assert that every reflected divisor
-arises from high-exponent shells.
-\end{remark}
-
-\section{The reflection-even tomographic shadow}
-
-\subsection{Quartet-symmetric divisors}
-
-Let \(\Gamma\) be a countable multiset in \(\C\setminus\{0\}\).  Multiplicity is part of the
-indexing: two copies at the same complex number are distinct elements of \(\Gamma\).
-Assume that
-\[
-       c(a)=\bar a,\qquad r(a)=-a
-\]
-act as commuting multiplicity-preserving bijections of \(\Gamma\).  Let \(z\in\C\) be
-\emph{regular} if none of \(z,-z,\bar z,-\bar z\) belongs to \(\Gamma\).
-
-\begin{definition}[Orientation vector and measure]
-For \(a\in\Gamma\), define
-\[
- \eta(a)=\Ima(a^{-2})
-        =-\frac{2\Rea a\,\Ima a}{|a|^4}.
-\]
-Whenever \(\eta\in\ell^2(\Gamma)\), define
-\[
- v_\Gamma=(\eta(a))_{a\in\Gamma},\qquad
- \mu_\Gamma=\sum_{a\in\Gamma}\eta(a)^2\delta_a,\qquad
- \cE_\Gamma=\mu_\Gamma(\Gamma).
-\]
-\end{definition}
-
-The coordinate has two symmetries:
-\[
-       \eta(\bar a)=-\eta(a),\qquad
-       \eta(-a)=\eta(a).
-\]
-Conjugation is the reflection across the real axis in the centered spectral plane; negation is
-the second functional-equation symmetry.
-
-For a regular \(z\), set
-\begin{equation}\label{eq:weight}
- W_z(a)=
- \frac{|a|^4(|a|^2+|z|^2)}
- {4|a-z|^2|\bar a-z|^2|a+z|^2|\bar a+z|^2}
-\end{equation}
-and
-\begin{equation}\label{eq:defect}
- D_\Gamma(z)=
- -\sum_{a\in\Gamma}\frac{\eta(a)}{|a-z|^2},
-\end{equation}
-whenever the latter series is absolutely convergent.
-
-\begin{proposition}[Reflection-even tomography]\label{thm:universal-law}
-Let \(\Gamma\) be a quartet-symmetric countable divisor, let
-\(\eta\in\ell^2(\Gamma)\), and let \(z\) be regular with
-\(\Rea z\,\Ima z\ne0\).  Assume the series in
-\eqref{eq:defect} is absolutely convergent.  Then the integral below is finite and:
-\begin{align}
-  Jv_\Gamma&=-v_\Gamma,                                      \label{eq:odd}\\
-  Q_\Gamma(v_\Gamma)&=-\cE_\Gamma,                           \label{eq:negative}\\
-  D_\Gamma(z)&=
-  16\,\Rea z\,\Ima z\int_\Gamma W_z(a)\,\dd\mu_\Gamma(a).
-                                                               \label{eq:tomography}
-\end{align}
-Here \(Jf(a)=f(\bar a)\) and
-\(Q_\Gamma(f)=\Rea\langle Jf,f\rangle_{\ell^2(\Gamma)}\).
-Moreover \(W_z(a)>0\) for every \(a\in\Gamma\).  Consequently,
-\[
-        D_\Gamma(z)=0
-        \quad\Longleftrightarrow\quad
-        \mu_\Gamma=0
-        \quad\Longleftrightarrow\quad
-        \eta(a)=0\ \text{for all }a\in\Gamma .
-\]
-\end{proposition}
-
-\begin{proof}
-The first identity follows from
-\(\eta(\bar a)=-\eta(a)\).  Hence
-\[
- Q_\Gamma(v_\Gamma)
- =\Rea\sum_{a\in\Gamma}\eta(\bar a)\eta(a)
- =-\sum_{a\in\Gamma}\eta(a)^2
- =-\cE_\Gamma.
-\]
-
-It remains to prove \eqref{eq:tomography}.  Write
-\[
- t_z(a)=-\frac{\eta(a)}{|a-z|^2}.
-\]
-A common denominator calculation on one orbit
-\(\{a,\bar a,-a,-\bar a\}\) gives
-\begin{align}
- &t_z(a)+t_z(\bar a)+t_z(-a)+t_z(-\bar a) \notag\\
- &\qquad =
- 64\,\Rea z\,\Ima z\,
- \frac{(\Rea a)^2(\Ima a)^2(|a|^2+|z|^2)}
- {|a|^4|a-z|^2|\bar a-z|^2|a+z|^2|\bar a+z|^2}. \label{eq:orbit}
-\end{align}
-Since
-\[
- \eta(a)^2=\frac{4(\Rea a)^2(\Ima a)^2}{|a|^8},
-\]
-the final factor in \eqref{eq:orbit} is exactly \(W_z(a)\eta(a)^2\).
-Absolute convergence permits reindexing by \(c\), \(r\), and \(cr\).  Therefore the sum of the
-left side of \eqref{eq:orbit} over all \(a\in\Gamma\) is \(4D_\Gamma(z)\).
-The sum of the right side is
-\[
- 64\,\Rea z\,\Ima z
- \sum_{a\in\Gamma}W_z(a)\eta(a)^2 .
-\]
-Division by \(4\) proves \eqref{eq:tomography}.  Regularity makes every factor in the
-denominator of \(W_z\) positive; its numerator is positive because \(a\ne0\).  Thus \(W_z>0\).
-A convergent sum of nonnegative terms with strictly positive weights vanishes exactly when every
-mass atom vanishes.
-\end{proof}
-
-\begin{remark}[Why the coefficient is \(16\)]
-The formula sums over the multiplicity-exact divisor rather than over a chosen quartet
-fundamental domain.  Orbit symmetrization produces \(64\), while reindexing counts the original
-defect four times.  This convention avoids any exceptional handling of orbits meeting a symmetry
-axis.
-\end{remark}
-
-\subsection{The erasure theorem}
-
-The positive measure is not a substitute for the signed vector.  It is its reflection-even
-shadow.
-
-\begin{corollary}[Even quotients erase orientation]\label{cor:erasure}
-Let \(X\) be a real or complex vector space, and let \(P:\ell^2(\Gamma)\to X\) be linear with
-\(PJ=P\).  Then \(Pv_\Gamma=0\).  In particular, no reflection-even quotient can reconstruct the
-sign of \(\eta\) from the descended vector.
-\end{corollary}
-
-\begin{proof}
-By \eqref{eq:odd},
-\[
- Pv_\Gamma=PJv_\Gamma=P(-v_\Gamma)=-Pv_\Gamma.
-\]
-Hence \(2Pv_\Gamma=0\).
-\end{proof}
-
-\begin{corollary}[Tomograms are faithful but unoriented]\label{cor:faithful}
-The family
-\[
- \left\{\int W_z\,\dd\mu_\Gamma:
- z\ \text{regular},\ \Rea z\,\Ima z\ne0\right\}
-\]
-detects whether transverse orientation exists, but each member is unchanged when
-\(\eta\) is replaced by \(-\eta\).
-\end{corollary}
-
-This distinction is the central structural point.  Squaring does not lose the \emph{presence} of
-off-axis mass; it loses its one-sided orientation.  A zero-exclusion proof needs a source law
-which controls that orientation before an even quotient or quartet scalarization.
-\Cref{thm:common-mode-law}\textup{II} supplies that law: the signed Lyapunov exponent of the
-labeled cofinal connection is \(\tfrac12-\Rea s\).  What remains for zero exclusion is not sign
-recovery, but a source-derived reason that this already oriented connection is isometric on
-divisor fibres.
-
-\section{The Riemann source-orientation measure}
-
-\subsection{Centered divisor geometry}
-
-Write the completed Riemann function as
-\[
- \xi(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s).
-\]
-Let \(\cZ_\xi\) be its multiset of nontrivial zeros.  For
-\(\rho=\beta+i\gamma\in\cZ_\xi\), define the centered spectral point
-\[
-             a_\rho=-i\left(\rho-\frac12\right)
-                    =\gamma-i\left(\beta-\frac12\right).
-\]
-The symmetries \(\rho\mapsto\bar\rho\) and \(\rho\mapsto1-\rho\) induce
-\(a\mapsto-\bar a\) and \(a\mapsto-a\); their composition gives
-\(a\mapsto\bar a\).  Thus the centered divisor
-\(\Gamma_\xi=\{a_\rho:\rho\in\cZ_\xi\}\), with multiplicity, satisfies the hypotheses of
-\Cref{thm:universal-law}.
-
-Direct calculation gives
-\begin{equation}\label{eq:eta-rho}
- \eta(a_\rho)=
- \frac{2(\beta-\tfrac12)\gamma}
- {((\beta-\tfrac12)^2+\gamma^2)^2}.
-\end{equation}
-This formula is already enough to show
-\[
- \eta(a_\rho)=0
- \quad\Longleftrightarrow\quad
- \beta=\frac12,
-\]
-because nontrivial zeros have \(\gamma\ne0\).
-
-\subsection{The arithmetic source supplies the sign}
-
-The first cofinal connection in \Cref{thm:common-mode-law} has character
-\[
-        U_2(s)=2^{1/2-s}.
-\]
-Its normalized Lyapunov exponent and reflected entropy are
-\begin{equation}\label{eq:entropy}
- \lambda(s)=\frac{\log|U_2(s)|}{\log2}
-       =\frac12-\Rea s,
-\qquad
- \delta(s)=\lambda(s)-\lambda(1-\bar s)=1-2\Rea s.
-\end{equation}
-The residual prime-three connection gives the same normalized exponent:
-\[
- \frac{\log|U_3(s)|}{\log3}=\frac12-\Rea s.
-\]
-Thus the horizontal coordinate is independent of the asymptotic atom used to read it.  The two
-characters are not redundant, because their incommensurate phases jointly recover \(\Ima s\).
-
-Combining \eqref{eq:eta-rho} and \eqref{eq:entropy} yields the source--divisor identity
-\begin{equation}\label{eq:source-square-root}
- \eta(a_\rho)=
- -\delta(\rho)\,
- \frac{\gamma}{((\beta-\tfrac12)^2+\gamma^2)^2}.
-\end{equation}
-Thus source entropy is not merely another expression vanishing on the critical line.  It is the
-signed square root, up to an invariant vertical amplitude, of the canonical tomographic mass.
-More importantly, it is obtained before any zero is selected: it is the Lyapunov exponent of the
-literal source-normalized transition \(H_{m+1}/H_m\).
-
-The differential separation in \Cref{thm:common-mode-law} now has a precise role.  No finite
-differential-algebraic expression in all transverse multipliers can create \(\zeta\), and
-adjoining the full zeta jet does not collapse the transverse frame.  The signed connection is
-therefore neither a disguised scalar formula for the common divisor nor an alias among finitely
-many source leaves.  It is boundary data of the complete labeled resolution.
-
-\begin{definition}[Riemann orientation measure]
-Define
-\[
- \mu_\xi=\sum_{\rho\in\cZ_\xi}\eta(a_\rho)^2\delta_{a_\rho},
- \qquad
- \cE_{\rm src}=\mu_\xi(\Gamma_\xi).
-\]
-All sums count zero multiplicity.
-\end{definition}
-
-\begin{corollary}[Riemann divisor shadow]\label{thm:xi-law}
-The measure \(\mu_\xi\) is finite and
-\[
- \cE_{\rm src}
- =\sum_{\rho\in\cZ_\xi}
- \delta(\rho)^2
- \frac{\gamma^2}{((\beta-\tfrac12)^2+\gamma^2)^4}
- <\frac1{150\,000}.
-\]
-Let \(v_\xi=(\eta(a_\rho))_\rho\) and let
-\(Jv(a)=v(\bar a)\).  Then
-\[
- Jv_\xi=-v_\xi,\qquad
- \|v_\xi\|_2^2=\mu_\xi(\Gamma_\xi),\qquad
- Q_\xi(v_\xi)=-\mu_\xi(\Gamma_\xi).
-\]
-For every regular \(z\) with \(\Rea z\,\Ima z\ne0\),
-\[
- D_\xi(z)=16\,\Rea z\,\Ima z\int W_z\,\dd\mu_\xi.
-\]
-If \(\Rea z\,\Ima z\ne0\), then
-\[
- D_\xi(z)=0
- \quad\Longleftrightarrow\quad
- \mu_\xi=0
- \quad\Longleftrightarrow\quad
- \text{every nontrivial zero of \(\zeta\) has real part \(1/2\)}.
-\]
-\end{corollary}
-
-\begin{proof}
-The source-density identity is the square of
-\eqref{eq:source-square-root}.  Absolute summability and the stated estimate follow from the
-completed endpoint charge bound proved below in \Cref{lem:endpoint-budget}.  The three Hilbert
-identities and the tomography formula are \Cref{thm:universal-law}.  Strict positivity of every
-\(W_z\), together with \(\gamma\ne0\), turns vanishing of the measure into
-\(\beta=\tfrac12\) for every zero.
-\end{proof}
-
-\begin{lemma}[Completed endpoint budget]\label{lem:endpoint-budget}
-Let
-\[
- C=2+\gamma_{\!E}-\log(4\pi)
-   =\sum_{\rho\in\cZ_\xi}
-       \Rea\frac1{\rho(1-\rho)}.
-\]
-Then \(0<C<93/2000\), every nontrivial zero satisfies
-\(\gamma^2>41/2\), and
-\[
- \cE_{\rm src}\le
- 4\left(\frac{C}{4-C}\right)^3<\frac1{150\,000}.
-\]
-\end{lemma}
-
-\begin{proof}
-The Hadamard product for \(\xi\), evaluated at the endpoint and paired by the functional
-equation, gives the displayed identity for \(C\).  Notice that the denominator is
-\(\rho(1-\rho)\), not \(\rho(1-\bar\rho)\).  For \(\rho=\beta+i\gamma\),
-\[
- \Rea\frac1{\rho(1-\rho)}
- =
- \frac{\gamma^2+\beta(1-\beta)}
- {(\beta^2+\gamma^2)((1-\beta)^2+\gamma^2)}>0.
-\]
-The elementary certified bounds for \(\gamma_E\), \(\pi\), and \(\log\) give
-\(C<93/2000\).
-
-Each zero contributes at least \(1/(\gamma^2+1)\) to the positive endpoint sum, so comparison
-with \(C\) gives \(\gamma^2>41/2\).  For an off-line quartet the four equal positive endpoint
-terms give the sharper
-\(\gamma^2>7907/93>85\).
-
-Put \(u=(\beta-\tfrac12)^2\), \(v=\gamma^2\), and define the positive endpoint atom
-\[
- b_\rho=\Rea\frac1{\rho(1-\rho)}.
-\]
-The off-line height floor and the endpoint atom give, atomwise,
-\[
- \frac{4uv}{(u+v)^4}
- \le
- \left(\frac4{4-C}\right)^3b_\rho^3.
-\]
-Within an off-line quartet, \(0\le b_\rho\le C/4\); hence
-\[
- b_\rho^3\le (C/4)^2b_\rho.
-\]
-Summing and using \(\sum_\rho b_\rho=C\) yields
-\[
- \cE_{\rm src}
- \le
- \left(\frac4{4-C}\right)^3\left(\frac C4\right)^2C
- =4\left(\frac C{4-C}\right)^3.
-\]
-Substitution of \(C<93/2000\) proves the numerical bound.
-\end{proof}
-
-\section{Reflection positivity and regular completion}
-
-\subsection{Modular characters}
-
-The source entropy \(\delta\) is the real exponent of a one-dimensional character.  Its
-unitarity is not an assumption; it is completely classified.
-
-\begin{proposition}[Unitarity and reflected signature]\label{prop:unitarity}
-Let \(U_t=e^{(\nu+i\omega)t}\) act on a nonzero one-dimensional complex space.
-Then \(U_t\) is unitary for every \(t\in\R\) if and only if \(\nu=0\).
-
-For the reflected pair
-\[
-          V_t=\begin{pmatrix}e^{\nu t}&0\\0&e^{-\nu t}\end{pmatrix},
-          \qquad \nu\ne0,
-\]
-the only positive-semidefinite Hermitian form invariant under every \(V_t\) is zero.  Every
-nondegenerate invariant Hermitian form is, after rescaling coordinates, a cross form
-\[
-          H=\begin{pmatrix}0&c\\\bar c&0\end{pmatrix},
-          \qquad c\ne0,
-\]
-and has signature \((1,1)\).
-\end{proposition}
-
-\begin{proof}
-The norm of \(U_t\) is \(e^{\nu t}\), proving the first assertion.  Write an invariant Hermitian
-matrix as \(H=(h_{jk})\).  From \(V_t^*HV_t=H\),
-\[
- e^{2\nu t}h_{11}=h_{11},\qquad
- e^{-2\nu t}h_{22}=h_{22}.
-\]
-Thus \(h_{11}=h_{22}=0\).  Positivity then forces \(h_{12}=0\), whereas nondegeneracy forces
-\(h_{12}\ne0\) and gives one positive and one negative eigenvalue.
-\end{proof}
-
-For the Riemann source, \(\nu=-\delta(\rho)=2\Rea\rho-1\).  Hence off-line reflected characters
-cannot be made into nonzero conservative Hilbert modes by a change of inner product.  The
-critical line is exactly the unitary locus, and off it the exact invariant carrier is Krein.
-
-\subsection{Positive survival as curvature}
-
-The preceding result does not say that positivity loses every trace of the charge.  It says that
-positivity cannot conserve it at first order.  On the balanced vector \((c,c)\), every
-reflection-symmetric positive quadratic energy has zero first derivative under reciprocal boost.
-For unit diagonal normalization,
-\[
- \left.\frac{\dd^2}{\dd t^2}
- Q_{1,\beta}(B_d(t)(c,c))\right|_{t=0}=8(cd)^2.
-\]
-The normalized reflected Bernoulli family has scores \(d\) and \(-d\) at its balanced point, so
-its Fisher information is \(d^2\).  Therefore
-\[
- -\frac12Q_{0,1}(cd,-cd)
- =c^2I_{\rm F}(d)
- =\frac18\left.\frac{\dd^2}{\dd t^2}
- Q_{1,\beta}(B_d(t)(c,c))\right|_{t=0}
- =(cd)^2.
-\]
-This identity is stronger than the statement that squaring loses sign.  It classifies the
-survivor: conservative geometry reads a negative cross square; positive geometry reads the same
-number as Fisher curvature.  For \(c=c_\rho\) and \(d=\delta(\rho)\), it is precisely
-\(\eta(a_\rho)^2\).
-
-\subsection{The common-test kernel}
-
-The same classification is visible without choosing a basis.  For \(L>0\), the removable-diagonal
-common-test kernel for the symmetric reflected pair \(1/2\pm d\) is
-\[
- K_{L,d}=
- \begin{pmatrix}
- L e^{dL}&\sinh(dL)/d\\
- \sinh(dL)/d&L e^{-dL}
- \end{pmatrix}.
-\]
-
-\begin{proposition}[Intrinsic Krein determinant]\label{prop:krein}
-For \(L>0\) and \(d>0\),
-\[
- \det K_{L,d}
- =L^2-\left(\frac{\sinh(dL)}d\right)^2<0.
-\]
-Thus the exact two-point kernel is not positive semidefinite on any nontrivial symmetric
-reflected pair.
-\end{proposition}
-
-\begin{proof}
-The determinant formula follows from \(e^{dL}e^{-dL}=1\).
-Since \(\sinh(dL)>dL\), its second term is strictly larger than \(L^2\).
-\end{proof}
-
-At a prime \(p\), the rooted critical source coordinate has squared size
-\[
-                    a_p^2=\frac{\log p}{\sqrt p}.
-\]
-Euler's divergence of the prime harmonic series gives
-\[
-                    \sum_p a_p^2=\infty.
-\]
-Therefore a nonzero scalar rooted repair cannot turn the direct sum of the local Krein packets
-into a Hilbert vector.  Setting the scalar to zero makes the new vector finite but leaves the
-negative determinant untouched.
-
-\subsection{All-orders flatness}
-
-The reflected valuation sectors have a second, independent obstruction.  A function \(f(L)\) is
-\emph{Rees-flat} if \(L^mf(L)\to0\) for every \(m\in\N\).  A matrix family is
-\emph{finite-Rees-moderate} if all its entries grow at most polynomially in \(L\).
-
-\begin{lemma}[Flat radicals are finite-Rees invariant]\label{lem:rees}
-Every finite-Rees-moderate matrix maps a vector of Rees-flat functions to a vector of Rees-flat
-functions.  Consequently it cannot map an all-orders-flat nonzero sector to a sector with a
-nonzero finite-order or half-normal leading term.
-\end{lemma}
-
-\begin{proof}
-If \(|A_{jk}(L)|\le C(1+L)^d\), then for every \(m\)
-\[
- L^m|A_{jk}(L)f_k(L)|
- \le C\,L^m(1+L)^d|f_k(L)|\longrightarrow0
-\]
-by applying flatness with order \(m+d+1\).  Finite summation preserves the limit.
-\end{proof}
-
-\begin{proposition}[Essential singularity of reflected sewing]\label{prop:essential-sewing}
-For \(N\geq2\), put
-\[
- w_N=\prod_{p<N}(1-p^{-1}),\qquad
- h_c(N)^2=
- \prod_{p<N}
- \frac{(1-p^{-1})(1-p^{-(1-2c)})}
-      {(1-p^{-(1-c)})^2}.
-\]
-If \(0<c<\tfrac12\), then
-\[
- h_c=o(w_N^K)\quad\text{for every }K\in\N,
- \qquad
- h_{-c}\asymp w_N^{1/2}.
-\tag{5.1}\label{eq:reflection-types}
-\]
-Consequently the exact scalar sewing cost is essential:
-\[
- w_N^{-K}=o\!\left(\frac{h_{-c}(N)}{h_c(N)}\right)
- \quad(K\in\N).
-\tag{5.2}\label{eq:essential-cost}
-\]
-More generally, if bounded real-linear maps \(R_N\) satisfy
-\(R_N(h_c(N))=h_{-c}(N)\), then
-\[
-                         w_N^{-K}=o(\|R_N\|)
-                         \quad\text{for every }K.
-\tag{5.3}\label{eq:essential-operator}
-\]
-\end{proposition}
-
-\begin{proof}
-The displayed local factor is the squared Hellinger affinity between the critical geometric
-prime-valuation law and its radial \(c\)-twist.  For \(c>0\), its logarithmic loss contains the
-divergent prime sum \(\sum_{p<N}p^{-(1-2c)}\), which dominates every multiple of
-\(\sum_{p<N}p^{-1}\); exponentiation gives the first relation in
-\eqref{eq:reflection-types}.  For \(-c<0\), the quotient by \(w_N\) is bounded above and below by
-positive convergent Euler products, giving the half-normal relation.  Division proves
-\eqref{eq:essential-cost}.  Finally
-\[
- h_{-c}(N)=\|R_N(h_c(N))\|\leq\|R_N\|h_c(N),
-\]
-so \eqref{eq:essential-operator} follows from \eqref{eq:essential-cost}.
-\end{proof}
-
-\begin{corollary}[Five regular consumer obstructions]\label{thm:completion-classification}
-Let a linear reflection-covariant realization retain a nonzero reflected source exponent
-\(\nu\), and require its completed form to be positive and conservative.  Such a realization
-cannot factor through any of the following operations:
-\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.4em]
-\item bounded label-blind linear descent of the complete source;
-\item fibrewise invariant Hilbert completion of the two reflected modes;
-\item a reflection-even positive quotient;
-\item nonzero scalar rooted normalization of the critical prime amplitudes;
-\item finite-Rees-moderate sewing of the reflected valuation sectors.
+\begin{corollary}[Regular-observer alternative]\label{cor:dichotomy}
+Under the hypotheses of \Cref{thm:abstract}, exactly one of the following can
+hold for a nonzero retained span:
+\begin{enumerate}[label=\textup{(\alph*)},leftmargin=2em]
+\item the completion is single-valued and loses that span;
+\item the completion retains that span and is multivalued over the collapsed
+      source point.
 \end{enumerate}
-Consequently any nonerasing positive conservative realization lies outside bounded fibrewise,
-reflection-even scalar, unit-weight rooted, and finite-Rees categories.  Equivalently, it must
-retain an infinite source label or use a topology singular relative to the direct-sum local norm.
+If \(\Span\mathcal V\) has arbitrarily large finite-dimensional quotients,
+then so does \(\mul\cR\).
 \end{corollary}
 
 \begin{proof}
-Part (i) is \Cref{thm:common-mode-law}\textup{III(a)}; part (ii) follows from
-\Cref{prop:unitarity}; part (iii) follows from \Cref{cor:erasure}.
-The divergence \(\sum_p(\log p)/\sqrt p=\infty\) excludes part (iv).
-\Cref{lem:rees,prop:essential-sewing} exclude part (v), and the latter shows that every exact
-replacement has norm singular beyond all finite Rees orders.  These conclusions are stable under finite direct sums.
-Thus a realization outside them cannot be a bounded unlabeled local completion or a finite-order
-graded correction.  This is exactly the stated infinite-label/singular-topology alternative.
+The first assertion follows from \eqref{eq:single-valued} and
+\Cref{thm:abstract}.  Quotients of a subspace inject their rank obstruction
+into the corresponding quotients of \(\mul\cR\).
 \end{proof}
 
-The theorem is a classification under the five displayed hypotheses, not an existence assertion
-for the singular alternative.  It proves that no unitarity declaration, bounded label-blind
-dagger, scalar whitening, or finite graded sewing in those classes can conserve a nonzero
-reflected charge.  This is why the
-labeled cofinal connection in \Cref{thm:common-mode-law} is essential rather than decorative.
+The law is topological, not metric.  A stronger metric precursor is useful.
+If \(F_K:X\to Z\) have a common Lipschitz bound and
+\(\|x_K-y_K\|\to0\), then \(d(F_Kx_K,F_Ky_K)\to0\).  Hence a nonzero limiting
+separation forces the Lipschitz constants to diverge.  The relation theorem
+identifies what that divergence becomes after graph closure: retained rank
+moves from a horizontal graph to a vertical fibre.
 
-\section{Exact consumers of the prime-source law}
+\section{A positive complete Riemann source}
 
-The claim is not that unrelated RH programs become equivalent after changing notation.  Each
-row below has an exact map to one of the alternatives in
-\Cref{thm:common-mode-law}: labeled radical, mass-only descent, indefinite conservation, positive
-curvature, or singular label retention.
+For an integer \(n>1\), put
+\[
+                         M(n)=\max_{p}v_p(n),
+\tag{3.1}\label{eq:max-valuation}
+\]
+and \(M(1)=0\).  Fix \(K\geq1\).  Define
+\[
+\begin{aligned}
+ \Phi^K_0(s)&=\zeta(Ks)^{-1},\\
+ \Phi^K_{j+1}(s)&=\zeta((K+j+1)s)^{-1}
+                   -\zeta((K+j)s)^{-1}\qquad(j\geq0),\\
+ E_K(s)&=(\Phi^K_j(s))_{j\geq0}.
+\end{aligned}
+\tag{3.2}\label{eq:complete-source}
+\]
+The telescoping identity
+\[
+       \sum_{j=0}^{N-K}\Phi^K_j(s)=\zeta(Ns)^{-1}
+       \qquad(N\geq K)
+\tag{3.3}\label{eq:telescoping}
+\]
+is the basic reconstruction formula.
 
+\begin{proposition}[Positive divisor resolution]\label{prop:positive-source}
+For \(K\geq12\), there are pairwise disjoint sets
+\((A^K_j)_{j\geq0}\) partitioning the positive integers such that
+\[
+                  \zeta(s)\Phi^K_j(s)
+                  =\sum_{n\in A^K_j}n^{-s}
+                  \qquad(\Rea s>1).
+\tag{3.4}\label{eq:positive-channels}
+\]
+The head \(A^K_0\) consists of the \(K\)-free integers, and
+\[
+                  A^K_{j+1}=\{n>1:M(n)=K+j\}.
+\tag{3.5}\label{eq:shell-support}
+\]
+For every \(\Rea s>0\), \(E_K(s)\in\ell^1(\N_0)\) and
+\[
+                              \sum_{j\geq0}\Phi^K_j(s)=1.
+\tag{3.6}\label{eq:mass-one}
+\]
+On \(\Rea s>\tfrac12\), every \(\Phi^K_j\) is holomorphic and nonzero.
+Consequently \(\zeta\Phi^K_j\) and \(\zeta\) have the same zeros with the
+same multiplicities in that half-plane.
+\end{proposition}
+
+\begin{proof}
+The Euler product gives
+\[
+ \frac{\zeta(s)}{\zeta(ms)}
+ =\prod_p(1+p^{-s}+\cdots+p^{-(m-1)s}),
+\]
+the Dirichlet series of the \(m\)-free integers.  Taking the difference
+between the cases \(m+1\) and \(m\) isolates exactly the integers with
+largest prime valuation \(m\), proving
+\eqref{eq:positive-channels}--\eqref{eq:shell-support}.  These sets partition
+\(\N_{\geq1}\).
+
+Equation \eqref{eq:mass-one} follows from \eqref{eq:telescoping} and
+\(\zeta(Ns)^{-1}\to1\).  Absolute summability follows from the standard
+zeta tail estimate after dilation.  For \(K\geq12\) and
+\(\Rea s>\tfrac12\), every dilated argument in \eqref{eq:complete-source}
+lies in the zero-free half-plane \(\Rea w>1\); the difference factors are
+nonzero there.  Multiplication by a holomorphic nonvanishing factor
+preserves analytic order.
+\end{proof}
+
+\begin{proposition}[Finite fidelity and cofinal collapse]\label{prop:collapse}
+For every \(K\geq1\), the map
+\[
+           E_K:\{s\in\C:\Rea s>0\}\longrightarrow\ell^1(\N_0)
+\tag{3.7}\label{eq:embedding}
+\]
+is injective.  For every fixed \(s\) in this half-plane,
+\[
+                              E_K(s)\longrightarrow e_0
+                              \quad\text{in }\ell^1.
+\tag{3.8}\label{eq:collapse}
+\]
+Hence for distinct \(s,t\),
+\[
+       \|E_K(s)-E_K(t)\|_1>0,\qquad
+       \|E_K(s)-E_K(t)\|_1\longrightarrow0,
+\tag{3.9}\label{eq:conditioning}
+\]
+and the reciprocal separation diverges.
+\end{proposition}
+
+\begin{proof}
+Injectivity follows from the prime-normal reconstruction in
+\Cref{sec:prime-peeling}: equality of two source vectors gives equality of
+the prime-two and prime-three transfers.  Thus
+\(2^{-s}=2^{-t}\) and \(3^{-s}=3^{-t}\).  Unique factorization implies the
+irrationality of \(\log2/\log3\), hence \(s=t\).
+
+For collapse, the head \(\zeta(Ks)^{-1}\) tends to \(1\), while the sum of
+the norms of all translated difference coordinates tends to zero.  This is
+the tail of an absolutely summable sequence.  Equation
+\eqref{eq:conditioning} follows from injectivity and
+\eqref{eq:collapse}.
+\end{proof}
+
+\begin{corollary}[Uniform regularity loses spectral separation]
+\label{cor:lipschitz}
+Let \(Z\) be a metric space and \(T_K:\ell^1\to Z\) have a common Lipschitz
+constant.  Then for every fixed \(s,t\) with positive real part,
+\[
+                 d(T_KE_K(s),T_KE_K(t))\longrightarrow0.
+\tag{3.10}\label{eq:lipschitz-loss}
+\]
+Any family retaining a nonzero limiting separation has unbounded Lipschitz
+constants.
+\end{corollary}
+
+\section{Prime peeling and the normal spectrum}
+\label{sec:prime-peeling}
+
+The source collapse might be dismissed as ordinary loss of information if
+no intrinsic coordinate survived it.  We now extract one surviving normal
+coordinate at every prime.
+
+For a prime \(q\), define the finite-prefix residual
+\[
+ R_q(w)=\frac1{\zeta(w)}
+          -\sum_{1\leq m<q}\frac{\mu(m)}{m^w}.
+\tag{4.1}\label{eq:peeled-residual}
+\]
+This is not a truncation at the \(q\)-th prime.  It removes every integer
+coefficient strictly below the integer \(q\).  Since \(q\) is prime,
+\(\mu(q)=-1\), so \(q^{-w}\) is the first remaining nonzero term.
+
+\begin{theorem}[Arbitrary-prime shell extraction]\label{thm:prime-extraction}
+Let \(q\) be prime.
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em]
+\item If \(\Rea w>1\), then
+\[
+               \left|q^wR_q(w)+1\right|
+                    \leq\frac{q}{\Rea w-1}.
+\tag{4.2}\label{eq:prime-bound}
+\]
+\item If \(\Rea s>0\), then
+\[
+                   q^{ns}R_q(ns)\longrightarrow-1.
+\tag{4.3}\label{eq:prime-atom}
+\]
+\item Put
+\[
+             S_{q,n}(s)=R_q((n+1)s)-R_q(ns).
+\tag{4.4}\label{eq:peeled-shell}
+\]
+Then
+\[
+\begin{aligned}
+ q^{ns}S_{q,n}(s)&\longrightarrow1-q^{-s},\\
+ \frac{S_{q,n+1}(s)}{S_{q,n}(s)}&\longrightarrow q^{-s},\\
+ q^{1/2}\frac{S_{q,n+1}(s)}{S_{q,n}(s)}
+     &\longrightarrow q^{1/2-s}.
+\end{aligned}
+\tag{4.5}\label{eq:prime-transfer}
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+For \(\sigma=\Rea w>1\), absolute convergence gives
+\[
+ \frac1{\zeta(w)}
+   =\sum_{m\geq1}\frac{\mu(m)}{m^w}
+   =\sum_{m<q}\frac{\mu(m)}{m^w}-q^{-w}
+      +\sum_{m>q}\frac{\mu(m)}{m^w}.
+\]
+Therefore
+\[
+\begin{aligned}
+ |q^wR_q(w)+1|
+ &\leq q^\sigma\sum_{m>q}m^{-\sigma}\\
+ &\leq q^\sigma\int_q^\infty x^{-\sigma}\,dx
+  =\frac{q}{\sigma-1},
+\end{aligned}
+\]
+which proves \eqref{eq:prime-bound}.  Set \(w=ns\); the right side tends
+to zero, proving \eqref{eq:prime-atom}.
+
+Write \(B_n=q^{ns}R_q(ns)\).  Then \(B_n\to-1\), and
+\[
+ q^{ns}S_{q,n}(s)=q^{-s}B_{n+1}-B_n
+       \longrightarrow1-q^{-s}.
+\]
+The limit is nonzero because \(\Rea s>0\).  Taking adjacent ratios gives
+the second line of \eqref{eq:prime-transfer}; multiplication by
+\(q^{1/2}\) gives the third.
+\end{proof}
+
+\begin{remark}[Internality]
+For \(n\geq K\), \eqref{eq:telescoping} reconstructs
+\(\zeta(ns)^{-1}\) from the coordinates of \(E_K(s)\).  The finite M\"obius
+prefix in \eqref{eq:peeled-residual} is explicit.  Moreover,
+\Cref{prop:collapse} makes \(s\) a function of the source point on the image
+of \(E_K\).  Thus \eqref{eq:prime-transfer} defines a reader on the actual
+source image; no zero label or externally chosen divisor point is used.
+\end{remark}
+
+Define the countable prime-normal spectrum
+\[
+                         \cB(s)=(p_i^{1/2-s})_{i\geq0}.
+\tag{4.6}\label{eq:normal-spectrum}
+\]
+The characters separate points: already the coordinates at \(2\) and \(3\)
+are jointly injective.  Reflection acts by reciprocal modulus,
+\[
+ |p_i^{1/2-(1-\overline{s})}|
+       =|p_i^{1/2-s}|^{-1}.
+\tag{4.7}\label{eq:reflection}
+\]
+Thus the logarithmic normal coordinate
+\[
+ \frac{\log|p_i^{1/2-s}|}{\log p_i}
+                    =\frac12-\Rea s
+\tag{4.8}\label{eq:orientation}
+\]
+is independent of \(i\) and retains its sign.
+
+\section{The unbounded boundary theorem}
+
+At \(s_j=\tfrac12+j\),
+\[
+                    \cB(s_j)=P_j=(p_i^{-j})_{i\geq0}.
+\tag{5.1}\label{eq:vandermonde-packets}
+\]
+For \(r\geq1\), let
+\[
+                   V_r=(p_i^{-j})_{0\leq i,j<r}.
+\tag{5.2}\label{eq:vandermonde}
+\]
+
+\begin{lemma}[Finite prime-normal rank]\label{lem:vandermonde}
+For every \(r\geq1\),
+\[
+ \det V_r
+   =\prod_{0\leq i<k<r}(p_k^{-1}-p_i^{-1})\ne0.
+\tag{5.3}\label{eq:vandermonde-det}
+\]
+Consequently the first \(r\) coordinate projections of
+\(P_0,\ldots,P_{r-1}\) span \(\C^r\).
+\end{lemma}
+
+\begin{proof}
+The matrix is the Vandermonde matrix at the distinct nodes
+\(p_0^{-1},\ldots,p_{r-1}^{-1}\).
+\end{proof}
+
+\begin{proof}[Proof of \Cref{thm:main}]
+Clause (i) is \Cref{prop:positive-source}; clause (ii) is
+\Cref{prop:collapse}; clause (iii) is
+\Cref{thm:prime-extraction}.
+
+Assume \(\cR\) satisfies \eqref{eq:retention}.  By
+\eqref{eq:collapse},
+\[
+                    E_K(s_j)-e_0\longrightarrow0
+                    \qquad(K\to\infty).
+\]
+\Cref{thm:abstract} gives \(P_j\in\mul\cR\) for every \(j\).
+Fix \(r\) and \(w\in\C^r\).  By \Cref{lem:vandermonde}, there are
+\(a_0,\ldots,a_{r-1}\in\C\) such that
+\[
+                w=\sum_{j=0}^{r-1}a_j\,\pr_r(P_j).
+\]
+Set \(v=\sum_{j=0}^{r-1}a_jP_j\).  Then
+\(v\in\mul\cR\) and \(\pr_r(v)=w\).  Hence
+\(\pr_r(\mul\cR)=\C^r\).  Since this holds for every \(r\), the vertical
+rank has no finite bound.  Equation \eqref{eq:single-valued} excludes an
+operator graph.
+\end{proof}
+
+\begin{corollary}[No complete closable prime-normal observer]
+\label{cor:no-closable}
+There is no closable linear operator on the centered source span whose graph
+contains every pair in \eqref{eq:retention}.
+\end{corollary}
+
+\begin{proof}
+The closure of a closable operator graph has trivial multivalued part, while
+\Cref{thm:main} forces all its finite coordinate projections to be
+surjective.
+\end{proof}
+
+\begin{corollary}[Every finite-rank truncation is maximal]
+\label{cor:finite-maximal}
+Choose any \(r\) distinct primes \(q_0,\ldots,q_{r-1}\).  A closed linear
+relation retaining their normal characters at the \(r\) canonical samples
+has the whole \(\C^r\) as its vertical fibre.
+\end{corollary}
+
+\begin{proof}
+Replace the nodes \(p_i^{-1}\) in \Cref{lem:vandermonde} by the distinct
+nodes \(q_i^{-1}\) and repeat the proof of \Cref{thm:main}.
+\end{proof}
+
+\section{What the law changes for the Riemann problem}
+
+\subsection{The source has orientation; regular completion does not}
+
+At a hypothetical nontrivial zero \(\rho\), every channel
+\(\zeta\Phi^K_j\) in \Cref{prop:positive-source} carries the same zero with
+the same multiplicity.  Independently, the source reader carries
+\[
+                         p_i^{1/2-\rho}.
+\tag{6.1}\label{eq:zero-character}
+\]
+Its modulus is less than, equal to, or greater than one according as
+\(\Rea\rho\) is greater than, equal to, or less than \(\tfrac12\).
+Therefore neither zero location nor one-sided orientation is absent from
+the pre-divisor arithmetic object.
+
+What fails is a regular passage to a completed operator.  A bounded or
+uniformly Lipschitz observer loses fixed distinctions by
+\Cref{cor:lipschitz}; a closed linear completion retaining the full normal
+reader acquires unbounded vertical rank by \Cref{thm:main}.  This gives a
+complete dichotomy inside the stated category:
+\[
+\boxed{
+\begin{array}{ccl}
+\text{single-valued regular completion}
+   &\Longrightarrow& \text{normal-rank loss},\\[2mm]
+\text{normal-rank retention}
+   &\Longrightarrow& \text{multivalued singular completion}.
+\end{array}}
+\tag{6.2}\label{eq:completion-dichotomy}
+\]
+
+This is not a no-go theorem for Hilbert--P\'olya, Connes--Consani,
+Hedenmalm, Suzuki, or any named program as a whole.  It excludes only
+realizations that use the canonical \(\ell^1\) source topology and demand a
+closable single-valued carrier for the complete prime-normal packet.
+Changing topology, using a relation, or discarding part of the packet lies
+outside the exclusion.
+
+\subsection{Why positivity loses the needed sign}
+
+Reflection sends the common logarithmic coordinate
+\(\tfrac12-\Rea s\) to its negative.  Any reflection-even scalar therefore
+depends on it through even data, beginning with
+\[
+                         (\Rea s-\tfrac12)^2.
+\tag{6.3}\label{eq:even-shadow}
+\]
+This explains why positive Cauchy, Fisher, Gram, and Ward quantities can
+detect an off-line defect without deciding its side.  The arithmetic reader
+\eqref{eq:normal-spectrum} precedes that squaring.  Theorem
+\ref{thm:main} shows that retaining all of it cannot be achieved by a
+regular graph closure; the sign problem and the singular-completion problem
+are the same transport obstruction viewed before and after reflection.
+
+\subsection{Relation to quantum recurrence and other source completions}
+
+The same law appears in projective recurrence.  A finite observer splits a
+finite state space into visible temporal rank and an unobserved relation
+kernel; rank--nullity conserves their sum.  When finite-horizon data converge
+while distinct completed futures persist, the future span is not destroyed:
+it becomes a vertical future fibre.  The arithmetic theorem is stronger in
+one respect.  It supplies an explicit countable normal spectrum and proves
+that a single completed vertical fibre has surjective projection at every
+finite rank.
+
+This comparison gives one precise dictionary:
+\begin{center}
 \small
-\begin{longtable}{p{0.19\textwidth}p{0.35\textwidth}p{0.36\textwidth}}
+\begin{tabular}{
+  >{\raggedright\arraybackslash}p{0.23\textwidth}
+  >{\raggedright\arraybackslash}p{0.34\textwidth}
+  >{\raggedright\arraybackslash}p{0.27\textwidth}}
 \toprule
-Construction & Exact statement & Placement by the law\\
+\textbf{Finite object} & \textbf{Singular limit} & \textbf{Rank carrier}\\
 \midrule
-\endfirsthead
-\toprule
-Construction & Exact statement & Placement by the law\\
-\midrule
-\endhead
-Prime-clock realization
-& Analytic differential relations over all finite-prime Euler germs are exactly clock-orbit
-relations in \(\mathcal Q\); relative fields are exactly quotient clock modules.
-& Analytic continuation preserves source distinctions.  This is the faithful, pre-consumer
-stage of the law.\\[0.4ex]
-Residue--valuation fusion
-& Every finite-state residue carrier at every depth can be adjoined, yet the filtered von
-Mangoldt current and the completed \(+2\) Xi shift remain hypertranscendental.
-& A cofinally nonzero primitive class survives complete local fusion; no finite
-differential-algebraic source surrogate exists.\\[0.4ex]
-Complete high-exponent source
-& Disjoint \(0/1\) sources form a mass-one \(\ell^1\) vector; its source embedding is injective,
-while every bounded label-blind observer factors through total mass.
-& All spectral position lies in the labeled zero-mass radical; bounded symmetric linear
-descent is exactly blind to it.\\[0.4ex]
-Differential common connection
-& \((\Phi_j)\) is independent over \(K\langle\zeta\rangle\), while both \(\zeta\) and
-\(\zeta'/\zeta\) are hypertranscendental over the complete shell tail; arbitrary shell subsets
-preserve intersection, union, and inclusion exactly, with linearly disjoint private extensions.
-& Longitudinal divisor field is the exact lattice core, while transverse source frame remains
-differentially irreducible and tensor-faithful.\\[0.4ex]
-Source-horizon transport
-& Canonically normalized derivative order is a Poisson packet with exponential tilt
-\(e^{\nu\tau}\); fixed compact jet and Ward windows can lose a charged packet escaping to
-infinite height even while its total Ward index remains \(8\pi\) per divisor quartet.
-& Poisson escape is the dynamic form of the same modular charge read by the static prime
-tail and the divisor residue.\\[0.4ex]
-Wold--Poisson valuation ancestry
-& \(\chi_d(\tau,r)\) is bounded on the independent quadrant exactly for \(d=0\), but every
-co-moving characteristic cancels depth growth.
-& Independent labels detect first-order charge; diagonal scalarization is nonselective.\\[0.4ex]
-Hilbert-line Gaussian curvature
-& Gaussian log-determinant curvature equals minus compressed-annihilator self-commutator energy
-and is invariant under reflection of the affine coordinate.
-& Universal positive Hilbert curvature is an even consumer.  It measures non-normality but
-cannot create the missing first-order orientation.\\[0.4ex]
-Hedenmalm-type dense radicals
-& Every nonzero continuous momentum-symmetric nonnegative theta-null form has a dense proper
-nonclosed \(L^2\)-radical and is not sequentially closable through ordinary \(L^2\).
-& Positive divisor detection occupies the singular-topology alternative; it is not a regular
-Hilbert polarization.\\[0.4ex]
-Deninger--Meyer--Paugam reflection
-& The weight-one reciprocal operator descends to the literal rapid Meyer quotient.  Its
-conserved odd form is cross/indefinite; the positive cup--Hodge double is a transverse
-second-order defect and vanishes on genuine Poisson cycles.
-& Conservation and positivity live in different grades, exactly as
-\Cref{thm:common-mode-law}\textup{III(b)} predicts.\\[0.4ex]
-Sonin--Calkin and Suzuki screw consumers
-& All-scale Calkin regularity is the equalizer \(d=0\); a strict-right divisor fibre produces
-noncompact prime-seam Gram response.
-& Regular horizontal consumers test the same cofinal character, not an independent source of
-orientation.\\[0.4ex]
-Four-unit Ward positivity
-& At a strict-right divisor fibre an adapted node has response norm square \(>4\), so the
-one-node boundary Gram is not positive semidefinite.
-& Ward positivity is a regular consumer of the charge equalizer.  Quartet scalarization
-retains \(\eta^2\), not the sign of \(\eta\).\\[0.4ex]
-Finite-Rees sewing
-& One reflected valuation sector is all-orders flat while its partner has a finite or
-half-normal leading term; every exact sewing norm dominates every finite inverse Rees power.
-& Finite graded operators cannot move signed boundary information into a regular positive
-completion.\\
+Projective recurrence & indistinguishable finite histories
+   & future relation fibre\\
+Riemann source & \(E_K(s)\to e_0\)
+   & \(\mul\cR\)\\
+Positive theta-null completion & dense null directions
+   & nonclosed radical\\
+Bounded Calkin/Ward consumer & regular scalar output
+   & rank discarded or squared\\
 \bottomrule
-\end{longtable}
-\normalsize
+\end{tabular}
+\end{center}
+The rows are not asserted to be equivalent theories.  They are the three
+possible locations of conserved observable rank under loss of horizontal
+separation: a kernel/radical, a multivalued fibre, or an explicitly
+nonfaithful scalar quotient.  Wold--Poisson ancestry supplies independent
+valuation labels before diagonalization; Sonin--Calkin and four-unit Ward
+tests are regular consumers after diagonalization.  The rank-transmutation
+law explains why the former can retain first-order character while the latter
+see only compactness or even positivity defects.
 
-These are logical specializations, not evidence by resemblance.  The first six rows are direct
-source, realization, quotient, or character instances of \Cref{thm:common-mode-law}.  The
-remaining operator rows require their displayed topology or positivity hypotheses; under those
-hypotheses their maps land exactly in the mass-only, even-curvature, or finite-grade consumers
-classified above.  No claim is made that their ambient theories are equivalent.
+\subsection{The precise RH significance}
 
-\subsection{Valuation occupancy and Gamma whitening}
+The theorem does not prove the Riemann hypothesis and does not give a new
+equivalent criterion.  Its progress is a structural exclusion and a new
+source object:
 
-The diagonal activation product gives another exact source shadow:
-\[
-          \prod_p\frac{1-p^{-2\sigma}}{1-p^{-\sigma}}
-          =\frac{\zeta(\sigma)}{\zeta(2\sigma)}.
-\]
-At one prime, with \(q=p^{-\sigma}\), the associated valuation law is
-\[
- \nu_q(0)=\frac1{1+q},\qquad
- \nu_q(k)=\frac{(1-q)q^k}{1+q}\quad(k\ge1).
-\]
-Thus occupancy is Bernoulli with variance \(q/(1+q)^2\), while the positive valuation conditional
-on occupancy is geometric.  Möbius depth differences are the positive-valuation atoms.
-Fisher whitening divides these rare-event amplitudes by their standard deviation; its norm must
-therefore grow as \(q\to0\).  The resulting Gamma recovery gauge is not a missing bounded source
-operator.  It is the inevitable unbounded normalization of a vanishing occupancy event.
-More precisely, Gamma sewing is boundedly invertible at every fixed positive aperture and hence
-preserves prime summability in both directions, while its principal-symbol matrices have
-nonzero determinant at every finite prime rank.  Thus no finite rank is lost, but the exact Rees
-rank is unbounded along the prime exhaustion.
-
-This source calculation fits \Cref{thm:completion-classification}: whitening can normalize local
-mass, but it cannot turn a nonunitary reflected character into a bounded positive invariant
-carrier.  At \(\sigma=1\), the sum of local occupancy probabilities diverges by Euler's prime
-harmonic theorem, so no summable local occupancy budget exists at the critical source.  The
-missing operation is still a singular cross-prime shorting, not another bounded local dagger.
-
-\subsection{The bifiltered source cannot be scalarized}
-
-Largest valuation depth \(M(n)=\max_pv_p(n)\) and occupied-prime codimension
-\(\omega(n)=|\{p:p\mid n\}|\) are independent nonnegative source grades.  This is not safely
-compressible to one additive ``total depth.''  For every additive map
-\[
-                         w:\N^2\longrightarrow\N
-\]
-there are distinct bidegrees with the same value; in particular, if
-\(w(a,b)=\alpha a+\beta b\) with \(\alpha,\beta>0\), then
-\[
-                         w(\beta,0)=w(0,\alpha).
-\]
-If either weight vanishes, that pure axis is already collapsed.
-The sharp positive replacement is paired observation.  The two nonparallel views
-\[
-                         (a,b)\longmapsto(a+b,\ a+2b)
-\]
-are jointly injective.  Their pairing is essential: retaining the two marginal multisets while
-forgetting which values came from the same source class is again nonfaithful.
-
-This rank-two statement explains why shell depth alone and Wold codimension alone each expose
-correct but incomplete shadows.  It also matches the divisor output in
-\eqref{eq:charge} and \eqref{eq:deck-charge}: continuous modular position and discrete
-ramification are independent coordinates, coupled only by the nearby-cycle residue
-\(-m_\rho(\rho-\tfrac12)\).  A faithful common-test factorization must therefore remain
-source-pointed on the joint incidence grid; no one-parameter additive filtration can carry all
-of its information.
-
-\section{Novelty boundary and interpretation}
-
-Several ingredients are classical.  The coefficient identity for \(m\)-free integers follows
-from Euler products.  Shapiro--Sparer Jacobians and later differential-algebra methods establish
-broad independence criteria for Dirichlet series
-\cite{ShapiroSparer1986,Pong2015,AmouKatsurada2001}.  Reciprocal symplectic transport is standard
-in scaling constructions \cite{Paugam2008,ConnesConsani2021}.  Fisher information, Krein
-signature, Cauchy transforms, and Weil's criterion are established theories
-\cite{Weil1952,Li1997,BombieriLagarias1999}.  None is renamed here as a discovery.
-
-Novelty resides in the theorem proved on the explicit Riemann source:
 \begin{enumerate}[leftmargin=2.1em]
-\item complete analytic differential independence of finite-abscissa prime-power sources is
-classified \emph{if and only if} by their logarithmic clock module modulo finite prime rays,
-with an exact relative quotient theorem;
-\item the filtered von Mangoldt primitive and completed \(+2\) Xi shift escape the field
-generated simultaneously by all finite-prime Euler germs and every depth of every finite
-residue--valuation fusion family;
-\item the prime numerator of the literal Suzuki position commutator is identified as the
-half-shifted logarithmic filtered von Mangoldt source and is proved hypertranscendental over the
-same complete local-Euler residue--valuation fusion fields;
-\item countably many pairwise-disjoint positive \(0/1\)-coefficient channels form an absolutely
-summable analytic partition of unity and carry exactly one common zeta divisor;
-\item differential fields preserve the complete Boolean shell algebra: arbitrary nonempty
-intersections are source intersections, arbitrary nonempty composita are source unions,
-complements are relative source complements, every observable has finite shell support, field
-inclusion is source inclusion, and private extensions are linearly disjoint over their exact
-common core; the complete transverse frame cannot differentially generate either \(\zeta\) or
-\(\zeta'/\zeta\);
-\item the resulting mass-one \(\ell^1\) source embedding is injective, and its unsquared
-functional-equation displacement vanishes exactly on the critical line;
-\item every bounded vector-valued label-blind observer factors uniquely through total mass and
-therefore annihilates the entire spectral radical, including each nonzero off-line displacement;
-\item the finite-stage injective, divisor-faithful source embeddings converge cofinally to one
-universal \(\ell^1\) atom; inverse spectral conditioning diverges, and every uniformly Lipschitz
-cofinal observer---including nonlinear and label-sensitive observers---loses all fixed spectral
-separation, while a canonical two-clock projective blow-up converges to an injective chart of the
-full complex spectral coordinate and admits no shell-independent Lipschitz realization even on
-one distinct spectral pair;
-\item prime-tail entropy, canonical Poisson escape, nearby-cycle charge, and the residue of the
-centered Xi current carry exactly the same unsquared modular charge;
-\item reflection-conservative positive geometry in the reciprocal two-mode quadratic class is
-completely classified: it is zero at first order off line, while its universal second-order
-survivor is the Fisher/Weil/Cauchy orientation mass; source-faithful conservative equivariance
-has a quantitative positive defect off line;
-\item the two reflected valuation sectors have different asymptotic species, and every exact
-operator sewing them has norm singular beyond every finite inverse Rees order.
+\item all prime-normal orientation characters are constructed before a zero
+      is selected;
+\item they are internal to a positive divisor-faithful arithmetic source;
+\item their rank survives every finite prime truncation;
+\item complete retention forces one relation with unbounded vertical rank;
+\item therefore the missing RH mechanism cannot be another bounded
+      single-valued recovery map on the canonical source completion.
 \end{enumerate}
 
-The exact source classifier is the structural hinge.  It separates faithful realization from
-consumer loss before topology or positivity is chosen.  The arbitrary-meet and finite-support
-laws add an infinitary rigidity statement: analytic field completion creates no observable
-supported on no common source label.  Injectivity then proves that the
-mass-one source is not a redundant partition; label-blind factorization identifies its exact
-lost subspace; the lattice law identifies the common zeta field intrinsically while common-current
-irreducibility prevents the shell frame from being mistaken for a finite differential
-reparametrization; and \eqref{eq:charge}--\eqref{eq:charge-residue} prove
-that the orientation transported to the divisor is the literal source charge, not a fitted
-zero-side statistic.
+The result changes the target of a spectral proof.  The relevant completed
+object is not an operator with a hidden eigenvalue list, but a singular
+relation whose vertical boundary already carries the signed prime-normal
+spectrum.  Any subsequent zero-exclusion mechanism must act on that boundary
+before reflection-even scalarization.  This is a restriction on proof
+architecture, not an assertion that the required selection has been
+constructed.
 
-The theorem also changes the RH frontier.  One-sided orientation is no longer missing at the
-source level:
+\section{Discussion}
+
+\subsection{Why the result is not a repackaged tail estimate}
+
+Translated \(\ell^1\) tails converge to zero; this is elementary.  The
+arithmetic content is the simultaneous coexistence of:
+
+\begin{enumerate}[leftmargin=2.1em]
+\item positive disjoint coefficient supports;
+\item exact replication of one famous divisor;
+\item finite-stage injectivity;
+\item cofinal collapse to one point;
+\item internal extraction of every prime character \(q^{1/2-s}\);
+\item nonsingular finite prime packets at every rank;
+\item one closed completion with unbounded vertical quotient rank.
+\end{enumerate}
+
+Removing any one of these conditions makes the construction routine.
+Together they identify a source whose information is neither lost nor
+regularly representable at its horizon.
+
+\subsection{Why two clocks were not the final law}
+
+The pair
 \[
- \frac{\log|U_2(\rho)|}{\log2}
- =\frac12-\Rea\rho .
+                     (2^{1/2-s},3^{1/2-s})
 \]
-The remaining statement is a source construction problem with an exact specification.  At every
-divisor point \(\rho\), construct source-defined \(A\) and norm-conservative \(V\) such that
-\[
- AE(\rho)\ne0,\qquad
- V(AE(\rho))=A\!\left(e^{\,2\Rea\rho-1}E(\rho)\right).
-\]
-Then \Cref{thm:common-mode-law}\textup{III(b)} forces
-\(\Rea\rho=\tfrac12\).  The present paper neither assumes nor constructs this descent.
-\Cref{thm:completion-classification} shows why it cannot come from bounded label-blind descent,
-a uniformly Lipschitz cofinal family, a fibrewise invariant metric, reflection-even
-scalarization, scalar whitening, or finite-Rees correction.  Any viable proof must have
-unbounded cofinal conditioning or act through a topology singular relative to the ordinary
-source norms.
+already determines \(s\), but a two-dimensional chart leaves open the
+possibility that the singularity is an artifact of one chosen coordinate
+system.  \Cref{thm:prime-extraction} removes that ambiguity.  Every prime is
+an exact normal atom after a finite arithmetic peeling, and
+\Cref{thm:main} shows that no finite vertical multiplicity can contain the
+complete boundary.  The two-clock chart is only the first nontrivial minor of
+the countable law.
+
+\subsection{Sharpness}
+
+The hypotheses cannot be weakened indiscriminately.
+
+\begin{itemize}[leftmargin=2em]
+\item Closedness is essential: without it, limiting vertical vectors need
+      not belong to the relation.
+\item Retention is essential: a scalar mass map is continuous and
+      single-valued precisely because it discards the normal packet.
+\item The canonical topology is essential: a blow-up or graph topology can
+      keep the packet, but is singular relative to \(\ell^1\).
+\item Distinct primes are essential for full Vandermonde rank.
+\end{itemize}
+
+Thus \Cref{thm:main} is a sharp classification of the specified completion,
+not a claim that every conceivable topology must fail.
 
 \section{Conclusion}
 
-The parent law is conservation of source distinctions under faithful analytic realization and
-their precisely classified loss in the consumer classes studied here:
+The complete Riemann source has two simultaneous faces.  At every finite
+stage it is positive, divisor-faithful, and spectrally injective.  At the
+cofinal horizon all source points merge in \(\ell^1\).  Exact M\"obius peeling
+shows that the merger hides, rather than destroys, a countable normal
+spectrum:
 \[
- \boxed{
- \begin{gathered}
- \text{source relation/lattice}
- \longmapsto \text{analytic field/current}
- \longmapsto \text{labeled modular type}\\[-2pt]
- \longmapsto
- \begin{cases}
- \text{mass} & \text{label-blind},\\
- \nu^2 & \text{reflection-positive},\\
- \nu & \text{label-sensitive},\\
- \text{essential singularity} & \text{reflected sewing}.
- \end{cases}
- \end{gathered}}
+                         \cB(s)=(p^{1/2-s})_{p\ {\rm prime}}.
 \]
-Its exact field-lattice instance is
-\[
- \boxed{\qquad
- \begin{aligned}
-\mathcal F_A\cap\mathcal F_B&=\mathcal F_{A\cap B},\qquad
-\mathcal F_A\vee\mathcal F_B=\mathcal F_{A\cup B},\\
-\bigcap_i\mathcal F_{A_i}&=\mathcal F_{\cap_iA_i}\quad(I\ne\varnothing),\\
-J_\zeta&\text{ is hypertranscendental over }K\langle H_r:r\geq12\rangle .
- \end{aligned}
- \qquad}
-\]
-Its Riemann realization has an injective positive resolution:
-\[
- \boxed{\quad
- E(s)=(\Phi_j(s))_{j\ge0}\in\ell^1,\qquad
- \Sigma E(s)=1,\qquad
- E\ {\rm injective},\qquad
- \sqrt2\,\frac{\Phi_{m+2}}{\Phi_{m+1}}
- \longrightarrow2^{1/2-s}.
- \quad}
-\]
-The affine constraint does not compress the source: all complex spectral information lies in
-\(E^\circ(s)\in\ker\Sigma\).  But it completely classifies unlabeled bounded linear observation:
-\[
-       Te_i=Te_j\ \forall i,j
-       \quad\Longrightarrow\quad
-       T=(Te_0)\Sigma
-       \quad\Longrightarrow\quad
-       T(E(s)-E(t))=0 .
-\]
-The cofinal boundary is stricter:
-\[
- \boxed{\quad
- E_M(s)\longrightarrow e_0,\qquad
- s\ne t\Longrightarrow
- \|E_M(s)-E_M(t)\|^{-1}\longrightarrow\infty,\qquad
- B_M(s)\longrightarrow(2^{1/2-s},3^{1/2-s}),\qquad
- \frac{d(B_M(s),B_M(t))}{\|E_M(s)-E_M(t)\|_1}
- \text{ is unbounded},\qquad
- \sup_M\operatorname{Lip}(T_M)<\infty
- \Longrightarrow d(T_ME_M(s),T_ME_M(t))\longrightarrow0 .
- \quad}
-\]
-Thus bounded label blindness is exact blindness at each stage, while uniform Lipschitz
-regularity is asymptotic blindness even for nonlinear label-sensitive observers.  The injective
-blow-up chart proves that the lost coordinate is not absent; it lives in projective normal
-geometry.  This is the precise boundary between stable fusion and spectral observation.
+At the samples \(s_j=\tfrac12+j\), every finite prime block is
+Vandermonde.  Consequently observable rank cannot disappear in a closed
+completion.  It transmutes into the multivalued fibre, whose projection onto
+every finite prime block is surjective.
 
-At a divisor point, the same number
-\[
- \nu(\rho)=2\Rea\rho-1
-\]
-is the cofinal Lyapunov exponent, canonical Poisson tilt, and normalized horizontal residue of
-the centered Xi current.  Reflection
-pairs opposite charges conservatively only in an indefinite cross geometry.  Positive geometry
-retains exactly their Fisher curvature:
-\[
- -\frac12Q_\times(\dot v_\rho)
- =I_{\rm F}(\rho)
- =\frac18E_\rho''(0)
- =\eta(a_\rho)^2.
-\]
-The global Weil negative direction, positive Cauchy tomograms, Hedenmalm dense radical,
-Wold--Poisson quadrant law, Sonin--Calkin obstruction, Ward failure, and finite-Rees no-go are
-therefore not competing source mechanisms.  They are faithful, mass-only, even-curvature, or
-finite-grade consumers of one prime-source distinction law, with their additional hypotheses
-stated explicitly in \Cref{thm:completion-classification}.
-
-This is the paper's answer: missing information is not zero location but transport category.
-Arithmetic spectral position and its orientation already exist as a nonzero primitive current
-in the labeled zero-mass radical.  Bounded label blindness kills it exactly;
-uniformly regular nonlinear observation kills it cofinally; reciprocal-quadratic positive
-reflection retains only curvature; finite local fusion cannot synthesize it.  RH would follow
-from a source-faithful norm-conservative equivariant descent of this labeled current.  No such
-descent is asserted here, and no equivalence is counted as a proof.
+This gives the universal answer within the paper's scope:
+\begin{center}
+\fbox{\begin{minipage}{0.78\textwidth}
+\centering
+Horizontal distinguishability may collapse, but retained rank must
+reappear as radical or vertical multiplicity.
+\end{minipage}}
+\end{center}
+For the Riemann source, the vertical alternative is unbounded.  Positive or
+bounded scalar consumers can erase or square the signed coordinate, but they
+cannot provide a regular complete carrier for it.  The theorem therefore
+opens a singular relation-valued route to the Riemann problem and closes the
+regular single-valued version of that route.  It makes no claim of zero
+exclusion.
 
 \begin{thebibliography}{99}
 
-\bibitem{AmouKatsurada2001}
-M.~Amou and M.~Katsurada,
-\newblock Differential transcendence of a class of generalized Dirichlet series,
-\newblock \emph{Illinois J. Math.} \textbf{45} (2001), 939--948.
-\newblock \url{https://doi.org/10.1215/ijm/1258138161}.
+\bibitem{Arens1961}
+R.~Arens,
+\newblock Operational calculus of linear relations,
+\newblock \emph{Pacific J. Math.} \textbf{11} (1961), 9--23.
+\newblock \url{https://doi.org/10.2140/pjm.1961.11.9}.
 
-\bibitem{Niven1969}
-I.~Niven,
-\newblock Averages of exponents in factoring integers,
-\newblock \emph{Proc. Amer. Math. Soc.} \textbf{22} (1969), 356--360.
-\newblock \url{https://doi.org/10.1090/S0002-9939-1969-0241373-5}.
-
-\bibitem{BombieriLagarias1999}
-E.~Bombieri and J.~C. Lagarias,
-\newblock Complements to Li's criterion for the Riemann hypothesis,
-\newblock \emph{J. Number Theory} \textbf{77} (1999), 274--287.
-\newblock \url{https://doi.org/10.1006/jnth.1999.2392}.
+\bibitem{Connes1999}
+A.~Connes,
+\newblock Trace formula in noncommutative geometry and the zeros of the
+Riemann zeta function,
+\newblock \emph{Selecta Math. (N.S.)} \textbf{5} (1999), 29--106.
+\newblock \url{https://doi.org/10.1007/s000290050042}.
 
 \bibitem{ConnesConsani2021}
 A.~Connes and C.~Consani,
@@ -1754,17 +813,11 @@ A.~Connes and C.~Consani,
 \newblock \emph{J. Operator Theory} \textbf{85} (2021), 257--276.
 \newblock \url{https://arxiv.org/abs/1910.14368}.
 
-\bibitem{ConnesConsaniWeil2021}
-A.~Connes and C.~Consani,
-\newblock Weil positivity and trace formula, the archimedean place,
-\newblock \emph{Selecta Math. (N.S.)} \textbf{27} (2021), Paper No.~77.
-\newblock \url{https://doi.org/10.1007/s00029-021-00677-0}.
-
-\bibitem{Deninger1992}
-C.~Deninger,
-\newblock Local \(L\)-factors of motives and regularized determinants,
-\newblock \emph{Invent. Math.} \textbf{107} (1992), 135--150.
-\newblock \url{https://doi.org/10.1007/BF01231885}.
+\bibitem{HassiDeSnooSzafraniec2009}
+S.~Hassi, H.~S.~V. de Snoo, and F.~H. Szafraniec,
+\newblock Componentwise and Cartesian decompositions of linear relations,
+\newblock \emph{Dissertationes Math.} \textbf{465} (2009), 1--59.
+\newblock \url{https://doi.org/10.4064/dm465-0-1}.
 
 \bibitem{Hedenmalm2026}
 H.~Hedenmalm,
@@ -1772,42 +825,18 @@ H.~Hedenmalm,
 \newblock arXiv:2606.17494 (2026).
 \newblock \url{https://arxiv.org/abs/2606.17494}.
 
-\bibitem{HedenmalmLindqvistSeip1997}
-H.~Hedenmalm, P.~Lindqvist, and K.~Seip,
-\newblock A Hilbert space of Dirichlet series and systems of dilated functions in \(L^2(0,1)\),
-\newblock \emph{Duke Math. J.} \textbf{86} (1997), 1--37.
-\newblock \url{https://doi.org/10.1215/S0012-7094-97-08601-4}.
+\bibitem{Meyer2005}
+R.~Meyer,
+\newblock A spectral interpretation for the zeros of the Riemann zeta
+function,
+\newblock preprint, arXiv:math/0412277 (2004).
+\newblock \url{https://arxiv.org/abs/math/0412277}.
 
-\bibitem{Li1997}
-X.-J. Li,
-\newblock The positivity of a sequence of numbers and the Riemann hypothesis,
-\newblock \emph{J. Number Theory} \textbf{65} (1997), 325--333.
-\newblock \url{https://doi.org/10.1006/jnth.1997.2137}.
-
-\bibitem{Paugam2008}
-F.~Paugam,
-\newblock Spectral symmetries of zeta functions,
-\newblock arXiv:0803.0199 (2008).
-\newblock \url{https://arxiv.org/abs/0803.0199}.
-
-\bibitem{Pong2015}
-W.~Y. Pong,
-\newblock Applications of differential algebra to algebraic independence of arithmetic
-functions,
-\newblock arXiv:1504.03263 (2015).
-\newblock \url{https://arxiv.org/abs/1504.03263}.
-
-\bibitem{ShapiroSparer1986}
-H.~N. Shapiro and G.~H. Sparer,
-\newblock On algebraic independence of Dirichlet series,
-\newblock \emph{Comm. Pure Appl. Math.} \textbf{39} (1986), 695--745.
-\newblock \url{https://doi.org/10.1002/cpa.3160390602}.
-
-\bibitem{Suzuki2022}
-M.~Suzuki,
-\newblock The screw line of the Riemann zeta-function and the de Branges space,
-\newblock arXiv:2209.04658 (2022).
-\newblock \url{https://arxiv.org/abs/2209.04658}.
+\bibitem{Niven1969}
+I.~Niven,
+\newblock Averages of exponents in factoring integers,
+\newblock \emph{Proc. Amer. Math. Soc.} \textbf{22} (1969), 356--360.
+\newblock \url{https://doi.org/10.1090/S0002-9939-1969-0241373-5}.
 
 \bibitem{Suzuki2026}
 M.~Suzuki,
@@ -1818,12 +847,8 @@ M.~Suzuki,
 \bibitem{Titchmarsh1986}
 E.~C. Titchmarsh,
 \newblock \emph{The Theory of the Riemann Zeta-Function},
-\newblock second ed., revised by D.~R. Heath-Brown, Oxford University Press, 1986.
-
-\bibitem{Weil1952}
-A.~Weil,
-\newblock Sur les ``formules explicites'' de la th\'eorie des nombres premiers,
-\newblock \emph{Comm. S\'em. Math. Univ. Lund} (1952), 252--265.
+\newblock second ed., revised by D.~R. Heath-Brown,
+Oxford University Press, 1986.
 
 \end{thebibliography}
 

@@ -397,6 +397,7 @@ theorem baseChain_comp_d (he₀ : e₀ (Fin.last (n + 2)) = a) :
 
 /-! ## The two equations the connecting map consumes -/
 
+omit [IsModularLattice L] in
 /-- **First half of the Mayer--Vietoris datum**: the link cycle, read in the base, is the boundary
 of the base half. -/
 theorem link_comp_inter_base (he₀ : e₀ (Fin.last (n + 2)) = a)
@@ -418,8 +419,10 @@ theorem link_comp_inter_base (he₀ : e₀ (Fin.last (n + 2)) = a)
     SSet.Subcomplex.homOfLE_comp, ← HomologicalComplex.Hom.comm, ← Category.assoc,
     apartmentBaseHalf_comp f e₀ R hN he₀ hbase, Preadditive.zsmul_comp,
     apartmentChainIn_comp_chainComplexMap, linkInterMap_comp_base_sup f c hbase hc,
-    baseChain_comp_d f c e₀ R he₀]
+    baseChain_comp_d f e₀ R he₀]
+  rfl
 
+omit [IsModularLattice L] in
 /-- **Second half of the Mayer--Vietoris datum**: the same cycle, read in the piece, is minus the
 boundary of the star half. -/
 theorem link_comp_inter_piece (he₀ : e₀ (Fin.last (n + 2)) = a)
@@ -443,6 +446,7 @@ theorem link_comp_inter_piece (he₀ : e₀ (Fin.last (n + 2)) = a)
     apartmentChainIn_comp_chainComplexMap, linkInterMap_comp_piece_sup f c hbase hc,
     apartmentChainIn_star_comp_d_eq he₀, ← neg_smul,
     show -((-1 : ℤ) ^ (n + 1)) = (-1 : ℤ) ^ (n + 2) by ring]
+  rfl
 
 end Halves
 

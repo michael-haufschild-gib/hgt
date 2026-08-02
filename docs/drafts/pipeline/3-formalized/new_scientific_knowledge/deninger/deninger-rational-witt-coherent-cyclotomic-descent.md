@@ -1,11 +1,11 @@
 # Coherent cyclotomic descent inside the rational-Witt presentation
 
 - **ID:** `deninger-rational-witt-coherent-cyclotomic-descent`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** SOURCE DESCENT CONSTRUCTION THEOREM
 - **Label:** `DAC_DENINGER_WRAT_COHERENT_CYCLOTOMIC_DESCENT`
 - **Parent:** `deninger-square-zero-first-suspension-cross-effect`
-- **Scientific status:** `[PAPER-PROVED] [SOURCE-SPECIFIC NOVELTY; EXTERNAL PRIORITY UNVERIFIED]`
+- **Scientific status:** `[FORMALIZED] [SOURCE-SPECIFIC NOVELTY; EXTERNAL PRIORITY UNVERIFIED]`
 - **Claim:** although the current finite rational-Witt embeddings choose primitive roots
   independently at every modulus, their images inside the common complexified rational-Witt
   presentation canonically induce injective, strictly composable stage transitions.  The finite
@@ -179,9 +179,41 @@ priority remains provisional pending specialist review.
 - [x] exact coherence debt isolated
 - [x] range inclusion and unique transition proved on paper
 - [x] strict composition, injectivity, Wrat inclusion, and Frobenius compatibility proved
-- [ ] unconditional Lean formalization
+- [x] unconditional Lean formalization
 - [ ] identify dual packet transition up to finite cyclotomic gauge
 - [ ] tensor cross-effect descent through that gauge
+
+## 9. Lean realization
+
+Module:
+`formal/GaloisForLFunctions/RHTower/DeningerRationalWittCoherentCyclotomicDescent.lean`.
+
+Formal capstones:
+
+- `deningerPrimeFiniteWittRootEmbedding_range_mono`;
+- `deningerPrimeFiniteWittRootTransition_unique`;
+- `deningerPrimeFiniteWittRootTransition_comp`;
+- `deningerPrimeFiniteCyclotomicWittTransition_injective`;
+- `deningerPrimeFiniteCyclotomicWittTransition_comp`;
+- `deningerPrimeFiniteCyclotomicWittTransition_frobenius`;
+- `deningerPrimeFiniteCyclotomicWittInclusion_transition`;
+- `deningerPrimeFiniteCyclotomicWittTransition_unique`;
+- `deningerPrimeFiniteCyclotomicWittStageImage_directed`;
+- `deningerPrimeFiniteCyclotomicWittSource_mem_iff`.
+
+The last theorem proves that the source supremum is literally the filtered
+union of finite stage images, rather than an algebraic closure that silently
+adds elements.
+
+Verification:
+
+- `lake env lean GaloisForLFunctions/RHTower/DeningerRationalWittCoherentCyclotomicDescent.lean`
+  passes;
+- targeted
+  `lake build GaloisForLFunctions.RHTower.DeningerRationalWittCoherentCyclotomicDescent`
+  passes;
+- capstone axiom audit reports only `propext`, `Classical.choice`, and
+  `Quot.sound`.
 
 ## References
 
@@ -196,3 +228,5 @@ priority remains provisional pending specialist review.
   sheaf-descent interface after the cross-effect obstruction.
 - 2026-08-02 — common-presentation range factorization constructed; strict cyclotomic Wrat source
   system and Frobenius compatibility proved on paper.
+- 2026-08-02 — unconditional Lean formalization completed, including transition uniqueness,
+  Frobenius naturality, directed stage images, and exact filtered-union membership.

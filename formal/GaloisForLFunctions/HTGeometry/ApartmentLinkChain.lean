@@ -34,8 +34,8 @@ variable {n : ℕ}
 def notLastEquiv (m : ℕ) : Fin m ≃ {x : Fin (m + 1) // x ≠ Fin.last m} where
   toFun j := ⟨j.castSucc, Fin.ne_of_lt (Fin.castSucc_lt_last j)⟩
   invFun x := x.1.castPred x.2
-  left_inv j := Fin.castPred_castSucc _
-  right_inv x := Subtype.ext (Fin.castSucc_castPred _ _)
+  left_inv _ := Fin.castPred_castSucc _
+  right_inv _ := Subtype.ext (Fin.castSucc_castPred _ _)
 
 theorem notLastEquiv_symm_apply (m : ℕ) (x : {x : Fin (m + 1) // x ≠ Fin.last m}) :
     (notLastEquiv m).symm x = (x : Fin (m + 1)).castPred x.2 := rfl

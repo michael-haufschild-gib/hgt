@@ -5343,3 +5343,91 @@ Lean:
 The earlier relative-shell Baire factorization card is corrected to auxiliary status.  Its
 Grothendieck/Baire mechanism is known and its source topology is not instantiated on Deninger's
 rational-Witt geometry; it closes no Route L gate.
+
+## 2026-08-02 Route L frontier update: coherent rational-Witt source descent
+
+The cross-effect audit exposed a source-level defect hidden by every fixed-stage theorem:
+primitive roots, hence finite cyclotomic rational-Witt embeddings, were chosen independently at
+each modulus.  Individual Wrat witnesses therefore did not form the cofinal source system needed
+for a source-varying packet restriction.
+
+For stages \(s\le t\), their images in the common published rational-Witt presentation satisfy
+strict range inclusion.  Restricting the inverse of the \(t\)-stage root embedding produces the
+unique transition
+
+```text
+tau_(s,t) : ZMod(s.modulus) ->+ ZMod(t.modulus)
+```
+
+whose root-embedding triangle commutes.  These transitions are injective, reflexive, and strictly
+composable.  Their group-algebra lifts are Frobenius-equivariant and commute with the actual
+finite-stage inclusions.  The stage images consequently form a directed family of subalgebras in
+one common rational-Witt presentation, and their supremum is proved to be literally their union:
+no closure-generated elements are introduced.
+
+This is a source producer, not a Hodge/spectral consumer.  It closes the previously undefined
+phrase “cofinal finite rational-Witt stages” at algebraic level.  It does not yet close packet
+descent: relative to arbitrary primitive-root choices, `tau_(s,t)` can differ from standard index
+inflation by a unit gauge.  Hard next theorem is exact identification of that gauge and proof or
+refutation of naturality of finite packet evaluation and tensorized Calderón cross-effect under
+it.
+
+Paper:
+`../3-formalized/new_scientific_knowledge/deninger/deninger-rational-witt-coherent-cyclotomic-descent.md`.
+Lean:
+`DeningerRationalWittCoherentCyclotomicDescent.lean`.
+
+## 2026-08-02 Route L frontier update: forced packet gauge descent
+
+The coherent rational-Witt source transition is not generally dual to the old standard packet
+reduction.  If `n | m`, independently chosen primitive roots force a unique unit
+
+```text
+a_(n,m) in (ZMod n)^x
+```
+
+and the exact source transition factors as
+
+```text
+tau_(n,m)(j) = inflation_(n,m)(a_(n,m) * j).
+```
+
+Consequently finite evaluation obeys the new duality law
+
+```text
+Eval_m(tau(j), u) = Eval_n(j, a_(n,m) * reduction_(n,m)(u)).
+```
+
+This forces an affine packet transition
+
+```text
+kappa_(n,m)(q) = [a_(n,m)] * quotientReduction_(n,m)(q).
+```
+
+The `kappa` maps are surjective, reflexive, and strictly composable.  Strict composition is not
+assumed as an exponent cocycle: it is forced from strict Wrat source composition plus finite
+evaluation faithfulness.  Every finite packet function now has one arithmetic-Frobenius-fixed
+Wrat witness whose images at all larger stages realize the corresponding coherent `kappa`
+pullbacks.
+
+Exact obstruction to prior infrastructure:
+
+```text
+kappaPullback(F) = standardPullback(F)
+iff
+F([a_(n,m)] * q) = F(q) for every q.
+```
+
+Thus ignoring primitive-root gauge silently discards source-visible coefficients except on the
+translation-invariant subspace.  Finite source-to-packet functoriality is now closed
+unconditionally in Lean.
+
+Route L remains open at the next genuinely global gate: construct the inverse limit of this
+affine packet system, prove it is a translation torsor for Deninger's standard profinite packet,
+transport Haar `L^2` and the tensorized Calderón cross-effect across that comparison, then build
+the secondary attachment with strict closed boundaries.
+
+Paper:
+`../3-formalized/new_scientific_knowledge/deninger/deninger-rational-witt-packet-gauge-descent.md`.
+Lean:
+`DeningerRationalWittPacketGaugeDescent.lean`.

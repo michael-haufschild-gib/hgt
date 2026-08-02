@@ -1627,3 +1627,140 @@ subfamily has a retraction), which is what lets step 3 compute only the star hal
 Next: the two halves as chains of the base and of the star piece.  A chain supported on the
 simplices of a subcomplex is lifted to that subcomplex by the retraction that sends a simplex
 outside it to zero, which avoids having to carry membership proofs inside the sum.
+
+### 2026-08-02 — the descent theorem is proved
+
+`ChainRetraction.lean`, `ApartmentCoverChains.lean`, `ApartmentDescent.lean` (all green, in the
+umbrella, axioms `[propext, Classical.choice, Quot.sound]`).
+
+**`apartmentClassIn_comp_delta`**: for a map `f` of the apartment of a frame into the disjoint-union
+presentation of a building, sending every vertex other than the coatom opposite a chosen frame
+vector into the base of the Solomon--Tits cover and sending that coatom to the centre of a piece,
+the connecting map of the Mayer--Vietoris sequence carries the apartment class to
+`(-1)^(n+2)` times the apartment class of the link — the apartment of the same frame with the
+chosen vector removed, inside the intersection of the base with that piece.
+
+The route was mathlib's `HomologicalComplex.HomologySequence.δ_eq`, which computes the connecting
+map on an explicit cycle, an explicit lift of it to the middle term, and an explicit chain of the
+left term.  The three are:
+
+* the apartment cycle `apartmentChainIn e₀ (apartmentSupMap f) R Finset.univ`;
+* `apartmentMvChain`, its splitting: the chambers whose ordering does not end with the chosen vector
+  form a chain of the base, the others a chain of the star of the coatom, and each is lifted to its
+  subcomplex by `chainRetraction`, the retraction of the chains that sends a simplex outside the
+  subcomplex to zero;
+* the link cycle, times `(-1)^(n+2)`.
+
+The two equations `δ_eq` asks for are `apartmentMvChain_comp_snd` and `apartmentMvChain_comp_d`.
+The second is checked one summand of the biproduct at a time, and each summand reduces — after
+composing with the inclusion of the base, resp. of the piece, into the union, which is a split
+monomorphism on chains because of the same retraction — to the boundary computation
+`apartmentChainIn_star_comp_d_eq` of the previous entry.
+
+Also generalised: `apartmentCycleIn`/`apartmentClassIn` now live in every degree, not only in a
+successor degree, since the descent from the smallest apartment lands in degree zero.
+
+What remains for Solomon's spanning theorem: the connecting map is an isomorphism in the top degree
+(mathlib's `isIso_δ` with the corpus's vanishing statements for the base and for the pieces), so the
+apartment class and its link class generate each other; the induction on the rank then needs the
+statement "every apartment class of every component of the disjoint union below the coatoms is the
+link class of an apartment class upstairs", which is the surjectivity of the frame-extension map.
+
+### 2026-08-02 — the link is an apartment of the family one rank down
+
+`ApartmentLinkTransport.lean` (green, in the umbrella, axioms `[propext, Classical.choice,
+Quot.sound]`):
+
+- `linkOrderHom` — the link of an apartment, as an apartment of `famBuilding (fun c => famCoverTop c)`,
+  the family of buildings below the coatoms.  Its vertices are strictly below the coatom because the
+  apartment map is strictly monotone, which is where injectivity of a frame's coordinate span enters.
+- `interToSmallerNerve`, `linkInterMap_comp_interToSmallerNerve` — the identification of the
+  disjoint union of the intersections with that family carries the link of an apartment to the
+  apartment of the link.  Stated as an equality of simplicial maps, so it moves classes by
+  `apartmentClassIn_comp_homologyMap` alone.
+- `apartmentClassIn_comp_delta_comp` — **the composite of the connecting map with that
+  identification sends an apartment class to `(-1)^(n+2)` times the apartment class of its link, as
+  an apartment of the smaller family.**  This is the induction step's transport law.
+- `isIso_mvDelta` — the connecting map is invertible above degree zero (mathlib's `isIso_δ` on the
+  corpus's vanishing statements for the base and for the disjoint union of stars).
+- `epi_sigmaDesc_of_epi_of_surjective` — the categorical form of the induction step: if an
+  isomorphism matches one family of maps with another up to an invertible scalar and a *surjective*
+  reindexing, generation by the second gives generation by the first.
+
+What is left for Solomon's spanning theorem is now exactly two geometric statements, both about
+frames rather than about homology:
+
+1. **Frame extension (surjectivity of the link map).**  Every frame of a coatom `c` of `W a` that
+   spans with the chosen atom extends to a frame of `W a` containing that atom, whose link is the
+   given frame.  Over a division ring this is `c ⊕ p = W a`.
+2. **The base case.**  In the smallest rank the target of the descent is degree zero, where the
+   connecting map is no longer invertible; what replaces it is that the kernel of
+   `∐_(coatom, point) R → ∐_coatom R` is generated by the differences within a fibre, which is the
+   corpus's own `FreeCoproductKernel.lean` computation.
+
+### 2026-08-02 — frames, frame extension, and the induction step of Solomon's theorem
+
+`LatticeFrame.lean` and `SolomonDescentStep.lean` (green, in the umbrella, axioms
+`[propext, Classical.choice, Quot.sound]`).
+
+The apartments are now built from **frames of a lattice element** — an independent family of atoms
+whose join is that element — rather than from bases of a vector space.  That keeps the whole
+induction inside one lattice: the frame of a coatom is a subfamily of a frame of the element above
+it, so the link of an apartment removes one atom and nothing has to be transported.
+
+* `LatticeFrame`, `span`, `span_strictMono` — independence is exactly what makes the join of a
+  subfamily determine the subfamily, hence what makes an apartment strictly monotone
+  (`atom_not_le_span` is the one place independence is used).
+* `FrameDatum`, `PointedFrame` — a frame of a component of a family, and one that contains the atom
+  the Solomon--Tits cover is taken with; `vertex_mem_famCoverBase`, `coverIndex`,
+  `vertices_apartmentCoatom` are the three hypotheses the descent asks of an apartment, discharged
+  once and for all.
+* `LatticeFrame.restrict`, `linkOrderHom_eq_vertices` — **the link of the apartment of a pointed
+  frame is the apartment of that frame with the chosen atom removed.**
+* `LatticeFrame.extend`, `exists_frameDatum_extend` — **every frame of a coatom extends to a pointed
+  frame above it** by adding the atom the cover is taken with.  Independence of the enlarged family
+  is where modularity enters: `a ⊓ (b ⊔ p) = a ⊓ ((b ⊔ p) ⊓ c) = a ⊓ b = ⊥`.
+* `epi_pointedFrame_classes_of_epi` — **the induction step of Solomon's theorem**: if the apartment
+  classes generate the homology of the family of buildings below the coatoms, then the classes of
+  the apartments whose frame contains the chosen atom generate the homology of the family above.
+  Its ingredients are the transport law of the previous entry, invertibility of the connecting map
+  above degree zero, and frame extension for surjectivity.
+
+Remaining: (a) from pointed frames to all frames, and from the union of the cover to the building
+itself — both are compositions with isomorphisms; (b) the existence of frames of the right size for
+the coatoms, which over a division ring is the rank of a subspace; (c) the base case in the smallest
+rank, where the descent lands in degree zero.
+
+### 2026-08-02 — the induction runs; only the smallest rank is left
+
+`SolomonFrameRank.lean` and `SolomonInduction.lean` (green, in the umbrella, axioms
+`[propext, Classical.choice, Quot.sound]`).
+
+- `frameOfBasis`, `nonempty_frame_of_finrank` — over a division ring the frames of a subspace are
+  its bases: the lines of the basis vectors are independent atoms joining to it, so a subspace of
+  dimension `r` has a frame indexed by any type with `r` elements.
+- `finrank_famCoverTop` — a coatom of the Solomon--Tits cover has dimension one less than its
+  component, since it meets the chosen line trivially and spans with it.
+- `epi_frameDatum_classes_of_epi` — the induction step in the shape the induction consumes:
+  hypothesis and conclusion are the same statement, one rank apart.  (Between the two lies only
+  bookkeeping: the passage from the frames containing the chosen atom to all frames, and from the
+  union of the cover to the order complex itself, both compositions with isomorphisms.)
+- **`epi_frameDatum_classes`** — *Solomon's theorem in every rank, by induction*: for a family of
+  subspaces of one fixed dimension `m + 3`, the apartment classes of the frames of the components
+  generate the homology of the disjoint union of their buildings in degree `m + 1` — conditional
+  only on `SolomonBase`, the same statement in the smallest rank.
+
+`SolomonBase` is now the single remaining gap, and it is a statement about **planes**: for a family
+of two-dimensional subspaces the descent lands in degree zero, where the base and the pieces still
+have homology, so the connecting map is only injective.  What replaces invertibility there is
+exactness: the image of the connecting map is the kernel of
+
+```text
+H_0(⨿_c B_c) → H_0(base) ⊞ H_0(⨿_c star_c),
+```
+
+the buildings `B_c` below the coatoms are then discrete sets of points, and that kernel is generated
+by the differences of two points of one `B_c` — which are exactly the apartment classes of the
+rank-two frames.  The corpus already owns the coproduct-kernel computation
+(`FreeCoproductKernel.lean`) and the component computations (`FamilyCoverBaseComponents.lean`,
+`PiZeroNerve.lean`) that this needs.

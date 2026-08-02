@@ -1730,3 +1730,167 @@ line estimates into `sup`-bounds for `f` — with the Fourier reflection supplyi
 for `𝓕f`, which is what controls the derivatives near the origin.
 
 - 2026-08-02 — **The reverse Mellin estimate on a line left of the critical strip.**
+
+### Record — strictness: the inversion machine (Lean)
+
+Five further modules, all built clean under `lake build`, turn the two line estimates for `1/ζ`
+into control of `f` by the radial data of `Zf`.
+
+* `RHTower/DeningerCapInversion.lean`
+  - `deningerReflect` — reflection of a Schwartz map.
+  - `mellin_deningerPoissonValue_eq_fourier` — on a vertical line the Mellin transform of `Zf` is
+    the Fourier transform of the reflected logarithmic weight.
+  - `verticalIntegrable_mellin_poisson` — hence integrable on every vertical line.
+  - `norm_mellinInv_le`, `norm_le_mellin_line` — **the inversion bound**
+    `‖f x‖ ≤ (2π)⁻¹ x^{-σ} ∫‖M(f)(σ+iy)‖dy` for every integer `σ ≥ −1`.
+* `RHTower/DeningerStrictLineBounds.lean`
+  - `deningerLineNorm σ g = ∫‖M(g)(σ+iy)‖dy`.
+  - `deningerLineNorm_le_right/_left` — the `1/ζ` multiplier estimates transported to the line
+    norms (factor `4` for `σ ≥ 2`, factor `8π²` on `σ = −1`; the left line uses that `{0}` is null).
+  - `norm_le_of_poisson_right/_left` — **`‖f x‖ ≤ C x^{-σ}·L_σ(Zf)`** and **`‖f x‖ ≤ C x·L_{-1}(Zf)`**.
+  - `integral_norm_le_seminorm` — `∫‖h‖ ≤ π(p₀,₀(h)+p₂,₀(h))` for Schwartz `h`.
+  - `deningerLineNorm_poisson_eq/_le`, `exists_bound_deningerLineNorm` — **the line norm of `Zf` is
+    bounded by finitely many Schwartz seminorms of the weight `Z_σ f`**, i.e. by radial data.
+* `RHTower/DeningerCapSupBound.lean`
+  - `abs_pow_mul_norm_le`, `seminorm_zero_le_lineNorm`, `exists_bound_seminorm_zero` —
+    **`p_{m,0}(f) ≤ C·(radial data of `Zf` at the two indices `m+2` and `−1`)`**: the far end from
+    the line `Re s = m+2`, the origin from the line `Re s = −1`, `x = 0` from `f(0) = 0`, and
+    negative `x` from evenness.
+* `RHTower/DeningerFourierWeight.lean`
+  - `exists_bound_seminorm_comp_pair`, `exists_bound_schwartzSup_comp` — generic seminorm bounds
+    for a continuous operator (all bi-indices, and finite suprema).
+  - `deningerPoissonSchwartz_fourier` — **the weights of `Z𝓕f` are the reflected weights of `Zf`**,
+    `Z_s(𝓕f) = reflect Z_{1−s}(f)`; the Poisson operator carries the Fourier involution to the
+    reflection `s ↦ 1 − s` of the weight index.
+  - `exists_bound_seminorm_zero_fourier` — **`p_{m,0}(𝓕f)` is bounded by the radial data of `f`**
+    (at the indices `1−(m+2)` and `2`).
+* `RHTower/DeningerCapDerivBound.lean`
+  - `norm_fourier_le_integral`, `norm_le_integral_norm_fourier` — Fourier inversion as a supremum
+    bound.
+  - `norm_fourier_derivSCLM`, `norm_fourier_iterate_derivSCLM` — the multiplier `(2π|ξ|)^n`.
+  - `integral_pow_norm_fourier_le`, `seminorm_zero_deriv_le_fourier` —
+    **`p_{0,n}(f) ≤ (2π)^n π (p_{n,0}(𝓕f) + p_{n+2,0}(𝓕f))`**: every derivative supremum of `f` is
+    controlled by two weighted suprema of `𝓕f`, hence by the radial data of `Zf`.
+
+What remains for the full strict-morphism statement is the dilation bookkeeping at the far end: the
+identity `x^n f^{(n)} = ∑_{j≤n} s(n,j) θ^j f` (signed Stirling numbers, from the recursion
+`U_{n+1} = θU_n − nU_n`), which converts the derivative seminorms for `|x| ≥ 1` into supremum
+seminorms of the Euler iterates `θ^j f` — themselves members of Meyer's space whose weights are
+derivatives of the weights of `f`.  Near the origin the derivative bound above already applies, so
+the two regions together give `p_{k,n}(f) ≤ C·(radial data)`, the reverse of
+`deningerPoissonLM_bound`.
+
+### Record — the Poisson operator is a strict morphism (Lean, unconditional)
+
+Three further modules close the strictness statement.  `#print axioms` on each headline theorem
+returns exactly `[propext, Classical.choice, Quot.sound]`.
+
+* `RHTower/DeningerEulerStirling.lean`
+  - `deningerWeightedDerivCLM` — the operator `U_n : f ↦ x^n f^{(n)}`.
+  - `deningerWeightedDerivCLM_succ_apply` — **the recursion `U_{n+1} = θU_n − nU_n`** (product rule).
+  - `deningerStirling`, `deningerStirling_eq_zero`, `deningerWeightedDerivCLM_eq_sum` —
+    **`x^n f^{(n)} = ∑_{j≤n} s(n,j) θ^j f`**, the falling factorial `θ(θ−1)⋯(θ−n+1)`.
+  - `seminorm_le_weightedDeriv` — `p_{k,n}(f) ≤ p_{0,n}(f) + p_{k,0}(U_n f)`: the origin is covered
+    by the derivative supremum, the far end by the weighted derivative.
+  - `seminorm_sum_le`, `seminorm_weightedDeriv_le_euler`.
+* `RHTower/DeningerRadialEulerData.lean`
+  - `deningerMeyerCap_eulerSCLM_iterate` — Meyer's space is stable under `θ^j`.
+  - `deningerEulerWeightCLM`, `deningerPoissonSchwartz_eulerSCLM`,
+    `deningerPoissonSchwartz_euler_iterate` — **`Z_τ(θ^j f) = (D − τ)^j Z_τ(f)`**: the Poisson
+    operator conjugates the Euler operator into `D − τ` on the `τ`-th weight.
+  - `exists_bound_schwartzSup_euler` — hence the radial data of `θ^j f` is bounded by that of `f`.
+* `RHTower/DeningerPoissonStrict.lean`
+  - `deningerRadialData` — the finite radial datum `∑_{s ∈ S} (sup_K p)(Z_s f)`, with
+    monotonicity lemmas.
+  - `exists_bound_seminorm_zero_deriv_radial` — the derivative suprema, through the Fourier side.
+  - `exists_bound_seminorm_zero_euler_radial`, `exists_bound_sum_euler_radial` — the Euler iterates.
+  - `exists_bound_seminorm_radial` — **every Schwartz seminorm `p_{k,n}(f)` of a member of Meyer's
+    space is bounded by finitely many seminorms of the radial datum of `Zf`.**
+  - `exists_bound_schwartzSup_radial` — the same for finite suprema.
+  - `deningerPoissonLM_strict` — **the Poisson operator is a strict morphism**: for every seminorm
+    index `K₀` there are a radial index `i` and a constant `C` with
+    `p_{K₀}(f) ≤ C · q_i(Z f)` for all `f ∈ ℋ_∩`.
+
+Together with `deningerPoissonLM_bound` (continuity) and `deningerPoissonLM_injective` this makes
+`Z : ℋ_∩ → ℋ_−` a topological isomorphism onto its image — statement (3) of the card, proved
+unconditionally in Lean.
+
+The mechanism, in one line: on the two vertical lines `Re s = σ ≥ 2` and `Re s = −1` the multiplier
+`1/ζ` is bounded (elementary Dirichlet bound on the right, functional equation plus
+`|Γ(1−it)|² = πt/sinh(πt)` on the left), so Mellin inversion recovers `f` from `Zf` with control;
+the origin is reached through the Fourier involution, which the Poisson operator turns into the
+reflection `s ↦ 1 − s` of the weight index; and the far end is reached through the dilation flow,
+which the Poisson operator turns into differentiation of the weight.
+
+### Record — closed range, completeness, and the separated cokernel (Lean, unconditional)
+
+The missing analytic ingredient for "closed embedding" was the completeness of Schwartz space,
+which mathlib does not have.  It is now proved in the corpus, and statement (3) closes with it.
+`#print axioms` on each headline theorem returns `[propext, Classical.choice, Quot.sound]`.
+
+* `HTGeometry/SchwartzComplete.lean` — **`𝓢(ℝ, ℂ)` is complete** (absent from mathlib).
+  - `derivPowSCLM` — the iterated derivative as a continuous operator, with the seminorm bounds
+    `‖(D^n f)(x)‖ ≤ p_{0,n}(f)` and `|x|^k‖(D^n f)(x)‖ ≤ p_{k,n}(f)`.
+  - `schwartzUniformityCountablyGenerated` — the uniformity is countably generated, so sequential
+    completeness suffices.
+  - `exists_seminorm_lt_of_cauchySeq`, `exists_schwartzSup_lt_of_cauchySeq`,
+    `exists_seminorm_bound_of_cauchySeq`, `cauchySeq_of_seminorm` — the Cauchy condition in the
+    seminorms, both directions.
+  - `schwartzLimitDeriv`, `tendstoUniformly_schwartzLimitDeriv`, `hasDerivAt_schwartzLimitDeriv`,
+    `contDiff_schwartzLimitDeriv`, `iteratedDeriv_schwartzLimitDeriv` — each iterated derivative
+    converges uniformly, and the limit of the derivatives is the derivative of the limit.
+  - `schwartzCauchyLimit`, `tendsto_schwartzCauchyLimit`, `instCompleteSpaceSchwartzMap`.
+* `RHTower/DeningerPoissonClosedRange.lean`
+  - `deningerPoissonSchwartz_sub` — the weights are linear in the function.
+  - `instCompleteSpaceDeningerMeyerCap` — Meyer's space is complete, being closed in `𝓢(ℝ, ℂ)`.
+  - `deningerPoisson_range_isClosed` — **the image of the Poisson operator is closed**: a sequence
+    in the image whose radial data converge has, by the strictness bounds, a Cauchy sequence of
+    preimages; the limit lies in Meyer's space and its Poisson sum is the limit.
+* `RHTower/DeningerRadialFrechet.lean`
+  - `deningerRadialCompat_isClosed`, `instCompleteSpaceDeningerRadialCompat` — the radial space is
+    closed in the countable product, hence complete.
+  - `deningerMZeta_t2Space` — **the cokernel `M_ζ` is separated.**
+  - `deningerMZetaMk_isOpenMap` — **the projection onto `M_ζ` is open.**
+
+Statement (3) is therefore complete in Lean: `Z : ℋ_∩ → ℋ_−` is continuous
+(`deningerPoissonLM_bound`), injective (`deningerPoissonLM_injective`), strict
+(`deningerPoissonLM_strict`) and has closed range (`deningerPoisson_range_isClosed`) — a strict
+closed embedding.  Statement (4) is a strict exact sequence of nuclear spaces: exactness
+(`deningerPoisson_exact`), nuclearity of all three terms
+(`deningerIsNuclearSpaceC_meyerCap`, `deningerIsNuclearSpaceC_radialCompat`,
+`deningerIsNuclearSpaceC_mZeta`), strictness at `ℋ_∩` and at `ℋ_−`, and separation of the
+cokernel; both `ℋ_∩` and `ℋ_−` are complete and first countable, i.e. Fréchet.
+
+### Record — §1 closed out (Lean, unconditional)
+
+* `HTGeometry/SchwartzComplete.lean` also carries `instMetrizableSpaceSchwartzMap`: the uniformity
+  is countably generated and the space is separated, so `𝓢(ℝ, ℂ)` is metrizable — with completeness
+  this makes it a Fréchet space.
+* `RHTower/DeningerFrechetProperties.lean`
+  - `instPseudoMetrizableSpaceDeningerMeyerCap`, `instPseudoMetrizableSpaceDeningerRadialCompat` —
+    both source spaces are metrizable.
+  - `instIsUniformAddGroupDeningerRadialCompat` — the radial space is a uniform additive group.
+  - `deningerMZeta_completeSpace` — **the cokernel is complete** (Bourbaki: quotient of a complete
+    first countable topological group).
+
+**Section 1 of this card is now fully formalized, unconditionally.**  Statements `(1)`–`(4)`:
+
+| claim | Lean |
+|---|---|
+| `ℋ_−` nuclear | `deningerIsNuclearSpaceC_radialCompat` |
+| `ℋ_∩` nuclear | `deningerIsNuclearSpaceC_meyerCap` |
+| both Fréchet | `instCompleteSpaceSchwartzMap`, `instCompleteSpaceDeningerMeyerCap`, `instCompleteSpaceDeningerRadialCompat`, metrizability instances |
+| `Z` continuous | `deningerPoissonLM_bound` |
+| `Z` injective | `deningerPoissonLM_injective` |
+| `Z` strict | `deningerPoissonLM_strict` |
+| `Z` closed range | `deningerPoisson_range_isClosed` |
+| exactness at `ℋ_−` | `deningerPoisson_exact` |
+| `M_ζ` nuclear | `deningerIsNuclearSpaceC_mZeta` |
+| `M_ζ` separated, complete | `deningerMZeta_t2Space`, `deningerMZeta_completeSpace` |
+| projection strict | `deningerMZetaMk_isOpenMap` |
+
+Remaining on this card: §2 (strict tensor transport) and §3 (angular cosheaf contraction).  Both
+need infrastructure absent from mathlib — the completed projective tensor product of locally convex
+spaces for §2, and topological singular chains for §3.  Next build unit: the projective tensor
+seminorm `p ⊗ q` on `E ⊗[𝕜] F` for seminorms `p, q`, its universal property for bounded bilinear
+maps, and the completion of the algebraic tensor product in that topology.

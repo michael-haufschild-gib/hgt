@@ -282,6 +282,7 @@ theorem mono_apartmentClassOf {n : ℕ} (hN : Nat.card ι = n + 3) (e₀ : Fin (
   rw [apartmentClassOf]
   exact @mono_comp _ _ _ _ _ _ (IsIso.mono_of_iso _) _ hmono
 
+omit [FiniteDimensional K V] [Fintype ι] in
 /-- Transporting a frame by an observer symmetry composes the induced maps of order complexes. -/
 theorem homologyMap_apartmentNerveMap_comp (b : Basis ι K V) (R : C) (m : ℕ) (g : V ≃ₗ[K] V) :
     SSet.homologyMap (apartmentNerveMap b) R m
@@ -293,6 +294,7 @@ theorem homologyMap_apartmentNerveMap_comp (b : Basis ι K V) (R : C) (m : ℕ) 
   rw [apartmentNerveMap, apartmentNerveMap, apartmentVertices_map b g, orderHomNerveMap_comp]
   rfl
 
+omit [FiniteDimensional K V] in
 /-- **The observer group permutes the explicit apartment classes.** -/
 theorem apartmentClassOf_comp_homologyMap {n : ℕ} (hN : Nat.card ι = n + 3)
     (e₀ : Fin (n + 3) ≃ ι) (b : Basis ι K V) (R : C) (g : V ≃ₗ[K] V) :

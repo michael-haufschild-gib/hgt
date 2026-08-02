@@ -992,10 +992,124 @@ shape the eliminator indexes by, and `HTGeometry/JetNonNegligible.lean` runs the
 `#print axioms` clean.  (`eval₂_jetTranslateWith` was generalized from a field to a commutative ring
 target, which its proof already supported, so the germ ring qualifies.)
 
-This is the analytic replacement for `(10)`: together with the expansions of `ψ`, its jets and their
-shifts, the truncated expansion of a nonzero element of `L_E` is eventually nonzero, which is
-`(11)`.  What remains is bookkeeping: turning "not negligible" plus "expansion to order `N`" into the
-leading term `c·s^a(log s)^b`, and then the datum of an arbitrary element of `K_E`.
+This is the analytic replacement for `(10)`.
+
+### Equation (11) for the polygamma ring
+
+Non-negligibility plus the expansions give the leading term outright, with no transseries field in
+between.  The mechanism is a single comparison of exponents.  Call a function *approximable* when on
+every tube, to every order `N` in the height, it agrees with some quotient `p(s)/q(s)` up to
+`O(t^{-N})`.  Then either the function is negligible, or some approximant is nonzero — and the
+degree difference of that approximant already beats the order: if `deg p - deg q ≤ -N` the
+approximant itself is `O(t^{-N})` and the function would be negligible at that order.  Since the
+degree difference is an *integer*, beating `-N` means beating it by one whole power, so the
+approximation error is smaller than the approximant's own leading term, and the datum of the
+function is the datum of a quotient of polynomials — which the datum algebra already computes.
+
+`HTGeometry/RatApproximant.lean` carries the class:
+
+> **`invReverse`**, **`eval_invReverse`**, **`eval_inv_eq_div`** — a polynomial in `1/s` is a
+> quotient of polynomials in `s`, by reversing the coefficients over `s^{deg}`;
+> **`HasRatApprox`** — approximation on every tube, to every order;
+> **`HasRatApprox.hasTubePolyGrowth`** — the class has polynomial tube growth, which is what makes
+> the product work: the two orders are raised by the *other* factor's growth exponent, so no
+> circularity;
+> **`hasRatApprox_ratEval`**, **`hasRatApprox_const`**, **`.add`**, **`.neg`**, **`.sub`**,
+> **`.mul`**;
+> **`hasRatApprox_iteratedDeriv_digamma_shift`** — **the shifted digamma jets of positive order are
+> approximable**, directly from their vertical expansions.
+
+`HTGeometry/RatApproxDatum.lean` runs the dichotomy:
+
+> **`IsTubeBigO`**, **`isVerticallyNegligible_of_forall_isTubeBigO`**, **`exists_not_isTubeBigO`** —
+> a function that is not negligible fails one tube bound outright;
+> **`TubeLimit.mono_tube`**, **`HasShiftTubeDatum.mono_tube`** — data restrict to smaller tubes, so
+> the single failing tube serves every tube;
+> **`norm_shape_natDegree_eq`** — the modulus of the boundary shape of a degree difference;
+> **`exists_hasShiftTubeDatum_of_ratApprox`** — **an approximable function that is not negligible has
+> a boundary datum**, with argument exponent `deg p - deg q` and residue the leading coefficient
+> ratio.
+
+`HTGeometry/ShiftedJetPolyDatum.lean` joins the two halves:
+
+> **`polyFunHom`**, **`jetFun`**, **`jetPolyFun`** — the value of a jet polynomial with polynomial
+> coefficients, as an honest ring evaluation into the function ring;
+> **`hasRatApprox_jetPolyFun`** — every such value is approximable, by induction on the polynomial;
+> **`jetEval_map_eq_coe`** — that value is the germ the eliminator works with, via
+> `MvPolynomial.eval₂_comp_left` and `ratFuncGerm_algebraMap`;
+> **`exists_hasShiftTubeDatum_jetPolyFun`** — **`(11)` for the shifted polygamma ring: for pairwise
+> incongruent nonnegative shifts, the value of a nonzero polynomial in the shifted digamma jets of
+> positive order has an argument exponent and a nonzero residue on every vertical tube.**
+
+`#print axioms` clean.
+
+### The logarithmic coordinate, and `(11)` for the whole field
+
+`ψ` itself expands as `log s + P(1/s)`, so the approximants of the full field are polynomials in the
+principal logarithm with polynomial coefficients, over a polynomial.  Nothing else changes: the
+dominant term is selected by degree difference first and logarithm exponent second, which is the
+ordering the boundary shape already carries.
+
+`HTGeometry/ClogVertLog.lean` reconciles the two logarithms:
+
+> **`norm_polyEval_le_of_norm_le_one`**, **`exists_bound_digamma_sub_clog`** — `ψ − log` is bounded
+> on every tube, from the zeroth-order expansion;
+> **`tubeLimit_clog_div_vertLog`** — hence `log s / vertLog t → 1` uniformly, since `ψ / vertLog → 1`
+> is already uniform;
+> **`tubeLimit_clog_div_vertLog_pow`**, **`hasShiftTubeDatum_ratEval_clogPow`** — a quotient of
+> polynomials times `(log s)^k` has datum `(0, deg p − deg q, k, lead p / lead q)`.
+
+`HTGeometry/LogPolyDatum.lean` computes the datum of the model:
+
+> **`logPolyEval`** — `ℂ[X][L]` evaluated at `(s, log s)`, a ring homomorphism for each `s`;
+> **`hasShiftTubeDatum_finsetSum_dominant`** — a finite sum with one strictly dominant member has
+> that member's datum;
+> **`exists_hasShiftTubeDatum_logPolyEval`** — **the datum of a nonzero logarithmic polynomial over
+> a polynomial**, the dominant member being the lexicographic maximum of coefficient degree and
+> logarithm exponent.  Distinct logarithm exponents make the dominant class a singleton, so no
+> cancellation can occur.
+
+`HTGeometry/LogRatApproximant.lean` carries the class:
+
+> **`HasTubePolyGrowth.add/.one/.mul/.pow`**, **`norm_clog_vertical_le`**,
+> **`hasTubePolyGrowth_clog`**, **`hasTubePolyGrowth_logPolyEval`** — the logarithm is dominated by
+> the height, so the model has polynomial tube growth;
+> **`HasLogRatApprox`**, **`.hasTubePolyGrowth`**, **`.add`**, **`.neg`**, **`.sub`**, **`.mul`**,
+> **`HasRatApprox.hasLogRatApprox`**;
+> **`hasLogRatApprox_digamma_shift`** — **the digamma translates themselves are approximable**, with
+> the logarithm carried by the linear term `L·s^{deg}` over `s^{deg}`.
+
+`HTGeometry/ShiftedJetFieldDatum.lean` closes `(11)`:
+
+> **`tubeLimit_zero_of_norm_le`**, **`norm_shape_neg_natCast`** — the comparison instruments;
+> **`exists_hasShiftTubeDatum_of_logRatApprox`** — the dichotomy against the shape `s^{-N}`: a
+> dominant signature that did not beat `s^{-N}` would make the whole approximant, hence the
+> function, negligible at order `N`;
+> **`jetFieldFun`**, **`jetFieldPolyFun`**, **`hasLogRatApprox_jetFieldPolyFun`**,
+> **`jetEval_map_eq_coe_field`**;
+> **`exists_hasShiftTubeDatum_jetFieldPolyFun`** — **equation `(11)`: for pairwise incongruent
+> nonnegative shifts, the value of a nonzero polynomial in the shifted digamma jets of any orders,
+> `ψ` itself included, has an argument exponent, a logarithm exponent and a nonzero residue on every
+> vertical tube.**
+
+`#print axioms` clean.  This is the input the datum layer was missing: the coefficients of a
+normal-form sum are elements of the shifted polygamma ring, and `(11)` is exactly the statement that
+a nonzero one does not vanish asymptotically.
+
+### The normal-form sum with polygamma coefficients
+
+`HTGeometry/GammaJetSumDatum.lean` feeds `(11)` into the datum layer:
+
+> **`hasShiftTubeDatum_gammaProd`** — the datum of a Gamma monomial, `(∑e, ∑ e·λ, 0, 1)`;
+> **`HasShiftTubeDatum.mul_gammaProd`** — a coefficient's datum multiplied by it;
+> **`exists_hasShiftTubeDatum_gammaCoeffSum`** — **the datum of a Gamma-monomial sum whose
+> coefficients have data**, by the dominant-class argument, with the class residues as the only
+> hypothesis;
+> **`exists_hasShiftTubeDatum_jetGammaMonomial`** — **a nonzero shifted jet polynomial times a Gamma
+> monomial has a datum**, with no hypothesis at all: `(11)` supplies the coefficient's residue and
+> `(16)` the Gamma part, and a single term cannot cancel.
+
+`#print axioms` clean.
 
 Downstream of `(11)` the chain is already Lean: the signature ordering `(16)`, the datum `(4)`, the
 projective boundary `(6)`, the finite phase law `(19)` and its consequences `(21)`, `(25)`.
@@ -1012,7 +1126,7 @@ projective boundary `(6)`, the finite phase law `(19)` and its consequences `(21
 - [x] translation-saturated prime-log consequence proved
 - [x] local orbit-residue and prime-log inputs connected to axiom-clean Lean
 - [ ] exact adjacent 2024--2025 full texts compared before publication
-- [ ] full formal-transseries and almost-periodic limit proof formalized in Lean (almost-periodic limit done: `GammaShiftShape/Datum/FinitePhase/Zeta`; Theorem A done unconditionally: `ShiftedDigammaFamilyIncrement/Independence`; Theorem B done unconditionally: `MultiplicativeShiftIndependence`, `RationalMultiplicativeShiftOrbit`, `JetTranslateLeadingTerm`, `ShiftedGammaMultiplicativeCoboundary`, `ShiftedGammaFieldIndependence`; the formal transseries injection (10)--(11) open)
+- [ ] full formal-transseries and almost-periodic limit proof formalized in Lean (almost-periodic limit done: `GammaShiftShape/Datum/FinitePhase/Zeta`; Theorem A done unconditionally: `ShiftedDigammaFamilyIncrement/Independence`; Theorem B done unconditionally: `MultiplicativeShiftIndependence`, `RationalMultiplicativeShiftOrbit`, `JetTranslateLeadingTerm`, `ShiftedGammaMultiplicativeCoboundary`, `ShiftedGammaFieldIndependence`; the transseries injection (10)--(11) done unconditionally and without the formal Stirling field: `JetNonNegligible` replaces (10), `ShiftedJetFieldDatum` proves (11); the normal-form sum with polygamma coefficients is `GammaJetSumDatum`, unconditional for a single monomial and modulo the class-residue hypothesis for a sum)
 
 ## Log
 
@@ -1077,3 +1191,16 @@ projective boundary `(6)`, the finite phase law `(19)` and its consequences `(21
 - 2026-08-02 -- the non-negligibility theorem is proved (`JetIncrementFlat`, `JetNonNegligible`): no
   nonzero jet polynomial decays faster than every power of the height, which replaces the injectivity
   of the formal Stirling expansion.
+- 2026-08-02 -- equation (11) proved for the shifted polygamma ring (`RatApproximant`,
+  `RatApproxDatum`, `ShiftedJetPolyDatum`): a nonzero polynomial in the shifted digamma jets of
+  positive order has a boundary datum on every vertical tube, the exponent being the degree
+  difference of a rational approximant. The integrality of that difference is what makes the
+  approximation error negligible against the leading term.
+- 2026-08-02 -- equation (11) closed for the whole shifted polygamma field, logarithms included
+  (`ClogVertLog`, `LogPolyDatum`, `LogRatApproximant`, `ShiftedJetFieldDatum`): the model is a
+  polynomial in log s with polynomial coefficients over a polynomial, its datum is the lexicographic
+  maximum of (coefficient degree, log exponent), and the dichotomy against s^{-N} turns
+  non-negligibility into that datum.
+- 2026-08-02 -- (11) fed into the datum layer (`GammaJetSumDatum`): a nonzero shifted jet polynomial
+  times a Gamma monomial has a boundary datum unconditionally, and a normal-form sum has one as soon
+  as its dominant class does not cancel.

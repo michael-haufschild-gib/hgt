@@ -534,6 +534,75 @@ coefficient of `ad_H^r(K_0)` is exactly a Gaussian-chaos sum over
 parity-admissible walks on the exponential Pauli commutator graph.  Commuting
 disconnected words vanish before any probabilistic estimate is taken.
 
+There is an exact source-realization theorem behind this walk language.  For
+`S` in the binary symplectic label space, let `cl_omega(S)` be the least set
+containing `S` and satisfying
+
+\[
+ p,q\in\operatorname{cl}_\omega(S),\quad\omega(p,q)=1
+ \quad\Longrightarrow\quad
+ p+q\in\operatorname{cl}_\omega(S).
+\]
+
+Then
+
+\[
+ \operatorname{Lie}_{\mathbb R}\langle iP_p:p\in S\rangle
+ =
+ \operatorname{span}_{\mathbb R}
+ \{iP_z:z\in\operatorname{cl}_\omega(S)\}.             \tag{O4.6a}
+\]
+
+The right side contains the generators and is Lie closed because a Pauli
+commutator is zero when its labels are symplectically orthogonal and is a
+nonzero multiple of `iP_(p+q)` otherwise.  Conversely every closure step is
+realized by that nonzero commutator.  Linear independence of distinct Pauli
+words proves equality.
+
+For the complete one- and two-local source, this closure saturates rapidly:
+every nonzero weight-`w` label belongs after at most `max(0,w-2)` extension
+steps.  Inductively, for `w>=3`, choose a weight-`w-1` label `x` that agrees
+with the target `z` on `w-2` old sites, has a different nonzero letter on
+one old site, and omits the new site.  Then `y=x+z` has weight two, and the
+two different nonzero letters on the shared old site give
+`omega(x,y)=1`; hence `z=x+y` is the next closure step.  Thus the full Pauli
+Lie algebra is already reached at commutator depth `O(n)`.
+
+This is the valid transfer from the source-horizon Riemann-divisor work:
+faithful source realization survives, but its Boolean source lattice is
+replaced by a symplectic closure lattice.  Hypertranscendence and cofinal
+observer collapse do not transfer.  A finite-dimensional static evolution
+already satisfies a finite constant-coefficient matrix ODE, and a short
+preparation circuit is neither a label-blind observer nor an inverse
+spectral decoder.  The quantitative problem is therefore the weighted
+injectivity radius inside (O4.6a), not differential independence.
+
+Spectral recurrence is the abelianized shadow of this source closure.
+Permanent locality tests retain the original generator labels.  The missing
+growth theorem must show that robust low-word relations do not appear in the
+full noncommutative group after its Lie closure has already saturated.
+Closure depth itself cannot be the complexity invariant.  The required
+invariant is the robust group word metric/injectivity radius, or an
+equivalent circuit-tube energy.  This is a structural relation among O4,
+O5, and O6, not a proof of O4.
+
+There is a sharp counting limit on the source-horizon analogy.  Suppose one
+uses only injectivity of a one-parameter orbit, an inverse-conditioning
+bound, or the existence of `N_epsilon(T)` distinguishable time cells up to
+time `T`.  A finite gate alphabet with `M` choices has `M^(s+1)` words of
+length at most `s`.  Such source distinguishability can therefore force at
+most
+
+\[
+ s\geq\log_M N_\varepsilon(T)=O(\log T),               \tag{O4.6b}
+\]
+
+not ballistic `Omega(T/poly(n))` complexity.  A proof of O4 must use the
+metric geometry of noncommutative relations inside the closure, not only
+faithful recovery of the time/source coordinate.  This rules out importing
+the Riemann source's cofinal conditioning theorem as a disguised
+no-fast-forwarding proof.
+
 This exposes a narrower surviving theorem than an unspecified “dynamical
 NLTS” assumption:
 
@@ -694,6 +763,537 @@ than contributing an error.  Nested and containing chords can change the
 first-line seed parity but create no compatibility defect; they belong in a
 dressed self-energy, not in the crossing-memory remainder.
 
+The surviving coefficient has an exact topological sign.  At every admissible
+step,
+
+\[
+ \operatorname{ad}_{P_p}(P_y)=2P_pP_y.
+\]
+
+After all `2k` steps, reorder equal Pauli labels until each pair is adjacent.
+Two paired labels require one interchange exactly when their chords cross,
+and that interchange contributes `(-1)^(omega(p_a,p_b))`.  The equal pairs
+then square to the identity.  Hence every word satisfying (O4.12) equals
+
+\[
+ 4^k(-1)^{\,\sum_{a<b,\ a\ {\rm crosses}\ b}
+                    \omega(p_a,p_b)}P_z .                            \tag{O4.12a}
+\]
+
+The crossing-memory remainder is therefore a signed Eulerian cycle gas, not
+a positive collision gas.  Its first connected polymer is a triangle and
+has negative sign.
+
+For three independent uniform weight-`q` labels, the triangle probability
+has the sharp fixed-`q` leading term
+
+\[
+ \mathbb P\bigl(
+ \omega(p_1,p_2)=\omega(p_2,p_3)=\omega(p_3,p_1)=1
+ \bigr)
+ ={2q^3\over9n^2}+O_q(n^{-3}).                                      \tag{O4.12b}
+\]
+
+To see the leading term, fix `p_1`.  With probability
+`1-O_q(n^(-1))` conditional on anticommutation, `p_2` meets it at one
+site.  Choose that site in `q` ways and the different letter in two ways.
+For `p_3` to anticommute with both at order `n^(-1)` rather than
+`n^(-2)`, it must use the same site and the unique third Pauli letter.
+The remaining supports are pairwise disjoint.  The exact leading count,
+conditional on `p_1`, is
+
+\[
+ 2q{n-q\choose q-1}{n-2q+1\choose q-1}3^{2q-2}
+\]
+
+out of `({n\choose q}3^q)^2`; every other support-incidence pattern has at
+least three independent coincidences and contributes `O_q(n^(-3))`.
+
+There is also an exact all-orders site factorization, so the cycle gas need
+not be treated as an independent-edge surrogate.  Identify the one-site
+Pauli alphabet with `A=F_2^2`, write its symplectic form as
+`<.,.>`, and let zero denote the identity letter.  Fix a pairing `pi` of
+`1,...,2k`; write `b(j)` for the block at location `j` and
+`cross_pi(a,c)` for its chord-crossing indicator.  For
+`eta in F_2^(2k)` and a one-site seed letter `zeta`, define the polynomial
+
+\[
+\begin{aligned}
+ \mathscr F_{\pi,\zeta,\eta}(x_1,\ldots,x_k)
+ =\sum_{a_1,\ldots,a_k\in\mathbb F_2^2}
+ &\prod_{r=1}^k x_r^{\mathbf1_{a_r\ne0}}\\
+ {}\times(-1)^{
+ &\sum_{r<c}\operatorname{cross}_\pi(r,c)\langle a_r,a_c\rangle}\\
+ {}\times(-1)^{
+ &\sum_{j=1}^{2k}\eta_j
+ \left\langle a_{b(j)},
+ \zeta+\sum_{\ell<j}a_{b(\ell)}\right\rangle}.
+                                                                    \tag{O4.12c}
+\end{aligned}
+\]
+
+Let `N_q=3^q {n choose q}` and sample the `k` block labels independently
+and uniformly from weight-`q` Pauli words.  Define the normalized signed
+survival weight (with the common amplitude `4^k` removed) by
+
+\[
+ \mathcal W_\pi(z)=
+ \mathbb E\!\left[
+ (-1)^{\sum_{a<c}\operatorname{cross}_\pi(a,c)\omega(p_a,p_c)}
+ \mathbf1_{\text{\rm(O4.11) holds}}
+ \right].
+\]
+
+Then
+
+\[
+\boxed{
+ \mathcal W_\pi(z)
+ ={2^{-2k}\over N_q^k}
+ \sum_{\eta\in\mathbb F_2^{2k}}(-1)^{\sum_j\eta_j}
+ [x_1^q\cdots x_k^q]\,
+ \prod_{i=1}^n
+ \mathscr F_{\pi,z_i,\eta}(x_1,\ldots,x_k).
+ }                                                                  \tag{O4.12d}
+\]
+
+**Proof.**  For occurrence `j`, let `c_j` be the bit on the left of
+(O4.11).  The admissibility indicator has the Walsh expansion
+
+\[
+ \prod_{j=1}^{2k}\mathbf1_{c_j=1}
+ =2^{-2k}\sum_{\eta\in\mathbb F_2^{2k}}
+   (-1)^{\sum_j\eta_j+\sum_j\eta_jc_j}.
+\]
+
+Both `c_j` and the crossing-sign exponent in (O4.12a) are sums of their
+one-site symplectic contributions.  Their characters therefore factor over
+the `n` sites.  The monomial records whether block `r` is nonidentity at
+that site; extracting `x_r^q` enforces weight exactly `q` for every block.
+Division by `N_q^k` normalizes the label choices.  This proves (O4.12d).
+
+For a seed of weight `w`, simultaneous one-site Clifford symmetry identifies
+all nonzero `z_i`; the product in (O4.12d) consequently has only two local
+types, `n-w` zero-seed factors and `w` nonzero-seed factors.  Formula
+(O4.12d) is a finite coefficient-extraction problem for every `n,q,k` and
+every chord pairing.  It includes repeated labels, all site-sharing
+correlations, Eulerian cancellation, and the fixed-weight constraint
+exactly.  No Brownian, independent-edge, or large-`n` approximation is
+present.
+
+The target ensemble with all weights `1,...,q` requires no new diagram
+argument.  If every weight-`r` label has variance `v_r`, replace each
+`[x_a^q]` in (O4.12d) by
+`\sum_(r=1)^q v_r[x_a^r]` and replace `N_q` by
+`\sum_(r=1)^q v_r3^r{n\choose r}`.  Wick block weights are then reproduced
+exactly.
+
+Repeated block labels do not need a separate large-order estimate.  For `m`
+equal-variance Pauli coefficients write the standard Gaussian vector as
+
+\[
+ J=R\Theta,\qquad R=\|J\|_2,\qquad
+ \Theta\ \text{uniform on }S^{m-1},
+\]
+
+with `R` and `Theta` independent.  Since an `r`-fold nested commutator is
+homogeneous of degree `r`,
+
+\[
+ \mathbb E_J\,\operatorname{ad}_{H(J)}^r(K_0)
+ =
+ \mathbb E R^r\,
+ \mathbb E_\Theta\operatorname{ad}_{H(\Theta)}^r(K_0).               \tag{O4.12e}
+\]
+
+For even order,
+
+\[
+ \mathbb E R^{2k}
+ =2^k{\Gamma(k+m/2)\over\Gamma(m/2)}
+ =m(m+2)\cdots(m+2k-2).                                             \tag{O4.12f}
+\]
+
+Thus the exact energy-shell/angular moment is obtained from the Wick sum by
+dividing by (O4.12f).  This removes the high-order radial repetitions
+without assuming distinct Pauli labels.  Unequal variances give the same
+statement after whitening the coefficient ellipsoid.  The remaining
+large-order problem is the signed angular site-transfer partition function,
+which is the physically relevant fixed-energy-shell object.
+
+Radial phase mixing is not an O4 shortcut.  The theorem normalizes elapsed
+time by the interaction rate, which scales with `R`; that normalization
+cancels the radial variable.  Any `t^(-m)` dephasing obtained by averaging
+over `R` would prove a scale-mixture statement, not the fixed-energy
+autonomous law.
+
+The response-Liouvillian corpus gives an exact bridge from these commutator
+diagrams to late spectral return.  In an energy eigenbasis of `H`, define for
+a Hermitian Pauli observable `Q`
+
+\[
+ I_{ab}={1\over D}|Q_{ab}|^2,\qquad
+ \mu_{H,Q}=\sum_{a,b}I_{ab}\,\delta_{E_a-E_b}.
+\]
+
+Then `mu_(H,Q)` is a finite nonnegative symmetric measure and, for every
+`k>=0`,
+
+\[
+\begin{aligned}
+ {1\over D}\operatorname{Tr}
+ \bigl(Q^\dagger\operatorname{ad}_H^{2k}(Q)\bigr)
+ &=\int x^{2k}\,d\mu_{H,Q}(x)\\
+ &={1\over D}\|\operatorname{ad}_H^k(Q)\|_{\rm HS}^2,                \tag{O4.12g}\\
+ {1\over D}\operatorname{Tr}
+ \bigl(Q^\dagger e^{itH}Qe^{-itH}\bigr)
+ &=\int e^{itx}\,d\mu_{H,Q}(x).                                    \tag{O4.12h}
+\end{aligned}
+\]
+
+The first identity follows entrywise from
+`(ad_H Q)_(a,b)=(E_a-E_b)Q_(a,b)`; self-adjointness of `ad_H` gives the
+norm square.  The second is the same diagonal action exponentiated.
+`FiniteResponseLiouvillian.lean` already certifies the abstract finite
+transition-measure moment identity and odd-moment cancellation; the
+basis-change specialization (O4.12g)--(O4.12h) is the physical dictionary.
+
+Therefore the site partition formula (O4.12d) computes exact ensemble
+moments of a positive spectral return measure, not merely formal Taylor
+coefficients.  This genuinely joins connected operator growth to recurrence.
+It does not yet join either one to circuit complexity: one transition
+measure contains two-point response data, while a circuit-tube event depends
+on a complete replicated endpoint tensor.  The next extension must construct
+and control that replica Liouvillian hierarchy.
+
+That hierarchy has an exact aggregate reduction.  Let
+`rho_t=|Phi_H(t)><Phi_H(t)|`, let `C_s` be the full size-`s` circuit class,
+and put `sigma_C=C rho_0 C^dagger`.  For pure states,
+
+\[
+ F_s(t)=\sup_{C\in\mathcal C_s}\operatorname{Tr}(\rho_t\sigma_C)
+       =\sup_{C\in\mathcal C_s}|\langle\Phi_H(t),C\Phi_0\rangle|^2.
+\]
+
+If trace distance from `rho_t` to some `sigma_C` is at most `epsilon`, then
+`F_s(t)>=1-epsilon^2`.  Hence, for every integer `r>=1`,
+
+\[
+ \mathbb P\{C_\varepsilon(\Phi_H(t))\leq s\}
+ \leq
+ (1-\varepsilon^2)^{-r}\,
+ \mathbb E\,F_s(t)^r,                                               \tag{O4.12i}
+\]
+
+and the moment is exactly
+
+\[
+ F_s(t)^r
+ =\sup_{C\in\mathcal C_s}
+ \operatorname{Tr}\!\left(
+   \rho_t^{\otimes r}\sigma_C^{\otimes r}\right).                   \tag{O4.12j}
+\]
+
+No circuitwise union has been introduced: the same circuit is repeated on
+all replicas and the supremum remains inside the ensemble expectation.
+
+The replicated density evolves under the collective static Liouvillian
+
+\[
+ \mathcal L_H^{(r)}
+ =\sum_{\ell=1}^r
+  1^{\otimes(\ell-1)}\otimes\operatorname{ad}_H
+  \otimes1^{\otimes(r-\ell)},\qquad
+ \rho_t^{\otimes r}=e^{-it\mathcal L_H^{(r)}}\rho_0^{\otimes r}.     \tag{O4.12k}
+\]
+
+In the replicated energy basis its eigenvalues are the sums of gaps
+
+\[
+ \sum_{\ell=1}^r(E_{a_\ell}-E_{b_\ell}).                            \tag{O4.12l}
+\]
+
+Thus (O4.12j) is a variational matrix coefficient of a finite
+self-adjoint response Liouvillian, and every one of its polynomial moments
+has a positive transition-measure realization.  The generic
+`FiniteResponseLiouvillian` theorem already applies after taking the
+multi-index energy
+`E^(r)(a_1,\ldots,a_r)=\sum_\ell E_(a_\ell)`.
+
+The site factorization also persists exactly.  Expanding
+`(L_H^(r))^k` adds a replica-leg label to every commutator occurrence.
+Its commutation and endpoint constraints are still sums of one-site
+symplectic bits.  Walsh expansion and the same coefficient extraction as
+(O4.12d) therefore factor every replicated matrix coefficient over the
+physical sites; the circuit supplies only the replicated boundary tensor
+`sigma_C^(tensor r)`.
+
+The remaining O4 estimate is now precise:
+
+\[
+ \mathbb E\sup_{C\in\mathcal C_s}
+ \operatorname{Tr}\!\left(
+ e^{-it\mathcal L_H^{(r)}}\rho_0^{\otimes r}
+ \,\sigma_C^{\otimes r}\right)
+ \leq
+ (1-\varepsilon^2)^r
+ \left({A tm\over\varepsilon}\right)^{-cm},                         \tag{O4.12m}
+\]
+
+for a replica order and gate budget chosen in the theorem.  Proving
+(O4.12m) by a signed angular site-transfer bound would imply (O4.3)
+directly and would not pay `M^s` circuit words one at a time.
+
+The circuit supremum itself has an exact recursive form.  Pad shorter words
+with the identity and define the replicated circuit body
+
+\[
+ \mathfrak K_{s,r}
+ =\operatorname{conv}\{
+   (C\rho_0C^\dagger)^{\otimes r}:|C|=s\}.
+\]
+
+For a Hermitian replicated operator `X`, let
+
+\[
+ h_{s,r}(X)=\sup_{Y\in\mathfrak K_{s,r}}\operatorname{Tr}(XY).
+\]
+
+If `G_n` is the finite set of allowed one-step local gates including
+placements and the identity, then
+
+\[
+\begin{aligned}
+ h_{0,r}(X)&=\operatorname{Tr}(X\rho_0^{\otimes r}),\\
+ h_{s+1,r}(X)
+ &=\max_{G\in\mathcal G_n}
+   h_{s,r}\!\left((G^\dagger)^{\otimes r}
+                   XG^{\otimes r}\right),                           \tag{O4.12n}\\
+ F_s(t)^r&=
+ h_{s,r}\!\left(e^{-it\mathcal L_H^{(r)}}
+                     \rho_0^{\otimes r}\right).                     \tag{O4.12o}
+\end{aligned}
+\]
+
+Equation (O4.12n) follows by removing the last gate of the word; convexifying
+does not change a support function.  It is a Bellman recursion, not a union
+bound.  Thus the no-shortcut theorem compares two semigroups:
+continuous evolution by the collective static Liouvillian and discrete
+optimal control by one local gate per Bellman step.
+
+In the site-factorized replica expansion, one Bellman step inserts one
+two-site boundary tensor on all `r` replicas.  This suggests the precise
+gate-sensitive estimate that return moments lacked.  Construct a replicated
+transfer norm `||.||_(r,*)` and constants `gamma,kappa>0` for which the
+signed angular bulk transfer through normalized time `t` gains
+`exp(-gamma r Lambda t/poly(n))`, while every local Bellman insertion costs
+at most `exp(kappa r)`.  Iteration of (O4.12n) would give
+
+\[
+ \mathbb E F_s(t)^r
+ \leq
+ \exp\!\left(
+   \kappa r s-
+   {\gamma r\Lambda(H)t\over\operatorname{poly}(n)}
+ \right)
+ +\text{exceptional angular mass}.                                 \tag{O4.12p}
+\]
+
+With the exceptional mass bounded in the optimal form (O4.3), (O4.12p)
+would prove ballistic growth for `s<a Lambda(H)t/poly(n)`.  The open
+mathematical problem is now a local transfer-norm inequality compatible with
+the signed Eulerian site action and the Bellman gate action.
+
+#### Pauli cut rank: an exact gate-sensitive bulk contraction
+
+The required transfer norm can now be constructed for each paired angular
+word.  The invariant is neither support size nor the rank of the whole
+crossing graph.  It is the sum, over physical sites, of binary cut ranks of
+the crossing graph seen by the Pauli letters active at that site.
+
+First consider a bipartite graph with vertex classes `L,R`, `|L|=l`,
+`|R|=r`, and binary adjacency matrix `A`.  Put
+`rho=rank_(F_2)(A)`.  For nonzero one-qubit Pauli labels
+`x_u,y_v in F_2^2\setminus{0}`, define the normalized signed transfer
+
+\[
+ (T_{A,\alpha,\beta}f)(x)
+ =3^{-r}\sum_y
+ (-1)^{
+   \sum_{u,v}A_{uv}\omega(x_u,y_v)+\alpha(x)+\beta(y)}
+ f(y),
+\]
+
+where `alpha,beta` are arbitrary binary linear forms.  On the uniform
+`L^2` spaces of the `3^r` and `3^l` nonzero-letter assignments,
+
+\[
+ \boxed{\quad
+ \|T_{A,\alpha,\beta}\|_{2\to2}
+ \le {2^{\,l+r-\rho}\over 3^{(l+r)/2}} .
+ \quad}                                                            \tag{O4.12q}
+\]
+
+This estimate is unconditional and uniform in every seed or boundary
+character.  To prove it, first allow zero Pauli labels.  The resulting
+`4^l` by `4^r` character matrix has bilinear form
+`A\otimes J`, where `J` is the nonsingular one-qubit symplectic matrix.
+Its binary rank is `2rho`.  Character orthogonality gives unnormalized
+operator norm exactly `2^(l+r-rho)`.  Restricting rows and columns to
+nonzero labels cannot increase Euclidean operator norm, and conversion to
+uniform `L^2` divides by `3^((l+r)/2)`.  Linear forms only multiply rows and
+columns by signs.  This proves (O4.12q).
+
+For a fixed support assignment of a paired word, apply (O4.12q) at every
+physical site.  If `d_i` chord labels are active at site `i`, and `rho_i`
+is the cut rank of their induced crossing matrix, put
+
+\[
+ Q=\sum_i d_i,\qquad R=\sum_i\rho_i .
+\]
+
+The site-factorized angular transfer therefore obeys
+
+\[
+ \|T_{\rm angular}\|_{2\to2}
+ \le {2^{Q-R}\over3^{Q/2}}
+ =2^{\,(\log_2(2/\sqrt3))Q-R}.                                    \tag{O4.12r}
+\]
+
+Here this is the transfer in the selected chord variables, uniformly after
+conditioning on every unselected chord label.  Edges to conditioned labels
+and the seed contribute only linear forms.  Consequently the same bound
+controls the full scalar coefficient of every fixed Pauli boundary branch
+after averaging the conditioned labels; it is not a claim that an arbitrary
+spectator-dependent boundary function has this norm.
+
+This is the first explicit norm with the required signed bulk contraction.
+It also identifies its sharp threshold:
+
+\[
+ {R\over Q}>
+ \theta_*:=\log_2(2/\sqrt3)=0.207518\ldots .                        \tag{O4.12s}
+\]
+
+The threshold is genuinely below the rank density produced by a random
+paired word.  Here is an exact proof.  Draw a uniform pairing of `2k`
+cyclically ordered commutator positions and split the positions into two
+semicircles of size `k`.  Let `b` be the number of chords with one endpoint
+in each semicircle.  Order those bridge chords by their first endpoint and
+put the first `l=floor(b/2)` in `L` and the remaining `r=ceil(b/2)` in `R`.
+Read the `L/R` word in the order of the second endpoints.  The bridge
+crossing matrix, after ordering rows and columns by the second endpoints, is
+a Ferrers matrix: its `(u,v)` entry is one exactly when the `L` endpoint
+precedes the `R` endpoint.  Consequently its binary rank is exactly the
+number of `L`-to-`R` transitions in that word.
+
+Now give every bridge chord an independent uniform weight-`q` support.
+At site `i`, delete the chords not containing `i` from the second-endpoint
+word.  The rank `rho_i` of the resulting Ferrers matrix is again exactly the
+number of `L`-to-`R` transitions in the surviving word.  With
+`p=q/n`, conditional on `b`,
+
+\[
+ \mathbb E\rho_i
+ ={lr\over b(b-1)}
+   \left(bp-1+(1-p)^b\right).                                     \tag{O4.12t}
+\]
+
+Indeed a pair of positions becomes consecutive in the retained word with
+total expected count
+`E[(N_i-1)_+]=bp-1+(1-p)^b`, and an ordered pair of distinct positions has
+types `L,R` with probability `lr/(b(b-1))`.  Since every bridge support has
+exactly `q` sites,
+
+\[
+ Q=qb,\qquad
+ \mathbb ER
+ =n{lr\over b(b-1)}
+   \left({bq\over n}-1+(1-q/n)^b\right).                            \tag{O4.12u}
+\]
+
+In particular, if `bq/n>=64`, then `lr/(b(b-1))>=1/4` and
+
+\[
+ \mathbb ER\ge {63\over256}Q.
+\]
+
+Exposing the uniform `L/R` permutation and the independent supports gives a
+bounded-difference martingale.  Replacing one support changes `R` by at most
+`4q`; transposing two positions changes it by at most `8q`.  Hence the usual
+permutation-exposure proof of bounded differences gives an absolute
+`c_0>0` such that
+
+\[
+ \Pr\!\left\{R<{15\over64}Q\mid b\right\}
+ \le 4e^{-c_0b}.                                                    \tag{O4.12v}
+\]
+
+No independence between physical sites is used.  A second
+bounded-difference exposure of the random matching gives
+`Pr{b<k/3}<=2e^{-c_1k}` for an absolute `c_1>0`.  Therefore, for
+`k>=192n/q`, outside probability `O(e^{-c k})`,
+
+\[
+ \|T_{\rm angular}\|_{2\to2}
+ \le
+ 2^{-\eta qk/3},\qquad
+ \eta={15\over64}-\log_2(2/\sqrt3)>0.                              \tag{O4.12w}
+\]
+
+The gate tariff is equally explicit.  In the normalized Pauli basis, the
+transfer matrix of a `d`-qubit unitary conjugation is real orthogonal.
+Every column therefore has `l^1` norm at most
+`sqrt(4^d)=2^d`.  On `r` replicas a two-qubit gate has branch variation at
+most `4^r`, and `s` gates have variation at most `4^(rs)`.  Each Pauli
+branch changes only the linear forms in (O4.12q), because commutation with a
+fixed boundary Pauli is a symplectic character.  Combining with
+(O4.12w), the uniform-pairing-normalized, gate-expanded signed factor
+satisfies
+
+\[
+ \boxed{\quad
+ \text{normalized paired signed factor at order }2k
+ \ \le\
+ 2^{2rs}\!\left(2^{-\eta qk/3}+O(e^{-ck})\right)
+ \quad}                                                            \tag{O4.12x}
+\]
+
+relative to its incoming Pauli-branch norm, whenever `k>=192n/q`.
+Thus paired angular order beats an arbitrary `s`-gate, `r`-replica boundary
+exponentially once
+
+\[
+ k>\max\!\left\{{6\over\eta q},{2\log 4\over c}\right\}rs .
+\]
+
+This statement does not silently normalize away the number of Wick
+pairings.  If the coefficient dictionary has size `m`, conversion from the
+uniform pairing-and-label average to the degree-`2k` spherical moment carries
+the exact scalar factor
+
+\[
+ a_{m,k}
+ ={m^k(2k-1)!!\over m(m+2)\cdots(m+2k-2)}.                         \tag{O4.12y}
+\]
+
+It is obtained by summing the normalized label average over `m^k` block
+labels and the normalized pairing average over `(2k-1)!!` pairings, then
+dividing by the angular moment denominator (O4.12f).  The common commutator
+amplitude and the chosen interaction-rate normalization must also remain in
+the polynomial coefficient.  Thus (O4.12x) is a genuine exponential
+contraction of the signed combinatorial factor, but not yet a bound on the
+resummed unitary propagator.
+
+Equations (O4.12q)--(O4.12x) move the open core from “find a transfer norm”
+to one precise analytic step: resum the exact finite-order cut-rank
+contraction into normalized autonomous time while separating the
+coefficient tubes forced by (O4.1).  Absolute Taylor summation is forbidden:
+it destroys the unitary cancellations and introduces an artificial
+`e^(t\|\mathcal L\|)` loss.  The remaining proof must use a norm-stable
+spectral or orthogonal-polynomial resummation of (O4.12x), not weaken the
+finite-order theorem.
+
 That nested sector can be resummed exactly.  Let `N_k(z)` be the coefficient
 of `P_z` obtained by summing the `2k`-th Wick expansion over noncrossing
 pairings only, with `N_0(z)=1`.  Decomposing at the chord incident to the
@@ -733,6 +1333,120 @@ where `C_k` is the `k`-th Catalan number.  Thus nested growth is not an open
 diagrammatic remainder.  Pairings with crossing chords remain: commuting
 crossings form the Gaussian background, whereas their nonempty
 anticommutation subgraph is constrained by (O4.12) to be Eulerian.
+
+The locality cost of those components has a uniform combinatorial bound.
+Take the uniform weight-`q` ensemble and sample the `k` block labels
+independently.  For any fixed set of `v` blocks, a connected
+anticommutation graph forces their `q`-site supports to be connected by
+overlaps.  For a fixed labelled spanning tree, expose it away from a root.
+At every new vertex, its independent uniform `q`-subset intersects its
+parent's fixed `q`-subset with probability at most
+
+\[
+ \mathbb P(S_a\cap S_b\ne\varnothing)
+ \leq\mathbb E|S_a\cap S_b|={q^2\over n}.
+\]
+
+Cayley's formula and a union bound over the chosen vertices therefore give
+
+\[
+ \mathbb P(\text{some nonempty Eulerian crossing component})
+ \leq
+ \sum_{v=3}^{k}{k\choose v}v^{v-2}
+       \left({q^2\over n}\right)^{v-1}.                              \tag{O4.16}
+\]
+
+The lower limit is three because a nonempty connected simple Eulerian graph
+contains a cycle.  This estimate is uniform in the chord pairing, seed label
+`z`, and Pauli letters; anticommutation is stronger than support overlap, so
+forgetting letters only enlarges the event.
+
+Writing `x=e q^2 k/n`, the right side is at most
+
+\[
+ {n\over q^2}\sum_{v=3}^{k}{x^v\over v^2}.
+\]
+
+For `x<=1/2` it is bounded by
+
+\[
+ {2e^3q^4k^3\over9n^2}.                                             \tag{O4.17}
+\]
+
+Consequently, if `R_(2k)^cross(z)` denotes the absolute Wick contribution
+from labelings with a nonempty crossing-memory component, then
+
+\[
+ |R_{2k}^{\rm cross}(z)|
+ \leq
+ 4^k(2k-1)!!\left(\sum_pv_p\right)^k
+ \sum_{v=3}^{k}{k\choose v}v^{v-2}
+       \left({q^2\over n}\right)^{v-1}.                              \tag{O4.18}
+\]
+
+Thus genuine crossing memory is negligible uniformly for
+`k=o_q(n^(2/3))`, improving the unrenormalized pair-collision window
+`k=o_q(sqrt(n))`.  The exponent `2/3` is not asserted sharp: it is the first
+cycle threshold of the rigorous tree bound.  Reaching order `n` requires
+resumming triangle and higher Eulerian polymers rather than bounding their
+occurrence probability.
+
+More generally, suppose every Eulerian crossing component on at most `L`
+blocks has been summed into a dressed background.  The absolute unsummed
+remainder is supported on a component of size at least `L+1`, and the same
+tree argument gives
+
+\[
+ \mathbb P(\text{an unsummed component remains})
+ \leq
+ \sum_{v=L+1}^{k}{k\choose v}v^{v-2}
+       \left({q^2\over n}\right)^{v-1}.                              \tag{O4.19}
+\]
+
+If `x=e q^2 k/n<=1/2`, this is at most
+
+\[
+ {2n\over q^2}\,{x^{L+1}\over(L+1)^2}.                              \tag{O4.20}
+\]
+
+For every fixed `L`, exact resummation through size `L` therefore controls
+the remainder for
+
+\[
+ k=o_q\!\left(n^{L/(L+1)}\right).                                   \tag{O4.21}
+\]
+
+The sequence begins with the triangle threshold `n^(2/3)`, then
+`n^(3/4)`, and tends to `n` as `L` grows.  This proves that no finite list of
+connected corrections reaches the order-`n` transition.  The complete
+signed polymer free energy, not another fixed cumulant, is the next
+load-bearing object.
+
+The same bound nevertheless reaches order `n` at the structural level.  Let
+`k=floor(kappa n)` and assume
+
+\[
+ x_\kappa=e q^2\kappa<1.
+\]
+
+Choose `L_n=ceil(C log n)` with
+`C>1/|log x_kappa|`.  Equation (O4.20) then gives
+
+\[
+ \mathbb P\!\left(
+ \begin{array}{c}
+ \text{some Eulerian crossing-memory component}\\
+ \text{contains more than }L_n\text{ blocks}
+ \end{array}\right)
+ \longrightarrow0.                                                  \tag{O4.22}
+\]
+
+Indeed `n x_kappa^(L_n+1)/(L_n+1)^2 -> 0`.  Thus below the explicit
+subcritical density `1/(e q^2)`, an order-`n` Wick word decomposes with high
+probability into crossing-memory components of logarithmic size.  The
+remaining difficulty is not a macroscopic connected diagram; it is the
+collective signed free energy of extensively many small components and
+their seed-parity dressing.
 
 This Eulerian law moves the live problem beyond the elementary `k^2/n`
 collision ceiling.  The next object is a forest-renormalized expansion in
