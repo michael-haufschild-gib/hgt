@@ -6158,3 +6158,68 @@ Lean:
 ```text
 CCMFirstClockPrimitivePromotedHellingerGammaPureHodgeCoface.lean
 ```
+
+## 2026-08-02 Route L frontier update: resolved Calderón--Witt source boundary
+
+The updated Hellinger--Hodge Green-descent paper rules out another coface or raw completed coend as
+the Deninger contribution.  Those constructions already retain Xi coefficients and Hodge channels,
+and their raw recovery holds for every modular displacement.  Deninger's unique missing role is
+factor provenance before the ordinary cup and Green codiagonals.
+
+That source-side resolved object now exists.  For the actual Calderón--Witt bilinear cross-effect
+`chi`, retain its two ordered terms
+
+```text
+R((q,a),(r,b)) = (chi(q,b), -chi(r,a)).
+```
+
+Its codiagonal is exactly the ordinary alternating cup.  Its two terms lie in the disjoint,
+source-forced axes `S x 0` and `0 x S`.  For the canonical algebraic Meyer defect and canonical
+finite rational-Witt unit packet at every prime,
+
+```text
+R(x,x) = (z,-z),     z != 0,
+cup(x,x) = 0.
+```
+
+One-prime inclusion gives a nonzero finite-support antidiagonal in the all-prime algebraic source.
+Consequently no linear observer which factors through the ordinary Calderón--Witt cup/codiagonal is
+conservative on the span of this canonical source boundary.  This is an unconditional source
+theorem, not a divisor-selected product duplication: nonvanishing uses the injective first
+suspension of an actual arithmetic-Frobenius-fixed rational-Witt packet.
+
+This source antidiagonal is the precise algebraic counterpart of the already formalized Deninger
+Green resolved defect, whose codiagonal vanishes unconditionally and whose full vanishing is RH.
+It gives Deninger a non-overlapping role relative to the physical Möbius--theta and completed
+Hellinger--Gamma work: Deninger supplies the resolved factor labels and an explicit source-selected
+falsifier for nonconservative descent.
+
+The comparison with the other agent's completed two-channel coend is now exact rather than
+terminological.  At every finite Hellinger--Gamma grade,
+
+```text
+B_n^a(x) = (gamma_n(-a) x, gamma_n(a) x),
+```
+
+with both Gamma gauges strictly positive.  Hence its codiagonal vanishes iff `x = 0`; equivalently,
+the balanced-grade range is disjoint from the complete codiagonal kernel.  Since every nonzero
+Deninger resolved Green defect lies in that kernel, no such defect is one balanced coend grade.
+This proves the two Hodge channels cannot be relabelled as the two Green factor-defect channels.
+Lean module: `DeningerResolvedDefectHellingerGammaBalancedCofaceNoGo.lean`.
+
+Route L is not closed.  The remaining scientific theorem is exactly the paper's maps
+
+```text
+L_J : im D_J -> P,       L_R : im D_R -> Q
+```
+
+on one source-pointed Hausdorff closed Gamma/Hodge graph carrier, with faithfulness, lifted Green
+identity, and `P ∩ Q = 0`.  The new algebraic axes model `P,Q`; they do not construct the completed
+maps or prove graph landing.  Any comparison through only the ordinary cup, Haar orientation, raw
+Hilbert recovery, or total Green covariance is now formally refuted on the canonical source sector.
+
+Paper card:
+`deninger-resolved-calderon-witt-cross-effect-boundary.md`.
+
+Lean:
+`DeningerCalderonWittResolvedCrossEffectBoundary.lean`.

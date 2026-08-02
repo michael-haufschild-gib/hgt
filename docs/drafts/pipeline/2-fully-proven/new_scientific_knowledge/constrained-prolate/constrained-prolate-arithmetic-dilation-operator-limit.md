@@ -281,10 +281,35 @@ negative constrained-prolate prime constant.  Finally,
 the product converges uniformly on every compact subset of `C`, agrees near the origin with the
 existing Hilbert--Schmidt `fredholmDet1`, and vanishes at every point `-1/kappa_k`.
 
+`GaloisForLFunctions.RHTower.ArithmeticDilationNegativeMass.lean` now formalizes the spectral
+consequence.  It proves that a Hermitian absolutely projective matrix gives a self-adjoint
+operator, that the limiting arithmetic diagonal is positive, and the sharp general estimate
+
+```text
+sum_n (sgVal_n(S))^- <= ||S - T||_1
+```
+
+for every positive comparator `T` whenever `S-T` is trace class.  Applied to the trace-norm limit
+above and the Gram symmetry of `E`, this proves that every arithmetic stage is self-adjoint and
+its complete signed-greedy negative spectral mass tends to zero.  This remains an unconditional
+Lean implication from the card's explicit weighted projective hypothesis `(3)`; it does not claim
+that the actual PSWF source has yet discharged that hypothesis.
+
+`GaloisForLFunctions.RHTower.ArithmeticDilationDeterminantZeros.lean` proves the converse missing
+from the initial product construction: an absolutely summable bare Fredholm product vanishes iff
+one of its linear factors vanishes.  Consequently
+
+```text
+D_arith(z) = 0  iff  exists k >= 2, z = -1/kappa_k.
+```
+
+Thus the global zero *set* in `(18)` is exact in Lean.  Analytic zero multiplicities (including
+coincident values of `kappa_k`) and entire order `1/2` remain open.
+
 What remains for the full Lean statement of this card is therefore narrower but still substantive:
 discharge actual PSWF hypothesis `(3)`; prove determinant continuity for the general nondiagonal
-trace-norm-convergent stages; formalize the negative-spectral-mass consequence and the converse
-zero/multiplicity plus entire-order assertions.  The card remains at stage 2.
+trace-norm-convergent stages; and formalize the converse zero/multiplicity plus entire-order
+assertions.  The card remains at stage 2.
 
 ## Gates
 
@@ -303,7 +328,9 @@ zero/multiplicity plus entire-order assertions.  The card remains at stage 2.
 - [ ] discharge the weighted projective hypothesis `(3)` from PSWF asymptotics in Lean
 - [x] trace-class operator realization and projective-norm-to-trace-norm interface in Lean
 - [x] limiting positive arithmetic operator, exact trace, and compact-uniform Fredholm product in Lean
-- [ ] nondiagonal stage determinant convergence and negative spectral mass in Lean
+- [x] vanishing full negative spectral mass from trace-norm convergence to the positive limit in Lean
+- [ ] nondiagonal stage determinant convergence in Lean
+- [x] exact determinant zero set (both directions) in Lean
 - [ ] exact determinant zero multiplicities and entire order `1/2` in Lean
 - [ ] independent PSWF normalization audit
 - [ ] polar--prime critical Mellin graph-domain assembly

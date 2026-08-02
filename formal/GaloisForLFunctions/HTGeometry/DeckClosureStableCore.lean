@@ -38,6 +38,21 @@ theorem fixedField_iSup {ι : Type*} (Γ : ι → Subgroup (F ≃ₐ[K] F)) :
       (iInf_le (fun m => IntermediateField.fixedField (Γ m)) n) hx
     exact (IntermediateField.mem_fixedField_iff (Γ n) x).mp hxn σ hσ
 
+/-- A subfield contained in the fixed field of a finite faithful deck group is the whole fixed
+field once its ambient degree equals the deck-group cardinality.  This is Artin's fixed-field
+degree theorem in the form needed for geometric quotient maps. -/
+theorem eq_fixedField_of_le_of_finite_of_finrank_eq_card
+    (L : IntermediateField K F) (H : Subgroup (F ≃ₐ[K] F))
+    [Finite H] [FiniteDimensional L F]
+    (hle : L ≤ IntermediateField.fixedField H)
+    (hdegree : Module.finrank L F = Nat.card H) :
+    L = IntermediateField.fixedField H := by
+  apply IntermediateField.eq_of_le_of_finrank_eq' hle
+  rw [hdegree]
+  letI := Fintype.ofFinite H
+  rw [Nat.card_eq_fintype_card]
+  exact (FixedPoints.finrank_eq_card H F).symm
+
 /-- The fixed field of two jointly generated symmetry groups is the intersection of their fixed
 fields. -/
 theorem fixedField_sup (Γ Δ : Subgroup (F ≃ₐ[K] F)) :

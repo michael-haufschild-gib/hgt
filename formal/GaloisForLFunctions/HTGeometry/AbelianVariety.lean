@@ -1,7 +1,12 @@
 import Mathlib.AlgebraicGeometry.Group.Abelian
 import Mathlib.AlgebraicGeometry.Group.Smooth
+import Mathlib.AlgebraicGeometry.Morphisms.Etale
+import Mathlib.AlgebraicGeometry.Morphisms.Finite
 import Mathlib.Algebra.Group.Hom.Basic
+import Mathlib.FieldTheory.Galois.Basic
+import Mathlib.CategoryTheory.Limits.Preserves.Shapes.Pullbacks
 import GaloisForLFunctions.HTGeometry.FunctionFieldPullback
+import GaloisForLFunctions.HTGeometry.DeckClosureStableCore
 
 /-!
 # Abelian varieties and multiplication morphisms
@@ -34,6 +39,24 @@ theorem GrpObj.mulRight_trans
   change _ = lift (𝟙 G)
     (lift (toUnit G ≫ x) (toUnit G ≫ y) ≫ μ) ≫ μ
   rfl
+
+/-- Right translation is faithful in its translating point. -/
+theorem GrpObj.mulRight_injective
+    {C : Type*} [Category C] [CartesianMonoidalCategory C]
+    {G : C} [GrpObj G] :
+    Function.Injective (GrpObj.mulRight : (𝟙_ C ⟶ G) → (G ≅ G)) := by
+  intro x y h
+  have hh := congrArg Iso.hom h
+  have hp := congrArg (fun f : G ⟶ G => η[G] ≫ f) hh
+  have hp' : lift η[G] x ≫ μ = lift η[G] y ≫ μ := by
+    simpa [GrpObj.mulRight_hom, comp_lift_assoc] using hp
+  have hx : lift η[G] x ≫ μ = x := by
+    change η[G] * x = x
+    simpa only [MonObj.one_eq_one] using (_root_.one_mul x)
+  have hy : lift η[G] y ≫ μ = y := by
+    change η[G] * y = y
+    simpa only [MonObj.one_eq_one] using (_root_.one_mul y)
+  exact hx.symm.trans (hp'.trans hy)
 
 /-- A proper geometrically integral group scheme over a field.  Properness already includes local
 finite type, and geometric integrality supplies the standard geometric reducedness and
@@ -279,6 +302,17 @@ noncomputable def abelianVarietyMultiplicationFunctionFieldPullback
         (h.symm.trans hfs) :
       A.left.functionField →ₐ[K] A.left.functionField }
 
+/-- Intermediate field consisting of rational functions pulled back by multiplication by `m`. -/
+noncomputable def abelianVarietyMultiplicationPullbackField
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    (m : ℤ) [IsDominant (abelianVarietyMultiplication A m).left] :
+    letI := abelianVarietyFunctionFieldAlgebra A
+    IntermediateField K A.left.functionField := by
+  letI := abelianVarietyFunctionFieldAlgebra A
+  exact IntermediateField.map
+    (abelianVarietyMultiplicationFunctionFieldPullback A m) ⊤
+
 /-- The `n`-fold field pullback by `[m]` is pullback by `[m ^ n]`. -/
 theorem abelianVarietyMultiplicationFunctionFieldPullback_pow_apply
     {K : Type u} [Field K]
@@ -297,6 +331,149 @@ theorem abelianVarietyMultiplicationFunctionFieldPullback_pow_apply
           ((abelianVarietyMultiplication A m).left.categoricalIterate n)
           (abelianVarietyMultiplication A (m ^ n)).left
           (categoricalIterate_abelianVarietyMultiplication_left A m n)
+
+/-- The intermediate-field image of the `n`-fold pullback is the pullback field of multiplication
+by `m ^ n`. -/
+theorem map_abelianVarietyMultiplicationFunctionFieldPullback_pow_top
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    (m : ℤ) [IsDominant (abelianVarietyMultiplication A m).left]
+    (n : ℕ) :
+    letI := abelianVarietyFunctionFieldAlgebra A
+    IntermediateField.map
+        ((abelianVarietyMultiplicationFunctionFieldPullback A m) ^ n) ⊤ =
+      abelianVarietyMultiplicationPullbackField A (m ^ n) := by
+  letI := abelianVarietyFunctionFieldAlgebra A
+  change IntermediateField.map
+      ((abelianVarietyMultiplicationFunctionFieldPullback A m) ^ n) ⊤ =
+    IntermediateField.map
+      (abelianVarietyMultiplicationFunctionFieldPullback A (m ^ n)) ⊤
+  congr 1
+  ext z
+  exact abelianVarietyMultiplicationFunctionFieldPullback_pow_apply A m n z
+
+/-- Scheme-theoretic kernel of multiplication by `m`, formed as the fiber over the identity
+section. -/
+def abelianVarietyTorsionScheme
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    (m : ℤ) : Over (Spec (.of K)) :=
+  pullback (abelianVarietyMultiplication A m) η[A]
+
+/-- Canonical identification of the Cartesian monoidal unit in the over-category with the literal
+identity object over the base scheme. -/
+noncomputable def abelianVarietyTensorUnitIsoBase
+    {K : Type u} [Field K] :
+    𝟙_ (Over (Spec (.of K))) ≅ Over.mk (𝟙 (Spec (.of K))) :=
+  isTerminalTensorUnit.uniqueUpToIso (Over.mkIdTerminal)
+
+/-- Identity section of an abelian variety with literal source `Spec K`. -/
+noncomputable def abelianVarietyIdentitySection
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A] :
+    Spec (.of K) ⟶ A.left :=
+  ((abelianVarietyTensorUnitIsoBase (K := K)).inv ≫ η[A]).left
+
+/-- Literal scheme-theoretic kernel of multiplication by `m`.  Unlike the kernel object formed in
+the over-category, this chosen model is definitionally a scheme pullback over `Spec K`. -/
+noncomputable def abelianVarietyTorsionKernelScheme
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    (m : ℤ) : Scheme :=
+  pullback (abelianVarietyMultiplication A m).left
+    (abelianVarietyIdentitySection A)
+
+/-- Structural projection of the literal torsion-kernel scheme to the ground field. -/
+noncomputable def abelianVarietyTorsionKernelProjection
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    (m : ℤ) :
+    abelianVarietyTorsionKernelScheme A m ⟶ Spec (.of K) :=
+  pullback.snd (abelianVarietyMultiplication A m).left
+    (abelianVarietyIdentitySection A)
+
+/-- Canonical comparison between the kernel formed in the over-category and the literal scheme
+pullback model. -/
+noncomputable def abelianVarietyTorsionSchemeIsoKernelScheme
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    (m : ℤ) :
+    (abelianVarietyTorsionScheme A m).left ≅
+      abelianVarietyTorsionKernelScheme A m := by
+  let e : Spec (.of K) ≅ (𝟙_ (Over (Spec (.of K)))).left :=
+    (Over.forget (Spec (.of K))).mapIso
+      (abelianVarietyTensorUnitIsoBase (K := K)).symm
+  letI : IsIso e.inv := inferInstance
+  let q := pullback.map
+    (abelianVarietyMultiplication A m).left η[A].left
+    (abelianVarietyMultiplication A m).left (abelianVarietyIdentitySection A)
+    (𝟙 A.left) e.inv (𝟙 A.left) (by simp) (by
+      simp only [Category.comp_id]
+      change η[A].left =
+        ((abelianVarietyTensorUnitIsoBase (K := K)).hom ≫
+          (abelianVarietyTensorUnitIsoBase (K := K)).inv ≫ η[A]).left
+      exact congrArg Over.Hom.left
+        (Iso.hom_inv_id_assoc
+          (abelianVarietyTensorUnitIsoBase (K := K)) η[A]).symm)
+  haveI : IsIso q := by
+    dsimp only [q]
+    apply pullback.map_isIso
+  exact PreservesPullback.iso (Over.forget (Spec (.of K)))
+      (abelianVarietyMultiplication A m) η[A] ≪≫
+        @asIso _ _ _ _ q ‹IsIso q›
+
+/-- Finiteness of multiplication propagates to the literal torsion-kernel scheme by base change. -/
+noncomputable instance finite_abelianVarietyTorsionKernelProjection
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    (m : ℤ) [IsFinite (abelianVarietyMultiplication A m).left] :
+    IsFinite (abelianVarietyTorsionKernelProjection A m) := by
+  dsimp only [abelianVarietyTorsionKernelProjection,
+    abelianVarietyTorsionKernelScheme]
+  infer_instance
+
+/-- Étaleness of multiplication propagates to the literal torsion-kernel scheme by base change. -/
+noncomputable instance etale_abelianVarietyTorsionKernelProjection
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    (m : ℤ) [Etale (abelianVarietyMultiplication A m).left] :
+    Etale (abelianVarietyTorsionKernelProjection A m) := by
+  dsimp only [abelianVarietyTorsionKernelProjection,
+    abelianVarietyTorsionKernelScheme]
+  infer_instance
+
+/-- A functor-of-points torsion element lifts canonically to the scheme-theoretic kernel. -/
+def abelianVarietyTorsionSchemeLift
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    (X : Over (Spec (.of K))) (m : ℤ) (x : X ⟶ A)
+    (hx : x ≫ abelianVarietyMultiplication A m = 1) :
+    X ⟶ abelianVarietyTorsionScheme A m :=
+  pullback.lift x (toUnit X) (by
+    simpa only [CategoryTheory.Hom.one_def] using hx)
+
+@[reassoc (attr := simp)]
+theorem abelianVarietyTorsionSchemeLift_fst
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    (X : Over (Spec (.of K))) (m : ℤ) (x : X ⟶ A)
+    (hx : x ≫ abelianVarietyMultiplication A m = 1) :
+    abelianVarietyTorsionSchemeLift A X m x hx ≫ pullback.fst _ _ = x :=
+  pullback.lift_fst _ _ _
+
+/-- Every point of the scheme-theoretic kernel projects to an `m`-torsion point. -/
+theorem abelianVarietyTorsionScheme_point_fst_comp_multiplication
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    (X : Over (Spec (.of K))) (m : ℤ)
+    (t : X ⟶ abelianVarietyTorsionScheme A m) :
+    (t ≫ pullback.fst (abelianVarietyMultiplication A m) η[A]) ≫
+        abelianVarietyMultiplication A m = 1 := by
+  dsimp only [abelianVarietyTorsionScheme] at t ⊢
+  rw [Category.assoc, pullback.condition]
+  change t ≫ pullback.snd _ _ ≫ η[A] = toUnit X ≫ η[A]
+  rw [← Category.assoc]
+  rw [toUnit_unique (t ≫ pullback.snd _ _) (toUnit X)]
 
 /-- `m`-torsion in every functor-of-points group of an abelian variety. -/
 def abelianVarietyTorsionPoints
@@ -351,6 +528,60 @@ theorem mem_abelianVarietyTorsionPoints_iff_comp_eq_one
       x ≫ abelianVarietyMultiplication A m = 1 := by
   rw [mem_abelianVarietyTorsionPoints_iff,
     comp_abelianVarietyMultiplication]
+
+/-- Functor-of-points torsion is represented exactly by the scheme-theoretic kernel of
+multiplication. -/
+noncomputable def abelianVarietyTorsionPointsEquivSchemePoints
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    (X : Over (Spec (.of K))) (m : ℤ) :
+    {x : X ⟶ A // x ∈ abelianVarietyTorsionPoints A X m} ≃
+      (X ⟶ abelianVarietyTorsionScheme A m) where
+  toFun x := abelianVarietyTorsionSchemeLift A X m x
+    ((mem_abelianVarietyTorsionPoints_iff_comp_eq_one A X m x).mp x.property)
+  invFun t :=
+    ⟨t ≫ pullback.fst (abelianVarietyMultiplication A m) η[A],
+      (mem_abelianVarietyTorsionPoints_iff_comp_eq_one A X m _).mpr
+        (abelianVarietyTorsionScheme_point_fst_comp_multiplication A X m t)⟩
+  left_inv x := by
+    apply Subtype.ext
+    exact abelianVarietyTorsionSchemeLift_fst A X m x _
+  right_inv t := by
+    dsimp only
+    apply pullback.hom_ext
+    · exact abelianVarietyTorsionSchemeLift_fst A X m _ _
+    · apply toUnit_unique
+
+/-- Two functor-of-points values have the same image under multiplication by `m` exactly when
+their quotient is `m`-torsion. -/
+theorem comp_abelianVarietyMultiplication_eq_iff_div_mem_torsion
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    (X : Over (Spec (.of K))) (m : ℤ) (x y : X ⟶ A) :
+    x ≫ abelianVarietyMultiplication A m =
+        y ≫ abelianVarietyMultiplication A m ↔
+      x / y ∈ abelianVarietyTorsionPoints A X m := by
+  rw [comp_abelianVarietyMultiplication, comp_abelianVarietyMultiplication,
+    mem_abelianVarietyTorsionPoints_iff, div_zpow, div_eq_one]
+
+/-- Fibers of multiplication by `m` are precisely orbits under right translation by `m`-torsion
+points, on every functor-of-points group. -/
+theorem comp_abelianVarietyMultiplication_eq_iff_exists_torsion_mul
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    (X : Over (Spec (.of K))) (m : ℤ) (x y : X ⟶ A) :
+    x ≫ abelianVarietyMultiplication A m =
+        y ≫ abelianVarietyMultiplication A m ↔
+      ∃ t ∈ abelianVarietyTorsionPoints A X m, x = y * t := by
+  rw [comp_abelianVarietyMultiplication_eq_iff_div_mem_torsion]
+  constructor
+  · intro h
+    refine ⟨x / y, h, ?_⟩
+    rw [mul_comm, div_mul_cancel]
+  · rintro ⟨t, ht, rfl⟩
+    rw [mem_abelianVarietyTorsionPoints_iff] at ht ⊢
+    rw [mul_div_cancel_left]
+    exact ht
 
 /-- Translation by an `m`-torsion point is a deck transformation over multiplication by `m`. -/
 theorem abelianVarietyTranslation_comp_multiplication_of_mem_torsion
@@ -414,6 +645,25 @@ theorem abelianVarietyTorsionDeckGroup_fix_multiplicationPullback
     (mem_abelianVarietyTorsionDeckGroup_iff A m σ).mp hσ
   exact
     abelianVarietyTranslationFunctionFieldAlgEquiv_fix_multiplicationPullback A m x hx z
+
+/-- The multiplication-pullback field is contained in the fixed field of the concrete torsion
+translation deck group. -/
+theorem abelianVarietyMultiplicationPullbackField_le_fixedField_torsionDeckGroup
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    (m : ℤ) [IsDominant (abelianVarietyMultiplication A m).left] :
+    letI := abelianVarietyFunctionFieldAlgebra A
+    abelianVarietyMultiplicationPullbackField A m ≤
+      IntermediateField.fixedField (abelianVarietyTorsionDeckGroup A m) := by
+  letI := abelianVarietyFunctionFieldAlgebra A
+  intro y hy
+  change y ∈ IntermediateField.map
+    (abelianVarietyMultiplicationFunctionFieldPullback A m) ⊤ at hy
+  rw [IntermediateField.mem_map] at hy
+  obtain ⟨z, _, rfl⟩ := hy
+  rw [IntermediateField.mem_fixedField_iff]
+  intro σ hσ
+  exact abelianVarietyTorsionDeckGroup_fix_multiplicationPullback A m σ hσ z
 
 /-- Union of all `m^n`-torsion point subgroups. -/
 def abelianVarietyMultiplicationPrimaryTorsionPoints
@@ -527,6 +777,39 @@ theorem mem_abelianVarietyMultiplicationPrimaryTorsionDeckGroup_iff
   rw [abelianVarietyMultiplicationPrimaryTorsionDeckGroup_eq_iSup]
   exact Subgroup.mem_iSup_of_directed
     (monotone_abelianVarietyTorsionDeckGroup_pow A m).directed_le
+
+/-- At every depth, the actual multiplication-pullback image is contained in the fixed field of
+the corresponding finite torsion deck group. -/
+theorem map_abelianVarietyMultiplicationFunctionFieldPullback_pow_top_le_fixedField
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    (m : ℤ) [IsDominant (abelianVarietyMultiplication A m).left]
+    (n : ℕ) :
+    letI := abelianVarietyFunctionFieldAlgebra A
+    IntermediateField.map
+        ((abelianVarietyMultiplicationFunctionFieldPullback A m) ^ n) ⊤ ≤
+      IntermediateField.fixedField (abelianVarietyTorsionDeckGroup A (m ^ n)) := by
+  letI := abelianVarietyFunctionFieldAlgebra A
+  rw [map_abelianVarietyMultiplicationFunctionFieldPullback_pow_top]
+  exact
+    abelianVarietyMultiplicationPullbackField_le_fixedField_torsionDeckGroup A (m ^ n)
+
+/-- The stable multiplication tail is fixed by every multiplication-primary torsion translation.
+This is the unconditional inclusion half of the Manin-horizon identity. -/
+theorem stableRangeCore_abelianVarietyMultiplicationFunctionFieldPullback_le_fixedField_primary
+    {K : Type u} [Field K]
+    (A : Over (Spec (.of K))) [GrpObj A] [IsAbelianVariety A]
+    (m : ℤ) [IsDominant (abelianVarietyMultiplication A m).left] :
+    letI := abelianVarietyFunctionFieldAlgebra A
+    stableRangeCore (abelianVarietyMultiplicationFunctionFieldPullback A m) ≤
+      IntermediateField.fixedField
+        (abelianVarietyMultiplicationPrimaryTorsionDeckGroup A m) := by
+  letI := abelianVarietyFunctionFieldAlgebra A
+  rw [stableRangeCore,
+    abelianVarietyMultiplicationPrimaryTorsionDeckGroup_eq_iSup,
+    fixedField_iSup]
+  exact iInf_mono fun n =>
+    map_abelianVarietyMultiplicationFunctionFieldPullback_pow_top_le_fixedField A m n
 
 end
 

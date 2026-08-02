@@ -479,10 +479,125 @@ holds as soon as the base evaluation vector is nonzero.  The positivity of `C_w`
 is obtained from the `N = 0` case of the upper bound rather than from nonvanishing of the Gamma
 factor.
 
-Still outside the formal tree: Burnol's orthogonal-complement identification `(10)`.  It is what
-supplies the nonvanishing `k_{rho,a_N} /= 0` at a zeta zero --- the single remaining hypothesis of
-`(13)` --- and what transfers the two-sided law to the co-Poisson quotient vectors `y_{rho,N}` of
-the parent boundary-transgression theorem.
+The nonvanishing hypothesis is now reduced to a single witness, in
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolSoninApertureMonotone.lean
+```
+
+Shrinking the aperture weakens the constant-head condition, so the extended Sonine spaces decrease:
+
+```text
+soninExtendedSpace_mono
+  : a <= b -> L_b <= L_a,
+burnolExtendedSoninEvaluationVector_eq_zero_iff
+  : k_{w,a} = 0 <-> the completed Mellin evaluation vanishes identically on L_a,
+burnolExtendedSoninEvaluationVector_ne_zero_of_le
+  : a <= b, k_{w,b} /= 0 -> k_{w,a} /= 0,
+burnolExtendedSoninEvaluationVector_ne_zero_of_witness
+  : one g in L_b with M g(w) /= 0 gives k_{w,a} /= 0 for every a <= b.
+```
+
+So `(10)` no longer has to be established at every aperture: exhibiting one vector of one extended
+Sonine space with nonvanishing completed Mellin evaluation makes `(13)` unconditional at every
+smaller aperture.  That single witness --- Burnol's co-Poisson construction --- is the last missing
+object.
+
+The witness target is further halved in
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolSoninEigenWitness.lean
+```
+
+The cosine transform is an involution of `L_a`, so every Sonine vector splits into self-dual and
+anti-self-dual parts, both Sonine at the same aperture, and the completed Mellin evaluation is
+additive there:
+
+```text
+soninSelfDualPart / soninAntiSelfDualPart, with F g = g resp. F g = -g,
+soninSelfDualPart_add_antiSelfDualPart : their sum is 2 f,
+exists_cosine_eigen_witness
+  : a Sonine vector with nonvanishing evaluation forces an eigenvector with nonvanishing evaluation,
+mem_soninExtendedSpace_of_cosine_eigen
+  : an even cosine eigenvector with constant aperture head is automatically in L_a,
+burnolExtendedSoninEvaluationVector_ne_zero_of_eigen_witness
+  : one such eigenvector at aperture b settles nonvanishing at every a <= b.
+```
+
+The second item is the useful one: for an eigenvector the constant-head condition on the cosine
+transform is automatic, so the witness has to satisfy only **one** of the two defining Sonine
+conditions.  The outstanding object is therefore a single even vector `g` with `F g = ±g`, constant
+on one aperture head, and `M g(w) /= 0`.
+
+The eigen-condition is then shown to be free, in the same module:
+
+```text
+soninCosineUnitary_add_self / _sub_self
+  : u + F u is self-dual and u - F u is anti-self-dual, for every even u,
+mem_soninExtendedSpace_symmetrized
+  : if u + F u is constant on the aperture head then it lies in L_a,
+burnolExtendedSoninEvaluationVector_ne_zero_of_symmetrized_witness
+  : one even u with (u + F u) head-constant and M(u + F u)(w) /= 0 settles nonvanishing
+    at every smaller aperture.
+```
+
+So the witness problem now has exactly **one** condition to satisfy beyond nonvanishing: an even `u`
+whose symmetrization `u + F u` is constant on one aperture head.  Self-duality is automatic, the
+cosine-head condition is automatic, and the aperture is arbitrary.
+
+Route for that last object: co-Poisson summation.  Mathlib supplies the archimedean input
+(`Real.tsum_eq_tsum_fourier_of_rpow_decay`, `SchwartzMap.tsum_eq_tsum_fourier`), which is what makes
+the multiplicative average of a Schwartz seed constant near the origin while remaining `L^2`.  Note
+that the seed cannot itself be Schwartz: `u + F u` would then be real analytic, and constancy on an
+interval would force it to vanish identically.  The non-analyticity has to come from the summation.
+
+The co-Poisson layer of `(10)` is now present in the formal tree
+(`BurnolCoPoissonSourceSpace.lean`, `BurnolCoPoissonBerezin.lean`): the literal co-Poisson sum, the
+closed source space, its orthogonal projection, the quotient kernel and its reproducing identity.
+**That layer is currently vacuous**, and the audit recording this is
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonInhabitedAudit.lean
+
+burnolCoPoissonSourceSpace_eq_bot_of_isEmpty
+  : with no inhabited co-Poisson source the closed source space is bottom,
+burnolCoPoissonQuotientSpace_eq_of_isEmpty
+  : and the quotient space is the whole extended Sonine space,
+burnolExtendedSoninEvaluationVector_ne_zero_of_coPoissonSource
+  : conversely one inhabited source with nonvanishing evaluation is exactly the missing witness.
+```
+
+The generator set is indexed by the structure `BurnolCoPoissonSource b`, whose Sonine membership is
+carried as *data*; no term of that structure is constructed anywhere in the tree.  So every
+statement about the source projection, the quotient kernel and the Berezin reader is consistent with
+the source space being `⊥`, and must not be read as content until an inhabitant exists.
+
+The constancy half of the landing statement is now proved unconditionally, in
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonHeadConstant.lean
+
+burnolCoPoissonRightSum_term_eq_zero
+  : a seed supported above b makes every term of the co-Poisson sum vanish for |t| < b,
+burnolCoPoissonRightSum_eq_const
+  : hence the co-Poisson value on the aperture head is its correction term, a constant,
+soninHeadConstant_burnolCoPoissonRightSum
+  : SoninHeadConstant b (co-Poisson sum of any seed supported in Icc b b^(-1)).
+```
+
+The mechanism is exactly Burnol's and is elementary: for `|t| < b` and `n >= 1` the argument `|t|/n`
+is again below `b`, so the sum is *empty* on the aperture head and only the correction term
+survives.  No analytic hypothesis beyond the support condition is used.
+
+What an inhabitant of `BurnolCoPoissonSource b` still needs is therefore only: square-integrability
+of the co-Poisson sum, and the cosine-side condition, for which Burnol's intertwining
+`F(E phi) = E(F phi)` is the intended route.  Note the symmetrization shortcut does not bypass this:
+`E phi + F(E phi) = E phi + E(F phi)`, and the second summand is head-constant only when `F phi` is
+again supported above the aperture.
+
+Still outside the formal tree: an inhabitant of `BurnolCoPoissonSource` --- equivalently the single
+symmetrized witness --- and the transfer of the two-sided law to the co-Poisson quotient vectors
+`y_{rho,N}` of the parent boundary-transgression theorem.
 
 ## Gates
 
@@ -504,5 +619,11 @@ the parent boundary-transgression theorem.
 - [x] Lean: the Riesz evaluation vector `k_{w,a}` and the boxed form of `(3)`
 - [x] Lean: cross-aperture dilation characters and the geometric lower bound `(11)`
 - [x] Lean: two-sided aperture-type law `(12)` and the exponent limit `(13)`
-- [ ] Lean: orthogonal-complement identification `(10)`: nonvanishing at a zeta zero, and transfer to the co-Poisson quotient vectors
+- [x] Lean: aperture monotonicity, reducing `(10)` to a single Sonine witness
+- [x] Lean: eigen-reduction, halving the witness conditions
+- [x] Lean: the eigen-condition is free (symmetrization), leaving one condition
+- [x] Lean: inhabitation audit of the co-Poisson source layer (currently vacuous)
+- [x] Lean: constant aperture head of the co-Poisson sum (first Sonine condition, unconditional)
+- [ ] Lean: an inhabitant of `BurnolCoPoissonSource`, i.e. one even `u` with `u + F u` constant on an aperture head and nonvanishing evaluation
+- [ ] Lean: transfer of `(12)`,`(13)` to the co-Poisson quotient vectors `y_{rho,N}`
 

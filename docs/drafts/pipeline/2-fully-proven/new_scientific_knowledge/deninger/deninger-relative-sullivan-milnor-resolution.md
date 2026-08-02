@@ -416,6 +416,109 @@ injectivity on the new-generator ideal, and that is what attaching further stage
   conditions the successor construction requires.  Step 2 can therefore be applied to the first
   layer of the card's own case, not only in the abstract.
 
+### The second layer, built
+
+Step 2 is now carried out concretely on the card's own object.  Axiom audit for all 10
+declarations: `propext, Classical.choice, Quot.sound`.
+
+- `deningerExteriorInl_eq_sullivanInclusion`, `deningerExteriorInl_exteriorTwo` — the abstract and
+  the concrete inclusion of the old algebra agree, and the inclusion preserves the degree-two part.
+- `deningerSullivanSecondPhi`, `_mem`, `_commute`, `_involute` — the second stage's generator
+  assignment and the verification that its values are degree two, hence central and involution
+  invariant.
+- `deningerSullivanSecondLayerDifferential` — **the differential of the second relative Sullivan
+  layer**, on `Λ((V ⊕ ⋀²V) ⊕ Syz)`.
+- `deningerSullivanSecondLayerDifferential_inl` — **the second layer extends the first**: on the
+  image of the first layer the new differential is the old one.
+- `deningerSullivanSecondLayerDifferential_new` — **every syzygy class becomes a coboundary at the
+  second stage**.  This is the effect step 2 exists to produce, achieved on the card's own first
+  layer rather than in the abstract.
+- `deningerSullivanSecondLayerDifferential_comp_self` — `d² = 0` again, so the second stage is once
+  more a differential graded algebra and the construction can be iterated.
+
+### The stage-to-stage engine
+
+Step 2 is now available as a general, self-reproducing construction rather than a one-off.  Axiom
+audit for all 10 declarations: `propext, Classical.choice, Quot.sound`.
+
+The invariant carried from stage to stage is that the generator values lie in the degree-two part.
+`deningerStagePhi_central` and `deningerStagePhi_involute` derive centrality and involution
+invariance from it, so a stage is described by that single condition.
+
+- `deningerStageDegreeTwoCocycles` — **the degree-two cocycles of a stage**: the degree-two
+  elements killed by the stage's differential.  Being degree two they are automatically admissible
+  attaching data, and being cocycles they are exactly what step 2 must kill.
+- `deningerStageSuccessorPhi`, `deningerStageSuccessorPhi_mem` — the successor stage's generator
+  assignment and the proof that it **preserves the degree-two invariant**, so the construction
+  applies again to its own output.
+- `deningerStageSuccessorPhi_inl`, `deningerStageSuccessorPhi_kill` — the successor differential
+  restricts to the old one and kills its own generator values, hence squares to zero.
+- `deningerStageSuccessor_kills` — **every degree-two cocycle of a stage becomes a coboundary at its
+  successor.**
+
+The successor of a Sullivan stage is therefore again a Sullivan stage, with all of the previous
+stage's degree-two cohomology killed.  This is the induction step the ordinal recursion iterates.
+
+### The tower, iterated
+
+The stage engine is now bundled and iterated.  Axiom audit for all 13 declarations:
+`propext, Classical.choice, Quot.sound`.
+
+- `DeningerSullivanStage` — **a Sullivan stage as a single object**: a generator space with a
+  degree-two generator assignment killed by its own differential.  `d` and `d_comp_self` give its
+  differential and `d² = 0`.
+- `DeningerSullivanStage.base` — **the starting point `(1)` of the statement**: the generator space
+  with vanishing differential, i.e. `P = Λ(V)` with `d_P = 0`.
+- `DeningerSullivanStage.succ`, `succ_space`, `succ_phi`, `succ_d_inl`, `succ_kills` — the successor
+  stage, its differential extending the previous one, and the fact that every degree-two cocycle of
+  a stage becomes a coboundary at its successor.  Since `succ` lands in `DeningerSullivanStage`
+  again, the construction is closed under iteration.
+- `DeningerSullivanStage.iterate`, `iterate_zero`, `iterate_succ`, `iterate_kills` — **the tower**:
+  the successor construction iterated along the natural numbers, with every degree-two cocycle
+  appearing at a stage dying at the next.
+
+Starting from `base`, the first successor attaches generators for every degree-two cocycle of
+`(Λ(V), 0)` — that is, for all of `⋀²V` — so the first layer built earlier is the first step of
+this tower, and the tower continues from it.
+
+### Acyclicity from stagewise killing
+
+- `DeningerSullivanTower.cocycle_isCoboundary_of_stagewise` — **if every cocycle present at a stage
+  dies at a later stage, the tower is acyclic**: every cocycle is a coboundary.  This is the
+  limit-stage argument that makes the successor attachments add up, and it is what converts the
+  stagewise killing theorem into the conclusion of clause 3.
+- `_of_stagewise_mem` — the same on a distinguished submodule of classes, which is the form that
+  applies here: a stage of degree-one generators kills exactly the degree-two classes.
+
+### A structural limit of the degree-one model
+
+The exterior algebra is the free graded-commutative algebra on generators **of degree one**.  A
+degree-one generator has a degree-two differential, so a stage of this kind can kill degree-two
+classes and no others.  The tower built here therefore resolves the degree-two cohomology
+completely, which is what the card's step 1 requires and what case `(4)` is about, but killing a
+class in degree `n + 1` needs a new generator of degree `n`, i.e. a free graded-commutative algebra
+on generators of mixed degree rather than an exterior algebra.  That object is now built (below), so what remains is
+to redo the tower construction over it instead of over the exterior algebra.
+
+### Free graded-commutative algebras on mixed degrees
+
+The infrastructure identified above as the next requirement is built in
+`formal/GaloisForLFunctions/HTGeometry/FreeGradedCommutativeAlgebra.lean`.  Axiom audit for all 11
+declarations: `propext, Quot.sound` for the algebra and its relations, with `Classical.choice`
+entering only through the universal property.
+
+- `DeningerGCARel`, `DeningerFreeGCA` — **the free graded-commutative algebra on generators of
+  assigned degrees**, as the free associative algebra modulo the Koszul relations: generators
+  commute up to the sign `(-1)^{|x||y|}`, and odd generators square to zero.
+- `deningerGCAι`, `deningerGCA_comm`, `deningerGCA_sq_zero` — the generators and their defining
+  relations.
+- `deningerGCALift`, `deningerGCALift_ι`, `deningerGCA_hom_ext` — **the universal property**: a
+  family of elements satisfying the Koszul relations extends uniquely to an algebra map.
+- `deningerGCA_anticomm_degreeOne` — for generators of degree one the relations are exactly the
+  exterior ones, so the exterior-algebra model used above is the degree-one case of this algebra.
+- `deningerGCA_comm_of_even` — generators of even degree commute with everything, which is the
+  reason a degree-`n` generator with `n` even can be attached to kill a class in degree `n + 1`.
+
 ### What is still missing, and why
 
 The theorem's proof is a factorization in the model category of nonnegatively graded commutative
@@ -424,11 +527,10 @@ DGAs.  mathlib has no model category structures and no small-object argument, so
 - clause 4's *functoriality* is proved for the construction's dependence on its generator data
   (`deningerOddDerivation_natural`); what cannot be stated is functoriality of the *factorization*,
   which is a statement about a model category.
-- the ordinal recursion itself cannot be run: the successor step (step 2) and the limit step
-  (step 3) are both proved as standalone constructions, but assembling them into an
-  ordinal-indexed tower and terminating it by the small-object argument (step 4) needs
-  transfinite recursion in the category of relative Sullivan algebras, which is what mathlib's
-  missing model-category layer would supply.  `DeningerRelativeSullivan`
+- the recursion is carried out along the natural numbers (`DeningerSullivanStage.iterate`); what
+  is not done is passing through limit ordinals and terminating.  The limit step is proved
+  separately (step 3), but assembling an ordinal-indexed colimit of stages and running the
+  small-object argument to termination needs the model-category layer mathlib lacks.  `DeningerRelativeSullivan`
   records what such a tower would have to satisfy, the first layer is built and is now an honest
   differential graded algebra; what is absent is the ordinal-indexed factorization itself.
 - consequently clause 3's quasi-isomorphism, though now statable, is not yet *proved*: the first
@@ -494,3 +596,19 @@ the limit-stage comparison of step 3.
 - 2026-08-02 — Constructed and verified the second stage's attaching data: the syzygy space of the
   first layer, proved central, involution-invariant and cocyclic, so the successor construction
   applies to the card's own first layer.
+- 2026-08-02 — Built the second relative Sullivan layer on the card's own first layer: its
+  differential extends the first, kills every syzygy class, and squares to zero.  Step 2 is now
+  performed, not merely available.
+- 2026-08-02 — Generalized step 2 into a self-reproducing engine: the successor of a Sullivan stage
+  is again a Sullivan stage, killing all of the previous stage's degree-two cohomology.  The
+  induction step of the ordinal recursion is now proved in general.
+- 2026-08-02 — Bundled a Sullivan stage as an object, exhibited the statement's `P = Λ(V)` with
+  `d_P = 0` as the base stage, and iterated the successor construction along the natural numbers,
+  with every degree-two cocycle of a stage dying at the next.
+- 2026-08-02 — Proved acyclicity from stagewise killing, which converts the tower's induction into
+  the conclusion of clause 3 in the degrees the model can reach.  Recorded the structural limit:
+  degree-one generators kill degree-two classes only, so the general statement needs free
+  graded-commutative algebras on generators of mixed degree.
+- 2026-08-02 — Built the free graded-commutative algebra on generators of mixed degree with its
+  universal property, recovering the exterior algebra as the degree-one case.  This is the object
+  the general statement needs; redoing the tower over it is the remaining work.

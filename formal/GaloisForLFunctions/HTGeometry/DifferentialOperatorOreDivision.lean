@@ -110,6 +110,70 @@ theorem exists_right_div {b : DiffOp K} (hb : b ≠ 0) (a : DiffOp K) :
             abel
   exact key (degree a) a le_rfl
 
+
+/-- Leading-term cancellation on the other side: a single monomial multiple of `b`, taken on the
+right, matches the top coefficient of `a`. -/
+theorem exists_leading_cancel_left {a b : DiffOp K} (ha : a ≠ 0) (hb : b ≠ 0)
+    (hab : degree b ≤ degree a) :
+    ∃ c : DiffOp K, degree (a - b * c) ≤ degree a ∧ coeff (a - b * c) (degree a) = 0 := by
+  have hla : leadCoeff a ≠ 0 := leadCoeff_ne_zero ha
+  have hlb : leadCoeff b ≠ 0 := leadCoeff_ne_zero hb
+  have hquot : (leadCoeff b)⁻¹ * leadCoeff a ≠ 0 :=
+    mul_ne_zero (inv_ne_zero hlb) hla
+  refine ⟨mono (degree a - degree b) ((leadCoeff b)⁻¹ * leadCoeff a), ?_, ?_⟩
+  · refine le_trans (degree_sub_le a (b * mono (degree a - degree b)
+      ((leadCoeff b)⁻¹ * leadCoeff a))) (max_le le_rfl (le_of_eq ?_))
+    rw [degree_mul hb (mono_ne_zero hquot), degree_mono hquot]
+    omega
+  · have hdeg : degree (b * mono (degree a - degree b) ((leadCoeff b)⁻¹ * leadCoeff a))
+        = degree a := by
+      rw [degree_mul hb (mono_ne_zero (n := degree a - degree b) hquot), degree_mono hquot]
+      omega
+    have htop : coeff (b * mono (degree a - degree b) ((leadCoeff b)⁻¹ * leadCoeff a))
+        (degree a) = leadCoeff a := by
+      have h := leadCoeff_mul hb (mono_ne_zero (n := degree a - degree b) hquot)
+      rw [leadCoeff, hdeg] at h
+      rw [h, leadCoeff_mono hquot, ← mul_assoc, mul_inv_cancel₀ hlb, one_mul]
+    rw [coeff_sub, htop, leadCoeff, sub_self]
+
+/-- Left division with remainder. -/
+theorem exists_left_div {b : DiffOp K} (hb : b ≠ 0) (a : DiffOp K) :
+    ∃ q r : DiffOp K, a = b * q + r ∧ (r = 0 ∨ degree r < degree b) := by
+  have key : ∀ n : ℕ, ∀ a : DiffOp K, degree a ≤ n →
+      ∃ q r : DiffOp K, a = b * q + r ∧ (r = 0 ∨ degree r < degree b) := by
+    intro n
+    induction n with
+    | zero =>
+      intro a ha
+      by_cases hlt : degree a < degree b
+      · exact ⟨0, a, by rw [mul_zero', zero_add], Or.inr hlt⟩
+      · by_cases ha0 : a = 0
+        · exact ⟨0, 0, by rw [ha0, mul_zero', zero_add], Or.inl rfl⟩
+        · obtain ⟨c, hcle, hczero⟩ :=
+            exists_leading_cancel_left ha0 hb (Nat.le_of_not_lt hlt)
+          have hzero : a - b * c = 0 := by
+            refine eq_zero_of_degree_le_zero (le_trans hcle ha) ?_
+            have hdz : degree a = 0 := Nat.le_zero.mp ha
+            rwa [hdz] at hczero
+          exact ⟨c, 0, by rw [add_zero, ← sub_eq_zero]; exact hzero, Or.inl rfl⟩
+    | succ n ih =>
+      intro a ha
+      by_cases hlt : degree a < degree b
+      · exact ⟨0, a, by rw [mul_zero', zero_add], Or.inr hlt⟩
+      · by_cases ha0 : a = 0
+        · exact ⟨0, 0, by rw [ha0, mul_zero', zero_add], Or.inl rfl⟩
+        · obtain ⟨c, hcle, hczero⟩ :=
+            exists_leading_cancel_left ha0 hb (Nat.le_of_not_lt hlt)
+          by_cases hz : a - b * c = 0
+          · exact ⟨c, 0, by rw [add_zero, ← sub_eq_zero]; exact hz, Or.inl rfl⟩
+          · have hdlt : degree (a - b * c) < degree a :=
+              degree_lt_of_coeff_eq_zero hcle hczero hz
+            obtain ⟨q, r, hqr, hr⟩ := ih (a - b * c) (by omega)
+            refine ⟨c + q, r, ?_, hr⟩
+            rw [mul_add', add_assoc, ← hqr]
+            abel
+  exact key (degree a) a le_rfl
+
 end
 
 end DiffOp

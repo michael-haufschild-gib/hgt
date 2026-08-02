@@ -31,6 +31,7 @@
 \newcommand{\cG}{\mathcal G}
 \newcommand{\cH}{\mathcal H}
 \newcommand{\cI}{\mathcal I}
+\newcommand{\cK}{\mathcal K}
 \newcommand{\cQ}{\mathcal Q}
 \newcommand{\cW}{\mathcal W}
 \newcommand{\Rea}{\operatorname{Re}}
@@ -93,13 +94,17 @@ displacement.
 
 The last clause is also the decisive no-go: raw completed-norm recovery is
 true both on and off the critical line and therefore cannot exclude a
-zero.  What remains is one joint theorem, not another source, positivity
-form, scalar equivalence, or regular completion.  The physical
-coefficient/jet grade and the Hodge/incidence grade must admit a common
-source-pointed closed graph transport for which the lifted Green identity
-is conservative on the antidiagonal defect sector.  Equivalently, the two
-factor defects must land faithfully in disjoint closed grades before their
-sum is taken.  Such a theorem would force
+zero.  More sharply, the canonical primary pure-Hodge lift is not
+admission-reflecting: away from the critical displacement it admits the
+lift of a global secondary Gamma witness which the global sector itself
+excludes.  What remains is one joint theorem, not another source,
+positivity form, scalar equivalence, or regular completion.  The physical
+coefficient/jet grade and the global secondary Hodge/incidence grade must
+admit a common source-pointed closed derived graph transport which reflects
+admission and for which the lifted Green identity is conservative on the
+antidiagonal defect sector.  Equivalently, the two factor defects must
+land faithfully in disjoint closed grades before their sum is taken.  Such
+a theorem would force
 \(2(\Rea\rho-\tfrac12)=0\) at every divisor point.  We do not assert this
 remaining graph-domain theorem or the Riemann hypothesis.
 \end{abstract}
@@ -253,14 +258,15 @@ Crucially, this holds for every real displacement.  Raw Hilbert
 completion therefore solves transport but cannot solve zero exclusion.
 
 The unresolved object is the \emph{joint} lift of
-\eqref{eq:green-antidiagonal}: a source-pointed closed graph transport
+\eqref{eq:green-antidiagonal}: a source-pointed closed derived graph transport
 which simultaneously retains physical coefficient/jet provenance and
-Hodge/incidence provenance, carries the lifted Green identity, and lands
-the two internal factor defects in disjoint closed grades before
-codiagonal.  Theorem~\ref{thm:resolved-conservation} would then force
-\eqref{eq:resolved-rh}.  The rest of this paper constructs the two
-marginals, proves their exact boundary laws, and shows why all regular or
-scalar alternatives fail this conservativity test.
+global secondary Hodge/incidence provenance, reflects admission, carries
+the lifted Green identity, and lands the two internal factor defects in
+disjoint closed grades before codiagonal.  Theorem~
+\ref{thm:resolved-conservation} would then force \eqref{eq:resolved-rh}.
+The rest of this paper constructs the two marginals, proves their exact
+boundary laws, and shows why the available primary, regular, and scalar
+alternatives fail this conservativity test.
 
 \section{The arithmetic occupation source}
 \label{sec:occupation}
@@ -687,6 +693,50 @@ closed secondary Gamma/Hodge graph norm together with its relative
 admission quotient; that is where antidiagonal factor provenance must be
 retained.
 
+\subsection{The resolved source boundary and primary-admission loss}
+
+The same augmentation kernel already occurs before completion.  If
+\(B:Q\times P\to S\) is the ordered Calder\'on--Witt cross-effect, retain
+the alternating cup before addition as
+\[
+ \widetilde\smile(x,y)
+   =\bigl(B(x_Q,y_P),-B(y_Q,x_P)\bigr)\in S\oplus S.
+\tag{4.21}\label{eq:resolved-cup}
+\]
+Its codiagonal is the ordinary cup.  For a self-cup,
+\[
+       \widetilde\smile(x,x)=\bigl(w_x,-w_x\bigr),
+       \qquad x\smile x=0.
+\tag{4.22}\label{eq:resolved-self-cup}
+\]
+At every arithmetic prime, the canonical algebraic rational-Witt unit has
+\(w_x\ne0\).  Its one-prime inclusion therefore gives a nonzero all-prime
+resolved boundary which every post-cup observation kills.  The two
+ordered source axes are disjoint before this codiagonal.  Thus the
+antidiagonal in \eqref{eq:green-antidiagonal} is not created at the
+divisor; it already has a nonzero arithmetic source ancestor.
+
+The canonical rank-one secondary lift nevertheless fails to preserve the
+relevant admission class.  Let \(w_{p,q}\) be the global cross-prime Gamma
+witness and \(L_a w_{p,q}\) its depth-zero odd pure-Hodge cell lift.  Then
+every value of \(L_a\) belongs to every primary pure-Hodge admission
+sector.  In contrast,
+\[
+ \left[
+ w_{p,q}\notin\cH^{\mathrm{global}}_a
+ \ \text{and}\
+ L_aw_{p,q}\in\cH^{\mathrm{primary}}_a
+ \right]
+ \quad\Longleftrightarrow\quad a\ne0.
+\tag{4.23}\label{eq:admission-loss}
+\]
+Hence the available primary lift is admission-reflecting exactly where no
+off-line displacement is present.  This is an exact information-loss
+theorem, not a missing estimate: adding primary pure-Hodge cells cannot by
+itself repair the global secondary defect.  A successful completed
+comparison must reflect the global secondary admission class while
+retaining the two ordered source axes.
+
 \section{The Hellinger--Hodge reflection law}
 \label{sec:main-law}
 
@@ -922,56 +972,73 @@ Consequently weight-one conservation is equivalent to
 \section{One law, many shadows}
 \label{sec:shadows}
 
-The point of Theorem~\ref{thm:main} is not to rename several
-equivalences.  It gives one mechanism---loss of a Hellinger-coupled
-orientation under a nonzero modular gap---whose representations occur in
-different parts of the source.
+Theorem~\ref{thm:resolved-conservation} supplies the common grammar of the
+corpus.  Each positive theorem constructs a resolution on which a
+previously cancelled relation becomes visible.  Each no-go identifies an
+augmentation, closure, or observation whose kernel still contains that
+resolved relation.  The Hellinger--Hodge law then identifies the decisive
+arithmetic relation as signed modular displacement.
 
 \begin{center}
 \small
-\begin{tabular}{>{\raggedright\arraybackslash}p{0.22\linewidth}
-                >{\raggedright\arraybackslash}p{0.33\linewidth}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.20\linewidth}
+                >{\raggedright\arraybackslash}p{0.35\linewidth}
                 >{\raggedright\arraybackslash}p{0.35\linewidth}}
 \toprule
-Setting & Positive theorem & Same boundary obstruction\\
+Resolved object & Positive theorem & Nonconservative descent\\
 \midrule
-Euler activation
- & squarefree Bernoulli occupancy plus geometric valuation fibre
- & Fisher whitening diverges at rare occupation\\
-Common-test source
- & two positive channels sum to the Hardy kernel; score energy is four
- & reflected odd tail is not in positive energy for \(\delta\ne0\)\\
+Green factorization
+ & conjugate-Riesz and odd-Hodge defects are individually explicit
+ & ordinary Green covariance adds exact antidiagonal partners\\
+Euler valuation
+ & occupancy and conditional valuation depth are separate source grades
+ & Fisher whitening forgets rare-event mass and becomes unbounded\\
+M\"obius--theta jets
+ & internal promotion gives a full-rank local multiplicity matrix
+ & zeroth landing is an exact Xi multiple; scalar landing forgets source order\\
+Hellinger--Gamma coface
+ & every finite grade is injective and completed Xi recovery is exact
+ & raw convergence holds for every displacement and hence selects none\\
+Calder\'on--Witt--Sullivan
+ & resolved cup and the next Sullivan layer retain antidiagonal boundary and killed incidence
+ & ordinary cup kills self-boundary; primary lift loses secondary admission\\
+Hypertranscendent packets
+ & deep operator rows and structural translates are faithful at resolved depth
+ & finite differential closure and shallow jets miss the deep packet\\
 Quantum recurrence
- & KMS half-density is the Hellinger cross-channel
- & nonzero gap exposes one face, purity tends to one, coherence to zero\\
-Gamma/co-Poisson
- & Hodge conjugate of the unit source is an exact Beta/Gamma column
- & reflected sewing is reciprocal and one side is beyond every Rees order\\
-Calder\'on--Witt
- & cup is vector-valued, onto, and has an exact Green incidence complex
- & scalarization before cup destroys nondegeneracy\\
-Hedenmalm-type forms
- & a nonzero tempered divisor distribution survives
- & ordinary \(L^2\) radical can be dense, proper, and nonclosed\\
-Wold--Poisson, Sonin--Calkin, Ward
- & each is a valid regular consumer on its natural domain
- & collective regularity is equivalent to the same weight-one law\\
-Hypertranscendental sectors
- & prime/depth and shifted-jet sources remain independent
- & no finite differential-algebraic sector explains the common divisor\\
-Cofinal depth source
- & doubled reflected carrier is Hodge-fixed and uniformly bounded
- & scalar readout gain grows at least linearly\\
+ & projective relations are detected at their resolved replica height
+ & every lower-height observation is identically blind to them\\
+Gamma/co-Poisson Rees sectors
+ & factorial damping supplies finite raw carriers
+ & one off-line reflected side is flat beyond every finite Rees order\\
+Hedenmalm completion
+ & finite coordinates and a nonzero divisor distribution survive
+ & closure is dense-radical or maximally vertical and carries no output constraint\\
+Wold--Sonin--Calkin--Ward
+ & exact ancestry, quotient, compactness, and four-unit positivity laws hold
+ & all are downstream consumers of already augmented source data\\
 \bottomrule
 \end{tabular}
 \end{center}
 
-The table separates sources from consumers.  Wold ancestry, dense
-radicals, Calkin compactness, Sonin projection, and four-unit Ward
-positivity are not competing explanations of zero location.  They are
-different consumers of one polarized source.  Each loses orientation
-precisely when it asks a scalar or regular topology to carry a nonzero
-modular gap.
+The table explains why adding more exact sources or more positive
+consumers has not moved zero exclusion.  The two missing features never
+occur in one established arrow: source coefficient provenance is retained
+by the physical jet construction, while Hodge factor provenance is
+retained by the incidence coface.  Each marginal is faithful.  Their
+known common endpoint is obtained only after the Green codiagonal, where
+Theorem~\ref{thm:resolved-conservation} proves the decisive kernel is
+unavoidable.
+
+The Sullivan resolution makes the law recursive.  Reifying a killed
+degree-two ideal as new degree-one generators removes the first
+augmentation kernel, but produces a central, involution-invariant cocycle
+syzygy.  The successor stage adjoins that syzygy and makes it a
+coboundary; the same degree-two construction iterates.  Thus
+``resolution before descent'' is not necessarily one extra coordinate.
+The natural universal object is a derived resolution continued until the
+chosen observation is conservative.  Equation \eqref{eq:admission-loss}
+is the analytic warning against stopping at the first primary lift.
 
 The law also explains why a closed product-topology relation cannot repair
 the problem.  If every leading finite output block is surjective, its
@@ -1006,17 +1073,25 @@ existence questions:
       vanishing is exactly RH.
 \end{enumerate}
 
+The source multiplication itself has now been resolved as well: a
+canonical arithmetic self-cup carries a nonzero antidiagonal boundary
+before ordinary alternation kills it.  Equation \eqref{eq:admission-loss}
+then proves that the available primary pure-Hodge lift cannot be the
+missing comparison, because it forgets the global secondary admission
+class exactly away from zero displacement.
+
 These facts rule out a one-object formulation of the remaining problem.
 There is a source, a divisor-faithful jet family, an incidence completion,
 a singularly gauged two-channel transport, and a Green comparison.  What
 is absent is one theorem asserting that these structures form a
-\emph{common conservative chain} in the RH-bearing topology.
+\emph{common conservative derived chain} in the RH-bearing topology.
 
-To state it, let \(D_J(a)=(\Theta J-J\Theta)C_Ra\) and
+To state its terminal property, let \(D_J(a)=(\Theta J-J\Theta)C_Ra\) and
 \(D_R(a)=J(\Theta C_R-C_R\Theta_c)a\).  Their ordinary sum is zero by
 \eqref{eq:green-antidiagonal}.  A resolved graph descent consists of a
 source-pointed domain \(\cE\), a Hausdorff closed graph carrier \(\cK\),
-closed subspaces \(P,Q\subset\cK\), and factor-provenance maps
+closed subspaces \(P,Q\subset\cK\), where \(\cK\) may be the terminal
+carrier of a completed derived graph resolution, and factor-provenance maps
 \[
  L_J:\im D_J\longrightarrow P,
  \qquad
@@ -1032,7 +1107,7 @@ Hellinger--Gamma incidence coface extend to one source-pointed closed
 graph domain on which:
 \begin{enumerate}[label=\textup{(\roman*)},leftmargin=1.8em]
 \item \(L_J\) and \(L_R\) are faithful on the two Green factor-defect
-      ranges;
+      ranges and reflect global secondary Gamma/Hodge admission;
 \item the lifted Green identity
       \(L_JD_J(a)+L_RD_R(a)=0\) holds for every source vector; and
 \item \(P\cap Q=\{0\}\).
@@ -1068,12 +1143,17 @@ The reflection law proves that this domain condition is equivalent to
 \(\delta_\rho=0\).  The unresolved implication is from the physical
 source identity to \eqref{eq:landing-estimate} in the \emph{resolved}
 graph carrier, without first using a scalar Xi trace or the ordinary
-codiagonal.
+codiagonal, and with the global secondary admission class reflected back
+from the completed target.  Equation \eqref{eq:admission-loss} proves that
+primary admission alone is insufficient.
 
 This formulation also locates every established obstruction:
 \begin{enumerate}[leftmargin=2.2em]
 \item raw completed-norm recovery cannot, because
       \eqref{eq:completed-coface-recovery} holds for every displacement;
+\item the canonical primary pure-Hodge lift cannot, because it is
+      non-admission-reflecting for every nonzero displacement by
+      \eqref{eq:admission-loss};
 \item a scalar Green, trace, or Ward codiagonal cannot, because
       Theorem~\ref{thm:resolved-conservation} annihilates the complete
       antidiagonal defect sector;
@@ -1102,27 +1182,41 @@ the common resolved graph boundary before those consumers diverge.
 \subsection{Why this is more than an RH equivalence}
 
 The equivalence in Corollary~\ref{cor:global} is not the source of the
-paper's content.  The new object is the chain
+paper's content.  The decisive theorem is that the arithmetic Green
+factorization already has perfect composite covariance while its resolved
+defect is exactly the critical-line obstruction.  This identifies a
+specific information loss inside an unconditional construction.  The
+source chain
 \[
 \begin{gathered}
-\text{Euler valuation probability}\\
+\text{M\"obius--theta coefficient and local jet source}\\
 \longrightarrow
-\text{Fisher-dual Hellinger/KMS polarization}\\
+\text{Euler/Hellinger--Gamma grade resolution}\\
 \longrightarrow
-\text{Beta/Gamma common-test transform}\\
+\text{Calder\'on--Witt incidence completion}\\
 \longrightarrow
-\text{Calder\'on--Witt Green transport}\\
-\longrightarrow
-\text{Gamma/co-Poisson reflection defect}.
+\text{resolved Green factor defect}\\
+\xrightarrow{\ \Sigma\ }
+\text{ordinary completed Xi Green covariance}
 \end{gathered}
 \tag{9.1}\label{eq:object-chain}
 \]
-Every arrow is explicit and unconditional.  The global equivalence says
-exactly which domain property of this object would exclude zeros.
+is explicit up to one derived comparison: a common closed graph lift of the physical
+and Hodge grades before \(\Sigma\).  The global equivalence identifies
+exactly what conservativity of that arrow would prove.
 
 \subsection{Why the law is universal}
 
-Only four structural ingredients enter the reflection classification:
+The resolved-defect law is independent of zeta functions, probability,
+and Hilbert space.  It applies whenever a symmetry is transported through
+a factorization and internal defects may cancel.  Its universal content
+is the exact sequence \eqref{eq:defect-exact-sequence}: descent sees an
+augmentation, while the missing information is a syzygy among local
+defects.  Positive constructions resolve that syzygy before observation;
+no-go theorems prove that a proposed completion is nonconservative on it.
+
+The Hellinger--Hodge realization adds four canonical arithmetic
+ingredients:
 \begin{enumerate}[leftmargin=2.2em]
 \item complementary positive occupations;
 \item the odd Hodge exchange forced by their likelihood ratio;
@@ -1134,7 +1228,9 @@ the two orientations remain Hellinger-coupled and the reflection defect
 can descend.  At nonzero gap, one orientation is tropically exposed, the
 other becomes radical, and positive reflection-odd energy is infinite.
 Regular scalar completion either discards this distinction or becomes
-uninformative.
+uninformative.  Factorial Gamma completion proves that a raw resolved
+carrier exists for both signs; its failure to select a sign is exactly why
+the graph/admission grade, rather than another norm completion, is needed.
 
 Arithmetic enters by supplying all four ingredients canonically and by
 identifying the gap with
@@ -1144,42 +1240,54 @@ Wold--Calkin--Ward regularity, and zero location.
 
 \subsection{What the full proof would now mean}
 
-A full proof of RH in this framework would not be a new positivity
-identity.  It would prove that the completed Xi source trace forces its
-explicit reflection defect into the natural Hellinger--Hodge graph domain
-already determined by the Euler source.  Theorem~\ref{thm:main} would
-then turn domain membership into reflection equipartition and zero
+A full proof of RH in this framework would prove
+\eqref{eq:landing-theorem}: the source-built Xi jet chain and the
+completed pure-Hodge coface are two restrictions of one conservative
+closed derived graph transport.  The lifted Green identity would then hold before
+codiagonal, and disjoint graph grades would prevent the exact cancellation
+in \eqref{eq:green-antidiagonal}.  Theorem~\ref{thm:resolved-conservation}
+would force the factor defects to vanish; Theorem~\ref{thm:main} would
+identify the same conclusion as reflection equipartition and zero
 exclusion.
 
 Conversely, any proposed proof which never constructs or estimates the
-reflection-odd Green current before scalarization cannot address
-\eqref{eq:landing-theorem}.  It may reconstruct the divisor, count
-off-line pairs, or prove a positive scalar identity, but it does not
-control the orientation domain which distinguishes the two sides of the
-critical line.
+factor provenance before scalarization cannot address
+\eqref{eq:landing-theorem}.  It may reconstruct every divisor jet, recover
+the completed Green vector, count off-line pairs, or prove a positive
+scalar identity, but these are all compatible with a nonzero
+antidiagonal resolved defect.
 
 \section{Conclusion}
 
-The arithmetic source already contains its completion geometry.
-Diagonal activation disintegrates into squarefree occupancy and geometric
-valuation depth.  The complementary boundary occupations force a
-reciprocal-Fisher Hodge scale.  Their Hodge cross-channel is exactly the
-Hellinger/KMS half-density, and its Laplace transform is an exact
-Beta/Gamma quotient.
+Factored transport obeys a conservation law: the defect of a composite is
+the augmentation of its transported factor defects.  The augmentation
+kills precisely the antidiagonal sector.  Resolution before descent is
+therefore necessary and, under faithful disjoint grades, sufficient to
+recover factor covariance.
 
-This polarization lifts through the vector-valued
-Calder\'on--Witt incidence complex and its Green retraction to the actual
-Gamma/co-Poisson boundary.  Reflection then obeys one universal law:
-Green descent, two-face Gibbs equipartition, finite positive boundary
-energy, and zero modular displacement are equivalent.
+The arithmetic Green factorization realizes the extremal case.  Its two
+factor defects are exact antidiagonal partners proportional to
+\(2(\Rea\rho-\tfrac12)\).  Their sum vanishes unconditionally, while their
+resolved pair vanishes exactly on the critical line.  This single fact
+explains why divisor reconstruction, Green covariance, regular Hilbert
+completion, scalar positivity, and downstream spectral consumers can all
+be exact without proving RH.
 
-At the Riemann divisor the displacement is
-\(2(\Rea\rho-\tfrac12)\).  Global descent is therefore RH.  The paper does
-not claim that descent.  It identifies its exact analytic content:
-annihilation of exact incidence by the divisor-indexed reflection defect,
-equivalently finite-energy landing of every nondegenerate labelled profile
-in the source-forced Hellinger--Hodge domain.  This is the sole remaining
-step after source, Gamma completion, polarized transport, and boundary
-comparison have been constructed.
+The corpus now supplies both marginals needed to attack the loss.  A
+target-free M\"obius--theta source retains every Xi multiplicity jet.  An
+actual incidence completion and two-channel Hellinger--Gamma coface retain
+every completed Xi coefficient and recover the Green vector in raw norm.
+Raw recovery holds for every modular displacement, so it is not the
+missing theorem.  The source cup already carries a nonzero resolved
+antidiagonal boundary, but its canonical primary pure-Hodge lift is
+non-admission-reflecting exactly off the critical displacement.
+
+The frontier is one conservative source-pointed derived graph descent which joins
+these marginals before codiagonal, reflects global secondary admission,
+and keeps the two Green factor defects in disjoint closed grades.  Proving
+that joint theorem would prove RH.  It is not proved here.  What is proved
+is why this is the exact remaining obligation and why no already
+constructed primary, scalar, regular, finite-Rees, or
+differential-algebraic quotient can substitute for it.
 
 \end{document}

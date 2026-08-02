@@ -156,6 +156,32 @@ theorem cohomology_computed_at_stages :
         ∃ b', b ≤ b' ∧ y ∈ T.stage b' ∧ T.d y = x) :=
   ⟨fun _ hx => T.cocycle_exists_stage hx, fun b _ _ hxy => T.coboundary_exists_stage_ge b hxy⟩
 
+/-- **Acyclicity from stagewise killing.**  If every cocycle present at a stage of the tower
+becomes a coboundary at a later stage, then the tower is acyclic: every cocycle is a coboundary.
+This is the limit-stage argument of a Sullivan tower, and it is what makes the successor
+attachments add up to a quasi-isomorphism. -/
+theorem cocycle_isCoboundary_of_stagewise
+    (hstage : ∀ (b : B) (x : ExteriorAlgebra k U), x ∈ T.stage b → T.d x = 0 →
+      ∃ b', b ≤ b' ∧ ∃ y ∈ T.stage b', T.d y = x)
+    {x : ExteriorAlgebra k U} (hx : T.d x = 0) :
+    ∃ y, T.d y = x := by
+  obtain ⟨b, hb⟩ := T.exists_stage x
+  obtain ⟨_, _, y, _, hy⟩ := hstage b x hb hx
+  exact ⟨y, hy⟩
+
+/-- **Acyclicity on a class of elements.**  If every cocycle of a distinguished submodule that is
+present at a stage dies at a later stage, then every such cocycle is a coboundary.  In a Sullivan
+tower the distinguished submodule is the degree-two part, which is exactly what a stage of
+degree-one generators can kill. -/
+theorem cocycle_isCoboundary_of_stagewise_mem (P : Submodule k (ExteriorAlgebra k U))
+    (hstage : ∀ (b : B) (x : ExteriorAlgebra k U), x ∈ P → x ∈ T.stage b → T.d x = 0 →
+      ∃ b', b ≤ b' ∧ ∃ y ∈ T.stage b', T.d y = x)
+    {x : ExteriorAlgebra k U} (hxP : x ∈ P) (hx : T.d x = 0) :
+    ∃ y, T.d y = x := by
+  obtain ⟨b, hb⟩ := T.exists_stage x
+  obtain ⟨_, _, y, _, hy⟩ := hstage b x hxP hb hx
+  exact ⟨y, hy⟩
+
 end Directed
 
 end DeningerSullivanTower

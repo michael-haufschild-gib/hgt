@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.DifferentialOperatorOreField
 import GaloisForLFunctions.HTGeometry.DifferentialOperatorTorsionDimension
+import GaloisForLFunctions.HTGeometry.SubspaceRelativeDimension
 
 /-!
 # Lattices of differential operators inside the skew field
@@ -70,9 +71,9 @@ def pseudoVecMulLin (P : ι' → ι → DiffOp K) :
   map_smul' r v := by
     funext j
     show ∑ i, (r • v i) * toPseudoMatrix P i j = r • ∑ i, v i * toPseudoMatrix P i j
-    rw [Finset.smul_sum]
+    rw [← numeratorRingHom_mul, Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
-    rw [← numeratorRingHom_mul, ← numeratorRingHom_mul, mul_assoc]
+    rw [← numeratorRingHom_mul, ← mul_assoc]
 
 @[simp] theorem pseudoVecMulLin_apply (P : ι' → ι → DiffOp K) (v : ι' → PseudoDiffOp K) :
     pseudoVecMulLin P v = pseudoVecMul P v := rfl
@@ -108,14 +109,88 @@ theorem exists_smul_mem_rowLattice (P : ι' → ι → DiffOp K)
   obtain ⟨⟨v, hv⟩, -⟩ := hw
   obtain ⟨b, hb, hclear⟩ := exists_common_denominator v Finset.univ
   choose y hy using fun i => hclear i (Finset.mem_univ i)
-  refine ⟨b, hb, ⟨⟨y, rfl⟩, ?_⟩⟩
-  rw [← hv]
-  show pseudoVecMulLin P (integralVec ι' y) = b • pseudoVecMulLin P v
-  rw [← map_smul]
-  congr 1
-  funext i
-  rw [integralVec_apply, ← hy i, numeratorRingHom_mul]
-  rfl
+  refine ⟨b, hb, ⟨integralVec ι' y, ⟨y, rfl⟩, ?_⟩⟩
+  have hyv : integralVec ι' y = b • v := by
+    funext i
+    rw [integralVec_apply, ← hy i, numeratorRingHom_mul]
+    rfl
+  rw [hyv, map_smul, hv]
+
+
+variable [Fintype ι]
+
+/-- The saturation is finitely generated over the operator ring. -/
+theorem fg_satLattice (P : ι' → ι → DiffOp K) : (satLattice P).FG := by
+  have hle : satLattice P ≤ LinearMap.range (integralVec ι) := fun w hw => hw.2
+  have hmap : (Submodule.comap (integralVec ι) (satLattice P)).map (integralVec ι)
+      = satLattice P := Submodule.map_comap_eq_self hle
+  rw [← hmap]
+  exact (fg_submodule _).map _
+
+/-- **Commensurability of the row lattice and its saturation.** -/
+theorem finiteDimensional_satLattice_mod_rowLattice (P : ι' → ι → DiffOp K) :
+    FiniteDimensional K
+      (((satLattice P).restrictScalars K).map ((rowLattice P).restrictScalars K).mkQ) :=
+  finiteDimensional_map_mkQ_of_fg_torsion (fg_satLattice P)
+    fun _ ht => exists_smul_mem_rowLattice P ht
+
+
+/-- The row map as a map of coefficient-field spaces. -/
+def rowMapK (P : ι' → ι → DiffOp K) :
+    (ι' → PseudoDiffOp K) →ₗ[K] (ι → PseudoDiffOp K) :=
+  (pseudoVecMulLin P).restrictScalars K
+
+omit [Fintype ι] in
+@[simp] theorem rowMapK_apply (P : ι' → ι → DiffOp K) (v : ι' → PseudoDiffOp K) :
+    rowMapK P v = pseudoVecMul P v := rfl
+
+omit [Fintype ι] in
+theorem rowMapK_injective (P : ι' → ι → DiffOp K) (hP : RowIndep P) :
+    Function.Injective (rowMapK P) := pseudoVecMul_injective P hP
+
+omit [Fintype ι] in
+theorem map_restrictScalars_rowMapK (P : ι' → ι → DiffOp K)
+    (N : Submodule (DiffOp K) (ι' → PseudoDiffOp K)) :
+    (N.restrictScalars K).map (rowMapK P) = (N.map (pseudoVecMulLin P)).restrictScalars K := by
+  ext x
+  constructor
+  · rintro ⟨v, hv, rfl⟩
+    exact ⟨v, hv, rfl⟩
+  · rintro ⟨v, hv, rfl⟩
+    exact ⟨v, hv, rfl⟩
+
+omit [Fintype ι] in
+/-- **Transport of the prefix invariant through the row map.**  The intrinsic prefix invariants of
+a pair of lattices upstairs are the prefix invariants of their images. -/
+theorem relIndexSup_rowMapK (P : ι' → ι → DiffOp K) (hP : RowIndep P) {κ : Type*}
+    (cut : κ → Submodule K (ι' → PseudoDiffOp K)) (M : Submodule K (ι' → PseudoDiffOp K)) :
+    relIndexSup (fun i => (cut i).map (rowMapK P))
+        (((integralLattice ι').restrictScalars K).map (rowMapK P)) (M.map (rowMapK P))
+      = relIndexSup cut ((integralLattice ι').restrictScalars K) M :=
+  relIndexSup_map_injective (rowMapK P) (rowMapK_injective P hP) cut _ M
+
+/-- **The Cartan prefix comparison.**  Computing the prefix invariants of a moving lattice against
+the row lattice or against its saturation differs by at most twice the relative dimension of the
+two base lattices — a constant depending on neither the moving lattice nor the cuts. -/
+theorem relIndexSup_row_sat_comparison (P : ι' → ι → DiffOp K) {κ : Type*} [Nonempty κ]
+    (cut : κ → Submodule K (ι → PseudoDiffOp K)) (M : Submodule K (ι → PseudoDiffOp K))
+    (hfin₁ : ∀ i, FiniteDimensional K
+      ((M ⊓ cut i).map ((((rowLattice P).restrictScalars K) ⊓ cut i)).mkQ))
+    (hfin₂ : ∀ i, FiniteDimensional K
+      (((((satLattice P).restrictScalars K) ⊓ cut i)).map ((M ⊓ cut i)).mkQ))
+    (hbdd₁ : BddAbove (Set.range fun i =>
+      relIndex (((rowLattice P).restrictScalars K) ⊓ cut i) (M ⊓ cut i)))
+    (hbdd₂ : BddAbove (Set.range fun i =>
+      relIndex (((satLattice P).restrictScalars K) ⊓ cut i) (M ⊓ cut i))) :
+    0 ≤ relIndexSup cut ((rowLattice P).restrictScalars K) M
+          - relIndexSup cut ((satLattice P).restrictScalars K) M ∧
+      relIndexSup cut ((rowLattice P).restrictScalars K) M
+          - relIndexSup cut ((satLattice P).restrictScalars K) M
+        ≤ 2 * (quotDim ((rowLattice P).restrictScalars K)
+            ((satLattice P).restrictScalars K) : ℤ) := by
+  haveI := finiteDimensional_satLattice_mod_rowLattice P
+  exact relIndexSup_sub_bounds cut
+    (fun x hx => rowLattice_le_satLattice P hx) M hfin₁ hfin₂ hbdd₁ hbdd₂
 
 end
 

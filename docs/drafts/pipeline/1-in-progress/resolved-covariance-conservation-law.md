@@ -102,23 +102,35 @@ critical-line purity             = resolved defect vanishes (equivalent to RH).
    conservative lift between reflected finite/flat types must be singular and source-pointed.
 9. **Horizontal/transverse graph no-go.**  Transverse graph powers do not detect the horizontal
    residue grade.  Required graph topology is at least bifiltered.
+10. **Resolved Calderón--Witt source boundary.**  The canonical arithmetic self-cup is a nonzero
+    antidiagonal pair before alternation; ordinary cup kills it.  Thus the Green antidiagonal has
+    an exact nonzero source-side structural ancestor.
+11. **Secondary-admission loss.**  The canonical global Gamma witness is excluded off the critical
+    displacement while its rank-one primary pure-Hodge lift is always admitted.  The present lift
+    is non-admission-reflecting exactly for nonzero displacement.
+12. **Completed Xi pure-Hodge coface.**  Finite grades are coefficient-faithful and raw-norm
+    recovery of the completed Xi Green vector holds for every displacement.  This closes raw
+    completion and proves that it is displacement-blind.
 
 ## Sharpened frontier
 
-Corpus already contains both marginals needed for a proof:
+Corpus now contains both marginals and their exact source-side antidiagonal:
 
 ```text
 coefficient-faithful physical coface --(Fourier)--> Xi,
 orientation-faithful pure-Hodge coface --(singular graph)--> admitted incidence.
 ```
 
-What remains is one **conservative external solder** between them: a source-defined, bifiltered
-graph map whose resolved output keeps coefficient/exponent and Hodge/incidence grades separate,
-is nonzero on exact source boundaries, and only then admits the completed Xi observation.
+What remains is one **secondary-admission-reflecting conservative external solder** between them:
+a source-defined, bifiltered graph map whose resolved output keeps coefficient/exponent and
+Hodge/incidence grades separate, is nonzero on exact source boundaries, reflects the global
+secondary Gamma/Hodge admission class, and only then admits the completed Xi observation.
 
 This is strictly narrower than “construct a source,” “construct a Green map,” or “prove
-positivity.”  Those exist.  The missing theorem is injectivity on the resolved-defect module before
-the codiagonal/orientation augmentation.
+positivity.”  Those exist.  The missing theorem is not plain injectivity: the separate completed
+coface is coefficient-faithful, while the current primary lift still loses global secondary
+admission off line.  Required gate is joint injectivity plus admission reflection on the resolved-defect module before the
+codiagonal/orientation augmentation.
 
 ## Hostile audit
 
@@ -133,8 +145,9 @@ the codiagonal/orientation augmentation.
 ## Gates
 
 - [x] 0 -> 1: exact paper statement, proof, corpus nonduplication search, hostile audit
-- [ ] 1 -> 2: formalize universal antidiagonal/codiagonal exactness and resolved detection
-- [ ] 2 -> 3: formalize the Deninger `RH <-> resolved defect vanishes` specialization; audit axioms
+- [x] 1 -> 2: formalize universal antidiagonal/codiagonal exactness and resolved detection
+- [x] 2 -> 3: formalize the Deninger `RH <-> resolved defect vanishes` specialization; direct
+  checks complete
 - [ ] 3 -> 4: construct a nontrivial source-side conservative solder or prove a new exact boundary
   for its existence
 
@@ -143,3 +156,7 @@ the codiagonal/orientation augmentation.
 - 2026-08-02 — extracted the resolved/augmented distinction from exact Deninger internal-defect
   cancellation and identified all current source constructions as complementary resolutions of
   the same augmentation kernel.
+- 2026-08-02 — source-side resolved cross-effect proved nonzero before cup augmentation; completed
+  Xi Hellinger--Gamma coface proved coefficient-faithful in raw norm; canonical primary lift proved
+  non-admission-reflecting exactly off the critical displacement.  Frontier sharpened to a
+  secondary-admission-reflecting completed resolved comparison.

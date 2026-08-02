@@ -275,13 +275,13 @@ theorem norm_le_tsum_of_summable_norm
 theorem absoluteMatrixOperator_diagMul_eq_diagonalOperator
     (g : ℕ → ℂ) (hg : Summable fun n => ‖g n‖) :
     absoluteMatrixOperator (HilbertSchmidt.diagMul g) =
-      _root_.RHTower.diagonalOperator g
-        (by intro n; exact hg.le_tsum n (fun _ _ => norm_nonneg _)) := by
+      _root_.RHTower.diagonalOperator (C := ∑' j : ℕ, ‖g j‖) g
+        (by intro n; exact Summable.le_tsum hg n (fun _ _ => norm_nonneg _)) := by
   refine ContinuousLinearMap.ext_on
     (Submodule.dense_iff_topologicalClosure_eq_top.mpr
       (HilbertSchmidt.lpBasis ℕ).dense_span) ?_
   rintro x ⟨n, rfl⟩
-  rw [absoluteMatrixOperator_diagMul_apply_basis,
+  rw [absoluteMatrixOperator_diagMul_apply_basis g hg n,
     GaloisForLFunctions.RHTower.diagonalOperator_lpBasis]
 
 /-- A summable nonnegative real diagonal gives a positive nuclear operator. -/

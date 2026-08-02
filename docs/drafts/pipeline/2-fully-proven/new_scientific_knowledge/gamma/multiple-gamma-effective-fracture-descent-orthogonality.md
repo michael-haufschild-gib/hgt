@@ -274,7 +274,8 @@ of the facet quotient complex and its localization remain to be assembled in Lea
   (`MultipleGammaTransverseDifference.lean`, `MultipleGammaTransverseDepthNecessity.lean`)
 - [x] annihilator `(1)`, inclusion `I_r subseteq Ann_DA(Psi_r)` for arbitrary difference operators
   (`MultipleGammaDifferenceOperatorAnnihilator.lean`)
-- [ ] annihilator `(1)`, reverse inclusion `Ann_DA(Psi_r) subseteq I_r` for arbitrary operators
+- [x] annihilator `(1)`, reverse inclusion `Ann_DA(Psi_r) subseteq I_r` for arbitrary operators
+  (`MultipleGammaAnnihilatorExact.lean`); `(1)` is an exact iff in Lean
 - [ ] construct one nontrivial polarized analytic effectivity locus for the hierarchy
 - [ ] prove a transferred analytic theorem from the incidence object
 
@@ -479,30 +480,63 @@ support-graded part vanishes, which by linear independence of the distinct `x`-m
 `P` has no monomial of width below `r`.
 
 `HTGeometry/MultipleGammaMonomialCoefficients.lean` builds the exponent coordinates that route
-needs, avoiding any group-algebra formalization by using nonnegative exponents only:
+needs, avoiding any group-algebra formalization by using nonnegative exponents only, and carries
+the whole iterated difference through them:
 
-> **`NatExp`**, **`natShift`**, **`natShift_add_single`**,
-> **`natShift_mem_faceShiftLattice`** -- nonnegative exponent vectors on the deleted directions of a
-> face and their shifts;
-> **`natShift_injective`** -- integral independence of the periods makes the exponent labelling
-> faithful;
-> **`natPacket`**, **`natPacket_injective`**, **`natPacket_differentialIndependent`** -- the face
-> packet in exponent coordinates, faithful and jointly differentially independent;
-> **`natSynth`**, **`natSynth_sub`**, **`natSynth_eq_sum`** -- synthesis as a linear map on
-> finitely supported coefficients;
-> **`hypertranscendentalOver_natSynth`**, **`natSynth_ne_zero`** -- **a nonzero coefficient
-> function synthesizes a hypertranscendental, hence nonzero, germ**;
-> **`natExpShift`**, **`natPacket_natExpShift`**, **`natSynth_translate`** -- the structural
-> translation in a deleted direction is the exponent shift `n -> n + e_j`;
-> **`natShiftDiffCoeff`**, **`listShiftDiff_natSynth`** -- **an iterated difference along deleted
-> directions is exactly the iterated operator `mapDomain(+e_j) - id` on coefficients**.
+> **`natShift`**, **`natShift_add_single`**, **`natShift_mem_faceShiftLattice`**,
+> **`natShift_injective`** -- exponent vectors, their shifts, and faithfulness of the labelling
+> under integral independence of the periods;
+> **`faceTranslate`**, **`natSynth`**, **`natSynth_sub`**, **`natSynth_single_zero`** -- synthesis
+> of a coefficient function as a linear map, with the zero exponent giving the face coordinate;
+> **`CarriedBy`**, **`carriedBy_mono`**, **`carriedBy_mapDomain_expShift`**,
+> **`carriedBy_single_zero`** -- the carrier condition and its propagation;
+> **`hypertranscendentalOver_natSynth`** -- **a nonzero coefficient function carried by a face
+> retaining two periods synthesizes a hypertranscendental germ**;
+> **`meroShiftDiff_natSynth`** -- a difference in an already deleted direction is the exponent
+> shift minus the identity;
+> **`meroShiftDiff_natSynth_notMem`** -- a difference in a surviving direction deletes that
+> direction and leaves the coefficients unchanged;
+> **`listCoeff`**, **`listTop`**, **`listShiftDiff_eq_natSynth`** -- **every iterated difference
+> along a list of directions is the synthesis of an explicit coefficient function on the face of
+> its distinct directions**;
+> **`carriedBy_listCoeff`**, **`listCoeff_support_le`**, **`listCoeff_top`** -- the carrier, box
+> and top invariants of that coefficient;
+> **`natExp_eq_of_le_of_degree_le`**, **`listCoeff_combination_ne_zero`** -- **iterated differences
+> with pairwise distinct tops are independent**: a combination whose maximal-degree term carries a
+> nonzero scalar has a nonzero coefficient function.
 
-What remains is the combinatorial finish: the box/top invariants of `natShiftDiffCoeff` (support
-below the accumulated exponent, coefficient one at the top), which give linear independence of the
-monomial coefficients of a fixed support by a top-degree argument, and the assembly over the
-support grading.
+The common-support case of the reverse inclusion is now closed:
+
+> **`count_flatMap`**, **`count_multiDegreeList`**, **`listTop_apply`**,
+> **`listTop_multiDegreeList_apply`**, **`sum_listTop_multiDegreeList`** -- the top of a
+> multidegree list is `d - 1_S`, so distinct monomials of a fixed support have distinct tops and
+> their degrees differ by the constant `|S|`;
+> **`hypertranscendentalOver_sum_xMonomialApply_of_common_support`** -- **a nonzero combination of
+> difference monomials sharing one support that retains two periods is hypertranscendental.**
+
+`HTGeometry/MultipleGammaAnnihilatorExact.lean` closes the grading and hence `(1)`:
+
+> **`pairTranslate`**, **`PairCarried`**, **`pairTranslate_inj`** -- the `(face, exponent)` pair is
+> a faithful coordinate on the union of all packets retaining two periods;
+> **`pairSynth`**, **`hypertranscendentalOver_pairSynth`** -- a nonzero admissible pair coefficient
+> synthesizes a hypertranscendental germ, so monomials of different width cannot cancel;
+> **`faceEmbed`**, **`natSynth_eq_pairSynth`**, **`mapDomain_faceEmbed_apply`** -- grading a
+> single-face coefficient into the pair coordinate;
+> **`hypertranscendentalOver_xApply_of_notMem_veroneseIdeal`** -- **the reverse inclusion
+> `Ann_DA(Psi_r) subseteq I_r`**: an operator with a monomial of width below `r` is
+> hypertranscendental on the source, witnessed at the top exponent of a maximal-degree narrow
+> monomial;
+> **`differentialAlgebraicOver_xApply_iff_mem_veroneseIdeal`** -- **the exact annihilator `(1)`:
+> `Ann_DA(Psi_r) = I_r`.**
 
 - 2026-08-02 -- the inclusion `I_r subseteq Ann_DA(Psi_r)` is unconditional Lean.
 - 2026-08-02 -- exponent coordinates for the reverse inclusion are unconditional Lean: faithful
   exponent labelling of a face packet, nonzero coefficients synthesize hypertranscendental germs,
   and iterated differences are the exponent shift operators.
+- 2026-08-02 -- the box/top invariants and the distinct-top independence of iterated differences
+  are unconditional Lean, together with the identification of every iterated difference with the
+  synthesis of an explicit exponent coefficient function.
+- 2026-08-02 -- the common-support case of the reverse inclusion is unconditional Lean: a nonzero
+  combination of difference monomials with one deep support is hypertranscendental.
+- 2026-08-02 -- the annihilator `(1)` is an exact unconditional Lean theorem:
+  `Ann_DA(Psi_r) = I_r` for arbitrary difference operators.

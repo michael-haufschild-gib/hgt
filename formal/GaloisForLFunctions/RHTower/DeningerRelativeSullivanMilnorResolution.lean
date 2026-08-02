@@ -1164,6 +1164,14 @@ theorem deningerExteriorInl_eq_sullivanInclusion {U N : Type*} [AddCommGroup U] 
   ext u
   simp
 
+/-- The inclusion of the old algebra preserves the degree-two part. -/
+theorem deningerExteriorInl_exteriorTwo {U N : Type*} [AddCommGroup U] [Module k U]
+    [AddCommGroup N] [Module k N] {x : ExteriorAlgebra k U} (hx : x ∈ ⋀[k]^2 U) :
+    (deningerExteriorInl : ExteriorAlgebra k U →ₐ[k] ExteriorAlgebra k (U × N)) x ∈
+      ⋀[k]^2 (U × N) := by
+  rw [deningerExteriorInl_eq_sullivanInclusion]
+  exact deningerSullivanInclusion_exteriorTwo _ hx
+
 variable (k V)
 
 /-- The generator assignment of the second stage. -/
@@ -1174,15 +1182,18 @@ noncomputable def deningerSullivanSecondPhi :
 
 variable {k V}
 
+set_option maxHeartbeats 4000000 in
 /-- Every second-stage generator value is a degree-two element. -/
 theorem deningerSullivanSecondPhi_mem
     (p : (V × (⋀[k]^2 V)) × (deningerSullivanSyzygy k V)) :
     deningerSullivanSecondPhi k V p ∈ ⋀[k]^2 ((V × (⋀[k]^2 V)) × (deningerSullivanSyzygy k V)) := by
-  rw [deningerSullivanSecondPhi, deningerSuccessorPhi_apply,
-    deningerExteriorInl_eq_sullivanInclusion, deningerExteriorInl_eq_sullivanInclusion]
-  refine Submodule.add_mem _ ?_ ?_
-  · exact deningerSullivanInclusion_exteriorTwo _ (deningerSullivanFirstPhi_mem p.1)
-  · exact deningerSullivanInclusion_exteriorTwo _ (deningerSullivanSyzygy_le_exteriorTwo p.2.2)
+  have h : deningerSullivanSecondPhi k V p =
+      deningerExteriorInl (deningerSullivanFirstPhi k V p.1) +
+        deningerExteriorInl (deningerSullivanSecondPsi p.2) := rfl
+  rw [h]
+  exact Submodule.add_mem _
+    (deningerExteriorInl_exteriorTwo (deningerSullivanFirstPhi_mem p.1))
+    (deningerExteriorInl_exteriorTwo (deningerSullivanSyzygy_le_exteriorTwo p.2.2))
 
 theorem deningerSullivanSecondPhi_commute
     (p : (V × (⋀[k]^2 V)) × (deningerSullivanSyzygy k V))
@@ -1210,12 +1221,9 @@ variable {k V}
 differential is the first-stage differential. -/
 theorem deningerSullivanSecondLayerDifferential_inl
     (x : ExteriorAlgebra k (V × (⋀[k]^2 V))) :
-    deningerSullivanSecondLayerDifferential k V
-        (deningerSullivanInclusion k (V × (⋀[k]^2 V)) (deningerSullivanSyzygy k V) x) =
-      deningerSullivanInclusion k (V × (⋀[k]^2 V)) (deningerSullivanSyzygy k V)
-        (deningerSullivanFirstLayerDifferential k V x) := by
-  rw [← deningerExteriorInl_eq_sullivanInclusion, ← deningerExteriorInl_eq_sullivanInclusion]
-  exact deningerSuccessorDerivation_inl (deningerSullivanFirstPhi k V)
+    deningerSullivanSecondLayerDifferential k V (deningerExteriorInl x) =
+      deningerExteriorInl (deningerSullivanFirstLayerDifferential k V x) :=
+  deningerSuccessorDerivation_inl (deningerSullivanFirstPhi k V)
     deningerSullivanSecondPsi deningerSullivanFirstPhi_commute
     deningerSullivanSecondPhi_commute x
 
@@ -1224,12 +1232,11 @@ the card's own first layer. -/
 theorem deningerSullivanSecondLayerDifferential_new (s : deningerSullivanSyzygy k V) :
     deningerSullivanSecondLayerDifferential k V
         (ι k ((0, s) : (V × (⋀[k]^2 V)) × (deningerSullivanSyzygy k V))) =
-      deningerSullivanInclusion k (V × (⋀[k]^2 V)) (deningerSullivanSyzygy k V)
-        (s : ExteriorAlgebra k (V × (⋀[k]^2 V))) := by
-  rw [← deningerExteriorInl_eq_sullivanInclusion]
-  exact deningerSuccessorDerivation_new (deningerSullivanFirstPhi k V)
+      deningerExteriorInl (s : ExteriorAlgebra k (V × (⋀[k]^2 V))) :=
+  deningerSuccessorDerivation_new (deningerSullivanFirstPhi k V)
     deningerSullivanSecondPsi deningerSullivanSecondPhi_commute s
 
+set_option maxHeartbeats 1000000 in
 /-- **The second-layer differential squares to zero**, so the second stage is again a differential
 graded algebra. -/
 theorem deningerSullivanSecondLayerDifferential_comp_self
@@ -1244,6 +1251,214 @@ theorem deningerSullivanSecondLayerDifferential_comp_self
     (fun s => deningerSullivanSyzygy_cocycle s.2) x
 
 end SecondLayer
+
+section GeneralStage
+
+open HTGeometry
+
+variable {k U : Type*} [CommRing k] [AddCommGroup U] [Module k U]
+variable (phi : U →ₗ[k] ExteriorAlgebra k U)
+
+/-- Generator values lying in the degree-two part are central. -/
+theorem deningerStagePhi_central (hmem : ∀ u, phi u ∈ ⋀[k]^2 U)
+    (u : U) (x : ExteriorAlgebra k U) : Commute (phi u) x :=
+  deningerExteriorPowerTwo_central (hmem u) x
+
+/-- Generator values lying in the degree-two part are invariant under the grading involution. -/
+theorem deningerStagePhi_involute (hmem : ∀ u, phi u ∈ ⋀[k]^2 U) (u : U) :
+    deningerExteriorInvolute k U (phi u) = phi u :=
+  deningerExteriorInvolute_exteriorTwo (hmem u)
+
+/-- **The degree-two cocycles of a Sullivan stage**: the degree-two elements killed by the stage's
+differential.  These are exactly the classes the next stage is attached to kill, and they are
+automatically admissible attaching data. -/
+noncomputable def deningerStageDegreeTwoCocycles (hmem : ∀ u, phi u ∈ ⋀[k]^2 U) :
+    Submodule k (ExteriorAlgebra k U) :=
+  (⋀[k]^2 U) ⊓ LinearMap.ker (deningerOddDerivation phi (deningerStagePhi_central phi hmem))
+
+theorem deningerStageDegreeTwoCocycles_le (hmem : ∀ u, phi u ∈ ⋀[k]^2 U) :
+    deningerStageDegreeTwoCocycles phi hmem ≤ ⋀[k]^2 U :=
+  inf_le_left
+
+theorem deningerStageDegreeTwoCocycles_cocycle (hmem : ∀ u, phi u ∈ ⋀[k]^2 U)
+    (s : deningerStageDegreeTwoCocycles phi hmem) :
+    deningerOddDerivation phi (deningerStagePhi_central phi hmem)
+      (s : ExteriorAlgebra k U) = 0 :=
+  s.2.2
+
+/-- **The generator assignment of the successor stage**: the old assignment together with one new
+generator for every degree-two cocycle. -/
+noncomputable def deningerStageSuccessorPhi (hmem : ∀ u, phi u ∈ ⋀[k]^2 U) :
+    (U × (deningerStageDegreeTwoCocycles phi hmem)) →ₗ[k]
+      ExteriorAlgebra k (U × (deningerStageDegreeTwoCocycles phi hmem)) :=
+  deningerSuccessorPhi phi (deningerStageDegreeTwoCocycles phi hmem).subtype
+
+/-- **The successor stage preserves the degree-two invariant**, so the construction iterates. -/
+theorem deningerStageSuccessorPhi_mem (hmem : ∀ u, phi u ∈ ⋀[k]^2 U)
+    (p : U × (deningerStageDegreeTwoCocycles phi hmem)) :
+    deningerStageSuccessorPhi phi hmem p ∈
+      ⋀[k]^2 (U × (deningerStageDegreeTwoCocycles phi hmem)) := by
+  have h : deningerStageSuccessorPhi phi hmem p =
+      deningerExteriorInl (phi p.1) +
+        deningerExteriorInl ((p.2 : ExteriorAlgebra k U)) := rfl
+  rw [h]
+  exact Submodule.add_mem _ (deningerExteriorInl_exteriorTwo (hmem p.1))
+    (deningerExteriorInl_exteriorTwo (deningerStageDegreeTwoCocycles_le phi hmem p.2.2))
+
+/-- The successor differential restricts to the old one on the image of the old algebra. -/
+theorem deningerStageSuccessorPhi_inl (hmem : ∀ u, phi u ∈ ⋀[k]^2 U)
+    (x : ExteriorAlgebra k U) :
+    deningerOddDerivation (deningerStageSuccessorPhi phi hmem)
+        (deningerStagePhi_central _ (deningerStageSuccessorPhi_mem phi hmem))
+        (deningerExteriorInl x) =
+      deningerExteriorInl
+        (deningerOddDerivation phi (deningerStagePhi_central phi hmem) x) :=
+  deningerSuccessorDerivation_inl phi (deningerStageDegreeTwoCocycles phi hmem).subtype
+    (deningerStagePhi_central phi hmem)
+    (deningerStagePhi_central _ (deningerStageSuccessorPhi_mem phi hmem)) x
+
+/-- **The successor differential kills its own generator values**, which is the condition making it
+square to zero.  Together with the preceding theorem this shows the successor of a Sullivan stage is
+again a Sullivan stage. -/
+theorem deningerStageSuccessorPhi_kill (hmem : ∀ u, phi u ∈ ⋀[k]^2 U)
+    (p : U × (deningerStageDegreeTwoCocycles phi hmem))
+    (hkill : ∀ u, deningerOddDerivation phi (deningerStagePhi_central phi hmem) (phi u) = 0) :
+    deningerOddDerivation (deningerStageSuccessorPhi phi hmem)
+        (deningerStagePhi_central _ (deningerStageSuccessorPhi_mem phi hmem))
+        (deningerStageSuccessorPhi phi hmem p) = 0 := by
+  have h : deningerStageSuccessorPhi phi hmem p =
+      deningerExteriorInl (phi p.1) +
+        deningerExteriorInl ((p.2 : ExteriorAlgebra k U)) := rfl
+  rw [h, map_add, deningerStageSuccessorPhi_inl, deningerStageSuccessorPhi_inl,
+    hkill, deningerStageDegreeTwoCocycles_cocycle]
+  simp
+
+/-- **Every degree-two cocycle of a stage becomes a coboundary at its successor.** -/
+theorem deningerStageSuccessor_kills (hmem : ∀ u, phi u ∈ ⋀[k]^2 U)
+    (s : deningerStageDegreeTwoCocycles phi hmem) :
+    deningerOddDerivation (deningerStageSuccessorPhi phi hmem)
+        (deningerStagePhi_central _ (deningerStageSuccessorPhi_mem phi hmem))
+        (ι k ((0, s) : U × (deningerStageDegreeTwoCocycles phi hmem))) =
+      deningerExteriorInl ((s : ExteriorAlgebra k U)) :=
+  deningerSuccessorDerivation_new phi (deningerStageDegreeTwoCocycles phi hmem).subtype
+    (deningerStagePhi_central _ (deningerStageSuccessorPhi_mem phi hmem)) s
+
+end GeneralStage
+
+section StageTower
+
+open HTGeometry
+
+/-- **A Sullivan stage**: a space of degree-one generators together with a generator assignment
+whose values are degree two and are killed by the resulting differential.  Degree-two values are
+automatically central and involution-invariant, so this single condition describes a stage. -/
+structure DeningerSullivanStage (k : Type*) [CommRing k] where
+  /-- The generator space of the stage. -/
+  space : Type*
+  [addCommGroup : AddCommGroup space]
+  [module : Module k space]
+  /-- The values of the differential on the generators. -/
+  phi : space →ₗ[k] ExteriorAlgebra k space
+  /-- The generator values are degree two. -/
+  phi_mem : ∀ u, phi u ∈ ⋀[k]^2 space
+  /-- The differential kills its own generator values, hence squares to zero. -/
+  kill : ∀ u, deningerOddDerivation phi (deningerStagePhi_central phi phi_mem) (phi u) = 0
+
+attribute [instance] DeningerSullivanStage.addCommGroup DeningerSullivanStage.module
+
+namespace DeningerSullivanStage
+
+variable {k : Type*} [CommRing k]
+
+/-- The differential of a stage. -/
+noncomputable def d (S : DeningerSullivanStage k) :
+    ExteriorAlgebra k S.space →ₗ[k] ExteriorAlgebra k S.space :=
+  deningerOddDerivation S.phi (deningerStagePhi_central S.phi S.phi_mem)
+
+theorem d_comp_self (S : DeningerSullivanStage k) (x : ExteriorAlgebra k S.space) :
+    S.d (S.d x) = 0 :=
+  deningerOddDerivation_comp_self _ _ (deningerStagePhi_involute S.phi S.phi_mem) S.kill x
+
+/-- The degree-two cocycles of a stage. -/
+noncomputable def cocycles (S : DeningerSullivanStage k) :
+    Submodule k (ExteriorAlgebra k S.space) :=
+  deningerStageDegreeTwoCocycles S.phi S.phi_mem
+
+/-- **The successor of a stage**, obtained by attaching one new generator for every degree-two
+cocycle. -/
+noncomputable def succ (S : DeningerSullivanStage k) : DeningerSullivanStage k where
+  space := S.space × (deningerStageDegreeTwoCocycles S.phi S.phi_mem)
+  phi := deningerStageSuccessorPhi S.phi S.phi_mem
+  phi_mem := deningerStageSuccessorPhi_mem S.phi S.phi_mem
+  kill := fun p => deningerStageSuccessorPhi_kill S.phi S.phi_mem p S.kill
+
+@[simp]
+theorem succ_space (S : DeningerSullivanStage k) :
+    S.succ.space = (S.space × (deningerStageDegreeTwoCocycles S.phi S.phi_mem)) := rfl
+
+@[simp]
+theorem succ_phi (S : DeningerSullivanStage k) :
+    S.succ.phi = deningerStageSuccessorPhi S.phi S.phi_mem := rfl
+
+/-- **The successor differential extends the stage differential.** -/
+theorem succ_d_inl (S : DeningerSullivanStage k) (x : ExteriorAlgebra k S.space) :
+    S.succ.d
+        ((deningerExteriorInl :
+          ExteriorAlgebra k S.space →ₐ[k]
+            ExteriorAlgebra k (S.space × (deningerStageDegreeTwoCocycles S.phi S.phi_mem))) x) =
+      (deningerExteriorInl :
+        ExteriorAlgebra k S.space →ₐ[k]
+          ExteriorAlgebra k (S.space × (deningerStageDegreeTwoCocycles S.phi S.phi_mem)))
+        (S.d x) :=
+  deningerStageSuccessorPhi_inl S.phi S.phi_mem x
+
+/-- **Every degree-two cocycle of a stage is a coboundary at its successor.** -/
+theorem succ_kills (S : DeningerSullivanStage k)
+    (s : deningerStageDegreeTwoCocycles S.phi S.phi_mem) :
+    S.succ.d
+        (ι k ((0, s) : S.space × (deningerStageDegreeTwoCocycles S.phi S.phi_mem))) =
+      (deningerExteriorInl :
+        ExteriorAlgebra k S.space →ₐ[k]
+          ExteriorAlgebra k (S.space × (deningerStageDegreeTwoCocycles S.phi S.phi_mem)))
+        ((s : ExteriorAlgebra k S.space)) :=
+  deningerStageSuccessor_kills S.phi S.phi_mem s
+
+/-- **The base stage**: a space of generators with vanishing differential, which is the algebra
+`P = Λ(V)` with `d_P = 0` of the statement. -/
+def base (k V : Type*) [CommRing k] [AddCommGroup V] [Module k V] :
+    DeningerSullivanStage k where
+  space := V
+  phi := 0
+  phi_mem := fun _ => Submodule.zero_mem _
+  kill := fun _ => by
+    show deningerOddDerivation (0 : V →ₗ[k] ExteriorAlgebra k V) _ 0 = 0
+    exact map_zero _
+
+/-- **The stage tower**: iterating the successor construction from a given stage. -/
+noncomputable def iterate (S : DeningerSullivanStage k) : ℕ → DeningerSullivanStage k
+  | 0 => S
+  | n + 1 => (S.iterate n).succ
+
+@[simp]
+theorem iterate_zero (S : DeningerSullivanStage k) : S.iterate 0 = S := rfl
+
+@[simp]
+theorem iterate_succ (S : DeningerSullivanStage k) (n : ℕ) :
+    S.iterate (n + 1) = (S.iterate n).succ := rfl
+
+/-- **Every degree-two cocycle appearing at a stage of the tower dies at the next stage.**  This is
+the induction of the proof, carried out along the natural numbers. -/
+theorem iterate_kills (S : DeningerSullivanStage k) (n : ℕ)
+    (s : deningerStageDegreeTwoCocycles (S.iterate n).phi (S.iterate n).phi_mem) :
+    (S.iterate (n + 1)).d
+        (ι k ((0, s) : (S.iterate n).space ×
+          (deningerStageDegreeTwoCocycles (S.iterate n).phi (S.iterate n).phi_mem))) =
+      deningerExteriorInl ((s : ExteriorAlgebra k (S.iterate n).space)) :=
+  (S.iterate n).succ_kills s
+
+end DeningerSullivanStage
+
+end StageTower
 
 end RHTower
 

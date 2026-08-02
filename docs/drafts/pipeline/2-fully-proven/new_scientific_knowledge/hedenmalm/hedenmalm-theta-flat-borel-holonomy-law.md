@@ -542,6 +542,6 @@ both reflected holonomies forces `alpha` real, not that it holds.
 - [x] Burnol completed-Mellin evaluator and ambient aperture bound in Lean (sibling card `(3)`)
 - [x] Burnol lower bound `(11)`, two-sided law `(12)` and exponent limit `(13)` in Lean
 - [x] Lean identification of the two aperture exponents `(16f)`
-- [ ] Burnol nonvanishing `(10)`: the one hypothesis left in the Sonine half of `(16f)`
+- [ ] Burnol nonvanishing `(10)`, now reduced in Lean to a single Sonine witness at one aperture
 - [ ] `[OPEN CORE: THETA_BOREL_REFLECTED_COMMON_DOMAIN]`
 - [ ] independent specialist novelty audit

@@ -627,3 +627,169 @@ classes `∂^k · tᵢ` with `k < deg bᵢ`; the auxiliary identities `C_smul`, 
 This supplies exactly the `FiniteDimensional K (B.map A.mkQ)` hypothesis that
 `relIndex_sub_bounds` and `relIndexSup_sub_bounds` consume, so the constant `K_k = 2 · quotDim L Λ`
 of `(12)` is now known to be a genuine finite number for commensurable operator lattices.
+
+### `(12)` is formalized
+
+`OperatorLattice.lean` assembles the operator picture:
+
+- `integralVec`, `integralLattice` — the integral vectors `R^ι` inside `Q^ι`;
+- `pseudoVecMulLin`, `rowLattice`, `satLattice` — the row map as a left linear map, the row lattice
+  `j_P (R^{ι'})` and its saturation `Row_Q(P) ∩ R^ι`;
+- `rowLattice_le_satLattice` and `exists_smul_mem_rowLattice` — the inclusion and the denominator
+  property: every integral vector of the row span becomes a row combination after multiplication by
+  one nonzero operator;
+- `fg_satLattice` — the saturation is finitely generated, by Noetherianity of the operator ring;
+- `finiteDimensional_satLattice_mod_rowLattice` — hence the two base lattices are commensurable:
+  `dim_K (Λ / j_P(R^s)) < ∞`;
+- `relIndexSup_rowMapK` — the intrinsic prefix invariants upstairs equal those of the images, since
+  `j_P` is injective;
+- `relIndexSup_row_sat_comparison` — the prefix invariants against the row lattice and against its
+  saturation differ by at most `2 · dim_K (Λ / j_P(R^s))`, a constant depending on neither the
+  moving lattice nor the cuts.
+
+Those two theorems together are equation `(12)`: the intrinsic Cartan prefix of `A_n` and the
+ambient Cartan prefix of `B_n = A_n P` differ by a constant independent of `n`.  All of it is
+axiom-clean.
+
+Remaining: `(13)`, i.e. dividing `(12)` by `n` and quoting the prefix-to-coordinate kernels of
+`DifferentialIndependentObservableNet.lean`.
+
+### `(13)` is formalized
+
+`CartanPrefixNormalizedLimit.lean`:
+
+- `finiteVectorPrefixSum_increments`: the prefix sums of an increment vector telescope, with the
+  correct behaviour past the last coordinate;
+- `tendsto_normalized_increments_of_prefix_bound`: two families of integer prefix invariants that
+  differ by a fixed constant at every level and every time have the same normalized limit vector.
+
+Feeding the constant of `(12)` into this gives `(13)`: if one normalized Cartan vector converges,
+so does the other, to the same limit.  The proof reuses the corpus kernel
+`tendsto_normalized_finiteVector_of_bounded_prefix`.
+
+### Status of Theorem B
+
+Equations `(12)` and `(13)` are formalized unconditionally and axiom-clean, with the Cartan prefix
+invariant defined as the supremum of the relative index over cuts of a given dimension, i.e.
+`σ_k = ∑_{i≤k} μ_i` in the lattice-distance sense.  What is not yet formalized is the identification
+of that invariant with the elementary-divisor vector of a Jacobson normal form; that identification
+is a separate classification theorem for matrices over a noncommutative principal ideal domain and
+is the next item.
+
+### Column operations
+
+`DifferentialOperatorOreColumn.lean` adds the second family of moves of the diagonal reduction:
+
+- `colAdd`, `colAddVec`, and `vecMul_colAdd : v · (P U) = (v · P) · U` — a column operation leaves
+  the coefficient vector untouched and acts on the result instead;
+- `colAdd_cancel`, `colAddVec_cancel` — the inverse move is the same operation with `-q`;
+- `rowIndep_colAdd`, `boundedDistortion_colAdd` — independence of the rows and bounded distortion
+  survive column operations.
+
+With the row operations of `DifferentialOperatorOreMatrix.lean` these are the moves of the Jacobson
+diagonal reduction, which is what remains to identify the cut-based Cartan prefix with the
+elementary-divisor vector.
+
+### Diagonal lattice pairs
+
+`finrank_quotient_pi_leftMultiples`: for a diagonal family of nonzero operators,
+
+`dim_K ((ι → K[∂;δ]) / ∏ᵢ K[∂;δ] dᵢ) = ∑ᵢ deg dᵢ`,
+
+by the direct-sum decomposition of the quotient and the cyclic dimension formula.  This is the
+anchor showing that the lattice index used in `(12)` computes exactly the sum of the elementary
+divisor orders on a diagonal pair — the `k = s` case of the identification of the cut invariant
+with the invariant-factor vector.  What is still open is the extremality statement for `k < s`
+(no cut beats the coordinate one) together with the diagonal reduction itself.
+
+### The lattice invariant on a diagonal pair
+
+`DiagonalLatticeIndex.lean` connects the abstract invariant with the operator picture:
+
+- `quotDim_top`, `relIndex_top` — the relative index against the whole space is the dimension of
+  the quotient;
+- `relIndexSup_top_cut` — the prefix invariant attached to the full cut is the relative index;
+- `relIndex_pi_leftMultiples_top` — for a diagonal family of nonzero operators,
+  `relIndex (∏ᵢ K[∂;δ] dᵢ) ⊤ = ∑ᵢ deg dᵢ`.
+
+So on a diagonal pair the lattice-distance invariant of `(12)` returns exactly the sum of the
+elementary divisor orders: the top-level case `k = s` of the identification is proved.  The two
+remaining ingredients are the diagonal reduction under the row and column moves, and the
+extremality of the coordinate cut for `k < s`.
+
+### Coordinate splitting of submodules
+
+`DifferentialOperatorSubmoduleSplitting.lean`:
+
+- `projCoord` — a coordinate projection of `K[∂;δ]^ι`, as a left linear map;
+- `exists_coord_generator` — the image of a submodule under a coordinate projection is a principal
+  left ideal, and a preimage of its generator splits the submodule: every element becomes, after
+  subtracting an operator multiple of that preimage, an element whose chosen coordinate vanishes;
+- `smul_eq_zero_of_coord_eq_zero` — the splitting is direct when the generator is nonzero.
+
+This is the induction step of the structure theory of submodules of free modules over the operator
+ring, hence of the diagonal reduction that identifies the cut invariant with the invariant-factor
+vector.
+
+### Generator count for submodules of a free module
+
+`exists_generators_card_le`: a submodule of `K[∂;δ]^ι` supported on a finite set `t` of coordinates
+is generated by at most `t.card` elements.  The induction peels one coordinate at a time with
+`exists_coord_generator`, so no basis theory and no type-level index surgery is needed.
+
+This is the noncommutative analogue of "a submodule of a free module over a principal ideal domain
+is free of rank at most the rank", in the generator-count form that the diagonal reduction consumes.
+
+### Quantitative torsion bound
+
+`finrank_map_mkQ_le_sum_degree`: if a submodule is generated by a finite set `s` and each generator
+`t` is carried into `L` by a nonzero operator `b t`, then
+
+`dim_K (image of span s in the quotient by L) ≤ ∑_{t ∈ s} deg (b t)`.
+
+The spanning set of the quotient image is `{∂^k · t : t ∈ s, k < deg (b t)}`, whose cardinality is
+the right-hand side, so the bound follows from `finrank_span_finset_le_card`.
+
+This upgrades the earlier finiteness statement to the quantitative form needed for the extremality
+half of the identification of the cut invariant with the invariant-factor vector: it is the
+inequality `dim_K (L ∩ V)/(M ∩ V) ≤ ∑ deg` in which the generators come from a cut.
+
+### Explicit index bound
+
+`OperatorLatticeIndexBound.lean` combines the two previous steps:
+
+`finrank_quotient_le_card_mul` — if a lattice `N` is supported on `t` coordinates and every element
+of `N` is carried into `L` by a nonzero operator of order at most `D`, then
+
+`dim_K (N / L) ≤ t.card · D`.
+
+This is the crude majorization behind the extremality of coordinate cuts: the number of generators
+is bounded by the number of coordinates and each contributes at most `D` to the dimension.  The
+sharp form, `∑_{i≤k} deg dᵢ` rather than `k · deg d₁`, needs the invariant-factor comparison and is
+what still separates the cut invariant from the elementary-divisor vector.
+
+### Two-sided Euclidean structure
+
+`exists_left_div` (with `exists_leading_cancel_left`): for `b ≠ 0` every `a` can be written
+`a = b * q + r` with `r = 0` or `deg r < deg b`.  The leading-term cancellation is the mirror of the
+right-division one, using `leadCoeff (b * mono n c) = leadCoeff b * c`.
+
+The operator ring is therefore Euclidean on both sides, which is what the column half of the
+diagonal reduction needs: a column operation `colⱼ ← colⱼ + colⱼ₀ · q` reduces an entry modulo the
+pivot on the right, so it consumes left division exactly as the row operations consume right
+division.
+
+### Row clearing by column operations
+
+`DifferentialOperatorOreColumn.lean` now mirrors the row half of the reduction:
+
+- `ColStep`, `ColEquiv`, with `ColEquiv.rowIndep` and `ColEquiv.boundedDistortion`;
+- `exists_reduce_row` — left division against a pivot lowers every other entry of its row below the
+  pivot order;
+- `exists_pivot_clear_row` — a row with a nonzero entry can be cleared to a single pivot by column
+  operations, by descent on the pivot order.
+
+Both halves of the Jacobson reduction step are now available: `exists_pivot_clear` clears a column
+with row operations and `exists_pivot_clear_row` clears a row with column operations.  What remains
+is the interleaving (clearing a row may spoil the column, so the descent must run on the minimal
+order of the whole matrix) and then the recursion on the complementary submatrix.

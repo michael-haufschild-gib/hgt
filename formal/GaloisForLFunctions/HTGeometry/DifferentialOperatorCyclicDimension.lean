@@ -1,6 +1,8 @@
 import GaloisForLFunctions.HTGeometry.DifferentialOperatorOreDivision
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
+import Mathlib.LinearAlgebra.Dimension.Constructions
 import Mathlib.LinearAlgebra.Quotient.Basic
+import Mathlib.LinearAlgebra.Quotient.Pi
 
 /-!
 # Cyclic quotients of the operator ring
@@ -158,6 +160,22 @@ theorem finrank_quotient_leftMultiples {d : DiffOp K} (hd : d ≠ 0) :
 theorem finiteDimensional_quotient_leftMultiples {d : DiffOp K} (hd : d ≠ 0) :
     FiniteDimensional K (DiffOp K ⧸ leftMultiples d) :=
   (quotientLeftMultiplesEquiv hd).finiteDimensional
+
+
+/-- **Diagonal lattice pairs.**  The quotient of the free module by a diagonal family of left
+ideals has dimension the sum of the orders. -/
+theorem finrank_quotient_pi_leftMultiples {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (d : ι → DiffOp K) (hd : ∀ i, d i ≠ 0) :
+    Module.finrank K ((ι → DiffOp K) ⧸ Submodule.pi Set.univ fun i => leftMultiples (d i))
+      = ∑ i, degree (d i) := by
+  haveI : ∀ i, FiniteDimensional K (DiffOp K ⧸ leftMultiples (d i)) := fun i =>
+    finiteDimensional_quotient_leftMultiples (hd i)
+  have he : Module.finrank K ((ι → DiffOp K) ⧸ Submodule.pi Set.univ fun i => leftMultiples (d i))
+      = Module.finrank K (∀ i : ι, DiffOp K ⧸ leftMultiples (d i)) :=
+    (Submodule.quotientPi (R := K) (Ms := fun _ : ι => DiffOp K)
+      (fun i => leftMultiples (d i))).finrank_eq
+  rw [he, Module.finrank_pi_fintype]
+  exact Finset.sum_congr rfl fun i _ => finrank_quotient_leftMultiples (hd i)
 
 end
 

@@ -106,42 +106,29 @@ theorem burnolExtendedSoninReflectedEvaluationVector_eq_cosine
           rw [Complex.sub_re, Complex.one_re]
           linarith) ha) := by
   letI : Fact (0 < a) := ⟨ha⟩
+  let hRlo : 1 / 2 < (1 - w).re := by
+    rw [Complex.sub_re, Complex.one_re]
+    linarith
+  let hRhi : (1 - w).re < 1 := by
+    rw [Complex.sub_re, Complex.one_re]
+    linarith
+  change burnolExtendedSoninReflectedEvaluationVector w a hlo hhi ha =
+    burnolExtendedSoninCosine a
+      (burnolExtendedSoninEvaluationVector (1 - w) a hRlo hRhi ha)
   apply ext_inner_right ℂ
   intro f
-  rw [inner_burnolExtendedSoninReflectedEvaluationVector,
-    burnolExtendedSoninReflectedEvaluation_apply]
-  symm
-  calc
+  rw [inner_burnolExtendedSoninReflectedEvaluationVector]
+  change burnolExtendedSoninReflectedEvaluation w a hlo hhi ha f =
     ⟪burnolExtendedSoninCosine a
-          (burnolExtendedSoninEvaluationVector (1 - w) a (by
-            rw [Complex.sub_re, Complex.one_re]
-            linarith) (by
-            rw [Complex.sub_re, Complex.one_re]
-            linarith) ha), f⟫_ℂ =
-        ⟪burnolExtendedSoninCosine a (burnolExtendedSoninCosine a
-            (burnolExtendedSoninEvaluationVector (1 - w) a (by
-              rw [Complex.sub_re, Complex.one_re]
-              linarith) (by
-              rw [Complex.sub_re, Complex.one_re]
-              linarith) ha)), burnolExtendedSoninCosine a f⟫_ℂ :=
-          ((burnolExtendedSoninCosine a).inner_map_map
-            (burnolExtendedSoninCosine a
-              (burnolExtendedSoninEvaluationVector (1 - w) a (by
-                rw [Complex.sub_re, Complex.one_re]
-                linarith) (by
-                rw [Complex.sub_re, Complex.one_re]
-                linarith) ha)) f).symm
-    _ = ⟪burnolExtendedSoninEvaluationVector (1 - w) a (by
-            rw [Complex.sub_re, Complex.one_re]
-            linarith) (by
-            rw [Complex.sub_re, Complex.one_re]
-            linarith) ha, burnolExtendedSoninCosine a f⟫_ℂ := by
-          rw [burnolExtendedSoninCosine_involutive]
-    _ = _ := inner_burnolExtendedSoninEvaluationVector (1 - w) a (by
-          rw [Complex.sub_re, Complex.one_re]
-          linarith) (by
-          rw [Complex.sub_re, Complex.one_re]
-          linarith) ha (burnolExtendedSoninCosine a f)
+      (burnolExtendedSoninEvaluationVector (1 - w) a hRlo hRhi ha), f⟫_ℂ
+  rw [burnolExtendedSoninReflectedEvaluation_apply]
+  symm
+  change ⟪soninCosineUnitary
+      ((burnolExtendedSoninEvaluationVector (1 - w) a hRlo hRhi ha :
+        soninExtendedSpace a) : evenSubspace), (f : evenSubspace)⟫_ℂ = _
+  rw [soninCosineUnitary.inner_map_eq_flip, soninCosineUnitary_symm_eq]
+  exact inner_burnolExtendedSoninEvaluationVector (1 - w) a hRlo hRhi ha
+    (burnolExtendedSoninCosine a f)
 
 /-- Exact normalized dilation character of the continued left-half-plane evaluation. -/
 theorem burnolExtendedSoninReflectedEvaluation_evenDilation
