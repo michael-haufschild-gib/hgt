@@ -124,9 +124,9 @@ def twoQubitEndpointFlip
   else
     (a.1, !a.2)
 
+set_option maxHeartbeats 1000000 in
 /-- Each endpoint Pauli has exactly one nonzero translated entry in every
 spectral row. -/
-set_option maxHeartbeats 1000000 in
 theorem twoQubitEndpointTransition_ne_zero_iff
     (s : Bool) (q : Fin 3)
     (a b : Bool × Bool) :

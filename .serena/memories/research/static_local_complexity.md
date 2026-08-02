@@ -23,14 +23,18 @@
   Duhamel robustness makes packing deficit and O4 annular volume deficit
   equivalent.  Direct packing bound (O4.3t), not fixed-target Haar
   anti-concentration, is the irreducible frontier.
-- Hellinger-Hodge-Green audit: an `m`-parameter locally Lipschitz endpoint
-  law on `CP^(D-1)` is supported on Hausdorff dimension at most `m`; when
-  `m<2D-2` it is mutually singular with Haar, has Hellinger affinity zero,
-  and TV distance one at every fixed time.  Thus no positive-mass Haar-bulk
-  decomposition can exist for fixed-q static ensembles.  The Riemann paper
-  only reinforces labels-before-scalarization; its linear Green/Hodge maps
-  do not control the nonlinear selector.  Its “Quantum recurrence” entry is
-  a two-state Gibbs purity limit, not an orbit recurrence theorem.
+- Hellinger-Hodge-Green audit: homogeneity makes the all-time theorem
+  stronger without adding a time dimension.  Since `tH(x)=H(tx)`, the full
+  all-time set equals `{[exp(-iH(y)) psi0] : y in R^m}` and has Hausdorff
+  dimension at most `m`; if `m<2D-2`, it is Haar-null yet supports every
+  coefficient/time law.  Hence one time-independent measurable separator
+  gives Hellinger affinity zero and TV distance one against Haar for every
+  static-local endpoint.  The same holds in `PU(D)` when `m<D^2-1`.  This closes
+  permanent non-Haar distinguishability only measure-theoretically: the
+  indicator need not be efficient or physically measurable.  The Riemann
+  paper still supplies no nonlinear selector/shortcut packing bound; its
+  “Quantum recurrence” entry is a two-state Gibbs purity limit, not an orbit
+  recurrence theorem.
 - O3 semantic correction: the existing `Omega(2^n/poly)` Choi lower bound is
   on 2n qubits, hence not near-maximal unrestricted state complexity there.
   New paper proof repairs this.  Stabilizer 2-design averaging selects one

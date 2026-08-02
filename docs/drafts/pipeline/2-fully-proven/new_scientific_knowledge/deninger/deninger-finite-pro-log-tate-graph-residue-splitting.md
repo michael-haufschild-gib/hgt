@@ -146,6 +146,81 @@ The source-independent graph-core mechanism is formalized in
 The analytic input instantiating these declarations is formulas
 `(3)`--`(5)`.
 
+## Lean status
+
+### Analytic structures landed
+
+The split chart `(1)`, the normal decomposition `(3)`, the maps `(4)`, the seminorm
+family `(2)` and the finite packet of clause 5 are represented directly in
+`formal/GaloisForLFunctions/RHTower/DeningerFiniteProLogTateGraphResidueSplitting.lean`
+(41 declarations; axiom audit for every one of them:
+`[propext, Classical.choice, Quot.sound]`).
+
+The chart and the two maps:
+
+- `DeningerLogForms D V = C(D × ℂ, V) × C(D × ℂ, V)` is the space of logarithmic forms in the
+  unique normal decomposition `ω = α + (dz/z) ∧ β`, and `DeningerBoundaryForms D V = C(D, V)`
+  the boundary forms on `D = D × {0}`; `deningerNormalZeroSection` and
+  `deningerChartProjection` are the two structure maps of the splitting `(1)`.
+- `deningerResidue : DeningerLogForms D V →L[ℂ] DeningerBoundaryForms D V` is `R ω = β|_{z=0}`
+  and `deningerLogSection : DeningerBoundaryForms D V →L[ℂ] DeningerLogForms D V` is
+  `S γ = (dz/z) ∧ π_D^* γ`.  Both are bundled as **continuous** linear maps for the
+  compact-open topology, which is clause 1; `deningerPrecomp` is the underlying
+  compact-open continuity of precomposition.
+- `deningerResidue_comp_logSection` is clause 2 (`R S = 1`), and
+  `deningerResidue_surjective` its split surjectivity.
+
+The transverse graph scale:
+
+- `DeningerTransverseCore A f` is the graph core of the Tate-normalized transverse generator
+  `A`: every transverse monomial `A ^ m` leaves the field continuous.  For an unbounded
+  generator this is a proper condition, so it is the honest analytic domain of the seminorms
+  `(2)`; `deningerTransverseMonomial` produces `A ^ m f` as a continuous field.
+- `deningerResidue_transverseCore` and `deningerLogSection_transverseCore` prove both maps
+  preserve that core, and `deningerResidue_transverseMonomial_comm`,
+  `deningerLogSection_transverseMonomial_comm` are the two commutations `(5)` of clause 3.
+- `deningerLogSection_graphSeminorm_le_iff` proves the section's graph seminorm bound is
+  *identical* to the boundary one, and `deningerResidue_graphSeminorm_le` transfers the
+  source bound to the residue with the same constant — clause 4's "same transverse bound".
+- `deningerResidue_splitStrict_graphCore` is clause 4 assembled: every boundary graph-core
+  form is the residue of a source graph-core log form with exactly the same transverse graph
+  seminorms and with vanishing higher normal derivatives
+  (`deningerLogSection_iteratedDeriv_normal`).
+
+The Cauchy input of the proof:
+
+- `deningerNormalCircle_iteratedDeriv_le` is Cauchy's estimate on a normal circle:
+  `‖∂_z^j g(x, ·)|_{z=0}‖ ≤ j! · C / r^j` whenever `‖g(x, z)‖ ≤ C` on `|z| = r`.
+- `DeningerTateGraphField` is the analytic domain of the full seminorm family `(2)` (every
+  transverse monomial continuous *and* holomorphic in the normal coordinate), and
+  `deningerTateGraphField_boundary_deriv_le` bounds every boundary derivative seminorm
+  `p_{K,j,m}` by the compact source seminorm `p_{circle,0,m}`.
+  `deningerLogSection_tateGraphField` shows the section lands in that domain.
+
+Clause 5, the finite packet:
+
+- `deningerPacketRestriction Y : C(D, ℂ) →L[ℂ] (↥Y → ℂ)` is evaluation on a finite packet,
+  continuous for the compact-open topology.
+- `deningerPacketIdempotent_exists` supplies the separating functions `e_y` with
+  `e_y(y') = δ_{y,y'}` from Urysohn separation on a `T1` normal horizontal factor — this is
+  the Lean form of "the coordinate ring of the affine torus separates its points".
+- `deningerPacketSection` is the resulting continuous right inverse
+  `(c_y) ↦ ∑_y c_y e_y`, and `deningerPacketRestriction_comp_section`,
+  `deningerPacketRestriction_surjective` prove packet restriction is a continuous split
+  surjection onto `Map(Y, ℂ)`.
+
+The finite relative-cell consequence:
+
+- `deningerSplitSurjection_prodMap` proves a finite direct sum of continuous split surjections
+  is a continuous split surjection, so each finite relative cell assembled from the residue
+  square inherits the splitting.
+
+### What is deliberately not in Lean
+
+The uniform pro-stage estimate is not formalized because it is not proved: it is the successor
+conjecture `DAC_PRO_LOG_TATE_PROJECTIVE_GRAPH_STRICTNESS` below, and the card's hostile audit
+states explicitly that this theorem supplies no uniform pro-stage constant.
+
 ## Next exact claim
 
 `[CONJECTURE] [DAC_PRO_LOG_TATE_PROJECTIVE_GRAPH_STRICTNESS]`
@@ -162,11 +237,17 @@ are summable on every defining Banach disk.
 - [x] complete paper proof
 - [x] hostile scope audit
 - [x] Lean graph-core split infrastructure
-- [ ] analytic structures represented directly in Lean
-- [ ] uniform pro-stage strictness
+- [x] analytic structures represented directly in Lean
+- [ ] uniform pro-stage strictness *(successor conjecture, not this theorem)*
 
 ## Log
 
 - 2026-08-01 — Proved finite-stage Poincare residue/evaluation remain
   split strict after intersecting holomorphic and Tate graph scales;
   isolated uniform pro-system passage as remaining topology gate.
+- 2026-08-02 — All five clauses formalized unconditionally in
+  `DeningerFiniteProLogTateGraphResidueSplitting.lean`: split chart, log-form
+  decomposition, continuous `R` and `S`, `RS = 1`, transverse graph core with both
+  monomial commutations, identical-bound seminorm lift, Cauchy normal-circle
+  derivative estimate, and the Urysohn-split finite packet evaluation.  Axiom audit
+  over all 41 declarations returns only `propext`, `Classical.choice`, `Quot.sound`.

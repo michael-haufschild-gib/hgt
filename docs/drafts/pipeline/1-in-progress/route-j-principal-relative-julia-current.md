@@ -3072,11 +3072,12 @@ Its depth codiagonal recovers `R_n` exactly.  Every shifted cross-prime term is 
 prime-power-cell Milnor incidence and its own Green primitive, so the finite spread is a
 chain-level source carrier rather than a scalar normalization.
 
-Reflected Hodge preservation is explicit.  Raw exterior reflection exchanges legs, reverses both
-finite depth intervals, and contributes one minus sign.  The odd orientation local system
-contributes the second.  Their compensated involution squares to one.  Since
+Compensated finite-index reflection symmetry is explicit.  Raw exterior reflection exchanges
+legs, reverses both finite depth intervals, and contributes one minus sign.  The odd orientation
+local system contributes the second.  Their compensated involution squares to one.  Since
 `Q_n(q,p)=Q_n(p,q)`, the doubled ordered-pair profile belongs to its fixed sector.  No projection
-onto a predeclared kernel is used.
+onto a predeclared kernel is used.  This fixed sector is not the actual Gamma/Hardy admitted
+sector, whose defect retains every ordered prime/depth coordinate.
 
 For one reflected fundamental domain,
 
@@ -3086,7 +3087,7 @@ For one reflected fundamental domain,
  <=100*289^2.                                         (176)
 ```
 
-The raw doubled Hodge-sector norm counts both ordered orientations and satisfies the exact
+The raw doubled compensated-sector norm counts both ordered orientations and satisfies the exact
 identity and uniform bound
 
 ```text
@@ -3100,8 +3101,9 @@ formal/GaloisForLFunctions/RHTower/
   CCMFirstClockPrimitivePromotedCofinalDepthCountertransport.lean
 ```
 
-This closes the requested countertransport construction, reflected-sector theorem, and uniform
-capacity theorem.  It does **not** close Route J.  Exact recovery of the linearly large current
+This closes the countertransport construction, compensated finite-index symmetry theorem, and
+uniform capacity theorem.  It does **not** prove actual Hodge admission.  Exact recovery of the
+linearly large current
 uses a singular codiagonal: any scalar readout gain satisfying
 
 ```text
@@ -3114,7 +3116,94 @@ obeys
 gain_n >= (10/289)n.                                  (178)
 ```
 
-Hence next hard Route-J theorem is no longer cofinal capacity.  It is a source Hodge
-polarization comparing negative first-clock excursion directly with bounded pretrace carrier
-`(176)` before codiagonal readout, or a class-complete theorem proving every such comparison
-inherits lower bound `(178)`.  This survivor stays in Route J.
+The actual-boundary audit below supersedes the former suggestion that a finite source Hodge
+polarization could repair this carrier.  The survivor stays in Route J but must be genuinely
+completion-relation-valued.
+
+## 47. Actual Gamma/Hardy cell-diagonal rigidity
+
+`[PAPER+LEAN-PROVED CLASSIFICATION]`
+`[NO RH INPUT]`
+
+For each prime/depth cell `i`, let `d_i` and `w_i` be normalized defect and packet generators and
+put
+
+```text
+E_ij=d_i wedge w_j,  i!=j.
+```
+
+The actual boundary defect is evaluated before scalar fusion:
+
+```text
+(partial_a X)(i,j)=gamma_a(i,j) tau_j(N_ij(X)).
+```
+
+Direct-sum component orthogonality gives the exact Kronecker law
+
+```text
+(partial_a E_kl)(i,j)
+ = if (i,j)=(k,l) then gamma_a(i,j) else 0.           (179)
+```
+
+Prime-power half-height is injective on cells.  Hence for `a!=0`,
+`gamma_a(i,j)!=0` whenever `i!=j`, and `(179)` yields
+
+```text
+ker(partial_a) intersect
+  span_finite{E_ij : i!=j} = {0}.                     (180)
+```
+
+The existing source-normal spread is exactly a finite `Finsupp` combination of these carriers.
+For positive depth counts and nonzero source weight its base coefficient is nonzero, so the whole
+spread is outside the actual admitted sector at every nonzero displacement.  Adding the reflected
+orientation cannot cancel it: the reversed carrier occupies coordinate `(j,i)`, not `(i,j)`.
+
+Lean certificate:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  CCMFirstClockPrimitivePromotedCellHodgeBoundaryRigidity.lean
+```
+
+Thus changing finite weights, adding finite depths, or symmetrizing finite ordered pairs cannot
+repair Section 46.  Any survivor must leave the coordinate-faithful finite carrier span.
+
+## 48. Closed oriented source admission is the exact remaining object
+
+`[CORPUS FRONTIER INCORPORATED]`
+`[OPEN PRODUCER]`
+
+The Hellinger--Hodge Green-descent law identifies actual incidence admission with zero modular
+displacement.  The oriented source-admission law adds the completed topology.  For fixed distinct
+primes `p,q`, the completed Xi Green map
+
+```text
+U_pq : H1_c -> IHat_pq
+```
+
+is coefficient-faithful and dense, and one completed coordinate decodes to the nonzero canonical
+Gamma witness.  If a closed admission set `K_rho` contains `range(U_pq)`, density forces
+`K_rho=IHat_pq`.  Therefore one exact unsquared finite trace
+
+```text
+e_(r;p,q) in K_rho
+  <-> w_(p,q) in actualAdmittedSector(delta_rho)       (181)
+```
+
+forces `delta_rho=0`.
+
+This sharpens the Route-J survivor.  An arbitrary source corona is insufficient: if it is closed
+and contains the dense completed Green range, it is the whole completion; if it erases finite
+coordinates, `(181)` cannot descend; if it keeps the singular codiagonal as a vertical part, it
+does not transport an oriented output.  The exact open producer is:
+
+```text
+construct K_rho from the arithmetic source,
+prove closedness and completed Green landing,
+and prove finite trace (181) before scalar orientation.
+```
+
+This is not a reassignment or a closure claim.  Existence of such `K_rho` at every divisor point
+is formally equivalent to RH.  Route J remains open until this source-derived admission object is
+constructed or every remaining source-relation class is exhausted with its strongest positive
+survivor.

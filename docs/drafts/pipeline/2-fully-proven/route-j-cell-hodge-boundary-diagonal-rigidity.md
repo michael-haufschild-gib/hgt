@@ -61,6 +61,22 @@ The audit found no external theorem identifying the kernel of the source-specifi
 Gamma/Hardy reflection defect.  The coordinate-linear algebra below is routine; novelty, if any, is
 only its exact weld to the source and the resulting Route-J survivor classification.
 
+## Publication-corpus impact
+
+`[CORPUS]` The Hellinger--Hodge Green-descent paper confirms the operation order used here.  Its
+actual reflection defect is evaluated on vector-valued exact incidence before Haar orientation,
+and one canonical cross-prime exact boundary detects every nonzero modular displacement.
+Section 5.2's bounded doubled carrier is only a compensated pretrace symmetry with singular scalar
+readout; it is not asserted to lie in the actual defect kernel.  Thus `(CHB-2)`--`(CHB-12)` are the
+missing exact audit of that finite carrier, not a contradiction with the paper.
+
+`[CORPUS]` The oriented source-admission paper supplies the completed-topology consequence.  The
+completed Xi Green map is coefficient-faithful and dense in completed incidence.  Any closed
+admission set containing its range is the whole completion, so a successful source corona must
+retain one exact unsquared finite trace.  An arbitrary quotient corona, dense radical, or vertical
+graph relation cannot close Route J.  The positive survivor `CHB-CORONA` is therefore sharpened to
+the closed source-admission object `K_rho`; its global existence is RH-equivalent and remains open.
+
 ## Exact conjecture
 
 Let
@@ -148,8 +164,11 @@ such relation loses the first-clock readout.
 - [ ] prove the exact Kronecker law `(CHB-2)`;
 - [ ] prove distinct prime/depth cells have distinct half-heights;
 - [ ] prove `(CHB-3)` and the finite depth-spread corollary;
-- [ ] correct the predecessor card's sector-preservation status;
-- [ ] formalize the exact dependency-closed theorem in Lean.
+- [x] correct the predecessor card's sector-preservation status;
+- [x] formalize the exact dependency-closed theorem in Lean;
+- [x] identify the completed survivor as a closed source-admission object with an exact finite
+      oriented trace;
+- [ ] complete targeted Lean lint/axiom/module audit and move this card to Stage 3.
 
 ## Dependency-closed paper proof
 

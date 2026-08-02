@@ -536,9 +536,10 @@ sum_(p,q,r,s) U_n(p,q,r,s)=R_n.                       (PPES-22)
 No scalar normalization of `R_n` occurs.  The amplitude is transported into depth before the
 singular codiagonal is read.
 
-### Reflected Hodge-sector preservation
+### Compensated finite-index reflection symmetry
 
-On the doubled ordered-pair realization, reflected Hodge acts by exchanging the exterior legs,
+On the doubled ordered-pair realization, a compensated finite-index reflection acts by exchanging
+the exterior legs,
 reversing each finite depth interval, and applying the orientation sign:
 
 ```text
@@ -554,9 +555,10 @@ Q_n(q,p)=Q_n(p,q),
 because both the squared-height difference and sine phase change sign under exchange.  The
 profile `(PPES-21)` is constant on each depth rectangle.  Hence `(PPES-23)` fixes the landed
 profile; the exterior swap sign is exactly cancelled by the odd orientation local system.
-Therefore the countertransport commutes with reflected Hodge and preserves both its fixed and
-antifixed sectors.  This is an explicit permutation/intertwining law, not membership installed by
-projection.
+Therefore the countertransport commutes with this compensated finite-index involution and
+preserves its fixed and antifixed sectors.  This is an explicit permutation/intertwining law, not
+membership installed by projection.  It is not, by itself, membership in the actual admitted
+Gamma/Hardy sector, whose reflection defect retains every ordered prime/depth coordinate.
 
 ### Uniform source-normal carrier capacity
 
@@ -600,9 +602,10 @@ aperture-independent bound
  <=100*289^2.                                           (PPES-27)
 ```
 
-Thus the requested cofinal depth-nonlocal countertransport exists, preserves the reflected Hodge
-sector, retains the exact finite two-scale readout, and has uniform source-normal carrier
-capacity.
+Thus the cofinal depth-nonlocal countertransport exists, is fixed by the compensated finite-index
+reflection, retains the exact finite two-scale readout, and has uniform source-normal carrier
+capacity.  Hostile boundary audit below proves that for nonzero modular displacement every
+nonzero finite spread fails the actual Gamma/Hardy admitted-sector condition.
 
 ### Anti-theatre boundary: carrier capacity is not yet Route-J residual capacity
 
@@ -636,7 +639,7 @@ constructing the source-specific ratio `(PPES-18)`, logarithmic prime-dependent 
 spread, reflected exterior intertwining, and uniform block capacity `(PPES-27)` together.
 Novelty is claimed only for that conjunction and remains provisional.
 
-### Reflected-sector closure audit
+### Compensated-sector closure audit and actual-boundary correction
 
 The coordinate identity `(PPES-23)` alone is not enough to claim preservation of a Hodge sector:
 it could hide the exterior sign in prose.  The doubled carrier therefore carries two explicit
@@ -660,14 +663,14 @@ so
 H_ref^2=1.
 ```
 
-Combining this with `Q_n(q,p)=Q_n(p,q)` proves the actual doubled landed profile
+Combining this with `Q_n(q,p)=Q_n(p,q)` proves the doubled landed profile
 
 ```text
 (U_n(p,q,-,-),U_n(q,p,-,-))
 ```
 
-lies in `Fix(H_ref)` for every source pair.  This is the concrete reflected Hodge sector used by
-the countertransport.
+lies in `Fix(H_ref)` for every source pair.  This is the concrete compensated finite-index sector
+used by the countertransport.
 
 There are two honest capacity conventions.  Equation `(PPES-24)` counts one fundamental domain
 of reflected ordered-pair orbits.  The raw Hilbert norm of the doubled fixed-sector carrier counts
@@ -677,8 +680,26 @@ both orientations and is exactly
 U_n^H=2U_n <= 200*289^2.                              (PPES-31)
 ```
 
-Thus reflected-sector preservation does not depend on quotienting away half of the carrier, and
-uniform capacity survives without changing order.  The exact Lean objects and theorems are:
+Thus compensated-sector preservation does not depend on quotienting away half of the carrier, and
+uniform capacity survives without changing order.  It must not be identified with
+
+```text
+ker(actual Gamma/Hardy boundary reflection defect).
+```
+
+The Hellinger--Hodge Green-descent law shows that the actual defect is evaluated before ordered
+coordinates are fused and that one canonical cross-prime exact boundary detects every nonzero
+modular displacement.  The cell-diagonal rigidity theorem strengthens this from one witness to
+the entire finite canonical carrier span:
+
+```text
+ker(partial_a) intersect C_cell = {0},  a!=0.
+```
+
+Hence neither the finite one-sided spread nor its doubled reflected version is actually admitted
+when `a!=0`; the reversed orientation occupies a different ordered boundary coordinate.  Only a
+genuinely completion-relation/source-corona object can remain.  The exact Lean objects and
+theorems for the compensated construction are:
 
 ```text
 rawExteriorDepthReflection
@@ -702,3 +723,10 @@ The same module formalizes `(PPES-18)`--`(PPES-22)`, `(PPES-25)`--`(PPES-28)`, a
 prime-power-cell incidence realization, and Green fixedness.  Direct `lake env lean` and the
 targeted module build pass.  `#print axioms` reports only `propext`, `Classical.choice`, and
 `Quot.sound`.
+
+The correction and exact finite-span classification are formalized in
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  CCMFirstClockPrimitivePromotedCellHodgeBoundaryRigidity.lean
+```

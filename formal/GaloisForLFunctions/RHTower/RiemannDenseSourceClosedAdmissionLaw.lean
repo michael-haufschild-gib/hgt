@@ -53,6 +53,56 @@ theorem denseSource_closedAdmission_eq_univ
     exact hland x
   exact closure_minimal hrange hKclosed (hU y)
 
+universe u v
+
+/--
+Route-independent closed-admission datum.  `good` is the route's oriented
+target condition: zero modular displacement, positivity of a source form,
+preservation of a represented relation, or any equivalent unsquared
+orientation statement.  The definition deliberately assumes neither
+linearity nor a bounded boundary operator.
+-/
+structure ClosedOrientedSourceAdmission
+    {E : Type u} {H : Type v} [TopologicalSpace H]
+    (U : E → H) (detector : H) (good : Prop) : Type (max u v) where
+  admitted : Set H
+  isClosed_admitted : IsClosed admitted
+  source_lands : ∀ x, U x ∈ admitted
+  detector_exact : detector ∈ admitted ↔ good
+
+/--
+**Universal dense-source admission law.**
+
+For every dense source transport and every decisive oriented detector, a
+closed admission set containing the transported source and having the exact
+detector trace exists precisely when the route's oriented target condition
+holds.
+-/
+theorem nonempty_closedOrientedSourceAdmission_iff
+    {E H : Type*} [TopologicalSpace H]
+    (U : E → H) (hU : DenseRange U)
+    (detector : H) (good : Prop) :
+    Nonempty (ClosedOrientedSourceAdmission U detector good) ↔ good := by
+  constructor
+  · rintro ⟨A⟩
+    have huniv : A.admitted = Set.univ :=
+      denseSource_closedAdmission_eq_univ
+        U hU A.admitted A.isClosed_admitted A.source_lands
+    apply A.detector_exact.mp
+    rw [huniv]
+    exact Set.mem_univ detector
+  · intro hgood
+    refine ⟨{
+      admitted := Set.univ
+      isClosed_admitted := isClosed_univ
+      source_lands := fun _ => Set.mem_univ _
+      detector_exact := ?_ }⟩
+    constructor
+    · intro _
+      exact hgood
+    · intro _
+      exact Set.mem_univ detector
+
 /--
 One finite divisor coordinate in completed incidence.  Its coefficient is
 one and its decoded source value is the actual nonzero cross-prime

@@ -1089,48 +1089,69 @@ word ball.  No map in that paper controls the associated support function,
 shortcut-centre packing, or annular volume.
 
 There is also a decisive Hellinger obstruction to importing “Haar-like
-bulk plus one exceptional recurrence component.”  Let
+bulk plus one exceptional recurrence component.”  Homogeneity of the full
+local coefficient family strengthens it to a permanent separator without
+spending even one dimension on time.  Let
 `\mathcal P_D=CP^(D-1)` be pure-state space with normalized Fubini--Study
-measure `sigma_D`, let `mu` be any coefficient law on `R^m`, and let
+measure `sigma_D`, let `H(x)=sum_(j=1)^m x_j A_j`, and define the complete
+autonomous reachability map
 
 \[
- F_t(x)=[e^{-itH(x)}\Phi_0],\qquad \nu_t=(F_t)_\#\mu .
+ \widehat F:\mathbb R^m\times\mathbb R\longrightarrow\mathcal P_D,
+ \qquad \widehat F(x,t)=[e^{-itH(x)}\Phi_0].
 \]
 
-If `H` is linear then `F_t` is locally Lipschitz.  When
+Since `tH(x)=H(tx)`, this map factors through
+`G(y)=[e^{-iH(y)}\Phi_0]` and
+
+\[
+ \mathfrak M:=\widehat F(\mathbb R^m\times\mathbb R)
+              =G(\mathbb R^m).
+\]
+
+The matrix exponential is smooth, so `G` is Lipschitz on every compact
+cube.  The set `\mathfrak M` is a countable union of compact sets and hence
+Borel.  When
 
 \[
  m<2D-2=\dim_{\mathbb R}\mathcal P_D,                 \tag{O4.3x}
 \]
 
-its image `M_t=F_t(R^m)` has Fubini--Study measure zero: write `R^m` as a
-countable union of bounded cubes, use that a Lipschitz map does not increase
-Hausdorff dimension on each cube, and compare with the
-`(2D-2)`-dimensional volume measure.  But the pushforward is supported on
-that image.  Hence
+Lipschitz monotonicity of Hausdorff dimension on each cube gives
+`\dim_H\mathfrak M\leq m`; comparison with the smooth
+`(2D-2)`-dimensional Fubini--Study volume therefore gives
 
 \[
- \sigma_D(M_t)=0,\qquad \nu_t(M_t)=1,\qquad
- \nu_t\perp\sigma_D .                                 \tag{O4.3y}
+ \sigma_D(\mathfrak M)=0,\qquad
+ \nu(\mathfrak M)=1,\qquad \nu\perp\sigma_D           \tag{O4.3y}
 \]
 
-In particular their Hellinger affinity and total-variation overlap are
-exactly zero:
+for every probability law `\nu=\widehat F_\#\lambda`, with arbitrary joint
+coefficient--time law `\lambda`.  In particular the same single set
+`\mathfrak M`, independent of time and of the coefficient distribution,
+supports every fixed-time endpoint law and separates every one of them from
+Haar.  Consequently
 
 \[
- \operatorname{Aff}(\nu_t,\sigma_D)=0,\qquad
- H^2(\nu_t,\sigma_D)=1,\qquad
- \|\nu_t-\sigma_D\|_{\rm TV}=1,                       \tag{O4.3z}
+ \operatorname{Aff}(\nu,\sigma_D)=0,\qquad
+ H^2(\nu,\sigma_D)=1,\qquad
+ \|\nu-\sigma_D\|_{\rm TV}=1,                         \tag{O4.3z}
 \]
 
-with the convention `H^2=1-Aff`.  For fixed `q`,
-`m=sum_(k<=q)3^k binom(n,k)=poly(n)` while `D=2^n`, so `(O4.3x)` holds
-throughout the many-body regime.
+with the convention `H^2=1-Aff`.  The identical factorization and proof for
+`(x,t)\mapsto[e^{-itH(x)}]\in PU(D)` gives a single Haar-null autonomous
+unitary-reachability set whenever `m<D^2-1`.  For fixed `q`,
+`m=sum_(k<=q)3^k binom(n,k)=poly(n)` while `D=2^n`, so both dimension
+inequalities hold throughout the many-body regime.
 
-Thus the static ensemble is maximally singular from Haar at every fixed
-time, even if many coarse observables look Haar-random.  Hellinger or
+Thus `[BRIDGE]` the entire all-time static-local family is permanently and
+maximally singular from Haar, even if many coarse observables look
+Haar-random.  This is a dependency-closed paper proof, but it is not the O4
+complexity theorem: the perfect separator `1_\mathfrak M` is merely Borel
+and need not be continuous, efficiently computable, or physically
+measurable.  A device-feasible witness remains separate.  Hellinger or
 total-variation closeness cannot leave a positive-mass Haar component to
-which a circuit union is applied.  The only useful transfer from the
+which a circuit union is applied.  The other useful transfer from the
 Riemann paper is methodological: retain every circuit label until a
 nonlinear aggregate is formed.  In O4 that aggregate is precisely
 `mathfrak S_(epsilon,a)` or its packing number `(O4.3t)`; the paper supplies

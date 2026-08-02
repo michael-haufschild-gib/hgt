@@ -5891,10 +5891,12 @@ Spreading each two-scale pair through the rectangle
 Depth codiagonal recovers the finite Route-J current exactly.  Each shifted
 term is exact cell incidence and its own Green primitive.
 
-Reflected-sector preservation is no longer inferred from scalar symmetry.
-Raw exterior reflection, odd orientation twist, and the compensated
-involution are separate Lean definitions.  The involution squares to one,
-and the doubled ordered-pair countertransport lies in its fixed sector.
+Compensated finite-index reflection symmetry is no longer inferred from
+scalar symmetry. Raw exterior reflection, odd orientation twist, and the
+compensated involution are separate Lean definitions.  The involution
+squares to one, and the doubled ordered-pair countertransport lies in its
+fixed sector.  This fixed sector is not the actual Gamma/Hardy admitted
+sector, which retains every ordered prime/depth boundary coordinate.
 Its fundamental-domain and raw doubled capacities obey
 
 ```text
@@ -5908,10 +5910,33 @@ Lean:
 CCMFirstClockPrimitivePromotedCofinalDepthCountertransport.lean
 ```
 
-This closes cofinal depth construction, reflected Hodge-sector preservation,
-and uniform pretrace capacity.  Route J remains open: exact scalar recovery
-has gain at least `(10/289)n`.  Live survivor is source Hodge polarization
-which bounds negative first-clock excursion directly by pretrace capacity
-before singular codiagonal, or a class-complete proof that every such
-comparison inherits the same linear gain obstruction.  This survivor is
+This closes cofinal depth construction, compensated reflection symmetry,
+and uniform pretrace capacity.  It does not prove actual Hodge admission.
+Exact scalar recovery still has gain at least `(10/289)n`.
+
+The subsequent cell-diagonal rigidity theorem proves that for every
+nonzero displacement the actual Gamma/Hardy boundary is injective on the
+entire finite canonical distinct-cell carrier span.  The source-normal
+depth spread is an explicit nonzero member of that span, so neither it nor
+its reversed double is admitted.  Lean:
+
+```text
+CCMFirstClockPrimitivePromotedCellHodgeBoundaryRigidity.lean
+```
+
+The oriented source-admission law sharpens the remaining object further.
+The completed Xi Green comparison has dense range in completed incidence.
+Any closed admission set containing that range is the whole completion;
+one exact unsquared finite trace then forces zero modular displacement.
+Route J is therefore open on construction of this source-derived closed
+admission object, not on another finite carrier or arbitrary corona:
+
+```text
+K_rho closed,
+range(U_pq) subset K_rho,
+e_(r;p,q) in K_rho
+  <-> w_(p,q) in actualAdmittedSector(delta_rho).
+```
+
+Existence at every divisor point is RH-equivalent.  This survivor remains
 Route J work and is not reassigned.
