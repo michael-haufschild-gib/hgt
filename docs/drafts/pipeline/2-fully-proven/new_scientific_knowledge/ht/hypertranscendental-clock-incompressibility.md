@@ -465,3 +465,165 @@ Remaining for `(12)`:
 3. assembling `0 ≤ relIndex (A ⊓ N) N - relIndex (B ⊓ N) N ≤ 2 · quotDim A B` for `A ≤ B`;
 4. `σ_k (L, M) = sup over k-dimensional subspaces V of relIndex (L ⊓ V) (M ⊓ V)`, the Cartan vector
    `μ_k = σ_k - σ_{k-1}`, and the transport of `σ_k` through `j_P`.
+
+### The uniform index estimate of `(12)` is formalized
+
+`SubspaceRelativeDimension.lean` now proves the estimate that carries `(12)`:
+
+- `finrank_add_quotDim : finrank P + quotDim P Q = finrank Q` for `P ≤ Q`;
+- `quotDim_inf_left : quotDim (A ⊓ N) N = quotDim A N`;
+- `quotDim_map_mkQ_le : quotDim (A.map N.mkQ) (B.map N.mkQ) ≤ quotDim A B`;
+- `relIndex_sub_bounds`: for `A ≤ B` and any `N`,
+  `0 ≤ relIndex A N - relIndex B N ≤ 2 · quotDim A B`;
+- `relIndex_inf_sub_bounds`: the same bound for `L₁ ⊓ W` against `M ⊓ W`, with a constant that
+  depends on neither the moving lattice `M` nor the cut `W`.
+
+That is exactly the content of `(12)`: the base-lattice change from `j_P (R^s)` to its saturation
+`Λ` costs at most `2 · dim_K (Λ / j_P(R^s))` in every fundamental-weight coordinate, uniformly in
+`n`.  What remains is bookkeeping: define `σ_k` as the supremum over `k`-dimensional cuts, set
+`μ_k = σ_k - σ_{k-1}`, transport `σ_k` through the isomorphism `j_P`, and feed the resulting
+prefix bounds into the already formalized
+`tendsto_normalized_finiteVector_of_bounded_prefix` to obtain `(13)`.
+
+### The prefix comparison of `(12)` is formalized in full generality
+
+`relIndexSup cut L M = sSup over the family of cuts of relIndex (L ⊓ cut i) (M ⊓ cut i)` is the
+prefix invariant `∑_{i≤k} μ_i` once the family of cuts is taken to be the `k`-dimensional subspaces
+of the ambient space.  The comparison
+
+`relIndexSup_sub_bounds : 0 ≤ relIndexSup cut L₁ M - relIndexSup cut L₂ M ≤ 2 · quotDim L₁ L₂`
+
+holds for every family of cuts, every moving lattice `M`, and every commensurable pair `L₁ ≤ L₂`:
+the pointwise bound `relIndex_inf_sub_bounds` is uniform, and suprema of two families that differ
+pointwise by at most `c` differ by at most `c` (`sSup_range_sub_bounds`).  Both are axiom-clean.
+
+What is left for `(12)`–`(13)` is the instantiation, not the mathematics:
+
+1. lattices over the operator ring inside `PseudoDiffOp K ^ s`, viewed as `K`-subspaces by
+   restriction of scalars (the scalar tower is already available);
+2. the transport of `relIndexSup` through the row-space isomorphism `j_P : v ↦ v·P`, which is an
+   isomorphism of `R`-modules onto the row span and therefore carries lattices to lattices;
+3. feeding the resulting prefix bounds into
+   `tendsto_normalized_finiteVector_of_bounded_prefix` for the normalized statement `(13)`.
+
+### Transport of the prefix invariant
+
+`quotDim_map_equiv`, `relIndex_map_equiv` and `relIndexSup_map_equiv` say that relative dimension,
+relative index and prefix invariant are unchanged by a linear equivalence that also transports the
+family of cuts.  This is the half of the proof of `(12)` that the card states as "`j_P` transports
+pairs of valuation lattices and their elementary-divisor vectors exactly": with the prefix
+invariant defined by cuts, transport is now a theorem rather than an assertion.
+
+The abstract layer of `(12)` is therefore complete: pointwise comparison, supremum comparison, and
+transport.  The remaining work is the instantiation over the operator ring:
+
+1. common denominators for a finite family in `PseudoDiffOp K` (from the Ore condition), hence
+   injectivity over the skew field of `j_P : v ↦ v · P` from the already proved row independence;
+2. the lattices `j_P (R^s)`, its saturation, and the moving lattice, as `K`-subspaces of
+   `Fin r → PseudoDiffOp K`;
+3. `(13)` from the prefix bounds through
+   `tendsto_normalized_finiteVector_of_bounded_prefix`.
+
+### Row independence over the skew field
+
+`DifferentialOperatorOreField.lean` now carries the passage from the operator ring to its skew
+field:
+
+- `exists_common_denominator`: a finite family of rational pseudodifferential operators has a
+  common left denominator, obtained by iterating the Ore condition over a `Finset`;
+- `numeratorRingHom_injective`: the operator ring embeds in the skew field;
+- `rowIndep_toPseudoMatrix`: rows that are left independent over `DiffOp K` stay independent over
+  `PseudoDiffOp K` — a rational relation is cleared by a common denominator and descends;
+- `pseudoVecMul_injective`: hence `j_P : v ↦ v · P` is injective over the skew field.
+
+With `rowIndep_frechetMatrix` this makes `j_P` an isomorphism onto the row span for the Frechet
+matrix of any differential embedding, which is the input that `relIndexSup_map_equiv` needs.
+Remaining for `(12)`–`(13)`: assemble the three lattices as `K`-subspaces of
+`Fin r → PseudoDiffOp K`, apply `relIndexSup_map_equiv` and `relIndexSup_sub_bounds`, then pass to
+normalized limits with `tendsto_normalized_finiteVector_of_bounded_prefix`.
+
+### Transport generalized to injective maps
+
+`quotDim_map_injective`, `relIndex_map_injective` and `relIndexSup_map_injective` replace the
+equivalence-only versions: relative dimension, relative index and prefix invariant are unchanged by
+any injective linear map that also transports the cuts.  This is what the operator instantiation
+needs, since `j_P` is injective but not surjective — with it there is no need to corestrict to the
+row span.
+
+The one remaining input for `(12)` in the operator setting is the commensurability of the two base
+lattices, `j_P (R^s) ⊆ Λ = Row_Q(P) ∩ R^r`, in the form `dim_K (Λ / j_P (R^s)) < ∞`.  The route is:
+
+1. `Λ` is finitely generated over `R` (a submodule of `R^r` over the Euclidean domain `K[∂;δ]`);
+2. each generator has a left denominator taking it into `j_P (R^s)`, because `j_P` is onto the row
+   span over the skew field and a rational vector has a common left denominator
+   (`exists_common_denominator`), so the quotient is a finitely generated torsion module;
+3. a finitely generated torsion module over `K[∂;δ]` has finite `K`-dimension, since
+   `dim_K (R / R d) = deg d` by division with remainder.
+
+Items 1 and 3 are the two pieces of infrastructure still to build; both are standard consequences
+of the division algorithm already formalized in `DifferentialOperatorOreDivision.lean`.
+
+### Orders are dimensions
+
+`DifferentialOperatorCyclicDimension.lean` proves the bridge between operator orders and
+`K`-dimensions:
+
+`finrank_quotient_leftMultiples : dim_K (K[∂;δ] / K[∂;δ] d) = deg d`  for `d ≠ 0`,
+
+by dividing with remainder and identifying the remainders of order `< deg d` with `K^{deg d}`
+through the truncation map `truncLT`.  The degenerate case `deg d = 0` is covered: then `d` is a
+unit and both sides vanish.
+
+This is item 3 of the commensurability route.  With it, a finitely generated torsion module over
+the operator ring has finite `K`-dimension, which is what turns `Λ / j_P(R^s)` into the constant of
+`(12)`.
+
+### The operator ring is a left principal ideal domain
+
+`DifferentialOperatorPrincipalIdeal.lean`:
+
+- `exists_generator`: every left ideal of `K[∂;δ]` is generated by an element of least order —
+  divide any element by the generator and the remainder, of smaller order, must vanish;
+- `isNoetherian_self`, `isNoetherian_pi_self`, `fg_submodule`: the operator ring and its finite
+  powers are left Noetherian, so lattices inside `K[∂;δ]^r` are finitely generated.
+
+`DifferentialOperatorTorsionDimension.lean`:
+
+- `finiteDimensional_span_singleton`: an element annihilated by a nonzero operator `b` spans a
+  subspace of finite `K`-dimension, since the cyclic module it generates is a quotient of
+  `K[∂;δ] / K[∂;δ] b`, which has dimension `deg b`.
+
+Items 1 and 3 of the commensurability route are therefore complete.  What remains is the assembly:
+`Λ` is finitely generated, each generator is torsion modulo `j_P (R^s)` by a common denominator, so
+the quotient is spanned over `K` by the finitely many `∂^k · tᵢ` with `k < deg bᵢ` and is therefore
+finite-dimensional — the constant of `(12)`.
+
+### Finitely generated torsion implies finite dimension
+
+`finiteDimensional_of_fg_torsion`: a finitely generated submodule over `K[∂;δ]` all of whose
+elements are annihilated by some nonzero operator has finite `K`-dimension.  The proof is induction
+over a finite generating set, using `finiteDimensional_span_singleton` on each generator and
+`Submodule.finiteDimensional_sup` to combine.
+
+The commensurability engine of `(12)` is now complete:
+
+- `fg_submodule` gives that `Λ` is finitely generated over the operator ring;
+- `exists_common_denominator` makes every class of `Λ / j_P (R^s)` torsion;
+- `finiteDimensional_of_fg_torsion` turns that into `dim_K (Λ / j_P (R^s)) < ∞`.
+
+The last step is the concrete lattice setup inside `Fin r → PseudoDiffOp K` (integral lattice,
+saturation, the row lattice of `A_n P`), after which `relIndexSup_map_injective` and
+`relIndexSup_sub_bounds` give `(12)` and the prefix kernels give `(13)`.
+
+### The constant of `(12)` is finite
+
+`finiteDimensional_map_mkQ_of_fg_torsion`: if `Λ` is finitely generated over `K[∂;δ]` and every
+element of `Λ` has a nonzero operator multiple inside `L ≤ Λ`, then the image of `Λ` in the
+quotient by `L` is finite-dimensional over `K`.  The proof reduces each coefficient modulo the
+annihilator by division with remainder, so the quotient is spanned over `K` by the finitely many
+classes `∂^k · tᵢ` with `k < deg bᵢ`; the auxiliary identities `C_smul`, `mono_smul` and
+`truncLT_smul` translate operator truncations into `K`-combinations.
+
+This supplies exactly the `FiniteDimensional K (B.map A.mkQ)` hypothesis that
+`relIndex_sub_bounds` and `relIndexSup_sub_bounds` consume, so the constant `K_k = 2 · quotDim L Λ`
+of `(12)` is now known to be a genuine finite number for commensurable operator lattices.

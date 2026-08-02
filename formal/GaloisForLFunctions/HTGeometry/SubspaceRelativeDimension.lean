@@ -1,3 +1,4 @@
+import Mathlib.Data.Int.ConditionallyCompleteOrder
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.Quotient.Basic
 
@@ -51,33 +52,36 @@ noncomputable def quotComparison (A N : Submodule K V) :
 @[simp] theorem quotComparison_mk (A N : Submodule K V) (x : V) :
     quotComparison A N (Submodule.Quotient.mk x) = Submodule.Quotient.mk x := rfl
 
+/-- The embedding `(B ⊓ N) / (A ⊓ N) ↪ B / A`. -/
+noncomputable def quotDimInfHom (A B N : Submodule K V) :
+    ((B ⊓ N).map (A ⊓ N).mkQ) →ₗ[K] (B.map A.mkQ) :=
+  (quotComparison A N).restrict (by
+    rintro _ ⟨x, hx, rfl⟩
+    exact ⟨x, hx.1, rfl⟩)
+
+theorem quotDimInfHom_injective (A B N : Submodule K V) :
+    Function.Injective (quotDimInfHom A B N) := by
+  rw [injective_iff_map_eq_zero]
+  rintro ⟨y, hy⟩ hzero
+  obtain ⟨x, hx, rfl⟩ := hy
+  have hmem : (Submodule.Quotient.mk x : V ⧸ A) = 0 := by
+    simpa [quotDimInfHom, LinearMap.restrict_apply] using congrArg Subtype.val hzero
+  have hxA : x ∈ A := (Submodule.Quotient.mk_eq_zero A).mp hmem
+  apply Subtype.ext
+  have hz : (Submodule.Quotient.mk x : V ⧸ (A ⊓ N)) = 0 :=
+    (Submodule.Quotient.mk_eq_zero (A ⊓ N)).mpr ⟨hxA, hx.2⟩
+  simpa using hz
+
 /-- Intersecting a nested pair of subspaces with an arbitrary subspace can only shrink the
 relative dimension. -/
-theorem quotDim_inf_le (A B N : Submodule K V)
-    [FiniteDimensional K (B.map A.mkQ)] :
-    quotDim (A ⊓ N) (B ⊓ N) ≤ quotDim A B := by
-  classical
-  -- the comparison map sends the small relative space into the large one
-  have hmaps : ∀ x ∈ (B ⊓ N).map (A ⊓ N).mkQ, quotComparison A N x ∈ B.map A.mkQ := by
-    rintro _ ⟨x, hx, rfl⟩
-    exact ⟨x, hx.1, rfl⟩
-  set f : ((B ⊓ N).map (A ⊓ N).mkQ) →ₗ[K] (B.map A.mkQ) :=
-    (quotComparison A N).restrict hmaps with hf
-  have hinj : Function.Injective f := by
-    rw [injective_iff_map_eq_zero]
-    rintro ⟨y, hy⟩ hzero
-    obtain ⟨x, hx, rfl⟩ := hy
-    have hmem : (Submodule.Quotient.mk x : V ⧸ A) = 0 := by
-      have := congrArg Subtype.val hzero
-      simpa [hf, LinearMap.restrict_apply] using this
-    have hxA : x ∈ A := (Submodule.Quotient.mk_eq_zero A).mp hmem
-    have hxAN : x ∈ A ⊓ N := ⟨hxA, hx.2⟩
-    apply Subtype.ext
-    have : (Submodule.Quotient.mk x : V ⧸ (A ⊓ N)) = 0 :=
-      (Submodule.Quotient.mk_eq_zero (A ⊓ N)).mpr hxAN
-    simpa using this
-  exact f.finrank_le_finrank_of_injective hinj
+theorem quotDim_inf_le (A B N : Submodule K V) [FiniteDimensional K (B.map A.mkQ)] :
+    quotDim (A ⊓ N) (B ⊓ N) ≤ quotDim A B :=
+  (quotDimInfHom A B N).finrank_le_finrank_of_injective (quotDimInfHom_injective A B N)
 
+instance finiteDimensional_inf_map (A B N : Submodule K V)
+    [FiniteDimensional K (B.map A.mkQ)] :
+    FiniteDimensional K ((B ⊓ N).map (A ⊓ N).mkQ) :=
+  FiniteDimensional.of_injective (quotDimInfHom A B N) (quotDimInfHom_injective A B N)
 
 /-- The comparison map `V ⧸ X → V ⧸ Y` for `X ≤ Y`. -/
 noncomputable def quotDown {X Y : Submodule K V} (h : X ≤ Y) : (V ⧸ X) →ₗ[K] (V ⧸ Y) :=
@@ -224,5 +228,144 @@ theorem relIndex_sub_bounds {A B : Submodule K V} (hAB : A ≤ B) (N : Submodule
   have hNB : quotDim N B = Module.finrank K (B.map N.mkQ) := rfl
   rw [relIndex, relIndex, hNA, hNB]
   omega
+
+
+/-- **Uniform comparison of lattice indices after an arbitrary cut.**  For a nested pair of
+lattices `L₁ ≤ L₂`, the index against any lattice `M`, computed inside any subspace `W`, changes by
+at most twice the relative dimension of the pair — a constant that depends on neither `M` nor
+`W`. -/
+theorem relIndex_inf_sub_bounds {L₁ L₂ : Submodule K V} (h : L₁ ≤ L₂) (M W : Submodule K V)
+    [FiniteDimensional K (L₂.map L₁.mkQ)]
+    [FiniteDimensional K ((M ⊓ W).map (L₁ ⊓ W).mkQ)]
+    [FiniteDimensional K ((L₂ ⊓ W).map (M ⊓ W).mkQ)] :
+    0 ≤ relIndex (L₁ ⊓ W) (M ⊓ W) - relIndex (L₂ ⊓ W) (M ⊓ W) ∧
+      relIndex (L₁ ⊓ W) (M ⊓ W) - relIndex (L₂ ⊓ W) (M ⊓ W)
+        ≤ 2 * (quotDim L₁ L₂ : ℤ) := by
+  have hAB : L₁ ⊓ W ≤ L₂ ⊓ W := inf_le_inf_right W h
+  obtain ⟨h0, h2⟩ := relIndex_sub_bounds hAB (M ⊓ W)
+  refine ⟨h0, le_trans h2 ?_⟩
+  have hcut := quotDim_inf_le L₁ L₂ W
+  omega
+
+
+/-- Two families of integers whose members differ by at most `c` have suprema differing by at most
+`c`. -/
+theorem sSup_range_sub_bounds {ι : Type*} [Nonempty ι] (f g : ι → ℤ) (c : ℤ)
+    (hbf : BddAbove (Set.range f)) (hbg : BddAbove (Set.range g))
+    (hle : ∀ i, g i ≤ f i) (hc : ∀ i, f i ≤ g i + c) :
+    sSup (Set.range g) ≤ sSup (Set.range f) ∧
+      sSup (Set.range f) ≤ sSup (Set.range g) + c := by
+  constructor
+  · refine csSup_le (Set.range_nonempty g) ?_
+    rintro _ ⟨i, rfl⟩
+    exact le_trans (hle i) (le_csSup hbf ⟨i, rfl⟩)
+  · refine csSup_le (Set.range_nonempty f) ?_
+    rintro _ ⟨i, rfl⟩
+    have hg : g i ≤ sSup (Set.range g) := le_csSup hbg ⟨i, rfl⟩
+    have hf := hc i
+    omega
+
+/-- The prefix invariant of a pair of lattices attached to a family of cuts: the largest relative
+index attained on a cut of the family. -/
+noncomputable def relIndexSup {ι : Type*} (cut : ι → Submodule K V) (L M : Submodule K V) : ℤ :=
+  sSup (Set.range fun i => relIndex (L ⊓ cut i) (M ⊓ cut i))
+
+/-- **Uniform comparison of prefix invariants.**  Replacing a lattice by a commensurable larger one
+changes every prefix invariant by at most twice the relative dimension of the pair, whatever the
+family of cuts and whatever the moving lattice. -/
+theorem relIndexSup_sub_bounds {ι : Type*} [Nonempty ι] (cut : ι → Submodule K V)
+    {L₁ L₂ : Submodule K V} (h : L₁ ≤ L₂) (M : Submodule K V)
+    [FiniteDimensional K (L₂.map L₁.mkQ)]
+    (hfin₁ : ∀ i, FiniteDimensional K ((M ⊓ cut i).map (L₁ ⊓ cut i).mkQ))
+    (hfin₂ : ∀ i, FiniteDimensional K ((L₂ ⊓ cut i).map (M ⊓ cut i).mkQ))
+    (hbdd₁ : BddAbove (Set.range fun i => relIndex (L₁ ⊓ cut i) (M ⊓ cut i)))
+    (hbdd₂ : BddAbove (Set.range fun i => relIndex (L₂ ⊓ cut i) (M ⊓ cut i))) :
+    0 ≤ relIndexSup cut L₁ M - relIndexSup cut L₂ M ∧
+      relIndexSup cut L₁ M - relIndexSup cut L₂ M ≤ 2 * (quotDim L₁ L₂ : ℤ) := by
+  have hpoint : ∀ i,
+      relIndex (L₂ ⊓ cut i) (M ⊓ cut i) ≤ relIndex (L₁ ⊓ cut i) (M ⊓ cut i) ∧
+        relIndex (L₁ ⊓ cut i) (M ⊓ cut i)
+          ≤ relIndex (L₂ ⊓ cut i) (M ⊓ cut i) + 2 * (quotDim L₁ L₂ : ℤ) := by
+    intro i
+    haveI := hfin₁ i
+    haveI := hfin₂ i
+    obtain ⟨h0, h2⟩ := relIndex_inf_sub_bounds h M (cut i)
+    constructor
+    · omega
+    · omega
+  obtain ⟨hA, hB⟩ := sSup_range_sub_bounds
+    (fun i => relIndex (L₁ ⊓ cut i) (M ⊓ cut i))
+    (fun i => relIndex (L₂ ⊓ cut i) (M ⊓ cut i)) (2 * (quotDim L₁ L₂ : ℤ))
+    hbdd₁ hbdd₂ (fun i => (hpoint i).1) (fun i => (hpoint i).2)
+  rw [relIndexSup, relIndexSup]
+  constructor
+  · omega
+  · omega
+
+
+section Transport
+
+variable {V' : Type*} [AddCommGroup V'] [Module K V']
+
+/-- Relative dimension is invariant under an injective linear map. -/
+theorem quotDim_map_injective (f : V →ₗ[K] V') (hf : Function.Injective f) (L M : Submodule K V) :
+    quotDim (L.map f) (M.map f) = quotDim L M := by
+  have hle : L ≤ Submodule.comap f (L.map f) := fun x hx => ⟨x, hx, rfl⟩
+  set q : (V ⧸ L) →ₗ[K] (V' ⧸ L.map f) := Submodule.mapQ L (L.map f) f hle with hq
+  have hqinj : Function.Injective q := by
+    rw [injective_iff_map_eq_zero]
+    intro z hz
+    induction z using Submodule.Quotient.induction_on with
+    | H x =>
+      have hmem : f x ∈ L.map f := by
+        have : (Submodule.Quotient.mk (f x) : V' ⧸ L.map f) = 0 := hz
+        exact (Submodule.Quotient.mk_eq_zero _).mp this
+      obtain ⟨y, hy, hxy⟩ := hmem
+      have hxL : x ∈ L := by
+        rwa [hf hxy] at hy
+      exact (Submodule.Quotient.mk_eq_zero L).mpr hxL
+  have hcomp : (L.map f).mkQ.comp f = q.comp L.mkQ := by
+    ext x
+    rfl
+  have himg : (M.map f).map (L.map f).mkQ = (M.map L.mkQ).map q := by
+    rw [← Submodule.map_comp, ← Submodule.map_comp, hcomp]
+  rw [quotDim, quotDim, himg]
+  exact ((Submodule.equivMapOfInjective _ hqinj _).finrank_eq).symm
+
+/-- The relative index is invariant under an injective linear map. -/
+theorem relIndex_map_injective (f : V →ₗ[K] V') (hf : Function.Injective f) (L M : Submodule K V) :
+    relIndex (L.map f) (M.map f) = relIndex L M := by
+  rw [relIndex, relIndex, quotDim_map_injective f hf L M, quotDim_map_injective f hf M L]
+
+/-- Prefix invariants are invariant under an injective linear map transporting the cuts. -/
+theorem relIndexSup_map_injective {ι : Type*} (f : V →ₗ[K] V') (hf : Function.Injective f)
+    (cut : ι → Submodule K V) (L M : Submodule K V) :
+    relIndexSup (fun i => (cut i).map f) (L.map f) (M.map f) = relIndexSup cut L M := by
+  have hinf : ∀ (P : Submodule K V) (i : ι),
+      (P ⊓ cut i).map f = P.map f ⊓ (cut i).map f := fun P i => Submodule.map_inf _ hf
+  rw [relIndexSup, relIndexSup]
+  congr 1
+  refine congrArg Set.range (funext fun i => ?_)
+  rw [← hinf L i, ← hinf M i, relIndex_map_injective f hf]
+
+/-- Relative dimension is invariant under a linear equivalence. -/
+theorem quotDim_map_equiv (e : V ≃ₗ[K] V') (L M : Submodule K V) :
+    quotDim (L.map (e : V →ₗ[K] V')) (M.map (e : V →ₗ[K] V')) = quotDim L M :=
+  quotDim_map_injective _ e.injective L M
+
+/-- The relative index is invariant under a linear equivalence. -/
+theorem relIndex_map_equiv (e : V ≃ₗ[K] V') (L M : Submodule K V) :
+    relIndex (L.map (e : V →ₗ[K] V')) (M.map (e : V →ₗ[K] V')) = relIndex L M :=
+  relIndex_map_injective _ e.injective L M
+
+/-- Prefix invariants are invariant under a linear equivalence transporting the cuts. -/
+theorem relIndexSup_map_equiv {ι : Type*} (e : V ≃ₗ[K] V') (cut : ι → Submodule K V)
+    (L M : Submodule K V) :
+    relIndexSup (fun i => (cut i).map (e : V →ₗ[K] V')) (L.map (e : V →ₗ[K] V'))
+        (M.map (e : V →ₗ[K] V'))
+      = relIndexSup cut L M :=
+  relIndexSup_map_injective _ e.injective cut L M
+
+end Transport
 
 end GaloisForLFunctions.HTGeometry

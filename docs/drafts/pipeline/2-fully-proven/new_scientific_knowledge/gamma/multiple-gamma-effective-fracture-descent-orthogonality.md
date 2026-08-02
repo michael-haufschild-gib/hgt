@@ -270,7 +270,11 @@ of the facet quotient complex and its localization remain to be assembled in Lea
 - [x] preliminary external novelty and parent audit
 - [ ] independent audit of the multiple-gamma order-one atomic parent
 - [x] assemble the monomial-block contractions into the full localized augmented facet complex
-- [ ] formalize the actual multiple-gamma annihilator and transverse-HT conjunction
+- [x] transverse-HT conjunction `(7)` formalized unconditionally in Lean as an exact iff
+  (`MultipleGammaTransverseDifference.lean`, `MultipleGammaTransverseDepthNecessity.lean`)
+- [x] annihilator `(1)`, inclusion `I_r subseteq Ann_DA(Psi_r)` for arbitrary difference operators
+  (`MultipleGammaDifferenceOperatorAnnihilator.lean`)
+- [ ] annihilator `(1)`, reverse inclusion `Ann_DA(Psi_r) subseteq I_r` for arbitrary operators
 - [ ] construct one nontrivial polarized analytic effectivity locus for the hierarchy
 - [ ] prove a transferred analytic theorem from the incidence object
 
@@ -413,11 +417,92 @@ operator of the hierarchy and the sufficiency half of `(7)`:
 This is `s(m) >= r ⟹ D_m Ψ_r is DA`, unconditionally and with no hypothesis on the periods beyond
 positivity of their imaginary parts.  `#print axioms` clean.
 
-What remains of `(7)` is the necessity half, `s(m) < r ⟹ D_m Ψ_r is HT`.  Its route inside this
-corpus is now explicit: expand the leftover difference factors into translates, land in the face
-packet with two surviving periods, and contradict
-`multipleEllipticGammaSelectedFaces_differentialIndependent` (the defect-coset matroid), which needs
-`PeriodsIntegrallyIndependent` plus a lemma turning differential independence of a family into
-non-differential-algebraicity of a nonzero integer combination of its members.
+## Lean status of the transverse-HT conjunction `(7)`: necessity half and the exact law
+
+The necessity half is now unconditional Lean as well, so `(7)` is an exact iff.
+
+`HTGeometry/DifferentialOperatorRowHypertranscendence.lean` supplies the missing general lemma:
+
+> **`hypertranscendentalOver_differentialOperatorRow_of_ne_zero`** -- a nonzero constant-coefficient
+> differential-operator row applied to a differentially independent family is hypertranscendental,
+> by the one-output case of the operator-row independence criterion;
+> **`hypertranscendentalOver_linearCombination_of_ne_zero`** -- in particular a nonzero linear
+> combination of a differentially independent family is hypertranscendental.
+
+`HTGeometry/MultipleGammaTransverseDepthNecessity.lean` runs the route:
+
+> **`faceShiftSubgroup`** -- the external lattice of a face as an additive subgroup of `C`;
+> **`facePacketFamily`**, **`facePacketFamily_injective`**,
+> **`facePacketFamily_differentialIndependent`** -- the face packet indexed faithfully by its
+> external shift, jointly differentially independent whenever the face keeps two periods;
+> **`facePacketSynth`**, **`facePacketSynth_translate`**, **`meroShiftDiff_facePacketSynth`** --
+> the coefficient calculus: a structural difference in an already deleted direction is the
+> group-algebra operator `t -> t + tau_q` minus the identity on finitely supported coefficients;
+> **`mapDomain_add_sub_ne_zero`** -- an infinite-order translation step never annihilates a nonzero
+> finitely supported coefficient function, so the leftover repetitions cannot cancel;
+> **`exists_facePacketSynth_listShiftDiff`** -- hence the leftover differences produce a nonzero
+> packet combination;
+> **`hypertranscendentalOver_facePacketSynth`** -- which is hypertranscendental;
+> **`hypertranscendentalOver_listShiftDiff_multipleEllipticGammaLogDerivMero`** -- **`s(m) < r`
+> implies `D_m Psi_r` is HT over `C(z)`**, the necessity half;
+> **`differentialAlgebraicOver_listShiftDiff_multipleEllipticGammaLogDerivMero_iff`** and
+> **`hypertranscendentalOver_listShiftDiff_multipleEllipticGammaLogDerivMero_iff`** -- **the exact
+> transverse-depth law `(7)`**: an iterated structural difference is DA exactly when its distinct
+> directions leave at most one surviving period.
+
+The hypotheses are the card's own genericity assumption `PeriodsIntegrallyIndependent tau` and
+`2 <= card iota`; nothing else is assumed.  `#print axioms` clean.
 
 - 2026-08-02 -- the sufficiency half of the transverse-depth law `(7)` is unconditional Lean.
+- 2026-08-02 -- the necessity half and hence the exact law `(7)` are unconditional Lean.
+
+## Lean status of the annihilator `(1)`
+
+`HTGeometry/MultipleGammaDifferenceOperatorAnnihilator.lean` gives the difference-operator action
+and the easy inclusion of `(1)`:
+
+> **`multiDegreeList`**, **`multiDegreeList_toFinset`** -- a monomial multidegree as a list of
+> directions, whose distinct entries are exactly its support;
+> **`xMonomialApply`**, **`xApply`** -- the action of a difference monomial and of an arbitrary
+> operator `P in C[x_0,...,x_r]` on a germ;
+> **`differentialAlgebraicOver_xMonomialApply`** -- a monomial whose support leaves at most one
+> surviving period is DA on the source, by the transverse-depth law;
+> **`differentialAlgebraicOver_xApply_of_mem_veroneseIdeal`** and its order-`r` form
+> **`differentialAlgebraicOver_xApply_of_mem_veroneseIdeal_of_card`** -- **`I_r subseteq
+> Ann_DA(Psi_r)`**, using the corpus ideal criterion `mem_veroneseIdeal_iff`.
+
+The reverse inclusion is the remaining step.  Its route is explicit: a monomial of support `S`
+lands in `span(packet S)` with coefficient the group-algebra element
+`prod_{j in S} (t_j - 1)^{d_j}`; grouping the monomials of `P` by support and using joint
+independence of the deep packets across distinct faces, the source is DA exactly when every
+support-graded part vanishes, which by linear independence of the distinct `x`-monomials means
+`P` has no monomial of width below `r`.
+
+`HTGeometry/MultipleGammaMonomialCoefficients.lean` builds the exponent coordinates that route
+needs, avoiding any group-algebra formalization by using nonnegative exponents only:
+
+> **`NatExp`**, **`natShift`**, **`natShift_add_single`**,
+> **`natShift_mem_faceShiftLattice`** -- nonnegative exponent vectors on the deleted directions of a
+> face and their shifts;
+> **`natShift_injective`** -- integral independence of the periods makes the exponent labelling
+> faithful;
+> **`natPacket`**, **`natPacket_injective`**, **`natPacket_differentialIndependent`** -- the face
+> packet in exponent coordinates, faithful and jointly differentially independent;
+> **`natSynth`**, **`natSynth_sub`**, **`natSynth_eq_sum`** -- synthesis as a linear map on
+> finitely supported coefficients;
+> **`hypertranscendentalOver_natSynth`**, **`natSynth_ne_zero`** -- **a nonzero coefficient
+> function synthesizes a hypertranscendental, hence nonzero, germ**;
+> **`natExpShift`**, **`natPacket_natExpShift`**, **`natSynth_translate`** -- the structural
+> translation in a deleted direction is the exponent shift `n -> n + e_j`;
+> **`natShiftDiffCoeff`**, **`listShiftDiff_natSynth`** -- **an iterated difference along deleted
+> directions is exactly the iterated operator `mapDomain(+e_j) - id` on coefficients**.
+
+What remains is the combinatorial finish: the box/top invariants of `natShiftDiffCoeff` (support
+below the accumulated exponent, coefficient one at the top), which give linear independence of the
+monomial coefficients of a fixed support by a top-degree argument, and the assembly over the
+support grading.
+
+- 2026-08-02 -- the inclusion `I_r subseteq Ann_DA(Psi_r)` is unconditional Lean.
+- 2026-08-02 -- exponent coordinates for the reverse inclusion are unconditional Lean: faithful
+  exponent labelling of a face packet, nonzero coefficients synthesize hypertranscendental germs,
+  and iterated differences are the exponent shift operators.

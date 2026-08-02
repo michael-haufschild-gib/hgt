@@ -866,7 +866,384 @@ theorem deningerSullivanFirstProjection_cocycle_surjective (x : TrivSqZeroExt k 
   · exact deningerSullivanFirstLayerDifferential_inl y
   · rw [deningerSullivanFirstProjection_inl, hy]
 
+/-- **The degree-one comparison is injective.**  A generator that is closed and dies in the target
+is zero, so the first layer creates no spurious degree-one class. -/
+theorem deningerSullivanFirstProjection_ι_eq_zero {u : V × (⋀[k]^2 V)}
+    (hcocycle : deningerSullivanFirstLayerDifferential k V (ι k u) = 0)
+    (hzero : deningerSullivanFirstProjection k V (ι k u) = 0) :
+    u = 0 := by
+  have hbase : u ∈ deningerSullivanFirstBase k V := by
+    rw [← deningerSullivanFirstTower_d_ι_eq_zero_iff]
+    exact hcocycle
+  have hsnd : u.2 = 0 := (Submodule.mem_bot k).mp hbase.2
+  have hmk : u = ((u.1, 0) : V × (⋀[k]^2 V)) := by
+    refine Prod.ext rfl ?_
+    exact hsnd
+  have hval : deningerSullivanFirstProjection k V (ι k u) = TrivSqZeroExt.inr u.1 := by
+    rw [hmk, ← deningerSullivanInclusion_ι, deningerSullivanFirstProjection_inl,
+      deningerMilnorEpsilon_ι]
+  rw [hval] at hzero
+  have hfst : u.1 = 0 := by
+    have := congrArg TrivSqZeroExt.snd hzero
+    simpa using this
+  rw [hmk, hfst]
+  rfl
+
+/-- **The degree-one comparison is surjective.**  Every degree-one class of the target is the image
+of a closed old generator. -/
+theorem deningerSullivanFirstProjection_degreeOne_surjective (v : V) :
+    ∃ u : V × (⋀[k]^2 V),
+      deningerSullivanFirstLayerDifferential k V (ι k u) = 0 ∧
+        deningerSullivanFirstProjection k V (ι k u) = TrivSqZeroExt.inr v := by
+  refine ⟨(v, 0), deningerSullivanFirstLayerDifferential_old v, ?_⟩
+  rw [← deningerSullivanInclusion_ι, deningerSullivanFirstProjection_inl,
+    deningerMilnorEpsilon_ι]
+
+/-- **The degree-one part of clause 3.**  On generators the comparison map of `(3)` is a bijection
+between the closed generators and the degree-one part of the target: `H¹` of the first layer is
+exactly `V`. -/
+theorem deningerSullivanFirstProjection_degreeOne_bijective :
+    (∀ v : V, ∃ u : V × (⋀[k]^2 V),
+        deningerSullivanFirstLayerDifferential k V (ι k u) = 0 ∧
+          deningerSullivanFirstProjection k V (ι k u) = TrivSqZeroExt.inr v) ∧
+      ∀ u : V × (⋀[k]^2 V),
+        deningerSullivanFirstLayerDifferential k V (ι k u) = 0 →
+          deningerSullivanFirstProjection k V (ι k u) = 0 → u = 0 :=
+  ⟨deningerSullivanFirstProjection_degreeOne_surjective,
+    fun _ hc hz => deningerSullivanFirstProjection_ι_eq_zero hc hz⟩
+
+/-- **Degree zero.**  The comparison map is a bijection between the scalars and the degree-zero
+part of the target: `H⁰` of the first layer is `k`. -/
+theorem deningerSullivanFirstProjection_degreeZero (c : k) :
+    deningerSullivanFirstLayerDifferential k V
+        (algebraMap k (ExteriorAlgebra k (V × (⋀[k]^2 V))) c) = 0 ∧
+      deningerSullivanFirstProjection k V
+        (algebraMap k (ExteriorAlgebra k (V × (⋀[k]^2 V))) c) = TrivSqZeroExt.inl c := by
+  refine ⟨?_, ?_⟩
+  · rw [deningerSullivanFirstLayerDifferential, deningerOddDerivation_algebraMap]
+  · rw [AlgHom.commutes]
+    exact congrFun (TrivSqZeroExt.algebraMap_eq_inl k V) c
+
+theorem deningerSullivanFirstProjection_degreeZero_injective {c : k}
+    (h : deningerSullivanFirstProjection k V
+      (algebraMap k (ExteriorAlgebra k (V × (⋀[k]^2 V))) c) = 0) : c = 0 := by
+  rw [(deningerSullivanFirstProjection_degreeZero c).2] at h
+  have := congrArg TrivSqZeroExt.fst h
+  simpa using this
+
 end FirstLayerChainMap
+
+section FirstLayerKilling
+
+open HTGeometry
+
+variable {k V : Type*} [CommRing k] [AddCommGroup V] [Module k V]
+
+/-- The grading involution commutes with the relative inclusion. -/
+theorem deningerExteriorInvolute_sullivanInclusion {W : Type*} [AddCommGroup W] [Module k W]
+    (z : ExteriorAlgebra k V) :
+    deningerExteriorInvolute k (V × W) (deningerSullivanInclusion k V W z) =
+      deningerSullivanInclusion k V W (deningerExteriorInvolute k V z) := by
+  have h : (deningerExteriorInvolute k (V × W)).comp (deningerSullivanInclusion k V W) =
+      (deningerSullivanInclusion k V W).comp (deningerExteriorInvolute k V) := by
+    ext v
+    simp
+  exact AlgHom.congr_fun h z
+
+/-- **The first layer kills every degree-two class.**  Each element of the image of the degree-two
+part is the differential of a new generator. -/
+theorem deningerSullivanFirstLayer_exteriorTwo_isCoboundary {x : ExteriorAlgebra k V}
+    (hx : x ∈ ⋀[k]^2 V) :
+    ∃ y, deningerSullivanFirstLayerDifferential k V y =
+      deningerSullivanInclusion k V (⋀[k]^2 V) x :=
+  ⟨ι k ((0, ⟨x, hx⟩) : V × (⋀[k]^2 V)),
+    deningerSullivanFirstLayerDifferential_new ⟨x, hx⟩⟩
+
+variable [Module kᵐᵒᵖ V] [IsCentralScalar k V]
+
+/-- **The classes the resolution must kill are killed by the first layer.**  If an element of the
+old algebra dies in the two-term algebra, then its image in the first layer is a coboundary.  This
+is the ideal-level statement `deningerMilnorEpsilon_ker` upgraded to the actual differential. -/
+theorem deningerSullivanFirstLayer_inl_isCoboundary {z : ExteriorAlgebra k V}
+    (hz : deningerMilnorEpsilon k V z = 0) :
+    ∃ y, deningerSullivanFirstLayerDifferential k V y =
+      deningerSullivanInclusion k V (⋀[k]^2 V) z := by
+  have hmem : z ∈ deningerMilnorIdeal k V := by
+    rw [← deningerMilnorEpsilon_ker]
+    exact hz
+  rw [deningerMilnorIdeal] at hmem
+  refine Submodule.span_induction ?_ ?_ ?_ ?_ hmem
+  · intro x hx
+    exact deningerSullivanFirstLayer_exteriorTwo_isCoboundary hx
+  · exact ⟨0, by rw [map_zero, map_zero]⟩
+  · rintro p q _ _ ⟨yp, hyp⟩ ⟨yq, hyq⟩
+    exact ⟨yp + yq, by rw [map_add, hyp, hyq, map_add]⟩
+  · rintro c p _ ⟨y, hy⟩
+    refine ⟨deningerSullivanInclusion k V (⋀[k]^2 V)
+      (deningerExteriorInvolute k V c) * y, ?_⟩
+    rw [deningerSullivanFirstLayerDifferential_leibniz, hy,
+      deningerSullivanFirstLayerDifferential_inl,
+      deningerExteriorInvolute_sullivanInclusion, deningerExteriorInvolute_involute,
+      zero_mul, add_zero, smul_eq_mul, map_mul]
+
+/-- The new-generator part of an element of the first layer: what remains after subtracting the
+image of its augmentation. -/
+noncomputable def deningerSullivanNewPart (x : ExteriorAlgebra k (V × (⋀[k]^2 V))) :
+    ExteriorAlgebra k (V × (⋀[k]^2 V)) :=
+  x - deningerSullivanInclusion k V (⋀[k]^2 V)
+    (deningerSullivanAugmentation k V (⋀[k]^2 V) x)
+
+omit [Module kᵐᵒᵖ V] [IsCentralScalar k V] in
+theorem deningerSullivanNewPart_augmentation (x : ExteriorAlgebra k (V × (⋀[k]^2 V))) :
+    deningerSullivanAugmentation k V (⋀[k]^2 V) (deningerSullivanNewPart x) = 0 := by
+  have h := AlgHom.congr_fun
+    (deningerSullivanAugmentation_comp_inclusion (k := k) (V := V) (W := (⋀[k]^2 V)))
+    (deningerSullivanAugmentation k V (⋀[k]^2 V) x)
+  rw [AlgHom.comp_apply, AlgHom.id_apply] at h
+  rw [deningerSullivanNewPart, map_sub, h, sub_self]
+
+omit [Module kᵐᵒᵖ V] [IsCentralScalar k V] in
+/-- The new-generator part lies in the ideal generated by the new generators. -/
+theorem deningerSullivanNewPart_mem (x : ExteriorAlgebra k (V × (⋀[k]^2 V))) :
+    deningerSullivanNewPart x ∈ deningerSullivanNewIdeal k V (⋀[k]^2 V) := by
+  rw [← deningerSullivanAugmentation_ker]
+  exact deningerSullivanNewPart_augmentation x
+
+/-- **Reduction of clause 3's injectivity to the new generators.**  A class killed by the
+comparison map is a coboundary exactly when its new-generator part is.  Everything coming from the
+old algebra has already been killed, so the whole remaining content of the quasi-isomorphism sits
+in the ideal generated by the new generators. -/
+theorem deningerSullivanFirstLayer_isCoboundary_iff_newPart
+    {x : ExteriorAlgebra k (V × (⋀[k]^2 V))}
+    (hzero : deningerSullivanFirstProjection k V x = 0) :
+    (∃ y, deningerSullivanFirstLayerDifferential k V y = x) ↔
+      ∃ y, deningerSullivanFirstLayerDifferential k V y = deningerSullivanNewPart x := by
+  have hker : deningerMilnorEpsilon k V (deningerSullivanAugmentation k V (⋀[k]^2 V) x) = 0 :=
+    hzero
+  obtain ⟨y₀, hy₀⟩ := deningerSullivanFirstLayer_inl_isCoboundary hker
+  constructor
+  · rintro ⟨y, hy⟩
+    refine ⟨y - y₀, ?_⟩
+    rw [map_sub, hy, hy₀, deningerSullivanNewPart]
+  · rintro ⟨y, hy⟩
+    refine ⟨y + y₀, ?_⟩
+    rw [map_add, hy, hy₀, deningerSullivanNewPart, sub_add_cancel]
+
+omit [Module kᵐᵒᵖ V] [IsCentralScalar k V] in
+/-- The differential of a new generator times an old element is the image of the product. -/
+theorem deningerSullivanFirstLayer_newGenerator_mul_inl (w : ⋀[k]^2 V)
+    (z : ExteriorAlgebra k V) :
+    deningerSullivanFirstLayerDifferential k V
+        (ι k ((0, w) : V × (⋀[k]^2 V)) * deningerSullivanInclusion k V (⋀[k]^2 V) z) =
+      deningerSullivanInclusion k V (⋀[k]^2 V) ((w : ExteriorAlgebra k V) * z) := by
+  rw [deningerSullivanFirstLayerDifferential_leibniz,
+    deningerSullivanFirstLayerDifferential_inl, mul_zero, zero_add,
+    deningerSullivanFirstLayerDifferential_new, ← map_mul]
+
+omit [Module kᵐᵒᵖ V] [IsCentralScalar k V] in
+/-- **The syzygy cocycles of the first layer.**  A new generator times an element of the old algebra
+is closed exactly when the corresponding product already vanishes in the old algebra.  These are the
+classes the next stage is attached to kill. -/
+theorem deningerSullivanFirstLayer_newGenerator_mul_inl_cocycle_iff (w : ⋀[k]^2 V)
+    (z : ExteriorAlgebra k V) :
+    deningerSullivanFirstLayerDifferential k V
+        (ι k ((0, w) : V × (⋀[k]^2 V)) * deningerSullivanInclusion k V (⋀[k]^2 V) z) = 0 ↔
+      (w : ExteriorAlgebra k V) * z = 0 := by
+  rw [deningerSullivanFirstLayer_newGenerator_mul_inl]
+  constructor
+  · intro h
+    exact deningerSullivanInclusion_injective (by rw [h, map_zero])
+  · intro h
+    rw [h, map_zero]
+
+/-- **A class with no new-generator part is a coboundary.**  Combining the reduction with the
+killing theorem: if a class killed by the comparison map lies entirely in the old algebra, it is a
+coboundary of the first layer. -/
+theorem deningerSullivanFirstLayer_isCoboundary_of_newPart_eq_zero
+    {x : ExteriorAlgebra k (V × (⋀[k]^2 V))}
+    (hzero : deningerSullivanFirstProjection k V x = 0)
+    (hnew : deningerSullivanNewPart x = 0) :
+    ∃ y, deningerSullivanFirstLayerDifferential k V y = x := by
+  rw [deningerSullivanFirstLayer_isCoboundary_iff_newPart hzero, hnew]
+  exact ⟨0, map_zero _⟩
+
+end FirstLayerKilling
+
+section SecondStageData
+
+open HTGeometry
+
+variable {k V : Type*} [CommRing k] [AddCommGroup V] [Module k V]
+
+variable (k V)
+
+/-- **The syzygy space of the first layer**: the span of the degree-two cocycles obtained by
+multiplying a new generator with an old generator whose corresponding product already vanishes.
+This is the space of classes the second stage is attached to kill. -/
+def deningerSullivanSyzygy : Submodule k (ExteriorAlgebra k (V × (⋀[k]^2 V))) :=
+  Submodule.span k { x | ∃ (w : ⋀[k]^2 V) (v : V),
+    (w : ExteriorAlgebra k V) * ι k v = 0 ∧
+      x = ι k ((0, w) : V × (⋀[k]^2 V)) * ι k ((v, 0) : V × (⋀[k]^2 V)) }
+
+variable {k V}
+
+/-- The syzygy space consists of degree-two elements. -/
+theorem deningerSullivanSyzygy_le_exteriorTwo :
+    deningerSullivanSyzygy k V ≤ ⋀[k]^2 (V × (⋀[k]^2 V)) := by
+  rw [deningerSullivanSyzygy, Submodule.span_le]
+  rintro _ ⟨w, v, -, rfl⟩
+  exact deningerExteriorTwo_mem _ _
+
+/-- **The syzygy classes are central**, so they are admissible attaching data for a further odd
+derivation. -/
+theorem deningerSullivanSyzygy_central {s : ExteriorAlgebra k (V × (⋀[k]^2 V))}
+    (hs : s ∈ deningerSullivanSyzygy k V) (x : ExteriorAlgebra k (V × (⋀[k]^2 V))) :
+    Commute s x :=
+  deningerExteriorPowerTwo_central (deningerSullivanSyzygy_le_exteriorTwo hs) x
+
+/-- **The syzygy classes are invariant under the grading involution.** -/
+theorem deningerSullivanSyzygy_involute {s : ExteriorAlgebra k (V × (⋀[k]^2 V))}
+    (hs : s ∈ deningerSullivanSyzygy k V) :
+    deningerExteriorInvolute k (V × (⋀[k]^2 V)) s = s :=
+  deningerExteriorInvolute_exteriorTwo (deningerSullivanSyzygy_le_exteriorTwo hs)
+
+/-- **The syzygy classes are cocycles**, so attaching generators with these differentials produces
+a differential that still squares to zero. -/
+theorem deningerSullivanSyzygy_cocycle {s : ExteriorAlgebra k (V × (⋀[k]^2 V))}
+    (hs : s ∈ deningerSullivanSyzygy k V) :
+    deningerSullivanFirstLayerDifferential k V s = 0 := by
+  rw [deningerSullivanSyzygy] at hs
+  refine Submodule.span_induction ?_ ?_ ?_ ?_ hs
+  · rintro _ ⟨w, v, hwv, rfl⟩
+    rw [← deningerSullivanInclusion_ι (W := (⋀[k]^2 V)) v,
+      deningerSullivanFirstLayer_newGenerator_mul_inl, hwv, map_zero]
+  · exact map_zero _
+  · intro p q _ _ hp hq
+    rw [map_add, hp, hq, add_zero]
+  · intro c p _ hp
+    rw [map_smul, hp, smul_zero]
+
+/-- The attaching map of the second stage: the inclusion of the syzygy space. -/
+def deningerSullivanSecondPsi :
+    (deningerSullivanSyzygy k V) →ₗ[k] ExteriorAlgebra k (V × (⋀[k]^2 V)) :=
+  (deningerSullivanSyzygy k V).subtype
+
+@[simp]
+theorem deningerSullivanSecondPsi_apply (s : deningerSullivanSyzygy k V) :
+    deningerSullivanSecondPsi s = (s : ExteriorAlgebra k (V × (⋀[k]^2 V))) :=
+  rfl
+
+/-- **The second stage's attaching data is admissible.**  Its values are central, involution
+invariant, and killed by the first-layer differential — exactly the three conditions the successor
+construction requires. -/
+theorem deningerSullivanSecondPsi_admissible :
+    (∀ (s : deningerSullivanSyzygy k V) (x : ExteriorAlgebra k (V × (⋀[k]^2 V))),
+        Commute (deningerSullivanSecondPsi s) x) ∧
+      (∀ s : deningerSullivanSyzygy k V,
+        deningerExteriorInvolute k (V × (⋀[k]^2 V)) (deningerSullivanSecondPsi s) =
+          deningerSullivanSecondPsi s) ∧
+      ∀ s : deningerSullivanSyzygy k V,
+        deningerSullivanFirstLayerDifferential k V (deningerSullivanSecondPsi s) = 0 :=
+  ⟨fun s => deningerSullivanSyzygy_central s.2,
+    fun s => deningerSullivanSyzygy_involute s.2,
+    fun s => deningerSullivanSyzygy_cocycle s.2⟩
+
+end SecondStageData
+
+section SecondLayer
+
+open HTGeometry
+
+variable {k V : Type*} [CommRing k] [AddCommGroup V] [Module k V]
+
+/-- The two constructions of the inclusion of the old algebra agree. -/
+theorem deningerExteriorInl_eq_sullivanInclusion {U N : Type*} [AddCommGroup U] [Module k U]
+    [AddCommGroup N] [Module k N] :
+    (deningerExteriorInl : ExteriorAlgebra k U →ₐ[k] ExteriorAlgebra k (U × N)) =
+      deningerSullivanInclusion k U N := by
+  ext u
+  simp
+
+variable (k V)
+
+/-- The generator assignment of the second stage. -/
+noncomputable def deningerSullivanSecondPhi :
+    ((V × (⋀[k]^2 V)) × (deningerSullivanSyzygy k V)) →ₗ[k]
+      ExteriorAlgebra k ((V × (⋀[k]^2 V)) × (deningerSullivanSyzygy k V)) :=
+  deningerSuccessorPhi (deningerSullivanFirstPhi k V) deningerSullivanSecondPsi
+
+variable {k V}
+
+/-- Every second-stage generator value is a degree-two element. -/
+theorem deningerSullivanSecondPhi_mem
+    (p : (V × (⋀[k]^2 V)) × (deningerSullivanSyzygy k V)) :
+    deningerSullivanSecondPhi k V p ∈ ⋀[k]^2 ((V × (⋀[k]^2 V)) × (deningerSullivanSyzygy k V)) := by
+  rw [deningerSullivanSecondPhi, deningerSuccessorPhi_apply,
+    deningerExteriorInl_eq_sullivanInclusion, deningerExteriorInl_eq_sullivanInclusion]
+  refine Submodule.add_mem _ ?_ ?_
+  · exact deningerSullivanInclusion_exteriorTwo _ (deningerSullivanFirstPhi_mem p.1)
+  · exact deningerSullivanInclusion_exteriorTwo _ (deningerSullivanSyzygy_le_exteriorTwo p.2.2)
+
+theorem deningerSullivanSecondPhi_commute
+    (p : (V × (⋀[k]^2 V)) × (deningerSullivanSyzygy k V))
+    (x : ExteriorAlgebra k ((V × (⋀[k]^2 V)) × (deningerSullivanSyzygy k V))) :
+    Commute (deningerSullivanSecondPhi k V p) x :=
+  deningerExteriorPowerTwo_central (deningerSullivanSecondPhi_mem p) x
+
+theorem deningerSullivanSecondPhi_involute
+    (p : (V × (⋀[k]^2 V)) × (deningerSullivanSyzygy k V)) :
+    deningerExteriorInvolute k ((V × (⋀[k]^2 V)) × (deningerSullivanSyzygy k V))
+        (deningerSullivanSecondPhi k V p) = deningerSullivanSecondPhi k V p :=
+  deningerExteriorInvolute_exteriorTwo (deningerSullivanSecondPhi_mem p)
+
+variable (k V)
+
+/-- **The differential of the second relative Sullivan layer.** -/
+noncomputable def deningerSullivanSecondLayerDifferential :
+    ExteriorAlgebra k ((V × (⋀[k]^2 V)) × (deningerSullivanSyzygy k V)) →ₗ[k]
+      ExteriorAlgebra k ((V × (⋀[k]^2 V)) × (deningerSullivanSyzygy k V)) :=
+  deningerOddDerivation (deningerSullivanSecondPhi k V) deningerSullivanSecondPhi_commute
+
+variable {k V}
+
+/-- **The second layer extends the first.**  On the image of the first layer the second-stage
+differential is the first-stage differential. -/
+theorem deningerSullivanSecondLayerDifferential_inl
+    (x : ExteriorAlgebra k (V × (⋀[k]^2 V))) :
+    deningerSullivanSecondLayerDifferential k V
+        (deningerSullivanInclusion k (V × (⋀[k]^2 V)) (deningerSullivanSyzygy k V) x) =
+      deningerSullivanInclusion k (V × (⋀[k]^2 V)) (deningerSullivanSyzygy k V)
+        (deningerSullivanFirstLayerDifferential k V x) := by
+  rw [← deningerExteriorInl_eq_sullivanInclusion, ← deningerExteriorInl_eq_sullivanInclusion]
+  exact deningerSuccessorDerivation_inl (deningerSullivanFirstPhi k V)
+    deningerSullivanSecondPsi deningerSullivanFirstPhi_commute
+    deningerSullivanSecondPhi_commute x
+
+/-- **Every syzygy class becomes a coboundary at the second stage.**  This is step 2 performed on
+the card's own first layer. -/
+theorem deningerSullivanSecondLayerDifferential_new (s : deningerSullivanSyzygy k V) :
+    deningerSullivanSecondLayerDifferential k V
+        (ι k ((0, s) : (V × (⋀[k]^2 V)) × (deningerSullivanSyzygy k V))) =
+      deningerSullivanInclusion k (V × (⋀[k]^2 V)) (deningerSullivanSyzygy k V)
+        (s : ExteriorAlgebra k (V × (⋀[k]^2 V))) := by
+  rw [← deningerExteriorInl_eq_sullivanInclusion]
+  exact deningerSuccessorDerivation_new (deningerSullivanFirstPhi k V)
+    deningerSullivanSecondPsi deningerSullivanSecondPhi_commute s
+
+/-- **The second-layer differential squares to zero**, so the second stage is again a differential
+graded algebra. -/
+theorem deningerSullivanSecondLayerDifferential_comp_self
+    (x : ExteriorAlgebra k ((V × (⋀[k]^2 V)) × (deningerSullivanSyzygy k V))) :
+    deningerSullivanSecondLayerDifferential k V
+      (deningerSullivanSecondLayerDifferential k V x) = 0 :=
+  deningerSuccessorDerivation_comp_self (deningerSullivanFirstPhi k V)
+    deningerSullivanSecondPsi deningerSullivanFirstPhi_commute
+    deningerSullivanSecondPhi_commute deningerSullivanFirstPhi_involute
+    (fun s => deningerSullivanSyzygy_involute s.2)
+    (fun u => deningerSullivanFirstLayerDifferential_kill u.2.2)
+    (fun s => deningerSullivanSyzygy_cocycle s.2) x
+
+end SecondLayer
 
 end RHTower
 

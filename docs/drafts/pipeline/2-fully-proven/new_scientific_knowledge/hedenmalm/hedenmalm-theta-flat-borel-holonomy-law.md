@@ -452,6 +452,24 @@ on `(0,T)`.  Its geometric sample form is
 `essSup_norm_mul_essSup_norm_hedenmalmBorelCharacter_eq_one_iff` proves the condition number is `1`
 exactly on the critical line.
 
+The Sonine half of `(16f)` is now proved as well, so the comparison itself is a Lean theorem:
+
+```text
+formal/GaloisForLFunctions/RHTower/XiHedenmalmBorelSoninApertureComparison.lean
+
+borel_and_sonin_aperture_exponents_agree
+  : at a centered spectral point off the critical line, both geometric-sample ratios ---
+    the Borel condition number of the theta tail and the norm of the Gamma-completed Sonine
+    evaluation vector --- converge to the same number |Im alpha|,
+borel_sonin_aperture_exponent_eq_zero_iff
+  : that common exponent vanishes exactly on the critical line.
+```
+
+The Sonine half rests on `tendsto_log_norm_burnolExtendedSoninEvaluationVector`, proved in the
+sibling card's modules from the exact dilation character; its only hypothesis is that the base
+evaluation vector is nonzero, which is Burnol's `(10)`.  So `(16f)` is now formalized as an equality
+of two independently constructed exponents rather than quoted as an external estimate.
+
 The Burnol side of `(16f)` now has its own module,
 
 ```text
@@ -522,6 +540,8 @@ both reflected holonomies forces `alpha` real, not that it holds.
 - [x] determinant-torsion sample law `(16g)` proved
 - [x] Lean formalization of Theorems 1--4, unconditional
 - [x] Burnol completed-Mellin evaluator and ambient aperture bound in Lean (sibling card `(3)`)
-- [ ] Burnol co-Poisson lower bound `(11)` in Lean (sibling card, parent transgression)
+- [x] Burnol lower bound `(11)`, two-sided law `(12)` and exponent limit `(13)` in Lean
+- [x] Lean identification of the two aperture exponents `(16f)`
+- [ ] Burnol nonvanishing `(10)`: the one hypothesis left in the Sonine half of `(16f)`
 - [ ] `[OPEN CORE: THETA_BOREL_REFLECTED_COMMON_DOMAIN]`
 - [ ] independent specialist novelty audit

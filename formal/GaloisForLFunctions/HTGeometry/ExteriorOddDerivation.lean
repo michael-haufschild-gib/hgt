@@ -560,4 +560,46 @@ theorem deningerSuccessorDerivation_coboundary (n : N) :
 
 end Successor
 
+section Naturality
+
+variable {k U U' : Type*} [CommRing k] [AddCommGroup U] [Module k U]
+  [AddCommGroup U'] [Module k U']
+
+/-- The grading involution is natural in the generator space. -/
+theorem deningerExteriorInvolute_map (f : U →ₗ[k] U') (x : ExteriorAlgebra k U) :
+    deningerExteriorInvolute k U' (ExteriorAlgebra.map f x) =
+      ExteriorAlgebra.map f (deningerExteriorInvolute k U x) := by
+  have h : (deningerExteriorInvolute k U').comp (ExteriorAlgebra.map f) =
+      (ExteriorAlgebra.map f).comp (deningerExteriorInvolute k U) := by
+    ext u
+    simp [ExteriorAlgebra.map_apply_ι]
+  exact AlgHom.congr_fun h x
+
+variable (phi : U →ₗ[k] ExteriorAlgebra k U)
+variable (hcomm : ∀ (u : U) (x : ExteriorAlgebra k U), Commute (phi u) x)
+variable (phi' : U' →ₗ[k] ExteriorAlgebra k U')
+variable (hcomm' : ∀ (u : U') (x : ExteriorAlgebra k U'), Commute (phi' u) x)
+
+include hcomm hcomm' in
+/-- **The odd derivation is natural.**  A linear map of generator spaces compatible with the two
+generator assignments induces a map of exterior algebras commuting with the two derivations.  This
+is the functoriality of the construction in its generator data. -/
+theorem deningerOddDerivation_natural (f : U →ₗ[k] U')
+    (hf : ∀ u : U, ExteriorAlgebra.map f (phi u) = phi' (f u))
+    (x : ExteriorAlgebra k U) :
+    ExteriorAlgebra.map f (deningerOddDerivation phi hcomm x) =
+      deningerOddDerivation phi' hcomm' (ExteriorAlgebra.map f x) := by
+  induction x using ExteriorAlgebra.induction with
+  | algebraMap r =>
+    rw [deningerOddDerivation_algebraMap, map_zero, AlgHom.commutes,
+      deningerOddDerivation_algebraMap]
+  | ι u =>
+    rw [deningerOddDerivation_ι, ExteriorAlgebra.map_apply_ι, deningerOddDerivation_ι, hf]
+  | add a b ha hb => simp only [map_add, ha, hb]
+  | mul a b ha hb =>
+    rw [deningerOddDerivation_leibniz, map_add, map_mul, map_mul, ha, hb, map_mul,
+      deningerOddDerivation_leibniz, deningerExteriorInvolute_map]
+
+end Naturality
+
 end HTGeometry

@@ -121,7 +121,7 @@ theorem coe_kolchinClosureAddSubgroup
 
 /-- An additive subgroup is Kolchin dense in its closure, expressed in the constructed affine
 Kolchin topology. -/
-theorem denseInducing_kolchinClosureAddSubgroup
+theorem closure_kolchinClosureAddSubgroup
     {ι K : Type*} [Field K] [Differential K]
     (H : AddSubgroup (ι → K)) :
     @closure (ι → K) (kolchinTopologicalSpace K) (H : Set (ι → K)) =

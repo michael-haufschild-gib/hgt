@@ -79,6 +79,79 @@ theorem Scheme.Hom.functionFieldPullback_id
   rw [Scheme.Hom.functionFieldPullback, Scheme.Hom.stalkMap_id]
   simp
 
+/-- Categorical iteration of a scheme endomorphism. -/
+def Scheme.Hom.categoricalIterate {X : Scheme.{u}} (f : X ⟶ X) : ℕ → (X ⟶ X)
+  | 0 => 𝟙 X
+  | n + 1 => f.categoricalIterate n ≫ f
+
+@[simp]
+theorem Scheme.Hom.categoricalIterate_zero {X : Scheme.{u}} (f : X ⟶ X) :
+    f.categoricalIterate 0 = 𝟙 X :=
+  rfl
+
+@[simp]
+theorem Scheme.Hom.categoricalIterate_succ {X : Scheme.{u}} (f : X ⟶ X) (n : ℕ) :
+    f.categoricalIterate (n + 1) = f.categoricalIterate n ≫ f :=
+  rfl
+
+/-- Every iterate of a dominant endomorphism is dominant. -/
+instance Scheme.Hom.isDominant_categoricalIterate
+    {X : Scheme.{u}} (f : X ⟶ X) [IsDominant f] (n : ℕ) :
+    IsDominant (f.categoricalIterate n) := by
+  induction n with
+  | zero => simp only [Scheme.Hom.categoricalIterate_zero]; infer_instance
+  | succ n _ => simp only [Scheme.Hom.categoricalIterate_succ]; infer_instance
+
+/-- Pullback along a categorical iterate is the corresponding functional iterate. -/
+theorem Scheme.Hom.functionFieldPullback_categoricalIterate_apply
+    {X : Scheme.{u}} [IrreducibleSpace X]
+    (f : X ⟶ X) [IsDominant f] (n : ℕ) (z : X.functionField) :
+    (f.categoricalIterate n).functionFieldPullback z =
+      (f.functionFieldPullback : X.functionField → X.functionField)^[n] z := by
+  induction n generalizing z with
+  | zero => simp
+  | succ n ih =>
+      have hsucc := Scheme.Hom.functionFieldPullback_congr
+        (f.categoricalIterate (n + 1)) (f.categoricalIterate n ≫ f)
+        (Scheme.Hom.categoricalIterate_succ f n)
+      rw [hsucc, Scheme.Hom.functionFieldPullback_comp, CommRingCat.comp_apply, ih]
+      simp only [Function.iterate_succ_apply]
+
+/-- An isomorphism of irreducible schemes induces the contravariant isomorphism of function
+fields. -/
+noncomputable def Scheme.Iso.functionFieldPullbackRingEquiv
+    {X Y : Scheme.{u}} [IrreducibleSpace X] [IrreducibleSpace Y]
+    (e : X ≅ Y) : Y.functionField ≃+* X.functionField where
+  toFun := e.hom.functionFieldPullback
+  invFun := e.inv.functionFieldPullback
+  left_inv z := by
+    have hcomp := e.inv.functionFieldPullback_comp e.hom
+    have hcancel := Scheme.Hom.functionFieldPullback_congr
+      (e.inv ≫ e.hom) (𝟙 Y) e.inv_hom_id
+    have h := hcomp.symm.trans (hcancel.trans (Scheme.Hom.functionFieldPullback_id Y))
+    exact congrArg (fun q : Y.functionField ⟶ Y.functionField => q z) h
+  right_inv z := by
+    have hcomp := e.hom.functionFieldPullback_comp e.inv
+    have hcancel := Scheme.Hom.functionFieldPullback_congr
+      (e.hom ≫ e.inv) (𝟙 X) e.hom_inv_id
+    have h := hcomp.symm.trans (hcancel.trans (Scheme.Hom.functionFieldPullback_id X))
+    exact congrArg (fun q : X.functionField ⟶ X.functionField => q z) h
+  map_add' x y := e.hom.functionFieldPullback.hom.map_add x y
+  map_mul' x y := e.hom.functionFieldPullback.hom.map_mul x y
+
+/-- Canonical algebra structure from a field to the function field of its spectrum. -/
+@[implicit_reducible] noncomputable def Scheme.specFunctionFieldAlgebra
+    (K : Type u) [Field K] : Algebra K (Spec (.of K)).functionField := by
+  exact RingHom.toAlgebra
+    (StructureSheaf.toStalk K (genericPoint (Spec (.of K)))).hom
+
+/-- The function field of the spectrum of a field is canonically that field. -/
+noncomputable def Scheme.specFunctionFieldAlgEquiv (K : Type u) [Field K] :=
+  letI := Scheme.specFunctionFieldAlgebra K
+  letI : IsFractionRing K (Spec (.of K)).functionField :=
+    functionField_isFractionRing_of_affine (.of K)
+  IsFractionRing.algEquiv K K (Spec (.of K)).functionField
+
 /-- A dominant structure morphism makes the source function field an algebra over the base
 function field. -/
 @[implicit_reducible] noncomputable def Scheme.Hom.functionFieldAlgebra

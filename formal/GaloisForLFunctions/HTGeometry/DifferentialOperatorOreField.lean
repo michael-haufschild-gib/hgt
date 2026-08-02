@@ -161,6 +161,111 @@ abbrev PseudoDiffOp (K : Type u) [Field K] [Differential K] : Type u :=
 
 instance : DivisionRing (PseudoDiffOp K) := inferInstance
 
+
+open OreLocalization in
+/-- Nonzero operators are left regular. -/
+theorem nonZeroDivisors_le_left : (DiffOp K)⁰ ≤ nonZeroDivisorsLeft (DiffOp K) := by
+  intro s hs
+  have hs0 : s ≠ 0 := mem_nonZeroDivisors_iff_ne_zero.mp hs
+  intro y hy
+  exact (mul_eq_zero.mp hy).resolve_left hs0
+
+open OreLocalization in
+theorem numeratorRingHom_injective :
+    Function.Injective (numeratorRingHom : DiffOp K → PseudoDiffOp K) :=
+  OreLocalization.numeratorHom_inj nonZeroDivisors_le_left
+
+open OreLocalization in
+/-- A finite family of rational pseudodifferential operators has a common left denominator. -/
+theorem exists_common_denominator {ι : Type*} (x : ι → PseudoDiffOp K) (t : Finset ι) :
+    ∃ d : DiffOp K, d ≠ 0 ∧ ∀ i ∈ t, ∃ y : DiffOp K,
+      (numeratorRingHom d : PseudoDiffOp K) * x i = numeratorRingHom y := by
+  classical
+  induction t using Finset.induction_on with
+  | empty => exact ⟨1, one_ne_zero, by simp⟩
+  | insert a t ha ih =>
+    obtain ⟨d, hd, hclear⟩ := ih
+    obtain ⟨r, s, hxa⟩ : ∃ (r : DiffOp K) (s : (DiffOp K)⁰), x a = r /ₒ s :=
+      OreLocalization.ind (fun r s => ⟨r, s, rfl⟩) (x a)
+    obtain ⟨r', s', hs', hore⟩ := exists_ore_left_multiple d (s : DiffOp K)
+      (mem_nonZeroDivisors_iff_ne_zero.mp s.2)
+    refine ⟨s' * d, mul_ne_zero' hs' hd, fun i hi => ?_⟩
+    rcases Finset.mem_insert.mp hi with rfl | hit
+    · refine ⟨r' * r, ?_⟩
+      rw [hxa, hore]
+      show ((r' * (s : DiffOp K)) /ₒ 1) * (r /ₒ s) = (r' * r) /ₒ 1
+      exact OreLocalization.mul_cancel'
+    · obtain ⟨y, hy⟩ := hclear i hit
+      exact ⟨s' * y, by rw [map_mul, mul_assoc, hy, ← map_mul]⟩
+
+section RowIndependence
+
+open OreLocalization
+
+variable {ι ι' : Type*} [Fintype ι']
+
+/-- The image of an operator matrix in the skew field of fractions. -/
+def toPseudoMatrix (P : ι' → ι → DiffOp K) : ι' → ι → PseudoDiffOp K :=
+  fun i j => numeratorRingHom (P i j)
+
+/-- **Row independence over the skew field.**  Rows that are left independent over the operator
+ring stay independent over the rational pseudodifferential operators: a rational relation is
+cleared by a common denominator. -/
+theorem rowIndep_toPseudoMatrix (P : ι' → ι → DiffOp K) (hP : RowIndep P)
+    (v : ι' → PseudoDiffOp K) (hv : ∀ j, ∑ i, v i * toPseudoMatrix P i j = 0) : v = 0 := by
+  classical
+  obtain ⟨d, hd, hclear⟩ := exists_common_denominator v Finset.univ
+  choose y hy using fun i => hclear i (Finset.mem_univ i)
+  have hyzero : (fun i => y i) = 0 := by
+    refine hP (fun i => y i) ?_
+    funext j
+    have hsum : ∑ i, (numeratorRingHom (y i) : PseudoDiffOp K) * toPseudoMatrix P i j = 0 := by
+      have hmul := congrArg (fun z : PseudoDiffOp K => (numeratorRingHom d : PseudoDiffOp K) * z)
+        (hv j)
+      rw [Finset.mul_sum, mul_zero] at hmul
+      refine Eq.trans (Finset.sum_congr rfl fun i _ => ?_) hmul
+      rw [← hy i, mul_assoc]
+    have hnum : (numeratorRingHom (∑ i, y i * P i j) : PseudoDiffOp K) = numeratorRingHom 0 := by
+      rw [map_sum, map_zero]
+      refine Eq.trans (Finset.sum_congr rfl fun i _ => ?_) hsum
+      rw [map_mul]
+      rfl
+    have := numeratorRingHom_injective hnum
+    show DiffOp.vecMul (fun i => y i) P j = 0
+    rw [DiffOp.vecMul, this]
+  funext i
+  have hyi : y i = 0 := congrFun hyzero i
+  have hdv : (numeratorRingHom d : PseudoDiffOp K) * v i = 0 := by
+    rw [hy i, hyi, map_zero]
+  have hdne : (numeratorRingHom d : PseudoDiffOp K) ≠ 0 := by
+    intro hzero
+    exact hd (numeratorRingHom_injective (by rw [hzero, map_zero]))
+  have := (mul_eq_zero.mp hdv).resolve_left hdne
+  simpa using this
+
+
+/-- The row map `v ↦ v · P` over the skew field of rational pseudodifferential operators. -/
+def pseudoVecMul (P : ι' → ι → DiffOp K) (v : ι' → PseudoDiffOp K) : ι → PseudoDiffOp K :=
+  fun j => ∑ i, v i * toPseudoMatrix P i j
+
+theorem pseudoVecMul_sub (P : ι' → ι → DiffOp K) (v w : ι' → PseudoDiffOp K) :
+    pseudoVecMul P (v - w) = pseudoVecMul P v - pseudoVecMul P w := by
+  funext j
+  simp only [pseudoVecMul, Pi.sub_apply, sub_mul]
+  rw [Finset.sum_sub_distrib]
+
+/-- **Injectivity of the row map over the skew field.** -/
+theorem pseudoVecMul_injective (P : ι' → ι → DiffOp K) (hP : RowIndep P) :
+    Function.Injective (pseudoVecMul P) := by
+  intro v w hvw
+  have hzero : pseudoVecMul P (v - w) = 0 := by
+    rw [pseudoVecMul_sub, hvw, sub_self]
+  have hv := rowIndep_toPseudoMatrix P hP (v - w) fun j => congrFun hzero j
+  have := sub_eq_zero.mp hv
+  exact this
+
+end RowIndependence
+
 end
 
 end DiffOp

@@ -299,9 +299,19 @@ All are axiom-clean, with the Fuchs constants abstract (positivity plus tempered
 `A_2 ≤ C^j A_{j+2}`).  The hypotheses still open for the *true prolate operator* are the ℓ-side
 inputs: square-summability, the Bessel bound `Σℓ² ≤ 2λ`, and the prolate-to-Hermite limits of
 the first two coordinates in each sector — plus Fuchs asymptotics identifying the true leakages
-with the Fuchs family.  The `O(λ^{-7})` eigenvector rate also remains (the tail-fraction collapse
-of the exact eigenvector is proved in `ConstrainedProlateSecularVector.lean`; the normalized
-distance form is not).  The card remains in stage 2 pending those true-operator inputs.
+with the Fuchs family.
+
+The exact normalized eigenvector statement is now formalized in
+`formal/GaloisForLFunctions/RHTower/ConstrainedProlateParityDistanceCCM.lean`.
+`ccm_tendsto_min_norm_lp_normalize_sub_negativeTwoModeSeed` constructs both the exact secular
+eigenvector and its two-mode `h_2-h_6` seed as literal `lp 2` vectors and proves that the minimum
+of the two squared normalized distances (the two sign choices) tends to zero.  The offset-Fuchs
+ordering, root location, square-summability of the secular vector, nonvanishing, head alignment,
+and `λ·d_6/(d_10-d_6) → 0` tail collapse are all discharged.  Only the same explicit true-prolate
+coordinate hypotheses remain.  The qualitative normalized-distance form is therefore complete;
+the stronger quantitative `O(λ^{-7})` rate still requires quantitative prolate-to-Hermite error
+bounds, not merely the coordinate limits currently available.  The card remains in stage 2
+pending those true-operator inputs.
 
 ## Gates
 
@@ -318,6 +328,8 @@ distance form is not).  The card remains in stage 2 pending those true-operator 
 - [x] exact infinite-dimensional constrained floors: `8/13`, `5/13`, quantified gap, parity
   collapse `(9)`, and sharp `lambda^4` coefficient `(8)` formalized in Lean for the Fuchs-rate
   model (ℓ-side inputs as explicit hypotheses)
+- [x] normalized full-`ℓ²` negative-sector eigenvector convergence up to sign formalized in Lean
+- [ ] quantitative `O(lambda^(-7))` normalized eigenvector rate in Lean
 - [ ] true-operator ℓ-side inputs (Bessel bound, prolate-to-Hermite limits) and Fuchs
   identification in Lean
 - [ ] independent proof audit

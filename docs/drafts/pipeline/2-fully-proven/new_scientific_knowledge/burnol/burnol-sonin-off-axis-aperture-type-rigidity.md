@@ -404,9 +404,85 @@ Completeness is the missing prerequisite for the continuous Gamma-completed eval
 evaluation on it, Riesz representation produces `k_{w,a}` with `||k_{w,a}||` equal to the functional
 norm, which is what turns the proved bound into the boxed form of `(3)`.
 
-Still outside the formal tree: the Riesz representative itself, Burnol's orthogonal-complement
-identification `(10)`, and the co-Poisson dilation contractions giving the lower bound `(11)`.
-Those are what the two-sided law `(12)` and the limit `(13)` still require.
+The continuous evaluation vector `k_{w,a}` of `(GS3)` now exists in the formal tree as well:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolSoninContinuousEvaluation.lean
+formal/GaloisForLFunctions/RHTower/BurnolSoninApertureRieszBound.lean
+```
+
+The first proves that the concrete completed Mellin integral converges absolutely on `L_a`, is
+additive and homogeneous there, is continuous by the aperture estimate, and produces its
+Frechet--Riesz vector:
+
+```text
+integrableOn_extendedSonin_mul_mellinKernel : absolute convergence on L_a,
+burnolExtendedSoninEvaluation               : the continuous functional on L_a,
+burnolExtendedSoninEvaluationVector         : its Riesz vector k_{w,a},
+inner_burnolExtendedSoninEvaluationVector   : <k_{w,a}, f> = M f(w).
+```
+
+The second turns the operator estimate into the boxed form of `(3)` by testing the functional on
+its own Riesz vector:
+
+```text
+norm_burnolExtendedSoninEvaluationVector_le_aperture
+  : ||k_{w,a}|| <= (C(w)/sqrt 2) a^(-|Re w - 1/2|)     for 1/2 < Re w < 1.
+```
+
+So the ambient bound `(3)` is now formalized in exactly the form the card states it, as a norm bound
+on the evaluation vector rather than on the functional.
+
+The lower bound `(11)` is now proved as well, and without the co-Poisson projections: the exact
+dilation character alone forces it.  In
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolSoninDilationMellin.lean
+formal/GaloisForLFunctions/RHTower/BurnolSoninCrossApertureRiesz.lean
+```
+
+the normalized dilation is shown to carry `L_a` into `L_{r^(-1) a}` in both branches, to multiply the
+completed Mellin evaluation by the exact character `r^(w-1/2)`, and hence, by testing the evaluation
+vector at the shrunk aperture against the dilate of the evaluation vector at `a`, to force
+
+```text
+norm_burnolExtendedSoninEvaluationVector_forward_le
+  : r^(Re w - 1/2) ||k_{w,a}|| <= ||k_{w, r^(-1) a}||,
+norm_burnolExtendedSoninEvaluationVector_inverse_le
+  : r^(1/2 - Re w) ||k_{w,a}|| <= ||k_{w, r^(-1) a}||,
+norm_burnolExtendedSoninEvaluationVector_max_le
+  : max of the two characters,                                                     (11) one step
+norm_burnolExtendedSoninEvaluationVector_geometric_le
+  : max(...)^N ||k_{w,a}|| <= ||k_{w, r^(-N) a}||.                                 (11)
+```
+
+Since `max(r^(s-1/2), r^(1/2-s)) = r^|s-1/2|` for `r >= 1`, this is exactly the boxed lower bound
+`(11)`, with the same exponent as the proved upper bound `(3)`.  Note the projections `E_j` and the
+identification `(10)` are not needed for it: the Cauchy--Schwarz self-test against the dilate
+already gives the sharp constant.
+
+The two-sided law `(12)` and the limit `(13)` follow, in the same module:
+
+```text
+max_character_eq_rpow_abs
+  : max(r^(s-1/2), r^(1/2-s)) = r^|s-1/2| for r >= 1,
+norm_burnolExtendedSoninEvaluationVector_geometric_lower
+  : ||k_{w,a}|| r^(N |Re w - 1/2|) <= ||k_{w,a_N}||,                               (12) lower
+norm_burnolExtendedSoninEvaluationVector_geometric_upper
+  : ||k_{w,a_N}|| <= (C(w)/sqrt 2) a^(-|Re w - 1/2|) r^(N |Re w - 1/2|),           (12) upper
+tendsto_log_norm_burnolExtendedSoninEvaluationVector
+  : k_{w,a} /= 0 -> lim_N log||k_{w,a_N}|| / (N log r) = |Re w - 1/2|.             (13)
+```
+
+So `(12)` holds unconditionally with `c_w = ||k_{w,a}||` and the explicit ambient `C_w`, and `(13)`
+holds as soon as the base evaluation vector is nonzero.  The positivity of `C_w` needed for `(13)`
+is obtained from the `N = 0` case of the upper bound rather than from nonvanishing of the Gamma
+factor.
+
+Still outside the formal tree: Burnol's orthogonal-complement identification `(10)`.  It is what
+supplies the nonvanishing `k_{rho,a_N} /= 0` at a zeta zero --- the single remaining hypothesis of
+`(13)` --- and what transfers the two-sided law to the co-Poisson quotient vectors `y_{rho,N}` of
+the parent boundary-transgression theorem.
 
 ## Gates
 
@@ -425,6 +501,8 @@ Those are what the two-sided law `(12)` and the limit `(13)` still require.
 - [x] Lean: Fubini interchange and the archimedean functional equation `(8)`
 - [x] Lean: reflected aperture bound `(3)`,`(4)` with the constant `C_-` for `Re w < 1/2`
 - [x] Lean: `L_a` is closed and complete (prerequisite for the Riesz evaluation vector)
-- [ ] Lean: the Riesz evaluation vector `k_{w,a}` and the boxed form of `(3)`
-- [ ] Lean: orthogonal-complement identification `(10)` and co-Poisson lower bound `(11)`
+- [x] Lean: the Riesz evaluation vector `k_{w,a}` and the boxed form of `(3)`
+- [x] Lean: cross-aperture dilation characters and the geometric lower bound `(11)`
+- [x] Lean: two-sided aperture-type law `(12)` and the exponent limit `(13)`
+- [ ] Lean: orthogonal-complement identification `(10)`: nonvanishing at a zeta zero, and transfer to the co-Poisson quotient vectors
 

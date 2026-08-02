@@ -261,8 +261,30 @@ these are axiom-clean (`propext`, `Classical.choice`, `Quot.sound` only).
 What remains genuinely open in Lean is the *hypothesis* `(3)` itself: the PSWF weighted projective
 convergence of the radial Gram matrix.  It is supplied as an explicit hypothesis, not asserted, so
 nothing here claims the unconditional operator convergence `(8)` or the Fredholm determinant limit
-`(16)` for the actual prolate source.  The trace-norm and determinant statements also still need a
-trace-class/Fredholm interface absent from the tree.  The card therefore remains at stage 2.
+`(16)` for the actual prolate source.
+
+The missing trace-class interface is now formalized in
+`GaloisForLFunctions/RHTower/ArithmeticDilationTraceClass.lean`.
+`RHTower.absoluteMatrixOperator` realizes every absolutely summable matrix as the literal sum of
+its rank-one matrix units.  `RHTower.traceNorm_absoluteMatrixOperator_le` proves that its genuine
+Schatten trace norm is bounded by the entrywise projective norm, and
+`RHTower.arithmeticDilation_traceClass_traceNorm_limit` upgrades the exact implication already
+proved in `ArithmeticDilationProjectiveLimit` to `(8)`: every stage and the limit are Schatten-1,
+and the operators converge in trace norm.
+
+The same module constructs the actual limiting operator
+`RHTower.constrainedProlateArithmeticLimitOperator` and proves unconditionally that it is
+Schatten-1, positive, self-adjoint, and diagonal on the canonical `ell^2` basis with precisely the
+eigenvalues `(7)`.  Its ordinary operator trace is proved equal to `sum_k kappa_k`, hence to the
+negative constrained-prolate prime constant.  Finally,
+`RHTower.constrainedProlateArithmeticFredholmDeterminant` is the global bare product in `(16)`;
+the product converges uniformly on every compact subset of `C`, agrees near the origin with the
+existing Hilbert--Schmidt `fredholmDet1`, and vanishes at every point `-1/kappa_k`.
+
+What remains for the full Lean statement of this card is therefore narrower but still substantive:
+discharge actual PSWF hypothesis `(3)`; prove determinant continuity for the general nondiagonal
+trace-norm-convergent stages; formalize the negative-spectral-mass consequence and the converse
+zero/multiplicity plus entire-order assertions.  The card remains at stage 2.
 
 ## Gates
 
@@ -279,7 +301,10 @@ trace-class/Fredholm interface absent from the tree.  The card therefore remains
 - [x] total-charge-as-trace recovery `(20)`--`(21)` formalized in Lean
 - [x] `kappa_k = 2 log(k) w_k` identified with the formalized arithmetic eigenvalue
 - [ ] discharge the weighted projective hypothesis `(3)` from PSWF asymptotics in Lean
-- [ ] trace-class and Fredholm determinant interface in Lean
+- [x] trace-class operator realization and projective-norm-to-trace-norm interface in Lean
+- [x] limiting positive arithmetic operator, exact trace, and compact-uniform Fredholm product in Lean
+- [ ] nondiagonal stage determinant convergence and negative spectral mass in Lean
+- [ ] exact determinant zero multiplicities and entire order `1/2` in Lean
 - [ ] independent PSWF normalization audit
 - [ ] polar--prime critical Mellin graph-domain assembly
 - [ ] complete Weil-form lower bound
