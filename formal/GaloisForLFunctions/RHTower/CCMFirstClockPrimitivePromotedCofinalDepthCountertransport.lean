@@ -224,6 +224,113 @@ theorem landedDepthPairProfile_reflection
     anchoredCrossPair_swap]
   ring
 
+/-- Landed depth profile for one ordered prime pair. -/
+abbrev LandedDepthPairProfileSpace (p q : ℕ) :=
+  Fin (primeDepthMultiplicity p) →
+    Fin (primeDepthMultiplicity q) → ℝ
+
+/--
+Raw exterior reflection exchanges the two source legs, reverses both depth
+intervals, and contributes the alternating exterior sign.
+-/
+def rawExteriorDepthReflection
+    {p q : ℕ}
+    (x : LandedDepthPairProfileSpace q p) :
+    LandedDepthPairProfileSpace p q :=
+  fun r s => -x (Fin.rev s) (Fin.rev r)
+
+/-- Odd source orientation contributes the second sign. -/
+def oddOrientationDepthTwist
+    {p q : ℕ}
+    (x : LandedDepthPairProfileSpace p q) :
+    LandedDepthPairProfileSpace p q :=
+  fun r s => -x r s
+
+/-- Reflected Hodge exchange after the odd orientation twist. -/
+def compensatedDepthReflection
+    {p q : ℕ}
+    (x : LandedDepthPairProfileSpace q p) :
+    LandedDepthPairProfileSpace p q :=
+  oddOrientationDepthTwist (rawExteriorDepthReflection x)
+
+theorem compensatedDepthReflection_eq
+    {p q : ℕ}
+    (x : LandedDepthPairProfileSpace q p)
+    (r : Fin (primeDepthMultiplicity p))
+    (s : Fin (primeDepthMultiplicity q)) :
+    compensatedDepthReflection x r s =
+      x (Fin.rev s) (Fin.rev r) := by
+  simp [compensatedDepthReflection, oddOrientationDepthTwist,
+    rawExteriorDepthReflection]
+
+theorem compensatedDepthReflection_involutive
+    {p q : ℕ}
+    (x : LandedDepthPairProfileSpace p q) :
+    compensatedDepthReflection (compensatedDepthReflection x) = x := by
+  funext r s
+  simp [compensatedDepthReflection_eq]
+
+/-- Both ordered orientations of one reflected depth rectangle. -/
+abbrev DoubledLandedDepthPairProfileSpace (p q : ℕ) :=
+  LandedDepthPairProfileSpace p q ×
+    LandedDepthPairProfileSpace q p
+
+/-- Total reflected Hodge involution on the doubled ordered-pair carrier. -/
+def reflectedDepthHodge
+    {p q : ℕ}
+    (x : DoubledLandedDepthPairProfileSpace p q) :
+    DoubledLandedDepthPairProfileSpace p q :=
+  (compensatedDepthReflection x.2,
+    compensatedDepthReflection x.1)
+
+theorem reflectedDepthHodge_sq
+    {p q : ℕ}
+    (x : DoubledLandedDepthPairProfileSpace p q) :
+    reflectedDepthHodge (reflectedDepthHodge x) = x := by
+  rcases x with ⟨x, y⟩
+  simp only [reflectedDepthHodge]
+  rw [compensatedDepthReflection_involutive,
+    compensatedDepthReflection_involutive]
+
+/-- Concrete fixed reflected Hodge sector of the doubled carrier. -/
+def reflectedDepthHodgeSector (p q : ℕ) :
+    Set (DoubledLandedDepthPairProfileSpace p q) :=
+  {x | reflectedDepthHodge x = x}
+
+/-- The actual landed countertransport on both ordered orientations. -/
+def doubledLandedDepthPairProfile (n p q : ℕ) :
+    DoubledLandedDepthPairProfileSpace p q :=
+  (landedDepthPairProfile n p q,
+    landedDepthPairProfile n q p)
+
+/--
+The countertransport lies in the concrete reflected Hodge fixed sector.
+This theorem includes both exterior and odd-orientation signs through
+`compensatedDepthReflection`; it is stronger than scalar symmetry alone.
+-/
+theorem doubledLandedDepthPairProfile_mem_reflectedDepthHodgeSector
+    (n p q : ℕ) :
+    doubledLandedDepthPairProfile n p q ∈
+      reflectedDepthHodgeSector p q := by
+  change
+    reflectedDepthHodge (doubledLandedDepthPairProfile n p q) =
+      doubledLandedDepthPairProfile n p q
+  apply Prod.ext
+  · funext r s
+    change
+      compensatedDepthReflection
+          (landedDepthPairProfile n q p) r s =
+        landedDepthPairProfile n p q r s
+    rw [compensatedDepthReflection_eq]
+    exact landedDepthPairProfile_reflection n p q r s
+  · funext s r
+    change
+      compensatedDepthReflection
+          (landedDepthPairProfile n p q) s r =
+        landedDepthPairProfile n q p s r
+    rw [compensatedDepthReflection_eq]
+    exact landedDepthPairProfile_reflection n q p s r
+
 /-- Singular depth codiagonal on one rectangle recovers the finite source
 pair exactly. -/
 theorem sum_landedDepthPairProfile
@@ -381,6 +488,78 @@ theorem cofinalDepthCountertransportCapacity_nonneg
   positivity
 
 /--
+Raw Hilbert capacity of both ordered orientations in the reflected Hodge
+carrier.  Unlike the orbit-normalized capacity, this counts both members of
+every reflection orbit.
+-/
+def reflectedHodgeCountertransportCapacity (n : ℕ) : ℝ :=
+  ∑ p ∈ suzukiMangoldtFivePrimeBlock n,
+    ∑ q ∈ suzukiMangoldtFivePrimeBlock
+        (PrimitivePromotedTwoScale.sourceDilation * n),
+      (landedDepthPairCapacity n p q +
+        landedDepthPairCapacity n q p)
+
+theorem reflectedHodgeCountertransportCapacity_eq
+    {n : ℕ} (_hn : 0 < n) :
+    reflectedHodgeCountertransportCapacity n =
+      2 * cofinalDepthCountertransportCapacity n := by
+  unfold reflectedHodgeCountertransportCapacity
+  calc
+    ∑ p ∈ suzukiMangoldtFivePrimeBlock n,
+        ∑ q ∈ suzukiMangoldtFivePrimeBlock
+            (PrimitivePromotedTwoScale.sourceDilation * n),
+          (landedDepthPairCapacity n p q +
+            landedDepthPairCapacity n q p) =
+        ∑ p ∈ suzukiMangoldtFivePrimeBlock n,
+          ∑ q ∈ suzukiMangoldtFivePrimeBlock
+              (PrimitivePromotedTwoScale.sourceDilation * n),
+            2 * (4 *
+              PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ 2 /
+                ((primeDepthMultiplicity p : ℝ) *
+                  (primeDepthMultiplicity q : ℝ))) := by
+      apply Finset.sum_congr rfl
+      intro p hp
+      apply Finset.sum_congr rfl
+      intro q hq
+      rw [landedDepthPairCapacity_eq
+          (mem_suzukiMangoldtFivePrimeBlock.mp hp).1.one_lt
+          (mem_suzukiMangoldtFivePrimeBlock.mp hq).1.one_lt,
+        landedDepthPairCapacity_eq
+          (mem_suzukiMangoldtFivePrimeBlock.mp hq).1.one_lt
+          (mem_suzukiMangoldtFivePrimeBlock.mp hp).1.one_lt,
+        anchoredCrossPair_swap]
+      ring
+    _ = 2 *
+        (∑ p ∈ suzukiMangoldtFivePrimeBlock n,
+          ∑ q ∈ suzukiMangoldtFivePrimeBlock
+              (PrimitivePromotedTwoScale.sourceDilation * n),
+            4 *
+              PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ 2 /
+                ((primeDepthMultiplicity p : ℝ) *
+                  (primeDepthMultiplicity q : ℝ))) := by
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro p hp
+      rw [Finset.mul_sum]
+    _ = 2 * (4 *
+        ∑ p ∈ suzukiMangoldtFivePrimeBlock n,
+          ∑ q ∈ suzukiMangoldtFivePrimeBlock
+              (PrimitivePromotedTwoScale.sourceDilation * n),
+            PrimitivePromotedTwoScale.anchoredCrossPair n p q ^ 2 /
+              ((primeDepthMultiplicity p : ℝ) *
+                (primeDepthMultiplicity q : ℝ))) := by
+      apply congrArg (fun x : ℝ => 2 * x)
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro p hp
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro q hq
+      ring
+    _ = 2 * cofinalDepthCountertransportCapacity n := by
+      rfl
+
+/--
 **Uniform carrier-capacity theorem.**  The actual-depth countertransport
 retains every finite two-scale source coefficient and has one
 aperture-independent source-normal capacity.
@@ -500,6 +679,18 @@ theorem cofinalDepthCountertransportCapacity_le
     exact depthNormalizedPrimeMass_nonneg
       (mem_suzukiMangoldtFivePrimeBlock.mp hq).1.one_lt
   unfold cofinalDepthCountertransportCapacity
+  nlinarith
+
+/--
+Uniform capacity of the genuine doubled reflected-Hodge carrier.  The
+constant is exactly twice the orbit-normalized bound because this norm
+counts both ordered orientations.
+-/
+theorem reflectedHodgeCountertransportCapacity_le
+    {n : ℕ} (hn : 0 < n) :
+    reflectedHodgeCountertransportCapacity n ≤ 200 * 289 ^ 2 := by
+  rw [reflectedHodgeCountertransportCapacity_eq hn]
+  have hcapacity := cofinalDepthCountertransportCapacity_le hn
   nlinarith
 
 /-- Complete singular depth readout is still exactly the original

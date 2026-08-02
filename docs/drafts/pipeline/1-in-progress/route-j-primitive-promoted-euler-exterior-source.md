@@ -635,3 +635,70 @@ the semilocal Sonine/scaling setting (`arXiv:1910.14368`).  The targeted audit f
 constructing the source-specific ratio `(PPES-18)`, logarithmic prime-dependent actual-depth
 spread, reflected exterior intertwining, and uniform block capacity `(PPES-27)` together.
 Novelty is claimed only for that conjunction and remains provisional.
+
+### Reflected-sector closure audit
+
+The coordinate identity `(PPES-23)` alone is not enough to claim preservation of a Hodge sector:
+it could hide the exterior sign in prose.  The doubled carrier therefore carries two explicit
+operations.  If `x` is a profile on the reversed ordered pair, raw exterior reflection is
+
+```text
+(R_ext x)(r,s)=-x(K(q)-1-s,K(p)-1-r),                 (PPES-29)
+```
+
+and the odd orientation local system is
+
+```text
+(O_odd x)(r,s)=-x(r,s).                               (PPES-30)
+```
+
+The compensated reflected Hodge operator exchanges the two ordered orientations and applies
+`O_odd R_ext`.  Both signs are present, not suppressed.  Finite interval reversal is involutive,
+so
+
+```text
+H_ref^2=1.
+```
+
+Combining this with `Q_n(q,p)=Q_n(p,q)` proves the actual doubled landed profile
+
+```text
+(U_n(p,q,-,-),U_n(q,p,-,-))
+```
+
+lies in `Fix(H_ref)` for every source pair.  This is the concrete reflected Hodge sector used by
+the countertransport.
+
+There are two honest capacity conventions.  Equation `(PPES-24)` counts one fundamental domain
+of reflected ordered-pair orbits.  The raw Hilbert norm of the doubled fixed-sector carrier counts
+both orientations and is exactly
+
+```text
+U_n^H=2U_n <= 200*289^2.                              (PPES-31)
+```
+
+Thus reflected-sector preservation does not depend on quotienting away half of the carrier, and
+uniform capacity survives without changing order.  The exact Lean objects and theorems are:
+
+```text
+rawExteriorDepthReflection
+oddOrientationDepthTwist
+compensatedDepthReflection
+reflectedDepthHodge
+reflectedDepthHodge_sq
+doubledLandedDepthPairProfile_mem_reflectedDepthHodgeSector
+reflectedHodgeCountertransportCapacity_eq
+reflectedHodgeCountertransportCapacity_le
+```
+
+in
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  CCMFirstClockPrimitivePromotedCofinalDepthCountertransport.lean
+```
+
+The same module formalizes `(PPES-18)`--`(PPES-22)`, `(PPES-25)`--`(PPES-28)`, actual
+prime-power-cell incidence realization, and Green fixedness.  Direct `lake env lean` and the
+targeted module build pass.  `#print axioms` reports only `propext`, `Classical.choice`, and
+`Quot.sound`.

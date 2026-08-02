@@ -1,0 +1,1029 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=27mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{booktabs,array}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!48!black,
+  citecolor=blue!48!black,urlcolor=blue!55!black]{hyperref}
+\setlength{\emergencystretch}{2em}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\cA}{\mathcal A}
+\newcommand{\cD}{\mathcal D}
+\newcommand{\cE}{\mathcal E}
+\newcommand{\cF}{\mathcal F}
+\newcommand{\cG}{\mathcal G}
+\newcommand{\cH}{\mathcal H}
+\newcommand{\cI}{\mathcal I}
+\newcommand{\cQ}{\mathcal Q}
+\newcommand{\cW}{\mathcal W}
+\newcommand{\Rea}{\operatorname{Re}}
+\newcommand{\im}{\operatorname{im}}
+\newcommand{\kerop}{\operatorname{ker}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\Div}{\operatorname{Div}}
+
+\title{\textbf{The Hellinger--Hodge reflection law}\\
+\large From Euler valuation probability to Gamma/co-Poisson Green descent
+at the Riemann divisor}
+\author{Michael Haufschild}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We identify a single polarized source law behind several constructions
+which have previously appeared unrelated in approaches to the Riemann
+hypothesis: squarefree Euler activation, Fisher whitening, Gamma
+completion, thermofield coherence, Calder\'on--Witt incidence, singular
+reflection sewing, and weight-one Hodge conservation.
+
+The diagonal Euler activation is
+\[
+              \frac{\zeta(s)}{\zeta(2s)}.
+\]
+Primewise it is a Bernoulli occupancy variable followed, conditional on
+occupancy, by a geometric valuation fibre.  On the source half-line its
+complementary occupation weights are
+\[
+                 h(t)=e^{-t},\qquad \tau(t)=1-e^{-t}.
+\]
+They force the odd Hodge scale
+\[
+ q(t)^2=\frac{\tau(t)}{h(t)},\qquad
+ J(f,g)(t)=\bigl(q(t)g(t),-q(t)^{-1}f(t)\bigr).
+\]
+If \(I(t)\) is the Bernoulli Fisher density, then \(q(t)^2I(t)=1\).
+Both off-diagonal transfers equal the Hellinger density
+\[
+              h(t)q(t)=\frac{\tau(t)}{q(t)}
+              =\sqrt{h(t)\tau(t)}.
+\]
+This density is exactly the KMS/Wightman half-density of the two-state
+occupation Hamiltonian.  Its Laplace transform is not an inserted
+archimedean factor but the exact Beta/Gamma column
+\[
+ -\int_0^\infty e^{-at}\sqrt{h(t)\tau(t)}\,dt
+ =-\frac{\Gamma(a+\tfrac12)\Gamma(\tfrac32)}
+          {\Gamma(a+2)},\qquad a>-\tfrac12 .
+\]
+
+We then construct the vector-valued lift of this polarization through the
+exact Calder\'on--Witt incidence complex and its canonical Green
+retraction.  Evaluation gives the confluent Gamma/co-Poisson boundary
+transport, and normalized orientation strictly intertwines the
+vector-valued and scalar Hodge rotations.
+
+The main result is a reflection-equipartition classification.  For every
+real modular displacement \(\delta\), the following are equivalent:
+the actual Gamma/co-Poisson reflection defect annihilates every exact
+secondary Green boundary; the two reflected Gibbs orientations remain on
+one exposed face; the reflection-odd source profile has finite positive
+energy; and \(\delta=0\).  For \(\delta\ne0\), the zero-temperature state
+becomes pure, off-diagonal KMS coherence vanishes, one reflected sewing
+cost grows beyond every finite Rees order, and the positive boundary
+energy diverges.
+
+At a zero \(\rho\) of the completed Riemann function, the source
+displacement is
+\[
+                       \delta_\rho=2\bigl(\Rea\rho-\tfrac12\bigr).
+\]
+Thus pointwise Green descent is exactly critical-line placement, and
+global descent over the completed divisor is equivalent to the Riemann
+hypothesis.  This does not prove global descent.  It replaces the former
+missing-transport problem by one explicit domain statement: the
+divisor-indexed reflection defect must annihilate exact Green incidence,
+equivalently its labelled common-test profile must land in the
+finite-energy polarized boundary.  All source, Gamma/co-Poisson, Hodge,
+incidence, and comparison maps entering that statement are constructed
+here.
+\end{abstract}
+
+\medskip
+\noindent\textbf{Keywords.}
+Riemann hypothesis; Euler product; Hellinger distance; Fisher information;
+KMS state; Gamma function; co-Poisson transform; Green operator;
+Calder\'on--Witt complex; Hodge polarization.
+
+\medskip
+\noindent\textbf{2020 Mathematics Subject Classification.}
+Primary 11M26, 11M06; Secondary 46N50, 47A06, 58A14.
+
+\section{Introduction}
+
+The central obstruction in a source-based approach to the Riemann
+hypothesis is easy to state and difficult to preserve.  A nontrivial zero
+\(\rho\) carries the signed normal displacement
+\[
+                       \Rea\rho-\frac12.
+\tag{1.1}\label{eq:intro-displacement}
+\]
+The functional equation pairs \(\rho\) with
+\(1-\overline\rho\), but a reflection-even divisor, a positive square, or
+a scalar trace can retain the pair while losing the sign in
+\eqref{eq:intro-displacement}.  A successful source must keep both
+orientations until after multiplication, reflection, and Hodge
+polarization.
+
+Several obstructions point to the same difficulty.  Ordinary Hilbert
+radicals may be dense and nonclosed.  A product-topology completion which
+retains every finite output coordinate becomes maximally vertical and
+therefore transports no output information.  Reflected valuation sectors
+cannot be sewn by any fixed Rees order.  A bounded finite-stage source can
+still require an unbounded scalar codiagonal.  Positive Ward forms count
+off-line pairs but do not supply a vanishing theorem.  Differential
+independence excludes every finite differential-algebraic explanation of
+the common divisor.  Each statement detects a loss occurring after the
+source has been compressed.
+
+The positive constructions are equally suggestive.  Diagonal Wold
+activation gives the squarefree Euler quotient.  Its local law separates
+prime occupancy from valuation depth.  M\"obius--Schur differences are
+the positive-valuation atoms, their damping is Fisher variance, and the
+Gamma valuation frame is obtained by removing that damping.  A common
+Laplace test splits into a compact Gamma head and a Hardy tail.  The two
+channels carry a forced odd Hodge rotation of energy four.  Exact
+Calder\'on--Witt incidence and a Green retraction preserve the
+prime/depth-labelled exterior source before orientation.
+
+The missing relation among these facts is the geometric mean.  If
+\(h+\tau=1\) are complementary source occupations, energy exchange forces
+the likelihood-ratio scale
+\[
+                   q^2=\frac{\tau}{h}.
+\tag{1.2}\label{eq:intro-q}
+\]
+The transported density is consequently
+\[
+                    hq=\frac{\tau}{q}=\sqrt{h\tau}.
+\tag{1.3}\label{eq:intro-hellinger}
+\]
+This is simultaneously:
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em]
+\item the Hellinger coupling of the two source occupations;
+\item the off-diagonal KMS/Wightman half-density of their canonical
+      two-state Gibbs model;
+\item the coefficient which makes the odd Hodge map an exact energy
+      exchange; and
+\item, after the common Laplace test, a Beta/Gamma quotient.
+\end{enumerate}
+Gamma completion, Fisher whitening, and quantum coherence are therefore
+not separate decorations of the Euler source.  They are three coordinate
+descriptions of the same polarized half-density.
+
+Reflection supplies the second half of the law.  A real modular
+displacement \(\delta\) assigns the two orientations the energies
+\((-\delta,\delta)\).  Source depth is the inverse-temperature clock.
+When \(\delta\ne0\), the zero-temperature limit selects one exposed
+orientation and radicalizes the other.  When \(\delta=0\), both remain
+equipotential.  This elementary tropical dichotomy is exactly the
+dichotomy seen by Gamma sewing, positive source energy, and Green
+descent.
+
+The resulting main equivalence is
+\[
+\boxed{
+\begin{aligned}
+&\text{Gamma/co-Poisson Green descent}\\
+&\quad\Longleftrightarrow
+  \text{reflection equipartition}\\
+&\quad\Longleftrightarrow
+  \text{finite-energy polarized landing}\\
+&\quad\Longleftrightarrow \delta=0.
+\end{aligned}}
+\tag{1.4}\label{eq:intro-main}
+\]
+At the Riemann divisor,
+\(\delta=2(\Rea\rho-\tfrac12)\).  Equation
+\eqref{eq:intro-main} then becomes a pointwise zero-location theorem
+conditional on one concrete landing assertion, and its global form is
+equivalent to RH.
+
+This advances the frontier in two ways.  First, the singular
+source-pointed polarized chain transport formerly specified only by its
+required properties is now constructed and compared exactly with the
+Gamma/co-Poisson boundary.  Second, the remaining gap is no longer
+``find a source'', ``find a Hilbert space'', or ``find positivity''.  It
+is the domain theorem
+\[
+\begin{gathered}
+ \text{the divisor-indexed reflection defect annihilates exact incidence,}\\
+ \text{equivalently its labelled profile has finite boundary energy.}
+\end{gathered}
+\tag{1.5}\label{eq:intro-domain}
+\]
+The paper proves that \eqref{eq:intro-domain} is sufficient, necessary,
+and cannot be replaced by any of the regular completions already ruled
+out.  It does not assert \eqref{eq:intro-domain}.
+
+\section{The arithmetic occupation source}
+\label{sec:occupation}
+
+\subsection{Diagonal activation and valuation disintegration}
+
+For \(q\in[0,1)\), define a probability law on
+\(\N_0\) by
+\[
+ \nu_q(0)=\frac1{1+q},\qquad
+ \nu_q(k)=\frac{(1-q)q^k}{1+q}\quad(k\ge1).
+\tag{2.1}\label{eq:valuation-law}
+\]
+The probability of positive valuation is
+\[
+                  \pi(q)=\frac{q}{1+q}.
+\tag{2.2}\label{eq:occupancy}
+\]
+Conditional on positive valuation, \(k-1\) is geometric:
+\[
+ \nu_q(k)=\pi(q)(1-q)q^{k-1},\qquad k\ge1.
+\tag{2.3}\label{eq:conditional-geometric}
+\]
+The normalization and factorization in
+\eqref{eq:valuation-law}--\eqref{eq:conditional-geometric} are exact.
+The logarithmic occupancy Fisher variance is
+\[
+             \mathcal I_{\mathrm{occ}}(q)
+             =\pi(q)(1-\pi(q))
+             =\frac{q}{(1+q)^2}.
+\tag{2.4}\label{eq:local-fisher}
+\]
+
+At a prime \(p\), take \(q=p^{-\sigma}\).  On the diagonal the activation
+holonomy is
+\[
+                 \mathcal Z_\infty(s,s)
+                   =\frac{\zeta(s)}{\zeta(2s)}.
+\tag{2.5}\label{eq:activation-zeta}
+\]
+The positive atoms in \eqref{eq:valuation-law} are exactly the
+M\"obius--Schur forward differences.  Their damping squared is
+\eqref{eq:local-fisher}; division by that damping gives the
+half-shifted Gamma valuation coordinate.  Thus the squarefree occupancy
+bit and the valuation-depth fibre are two marginals of one local source
+law.
+
+At \(\sigma=1\), the local occupancy probability is \(1/(p+1)\).
+The Kolmogorov product of the local measures exists.  Since the occupancy
+events are independent and
+\[
+                         \sum_p\frac1{p+1}=\infty,
+\tag{2.6}\label{eq:occupancy-divergence}
+\]
+the product measure assigns mass one to configurations with infinitely
+many occupied primes.  Finite integers are therefore not the critical
+sample space; the full prime-valuation product space survives.
+
+\subsection{The common-test boundary source}
+
+The product source has a continuous boundary coordinate
+\(t>0\).  Its complementary occupations are
+\[
+                 h(t)=e^{-t},\qquad
+                 \tau(t)=1-e^{-t},\qquad h(t)+\tau(t)=1.
+\tag{2.7}\label{eq:head-tail}
+\]
+For two-channel features \(x=(x_0,x_1)\) and \(y=(y_0,y_1)\), put
+\[
+ \langle x,y\rangle_{\mathrm{pol}}
+  =\int_0^\infty h(t)x_0(t)\overline{y_0(t)}\,dt
+   +\int_0^\infty \tau(t)x_1(t)\overline{y_1(t)}\,dt .
+\tag{2.8}\label{eq:polar-pairing}
+\]
+Both channels observe the same Laplace test
+\[
+                         E_a(t)=(e^{-at},e^{-at}).
+\tag{2.9}\label{eq:common-test}
+\]
+For \(\Rea a,\Rea b>0\),
+\[
+                   \langle E_a,E_b\rangle_{\mathrm{pol}}
+                     =\frac1{a+\overline b}.
+\tag{2.10}\label{eq:hardy-kernel}
+\]
+The compact-head score \(S(t)=(2(1-t),0)\) satisfies
+\[
+       \langle E_a,S\rangle_{\mathrm{pol}}
+             =\frac{2a}{(1+a)^2},
+       \qquad
+       \langle S,S\rangle_{\mathrm{pol}}=4.
+\tag{2.11}\label{eq:fisher-column}
+\]
+The four-unit Ward normalization is therefore already a source norm,
+before any divisor is selected.
+
+\section{Hellinger--Hodge transgression}
+\label{sec:hellinger}
+
+\subsection{Fisher reciprocity forces the Hodge scale}
+
+For the Bernoulli family \((h(t),\tau(t))\), its Fisher information
+density in the depth parameter is
+\[
+ I(t)=\frac{(h'(t))^2}{h(t)}
+      +\frac{(\tau'(t))^2}{\tau(t)}
+      =h(t)+\frac{h(t)^2}{\tau(t)}
+      =\frac{h(t)}{\tau(t)}.
+\tag{3.1}\label{eq:fisher-density}
+\]
+Define
+\[
+                 q(t)=\sqrt{e^t-1}
+                     =\sqrt{\frac{\tau(t)}{h(t)}}.
+\tag{3.2}\label{eq:hodge-scale}
+\]
+Then
+\[
+                         q(t)^2I(t)=1.
+\tag{3.3}\label{eq:fisher-reciprocity}
+\]
+Thus \(q\) is not an arbitrary recovery gauge.  It is the reciprocal
+square-root Fisher scale forced by the occupation source.
+
+Define the odd Hodge map
+\[
+                   J(f,g)(t)
+                      =\bigl(q(t)g(t),-q(t)^{-1}f(t)\bigr).
+\tag{3.4}\label{eq:odd-hodge}
+\]
+For every \(t>0\),
+\[
+                          J^2=-1,
+\tag{3.5}\label{eq:hodge-square}
+\]
+and the weighted energy is exchanged exactly:
+\[
+\begin{aligned}
+ &h(t)\lvert (Jx)_0(t)\rvert^2
+   +\tau(t)\lvert (Jx)_1(t)\rvert^2\\
+ &\hspace{20mm}
+   =\tau(t)\lvert x_1(t)\rvert^2
+    +h(t)\lvert x_0(t)\rvert^2 .
+\end{aligned}
+\tag{3.6}\label{eq:energy-exchange}
+\]
+
+\subsection{The cross-channel is a KMS half-density}
+
+The two coefficients in \eqref{eq:odd-hodge} meet at
+\[
+        h(t)q(t)=\frac{\tau(t)}{q(t)}
+          =\sqrt{h(t)\tau(t)}.
+\tag{3.7}\label{eq:hellinger-density}
+\]
+Write \(H(t)=\sqrt{h(t)\tau(t)}\).
+It is the Hellinger geometric mean of the complementary occupations.
+
+This statement has an exact quantum-statistical form.  On the two-point
+space \(\{0,1\}\), define
+\[
+  \mathsf E_t(0)=t,\qquad
+  \mathsf E_t(1)=-\log\tau(t).
+\tag{3.8}\label{eq:occupation-hamiltonian}
+\]
+At inverse temperature one, its partition function is one and its Gibbs
+probabilities are \(h(t)\) and \(\tau(t)\).  If
+\(\mathsf W_t(0,1)\) denotes the symmetric KMS/Wightman half-density,
+then
+\[
+                         \mathsf W_t(0,1)=H(t).
+\tag{3.9}\label{eq:kms-hellinger}
+\]
+Hence the odd Hodge cross-channel is the canonical thermofield coupling
+of the two arithmetic occupations.
+
+\subsection{Gamma is the transform of the Hellinger channel}
+
+Let \(u=(1,0)\) be the unit head source.  For \(a>-1\),
+\[
+                     \langle E_a,u\rangle_{\mathrm{pol}}
+                       =\frac1{1+a}.
+\tag{3.10}\label{eq:rational-column}
+\]
+Its odd-Hodge conjugate is \(Ju=(0,-q^{-1})\).  By
+\eqref{eq:hellinger-density},
+\[
+\begin{aligned}
+ \langle E_a,Ju\rangle_{\mathrm{pol}}
+   &=-\int_0^\infty e^{-at}H(t)\,dt\\
+   &=-B\!\left(a+\frac12,\frac32\right)\\
+   &=-\frac{\Gamma(a+\tfrac12)\Gamma(\tfrac32)}
+            {\Gamma(a+2)},\qquad a>-\frac12 .
+\end{aligned}
+\tag{3.11}\label{eq:beta-gamma}
+\]
+The substitution \(x=e^{-t}\) proves the second line.  The resulting
+column obeys the exact coface recurrence
+\[
+ G(a+1)=\frac{a+\tfrac12}{a+2}\,G(a),
+ \qquad
+ G(a)=-B\!\left(a+\frac12,\frac32\right).
+\tag{3.12}\label{eq:gamma-coface}
+\]
+
+Equations \eqref{eq:fisher-reciprocity},
+\eqref{eq:kms-hellinger}, and \eqref{eq:beta-gamma} give the first
+unification:
+\[
+\boxed{
+\begin{gathered}
+\text{Fisher-dual Hodge transport}
+=\text{Hellinger/KMS half-density}\\
+\xrightarrow{\ \mathrm{Laplace}\ }
+\text{Beta/Gamma completion}
+\end{gathered}}
+\tag{3.13}\label{eq:first-unification}
+\]
+
+\section{Exact Green transport to the Gamma/co-Poisson boundary}
+\label{sec:transport}
+
+\subsection{The incidence source and its Green primitive}
+
+At every prime \(p\), the algebraic source has degree one
+\[
+                         \cA_p^1=\cQ_p\oplus\cW_p
+\tag{4.1}\label{eq:degree-one}
+\]
+and degree two \(\cA_p^2\), the first-suspension packet.  The
+Calder\'on--Witt cross-effect gives an alternating vector-valued cup
+\[
+                    \smile_p:\Lambda^2\cA_p^1\longrightarrow\cA_p^2.
+\tag{4.2}\label{eq:cup}
+\]
+It is surjective and has zero vector-valued radical.  Its kernel
+\[
+                         \cI_p=\kerop(\smile_p)
+\tag{4.3}\label{eq:incidence}
+\]
+is the exact incidence space.  An explicit section and Green retraction
+give a split exact complex
+\[
+       0\longrightarrow\cI_p
+        \longrightarrow\Lambda^2\cA_p^1
+        \xrightarrow{\smile_p}\cA_p^2
+        \longrightarrow0.
+\tag{4.4}\label{eq:exact-complex}
+\]
+The same holds for the all-prime finite-support source.  A normalized
+Haar orientation may be applied only after the vector-valued cup; applying
+a scalar trace before the cup makes the degree-one form degenerate.
+
+\subsection{The polarized comparison map}
+
+For prime/depth cells \(i=(p,e)\), \(j=(q,f)\), let
+\[
+              T(i,j)=-(r_i+r_j)>0
+\tag{4.5}\label{eq:pair-action}
+\]
+be their positive source action, where \(r_i\) is the primitive modular
+rate.  Let \(A(i,j)\) be their undeformed oriented exterior amplitude.
+The two-channel exterior feature at displacement \(\delta\) is
+\[
+                  \Phi_\delta(i,j)(t)
+                    =A(i,j)\,(e^{-\delta t},e^{-\delta t}).
+\tag{4.6}\label{eq:exterior-feature}
+\]
+For \(\delta>0\) and \(\Rea b>0\), its pairing with the
+right-half-plane common test is the exact unshifted Cauchy response
+\[
+       \langle\Phi_\delta(i,j),E_b\rangle_{\mathrm{pol}}
+          =\frac{A(i,j)}{\delta+\overline b}.
+\tag{4.7}\label{eq:cauchy-response}
+\]
+Evaluation at \(T(i,j)\) is the primitive modular exterior and,
+simultaneously, the confluent Gamma/co-Poisson exterior.
+
+Applying \(\Phi_\delta\) to the nonlocal Calder\'on--Witt cross-effect
+defines a linear vector transport
+\[
+       \mathfrak T_\delta:\cI\longrightarrow
+       \prod_{p,q,e,f}
+       \bigl((\R_{>0}\to\cA_q^2)^2\bigr).
+\tag{4.8}\label{eq:vector-transport}
+\]
+Evaluation at \(T(i,j)\) recovers the singular vector transport exactly.
+There is also a vector Hodge lift
+\[
+          \mathfrak J(X_0,X_1)(t)
+            =\bigl(q(t)X_1(t),-q(t)^{-1}X_0(t)\bigr),
+\tag{4.9}\label{eq:vector-hodge}
+\]
+which squares to \(-1\).  Normalized Haar orientation
+\(\mathfrak o\) strictly intertwines the lifts:
+\[
+                       \mathfrak o\mathfrak J
+                         =J\mathfrak o.
+\tag{4.10}\label{eq:intertwining}
+\]
+The canonical Green retraction in \eqref{eq:exact-complex} is fixed on
+incidence.  Consequently \(\mathfrak T_\delta\) is an actual transport of
+the canonical Green primitive, not a coefficient analogy.
+
+\subsection{Safe transport to the completed Xi trace}
+
+The same endpoint Green channel reaches the full completed logarithmic
+source trace on the Euler half-plane.  For \(\sigma>1\) and
+\(\Rea a>-\tfrac12\), normalize the von Mangoldt prime-power law and set
+\[
+                  s_{\sigma,a}
+                    =\sigma+(\sigma-1)a.
+\tag{4.11}\label{eq:safe-point}
+\]
+The endpoint character has expectation
+\[
+ \mathbb E_\sigma[n^{-(\sigma-1)a}]
+   =\frac{(-\zeta'/\zeta)(s_{\sigma,a})}
+          {(-\zeta'/\zeta)(\sigma)}.
+\tag{4.12}\label{eq:endpoint-expectation}
+\]
+Multiplication by the source flux reconstructs
+\(-\zeta'/\zeta\) at \(s_{\sigma,a}\).  Adding the fixed archimedean
+logarithmic derivative gives the continued prime--archimedean Xi source
+trace exactly.  The expectation in \eqref{eq:endpoint-expectation} is an
+off-diagonal entry of the endpoint Green primitive.
+
+Thus source, Green primitive, Gamma completion, and completed Xi trace are
+already connected on their unconditional common domain.  What is not
+supplied by \eqref{eq:endpoint-expectation} is boundary-domain control at
+a zero.
+
+\section{The Hellinger--Hodge reflection law}
+\label{sec:main-law}
+
+\subsection{Reflection defect and Gibbs face}
+
+Reflection sends \(\delta\) to \(-\delta\).  After vector transport and
+only then Haar orientation, define the actual boundary reflection defect
+\[
+ \cD_\delta(s;i,j)
+ =\frac12\left[
+   \bigl(\mathfrak o\mathfrak T_\delta s\bigr)_0(T(i,j))
+  -\bigl(\mathfrak o\mathfrak T_{-\delta}s\bigr)_1(T(i,j))
+ \right],
+ \qquad s\in\cI .
+\tag{5.1}\label{eq:reflection-defect}
+\]
+This is equal, on every incidence relation, to the independently defined
+reflection-odd singular source transport.  Hence its kernel is precisely
+the admitted Gamma/co-Poisson Hodge sector.
+
+The same displacement defines a two-state orientation energy
+\[
+              \epsilon_\delta(0)=-\delta,\qquad
+              \epsilon_\delta(1)=\delta.
+\tag{5.2}\label{eq:orientation-energy}
+\]
+Let \(F_\delta\) be its maximum-energy exposed face.  Directly,
+\[
+                   |F_\delta|=
+                    \begin{cases}
+                      2,&\delta=0,\\
+                      1,&\delta\ne0.
+                    \end{cases}
+\tag{5.3}\label{eq:face-cardinality}
+\]
+The reflection-odd common-test profile is
+\[
+                 R_\delta(t)=e^{\delta t}-e^{-\delta t}.
+\tag{5.4}\label{eq:reflection-profile}
+\]
+Its finite positive Hardy-tail energy condition is
+\[
+ \mathsf{FinE}(\delta)
+ \quad:\Longleftrightarrow\quad
+ \bigl[t\mapsto\tau(t)\lvert R_\delta(t)\rvert^2\bigr]
+       \in L^1(0,\infty).
+\tag{5.5}\label{eq:reflection-energy}
+\]
+
+\begin{theorem}[Hellinger--Hodge reflection descent law]
+\label{thm:main}
+Fix two distinct primes.  For every real modular displacement
+\(\delta\), the following conditions are equivalent:
+\[
+\begin{aligned}
+\textup{(i)}\quad&
+  \cD_\delta=0
+  \quad\text{on the entire exact Calder\'on--Witt incidence space};\\
+\textup{(ii)}\quad&
+  |F_\delta|=2;\\
+\textup{(iii)}\quad&
+  \mathsf{FinE}(\delta);\\
+\textup{(iv)}\quad&
+  \delta=0.
+\end{aligned}
+\tag{5.6}\label{eq:main-equivalence}
+\]
+Moreover, for the Gibbs state with energies
+\(-\epsilon_\delta\) at integer inverse temperature \(k\),
+\[
+\lim_{k\to\infty}\Tr(\varrho_{\delta,k}^2)
+ =
+\begin{cases}
+\tfrac12,&\delta=0,\\
+1,&\delta\ne0,
+\end{cases}
+\tag{5.7}\label{eq:purity-limit}
+\]
+while the total squared off-diagonal KMS/Wightman mass tends to
+\[
+\begin{cases}
+\tfrac12,&\delta=0,\\
+0,&\delta\ne0.
+\end{cases}
+\tag{5.8}\label{eq:coherence-limit}
+\]
+\end{theorem}
+
+\begin{proof}
+The comparison identity following \eqref{eq:reflection-defect} reduces
+\(\cD_\delta\) to the reflection-odd singular source transport.  One
+canonical cross-prime incidence witness detects that transport:
+it is annihilated exactly when \(\delta=0\).  This proves
+\(\textup{(i)}\Longleftrightarrow\textup{(iv)}\).
+
+Equation \eqref{eq:face-cardinality} gives
+\(\textup{(ii)}\Longleftrightarrow\textup{(iv)}\).
+If \(\delta=0\), then \(R_\delta=0\), so
+\(\mathsf{FinE}(\delta)\) holds.  If \(\delta\ne0\), the density in
+\eqref{eq:reflection-energy} tends to \(+\infty\); in particular it is
+eventually at least one on a half-line and is not integrable.  This gives
+\(\textup{(iii)}\Longleftrightarrow\textup{(iv)}\).
+
+The zero-temperature purity of a finite Gibbs state is the reciprocal
+cardinality of its maximum-energy exposed face.  Its off-diagonal
+thermofield mass is one minus that purity.  Substitution of
+\eqref{eq:face-cardinality} proves
+\eqref{eq:purity-limit}--\eqref{eq:coherence-limit}.
+\end{proof}
+
+\subsection{Reciprocal sewing and the Rees boundary}
+
+For primes \(p,q\) and common depth \(n\), reflection sewing has exact
+cost
+\[
+ C_\delta(p,q,n)
+   =\exp\!\left(
+       2\delta(\log p+\log q)(n+1)\right).
+\tag{5.9}\label{eq:sewing-cost}
+\]
+It obeys
+\[
+                    C_\delta C_{-\delta}=1.
+\tag{5.10}\label{eq:sewing-reciprocal}
+\]
+If \(\delta>0\), \(C_\delta\) dominates every fixed polynomial in \(n\);
+if \(\delta<0\), the same is true of \(C_{-\delta}\).  Thus every
+nonzero gap has one reflected direction beyond every finite Rees order.
+This is the graded form of the same superselection measured by
+\eqref{eq:purity-limit}.
+
+The source before scalar readout behaves differently.  Prime/depth
+amplitudes may be spread over
+\(\lceil\log p\rceil\lceil\log q\rceil\) cells.  The doubled reflected
+carrier is fixed by its compensated Hodge reflection and has a uniform
+capacity bound.  Complete scalar codiagonal readout still recovers the
+finite current exactly, but any gain controlling that readout grows at
+least linearly in the source scale.  Therefore:
+\[
+\boxed{
+\begin{gathered}
+\text{polarized pretrace transport can be bounded and lossless,}\\
+\text{while scalar readout is necessarily singular}
+\end{gathered}}
+\tag{5.11}\label{eq:pretrace-scalar}
+\]
+The singularity is created by orientation collapse, not by absence of a
+source carrier.
+
+\section{Specialization to the Riemann divisor}
+\label{sec:riemann}
+
+Let \(\Xi\) be the completed Riemann function and let
+\(\rho\) be a point of its nontrivial divisor, counted with
+multiplicity.  The source duality-adjunction fracture is
+\[
+                  \delta_\rho
+                    =2\left(\Rea\rho-\frac12\right).
+\tag{6.1}\label{eq:riemann-fracture}
+\]
+The same scalar occurs as:
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em]
+\item the multiplier of the Frobenius--Hodge commutator;
+\item minus the weight-one metric purity defect;
+\item the source Cayley-rate fracture;
+\item minus the reflected valuation-entropy difference; and
+\item the exponent controlling reciprocal Gamma sewing.
+\end{enumerate}
+These are exact coordinate identities, not sign analogies.
+
+\begin{corollary}[Pointwise divisor classification]
+\label{cor:pointwise}
+For every divisor point \(\rho\), the following are equivalent:
+\[
+\begin{aligned}
+ &\cD_{\delta_\rho}=0,\\
+ &|F_{\delta_\rho}|=2,\\
+ &\left[t\mapsto\tau(t)
+    \left|e^{\delta_\rho t}-e^{-\delta_\rho t}\right|^2\right]
+      \in L^1(0,\infty),\\
+ &\Rea\rho=\frac12.
+\end{aligned}
+\tag{6.2}\label{eq:pointwise-rh}
+\]
+\end{corollary}
+
+\begin{proof}
+Apply Theorem~\ref{thm:main} and
+\eqref{eq:riemann-fracture}.
+\end{proof}
+
+Define global Gamma/co-Poisson Green descent by
+\[
+ \mathsf{Desc}_\Xi:\quad
+   \cD_{\delta_\rho}=0
+   \quad\text{for every }\rho\in\Div(\Xi).
+\tag{6.3}\label{eq:global-descent}
+\]
+
+\begin{corollary}[Global descent classification]
+\label{cor:global}
+\[
+                       \mathsf{Desc}_\Xi
+                       \quad\Longleftrightarrow\quad
+                       \mathrm{RH}.
+\tag{6.4}\label{eq:global-rh}
+\]
+\end{corollary}
+
+\begin{proof}
+By Corollary~\ref{cor:pointwise},
+\(\mathsf{Desc}_\Xi\) holds exactly when every nontrivial zero has real
+part \(1/2\).
+\end{proof}
+
+The statement is also the weight-one law for the derived divisor metric.
+If \(\omega\) is the oriented nondegenerate cup, \(\Theta\) the weight
+operator, \(J\) the odd Hodge map, and
+\[
+                            g(x,y)=\omega(x,Jy),
+\tag{6.5}\label{eq:divisor-metric}
+\]
+then
+\[
+ g(\Theta x,y)+g(x,\Theta y)-g(x,y)
+   =-\omega(x,[\Theta,J]y).
+\tag{6.6}\label{eq:purity-commutator}
+\]
+Consequently weight-one conservation is equivalent to
+\([\Theta,J]=0\), and orbitwise this is
+\(\delta_\rho=0\).
+
+\section{One law, many shadows}
+\label{sec:shadows}
+
+The point of Theorem~\ref{thm:main} is not to rename several
+equivalences.  It gives one mechanism---loss of a Hellinger-coupled
+orientation under a nonzero modular gap---whose representations occur in
+different parts of the source.
+
+\begin{center}
+\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.22\linewidth}
+                >{\raggedright\arraybackslash}p{0.33\linewidth}
+                >{\raggedright\arraybackslash}p{0.35\linewidth}}
+\toprule
+Setting & Positive theorem & Same boundary obstruction\\
+\midrule
+Euler activation
+ & squarefree Bernoulli occupancy plus geometric valuation fibre
+ & Fisher whitening diverges at rare occupation\\
+Common-test source
+ & two positive channels sum to the Hardy kernel; score energy is four
+ & reflected odd tail is not in positive energy for \(\delta\ne0\)\\
+Quantum recurrence
+ & KMS half-density is the Hellinger cross-channel
+ & nonzero gap exposes one face, purity tends to one, coherence to zero\\
+Gamma/co-Poisson
+ & Hodge conjugate of the unit source is an exact Beta/Gamma column
+ & reflected sewing is reciprocal and one side is beyond every Rees order\\
+Calder\'on--Witt
+ & cup is vector-valued, onto, and has an exact Green incidence complex
+ & scalarization before cup destroys nondegeneracy\\
+Hedenmalm-type forms
+ & a nonzero tempered divisor distribution survives
+ & ordinary \(L^2\) radical can be dense, proper, and nonclosed\\
+Wold--Poisson, Sonin--Calkin, Ward
+ & each is a valid regular consumer on its natural domain
+ & collective regularity is equivalent to the same weight-one law\\
+Hypertranscendental sectors
+ & prime/depth and shifted-jet sources remain independent
+ & no finite differential-algebraic sector explains the common divisor\\
+Cofinal depth source
+ & doubled reflected carrier is Hodge-fixed and uniformly bounded
+ & scalar readout gain grows at least linearly\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The table separates sources from consumers.  Wold ancestry, dense
+radicals, Calkin compactness, Sonin projection, and four-unit Ward
+positivity are not competing explanations of zero location.  They are
+different consumers of one polarized source.  Each loses orientation
+precisely when it asks a scalar or regular topology to carry a nonzero
+modular gap.
+
+The law also explains why a closed product-topology relation cannot repair
+the problem.  If every leading finite output block is surjective, its
+multivalued part is dense.  Closedness makes it the whole product target,
+so the relation is
+\[
+                 \operatorname{dom}\mathcal R\times
+                 \C^{\N}.
+\tag{7.1}\label{eq:maximal-vertical}
+\]
+It retains every possible output and therefore transports none.  The
+needed boundary domain must be source-pointed and graph-normed; it cannot
+be the closure generated by finite coordinate observation.
+
+\section{The exact remaining theorem}
+\label{sec:missing}
+
+The source and comparison constructions settle the former existence
+problem:
+\begin{enumerate}[leftmargin=2.2em]
+\item the local valuation probability and its critical infinite product
+      exist;
+\item the complementary head/tail source and its Fisher score exist;
+\item the singular odd Hodge rotation is forced and energy-exact;
+\item its Hellinger channel is exactly a KMS half-density;
+\item its transform is an exact Beta/Gamma quotient;
+\item the vector-valued Calder\'on--Witt cup, incidence, and Green
+      retraction exist;
+\item the polarized transport reaches the actual Gamma/co-Poisson
+      boundary and intertwines Hodge before orientation;
+\item the safe endpoint Green channel reconstructs the completed Xi
+      logarithmic source trace; and
+\item the boundary reflection defect is an explicit linear map, detected
+      by one canonical cross-prime exact boundary.
+\end{enumerate}
+
+No further source or comparison map is missing.  The full RH proof now
+requires exactly the assertion
+\[
+\boxed{
+\begin{minipage}{0.82\linewidth}
+For every \(\rho\in\Div(\Xi)\), the actual Gamma/co-Poisson reflection
+defect \(\cD_{\delta_\rho}\) annihilates the complete exact
+Calder\'on--Witt incidence space; equivalently, every nondegenerate
+prime/depth-labelled reflected common-test profile has finite tail energy.
+\end{minipage}}
+\tag{8.1}\label{eq:landing-theorem}
+\]
+Because the boundary feature and its incidence transport are explicit,
+\eqref{eq:landing-theorem} means, for every nondegenerate exterior cell
+\((i,j)\), the concrete condition
+\[
+ \left[t\mapsto
+   \lvert A(i,j)\rvert^2\tau(t)
+   \left|e^{\delta_\rho t}-e^{-\delta_\rho t}\right|^2
+ \right]\in L^1(0,\infty),
+\tag{8.2}\label{eq:landing-estimate}
+\]
+with multiplication and prime/depth labels retained before orientation.
+The missing implication is from the already reconstructed completed Xi
+source trace to this boundary-domain condition.
+
+Theorem~\ref{thm:main} answers what
+\eqref{eq:landing-theorem} would do: it forces
+\(\delta_\rho=0\) at each fibre and hence proves RH.  It also answers what
+cannot establish it:
+\begin{enumerate}[leftmargin=2.2em]
+\item finite-stage exactness alone cannot, because bounded polarized
+      carriers may coexist with singular scalar readout;
+\item a bounded label-blind codiagonal cannot, because it annihilates the
+      labelled zero-mass radical;
+\item product-topology closure cannot, because it becomes maximally
+      vertical as in \eqref{eq:maximal-vertical};
+\item finite-Rees continuation cannot, because one reflected sewing
+      direction is beyond every finite order when
+      \(\delta_\rho\ne0\);
+\item positivity after squaring cannot, because it erases the orientation
+      whose energy appears in \eqref{eq:landing-estimate}; and
+\item a finite differential-algebraic closure cannot, because the
+      prime/depth source remains relatively independent of every such
+      sector.
+\end{enumerate}
+
+Thus the remaining proof obligation is analytic domain control
+\emph{before} scalar orientation.  It must be obtained from the
+source-normalized Xi current or an equivalent explicit-formula estimate
+while the vector-valued Green incidence is still present.  Once scalar
+orientation has been taken, the required estimate is either already RH
+or has lost its sign.
+
+\section{Discussion}
+
+\subsection{Why this is more than an RH equivalence}
+
+The equivalence in Corollary~\ref{cor:global} is not the source of the
+paper's content.  The new object is the chain
+\[
+\begin{gathered}
+\text{Euler valuation probability}\\
+\longrightarrow
+\text{Fisher-dual Hellinger/KMS polarization}\\
+\longrightarrow
+\text{Beta/Gamma common-test transform}\\
+\longrightarrow
+\text{Calder\'on--Witt Green transport}\\
+\longrightarrow
+\text{Gamma/co-Poisson reflection defect}.
+\end{gathered}
+\tag{9.1}\label{eq:object-chain}
+\]
+Every arrow is explicit and unconditional.  The global equivalence says
+exactly which domain property of this object would exclude zeros.
+
+\subsection{Why the law is universal}
+
+Only four structural ingredients enter the reflection classification:
+\begin{enumerate}[leftmargin=2.2em]
+\item complementary positive occupations;
+\item the odd Hodge exchange forced by their likelihood ratio;
+\item a noncompact source clock; and
+\item two reflected orientations with opposite real modular energies.
+\end{enumerate}
+Any system with these ingredients has the same trichotomy.  At zero gap,
+the two orientations remain Hellinger-coupled and the reflection defect
+can descend.  At nonzero gap, one orientation is tropically exposed, the
+other becomes radical, and positive reflection-odd energy is infinite.
+Regular scalar completion either discards this distinction or becomes
+uninformative.
+
+Arithmetic enters by supplying all four ingredients canonically and by
+identifying the gap with
+\(2(\Rea\rho-\tfrac12)\).  This is why the same coefficient controls
+valuation entropy, Gamma sewing, KMS coherence, Hodge commutation,
+Wold--Calkin--Ward regularity, and zero location.
+
+\subsection{What the full proof would now mean}
+
+A full proof of RH in this framework would not be a new positivity
+identity.  It would prove that the completed Xi source trace forces its
+explicit reflection defect into the natural Hellinger--Hodge graph domain
+already determined by the Euler source.  Theorem~\ref{thm:main} would
+then turn domain membership into reflection equipartition and zero
+exclusion.
+
+Conversely, any proposed proof which never constructs or estimates the
+reflection-odd Green current before scalarization cannot address
+\eqref{eq:landing-theorem}.  It may reconstruct the divisor, count
+off-line pairs, or prove a positive scalar identity, but it does not
+control the orientation domain which distinguishes the two sides of the
+critical line.
+
+\section{Conclusion}
+
+The arithmetic source already contains its completion geometry.
+Diagonal activation disintegrates into squarefree occupancy and geometric
+valuation depth.  The complementary boundary occupations force a
+reciprocal-Fisher Hodge scale.  Their Hodge cross-channel is exactly the
+Hellinger/KMS half-density, and its Laplace transform is an exact
+Beta/Gamma quotient.
+
+This polarization lifts through the vector-valued
+Calder\'on--Witt incidence complex and its Green retraction to the actual
+Gamma/co-Poisson boundary.  Reflection then obeys one universal law:
+Green descent, two-face Gibbs equipartition, finite positive boundary
+energy, and zero modular displacement are equivalent.
+
+At the Riemann divisor the displacement is
+\(2(\Rea\rho-\tfrac12)\).  Global descent is therefore RH.  The paper does
+not claim that descent.  It identifies its exact analytic content:
+annihilation of exact incidence by the divisor-indexed reflection defect,
+equivalently finite-energy landing of every nondegenerate labelled profile
+in the source-forced Hellinger--Hodge domain.  This is the sole remaining
+step after source, Gamma completion, polarized transport, and boundary
+comparison have been constructed.
+
+\end{document}

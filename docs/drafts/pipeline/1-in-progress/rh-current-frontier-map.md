@@ -5799,3 +5799,119 @@ Lean:
 DeningerCalderonWittSingularGammaTransgression.lean
 DeningerCalderonWittGammaCoPoissonHodgeBoundaryComparison.lean
 ```
+
+## 2026-08-02 Route L frontier update: completed incidence carrier and graph-domain correction
+
+The requested typed map from the completed Xi comparison model to an
+actual Calderón--Witt incidence completion now exists.  Fix distinct primes
+\(p,q\) and let \(w_{p,q}\) be the nonzero canonical cross-prime
+Milnor-incidence witness.  A finite Xi jet \(a\) is realized by
+\[
+                 \rho\longmapsto a_\rho w_{p,q}.
+\]
+The normalized zero-displacement Gamma orientation of this actual source
+value recovers \(a_\rho\) exactly.  Pulling back the Xi \(\ell^2\) norm
+through this source-readable coordinate and completing gives
+\(\widehat{\mathcal I}_{p,q}^{\,\Xi}\).  There is a canonical linear
+isometric equivalence
+\[
+ H^1_{\Xi,\ell^2}\simeq
+ \widehat{\mathcal I}_{p,q}^{\,\Xi},
+\]
+and the completed comparison-model Green map lands densely and
+isometrically in this incidence completion.  On finite jets it is exactly
+the oriented Calderón--Witt Green reflection and retains the unconditional
+ordinary/compact Frobenius intertwining.  This closes the missing *typed
+carrier map*.  It does not construct an arithmetic estimate.
+
+The Hellinger--Hodge Green-descent paper prevents miscounting this carrier
+as Route L closure.  Its safe endpoint expectation reconstructs the
+completed Xi logarithmic source trace only on the Euler half-plane and
+explicitly supplies no boundary-domain control at a zero.  Its exact
+remaining condition is
+\[
+ t\longmapsto |A(i,j)|^2(1-e^{-t})
+ \left|e^{\delta_\rho t}-e^{-\delta_\rho t}\right|^2
+ \in L^1(0,\infty)
+\]
+for every divisor fibre and every nondegenerate labelled incidence cell.
+Existing Lean proves this condition is equivalent to
+\(\delta_\rho=0\), hence global landing is equivalent to RH.
+
+This audit sharpens the hard gate:
+
+1. the new Hilbert completion is an ambient carrier, not the required
+   graph domain;
+2. the historical `deningerArithmeticSourceGreen` is explicitly a
+   Xi-divisor comparison-model operator, not an independently constructed
+   arithmetic Green operator;
+3. its dense range rules out obtaining the missing statement from another
+   bounded ambient-Hilbert operator.  Required comparison must be a lift
+   into the domain of an unbounded/closable Hellinger--Hodge defect, with
+   control in graph norm;
+4. analytic continuation of the safe scalar trace cannot by itself provide
+   that lift, because squaring the reflection-odd profile destroys the
+   cancellations used by scalar continuation.
+
+Therefore Route L remains open at one scientific theorem, not another map:
+derive the labelled finite-tail-energy estimate from the source-side
+prime-power Green current before scalarization.  Assuming the estimate,
+or extending a divisor-indexed \(\ell^2\) vector by an isometry and then
+restating its finite-energy membership, is circular and receives no
+closure credit.
+
+Lean:
+
+```text
+DeningerCalderonWittCompletedXiGreenIncidenceComparison.lean
+EulerPrimitiveCommonTestXiTraceTransport.lean
+EulerPrimitiveCommonTestPolarizedReflectionRigidity.lean
+RiemannGammaCoPoissonHodgeGreenDescentLaw.lean
+```
+
+## 2026-08-02 Route J frontier update: cofinal depth countertransport
+
+Route J's depth-nonlocal countertransport now exists on the actual
+prime-power-cell Calderón--Witt source.  At prime `p`, source landing forces
+
+```text
+K(p)=ceil(log p),
+D(p,r)=J_0(p,0)/J_0(p,r),
+J_0(p,r)D(p,r)=J_0(p,0),
+D(p,r)^2=p^r.
+```
+
+Spreading each two-scale pair through the rectangle
+`0<=r<K(p)`, `0<=s<K(q)` gives landed coefficient
+
+```text
+2Q_n(p,q)/(K(p)K(q)).
+```
+
+Depth codiagonal recovers the finite Route-J current exactly.  Each shifted
+term is exact cell incidence and its own Green primitive.
+
+Reflected-sector preservation is no longer inferred from scalar symmetry.
+Raw exterior reflection, odd orientation twist, and the compensated
+involution are separate Lean definitions.  The involution squares to one,
+and the doubled ordered-pair countertransport lies in its fixed sector.
+Its fundamental-domain and raw doubled capacities obey
+
+```text
+U_n^orb <=100*289^2,
+U_n^H=2U_n^orb <=200*289^2.
+```
+
+Lean:
+
+```text
+CCMFirstClockPrimitivePromotedCofinalDepthCountertransport.lean
+```
+
+This closes cofinal depth construction, reflected Hodge-sector preservation,
+and uniform pretrace capacity.  Route J remains open: exact scalar recovery
+has gain at least `(10/289)n`.  Live survivor is source Hodge polarization
+which bounds negative first-clock excursion directly by pretrace capacity
+before singular codiagonal, or a class-complete proof that every such
+comparison inherits the same linear gain obstruction.  This survivor is
+Route J work and is not reassigned.

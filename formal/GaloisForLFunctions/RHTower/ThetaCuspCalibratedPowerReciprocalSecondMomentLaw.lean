@@ -224,6 +224,45 @@ theorem ae_thetaCuspSourceSelectedPowerReciprocal_support_one_div_eightyOne :
     rw [hpow] at hexponent
     exact hbase.trans_lt hexponent
 
+/-- Every adjacent pair of source-selected carrier moments satisfies the
+same strict support contraction. -/
+theorem thetaCuspSourceSelectedPowerReciprocal_moment_succ_lt
+    (n : ℕ) :
+    (∫ x : ℝ, x ^ (n + 1)
+        ∂thetaCuspCassiniCalibratedPowerReciprocalLikelihoodMeasure
+          thetaCuspSourceSelectedPowerReciprocalExponent) <
+      (1 / 81 : ℝ) *
+        ∫ x : ℝ, x ^ n
+          ∂thetaCuspCassiniCalibratedPowerReciprocalLikelihoodMeasure
+            thetaCuspSourceSelectedPowerReciprocalExponent := by
+  let mu : Measure ℝ :=
+    thetaCuspCassiniCalibratedPowerReciprocalLikelihoodMeasure
+      thetaCuspSourceSelectedPowerReciprocalExponent
+  letI : IsFiniteMeasure mu :=
+    thetaCuspCassiniCalibratedPowerReciprocalLikelihoodMeasure_finite _
+  have hmu : 0 < mu Set.univ := by
+    dsimp only [mu]
+    rw [thetaCuspCassiniCalibratedPowerReciprocalLikelihoodMeasure_univ]
+    exact ENNReal.ofReal_pos.mpr normalizedPrimeArchMoment_zero_pos
+  letI : NeZero mu := ⟨by
+    intro hzero
+    rw [hzero] at hmu
+    simp at hmu⟩
+  have hsupport : ∀ᵐ x ∂mu, 0 < x ∧ x < 1 / 81 := by
+    simpa only [mu] using
+      ae_thetaCuspSourceSelectedPowerReciprocal_support_one_div_eightyOne
+  have hint : ∀ k : ℕ, Integrable (fun x : ℝ => x ^ k) mu := by
+    intro k
+    refine Integrable.of_bound
+      (continuous_id.pow k).aestronglyMeasurable 1 ?_
+    filter_upwards [hsupport] with x hx
+    rw [Real.norm_eq_abs, abs_of_nonneg (pow_nonneg hx.1.le k)]
+    exact pow_le_one₀ hx.1.le (hx.2.le.trans (by norm_num))
+  simpa only [mu] using
+    HTGeometry.integral_pow_succ_lt_upper_mul_integral_pow_of_ae_pos_lt
+      (mu := mu) (f := fun x : ℝ => x) (R := (1 / 81 : ℝ)) n
+      (hint n) (hint (n + 1)) hsupport
+
 /-- Exact degree-two value at the source-selected exponent. -/
 theorem thetaCuspSourceSelectedPowerReciprocal_secondMoment :
     (∫ x : ℝ, x ^ 2
@@ -241,41 +280,30 @@ theorem thetaCuspSourceSelectedPowerReciprocal_secondMoment_lt_one_div_eightyOne
         ∂thetaCuspCassiniCalibratedPowerReciprocalLikelihoodMeasure
           thetaCuspSourceSelectedPowerReciprocalExponent) <
       (1 / 81 : ℝ) * normalizedPrimeArchMoment 1 := by
-  let mu : Measure ℝ :=
-    thetaCuspCassiniCalibratedPowerReciprocalLikelihoodMeasure
-      thetaCuspSourceSelectedPowerReciprocalExponent
-  letI : IsFiniteMeasure mu :=
-    thetaCuspCassiniCalibratedPowerReciprocalLikelihoodMeasure_finite _
-  have hmu : 0 < mu Set.univ := by
-    dsimp only [mu]
-    rw [thetaCuspCassiniCalibratedPowerReciprocalLikelihoodMeasure_univ]
-    exact ENNReal.ofReal_pos.mpr normalizedPrimeArchMoment_zero_pos
-  letI : NeZero mu := ⟨by
-    intro hzero
-    rw [hzero] at hmu
-    simp at hmu⟩
-  have hsupport : ∀ᵐ x ∂mu, 0 < x ∧ x < 1 / 81 := by
-    simpa only [mu] using
-      ae_thetaCuspSourceSelectedPowerReciprocal_support_one_div_eightyOne
-  have hid : Integrable (fun x : ℝ => x) mu := by
-    refine Integrable.of_bound continuous_id.aestronglyMeasurable
-      (1 / 81 : ℝ) ?_
-    filter_upwards [hsupport] with x hx
-    rw [Real.norm_eq_abs, abs_of_pos hx.1]
-    exact hx.2.le
-  have hsq : Integrable (fun x : ℝ => x ^ 2) mu := by
-    refine Integrable.of_bound
-      (continuous_id.pow 2).aestronglyMeasurable 1 ?_
-    filter_upwards [hsupport] with x hx
-    rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg x)]
-    nlinarith
   have hstrict :=
-    HTGeometry.integral_pow_succ_lt_upper_mul_integral_pow_of_ae_pos_lt
-      (mu := mu) (f := fun x : ℝ => x) (R := (1 / 81 : ℝ)) 1
-      (by simpa using hid) (by simpa using hsq) hsupport
+    thetaCuspSourceSelectedPowerReciprocal_moment_succ_lt 1
   have hfirst :=
     thetaCuspSourceSelectedPowerReciprocal_mass_and_firstMoment.2
-  simpa only [mu, hfirst] using hstrict
+  simpa [hfirst] using hstrict
+
+/-- Matching two adjacent source moments with the selected carrier
+forces the same strict `1/81` contraction on that source pair. -/
+theorem normalizedPrimeArchMoment_succ_lt_one_div_eightyOne_mul_of_selectedPowerReciprocal_matches
+    (n : ℕ)
+    (hn :
+      (∫ x : ℝ, x ^ n
+          ∂thetaCuspCassiniCalibratedPowerReciprocalLikelihoodMeasure
+            thetaCuspSourceSelectedPowerReciprocalExponent) =
+        normalizedPrimeArchMoment n)
+    (hsucc :
+      (∫ x : ℝ, x ^ (n + 1)
+          ∂thetaCuspCassiniCalibratedPowerReciprocalLikelihoodMeasure
+            thetaCuspSourceSelectedPowerReciprocalExponent) =
+        normalizedPrimeArchMoment (n + 1)) :
+    normalizedPrimeArchMoment (n + 1) <
+      (1 / 81 : ℝ) * normalizedPrimeArchMoment n := by
+  rw [← hsucc, ← hn]
+  exact thetaCuspSourceSelectedPowerReciprocal_moment_succ_lt n
 
 /-- Exact degree-two matching would force a strict source moment-ratio
 constraint. -/
@@ -287,9 +315,12 @@ theorem normalizedPrimeArchMoment_two_lt_one_div_eightyOne_mul_one_of_selectedPo
         normalizedPrimeArchMoment 2) :
     normalizedPrimeArchMoment 2 <
       (1 / 81 : ℝ) * normalizedPrimeArchMoment 1 := by
-  rw [← hmatch]
   exact
-    thetaCuspSourceSelectedPowerReciprocal_secondMoment_lt_one_div_eightyOne_mul_first
+    normalizedPrimeArchMoment_succ_lt_one_div_eightyOne_mul_of_selectedPowerReciprocal_matches
+      1 (by
+        simpa using
+          thetaCuspSourceSelectedPowerReciprocal_mass_and_firstMoment.2)
+      (by simpa using hmatch)
 
 end
 

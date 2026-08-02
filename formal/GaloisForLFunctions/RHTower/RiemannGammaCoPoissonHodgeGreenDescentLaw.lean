@@ -40,12 +40,11 @@ obstruction.
 -/
 theorem
     deningerCalderonWittGammaPolarizedBoundaryReflectionDefect_eq_zero_iff
-    {p q : Nat.Primes} (hpq : p ≠ q) (a : ℝ) :
+    (a : ℝ) :
     deningerCalderonWittGammaPolarizedBoundaryReflectionDefect a = 0 ↔
       a = 0 := by
   rw [deningerCalderonWittGammaPolarizedBoundaryReflectionDefect_eq,
-    deningerCalderonWittGammaReflectionOddScalarTransport_eq_zero_iff
-      hpq]
+    deningerCalderonWittGammaReflectionOddScalarTransport_eq_zero_iff]
 
 /--
 Pointwise Gamma/co-Poisson Green descent at a Riemann boundary point is
@@ -53,13 +52,12 @@ exactly the critical-line condition.
 -/
 theorem
     deningerCalderonWittGammaPolarizedBoundaryReflectionDefect_boundaryFracture_eq_zero_iff
-    {p q : Nat.Primes} (hpq : p ≠ q) (rho : ℂ) :
+    (rho : ℂ) :
     deningerCalderonWittGammaPolarizedBoundaryReflectionDefect
         (xiNearbyPoleDualityAdjunctionFracture rho).re = 0 ↔
       rho.re = 1 / 2 := by
   rw [
-    deningerCalderonWittGammaPolarizedBoundaryReflectionDefect_eq_zero_iff
-      hpq,
+    deningerCalderonWittGammaPolarizedBoundaryReflectionDefect_eq_zero_iff,
     xiNearbyPoleDualityAdjunctionFracture_eq_two_re]
   simp
   constructor <;> intro h <;> linarith
@@ -81,7 +79,7 @@ boundary comparison through exact secondary Green boundaries is equivalent
 to boundary-character neutrality, hence to RH.
 -/
 theorem xiGammaCoPoissonHodgeGreenBoundaryDescends_iff_riemannHypothesis
-    {p q : Nat.Primes} (hpq : p ≠ q) :
+    :
     XiGammaCoPoissonHodgeGreenBoundaryDescends ↔
       RiemannHypothesis := by
   rw [← xiBoundaryCharacterNeutral_iff_riemannHypothesis]
@@ -92,11 +90,11 @@ theorem xiGammaCoPoissonHodgeGreenBoundaryDescends_iff_riemannHypothesis
         (rho : ℂ)).2
     exact
       (deningerCalderonWittGammaPolarizedBoundaryReflectionDefect_boundaryFracture_eq_zero_iff
-        hpq (rho : ℂ)).1 (h rho)
+        (rho : ℂ)).1 (h rho)
   · intro h rho
     apply
       (deningerCalderonWittGammaPolarizedBoundaryReflectionDefect_boundaryFracture_eq_zero_iff
-        hpq (rho : ℂ)).2
+        (rho : ℂ)).2
     exact
       (xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff
         (rho : ℂ)).1 (h rho)

@@ -3040,3 +3040,81 @@ its own Green primitive, but its reflection-odd Gamma coefficient is nonzero. He
 using only cross-prime countersewing can preserve the reflection-balanced sector. Any successful
 countertransport must be depth-nonlocal within every prime and only cancel after cofinal depth
 assembly.
+
+## 46. Cofinal source-normal depth countertransport and uniform reflected capacity
+
+`[PAPER+LEAN-PROVED CONSTRUCTION]`
+`[OPEN PRETRACE-TO-FIRST-CLOCK COMPARISON]`
+
+The depth-nonlocal survivor from Section 45 is now constructed rather than postulated.  Put
+
+```text
+A(p,r)=log(p)/sqrt(p^(r+1)),
+D(p,r)=A(p,0)/A(p,r),
+K(p)=ceil(log p).                                     (173)
+```
+
+The source amplitude law forces
+
+```text
+A(p,r)D(p,r)=A(p,0),   D(p,r)^2=p^r.                 (174)
+```
+
+Thus equal spreading through the actual Euler depths `0<=r<K(p)` preserves primitive landing and
+reduces squared source-normal mass from `log(p)^2/p` to at most `log(p)/p`.  Applied to both legs
+of the finite two-scale source, the landed depth rectangle is
+
+```text
+U_n(p,q,r,s)=2Q_n(p,q)/(K(p)K(q)).                   (175)
+```
+
+Its depth codiagonal recovers `R_n` exactly.  Every shifted cross-prime term is an actual
+prime-power-cell Milnor incidence and its own Green primitive, so the finite spread is a
+chain-level source carrier rather than a scalar normalization.
+
+Reflected Hodge preservation is explicit.  Raw exterior reflection exchanges legs, reverses both
+finite depth intervals, and contributes one minus sign.  The odd orientation local system
+contributes the second.  Their compensated involution squares to one.  Since
+`Q_n(q,p)=Q_n(p,q)`, the doubled ordered-pair profile belongs to its fixed sector.  No projection
+onto a predeclared kernel is used.
+
+For one reflected fundamental domain,
+
+```text
+0<=U_n^orb
+ =4 sum_(p,q) Q_n(p,q)^2/(K(p)K(q))
+ <=100*289^2.                                         (176)
+```
+
+The raw doubled Hodge-sector norm counts both ordered orientations and satisfies the exact
+identity and uniform bound
+
+```text
+U_n^H=2U_n^orb <=200*289^2.                           (177)
+```
+
+Lean certificate:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  CCMFirstClockPrimitivePromotedCofinalDepthCountertransport.lean
+```
+
+This closes the requested countertransport construction, reflected-sector theorem, and uniform
+capacity theorem.  It does **not** close Route J.  Exact recovery of the linearly large current
+uses a singular codiagonal: any scalar readout gain satisfying
+
+```text
+R_n <= gain_n sqrt(U_n^orb)
+```
+
+obeys
+
+```text
+gain_n >= (10/289)n.                                  (178)
+```
+
+Hence next hard Route-J theorem is no longer cofinal capacity.  It is a source Hodge
+polarization comparing negative first-clock excursion directly with bounded pretrace carrier
+`(176)` before codiagonal readout, or a class-complete theorem proving every such comparison
+inherits lower bound `(178)`.  This survivor stays in Route J.

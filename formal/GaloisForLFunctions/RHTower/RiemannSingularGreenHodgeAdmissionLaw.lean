@@ -65,9 +65,15 @@ at zero modular displacement.  One canonical cross-prime boundary detects
 the full obstruction.
 -/
 theorem deningerCalderonWittGammaReflectionOddScalarTransport_eq_zero_iff
-    {p q : Nat.Primes} (hpq : p ≠ q) (a : ℝ) :
+    (a : ℝ) :
     deningerCalderonWittGammaReflectionOddScalarTransport a = 0 ↔
       a = 0 := by
+  let p : Nat.Primes := ⟨2, Nat.prime_two⟩
+  let q : Nat.Primes := ⟨3, Nat.prime_three⟩
+  have hpq : p ≠ q := by
+    intro h
+    have hval := congrArg (fun r : Nat.Primes => (r : ℕ)) h
+    norm_num [p, q] at hval
   constructor
   · intro hzero
     have hmem :
@@ -115,12 +121,12 @@ boundaries is exactly the critical-line condition.
 -/
 theorem
     deningerCalderonWittGammaReflectionOddScalarTransport_boundaryFracture_eq_zero_iff
-    {p q : Nat.Primes} (hpq : p ≠ q) (rho : ℂ) :
+    (rho : ℂ) :
     deningerCalderonWittGammaReflectionOddScalarTransport
         (xiNearbyPoleDualityAdjunctionFracture rho).re = 0 ↔
       rho.re = 1 / 2 := by
   rw [
-    deningerCalderonWittGammaReflectionOddScalarTransport_eq_zero_iff hpq,
+    deningerCalderonWittGammaReflectionOddScalarTransport_eq_zero_iff,
     xiNearbyPoleDualityAdjunctionFracture_eq_two_re]
   simp
   constructor <;> intro h <;> linarith
@@ -220,7 +226,7 @@ Gamma/co-Poisson reflection defect annihilates the entire exact secondary
 Green boundary space exactly when RH holds.
 -/
 theorem xiGammaReflectionOddSecondaryBoundaryDescent_iff_riemannHypothesis
-    {p q : Nat.Primes} (hpq : p ≠ q) :
+    :
     (∀ rho : XiDivisorSupport,
       deningerCalderonWittGammaReflectionOddScalarTransport
           (xiNearbyPoleDualityAdjunctionFracture (rho : ℂ)).re = 0) ↔
@@ -233,11 +239,11 @@ theorem xiGammaReflectionOddSecondaryBoundaryDescent_iff_riemannHypothesis
         (rho : ℂ)).2
     exact
       (deningerCalderonWittGammaReflectionOddScalarTransport_boundaryFracture_eq_zero_iff
-        hpq (rho : ℂ)).1 (h rho)
+        (rho : ℂ)).1 (h rho)
   · intro h rho
     apply
       (deningerCalderonWittGammaReflectionOddScalarTransport_boundaryFracture_eq_zero_iff
-        hpq (rho : ℂ)).2
+        (rho : ℂ)).2
     exact
       (xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff
         (rho : ℂ)).1 (h rho)

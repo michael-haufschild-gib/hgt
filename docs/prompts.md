@@ -4,7 +4,7 @@
 
 your task:
 if you are already working on a card, keep going.
-else: pick a card from docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/deninger
+else: pick a card from docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/hedenmalm
 
 do: formalize UNCONDITIONALLY in lean any proven theorem in the chosen card. add missing infrastructure, lean proofs, everything needed to mark the card as fully done - no simplifications.
 

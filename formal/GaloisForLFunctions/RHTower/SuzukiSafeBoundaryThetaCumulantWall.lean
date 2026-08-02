@@ -1,3 +1,5 @@
+import GaloisForLFunctions.HTGeometry.MomentHankelStrict
+import GaloisForLFunctions.HTGeometry.PositiveReweightingSupport
 import GaloisForLFunctions.RHTower.PrimeArchThetaWardLaplaceHalfDensity
 import GaloisForLFunctions.RHTower.SuzukiXiSecondDefectJet
 
@@ -577,6 +579,146 @@ theorem thetaCuspSafeTiltVariance_lt_mean :
   have hB := re_xiShiftedReciprocalMoment_pos
     (y := (1 : ℝ)) (by norm_num) (n := 1) (by norm_num)
   linarith
+
+/-! ## Full-support endpoint moment geometry -/
+
+/-- Positive measure represented by the theta source at Suzuki's unit exponential tilt. -/
+def thetaCuspSafeTiltMeasure : Measure ℝ :=
+  volume.withDensity fun x =>
+    ENNReal.ofReal (Real.exp x * thetaCuspFullSource x)
+
+private theorem measurable_thetaCuspSafeTiltDensity :
+    Measurable (fun x : ℝ =>
+      ENNReal.ofReal (Real.exp x * thetaCuspFullSource x)) := by
+  exact ENNReal.measurable_ofReal.comp
+    (Real.continuous_exp.mul
+      contDiff_thetaCuspFullSource.continuous).measurable
+
+private theorem thetaCuspSafeTiltDensity_pos (x : ℝ) :
+    0 < Real.exp x * thetaCuspFullSource x :=
+  mul_pos (Real.exp_pos x) (thetaCuspFullSource_pos_all x)
+
+/-- Every polynomial monomial is integrable in the endpoint tilted theta state. -/
+theorem integrable_pow_thetaCuspSafeTiltMeasure (k : ℕ) :
+    Integrable (fun x : ℝ => x ^ k) thetaCuspSafeTiltMeasure := by
+  rw [thetaCuspSafeTiltMeasure,
+    integrable_withDensity_iff_integrable_smul₀'
+      measurable_thetaCuspSafeTiltDensity.aemeasurable
+      (Filter.Eventually.of_forall fun _ => ENNReal.ofReal_lt_top)]
+  simp_rw [ENNReal.toReal_ofReal (thetaCuspSafeTiltDensity_pos _).le,
+    smul_eq_mul]
+  simpa only [mul_assoc, mul_left_comm, mul_comm] using
+    integrable_thetaCuspSafeTiltRawMoment k
+
+/-- The safe-tilt raw sequence is the moment sequence of its positive endpoint measure. -/
+theorem thetaCuspSafeTiltRawMoment_eq_integral_measure (k : ℕ) :
+    thetaCuspSafeTiltRawMoment k =
+      ∫ x : ℝ, x ^ k ∂thetaCuspSafeTiltMeasure := by
+  rw [thetaCuspSafeTiltMeasure,
+    integral_withDensity_eq_integral_toReal_smul
+      measurable_thetaCuspSafeTiltDensity
+      (Filter.Eventually.of_forall fun _ => ENNReal.ofReal_lt_top)]
+  simp_rw [ENNReal.toReal_ofReal (thetaCuspSafeTiltDensity_pos _).le,
+    smul_eq_mul]
+  rw [thetaCuspSafeTiltRawMoment]
+  apply integral_congr_ae
+  filter_upwards with x
+  ring
+
+private theorem thetaCuspSafeTiltMeasure_compl_finset_pos
+    (F : Finset ℝ) :
+    0 < thetaCuspSafeTiltMeasure {x : ℝ | x ∉ F} := by
+  classical
+  rw [pos_iff_ne_zero]
+  intro hzero
+  have hpos : ∀ᵐ x : ℝ ∂volume,
+      ENNReal.ofReal (Real.exp x * thetaCuspFullSource x) ≠ 0 := by
+    filter_upwards with x
+    exact (ENNReal.ofReal_pos.mpr (thetaCuspSafeTiltDensity_pos x)).ne'
+  have hvolcomp : volume {x : ℝ | x ∉ F} = 0 := by
+    apply (GaloisForLFunctions.HTGeometry.measure_withDensity_eq_zero_iff
+      volume measurable_thetaCuspSafeTiltDensity hpos _).mp
+    exact hzero
+  have hF : volume (↑F : Set ℝ) = 0 := F.measure_zero volume
+  have huniv : (volume : Measure ℝ) Set.univ = 0 := by
+    rw [show Set.univ = (↑F : Set ℝ) ∪ {x : ℝ | x ∉ F} by
+      ext x
+      constructor
+      · intro _
+        exact Classical.em (x ∈ F)
+      · intro _
+        exact Set.mem_univ x]
+    exact measure_union_null hF hvolcomp
+  simp at huniv
+
+/-- Every finite Hankel block of Suzuki's endpoint tilted theta moments is positive definite. -/
+theorem thetaCuspSafeTilt_momentHankelMatrix_posDef (n : ℕ) :
+    (HTGeometry.momentHankelMatrix thetaCuspSafeTiltRawMoment n).PosDef :=
+  HTGeometry.momentHankelMatrix_posDef_of_infiniteSupport
+    thetaCuspSafeTiltRawMoment thetaCuspSafeTiltRawMoment_eq_integral_measure
+      integrable_pow_thetaCuspSafeTiltMeasure
+      thetaCuspSafeTiltMeasure_compl_finset_pos n
+
+/-- Every finite Hankel determinant of the endpoint tilted theta moments is strictly positive. -/
+theorem det_thetaCuspSafeTilt_momentHankelMatrix_pos (n : ℕ) :
+    0 <
+      (HTGeometry.momentHankelMatrix thetaCuspSafeTiltRawMoment n).det :=
+  (thetaCuspSafeTilt_momentHankelMatrix_posDef n).det_pos
+
+theorem thetaCuspSafeTiltRawMoment_zero_pos :
+    0 < thetaCuspSafeTiltRawMoment 0 := by
+  have hdet := det_thetaCuspSafeTilt_momentHankelMatrix_pos 1
+  simpa [HTGeometry.momentHankelMatrix] using hdet
+
+theorem thetaCuspSafeTiltMean_pos :
+    0 < thetaCuspSafeTiltMean := by
+  rw [thetaCuspSafeTiltMean_eq_xiRealLogDeriv_one,
+    ← xiHedenmalmDonoghueScale_eq_xiRealLogDeriv_one]
+  exact xiHedenmalmDonoghueScale_pos
+
+/-- The full-support endpoint moment law discharges strict positivity of the safe-tilt variance. -/
+theorem thetaCuspSafeTiltVariance_pos :
+    0 < thetaCuspSafeTiltVariance := by
+  have hdet := det_thetaCuspSafeTilt_momentHankelMatrix_pos 2
+  have hraw :
+      0 <
+        thetaCuspSafeTiltRawMoment 0 *
+            thetaCuspSafeTiltRawMoment 2 -
+          thetaCuspSafeTiltRawMoment 1 ^ 2 := by
+    simpa [HTGeometry.momentHankelMatrix, Matrix.det_fin_two, pow_two] using hdet
+  have hzero := thetaCuspSafeTiltRawMoment_zero_pos
+  rw [thetaCuspSafeTiltVariance, thetaCuspSafeTiltMean]
+  have hid :
+      thetaCuspSafeTiltRawMoment 2 / thetaCuspSafeTiltRawMoment 0 -
+          (thetaCuspSafeTiltRawMoment 1 /
+            thetaCuspSafeTiltRawMoment 0) ^ 2 =
+        (thetaCuspSafeTiltRawMoment 0 *
+              thetaCuspSafeTiltRawMoment 2 -
+            thetaCuspSafeTiltRawMoment 1 ^ 2) /
+          thetaCuspSafeTiltRawMoment 0 ^ 2 := by
+    field_simp [hzero.ne']
+  rw [hid]
+  exact div_pos hraw (sq_pos_of_pos hzero)
+
+/-- Suzuki's endpoint tilted theta law has strictly negative third cumulant. -/
+theorem thetaCuspSafeTiltThirdCumulant_neg :
+    thetaCuspSafeTiltThirdCumulant < 0 := by
+  rw [thetaCuspSafeTiltThirdCumulant_eq_deriv2_xiRealLogDeriv_one,
+    deriv2_xiRealLogDeriv_one_eq]
+  have hM1 := re_xiShiftedReciprocalMoment_pos
+    (y := (1 : ℝ)) (by norm_num) (n := 1) (by norm_num)
+  have hratio :=
+    eightyFive_mul_re_xiShiftedReciprocalMoment_two_lt_four_mul_one
+  nlinarith
+
+/-- Exact unconditional sign chamber of the first three endpoint theta cumulants. -/
+theorem thetaCuspSafeTilt_cumulantSignChamber :
+    0 < thetaCuspSafeTiltMean ∧
+      0 < thetaCuspSafeTiltVariance ∧
+        thetaCuspSafeTiltThirdCumulant < 0 ∧
+          thetaCuspSafeTiltVariance < thetaCuspSafeTiltMean :=
+  ⟨thetaCuspSafeTiltMean_pos, thetaCuspSafeTiltVariance_pos,
+    thetaCuspSafeTiltThirdCumulant_neg, thetaCuspSafeTiltVariance_lt_mean⟩
 
 end
 

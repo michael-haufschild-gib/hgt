@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.EulerPrimitiveCommonTestPolarizedChainSource
 import GaloisForLFunctions.RHTower.CCMFirstClockPrimitivePromotedExteriorSource
+import GaloisForLFunctions.RHTower.DeningerCalderonWittSingularGammaTransgression
 import GaloisForLFunctions.RHTower.XiSourceModularTypeSuperselectionLaw
 
 /-!
@@ -51,6 +52,41 @@ def eulerPrimitiveBoundaryPolarizedReflectionOddProfile
     fun t =>
       (eulerPrimitiveBoundaryPolarizedTest ((-a : ℝ) : ℂ)).2 t -
         (eulerPrimitiveBoundaryPolarizedTest (a : ℂ)).2 t)
+
+/--
+Singular source-pointed fracture vector.  Its head is the fixed
+pole-centered Fisher score; its tail is the full reflected common-test
+difference.  The critical fibre therefore retains the four-unit source
+score while every transverse displacement is tested before trace.
+-/
+def eulerPrimitiveBoundaryFractureAugmentedSource
+    (a : ℝ) : EulerPrimitiveBoundaryPolarizedFeature :=
+  (eulerPrimitiveBoundaryPolarizedScore.1,
+    (eulerPrimitiveBoundaryPolarizedReflectionOddProfile a).2)
+
+@[simp]
+theorem eulerPrimitiveBoundaryFractureAugmentedSource_zero :
+    eulerPrimitiveBoundaryFractureAugmentedSource 0 =
+      eulerPrimitiveBoundaryPolarizedScore := by
+  apply Prod.ext
+  · rfl
+  · funext t
+    simp [eulerPrimitiveBoundaryFractureAugmentedSource,
+      eulerPrimitiveBoundaryPolarizedReflectionOddProfile,
+      eulerPrimitiveBoundaryPolarizedTest,
+      eulerPrimitiveBoundaryPolarizedScore]
+
+/--
+Four is the exact norm square of the unique zero-displacement source
+fibre.
+-/
+theorem eulerPrimitiveBoundaryFractureAugmentedSource_zero_pairing :
+    eulerPrimitiveBoundaryPolarizedPairing
+        (eulerPrimitiveBoundaryFractureAugmentedSource 0)
+        (eulerPrimitiveBoundaryFractureAugmentedSource 0) =
+      4 := by
+  rw [eulerPrimitiveBoundaryFractureAugmentedSource_zero,
+    eulerPrimitiveBoundaryPolarizedPairing_score_score]
 
 theorem eulerPrimitiveBoundaryPolarizedReflectionOddProfile_apply
     (a t : ℝ) :
@@ -242,6 +278,24 @@ theorem
     using
       integrableOn_eulerPrimitiveBoundaryReflectionOddTailEnergyDensity_iff a
 
+/--
+The singular augmented source has an admissible Hardy tail exactly in its
+four-unit critical fibre.
+-/
+theorem
+    integrableOn_eulerPrimitiveBoundaryFractureAugmentedSource_tail_iff
+    (a : ℝ) :
+    IntegrableOn
+        (fun t : ℝ =>
+          eulerPrimitiveBoundaryTailWeight t *
+            Complex.normSq
+              ((eulerPrimitiveBoundaryFractureAugmentedSource a).2 t))
+        (Ioi 0) ↔
+      a = 0 := by
+  exact
+    integrableOn_eulerPrimitiveBoundaryPolarizedReflectionOddProfile_tail_iff
+      a
+
 /-! ## Prime/depth-labelled exterior source -/
 
 /--
@@ -362,6 +416,24 @@ def xiPrimitiveBoundaryFractureReflectionOddProfile (rho : ℂ) :
     (xiNearbyPoleDualityAdjunctionFracture rho).re
 
 /--
+Four-unit augmented source fibre at the actual Xi boundary fracture.
+-/
+def xiPrimitiveBoundaryFractureAugmentedSource (rho : ℂ) :
+    EulerPrimitiveBoundaryPolarizedFeature :=
+  eulerPrimitiveBoundaryFractureAugmentedSource
+    (xiNearbyPoleDualityAdjunctionFracture rho).re
+
+/--
+Literal promoted prime/depth exterior common test evaluated at the Xi
+duality-adjunction fracture.
+-/
+def xiGammaEulerPrimitivePolarizedFractureCommonTest
+    (rho : ℂ) (i j : Nat.Primes × ℕ) :
+    EulerPrimitiveBoundaryPolarizedFeature :=
+  xiGammaEulerPrimitivePolarizedReflectionOddCommonTest
+    (xiNearbyPoleDualityAdjunctionFracture rho).re i j
+
+/--
 A point of the critical strip has a finite-energy reflected source profile
 exactly when its real part is on the critical line.
 -/
@@ -381,6 +453,72 @@ theorem
   simp
   constructor <;> intro h <;> linarith
 
+theorem
+    integrableOn_xiPrimitiveBoundaryFractureAugmentedSource_tail_iff
+    (rho : ℂ) :
+    IntegrableOn
+        (fun t : ℝ =>
+          eulerPrimitiveBoundaryTailWeight t *
+            Complex.normSq
+              ((xiPrimitiveBoundaryFractureAugmentedSource rho).2 t))
+        (Ioi 0) ↔
+      rho.re = 1 / 2 := by
+  rw [xiPrimitiveBoundaryFractureAugmentedSource,
+    integrableOn_eulerPrimitiveBoundaryFractureAugmentedSource_tail_iff]
+  rw [xiNearbyPoleDualityAdjunctionFracture_eq_two_re]
+  simp
+  constructor <;> intro h <;> linarith
+
+/--
+On the critical line the actual Xi-fracture source fibre is literally the
+four-unit score, not merely a vector with the same scalar norm.
+-/
+theorem xiPrimitiveBoundaryFractureAugmentedSource_eq_score
+    {rho : ℂ} (hrho : rho.re = 1 / 2) :
+    xiPrimitiveBoundaryFractureAugmentedSource rho =
+      eulerPrimitiveBoundaryPolarizedScore := by
+  rw [xiPrimitiveBoundaryFractureAugmentedSource]
+  have hzero :
+      (xiNearbyPoleDualityAdjunctionFracture rho).re = 0 := by
+    rw [xiNearbyPoleDualityAdjunctionFracture_eq_two_re]
+    simp [hrho]
+  rw [hzero, eulerPrimitiveBoundaryFractureAugmentedSource_zero]
+
+theorem xiPrimitiveBoundaryFractureAugmentedSource_pairing_eq_four
+    {rho : ℂ} (hrho : rho.re = 1 / 2) :
+    eulerPrimitiveBoundaryPolarizedPairing
+        (xiPrimitiveBoundaryFractureAugmentedSource rho)
+        (xiPrimitiveBoundaryFractureAugmentedSource rho) =
+      4 := by
+  rw [xiPrimitiveBoundaryFractureAugmentedSource_eq_score hrho,
+    eulerPrimitiveBoundaryPolarizedPairing_score_score]
+
+/--
+On every nondegenerate promoted prime/depth exterior cell, finite-energy
+landing of the actual fracture common test is exactly critical-line
+placement.
+-/
+theorem
+    integrableOn_xiGammaEulerPrimitivePolarizedFractureCommonTest_tail_iff
+    (rho : ℂ) (i j : Nat.Primes × ℕ)
+    (hheight :
+      xiGammaEulerBoundaryHalfHeight i.1 i.2 ≠
+        xiGammaEulerBoundaryHalfHeight j.1 j.2) :
+    IntegrableOn
+        (fun t : ℝ =>
+          eulerPrimitiveBoundaryTailWeight t *
+            Complex.normSq
+              ((xiGammaEulerPrimitivePolarizedFractureCommonTest
+                rho i j).2 t))
+        (Ioi 0) ↔
+      rho.re = 1 / 2 := by
+  rw [xiGammaEulerPrimitivePolarizedFractureCommonTest,
+    integrableOn_xiGammaEulerPrimitivePolarizedReflectionOddCommonTest_tail_iff
+      _ i j hheight]
+  rw [xiNearbyPoleDualityAdjunctionFracture_eq_two_re]
+  simp
+  constructor <;> intro h <;> linarith
+
 /--
 Every Xi divisor fibre lands in the finite-energy polarized source
 boundary.  This predicate names the remaining global landing assertion;
@@ -394,6 +532,21 @@ def XiPrimitiveBoundaryFractureFiniteEnergy : Prop :=
           Complex.normSq
             ((xiPrimitiveBoundaryFractureReflectionOddProfile
               (rho : ℂ)).2 t))
+      (Ioi 0)
+
+/--
+Global finite-energy landing law on one fixed nondegenerate,
+prime/depth-labelled exterior cell.
+-/
+def XiPrimitiveBoundaryLabeledFractureFiniteEnergy
+    (i j : Nat.Primes × ℕ) : Prop :=
+  ∀ rho : XiDivisorSupport,
+    IntegrableOn
+      (fun t : ℝ =>
+        eulerPrimitiveBoundaryTailWeight t *
+          Complex.normSq
+            ((xiGammaEulerPrimitivePolarizedFractureCommonTest
+              (rho : ℂ) i j).2 t))
       (Ioi 0)
 
 theorem
@@ -426,6 +579,109 @@ theorem xiPrimitiveBoundaryFractureFiniteEnergy_iff_riemannHypothesis :
       RiemannHypothesis := by
   rw [xiPrimitiveBoundaryFractureFiniteEnergy_iff_boundaryCharacterNeutral,
     xiBoundaryCharacterNeutral_iff_riemannHypothesis]
+
+/--
+For every nondegenerate literal exterior cell, its global finite-energy
+landing law is exactly RH.  Unlike a scalar divisor coordinate, the
+predicate retains the selected prime and valuation-depth labels before
+trace.
+-/
+theorem
+    xiPrimitiveBoundaryLabeledFractureFiniteEnergy_iff_riemannHypothesis
+    (i j : Nat.Primes × ℕ)
+    (hheight :
+      xiGammaEulerBoundaryHalfHeight i.1 i.2 ≠
+        xiGammaEulerBoundaryHalfHeight j.1 j.2) :
+    XiPrimitiveBoundaryLabeledFractureFiniteEnergy i j ↔
+      RiemannHypothesis := by
+  rw [← xiBoundaryCharacterNeutral_iff_riemannHypothesis]
+  constructor
+  · intro h rho
+    apply
+      (xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff
+        (rho : ℂ)).2
+    exact
+      (integrableOn_xiGammaEulerPrimitivePolarizedFractureCommonTest_tail_iff
+        (rho : ℂ) i j hheight).1 (h rho)
+  · intro h rho
+    apply
+      (integrableOn_xiGammaEulerPrimitivePolarizedFractureCommonTest_tail_iff
+        (rho : ℂ) i j hheight).2
+    exact
+      (xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff
+        (rho : ℂ)).1 (h rho)
+
+/--
+Distinct primes at one common valuation depth automatically give a
+nondegenerate polarized reflection-odd source cell.  Thus its local
+finite-energy law has no residual height-separation premise.
+-/
+theorem
+    integrableOn_xiGammaEulerPrimitivePolarizedReflectionOddCommonTest_sameDepth_tail_iff
+    (a : ℝ) {p q : Nat.Primes} (hpq : p ≠ q) (n : ℕ) :
+    IntegrableOn
+        (fun t : ℝ =>
+          eulerPrimitiveBoundaryTailWeight t *
+            Complex.normSq
+              ((xiGammaEulerPrimitivePolarizedReflectionOddCommonTest
+                a (p, n) (q, n)).2 t))
+        (Ioi 0) ↔
+      a = 0 :=
+  integrableOn_xiGammaEulerPrimitivePolarizedReflectionOddCommonTest_tail_iff
+    a (p, n) (q, n)
+      (xiGammaEulerBoundaryHalfHeight_ne_of_primes_ne_sameDepth hpq n)
+
+/--
+The actual Xi-fracture common test on every distinct-prime same-depth cell
+lands in finite Hardy-tail energy exactly on the critical line.
+-/
+theorem
+    integrableOn_xiGammaEulerPrimitivePolarizedFractureCommonTest_sameDepth_tail_iff
+    (rho : ℂ) {p q : Nat.Primes} (hpq : p ≠ q) (n : ℕ) :
+    IntegrableOn
+        (fun t : ℝ =>
+          eulerPrimitiveBoundaryTailWeight t *
+            Complex.normSq
+              ((xiGammaEulerPrimitivePolarizedFractureCommonTest
+                rho (p, n) (q, n)).2 t))
+        (Ioi 0) ↔
+      rho.re = 1 / 2 :=
+  integrableOn_xiGammaEulerPrimitivePolarizedFractureCommonTest_tail_iff
+    rho (p, n) (q, n)
+      (xiGammaEulerBoundaryHalfHeight_ne_of_primes_ne_sameDepth hpq n)
+
+/--
+Every distinct-prime same-depth labeled exterior cell is independently a
+complete finite-energy criterion for RH; no auxiliary source-height
+nondegeneracy hypothesis remains.
+-/
+theorem
+    xiPrimitiveBoundaryLabeledFractureFiniteEnergy_sameDepth_iff_riemannHypothesis
+    {p q : Nat.Primes} (hpq : p ≠ q) (n : ℕ) :
+    XiPrimitiveBoundaryLabeledFractureFiniteEnergy (p, n) (q, n) ↔
+      RiemannHypothesis :=
+  xiPrimitiveBoundaryLabeledFractureFiniteEnergy_iff_riemannHypothesis
+    (p, n) (q, n)
+      (xiGammaEulerBoundaryHalfHeight_ne_of_primes_ne_sameDepth hpq n)
+
+/--
+One fixed source cell already detects the global landing law: the
+prime-two/prime-three depth-zero polarized boundary has finite energy on
+every Xi divisor fibre exactly when RH holds.
+-/
+theorem
+    xiPrimitiveBoundaryLabeledFractureFiniteEnergy_primeTwoThree_iff_riemannHypothesis
+    :
+    XiPrimitiveBoundaryLabeledFractureFiniteEnergy
+        (⟨2, Nat.prime_two⟩, 0)
+        (⟨3, Nat.prime_three⟩, 0) ↔
+      RiemannHypothesis := by
+  apply
+    xiPrimitiveBoundaryLabeledFractureFiniteEnergy_sameDepth_iff_riemannHypothesis
+      (n := 0)
+  intro h
+  have hval := congrArg (fun r : Nat.Primes => (r : ℕ)) h
+  norm_num at hval
 
 end
 

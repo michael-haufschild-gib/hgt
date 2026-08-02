@@ -19,7 +19,7 @@ specializing the free modular parameter to their centered real displacement.
 
 - [x] 0 → 1 in-progress: source-pure formula fixed; canonical cross-prime incidence witness fixed
 - [x] 1 → 2 fully-proven: vector transport, witness formula, sector classification, singularity, and finite-support Gamma/Hardy boundary comparison proved on paper
-- [ ] 2 → 3 formalized: Lean theorem module, targeted build green, lint and axiom audit pass
+- [x] 2 → 3 formalized: Lean theorem modules, targeted builds green, Route L reachability and axiom audit pass
 - [ ] 3 → 4 publication-ready: integrate theorem into orientation-transgression paper
 
 ## Approach
@@ -72,12 +72,27 @@ Green boundary.
   lint remains red only because concurrently added unrelated modules are not wired into their
   umbrellas; Route L comparison module itself is reachable and contains no forbidden
   declarations.
+- 2026-08-02 — constructed
+  `DeningerCalderonWittCompletedXiGreenIncidenceComparison.lean`.  Finite Xi jets now multiply the
+  actual nonzero cross-prime incidence witness, and normalized Gamma orientation recovers every
+  coefficient.  Their induced completion is canonically isometric to the completed Xi comparison
+  model.  Completed Green comparison is continuous, isometric on norms, dense, finite-test exact,
+  and Frobenius-compatible.  Direct Lean, targeted module build, and axiom audit passed; Route L
+  modules are wired into both theorem-area umbrellas.
+- 2026-08-02 — audited `riemann-hellinger-hodge-green-descent/main.tex`.  Its safe endpoint
+  expectation reaches the completed Xi scalar trace but explicitly gives no boundary-domain
+  control at a zero.  Thus completed incidence Hilbert transport is only carrier infrastructure.
+  Missing map is a graph-norm lift of the source-side Green current into the unbounded
+  Hellinger--Hodge defect domain.
 
 ## Exact remaining frontier
 
-Finite-support source construction and comparison are closed.  They do not imply RH.  Missing
-scientific theorem is a completed/cofinal continuation carrying the project-specific source
-Green primitive to the Xi outer current and proving its actual Gamma/Hardy reflection defect
-vanishes.  Equivalently, that completed primitive must remain in the concrete kernel identified
-above.  Assuming this membership, or restating it as a divisor/Hodge/RH equivalence, receives no
-closure credit.
+Finite-support source construction, Gamma/co-Poisson comparison, and the typed completed
+incidence carrier are closed.  They do not imply RH.  Historical
+`deningerArithmeticSourceGreen` remains a Xi-divisor comparison-model operator, not an
+independently constructed arithmetic Green operator.  Missing scientific theorem is a
+source-side, labelled graph-norm estimate carrying the prime-power endpoint Green current into
+the unbounded Hellinger--Hodge defect domain at every Xi divisor fibre.  Concretely it must prove
+finite tail energy before scalar orientation; local Lean rigidity then forces zero displacement.
+Assuming this membership, deriving it from a bounded Hilbert isometry, or restating it as a
+divisor/Hodge/RH equivalence receives no closure credit.
