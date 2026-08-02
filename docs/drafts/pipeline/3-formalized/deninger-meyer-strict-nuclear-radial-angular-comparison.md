@@ -2413,3 +2413,151 @@ This is the direct sum half of the pro-Ind passage.  What remains is the present
 strict inductive limit as a quotient of the direct sum, after which the corpus's own quotient
 permanence (`deningerIsNuclearSpaceC_quotient`) finishes Trèves Prop. 50.1 and, with it,
 `deningerTensor_poisson_strict` applies to the phase coefficient.
+
+### Record — §2 pro-Ind closed: a countable inductive limit of nuclear spaces is nuclear (Lean, unconditional)
+
+* `RHTower/DeningerIndLimitNuclear.lean`
+  - `deningerQuotKerEquiv`, `_mk`, `_symm_apply` — the isomorphism of the quotient by the kernel with
+    the target of a surjection, named so that the elaborator never unfolds it.
+  - `deningerFinalSeminorm` — **the seminorm of a locally convex final topology**: the source
+    seminorm read through that isomorphism, i.e. the infimum over preimages.
+  - `deningerFinalSeminorm_le`, `le_deningerFinalSeminorm` — it is bounded by the source seminorm on
+    every preimage, and is the largest seminorm with that property.  These two are the defining
+    property of a final topology, so the presentation is pinned down and not merely asserted.
+  - `deningerIsNuclearSpaceC_final` — **nuclearity passes to a locally convex final topology**, by
+    the corpus's quotient permanence together with the transport of nuclearity along a linear
+    isomorphism.
+  - `deningerIndLimitFamily` — **the presentation of a locally convex inductive limit**: the final
+    seminorms of the map from the direct sum of the stages.
+  - `deningerIndLimitFamily_stage_le` — **each stage maps continuously into the limit.**
+  - `le_deningerIndLimitFamily` — **the topology is the finest one making every stage continuous**:
+    a seminorm bounded on each stage is dominated by a member of the presentation.  Together with
+    the previous item this certifies that the presentation is the inductive limit topology.
+  - `deningerIsNuclearSpaceC_indLimit` — **a countable inductive limit of nuclear spaces is
+    nuclear.**
+
+This is Trèves, Prop. 50.1, and it closes the last classical input of §2's pro-Ind passage.  The
+route was the one the corpus's own permanence theorems allow: an inductive limit is a quotient of
+the direct sum, the direct sum was proved nuclear in the previous record, and quotients were already
+proved nuclear.  The coefficient hypothesis of `deningerTensor_poisson_strict` — which was stated
+for *any* nuclear coefficient family — is therefore now met by a countable strict inductive limit of
+nuclear spaces, so `(5)` holds for the pro-Ind phase coefficient with no further input.
+
+Field hypothesis: the quotient permanence of the corpus is proved for `RCLike` coefficients (it goes
+through the Hilbertian refinement), so `deningerIsNuclearSpaceC_final` and
+`deningerIsNuclearSpaceC_indLimit` carry `[RCLike 𝕜]`; the direct sum, the presentation, and the
+universal property hold over an arbitrary nontrivially normed field.  The card's coefficients are
+`ℂ`, so nothing is lost.
+
+### Record — §3: the chain complex is the free chain complex on the simplices (Lean, unconditional)
+
+The last gap between the topological statement of `(6)`–`(7)` and mathlib's singular chain complex
+was the identification of the two models of "the free module on the singular simplices".  It is now
+proved, so the boundedness results apply to the actual differential and not only to a free model
+carrying the same name.
+
+* `HTGeometry/FreeModuleCoproduct.lean`
+  - `freeCoprodIso` — **a coproduct of copies of the base field is the free module on the index
+    set**, built from the two universal properties (`Sigma.desc` one way, `Finsupp.lsum` the other).
+  - `ι_freeCoprodIso_hom` — it sends a summand to the corresponding generator.
+  - `freeCoprodIso_naturality` — **it carries `Sigma.map'` to `Finsupp.mapDomain`**, which is what
+    makes the free locally convex seminorms transportable.
+
+* `HTGeometry/SingularChainFreeModel.lean`
+  - `sSetFreeChain`, `sSetFreeChainSpace`, `sSetFreeChainD`, `sSetFreeChainD_eq` — the simplicial
+    chain complex with coefficients in the base field, its chain spaces presented as coproducts, and
+    its differential on that presentation.
+  - `sSetChainSpaceIso`, `ι_sSetChainSpaceIso_hom` — **the chain space in degree `n` is the free
+    module on the `n`-simplices.**
+  - `sSetChain_d` — the differential is the alternating sum of the maps induced by the face maps.
+  - `ι_comp_sSetChain_d`, `sSetChain_d_comp`, `sSetChain_d_conj` — **the differential, read through
+    the identification, is exactly `freeBoundary` of the face maps.**
+  - `sSetChain_freeSeminorm_d_le` — **the differential of the singular chain complex is bounded**
+    for the free locally convex seminorms.
+
+With this the sentence of `(6)` — "each chain space has the free locally convex direct-sum topology
+on singular simplices; a continuous map or homotopy induces a continuous chain map or prism
+operator" — is proved on mathlib's own singular chain complex: the chain spaces are the free
+modules, the differential is the alternating face differential, and the boundedness of an induced
+chain map and of a prism operator was already proved for maps of that shape
+(`freeSeminorm_freeSimplicialMap_le`, `freeSeminorm_freePrism_le`).
+
+### Record — §1–§2 residual claims: density, splittings, and the Fréchet property of `M_ζ` (Lean, unconditional)
+
+Auditing the card statement by statement left three sentences of §1–§2 that were asserted but not
+yet formalized.  All three are now proved.
+
+* `HTGeometry/ProjectiveTensorDensity.lean` — "density survives completed tensoring because the
+  algebraic tensor of dense subspaces is dense".
+  - `tensorSubmodule`, `tmul_mem_tensorSubmodule` — the subspace spanned by the tensors of two
+    subspaces.
+  - `exists_tmul_approx` — **a pure tensor is approximated by the tensors of dense subspaces**, from
+    the splitting `x ⊗ y − a ⊗ b = (x − a) ⊗ y + a ⊗ (y − b)` and the estimate of the projective
+    seminorm on pure tensors.
+  - `exists_tensor_approx` — **the algebraic tensor product of two dense subspaces is dense** for the
+    projective seminorm; a general tensor is a finite sum of pure ones and the error is halved at
+    each step.
+  - `lTensor_leftInverse` — **a split injection stays split after tensoring.**  The quantitative
+    form, that the splitting stays bounded and hence the tensored map stays strict, is the corpus's
+    `projTensorSeminorm_strict_of_leftInverse`; that is the sentence "completed projective tensor
+    product preserves an explicit continuous splitting", and it is now backed on both the algebraic
+    and the seminorm side.
+
+* `RHTower/DeningerMZetaMetrizable.lean` — the last component of "`(4)` is a strict exact sequence of
+  nuclear **Fréchet** spaces".
+  - `deningerMZeta_firstCountable` — the cokernel is first countable: the projection is open and
+    continuous and the radial space is metrizable, so the neighbourhood filter of a class is the
+    image of a countably generated filter.
+  - `deningerMZeta_metrizableSpace` — **the cokernel is metrizable**: its left group uniformity is
+    the pullback of the neighbourhood filter of zero, hence countably generated, and a separated
+    uniform space with countably generated uniformity is metrizable.
+
+  With `deningerMZeta_completeSpace`, `deningerMZeta_t2Space` and `deningerIsNuclearSpaceC_mZeta`,
+  the cokernel is now a nuclear Fréchet space in full, and every space in `(4)` is.
+
+### Record — §3: the augmentation of `(6)` and its equivariance (Lean, unconditional)
+
+* `HTGeometry/SingularAugmentation.lean`
+  - `sigmaAugmentation`, `ι_sigmaAugmentation` — **the augmentation** of a chain space presented as
+    a coproduct of copies of the coefficient object: the identity on every summand.
+  - `sigmaAugmentation_naturality` — **the augmentation is natural in the index set.**
+  - `sigmaAugmentation_equivariant` — **the augmentation is equivariant**: a group acting on the
+    simplices fixes it.  This is the card's sentence "the augmentation `(6)` is equivariant even
+    though the chosen contraction need not be" — the contraction built here does depend on a choice
+    of isometry and of base point, and the equivariance of the augmentation is proved independently
+    of it.
+  - `sSetAugmentation`, `sSetAugmentation_comp_d` — **the augmentation kills boundaries**, so the
+    augmented complex `(6)` is a complex: the bottom differential is the difference of the two face
+    maps and the augmentation does not distinguish them.
+
+Together with the exactness of continuous invariants this is the full compact-descent paragraph of
+§3: the augmented complex exists, its augmentation is equivariant, and applying invariants to it
+preserves exactness and strictness.
+
+### Card status after this pass
+
+Every numbered statement `(1)`–`(10)` of the card is now formalized unconditionally in Lean, with
+each headline theorem audited to `propext, Classical.choice, Quot.sound`:
+
+| statement | Lean |
+|---|---|
+| `(1)` the radial space, integer weights suffice, nuclear Fréchet | `deningerIInf_real_eq_int`, `deningerRadialCompat`, `deningerIsNuclearSpaceC_radialCompat`, `instCompleteSpaceDeningerRadialCompat`, `instPseudoMetrizableSpaceDeningerRadialCompat` |
+| `(2)` Meyer's space, closed, nuclear Fréchet | `DeningerMeyerCap`, `deningerMeyerCap_isClosed`, `deningerIsNuclearSpaceC_meyerCap`, `instCompleteSpaceDeningerMeyerCap`, `instPseudoMetrizableSpaceDeningerMeyerCap` |
+| `(3)` the Poisson operator, strict closed embedding | `deningerPoissonLM`, `deningerPoissonLM_strict`, `deningerPoisson_range_isClosed` |
+| `(4)` the strict exact sequence of nuclear Fréchet spaces | `deningerPoisson_exact`, `deningerIsNuclearSpaceC_mZeta`, `deningerMZeta_t2Space`, `deningerMZeta_completeSpace`, `deningerMZeta_metrizableSpace` |
+| `(5)` strict tensor transport, and the pro-Ind coefficient | `deningerTensor_exact`, `deningerTensor_quotient_strict`, `deningerTensor_poisson_strict`, `deningerIsNuclearSpaceC_indLimit`, `exists_tensor_approx`, `lTensor_leftInverse` |
+| `(6)` the augmented topological chain cosheaf | `sSetChainSpaceIso`, `sSetChain_d_conj`, `sSetChain_freeSeminorm_d_le`, `sSetAugmentation_comp_d`, `sigmaAugmentation_equivariant` |
+| `(7)` the continuous prism homotopy, split | `contractibleSpace_sphere_lp`, `singularChainHomotopyEquivPoint_sphere_lp`, `freeSeminorm_freePrism_le` |
+| `(8)` the contraction with coefficients | `singularChainHomotopyEquivSingle`, `singularChainCoeffHomotopyEquivSingle`, `singularChainUnitTensorHomotopyEquiv_sphere_lp` |
+| Galois descent of `(6)` | `map_averageMap`, `invariants_shortExact` |
+| `(9)` the apex | `contractibleSpace_punctured_lp` |
+| `(10)` the two endpoint maps and the relative kernel | `deningerMeyerCap_eq_endpoints`, `deningerEndpointPair_surjective`, `ker_deningerEndpointPair`, `deningerMeyerCap_finrank_quotient` |
+
+What §5 names as remaining — the arithmetic gluing, i.e. identifying the finite-residue/real-boundary
+totalization of the intrinsic source middle complex with `(4)` and proving cup/trace compatibility —
+is stated by the card itself as the *remaining* comparison, not as a proved theorem of this card, so
+it is not a formalization gap.
+
+- 2026-08-02 — **Card fully formalized.**  `(1)`–`(10)`, the Galois-descent paragraph of §3 and the
+  residual density/splitting/Fréchet claims of §1–§2 are all proved unconditionally in Lean; every
+  headline theorem audits to `propext, Classical.choice, Quot.sound`.  Moved to `3-formalized`.

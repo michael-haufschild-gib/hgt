@@ -345,7 +345,7 @@ HT theorem, and the DD generator computation.  No analytic claim is inserted as 
 - [x] gauge invariance under the intersection sector proved
 - [x] parent and anti-theatre boundaries explicit
 - [ ] independent specialist proof and novelty audit
-- [ ] group--Cech and DA coefficient complexes formalized in Lean
+- [x] group--Cech and DA coefficient complexes formalized in Lean
 - [ ] analytic theorem formalized without axioms
 
 ## Lean route for the pointed incidence phase (14b)
@@ -567,3 +567,108 @@ subgroup; the Cech direction of `(2)` is untouched by this module.
 
 - 2026-08-02 -- translation stability of the DA sector proved, with the general coordinate shift
   automorphism built along the way.
+
+## Lean status of the three coefficient sectors `(3)`
+
+`HTGeometry/AnomalyCoefficientSectors.lean` builds all three sectors of `(3)` inside the ambient
+meromorphic field, in the group direction:
+
+> **`oSector`** -- the holomorphic nowhere-vanishing sector, defined as the image of the *units* of
+> the entire germ ring, which is exactly "holomorphic and nowhere vanishing";
+> **`oSector_one`**, **`oSector_mul`**, **`oSector_inv`**, **`oSector_ne_zero`** -- it is a
+> multiplicative group of nonzero elements;
+> **`oSector_addTranslationMeroEquiv`** -- **it is translation stable**, because translation acts on
+> the entire germ ring by a ring isomorphism and therefore carries units to units;
+> **`oSector_shiftQuotient`** -- hence stable under the entrywise group differential;
+> **`aSector`** -- the intersection sector `C_A = C_O ∩ C_B`, with **`aSector_mul`**,
+> **`aSector_inv`**, **`aSector_addTranslationMeroEquiv`**, **`aSector_shiftQuotient`**;
+> **`aSector_koszulCoboundary`** -- **the Koszul coboundary of a degree-one cochain with entries in
+> the intersection sector stays in that sector**: `C_A` is a subcomplex for the group differential,
+> which is the content of `(3)` in that direction.
+
+`#print axioms` clean.  Together with the previous module the whole coefficient layer of `(3)` is
+unconditional Lean in the group direction; only the Cech direction of the total complex `(2)` is
+still unformalized, and it is the direction where the FHRZ cochain and the Dixmier--Douady class of
+`(12)` live.
+
+- 2026-08-02 -- the three coefficient sectors and their stability under the group differential are
+  unconditional Lean.
+
+## Lean status of the Cech direction
+
+`HTGeometry/CechLowDegreeComplex.lean` builds the multiplicative Cech complex in the three degrees
+the gerbe cochain uses, for an arbitrary index type and an arbitrary commutative coefficient group:
+
+> **`cechD0`**, **`cechD1`**, **`cechD2`** -- the differentials from patches to overlaps, from
+> overlaps to triple overlaps, and from triple to quadruple overlaps;
+> **`cechD1_cechD0`**, **`cechD2_cechD1`** -- **it is a complex**: both composites are constantly
+> one, the second by an explicit six-fold cancellation (`sixfold_cancel`);
+> **`Sector`** -- an abstract coefficient sector: a subset closed under unit, product and inverse,
+> with **`Sector.div_mem`**;
+> **`cechD0_mem`**, **`cechD1_mem`**, **`cechD2_mem`** -- **a sector is a subcomplex in all three
+> degrees**;
+> **`cechD2_cechD1_mem_of_mem`** -- a degree-one cochain whose differential lands in a sector has a
+> sector-valued cocycle as differential.
+
+`#print axioms` clean.
+
+- 2026-08-02 -- the Cech direction of the total complex `(2)` is unconditional Lean.
+
+## Lean status of the group--Cech bicomplex `(2)`
+
+`HTGeometry/GroupCechBicomplex.lean` welds the two directions.  With one translation the group
+direction has two rows, so the total complex in low degrees is the mapping cone of the coefficient
+map, and the module carries both the abstract and the meromorphic instance:
+
+> **`cechD0_comp`**, **`cechD1_comp`** -- the Cech differential is natural in the coefficient group,
+> which is the commutation of the mixed square;
+> **`cechD1_div`** -- it is a homomorphism in the cochain;
+> **`totalD1`**, **`totalD2`**, **`totalD3`** -- the total differentials, with the alternating sign
+> in the mixed entry;
+> **`totalD2_totalD1`**, **`totalD3_totalD2`** -- **the total differential squares to one** in both
+> available total degrees;
+> **`totalD1_mem`**, **`totalD2_mem`** -- **the total complex restricts to a pair of coefficient
+> sectors**;
+> **`MeroUnits`**, **`translationUnitHom`**, **`shiftUnitHom`**, **`shiftUnitHom_val`** -- the
+> concrete instance: translation and the shift quotient acting on the units of the ambient
+> meromorphic field, with the unit-level differential identified with `shiftQuotient`;
+> **`one_mem_aSector`**, **`aSectorUnits`**, **`shiftUnitHom_mem_aSectorUnits`** -- the intersection
+> sector as a coefficient sector of that group, stable under the group differential;
+> **`totalD_aSector`** -- **the bicomplex of the ambient field with coefficients in the anomaly
+> sector**: the total differential squares to one and every entry produced from a sector cochain
+> stays in the sector, in both directions;
+> **`shiftUnitHom_comm`** -- the two group differentials of a pair of commuting translations
+> commute, so a two-shift anomaly is a class in the total complex.
+
+`#print axioms` clean.  Together with the Koszul module and the three coefficient sectors, the
+group--Cech and DA coefficient complexes of `(2)`--`(3)` are now unconditional Lean in both
+directions.  What stays outside Lean is only the degree-two *nonvanishing* `(12)`, which needs the
+FHRZ cochain and the Dixmier--Douady generator as external parent mathematics.
+
+- 2026-08-02 -- the group--Cech bicomplex with DA coefficients is unconditional Lean.
+
+## Exact remaining Lean input for `(12)`
+
+Everything on this card that can be proved from objects living inside this corpus is now
+unconditional Lean: `(11)` in cochain form, `(13)` with its nontriviality, `(14b)` in both fibres,
+the three coefficient sectors `(3)`, and the group--Cech bicomplex `(2)` with those coefficients.
+
+The single remaining analytic item is the *degree-two nonvanishing* `(12)`, and its obstruction is
+sharp rather than a matter of effort.  In the pure group direction the anomaly is provably trivial:
+`koszulCoboundary_shiftQuotient` shows the canonical two-shift cochain of the elliptic gamma is a
+Koszul cocycle with trivial coboundary, and undoing that coboundary yields only that the shift
+quotients are differentially algebraic -- which they are, being theta functions.  So no argument in
+the group direction can detect `(12)`; the class lives in the mixed Cech-group bidegree and is
+detected only by the gerbe.
+
+Closing `(12)` therefore requires importing, not deriving, two external parent objects:
+
+1. the Felder--Henriques--Rossi--Zhu group--Cech cochain on the explicit invariant cover, with its
+   exponential-rational cocycle;
+2. the Dixmier--Douady computation identifying its class with the generator `(8)`.
+
+Neither is a corollary of anything in this corpus, and no substitute detector exists in the group
+direction, by the triviality just cited.  The gate stays open and no analytic claim is inserted as
+an axiom.
+
+- 2026-08-02 -- Lean work on this card is complete up to the two external parent objects above.

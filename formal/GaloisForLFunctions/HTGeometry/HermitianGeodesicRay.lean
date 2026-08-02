@@ -105,21 +105,11 @@ theorem norm_metricRay_ge (hT : T.IsSymmetric) (hn : finrank ℂ E = n) {c : ℝ
   set b := hT.eigenvectorBasis hn with hb
   have hzero : ∀ i : Fin n, hT.eigenvalues hn i ≤ c → b.repr v i = 0 := by
     intro i hi
-    rw [hb, (hT.eigenvectorBasis hn).repr_apply_apply]
-    have hmem : v ∈ Submodule.span ℂ (b '' {j | c < hT.eigenvalues hn j}) := by
-      rwa [← eigenSum_eq_span hT hn c]
-    refine Submodule.span_induction (p := fun x _ => inner ℂ (b i) x = (0 : ℂ)) ?_ ?_ ?_ ?_ hmem
-    · rintro _ ⟨j, hj, rfl⟩
-      have hortho : inner ℂ (b i) (b j) = if i = j then (1 : ℂ) else 0 :=
-        orthonormal_iff_ite.1 b.orthonormal i j
-      rw [hortho, if_neg]
-      rintro rfl
-      exact absurd hj (not_lt.2 hi)
-    · simp
-    · intro x y _ _ hx hy
-      rw [inner_add_right, hx, hy, add_zero]
-    · intro a x _ hx
-      rw [inner_smul_right, hx, mul_zero]
+    refine repr_eq_zero_of_mem_span b (s := {j | c < hT.eigenvalues hn j}) ?_ ?_
+    · rw [hb, ← eigenSum_eq_span hT hn c]
+      exact hv
+    · intro hmem
+      exact absurd (show c < hT.eigenvalues hn i from hmem) (not_lt.2 hi)
   have hbound : ∀ i : Fin n,
       (Real.exp (c * t)) ^ 2 * ‖b.repr v i‖ ^ 2 ≤ ‖b.repr (metricRay T t v) i‖ ^ 2 := by
     intro i

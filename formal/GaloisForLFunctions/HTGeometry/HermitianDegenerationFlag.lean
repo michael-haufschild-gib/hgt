@@ -105,6 +105,100 @@ theorem eigenSum_add_smul_id (a c : ℝ) :
     rw [hkey]
     exact eigenspace_le_eigenSum (by linarith)
 
+/-! ## Spans of parts of an orthonormal basis -/
+
+section Orthonormal
+
+variable {ι : Type*} [Fintype ι]
+
+/-- **Coordinates vanish off the index set of a span.** -/
+theorem repr_eq_zero_of_mem_span (b : OrthonormalBasis ι ℂ E) {s : Set ι} {x : E}
+    (hx : x ∈ Submodule.span ℂ (b '' s)) {i : ι} (hi : i ∉ s) : b.repr x i = 0 := by
+  classical
+  rw [b.repr_apply_apply]
+  refine Submodule.span_induction (p := fun y _ => inner ℂ (b i) y = (0 : ℂ)) ?_ ?_ ?_ ?_ hx
+  · rintro _ ⟨j, hj, rfl⟩
+    have hortho : inner ℂ (b i) (b j) = if i = j then (1 : ℂ) else 0 :=
+      orthonormal_iff_ite.1 b.orthonormal i j
+    rw [hortho, if_neg]
+    rintro rfl
+    exact hi hj
+  · simp
+  · intro y z _ _ hy hz
+    rw [inner_add_right, hy, hz, add_zero]
+  · intro a y _ hy
+    rw [inner_smul_right, hy, mul_zero]
+
+/-- **A vector whose coordinates vanish off an index set lies in the corresponding span.** -/
+theorem mem_span_of_repr_eq_zero (b : OrthonormalBasis ι ℂ E) {s : Set ι} {x : E}
+    (h : ∀ i, i ∉ s → b.repr x i = 0) : x ∈ Submodule.span ℂ (b '' s) := by
+  classical
+  rw [← b.sum_repr x]
+  refine Submodule.sum_mem _ fun i _ => ?_
+  by_cases hi : i ∈ s
+  · exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, hi, rfl⟩)
+  · rw [h i hi, zero_smul]
+    exact Submodule.zero_mem _
+
+/-- **An operator diagonal in an orthonormal basis has diagonal matrix.** -/
+theorem toMatrix_diagonal_of_orthonormalBasis {m : ℕ} (b : OrthonormalBasis (Fin m) ℂ E)
+    {f : E →ₗ[ℂ] E} {d : Fin m → ℂ} (hd : ∀ i, f (b i) = d i • b i) :
+    LinearMap.toMatrix b.toBasis b.toBasis f = Matrix.diagonal d := by
+  classical
+  ext i j
+  rw [LinearMap.toMatrix_apply, Matrix.diagonal_apply,
+    OrthonormalBasis.coe_toBasis_repr_apply, OrthonormalBasis.coe_toBasis]
+  show b.repr (f (b j)) i = _
+  rw [hd j, map_smul, PiLp.smul_apply, b.repr_apply_apply]
+  have hortho : inner ℂ (b i) (b j) = if i = j then (1 : ℂ) else 0 :=
+    orthonormal_iff_ite.1 b.orthonormal i j
+  rw [hortho]
+  by_cases hij : i = j
+  · subst hij
+    simp
+  · simp [hij]
+
+/-- **A basis vector outside an index set is orthogonal to its span.** -/
+theorem mem_orthogonal_span_of_notMem (b : OrthonormalBasis ι ℂ E) {s : Set ι} {j : ι}
+    (hj : j ∉ s) : b j ∈ (Submodule.span ℂ (b '' s))ᗮ := by
+  refine (Submodule.mem_orthogonal' _ _).2 fun y hy => ?_
+  have h := repr_eq_zero_of_mem_span b hy hj
+  rwa [b.repr_apply_apply] at h
+
+/-- **Removing a sub-span cuts the index set.**  The part of a coordinate subspace orthogonal to a
+smaller one is the coordinate subspace of the difference. -/
+theorem span_inf_orthogonal (b : OrthonormalBasis ι ℂ E) (s t : Set ι) :
+    Submodule.span ℂ (b '' t) ⊓ (Submodule.span ℂ (b '' s))ᗮ
+      = Submodule.span ℂ (b '' (t \ s)) := by
+  classical
+  refine le_antisymm (fun x hx => ?_) (le_inf ?_ ?_)
+  · refine mem_span_of_repr_eq_zero b fun i hi => ?_
+    by_cases his : i ∈ s
+    · rw [b.repr_apply_apply]
+      exact inner_eq_zero_symm.1 ((Submodule.mem_orthogonal' _ _).1 hx.2 (b i)
+        (Submodule.subset_span ⟨i, his, rfl⟩))
+    · exact repr_eq_zero_of_mem_span b hx.1 fun hit => hi ⟨hit, his⟩
+  · refine Submodule.span_le.2 ?_
+    rintro _ ⟨i, hi, rfl⟩
+    exact Submodule.subset_span ⟨i, hi.1, rfl⟩
+  · refine Submodule.span_le.2 ?_
+    rintro _ ⟨i, hi, rfl⟩
+    refine (Submodule.mem_orthogonal' _ _).2 ?_
+    intro y hy
+    have hyrepr : ∀ j, j ∉ s → b.repr y j = 0 := fun j hj => repr_eq_zero_of_mem_span b hy hj
+    rw [← b.sum_repr y, inner_sum]
+    refine Finset.sum_eq_zero fun j _ => ?_
+    by_cases hjs : j ∈ s
+    · have hne : i ≠ j := by
+        rintro rfl
+        exact hi.2 hjs
+      have hortho : inner ℂ (b i) (b j) = if i = j then (1 : ℂ) else 0 :=
+        orthonormal_iff_ite.1 b.orthonormal i j
+      rw [inner_smul_right, hortho, if_neg hne, mul_zero]
+    · rw [inner_smul_right, hyrepr j hjs, zero_mul]
+
+end Orthonormal
+
 /-! ## The flag through an eigenbasis -/
 
 /-- **An eigenspace is spanned by the eigenbasis vectors carrying that eigenvalue.** -/

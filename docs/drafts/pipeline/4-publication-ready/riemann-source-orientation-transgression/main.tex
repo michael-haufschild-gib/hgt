@@ -1,0 +1,1090 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=28mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,mathrsfs}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{booktabs,array}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!48!black,
+  citecolor=blue!48!black,urlcolor=blue!55!black]{hyperref}
+\setlength{\emergencystretch}{2em}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\cA}{\mathcal A}
+\newcommand{\cI}{\mathcal I}
+\newcommand{\cS}{\mathcal S}
+\newcommand{\cT}{\mathcal T}
+\newcommand{\cQ}{\mathcal Q}
+\newcommand{\cW}{\mathcal W}
+\newcommand{\cR}{\mathcal R}
+\newcommand{\cH}{\mathcal H}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\im}{\operatorname{im}}
+\newcommand{\Span}{\operatorname{span}}
+\newcommand{\Rea}{\operatorname{Re}}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\id}{\operatorname{id}}
+\newcommand{\mul}{\operatorname{mul}}
+
+\title{\textbf{One orientation survives}\\
+\large An orientation--transgression completeness law for the Riemann source}
+\author{Michael Haufschild}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We construct and classify a two-step arithmetic source built from the
+Meyer--Calder\'on defect and the directed algebraic rational-Witt packet.
+At each prime \(p\), degree one is
+\[
+  \cA_p^1=\cQ_p\oplus\cW_p,
+\]
+degree two is the first-suspension packet \(\cA_p^2\), and the
+Calder\'on--Witt cross-effect gives a vector-valued alternating cup
+\[
+  \Lambda^2\cA_p^1\longrightarrow\cA_p^2.
+\]
+The cup is onto, its vector-valued radical is zero, and its kernel
+\(\cI_p\) is the exact incidence relation space.  We give an explicit
+section and Green retraction, proving
+\[
+  \Lambda^2\cA_p^1
+    =\cI_p\oplus\im(\cA_p^2),\qquad
+  H^\bullet\!\left(
+    \cI_p\to\Lambda^2\cA_p^1\to\cA_p^2\right)=0.
+\]
+The same assertions hold on the all-prime finite-support source.
+
+The arithmetic source nevertheless has one canonical absolute invariant.
+A normalized Haar coefficient \(\tau:\cA^2\to\C\) defines the oriented
+boundary and trace
+\[
+  D w=(\smile w,-\tau(\smile w)),\qquad
+  T(z,c)=\tau(z)+c.
+\]
+Then \(\im D=\ker T\), the oriented source has cohomology
+\[
+                         (H^0,H^1,H^2)=(0,0,\C),
+\]
+and every top cochain has a canonical Green decomposition
+\[
+                         z=DHz+\jmath Tz.
+\]
+This yields the paper's universal law.  For every complex vector space
+\(V\) and linear consumer \(F\),
+\[
+ F D=0
+ \quad\Longleftrightarrow\quad
+ \exists!\,\phi:\C\to V\ \text{such that}\ F=\phi T.
+\]
+Thus every regular boundary-blind consumer sees only one orientation
+line.  Information beyond it is exactly sensitivity to an exact boundary.
+After restricting incidence primitives to a sector \(\cS\), the complete
+remaining invariant is the canonical Green primitive modulo \(\cS\);
+its class vanishes exactly when the Green primitive remains in \(\cS\).
+
+The law unifies previously separate completion, scalarization,
+hypertranscendence, Rees, and positivity obstructions.  It also changes the
+Riemann frontier: another source, scalar trace, or regular Hilbert
+completion cannot supply the missing information.  The only surviving
+mechanism is a source-pointed singular polarized chain transport which
+preserves the vector-valued cup through the boundary and makes its Green
+primitive sector-preserving.  In the completed divisor geometry this
+condition is the vanishing of the Frobenius--Hodge commutator; its
+weight-one metric law is equivalent to the Riemann hypothesis.  No
+zero-exclusion statement is assumed or claimed.
+\end{abstract}
+
+\medskip
+\noindent\textbf{Keywords.}
+Riemann zeta function; arithmetic source; rational Witt vectors;
+Calder\'on transform; relative cohomology; Green contraction;
+orientation; Hodge polarization; singular completion.
+
+\medskip
+\noindent\textbf{2020 Mathematics Subject Classification.}
+Primary 11M26, 11R58; Secondary 18G35, 46A13, 47A06.
+
+\section{Introduction}
+
+The persistent ambiguity in spectral approaches to the Riemann hypothesis
+is not whether the Riemann divisor can be represented.  It can.  The
+difficulty is to retain the signed displacement
+\[
+                         \Rea\rho-\frac12
+\tag{1.1}\label{eq:signed-displacement}
+\]
+while passing from an arithmetic source to a completed positive or
+spectral object.
+
+Several exact mechanisms show where the sign is lost.  A scalar
+codiagonal preserves total mass but annihilates the labelled zero-mass
+radical.  Product-topology graph closure retains every finite output and
+becomes maximally vertical.  Reflection-even squaring preserves a divisor
+but erases its normal orientation.  A positive Ward index counts an
+off-line pair without forcing the count to vanish.  Reflected
+prime-valuation sectors can have incompatible asymptotic types, so no
+finite-order graded map sews them.  These statements appear different
+because they are expressed in Banach, Hilbert, divisor, probabilistic, and
+Rees coordinates.
+
+The present paper identifies their common source.  The starting object is
+not a Hilbert space selected after the divisor is known.  It is the
+directed algebraic union of finite rational-Witt packets, coupled to the
+one-dimensional Meyer--Calder\'on defect.  The coupling is bilinear and
+therefore belongs as multiplication in a two-step graded source.  Its
+alternating polarization is vector-valued:
+\[
+  (q,a)\smile(q',a')
+     =\chi(q,a')-\chi(q',a).
+\tag{1.2}\label{eq:cup-intro}
+\]
+Keeping this value before scalarization is decisive.
+
+The source turns out to be much more rigid than expected.  Its exterior cup
+generates all of degree two.  The kernel is an exact incidence space, and
+an explicit Green operator contracts the resulting three-term complex.
+Thus no hidden absolute middle class remains to be discovered.  Adding the
+normalized Haar orientation does not create an uncontrolled new
+cohomology: it leaves exactly one top line and nothing else.
+
+This produces one universal classification:
+\[
+\boxed{
+\begin{gathered}
+\text{regular absolute information}
+   =\text{one source orientation line},\\[2mm]
+\text{all further information}
+   =\text{canonical primitive escaping an admitted sector}.
+\end{gathered}}
+\tag{1.3}\label{eq:master-law-intro}
+\]
+The first line is a factorization theorem for every vector-valued linear
+consumer.  The second line is a necessity-and-sufficiency theorem for every
+relative cocycle.  Neither is a dimension count or a heuristic.
+
+\subsection*{What the law answers}
+
+The law closes the source-identification problem.  It proves that one
+should not search for another absolute source class, another scalar
+positive functional, or another regular completion.  Those categories are
+already classified.  A construction that carries more than the orientation
+line must detect an exact boundary, hence must be relative to a restricted
+primitive sector.
+
+For the Riemann problem the relevant restrictions are simultaneously
+arithmetic, topological, asymptotic, and polarizing.  The primitive must
+retain prime, valuation depth, rational-Witt stage, suspension, and
+source-horizon sample labels.  Its completion must be finer than every
+finite-coordinate observation and more singular than every fixed Rees
+order.  Its degree-two value must remain vector-valued until Hodge
+polarization.  These are not optional design preferences: each is forced
+by an exact obstruction.
+
+The completed divisor geometry supplies the final coordinate.  If
+\(\Theta\) is the weight operator, \(J\) the odd Hodge involution,
+\(\smile\) the oriented divisor cup, and
+\[
+                       g(x,y)=x\smile Jy,
+\tag{1.4}\label{eq:hodge-metric-intro}
+\]
+then
+\[
+ g(\Theta x,y)+g(x,\Theta y)-g(x,y)
+   =-x\smile[\Theta,J]y.
+\tag{1.5}\label{eq:purity-defect-intro}
+\]
+The cup is nondegenerate, so exact weight-one conservation is equivalent
+to \([\Theta,J]=0\).  For the completed Riemann divisor, this is equivalent
+to the Riemann hypothesis.  The source law therefore identifies the
+missing mathematical object without presenting an RH equivalence as its
+novelty: it is a singular, sector-preserving, polarized chain transport
+from the explicit arithmetic source to this divisor metric.
+
+\subsection*{Organization}
+
+Section~\ref{sec:algebraic-source} constructs the algebraic source.
+Section~\ref{sec:milnor} gives its exterior presentation and Green
+contraction.  Section~\ref{sec:orientation} adds the unique orientation
+line.  Section~\ref{sec:main-law} proves the universal
+orientation--transgression law.  Sections~\ref{sec:shadows}
+and~\ref{sec:riemann-boundary} derive the earlier completion,
+scalarization, Rees, and Hodge results as shadows of the law.
+
+\section{The directed algebraic source}
+\label{sec:algebraic-source}
+
+\subsection{Finite rational-Witt packets}
+
+Fix a prime \(p\).  Let \(\mathfrak S_p\) be the directed set of finite
+Frobenius stages.  At a stage \(s\in\mathfrak S_p\), let \(X_{p,s}\) be its
+finite affine packet and
+\[
+                         W_{p,s}=\C^{X_{p,s}}.
+\tag{2.1}\label{eq:finite-stage}
+\]
+Gauge-corrected refinement gives injective linear pullbacks
+\[
+                  \kappa_{s,t}^{*}:W_{p,s}\longrightarrow W_{p,t}
+                  \qquad(s\le t)
+\tag{2.2}\label{eq:gauge-pullback}
+\]
+which are reflexive and strictly composable.  All stages embed in one
+full-support Haar \(L^2\)-envelope.  Define the algebraic packet
+\[
+                  \cW_p=\bigcup_{s\in\mathfrak S_p}W_{p,s}.
+\tag{2.3}\label{eq:algebraic-packet}
+\]
+Directedness has a useful exact consequence: every \(a\in\cW_p\) occurs at
+one finite stage.  No closure-generated vector is part of the arithmetic
+source.
+
+\begin{proposition}[Finite-stage realization]
+\label{prop:finite-stage-realization}
+Every \(a\in\cW_p\) has a stage \(s\) and a unique stage image
+\(a_s\in W_{p,s}\) representing it in the Haar envelope.  Refinement of
+\(a_s\) represents the same element at every later stage.
+\end{proposition}
+
+\begin{proof}
+The stage images form a directed family of subspaces.  Membership in their
+supremum is therefore membership in one member of the family.  Injectivity
+of the stage maps gives uniqueness at a fixed stage, and strict
+composability of \(\kappa_{s,t}^{*}\) gives refinement invariance.
+\end{proof}
+
+\subsection{The two degree-one legs}
+
+Let \(\cQ_p\) be the Meyer--Calder\'on quotient.  It is one-dimensional
+and has a distinguished unit defect \(u_p\).  Let
+\[
+                        \lambda_p:\cQ_p\overset{\sim}{\longrightarrow}\C
+\tag{2.4}\label{eq:calderon-coordinate}
+\]
+be the normalized coordinate with \(\lambda_p(u_p)=1\).
+
+Let
+\[
+                         S_p:\cW_p\longrightarrow \cA_p^2
+\tag{2.5}\label{eq:first-suspension}
+\]
+be the first-suspension map, with codomain restricted to its algebraic
+image.  This map is a linear isomorphism onto \(\cA_p^2\).  Let
+\(\delta_p\in\R_{>0}\) be the nonzero polarized half-density scale.
+
+Define
+\[
+   \cA_p^1=\cQ_p\oplus\cW_p,\qquad
+   \chi_p(q,a)=\lambda_p(q)\,\delta_p\,S_p(a),
+\tag{2.6}\label{eq:two-step-source}
+\]
+and
+\[
+  (q,a)\smile_p(q',a')
+    =\chi_p(q,a')-\chi_p(q',a).
+\tag{2.7}\label{eq:local-cup}
+\]
+This is bilinear, alternating, and invariant under every
+gauge-corrected stage refinement.
+
+\begin{theorem}[Vector-valued source nondegeneracy]
+\label{thm:vector-source-nondegenerate}
+The left and right radicals of \(\smile_p\) are zero.  The all-prime
+finite-support cup
+\[
+  \smile:\cA^1\times\cA^1\longrightarrow\cA^2,\qquad
+  \cA^j=\bigoplus_p\cA_p^j,
+\tag{2.8}\label{eq:global-cup}
+\]
+also has zero vector-valued radical.
+\end{theorem}
+
+\begin{proof}
+Suppose \(x=(q,a)\) cups to zero with every \(y\).
+Taking \(y=(0,b)\) gives
+\(\lambda_p(q)\delta_pS_p(b)=0\) for every \(b\).
+The packet is nonzero, \(S_p\) is injective, and \(\delta_p\ne0\), so
+\(q=0\).  Taking \(y=(u_p,0)\) then gives
+\(-\delta_pS_p(a)=0\), hence \(a=0\).  Skew-symmetry gives the right
+radical.  In the all-prime direct sum, testing against vectors supported at
+one prime reduces each component to the local argument.
+\end{proof}
+
+\section{Exterior presentation and Green contraction}
+\label{sec:milnor}
+
+Alternation induces a linear exterior cup
+\[
+                 d_1:\Lambda^2\cA_p^1\longrightarrow\cA_p^2.
+\tag{3.1}\label{eq:exterior-cup}
+\]
+Put
+\[
+                           \cI_p=\ker d_1.
+\tag{3.2}\label{eq:incidence}
+\]
+We call \(\cI_p\) the Milnor-incidence relation space.  The name records
+its role: it contains exactly the quadratic degree-one incidences which
+vanish in the suspension center.
+
+\subsection{Surjectivity and a canonical section}
+
+For \(z\in\cA_p^2\), define
+\[
+ a_z=\delta_p^{-1}S_p^{-1}z,\qquad
+ \sigma_p(z)=u_p\wedge(0,a_z).
+\tag{3.3}\label{eq:cup-section}
+\]
+Then
+\[
+                              d_1\sigma_p=\id_{\cA_p^2}.
+\tag{3.4}\label{eq:section-law}
+\]
+Consequently \(d_1\) is onto and
+\[
+             \cA_p^2\cong\Lambda^2\cA_p^1/\cI_p.
+\tag{3.5}\label{eq:milnor-quotient}
+\]
+
+Define the Green retraction
+\[
+      h_p(w)=w-\sigma_p(d_1w)\in\cI_p.
+\tag{3.6}\label{eq:green-retraction}
+\]
+Writing \(\iota_p:\cI_p\hookrightarrow\Lambda^2\cA_p^1\) for inclusion,
+\[
+                   \iota_ph_p+\sigma_pd_1=\id.
+\tag{3.7}\label{eq:green-middle}
+\]
+
+\begin{theorem}[Exact Milnor resolution]
+\label{thm:milnor-resolution}
+For every prime \(p\),
+\[
+  \Lambda^2\cA_p^1
+     =\cI_p\oplus\im\sigma_p,
+\tag{3.8}\label{eq:milnor-splitting}
+\]
+and the three-term complex
+\[
+   0\longrightarrow\cI_p
+     \xrightarrow{\ \iota_p\ }
+     \Lambda^2\cA_p^1
+     \xrightarrow{\ d_1\ }
+     \cA_p^2
+     \longrightarrow0
+\tag{3.9}\label{eq:milnor-complex}
+\]
+is split exact.  Its cohomology vanishes in all three degrees.
+
+For the all-prime finite-support source, the analogous exterior cup is
+onto, cross-prime wedges lie in its incidence kernel, an explicit
+finite-support section satisfies the same Green identity, and the global
+three-term complex is split exact.
+\end{theorem}
+
+\begin{proof}
+Equation~\eqref{eq:section-law} gives surjectivity.
+Equation~\eqref{eq:green-retraction} gives \(h_p(w)\in\ker d_1\), and
+\eqref{eq:green-middle} gives the sum decomposition.  If
+\(w\in\cI_p\cap\im\sigma_p\), write \(w=\sigma_pz\).  Then
+\(0=d_1w=z\), so \(w=0\).  Hence the sum is direct.
+Injectivity of \(\iota_p\), exactness at the middle term by definition of
+\(\cI_p\), and surjectivity of \(d_1\) kill \(H^0,H^1,H^2\).
+
+For the direct sum, every degree-two vector has finite prime support.  Sum
+the local sections over that support.  Local cups recover each component,
+while cross-prime wedges have zero cup and therefore are incidence
+relations.  The same calculation proves the global Green identity.
+\end{proof}
+
+\begin{remark}
+\label{rem:not-hidden-cohomology}
+The theorem rules out a specific class of explanations.  The Riemann
+divisor cannot be an undiscovered absolute class of the algebraic
+Calder\'on--Witt Milnor resolution: that resolution is contractible.
+Any additional class must be created by an orientation extension, a
+restriction of primitives, or a singular completion.
+\end{remark}
+
+\section{The unique absolute orientation}
+\label{sec:orientation}
+
+\subsection{Haar trace}
+
+Let \(1_p\in\cW_p\) be the constant packet and put
+\[
+  m_p=\langle1_p,1_p\rangle,\qquad
+  \eta_p(a)=m_p^{-1}\langle1_p,a\rangle.
+\tag{4.1}\label{eq:packet-trace}
+\]
+Full support gives \(m_p\ne0\), and \(\eta_p(1_p)=1\).  Transport through
+\(S_p\) defines
+\[
+                     \tau_p:\cA_p^2\longrightarrow\C.
+\tag{4.2}\label{eq:center-trace}
+\]
+The constant packet gives a section
+\(\epsilon_p:\C\to\cA_p^2\) with
+\[
+                           \tau_p\epsilon_p=\id_\C.
+\tag{4.3}\label{eq:trace-section}
+\]
+
+\subsection{Oriented graph complex}
+
+Define
+\[
+\begin{aligned}
+ D_p &: \Lambda^2\cA_p^1\longrightarrow\cA_p^2\oplus\C,
+ &D_p w&=(d_1w,-\tau_p(d_1w)),\\
+ T_p &: \cA_p^2\oplus\C\longrightarrow\C,
+ &T_p(z,c)&=\tau_p(z)+c.
+\end{aligned}
+\tag{4.4}\label{eq:oriented-graph}
+\]
+Then \(T_pD_p=0\).
+
+\begin{theorem}[Oriented source cohomology]
+\label{thm:oriented-cohomology}
+The graph boundary and orientation trace form an exact sequence
+\[
+ \Lambda^2\cA_p^1\xrightarrow{D_p}
+ \cA_p^2\oplus\C\xrightarrow{T_p}\C\longrightarrow0,
+\qquad
+ \im D_p=\ker T_p.
+\tag{4.5}\label{eq:oriented-exact}
+\]
+Moreover,
+\[
+ \ker D_p=\cI_p,\qquad
+ H^\bullet\!\left(
+  \cI_p\to\Lambda^2\cA_p^1\xrightarrow{D_p}
+  \cA_p^2\oplus\C\right)=(0,0,\C).
+\tag{4.6}\label{eq:oriented-cohomology}
+\]
+The all-prime finite-support oriented source has the same cohomology.
+\end{theorem}
+
+\begin{proof}
+If \(T_p(z,c)=0\), surjectivity of \(d_1\) gives \(w\) with \(d_1w=z\).
+The trace equation gives \(c=-\tau_p(z)\), hence \((z,c)=D_pw\).
+The reverse inclusion follows from \(T_pD_p=0\).
+
+The first component of \(D_pw\) is \(d_1w\), so
+\(\ker D_p=\ker d_1=\cI_p\).  Exactness and injectivity at the first two
+terms give \(H^0=H^1=0\).  The cokernel of \(D_p\) is canonically \(\C\)
+through \(T_p\), giving \(H^2\cong\C\).
+
+The global proof uses the finite-support sum
+\(\tau=\sum_p\tau_p\).  Every prime separately supplies a section of this
+trace, so it is onto.  Global cup surjectivity gives
+\(\im D=\ker T\), and the remaining assertions follow as above.
+\end{proof}
+
+Define the orientation inclusion
+\[
+                     \jmath_p(c)=(0,c)
+\tag{4.7}\label{eq:orientation-inclusion}
+\]
+and the top Green lift
+\[
+                     H_p(z,c)=\sigma_p(z).
+\tag{4.8}\label{eq:top-green-lift}
+\]
+
+\begin{proposition}[Top Green decomposition]
+\label{prop:top-green}
+Every top cochain has the canonical decomposition
+\[
+                   D_pH_p(z,c)+\jmath_pT_p(z,c)=(z,c).
+\tag{4.9}\label{eq:top-green}
+\]
+The same identity holds globally.
+\end{proposition}
+
+\begin{proof}
+Using \(d_1\sigma_pz=z\), the first coordinate is \(z\).  The second
+coordinate is
+\[
+               -\tau_p(z)+\tau_p(z)+c=c.
+\]
+The global calculation is identical.
+\end{proof}
+
+\section{The orientation--transgression completeness law}
+\label{sec:main-law}
+
+We first isolate the universal algebra behind
+\eqref{eq:top-green}.  Let
+\[
+ A_1\xrightarrow{D}A_2\xrightarrow{T}O
+\tag{5.1}\label{eq:abstract-complex}
+\]
+be linear maps over a field.  Suppose there are linear maps
+\(\jmath:O\to A_2\) and \(H:A_2\to A_1\) such that
+\[
+                  DH+\jmath T=\id_{A_2},\qquad
+                  TD=0,\qquad T\jmath=\id_O.
+\tag{5.2}\label{eq:abstract-green}
+\]
+
+\begin{lemma}[Universal orientation factorization]
+\label{lem:universal-factorization}
+For every vector space \(V\) and linear map \(F:A_2\to V\),
+\[
+  FD=0
+  \quad\Longleftrightarrow\quad
+  \exists!\,\phi:O\to V\text{ such that }F=\phi T.
+\tag{5.3}\label{eq:factorization}
+\]
+Equivalently,
+\[
+  F\text{ does not factor through }T
+  \quad\Longleftrightarrow\quad
+  \exists x\in A_1,\ F(Dx)\ne0.
+\tag{5.4}\label{eq:boundary-detection}
+\]
+\end{lemma}
+
+\begin{proof}
+Assume \(FD=0\).  Applying \(F\) to \eqref{eq:abstract-green} gives
+\[
+                         F=(F\jmath)T.
+\]
+Thus \(\phi=F\jmath\) is a factor.  If \(F=\psi T\), then
+\[
+                         \psi=\psi T\jmath=F\jmath=\phi,
+\]
+so the factor is unique.
+
+Conversely, \(F=\phi T\) gives \(FD=\phi TD=0\).  Negating the two
+equivalent statements yields \eqref{eq:boundary-detection}.
+\end{proof}
+
+The middle-degree counterpart is relative.  Let
+\[
+ A_0\xrightarrow{d_0}A_1\xrightarrow{d_1}A_2
+\tag{5.5}\label{eq:three-term}
+\]
+have a contraction \(h_1:A_1\to A_0\), \(h_2:A_2\to A_1\) satisfying
+\[
+                         d_0h_1+h_2d_1=\id_{A_1}.
+\tag{5.6}\label{eq:middle-contraction}
+\]
+For an admitted primitive sector \(\cS\subseteq A_0\), define
+\[
+ \mathfrak o_{\cS}(x)
+   =[h_1x]\in A_0/(\cS+\ker d_0).
+\tag{5.7}\label{eq:relative-obstruction}
+\]
+
+\begin{lemma}[Relative primitive classification]
+\label{lem:relative-classification}
+If \(d_1x=0\), then
+\[
+ \mathfrak o_{\cS}(x)=0
+ \quad\Longleftrightarrow\quad
+ \exists b\in\cS,\ d_0b=x.
+\tag{5.8}\label{eq:relative-existence}
+\]
+If \(d_0\) is injective, this is equivalent to
+\[
+                  \mathfrak o_{\cS}(x)=0
+                  \quad\Longleftrightarrow\quad
+                  h_1x\in\cS.
+\tag{5.9}\label{eq:sector-preservation}
+\]
+\end{lemma}
+
+\begin{proof}
+Because \(d_1x=0\), \eqref{eq:middle-contraction} gives
+\(d_0h_1x=x\).  If \([h_1x]=0\), write
+\(h_1x=b+k\) with \(b\in\cS\) and \(k\in\ker d_0\).  Then
+\(d_0b=x\).  Conversely, if \(b\in\cS\) and \(d_0b=x\), then
+\(h_1x-b\in\ker d_0\), so \([h_1x]=0\).
+
+If \(d_0\) is injective, its kernel vanishes.  The quotient class is zero
+exactly when \(h_1x\in\cS\).
+\end{proof}
+
+\begin{theorem}[Source orientation--transgression completeness]
+\label{thm:main}
+For the local and all-prime algebraic Calder\'on--Witt sources, the
+following classification holds.
+
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em]
+\item The un-oriented Milnor source is split exact.  The oriented source has
+      cohomology \((0,0,\C)\), with canonical generator measured by its
+      normalized Haar trace \(T\).
+
+\item For every complex vector space \(V\) and every linear top-source
+      consumer \(F\),
+      \[
+      FD=0
+      \quad\Longleftrightarrow\quad
+      \exists!\,\phi:\C\to V,\ F=\phi T.
+      \tag{5.10}\label{eq:arithmetic-factorization}
+      \]
+      Hence information beyond the orientation trace is equivalent to
+      detecting an exact oriented boundary.
+
+\item For every admitted incidence sector
+      \(\cS\subseteq\cI\) and every exterior cocycle \(x\),
+      \[
+      \mathfrak o_{\cS}(x)=0
+      \quad\Longleftrightarrow\quad
+      hx\in\cS.
+      \tag{5.11}\label{eq:arithmetic-relative}
+      \]
+      Thus the relative class is exactly canonical Green-primitive escape.
+\end{enumerate}
+
+Consequently the source has no third regular information channel:
+all absolute boundary-invariant information is the one orientation line,
+and all additional information is relative transgression.
+\end{theorem}
+
+\begin{proof}
+Part~(i) is Theorems~\ref{thm:milnor-resolution}
+and~\ref{thm:oriented-cohomology}.  Proposition~\ref{prop:top-green}
+supplies \eqref{eq:abstract-green}; the oriented trace kills the graph
+boundary and the orientation inclusion is its section.  Applying
+Lemma~\ref{lem:universal-factorization} proves part~(ii).
+
+For part~(iii), use \(d_0=\iota:\cI\hookrightarrow\Lambda^2\cA^1\),
+\(d_1=\smile\), \(h_1=h\), and \(h_2=\sigma\).
+Equation~\eqref{eq:green-middle} is the contraction identity and
+\(\iota\) is injective.  Lemma~\ref{lem:relative-classification} gives
+\eqref{eq:arithmetic-relative}.
+\end{proof}
+
+\begin{corollary}[No hidden regular divisor channel]
+\label{cor:no-third-channel}
+A linear source observable which is insensitive to exact incidence
+boundaries contains no divisor information independent of the normalized
+orientation trace.  Any proposed additional source observable must either
+detect an exact boundary or depend on a restriction of the primitive
+sector.
+\end{corollary}
+
+\begin{proof}
+This is Theorem~\ref{thm:main}(ii)--(iii).
+\end{proof}
+
+\section{Earlier obstructions as shadows of one law}
+\label{sec:shadows}
+
+This section does not assemble independent main theorems.  It identifies
+which operation in Theorem~\ref{thm:main} is violated by each known
+obstruction.
+
+\subsection{Scalarization before polarization}
+
+The local degree-one source has a one-dimensional Calder\'on leg and a
+packet leg containing two linearly independent continuous directions.
+Let
+\[
+                    \ell:\cA_p^2\longrightarrow\C
+\tag{6.1}\label{eq:scalar-trace}
+\]
+be any scalar trace, and define
+\[
+ \omega_\ell((q,a),(q',a'))
+     =\ell\!\left((q,a)\smile_p(q',a')\right).
+\tag{6.2}\label{eq:scalar-cup}
+\]
+
+\begin{proposition}[Scalar-trace fracture]
+\label{prop:scalar-fracture}
+For every prime \(p\) and every scalar trace \(\ell\), the alternating form
+\(\omega_\ell\) is degenerate.
+\end{proposition}
+
+\begin{proof}
+Fix the Calder\'on unit \(u_p\).  If \(\omega_\ell\) were nondegenerate,
+the map
+\[
+  a\longmapsto \ell\chi_p(u_p,a)
+\tag{6.3}\label{eq:packet-scalar-map}
+\]
+would be injective on the packet leg.  But the packet leg contains a
+two-dimensional subspace and the target is one-dimensional.  This is
+impossible.
+\end{proof}
+
+Thus the unique top orientation trace of
+Theorem~\ref{thm:main} must not be confused with a scalarization of each
+degree-one leg.  Multiplication must occur while the degree-two packet is
+still vector-valued; only afterward may an orientation be read.
+
+\subsection{Closed completion and maximal verticality}
+
+Let source representatives \(x_K\to0\) carry output packets whose leading
+finite coordinate projections are all onto.  If a closed linear relation
+\(\cR\) in product topology contains all pairs \((x_K,y_j)\), then
+closedness gives \((0,y_j)\in\cR\).  Surjectivity of every leading
+projection makes \(\mul\cR\) dense; closedness makes it the entire target.
+Hence
+\[
+                       \cR=\operatorname{dom}\cR\times Y.
+\tag{6.4}\label{eq:maximal-vertical}
+\]
+The completed relation transports no output information.
+
+In the language of Theorem~\ref{thm:main}, product closure has admitted so
+many boundary directions that the Green splitting is erased.  A useful
+completion must use a topology strictly finer than finite-coordinate
+product observation.
+
+\subsection{Finite-order reflection sewing}
+
+Let \(a_N\to0\).  Suppose one reflected source germ is all-orders flat,
+\[
+                      x_N=o(a_N^m)\quad\text{for every }m,
+\tag{6.5}\label{eq:flat-germ}
+\]
+while the other has finite grade
+\[
+                      \|y_N\|\asymp a_N^d.
+\tag{6.6}\label{eq:finite-grade}
+\]
+Every exact sewing \(R_Nx_N=y_N\) satisfies
+\[
+                  a_N^{-K}=o(\|R_N\|)
+                  \quad\text{for every }K.
+\tag{6.7}\label{eq:beyond-rees}
+\]
+Thus the required relative transgression is beyond every fixed Rees order.
+The reflected prime-valuation source realizes precisely this split at an
+off-critical displacement.
+
+\subsection{Hypertranscendental coefficient sectors}
+
+A translation cocycle can be exact in the ambient meromorphic field while
+having no primitive in a differentially algebraic coefficient sector.
+The cocycle is not a new ambient class.  It is the class of its canonical
+ambient primitive modulo the thin sector.  This is
+\eqref{eq:relative-obstruction} literally, with differential algebraicity
+as the admitted primitive condition.
+
+\subsection{Positive singular examples}
+
+Two source constructions show that boundary sensitivity need not be
+pathological.
+
+First, splitting the Euler common-test source at the moving point
+\(\log n\) gives a compact Gamma/co-Poisson head and a Hardy tail.  In the
+joint scaling limit their kernels converge to complementary shifted-polar
+channels whose sum reconstructs the Hardy Gram exactly.  The polar channel
+is created by boundary blow-up; it is not an external correction.
+
+Second, multiplication of the Euler boundary half-density by the
+source-derived factor \(\sqrt{\log p}\) produces the critical
+von-Mangoldt/Mellin current before scalar fusion.  Its reflection-odd
+center jet is the exterior difference of squared source heights.  Gamma
+anchoring centers those squares, and every finite anchored packet is
+nonnegative.  This realizes the minimal source promotion forced by the
+first-clock capacity bound, while its cofinal control remains necessarily
+singular.
+
+\section{The Riemann boundary coordinate}
+\label{sec:riemann-boundary}
+
+\subsection{Derived polarization}
+
+Let \(V\) be a complex vector space with a nondegenerate alternating cup
+\(\omega\), a complex-linear weight operator \(\Theta\), and a
+conjugate-linear odd polarization \(J\).  Assume
+\[
+ \omega(\Theta x,z)+\omega(x,\Theta z)=\omega(x,z).
+\tag{7.1}\label{eq:cup-weight}
+\]
+Define
+\[
+                            g(x,y)=\omega(x,Jy).
+\tag{7.2}\label{eq:derived-metric}
+\]
+
+\begin{proposition}[Purity-defect identity]
+\label{prop:purity-defect}
+For all \(x,y\in V\),
+\[
+ g(\Theta x,y)+g(x,\Theta y)-g(x,y)
+    =-\omega\bigl(x,[\Theta,J]y\bigr).
+\tag{7.3}\label{eq:purity-defect}
+\]
+Consequently,
+\[
+\begin{aligned}
+ &g(\Theta x,y)+g(x,\Theta y)=g(x,y)
+       \quad\text{for all }x,y\\
+ &\hspace{40mm}\Longleftrightarrow\quad [\Theta,J]=0.
+\end{aligned}
+\tag{7.4}\label{eq:metric-commutator}
+\]
+\end{proposition}
+
+\begin{proof}
+Apply \eqref{eq:cup-weight} to \(x\) and \(Jy\):
+\[
+ \omega(\Theta x,Jy)+\omega(x,\Theta Jy)=\omega(x,Jy).
+\]
+Subtract and add \(\omega(x,J\Theta y)\).  This gives
+\eqref{eq:purity-defect}.  If the commutator vanishes, the metric law
+follows.  Conversely, the metric law and nondegeneracy of \(\omega\) force
+\([\Theta,J]y=0\) for every \(y\).
+\end{proof}
+
+\subsection{Completed divisor specialization}
+
+For the completed Riemann divisor, the oriented cup is nondegenerate and
+the Hodge involution pairs a divisor point with its reflected point.
+Orbitwise,
+\[
+ [\Theta,J]_{\rho}
+   =-\kappa(\rho)\,J_{\rho},\qquad
+ \kappa(\rho)=2\Rea\rho-1.
+\tag{7.5}\label{eq:orbit-curvature}
+\]
+The same coefficient has three source representations:
+\[
+\begin{aligned}
+\kappa(\rho)
+ &= -\bigl(h_p(\rho)-h_p(1-\overline\rho)\bigr),\\
+\kappa(\rho)
+ &= -\,\text{reflected prime-valuation entropy at }\rho,\\
+-m_\rho(\rho-\tfrac12)
+ &=\operatorname*{Res}_{s=\rho}
+     \left[-(s-\tfrac12)\frac{\Xi'(s)}{\Xi(s)}\right].
+\end{aligned}
+\tag{7.6}\label{eq:charge-representations}
+\]
+The first identity is independent of the prime base, the second records
+the Rees type, and the third retains the full complex outer charge.
+
+\begin{theorem}[Riemann Hodge boundary law]
+\label{thm:riemann-hodge}
+For the completed Riemann divisor metric,
+\[
+ \begin{aligned}
+ &g(\Theta x,y)+g(x,\Theta y)=g(x,y)
+      \quad\text{for all }x,y\\
+ &\hspace{38mm}\Longleftrightarrow
+      [\Theta,J]=0
+      \Longleftrightarrow
+      \Rea\rho=\frac12
+      \text{ for every nontrivial zero }\rho.
+ \end{aligned}
+\tag{7.7}\label{eq:rh-hodge}
+\]
+\end{theorem}
+
+\begin{proof}
+The first equivalence is
+Proposition~\ref{prop:purity-defect}.  By
+\eqref{eq:orbit-curvature}, the commutator vanishes on the orbit of
+\(\rho\) exactly when \(2\Rea\rho-1=0\).  It vanishes globally exactly
+when this holds for every nontrivial zero.
+\end{proof}
+
+\subsection{What is now missing}
+
+Theorems~\ref{thm:main} and~\ref{thm:riemann-hodge} locate the boundary
+between source construction and zero exclusion.
+
+The arithmetic source already supplies:
+
+\begin{enumerate}[leftmargin=2.2em]
+\item a directed finite-stage packet before completion;
+\item a nondegenerate vector-valued exterior product;
+\item its exact incidence relations and Green contraction;
+\item one normalized absolute orientation line;
+\item a primitive promotion to the critical von-Mangoldt current; and
+\item a singular Gamma/Hardy boundary decomposition.
+\end{enumerate}
+
+The divisor side already supplies:
+
+\begin{enumerate}[leftmargin=2.2em]
+\item the unsquared outer charge;
+\item the odd Hodge polarization;
+\item the exact purity-curvature identity;
+\item the prime-valuation asymptotic type of that curvature; and
+\item an RH-equivalent weight-one conservation law.
+\end{enumerate}
+
+The missing object is therefore not another item on either list.  It is one
+chain-level transport between them.  The classification forces it to have
+the following form:
+\[
+\boxed{
+\begin{gathered}
+\text{rational-Witt exterior source}\\
+\xrightarrow[\text{nonlocal, beyond all finite Rees orders}]
+ {\text{singular source-pointed Green transport}}\\
+\text{Gamma/co-Poisson reflected boundary}\\
+\xrightarrow[\text{after vector-valued multiplication}]
+ {\text{odd Hodge polarization}}
+\text{weight-one divisor metric}.
+\end{gathered}}
+\tag{7.8}\label{eq:missing-transport}
+\]
+
+It must preserve the canonical Green primitive in the admitted
+positive/Hodge sector.  By
+\eqref{eq:arithmetic-relative}, that is exactly vanishing of the relative
+source class.  By \eqref{eq:rh-hodge}, its divisor realization is exactly
+the vanishing of \([\Theta,J]\).  This is a specification of one
+mathematical object, not a request for a new positivity criterion.
+
+\section{Consequences for proof architecture}
+
+\subsection{Necessary order of operations}
+
+The source law fixes the order in which operations may occur:
+\[
+\begin{gathered}
+\text{finite rational-Witt refinement}\\
+\longrightarrow
+\text{labelled degree-one source}\\
+\longrightarrow
+\text{vector-valued exterior multiplication}\\
+\longrightarrow
+\text{singular reflected boundary transport}\\
+\longrightarrow
+\text{Hodge polarization}\\
+\longrightarrow
+\text{orientation trace}.
+\end{gathered}
+\tag{8.1}\label{eq:operation-order}
+\]
+Reversing any adjacent pair meets an established obstruction.
+Scalarizing before multiplication gives
+Proposition~\ref{prop:scalar-fracture}.  Closing before installing an
+unbounded sample grade gives \eqref{eq:maximal-vertical}.  Sewing reflected
+sectors with finite order violates \eqref{eq:beyond-rees}.  Squaring before
+odd polarization erases \eqref{eq:signed-displacement}.
+
+\subsection{A classification of failed consumers}
+
+The four principal consumer classes can now be separated without examining
+zeros.
+
+\begin{center}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.24\linewidth}
+                >{\raggedright\arraybackslash}p{0.31\linewidth}
+                >{\raggedright\arraybackslash}p{0.34\linewidth}}
+\toprule
+Consumer & Preserved source datum & Forced loss\\
+\midrule
+bounded label-blind codiagonal
+  & total orientation mass
+  & labelled zero-mass radical\\
+closed product-topology relation
+  & every finite output packet
+  & all output constraints\\
+scalar trace before cup
+  & one scalar degree-two moment
+  & nondegeneracy of degree one\\
+finite-Rees reflected sewing
+  & finite asymptotic grades
+  & all-orders-flat reflected sector\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+These are not four missing tricks.  They are four ways of forcing a
+boundary-sensitive observable through the regular factorization
+\eqref{eq:arithmetic-factorization}.
+
+\subsection{Positive consumers}
+
+The law also explains why several positive constructions remain useful.
+The Euler common-test source retains labels before the horizon split.  The
+Gamma/co-Poisson head is a genuine positive Gram channel.  The Hardy tail
+is a second positive channel.  Their joint blow-up restores the shifted
+polar component.  The primitive-promoted exterior source keeps both legs
+until an odd center jet is taken.  These constructions respect the order
+\eqref{eq:operation-order}; their limitation is not source absence but
+cofinal sector preservation.
+
+\section{Discussion}
+
+\subsection{A source, not a decoration}
+
+The algebraic source is independent of any chosen zero.  Its finite-stage
+packets, cup, incidence relations, trace, and Green contraction are defined
+before the Xi divisor enters.  The one-dimensional top cohomology is
+therefore not a decorative rewriting of the functional equation.  It is
+the complete regular quotient of an arithmetic multiplication law.
+
+\subsection{Why one orientation line is enough}
+
+At first sight, one scalar top class seems too small to control a complex
+divisor.  The factorization theorem says the opposite.  The scalar is not
+expected to encode every divisor coordinate directly.  It classifies what
+survives after exact boundaries have been forgotten.  Divisor displacement
+belongs to the relative part: it is carried by whether the canonical
+primitive stays inside the admitted sector.  The absolute line normalizes
+orientation; relative transgression supplies location.
+
+\subsection{Universality}
+
+The factorization argument uses only a Green decomposition, a trace which
+kills boundaries, and a section of that trace.  It is valid over arbitrary
+fields and with arbitrary target dimension.  The relative classification
+uses only a three-term contraction.  Arithmetic enters by producing these
+structures canonically from rational-Witt and Calder\'on data.
+
+The resulting universality is explanatory rather than terminological.
+Source-horizon verticality, dense Hilbert radicals, scalar-trace rank loss,
+hypertranscendental anomalies, Rees superselection, and Hodge purity are
+corollaries or representations of the same dichotomy:
+\[
+                \text{orientation factor}\quad\text{or}\quad
+                \text{primitive escape}.
+\tag{9.1}\label{eq:dichotomy}
+\]
+
+\section{Conclusion}
+
+The arithmetic source problem has a complete answer.  The directed
+rational-Witt packet and Meyer--Calder\'on defect form a two-step graded
+source with nondegenerate vector-valued cup.  Its exterior square has an
+exact incidence presentation and explicit Green contraction.  Without
+orientation it is contractible.  With normalized Haar orientation it has
+exactly one top class.
+
+Every regular boundary-blind consumer factors uniquely through that class.
+Every additional invariant is the canonical primitive modulo an admitted
+sector.  This is the orientation--transgression completeness law.
+
+For the Riemann problem, the law removes a broad ambiguity.  Missing
+mathematics is not another source, divisor equivalence, positive scalar
+form, or regular completion.  It is one singular source-pointed polarized
+chain transport which preserves the Green primitive through the
+Gamma/co-Poisson boundary.  The completed divisor metric identifies its
+decisive condition: weight-one conservation, equivalently vanishing of the
+Frobenius--Hodge commutator.  The law does not prove that condition.  It
+does prove why all known successful pieces and failed regular routes are
+shadows of it, and what a source-internal proof must construct.
+
+\end{document}

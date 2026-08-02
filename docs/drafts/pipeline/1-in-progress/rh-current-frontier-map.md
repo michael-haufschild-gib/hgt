@@ -5538,3 +5538,214 @@ Lean:
 CompleteResolutionPrimeNormalHilbertSaturation.lean
 CompleteResolutionPrimeNormalFiniteFibreGrading.lean
 ```
+
+## 2026-08-02 apex update: source orientation--transgression completeness
+
+Route L's algebraic source is no longer hypothetical, and its cohomological
+content is now classified exactly.
+
+### The source that now exists
+
+For every prime \(p\), the directed union of finite rational-Witt packet
+stages supplies an algebraic degree-one source
+\[
+ A_p^1=Q_p\oplus W_p
+\]
+consisting of the Meyer--Calderón quotient leg and the affine-gauge
+rational-Witt packet leg.  Its first-suspension packet is \(A_p^2\).  The
+alternating Calderón--Witt cross-effect gives a vector-valued cup
+\[
+ \smile_p:\Lambda^2 A_p^1\longrightarrow A_p^2.
+\]
+This cup is surjective.  Its kernel
+\[
+ I_p=\ker(\smile_p)
+\]
+is the exact Milnor-incidence relation space, and
+\[
+ A_p^2\cong\Lambda^2A_p^1/I_p.
+\]
+An explicit exterior-cup section and Green retraction split the exterior
+square:
+\[
+ \Lambda^2A_p^1
+   = I_p\oplus\operatorname{im}(s_p),\qquad
+ \iota_p h_p+s_p\smile_p=1.
+\]
+The same statements hold on the all-prime finite-support source.  Cross-prime
+wedges are precisely incidence relations.  The un-oriented Milnor complex
+\[
+ I\longrightarrow\Lambda^2A^1\longrightarrow A^2
+\]
+is contractible and has \(H^0=H^1=H^2=0\).
+
+The source contains one additional datum which must not be discarded: its
+normalized Haar orientation trace \(\tau:A^2\to\mathbb C\).  Replacing the
+last differential by the oriented graph
+\[
+ D w=\bigl(\smile w,-\tau(\smile w)\bigr),\qquad
+ T(z,c)=\tau(z)+c
+\]
+gives
+\[
+ \operatorname{im}D=\ker T,\qquad
+ H^0=H^1=0,\qquad H^2\cong\mathbb C.
+\]
+Every top cochain has the exact Green decomposition
+\[
+ z=D(H z)+\jmath(Tz).
+\]
+Thus the arithmetic source is not an unknown cohomology theory waiting for
+more absolute classes.  It has exactly one absolute survivor: the
+source-derived orientation line.
+
+### Universal observation law
+
+The Green decomposition proves the following complete classification.
+For every complex vector space \(V\) and every linear consumer
+\[
+ F:A^2\oplus\mathbb C\longrightarrow V,
+\]
+\[
+ F\circ D=0
+ \quad\Longleftrightarrow\quad
+ \exists!\,\phi:\mathbb C\to V\ \text{with}\ F=\phi\circ T.
+\]
+Equivalently,
+\[
+ F\ \text{does not factor through }T
+ \quad\Longleftrightarrow\quad
+ \exists w,\ F(Dw)\ne0.
+\]
+There is no third regular source channel.  Every boundary-blind observer sees
+only the one Haar orientation coefficient.  Every observer carrying more
+information must be boundary-sensitive.
+
+Restriction to an admitted primitive sector \(S\subseteq I\) creates the
+only remaining middle invariant.  For an exterior cocycle \(x\), define its
+relative class by the canonical Green primitive
+\[
+ \mathfrak o_S(x)=[h x]\in I/(S+\ker\iota).
+\]
+Then
+\[
+ \mathfrak o_S(x)=0
+ \quad\Longleftrightarrow\quad
+ x\text{ has a primitive in }S.
+\]
+Because \(\iota:I\hookrightarrow\Lambda^2A^1\) is injective, this sharpens to
+\[
+ \mathfrak o_S(x)=0
+ \quad\Longleftrightarrow\quad
+ h x\in S.
+\]
+
+This is the **source orientation--transgression completeness law**:
+
+```text
+absolute source information = one orientation line;
+all additional information = canonical primitive escaping an admitted sector.
+```
+
+It replaces the earlier, weaker instruction to “construct a cohomology” or
+“find a source.”  Source formation, exterior multiplication, incidence
+relations, Green contraction, and absolute orientation are now explicit.
+
+Lean:
+
+```text
+DeningerCalderonWittDerivedCupSource.lean
+DeningerCalderonWittAlgebraicSource.lean
+DeningerCalderonWittMilnorIncidence.lean
+DeningerCalderonWittOrientedSource.lean
+RelativeContractionTransgressionLaw.lean
+OrientationTraceFactorizationLaw.lean
+DeningerCalderonWittRelativeBoundaryTransgression.lean
+DeningerCalderonWittOrientationTransgressionCompleteness.lean
+```
+
+### How existing positive results and no-gos become shadows
+
+1. **Source-horizon maximal verticality.**  Product-topology closure forgets
+   the Green splitting and makes every retained output a boundary direction.
+   Maximal verticality is completion-level failure to preserve the admitted
+   primitive sector.
+
+2. **Scalar-trace fracture.**  A scalar trace taken before exterior
+   polarization cannot separate both degree-one source legs.  The
+   vector-valued cup must survive until orientation is formed; otherwise the
+   only remaining regular consumer is the one-dimensional trace factor above.
+
+3. **Hypertranscendental anomalies.**  Elliptic-gamma shift cocycles have
+   canonical ambient primitives but no differentially algebraic primitive.
+   They are literal relative classes produced by primitive escape from a thin
+   coefficient sector.
+
+4. **Wold--Poisson, valuation, Fisher, and Gamma frames.**  These are
+   coordinate presentations of \(A^1\) and its completion gauges.  Fisher
+   whitening is unbounded because it tries to recover boundary-sensitive
+   source directions after a rare-event scalarization.
+
+5. **Euler/Gamma common-test horizon.**  Compact Gamma head and Hardy tail
+   split the same source, and the shifted polar channel appears only in the
+   singular joint blow-up.  This is a positive example of boundary
+   transgression rather than a new absolute source class.
+
+6. **Hedenmalm radicals and Sonin/Calkin consumers.**  Regular consumers
+   which annihilate the source boundary are forced through the single
+   orientation trace.  Dense radicals, compact equalization, and loss of
+   divisor side are different analytic realizations of this factorization.
+
+7. **Reflected Rees fracture.**  Off-line reflected valuation sectors have
+   incompatible asymptotic types.  No finite-Rees-moderate map can preserve
+   the required primitive sector; any surviving transgression is necessarily
+   beyond every finite Rees order.
+
+8. **Hodge/purity curvature.**  For the oriented Hodge metric already present
+   in the corpus,
+   \[
+   g(\Theta x,y)+g(x,\Theta y)-g(x,y)
+      =-\smile\bigl(x,[\Theta,J]y\bigr).
+   \]
+   Its weight-one conservation is equivalent to RH, and the commutator
+   coefficient is the same signed source entropy/Rees charge.  This is the
+   analytic target form of sector-preserving orientation transport.
+
+9. **Four-unit Ward positivity.**  Finite aperture already supplies a
+   contraction.  Zero aperture is not missing another positive source; it is
+   the assertion that the singular source-to-divisor transgression preserves
+   the admitted orientation sector.
+
+Quantum-recurrence symmetric-space and observer-metric work supplies a
+possible geometric target category, but no source-specific chain map to that
+category is yet proved.  It must not be counted as closing this frontier.
+
+### Exact missing theorem after source creation
+
+Stop searching for:
+
+- another absolute \(H^1\) or \(H^2\) source class;
+- another bounded scalar trace, positive Gram matrix, or regular Hilbert
+  completion;
+- another reflection-even divisor equivalence;
+- another finite Rees or finite-coordinate sewing.
+
+The remaining construction is one **source-pointed singular polarized chain
+transport**.  It must:
+
+1. retain rational-Witt stage, prime, valuation depth, suspension, and
+   source-horizon sample labels through exterior multiplication;
+2. transport the vector-valued cup before scalar trace;
+3. carry the unique source orientation line to the completed Xi outer
+   orientation current;
+4. use a topology strictly finer than finite-coordinate product observation
+   and an operator order beyond every finite Rees grade;
+5. intertwine the source Green contraction with the reflected
+   Gamma/co-Poisson boundary; and
+6. prove that the resulting Green primitive remains in the admitted
+   positive/Hodge sector.
+
+Item 6 is the single mathematical last mile.  In the established Hodge
+coordinate it is equivalent to vanishing of the purity commutator
+\([\Theta,J]\), hence to RH.  Items 1--5 specify the source and category so
+that item 6 is no longer a vague request for positivity.

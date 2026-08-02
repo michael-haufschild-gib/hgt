@@ -273,3 +273,89 @@ of the facet quotient complex and its localization remain to be assembled in Lea
 - [ ] formalize the actual multiple-gamma annihilator and transverse-HT conjunction
 - [ ] construct one nontrivial polarized analytic effectivity locus for the hierarchy
 - [ ] prove a transferred analytic theorem from the incidence object
+
+## Lean status of the augmented facet complex `(4)`
+
+The assembly of the monomial blocks into the actual facet quotient complex is now unconditional
+Lean, in every degree, over any commutative coefficient ring and for an arbitrary family of facets.
+Three modules carry it.
+
+`HTGeometry/SimplexConeContraction.lean` contracts one monomial block in the concrete cochain model
+of `SimplicialCochainComplex`, which is the model the facet complex actually produces (the
+categorical `SSet` contraction cannot be applied to it):
+
+> **`simplicialCone`** -- the cone homotopy at a base vertex;
+> **`faceSign_cone_cancel`** -- the incidence-sign identity behind it;
+> **`simplicialCoboundary_simplicialCone_add`** -- **`δ ∘ K + K ∘ δ = id`**, in every degree at once;
+> **`simplicialCoboundary_simplicialCone`**, **`simplicialCone_mem_cardCochains`**,
+> **`simplicialCone_support`** -- every cocycle is a coboundary, with a primitive of the same
+> support one degree lower;
+> **`simplicialCoboundary_simplicialCone_of_subset`**, **`fullSimplex_exact`**,
+> **`fullSimplex_exact_on`** -- **the block contraction**: on a nonempty vertex set, a cochain that
+> is a cocycle on the subsets of that set is the coboundary of its cone primitive there.  This is
+> the form the blocks occur in, because the block differential is the ambient one restricted to
+> subsets of the block.
+
+`HTGeometry/FacetSupportedRestriction.lean` makes the quotient terms explicit:
+
+> **`suppRestrict`** -- truncation of a polynomial to the multidegrees satisfying a condition, with
+> **`coeff_suppRestrict`**, **`suppRestrict_eq_zero_iff`**, **`suppRestrict_eq_self_iff`**,
+> additivity, `k`-linearity (**`suppRestrictₗ`**) and **`suppRestrict_suppRestrict`** (conditions
+> compose by conjunction);
+> **`facetRestrict`** -- the truncation of one coordinate facet, with
+> **`mem_facetIdeal_iff_coeff`**, **`facetRestrict_eq_zero_iff_mem`** -- **its kernel is exactly the
+> coordinate-facet ideal**, so it computes the quotient with no choice of representative --
+> **`sub_facetRestrict_mem_facetIdeal`**, and **`facetRestrict_facetRestrict`**, the mirror of
+> `J F + J G = J (F ∩ G)`.
+
+`HTGeometry/FacetAugmentedComplex.lean` builds the complex and proves it exact:
+
+> **`capSupported`**, **`capRestrict`** -- the term of the complex belonging to a set `T` of facets;
+> **`capIdeal`** -- the sum `J_(F_0) + ... + J_(F_p)` of their coordinate ideals;
+> **`mem_capIdeal_iff_coeff`**, **`capRestrict_eq_zero_iff_mem`** -- **the truncation kernel is
+> exactly that sum**, which identifies the truncation model with the quotient complex `(4)`;
+> **`facetCoboundary`** -- the differential, the alternating sum of the canonical projections;
+> **`coeff_facetCoboundary`** -- **it is the reduced simplicial coboundary in every multidegree**;
+> **`facetCoboundary_facetCoboundary`** -- it is a complex;
+> **`facetBlock`** -- the facets carrying a given multidegree, the vertex set of that multidegree's
+> block; **`basePart`**, **`coneAssemble`** -- the explicit primitive, assembled from the block
+> contractions with the *smallest* carrying facet as base vertex, which is what makes the
+> multidegree-dependent choice of base point uniform and keeps the primitive a polynomial;
+> **`coeff_coneAssemble_of_min`**, **`coeff_coneAssemble_of_min_top`** -- in every multidegree the
+> primitive is exactly the block cone contraction;
+> **`facetComplex_exact`** -- **the augmented facet complex is exact in every positive degree**: a
+> cochain on the `c+1`-element facet sets, truncated to what its facets carry and with vanishing
+> differential, is the differential of the explicit primitive one degree lower, which satisfies the
+> same degree, support and truncation conditions.
+
+`#print axioms` clean for all of them.  Together with the already formalized augmentation
+injectivity (`stanleyReisnerIdeal` is the intersection of the facet ideals) this is the full
+all-degree exactness of `(4)` over the polynomial ring.
+
+What is still outside Lean in `(4)` is only the last sentence of its proof: the *localization* step
+at the elements `1+x_j=t_j`.  Exactness is preserved because localization is flat, and the corpus
+already carries the localized facet ideals and their intersection law
+(`localizedStanleyReisnerIdeal_eq_iInf_localizedFacetIdeal`); what is missing is the passage of the
+exactness statement itself through that flat base change, which needs the complex restated with
+quotient modules rather than truncated representatives.
+
+- 2026-08-02 -- the monomial-block contractions are assembled into the augmented facet complex and
+  its all-degree exactness is unconditional Lean over the polynomial ring.
+
+## Lean status of the quotient form of `(4)`
+
+`HTGeometry/FacetQuotientComplex.lean` transports the exactness to the form `(4)` is written in,
+where a term really is a quotient ring rather than a truncated representative:
+
+> **`capIdeal_mono`**, **`facetQuot`**, **`facetFactor`**, **`facetFactor_mk`** -- the terms
+> `R / (J_(F_0) + ... + J_(F_p))` and the canonical projections between them;
+> **`quotCoboundary`** -- the differential as the alternating sum of those projections;
+> **`capRestrict_idem`**, **`sub_capRestrict_mem_capIdeal`**, **`quotCoboundary_mk`**,
+> **`capRestrict_facetCoboundary`** -- truncation is a section of the quotient map and intertwines
+> the two differentials;
+> **`facetQuotientComplex_exact`** -- **the quotient complex is exact in every positive degree**.
+
+`#print axioms` clean.  The remaining step for `(4)` as stated over `R_tau` is the localization at
+`1+x_j=t_j`.
+
+- 2026-08-02 -- the quotient form of the augmented facet complex is unconditional Lean.

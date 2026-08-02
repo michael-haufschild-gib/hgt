@@ -133,7 +133,24 @@ from that boundary to Weil positivity, the critical line, or zero exclusion is k
 
 - [x] 0 -> 1: literal boundary candidate separated from spacetime and black-hole metaphors
 - [x] 1 -> 2: equivariant building-at-infinity identification proved
-- [ ] 2 -> 3: parent reconstruction core formalized; symmetric-space boundary unavailable in Lean
+- [x] the degeneration dictionary `(4)`: Hermitian directions ↔ simplices of the building, with the
+  chamber/face criterion, the common apartment of commuting directions, surjectivity onto all
+  flags, and the exponential growth law of the ray `exp (t A)` along the flag
+- [x] equation `(1)`: the space of observer metrics is one orbit of the observer group with the
+  isometries as stabilizer, and the rays of traceless directions stay inside it
+- [x] the equivariance of the dictionary: conjugating a direction moves its flag by the
+  conjugating symmetry, and scalars act trivially
+- [x] the boundary parametrization is faithful: a direction is determined by its flag family, so
+  distinct directions give distinct boundary data
+- [x] real rank `N - 1`: a maximal flat is a Euclidean space of dimension `N - 1`, all of whose
+  directions commute and share one apartment
+- [x] the Cartan parametrization: the exponential is a bijection from traceless Hermitian
+  directions onto the determinant-one observer metrics, with the spectral logarithm as inverse
+- [x] the tangent norm and the radial distance: the Hilbert–Schmidt norm of a direction is the
+  Euclidean norm of its eigenvalues, and a ray leaves the reference metric at constant rate
+- [ ] 2 -> 3: parent reconstruction core formalized; the Tits boundary of `SL_N(C)/SU(N)` as a
+  metric object (symmetric-space distance, geodesic asymptote classes, Tits metric) is still
+  unavailable in Lean, so `(3)` itself is not encoded
 - [ ] 3 -> 4: external audit in symmetric spaces and projective differential invariants
 
 ## References
@@ -289,3 +306,162 @@ from that boundary to Weil positivity, the critical line, or zero exclusion is k
   the whole content of `(4)` that lives in linear algebra: the map from Hermitian directions to
   simplices of the building, its surjectivity, and the two structural facts (chamber criterion,
   common apartment for commuting directions) that make it a boundary-at-infinity dictionary.
+
+- 2026-08-02 — **The ray `exp(tA)` itself is now in the formalization, with its growth law.**
+  `formal/GaloisForLFunctions/HTGeometry/HermitianGeodesicRay.lean`, in the umbrella, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+
+  Equation `(4)` names the ray `H_A(t) = exp(tA)`, not just its direction.  `metricRay T t` is that
+  exponential — mathlib's `NormedSpace.exp` of `t • T` — and it dilates each eigenvector by the
+  exponential of its eigenvalue (`metricRay_apply_of_eigenvector`, proved from the exponential
+  series through the corpus's own `pow_apply_of_eigenvector'`).
+
+  The flag is then exactly the record of expansion rates along the ray:
+
+  ```text
+  v ∈ eigenSum T c        →  exp (c t) ‖v‖ ≤ ‖exp (t T) v‖        (t ≥ 0)
+  v ∈ (eigenSum T c)ᗮ     →  ‖exp (t T) v‖ ≤ exp (c t) ‖v‖        (t ≥ 0)
+  ```
+
+  (`norm_metricRay_ge`, `norm_metricRay_le`).  So the flag member at threshold `c` is precisely the
+  subspace on which the observer metric expands at least at rate `c`, and its orthogonal complement
+  is where it expands at most at that rate: the two-sided statement that the flag *is* the
+  asymptotic degeneration pattern of the ray.  Together with the scaling and translation invariance
+  already proved (`eigenSum_smul`, `eigenSum_add_smul_id`) this says the pattern depends only on the
+  direction of the ray, which is what makes it a point of the boundary at infinity rather than of
+  the space.
+
+  The gap to `(3)` is unchanged and now sharply localized: what is missing is not the dictionary but
+  the *metric* — the symmetric-space distance on `SL_N(C)/SU(N)`, its geodesics, and the Tits
+  metric on asymptote classes.  Every statement of `(4)` that does not mention that metric is now a
+  theorem.
+
+- 2026-08-02 — **Equation `(1)` and the equivariance of `(3)`, formalized.**  Three modules, in the
+  `HTGeometry` umbrella, axioms `[propext, Classical.choice, Quot.sound]`:
+  `HermitianFlagEquivariance.lean`, `HermitianObserverMetric.lean`, `ObserverMetricSpace.lean`.
+
+  **The observer metric.**  The value of a ray is a genuine observer metric: `exp (t T)` is a
+  Hermitian form (`isSymmetric_metricRay`), positive definite (`inner_metricRay_pos`), and its
+  determinant is `exp (t · tr T)` (`det_metricRay`), proved from the spectral decomposition — this
+  is the identity `det (exp A) = exp (tr A)`, which mathlib still lists as a TODO, in the case the
+  card needs.  With `trace_eq_sum_eigenvalues` it follows that the ray lies in the
+  determinant-**one** space exactly when the direction is traceless
+  (`det_metricRay_eq_one_iff`, `metricRay_mem_observerMetric`) — the normalization the card's
+  `X_N = SL_N(C)/SU(N)` imposes.  The flag reads the degeneration of the *form* as well as of the
+  norm: `exp (c t) ‖v‖² ≤ ⟪v, exp (t T) v⟫` on the flag member at threshold `c`, and `≤` the other
+  way on its orthogonal complement (`re_inner_metricRay_ge`, `re_inner_metricRay_le`).
+
+  **Equation `(1)`.**  `exists_congruence_of_observerMetric`: every positive-definite Hermitian form
+  of determinant one is the pullback of the reference form by a determinant-one symmetry — its
+  positive square root, constructed here from the spectral decomposition (`sqrtOp`,
+  `sqrtOp_comp_sqrtOp`, `det_sqrtOp`).  `congruence_eq_refl_iff`: the symmetries fixing the
+  reference form are exactly the isometries.  Together: the space of observer metrics is a single
+  orbit of the observer group with the unitary group as stabilizer, which is the card's description
+  of `X_N` as `SL_N(C)/SU(N)`.
+
+  **Equivariance.**  `eigenSum_conj`: conjugating a direction by an observer symmetry moves its
+  degeneration flag by that symmetry, `eigenSum (g T g⁻¹) c = map g (eigenSum T c)`; and
+  `conj_smul_eq`: scalars act trivially, so the action is that of the *projective* observer group.
+  That is the equivariance clause of `(3)` at the level of the dictionary.
+
+  Still not asserted, and now the only missing piece: the *metric geometry* of `X_N` — its
+  distance, geodesics as metric objects, asymptote classes and the Tits metric.  The algebraic
+  description of the space, the rays, the flags, their equivariance and the two-sided degeneration
+  law are all theorems.
+
+- 2026-08-02 — **Faithfulness of the boundary data, and the real rank.**  Two modules, in the
+  umbrella, axioms `[propext, Classical.choice, Quot.sound]`:
+  `HermitianFlagUniqueness.lean`, `HermitianFlat.lean`.
+
+  **A direction is its flag.**  `eq_of_eigenSum_eq`: two Hermitian directions whose degeneration
+  flags agree at every threshold are *equal*.  The proof is the reconstruction of the spectral data
+  from the flag: the dimensions of the flag members count the eigenvalues above each threshold, and
+  two antitone families with the same upper counts coincide (`eigenvalues_eq_of_eigenSum_eq`); then
+  each eigenspace is cut out of the flag by a threshold in the gap below its eigenvalue
+  (`exists_gap`, `eigenspace_eq_inf_orthogonal`), so the eigenspaces agree too.  This is the
+  statement that the boundary parametrization is faithful — distinct rays of observer metrics have
+  distinct degeneration data — which is what makes "the flag *is* the point at infinity" an honest
+  reading rather than a lossy one.
+
+  The reconstruction needed three general facts about spans of parts of an orthonormal basis, now
+  proved once and reused: coordinates vanish off the index set of a span, a vector whose coordinates
+  vanish off a set lies in the corresponding span, and `span (b '' t) ⊓ (span (b '' s))ᗮ
+  = span (b '' (t \ s))`.
+
+  **The real rank.**  `HermitianFlat.lean` builds the flat of a frame: the directions diagonal in an
+  orthonormal frame, parametrized linearly and faithfully by their weights (`diagOpₗ`,
+  `diagOpₗ_injective`), with trace the sum of the weights (`trace_diagOp`).  The traceless ones —
+  exactly those whose rays stay in the determinant-one space — form a subspace of dimension `N - 1`
+  (`finrank_flat`).  That is the card's "real rank `N - 1`": a maximal flat is a Euclidean space of
+  that dimension, so its sphere at infinity has dimension `N - 2`, the dimension of an apartment.
+  All directions of one flat commute (`commute_of_mem_flat`) and hence, by the apartment theorem,
+  have all their flags inside a single apartment (`exists_frame_flat`) — the card's "commuting
+  choices of `A` lie in one maximal flat and give one apartment", now with the flat itself
+  constructed.
+
+  What remains for `(3)` is unchanged: the *metric* on the space of observer metrics and the Tits
+  metric on its boundary.  Everything the card says about the space, its flats, its rank, its rays
+  and their degeneration data is now proved.
+
+- 2026-08-02 — **Every observer metric lies on exactly one ray: the Cartan parametrization.**
+  `formal/GaloisForLFunctions/HTGeometry/HermitianLog.lean`, in the umbrella, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+
+  The card's geodesic rays `H_A(t) = exp (t A)` only describe the space if they *fill* it, one ray
+  per point.  They do, and both halves are now theorems.
+
+  `logOp` is the Hermitian logarithm of a positive-definite form, built from its spectral
+  decomposition like the square root before it.  The two inversion identities are proved through the
+  flag, using the uniqueness theorem of the previous entry:
+
+  ```text
+  eigenSum (exp (t T)) c = eigenSum T (log c / t)        (t > 0, c > 0)
+  eigenSum (log P) c     = eigenSum P (exp c)
+  ```
+
+  (`eigenSum_metricRay`, `eigenSum_logOp`), so `log (exp T)` and `T` have the same flag at every
+  threshold and are therefore equal (`logOp_metricRay`), and symmetrically `exp (log P) = P`
+  (`metricRay_logOp`).  The exponential is therefore a bijection from Hermitian directions onto
+  positive-definite Hermitian forms (`exists_unique_isSymmetric_metricRay`).
+
+  Under the determinant-one normalization the correspondence is with *traceless* directions:
+  `trace_logOp_eq_zero` — the trace of the logarithm is `log (det P)`, hence zero exactly when the
+  determinant is one — and `exists_unique_traceless_metricRay` states the bijection in the form the
+  card uses: every observer metric of determinant one lies on exactly one ray of a traceless
+  direction, and every such ray stays inside the space.
+
+  Combined with the earlier entries, the geodesic picture of `X_N` is complete except for its
+  metric: the space is one orbit `SL_N(C)/SU(N)`, its points are the exponentials of the traceless
+  Hermitian directions bijectively, its maximal flats are Euclidean of dimension `N - 1`, and each
+  direction carries a faithful degeneration flag which is a simplex of the building, with the
+  chamber/face dichotomy and the apartment structure of commuting directions.
+
+- 2026-08-02 — **The tangent norm and the radial distance.**
+  `formal/GaloisForLFunctions/HTGeometry/ObserverDistance.lean`, in the umbrella, axioms
+  `[propext, Classical.choice, Quot.sound]`.
+
+  The metric layer starts at the tangent space.  The norm of a Hermitian direction is its
+  Hilbert–Schmidt norm — and this corpus already owns the Hilbert–Schmidt theory
+  (`HilbertSchmidtOperator.lean`, `HilbertSchmidtRankOne.lean`), so nothing about it had to be
+  rebuilt: the triangle inequality (`hsNorm_add_le`), definiteness and homogeneity come from there.
+  What is new here is the bridge to the spectral picture, `hsNorm_toCLM_eq_sqrt`:
+
+  ```text
+  ‖T‖_HS = √(∑ᵢ λᵢ²)
+  ```
+
+  for a Hermitian direction with eigenvalues `λᵢ` (through `isHilbertSchmidt_toCLM`: in finite
+  dimension every operator is Hilbert–Schmidt).  So the directions at the reference metric form a
+  normed space whose norm is the Euclidean norm of the eigenvalues — the flat metric of a maximal
+  flat, matching the rank computation of the previous entry.
+
+  Transported by the exponential this gives the radial distance `distId P = ‖log P‖`, and:
+
+  - `logOp_metricRay_smul` — the logarithm of the point of a ray at parameter `t` is `t · T`;
+  - `distId_metricRay` — that point is at distance `t · ‖T‖` from the reference metric, so the rays
+    of `(4)` are radial geodesics parametrized proportionally to arclength;
+  - `distId_eq_zero_iff` — only the reference metric is at distance zero.
+
+  What is still not formalized, and is the last item of `(3)`: the distance between two *arbitrary*
+  observer metrics — whose triangle inequality is the nonpositive-curvature statement — and the Tits
+  metric on the boundary.  The radial case, which is what the card's rays use, is done.

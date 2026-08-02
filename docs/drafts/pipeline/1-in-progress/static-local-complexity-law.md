@@ -476,6 +476,111 @@ time.  Kotowski--Oszmaniec--Horodecki obtain an immediate extremal jump for
 GUE and Haar-conjugated diagonal generators using load-bearing unitary
 invariance; no audited result proves this local ballistic law.
 
+#### Quantized-witness reduction: the actual circuit-lower-bound frontier
+
+`[BRIDGE] [PAPER-PROVED]`  The quenched theorem is not merely stronger than
+known Hamiltonian-simulation lower bounds.  At exponential time it produces a
+polynomial-bit local Hamiltonian with robust exponential **nonuniform endpoint
+circuit complexity**.
+
+Let
+
+\[
+ H(J)=\sum_{a=1}^m J_aP_a,\qquad \|P_a\|\leq1,
+\]
+
+let `K` be contained in the coefficient box `[-B,B]^m`, and suppose the state
+metric is dominated by operator-norm perturbation of the implementing
+unitary.  Fix `t>0`, `epsilon>0`, and an integer `s`.  If
+
+\[
+ \mu\{J\in K:C_\varepsilon(e^{-itH(J)}\Phi_0)\leq s\}<1,            \tag{O4.3j}
+\]
+
+then there is a rational coefficient vector `J_tilde` whose coordinates have
+bit length
+
+\[
+ O\!\left(\log {Btm\over\varepsilon}\right)
+                                                                    \tag{O4.3k}
+\]
+
+and for which
+
+\[
+ C_{\varepsilon/2}(e^{-itH(\widetilde J)}\Phi_0)>s.                 \tag{O4.3l}
+\]
+
+If the simulation rate `Lambda` is `L_Lambda`-Lipschitz in coefficient
+`l^1` distance and `Lambda(H(J))>=lambda_0` on `K`, the same witness satisfies
+
+\[
+ \Lambda(H(\widetilde J))
+ \geq\lambda_0-{L_\Lambda\varepsilon\over4t}.                       \tag{O4.3m}
+\]
+
+**Proof.**  Choose a hard `J` supplied by (O4.3j), take
+
+\[
+ Q=\left\lceil {2tm\over\varepsilon}\right\rceil,
+\]
+
+and round every coordinate of `J` to the nearest multiple of `1/Q`.
+Then
+
+\[
+ \|H(J)-H(\widetilde J)\|
+ \leq\sum_a|J_a-\widetilde J_a|
+ \leq {m\over2Q},
+\]
+
+so Duhamel's inequality gives
+
+\[
+ \|e^{-itH(J)}-e^{-itH(\widetilde J)}\|
+ \leq {tm\over2Q}\leq{\varepsilon\over4}.                           \tag{O4.3n}
+\]
+
+An `s`-gate circuit within `epsilon/2` of the rounded endpoint would
+therefore lie within `3epsilon/4` of the original endpoint, contradicting
+its `epsilon`-hardness.  The rounded numerator is at most `BQ+1`, proving
+(O4.3k).  The same coefficient estimate and Lipschitz continuity prove
+(O4.3m).
+
+For `m=poly(n)`, constant `epsilon`, and
+`t=exp(alpha n)`, (O4.3k) is `O(n)` bits per local coefficient, while the
+O4 lower bound is `exp(Omega(n))/poly(n)` gates.  With a finite computable
+gate alphabet the witnesses can even be selected as a uniformly computable
+sequence: enumerate the finite coefficient grid and the finite word ball,
+compute every distance to successively finer certified precision, and choose
+the first point separated by the strict margin in (O4.3n).  This observation
+does not make the search efficient; it shows that O4 would constitute a
+robust exponential circuit lower bound for a finitely described autonomous
+quantum evolution, rather than an oracle or input-uniform simulation bound.
+
+`[LITERATURE BOUNDARY.]`  Zlokapa--Allen--Harrow,
+*Optimal Lower Bounds for Hamiltonian Simulation*, arXiv:2607.19852, does not
+cross this frontier.  Its gate theorem requires channel approximation on
+every input state.  Its factor linear in late time is obtained by applying
+successive unit intervals to fresh disjoint qubit blocks; after rewriting
+the construction as time independent, both the number of qubits and the
+Hamiltonian description grow linearly with `t`.  Its unit-time static lemma
+is a spatial direct-sum lower bound.  None of these statements lower-bounds
+the best circuit for one fixed Choi/state endpoint of one fixed finite
+Hamiltonian at its `t`-th power.
+
+`[FRONTIER RESET.]`  Equations (O4.12q)--(O4.12z16) below remain valid
+fixed-order or planar identities, but they do not address (O4.3j).  Signed
+Wick cancellation is destroyed by the Hamiltonian-dependent maximizer, and
+the proposed planar Bellman dressing has not supplied a positive
+selector-aware inequality.  It is therefore retired as evidence of progress
+on O4.  The first missing scientific statement is exactly a robust
+exponential nonuniform circuit lower bound of the form (O4.3l), proved for a
+positive-density set of polynomial-bit fixed-local Hamiltonians and then
+upgraded to the quenched annular law (O4.3i).  Any weaker simulator,
+fixed-target, moment, design, spreading, or spatial direct-sum theorem leaves
+the frontier unchanged.
+
 #### Hard-frontier audit: deterministic complexity production
 
 The preceding formulation still permits misleading auxiliary progress unless

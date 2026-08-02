@@ -104,6 +104,13 @@ theorem deningerSigmaFamily_apply {κ : ι → Type*} (P : ∀ i, SeminormFamily
   rw [deningerSigmaFamily, deningerSigmaSeminorm_apply]
   exact tsum_congr fun i => by rw [smul_apply, NNReal.smul_def, smul_eq_mul]
 
+theorem deningerSigmaFamily_single [DecidableEq ι] {κ : ι → Type*}
+    (P : ∀ i, SeminormFamily 𝕜 (F i) (κ i)) (ac : (∀ i, κ i) × (ι → ℝ≥0)) (i : ι) (u : F i) :
+    deningerSigmaFamily P ac (DFinsupp.lsingle (R := 𝕜) i u)
+      = (ac.2 i : ℝ) * P i (ac.1 i) u := by
+  rw [DFinsupp.lsingle_apply, deningerSigmaFamily, deningerSigmaSeminorm_single,
+    smul_apply, NNReal.smul_def, smul_eq_mul]
+
 end SigmaFamily
 
 end RHTower

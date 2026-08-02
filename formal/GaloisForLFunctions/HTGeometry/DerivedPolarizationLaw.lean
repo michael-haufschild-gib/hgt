@@ -1,4 +1,5 @@
 import Mathlib.LinearAlgebra.BilinearForm.Properties
+import Mathlib.LinearAlgebra.Dimension.Finite
 import Mathlib.Analysis.Complex.Basic
 import Mathlib.Tactic.LinearCombination
 
@@ -162,6 +163,43 @@ theorem tracedMixedSourceCup_nondegenerate_iff
   · rintro ⟨hleft, hright⟩
     exact tracedMixedSourceCup_nondegenerate
       cross trace hleft hright
+
+/--
+**Scalar-trace rank fracture.**  If the left source leg is one-dimensional
+and the right leg contains two independent directions, no single scalar
+degree-two trace can make the induced cup nondegenerate.  A faithful
+polarization must retain a family-valued trace or additional grading.
+-/
+theorem no_scalar_tracedMixedSourceCup_of_oneDimensional_left
+    (cross : A →ₗ[ℂ] B →ₗ[ℂ] C)
+    (trace : C →ₗ[ℂ] ℂ)
+    (a0 : A)
+    (hspan : ∀ a : A, ∃ c : ℂ, a = c • a0)
+    (packet : Fin 2 → B)
+    (hpacket : LinearIndependent ℂ packet) :
+    ¬(tracedMixedSourceCup cross trace).Nondegenerate := by
+  intro hnondegenerate
+  have hseparates :=
+    (tracedMixedSourceCup_nondegenerate_iff cross trace).mp
+      hnondegenerate
+  let phi : B →ₗ[ℂ] ℂ := trace.comp (cross a0)
+  have hphi_zero : ∀ b : B, phi b = 0 → b = 0 := by
+    intro b hb
+    apply hseparates.2 b
+    intro a
+    obtain ⟨c, rfl⟩ := hspan a
+    simp only [map_smul, LinearMap.smul_apply]
+    change c • phi b = 0
+    rw [hb, smul_zero]
+  have hphi : Function.Injective phi := by
+    intro x y hxy
+    apply sub_eq_zero.mp
+    apply hphi_zero (x - y)
+    rw [map_sub, sub_eq_zero.mpr hxy]
+  have hlinear : LinearIndependent ℂ (fun i => phi (packet i)) :=
+    hpacket.map' phi (LinearMap.ker_eq_bot.mpr hphi)
+  have hcard := hlinear.fintype_card_le_finrank
+  norm_num [Module.finrank_self] at hcard
 
 /-- Sesquilinear metric obtained by following a bilinear cup form with a
 conjugate-linear polarization in its second variable. -/

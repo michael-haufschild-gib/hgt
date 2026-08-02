@@ -2794,3 +2794,154 @@ orders `r>=4`, determine lower envelope of interaction exponents, and decide whe
 one-prime Euler series has any nontrivial uniform degree window. Finite-prime orthogonalization,
 source-selected extension, Sonin-corner resolvent transport, and genuine infinite-label singular
 carrier remain unresolved.
+
+## 43. Primitive-promoted modular exterior and Gamma-anchor shorting
+
+`[PAPER+LEAN-PROVED SOURCE CONSTRUCTION]`
+`[OPEN COFINAL BUDGET]`
+
+The minimum `sqrt(log X)` singularity from Section 22 is now constructed from the arithmetic
+source.  For a prime/depth cell `i=(p,e)`, primitive promotion before scalar fusion gives
+
+```text
+J_u(i)
+  = sqrt(log p) xiGammaEulerBoundaryRealAmplitude(u,i),
+
+J_0(i)
+  = (log p)/sqrt(p^(e+1))
+  = criticalMellinAtomWeight(p^(e+1)).                 (149)
+```
+
+The source modular family
+
+```text
+J_a(i)=J_0(i) exp(a r_i),
+r_i=2(e+1)log(p^(-1/2))=-2h_i                         (150)
+```
+
+has exact reflected geometric mean `J_a(i)J_(-a)(i)=J_0(i)^2` and center derivative
+
+```text
+J'_0(i)=-log(p^(e+1))J_0(i).                           (151)
+```
+
+Consequently the reflection-odd two-leg center jet is not another copy of the old exterior:
+
+```text
+dot O_0(i,j)
+ =J_0(i)J_0(j)(r_i+r_j)(h_i-h_j)
+ =-2J_0(i)J_0(j)(h_i^2-h_j^2).                        (152)
+```
+
+This squared-height transgression supplies the missing modular logarithm from source reflection.
+It also exposes an exact division-free Gamma anchor.  For any source height `H`,
+
+```text
+O_H(i,j)=dot O_0(i,j)+4H E_0(i,j)
+        =-2J_0(i)J_0(j)
+           ((h_i-H)^2-(h_j-H)^2).                     (153)
+```
+
+At first-clock aperture `L_m=6log m`, the canonical anchor is
+
+```text
+H_m=L_m/3=2log m.
+```
+
+Every hard-block height `h_p=(1/2)log p`, `2m^4<p<=5m^4`, lies strictly above `H_m`.  Therefore
+
+```text
+-(1/2)O_(H_m)(i,j) sin(tau(h_i-h_j)) >= 0              (154)
+```
+
+whenever `tau>=0` and the pair is before phase wrap.  Summing `(154)` gives a genuine nonnegative
+finite source scalar.  It is primitive-promoted, reflection-odd before fusion, and
+Gamma-longitudinally centered.
+
+On every hard depth-zero cell, the promoted source current lands on the actual bad coefficient:
+
+```text
+(1/2)(log p)/sqrt p <= bad_p(L_m) <= (log p)/sqrt p,   (155)
+
+log(2m^4)<(sqrt(log p))^2<=log(5m^4).                  (156)
+```
+
+Equations `(155)`--`(156)` close the amplitude-provenance part of `J-SF2`: the source itself
+realizes the previously proved minimum singular rate and reaches the literal obstruction within
+factor two.  Equations `(152)`--`(154)` construct the missing pre-fusion modular/Gamma carrier;
+they are not target equivalences or coefficient interpolation.
+
+Full card and Lean certificate:
+
+```text
+docs/drafts/pipeline/1-in-progress/
+  route-j-primitive-promoted-euler-exterior-source.md
+
+formal/GaloisForLFunctions/RHTower/
+  CCMFirstClockPrimitivePromotedExteriorSource.lean
+```
+
+Route J remains open.  Immediate hard frontier is exact two-scale domination for `(154)`, followed
+by one aperture-coherent Gamma/co-Poisson relation whose finite restrictions are `(153)` and whose
+scalar capacity has a source-uniform cofinal budget.  Ordinary closure, bounded polarization, or
+post-fusion positivity cannot supply that theorem.
+
+## 44. Exact two-scale source domination and exposed renormalization core
+
+The finite-domination part of section 43 is now closed unconditionally.  Fix
+
+```text
+K=2^32,  tau=1/64,
+eta_n(p)=(1/2)log p-(1/2)log n,
+
+Q_n(p,q)=j_p j_q (eta_n(q)^2-eta_n(p)^2)
+                    sin((eta_n(q)-eta_n(p))/64),
+
+R_n=2 sum_(p in P_n) sum_(q in P_(Kn)) Q_n(p,q).       (157)
+```
+
+The first block has `eta_n(p) in [0,1]`; the dilated block has
+`eta_n(q) in [8,17]`.  The squared-height gap and Jordan sine inequality give the pointwise
+source bound
+
+```text
+3j_pj_q <= Q_n(p,q).                                   (158)
+```
+
+Unconditional Chebyshev estimates give
+
+```text
+sqrt(n)/12 <= sum_(p in P_n) j_p <= 10sqrt(n),         (159)
+100n <= R_n                                             (160)
+```
+
+past the explicit source threshold `exp(20)<=n`.  Since the complete hard-block bad mass obeys
+
+```text
+(sum_(p in P_(m^4)) bad_p(L_m))^2 <= 100m^4,           (161)
+```
+
+equations `(160)`--`(161)` prove
+
+```text
+(sum_(p in P_(m^4)) bad_p(L_m))^2 <= R_(m^4).          (162)
+```
+
+No target sign, Xi zero, zero multiplicity, numerical certification, or interpolated coefficient
+enters `(157)`.  Thus source provenance, primitive landing, and finite obstruction domination are
+no longer open parts of Route J.
+
+Lean certificate:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  CCMFirstClockPrimitivePromotedTwoScaleDomination.lean
+```
+
+The exact remaining core is sharper than the previous “find enough energy” formulation:
+`R_n` has an unconditional linear floor, so it cannot itself be the uniformly bounded Route J
+capacity.  One must construct the completed Gamma/co-Poisson countercurrent before positive
+scalarization and prove an aperture-refinement identity that cancels this longitudinal linear
+mass while retaining the local lower comparison `(162)`.  Normalizing `(157)` by hand, moving the
+survivor to another route, or taking an absolute prime norm would erase the required source
+identity and does not close Route J.

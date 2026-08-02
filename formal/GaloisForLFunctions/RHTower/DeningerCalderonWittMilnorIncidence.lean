@@ -1,5 +1,8 @@
 import GaloisForLFunctions.RHTower.DeningerCalderonWittAlgebraicSource
+import GaloisForLFunctions.RHTower.DeningerPolarizationAlmostProjection
+import GaloisForLFunctions.RHTower.DeningerArithmeticThreeTermCohomology
 import Mathlib.LinearAlgebra.ExteriorPower.Basic
+import Mathlib.LinearAlgebra.Alternating.Curry
 import Mathlib.Algebra.Exact.Basic
 
 /-!
@@ -271,6 +274,304 @@ theorem deningerCalderonWittMilnorQuotientEquiv_mk
       deningerCalderonWittAlgebraicExteriorCup p w :=
   rfl
 
+/-! ## Explicit local Koszul--Green splitting -/
+
+/-- Exterior multiplication on the left by one local degree-one
+source class. -/
+def deningerCalderonWittExteriorWedgeLeft
+    (p : Nat.Primes)
+    (x : DeningerCalderonWittAlgebraicDegreeOne p) :
+    DeningerCalderonWittAlgebraicDegreeOne p →ₗ[ℂ]
+      (⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p)) :=
+  (AlternatingMap.ofSubsingleton ℂ
+      (DeningerCalderonWittAlgebraicDegreeOne p)
+      (⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p))
+      (0 : Fin 1)).symm
+    ((exteriorPower.ιMulti ℂ 2).curryLeft x)
+
+@[simp]
+theorem deningerCalderonWittExteriorWedgeLeft_apply
+    (p : Nat.Primes)
+    (x y : DeningerCalderonWittAlgebraicDegreeOne p) :
+    deningerCalderonWittExteriorWedgeLeft p x y =
+      exteriorPower.ιMulti ℂ 2 ![x, y] :=
+  rfl
+
+/-- Canonical center-to-packet leg, normalized by the inverse
+half-density scale. -/
+def deningerCalderonWittCenterToDegreeOne
+    (p : Nat.Primes) :
+    DeningerCalderonWittAlgebraicDegreeTwo p →ₗ[ℂ]
+      DeningerCalderonWittAlgebraicDegreeOne p :=
+  (LinearMap.inr ℂ
+      (DeningerMeyerPrimeCalderonQuotient p)
+      (DeningerPrimeFinitePacketGaugeAlgebraic p)).comp
+    ((deningerCalderonWittHalfDensityScale p)⁻¹ •
+      (deningerPrimeFinitePacketGaugeAlgebraicFirstModeEquiv p).symm.toLinearMap)
+
+@[simp]
+theorem deningerCalderonWittCenterToDegreeOne_apply
+    (p : Nat.Primes)
+    (z : DeningerCalderonWittAlgebraicDegreeTwo p) :
+    deningerCalderonWittCenterToDegreeOne p z =
+      (0,
+        (deningerCalderonWittHalfDensityScale p)⁻¹ •
+          (deningerPrimeFinitePacketGaugeAlgebraicFirstModeEquiv p).symm z) :=
+  rfl
+
+/-- Explicit source-derived section of the exterior cup. -/
+def deningerCalderonWittExteriorCupSection
+    (p : Nat.Primes) :
+    DeningerCalderonWittAlgebraicDegreeTwo p →ₗ[ℂ]
+      (⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p)) :=
+  (deningerCalderonWittExteriorWedgeLeft p
+      (deningerCalderonWittUnitDefect p, 0)).comp
+    (deningerCalderonWittCenterToDegreeOne p)
+
+/-- **Koszul--Green section law.** Exterior cup retracts its explicit
+source section exactly. -/
+theorem deningerCalderonWittExteriorCup_section
+    (p : Nat.Primes) :
+    (deningerCalderonWittAlgebraicExteriorCup p).comp
+        (deningerCalderonWittExteriorCupSection p) =
+      LinearMap.id := by
+  apply LinearMap.ext
+  intro z
+  rw [LinearMap.comp_apply, deningerCalderonWittExteriorCupSection,
+    LinearMap.comp_apply,
+    deningerCalderonWittExteriorWedgeLeft_apply,
+    deningerCalderonWittAlgebraicExteriorCup_ιMulti]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one,
+    LinearMap.id_apply, deningerCalderonWittCenterToDegreeOne_apply]
+  change
+    deningerMeyerCalderonWittAlgebraicCrossEffect p
+        (deningerCalderonWittUnitDefect p)
+        ((deningerCalderonWittHalfDensityScale p)⁻¹ •
+          (deningerPrimeFinitePacketGaugeAlgebraicFirstModeEquiv p).symm z) -
+      deningerMeyerCalderonWittAlgebraicCrossEffect p 0 0 =
+        z
+  rw [map_zero, sub_zero,
+    deningerMeyerCalderonWittAlgebraicCrossEffect_unit,
+    map_smul]
+  rw [← mul_smul, mul_inv_cancel₀
+    (deningerCalderonWittHalfDensityScale_ne_zero p), one_smul]
+  exact
+    (deningerPrimeFinitePacketGaugeAlgebraicFirstModeEquiv p)
+      |>.apply_symm_apply z
+
+/-- The explicit exterior-cup section is injective. -/
+theorem deningerCalderonWittExteriorCupSection_injective
+    (p : Nat.Primes) :
+    Function.Injective
+      (deningerCalderonWittExteriorCupSection p) :=
+  Function.LeftInverse.injective (by
+    intro z
+    have hz := LinearMap.congr_fun
+      (deningerCalderonWittExteriorCup_section p) z
+    simpa [LinearMap.comp_apply] using hz)
+
+/-- Kernel of the section--cup projection is exactly the
+Milnor-incidence relation space. -/
+theorem ker_deningerCalderonWittExteriorCupProjection
+    (p : Nat.Primes) :
+    LinearMap.ker
+        ((deningerCalderonWittExteriorCupSection p).comp
+          (deningerCalderonWittAlgebraicExteriorCup p)) =
+      deningerCalderonWittMilnorIncidence p := by
+  ext w
+  simp only [LinearMap.mem_ker, LinearMap.comp_apply,
+    deningerCalderonWittMilnorIncidence]
+  constructor
+  · intro hw
+    apply deningerCalderonWittExteriorCupSection_injective p
+    simpa using hw
+  · intro hw
+    rw [hw, map_zero]
+
+/-- The exterior square splits exactly into Milnor-incidence
+relations and the canonical suspension-center section. -/
+theorem deningerCalderonWittMilnorIncidence_isCompl_center
+    (p : Nat.Primes) :
+    IsCompl
+      (deningerCalderonWittMilnorIncidence p)
+      (LinearMap.range
+        (deningerCalderonWittExteriorCupSection p)) := by
+  have hcompl :=
+    deningerExactLeg_isCompl
+      (iota := deningerCalderonWittExteriorCupSection p)
+      (pi := deningerCalderonWittAlgebraicExteriorCup p)
+      (deningerCalderonWittExteriorCup_section p)
+  rw [deningerLeg,
+    ker_deningerCalderonWittExteriorCupProjection p] at hcompl
+  exact hcompl
+
+/-! ## Local source Green contraction -/
+
+/-- An injective first differential kills degree-zero cohomology. -/
+theorem deningerThreeTermH0_eq_zero_of_injective
+    {R A0 A1 A2 : Type*}
+    [CommRing R]
+    [AddCommGroup A0] [Module R A0]
+    [AddCommGroup A1] [Module R A1]
+    [AddCommGroup A2] [Module R A2]
+    (C : DeningerArithmeticThreeTermComplex R A0 A1 A2)
+    (hinjective : Function.Injective C.d0)
+    (x : C.H0) :
+    x = 0 := by
+  apply Subtype.ext
+  apply hinjective
+  simpa using x.property
+
+/-- Exactness at the middle term kills degree-one cohomology. -/
+theorem deningerThreeTermH1_eq_zero_of_exact
+    {R A0 A1 A2 : Type*}
+    [CommRing R]
+    [AddCommGroup A0] [Module R A0]
+    [AddCommGroup A1] [Module R A1]
+    [AddCommGroup A2] [Module R A2]
+    (C : DeningerArithmeticThreeTermComplex R A0 A1 A2)
+    (hexact : Function.Exact C.d0 C.d1)
+    (q : C.H1) :
+    q = 0 := by
+  obtain ⟨x, rfl⟩ :=
+    Submodule.Quotient.mk_surjective
+      (C.boundaries1.comap C.cycles1.subtype) q
+  apply (C.H1_mk_eq_zero_iff x).2
+  exact (hexact (x : A1)).1 x.property
+
+/-- A surjective last differential kills degree-two cohomology. -/
+theorem deningerThreeTermH2_eq_zero_of_surjective
+    {R A0 A1 A2 : Type*}
+    [CommRing R]
+    [AddCommGroup A0] [Module R A0]
+    [AddCommGroup A1] [Module R A1]
+    [AddCommGroup A2] [Module R A2]
+    (C : DeningerArithmeticThreeTermComplex R A0 A1 A2)
+    (hsurjective : Function.Surjective C.d1)
+    (q : C.H2) :
+    q = 0 := by
+  obtain ⟨z, rfl⟩ :=
+    Submodule.Quotient.mk_surjective C.boundaries2 q
+  apply (C.H2_mk_eq_zero_iff z).2
+  exact hsurjective z
+
+/-- Retraction onto exact Milnor-incidence relations, obtained by
+subtracting the canonical center section. -/
+def deningerCalderonWittMilnorGreenRetraction
+    (p : Nat.Primes) :
+    (⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p)) →ₗ[ℂ]
+      deningerCalderonWittMilnorIncidence p :=
+  ((LinearMap.id -
+      (deningerCalderonWittExteriorCupSection p).comp
+        (deningerCalderonWittAlgebraicExteriorCup p))).codRestrict
+    (deningerCalderonWittMilnorIncidence p) (fun w => by
+      change
+        deningerCalderonWittAlgebraicExteriorCup p
+            (w -
+              deningerCalderonWittExteriorCupSection p
+                (deningerCalderonWittAlgebraicExteriorCup p w)) =
+          0
+      rw [map_sub]
+      have hw := LinearMap.congr_fun
+        (deningerCalderonWittExteriorCup_section p)
+        (deningerCalderonWittAlgebraicExteriorCup p w)
+      simpa [LinearMap.comp_apply] using sub_eq_zero.mpr hw.symm)
+
+@[simp]
+theorem deningerCalderonWittMilnorGreenRetraction_coe
+    (p : Nat.Primes)
+    (w : ⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p)) :
+    (deningerCalderonWittMilnorGreenRetraction p w :
+        ⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p)) =
+      w -
+        deningerCalderonWittExteriorCupSection p
+          (deningerCalderonWittAlgebraicExteriorCup p w) :=
+  by
+    change
+      ((LinearMap.id :
+          (⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p)) →ₗ[ℂ]
+            (⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p))) -
+          (deningerCalderonWittExteriorCupSection p).comp
+            (deningerCalderonWittAlgebraicExteriorCup p)) w =
+        w -
+          deningerCalderonWittExteriorCupSection p
+            (deningerCalderonWittAlgebraicExteriorCup p w)
+    rw [LinearMap.sub_apply, LinearMap.id_apply, LinearMap.comp_apply]
+
+/-- Green retraction is the identity on Milnor-incidence relations. -/
+theorem deningerCalderonWittMilnorGreenRetraction_subtype
+    (p : Nat.Primes)
+    (i : deningerCalderonWittMilnorIncidence p) :
+    deningerCalderonWittMilnorGreenRetraction p i.1 = i := by
+  apply Subtype.ext
+  rw [deningerCalderonWittMilnorGreenRetraction_coe]
+  change
+    i.1 -
+        deningerCalderonWittExteriorCupSection p
+          (deningerCalderonWittAlgebraicExteriorCup p i.1) =
+      i.1
+  rw [i.2, map_zero, sub_zero]
+
+/-- Middle Green contraction identity:
+`d₀ h₁ + h₂ d₁ = id`. -/
+theorem deningerCalderonWittMilnorGreenContraction_middle
+    (p : Nat.Primes)
+    (w : ⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p)) :
+    (deningerCalderonWittMilnorIncidence p).subtype
+        (deningerCalderonWittMilnorGreenRetraction p w) +
+      deningerCalderonWittExteriorCupSection p
+        (deningerCalderonWittAlgebraicExteriorCup p w) =
+      w := by
+  change
+    (w -
+        deningerCalderonWittExteriorCupSection p
+          (deningerCalderonWittAlgebraicExteriorCup p w)) +
+      deningerCalderonWittExteriorCupSection p
+        (deningerCalderonWittAlgebraicExteriorCup p w) =
+      w
+  abel
+
+/-- Canonical three-term Milnor relation resolution. -/
+def deningerCalderonWittMilnorComplex
+    (p : Nat.Primes) :
+    DeningerArithmeticThreeTermComplex ℂ
+      (deningerCalderonWittMilnorIncidence p)
+      (⋀[ℂ]^2 (DeningerCalderonWittAlgebraicDegreeOne p))
+      (DeningerCalderonWittAlgebraicDegreeTwo p) where
+  d0 := (deningerCalderonWittMilnorIncidence p).subtype
+  d1 := deningerCalderonWittAlgebraicExteriorCup p
+  d1_comp_d0 :=
+    (deningerCalderonWittMilnorIncidence_exact p).linearMap_comp_eq_zero
+
+/-- Local Milnor relation resolution has trivial degree-zero
+cohomology. -/
+theorem deningerCalderonWittMilnorComplex_H0_eq_zero
+    (p : Nat.Primes)
+    (x : (deningerCalderonWittMilnorComplex p).H0) :
+    x = 0 :=
+  deningerThreeTermH0_eq_zero_of_injective
+    (deningerCalderonWittMilnorComplex p)
+    (deningerCalderonWittMilnorIncidence p).subtype_injective x
+
+/-- Exact incidence relations kill all middle cohomology. -/
+theorem deningerCalderonWittMilnorComplex_H1_eq_zero
+    (p : Nat.Primes)
+    (q : (deningerCalderonWittMilnorComplex p).H1) :
+    q = 0 :=
+  deningerThreeTermH1_eq_zero_of_exact
+    (deningerCalderonWittMilnorComplex p)
+    (deningerCalderonWittMilnorIncidence_exact p) q
+
+/-- Cup surjectivity kills all top cohomology of the relation
+resolution. -/
+theorem deningerCalderonWittMilnorComplex_H2_eq_zero
+    (p : Nat.Primes)
+    (q : (deningerCalderonWittMilnorComplex p).H2) :
+    q = 0 :=
+  deningerThreeTermH2_eq_zero_of_surjective
+    (deningerCalderonWittMilnorComplex p)
+    (deningerCalderonWittAlgebraicExteriorCup_surjective p) q
+
 /-! ## All-prime Milnor presentation -/
 
 /-- The all-prime algebraic cup vanishes on the diagonal. -/
@@ -321,9 +622,13 @@ theorem deningerCalderonWittAlgebraicGlobalExteriorCup_ιMulti
     deningerCalderonWittAlgebraicGlobalExteriorCup
         (exteriorPower.ιMulti ℂ 2 v) =
       deningerCalderonWittAlgebraicGlobalCup (v 0) (v 1) := by
-  exact
-    exteriorPower.alternatingMapLinearEquiv_apply_ιMulti
-      deningerCalderonWittAlgebraicGlobalCupAlternating v
+  change
+    exteriorPower.alternatingMapLinearEquiv
+        deningerCalderonWittAlgebraicGlobalCupAlternating
+        (exteriorPower.ιMulti ℂ 2 v) =
+      deningerCalderonWittAlgebraicGlobalCup (v 0) (v 1)
+  rw [exteriorPower.alternatingMapLinearEquiv_apply_ιMulti]
+  rfl
 
 /-- The all-prime exterior cup generates the whole finite-support
 algebraic suspension center. -/
@@ -415,6 +720,190 @@ theorem deningerCalderonWittGlobalMilnorQuotientEquiv_mk
         (Submodule.Quotient.mk w) =
       deningerCalderonWittAlgebraicGlobalExteriorCup w :=
   rfl
+
+/-! ## All-prime source Green contraction -/
+
+/-- Exterior multiplication on the left in the all-prime algebraic
+source. -/
+def deningerCalderonWittGlobalExteriorWedgeLeft
+    (x : DeningerCalderonWittAlgebraicGlobalDegreeOne) :
+    DeningerCalderonWittAlgebraicGlobalDegreeOne →ₗ[ℂ]
+      (⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) :=
+  (AlternatingMap.ofSubsingleton ℂ
+      DeningerCalderonWittAlgebraicGlobalDegreeOne
+      (⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+      (0 : Fin 1)).symm
+    ((exteriorPower.ιMulti ℂ 2).curryLeft x)
+
+@[simp]
+theorem deningerCalderonWittGlobalExteriorWedgeLeft_apply
+    (x y : DeningerCalderonWittAlgebraicGlobalDegreeOne) :
+    deningerCalderonWittGlobalExteriorWedgeLeft x y =
+      exteriorPower.ιMulti ℂ 2 ![x, y] :=
+  rfl
+
+/-- One-prime center section into the global exterior square. -/
+def deningerCalderonWittGlobalPrimeExteriorCupSection
+    (p : Nat.Primes) :
+    DeningerCalderonWittAlgebraicDegreeTwo p →ₗ[ℂ]
+      (⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) :=
+  (deningerCalderonWittGlobalExteriorWedgeLeft
+      (DirectSum.lof ℂ Nat.Primes
+        DeningerCalderonWittAlgebraicDegreeOne p
+        (deningerCalderonWittUnitDefect p, 0))).comp
+    ((DirectSum.lof ℂ Nat.Primes
+      DeningerCalderonWittAlgebraicDegreeOne p).comp
+        (deningerCalderonWittCenterToDegreeOne p))
+
+/-- Global exterior cup sends the one-prime section back to that
+prime center exactly. -/
+theorem deningerCalderonWittGlobalExteriorCup_primeSection
+    (p : Nat.Primes) :
+    deningerCalderonWittAlgebraicGlobalExteriorCup.comp
+        (deningerCalderonWittGlobalPrimeExteriorCupSection p) =
+      DirectSum.lof ℂ Nat.Primes
+        DeningerCalderonWittAlgebraicDegreeTwo p := by
+  apply LinearMap.ext
+  intro z
+  rw [LinearMap.comp_apply,
+    deningerCalderonWittGlobalPrimeExteriorCupSection,
+    LinearMap.comp_apply, LinearMap.comp_apply,
+    deningerCalderonWittGlobalExteriorWedgeLeft_apply,
+    deningerCalderonWittAlgebraicGlobalExteriorCup_ιMulti]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
+  rw [deningerCalderonWittAlgebraicGlobalCup_lof_same]
+  apply congrArg
+    (DirectSum.lof ℂ Nat.Primes
+      DeningerCalderonWittAlgebraicDegreeTwo p)
+  have hz := LinearMap.congr_fun
+    (deningerCalderonWittExteriorCup_section p) z
+  simpa [LinearMap.comp_apply,
+    deningerCalderonWittExteriorCupSection,
+    deningerCalderonWittExteriorWedgeLeft_apply] using hz
+
+/-- Explicit all-prime section, assembled from finite-support prime
+center sections. -/
+def deningerCalderonWittGlobalExteriorCupSection :
+    DeningerCalderonWittAlgebraicGlobalDegreeTwo →ₗ[ℂ]
+      (⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) :=
+  DirectSum.toModule ℂ Nat.Primes
+    (⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+    deningerCalderonWittGlobalPrimeExteriorCupSection
+
+@[simp]
+theorem deningerCalderonWittGlobalExteriorCupSection_lof
+    (p : Nat.Primes)
+    (z : DeningerCalderonWittAlgebraicDegreeTwo p) :
+    deningerCalderonWittGlobalExteriorCupSection
+        (DirectSum.lof ℂ Nat.Primes
+          DeningerCalderonWittAlgebraicDegreeTwo p z) =
+      deningerCalderonWittGlobalPrimeExteriorCupSection p z := by
+  rw [deningerCalderonWittGlobalExteriorCupSection,
+    DirectSum.toModule_lof]
+
+/-- **All-prime Green section law.** Global exterior cup retracts the
+finite-support source section exactly. -/
+theorem deningerCalderonWittGlobalExteriorCup_section :
+    deningerCalderonWittAlgebraicGlobalExteriorCup.comp
+        deningerCalderonWittGlobalExteriorCupSection =
+      LinearMap.id := by
+  apply DirectSum.linearMap_ext ℂ
+  intro p
+  apply LinearMap.ext
+  intro z
+  simp only [LinearMap.comp_apply, LinearMap.id_apply]
+  rw [deningerCalderonWittGlobalExteriorCupSection_lof]
+  exact LinearMap.congr_fun
+    (deningerCalderonWittGlobalExteriorCup_primeSection p) z
+
+/-- Global source Green retraction onto exact Milnor-incidence
+relations. -/
+def deningerCalderonWittGlobalMilnorGreenRetraction :
+    (⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) →ₗ[ℂ]
+      deningerCalderonWittGlobalMilnorIncidence :=
+  ((LinearMap.id -
+      deningerCalderonWittGlobalExteriorCupSection.comp
+        deningerCalderonWittAlgebraicGlobalExteriorCup)).codRestrict
+    deningerCalderonWittGlobalMilnorIncidence (fun w => by
+      change
+        deningerCalderonWittAlgebraicGlobalExteriorCup
+            (w -
+              deningerCalderonWittGlobalExteriorCupSection
+                (deningerCalderonWittAlgebraicGlobalExteriorCup w)) =
+          0
+      rw [map_sub]
+      have hw := LinearMap.congr_fun
+        deningerCalderonWittGlobalExteriorCup_section
+        (deningerCalderonWittAlgebraicGlobalExteriorCup w)
+      simpa [LinearMap.comp_apply] using sub_eq_zero.mpr hw.symm)
+
+@[simp]
+theorem deningerCalderonWittGlobalMilnorGreenRetraction_coe
+    (w : ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) :
+    (deningerCalderonWittGlobalMilnorGreenRetraction w :
+        ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) =
+      w -
+        deningerCalderonWittGlobalExteriorCupSection
+          (deningerCalderonWittAlgebraicGlobalExteriorCup w) := by
+  change
+    ((LinearMap.id :
+        (⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) →ₗ[ℂ]
+          (⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)) -
+      deningerCalderonWittGlobalExteriorCupSection.comp
+        deningerCalderonWittAlgebraicGlobalExteriorCup) w =
+      w -
+        deningerCalderonWittGlobalExteriorCupSection
+          (deningerCalderonWittAlgebraicGlobalExteriorCup w)
+  rw [LinearMap.sub_apply, LinearMap.id_apply, LinearMap.comp_apply]
+
+/-- Global middle Green contraction identity. -/
+theorem deningerCalderonWittGlobalMilnorGreenContraction_middle
+    (w : ⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne) :
+    deningerCalderonWittGlobalMilnorIncidence.subtype
+        (deningerCalderonWittGlobalMilnorGreenRetraction w) +
+      deningerCalderonWittGlobalExteriorCupSection
+        (deningerCalderonWittAlgebraicGlobalExteriorCup w) =
+      w := by
+  change
+    (w -
+        deningerCalderonWittGlobalExteriorCupSection
+          (deningerCalderonWittAlgebraicGlobalExteriorCup w)) +
+      deningerCalderonWittGlobalExteriorCupSection
+        (deningerCalderonWittAlgebraicGlobalExteriorCup w) =
+      w
+  abel
+
+/-- All-prime exact Milnor relation resolution. -/
+def deningerCalderonWittGlobalMilnorComplex :
+    DeningerArithmeticThreeTermComplex ℂ
+      deningerCalderonWittGlobalMilnorIncidence
+      (⋀[ℂ]^2 DeningerCalderonWittAlgebraicGlobalDegreeOne)
+      DeningerCalderonWittAlgebraicGlobalDegreeTwo where
+  d0 := deningerCalderonWittGlobalMilnorIncidence.subtype
+  d1 := deningerCalderonWittAlgebraicGlobalExteriorCup
+  d1_comp_d0 :=
+    deningerCalderonWittGlobalMilnorIncidence_exact.linearMap_comp_eq_zero
+
+theorem deningerCalderonWittGlobalMilnorComplex_H0_eq_zero
+    (x : deningerCalderonWittGlobalMilnorComplex.H0) :
+    x = 0 :=
+  deningerThreeTermH0_eq_zero_of_injective
+    deningerCalderonWittGlobalMilnorComplex
+    deningerCalderonWittGlobalMilnorIncidence.subtype_injective x
+
+theorem deningerCalderonWittGlobalMilnorComplex_H1_eq_zero
+    (x : deningerCalderonWittGlobalMilnorComplex.H1) :
+    x = 0 :=
+  deningerThreeTermH1_eq_zero_of_exact
+    deningerCalderonWittGlobalMilnorComplex
+    deningerCalderonWittGlobalMilnorIncidence_exact x
+
+theorem deningerCalderonWittGlobalMilnorComplex_H2_eq_zero
+    (x : deningerCalderonWittGlobalMilnorComplex.H2) :
+    x = 0 :=
+  deningerThreeTermH2_eq_zero_of_surjective
+    deningerCalderonWittGlobalMilnorComplex
+    deningerCalderonWittAlgebraicGlobalExteriorCup_surjective x
 
 end
 
