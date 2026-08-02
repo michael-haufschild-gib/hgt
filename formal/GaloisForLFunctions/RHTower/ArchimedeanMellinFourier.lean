@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.BurnolSoninEvaluationAperture
 import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
 import Mathlib.Analysis.Fourier.Inversion
+import Mathlib.Analysis.Fourier.PoissonSummation
 
 /-!
 # Gaussian smoothing and the archimedean Mellin--Fourier exchange
@@ -546,5 +547,84 @@ theorem norm_soninMellinEvaluation_le_aperture_reflected
   rw [soninMellinEvaluation_fourier hlo (by linarith) hf hFf heven hint hFint]
   have hbound := norm_soninMellinEvaluation_le_soninApertureConstant h1 h2 hA hFmem hFhead
   rwa [show (1 : ℝ) / 2 - (1 - w).re = w.re - 1 / 2 from by rw [hre]; ring] at hbound
+
+
+/-! ## Even Poisson summation -/
+
+/-- **Poisson summation for an even Schwartz function.**  Folding the integer lattice onto the
+positive half turns Poisson summation into a statement about half-line sums with an explicit
+central term.  This is the form used by the co-Poisson intertwining. -/
+theorem even_poisson_summation (f : SchwartzMap ℝ ℂ)
+    (heven : ∀ x : ℝ, f (-x) = f x)
+    (hsum : Summable fun n : ℕ => f ((n : ℝ) + 1))
+    (hsumF : Summable fun n : ℕ => (𝓕 (f : ℝ → ℂ)) ((n : ℝ) + 1)) :
+    f 0 + 2 * ∑' n : ℕ, f ((n : ℝ) + 1) =
+      (𝓕 (f : ℝ → ℂ)) 0 + 2 * ∑' n : ℕ, (𝓕 (f : ℝ → ℂ)) ((n : ℝ) + 1) := by
+  have hFeven : ∀ x : ℝ, (𝓕 (f : ℝ → ℂ)) (-x) = (𝓕 (f : ℝ → ℂ)) x :=
+    fourier_even_of_even heven
+  have hcast : ∀ n : ℕ, (((n : ℤ) + 1 : ℤ) : ℝ) = (n : ℝ) + 1 := by
+    intro n
+    push_cast
+    ring
+  have hcastneg : ∀ n : ℕ, ((-((n : ℤ) + 1) : ℤ) : ℝ) = -((n : ℝ) + 1) := by
+    intro n
+    push_cast
+    ring
+  -- the two half-line families are summable in the integer parametrization
+  have hsum1 : Summable fun n : ℕ => f ((((n : ℤ) + 1 : ℤ) : ℝ)) := by
+    refine hsum.congr fun n => ?_
+    rw [hcast n]
+  have hsum2 : Summable fun n : ℕ => f (((-((n : ℤ) + 1) : ℤ) : ℝ)) := by
+    refine hsum.congr fun n => ?_
+    rw [hcastneg n, heven]
+  have hsumF1 : Summable fun n : ℕ => (𝓕 (f : ℝ → ℂ)) ((((n : ℤ) + 1 : ℤ) : ℝ)) := by
+    refine hsumF.congr fun n => ?_
+    rw [hcast n]
+  have hsumF2 : Summable fun n : ℕ => (𝓕 (f : ℝ → ℂ)) (((-((n : ℤ) + 1) : ℤ) : ℝ)) := by
+    refine hsumF.congr fun n => ?_
+    rw [hcastneg n, hFeven]
+  have hsplit := tsum_of_add_one_of_neg_add_one (f := fun n : ℤ => f ((n : ℝ))) hsum1 hsum2
+  have hsplitF :=
+    tsum_of_add_one_of_neg_add_one (f := fun n : ℤ => (𝓕 (f : ℝ → ℂ)) ((n : ℝ))) hsumF1 hsumF2
+  have hpoisson := SchwartzMap.tsum_eq_tsum_fourier f 0
+  have hfz : ∀ n : ℤ, (fourier n) (((0 : ℝ) : UnitAddCircle)) = 1 := by
+    intro n
+    simp
+  simp only [zero_add, hfz, mul_one, SchwartzMap.fourier_coe] at hpoisson
+  rw [hsplit, hsplitF] at hpoisson
+  have hL : (∑' n : ℕ, f ((((n : ℤ) + 1 : ℤ) : ℝ))) = ∑' n : ℕ, f ((n : ℝ) + 1) :=
+    tsum_congr fun n => by rw [hcast n]
+  have hL' : (∑' n : ℕ, f (((-((n : ℤ) + 1) : ℤ) : ℝ))) = ∑' n : ℕ, f ((n : ℝ) + 1) :=
+    tsum_congr fun n => by rw [hcastneg n, heven]
+  have hR : (∑' n : ℕ, (𝓕 (f : ℝ → ℂ)) ((((n : ℤ) + 1 : ℤ) : ℝ))) =
+      ∑' n : ℕ, (𝓕 (f : ℝ → ℂ)) ((n : ℝ) + 1) :=
+    tsum_congr fun n => by rw [hcast n]
+  have hR' : (∑' n : ℕ, (𝓕 (f : ℝ → ℂ)) (((-((n : ℤ) + 1) : ℤ) : ℝ))) =
+      ∑' n : ℕ, (𝓕 (f : ℝ → ℂ)) ((n : ℝ) + 1) :=
+    tsum_congr fun n => by rw [hcastneg n, hFeven]
+  rw [hL, hL', hR, hR'] at hpoisson
+  push_cast at hpoisson
+  linear_combination hpoisson
+
+
+/-- **Fourier dilation rule.**  Compressing the argument by `c > 0` dilates the transform and scales
+it by `1/c`. -/
+theorem fourier_comp_mul_left {c : ℝ} (hc : 0 < c) (f : ℝ → ℂ) (w : ℝ) :
+    (𝓕 fun v : ℝ => f (c * v)) w = (c : ℂ)⁻¹ • (𝓕 f) (w / c) := by
+  have hcne : c ≠ 0 := ne_of_gt hc
+  have harg : ∀ v : ℝ, (inner ℝ v w : ℝ) = inner ℝ (c * v) (w / c) := by
+    intro v
+    simp only [RCLike.inner_apply, conj_trivial]
+    field_simp
+  have hrewrite : ∀ v : ℝ,
+      Real.fourierChar (-(inner ℝ v w)) • f (c * v) =
+        (fun u : ℝ => Real.fourierChar (-(inner ℝ u (w / c))) • f u) (c * v) := by
+    intro v
+    rw [harg v]
+  rw [Real.fourier_eq, Real.fourier_eq]
+  simp only [hrewrite]
+  rw [MeasureTheory.Measure.integral_comp_mul_left
+      (fun u : ℝ => Real.fourierChar (-(inner ℝ u (w / c))) • f u) c,
+    abs_of_pos (inv_pos.mpr hc), Complex.real_smul, Complex.ofReal_inv, smul_eq_mul]
 
 end RHTower

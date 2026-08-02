@@ -1,7 +1,7 @@
 # Multiple Elliptic Gamma Translation Annihilator and Transverse Constraint Depth
 
 - **ID:** multiple-elliptic-gamma-transverse-constraint-depth
-- **Stage:** 2-fully-proven / needs independent audit
+- **Stage:** 3-formalized / needs independent audit
 - **Type:** THEOREM (paper) / EXACT ANNIHILATOR CLASSIFICATION
 - **Scientific status:** `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` — provisional pending independent audit of the order-one parent and literature boundary
 - **Successor:** `multiple-gamma-effective-fracture-descent-orthogonality.md`
@@ -328,11 +328,70 @@ Scientific novelty remains provisional until experts check the order-one proof a
 
 ## Lean route
 
-`GaloisForLFunctions/HTGeometry/SquarefreeVeronesePairDetection.lean` now formalizes the complete
-finite pair-detection step used by the reverse inclusion.  The card remains in stage 2 because its
-special-function conclusions still require the actual order-one elliptic-gamma defect matroid and
-the multiple-gamma hierarchy descent; no conditional Lean wrapper is counted as that analytic
-proof.
+`GaloisForLFunctions/HTGeometry/SquarefreeVeronesePairDetection.lean` formalizes the finite
+pair-detection step used by the reverse inclusion.
+
+### The special-function conclusions are now unconditional Lean
+
+Both analytic inputs the card named are theorems about the actual meromorphic kernels, under the
+card's own genericity hypothesis `PeriodsIntegrallyIndependent tau`:
+
+- the order-one defect matroid enters through
+  `multipleEllipticGammaSelectedFaces_differentialIndependent` and the exact period-rank dichotomy;
+- the hierarchy descent is `listShiftDiff_nodup` together with the face coface equation.
+
+The card's headline statement is then formalized as:
+
+- `differentialAlgebraicOver_xApply_iff_mem_veroneseIdeal`
+  (`MultipleGammaAnnihilatorExact.lean`) -- **the exact annihilator: a constant-coefficient
+  difference operator sends the source into the differentially algebraic locus exactly when it
+  lies in the squarefree degree-`r` ideal**;
+- `differentialAlgebraicOver_listShiftDiff_multipleEllipticGammaLogDerivMero_iff`
+  (`MultipleGammaTransverseDepthNecessity.lean`) -- **the exact monomial threshold: an iterated
+  difference is DA exactly when its distinct directions leave at most one surviving period**;
+- `multipleEllipticGammaTransverseDADepth_eq_order`
+  (`MultipleGammaTransverseDepthValue.lean`) -- the resulting depth value `d_DA(Psi_r) = r`.
+
+`MultipleGammaDifferenceOperatorAlgebra.lean` supplies the operator algebra these use:
+`multiDegreeList_add_perm` and `xMonomialApply_add` (monomial composition), the germ-linearity
+lemmas, and the full operator calculus
+
+```text
+xApply_add, xApply_monomial, xApply_one, xApply_X,
+xApply_mul   -- difference operators act by composition,
+xApply_one_add_X   -- the unit operator 1 + x_j acts as translation by tau_j.
+```
+
+`xApply_mul` together with `xApply_one_add_X` is the change of basis between the translation
+variables `t_j` and the difference variables `x_j = t_j - 1` at the level of the action.  It is
+completed by
+
+```text
+natShift_add, natShift_single,
+xApply_one_add_X_pow,          -- (1 + x_j)^b acts as translation by b tau_j,
+translationMonomial,
+xApply_translationMonomial     -- t^n acts as translation by n . tau.
+```
+
+so an arbitrary translation monomial is realized in the difference calculus.  `#print axioms`
+clean throughout.
+
+### The multiplicative hypercube specialization is unconditional Lean
+
+`MultipleGammaMultiplicativeAnnihilator.lean` completes the passage to finite integer products of
+translated gamma functions:
+
+- `translateGamma`, `translateGamma_ne_zero`, `logDeriv_translateGamma` -- a translated gamma
+  factor is nonzero and translation commutes with logarithmic differentiation;
+- `translateGammaProduct`, `translateGammaProduct_ne_zero`, `translateProductOperator` -- the
+  finite product of integer powers and its exponent operator;
+- `logDeriv_translateGammaProduct` -- **the logarithmic derivative of such a product is exactly the
+  exponent operator applied to `Psi_r`**;
+- `differentialAlgebraicOver_translateGammaProduct_iff_mem_veroneseIdeal` -- **the multiplicative
+  classification: a finite integer translate product is differentially algebraic exactly when its
+  exponent operator lies in `I_r`.**
+
+`#print axioms` clean.
 
 ## Gates
 
@@ -344,10 +403,12 @@ proof.
 - [x] Sufficiency proof by hierarchy descent completed.
 - [x] Necessity proof by reduction to the order-one defect matroid completed.
 - [x] All finite integer structural translate products classified.
-- [x] Multiplicative hypercube specialization completed.
+- [x] Multiplicative hypercube specialization completed and formalized unconditionally in Lean.
 - [x] False total-order formulation excluded.
 - [x] Parent-theory novelty gate completed provisionally.
 - [x] Exact/equivalent/stronger literature gate completed provisionally through 2026.
+- [x] Exact annihilator, monomial threshold, and depth value formalized unconditionally in Lean
+  for the actual meromorphic kernels.
 - [ ] Independent audit of the order-one parent theorem.
 
 ## Log
@@ -377,3 +438,11 @@ integer combination of its members.
 
 - 2026-08-02 -- sufficiency half formalized; necessity half reduced to one matroid-to-combination
   step inside the corpus.
+- 2026-08-02 - The special-function conclusions became unconditional Lean: the exact annihilator,
+  the exact transverse monomial threshold, and the depth value. Promoted to Stage 3.
+- 2026-08-02 - Added the operator calculus: the difference-operator action is multiplicative and
+  `1 + x_j` acts as the structural translation, giving the `t`/`x` change of basis in Lean.
+- 2026-08-02 - Added translation monomials: `t^n` acts as the structural translation by `n . tau`,
+  completing the `t`/`x` change of basis in the operator calculus.
+- 2026-08-02 - The multiplicative hypercube specialization became unconditional Lean: finite
+  integer translate products are classified by ideal membership of their exponent operator.

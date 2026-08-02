@@ -622,11 +622,57 @@ P(t) = sum over n in [|t| b, |t|/b] of 1/n   -   ( -2 log b ),
 whose profile `1/u` is monotone, so the Riemann-sum error is the classical harmonic-sum-versus-log
 comparison and the `1/|t|` decay follows by monotone comparison rather than by Euler--Maclaurin.
 
+That comparison is now proved, in
+
+```text
+formal/GaloisForLFunctions/HTGeometry/HarmonicLogWindow.lean
+
+abs_harmonic_sub_log_sub_eulerMascheroni_le
+  : |harmonic n - log n - gamma| <= 1/n,
+abs_harmonic_window_sub_log_le
+  : |(harmonic N - harmonic m) - (log N - log m)| <= 1/N + 1/m.
+```
+
+Mathlib sandwiches `gamma` strictly between `harmonic n - log (n+1)` and `harmonic n - log n`;
+reading that sandwich in the other direction and using `log (1 + 1/n) <= 1/n` gives the sharp `1/n`
+error, which is exactly the rate needed.  Applying the window form at the endpoints `m = |t| b` and
+`N = |t| / b` gives the `O(1/(|t| b))` decay of the explicit co-Poisson sum, hence its square
+integrability.
+
 What an inhabitant of `BurnolCoPoissonSource b` still needs is therefore only: that
 `1/|t|`-decay estimate giving square-integrability, and the cosine-side condition, for which
 Burnol's intertwining `F(E phi) = E(F phi)` is the intended route.  Note the symmetrization shortcut does not bypass this:
 `E phi + F(E phi) = E phi + E(F phi)`, and the second summand is head-constant only when `F phi` is
 again supported above the aperture.
+
+The archimedean input to the intertwining is now in the tree as well:
+
+```text
+formal/GaloisForLFunctions/RHTower/ArchimedeanMellinFourier.lean
+
+even_poisson_summation
+  : for an even Schwartz f,
+    f(0) + 2 sum_{n>=1} f(n) = (F f)(0) + 2 sum_{n>=1} (F f)(n).
+```
+
+This is Poisson summation folded onto the positive half using evenness of `f` and of `F f`, with the
+central term made explicit.  The dilation rule that carries the scale parameter through it is proved
+in the same module:
+
+```text
+fourier_comp_mul_left
+  : for c > 0,  F (fun v => f (c v)) w = c^(-1) F f (w / c).
+```
+
+Combining the two gives the dilated even Poisson identity
+
+```text
+f(0) + 2 sum_{n>=1} f(n x) = x^(-1) [ (F f)(0) + 2 sum_{k>=1} (F f)(k / x) ],
+```
+
+which is the co-Poisson intertwining `F(E phi) = E(F phi)` after collecting the correction terms.
+The remaining cosine-side condition is therefore bookkeeping on top of two proved identities rather
+than a fresh analytic theorem.
 
 Still outside the formal tree: an inhabitant of `BurnolCoPoissonSource` --- equivalently the single
 symmetrized witness --- and the transfer of the two-sided law to the co-Poisson quotient vectors
@@ -658,6 +704,8 @@ symmetrized witness --- and the transfer of the two-sided law to the co-Poisson 
 - [x] Lean: inhabitation audit of the co-Poisson source layer (currently vacuous)
 - [x] Lean: constant aperture head of the co-Poisson sum (first Sonine condition, unconditional)
 - [x] Lean: local finiteness, pointwise summability, and the contributing index window
+- [x] Lean: sharp harmonic-versus-logarithm window comparison (the `1/|t|` decay rate)
+- [x] Lean: even Poisson summation and the Fourier dilation rule (both inputs to the intertwining)
 - [ ] Lean: an inhabitant of `BurnolCoPoissonSource`, i.e. one even `u` with `u + F u` constant on an aperture head and nonvanishing evaluation
 - [ ] Lean: transfer of `(12)`,`(13)` to the co-Poisson quotient vectors `y_{rho,N}`
 

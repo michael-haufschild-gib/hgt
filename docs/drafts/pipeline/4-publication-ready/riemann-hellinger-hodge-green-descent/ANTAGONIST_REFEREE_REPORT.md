@@ -18,7 +18,10 @@ realization of one signed modular character:
    fibres exact boundary for proper closed retention;
 5. actual Meyer cohomology contains every Xi zero with multiplicity and every finite jet packet,
    but full product admission, uniformly regular cofinal synthesis, and local-to-middle positivity
-   all fail in sharply classified ways.
+   all fail in sharply classified ways; and
+6. the canonical half-density quotient seminorm is centered-flow invariant, its Hausdorff
+   seminorm completion carries a surjective isometric flow, and its continuous actual-Xi spectrum
+   is exactly the critical-line sector.
 
 This is materially stronger than previous manuscript.
 
@@ -28,19 +31,22 @@ Earlier “joint Möbius--theta/Hellinger incidence bridge” was not terminal f
 contains literal Meyer source quotient, one-way inclusion of every actual Xi zero with full
 multiplicity, reciprocal flow, and exact weight-one complementary-jet Paugam form.
 
-Minimal missing theorem is:
+Earlier “construct a positive admissible completion” is also no longer the frontier.  That
+completion now exists canonically after quotienting the half-density seminorm kernel.  Minimal
+missing theorem is:
 
-> Construct Hausdorff positive completion of genuine Meyer middle cohomology such that centered
-> dilation extends as surjective isometric group and every actual Xi zero-evaluation extends
-> continuously and nontrivially.
+> Prove, from source arithmetic and without assuming zero locations, that every actual Xi
+> zeroth-evaluation is bounded by the canonical quotient seminorm
+> \(\overline p_{1/2}([g])=\inf_{b\in\mathcal B_P}\int e^{t/2}|g(t)+b(t)|dt\).
 
-This alone implies RH.  Global Meyer--Xi spectral synthesis is stronger and not logically needed
-for zero exclusion.
+This statement is exactly equivalent to RH.  Global Meyer--Xi spectral synthesis, a common Hilbert
+norm, and faithful embedding of all algebraic middle cohomology are stronger and not logically
+needed for zero exclusion.
 
 ## Why this is not yet RH
 
-Positive admissible completion is unproved.  Existing results constrain it but do not construct
-it:
+Universal half-density admission is unproved.  Existing results construct topology and classify
+its actual-Xi continuity spectrum, but do not place every zero-evaluation in it:
 
 - ordinary complete-source topology collapses spectral separation;
 - regular pointwise-nonerasing comparison can erase every reflection displacement;
@@ -52,7 +58,9 @@ it:
 - positive reciprocal Calderón form lives on regulator defect and pulls back to zero on genuine
   middle cycles.
 
-No theorem in manuscript supplies positive norm on middle cohomology.
+Manuscript now supplies a canonical positive seminorm and isometric Banach completion.  It does
+not supply the arithmetic estimate asserting continuity of all actual Xi evaluations.  By its own
+selector theorem, that estimate is RH-strength.
 
 ## Strongest positive assessment
 
@@ -60,7 +68,8 @@ Paper answers question corpus had repeatedly obscured:
 
 - divisor representation is solved;
 - signed source-to-divisor orientation transport is solved;
-- positive norm-conservative admission in correct cohomological degree is not solved.
+- canonical positive norm-conservative source geometry is solved after quotient by its kernel;
+- arithmetic admission of every actual Xi evaluation to that geometry is not solved.
 
 It also proves topology cannot be selected arbitrarily.  Locally finite grading is exact escape
 from closed saturation in complete prime-normal model.  This is a concrete mathematical boundary,
@@ -68,10 +77,11 @@ not a stylistic preference.
 
 ## Strongest objections
 
-1. **Positive-completion criterion may still be judged Hilbert--Pólya in source-specific dress.**
-   Publication significance depends on whether finite-fibre/singular-descent theorems are novel
-   and whether they constrain construction enough to generate new analysis, not merely rename
-   positivity.
+1. **The final criterion is an exact RH reformulation, not progress toward proving its hard
+   direction.**  The explicit half-density topology is better than a postulated Hilbert space, but
+   “all Xi evaluations are continuous” is proved equivalent to RH.  High-impact significance now
+   depends on a new arithmetic mechanism that establishes those bounds, or on independent novelty
+   of the selector and singular-descent laws.
 2. **External priority is unassessed.**  No novelty claim can be accepted until comparison against
    Meyer, Deninger, Paugam, co-Poisson, de Branges/Hilbert--Pólya, LF/Köthe completion, and closed
    linear-relation literature.
@@ -84,15 +94,17 @@ not a stylistic preference.
    identification and sharp finite/infinite boundaries must carry significance.
 5. **Finite-fibre theorem is proved for canonical prime-normal packet model.**  Manuscript must not
    imply categorical necessity for every conceivable RH completion.
-6. **Definition 7.1 includes topology language not yet constructed.**  “Strict locally finite
-   normal grading” needs an explicit category/topology before it can guide implementation.
+6. **The completion map need not be faithful.**  Construction passes to Hausdorff quotient by
+   seminorm kernel; no theorem shows literal Meyer middle cohomology embeds.  This does not break
+   the continuity selector, but limits cohomological interpretation.
 7. **No literature, references, or priority discussion.**  User intentionally deferred these;
    general scientific journal would reject current submission form.
 
 ## Formal-evidence audit
 
 Load-bearing claims have explicit theorem map in FORMAL_CLAIM_MAP.md.  No manuscript theorem
-depends on numerical computation.  Pending final audit:
+depends on numerical computation.  Direct checks of gauge and half-density modules pass.  Pending
+final audit:
 
 - direct foreground checks of changed/load-bearing modules;
 - targeted leaf builds;
@@ -104,8 +116,8 @@ depends on numerical computation.  Pending final audit:
 Goal not met.  Paper now states strongest honest corpus-wide law and locates minimal RH frontier
 correctly.  Honest general-journal review still rejects until:
 
-1. positive admissible Meyer completion is constructed, or paper's unconditional finite-fibre and
-   source-boundary results pass external novelty/significance review as standalone mathematics;
+1. universal half-density admission is proved, or paper's unconditional selector,
+   finite-fibre, and source-boundary results pass external novelty/significance review as
+   standalone mathematics;
 2. manuscript becomes self-contained and conventionally sourced; and
 3. final formal and adversarial audits pass.
-

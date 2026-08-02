@@ -22,6 +22,26 @@ variable [AddCommGroup X] [Module R X]
 variable [AddCommGroup Z] [Module R Z]
 variable [AddCommGroup W] [Module R W]
 
+/-- The two transported covariance defects of a factored map `X -> Y -> Z`, retained before
+the codiagonal adds them. -/
+def factoredResolvedCovarianceDefect
+    {Y : Type*} [AddCommGroup Y] [Module R Y]
+    (C : X →ₗ[R] X) (B : Y →ₗ[R] Y) (A : Z →ₗ[R] Z)
+    (r : X →ₗ[R] Y) (j : Y →ₗ[R] Z) :
+    X →ₗ[R] Z × Z :=
+  (((A.comp j - j.comp B).comp r).prod
+    (j.comp (B.comp r - r.comp C)))
+
+@[simp]
+theorem factoredResolvedCovarianceDefect_apply
+    {Y : Type*} [AddCommGroup Y] [Module R Y]
+    (C : X →ₗ[R] X) (B : Y →ₗ[R] Y) (A : Z →ₗ[R] Z)
+    (r : X →ₗ[R] Y) (j : Y →ₗ[R] Z) (x : X) :
+    factoredResolvedCovarianceDefect C B A r j x =
+      (A (j (r x)) - j (B (r x)),
+        j (B (r x)) - j (r (C x))) := by
+  simp [factoredResolvedCovarianceDefect]
+
 /-- Codiagonal observation of a two-channel resolved defect. -/
 def resolvedDefectCodiagonal : (Z × Z) →ₗ[R] Z :=
   LinearMap.fst R Z Z + LinearMap.snd R Z Z
@@ -50,6 +70,34 @@ theorem resolvedDefectCodiagonal_comp_antidiagonal :
         (resolvedDefectAntidiagonal (R := R) (Z := Z)) = 0 := by
   ext z
   simp [resolvedDefectCodiagonal, resolvedDefectAntidiagonal]
+
+/-- **Resolved two-factor covariance law.**  The covariance defect of a composite is exactly the
+codiagonal of its two transported factor defects. -/
+theorem resolvedDefectCodiagonal_comp_factoredResolvedCovarianceDefect
+    {Y : Type*} [AddCommGroup Y] [Module R Y]
+    (C : X →ₗ[R] X) (B : Y →ₗ[R] Y) (A : Z →ₗ[R] Z)
+    (r : X →ₗ[R] Y) (j : Y →ₗ[R] Z) :
+    (resolvedDefectCodiagonal (R := R) (Z := Z)).comp
+        (factoredResolvedCovarianceDefect C B A r j) =
+      A.comp (j.comp r) - (j.comp r).comp C := by
+  ext x
+  simp [factoredResolvedCovarianceDefect, resolvedDefectCodiagonal]
+
+/-- Disjoint retained grades make the codiagonal conservative on a resolved pair. -/
+theorem resolvedPair_eq_zero_of_disjoint_of_add_eq_zero
+    (P Q : Submodule R Z) (hPQ : Disjoint P Q)
+    (u v : Z) (hu : u ∈ P) (hv : v ∈ Q) (hsum : u + v = 0) :
+    u = 0 ∧ v = 0 := by
+  have huv : u = -v := eq_neg_of_add_eq_zero_left hsum
+  have huQ : u ∈ Q := by
+    rw [huv]
+    exact Q.neg_mem hv
+  have hu0 : u = 0 :=
+    (Submodule.disjoint_def.mp hPQ) u hu huQ
+  constructor
+  · exact hu0
+  · rw [hu0, zero_add] at hsum
+    exact hsum
 
 /-- **Universal two-factor cancellation sequence.**  The entire codiagonal kernel is the
 antidiagonal range; there is no other hidden two-channel defect. -/

@@ -5,9 +5,9 @@ Scope: load-bearing mathematical claims only.  Manuscript contains no mention of
 
 | Manuscript result | Unconditional theorem/module |
 |---|---|
-| Resolved-defect conservation and antidiagonal kernel | `HTGeometry/ResolvedDefectConservationLaw.lean`: `covarianceDefect_comp`, `resolvedDefect_codiagonal`, `ker_codiagonal_eq_range_antidiagonal`, `resolvedDefect_eq_zero_of_disjoint_ranges` |
-| Closed collapsing graph limits enter vertical fibre | `RHTower/CompleteResolutionCofinalConditioningLaw.lean`: `closedLinearRelation_mem_vertical_of_tendsto_zero`, `closedLinearRelation_span_le_verticalFiber_of_cofinalCollapse` |
-| Full verticality implies domain-product relation | same module: `completeResolution_closedLinearRelation_countablePrime_affine_eq_domain_prod`; Hilbert form in `CompleteResolutionPrimeNormalHilbertSaturation.lean`: `closedLinearRelation_completeResolutionPrimeHilbert_eq_domain_prod` |
+| Resolved-defect conservation and antidiagonal kernel | `HTGeometry/ResolvedDefectConservationLaw.lean`: `resolvedDefectCodiagonal_comp_factoredResolvedCovarianceDefect`, `ker_resolvedDefectCodiagonal_eq_range_antidiagonal`, `resolvedPair_eq_zero_of_disjoint_of_add_eq_zero` |
+| Closed collapsing graph limits enter vertical fibre | `RHTower/CompleteResolutionCofinalConditioningLaw.lean`: `closedLinearRelation_mem_vertical_of_tendsto_zero`, `closedLinearRelation_mem_vertical_of_graph_tendsto`, `closedLinearRelation_span_le_verticalFiber_of_cofinalCollapse` |
+| Dense graph limits force full verticality and domain-product relation | same module: `closedLinearRelation_fullVertical_of_dense_graph_limits`, `linearRelation_eq_domain_prod_of_fullVertical`; arithmetic instances include `completeResolution_closedLinearRelation_countablePrime_affine_eq_domain_prod` |
 | Complete source collapse and injective two-prime blow-up | `CompleteResolutionCofinalConditioningLaw.lean`: `completeResolution_collapseBlowup_duality`, `completeResolutionCofinalBlowupLimit_injective`, `no_uniformLipschitz_completeResolutionCofinalBlowupChart_pair` |
 | Prime-normal packet tends to zero and has dense span | `CompleteResolutionPrimeNormalHilbertSaturation.lean`: `tendsto_completeResolutionPrimeHilbertPacket_zero`, `completeResolutionPrimeHilbertPacketSpan_closure_eq_top`, `completeResolutionPrimeHilbertAffinePacketSpan_closure_eq_top` |
 | Every infinite packet subsequence and affine centering is dense | `CompleteResolutionPrimeNormalFiniteFibreGrading.lean`: `completeResolutionPrimeHilbertPacketSpanOn_closure_eq_top`, `completeResolutionPrimeHilbertAffinePacketSpanOn_closure_eq_top` |
@@ -35,16 +35,25 @@ Scope: load-bearing mathematical claims only.  Manuscript contains no mention of
 | Positive reciprocal Calderón form has zero radical locally | `DeningerMeyerReciprocalPaugamPolarization.lean`: `deningerMeyerPoissonReciprocal_cupSigma_self`, `deningerMeyerPoissonReciprocal_cupSigma_eq_zero_iff` |
 | Local reciprocal positive form pulls back to zero on genuine global middle cycles | `DeningerMeyerPaugamGradingObstruction.lean`: `deningerMeyerEndpointCycleReciprocalQuotient_eq_zero`, `deningerMeyerEndpointCycleReciprocal_cupSigma_self_zero` |
 | Meyer-to-Xi spectral synthesis is exactly comparison injectivity | `DeningerMeyerXiSpectralInclusion.lean`: `deningerMeyerCompactOpenXiComparison_injective_iff` |
+| Positive admissible completed dual spectrum implies RH | `DeningerMeyerPositiveAdmissibleCompletionFrontier.lean`: `normConservative_centeredXiCharacter_forces_re_half`, `riemannHypothesis_of_deningerMeyerPositiveAdmissibleDualSpectrum` |
+| Finite invariant domination of a nonzero eigenfunctional exists iff character has zero real rate | `TransverseInformationInvariantGaugeDichotomy.lean`: `invariantGauge_bounded_eigenfunctional_iff_re_eq_zero`; forward implication also `DeningerMeyerInvariantEvaluationGaugeFrontier.lean`: `re_eq_zero_of_invariantGauge_bounded_eigenfunctional` |
+| Canonical half-density source and quotient seminorm are exactly centered-flow invariant | `DeningerMeyerHalfDensityL1Completion.lean`: `deningerMeyerHalfDensityL1Seminorm_centeredFlow`, `deningerMeyerHalfDensityCohomologySeminorm_centeredFlow` |
+| Half-density seminorm completion carries a surjective isometric centered flow | same module: `deningerMeyerHalfDensityCompletedFlow_norm`, `deningerMeyerHalfDensityCompletedFlow_surjective` |
+| Actual Xi evaluation is half-density bounded iff its zero is critical | same module: `deningerMeyerHalfDensityXiEvaluationBounded_iff` |
+| RH iff every actual Xi evaluation is continuous for canonical half-density topology | same module: `riemannHypothesis_iff_deningerMeyerHalfDensityXiEvaluationsBounded` |
 
 ## Unproved statement, explicitly labeled in manuscript
 
-Existence of a positive admissible Meyer completion (Definition 7.1) is not proved.  The implication from its existence to RH is an unconditional consequence of the already proved nonzero Xi eigenfunctionals and `normConservative_equivariantDescent_forces_zero`.
+The canonical half-density quotient seminorm, Hausdorff seminorm completion, and surjective
+isometric centered flow are proved.  What is not proved is universal arithmetic admission:
+boundedness of every actual Xi evaluation for that seminorm.  By
+`riemannHypothesis_iff_deningerMeyerHalfDensityXiEvaluationsBounded`, this statement is exactly
+equivalent to RH.
 
 ## Verification status
 
-- Paper proof audit: complete.
-- Direct Lean checks: pending final foreground batch after concurrent writers release Lean processes.
+- Paper proof audit: complete through canonical half-density selector.
+- Direct Lean checks: new gauge dichotomy and half-density completion pass; dependency batch passed.
 - Targeted module builds: pending final audit.
 - Axiom audit: pending final audit.
 - External novelty/priority audit: intentionally deferred; `[NOVELTY UNVERIFIED]`.
-

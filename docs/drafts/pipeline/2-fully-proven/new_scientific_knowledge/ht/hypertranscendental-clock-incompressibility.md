@@ -811,3 +811,94 @@ survives has strictly smaller order and becomes the next pivot.
 
 This is the induction step of the Jacobson diagonal reduction; iterating it on the complementary
 submatrix gives the diagonal form.
+
+### The diagonal form
+
+`DifferentialOperatorOreDiagonal.lean`:
+
+- `Diagonalized P` — every nonzero entry of `P` is the only nonzero entry of its row and of its
+  column;
+- `exists_lift_rowColEquiv` — an equivalence of the complementary submatrix `restrictMat i₁ j₁ P`
+  lifts to an equivalence of `P` itself which leaves a cleared pivot row and column untouched;
+- **`exists_diagonalized`** — every matrix over `K[∂;δ]` is equivalent, under elementary row and
+  column operations, to a diagonalized one.
+
+The recursion is on the number of rows.  `exists_pivot_clear_both` produces a pivot alone in its
+row and column; the complementary submatrix is diagonalized by the recursion; the lifting lemma
+carries those moves back to the whole matrix.  Lifting works because a row operation among the
+complementary rows does not touch the pivot row (`rowAdd_pivot_row`) and keeps the cleared pivot
+column cleared (`rowAdd_pivot_col`), and symmetrically for column operations.
+
+### The row lattice and its elementary divisors
+
+`DifferentialOperatorRowSpace.lean`:
+
+- `vecMulLin`, `rowSpace P = LinearMap.range (vecMulLin P)` — the space of left combinations of the
+  rows, as a `K`-subspace of the free module;
+- `rowSpace_rowAdd` — a row operation does not change the row lattice;
+- `colAddVecLin`, `colAddVecEquiv`, `rowSpace_colAdd` — a column operation transports the row
+  lattice by an automorphism of the ambient module;
+- **`finrank_quotient_rowSpace_congr`** — the codimension of the row lattice is an invariant of the
+  reduction;
+- `exists_ne_zero_of_rowIndep` — every row of a matrix with left independent rows carries a nonzero
+  entry;
+- `coordEquiv`, `vecMul_of_diagonalized`, **`map_rowSpace_coordEquiv`** — on a diagonalized matrix
+  whose pivots are indexed by a bijection `e`, the row lattice is `∏ᵢ K[∂;δ] · P i (e i)`;
+- **`exists_degree_sum_eq_finrank_quotient_rowSpace`** — for a square matrix with left independent
+  rows there are nonzero `dᵢ` with
+
+  `dim_K ((κ → K[∂;δ]) / rowSpace P) = ∑ᵢ deg dᵢ`.
+
+The pivots of a diagonal form of a row-independent square matrix are a bijection: each row carries
+one (else that row would be a nontrivial relation), and two rows cannot share a column by
+diagonality.  Composing the invariance of the codimension with the diagonal computation and
+`finrank_quotient_pi_leftMultiples` gives the elementary-divisor form of the index.
+
+This closes the `k = s` case of the identification announced above in its operator form: the index
+of the row lattice of the Fréchet matrix is exactly the sum of the orders of the elementary
+divisors of that matrix, and it does not depend on which diagonal form is used to compute it.
+
+A caveat worth recording, because it corrects the expectation stated earlier on this card: the
+diagonal entries of a diagonal form are *not* the invariant factors of the pair.  Over `ℤ`, the
+pair `2ℤ ⊕ 3ℤ ⊆ ℤ²` is diagonal with entries `2, 3`, while its invariant factors are `1, 6` and the
+one-dimensional cut `ℚ·(1,1)` realizes the index `6 > max(2,3)`.  So `σ_k` for `k < s` is not the
+sum of the `k` largest diagonal orders of an arbitrary diagonal form; the sharp prefix
+identification needs the divisibility-normalized (Jacobson) form, whereas the top invariant
+`σ_s = ∑ᵢ deg dᵢ` is already diagonal-form independent, as the invariance theorem shows.
+
+### Equation (6): the pseudodifferential right inverse
+
+`DifferentialOperatorPseudoRightInverse.lean`:
+
+- `pseudoVecMulSkewLin` — the row map `v ↦ v·P` as a map of left vector spaces over the skew field
+  `Q_F` (the earlier `pseudoVecMulLin` is only linear over the operator ring);
+- `pseudoVecMul_single` — the row map sends a standard vector to the corresponding row;
+- `apply_eq_sum_single` — every linear map between finite coordinate spaces over `Q_F` is right
+  multiplication by the matrix of the images of the standard vectors;
+- **`exists_pseudo_right_inverse`** — a matrix whose rows are left independent over `K[∂;δ]` admits
+  `Q` over `Q_F` with `P · Q = I`, which is `(6)`.
+
+Row independence over the operator ring gives injectivity of the row map over `Q_F`
+(`pseudoVecMul_injective`, by clearing denominators); an injective map of vector spaces over a
+division ring has a left inverse; the matrix of that left inverse is `Q`.  So `(6)` is now a
+theorem of the corpus, not only the surrogate `boundedDistortion_of_rowIndep` that the Lean proof
+of Theorem A uses.
+
+### Equation (17): the conductor and its length
+
+`OperatorConductorLength.lean`:
+
+- `integralVecK`, `map_top_integralVecK`, `map_rowSpace_integralVecK`, `pseudoVecMul_integralVec` —
+  the integral embedding `R^ι → Q^ι` carries the row lattice of `P` to `rowLattice P` and the whole
+  free module to `integralLattice ι`;
+- **`satLattice_eq_integralLattice`** — for a square matrix with left independent rows the row map
+  over `Q_F` is bijective, so `Sat(P R^ι) = R^ι`;
+- **`exists_degree_sum_eq_quotDim_conductor`** — the conductor `Sat(P R^ι)/(P R^ι)` of `(17)` has
+  dimension `∑ᵢ deg dᵢ`, the total order of the elementary divisors of `P`;
+- **`quotDim_conductor_single`** — the conductor of the one-by-one matrix `d` has length `deg d`;
+  for `d = ∂ᵏ` this is exactly the card's example `y = δᵏ x`, of conductor length `k`.
+
+The finiteness of the conductor was already known to the corpus
+(`finiteDimensional_satLattice_mod_rowLattice`); what is new is its exact length.  This also makes
+the `[NO-GO]` of section 5 quantitative: the conductor of a fixed embedding contributes exactly
+`∑ᵢ deg dᵢ` — a constant — to every comparison, so normalization by `n` kills it.

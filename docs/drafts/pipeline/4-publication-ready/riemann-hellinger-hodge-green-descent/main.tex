@@ -40,7 +40,7 @@
 
 \title{\textbf{Transverse information at singular descent}\\
 \large A source--boundary conservation law and the exact positive
-completion frontier for the Riemann hypothesis}
+admission frontier for the Riemann hypothesis}
 \author{Michael Haufschild}
 \date{}
 
@@ -91,21 +91,30 @@ of all Xi jets is not source-admissible, cofinal unit synthesis is singular
 at every positive differential order, and the available positive local
 Calder\'on polarization pulls back to zero on every genuine middle cycle.
 
-Thus the missing RH theorem is no longer a source, an orientation
-coordinate, a divisor comparison, or a finite transport.  It is a positive
-admissible completion of genuine Meyer middle cohomology on which centered
-dilation is isometric and every actual Xi evaluation remains continuous
-and nonzero.  Such a completion would force every Xi zero onto the critical
-line.  We prove the conservation, rigidity, finite-fibre, spectral
-inclusion, and obstruction statements unconditionally; we do not assert
-the existence of this final positive completion or the Riemann hypothesis.
+The terminal positive geometry is also explicit.  On the logarithmic Meyer
+source the half-density functional
+\[
+                   p_{1/2}(g)=\int_{\R}e^{t/2}|g(t)|\,dt
+\]
+descends by quotient infimum to an exactly centered-flow-invariant
+seminorm and a Banach completion with surjective isometric flow.  An actual
+Xi evaluation is bounded for this one source-defined seminorm if and only
+if its zero lies on the critical line.  Consequently RH is equivalent to
+continuity of all actual Xi evaluations in this canonical topology.
+More generally, a finite invariant gauge can dominate a nonzero character
+exactly when its real rate vanishes.  Thus the missing object is no longer
+a source, transport, orientation, gauge, or completion: it is the
+arithmetic admission estimate putting every actual Xi evaluation into the
+continuous spectrum of the already constructed half-density completion.
+We prove all structural and selector statements unconditionally; we do not
+assert this final admission estimate or the Riemann hypothesis.
 \end{abstract}
 
 \medskip
 \noindent\textbf{Keywords.}
 Riemann hypothesis; modular character; co-Poisson transform; Meyer
 cohomology; hyperbolic representation; Hodge polarization; singular
-completion; spectral synthesis.
+descent; invariant gauge; spectral synthesis.
 
 \medskip
 \noindent\textbf{2020 Mathematics Subject Classification.}
@@ -147,16 +156,16 @@ The results of this paper answer four questions.
       erases the normal coordinate; ungraded closed retention becomes
       maximally multivalued.
 \item \emph{What theorem remains?}
-      One must place the already existing Xi eigenfunctionals inside a
-      positive completion of genuine middle cohomology where centered
-      dilation is isometric and the functionals remain continuous and
-      nonzero.
+      Prove from the arithmetic source that every already existing Xi
+      eigenfunctional is bounded by the canonical half-density quotient
+      seminorm.
 \end{enumerate}
 
-The last statement is narrower than global spectral synthesis.  Full
-synthesis would identify the entire spectrum, but RH already follows from
-the proved one-way inclusion of every Xi zero and continuity in a positive
-isometric completion.
+The last statement is narrower not only than global spectral synthesis but
+also than Hilbert--P\'olya.  The positive isometric completion has already
+been constructed.  Its continuous Xi spectrum is exactly the critical-line
+part of the divisor.  What remains is an arithmetic theorem that all actual
+Xi evaluations belong to that continuous spectrum.
 
 \section{The conservation law}
 
@@ -484,6 +493,17 @@ The following statements hold unconditionally.
       character \(e^{\kappa t}\) with a norm-conservative real-linear
       action.  If \(T\) does not annihilate that vector, then
       \(\kappa=0\).
+\item More generally, let \(E\ne0\) be a linear functional satisfying
+      \[
+                         E(V_tu)=e^{tz}E(u).
+      \]
+      There exists a finite nonnegative function \(g\) and a constant
+      \(C\ge0\) such that
+      \[
+        g(V_tu)=g(u),\qquad |E(u)|\le Cg(u)
+      \]
+      for all \(t,u\) if and only if \(\Rea z=0\).  No norm, seminorm,
+      topology, or common gauge is required.
 \end{enumerate}
 \end{theorem}
 
@@ -518,11 +538,22 @@ Finally, if \(V_t\) is norm-conservative and
 \]
 Since \(Tx\ne0\), \(e^{\kappa t}=1\), and any nonzero real \(t\) gives
 \(\kappa=0\).
+
+For the gauge statement, choose \(u\) with \(E(u)\ne0\).  Invariance and
+the bound applied to \(V_tu\) give
+\[
+ e^{t\Rea z}|E(u)|=|E(V_tu)|\le Cg(V_tu)=Cg(u)
+\]
+for every real \(t\).  If \(\Rea z\ne0\), one of the two time directions
+makes the left side arbitrarily large, a contradiction.  Conversely, if
+\(\Rea z=0\), then \(g(u)=|E(u)|\) is finite, nonnegative, invariant, and
+dominates \(E\) with \(C=1\).
 \end{proof}
 
 This is the central law.  Off-axis reflection is not nonconservative; it
 is exactly conservative in a hyperbolic plane.  What it cannot carry is a
-nonzero positive conservative metric.
+nonzero positive conservative metric---or even a finite invariant upper
+gauge for one surviving nonzero eigenfunctional.
 
 \subsection{Green factorization}
 
@@ -691,6 +722,33 @@ This grading obstruction removes the main ambiguity in the frontier:
 another positive local block cannot prove RH, regardless of how sharp
 its scalar estimate is.
 
+\subsection{Faithful co-Poisson positivity and the same hyperbolic rate}
+
+On every closed Burnol co-Poisson quotient in the right regularity strip,
+the completed Mellin evaluation kernels have dense linear span.  Hence,
+for a positive operator supported on that quotient, its Berezin diagonal
+\[
+                         \cB_T(w)=\langle k_w,Tk_w\rangle
+\tag{5.8}\label{eq:berezin}
+\]
+is faithful: if \(\cB_T(w)=0\) throughout the strip, then \(T=0\).
+Cosine reflection transports the left evaluation kernel to the right
+kernel at \(1-w\).  Therefore a Fourier-odd operator has reflection-odd
+Berezin diagonal.
+
+For the finite bilateral aperture holonomy, the diagonal at a
+co-Poisson annihilator point has the exact normalized value
+\[
+ \frac{\Rea\cB_T(w)}{\|k_w\|^2}
+   =r^{\,2\Rea w-1}-r^{\,1-2\Rea w}
+   =2\sinh\!\left(\log r\,\kappa(w)\right).
+\tag{5.9}\label{eq:burnol-hyperbolic}
+\]
+Thus the Sonin--Burnol positive consumer does not introduce a new
+orientation law.  It reads the same transverse character through its
+hyperbolic sine.  Faithfulness says positivity can detect a surviving
+operator; reflection oddness says the oriented reader remains signed.
+
 \section{One law, many shadows}
 
 The corpus-wide results now organize by the fate of the same transverse
@@ -722,6 +780,9 @@ Prime-valuation Rees sectors
 Meyer--Poisson cohomology
  & all finite Xi jet packets and exact reciprocal flow
  & unrestricted full packet fails admission; cofinal synthesis is singular\\
+Meyer half-density
+ & canonical centered-flow-invariant quotient seminorm and Banach completion
+ & its continuous Xi spectrum is exactly the neutral sector\\
 Paugam polarization
  & alternating complementary-jet form of weight one
  & positive local regulator form vanishes on genuine middle cycles\\
@@ -731,9 +792,9 @@ Hedenmalm / dense radical
 Wold--Poisson
  & conjugate depth/time characters
  & independent quadrant boundedness holds exactly at zero real rate\\
-Sonin--Calkin
- & exact quotient and compact consumer after admission
- & compactness cannot restore a character erased upstream\\
+Sonin--Burnol--Calkin
+ & dense Mellin kernels, faithful positive Berezin reader, exact quotient
+ & finite holonomy reads \(2\sinh(\log r\,\kappa)\); compactness cannot restore erased data\\
 four-unit Ward
  & positive boundary consumer on the neutral sector
  & positivity is downstream of the same modular equalizer\\
@@ -753,7 +814,7 @@ or confined to the wrong cohomological degree.
 
 \section{The exact RH frontier}
 
-\subsection{Minimal closing theorem}
+\subsection{Pointwise invariant-gauge criterion}
 
 Let \(U_c\) be dilation on \(\cH_{\mathrm M}\) and define the centered
 flow
@@ -764,49 +825,134 @@ flow
 At a Xi divisor point, the zero-order functional transforms by the
 character \(e^{c(\rho-1/2)}\).
 
-\begin{definition}[Positive admissible Meyer completion]
-\label{def:completion}
-A positive admissible completion consists of a Hausdorff normed
-completion \(\widehat{\cH}_{\mathrm M}\) of genuine Meyer middle
-cohomology such that:
-
-\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2em]
-\item every \(V_c\) extends to a surjective linear isometry of
-      \(\widehat{\cH}_{\mathrm M}\), with inverse \(V_{-c}\);
-\item for every \(\rho\in\Div(\Xi)\), the nonzero functional
-      \(E_{\rho,0}\) extends continuously and remains nonzero; and
-\item the completion respects the literal Poisson quotient and a strict
-      locally finite normal grading, rather than unrestricted product
-      closure.
-\end{enumerate}
+\begin{definition}[Pointwise invariant evaluation gauge]
+\label{def:gauge}
+For \(\rho\in\Div(\Xi)\), an admissible gauge is a finite function
+\[
+                         g_\rho:\cH_{\mathrm M}\longrightarrow[0,\infty)
+\]
+such that, for some \(C_\rho\ge0\),
+\[
+ g_\rho(V_cu)=g_\rho(u),\qquad
+ |E_{\rho,0}(u)|\le C_\rho g_\rho(u)
+\tag{7.2}\label{eq:gauge}
+\]
+for every \(c\in\R\) and \(u\in\cH_{\mathrm M}\).
 \end{definition}
 
-\begin{corollary}[Closure of the route]
+\begin{theorem}[Exact pointwise admission frontier]
 \label{cor:rh}
-Existence of a positive admissible Meyer completion implies the Riemann
-hypothesis.
-\end{corollary}
+For an actual Xi divisor point \(\rho\), an admissible gauge exists if
+and only if \(\Rea\rho=\tfrac12\).  Consequently,
+\[
+ \bigl(\forall\rho\in\Div(\Xi)\;\exists g_\rho
+       \text{ satisfying \eqref{eq:gauge}}\bigr)
+ \quad\Longleftrightarrow\quad \mathrm{RH}.
+\tag{7.3}\label{eq:gauge-rh}
+\]
+\end{theorem}
 
 \begin{proof}
-The dual of an isometry is norm-conservative.  For every actual divisor
-point \(\rho\), the extended nonzero evaluation satisfies
+The evaluation is nonzero and satisfies
 \[
-              V_c^*E_{\rho,0}
+              E_{\rho,0}V_c
               =e^{c(\rho-1/2)}E_{\rho,0}.
 \]
-Taking norms gives
+Theorem~\ref{thm:main}(vi), with \(z=\rho-\tfrac12\), proves the forward
+implication.  If \(\Rea\rho=\tfrac12\), take
+\(g_\rho(u)=|E_{\rho,0}(u)|\); the same character law makes this gauge
+invariant, with \(C_\rho=1\).  The global equivalence follows because the
+Meyer quotient contains every actual Xi zero.
+\end{proof}
+
+\subsection{Canonical half-density positive geometry}
+
+For \(g\in\cS_{\mathrm M}\), define
 \[
- 1=\left|e^{c(\rho-1/2)}\right|
-   =e^{c(\Rea\rho-1/2)}
+ p_{1/2}(g)=\int_{\R}e^{t/2}|g(t)|\,dt
+\tag{7.4}\label{eq:half-density}
 \]
-for every real \(c\).  Hence \(\Rea\rho=\tfrac12\).  This holds for every
-Xi zero.
+and descend it through the literal Poisson boundary by
+\[
+ \overline p_{1/2}([g])
+   =\inf_{b\in\cB_{\mathrm P}}p_{1/2}(g+b).
+\tag{7.5}\label{eq:quotient-half-density}
+\]
+
+\begin{theorem}[Exact half-density continuity selector]
+\label{thm:half-density}
+The following statements hold unconditionally.
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2em]
+\item \(p_{1/2}\) is a seminorm on the strong logarithmic Meyer source and
+      \(\overline p_{1/2}\) is its quotient seminorm on
+      \(\cH_{\mathrm M}\).
+\item Centered dilation is exactly isometric:
+      \[
+                  \overline p_{1/2}(V_cu)=\overline p_{1/2}(u).
+      \]
+\item The Hausdorff quotient by the seminorm kernel has a Banach
+      completion on which \(V_c\) extends to a surjective linear isometry
+      with inverse \(V_{-c}\).
+\item For every actual Xi divisor point,
+      \[
+      E_{\rho,0}\text{ is bounded by }\overline p_{1/2}
+      \quad\Longleftrightarrow\quad
+      \Rea\rho=\frac12.
+      \tag{7.6}\label{eq:selector}
+      \]
+      On the critical line the bound is contractive.
+\item Consequently,
+      \[
+      \mathrm{RH}
+      \quad\Longleftrightarrow\quad
+      \text{every actual \(E_{\rho,0}\) is
+      \(\overline p_{1/2}\)-bounded}.
+      \tag{7.7}\label{eq:canonical-rh}
+      \]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The change of variables \(u=t-c\) gives
+\[
+\begin{aligned}
+p_{1/2}(V_cg)
+ &=\int_{\R}e^{t/2}e^{-c/2}|g(t-c)|\,dt\\
+ &=\int_{\R}e^{u/2}|g(u)|\,du=p_{1/2}(g).
+\end{aligned}
+\]
+Taking the quotient infimum and using both \(c\) and \(-c\) gives exact
+quotient invariance.  Quotient by the null space and completion therefore
+extend the centered flow isometrically; the inverse flow proves
+surjectivity.
+
+If \(\Rea\rho=\tfrac12\), the Mellin estimate gives
+\[
+ |E_{\rho,0}([g])|
+ \le p_{1/2}(g+b)
+\]
+for every boundary representative \(g+b\).  Taking the infimum proves
+the contractive bound.  Conversely, \(\overline p_{1/2}\) is an admissible
+gauge in Definition~\ref{def:gauge}, so Theorem~\ref{cor:rh} forces
+\(\Rea\rho=\tfrac12\).  This proves \eqref{eq:selector}; applying it to
+every actual Xi point gives \eqref{eq:canonical-rh}.
 \end{proof}
 
 \subsection{What has and has not been reduced}
 
-Definition~\ref{def:completion} is not a renamed RH statement.  Each
-clause is pinned to an already constructed object:
+Theorem~\ref{cor:rh} removes assumptions previously mistaken for the
+frontier.  Zero exclusion requires neither a Hilbert space nor a
+positive-definite inner product or surjectivity onto a global divisor
+model.  The exact logical datum is only finite invariant domination of
+each already existing nonzero evaluation.  Theorem~\ref{thm:half-density}
+then supplies one canonical common seminorm and its positive isometric
+completion.
+
+The selector is exact, so asserting universal boundedness is equivalent to
+RH.  Its research content is diagnostic rather than a disguised proof:
+the missing proof must derive universal boundedness from arithmetic source
+structure, not from the unknown locations of zeros.  The corpus has fixed
+every surrounding ingredient:
 
 \begin{enumerate}[leftmargin=2.2em]
 \item the source space and literal boundary quotient are explicit;
@@ -818,9 +964,17 @@ clause is pinned to an already constructed object:
 \item Theorem~\ref{thm:finite-fibre} gives an exact topology constraint.
 \end{enumerate}
 
-The unresolved mathematical step is narrower: construct a positive
-middle-cohomology norm which admits all actual Xi evaluations and makes
-centered dilation isometric.
+The unresolved mathematical step is therefore not construction of a
+positive completion.  It is the arithmetic admission theorem
+\[
+  \forall\rho\in\Div(\Xi),\quad
+  |E_{\rho,0}(u)|\le C_\rho\overline p_{1/2}(u)
+  \quad(u\in\cH_{\mathrm M}),
+\tag{7.8}\label{eq:missing-admission}
+\]
+with finite \(C_\rho\), proved from the source without assuming
+\(\Rea\rho=\tfrac12\).  By \eqref{eq:canonical-rh}, this is exactly the
+RH-bearing step.
 
 The following substitutes are now excluded.
 
@@ -841,9 +995,10 @@ The following substitutes are now excluded.
 
 Global spectral synthesis \eqref{eq:synthesis} is a natural stronger
 theorem: it would identify all of compact-open Xi cohomology with the
-Meyer quotient.  It is not required for Corollary~\ref{cor:rh}.  The
-minimal frontier is continuity and positivity for the already proved
-one-way Xi spectral inclusion.
+Meyer quotient.  It is not required for Theorem~\ref{cor:rh}.  The
+minimal frontier is the concrete half-density admission estimate
+\eqref{eq:missing-admission} for the already proved one-way Xi spectral
+inclusion.
 
 \subsection{Why several routes converge here}
 
@@ -859,18 +1014,27 @@ artificial chain.
 \item The Euler--Hellinger--Gamma route supplies reciprocal source
       polarization and proves why bounded whitening cannot be global.
 \item The Meyer route supplies the actual source-native cohomology,
-      reciprocal flow, and Xi spectral inclusion.
+      reciprocal flow, Xi spectral inclusion, and canonical half-density
+      isometric completion.
 \end{itemize}
 
 Their common conclusion is not another bridge between arbitrary
 marginals.  It is that all source and transport data required before
-positive completion already exist.  The missing positive norm must live
-on Meyer middle cohomology and must respect the strict normal information
-identified independently by the other routes.
+positive admission already exist.  The missing estimate must act on
+genuine Meyer middle cohomology and prove that every actual Xi evaluation
+is continuous for \(\overline p_{1/2}\).  The required positive geometry
+is no longer hypothetical.
 
 \section{Discussion}
 
 \subsection{What the universal law explains}
+
+The corpus-wide law can be stated in one sentence.  A reflected spectral
+rate is conserved on resolved or normally graded source data; regular
+descent erases it, ungraded closed retention verticalizes it, and positive
+finite invariant admission retains a nonzero character exactly at zero
+real rate.  Source entropy, Xi residue, nearby-cycle charge, Green defect,
+Rees type, and Meyer continuity are its coordinate realizations.
 
 The law separates three questions often conflated in RH research.
 
@@ -882,8 +1046,9 @@ The law separates three questions often conflated in RH research.
       \(\kappa\) is an explicit projective source character, residue,
       nearby-cycle charge, and resolved Green defect.
 \item \emph{Why must the orientation vanish?}  This is the remaining
-      problem.  Vanishing follows from positive norm-conservative
-      admission, but not from hyperbolic conservation, scalar covariance,
+      problem.  Vanishing is equivalent to continuity of every Xi
+      evaluation for the canonical half-density quotient seminorm, but
+      does not follow from hyperbolic conservation, scalar covariance,
       local positivity, or regular completion.
 \end{enumerate}
 
@@ -895,9 +1060,9 @@ correct cohomological degree and topology.
 \subsection{Scope}
 
 All theorems stated as results in this paper are unconditional.  The
-existence of the positive admissible completion is not claimed.  The
-paper does not prove RH, simplicity of zeros, a trace formula, or global
-Meyer--Xi spectral synthesis.
+source-derived invariant bounds required simultaneously at every actual
+Xi point are not claimed.  The paper does not prove RH, simplicity of
+zeros, a trace formula, or global Meyer--Xi spectral synthesis.
 
 The universal algebraic and representation-theoretic identities are
 elementary in isolation.  Their significance lies in the sharp arithmetic
@@ -929,12 +1094,14 @@ admitted, cofinal synthesis is singular to every finite order, and the
 known local positive polarization lies in the regulator degree and
 vanishes on middle cycles.
 
-The frontier is therefore exact.  One must construct a strict positive
-completion of genuine Meyer middle cohomology on which centered dilation
-is isometric and every actual Xi evaluation remains continuous and
-nonzero.  The source-boundary conservation law shows why this would force
-the Riemann hypothesis; the singular-descent and grading laws show why the
-completed, scalar, local, and finite-Rees alternatives cannot substitute
-for it.
+The frontier is therefore exact and smaller than previously stated.  The
+canonical half-density quotient seminorm and its positive isometric Banach
+completion already exist.  An actual Xi evaluation is continuous for this
+topology exactly when its zero is critical.  What remains is one
+source-derived arithmetic admission theorem proving continuity for every
+actual Xi evaluation.  The source--boundary conservation law identifies
+the controlled character; the singular-descent and grading laws explain
+why scalar, local, ungraded, and finite-Rees substitutes fail to control
+it.
 
 \end{document}

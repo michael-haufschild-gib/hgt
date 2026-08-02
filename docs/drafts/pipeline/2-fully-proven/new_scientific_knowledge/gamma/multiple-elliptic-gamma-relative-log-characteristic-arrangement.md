@@ -239,8 +239,27 @@ certification.
 3. exact projection to the constant gauge mode;
 4. the exact kernel and surjectivity of this gauge reduction.
 
-The special-function identification `(14)` remains the analytic input of the parent paper theorem;
-it is not introduced as a Lean axiom.
+### The special-function identification `(14)` is now unconditional Lean
+
+`Ann_DA(Psi_r) = I_r` is no longer a paper input.  It is proved for the actual meromorphic kernels
+in `MultipleGammaAnnihilatorExact.lean` as
+`differentialAlgebraicOver_xApply_iff_mem_veroneseIdeal`, under the card's own genericity
+hypothesis `PeriodsIntegrallyIndependent tau`.
+
+`RelativeLogCharacteristicSourceBridge.lean` transports the combinatorial arrangement above onto
+that genuine annihilator:
+
+- `daTranslationAnnihilator` is the set of difference operators sending the source into the
+  differentially algebraic locus, and `daTranslationAnnihilator_eq_veroneseIdeal` is `(14)`;
+- `forall_eval_veroneseIdeal_iff_cofaceProductsVanish` identifies the vanishing of the whole ideal
+  at a point with the coface point equations;
+- `daTranslationAnnihilator_logCharacteristicBoundary_iff` and
+  `daTranslationAnnihilator_logCharacteristicBoundary_iff_integer_chargedPair` are the card's
+  arrangement theorem **for the genuine source**: a clock lies on the characteristic boundary of
+  `Ann_DA(Psi_r)` exactly when two distinct clock coordinates exponentiate to the unit translation
+  character, equivalently when two coordinates carry integral deck charges.
+
+`#print axioms` clean.
 
 ## Gates
 
@@ -255,6 +274,14 @@ it is not introduced as a Lean axiom.
 - [x] classical mean-periodic parent separated from the DA-relative residue
 - [x] external novelty search completed provisionally
 - [x] unconditional combinatorial and Gamma gauge cores formalized in Lean
+- [x] parent multiple-Gamma annihilator theorem `(14)` formalized unconditionally in Lean and
+  transported to the arrangement (`MultipleGammaAnnihilatorExact.lean`,
+  `RelativeLogCharacteristicSourceBridge.lean`)
 - [ ] independent audit of the parent multiple-Gamma annihilator theorem
 - [ ] source-minimal reconstruction theorem for a natural HT class
 - [ ] conservative comparison with two independent analytic realizations
+
+## Log
+
+- 2026-08-02 -- the special-function identification `(14)` became an unconditional Lean theorem and
+  the pair arrangement was transported onto the genuine differential-algebraic annihilator.

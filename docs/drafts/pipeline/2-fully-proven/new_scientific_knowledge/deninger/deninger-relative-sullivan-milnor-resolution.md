@@ -533,6 +533,107 @@ algebra.  Axiom audit for all 7 declarations: `propext, Quot.sound` for the rela
 - `deningerGCAInvolute_ι_degreeOne`, `_ι_of_even` — it negates degree-one generators, matching the
   exterior algebra, and fixes even generators.
 
+### The square-zero odd extension on mixed degrees
+
+- `DeningerGCAOddExt` — **the square-zero odd extension** of a free graded-commutative algebra,
+  with the product `(a, b)(a', b') = (a a', σ a · b' + b · a')` carrying the Koszul sign through the
+  grading involution, together with its `Ring` and `Algebra` structure and the projections
+  `evenHom`, `oddLinear`.
+
+This is the carrier the odd-derivation construction is lifted into, now available over generators
+of arbitrary degree rather than only degree one.
+
+### The odd derivation on mixed degrees
+
+The derivation construction now runs over generators of arbitrary degree.  Axiom audit for all 10
+declarations: `propext` alone for the sign arithmetic, `propext, Classical.choice, Quot.sound` for
+the rest.
+
+- `deningerNegOnePow_two_mul`, `_sign_left`, `_sign_right` — the sign identities the Koszul
+  bookkeeping needs.
+- `deningerGCAOddGen_comm`, `deningerGCAOddGen_sq` — **the generator assignment respects the Koszul
+  relations in the odd extension**, under the single hypothesis that each value `φ y` graded-commutes
+  with the generators as an element of degree `|y| + 1`.  In the degree-one case that hypothesis is
+  exactly the centrality used in the exterior construction.
+- `deningerGCAOddDerivationHom`, `deningerGCAOddDerivation`, `deningerGCAOddDerivation_ι` — **the
+  odd derivation** determined by its values on generators of arbitrary degree.
+- `deningerGCAOddDerivationHom_even` — the even component of the lift is the identity, which is what
+  makes the odd component a derivation.
+- `deningerGCAOddDerivation_leibniz` — **the graded Leibniz rule** on the mixed-degree algebra.
+
+### `d² = 0` on mixed degrees
+
+- `deningerGCA_induction` — induction on a free graded-commutative algebra: a property holding on
+  scalars and generators and closed under sums and products holds everywhere.  Obtained by
+  transporting `FreeAlgebra.induction` through the quotient.
+- `deningerGCAOddDerivation_algebraMap` — the derivation kills scalars.
+- `deningerGCAOddDerivation_involute` — **the derivation anticommutes with the grading
+  involution**, under the hypothesis that each generator value transforms as an element of degree
+  one more than its generator.  In degree one that hypothesis is the involution-invariance used in
+  the exterior construction.
+- `deningerGCAOddDerivation_comp_self` — **`d² = 0`** as soon as the derivation kills its own
+  generator values.
+
+The full differential-graded-algebra layer — involution, odd extension, derivation, Leibniz,
+anticommutation, `d² = 0` — now exists over generators of arbitrary degree, matching the exterior
+constructions degree for degree.
+
+### Stage inclusion on mixed degrees
+
+- `deningerGCASuccDeg` — the degree function of a stage extended by new generators of prescribed
+  degrees.
+- `deningerGCAInl_comm`, `deningerGCAInl_sq`, `deningerGCAInl`, `deningerGCAInl_ι` — **the
+  inclusion of a stage into its successor**, sending each old generator to itself in the extended
+  generator set.  Since the degree function restricts correctly, the Koszul relations transfer
+  verbatim.
+- `deningerGCAInvolute_inl` — the inclusion commutes with the grading involution, which is what
+  lets the successor differential be compared with the old one.
+
+### The successor stage on mixed degrees
+
+- `deningerGCASuccPhi`, `_inl`, `_inr` — **the successor generator assignment** on the extended
+  generator set: old generators keep their differential, each new generator maps to the class it
+  kills.
+- `deningerGCASuccDerivation_new` — **each new generator's differential is the class it was
+  attached for**.  Since the new generator may have any degree, this is where a degree-`n`
+  generator kills a degree-`n + 1` class, which the exterior model could not express.
+- `deningerGCASuccDerivation_inl` — **the successor differential restricts to the stage
+  differential**, so the successor is a differential extension of its predecessor.  This is the
+  compatibility that makes a tower a tower, now over arbitrary degrees.
+
+### `d² = 0` at the successor, on mixed degrees
+
+- `deningerGCASuccPhi_involute` — the successor generator values transform as elements of degree one
+  more than their generators, given that the stage's do and that the attached classes do.
+- `deningerGCASuccPhi_kill` — the successor differential kills its own generator values, given that
+  the stage differential does and that **the attached classes are cocycles**.
+- `deningerGCASuccDerivation_comp_self` — **`d² = 0` at the successor**: the successor of a stage
+  is again a stage over the free graded-commutative algebra on mixed degrees.
+
+The successor construction over mixed degrees is therefore complete and self-reproducing, exactly
+as the exterior one was — but now a new generator of degree `n` kills a class in degree `n + 1`,
+which lifts the degree-two ceiling recorded above.
+
+### The mixed-degree tower
+
+`formal/GaloisForLFunctions/HTGeometry/GradedSullivanStage.lean` bundles and iterates the
+mixed-degree construction.  Axiom audit for all 11 declarations:
+`propext, Classical.choice, Quot.sound`.
+
+- `DeningerGCAStage` — **a Sullivan stage on generators of mixed degree**, described by the three
+  conditions on its generator values, with `d`, `d_leibniz` and `d_comp_self`.
+- `DeningerGCAAttachment` — **the data attached at a successor step**: new generators of prescribed
+  degrees, each mapping to a cocycle of the stage of the right degree.
+- `DeningerGCAStage.succ`, `succ_d_inl`, `succ_kills` — the successor stage, its differential
+  extending the old one, and every attached class becoming a coboundary.
+- `DeningerGCAStage.iterate`, `iterate_zero`, `iterate_succ`, `iterate_kills` — **the tower**
+  obtained by iterating a choice of attachment, with every class attached at a stage dying at the
+  next.
+
+The tower construction now exists over generators of arbitrary degree, so the degree-two ceiling of
+the exterior model is gone: at each stage a generator of degree `n` may be attached to kill a class
+in degree `n + 1`.
+
 ### What is still missing, and why
 
 The theorem's proof is a factorization in the model category of nonnegatively graded commutative
@@ -629,3 +730,21 @@ the limit-stage comparison of step 3.
 - 2026-08-02 — Built the grading involution on the mixed-degree algebra, agreeing with the exterior
   one in degree one.  This is the sign rule the odd-derivation construction runs on, so the
   derivation can now be redone over the general algebra.
+- 2026-08-02 — Built the square-zero odd extension over the mixed-degree algebra, the carrier the
+  derivation is lifted into.  What remains on this line is the derivation itself and the stage
+  construction over it.
+- 2026-08-02 — Built the odd derivation and its graded Leibniz rule over the mixed-degree algebra,
+  under the degree-shifted commutation hypothesis that specializes to centrality in degree one.
+- 2026-08-02 — Completed the differential-graded-algebra layer over mixed degrees: induction
+  principle, anticommutation with the involution, and `d² = 0`.  The remaining work is the stage
+  and tower construction over this algebra.
+- 2026-08-02 — Built the stage inclusion on mixed degrees, with its involution compatibility: a
+  stage now embeds in its successor over the general algebra, as it does over the exterior one.
+- 2026-08-02 — Built the successor stage over mixed degrees: the extended generator assignment, the
+  restriction of the successor differential to the old one, and the fact that a new generator of
+  any degree kills the class it was attached for.
+- 2026-08-02 — Proved `d² = 0` at the successor over mixed degrees, so the successor construction
+  is self-reproducing there.  The degree-two ceiling of the exterior model is lifted; what remains
+  is bundling stages and iterating over the general algebra.
+- 2026-08-02 — Bundled and iterated the mixed-degree stage: a Sullivan stage, its attachment data,
+  its successor, and the tower.  The construction now reaches every degree, not only two.

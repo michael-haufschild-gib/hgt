@@ -1,6 +1,6 @@
 # Transverse information under singular descent
 
-Status: PAPER THEOREM PROVED FROM FORMALIZED CORPUS; CONSOLIDATED LEAN CAPSTONE PENDING.  
+Status: PAPER THEOREM AND CONSOLIDATED LEAN CAPSTONE PROVED; RH-BEARING ADMISSION OPEN.  
 Novelty: `[NOVELTY UNVERIFIED]` (external comparison intentionally deferred).  
 Owner manuscript: `docs/drafts/pipeline/4-publication-ready/riemann-hellinger-hodge-green-descent/main.tex`.
 
@@ -29,13 +29,18 @@ Three operations govern every construction in scope.
    prime-normal source this is sharp: a closed gradewise-proper carrier retaining all
    packets exists if and only if every grade has finite exponent fibre.  Infinite fibres
    force saturation; finite fibres are the exact escape boundary.
+4. **Positive admission.** If a nonzero functional transforms by the character
+   `exp(c z)`, finite invariant domination exists exactly when `Re z = 0`.  No norm,
+   seminorm, topology, or common gauge is needed.  Thus positive finite admission is the
+   exact neutral-sector selector.
 
 These are not three analogies.  They are three stages of one conservation statement:
 
 > A nonzero transverse class cannot be created downstream.  Before descent it must be
 > carried in a strict, locally finite associated grade; under regular descent it is erased;
 > under closed ungraded relational descent it reappears only as maximal vertical
-> multivaluedness.
+> multivaluedness; under positive finite invariant admission it survives exactly at zero
+> real modular rate.
 
 ## Paper proof
 
@@ -101,6 +106,10 @@ ordinary completion.
    not on middle cohomology: its pullback to every genuine global middle cycle is zero.
 9. The Green composite is covariant unconditionally because its two internal defects are
    exact antidiagonal partners.  The resolved pair vanishes globally exactly when RH holds.
+10. The canonical half-density source seminorm `p(g)=∫ exp(t/2)|g(t)|dt` descends to
+    literal Meyer cohomology, is exactly invariant under centered dilation, and yields a
+    Hausdorff Banach completion with surjective isometric flow.  An actual Xi evaluation is
+    bounded for this quotient seminorm exactly when its zero is on the critical line.
 
 ## Corrected frontier
 
@@ -108,39 +117,23 @@ The old “common physical-jet/Hellinger-incidence graph bridge” is not the te
 The literal Meyer quotient already supplies a source-native cohomology, reciprocal flow,
 full finite Xi jet packets, and weight-one generalized Paugam pairings.
 
-The minimal remaining RH object is one **strict finite-fibre positive admissible
-completion** of that source-native middle cohomology.  It must satisfy the first clause
-below.  The second clause is the stronger spectral-completeness problem, not a logical
-prerequisite for zero exclusion.
+The old completion problem is solved more strongly and more canonically than postulated:
+the half-density quotient seminorm and its surjective isometric Banach completion exist
+unconditionally.  Faithfulness of the map from algebraic Meyer cohomology is not proved,
+but is not needed for the exact continuity selector.
 
-1. **Positive admissible middle polarization (minimal RH gate):** the centered dilation
-   flow acts isometrically on a Hausdorff positive completion of genuine Meyer middle
-   cohomology, and every actual Xi zero-evaluation remains continuous and nonzero.  The
-   Hodge structure cannot be the local reciprocal regulator polarization, whose restriction
-   to genuine middle cycles is identically zero.
-2. **Global spectral synthesis (stronger completion theorem):** vanishing of every
-   multiplicity-bounded Xi jet forces a class to be a literal Poisson boundary.  This would
-   identify the whole spectral quotient, but RH already follows from clause 1 and the
-   proved one-way Xi spectral inclusion.
+The minimal remaining RH theorem is now the **canonical half-density arithmetic admission
+estimate**
 
-The finite-fibre law supplies the topology constraint; it does not prove either clause.
-Clause 1 cannot be obtained by first taking ordinary completion and then adding positivity:
-ordinary completion erases the normal class or becomes maximally vertical, while local
-positivity is in the wrong cohomological degree.
+`∀ rho, ∃ C_rho < ∞, ∀ u, |E_{rho,0}(u)| ≤ C_rho pbar_{1/2}(u)`.
 
-If both clauses hold, every actual Xi generalized eigencharacter `exp(c rho)` lies in a
-positive weight-one pairing.  For a nonzero eigenvector `v`,
+The exact selector proves this statement equivalent to RH.  It must therefore be obtained
+from a new arithmetic identity or inequality on the co-Poisson/Gamma source, not from
+generic functional analysis or a topology chosen after inspecting the zeros.
 
-`h(U_c v,U_c v)=exp(c)h(v,v)`
-
-and also
-
-`h(U_c v,U_c v)=|exp(c rho)|^2 h(v,v)=exp(2c Re rho)h(v,v)`.
-
-Positivity gives `h(v,v)>0`, so `exp(2c Re rho)=exp(c)` for real `c`, hence
-`Re rho=1/2`.  The already proved Meyer-to-Xi spectral inclusion supplies a nonzero actual
-Xi evaluation at every divisor point; continuity/admission in the positive completion is
-the missing step.  Therefore clause 1 alone implies RH.
+Global spectral synthesis remains a stronger problem: vanishing of every
+multiplicity-bounded Xi jet would have to force a class into the literal Poisson boundary.
+It is not logically required for zero exclusion.
 
 ## Antagonist audit
 
@@ -149,8 +142,8 @@ the missing step.  Therefore clause 1 alone implies RH.
   topology collapses, projective normal tomography remains injective, regular comparisons
   erase reflection, closed infinite-fibre relations become maximally vertical, and finite
   grade fibres are exactly the proper-carrier boundary.
-- No RH proof is claimed.  Global spectral synthesis and positive middle polarization remain
-  unproved.
+- No RH proof is claimed.  Positive isometric source geometry is proved; universal
+  half-density admission and global spectral synthesis remain unproved.
 - No local positivity result may be presented as progress on zero exclusion unless it lands
   on genuine middle cycles; the present local Calderón positivity provably does not.
 - No pointwise-nonzero comparison may be called faithful; an explicit counterexample exists.
@@ -173,3 +166,6 @@ the missing step.  Therefore clause 1 alone implies RH.
 - `RHTower/DeningerMeyerPointwiseXiComparisonSharpness.lean`
 - `RHTower/DeningerMeyerPaugamGeneralizedJetPairing.lean`
 - `RHTower/DeningerMeyerPaugamGradingObstruction.lean`
+- `RHTower/DeningerMeyerInvariantEvaluationGaugeFrontier.lean`
+- `RHTower/TransverseInformationInvariantGaugeDichotomy.lean`
+- `RHTower/DeningerMeyerHalfDensityL1Completion.lean`

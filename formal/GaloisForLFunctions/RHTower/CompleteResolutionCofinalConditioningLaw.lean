@@ -728,6 +728,22 @@ theorem closedLinearRelation_mem_vertical_of_tendsto_zero
   apply hclosed.mem_of_tendsto (hu.prodMk_nhds tendsto_const_nhds)
   exact Filter.Eventually.of_forall hgraph
 
+/-- A closed relation also retains a convergent output sequence when its source sequence collapses
+to zero. -/
+theorem closedLinearRelation_mem_vertical_of_graph_tendsto
+    {𝕜 X Y : Type*}
+    [Semiring 𝕜]
+    [AddCommMonoid X] [Module 𝕜 X] [TopologicalSpace X]
+    [AddCommMonoid Y] [Module 𝕜 Y] [TopologicalSpace Y]
+    (R : Submodule 𝕜 (X × Y)) (hclosed : IsClosed (R : Set (X × Y)))
+    (u : ℕ → X) (v : ℕ → Y) (y : Y)
+    (hu : Tendsto u atTop (nhds 0)) (hv : Tendsto v atTop (nhds y))
+    (hgraph : ∀ K : ℕ, (u K, v K) ∈ R) :
+    y ∈ linearRelationVerticalFiber R := by
+  change ((0 : X), y) ∈ R
+  apply hclosed.mem_of_tendsto (hu.prodMk_nhds hv)
+  exact Filter.Eventually.of_forall hgraph
+
 /-- **Cofinal rank-transmutation law.** Every linear span retained by
 outputs whose source representatives collapse to zero becomes vertical
 rank in every closed graph limit. -/
@@ -746,6 +762,39 @@ theorem closedLinearRelation_span_le_verticalFiber_of_cofinalCollapse
   obtain ⟨u, hu, hgraph⟩ := hcollapse v hv
   exact closedLinearRelation_mem_vertical_of_tendsto_zero
     R hclosed u v hu hgraph
+
+/-- If a closed relation retains graph limits whose outputs have dense linear span, its vertical
+fibre is the whole target. -/
+theorem closedLinearRelation_fullVertical_of_dense_graph_limits
+    {𝕜 X Y : Type*}
+    [Semiring 𝕜] [TopologicalSpace 𝕜]
+    [AddCommMonoid X] [Module 𝕜 X] [TopologicalSpace X]
+    [AddCommMonoid Y] [Module 𝕜 Y] [TopologicalSpace Y] [ContinuousAdd Y]
+    [ContinuousConstSMul 𝕜 Y]
+    (R : Submodule 𝕜 (X × Y)) (hclosed : IsClosed (R : Set (X × Y)))
+    (V : Set Y)
+    (hdense : (Submodule.span 𝕜 V).topologicalClosure = ⊤)
+    (hcollapse : ∀ y ∈ V, ∃ (u : ℕ → X) (v : ℕ → Y),
+      Tendsto u atTop (nhds 0) ∧ Tendsto v atTop (nhds y) ∧
+        ∀ K : ℕ, (u K, v K) ∈ R) :
+    linearRelationVerticalFiber R = ⊤ := by
+  let W := linearRelationVerticalFiber R
+  have hVW : Submodule.span 𝕜 V ≤ W := by
+    rw [Submodule.span_le]
+    intro y hy
+    obtain ⟨u, v, hu, hv, hgraph⟩ := hcollapse y hy
+    exact closedLinearRelation_mem_vertical_of_graph_tendsto
+      R hclosed u v y hu hv hgraph
+  have hWclosed : IsClosed (W : Set Y) := by
+    change IsClosed ((fun y : Y => ((0 : X), y)) ⁻¹' (R : Set (X × Y)))
+    exact hclosed.preimage (continuous_const.prodMk continuous_id)
+  have hclosure : (Submodule.span 𝕜 V).topologicalClosure ≤ W :=
+    Submodule.topologicalClosure_minimal _ hVW hWclosed
+  apply top_unique
+  intro y _
+  apply hclosure
+  rw [hdense]
+  exact Submodule.mem_top
 
 /-- The two exact complete-source graph directions force every target
 direction into the vertical fibre of any closed linear graph completion. -/
@@ -1660,6 +1709,26 @@ def linearRelationDomain
     [AddCommMonoid Y] [Module 𝕜 Y]
     (R : Submodule 𝕜 (X × Y)) : Set X :=
   {x | ∃ y : Y, (x, y) ∈ R}
+
+/-- A linear relation with full vertical fibre is exactly its domain times the full target. -/
+theorem linearRelation_eq_domain_prod_of_fullVertical
+    {𝕜 X Y : Type*}
+    [Ring 𝕜]
+    [AddCommGroup X] [Module 𝕜 X]
+    [AddCommGroup Y] [Module 𝕜 Y]
+    (R : Submodule 𝕜 (X × Y))
+    (hvertical : linearRelationVerticalFiber R = ⊤) :
+    (R : Set (X × Y)) = linearRelationDomain R ×ˢ Set.univ := by
+  ext p
+  constructor
+  · intro hp
+    exact ⟨⟨p.2, hp⟩, Set.mem_univ _⟩
+  · rintro ⟨⟨y₀, hy₀⟩, _⟩
+    have hv : ((0 : X), p.2 - y₀) ∈ R := by
+      change p.2 - y₀ ∈ linearRelationVerticalFiber R
+      rw [hvertical]
+      exact Submodule.mem_top
+    simpa using Submodule.add_mem R hy₀ hv
 
 /-- **Complete output-information collapse.** Once the countable prime
 reader is retained across the source horizon, the relation is exactly its

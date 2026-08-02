@@ -303,13 +303,27 @@ one of its linear factors vanishes.  Consequently
 D_arith(z) = 0  iff  exists k >= 2, z = -1/kappa_k.
 ```
 
-Thus the global zero *set* in `(18)` is exact in Lean.  Analytic zero multiplicities (including
-coincident values of `kappa_k`) and entire order `1/2` remain open.
+Thus the global zero *set* in `(18)` is exact in Lean.  The same module now proves more: the real
+profile `log(x) arcsin(1/x)/x` is strictly decreasing on `[2,infinity)`, hence the `kappa_k` are
+pairwise distinct; the locally uniform limit of finite characteristic polynomials is entire; and
+factoring out each linear term leaves a nonzero entire cofactor at its reciprocal point.  Therefore
+every zero is uniquely indexed and simple (`D_arith'(z_k) != 0`).
+
+`GaloisForLFunctions.RHTower.ArithmeticDilationEntireOrder.lean` completes the determinant growth
+block unconditionally.  `RHTower.constrainedProlateArithmeticFredholmZero_hasExponentOfConvergence_half`
+proves that the reciprocal zero divisor has exact convergence exponent `1/2`.  The reusable
+predicate `RHTower.HasExactEntireOrder` uses the standard global characterization: every power
+strictly above `rho` gives a global exponential growth envelope and every power strictly below
+`rho` fails to do so.  The declaration
+`RHTower.constrainedProlateArithmeticFredholmDeterminant_hasExactEntireOrder_half` proves this at
+`rho=1/2`.  Its upper bound comes from summability of `kappa_k^p` for every `p>1/2`; its lower bound
+is a direct positive-axis estimate, not an inference from zeros alone: at radius `10(N+2)^2`, the
+first `N` positive factors are each at least `2`, so the determinant norm is at least `2^N`.  Both
+capstones are axiom-clean (`propext`, `Classical.choice`, `Quot.sound` only).
 
 What remains for the full Lean statement of this card is therefore narrower but still substantive:
-discharge actual PSWF hypothesis `(3)`; prove determinant continuity for the general nondiagonal
-trace-norm-convergent stages; and formalize the converse zero/multiplicity plus entire-order
-assertions.  The card remains at stage 2.
+discharge actual PSWF hypothesis `(3)` and prove determinant continuity for the general
+nondiagonal trace-norm-convergent stages.  The card remains at stage 2.
 
 ## Gates
 
@@ -330,8 +344,10 @@ assertions.  The card remains at stage 2.
 - [x] limiting positive arithmetic operator, exact trace, and compact-uniform Fredholm product in Lean
 - [x] vanishing full negative spectral mass from trace-norm convergence to the positive limit in Lean
 - [ ] nondiagonal stage determinant convergence in Lean
-- [x] exact determinant zero set (both directions) in Lean
-- [ ] exact determinant zero multiplicities and entire order `1/2` in Lean
+- [x] exact determinant zero set, unique indexing, and simple multiplicity in Lean
+- [x] determinant proved entire in Lean
+- [x] exact zero exponent of convergence `1/2` in Lean
+- [x] exact entire order `1/2` in Lean
 - [ ] independent PSWF normalization audit
 - [ ] polar--prime critical Mellin graph-domain assembly
 - [ ] complete Weil-form lower bound

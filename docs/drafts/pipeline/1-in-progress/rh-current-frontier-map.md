@@ -6223,3 +6223,72 @@ Paper card:
 
 Lean:
 `DeningerCalderonWittResolvedCrossEffectBoundary.lean`.
+
+## 2026-08-02 Route L frontier correction: positive Meyer middle completion
+
+The current replacement of
+`riemann-hellinger-hodge-green-descent/main.tex` supersedes the preceding
+`L_J/L_R` graph-lift target as Route L's minimal closing theorem.  Source orientation, Green factor
+provenance, singular Gamma transport, physical jets, and completed incidence are now obstruction
+and provenance infrastructure.  They do not themselves supply positivity in the cohomological
+degree carrying the Xi spectrum.
+
+Deninger's unique non-overlapping carrier is the literal source-native Meyer--Poisson middle
+cohomology
+
+```text
+H_M = DeningerMeyerStrongLogCohomology,
+V_c = exp(-c/2) * deningerMeyerStrongLogCohomologyFlow c.
+```
+
+The corpus already proves unconditionally:
+
+1. every actual Xi divisor point and every generalized jet below its analytic multiplicity is a
+   nonzero linearly independent functional on `H_M`;
+2. every finite Xi jet packet is a surjective Meyer quotient and transforms by the exact confluent
+   flow;
+3. weighted reciprocal inversion descends to `H_M`, and the complementary-jet Paugam form has
+   exact weight one, hence is invariant after centering;
+4. the unrestricted product of all Xi jets is not Meyer-admissible and cofinal unit synthesis is
+   singular at every positive differential order;
+5. the canonical reciprocal Calderon/Paugam form is positive on the local regulator quotient, but
+   `DeningerMeyerPaugamGradingObstruction.lean` proves its pullback is identically zero on every
+   genuine degree-one Meyer cycle;
+6. the positive oriented Hodge structure on `XiDivisorL2` is divisor-indexed downstream data and
+   cannot define the missing source completion.
+
+Therefore Route L must not construct another shell chart, theta source, Hellinger--Gamma coface,
+incidence completion, local Calderon positive block, raw Green map, or divisor-labelled Hilbert
+space.  Those duplicate other routes or live in the wrong degree.
+
+One explicit source-defined middle completion is now constructed.  On the literal strong-log target
+define
+
+```text
+p_half(g) = integral_R exp(t/2) * norm(g(t)) dt,
+q_half([g]) = inf_{b in Meyer boundary} p_half(g+b).
+```
+
+`DeningerMeyerHalfDensityL1Completion.lean` proves unconditionally that `p_half` is finite and a
+seminorm, `q_half` is its actual Meyer quotient seminorm, every centered flow is exactly
+`q_half`-isometric, and the Hausdorff quotient completion carries a surjective completed linear
+isometry with inverse time `-c`.  It also proves the sharp source continuity selector
+
+```text
+zeroth Xi evaluation at rho is q_half-bounded  <->  Re(rho) = 1/2,
+RH <-> every actual zeroth Xi evaluation is q_half-bounded.
+```
+
+At every critical actual Xi point the evaluation extends continuously to the concrete completion
+and remains nonzero.  This is the Deninger-specific contribution: a topology built on the literal
+Meyer source, not divisor-labelled downstream data, whose continuous Xi spectrum is exactly the
+critical spectrum.
+
+The hard scientific frontier is now two exact source theorems.  First, prove Hausdorff faithfulness:
+`q_half([g]) = 0` must force `[g] = 0` in literal Meyer cohomology, equivalently the actual Poisson
+boundary range must be closed in the half-density `L1` geometry.  Second, prove arithmetic
+admission of every actual Xi evaluation from Gamma/co-Poisson source transport.  The selector proves
+that the second statement is already equivalent to RH, so generic functional analysis, another
+completion shell, or another local positive block cannot supply it.  A source middle-Hodge
+polarization or faithful harmonic full-Cauchy comparison remains a viable mechanism only if it
+proves these two named obligations for `q_half` rather than replacing the literal quotient.

@@ -83,13 +83,23 @@ Its declarations are:
 - `riemannHypothesis_iff_regularizedCriticalMellinDefect_analytic_rightNegHalf`
 - `inverseTiltedCriticalMellinFactorization_capstone`
 
+It reuses the stronger aperture theorem
+`inverseTiltedDyadicMellin_ne_zero_of_re_pos`; hence the stated nonvanishing on
+`Re(s) > 1/2` is formalized without duplicating a weaker lemma.
+
 ## Scientific-status boundary
 
 The theorem is a direct algebraic and analytic bridge between two already established source
 coordinates.  It materially sharpens the route architecture but does not clear the novelty gate.
 The remaining holomorphy statement is exactly RH, so the theorem is not an RH proof.
 
-## Gates
+## Completion
+
+`[LEAN-PROVED]` This card is complete as an unconditional factorization and RH-criterion bridge.
+The Connes/Sonin holomorphy mechanism and RH are downstream open problems, not unproved obligations
+inside this theorem.
+
+## Formalization gates
 
 - [x] source/defect identity is global and exact
 - [x] correction analyticity on the full source continuation half-plane
@@ -98,5 +108,8 @@ The remaining holomorphy statement is exactly RH, so the theorem is not an RH pr
 - [x] exact critical-Mellin RH criterion
 - [x] unconditional Lean proof without project axioms
 - [x] classified as bridge infrastructure
+
+## Downstream open problems
+
 - [ ] unconditional Connes/Sonin theorem forcing defect holomorphy on `Re(u) > -1/2`
 - [ ] RH
