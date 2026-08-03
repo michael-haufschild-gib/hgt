@@ -157,11 +157,42 @@ norm and the CCM exterior-tail identity gives a sharper route specification, but
 RH vocabulary it remains a textbook variational estimate. It is a bridge, not new scientific
 knowledge.
 
-## Lean decision
+## Lean status
 
-The formal tree can express an abstract finite-dimensional version of `(3)`, but it has no CCM
-restricted Weil operator, exterior-tail form identity, or growing Mellin evaluation interface.
-Formalizing only the angle inequality would be wrapper work. No Lean file is added.
+**Superseded, 2026-08-03.**  Formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/CCMRayleighExcessAngle.lean`.  The previous decision anticipated
+"an abstract finite-dimensional version of `(3)`"; the version built is **not** finite dimensional —
+the spectral half is stated with `HasSum` over an arbitrary index type, so no finite-dimensionality
+and no eigenbasis cardinality assumption enters.
+
+- **`gap_mul_one_sub_le_rayleighExcess`** — equation `(4)`: with nonnegative spectral weights summing
+  to one and every non-ground eigenvalue at least `Gap` above the bottom,
+  `Gap * (1 - w i₀) ≤ r - eps_0`.  Proved by exhibiting the difference as a sum of manifestly
+  nonnegative terms, so it needs no reordering and no positivity of the tail sum separately.
+- **`norm_sub_smul_sq_eq`**, **`two_sub_two_mul_norm_le_norm_sub_smul_sq`**,
+  **`exists_unit_norm_sub_smul_sq_eq`** — equation `(5)` in full: for unit vectors
+  `‖g - c ξ‖² = 2 - 2 Re(c ⟪g,ξ⟫)`, the value `2(1 - |⟪g,ξ⟫|)` is a lower bound for every unit phase,
+  and it is **attained** at `c = conj⟪g,ξ⟫ / |⟪g,ξ⟫|`.  The card writes `(5)` as an infimum "after
+  choosing the phase"; both halves of that infimum are now proved, so `(3)` bounds a genuine
+  attained minimum rather than an unproved infimum.
+- **`projectiveDistSq_le_two_mul_excess_div_gap`** — equation `(3)`: the angle bound
+  `‖g - c ξ‖² ≤ 2 delta / Gap` at the attaining phase.  The step `2(1-t) ≤ 2(1-t²)` uses
+  `|⟪g,ξ⟫| ≤ 1`, which is Cauchy–Schwarz for unit vectors.
+- **`tendsto_sqrt_of_tendsto_zero`** — equations `(6)`--`(8)`: the squared-rate hypothesis transfers
+  to the unsquared projective distance, which is the square-root rate consequence `(7)`.
+- **`rayleighExcess_le_of_lower_bound`** — equations `(9)`--`(10)`: any proved lower bound for the
+  ground energy bounds the excess, so no two-sided estimate of the unknown eigenvalue is needed.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+The bridge between the two halves is Parseval, `w i₀ = |⟪g, ξ⟫|²`, which is why the spectral
+inequality is stated with the abstract ground weight and the angle bound with the overlap.
+
+Not formalized, and not theorems of this card: the exterior-tail radical identity `(12)`, which is an
+imported result of `ccm-weil-exterior-tail-quotient-gate.md`; and the growing Mellin evaluation
+interface of `ccm-growing-aperture-mellin-determinant-transfer.md`, which consumes `(7)` rather than
+proving it.
 
 ## Gates
 
@@ -169,6 +200,10 @@ Formalizing only the angle inequality would be wrapper work. No Lean file is add
 - [x] exact squared Mellin rate derived
 - [x] certified-lower-bound variant proved
 - [x] compatibility with the quadratic exterior-tail identity established
+- [x] Lean: spectral inequality `(4)` unconditional, arbitrary index type
+- [x] Lean: projective distance `(5)` with both the bound and its attaining phase
+- [x] Lean: angle bound `(3)` and square-root rate transfer `(7)` unconditional
+- [x] Lean: certified-lower-bound variant `(9)`--`(10)` unconditional
 - [ ] true Weil lower bound and even spectral gap
 - [ ] source-specific radial-prolate Rayleigh-excess estimate `(10)`
 - [ ] locally uniform normalized determinant convergence to `Xi`

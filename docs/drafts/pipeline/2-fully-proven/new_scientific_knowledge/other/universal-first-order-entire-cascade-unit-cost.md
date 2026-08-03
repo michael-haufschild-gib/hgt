@@ -571,6 +571,10 @@ meanIndex_le_centralIndex_add             -- Lambda(r) <= nu(s) + log(nu(s')+C)/
 centralIndex_sub_le_meanIndex             -- Lambda(r) >= nu(t) - log(nu(r)+C)/log(r/t)
 abs_meanIndex_sub_centralIndex_le         -- |Lambda(r) - nu(r)| <= window width + two logs
 tsum_index_sub_centralIndex_mul_normalised_norm -- (S/mu)(Lambda - nu) as a normalised first moment
+coeffSum_le_one_add_defect_mul_norm       -- S <= (1 + D) |f(z)|, not (nu + C) |f(z)|
+summable_index_deviation_normalised       -- the weighted normalised series converges absolutely
+tsum_index_weighted_re_eq                 -- weighted projection = mean-mode gap - weighted defect
+mul_logDeriv_sub_centralIndex_eq_div      -- z f'/f - nu = (weighted normalised) / (normalised)
 ```
 
 `Lambda(r)` is therefore sandwiched by the difference quotients of `log S` on either side, exactly as
@@ -1137,3 +1141,34 @@ triangularity package, which is exactly how the paper proof uses them.
   two pieces cancel each other; bounding them separately discards exactly that cancellation.  The
   weighted sum has to be estimated with the phases intact -- which is what the local expansion and
   the transverse bounds are for.
+- 2026-08-03 -- **Correction to the previous entry.**  I recorded that splitting
+  `Re(conj(u) c_n) = ||c_n|| - d_n` is unusable because `S/M` can be as large as `nu`.  That bound is
+  far too crude.  From the alignment identity `S - |f(z)| = mu * (total misalignment)`, together with
+  `mu <= |f(z)|`, one gets
+
+  ```text
+  S(r)  <=  (1 + D) |f(z)| ,
+  ```
+
+  so `S/M <= 1 + D` where `D` is the total misalignment -- **not** `nu + C`.  The split is therefore
+  usable after all, and gives `|z f'/f - nu| <= (1+D)|Lambda - nu| + sum |n-nu| d_n`.  The sanity
+  check is `f = exp`: on the positive real axis every coefficient is positive, so the phases align
+  exactly, `D = 0`, `S = M`, and the bound collapses to `|Lambda(r) - nu(r)| = |r - floor(r)| <= 1`.
+  The whole estimate is then driven by how small the misalignment is at the maximum-modulus point,
+  which is the right question -- the previous entry pointed at the wrong obstruction.
+- 2026-08-03 -- Split the weighted projection:
+  `sum (n-nu) Re(conj(u) c_n) = (S/mu)(Lambda - nu) - sum (n-nu) d_n`.  Both series converge
+  absolutely, the second because a term's misalignment never exceeds twice its modulus -- applying
+  the projection bound to `-c_n` gives `Re(conj(u) c_n) >= -||c_n||`, hence `d_n <= 2||c_n||`.  With
+  the corrected `S <= (1+D)|f(z)|` and criticality (which makes `conj(u) V` real, so
+  `||V|| = |Re(conj(u) V)|`), this assembles to
+  `|z f'/f - nu| <= (1+D)|Lambda - nu| + sum |n-nu| d_n`.  Every ingredient of that inequality is now
+  proved; what remains is to write the assembly down and then bound the two terms at a Borel-good
+  radius.
+- 2026-08-03 -- The deviation as a ratio of normalised series:
+  `z f'/f - nu = (sum (n-nu) c_n) / (sum c_n)`.  Both numerator and denominator carry the central
+  term `a_nu z^nu` as a factor, and `mul_div_mul_left` cancels it, so the identity holds with no
+  estimate at all -- only `f(z) != 0`.  This is the last structural piece: combined with criticality
+  (the ratio is real, so its modulus is the modulus of its real part), the weighted-projection split
+  from the previous step, and `S <= (1+D)|f(z)|`, it gives
+  `|z f'/f - nu| <= (1+D)|Lambda - nu| + sum |n-nu| d_n`.

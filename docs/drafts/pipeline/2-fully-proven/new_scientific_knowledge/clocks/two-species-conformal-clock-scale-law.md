@@ -1345,11 +1345,49 @@ honest differential operator:
   bound. This is the sup-norm counterpart of the coefficient estimate, and it is the form the
   recursion consumes.
 
+Since the iterates take values in a space of holomorphic functions, the double-integration bound is
+needed for a Banach-valued integrand; `ClockIteratedIntegralBound.lean` also carries that form:
+
+- `norm_integral_pow_bound`, **`norm_iterated_integral_le`** — the same estimate with `‖·‖` in place
+  of `|·|`, for an integrand valued in any real normed space. Nothing changes in the proof: the norm
+  of an integral is at most the integral of the norm, and the comparison is then between real
+  integrals.
+
 Everything the construction needs is now proved: the algebra estimate, the derivative loss in both
 forms, the step operator in both forms, the exact step identity, the convergence bound, the
-recursion, the double integration, and both halves of the synthesis dictionary. What remains is to
-define the iterates themselves, assemble these into the step hypothesis, and identify the limit
-with a clock probe.
+recursion, the double integration in scalar and vector form, and both halves of the synthesis
+dictionary. What remains is to define the iterates
+
+`W₀ = 1`,  `W_{m+1}(ξ,η,z) = ∫₀^ξ ∫₀^η (W_m(s,t,·)'' + V W_m(s,t,·))(z)/4 dt ds`,
+
+assemble the estimates into the step hypothesis, and identify the limit with a clock probe. The
+first thing that needed proving about them was a regularity fact of independent interest, and
+`ClockParametricHolomorphy.lean` now has it:
+
+- `iteratedDeriv_two`, `iteratedDeriv_eq_circleIntegral` — Cauchy's formula for derivatives, solved
+  for the derivative: `f⁽ⁿ⁾(z) = (2πi/n!)⁻¹ ∮_{|ζ-z|=R} f(ζ)/(ζ-z)^{n+1} dζ`;
+- **`continuous_iteratedDeriv_parametric`**, **`continuous_deriv_deriv_parametric`** — *the
+  derivatives of a family of holomorphic functions depending continuously on parameters depend
+  continuously on those parameters.*
+
+There is no such statement for `deriv` directly, and none can be had by differentiating: a
+derivative is a limit, and limits do not commute with parameters for free. Cauchy's formula converts
+the derivative into a contour integral of the function itself, a contour integral is an interval
+integral in the angle, and continuity of a parametric interval integral is standard.
+
+The iteration needs it jointly in the null coordinates and the transverse point, since the next
+iterate integrates in the former and is evaluated at the latter. Moving the contour with the point
+costs nothing, because the integral only ever sees `ζ - z`, which is `circleMap 0 R θ` and does not
+depend on `z`:
+
+- `cauchySecond`, `circleMap_eq_add`, `continuous_cauchySecond` — the Cauchy representation of the
+  second derivative as a function of parameters and point together, and its joint continuity;
+- **`continuousAt_deriv_deriv_parametric`** — *for a family holomorphic on the strip of radius `ρ'`,
+  the second derivative is continuous at every point of the strip of radius `ρ < ρ'`, jointly in the
+  parameters and the point.* The representation is valid only on the strip, so the transfer is by
+  congruence on the neighbourhood where it holds.
+
+This is what makes the iterated integrals defining the iterates well defined.
 
 The first genuinely coupled target this reaches is dimension three: a potential
 `V(x⁰, x¹, x²)` with arbitrary continuously differentiable dependence on the null coordinates and

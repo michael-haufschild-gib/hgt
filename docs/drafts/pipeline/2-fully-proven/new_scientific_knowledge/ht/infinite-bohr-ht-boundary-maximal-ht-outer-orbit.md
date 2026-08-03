@@ -2491,3 +2491,70 @@ Ostrowski's argument are now all formal.
 
 Remaining: the iterated-derivative form (`iteratedDeriv k` of the carrier), the amplitude of a
 monomial at a fixed frequency, and the final descent to `not DifferentiallyAlgebraicOn`.
+
+## Claim (2): jets and monomials are exponential series
+
+`ExponentialSeriesAlgebra.lean` now carries the whole expansion:
+
+    iteratedDeriv_cexpSeriesCarrier :
+      iteratedDeriv k (cexpSeriesCarrier a omega)
+        = cexpSeriesCarrier (fun i => a i * (I * omega i)^k) omega
+
+    prod_expSeriesCarrier :
+      prod_j expSeriesCarrier (b j) omega t
+        = expSeriesCarrier (fun n : Fin m -> iota => prod_j b j (n j))
+            (fun n => sum_j omega (n j)) t
+
+with `summable_norm_prod_expSeries` and `ExpSeriesNormallySummable.iteratedDeriv` the summability
+side conditions.  So a monomial in the jets of a carrier is a carrier indexed by *tuples* of
+indices, with amplitude the product of `a_{n_j} (i omega_{n_j})^{k_j}` and frequency
+`sum_j omega_{n_j}` -- and by `monomialFrequency_injective` that frequency determines the multiset
+of indices used.
+
+Two traps worth recording: `Summable.mul_norm` and `Summable.mul_of_nonneg` both stall on a
+hypothesis whose statement is not beta reduced (`(fun j => b j.succ) j`), and unfolding
+`Fin.consEquiv` inside `simp` is a whnf timeout -- an explicit `rfl` lemma for its application plus
+`Fin.cons_zero`/`Fin.cons_succ` is instant.
+
+Everything for (2) is now in place except the final assembly.
+
+## Claim (2): reading a monomial's amplitude off a frequency
+
+`ExponentialSeriesFiberwise.lean` (wired, axiom-clean) supplies the missing extraction step:
+
+    expSeriesCarrier_fiberwise :
+      expSeriesCarrier B Omega t = expSeriesCarrier (fiberAmplitude B Omega) id t
+
+    bohrCoefficient_expSeriesCarrier_fiber :
+      bohrCoefficient (expSeriesCarrier B Omega) nu = fiberAmplitude B Omega nu
+
+A monomial's expansion is indexed by *tuples*, and different tuples share a frequency, so the
+corpus's `bohrCoefficient_expSeriesCarrier` -- which needs injective frequencies -- does not apply
+directly.  Regrouping by the fibres of the frequency map (`Equiv.sigmaFiberEquiv`, then
+`Summable.tsum_sigma`) re-indexes the series by the frequencies themselves, where the frequency map
+is the identity and therefore injective.  The Bohr coefficient at `nu` is then exactly the sum of
+the amplitudes over the fibre `{j | Omega j = nu}`.
+
+Combined with `monomialFrequency_injective`, the fibre over a frequency of a monomial expansion
+consists of the tuples that use one fixed multiset of indices -- so the Bohr coefficient sees one
+multiset at a time, which is exactly what Ostrowski's counting argument needs.
+
+## Claim (2): a vanishing series has vanishing amplitudes
+
+    fiberAmplitude_eq_zero_of_expSeriesCarrier_eq_zero :
+      Summable (norm . B) -> (forall t, expSeriesCarrier B Omega t = 0) ->
+      forall nu, fiberAmplitude B Omega nu = 0
+
+The Bohr coefficient of the zero function is zero (`bohrCoefficient_zero`, on the corpus's
+`bohrMean_zero`), and the Bohr coefficient at `nu` is the fibre sum, so a vanishing series has
+vanishing fibre sums.  This is the form in which the analytic half hands its conclusion to the
+combinatorial half.
+
+The chain for (2) is now: a relation restricted to the real line is
+`sum_d t^d G_d(t) = 0` with each `G_d` a carrier ->
+`eq_zero_of_polynomialCombination_bohr` kills each `G_d` ->
+`fiberAmplitude_eq_zero_of_expSeriesCarrier_eq_zero` kills each fibre sum ->
+`monomialFrequency_injective` says a fibre is one multiset of indices.
+
+Left: the bookkeeping that assembles a relation into that shape and reads "all fibre sums vanish"
+as "the relation polynomial is zero".

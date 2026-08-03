@@ -159,4 +159,31 @@ theorem norm_weighted_sum_sub_le {ι : Type*} (s : Finset ι) (c : ι → ℂ) (
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
 
 
+/-- A complex number with vanishing imaginary part has norm the absolute value of its real part. -/
+theorem norm_eq_abs_re_of_im_eq_zero {X : ℂ} (h : X.im = 0) : ‖X‖ = |X.re| := by
+  rw [Complex.norm_def, Complex.normSq_apply, h]
+  simp [← sq, Real.sqrt_sq_eq_abs]
+
+/-- Dividing by a positive multiple of a unit is conjugating and scaling. -/
+theorem div_ofReal_mul_unit (V : ℂ) {u : ℂ} (hu : ‖u‖ = 1) {M : ℝ} (hM : 0 < M) :
+    V / ((M : ℂ) * u) = ((starRingEnd ℂ) u * V) / (M : ℂ) := by
+  have hune : u ≠ 0 := by
+    intro h
+    rw [h, norm_zero] at hu
+    exact zero_ne_one hu
+  have hMne : ((M : ℝ) : ℂ) ≠ 0 := by
+    simpa using ne_of_gt hM
+  have huu : (starRingEnd ℂ) u * u = 1 := by
+    have h := Complex.mul_conj' u
+    rw [mul_comm] at h
+    rw [h, hu]
+    simp
+  rw [div_eq_div_iff (mul_ne_zero hMne hune) hMne]
+  calc V * (M : ℂ) = V * (M : ℂ) * ((starRingEnd ℂ) u * u) := by rw [huu, mul_one]
+    _ = (starRingEnd ℂ) u * V * ((M : ℂ) * u) := by ring
+
+
 end GaloisForLFunctions.HTGeometry
+
+#print axioms GaloisForLFunctions.HTGeometry.norm_eq_abs_re_of_im_eq_zero
+#print axioms GaloisForLFunctions.HTGeometry.div_ofReal_mul_unit

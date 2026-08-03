@@ -419,3 +419,18 @@ stabilization or a different Dirac parity.
   on the main diagonal lies in `S(C_Q) = intersection_beta mu^beta S(C_Q)`. P2 remains open until
   that exact diagonal-condition cyclic submodule, its closed cokernel, and the concrete
   `kappa`/bivariant-Chern/Lefschetz comparison are formalized.
+- 2026-08-03 — The primary-source strong target itself is now exact and formal.
+  `CCMRationalStrongCyclicTarget.lean` defines the degree-`n` main-diagonal functional by ordered
+  multiplication of continuous trace-norm field factors followed by normalized operator trace,
+  takes the inverse image of the literal strong class-space scalar space, and proves that every
+  face, degeneracy, arbitrary presented simplex morphism, and Connes rotation preserves this
+  condition. `CCMRationalStrongCyclicReal.lean` proves the diagonal Real law
+  `Tr^natural(sigma x)(b) = conjugate(Tr^natural(x)(b))` and restricts the even Real structure to
+  the full strong cyclic module. `CCMRationalStrongCyclicClassSpaceAction.lean` constructs the
+  exact `C_Q` right action and proves diagonal covariance; `CCMRationalStrongCyclicLefschetz.lean`
+  proves identity/product laws in every degree and packages each translation as a Real-equivariant
+  cyclic endomorphism. These modules compile unconditionally and supply the genuine target-side
+  CCM Lefschetz architecture. P2 is still open at the analytic landing gate: the adelic source
+  representation must be proved continuous in the Schatten-1 norm over the literal section, the
+  reduced diagonal trace must land in the strong target in all degrees, and only then may the
+  closed cokernel action and `kappa`/bivariant-Chern comparison be claimed.

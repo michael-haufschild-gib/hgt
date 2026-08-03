@@ -203,7 +203,11 @@
   `GaloisForLFunctions.RHTower.DeningerPowCycRed` (an element whose power is cyclically reduced is
   cyclically reduced),
   `GaloisForLFunctions.RHTower.DeningerFactorConjPow` (a conjugate of a factor element has no
-  cyclically reduced power)
+  cyclically reduced power),
+  `GaloisForLFunctions.RHTower.DeningerCycRedWordOfPow` (elements with a cyclically reduced power),
+  `GaloisForLFunctions.RHTower.DeningerConjCycRed` (reducing an equality of powers to the cyclically
+  reduced case),
+  `GaloisForLFunctions.RHTower.DeningerFactorConjOfPow` (elements with a short power)
 
 ## Statement
 
@@ -2939,3 +2943,46 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   because the powers do, and `deningerCycRedWord_pow_eq` identifies them.  Every ingredient of
   Baumslag's theorem for a root adjunction at an isolated element is now proved; what is left is to
   write the chain down.
+- 2026-08-03 — **The chain is written down: two elements with the same cyclically reduced power are
+  equal.**  `deningerCycRedWord_of_pow` runs the case analysis.  An element with a nonempty
+  cyclically reduced power is not in the base group, since a power of a base element is one and has
+  length zero.  Its cyclic reduction therefore exists, and the two branches of that reduction are
+  settled: a cyclic word of length one makes the element a conjugate of a factor element, which
+  `deningerFactorConj_pow_ne_cycRed` forbids, and a cyclic word satisfying the cyclic condition is
+  handled by `deningerCycRed_of_pow`, which empties the conjugator.  So the element is itself a
+  cyclically reduced word, of length the length of the power divided by the exponent.
+  `deningerPow_eq_of_cycRedPow` then concludes: two elements with the same such power are cyclically
+  reduced words of the same length, and `deningerCycRedWord_pow_eq` identifies them.  The hypotheses
+  are the three the base group has to satisfy — abelian, torsion free, and not moved by conjugation
+  from the factors — which for a root adjunction at an isolated element of a group with unique roots
+  are `deningerRootHcent` and the arithmetic of the infinite cyclic group.
+  What is left of Baumslag's theorem is the passage from an arbitrary equality of powers to one whose
+  common value is cyclically reduced, which is a conjugation: cyclically reduce the common power and
+  conjugate both elements by the conjugator that does it.
+- 2026-08-03 — **The reduction to the cyclically reduced case is proved.**
+  `deningerExists_cycRed_conj` packages the cyclic reduction as a conjugation: an element outside the
+  base group has a nonempty normal word, its cyclic data writes that word as a conjugate of the
+  cyclic word, and conjugating by the conjugator returns the cyclic word itself.
+  `deningerPow_eq_of_conj_cycRed` then closes the reduction: conjugating both elements by the same
+  element preserves the equality of their powers and makes the common power a cyclically reduced
+  word, so `deningerPow_eq_of_cycRedPow` applies and conjugating back gives the two elements equal.
+  Uniqueness of roots in an amalgam is therefore proved for every pair whose common power is
+  conjugate to a cyclically reduced word of length at least two — which, by the cyclic reduction, is
+  every pair whose common power is not conjugate into a factor.  The only case outside it is the one
+  the factor machinery already covers: elements conjugate into a factor, settled for a root adjunction
+  at an isolated element by `deningerRootAdjunction_pow_eq_of_factors`.  Assembling the two cases
+  into the single statement `x ^ n = y ^ n → x = y` for a root adjunction is what remains.
+- 2026-08-03 — **The complementary case is classified.**  `deningerCycRed_two_le` records the
+  observation that makes the dichotomy sharp: a one letter word is its own first and last letter, so
+  the cyclic condition would ask its index to differ from itself; a cyclically reduced word therefore
+  has at least two letters.  `deningerConj_factor_of_pow_len_le_one` uses it to classify the elements
+  the cyclically reduced case does not reach.  If the square or a higher power of an element has
+  length at most one, the length formula forbids a cyclic word satisfying the cyclic condition —
+  that would make the length of the power at least twice the exponent minus one — so the cyclic word
+  is a single letter and the element is a base group element or a conjugate of a factor element.
+  The dichotomy for an equality of powers `x^{n+2} = y^{n+2}` is therefore complete and effective:
+  either the common power has length at least two after cyclic reduction, and
+  `deningerPow_eq_of_conj_cycRed` settles it, or it has length at most one, and both elements are
+  base elements or conjugates of factor elements, where the factor case
+  `deningerRootAdjunction_pow_eq_of_factors` applies once the common conjugator is stripped.
+  Matching the conjugators of the two elements in the second branch is the last step.

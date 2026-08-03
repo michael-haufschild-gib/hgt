@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.MaximumTermCentralIndex
 import GaloisForLFunctions.HTGeometry.DiscreteJensenExp
+import GaloisForLFunctions.HTGeometry.MaximumTermLogarithmicDerivative
 
 /-!
 # The mean index against the central index
@@ -249,6 +250,69 @@ theorem tsum_index_sub_centralIndex_mul_normalised_norm
   rw [tsum_congr hsplit, tsum_div_const,
     tsum_index_sub_mul_term ha hr (centralIndex a r), meanIndex]
   field_simp
+
+
+/-! ## Splitting the weighted projection
+
+The weighted sum of the projections of the normalised coefficients onto the direction of the value
+splits into the mean-minus-mode gap and a weighted misalignment.  Both pieces are absolutely
+convergent, because the misalignment of a term never exceeds twice its modulus. -/
+
+/-- The weighted deviation series of the moduli converges absolutely. -/
+theorem summable_index_deviation_normalised
+    (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hz : ‖z‖ = r) (k : ℕ) :
+    Summable fun n : ℕ => |(n : ℝ) - (k : ℝ)| * ‖normalisedCoeff a r z n‖ := by
+  have hzpos : 0 < ‖z‖ := by rw [hz]; exact hr
+  have hbase := summable_index_deviation ha hzpos k
+  have hCn : ‖a (centralIndex a r) * z ^ centralIndex a r‖ = maxTerm a r := by
+    rw [norm_mul, norm_pow, hz]
+    exact term_centralIndex_eq ha hr hn₀
+  refine (hbase.div_const (maxTerm a r)).congr fun n => ?_
+  rw [normalisedCoeff_def, norm_div, hCn, norm_mul, norm_pow, hz]
+  ring
+
+set_option maxHeartbeats 400000 in
+/-- **Splitting the weighted projection.**  With `u` any unit, the weighted sum of the projections is
+the mean-minus-mode gap minus the weighted misalignment. -/
+theorem tsum_index_weighted_re_eq
+    (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hz : ‖z‖ = r)
+    {u : ℂ} (hu : ‖u‖ = 1) :
+    ∑' n : ℕ, ((n : ℝ) - (centralIndex a r : ℝ))
+        * ((starRingEnd ℂ) u * normalisedCoeff a r z n).re
+      = (coeffSum a r / maxTerm a r) * (meanIndex a r - (centralIndex a r : ℝ))
+        - ∑' n : ℕ, ((n : ℝ) - (centralIndex a r : ℝ))
+            * (‖normalisedCoeff a r z n‖
+              - ((starRingEnd ℂ) u * normalisedCoeff a r z n).re) := by
+  set k := centralIndex a r with hk
+  set c : ℕ → ℂ := normalisedCoeff a r z with hc
+  set w : ℕ → ℝ := fun n => (n : ℝ) - (k : ℝ) with hw
+  have habs := summable_index_deviation_normalised ha hr hn₀ hz k
+  have hA : Summable fun n : ℕ => w n * ‖c n‖ := by
+    refine Summable.of_abs (habs.congr fun n => ?_)
+    rw [abs_mul, abs_of_nonneg (norm_nonneg (c n))]
+  have hB : Summable fun n : ℕ => w n * (‖c n‖ - ((starRingEnd ℂ) u * c n).re) := by
+    refine Summable.of_abs ((habs.mul_left 2).of_nonneg_of_le (fun n => abs_nonneg _)
+      (fun n => ?_))
+    have hnn : 0 ≤ ‖c n‖ - ((starRingEnd ℂ) u * c n).re := alignment_defect_nonneg (c n) hu
+    have hle : ‖c n‖ - ((starRingEnd ℂ) u * c n).re ≤ 2 * ‖c n‖ := by
+      have := re_conj_mul_le_norm (-(c n)) hu
+      simp only [Complex.neg_re, norm_neg, mul_neg] at this
+      linarith
+    calc |w n * (‖c n‖ - ((starRingEnd ℂ) u * c n).re)|
+        = |w n| * (‖c n‖ - ((starRingEnd ℂ) u * c n).re) := by
+          rw [abs_mul, abs_of_nonneg hnn]
+      _ ≤ 2 * (|w n| * ‖c n‖) := by nlinarith [abs_nonneg (w n), norm_nonneg (c n)]
+  have hmoment : ∑' n : ℕ, w n * ‖c n‖
+      = (coeffSum a r / maxTerm a r) * (meanIndex a r - (k : ℝ)) := by
+    rw [← tsum_index_sub_centralIndex_mul_normalised_norm ha hr hn₀, ← hk]
+    refine tsum_congr fun n => ?_
+    rw [hc, normalisedCoeff_def, norm_div, norm_mul, norm_pow, hz, hw]
+    have hCn : ‖a (centralIndex a r) * z ^ centralIndex a r‖ = maxTerm a r := by
+      rw [norm_mul, norm_pow, hz]
+      exact term_centralIndex_eq ha hr hn₀
+    rw [hCn]
+  rw [← hmoment, ← Summable.tsum_sub hA hB]
+  exact tsum_congr fun n => by ring
 
 
 end GaloisForLFunctions.HTGeometry

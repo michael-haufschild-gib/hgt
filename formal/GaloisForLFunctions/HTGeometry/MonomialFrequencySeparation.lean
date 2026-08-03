@@ -69,6 +69,66 @@ theorem monomialFrequency_injective [DecidableEq ι] {omega : ι → ℝ}
   simp only [hcoeff i, Finsupp.coe_zero, Pi.zero_apply] at hi
   omega
 
+/-! ## The multiset a tuple uses -/
+
+theorem monomialFrequency_zero (omega : ι → ℝ) : monomialFrequency omega 0 = 0 := by
+  rw [monomialFrequency]
+  simp
+
+theorem monomialFrequency_add [DecidableEq ι] (omega : ι → ℝ) (s t : ι →₀ ℕ) :
+    monomialFrequency omega (s + t)
+      = monomialFrequency omega s + monomialFrequency omega t := by
+  classical
+  set u : Finset ι := (s + t).support ∪ (s.support ∪ t.support) with hu
+  have hst : (s + t).support ⊆ u := Finset.subset_union_left
+  have hs : s.support ⊆ u := fun i hi =>
+    Finset.mem_union_right _ (Finset.mem_union_left _ hi)
+  have ht : t.support ⊆ u := fun i hi =>
+    Finset.mem_union_right _ (Finset.mem_union_right _ hi)
+  rw [monomialFrequency_eq_sum omega (s + t) hst, monomialFrequency_eq_sum omega s hs,
+    monomialFrequency_eq_sum omega t ht, ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  have hval : ((s + t) i : ℝ) = (s i : ℝ) + (t i : ℝ) := by
+    push_cast [Finsupp.add_apply]
+    ring
+  rw [hval]
+  ring
+
+/-- The frequency of a monomial, as an additive map. -/
+def monomialFrequencyHom [DecidableEq ι] (omega : ι → ℝ) : (ι →₀ ℕ) →+ ℝ where
+  toFun := monomialFrequency omega
+  map_zero' := monomialFrequency_zero omega
+  map_add' := monomialFrequency_add omega
+
+theorem monomialFrequency_single [DecidableEq ι] (omega : ι → ℝ) (i : ι) :
+    monomialFrequency omega (Finsupp.single i 1) = omega i := by
+  classical
+  rw [monomialFrequency, show (Finsupp.single i (1 : ℕ)).support = {i} from by simp]
+  simp
+
+/-- The multiset of indices a tuple uses. -/
+def tupleCount [DecidableEq ι] {m : ℕ} (n : Fin m → ι) : ι →₀ ℕ :=
+  ∑ j, Finsupp.single (n j) 1
+
+/-- **A tuple's frequency is the frequency of the multiset it uses.** -/
+theorem monomialFrequency_tupleCount [DecidableEq ι] (omega : ι → ℝ) {m : ℕ} (n : Fin m → ι) :
+    monomialFrequency omega (tupleCount n) = ∑ j, omega (n j) := by
+  classical
+  have hhom : monomialFrequency omega (tupleCount n)
+      = ∑ j, monomialFrequency omega (Finsupp.single (n j) 1) := by
+    rw [tupleCount]
+    exact map_sum (monomialFrequencyHom omega) _ _
+  rw [hhom]
+  exact Finset.sum_congr rfl fun j _ => monomialFrequency_single omega (n j)
+
+/-- **Tuples with the same frequency use the same multiset of indices.** -/
+theorem tupleCount_eq_of_frequency_eq [DecidableEq ι] {omega : ι → ℝ}
+    (h : RationallyIndependentSequence omega) {m : ℕ} {n n' : Fin m → ι}
+    (hfreq : ∑ j, omega (n j) = ∑ j, omega (n' j)) : tupleCount n = tupleCount n' := by
+  refine monomialFrequency_injective h ?_
+  rw [monomialFrequency_tupleCount, monomialFrequency_tupleCount]
+  exact hfreq
+
 end
 
 end GaloisForLFunctions.HTGeometry

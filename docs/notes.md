@@ -1,1 +1,1 @@
-Route R sits at the intersection of arithmetic Hodge theory, global reciprocity, cyclic/noncommutative homology, and regularized index theory. Its missing theorem is a number-field analogue of purity: an arithmetic mechanism that forces a source-defined monodromy character to be unitary.
+Construct, from arithmetic source alone, a nonzero polarization-compatible descent of resolved Route-R system such that source inverse duality becomes positive Hilbert adjunction on same fibre.

@@ -550,4 +550,70 @@ theorem norm_weighted_window_sub_le
     _ = Real.sqrt 2 * Real.sqrt (∑ n ∈ F, w n ^ 2) * Real.sqrt D := by ring
 
 
+/-- **The majorant is within the defect of the value.**  If the total misalignment is at most `D`,
+then the majorant exceeds the modulus of the value by a factor of at most `1 + D` -- not by the
+factor `nu + C` that the crude comparison gives.  When the phases align the two are comparable. -/
+theorem coeffSum_le_one_add_defect_mul_norm
+    (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hz : ‖z‖ = r)
+    (hfz : maxTerm a r ≤ ‖coeffFun a z‖) {u : ℂ} {D : ℝ}
+    (hdefect : ∑' n : ℕ,
+        (‖normalisedCoeff a r z n‖
+          - ((starRingEnd ℂ) u * normalisedCoeff a r z n).re)
+      = (coeffSum a r - ‖coeffFun a z‖) / maxTerm a r)
+    (hD : ∑' n : ℕ,
+        (‖normalisedCoeff a r z n‖
+          - ((starRingEnd ℂ) u * normalisedCoeff a r z n).re) ≤ D) :
+    coeffSum a r ≤ (1 + D) * ‖coeffFun a z‖ := by
+  obtain ⟨-, -, hμpos⟩ := exists_maxTerm_eq ha hr hn₀
+  have hzpos : 0 < ‖z‖ := by rw [hz]; exact hr
+  have hSf : ‖coeffFun a z‖ ≤ coeffSum a r := by
+    have h := norm_coeffFun_le ha hzpos
+    rwa [hz] at h
+  have hgap : (coeffSum a r - ‖coeffFun a z‖) / maxTerm a r ≤ D := by
+    rw [← hdefect]
+    exact hD
+  have hD0 : 0 ≤ D :=
+    le_trans (div_nonneg (by linarith) hμpos.le) hgap
+  rw [div_le_iff₀ hμpos] at hgap
+  nlinarith [hgap, hfz, hμpos, hD0]
+
+
+/-- **The logarithmic-derivative deviation as a ratio of normalised series.**  The central term
+cancels, leaving the weighted normalised series over the plain one. -/
+theorem mul_logDeriv_sub_centralIndex_eq_div
+    (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hz : ‖z‖ = r)
+    (hfz : coeffFun a z ≠ 0) :
+    z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a r : ℂ)
+      = (∑' n : ℕ, ((n : ℂ) - (centralIndex a r : ℂ)) * normalisedCoeff a r z n)
+        / ∑' n : ℕ, normalisedCoeff a r z n := by
+  have hzpos : 0 < ‖z‖ := by rw [hz]; exact hr
+  have hC : a (centralIndex a r) * z ^ centralIndex a r ≠ 0 :=
+    central_term_ne_zero ha hr hn₀ hz
+  have hW : coeffFun a z
+      = (a (centralIndex a r) * z ^ centralIndex a r) * ∑' n : ℕ, normalisedCoeff a r z n :=
+    coeffFun_eq_central_term_mul_tsum ha hr hn₀ hz
+  have hV : z * deriv (coeffFun a) z - (centralIndex a r : ℂ) * coeffFun a z
+      = (a (centralIndex a r) * z ^ centralIndex a r)
+        * ∑' n : ℕ, ((n : ℂ) - (centralIndex a r : ℂ)) * normalisedCoeff a r z n := by
+    rw [mul_deriv_sub_eq_tsum ha hzpos (centralIndex a r), ← tsum_mul_left]
+    refine tsum_congr fun n => ?_
+    rw [normalisedCoeff_def]
+    have hcancel : (a (centralIndex a r) * z ^ centralIndex a r)
+        * (a n * z ^ n / (a (centralIndex a r) * z ^ centralIndex a r)) = a n * z ^ n := by
+      rw [mul_comm, div_mul_cancel₀ _ hC]
+    calc ((n : ℂ) - (centralIndex a r : ℂ)) * a n * z ^ n
+        = ((n : ℂ) - (centralIndex a r : ℂ)) * (a n * z ^ n) := by ring
+      _ = ((n : ℂ) - (centralIndex a r : ℂ))
+          * ((a (centralIndex a r) * z ^ centralIndex a r)
+            * (a n * z ^ n / (a (centralIndex a r) * z ^ centralIndex a r))) := by rw [hcancel]
+      _ = (a (centralIndex a r) * z ^ centralIndex a r)
+          * (((n : ℂ) - (centralIndex a r : ℂ))
+            * (a n * z ^ n / (a (centralIndex a r) * z ^ centralIndex a r))) := by ring
+  have hsplit : z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a r : ℂ)
+      = (z * deriv (coeffFun a) z - (centralIndex a r : ℂ) * coeffFun a z) / coeffFun a z := by
+    field_simp
+  rw [hsplit, hV, hW]
+  exact mul_div_mul_left _ _ hC
+
+
 end GaloisForLFunctions.HTGeometry

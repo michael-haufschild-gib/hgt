@@ -225,12 +225,38 @@ fail the dual novelty/significance gate for new scientific knowledge. Their valu
 they replace an ambiguous ``prolate approximation error'' by one exact exterior tail and identify
 the first topology in which that tail can possibly be controlled.
 
-## Lean decision
+## Lean status
 
-The abstract radical-quotient identity and closed-multiplier argument are standard shadows. The
-formal tree has no analytic interface for the global summation map, its Mellin multiplier, the Weil
-form domain, or critical-line zeta unboundedness. Formalizing only the abstract algebra would add a
-wrapper without certifying the source-specific statement. No Lean file is added.
+**Superseded, 2026-08-03.**  Formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/CCMWeilRadicalTailQuotient.lean`.
+
+- `IsBiadditive`, `weilRadical`, `weilRadicalSubgroup` — the pairing and its two-sided radical.  Only
+  **additivity in each argument** is assumed: no sesquilinearity, no scalars, no topology and no form
+  domain, which is why the identity needs none of the analytic interface the previous decision waited
+  for.
+- **`radical_pair_left`**, **`radical_pair_right`** — equation `(2)`.
+- **`radical_diag_eq`** — equation `(3)`: `QW(a,a) = QW(b,b)`, by expanding `a = h - b` and killing
+  every term containing `h`.
+- **`radical_quotient_eq_neg`** — equation `(4)`: in `D/Rad(QW)` the aperture class is exactly the
+  negative of the exterior-tail class.
+- **`integral_scaledBump`**, **`integral_sq_scaledBump`**, **`tendsto_integral_sq_scaledBump`** — the
+  quantitative core of the density lemma: `β_R x = R⁻¹ β (x/R)` preserves the integral while its
+  squared `L²` norm scales by `R⁻¹`, so the integral of an approximant can be corrected to zero at
+  `L²` cost tending to zero.
+- **`lt_setIntegral_normSq_of_exceeds`** — the unboundedness step `(6)`--`(7)` in the form that needs
+  no closed-operator extension: if `‖m‖²` exceeds `C²` on a set of positive finite measure, the
+  multiplier bound already fails at the indicator of that set.  The card routes `(6)` through
+  closedness of the multiplication operator and its extension to all of `L²`; the Lean statement
+  short-circuits that by exhibiting the failing test vector directly.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+Not formalized, and genuinely external: Connes--Consani's radical membership `E(f) ∈ Rad(QW)` and the
+Mellin multiplier formula `(5)`, which are imported source results; the Schwartz/Fourier side
+conditions defining `S_0`; and unboundedness of `zeta` on the critical line, which supplies the set
+`S` consumed by `lt_setIntegral_normSq_of_exceeds`.  The graph norm `(8)` is a definition, not a
+theorem.
 
 ## Gates
 
@@ -240,6 +266,9 @@ wrapper without certifying the source-specific statement. No Lean file is added.
 - [x] correct first graph topology isolated
 - [x] zero-extended prolate source shown to belong qualitatively to that graph domain
 - [x] cofinal logarithmic-boundary obligations integrated
+- [x] Lean: radical quotient identity `(2)`--`(4)` unconditional, from additivity alone
+- [x] Lean: zero-integral repair cost of the density lemma unconditional
+- [x] Lean: multiplier unboundedness `(6)`--`(7)` unconditional, witnessed by one indicator
 - [ ] source-specific fixed-prolate graph/sampling estimate
 - [ ] relative true-Weil Schur--Feshbach transfer
 - [ ] source-defined zero-preserving determinant converging to `Xi`

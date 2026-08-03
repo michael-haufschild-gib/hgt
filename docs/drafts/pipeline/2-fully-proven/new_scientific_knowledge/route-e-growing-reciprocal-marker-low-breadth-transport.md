@@ -2640,3 +2640,128 @@ keeps the result in *pair-labelled* antidiagonal form and never performs the rei
 summed identities above were absent. `RHTower.MoebiusFloorSummatory` already owns
 `moebius_floor_summatory` (`∑_{d≤N} μ(d)⌊N/d⌋ = 1`) and `abs_sum_moebius_div_le_one`
 (`|∑_{d≤N} μ(d)/d| ≤ 1`) — those were not rebuilt.
+
+### Formal layer — the Euler product is damped by the distance
+
+`formal/GaloisForLFunctions/RHTower/Sieve/EulerDamping.lean`.
+
+- `norm_one_add_le_exp` — **`‖1 + z‖ ≤ exp(Re z + ‖z‖²)` for every complex `z`**, with no smallness
+  hypothesis.
+- `prod_norm_one_add_le_exp` — the product form over any finite index set.
+- `sum_re_eq_sub_mulDistSq` — `∑_p Re(f(p)p^{−it}/p) = ∑_p 1/p − D(f,t;P)²`.
+- `prod_euler_factor_le` — **`∏_{p∈P} ‖1 + f(p)p^{−it}/p‖ ≤ exp(∑_{p∈P}1/p + ∑_{p∈P}1/p² − D(f,t;P)²)`**.
+
+All unconditional.
+
+This is the structural reason Halász's theorem is stated in terms of `D`: the Euler product is below
+its trivial size by exactly `exp(−D²)`, so a multiplicative function far from every character has a
+small product, and the squared distance is the exponential rate.
+
+The pointwise bound needs no hypothesis at all, which is worth recording since the textbook version
+carries one. Squaring gives `‖1+z‖² = 1 + 2Re z + ‖z‖² ≤ 1 + 2Re z + 2‖z‖²`, and `1 + u ≤ exp u`
+finishes — the discarded `‖z‖²` is precisely the slack that removes the usual `|z| ≤ 1/2`
+restriction, so no series expansion of `log(1+z)` is required.
+
+### Formal layer — the damped product as a Dirichlet sum
+
+`formal/GaloisForLFunctions/RHTower/Sieve/EulerExpansion.lean`.
+
+- `prod_one_add_eq_sum_powerset` — `∏_{p∈P}(1+z_p) = ∑_{T ⊆ P} ∏_{p∈T} z_p`.
+- `primeFactors_prod_of_subset`, `prod_injOn_powerset` — on a set of primes, `T ↦ ∏_{p∈T} p` is
+  injective (a subset is recovered as the prime factors of its product), so the subset sum is
+  literally a sum over distinct squarefree `P`-smooth integers.
+- `norm_sum_powerset_le_exp` — **`‖∑_{T⊆P} ∏_{p∈T} f(p)p^{−it}/p‖ ≤
+  exp(∑_{p∈P}1/p + ∑_{p∈P}1/p² − D(f,t;P)²)`**.
+
+All unconditional.
+
+This converts the damping bound into a statement about a Dirichlet-type sum: a multiplicative
+function far from every character has small partial sums over squarefree smooth numbers, at the
+exponential rate `exp(−D²)`.
+
+The estimate is not a triangle inequality. The sum is first rewritten *as* the product and only then
+bounded, so no cancellation is discarded in the passage — a term-by-term bound on the same sum would
+give `∏(1+1/p)`, with no dependence on the distance at all and hence no damping.
+
+### Formal layer — the damped sum indexed by integers
+
+`formal/GaloisForLFunctions/RHTower/Sieve/EulerIntegerIndex.lean`.
+
+- `prod_eq_of_multiplicative` — `∏_{p∈T} f(p) = f(∏_{p∈T} p)` for multiplicative `f` on a finite set
+  of distinct primes (induction, with pairwise coprimality from `Nat.coprime_primes`).
+- `prod_term_eq` — the subset factor collapses to the integer term:
+  `∏_{p∈T} f(p)p^{−it}/p = f(n) n^{−it}/n` with `n = ∏_{p∈T} p`.
+- `norm_sum_smooth_le_exp` — **`‖∑_{n squarefree, P-smooth} f(n) n^{−it}/n‖ ≤
+  exp(∑_{p∈P}1/p + ∑_{p∈P}1/p² − D(f,t;P)²)`**, the sum running over genuine distinct integers.
+
+All unconditional.
+
+The hypotheses are exactly multiplicativity (`f(ab) = f(a)f(b)` for coprime `a,b`), `f(1) = 1` and
+`‖f‖ ≤ 1` — satisfied by μ, unlike the complete multiplicativity that the general Halász recursion
+needs. Three separate facts are required to collapse a subset factor to an integer term:
+multiplicativity across distinct primes, `log` additivity on the product, and `∏ 1/p = 1/n`; the
+first is the only one that uses primality, via coprimality of distinct primes.
+
+### Formal layer — the damping bound for μ itself
+
+`formal/GaloisForLFunctions/RHTower/Sieve/MoebiusEulerDamping.lean`.
+
+- `moebiusC`, `norm_moebiusC_le_one`, `moebiusC_one`, `moebiusC_mul_of_coprime`, `moebiusC_prime` —
+  μ as a complex-valued function meets every hypothesis of the damped bound.
+- `mulDistSq_moebiusC` — **`D(μ,t;P)² = ∑_{p∈P}(1 + cos(t log p))/p`**.
+- `norm_sum_moebius_smooth_le_exp` — **`‖∑_{n squarefree, P-smooth} μ(n) n^{−it}/n‖ ≤
+  exp(∑_{p∈P} 1/p² − ∑_{p∈P} cos(t log p)/p)`**.
+
+All unconditional.
+
+Because `μ(p) = −1` at every prime, the `∑_p 1/p` in the damping exponent cancels *exactly* against
+the same term inside `D(μ,t;P)²`. What survives is the convergent `∑ 1/p²` against
+`∑_p cos(t log p)/p`.
+
+At `t = 0` this reads `exp(∑ 1/p² − ∑ 1/p)`, which tends to 0 as `P` exhausts the primes — the
+elementary cancellation of μ over squarefree smooth numbers, with an explicit rate. This also marks
+the boundary precisely: for `t ≠ 0` the bound is only as strong as a lower bound for
+`∑_p cos(t log p)/p`, and supplying one uniformly in `t` is exactly the non-elementary input. The
+formal layer now states the cards' obstruction as a single scalar quantity rather than as a citation.
+
+### Formal layer — unconditional cancellation with an explicit rate
+
+`formal/GaloisForLFunctions/RHTower/Sieve/MoebiusSmoothCancellation.lean`.
+
+- `sum_inv_sq_le_two_of_pos` — `∑_{p∈P} 1/p² ≤ 2` for any finite set of positive integers.
+- `norm_sum_moebius_smooth_le_exp_two` — **`‖∑_{n sf, P-smooth} μ(n)n^{−it}/n‖ ≤
+  exp(2 − ∑_{p∈P} cos(t log p)/p)`**, with the `∑1/p²` clutter replaced by an absolute constant.
+- `norm_sum_moebius_smooth_zero_le` — **`‖∑_{n sf, P-smooth} μ(n)/n‖ ≤ exp(2 − ∑_{p∈P} 1/p)`**.
+
+All unconditional.
+
+The `t = 0` statement is genuine unconditional cancellation with an explicit rate: since `∑_p 1/p`
+diverges, the left side tends to zero as `P` exhausts the primes, and the rate is the prime harmonic
+sum itself.
+
+It also isolates what is *not* available. Nothing analogous follows here for `t ≠ 0`: the exponent is
+governed by `∑_p cos(t log p)/p`, and a lower bound for that uniform in `t` is precisely the
+non-elementary input these cards name as Menon 2026 / Matomäki–Radziwiłł. The gap is now a single
+explicit scalar inequality rather than a literature citation.
+
+`RHTower.Sieve.SquarefreeHarmonic.sum_inv_sq_le_two` supplied the telescoping bound; only the
+restriction from `Icc 1 Y` to an arbitrary finite prime set was added.
+
+### Formal layer — the cancellation in the limit
+
+`formal/GaloisForLFunctions/RHTower/Sieve/MoebiusSmoothLimit.lean`.
+
+- `tendsto_sum_primesBelow_inv_atTop` — the prime harmonic sum diverges, in `Finset` form
+  (`∑_{p ∈ primesBelow N} 1/p → ∞`), obtained from mathlib's `not_summable_one_div_on_primes`.
+- `tendsto_exp_two_sub` — `exp(2 − u) → 0` along any divergent `u`.
+- `tendsto_norm_sum_moebius_smooth_zero` — **`‖∑_{n squarefree, p∣n ⇒ p<N} μ(n)/n‖ → 0`**.
+
+All unconditional.
+
+This is the limit form of the cancellation bound. The entire decay comes from the divergence of
+`∑ 1/p` — no prime number theorem, no zero-free region.
+
+Note what this does and does not give. The smooth-number restriction is essential: the statement is
+about squarefree integers all of whose prime factors lie below `N`, not about `∑_{n ≤ N} μ(n)/n`,
+which is a different (and already corpus-owned, `abs_sum_moebius_div_le_one`) quantity. The
+corresponding limit at `t ≠ 0` remains out of reach from this chain, for the reason recorded above.
