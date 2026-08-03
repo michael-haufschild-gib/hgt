@@ -208,6 +208,24 @@ theorem linearIndependent_compressedShift_primes {A : ℝ} {r : ℕ} {p : Fin r 
           Real.log_lt_log (by linarith [hpos j]) this
       _ = A := Real.log_exp A
 
+/-- The prime logarithms of an injective prime family are `ℚ`-linearly independent.  This is
+`GaloisForLFunctions.linearIndependent_log_primes` transported along the family. -/
+theorem linearIndependent_rat_logPrimes {r : ℕ} {p : Fin r → Nat.Primes}
+    (hpinj : Function.Injective p) :
+    LinearIndependent ℚ (fun j : Fin r => Real.log ((p j : ℕ) : ℝ)) :=
+  GaloisForLFunctions.linearIndependent_log_primes.comp p hpinj
+
+/-- **Faithfulness of the prime-log operator carrier.**  The compressed prime shifts are already
+independent over `ℚ`, so the `ℚ`-linear map sending `log p` to `T A (log p)` is injective: the
+operator span is a faithful copy of the prime-log space. -/
+theorem linearIndependent_rat_compressedShift_primes {A : ℝ} {r : ℕ} {p : Fin r → Nat.Primes}
+    (hpinj : Function.Injective p) (hA : ∀ j, ((p j : ℕ) : ℝ) < Real.exp A) :
+    LinearIndependent ℚ (fun j : Fin r => compressedShift A (Real.log ((p j : ℕ) : ℝ))) := by
+  refine LinearIndependent.restrict_scalars ?_
+    (linearIndependent_compressedShift_primes hpinj hA)
+  intro q q' hqq'
+  simpa using hqq'
+
 /-! ## Independence on one cyclic vector -/
 
 /-- **The pointed cyclic strengthening.**  For a single nonzero compactly supported vector the
@@ -304,6 +322,55 @@ theorem linearIndependent_weightedShift_apply {r : ℕ} {h : Fin r → ℝ}
   · rcases mul_eq_zero.mp hrest with he | hz
     · exact hexp he
     · exact hfy hz
+
+/-! ## The arithmetic complement quotient -/
+
+/-- **The first-isomorphism consequence.**  An injective linear map identifies the quotient `V / D`
+with the quotient of its image by the image of `D`.  This is the canonical isomorphism
+`A_N ≅ J(V_N)/J(D_N)`. -/
+def quotientEquivRangeQuotient {V W : Type*} [AddCommGroup V] [Module ℚ V] [AddCommGroup W]
+    [Module ℚ W] (J : V →ₗ[ℚ] W) (hJ : Function.Injective J) (D : Submodule ℚ V) :
+    (V ⧸ D) ≃ₗ[ℚ]
+      (LinearMap.range J ⧸ D.map ((LinearEquiv.ofInjective J hJ) : V →ₗ[ℚ] LinearMap.range J)) :=
+  Submodule.Quotient.equiv D _ (LinearEquiv.ofInjective J hJ) rfl
+
+/-- Rank-nullity for the quotient projection. -/
+theorem finrank_quotient_add_finrank_submodule {V : Type*} [AddCommGroup V] [Module ℚ V]
+    [FiniteDimensional ℚ V] (D : Submodule ℚ V) :
+    Module.finrank ℚ (V ⧸ D) + Module.finrank ℚ D = Module.finrank ℚ V := by
+  have h := LinearMap.finrank_range_add_finrank_ker (K := ℚ) D.mkQ
+  rw [Submodule.range_mkQ, Submodule.ker_mkQ, finrank_top] at h
+  exact h
+
+/-- **The arithmetic complement dimension bound.**  A phase subspace of dimension at most `b`
+leaves a quotient of dimension at least `dim V - b`. -/
+theorem finrank_le_finrank_quotient_add {V : Type*} [AddCommGroup V] [Module ℚ V]
+    [FiniteDimensional ℚ V] (D : Submodule ℚ V) {b : ℕ} (hD : Module.finrank ℚ D ≤ b) :
+    Module.finrank ℚ V ≤ Module.finrank ℚ (V ⧸ D) + b := by
+  have h := finrank_quotient_add_finrank_submodule D
+  omega
+
+/-- The prime-log space of an injective prime family has dimension the number of primes. -/
+theorem finrank_span_logPrimes {r : ℕ} {p : Fin r → Nat.Primes}
+    (hpinj : Function.Injective p) :
+    Module.finrank ℚ
+        (Submodule.span ℚ (Set.range fun j : Fin r => Real.log ((p j : ℕ) : ℝ))) = r := by
+  simpa using finrank_span_eq_card (linearIndependent_rat_logPrimes hpinj)
+
+/-- **Equation (16).**  With `r` independent prime logarithms and a phase subspace of dimension at
+most `b`, the arithmetic complement has dimension at least `r - b`. -/
+theorem finrank_primeLog_le_quotient_add {r : ℕ} {p : Fin r → Nat.Primes}
+    (hpinj : Function.Injective p)
+    (D : Submodule ℚ (Submodule.span ℚ (Set.range fun j : Fin r => Real.log ((p j : ℕ) : ℝ))))
+    {b : ℕ} (hD : Module.finrank ℚ D ≤ b) :
+    r ≤ Module.finrank ℚ
+        ((Submodule.span ℚ (Set.range fun j : Fin r => Real.log ((p j : ℕ) : ℝ))) ⧸ D) + b := by
+  haveI : FiniteDimensional ℚ
+      (Submodule.span ℚ (Set.range fun j : Fin r => Real.log ((p j : ℕ) : ℝ))) :=
+    FiniteDimensional.span_of_finite ℚ (Set.finite_range _)
+  have h := finrank_le_finrank_quotient_add D hD
+  rw [finrank_span_logPrimes hpinj] at h
+  exact h
 
 /-! ## The Krein block identity -/
 

@@ -2454,3 +2454,52 @@ triangle inequality is `norm_add_le` rather than an inequality needing proof. On
 the inequality `half_normSq_sub_le` survives, in the direction that does *not* give the triangle
 inequality — so the unimodular hypothesis in the triangle theorem is doing real work, not tidiness.
 The disc case is the Granville–Soundararajan lemma proper and is not proved here.
+
+### Formal layer — the triangle inequality on the closed unit disc
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DistanceDiscTriangle.lean` removes the unimodularity
+hypothesis, giving the Granville–Soundararajan triangle inequality in the form it is actually used.
+
+- `sqrt_one_sub_re_triangle` — **pointwise on the closed unit disc**:
+  `√(1−Re(u w̄)) ≤ √(1−Re(u v̄)) + √(1−Re(v w̄))` for `‖u‖,‖v‖,‖w‖ ≤ 1`.
+- `sqrt_sum_sq_add_le` — Minkowski for a finite sum of squares, via `EuclideanSpace ℝ P`.
+- `one_sub_re_mul_conj_nonneg` — the summands are nonnegative on the disc.
+- `sqrt_mulDistSqPair_triangle_disc` — **the full theorem**: `D(f,h;P) ≤ D(f,g;P) + D(g,h;P)`
+  for `‖f(p)‖, ‖g(p)‖, ‖h(p)‖ ≤ 1`.
+- `mulDistSqPair_nonneg_disc`, `sqrt_mulDistSq_triangle_char_disc` — nonnegativity and transitivity
+  of closeness to a character, on the disc.
+
+All unconditional.
+
+The naive comparison `C ≤ A + B` is **false** on the disc: at `u = e^{iπ/3}`, `v = 1`,
+`w = e^{-iπ/3}` it reads `3/2 ≤ 1/2 + 1/2`. The cross term is not slack, it is the content. What
+carries the proof is the identity `2(1−Re(u v̄)) = ‖u−v‖² + (1−‖u‖²) + (1−‖v‖²)`; writing
+`2A = X²+a+b`, `2B = Y²+b+c`, `2C = Z²+a+c` gives
+`4AB ≥ (X²+b)(Y²+b) = (XY+b)² + b(X−Y)²`, so `2√(AB) ≥ XY+b`, and `Z ≤ X+Y` finishes.
+The slack `b(X−Y)²` — the *defect* of the middle value — is exactly what pays for the cross term,
+which is why the unimodular case (`b = 0`) is the tight one.
+
+This closes the metric geometry of the Halász distance. The mean-value bound itself remains the
+route's open input.
+
+### Formal layer — the divisor swap and Halász's recursion
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DivisorSwap.lean`.
+
+- `sum_divisors_swap` — **the general divisor swap**
+  `∑_{m ≤ N} ∑_{d ∣ m} G(d, m/d) = ∑_{d ≤ N} ∑_{k ≤ N/d} G(d,k)`, by the explicit bijection
+  `(m,d) ↦ (d, m/d)` with inverse `(d,k) ↦ (dk, d)`.
+- `sum_mul_log_eq_vonMangoldt` — **Halász's recursion** for completely multiplicative `f`:
+  `∑_{m ≤ N} f(m) log m = ∑_{d ≤ N} Λ(d) f(d) ∑_{k ≤ N/d} f(k)`.
+
+Both unconditional.
+
+`RHTower.Mertens.log_summatory_eq` already had the constant-summand case (`∑_{m≤n} log m =
+∑_{d≤n} Λ(d)⌊n/d⌋`), proved by counting multiples; `sum_divisors_swap` is the general form that
+carries an arbitrary summand through the same reindexing, which is what a weighted sum needs.
+
+The recursion is the identity the mean-value theory turns on: it expresses the log-weighted sum of
+`f` through the *unweighted* sums of `f` over the shorter ranges `N/d`, and so converts information
+about `f` at primes into information about its partial sums. Complete multiplicativity is used
+exactly once, to split `f(m) = f(d) f(m/d)` — for merely multiplicative `f` the same shape holds
+with `Λ` replaced by the Dirichlet inverse `f^{-1} * (f·log)`, which is not built here.

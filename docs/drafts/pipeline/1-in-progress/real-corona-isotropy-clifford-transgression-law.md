@@ -406,3 +406,16 @@ stabilization or a different Dirac parity.
   only with the support indicator, and analytic-rank variation is exactly this `K₀` variation plus
   variation of central multiplicity excess. Thus `[e_R]` and analytic rank agree only in the
   multiplicity-free central sector; their general discrepancy is computed, not suppressed.
+- 2026-08-03 — Coefficientwise projective topology and closed relative cyclic quotient are now
+  formalized on the genuine CCM class-space target. `CyclicBarProjectiveContinuity.lean` proves
+  norm bounds and continuity for every face, degeneracy, and cyclic rotation on projective tensor
+  powers. `CCMRationalAdelicClassSpaceCyclicContinuity.lean` proves that all class-space evaluation
+  maps intertwine these operators and makes the induced section-chain topology cyclic.
+  `CCMRationalAdelicClosedRelativeCyclicModule.lean` proves continuity for every presented simplex
+  morphism and constructs the quotient by the closure of the actual reduced restriction range.
+  `CCMRationalMoritaTraceClassAlgebra.lean` now supplies the exact norm-one unit required for
+  degeneracy continuity. This is a dependency-closed coefficientwise-projective model, not yet the
+  primary-source strong target: CCM requires continuous trace-class-valued chains whose scalar trace
+  on the main diagonal lies in `S(C_Q) = intersection_beta mu^beta S(C_Q)`. P2 remains open until
+  that exact diagonal-condition cyclic submodule, its closed cokernel, and the concrete
+  `kappa`/bivariant-Chern/Lefschetz comparison are formalized.

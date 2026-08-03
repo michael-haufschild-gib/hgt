@@ -1305,9 +1305,33 @@ into multiplication, which is what lets the synthesised potential multiply the s
   which folds the result back into a convolution.
 
 The dictionary between the coefficient picture and the field picture is now complete in both
-directions: `-k²` is the transverse Laplacian, and `⋆` is multiplication. What remains is the
-iteration itself — the doubly-integrated recursion on coefficient-valued functions of the null
-coordinates — and the identification of its limit with a clock probe.
+directions: `-k²` is the transverse Laplacian, and `⋆` is multiplication.
+
+`ClockOvsyannikovRecursion.lean` closes the estimate side. **`ovsyannikov_induction`** takes a
+single hypothesis — one step with loss `K/(σ-ρ)²` and the gain of a double integration, in the exact
+form the double integral produces it — and derives the closed bound
+
+`N m ρ x y ≤ Kᵐ m^{2m} xᵐ yᵐ / ((m!)² (ρ₀-ρ)^{2m})`
+
+at every stage, by induction with the intermediate radius `σ = ρ + (ρ₀-ρ)/(m+1)`. The statement is
+purely scalar: `N m ρ x y` is any nonnegative bound on the `m`-th stage at radius `ρ` over a
+rectangle of sides `x` and `y`. So it applies verbatim to either form of the scale, and the concrete
+construction has only to discharge the step. The `m = 0` stage needs the base hypothesis rather than
+the induction hypothesis, since there the intermediate radius is `ρ₀` itself.
+
+`ClockIteratedIntegralBound.lean` supplies the integration that discharges that hypothesis:
+
+- `integral_pow_zero_left` — `∫₀ˣ sᵐ ds = x^{m+1}/(m+1)`, by the fundamental theorem of calculus
+  rather than by importing the special-functions integral tables;
+- `abs_integral_pow_bound` — a power-dominated integrand integrates to a power;
+- **`abs_iterated_integral_le`** — *an integrand dominated by `c sᵐ tᵐ` on the rectangle integrates
+  to at most `c x^{m+1} y^{m+1}/(m+1)²`*. Both factorials of the recursion come from here, one from
+  each characteristic direction, and they are exactly what compensates the derivative loss.
+
+Everything the construction needs is now proved: the algebra estimate, the derivative loss in both
+forms, the exact step identity, the convergence bound, the step operator, the recursion, the double
+integration, and both halves of the synthesis dictionary. What remains is to define the iterates
+themselves, assemble these into the step hypothesis, and identify the limit with a clock probe.
 
 The first genuinely coupled target this reaches is dimension three: a potential
 `V(x⁰, x¹, x²)` with arbitrary continuously differentiable dependence on the null coordinates and

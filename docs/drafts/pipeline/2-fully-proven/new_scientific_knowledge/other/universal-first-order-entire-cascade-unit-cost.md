@@ -423,7 +423,8 @@ It also identifies the mechanism and the sharp wall.  The analytic growth invari
 - [x] Lean: log-convexity of `mu` in `log r`, the second-order input the decay bounds lack
 - [x] Lean: the majorant bounded back by the maximum term times the central index
 - [x] Lean: the local expansion, the alignment mechanism, and criticality at a circle maximum
-- [ ] Lean: the mean index `Lambda(r) = r S'(r)/S(r)` is close to the modal index `nu(r)`
+- [x] Lean: the mean index is within `(nu(s)-nu(t)) + log(nu+C)/log(s/r)` of the modal index
+- [ ] Lean: choose the radii so that bound is `o(nu)`, and assemble the main estimate
 - [ ] Lean: Newton--Puiseux places at `U = infinity`, hence the nondegenerate Wiman place
 - [ ] Lean: Clunie--Steinmetz composition separation and state algebraic independence
 - [x] Lean: the order lower bound `ord_DA >= n` from `n` algebraically independent jets
@@ -565,6 +566,8 @@ exp_tsum_mul_le_tsum_mul_exp              -- discrete Jensen for the exponential
 meanIndex                                 -- Lambda(r) = r S'(r) / S(r)
 meanIndex_mul_log_le_log_coeffSum_sub     -- Lambda(r) log(s/r) <= log S(s) - log S(r)
 meanIndex_le_slope, slope_le_meanIndex    -- Lambda(r) sits between adjacent slopes of log S
+meanIndex_le_centralIndex_add             -- Lambda(r) <= nu(s) + log(nu(s')+C)/log(s/r)
+centralIndex_sub_le_meanIndex             -- Lambda(r) >= nu(t) - log(nu(r)+C)/log(r/t)
 ```
 
 `Lambda(r)` is therefore sandwiched by the difference quotients of `log S` on either side, exactly as
@@ -1090,3 +1093,24 @@ triangularity package, which is exactly how the paper proof uses them.
   `nu(r)` sits between those of `log mu`.  The two sandwiches then overlap up to
   `log(nu+C)/log(s/r)`, coming from `mu <= S <= mu (nu + C)` -- that is the bound on `Lambda - nu`,
   and assembling it is the next step.
+- 2026-08-03 -- Bounded the mean index against the modal index on both sides:
+
+  ```text
+  nu(t) - log(nu(r)+C)/log(r/t)  <=  Lambda(r)  <=  nu(s) + log(nu(s')+C)/log(s/r).
+  ```
+
+  Each side is the mean-index slope bound, with `log S` replaced by `log mu` at the two ends using
+  `mu <= S <= mu (nu + C)` and the modal growth law absorbing the difference of `log mu`.  Since
+  `nu(t) <= nu(r) <= nu(s)`, this bounds `|Lambda(r) - nu(r)|` by the window width plus two
+  logarithmic terms.  The ratio `S/mu` may be as large as `nu`, but only its **logarithm** appears,
+  which is the whole reason the mean and the mode are close: a factor of `nu` in the majorant costs
+  only `log nu` in the index.  What remains is arithmetic -- pick the radii so that the window width
+  and the two logarithmic terms are `o(nu)`.
+- 2026-08-03 -- Optimisation pass over the Wiman--Valiron modules.  I had been adding
+  `set_option maxHeartbeats 1000000 in` defensively before long proofs.  Stripping all 18 of them and
+  recompiling showed that exactly **one** was needed (`tsum_upper_tail_le`), and that one at 400000
+  rather than 1000000.  The other 17 were pure noise -- they hide genuine slowness and cost nothing
+  to keep, so they had accumulated silently.  `MaximumTermCentralIndex.lean` now compiles in ~29s and
+  `MaximumTermLogarithmicDerivative.lean` in ~12s.  Method worth reusing: remove every bump at once,
+  compile once, and re-add only at the line the timeout names -- cascading "unknown constant" errors
+  downstream of the real failure are not additional sites.

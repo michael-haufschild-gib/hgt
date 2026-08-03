@@ -190,6 +190,33 @@ theorem deningerCalderonWittOrientationConsumer_nonfactorization_iff
       deningerCalderonWittOrientationInclusion]
 
 /--
+**Unconditional local observation--transgression completeness.** Every
+consumer has its canonical primary--secondary Green split.  Vanishing of
+the secondary channel is exactly unique descent through Haar orientation,
+while an exact incidence input has vanishing relative class exactly when
+its Green primitive stays in the admitted sector.
+-/
+theorem deningerCalderonWittGreenObservationTransgressionCompleteness
+    {W : Type*} [AddCommGroup W] [Module ℂ W]
+    (p : Nat.Primes)
+    (F :
+      (DeningerCalderonWittAlgebraicDegreeTwo p × ℂ) →ₗ[ℂ] W)
+    (S : Submodule ℂ (deningerCalderonWittMilnorIncidence p))
+    (w : deningerCalderonWittMilnorIncidence p) :
+    (deningerCalderonWittOrientationConsumerPrimary p F +
+        deningerCalderonWittOrientationConsumerSecondary p F = F) ∧
+      (deningerCalderonWittOrientationConsumerSecondary p F = 0 ↔
+        ∃! phi : ℂ →ₗ[ℂ] W,
+          F = phi.comp (deningerCalderonWittOrientedTrace p)) ∧
+      (deningerCalderonWittRelativeBoundaryClass p S w.1 = 0 ↔
+        deningerCalderonWittMilnorGreenRetraction p w.1 ∈ S) :=
+  ⟨deningerCalderonWittOrientationConsumer_primary_add_secondary p F,
+    deningerCalderonWittOrientationConsumerSecondary_eq_zero_iff_factorization
+      p F,
+    deningerCalderonWittRelativeBoundaryClass_incidence_eq_zero_iff
+      p S w⟩
+
+/--
 **Local orientation--transgression completeness law.**  A regular consumer
 has exactly one orientation factor, while a relative exterior cocycle
 vanishes exactly when Green contraction preserves its admitted sector.
@@ -208,11 +235,17 @@ theorem deningerCalderonWittOrientationTransgressionCompleteness
         F = phi.comp (deningerCalderonWittOrientedTrace p)) ∧
       (deningerCalderonWittRelativeBoundaryClass p S w = 0 ↔
         deningerCalderonWittMilnorGreenRetraction p w ∈ S) := by
-  exact
-    ⟨(deningerCalderonWittOrientationConsumer_factorization_unique_iff
-        p F).mp hregular,
-      deningerCalderonWittRelativeBoundaryClass_eq_zero_iff
-        p S w hcocycle⟩
+  let wi : deningerCalderonWittMilnorIncidence p := ⟨w, hcocycle⟩
+  have hcomplete :=
+    deningerCalderonWittGreenObservationTransgressionCompleteness
+      p F S wi
+  refine ⟨?hfactor, ?hrelative⟩
+  case hfactor =>
+    exact hcomplete.2.1.mp
+      ((deningerCalderonWittOrientationConsumerSecondary_eq_zero_iff
+        p F).2 hregular)
+  case hrelative =>
+    simpa only [wi] using hcomplete.2.2
 
 /-! ## All-prime completeness -/
 
@@ -366,6 +399,31 @@ theorem deningerCalderonWittGlobalOrientationConsumer_nonfactorization_iff
       deningerCalderonWittGlobalOrientationInclusion]
 
 /--
+**Unconditional all-prime observation--transgression completeness.** Every
+finite-support global consumer splits canonically into Haar orientation and
+boundary Green channels, and exact global incidence internalizes the
+cocycle condition in the relative-sector criterion.
+-/
+theorem deningerCalderonWittGlobalGreenObservationTransgressionCompleteness
+    {W : Type*} [AddCommGroup W] [Module ℂ W]
+    (F :
+      (DeningerCalderonWittAlgebraicGlobalDegreeTwo × ℂ) →ₗ[ℂ] W)
+    (S : Submodule ℂ deningerCalderonWittGlobalMilnorIncidence)
+    (w : deningerCalderonWittGlobalMilnorIncidence) :
+    (deningerCalderonWittGlobalOrientationConsumerPrimary F +
+        deningerCalderonWittGlobalOrientationConsumerSecondary F = F) ∧
+      (deningerCalderonWittGlobalOrientationConsumerSecondary F = 0 ↔
+        ∃! phi : ℂ →ₗ[ℂ] W,
+          F = phi.comp deningerCalderonWittGlobalOrientedTrace) ∧
+      (deningerCalderonWittGlobalRelativeBoundaryClass S w.1 = 0 ↔
+        deningerCalderonWittGlobalMilnorGreenRetraction w.1 ∈ S) :=
+  ⟨deningerCalderonWittGlobalOrientationConsumer_primary_add_secondary F,
+    deningerCalderonWittGlobalOrientationConsumerSecondary_eq_zero_iff_factorization
+      F,
+    deningerCalderonWittGlobalRelativeBoundaryClass_incidence_eq_zero_iff
+      S w⟩
+
+/--
 **All-prime orientation--transgression completeness law.**  Every regular
 all-prime consumer is the unique image of the one orientation trace, and
 every relative exterior class is exactly canonical Green-primitive escape
@@ -385,11 +443,17 @@ theorem deningerCalderonWittGlobalOrientationTransgressionCompleteness
         F = phi.comp deningerCalderonWittGlobalOrientedTrace) ∧
       (deningerCalderonWittGlobalRelativeBoundaryClass S w = 0 ↔
         deningerCalderonWittGlobalMilnorGreenRetraction w ∈ S) := by
-  exact
-    ⟨(deningerCalderonWittGlobalOrientationConsumer_factorization_unique_iff
-        F).mp hregular,
-      deningerCalderonWittGlobalRelativeBoundaryClass_eq_zero_iff
-        S w hcocycle⟩
+  let wi : deningerCalderonWittGlobalMilnorIncidence := ⟨w, hcocycle⟩
+  have hcomplete :=
+    deningerCalderonWittGlobalGreenObservationTransgressionCompleteness
+      F S wi
+  refine ⟨?hfactor, ?hrelative⟩
+  case hfactor =>
+    exact hcomplete.2.1.mp
+      ((deningerCalderonWittGlobalOrientationConsumerSecondary_eq_zero_iff
+        F).2 hregular)
+  case hrelative =>
+    simpa only [wi] using hcomplete.2.2
 
 end
 

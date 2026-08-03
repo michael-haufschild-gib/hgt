@@ -70,7 +70,6 @@ theorem norm_coeffFun_le (ha : EntireCoeffs a) {z : ℂ} (hz : 0 < ‖z‖) :
   exact tsum_congr fun n => by rw [norm_mul, norm_pow]
 
 
-set_option maxHeartbeats 1000000 in
 /-- **Termwise differentiation.**  The entire function of a coefficient sequence is differentiated
 term by term.  The partial sums are polynomials, and both they and their derivatives converge
 uniformly on every ball, so the Weierstrass limit theorem applies. -/
@@ -229,7 +228,6 @@ theorem norm_mul_logDeriv_sub_le_of_deviation_le
     _ ≤ (maxTerm a r * B) / maxTerm a r := div_le_div_of_nonneg_left hBnn hμpos hf
     _ = B := by field_simp
 
-set_option maxHeartbeats 1000000 in
 /-- **The Wiman--Valiron logarithmic-derivative estimate.**  At a point of the circle of radius `r`
 where the function is at least as large as the maximum term, `z f'(z)/f(z)` differs from the central
 index by at most the deviation bound divided by the maximum term. -/
@@ -349,7 +347,6 @@ Applying the alignment identity to the normalised coefficients converts the gap 
 and the actual value of the function into the total misalignment of the phases.  At a
 maximum-modulus point that gap is as small as the circle allows. -/
 
-set_option maxHeartbeats 1000000 in
 /-- **The normalised defect.**  The total misalignment of the normalised coefficients is exactly the
 gap between the majorant and the modulus of the value, measured in units of the maximum term. -/
 theorem exists_unit_tsum_normalised_alignment_defect
@@ -407,7 +404,6 @@ theorem exists_unit_tsum_normalised_alignment_defect
     ring
 
 
-set_option maxHeartbeats 1000000 in
 /-- **The defect is bounded by the central index.**  At a point where the function is at least the
 maximum term, the total misalignment is at most `nu(s)` plus a constant fixed by the radius ratio. -/
 theorem exists_unit_tsum_normalised_defect_le
@@ -477,7 +473,6 @@ theorem normalisedCoeff_def (a : ℕ → ℂ) (r : ℝ) (z : ℂ) (n : ℕ) :
     normalisedCoeff a r z n
       = a n * z ^ n / (a (centralIndex a r) * z ^ centralIndex a r) := rfl
 
-set_option maxHeartbeats 1000000 in
 /-- **The weighted window sum.**  Over any finite window the weighted sum of the normalised
 coefficients differs from a real multiple of the common direction by at most
 `sqrt 2 * sqrt (sum of squared weights) * sqrt (total misalignment)`.  The weights enter only through

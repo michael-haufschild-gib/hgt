@@ -267,11 +267,55 @@ that the Gamma no-go is replaced by the exact operator quotient a successful CCM
 - `signed-archimedean-gamma-orbit-charge-phase-law.md`.
 - `incommensurable-gamma-orbit-free-quasianalyticity.md`.
 
-## Lean decision
+## Lean status
 
-The formal tree does not yet contain the weighted `L2` translation representation or the analytic
-completed operator. Formalizing only finite linear independence would not certify the CCM source
-factorization, so no Lean file is added at this stage.
+**Superseded, 2026-08-03.**  Formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/CCMCompressedShiftIndependence.lean`.
+
+The previous decision waited for "the weighted `L2` translation representation".  None is needed:
+every independence statement of this card is *pointwise*, so the shifts are realized as linear maps
+on functions and the proofs use no measure theory at all.
+
+- `weightedShift`, **`weightedShift_comp`** — the weighted translation `S h f x = e^h f (x - h)` and
+  the semigroup law `S h ∘ S k = S (h+k)` of `(2)`.
+- `compressedShift` — the aperture compression `T A h = P_A S h P_A` of `(3)`.
+- **`linearIndependent_compressedShift`** — equations `(4)`--`(8)`, in a form **stronger** than the
+  card: the shifts need only be *injective* with values in `[0, A)`; no ordering is required.  The
+  reason is that the separating interval length may be chosen after fixing the coefficient to be
+  isolated, so the single global `epsilon` of `(6)` is unnecessary.  The witness is the indicator of
+  `[0, epsilon]` and the evaluation point is `h j₀ + epsilon/2`.
+- **`linearIndependent_weightedShift_apply`** — the pointed cyclic strengthening `(8a)`.  The card
+  proves it by Fourier transformation and the identity theorem for exponential polynomials; the Lean
+  proof instead uses the **rightmost point of the support**: at the largest shift carrying a nonzero
+  coefficient, every other term has already left `sSup (support f)`.  That replaces the analytic
+  argument by a one-shot order argument, needs only `HasCompactSupport f` and `f ≠ 0`, and avoids the
+  Fourier interface entirely.
+- **`linearIndependent_compressedShift_primes`** and
+  **`linearIndependent_rat_compressedShift_primes`** — equations `(10)`--`(11)`: distinct prime
+  logarithms below the aperture give compressed shifts independent over `ℂ`, hence over `ℚ`.  This is
+  the injectivity of `J_(A,N)` and therefore the faithfulness of the prime-log operator carrier.
+  `linearIndependent_rat_logPrimes` supplies the other half by transporting the corpus's
+  `GaloisForLFunctions.linearIndependent_log_primes` along the prime family.
+- **`kreinBlock_identity`** — equation `(16c)`: with weights `a n` and feature maps
+  `√(a n) (T n ± c v)`, the difference of squared norms is `4c` times the weighted real part of the
+  diagonal pairings.  This is the parallelogram identity carrying the indefinite factorization
+  `(16d)`, stated for an arbitrary complex inner-product space and an arbitrary finite index set.
+
+- **`quotientEquivRangeQuotient`** — equation `(14)`: an injective linear map identifies `V/D` with
+  `J(V)/J(D)`, so `A_N` is canonically the operator quotient.
+- **`finrank_quotient_add_finrank_submodule`**, **`finrank_le_finrank_quotient_add`**,
+  **`finrank_span_logPrimes`**, **`finrank_primeLog_le_quotient_add`** — equations `(10)` and `(16)`:
+  the prime-log space of `r` distinct primes has dimension exactly `r`, and a phase subspace of
+  dimension at most `b` leaves `dim_ℚ A_N ≥ r - b`.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+Not formalized, and not theorems of this card: the operator-norm identity `‖S h‖ = e^(h/2)` on the
+weighted space `L2(ℝ, e^(-x) dx)`, which needs that weighted measure; and the signed-Gamma
+orbit-charge bound `(15)`, which is an imported result of
+`signed-archimedean-gamma-orbit-charge-phase-law.md` and enters `(16)` only as the numerical value
+of `b`.
 
 ## Gates
 
@@ -281,6 +325,11 @@ factorization, so no Lean file is added at this stage.
 - [x] signed-Gamma phase quotient identified exactly
 - [x] arithmetic complement lower bound proved
 - [x] exact prime Krein defect block constructed
+- [x] Lean: semigroup law, compressed-shift independence `(4)`--`(8)` unconditional
+- [x] Lean: cyclic strengthening `(8a)` unconditional, by support order rather than Fourier
+- [x] Lean: prime-log carrier faithfulness `(10)`--`(11)` over `ℂ` and over `ℚ`
+- [x] Lean: Krein block parallelogram identity `(16c)` unconditional
+- [x] Lean: first-isomorphism quotient `(14)` and complement dimension bound `(10)`, `(16)`
 - [ ] construct a positive factorization faithful on the quotient `A_N`
 - [ ] preserve the aperture Morse index cofinally
 - [ ] prove RH

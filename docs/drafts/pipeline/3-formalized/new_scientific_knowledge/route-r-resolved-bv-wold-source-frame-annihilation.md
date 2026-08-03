@@ -1,9 +1,9 @@
 # Route R resolved BV--Wold source-frame annihilation
 
 - **ID:** `route-r-resolved-bv-wold-source-frame-annihilation`
-- **Stage:** 1 — in progress
+- **Stage:** 3 — formalized in Lean 4
 - **Type:** SOURCE-FRAME RESOLUTION / ACTUAL-XI-LANDING ANNIHILATION / SCALAR-DESCENT NO-GO
-- **Status:** `[FROZEN] [PAPER PROOF CLOSED] [LEAN OPEN] [SCALAR ANNIHILATION NOT PROVED] [NOT RH]`
+- **Status:** `[FROZEN] [PAPER PROOF CLOSED] [LEAN FORMALIZED] [SCALAR ANNIHILATION NOT PROVED] [NOT RH]`
 - **Parent:** `route-r-prime-depth-bv-wold-curved-source-differential.md`
 
 ## Frontier correction
@@ -169,9 +169,23 @@ by the triangular clock normalization and not a nowhere-zero landing gauge.
 - [x] dependency-closed algebraic proof
 - [x] actual leading conormal identified and proved nonzero in existing corpus
 - [x] external exact-collision audit
-- [ ] unconditional Lean formalization
+- [x] unconditional Lean formalization
+- [x] targeted module build
+- [x] standard-axiom audit
+- [x] imported by `GaloisForLFunctions.RHTower`
 - [ ] scalar equal-grade boundary
 - [ ] RH
+
+## Formal artifact and audit
+
+Formalization:
+`formal/GaloisForLFunctions/RHTower/PrimeDepthBVWoldResolvedXiLandingAnnihilation.lean`.
+Targeted `lake build` passed.  Axiom prints for transport composition,
+cofinal Xi landing, resolved annihilation, and scalar-annihilation/RH
+equivalence contain only `propext`, `Classical.choice`, and `Quot.sound`.
+Repository-wide lint still exits on unrelated pre-existing modules missing
+from the RHTower umbrella; this module is imported by that umbrella and is
+not among the reported unreachable modules.
 
 ## External boundary
 

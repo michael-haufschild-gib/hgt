@@ -489,7 +489,7 @@ theorem term_le_maxTerm_mul_pow_of_le_centralIndex
         rw [hpowsplit]; ring
     _ = maxTerm a r * (t / r) ^ (k - n) := by rw [hprod]; ring
 
-set_option maxHeartbeats 1000000 in
+set_option maxHeartbeats 400000 in
 /-- **The upper tail is a geometric remainder.**  Everything strictly beyond the central index at the
 larger radius sums to at most `mu(r) (r/s) / (1 - r/s)`. -/
 theorem tsum_upper_tail_le
@@ -527,7 +527,6 @@ theorem tsum_upper_tail_le
   rwa [hcalc] at hle
 
 
-set_option maxHeartbeats 1000000 in
 /-- **The lower tail is a geometric remainder.**  Everything strictly below the central index at the
 smaller radius sums to at most `mu(r) (t/r) / (1 - t/r)`. -/
 theorem sum_lower_tail_le
@@ -572,7 +571,6 @@ theorem sum_lower_tail_le
     _ ≤ maxTerm a r * (q / (1 - q)) := mul_le_mul_of_nonneg_left hgeom hμ
     _ = maxTerm a r * q / (1 - q) := by ring
 
-set_option maxHeartbeats 1000000 in
 /-- **The central window carries everything.**  The majorant at radius `r` equals the sum over the
 window between the central indices at `t < r` and `s > r`, plus two geometric remainders each
 proportional to the maximum term. -/
@@ -620,7 +618,6 @@ On a compact positive interval only finitely many terms can compete for the maxi
 term is locally the maximum of finitely many monomials, hence continuous.  Continuity is what lets
 the Borel growth lemma be applied to `log mu`. -/
 
-set_option maxHeartbeats 1000000 in
 /-- On `[r₁, r₂]` the maximum term is the maximum of a fixed finite family of monomials. -/
 theorem exists_finset_maxTerm_eq_sup'
     (ha : EntireCoeffs a) {r₁ r₂ : ℝ} (hr₁ : 0 < r₁) (hle : r₁ ≤ r₂)
@@ -684,7 +681,6 @@ resulting bound is transferred to the central index through the two-sided growth
 noncomputable def logMaxTermMajorant (a : ℕ → ℂ) (r₀ : ℝ) : ℝ → ℝ :=
   fun x => 1 + Real.log (maxTerm a (max x r₀))
 
-set_option maxHeartbeats 1000000 in
 /-- **Good radii for the maximum term.**  Beyond every bound there is a radius at which `1 + log mu`
 does not double when the radius is scaled by `1 + 1/(1 + log mu(r))`. -/
 theorem exists_ge_borel_maxTerm
@@ -822,7 +818,6 @@ theorem entireCoeffs_mul_index (ha : EntireCoeffs a) :
         mul_le_mul_of_nonneg_left hbase (Nat.cast_nonneg n)
     _ = maxTerm a (2 * r) * ((n : ℝ) * ((1 : ℝ) / 2) ^ n) := by ring
 
-set_option maxHeartbeats 1000000 in
 /-- **The derivative maximum term.**  Beyond the central index at a larger radius the extra factor
 `n` is absorbed by the geometric decay, so `mu'` is at most `mu` times the central index plus a
 constant depending only on the radius ratio. -/
@@ -932,7 +927,6 @@ theorem sum_window_index_deviation_le
   exact mul_le_mul_of_nonneg_right habs (term_nonneg a hr n)
 
 
-set_option maxHeartbeats 1000000 in
 /-- **The full deviation estimate.**  Splitting at the two central indices bounds the deviation
 series by the window width times the majorant, plus two remainders each proportional to the maximum
 term, with constants fixed by the radius ratios alone. -/
@@ -1068,7 +1062,6 @@ exponentials of affine functions.  This is the second-order information that the
 bounds do not carry: the two-sided growth law only says the difference quotients of `log mu` are
 squeezed between the central indices, whereas convexity makes those quotients monotone. -/
 
-set_option maxHeartbeats 1000000 in
 /-- **Log-convexity of the maximum term.**  `u ↦ log mu(e^u)` is convex. -/
 theorem convexOn_log_maxTerm_exp (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
     ConvexOn ℝ Set.univ (fun u : ℝ => Real.log (maxTerm a (Real.exp u))) := by
@@ -1305,7 +1298,6 @@ The maximum term is below the maximum modulus, and the maximum modulus is below 
 bounds the majorant back in terms of the maximum term, with the central index as the only cost.  All
 three quantities therefore agree up to a factor linear in `nu`. -/
 
-set_option maxHeartbeats 1000000 in
 /-- **The majorant costs one central index.**  `S(r) <= mu(r) (nu(s) + 1 + (r/s)/(1 - r/s))` for any
 `s > r`: the terms up to `nu(s)` are each at most `mu(r)`, and the rest is the geometric tail. -/
 theorem coeffSum_le_maxTerm_mul_centralIndex
@@ -1388,7 +1380,6 @@ The majorant `S(r) = sum ||a_n|| r^n` is differentiated term by term, exactly as
 was.  The combination `r S'(r)` is the first moment of the modulus profile, which is the quantity the
 logarithmic-derivative estimate still has to control. -/
 
-set_option maxHeartbeats 1000000 in
 /-- **Termwise differentiation of the majorant.** -/
 theorem hasDerivAt_coeffSum (ha : EntireCoeffs a) (hr : 0 < r) :
     HasDerivAt (coeffSum a) (∑' n : ℕ, (n : ℝ) * ‖a n‖ * r ^ (n - 1)) r := by
@@ -1480,7 +1471,6 @@ modal index satisfies for the maximum term. -/
 noncomputable def meanIndex (a : ℕ → ℂ) (r : ℝ) : ℝ :=
   (∑' n : ℕ, (n : ℝ) * (‖a n‖ * r ^ n)) / coeffSum a r
 
-set_option maxHeartbeats 1000000 in
 /-- **Growth law for the mean index.**  By Jensen, the majorant grows at least like `(s/r)` to the
 mean index. -/
 theorem meanIndex_mul_log_le_log_coeffSum_sub
@@ -1559,6 +1549,86 @@ theorem slope_le_meanIndex (ha : EntireCoeffs a) (ht : 0 < t) (htr : t < r)
   have h := meanIndex_mul_log_le_log_coeffSum_sub ha hr ht hn₀
   rw [hneg] at h
   rw [div_le_iff₀ hL]
+  linarith
+
+
+/-- **The mean index is not far above the central index.**  The only cost is the logarithm of the
+majorant-to-maximum-term ratio, divided by the logarithmic spacing of the radii. -/
+theorem meanIndex_le_centralIndex_add
+    (ha : EntireCoeffs a) (hr : 0 < r) (hrs : r < s) {s' : ℝ} (hss' : s < s')
+    {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
+    meanIndex a r
+      ≤ (centralIndex a s : ℝ)
+        + Real.log (((centralIndex a s' : ℝ) + 1) + (s / s') / (1 - s / s'))
+            / Real.log (s / r) := by
+  have hs : 0 < s := lt_trans hr hrs
+  have hL : 0 < Real.log (s / r) := Real.log_pos (by rw [lt_div_iff₀ hr]; linarith)
+  obtain ⟨-, -, hμr⟩ := exists_maxTerm_eq ha hr hn₀
+  obtain ⟨-, -, hμs⟩ := exists_maxTerm_eq ha hs hn₀
+  have hSr : 0 < coeffSum a r := lt_of_lt_of_le hμr (maxTerm_le_coeffSum ha hr hn₀)
+  have hSs : 0 < coeffSum a s := lt_of_lt_of_le hμs (maxTerm_le_coeffSum ha hs hn₀)
+  set B : ℝ := ((centralIndex a s' : ℝ) + 1) + (s / s') / (1 - s / s') with hB
+  have hs'pos : 0 < s' := lt_trans hs hss'
+  have hq1 : s / s' < 1 := by rw [div_lt_one hs'pos]; exact hss'
+  have hq0 : 0 < s / s' := div_pos hs hs'pos
+  have hBpos : 0 < B := by
+    rw [hB]
+    have : 0 < (s / s') / (1 - s / s') := div_pos hq0 (by linarith)
+    have : (0 : ℝ) ≤ (centralIndex a s' : ℝ) := Nat.cast_nonneg _
+    positivity
+  have hSbound := coeffSum_le_maxTerm_mul_centralIndex ha hs hss' hn₀
+  rw [← hB] at hSbound
+  have hlogS : Real.log (coeffSum a s) ≤ Real.log (maxTerm a s) + Real.log B := by
+    have h := Real.log_le_log hSs hSbound
+    rwa [Real.log_mul (ne_of_gt hμs) (ne_of_gt hBpos)] at h
+  have hlogr : Real.log (maxTerm a r) ≤ Real.log (coeffSum a r) :=
+    Real.log_le_log hμr (maxTerm_le_coeffSum ha hr hn₀)
+  have hgrow := log_maxTerm_sub_le_centralIndex_mul_log ha hr hrs.le hn₀
+  have hslope := meanIndex_le_slope ha hr hrs hn₀
+  refine le_trans hslope ?_
+  rw [div_le_iff₀ hL]
+  have hexpand : ((centralIndex a s : ℝ) + Real.log B / Real.log (s / r)) * Real.log (s / r)
+      = (centralIndex a s : ℝ) * Real.log (s / r) + Real.log B := by
+    field_simp
+  rw [hexpand]
+  linarith
+
+/-- **The mean index is not far below the central index.** -/
+theorem centralIndex_sub_le_meanIndex
+    (ha : EntireCoeffs a) (ht : 0 < t) (htr : t < r) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
+    (centralIndex a t : ℝ)
+        - Real.log (((centralIndex a r : ℝ) + 1) + (t / r) / (1 - t / r))
+            / Real.log (r / t)
+      ≤ meanIndex a r := by
+  have hr : 0 < r := lt_trans ht htr
+  have hL : 0 < Real.log (r / t) := Real.log_pos (by rw [lt_div_iff₀ ht]; linarith)
+  obtain ⟨-, -, hμr⟩ := exists_maxTerm_eq ha hr hn₀
+  obtain ⟨-, -, hμt⟩ := exists_maxTerm_eq ha ht hn₀
+  have hSr : 0 < coeffSum a r := lt_of_lt_of_le hμr (maxTerm_le_coeffSum ha hr hn₀)
+  have hSt : 0 < coeffSum a t := lt_of_lt_of_le hμt (maxTerm_le_coeffSum ha ht hn₀)
+  set B : ℝ := ((centralIndex a r : ℝ) + 1) + (t / r) / (1 - t / r) with hB
+  have hq1 : t / r < 1 := by rw [div_lt_one hr]; exact htr
+  have hq0 : 0 < t / r := div_pos ht hr
+  have hBpos : 0 < B := by
+    rw [hB]
+    have : 0 < (t / r) / (1 - t / r) := div_pos hq0 (by linarith)
+    have : (0 : ℝ) ≤ (centralIndex a r : ℝ) := Nat.cast_nonneg _
+    positivity
+  have hSbound := coeffSum_le_maxTerm_mul_centralIndex ha ht htr hn₀
+  rw [← hB] at hSbound
+  have hlogS : Real.log (coeffSum a t) ≤ Real.log (maxTerm a t) + Real.log B := by
+    have h := Real.log_le_log hSt hSbound
+    rwa [Real.log_mul (ne_of_gt hμt) (ne_of_gt hBpos)] at h
+  have hlogr : Real.log (maxTerm a r) ≤ Real.log (coeffSum a r) :=
+    Real.log_le_log hμr (maxTerm_le_coeffSum ha hr hn₀)
+  have hgrow := centralIndex_mul_log_le_log_maxTerm_sub ha ht htr.le hn₀
+  have hslope := slope_le_meanIndex ha ht htr hn₀
+  refine le_trans ?_ hslope
+  rw [le_div_iff₀ hL]
+  have hexpand : ((centralIndex a t : ℝ) - Real.log B / Real.log (r / t)) * Real.log (r / t)
+      = (centralIndex a t : ℝ) * Real.log (r / t) - Real.log B := by
+    field_simp
+  rw [hexpand]
   linarith
 
 

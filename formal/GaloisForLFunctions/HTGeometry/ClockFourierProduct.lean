@@ -75,16 +75,11 @@ theorem cosSeries_wienerConv {ρ : ℝ} (hρ : 0 ≤ ρ) {f g : ℤ → ℝ}
     refine summable_prod_of_abs_bound hfa hga fun p => ?_
     obtain ⟨c, hc, hrep⟩ := hFrep p
     rw [hrep, abs_mul, abs_mul]
-    have hnn : (0 : ℝ) ≤ |f p.1| * |g p.2| := by positivity
-    calc |f p.1| * |g p.2| * |c| ≤ |f p.1| * |g p.2| * 1 :=
-          mul_le_mul_of_nonneg_left hc hnn
-      _ = |f p.1| * |g p.2| := mul_one _
+    exact mul_le_of_le_one_right (by positivity) hc
   have hCs : Summable C := hbound C fun p =>
     ⟨Real.cos ((p.1 : ℝ) * z) * Real.cos ((p.2 : ℝ) * z), by
       rw [abs_mul]
-      have h1 : |Real.cos ((p.1 : ℝ) * z)| ≤ 1 := Real.abs_cos_le_one _
-      have h2 : |Real.cos ((p.2 : ℝ) * z)| ≤ 1 := Real.abs_cos_le_one _
-      nlinarith [abs_nonneg (Real.cos ((p.1 : ℝ) * z)), abs_nonneg (Real.cos ((p.2 : ℝ) * z))],
+      exact mul_le_one₀ (Real.abs_cos_le_one _) (abs_nonneg _) (Real.abs_cos_le_one _),
       by rw [hC]; ring⟩
   have hPs : Summable P := hbound P fun p =>
     ⟨Real.cos ((p.1 : ℝ) * z + (p.2 : ℝ) * z), Real.abs_cos_le_one _, by rw [hP]⟩
@@ -94,13 +89,11 @@ theorem cosSeries_wienerConv {ρ : ℝ} (hρ : 0 ≤ ρ) {f g : ℤ → ℝ}
   have hfn : Summable fun j : ℤ => ‖f j * Real.cos ((j : ℝ) * z)‖ := by
     refine hfa.of_nonneg_of_le (fun _ => norm_nonneg _) fun j => ?_
     rw [Real.norm_eq_abs, abs_mul]
-    have h1 : |Real.cos ((j : ℝ) * z)| ≤ 1 := Real.abs_cos_le_one _
-    nlinarith [abs_nonneg (f j), abs_nonneg (Real.cos ((j : ℝ) * z))]
+    exact mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _)
   have hgn : Summable fun m : ℤ => ‖g m * Real.cos ((m : ℝ) * z)‖ := by
     refine hga.of_nonneg_of_le (fun _ => norm_nonneg _) fun m => ?_
     rw [Real.norm_eq_abs, abs_mul]
-    have h1 : |Real.cos ((m : ℝ) * z)| ≤ 1 := Real.abs_cos_le_one _
-    nlinarith [abs_nonneg (g m), abs_nonneg (Real.cos ((m : ℝ) * z))]
+    exact mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _)
   have hcauchy : cosSeries f z * cosSeries g z = ∑' p : ℤ × ℤ, C p :=
     tsum_mul_tsum_of_summable_norm hfn hgn
   -- product to sum

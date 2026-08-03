@@ -196,7 +196,12 @@
   `GaloisForLFunctions.RHTower.DeningerShiftFixed` (the shift preserves differences),
   `GaloisForLFunctions.RHTower.DeningerBlockInv` (the block data of a power decomposes),
   `GaloisForLFunctions.RHTower.DeningerBaseHeadEq` (equal powers of cyclically reduced elements are
-  equal)
+  equal),
+  `GaloisForLFunctions.RHTower.DeningerCycRedEltEq` (uniqueness of roots for cyclically reduced
+  words),
+  `GaloisForLFunctions.RHTower.DeningerCycLenBound` (the length bound of the cyclic reduction),
+  `GaloisForLFunctions.RHTower.DeningerPowCycRed` (an element whose power is cyclically reduced is
+  cyclically reduced)
 
 ## Statement
 
@@ -2867,3 +2872,51 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   group does not move it, which is `deningerRootHcent`.  What is left of the theorem is the
   reduction of an arbitrary element to this case — conjugating it to its cyclic reduction, which
   `deningerExists_cycData` supplies, and transporting the conclusion back along the conjugator.
+- 2026-08-03 — **Uniqueness of roots for cyclically reduced words, with no transversality
+  hypothesis.**  `deningerCycRed_transversal_form` records that a cyclically reduced word is a base
+  group element times a cyclically reduced *transversal* word: replacing each letter by its
+  transversal representative costs a base element which accumulates at the front, and the sequence of
+  factors — which is what the cyclic condition is about — is untouched.  `deningerCycRedWord_pow_eq`
+  then removes the transversality hypothesis from the previous cycle's theorem: two cyclically
+  reduced words of the same length whose positive powers agree have the same product.  The proof puts
+  both into transversal form, matches the words by `deningerBaseHead_pow_word_eq` and then the heads
+  by `deningerBaseHead_pow_eq`.
+  This matters because the cyclic reduction machinery of this card produces words that are reduced,
+  alternating and cyclically reduced, but never transversal — `deningerExists_cycData` merges letters
+  as it rotates — so the transversal statement could not have been applied to its output.  With this
+  cycle the classification is in the form the reduction consumes.
+  What is left is the reduction itself: an arbitrary element is `c · V · c⁻¹` for a cyclically
+  reduced `V`, and two elements with the same power have cyclic words of the same length by
+  `deningerLen_eq_of_pow_eq`, so the conjugacy criterion for powers `deningerConj_pow_cycRed` turns
+  the relation into one between the cyclic words, which this cycle's theorem settles.  Transporting
+  the answer back through the conjugators is the remaining step, and it is where the centralizer of
+  a cyclically reduced element has to be identified.
+- 2026-08-03 — **The cyclic reduction carries a length bound, and that bound is the criterion for
+  being cyclically reduced.**  `deningerExists_cycData_len` re-runs the cyclic reduction recursion
+  carrying one extra clause, `V.length ≤ R.length`.  The clause propagates trivially: the base case
+  has `V = R`, the step in which the merged letter survives leaves the tail length unchanged, and the
+  step in which it falls into the base group shortens the cyclic word by one more.  What the clause
+  buys is `deningerCycRed_of_cycLen_eq`: since the word splits as `C ++ R`, a word at least as long
+  as its cyclic word has `C.length + R.length ≤ V.length ≤ R.length`, so the conjugator is empty and
+  the word is its own cyclic word.
+  This is the missing criterion for the reduction.  An element whose `N`-th power is cyclically
+  reduced of length `Nℓ` has, by the length formula `deningerLen_conj_pow`,
+  `|C| + (N-1)ℓ + |R| = Nℓ`, hence word length `ℓ`, which is its cyclic length; the criterion then
+  says the element is itself cyclically reduced, so `deningerCycRedWord_pow_eq` applies to it.  The
+  remaining assembly is to run that computation: cyclically reduce the common power, conjugate both
+  elements by the same conjugator, apply the criterion to each, and conclude.
+- 2026-08-03 — **An element whose power is cyclically reduced is cyclically reduced.**
+  `deningerCycRed_of_pow` runs the computation the previous cycle set up.  The length of the `k`-th
+  power of an element is its conjugator length plus `k-1` times its cyclic length plus its tail
+  length (`deningerLen_conj_pow`), so evaluating at two exponents — `n+1` and `2n+2` — and comparing
+  with the length of the cyclically reduced power, which is its word length and doubles under
+  squaring, reads off `(n+1)·|V| = |V₀|` and then `|C| + |R| ≤ |V|`.  The criterion
+  `deningerCycRed_of_cycLen_eq` then empties the conjugator, so the element equals its own cyclic
+  word, and the cyclic length is the length of the power divided by the exponent.
+  This is the last structural ingredient.  The reduction now reads: cyclically reduce the common
+  power `z = x^N`, conjugate `x` and `y` by the conjugator that does it, apply this theorem to each
+  to see that both are cyclically reduced words, and finish with `deningerCycRedWord_pow_eq`, which
+  settles equal powers of cyclically reduced words.  The one case it does not cover is a cyclic word
+  of length one, where the length formula is unavailable because a single letter is not cyclically
+  reduced; there the element is conjugate into a factor, and the factor case
+  `deningerRootAdjunction_pow_eq_of_factors` applies instead.

@@ -69,9 +69,8 @@ theorem sq_le_exp_weight {ρ : ℝ} (hρ : 0 < ρ) (k : ℤ) :
 theorem summable_abs_of_wienerSummable {ρ : ℝ} (hρ : 0 ≤ ρ) {g : ℤ → ℝ}
     (hg : WienerSummable ρ g) : Summable fun k : ℤ => |g k| := by
   refine hg.of_nonneg_of_le (fun _ => abs_nonneg _) fun k => ?_
-  have h1 : (1 : ℝ) ≤ Real.exp (ρ * |(k : ℝ)|) :=
-    Real.one_le_exp (mul_nonneg hρ (abs_nonneg _))
-  nlinarith [abs_nonneg (g k)]
+  exact le_mul_of_one_le_right (abs_nonneg _)
+    (Real.one_le_exp (mul_nonneg hρ (abs_nonneg _)))
 
 theorem summable_of_wienerSummable {ρ : ℝ} (hρ : 0 ≤ ρ) {g : ℤ → ℝ}
     (hg : WienerSummable ρ g) : Summable g :=
@@ -133,11 +132,7 @@ theorem hasDerivAt_cosSeries {ρ : ℝ} (hρ : 0 < ρ) {g : ℤ → ℝ} (hg : W
     (y₀ := 0) (summable_absMul hρ hg) (fun k y => hasDerivAt_cos_term _ _ _) ?_ ?_ z
   · intro k y
     rw [Real.norm_eq_abs, abs_mul, abs_neg, abs_mul]
-    have hsin : |Real.sin ((k : ℝ) * y)| ≤ 1 := Real.abs_sin_le_one _
-    have hnn : (0 : ℝ) ≤ |g k| * |(k : ℝ)| := by positivity
-    calc |g k| * |(k : ℝ)| * |Real.sin ((k : ℝ) * y)| ≤ |g k| * |(k : ℝ)| * 1 :=
-          mul_le_mul_of_nonneg_left hsin hnn
-      _ = |g k| * |(k : ℝ)| := mul_one _
+    exact mul_le_of_le_one_right (by positivity) (Real.abs_sin_le_one _)
   · simpa using summable_of_wienerSummable hρ.le hg
 
 /-- **The sine series may be differentiated term by term.** -/
@@ -150,11 +145,7 @@ theorem hasDerivAt_sinSeries {ρ : ℝ} (hρ : 0 < ρ) {g : ℤ → ℝ} (hg : W
     (y₀ := 0) (summable_absMul hρ hg) (fun k y => hasDerivAt_sin_term _ _ _) ?_ ?_ z
   · intro k y
     rw [Real.norm_eq_abs, abs_mul, abs_mul]
-    have hcos : |Real.cos ((k : ℝ) * y)| ≤ 1 := Real.abs_cos_le_one _
-    have hnn : (0 : ℝ) ≤ |g k| * |(k : ℝ)| := by positivity
-    calc |g k| * |(k : ℝ)| * |Real.cos ((k : ℝ) * y)| ≤ |g k| * |(k : ℝ)| * 1 :=
-          mul_le_mul_of_nonneg_left hcos hnn
-      _ = |g k| * |(k : ℝ)| := mul_one _
+    exact mul_le_of_le_one_right (by positivity) (Real.abs_cos_le_one _)
   · simp
 
 /-- An integer is dominated by its square. -/

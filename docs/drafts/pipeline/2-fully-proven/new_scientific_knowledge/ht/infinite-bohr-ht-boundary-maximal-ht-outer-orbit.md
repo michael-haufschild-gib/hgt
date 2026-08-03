@@ -2421,3 +2421,73 @@ Started, and now formal:
 Remaining for (2): the rescaled-mean extraction of polynomial coefficients, the expansion of a
 differential relation into an almost periodic series with polynomial coefficients, and the
 conclusion.
+
+## Claim (2): the polynomial-coefficient obstacle is cleared
+
+`PolynomialBohrVanishing.lean` (wired, axiom-clean):
+
+    eq_zero_of_polynomialCombination_bohr :
+      (forall d, IsBohrAlmostPeriodic (G d)) -> (forall d, G d bounded) ->
+      forall D, (forall t : R, sum_{d <= D} t^d * G d t = 0) -> forall d <= D, G d = 0
+
+This is the step the Bohr mean cannot do.  Dividing the identity by `t^D` leaves the top coefficient
+plus terms of size `O(1/t)`, so the top coefficient function tends to zero at `+infinity`; the
+corpus's `eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero` then makes it identically zero, and
+downward induction kills the rest.  No mean value, no divergent integral.
+
+With `monomialFrequency_injective` this gives both halves of Ostrowski's argument in the abstract:
+
+- a relation restricted to the real line is `sum_{d} t^d G_d(t) = 0` with each `G_d` an absolutely
+  convergent exponential series, hence bounded and almost periodic, so every `G_d` vanishes;
+- each `G_d` is a series whose amplitudes are indexed by monomials in the jets, and distinct
+  monomials sit at distinct frequencies, so `bohrCoefficient_expSeriesCarrier` reads off one
+  monomial's coefficient at a time.
+
+Remaining for (2): the expansion itself -- writing the jets of `cexpSeriesCarrier` and their
+monomials as exponential series with the amplitudes indexed by monomials -- and the bookkeeping that
+turns "every amplitude vanishes" into "the relation polynomial is zero".
+
+## Claim (2): exponential series are closed under products and differentiation
+
+`ExponentialSeriesAlgebra.lean` (wired, axiom-clean) supplies the expansion algebra:
+
+- `expSeriesCarrier_mul` -- a product of two absolutely convergent exponential series is an
+  exponential series indexed by the pairs, with the frequencies **added** (Cauchy product of
+  absolutely convergent series, plus `expChar_add`);
+- `ExpSeriesNormallySummable.deriv` -- normal summability survives differentiation: the extra factor
+  `|omega_i|` is absorbed by `|x| <= exp |x|` into the next exponential weight, so the amplitudes
+  `a_i * i omega_i` are again normally summable at every radius;
+- `deriv_cexpChar` -- the character's derivative.
+
+These are the three facts that turn "a monomial in the jets of a carrier" into "an exponential
+series": each jet is a carrier with amplitudes scaled by `(i omega)^k`, and a monomial is a finite
+product of carriers, hence a carrier indexed by tuples with frequencies summed.
+
+The pieces of (2) now standing are: the frequency separation
+(`monomialFrequency_injective`), the polynomial-coefficient vanishing
+(`eq_zero_of_polynomialCombination_bohr`), and this expansion algebra.  What remains is the
+assembly -- the termwise derivative of the series itself (`deriv (cexpSeriesCarrier a omega)
+= cexpSeriesCarrier (a * i omega) omega`, from the corpus's locally uniform convergence), the
+identification of a monomial's amplitude at a given frequency, and the descent from "all amplitudes
+vanish" to "the relation is zero".
+
+## Claim (2): termwise differentiation of the carrier
+
+    deriv_cexpSeriesCarrier :
+      ExpSeriesNormallySummable a omega ->
+      deriv (cexpSeriesCarrier a omega)
+        = cexpSeriesCarrier (fun i => a i * (I * omega i)) omega
+
+Termwise differentiation is legitimate because the partial sums converge locally uniformly
+(`tendstoLocallyUniformly_cexpSeries`, corpus-owned) and are differentiable, so
+`TendstoLocallyUniformlyOn.deriv` transports the convergence to the derivatives; the limit is
+identified pointwise against the series of scaled amplitudes, which is summable by
+`ExpSeriesNormallySummable.deriv`.
+
+Iterating gives every jet of the carrier as a carrier with amplitudes `a_i (i omega_i)^k`, and
+`expSeriesCarrier_mul` then makes every monomial in the jets a carrier indexed by tuples.  Together
+with `monomialFrequency_injective` and `eq_zero_of_polynomialCombination_bohr`, the three inputs of
+Ostrowski's argument are now all formal.
+
+Remaining: the iterated-derivative form (`iteratedDeriv k` of the carrier), the amplitude of a
+monomial at a fixed frequency, and the final descent to `not DifferentiallyAlgebraicOn`.
