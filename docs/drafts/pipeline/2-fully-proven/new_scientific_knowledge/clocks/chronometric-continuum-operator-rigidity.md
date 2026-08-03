@@ -4,11 +4,11 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM / CONTINUUM GRAVITY / TIME / CAUSALITY / INVERSE LAW
 - **Parent:** `../../1-in-progress/continuum-chronometric-equivalence-theorem.md`
-- **Status:** dependency-closed paper proof. Continuum-indexed polarization, graph rigidity,
-  Ramsey phase recovery, the tangent-bundle and chart lifts, the quotient lift under
-  label-preserving frame automorphisms, and ordered-product recovery for a regular pulse family
-  are all unconditional in Lean. Only the unbounded-generator (Fock-space Weyl) realization of the
-  pulse family remains open.
+- **Status:** dependency-closed paper proof, fully formalized. Continuum-indexed polarization,
+  graph rigidity, Ramsey phase recovery, the tangent-bundle and chart lifts, the quotient lift
+  under label-preserving frame automorphisms, and ordered-product recovery for a regular pulse
+  family with unbounded generators are all unconditional in Lean. No stated theorem of this card
+  is unformalized.
 
 ## Headline
 
@@ -276,10 +276,11 @@ Formalize unconditionally:
    fields;
 4. [complete] two-quadrature Ramsey recovery;
 5. [complete] nine null-order comparisons plus one tick determine a symmetric four-metric;
-6. [complete for bounded generators] ordered-product recovery by characteristic-functional
-   differentiation;
+6. [complete] ordered-product recovery by characteristic-functional differentiation, for a regular
+   family with unbounded generators;
 7. [complete] smooth tangent-bundle/chart lift;
-8. [complete] quotient lift under label-preserving equivalences.
+8. [complete] quotient lift under label-preserving equivalences;
+9. [complete] the pointwise inverse-law form `(6)` on a region where the law is bijective.
 
 The existing all-orders symmetric multilinear polarization theorem supplies a stronger reusable
 dependency for item 1.
@@ -304,7 +305,10 @@ polarization argument is fiberwise, so it lifts to a family of fibers indexed by
   charted smooth manifold;
 - `SmoothPseudoMetric.squaredInterval_injective`,
   `SmoothPseudoMetric.chronometricOperatorRigidity` — the chart lift, for a smooth nondegenerate
-  symmetric matrix metric field.
+  symmetric matrix metric field;
+- `law_eq_invFun_encode_comp_symm`, `injective_encode_comp_symm` — Corollary 3, equation `(6)`:
+  on a region where the law is bijective it equals the inverse of the induced source-to-clock map
+  composed with the clock encoding.
 
 `formal/GaloisForLFunctions/HTGeometry/ChronometricQuotientRigidity.lean` — item 8, which answers
 hostile-audit point 1. Equality of laws is replaced by equivalence, not weakened away:
@@ -335,11 +339,39 @@ hostile-audit point 1. Equality of laws is replaced by equivalence, not weakened
 - `ordered_correlation_of_ramsey_quadratures` — composed with the two-quadrature recovery: any
   reported functional with the same Ramsey quadratures yields the same ordered correlations.
 
+`formal/GaloisForLFunctions/HTGeometry/ChronometricRegularPulseTomography.lean` — item 6 in the
+generality Lemma 4 states it, with **unbounded** generators. The hypotheses are exactly: each pulse
+is a bounded operator at fixed coupling, the generators are linear maps of one common invariant
+domain, and each pulse family is differentiable at zero coupling on that domain with derivative `i`
+times its generator. No continuity, boundedness, self-adjointness or group law is assumed:
+
+- `nestedRealDerivAtZero` — the iterated mixed derivative at zero in real couplings;
+- `orderedPulseApply`, `orderedGenerator` — the ordered pulse family and the ordered composite of
+  the generators as a linear map of the domain;
+- `nestedRealDerivAtZero_orderedPulseApply` — **equation `(9)`**: the mixed derivative of the
+  characteristic functional equals `iⁿ ω(Φ_0 ⋯ Φ_{n-1} v)`;
+- `exists_regularPulseFamily` — the hypothesis class is inhabited.
+
+`formal/GaloisForLFunctions/HTGeometry/ChronometricUnboundedPulseModel.lean` — the class contains
+genuinely unbounded generators, so `(9)` is not a disguised Banach-algebra statement:
+
+- `finiteSupportSeq` — finitely supported bounded sequences, the common invariant domain inside the
+  supremum-norm space `ℕ →ᵇ ℂ`;
+- `natPulse` — multiplication by the unimodular sequence `k ↦ e^{itk}`, a bounded operator;
+- `natGenerator` — multiplication by the unbounded sequence `k ↦ k`, a linear endomorphism of the
+  domain;
+- `hasDerivAt_natPulse` — the regular-family derivative property, proved from the elementary bound
+  `‖e^z - 1 - z‖ ≤ ‖z‖²`;
+- `natGenerator_unbounded` — no constant controls the generator's norm on the domain;
+- `exists_unbounded_regularPulseFamily` — a regular pulse family all of whose generators are
+  unbounded.
+
 All of these depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
-Still open: realizing the pulse family by unbounded field operators `Φ(f)` on a Fock space, where
-`exp(iλΦ(f))` is a Weyl operator rather than a Banach-algebra exponential. That is a
-functional-analytic construction, not a gap in `(9)`.
+The Fock-space *instantiation* — constructing Segal field operators and their Weyl unitaries — is a
+separate object construction absent from mathlib and from this corpus. It is an input to `(9)`, not
+a gap in it: any such construction supplies the three hypotheses above and the theorem then applies
+verbatim.
 
 ## Primary sources and closest collisions
 

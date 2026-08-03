@@ -197,6 +197,12 @@ algebra is a Maurer--Cartan hologram of the deck closure.
 
 ### Parent results deliberately separated
 
+- Hasse--Schmidt jet spaces via truncated higher derivations: Vojta,
+  <https://arxiv.org/abs/math/0407113>, and the generalized prolongation formalism of
+  Moosa--Scanlon, <https://arxiv.org/abs/0908.4230>;
+- right Maurer--Cartan trivialization of finite jet bundles for Lie groups: Vizman,
+  <https://arxiv.org/abs/1304.5024>.  This is supporting finite-order geometry, not a substitute
+  for the still-open algebraic smooth-group/Lie-coordinate proof;
 - finite isogenies are quotients by their kernels: classical algebraic-group theory;
 - the logarithmic derivative has constant-point fibres: Kolchin differential algebra;
 - constant-group orbit quotients admit generalized Schwarzians: Scanlon 2018;
@@ -248,17 +254,35 @@ The 2026-08-03 formalization pass added four dependency modules and wired them i
   fixed-field theorem, derives the closed-deck stable-core equality from finite deck quotients plus
   closed stabilizers (rather than assuming the fixed-field closure equality), and constructs the
   quotient automorphism induced by an open continuous surjective isogeny.
+- `AlgebraicGroupJet.lean` constructs the genuine truncated arc algebra
+  `R[t]/(t^(n+1))`, its augmentation and order maps, scheme-valued jets of arbitrary (including
+  non-affine) group schemes, constant jets, evaluation, order restriction, target functoriality,
+  and coefficient-algebra prolongation.  Identity and composition of coefficient prolongations
+  are proved rather than assumed;
+- `AlgebraicGroupInfiniteJet.lean` constructs `J^infinity G(R)` as the subgroup of coherent
+  families in the inverse limit of all finite jet groups, with projections, constant section,
+  evaluation, infinite-order Maurer--Cartan product coordinates, and quotient by constant jets.
+  For every subgroup `H <= G(R)` it proves the exact group-valued position--velocity split
+  `J^infinity G(R)/H ~= (G(R)/H) x basedJets`;
+- `MaurerCartanJetQuotient.lean` proves the finite-order commutative-group Maurer--Cartan
+  normalization.  For every commutative group scheme it gives unconditional equivalences
+  `J^nG(R) ~= G(R) x ker(eval)` and
+  `J^nG(R) / constant(G(R)) ~= ker(eval)`.
 
-Direct `lake env lean <file>` checks pass for all four files.  This does **not** yet close the
+Direct `lake env lean <file>` checks pass for all seven files.  This does **not** yet close the
 Stage 2 -> 3 gate.  Exact remaining Lean cores are:
 
 1. finite-etale constant group quotients commute with every jet/prolongation level and yield
    `alpha^(n*) K = K^(ker(alpha^n)(C))`;
 2. Zariski closedness of every finite-order differential-rational translation stabilizer for the
    actual algebraic-group jet action (the new topological theorem consumes precisely this fact);
-3. construction of `J^infinity G`, the algebraic-group quotient `G/H`, and the birational
-   Maurer--Cartan jet trivialization proving
-   `K^(H(C)) = C<pi(g), ell_delta(g)>`;
+3. representability/function-field infrastructure for the now-formal inverse-limit point functor
+   `J^infinity G`, the algebraic-group quotient `G/H`, and the smooth characteristic-zero
+   identification of identity-based finite jets with iterated Lie data.  Finite- and
+   infinite-order quotients by every subgroup of constant points, including their quotient-position
+   factor, are now formal at functor-of-points group level, but the resulting function-field
+   invariant-generation theorem
+   `K^(H(C)) = C<pi(g), ell_delta(g)>` is not;
 4. differential genericity/dominance of `ell_delta`, connecting the now-formal cardinal
    differential transcendence degree to `dim G`;
 5. scheme-level descent from `G` to `G/F`.  The fixed-field/stable-core part after descent is now
@@ -291,3 +315,9 @@ critical line, or positivity is made.
   reversibility, and commuting-holonomy stable-core restriction formalized unconditionally.
   Full card remains Stage 2 pending the five explicit algebraic-group jet foundations listed in
   Lean status; no conditional restatement was counted as completion.
+- 2026-08-03 -- General finite-order algebraic-group jet/prolongation foundation added from
+  truncated arc algebras, together with unconditional Maurer--Cartan normalization and quotient by
+  constant jets.  The coherent inverse-limit infinite jet group and its quotient by constant jets
+  were then formalized.  Card remains Stage 2: representability and invariant function fields,
+  smooth Lie-coordinate identification, finite-etale quotient compatibility, and scheme quotient
+  descent remain explicit open cores.

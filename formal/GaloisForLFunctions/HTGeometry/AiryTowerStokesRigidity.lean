@@ -95,7 +95,7 @@ theorem gcd_eq_nextRamification {R beta : ℕ} (c : Characteristic R beta) :
   | step _ _ _ hgcd => simpa [nextRamification] using hgcd
 
 /-- A proper positive divisor is at most half its multiple. -/
-private theorem twice_le_of_dvd_of_lt {E R : ℕ} (hE : 0 < E) (hdvd : E ∣ R) (hlt : E < R) :
+private theorem twice_le_of_dvd_of_lt {E R : ℕ} (_hE : 0 < E) (hdvd : E ∣ R) (hlt : E < R) :
     2 * E ≤ R := by
   obtain ⟨q, rfl⟩ := hdvd
   have hq : 1 < q := by nlinarith
@@ -103,7 +103,7 @@ private theorem twice_le_of_dvd_of_lt {E R : ℕ} (hE : 0 < E) (hdvd : E ∣ R) 
 
 /-- There is no nontrivial gcd multiple strictly between `R-E` and `R+E` except `R`, whose gcd
 with `R` is too large.  This is the discrete gap driving the negative half of the sign law. -/
-theorem le_sub_of_lt_add_gcd {R beta E : ℕ} (hE : 0 < E) (hER : E < R)
+theorem le_sub_of_lt_add_gcd {R beta E : ℕ} (_hE : 0 < E) (hER : E < R)
     (hgcd : Nat.gcd R beta = E) (hlt : beta < R + E) :
     beta ≤ R - E := by
   have hEdvdR : E ∣ R := by

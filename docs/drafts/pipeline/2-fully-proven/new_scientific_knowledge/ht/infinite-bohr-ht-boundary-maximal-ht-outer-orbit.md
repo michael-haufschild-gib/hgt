@@ -466,8 +466,59 @@ flow, which mathlib has only for finite tori.
      This is exactly the injectivity of the card's hull map `α : T^N → Hol(C)` at the level of
      boundary values.
 
-   What remains of this step is the holomorphic side: normal convergence of `A_λ` on compacts of the
-   complex plane and continuity of `α` into the compact-open topology.
+   The holomorphic side is now done as well.  `ComplexExponentialSeriesCarrier.lean` (wired,
+   axiom-clean) proves for the entire carrier `A_λ(z) = ∑ a_i e^(i ω_i z)`:
+
+   - `cexpChar`, `norm_cexpChar` (`‖e^(iωz)‖ = e^(-ω Im z)`), `ExpSeriesNormallySummable` -- the
+     card's condition (1);
+   - `norm_term_le_of_mem_closedBall`, **`tendstoUniformlyOn_cexpSeries`**,
+     **`tendstoLocallyUniformly_cexpSeries`** -- normal convergence on every closed ball, hence on
+     every compact set;
+   - **`differentiable_cexpSeriesCarrier`** -- the carrier is entire, by the Weierstrass
+     locally-uniform-limit theorem;
+   - `cexpSeriesCarrier_ofReal` -- on the real line it is the almost periodic carrier of the same
+     data, so the Bohr coefficients above are its boundary coefficients;
+   - **`cexpSeriesCarrier_phase_injective`** -- consequently the holomorphic hull map is injective:
+     two phase assignments of the same nonvanishing amplitude family whose entire carriers agree are
+     equal.
+
+   The estimate that drives the hull topology is also proved:
+
+   - `expSeriesNormallySummable_phase` -- damping by any bounded phase family preserves the
+     normal-summability hypothesis, so every `A_λ` is entire with the same weights;
+   - **`norm_cexpSeriesCarrier_phase_sub_partial_le`** -- on every closed ball the distance from
+     `A_λ` to its partial sum is at most the tail `∑_(i ∉ S) ‖a_i‖ e^(R|ω_i|)`, *independently of the
+     phase family*.
+
+   The two-phase form of the estimate is proved as well:
+
+   - `norm_cexpChar_le_of_mem_closedBall` and
+     **`norm_cexpSeriesCarrier_phase_sub_phase_le`** -- on every closed ball two phase-modulated
+     carriers differ by at most the weighted head distance over a finite frequency set plus twice
+     the tail of the remaining weights.  The tail does not see the phases and the head depends on
+     finitely many phase coordinates, which is exactly the `ε/3` input for compact-open continuity.
+
+   **Step 2 is now closed.**  `BohrHullContinuity.lean` (wired, axiom-clean) assembles it:
+
+   - `exists_finset_tsum_compl_lt_real`, `summable_norm_of_expSeriesNormallySummable` -- the tail
+     selection and the plain summability of the amplitudes;
+   - `bohrHullMap` -- the hull map `T^N → C(C, C)`, `λ ↦ A_λ`, valued in continuous (indeed entire)
+     functions;
+   - **`continuous_bohrHullMap`** -- continuity for the topology of uniform convergence on compacts:
+     on a compact set the phase-uniform tail gives `ε/2`, and the head is a continuous function of
+     finitely many phase coordinates vanishing at the base point;
+   - **`injective_bohrHullMap`** -- injectivity from Bohr--Fourier uniqueness;
+   - **`isClosedEmbedding_bohrHullMap`** -- hence the hull map is a closed embedding: `T^N` is
+     compact and `C(C, C)` is Hausdorff.  The hull is a homeomorphic copy of the infinite phase
+     torus, which is claim (3) of the boundary theorem.
+
+3'. **Disjointness is now available in the form the card uses.**
+   **`expSeriesCarrier_phase_eq_of_tendsto_zero`** (in `BohrExponentialSeriesCoefficient.lean`):
+   if two phase-modulated carriers of the same nonvanishing amplitude family differ by a function
+   decaying at `+∞`, then the phases coincide.  The difference is Bohr almost periodic, so the
+   corpus's vanishing lemma forces it to be identically zero, and Bohr--Fourier uniqueness then
+   identifies the phases.  This is exactly step (15) of the card's disjointness proof, with the
+   Stieltjes decay (7) as its hypothesis.
 3. **Closure and disjointness** of `O_n` and `B_n`, which needs the Stieltjes limit (7) and the
    almost-periodicity argument of (15).
 4. **Imported inputs.**  Ostrowski's hypertranscendence theorem for generalized Dirichlet series and

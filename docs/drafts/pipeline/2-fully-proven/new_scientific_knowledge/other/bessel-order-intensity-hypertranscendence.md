@@ -5,7 +5,10 @@
 - **Type:** THEOREM (paper) / DIFFERENCE GALOIS THEORY / BLACK-HOLE RESPONSE
 - **Statement:** For every real `s > 0`, both `ν ↦ K_ν(s)` and
   `ν ↦ K_ν(s) K_{ν-2}(s)` are hypertranscendental over `ℂ(ν)`.
-- **Status:** `[PROVED HERE]` on paper; novelty search found no collision; Lean formalization open.
+- **Status:** `[PROVED HERE]` on paper; novelty search found no collision; Lean formalization has
+  closed every analytic, recurrence, scalar-annihilator, progression-growth, and factorial-growth
+  obligation. The exact Dreyfus higher-order classification theorem remains unformalized, so this
+  card is not promoted.
 
 ## Theorem
 
@@ -200,11 +203,11 @@ backreaction, and collapse stability remain outside the model.
 
 - [ ] Formalize the needed special case of Dreyfus's DA-to-periodic-exponential theorem, with no
   axioms.
-- [ ] Define order-variable \(K_\nu(s)\) from `(2)` and prove entire dependence, reflection,
+- [x] Define order-variable \(K_\nu(s)\) from `(2)` and prove entire dependence, reflection,
   recurrence, and real positivity.
-- [ ] Formalize the symmetric-square system `(5)` and scalar-annihilator existence `(7)`.
-- [ ] Formalize periodic-progression exponential-polynomial upper growth.
-- [ ] Formalize recurrence lower bounds `(10)`--`(11)` and the growth contradiction.
+- [x] Formalize the symmetric-square system `(5)` and scalar-annihilator existence `(7)`.
+- [x] Formalize periodic-progression rational-exponential upper growth.
+- [x] Formalize recurrence lower bounds `(10)`--`(11)` and the growth contradiction.
 - [ ] Prove affine-change and nonzero-DA-factor preservation for the physical scan.
 
 ## Primary sources
@@ -233,3 +236,14 @@ backreaction, and collapse stability remain outside the model.
 - 2026-07-28 — Dreyfus plus exact recurrence-growth proof closed for \(K_\nu(s)\) and
   \(K_\nu(s)K_{\nu-2}(s)\).
 - 2026-07-28 — universal extremality phase interpretation rejected; exact model corollary retained.
+- 2026-08-03 — formalized the Schlaefli carrier, entire order dependence, conjugation, reflection,
+  strict real positivity, and the exact order recurrence in `BesselOrderIntegral` and
+  `BesselOrderRecurrence`.
+- 2026-08-03 — formalized the explicit symmetric-square scalar annihilator with nonzero polynomial
+  endpoints, formulas `(10)`--`(11)`, exact modulus identity on the physical line, and exclusion of
+  every rational-exponential progression representation in `BesselOrderIntensityShift`,
+  `BesselOrderFactorialGrowth`, `BesselOrderIntensity`,
+  `RationalExponentialProgressionGrowth`, and `BesselOrderDreyfusSeam`.
+- 2026-08-03 — formal audit isolated one remaining dependency: Dreyfus Theorem 1/Corollary 2 itself
+  (parameterized Picard--Vessiot/difference-Galois classification). No corresponding formal theory
+  exists in mathlib or this repository; no axiom or conditional substitute was introduced.

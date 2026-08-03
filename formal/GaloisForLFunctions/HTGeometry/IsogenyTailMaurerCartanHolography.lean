@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.DifferentialHorizonInterface
 import GaloisForLFunctions.HTGeometry.DifferentialTranscendenceDegree
 import GaloisForLFunctions.HTGeometry.FixedFieldStableCoreRestriction
 import GaloisForLFunctions.HTGeometry.IsogenyKernelClosure
+import GaloisForLFunctions.HTGeometry.AlgebraicGroupInfiniteJet
 
 /-!
 # Isogeny-tail Maurer–Cartan holography foundations

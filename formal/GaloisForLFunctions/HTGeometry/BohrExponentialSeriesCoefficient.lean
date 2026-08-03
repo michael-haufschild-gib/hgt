@@ -142,6 +142,33 @@ theorem expSeriesCarrier_phase_injective {a : ι → ℂ} {omega : ι → ℝ} {
   rw [h, hmu] at hlam
   exact mul_left_cancel₀ (hane k) hlam.symm
 
+
+/-- **Decay at one end forces equal phases.**  If two phase-modulated carriers of the same
+nonvanishing amplitude family differ by a function decaying at `+∞`, the phases coincide: the
+difference is Bohr almost periodic, hence identically zero.
+
+This is the disjointness mechanism of an almost periodic boundary: an orbit point which converges to
+a boundary point can only do so by being that boundary point. -/
+theorem expSeriesCarrier_phase_eq_of_tendsto_zero {a : ι → ℂ} {omega : ι → ℝ} {lam mu : ι → ℂ}
+    (halam : Summable fun i => ‖a i * lam i‖) (hamu : Summable fun i => ‖a i * mu i‖)
+    (hane : ∀ i, a i ≠ 0) (hinj : Function.Injective omega)
+    (hzero : Filter.Tendsto
+      (fun t : ℝ => expSeriesCarrier (fun i => a i * lam i) omega t
+        - expSeriesCarrier (fun i => a i * mu i) omega t) Filter.atTop (nhds 0)) :
+    lam = mu := by
+  have hlamC := continuous_expSeriesCarrier halam omega
+  have hmuC := continuous_expSeriesCarrier hamu omega
+  have hlamA := isBohrAlmostPeriodic_expSeriesCarrier halam omega
+  have hmuA := isBohrAlmostPeriodic_expSeriesCarrier hamu omega
+  have hdiffA : HTGeometry.IsBohrAlmostPeriodic
+      (fun t => expSeriesCarrier (fun i => a i * lam i) omega t
+        - expSeriesCarrier (fun i => a i * mu i) omega t) :=
+    isBohrAlmostPeriodic_sub hlamC hlamA hmuC hmuA
+  have hvanish := HTGeometry.eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero hdiffA hzero
+  refine expSeriesCarrier_phase_injective halam hamu hane hinj ?_
+  funext t
+  exact sub_eq_zero.mp (hvanish t)
+
 end
 
 end GaloisForLFunctions

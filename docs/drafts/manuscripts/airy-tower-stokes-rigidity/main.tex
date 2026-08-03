@@ -1,0 +1,976 @@
+\documentclass[11pt,a4paper]{amsart}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[margin=3.05cm]{geometry}
+\usepackage{xcolor}
+\definecolor{linkcol}{rgb}{0.10,0.20,0.50}
+\usepackage[colorlinks=true,linkcolor=linkcol,citecolor=linkcol,urlcolor=linkcol]{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\CC}{\mathbb C}
+\newcommand{\NN}{\mathbb N}
+\newcommand{\QQ}{\mathbb Q}
+\newcommand{\ZZ}{\mathbb Z}
+\newcommand{\Ram}{\operatorname{Ram}}
+\newcommand{\Irr}{\operatorname{Irr}}
+\newcommand{\Slope}{\operatorname{Slope}}
+\newcommand{\Spec}{\operatorname{Spec}}
+\newcommand{\Loop}{\operatorname{Loop}}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\lcm}{\operatorname{lcm}}
+\newcommand{\muR}{\boldsymbol\mu}
+\newcommand{\leanname}[1]{\nolinkurl{#1}}
+\emergencystretch=1.5em
+
+\begin{document}
+
+\title[Zero-loop rigidity in Stokes geometry]{Zero-loop rigidity and exact recognition\
+for ramified nonabelian Hodge graphs}
+
+\author{M.~Haufschild}
+\address{Independent researcher}
+\email{haufschildmichael@gmail.com}
+
+\date{3 August 2026}
+
+\subjclass[2020]{Primary 34M40, 14D24; Secondary 14H60, 32G34, 57K10, 68V20}
+\keywords{irregular nonabelian Hodge theory, Stokes geometry, fission tree, Puiseux
+characteristic, ultrametric, Fourier transform, formal verification}
+
+\begin{abstract}
+The core diagram of a wild nonabelian Hodge space may have twisted vertices, multiple edges and
+loops.  We classify the ramified vertices whose diagonal multiplicity vanishes.  If a Stokes circle
+has characteristic exponents $\beta_1/r>\cdots>\beta_m/r$ and strict cumulative gcd chain
+$r=e_0>e_1>\cdots>e_m=1$, then the sign of its diagonal multiplicity is the sign of the first
+nonzero difference
+\[
+  \beta_i-(e_{i-1}+e_i).
+\]
+Consequently the loop vanishes exactly when $\beta_i=e_{i-1}+e_i$ at every level.  We call these
+characteristics Airy towers.  They are classified by strict divisor chains, equivalently ordered
+multiplicative factorizations of $r$.  They lie on the all-negative branch of Hiroe's local
+Fourier--Euclidean reduction, and include $2^{k-1}$ types at ramification $p^k$.
+
+The local rigidity has global consequences.  We compute the core of any leading-separated family,
+determine the exact two-circle edge spectrum on the elementary locus, and prove a finite-fibre
+theorem after ramification decoration.  For simple Airy circles of ramifications $r,s>1$, the edge
+spectrum is
+\[
+ \{\max(r,s)\}\cup rs\NN_{>0}\quad(r\ne s),\qquad
+ \{0,1,\ldots,r\}\cup r^2\NN_{>0}\quad(r=s).
+\]
+Thus two ramification-two vertices never have edge $3$, an obstruction invisible to the known
+two-vertex ultrametric condition.  Finally, we prove an exact recognition theorem for arbitrary
+finite elementary decorated graphs: pair-spectrum membership together with the rescaled
+ultrametric inequalities is necessary and sufficient.  The proof reconstructs Puiseux polynomials
+from a finite dendrogram.  The arithmetic and finite-cophenetic core, including the strict sign
+law, is verified unconditionally in Lean~4.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+Wild nonabelian Hodge theory attaches hyperk\"ahler moduli spaces to irregular connections and
+meromorphic Higgs bundles on curves \cite{BiquardBoalch2004}.  On the affine line, formal
+singularity data determine a diagram whose symmetric integer matrix is a generalized Cartan matrix
+for the corresponding nonabelian Hodge space \cite{BoalchYamakawa2020}.  Untwisted irregular types
+give fission graphs.  Ramification changes the picture: loops and negative entries may occur, and
+even a loopless nonnegative diagram need not be a fission graph.
+
+Two recent developments make a sharp local analysis possible.  First, fission trees give the
+discrete classification of admissible deformation classes, including arbitrary twisted type-$A$
+formal structures \cite{BoalchDoucotRembado2025}.  Second, Dou\c cot wrote the loop and edge
+multiplicities directly in terms of Puiseux exponents and proved that, after division by the
+ramification products, all edge matrices satisfy ultrametric inequalities
+\cite{Doucot2025Graphs}.  In the untwisted case those inequalities characterize fission graphs; in
+the twisted case they are only necessary.  The simplest unresolved local question is therefore:
+\begin{quote}
+Which ramified Stokes circles have zero diagonal multiplicity, and which loopless decorated graphs
+do they realize?
+\end{quote}
+
+The answer is unexpectedly rigid.  Let $I=\langle q\rangle$ have ramification $r>1$.  Retain only
+the exponents that decrease the cumulative gcd, write them as
+\[
+  \frac{\beta_1}{r}>\cdots>\frac{\beta_m}{r}>0,
+  \qquad r=e_0>e_1>\cdots>e_m=1,
+  \qquad e_i=\gcd(e_{i-1},\beta_i).
+\]
+The diagonal entry is
+\begin{equation}\label{eq:intro-loop}
+  B_{I,I}=\sum_{i=1}^m\beta_i(e_{i-1}-e_i)-r^2+1.
+\end{equation}
+Our first theorem is a lexicographic sign law.
+
+\begin{theorem}[Airy-tower sign law]\label{thm:intro-sign}
+Let $j$ be the first index such that $\beta_j\ne e_{j-1}+e_j$.  Then
+\[
+ \operatorname{sgn}(B_{I,I})=
+ \operatorname{sgn}\bigl(\beta_j-e_{j-1}-e_j\bigr).
+\]
+If there is no such index, then $B_{I,I}=0$.  In particular
+\begin{equation}\label{eq:intro-zero}
+ B_{I,I}=0\quad\Longleftrightarrow\quad
+ \beta_i=e_{i-1}+e_i\quad(1\le i\le m).
+\end{equation}
+\end{theorem}
+
+The proof is not an estimate near equality.  The gcd constraint creates a forbidden interval:
+below $R+E$ the exponent is at most $R-E$, while above it the exponent is at least $R+2E$.
+A subcanonical first term leaves a deficit that no decreasing tail can repair; a supercanonical
+first term already exceeds the target $R^2-1$; and the canonical term
+$(R+E)(R-E)=R^2-E^2$ reduces the problem exactly from $R$ to $E$.
+
+We call the zero-loop data in \eqref{eq:intro-zero} \emph{Airy towers}.  Choosing an Airy tower is
+equivalent to choosing the divisor chain $e_0>\cdots>e_m=1$, hence to choosing the ordered
+factorization
+\[
+  r=a_1\cdots a_m,\qquad a_i=e_{i-1}/e_i\ge2.
+\]
+This arithmetic classification has three geometric effects.
+
+First, it identifies a large Fourier-resolvable family.  The equality
+$\beta_i=e_{i-1}+e_i$ is exactly the negative congruence
+$e_{i-1}\equiv-e_i\pmod{\beta_i}$ in Hiroe's dual-Puiseux criterion
+\cite{Hiroe2017}; every rank drop preserves the zero loop.
+
+Second, it exposes information forgotten by the diagram.  For a leading-separated family, put
+$a_i=r_i/e_{i,1}$.  We prove
+\begin{equation}\label{eq:intro-separated}
+  B_{I_i,I_j}=\frac{r_ir_j}{\min(a_i,a_j)}.
+\end{equation}
+The matrix depends only on the first factors $a_i$, while the remaining ordered factorization is
+retained by the fission tree.  Thus one graph may carry a large, explicitly counted family of
+admissible deformation classes.
+
+Third, even the simplest ramified vertices impose congruence gaps on edges.  A simple Airy circle
+of ramification $r$ has the single mandatory level $(r+1)/r$.  For two such circles the exact
+spectrum is
+\begin{equation}\label{eq:intro-spectrum}
+ \Spec(r,s)=
+ \begin{cases}
+   \{\max(r,s)\}\cup rs\NN_{>0},&r\ne s,\\
+   \{0,1,\ldots,r\}\cup r^2\NN_{>0},&r=s.
+ \end{cases}
+\end{equation}
+No three-vertex test can see these two-vertex gaps.  Combining \eqref{eq:intro-spectrum} with the
+known rescaled ultrametric inequality yields our global recognition theorem.
+
+\begin{theorem}[Elementary recognition; informal form]\label{thm:intro-recognition}
+Let $B$ be a symmetric nonnegative integer matrix with zero diagonal on a finite labelled set $N$,
+and let $r_i\ge1$.  The decorated graph $(B,r)$ is the core diagram of elementary loopless Stokes
+circles if and only if
+\[
+ B_{ij}\in\Spec(r_i,r_j)\quad(i\ne j)
+\]
+and the rational weights $w_{ij}=B_{ij}/(r_ir_j)$ have no triangle with a unique largest side.
+The proof is constructive and uses $O(|N|^3)$ rational comparisons in the unit-cost model, after
+pair-spectrum membership tests.
+\end{theorem}
+
+Here ``elementary'' means unramified when $r_i=1$ and simple Airy when $r_i>1$.  Sufficiency is the
+new point.  A finite ultrametric dendrogram first realizes integral weights by common unramified
+terms.  It then processes the smallest remaining ramification: mandatory Airy coefficients split
+the leaves into root-of-unity orbits, with all larger ramifications occupying the unique empty
+child allowed by the fission-tree axioms.  Lower fractional coefficients realize the residual
+values $0,\ldots,r-1$.  This exhausts the exact pair spectra.
+
+The result is deliberately local to formal Stokes geometry.  It does not classify all twisted
+nonabelian Hodge graphs, nor assert that equal core diagrams give isomorphic wild character
+varieties.  Recent work shows precisely why such an inference would be unsafe: fission data refine
+the diagram and can distinguish admissible deformation classes invisible in the Cartan shadow
+\cite{Doucot2026Basic}.  Our theorems instead identify and reconstruct one natural ramified stratum
+exactly.
+
+\subsection*{Organization}
+Section~\ref{sec:background} fixes conventions and recalls the source formulas.
+Section~\ref{sec:sign} proves the sign law.  Section~\ref{sec:classification} gives the divisor-chain,
+enumerative and Fourier consequences.  Sections~\ref{sec:separated}--\ref{sec:finite} treat separated
+cores, pair spectra and finite fibres.  Section~\ref{sec:recognition} proves exact elementary
+recognition.  Section~\ref{sec:examples} records graph twins and obstructions.
+Section~\ref{sec:formal} gives the formal theorem map and scope limits.
+
+\section{Stokes circles, levels and diagrams}\label{sec:background}
+
+We use the conventions of \cite[\S2]{Doucot2025Graphs}.  Let $z$ be the affine coordinate near
+infinity.  A Stokes circle is a Galois orbit $I=\langle q\rangle$ of a Puiseux polynomial
+\[
+  q=\sum_{j=1}^{s}c_jz^{j/r},\qquad c_s\ne0,
+\]
+where $r$ is minimal.  Then $\Ram(I)=r$, $\Irr(I)=s$, and $\Slope(I)=s/r$.  Exponents whose
+successive adjunction strictly lowers the cumulative gcd are the levels.  Deleting all other
+exponents preserves the loop multiplicity.
+
+For a ramified circle, list the level numerators in decreasing order as
+\begin{equation}\label{eq:char-data}
+ \beta_1>\cdots>\beta_m>0,
+ \qquad e_0=r,
+ \qquad e_i=\gcd(r,\beta_1,\ldots,\beta_i).
+\end{equation}
+Since each entry is a level,
+\begin{equation}\label{eq:gcd-chain}
+ r=e_0>e_1>\cdots>e_m=1,
+ \qquad e_i=\gcd(e_{i-1},\beta_i).
+\end{equation}
+The last equality $e_m=1$ is equivalent to minimality of $r$.
+
+\begin{definition}\label{def:weighted-loop}
+For characteristic data \eqref{eq:char-data}--\eqref{eq:gcd-chain}, define
+\[
+ S(\beta,e)=\sum_{i=1}^m\beta_i(e_{i-1}-e_i),
+ \qquad
+ \Loop(\beta,e)=S(\beta,e)-r^2+1.
+\]
+\end{definition}
+
+The loop formula of \cite[Lemma~2.1]{Doucot2025Graphs} says
+\begin{equation}\label{eq:source-loop}
+ B_{I,I}=\Loop(\beta,e).
+\end{equation}
+The sum $S$ is also the Komatsu--Malgrange irregularity of the endomorphism connection, in the
+dual-Puiseux form developed by Hiroe \cite{Hiroe2017}.  Formula \eqref{eq:source-loop} is the only
+input to the arithmetic argument below.
+
+For two distinct circles $I,J$, their common part is the maximal common Galois-orbit truncation,
+and the fission exponent $f_{I,J}$ is the larger slope of the two remaining parts.  The exact edge
+formula \cite[Lemma~2.2]{Doucot2025Graphs} has one contribution from each level of the common part,
+one contribution from $f_{I,J}$, and the normalization $-\Ram(I)\Ram(J)$.  We will use two direct
+specializations.  If the common part is zero and the larger slope is $s/r$, then
+\begin{equation}\label{eq:zero-common-edge}
+ B_{I,J}=r'(s-r),
+\end{equation}
+where $r'$ is the ramification of the other circle.  If both circles are unramified, then
+\begin{equation}\label{eq:unramified-edge}
+ B_{I,J}=\deg(q-q')-1.
+\end{equation}
+
+For a finite irregular class $\Theta=\sum_{i\in N}n_iI_i$, these numbers form the symmetric core
+matrix $B=(B_{ij})$.  The rescaled off-diagonal entries are
+\begin{equation}\label{eq:rescaled}
+ \widetilde B_{ij}=\frac{B_{ij}}{r_ir_j}\qquad(i\ne j).
+\end{equation}
+Every decorated nonabelian Hodge diagram satisfies the ultrametric implication
+\begin{equation}\label{eq:known-ultra}
+ \widetilde B_{ij}\le\widetilde B_{ik}\le\widetilde B_{jk}
+ \quad\Longrightarrow\quad
+ \widetilde B_{ik}=\widetilde B_{jk}
+\end{equation}
+for pairwise distinct $i,j,k$ \cite[Theorem~4.2]{Doucot2025Graphs}.
+
+\section{The first-deviation sign law}\label{sec:sign}
+
+The proof rests on a discrete interval excluded by the gcd condition.
+
+\begin{lemma}[Gcd gap]\label{lem:gcd-gap}
+Let $R>E\ge1$, assume $E\mid R$, and let $\gcd(R,\beta)=E$.
+Then:
+\begin{enumerate}[label=(\roman*)]
+\item $\beta=R+E$ satisfies the gcd condition;
+\item if $\beta<R+E$, then $\beta\le R-E$;
+\item if $\beta>R+E$, then $\beta\ge R+2E$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Write $R=aE$ and $\beta=cE$.  Then $a\ge2$ and $\gcd(a,c)=1$.  The value $c=a+1$ is coprime to
+$a$.  If $c<a+1$, then $c\ne a$, hence $c\le a-1$.  If $c>a+1$, integrality gives $c\ge a+2$.
+Multiplying by $E$ proves the result.
+\end{proof}
+
+We isolate the tail estimate used in the negative branch.
+
+\begin{lemma}[First-exponent bound]\label{lem:tail-bound}
+Let a nonempty characteristic datum start at ramification $R$ with first exponent $\beta$.
+Then
+\[
+ S(\beta,e)\le \beta(R-1).
+\]
+If the first gcd drop is to an intermediate $E>1$, the inequality is strict.
+\end{lemma}
+
+\begin{proof}
+The drops telescope:
+\[
+ \sum_i(e_{i-1}-e_i)=R-1.
+\]
+Every exponent is at most $\beta$, giving the weak inequality.  If a tail exists, all its
+exponents are strictly less than $\beta$, and its total drop is $E-1>0$, giving strictness.
+\end{proof}
+
+\begin{lemma}[First-deviation trichotomy]\label{lem:first-deviation}
+Let the first step of characteristic data be
+\[
+ R\longrightarrow E,\qquad \beta=\beta_1.
+\]
+Then:
+\begin{enumerate}[label=(\roman*)]
+\item if $\beta<R+E$, then $\Loop(\beta,e)<0$;
+\item if $\beta>R+E$, then $\Loop(\beta,e)>0$;
+\item if $\beta=R+E$, then $\Loop(\beta,e)$ equals the loop functional of the tail beginning at
+$E$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Suppose first that $\beta<R+E$.  Lemma~\ref{lem:gcd-gap} gives $\beta\le R-E\le R-1$.
+If there is no tail, then
+\[
+ S=\beta(R-1)\le(R-1)^2<R^2-1.
+\]
+If a tail exists, Lemma~\ref{lem:tail-bound} gives the strict inequality
+$S<\beta(R-1)\le(R-1)^2<R^2-1$.  Thus $\Loop<0$.
+
+Suppose next that $\beta>R+E$.  Lemma~\ref{lem:gcd-gap} gives $\beta\ge R+2E$.  Since $E$ is a
+proper divisor of $R$, one has $R\ge2E$.  The first summand alone satisfies
+\[
+ \beta(R-E)\ge(R+2E)(R-E)
+ =R^2+E(R-2E)\ge R^2>R^2-1.
+\]
+All other summands are nonnegative, so $\Loop>0$.
+
+Finally, if $\beta=R+E$, then
+\[
+ (R+E)(R-E)=R^2-E^2.
+\]
+Substitution into Definition~\ref{def:weighted-loop} cancels $R^2-E^2$ and leaves precisely the
+tail functional normalized by $E^2-1$.
+\end{proof}
+
+\begin{theorem}[Airy-tower sign law]\label{thm:sign-law}
+For characteristic data \eqref{eq:char-data}--\eqref{eq:gcd-chain}, let $j$ be the first index such
+that $\beta_j\ne e_{j-1}+e_j$.  If $j$ exists, then
+\[
+ \operatorname{sgn}B_{I,I}
+ =\operatorname{sgn}\bigl(\beta_j-e_{j-1}-e_j\bigr).
+\]
+If $j$ does not exist, then $B_{I,I}=0$.  Hence
+\[
+ B_{I,I}=0\quad\Longleftrightarrow\quad
+ \beta_i=e_{i-1}+e_i\quad\text{for all }i.
+\]
+\end{theorem}
+
+\begin{proof}
+Apply Lemma~\ref{lem:first-deviation}(iii) repeatedly while the characteristic value is canonical.
+At the first noncanonical entry, parts (i) and (ii) give the strict sign.  If every entry is
+canonical, the recursion ends at ramification $1$ with empty weighted sum, whose normalized loop is
+$-1+1=0$.
+\end{proof}
+
+\begin{definition}
+A ramified characteristic satisfying $\beta_i=e_{i-1}+e_i$ at every level is an
+\emph{Airy tower}.
+\end{definition}
+
+\begin{remark}
+Inconsequential exponents do not create additional zero-loop cases: they do not lower the
+cumulative gcd and therefore do not occur in \eqref{eq:source-loop}.  An Airy tower classifies the
+level data, not every coefficient in a representative Puiseux polynomial.
+\end{remark}
+
+\section{Divisor chains, enumeration and Fourier reduction}\label{sec:classification}
+
+The zero-loop equality removes the exponents as independent variables.
+
+\begin{theorem}[Arithmetic classification]\label{thm:factor-classification}
+For $r>1$, the following sets are naturally bijective:
+\begin{enumerate}[label=(\roman*)]
+\item Airy towers of ramification $r$;
+\item strict divisor chains
+\[
+ r=e_0>e_1>\cdots>e_m=1,qquad e_i\mid e_{i-1};
+\]
+\item ordered multiplicative factorizations
+\[
+ r=a_1\cdots a_m,qquad a_i\ge2.
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Given a divisor chain, set $\beta_i=e_{i-1}+e_i$.  Then
+\[
+ \beta_i-\beta_{i+1}=e_{i-1}-e_{i+1}>0
+\]
+and, since $e_i\mid e_{i-1}$,
+\[
+ \gcd(e_{i-1},\beta_i)=\gcd(e_{i-1},e_i)=e_i.
+\]
+Thus the prescribed values form characteristic data, and
+Theorem~\ref{thm:sign-law} makes them an Airy tower.  Conversely, that theorem forces these values
+from any zero-loop characteristic, so the first correspondence is injective and surjective.
+
+For the second, put $a_i=e_{i-1}/e_i$.  The factors are at least two because the chain is strict,
+and they telescope to $r$.  Conversely, from $r=a_1\cdots a_m$ define
+$e_i=a_{i+1}\cdots a_m$ (with $e_m=1$).  These operations are inverse.
+\end{proof}
+
+Let $A(r)$ denote the number of Airy towers of ramification $r$, and put $A(1)=1$ for the empty
+tail.
+
+\begin{corollary}[Two exact counts]\label{cor:counts}
+\begin{enumerate}[label=(\roman*)]
+\item If $r=p^k$ with $p$ prime and $k\ge1$, then $A(r)=2^{k-1}$.
+\item If $r$ is the product of $k$ distinct primes, then
+\[
+ A(r)=\sum_{j=1}^k j!\,S(k,j),
+\]
+the $k$th ordered Bell number, where $S(k,j)$ is a Stirling number of the second kind.
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+An ordered factorization of $p^k$ is a composition of $k$; its cuts are an arbitrary subset of the
+$k-1$ interior gaps.  In the squarefree case, each factor is a block of prime factors, and the
+ordered list of factors is exactly an ordered set partition of the $k$ primes.  An ordered
+partition into $j$ blocks is counted by $j!S(k,j)$.
+\end{proof}
+
+The same equality is compatible with local Fourier transform.  We state only the exact consequence
+needed here; the Fourier-resolution theorem itself is Hiroe's.
+
+\begin{theorem}[Negative Fourier branch]\label{thm:fourier}
+Every Airy tower satisfies
+\begin{equation}\label{eq:negative-congruence}
+ e_{i-1}\equiv-e_i\pmod{\beta_i}
+\end{equation}
+at every level.  It is therefore reduced to rank one by Hiroe's sequence of local Fourier
+transforms and additions, using the negative branch at every rank drop.  The diagonal multiplicity
+remains zero at each intermediate rank.
+
+Conversely, if a characteristic satisfies \eqref{eq:negative-congruence} and
+$\beta_i>e_{i-1}$ at every level, then it is an Airy tower.
+\end{theorem}
+
+\begin{proof}
+For an Airy tower, \eqref{eq:negative-congruence} is the identity
+$\beta_i=e_{i-1}+e_i$.  Hiroe's criterion
+\cite[Theorem~3.10 and \S4]{Hiroe2017} applies, and loop preservation is the canonical clause of
+Lemma~\ref{lem:first-deviation}.
+
+For the converse, the congruence says $\beta_i\mid e_{i-1}+e_i$.  Since
+$e_i<e_{i-1}<\beta_i$, one has
+\[
+ \beta_i\le e_{i-1}+e_i<2\beta_i.
+\]
+The only positive multiple of $\beta_i$ in this interval is $\beta_i$ itself.  Hence
+$\beta_i=e_{i-1}+e_i$ at every level.
+\end{proof}
+
+Hiroe associates dual Puiseux characteristics with iterated torus-knot cabling and with the Stokes
+order decomposition \cite{Hiroe2017}.  Thus Theorem~\ref{thm:factor-classification} supplies an
+explicit ordered-factorization family of such cabling data.  We do not use, or claim, a converse
+analytic classification of Stokes moduli by the resulting knot alone.
+
+\section{Leading-separated loopless cores}\label{sec:separated}
+
+Let $I$ be an Airy tower of ramification $r$ and first divisor drop $r>e_1$.  Define
+\begin{equation}\label{eq:first-factor}
+ a=\frac r{e_1}\ge2.
+\end{equation}
+Its leading level is
+\begin{equation}\label{eq:leading-slope}
+ \frac{r+e_1}{r}=1+\frac1a.
+\end{equation}
+
+Two Stokes circles are \emph{leading-separated} if their common part is zero.  When their leading
+slopes agree, this means that the leading coefficients lie in different Galois orbits; equivalently,
+their appropriate powers differ.
+
+\begin{theorem}[Separated-core formula]\label{thm:separated-core}
+Let $I_i,I_j$ be leading-separated Airy towers with ramifications $r_i,r_j$ and first factors
+$a_i,a_j$.  Then
+\[
+ B_{I_i,I_j}=\frac{r_ir_j}{\min(a_i,a_j)},
+ \qquad
+ \widetilde B_{I_i,I_j}=\frac1{\min(a_i,a_j)}.
+\]
+\end{theorem}
+
+\begin{proof}
+Suppose $a_i\le a_j$.  Then the leading slope of $I_i$ is at least that of $I_j$.  Since the
+common part is zero, \eqref{eq:zero-common-edge} gives
+\[
+ B_{I_i,I_j}
+ =r_j\bigl((r_i+e_{i,1})-r_i\bigr)
+ =r_je_{i,1}
+ =\frac{r_ir_j}{a_i}.
+\]
+The expression is symmetric when $a_i=a_j$, and the other ordering interchanges $i,j$.
+\end{proof}
+
+\begin{theorem}[Simultaneous realization]\label{thm:simultaneous}
+Every finite family of strict divisor chains is realized by pairwise leading-separated Airy
+towers.  Consequently every matrix supplied by Theorem~\ref{thm:separated-core} is a loopless
+twisted core diagram.
+\end{theorem}
+
+\begin{proof}
+For the $i$th chain choose
+\[
+ q_i=\sum_{h=1}^{m_i}c_{i,h}
+ z^{(e_{i,h-1}+e_{i,h})/r_i},\qquad c_{i,h}\ne0.
+\]
+The gcd computation in Theorem~\ref{thm:factor-classification} shows that these are precisely the
+prescribed level data.  For every fixed first factor $a$, there are only finitely many leading
+coefficients to choose.  Choose their $a$th powers pairwise distinct.  Then equal-slope leading
+terms lie in distinct $\mu_a$-orbits, while unequal slopes are automatically separated.  All
+common parts are zero, and Theorems~\ref{thm:sign-law} and \ref{thm:separated-core} compute the
+entire core.
+\end{proof}
+
+The reciprocal-min matrices automatically satisfy the required ultrametric condition.
+
+\begin{proposition}[Separated ultrametric law]\label{prop:separated-ultra}
+For positive integers $a,b,c$, the three values
+\[
+ \frac1{\min(a,b)},\qquad \frac1{\min(a,c)},\qquad \frac1{\min(b,c)}
+\]
+have their maximum at least twice.
+\end{proposition}
+
+\begin{proof}
+The minimum of $a,b,c$ occurs in at least two of the three pairwise minima.  Taking positive
+reciprocals reverses the order.
+\end{proof}
+
+The diagram forgets the factorization tail.
+
+\begin{corollary}[Exact separated hidden fibre]\label{cor:hidden-fibre}
+Fix labelled pairs $(r_i,a_i)$ in the leading-separated zero-loop locus.  The number of labelled
+fission trees with these data and the same core matrix is
+\[
+ \prod_i A(r_i/a_i).
+\]
+The members have different level data and hence different admissible deformation classes.
+\end{corollary}
+
+\begin{proof}
+After the first factor $a_i$ is fixed, the remaining divisor chain is exactly an ordered
+factorization of $r_i/a_i$.  Theorem~\ref{thm:separated-core} ignores all these tails, while the
+fission tree retains them.  Independence across labelled vertices gives the product.
+\end{proof}
+
+\section{Exact edge spectra on the elementary locus}\label{sec:spectrum}
+
+\begin{definition}
+An \emph{elementary loopless circle} is either the tame/unramified circle, recorded by $r=1$, or a
+\emph{simple Airy circle} of ramification $r>1$, having the single level $(r+1)/r$.
+\end{definition}
+
+An elementary circle may contain additional unramified or lower inconsequential terms.  Such terms
+do not change its sole level or its zero diagonal entry, but they control pairwise fission.
+
+\begin{theorem}[Two-circle spectrum]\label{thm:pair-spectrum}
+Let $I,J$ be distinct simple Airy circles of ramifications $r,s>1$.  Their possible edge
+multiplicities are exactly
+\[
+ \Spec(r,s)=
+ \begin{cases}
+ \{\max(r,s)\}\cup rs\NN_{>0},&r\ne s,\\[2mm]
+ \{0,1,\ldots,r\}\cup r^2\NN_{>0},&r=s.
+ \end{cases}
+\]
+For mixed and unramified pairs,
+\[
+ \Spec(1,r)=\{1\}\cup r\NN_{>0}\quad(r>1),
+ \qquad \Spec(1,1)=\NN_{\ge0}.
+\]
+Every listed value is realized.
+\end{theorem}
+
+\begin{proof}
+All terms above a simple Airy level have integral exponent.  If the highest difference between
+$I,J$ occurs at an integer $d\ge2$, the common terms above it have denominator one and make no
+contribution to the rescaled edge formula.  The fission term gives
+\[
+ \widetilde B_{I,J}=d-1,
+ \qquad B_{I,J}=rs(d-1),
+\]
+which realizes precisely the positive multiples of $rs$.
+
+Assume no such high difference occurs.  If $r\ne s$, the slopes $1+1/r$ and $1+1/s$ differ.
+The first difference is the larger slope and the common part is zero.  Formula
+\eqref{eq:zero-common-edge} gives $B_{I,J}=\max(r,s)$.
+
+Now let $r=s$.  If the mandatory leading coefficients lie in different $\mu_r$-orbits, the common
+part is zero and \eqref{eq:zero-common-edge} gives $B_{I,J}=r$.  Otherwise make the leading terms
+equal.  The first lower difference can occur exactly at
+\[
+ f=\frac jr,\qquad 1\le j\le r.
+\]
+Substitution in the common-level edge formula gives
+\[
+ B_{I,J}=rf-1=j-1,
+\]
+and hence $0,\ldots,r-1$.  Choosing distinct coefficients at the stated first differing exponent
+realizes every value without changing the already complete ramification.  This proves the two
+ramified formulas.
+
+For an unramified and a ramified circle, the same high-difference argument gives $r\NN_{>0}$, while
+separation at the Airy level gives $1$.  Two unramified circles satisfy
+\eqref{eq:unramified-edge}, and a first difference at degree $d\ge1$ gives every $d-1\ge0$.
+\end{proof}
+
+\begin{corollary}[A local obstruction beyond ultrametricity]\label{cor:edge-three}
+Two ramification-two simple Airy vertices have possible edge multiplicities
+\[
+ 0,1,2,4,8,12,\ldots,
+\]
+but never $3$.  Since the ultrametric condition is vacuous on two vertices, this obstruction is
+independent of the necessary condition \eqref{eq:known-ultra}.
+\end{corollary}
+
+\section{Finite fibres after ramification decoration}\label{sec:finite}
+
+The preceding hidden fibres are finite.  This is part of a general finiteness statement.
+
+\begin{theorem}[Decorated finite-fibre theorem]\label{thm:finite-fibre}
+Fix a finite labelled core matrix $B$ and a ramification $r_i\ge1$ at every vertex.  There are only
+finitely many labelled fission trees whose decorated nonabelian Hodge diagram is $(B,r)$.  The
+fibre is effectively enumerable.
+\end{theorem}
+
+\begin{proof}
+At vertex $i$, the diagonal formula fixes
+\begin{equation}\label{eq:fixed-weight}
+ \sum_h\beta_{i,h}(e_{i,h-1}-e_{i,h})=B_{ii}+r_i^2-1=:W_i.
+\end{equation}
+If $W_i<0$, the fibre is empty.  Otherwise there are finitely many strict divisor chains from
+$r_i$ to $1$.  Every summand on the left of \eqref{eq:fixed-weight} is positive, so every
+$\beta_{i,h}$ lies in $[1,W_i]$.  Thus each vertex has finitely many possible level data.  Notice
+that this step discards arbitrary coefficient support on inconsequential rays; fission trees record
+level and fission data, not an individual polynomial representative.
+
+Fix one level choice at every vertex.  For a pair of leaves, choose their common characteristic
+prefix and one of the finitely many sibling/fission cases at their nearest common ancestor.  On
+each resulting interval of admissible exponents, write $f_{ij}=s_d/r_i$.  Formula~(2.5) of
+\cite{Doucot2025Graphs} has the form
+\[
+  B_{ij}=C+s_dg-r_ir_j,
+\]
+where $C$ is fixed by the chosen common levels and
+$g=\gcd(r_j,m'_0,\ldots,m'_t)\geq1$.  Thus the fixed value $B_{ij}$ determines at most one
+$s_d$, and hence at most one fission exponent, for that choice.  Only finitely many pair data
+remain.  The fission-tree axioms are finite compatibility checks, and the full fission data
+determine the labelled tree uniquely \cite[Lemma~3.21]{BoalchDoucotRembado2025}.  Enumerating the
+finite choices and retaining those that satisfy the axioms lists the fibre.
+\end{proof}
+
+\begin{remark}
+Ramification decoration is essential.  Without it, the one-vertex zero-loop graph is realized by a
+simple Airy circle for every $r>1$, so its undecorated fibre is infinite.
+\end{remark}
+
+\section{Exact elementary decorated-graph recognition}\label{sec:recognition}
+
+Extend the notation of Theorem~\ref{thm:pair-spectrum} by
+\begin{equation}\label{eq:spec-all}
+\begin{aligned}
+ \Spec(1,1)&=\NN_{\ge0},\\
+ \Spec(1,s)&=\{1\}\cup s\NN_{>0} &&(s>1),\\
+ \Spec(r,s)&=\{\max(r,s)\}\cup rs\NN_{>0} &&(1<r\ne s>1),\\
+ \Spec(r,r)&=\{0,1,\ldots,r\}\cup r^2\NN_{>0} &&(r>1).
+\end{aligned}
+\end{equation}
+
+Let $N$ be a finite labelled set, let $B=(B_{ij})_{i,j\in N}$ be symmetric and nonnegative with
+$B_{ii}=0$, and let $r_i\ge1$.  Put
+\begin{equation}\label{eq:weights-recognition}
+ w_{ij}=\frac{B_{ij}}{r_ir_j}\qquad(i\ne j),
+ \qquad w_{ii}=0.
+\end{equation}
+
+\begin{theorem}[Elementary Stokes--Cartan recognition]\label{thm:recognition}
+The following are equivalent.
+\begin{enumerate}[label=(\roman*)]
+\item $(B,r)$ is the decorated core diagram of a finite irregular class of elementary loopless
+Stokes circles.
+\item Both conditions hold:
+\begin{align}
+ B_{ij}&\in\Spec(r_i,r_j) &&(i\ne j),\label{eq:pair-test}\\
+ w_{ij}\le w_{ik}\le w_{jk}&\Longrightarrow w_{ik}=w_{jk}
+ &&(i,j,k\text{ pairwise distinct}).\label{eq:ultra-test}
+\end{align}
+\end{enumerate}
+Moreover, the proof reconstructs explicit Puiseux polynomials.  In the unit-cost rational-arithmetic
+model, after the pair tests, condition \eqref{eq:ultra-test} and reconstruction of its finite
+dendrogram use $O(|N|^3)$ comparisons.
+\end{theorem}
+
+Necessity follows immediately from Theorem~\ref{thm:pair-spectrum} and
+\eqref{eq:known-ultra}.  We prove sufficiency in several steps.
+
+\subsection{Finite ultrametric dendrograms}
+
+We use the following standard form, included to fix the reconstruction.
+
+\begin{lemma}[Dendrogram lemma]\label{lem:dendrogram}
+Let $X$ be finite and let $d:X^2\to L$ be symmetric, zero on the diagonal, with values in a finite
+totally ordered set.  Suppose no triangle has a unique largest side.  Then the values of $d$ are
+realized as highest-difference heights in a rooted dendrogram.  At every height, distinct child
+clusters can be assigned distinct coefficients in any infinite field.
+\end{lemma}
+
+\begin{proof}
+Let $D$ be the largest value.  Define $x\sim y$ when $x=y$ or $d(x,y)<D$.  If
+$d(x,y),d(y,z)<D$ but $d(x,z)=D$, the triangle has a unique largest side.  Thus $\sim$ is an
+equivalence relation.  Attach distinct coefficients to its finitely many classes at height $D$ and
+recurse inside each class.  The number of distinct values decreases, so the construction
+terminates.  Two leaves first differ at the coefficient attached to their least common ancestor,
+whose height is their prescribed value.
+\end{proof}
+
+Equivalently, for every threshold $t\ge0$, the relation $d(x,y)\le t$ is an equivalence relation,
+and these partitions coarsen with $t$.  This threshold formulation is the one formalized in
+Section~\ref{sec:formal}.
+
+\subsection{Integral heights}
+
+Assume \eqref{eq:pair-test}--\eqref{eq:ultra-test}.  Apply
+Lemma~\ref{lem:dendrogram} to the positive integral values among the $w_{ij}$, from largest to
+smallest.  By \eqref{eq:spec-all}, every such value $n$ arises from the high-contact branch of the
+pair spectrum and is realized by a first difference at the unramified exponent $n+1$.  At the
+corresponding dendrogram node assign distinct complex coefficients to its child clusters at
+$z^{n+1}$.  Integer terms are admissible and inconsequential for every ramification.  After all
+such nodes are processed, every unresolved pair has weight $<1$.
+
+\subsection{Mandatory Airy levels}
+
+Consider one unresolved cluster.  Let $r>1$ be the smallest ramification among its ramified leaves;
+regard unramified leaves as having ramification $\infty$.  Pair-spectrum membership forces:
+\begin{enumerate}[label=(\roman*)]
+\item an $r$-leaf and any leaf of larger ramification have weight exactly $1/r$;
+\item two $r$-leaves have weight at most $1/r$;
+\item two leaves of larger ramification have weight strictly less than $1/r$.
+\end{enumerate}
+Indeed, after integral weights have been removed, only the low branches of
+\eqref{eq:spec-all} remain.
+
+It follows from \eqref{eq:ultra-test} that the equivalence classes for $w<1/r$ consist of some
+blocks of $r$-leaves and at most one block containing all larger-ramification and unramified leaves.
+Assign to the $r$-blocks nonzero coefficients at
+\[
+ z^{1+1/r}
+\]
+whose $r$th powers are pairwise distinct.  Assign coefficient zero to the possible residual block.
+Thus mandatory siblings are separated modulo the $\mu_r$ Galois action, and there is exactly the
+single possible empty child allowed in the twisted fission-tree sibling axioms
+\cite[\S3.4]{BoalchDoucotRembado2025}.  Remove the $r$-blocks and repeat with the next ramification
+inside the residual block.
+
+\subsection{Lower fractional heights}
+
+Inside one fixed $r$-block, distinct leaves have equal mandatory Airy term.  Their unresolved
+weights are
+\[
+  \frac b{r^2},\qquad 0\le b\le r-1.
+\]
+At the largest numerator $b$, the dendrogram lemma partitions by smaller weight.  Assign distinct
+coefficients to the child clusters at the exponent
+\[
+  \frac{b+1}{r}.
+\]
+The computation in Theorem~\ref{thm:pair-spectrum} gives edge multiplicity $b$ between distinct
+children.  Recurse on $b$.  At $b=0$, distinct coefficients of $z^{1/r}$ realize edge zero.  These
+terms introduce no new level: the mandatory exponent $(r+1)/r$ has already reduced the cumulative
+gcd to one.
+
+After all ramified blocks are resolved, any residual unramified block has pair weight zero.
+Distinct coefficients of $z$ realize it.
+
+\begin{proof}[Completion of Theorem~\ref{thm:recognition}]
+The preceding finite recursion constructs Puiseux polynomials $q_i$.  When $r_i>1$, the only gcd
+drop is the mandatory exponent $(r_i+1)/r_i$, so $\langle q_i\rangle$ is a simple Airy circle and
+has zero diagonal by Theorem~\ref{thm:sign-law}.  When $r_i=1$, it is unramified and loopless.
+
+At every dendrogram split, the chosen exponent is the highest one at which leaves in distinct
+children differ.  The edge calculations above therefore give exactly $B_{ij}$ for every pair.
+The mandatory and admissible sibling rules hold at each
+node, so the realization criterion and existence theorem
+\cite[Theorem~3.27 and Corollary~3.28]{BoalchDoucotRembado2025} supply the irregular class.
+This proves sufficiency.  The pair tests require $O(|N|^2)$ arithmetic checks; checking all
+triangles and forming the threshold partitions takes $O(|N|^3)$ comparisons.
+\end{proof}
+
+\begin{corollary}\label{cor:no-further-obstruction}
+On the elementary locus, the local spectra \eqref{eq:spec-all} and rescaled ultrametricity are a
+complete set of obstructions.  In particular, there are infinitely many forbidden two-vertex and
+higher decorated graphs not detected by ultrametricity alone.
+\end{corollary}
+
+\section{Examples and information loss}\label{sec:examples}
+
+\begin{example}[An all-ramified graph twin]\label{ex:twin}
+Consider the Airy towers
+\[
+\begin{array}{ccl}
+ r=2:&2>1,&q_1=c_1z^{3/2},\\
+ r=3:&3>1,&q_2=c_2z^{4/3},\\
+ r=4:&4>2>1,&q_3=c_3z^{3/2}+d_3z^{3/4}.
+\end{array}
+\]
+Choose $c_1,c_3$ in different $\mu_2$-orbits.  The first factors are $2,3,2$, so
+Theorem~\ref{thm:separated-core} gives
+\[
+ B_{12}=3,\qquad B_{13}=4,\qquad B_{23}=6.
+\]
+This is the same core multigraph as the triangle in
+\cite[Proposition~3.3]{Doucot2025Graphs}, but the ramification decoration here is $(2,3,4)$ rather
+than $(1,3,2)$.  The conclusion is equality of the core graph, not an isomorphism of the associated
+wild character varieties.
+\end{example}
+
+\begin{example}[Exponential hidden fibres]
+Fix a separated vertex of ramification $p^k$ and first factor $p^j$.  The graph and first
+ramification drop forget the remaining factorization of $p^{k-j}$, leaving
+$2^{k-j-1}$ possibilities when $k-j\ge1$ and one possibility when $k=j$.  Products of such
+vertices give exponentially large labelled fibres with an unchanged core matrix.
+\end{example}
+
+The finite-fibre theorem and these examples isolate the role of decoration.  The undecorated Cartan
+shadow can hide arbitrarily large ramification and infinitely many local types.  Ramification makes
+the full fibre finite; on the separated locus, the first quotient fixes the matrix and the remaining
+ordered factors describe the exact hidden part.  This complements existing counts in the untwisted
+case \cite{Boalch2025Counting}: the present counts concern one ramified zero-loop stratum rather
+than untwisted trees of fixed slope and leaf number.
+
+\section{Formal verification and scope}\label{sec:formal}
+
+The arithmetic and finite-cophenetic core has been formalized in Lean~4 against the repository's
+pinned mathlib toolchain.  The declarations are unconditional: no \texttt{sorry}, \texttt{admit},
+new axiom, \texttt{opaque}, or \texttt{unsafe} declaration is used.  Table~\ref{tab:lean} records the
+main map.
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.34\textwidth}>{\raggedright\arraybackslash}p{0.57\textwidth}}
+\toprule
+Mathematical statement & Lean declaration \\
+\midrule
+Gcd gap below $R+E$ & \leanname{le_sub_of_lt_add_gcd} \\
+Gap above $R+E$ & \leanname{add_twice_le_of_add_lt_of_dvd} \\
+Negative/positive first-deviation laws &
+\leanname{diagonalLoop_neg_of_first_lt},
+\leanname{diagonalLoop_pos_of_first_gt} \\
+Zero-loop rigidity & \leanname{diagonalLoop_eq_zero_iff_isAiryTower} \\
+Negative Fourier characterization &
+\leanname{isAiryTower_iff_negativeFourier_and_largeSteps} \\
+Divisor-chain construction & \leanname{StrictDivisorChain.toCharacteristic} \\
+Ordered factorization construction &
+\leanname{OrderedFactorization.toAiryCharacteristic} \\
+Separated-core arithmetic and ultrametricity &
+\leanname{separatedEdge_eq_right_mul_next_of_le},
+\leanname{separatedRescaledWeight_acuteIsosceles} \\
+Exact elementary pair spectrum &
+\leanname{nonempty_elementaryPairPresentation_iff_spectrum} \\
+Elementary finite recognition &
+\leanname{nonempty_elementaryFissionEncoding_iff_certificate} \\
+Canonical threshold dendrogram & \leanname{thresholdSetoid}, \leanname{thresholdSetoid_mono} \\
+Finite local characteristic fibres &
+\leanname{finite_fixedWeightedCharacteristic} \\
+\bottomrule
+\end{tabular}
+\caption{Principal paper-to-Lean theorem map.}
+\label{tab:lean}
+\end{table}
+
+The formal model encodes the exact decreasing gcd characteristic, signed diagonal loop, divisor
+chain, ordered factorization, pair contact mechanisms, finite decorated matrix and cophenetic
+fission data.  The coefficient choices over $\CC$ and the invocation of the published analytic
+fission-tree realization theorem remain in the paper proof; they are not replaced by a claim about
+formal meromorphic connections in Lean.
+
+Several stronger statements are intentionally excluded.
+\begin{enumerate}[label=(\roman*)]
+\item We do not classify all twisted loopless vertices or all twisted nonabelian Hodge graphs.
+\item Equal diagrams do not imply isomorphic wild character varieties, isomonodromy systems, or
+nonabelian Hodge spaces.  Enriched-tree data are needed for such comparisons
+\cite{Doucot2026Basic}.
+\item The knot interpretation uses the explicit dual-Puiseux-to-cabling direction in
+\cite{Hiroe2017}; no unproved converse from Stokes order data is assumed.
+\item The stated cubic recognition cost is a unit-cost combinatorial bound, not a bit-complexity
+analysis of rational arithmetic.
+\end{enumerate}
+
+\section{Concluding perspective}
+
+The equality $B_{I,I}=0$ looks at first like one linear constraint on a Puiseux characteristic.
+The gcd lattice makes it rigid: each characteristic exponent is forced to be the sum of two
+successive ramifications.  This converts a Stokes-geometric equality case into divisor chains,
+ordered factorizations, negative Fourier steps and iterated cabling data.
+
+At graph level, the same rigidity has two opposite effects.  It creates large hidden fibres because
+the Cartan shadow sees only the first factor of a separated Airy tower.  Yet it also creates sharp
+edge gaps: local divisibility obstructs many graphs that pass every ultrametric test.  On the
+elementary locus the two effects fit exactly.  Local spectra supply the missing arithmetic
+conditions, and the ultrametric reconstructs their global fission dendrogram.  This gives a first
+complete recognition theorem for a genuinely ramified, arbitrary-size class of nonabelian Hodge
+graphs.
+
+\begin{thebibliography}{99}
+
+\bibitem{BiquardBoalch2004}
+O.~Biquard and P.~Boalch,
+\emph{Wild non-abelian Hodge theory on curves},
+Compos. Math. \textbf{140} (2004), no.~1, 179--204.
+\href{https://doi.org/10.1112/S0010437X03000010}{doi:10.1112/S0010437X03000010}.
+
+\bibitem{Boalch2025Counting}
+P.~Boalch,
+\emph{Counting the fission trees and nonabelian Hodge graphs (untwisted case)},
+J. Geom. Phys. \textbf{214} (2025), 105512.
+\href{https://doi.org/10.1016/j.geomphys.2025.105512}{doi:10.1016/j.geomphys.2025.105512}.
+
+\bibitem{BoalchDoucotRembado2025}
+P.~Boalch, J.~Dou\c cot and G.~Rembado,
+\emph{Twisted local wild mapping class groups: configuration spaces, fission trees and complex
+braids},
+Publ. Res. Inst. Math. Sci. \textbf{61} (2025), no.~3, 391--445.
+\href{https://doi.org/10.4171/PRIMS/61-3-4}{doi:10.4171/PRIMS/61-3-4}.
+
+\bibitem{BoalchYamakawa2020}
+P.~Boalch and D.~Yamakawa,
+\emph{Diagrams for nonabelian Hodge spaces on the affine line},
+C. R. Math. \textbf{358} (2020), no.~1, 59--65.
+\href{https://doi.org/10.5802/crmath.11}{doi:10.5802/crmath.11}.
+
+\bibitem{Doucot2025Graphs}
+J.~Dou\c cot,
+\emph{New nonabelian Hodge graphs from twisted irregular connections},
+arXiv:2509.24861 (2025), revised 2026.
+\href{https://arxiv.org/abs/2509.24861}{arXiv:2509.24861}.
+
+\bibitem{Doucot2026Basic}
+J.~Dou\c cot,
+\emph{Basic representations of genus zero nonabelian Hodge spaces},
+SIGMA \textbf{22} (2026), 027, 43 pp.
+\href{https://doi.org/10.3842/SIGMA.2026.027}{doi:10.3842/SIGMA.2026.027}.
+
+\bibitem{Hiroe2017}
+K.~Hiroe,
+\emph{Ramified irregular singularities of meromorphic connections and plane curve singularities},
+Josai Math. Monogr. \textbf{10} (2017), 161--192.
+\href{https://arxiv.org/abs/1406.5788}{arXiv:1406.5788}.
+
+\enlargethispage{3\baselineskip}
+\end{thebibliography}
+
+\end{document}

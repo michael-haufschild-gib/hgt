@@ -30,7 +30,7 @@ theorem firstExponent_le_weightedIrregularity {R beta : ℕ} (c : Characteristic
 private def Code (R beta : ℕ) : Type :=
   { _u : Unit // 1 < R ∧ 0 < beta ∧ Nat.gcd R beta = 1 } ⊕
   (Σ E : Fin R, Σ gamma : Fin beta,
-    { tail : Characteristic E gamma //
+    { _tail : Characteristic E gamma //
       (1 : ℕ) < (E : ℕ) ∧ 0 < beta ∧ Nat.gcd R beta = (E : ℕ) })
 
 /-- Full characteristic data form a finite type once ramification and first exponent are fixed. -/

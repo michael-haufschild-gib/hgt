@@ -84,7 +84,7 @@ theorem separatedRescaledWeight_symm (a b : ℕ) :
   simp [separatedRescaledWeight, min_comm]
 
 /-- One ultrametric inequality for reciprocal-min weights. -/
-theorem separatedRescaledWeight_le_max {a b c : ℕ} (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) :
+theorem separatedRescaledWeight_le_max {a b c : ℕ} (hc : 0 < c) :
     separatedRescaledWeight a b ≤
       max (separatedRescaledWeight a c) (separatedRescaledWeight b c) := by
   simp only [separatedRescaledWeight]
@@ -118,11 +118,11 @@ theorem separatedRescaledWeight_acuteIsosceles {a b c : ℕ}
         max (separatedRescaledWeight a b) (separatedRescaledWeight b c) ∧
     separatedRescaledWeight b c ≤
         max (separatedRescaledWeight a b) (separatedRescaledWeight a c) := by
-  refine ⟨separatedRescaledWeight_le_max ha hb hc, ?_, ?_⟩
+  refine ⟨separatedRescaledWeight_le_max hc, ?_, ?_⟩
   · simpa [separatedRescaledWeight_symm b c] using
-      (separatedRescaledWeight_le_max ha hc hb)
+      (separatedRescaledWeight_le_max (a := a) (b := c) hb)
   · simpa [separatedRescaledWeight_symm b a, separatedRescaledWeight_symm c a] using
-      (separatedRescaledWeight_le_max hb hc ha)
+      (separatedRescaledWeight_le_max (a := b) (b := c) ha)
 
 end IrregularStokes
 end GaloisForLFunctions

@@ -247,6 +247,83 @@ def mapAlgebraicJet (n : ℕ) (f : G ⟶ H) [IsMonHom f] :
   map_one' := MonObj.one_comp f
   map_mul' p q := MonObj.mul_comp p q f
 
+section AlgebraChange
+
+variable {S : Type u} [CommRing S] [Algebra K S]
+
+/-- A morphism of coefficient algebras acts coefficientwise on every truncated arc algebra. -/
+def mapTruncatedArcAlgHom (n : ℕ) (f : R →ₐ[K] S) :
+    TruncatedArcAlgebra R n →ₐ[K] TruncatedArcAlgebra S n :=
+  Ideal.quotientMapₐ (truncatedArcIdeal S n) (Polynomial.mapAlgHom f) (by
+    rw [truncatedArcIdeal, truncatedArcIdeal]
+    apply Ideal.span_le.2
+    intro p hp
+    simp only [Set.mem_singleton_iff] at hp
+    subst p
+    change Polynomial.map f.toRingHom (X ^ (n + 1)) ∈ Ideal.span {X ^ (n + 1)}
+    simp)
+
+@[simp]
+theorem mapTruncatedArcAlgHom_mk (n : ℕ) (f : R →ₐ[K] S) (p : R[X]) :
+    mapTruncatedArcAlgHom n f (Ideal.Quotient.mk (truncatedArcIdeal R n) p) =
+      Ideal.Quotient.mk (truncatedArcIdeal S n) (Polynomial.map f.toRingHom p) := by
+  rfl
+
+@[simp]
+theorem mapTruncatedArcAlgHom_algebraMap (n : ℕ) (f : R →ₐ[K] S) (r : R) :
+    mapTruncatedArcAlgHom n f (algebraMap R (TruncatedArcAlgebra R n) r) =
+      algebraMap S (TruncatedArcAlgebra S n) (f r) := by
+  change mapTruncatedArcAlgHom n f
+      (Ideal.Quotient.mk (truncatedArcIdeal R n) (C r)) =
+    Ideal.Quotient.mk (truncatedArcIdeal S n) (C (f r))
+  simp
+
+@[simp]
+theorem mapTruncatedArcAlgHom_id (n : ℕ) :
+    mapTruncatedArcAlgHom n (AlgHom.id K R) =
+      AlgHom.id K (TruncatedArcAlgebra R n) := by
+  apply AlgHom.ext
+  intro x
+  obtain ⟨p, rfl⟩ := Ideal.Quotient.mkₐ_surjective K (truncatedArcIdeal R n) x
+  simp
+
+variable {T : Type u} [CommRing T] [Algebra K T]
+
+@[simp]
+theorem mapTruncatedArcAlgHom_comp (n : ℕ) (f : R →ₐ[K] S) (g : S →ₐ[K] T) :
+    (mapTruncatedArcAlgHom n g).comp (mapTruncatedArcAlgHom n f) =
+      mapTruncatedArcAlgHom n (g.comp f) := by
+  apply AlgHom.ext
+  intro x
+  obtain ⟨p, rfl⟩ := Ideal.Quotient.mkₐ_surjective K (truncatedArcIdeal R n) x
+  simp only [AlgHom.comp_apply, Ideal.Quotient.mkₐ_eq_mk, mapTruncatedArcAlgHom_mk,
+    Polynomial.map_map]
+  have hfg : g.toRingHom.comp f.toRingHom = (g.comp f).toRingHom := rfl
+  rw [hfg]
+
+/-- The source morphism which extends an `R`-valued jet along `R → S`. -/
+def mapAlgebraicJetSource (n : ℕ) (f : R →ₐ[K] S) :
+    algebraicJetSource (K := K) (R := S) n ⟶ algebraicJetSource (K := K) (R := R) n :=
+  Over.homMk (Spec.map (CommRingCat.ofHom (mapTruncatedArcAlgHom n f).toRingHom)) (by
+    change Spec.map (CommRingCat.ofHom (mapTruncatedArcAlgHom n f).toRingHom) ≫
+      Spec.map (CommRingCat.ofHom
+        ((algebraMap R (TruncatedArcAlgebra R n)).comp (algebraMap K R))) =
+      Spec.map (CommRingCat.ofHom
+        ((algebraMap S (TruncatedArcAlgebra S n)).comp (algebraMap K S)))
+    rw [← Spec.map_comp, Spec.map_inj]
+    ext k
+    simp)
+
+/-- Functorial prolongation of algebraic jets along a morphism of coefficient algebras. -/
+def prolongAlgebraicJet (n : ℕ) (f : R →ₐ[K] S) :
+    AlgebraicJetPoint (K := K) (R := R) G n →*
+      AlgebraicJetPoint (K := K) (R := S) G n where
+  toFun p := mapAlgebraicJetSource n f ≫ p
+  map_one' := MonObj.comp_one _
+  map_mul' p q := MonObj.comp_mul _ p q
+
+end AlgebraChange
+
 end
 
 end GaloisForLFunctions.HTGeometry

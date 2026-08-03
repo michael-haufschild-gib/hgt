@@ -76,7 +76,12 @@
   `GaloisForLFunctions.RHTower.DeningerTransversalForm` (transversal form of a word),
   `GaloisForLFunctions.RHTower.DeningerWordMerge` (merging letters at the ends of a word),
   `GaloisForLFunctions.RHTower.DeningerConjWord` (normal word of a conjugated power),
-  `GaloisForLFunctions.RHTower.DeningerConjNormalize` (normalizing a conjugator)
+  `GaloisForLFunctions.RHTower.DeningerConjNormalize` (normalizing a conjugator),
+  `GaloisForLFunctions.RHTower.DeningerBaseLength` (the base group preserves the word length),
+  `GaloisForLFunctions.RHTower.DeningerConjSplit` (splitting a conjugated power),
+  `GaloisForLFunctions.RHTower.DeningerPowWord` (the normal word of a power),
+  `GaloisForLFunctions.RHTower.DeningerRotate` (rotation is conjugation),
+  `GaloisForLFunctions.RHTower.DeningerFlattenRotate` (dropping from a concatenation of copies)
 
 ## Statement
 
@@ -864,7 +869,65 @@ the base group on the right, and that freedom is exactly what is needed:
   by the base group, which changes neither its word length nor its indices.
 
 Without this the right hand conjugator `D` would be the inverse of a transversal word, and inverses
-of transversal letters need not be transversal.
+of transversal letters need not be transversal.  `DeningerBaseLength.lean` records that the
+adjustment is free:
+
+- `deningerLen_mul_base`, `deningerLen_base_conj` — multiplication by the base group on either side,
+  and conjugation by it, leave the word length unchanged;
+- `deningerLen_base_conj_pow`, `deningerLen_conj_of_len_zero` — hence so do all the powers, and a
+  conjugator of word length zero changes nothing.
+
+**A correction to the plan recorded above.**  For amalgams the word of `g^k` is *not* literally
+`C ++ Lᵏ ++ D` with `D` the inverse word of `C`.  Cyclic reduction here conjugates by the first
+letter, which deletes it and multiplies it into the last letter; the two ends are not inverse to
+each other as they are in a free group, and the right hand junction genuinely cancels.  The word of
+`g^k` is instead `C` followed by `k-1` copies of the cyclically reduced word and then the original
+tail.  The right way to write it is
+
+  `(c v c⁻¹)^{k+1} = c · vᵏ · (v c⁻¹)`,
+
+which confines all the cancellation to the last factor: the left conjugator survives intact, the
+middle is a power of the cyclically reduced part, and `v c⁻¹` is a single element whose word begins
+like `v` does.  The junction conditions this needs are exactly `last(C) ≠ first(V)` and the cyclic
+reducedness of `V` — no condition relating the two ends of the conjugator, which is what failed.
+And the pair `(C, V)` still determines the element, since `w = letterProd C · letterProd V ·
+(letterProd C)⁻¹`, so recovering `C` and `V` from the word of a power recovers the element.
+
+`DeningerConjSplit.lean`:
+
+- `deningerConj_pow_split` — the splitting identity;
+- `deningerNormalWord_append` — the normal word of a product of two transversal words meeting
+  without cancellation, which is the degenerate case of the concatenation statement needed when the
+  middle power is empty.
+
+`DeningerPowWord.lean` puts the two together:
+
+- `deningerNormalWord_pow` — **if `x = c v c⁻¹` with `v` cyclically reduced, the left junction not
+  cancelling, and `B` the word of `v c⁻¹`, then the normal word of `x^{k+1}` is `C` followed by `k`
+  copies of `V` followed by `B`.**
+
+This is the statement the two-exponent comparison is applied to.  Taking it at two different
+exponents and using uniqueness of normal words turns `xⁿ = yⁿ` into an equality of explicit lists
+for every multiple of `n`; the tail `B` has no reason to have the same length as `C`, so unlike the
+free group case the conjugators are not immediately equal, and what comes out first is that the two
+cyclically reduced words are cyclic rotations of one another.  Since a rotation is conjugation by
+the corresponding prefix, that still forces the two elements to agree.  `DeningerRotate.lean` proves
+that last step:
+
+- `deningerLetterProd_take_drop` — a word is its prefix times its suffix;
+- `deningerLetterProd_rotate`, `deningerLetterProd_rotate_conj` — **rotating a word by `t`
+  conjugates its product by the prefix of length `t`.**
+
+`DeningerFlattenRotate.lean` supplies the combinatorial identity that produces the rotation in the
+first place:
+
+- `deningerDrop_append` — `drop r V ++ V = rotate r V ++ drop r V`;
+- `deningerDrop_flatten` — **dropping `r` letters from a concatenation of copies of `V` gives the
+  concatenation of copies of `rotate r V`, followed by `drop r V`.**
+
+So when the two conjugators have different lengths, shifting one word against the other by the
+difference turns the copies of one cyclically reduced word into copies of a rotation of it, and the
+rotation is read off directly.
 
 Step 1 still needs Baumslag's inductive step (root adjunction preserves unique roots), which rests
 on the same normal-form machinery.
@@ -1350,3 +1413,35 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   statement needs, since inverses of transversal letters need not be transversal.  The absorbed base
   group element reappears as a conjugation of the cyclically reduced part by the base group, which
   changes neither its word length nor its indices, so nothing else in the argument is disturbed.
+- 2026-08-03 — Proved that the base group leaves the word length unchanged on either side and under
+  conjugation, so the conjugator adjustment of the previous step costs nothing.  Also corrected the
+  plan: for amalgams the word of `g^k` is not literally `C ++ Lᵏ ++ C⁻¹`.  Cyclic reduction here
+  conjugates by the first letter, deleting it and multiplying it into the last letter, so the two
+  ends of the conjugated element are not inverse to one another the way they are in a free group,
+  and the right hand junction genuinely cancels — the word is `C`, then `k-1` copies of the
+  cyclically reduced word, then the original tail.  Establishing that shape needs the cancellation
+  theory for products in an amalgam, which is the next thing to build.
+- 2026-08-03 — Found the right shape for a conjugated power in an amalgam:
+  `(c v c⁻¹)^{k+1} = c · vᵏ · (v c⁻¹)`.  This confines all the cancellation to the last factor, and
+  the junction conditions it needs are just `last(C) ≠ first(V)` together with cyclic reducedness of
+  `V` — no condition relating the two ends of the conjugator, which is the one that failed for
+  amalgams.  The pair `(C, V)` still determines the element, so recovering them from the word of a
+  power recovers the element, which is what the two-exponent comparison requires.
+- 2026-08-03 — Proved the normal word of a power in terms of the cyclic reduction data: `C`, then
+  `k` copies of `V`, then the tail `B`.  This is what the two-exponent comparison is applied to.
+  One difference from the free group case is now clear: there the tail is the reverse of the
+  conjugator, so equal lengths force the conjugators to be equal outright, whereas here `B` has no
+  reason to have the same length as `C`.  What comes out of the comparison first is instead that the
+  two cyclically reduced words are cyclic rotations of one another — and since a rotation is
+  conjugation by the corresponding prefix, that still forces the elements to agree.
+- 2026-08-03 — Proved that rotation is conjugation: rotating a word by `t` conjugates its product by
+  the prefix of length `t`.  This is the step that makes the amalgam comparison conclusive despite
+  the asymmetry noted above — the comparison of powers yields only that the two cyclically reduced
+  words are rotations of one another, and this turns that into a statement about the elements
+  themselves.
+- 2026-08-03 — Proved the combinatorial identity that produces the rotation: dropping `r` letters
+  from a concatenation of copies of `V` gives a concatenation of copies of `rotate r V` followed by
+  `drop r V`.  Together with the previous step this closes the conceptual gap the amalgam case has
+  over the free group case — when the two conjugators differ in length, shifting one word against
+  the other by the difference converts copies of one cyclically reduced word into copies of a
+  rotation of it, and rotation is conjugation.

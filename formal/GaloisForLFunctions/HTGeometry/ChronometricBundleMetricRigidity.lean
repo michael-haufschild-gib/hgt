@@ -192,4 +192,39 @@ theorem chronometricOperatorRigidity {Source : Type w}
 
 end SmoothPseudoMetric
 
+/-! ## The gravity operator as an inverse clock law -/
+
+section InverseLaw
+
+variable {Geometry : Type u} {Source : Type v} {Observation : Type w}
+
+/-- **The field equation and the source-to-clock map are inverse descriptions.**
+
+On a region where the gravity law is bijective, the law is recovered from the clock encoding by
+inverting the induced source-to-clock map. This is the pointwise form of the branch-safe graph
+statement, valid only under the bijectivity restriction. -/
+theorem law_eq_invFun_encode_comp_symm [Nonempty Source]
+    (law : Geometry ≃ Source) {encode : Geometry → Observation}
+    (hencode : Function.Injective encode) :
+    (law : Geometry → Source) =
+      Function.invFun (encode ∘ (law.symm : Source → Geometry)) ∘ encode := by
+  have hinj : Function.Injective (encode ∘ (law.symm : Source → Geometry)) :=
+    hencode.comp law.symm.injective
+  funext g
+  have hval : (encode ∘ (law.symm : Source → Geometry)) (law g) = encode g := by
+    simp
+  have hleft := Function.leftInverse_invFun hinj (law g)
+  rw [hval] at hleft
+  exact hleft.symm
+
+/-- The clock encoding composed with the inverse law is itself injective, so the inversion above is
+well posed. -/
+theorem injective_encode_comp_symm
+    (law : Geometry ≃ Source) {encode : Geometry → Observation}
+    (hencode : Function.Injective encode) :
+    Function.Injective (encode ∘ (law.symm : Source → Geometry)) :=
+  hencode.comp law.symm.injective
+
+end InverseLaw
+
 end GaloisForLFunctions.HTGeometry

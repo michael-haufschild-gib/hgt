@@ -245,6 +245,7 @@ formal/GaloisForLFunctions/HTGeometry/RationalPowerCyclicNorm.lean
 formal/GaloisForLFunctions/HTGeometry/PowerSubstitutionJet.lean
 formal/GaloisForLFunctions/HTGeometry/PowerSubstitutionDifferentialDescent.lean
 formal/GaloisForLFunctions/HTGeometry/RationalPowerHypertranscendenceTransfer.lean
+formal/GaloisForLFunctions/HTGeometry/EvenPowerCanonicalProductDA.lean
 ```
 
 Principal declarations:
@@ -261,7 +262,24 @@ prod_powerCanonicalProduct_primitiveRoot  -- the exact cyclic norm (5)
 differentiallyAlgebraic_of_comp_pow       -- the hard half of (7), for z |-> z^q
 differentiallyAlgebraic_of_comp_const_mul_pow  -- (7) for z |-> c z^q
 hypertranscendental_powerCanonicalProduct_ratio -- (10) modulo (8)
+sincProduct, pi_mul_sincProduct, sincProduct_ade,
+differentiallyAlgebraic_sincProduct       -- the Euler sine product and its ADE
+powerCanonicalProduct_even_eq_prod_sinc   -- W_(2m)(-w^(2m)) = prod_(k<m) sinc(alpha^k w)
+differentiallyAlgebraic_powerCanonicalProduct_of_even -- the even half of (8)
 ```
+
+The even half of Bank's theorem `(8)` is now proved outright, and without any Gamma theory: for
+`p=2m` the substitution `z = -w^(2m)` splits the `n`-th factor by the `2m`-th roots of unity into
+`m` Euler sine factors, so
+
+```text
+W_(2m)(-w^(2m)) = product_(k<m) sinc(alpha^k w),
+sinc(c) = product_(n>=1)(1-c^2/n^2) = sin(pi c)/(pi c),
+```
+
+with `alpha` a primitive `2m`-th root of unity.  Each `sinc` satisfies the exact algebraic
+differential equation `(pi c y)^2 + (y + c y')^2 = 1` obtained from `sin^2 + cos^2 = 1`, so the
+right side is DA; the monomial descent `(7)` then makes `W_(2m)` itself DA.
 
 `(5)` is the exact cyclic-norm identity, with no hypothesis beyond `p,q>=1` and `omega` a primitive
 `q`-th root of unity: the finite root-of-unity packet is grouped inside the locally uniformly
@@ -282,8 +300,62 @@ sectorial-branch argument and needs no simple connectedness.
 Hypertranscendental W_p  ->  Hypertranscendental W_(p/q)      for all p,q >= 1.
 ```
 
-The remaining Lean gap is exactly Bank's integer theorem `(8)`; nothing else in the card is
-assumed.
+The remaining Lean gap is exactly the **odd** half of Bank's integer theorem `(8)`.  For odd `p`
+the `p`-th roots of unity admit no `+/-` pairing, no elementary closed form appears, and the
+substitution `z = -w^p` instead produces the Gamma-ray product
+
+```text
+W_p(-w^p) = product_(gamma^p=1) 1/Gamma(1-gamma w),
+```
+
+equivalently the digamma relation
+
+```text
+(d/dw) log W_p(-w^p)
+  = -(1/(p w^(p-1))) sum_(gamma^p=1) gamma psi(1-gamma w).
+```
+
+Hypertranscendence of that finite *multi-scale* digamma combination is the one open Lean input.
+The corpus owns Hoelder (`hypertranscendental_gamma`) and a complete common-scale/natural-scale
+Gamma-orbit superselection layer (`MeromorphicGammaOrbit`, `MeromorphicGammaSuperselection`,
+`MeromorphicGammaNatScale`); what is missing is the arbitrary-complex-scale form of that layer.
+
+Also still open on the Lean side: the *forward* half of `(7)` (`f` DA implies `f(c z^q)` DA), which
+`(9)` needs in the even branch.  The hard converse half is proved.
+
+### Reduction of the odd branch, and the Lean route
+
+The odd branch reduces exactly.  For odd `p` the identity `sum_(gamma^p=1) gamma = 0` gives
+
+```text
+product_(gamma^p=1) W_1(gamma w) = product_(n>=1)(1 + w^p/n^p) = W_p(w^p),
+```
+
+which is the `p = q` case of the cyclic-norm law `(5)` already formalized
+(`prod_powerCanonicalProduct_primitiveRoot` with `p := p`, `q := p`, using `W_(p/p) = W_1`).  Since
+`W_1(z) = exp(-gamma_E z)/Gamma(1+z)`, this says
+
+```text
+W_p(w^p) = product_(gamma^p=1) Gamma(1+gamma w)^(-1).
+```
+
+So `W_p` HT for odd `p >= 3` is *equivalent* to hypertranscendence of a finite reciprocal-Gamma
+product at the `p`-th roots of unity — a **multi-scale** Gamma product.  The corpus owns the
+common-scale and natural-scale superselection layers but not the arbitrary-complex-scale one; that
+layer is the single mathematical input still missing.
+
+Milestones, in dependency order:
+
+```text
+O1  W_1(z) = exp(-gamma_E z) * Gamma(z+1)^(-1)        (Euler limit + Euler-Mascheroni)
+O2  W_1 hypertranscendental                            (O1 + Hoelder, in the meromorphic field)
+O3  W_(1/q) hypertranscendental for every q >= 1        (O2 + the proved transfer (10))
+O4  multi-scale root-of-unity reciprocal-Gamma product is HT   (open layer)
+O5  W_p hypertranscendental for every odd p             (O4 + the p=q cyclic norm)
+```
+
+`O3` already gives a dense rational stratum of hypertranscendental exponents `1/q`, which is the
+card's headline consequence for the numerator-one subfamily.
 
 ## Gates
 

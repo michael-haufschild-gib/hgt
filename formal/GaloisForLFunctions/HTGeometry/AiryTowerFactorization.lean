@@ -68,7 +68,7 @@ def StrictDivisorChain.toOrderedFactorization {R : ℕ} (d : StrictDivisorChain 
     OrderedFactorization R where
   factors := d.factors
   nonempty := d.factors_nonempty
-  factor_ge_two := fun a ha => d.two_le_of_mem_factors ha
+  factor_ge_two := fun _a ha => d.two_le_of_mem_factors ha
   prod_eq := d.prod_factors
 
 namespace OrderedFactorization

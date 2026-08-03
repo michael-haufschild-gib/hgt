@@ -60,16 +60,16 @@ theorem realAffineOrderShiftRecurrence_factorial_lower
       simp only [Nat.cast_succ]
       by_cases hN0 : N = 0
       · subst N
-        convert realAffineOrderShiftRecurrence_strict_step hy hypos x using 1 <;>
-          simp [realOrderRisingProduct_succ] <;> ring
+        simpa [realOrderRisingProduct_succ, mul_comm, mul_left_comm, mul_assoc] using
+          realAffineOrderShiftRecurrence_strict_step hy hypos x
       · have hNpos : 1 ≤ N := Nat.one_le_iff_ne_zero.mpr hN0
         have hih := ih hNpos
         have hxN : 0 < x + (N : ℝ) := by positivity
         have hfac : 0 < c * (x + (N : ℝ)) := mul_pos hc hxN
         have hstep :
             c * (x + (N : ℝ)) * y (x + N) < y (x + (N + 1)) := by
-          convert realAffineOrderShiftRecurrence_strict_step hy hypos (x + N) using 1 <;>
-            push_cast <;> ring
+          simpa [add_assoc] using
+            realAffineOrderShiftRecurrence_strict_step hy hypos (x + N)
         calc
           y x * c ^ (N + 1) * realOrderRisingProduct x (N + 1) =
               (y x * c ^ N * realOrderRisingProduct x N) *

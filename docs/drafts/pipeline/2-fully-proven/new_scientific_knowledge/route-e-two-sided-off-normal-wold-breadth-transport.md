@@ -439,3 +439,143 @@ Chernoff rate (choose `t = k/∑_{p≤z}1/p` to make `roughDensityBound·smoothT
 
 Remaining: the parameter instantiation turning `card_omega_le_le` into `(7)`, the mirror argument
 for the upper tail `(8)`, and `(9)`.
+
+### Upper tail `(8)` — route found (2026-08-03)
+
+The smooth/rough fibring that proved `(7)` **cannot** prove `(8)`: its error term is
+`(sieve error) × #{index set}`, and for the upper tail the index set
+`{σ z-smooth ≤ b : ω σ ≥ k'}` has no useful cardinality bound (unlike `ω σ ≤ k`, which
+`card_smoothUpTo_card_primeFactors_le` bounds).  Several natural repairs were checked and all fail
+on the same `+1`-per-divisor error:
+
+- plain divisor choice (`∑_{ω d = k'} #{n : d ∣ n}`) has no `1/log z` saving and is worse than
+  trivial already at `c₊ = 1.5`;
+- the untruncated MGF `∑_n u^{ω_{≤z} n}` has error `u^{π(z)}`;
+- truncating the MGF from above is the wrong direction for `u > 1` (all terms are nonnegative);
+- second/higher moments give only `(log X)^{-(c-1)²/e}`, and the `2m`-th moment needs the same
+  divisor sums anyway;
+- transferring `ω → ω_{≤z}` with the worst-case bound `ω_{>z}(n) ≤ log b / log z` loses
+  `≍ log log X`, i.e. everything.
+
+**The route that works** splits at a threshold `J` and uses two different devices.
+
+**(8a) Small primes — truncated factorial-moment (Bonferroni) MGF.**  For `u ≥ 1` and any `w`,
+
+```text
+[w ≥ k'] ≤ u^{-k'} ∑_{i ≤ k'} C(w, i) (u-1)^i,
+```
+because `C(w,i) ≥ C(k',i)` for `w ≥ k'` makes the truncated sum at least `u^{k'}`, and every term
+is nonnegative.  Summing over `n ∈ (a,b]` and using
+`∑_{n ∈ (a,b]} C(ω_{≤z} n, i) = ∑_{d ∣ z#, ω d = i} #{n ∈ (a,b] : d ∣ n}` gives
+
+```text
+#{n ∈ (a,b] : ω_{≤z} n ≥ k'}
+  ≤ u^{-k'} (b-a) ∏_{p ≤ z}(1 + (u-1)/p) + u^{-k'} ∑_{i ≤ k'} (u-1)^i C(π z, i),
+```
+whose main term is the **sharp** Chernoff factor `exp(-S·I(c))` at `u = k'/S`, and whose error is
+`#truncDivisors (z#) k'`-shaped, hence `X^{o(1)}` for `log z ≍ log X / log log X`.
+The same device reproves `(7)` directly (with `t ≤ 1`, using the *even* Bonferroni inequality
+already in `TruncatedMoebius.lean`), with no fibring and no sieve.
+
+**(8b) Large primes — geometric-mean divisor trick.**  If `ω_{>z} n ≥ 4J` then the product `d` of
+the `J` smallest prime factors of `n` exceeding `z` satisfies `d ≤ n^{J/ω_{>z} n} ≤ b^{1/4}`,
+because the geometric mean of the `J` smallest is at most the geometric mean of all.  Hence
+
+```text
+#{n ∈ (a,b] : ω_{>z} n ≥ 4J} ≤ (b-a) · L^J / J! + b^{1/4},
+    L = ∑_{z < p ≤ b} 1/p ≍ log log log X.
+```
+Choosing `J ≍ log log X / log log log X` makes `L^J/J! ≤ (log X)^{-I(c)}` while
+`4J = o(log log X)`, so the transfer `ω n ≥ k ⟹ ω_{≤z} n ≥ k - 4J` costs nothing in the
+exponent.  The `b^{1/4}` error is far below `H = X^{1/2+o(1)}`.
+
+This is the plan for the next stages; `(9)` then follows from `(7)` and `(8)`.
+
+### Factorial-moment layer landed (2026-08-03) — `Sieve/OmegaMGF.lean`
+
+Built, wired, axiom-clean:
+
+- **`card_divisors_filter_card_primeFactors_eq`** : for squarefree `m`,
+  `#{d ∣ m : ω d = i} = C(ω m, i)` — via the bijection `d ↦ d.primeFactors` onto
+  `m.primeFactors.powersetCard i`;
+- `omegaSmall z n = ω (gcd n z#)` — the number of primes `≤ z` dividing `n`;
+- `levelDivisors z i = {d ∣ z# : ω d = i}`, `levelDivisors_gcd`;
+- **`sum_choose_omegaSmall_eq`** — the factorial moment identity:
+  `∑_{n ∈ (a,b]} C(ω_{≤z} n, i) = ∑_{d ∣ z#, ω d = i} #{n ∈ (a,b] : d ∣ n}`;
+- `binomialPartial x w r = ∑_{i ≤ r} C(w,i)(−x)^i`, with `binomialPartial_zero`,
+  `binomialPartial_succ` (the Pascal recursion
+  `B(w+1, r+1) = B(w, r+1) − x·B(w, r)`), and
+- **`binomialPartial_sign`** : `0 ≤ (−1)^r (binomialPartial x w r − (1−x)^w)` for `x ∈ [0,1]` —
+  the Bonferroni inequalities for the binomial expansion, both parities at once, by induction on
+  `w` with `r` quantified inside (the even and odd cases feed each other through the Pascal
+  recursion).
+
+These are the two halves of `(8a)`: the moment identity turns `∑_n C(ω_{≤z} n, i)` into a divisor
+sum whose error is one unit per divisor of `z#` at level `i`, and `binomialPartial_sign` supplies
+the one-sided truncation needed to assemble the moments into an indicator bound.
+
+Remaining: the indicator lemmas (`[w ≥ k'] ≤ u^{−k'} ∑_{i≤k'} C(w,i)(u−1)^i` for `u ≥ 1`, and its
+`t ≤ 1` mirror from `binomialPartial_sign`), their combination with the moment identity into the
+two `ω_{≤z}` tail bounds, then `(8b)` (the geometric-mean divisor trick for `ω_{>z}`) and `(9)`.
+
+### `(8a)` complete and `(8b)`'s core landed (2026-08-03)
+
+**`Sieve/OmegaMGF.lean` (extended)** — both tails of the small-prime count, sharp:
+
+- `indicator_mul_pow_le_sum_choose` : for `u ≥ 1`,
+  `[k ≤ w]·u^k ≤ ∑_{i≤k} C(w,i)(u−1)^i` — from `C(k,i) ≤ C(w,i)` and the binomial theorem
+  `u^k = ∑_{i≤k} C(k,i)(u−1)^i`;
+- `indicator_mul_pow_le_binomialPartial` : for `0 < t ≤ 1` and even `r`,
+  `[w ≤ k]·t^k ≤ binomialPartial (1−t) w r` — from `binomialPartial_sign` and `t^k ≤ t^w`;
+- `abs_sum_choose_omegaSmall_sub_le` : `|∑_n C(ω_{≤z}n, i) − (b−a)∑_{d ∈ levelDivisors} 1/d|
+  ≤ #levelDivisors z i`;
+- **`card_omegaSmall_ge_mul_pow_le`** :
+  `#{n ∈ (a,b] : k ≤ ω_{≤z} n}·u^k ≤ (b−a)·∑_{i≤k}(u−1)^i e_i + ∑_{i≤k}(u−1)^i·#levelDivisors z i`;
+- **`card_omegaSmall_le_mul_pow_le`** :
+  `#{n ∈ (a,b] : ω_{≤z} n ≤ k}·t^k ≤ (b−a)·∑_{i≤r}(t−1)^i e_i + ∑_{i≤r} #levelDivisors z i`
+  for even `r`.
+
+Both carry the **sharp** Chernoff shape: optimising `u` (resp. `t`) at `k/∑_{p≤z}1/p` makes the
+main term `exp(−S·I(c))`, and the error is one unit per level divisor — bounded by
+`#truncDivisors (z#) k`, hence `X^{o(1)}` at `log z ≍ log X / log log X`.
+
+**`Sieve/GeometricMeanDivisor.lean`** — the core of `(8b)`:
+
+- **`prod_pow_card_le_prod_pow_card`** : if every element of `T` is at most every element of
+  `S \ T` then `(∏_T p)^{#S} ≤ (∏_S p)^{#T}` — the integral geometric-mean inequality, proved by
+  the two-sided product comparison `(∏_T p)^{#(S\T)} ≤ (∏_{S\T} q)^{#T}`;
+- **`pow_prod_le_of_card_mul_le`** : if additionally `c·#T ≤ #S` and `∏_S p ≤ n`, then
+  `(∏_T p)^c ≤ n`.
+
+So once `n` has at least `c·J` prime factors above the cut, the product of the `J` smallest of them
+is at most `n^{1/c}` — which is exactly what keeps the `(8b)` divisor range below `b^{1/4}`.
+
+All built, wired, axiom-clean.  Remaining: instantiate `S = {p ∈ n.primeFactors | z < p}` with `T`
+its `J` smallest elements, count `#{n : ω_{>z} n ≥ 4J}` by the resulting small divisors, combine
+with `(8a)` for `(8)`, and conclude `(9)`.
+
+### `(8b)` landed (2026-08-03) — `Sieve/SmallestPart.lean`
+
+- `smallestPart S J` — the `J` smallest elements of a finite set of naturals, defined by truncating
+  `Finset.sort`; `smallestPart_subset`, `card_smallestPart` (`= min J #S`), and
+  **`smallestPart_le`** (`∀ p ∈ T, ∀ q ∈ S \ T, p ≤ q`, from `List.pairwise_append` applied to
+  `take ++ drop`);
+- **`exists_small_divisor`** : if `c·J ≤ #{p ∣ n : z < p}` and `n ≠ 0`, there is a squarefree
+  `d ∣ n` with `ω d = J`, every prime factor above `z`, and **`d^c ≤ n`** — the product of the `J`
+  smallest large prime factors, with the size bound coming from
+  `pow_prod_le_of_card_mul_le`;
+- `bigDivisors z b J c` and `bigDivisors_subset_Icc` : such divisors are confined to
+  `Icc 1 D` whenever `b < (D+1)^c`, i.e. to a `c`-th root range;
+- **`card_omegaBig_ge_le_sum`** : the covering
+  `#{n ∈ (a,b] : c·J ≤ ω_{>z} n} ≤ ∑_{d ∈ bigDivisors} #{n ∈ (a,b] : d ∣ n}`;
+- **`card_omegaBig_ge_le`** : its quantitative form
+  `≤ (b−a)·∑_{d ∈ bigDivisors} 1/d + D`.
+
+Built, wired, axiom-clean.  Both halves of `(8)` now exist as unconditional Lean theorems: `(8a)`
+(`card_omegaSmall_ge_mul_pow_le`) with the sharp Chernoff main term, and `(8b)`
+(`card_omegaBig_ge_le`) with the divisor range confined to `b^{1/c}` so that the `D` error is
+negligible.
+
+Remaining: bound `∑_{d ∈ bigDivisors} 1/d` by the tilted Euler product over the primes in `(z,b]`
+(the same `prod_one_add_mul_le_exp` device), then instantiate parameters to combine `(8a)` and
+`(8b)` into `(8)`, and conclude `(9)`.

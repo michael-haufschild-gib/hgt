@@ -127,6 +127,55 @@ theorem trivialization_apply (j : J) :
 theorem trivialization_symm_apply (z : P × S.eval.ker) :
     S.trivialization.symm z = S.const z.1 * z.2.1 := rfl
 
+/-- Position modulo a constant subgroup, together with normalized Maurer–Cartan data. -/
+def positionVelocityHom (H : Subgroup P) : J →* (P ⧸ H) × S.eval.ker :=
+  ((QuotientGroup.mk' H).comp S.eval).prod S.normalize
+
+/-- Every quotient position and identity-based jet has a position–velocity lift. -/
+theorem positionVelocityHom_surjective (H : Subgroup P) :
+    Function.Surjective (S.positionVelocityHom H) := by
+  rintro ⟨q, b⟩
+  obtain ⟨p, rfl⟩ := QuotientGroup.mk_surjective q
+  refine ⟨S.trivialization.symm (p, b), ?_⟩
+  apply Prod.ext
+  · change QuotientGroup.mk (S.eval (S.trivialization.symm (p, b))) = QuotientGroup.mk p
+    rw [S.trivialization_symm_apply]
+    have hb : S.eval b.1 = 1 := b.2
+    simp [hb]
+  · change S.normalize (S.trivialization.symm (p, b)) = b
+    exact congrArg Prod.snd (S.trivialization.apply_symm_apply (p, b))
+
+/-- Kernel of the position–velocity map is exactly the chosen subgroup of constant jets. -/
+theorem positionVelocityHom_ker (H : Subgroup P) :
+    (S.positionVelocityHom H).ker = H.map S.const := by
+  ext j
+  constructor
+  · intro hj
+    rw [MonoidHom.mem_ker] at hj
+    have hq : QuotientGroup.mk (S.eval j) = (1 : P ⧸ H) := congrArg Prod.fst hj
+    have hn : S.normalize j = 1 := congrArg Prod.snd hj
+    have hej : S.eval j ∈ H := by
+      simpa using (QuotientGroup.eq_one_iff (N := H) (S.eval j)).mp hq
+    refine ⟨S.eval j, hej, ?_⟩
+    have hnorm : j / S.const (S.eval j) = 1 := congrArg Subtype.val hn
+    exact (div_eq_one.mp hnorm).symm
+  · rintro ⟨p, hp, rfl⟩
+    rw [MonoidHom.mem_ker]
+    apply Prod.ext
+    · change QuotientGroup.mk (S.eval (S.const p)) = 1
+      rw [S.eval_const_apply]
+      exact (QuotientGroup.eq_one_iff (N := H) p).mpr hp
+    · change S.normalize (S.const p) = 1
+      apply Subtype.ext
+      simp [normalize]
+
+/-- Quotient by any constant subgroup splits into quotient position and Maurer–Cartan data. -/
+def quotientSubgroupEquivPositionVelocity (H : Subgroup P) :
+    J ⧸ H.map S.const ≃* (P ⧸ H) × S.eval.ker :=
+  (QuotientGroup.quotientMulEquivOfEq (S.positionVelocityHom_ker H).symm).trans
+    (QuotientGroup.quotientKerEquivOfSurjective (S.positionVelocityHom H)
+      (S.positionVelocityHom_surjective H))
+
 end SplitJetEvaluation
 
 universe w
@@ -165,6 +214,17 @@ def algebraicJetQuotientConstantsEquivBased (n : ℕ) :
         (constantJet (K := K) (R := R) G n).range ≃*
       AlgebraicBasedJetPoint (K := K) (R := R) G n :=
   (algebraicJetSplitEvaluation (K := K) (R := R) G n).quotientEquivBased
+
+/-- Finite jets modulo any subgroup of constant points split into quotient position and based
+Maurer–Cartan data. -/
+def algebraicJetQuotientConstantSubgroupEquivPositionVelocity (n : ℕ)
+    (H : Subgroup (AlgebraicPoint (K := K) (R := R) G)) :
+    AlgebraicJetPoint (K := K) (R := R) G n ⧸
+        H.map (constantJet (K := K) (R := R) G n) ≃*
+      (AlgebraicPoint (K := K) (R := R) G ⧸ H) ×
+        AlgebraicBasedJetPoint (K := K) (R := R) G n :=
+  (algebraicJetSplitEvaluation (K := K) (R := R) G n)
+    |>.quotientSubgroupEquivPositionVelocity H
 
 @[simp]
 theorem algebraicJetMaurerCartanNormalize_coe (n : ℕ)
