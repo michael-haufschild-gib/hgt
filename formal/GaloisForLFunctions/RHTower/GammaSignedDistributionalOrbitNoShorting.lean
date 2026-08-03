@@ -39,14 +39,14 @@ theorem isolatedSpectrum_coeff_eq_zero
     (lam : ℕ → ℝ) (c : ℕ → ℂ)
     (hdisc : ∀ i, ∃ s : Set ℝ, s ∈ 𝓝 (lam i) ∧
       ∀ j, lam j ∈ s → j = i)
-    (hvan : ∀ f : 𝓓((⊤ : Opens ℝ), ℝ),
+    (hvan : ∀ f : 𝓓((⊤ : TopologicalSpace.Opens ℝ), ℝ),
       ∑' j : ℕ, c j * (f (lam j) : ℂ) = 0) :
     ∀ i, c i = 0 := by
   intro i
   obtain ⟨s, hs, hsi⟩ := hdisc i
   obtain ⟨f, hfs, hfc, hfd, _hfrange, hfi⟩ :=
     exists_contDiff_tsupport_subset (n := (⊤ : ℕ∞)) hs
-  let phi : 𝓓((⊤ : Opens ℝ), ℝ) :=
+  let phi : 𝓓((⊤ : TopologicalSpace.Opens ℝ), ℝ) :=
     ⟨f, hfd, hfc, fun _ _ => trivial⟩
   have hphi_i : phi (lam i) = 1 := hfi
   have hterm : ∀ j : ℕ,
@@ -109,7 +109,7 @@ cross-prime/depth family is coefficient-faithful. -/
 theorem xiGammaEulerCanonicalCrossPrime_distributional_noShorting
     (edge : ℕ → XiGammaEulerCanonicalCrossPrimeDepthPair)
     (hedge : Function.Injective edge) (c : ℕ → ℂ)
-    (hvan : ∀ f : 𝓓((⊤ : Opens ℝ), ℝ),
+    (hvan : ∀ f : 𝓓((⊤ : TopologicalSpace.Opens ℝ), ℝ),
       ∑' j : ℕ, c j *
         (f (xiGammaEulerCanonicalCrossPrimeFrequency (edge j)) : ℂ) = 0) :
     ∀ i, c i = 0 := by
@@ -128,7 +128,7 @@ vanish. -/
 theorem xiGammaEulerCanonicalCrossPrimeCooriented_distributional_noShorting
     (edge : ℕ → XiGammaEulerCanonicalCrossPrimeDepthPair)
     (hedge : Function.Injective edge) (c : ℕ → ℂ)
-    (hvan : ∀ f : 𝓓((⊤ : Opens ℝ), ℝ),
+    (hvan : ∀ f : 𝓓((⊤ : TopologicalSpace.Opens ℝ), ℝ),
       ∑' j : ℕ,
         (c j *
           (xiGammaEulerCanonicalCrossPrimeCoorientedAmplitude (edge j) : ℂ)) *

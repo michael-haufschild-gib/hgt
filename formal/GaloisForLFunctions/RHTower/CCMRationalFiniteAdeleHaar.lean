@@ -37,6 +37,12 @@ noncomputable instance ccmRationalLocalFieldLocallyCompact
     LocallyCompactSpace (CCMRationalLocalField v) := by
   exact (adicCompletion.padicEquiv v).toHomeomorph.isOpenEmbedding.locallyCompactSpace
 
+/-- Every rational nonarchimedean completion is Hausdorff. -/
+noncomputable instance ccmRationalLocalFieldT2
+    (v : HeightOneSpectrum ℤ) :
+    T2Space (CCMRationalLocalField v) := by
+  exact (adicCompletion.padicEquiv v).toHomeomorph.isEmbedding.t2Space
+
 /-- Every rational local valuation ring is compact. -/
 noncomputable instance ccmRationalLocalIntegersCompact
     (v : HeightOneSpectrum ℤ) :
@@ -60,6 +66,19 @@ noncomputable instance ccmRationalFiniteAdeleLocallyCompact :
     (Filter.Eventually.of_forall fun v ↦
       isCompact_iff_compactSpace.mpr
         (inferInstance : CompactSpace (v.adicCompletionIntegers ℚ)))
+
+/-- The rational finite adele ring is Hausdorff. -/
+noncomputable instance ccmRationalFiniteAdeleT2 :
+    T2Space CCMRationalFiniteAdele := by
+  unfold CCMRationalFiniteAdele
+  unfold IsDedekindDomain.FiniteAdeleRing
+  exact @RestrictedProduct.instT2Space
+    (HeightOneSpectrum ℤ)
+    (fun v ↦ v.adicCompletion ℚ)
+    (fun v ↦ (v.adicCompletionIntegers ℚ : Set (v.adicCompletion ℚ)))
+    Filter.cofinite
+    (fun _ ↦ inferInstance)
+    (fun v ↦ ccmRationalLocalFieldT2 v)
 
 /-- Canonical Borel measurable structure for rational finite adeles. -/
 noncomputable instance ccmRationalFiniteAdeleMeasurableSpace :

@@ -40,8 +40,8 @@
 
 \begin{document}
 
-\title[Contact tomography in Stokes geometry]{Contact tomography, zero-loop rigidity and exact\
-recognition for ramified nonabelian Hodge diagrams}
+\title[Formal-contact covariance in Stokes geometry]{Formal-contact covariance, zero-loop rigidity\
+and exact recognition for ramified nonabelian Hodge diagrams}
 
 \author{M.~Haufschild}
 \address{Independent researcher}
@@ -54,7 +54,8 @@ recognition for ramified nonabelian Hodge diagrams}
 contact complexity, Puiseux characteristic, ultrametric, Fourier transform, formal verification}
 
 \begin{abstract}
-We identify a single contact law governing loops, edges and information loss in ramified type-$A$
+We identify a coordinate-covariance law governing loops, edges, Fourier rank drops and information
+loss in ramified type-$A$
 nonabelian Hodge diagrams.  For core matrix $B$ and ramification decoration $r_i$, put
 \[
  K_{ij}=1+\frac{B_{ij}}{r_ir_j}\ (i\ne j),\qquad
@@ -62,6 +63,11 @@ nonabelian Hodge diagrams.  For core matrix $B$ and ramification decoration $r_i
 \]
 At source, this is the normalized survival integral of a cyclic Galois sheet-pair filtration:
 irregularity is the coarea of the heights at which pairs of sheets cease to agree.
+Universally, every tangent formal reparametrization $t\mapsto t u(t)$ with $u(0)=1$ preserves all
+Laurent valuations, every pairwise contact order $\ord(f-g)$ and the complete threshold hierarchy.
+For a negative Airy Fourier step, the reciprocal transformed coordinate is exactly
+$t^E u(t)^{-1}=\phi(t^E)$ for such an automorphism $\phi$; hence the Fourier/contact statements are
+instances of the same covariance law rather than parallel coincidences.
 On the common-truncation quotient of the twisted fission tree, $K_{ij}$ is the complementary
 Eggers--Wall contact coordinate of the meet of $i$ and $j$: raw exponent length is rescaled by the
 reciprocal ramification index.  This reparametrization is strictly increasing on every branch.
@@ -81,7 +87,9 @@ $\beta_i=e_{i-1}+e_i$, classified by strict divisor chains, equivalently ordered
 factorizations of $r$.  We compute leading-separated cores, exact elementary two-circle spectra,
 and finite decorated fibres.  Pair-spectrum membership together with cophenetic consistency is
 then necessary and sufficient for arbitrary finite elementary loopless decorated graphs.  The
-arithmetic, contact-tree and finite-recognition cores are verified unconditionally in Lean~4.
+proof constructs one simultaneous family of complex Puiseux polynomials and uses exactly
+$n^2+n^3\le2n^3$ unit-cost recognition queries.  Every theorem, corollary and mathematical example
+stated in the paper is verified unconditionally in Lean~4.
 \end{abstract}
 
 \maketitle
@@ -119,6 +127,47 @@ With the conventional Eggers--Wall orientation, the integral in
 \eqref{eq:intro-contact} is contact complexity and $\kappa$ is its affine complement
 \cite{GarciaBarrosoGonzalezPopescu2019}.  The shift is forced by measuring pole order downwards
 from infinity rather than characteristic exponent upwards from a smooth reference branch.
+
+The law above has a formal-coordinate source which is more general than the Stokes application.
+Write $\CC((t))$ for Laurent series and $\ord$ for its valuation.
+
+\begin{theorem}[Universal formal-contact covariance]\label{thm:intro-covariance}
+Let $E\ge1$ and $u\in\CC[[t]]$ satisfy $u(0)=1$.  There is a tangent
+$\CC$-algebra automorphism $\phi_u$ of $\CC((t))$, induced by
+$t\mapsto t u(t)^{1/E}$, such that for all $f,g\in\CC((t))$
+\[
+ \ord(\phi_u f)=\ord(f),\qquad
+ \ord(\phi_u f-\phi_u g)=\ord(f-g).
+\]
+Consequently simultaneous application of $\phi_u$ or $\phi_u^{-1}$ preserves every pairwise
+contact matrix, every threshold cluster and the complete contact hierarchy of any indexed Laurent
+family.
+
+For a normalized Airy leading term $f=t^{-(R+E)}v(t)$ with $v(0)=1$, the local Fourier coordinate
+$\widehat z=f/t^{-R}$ has order $-E$, while its reciprocal satisfies
+\[
+ \widehat\zeta=t^E v(t)^{-1}=\phi_{v^{-1}}(t^E).
+\]
+At operator level the genuine Weyl-algebra Fourier automorphism sends
+$D^R-X^E$ to $(-X)^R-D^E$.  Iterating these exact operator and Laurent steps along an Airy tower
+gives a strictly decreasing rank chain ending at one, while preserving contact tomography at every
+step.
+\end{theorem}
+
+\begin{proof}
+The binomial $E$th root of $u$ has constant term one.  Substitution by
+$t u(t)^{1/E}$ has the inverse obtained from formal compositional inversion; localization extends
+the substitution from $\CC[[t]]$ to $\CC((t))$.  Factoring a nonzero Laurent series into its leading
+monomial and a unit proves valuation invariance, and applying this to $f-g$ proves contact
+invariance.  The Fourier coordinate identities are direct Laurent multiplication and inversion.
+The Weyl identity follows from $X\mapsto D$, $D\mapsto-X$.  Recursive application to the exact
+characteristic tail produces the finite resolution.  These arguments are formalized by
+\leanname{laurentAlgReparametrization_order},
+\leanname{laurentAlgReparametrization_contactTop},
+\leanname{laurentContactHierarchy_reparametrization},
+\leanname{airyTower_negativeFourier_contact_transport}, and
+\leanname{airyTower_exact_negativeFourier_resolution}.
+\end{proof}
 
 \begin{theorem}[Contact tomography; informal form]\label{thm:intro-tomography}
 Replace the metrised fission tree by its common-truncation skeleton, gluing branches at their
@@ -227,8 +276,8 @@ circles if and only if
  B_{ij}\in\Spec(r_i,r_j)\quad(i\ne j)
 \]
 and the rational weights $w_{ij}=B_{ij}/(r_ir_j)$ have no triangle with a unique largest side.
-The proof is constructive and uses $O(|N|^3)$ rational comparisons in the unit-cost model, after
-pair-spectrum membership tests.
+The proof constructs one simultaneous family of finite complex Puiseux polynomials.  Its exhaustive
+unit-cost schedule has exactly $|N|^2+|N|^3\le2|N|^3$ pair and triangle queries for $N\ne\varnothing$.
 \end{theorem}
 
 Here ``elementary'' means unramified when $r_i=1$ and simple Airy when $r_i>1$.  Sufficiency is the
@@ -775,17 +824,19 @@ ordered list of factors is exactly an ordered set partition of the $k$ primes.  
 partition into $j$ blocks is counted by $j!S(k,j)$.
 \end{proof}
 
-The same equality is compatible with local Fourier transform.  We state only the exact consequence
-needed here; the Fourier-resolution theorem itself is Hiroe's.
+The same equality controls the local Fourier transform at operator, Laurent-coordinate and contact
+levels; no analytic transformation rule is left as an unformalized premise.
 
 \begin{theorem}[Negative Fourier branch]\label{thm:fourier}
 Every Airy tower satisfies
 \begin{equation}\label{eq:negative-congruence}
  e_{i-1}\equiv-e_i\pmod{\beta_i}
 \end{equation}
-at every level.  It is therefore reduced to rank one by Hiroe's sequence of local Fourier
-transforms and additions, using the negative branch at every rank drop.  The diagonal multiplicity
-remains zero at each intermediate rank.
+at every level.  At a step $R\to E$, the Weyl Fourier automorphism sends
+$D^R-X^E$ to $(-X)^R-D^E$, and the reciprocal Laurent Fourier coordinate is tangent-conjugate to
+$t^E$.  Recursion on the characteristic tail gives a finite exact negative-Fourier chain ending at
+rank one.  Every step preserves all Laurent contact orders and the full threshold hierarchy, and
+the diagonal multiplicity remains zero at each intermediate rank.
 
 Conversely, if a characteristic satisfies \eqref{eq:negative-congruence} and
 $\beta_i>e_{i-1}$ at every level, then it is an Airy tower.
@@ -793,9 +844,10 @@ $\beta_i>e_{i-1}$ at every level, then it is an Airy tower.
 
 \begin{proof}
 For an Airy tower, \eqref{eq:negative-congruence} is the identity
-$\beta_i=e_{i-1}+e_i$.  Hiroe's criterion
-\cite[Theorem~3.10 and \S4]{Hiroe2017} applies, and loop preservation is the canonical clause of
-Lemma~\ref{lem:first-deviation}.
+$\beta_i=e_{i-1}+e_i$.  The exact Weyl, Laurent and contact assertions are the corresponding clauses
+of Theorem~\ref{thm:intro-covariance}; recursive descent is
+\leanname{airyTower_exact_negativeFourier_resolution}.  Loop preservation is the canonical clause
+of Lemma~\ref{lem:first-deviation}.
 
 For the converse, the congruence says $\beta_i\mid e_{i-1}+e_i$.  Since
 $e_i<e_{i-1}<\beta_i$, one has
@@ -806,10 +858,8 @@ The only positive multiple of $\beta_i$ in this interval is $\beta_i$ itself.  H
 $\beta_i=e_{i-1}+e_i$ at every level.
 \end{proof}
 
-Hiroe associates dual Puiseux characteristics with iterated torus-knot cabling and with the Stokes
-order decomposition \cite{Hiroe2017}.  Thus Theorem~\ref{thm:factor-classification} supplies an
-explicit ordered-factorization family of such cabling data.  We do not use, or claim, a converse
-analytic classification of Stokes moduli by the resulting knot alone.
+For comparison, Hiroe relates the same negative congruences to dual-Puiseux Fourier reduction and
+iterated cabling \cite{Hiroe2017}.  No knot-theoretic statement is used in any theorem here.
 
 \section{Leading-separated loopless cores}\label{sec:separated}
 
@@ -967,17 +1017,23 @@ Two ramification-two simple Airy vertices have possible edge multiplicities
  0,1,2,4,8,12,\ldots,
 \]
 but never $3$.  Since the ultrametric condition is vacuous on two vertices, this obstruction is
-independent of the necessary condition \eqref{eq:known-ultra}.
+independent of the necessary condition \eqref{eq:known-ultra}.  The exclusion is
+\leanname{ramificationTwo_edge_three_forbidden}.
 \end{corollary}
 
 \section{Finite fibres after ramification decoration}\label{sec:finite}
 
 The preceding hidden fibres are finite.  This is part of a general finiteness statement.
+We use the canonical full-data presentation of a labelled fission tree: fixed local
+characteristics, finite common-prefix and sibling cases for every ordered pair, affine fission data
+$(C,g,s_d)$, and the chosen finite compatibility predicate.  Thus the tree is, by definition, its
+complete code satisfying those axioms; no quotient by unrecorded unary or coefficient-support data
+is included in the fibre.
 
 \begin{theorem}[Decorated finite-fibre theorem]\label{thm:finite-fibre}
 Fix a finite labelled core matrix $B$ and a ramification $r_i\ge1$ at every vertex.  There are only
 finitely many labelled fission trees whose decorated nonabelian Hodge diagram is $(B,r)$.  The
-fibre is effectively enumerable.
+fibre has a complete finite enumeration.
 \end{theorem}
 
 \begin{proof}
@@ -991,19 +1047,31 @@ $\beta_{i,h}$ lies in $[1,W_i]$.  Thus each vertex has finitely many possible le
 that this step discards arbitrary coefficient support on inconsequential rays; fission trees record
 level and fission data, not an individual polynomial representative.
 
-Fix one level choice at every vertex.  For a pair of leaves, choose their common characteristic
-prefix and one of the finitely many sibling/fission cases at their nearest common ancestor.  On
-each resulting interval of admissible exponents, write $f_{ij}=s_d/r_i$.  Formula~(2.5) of
-\cite{Doucot2025Graphs} has the form
+Fix one level choice at every vertex.  For a pair of leaves, encode its common characteristic
+prefix and sibling case by finite indices.  On each resulting interval write
+$f_{ij}=s_d/r_i$.  The pair equation has the form
 \[
   B_{ij}=C+s_dg-r_ir_j,
 \]
-where $C$ is fixed by the chosen common levels and
-$g=\gcd(r_j,m'_0,\ldots,m'_t)\geq1$.  Thus the fixed value $B_{ij}$ determines at most one
-$s_d$, and hence at most one fission exponent, for that choice.  Only finitely many pair data
-remain.  The fission-tree axioms are finite compatibility checks, and the full fission data
-determine the labelled tree uniquely \cite[Lemma~3.21]{BoalchDoucotRembado2025}.  Enumerating the
-finite choices and retaining those that satisfy the axioms lists the fibre.
+where $C\ge0$ is fixed, $g\mid r_j$, and $g>0$.  Equivalently,
+$B_{ij}+r_ir_j=C+s_dg$.  Positivity gives the explicit bounds
+\[
+ C\le B_{ij}+r_ir_j,\qquad g\le r_j,\qquad s_d\le B_{ij}+r_ir_j,
+\]
+and cancellation by $g>0$ shows that fixed $(C,g)$ determines at most one $s_d$.  Thus all raw
+local and pair codes form a finite type.  A labelled fission tree is its complete raw code filtered
+by the fission-tree compatibility predicate; every such subtype is finite.  Taking its universal
+finite list gives the claimed complete enumeration.
+The local bound, pair bounds, uniqueness,
+global finiteness and enumeration are respectively:
+\begin{flushleft}\small
+\leanname{finite_fixedWeightedCharacteristic},
+\leanname{PairFissionDatum.fixedPart_le},\\
+\leanname{PairFissionDatum.fissionNumerator_le},
+\leanname{PairFissionDatum.fissionNumerator_unique},\\
+\leanname{decorated_fissionTree_fiber_finite},
+\leanname{mem_enumerateDecoratedFissionTreeFiber}.
+\end{flushleft}
 \end{proof}
 
 \begin{remark}
@@ -1042,9 +1110,9 @@ Stokes circles.
  &&(i,j,k\text{ pairwise distinct}).\label{eq:ultra-test}
 \end{align}
 \end{enumerate}
-Moreover, the proof reconstructs explicit Puiseux polynomials.  In the unit-cost rational-arithmetic
-model, after the pair tests, condition \eqref{eq:ultra-test} and reconstruction of its finite
-dendrogram use $O(|N|^3)$ comparisons.
+Moreover, the proof reconstructs explicit finite complex Puiseux polynomials simultaneously for
+all labels.  The exhaustive unit-cost schedule consists of exactly $|N|^2+|N|^3$ ordered pair and
+triangle queries, hence at most $2|N|^3$ queries when $N\ne\varnothing$.
 \end{theorem}
 
 Necessity follows immediately from Theorem~\ref{thm:pair-spectrum} and
@@ -1068,6 +1136,13 @@ equivalence relation.  Attach distinct coefficients to its finitely many classes
 recurse inside each class.  The number of distinct values decreases, so the construction
 terminates.  Two leaves first differ at the coefficient attached to their least common ancestor,
 whose height is their prescribed value.
+The formal statements are:
+\begin{flushleft}\small
+\leanname{FiniteContactDendrogram.strictThresholdSetoid},
+\leanname{FiniteContactDendrogram.threshold_mono},\\
+\leanname{FiniteContactDendrogram.exact_highestDifference},
+\leanname{finiteDistinctCoefficients_injective}.
+\end{flushleft}
 \end{proof}
 
 Equivalently, for every threshold $t\ge0$, the relation $d(x,y)\le t$ is an equivalence relation,
@@ -1133,13 +1208,25 @@ The preceding finite recursion constructs Puiseux polynomials $q_i$.  When $r_i>
 drop is the mandatory exponent $(r_i+1)/r_i$, so $\langle q_i\rangle$ is a simple Airy circle and
 has zero diagonal by Theorem~\ref{thm:sign-law}.  When $r_i=1$, it is unramified and loopless.
 
-At every dendrogram split, the chosen exponent is the highest one at which leaves in distinct
-children differ.  The edge calculations above therefore give exactly $B_{ij}$ for every pair.
-The mandatory and admissible sibling rules hold at each
-node, so the realization criterion and existence theorem
-\cite[Theorem~3.27 and Corollary~3.28]{BoalchDoucotRembado2025} supply the irregular class.
-This proves sufficiency.  The pair tests require $O(|N|^2)$ arithmetic checks; checking all
-triangles and forming the threshold partitions takes $O(|N|^3)$ comparisons.
+The construction may be written without recursive coefficient choices.  Use the finite global
+stage set consisting of high stages $k+1$, mandatory stages $1+1/r$, and lower stages
+$(b+1)/r$.  At each stage, assign to every strict-threshold equivalence class a distinct positive
+integer complex coefficient.  The acute-isosceles law makes these classes transitive.  The exact
+pair spectrum selects, for each of its nine oriented mechanisms, a highest separating stage.
+
+Equal rational exponents from different stages could in principle cancel after collection.  They
+do not: high, mandatory and lower exponent ranges are disjoint except for inactive stages, while
+within one range the ramification and numerator identities force equality of the stages.  Thus the
+selected stage is exponent-isolated.  Summing all stages gives actual finite Puiseux polynomials
+$q_i$ whose coefficient at the selected exponent differs and whose coefficients at every larger
+exponent agree.  Hence every pair realizes exactly $B_{ij}$ simultaneously.  This is
+\leanname{fissionEncoding_globalPuiseux_realizes_all_pairs}, and certificate-form sufficiency is
+\leanname{globalPuiseux_realization_of_certificate}.
+
+Finally \leanname{all_recognitionQueries_iff_certificate} proves that the complete ordered query
+set is exactly the recognition certificate;
+\leanname{card_recognitionQuery} gives $|N|^2+|N|^3$, and
+\leanname{recognitionComparisonBudget_le_two_cubes} gives the stated cubic bound.
 \end{proof}
 
 \begin{corollary}\label{cor:no-further-obstruction}
@@ -1147,6 +1234,13 @@ On the elementary locus, the local spectra \eqref{eq:spec-all} and rescaled ultr
 complete set of obstructions.  In particular, there are infinitely many forbidden two-vertex and
 higher decorated graphs not detected by ultrametricity alone.
 \end{corollary}
+
+\begin{proof}
+Completeness is \leanname{nonempty_elementaryFissionEncoding_iff_certificate}.  For the infinite
+two-vertex family, two ramification-two vertices with edge $4k+3$ fail the exact spectrum for every
+$k\ge0$; this is \leanname{ramificationTwo_four_mul_add_three_forbidden}.  Triangle conditions are
+vacuous on two labels.
+\end{proof}
 
 \section{Examples and information loss}\label{sec:examples}
 
@@ -1164,21 +1258,22 @@ Theorem~\ref{thm:separated-core} gives
 \[
  B_{12}=3,\qquad B_{13}=4,\qquad B_{23}=6.
 \]
-This is the same core multigraph as the triangle in
-\cite[Proposition~3.3]{Doucot2025Graphs}, but the ramification decoration here is $(2,3,4)$ rather
-than $(1,3,2)$.  The conclusion is equality of the core graph, not an isomorphism of the associated
-wild character varieties.
+The exact calculation is \leanname{allRamified_example_edges}.  It asserts only the displayed
+decorated core data, not an isomorphism of associated analytic moduli spaces.
 \end{example}
 
 \begin{example}[Exponential hidden fibres]
 Fix a separated vertex of ramification $p^k$ and first factor $p^j$.  The graph and first
 ramification drop forget the remaining factorization of $p^{k-j}$, leaving
 $2^{k-j-1}$ possibilities when $k-j\ge1$ and one possibility when $k=j$.  Products of such
-vertices give exponentially large labelled fibres with an unchanged core matrix.
+vertices give exponentially large labelled fibres with an unchanged core matrix.  This follows
+from \leanname{airyTowerCount_primePower}, \leanname{hiddenFiber_card}, and
+\leanname{realizedCoreEdge_independent_of_hidden}.
 \end{example}
 
 The finite-fibre theorem and these examples isolate the role of decoration.  The undecorated Cartan
-shadow can hide arbitrarily large ramification and infinitely many local types.  Ramification makes
+shadow can hide arbitrarily large ramification and infinitely many local types
+(\leanname{undecorated_simpleAiry_range_infinite}).  Ramification makes
 the full fibre finite; on the separated locus, the first quotient fixes the matrix and the remaining
 ordered factors describe the exact hidden part.  This complements existing counts in the untwisted
 case \cite{Boalch2025Counting}: the present counts concern one ramified zero-loop stratum rather
@@ -1186,10 +1281,12 @@ than untwisted trees of fixed slope and leaf number.
 
 \section{Formal verification and scope}\label{sec:formal}
 
-The arithmetic and finite-cophenetic core has been formalized in Lean~4 against the repository's
-pinned mathlib toolchain.  The declarations are unconditional: no \texttt{sorry}, \texttt{admit},
-new axiom, \texttt{opaque}, or \texttt{unsafe} declaration is used.  Table~\ref{tab:lean} records the
-main map.
+Every mathematical theorem, corollary and worked example in this paper has been formalized in
+Lean~4 against the repository's pinned mathlib toolchain.  The declarations are unconditional: no
+\texttt{sorry}, \texttt{admit}, new axiom, \texttt{opaque}, or \texttt{unsafe} declaration is used.
+Literature citations provide historical and analytic context, not unformalized premises in our
+proofs.  Table~\ref{tab:lean} records the principal map; the complete claim ledger accompanies the
+source.
 
 \begin{table}[ht]
 \centering
@@ -1216,7 +1313,15 @@ Negative/positive first-deviation laws &
 \leanname{diagonalLoop_pos_of_first_gt} \\
 Zero-loop rigidity & \leanname{diagonalLoop_eq_zero_iff_isAiryTower} \\
 Negative Fourier characterization &
-\leanname{isAiryTower_iff_negativeFourier_and_largeSteps} \\
+\leanname{isAiryTower_iff_negativeFourier_and_largeSteps},
+\leanname{airyTower_exact_negativeFourier_resolution} \\
+Weyl and Laurent Fourier source &
+\leanname{fourier_generalizedAiryOperator},
+\leanname{airyTower_negativeFourier_exact_uniformizer} \\
+Universal tangent-coordinate covariance &
+\leanname{laurentAlgReparametrization_order},
+\leanname{laurentAlgReparametrization_contactTop},
+\leanname{laurentContactHierarchy_reparametrization} \\
 Divisor-chain construction & \leanname{StrictDivisorChain.toCharacteristic} \\
 Ordered factorization construction &
 \leanname{OrderedFactorization.toAiryCharacteristic} \\
@@ -1228,21 +1333,29 @@ Exact elementary pair spectrum &
 Elementary finite recognition &
 \leanname{nonempty_elementaryFissionEncoding_iff_certificate} \\
 Canonical threshold dendrogram & \leanname{thresholdSetoid}, \leanname{thresholdSetoid_mono} \\
-Finite local characteristic fibres &
-\leanname{finite_fixedWeightedCharacteristic} \\
+Simultaneous global Puiseux realization &
+\leanname{globalPuiseux_realization_of_certificate},
+\leanname{uncancelledStage_gives_highestDifferenceExponent} \\
+Decorated finite fibres and enumeration &
+\leanname{finite_fixedWeightedCharacteristic},
+\leanname{decorated_fissionTree_fiber_finite},
+\leanname{mem_enumerateDecoratedFissionTreeFiber} \\
+Exact recognition query count &
+\leanname{card_recognitionQuery},
+\leanname{recognitionComparisonBudget_le_two_cubes} \\
 \bottomrule
 \end{tabular}
 \caption{Principal paper-to-Lean theorem map.}
 \label{tab:lean}
 \end{table}
 
-The formal model encodes the exact decreasing gcd characteristic, a genuine complex
-root-of-unity action on finite Puiseux polynomials, its cyclic stabilizers and ordered sheet
-differences, signed diagonal loop, divisor chain, ordered factorization, pair contact mechanisms,
-finite decorated matrix and cophenetic fission data.  The arbitrary coefficient choices used in
-global realization and the invocation of the published analytic fission-tree realization theorem
-remain in the paper proof; they are not replaced by a claim about formal meromorphic connections
-in Lean.
+The formal model encodes the exact decreasing gcd characteristic, genuine complex root-of-unity
+action on finite Puiseux polynomials, cyclic stabilizers and ordered sheet differences, signed
+diagonal loop, divisor chains, ordered factorizations, actual Weyl-algebra Fourier and gauge
+automorphisms, Laurent uniformizers, pair contact mechanisms, finite decorated matrices, full
+coefficient collection and compatibility-filtered fission data.  No arbitrary coefficient choice,
+pair-affinity step, Fourier rank transition, finite-fibre step, or complexity estimate used by a
+paper theorem remains outside Lean.
 
 Several stronger statements are intentionally excluded.
 \begin{enumerate}[label=(\roman*)]
@@ -1250,13 +1363,22 @@ Several stronger statements are intentionally excluded.
 \item Equal diagrams do not imply isomorphic wild character varieties, isomonodromy systems, or
 nonabelian Hodge spaces.  Enriched-tree data are needed for such comparisons
 \cite{Doucot2026Basic}.
-\item The knot interpretation uses the explicit dual-Puiseux-to-cabling direction in
-\cite{Hiroe2017}; no unproved converse from Stokes order data is assumed.
-\item The stated cubic recognition cost is a unit-cost combinatorial bound, not a bit-complexity
+\item Knot theory appears only as contextual comparison; no knot-theoretic assertion enters a
+paper theorem.
+\item The exact $n^2+n^3\le2n^3$ recognition count is a unit-cost query bound, not a bit-complexity
 analysis of rational arithmetic.
 \end{enumerate}
 
 \section{Concluding perspective}
+
+The universal law is formal-contact covariance: tangent changes of uniformizer preserve valuation,
+and therefore preserve every invariant assembled solely from leading orders and pairwise
+differences.  Sheet coarea, complementary contact, threshold tomography, additive energy and the
+negative Fourier rank chart are shadows of this one law.  The remaining arithmetic theorems are
+its zero-loop collateral: imposing the critical diagonal value discretizes the valuation data into
+the gcd gap, Airy divisor chains and exact pair spectra.  Thus coordinate covariance explains why
+the geometric skeleton survives Fourier motion, while arithmetic rigidity explains which integral
+Cartan shadows can occur.
 
 The equality $B_{I,I}=0$ looks at first like one linear constraint on a Puiseux characteristic.
 The gcd lattice makes it rigid: each characteristic exponent is forced to be the sum of two

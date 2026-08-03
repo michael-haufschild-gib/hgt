@@ -421,7 +421,9 @@ It also identifies the mechanism and the sharp wall.  The analytic growth invari
 - [x] Lean: `z f'(z) - k f(z)` is the index-deviation series, and its bound
 - [x] Lean: the logarithmic-derivative estimate at a maximum-modulus point, with explicit remainder
 - [x] Lean: log-convexity of `mu` in `log r`, the second-order input the decay bounds lack
-- [ ] Lean: the Gaussian concentration of the central terms, and hence the remainder `o(nu(r))`
+- [x] Lean: the majorant bounded back by the maximum term times the central index
+- [ ] Lean: the local Gaussian expansion of `f` near a maximum-modulus point (see the log entry --
+      the term-by-term route provably cannot reach the main estimate)
 - [ ] Lean: Newton--Puiseux places at `U = infinity`, hence the nondegenerate Wiman place
 - [ ] Lean: Clunie--Steinmetz composition separation and state algebraic independence
 - [x] Lean: the order lower bound `ord_DA >= n` from `n` algebraically independent jets
@@ -530,7 +532,13 @@ term_le_maxTerm_mul_exp_of_le_centralIndex -- and below nu(r/(1+d))
 log_maxTerm_exp_sub_le_centralIndex_mul   -- the growth law in logarithmic coordinates
 centralIndex_mul_le_log_maxTerm_exp_sub
 centralIndex_between_log_increments       -- nu(e^v) sits between adjacent increments of log mu
+exists_increment_le_average               -- telescoping pigeonhole on a chain
+exists_small_centralIndex_increment       -- a radius across which nu barely moves
+coeffSum_le_maxTerm_mul_centralIndex      -- S(r) <= mu(r)(nu(s)+1+(r/s)/(1-r/s))
 ```
+
+With this the three quantities are pinned to each other: `mu(r) <= M(r) <= S(r) <= mu(r)(nu(s)+C)`,
+so the maximum modulus exceeds the maximum term by at most a factor linear in the central index.
 
 The final form is coefficient-free.  With the window bounded by its term count, the deviation is
 `mu(r)` times
@@ -867,3 +875,25 @@ triangularity package, which is exactly how the paper proof uses them.
   index `nu(e^v)` sits between the two adjacent difference quotients of `L`.  That is the precise
   sense in which `nu = d log mu / d log r`, and it is the coordinate every Wiman--Valiron estimate is
   written in.
+- 2026-08-03 -- Built the substitute for applying Borel to `nu`.  The growth lemma needs a continuous
+  majorant and `nu` is a step function, so instead one uses that the increments of a monotone
+  function telescope: along `N` steps of a geometric chain of radii, some step raises the central
+  index by at most the total rise divided by `N`, and never lowers it.  Recorded because the first
+  version of this was wrong in a instructive way -- stated without the monotonicity conjunct, the
+  corollary needed none of `EntireCoeffs`, the nonzero coefficient, or `h > 0`, which is the tell
+  that it had no content: the pigeonhole alone allows negative increments.  Pairing the average bound
+  with `0 <= increment` is what makes it a statement about the central index rather than about
+  arbitrary sequences.
+- 2026-08-03 -- A no-go for the route, and the last brick the route does yield.  Bounding
+  `|z f'(z) - nu f(z)|` by the sum of the absolute values of its terms **cannot** give the
+  Wiman--Valiron main estimate.  Even granting the sharpest available concentration -- terms decaying
+  like `exp(-j delta/2)` beyond the window, with `delta` small enough that `nu` barely moves across
+  it -- the weighted sum `sum_j |j| exp(-j delta/2)` is of order `delta^(-2)`, so the numerator is of
+  order `mu(r) nu(r)` while the denominator is only bounded below by `mu(r)`; the quotient is `O(nu)`
+  and never `o(nu)`.  Getting `o(nu)` this way would need `M(r)/mu(r) -> infinity`, which is false
+  (`f = z^n` has `M = mu`).  The theorem genuinely needs the cancellation in the local expansion
+  `f(z_r e^(w/sqrt(nu))) ~ a_nu z_r^nu exp(sqrt(nu) w - w^2/2)`, not a triangle inequality.  What the
+  present route does yield, and what is now proved, is the reverse comparison
+  `S(r) <= mu(r)(nu(s)+1+(r/s)/(1-r/s))`, closing the chain `mu <= M <= S <= mu (nu + C)`: the three
+  growth measures differ by at most a factor linear in the central index.  The remaining Lean gate is
+  therefore the local Gaussian expansion, not a sharper term-by-term bound.

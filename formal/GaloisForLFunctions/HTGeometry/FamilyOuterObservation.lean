@@ -27,6 +27,26 @@ theorem im_combinedNodes {row : Type*} {r : ℕ} (z : row → ℂ) (t : Fin r �
     (combinedNodes z t p).im = (z p.1).im := by
   simp [combinedNodes]
 
+/-- **Nodes at distinct heights stay distinct after real translation.**  Real shifts do not move the
+imaginary part, so the combined nodes of a family of distinct real translates are pairwise
+distinct. -/
+theorem injective_combinedNodes {row : Type*} {r : ℕ} {z : row → ℂ} {t : Fin r → ℝ}
+    (hz : ∀ b b', b ≠ b' → (z b).im ≠ (z b').im) (ht : Function.Injective t) :
+    Function.Injective (combinedNodes z t) := by
+  rintro ⟨b, i⟩ ⟨b', i'⟩ hEq
+  have him : (z b).im = (z b').im := by
+    have h1 := congrArg Complex.im hEq
+    rwa [im_combinedNodes, im_combinedNodes] at h1
+  have hb : b = b' := by
+    by_contra hne
+    exact hz b b' hne him
+  subst hb
+  have hi : (t i : ℂ) = (t i' : ℂ) := by
+    have h2 : z b + (t i : ℂ) = z b + (t i' : ℂ) := hEq
+    exact add_left_cancel h2
+  have : t i = t i' := by exact_mod_cast hi
+  rw [ht this]
+
 /-- The outer jets of the translated family, folded into the coordinates of the evaluation
 matrix. -/
 def familyOuterObservation {row : Type*} (r d D : ℕ) (h : r * (d + 1) = D) (z : row → ℂ)

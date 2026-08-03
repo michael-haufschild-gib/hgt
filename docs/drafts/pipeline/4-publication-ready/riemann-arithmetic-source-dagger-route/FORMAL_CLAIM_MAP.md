@@ -68,6 +68,21 @@ interfaces from being reported as constructed mathematics.
 | Physical minimal boundary is bottom on the critical line and top off it | same module: `thetaInternalJetSourceDaggerMinimalBoundary_eq_bot_of_re_eq_half`, `thetaInternalJetSourceDaggerMinimalBoundary_eq_top_of_re_ne_half` |
 | Canonical physical quotient class is nonzero iff `Re rho = 1/2`; global survival iff RH | same module: `thetaInternalJetLeadingSourceBoundaryClass_ne_zero_iff`, `thetaInternalJetSourceDaggerBoundaryClassSurvives_iff_riemannHypothesis` |
 
+## Literal cyclic comparison and residue transgression
+
+| Manuscript claim | Formal support |
+|---|---|
+| Literal degree-one rational-adelic cyclic source and genuine rotation/trace exist; trace is rotation-invariant | `RHTower/MobiusThetaSourceDaggerMinimalBoundaryLaw.lean`: `CCMRationalAdelicDegreeOneCyclicSource`, `ccmRationalAdelicDegreeOneCyclicRotation`, `ccmRationalAdelicDegreeOneTrace`, `ccmRationalAdelicDegreeOneTrace_rotate` |
+| For every ordinary prime, the canonical `p ⊗ p⁻¹` crossed-product cycle has trace exactly one | same module: `ccmRationalAdelicOrdinaryPrimeCycleAtom`, `ccmRationalAdelicOrdinaryPrimeCycleAtom_trace_eq_one` |
+| Pre-divisor ordered comparison maps every prime cycle to the physical source atom `(1,0)` | same module: `ccmRationalAdelicOrderedTwoLegComparison`, `ccmRationalAdelicOrderedTwoLegComparison_primeCycle` |
+| Coordinate-sum cyclic residue kills the untwisted cyclic comparison defect | same module: `ccmRationalAdelicTwoLegCyclicResidue`, `ccmRationalAdelicTwoLegCyclicResidue_cyclicDefect_eq_zero` |
+| Global comparison exists for every independent jet grade, physical rung, and spectral parameter; it converges to the Xi-jet landing at every divisor and specializes at multiplicity to physical landing (6.8) | same module: `ccmMobiusThetaFilteredTwoLegLanding`, `ccmMobiusThetaXiJetTwoLegLanding`, `tendsto_ccmMobiusThetaFilteredTwoLegLanding_primeCycle_at_divisor`, `ccmMobiusThetaXiJetTwoLegLanding_eq_physicalLeadingLanding` |
+| Multiplicity stays filtered: residue is zero below support multiplicity and nonzero at support multiplicity, without a unitary Jordan premise | same module: `ccmMobiusThetaXiJetTwoLegResidue_eq_zero_before_supportMultiplicity`, `ccmMobiusThetaXiJetTwoLegResidue_ne_zero_at_supportMultiplicity` |
+| Physical prime-cycle atom is detected by source residue | same module: `ccmRationalAdelicTwoLegCyclicResidue_physicalPrimeCycle_ne_zero` |
+| Exact physical transgression is `Res(D x) = (δ-1)cρ ε₀¹(x)` | same module: `ccmMobiusThetaTwoLegParacyclicDefect_residue` |
+| Constructed source residue annihilates physical `B_min,ρ` iff `Re rho = 1/2`; global annihilation iff RH | same module: `ccmMobiusThetaSourceResidueAnnihilatesMinimalBoundary_iff`, `ccmMobiusThetaSourceResidueAnnihilatesEveryMinimalBoundary_iff_riemannHypothesis` |
+| Any linear residue annihilating `B_min,ρ` and detecting `Lρ(x₀)` forces `Re rho = 1/2` | same module: `re_eq_half_of_residue_annihilates_minimalBoundary_and_detects` |
+
 ## Completion no-gos
 
 | Manuscript claim | Formal support |
@@ -80,25 +95,20 @@ interfaces from being reported as constructed mathematics.
 
 ## Explicitly unproved
 
-Manuscript Problem 8.2 (`Independent arithmetic survival law`) is **not constructed**. The
-boundary-choice subproblem is closed: the minimal stable defect boundary is canonical and gives
-the largest admissible quotient. In particular:
+Literal source, pre-divisor comparison, source residue, ordinary-prime detection, and separate
+multiplicity filtration are now constructed. The only unproved content is a source theorem making
+the **physical paracyclic defect** null-homologous in the literal arithmetic cyclic complex (or
+otherwise proving its source residue zero) before divisor specialization. Exact status:
 
-- no theorem compares the literal cyclic CCM source with the physical Möbius--theta two-leg
-  landing before divisor specialization;
-- no source-defined residue is proved to annihilate the canonical minimal boundary while detecting
-  the physical top-conormal class;
-- existing atomic non-erasure proves a target vector is nonzero, not that its quotient class is
-  nonzero; the new classification proves the latter statement is exactly critical-line placement;
-- `SourceDaggerCyclicBoundaryDefectLaw.lean` remains a general consumer, while
-  `MobiusThetaSourceDaggerMinimalBoundaryLaw.lean` constructs and classifies the maximal physical
-  quotient without asserting global survival;
-- reflected Green commutation is even under functional-equation reflection and is not the
-  missing same-fibre mixed rotation;
-- local completed Gamma incidence is coefficient-faithful but does not prove global
-  source--dagger boundary exactness;
-- no RH theorem is claimed.
+- `ccmMobiusThetaTwoLegParacyclicDefect_residue` computes that residue as
+  `(δ_n(rho)-1) c_rho ε₀¹(x)`;
+- on the explicit ordinary-prime cycle, `ε₀¹(x)=1` and `c_rho ≠ 0`, so source-null-homology would
+  force `δ_n(rho)=1`;
+- `ccmMobiusThetaSourceResidueAnnihilatesMinimalBoundary_iff` proves pointwise boundary
+  annihilation is exactly critical-line placement;
+- `ccmMobiusThetaSourceResidueAnnihilatesEveryMinimalBoundary_iff_riemannHypothesis` proves global
+  annihilation is exactly RH;
+- no theorem proves physical source-null-homology or RH, and no declaration assumes either.
 
-The boundary-defect and minimal-boundary modules add the universal identity, strict obstruction,
-canonical maximal quotient, exact physical top/bottom classification, and global equivalence. No
-declaration assumes the missing independent arithmetic survival theorem.
+Thus the construction closes infrastructure and replaces the former vague comparison gap by one
+exact RH-bearing homology statement. It must not be reported as an outstanding routine lemma.

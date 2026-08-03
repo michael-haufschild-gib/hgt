@@ -970,10 +970,63 @@ itself:
   **Both mixed second derivatives exist and both equal `K·u`**, with `u(ξ₀,·) = 1`, for every
   continuous kernel.
 
-That is the full Goursat datum the chart d'Alembertian needs. What remains is bookkeeping: matching
-the `HasDerivAt` statements to the `coordPartial` interface of the chart calculus, so that
-`solvesPotentialWaveAt_iff_characteristic` converts the solution into a clock probe and closes the
-two-dimensional inverse step.
+That is the full Goursat datum the chart d'Alembertian needs.
+
+`formal/GaloisForLFunctions/HTGeometry/ClockBivariateChart.lean` builds the bridge to the chart
+calculus, which reads partial derivatives off the **total** derivative and so needs more than the
+existence of the two partials:
+
+- `pairCLM`, `toCLM` — the linear identification `x ↦ (x⁰,x¹)` and the scalar-to-operator embedding;
+- `hasFDerivAt_bivariateChart`, `differentiableAt_bivariateChart` — via mathlib's
+  `hasStrictFDerivAt_uncurry_coprod`, continuous partial derivatives give a **totally**
+  differentiable chart function;
+- `coordPartial_bivariateChart_zero`, `coordPartial_bivariateChart_one` — and its `coordPartial` in
+  the two coordinate directions are exactly the bivariate partial derivatives.
+
+Instantiating that bridge at the Goursat solution turns out to need more than the mixed derivatives.
+The chart d'Alembertian reads second partials one direction at a time, and in Minkowski coordinates
+`∂₀∂₀(u∘F) = ∂ξ²u + 2∂ξ∂ηu + ∂η²u`; the pure terms cancel in `-∂₀∂₀ + ∂₁∂₁`, but each must exist for
+the formula to apply. So the two-dimensional closure needs `u ∈ C²`, which for a merely continuous
+kernel is false and for a smooth kernel requires a regularity bootstrap — differentiating
+
+`∂ξ u(ξ,η) = ∫_b^η K(ξ,t)u(ξ,t)dt`
+
+again under the integral sign. That is no loss of generality for this card, whose potentials are
+smooth.
+
+`formal/GaloisForLFunctions/HTGeometry/ClockParametricDerivative.lean` supplies the tool:
+
+- `hasDerivAt_parametric_intervalIntegral` — the **Leibniz rule for continuous data**: if the
+  integrand and its partial derivative in the parameter are jointly continuous, the parametric
+  interval integral is differentiable and its derivative is the integral of the derivative.
+  mathlib's general statement carries measurability and domination hypotheses; on a compact
+  rectangle they are automatic.
+- `hasDerivAt_parametric_intervalIntegral_on` — the same rule with the differentiability of the
+  integrand required only for parameters in an open set and only for integration variables inside
+  the interval of integration. Both localisations are needed downstream, because the derivatives of
+  the Goursat solution are known only where the characteristic equation holds.
+
+The bootstrap itself is now built. `ClockGoursatDerivContinuity.lean` records that the two first
+derivatives are jointly continuous — each is a parametric interval integral of a jointly continuous
+integrand with a continuous limit of integration:
+
+- `continuous_goursatXiDeriv`, `continuous_goursatEtaDeriv`.
+
+`ClockGoursatRegularity.lean` then differentiates the two Goursat identities once more:
+
+- `hasDerivAt_goursat_xi_second` — for a kernel with a jointly continuous partial derivative in the
+  characteristic parameter, `∂ξ²u` exists at every point of an open set inside the domain, and
+  equals `∫_b^η (∂ξK·u + K·∂ξu) dt`. The clamp used to globalise the solution is invisible here:
+  on the open set it is the identity, so the integrand agrees with a genuine product near each
+  point and the product rule applies through `HasDerivAt.congr_of_eventuallyEq`.
+- `hasDerivAt_goursat_eta_second` — symmetrically, `∂η²u` exists and equals
+  `∫_{ξ₀}^{ξ} (∂ηK·u + K·∂ηu) dτ`. Here the localisation in the integration variable is essential:
+  the `η`-derivative of `u(τ,·)` is known only for `τ` in the window, which is exactly the range of
+  integration.
+
+So a `C¹` kernel already forces the Goursat solution to be `C²`, and all four second derivatives of
+the solution are now available. What remains is to feed them to `hasFDerivAt_bivariateChart` and let
+`solvesPotentialWaveAt_iff_characteristic` convert the solution into a clock probe.
 
 So the last open input of the whole programme is now stated in its physical form:
 

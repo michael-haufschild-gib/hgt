@@ -390,3 +390,60 @@ boundary-construction lemma.
 Formal support:
 
 - `formal/GaloisForLFunctions/RHTower/MobiusThetaSourceDaggerMinimalBoundaryLaw.lean`
+
+## 2026-08-03 literal comparison and residue-transgression closure
+
+The literal comparison is now constructed. Let `A` be the minimal unitization of the rational
+adelic CCM crossed product and use its genuine degree-one cyclic bar `A ⊗ A`. For every ordinary
+prime `p`, the source atom with scaling labels `p` and `p⁻¹`, Gaussian real coefficient, and
+integral finite-adele Bruhat coefficient satisfies the independent source identity
+
+```text
+epsilon_0^1(u_p) = 1.
+```
+
+The pre-divisor ordered comparison and cyclic residue are
+
+```text
+C(x) = (epsilon_0^1(x), 0),
+Res(z_0,z_1) = z_0 + z_1.
+```
+
+For every independent jet grade `k`, physical rung `m`, and spectral point `w`, the comparison
+lands through the actual Möbius--theta transform and converges cofinally to
+`XiC^(k)(w) C(x)`. Only after construction is `k` specialized to divisor multiplicity. Lower
+grades have zero residue and the first nonzero grade is detected, without any unitary Jordan or
+simplicity premise.
+
+The decisive exact law is
+
+```text
+Res(D_{n,rho} x) = (delta_n(rho) - 1) c_rho epsilon_0^1(x).
+```
+
+Thus the source residue kills the untwisted cyclic comparison defect, while analytic dagger
+twisting transgresses it by precisely monodromy minus one. On `u_p`, both source factors outside
+`delta-1` are nonzero. The constructed residue annihilates the physical `B_min(rho)` iff
+`Re rho = 1/2`; global annihilation iff RH. This closes source construction, literal comparison,
+ordinary-prime detection, multiplicity filtering, and residue construction.
+
+Revised open core:
+
+```text
+[PHYSICAL_DEFECT_SOURCE_NULL_HOMOLOGY]
+prove, before divisor specialization, that the physical analytic-dagger defect is a literal
+cyclic boundary (or otherwise has zero literal source residue).
+```
+
+This is not an infrastructure lemma. The transgression formula and trace-one prime cycle prove it
+is exactly RH-bearing.
+
+Formal support:
+
+- `formal/GaloisForLFunctions/RHTower/MobiusThetaSourceDaggerMinimalBoundaryLaw.lean`
+  (`ccmRationalAdelicOrdinaryPrimeCycleAtom_trace_eq_one`,
+  `tendsto_ccmMobiusThetaFilteredTwoLegLanding_primeCycle_at_divisor`,
+  `ccmMobiusThetaXiJetTwoLegResidue_ne_zero_at_supportMultiplicity`,
+  `ccmMobiusThetaTwoLegParacyclicDefect_residue`,
+  `ccmMobiusThetaSourceResidueAnnihilatesMinimalBoundary_iff`,
+  `ccmMobiusThetaSourceResidueAnnihilatesEveryMinimalBoundary_iff_riemannHypothesis`)

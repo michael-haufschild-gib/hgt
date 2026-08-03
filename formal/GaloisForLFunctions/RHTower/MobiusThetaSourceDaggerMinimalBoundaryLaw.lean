@@ -1,4 +1,9 @@
 import GaloisForLFunctions.HTGeometry.CyclicParacyclicBoundaryDefectLaw
+import GaloisForLFunctions.HTGeometry.GaussianSchwartz
+import GaloisForLFunctions.RHTower.CCMRationalAdelicEpsilonZero
+import GaloisForLFunctions.RHTower.CyclicBarTraceAugmentation
+import GaloisForLFunctions.RHTower.FieldOneFiniteAdeleIntegralBruhatTest
+import GaloisForLFunctions.RHTower.MobiusThetaInternalJetCofinalComplexLanding
 import GaloisForLFunctions.RHTower.MobiusThetaInternalJetCompletedHellingerGammaIncidenceBridge
 import GaloisForLFunctions.RHTower.SourceDaggerCyclicBoundaryDefectLaw
 
@@ -360,6 +365,390 @@ theorem thetaInternalJetSourceDaggerBoundaryClassSurvives_iff_riemannHypothesis
   intro rho
   rw [thetaInternalJetLeadingSourceBoundaryClass_ne_zero_iff hn,
     xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff]
+
+/-! ## Literal cyclic arithmetic source comparison
+
+The comparison below starts with the genuine degree-one cyclic bar of the
+rational adelic CCM source.  Its distinguished atom is supported on an
+ordinary-prime scaling and its inverse.  The atom has trace exactly one by
+the zero-adele fixed-point identity.  No divisor occurs in its definition.
+
+Jet order remains an independent natural-number grade.  The finite physical
+Möbius--theta landing is defined for every grade, rung, and spectral
+parameter; only a later theorem specializes the grade to divisor
+multiplicity.  The cyclic residue kills the literal cyclic comparison defect
+but measures the physical paracyclic defect by the monodromy factor minus
+one. -/
+
+open Filter
+open GaloisForLFunctions.RHTower
+open scoped Topology
+
+/-- Genuine degree-one cyclic tensor source of the rational adelic CCM
+algebra. -/
+abbrev CCMRationalAdelicDegreeOneCyclicSource :=
+  CyclicBarTensor ℂ CCMRationalAdelicCyclicSourceAlgebra 1
+
+/-- Literal degree-one cyclic rotation on the rational adelic bar source. -/
+def ccmRationalAdelicDegreeOneCyclicRotation :
+    CCMRationalAdelicDegreeOneCyclicSource →ₗ[ℂ]
+      CCMRationalAdelicDegreeOneCyclicSource :=
+  (cyclicBarRotate (R := ℂ)
+    (A := CCMRationalAdelicCyclicSourceAlgebra) 1).toLinearMap
+
+/-- Degree-one trace augmentation of the literal arithmetic cyclic source. -/
+def ccmRationalAdelicDegreeOneTrace :
+    CCMRationalAdelicDegreeOneCyclicSource →ₗ[ℂ] ℂ :=
+  cyclicBarTraceAugmentation ccmRationalAdelicEpsilonZero 1
+
+/-- The arithmetic trace is invariant under genuine cyclic rotation. -/
+theorem ccmRationalAdelicDegreeOneTrace_rotate
+    (x : CCMRationalAdelicDegreeOneCyclicSource) :
+    ccmRationalAdelicDegreeOneTrace
+        (ccmRationalAdelicDegreeOneCyclicRotation x) =
+      ccmRationalAdelicDegreeOneTrace x := by
+  have h := cyclicBarTraceAugmentation_comp_rotate
+    ccmRationalAdelicEpsilonZero ccmRationalAdelicEpsilonZero_isTrace 1
+  exact LinearMap.congr_fun h x
+
+/-- Canonical zero-adele coefficient: Gaussian at the real place and the
+integral characteristic function at all finite places. -/
+def ccmRationalAdelicPrimeCycleCore :
+    CCMRationalAdelicBruhatSimpleTensor :=
+  GaloisForLFunctions.gaussianSchwartz ⊗ₜ[ℂ]
+    fieldOneFiniteAdeleIntegralBruhatTest
+
+@[simp]
+theorem ccmRationalAdelicPrimeCycleCore_zeroEval :
+    ccmRationalAdelicBruhatZeroEval ccmRationalAdelicPrimeCycleCore = 1 := by
+  simp [ccmRationalAdelicPrimeCycleCore,
+    ccmRationalAdelicBruhatZeroEval_tmul,
+    GaloisForLFunctions.gaussReal]
+
+/-- Rational adelic scaling supplied by an ordinary prime. -/
+def ccmRationalAdelicPrimeScaling
+    (p : Nat.Primes) : CCMRationalAdelicScaling :=
+  ⟨Units.mk0 (p : ℚ) (by exact_mod_cast p.2.ne_zero)⟩
+
+/-- Forward ordinary-prime crossed-product coefficient. -/
+def ccmRationalAdelicPrimeCycleForward
+    (p : Nat.Primes) : CCMRationalAdelicAlgebraicCrossedProduct :=
+  Finsupp.single (ccmRationalAdelicPrimeScaling p)
+    ccmRationalAdelicPrimeCycleCore
+
+/-- Inverse ordinary-prime crossed-product coefficient. -/
+def ccmRationalAdelicPrimeCycleBackward
+    (p : Nat.Primes) : CCMRationalAdelicAlgebraicCrossedProduct :=
+  Finsupp.single (ccmRationalAdelicPrimeScaling p)⁻¹
+    ccmRationalAdelicPrimeCycleCore
+
+/-- Literal degree-one arithmetic cycle carried by `p` and `p⁻¹`. -/
+def ccmRationalAdelicOrdinaryPrimeCycleAtom
+    (p : Nat.Primes) : CCMRationalAdelicDegreeOneCyclicSource :=
+  PiTensorProduct.tprod ℂ (fun i : Fin 2 =>
+    Fin.cases
+      (ccmRationalAdelicPrimeCycleForward p :
+        CCMRationalAdelicCyclicSourceAlgebra)
+      (fun _ =>
+        (ccmRationalAdelicPrimeCycleBackward p :
+          CCMRationalAdelicCyclicSourceAlgebra)) i)
+
+/-- **Independent ordinary-prime source identity.**  The literal cycle
+`p ⊗ p⁻¹`, with its canonical zero-adele coefficient, has arithmetic cyclic
+trace one. -/
+theorem ccmRationalAdelicOrdinaryPrimeCycleAtom_trace_eq_one
+    (p : Nat.Primes) :
+    ccmRationalAdelicDegreeOneTrace
+      (ccmRationalAdelicOrdinaryPrimeCycleAtom p) = 1 := by
+  change ccmRationalAdelicEpsilonZero
+    (cyclicBarDegreeZeroProduct
+      (cyclicBarFace (R := ℂ)
+        (A := CCMRationalAdelicCyclicSourceAlgebra)
+        (0 : Fin 2) (ccmRationalAdelicOrdinaryPrimeCycleAtom p))) = 1
+  rw [ccmRationalAdelicOrdinaryPrimeCycleAtom, cyclicBarFace_tprod,
+    cyclicBarDegreeZeroProduct_tprod]
+  change ccmRationalAdelicEpsilonZero
+    ((ccmRationalAdelicPrimeCycleForward p :
+        CCMRationalAdelicCyclicSourceAlgebra) *
+      (ccmRationalAdelicPrimeCycleBackward p :
+        CCMRationalAdelicCyclicSourceAlgebra)) = 1
+  rw [ccmRationalAdelicCyclicSource_inr_mul]
+  rw [ccmRationalAdelicPrimeCycleForward,
+    ccmRationalAdelicPrimeCycleBackward,
+    ccmRationalAdelicCrossedProduct_single_mul_single]
+  rw [ccmRationalAdelicEpsilonZero_inr,
+    ccmRationalAdelicEpsilonZeroNonunital_single]
+  simp only [mul_inv_cancel, if_true]
+  rw [ccmRationalAdelicBruhatZeroEval_mul,
+    ccmRationalAdelicBruhatZeroEval_smul]
+  simp
+
+/-- Pre-divisor ordered comparison from the literal cyclic arithmetic source
+to the first physical two-leg source coordinate. -/
+def ccmRationalAdelicOrderedTwoLegComparison :
+    CCMRationalAdelicDegreeOneCyclicSource →ₗ[ℂ] (ℂ × ℂ) where
+  toFun x := (ccmRationalAdelicDegreeOneTrace x, 0)
+  map_add' x y := by ext <;> simp
+  map_smul' c x := by ext <;> simp
+
+@[simp]
+theorem ccmRationalAdelicOrderedTwoLegComparison_apply
+    (x : CCMRationalAdelicDegreeOneCyclicSource) :
+    ccmRationalAdelicOrderedTwoLegComparison x =
+      (ccmRationalAdelicDegreeOneTrace x, 0) := rfl
+
+/-- Every ordinary-prime cycle maps to the canonical ordered source atom. -/
+theorem ccmRationalAdelicOrderedTwoLegComparison_primeCycle
+    (p : Nat.Primes) :
+    ccmRationalAdelicOrderedTwoLegComparison
+        (ccmRationalAdelicOrdinaryPrimeCycleAtom p) =
+      thetaInternalJetLeadingSourceAtom := by
+  ext <;>
+    simp [ccmRationalAdelicOrderedTwoLegComparison,
+      thetaInternalJetLeadingSourceAtom,
+      ccmRationalAdelicOrdinaryPrimeCycleAtom_trace_eq_one]
+
+/-- Cyclic homology residue on the ordered two-leg target. -/
+def ccmRationalAdelicTwoLegCyclicResidue : (ℂ × ℂ) →ₗ[ℂ] ℂ where
+  toFun z := z.1 + z.2
+  map_add' x y := by simp; ring
+  map_smul' c x := by simp [smul_eq_mul]; ring
+
+@[simp]
+theorem ccmRationalAdelicTwoLegCyclicResidue_apply (z : ℂ × ℂ) :
+    ccmRationalAdelicTwoLegCyclicResidue z = z.1 + z.2 := rfl
+
+/-- Before analytic dagger twisting, the cyclic residue kills the exact
+comparison defect. -/
+theorem ccmRationalAdelicTwoLegCyclicResidue_cyclicDefect_eq_zero
+    (x : CCMRationalAdelicDegreeOneCyclicSource) :
+    ccmRationalAdelicTwoLegCyclicResidue
+      (sourceDaggerDegreeOneCyclicRotation
+          (ccmRationalAdelicOrderedTwoLegComparison x) -
+        ccmRationalAdelicOrderedTwoLegComparison
+          (ccmRationalAdelicDegreeOneCyclicRotation x)) = 0 := by
+  simp [ccmRationalAdelicTwoLegCyclicResidue,
+    ccmRationalAdelicOrderedTwoLegComparison,
+    sourceDaggerDegreeOneCyclicRotation,
+    ccmRationalAdelicDegreeOneTrace_rotate]
+
+/-- Global finite-rung comparison.  It is defined for every jet grade `k`,
+physical Möbius rung `m`, and spectral parameter `w`, before a divisor is
+chosen. -/
+def ccmMobiusThetaFilteredTwoLegLanding
+    (k m : ℕ) (w : ℂ) :
+    CCMRationalAdelicDegreeOneCyclicSource →ₗ[ℂ] (ℂ × ℂ) where
+  toFun x := mobiusThetaInternalJetFourierLaplace k m w •
+    ccmRationalAdelicOrderedTwoLegComparison x
+  map_add' x y := by
+    ext
+    · simp [ccmRationalAdelicOrderedTwoLegComparison, mul_add]
+    · simp [ccmRationalAdelicOrderedTwoLegComparison]
+  map_smul' c x := by
+    ext
+    · simp [ccmRationalAdelicOrderedTwoLegComparison, smul_eq_mul]
+      ring
+    · simp [ccmRationalAdelicOrderedTwoLegComparison]
+
+/-- Global completed jet comparison, still indexed by an independent grade
+`k`; multiplicity is not part of its construction. -/
+def ccmMobiusThetaXiJetTwoLegLanding
+    (k : ℕ) (w : ℂ) :
+    CCMRationalAdelicDegreeOneCyclicSource →ₗ[ℂ] (ℂ × ℂ) where
+  toFun x := iteratedDeriv k XiC w •
+    ccmRationalAdelicOrderedTwoLegComparison x
+  map_add' x y := by
+    ext
+    · simp [ccmRationalAdelicOrderedTwoLegComparison, mul_add]
+    · simp [ccmRationalAdelicOrderedTwoLegComparison]
+  map_smul' c x := by
+    ext
+    · simp [ccmRationalAdelicOrderedTwoLegComparison, smul_eq_mul]
+      ring
+    · simp [ccmRationalAdelicOrderedTwoLegComparison]
+
+/-- Physical provenance: every independently graded finite-rung comparison
+converges to the corresponding completed Xi-jet comparison at every divisor
+point. -/
+theorem tendsto_ccmMobiusThetaFilteredTwoLegLanding_primeCycle_at_divisor
+    (k K : ℕ) (rho : XiDivisorSupport) (p : Nat.Primes) :
+    Tendsto
+      (fun N : ℕ =>
+        ccmMobiusThetaFilteredTwoLegLanding k (K + N)
+          (xiSpectralPointSupport rho)
+          (ccmRationalAdelicOrdinaryPrimeCycleAtom p))
+      atTop
+      (𝓝 (ccmMobiusThetaXiJetTwoLegLanding k
+        (xiSpectralPointSupport rho)
+        (ccmRationalAdelicOrdinaryPrimeCycleAtom p))) := by
+  have h := tendsto_mobiusThetaInternalJetFourierLaplace_cofinal_at_divisor
+    k K rho
+  simpa [ccmMobiusThetaFilteredTwoLegLanding,
+    ccmMobiusThetaXiJetTwoLegLanding,
+    ccmRationalAdelicOrderedTwoLegComparison,
+    ccmRationalAdelicOrdinaryPrimeCycleAtom_trace_eq_one]
+    using h.prodMk_nhds tendsto_const_nhds
+
+/-- After specialization of the still-separate grade to actual
+multiplicity, the global comparison is exactly the physical two-leg landing
+of (6.8) composed with the literal arithmetic comparison. -/
+theorem ccmMobiusThetaXiJetTwoLegLanding_eq_physicalLeadingLanding
+    (rho : XiDivisorSupport)
+    (x : CCMRationalAdelicDegreeOneCyclicSource) :
+    ccmMobiusThetaXiJetTwoLegLanding (xiSupportMultiplicity rho)
+        (xiSpectralPointSupport rho) x =
+      thetaInternalJetLeadingTwoLegLanding rho
+        (ccmRationalAdelicOrderedTwoLegComparison x) := by
+  ext <;>
+    simp [ccmMobiusThetaXiJetTwoLegLanding,
+      thetaInternalJetLeadingTwoLegLanding,
+      thetaInternalJetLeadingSourceCoefficient_eq]
+
+/-- Separate filtered-channel law: every grade below divisor multiplicity
+has zero arithmetic residue. -/
+theorem ccmMobiusThetaXiJetTwoLegResidue_eq_zero_before_supportMultiplicity
+    {k : ℕ} (rho : XiDivisorSupport) (p : Nat.Primes)
+    (hk : k < xiSupportMultiplicity rho) :
+    ccmRationalAdelicTwoLegCyclicResidue
+      (ccmMobiusThetaXiJetTwoLegLanding k
+        (xiSpectralPointSupport rho)
+        (ccmRationalAdelicOrdinaryPrimeCycleAtom p)) = 0 := by
+  simp [ccmMobiusThetaXiJetTwoLegLanding,
+    ccmRationalAdelicOrderedTwoLegComparison,
+    ccmRationalAdelicTwoLegCyclicResidue,
+    iteratedDeriv_XiC_eq_zero_before_supportMultiplicity rho hk]
+
+/-- At the first nonzero multiplicity grade, every ordinary-prime cycle is
+detected by the source residue. -/
+theorem ccmMobiusThetaXiJetTwoLegResidue_ne_zero_at_supportMultiplicity
+    (rho : XiDivisorSupport) (p : Nat.Primes) :
+    ccmRationalAdelicTwoLegCyclicResidue
+      (ccmMobiusThetaXiJetTwoLegLanding (xiSupportMultiplicity rho)
+        (xiSpectralPointSupport rho)
+        (ccmRationalAdelicOrdinaryPrimeCycleAtom p)) ≠ 0 := by
+  simpa [ccmRationalAdelicTwoLegCyclicResidue,
+    ccmMobiusThetaXiJetTwoLegLanding,
+    ccmRationalAdelicOrderedTwoLegComparison,
+    ccmRationalAdelicOrdinaryPrimeCycleAtom_trace_eq_one] using
+      (iteratedDeriv_XiC_ne_zero_at_supportMultiplicity rho)
+
+/-- Equivalent physical form: the independent ordinary-prime trace-one
+identity sends its source atom to `x₀`, and the residue detects
+`Lρ(x₀)`. -/
+theorem ccmRationalAdelicTwoLegCyclicResidue_physicalPrimeCycle_ne_zero
+    (rho : XiDivisorSupport) (p : Nat.Primes) :
+    ccmRationalAdelicTwoLegCyclicResidue
+      (thetaInternalJetLeadingTwoLegLanding rho
+        (ccmRationalAdelicOrderedTwoLegComparison
+          (ccmRationalAdelicOrdinaryPrimeCycleAtom p))) ≠ 0 := by
+  rw [ccmRationalAdelicOrderedTwoLegComparison_primeCycle]
+  simpa [ccmRationalAdelicTwoLegCyclicResidue,
+    thetaInternalJetLeadingTwoLegLanding,
+    thetaInternalJetLeadingSourceAtom] using
+      thetaInternalJetLeadingSourceCoefficient_ne_zero rho
+
+/-- Exact transgression formula.  Analytic dagger twisting changes the
+source-cyclic residue of the comparison defect by `δ-1`; no square or norm
+erases its orientation. -/
+theorem ccmMobiusThetaTwoLegParacyclicDefect_residue
+    (n : ℕ) (rho : XiDivisorSupport)
+    (x : CCMRationalAdelicDegreeOneCyclicSource) :
+    ccmRationalAdelicTwoLegCyclicResidue
+      (cyclicParacyclicEquivarianceDefect
+        ccmRationalAdelicDegreeOneCyclicRotation
+        (sourceDaggerNormalizedDegreeOneRotationLinear n (rho : ℂ))
+        (ccmMobiusThetaXiJetTwoLegLanding (xiSupportMultiplicity rho)
+          (xiSpectralPointSupport rho)) x) =
+      ((deningerHalfDensityMateGain n (rho : ℂ) : ℂ) - 1) *
+        thetaInternalJetLeadingSourceCoefficient rho *
+          ccmRationalAdelicDegreeOneTrace x := by
+  rw [thetaInternalJetLeadingSourceCoefficient_eq]
+  simp [cyclicParacyclicEquivarianceDefect,
+    sourceDaggerNormalizedDegreeOneRotationLinear,
+    sourceDaggerNormalizedDegreeOneRotation,
+    ccmMobiusThetaXiJetTwoLegLanding,
+    ccmRationalAdelicOrderedTwoLegComparison,
+    ccmRationalAdelicTwoLegCyclicResidue,
+    ccmRationalAdelicDegreeOneTrace_rotate, smul_eq_mul]
+  ring
+
+/-- The source-defined residue family is constant in the divisor parameter;
+the parameter only records the target stalk at which it is read. -/
+def ccmMobiusThetaSourceResidue (_rho : XiDivisorSupport) :
+    (ℂ × ℂ) →ₗ[ℂ] ℂ :=
+  ccmRationalAdelicTwoLegCyclicResidue
+
+/-- Meaning of annihilating the already constructed physical minimal defect
+boundary. -/
+def CCMMobiusThetaSourceResidueAnnihilatesMinimalBoundary
+    (n : ℕ) (rho : XiDivisorSupport) : Prop :=
+  ∀ y ∈ thetaInternalJetSourceDaggerMinimalBoundary n rho,
+    ccmMobiusThetaSourceResidue rho y = 0
+
+/-- Exact pointwise obstruction: the constructed source residue annihilates
+the physical minimal boundary exactly on the critical line. -/
+theorem ccmMobiusThetaSourceResidueAnnihilatesMinimalBoundary_iff
+    {n : ℕ} (hn : 2 ≤ n) (rho : XiDivisorSupport) :
+    CCMMobiusThetaSourceResidueAnnihilatesMinimalBoundary n rho ↔
+      (rho : ℂ).re = 1 / 2 := by
+  constructor
+  · intro hann
+    by_contra hoff
+    have htop :=
+      thetaInternalJetSourceDaggerMinimalBoundary_eq_top_of_re_ne_half
+        hn rho hoff
+    have hzero := hann (1, 0) (by rw [htop]; exact Submodule.mem_top)
+    simp [ccmMobiusThetaSourceResidue,
+      ccmRationalAdelicTwoLegCyclicResidue] at hzero
+  · intro hcritical y hy
+    have hbot :=
+      thetaInternalJetSourceDaggerMinimalBoundary_eq_bot_of_re_eq_half
+        n rho hcritical
+    rw [hbot] at hy
+    have hyzero : y = 0 := by simpa using hy
+    subst y
+    simp [ccmMobiusThetaSourceResidue]
+
+/-- Universal obstruction independent of the chosen residue: annihilating
+the canonical physical boundary while detecting the landed ordered atom
+forces the critical line. -/
+theorem re_eq_half_of_residue_annihilates_minimalBoundary_and_detects
+    {n : ℕ} (hn : 2 ≤ n) (rho : XiDivisorSupport)
+    (residue : (ℂ × ℂ) →ₗ[ℂ] ℂ)
+    (hann : ∀ y ∈ thetaInternalJetSourceDaggerMinimalBoundary n rho,
+      residue y = 0)
+    (hdetect : residue
+      (thetaInternalJetLeadingTwoLegLanding rho
+        thetaInternalJetLeadingSourceAtom) ≠ 0) :
+    (rho : ℂ).re = 1 / 2 := by
+  by_contra hoff
+  have htop :=
+    thetaInternalJetSourceDaggerMinimalBoundary_eq_top_of_re_ne_half
+      hn rho hoff
+  apply hdetect
+  exact hann _ (by rw [htop]; exact Submodule.mem_top)
+
+/-- Global annihilation by the literal source residue. -/
+def CCMMobiusThetaSourceResidueAnnihilatesEveryMinimalBoundary
+    (n : ℕ) : Prop :=
+  ∀ rho : XiDivisorSupport,
+    CCMMobiusThetaSourceResidueAnnihilatesMinimalBoundary n rho
+
+/-- **Exact closure of the requested construction.**  Physical provenance,
+ordinary-prime detection, and the full multiplicity filtration are
+unconditional above.  The remaining demand that the source residue
+annihilate every physical minimal boundary is equivalent to RH. -/
+theorem ccmMobiusThetaSourceResidueAnnihilatesEveryMinimalBoundary_iff_riemannHypothesis
+    {n : ℕ} (hn : 2 ≤ n) :
+    CCMMobiusThetaSourceResidueAnnihilatesEveryMinimalBoundary n ↔
+      RiemannHypothesis := by
+  rw [← thetaInternalJetSourceDaggerBoundaryClassSurvives_iff_riemannHypothesis hn]
+  unfold CCMMobiusThetaSourceResidueAnnihilatesEveryMinimalBoundary
+    ThetaInternalJetSourceDaggerBoundaryClassSurvives
+  apply forall_congr'
+  intro rho
+  rw [ccmMobiusThetaSourceResidueAnnihilatesMinimalBoundary_iff hn,
+    thetaInternalJetLeadingSourceBoundaryClass_ne_zero_iff hn]
 
 end
 

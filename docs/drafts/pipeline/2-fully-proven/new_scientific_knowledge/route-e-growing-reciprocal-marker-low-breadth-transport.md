@@ -1317,3 +1317,171 @@ the two together bound `|A|`.
 
 The inequality is deliberately stated multiplicatively rather than as `∑_h A_h² ≥ |A|²/c`, so it
 stays true (and vacuous) when `A` is empty and `c = 0` — the divided form would be junk there.
+
+### Formal layer — the large sieve for a set of integers
+
+`formal/GaloisForLFunctions/RHTower/Sieve/IndicatorExpSum.lean` applies the sieve at an indicator,
+which is where a set of integers enters.
+
+- `circleFreq_pow` — `e(θ)^n = e(nθ)`.
+- `indicatorVec`, `expSum_indicatorVec` — the trigonometric polynomial of an indicator is the
+  exponential sum of the set.
+- `sum_normSq_indicatorVec` — its energy is `|A|`.
+- `largeSieve_set_fareySet` — **`∑_{(a,q) Farey of order Q} |∑_{n ∈ A} e(na/q)|² ≤
+  (N + Q²(1 + log(Q²/2+1))) |A|`** for `A ⊆ [0,N)`.
+
+All unconditional. This is the upper-bound half in the form Montgomery's sieve needs; the
+lower-bound half (`occupied_mul_sum_nonzero_ge`) is already present. The two now speak about the
+same object — the exponential sum of a set of integers at fractions — so the only remaining step to
+a sieve bound on `|A|` is the observation that for prime `q` the non-zero residues are exactly the
+primitive ones, and the sum over primes `q ≤ Q` of the Farey contributions.
+
+### Formal layer — the prime fibre
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PrimeFibre.lean` identifies the index sets of the two
+halves of Montgomery's sieve at a prime denominator.
+
+- `sum_erase_fin_eq_range` — erasing the zero frequency over `Fin p` or over `range p` gives the
+  same sum.
+- `fareySet_fibre_prime` — the fibre of the Farey set of order `Q` above a prime `p ≤ Q` is exactly
+  `{a/p : 1 ≤ a < p}`; a numerator coprime to a prime is a numerator not divisible by it.
+- `sum_fareySet_fibre_eq` — **the lower bound's index set (nonzero residues mod `p`) is the prime
+  fibre of the Farey set**, so `∑_{a ≠ 0} |S(a/p)|²` is literally a sub-sum of what the large sieve
+  bounds.
+
+All unconditional. With this, `occupied_mul_sum_nonzero_ge` and `largeSieve_set_fareySet` are
+statements about the same sums, and the sieve inequality follows by summing the fibres over primes
+`p ≤ Q` (they are disjoint subsets of the Farey set) and dividing by `|A|`.
+
+### Formal layer — Montgomery's sieve inequality (complete)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/MontgomeryInequality.lean` closes the chain:
+
+- `occupiedClasses_card_pos` — a nonempty set meets at least one class.
+- `montgomery_sieve` — **`|A| ∑_{p ∈ P} (p − c_p)/c_p ≤ N + Q²(1 + log(Q²/2 + 1))`** for
+  `A ⊆ [0,N)` nonempty, `P` any family of primes `≤ Q`, and `c_p` the number of residue classes
+  modulo `p` that `A` meets.
+
+Unconditional. A set omitting many residue classes modulo many primes is small — the sieve
+statement itself, not an ingredient of one.
+
+The full chain, all unconditional, all in `RHTower/Sieve/`: Bessel with an assumed `Δ`
+(`LargeSieveWeak`) → separation (`SeparatedPoints`, `SeparatedRowSum`) → circle distance and chord
+bound (`CircleSeparation`, `CircleDistance`) → circle row sum (`CircleRowSum`) → closed form
+(`HarmonicLogBound`, `LargeSieveExplicit`) → Farey separation and coprimality (`FareySeparation`,
+`FareyCoprime`, `FareySet`) → exponential sums (`LargeSieveExpSum`, `IndicatorExpSum`) → residues
+and Parseval (`ResidueSum`, `ResidueParseval`) → the lower bound (`MontgomerySieve`) → the prime
+fibre (`PrimeFibre`) → this inequality. The dual form (`LargeSieveDual`) runs alongside for
+Halász–Montgomery.
+
+The one quantitative gap to the classical statement remains the logarithmic factor, and
+`sum_inv_abs_dist_le` proves it is the ceiling of the absolute-value method rather than an artefact
+of this assembly.
+
+### Formal layer — the sieve bound in usable form
+
+`formal/GaloisForLFunctions/RHTower/Sieve/SieveBound.lean` restates the sieve the way applications
+quote it: in terms of the classes *omitted* rather than those occupied.
+
+- `deficiency_ge` — `(p − c_p)/c_p ≥ w_p/(p − w_p)` when `A` misses at least `w_p` classes; the
+  deficiency ratio decreases as occupancy grows.
+- `card_mul_omitted_le` — **`|A| ∑_{p ∈ P} w_p/(p − w_p) ≤ N + Q²(1 + log(Q²/2+1))`**.
+- `card_le_of_sieve` — **`|A| ≤ (N + Q²(1 + log(Q²/2+1))) / L`** for any positive `L` bounding the
+  sum from below.
+
+All unconditional. The hypothesis is now the natural one — "`A` omits at least `w_p` classes mod
+`p`" — with no reference to the internal occupancy count, so the sieve can be applied without
+unfolding its proof.
+
+### Formal layer — the sieve is non-vacuous
+
+`formal/GaloisForLFunctions/RHTower/Sieve/SquareSieve.lean` exhibits the chain producing a real
+bound, not merely an inequality between defined quantities.
+
+- `third_le_ratio` — omitting half the classes gives `w/(p − w) ≥ 1/3` (the value at `w = (p−1)/2`,
+  `p = 2`; it improves to `1` as `p` grows).
+- `card_le_of_half_omitted` — **`|A| ≤ 3(N + Q²(1 + log(Q²/2+1)))/|P|`** for a set missing at least
+  half the residue classes modulo each prime of a family `P` of primes `≤ Q`.
+
+Both unconditional. No prime counting enters — only `|P|` — so the statement is self-contained, and
+it is the classical square-root phenomenon: with `Q` of order `√N` the bound is `≍ N log N / |P|`.
+
+This settles that the sieve layer is inhabited rather than formally true and empty, which is the
+standard failure mode for a formalised inequality chain.
+
+### Formal layer — Dirichlet rows (toward Matomäki–Radziwiłł)
+
+The card's sole remaining input is Matomäki–Radziwiłł's Theorem 2. Its proof runs through mean
+values of Dirichlet polynomials, and `formal/GaloisForLFunctions/RHTower/Sieve/DirichletRow.lean`
+sets up that frame in the corpus.
+
+- `dirRow N t` — the row `n ↦ n^{it} = exp(it log n)`, `1 ≤ n ≤ N`.
+- `norm_dirRow_coord`, `norm_dirRow_sq` — the rows are unimodular coordinatewise, so `‖dirRow‖² = N`.
+- `inner_dirRow` — the Gram entry is the exponential sum `∑_{n ≤ N} n^{i(u−t)}`.
+- `dirichlet_bessel`, `dirichlet_bilinear` — **Halász–Montgomery for Dirichlet polynomials**: the
+  mean square over a family of frequencies is controlled by the largest Gram row, in both the Bessel
+  and bilinear pairings.
+
+All unconditional; the almost-orthogonality bound they rest on
+(`AlmostOrthogonality.sum_norm_inner_sq_le_of_schur`) was already corpus-owned.
+
+What is *not* proved here, and is the next analytic obligation, is the estimate for
+`∑_{n ≤ N} n^{iu}` at `u ≠ 0` — the input that makes the Gram rows small. The corpus's Abel
+summation layer is the natural tool. This module is the frame that estimate drops into; it does not
+assume it.
+
+### Formal layer — the trivial Dirichlet benchmark
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DirichletTrivial.lean` records what the analytic input
+must beat.
+
+- `inner_dirRow_self` — the diagonal Gram entry is exactly `N`.
+- `norm_inner_dirRow_le` — every Gram entry is at most `N` in modulus.
+- `dirichlet_pointwise` — `|F(t)|² ≤ N ∑_n |a_n|²`.
+- `dirichlet_bessel_trivial` — `∑_r |F(t_r)|² ≤ R N ∑_n |a_n|²`.
+
+All unconditional and deliberately crude. Their role is to make the content of a genuine mean value
+theorem explicit: it is that the *off-diagonal* Gram entries `∑_{n ≤ N} n^{i(u−t)}` are much smaller
+than `N` for separated frequencies, so the Gram row is dominated by its diagonal term. Nothing in
+the corpus assumes that yet; the next analytic obligation is exactly that estimate.
+
+### Formal layer — the near-diagonal half
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DirichletLipschitz.lean`:
+
+- `norm_exp_phase_sub_le` — the phase exponential is 1-Lipschitz, `‖e^{ia} − e^{ib}‖ ≤ |a − b|`
+  (the chord never exceeds the arc; proved from the corpus's `norm_exp_I_sub_one`).
+- `norm_inner_dirRow_sub_card_le` — **`‖⟪dirRow N t, dirRow N u⟫ − N‖ ≤ |u − t| ∑_{n ≤ N} log n`**.
+
+Both unconditional. This is the *near-diagonal* half of the mean value problem, and it is a genuine
+constraint rather than a step: no cancellation whatever is available while the frequencies stay
+within `≈ 1/log N` of each other, so any separation hypothesis that a mean value theorem uses must
+exceed that scale. It is proved independently of the far-field estimate and does not assume it.
+
+The complementary far-field estimate — cancellation in `∑_{n ≤ N} n^{iv}` for `|v|` large — remains
+the open analytic obligation. The corpus's `HTGeometry/DirichletLinePartialSum.lean` carries out
+exactly this Euler–Maclaurin comparison for the *one-line* exponent `x^{-1+iα}`; the zero-line case
+`x^{iv}` needs the same argument with antiderivative `x^{1+iv}/(1+iv)`, whose telescoped part is of
+size `N/|1+iv|` rather than `1/|α|`.
+
+### Formal layer — the zero-line power
+
+`formal/GaloisForLFunctions/RHTower/Sieve/ZeroLinePower.lean` builds the analytic objects the
+far-field estimate needs, mirroring `HTGeometry/DirichletLinePartialSum.lean` at the abscissa
+`Re s = 0`.
+
+- `zpow0 v x = x^{iv}`, `Zpow0 v x = x^{1+iv}/(1+iv)`.
+- `one_add_mul_I_ne_zero` — the denominator never vanishes (its real part is `1`), so no hypothesis
+  `v ≠ 0` is needed anywhere in this layer.
+- `norm_zpow0` — the power is unimodular.
+- `exp_one_add_mul_log`, `norm_Zpow0` — `‖Zpow0 v x‖ = x/‖1+iv‖`.
+- `hasDerivAt_zpow0`, `hasDerivAt_Zpow0` — **the antiderivative differentiates to the power**.
+- `continuousOn_zpow0`, `intervalIntegrable_zpow0` — the hypotheses an interval integral consumes.
+
+All unconditional. The contrast with the one-line case is the size of the antiderivative: constant
+`1/|α|` there, growing like `x` here. That is exactly why `∑_{n ≤ N} n^{iv}` is of size `N/‖1+iv‖`
+rather than `O(1)`, and it is the source of the `N` in the mean value theorem.
+
+Remaining for the far-field estimate: the fundamental theorem of calculus on `[k, k+1]`, the
+correction bound `‖x^{iv} − k^{iv}‖ ≤ |v|/k` (which follows from `norm_exp_phase_sub_le` already
+proved), telescoping, and the harmonic sum — for which `sum_Icc_one_div_le_one_add_log` is in place.

@@ -683,3 +683,33 @@ strict preclosure Wold--Gamma/BV relative-extension landing       OPEN
 
 This audit does not claim RH.  It proves that ordinary closure, scalar unordered beyond-`ell1`
 summation, missing atomic support, and missing covariant capacity are not the remaining problem.
+
+## 2026-08-03 strict-preclosure regularization threshold
+
+`PrimeFirstTraceEssentialEdgeSchattenThreshold.lean` now globalizes the literal normalized local
+edge over every ordinary prime.  Its source and response corrections are both `ell2`, while the
+source correction is not `ell1`.  The exact retained coordinate is
+
+\[
+ a_p(2)=\frac1p-\frac{p}{r_p^2}\ge\frac{3}{4p}.
+\]
+
+Therefore the first global preclosure anomaly is canonically Hilbert--Schmidt but not trace class.
+This rules out an ordinary coefficient trace/Fredholm determinant at the live site and forces the
+regular Wold--Gamma comparison to begin at second-regularized determinant level.  The local edge
+has consequently been globalized as an actual all-prime Hilbert correction, but the operator
+realization and its relative landing remain open.
+
+The first arrow in the dependency chain is now refined to
+
+```text
+all-prime essential-edge ell2/not-ell1 source object              LEAN-PROVED
+  -> diagonal/operator det2 realization                           OPEN
+  -> identify det2 quadratic cocycle = Gamma regular anomaly      OPEN
+  -> identify same relative class = BV singular first trace       OPEN
+  -> source-to-Xi arithmetic annihilation                          OPEN
+```
+
+An invariant positive trace is not a substitute: positivity, invariance, and non-erasure on an
+exact centered character line already imply its unitarity and hence reinsert the RH-bearing
+premise.  Positivity can descend only after the strict `det2`/BV relative class is constructed.

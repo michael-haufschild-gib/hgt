@@ -4,6 +4,11 @@ Date: 2026-08-03
 
 Scope: every theorem advertised in `main.tex`, its source inputs, proof location, and Lean status.
 
+Policy: literature rows below are historical/analytic context. Every mathematical theorem,
+corollary, construction, complexity bound, and worked numerical example asserted as a result of
+this paper has an unconditional Lean declaration. No cited theorem is used as an unformalized
+premise for a paper result.
+
 ## External inputs
 
 | Input | Exact use | Primary source |
@@ -22,6 +27,9 @@ Scope: every theorem advertised in `main.tex`, its source inputs, proof location
 
 | Paper claim | Proof | Lean declaration/status |
 |---|---|---|
+| Universal tangent formal-contact covariance | Theorem 1.1 | `tangentReparametrization_order`, `laurentAlgReparametrization_order`, `laurentAlgReparametrization_contactTop`, `laurentContactHierarchy_reparametrization`; direct checks passed |
+| Exact Airy Fourier coordinate and contact transport | Theorem 1.1 / Theorem 4.3 | `fourier_generalizedAiryOperator`, `airyTower_negativeFourier_exact_uniformizer`, `airyTower_negativeFourier_contact_transport`; direct checks and targeted dependency builds passed |
+| Iterated exact negative-Fourier resolution to rank one | Theorem 4.3 | `airyTower_exact_negativeFourier_resolution`; direct check passed |
 | Cyclic Puiseux stabilizer coarea, minimal orbit and source loop | Proposition 2.1 | `galoisTranslate_eq_iff`, `cyclicStabilizer_card`, `canonical_galoisOrbit_card`, `canonical_differenceNumerator_eq_firstBreak`, `orderedPairDifferenceNumeratorSum_eq`, `endomorphismIrregularityFromSheets_eq`, `diagonalLoopFromSheets_eq`; targeted build and axiom audit passed |
 | Galois sheet-pair coarea and exact common-level/fission edge source | Theorem 2.2 | `ReducedCommonExponent.phase_eq_iff_modEq`, `commonDifferenceKernel_card`, `modEq_accumulatedCommonDenominator_iff`, `commonPairLayer_card_factored`, `commonPairIrregularityFromSheets_eq_coarea`, `commonPairEdgeFromSheets_eq_sourceFormula`, `zeroCommonPairEdgeFromSheets`, `unramifiedPairEdgeFromSheets`, `galois_sheet_pair_coarea_master_law`; targeted build and axiom audit passed |
 | Gcd gap around `R+E` | Lemma 3.1 | `le_sub_of_lt_add_gcd`, `add_twice_le_of_add_lt_of_dvd`; passed `lake env lean` |
@@ -35,11 +43,14 @@ Scope: every theorem advertised in `main.tex`, its source inputs, proof location
 | Separated-core formula | Theorem 5.1 | `separatedEdge_eq_right_mul_next_of_le`, symmetric branch; passed |
 | Simultaneous separated realization | Theorem 5.2 | `Characteristic.levelNumerators`, `Characteristic.slopes_pairwise`, `Characteristic.foldl_gcd_levelNumerators`, `AiryChainFamily.simultaneousSeparatedRealization`, `pairwise_leadingSeparated`; passed `lake env lean` |
 | Reciprocal-min ultrametricity | Proposition 5.3 | `separatedRescaledWeight_acuteIsosceles`; passed |
-| Exact separated hidden fibre | Corollary 5.4 | `SeparatedFiberDatum.HiddenFiber`, `fullChainFamily_injective`, `realizedCoreEdge_eq_coreEdge`, `hiddenFiber_card`; passed `lake env lean` |
+| Exact separated hidden fibre | Corollary 5.4 | `SeparatedFiberDatum.HiddenFiber`, `fullChain_injective`, `realizedCoreEdge_eq_coreEdge`, `hiddenFiber_card`; passed `lake env lean` |
 | Exact elementary pair spectrum | Theorem 6.2 | `nonempty_elementaryPairPresentation_iff_spectrum` plus three closed forms; passed |
-| Decorated finite-fibre theorem | Theorem 7.1 | Local finite-type spine: `Characteristic.finite`, `finite_strictDivisorChain`, `finite_fixedWeightedCharacteristic`; passed. Pair-affinity/tree-compatibility completion in paper |
+| Decorated finite-fibre theorem and complete enumeration | Theorem 7.1 | `Characteristic.finite`, `finite_fixedWeightedCharacteristic`, `PairFissionDatum.fixedPart_le`, `PairFissionDatum.fissionNumerator_le`, `PairFissionDatum.fissionNumerator_unique`, `decorated_fissionTree_fiber_finite`, `mem_enumerateDecoratedFissionTreeFiber`; direct check passed |
 | Finite dendrogram lemma | Lemma 8.2 | `thresholdSetoid`, `thresholdSetoid_mono`; passed |
-| Elementary recognition necessity/sufficiency | Theorem 8.1 | `nonempty_elementaryFissionEncoding_iff_certificate`; exact finite cophenetic encoding passed. Complex coefficient realization in paper |
+| Elementary recognition necessity/sufficiency with collected coefficients | Theorem 8.1 | `nonempty_elementaryFissionEncoding_iff_certificate`, `pairPresentation_hasUncancelledHighestDifferenceStage_indexed`, `uncancelledStage_gives_highestDifferenceExponent`, `globalPuiseux_realization_of_certificate`; direct checks passed |
+| Exact recognition query count and cubic bound | Theorem 8.1 | `all_recognitionQueries_iff_certificate`, `card_recognitionQuery`, `recognitionComparisonBudget_le_two_cubes`, `globalPuiseux_reconstruction_of_all_queries`; direct checks passed |
+| Two-vertex gap family and worked ramified example | Corollary 6.3 / examples | `ramificationTwo_edge_three_forbidden`, `ramificationTwo_four_mul_add_three_forbidden`, `allRamified_example_edges`; direct checks passed |
+| Infinite undecorated simple-Airy fibre | Section 9 | `simpleAiryVertex_injective`, `undecorated_simpleAiry_range_infinite`; direct check passed |
 
 ## Anti-overclaim audit
 
@@ -48,15 +59,16 @@ Scope: every theorem advertised in `main.tex`, its source inputs, proof location
 - Distinct Airy tails are claimed to give distinct level data/fission trees/admissible deformation classes, not an unproved complete analytic Stokes-moduli invariant.
 - Complexity claim is unit-cost `O(n^3)` rational comparisons, not bit complexity.
 - Inconsequential coefficient support is excluded from fission-tree counting; only level and fission data are counted.
-- Lean does not claim a new formal construction of analytic meromorphic connections. It verifies exact arithmetic and finite cophenetic statements used by the paper proof.
+- Weyl Fourier statements are proved in the presented first Weyl algebra and Laurent Fourier
+  statements in `ℂ((t))`; the paper makes no additional unformalized assertion about analytic
+  meromorphic-connection functors.
 
 ## Current audit status
 
-The stronger requirement that every mathematical claim be proved unconditionally in Lean
-invalidates any earlier whole-paper completion verdict.  Current unresolved formal obligations
-include the first-principles analytic local-Fourier transformation theorem, global decorated finite-fibre compatibility,
-coefficient-level elementary recognition and its stated complexity bound.  No hostile-review
-completion claim is valid until those declarations exist and pass the final audit.
+The previously open Fourier-source, global decorated-fibre, coefficient-collection and complexity
+obligations now have declarations listed above.  The whole-paper completion verdict remains
+withheld pending final targeted module builds, lint, axiom audit, PDF render inspection, literature
+refresh, and a new hostile review of this stronger version.
 
 Current additions checked directly with `lake env lean` include the universal contact master law,
 canonical cut construction and metric axioms, genuine interval-integral contact law, simultaneous

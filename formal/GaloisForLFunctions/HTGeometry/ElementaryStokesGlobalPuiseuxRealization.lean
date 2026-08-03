@@ -6,6 +6,19 @@ noncomputable section
 
 namespace ElementaryDecoratedGraph
 
+/-- Any finite set admits an explicit injective coefficient assignment in any infinite type. -/
+noncomputable def finiteDistinctCoefficients (α K : Type*) [Finite α] [Infinite K] : α → K :=
+  letI : Fintype α := Fintype.ofFinite α
+  fun a => Infinite.natEmbedding K ((Fintype.equivFin α a).val)
+
+theorem finiteDistinctCoefficients_injective (α K : Type*) [Finite α] [Infinite K] :
+    Function.Injective (finiteDistinctCoefficients α K) := by
+  letI : Fintype α := Fintype.ofFinite α
+  intro a b h
+  apply (Fintype.equivFin α).injective
+  apply Fin.ext
+  exact (Infinite.natEmbedding K).injective h
+
 def maxEdge {n : ℕ} (g : ElementaryDecoratedGraph n) : ℕ :=
   Finset.univ.sup fun i => Finset.univ.sup fun j => g.edge i j
 

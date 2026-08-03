@@ -1254,7 +1254,7 @@ moves by an arbitrarily small fraction of its total growth. -/
 
 /-- **Telescoping pigeonhole.**  Along `N` steps of a monotone sequence some increment is at most the
 average. -/
-theorem exists_increment_le_average {g : ℕ → ℝ} (hg : Monotone g) {N : ℕ} (hN : 0 < N) :
+theorem exists_increment_le_average (g : ℕ → ℝ) {N : ℕ} (hN : 0 < N) :
     ∃ i < N, g (i + 1) - g i ≤ (g N - g 0) / N := by
   by_contra hcon
   have hall : ∀ i < N, (g N - g 0) / N < g (i + 1) - g i := by
@@ -1272,26 +1272,24 @@ theorem exists_increment_le_average {g : ℕ → ℝ} (hg : Monotone g) {N : ℕ
   exact lt_irrefl _ hlt
 
 /-- **A step with a small central-index increment.**  Along a geometric chain of `N` radii some step
-raises the central index by at most the total rise divided by `N`. -/
+raises the central index -- it never lowers it -- by at most the total rise divided by `N`. -/
 theorem exists_small_centralIndex_increment
     (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {u h : ℝ} (hh : 0 < h) {N : ℕ} (hN : 0 < N) :
     ∃ i < N,
-      (centralIndex a (Real.exp (u + ((i : ℝ) + 1) * h)) : ℝ)
-          - (centralIndex a (Real.exp (u + (i : ℝ) * h)) : ℝ)
-        ≤ ((centralIndex a (Real.exp (u + (N : ℝ) * h)) : ℝ)
-            - (centralIndex a (Real.exp u) : ℝ)) / N := by
+      centralIndex a (Real.exp (u + (i : ℝ) * h))
+          ≤ centralIndex a (Real.exp (u + ((i : ℝ) + 1) * h))
+        ∧ (centralIndex a (Real.exp (u + ((i : ℝ) + 1) * h)) : ℝ)
+            - (centralIndex a (Real.exp (u + (i : ℝ) * h)) : ℝ)
+          ≤ ((centralIndex a (Real.exp (u + (N : ℝ) * h)) : ℝ)
+              - (centralIndex a (Real.exp u) : ℝ)) / N := by
   set g : ℕ → ℝ := fun i => (centralIndex a (Real.exp (u + (i : ℝ) * h)) : ℝ) with hg
-  have hmono : Monotone g := by
-    intro i j hij
-    have hle : u + (i : ℝ) * h ≤ u + (j : ℝ) * h := by
-      have : (i : ℝ) ≤ (j : ℝ) := by exact_mod_cast hij
-      nlinarith
-    have := centralIndex_mono ha (Real.exp_pos _) (Real.exp_le_exp.mpr hle) hn₀
-    exact_mod_cast this
-  obtain ⟨i, hi, hle⟩ := exists_increment_le_average hmono hN
-  refine ⟨i, hi, ?_⟩
-  have hg0 : g 0 = (centralIndex a (Real.exp u) : ℝ) := by
-    simp [hg]
+  obtain ⟨i, hi, hle⟩ := exists_increment_le_average g hN
+  have hstep : u + (i : ℝ) * h ≤ u + ((i : ℝ) + 1) * h := by nlinarith
+  have hmono : centralIndex a (Real.exp (u + (i : ℝ) * h))
+      ≤ centralIndex a (Real.exp (u + ((i : ℝ) + 1) * h)) :=
+    centralIndex_mono ha (Real.exp_pos _) (Real.exp_le_exp.mpr hstep) hn₀
+  refine ⟨i, hi, hmono, ?_⟩
+  have hg0 : g 0 = (centralIndex a (Real.exp u) : ℝ) := by simp [hg]
   have hgN : g N = (centralIndex a (Real.exp (u + (N : ℝ) * h)) : ℝ) := rfl
   have hgi : g (i + 1) = (centralIndex a (Real.exp (u + ((i : ℝ) + 1) * h)) : ℝ) := by
     simp only [hg]
@@ -1299,6 +1297,42 @@ theorem exists_small_centralIndex_increment
     ring_nf
   rw [← hgi, ← hg0, ← hgN]
   exact hle
+
+/-! ## The majorant against the central index
+
+The maximum term is below the maximum modulus, and the maximum modulus is below the majorant; this
+bounds the majorant back in terms of the maximum term, with the central index as the only cost.  All
+three quantities therefore agree up to a factor linear in `nu`. -/
+
+set_option maxHeartbeats 1000000 in
+/-- **The majorant costs one central index.**  `S(r) <= mu(r) (nu(s) + 1 + (r/s)/(1 - r/s))` for any
+`s > r`: the terms up to `nu(s)` are each at most `mu(r)`, and the rest is the geometric tail. -/
+theorem coeffSum_le_maxTerm_mul_centralIndex
+    (ha : EntireCoeffs a) (hr : 0 < r) (hrs : r < s) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
+    coeffSum a r
+      ≤ maxTerm a r * (((centralIndex a s : ℝ) + 1) + (r / s) / (1 - r / s)) := by
+  classical
+  have hs : 0 < s := lt_trans hr hrs
+  set k := centralIndex a s with hk
+  have hμ : (0 : ℝ) ≤ maxTerm a r :=
+    le_trans (term_nonneg a hr 0) (term_le_maxTerm ha hr 0)
+  have hsplit := Summable.sum_add_tsum_nat_add (f := fun n => ‖a n‖ * r ^ n) (k + 1)
+    (summable_term ha hr)
+  have hhead : ∑ n ∈ Finset.range (k + 1), ‖a n‖ * r ^ n ≤ ((k : ℝ) + 1) * maxTerm a r := by
+    have hbd : ∀ n ∈ Finset.range (k + 1), ‖a n‖ * r ^ n ≤ maxTerm a r :=
+      fun n _ => term_le_maxTerm ha hr n
+    have h := Finset.sum_le_card_nsmul _ _ _ hbd
+    rw [Finset.card_range, nsmul_eq_mul] at h
+    calc ∑ n ∈ Finset.range (k + 1), ‖a n‖ * r ^ n ≤ ((k + 1 : ℕ) : ℝ) * maxTerm a r := h
+      _ = ((k : ℝ) + 1) * maxTerm a r := by push_cast; ring
+  have htail := tsum_upper_tail_le ha hr hrs hn₀
+  rw [← hk] at htail
+  calc coeffSum a r
+      = (∑ n ∈ Finset.range (k + 1), ‖a n‖ * r ^ n)
+        + ∑' j : ℕ, ‖a (j + (k + 1))‖ * r ^ (j + (k + 1)) := hsplit.symm
+    _ ≤ ((k : ℝ) + 1) * maxTerm a r + maxTerm a r * (r / s) / (1 - r / s) := by
+        exact add_le_add hhead htail
+    _ = maxTerm a r * (((k : ℝ) + 1) + (r / s) / (1 - r / s)) := by ring
 
 
 /-! ## Entire functions -/

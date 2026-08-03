@@ -154,6 +154,81 @@ theorem exists_upper_injective_nodes_shapeDeterminant_ne_zero {κ : Type} [Finty
     rw [hDdef, eval_det_expandedPolyMatrix]
     exact heval.symm
 
+/-! ## Nodes at distinct heights -/
+
+/-- **A shape has an admissible node packet at pairwise distinct heights above the real axis.**  The
+determinant is a nonzero polynomial, hence nonzero on a dense set, and that set meets the open set of
+packets whose nodes lie above the real axis at pairwise distinct heights.  Distinct heights are what
+survives translation by real numbers, so this is the form a family of real translates needs. -/
+theorem exists_distinctIm_nodes_shapeDeterminant_ne_zero {κ : Type} [Fintype κ]
+    [DecidableEq κ] (q n : ℕ) (exponent : κ → (Fin n →₀ ℕ)) (hexp : Function.Injective exponent) :
+    ∃ z : κ × Fin (q + 1) → ℂ, (∀ r, 0 < (z r).im) ∧
+      (∀ r r', r ≠ r' → (z r).im ≠ (z r').im) ∧ shapeDeterminant q n exponent z ≠ 0 := by
+  classical
+  obtain ⟨z₀, y₀, -, hinj₀⟩ :=
+    exists_injective_nodes_expandedMatrix_mulVec_injective q n exponent hexp
+  set D : MvPolynomial ((κ × Fin (q + 1)) ⊕ ((κ × Fin (q + 1)) × Fin n)) ℂ :=
+    (expandedPolyMatrix q n exponent).det with hDdef
+  have hDne : D ≠ 0 := by
+    intro hzero
+    have hdet0 : (expandedDifferentialEvaluationMatrix q n z₀ exponent y₀).det = 0 := by
+      have heval := eval_det_expandedPolyMatrix q n exponent (Sum.elim z₀ y₀)
+      rw [← hDdef, hzero, map_zero] at heval
+      exact heval.symm
+    rw [Matrix.mulVec_injective_iff_isUnit, Matrix.isUnit_iff_isUnit_det,
+      isUnit_iff_ne_zero] at hinj₀
+    exact hinj₀ hdet0
+  have hpos : IsOpen {p : ((κ × Fin (q + 1)) ⊕ ((κ × Fin (q + 1)) × Fin n)) → ℂ |
+      ∀ r, 0 < (p (Sum.inl r)).im} := by
+    rw [Set.setOf_forall]
+    refine isOpen_iInter_of_finite fun r => ?_
+    exact isOpen_lt continuous_const (Complex.continuous_im.comp (continuous_apply (Sum.inl r)))
+  have hsep : IsOpen {p : ((κ × Fin (q + 1)) ⊕ ((κ × Fin (q + 1)) × Fin n)) → ℂ |
+      ∀ r r', r ≠ r' → (p (Sum.inl r)).im ≠ (p (Sum.inl r')).im} := by
+    rw [Set.setOf_forall]
+    refine isOpen_iInter_of_finite fun r => ?_
+    rw [Set.setOf_forall]
+    refine isOpen_iInter_of_finite fun r' => ?_
+    by_cases hrr : r = r'
+    · subst hrr
+      simp
+    · have hset : {p : ((κ × Fin (q + 1)) ⊕ ((κ × Fin (q + 1)) × Fin n)) → ℂ |
+          r ≠ r' → (p (Sum.inl r)).im ≠ (p (Sum.inl r')).im}
+          = {p : ((κ × Fin (q + 1)) ⊕ ((κ × Fin (q + 1)) × Fin n)) → ℂ |
+            (p (Sum.inl r)).im ≠ (p (Sum.inl r')).im} := by
+        ext p
+        simp [hrr]
+      rw [hset]
+      exact isOpen_ne_fun (Complex.continuous_im.comp (continuous_apply (Sum.inl r)))
+        (Complex.continuous_im.comp (continuous_apply (Sum.inl r')))
+  set U : Set (((κ × Fin (q + 1)) ⊕ ((κ × Fin (q + 1)) × Fin n)) → ℂ) :=
+    {p | ∀ r, 0 < (p (Sum.inl r)).im} ∩
+      {p | ∀ r r', r ≠ r' → (p (Sum.inl r)).im ≠ (p (Sum.inl r')).im} with hUdef
+  have hUopen : IsOpen U := hpos.inter hsep
+  have hUne : U.Nonempty := by
+    refine ⟨fun v => Sum.elim (fun r => Complex.I *
+      ((1 + (Fintype.equivFin (κ × Fin (q + 1)) r : ℕ) : ℝ) : ℂ)) (fun _ => 0) v, ?_, ?_⟩
+    · intro r
+      simp only [Sum.elim_inl, Complex.mul_im, Complex.I_re, Complex.I_im, Complex.ofReal_re,
+        Complex.ofReal_im, zero_mul, one_mul, zero_add]
+      positivity
+    · intro r r' hrr
+      simp only [Sum.elim_inl, Complex.mul_im, Complex.I_re, Complex.I_im, Complex.ofReal_re,
+        Complex.ofReal_im, zero_mul, one_mul, zero_add, ne_eq, add_right_inj, Nat.cast_inj]
+      intro hcast
+      exact hrr ((Fintype.equivFin (κ × Fin (q + 1))).injective (Fin.ext hcast))
+  obtain ⟨p, hpne, hpU⟩ :=
+    (mvPolynomial_nonzero_eval_dense D hDne).exists_mem_open hUopen hUne
+  simp only [Set.mem_setOf_eq] at hpne
+  refine ⟨fun r => p (Sum.inl r), fun r => hpU.1 r, fun r r' hrr => hpU.2 r r' hrr, ?_⟩
+  intro hzero
+  have heval := eval_shapeDeterminant q n exponent (fun r => p (Sum.inl r))
+    (fun t => p (Sum.inr t))
+  rw [hzero, map_zero] at heval
+  refine hpne ?_
+  rw [hDdef, eval_det_expandedPolyMatrix]
+  exact heval.symm
+
 end
 
 end GaloisForLFunctions.HTGeometry

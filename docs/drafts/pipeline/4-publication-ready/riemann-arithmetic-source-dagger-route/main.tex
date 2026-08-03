@@ -33,7 +33,7 @@
 \newcommand{\Ima}{\operatorname{Im}}
 
 \title{\textbf{Arithmetic source descent toward the Riemann hypothesis}\\
-\large Boundary-defect conservation and maximal quotient collapse}
+\large Cyclic residue transgression and maximal quotient collapse}
 \author{Michael Haufschild}
 \date{}
 
@@ -66,16 +66,27 @@ It is target-stable, contains every defect, and lies in every competing
 stable defect boundary; hence it gives the largest possible quotient.  Away
 from \(\delta=1\), the landing range lies in \(B_{\min}\).
 
-For the physical two-leg landing scaled by the first nonzero
-M\"obius--theta jet, target monodromy is
-\(\exp((2\Rea\rho-1)\log n)\).  We prove
+We then construct the previously missing comparison from the literal
+degree-one rational-adelic cyclic bar to the physical two-leg landing,
+before choosing a zero.  For every ordinary prime \(p\), a canonical
+\(p\otimes p^{-1}\) cycle has trace one.  The coordinate-sum cyclic residue
+kills its untwisted cyclic comparison defect, detects its physical leading
+jet, and retains multiplicity in a separate jet filtration.  Under the
+analytic paracyclic rotation its defect satisfies the exact transgression
+law
+\[
+ \operatorname{Res}(D_{n,\rho}x)
+  =(\delta_n(\rho)-1)c_\rho\,\varepsilon_0^{(1)}(x).
+\]
+For the physical two-leg landing we prove
 \(B_{\min,\rho}=0\) on the critical line and
-\(B_{\min,\rho}=\C^2\) off it.  Thus the canonical top-conormal class
-survives exactly on the critical line, and global survival is equivalent to
-RH.  The result closes boundary choice and singular topology as missing
-infrastructure.  It does not prove RH: the remaining content is an
-independent arithmetic comparison from the literal cyclic source to the
-physical landing that forces survival of this already canonical class.
+\(B_{\min,\rho}=\C^2\) off it.  Consequently the constructed residue
+annihilates \(B_{\min,\rho}\) exactly on the critical line, and global
+annihilation is equivalent to RH.  Thus source comparison, ordinary-prime
+detection, multiplicity retention, boundary choice, and singular topology
+are closed unconditionally.  The sole RH-bearing content is now the
+source-null-homology of the physical paracyclic defect; this paper neither
+assumes nor proves that final statement.
 \end{abstract}
 
 \medskip
@@ -657,9 +668,9 @@ Theorems~\ref{thm:defect-conservation} and
 \ref{thm:maximal-quotient} strengthen this list.  Topology cannot rescue
 strict equivariance, and boundary choice cannot rescue quotient survival.
 The maximal quotient is canonical; off line it is zero for the physical
-two-leg landing.  A viable successor must therefore supply an independent
-source residue proving that the arithmetic class survives this fixed
-quotient.  It cannot enlarge the quotient by changing completion or boundary.
+two-leg landing.  A viable successor must therefore prove that the physical
+paracyclic defect is null-homologous in the literal cyclic arithmetic source.
+It cannot enlarge the quotient by changing completion or boundary.
 
 \section{Exact status of the arithmetic route}
 
@@ -688,64 +699,184 @@ unconditional properties.
 \item The canonical minimal defect boundary exists and gives the largest
       admissible quotient.  For the physical two-leg landing it is zero on
       the critical line and the whole target off it.
+\item The genuine rational-adelic degree-one cyclic bar maps to the physical
+      two-leg landing before divisor specialization; an ordinary-prime cycle
+      has trace one, its cyclic residue detects the leading jet, and the
+      physical residue defect is exactly monodromy minus one times that
+      trace.
 \end{enumerate}
 \end{theorem}
 
-\begin{problem}[Independent arithmetic survival law]
-\label{prob:arithmetic-survival}
-Construct, before selecting a zero, a comparison from the literal cyclic
-arithmetic source to the physical two-leg landing
-\eqref{eq:physical-two-leg}, together with a source-defined residue or
-homology functional \(\operatorname{Res}_\rho\), such that after
-specialization at every divisor point \(\rho\):
+\subsection{Literal cyclic comparison and prime-cycle residue}
+
+Let \(A_{\rm CCM}\) be the minimal unitization of the algebraic rational
+adeles-class-space crossed product and let
+\[
+ C_1(A_{\rm CCM})=A_{\rm CCM}\otimes A_{\rm CCM},
+ \qquad \tau(a_0\otimes a_1)=a_1\otimes a_0.
+\]
+The zero-adele endpoint trace \(\varepsilon_0:A_{\rm CCM}\to\C\) induces
+the genuine degree-one cyclic trace
+\[
+ \varepsilon_0^{(1)}(a_0\otimes a_1)=\varepsilon_0(a_0a_1),
+ \qquad \varepsilon_0^{(1)}\tau=\varepsilon_0^{(1)}.
+\tag{8.1}\label{eq:cyclic-trace}
+\]
+Let \(g\) be the product of the real Gaussian and the characteristic
+function of the integral finite adeles.  Its zero-adele value is one.  For
+an ordinary prime \(p\), let \(u_p\in C_1(A_{\rm CCM})\) be the tensor whose
+crossed-product scaling labels are \(p\) and \(p^{-1}\), both with
+coefficient \(g\).
+
+\begin{theorem}[Ordinary-prime cyclic identity]
+\label{thm:prime-cycle}
+For every ordinary prime \(p\),
+\[
+                         \varepsilon_0^{(1)}(u_p)=1.
+\tag{8.2}\label{eq:prime-cycle-one}
+\]
+\end{theorem}
+
+\begin{proof}
+The two scaling labels multiply to the identity label.  Twisted convolution
+therefore places the product in the identity coefficient read by
+\(\varepsilon_0\).  Zero is fixed by rational scaling, so zero-adele
+evaluation is unchanged by the twist.  It is multiplicative on the Bruhat
+tensor core, and each copy of \(g\) has value one.  Hence the product has
+trace one.
+\end{proof}
+
+Define, without a divisor parameter,
+\[
+ C(x)=\bigl(\varepsilon_0^{(1)}(x),0\bigr),
+ \qquad
+ \operatorname{Res}(z_0,z_1)=z_0+z_1.
+\tag{8.3}\label{eq:comparison-residue}
+\]
+Thus \(C(u_p)=x_0=(1,0)\).  For every jet grade \(k\), physical rung \(m\),
+and spectral parameter \(w\), set
+\[
+ L_{k,m,w}(x)=
+   \mathcal{FL}(\Psi_{m,k})(w)\,C(x),
+ \qquad
+ L_{k,w}^{\infty}(x)=\XiC^{(k)}(w)\,C(x).
+\tag{8.4}\label{eq:global-cyclic-comparison}
+\]
+All objects in \eqref{eq:comparison-residue}--\eqref{eq:global-cyclic-comparison}
+are defined before a zero is selected.
+
+\begin{theorem}[Cyclic-to-paracyclic residue transgression]
+\label{thm:residue-transgression}
+The comparison \eqref{eq:global-cyclic-comparison} has the following
+properties.
 \begin{enumerate}[label=\textup{(\roman*)}]
-\item the comparison has physical provenance
-      \eqref{eq:source-transform}--\eqref{eq:gamma-landing}, not a
-      divisor-fitted cyclic source;
-\item the source residue annihilates
-      \(B_{\min,\rho}\), whose stability and defect containment are already
-      proved;
-\item \(\operatorname{Res}_\rho(L_\rho(x_0))\neq0\) follows from one
-      independent ordinary-prime source identity;
-\item multiplicity jets are retained in a separate compatible filtered
-      channel, without demanding unitary Jordan action and therefore without
-      silently assuming simplicity of zeros.
+\item For every \(k,K,\rho,p\),
+\[
+ L_{k,K+N,w_\rho}(u_p)\longrightarrow
+ L_{k,w_\rho}^{\infty}(u_p).
+\tag{8.5}\label{eq:comparison-limit}
+\]
+At \(k=r_\rho\), the right side is exactly
+\(L_\rho(C(u_p))=L_\rho(x_0)\) from
+\eqref{eq:physical-two-leg}.
+\item The untwisted cyclic defect is residue-exact:
+\[
+ \operatorname{Res}\!\left(\tau C(x)-C(\tau x)\right)=0.
+\tag{8.6}\label{eq:cyclic-residue-zero}
+\]
+\item Grades remain separate:
+\[
+ \operatorname{Res}(L_{k,w_\rho}^{\infty}(u_p))=0
+       \quad(k<r_\rho),
+ \qquad
+ \operatorname{Res}(L_{r_\rho,w_\rho}^{\infty}(u_p))\neq0.
+\tag{8.7}\label{eq:filtered-detection}
+\]
+No diagonalizability, unitary Jordan action, or simplicity of a zero is
+used.
+\item Let
+\(D_{n,\rho}=R_{n,\rho}L_{r_\rho,w_\rho}^{\infty}
+-L_{r_\rho,w_\rho}^{\infty}\tau\).  Then for every source chain \(x\),
+\[
+ \boxed{\quad
+ \operatorname{Res}(D_{n,\rho}x)
+  =\bigl(\delta_n(\rho)-1\bigr)c_\rho
+     \varepsilon_0^{(1)}(x).
+ \quad}
+\tag{8.8}\label{eq:residue-transgression}
+\]
+In particular,
+\(\operatorname{Res}(L_\rho(C(u_p)))=c_\rho\neq0\).
 \end{enumerate}
-\end{problem}
+\end{theorem}
 
-The word \emph{source} in Problem~\ref{prob:arithmetic-survival} is
-load-bearing.
-One may always define a divisor-dependent identification that is unitary on
-the critical line; that merely rewrites RH.  The required identity must be a
-chain or boundary law of the ordinary-prime source before divisor
-specialization.  The word \emph{unsymmetrized} is equally load-bearing:
-functional-equation reflection pairs an off-line zero with another allowed
-zero.  Boundary choice is no longer part of the freedom: by
-Theorem~\ref{thm:maximal-quotient}, every admissible boundary contains
-\(B_{\min}\).  A residue that kills this minimal boundary and detects the
-physical atom would prove RH, while any residue supplied only after assuming
-\eqref{eq:class-iff-line} is circular.
+\begin{proof}
+Part (i) is the cofinal source-to-Xi limit in
+Proposition~\ref{prop:source-landing}, applied at every independent grade,
+together with \eqref{eq:prime-cycle-one}.  At the leading grade,
+\(\XiC^{(r_\rho)}(w_\rho)=c_\rho\), giving the physical landing.
+For (ii), cyclic trace invariance gives
+\(\varepsilon_0^{(1)}(\tau x)=\varepsilon_0^{(1)}(x)\); coordinate sum
+annihilates the resulting anti-diagonal vector.  Equation
+\eqref{eq:filtered-detection} is exactly \eqref{eq:first-jet} multiplied by
+the trace-one identity.  Finally, if
+\(a=c_\rho\varepsilon_0^{(1)}(x)\), then the paracyclic rotation sends
+\((a,0)\) to \((0,\delta_n(\rho)a)\).  Subtracting \((a,0)\) and summing
+coordinates gives \((\delta_n(\rho)-1)a\), proving
+\eqref{eq:residue-transgression}.
+\end{proof}
 
-\begin{corollary}[Arithmetic-survival implication]
-If Problem~\ref{prob:arithmetic-survival} is solved, then the Riemann
-hypothesis follows from Theorem~\ref{thm:physical-boundary-classification}.
-\end{corollary}
+\begin{theorem}[Exact residue boundary criterion]
+\label{thm:residue-boundary-criterion}
+For every \(n\geq2\) and divisor point \(\rho\),
+\[
+ \operatorname{Res}(B_{\min,\rho})=0
+ \quad\Longleftrightarrow\quad
+ \Rea\rho=\frac12.
+\tag{8.9}\label{eq:residue-boundary-iff}
+\]
+Consequently,
+\[
+ \bigl[\operatorname{Res}(B_{\min,\rho})=0
+       \text{ for every divisor point }\rho\bigr]
+ \quad\Longleftrightarrow\quad \RH.
+\tag{8.10}\label{eq:global-residue-iff-rh}
+\]
+More generally, any linear functional which annihilates
+\(B_{\min,\rho}\) and is nonzero on \(L_\rho(x_0)\) forces
+\(\Rea\rho=1/2\).
+\end{theorem}
 
-This corollary does not assert that Problem~\ref{prob:arithmetic-survival}
-has been solved.  The coherent maximal boundary and defect exactness are now
-constructed.  The unproved content is an independent source-derived proof of
-class survival.  Theorem~\ref{thm:physical-boundary-classification} shows
-that this content is exactly as strong as RH; it must not be advertised as a
-smaller technical completion.
+\begin{proof}
+On the critical line, \(B_{\min,\rho}=0\), so every linear residue
+annihilates it.  Off the line,
+\(B_{\min,\rho}=\C^2\), while \(\operatorname{Res}(1,0)=1\); annihilation is
+impossible.  This proves \eqref{eq:residue-boundary-iff}.  Quantification over
+the divisor is RH.  The final assertion follows identically: off line the
+minimal boundary is the whole target, so a functional vanishing on it cannot
+detect any landed vector.
+\end{proof}
 
-\clearpage
+The construction closes literal cyclic provenance, independent
+ordinary-prime detection, and multiplicity-compatible physical landing.  It
+also answers the annihilation demand exactly rather than postulating it.  The
+last theorem is not ``find a source,'' ``find a residue,'' or ``retain
+multiplicity.''  Those objects now exist.  It is the source-null-homology
+statement that the physical analytic-dagger defect in
+\eqref{eq:residue-transgression} is a literal cyclic boundary, or otherwise
+has zero source residue, before divisor specialization.  By
+\eqref{eq:prime-cycle-one} and \eqref{eq:residue-transgression}, that
+statement forces \(\delta_n(\rho)=1\) at every divisor and is precisely the
+RH-bearing selection law.  Calling it a routine comparison lemma would be
+circular.
+
 \section{Comparison with classical routes}
 
 Table~\ref{tab:routes} compares logical inputs, not historical priority.
 
-\begin{table}[H]
+\begin{table}[p]
 \centering
-\small
+\footnotesize
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.17\textwidth}
                               >{\raggedright\arraybackslash}p{0.24\textwidth}
                               >{\raggedright\arraybackslash}X
@@ -759,11 +890,11 @@ Weil positivity & Positivity of an explicit-formula quadratic form & Positive Ga
 \addlinespace
 Nyman--Beurling and Hedenmalm density & Closure or cyclicity of a function system & Dense arithmetic common tests, source-to-Xi landing, and divisor-faithful evaluation & Density controls representation.  The normalized Hodge boundary is nonclosable, so closure alone cannot impose same-fibre dagger. \\
 \addlinespace
-Sonin/co-Poisson & Fourier/Mellin duality and invariant subspaces & Exact Gamma/co-Poisson incidence, Green primitive, reflected transport, and minimal mixed-defect boundary & Reflection duality relates mate fibres.  Need an independent source residue detecting the physical class. \\
+Sonin/co-Poisson & Fourier/Mellin duality and invariant subspaces & Exact Gamma/co-Poisson incidence, Green primitive, reflected transport, cyclic residue, and minimal mixed-defect boundary & Reflection duality relates mate fibres.  Need source-null-homology of the physical paracyclic defect. \\
 \addlinespace
-CCM/Meyer & Quotient trace, absorption spectrum, or cohomological boundary & Literal cyclic arithmetic source, cross-prime span, and exact relative Green transgression & No comparison maps that cyclic source to the physical M\"obius--theta two-leg landing while detecting its quotient class. \\
+CCM/Meyer & Quotient trace, absorption spectrum, or cohomological boundary & Literal cyclic source, trace-one ordinary-prime cycle, physical two-leg comparison, and exact residue transgression & Need the analytic-dagger defect to be a literal cyclic boundary; the available trace proves what its residue would be. \\
 \addlinespace
-Deninger-type cohomology & Frobenius flow with a Hodge star or weight formalism & Half-density character, mate gain, top conormal, and maximal quotient law & Boundary exactness is canonical.  Missing content is a source-derived nonzero homology class, which the classification proves equivalent to critical-line placement. \\
+Deninger-type cohomology & Frobenius flow with a Hodge star or weight formalism & Half-density character, mate gain, top conormal, filtered cyclic comparison, and maximal quotient law & The remaining null-homology assertion kills the measured monodromy defect and is equivalent to critical-line placement. \\
 \bottomrule
 \end{tabularx}
 \caption{Logical comparison of the arithmetic source--dagger route with classical programs.}
@@ -789,35 +920,34 @@ positive consumer as the missing oppositely signed degree-one term.
 Finally, the route explains why repeated source reconstructions and density
 theorems did not finish zero exclusion.  Those results solve attainment and
 vector faithfulness.  Theorem~\ref{thm:maximal-quotient} also solves the
-optimal boundary choice.  Problem~\ref{prob:arithmetic-survival} is the
-remaining homological selection law: it must prove, from the literal source,
-that the physical top conormal is not exact in this fixed quotient.
+optimal boundary choice.  Theorem~\ref{thm:residue-transgression} now solves
+the literal comparison and computes its homological obstruction.  The
+remaining selection law must prove, from the literal source, that the
+physical paracyclic defect is cyclically null-homologous.
 
-\section{A falsifiable proof program}
+\clearpage
+\section{The falsifiable final law}
 
-Problem~\ref{prob:arithmetic-survival} is narrower than ``construct a cohomology
-theory for the zeta function.''  A candidate construction must pass all of
-the following tests.
+The remaining statement is narrower than ``construct a cohomology theory
+for the zeta function.''  The preceding transgression theorem has already
+passed tests for pre-divisor definition, physical comparison, independent
+detection, and multiplicity.  A candidate final law must pass this audit.
 
 \begin{enumerate}[leftmargin=2.2em]
-\item \textbf{Pre-divisor definition.}  Its source, differential, and
-      involution are defined from the ordinary-prime/theta/Gamma data before
-      a zero is chosen.
-\item \textbf{Physical comparison.}  Its analytic realization agrees with
-      the M\"obius--theta landing \eqref{eq:source-transform} and with the
-      coefficient \(c_\rho\) in \eqref{eq:gamma-landing}.
-\item \textbf{Fixed maximal quotient.}  The detector annihilates the
-      canonical \(B_{\min}\), not a smaller fitted subspace.  Vector
-      nonvanishing alone is insufficient, and choosing another admissible
-      boundary cannot enlarge the quotient.
-\item \textbf{Independent class detection.}  Nonzero residue of the physical
-      atom follows from one pre-divisor ordinary-prime identity, not from
-      assuming critical-line placement or from a divisor-dependent
-      correction.
-\item \textbf{Multiplicity separation.}  Nilpotent jets remain in a
-      filtered channel, while unitarity is asserted only for the reduced
-      continuous character.  A proof that forces diagonalizable multiplicity
-      action has proved more than RH and must justify that extra conclusion.
+\item \textbf{Literal boundary provenance.}  Exhibit a source chain whose
+      cyclic boundary maps to the physical defect, or derive its zero residue
+      from an independent arithmetic boundary identity.  Declaring the
+      target defect exact is not a source proof.
+\item \textbf{Fixed maximal quotient.}  The resulting detector must
+      annihilate canonical \(B_{\min}\), not a smaller fitted subspace.
+      Theorem~\ref{thm:residue-boundary-criterion} forbids an off-line
+      shortcut.
+\item \textbf{Prime-cycle compatibility.}  The boundary law must apply to
+      \(u_p\) without erasing \(\varepsilon_0^{(1)}(u_p)=1\).  Otherwise it
+      destroys the independent source detector it is meant to use.
+\item \textbf{Filtered compatibility.}  The law acts grade by grade on
+      \eqref{eq:filtered-detection}; it may not mix multiplicity jets into a
+      unitary Jordan representation or assume simple zeros.
 \item \textbf{Off-line falsifier.}  Any model that reproduces only an entire
       functional equation, reflection symmetry, positive Gamma factors, or
       hypertranscendence but admits off-line quartets must fail at a named
@@ -826,13 +956,12 @@ the following tests.
 \end{enumerate}
 
 These tests locate useful future work.  Building another faithful divisor
-carrier, positive form, boundary, or reflection-equivariant completion does
-not attack the open theorem.  Strict equivariance is obstructed, and the
-largest admissible quotient is already constructed.  A useful advance must
-connect the literal cyclic arithmetic source to the physical landing and
-produce a source residue that kills \(B_{\min}\) while detecting its canonical
-atom.  Theorem~\ref{thm:physical-boundary-classification} makes clear that
-this is the RH-bearing theorem itself, not downstream infrastructure.
+carrier, comparison, positive form, residue, boundary, or
+reflection-equivariant completion does not attack the final theorem.  All
+are already constructed.  A useful advance must prove source-null-homology
+of the measured physical defect in \eqref{eq:residue-transgression}.
+Theorem~\ref{thm:residue-boundary-criterion} makes clear that this is the
+RH-bearing theorem itself, not downstream infrastructure.
 
 \section{Conclusion}
 
@@ -858,10 +987,17 @@ frontier.  Strict identification of source inverse with analytic dagger is
 algebraically overdetermined off line.  Their minimal stable defect boundary
 is canonical; for the physical leading-jet landing it is zero on the line and
 all of \(\C^2\) off it.  Thus neither topology nor boundary choice can create
-the desired class.  The only surviving claim is an independent arithmetic
-non-erasure theorem for that fixed quotient, obtained by comparing the
-literal cyclic source with the M\"obius--theta landing.  Its global form is
-equivalent to RH, and no result in this paper assumes it.
+the desired class.
+
+The literal comparison is no longer missing.  A canonical ordinary-prime
+cycle has trace one, maps to the ordered physical atom, and is detected at
+the first nonzero jet while all lower multiplicity grades vanish separately.
+Its cyclic residue kills the untwisted comparison defect.  Analytic dagger
+twisting changes that zero into the exact scalar
+\((\delta_n(\rho)-1)c_\rho\).  This transgression formula isolates the sole
+surviving claim: the physical paracyclic defect must be null-homologous in
+the literal arithmetic source.  Global residue annihilation is equivalent to
+RH, and no result in this paper assumes it.
 
 \begin{thebibliography}{9}
 
