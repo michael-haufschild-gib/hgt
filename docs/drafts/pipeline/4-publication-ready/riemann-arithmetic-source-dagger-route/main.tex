@@ -41,67 +41,41 @@
 \maketitle
 
 \begin{abstract}
-We give a source-first route to the Riemann hypothesis and separate its
-constructed part from its one unresolved arithmetic law.  The organizing
-principle is source-descent conservation: a distinction erased by one edge of
-a transport chain cannot be recreated downstream, while a resolved packet can
-cancel only against another term in the same full grade.  This identifies a
-forced order for a Riemann construction: arithmetic source, exact analytic
-landing, conormal retention, source-preserving singular completion, and only
-then Hermitian polarization.
+We analyze a source-first route to the Riemann hypothesis and separate its
+constructed transport from its selection problem.  A target-free
+M\"obius--theta source reaches every jet of the centered completed zeta
+function.  At a zero of arbitrary multiplicity it retains the first nonzero
+jet as a division-free top conormal, lands coefficient-faithfully in a
+completed Gamma/co-Poisson incidence, and survives a boundedly invertible
+reflected Green transport.  Its unsquared Hodge trace has exact radical
+\(\Rea\rho=1/2\).  None of these facts excludes an off-line divisor.
 
-All stages before the final selection law are realized explicitly.  A
-target-free M\"obius--theta source has Fourier--Laplace transform
-\[
- \zeta\!\left(m\left(\tfrac12+iw\right)\right)^{-1}
- \XiC^{(k)}(w),
-\]
-and its complete high-exponent cofaces converge to every jet of the centered
-completed zeta function.  At a zero of arbitrary multiplicity \(r\), the
-division-free conormal landing is the nonzero vertical pair
-\((0,\XiC^{(r)}(w_\rho))\).  The first nonzero physical jet lands
-coefficient-faithfully in a completed Hellinger--Gamma/Calder\'on--Witt
-incidence vector and is nonzero at every divisor stalk.  Its unsquared Hodge
-trace vanishes exactly when \(\Rea\rho=1/2\).  A separate adaptive
-prime-normal construction yields a boundedly invertible reflected Green
-transport with pointwise lower modulus \(3/4\); it commutes with source Green
-reflection and harmonic Hodge rotation and loses no divisor atom.
-
-These results close source existence, source-to-\(\Xi\) landing,
-multiplicity retention, Gamma incidence, co-Poisson transport, reflected
-Green transport, and atomic non-erasure.  They do not prove the Riemann
-hypothesis.  We prove instead a universal two-step boundary-defect law.  If
-a cyclic source rotation \(\tau\), a paracyclic target rotation \(T\), and a
-landing \(L\) have equivariance defect \(D=TL-L\tau\), then
+We prove a universal boundary-defect law.  For a cyclic source rotation
+\(\tau\), paracyclic target rotation \(T\), landing \(L\), and defect
+\(D=TL-L\tau\),
 \[
                          TD+D\tau=T^2L-L\tau^2.
 \]
-Thus, when \(\tau^2=1\) and \(T^2=\delta\,\mathrm{id}\), one has
-\((\delta-1)L=TD+D\tau\).  Strict equivariance
-therefore forces every off-unit-monodromy landing to vanish; no singular
-topology repairs a strict single-valued operator.  More generally, if \(D\)
-takes values in a \(T\)-stable boundary subspace while one landed atom
-survives in the quotient, then \(\delta=1\).
+If \(\tau^2=1\) and \(T^2=\delta\,\mathrm{id}\), strict equivariance forces
+every off-unit-monodromy landing to vanish.  The smallest admissible boundary
+is
+\[
+                         B_{\min}=\ran D+\ran(TD).
+\]
+It is target-stable, contains every defect, and lies in every competing
+stable defect boundary; hence it gives the largest possible quotient.  Away
+from \(\delta=1\), the landing range lies in \(B_{\min}\).
 
-For the source--dagger target, the degree-one monodromy is
-\[
- \delta_n(\rho)=\exp\!\left((2\Rea\rho-1)\log n\right).
-\]
-A retained cyclic boundary class forces \(\delta_n(\rho)=1\), hence
-\(\Rea\rho=1/2\).  We then construct the smallest admissible boundary
-\[
- B_{\min}=\ran D+\ran(TD).
-\]
-It is target-stable, contains every physical defect, and is contained in
-every competing boundary; hence it gives the largest possible quotient.
-For the two-leg landing scaled by the first nonzero M\"obius--theta jet,
+For the physical two-leg landing scaled by the first nonzero
+M\"obius--theta jet, target monodromy is
+\(\exp((2\Rea\rho-1)\log n)\).  We prove
 \(B_{\min,\rho}=0\) on the critical line and
-\(B_{\min,\rho}=\C^2\) off it.  The canonical top-conormal class therefore
-survives exactly when \(\Rea\rho=1/2\), and global survival is equivalent to
-RH.  This answers the boundary-choice problem negatively: neither a different
-stable boundary nor singular topology can improve the quotient.  What
-remains is not construction of \(B\), but an independent arithmetic theorem
-forcing survival of this already canonical class.
+\(B_{\min,\rho}=\C^2\) off it.  Thus the canonical top-conormal class
+survives exactly on the critical line, and global survival is equivalent to
+RH.  The result closes boundary choice and singular topology as missing
+infrastructure.  It does not prove RH: the remaining content is an
+independent arithmetic comparison from the literal cyclic source to the
+physical landing that forces survival of this already canonical class.
 \end{abstract}
 
 \medskip
@@ -725,10 +699,10 @@ arithmetic source to the physical two-leg landing
 homology functional \(\operatorname{Res}_\rho\), such that after
 specialization at every divisor point \(\rho\):
 \begin{enumerate}[label=\textup{(\roman*)}]
-\item the comparison has the M\"obius--theta provenance of
-      \eqref{eq:source-transform}--\eqref{eq:gamma-landing}, rather than a
+\item the comparison has physical provenance
+      \eqref{eq:source-transform}--\eqref{eq:gamma-landing}, not a
       divisor-fitted cyclic source;
-\item \(\operatorname{Res}_\rho\) annihilates
+\item the source residue annihilates
       \(B_{\min,\rho}\), whose stability and defect containment are already
       proved;
 \item \(\operatorname{Res}_\rho(L_\rho(x_0))\neq0\) follows from one
@@ -764,6 +738,7 @@ class survival.  Theorem~\ref{thm:physical-boundary-classification} shows
 that this content is exactly as strong as RH; it must not be advertised as a
 smaller technical completion.
 
+\clearpage
 \section{Comparison with classical routes}
 
 Table~\ref{tab:routes} compares logical inputs, not historical priority.

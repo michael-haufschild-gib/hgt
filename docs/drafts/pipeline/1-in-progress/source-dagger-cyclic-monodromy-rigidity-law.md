@@ -349,3 +349,44 @@ Formal support:
 
 - `formal/GaloisForLFunctions/HTGeometry/CyclicParacyclicBoundaryDefectLaw.lean`
 - `formal/GaloisForLFunctions/RHTower/SourceDaggerCyclicBoundaryDefectLaw.lean`
+
+## 2026-08-03 maximal-boundary closure
+
+The boundary itself is no longer an open construction. Define the canonical minimal stable defect
+boundary
+
+```text
+B_min = range(D) + range(T D).
+```
+
+When `T^2 = delta id`, `B_min` is `T`-stable, contains the defect, and is contained in every other
+stable defect boundary. Therefore an atom survives any admissible quotient iff it survives
+`V / B_min`. Away from `delta = 1`, the entire range of `L` lies in `B_min`; if `L` is surjective,
+`B_min = V`.
+
+For the literal two-leg landing scaled by the first nonzero physical Möbius--theta jet,
+
+```text
+B_min(rho) = 0       if Re rho = 1/2,
+B_min(rho) = C^2     if Re rho != 1/2.
+```
+
+The canonical source atom class is nonzero iff `Re rho = 1/2`, and global class survival is
+equivalent to RH. Thus boundary choice, topology, and singular completion are closed as possible
+sources of the missing theorem. Revised open core:
+
+```text
+[INDEPENDENT_ARITHMETIC_CLASS_SURVIVAL]
+compare literal cyclic arithmetic source with physical Möbius--theta two-leg landing;
+construct a pre-divisor source residue annihilating B_min;
+prove it detects the canonical physical class.
+```
+
+The corpus currently contains the literal cyclic CCM source and the physical Möbius--theta landing
+as separate producers, but no comparison between them and no residue with the two required
+properties. Any global proof of this source residue statement is exactly RH-bearing, not a smaller
+boundary-construction lemma.
+
+Formal support:
+
+- `formal/GaloisForLFunctions/RHTower/MobiusThetaSourceDaggerMinimalBoundaryLaw.lean`

@@ -1244,6 +1244,63 @@ theorem centralIndex_between_log_increments
     exact centralIndex_mul_le_log_maxTerm_exp_sub ha hn₀ hvw.le
 
 
+/-! ## A radius where the central index barely moves
+
+The Borel growth lemma cannot be applied to `nu` directly, because `nu` is a step function and the
+lemma needs continuity.  The substitute is a pigeonhole on a chain of radii: the increments of a
+monotone function telescope, so along `N` consecutive steps at least one increment is at most the
+total rise divided by `N`.  Applied to the central index this produces a radius across which `nu`
+moves by an arbitrarily small fraction of its total growth. -/
+
+/-- **Telescoping pigeonhole.**  Along `N` steps of a monotone sequence some increment is at most the
+average. -/
+theorem exists_increment_le_average {g : ℕ → ℝ} (hg : Monotone g) {N : ℕ} (hN : 0 < N) :
+    ∃ i < N, g (i + 1) - g i ≤ (g N - g 0) / N := by
+  by_contra hcon
+  have hall : ∀ i < N, (g N - g 0) / N < g (i + 1) - g i := by
+    intro i hi
+    by_contra h
+    exact hcon ⟨i, hi, not_lt.mp h⟩
+  have hNpos : (0 : ℝ) < N := by exact_mod_cast hN
+  have htel : ∑ i ∈ Finset.range N, (g (i + 1) - g i) = g N - g 0 :=
+    Finset.sum_range_sub g N
+  have hlt : (N : ℝ) * ((g N - g 0) / N) < ∑ i ∈ Finset.range N, (g (i + 1) - g i) := by
+    have h := Finset.sum_lt_sum_of_nonempty (Finset.nonempty_range_iff.mpr hN.ne')
+      (fun i hi => hall i (Finset.mem_range.mp hi))
+    simpa [Finset.sum_const, Finset.card_range, nsmul_eq_mul] using h
+  rw [htel, mul_div_cancel₀ _ (ne_of_gt hNpos)] at hlt
+  exact lt_irrefl _ hlt
+
+/-- **A step with a small central-index increment.**  Along a geometric chain of `N` radii some step
+raises the central index by at most the total rise divided by `N`. -/
+theorem exists_small_centralIndex_increment
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {u h : ℝ} (hh : 0 < h) {N : ℕ} (hN : 0 < N) :
+    ∃ i < N,
+      (centralIndex a (Real.exp (u + ((i : ℝ) + 1) * h)) : ℝ)
+          - (centralIndex a (Real.exp (u + (i : ℝ) * h)) : ℝ)
+        ≤ ((centralIndex a (Real.exp (u + (N : ℝ) * h)) : ℝ)
+            - (centralIndex a (Real.exp u) : ℝ)) / N := by
+  set g : ℕ → ℝ := fun i => (centralIndex a (Real.exp (u + (i : ℝ) * h)) : ℝ) with hg
+  have hmono : Monotone g := by
+    intro i j hij
+    have hle : u + (i : ℝ) * h ≤ u + (j : ℝ) * h := by
+      have : (i : ℝ) ≤ (j : ℝ) := by exact_mod_cast hij
+      nlinarith
+    have := centralIndex_mono ha (Real.exp_pos _) (Real.exp_le_exp.mpr hle) hn₀
+    exact_mod_cast this
+  obtain ⟨i, hi, hle⟩ := exists_increment_le_average hmono hN
+  refine ⟨i, hi, ?_⟩
+  have hg0 : g 0 = (centralIndex a (Real.exp u) : ℝ) := by
+    simp [hg]
+  have hgN : g N = (centralIndex a (Real.exp (u + (N : ℝ) * h)) : ℝ) := rfl
+  have hgi : g (i + 1) = (centralIndex a (Real.exp (u + ((i : ℝ) + 1) * h)) : ℝ) := by
+    simp only [hg]
+    push_cast
+    ring_nf
+  rw [← hgi, ← hg0, ← hgN]
+  exact hle
+
+
 /-! ## Entire functions -/
 
 /-- The coefficients of a power series with infinite radius of convergence satisfy the decay

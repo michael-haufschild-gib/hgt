@@ -153,7 +153,8 @@
   `GaloisForLFunctions.RHTower.DeningerIndSubsingleton` (induction from a trivial subgroup),
   `GaloisForLFunctions.RHTower.DeningerFreeProductRoots` (roots in a free product),
   `GaloisForLFunctions.RHTower.DeningerRetractVanishing` (vanishing passes to a retract),
-  `GaloisForLFunctions.RHTower.DeningerBauVanishingCriterion` (a criterion for clause (4))
+  `GaloisForLFunctions.RHTower.DeningerBauVanishingCriterion` (a criterion for clause (4)),
+  `GaloisForLFunctions.RHTower.DeningerBauTrivial` (the rationalization of a trivial group)
 
 ## Statement
 
@@ -2480,3 +2481,9 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   not divisible at all, since a product of generators from different factors has no square root.  The
   witness has to be uniquely divisible and acyclic at once, and the two conditions pull in opposite
   directions — which is the real content of the remaining gate.
+- 2026-08-03 — The base case of clause (4) is closed outright: for an empty index set the free group
+  is trivial, its rationalization is trivial (`deningerBau_subsingleton` — the trivial subgroup is
+  closed under the roots, since the only root of the identity is the identity), and the homology
+  vanishes in every positive degree (`deningerBauFree_isZero_of_isEmpty`).  Small, but it is the one
+  case of the open gate that is settled unconditionally in all degrees, and it fixes the shape the
+  general statement must take.

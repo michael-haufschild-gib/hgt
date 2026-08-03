@@ -46,8 +46,8 @@ theorem norm_inner_expRow_countVec (q : ℕ) (A : Finset ℕ) (j : Fin q) :
   have hnorm : ‖(starRingEnd ℂ) (∑ h : Fin q,
       ((rootOfUnity q) ^ (j : ℕ)) ^ (h : ℕ) * ((residueCount q A (h : ℕ) : ℕ) : ℂ))‖
       = ‖∑ h : Fin q,
-          ((rootOfUnity q) ^ (j : ℕ)) ^ (h : ℕ) * ((residueCount q A (h : ℕ) : ℕ) : ℂ)‖ := by
-    simp
+          ((rootOfUnity q) ^ (j : ℕ)) ^ (h : ℕ) * ((residueCount q A (h : ℕ) : ℕ) : ℂ)‖ :=
+    RCLike.norm_conj _
   rw [hnorm,
     Fin.sum_univ_eq_sum_range
       (fun h => ((rootOfUnity q) ^ (j : ℕ)) ^ h * ((residueCount q A h : ℕ) : ℂ)) q]

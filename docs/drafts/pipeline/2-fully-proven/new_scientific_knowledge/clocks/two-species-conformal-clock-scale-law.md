@@ -962,10 +962,18 @@ itself:
   continuous, by clamping the characteristic parameter. Nothing is lost, because every differential
   statement is local, and every integrability condition downstream becomes automatic.
 
-What remains for the two-dimensional case is the second mixed derivative, `∂ξ ∂η u`, which the
-chart d'Alembertian also needs: swapping the order of the double integral lets `∂η u` be read off by
-the fundamental theorem of calculus, and one further application gives `∂ξ ∂η u = K u`. With both
-mixed derivatives in hand, the equivalence above converts the solution into a clock probe.
+`formal/GaloisForLFunctions/HTGeometry/ClockGoursatMixed.lean` completes the analytic construction:
+
+- `exists_goursat_mixed` — exchanging the order of integration exhibits `u` as a primitive in `η` as
+  well as in `ξ`, so the fundamental theorem of calculus gives
+  `∂η u(ξ,η) = ∫_{ξ₀}^{ξ} K(τ,η)u(τ,η)dτ`, and differentiating that in `ξ` gives `K(ξ,η)u(ξ,η)`.
+  **Both mixed second derivatives exist and both equal `K·u`**, with `u(ξ₀,·) = 1`, for every
+  continuous kernel.
+
+That is the full Goursat datum the chart d'Alembertian needs. What remains is bookkeeping: matching
+the `HasDerivAt` statements to the `coordPartial` interface of the chart calculus, so that
+`solvesPotentialWaveAt_iff_characteristic` converts the solution into a clock probe and closes the
+two-dimensional inverse step.
 
 So the last open input of the whole programme is now stated in its physical form:
 

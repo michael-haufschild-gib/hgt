@@ -57,6 +57,17 @@ interfaces from being reported as constructed mathematics.
 | One global boundary-class landing on every Xi divisor fibre implies RH | same module: `riemannHypothesis_of_sourceDaggerCyclicBoundaryClassLanding` |
 | Mate gain is `exp ((2 Re s - 1) log n)` | `RHTower/DeningerOneSidedFramedMateCurvatureTransgression.lean`: `deningerHalfDensityMateGain`, `deningerHalfDensityMateGain_eq_norm_inv_sq` |
 
+## Canonical maximal quotient and physical collapse
+
+| Manuscript claim | Formal support |
+|---|---|
+| Minimal admissible boundary is `range D ⊔ range (T ∘ D)`, contains all defects, is target-stable, and lies in every competing stable defect boundary | `RHTower/MobiusThetaSourceDaggerMinimalBoundaryLaw.lean`: `cyclicParacyclicMinimalDefectBoundary`, `cyclicParacyclicEquivarianceDefect_mem_minimalBoundary`, `cyclicParacyclicMinimalDefectBoundary_target_stable`, `cyclicParacyclicMinimalDefectBoundary_le` |
+| An atom survives some admissible boundary quotient iff it survives the minimal one | same module: `not_mem_cyclicParacyclicMinimalDefectBoundary_iff_exists` |
+| Away from unit monodromy the entire landing range lies in the minimal boundary; for a surjective landing the boundary is top | same module: `land_mem_cyclicParacyclicMinimalDefectBoundary_of_monodromy_ne_one`, `cyclicParacyclicMinimalDefectBoundary_eq_top_of_surjective` |
+| Physical two-leg landing is scaling by the first nonzero Möbius–theta/Xi jet, hence is surjective and retains the exact multiplicity grade | same module: `thetaInternalJetLeadingTwoLegLanding`, `thetaInternalJetLeadingTwoLegLanding_surjective`, `thetaInternalJetLeadingSourceAtom_landing_eq_multiplicityJet` |
+| Physical minimal boundary is bottom on the critical line and top off it | same module: `thetaInternalJetSourceDaggerMinimalBoundary_eq_bot_of_re_eq_half`, `thetaInternalJetSourceDaggerMinimalBoundary_eq_top_of_re_ne_half` |
+| Canonical physical quotient class is nonzero iff `Re rho = 1/2`; global survival iff RH | same module: `thetaInternalJetLeadingSourceBoundaryClass_ne_zero_iff`, `thetaInternalJetSourceDaggerBoundaryClassSurvives_iff_riemannHypothesis` |
+
 ## Completion no-gos
 
 | Manuscript claim | Formal support |
@@ -69,21 +80,25 @@ interfaces from being reported as constructed mathematics.
 
 ## Explicitly unproved
 
-Manuscript Problem 8.2 (`Arithmetic boundary-class law`) is **not constructed**. In particular:
+Manuscript Problem 8.2 (`Independent arithmetic survival law`) is **not constructed**. The
+boundary-choice subproblem is closed: the minimal stable defect boundary is canonical and gives
+the largest admissible quotient. In particular:
 
-- no global source-generated target-stable arithmetic boundary submodule has been identified;
-- no theorem proves the physical Möbius--theta source--dagger equivariance defect lies in that
-  boundary on the unsymmetrized top-conormal grade;
+- no theorem compares the literal cyclic CCM source with the physical Möbius--theta two-leg
+  landing before divisor specialization;
+- no source-defined residue is proved to annihilate the canonical minimal boundary while detecting
+  the physical top-conormal class;
 - existing atomic non-erasure proves a target vector is nonzero, not that its quotient class is
-  nonzero modulo the missing boundary;
-- `SourceDaggerCyclicBoundaryDefectLaw.lean` is a consumer with explicit boundary stability,
-  defect exactness, and quotient non-erasure hypotheses;
+  nonzero; the new classification proves the latter statement is exactly critical-line placement;
+- `SourceDaggerCyclicBoundaryDefectLaw.lean` remains a general consumer, while
+  `MobiusThetaSourceDaggerMinimalBoundaryLaw.lean` constructs and classifies the maximal physical
+  quotient without asserting global survival;
 - reflected Green commutation is even under functional-equation reflection and is not the
   missing same-fibre mixed rotation;
 - local completed Gamma incidence is coefficient-faithful but does not prove global
   source--dagger boundary exactness;
 - no RH theorem is claimed.
 
-The two boundary-defect modules were added for the new universal identity, strict obstruction,
-boundary-class rigidity, and conditional global consumer. They do not assume or construct any of
-the three missing arithmetic clauses.
+The boundary-defect and minimal-boundary modules add the universal identity, strict obstruction,
+canonical maximal quotient, exact physical top/bottom classification, and global equivalence. No
+declaration assumes the missing independent arithmetic survival theorem.

@@ -1277,3 +1277,43 @@ hypothesis about residue classes reach the large sieve.
 All unconditional. The exponential sum of an arbitrary finite set now collapses to a sum of length
 `q` in the residue counts, which is the form Montgomery's sieve inequality needs before Parseval
 over the residues turns it into a count.
+
+### Formal layer — Parseval over the residues
+
+`formal/GaloisForLFunctions/RHTower/Sieve/ResidueParseval.lean` turns the exponential sum of a set
+into a count.
+
+- `countVec`, `norm_inner_expRow_countVec` — the residue counts as a Euclidean vector; its
+  coefficient against an exponential row *is* the exponential sum (up to conjugation, the counts
+  being real).
+- `norm_sq_countVec` — its energy is `∑_h A_h²`.
+- `sum_residue_parseval` — `∑_{a<q} |∑_h A_h e(ha/q)|² = q ∑_h A_h²`.
+- `sum_full_expSum_sq` — **`∑_{a<q} |∑_{n ∈ A} e(na/q)|² = q ∑_{h<q} #{n ∈ A : n ≡ h}²`**.
+
+All unconditional. No new orthogonality was needed: the corpus's orthonormal root basis
+(`DiscreteParseval.sum_norm_inner_expRow_root`) applies directly once the count vector is identified
+as the vector whose exponential-row coefficients are the values of the sum.
+
+This is the identity by which a sieve hypothesis becomes a count — bounding the left side below by
+the classes `A` avoids and above by the large sieve bounds `|A|`, which is Montgomery's sieve
+inequality. The remaining step is the passage from all residues `a < q` to the primitive ones
+`(a,q) = 1`, where the large sieve lives.
+
+### Formal layer — omitted classes force large exponential sums
+
+`formal/GaloisForLFunctions/RHTower/Sieve/MontgomerySieve.lean` builds the lower-bound half of
+Montgomery's sieve, the counterpart to the large sieve's upper bound.
+
+- `occupiedClasses`, `sum_residueCount`, `sum_residueCount_occupied` — the classes `A` meets, and
+  the fact that the counts sum to `|A|`.
+- `sq_card_le_occupied_mul` — Cauchy–Schwarz over the occupied classes: `|A|² ≤ c ∑_h A_h²`.
+- `expSum_zero` — `S(0) = |A|`.
+- `occupied_mul_sum_nonzero_ge` — **`|A|²(q − c) ≤ c ∑_{a ≠ 0} |S(a/q)|²`**, `c` the number of
+  occupied classes.
+
+All unconditional. A set missing many residue classes modulo `q` therefore has large exponential
+sums at the fractions with denominator `q`; the large sieve bounds those same sums from above, and
+the two together bound `|A|`.
+
+The inequality is deliberately stated multiplicatively rather than as `∑_h A_h² ≥ |A|²/c`, so it
+stays true (and vacuous) when `A` is empty and `c = 0` — the divided form would be junk there.

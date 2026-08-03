@@ -8571,3 +8571,45 @@ deninger-centered-flow-countercharacter-relative-curvature-no-go.md
 GaloisForLFunctions/RHTower/
 DeningerCenteredFlowCountercharacterRelativeCurvatureNoGo.lean
 ```
+
+## 2026-08-03 Route R frontier update: scalar distributional frequency closure
+
+“Distribution-valued” no longer includes a scalar distribution formed after canonical modular
+frequencies have been separated.  Let `lambda_n` be any pointwise isolated real spectrum.  If
+
+```text
+sum'_n c_n phi(lambda_n) = 0
+```
+
+for every smooth compactly supported real test function `phi`, then every `c_n=0`.  A smooth bump
+supported in an isolating neighbourhood of `lambda_n` extracts that coefficient exactly; no
+absolute summability or positive-real modular evaluation is required.
+
+The theorem applies to the literal cross-prime/depth spectrum
+
+```text
+lambda_(p,e;q,f)=log(p^(e+1) q^(f+1)),  p<q.
+```
+
+Exponentiation sends these frequencies injectively to positive integers.  The preimage of
+`(N-1/2,N+1/2)` isolates `log N`, and the actual cooriented Gamma amplitude is strictly positive.
+Therefore a vanishing scalar frequency distribution is coefficientwise trivial even when it is
+not an ordinary `tsum` orbit and has no positive-real evaluation.
+
+This is a no-go, not RH.  The underlying isolated-Dirac localization is classical; new Route-R
+content is the exact canonical prime/depth application.  The strongest positive survivor is now
+strictly pre-frequency.  A successful producer must remain relative/operator-valued with
+discontinuous or unavailable full test evaluation, use a source ordering/renormalization not
+represented by an unordered scalar distribution, or couple coefficients to divisor provenance
+before the fixed-frequency decomposition.  Merely replacing scalar sums by distributions is
+closed.
+
+Paper/Lean:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+route-r-distributional-frequency-no-shorting.md
+
+GaloisForLFunctions/RHTower/
+GammaSignedDistributionalOrbitNoShorting.lean
+```
