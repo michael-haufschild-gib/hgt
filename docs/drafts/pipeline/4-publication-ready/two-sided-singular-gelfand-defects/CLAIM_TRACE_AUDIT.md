@@ -10,6 +10,8 @@ Status: active strict ledger. Manuscript may not retain a mathematical claim wit
 | O2 | Arbitrary-family observer–annihilator law | `dense_images_iff_orthogonal_avoids_adjointRanges` |
 | O3 | Closed subspaces below a common normal yield dense orthogonal defects | `dense_orthogonal_image_of_le_countableWovenNormalSpace` |
 | O4 | Nonzero normal gives a proper orthogonal defect | `orthogonal_ne_top_of_ne_bot` |
+| O5 | Arbitrary nonempty-family normal rigidity iff adjoint ranges cover source pointwise | `closed_common_avoidance_rigid_iff_adjointRanges_cover` |
+| O6 | Arbitrary nonempty-family dense-image rigidity iff adjoint ranges cover source pointwise | `closed_common_dense_image_rigid_iff_adjointRanges_cover` |
 
 ## Coercivity and weaving
 
@@ -61,12 +63,12 @@ Status: active strict ledger. Manuscript may not retain a mathematical claim wit
 - Source modules:
   - `formal/GaloisForLFunctions/RHTower/PythagoreanObserverBlindness.lean`
   - `formal/GaloisForLFunctions/RHTower/PreQuasiGelfandTwoSidedSingularDefect.lean`
-- Required final checks:
-  - direct `lake env lean` on each modified module;
-  - `scripts/formal_tools.py lint`;
-  - scratch-file `#print axioms` on headline declarations;
-  - targeted `lake build GaloisForLFunctions.RHTower.PythagoreanObserverBlindness`;
-  - umbrella import present in `GaloisForLFunctions/RHTower.lean`.
+- Final checks:
+  - direct `lake env lean` on modified module: PASS;
+  - `scripts/formal_tools.py lint`: PASS;
+  - scratch-file `#print axioms`: PASS, only `propext`, `Classical.choice`, `Quot.sound`;
+  - targeted `lake build GaloisForLFunctions.RHTower.PythagoreanObserverBlindness`: PASS;
+  - umbrella import present in `GaloisForLFunctions/RHTower.lean`: PASS.
 
 ## Exclusions
 

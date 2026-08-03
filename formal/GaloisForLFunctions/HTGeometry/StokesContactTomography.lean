@@ -118,10 +118,20 @@ lemma antitone_inf_le_max {T : Type*} [SemilatticeInf T] [PredOrder T]
 height.  Incomparability says distinct labels are genuine leaves of the represented skeleton. -/
 structure RootedContactTree (n : ℕ) where
   tree : RootedTree
+  /-- Equality and ancestry are decidable on the retained finite skeleton. -/
+  decidableEqTree : DecidableEq tree
+  decidableLETree : DecidableRel (fun x y : tree => x ≤ y)
+  /-- Fission skeletons retain only finitely many vertices relevant to the labelled leaves. -/
+  fintypeTree : Fintype tree
   leaf : Fin n → tree
+  /-- Each labelled irregular class lies strictly above the root. -/
+  leaf_ne_root : ∀ i, leaf i ≠ ⊥
   leaf_antichain : ∀ i j, i ≠ j → ¬ leaf i ≤ leaf j
   kappa : tree → ℝ
   kappa_strictAnti : StrictAnti kappa
+
+attribute [instance] RootedContactTree.decidableEqTree RootedContactTree.decidableLETree
+  RootedContactTree.fintypeTree
 
 namespace RootedContactTree
 

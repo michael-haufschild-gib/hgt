@@ -226,9 +226,67 @@ transitive. `formal/GaloisForLFunctions/HTGeometry/ClockProbeTranslationFamily.l
 - `constantProbes`, `probeActionClosed_constantProbes`,
   `potentialDeterminationSet_constantProbes` — the hypothesis class is inhabited.
 
-What remains genuinely open is therefore narrow and concrete: exhibit, for a backreacting
-Einstein--scalar geometry, one action-closed probe family per species together with a single
-nonvanishing observation. The determination half of step 1 is closed.
+The determination half of step 1 is therefore closed, and the construction is carried out in the
+flat diagonal case. `formal/GaloisForLFunctions/HTGeometry/ClockProbeAxisExponential.lean` builds an
+explicit family for the corpus's own geometric d'Alembertian:
+
+- `axisExponential`, `axisExponential_ne_zero`, `contDiff_axisExponential` — the probes
+  `x ↦ c e^{s x_{i₀}}`, smooth and everywhere nonvanishing;
+- `coordPartial_axisExponential`, `coordPartial_coordPartial_axisExponential` — they are
+  eigenfunctions of the coordinate second derivatives;
+- `dalembert_axisExponential`, `solvesPotentialWave_axisExponential` — they solve the chart wave
+  equation of `SmoothPseudoMetric.ofSignature` for the constant potential `-ε_{i₀}⁻¹ s²`, so both
+  signs are reachable in Lorentzian signature;
+- `axisExponentialFamily`, `probeActionClosed_axisExponentialFamily`,
+  `eventTranslation_transitive` — the nonzero multiples form a translation-closed family and
+  translations act transitively;
+- `potentialDeterminationSet_axisExponentialFamily` — the family determines its potential at
+  **every** event;
+- `potential_eq_axisPotential` — any potential explaining the family is the axis potential.
+
+The translation hypothesis is then removable altogether.
+`formal/GaloisForLFunctions/HTGeometry/ClockProbeNonvanishing.lean` drops flatness, homogeneity and
+the group action:
+
+- `inducedPotential`, `solvesPotentialWave_inducedPotential` — running the wave equation backwards,
+  every nowhere-vanishing `u` solves the explicit potential `-(□u)/u`;
+- `potential_eq_inducedPotential` — **one nowhere-vanishing probe pins the potential globally, on
+  any geometry**;
+- `exists_nonvanishing_probe_iff` — the potentials admitting a nowhere-vanishing probe are exactly
+  those of the form `-(□u)/u`;
+- `reconstructedScale_eq_of_nonvanishing_probes` — two such probes reconstruct the conformal scale
+  everywhere;
+- `potential_eq_inducedPotential_exp`,
+  `potential_eq_inducedPotential_exp_conformalMinkowski`, `reconstructedScale_eq_of_exp_probes` —
+  on any smooth chart, and in particular on a **conformally rescaled Minkowski chart**, every
+  exponential `e^{f}` is such a probe, giving a variable-potential family on a curved background.
+
+A globally nonvanishing probe is in any case more than the argument needs.
+`formal/GaloisForLFunctions/HTGeometry/ClockProbeSolutionSpace.lean` works with the full solution
+space:
+
+- `LinearWave`, `solutionSet`, `zero_mem_solutionSet`, `add_mem_solutionSet`,
+  `smul_mem_solutionSet` — for a linear wave operator the solutions form a linear space;
+- `NoCommonZero`, `potentialDeterminationSet_solutionSet_eq_univ_iff` — determination is complete
+  exactly when the solution space has no common zero;
+- `potential_eq_of_noCommonZero`, `potential_eq_of_solutionSet_eq` — **two potentials with the same
+  solution space are equal** as soon as that space has no common zero;
+- `noCommonZero_of_exists_normalized` — normalized Cauchy data at each event suffice;
+- `noCommonZero_of_nonvanishing_probe`, `noCommonZero_axisPotential` — a globally nonvanishing
+  probe is the special case, and the condition is inhabited;
+- `reconstructedScale_eq_of_noCommonZero` — pointwise probes for both species reconstruct the
+  conformal scale everywhere.
+
+The requirement is therefore only that **for each event separately** some solution be nonvanishing
+there — the solutions may differ from event to event, which is exactly what solvability of the
+Cauchy problem with normalized data delivers.
+
+So the identifiability content of step 1 is settled in full generality, and the reachable potential
+class is characterized. What remains open is the physical selection problem: a laboratory does not
+choose `u` and read off `-(□u)/u`; it prepares sources and must obtain solutions with the required
+nonvanishing behaviour for the *given* clock species. Supplying normalized Cauchy data in a
+backreacting Einstein--scalar geometry is a hyperbolic-PDE construction, and is what the bridge
+still lacks.
 
 All depend only on `propext`, `Classical.choice`, `Quot.sound`.
 

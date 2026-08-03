@@ -254,6 +254,7 @@ formal/GaloisForLFunctions/HTGeometry/RationalPowerNormDichotomy.lean
 formal/GaloisForLFunctions/HTGeometry/OddPowerCanonicalProductGammaRay.lean
 formal/GaloisForLFunctions/HTGeometry/MeromorphicGammaComplexScale.lean
 formal/GaloisForLFunctions/HTGeometry/ReflectionNormPowerCanonicalProduct.lean
+formal/GaloisForLFunctions/HTGeometry/CyclotomicSubsetSumOrbit.lean
 ```
 
 Principal declarations:
@@ -287,6 +288,13 @@ complexScaleMeroEquiv_ratfuncToMero       -- the dilation restricts to C(X)
 addTranslationMeroEquiv_gammaScaleShiftMero  -- scaled Gamma recurrence, T_(1/a)
 digammaScaleShiftMero,
 addTranslationMeroEquiv_digammaScaleShiftMero -- scaled digamma has a rational increment
+addTranslationMeroEquiv_gammaScaleShiftMero_param -- T_h moves the shift parameter by a h
+gammaScaleShiftMero_param_succ,
+digammaScaleShiftMero_param_succ          -- the parameter recurrence
+isRationalMero_alternating_digammaScaleShiftMero -- the difference tower rationalises one scale
+eq_const_mul_cyclotomic_of_aeval_eq_zero  -- degree < p and vanishing at omega forces C(lam)*Phi_p
+coeffs_eq_of_sum_pow_eq_ratCast           -- rationality of sum d_m omega^m forces all d_m equal
+subsetSum_sub_eq_intCast_cases            -- step 4: the Z-shift orbits of the subset sums
 hypertranscendental_powerCanonicalProduct_odd_iff_mero -- the open core, in the mero field
 sincProduct, pi_mul_sincProduct, sincProduct_ade,
 differentiallyAlgebraic_sincProduct       -- the Euler sine product and its ADE
@@ -520,6 +528,80 @@ makes the obstruction of the negative finding exact and checkable in Lean: for e
 increment is rational under `T_(1/omega^j)` and under no other translation of the group, because
 `omega^(j-k)` is real only for `j = k` when `p` is odd.  A superselection proof therefore cannot be
 assembled from the single-scale recurrences alone; it needs an input that couples different scales.
+
+**The coupling input, now built.**  `isRationalMero_alternating_digammaScaleShiftMero` proves, for an
+arbitrary nonzero scale `a`, an arbitrary finite family of translation steps `tau`, and any step
+`j_0` that is *integral for the scale* (`a * tau j_0 = 1`):
+
+```text
+sum_(S subset K) (-1)^|S| * digammaScaleShift a (b + a * sum_(k in S) tau k)   is rational.
+```
+
+Instantiated at `a = omega^j`, `tau k = omega^(-k)`, the step `k = j` is integral for the `j`-th
+scale, so the `p`-fold difference operator `prod_(k<p) (T_(omega^(-k)) - 1)` rationalises **every**
+factor of the ray product at once:
+
+```text
+prod_(k<p) (T_(omega^(-k)) - 1) . ( sum_(j<p) digammaScaleShift(omega^j, 1) )   is rational.
+```
+
+This is the exact structural coupling between the `p` scales: they are tied together through the `p`
+translations, in the same shape as the Barnes multiple-gamma constraint tower.
+
+## A complete proof route for the odd gate (2026-08-03)
+
+The tower does not need the matroid machinery at all.  Applying the operator with **one factor
+omitted** isolates a single scale, and what is left is a *common-scale* digamma combination, which
+the corpus already decides.
+
+Let `tau_k = omega^(-k)`, `K = {1,...,p-1}` (note: `k = 0` omitted), and
+`Phi = sum_(j<p) digammaScaleShift(omega^j, 1)`, so `Phi = -logDeriv G`.
+
+1. If `Phi` is DA over `C(z)`, so is `D := prod_(k in K) (T_(tau_k) - 1) Phi`, because DA is stable
+   under translation (`differentialAlgebraicOver_addTranslationMeroEquiv`) and under sums.
+2. For each `j != 0` the step `k = j` lies in `K` and is integral for the scale `omega^j`
+   (`omega^j * omega^(-j) = 1`), so the coupling theorem
+   `isRationalMero_alternating_digammaScaleShiftMero` makes the whole `j`-component **rational**.
+3. For `j = 0` no step is integral (`1 * omega^(-k) = 1` forces `k = 0 notin K`), so the surviving
+   part is the pure **scale-one** combination
+
+   ```text
+   A = sum_(S subset K) (-1)^(|K|-|S|) * digammaShift(1 + sigma_S),   sigma_S = sum_(k in S) omega^(-k).
+   ```
+
+   Hence `A = D - (rational)` is DA.
+4. Arithmetic of the shifts, for `p` an **odd prime**.  With `1, omega, ..., omega^(p-2)` a `Z`-basis
+   of `Z[omega]` and `omega^(p-1) = -(1 + omega + ... + omega^(p-2))`, one computes
+
+   ```text
+   sigma_S - sigma_(S') in Z   <=>   S = S'  or  {S,S'} = {empty, K}.
+   ```
+
+   So the `Z`-shift orbits are: one orbit `{empty, K}` of charge `1 + (-1)^(p-1) = 2` (as `p` is
+   odd), and singleton orbits of charge `+-1`.  **Every orbit charge is nonzero**, and distinct
+   orbits are separated.
+5. Pick any `S_0` with `empty != S_0 != K` (possible since `p >= 3`).  Its orbit is a singleton with
+   charge `+-1` and is separated from all the others, so the corpus's
+   `hypertranscendentalOver_gammaOrbitDigammaMero` gives `A` hypertranscendental over `C(X)` —
+   contradicting step 3.
+
+Therefore `Phi`, hence `G`, hence `W_p`, is hypertranscendental for every odd prime `p`; and by the
+already-formalized transfer `(10)`, `W_(p/q)` is hypertranscendental for every odd prime `p` and
+every `q >= 1`.  This closes the odd branch of Bank's theorem for prime exponents **without any
+Nevanlinna theory**.
+
+For odd composite `p` the same route applies verbatim except step 4: `Z[zeta_p]` has rank
+`phi(p) < p-1`, extra relations such as `zeta_9^3 + zeta_9^6 = -1` merge further subsets into the
+integer orbit, and the grouped orbit charges must be recomputed.  That is the only remaining case.
+
+Build order:
+
+```text
+B1  cyclotomic subset-sum orbit arithmetic for odd prime p                   [DONE]
+B2  the omitted-factor difference operator and its rationalisation           (steps 1-3)
+B3  presentation of A as gammaOrbitDigammaMero and the contradiction         (step 5)
+B4  odd composite p: recompute the grouped charges in Z[zeta_p]
+```
 
 ```text
 ```

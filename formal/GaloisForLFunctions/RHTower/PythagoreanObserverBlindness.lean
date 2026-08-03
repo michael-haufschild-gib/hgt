@@ -105,6 +105,75 @@ theorem dense_images_iff_orthogonal_avoids_adjointRanges
     dense_image_iff_orthogonal_inf_adjointRange_eq_bot
       (T i) (hdense i) M hMclosed
 
+/-- A nonempty family has no nonzero closed common normal avoiding every adjoint
+range exactly when those adjoint ranges cover the source pointwise.  This is the
+purely algebraic coverage--rigidity law underlying simultaneous observer density. -/
+theorem closed_common_avoidance_rigid_iff_adjointRanges_cover
+    {I : Type*} [Nonempty I] {F : I → Type*}
+    [∀ i, NormedAddCommGroup (F i)] [∀ i, InnerProductSpace ℂ (F i)]
+    [∀ i, CompleteSpace (F i)]
+    (T : ∀ i, G →L[ℂ] F i) :
+    (∀ D : Submodule ℂ G, IsClosed (D : Set G) →
+      (∀ i, D ⊓ LinearMap.range (T i).adjoint.toLinearMap = ⊥) → D = ⊥) ↔
+      ∀ x : G, ∃ i, x ∈ LinearMap.range (T i).adjoint.toLinearMap := by
+  constructor
+  · intro hrigid x
+    by_contra hcover
+    push Not at hcover
+    let D : Submodule ℂ G := ℂ ∙ x
+    have hDclosed : IsClosed (D : Set G) := D.closed_of_finiteDimensional
+    have hDavoid : ∀ i, D ⊓ LinearMap.range (T i).adjoint.toLinearMap = ⊥ := by
+      intro i
+      rw [Submodule.eq_bot_iff]
+      intro z hz
+      obtain ⟨a, rfl⟩ := Submodule.mem_span_singleton.mp hz.1
+      by_cases ha : a = 0
+      · simp [ha]
+      · exfalso
+        apply hcover i
+        have haz : a • x ∈ LinearMap.range (T i).adjoint.toLinearMap := hz.2
+        simpa [smul_smul, ha] using
+          (LinearMap.range (T i).adjoint.toLinearMap).smul_mem a⁻¹ haz
+    have hDbot : D = ⊥ := hrigid D hDclosed hDavoid
+    have hxzero : x = 0 := Submodule.span_singleton_eq_bot.mp hDbot
+    let i : I := Classical.choice inferInstance
+    apply hcover i
+    rw [hxzero]
+    exact (LinearMap.range (T i).adjoint.toLinearMap).zero_mem
+  · intro hcover D _ hDavoid
+    rw [Submodule.eq_bot_iff]
+    intro x hx
+    obtain ⟨i, hxi⟩ := hcover x
+    have hxinf : x ∈ D ⊓ LinearMap.range (T i).adjoint.toLinearMap := ⟨hx, hxi⟩
+    rw [hDavoid i] at hxinf
+    exact hxinf
+
+/-- Universal coverage--rigidity law for Hilbert observers: every closed source
+subspace whose images are simultaneously dense is the full source exactly when
+the union of the adjoint ranges covers the source. -/
+theorem closed_common_dense_image_rigid_iff_adjointRanges_cover
+    {I : Type*} [Nonempty I] {F : I → Type*}
+    [∀ i, NormedAddCommGroup (F i)] [∀ i, InnerProductSpace ℂ (F i)]
+    [∀ i, CompleteSpace (F i)]
+    (T : ∀ i, G →L[ℂ] F i) (hdense : ∀ i, DenseRange (T i)) :
+    (∀ M : Submodule ℂ G, IsClosed (M : Set G) →
+      (∀ i, Dense (M.map (T i).toLinearMap : Set (F i))) → M = ⊤) ↔
+      ∀ x : G, ∃ i, x ∈ LinearMap.range (T i).adjoint.toLinearMap := by
+  rw [← closed_common_avoidance_rigid_iff_adjointRanges_cover T]
+  constructor
+  · intro hdenseRigid D hDclosed hDavoid
+    have himage : ∀ i, Dense (Dᗮ.map (T i).toLinearMap : Set (F i)) := by
+      intro i
+      exact (dense_image_orthogonal_iff_inf_adjointRange_eq_bot
+        (T i) (hdense i) D hDclosed).2 (hDavoid i)
+    have htop : Dᗮ = ⊤ := hdenseRigid Dᗮ D.isClosed_orthogonal himage
+    exact D.orthogonal_eq_top_iff.mp htop
+  · intro havoidRigid M hMclosed himage
+    have havoid : ∀ i, Mᗮ ⊓ LinearMap.range (T i).adjoint.toLinearMap = ⊥ :=
+      (dense_images_iff_orthogonal_avoids_adjointRanges T hdense M hMclosed).1 himage
+    have hbot : Mᗮ = ⊥ := havoidRigid Mᗮ M.isClosed_orthogonal havoid
+    exact Submodule.orthogonal_eq_bot_iff.mp hbot
+
 abbrev PQWildIndex := Bool × (ℕ × ℕ)
 abbrev PQWildHilbert := DiagonalL2 PQWildIndex
 

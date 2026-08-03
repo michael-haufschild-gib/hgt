@@ -360,7 +360,7 @@ theorem isRationalMero_alternating_digammaScaleShiftMero {ι : Type*} [Decidable
       ring
     rw [hcard, hparam, pow_succ]
     ring
-  rw [Finset.sum_congr rfl hpair, ← Finset.sum_neg_distrib, ← Finset.sum_add_distrib]
+  rw [Finset.sum_congr rfl hpair, ← Finset.sum_add_distrib]
   refine IsRationalMero.sum _ _ fun S _ => ?_
   have hdiff := isRationalMero_digammaScaleShiftMero_param_succ_sub a ha (b + a * ∑ k ∈ S, τ k)
   have hrw : (-1 : meroField (Set.univ : Set ℂ)) ^ S.card * digammaScaleShiftMero a ha (b + a * ∑ k ∈ S, τ k)
@@ -406,5 +406,6 @@ theorem hypertranscendental_powerCanonicalProduct_odd_iff_mero {p : ℕ} (hp : 1
 end
 
 end HTGeometry
+
 
 

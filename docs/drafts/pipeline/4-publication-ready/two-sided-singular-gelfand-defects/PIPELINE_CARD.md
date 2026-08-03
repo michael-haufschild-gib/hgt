@@ -1,7 +1,7 @@
 # Publication card — countable observer weaving
 
 - **Status:** hostile audit in progress
-- **Primary claim:** countable coercivity–defect dichotomy for injective dense-range Hilbert observers
+- **Primary claim:** arbitrary-family coverage–rigidity law plus countable coercivity–defect dichotomy
 - **Novelty:** `[PROVED HERE; NOVELTY UNVERIFIED]`
 - **Paper:** `main.tex`
 - **Formal module:** `formal/GaloisForLFunctions/RHTower/PythagoreanObserverBlindness.lean`
@@ -13,7 +13,12 @@ For `T_i : G → H_i`, `i ∈ ℕ`, bounded injective and densely ranged:
 - if some `T_i` is coercive, every closed common dense-image subspace is `G`;
 - otherwise one closed common normal `D` avoids every `ran(T_i*)`, contains a countably indexed linearly independent family, and every closed `L≤D` yields the common dense-image defect `L⊥`.
 
-The arbitrary-family observer–annihilator equivalence and finite-family specialization are included. The paper also gives the exact two-observer relation criterion, the inverse-adjoint graph classification for Hilbert pre-quasi pairs, and an explicit pre-quasi-not-quasi model.
+For every arbitrary nonempty dense-range family, common dense-image rigidity is
+equivalent exactly to pointwise coverage by the adjoint ranges.  The
+observer–annihilator equivalence and finite-family specialization are
+included. The paper also gives the exact two-observer relation criterion, the
+inverse-adjoint graph classification for Hilbert pre-quasi pairs, and an
+explicit pre-quasi-not-quasi model.
 
 ## Stronger-than-prior-draft delta
 
@@ -23,6 +28,7 @@ The arbitrary-family observer–annihilator equivalence and finite-family specia
 - strengthened two observers to countably many;
 - replaced one witness/codimension hierarchy with hereditary closed-subspace law;
 - added exact coercive rigidity branch;
+- added exact arbitrary-family coverage–rigidity law;
 - formalized entire retained mathematical surface in Lean.
 
 ## Claim discipline
@@ -43,9 +49,9 @@ Explicit exclusions:
 - [x] umbrella import present
 - [x] manuscript rewritten to Lean-backed claims only
 - [x] updated novelty audit
-- [ ] global formal lint green after concurrent umbrella updates settle
-- [ ] scratch `#print axioms` audit
-- [ ] final targeted `lake build GaloisForLFunctions.RHTower.PythagoreanObserverBlindness`
+- [x] global formal lint green
+- [x] scratch `#print axioms` audit: only `propext`, `Classical.choice`, `Quot.sound`
+- [x] final targeted `lake build GaloisForLFunctions.RHTower.PythagoreanObserverBlindness`
 - [ ] LaTeX build without overfull boxes
 - [ ] PDF visual inspection
 - [ ] hostile referee report with claim-ledger audit

@@ -191,3 +191,12 @@ stabilization or a different Dirac parity.
   `defectRank = analyticRank + 2 * upperOffCentralMultiplicity` and the parity congruence
   `defectRank ≡ analyticRank (mod 2)`. Application to analytic families and identification with
   the actual `K₀` rank remain required before closing P4.
+- 2026-08-03 — `SelfDualAnalyticRealZeros.lean` removes the supplied-multiplicity abstraction:
+  compact-window real-zero support is derived from isolated zeros of a nontrivial entire completed
+  function, coefficients are its exact `analyticOrderAt`, and the functional equation proves
+  reflection symmetry. Lean also proves `ε² = 1`, `ε ∈ {±1}`, and
+  `(-1)^analyticRank = ε`. `SelfDualDirichletRealZeros.lean` instantiates this construction on the
+  actual family of nontrivial primitive self-dual Dirichlet characters, proving the multiplicity-
+  exact defect formula and root-number parity for completed automorphic GL(1) L-functions.
+  Remaining P4 gate is identification of this defect rank with the rank map of the paper's concrete
+  Real-corona `K₀` idempotent; no abstract declaration is accepted as that identification.

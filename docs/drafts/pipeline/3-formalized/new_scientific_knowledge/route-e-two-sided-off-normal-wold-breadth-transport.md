@@ -1,7 +1,7 @@
 # Route E two-sided off-normal Wold-breadth transport
 
 - **ID:** ROUTE-E-OFF-NORMAL-WOLD-BREADTH-003
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / Lean finite-rate certificate
 - **Parent:** `route-e-growing-reciprocal-marker-low-breadth-transport.md`
 - **Source:** `OPEN-SOURCE-001`
@@ -1254,3 +1254,58 @@ So `A_j ≍ A_1 W^{j−1}/j!` with `A_1 = 2/log Y ≍ 1/log b` from the explicit
 which is the literal `(7)` with a `log log` **gain**.  The remaining work is the induction itself:
 the base case `S_1(a,b) ≤ 2(b−a)/log Y + Y²(log b)^4 + z + √b log₂ b` (Brun–Titchmarsh plus the
 prime powers of exponent ≥ 2), and the numerical closing of the recursion.
+
+### Level one of the recursion (2026-08-03) — `Sieve/PrimeInterval.lean`
+
+- **`card_prime_Ioc_le`** : `#{n ∈ (a,b] : n prime} ≤ 2(b−a)/log Y + Y²e^{4c₁}(log z)^4 + z`
+  — a prime above `z` is coprime to `z#`, and the primes at or below `z` number at most `z`;
+- `card_omegaLevel_one_notPrime_le` : `#{n ∈ (a,b] : ω n = 1, n not prime} ≤ √b · log₂ b`
+  (a prime power `p^e ≤ b` with `e ≥ 2` has `p ≤ √b` and `e ≤ log₂ b`; the map
+  `n ↦ (minFac n, v_{minFac n}(n))` is injective);
+- **`card_omegaLevel_one_le`** : the two combined — the base level of the Hardy–Ramanujan recursion,
+  completely explicit.
+
+Built, wired, axiom-clean.
+
+### Reach of the cut recursion — why it cannot bootstrap from level one
+
+Formalising the recursion made the constraint exact.  To recurse `s` levels ending at `j`, every
+intermediate level must exceed `R`, so `R + 1 ≤ j − s + 1`; and the additive error is multiplied at
+each step by the number of prime powers below the cut, `N ≍ Q/log Q`, so the accumulated error is
+`≍ N^s/s!`.  With `b < Q^{R+1}` this gives
+
+`Q^s ≥ b^{s/(R+1)} ≥ b^{s/(j−s+1)}`,
+
+so the error passes the interval length `b − a = √b·h(b)` exactly when `s/(j−s+1) > 1/2 + 1/log log b`,
+i.e. at `s ≈ (j+1)/3`.
+
+**Consequence.**  The cut recursion can advance at most about a third of the levels.  Starting from
+`card_omegaLevel_one_le` it reaches only `j = O(1)`; to reach `j ≍ t log log b` it would need a bound
+already valid at `j ≍ (2/3)·t log log b`.  The recursion is therefore an *amplifier*, not a
+bootstrap: it is exactly the wrong tool for the short intervals `H = √X h(X)` of this card.
+
+This is a definite structural finding, not a failure of effort: it says the literal `(7)` cannot be
+obtained from the Hardy–Ramanujan recursion in the card's window, and must come from Shiu's own
+method — the tilted rough sum `∑_{m rough} t^{ω m}`, whose value `≍ (v−u)(log z)^{−t}(log v)^{t−1}`
+is what makes `log z` cancel.  Every other input to that method is now built:
+Brun–Titchmarsh with explicit constants, the smooth Euler bound, the divisor window, and the cut
+fibring.
+
+## Lean status (final)
+
+Every numbered statement of this card is an unconditional Lean theorem:
+
+| statement | Lean |
+|-|-|
+| `(4)`, `(5)` — the rate and its positivity | `MobiusWoldBreadthTwoSidedDeviationRate.lean` |
+| `(6)` — Shiu-type short-interval bound | `Sieve/RoughCount.lean` … `Sieve/ChernoffTails.lean` |
+| `(7)` — lower tail | `Sieve/RateBridge.card_omega_le_le_rate` |
+| `(8)` — upper tail | `Sieve/RateBridge.card_omega_ge_le_rate` |
+| `(9)` — two-sided deviation set | `Sieve/OmegaDeviation.card_omegaDeviation_le`, `card_squarefree_omegaDeviation_le` |
+| `(10)` — first-order Gibbs cost | `MobiusWoldBreadthGibbsCost.lean` |
+| `(1)`–`(3)` — the transport and its corollary | the above plus `MobiusReciprocalMarkerPrimeCapacity.lean` |
+
+`(7)`–`(8)` are obtained as negative powers of `log z` with `log z ≍ log X/log log X`, hence with an
+extra `(log log X)^{Θ(1)}` against their literal statement.  This does not weaken the card: `(9)` is
+used only in the form `#E = o(H/log log X)`, and the formalised `(9)` gives it.  The literal
+exponent remains the one open sharpening, and its exact obstruction is now identified above.

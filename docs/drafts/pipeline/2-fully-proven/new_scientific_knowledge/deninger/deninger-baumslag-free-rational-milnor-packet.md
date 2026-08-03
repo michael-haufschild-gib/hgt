@@ -103,7 +103,11 @@
   `GaloisForLFunctions.RHTower.DeningerWordIndices` (the index sequence is an invariant),
   `GaloisForLFunctions.RHTower.DeningerHeadOnly` (words transversal except at the front),
   `GaloisForLFunctions.RHTower.DeningerPowerLength` (the length of a power),
-  `GaloisForLFunctions.RHTower.DeningerTwoExponent` (the two exponent comparison)
+  `GaloisForLFunctions.RHTower.DeningerTwoExponent` (the two exponent comparison),
+  `GaloisForLFunctions.RHTower.DeningerRotateCycRed` (rotations of a cyclically reduced word),
+  `GaloisForLFunctions.RHTower.DeningerConjLetter` (conjugating by a letter),
+  `GaloisForLFunctions.RHTower.DeningerConjHead` (incomplete cancellation),
+  `GaloisForLFunctions.RHTower.DeningerConjLast` (cancellation at the back)
 
 ## Statement
 
@@ -1176,7 +1180,41 @@ criterion for cyclically reduced elements — two conjugate cyclically reduced e
 letters are cyclic permutations of one another — whose proof is an induction on the length of the
 conjugating element, shortening it by moving a letter across whenever the conjugate fails to be
 longer.  The length bounds this needs are the ones already proved for conjugates, and the case
-analysis is the merge dichotomy.
+analysis is the merge dichotomy.  Its first ingredient is proved:
+
+- `deningerRotate_cycRed` — **rotations of a cyclically reduced word are cyclically reduced.**  The
+  junction the rotation creates is an adjacent pair of the original word, and the junction it
+  destroys is the one the cyclic condition controls;
+- `deningerRotate_one_conj` — conjugating by the first letter rotates by one.
+
+Conjugating a cyclically reduced word by a single letter shortens it only when that letter is, up to
+the base group, the first or the last letter of the word, and the result is then the rotation.  So an
+element conjugating one cyclically reduced word to another of the same length can be shortened one
+letter at a time, each step rotating the word — which is the induction the criterion runs.  The two
+sides of that dichotomy are proved:
+
+- `deningerLen_conj_letter_ne` — **conjugating by a letter whose factor occurs neither at the front
+  nor at the back lengthens by two**, there being no cancellation at either end;
+- `deningerConj_head_merge` — **if the letter is from the front factor and the front letter cancels
+  it into the base group, the conjugate is the rotation by one**, conjugated by the base group
+  element the cancellation produced.
+
+- `deningerLen_conj_head_ne` — **if the letter is from the front factor but the front letter does not
+  cancel it into the base group, the length grows by one**: the front merges but survives, and
+  nothing cancels at the back.
+
+The back of the word behaves as the mirror image:
+
+- `deningerConj_last_merge` — **if the letter is from the back factor and the last letter cancels it
+  into the base group, the conjugate is the rotation that moves the last letter to the front**, again
+  conjugated by the base group element the cancellation produced;
+- `deningerLen_conj_last_ne` — incomplete cancellation at the back also lengthens by one.
+
+So a conjugation that does not lengthen must use a letter from an extreme factor, and a conjugation
+that shortens by the full two must cancel completely — which is the rotation, forwards at the front
+and backwards at the back.  Conjugation by the
+base group alone changes no length, which the corpus already owned (`deningerLen_base_conj`), so the
+base element the rotation carries never disturbs the induction.
 
 Step 1 still needs Baumslag's inductive step (root adjunction preserves unique roots), which rests
 on the same normal-form machinery.
@@ -1835,3 +1873,30 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   conjugacy criterion for cyclically reduced elements: the induction shortens the conjugating element
   by moving a letter across whenever the conjugate fails to be longer, using the conjugate length
   bounds and the merge dichotomy, both already proved.
+- 2026-08-03 — Proved that rotations of a cyclically reduced word are cyclically reduced, the first
+  ingredient of the conjugacy criterion: the junction a rotation creates is an adjacent pair of the
+  original word, and the junction it destroys is the one the cyclic condition controls.  Also that
+  conjugating by the first letter rotates by one.  Conjugating a cyclically reduced word by a single
+  letter shortens it only when that letter is, up to the base group, the first or last letter of the
+  word, and the result is then the rotation; so a conjugating element between two cyclically reduced
+  words of the same length can be shortened one letter at a time, each step rotating.  That is the
+  induction the criterion runs, and it is the next block.
+- 2026-08-03 — Proved both sides of the one-letter dichotomy that drives the conjugacy criterion.
+  Conjugating by a letter whose factor occurs neither at the front nor at the back of the word
+  lengthens it by two, there being no cancellation at either end; and if the letter comes from the
+  front factor and the front letter cancels it into the base group, the conjugate is exactly the
+  rotation by one, conjugated by the base group element the cancellation produced.  A conjugation
+  that does not lengthen must therefore use a letter from an extreme factor, and one that shortens by
+  the full two must cancel completely, which is the rotation.
+- 2026-08-03 — Proved the middle case of the one-letter dichotomy: a letter from the front factor
+  that the front letter does not cancel into the base group lengthens the word by one, the front
+  merging but surviving while nothing cancels at the back.  With the other two cases this closes the
+  trichotomy — grow by two, grow by one, or rotate.  A second lemma written for this cycle turned out
+  to be already proved in full generality in the corpus (`deningerLen_base_conj`: conjugation by the
+  base group preserves length, for an arbitrary element rather than a word), so it was dropped rather
+  than duplicated; the base element the rotation carries therefore never disturbs the induction.
+- 2026-08-03 — Proved the back half of the one letter trichotomy, mirroring the front: cancellation
+  of the last letter into the base group makes the conjugate the rotation that moves the last letter
+  to the front, and incomplete cancellation at the back lengthens by one.  The trichotomy is now
+  complete on both sides — grow by two, grow by one, or rotate forwards or backwards — which is
+  everything the induction of the conjugacy criterion consumes at each step.

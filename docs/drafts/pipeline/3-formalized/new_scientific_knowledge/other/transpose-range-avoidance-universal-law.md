@@ -21,6 +21,18 @@ For every closed `M ≤ G`,
 
 Lean: `dense_images_iff_orthogonal_avoids_adjointRanges`.
 
+### Arbitrary-family coverage–rigidity law
+
+For every nonempty family, all closed common dense-image subspaces equal `G`
+if and only if the adjoint ranges cover `G` pointwise:
+
+`(∀ M closed, (∀ i, Dense (T_i(M))) → M = G) ↔ (∀ x, ∃ i, x ∈ ran(T_i*))`.
+
+Lean: `closed_common_dense_image_rigid_iff_adjointRanges_cover`.
+
+Thus pointwise adjoint-range coverage is the universal rigidity invariant.
+The countable theorem below identifies its exact coercive/noncoercive behavior.
+
 ### Countable coercivity–wildness dichotomy
 
 For a countable family:
@@ -46,6 +58,11 @@ This theorem is stronger than the retired stable spectral route: it removes stab
    Divide by the positive factor and let `n→∞`; every base coefficient vanishes, hence `z=0`.
 7. Observer–annihilator duality transfers every closed `L≤D` to the dense defect `L⊥`.
 8. In the coercive branch, a closed restriction has closed image; density gives surjectivity, and injectivity forces the restriction domain to be all of `G`.
+9. For arbitrary nonempty families, coverage implies rigidity because every
+   common normal vector lies in some adjoint range and hence vanishes.
+   Conversely, a vector outside every adjoint range spans a closed common
+   normal line, whose orthogonal hyperplane is a proper common dense-image
+   subspace.
 
 ## Rigged-Hilbert shadow
 
@@ -59,6 +76,8 @@ Lean declarations:
 - `twoSidedSingular_iff_hasProperClosedBiDenseSubspace`
 - `exists_hilbertPreQuasiPair_not_quasi`
 - `not_every_hilbertPreQuasiPair_is_quasi`
+- `closed_common_avoidance_rigid_iff_adjointRanges_cover`
+- `closed_common_dense_image_rigid_iff_adjointRanges_cover`
 
 ## Novelty boundary
 
@@ -76,9 +95,11 @@ Finite-codimensional persistence and direct orthonormal weaving prove a strictly
 
 ## Formal status
 
-- Direct `lake env lean` on headline module: PASS during development.
+- Direct `lake env lean` on headline module: PASS.
 - Umbrella import: present.
-- Final targeted build, lint, and axiom audit: pending final publication audit.
+- Final targeted build: PASS.
+- Formal lint: PASS.
+- Axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`.
 - Manuscript claim ledger: `CLAIM_TRACE_AUDIT.md` in publication package.
 
 ## Promotion gate
@@ -96,4 +117,5 @@ Move to stage 4 only after:
 - 2026-08-03 — observer–annihilator law and explicit two-observer model formalized.
 - 2026-08-03 — stable spectral route superseded by direct finite-family weaving.
 - 2026-08-03 — construction extended to countable families and packaged as exact coercivity–wildness dichotomy.
+- 2026-08-03 — universal rigidity identified exactly with pointwise adjoint-range coverage.
 - 2026-08-03 — manuscript rewritten to remove every unformalized Banach, spectral, and stability claim.

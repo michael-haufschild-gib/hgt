@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.AlgebraicGroupInfiniteJet
+import GaloisForLFunctions.HTGeometry.SchemeStabilizerDominance
 
 /-!
 # Concrete position--velocity quotients and Maurer--Cartan torsors
@@ -115,6 +116,15 @@ universe w
 
 variable {K R : Type w} [CommRing K] [CommRing R] [Algebra K R]
 variable (G : Over (Spec (.of K))) [GrpObj G] [IsCommMonObj G]
+
+/-- Constant-jet source projection is an actual dominant scheme morphism: truncated-arc
+augmentation is its section. -/
+theorem constantJetSourceHom_isDominant (n : ℕ) :
+    IsDominant (constantJetSourceHom (K := K) (R := R) n).left := by
+  apply Scheme.Hom.isDominant_of_comp_eq_id _
+    (evaluateJetSourceHom (K := K) (R := R) n).left
+  exact congrArg Over.Hom.left
+    (evaluateJetSourceHom_comp_constantJetSourceHom (K := K) (R := R) n)
 
 /-- Concrete quotient group of `R`-points by a subgroup of constant points. -/
 abbrev AlgebraicPointQuotient

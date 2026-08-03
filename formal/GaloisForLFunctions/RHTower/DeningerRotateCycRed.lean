@@ -8,6 +8,7 @@ rotation is an adjacent pair of the original word, and the junction destroyed is
 condition controls.
 
 * `deningerRotate_cycRed` : rotations are cyclically reduced.
+* `deningerRotate_one_conj` : conjugating by the first letter rotates by one.
 -/
 
 namespace RHTower
@@ -17,7 +18,6 @@ open Monoid Monoid.PushoutI Monoid.CoprodI
 variable {ι : Type*} {G : ι → Type*} {H : Type*} [∀ i, Group (G i)] [Group H]
   {φ : ∀ i, H →* G i}
 
-omit [∀ i, Group (G i)] in
 /-- **Rotations of a cyclically reduced word are cyclically reduced.** -/
 theorem deningerRotate_cycRed (U : List (Σ i, G i))
     (hred : ∀ p ∈ U, p.2 ∉ (φ p.1).range)
@@ -63,8 +63,24 @@ theorem deningerRotate_cycRed (U : List (Σ i, G i))
     | none => exact absurd (List.getLast?_eq_none_iff.1 hd) htakene
     | some z =>
       rw [hd] at hp
-      simp only [Option.or_some, Option.mem_def, Option.some.injEq] at hp
+      simp only [Option.some_or, Option.mem_def, Option.some.injEq] at hp
       subst hp
       exact hjunc z hd q hq
+
+/-- **Conjugating by the first letter rotates by one.** -/
+theorem deningerRotate_one_conj (U : List (Σ i, G i)) (hne : U ≠ []) :
+    ∃ p : Σ i, G i, U.head? = some p ∧
+      (PushoutI.of (φ := φ) p.1 p.2)⁻¹ * deningerLetterProd (φ := φ) U *
+        PushoutI.of (φ := φ) p.1 p.2 = deningerLetterProd (φ := φ) (U.rotate 1) := by
+  cases U with
+  | nil => exact absurd rfl hne
+  | cons p rest =>
+    refine ⟨p, rfl, ?_⟩
+    have h1 : (p :: rest).take 1 = [p] := by simp
+    have := deningerLetterProd_rotate (φ := φ) (p :: rest) 1 (by simp)
+    rw [h1] at this
+    have hp : deningerLetterProd (φ := φ) [p] = PushoutI.of (φ := φ) p.1 p.2 := by
+      rw [deningerLetterProd_cons, deningerLetterProd_nil, mul_one]
+    rw [this, hp]
 
 end RHTower

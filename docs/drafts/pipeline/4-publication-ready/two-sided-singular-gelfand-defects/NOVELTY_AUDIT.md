@@ -4,6 +4,12 @@ Status: `[PROVED HERE; NOVELTY UNVERIFIED]`
 
 ## Exact new theorem surface
 
+For an arbitrary nonempty family of dense-range Hilbert observers, every
+closed simultaneous dense-image subspace is the full source if and only if
+the union of the adjoint ranges covers the source pointwise.  This universal
+coverage--rigidity equivalence is Lean theorem
+`closed_common_dense_image_rigid_iff_adjointRanges_cover`.
+
 Let `T_i : G → H_i`, `i ∈ ℕ`, be bounded injective dense-range Hilbert operators.
 
 - If some `T_i` is coercive, every closed `M ≤ G` whose image under every `T_j` is dense equals `G`.
@@ -48,8 +54,9 @@ No exact collision was found. Search-engine absence is not proof of priority. In
 ### Positive
 
 - Removes all spectral and stability assumptions from prior draft.
+- Identifies exact arbitrary-family rigidity invariant: pointwise adjoint-range coverage.
 - Upgrades two-observer hyperplane existence to countable-family hereditary lattice existence.
-- Gives exact rigidity boundary through coercivity.
+- Shows that for countable families, pointwise coverage occurs exactly in the branch where some observer is coercive.
 - Applies directly to graph-coordinate problems for closed relations and rigged Hilbert embeddings.
 - Entire theorem, construction, and applications have unconditional Lean certificates.
 

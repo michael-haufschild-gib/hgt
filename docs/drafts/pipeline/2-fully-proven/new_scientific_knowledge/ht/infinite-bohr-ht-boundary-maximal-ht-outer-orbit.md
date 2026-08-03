@@ -713,3 +713,98 @@ What remains on the card is exactly its two research inputs: Ostrowski's hypertr
 for generalized Dirichlet series with independent exponents, and the perturbed positive-mass Baire
 transversality argument behind the residual theorem (9).  Everything the card derives *from* those
 two -- claims (1) through (5) and the Haar law (16) -- is now formal.
+
+## Lean progress: faithfulness and disjointness
+
+`PerturbedBoundaryRigidity.lean` (wired, axiom-clean) proves the two rigidity halves of the boundary
+theorem for the object itself:
+
+- `cexpChar_I`, `heightOneAmp`, `summable_norm_heightOneAmp` and
+  **`cexpSeriesCarrier_ofReal_add_I`** -- on the line `Im z = 1` the entire carrier is the corpus's
+  real almost-periodic exponential series with amplitudes `a_j e^(-omega_j)`.  This is the bridge
+  which lets the Bohr-coefficient uniqueness theorem act on the half-plane objects;
+- **`injective_perturbedBoundary`** and **`isClosedEmbedding_perturbedBoundary`** -- claim (3):
+  two boundary states agreeing on the upper half plane have equal *entire* carriers, by the identity
+  theorem, hence equal phases; so the compact phase torus embeds as a closed subset of `C(H, C)`;
+- **`perturbedOrbit_ne_perturbedBoundary`** -- the disjointness argument of (15) in full: an orbit
+  point equal to a boundary state forces, on the line of height one, an almost periodic series
+  tending to zero, hence equal phases by `expSeriesCarrier_phase_eq_of_tendsto_zero`, hence a
+  constant background.  A non-constant background therefore never meets its own boundary.
+
+`OuterCauchyOrbitBoundary.lean` discharges non-constancy for the card's `S_u` too:
+
+- `norm_sub_I_lt_norm_add_I` and **`norm_cayleyOuter_gt`** -- the Cayley image of the upper half
+  plane lies in the open unit disc, so `|chi(w)| > exp(-1)` there.  This is the strict half of the
+  card's bound (6);
+- **`outerBackground_ne_const`** -- hence for every nonzero finite mass the outer background is not
+  the constant `exp(-1)`;
+- **`outerCauchyOrbit_ne_perturbedBoundary`** and **`disjoint_range_outerCauchyOrbit`** -- the orbit
+  and the boundary of the card's own object are disjoint.  With `closure_range_outerCauchyOrbit`
+  this is equation (12) as stated, a *disjoint* union.
+
+## Lean progress: claim (5)
+
+`BohrOrbitClusterSet.lean` (wired, axiom-clean) closes the last topological claim:
+
+- **`mem_closure_image_tail_of_dense_tails`** -- an asymptotic orbit reaches every parameter using
+  times beyond any prescribed bound, because every *tail* of the flow is still dense;
+- **`range_subset_clusterAtInfinity`** -- hence every boundary point is a cluster point of the orbit
+  at infinity;
+- **`clusterAtInfinity_eq_range`** -- with the converse inclusion already proved, the cluster set at
+  infinity *equals* the boundary family.  This is claim (5);
+- **`clusterAtInfinity_perturbedOrbit_eq`** and **`clusterAtInfinity_outerCauchyOrbit_eq`** -- the
+  same for the perturbed orbit and for the card's own object.
+
+### Status of the numbered claims
+
+| claim | Lean |
+|---|---|
+| (1) all-power independence | reduced to (9) by `not_familyDifferentiallyAlgebraicOn_translates_pow` |
+| (2) boundary HT | reduced to Ostrowski by `not_differentiallyAlgebraicOn_pow` |
+| (3) `B_n` is the infinite torus | `isClosedEmbedding_perturbedBoundary` |
+| (4) `closure(O_n) = O_n ⊔ B_n` | `closure_range_outerCauchyOrbit` + `disjoint_range_outerCauchyOrbit` |
+| (5) `B_n` is the cluster set | `clusterAtInfinity_outerCauchyOrbit_eq` |
+| (16) Haar limiting law | `tendsto_windowAverage_outerCauchyOrbit` |
+| (9) residual transversality | open: the perturbed positive-mass Baire argument |
+| Ostrowski | imported, not formalized |
+
+Claims (3), (4), (5) and (16) are unconditional in Lean for the card's own object -- a Cayley
+exponential of the Cauchy transform of an arbitrary nonzero finite mass, perturbed by an exponential
+carrier with rationally independent frequencies.  Claims (1) and (2) are formal reductions to the
+card's two research inputs.
+
+## Lean progress: the shear gauge, and what claim (9) really needs
+
+`FamilyShearGauge.lean` (wired, axiom-clean) removes the *additive* half of the residual theorem
+from the transversality argument entirely:
+
+- `subst_ne_zero_of_pointMap_surjective'` -- the cross-type form of the corpus's nonvanishing
+  criterion, for substitutions which enlarge the variable set;
+- `doubledFamily`, `familyShearJetImage`, `shearPointMap`, `eval_bind₁_shear` and
+  **`surjective_shearPointMap`** -- adding `c` times the second block to the first is an invertible
+  linear change of jet coordinates on the two families taken together.  Its point map is surjective
+  outright: set the second block to zero.  No nonvanishing locus is involved;
+- **`familyDifferentiallyAlgebraicOn_doubled_of_shear`** and
+  **`not_familyDifferentiallyAlgebraicOn_shear`** -- a relation among the sums `f_i + c g_i` pulls
+  back to a relation among `{f_i} ∪ {g_i}`; hence joint independence of the two families implies
+  independence of the perturbed family.
+
+### Consequence for claim (9)
+
+The card's residual theorem is
+`{S_u(z + t) + eps A(z + t)}` differentially independent.  The shear gauge reduces it to
+
+  **joint independence of `{S_u(. + t_i)}` together with `{A(. + t_i)}`**,
+
+and the exponential and Mobius gauges already in the corpus (`not_familyDifferentiallyAlgebraicOn_-`
+`exp`, `familyDifferentiallyAlgebraicOn_of_mobius`) reduce the `S_u` half further to the *Cauchy*
+family `{m_u(. + t_i)}`, whose residual freeness the corpus already owns
+(`herglotz_fullTranslationCauchyFamilyFreeness_denseResidual`,
+`exists_denseResidual_boundedSequence_regularizedHerglotz_fullTranslationFree`).
+
+So the single remaining mathematical content of (9) is the *mixing* part: no differential relation
+couples the Cauchy translates to the fixed carrier translates.  In the corpus's architecture this is
+the statement that the pattern-relation rigidity survives when the coefficient row is enlarged from
+polynomials in `z` to polynomials in `z` and the fixed jets `A^(k)(z + t_i)`.  That enlargement --
+not the perturbation itself -- is what the card's re-run of the transversality argument supplies, and
+it is the next target.

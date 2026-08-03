@@ -46,6 +46,8 @@ For a closed subspace \(M\subset G\), simultaneous density is governed exactly b
   \quad\Longleftrightarrow\quad
   M^\perp\cap\ran T_i^*=\{0\}\quad(i\in I).
 \]
+For every nonempty family, all closed simultaneous dense-image subspaces are
+trivial precisely when the adjoint ranges cover \(G\) pointwise.
 For a countable family we prove a sharp dichotomy.  If one observer is
 coercive, every closed simultaneous dense-image subspace is \(G\).  If no
 observer is coercive, there is a closed subspace \(\cD\subset G\), containing
@@ -90,9 +92,11 @@ defects.
 The motivating ranges are adjoint ranges.  If \(T:G\to H\) has dense range,
 then a closed source restriction \(M\subset G\) remains dense under \(T\)
 exactly when its normal space misses \(\ran T^*\).  This elementary duality
-turns a density problem into simultaneous operator-range avoidance.  The
-first result, Theorem~\ref{thm:observer}, records the exact law for arbitrary
-families.
+turns a density problem into simultaneous operator-range avoidance.
+Theorems~\ref{thm:observer} and~\ref{thm:coverage} record the exact laws for
+arbitrary families.  The second says that collective rigidity is neither a
+spectral nor a lower-bound phenomenon in general: it is exactly pointwise
+coverage of \(G\) by the adjoint ranges.
 
 The main result is Theorem~\ref{thm:dichotomy}.  For countably many injective
 dense-range observers there are only two regimes:
@@ -184,6 +188,35 @@ The inclusion \(L\subset\cD\) gives
 Theorem~\ref{thm:observer} to \(M=L^\perp\), using
 \((L^\perp)^\perp=L\).  Finally \(L^\perp=G\) holds exactly when
 \(L=\{0\}\).
+\end{proof}
+
+\begin{theorem}[collective coverage--rigidity law]\label{thm:coverage}
+Let \(I\) be nonempty and retain the hypotheses of
+Theorem~\ref{thm:observer}.  The following are equivalent:
+\begin{enumerate}[label=(\roman*)]
+  \item every closed \(M\subset G\) satisfying
+  \(\clos{T_iM}=H_i\) for all \(i\in I\) equals \(G\);
+  \item the adjoint ranges cover \(G\) pointwise:
+  \[
+    \forall x\in G\ \exists i\in I\quad x\in\ran T_i^*.
+    \tag{2.4}
+  \]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Assume (ii), and let \(M\) satisfy (i)'s density hypothesis.  By
+Theorem~\ref{thm:observer}, \(M^\perp\) misses every adjoint range.  Given
+\(x\in M^\perp\), choose \(i\) with \(x\in\ran T_i^*\); then \(x=0\).
+Thus \(M^\perp=\{0\}\), and closedness gives \(M=G\).
+
+Conversely, suppose (ii) fails and choose \(x\in G\) outside every adjoint
+range.  Since \(I\ne\varnothing\) and every range contains zero, \(x\ne0\).
+Put \(M=(\mathbb Cx)^\perp\).  If
+\(a x\in\ran T_i^*\) and \(a\ne0\), then \(x\in\ran T_i^*\), a contradiction.
+Hence \(\mathbb Cx\cap\ran T_i^*=\{0\}\) for every \(i\).  Theorem
+\ref{thm:observer} makes every \(T_iM\) dense, while \(M\ne G\).  Thus (i)
+fails.
 \end{proof}
 
 \section{The countable coercivity--defect law}\label{sec:law}
@@ -550,12 +583,15 @@ surface is:
 \begingroup
 \footnotesize
 \sloppy
+\raggedright
 \begin{description}[leftmargin=2.8em,style=nextline]
   \item[Theorem~\ref{thm:observer}]
   \nolinkurl{dense_images_iff_orthogonal_avoids_adjointRanges}.
   \item[Corollary~\ref{cor:hereditary}]
   \nolinkurl{dense_orthogonal_image_of_le_countableWovenNormalSpace} and
   \nolinkurl{orthogonal_ne_top_of_ne_bot}.
+  \item[Theorem~\ref{thm:coverage}]
+  \nolinkurl{closed_common_dense_image_rigid_iff_adjointRanges_cover}.
   \item[Lemma~\ref{lem:persistence}]
   \nolinkurl{hilbertRangeSingular_domRestrict_orthogonal} and
   \nolinkurl{exists_unit_norm_map_lt_of_hilbertRangeSingular}.
@@ -618,7 +654,10 @@ Two problems remain.
 
 \begingroup
 \raggedright
+\footnotesize
 \begin{thebibliography}{99}
+\setlength{\itemsep}{0.25em}
+\setlength{\parskip}{0pt}
 
 \bibitem{AraujoEtAl2025}
 G.~Ara\'ujo, A.~Barbosa, A.~Baganha Raposo Jr., and G.~Ribeiro,
