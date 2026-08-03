@@ -468,6 +468,7 @@ made for the classical ingredients.
 - [x] hypertranscendental-rank faithfulness inference rejected
 - [x] accelerated-Weyl falsifier retained
 - [x] scalar Hilbert/Borel and moving-horizon identities formalized unconditionally in Lean
+- [x] Hilbert-matrix positivity, boundedness and the norm bound `||H|| <= pi` formalized in Lean
 - [ ] all-prime polarized pullback constructed
 - [ ] essential comparison cone identified with Sonin source-error syzygy
 - [ ] Xi conormal-faithful Bockstein and dagger naturality
@@ -965,3 +966,111 @@ argument is needed, and the value is the difference of the two endpoint values a
   the monotone comparison `f(n+1/2) <= int_n^(n+1) f` for the decreasing convex integrand
   `f(t) = 1/((m+1/2+t) sqrt t)`, summed over `n`, which turns the weighted row sum into the integral
   just computed.
+
+### Lean: the midpoint rule for a convex integrand
+
+The discrete-to-continuous step needs the midpoint comparison, which mathlib does not have.
+`HTGeometry/MidpointConvexIntegral.lean` supplies it, with no differentiability hypothesis:
+
+```text
+ConvexOn.midpoint_mul_le_integral :
+  f convex on [a,b], f interval-integrable  ==>  f((a+b)/2) * (b - a) <= int_a^b f.
+```
+
+Reflecting the interval about its midpoint leaves the integral unchanged, so the integral equals that
+of the symmetrisation `(f t + f(a+b-t))/2`, and convexity bounds the symmetrisation below by the
+midpoint value pointwise.  `#print axioms` clean.
+
+- 2026-08-03 -- Midpoint rule formalized.  The operator-norm gate now needs only the convexity of
+  `t -> 1/((A+t) sqrt t)` on `(0,infty)`: with it, each row term `1/((m+n+1) sqrt(n+1/2))` is the
+  midpoint value of that integrand on `[n,n+1]`, the midpoint rule turns the row sum into an integral
+  over `(0,k)`, and the integral identity already proved bounds it by `pi / sqrt(m+1/2)`.
+
+### Lean: convexity of a product of same-direction factors
+
+The convexity the midpoint rule needs is a product convexity, and mathlib's `ConvexOn.mul` does not
+cover two *decreasing* factors.  `HTGeometry/ConvexProductSameDirection.lean` proves the general form:
+
+```text
+ConvexOn.mul_of_sameDirection :
+  f, g convex and nonnegative on s, and (f x - f y)(g x - g y) >= 0 for all x, y in s
+     ==>  f * g convex on s;
+sameDirection_of_antitoneOn :
+  two antitone factors satisfy that hypothesis.
+```
+
+The computation is exact rather than an estimate: bounding each factor by its convexity estimate, the
+gap between the convex combination of the products and the product of the combinations is
+`a b (f x - f y)(g x - g y)`, nonnegative precisely under the same-direction hypothesis.
+`#print axioms` clean.
+
+- 2026-08-03 -- Product convexity formalized.  For the kernel `1/((A+t) sqrt t)` the two factors are
+  `(A+t)^(-1)` and `t^(-1/2)`, both positive, decreasing and convex on `(0,infty)`; supplying those
+  two factor convexities is all that now stands between the corpus and `||H|| <= pi`.
+
+### Lean: the two factor convexities, and `||H|| <= pi`
+
+The two remaining factor convexities are proved by one structural lemma rather than by second
+derivatives (`HTGeometry/ConvexAntitoneComposition.lean`):
+
+```text
+ConvexOn.comp_concaveOn_of_antitoneOn :
+  f convex and decreasing on t, g concave into t  ==>  f o g convex;
+
+convexOn_inv_Ioi          : x^(-1) is convex on (0,infty);
+convexOn_inv_add_const    : t -> (A+t)^(-1) is convex on (0,infty)   (A >= 0);
+convexOn_inv_sqrt         : t -> (sqrt t)^(-1) is convex on (0,infty);
+convexOn_one_div_add_mul_sqrt :
+  t -> 1/((A+t) sqrt t) is convex on (0,infty).
+```
+
+A decreasing convex function of a concave function is convex: concavity raises the inner value at a
+convex combination, the outer function reverses that, and the outer convexity estimate closes it.  The
+inner functions are `sqrt` (mathlib's `Real.strictConcaveOn_sqrt`) and the affine `t -> A + t`; the
+outer function is `x^(-1)`, convex by `convexOn_zpow (-1)` and decreasing.  The kernel itself is then
+the same-direction product of the two.  This route needs no derivative of `t^(-1/2)` at all.
+
+The midpoint rule is used in an open-interval form, since the kernel has an integrable singularity at
+the origin and no convexity statement on `[0,1]` is available
+(`HTGeometry/MidpointConvexIntegralInterior.lean`):
+
+```text
+ConvexOn.midpoint_mul_le_integral_of_Ioo :
+  f convex on (a,b) and interval integrable  ==>  f((a+b)/2)(b-a) <= int_a^b f.
+```
+
+The reflection argument is unchanged; the comparison of integrals is made almost everywhere, the two
+endpoints being a null set.
+
+With those, `HTGeometry/HilbertMatrixNormBound.lean` closes the operator-norm gate:
+
+```text
+integrableOn_one_div_add_mul_sqrt  : the comparison kernel is integrable on (0,infty);
+midpoint_le_integral_one_div_add_mul_sqrt :
+  1/((a + c + 1/2) sqrt(c+1/2)) <= int_c^(c+1) dt/((a+t) sqrt t)      (c >= 0);
+hilbert_weighted_row_bound :
+  sum_(n in S) 1/((m+n+1) sqrt(n+1/2)) <= pi / sqrt(m+1/2)            (S any finite set);
+hilbertAbsQuadraticForm_le_pi :
+  sum_(m,n) |a_m||a_n|/(m+n+1) <= pi sum_m a_m^2;
+hilbertQuadraticForm_abs_le_pi :
+  |sum_(m,n) a_m a_n/(m+n+1)|  <= pi sum_m a_m^2;
+hilbertQuadraticForm_mem_Icc :
+  0 <= sum_(m,n) a_m a_n/(m+n+1) <= pi sum_m a_m^2.
+```
+
+The chain is: with `a = m + 1/2` the summand `1/((m+n+1) sqrt(n+1/2))` is exactly the value of
+`f(t) = 1/((a+t) sqrt t)` at the midpoint `t = n + 1/2` of `[n,n+1]`, since `m + 1/2 + n + 1/2 =
+m+n+1`.  Convexity of `f` on each `(n,n+1)` gives `f(n+1/2) <= int_n^(n+1) f`; the unit intervals
+telescope to `int_0^k f`, which is at most the improper integral `pi/sqrt a = pi w m`.  That is the
+weighted row bound with weight `w n = (n+1/2)^(-1/2)`, and the weighted Schur test converts it into
+the quadratic-form bound.  Every statement is finite -- no series convergence is used anywhere -- so
+the bound holds for every finitely supported vector, which is the operator-norm statement
+`||H|| <= pi` on the finite core.  `#print axioms` clean throughout.
+
+- 2026-08-03 -- The operator-norm half of the bridge is closed in Lean.  The Hilbert matrix is now,
+  unconditionally in the corpus: Hankel-intertwining (`HS = S^*H`), moment-representable in both the
+  interval-cell and Hardy-ladder readings, positive semidefinite, and bounded with the sharp classical
+  constant `pi`.  Mathlib has none of this; the four reusable pieces built along the way (weighted
+  Schur test, open-interval midpoint rule, same-direction product convexity, decreasing-convex-of-
+  concave composition) are general.  What remains under the analytic-bridge gate is no longer operator
+  theory but the source-normal continuation, which is gated by the three open structural gates above.

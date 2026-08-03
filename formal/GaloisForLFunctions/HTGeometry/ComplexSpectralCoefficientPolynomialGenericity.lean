@@ -32,20 +32,18 @@ theorem eval_complexSpectralCoefficientObstructionPullback
     {θ I : Type*} [Fintype I]
     (coefficient :
       Fin (Fintype.card I) → MvPolynomial θ ℂ)
-    (k : I → ℤ) (p : θ → ℝ) :
-    MvPolynomial.eval₂ (RingHom.id ℂ)
-        (fun i => (p i : ℂ))
+    (k : I → ℤ) (z : θ → ℂ) :
+    MvPolynomial.eval₂ (RingHom.id ℂ) z
         (complexSpectralCoefficientObstructionPullback
           coefficient k) =
       MvPolynomial.eval₂ (Rat.castHom ℂ)
         (fun i =>
-          MvPolynomial.eval₂ (RingHom.id ℂ)
-            (fun t => (p t : ℂ))
+          MvPolynomial.eval₂ (RingHom.id ℂ) z
             (coefficient i))
         (spectralRelationCoefficientPolynomial k) := by
   unfold complexSpectralCoefficientObstructionPullback
   change
-    (MvPolynomial.aeval (fun i => (p i : ℂ)))
+    (MvPolynomial.aeval z)
         (MvPolynomial.aeval coefficient
           ((spectralRelationCoefficientPolynomial k).map
             (Rat.castHom ℂ))) = _
@@ -119,27 +117,24 @@ def complexSpectralCoefficientProjectiveGenericSet
         (complexSpectralCoefficientObstructionPullback
           coefficient k) ≠ 0}
 
-/-- **Complex one-witness genericity theorem.** If one real parameter has
-a maximally projective real root packet with the prescribed complex
-characteristic coefficients, simultaneous projective independence is
-dense, residual, and full measure in the real parameter space. -/
+/-- **Complex genericity from parameterwise witnesses.** If every nonzero
+balanced obstruction is nonzero at some real parameter, simultaneous
+projective independence is dense, residual, and full measure. -/
 theorem
-    complexSpectralCoefficientProjectiveGenericSet_dense_residual_fullMeasure
+    complexSpectralCoefficientProjectiveGenericSet_dense_residual_fullMeasure_of_witness
     {m : ℕ} {I : Type*} [Fintype I]
     (coefficient :
       Fin (Fintype.card I) →
         MvPolynomial (Fin m) ℂ)
-    (p₀ : Fin m → ℝ)
-    (energy : I → ℝ)
-    (hmax : MaximallyProjectiveEnergy energy)
-    (hcoefficient :
-      ∀ i,
-        MvPolynomial.eval₂ (RingHom.id ℂ)
-            (fun t => (p₀ t : ℂ))
-            (coefficient i) =
-          MvPolynomial.eval₂ (Rat.castHom ℂ)
-            (fun a => (energy a : ℂ))
-            (MvPolynomial.esymm I ℚ (i.1 + 1))) :
+    (hwitness :
+      ∀ k : I → ℤ,
+        SpectralCharacterBalanced k →
+        k ≠ 0 →
+        ∃ p : Fin m → ℝ,
+          MvPolynomial.eval₂ (RingHom.id ℂ)
+            (fun t => (p t : ℂ))
+            (complexSpectralCoefficientObstructionPullback
+              coefficient k) ≠ 0) :
     Dense
         (complexSpectralCoefficientProjectiveGenericSet
           coefficient) ∧
@@ -171,12 +166,9 @@ theorem
     intro n
     unfold P
     split
-    · exact ⟨p₀, by simp⟩
+    · exact ⟨0, by simp⟩
     · rename_i k hdecode
-      exact ⟨p₀,
-        complexSpectralCoefficientObstructionPullback_has_real_witness
-          coefficient p₀ energy hmax hcoefficient
-          k.1 k.2.1 k.2.2⟩
+      exact hwitness k.1 k.2.1 k.2.2
   have hset :
       complexSpectralCoefficientProjectiveGenericSet
           coefficient =
@@ -199,6 +191,43 @@ theorem
   exact
     complexPolynomialRealAvoidanceSet_dense_residual_fullMeasure
       P hP
+
+/-- **Complex one-witness genericity theorem.** If one real parameter has
+a maximally projective real root packet with the prescribed complex
+characteristic coefficients, simultaneous projective independence is
+dense, residual, and full measure in the real parameter space. -/
+theorem
+    complexSpectralCoefficientProjectiveGenericSet_dense_residual_fullMeasure
+    {m : ℕ} {I : Type*} [Fintype I]
+    (coefficient :
+      Fin (Fintype.card I) →
+        MvPolynomial (Fin m) ℂ)
+    (p₀ : Fin m → ℝ)
+    (energy : I → ℝ)
+    (hmax : MaximallyProjectiveEnergy energy)
+    (hcoefficient :
+      ∀ i,
+        MvPolynomial.eval₂ (RingHom.id ℂ)
+            (fun t => (p₀ t : ℂ))
+            (coefficient i) =
+          MvPolynomial.eval₂ (Rat.castHom ℂ)
+            (fun a => (energy a : ℂ))
+            (MvPolynomial.esymm I ℚ (i.1 + 1))) :
+    Dense
+        (complexSpectralCoefficientProjectiveGenericSet
+          coefficient) ∧
+      complexSpectralCoefficientProjectiveGenericSet
+          coefficient ∈
+        residual (Fin m → ℝ) ∧
+      volume
+        (complexSpectralCoefficientProjectiveGenericSet
+          coefficient)ᶜ = 0 :=
+  complexSpectralCoefficientProjectiveGenericSet_dense_residual_fullMeasure_of_witness
+    coefficient
+    (fun k hbalanced hk =>
+      ⟨p₀,
+        complexSpectralCoefficientObstructionPullback_has_real_witness
+          coefficient p₀ energy hmax hcoefficient k hbalanced hk⟩)
 
 end
 

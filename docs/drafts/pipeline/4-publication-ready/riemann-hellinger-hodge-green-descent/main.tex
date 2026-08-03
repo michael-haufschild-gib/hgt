@@ -39,8 +39,8 @@
 \newcommand{\Div}{\operatorname{Div}}
 \newcommand{\Spec}{\operatorname{Spec}}
 
-\title{\textbf{Regular tomography conservation at the Riemann boundary}\\
-\large A universal law for resolved sources, character transport, and the singular RH frontier}
+\title{\textbf{The resolved-descent conservation law}\\
+\large Observation kernels, gauge curvature, and the Riemann boundary}
 \author{Michael Haufschild}
 \date{}
 
@@ -49,108 +49,110 @@
 \maketitle
 
 \begin{abstract}
-Let \((\gamma_n,c_n)\) be a countable source packet with complete grades
-\(\gamma_n\), complex coefficients satisfying \(\sum_n|c_n|<\infty\), and
-a real resolving coordinate \(\chi\).  Its character response is
+We formulate a single resolved-descent law for a source groupoid.  Its
+degree-zero part is the observation-kernel order.  For an arbitrary
+deterministic chain
+\(X_0\xrightarrow{T_0}\cdots\xrightarrow{T_{n-1}}X_n\), the source kernel
+relations
 \[
-             F_\chi(y)=\sum_{n\ge0}c_ne^{iy\chi(\gamma_n)}.
+ K_k=\{(x,y):T^{[k]}x=T^{[k]}y\}
 \]
-We prove the regular tomography conservation law:
-\[
- F_\chi\equiv0
- \quad\Longrightarrow\quad
- \sum_{\chi(\gamma_n)=\chi(\gamma_m)}c_n=0
- \quad\hbox{for every }m.
-\]
-Every nonzero atom therefore has a distinct nonzero mate in the same
-observed-grade fibre.  If \(\chi\) is injective, the mate has the same
-complete grade; if the source grades are distinct, any zero created by
-\(\chi\) exhibits an explicit collision of distinct grades.  If both source
-grades and resolving frequencies are distinct, \(F_\chi\equiv0\) if and
-only if every coefficient vanishes.  Finite resolved-grade conservation is
-the atomic shadow of this theorem.  Exact first loss is its support shadow,
-the lattice of observation kernels its collision shadow, and faithful
-character recovery its tomography shadow.
+increase monotonically, and every terminally identified distinct pair has a
+unique first coalescing edge.  A target \(\vartheta:X_0\to C\) is recoverable
+from the attained terminal range exactly when
+\(K_n\subseteq K_\vartheta\).  Serial processing can therefore preserve or
+erase an object distinction, never recreate one; heterogeneous parallel
+records retain the intersection of their channel kernels.
 
-For a real pointed defect \(a\), principal responses have the form
-\(F_{m,u}(a)=a^m u\).  Their degrees add under multiplication, every positive
-degree with \(u\ne0\) has exactly the radical \(a=0\), and reflection
-\(a\mapsto-a\) acts by \((-1)^m\).  Even degree therefore erases orientation
-without adding a zero; odd degree retains it.  Positive cooriented mixtures
-cannot cancel a nonzero principal defect.  Independently, all-orders-flat
-boundary germs form a proper ideal under every finite-Rees-grade operator,
-so finite and flat source types cannot be sewn by regular transport.  These
-are finite-degree and asymptotic faces of one rule: regular separated
-tomography cannot manufacture a source relation.  A resolved source class
-can disappear only through an explicit kernel, a same-fibre signed relation,
-failure of regular summability, or absence of its supporting point.
+Its degree-one part is gauge-curvature conservation.  If an edge field is
+changed by endpoint gauges,
+\[
+             B^g_{ij}=g_i^{-1}B_{ij}g_j,
+\]
+then open transport changes only at its endpoints and every closed-loop
+holonomy is conjugate to the original one; in the scalar case it is equal.
+On a connected source graph, a reversible edge field is an endpoint
+coboundary exactly when all closed holonomies are trivial.  Hence a
+separable source can move open-path growth but cannot create curvature.  An
+involution adds a canonical polarization: if
+\(B_{-u}(i,j)=-B_u(j,i)\), its reflection-even sector is skew and its
+reflection-odd sector is symmetric.  Diagonal restriction annihilates the
+former and cannot reconstruct the latter.  Kernel monotonicity, gauge
+holonomy, and signed transpose are the object, edge, and equivariant forms of
+one statement: regular descent transports only resolved information already
+present before quotienting.
 
-For the Riemann divisor the pointed class is no longer hypothetical.  A
-reflection-fixed Meyer Gaussian and its anti-reflected logarithmic moment
-give
+The linear dual is exact.  A quotient observation sees a finite signed
+source only through its fibre sums, total variation cannot increase, and the
+annihilator consists precisely of fibrewise zero-mass packets.  For an
+absolutely summable character packet
 \[
- r_G(q)=\frac{\rho_q-1/2}{2\pi},\qquad
- \delta_\tau r_G(q)=\frac{\Re\rho_q-1/2}{\pi},
+ F_\chi(y)=\sum_{n\ge0}c_ne^{iy\chi(\gamma_n)},
 \]
-and the exterior source class is
-\[
- \Omega_G(q)=\left(\Re\rho_q-\frac12\right)
-              \frac{|J_0(q)|^2}{\pi}.
-\]
-The completed Green fracture and normalized Gamma admission coefficient are
-both degree one in this displacement.  Their composition is the positive
-mate curvature
-\[
-                    K_\Gamma(q)=a(q)^2g_\Gamma(q),
-                    \qquad g_\Gamma(q)>0,
-\]
-and every individual cross-prime coordinate of the Gamma-admitted Gaussian
-Green packet vanishes exactly when \(a(q)=0\).  No packet-level cancellation
-remains.  Cooriented Gamma cell packets are positive degree-one mixtures and
-cannot cancel off line.  More strongly, canonical complex Gamma orbit
-functions have distinct prime-depth frequencies and are linearly independent;
-no finite displacement-independent signed packet cancels.  This remains true
-for every countable packet whose physical orbit amplitudes are absolutely
-summable: Bohr--Ces\`aro extraction recovers each coefficient separately.
-Fixed prime-cycle holonomy is degree three on scalar
-carrier rays and is another faithful detector.  These constructions are a
-principal tower of one horizontal class, not independent equations.
+identical vanishing is equivalent to cancellation in every observed-frequency
+fibre.  Thus every nonzero atom needs a distinct equal-observed-grade mate;
+injective resolution is faithful, while any new cancellation after
+coarsening has an explicit collision witness.  Positive exposure forces sign
+coherence, and even principal degree erases orientation while preserving its
+radical.
 
-The remaining representation problem is also closed.  The full
-prime--valuation source and reciprocal co-source land in the completed Xi
-trace; the actual all-cross-prime arithmetic span is dense; exact Koszul
-compatibility leaves one residual horizon ray per divisor; and the Gaussian
-horizontal packet is exactly \(\Omega_G(q)\) times that horizon.  A doubled
-pair of actual Burnol co-Poisson windows
-cancels the common divisor conormal and recovers \(e^{L\rho}\); its centered
-invariant quadratic cover has discriminant zero exactly on the critical
-line.  Thus source recovery is not missing.  Inverse-horizon normalization
-and every diagonal weight satisfy an all-or-nothing law: summable weights
-admit the whole residual ray and select nothing,
-whereas nonsummable weights admit only its zero.  A bounded Gamma/co-Poisson
-operator on the full incidence completion has the critical-line-supported
-sector as its exact kernel and is conservative on completed Green
-provenance.  For the fixed reflected-Gaussian Green vector \(g_{\rm ref}\),
+The completed Riemann source realizes every layer of this law.  The literal
+prime--valuation source and reciprocal co-source form a doubled indefinite
+carrier whose cross coefficient is the full von Mangoldt Laplace channel.
+After the two polar terms and the fixed Gamma connection, that coefficient is
+the centered Xi relative resolvent throughout its regular positive chamber.
+Thus a source and source-to-Xi landing are already present.  Before
+codiagonalization, the centered horizontal parameter \(a\) enters the full
+joint-depth incidence by the exact edge character
 \[
-                 A_\Gamma Cg_{\rm ref}=0
-                 \quad\Longleftrightarrow\quad \mathrm{RH}.
+ P_{\varepsilon,a}(i,j)=P_{\varepsilon,0}(i,j)
+      H_a(i,j),\qquad
+ H_a(i,j)=\exp\!\bigl(a(\lambda_j-\lambda_i)\bigr),
+ \quad \lambda_{(p,e)}=(e+1)\log p.
 \]
+This character is an endpoint coboundary: every triangle product is one and
+every closed-loop invariant of \(P_{\varepsilon,a}\) equals that of
+\(P_{\varepsilon,0}\).  A canonical inverse-clock countertransport recovers
+the complete off-diagonal finite-packet incidence by a commutator, but does
+not change this flat gauge class.  Its edges are Hermitian, and its all-depth
+capacity is bounded, exactly when \(\Re a=0\).  At
+\(a=\rho-\tfrac12\), uniform capacity over the Xi divisor is therefore
+equivalent to RH; this is a sharp wall classification, not a proof of the
+required bound.
 
-Regular tomography conservation turns the remaining problem into an exact
-fork.
-Either an arithmetic source law excludes every off-line supporting divisor,
-or the source must supply a new signed term of the same complete
-source--divisor--boundary grade before coarsening.  Different principal
-degree, positive mixing, absolutely summable fixed Gamma orbits,
-fixed-carrier tensoring,
-finite-Rees transport, and post-completion cancellation cannot do so.  Any
-Gamma-based survivor must either couple nonseparably to divisor provenance or
-be singular beyond absolute summability.  The uniquely purified diagonal
-Cartier metric is already known and renormalizes to a strictly positive
-top-conormal value, so singularity without polarized off-diagonal data is
-still only a detector.  We do not
-construct this equal-grade relation or prove support exclusion; hence we do
-not claim RH.
+The source also contains genuine curvature.  Valuation-resolved physical
+endpoint correction produces a real symmetric prime-ratio response whose
+infinite matrix is a self-adjoint Hilbert--Schmidt operator.  Arbitrarily late
+positive source triangles assemble into a self-adjoint trace-class carrier
+with zero diagonal and nonzero holonomy on every retained block.  Separately,
+the completed Xi aperture kernel satisfies
+\[
+ K_{-u}(x,y)=-K_u(y,x),
+\]
+and its live reflection-odd sector is the symmetric real kernel
+\(K_u+K_u^{\mathsf T}\).  On the regular upper half-strip, one half of this
+odd sector is exactly the imaginary part of the continued prime--Archimedean
+source trace.  Hence off-diagonal incidence, infinite completion, nontrivial
+holonomy, reflection polarization, and a direct source bridge all exist
+unconditionally.
+
+The resolved-descent law now identifies the precise unsolved incidence.
+The joint-depth Xi landing carries horizontal displacement only as a flat
+endpoint gauge, whereas the physical prime curvature is source-defined but
+not coupled to divisor displacement.  Multiplying any curved carrier by
+\(H_a\) leaves every closed holonomy unchanged, so the obvious combination is
+still horizontally blind.  What is absent is one source-derived,
+parameter-dependent curvature transgression---equivalently a genuinely
+nonseparable prime--depth--divisor incidence---whose singular common-test
+extension obeys the Hodge symmetry or boundedness forced at the Xi divisor.
+Regular self-dual Gamma envelopes cannot supply it: moderate self-dual data
+with off-critical zeros exist, and the envelope preserves every right-half-
+plane divisor and top conormal class.  Positive Gram completion, diagonal
+weighting, finite-Rees transport, continuous or closable completion, and
+fixed-carrier tensoring are likewise downstream gauges or quotients covered
+by the law.  We therefore do not claim RH.  We prove instead that the
+frontier is neither source construction nor positivity: it is the first
+nonflat horizontal curvature class in the source-to-Xi descent.
 \end{abstract}
 
 \medskip
@@ -211,8 +213,17 @@ The results answer four questions.
 
 \begin{enumerate}[leftmargin=2.2em]
 \item \emph{What is the parent law?}
-      An absolutely summable character packet vanishes only fibrewise in its
-      observed frequency, and injective character resolution is faithful.
+      Every arbitrary heterogeneous deterministic chain induces an increasing
+      filtration of equivalence relations on its source, and a target is
+      recoverable exactly when the terminal relation refines the target
+      relation.  Equivalently, a terminally
+      identified source pair was either identical initially or has one unique
+      first coalescing edge.  Once coalesced, the pair remains coalesced;
+      therefore every target distinction recoverable at the terminal record
+      must be present at the source and survive every edge.  An absolutely
+      summable character packet is the arithmetic computation of this law:
+      it vanishes only fibrewise in observed frequency, and injective
+      character resolution is faithful.
       Every nonzero atom needs a distinct equal-observed-grade mate; failure
       under a noninjective reader exhibits an explicit source-grade
       collision.  A finite resolved packet is the atomic shadow and vanishes
@@ -234,7 +245,7 @@ The results answer four questions.
       subcalculus which cannot recover a nonzero odd target.  Pair-groupoid
       difference, involutive descent, projective wedge, and commuting
       bidescent are additive, symmetric, exterior, and two-directional
-      coordinates of regular tomography conservation after successive forgetting
+      coordinates of pairwise distinguishability after successive forgetting
       operations.  Orientation must be resolved before an invariant completion.
       Source-pointed polarized exact descent is the linear, stable refinement:
       unique gluing plus stable,
@@ -316,7 +327,147 @@ absolute summability.
 The other logical branch is a direct source theorem excluding off-line
 support, which would prove RH without cancellation.
 Positivity and the four-unit consumer come after this descent, not before it.
-\section{Regular tomography conservation and its loss shadows}
+\section{Resolved descent: kernels, curvature, and tomography}
+
+Let \(X_0,\ldots,X_n\) be arbitrary sets and let
+\(T_k:X_k\to X_{k+1}\).  Put
+\[
+ T^{[0]}=\mathrm{id}_{X_0},\qquad
+ T^{[k+1]}=T_k\circ T^{[k]}.
+\tag{2.C0}\label{eq:iterated-observation-transport}
+\]
+
+\begin{theorem}[Monotone-kernel and first-coalescence law]
+\label{thm:pairwise-first-coalescence}
+The source kernel pairs form an increasing filtration
+\[
+ \Delta_{X_0}=K_0\subseteq K_1\subseteq\cdots\subseteq K_n,
+ \qquad K_k:=\{(x,y):T^{[k]}x=T^{[k]}y\}.
+\tag{2.C1}\label{eq:monotone-kernel-filtration}
+\]
+Its terminal kernel is the disjoint union of the diagonal and the first-loss
+strata \(K_{k+1}\setminus K_k\).  Equivalently, for every \(x,y\in X_0\),
+\[
+ T^{[n]}x=T^{[n]}y
+ \quad\Longleftrightarrow\quad
+ x=y\quad\hbox{or}\quad
+ \exists!k<n:\
+ \begin{cases}
+ T^{[k]}x\ne T^{[k]}y,\\
+ T^{[k+1]}x=T^{[k+1]}y.
+ \end{cases}
+\tag{2.C2}\label{eq:pairwise-first-coalescence}
+\]
+For a target \(\vartheta:X_0\to C\), put
+\(K_\vartheta=\{(x,y):\vartheta(x)=\vartheta(y)\}\).  Then \(\vartheta\)
+is recoverable from the attained range of \(T^{[n]}\) if and only if
+\[
+                              K_n\subseteq K_\vartheta.
+\tag{2.C3}\label{eq:recovery-kernel-inclusion}
+\]
+Consequently, if \(\vartheta(x)\ne\vartheta(y)\), then
+\[
+                    T^{[k]}x\ne T^{[k]}y
+                    \qquad(0\le k\le n).
+\tag{2.C4}\label{eq:distinction-survives}
+If \(\sigma:X_0\to X_0\),
+\(\vartheta(\sigma x)=-\vartheta(x)\), and \(\vartheta(x)\ne0\), the same
+conclusion holds for the reflected pair \((\sigma x,x)\).
+\end{theorem}
+
+\begin{proof}
+Equality at stage \(k\) is preserved by applying \(T_k\), hence by every
+later composite; this proves \eqref{eq:monotone-kernel-filtration}.  Every
+pair in the terminal member lies either on the source diagonal or in the
+unique first difference \(K_{k+1}\setminus K_k\) containing it.  If distinct
+source states agree at stage \(n\), the least
+stage at which they agree exists and its preceding edge is unique; this is
+\eqref{eq:pairwise-first-coalescence}.  Recoverability means that equality
+of terminal records forces equality of target values, which is precisely
+\eqref{eq:recovery-kernel-inclusion}.  Conversely, that inclusion makes the
+target value of an attained terminal record independent of its source
+representative.  A collision at any
+earlier stage would persist to stage \(n\) and contradict the target
+distinction, proving \eqref{eq:distinction-survives}.  For the reflected
+pair, equality of target values together with oddness would force
+\(\vartheta(x)=0\).
+\end{proof}
+
+This is the object-level face of the parent law.  Its edge-level face is
+gauge curvature.  Let (I) be a nonempty source set, let (G) be a group,
+and let (B:I\times I\to G) be a field of directed edge comparisons.  Put
+\[
+ \operatorname{Hol}_B(i,j,k)=B(i,j)B(j,k)B(i,k)^{-1}.
+\tag{2.H0}\label{eq:triangle-holonomy}
+\]
+An endpoint story is a field (U:I\to G) for which
+\(B(i,j)=U(i)^{-1}U(j)\).  A change of local standards (g:I\to G) acts by
+\[
+                       B^g(i,j)=g(i)^{-1}B(i,j)g(j).
+\tag{2.H1}\label{eq:endpoint-gauge}
+\]
+
+\begin{theorem}[Gauge-curvature conservation]
+\label{thm:gauge-curvature-conservation}
+The following statements are exact.
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.4em]
+\item (B) has an endpoint story if and only if
+      (B(i,j)B(j,k)=B(i,k)) for all (i,j,k\), equivalently
+      \(\operatorname{Hol}_B(i,j,k)=1\) for every triangle.
+\item Along an arbitrary finite path, endpoint gauge changes transport only
+      by the gauges at its endpoints.  Closed holonomy is conjugated by the
+      gauge at its base point.  Hence every conjugation-invariant readout of
+      closed holonomy is gauge invariant; for abelian (G), closed holonomy
+      itself is invariant.
+\item On a connected graph, a reversible edge field is an endpoint story if
+      and only if every closed walk has unit holonomy.  One nonunit closed
+      holonomy therefore obstructs every scalar endpoint calibration.
+\item In particular, for a scalar edge field and any nonvanishing vertex
+      family (g_a),
+      \[
+        B_a(i,j)=B_0(i,j)g_a(i)^{-1}g_a(j)
+        \quad\Longrightarrow\quad
+        \operatorname{Hol}_{B_a}(i,j,k)
+        =\operatorname{Hol}_{B_0}(i,j,k).
+      \tag{2.H2}\label{eq:separable-holonomy-blindness}
+      \]
+      Parameter dependence carried only by endpoints is invisible to every
+      closed-loop observable.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+If (B(i,j)=U(i)^{-1}U(j)), adjacent endpoint factors cancel, proving all
+four forward statements.  Conversely, fix a base point (b\).  The triangle
+identity with vertices (b,i,j) gives
+\(B(i,j)=B(b,i)^{-1}B(b,j)\), so (U(i)=B(b,i)) is an endpoint story.
+For a graph, choose one path from a fixed root to every vertex.  Flatness
+makes its transport path independent; reversibility then gives the endpoint
+ratio on each edge.  Formula \eqref{eq:separable-holonomy-blindness} is the
+abelian closed-path gauge law specialized to a triangle.
+\end{proof}
+
+Reflection supplies the equivariant edge grading.  For a two-point kernel
+with negative signed-transpose covariance,
+\[
+                         K_{-u}(i,j)=-K_u(j,i),
+\tag{2.H3}\label{eq:negative-signed-transpose}
+\]
+the reflection-even and reflection-odd sectors are respectively
+\[
+ K_u+K_{-u}=K_u-K_u^{\mathsf T},\qquad
+ K_u-K_{-u}=K_u+K_u^{\mathsf T}.
+\tag{2.H4}\label{eq:signed-transpose-sectors}
+\]
+Thus the even sector is skew and has zero diagonal, while the odd sector is
+symmetric.  At a fixed parameter every odd-cardinality finite packet of the
+negative-covariance kernel is singular.  This is the incidence-level form of
+the same conservation law: diagonalization is an object quotient and cannot
+recover the erased transpose sector.
+
+To use degree-zero conservation in arithmetic one must compute the relevant
+kernel pairs.  Regular character tomography gives that computation for the
+countable source packets used below.
 
 Let \(\Gamma\) be a grade set, let \(\gamma_n\in\Gamma\), let
 \(\chi:\Gamma\to\R\) be a resolving coordinate, and let
@@ -1890,7 +2041,7 @@ range comparison remains open: the resolved quotient is exhaustively
 provenance off axis and the adaptive comparison is faithful.  Missing is a
 source-derived boundedness or annihilation law forcing the unsquared
 secondary trace to vanish.  Raw coface recovery alone holds for every
-(a), on and off axis.
+\(a\), on and off axis.
 
 \paragraph{Euler valuation and Hellinger--Gamma source.}
 For \(q=p^{-\sigma}\), the diagonal activation
@@ -1948,13 +2099,214 @@ their unsquared pairing is exactly the full normalized von Mangoldt current,
              =\sum_{n\ge1}\frac{\Lambda(n)}{n^{1+u}}.
 \tag{3.7ze}\label{eq:joint-depth-prime-current}
 \]
-After subtracting the explicit Archimedean logarithmic derivative, this
-pairing lands exactly in the continued completed-Xi source trace.  Thus a
-full prime--valuation source, a full co-source, and their completed landing
-exist before divisor scalarization.  The sharp wall is instead
+Thus a full prime--valuation source and reciprocal co-source exist.  Their
+sharp wall is
 \eqref{eq:joint-depth-hilbert-chamber}: at the critical boundary the source
 leaves the Hilbert category.  This is stable-descent failure, not missing
 arithmetic coefficients.
+The common test also exists without taking a geometric mean or collapsing
+valuation depth.  Complex Hardy damping of the two distinct depth legs,
+\[
+ A_w(p,k)=\frac{\log p}{\sqrt{p^{k+1}}}\,(p^{k+1})^{-w},
+ \qquad
+ B_v(p,k)=\frac1{\sqrt{p^{k+1}}}\,(p^{k+1})^{-v},
+\]
+gives two \(\ell^2(\mathbb P\times\mathbb N)\) vectors whenever
+\(\Rea w,\Rea v>0\), and their exact biorthogonal pairing is
+\[
+ \langle B_v,A_w\rangle
+ =\sum_{n\ge1}\frac{\Lambda(n)}
+        {n^{\,1+w+\bar v}}.
+\tag{3.7zf}\label{eq:joint-depth-biorthogonal-common-test}
+\]
+The landing of this literal pairing is exact, including its polar
+renormalization.  Put \(u=w+\bar v\) and
+\[
+ D_{\rm JD}(w,v)
+   =\frac1u+\frac1{u+1}-\langle B_v,A_w\rangle .
+\]
+On \(\Rea u>0\), this is the regularized critical-Mellin defect
+\(D_{\rm reg}(u)\).  Let
+\[
+ \mathfrak T_{\rm JD}(u)
+   =i\bigl(D_{\rm reg}(u)+\gamma_{\mathbb R}^{\log}(u+1)\bigr),
+ \qquad z=-i\left(u+\frac12\right).
+\tag{3.7zf0}\label{eq:joint-depth-pole-filled-trace}
+\]
+If \(\Rea u>-1\), \(u\ne0\), and \(\zeta(u+1)\ne0\), then
+\[
+ \mathfrak T_{\rm JD}(u)=\mathcal R_\Xi(z),\qquad
+ \mathcal R_\Xi(z)=\sum_q
+ \left(\frac1{a_q}-\frac1{a_q-z}\right),
+\tag{3.7zf1}\label{eq:joint-depth-xi-relative-resolvent-landing}
+\]
+where \(a_q\) runs over the centered Xi divisor copies.  Thus exact regular
+source-to-resolvent transport exists.  The equality is deliberately stated
+on the regular locus: scalar analytic continuation does not by itself retain
+a source-labelled polarized residue at a divisor.
+Multiplication by the common Hardy Cauchy factor
+\((w+\bar v)^{-1}\) gives the existing primitive common-test kernel
+exactly.  Thus full prime label, valuation depth, source/co-source
+asymmetry, and one common test coexist before scalarization.  This closes
+another representation loophole but supplies no vanishing source relation.
+There is also a literal signed carrier, rather than only a scalar pairing.
+On
+\[
+ \mathcal K=\ell^2(\mathbb P\times\mathbb N)
+              \oplus\ell^2(\mathbb P\times\mathbb N)
+\]
+let (J(x,y)=(y,x)) and
+\[
+ [x,y]_J=\langle x_+,y_-\rangle+\langle x_-,y_+\rangle.
+\tag{3.7zf2}\label{eq:joint-depth-krein-pair}
+\]
+This Hermitian form is positive on ((h,h)), negative on ((h,-h)), and
+the cross coefficient of the actual co-source and source legs is exactly
+the von Mangoldt Laplace channel.  Its polar-filled Gamma completion is
+\eqref{eq:joint-depth-xi-relative-resolvent-landing}.  Thus the positive-Gram
+obstruction has its exact survivor: the source-to-Xi producer is an
+off-diagonal indefinite coefficient.  At balanced reflection the cross
+series is not absolutely summable, so its scalar continuation cannot be
+reinterpreted as an ordinary boundary Hilbert vector.
+
+In fact reflection sewing identifies its exact first-coalescence edge.  For
+centered displacement \(a\in\C\) and regularization depth
+\(\varepsilon>0\), put
+\[
+ w=\varepsilon+a,qquad v=\varepsilon-\bar a.
+\]
+Then
+\[
+                         w+\bar v=2\varepsilon,
+\tag{3.7zg}\label{eq:reflected-common-test-diagonal-blindness}
+\]
+so every retained prime--depth--time coefficient product, its integral,
+and the full diagonal pairing are independent of \(a\) before any label is
+summed.  The two unresolved legs are jointly Hilbert exactly when
+\[
+                         |\Rea a|<\varepsilon,
+\tag{3.7zh}\label{eq:reflected-common-test-hilbert-wall}
+\]
+and they fail joint admission at equality.  Hence regular diagonal
+reflection sewing irreversibly coalesces horizontal displacement; only the
+singular chamber wall remembers its absolute size.  By
+Theorem~\ref{thm:pairwise-first-coalescence}, no downstream consumer can
+recover the lost orientation.  A surviving use of this source must act at
+the wall, retain genuinely off-diagonal label incidence, or introduce an
+additional divisor-coupled differential before diagonal pairing.
+
+Retaining distinct labels closes the next question exactly.  For
+(i=(p,e)), put
+\[
+                 \lambda_i=(e+1)\log p,\qquad
+ H_a(i,j)=e^{a(\lambda_j-\lambda_i)}.
+\tag{3.7zh0}\label{eq:joint-depth-edge-character}
+\]
+Let (P_{\varepsilon,a}(i,j)) be the actual source/co-source coefficient
+with source parameter \(\varepsilon+a\) at (i) and reflected co-source
+parameter \(\varepsilon-\bar a\) at (j).  Then
+\[
+ P_{\varepsilon,a}(i,j)
+   =P_{\varepsilon,0}(i,j)H_a(i,j),
+ \qquad
+ H_a(i,j)H_a(j,k)H_a(k,i)=1.
+\tag{3.7zh1}\label{eq:joint-depth-flat-incidence}
+\]
+The logarithmic clock is injective.  Hence on every finite injectively
+labelled packet the matrix
+\[
+ C_a(i,j)=
+ \begin{cases}
+ 0,&i=j,\\[2pt]
+ H_a(i,j)/(\lambda_i-\lambda_j),&i\ne j,
+ \end{cases}
+\]
+satisfies the exact commutator equation
+\[
+                  [\Lambda,C_a]=H_a-I.
+\tag{3.7zh2}\label{eq:joint-depth-countertransport}
+\]
+For every distinct edge,
+\[
+ H_a(j,i)=\overline{H_a(i,j)}
+       \quad\Longleftrightarrow\quad \Rea a=0,
+\tag{3.7zh3}\label{eq:joint-depth-hodge-edge}
+\]
+and (C_a^*=-C_a\) when this condition holds.  Globally,
+\[
+ \sup_{i,j}|H_a(i,j)|<\infty
+       \quad\Longleftrightarrow\quad \Rea a=0;
+\tag{3.7zh4}\label{eq:joint-depth-capacity-wall}
+\]
+depth separation at the single prime (2) proves both escape directions.
+The off-diagonal countertransport therefore exists at every finite depth,
+but its parameter dependence is a flat endpoint gauge.  By
+Theorem~\ref{thm:gauge-curvature-conservation}, every closed cycle is
+independent of (a).  The construction transports open-path modular growth;
+it does not turn horizontal displacement into source curvature.
+
+The complementary curved source is also explicit.  The valuation-resolved
+physical endpoint correction produces a symmetric pair response
+\(B_{pq}\) on actual primes.  Its full infinite matrix defines a
+self-adjoint Hilbert--Schmidt operator.  Moreover, arbitrarily far beyond
+every finite prime cut there are positive three-prime cycles.  Choosing
+disjoint such cycles with geometric amplitudes gives a self-adjoint
+trace-class operator (N\) such that
+\[
+ \langle e_p,Ne_p\rangle=0\quad(p\in\mathbb P),
+ \qquad
+ \langle e_{p_0},Ne_{p_1}\rangle
+ \langle e_{p_1},Ne_{p_2}\rangle
+ \langle e_{p_2},Ne_{p_0}\rangle\ne0
+\tag{3.7zh5}\label{eq:cofinal-curved-prime-carrier}
+\]
+on every selected block.  This rules out missing incidence, infinite
+completion, and loop curvature.  But twisting (N) by the divisor character
+(H_a) is precisely an endpoint gauge, so all products in
+\eqref{eq:cofinal-curved-prime-carrier} remain independent of (a).
+
+Finally, the completed Xi seam already has the required signed-transpose
+polarization.  With
+\[
+ K_u(x,y)=-\frac{\Xi'}{\Xi}
+   \left(\frac12+u+i(x-y)\right),
+\]
+one has
+\[
+ K_{-u}(x,y)=-K_u(y,x),\qquad
+ K_u-K_{-u}=K_u+K_u^{\mathsf T}=2\Rea K_u.
+\tag{3.7zh6}\label{eq:xi-aperture-signed-transpose}
+\]
+For (0<u<\tfrac12) away from a zeta zero, the continued prime--Archimedean
+source trace obeys
+\[
+ \Im\mathfrak S(t+iu)
+     =\frac12\Rea\bigl(K_u(t,0)-K_{-u}(t,0)\bigr).
+\tag{3.7zh7}\label{eq:source-to-odd-aperture}
+\]
+Thus the reflection-odd Xi sector is not conjectural and does not need to be
+recovered from a squared coordinate.  What remains absent is a single
+source law coupling this (u)-dependence nonseparably to the nonzero prime
+cycle curvature before the singular common-test limit.
+
+Nor can one repair the order-growing Gamma jet by an orthogonal positive
+completion.  At depth one and the central Cauchy point, the first Euler atom
+already gives
+\[
+ M_0<\frac{29}{625}<\frac15
+ <K^{(1)}_{\rm Euler}(0,0),
+\tag{3.7zi}\label{eq:depth-one-positive-completion-no-go}
+\]
+where \(M_0\) is the complete canonical zeroth prime--Archimedean moment.
+Consequently
+\[
+        \Rea C\ge0
+        \quad\Longrightarrow\quad
+        K^{(1)}_{\rm Euler}(0,0)+C\ne M_0.
+\]
+Any completed moment identity must therefore introduce a negative or
+genuinely off-diagonal Schur coupling between the Euler packet and the
+Gamma/polar channel; adding another positive diagonal sector is impossible.
 Indeed one common Laplace test sends the elementary head source and its
 forced odd-Hodge conjugate to
 \[
@@ -2212,6 +2564,23 @@ arithmetic source span.  Completion cannot manufacture it.  This is the
 dense-linear form of serial kernel monotonicity, and it rules out the whole
 class of ``extend the existing boundary continuously'' repairs at once.
 
+The closed-graph form is stronger.  If
+\(\mathcal R\subset H_{\rm packet}\times W\) is any closed complex linear
+relation satisfying
+\(\mathcal S_{\rm arith}\times\{0\}\subset\mathcal R\), then
+\[
+        \mathcal R
+        =H_{\rm packet}\times\mul\mathcal R.
+\tag{3.7ci}\label{eq:cross-prime-closed-relation-saturation}
+\]
+Thus a single-valued such relation is exactly the full zero graph.  More
+generally, every closable partial operator which agrees with the old zero
+boundary on the dense actual witness core has zero closure.  Unboundedness,
+graph norms, and relation-valued completion therefore do not evade the
+first coalescing edge: a surviving transgression must act nontrivially on
+finite actual witnesses, or change the source topology and arithmetic
+relation before the packet Hilbert completion is formed.
+
 \paragraph{Hypertranscendental character germs.}
 The genuine exponential source clock has a canonical valuation--unit split
 in the convergent local ring \(A=\C\{\lambda\}\):
@@ -2385,6 +2754,41 @@ replica-collision mass by at most
 Thus fixed-order recurrence instability is confined to a finite algebraic
 collision locus.  Even this uniformity controls only the compact character;
 it supplies no equation for the split coordinate.
+
+There is nevertheless a genuine source-level escape mechanism.  At a simple
+diagonalizable base point, every eigenvalue of an analytic finite matrix
+family has a unique analytic local root germ, simultaneously after shrinking
+one neighbourhood.  Independently, the actual Hermitian block Hamiltonian
+\[
+ H(u)=\bigoplus_z
+ \begin{pmatrix}m_z+d_z&u\\u&m_z-d_z\end{pmatrix}
+\]
+has exact characteristic roots \(m_z\pm\sqrt{d_z^2+u^2}\) for real \(u\).
+If the unsplit energies are pairwise distinct, every analytic characteristic
+root through one of them agrees locally, along the real coupling axis, with
+the corresponding explicit root.  An integer spectral relation on these
+analytic eigenvalue branches therefore has the form
+\[
+                c+\sum_z\beta_z\sqrt{d_z^2+u^2},
+\qquad
+ \frac{d^2}{du^2}\bigg|_{u=0}
+                =\sum_z\frac{\beta_z}{|d_z|}.
+\tag{3.12b}\label{eq:block-split-escape}
+\]
+If the reciprocal-gap weight on the right is nonzero, the relation cannot
+vanish on any neighbourhood of the unsplit point.  This condition can always
+be arranged for a nonzero block-difference vector with pairwise distinct
+base gaps: after a common diagonal shift, clearing denominators turns the
+reciprocal sum into a nonzero polynomial, so all but finitely many shifts
+work, including arbitrarily large shifts making every gap positive.  Also,
+every nonconstant character on a finite Boolean cube differs across some
+single-coordinate edge.  Thus every nonconstant finite character admits an
+abstract source-local edge and an arbitrarily small block split which escape
+its relation.  This is a positive transverse channel in the precise sense of
+Theorem~\ref{thm:pairwise-first-coalescence}: it changes source geometry
+before transport, rather than attempting to recreate a distinction after a
+collision.  What remains absent is an arithmetic theorem coupling this
+escape charge to the Riemann reflection pair.
 
 The arithmetic source exhibits the separation internally.  A packet of
 \(N\) distinct primes has normal rank \(N\), minimal lossless valuation
@@ -3219,10 +3623,19 @@ Theorem~\ref{thm:projective-descent}, this forces the Gaussian exterior
 curvature and hence the Green fracture to vanish.  Fibrewise Koszul exactness
 does not prove \eqref{eq:missing-projective-factorization}: it leaves one
 residual projective ray at each divisor and supplies no comparison between
-the rays at \(q\) and \(q^\#\).  Nor can a finite differential-rational jet
-gauge supply the needed degree-one logarithmic connection; its numerator has
-degree at most that of its denominator pair, while the required multiplier
-raises degree by one.
+the rays at \(q\) and \(q^\#\).  Nor is this limitation peculiar to the
+ordinary jet shift.  For an arbitrary index set, let a jet-like derivation
+send every polynomial generator to an element of total degree at most one.
+No nonzero element \(c\) of the resulting rational function field can satisfy
+\[
+                              D c=T c
+\]
+for a nonzero polynomial \(T\) of total degree one: after clearing a
+denominator, the left numerator has degree at most the denominator-pair
+degree, whereas the right side has degree one more.  Thus every finite
+differential-rational gauge driven by a degree-nonincreasing connection is
+excluded.  A surviving connection must leave that rational jet field or
+raise its filtration before the quotient is taken.
 
 Thus static states, fixed bounded reporters, target-independent damping,
 saturated contractions, and purely fibrewise resolutions are excluded for
@@ -5616,7 +6029,10 @@ polarization be applied.
 
 \subsection{What the universal law explains}
 
-The parent law has five exact layers.  At regular character level, every
+The parent law is the monotone filtration of source kernel relations under
+arbitrary deterministic transport.  First-loss strata partition its terminal
+kernel, while target recovery is exactly kernel refinement.  The remaining
+theorems compute this filtration in five structured categories.  At regular character level, every
 absolutely summable vanishing packet cancels fibrewise in its observed
 frequency; injective resolution admits no nontrivial packet, while
 noninjective resolution leaves a collision witness.  At finite resolved
@@ -5788,15 +6204,19 @@ with full finite Xi jet packets.
 
 \section{Conclusion}
 
-Regular tomography conservation is the common law.  An absolutely summable
-character packet can vanish only by fibrewise cancellation, and every
-nonzero atom requires an equal-observed-grade mate.  Injective resolution
-upgrades this to equal full grade; a coarsening can create apparent
-cancellation only by merging grades.  Finite resolved-grade conservation is
-its atomic shadow and exact first loss its support shadow:
-a terminal zero of a pointed
-obstruction is either present at the source or enters at one unique first
-nonconservative edge; a parallel record loses only its common radical.
+Monotone kernel filtration is the common law.  Every deterministic transport
+chain produces an increasing sequence of source equivalence relations;
+target recovery is exactly inclusion of the final kernel in the target
+kernel, and first-loss strata partition all terminal collisions.  Thus any
+terminal identification of distinct source states has one unique first coalescing edge, and no
+downstream transport can restore the lost distinction.  A terminally
+recoverable target distinction must therefore be present at the source and
+survive every edge.  Pointed first loss is the specialization to \((x,0)\).
+Regular tomography computes the collision fibres for absolutely summable
+character packets: every nonzero atom in a vanishing packet needs an
+equal-observed-grade mate; injective resolution upgrades this to equal full
+grade, while coarsening can create apparent cancellation only by merging
+grades.  A parallel record loses only its common radical.
 Unit gauges have no loss locus, every nonzero homogeneous fixed-carrier
 response is a faithful detector, and cooriented positive mixtures cannot
 short a nonzero principal defect.  Pair-groupoid descent is the collision
@@ -5898,7 +6318,7 @@ reporter, mixed Fisher
 signature, and contraction-saturation theorem explain why later positive
 scalarization cannot supply the missing identification.
 
-Regular tomography conservation gives the frontier.  Serial processing cannot recover a
+Monotone-kernel conservation gives the frontier.  Serial processing cannot recover a
 distinction once lost, arbitrary parallel records only intersect channel
 kernels, and the entire reflection-invariant subcalculus remains
 reflection-invariant.  Nowhere-zero gauges and fixed-carrier homogeneous
@@ -5939,7 +6359,9 @@ static transports, diagonal damping, common-factor co-Poisson enlargements,
 positive Gamma cones, fixed prime-cycle tensors, and saturated four-unit
 contractions cannot provide this relation.  Nor can continuous extension of the old oriented
 Calder\'on--Witt boundary: it vanishes on a dense actual arithmetic source
-span and therefore extends only as zero.  Hedenmalm quotient by the invariant polynomial module retains every
+span and therefore extends only as zero.  Every closed relation agreeing
+with that boundary is the full source times its vertical fibre; every
+single-valued or closable extension again closes to zero.  Hedenmalm quotient by the invariant polynomial module retains every
 divisor mode, showing that vertical faithfulness is also insufficient.  We
 do not prove off-line support exclusion, construct the required equal-grade
 source relation, or derive inverse-horizon admission from an independent

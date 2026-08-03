@@ -58,6 +58,39 @@ This is unconditional and two-variable. It constructs the exact
 source-to-common-test landing on the joint prime/depth carrier rather than
 recovering only a scalar real-displacement trace.
 
+## Maximal regular codiagonal and singular reflection wall
+
+The Hilbert-vector hypothesis on both legs is stronger than required for
+the coordinate product. The direct biorthogonal codiagonal is absolutely
+summable on the larger chamber
+
+```text
+Re(w)+Re(v)>0,
+```
+
+and throughout that chamber still equals
+
+```text
+LSeries Lambda (1+w+conj(v)).
+```
+
+Thus one leg may already have crossed its individual Hilbert wall while the
+paired source remains regular. This identifies the maximal regular direction
+needed before a rigged/singular completion is introduced.
+
+At exact reflected balance, take real `a` and `(w,v)=(a,-a)`. Every
+prime-depth coordinate then satisfies the displacement-independent identity
+
+```text
+L_a(p,e) conjugate(R_(-a)(p,e))
+  = Lambda(p^(e+1))/p^(e+1).
+```
+
+The depth-zero prime face contains `log(p)/p`, whose series diverges.
+Therefore the full balanced codiagonal is not summable for any `a`. Ordinary
+absolute pairing cannot cross the reflection-balanced face; Route R's
+remaining continuation must be singular before the codiagonal is formed.
+
 ## Proof
 
 For every prime-depth coordinate, the squared norms are
@@ -125,7 +158,10 @@ Capstones:
 - `xiGammaEulerPrimitiveCommonTestCoSourceLp`;
 - `xiGammaEulerPrimitiveCommonTestSourceCoeff_mul_star_coSourceCoeff_eq_term`;
 - `inner_xiGammaEulerPrimitiveCommonTestCoSource_source_eq`;
-- `xiGammaEulerPrimitiveJointDepthCommonTestPairing_eq`.
+- `xiGammaEulerPrimitiveJointDepthCommonTestPairing_eq`;
+- `summable_xiGammaEulerPrimitiveJointDepthPairedCodiagonal_of_re_add_pos`;
+- `xiGammaEulerPrimitiveJointDepthPairedCodiagonal_eq`;
+- `not_summable_xiGammaEulerPrimitiveBalancedReflectionCoeff`.
 
 ## Exact surviving frontier
 
@@ -135,3 +171,66 @@ four-unit Ward form with source-derived positive orientation. Existing
 positive-cone, finite signed-orbit, and absolutely summable signed-orbit
 rigidity theorems force that differential to be divisor-coupled before
 frequency separation or singular beyond absolute orbit summability.
+
+## Pole-filled source-to-Xi landing
+
+Literal paired source now lands through singular wall, not only in common-test L-series. On
+regular chamber, set `u=w+conj(v)` and subtract pairing from two forced polar Cauchy channels:
+
+```text
+1/u + 1/(u+1) - <R_v,L_w>.
+```
+
+This is proved equal to pole-filled `regularizedCriticalMellinDefect(u)`. Under exact centered
+coordinate `z=-i(u+1/2)`, Gamma completion
+
+```text
+i (regularizedCriticalMellinDefect(u) + gammaRealLogConnection(u+1))
+```
+
+equals `xiRelativeResolventTrace(z)` on regular resolvent locus `Re u>-1`, `u!=0`,
+`zeta(u+1)!=0`. The theorem is unconditional; nonvanishing is domain condition for meromorphic
+value equality, not zero-location hypothesis.
+
+Additional Lean module:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  EulerPrimitiveJointDepthSingularXiLanding.lean
+```
+
+Capstones:
+
+- `xiGammaEulerPrimitiveJointDepthLaplaceDefect_eq_regularized`;
+- `criticalMellinToCenteredXi`;
+- `xiGammaEulerPrimitiveJointDepthPoleFilledCompletedTrace_eq_xiRelativeResolventTrace`.
+
+Source construction, polar renormalization, singular continuation coordinate, Gamma completion,
+and Xi landing are therefore closed. Remaining Route-R theorem is not another continuation: it
+is signed/off-diagonal arithmetic annihilation on divisor boundary.
+
+## Genuine signed carrier
+
+The two nonidentical source legs now live in one actual Hilbert direct sum
+`ell2(Fin 2 x (Primes x Nat))`.  Slot exchange is proved unitary,
+self-adjoint, and involutive.  Its Krein form has strict positive diagonal
+and strict negative anti-diagonal sectors, and the source/co-source cross
+coefficient is exactly the full von Mangoldt channel.  Polar and Gamma
+completion of its canonical complex split lands in the Xi relative
+resolvent.  This supplies the negative/off-diagonal producer forced by the
+depth-one positive-completion obstruction.
+
+Additional Lean module and research card:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  EulerPrimitiveJointDepthKreinXiLanding.lean
+
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+  route-r-joint-depth-krein-xi-landing.md
+```
+
+This still does not annihilate actual Green provenance.  Rank-one reflected
+prime/depth incidence is a flat coboundary, so surviving source differential
+must be nonseparable across Euler--Gamma/divisor provenance before
+codiagonalization.

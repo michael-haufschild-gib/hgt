@@ -85,12 +85,12 @@ theorem commute_of_commGroup (x y : DeningerBau α) : Commute x y := by
     · refine Subgroup.mem_centralizer_iff.2 fun w hw => ?_
       rw [Set.mem_singleton_iff] at hw
       subst hw
-      have hcz : Commute y z := Subgroup.mem_centralizer_iff.1 hz _ rfl
+      have hcz : Commute w z := Subgroup.mem_centralizer_iff.1 hz _ rfl
       exact commute_of_root n hcz
     · refine Subgroup.mem_centralizer_iff.2 fun w hw => ?_
       rw [Set.mem_singleton_iff] at hw
       subst hw
-      exact (hof a y).symm
+      exact (hof a w).symm
   have : x ∈ Subgroup.centralizer {y} := by rw [hK]; trivial
   exact (Subgroup.mem_centralizer_iff.1 this _ rfl).symm
 

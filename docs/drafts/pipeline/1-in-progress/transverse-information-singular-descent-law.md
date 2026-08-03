@@ -184,3 +184,71 @@ It is not logically required for zero exclusion.
 - `RHTower/DeningerMeyerLogGaussianUniversalOrbitCriterion.lean`
 - `RHTower/BurnolCoPoissonBerezinFaithful.lean`
 - `RHTower/BurnolCoPoissonBerezinReflection.lean`
+
+## Pairwise first-coalescence upgrade (2026-08-03)
+
+Status: PAPER PROOF AND LEAN PROOF COMPLETE; ARITHMETIC SELECTOR OPEN.
+
+The former first-loss law was stated only for the pointed pair `(x,0)` under
+zero-preserving maps.  The maximally general statement needs neither zero nor a common carrier.
+For arbitrary heterogeneous deterministic transport
+
+`X_0 -> X_1 -> ... -> X_n`,
+
+every terminally identified source pair was either identical at the source or has one unique first
+coalescing edge.  Once coalesced, the pair stays coalesced.  Therefore every target distinction
+recoverable from the terminal attained range is already present at the source and survives every
+edge.  Applied to a reflection-odd target, every nonzero reflected pair must stay separated through
+the full route.
+
+This is now parent conservation law.  Existing results become exact shadows:
+
+1. pointed first loss is specialization to `(x,0)`;
+2. observation-kernel order is quotient formulation;
+3. regular character tomography computes coalescence fibres for absolutely summable packets;
+4. positive-cone no-shorting and transverse block splitting prove sectors where coalescence cannot
+   occur;
+5. support escape, dense completion collapse, and maximal verticality identify edges where it is
+   forced;
+6. Hedenmalm causal/anti-causal coincidence is vertical coalescence at a Xi zero and cannot create
+   the independent horizontal orientation;
+7. every Riemann route must therefore provide the odd distinction at source and preserve it, or
+   prove directly that no off-line source pair exists.
+
+Formal evidence:
+
+- `HTGeometry/PairwiseFirstCoalescenceLaw.lean`
+- `HTGeometry/RegularCharacterTomographyLaw.lean`
+- `HTGeometry/PointedTransportFirstLossLaw.lean`
+- `HTGeometry/BlockSplitEscape.lean`
+
+Two later arithmetic/quantum realizations make boundary sharper.  Functional-equation diagonal
+sewing of complete joint-depth primitive source and co-source cancels horizontal displacement at
+every prime-depth-time coordinate: the full regular common test depends only on regularization
+depth.  Its unresolved legs are jointly Hilbert exactly inside the wall
+`|Re a| < eps`; equality is singular.  Conversely, every nonconstant finite hypercube character
+has a nontrivial edge, and distinct diagonal gaps admit arbitrarily large positive shifts with
+nonzero reciprocal-gap charge, so an arbitrarily small block split escapes the relation.  Thus
+abstract transverse source escape is available; missing theorem is its arithmetic realization on
+Riemann reflection pair before diagonal sewing.
+
+Additional evidence:
+
+- `RHTower/EulerPrimitiveJointDepthReflectionDiagonalBlindness.lean`
+- `HTGeometry/HypercubeCharacterNonconstancy.lean`
+- `HTGeometry/ReciprocalSumNonvanishing.lean`
+
+The cross-prime completion no-go is now closed beyond bounded observers.  Any closed linear relation
+containing old zero boundary on dense actual arithmetic witness core equals full packet source times
+its vertical fibre; if single-valued it is full zero graph, and any closable partial operator
+agreeing on core has zero closure.  Therefore surviving horizontal transgression must act already
+on finite witnesses or change source topology/arithmetic relation before completion.
+
+- `RHTower/DeningerCalderonWittCrossPrimeClosedRelationNoGo.lean`
+
+Positive orthogonal completion is independently excluded at depth one: the first order-growing
+Euler jet atom at central Cauchy point already exceeds the whole canonical zeroth
+prime--Archimedean moment.  Adding nonnegative diagonal mass cannot repair it.  Surviving completion
+must use a negative or genuinely off-diagonal Schur coupling.
+
+- `RHTower/VonMangoldtGammaJetPositiveCompletionNoGo.lean`

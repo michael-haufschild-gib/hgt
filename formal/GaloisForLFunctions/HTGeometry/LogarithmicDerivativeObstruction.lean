@@ -63,14 +63,14 @@ theorem derivative_mul_sub_ne_const_mul {F : Type*} [Field F] [CharZero F]
 
 /-- The total jet derivation does not raise total degree: it replaces one jet variable by the next,
 which has the same degree. -/
-theorem totalDegree_jetDerivation_le (P : MvPolynomial ℕ ℂ) :
-    (jetDerivation P).totalDegree ≤ P.totalDegree := by
+theorem totalDegree_jetTotalDerivation_le (P : MvPolynomial ℕ ℂ) :
+    (jetTotalDerivation P).totalDegree ≤ P.totalDegree := by
   conv_lhs => rw [P.as_sum]
   rw [map_sum]
   refine le_trans (MvPolynomial.totalDegree_finsetSum _ _) ?_
   refine Finset.sup_le fun s hs => ?_
   have hsdeg : (s.sum fun _ e => e) ≤ P.totalDegree := MvPolynomial.le_totalDegree hs
-  rw [jetDerivation, MvPolynomial.mkDerivation_monomial]
+  rw [jetTotalDerivation, MvPolynomial.mkDerivation_monomial]
   refine le_trans (MvPolynomial.totalDegree_smul_le _ _) ?_
   rw [Finsupp.sum]
   refine le_trans (MvPolynomial.totalDegree_finsetSum _ _) ?_
@@ -98,20 +98,20 @@ theorem totalDegree_jetDerivation_le (P : MvPolynomial ℕ ℂ) :
 /-- **The jet logarithmic-derivative equation is impossible.**  In the jet polynomial ring no
 nonzero pair `A`, `B` satisfies `D A * B - D B * A = n * X_1 * A * B` with `n` nonzero: the total
 degree of the left side is at most `deg A + deg B`, while the right side has degree one more. -/
-theorem jetDerivation_logDeriv_equation_impossible {A B : MvPolynomial ℕ ℂ} (hA : A ≠ 0)
+theorem jetTotalDerivation_logDeriv_equation_impossible {A B : MvPolynomial ℕ ℂ} (hA : A ≠ 0)
     (hB : B ≠ 0) {n : ℂ} (hn : n ≠ 0) :
-    jetDerivation A * B - jetDerivation B * A
+    jetTotalDerivation A * B - jetTotalDerivation B * A
       ≠ MvPolynomial.C n * (MvPolynomial.X 1 * (A * B)) := by
   intro heq
-  have hdegL : (jetDerivation A * B - jetDerivation B * A).totalDegree
+  have hdegL : (jetTotalDerivation A * B - jetTotalDerivation B * A).totalDegree
       ≤ A.totalDegree + B.totalDegree := by
     refine le_trans (MvPolynomial.totalDegree_sub _ _) ?_
     refine max_le ?_ ?_
     · refine le_trans (MvPolynomial.totalDegree_mul _ _) ?_
-      exact Nat.add_le_add_right (totalDegree_jetDerivation_le A) _
+      exact Nat.add_le_add_right (totalDegree_jetTotalDerivation_le A) _
     · refine le_trans (MvPolynomial.totalDegree_mul _ _) ?_
       rw [add_comm A.totalDegree B.totalDegree]
-      exact Nat.add_le_add_right (totalDegree_jetDerivation_le B) _
+      exact Nat.add_le_add_right (totalDegree_jetTotalDerivation_le B) _
   have hCn : (MvPolynomial.C n : MvPolynomial ℕ ℂ) ≠ 0 := by simpa using hn
   have hX1 : (MvPolynomial.X 1 : MvPolynomial ℕ ℂ) ≠ 0 := MvPolynomial.X_ne_zero 1
   have hAB : A * B ≠ 0 := mul_ne_zero hA hB

@@ -35,7 +35,23 @@
   transfer),
   `GaloisForLFunctions.RHTower.DeningerRationalPower` (rational powers in a group with unique
   roots),
-  `GaloisForLFunctions.RHTower.DeningerRationalFreeDGroup` (`Bau(ℤ) ≅ ℚ`)
+  `GaloisForLFunctions.RHTower.DeningerRationalFreeDGroup` (`Bau(ℤ) ≅ ℚ`),
+  `GaloisForLFunctions.RHTower.DeningerBaumslagAbelian` (root-closed centralizers; `Bau` of an
+  abelian group is abelian),
+  `GaloisForLFunctions.RHTower.DeningerRatVectorSpace` (an abelian group with unique roots is a
+  rational vector space),
+  `GaloisForLFunctions.RHTower.DeningerPermutationShapiro` (Shapiro's lemma for permutation
+  representations),
+  `GaloisForLFunctions.RHTower.DeningerPushoutLength` (word length in an amalgamated free product),
+  `GaloisForLFunctions.RHTower.DeningerBassSerreTree` (the tree of cosets and its augmented
+  complex),
+  `GaloisForLFunctions.RHTower.DeningerPushoutFirstLetter` (the sharp length law),
+  `GaloisForLFunctions.RHTower.DeningerTreeAcyclic` (acyclicity of the tree of cosets),
+  `GaloisForLFunctions.RHTower.DeningerTreeShortExact` (the tree sequence as a short exact sequence
+  of representations),
+  `GaloisForLFunctions.RHTower.DeningerPermutationSum` (permutation representations of disjoint
+  unions),
+  `GaloisForLFunctions.RHTower.DeningerHomologyAdditive` (group homology is an additive functor)
 
 ## Statement
 
@@ -333,6 +349,203 @@ statements.
 This is also a check on the term-algebra construction: it produces the classically expected object in
 the one-generator case, rather than something larger.
 
+**Centralizers in a group with unique roots are root closed**, and the abelian case follows.
+`DeningerBaumslagAbelian.lean`:
+
+- `deningerCommute_of_commute_pow` — if `x` commutes with `y^(n+1)` then it commutes with `y`,
+  because conjugation by `x` sends `y` to another `(n+1)`-st root of `y^(n+1)`, and roots are
+  unique.  Axiom audit: `propext` only;
+- `deningerRoot_commute` — hence roots of commuting elements commute;
+- `DeningerBau.commute_of_commGroup` and the `CommGroup` instance — **`Bau(G)` is abelian whenever
+  `G` is**: the centralizer of any element is root closed and contains the image of `G`, so by the
+  generation lemma it is everything.
+
+This is the structural input for the packet's target side, where `A` is abelian, and it is what makes
+`Bau(ℤ) ≅ ℚ` a special case rather than an accident.
+
+**An abelian group with unique roots is a rational vector space.**  `DeningerRatVectorSpace.lean`
+turns the root operations into a `ℚ`-action:
+
+- `deningerRoot_mul`, `deningerRoot_zpow` — in the abelian case each root operation is a group
+  homomorphism and commutes with integer powers, both by uniqueness of roots;
+- `deningerRoot_root` — the `m`-th root of the `n`-th root is the `mn`-th root;
+- `deningerRatModule` — the `ℚ`-module structure on `Additive H`, with `q • x` the rational power.
+  The scalar associativity axiom is the content: it is exactly the composition law for roots
+  together with the fact that `n₁n₂/(d₁d₂)` and the reduced form of `q₁q₂` give the same rational
+  power;
+- `deningerRatLinearMap` — every homomorphism between abelian groups with unique roots is
+  automatically `ℚ`-linear, since homomorphisms preserve roots.  So the rationalization of abelian
+  groups is a functor to `ℚ`-vector spaces, and `deningerBauRatLift` is the universal property in
+  that category;
+- `deningerRatModule_unique` — this structure is the only one, by mathlib's uniqueness of `ℚ`-module
+  structures.  There is no choice being made.
+
+mathlib knows a `ℚ`-module structure is unique when it exists but has no existence statement of this
+kind, so this is new infrastructure.
+
+### The route to clause (4) in degrees `≥ 3`
+
+The degrees `0, 1, 2` are literal in mathlib's `groupCohomology`, which is why they are done.  For
+all degrees the argument has to change shape, and the shape it has to take is this:
+
+1. `Bau(F)` is the colimit of the tower of root adjunctions `A ↦ A *_{⟨g⟩ = ⟨t^n⟩} ⟨t⟩`.
+2. Each step is an amalgamated free product over an infinite cyclic group, and `⟨g⟩ → ⟨t⟩` is an
+   isomorphism on `H_*(-;ℚ)` — on `H_1` it is multiplication by `n`, invertible over `ℚ`.  So by
+   Mayer–Vietoris each step is a `ℚ`-homology isomorphism.
+3. Homology commutes with filtered colimits of groups, so `H_*(Bau F;ℚ) = H_*(F;ℚ)`, which vanishes
+   above degree one.
+4. Over a field, cohomology is the dual of homology, so `H^n(Bau F;ℚ) = 0` for `n ≥ 2`.
+
+The argument must run in **homology**, not cohomology: cohomology does not commute with filtered
+colimits.  Step 2 needs Mayer–Vietoris for amalgamated free products, which mathlib does not have;
+the standard construction of it is the short exact sequence of the Bass–Serre tree,
+
+  `0 → k[E] → k[V] → k → 0`,
+
+with `E` and `V` disjoint unions of coset spaces, whose long exact sequence in `H_*(G;-)` becomes
+Mayer–Vietoris once each `H_*(G;k[G ⧸ S])` is identified with `H_*(S;k)`.
+
+That identification is now built.  `DeningerPermutationShapiro.lean`:
+
+- `deningerIndTrivialIso` — `Ind_S^G(k) ≅ k[G ⧸ S]`, the induced representation of the trivial
+  representation of a subgroup is the permutation representation on its cosets.  The map sends
+  `⟦h ⊗ c⟧` to the basis element at the coset of `h⁻¹`; the inversion is what converts mathlib's
+  right-handed coinvariants convention into left cosets;
+- `deningerPermutationShapiro` — `H_n(G; k[G ⧸ S]) ≅ H_n(S; k)`, by composing that isomorphism with
+  mathlib's Shapiro lemma for induced representations.
+
+mathlib has Shapiro's lemma only for `Rep.ind`, whose underlying module is a coinvariants quotient
+of `k[G] ⊗ A`; the permutation form is the one every geometric application needs, and it was
+missing.
+
+The remaining input for step 2 is the exactness of the tree sequence.  Its easy half — connectivity,
+i.e. that the image of the boundary map is all of the augmentation kernel — needs no normal forms at
+all: `gC` and `g·of i x·C` are both adjacent to `g·A_i`, so `PushoutI.induction_on` over the
+generators collapses every vertex to the root.  The hard half is acyclicity, and the standard proof
+grades the tree by distance from the root and looks at an edge of maximal distance in a supposed
+cycle.  That grading is the word length of the normal form, which is now built.
+`DeningerPushoutLength.lean`:
+
+- `deningerLen` — the number of letters of the normal form of an element, relative to a transversal
+  of the base group;
+- `deningerLen_rcons_of_mem`, `deningerLen_rcons_of_notMem` — prepending a letter lengthens the word
+  by one exactly when the letter is not already in the base group;
+- `deningerLen_base_mul`, `deningerLen_eq_zero_iff` — the length is unchanged by the base group on
+  the left and vanishes exactly on it;
+- `deningerLen_of_mul_le`, `deningerLen_le_of_mul` — multiplying by an element of one of the factors
+  changes the length by at most one in either direction.  Both bounds come from the same
+  computation: multiplication by a factor rewrites the normal form as `rcons` of the same tail with
+  a different head, and only the head decides whether the word gains a letter;
+- `deningerCosetLen`, `deningerCosetLen_eq_zero_iff`, `deningerCosetLen_mul_of` — the induced length
+  on the cosets of the base group, with the base coset as its unique zero, and its one-step bound.
+  The length is invariant under the base group on the *left*, so it descends to *left* cosets only
+  after inverting representatives; that inversion is the same one already used in the permutation
+  form of Shapiro's lemma, and the two must be taken with the same handedness or the tree and the
+  coefficients will not match.
+
+The complex itself is now built.  `DeningerBassSerreTree.lean`:
+
+- `DeningerTreeVertex`, `DeningerTreeEdge` — the cosets of the base group together with the cosets
+  of each factor, and the pairs (factor, coset of the base group); with the `PushoutI`-actions;
+- `deningerEdgeHead` — the map on cosets induced by `C ≤ A_i`, which is what makes the edge
+  `(i, gC)` run from `gC` to `gA_i`;
+- `deningerTreeBoundary`, `deningerTreeAug`, and their equivariance; packaged as morphisms of
+  representations `deningerTreeBoundaryHom`, `deningerTreeAugHom`;
+- `deningerTreeAug_surjective`, `deningerTreeAug_comp_boundary` — it is a complex, exact at `k`;
+- `deningerTree_connected` — **the kernel of the augmentation is the image of the boundary.**  The
+  proof is the induction over the generators of the pushout announced above: the statement is made
+  multiplicative by quantifying over a left translate, the base group moves nothing, and a letter
+  `of i x` moves `gC` to `g·of i x·C`, whose difference is the difference of the two edges into the
+  common vertex `gA_i`.  The passage from vertices to arbitrary chains is the splitting
+  `f = (f - ε(f)·root) + ε(f)·root`.
+
+The remaining half, acyclicity, is proved as follows.
+
+**The rank of an edge.**  Put `ρ(i, x) = 2·cosetLen(x) + (0 if the normal form attached to `x`
+starts in the factor `i`, else 1)`.  This is the distance from the base coset to the endpoint of the
+edge `(i, x)` that is further away.  Suppose a chain `f` has `∂f = 0` and `f ≠ 0`, and let
+`e₀ = (i₀, x₀)` maximize `ρ` on the support of `f`.  Two cases, and in each one `e₀` is the only edge
+of the support meeting a chosen vertex, so the vanishing of that vertex's coefficient gives
+`f(e₀) = 0`:
+
+- if the normal form of `x₀` starts in the factor `i₀`, take the vertex `x₀` itself.  Its other
+  edges are `(i, x₀)` with `i ≠ i₀`, and those have rank `2·cosetLen(x₀) + 1 > ρ(e₀)`.  This case is
+  free — it is only the definition of `ρ`;
+- otherwise take the vertex `x₀A_{i₀}`.  Its other edges are `(i₀, x')` with `x' ⊆ x₀A_{i₀}`,
+  `x' ≠ x₀`, and those have `cosetLen(x') = cosetLen(x₀) + 1`, hence rank `> ρ(e₀)`.
+
+The second bullet is the geometric content, and it is now proved.
+`DeningerPushoutFirstLetter.lean`:
+
+- `deningerEquivPair_of_fstIdx_ne` — if the normal form of a word does not begin in the factor `i`,
+  its `i`-th pair decomposition has head coming entirely from the base group and tail the whole
+  word;
+- `deningerLen_of_mul_eq` — hence multiplying by a letter of `i` that is not in the base group
+  lengthens the normal form by **exactly** one, sharpening the two-sided bound of
+  `DeningerPushoutLength`;
+- `deningerFirstIdx` — the index the normal form of a coset begins in, well defined because the base
+  group changes only the head of a normal word;
+- `deningerCosetLen_mul_of_eq` — the second bullet above: among the cosets of the base group inside a
+  fixed coset of a factor, the one already reached is strictly closest, and every other is exactly
+  one step further.
+
+**Acyclicity is proved.**  `DeningerTreeAcyclic.lean`:
+
+- `deningerEdgeRank` — the grading `ρ` above;
+- `deningerVertexCoeff`, `deningerBoundaryChar`, `deningerVertexCoeff_boundary` — the coefficient of
+  a vertex in a boundary, as a sum over the support against the incidence coefficient;
+- `deningerTreeBoundary_injective` — **the boundary map is injective**, by the two-case leaf argument
+  run against `Finsupp.sum_eq_single`.
+
+So the tree sequence `0 → k[E] → k[V] → k → 0` is now exact at all three places, for any pushout of
+groups whose structure maps are injective.  `DeningerTreeShortExact.lean` packages it as
+`deningerTreeShortComplex` together with `deningerTreeShortComplex_shortExact`, a
+`ShortComplex.ShortExact` in `Rep k G` — the exact input mathlib's long exact sequence in group
+homology consumes.  Exactness in the middle is transported from modules by
+`reflects_exact_of_faithful` along the forgetful functor; mono and epi are `Rep.mono_iff_injective`
+and `Rep.epi_iff_surjective`.
+
+**What is left to reach Mayer-Vietoris.**  The long exact sequence of this short exact sequence has
+terms `H_n(G; k[E])` and `H_n(G; k[V])`, and these have to be identified with the homology of the
+factors.  `k[E]` and `k[V]` are permutation representations on disjoint unions of coset spaces:
+
+  `E = ι × (G ⧸ C)`,  `V = (G ⧸ C) ⊔ (Σ i, G ⧸ A_i)`,
+
+so what is needed is that the permutation representation on a disjoint union is the direct sum of
+the pieces, and that group homology takes it to the direct sum.  For a **finite** index set this is
+a biproduct and follows from additivity of the homology functor, which is enough for the intended
+application (the tower of root adjunctions uses two factors).  For an arbitrary index set it would
+need homology to commute with coproducts, which mathlib does not package.
+
+The disjoint union half is now built.  `DeningerPermutationSum.lean`:
+
+- `deningerPermLift`, `deningerPermHom` — a map of a `G`-set into a permutation representation
+  extends to a linear map, and an equivariant one extends to a morphism of representations.  Every
+  map below is built through this, so all verifications reduce to a computation on basis elements;
+- `deningerPermRepIsoOfEquiv` — an equivariant bijection induces an isomorphism of permutation
+  representations, which is what converts `Σ (i : Bool), Y i` into `Y true ⊕ Y false`;
+- `deningerSumInl`, `deningerSumInr`, `deningerSumFst`, `deningerSumSnd` with their four composite
+  identities, and `deningerSumRepIso` — **the permutation representation on a disjoint union is the
+  biproduct**, `k[X ⊕ Y] ≅ k[X] ⊞ k[Y]`.
+
+The content of the last one is the total identity `fst ≫ inl + snd ≫ inr = 1`; the four component
+identities are formal.
+
+The homology half is built too.  `DeningerHomologyAdditive.lean`:
+
+- `deningerChainsFunctor_additive` — the functor sending a representation to its complex of
+  inhomogeneous chains is additive.  mathlib registers only `PreservesZeroMorphisms` for it;
+- `deningerHomologyFunctor_additive` — hence group homology in each degree is additive;
+- `deningerHomologyBiprodIso` — **`Hₙ(G, A ⊞ B) ≅ Hₙ(G, A) ⊞ Hₙ(G, B)`**, assembled from the images
+  of the four structure maps, with the composite identities coming from the biproduct's total
+  identity together with additivity.
+
+mathlib's route from additivity to preservation of binary biproducts does not fire by instance
+search on this functor, so the isomorphism is built by hand from `biprod.lift` and `biprod.desc`.
+
+Step 1 still needs Baumslag's inductive step (root adjunction preserves unique roots), which rests
+on the same normal-form machinery.
+
 Supporting facts that are proved, in `DeningerBaumslagGeneration.lean`:
 
 - `DeningerBau.eq_top_of_rootClosed` — a subgroup containing the image of `G` and closed under the
@@ -570,3 +783,86 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   that image's `d`-th root — so the two are isomorphic, both composites being pinned by uniqueness.
   Besides being the `dim U = 1` case of the packet, this is a check that the term-algebra construction
   produces the classically expected object and nothing larger.
+- 2026-08-03 — Proved that centralizers in a group with unique roots are closed under the roots, and
+  deduced that `Bau(G)` is abelian whenever `G` is.  The mechanism is one line of algebra:
+  conjugation by an element commuting with `y^(n+1)` sends `y` to another `(n+1)`-st root of the same
+  element, and uniqueness of roots forces it to fix `y`.  Combined with the generation lemma — the
+  centralizer of any element is root closed and contains the image of `G`, hence is everything —
+  this gives the abelian case, of which `Bau(ℤ) ≅ ℚ` is now visibly a special case.
+- 2026-08-03 — Built the rational vector space structure on an abelian group with unique roots.
+  In the abelian case the root operations are homomorphisms, commute with integer powers, and
+  compose (`m`-th root of `n`-th root = `mn`-th root); the rational power operation then satisfies
+  the module axioms, with scalar associativity the only nontrivial one.  Homomorphisms preserve
+  roots, so they are automatically `ℚ`-linear, making the abelian rationalization a functor to
+  `ℚ`-vector spaces with `deningerBauRatLift` as its universal property.  mathlib has uniqueness of
+  `ℚ`-module structures but no existence statement of this kind; combined with that uniqueness, the
+  structure built here is canonical.
+- 2026-08-03 — Settled the route for clause (4) in all degrees and built its first missing input.
+  The argument cannot be run in cohomology, because cohomology does not commute with the filtered
+  colimit defining the rationalization; it has to run in homology and be dualized at the end.  What
+  it needs is Mayer–Vietoris for amalgamated free products, i.e. the Bass–Serre tree sequence
+  `0 → k[E] → k[V] → k → 0` plus an identification of `H_*(G; k[G ⧸ S])` with `H_*(S; k)`.  The
+  latter is now proved: mathlib's Shapiro lemma is stated for `Rep.ind`, whose underlying module is
+  a coinvariants quotient of `k[G] ⊗ A`, so the permutation-representation form had to be built.
+  The comparison map sends `⟦h ⊗ c⟧` to the coset of `h⁻¹`, the inversion converting mathlib's
+  right-handed convention into left cosets.
+- 2026-08-03 — Built the length function on an amalgamated free product, the grading the tree
+  sequence's acyclicity argument runs on.  Both directions of the one-step bound come from a single
+  observation: multiplication by an element of a factor rewrites the normal form as `rcons` of the
+  *same* tail with a different head, and only the head decides whether a letter is gained, so the
+  length can move by at most one.  The length is invariant under the base group on the left, so it
+  descends to left cosets only after inverting representatives — the same inversion the permutation
+  form of Shapiro's lemma uses, and the two have to agree in handedness.  Also recorded that the
+  connectivity half of the tree sequence needs no normal forms: `gC` and `g·of i x·C` are both
+  adjacent to `g·A_i`, so induction over the generators of the pushout collapses every vertex to the
+  root.
+- 2026-08-03 — Built the tree of cosets of a pushout of groups, its augmented complex, the
+  equivariance of both maps, and the connectivity half of exactness.  Connectivity needed no normal
+  forms, as expected: quantifying over a left translate makes the statement multiplicative, so
+  `PushoutI.induction_on` reduces it to two cases — the base group moves no coset, and a letter
+  `of i x` moves `gC` to `g·of i x·C`, whose difference is the difference of the two edges into the
+  common vertex `gA_i`.  Arbitrary chains reduce to vertices by the splitting
+  `f = (f - ε(f)·root) + ε(f)·root`.  What is left of the tree sequence is acyclicity, which is what
+  the length function was built for.
+- 2026-08-03 — Fixed the acyclicity argument for the tree sequence and proved its geometric input.
+  The right rank on edges is `2·cosetLen(x) + (0 if the normal form of x starts in the factor i,
+  else 1)` — the distance to the far endpoint.  Maximizing it isolates a leaf in two cases, one of
+  which is free from the definition of the rank and the other of which needs a *sharp* length law:
+  multiplying by a letter of a factor that is not already at the front, and not in the base group,
+  lengthens the normal form by exactly one.  That is now proved, via the observation that when the
+  first letter is not in the factor `i`, the `i`-th pair decomposition of the normal word has head
+  entirely in the base group and tail the whole word.  The consequence for cosets — among the cosets
+  of the base group inside a coset of a factor, exactly one is closest and all others are one step
+  further — is what makes the far vertex a leaf.
+- 2026-08-03 — Proved acyclicity, completing the Bass-Serre tree sequence: for any pushout of groups
+  with injective structure maps, `0 → k[E] → k[V] → k → 0` is exact at all three places.  The leaf
+  argument went through as planned, with two implementation notes worth keeping: the vertex type has
+  a dependent constructor, so the summand branch needs the index destructured *before* the maximal
+  edge is chosen, or the heterogeneous equality coming out of `injEq` cannot be substituted away;
+  and the coefficient extraction is cleanest as a single `Finsupp.sum` against an incidence
+  coefficient, reduced by `Finsupp.sum_eq_single` at the maximal edge.  Next is assembling
+  Mayer-Vietoris: package the sequence as a short exact sequence of representations, feed it to
+  mathlib's long exact sequence in group homology, and identify the terms with the permutation form
+  of Shapiro's lemma.
+- 2026-08-03 — Packaged the tree sequence as a short exact sequence of representations, the form
+  mathlib's long exact sequence in group homology consumes.  What is left before Mayer-Vietoris is
+  the identification of the two permutation representations with direct sums over the pieces of
+  their index sets; for a finite index set that is a biproduct and follows from additivity of the
+  homology functor, which suffices for the two-factor amalgams the tower of root adjunctions uses.
+  For arbitrary index sets it would need homology to commute with coproducts, which mathlib does not
+  package — so the Mayer-Vietoris statement will be stated for finitely many factors.
+- 2026-08-03 — Proved that the permutation representation on a disjoint union is the biproduct, and
+  that equivariant bijections induce isomorphisms of permutation representations.  Everything is
+  built through a single lift construction — a map of a `G`-set into a permutation representation
+  extends to a morphism — so each verification is a computation on basis elements.  The content of
+  the biproduct statement is the total identity `fst ≫ inl + snd ≫ inr = 1`; the four component
+  identities are formal.  With two factors, the tree's edge and vertex sets are `Bool`-indexed, so
+  the binary statement plus the transport along equivariant bijections covers both.
+- 2026-08-03 — Proved group homology additive and deduced that it takes biproducts to biproducts.
+  mathlib registers only `PreservesZeroMorphisms` for the chains functor, so additivity had to be
+  proved from the description of the chain map on basis elements; the instance chain from
+  `Additive` to `PreservesBinaryBiproduct` then failed to fire anyway, so the biproduct isomorphism
+  is assembled by hand from `biprod.lift`/`biprod.desc`, its two composite identities coming from
+  `biprod.total` plus additivity.  One tactic note: the `@[simps]`-generated `functor_map` lemma
+  unfolds the functor's action and defeats `← Functor.map_comp`; suppressing it with
+  `simp [-groupHomology.functor_map]` is what makes the composite identities go through.

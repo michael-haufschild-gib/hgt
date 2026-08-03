@@ -242,5 +242,127 @@ theorem xiGammaEulerPrimitiveJointDepthCommonTestPairing_eq
   rw [xiGammaEulerPrimitiveJointDepthCommonTestPairing,
     inner_xiGammaEulerPrimitiveCommonTestCoSource_source_eq, eulerPrimitiveCommonTestKernel]
 
+
+/-! ## Maximal regular codiagonal and the balanced-reflection wall
+
+The product series has a strictly larger regular domain than the Hilbert
+inner product: only the sum of real dampings must be positive. At exact
+opposite displacement the coordinate product loses all damping and becomes
+the critical von Mangoldt mass. Its prime face is nonsummable. Thus ordinary
+absolute codiagonal continuation cannot cross the reflection-balanced face;
+the remaining Route-R continuation is necessarily singular before pairing.
+-/
+def xiGammaEulerPrimitiveJointDepthPairedCodiagonal (w v : ℂ) : ℂ :=
+  ∑' pe : Nat.Primes × ℕ,
+    xiGammaEulerPrimitiveCommonTestSourceCoeff w pe *
+      star (xiGammaEulerPrimitiveCommonTestCoSourceCoeff v pe)
+
+theorem summable_xiGammaEulerPrimitiveJointDepthPairedCodiagonal_of_re_add_pos
+    {w v : ℂ} (h : 0 < w.re + v.re) :
+    Summable (fun pe : Nat.Primes × ℕ =>
+      xiGammaEulerPrimitiveCommonTestSourceCoeff w pe *
+        star (xiGammaEulerPrimitiveCommonTestCoSourceCoeff v pe)) := by
+  have hs : Summable (LSeries.term
+      (fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℂ))
+      (w + star v + 1)) := by
+    apply ArithmeticFunction.LSeriesSummable_vonMangoldt
+    change 1 < w.re + v.re + 1
+    linarith
+  exact (hs.comp_injective
+    xiGammaEulerValuationNat_injective_commonTest).congr fun pe =>
+      (xiGammaEulerPrimitiveCommonTestSourceCoeff_mul_star_coSourceCoeff_eq_term
+        w v pe).symm
+
+theorem xiGammaEulerPrimitiveJointDepthPairedCodiagonal_eq
+    {w v : ℂ} (h : 0 < w.re + v.re) :
+    xiGammaEulerPrimitiveJointDepthPairedCodiagonal w v =
+      vonMangoldtPrimeLaplaceChannelComplex (w + star v) := by
+  have hs : Summable (LSeries.term
+      (fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℂ))
+      (w + star v + 1)) := by
+    apply ArithmeticFunction.LSeriesSummable_vonMangoldt
+    change 1 < w.re + v.re + 1
+    linarith
+  have hsupport : Function.support (LSeries.term
+      (fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℂ))
+      (w + star v + 1)) ⊆ {n : ℕ | IsPrimePow n} := by
+    intro n hn
+    by_contra hpow
+    apply hn
+    simp [LSeries.term,
+      ArithmeticFunction.vonMangoldt_eq_zero_iff.mpr hpow]
+  have hreindex :=
+    tsum_eq_tsum_primes_of_support_subset_prime_powers hs hsupport
+  rw [xiGammaEulerPrimitiveJointDepthPairedCodiagonal]
+  calc
+    (∑' pe : Nat.Primes × ℕ,
+        xiGammaEulerPrimitiveCommonTestSourceCoeff w pe *
+          star (xiGammaEulerPrimitiveCommonTestCoSourceCoeff v pe)) =
+      ∑' pe : Nat.Primes × ℕ,
+        LSeries.term
+          (fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℂ))
+          (w + star v + 1) (xiGammaEulerValuationNat pe) := by
+      apply tsum_congr
+      exact
+        xiGammaEulerPrimitiveCommonTestSourceCoeff_mul_star_coSourceCoeff_eq_term
+          w v
+    _ = ∑' p : Nat.Primes, ∑' e : ℕ,
+        LSeries.term
+          (fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℂ))
+          (w + star v + 1) (p ^ (e + 1)) := by
+      have hpair : Summable (fun pe : Nat.Primes × ℕ =>
+          LSeries.term
+            (fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℂ))
+            (w + star v + 1) (xiGammaEulerValuationNat pe)) :=
+        hs.comp_injective xiGammaEulerValuationNat_injective_commonTest
+      simpa only [xiGammaEulerValuationNat] using hpair.tsum_prod
+    _ = ∑' n : ℕ,
+        LSeries.term
+          (fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℂ))
+          (w + star v + 1) n := hreindex.symm
+    _ = vonMangoldtPrimeLaplaceChannelComplex (w + star v) := rfl
+
+theorem xiGammaEulerPrimitiveBalancedReflectionCoeff_eq
+    (a : ℝ) (pe : Nat.Primes × ℕ) :
+    xiGammaEulerPrimitiveCommonTestSourceCoeff (a : ℂ) pe *
+        star (xiGammaEulerPrimitiveCommonTestCoSourceCoeff (-a : ℂ) pe) =
+      finiteVonMangoldtWeight (xiGammaEulerValuationNat pe) := by
+  rw [
+    xiGammaEulerPrimitiveCommonTestSourceCoeff_mul_star_coSourceCoeff_eq_term]
+  simp [finiteVonMangoldtWeight]
+
+theorem not_summable_xiGammaEulerPrimitiveBalancedReflectionCoeff (a : ℝ) :
+    ¬Summable (fun pe : Nat.Primes × ℕ =>
+      xiGammaEulerPrimitiveCommonTestSourceCoeff (a : ℂ) pe *
+        star (xiGammaEulerPrimitiveCommonTestCoSourceCoeff (-a : ℂ) pe)) := by
+  intro hsum
+  have hpComplex : Summable (fun p : Nat.Primes =>
+      finiteVonMangoldtWeight p) := by
+    have hp := hsum.comp_injective
+      (fun p q h => by exact congrArg Prod.fst h :
+        Function.Injective (fun p : Nat.Primes => (p, 0)))
+    exact hp.congr fun p => by
+      simpa [xiGammaEulerValuationNat] using xiGammaEulerPrimitiveBalancedReflectionCoeff_eq a (p, 0)
+  have hpReal : Summable (fun p : Nat.Primes =>
+      vonMangoldtGammaRenormalizedBoundaryCoordinate 0 p ^ 2) := by
+    have hre := Complex.reCLM.summable hpComplex
+    exact hre.congr fun p => by
+      rw [← finiteVonMangoldtDepthOneAmplitude_sq p.property.ne_zero]
+      have hzero := vonMangoldtGammaRenormalizedBoundaryCoordinate_zero p.property.two_le
+      have hzeroRe := congrArg Complex.re hzero
+      simp only [Complex.ofReal_re] at hzeroRe
+      rw [hzeroRe]
+      have hamp : finiteVonMangoldtDepthOneAmplitude (p : ℕ) =
+          (((finiteVonMangoldtDepthOneAmplitude (p : ℕ)).re : ℝ) : ℂ) := by
+        simp [finiteVonMangoldtDepthOneAmplitude]
+      rw [hamp]
+      rw [pow_two, pow_two]
+      simp [Complex.reCLM_apply]
+  have hpos :=
+    (summable_sq_vonMangoldtGammaRenormalizedBoundaryCoordinate_prime_iff 0).mp
+      hpReal
+  norm_num at hpos
+
+
 end
 end RHTower

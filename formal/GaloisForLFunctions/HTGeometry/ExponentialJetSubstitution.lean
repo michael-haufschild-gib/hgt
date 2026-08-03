@@ -23,12 +23,12 @@ noncomputable section
 /-- The exponential Bell polynomials: `exp f` factored out of the jets of `exp f`. -/
 def expJetNum : ℕ → MvPolynomial ℕ ℂ
   | 0 => 1
-  | (k + 1) => jetDerivation (expJetNum k) + MvPolynomial.X 1 * expJetNum k
+  | (k + 1) => jetTotalDerivation (expJetNum k) + MvPolynomial.X 1 * expJetNum k
 
 @[simp] theorem expJetNum_zero : expJetNum 0 = 1 := rfl
 
 theorem expJetNum_succ (k : ℕ) :
-    expJetNum (k + 1) = jetDerivation (expJetNum k) + MvPolynomial.X 1 * expJetNum k := rfl
+    expJetNum (k + 1) = jetTotalDerivation (expJetNum k) + MvPolynomial.X 1 * expJetNum k := rfl
 
 /-- The exponential Bell polynomials involve only the jets they may. -/
 theorem expJetNum_mem_supported (k : ℕ) :
@@ -50,7 +50,7 @@ theorem expJetNum_mem_supported (k : ℕ) :
         rw [MvPolynomial.X_mem_supported]
         simp only [Set.mem_Iic]
         omega
-      exact Subalgebra.add_mem _ (jetDerivation_mem_supported ih)
+      exact Subalgebra.add_mem _ (jetTotalDerivation_mem_supported ih)
         (Subalgebra.mul_mem _ hX1 (hmono ih))
 
 /-- **The exponential jet formula.**  Every jet of `exp f` is `exp f` times a universal polynomial
@@ -112,7 +112,7 @@ theorem expJetNum_sub_X_mem_supported (k : ℕ) :
   induction k with
   | zero =>
       have hone : expJetNum 1 = MvPolynomial.X 1 := by
-        rw [expJetNum_succ, expJetNum_zero, jetDerivation.map_one_eq_zero, mul_one, zero_add]
+        rw [expJetNum_succ, expJetNum_zero, jetTotalDerivation.map_one_eq_zero, mul_one, zero_add]
       rw [hone, sub_self]
       exact Subalgebra.zero_mem _
   | succ k ih =>
@@ -125,13 +125,13 @@ theorem expJetNum_sub_X_mem_supported (k : ℕ) :
         omega
       have hsplit : expJetNum (k + 1) = MvPolynomial.X (k + 1)
           + (expJetNum (k + 1) - MvPolynomial.X (k + 1)) := by ring
-      have hD : jetDerivation (expJetNum (k + 1))
+      have hD : jetTotalDerivation (expJetNum (k + 1))
           = MvPolynomial.X (k + 2)
-            + jetDerivation (expJetNum (k + 1) - MvPolynomial.X (k + 1)) := by
+            + jetTotalDerivation (expJetNum (k + 1) - MvPolynomial.X (k + 1)) := by
         conv_lhs => rw [hsplit]
-        rw [map_add, jetDerivation_X]
-      have hDlow : jetDerivation (expJetNum (k + 1) - MvPolynomial.X (k + 1))
-          ∈ MvPolynomial.supported ℂ (Set.Iic (k + 1)) := jetDerivation_mem_supported ih
+        rw [map_add, jetTotalDerivation_X]
+      have hDlow : jetTotalDerivation (expJetNum (k + 1) - MvPolynomial.X (k + 1))
+          ∈ MvPolynomial.supported ℂ (Set.Iic (k + 1)) := jetTotalDerivation_mem_supported ih
       have hX1 : (MvPolynomial.X 1 : MvPolynomial ℕ ℂ) ∈
           MvPolynomial.supported ℂ (Set.Iic (k + 1)) := by
         rw [MvPolynomial.X_mem_supported]
@@ -141,7 +141,7 @@ theorem expJetNum_sub_X_mem_supported (k : ℕ) :
           ∈ MvPolynomial.supported ℂ (Set.Iic (k + 1)) :=
         Subalgebra.mul_mem _ hX1 (expJetNum_mem_supported (k + 1))
       have hval : expJetNum (k + 1 + 1) - MvPolynomial.X (k + 1 + 1)
-          = jetDerivation (expJetNum (k + 1) - MvPolynomial.X (k + 1))
+          = jetTotalDerivation (expJetNum (k + 1) - MvPolynomial.X (k + 1))
             + MvPolynomial.X 1 * expJetNum (k + 1) := by
         rw [expJetNum_succ, hD]
         ring_nf

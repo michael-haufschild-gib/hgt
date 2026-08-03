@@ -7213,6 +7213,67 @@ Lean:
 DeningerCalderonWittAllCrossPrimeArithmeticSourceCompletion.lean
 ```
 
+### 64.1 Closed-relation saturation of the actual arithmetic core
+
+The updated Hellinger--Hodge--Green descent manuscript requires the usable
+Calderón--Witt comparison to retain a boundary primitive, pass from the
+algebraic direct sum to a locally finite strict grade, and remain
+packet-valued.  The dense actual witness realization now gives a complete
+test of the tempting singular-completion interpretation.
+
+Let `E = ell2(I)` be the actual ordered cross-prime packet completion and
+let `R <= E x W` be any closed complex-linear relation containing
+
+```text
+(iota(s), 0),  s in S_arith,
+```
+
+on the dense actual Calderón--Witt source core.  If
+
+```text
+V_R = {w : (0,w) in R},
+```
+
+then unconditionally
+
+```text
+R = E x V_R.
+```
+
+Thus every single-valued such relation is the full zero graph, every
+closable partial operator agreeing with the old boundary has zero closure,
+and every nonzero multivalued survivor is pure vertical ambiguity occurring
+over every source input.  Closed unbounded operators, graph norms, and
+arbitrary closed linear relations therefore do not rescue the old oriented
+boundary.  This strictly strengthens Section 64's continuous-operator
+no-go.
+
+The corrected hard target supplied by the updated paper is consequently
+finite-core arithmetic, not completion-theoretic: construct source
+observations `A_(j,p)` whose horizontal action is already nonzero on finite
+actual witnesses, retains resolved divisor/provenance and off-diagonal
+packet/cycle data, and proves
+
+```text
+A_(j,p) Phi_(G,p) = 0
+```
+
+from an arithmetic source identity.  Their joint observation must be
+conservative on the Green comparison range.  Scalar co-Poisson traces,
+diagonal readers, fixed prime-carrier tensors, three-node theta Gram data,
+and generic Bianchi/commuting-square identities remain excluded: they are
+detectors or transport laws, not the missing annihilation theorem.
+
+Paper/Lean:
+
+```text
+docs/drafts/pipeline/3-formalized/
+deninger-cross-prime-closed-relation-saturation.md
+
+GaloisForLFunctions/RHTower/
+DeningerCalderonWittCrossPrimeClosedRelationNoGo.lean
+```
+
 ## 64. Route J universal involutive defect and horizontal null-homotopy
 
 Updated Hellinger--Hodge--Green synthesis identifies the exact parent object
@@ -7668,6 +7729,104 @@ GaloisForLFunctions/RHTower/
 DeningerFailureNerveSingularCartierMetric.lean
 ```
 
+### 67.5 Unique ramified top-conormal source transport
+
+Updated Hellinger descent sharpens required ordering. Full prime--valuation
+source/co-source labels coexist in one biorthogonal common test, but
+reflection-diagonal sewing cancels horizontal displacement before integration
+or summation. Surviving Deninger operation must therefore act at singular
+wall, retain off-diagonal incidence, or insert divisor-coupled differential
+before diagonal pairing.
+
+Finite ramified power source now supplies unique coherent version of third
+option. On
+
+```text
+A_k = C[y]/(y^k),
+B_(k,n) = C[x]/(x^(kn)),
+y |-> x^n,
+```
+
+raw pullback occupies residue class zero, whereas Grothendieck-residue
+transpose extracts residue class `n-1`. These sectors are disjoint for
+`n>1`, so raw pullback cannot be sought positive dagger pair. Corrected
+source map is
+
+```text
+C_n(g) = x^(n-1) g(x^n).
+```
+
+Final-residue extraction `R_n` is literal Hilbert adjoint of `C_n`,
+`R_n C_n=id`, and rank-half-density normalization gives exact degree law
+
+```text
+(sqrt(n) R_n) (sqrt(n) C_n) = n id.
+```
+
+Correction is strict under whole power semigroup:
+
+```text
+C_m C_n = C_(mn),
+R_n R_m = R_(mn).
+```
+
+More strongly, if monomial shifts `r_n` satisfy
+
+```text
+0 <= r_n < n,
+r_(mn)=m r_n+r_m,
+```
+
+then either `r_n=0` for every `n`, or `r_n=n-1` for every `n`. Raw and
+top-conormal transports are only strict coherent monomial sectors. Lean
+also formalizes anti-diagonal residue transpose, sector disjointness,
+`trace = different * residue`, literal adjunction, isometry, and normalized
+push--pull.
+
+This closes finite ramified local block, not whole rational-Witt source.
+Hostile audit found actual finite stages are unit-group quotients
+`(ZMod m)^x/<p>` with no ramified zero fibre. Minimal honest construction
+now retains exact quotient label, adjoins final conormal grade, extends
+genuine gauge transition trivially in grade, and proves:
+
+```text
+extended transitions compose and are injective;
+top embedding and residue commute with every refinement;
+admitted sector = final-grade support = top-embedding range;
+residue is injective on admitted sector;
+collapse by residue lands as strict coefficient-faithful cocone
+in literal algebraic Calderon--Witt packet.
+```
+
+This fixes category mismatch without claiming added grade intrinsic.
+Remaining hard theorem is no longer “find a dualizing twist”:
+
+```text
+prove genuine framed rational-Witt coefficient intrinsically supplies
+  top-conormal grade,
+then construct coefficient-faithful, nonannihilating chain landing of
+  C_n  <->  R_n
+into actual completed Xi Gamma/co-Poisson top-conormal Green boundary
+before reflection-diagonal sewing,
+and prove source inverse = analytic dagger there.
+```
+
+Actual Gamma reporter is already positive multiple of `K_6(rho)`. Thus
+dagger-preserving landing would force its mate curvature to vanish; using
+that consequence as landing premise is circular and forbidden.
+
+Paper/Lean:
+
+```text
+docs/drafts/pipeline/3-formalized/
+deninger-ramified-top-conormal-ambidexterity.md
+deninger-ramified-top-conormal-finite-stage-cocone.md
+
+GaloisForLFunctions/RHTower/
+DeningerRamifiedTopConormalAmbidexterity.lean
+DeningerRamifiedTopConormalFiniteStageCocone.lean
+```
+
 ## 67. Route J fixed prime-cycle tensor boundary
 
 The updated Hellinger paper closes arbitrary diagonal inverse-horizon
@@ -7869,4 +8028,333 @@ route-j-principal-relative-julia-current.md, Section 55
 
 GaloisForLFunctions/RHTower/
 BurnolCoPoissonConormalReflectionCover.lean
+```
+
+## 2026-08-03 Route R frontier update: biorthogonal joint-depth common-test landing
+
+The earlier joint-depth Hilbert landing resolved a real displacement and the
+earlier common-test source used the symmetric amplitude
+`sqrt(Lambda(n)/n)`. The latter scalarized the primitive promotion by a
+geometric mean before pairing. Route R now has the stronger source object on
+the full `(prime, valuation-depth)` carrier.
+
+For `n=p^(e+1)` and independent right-half-plane parameters `w,v`, the literal
+promoted source and reciprocal-promotion co-source are
+
+```text
+L_w(p,e) = [log(p)/sqrt(n)] n^(-w),
+R_v(p,e) = [1/sqrt(n)]       n^(-v).
+```
+
+Both are Hilbert vectors. Their pairing retains every prime/depth label until
+the final multiplication and satisfies unconditionally
+
+```text
+<R_v,L_w>
+  = LSeries Lambda (1+w+conj(v)),
+
+<R_v,L_w> / (w+conj(v))
+  = eulerPrimitiveCommonTestKernel(w,v).
+```
+
+Thus primitive promotion, reciprocal descent, full two-variable common-test
+formation, prime-power reindexing, and source-to-common-test landing are now
+closed without early scalarization. This is new source infrastructure, not
+the Ward sign and not RH.
+
+Exact Route-R frontier is correspondingly narrower: construct the
+Gamma/Green-reflected differential on this biorthogonal source and prove its
+arithmetic boundary form lands in the four-unit Ward correspondence with
+positive source orientation. Positive-cone, finite signed-orbit, and
+absolutely summable signed-orbit rigidity force the surviving differential to
+be divisor-coupled before frequency separation or singular beyond absolute
+orbit summability.
+
+Paper/Lean:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+route-r-primitive-joint-depth-biorthogonal-common-test.md
+
+GaloisForLFunctions/RHTower/
+EulerPrimitiveJointDepthBiorthogonalCommonTest.lean
+```
+
+### Sharp regular-pairing boundary
+
+The direct biorthogonal codiagonal exists on the larger chamber
+`Re(w)+Re(v)>0`, even if one individual leg is no longer Hilbert, and equals
+the same von Mangoldt L-series there. This separates individual source
+admission from paired-source admission.
+
+At exact reflection balance `(w,v)=(a,-a)`, however, every retained
+prime-depth coordinate loses its damping and becomes
+
+```text
+Lambda(p^(e+1))/p^(e+1).
+```
+
+The depth-zero prime face is `log(p)/p` and is nonsummable. Hence no ordinary
+absolutely summable codiagonal continuation reaches the balanced reflection
+face, for any displacement `a`. This proves the singularity demanded by the
+latest Hellinger--Hodge--Green frontier is intrinsic to the literal
+biorthogonal source, not an artifact of choosing two separately completed
+Hilbert legs. What remains is construction of the singular, divisor-coupled
+pre-codiagonal differential and its arithmetic annihilation identity.
+
+## 69. Route J reflected biorthogonal two-wall classification
+
+The updated Hellinger--Hodge--Green source retains distinct primitive and reciprocal legs on every
+prime-power label.  Sewing those legs by functional-equation reflection nevertheless produces a
+complete regular-class no-go.  For centered divisor displacement `alpha=rho-1/2` and Hardy depth
+`eps`, use parameters
+
+```text
+w=eps+alpha,                 v=eps-conj(alpha).
+```
+
+Then `w+conj(v)=2 eps`, and at every retained prime, valuation depth, and Hardy time,
+
+```text
+L_w(p,e;t) conj(R_v(p,e;t))
+  = Lambda(p^(e+1)) p^(-(e+1)(1+2 eps)) exp(-2 eps t).
+```
+
+Horizontal displacement cancels before integration, prime summation, or depth summation.  The
+full reflected common-test value is therefore a function of `eps` alone.
+
+Two different sharp walls remain:
+
+```text
+both unresolved legs are Hilbert
+  <-> eps>|Re(alpha)|=|Re(rho)-1/2|;
+
+the paired codiagonal is absolutely summable
+  <-> eps>0.
+```
+
+Thus `0<eps<=|Re(alpha)|` is a genuine regular-but-non-Hilbert pairing chamber.  At `eps=0`, the
+depth-zero prime face is `log(p)/p`, so no absolutely summable reflected codiagonal exists.  This
+closes every regular reflection-diagonal use of the stronger joint-depth source.  Its Hilbert wall
+detects horizontal displacement but supplies no independent annihilation, while its larger paired
+chamber erases displacement completely.
+
+Route J remains open on a singular pre-codiagonal arithmetic differential: it must retain
+off-diagonal prime/depth incidence or divisor coupling before reflection pairing and prove an
+arithmetic zero identity forcing the Burnol conormal cover discriminant to vanish.  This survivor
+is not reassigned to another route.
+
+Paper/Lean:
+
+```text
+docs/drafts/pipeline/1-in-progress/
+route-j-principal-relative-julia-current.md, Section 56
+
+GaloisForLFunctions/RHTower/
+EulerPrimitiveJointDepthReflectionDiagonalBlindness.lean
+```
+
+## 2026-08-03 Route R frontier update: depth-one positive-completion obstruction
+
+The order-growing two-boundary Euler packet cannot be completed to the canonical
+prime--archimedean moment kernel by adding independent positive Gamma/polar channels. At Gamma
+depth one and central Cauchy point, first actual Euler atom `n=2` has exact square
+
+```text
+1 / (128 log(2) (log(2)^2 - 1/4)^2) > 1/5.
+```
+
+Since all remaining diagonal atoms are nonnegative,
+
+```text
+Re K_1(0,0) > 1/5.
+```
+
+Existing unconditional completed-source bound gives
+
+```text
+normalizedPrimeArchMoment(0) < 29/625 < 1/5.
+```
+
+Hence prime packet alone strictly exceeds complete target mass. For every correction `C` with
+nonnegative central diagonal,
+
+```text
+K_1(0,0) + C != normalizedPrimeArchMoment(0).
+```
+
+If equality is imposed without sign restriction, correction must obey quantitative budget
+
+```text
+Re C < -96/625.
+```
+
+This falsifies proposed completed value identity for every orthogonal positive direct sum before
+local-uniform analyticity or higher mixed jets enter. Required Route-R completion must contain a
+forced negative Schur complement, genuinely off-diagonal Euler--Gamma/polar cross term, or
+singular indefinite pre-codiagonal coupling. Positivity may survive only after nonorthogonal
+cancellation; it cannot be assembled channelwise.
+
+Paper/Lean:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+route-r-depth-one-positive-completion-no-go.md
+
+GaloisForLFunctions/RHTower/
+VonMangoldtGammaJetPositiveCompletionNoGo.lean
+```
+
+## 2026-08-03 Route R frontier update: unconditional singular source-to-Xi landing
+
+Literal biorthogonal joint-depth source now crosses its regular summability wall by forced polar
+renormalization. For `u=w+conj(v)` in positive Laplace chamber,
+
+```text
+1/u + 1/(u+1) - <R_v,L_w>
+  = regularizedCriticalMellinDefect(u).
+```
+
+Left side retains primitive and reciprocal `(prime,depth)` legs until final pairing. Right side is
+pole-filled continuation through balanced Euler wall. Under exact coordinate
+
+```text
+z=-i(u+1/2),
+```
+
+fixed Gamma completion satisfies unconditionally on regular resolvent locus
+
+```text
+i (regularizedCriticalMellinDefect(u) + gammaRealLogConnection(u+1))
+  = xiRelativeResolventTrace(z).
+```
+
+This closes requested source-to-Xi landing without squarefree scalarization, divisor-fed source
+definition, or RH assumption. Regular-locus nonvanishing is necessary only because totalized Lean
+logarithmic derivatives do not encode meromorphic pole values.
+
+Remaining Route-R frontier is now entirely boundary arithmetic: construct signed/off-diagonal
+pre-codiagonal Schur coupling with central correction below `-96/625`, retain divisor/horizontal
+provenance, and prove its source-derived annihilation/Ward sign. Another continuation or positive
+channel addition cannot close route.
+
+Lean:
+
+```text
+GaloisForLFunctions/RHTower/
+EulerPrimitiveJointDepthSingularXiLanding.lean
+```
+
+## 2026-08-03 Route R frontier update: genuine Krein source-to-Xi producer
+
+Depth-one mass forces any exact Euler--Gamma completion to contain a negative
+central correction.  The literal primitive and reciprocal source legs now
+have one source-native signed carrier:
+
+```text
+K = ell2(Fin 2 x (Primes x Nat)),
+J = slot exchange,
+[x,y]_J = <x,Jy>.
+```
+
+Lean proves `J` unitary, self-adjoint, and involutive.  The diagonal sector
+has value `2||h||^2`; the anti-diagonal sector has value `-2||h||^2` and is
+strictly negative away from zero.  For literal joint-depth legs,
+
+```text
+[(0,R_v),(L_w,0)]_J
+  = LSeries Lambda (1+w+conj(v)).
+```
+
+The canonical complex split `w=u/2`, `v=conj(u)/2`, followed by the two
+forced polar channels and fixed Gamma connection, satisfies
+
+```text
+i * (1/u + 1/(u+1) - [(0,R_v),(L_w,0)]_J
+     + gammaRealLogConnection(u+1))
+  = xiRelativeResolventTrace(-i(u+1/2))
+```
+
+on the regular positive source chamber.  Balanced reflection remains
+nonsummable.  This closes the honest signed/off-diagonal producer and
+source-to-Xi landing left alive by the positive-completion no-go.
+
+Anti-theatre boundary: this is not source annihilation.  The prime/depth
+matrix coefficient is still rank-one separable; normalized reflected
+off-diagonal incidence is a flat coboundary, so cycle holonomy cannot select
+the critical line.  Remaining Route-R object must have source rank at least
+two in the relevant incidence after normalization, or be singular/divisor
+coupled before frequency separation.  It must prove the first clause of the
+transverse arithmetic annihilator, not merely another faithful landing.
+
+Paper/Lean:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+route-r-joint-depth-krein-xi-landing.md
+
+GaloisForLFunctions/RHTower/
+EulerPrimitiveJointDepthKreinXiLanding.lean
+```
+
+## 2026-08-03 Route J frontier update: off-diagonal source countertransport and exact capacity wall
+
+The full joint-depth primitive/co-source incidence has now been retained before codiagonalization.
+For prime-depth log clock `lambda_(p,e)=log(p^(e+1))`, its normalized reflected incidence is exactly
+
+```text
+H_a(i,j)=exp(a (lambda_j-lambda_i)).
+```
+
+This is an actual source quotient, not an inserted edge character.  It has a canonical finite
+inverse-clock countertransport whose commutator recovers every off-diagonal source entry.  On
+`Re(a)=0`, the normalized countertransport is skew-Hermitian and its clock commutator is Hermitian,
+so reflected Hodge sector is preserved at operator level.
+
+Two class-complete facts sharpen frontier:
+
+```text
+every normalized cycle holonomy = 1                  for every a;
+
+exists one bound for all oriented prime-depth edges
+  <-> Re(a)=0.
+```
+
+Capacity failure is witnessed cofinally at prime `2` by arbitrarily separated depths, with edge
+orientation chosen according to sign of `Re(a)`.  At divisor displacement `a=rho-1/2`, same edge
+character is exactly Burnol centered conormal character at window length `lambda_j-lambda_i`.
+Uniform capacity over all Xi divisor supports is therefore equivalent to RH, unconditionally.
+
+This closes separable normalized-incidence/cycle class, but does not close Route J.  Prior failed
+first-prime seam work already knew flat-character mechanism, so it is not relabeled as new science.
+Strict extension is literal joint-depth source factorization, exact Burnol bridge, finite
+countertransport/Hodge theorem, and sharp all-depth phase boundary.
+
+Finite closure is stronger than cycle flatness.  With diagonal vertex gauge
+`G_a=diag(exp(a lambda_i))`, every packet incidence obeys
+
+```text
+P_(eps,a)=G_a^(-1) P_(eps,0) G_a.
+```
+
+Hence characteristic polynomial, determinant, and all trace powers are displacement-blind for
+every finite packet.  Route-J Julia/spectral currents cannot escape by increasing matrix size or
+using a different similarity-invariant finite statistic.
+
+Remaining Route-J frontier is now narrower: construct genuinely nonseparable, non-coboundary
+prime/depth--divisor incidence before codiagonalization and prove its independent arithmetic
+differential annihilates Burnol reflection discriminant.  Cycle closure is identically blind;
+uniform capacity and Hodge compatibility are RH-equivalent and may not be assumed.
+
+Paper/Lean:
+
+```text
+docs/drafts/pipeline/1-in-progress/
+route-j-principal-relative-julia-current.md, Section 57
+
+docs/drafts/pipeline/3-formalized/
+route-j-joint-depth-offdiagonal-countertransport.md
+
+GaloisForLFunctions/RHTower/
+EulerPrimitiveJointDepthOffDiagonalCountertransport.lean
 ```

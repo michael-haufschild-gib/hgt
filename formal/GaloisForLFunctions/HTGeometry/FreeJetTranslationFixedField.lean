@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DifferentialIndependence
+import GaloisForLFunctions.HTGeometry.FreeCoordinateConstantKernel
 import GaloisForLFunctions.HTGeometry.FreeCoordinateField
 import GaloisForLFunctions.HTGeometry.RatFuncTranslationFixedField
 import Mathlib.RingTheory.AlgebraicIndependent.Transcendental
@@ -331,14 +332,6 @@ theorem freeCoordinateCommonKernelField_eq_freeCoordinateField
     freeCoordinateCommonKernelField C σ S = freeCoordinateField C σ S := by
   ext f
   rw [mem_freeCoordinateCommonKernelField_iff, mem_freeCoordinateField_iff]
-
-/-- All coordinate currents have scalar common kernel. -/
-@[simp]
-theorem freeCoordinateCommonKernelField_empty
-    {C σ : Type*} [Field C] [CharZero C] :
-    freeCoordinateCommonKernelField C σ ∅ = ⊥ := by
-  rw [freeCoordinateCommonKernelField_eq_freeCoordinateField,
-    freeCoordinateField_empty]
 
 /-- The full translation fixed field and the common kernel of all coordinate currents coincide
 and are both exactly the scalar field. -/

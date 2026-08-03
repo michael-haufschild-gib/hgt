@@ -45,7 +45,7 @@ theorem coeff_sub_partialSum {g : ℂ → ℂ} (hg : AnalyticOnNhd ℂ g (Metric
       = if k < N then 0 else (cauchyPowerSeries g 0 R₀).coeff k := by
   have hpart : AnalyticOnNhd ℂ (fun z => (cauchyPowerSeries g 0 R₀).partialSum N z)
       (Metric.ball 0 1) := fun z _ =>
-    (hasFPowerSeriesOnBall_partialSum (cauchyPowerSeries g 0 R₀) N).analyticAt_of_mem (by simp)
+    (hasFPowerSeriesOnBall_partialSum_truncSeries (cauchyPowerSeries g 0 R₀) N).analyticAt_of_mem (by simp)
   rw [cauchyPowerSeries_sub hg hpart hR₀0 hR₀1, cauchyPowerSeries_partialSum N hR₀0 hR₀1]
   show (cauchyPowerSeries g 0 R₀).coeff k - (truncSeries (cauchyPowerSeries g 0 R₀) N).coeff k = _
   rw [coeff_truncSeries]
@@ -163,7 +163,7 @@ theorem tendsto_tsum_normSq_coeff_sub_polynomial_mul {O f : ℂ → ℂ} {M K : 
     intro N
     have hpart : AnalyticOnNhd ℂ (fun z => (cauchyPowerSeries g 0 R₀).partialSum N z)
         (Metric.ball 0 1) := fun z _ =>
-      (hasFPowerSeriesOnBall_partialSum (cauchyPowerSeries g 0 R₀) N).analyticAt_of_mem (by simp)
+      (hasFPowerSeriesOnBall_partialSum_truncSeries (cauchyPowerSeries g 0 R₀) N).analyticAt_of_mem (by simp)
     have hdiffA : AnalyticOnNhd ℂ
         (fun z => g z - (cauchyPowerSeries g 0 R₀).partialSum N z) (Metric.ball 0 1) :=
       hgA.sub hpart

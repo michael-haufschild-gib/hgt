@@ -432,7 +432,155 @@ and hence nonselective.
 - [x] shifted BV typing and exact decimation-neutrality proved
 - [x] positive source-dagger survivor isolated
 - [x] construct the BV normal class inside the translated universal envelope
+- [x] universal envelope, divisor faithfulness, shifted typing and decimation neutrality formalized unconditionally in Lean
 - [ ] transport finite coefficient Stein positivity to its singular graph
 - [ ] prove co-Poisson multiplier radical invariance
 - [ ] prove conormal-jet continuity on the quotient
 - [ ] compose contractivity with the formal RH endpoint
+
+## Lean: the universal envelope, unconditionally
+
+Theorems 1--3 and the nonselection conclusion of section 5 are now Lean, with no hypotheses.  Five
+modules, all `#print axioms` clean (only `propext`, `Classical.choice`, `Quot.sound`).
+
+### The multiplier and the exact reflection identity
+
+`HTGeometry/GammaGaussianEnvelope.lean` defines the two factors through mathlib's archimedean factor
+`Gammaℝ(s) = pi^(-s/2) Gamma(s/2)`, which makes `(2)` and `(1)` one-line identities:
+
+```text
+evenChiFactor s          = Gammaℝ(1-s) * Gammaℝ(s)⁻¹
+                         = pi^(s-1/2) Gamma((1-s)/2) / Gamma(s/2);          -- (1)
+gammaGaussianEnvelope s  = exp((s-1/2)^2) * Gammaℝ(s)⁻¹
+                         = exp((s-1/2)^2) pi^(s/2) / Gamma(s/2);            -- (2)
+
+gammaGaussianEnvelope_eq_zero_iff        : A(s) = 0 <-> s in {0,-2,-4,...};  -- (3)
+gammaGaussianEnvelope_ne_zero_of_re_pos  : A is a unit on Re s > 0;
+evenChiFactor_mul_envelope_one_sub       : chi(s) A(1-s) = A(s);             -- (6)
+Gammaℝ_mul_gammaGaussianEnvelope         : Gammaℝ(s) A(s) = exp((s-1/2)^2);  -- (10)
+differentiable_gammaGaussianEnvelope     : A is entire.
+```
+
+The identity `(6)` is exactly the card's proof: `(1-s-1/2)^2 = (s-1/2)^2` makes the Gaussian
+reflection-invariant, and the two archimedean factors cancel.  The only hypothesis needed is that
+`Gammaℝ(1-s)` be nonzero, which the corollary discharges on `Re s < 1` -- so `(6)` holds throughout
+the critical strip.  Note that mathlib's `Gamma` vanishes at its poles, so `Gammaℝ⁻¹` *is* the entire
+function whose zeros are `(3)`; nothing has to be excised by hand.
+
+### Vertical growth: the multiplier of the moderate class
+
+`HTGeometry/GammaGaussianEnvelopeDecay.lean` proves the moderation half of Theorem 1:
+
+```text
+norm_exp_sq_sub_half             : ||exp((s-1/2)^2)|| = exp((Re s - 1/2)^2 - (Im s)^2);   -- (9)
+exists_bound_norm_inv_Gamma_strip: ||Gamma(z)⁻¹|| <= B exp(pi |Im z|) on a strip;         -- (8)
+exists_bound_envelope_strip_decay: ||A(s)|| (1+|Im s|)^N is bounded on every closed strip;
+exists_bound_envelope_band       : A is bounded on every compact horizontal band;
+exists_bound_envelope_mul        : A F is bounded on every strip when F has polynomial
+                                   vertical growth;
+hasStripPolyGrowth_envelope_mul  : A preserves polynomial vertical growth;
+hasStripPolyGrowth_one_sub       : reflection preserves it.
+```
+
+The reciprocal-Gamma bound reuses the corpus's own reflection-formula estimate
+`RHTower.exists_lower_bound_norm_Gamma_strip` rather than Stirling; the constant is `exp(pi|Im z|)`
+instead of `exp(pi|Im z|/4)`, which the Gaussian absorbs either way.  The decay proof needs no
+compactness and no limit: `(1+t)^N <= exp(Nt)` and `-t^2 + bt <= b^2/4` turn the product into a
+single exponential with a negative quadratic, bounded by the vertex value.  Only the horizontal band
+`|Im s| <= 2` uses compactness, through continuity of the entire multiplier.
+
+Combining the two modules gives Theorem 1 in full: `A F` and `s -> A(s) F(1-s)` are both moderate,
+and on `Re s < 1` the second is literally `chi(s) (A F)(1-s)`
+(`evenChiFactor_mul_envelope_mul_one_sub`).
+
+### Divisor and conormal faithfulness
+
+`HTGeometry/GammaGaussianEnvelopeDivisor.lean` proves Theorem 2 with mathlib's meromorphic order and
+trailing coefficient:
+
+```text
+meromorphicOrderAt_envelope_mul :
+  ord_rho(A F) = ord_rho(F)                                    for Re rho > 0;             -- (11)
+meromorphicTrailingCoeffAt_envelope_mul :
+  trailing coefficient of A F at rho = A(rho) * (that of F);
+meromorphicTrailingCoeffAt_envelope_mul_ne_zero_iff :
+  the top conormal jet is nonzero exactly when it was;
+meromorphicOrderAt_envelope_mul_half :
+  a pole at s = 1/2 survives with its exact order.
+```
+
+So the envelope preserves order, multiplicity and nonzero top conormal class, and the surviving
+boundary pole of section 4 is a proved statement rather than a remark.
+
+### The shifted BV coordinate and exact decimation neutrality
+
+`HTGeometry/GammaGaussianEnvelopeBVShift.lean` proves Theorem 3 and the neutrality of section 8:
+
+```text
+bvChiFactor u, bvGammaGaussianEnvelope u  = the (18) translates by 1/2;
+bvChiFactor_mul_bvEnvelope_two_sub        : chi_BV(u) A_BV(2-u) = A_BV(u);                 -- (19)
+bvGammaGaussianEnvelope_eq_zero_iff       : zero set {1/2, -3/2, -7/2, ...};               -- (20)
+bvGammaGaussianEnvelope_ne_zero_of_half_lt_re : unit on the shifted strip;
+bvLaurentCoeff_ratio                      : R_(j+2)/R_j = r^(2 rho - 1);                  -- (21)
+bvEnvelope_decimation_neutral             : the same ratio after multiplying every
+                                            coefficient by A_BV(rho + 1/2);               -- (22)
+log_norm_radial_character                 : log||r^(2 rho -1)|| = (2 Re rho - 1) log r;   -- (23)
+norm_radial_character_eq_one_iff          : that modulus is 1 iff Re rho = 1/2.
+```
+
+The last statement is the `(16)` clause of the positive-survivor section in Lean: unimodularity of the
+radial character at a single `r > 1` is equivalent to criticality.  What the envelope cannot do is
+produce that unimodularity -- neutrality is proved, not assumed.
+
+### The nonselection theorem
+
+`HTGeometry/GammaGaussianEnvelopeNonselective.lean` turns section 5 into a construction.  For an
+off-critical, off-axis `rho` the reflection quartet
+
+```text
+reflectionQuartet rho s = (s-rho)(s-(1-rho))(s-conj rho)(s-(1-conj rho))
+```
+
+is reflection-symmetric (`reflectionQuartet_one_sub`), of polynomial vertical growth, and has a simple
+zero at `rho` (`meromorphicOrderAt_reflectionQuartet`, proved from the distinctness of the four points,
+which is exactly `Re rho != 1/2` and `Im rho != 0`).  Hence
+
+```text
+exists_selfDual_moderate_with_offCritical_zero :
+  for every rho with Re rho > 0, Re rho != 1/2, Im rho != 0 there is a datum F with
+    F moderate, F(1-s) = F(s),
+    A F moderate,
+    chi(s) (A F)(1-s) = (A F)(s)   on Re s < 1,
+    ord_rho(A F) = 1.
+```
+
+That is the no-go: a faithful, moderate, cosine-Fourier self-dual envelope coexists with an arbitrary
+off-critical reflection quartet.  Also proved: in the right half-plane `A F` vanishes exactly on the
+quartet (`envelope_reflectionQuartet_eq_zero_iff`), so the envelope neither creates nor destroys a
+divisor there.
+
+- 2026-08-03 -- The universal envelope is now a Lean object, and every proved theorem of this card is
+  formalized unconditionally: the reflection identity, the zero set, entirety, the archimedean seam,
+  moderation preservation, divisor and top-jet faithfulness, the shifted typing, decimation
+  neutrality, the criticality criterion for the radial character, and an explicit off-critical
+  witness family realizing the whole completion package.  Burnol's Theorem 4.54 is used nowhere: the
+  Lean statements are about the multiplier and the divisor, which is precisely the part of the card
+  that carries the no-go.  What remains open is unchanged and is the conjecture's positivity content
+  -- the four gates below -- not the kinematics.
+
+### Scope of the formalization
+
+All three `[PROVED HERE]` theorems are formalized, in the generality in which the card states and
+uses them.  Two boundaries are worth recording:
+
+1. Section 4 derives its four claims about the specific seed
+   `F_(1/2)(s) = eta(s-1/2)/(s-1/2)` from `(6)` and `(10)`; those two identities and the
+   pole-survival statement are formalized for an arbitrary datum with a simple pole at `1/2`, which
+   is exactly the argument the card gives.  The `eta` object itself is not built in Lean: mathlib's
+   `riemannZeta` carries a junk value at `s = 1`, so `(1 - 2^(1-s)) riemannZeta s` is not the
+   alternating zeta there, and an analytic `eta` would require a removable-singularity construction
+   that no proved statement of this card needs.
+2. Burnol's Theorems 4.31/4.54 are literature inputs and appear nowhere in the Lean development.
+   Nothing formalized here depends on the existence of the property-`S` distribution; the multiplier
+   identity, the divisor faithfulness and the off-critical witness are what carry the no-go, and they
+   are unconditional.

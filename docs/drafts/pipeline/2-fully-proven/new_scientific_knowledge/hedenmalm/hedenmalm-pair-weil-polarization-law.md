@@ -368,7 +368,9 @@ Hedenmalm pair. No source-side or positivity claim is represented by an assumpti
 
 ```text
 exists_norm_xiThetaEigenFourier_ofReal_le
-  : ||xiThetaEigenFourier alpha t|| <= C exp(-delta |t|) for every delta < pi/4.
+  : ||xiThetaEigenFourier alpha t|| <= C exp(-delta |t|) for every delta < pi/4;
+exists_norm_xiThetaEigenFourier_horizontal_le
+  : the same bound at t + i a, uniformly over |a| <= A, for every A < 1.
 ```
 
 The exponential factor of `(18a)` is therefore unconditional, and the polynomial factor is not
@@ -376,7 +378,206 @@ needed for it: away from the removed point the linear denominator is bounded bel
 simply inherits the exponential decay of `XiC` proved in
 `RHTower/ThetaCuspComplexStrip.lean`, and on the remaining compact interval continuity gives a bound.
 What `(18a)` still lacks in Lean is the same estimate on closed *horizontal strips* rather than the
-real axis alone; that needs the contour shift at a complex frequency.
+real axis alone.  The first piece of that is now built and stated for an arbitrary function, in
+`formal/GaloisForLFunctions/RHTower/StripHorizontalShift.lean`:
+
+```text
+integral_horizontal_shift_of_decay
+  : a function holomorphic on a closed horizontal strip and decaying exponentially in the real
+    direction there has the same full-line integral on every horizontal line of the strip.
+```
+
+This is the theta-free form of the shift used for the real-axis decay, and applying it to the
+tilted kernel gives the strip estimate itself, in
+`formal/GaloisForLFunctions/RHTower/XiHorizontalStripDecay.lean`:
+
+```text
+exists_norm_XiC_horizontal_le
+  : ||XiC (t + i a)|| <= C exp(-delta |t|), uniformly over |a| <= A, for every A < 1
+    and every delta < pi/4.
+```
+
+So the exponential factor of `(18a)` is unconditional on every closed horizontal substrip, not only
+on the real axis, and the same is true of the removable quotient itself: away from the removed point
+the linear denominator is bounded below on the substrip, and on the remaining compact box continuity
+gives a bound.  This is the estimate the card cites to place the eigenfunction quotients in the
+Guinand--Weil test class.
+
+The same module also discharges the polarization's own convergence hypothesis:
+
+```text
+xiWeilPairSummable_of_squareSummable
+  : XiWeilSquareSummable F -> XiWeilSquareSummable (xiWeilSharp G) -> XiWeilPairSummable F G.
+```
+
+and, with the sharp hypothesis removed,
+
+```text
+XiWeilSquareSummable_sharp
+  : square-summability is stable under the Weil sharp involution;
+xiWeilPairSummable_of_squareSummable'
+  : XiWeilSquareSummable F -> XiWeilSquareSummable G -> XiWeilPairSummable F G.
+```
+
+`XiWeilPairSummable` was previously an assumed condition.  The arithmetic--geometric mean bound
+dominates each polarized term by half the sum of the two squared divisor evaluations, and the sharp
+involution preserves square-summability because the Xi divisor is conjugation stable --- `xi` has
+real Taylor coefficients.  That stability is **unconditional**: the corpus already owned
+`xi_divisor_conj`, `xiZeroCopyConjEquiv` and `xiSpectralPoint_copyConj`, and composing the
+conjugation equivalence with the reflection one gives an involution `xiZeroCopyStarEquiv` realising
+plain conjugation of the centered spectral points.  Only the *pointwise* identity `conj rho = rho`
+needs RH; the divisor being conjugation stable does not.
+
+With absolute convergence available, the polarization is a genuine sesquilinear form on the
+square-summable class, unconditionally:
+
+```text
+XiWeilSquareSummable.add, XiWeilSquareSummable.const_smul
+  : the class is closed under sums and scalar multiples;
+xiWeilPolarization_add_left, xiWeilPolarization_const_smul_left
+  : the form is additive and homogeneous in the left argument.
+```
+
+The right-hand laws `xiWeilPolarization_add_right` and `xiWeilPolarization_const_smul_right` are
+proved from these through the existing Hermitian symmetry `xiWeilPolarization_conj_symm`.
+
+Cross-reference worth keeping: `RHTower/XiWeilLineConjHilbert.lean` already proves, **without RH**,
+that the polarization *is* an `ell^2` inner product --- `inner_xiWeilLineConjLp_evaluation_eq_polarization`,
+through the line-conjugation isometry `xiWeilLineConjLp` --- and deduces the Cauchy--Schwarz bound
+`norm_xiWeilPolarization_le` in the sharp form `||F|| ||G||`.  So the RH hypothesis in
+`inner_xiWeilEvaluationLp_eq_polarization_of_riemannHypothesis` is needed only to make the *plain*
+inner product work; the conjugated one needs nothing.  So the square-summable class is a module and the polarization is defined
+and sesquilinear on it --- the structural half of "test algebra".  The form is moreover Lipschitz for the divisor `ell^2` distance:
+
+```text
+XiWeilSquareSummable.sub, xiWeilPolarization_sub_left
+norm_xiWeilPolarization_sub_left_le
+  : ||q_W(F1,G) - q_W(F2,G)|| <= ||v(F1) - v(F2)|| ||v(G)||.
+```
+
+The function-level packets and the vector-level Hilbert core are also now bridged:
+
+```text
+XiWeilSquareSummable_cauchyPacket
+xiWeilEvaluationLp_cauchyPacket_mem
+  : the evaluation vector of a finite Cauchy packet lies in the algebraic Cauchy span.
+```
+
+The two were defined independently --- packets as functions in `XiWeilResolventSource`, the span as
+a submodule of the divisor `ell^2` in `XiWeilHilbertCore` --- with nothing connecting them, so the
+prime-plus-Gamma identity for packets and the Hilbert closure could not previously be used together.
+
+Lipschitz continuity is the mechanism by which an identity proved on a subclass passes to its
+closure, so the extension of the prime-plus-Gamma equality now reduces to two separable questions: whether the
+Cauchy packets are `ell^2`-dense in the intended test class, and whether the prime-plus-Gamma side
+converges along the same limits.  What is still missing for the open gate is therefore analytic, not
+structural: the prime-plus-Gamma *value* is known only on the Cauchy resolvent core and on the
+rectangular family, not for an arbitrary member of this class.  One subtlety in the proof is worth recording: the *uniform* bound needed by the
+contour-shift hypothesis must use `exp(|t| delta)`, since `t z.im <= t delta` fails for `t <= 0`;
+the sharp factor `exp(t delta)` is available only on the shifted line itself, where `z.im = delta`
+exactly.  Using the sharp factor uniformly is the natural mistake and makes the estimate false.
+
+## Both limit questions of the Cauchy core, answered
+
+The two questions left by the Lipschitz continuity of the polarization --- whether the
+prime-plus-Gamma side converges along `ell^2`-convergent sequences of Cauchy packets, and whether
+those packets are `ell^2`-dense --- are now both settled in Lean, and they have opposite answers.
+
+**Convergence: yes, unconditionally.**
+
+```text
+tendsto_primeArchSource_packetSum_of_tendsto
+  : if the evaluation vectors of a sequence of finite Cauchy packets converge in the divisor
+    ell^2 space, then the prime-plus-Gamma double sums
+
+      sum_{z in s_n} sum_{w in t} c_n(z) conj(d(w)) (T(conj w) - T(z)) / (z - conj w)
+
+    converge, with limit the inner product of the fixed line-conjugated evaluation vector against
+    the limit vector.
+```
+
+The mechanism is that the polarization *is* an inner product against a fixed vector
+(`inner_xiWeilLineConjLp_evaluation_eq_polarization`), hence continuous in the evaluation vector,
+while on packets it is literally the prime-plus-Gamma expression.  So the arithmetic side of the
+explicit formula has a canonical continuous extension to the closure of the Cauchy core: no
+additional analytic input is needed for the passage to the limit, only for identifying the limit
+with a prime sum for a *given* test function.
+
+**Density: exactly obstructed by multiplicity.**
+
+```text
+mem_orthogonal_xiWeilCauchyAlgebraicSubspace_iff
+  : u orthogonal to the algebraic Cauchy core
+      <-> for every Xi zero rho, the sum of the coordinates of u over the multiplicity copies
+          above rho vanishes.
+xiWeilCauchyHilbertSubspace_eq_top_iff
+  : the closed Cauchy core is the whole divisor ell^2 space
+      <-> every Xi zero is simple.
+```
+
+This is a sharp, unconditional structural theorem about the carrier, and it is not what the naive
+picture suggests.  The Cauchy kernels `q |-> (rho_q - z)^{-1}` are constant along each multiplicity
+fibre, so they cannot separate two copies of a multiple zero; the content of the theorem is that
+this is the *only* obstruction.  The nontrivial direction extracts the fibre sum as a residue: for
+an orthogonal `u` the resolvent transform `sum_q conj(u_q) (rho_q - z)^{-1}` vanishes at every
+regular point, multiplying by `a - z` turns the fibre part into the constant fibre sum, and the
+remaining terms are bounded uniformly by Cauchy--Schwarz because the divisor is separated from `a`
+(finitely many divisor points meet any disc).  Letting `z` approach `a` inside the punctured
+neighbourhood of regular points --- which is nonempty because the zeros of `XiC` are isolated ---
+kills the fibre sum.
+
+Consequences for the open gate:
+
+1. The resolvent core sees the Xi divisor only through its support weighted by total multiplicity.
+   No family of Cauchy packets, and no limit of such, can ever detect the difference between a
+   double zero and two coincident simple zeros.  Any test-algebra extension that intends to
+   reach the *whole* `ell^2` carrier must therefore either assume simplicity or add non-Cauchy
+   generators (derivatives of the Cauchy kernel are the natural candidates, since
+   `d/dz (rho - z)^{-1}` still only separates fibres if the fibre index enters the coefficients).
+2. Unconditionally, the closure of the Cauchy core is exactly the orthogonal complement of the
+   fibrewise mean-zero space, so the polarization extends canonically to that subspace and to
+   nothing larger.
+3. Simplicity of the zeros is thus *equivalent* to density of the resolvent core --- the same
+   hypothesis that already appeared in the nondegeneracy gate ("RH plus simplicity") reappears
+   here for an independent reason, on the zero side alone and with no use of RH.
+
+## The test-algebra gate, in its limit form
+
+The two structural facts above combine into an approximation theorem that goes past the Cauchy
+resolvent core.  Three ingredients:
+
+```text
+xiWeilEvaluationLp_mem_xiWeilCauchyHilbertSubspace
+  : the evaluation vector of ANY square-summable test function lies in the closed Cauchy core.
+exists_cauchyPacket_of_mem_xiWeilCauchyNodeSpan
+  : every element of a node-restricted Cauchy span IS the evaluation vector of a finite Cauchy
+    packet with nodes in the same set.
+eventually_mem_xiWeilContinuedNodeSet
+  : the continued prime-plus-Gamma domain accumulates at every Xi zero.
+```
+
+The first is the positive half of the multiplicity theorem: evaluation vectors are fibrewise
+constant by construction, so they never meet the fibrewise mean-zero annihilator, and the failure of
+density for multiple zeros never touches the range of the evaluation map.  The third says the
+restriction to nodes where the *continued* trace is defined --- `Re(1/2 + zi) > 0`,
+`1/2 + zi != 1`, `zeta(1/2 + zi) != 0` --- costs nothing, because the two open conditions hold at
+each zero itself and the zeta condition fails only at the zero.  Together with the Lipschitz bound:
+
+```text
+exists_cauchyPacket_continuedPrimeArchSource_approx
+  : for every square-summable F, every finite Cauchy packet G with nodes in the conjugated
+    continued domain, and every eps > 0, there is a finite node set s in the continued domain,
+    disjoint from the conjugated nodes of G, and coefficients c, with
+
+      || sum_{z in s} sum_{w in t} c_z conj(d_w)
+           (Ttilde(conj w) - Ttilde(z)) / (z - conj w)   -   q_W(F, G) ||  <=  eps.
+```
+
+So the zero-side Weil polarization of an *arbitrary* square-summable test function against a Cauchy
+packet is a limit of explicit finite prime-plus-Gamma expressions, unconditionally.  This is the
+limit form of the open gate: what is still missing is not the approximation but a *closed formula*
+--- the identification of the limit with a prime sum attached to `F` itself rather than to its
+approximants.  The gate below is therefore split into the part now proved and the part remaining.
 
 ## Gates
 
@@ -395,8 +596,14 @@ real axis alone; that needs the contour shift at a complex frequency.
 - [ ] independent specialist novelty audit
 - [x] multiplicity-exact zero-side Weil polarization and theta radical in Lean
 - [x] Lean prime-plus-Gamma realization on the Cauchy/resolvent core
-- [ ] Lean extension to the full Guinand--Weil test algebra (the real-axis admissibility bound for
-      the eigenfunction quotients is now proved; the strip version and the algebra extension remain)
+- [x] Lean extension of the prime-plus-Gamma value to every square-summable test function in
+      approximation form (finite continued prime sums, arbitrary accuracy, unconditional)
+- [ ] Lean extension to the full Guinand--Weil test algebra in closed form (a prime formula attached
+      to the test function itself, not to its Cauchy approximants)
 - [x] Lean entire eigenfunction quotient and pointwise derivative law
 - [x] Lean multiplicity-summed eigenfunction norm and orthogonality law
 - [x] Lean `ell^2` evaluation carrier, Cauchy completion, and exact Hedenmalm Hilbert norm
+- [x] Lean bridge from finite Cauchy packets to the Hilbert core
+- [x] Lean convergence of the prime-plus-Gamma side along `ell^2`-convergent packet sequences
+- [x] Lean exact density criterion for the Cauchy core (multiplicity annihilator; density is
+      equivalent to simplicity of the Xi zeros)

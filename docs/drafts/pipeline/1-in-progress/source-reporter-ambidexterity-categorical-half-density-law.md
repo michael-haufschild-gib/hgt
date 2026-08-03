@@ -318,6 +318,41 @@ diagram. Plain Frobenius monoidality is enough to preserve it by McCurdy--Street
 Frobenius equations may retain ramification defects without affecting the normalized isometry
 consumer.
 
+### 2026-08-03 correction: finite source map is top-conormal, not raw pullback
+
+The ramified dagger square is now exact and changes candidate `(4a)`--`(4c)`. Raw pullback
+occupies residue class `0`, while its Grothendieck-residue transpose extracts class `n-1`; for
+`n>1` these sectors are disjoint. Therefore no statement identifying residue transpose with
+positive adjoint of raw pullback is permitted.
+
+Correct source map is
+
+\[
+ C_n(g)=x^{n-1}g(x^n).
+\tag{4f}
+\]
+
+Final-residue extraction `R_n` is literal Hilbert adjoint of `C_n`, `R_nC_n=id`, and `sqrt(n)`
+normalization gives degree `n`. These maps compose strictly. Moreover every coherent monomial
+shift `r_(mn)=m r_n+r_m`, `0<=r_n<n`, is either `r_n=0` for all `n` or `r_n=n-1` for all `n`.
+Thus top-conormal shift is unique nonraw power-semigroup correction.
+
+Paper and unconditional Lean:
+
+```text
+docs/drafts/pipeline/3-formalized/
+deninger-ramified-top-conormal-ambidexterity.md
+
+GaloisForLFunctions/RHTower/
+DeningerRamifiedTopConormalAmbidexterity.lean
+```
+
+Finite open core is discharged only in ramified block category. Remaining theorem is strict,
+coefficient-faithful, nonannihilating transport of `(C_n,R_n)` into actual completed Xi
+Gamma/co-Poisson top-conormal Green boundary before reflection-diagonal sewing. Constructing raw
+pullback dagger, or using vanishing of already-known Gamma mate curvature to define landing, is
+now falsified/circular route.
+
 ## New mathematical predictions
 
 If the law is correct, it predicts more than RH:
@@ -431,15 +466,19 @@ falsifier producing a nontrivial orientation cofiber.
 - [x] primary categorical collision audit
 - [x] RH consumer and circularity boundary stated
 - [x] explicit off-line/generalized-prime falsifiers stated
-- [ ] construct finite source/reporter adjunction
-- [ ] identify arithmetic dualizing twist, Gamma dagger, and categorical degree trace
+- [x] construct unique coherent ramified finite-block source/reporter dagger pair
+- [x] construct refinement-natural conormal thickening on actual finite rational-Witt stages
+- [x] land admitted finite-stage sector faithfully in literal algebraic Calderon--Witt packet
+- [ ] prove conormal grade is intrinsic to genuine framed rational-Witt coefficient
+- [ ] lift finite-block pair to source/reporter adjunction on actual incidence complex
+- [ ] identify top-conormal dualizing twist with actual Gamma dagger and categorical degree trace
 - [ ] prove finite connected-diagram transport on the actual incidence complex
 - [ ] prove strict cofinal extension of the duality context
 - [ ] prove nonannihilating Xi Cartier base change
 - [x] generate the Xi Cartier package algebraically from the source exceptional section
 - [ ] prove internal descent preserves the raw alternating-tail grade
 - [ ] derive unconditional RH
-- [ ] formalize dependency-closed theorem in Lean
+- [x] formalize dependency-closed finite ramified theorem in Lean
 
 ## Log
 

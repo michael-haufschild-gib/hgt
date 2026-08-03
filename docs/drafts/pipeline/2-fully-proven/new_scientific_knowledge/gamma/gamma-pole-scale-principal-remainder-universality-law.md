@@ -48,15 +48,22 @@ because the evaluated scale is a unit.
   `lake env lean GaloisForLFunctions/HTGeometry/GammaPoleScalePrincipalRemainderUniversalityLaw.lean`
   passed on 2026-07-22.
 
-## Verification gate (blocked)
+## Verification gate (passed)
 
-`lake build GaloisForLFunctions.HTGeometry.GammaPoleScalePrincipalRemainderUniversalityLaw` currently
-fails **inside a dependency**, not in this module: `GammaFactorialAllOrderPoleJet.lean` and
-`GammaFactorialSecondJetHarmonicResidue.lean` both declare `GaloisForLFunctions.shiftedHarmonicPowerSum`,
-`GaloisForLFunctions.iteratedDeriv_digamma_neg_nat_add_of_ne_int` and
-`GaloisForLFunctions.gammaFactorialScaledPolygamma`, so the older module no longer elaborates once
-both are in one import cone.  The named theorems of this card are unaffected in content; promotion
-waits on the duplicate-name resolution in the `GammaFactorial*` cone.
+```text
+lake build +GaloisForLFunctions.HTGeometry.GammaPoleScalePrincipalRemainderUniversalityLaw:olean
+  -> Build completed successfully (8917 jobs)
+```
+
+The former blocker is gone: the duplicate declarations of `shiftedHarmonicPowerSum`,
+`iteratedDeriv_digamma_neg_nat_add_of_ne_int` and `gammaFactorialScaledPolygamma` no longer exist.
+`GammaFactorialSecondJetHarmonicResidue.lean` owns all three, `GammaFactorialAllOrderPoleJet.lean`
+keeps only the derived statements, and both sit in one import cone with the whole `HTGeometry`
+umbrella building.  `#print axioms` on
+`algebraicIndependent_gammaPoleScaleAndFinitePartJet_over_ratFunc`,
+`gammaPoleScaleAndFinitePartJetLaurentEval_injective`,
+`gammaPoleFinitePartJetGerm_eq_unitCoefficient` and `mvPolynomialDiagonalScaleRing_injective`
+reports only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Novelty audit
 

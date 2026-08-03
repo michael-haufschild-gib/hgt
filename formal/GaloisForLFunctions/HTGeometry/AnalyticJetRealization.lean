@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FamilyJetChainRule
+import GaloisForLFunctions.HTGeometry.UpperEndPrimeLogJets
 import GaloisForLFunctions.HTGeometry.MeromorphicDifferentialField
 
 /-!
@@ -18,15 +19,6 @@ namespace GaloisForLFunctions.HTGeometry
 open Filter Topology
 
 noncomputable section
-
-/-- Every iterated derivative of an analytic function is analytic. -/
-theorem analyticOnNhd_iteratedDeriv {U : Set ℂ} {f : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f U) (k : ℕ) :
-    AnalyticOnNhd ℂ (iteratedDeriv k f) U := by
-  induction k with
-  | zero => rwa [iteratedDeriv_zero]
-  | succ k ih =>
-      rw [iteratedDeriv_succ]
-      exact ih.deriv
 
 theorem contDiffAt_of_analyticOnNhd {U : Set ℂ} {f : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f U) :
     ∀ w ∈ U, ContDiffAt ℂ (⊤ : ℕ∞) f w := fun w hw => (hf w hw).contDiffAt

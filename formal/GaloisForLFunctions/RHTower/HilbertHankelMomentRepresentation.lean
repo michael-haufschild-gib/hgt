@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.LegStripThreshold
 import GaloisForLFunctions.HTGeometry.HilbertMatrixShiftIntertwining
+import GaloisForLFunctions.HTGeometry.HilbertMatrixNormBound
 
 /-!
 # The two moment representations of the Hilbert–Hankel kernel
@@ -76,6 +77,18 @@ theorem hilbertQuadraticForm_nonneg (a : ℕ →₀ ℝ) :
     rw [intervalIntegral.integral_const_mul, hilbertMoment_eq_integral_pow]
   rw [← hint]
   exact intervalIntegral.integral_nonneg (by norm_num) fun t _ => sq_nonneg _
+
+/-! ## The two-sided operator bound -/
+
+/-- **The Hilbert matrix is positive and bounded by `π`.**  On every finitely supported real vector
+its quadratic form lies between `0` and `π` times the energy: positivity comes from the interval-cell
+reading of the entries, the upper bound from the weighted Schur test with weight `(n+½)^{-1/2}`. -/
+theorem hilbertQuadraticForm_mem_Icc (a : ℕ →₀ ℝ) :
+    0 ≤ (∑ m ∈ a.support, ∑ n ∈ a.support, a m * a n * (1 / (((m + n : ℕ) : ℝ) + 1)))
+      ∧ (∑ m ∈ a.support, ∑ n ∈ a.support, a m * a n * (1 / (((m + n : ℕ) : ℝ) + 1)))
+          ≤ Real.pi * ∑ m ∈ a.support, (a m) ^ 2 :=
+  ⟨hilbertQuadraticForm_nonneg a, le_trans (le_abs_self _) (hilbertQuadraticForm_abs_le_pi a)⟩
+
 
 end
 

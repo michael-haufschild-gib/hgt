@@ -160,7 +160,7 @@ theorem coeff_truncSeries (P : FormalMultilinearSeries ℂ ℂ ℂ) (N k : ℕ) 
     rfl
 
 /-- The partial sums of a power series are its own truncations. -/
-theorem hasFPowerSeriesOnBall_partialSum (P : FormalMultilinearSeries ℂ ℂ ℂ) (N : ℕ) :
+theorem hasFPowerSeriesOnBall_partialSum_truncSeries (P : FormalMultilinearSeries ℂ ℂ ℂ) (N : ℕ) :
     HasFPowerSeriesOnBall (fun z => P.partialSum N z) (truncSeries P N) 0 ⊤ where
   r_le := by rw [truncSeries_radius]
   r_pos := by simp
@@ -186,11 +186,11 @@ theorem cauchyPowerSeries_partialSum {f : ℂ → ℂ} {R : NNReal} (N : ℕ) (h
   have hana : AnalyticOnNhd ℂ (fun z => (cauchyPowerSeries f 0 R).partialSum N z)
       (Metric.ball 0 1) := by
     intro z _
-    exact (hasFPowerSeriesOnBall_partialSum (cauchyPowerSeries f 0 R) N).analyticAt_of_mem
+    exact (hasFPowerSeriesOnBall_partialSum_truncSeries (cauchyPowerSeries f 0 R) N).analyticAt_of_mem
       (by simp)
   have h1 := hasFPowerSeriesOnBall_of_analyticOnNhd_ball hana hR0 hR1
   exact h1.hasFPowerSeriesAt.eq_formalMultilinearSeries
-    (hasFPowerSeriesOnBall_partialSum (cauchyPowerSeries f 0 R) N).hasFPowerSeriesAt
+    (hasFPowerSeriesOnBall_partialSum_truncSeries (cauchyPowerSeries f 0 R) N).hasFPowerSeriesAt
 
 end
 

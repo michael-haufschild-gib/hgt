@@ -3898,3 +3898,347 @@ character and its inverse, conjugate-inverse reflection law, reflection-invarian
 coefficients and discriminant, unit-modulus orbit product, both quadratic-root laws, and the
 ramification equivalence `(237)`.  No abstract replacement for the source conormal, universal
 ramification premise, zeta-zero classification, or RH axiom enters any theorem.
+
+## 56. Reflection-diagonal phase diagram of the full joint-depth source
+
+`[PAPER+LEAN-PROVED SOURCE CLASSIFICATION]`
+`[PAPER+LEAN-PROVED SHARP TWO-WALL NO-GO]`
+`[CANDIDATE SOURCE-SPECIFIC NEW KNOWLEDGE]`
+`[OPEN SINGULAR PRE-CODIAGONAL ARITHMETIC DIFFERENTIAL]`
+
+The latest Hellinger--Hodge--Green revision closes the early-scalarization loophole.  On every
+prime-power label `n=p^(e+1)`, the primitive-promoted source and reciprocal co-source remain
+distinct,
+
+```text
+L_w(p,e)=[log(p)/sqrt(n)] n^(-w),
+R_v(p,e)=[1/sqrt(n)] n^(-v),                            (238)
+```
+
+and their full labelled pairing is the von Mangoldt Dirichlet channel.  The common Hardy Cauchy
+factor was previously known to give the scalar common-test kernel.  To test whether this stronger
+source can ramify the Burnol cover `(235)`, retain the common half-line coordinate `t>0` and use
+the literal biorthogonal features
+
+```text
+L_w(p,e;t)=L_w(p,e) exp(-wt),
+R_v(p,e;t)=R_v(p,e) exp(-vt).                           (239)
+```
+
+Write the centered divisor displacement as `alpha=rho-1/2`.  Reflection sends it to
+`-conj(alpha)`.  At Hardy regularization depth `eps`, the reflected source/co-source parameters
+are therefore
+
+```text
+w=eps+alpha,                 v=eps-conj(alpha).          (240)
+```
+
+The sesquilinear exponent has the exact cancellation
+
+```text
+w+conj(v)=2 eps.                                        (241)
+```
+
+Consequently horizontal displacement disappears before any integration or summation.  For every
+retained `(p,e,t)`,
+
+```text
+L_(eps+alpha)(p,e;t) conj(R_(eps-conj(alpha))(p,e;t))
+  = Lambda(n) n^(-(1+2 eps)) exp(-2 eps t).              (242)
+```
+
+This is stronger than blindness of a scalar Gram: prime label, valuation depth, primitive/co-source
+asymmetry, and common Hardy time are all still resolved when `alpha` cancels.  Integrating in `t`
+and summing only afterward gives
+
+```text
+<R_(eps-conj(alpha)),L_(eps+alpha)>
+  = LSeries Lambda (1+2 eps),
+
+K_ref(eps,alpha)
+  = [LSeries Lambda (1+2 eps)]/(2 eps),                  (243)
+```
+
+whenever the Hilbert pairing is defined.  Both right sides are independent of `alpha`.
+
+The hostile summability audit exposes two different sharp walls.  Individual source and co-source
+legs have exact Hilbert chambers
+
+```text
+L_w in ell2  <-> Re(w)>0,
+R_v in ell2  <-> Re(v)>0.
+```
+
+Thus simultaneous reflected Hilbert admission is
+
+```text
+L_(eps+alpha), R_(eps-conj(alpha)) in ell2
+  <-> eps>|Re(alpha)|
+  <-> eps>|Re(rho)-1/2|.                                (244)
+```
+
+The direct coefficientwise codiagonal has a strictly larger maximal regular chamber:
+
+```text
+sum_(p,e) |L_(eps+alpha)(p,e)
+                 conj(R_(eps-conj(alpha))(p,e))| < infinity
+  <-> eps>0.                                             (245)
+```
+
+The reverse implication in `(245)` is not inferred from a recalled Dirichlet convergence slogan.
+Restricting a hypothetical sum at `eps<=0` to the depth-zero prime face gives the exact squared
+Gamma boundary coordinate at displacement `2 eps`; its summability is equivalent to `2 eps>0`.
+At `eps=0` this is the nonsummable prime mass `log(p)/p`.  Hence the complete phase diagram is
+
+```text
+eps>|Re(alpha)| : paired codiagonal + two Hilbert legs;
+0<eps<=|Re(alpha)| : paired codiagonal, but no two-leg Hilbert realization;
+eps=0 : no absolutely summable reflected codiagonal.     (246)
+```
+
+Equations `(242)--(246)` close every regular reflection-diagonal use of the updated source.
+Horizontal displacement survives only as the location of the individual-leg chamber wall; that
+is another radial detector, already recovered exactly by `(232)`, not an independent arithmetic
+annihilator.  Passing from two Hilbert vectors to the larger regular codiagonal does not help: it
+erases `alpha` throughout its entire domain.  The singularity at `eps=0` is real, but merely
+declaring a renormalized boundary value to vanish would install the missing RH statement.
+
+The Route-J survivor is therefore sharper and remains in Route J.  It must be constructed before
+reflection codiagonalization, retain genuinely off-diagonal prime/depth incidence, and either
+admit a source-derived singular renormalization at `eps=0` or couple nonseparably to divisor
+provenance.  Its arithmetic differential must then prove a zero identity forcing the Burnol
+discriminant `(236)` to vanish.  No regular diagonal common-test manipulation can do so.
+
+Internal novelty audit found the newly formalized larger codiagonal chamber and its balanced real
+wall, but no complex reflected regularization theorem, pointwise prime-depth-time cancellation,
+exact individual-versus-paired two-wall phase diagram, or its Route-J conormal consequence.
+Targeted primary searches found Burnol's co-Poisson/Sonine Hilbert constructions and the
+Connes--Consani scaling-Hamiltonian discussion of balanced absorption/emission, but not
+`(242)--(246)`.  General Cauchy-kernel algebra and prime-series convergence are classical;
+candidate new content is their exact source-resolved reflection classification and the resulting
+elimination of the full regular diagonal annihilator class.
+
+Lean realization:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  EulerPrimitiveJointDepthReflectionDiagonalBlindness.lean
+```
+
+The module proves the reciprocal co-source's previously missing sharp Hilbert iff, both complex
+coefficient chambers, the literal biorthogonal prime-depth-time feature formula, pointwise
+reflection blindness `(242)`, integrated fibre identity, exact maximal codiagonal iff `(245)`,
+universal codiagonal value, global Hilbert-pairing blindness `(243)`, the regular-but-non-Hilbert
+middle chamber, and the spectral specialization `(244)`.  All statements are unconditional and
+contain no divisor-location premise.
+
+## 57. Off-diagonal inverse-clock countertransport and the exact all-depth Hodge wall
+
+`[PAPER+LEAN-PROVED SOURCE CONSTRUCTION]`
+`[PAPER+LEAN-PROVED CLASS-COMPLETE FLAT-CYCLE NO-GO]`
+`[FORMAL CLASS-CLOSING EXTENSION; FLATNESS ITSELF IS PRIOR INTERNAL KNOWLEDGE]`
+`[OPEN NON-COBOUNDARY ARITHMETIC DIFFERENTIAL]`
+
+The survivor left by Section 56 must be tested before reflection codiagonalization.  Let
+
+```text
+I = Nat.Primes x Nat,
+n_(p,e) = p^(e+1),
+lambda_(p,e) = log n_(p,e) = (e+1) log p.                (247)
+```
+
+For two independently retained labels `i,j in I`, define the literal reflected source incidence
+
+```text
+P_(eps,a)(i,j)
+ = L_(eps+a)(i) conj(R_(eps-conj(a))(j)).                (248)
+```
+
+This is not an abstract edge field: both factors are the primitive-promoted source and reciprocal
+co-source from `(238)`.  Direct complex-power algebra, using positivity of every `n_i`, gives
+
+```text
+P_(eps,a)(i,j)
+ = P_(eps,0)(i,j) H_a(i,j),
+
+H_a(i,j) = exp(a (lambda_j-lambda_i))
+          = n_j^a n_i^(-a).                              (249)
+```
+
+Every source and co-source coefficient is nonzero, so normalization by `P_(eps,0)` is legitimate
+and source-defined:
+
+```text
+P_(eps,a)(i,j) / P_(eps,0)(i,j) = H_a(i,j).              (250)
+```
+
+Thus the first literal off-diagonal survivor is completely computable.  Its computation exposes
+a full-class obstruction, not one failed loop.  For all labels `i,j,k`,
+
+```text
+H_a(i,j) H_a(j,k) = H_a(i,k),
+H_a(i,j) H_a(j,k) H_a(k,i) = 1.                          (251)
+```
+
+Hence every multiplicative cycle word in the normalized joint-depth incidence is identically
+flat for every horizontal displacement.  No choice of finite prime/depth graph, longer cycle, or
+cofinal union of such cycle identities can create an RH equation from this separable character.
+
+The reflection and Hodge laws are nevertheless exact.  Complex conjugation gives
+
+```text
+H_(-conj(a))(i,j) = conj(H_a(i,j))^(-1).                 (252)
+```
+
+Since the log clock is injective on prime powers, every distinct pair obeys
+
+```text
+H_a(i,j) = H_(-conj(a))(i,j)  <->  Re(a)=0,
+H_a(j,i) = conj(H_a(i,j))     <->  Re(a)=0.              (253)
+```
+
+Thus edgewise reflected-Hodge compatibility is exactly the critical-line condition, while closed
+cycle holonomy is blind to it.  There is also an exact cross-construction identification with the
+doubled-window Burnol cover of Section 55:
+
+```text
+H_(rho-1/2)(i,j)
+ = burnolCoPoissonCenteredConormalCharacter
+     (lambda_j-lambda_i, rho).                            (254)
+```
+
+The Burnol window length is therefore not an analogy or inserted calibration: it is precisely the
+log-clock separation of two literal Euler source labels.
+
+The requested countertransport now has a canonical finite form.  For an injective packet
+`q : Fin N -> I`, let `D_q=diag(lambda_(q_i))` and let `P_q` be `(248)`.  Put
+
+```text
+K^P_q(i,j) = 0                                      if i=j,
+             P_(eps,a)(q_i,q_j)/(lambda_(q_i)-lambda_(q_j)) otherwise.
+```
+
+Every denominator is nonzero by injectivity of the prime-power clock, and entrywise multiplication
+proves the exact commutator identity
+
+```text
+[D_q,K^P_q]
+ = P_q - diag_i(P_(eps,a)(q_i,q_i)).                    (255)
+```
+
+This constructs the depth-nonlocal countertransport of the actual source incidence.  Its only
+unrecovered part is the diagonal residual already classified in Section 56 as displacement-blind.
+For the normalized source character define similarly
+
+```text
+K^H_q(i,j) = 0                                      if i=j,
+             H_a(q_i,q_j)/(lambda_(q_i)-lambda_(q_j)) otherwise.
+```
+
+Then
+
+```text
+[D_q,K^H_q] = H_q - I.                                  (256)
+```
+
+If `Re(a)=0`, equation `(253)` and antisymmetry of the clock denominator give
+
+```text
+(K^H_q)^* = -K^H_q,
+[D_q,K^H_q]^* = [D_q,K^H_q].                            (257)
+```
+
+Thus the countertransport preserves the reflected Hodge sector at operator level, not merely at
+the level of a scalar cycle.
+
+Its cofinal capacity has a sharp unconditional classification.  Let
+
+```text
+UB(a) := exists C, forall i j in I, ||H_a(i,j)|| <= C.
+```
+
+Because
+
+```text
+||H_a(i,j)|| = exp(Re(a) (lambda_j-lambda_i)),
+```
+
+one has
+
+```text
+UB(a) <-> Re(a)=0.                                       (258)
+```
+
+The reverse direction has bound `C=1`.  For `Re(a)>0`, keep prime `2`, orient depth `0` toward
+depth `e`, and obtain `exp(Re(a) e log 2) -> infinity`.  For `Re(a)<0`, reverse the orientation.
+This uses arbitrarily separated valuation depths at one fixed prime; it requires no prime-gap
+input and no numerical experiment.
+
+Specializing to actual Xi divisor supports produces the unconditional capstone
+
+```text
+exists C, forall rho in XiDivisorSupport, forall i j in I,
+  ||H_(rho-1/2)(i,j)|| <= C
+  <-> RiemannHypothesis.                                  (259)
+```
+
+Equation `(259)` is an equivalence, not a proof of its left side.  It prevents capacity language
+from laundering the missing theorem: uniform all-depth reflected capacity is exactly RH.
+
+There is a stronger finite spectral no-go.  On a packet `q`, define the diagonal vertex gauge
+
+```text
+G_a(q)=diag_i(exp(a lambda_(q_i))),
+G_a(q)^(-1)=diag_i(exp(-a lambda_(q_i))).                (260)
+```
+
+Equations `(249)--(250)` give the full matrix identity
+
+```text
+P_(eps,a)[q] = G_a(q)^(-1) P_(eps,0)[q] G_a(q).          (261)
+```
+
+This is stronger than triangle flatness.  For every finite packet and every `m>=0`,
+
+```text
+charpoly(P_(eps,a)[q]) = charpoly(P_(eps,0)[q]),
+det(P_(eps,a)[q])      = det(P_(eps,0)[q]),
+trace(P_(eps,a)[q]^m)  = trace(P_(eps,0)[q]^m).          (262)
+```
+
+Therefore every finite similarity-invariant Julia/spectral consumer of the complete actual
+off-diagonal incidence is horizontally blind.  Changing graph, packet size, determinant degree,
+or trace moment cannot help; a successful finite consumer must break this vertex gauge by adding
+nonseparable arithmetic incidence before taking spectral invariants.
+
+The hostile prior-research audit changes the novelty verdict.  The failed
+`orbitwise-source-divisor-seam-obstruction` card already proved the first-prime character to be a
+coboundary and explicitly predicted coordinatewise flatness for the full prime-power grading.
+General divided-difference commutators are also classical.  Therefore `(251)` alone is not new
+knowledge.  The strict extension established here is the exact factorization of the literal
+joint-depth primitive/co-source incidence, its Burnol conormal identification `(254)`, the source
+countertransport identities `(255)--(257)`, the all-oriented-depth phase boundary `(258)`, and the
+complete finite gauge-similarity/spectral blindness law `(260)--(262)`.  These close the separable
+normalized-incidence/similarity-invariant spectral class without claiming novelty for its known
+flat mechanism.
+
+Route J remains open.  The constructed source object shows exactly why it is insufficient: its
+normalized edge field is a vertex-potential quotient.  The remaining object must be a genuinely
+nonseparable, non-coboundary prime/depth--divisor incidence whose arithmetic differential is not a
+function only of `lambda_j-lambda_i`.  It must carry an independently proved source law forcing a
+nontrivial reflected edge—or equivalently the Burnol discriminant—to vanish.  Uniform capacity,
+Hodge compatibility, or loop closure cannot be assumed; the first two are RH-equivalent and the
+third is identically true.
+
+Lean realization:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  EulerPrimitiveJointDepthOffDiagonalCountertransport.lean
+```
+
+The module proves `(247)--(262)` unconditionally, including both actual and normalized finite
+countertransports, skew-Hermitian Hodge preservation, same-prime cofinal escape in both
+orientations, the Xi-support/RH equivalence, explicit finite diagonal similarity, characteristic
+polynomial invariance, determinant invariance, and invariance of all trace powers.  No
+divisor-location hypothesis is used in any source construction or local capacity theorem.

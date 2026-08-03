@@ -27,18 +27,18 @@ def jetVec (f : ℂ → ℂ) (z : ℂ) : ℕ → ℂ := fun n => iteratedDeriv n
 theorem jetVec_apply (f : ℂ → ℂ) (z : ℂ) (n : ℕ) : jetVec f z n = iteratedDeriv n f z := rfl
 
 /-- The total derivation on jet polynomials: it raises every jet variable by one. -/
-def jetDerivation : Derivation ℂ (MvPolynomial ℕ ℂ) (MvPolynomial ℕ ℂ) :=
+def jetTotalDerivation : Derivation ℂ (MvPolynomial ℕ ℂ) (MvPolynomial ℕ ℂ) :=
   MvPolynomial.mkDerivation ℂ fun n => MvPolynomial.X (n + 1)
 
 @[simp]
-theorem jetDerivation_X (n : ℕ) :
-    jetDerivation (MvPolynomial.X n) = MvPolynomial.X (n + 1) :=
+theorem jetTotalDerivation_X (n : ℕ) :
+    jetTotalDerivation (MvPolynomial.X n) = MvPolynomial.X (n + 1) :=
   MvPolynomial.mkDerivation_X ℂ _ n
 
 @[simp]
-theorem jetDerivation_C (a : ℂ) : jetDerivation (MvPolynomial.C a) = 0 := by
+theorem jetTotalDerivation_C (a : ℂ) : jetTotalDerivation (MvPolynomial.C a) = 0 := by
   rw [show (MvPolynomial.C a : MvPolynomial ℕ ℂ) = algebraMap ℂ (MvPolynomial ℕ ℂ) a from rfl]
-  exact jetDerivation.map_algebraMap a
+  exact jetTotalDerivation.map_algebraMap a
 
 /-- On an open set of smoothness every iterated derivative is again differentiable. -/
 theorem differentiableAt_iteratedDeriv_of_contDiffAt {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
@@ -78,10 +78,10 @@ theorem deriv_eval_jetVec {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
     (hf : ∀ w ∈ U, ContDiffAt ℂ (⊤ : ℕ∞) f w) {z : ℂ} (hz : z ∈ U)
     (P : MvPolynomial ℕ ℂ) :
     deriv (fun w => MvPolynomial.eval (jetVec f w) P) z
-      = MvPolynomial.eval (jetVec f z) (jetDerivation P) := by
+      = MvPolynomial.eval (jetVec f z) (jetTotalDerivation P) := by
   induction P using MvPolynomial.induction_on with
   | C a =>
-      simp only [MvPolynomial.eval_C, jetDerivation_C, map_zero]
+      simp only [MvPolynomial.eval_C, jetTotalDerivation_C, map_zero]
       exact deriv_const z a
   | add p q hp hq =>
       have hdp := differentiableAt_eval_jetVec hU hf hz p
@@ -94,7 +94,7 @@ theorem deriv_eval_jetVec {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
       have hsucc : deriv (fun w => iteratedDeriv n f w) z = iteratedDeriv (n + 1) f z := by
         rw [iteratedDeriv_succ]
       simp only [map_mul, MvPolynomial.eval_X, jetVec_apply, Derivation.leibniz,
-        jetDerivation_X, smul_eq_mul]
+        jetTotalDerivation_X, smul_eq_mul]
       rw [deriv_fun_mul hdp hdjet, hp, hsucc]
       simp only [map_add, map_mul, MvPolynomial.eval_X, jetVec_apply]
       ring
@@ -102,13 +102,13 @@ theorem deriv_eval_jetVec {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
 /-- Universal numerators of the reciprocal jets. -/
 def invJetNum : ℕ → MvPolynomial ℕ ℂ
   | 0 => 1
-  | (k + 1) => jetDerivation (invJetNum k) * MvPolynomial.X 0
+  | (k + 1) => jetTotalDerivation (invJetNum k) * MvPolynomial.X 0
       - MvPolynomial.C ((k : ℂ) + 1) * (MvPolynomial.X 1 * invJetNum k)
 
 @[simp] theorem invJetNum_zero : invJetNum 0 = 1 := rfl
 
 theorem invJetNum_succ (k : ℕ) :
-    invJetNum (k + 1) = jetDerivation (invJetNum k) * MvPolynomial.X 0
+    invJetNum (k + 1) = jetTotalDerivation (invJetNum k) * MvPolynomial.X 0
       - MvPolynomial.C ((k : ℂ) + 1) * (MvPolynomial.X 1 * invJetNum k) := rfl
 
 /-- **The reciprocal jet formula.**  Every jet of `1 / f` is a universal polynomial in the jets of
@@ -173,20 +173,20 @@ theorem mvPolynomial_eq_zero_of_eval_eq_zero_off_coordinates {σ : Type*} [Decid
   · exact absurd hcon hprod
 
 /-- The total derivation raises the jet support by at most one. -/
-theorem jetDerivation_mem_supported {k : ℕ} {P : MvPolynomial ℕ ℂ}
+theorem jetTotalDerivation_mem_supported {k : ℕ} {P : MvPolynomial ℕ ℂ}
     (hP : P ∈ MvPolynomial.supported ℂ (Set.Iic k)) :
-    jetDerivation P ∈ MvPolynomial.supported ℂ (Set.Iic (k + 1)) := by
+    jetTotalDerivation P ∈ MvPolynomial.supported ℂ (Set.Iic (k + 1)) := by
   rw [MvPolynomial.supported_eq_adjoin_X] at hP ⊢
   induction hP using Algebra.adjoin_induction with
   | mem x hx =>
       obtain ⟨j, hj, rfl⟩ := hx
-      rw [jetDerivation_X]
+      rw [jetTotalDerivation_X]
       refine Algebra.subset_adjoin ⟨j + 1, ?_, rfl⟩
       simp only [Set.mem_Iic] at hj ⊢
       omega
   | algebraMap r =>
       have hCr : (algebraMap ℂ (MvPolynomial ℕ ℂ)) r = MvPolynomial.C r := rfl
-      rw [hCr, jetDerivation_C]
+      rw [hCr, jetTotalDerivation_C]
       exact Subalgebra.zero_mem _
   | add x y hx hy ihx ihy =>
       rw [map_add]
@@ -218,8 +218,8 @@ theorem invJetNum_mem_supported (k : ℕ) :
         intro j hj
         simp only [Set.mem_Iic] at hj ⊢
         omega
-      have hD : jetDerivation (invJetNum k) ∈ MvPolynomial.supported ℂ (Set.Iic (k + 1)) :=
-        jetDerivation_mem_supported ih
+      have hD : jetTotalDerivation (invJetNum k) ∈ MvPolynomial.supported ℂ (Set.Iic (k + 1)) :=
+        jetTotalDerivation_mem_supported ih
       have hX0 : (MvPolynomial.X 0 : MvPolynomial ℕ ℂ) ∈
           MvPolynomial.supported ℂ (Set.Iic (k + 1)) := by
         rw [MvPolynomial.X_mem_supported]

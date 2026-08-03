@@ -34,19 +34,16 @@ characteristic coefficients. -/
 theorem eval_matrixCharacteristicElementaryPolynomial
     {θ I : Type*} [Fintype I] [DecidableEq I]
     (M : Matrix I I (MvPolynomial θ ℂ))
-    (p : θ → ℝ)
+    (z : θ → ℂ)
     (j : Fin (Fintype.card I)) :
-    MvPolynomial.eval₂ (RingHom.id ℂ)
-        (fun t => (p t : ℂ))
+    MvPolynomial.eval₂ (RingHom.id ℂ) z
         (matrixCharacteristicElementaryPolynomial M j) =
       (-1 : ℂ) ^ (j.1 + 1) *
         (M.map
-          (MvPolynomial.eval₂Hom (RingHom.id ℂ)
-            (fun t => (p t : ℂ)))).charpoly.coeff
+          (MvPolynomial.eval₂Hom (RingHom.id ℂ) z)).charpoly.coeff
           (Fintype.card I - (j.1 + 1)) := by
   let f :=
-    MvPolynomial.eval₂Hom (RingHom.id ℂ)
-      (fun t => (p t : ℂ))
+    MvPolynomial.eval₂Hom (RingHom.id ℂ) z
   have hcharpoly :
       (M.map f).charpoly =
         Polynomial.map f M.charpoly :=
@@ -69,24 +66,20 @@ theorem
     matrixCharacteristicElementaryCoefficient_eq_rootPacket
     {I : Type*} [Fintype I] [DecidableEq I]
     (H : Matrix I I ℂ)
-    (energy : I → ℝ)
+    (energy : I → ℂ)
     (hinjective : Function.Injective energy)
     (hroot :
       ∀ i,
         matrixCharpolyRelation
-          (H, (energy i : ℂ)) = 0)
+          (H, energy i) = 0)
     (j : Fin (Fintype.card I)) :
     (-1 : ℂ) ^ (j.1 + 1) *
         H.charpoly.coeff
           (Fintype.card I - (j.1 + 1)) =
-      MvPolynomial.eval₂ (Rat.castHom ℂ)
-        (fun i => (energy i : ℂ))
+      MvPolynomial.eval₂ (Rat.castHom ℂ) energy
         (MvPolynomial.esymm I ℚ (j.1 + 1)) := by
-  let energyC : I → ℂ :=
-    fun i => (energy i : ℂ)
-  have hinjectiveC : Function.Injective energyC := by
-    intro i k hik
-    exact hinjective (Complex.ofReal_injective hik)
+  let energyC : I → ℂ := energy
+  have hinjectiveC : Function.Injective energyC := hinjective
   let rootsPacket : Multiset ℂ :=
     Finset.univ.val.map energyC
   have hpacketNodup : rootsPacket.Nodup := by
@@ -200,7 +193,8 @@ theorem
   rw [eval_matrixCharacteristicElementaryPolynomial]
   exact
     matrixCharacteristicElementaryCoefficient_eq_rootPacket
-      _ energy hinjective hroot j
+      _ (fun i => ((energy i : ℝ) : ℂ))
+      (fun a b h => hinjective (Complex.ofReal_injective h)) hroot j
 
 end
 

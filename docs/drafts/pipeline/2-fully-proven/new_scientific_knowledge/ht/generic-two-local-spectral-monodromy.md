@@ -328,3 +328,253 @@ stage 3 or be cited for that conclusion until the remaining transfer closes.
   irreducible over both its multivariate parameter ring and its
   rational-function field.  Foreground compilation and axiom audits pass
   with only `propext`, `Classical.choice`, and `Quot.sound`.
+
+## Remaining transfer: exact assembly plan
+
+An audit of the tree shows the real-slice null transfer needs no new analysis
+lane -- every general ingredient already exists, and what is missing is one
+family-specific assembly.
+
+Available:
+
+- `AnalyticSpectralRelationEscape.lean`:
+  **`exists_all_permutedAnalyticSpectralRelation_ne_zero`** and
+  **`exists_coefficientObstruction_eval_ne_zero_of_analytic`**.  Given analytic
+  eigenvalue branches on a connected open chart and the escape of *each*
+  labelling somewhere in that chart, they produce a point where the
+  labelling-free coefficient obstruction is nonzero.
+- `PolynomialHermitianMatrixProjectiveGenericity.lean`:
+  `polynomialMatrixProjectiveGenericSet` and
+  **`polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure`** -- a
+  nonzero obstruction gives a dense residual full-measure generic parameter set.
+- `PolynomialHermitianSpectrumGenericity.lean`:
+  **`maximallyProjectiveEnergy_eigenvalues_of_mem_polynomialMatrixGenericSet`**
+  and `polynomialHermitianMatrixMaximalSet_dense_residual_fullMeasure` -- membership
+  in that set forces the actual Hermitian eigenvalue packet to be maximally
+  projectively independent, i.e. exactly the card's conclusion.
+- `TwoLocalMonodromyRelationRigidity.lean`:
+  **`exists_commonBaseTwoLocalLoop_breaking_balancedCharacter`** -- every nonzero
+  balanced character is broken by one exact closed loop at the common base.
+- `RealPolynomialZeroMeasure.lean` / `AffineLinePolynomialAvoidance.lean`: a
+  nonzero real multivariate polynomial has a Lebesgue-null zero set.
+
+Missing, and the only remaining work:
+
+1. **Analytic branches for the two-local family.**  DONE, in
+   `SimpleSpectrumAnalyticBranch.lean`:
+
+   - `matrixCharpolyRelation_conj` -- the characteristic relation is conjugation
+     invariant, which removes the diagonal normal form from the universal branch
+     theorem;
+   - `analyticAt_conj_matrixFamily`, `analyticMatrixFamily_eigenvalueBranch_of_conj`
+     -- every eigenvalue of an analytic matrix family whose base value is merely
+     diagonalizable with distinct eigenvalues continues analytically;
+   - **`exists_simultaneous_eigenvalueBranches`** -- at a simple base point one open
+     neighbourhood carries an analytic branch through *every* eigenvalue at once,
+     with prescribed values at the base.
+
+   This is exactly the `hbranch` input of `AnalyticSpectralRelationEscape.lean`.
+   Axiom-clean and wired into the umbrella.
+2. **`hlabel`: the escape mechanism is the isolated-edge block, not a diagonal
+   move.**  Two facts pin the construction down.
+
+   *Diagonal directions cannot work.*  Diagonal two-local energies lie in the span of
+   `1`, `z_i`, `z_i z_j`, of dimension `1 + n + C(n,2) < 2^n` for `n >= 4`, so some
+   nonzero balanced characters annihilate every diagonal move: no diagonal
+   perturbation escapes them.
+
+   *The isolated-edge block does work.*  On the card's own Step-1/2 family the
+   perturbation `w Z_i + u X_i` is block diagonal in `z`, so all nonselected
+   eigenvalues are *unchanged* and the selected pair is `g(z_0) ± sqrt(w² + u²)`.
+   For a labelling `σ` the relation therefore reads
+
+   `f_σ(w) = C + (k_{σ⁻¹ a} - k_{σ⁻¹ b}) · sqrt(w² + u²)`,
+
+   with `C` independent of `w`.  Since a nonzero balanced `k` is nonconstant and the
+   Boolean cube is connected, some edge `(a,b)` has `k_{σ⁻¹ a} ≠ k_{σ⁻¹ b}`, and
+   `sqrt(w² + u²)` is nonconstant in `w`; hence `f_σ` is nonconstant and escapes.
+
+   Both halves of that mechanism are now formalized.
+
+   `HypercubeCharacterNonconstancy.lean` (wired, axiom-clean) selects the qubit:
+
+   - `boolPatch_insert` -- adding one coordinate to a patch either changes nothing or
+     toggles exactly that coordinate;
+   - **`const_of_boolToggle_const`** -- a character unchanged by every edge toggle is
+     constant;
+   - **`exists_boolToggle_ne_of_ne`** -- hence a nonconstant character differs across
+     some hypercube edge, which is exactly the qubit whose transverse coupling has a
+     nonzero block-difference vector.
+
+   `BlockSplitEscape.lean` (wired, axiom-clean) is the analytic half:
+
+   - `hasDerivAt_sqrtQuadratic`, `hasDerivAt_slope_sqrtQuadratic` -- the block branch
+     `sqrt(d² + u²)` has vanishing first and reciprocal-gap second derivative at the
+     unsplit point;
+   - `blockSplitRelation`, `hasDerivAt_blockSplitRelation`,
+     **`hasDerivAt_deriv_blockSplitRelation_zero`** -- the character's block-split
+     relation has second derivative `∑_z β_z / |d_z|` at `u = 0`;
+   - **`not_eventuallyEq_zero_blockSplitRelation`** and
+     **`exists_ne_zero_blockSplitRelation`** -- if the block differences weight the
+     reciprocal gaps nontrivially, the relation cannot vanish near the diagonal point,
+     so some arbitrarily small splitting parameter escapes it.
+
+   The escape points for the different qubits are all small perturbations of one
+   diagonal base, so they lie in one chart: `hlabel` needs no travel between distant
+   regions of parameter space, and the earlier worry about joining edge families
+   without enclosing a branch point does not arise.
+
+   The gap-weight nondegeneracy is now formalized too, in
+   `ReciprocalSumNonvanishing.lean` (wired, axiom-clean).  Clearing denominators is
+   enough -- no genericity or subvariety argument is needed, because the one-body
+   coefficient of the flipped qubit shifts every block gap simultaneously:
+
+   - `reciprocalSumPolynomial`, `eval_reciprocalSumPolynomial_neg` -- the clearing
+     polynomial `∑_z β_z ∏_{w ≠ z}(X + a_w)` takes the value
+     `β_{z₀} ∏_{w ≠ z₀}(a_w - a_{z₀})` at `t = -a_{z₀}`;
+   - **`reciprocalSumPolynomial_ne_zero`** -- for pairwise distinct base gaps that
+     value is nonzero, so the clearing polynomial is nonzero: the poles of the
+     reciprocals cannot cancel;
+   - `reciprocalSum_eq_div`, **`exists_large_reciprocalSum_ne_zero`** -- hence for
+     arbitrarily large shifts `t` every gap `a_z + t` is positive and
+     `∑_z β_z/(a_z + t) ≠ 0`;
+   - **`exists_shift_and_split_ne_zero`** -- combining with the block-splitting
+     escape: for a nonzero block-difference vector there is a diagonal shift with all
+     gaps positive and a splitting parameter, arbitrarily close to the unsplit point,
+     at which the block-split relation is nonzero.
+
+   The bridge from the explicit split spectrum to the abstract analytic branches is
+   also formalized now.
+
+   `SimpleSpectrumAnalyticBranch.lean` gained the uniqueness half:
+
+   - `continuousAt_conj_matrixFamily`, **`simpleMatrix_root_germs_unique_of_conj`** --
+     two continuous characteristic roots through the same simple eigenvalue of a
+     diagonalizable base agree near the base;
+   - **`eventuallyEq_branch_of_root_path`** -- consequently an explicitly given
+     continuous root path through a simple base value *is* the analytic branch near
+     the base, so explicit spectra may be substituted for the abstract branches.
+
+   `BlockSplitSpectrum.lean` (wired, axiom-clean) supplies that explicit spectrum:
+
+   - `splitBlock`, `blockSplitMatrix` -- the transverse splitting of a diagonal
+     Hamiltonian as a block-diagonal matrix with two-by-two blocks;
+   - `scalar_eq_blockDiagonal`, `matrixCharpolyRelation_blockSplitMatrix`,
+     `det_scalar_sub_splitBlock` -- the characteristic determinant factors over the
+     blocks with block factor `(λ - m)² - (d² + u²)`;
+   - **`matrixCharpolyRelation_blockSplitMatrix_root`** -- both block roots
+     `m_z ± sqrt(d_z² + u²)` satisfy the characteristic relation, for every splitting
+     parameter;
+   - `blockSplitRoot_zero`, `continuous_blockSplitRoot`, `continuous_blockSplitMatrix`
+     -- the root paths are continuous and start at the unsplit diagonal spectrum
+     (using `d_z > 0`, which the shift selection provides).
+
+   `BlockSplitBranchEscape.lean` (wired, axiom-clean) presents that splitting as an
+   analytic family through a simple diagonal base, which is the exact input shape of
+   the branch machinery:
+
+   - `offCouplingMatrix`, `blockSplitMatrix_eq_add_smul`,
+     **`analyticAt_blockSplitMatrix`** -- the transverse coupling enters affinely, so
+     the splitting is analytic in the (complexified) coupling;
+   - `blockEnergy`, **`blockSplitMatrix_zero`** -- at zero coupling the family is the
+     diagonal Hamiltonian of the unsplit block energies;
+   - `blockSplitRoot`, `blockSplitRoot_zero_eq`, `continuous_blockSplitRoot_real`,
+     **`matrixCharpolyRelation_blockSplitRoot`** -- along the real coupling axis each
+     block root path is a continuous characteristic root through that base;
+   - **`sum_blockSplitRoot_eq`** -- a character summed over the spectrum is exactly the
+     block-split relation, with constant `∑_z (k(0,z)+k(1,z)) m_z` and block
+     differences `k(0,z) - k(1,z)`.
+
+   The assembly is now in the tree:
+
+   - **`exists_split_branch_relation_ne_zero`** -- if the block differences of a
+     character weight the reciprocal gaps nontrivially, then arbitrarily small
+     transverse couplings make the character's relation *among the analytic eigenvalue
+     branches* nonzero.  This is `hlabel` in abstract form;
+   - **`exists_shift_blockWeight_ne_zero`** -- for pairwise distinct base gaps and a
+     character with one nonzero block difference, arbitrarily large diagonal shifts
+     make every gap positive and the reciprocal-gap weight nonzero, which is exactly
+     the hypothesis of the previous theorem.
+
+   A note for whoever continues: the composition must go through the corpus's
+   *diagonal-base* germ-uniqueness lemma `simpleDiagonalMatrix_root_germs_unique`
+   directly.  Routing it through the conjugated variant with `S = 1` makes the
+   elaborator diverge in `whnf` on the `Fin 2 × Z`-indexed matrix type (it does not
+   terminate at one million heartbeats); with the diagonal-base lemma the same proof
+   elaborates in two seconds.
+
+   With this in place, `hlabel` is bookkeeping at the card's own two-local family:
+   present the flipped-qubit family in the block form above, with the environment
+   energies as `m_z ± d_z`, and chain
+   `matrixCharpolyRelation_blockSplitMatrix_root` → `eventuallyEq_branch_of_root_path`
+   → `exists_shift_and_split_ne_zero`.  That identification, followed by the assembly
+   of step 3, is what remains.
+2b. **Identity-theorem transport.**  The escape hypothesis is about the branches on
+   the chart, while monodromy rigidity lives at the common base, so a relation that
+   vanishes identically on the chart must be transported along an analytic path to
+   the base before `exists_commonBaseTwoLocalLoop_breaking_balancedCharacter`
+   applies.  This is the one genuinely new step: analytic continuation of the branch
+   relation along a path in the simple-spectrum locus.
+
+3. **Assembly.**  Steps 1--2b feed `exists_coefficientObstruction_eval_ne_zero_of_analytic`,
+   whose conclusion is exactly the nonvanishing hypothesis of the genericity
+   capstones; those give the dense residual full-measure set, and
+   `maximallyProjectiveEnergy_eigenvalues_of_mem_polynomialMatrixGenericSet`
+   converts it into the card's almost-sure statements (1) and (2).
+
+Note for the audit: a direct *witness* route is not available here.  A diagonal
+two-local Hamiltonian has energies in the span of `1`, `z_i`, `z_i z_j`, so for
+`n >= 3` its `2^n` energies satisfy integer balanced relations; the witness must
+therefore come from the monodromy escape, not from an explicit spectrum.
+
+## Assembly roadmap after the branch-escape capstone
+
+The transfer machinery is now generic and complete; what is left is one family
+identification.  Built and axiom-clean:
+
+- `AnalyticEscapeGenericityTransfer.lean` -- **the whole of step 3, in general form.**
+  `eq_zero_of_eval_real_eq_zero` (a complex polynomial law vanishing at every real
+  parameter is zero, via coefficientwise real and imaginary parts) and
+  `exists_real_eval_ne_zero_of_complex` turn the *complex* escape point into a real
+  witness; `polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure_of_analyticBranchEscape`
+  then takes analytic, simple, root-valued branches on one connected chart plus an
+  escape of every labelling somewhere on that chart, and returns exactly the card's
+  conclusion for the family: the real parameters with no balanced integer spectral
+  relation are dense, residual, and of full measure.  Two supporting generalizations
+  were made in place: `eval_matrixCharacteristicElementaryPolynomial`,
+  `eval_complexSpectralCoefficientObstructionPullback` and
+  `matrixCharacteristicElementaryCoefficient_eq_rootPacket` now accept complex
+  parameters and complex root packets, and both genericity capstones gained
+  `..._of_witness` forms whose hypothesis is one witness per balanced character.
+- `ReciprocalSumNonvanishing.lean` -- `exists_small_reciprocalSum_ne_zero`: the shift
+  may be taken *arbitrarily small* rather than large, because the clearing polynomial
+  has finitely many roots.  This keeps every escape point inside one fixed chart.
+- `BlockSplitBranchEscape.lean` -- `shiftedBlockSplitMatrix`, `shiftedBlockSplitRoot`
+  and **`exists_shifted_split_branch_relation_ne_zero`**: the two-parameter family
+  (uniform gap shift, transverse coupling) through one fixed simple diagonal base.
+  Germ uniqueness is applied once, at the base of the two-parameter family, so no
+  transport along a path of base points is needed -- this removes obligation 2b
+  entirely.
+
+Remaining, in order:
+
+1. **Finite hyperplane avoidance.**  A nonempty open set of a finite parameter space
+   is not covered by finitely many proper hyperplanes.  Needed to choose the diagonal
+   base.
+2. **Edge block reindexing.**  For a qubit `i`, the equivalence
+   `Fin 2 x {x | x i = false} ≃ (Fin n → Bool)` carries a diagonal-plus-single-edge
+   Hamiltonian to `blockSplitMatrix m d u` with `m = (e⁺+e⁻)/2`, `d = (e⁺-e⁻)/2`, and
+   `matrixCharpolyRelation` is invariant under that reindexing.  Because
+   `boolOccupation` is `0/1`, the gap-shift direction is `onsite i += 2t`,
+   `constant -= t`: it fixes every block mean and shifts every block gap by `t`.
+3. **Diagonal base genericity.**  Choose real two-local diagonal parameters with all
+   `2^n` energies distinct and, for every qubit, all edge gaps positive and pairwise
+   distinct.  Each failure is the vanishing of one explicit nonzero linear functional
+   of the coefficients (the `onsite i` coefficient of `e(x)-e(y)` is `occ(x i)-occ(y i)`;
+   the `interaction i j` coefficient of `h_i(z)-h_i(z')` is `occ(z j)-occ(z' j)`), and
+   positivity holds on the nonempty open set where the onsite terms dominate.
+4. **Instantiation.**  Feed `exists_simultaneous_eigenvalueBranches` at that base,
+   restrict to the two-parameter slice of the chosen qubit, apply
+   `exists_shifted_split_branch_relation_ne_zero` with the qubit supplied by
+   `exists_boolToggle_ne_of_ne`, and discharge the `hlabel` hypothesis of the transfer
+   capstone.
