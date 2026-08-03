@@ -4,9 +4,10 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM / CONTINUUM GRAVITY / CLOCKS / CONFORMAL SCALE / INVERSE PROBLEM
 - **Parent:** `../../1-in-progress/continuum-chronometric-equivalence-theorem.md`
-- **Status:** differential-geometric identity and algebraic scale theorem paper-proved; algebraic
-  separation unconditional in Lean; smooth conformal wave-operator formalization and inverse-data
-  realization open.
+- **Status:** every proved theorem of this card is unconditional in Lean, including the literal
+  smooth pseudo-Riemannian realization of the conformal wave operator and formula `(4)`. The only
+  remaining item is the coupled inverse theorem of step 1 below, which is open research, not a
+  proved statement awaiting formalization.
 
 ## Headline
 
@@ -139,7 +140,8 @@ Thus the map
 \]
 
 is injective whenever \(\mu_1\neq\mu_2\). This algebraic injectivity and formula `(7)` are
-unconditional in Lean.
+unconditional in Lean, both algebraically and for the d'Alembertian of a literal smooth
+nondegenerate metric field.
 
 ## Why one species is structurally weaker
 
@@ -220,11 +222,67 @@ general-dimensional exponential calculation in an abstract second-order clock ca
 These theorems prove the chain/product-rule expansion, first-derivative cancellation, geometric
 defect, and mass term at `a=(d-2)/2` without assuming the displayed conclusion.
 
+### Smooth pseudo-Riemannian realization
+
+The abstract calculus is now realized by a literal smooth metric field. Three new modules:
+
+`formal/GaloisForLFunctions/HTGeometry/SmoothMatrixDeterminantCalculus.lean`
+
+- `contDiff_matrix_det`, `contDiff_matrix_adjugate_apply`, `contDiff_matrix_inv_apply` — a
+  matrix field with `C^∞` entries has `C^∞` determinant, adjugate and (off the vanishing locus of
+  the determinant) inverse entries;
+- `contDiff_sqrt_abs` — `√|u|` is `C^∞` wherever `u` does not vanish.
+
+`formal/GaloisForLFunctions/HTGeometry/ConformalMetricDalembertian.lean`
+
+- `coordPartial` with its constant, sum, product, constant-multiple, exponential and smoothness
+  rules;
+- `SmoothMetricChart` — smooth symmetric inverse-metric field with smooth positive density; its
+  `gradPair` (carré du champ), `flux` and divergence-form `dalembert`
+  `□f = ρ⁻¹ ∑ᵢ ∂ᵢ(ρ ∑ⱼ Gⁱʲ ∂ⱼ f)`;
+- `SmoothMetricChart.dalembert_conformalRescale` — **formula `(4)` in full generality**:
+  `□_{(e^{-2σ}G, e^{dσ}ρ)} f = e^{-2σ}(□ f + (d-2) Γ(σ,f))`;
+- `SmoothPseudoMetric` — smooth symmetric metric field with nowhere-vanishing determinant, its
+  chart `(g⁻¹, √|det g|)`, and the literal conformal rescaling `g ↦ e^{2σ}g`;
+- `SmoothPseudoMetric.chart_conformal` — the chart of `e^{2σ}g` **is** the rescaled chart, i.e.
+  `(e^{2σ}g)⁻¹ = e^{-2σ}g⁻¹` and `√|det(e^{2σ}g)| = e^{dσ}√|det g|`;
+- `SmoothPseudoMetric.dalembert_conformal` — formula `(4)` for a literally rescaled metric;
+- `SmoothPseudoMetric.ofSignature`, `minkowski`, `ofSignature_dalembert` — the class is inhabited,
+  and for a constant diagonal signature the divergence-form operator is the literal
+  `∑ᵢ εᵢ⁻¹ ∂ᵢ²`.
+
+`formal/GaloisForLFunctions/HTGeometry/ConformalMetricClockCalculus.lean`
+
+- `smoothScalarAlgebra` — the `ℝ`-algebra of `C^∞` functions of `d` coordinates;
+- `SmoothMetricChart.dalembert_mul`, `gradPair_comm`, `gradPair_mul_left/right`,
+  `dalembert_expSmul`, `gradPair_expSmul_left/right` — the Leibniz and exponential chain rules of
+  the metric d'Alembertian (symmetry of `Gⁱʲ` is exactly what supplies the factor `2`);
+- `SmoothMetricChart.secondOrderCalculus`, `SmoothMetricChart.expClockCalculus` — the metric
+  d'Alembertian **is** a `SecondOrderClockCalculus` and an
+  `ExponentialSecondOrderClockCalculus`;
+- `SmoothMetricChart.conformalWaveSigma_eq_dalembert_conformalRescale` — the abstract conformal
+  wave operator at `a=(d-2)/2` equals the d'Alembertian of the conformally rescaled chart.
+
+`formal/GaloisForLFunctions/HTGeometry/ConformalClockTwoSpeciesScaleLaw.lean`
+
+- `SmoothMetricChart.conformalDefect`, `conformalPotential` — `D_σ` of `(8)` and `V_μ^σ` of `(3)`;
+- `SmoothPseudoMetric.conformalKleinGordon_conjugation` — **Theorem 1, boxed `(3)`, for a literal
+  smooth metric field**;
+- `SmoothMetricChart.conformalKleinGordon_dimension_conjugation` — its `d ≥ 3` literal form;
+- `SmoothPseudoMetric.conformalKleinGordon_four` — equation `(6)`, the `d=4`, `a=1` form;
+- `SmoothMetricChart.conformalPotential_difference` — the defect cancellation of Theorem 2;
+- `SmoothMetricChart.conformalScale_reconstruction`,
+  `SmoothPseudoMetric.conformalScale_reconstruction` — **Theorem 2, boxed `(7)`**;
+- `SmoothMetricChart.conformalDefect_reconstruction` — equation `(8)`;
+- `SmoothMetricChart.conformalPotentialPair_injective` — injectivity of
+  `(e^{2σ}, D_σ) ↦ (V_{μ₁}^σ, V_{μ₂}^σ)`.
+
+All of the above depend only on `propext`, `Classical.choice`, `Quot.sound`.
+
 Missing:
 
-1. realization of the abstract calculus by smooth pseudo-Riemannian conformal metric rescaling and
-   the literal scalar d'Alembertian formula `(4)`;
-2. coupled inverse theorem recovering both effective potentials from clock data.
+1. coupled inverse theorem recovering both effective potentials from clock data (open research;
+   step 1 of the continuum-gravity bridge below).
 
 ## Closest SOTA
 

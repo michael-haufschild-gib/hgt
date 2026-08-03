@@ -149,6 +149,54 @@ theorem analyticAt_polynomialMatrixFamily {m : ℕ} {I : Type*} [Fintype I] [Dec
   have h := AnalyticAt.aeval_mvPolynomial (f := fun z : Fin m → ℂ => z) (z := z₀) hcoord (M x y)
   simpa [MvPolynomial.aeval_def] using h
 
+
+/-- **Rational independence of the projective frequencies.**  A maximally projective energy packet
+admits no nontrivial integer relation among the differences `energy x - energy x₀`, which is
+rational independence of the `card I - 1` projective frequencies. -/
+theorem eq_zero_of_projectiveRelation {I : Type*} [Fintype I] [DecidableEq I] {energy : I → ℝ}
+    (h : MaximallyProjectiveEnergy energy) (x₀ : I) (k : I → ℤ) (hk₀ : k x₀ = 0)
+    (hk : (∑ x, (k x : ℝ) * (energy x - energy x₀)) = 0) : k = 0 := by
+  classical
+  set K : I → ℤ := fun x => k x - (if x = x₀ then ∑ y, k y else 0) with hK
+  have hbalanced : SpectralCharacterBalanced K := by
+    show (∑ x, K x) = 0
+    rw [hK]
+    rw [Finset.sum_sub_distrib, Finset.sum_ite_eq' Finset.univ x₀ fun _ => ∑ y, k y]
+    simp
+  have hexpand : (∑ x, (k x : ℝ) * (energy x - energy x₀))
+      = (∑ x, (k x : ℝ) * energy x) - ((∑ x, (k x : ℝ)) * energy x₀) := by
+    rw [Finset.sum_mul]
+    rw [← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun x _ => ?_
+    ring
+  have hrel : (∑ x, (K x : ℝ) * energy x) = 0 := by
+    have hterm : ∀ x : I, (K x : ℝ) * energy x
+        = (k x : ℝ) * energy x - (if x = x₀ then ((∑ y, k y : ℤ) : ℝ) * energy x₀ else 0) := by
+      intro x
+      by_cases hx : x = x₀
+      · subst hx
+        rw [hK]
+        simp only [Int.cast_sub, if_true]
+        ring
+      · rw [hK]
+        simp only [if_neg hx]
+        push_cast
+        simp
+    rw [Finset.sum_congr rfl fun x _ => hterm x, Finset.sum_sub_distrib,
+      Finset.sum_ite_eq' Finset.univ x₀ fun _ => ((∑ y, k y : ℤ) : ℝ) * energy x₀,
+      if_pos (Finset.mem_univ x₀)]
+    rw [hexpand] at hk
+    push_cast at hk ⊢
+    linarith [hk]
+  have hKzero : K = 0 := h K hbalanced hrel
+  funext x
+  by_cases hx : x = x₀
+  · subst hx
+    exact hk₀
+  · have hKx := congrFun hKzero x
+    rw [hK] at hKx
+    simpa [hx] using hKx
+
 end
 
 end GaloisForLFunctions.HTGeometry

@@ -88,14 +88,16 @@ theorem deningerExists_cycRed (g : PushoutI φ) :
     have haltT : List.IsChain (fun p q : Σ i, G i => p.1 ≠ q.1) L.tail := halt.tail
     have hlastT : L.tail.getLast? = some p := by
       rw [Option.mem_def] at hp
-      rw [← hp, hLcons, List.getLast?_cons_of_ne_nil htailne]
+      have hgl := List.getLast?_cons_of_ne_nil (x := q) htailne
+      rw [← hLcons] at hgl
+      exact hgl.symm.trans hp
     have hgsplit : g = PushoutI.of q.1 q.2 * deningerLetterProd (φ := φ) L.tail := by
       rw [hgL]
       conv_lhs => rw [hLcons]
       rw [deningerLetterProd_cons]
-    set c₀ : PushoutI φ := PushoutI.of q.1 q.2 with hc₀
-    have hconj : c₀⁻¹ * g * c₀ = deningerLetterProd (φ := φ) L.tail * c₀ := by
-      rw [hgsplit, hc₀]
+    have hconj : (PushoutI.of q.1 q.2)⁻¹ * g * PushoutI.of q.1 q.2 =
+        deningerLetterProd (φ := φ) L.tail * PushoutI.of q.1 q.2 := by
+      rw [hgsplit]
       group
     have hinvfst : (((deningerLetterProd (φ := φ) L.tail)⁻¹ •
         (NormalWord.empty : NormalWord d)) : NormalWord d).fstIdx = some q.1 := by
@@ -103,8 +105,9 @@ theorem deningerExists_cycRed (g : PushoutI φ) :
       obtain ⟨r, hr⟩ : ∃ r, (deningerInvList (G := G) L.tail).head? = some r := by
         cases hIL : (deningerInvList (G := G) L.tail).head? with
         | none =>
-          exact absurd (List.head?_eq_none_iff.1 hIL)
-            (by simpa [deningerInvList] using htailne)
+          refine absurd ?_ htailne
+          have hnil := List.head?_eq_none_iff.1 hIL
+          rwa [deningerInvList, List.reverse_eq_nil_iff, List.map_eq_nil_iff] at hnil
         | some r => exact ⟨r, rfl⟩
       have hrfst : r.1 = q.1 := by
         have := deningerInvList_head_fst (G := G) L.tail
@@ -112,7 +115,7 @@ theorem deningerExists_cycRed (g : PushoutI φ) :
         exact (Option.some.inj this).trans hpq
       rw [deningerFstIdx_letterProd (d := d) _ (deningerInvList_reduced L.tail hredT)
         (deningerInvList_isChain L.tail haltT) r (by rw [hr]; rfl), hrfst]
-    have hbound : deningerLen d (c₀⁻¹ * g * c₀) ≤ n := by
+    have hbound : deningerLen d ((PushoutI.of q.1 q.2)⁻¹ * g * PushoutI.of q.1 q.2) ≤ n := by
       rw [hconj]
       have h1 := deningerLen_mul_of_le (d := d) q.1 q.2 _ hinvfst
       have h2 : deningerLen d (deningerLetterProd (φ := φ) L.tail) = L.tail.length :=
@@ -121,9 +124,10 @@ theorem deningerExists_cycRed (g : PushoutI φ) :
         conv_rhs => rw [hLcons]
         simp
       omega
-    obtain ⟨c₁, hc₁⟩ := ih (c₀⁻¹ * g * c₀) hbound
-    refine ⟨c₀ * c₁, ?_⟩
-    have hrw : (c₀ * c₁)⁻¹ * g * (c₀ * c₁) = c₁⁻¹ * (c₀⁻¹ * g * c₀) * c₁ := by group
+    obtain ⟨c₁, hc₁⟩ := ih ((PushoutI.of q.1 q.2)⁻¹ * g * PushoutI.of q.1 q.2) hbound
+    refine ⟨PushoutI.of q.1 q.2 * c₁, ?_⟩
+    have hrw : (PushoutI.of q.1 q.2 * c₁)⁻¹ * g * (PushoutI.of q.1 q.2 * c₁) =
+        c₁⁻¹ * ((PushoutI.of q.1 q.2)⁻¹ * g * PushoutI.of q.1 q.2) * c₁ := by group
     rw [hrw]
     exact hc₁
 

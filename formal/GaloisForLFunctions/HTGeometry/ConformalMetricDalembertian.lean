@@ -380,6 +380,72 @@ theorem chart_conformal (sigma : (Fin d → ℝ) → ℝ) (hsigma : ContDiff ℝ
   · funext x
     exact hdet x
 
+/-- Constant diagonal metric of a nonvanishing signature. -/
+noncomputable def ofSignature {d : ℕ} (eps : Fin d → ℝ) (heps : ∀ i, eps i ≠ 0) :
+    SmoothPseudoMetric d where
+  metric := fun _ => Matrix.diagonal eps
+  contDiff_metric := fun _ _ => contDiff_const
+  metric_symm := fun _ => Matrix.isSymm_diagonal eps
+  det_ne_zero := by
+    intro _
+    rw [Matrix.det_diagonal]
+    exact Finset.prod_ne_zero_iff.mpr fun i _ => heps i
+
+theorem ofSignature_inverseMetric {d : ℕ} (eps : Fin d → ℝ) (heps : ∀ i, eps i ≠ 0)
+    (x : Fin d → ℝ) :
+    (ofSignature eps heps).chart.inverseMetric x =
+      Matrix.diagonal fun i => (eps i)⁻¹ := by
+  have hmul : (Matrix.diagonal eps) * (Matrix.diagonal fun i => (eps i)⁻¹) = 1 := by
+    rw [Matrix.diagonal_mul_diagonal]
+    have : (fun i => eps i * (eps i)⁻¹) = fun _ : Fin d => (1 : ℝ) := by
+      funext i
+      exact mul_inv_cancel₀ (heps i)
+    rw [this, Matrix.diagonal_one]
+  exact Matrix.inv_eq_right_inv hmul
+
+theorem ofSignature_density {d : ℕ} (eps : Fin d → ℝ) (heps : ∀ i, eps i ≠ 0)
+    (x : Fin d → ℝ) :
+    (ofSignature eps heps).chart.density x = Real.sqrt |∏ k, eps k| := by
+  simp [chart, ofSignature, Matrix.det_diagonal]
+
+/-- **The divergence-form operator of a constant diagonal metric is the literal second-order
+wave operator** `∑ᵢ εᵢ⁻¹ ∂ᵢ²`. -/
+theorem ofSignature_dalembert {d : ℕ} (eps : Fin d → ℝ) (heps : ∀ i, eps i ≠ 0)
+    {f : (Fin d → ℝ) → ℝ} (hf : ContDiff ℝ ∞ f) (x : Fin d → ℝ) :
+    (ofSignature eps heps).chart.dalembert f x =
+      ∑ i, (eps i)⁻¹ * coordPartial i (coordPartial i f) x := by
+  have hrhopos : 0 < Real.sqrt |∏ k, eps k| := by
+    rw [← ofSignature_density eps heps x]
+    exact (ofSignature eps heps).chart.density_pos x
+  have hflux : ∀ i : Fin d,
+      (ofSignature eps heps).chart.flux f i =
+        fun y => Real.sqrt |∏ k, eps k| * ((eps i)⁻¹ * coordPartial i f y) := by
+    intro i
+    funext y
+    simp only [SmoothMetricChart.flux, ofSignature_density eps heps,
+      ofSignature_inverseMetric eps heps, Matrix.diagonal_apply]
+    congr 1
+    simp [Finset.sum_ite_eq, ite_mul]
+  have hderiv : ∀ i : Fin d,
+      coordPartial i ((ofSignature eps heps).chart.flux f i) x =
+        Real.sqrt |∏ k, eps k| * ((eps i)⁻¹ * coordPartial i (coordPartial i f) x) := by
+    intro i
+    rw [hflux i]
+    rw [coordPartial_const_mul
+      (differentiableAt_of_contDiff_infty (contDiff_const.mul (contDiff_coordPartial hf i)) x)
+      (Real.sqrt |∏ k, eps k|) i]
+    rw [coordPartial_const_mul
+      (differentiableAt_of_contDiff_infty (contDiff_coordPartial hf i) x) (eps i)⁻¹ i]
+  simp only [SmoothMetricChart.dalembert, ofSignature_density eps heps]
+  rw [Finset.sum_congr rfl fun i _ => hderiv i, ← Finset.mul_sum, ← mul_assoc,
+    inv_mul_cancel₀ (ne_of_gt hrhopos), one_mul]
+
+/-- Minkowski metric of signature `(-,+,…,+)`. -/
+noncomputable def minkowski (d : ℕ) : SmoothPseudoMetric d :=
+  ofSignature (fun i => if (i : ℕ) = 0 then -1 else 1) (by
+    intro i
+    by_cases h : (i : ℕ) = 0 <;> simp [h])
+
 /-- **Conformal transformation law for a literally rescaled smooth metric.**
 
 The d'Alembertian of `e^{2σ} g` differs from that of `g` by the exact carré-du-champ shift. -/

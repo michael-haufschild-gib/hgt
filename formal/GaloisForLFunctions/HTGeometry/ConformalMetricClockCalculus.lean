@@ -398,6 +398,12 @@ noncomputable def expClockCalculus :
       smul_eq_mul]
     exact M.gradPair_expSmul_right c (contDiff_smoothScalar sigma) (u : (Fin d → ℝ) → ℝ) x
 
+@[simp] theorem expClockCalculus_expSmul (c : ℝ) (sigma : ↥(smoothScalarAlgebra d)) :
+    M.expClockCalculus.expSmul c sigma = smoothExpSmul c sigma := rfl
+
+@[simp] theorem expClockCalculus_toSecondOrder :
+    M.expClockCalculus.toSecondOrder = M.secondOrderCalculus := rfl
+
 /-- The abstract conformal wave operator of the realized calculus at `a = (d-2)/2` is exactly the
 d'Alembertian of the conformally rescaled chart. -/
 theorem conformalWaveSigma_eq_dalembert_conformalRescale

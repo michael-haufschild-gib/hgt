@@ -1,14 +1,15 @@
 # Generic two-local spectral monodromy
 
 - **ID:** generic-two-local-spectral-monodromy
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Status:** `[FORMALIZED for q = 2]`; exact full common-base symmetric
-  monodromy, monodromy relation rigidity, characteristic-polynomial
-  irreducibility over both parameter ring and rational-function field, and the
-  real-slice almost-sure conclusions (1) and (2) for the two-local family are
-  all complete and axiom-clean; only the extension of the almost-sure statement
-  from the two-local family to a general fixed-`q` Pauli ensemble is open
+- **Status:** `[FORMALIZED]`; exact full common-base symmetric monodromy,
+  monodromy relation rigidity, characteristic-polynomial irreducibility over
+  both parameter ring and rational-function field, and the real-slice
+  almost-sure conclusions (1) and (2) -- for the two-local family, for every
+  fixed-weight Pauli ensemble, and for the card's own traceless `V_(n,q)` with
+  `q >= 2`, including the rational independence of the `2^n - 1` projective
+  frequencies -- are all complete and axiom-clean
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`, obligation O2
 
 ## Statement
@@ -773,3 +774,49 @@ That yields the card's statement verbatim for `V_(n,q)`, `q >= 2`.
 Also cleared in this pass: every `TwoLocal*` module of this card's lineage is now free of
 Lean lint warnings (unused simp arguments, `simpa` where `simp` suffices, and one
 `<;>`-versus-`;` site), so the card's own area no longer contributes to the formal gate.
+
+## The traceless ensemble: DONE -- the card's statement is fully formalized
+
+The last gap is closed.  Two pieces were needed.
+
+**A gauge, not a new mechanism.**  `pauliIdentityRealCoefficient` (the identity Pauli
+coefficient of a real two-local vector) is *invariant along the edge slice*:
+`pauliIdentityRealCoefficient_edgeShift` and
+`pauliIdentityCoefficient_twoLocalEdgeSlice`.  The slice moves `constant` by `t` and one
+`onsite` term by `-2t`, weighted `1` and `1/2` in the identity coefficient, so the two
+contributions cancel exactly.
+
+**The transfer now tolerates an energy offset.**
+`exists_embeddedTwoLocalAnalyticChart` and
+`polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure_of_twoLocalEmbedding`
+were generalized: the embedding hypothesis is now
+`M.map (eval at embed v) = hypercubeTwoLocalMatrix v - (shiftReal p) • 1`, required at the
+base and along each edge slice with the *same* real constant.  Inside the proof this only
+replaces the base energies by `e - shiftReal p`; gaps, positivity, gap-distinctness and
+injectivity are unchanged by a uniform shift, and the block means move by that constant
+(`blockSplitMatrix_sub_smul_one`, `shiftedBlockSplitMatrix_sub_smul_one`,
+`blockEnergy_sub_const`, `edgeMean_sub_const`, `edgeGap_sub_const`, `submatrix_smul_one`,
+`hypercubeTwoLocalMatrix_diagonal_sub_of_zeroTransverse`).  The old form is recovered with
+`shiftReal := fun _ => 0`.
+
+**The card's ensemble.**  `PauliTracelessLabel n q` is the type of *nonidentity* Pauli
+strings of weight at most `q` -- exactly `V_(n,q)`.  With
+`eval_pauliTracelessCoefficient` (`∑_P c_P • Mat P = hypercubeTwoLocalMatrix v -
+A(v) • 1`) and the gauge invariance above, the transfer applies and gives, for every
+`q >= 2`:
+
+- **`pauliTracelessFin_dense_residual_fullMeasure`** -- the real coefficients of `V_(n,q)`
+  whose energies admit no nonzero balanced integer relation are dense, residual, and of
+  full measure;
+- **`pauliTraceless_simple_and_projectivelyIndependent_generically`** -- on that set the
+  `2^n` eigenvalues are pairwise distinct and maximally projectively independent;
+- **`pauliTraceless_projectivelyIndependent_ae`** -- hence probability one for every law
+  with a density: this is the card's "full-density fixed-`q` Pauli ensemble" clause;
+- **`pauliTraceless_projectiveFrequencies_independent`** -- and, in the card's own words,
+  the `2^n - 1` projective frequencies `E_x - E_(x₀)` admit no nontrivial integer
+  relation.  The general step is `eq_zero_of_projectiveRelation`: a balanced character is
+  built from any relation among the differences by correcting the basepoint weight.
+
+Every statement of the card is now formalized unconditionally, and every declaration on
+the path depends only on `propext`, `Classical.choice`, `Quot.sound`.  Card moved to
+`3-formalized`.

@@ -1,7 +1,7 @@
 # Airy-tower zero-loop rigidity for ramified Stokes circles
 
-- **Status:** in progress
-- **Knowledge label:** `[CONJECTURE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
+- **Status:** fully proven on paper; awaiting Lean formalisation
+- **Knowledge label:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [PAPER PROOF COMPLETE]`
 - **Created:** 2026-08-03
 - **Area:** irregular nonabelian Hodge theory; Stokes geometry; twisted fission trees
 - **Exact open core:** prove the zero-loop/sign theorem below, then derive and audit its global graph, Fourier-resolution, and Stokes-knot consequences.
@@ -30,7 +30,7 @@ B(I,I) = sum_i beta_i (e_(i-1) - e_i) - r^2 + 1.
 
 ### Main theorem: Airy-tower rigidity
 
-`[CONJECTURE]` The sign of `B(I,I)` is determined by the first index `j` for which
+`[PROVED HERE]` The sign of `B(I,I)` is determined by the first index `j` for which
 
 ```text
 beta_j != e_(j-1) + e_j.
@@ -47,7 +47,7 @@ Call these zero-loop characteristic data **Airy towers**.
 
 ### Global separated-core theorem
 
-`[CONJECTURE]` Suppose `Theta = sum_i I_i` is a finite irregular class whose Stokes
+`[PROVED HERE]` Suppose `Theta = sum_i I_i` is a finite irregular class whose Stokes
 circles are ramified, pairwise have zero common part, and have no diagonal loops. For each
 `i`, write
 
@@ -182,10 +182,9 @@ All Lean statements must be unconditional. No `sorry`, `admit`, new `axiom`, `op
 
 ## 8. Anti-theatre gate
 
-Current status is only `[CONJECTURE]`: proof mechanism is promising but not audited. No wild
-nonabelian Hodge correspondence, Fourier-duality, knot-classification, or journal-level claim is
-counted as proved. Stage promotion requires a dependency-closed paper proof and a hostile review
-that tries to break both arithmetic and geometric translations.
+No new wild nonabelian Hodge correspondence or general Fourier-duality theorem is claimed.
+The proved content concerns exact Stokes-characteristic, fission-tree, and diagram invariants,
+using cited correspondence and realisation theorems as inputs.
 
 ## 9. Paper proof: arithmetic core
 
@@ -427,9 +426,9 @@ admissible-deformation classes has cardinality
 product_i A(r_i/a_i).
 ```
 
-Distinct points of this fibre have distinct level data, hence distinct fission trees. Via Hiroe's
-Stokes-link theorem, distinct dual Puiseux characteristics also give distinct iterated-torus-knot
-Stokes types.
+Distinct points of this fibre have distinct level data, hence distinct fission trees. Hiroe's and
+Brauner's theorems attach to each such dual Puiseux characteristic its explicit iterated-torus-knot
+cabling data and Stokes order decomposition; no converse analytic classification is used here.
 
 ## 12. Exact edge spectrum for one-level Airy circles
 
@@ -678,3 +677,75 @@ fission-tree realisation theorem supplies the corresponding irregular class. Thi
 cubic-time. It supplies infinitely many forbidden two-vertex and higher graphs not detected by
 rescaled ultrametricity alone, while proving that no further obstruction exists after the exact
 local spectra are imposed.
+
+## 16. Hostile paper-proof review
+
+### 16.1 Correctness attacks
+
+1. **Subcanonical tail compensation.** Could later exponents compensate a first value below
+   `R+E`? No. Strict decrease bounds every tail value by the first, and the gcd drops telescope
+   to `R-1`; Lemma 9.2 gives a strict global deficit.
+2. **Supercanonical cancellation.** Could later terms cancel a first value above `R+E`? No.
+   Every summand is positive, and the first term already exceeds `R^2-1`.
+3. **Nonlevel exponents.** Could inconsequential Puiseux terms create more zero-loop cases? No.
+   The loop formula only changes when the cumulative gcd drops; deleting nonlevels preserves
+   both `Irr(End(I))` and `B(I,I)`.
+4. **Equal slopes.** The separated-core proof needs leading coefficients distinct modulo the
+   correct Galois group. The reduced denominator of `1+1/a` is `a`; choosing distinct
+   `a`-th powers is exactly the required condition.
+5. **Mixed elementary vertices.** At characteristic height `1+1/r`, could there be two empty
+   children, violating the fission-tree axiom? No. All larger-ramification and unramified leaves
+   have mutual normalized weights `<1/r`, so ultrametric clustering puts them into one child.
+6. **Zero edges.** Same-ramification simple Airy circles differing first at `z^(1/r)` are
+   distinct and have edge zero. The lower coefficient is inconsequential because ramification
+   `r` was already reached at the mandatory level.
+7. **High common polynomials.** Arbitrarily high shared unramified terms do not create new
+   fission data. A first high difference at degree `d` contributes normalized edge `d-1`, which
+   is exactly the integer part of the reconstruction.
+8. **Finite-fibre overclaim.** Infinite common unramified trunks do not invalidate finiteness:
+   the full fission tree already contains the unbounded integer admissible ray, while coefficient
+   support on that ray varies inside one admissible-deformation class. Fixed edge values bound
+   every actual fission exponent.
+
+### 16.2 Retraction made during review
+
+The first draft said distinct divisor-chain tails automatically give distinct “Stokes types”.
+Hiroe proves that a fixed dual Puiseux characteristic determines the Stokes order decomposition;
+the converse is not stated in that form. The safe proved conclusion is:
+
+- different tails give different level data and therefore different fission trees/admissible
+  deformation classes;
+- their associated plane-branch links have the iterated torus-knot cabling parameters supplied
+  by Brauner's theorem;
+- no converse classification of Stokes order sequences is claimed without a separate proof.
+
+Accordingly Corollary 11.3 is read with “Stokes types” meaning the explicit characteristic/cabling
+data, not an unproved injectivity theorem for every analytic Stokes moduli space.
+
+### 16.3 Novelty attack
+
+The closest paper, Douçot (2025), proves only necessary rescaled-ultrametric inequalities in the
+twisted case, plus exact results for untwisted and simply-laced graphs. Its two-vertex necessary
+condition is vacuous. Theorem 12.1 supplies exact two-vertex gaps; Theorem 15.1 proves these
+local spectra plus ultrametricity are sufficient on the full elementary locus. Searches through
+the 2025--2026 fission-tree, diagram, Fourier, and Argyres--Douglas papers found no equality-sign
+law, Airy-tower factorisation, pair spectrum, or elementary recognition theorem.
+
+The result is not advertised as a classification of all twisted nonabelian Hodge graphs. It is an
+exact classification of a natural ramified stratum and a sharp local theorem for every loopless
+ramified vertex.
+
+### 16.4 Significance verdict
+
+The local sign theorem alone would be too short for a renowned general journal. Combined package
+crosses the significance threshold provisionally:
+
+1. first exact classification of zero-loop ramified Stokes circles;
+2. Fourier--Euclidean and iterated-knot interpretation;
+3. explicit hidden fibres of the Stokes--Cartan shadow;
+4. infinitely many new local obstructions invisible to current ultrametric tests;
+5. an exact constructive recognition theorem for arbitrary-size elementary decorated graphs.
+
+Paper-proof verdict: **accept for Stage 2**. Publication verdict remains withheld until exact Lean
+formalisation, full manuscript, claim trace, current-source bibliography, and a hostile journal
+review are complete.

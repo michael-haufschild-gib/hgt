@@ -832,6 +832,21 @@ theorem pauliTraceless_projectivelyIndependent_ae (n : ℕ) {q : ℕ} (hq : 2 �
   by_contra hcon
   exact hz (hgeneric z (by simpa using hcon))
 
+
+/-- **Rational independence of the projective frequencies of a generic Pauli Hamiltonian.**  At a
+generic real coefficient vector of the nonidentity Pauli strings of weight at most `q`, the
+`2^n - 1` differences `E_x - E_(x₀)` admit no nontrivial integer relation. -/
+theorem pauliTraceless_projectiveFrequencies_independent (n : ℕ) {q : ℕ}
+    (p : Fin (Fintype.card (PauliTracelessLabel n q)) → ℝ)
+    (hp : p ∈ polynomialMatrixProjectiveGenericSet (pauliTracelessFinPolynomialMatrix n q))
+    (x₀ : Fin n → Bool) (k : (Fin n → Bool) → ℤ) (hk₀ : k x₀ = 0)
+    (hk : (∑ x, (k x : ℝ) *
+      ((isHermitian_pauliTracelessFinEval p).eigenvalues x
+        - (isHermitian_pauliTracelessFinEval p).eigenvalues x₀)) = 0) :
+    k = 0 :=
+  eq_zero_of_projectiveRelation
+    (maximallyProjectiveEnergy_eigenvalues_of_mem_polynomialMatrixGenericSet _ p hp _) x₀ k hk₀ hk
+
 end
 
 end GaloisForLFunctions.HTGeometry

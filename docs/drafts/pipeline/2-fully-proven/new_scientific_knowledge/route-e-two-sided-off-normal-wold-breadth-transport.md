@@ -222,3 +222,60 @@ function theory.  This is why stage 4 landed in one pass.
 
 Remaining: stage 5 (`Shiu.lean`, the `z^{ω(n)}` short-interval bound `(6)`) and stage 6
 (`(7)`–`(9)`).
+
+### Stage 5 plan — Shiu's bound `(6)` from the new sieve
+
+Route (formalization-friendly, uses the sieve just built):
+
+Fix `z₀ > 0` and a smoothness cut `z`.  Factor each `n` as `n = d·m` with `d` the `z`-smooth part
+and `m` the `z`-rough part.  Then `z₀^{ω n} = z₀^{ω d} z₀^{ω m}`, and for `z = X^{1/L}` every
+`z`-rough `m ≤ 2X` has `ω m ≤ L`, so `z₀^{ω m} ≤ max(1, z₀)^L = O_L(1)`.  Hence
+
+```text
+∑_{X<n≤X+H} z₀^{ω n} ≪_L ∑_{d z-smooth} z₀^{ω d} · #{m : dm ∈ (X, X+H], P⁻(m) > z}.
+```
+
+The inner count is exactly what `Sieve.card_coprime_Ioc_le_prod` bounds, with modulus the
+primorial `∏_{p ≤ z} p`; it gives `≪ (H/d)/log z` once `∏_{p≤z}(1−1/p) ≪ 1/log z`.  The outer sum
+is `∑_{d z-smooth} z₀^{ω d}/d ≤ ∏_{p≤z}(1 + z₀/p + z₀/p² + …) ≪ (log z)^{z₀}`.  Multiplying gives
+`≪ H (log z)^{z₀−1}`, and `log z ≍ log X` up to a `log log X` factor, which is harmless for
+`(7)`–`(9)` since only `o(H / log log X)` is used downstream.
+
+**The missing analytic input is Mertens' second theorem**, and it is missing everywhere:
+
+- mathlib has no Mertens theorem at all (`rg -il mertens` over mathlib hits only
+  `RingTheory/Polynomial/ContentIdeal.lean`, an unrelated name);
+- the corpus's many `Mertens`-named modules are all about the Mertens function `M(x)=∑μ(n)`, not
+  about `∑_{p≤x} 1/p`.
+
+Sharpness matters: with `∑_{p≤x} 1/p ≤ A log log x + O(1)` the Chernoff optimum in `(7)` becomes
+`−I(c) + c log A`, so any `A > 1` destroys the theorem.  The constant must be exactly `1`.
+
+Stage 5 therefore splits:
+
+* **5a** `∏_{p≤z}(1−1/p) ≤ exp(−∑_{p≤z} 1/p)` and `∏_{p≤z}(1+λ/p) ≤ exp(λ ∑_{p≤z} 1/p)`
+  (elementary, no arithmetic input).
+* **5b** Chebyshev `θ(x) = ∑_{p≤x} log p ≪ x`, from mathlib's `Nat.primorial_le_4_pow`.
+* **5c** Mertens' first theorem `∑_{p≤x} (log p)/p = log x + O(1)`, from Legendre's formula for
+  `v_p(n!)`, mathlib's Stirling, and 5b.
+* **5d** Mertens' second theorem `∑_{p≤x} 1/p = log log x + O(1)`, by **discrete** Abel summation
+  from 5c against `f(n) = 1/log n` — no integral is needed for the `R(t)` part, which telescopes;
+  the main part reduces to `∑_{n≤N} log(1+1/n)/log(n+1) = log log N + O(1)`, handled by mathlib's
+  `AntitoneOn.sum_le_integral_Ico`.
+* **5e** smooth/rough factorization and the assembly above.
+
+### Stage 5a–5b landed (2026-08-03)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/Mertens.lean`, wired into the umbrella, built,
+axiom-clean:
+
+- `one_sub_le_exp_neg`,
+- `prod_one_sub_inv_le_exp_neg_sum` : `∏_{p ∈ P}(1−1/p) ≤ exp(−∑_{p ∈ P} 1/p)`,
+- `prod_one_add_le_exp_sum` : `∏_{p ∈ P}(1+λ/p) ≤ exp(λ ∑_{p ∈ P} 1/p)`,
+- `sum_log_primesLE_le` : Chebyshev `∑_{p ≤ n} log p ≤ n log 4`, from mathlib's
+  `primorial_le_four_pow`,
+- `primeFactors_primorial_eq` : the sieve modulus `n#` has prime support exactly `primesLE n`,
+  so `Sieve.card_coprime_Ioc_le_prod` applied at `m = n#` counts `z`-rough integers.
+
+Both Euler products in the sieve capstone are now controlled by the single quantity
+`∑_{p ≤ z} 1/p`.  Next: 5c (Mertens I) and 5d (Mertens II).

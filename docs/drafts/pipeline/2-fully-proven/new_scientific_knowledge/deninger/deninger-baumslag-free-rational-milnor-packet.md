@@ -62,7 +62,12 @@
   `GaloisForLFunctions.RHTower.DeningerPushoutConcat` (length of a product of alternating letters),
   `GaloisForLFunctions.RHTower.DeningerPushoutPower` (length of a power),
   `GaloisForLFunctions.RHTower.DeningerPushoutDecomp` (the letter decomposition of an element),
-  `GaloisForLFunctions.RHTower.DeningerPushoutInv` (word length of an inverse)
+  `GaloisForLFunctions.RHTower.DeningerPushoutInv` (word length of an inverse),
+  `GaloisForLFunctions.RHTower.DeningerPushoutMerge` (merging a letter into a word),
+  `GaloisForLFunctions.RHTower.DeningerCyclicReduction` (cyclic reduction),
+  `GaloisForLFunctions.RHTower.DeningerPushoutTorsion` (amalgams of torsion free groups),
+  `GaloisForLFunctions.RHTower.DeningerPushoutNormal` (uniqueness of transversal words),
+  `GaloisForLFunctions.RHTower.DeningerPushoutRoot` (equal powers of cyclically reduced elements)
 
 ## Statement
 
@@ -711,6 +716,64 @@ The last one matters out of proportion to its difficulty: all the normal-form ma
 left-handed, because mathlib's normal words carry a left action.  Conjugating to shorten a word
 needs multiplication on the *right*, and `deningerLen_inv` is what converts one into the other.
 
+`DeningerPushoutMerge.lean` gives the sharp bound conjugation needs:
+
+- `deningerEquivPair_head_notMem` — if the normal form begins in the factor `i` then the head of its
+  `i`-th pair decomposition is a genuine letter, not an element of the base group;
+- `deningerLen_of_mul_le_of_fstIdx` — hence multiplying by a letter of a factor the word already
+  begins in does **not** lengthen it;
+- `deningerLen_mul_of_le` — the same on the right, via invariance of the length under inversion.
+
+`DeningerCyclicReduction.lean` then gives:
+
+- `DeningerCycRed` — the property of having a nonempty reduced alternating word beginning and ending
+  in different factors;
+- `deningerFstIdx_letterProd` — the normal form of a reduced alternating product begins in the
+  factor of its first letter;
+- `deningerExists_cycRed` — **every element is conjugate to one which either has word length at most
+  one, or is cyclically reduced.**  Induction on a bound for the length: if the first and last
+  letters share a factor, conjugating by the first letter strips it on the left and merges it on the
+  right, so the length drops.
+
+**First payoff of the layer.**  `DeningerPushoutTorsion.lean` proves
+`deningerPushout_torsionFree`: **an amalgamated free product of torsion free groups, over a torsion
+free base, with injective structure maps, is torsion free.**  Every element is conjugate to one
+lying in a factor or to a cyclically reduced one; the second has powers of growing length so cannot
+be trivial, and the first inherits the property from the factor.  mathlib does not have this.
+
+Note that mathlib's `IsMulTorsionFree` is stronger than the absence of torsion: it is injectivity of
+`x ↦ xⁿ`, i.e. **uniqueness of roots**, which is exactly the R-group property Baumslag's theorem is
+about.  So the remaining step is stated in mathlib's own vocabulary as
+`IsMulTorsionFree (PushoutI φ)`.
+
+Reaching it needs the *letters*, not just the length, and the reduced alternating decomposition is
+not unique: base group elements can be shifted between adjacent letters.  It becomes unique once the
+letters are required to lie in the chosen transversal, and that is what
+`DeningerPushoutNormal.lean` proves:
+
+- `deningerEquiv_fst_eq_one` — a transversal element factors through the complement with trivial
+  base part;
+- `deningerNormalWord_letterProd` — **if every letter lies in the transversal, the normal form of
+  the product is the word itself, with trivial head**;
+- `deningerLetterProd_injective` — hence transversal words are determined by their products.
+
+This is what makes the powers comparable: for a cyclically reduced transversal word the word of `gⁿ`
+is literally the `n`-fold concatenation, again a transversal word, so `xⁿ = yⁿ` forces the
+concatenations, and therefore the words, to agree.
+
+That is now carried out.  `DeningerPushoutRoot.lean`:
+
+- `deningerFlatten` and its laws — the concatenation of `n` copies of a word, its length, its
+  members, its first letter, and `deningerLetterProd_flatten`, that its product is the `n`-th power;
+- `deningerFlatten_isChain` — the concatenation is alternating, the junction between consecutive
+  copies being exactly the cyclic reducedness hypothesis;
+- `deningerPow_injective_cycRed` — **equal powers of cyclically reduced transversal elements have
+  equal words**, hence are equal.  Equal concatenations have equal lengths, so the two words have
+  equal lengths, and a prefix of a common list of the same length is determined.
+
+What is left for Baumslag's theorem is the elements conjugate into a factor, and the passage from
+cyclically reduced representatives back to arbitrary elements.
+
 Step 1 still needs Baumslag's inductive step (root adjunction preserves unique roots), which rests
 on the same normal-form machinery.
 
@@ -1116,3 +1179,32 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   right.  Inversion converts one into the other, so no right-handed normal-form theory has to be
   built.  The word of an inverse is the reversed list of inverted letters, which is reduced and
   alternating because the alternation relation is symmetric.
+- 2026-08-03 — Proved cyclic reduction: every element is conjugate to one of word length at most one
+  or to a cyclically reduced one.  The step needs a sharp merging bound, not the two-sided estimate
+  built earlier: conjugating by the first letter strips it on the left, and the length only drops
+  because multiplying on the right by a letter of the factor the word already ends in cannot
+  lengthen it.  That sharp bound is where the head of the pair decomposition has to be shown to be a
+  genuine letter — if it were in the base group the normal form would not begin in that factor at
+  all.  Together with the power lemma this gives the growth statement for arbitrary elements:
+  conjugate to a cyclically reduced form, whose powers have linearly growing length.
+- 2026-08-03 — Proved that an amalgamated free product of torsion free groups over a torsion free
+  base is torsion free — the first theorem the normal-form layer actually yields, and one mathlib
+  does not have.  Cyclic reduction plus linear growth of the length of powers does it in two cases.
+  Also noted that mathlib's `IsMulTorsionFree` is not the absence of torsion but injectivity of the
+  `n`-th power map, i.e. uniqueness of roots — so Baumslag's theorem is stated in mathlib's own
+  vocabulary as `IsMulTorsionFree (PushoutI φ)`, and the theorem proved here is the weaker statement
+  that the trivial element has a unique root.
+- 2026-08-03 — Proved that a reduced alternating word whose letters lie in the chosen transversal is
+  literally the normal form of its product, with trivial head, so such words are determined by their
+  products.  This is the missing uniqueness: the reduced alternating decomposition of an element is
+  *not* unique in general, since base group elements can be shifted between adjacent letters, and
+  the length alone cannot separate `x` from `y`.  Requiring the letters to lie in the transversal
+  removes the ambiguity, and the concatenation describing a power of a cyclically reduced element
+  stays inside that class — its base group factor is trivial, so nothing is absorbed.
+- 2026-08-03 — Proved that equal powers of cyclically reduced transversal elements have equal words.
+  With uniqueness of transversal words in hand this is list algebra: the word of a power is the
+  `n`-fold concatenation, whose alternation at each junction is exactly the cyclic reducedness
+  hypothesis; equal concatenations have equal lengths, so the two words have equal lengths, and a
+  prefix of a common list of a given length is determined.  This is the cyclically reduced half of
+  Baumslag's theorem.  What remains is the elements conjugate into a factor, and the passage from
+  cyclically reduced representatives back to arbitrary elements.
