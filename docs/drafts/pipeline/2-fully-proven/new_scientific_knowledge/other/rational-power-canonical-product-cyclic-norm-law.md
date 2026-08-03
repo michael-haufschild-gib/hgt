@@ -236,11 +236,54 @@ through finite monodromy completion of its entire divisor.
 
 ## Lean status
 
-No Lean edit is claimed.  The finite primary-factor filter `(3)` is elementary, but formalizing
-it alone would not formalize the scientific theorem.  The unconditional HT consequence depends
-on Bank's analytic theorem, which is not available in the project's Lean analytic stack.
-Encoding Bank as a hypothesis would violate the unconditional-proof rule.  Lean work is deferred
-until the integer canonical-product theorem itself can be formalized without an axiom wrapper.
+Everything in the paper except Bank's integer theorem `(8)` is now formalized unconditionally and
+axiom-clean (`[propext, Classical.choice, Quot.sound]`).
+
+```text
+formal/GaloisForLFunctions/HTGeometry/RootOfUnityPacketFilter.lean
+formal/GaloisForLFunctions/HTGeometry/RationalPowerCyclicNorm.lean
+formal/GaloisForLFunctions/HTGeometry/PowerSubstitutionJet.lean
+formal/GaloisForLFunctions/HTGeometry/PowerSubstitutionDifferentialDescent.lean
+formal/GaloisForLFunctions/HTGeometry/RationalPowerHypertranscendenceTransfer.lean
+```
+
+Principal declarations:
+
+```text
+prod_one_add_primitiveRoot_pow_mul        -- linear half of (3)
+sum_primitiveRoot_pow_mul                 -- orthogonality used by (3)
+sum_primaryExponent_primitiveRoot         -- exponential half of (3)
+prod_primaryFactor_primitiveRoot          -- the packet identity (3)
+powerGenus_natCast, powerGenus_ratio,
+nat_div_div_self                          -- the genus bookkeeping (4)
+powerCanonicalProduct                     -- W_a, on the corpus canonical-product layer
+prod_powerCanonicalProduct_primitiveRoot  -- the exact cyclic norm (5)
+differentiallyAlgebraic_of_comp_pow       -- the hard half of (7), for z |-> z^q
+differentiallyAlgebraic_of_comp_const_mul_pow  -- (7) for z |-> c z^q
+hypertranscendental_powerCanonicalProduct_ratio -- (10) modulo (8)
+```
+
+`(5)` is the exact cyclic-norm identity, with no hypothesis beyond `p,q>=1` and `omega` a primitive
+`q`-th root of unity: the finite root-of-unity packet is grouped inside the locally uniformly
+convergent canonical product through `HasProd`, so no regularization enters.
+
+`(7)` is proved by elimination rather than by branch selection.  The chain rule for `z |-> z^q`
+gives a triangular polynomial-coefficient substitution on jet variables whose matrix has diagonal
+`(q z^(q-1))^j`, hence is invertible at every `z != 0`; solving that system shows the substitution
+is injective on differential polynomials.  Reducing the substituted relation modulo the monic
+`X^q - t`, with the target point adjoined as a new variable `t`, leaves a remainder of degree `<q`
+which still annihilates the jets along `t = z^q`; replacing `z` by `omega^i z` fixes `z^q` and lets
+the additive root-of-unity filter isolate one coefficient.  This is stronger than the paper's
+sectorial-branch argument and needs no simple connectedness.
+
+`(10)` is formalized as the unconditional implication
+
+```text
+Hypertranscendental W_p  ->  Hypertranscendental W_(p/q)      for all p,q >= 1.
+```
+
+The remaining Lean gap is exactly Bank's integer theorem `(8)`; nothing else in the card is
+assumed.
 
 ## Gates
 
@@ -254,7 +297,10 @@ until the integer canonical-product theorem itself can be formalized without an 
 - [ ] independent full-text priority audit
 - [ ] even-numerator noninteger factor classified or counterexample found
 - [ ] infinite-monodromy/nonreal exponent theorem proved
-- [ ] unconditional analytic Lean formalization
+- [x] Lean: primary-factor filter, genus bookkeeping, exact cyclic norm `(5)`
+- [x] Lean: algebraic-change lemma `(7)` for `z |-> c z^q`, unconditional
+- [x] Lean: the odd-numerator transfer `(10)` as an unconditional implication from `(8)`
+- [ ] Lean: Bank's integer-exponent theorem `(8)` (the only remaining gap)
 
 ## Log
 

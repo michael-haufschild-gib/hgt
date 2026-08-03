@@ -57,7 +57,7 @@ theorem two_le_of_mem_factors {R a : ℕ} (d : StrictDivisorChain R) (ha : a ∈
 end StrictDivisorChain
 
 /-- Nontrivial ordered multiplicative factorization of `R`. -/
-structure OrderedFactorization (R : ℕ) where
+@[ext] structure OrderedFactorization (R : ℕ) where
   factors : List ℕ
   nonempty : factors ≠ []
   factor_ge_two : ∀ a ∈ factors, 2 ≤ a
@@ -130,6 +130,13 @@ def toStrictDivisorChain {R : ℕ} (f : OrderedFactorization R) : StrictDivisorC
   | mk factors nonempty factor_ge_two prod_eq =>
       subst R
       exact factors_chainOfList factors nonempty factor_ge_two
+
+/-- Factorization is recovered after constructing and re-extracting its divisor chain. -/
+@[simp] theorem toOrderedFactorization_toStrictDivisorChain {R : ℕ}
+    (f : OrderedFactorization R) :
+    f.toStrictDivisorChain.toOrderedFactorization = f := by
+  apply OrderedFactorization.ext
+  exact f.factors_toStrictDivisorChain
 
 /-- Every ordered factorization therefore generates an unconditional zero-loop Airy
 characteristic. -/

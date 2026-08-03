@@ -97,7 +97,7 @@ theorem realModifiedBesselKOrder_realAffineOrderShiftRecurrence
       realModifiedBesselKOrder s (x - 1) +
         (2 * x / s) * realModifiedBesselKOrder s x := by
     exact_mod_cast h
-  convert hr using 1 <;> ring
+  simpa [div_eq_mul_inv, mul_assoc, mul_comm, mul_left_comm] using hr
 
 /-- Formula `(10)`: exact rising-product lower bound for every positive starting order. -/
 theorem realModifiedBesselKOrder_risingProduct_lower
