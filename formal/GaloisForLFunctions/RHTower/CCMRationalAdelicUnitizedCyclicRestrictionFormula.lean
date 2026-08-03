@@ -35,20 +35,27 @@ def ccmRationalAdelicUnitizedCyclicTotalScale {n : ℕ}
     (label : Fin (n + 1) → Label) : Scale :=
   ∏ j, ccmRationalAdelicUnitizedLabelScale (label j)
 
+/-- Orbit evaluation of one dependent unitized coefficient after a fixed rational translation. -/
+def ccmRationalAdelicUnitizedFiberCoefficient :
+    (label : Label) → Fiber label → CCMRationalAdelicMoritaBase →
+      CCMRationalUnit → CCMRationalUnit → ℂ :=
+  CCMRationalAdelicUnitizedLabel.rec
+    (motive := fun label => Fiber label → CCMRationalAdelicMoritaBase →
+      CCMRationalUnit → CCMRationalUnit → ℂ)
+    (fun z _ _ _ => z)
+    (fun _ t base shift q =>
+      ccmRationalAdelicBruhatTensorOrbitCoefficient
+        t base.bInf base.bFin (shift * q))
+
 /-- One mixed-sector generalized matrix coefficient. -/
 def ccmRationalAdelicUnitizedCyclicFactor {n : ℕ}
     (label : Fin (n + 1) → Label)
     (coefficient : (j : Fin (n + 1)) → Fiber (label j))
     (base : Fin (n + 1) → CCMRationalAdelicMoritaBase)
     (q : CCMRationalUnit) (j : Fin (n + 1)) : ℂ :=
-  CCMRationalAdelicUnitizedLabel.rec
-    (motive := fun l => Fiber l → ℂ)
-    (fun z => z)
-    (fun _ t =>
-      ccmRationalAdelicBruhatTensorOrbitCoefficient
-        t (base j).bInf (base j).bFin
-        ((ccmRationalAdelicUnitizedCyclicPrefix label j).val⁻¹ * q))
-    (label j) (coefficient j)
+  ccmRationalAdelicUnitizedFiberCoefficient
+    (label j) (coefficient j) (base j)
+    (ccmRationalAdelicUnitizedCyclicPrefix label j).val⁻¹ q
 
 /-- Mixed-sector higher generalized trace summand. -/
 def ccmRationalAdelicUnitizedCyclicTerm {n : ℕ}
@@ -115,7 +122,8 @@ theorem ccmRationalAdelicUnitizedCyclicTerm_allCrossed {n : ℕ}
       ccmRationalAdelicCyclicRestrictionTerm k t base q := by
   apply Finset.prod_congr rfl
   intro j hj
-  simp [ccmRationalAdelicUnitizedCyclicFactor]
+  simp [ccmRationalAdelicUnitizedCyclicFactor,
+    ccmRationalAdelicUnitizedFiberCoefficient]
 
 theorem ccmRationalAdelicUnitizedCyclicTerm_allCrossed_summable {n : ℕ}
     (k : Fin (n + 1) → Scale)

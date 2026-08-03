@@ -1167,9 +1167,53 @@ derivatives cancel between the timelike and the spacelike direction, exactly as 
   coordinates*. No hypothesis on the probe families: the required probes are proved to exist.
 
 In dimension two every conformal factor is of slab form, so this contains the two-dimensional
-theorem. What remains open is a conformal factor with genuine transverse dependence in dimension
-`≥ 3`, where the characteristic reduction to a Goursat problem is unavailable; and the last open
-input of the whole programme is stated in its physical form:
+theorem.
+
+`ClockSlabSeparable.lean` multiplies the slab block by the fully separable construction. On a
+diagonal chart the gradient pairing is a sum over coordinates; a slab lift has no transverse
+derivative and a product of transverse coordinate factors has no derivative in the two null
+directions, so the two factors pair to zero and the Leibniz rule turns a product of solutions into a
+solution for the sum of the potentials:
+
+- `gradPair_slabLift_boxProduct` — the two factors are metrically orthogonal;
+- `slabSeparable_solves` — the product of a slab probe with transverse coordinate factors solves the
+  sum equation;
+- **`exists_clockProbe_on_slabSeparable`** — *in every dimension, every potential of the form*
+
+  `V(x) = v(x⁰ + x¹, x⁰ - x¹) + ∑ⱼ Vⱼ(xʲ)`
+
+  *with `v` and every `Vⱼ` continuously differentiable admits a clock probe on an open neighbourhood
+  of any prescribed event, nonvanishing there and equal to `1` at the event.* The two-dimensional
+  block is solved by Goursat, each transverse block by Picard–Lindelöf.
+
+That class is strictly larger than either constituent: it contains the fully separable potentials
+(empty slab part) and the slab potentials (no transverse profiles), and neither contains the other.
+
+What remains open is a potential with *coupled* transverse dependence in dimension `≥ 3` — one that
+is neither a function of two null coordinates nor a sum of one-variable profiles. There the
+characteristic reduction produces
+
+`∂ξ∂η u = (Δ⊥ u + V u) / 4`,
+
+so the Volterra iteration loses two transverse derivatives at each step. The classical remedy is to
+run it in a *scale* of Banach spaces of transverse-analytic functions, paying for the lost
+derivatives by shrinking the radius of analyticity: this is the Ovsyannikov / Nirenberg–Nishida form
+of Cauchy–Kovalevskaya. `ClockAnalyticWienerScale.lean` builds the scale in its concrete Fourier
+form — a function analytic in a strip of half-width `ρ` around a circle is exactly one whose Fourier
+coefficients are summable against `e^{ρ|k|}`:
+
+- `sq_le_four_mul_exp`, `sq_mul_exp_neg_le` — the elementary bound `t² e^{-δt} ≤ 4/δ²` behind the
+  whole method, obtained by squaring `1 + s ≤ e^s`;
+- `wienerNorm`, `WienerSummable`, `wienerNorm_nonneg`;
+- `wienerSummable_of_le`, `wienerNorm_mono` — the scale is decreasing;
+- `sqMul`, `abs_sqMul_weight_le`, `wienerSummable_sqMul`, **`wienerNorm_sqMul_le`** — *the transverse
+  Laplacian maps radius `ρ` to radius `ρ'` with norm at most `4/(ρ-ρ')²`*. This is the derivative-loss
+  estimate the iteration is built on.
+
+Still to build on this base: the convolution (Banach-algebra) estimate, which is how multiplication
+by the potential acts on coefficients; the Ovsyannikov iteration with geometrically shrinking radii;
+and the Fourier synthesis back to functions on the transverse circle. The last open input of the
+whole programme is stated in its physical form:
 
 > the massive Klein–Gordon field on the rescaled spacetime admits, at every event, a smooth solution
 > nonvanishing there.

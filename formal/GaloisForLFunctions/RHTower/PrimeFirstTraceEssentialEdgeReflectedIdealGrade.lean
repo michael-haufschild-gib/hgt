@@ -188,6 +188,186 @@ theorem not_both_summable_reflected_primeFirstTraceEssentialHarmonicTwist (t : �
   rintro ⟨htn, htp⟩
   linarith
 
+/-! ## Literal activation-Fisher provenance -/
+
+/-- Ordinary-prime occupancy Fisher density selected by diagonal Euler activation. -/
+def primeActivationOccupancyFisherDensity (p : Nat.Primes) : ℝ :=
+  diagonalActivationOccupancyFisher
+    (xiTransversePrimeApertureDiskNode 1 p)
+
+/-- Modular transport of the source-selected occupancy Fisher density. -/
+def primeActivationOccupancyFisherTwist (t : ℝ) (p : Nat.Primes) : ℝ :=
+  (p.1 : ℝ) ^ t * primeActivationOccupancyFisherDensity p
+
+/-- Occupancy Fisher is exactly the square of the Möbius-to-Gamma damping. -/
+theorem primeActivationOccupancyFisherDensity_eq_damping_sq
+    (p : Nat.Primes) :
+    primeActivationOccupancyFisherDensity p =
+      xiMobiusPrimeSchurValuationDamping p ^ 2 := by
+  exact (xiMobiusPrimeSchurValuationDamping_sq_eq_activationOccupancyFisher p).symm
+
+/-- Closed rational form of the ordinary-prime Fisher density. -/
+theorem primeActivationOccupancyFisherDensity_eq (p : Nat.Primes) :
+    primeActivationOccupancyFisherDensity p =
+      (p.1 : ℝ) / ((p.1 : ℝ) + 1) ^ 2 := by
+  have hp0 : (p.1 : ℝ) ≠ 0 := by exact_mod_cast p.2.ne_zero
+  rw [primeActivationOccupancyFisherDensity,
+    diagonalActivationOccupancyFisher,
+    xiTransversePrimeApertureDiskNode_one_eq_inv]
+  field_simp [hp0]
+
+/-- Occupancy Fisher differs from the prime harmonic density by a positive `O(p⁻²)` term. -/
+theorem primeActivationOccupancyFisherDensity_harmonic_difference_bounds
+    (p : Nat.Primes) :
+    0 ≤ 1 / (p.1 : ℝ) - primeActivationOccupancyFisherDensity p ∧
+      1 / (p.1 : ℝ) - primeActivationOccupancyFisherDensity p ≤
+        3 / (p.1 : ℝ) ^ 2 := by
+  let P : ℝ := p.1
+  have hP0 : 0 < P := by dsimp [P]; exact_mod_cast p.2.pos
+  have hP1 : 1 ≤ P := by dsimp [P]; exact_mod_cast p.2.one_lt.le
+  rw [primeActivationOccupancyFisherDensity_eq]
+  change 0 ≤ 1 / P - P / (P + 1) ^ 2 ∧
+    1 / P - P / (P + 1) ^ 2 ≤ 3 / P ^ 2
+  have hdiff :
+      1 / P - P / (P + 1) ^ 2 =
+        (2 * P + 1) / (P * (P + 1) ^ 2) := by
+    field_simp [hP0.ne']
+    ring
+  rw [hdiff]
+  constructor
+  · positivity
+  · rw [div_le_div_iff₀ (by positivity) (sq_pos_of_pos hP0)]
+    have haux : 0 ≤ P * (P ^ 2 + 5 * P + 3) :=
+      mul_nonneg hP0.le (by nlinarith [sq_nonneg P])
+    nlinarith
+
+/-- The literal essential edge and occupancy Fisher density differ by at most `4 / p²`. -/
+theorem primeFirstTraceEssentialHarmonicCoordinate_sub_fisher_abs_le
+    (p : Nat.Primes) :
+    |primeFirstTraceEssentialHarmonicCoordinate p -
+        primeActivationOccupancyFisherDensity p| ≤
+      4 / (p.1 : ℝ) ^ 2 := by
+  let P : ℝ := p.1
+  let R : ℝ := (farPrime p).1
+  have hP0 : 0 < P := by dsimp [P]; exact_mod_cast p.2.pos
+  have hP1 : 1 ≤ P := by dsimp [P]; exact_mod_cast p.2.one_lt.le
+  have hR0 : 0 < R := by dsimp [R]; exact_mod_cast (farPrime p).2.pos
+  have hsq : P ^ 2 ≤ R := by
+    dsimp [P, R]
+    exact_mod_cast (farPrime_sq_lt p).le
+  have hR2' : (P ^ 2) ^ 2 ≤ R ^ 2 :=
+    (sq_le_sq₀ (sq_nonneg P) hR0.le).2 hsq
+  have hR2 : P ^ 4 ≤ R ^ 2 := by nlinarith
+  have hfar : P / R ^ 2 ≤ 1 / P ^ 3 := by
+    calc
+      P / R ^ 2 ≤ P / P ^ 4 :=
+        div_le_div_of_nonneg_left hP0.le (by positivity) hR2
+      _ = 1 / P ^ 3 := by field_simp [hP0.ne']
+  have hfisher :=
+    primeActivationOccupancyFisherDensity_harmonic_difference_bounds p
+  rw [primeFirstTraceEssentialHarmonicCoordinate_eq]
+  change |(1 / P - P / R ^ 2) - primeActivationOccupancyFisherDensity p| ≤
+    4 / P ^ 2
+  calc
+    |(1 / P - P / R ^ 2) - primeActivationOccupancyFisherDensity p| =
+        |(1 / P - primeActivationOccupancyFisherDensity p) - P / R ^ 2| := by
+          congr 1
+          ring
+    _ ≤ |1 / P - primeActivationOccupancyFisherDensity p| + |P / R ^ 2| :=
+      abs_sub _ _
+    _ = (1 / P - primeActivationOccupancyFisherDensity p) + P / R ^ 2 := by
+      rw [abs_of_nonneg hfisher.1, abs_of_nonneg (by positivity)]
+    _ ≤ 3 / P ^ 2 + 1 / P ^ 3 := add_le_add hfisher.2 hfar
+    _ ≤ 4 / P ^ 2 := by
+      have htail : 1 / P ^ 3 ≤ 1 / P ^ 2 := by
+        rw [div_le_div_iff₀ (pow_pos hP0 3) (pow_pos hP0 2)]
+        nlinarith [mul_nonneg (sq_nonneg P) (sub_nonneg.mpr hP1)]
+      calc
+        3 / P ^ 2 + 1 / P ^ 3 ≤ 3 / P ^ 2 + 1 / P ^ 2 :=
+          add_le_add_right htail _
+        _ = 4 / P ^ 2 := by ring
+
+/-- Below modular rate one, actual-edge and activation-Fisher twists define the same class modulo
+`ell¹`. -/
+theorem summable_primeFirstTraceEssentialHarmonicTwist_sub_fisherTwist_of_lt_one
+    {t : ℝ} (ht : t < 1) :
+    Summable (fun p : Nat.Primes =>
+      primeFirstTraceEssentialHarmonicTwist t p -
+        primeActivationOccupancyFisherTwist t p) := by
+  have hpow : Summable (fun p : Nat.Primes =>
+      4 * (p.1 : ℝ) ^ (t - 2)) :=
+    ((Nat.Primes.summable_rpow).2 (by linarith)).mul_left 4
+  have habs : Summable (fun p : Nat.Primes =>
+      |primeFirstTraceEssentialHarmonicTwist t p -
+        primeActivationOccupancyFisherTwist t p|) := by
+    refine Summable.of_nonneg_of_le (fun _ => abs_nonneg _) (fun p => ?_) hpow
+    have hP0 : 0 < (p.1 : ℝ) := by exact_mod_cast p.2.pos
+    rw [primeFirstTraceEssentialHarmonicTwist,
+      primeActivationOccupancyFisherTwist, ← mul_sub, abs_mul,
+      abs_of_nonneg (Real.rpow_nonneg hP0.le t)]
+    calc
+      (p.1 : ℝ) ^ t *
+          |primeFirstTraceEssentialHarmonicCoordinate p -
+            primeActivationOccupancyFisherDensity p| ≤
+          (p.1 : ℝ) ^ t * (4 / (p.1 : ℝ) ^ 2) :=
+        mul_le_mul_of_nonneg_left
+          (primeFirstTraceEssentialHarmonicCoordinate_sub_fisher_abs_le p)
+          (Real.rpow_nonneg hP0.le t)
+      _ = 4 * (p.1 : ℝ) ^ (t - 2) := by
+        calc
+          (p.1 : ℝ) ^ t * (4 / (p.1 : ℝ) ^ 2) =
+              4 * ((p.1 : ℝ) ^ t / (p.1 : ℝ) ^ 2) := by ring
+          _ = 4 * (p.1 : ℝ) ^ (t - 2) := by
+            rw [← Real.rpow_natCast (p.1 : ℝ) 2,
+              ← Real.rpow_sub hP0]
+            norm_num
+  exact summable_norm_iff.mp (by simpa [Real.norm_eq_abs] using habs)
+
+/-- In the moderate strip `t < 1`, source Fisher has the same exact trace-ideal grade as the
+literal essential edge. -/
+theorem summable_primeActivationOccupancyFisherTwist_iff_of_lt_one
+    {t : ℝ} (ht : t < 1) :
+    Summable (primeActivationOccupancyFisherTwist t) ↔ t < 0 := by
+  have hdiff :=
+    summable_primeFirstTraceEssentialHarmonicTwist_sub_fisherTwist_of_lt_one ht
+  rw [← summable_primeFirstTraceEssentialHarmonicTwist_iff t]
+  constructor
+  · intro hfisher
+    have hadd := hdiff.add hfisher
+    exact hadd.congr (fun p => by
+      ring)
+  · intro hedge
+    have hsub := hedge.sub hdiff
+    exact hsub.congr (fun p => by
+      ring)
+
+/-- Every actual Xi-divisor centered modular rate lies in `(-1,1)`. -/
+theorem xiCenteredPrimeIdealRate_abs_lt_one (rho : XiDivisorSupport) :
+    |2 * (rho : ℂ).re - 1| < 1 := by
+  have hstrip := xi_divisor_support_re_mem_open_unit rho
+  rw [abs_lt]
+  constructor <;> linarith
+
+/-- Forward actual edge and forward activation Fisher represent the same critical-strip relative
+ideal class at every Xi divisor. -/
+theorem xi_actualEdge_forward_sub_activationFisher_summable
+    (rho : XiDivisorSupport) :
+    Summable (fun p : Nat.Primes =>
+      primeFirstTraceEssentialHarmonicTwist (2 * (rho : ℂ).re - 1) p -
+        primeActivationOccupancyFisherTwist (2 * (rho : ℂ).re - 1) p) := by
+  apply summable_primeFirstTraceEssentialHarmonicTwist_sub_fisherTwist_of_lt_one
+  exact (abs_lt.mp (xiCenteredPrimeIdealRate_abs_lt_one rho)).2
+
+/-- Reflected actual edge and reflected activation Fisher represent the same critical-strip
+relative ideal class at every Xi divisor. -/
+theorem xi_actualEdge_reflected_sub_activationFisher_summable
+    (rho : XiDivisorSupport) :
+    Summable (fun p : Nat.Primes =>
+      primeFirstTraceEssentialHarmonicTwist (-(2 * (rho : ℂ).re - 1)) p -
+        primeActivationOccupancyFisherTwist (-(2 * (rho : ℂ).re - 1)) p) := by
+  apply summable_primeFirstTraceEssentialHarmonicTwist_sub_fisherTwist_of_lt_one
+  linarith [(abs_lt.mp (xiCenteredPrimeIdealRate_abs_lt_one rho)).1]
+
 end
 
 

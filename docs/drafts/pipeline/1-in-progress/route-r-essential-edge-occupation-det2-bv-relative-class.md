@@ -210,6 +210,7 @@ The dependency-closed unconditional core is formalized in
 
 - `primeFirstTraceEssentialEdgeNomeReal_eq` proves exact nome recovery;
 - `primeFirstTraceEssentialEdgeOccupationEntry_eq` proves reciprocal-integer occupation spectrum;
+- `not_summable_primeFirstTraceEssentialEdgeOccupationEntry` proves sharp failure of trace class;
 - `primeFirstTraceEssentialEdgeOccupationKernel_isHS` constructs diagonal Hilbert--Schmidt kernel;
 - `primeFirstTraceEssentialEdgeOccupationKernel_quadraticTrace` and
   `primeFirstTraceEssentialEdgeOccupationQuadraticCocycle_eq_woldGammaAnomaly` identify quadratic

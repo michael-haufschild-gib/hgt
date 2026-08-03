@@ -1971,3 +1971,122 @@ Parseval to evaluate the resulting integrals — and neither ingredient exists f
 Dirichlet mean value theorem is not a corollary of what this folder proved for the large sieve; it
 is a genuinely separate obligation, and it sits alongside Matomäki–Radziwiłł as the route's open
 input.
+
+### Formal layer — logarithmic separation
+
+`formal/GaloisForLFunctions/RHTower/Sieve/LogSeparation.lean`:
+
+- `log_sub_ge` — `log x − log y ≥ (x−y)/x` for `0 < y ≤ x`, from `log(y/x) ≤ y/x − 1`.
+- `abs_log_succ_sub_ge` — **`|log(m+1) − log(n+1)| ≥ |m − n|/N`** for `m, n < N`.
+- `two_div_abs_log_le` — **`2/|log(m/n)| ≤ 2N/|m − n|`**.
+
+All unconditional. This corrects the assessment recorded two batches ago. The off-diagonal sum of the
+Dirichlet mean square does *not* require a Hilbert inequality at the frequencies `log n` in order to
+be bounded at all — only to be bounded *sharply*. Comparing the logarithmic separation with the
+integer separation costs a factor `N`, and `N` is already the size of the mean value theorem's error
+term, so the elementary comparison suffices for a mean value theorem with an `N log N` error.
+
+Concretely: `∑_{m≠n} |a_m||a_n| · 2/|log(m/n)| ≤ 2N ∑_{m≠n} |a_m||a_n|/|m−n|`, and the right-hand
+side is controlled by AM–GM plus the harmonic row sum. Montgomery–Vaughan remains needed for the
+sharp error `O(N)`; it is not needed for `O(N log N)`.
+
+### Formal layer — the integer row sum
+
+`formal/GaloisForLFunctions/RHTower/Sieve/IntegerRowSum.lean`:
+
+- `sum_inv_abs_int_dist_le` — **`∑_{n < N, n ≠ m} |n − m|^{-1} ≤ 2(1 + log N)`**.
+
+Unconditional, and obtained by instantiating `SeparatedRowSum.sum_inv_abs_dist_le` at the arithmetic
+progression `λ_i = i` with gap `1`, then applying the closed-form harmonic bound. No new argument
+was needed: the general separated row sum proved early in this folder specialises directly.
+
+This is the row sum that appears once `LogSeparation.lean` has traded the logarithmic separations of
+a Dirichlet polynomial for integer ones. With AM–GM to decouple `|a_m||a_n|` it gives the mean value
+theorem with error `O(N log N)`.
+
+### Formal layer — the row sum over `Fin N`
+
+`formal/GaloisForLFunctions/RHTower/Sieve/FinRowSum.lean`:
+
+- `sum_erase_inv_abs_eq`, `sum_erase_inv_abs_range_eq` — erasing the diagonal changes neither sum.
+- `sum_inv_abs_fin_dist_le` — **`∑_{n ≠ m} |n − m|^{-1} ≤ 2(1 + log N)` over `Fin N`**.
+
+Unconditional. The Dirichlet sums of this folder are indexed by `Fin N` while the row sum was proved
+over `range N`; the transfer is immediate once one notices that the omitted diagonal term is
+`|m − m|^{-1} = 0` under Lean's `1/0 = 0` convention, so both erased sums equal their full sums and
+`Fin.sum_univ_eq_sum_range` identifies those.
+
+That convention is usually a nuisance; here it removes the need for any bijection between
+`univ.erase m` and `(range N).erase m`.
+
+### Formal layer — swapping the off-diagonal double sum
+
+`formal/GaloisForLFunctions/RHTower/Sieve/OffDiagonalSwap.lean`:
+
+- `sum_erase_eq_sum_ite` — an erased sum is the full sum with the diagonal term zeroed.
+- `sum_erase_swap` — **`∑_m ∑_{n ≠ m} g m n = ∑_n ∑_{m ≠ n} g m n`**.
+
+Unconditional. `Finset.sum_comm` cannot be applied to iterated sums whose inner index set depends on
+the outer index; rewriting `univ.erase m` as `univ` with the diagonal zeroed removes that dependence
+and makes the swap a one-line application.
+
+This is the decoupling step for the Dirichlet mean value theorem: it identifies the two halves of
+`∑_m ∑_{n ≠ m} (|a_m|² + |a_n|²) K(m,n)` for a symmetric kernel `K`, so the AM–GM bound on
+`|a_m||a_n|` collapses to a single row sum.
+
+### Formal layer — the off-diagonal sum bounded
+
+`formal/GaloisForLFunctions/RHTower/Sieve/OffDiagonalBound.lean`:
+
+- `offDiagonal_le` — **`∑_m ∑_{n ≠ m} |a_m||a_n| · 2/|log(m/n)| ≤ 4N(1 + log N) ∑_m |a_m|²`**.
+
+Unconditional. Three steps, each already in the corpus: `LogSeparation` trades logarithmic
+separations for integer ones at a cost of `N`; AM–GM decouples `|a_m||a_n|` into
+`(|a_m|² + |a_n|²)/2`; `OffDiagonalSwap` identifies the two resulting halves, each a row sum bounded
+by `2(1 + log N)` via `FinRowSum`.
+
+Combined with `norm_integral_normSq_dirPoly_sub_diag_le` this gives the mean value theorem for
+Dirichlet polynomials with error `O(N log N)`:
+
+`‖∫_0^T |F|² − T ∑_n |a_n|²‖ ≤ 4N(1 + log N) ∑_n |a_n|²`.
+
+The sharp Montgomery–Vaughan error `O(N)` still requires the Hilbert inequality at the frequencies
+`log n`; the `log N` here is the price of the elementary comparison, exactly as the `log` in the weak
+large sieve was.
+
+### Formal layer — THE MEAN VALUE THEOREM FOR DIRICHLET POLYNOMIALS
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DirichletMVT.lean`:
+
+- `dirichlet_meanValue_complex`, `dirichlet_meanValue_theorem` —
+
+  **`|∫_0^T |F(t)|² dt − T ∑_{n<N} |a_n|²| ≤ 4N(1 + log N) ∑_{n<N} |a_n|²`**
+
+  for `F(t) = ∑_{n<N} a_n n^{it}`.
+
+Unconditional. This is the mean value theorem for Dirichlet polynomials, with error `O(N log N)`.
+
+Corrected assessment: an earlier entry on this card reported the theorem as blocked behind
+Montgomery–Vaughan. That was wrong — Montgomery–Vaughan is needed only for the *sharp* error `O(N)`.
+The elementary comparison between logarithmic and integer separations (`LogSeparation.lean`) costs a
+factor `N`, which is already the order of the error term, so `O(N log N)` follows from material this
+folder owns.
+
+Route status: the Dirichlet-polynomial layer now has the reduction (`DirichletGallagher`), the
+mean value theorem, and the large sieve at classical strength. The card's stated remaining input,
+Matomäki–Radziwiłł Theorem 2, is unchanged.
+
+### Formal layer — the derivative energy
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DirichletDerivEnergy.lean`:
+
+- `norm_dirDerivCoeff` — `‖i log n · a_n‖ = log n · ‖a_n‖`.
+- `sum_normSq_dirDerivCoeff_le` — **`∑_{n<N} ‖i log n · a_n‖² ≤ (log N)² ∑_{n<N} ‖a_n‖²`**.
+
+Unconditional. The largest frequency of a Dirichlet polynomial of length `N` is `log N`, so
+differentiation multiplies the energy by at most `(log N)²`.
+
+Applying the mean value theorem to `F'` — itself a Dirichlet polynomial with these coefficients —
+bounds `∫_0^T |F'|²`, the second integral in Gallagher's reduction. With that and `∫_0^T |F|²`, the
+reduction of `DirichletGallagher.lean` becomes a large-values estimate: a bound on
+`∑_r |F(t_r)|²` at separated points purely in terms of `T`, `N` and the coefficient energy.

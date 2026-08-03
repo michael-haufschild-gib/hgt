@@ -91,6 +91,40 @@ theorem primeFirstTraceEssentialEdgeOccupationEntry_eq (ν : Nat.Primes →₀ �
     funext primeFirstTraceEssentialEdgeNome_eq_primeLinearNome
   rw [hfun, GaloisForLFunctions.nomeMonomial_primeLinearNome]
 
+/-- The recovered reciprocal-integer spectrum is not trace class. This is the sharp reason that
+the first determinant attached to the source edge is `det₂`, not the ordinary Fredholm
+determinant. -/
+theorem not_summable_primeFirstTraceEssentialEdgeOccupationEntry :
+    ¬ Summable primeFirstTraceEssentialEdgeOccupationEntry := by
+  intro h
+  have hpnat : Summable (fun n : ℕ+ =>
+      primeFirstTraceEssentialEdgeOccupationEntry
+        (GaloisForLFunctions.primeOccupationEquivPNat.symm n)) :=
+    (GaloisForLFunctions.primeOccupationEquivPNat.symm.summable_iff).mpr h
+  have hpnatR : Summable (fun n : ℕ+ => 1 / ((n : ℕ) : ℝ)) := by
+    apply hpnat.norm.congr
+    intro n
+    rw [primeFirstTraceEssentialEdgeOccupationEntry_eq]
+    have hn :
+        GaloisForLFunctions.primeProduct
+            (GaloisForLFunctions.primeOccupationEquivPNat.symm n) =
+          (n : ℕ) := by
+      exact congrArg Subtype.val
+        (GaloisForLFunctions.primeOccupationEquivPNat.apply_symm_apply n)
+    rw [hn]
+    simp [one_div, norm_inv]
+  have hcomp : (fun n : ℕ+ => 1 / ((n : ℕ) : ℝ)) =
+      (fun k : ℕ => 1 / ((k + 1 : ℕ) : ℝ)) ∘ Equiv.pnatEquivNat := by
+    funext n
+    simp only [Function.comp_apply, Equiv.pnatEquivNat_apply]
+    rw [PNat.natPred_add_one]
+  rw [hcomp] at hpnatR
+  have hshift : Summable (fun n : ℕ => 1 / ((n + 1 : ℕ) : ℝ)) :=
+    (Equiv.pnatEquivNat.summable_iff).mp hpnatR
+  apply Real.not_summable_one_div_natCast
+  apply (summable_nat_add_iff (f := fun n : ℕ => 1 / (n : ℝ)) 1).mp
+  simpa only [Nat.cast_add, Nat.cast_one] using hshift
+
 theorem summable_norm_sq_primeLinearNome :
     Summable (fun p : Nat.Primes =>
       ‖GaloisForLFunctions.primeLinearNome p‖ ^ 2) := by
@@ -459,4 +493,3 @@ end
 
 
 end RHTower
-

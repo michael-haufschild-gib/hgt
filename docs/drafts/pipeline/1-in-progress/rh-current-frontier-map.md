@@ -3920,6 +3920,41 @@ Hilbert--Pólya operator.
 `GammaSignedUnconditionalOrbitNoShorting.lean`,
 `GammaSignedDistributionalOrbitNoShorting.lean`, and
 `GammaSewnMobiusXiWardCofinalBoundaryLift.lean`.
+
+**2026-08-03 essential-edge `det2` / BV frontier delta.** The sharp `ell2`/not-`ell1`
+strict-preclosure edge now has its canonical diagonal realization. If `a_p` is the literal source
+deviation and `r_p=farPrime(p)`, its first two coordinates satisfy
+
+```text
+a_p(1)=-p/r_p,
+a_p(2)=1/p-p/r_p^2,
+a_p(2)-a_p(1)/r_p=1/p.
+```
+
+Thus a source-fixed contraction removes the auxiliary Bertrand prime exactly and recovers the
+canonical inverse-prime nome. Finite prime-occupation condensation then enumerates the full
+reciprocal-positive-integer spectrum `1/N(nu)` exactly once. The resulting diagonal kernel is
+Hilbert--Schmidt and not trace class; its quadratic Hilbert--Carleman cocycle is
+`t^2*zeta(2)/2`, its local `det2` is `exp(gamma*t)/Gamma(1-t)`, and its polarized quotient is the
+regular Wold--Gamma phase.
+
+Prime decimation produces one relative spectral-zeta class
+
+```text
+Z_p(s)=(1-p^(-s))*zeta(s).
+```
+
+Its actual off-multiple Wold quadratic trace is `Z_p(2)`, while its singular first residue is
+`1-p^(-1)`, exactly the Wold first-cell boundary mass and the coefficient of the adjacent BV
+continued-source residue. This closes the previously open operator realization and the
+regular/singular Wold--Gamma/BV identification in
+`PrimeEssentialEdgeOccupationDet2BVRelativeClass.lean`.
+
+It does **not** close Route R. The formal determinant is an exponential and is proved nowhere zero.
+Hence this diagonal construction cannot annihilate the completed Xi landing. The exact open core
+remains the pre-scalar, sign-indefinite, nonseparable arithmetic null-homotopy already stated
+above; calling the zero-free determinant an annihilator would be false.
+
 ### Non-route coordinate — divisor-fed prime-seam submass
 
 **Endpoint.** `XiPrimeSeamPairEnergySubmass ↔ RH`.
@@ -5084,6 +5119,55 @@ deninger-burnol-conormal-radial-top-boundary-comparison.md
 GaloisForLFunctions/RHTower/
 DeningerBurnolConormalRadialTopBoundaryComparison.lean
 ```
+
+## 2026-08-03 Route L refinement: explicit BV Green--Stokes chain and exact descent obstruction
+
+Pre-specialization ordinary-integer chain now exists. On
+\(\ell^2(\mathbf N_{\ge1})\), let
+\[
+ S_ne_k=e_{nk},\qquad Qe_k=k^{-1}e_k,\qquad P_n=S_nS_n^*.
+\]
+Then
+\[
+ \mathcal B_n=[S_n^*,QS_n]=n^{-1}Q-P_nQ=b(S_n^*\otimes QS_n).
+\]
+It remains a literal Hochschild boundary after tensoring with completed Xi Green primitive.
+
+Its physical centered-conormal evaluation is not zero in general. With
+\(\chi_n(s)=\exp((2\operatorname{Re}s-1)\log n)\),
+\[
+ g_n(s)=n^{-1}(1-\chi_n(s)^{-1}),\qquad
+ n(g_n(s)-g_n(1-\overline s))=K_n(s).
+\]
+Therefore, at every Xi divisor,
+\[
+ E_n^{\mathrm B}(\rho)
+ =n(g_n(\rho)-g_n(\rho^\#)).
+\]
+This is now formalized unconditionally. It proves two load-bearing facts:
+
+1. ordinary-integer Green--Stokes boundary itself was not missing;
+2. physical Burnol/Deninger landing fails to descend through that boundary by exactly retained
+   radial coefficient.
+
+A cyclic source trace kills \(\mathcal B_n\), but physical conormal marginal kills it exactly
+when \(\operatorname{Re}s=1/2\). Thus declaring physical landing boundary-blind imports
+conclusion. Exact open core is sharper:
+
+**[XI_BV_GREEN_STOKES_STRICT_DESCENT]**
+
+Construct source-first chain map from completed/cofinal Xi Green source tensored with Wold/BV
+Hochschild complex to resolved Calderón--Witt incidence complex. Prove existing physical
+degree-zero landing is its strict specialization and explicit primitive maps to target boundary,
+retaining multiplicity and prime-labelled provenance through completion.
+
+Paper/Lean:
+
+- docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/deninger/deninger-ordinary-integer-bv-green-stokes-radial-comparison.md
+- docs/drafts/pipeline/3-formalized/deninger-ordinary-integer-bv-green-stokes-radial-comparison.md
+- GaloisForLFunctions/RHTower/DeningerOrdinaryIntegerBVGreenStokesRadialComparison.lean
+
+
 
 ## 2026-08-03 Route R frontier update: strict first-trace edge has exact Schatten threshold two
 

@@ -469,4 +469,90 @@ theorem norm_normalised_transverse_sq_le
   nlinarith [hsq, hterm, hle1, hnn]
 
 
+/-- The coefficients normalised by the central term. -/
+noncomputable def normalisedCoeff (a : ℕ → ℂ) (r : ℝ) (z : ℂ) (n : ℕ) : ℂ :=
+  a n * z ^ n / (a (centralIndex a r) * z ^ centralIndex a r)
+
+theorem normalisedCoeff_def (a : ℕ → ℂ) (r : ℝ) (z : ℂ) (n : ℕ) :
+    normalisedCoeff a r z n
+      = a n * z ^ n / (a (centralIndex a r) * z ^ centralIndex a r) := rfl
+
+set_option maxHeartbeats 1000000 in
+/-- **The weighted window sum.**  Over any finite window the weighted sum of the normalised
+coefficients differs from a real multiple of the common direction by at most
+`sqrt 2 * sqrt (sum of squared weights) * sqrt (total misalignment)`.  The weights enter only through
+their `l^2` norm, which is the gain over bounding each term by its modulus. -/
+theorem norm_weighted_window_sub_le
+    (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hz : ‖z‖ = r)
+    {u : ℂ} (hu : ‖u‖ = 1) {D : ℝ}
+    (hD : ∑' n : ℕ,
+        (‖normalisedCoeff a r z n‖
+          - ((starRingEnd ℂ) u * normalisedCoeff a r z n).re) ≤ D)
+    (F : Finset ℕ) (w : ℕ → ℝ) :
+    ‖(∑ n ∈ F, (w n : ℂ) * normalisedCoeff a r z n)
+        - ((∑ n ∈ F, w n * ((starRingEnd ℂ) u * normalisedCoeff a r z n).re : ℝ) : ℂ) * u‖
+      ≤ Real.sqrt 2 * Real.sqrt (∑ n ∈ F, w n ^ 2) * Real.sqrt D := by
+  set c : ℕ → ℂ := normalisedCoeff a r z with hc
+  set d : ℕ → ℝ := fun n => ‖c n‖ - ((starRingEnd ℂ) u * c n).re with hd
+  have hdnn : ∀ n, 0 ≤ d n := fun n => alignment_defect_nonneg (c n) hu
+  -- the per-term transverse bound
+  have hpt : ∀ n : ℕ,
+      ‖c n - ((((starRingEnd ℂ) u * c n).re : ℝ) : ℂ) * u‖ ≤ Real.sqrt 2 * Real.sqrt (d n) := by
+    intro n
+    have hsq := norm_sub_re_mul_sq_le (c n) hu
+    have hle1 : ‖c n‖ ≤ 1 := norm_normalised_coeff_le_one ha hr hn₀ hz n
+    have hbound : ‖c n - ((((starRingEnd ℂ) u * c n).re : ℝ) : ℂ) * u‖ ^ 2 ≤ 2 * d n := by
+      have := hdnn n
+      nlinarith [hsq, hle1, this]
+    have hsqrt : Real.sqrt 2 * Real.sqrt (d n) = Real.sqrt (2 * d n) :=
+      (Real.sqrt_mul (by norm_num) _).symm
+    rw [hsqrt]
+    exact Real.le_sqrt_of_sq_le hbound
+  -- aggregate
+  have hstep := norm_weighted_sum_sub_le F c w u
+  have hsum : ∑ n ∈ F, |w n| * ‖c n - ((((starRingEnd ℂ) u * c n).re : ℝ) : ℂ) * u‖
+      ≤ ∑ n ∈ F, |w n| * (Real.sqrt 2 * Real.sqrt (d n)) :=
+    Finset.sum_le_sum fun n _ => mul_le_mul_of_nonneg_left (hpt n) (abs_nonneg _)
+  have hfactor : ∑ n ∈ F, |w n| * (Real.sqrt 2 * Real.sqrt (d n))
+      = Real.sqrt 2 * ∑ n ∈ F, |w n| * Real.sqrt (d n) := by
+    rw [Finset.mul_sum]
+    exact Finset.sum_congr rfl fun n _ => by ring
+  -- Cauchy--Schwarz
+  have hcs := sum_weighted_sqrt_sq_le F (fun n => |w n|) d (fun n _ => hdnn n)
+  have hdF : ∑ n ∈ F, d n ≤ D := by
+    have hdsum : Summable d := by
+      have hnsum : Summable fun m => ‖c m‖ := by
+        have hCnorm : ‖a (centralIndex a r) * z ^ centralIndex a r‖ = maxTerm a r := by
+          rw [norm_mul, norm_pow, hz]
+          exact term_centralIndex_eq ha hr hn₀
+        refine ((summable_term ha hr).div_const (maxTerm a r)).congr fun m => ?_
+        rw [hc, normalisedCoeff_def, norm_div, hCnorm, norm_mul, norm_pow, hz]
+      exact hnsum.sub (Complex.reCLM.summable ((Summable.of_norm hnsum).mul_left _))
+    exact le_trans (hdsum.sum_le_tsum F fun n _ => hdnn n) hD
+  have hCS : ∑ n ∈ F, |w n| * Real.sqrt (d n)
+      ≤ Real.sqrt (∑ n ∈ F, w n ^ 2) * Real.sqrt D := by
+    have habs : ∑ n ∈ F, |w n| ^ 2 = ∑ n ∈ F, w n ^ 2 :=
+      Finset.sum_congr rfl fun n _ => sq_abs (w n)
+    rw [habs] at hcs
+    have hnn : (0 : ℝ) ≤ ∑ n ∈ F, |w n| * Real.sqrt (d n) :=
+      Finset.sum_nonneg fun n _ => mul_nonneg (abs_nonneg _) (Real.sqrt_nonneg _)
+    have hprod : (∑ n ∈ F, |w n| * Real.sqrt (d n)) ^ 2
+        ≤ (∑ n ∈ F, w n ^ 2) * D := by
+      refine le_trans hcs (mul_le_mul_of_nonneg_left hdF ?_)
+      exact Finset.sum_nonneg fun n _ => sq_nonneg (w n)
+    have hsqrt : Real.sqrt ((∑ n ∈ F, w n ^ 2) * D)
+        = Real.sqrt (∑ n ∈ F, w n ^ 2) * Real.sqrt D :=
+      Real.sqrt_mul (Finset.sum_nonneg fun n _ => sq_nonneg (w n)) D
+    rw [← hsqrt]
+    exact Real.le_sqrt_of_sq_le hprod
+  calc ‖(∑ n ∈ F, (w n : ℂ) * c n)
+        - ((∑ n ∈ F, w n * ((starRingEnd ℂ) u * c n).re : ℝ) : ℂ) * u‖
+      ≤ ∑ n ∈ F, |w n| * ‖c n - ((((starRingEnd ℂ) u * c n).re : ℝ) : ℂ) * u‖ := hstep
+    _ ≤ Real.sqrt 2 * ∑ n ∈ F, |w n| * Real.sqrt (d n) := by
+        rw [← hfactor]; exact hsum
+    _ ≤ Real.sqrt 2 * (Real.sqrt (∑ n ∈ F, w n ^ 2) * Real.sqrt D) :=
+        mul_le_mul_of_nonneg_left hCS (Real.sqrt_nonneg 2)
+    _ = Real.sqrt 2 * Real.sqrt (∑ n ∈ F, w n ^ 2) * Real.sqrt D := by ring
+
+
 end GaloisForLFunctions.HTGeometry

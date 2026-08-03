@@ -127,9 +127,9 @@ threshold.
 - [x] complete paper proof of `(2)`
 - [x] formalize exact coordinate, lower bound, square summability, and failure of absolute
   summability
-- [ ] construct diagonal Hilbert--Schmidt realization
-- [ ] identify its `det2` cocycle with the Wold--Gamma regular anomaly
-- [ ] identify the same relative class with the BV singular first trace
+- [x] construct diagonal Hilbert--Schmidt realization
+- [x] identify its `det2` cocycle with the Wold--Gamma regular anomaly
+- [x] identify the same relative class with the BV singular first trace
 - [ ] source-to-Xi annihilation
 - [ ] RH
 

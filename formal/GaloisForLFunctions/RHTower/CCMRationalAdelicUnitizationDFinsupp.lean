@@ -230,5 +230,12 @@ def ccmRationalAdelicSourceUnitizedDFinsuppEquiv :
         rw [ccmRationalAdelicSourceToUnitizedDFinsupp_apply_crossed,
           ccmRationalAdelicUnitizedDFinsuppToSource_snd_apply]
 
+@[simp]
+theorem ccmRationalAdelicSourceToUnitizedDFinsupp_unitizedDFinsuppToSource
+    (d : CCMRationalAdelicUnitizedDFinsupp) :
+    ccmRationalAdelicSourceToUnitizedDFinsupp
+        (ccmRationalAdelicUnitizedDFinsuppToSource d) = d :=
+  ccmRationalAdelicSourceUnitizedDFinsuppEquiv.apply_symm_apply d
+
 end RHTower
 end GaloisForLFunctions

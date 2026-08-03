@@ -551,7 +551,19 @@ norm_weighted_sum_sub_le                  -- the weighted sum, minus a real mult
 exists_unit_tsum_normalised_alignment_defect -- total misalignment = (S(r) - |f(z)|) / mu(r)
 exists_unit_tsum_normalised_defect_le     -- hence the defect is at most nu(s) + C(r/s)
 norm_normalised_transverse_sq_le          -- so every transverse part is at most sqrt(2 D)
+normalisedCoeff                           -- the coefficients normalised by the central term
+norm_weighted_window_sub_le               -- the weighted window sum, with l^2 weights
 ```
+
+The assembled bound over a window `F` with weights `w` is
+
+```text
+|| sum_F w_n c_n  -  (real) u ||  <=  sqrt 2 * sqrt( sum_F w_n^2 ) * sqrt D,
+```
+
+with `D <= nu(s) + C`.  Taking `w_n = n - nu` over a window of half-width `W` this is
+`O(W^(3/2) sqrt(nu))`, against the trivial `O(W^2)` -- the square-root gain that the
+absolute-value route could not produce.
 
 The bridge is now explicit: the total misalignment of the normalised coefficients equals
 `(S(r) - |f(z)|) / mu(r)`.  Every quantity on the right is already controlled -- `S(r)` by
@@ -985,3 +997,11 @@ triangularity package, which is exactly how the paper proof uses them.
   bound, and using `||c_n|| <= 1`, every normalised coefficient lies within `sqrt(2 D)` of a
   nonnegative multiple of the common direction.  Both halves of the local expansion are now
   quantitative; what is left is to assemble them with the weighted aggregation over a window.
+- 2026-08-03 -- Assembled the weighted window bound, which is the local expansion in usable form:
+  over any finite window, the weighted sum of the normalised coefficients differs from a real
+  multiple of the common direction by at most `sqrt 2 * sqrt(sum w_n^2) * sqrt D`, where `D` is the
+  total misalignment.  The chain is per-term transverse bound (`sqrt(2 d_n)`, using `||c_n|| <= 1`),
+  then Cauchy--Schwarz against the square roots, then the tail bound `sum_F d_n <= D`.  Introduced
+  `normalisedCoeff` as a definition so the statements are readable.  With `w_n = n - nu` over a
+  window of half-width `W` this reads `O(W^(3/2) sqrt(nu))` where the naive bound gives `O(W^2)`;
+  that square-root gain is exactly what the discarded absolute-value route lacked.

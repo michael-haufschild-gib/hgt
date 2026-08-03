@@ -57,7 +57,7 @@ theorem deningerOrdinaryIntegerBVGreenStokes_reflectedDifference
   have hgain0 : deningerHalfDensityMateGain n s ≠ 0 :=
     ne_of_gt (deningerHalfDensityMateGain_pos n s)
   field_simp [hn0, hgain0]
-  <;> ring
+  ring
 
 /-- The actual multiplicity-exact Burnol conormal radial defect is the
 reflected ordinary-integer BV Green--Stokes boundary evaluation. -/
@@ -89,7 +89,7 @@ theorem deningerOrdinaryIntegerBVGreenStokesBoundaryEvaluation_eq_zero_iff
   · intro h
     have hgainOne : deningerHalfDensityMateGain n s = 1 := by
       have hinv := congrArg Inv.inv h
-      simpa using hinv
+      simpa using hinv.symm
     apply (deningerTensorSquareRadialMateCurvature_eq_zero_iff n s hn).mp
     rw [← deningerHalfDensityMateGain_sub_inv_eq_mateCurvature
       (lt_of_lt_of_le Nat.zero_lt_two hn), hgainOne]
@@ -112,4 +112,3 @@ theorem deningerOrdinaryIntegerBVGreenStokesBoundaryEvaluation_eq_zero_iff
 end
 
 end RHTower
-

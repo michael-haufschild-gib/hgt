@@ -2199,3 +2199,38 @@ instantiation:
 - globalize over the shift space by `globalConfigurationAvoidance_dense_residual_of_sigmaCompact`,
   transfer density from the finite atom slice back to the bounded exponential parameter, and descend
   through `eq_zero_of_relation_of_rigid_jets` (already proved, and already general in the row type).
+
+## Lean progress: the observation the engine sees is smooth and a submersion
+
+Two modules (wired, axiom-clean) assemble the observation `F (s, t)`:
+
+- `OuterJetSigmaSubmersion.lean` -- the multi-node chart.  The branch inverses at the nodes assemble
+  to `outerJetSigmaInv`, a smooth right inverse of `outerJetSigma` on the open set where every node
+  slice lies in the target of its own branch inverse, giving
+
+      surjective_fderiv_outerJetSigma :
+        y in outerJetSigmaDomain m -> Function.Surjective (fderiv R (outerJetSigma m) y)
+
+  Both directions are smooth because a node slice is a linear coordinate restriction and the
+  one-node results transport through it.
+- `OuterShiftObservation.lean` -- the observation itself,
+
+      outerShiftObservation z d x w a carrier (s, t)
+        = outerJetSigma (shiftedMassJetPacket z .. x w a (s, t)) + carrier t
+
+  with `contDiffOn_outerShiftObservation` (smooth on `univ x U`) and
+
+      surjective_fderiv_param_outerShiftObservation :
+        span of the mass columns at t = top ->
+        Function.Surjective (fderiv R (fun s => outerShiftObservation .. (s, t)) s0)
+
+  by the chain rule from the two submersions.  The chart is defined along the whole parameter space
+  because a nonnegative discrete mass has jets in the chart domain
+  (`discreteJetPacket_zero_add_I_ne_zero`), and the fixed carrier is invisible to the derivative.
+
+Step 5 of the plan is therefore reduced to bookkeeping: feed
+`compactConfigurationAvoidance_dense_of_finiteRegularStratification` with this `F`, with
+`bad` the preimage of `expandedDifferentialEvaluationRankDefect` under the fold
+`sigmaJetIndexEquiv` -- whose stratification transports by
+`FiniteRegularStratification.image_continuousLinearEquiv` -- and `hdim` arranged by taking more
+evaluation rows than `r + card(monomials) + degree`.
