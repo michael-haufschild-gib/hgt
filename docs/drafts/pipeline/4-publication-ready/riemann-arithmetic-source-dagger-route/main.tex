@@ -33,7 +33,7 @@
 \newcommand{\Ima}{\operatorname{Im}}
 
 \title{\textbf{Arithmetic source descent toward the Riemann hypothesis}\\
-\large Completed conormal non-erasure and the remaining source--dagger law}
+\large Boundary-defect conservation and the arithmetic quotient frontier}
 \author{Michael Haufschild}
 \date{}
 
@@ -57,7 +57,7 @@ target-free M\"obius--theta source has Fourier--Laplace transform
  \XiC^{(k)}(w),
 \]
 and its complete high-exponent cofaces converge to every jet of the centered
-completed zeta function.  At a zero of arbitrary multiplicity (r), the
+completed zeta function.  At a zero of arbitrary multiplicity \(r\), the
 division-free conormal landing is the nonzero vertical pair
 \((0,\XiC^{(r)}(w_\rho))\).  The first nonzero physical jet lands
 coefficient-faithfully in a completed Hellinger--Gamma/Calder\'on--Witt
@@ -67,23 +67,32 @@ prime-normal construction yields a boundedly invertible reflected Green
 transport with pointwise lower modulus \(3/4\); it commutes with source Green
 reflection and harmonic Hodge rotation and loses no divisor atom.
 
-These results close source existence, source-to-
-\(\Xi\) landing, multiplicity retention, Gamma incidence, co-Poisson transport, reflected
+These results close source existence, source-to-\(\Xi\) landing,
+multiplicity retention, Gamma incidence, co-Poisson transport, reflected
 Green transport, and atomic non-erasure.  They do not prove the Riemann
-hypothesis.  The remaining theorem is a strict, unsymmetrized law in one full grade:
-intertwining law: on the same retained top-conormal atom, source inverse must
-be identified with analytic dagger before reflection averaging or positive
-scalarization.  Its degree-one target rotation has square
+hypothesis.  We prove instead a universal two-step boundary-defect law.  If
+a cyclic source rotation \(\tau\), a paracyclic target rotation \(T\), and a
+landing \(L\) have equivariance defect \(D=TL-L\tau\), then
+\[
+                         TD+D\tau=T^2L-L\tau^2.
+\]
+Thus, when \(\tau^2=1\) and \(T^2=\delta\,\mathrm{id}\), one has
+\((\delta-1)L=TD+D\tau\).  Strict equivariance
+therefore forces every off-unit-monodromy landing to vanish; no singular
+topology repairs a strict single-valued operator.  More generally, if \(D\)
+takes values in a \(T\)-stable boundary subspace while one landed atom
+survives in the quotient, then \(\delta=1\).
+
+For the source--dagger target, the degree-one monodromy is
 \[
  \delta_n(\rho)=\exp\!\left((2\Rea\rho-1)\log n\right).
 \]
-Nonzero cyclic equivariance forces \(\delta_n(\rho)=1\), hence
-\(\Rea\rho=1/2\).  We prove that ordinary Hilbert completion, product-topology
-closure, finite-Rees transport, reflection averaging, and positive
-Gamma scalarization cannot manufacture this identity.  The route therefore
-does not seek a hidden self-adjoint operator or another positivity criterion.
-It seeks one arithmetic boundary identity upstream of every operation known
-to erase the required orientation.
+A retained cyclic boundary class forces \(\delta_n(\rho)=1\), hence
+\(\Rea\rho=1/2\).  The exact remaining arithmetic problem is consequently
+threefold: construct the source boundary, prove the physical source--dagger
+defect is a boundary, and prove the top conormal is not one.  This quotient
+law lies upstream of reflection averaging and positive scalarization and is
+strictly weaker than the now-obstructed strict intertwiner.
 \end{abstract}
 
 \medskip
@@ -196,7 +205,7 @@ This is not a Riemann-specific no-go.  It is the reason that the order
    \text{resolve source}\ \longrightarrow\
    \text{land analytically}\ \longrightarrow\
    \text{retain conormal}\\[-1mm]
-   \longrightarrow\ \text{strictify singular range}\
+   \longrightarrow\ \text{retain boundary class}\
    \longrightarrow\ \text{polarize}
  \end{gathered}}
 \tag{2.1}\label{eq:forced-order}
@@ -432,11 +441,12 @@ It deliberately does not solve selection.  The symmetrized reader is
 reflection-even, so it transports the Green defect faithfully rather than
 annihilating it.
 
-\section{The source--dagger monodromy consumer}
+\section{Boundary-defect conservation}
 
-We now isolate the only remaining identity needed by this route.  Let a
-degree-one source carry a cyclic rotation \(\tau\) with \(\tau^2=1\).  For
-an integer clock \(n\geq2\), define the normalized target rotation
+We isolate the algebraic law governing every cyclic-to-paracyclic descent.
+Let a degree-one source carry a cyclic rotation \(\tau\) with
+\(\tau^2=1\).  For an integer clock \(n\geq2\), define the normalized
+source--dagger target rotation
 \[
  R_{n,s}(x,y)=\bigl(y,\delta_n(s)x\bigr),
  \qquad
@@ -452,43 +462,74 @@ The scalar \(\delta_n(s)\) is the radial mate gain: it measures the mismatch
 between source inverse and analytic Hilbert adjoint for the half-density
 character.
 
-\begin{theorem}[Retained cyclicity forces the critical line]
-\label{thm:cyclic-rigidity}
-Let \(L_s:S\to\C^2\) satisfy
+For an arbitrary linear landing \(L:S\to V\), with source and target
+rotations \(\tau\) and \(T\), define the one-step equivariance defect
 \[
- L_s(\tau x)=R_{n,s}L_s(x)
-\tag{6.3}\label{eq:intertwining}
+                         D=TL-L\tau.
+\tag{6.3}\label{eq:defect}
 \]
-for every \(x\in S\).  If \(L_s(x_0)\neq0\) for one source atom, then
+
+\begin{theorem}[Two-step boundary-defect conservation]
+\label{thm:defect-conservation}
+For every \(\tau,T,L\), one has
 \[
-                        \Rea s=\frac12.
+                         TD+D\tau=T^2L-L\tau^2.
+\tag{6.4}\label{eq:two-step-defect}
 \]
-Consequently, if a single source-defined family \(L_\rho\) satisfies
-\eqref{eq:intertwining} and retains one atom at every nontrivial divisor
-point, then the Riemann hypothesis follows.
+Suppose \(\tau^2=1\) and \(T^2=\delta\,\mathrm{id}\).  Then:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item if \(D=0\) and \(\delta\neq1\), then \(L=0\);
+\item if \(B\subseteq V\) is a \(T\)-stable linear subspace,
+      \(D(S)\subseteq B\), and \(L(x_0)\notin B\) for one source atom,
+      then \(\delta=1\).
+\end{enumerate}
 \end{theorem}
 
 \begin{proof}
-Apply \eqref{eq:intertwining} twice.  Source cyclicity and
-\eqref{eq:paracyclic-square} give
+Expanding \eqref{eq:defect} gives
 \[
- L_s(x_0)=L_s(\tau^2x_0)
- =R_{n,s}^2L_s(x_0)
- =\delta_n(s)L_s(x_0).
+ T(TL-L\tau)+(TL-L\tau)\tau=T^2L-L\tau^2.
 \]
-Since \(L_s(x_0)\neq0\), \(\delta_n(s)=1\).  The real exponential is one
-only at zero, and \(\log n>0\); hence \(2\Rea s-1=0\).
+Under the square hypotheses this becomes
+\[
+                         (\delta-1)L=TD+D\tau.
+\tag{6.5}\label{eq:monodromy-boundary}
+\]
+If \(D=0\) and \(\delta-1\neq0\), scalar cancellation gives \(L=0\).
+For (ii), the right side of \eqref{eq:monodromy-boundary} lies in \(B\):
+the first summand does by \(T\)-stability and the second directly by
+\(D(S)\subseteq B\).  If \(\delta\neq1\), closure of \(B\) under scalar
+multiplication would imply \(L(x_0)\in B\), a contradiction.
 \end{proof}
 
-\begin{remark}[What this theorem does not construct]
-Theorem~\ref{thm:cyclic-rigidity} is a consumer.  It does not identify the
-physical M\"obius--theta rotation with \(R_{n,\rho}\).  Atomic non-erasure
-from Theorem~\ref{thm:gamma-atomic} cannot be substituted for equivariance,
-and reflected commutation from Theorem~\ref{thm:green-auto} cannot be
-substituted for the unsymmetrized source-inverse/analytic-dagger identity.
-\end{remark}
+\begin{corollary}[Retained source--dagger boundary class]
+\label{cor:boundary-class-rigidity}
+Let \(L_s:S\to\C^2\), and let \(B_s\subseteq\C^2\) be stable under
+\(R_{n,s}\).  If
+\[
+ R_{n,s}L_s-L_s\tau\quad\hbox{takes values in }B_s
+\tag{6.6}\label{eq:defect-boundary}
+\]
+and \(L_s(x_0)\notin B_s\) for one source atom, then
+\(\Rea s=1/2\).  A single source-defined construction with these properties
+at every nontrivial divisor point implies RH.
+\end{corollary}
 
-\section{Why regular completion cannot supply the missing identity}
+\begin{proof}
+Theorem~\ref{thm:defect-conservation} gives \(\delta_n(s)=1\).  Since
+\(n\geq2\), the real exponential in \eqref{eq:target-rotation} equals one
+only when \(2\Rea s-1=0\).
+\end{proof}
+
+The distinction between vector non-erasure and class non-erasure is now
+load-bearing.  Theorem~\ref{thm:gamma-atomic} proves that the physical
+landing is nonzero in the target.  It does not prove that this vector is
+nonzero modulo the arithmetic boundary required in
+\eqref{eq:defect-boundary}.  Conversely, strict equivariance is no longer a
+plausible missing construction: Theorem~\ref{thm:defect-conservation}(i)
+annihilates every off-line fibre algebraically, before topology is imposed.
+
+\section{Why regular completion cannot supply the boundary class}
 
 The existing constructions sharply constrain the missing arrow.
 
@@ -539,10 +580,13 @@ Theorem~\ref{thm:green-auto}.  Part (v) is
 Theorem~\ref{thm:source-descent}(ii).
 \end{proof}
 
-The no-go theorem identifies the topology of a viable successor.  It must be
-singular enough to retain the nonclosed source boundary, strict enough not to
-become vertically indeterminate, source-pointed enough not to extend the old
-zero boundary, and resolved enough to preserve the unsquared full grade.
+Theorem~\ref{thm:defect-conservation} strengthens this list.  Topology cannot
+rescue strict equivariance: an off-line strict single-valued landing is zero
+on any domain stable under the source rotation.  A viable successor must
+instead retain information in a quotient by a source-generated boundary.  It
+must be singular enough to retain the nonclosed source boundary, strict
+enough not to become vertically indeterminate, and resolved enough to
+preserve the unsquared full grade and its nonzero quotient class.
 
 \section{Exact status of the arithmetic route}
 
@@ -566,46 +610,50 @@ unconditional properties.
       nonzero at every divisor copy.
 \item Every ordinary closed, bounded, reflection-averaged, product-topology,
       or positive scalar completion covered by
-      Theorem~\ref{thm:no-go} fails to create the missing odd identity.
+      Theorem~\ref{thm:no-go} fails to create the missing odd boundary class.
 \end{enumerate}
 \end{theorem}
 
-\begin{problem}[Arithmetic source--dagger law]
-\label{prob:source-dagger}
-Construct, before selecting a zero, one global landing of the physical
-source into the Gamma/co-Poisson top-conormal boundary such that:
+\begin{problem}[Arithmetic boundary-class law]
+\label{prob:boundary-class}
+Construct, before selecting a zero, one global source complex, landing \(L\),
+and coherent boundary submodule \(B\) in the Gamma/co-Poisson top-conormal
+target such that, after specialization at every divisor point \(\rho\):
 \begin{enumerate}[label=\textup{(\roman*)}]
-\item the landing uses the same source provenance as
+\item \(L_\rho\) uses the same source provenance as
       \eqref{eq:source-transform}--\eqref{eq:gamma-landing};
-\item it retains a nonzero atom in every reduced Cartier stalk;
-\item on the unsymmetrized reduced character channel, source inverse and
-      analytic dagger are the two realizations of one degree-one cyclic
-      rotation;
-\item the equality is internal to one full source--divisor--boundary grade,
-      rather than an equality after averaging reflected fibres;
+\item \(B_\rho\) is stable under the unsymmetrized target rotation
+      \(R_{n,\rho}\);
+\item the physical equivariance defect
+      \(R_{n,\rho}L_\rho-L_\rho\tau\) takes values in \(B_\rho\);
+\item one canonical top-conormal source atom satisfies
+      \(L_\rho(x_0)\notin B_\rho\);
 \item multiplicity jets are retained in a separate compatible filtered
       channel, without demanding unitary Jordan action and therefore without
       silently assuming simplicity of zeros.
 \end{enumerate}
 \end{problem}
 
-The word \emph{source} in Problem~\ref{prob:source-dagger} is load-bearing.
+The word \emph{source} in Problem~\ref{prob:boundary-class} is load-bearing.
 One may always define a divisor-dependent identification that is unitary on
 the critical line; that merely rewrites RH.  The required identity must be a
 chain or boundary law of the ordinary-prime source before divisor
 specialization.  The word \emph{unsymmetrized} is equally load-bearing:
 functional-equation reflection pairs an off-line zero with another allowed
-zero, while same-grade cyclicity acts twice on one retained source atom and
-forces its radial monodromy to be trivial.
+zero.  The new theorem does not demand equality of source inverse and
+analytic dagger on vectors.  It demands that their failure be an actual
+arithmetic boundary and that the physical conormal survive its quotient.
 
-\begin{corollary}[Only remaining implication]
-If Problem~\ref{prob:source-dagger} is solved, then the Riemann hypothesis
-follows from Theorem~\ref{thm:cyclic-rigidity}.
+\begin{corollary}[Boundary-class implication]
+If Problem~\ref{prob:boundary-class} is solved, then the Riemann hypothesis
+follows from Corollary~\ref{cor:boundary-class-rigidity}.
 \end{corollary}
 
-This corollary does not assert that Problem~\ref{prob:source-dagger} has been
-solved.  It states the exact remaining implication after all preceding route
-gates have been discharged.
+This corollary does not assert that Problem~\ref{prob:boundary-class} has
+been solved.  It separates its three unproved arithmetic clauses: construct
+the coherent boundary, prove defect exactness, and prove conormal survival
+modulo that boundary.  Strict source--dagger equality is obstructed and is no
+longer an open gate.
 
 \section{Comparison with classical routes}
 
@@ -621,17 +669,17 @@ Table~\ref{tab:routes} compares logical inputs, not historical priority.
 \toprule
 Program & Typical decisive object & What is already available here & Different unresolved gate \\
 \midrule
-Hilbert--P\'olya & A self-adjoint operator whose spectral parameters encode zeros & A complete divisor carrier, reflected Green transport, harmonic Hodge rotation, and exact local non-erasure & No spectral realization or self-adjointness is assumed.  Need arithmetic equality of source inverse and analytic dagger before an operator is formed. \\
+Hilbert--P\'olya & A self-adjoint operator whose spectral parameters encode zeros & A complete divisor carrier, reflected Green transport, harmonic Hodge rotation, and exact local non-erasure & No spectral realization or self-adjointness is assumed.  Need an arithmetic boundary class before an operator is formed. \\
 \addlinespace
-Weil positivity & Positivity of an explicit-formula quadratic form & Positive Gamma/Green consumers with exact critical-line radical & Positivity squares the horizontal orientation.  Need an unsquared equal-grade source identity upstream of the quadratic form. \\
+Weil positivity & Positivity of an explicit-formula quadratic form & Positive Gamma/Green consumers with exact critical-line radical & Positivity squares horizontal orientation.  Need unsquared defect exactness and quotient survival upstream of the quadratic form. \\
 \addlinespace
 Nyman--Beurling and Hedenmalm density & Closure or cyclicity of a function system & Dense arithmetic common tests, source-to-Xi landing, and divisor-faithful evaluation & Density controls representation.  The normalized Hodge boundary is nonclosable, so closure alone cannot impose same-fibre dagger. \\
 \addlinespace
-Sonin/co-Poisson & Fourier/Mellin duality and invariant subspaces & Exact Gamma/co-Poisson incidence, Green primitive, and reflected source transport & Reflection duality naturally relates mate fibres.  Need internal cyclic equality on one retained unsymmetrized grade. \\
+Sonin/co-Poisson & Fourier/Mellin duality and invariant subspaces & Exact Gamma/co-Poisson incidence, Green primitive, and reflected source transport & Reflection duality relates mate fibres.  Need the mixed-rotation defect to be a boundary on one retained unsymmetrized grade. \\
 \addlinespace
-CCM/Meyer & Quotient trace, absorption spectrum, or cohomological boundary & Literal arithmetic cross-prime source span and exact relative Green transgression & Continuous extension of the old oriented boundary is zero; the new boundary must be singular and horizontal rather than another regular quotient trace. \\
+CCM/Meyer & Quotient trace, absorption spectrum, or cohomological boundary & Literal arithmetic cross-prime source span and exact relative Green transgression & Continuous extension of the old oriented boundary is zero; the required boundary must be source-generated, singular, horizontal, and quotient-faithful. \\
 \addlinespace
-Deninger-type cohomology & Frobenius flow with a Hodge star or weight formalism & Half-density character, explicit mate gain, top conormal, and the monodromy consumer & The missing cohomology is not postulated.  Its required content is reduced to a source-generated same-grade dagger identity. \\
+Deninger-type cohomology & Frobenius flow with a Hodge star or weight formalism & Half-density character, explicit mate gain, top conormal, and the defect law & The missing cohomology is not postulated.  Its required content is reduced to source-generated boundary exactness plus conormal survival. \\
 \bottomrule
 \end{tabularx}
 \caption{Logical comparison of the arithmetic source--dagger route with classical programs.}
@@ -641,10 +689,12 @@ Deninger-type cohomology & Frobenius flow with a Hodge star or weight formalism 
 The present route is therefore not a disguised Hilbert--P\'olya program.
 It does not search for an operator and then demand self-adjointness.  It
 first constructs arithmetic source atoms and their singular conormal
-landing.  A Hilbert object may appear only after the source inverse has been
-identified with analytic dagger.  If that identification is proved at the
-source boundary, unitarity is a consequence; if it is assumed at the Hilbert
-level, it is RH in operator language.
+landing.  The strict identification of source inverse with analytic dagger is
+in fact impossible off line.  A Hilbert object may appear only after their
+defect has descended to zero in a source-defined quotient.  If quotient
+cyclicity and conormal survival are proved at the arithmetic boundary,
+unitarity follows; if imposed at the Hilbert level, it is RH in operator
+language.
 
 The route also differs from a positivity criterion.  The sign of
 \(a_\rho\) is present in the unsquared Hodge trace
@@ -654,13 +704,13 @@ positive consumer as the missing oppositely signed degree-one term.
 
 Finally, the route explains why repeated source reconstructions and density
 theorems did not finish zero exclusion.  Those results solve attainment and
-faithfulness.  Problem~\ref{prob:source-dagger} is a selection law: it must
-show that ordinary-prime source topology permits only the unitary reduced
-character, while still retaining the filtered multiplicity package.
+vector faithfulness.  Problem~\ref{prob:boundary-class} is a homological
+selection law: it must make modular drift exact without making the physical
+top conormal exact, while retaining the filtered multiplicity package.
 
 \section{A falsifiable proof program}
 
-Problem~\ref{prob:source-dagger} is narrower than ``construct a cohomology
+Problem~\ref{prob:boundary-class} is narrower than ``construct a cohomology
 theory for the zeta function.''  A candidate construction must pass all of
 the following tests.
 
@@ -671,13 +721,15 @@ the following tests.
 \item \textbf{Physical comparison.}  Its analytic realization agrees with
       the M\"obius--theta landing \eqref{eq:source-transform} and with the
       coefficient \(c_\rho\) in \eqref{eq:gamma-landing}.
-\item \textbf{Strict singular base change.}  The reduced Cartier atom
-      survives.  The construction does not factor through the nonclosed
-      Hodge marginal, a product-topology closed relation, or the continuous
-      extension of the old oriented boundary.
-\item \textbf{Same-grade dagger.}  Source inverse and analytic dagger are
-      equal on one unsymmetrized degree-one atom, not merely paired across
-      functional-equation mates.
+\item \textbf{Boundary-class base change.}  The reduced Cartier atom
+      survives modulo the proposed arithmetic boundary.  Vector
+      nonvanishing alone is insufficient.  The quotient does not factor
+      through the nonclosed Hodge marginal, a product-topology closed
+      relation, or the continuous extension of the old oriented boundary.
+\item \textbf{Same-grade defect exactness.}  The difference between source
+      inverse and analytic dagger is a source-generated boundary on the
+      unsymmetrized degree-one grade, not merely a pairing across
+      functional-equation mates and not a divisor-dependent correction.
 \item \textbf{Multiplicity separation.}  Nilpotent jets remain in a
       filtered channel, while unitarity is asserted only for the reduced
       continuous character.  A proof that forces diagonalizable multiplicity
@@ -691,10 +743,11 @@ the following tests.
 
 These tests locate useful future work.  Building another faithful divisor
 carrier, positive form, or reflection-equivariant completion does not attack
-the open theorem.  A useful advance must construct or obstruct one
-source-level boundary operator whose square is simultaneously source cyclic
-and analytically paracyclic.  Its nonzero top-conormal image is already
-available.
+the open theorem.  The strict source-level boundary operator is now
+obstructed: off the critical line it is identically zero.  A useful advance
+must instead construct the arithmetic boundary in which its equivariance
+defect is exact, and prove independently that the existing top conormal is
+not exact.
 
 \section{Conclusion}
 
@@ -715,12 +768,14 @@ positive scalarization squares it; Hilbert closure makes the normalized
 boundary nonclosable; product closure becomes maximally vertical; continuous
 extension of the old boundary is zero.
 
-The surviving route is one precise arithmetic statement.  The ordinary-prime
-source must identify source inverse with analytic dagger on the same retained,
-unsymmetrized, reduced top-conormal grade.  Atomic non-erasure then turns
-degree-one cyclicity into trivial radial monodromy, forcing
-\(\Rea\rho=1/2\) at every divisor point.  This is the only unproved step
-claimed by the route, and no result in this paper assumes it.
+The two-step defect law changes the frontier.  The ordinary-prime source must
+not strictly identify source inverse with analytic dagger; that requirement
+is algebraically overdetermined off line.  It must make their defect exact in
+one source-generated, target-stable boundary while the physical top conormal
+survives in the quotient.  Quotient cyclicity then forces trivial radial
+monodromy and \(\Rea\rho=1/2\) at every divisor point.  Construction of that
+boundary, defect exactness, and quotient non-erasure are the unproved
+arithmetic content, and no result in this paper assumes them.
 
 \begin{thebibliography}{9}
 

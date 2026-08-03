@@ -308,3 +308,44 @@ Step 6 is the decisive cofinal theorem.
   fixed-carrier homogeneous-cycle attacks were all closed. The surviving invariant is the
   degree-one cyclic identity before source-inverse/analytic-dagger descent; its target defect is
   exactly the already computed Riemann modular character.
+
+## 2026-08-03 boundary-defect correction
+
+The strict landing in Sections 4 and 8 is overdetermined and is no longer the open core. For an
+arbitrary linear landing `L`, define `D = T L - L t`. The exact identity
+
+```text
+T D + D t = T^2 L - L t^2
+```
+
+implies, when `t^2 = 1` and `T^2 = delta id`, that
+
+```text
+(delta - 1) L = T D + D t.
+```
+
+Consequences:
+
+1. strict equivariance `D = 0` forces `L = 0` whenever `delta != 1`; singular topology,
+   unboundedness, and nonclosability do not evade this algebraic obstruction for a single-valued
+   landing on a rotation-stable domain;
+2. strict equivariance is stronger than needed: if `D` lands in a `T`-stable boundary submodule
+   `B` and one physical atom satisfies `L(theta_q) notin B`, then `delta = 1`;
+3. the existing nonzero top-conormal vector does not yet prove the required nonzero quotient class.
+
+Revised open core:
+
+```text
+[GLOBAL_ARITHMETIC_BOUNDARY_CLASS_LAW]
+construct source-defined B;
+prove physical source-dagger defect lies in B;
+prove physical top conormal does not lie in B.
+```
+
+At every Xi divisor fibre these three clauses imply `q^(2 Re rho - 1) = 1`, hence RH. The strict
+landing route is obstructed; the surviving route is homological, not topological.
+
+Formal support:
+
+- `formal/GaloisForLFunctions/HTGeometry/CyclicParacyclicBoundaryDefectLaw.lean`
+- `formal/GaloisForLFunctions/RHTower/SourceDaggerCyclicBoundaryDefectLaw.lean`

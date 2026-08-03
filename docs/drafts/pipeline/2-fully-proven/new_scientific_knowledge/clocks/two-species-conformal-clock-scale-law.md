@@ -924,10 +924,32 @@ the dependence on the characteristic parameter:
   kernel and every `ξ₀` there is `h > 0` and `α : ℝ → (ℝ →ᵇ ℝ)` with `α(ξ₀) = 1` and
   `∂ξ α(ξ) = A(ξ)α(ξ)` on `[ξ₀-h, ξ₀+h]`.
 
-This is the analytic content of Riemann's method, and it is unconditional. What remains for the
-two-dimensional case is to read the mixed second derivative off that solution: evaluating at a
-second null coordinate and differentiating gives `∂ξ∂η u = K u`, after which the equivalence above
-converts it into a clock probe.
+This is the analytic content of Riemann's method, and it is unconditional.
+
+`formal/GaloisForLFunctions/HTGeometry/ClockGoursatPointwise.lean` reads that solution pointwise:
+
+- `hasDerivWithinAt_bcf_eval` — evaluation at a second null coordinate is a continuous linear map,
+  so it commutes with the derivative, and `∂ξ u` is the Volterra transform of `u`;
+- `hasDerivAt_volterraFun` — that transform differentiates in `η` to `K·u`, by the fundamental
+  theorem of calculus;
+- `exists_goursat_pointwise` — hence **`∂η ∂ξ u = K u` on the open rectangle**, with `u(ξ₀,·) = 1`,
+  for every continuous kernel.
+
+`formal/GaloisForLFunctions/HTGeometry/ClockGoursatContinuity.lean` supplies the regularity the
+remaining step needs:
+
+- `continuousOn_bcf_eval` — a differentiable curve of bounded continuous functions is jointly
+  continuous when read as a function of two variables, because evaluation is continuous;
+- `exists_goursat_jointly_continuous` — hence the Goursat solution is jointly continuous on the
+  strip where it is defined;
+- `continuousOn_kernel_mul_solution` — the integrand of the second mixed derivative is continuous
+  along the characteristic parameter.
+
+What remains for the two-dimensional case is the second mixed derivative, `∂ξ ∂η u`, which the
+chart d'Alembertian also needs. Joint continuity makes the Goursat double integral a continuous
+integrand on a compact rectangle, so the Fubini exchange applies and `∂η u` can be read off by the
+fundamental theorem of calculus; with both mixed derivatives in hand, the equivalence above converts
+the solution into a clock probe.
 
 So the last open input of the whole programme is now stated in its physical form:
 

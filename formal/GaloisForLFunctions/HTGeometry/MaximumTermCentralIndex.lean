@@ -1322,6 +1322,59 @@ theorem norm_mul_logDeriv_sub_centralIndex_le
         div_le_div_of_nonneg_left hBnonneg hμpos hf
 
 
+/-! ## Log-convexity
+
+`log mu` is a convex function of `log r`, because `mu(e^u) = sup_n ||a_n|| e^(n u)` is a supremum of
+exponentials of affine functions.  This is the second-order information that the geometric decay
+bounds do not carry: the two-sided growth law only says the difference quotients of `log mu` are
+squeezed between the central indices, whereas convexity makes those quotients monotone. -/
+
+set_option maxHeartbeats 1000000 in
+/-- **Log-convexity of the maximum term.**  `u ↦ log mu(e^u)` is convex. -/
+theorem convexOn_log_maxTerm_exp (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
+    ConvexOn ℝ Set.univ (fun u : ℝ => Real.log (maxTerm a (Real.exp u))) := by
+  refine ⟨convex_univ, fun u _ w _ p q hp hq hpq => ?_⟩
+  simp only [smul_eq_mul]
+  set v : ℝ := p * u + q * w with hv
+  set N : ℕ := centralIndex a (Real.exp v) with hN
+  have hev : (0 : ℝ) < Real.exp v := Real.exp_pos v
+  have heu : (0 : ℝ) < Real.exp u := Real.exp_pos u
+  have hew : (0 : ℝ) < Real.exp w := Real.exp_pos w
+  have hterm : ‖a N‖ * (Real.exp v) ^ N = maxTerm a (Real.exp v) :=
+    term_centralIndex_eq ha hev hn₀
+  have hane : a N ≠ 0 := coeff_centralIndex_ne_zero ha hev hn₀
+  have hapos : (0 : ℝ) < ‖a N‖ := norm_pos_iff.mpr hane
+  obtain ⟨-, -, hμv⟩ := exists_maxTerm_eq ha hev hn₀
+  obtain ⟨-, -, hμu⟩ := exists_maxTerm_eq ha heu hn₀
+  obtain ⟨-, -, hμw⟩ := exists_maxTerm_eq ha hew hn₀
+  -- split the term at the interpolated radius
+  have hsplit : ‖a N‖ * (Real.exp v) ^ N
+      = (‖a N‖ * (Real.exp u) ^ N) ^ p * (‖a N‖ * (Real.exp w) ^ N) ^ q := by
+    have hexpv : (Real.exp v) ^ N = ((Real.exp u) ^ N) ^ p * ((Real.exp w) ^ N) ^ q := by
+      rw [← Real.exp_nat_mul, ← Real.exp_nat_mul, ← Real.exp_nat_mul, ← Real.exp_mul,
+        ← Real.exp_mul, ← Real.exp_add, hv]
+      congr 1
+      ring
+    have hanorm : ‖a N‖ = ‖a N‖ ^ p * ‖a N‖ ^ q := by
+      rw [← Real.rpow_add hapos, hpq, Real.rpow_one]
+    rw [hexpv]
+    nth_rewrite 1 [hanorm]
+    rw [Real.mul_rpow hapos.le (by positivity), Real.mul_rpow hapos.le (by positivity)]
+    ring
+  -- each factor is at most the maximum term at the corresponding radius
+  have hbu : ‖a N‖ * (Real.exp u) ^ N ≤ maxTerm a (Real.exp u) := term_le_maxTerm ha heu N
+  have hbw : ‖a N‖ * (Real.exp w) ^ N ≤ maxTerm a (Real.exp w) := term_le_maxTerm ha hew N
+  have hprod : maxTerm a (Real.exp v)
+      ≤ (maxTerm a (Real.exp u)) ^ p * (maxTerm a (Real.exp w)) ^ q := by
+    rw [← hterm, hsplit]
+    refine mul_le_mul (Real.rpow_le_rpow (by positivity) hbu hp)
+      (Real.rpow_le_rpow (by positivity) hbw hq) (by positivity) (by positivity)
+  -- take logarithms
+  have hlog := Real.log_le_log hμv hprod
+  rw [Real.log_mul (by positivity) (by positivity), Real.log_rpow hμu, Real.log_rpow hμw] at hlog
+  exact hlog
+
+
 /-! ## Entire functions -/
 
 /-- The coefficients of a power series with infinite radius of convergence satisfy the decay

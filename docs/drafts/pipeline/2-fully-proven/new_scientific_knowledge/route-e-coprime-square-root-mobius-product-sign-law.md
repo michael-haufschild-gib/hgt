@@ -1083,3 +1083,77 @@ in these terms.
 the separation hypothesis", which is the step the circle row-sum needs and the reason the real-line
 estimate `sum_inv_abs_dist_le` does not transfer directly: on the circle the ordering of the
 frequencies does not bound their distances, only their reduced offsets do.
+
+### Formal layer — the large sieve with an explicit Δ
+
+Two further modules close the gap between the abstract Bessel inequality of `LargeSieveWeak.lean`
+and a usable sieve statement. Both unconditional.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CircleRowSum.lean` proves the Gram row of a family
+`δ`-separated in `ℝ/ℤ` is harmonic:
+
+`circle_row_sum_le` — `∑_{t ≠ r} ‖λ_t − λ_r‖^{-1} ≤ 2δ^{-1} ∑_{1 ≤ k ≤ M} k^{-1}` for `M ≥ (2δ)^{-1}`,
+
+together with `one_le_levelOf`, `levelOf_mul_le`, `lt_levelOf_succ_mul`, `levelOf_le`. The index
+ordering is *not* available here — on the circle the frequencies may wrap — so the count is by band:
+each `λ_t − λ_r` reduces to an offset in `[−1/2, 1/2]` lying in some `[kδ, (k+1)δ)`; two frequencies
+in the same band on the same side of zero have offsets differing by less than `δ` and so violate the
+separation hypothesis (`toIntDist_sub_lt`). Hence the level–side pair is injective, at most two
+frequencies per level, and no level exceeds `(2δ)^{-1}` since offsets never exceed `1/2`.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/LargeSieveSeparated.lean` assembles this with the chord
+bound:
+
+- `circleFreq`, `norm_circleFreq`, `conj_circleFreq_mul` — the correlation of two circle frequencies
+  is the frequency of their difference.
+- `four_mul_toIntDist_le_norm_sub` — chordal separation from circle separation.
+- `largeSieve_separated` — **`∑_r |⟪e(λ_r), a⟫|² ≤ (N + δ^{-1} ∑_{1 ≤ k ≤ M} k^{-1}) ‖a‖²`** for
+  `λ` pairwise `δ`-separated in `ℝ/ℤ` and `M ≥ (2δ)^{-1}`.
+
+This is the first statement in the corpus where the large sieve constant is *computed* from a
+separation hypothesis rather than assumed: `Δ = N + O(δ^{-1} log δ^{-1})`, everything explicit. The
+sharp `Δ = N + δ^{-1}` is a different theorem — `sum_inv_abs_dist_le` shows the harmonic factor is
+the provable ceiling of the absolute-value method, so removing it requires cancellation
+(Montgomery–Vaughan), not a better assembly of these pieces.
+
+### Formal layer — the large sieve constant in closed form
+
+`formal/GaloisForLFunctions/RHTower/Sieve/HarmonicLogBound.lean` identifies the partial harmonic
+sums produced by the Gram-row estimates with mathlib's harmonic numbers and quotes the logarithmic
+bound: `sum_Icc_one_div_eq_sum_range`, `sum_Icc_one_div_eq_harmonic`, and
+`sum_Icc_one_div_le_one_add_log` (`∑_{1 ≤ k ≤ M} k^{-1} = H_M ≤ 1 + log M`).
+
+`formal/GaloisForLFunctions/RHTower/Sieve/LargeSieveExplicit.lean` removes the free cut:
+
+- `largeSieve_separated_log` — `Δ = N + δ^{-1}(1 + log M)` for any `M ≥ (2δ)^{-1}`.
+- `largeSieve_separated_explicit` — **`∑_r |⟪e(λ_r), a⟫|² ≤ (N + δ^{-1}(1 + log((2δ)^{-1}+1))) ‖a‖²`**
+  for any family `δ`-separated in `ℝ/ℤ`, taking `M = ⌈(2δ)^{-1}⌉`.
+
+Both unconditional. This is the weak large sieve in closed form: no free parameter, no hypothesis
+beyond the separation, and `Δ = N + O(δ^{-1} log δ^{-1})` now written out rather than described.
+
+Status of the route's sieve layer: the weak large sieve is complete and usable. What is *not* here
+is the sharp `Δ = N + δ^{-1}`; `sum_inv_abs_dist_le` proves the logarithm is the ceiling of the
+absolute-value method, so it can only be removed by Montgomery–Vaughan's cancellation argument for
+arbitrary well-spaced frequencies, which remains the open input alongside Matomäki–Radziwiłł.
+
+### Formal layer — the arithmetic large sieve
+
+`formal/GaloisForLFunctions/RHTower/Sieve/FareySeparation.lean`:
+
+- `one_div_le_toIntDist_of_not_dvd` — a rational with denominator `D` is either an integer or at
+  distance at least `D^{-1}` from every integer. Writing `m/D − round(m/D) = (m − D·round(m/D))/D`,
+  the numerator is an integer that vanishes exactly when `D ∣ m`.
+- `one_div_le_toIntDist_farey` — hence `‖a/q − a'/q'‖ ≥ (qq')^{-1}` whenever the two fractions are
+  distinct modulo one.
+
+`formal/GaloisForLFunctions/RHTower/Sieve/LargeSieveFarey.lean`:
+
+- `largeSieve_farey` — **`∑ |⟪e(a_i/q_i), x⟫|² ≤ (N + Q²(1 + log(Q²/2 + 1))) ‖x‖²`** for rationals
+  with denominators at most `Q ≥ 2`, pairwise distinct modulo one.
+
+Both unconditional. This is the arithmetic shape of the large sieve — the form an actual sieve
+application consumes — obtained by feeding Farey separation (`δ = Q^{-2}`) into the closed-form
+statement. The classical constant is `N + Q²`; the surplus logarithmic factor is exactly the one
+`sum_inv_abs_dist_le` proves the absolute-value method cannot avoid, so closing the gap to the
+classical constant is Montgomery–Vaughan's theorem and not a rearrangement of these steps.

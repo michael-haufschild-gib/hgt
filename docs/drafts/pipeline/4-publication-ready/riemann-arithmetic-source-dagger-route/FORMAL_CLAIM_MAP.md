@@ -45,13 +45,16 @@ interfaces from being reported as constructed mathematics.
 | Every reflected horizon coordinate is nonzero | same module: `adaptivePrimeNormalReflectedHorizonColumn_apply_ne_zero` |
 | Local Green coefficient vanishes iff divisor is on critical line; global provenance vanishes iff RH | same module: `adaptivePrimeNormalReflectedHorizonGreenCoefficient_eq_zero_iff`, `adaptivePrimeNormalReflectedHorizonGreenProvenance_eq_zero_iff_riemannHypothesis` |
 
-## Cyclic source--dagger consumer
+## Cyclic--paracyclic boundary-defect law
 
 | Manuscript claim | Formal support |
 |---|---|
 | Target degree-one rotation squares to half-density mate gain | `RHTower/SourceDaggerCyclicMonodromyRigidity.lean`: `sourceDaggerNormalizedDegreeOneRotation_sq` |
-| Nonzero equivariant cyclic atom forces scalar monodromy one and `Re s = 1/2` | same module: `retainedCyclicity_forces_monodromy_one`, `re_eq_half_of_sourceDaggerCyclicLanding` |
-| One global nonzero equivariant atom on every Xi divisor fibre implies RH | same module: `riemannHypothesis_of_sourceDaggerCyclicAtomicLanding` |
+| For arbitrary landing, two-step target/source square mismatch is exactly sum of two transported equivariance defects | `HTGeometry/CyclicParacyclicBoundaryDefectLaw.lean`: `cyclicParacyclicEquivarianceDefect_twoStep`, `cyclicParacyclicEquivarianceDefect_twoStep_apply` |
+| Equivariance modulo a target-stable boundary plus one retained quotient class forces scalar monodromy one | same module: `retainedCyclicClass_forces_monodromy_one` |
+| Away from monodromy one, every strict single-valued cyclic-to-paracyclic landing is zero, independently of topology | same module: `strictCyclicParacyclicLanding_eq_zero_of_monodromy_ne_one` |
+| Source--dagger boundary class forces `Re s = 1/2`; strict landing is zero off line | `RHTower/SourceDaggerCyclicBoundaryDefectLaw.lean`: `re_eq_half_of_sourceDaggerCyclicBoundaryClass`, `sourceDaggerStrictCyclicLanding_eq_zero_of_re_ne_half` |
+| One global boundary-class landing on every Xi divisor fibre implies RH | same module: `riemannHypothesis_of_sourceDaggerCyclicBoundaryClassLanding` |
 | Mate gain is `exp ((2 Re s - 1) log n)` | `RHTower/DeningerOneSidedFramedMateCurvatureTransgression.lean`: `deningerHalfDensityMateGain`, `deningerHalfDensityMateGain_eq_norm_inv_sq` |
 
 ## Completion no-gos
@@ -66,18 +69,21 @@ interfaces from being reported as constructed mathematics.
 
 ## Explicitly unproved
 
-Manuscript Problem 8.2 (`Arithmetic source--dagger law`) is **not constructed**. In particular:
+Manuscript Problem 8.2 (`Arithmetic boundary-class law`) is **not constructed**. In particular:
 
-- no theorem identifies physical Möbius--theta source inverse with analytic dagger on same
-  unsymmetrized retained top-conormal grade;
-- `SourceDaggerCyclicMonodromyRigidity.lean` is a consumer with explicit equivariance and
-  non-erasure hypotheses;
+- no global source-generated target-stable arithmetic boundary submodule has been identified;
+- no theorem proves the physical Möbius--theta source--dagger equivariance defect lies in that
+  boundary on the unsymmetrized top-conormal grade;
+- existing atomic non-erasure proves a target vector is nonzero, not that its quotient class is
+  nonzero modulo the missing boundary;
+- `SourceDaggerCyclicBoundaryDefectLaw.lean` is a consumer with explicit boundary stability,
+  defect exactness, and quotient non-erasure hypotheses;
 - reflected Green commutation is even under functional-equation reflection and is not the
   missing same-fibre mixed rotation;
 - local completed Gamma incidence is coefficient-faithful but does not prove global
-  source--dagger equivariance;
+  source--dagger boundary exactness;
 - no RH theorem is claimed.
 
-No new Lean declaration was added for manuscript synthesis. Existing formal corpus already closes
-all unconditional producer/non-erasure claims stated in paper; a wrapper theorem would add no
-mathematical content.
+The two boundary-defect modules were added for the new universal identity, strict obstruction,
+boundary-class rigidity, and conditional global consumer. They do not assume or construct any of
+the three missing arithmetic clauses.

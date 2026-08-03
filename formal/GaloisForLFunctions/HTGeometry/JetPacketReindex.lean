@@ -19,23 +19,25 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
 /-- Folding (member, order) into a single jet index. -/
-def sigmaJetIndexEquiv {row : Type*} (r d : ℕ) :
-    (Σ _ : row × Fin r, Fin (d + 1)) ≃ row × Fin (r * (d + 1)) where
-  toFun t := (t.1.1, finProdFinEquiv (t.1.2, t.2))
-  invFun p := ⟨(p.1, (finProdFinEquiv.symm p.2).1), (finProdFinEquiv.symm p.2).2⟩
+def sigmaJetIndexEquiv {row : Type*} (r d D : ℕ) (h : r * (d + 1) = D) :
+    (Σ _ : row × Fin r, Fin (d + 1)) ≃ row × Fin D where
+  toFun t := (t.1.1, finCongr h (finProdFinEquiv (t.1.2, t.2)))
+  invFun p := ⟨(p.1, (finProdFinEquiv.symm ((finCongr h).symm p.2)).1),
+    (finProdFinEquiv.symm ((finCongr h).symm p.2)).2⟩
   left_inv := by
     rintro ⟨⟨b, j⟩, o⟩
     simp
   right_inv := by
     rintro ⟨b, m⟩
-    show (b, finProdFinEquiv ((finProdFinEquiv.symm m).1, (finProdFinEquiv.symm m).2)) = (b, m)
-    rw [Prod.mk.eta, finProdFinEquiv.apply_symm_apply]
+    show (b, finCongr h (finProdFinEquiv ((finProdFinEquiv.symm ((finCongr h).symm m)).1,
+      (finProdFinEquiv.symm ((finCongr h).symm m)).2))) = (b, m)
+    rw [Prod.mk.eta, finProdFinEquiv.apply_symm_apply, Equiv.apply_symm_apply]
 
 /-- The two coordinate systems for a jet packet are homeomorphic. -/
-def sigmaJetHomeomorph {row : Type*} (r d : ℕ) :
-    ((Σ _ : row × Fin r, Fin (d + 1)) → ℂ) ≃ₜ ((row × Fin (r * (d + 1))) → ℂ) where
-  toFun y := fun p => y ((sigmaJetIndexEquiv r d).symm p)
-  invFun w := fun t => w (sigmaJetIndexEquiv r d t)
+def sigmaJetHomeomorph {row : Type*} (r d D : ℕ) (h : r * (d + 1) = D) :
+    ((Σ _ : row × Fin r, Fin (d + 1)) → ℂ) ≃ₜ ((row × Fin D) → ℂ) where
+  toFun y := fun p => y ((sigmaJetIndexEquiv r d D h).symm p)
+  invFun w := fun t => w (sigmaJetIndexEquiv r d D h t)
   left_inv := by
     intro y
     funext t
@@ -73,9 +75,9 @@ theorem LocallySurjectiveObservation.add_const {P : Type*} [TopologicalSpace P] 
 
 /-- The jet packet of a family of translates, read in the coordinates of the evaluation matrix. -/
 theorem locallySurjectiveObservation_reindex {P : Type*} [TopologicalSpace P] {row : Type*}
-    (r d : ℕ) {J : P → ((Σ _ : row × Fin r, Fin (d + 1)) → ℂ)}
+    (r d D : ℕ) (h : r * (d + 1) = D) {J : P → ((Σ _ : row × Fin r, Fin (d + 1)) → ℂ)}
     (hJ : LocallySurjectiveObservation J) :
-    LocallySurjectiveObservation fun p => sigmaJetHomeomorph r d (J p) :=
+    LocallySurjectiveObservation fun p => sigmaJetHomeomorph r d D h (J p) :=
   hJ.congr_homeomorph _
 
 end

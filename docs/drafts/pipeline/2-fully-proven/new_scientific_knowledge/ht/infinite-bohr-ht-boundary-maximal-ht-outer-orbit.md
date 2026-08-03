@@ -1803,3 +1803,67 @@ is to write that composition: instantiate `hrigid` from the rigidity theorem (ma
 of the jet index, both built from `finProdFinEquiv`), and instantiate `hrel` from the definition of
 `FamilyDifferentiallyAlgebraicOn` at the admissible nodes, which lie in the upper half plane -- the
 common domain of a family of *real* translates.
+
+## Lean progress: from a differential relation to the matrix, in one step
+
+- `familyJetVec_eq_sumElim` -- the jet vector of a family is the spectral coordinate together with
+  the jets, as a `Sum.elim`;
+- **`eq_zero_of_rigid_of_relation`** -- if a differential relation of the family holds on a set
+  containing a node packet, and the evaluation matrix of its shape has trivial kernel at that packet
+  with the *actual* jets of the family, then the relation is zero.
+
+This is the statement (9) reduces to, with the analytic content entirely isolated in the kernel
+hypothesis.  Reading it against the transversality layer:
+
+- the node packet is `nodeOf S` from `exists_upper_injective_nodes_shapeDeterminant_ne_zero`, whose
+  nodes lie in the upper half plane -- and for a family of *real* translates that is the common
+  domain, so `hznodes` holds;
+- the jets appearing in the matrix are the outer jets of the family at those nodes, which is
+  `familyOuterObservation`;
+- the trivial kernel is `residual_perturbedOuterJet_shape_rigidity`.
+
+Only the identification of the two jet folds is still to be written down; both are `finProdFinEquiv`
+composed with a `finCongr`.
+
+## Lean progress: the two folds are now the same fold
+
+`sigmaJetIndexEquiv`, `sigmaJetHomeomorph`, `locallySurjectiveObservation_reindex` and
+`familyOuterObservation` were generalised to fold into an *arbitrary* target `Fin D` given
+`r * (d + 1) = D`, exactly as `foldExponentEquiv` already did on the relation side.
+
+That removes the last structural mismatch: the observation and the relation now fold the
+(member, order) jet index through the same `finProdFinEquiv` composed with a `finCongr`, into the same
+`Fin D`.  Taking `D = (relationShapeOf P).depthPred + 1` makes the jet coordinates of
+`familyOuterObservation` and the jet argument of `eq_zero_of_rigid_of_relation` the same type and the
+same function.
+
+Everything (9) needs is now proved and typechecks against everything else:
+
+- `eq_zero_of_rigid_of_relation` -- a relation dies where the evaluation matrix is rigid;
+- `residual_perturbedOuterJet_shape_rigidity` -- the matrix is rigid, at admissible nodes above the
+  axis, for a residual set of mass parameters, *with the fixed carrier included*;
+- `continuous_familyOuterObservation`, `locallySurjective_familyOuterObservation` -- the observation
+  those two share is continuous and locally surjective.
+
+## Lean progress: the jets of a translate
+
+- `iteratedDeriv_translate` -- the jets of `w |-> F(w + c)` at `z` are the jets of `F` at `z + c`;
+- **`familyJet_translate`** -- hence the jets of a family of real translates, evaluated at a packet of
+  points, are the jets of the single function at the *combined nodes* `z_b + t_j`.
+
+This is the identity that lets the relation side and the observation side speak about the same
+numbers: `eq_zero_of_rigid_of_relation` reads the jets of the translated family at the evaluation
+points, while `familyOuterObservation` produces the jets of the outer function at the combined
+nodes, and the two are equal term by term.
+
+With this every ingredient of (9) is proved, in matching coordinates:
+
+| ingredient | theorem |
+|---|---|
+| relation dies where the matrix is rigid | `eq_zero_of_rigid_of_relation` |
+| the matrix is rigid on a residual set | `residual_perturbedOuterJet_shape_rigidity` |
+| observation is continuous and locally surjective | `continuous_familyOuterObservation`, `locallySurjective_familyOuterObservation` |
+| jets of translates = jets at combined nodes | `familyJet_translate` |
+| the fixed carrier only translates the packet | `LocallySurjectiveObservation.add_const` |
+| admissible nodes lie above the axis | `exists_upper_injective_nodes_shapeDeterminant_ne_zero` |
+| real translates keep the common domain | `im_combinedNodes` |

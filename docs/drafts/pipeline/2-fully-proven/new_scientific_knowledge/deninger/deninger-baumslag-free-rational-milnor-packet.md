@@ -2430,3 +2430,9 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   representation is induced from the trivial subgroup at once.  The vertex side remains the obstacle
   for arbitrary index sets: it is a coproduct over the index set, and the homology functor's
   preservation of coproducts is not available.
+- 2026-08-03 — Session audit.  The area umbrella builds clean end to end (15762 jobs), every module
+  added for this card is wired into it, and each new theorem was checked with `#print axioms` to
+  depend only on `propext`, `Classical.choice` and `Quot.sound`.  The lint gate still reports errors,
+  and none of them are from this work: they are modules of a concurrently running session that are
+  not yet wired into their umbrella, plus generated index files that go stale between regeneration
+  and the check because that session is adding modules meanwhile.

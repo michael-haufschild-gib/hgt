@@ -310,3 +310,33 @@ stabilization or a different Dirac parity.
   of these degree-zero and positive pieces. Lean proves its value is always zero and therefore can
   never equal the graded cyclic charge `2`. Selected theorems are axiom-clean modulo `propext`,
   `Classical.choice`, and `Quot.sound`.
+- 2026-08-03 — P2 no longer uses a cyclic-module placeholder. Lean now contains the exact
+  generator-and-relation simplex presentation, genuine cyclic-bar tensor powers of arbitrary
+  unital noncommutative algebras, all face/degeneracy/rotation identities, and the resulting cyclic
+  module (`PresentedSimplicialObject.lean`, `CyclicBarTensorOperators.lean`,
+  `CyclicBarSimplicialTupleRelations.lean`, `CyclicBarSimplicialLinearRelations.lean`,
+  `CyclicBarPresentedSimplicial.lean`, `CyclicBarCyclicTupleRelations.lean`,
+  `CyclicBarCyclicLinearRelations.lean`, `CyclicBarCyclicModule.lean`). The actual rational CCM
+  coefficient algebra and finite-support twisted crossed product are also present, followed by its
+  minimal unitization; no all-functions algebra, free-word object, or degree-zero truncation remains.
+- 2026-08-03 — `CCMRationalAdelicEpsilonZero.lean` constructs the exact first CCM endpoint on that
+  source: zero-adele evaluation is proved multiplicative and rational-scaling invariant; the
+  identity coefficient is proved a trace for twisted convolution; and its normalized unitized
+  extension is proved a trace. `CyclicBarTraceAugmentation.lean` and
+  `CyclicBarTraceMorphism.lean` prove universally that every linear trace induces a morphism from
+  the genuine tensor cyclic bar to the constant scalar cyclic module, natural for every morphism
+  of the presented simplex category and for Connes rotation. `CCMRationalAdelicEpsilonZeroCyclic.lean`
+  instantiates the result as the literal all-degree morphism `ε₀ⁿ`.
+- 2026-08-03 — `CyclicModuleDoubleKernel.lean` constructs the exact categorical operation needed
+  for CCM's reduced source: for any two cyclic morphisms, the degreewise intersection of their
+  kernels inherits every face, degeneracy, and cyclic rotation, with a canonical cyclic inclusion.
+  This will instantiate `ker ε₀ⁿ ∩ ker ε₁ⁿ` once the second endpoint is built.
+- 2026-08-03 — Honest `ε₁` audit exposed a concrete upstream formalization gap rather than a
+  mathematical ambiguity: mathlib's `IsDedekindDomain.FiniteAdeleRing ℤ ℚ` currently has its
+  restricted-product topology and topological-ring structure, but no measurable-space,
+  locally-compact-space, or Haar-measure instance. Consequently the genuine finite-adelic Haar
+  integral cannot yet be typed. The required route is frozen: import/prove compactness of every
+  rational adic integer ring using the finite-place DVR and finite-residue-field theorems, apply
+  restricted-product local compactness, install Borel and additive Haar measure, prove the
+  rational diagonal product formula for Haar scaling, then define `ε₁`, its trace law, and `ε₁ⁿ`.
+  Replacing this with zero, evaluation at zero, or an assumed functional is explicitly forbidden.

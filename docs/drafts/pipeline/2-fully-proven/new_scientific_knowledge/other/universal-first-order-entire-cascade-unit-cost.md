@@ -420,7 +420,8 @@ It also identifies the mechanism and the sharp wall.  The analytic growth invari
 - [x] Lean: the Borel bridge -- good radii for `mu`, and the resulting bound on `nu`
 - [x] Lean: `z f'(z) - k f(z)` is the index-deviation series, and its bound
 - [x] Lean: the logarithmic-derivative estimate at a maximum-modulus point, with explicit remainder
-- [ ] Lean: choose `t` and `s` at a Borel-good radius to make the remainder `o(nu(r))`
+- [x] Lean: log-convexity of `mu` in `log r`, the second-order input the decay bounds lack
+- [ ] Lean: the Gaussian concentration of the central terms, and hence the remainder `o(nu(r))`
 - [ ] Lean: Newton--Puiseux places at `U = infinity`, hence the nondegenerate Wiman place
 - [ ] Lean: Clunie--Steinmetz composition separation and state algebraic independence
 - [x] Lean: the order lower bound `ord_DA >= n` from `n` algebraically independent jets
@@ -519,7 +520,21 @@ mul_deriv_sub_eq_tsum                     -- z f'(z) - k f(z) = sum (n - k) a_n 
 norm_mul_deriv_sub_le                     -- bounded by the deviation series
 sum_window_le_card_mul_maxTerm            -- the window sum is at most its count times mu(r)
 norm_mul_logDeriv_sub_centralIndex_le     -- the Wiman--Valiron logarithmic-derivative estimate
+tsum_index_deviation_le_of_window_le      -- the estimate with the window bound left abstract
+tsum_index_deviation_le_maxTerm           -- window bounded by its count: everything is mu(r) times
+norm_mul_logDeriv_sub_le_of_deviation_le  -- hence a coefficient-free remainder
+convexOn_log_maxTerm_exp                  -- log mu is convex in log r
 ```
+
+The final form is coefficient-free.  With the window bounded by its term count, the deviation is
+`mu(r)` times
+
+```text
+B = (nu(s)-nu(t)) (nu(s)+1-nu(t)) + nu(r) (t/r)/(1-t/r) + (nu(s)+1) C(r/s),
+```
+
+and the `mu(r)` cancels against `|f(z)| >= mu(r)`, leaving `| z f'(z)/f(z) - nu(r) | <= B` with `B`
+depending only on the three central indices and the two radius ratios.
 
 With `norm_mul_deriv_sub_le` the coefficient estimate becomes a statement about the function:
 combining it with `tsum_index_deviation_le` at `k = nu(r)` bounds `|z f'(z) - nu(r) f(z)|` by the
@@ -808,3 +823,22 @@ triangularity package, which is exactly how the paper proof uses them.
   makes the whole remainder a multiple of `mu(r)`.  The only step left is quantitative: choose `t`
   and `s` at a Borel-good radius so that the window width and the two ratios shrink fast enough for
   the right-hand side to be `o(nu(r))`.
+- 2026-08-03 -- Made the Wiman--Valiron remainder coefficient-free.  The deviation estimate was
+  generalised to take the window bound as a parameter, which recovers the majorant version as a
+  corollary and also allows the sharper choice: bounding the window by its term count times `mu(r)`
+  makes every one of the three remainders a multiple of `mu(r)`.  That factor then cancels against
+  `|f(z)| >= mu(r)`, so at a maximum-modulus point
+  `| z f'(z)/f(z) - nu(r) | <= (nu(s)-nu(t))(nu(s)+1-nu(t)) + nu(r)(t/r)/(1-t/r) + (nu(s)+1) C(r/s)`
+  -- a bound involving only the three central indices and the two radius ratios.  The remaining task
+  is to choose `t` and `s` at a Borel-good radius so that this expression is `o(nu(r))`.
+- 2026-08-03 -- Correction to the plan, and the brick it calls for.  The coefficient-free remainder
+  proved last time **cannot** be made `o(nu(r))` by any choice of `t < r < s`: the lower-tail term
+  `nu(r) (t/r)/(1-t/r)` needs `t/r -> 0`, which drives `nu(t)` far below `nu(r)` and blows up the
+  window width, and the window term is quadratic in that width.  The obstruction is real and not a
+  matter of tuning: purely geometric decay away from the central index is too weak.  What
+  Wiman--Valiron actually uses is the *Gaussian* concentration of the terms near `nu`, which comes
+  from second-order information about `mu`.  So the next brick is log-convexity, now proved:
+  `convexOn_log_maxTerm_exp` says `u |-> log mu(e^u)` is convex, by interpolating the single term
+  that attains `mu` at the intermediate radius -- `||a_N|| e^(Nv) = (||a_N|| e^(Nu))^p (||a_N||
+  e^(Nw))^q <= mu(e^u)^p mu(e^w)^q`.  Convexity makes the difference quotients of `log mu` monotone,
+  which is exactly what turns the two-sided growth law into concentration.
