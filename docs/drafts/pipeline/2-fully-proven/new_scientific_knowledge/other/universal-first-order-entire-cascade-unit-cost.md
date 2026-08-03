@@ -452,6 +452,7 @@ formal/GaloisForLFunctions/HTGeometry/NewtonEdgeNonCancellation.lean (new)
 formal/GaloisForLFunctions/HTGeometry/MaximumTermCentralIndex.lean (new)
 formal/GaloisForLFunctions/HTGeometry/MaximumTermLogarithmicDerivative.lean (new)
 formal/GaloisForLFunctions/HTGeometry/TriangleInequalityDefect.lean (new)
+formal/GaloisForLFunctions/HTGeometry/CircleMaximumCriticality.lean (new)
 formal/GaloisForLFunctions/HTGeometry/BorelGrowthLemma.lean (already existed; extended)
 ```
 
@@ -553,6 +554,9 @@ exists_unit_tsum_normalised_defect_le     -- hence the defect is at most nu(s) +
 norm_normalised_transverse_sq_le          -- so every transverse part is at most sqrt(2 D)
 normalisedCoeff                           -- the coefficients normalised by the central term
 norm_weighted_window_sub_le               -- the weighted window sum, with l^2 weights
+hasDerivAt_normSq_circlePath              -- d/dt |f(z e^(it))|^2 = -2 Im(conj f . z f')
+im_conj_mul_eq_zero_of_isLocalMax         -- so at a circle maximum that pairing is real
+im_mul_deriv_div_eq_zero_of_isLocalMax    -- hence z f'(z)/f(z) is real there
 ```
 
 The assembled bound over a window `F` with weights `w` is
@@ -1005,3 +1009,13 @@ triangularity package, which is exactly how the paper proof uses them.
   `normalisedCoeff` as a definition so the statements are readable.  With `w_n = n - nu` over a
   window of half-width `W` this reads `O(W^(3/2) sqrt(nu))` where the naive bound gives `O(W^2)`;
   that square-root gain is exactly what the discarded absolute-value route lacked.
+- 2026-08-03 -- Supplied the input that no coefficient estimate can give: criticality.  Differentiating
+  `t |-> |f(z e^(it))|^2` gives `-2 Im(conj(f(z)) z f'(z))`, so at a local maximum of the modulus
+  along the circle that pairing is real, and therefore `z f'(z)/f(z)` is real.  This is what removes
+  the component of the weighted sum along the direction of the value -- the part the alignment
+  estimates do *not* control -- leaving only the transverse part, which they do.  New module
+  `CircleMaximumCriticality.lean`.  Three mechanical traps, worth recording: `comp_hasDerivAt` is not
+  a projection on `HasDerivAt` (use `HasDerivAt.scomp`), `HasDerivAt.pow` builds the `Pi` power and
+  the pointwise one is `HasDerivAt.fun_pow`, and `convert ... using 1` on a `HasDerivAt` goal spawns
+  instance-equality subgoals -- normalise the derivative value in the hypothesis with `norm_num at h`
+  and close with plain `exact`.

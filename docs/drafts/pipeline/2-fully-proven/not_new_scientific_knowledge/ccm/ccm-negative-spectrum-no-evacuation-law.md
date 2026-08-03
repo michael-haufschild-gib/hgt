@@ -111,11 +111,52 @@ identity. It is a route bridge, not new scientific knowledge.
 - M. Suzuki, *Weil's quadratic form via the screw function*, arXiv:2606.09096, Sections 3 and 8.
 - A. Connes, C. Consani, H. Moscovici, *Zeta Spectral Triples*, arXiv:2511.22755.
 
-## Lean decision
+## Lean status
 
-The formal tree does not represent the nested restricted-Weil domains or their spectral floors.
-An abstract infimum-monotonicity wrapper would not certify the analytic embedding, so no Lean file
-is added.
+**Superseded, 2026-08-03.**  Every proved theorem of this card is formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/CCMNestedFloorNoEvacuation.lean`.
+
+The previous decision objected that "an abstract infimum-monotonicity wrapper would not certify the
+analytic embedding".  The objection is answered by choosing the right representation: the trial
+domains are taken as *subsets of one fixed function space*,
+
+```text
+apertureDomain a = {v : ℝ → ℝ | ∀ x, v x ≠ 0 → x ∈ (-a, a)},
+```
+
+so zero extension is literal set inclusion (`apertureDomain_mono`) and no embedding argument is
+needed at all.  The energy is the two-variable kernel form `diffBilinForm K v v` of
+`SuzukiParityHankelDecomposition.lean`, i.e. `QW(v,v)`, and the mass is `sqMass v = ∫ v²`.
+
+- `rayleighQuotientSet`, `rayleighFloor`, `rayleighFloorNegPart` — definition `(1)` and the negative
+  magnitude `(4)`.
+- **`rayleighFloor_antitone`** — equation `(2)`: a larger trial domain has a smaller floor.
+- **`rayleighFloor_le_of_witness`** — equation `(3)`: one trial vector at aperture `a₀` bounds the
+  floor at every larger aperture, so `epsilon_0(a_0) = -delta` forces `epsilon_0(b) ≤ -delta`.
+- **`rayleighFloorNegPart_mono`** — equation `(4)`: the negative part is nondecreasing.
+- `zero_le_rayleighFloor_iff` — the floor is nonnegative exactly when the energy is nonnegative on
+  the domain.
+- **`zero_le_rayleighFloor_of_tendsto_zero`** — equation `(5)`, the evacuation theorem: if the floor
+  tends to zero along *any* apertures tending to infinity, it is nonnegative at every aperture.  A
+  negative component, once present, persists with at least its original magnitude.
+- `repairSet`, `repairThreshold` — definition `(8)`; **`repairSet_eq_Ici`** and
+  **`repairThreshold_eq_negPart`** — equation `(9)`: the admissible repair set is exactly
+  `[max 0 (-epsilon_0), ∞)`, so the threshold equals `max(0, -epsilon_0(a))`.
+- **`repairThreshold_mono`** and **`repairThreshold_eq_zero_of_tendsto_zero`** — equation `(10)`:
+  the threshold is nondecreasing and vanishes cofinally only if it vanishes identically.
+- `restrictedKernelFloor`, **`restrictedKernelFloor_antitone`** — the instantiation on the aperture
+  domains with the kernel form.
+- **`rayleighQuotientSet_apertureDomain_nonempty`** — a smooth bump supported in `(-a, a)` has
+  positive mass, so at every positive aperture the trial set is nonempty and the floor is not a
+  junk value.  This is the non-vacuity certificate for the whole family.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]` for every theorem above.
+
+Not formalized: Suzuki's published generalized eigenvalue identity `(6)` itself, which converts
+`QW(v,v)` and `||v||²` into `<G_a u,u>` and `<K_a u,u>` for `u = Dv`.  That is an analytic input of
+the source, not a theorem of this card; the abstract statements above are stated for an arbitrary
+energy/mass pair, so they apply verbatim to either presentation.
 
 ## Gates
 
@@ -124,3 +165,7 @@ is added.
 - [x] compact repair threshold identified
 - [x] evacuation mechanism excluded
 - [x] positive no-negative-birth formulation isolated
+- [x] Lean: floor antitonicity, witness bound and negative-part monotonicity unconditional
+- [x] Lean: evacuation theorem `(5)` unconditional
+- [x] Lean: repair threshold `(8)`--`(10)` identified with the negative part, unconditional
+- [x] Lean: aperture-domain instantiation with nonempty trial set at every positive aperture

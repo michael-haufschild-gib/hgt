@@ -136,4 +136,111 @@ theorem wienerNorm_sqMul_le {ρ' ρ : ℝ} (hρ : ρ' < ρ) {g : ℤ → ℝ}
   exact Summable.tsum_le_tsum (abs_sqMul_weight_le hρ g) (wienerSummable_sqMul hρ hg)
     (hg.mul_left (4 / (ρ - ρ') ^ 2))
 
+/-! ## Multiplication: the scale is an algebra at each radius
+
+Multiplication of functions is convolution of Fourier coefficients, and the weight is submultiplicative
+because `|k| ≤ |j| + |k - j|`. So each radius carries a Banach-algebra estimate, which is how the
+potential enters the iteration.
+-/
+
+/-- Convolution of coefficient sequences: the coefficients of a product of functions. -/
+noncomputable def wienerConv (f g : ℤ → ℝ) : ℤ → ℝ := fun k => ∑' j : ℤ, f j * g (k - j)
+
+/-- **The weight is submultiplicative.** -/
+theorem exp_weight_triangle {ρ : ℝ} (hρ : 0 ≤ ρ) (k j : ℤ) :
+    Real.exp (ρ * |(k : ℝ)|)
+      ≤ Real.exp (ρ * |(j : ℝ)|) * Real.exp (ρ * |((k - j : ℤ) : ℝ)|) := by
+  rw [← Real.exp_add]
+  refine Real.exp_le_exp.mpr ?_
+  have hsplit : (k : ℝ) = (j : ℝ) + ((k - j : ℤ) : ℝ) := by push_cast; ring
+  have htri : |(k : ℝ)| ≤ |(j : ℝ)| + |((k - j : ℤ) : ℝ)| := by
+    rw [hsplit]
+    exact abs_add_le _ _
+  calc ρ * |(k : ℝ)| ≤ ρ * (|(j : ℝ)| + |((k - j : ℤ) : ℝ)|) :=
+        mul_le_mul_of_nonneg_left htri hρ
+    _ = ρ * |(j : ℝ)| + ρ * |((k - j : ℤ) : ℝ)| := by ring
+
+/-- **Each radius of the scale carries a Banach-algebra estimate.** -/
+theorem wienerSummable_conv_and_norm_le {ρ : ℝ} (hρ : 0 ≤ ρ) {f g : ℤ → ℝ}
+    (hf : WienerSummable ρ f) (hg : WienerSummable ρ g) :
+    WienerSummable ρ (wienerConv f g) ∧
+      wienerNorm ρ (wienerConv f g) ≤ wienerNorm ρ f * wienerNorm ρ g := by
+  classical
+  set F : ℤ → ℝ := fun j => |f j| * Real.exp (ρ * |(j : ℝ)|) with hFdef
+  set G : ℤ → ℝ := fun m => |g m| * Real.exp (ρ * |(m : ℝ)|) with hGdef
+  have hFnn : ∀ j, 0 ≤ F j := fun j => mul_nonneg (abs_nonneg _) (Real.exp_pos _).le
+  have hGnn : ∀ m, 0 ≤ G m := fun m => mul_nonneg (abs_nonneg _) (Real.exp_pos _).le
+  have hH : Summable fun p : ℤ × ℤ => F p.1 * G p.2 := hf.mul_of_nonneg hg hFnn hGnn
+  -- the shear `(k, j) ↦ (j, k - j)`
+  let e : ℤ × ℤ ≃ ℤ × ℤ :=
+    { toFun := fun q => (q.2, q.1 - q.2)
+      invFun := fun p => (p.1 + p.2, p.1)
+      left_inv := by intro q; simp
+      right_inv := by intro p; simp }
+  have hHe : Summable fun q : ℤ × ℤ => F q.2 * G (q.1 - q.2) := e.summable_iff.mpr hH
+  have hshear : (∑' q : ℤ × ℤ, F q.2 * G (q.1 - q.2)) = ∑' p : ℤ × ℤ, F p.1 * G p.2 :=
+    e.tsum_eq fun p => F p.1 * G p.2
+  set K : ℤ × ℤ → ℝ := fun q => |f q.2| * |g (q.1 - q.2)| * Real.exp (ρ * |(q.1 : ℝ)|) with hKdef
+  have hKnn : ∀ q, 0 ≤ K q := fun q =>
+    mul_nonneg (mul_nonneg (abs_nonneg _) (abs_nonneg _)) (Real.exp_pos _).le
+  have hKle : ∀ q : ℤ × ℤ, K q ≤ F q.2 * G (q.1 - q.2) := by
+    intro q
+    have hw := exp_weight_triangle hρ q.1 q.2
+    have hnn : 0 ≤ |f q.2| * |g (q.1 - q.2)| := mul_nonneg (abs_nonneg _) (abs_nonneg _)
+    calc K q = (|f q.2| * |g (q.1 - q.2)|) * Real.exp (ρ * |(q.1 : ℝ)|) := by
+          rw [hKdef]
+      _ ≤ (|f q.2| * |g (q.1 - q.2)|)
+            * (Real.exp (ρ * |(q.2 : ℝ)|) * Real.exp (ρ * |((q.1 - q.2 : ℤ) : ℝ)|)) :=
+          mul_le_mul_of_nonneg_left hw hnn
+      _ = F q.2 * G (q.1 - q.2) := by rw [hFdef, hGdef]; ring
+  have hKsum : Summable K := hHe.of_nonneg_of_le hKnn hKle
+  have hprodval : (∑' p : ℤ × ℤ, F p.1 * G p.2) = (∑' j, F j) * ∑' m, G m := by
+    rw [hH.tsum_prod]
+    have hinner : ∀ j : ℤ, (∑' m : ℤ, F j * G m) = F j * ∑' m : ℤ, G m :=
+      fun j => tsum_mul_left
+    rw [tsum_congr hinner]
+    exact tsum_mul_right
+  -- the pointwise bound
+  have hbound : ∀ k : ℤ,
+      |wienerConv f g k| * Real.exp (ρ * |(k : ℝ)|) ≤ ∑' j, K (k, j) := by
+    intro k
+    have hsec : Summable fun j => K (k, j) := hKsum.prod_factor k
+    have hcabs : Summable fun j => |f j * g (k - j)| := by
+      have hrw : (fun j => K (k, j))
+          = fun j => |f j * g (k - j)| * Real.exp (ρ * |(k : ℝ)|) := by
+        funext j
+        rw [hKdef, abs_mul]
+      rw [hrw] at hsec
+      exact (summable_mul_right_iff (Real.exp_ne_zero _)).mp hsec
+    have h1 : |wienerConv f g k| ≤ ∑' j, |f j * g (k - j)| := by
+      rw [wienerConv]
+      have := norm_tsum_le_tsum_norm (f := fun j : ℤ => f j * g (k - j)) (by simpa using hcabs)
+      simpa using this
+    have h2 : (∑' j, |f j * g (k - j)|) * Real.exp (ρ * |(k : ℝ)|) = ∑' j, K (k, j) := by
+      rw [← tsum_mul_right]
+      refine tsum_congr fun j => ?_
+      rw [hKdef, abs_mul]
+    rw [← h2]
+    exact mul_le_mul_of_nonneg_right h1 (Real.exp_pos _).le
+  have hfib : Summable fun k : ℤ => ∑' j, K (k, j) := hKsum.prod
+  have hsum : WienerSummable ρ (wienerConv f g) :=
+    hfib.of_nonneg_of_le (fun _ => mul_nonneg (abs_nonneg _) (Real.exp_pos _).le) hbound
+  refine ⟨hsum, ?_⟩
+  calc wienerNorm ρ (wienerConv f g) ≤ ∑' k : ℤ, ∑' j, K (k, j) :=
+        Summable.tsum_le_tsum hbound hsum hfib
+    _ = ∑' q : ℤ × ℤ, K q := hKsum.tsum_prod.symm
+    _ ≤ ∑' q : ℤ × ℤ, F q.2 * G (q.1 - q.2) := Summable.tsum_le_tsum hKle hKsum hHe
+    _ = (∑' j, F j) * ∑' m, G m := by rw [hshear, hprodval]
+    _ = wienerNorm ρ f * wienerNorm ρ g := rfl
+
+theorem wienerSummable_conv {ρ : ℝ} (hρ : 0 ≤ ρ) {f g : ℤ → ℝ}
+    (hf : WienerSummable ρ f) (hg : WienerSummable ρ g) :
+    WienerSummable ρ (wienerConv f g) :=
+  (wienerSummable_conv_and_norm_le hρ hf hg).1
+
+theorem wienerNorm_conv_le {ρ : ℝ} (hρ : 0 ≤ ρ) {f g : ℤ → ℝ}
+    (hf : WienerSummable ρ f) (hg : WienerSummable ρ g) :
+    wienerNorm ρ (wienerConv f g) ≤ wienerNorm ρ f * wienerNorm ρ g :=
+  (wienerSummable_conv_and_norm_le hρ hf hg).2
+
 end GaloisForLFunctions.HTGeometry

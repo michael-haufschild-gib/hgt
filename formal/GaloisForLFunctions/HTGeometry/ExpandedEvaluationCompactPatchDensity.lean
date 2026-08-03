@@ -40,7 +40,7 @@ theorem expandedEvaluation_compactPatchAvoidance_dense
   exact compactConfigurationAvoidance_dense_of_finiteRegularStratification F
     (expandedDifferentialEvaluationRankDefect q n z exponent)
     (2 * (Fintype.card row - Fintype.card (κ × Fin (q + 1)) - q + 1))
-    U K hU hKU hF hsubmersion
+    U K hU hKU (hF.of_le (by simp)) hsubmersion
     (expandedDifferentialEvaluationRankDefect_finiteRegularStratification_unconditional
       q n z hz exponent hexponent hrows)
     hdim

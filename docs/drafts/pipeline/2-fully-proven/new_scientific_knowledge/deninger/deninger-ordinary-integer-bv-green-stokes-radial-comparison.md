@@ -166,3 +166,10 @@ No such strict descent is proved here. Defining it only after evaluating \(\rho\
 physical marginal is cyclic, or declaring its target image a boundary would import conclusion
 through (12).
 
+## 6. Formal status
+
+`DeningerOrdinaryIntegerBVGreenStokesRadialComparison.lean` formalizes (1)--(2) on the
+positive-integer sequence endomorphism algebra, including the literal degree-one Hochschild
+primitive, and formalizes (6), (8), (10), and (12) through the existing Burnol/Deninger radial
+comparison. All proofs are unconditional. The completed tensor statement (3) remains paper-level
+because its strict Xi-to-incidence chain map is exactly the open core above.

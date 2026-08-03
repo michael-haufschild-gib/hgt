@@ -174,7 +174,13 @@
   `GaloisForLFunctions.RHTower.DeningerHomologyCohomology` (vanishing homology forces vanishing
   cohomology, for trivial coefficients over a field),
   `GaloisForLFunctions.RHTower.DeningerVanishingCohomology` (the cohomological form of the vanishing
-  results)
+  results),
+  `GaloisForLFunctions.RHTower.DeningerFactorMix` (uniqueness of roots for elements of the factors,
+  over a mixing hypothesis),
+  `GaloisForLFunctions.RHTower.DeningerRootIsolated` (uniqueness of roots for elements of the
+  factors of a root adjunction at an isolated element,
+  `GaloisForLFunctions.RHTower.DeningerCycRedPowInj` (equal powers of cyclically reduced words of
+  equal length are equal)
 
 ## Statement
 
@@ -2677,3 +2683,52 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   — for every result on the card.  What is still open for clause (4) is unchanged and is not about
   which theory the statement lives in: it is Baumslag's theorem, or equivalently one acyclic group
   with unique roots surjecting onto `Bau(F)` for an index set with more than one element.
+- 2026-08-03 — **The tower route is not dead; the earlier reading of the obstruction was too
+  strong.**  Two proved facts stand: adjoining an `n`-th root to an element that already has one
+  creates two distinct roots (`deningerRootAdjoin_not_uniquelyDivisible`), and the base group of a
+  root adjunction is never isolated in its infinite cyclic factor
+  (`deningerZpow_not_isolated`).  The conclusion drawn from them — that no tower of root adjunctions
+  has stages with unique roots — does not follow.  The first fact is about adjoining a root to a
+  *non-isolated* element, which the classical construction never does; the second only says that the
+  particular sufficient criterion in `deningerPow_eq_of_factors`, which demands isolation in *every*
+  factor, cannot be the one used.
+  What the argument actually needs is weaker, and is now isolated as a hypothesis.
+  `deningerPow_eq_of_factors_mix` proves uniqueness of roots for elements of the factors of any
+  amalgam from the *mixing hypothesis*: when two elements of different factors have the same power
+  and that power lies in the base group, both elements lie in the base group.  The old isolation
+  hypothesis implies it, but so does much less.
+  `deningerRootMix` verifies the mixing hypothesis for a root adjunction `A *_{a = t^m} ⟨t⟩` from
+  isolation of `a` **inside `A` alone**, and nothing about the cyclic factor.  The mechanism is
+  arithmetic rather than combinatorial: if `x ∈ A` and `t^c` have equal `n`-th powers in the base,
+  isolation puts `x = a^u`, injectivity of the base map forces the base exponents to agree, and
+  `cn = mun` gives `c = mu`, so `t^c = (t^m)^u` is in the base after all.  The counterexample
+  `deningerPow_eq_ne` is not available because it needs `a` non-isolated.
+  Combining the two, `deningerRootAdjunction_pow_eq_of_factors` is Baumslag's theorem for the
+  elements of the factors: a root adjunction at an isolated element of a group with unique roots
+  has unique roots on all elements of length at most one.  What remains of that theorem is the
+  elements of cyclic length at least two, which is what the conjugacy criterion
+  `deningerConj_cycRed_rotate` and the rotation and periodicity machinery were built for: for a
+  cyclically reduced word of length `ℓ ≥ 2` a power has length `nℓ`, so equal powers force equal
+  lengths (`deningerLen_eq_of_pow_eq`), and the two cyclically reduced words are rotations of one
+  another by an amount the periodicity of the power pins down.  That is the next brick.
+- 2026-08-03 — **The second brick of Baumslag's theorem: equal powers of cyclically reduced words.**
+  `deningerNormalWord_cycRed_pow` records that a power of a cyclically reduced transversal word is
+  already normal — its normal word is the concatenation of that many copies, with no cancellation at
+  any junction, which is the degenerate case of the conjugated-power normal form with both
+  conjugators empty.  `deningerCycRed_pow_inj` reads that backwards: two cyclically reduced
+  transversal words of the same length whose positive powers agree have the same normal word, and a
+  concatenation of copies determines the word it repeats (`deningerFlatten_inj`), so the words
+  themselves agree.  This is the length `≥ 2` half of uniqueness of roots in an amalgam, in the form
+  in which the words are already normalized.
+  What now stands between these bricks and Baumslag's theorem is bookkeeping of two kinds, both with
+  their instruments already in the corpus.  First, an arbitrary element is a conjugate `c V c⁻¹` of a
+  cyclically reduced word (`deningerExists_cycData`), and its cyclic word need not be transversal;
+  `deningerConj_transversal_form` normalizes the conjugator at the cost of a base group conjugation,
+  and the absorption lemmas move a base element into the first and last letters of a word.  Second,
+  comparing `x = c U c⁻¹` with `y = e W e⁻¹` when `x^n = y^n`: the lengths of `U` and `W` agree
+  (`deningerLen_eq_of_pow_eq`), the conjugacy criterion for powers
+  (`deningerConj_pow_cycRed`) turns the relation into `U^n = (B W B⁻¹)^n` with `B` a base element
+  times a prefix of `W`, and `deningerCycRed_pow_inj` then gives `U = B W B⁻¹`, whence
+  `x = y` after transporting the conjugators.  The remaining case, elements whose cyclic word has
+  length at most one, is the conjugacy of factor elements, and reduces to the factor case already
+  proved.

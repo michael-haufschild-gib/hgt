@@ -99,6 +99,12 @@ def ccmRationalAdelicEpsilonOneNonunital : Crossed →ₗ[ℂ] ℂ where
   map_add' F H := by simp
   map_smul' z F := by simp
 
+@[simp]
+theorem ccmRationalAdelicEpsilonOneNonunital_apply (F : Crossed) :
+    ccmRationalAdelicEpsilonOneNonunital F =
+      ccmRationalAdelicBruhatIntegral (F 1) :=
+  rfl
+
 @[simp] theorem ccmRationalAdelicEpsilonOneNonunital_single (k : Scale) (a : Core) :
     ccmRationalAdelicEpsilonOneNonunital (Finsupp.single k a) =
       if k = 1 then ccmRationalAdelicBruhatIntegral a else 0 := by

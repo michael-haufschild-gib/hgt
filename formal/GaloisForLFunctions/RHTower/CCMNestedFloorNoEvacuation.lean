@@ -107,13 +107,13 @@ theorem zero_le_rayleighFloor_iff (Q N : V → ℝ) {D : Set V}
 /-- **The evacuation theorem.**  If the floor over an increasing family of trial domains tends to
 zero along some apertures tending to infinity, then it is nonnegative at every aperture.  A negative
 component, once present, persists with at least its original magnitude. -/
-theorem zero_le_rayleighFloor_of_tendsto_zero {Q N : V → ℝ} {D : ℝ → Set V}
-    (hmono : ∀ {a b : ℝ}, a ≤ b → D a ⊆ D b)
-    (hbdd : ∀ a : ℝ, BddBelow (rayleighQuotientSet Q N (D a)))
-    (hne : ∀ a : ℝ, (rayleighQuotientSet Q N (D a)).Nonempty)
+theorem zero_le_rayleighFloor_of_tendsto_zero {Q N : V → ℝ} {D : ℝ → Set V} (a : ℝ)
+    (hmono : ∀ {b c : ℝ}, b ≤ c → D b ⊆ D c)
+    (hbdd : ∀ b : ℝ, BddBelow (rayleighQuotientSet Q N (D b)))
+    (hne : (rayleighQuotientSet Q N (D a)).Nonempty)
     {ι : Type*} {l : Filter ι} [l.NeBot] {aseq : ι → ℝ}
     (hseq : Tendsto aseq l atTop)
-    (hlim : Tendsto (fun i => rayleighFloor Q N (D (aseq i))) l (nhds 0)) (a : ℝ) :
+    (hlim : Tendsto (fun i => rayleighFloor Q N (D (aseq i))) l (nhds 0)) :
     0 ≤ rayleighFloor Q N (D a) := by
   by_contra hneg
   rw [not_le] at hneg
@@ -122,7 +122,7 @@ theorem zero_le_rayleighFloor_of_tendsto_zero {Q N : V → ℝ} {D : ℝ → Set
   have h1 : ∀ᶠ i in l, a ≤ aseq i := hseq.eventually_ge_atTop a
   have h2 : ∀ᶠ i in l, rayleighFloor Q N (D (aseq i)) ≤ -δ := by
     filter_upwards [h1] with i hi
-    have := rayleighFloor_antitone Q N (hmono hi) (hbdd (aseq i)) (hne a)
+    have := rayleighFloor_antitone Q N (hmono hi) (hbdd (aseq i)) hne
     rw [hδ]
     linarith
   have h3 : ∀ᶠ i in l, -δ / 2 < rayleighFloor Q N (D (aseq i)) :=
@@ -183,16 +183,16 @@ theorem repairThreshold_mono (Q N : V → ℝ) {D E : Set V} (h : D ⊆ E)
   exact rayleighFloorNegPart_mono Q N h hbddE hne
 
 /-- **A cofinal vanishing repair threshold vanishes everywhere.** -/
-theorem repairThreshold_eq_zero_of_tendsto_zero {Q N : V → ℝ} {D : ℝ → Set V}
-    (hmono : ∀ {a b : ℝ}, a ≤ b → D a ⊆ D b)
-    (hN : ∀ a : ℝ, ∀ v ∈ D a, N v ≠ 0 → 0 < N v)
-    (hbdd : ∀ a : ℝ, BddBelow (rayleighQuotientSet Q N (D a)))
-    (hne : ∀ a : ℝ, (rayleighQuotientSet Q N (D a)).Nonempty)
+theorem repairThreshold_eq_zero_of_tendsto_zero {Q N : V → ℝ} {D : ℝ → Set V} (a : ℝ)
+    (hmono : ∀ {b c : ℝ}, b ≤ c → D b ⊆ D c)
+    (hN : ∀ b : ℝ, ∀ v ∈ D b, N v ≠ 0 → 0 < N v)
+    (hbdd : ∀ b : ℝ, BddBelow (rayleighQuotientSet Q N (D b)))
+    (hne : (rayleighQuotientSet Q N (D a)).Nonempty)
     {ι : Type*} {l : Filter ι} [l.NeBot] {aseq : ι → ℝ}
     (hseq : Tendsto aseq l atTop)
-    (hlim : Tendsto (fun i => rayleighFloor Q N (D (aseq i))) l (nhds 0)) (a : ℝ) :
+    (hlim : Tendsto (fun i => rayleighFloor Q N (D (aseq i))) l (nhds 0)) :
     repairThreshold Q N (D a) = 0 := by
-  have hfloor := zero_le_rayleighFloor_of_tendsto_zero hmono hbdd hne hseq hlim a
+  have hfloor := zero_le_rayleighFloor_of_tendsto_zero a hmono hbdd hne hseq hlim
   rw [repairThreshold_eq_negPart Q N (hN a) (hbdd a), rayleighFloorNegPart]
   exact max_eq_left (by linarith)
 

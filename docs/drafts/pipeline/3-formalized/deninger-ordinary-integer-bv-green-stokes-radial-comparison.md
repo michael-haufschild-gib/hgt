@@ -8,6 +8,14 @@
 
 ## Formalized statements
 
+- positive-integer sequence carrier, ordinary Wold shift and backward map;
+- reciprocal Green multiplier and ordinary divisibility projection;
+- exact identities `S_n^* S_n = 1`, `S_n S_n^* = P_n`, and
+  `S_n^* Q S_n = n^-1 Q`;
+- operator Green--Stokes relation
+  `B_n = [S_n^*, Q S_n] = n^-1 Q - P_n Q`;
+- literal realization of `B_n` as Hochschild boundary
+  `b(S_n^* tensor Q S_n)`;
 - normalized physical conormal evaluation of the ordinary-integer BV boundary;
 - reflection law for that evaluation;
 - reflected difference equals Deninger tensor-square radial mate curvature;
@@ -15,7 +23,7 @@
   Green--Stokes evaluation;
 - physical conormal evaluation kills this boundary exactly on the critical line.
 
-Operator identity B_n = [S_n^*, Q S_n] = n^-1 Q - P_n Q = b(S_n^* tensor Q S_n)
-uses parent Wold/Hochschild infrastructure already proved on paper; this module formalizes new
-Route-L scalar comparison to existing physical coefficient. It deliberately does not package
-physical conormal marginal as cyclic trace, since that descent is exact RH-bearing open core.
+Operator identity and its Hochschild primitive are formalized on the algebraic positive-integer
+sequence carrier; scalar comparison then identifies its physical coefficient. Module deliberately
+does not package physical conormal marginal as cyclic trace, since that descent is exact
+RH-bearing open core.

@@ -134,7 +134,7 @@ theorem exists_nhds_dimH_parameter_image_preimage_stratum_lt
     [NormedAddCommGroup H] [NormedSpace ℝ H] [FiniteDimensional ℝ H]
     [NormedAddCommGroup Y] [NormedSpace ℝ Y] [FiniteDimensional ℝ Y]
     (F : P × H → Y) (U : Set H) (hU : IsOpen U)
-    (hF : ContDiffOn ℝ ⊤ F (Set.univ ×ˢ U))
+    (hF : ContDiffOn ℝ (⊤ : ℕ∞) F (Set.univ ×ˢ U))
     (hparameter : ∀ p h, h ∈ U →
       Function.Surjective (fderiv ℝ (fun v => F (v, h)) p))
     (hregular : IsLocalRegularLevelSetOfCodimAtLeast S c)
@@ -145,7 +145,7 @@ theorem exists_nhds_dimH_parameter_image_preimage_stratum_lt
   obtain ⟨m, hcm, V, hVopen, hxV, g, hg, hS, hgSurjWithin⟩ := hregular (F x) hxS
   have hdomainOpen : IsOpen ((Set.univ : Set P) ×ˢ U) := isOpen_univ.prod hU
   have hxDomain : x ∈ (Set.univ : Set P) ×ˢ U := ⟨mem_univ _, hxU⟩
-  have hFAt : ContDiffAt ℝ ⊤ F x :=
+  have hFAt : ContDiffAt ℝ (⊤ : ℕ∞) F x :=
     (hF x hxDomain).contDiffAt (hdomainOpen.mem_nhds hxDomain)
   have hgAt : ContDiffAt ℝ ⊤ g (F x) :=
     (hg (F x) hxV).contDiffAt (hVopen.mem_nhds hxV)
@@ -189,7 +189,7 @@ theorem dimH_parameter_preimage_stratum_le_pred
     [NormedAddCommGroup Y] [NormedSpace ℝ Y] [FiniteDimensional ℝ Y]
     (F : P × H → Y) (U : Set H) (K : Set H) (hU : IsOpen U)
     (hKU : K ⊆ U)
-    (hF : ContDiffOn ℝ ⊤ F (Set.univ ×ˢ U))
+    (hF : ContDiffOn ℝ (⊤ : ℕ∞) F (Set.univ ×ˢ U))
     (hparameter : ∀ p h, h ∈ U →
       Function.Surjective (fderiv ℝ (fun v => F (v, h)) p))
     (hregular : IsLocalRegularLevelSetOfCodimAtLeast S c)
@@ -233,7 +233,7 @@ theorem parameter_finrank_pos_of_hits_regular_stratum
     [NormedAddCommGroup H] [NormedSpace ℝ H] [FiniteDimensional ℝ H]
     [NormedAddCommGroup Y] [NormedSpace ℝ Y] [FiniteDimensional ℝ Y]
     (F : P × H → Y) (U : Set H) (hU : IsOpen U)
-    (hF : ContDiffOn ℝ ⊤ F (Set.univ ×ˢ U))
+    (hF : ContDiffOn ℝ (⊤ : ℕ∞) F (Set.univ ×ˢ U))
     (hparameter : ∀ p h, h ∈ U →
       Function.Surjective (fderiv ℝ (fun v => F (v, h)) p))
     (hregular : IsLocalRegularLevelSetOfCodimAtLeast S c)
@@ -244,7 +244,7 @@ theorem parameter_finrank_pos_of_hits_regular_stratum
     hregular (F (p, h)) hS
   have hdomainOpen : IsOpen ((Set.univ : Set P) ×ˢ U) := isOpen_univ.prod hU
   have hxDomain : (p, h) ∈ (Set.univ : Set P) ×ˢ U := ⟨mem_univ _, hhU⟩
-  have hFAt : ContDiffAt ℝ ⊤ F (p, h) :=
+  have hFAt : ContDiffAt ℝ (⊤ : ℕ∞) F (p, h) :=
     (hF (p, h) hxDomain).contDiffAt (hdomainOpen.mem_nhds hxDomain)
   have hgAt : ContDiffAt ℝ ⊤ g (F (p, h)) :=
     (hg (F (p, h)) hxV).contDiffAt (hVopen.mem_nhds hxV)
@@ -269,7 +269,7 @@ theorem dimH_parameter_preimage_finite_stratification_le_pred
     [NormedAddCommGroup Y] [NormedSpace ℝ Y] [FiniteDimensional ℝ Y]
     (F : P × H → Y) (U : Set H) (K : Set H) (hU : IsOpen U)
     (hKU : K ⊆ U)
-    (hF : ContDiffOn ℝ ⊤ F (Set.univ ×ˢ U))
+    (hF : ContDiffOn ℝ (⊤ : ℕ∞) F (Set.univ ×ˢ U))
     (hparameter : ∀ p h, h ∈ U →
       Function.Surjective (fderiv ℝ (fun v => F (v, h)) p))
     (hstrata : FiniteRegularStratification bad c)
@@ -301,7 +301,7 @@ theorem compactConfigurationAvoidance_dense_of_finiteRegularStratification
     (F : P × H → Y) (bad : Set Y) (c : ℕ)
     (U : Set H) (K : Set H)
     (hU : IsOpen U) (hKU : K ⊆ U)
-    (hF : ContDiffOn ℝ ⊤ F (Set.univ ×ˢ U))
+    (hF : ContDiffOn ℝ (⊤ : ℕ∞) F (Set.univ ×ˢ U))
     (hparameter : ∀ p h, h ∈ U →
       Function.Surjective (fderiv ℝ (fun v => F (v, h)) p))
     (hstrata : FiniteRegularStratification bad c)

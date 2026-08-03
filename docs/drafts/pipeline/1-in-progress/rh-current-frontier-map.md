@@ -55,9 +55,11 @@ absolute curvature, while raw-minus-flat relative curvature retains the Deninger
 polarization. Finite Tate shifts realize it as `(1-χ_s(n))β_m`; reflection gives
 `K_n(s)β_m`, and the top-coordinate reader and completed finite-support Xi incidence recover
 that coefficient exactly. Meyer and Calderón--Witt comparisons prove non-erasure, not vanishing.
-The open core is an ordinary-integer Green/Stokes theorem identifying the completed/cofinal Xi
-Green primitive with this relative top-boundary class and annihilating its source boundary without
-assuming an RH-equivalent kernel, capacity, or flatness statement.
+The ordinary-integer BV Green--Stokes boundary and its physical Burnol/Deninger comparison are
+constructed; physical landing fails to descend by exactly `K_n(s)`. The open core is a
+source-first strict chain map carrying the completed Xi Green primitive to a target boundary while
+retaining multiplicity and prime provenance, without assuming the RH-bearing radial coefficient
+vanishes.
 
 Route R's source, joint-depth Hilbert/Krein carrier, Gamma completion, and regular and singular
 source-to-Xi landings are closed. Positive or nonnegative Gamma shorting cannot annihilate an
@@ -91,8 +93,8 @@ The shortest current chains are:
   it to the proved four-unit Ward equivalence;
 - Route J: construct a genuinely non-coboundary principal-relative current, or derive a
   source-native annihilation of its Burnol/Deninger reflection discriminant;
-- Route L: prove the ordinary-integer Green/Stokes annihilation for the concrete relative Tate
-  top-boundary class;
+- Route L: construct strict source-first BV Green--Stokes descent after the ordinary boundary and
+  its exact physical radial obstruction;
 - Route E: prove critical low-frequency Möbius cancellation and co-moving central-breadth flux
   after the formal sieve, Hall-capacity, and off-normal-tail gates;
 - Routes C1, D2, G, N, O, P, and Q: supply their stated singular boundary, high-frequency,
@@ -3640,18 +3642,45 @@ centered-flow capacity is unconditionally the multiplicity square, whereas stati
 countercharacter triviality are RH-equivalent. These are detector and conservation laws, not the
 missing source theorem.
 
-**Open core — `ORDINARY_INTEGER_GREEN_STOKES_ANNIHILATION`.** Construct an ordinary-integer
-source comparison from the completed/cofinal Xi Green primitive to the relative Tate top-boundary
-class; prove compatibility with the actual Gamma/co-Poisson Hodge boundary and completed
-Calderón--Witt incidence; then prove its source Stokes boundary vanishes independently. The proof
-may not assume `K_6=0`, Gamma/Hardy kernel membership, countercharacter triviality, static
-capacity, any positivity statement equivalent to RH, or RH itself.
+**Physical Burnol/Deninger comparison.** For the literal Burnol window
+`B_L(w)=ζ(w)(exp(Lw)-1)/w`, the first nonzero jet at a Xi divisor `ρ` of multiplicity `m`
+is `(exp(Lρ)-1)ζ^(m)(ρ)/ρ`, hence nonzero. Nested-window tomography at
+`L=log n` gives a centered conormal `u_n(ρ)=exp(L(ρ-1/2))`. Its reflected norm
+discriminant is exactly
 
-Generic mapping-cone exactness, cyclicity, square-boundary cancellation, covariant
-countertransport, and bare non-erasure cannot prove this theorem: the coefficient-faithful reader
-already shows that the finite relative class survives. Route L remains open at the arithmetic
-Green/Stokes annihilation, not at source formation, rational-Witt prime-fibre construction,
-Hilbert completion, Green primitive construction, or finite incidence landing.
+`|u_n(ρ)|²-|u_n(ρ#)|² = K_n(ρ)`,
+
+the top coordinate of the relative cofinal Tate defect. At `n=6` the actual
+Gamma/Calderón--Witt boundary and completed incidence landing recover the same coefficient up to
+the proved nonzero calibration and incidence witness. This closes the physical co-Poisson
+conormal, Deninger relative boundary, Gamma boundary, and completed incidence compatibility. It
+does not annihilate the coefficient; the discriminant vanishes exactly on the critical line.
+
+**Ordinary-integer BV Green--Stokes classification.** On `ℓ²(ℕ_{≥1})`, with
+`S_n e_k=e_{nk}`, `Qe_k=k⁻¹e_k`, and `P_n=S_nS_n*`, the operator
+
+`B_n=[S_n*,QS_n]=n⁻¹Q-P_nQ`
+
+is a literal Hochschild boundary, including after tensoring with the completed Xi Green
+primitive. Its physical centered-conormal evaluation is not boundary-blind:
+`n(g_n(s)-g_n(1-conj(s)))=K_n(s)`. Thus ordinary Green--Stokes boundary construction is
+closed, but physical landing fails to descend through it by exactly the retained radial
+coefficient. A cyclic source trace kills `B_n`; the physical conormal marginal kills it exactly
+on the critical line.
+
+**Open core — `XI_BV_GREEN_STOKES_STRICT_DESCENT`.** Construct a source-first chain map from
+the completed/cofinal Xi Green source tensored with the Wold/BV Hochschild complex to the resolved
+Calderón--Witt incidence complex. Prove the existing physical degree-zero landing is its strict
+specialization and that the explicit primitive maps to a target boundary while multiplicity and
+prime-labelled provenance survive completion. The proof may not assume that the Burnol
+discriminant or `K_6` vanishes, Gamma/Hardy kernel membership, countercharacter triviality,
+static capacity, RH-equivalent positivity, or RH.
+
+Generic mapping-cone exactness, cyclicity, covariant countertransport, and bare non-erasure cannot
+prove strict descent: the coefficient-faithful reader already exhibits its exact failure on the
+ordinary boundary. Route L is open at this source-first chain map, not at source formation,
+rational-Witt prime-fibre construction, Hilbert completion, Green primitive, ordinary BV
+boundary, physical radial comparison, or finite incidence landing.
 The generic contraction hypotheses are now instantiated unconditionally on
 `ℓ²(ℕ,ℝ)`: the unilateral shift is an eigenvector-free linear isometry, its range is
 orthogonal to the first basis vector, and the unit sphere is contractible. No theorem
@@ -3921,7 +3950,7 @@ Hilbert--Pólya operator.
 `GammaSignedDistributionalOrbitNoShorting.lean`, and
 `GammaSewnMobiusXiWardCofinalBoundaryLift.lean`.
 
-**2026-08-03 essential-edge `det2` / BV frontier delta.** The sharp `ell2`/not-`ell1`
+**Essential-edge `det2` / BV classification.** The sharp `ell2`/not-`ell1`
 strict-preclosure edge now has its canonical diagonal realization. If `a_p` is the literal source
 deviation and `r_p=farPrime(p)`, its first two coordinates satisfy
 
@@ -4563,9 +4592,10 @@ equivalent wrapper around one of them does not advance source acquisition.
 2. **Route J non-coboundary relative current.** Construct an incidence whose cycle class is not a
    vertex-gauge coboundary and derive an arithmetic null-homotopy forcing its
    Burnol/Deninger reflection discriminant to vanish.
-3. **Route L ordinary-integer Green/Stokes annihilation.** Compare the completed/cofinal Xi Green
-   primitive with the concrete relative Tate top-boundary class and prove source-boundary
-   vanishing without an RH-equivalent assumption.
+3. **Route L strict BV Green--Stokes descent.** Construct a source-first chain map from completed
+   Xi Green source tensored with the Wold/BV Hochschild complex to resolved Calderón--Witt
+   incidence, making physical degree-zero landing a strict specialization and the explicit
+   primitive a target boundary without assuming its radial coefficient vanishes.
 4. **Route E central-breadth Möbius cancellation.** Control the zero/near-zero Möbius frequency
    and co-moving signed flux on the exact normal Wold seam after the proved sieve,
    off-normal-tail, coprime-pair, and prime-anchor Hall inputs.
@@ -4695,8 +4725,8 @@ The cited primary sources close no Tier-1 or Tier-2 open core above.
 
 1. Route R pre-frequency, sign-indefinite joint-depth arithmetic null-homotopy and four-unit Ward
    sign;
-2. Route L ordinary-integer Green/Stokes annihilation for the constructed relative top-boundary
-   class;
+2. Route L strict source-first BV Green--Stokes descent through the exact physical radial
+   obstruction;
 3. Route J genuinely non-coboundary prime/depth--divisor current and source-native horizontal
    annihilation;
 4. Route E central normal-breadth Möbius cancellation and co-moving seam flux;
@@ -4759,9 +4789,9 @@ The first unresolved theorem is therefore route-dependent but consistently pre-s
 - Route J needs a genuinely non-coboundary principal-relative current and an arithmetic
   annihilation of the retained reflection discriminant. Its unrenormalized energy route is closed
   negatively, but this successor is not class-completely excluded.
-- Route L needs ordinary-integer Green/Stokes annihilation of the concrete relative Tate
-  top-boundary class. Source, relative curvature, Green primitive, and coefficient-faithful
-  landing exist; vanishing does not.
+- Route L needs a strict source-first BV Green--Stokes chain map. Source, relative curvature,
+  Green primitive, ordinary boundary, physical Burnol/Deninger comparison, and
+  coefficient-faithful landing exist; descent fails by exactly the RH-bearing radial coefficient.
 - Route E needs critical low-frequency Möbius cancellation on the central normal-breadth seam.
   Sieve counts, coprime opposite-sign supply, prime-anchor Hall capacity, and off-normal tail
   control do not orient that seam.
@@ -4778,7 +4808,7 @@ The external literature audited through 3 August 2026 contributes useful finite 
 sieve, Hedenmalm, Suzuki, Möbius-moment, and Deninger/Connes infrastructure. Where a theorem was
 both unconditional and useful, the corpus has formalized or scheduled its precise reusable
 content. No located primary source supplies Route R's pre-frequency annihilator, Route J's
-non-coboundary arithmetic current, Route L's source Stokes vanishing, Route E's critical Möbius
+non-coboundary arithmetic current, Route L's strict source-first BV descent, Route E's critical Möbius
 cancellation, or another live route's first open premise.
 
 The disproof map is equally closed at the connector level: one certified off-line Xi zero or an

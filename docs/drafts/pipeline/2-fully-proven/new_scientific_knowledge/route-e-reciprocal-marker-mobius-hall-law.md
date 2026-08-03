@@ -1997,3 +1997,66 @@ Applying the mean value theorem to `F'` — itself a Dirichlet polynomial with t
 bounds `∫_0^T |F'|²`, the second integral in Gallagher's reduction. With that and `∫_0^T |F|²`, the
 reduction of `DirichletGallagher.lean` becomes a large-values estimate: a bound on
 `∑_r |F(t_r)|²` at separated points purely in terms of `T`, `N` and the coefficient energy.
+
+### Formal layer — both integrals of Gallagher's reduction
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DirichletIntegralBound.lean`:
+
+- `integral_normSq_dirPoly_le` — **`∫_0^T |F|² ≤ (T + 4N(1 + log N)) ∑_n |a_n|²`**.
+- `window_factor_nonneg` — the factor `T + 4N(1 + log N)` is nonnegative for `T ≥ 0`.
+- `integral_normSq_dirPoly_deriv_le` — **`∫_0^T |F'|² ≤ (T + 4N(1 + log N))(log N)² ∑_n |a_n|²`**.
+
+All unconditional. The second follows from the first applied to `F'`, which is itself a Dirichlet
+polynomial whose coefficient energy is at most `(log N)²` times that of `F`.
+
+Both integrals appearing in `gallagher_dirPoly_sum` are now controlled by `T`, `N` and the
+coefficient energy alone, so that reduction is no longer conditional on evaluating them. Feeding
+these bounds in — with the AM–GM split of `AmGmIntegral.lean` for the mixed term — yields a
+large-values estimate for Dirichlet polynomials at separated points.
+
+### Formal layer — splitting the mixed term for Dirichlet polynomials
+
+`formal/GaloisForLFunctions/RHTower/Sieve/AmGmDirichlet.lean`:
+
+- `integral_mixed_dirPoly_le` — **`∫_A^B 2|F||F'| ≤ ε ∫_A^B |F|² + ε^{-1} ∫_A^B |F'|²`** for every
+  `ε > 0`.
+
+Unconditional. The pointwise inequality `two_mul_le_amgm` is shared with the trigonometric case; only
+the continuity and integrability facts differ, and those come from `continuous_dirPoly`.
+
+Every ingredient of a large-values estimate for Dirichlet polynomials is now present: the Gallagher
+reduction (`DirichletGallagher`), bounds for both integrals (`DirichletIntegralBound`), and this
+split. Choosing `ε = log N` — the largest frequency — equalises the two contributions and gives a
+bound of the shape `(T + 4N(1 + log N))(δ^{-1} + 2 log N) ∑_n |a_n|²`.
+
+### Formal layer — A LARGE-VALUES ESTIMATE FOR DIRICHLET POLYNOMIALS
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DirichletLargeValues.lean`:
+
+- `largeValues_dirPoly` —
+
+  **`∑_{r ≤ R} |F(t_r)|² ≤ (T + 4N(1 + log N))(δ^{-1} + 2 log N) ∑_{n<N} |a_n|²`**
+
+  for `F(t) = ∑_{n<N} a_n n^{it}`, `N ≥ 2`, and points in `[δ/2, T − δ/2]` with consecutive gaps at
+  least `δ`.
+
+Unconditional. Gallagher's reduction trades the discrete sum for two integrals over `[0,T]`, the
+mixed one is split with balancing parameter `log N`, and both are bounded by the mean value theorem.
+
+This is the estimate a large-values or zero-density argument consumes, and it completes the Dirichlet
+layer: reduction, mean value theorem, derivative energy, and now the large-values bound itself — all
+unconditional and all at `log`-lossy but usable strength.
+
+### Formal layer — counting large values
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DirichletLargeValuesCount.lean`:
+
+- `card_largeValues_le` — **`(R+1)V² ≤ (T + 4N(1 + log N))(δ^{-1} + 2 log N) ∑_{n<N} |a_n|²`**
+  whenever `|F| ≥ V` at `R+1` points separated by `δ` inside `[δ/2, T − δ/2]`.
+
+Unconditional. This is the form in which a large-values estimate is used — a cap on how often a
+Dirichlet polynomial can be large — rather than a bound on a sum the caller would have to unpack.
+
+With this the corpus's analytic layer for Route E stands complete at usable strength: the large sieve
+(sharp), Montgomery's sieve (sharp), the Dirichlet mean value theorem, and the large-values estimate
+with its counting form. The card's stated remaining input is unchanged: Matomäki–Radziwiłł Theorem 2.

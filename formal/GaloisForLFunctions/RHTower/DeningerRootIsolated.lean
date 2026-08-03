@@ -12,6 +12,7 @@ because the exponents then match on the nose.  So a root adjunction at an isolat
 unique roots for the elements of its factors.
 
 * `deningerUliftInt_pow_inj` : an infinite cyclic group has unique roots.
+* `deningerRootMap_true_mem_iff` : the base group inside the group is the powers of the element.
 * `deningerRootMix` : the mixing hypothesis for a root adjunction at an isolated element.
 * `deningerRootAdjunction_pow_eq_of_factors` : uniqueness of roots for elements of the factors.
 -/
@@ -32,9 +33,24 @@ theorem deningerUliftInt_pow_inj (y z : ULift.{u} (Multiplicative ℤ)) (n : ℕ
   have h1 : Multiplicative.toAdd (MulEquiv.ulift (y ^ n)) =
       Multiplicative.toAdd (MulEquiv.ulift (z ^ n)) := by rw [h]
   simp only [map_pow, toAdd_pow, nsmul_eq_mul] at h1
-  exact mul_left_cancel₀ (by exact_mod_cast Nat.pos_iff.1 hn) h1
+  exact mul_left_cancel₀ (Nat.cast_ne_zero.mpr (by omega)) h1
 
 variable (A : Type u) [Group A] (a : A) (m : ℤ)
+
+/-- The cyclic factor of a root adjunction has unique roots. -/
+theorem deningerRootFactorFalse_pow_inj (y z : deningerRootFactor A (ULift.up false)) (n : ℕ)
+    (hn : 0 < n) (h : y ^ n = z ^ n) : y = z :=
+  deningerUliftInt_pow_inj y z n hn h
+
+/-- The base group of a root adjunction sits in the group as the powers of the element whose root
+is adjoined. -/
+theorem deningerRootMap_true_mem_iff (x : A) :
+    x ∈ (deningerRootMap A a m (ULift.up true)).range ↔ ∃ k : ℤ, a ^ k = x := by
+  constructor
+  · rintro ⟨w, rfl⟩
+    exact ⟨Multiplicative.toAdd (MulEquiv.ulift w), rfl⟩
+  · rintro ⟨k, rfl⟩
+    exact ⟨MulEquiv.ulift.symm (Multiplicative.ofAdd k), rfl⟩
 
 /-- The mixed case of the mixing hypothesis: an element of the group and an element of the cyclic
 factor whose common power lies in the base group both lie in the base group. -/
@@ -62,8 +78,10 @@ theorem deningerRootMix_true_false (hm : m ≠ 0) (ha : ∀ n : ℤ, a ^ n = 1 �
       ← PushoutI.of_apply_eq_base (deningerRootMap A a m) (ULift.up false) v, ← hxn, hv]
     exact h
   have hwv : w ^ n = v := PushoutI.base_injective hφ hbase
-  refine ⟨w, deningerUliftInt_pow_inj (deningerRootMap A a m (ULift.up false) w) y n hn ?_⟩
-  rw [← map_pow, hwv, hv]
+  refine ⟨w, ?_⟩
+  have hpow : (deningerRootMap A a m (ULift.up false) w) ^ n = y ^ n := by
+    rw [← map_pow, hwv, hv]
+  exact deningerRootFactorFalse_pow_inj A _ y n hn hpow
 
 /-- **The mixing hypothesis for a root adjunction at an isolated element.** -/
 theorem deningerRootMix (hm : m ≠ 0) (ha : ∀ n : ℤ, a ^ n = 1 → n = 0)
@@ -106,7 +124,7 @@ theorem deningerRootAdjunction_pow_eq_of_factors (hm : m ≠ 0) (ha : ∀ n : �
     (deningerRootMix A a m hm ha hiso) i j x y n hn h
   rintro ⟨b⟩
   cases b
-  · exact fun p q r hr hpq => deningerUliftInt_pow_inj p q r hr hpq
+  · exact fun p q r hr hpq => deningerRootFactorFalse_pow_inj A p q r hr hpq
   · exact fun p q r hr hpq => hA p q r hr hpq
 
 end RootAdjunction

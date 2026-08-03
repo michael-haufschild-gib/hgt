@@ -1210,10 +1210,24 @@ coefficients are summable against `e^{ρ|k|}`:
   Laplacian maps radius `ρ` to radius `ρ'` with norm at most `4/(ρ-ρ')²`*. This is the derivative-loss
   estimate the iteration is built on.
 
-Still to build on this base: the convolution (Banach-algebra) estimate, which is how multiplication
-by the potential acts on coefficients; the Ovsyannikov iteration with geometrically shrinking radii;
-and the Fourier synthesis back to functions on the transverse circle. The last open input of the
-whole programme is stated in its physical form:
+- `wienerConv`, `exp_weight_triangle`, `wienerSummable_conv`, **`wienerNorm_conv_le`** — each radius
+  carries a Banach-algebra estimate `‖f ⋆ g‖_ρ ≤ ‖f‖_ρ ‖g‖_ρ`, since multiplication of functions is
+  convolution of coefficients and the weight is submultiplicative by `|k| ≤ |j| + |k - j|`. This is
+  how the potential enters the iteration. The proof runs on `ℤ × ℤ` through the shear
+  `(k, j) ↦ (j, k - j)`.
+
+Still to build on this base: the Ovsyannikov iteration with geometrically shrinking radii, and the
+passage back to functions. For the second, the sup-norm form of the scale looks better adapted than
+the coefficient form — an element of the radius-`ρ` space is then literally a holomorphic function
+on a strip of half-width `ρ`, its second derivative is the actual second derivative, and the
+derivative-loss estimate is Cauchy's estimate applied twice, giving `8M/(ρ-ρ')²`. The two forms are
+the same scale seen from opposite sides, and the coefficient form proved here supplies the algebra
+estimate in either.
+
+The first genuinely coupled target this reaches is dimension three: a potential
+`V(x⁰, x¹, x²)` with arbitrary continuously differentiable dependence on the null coordinates and
+periodic-analytic dependence on the transverse one. The last open input of the whole programme is
+stated in its physical form:
 
 > the massive Klein–Gordon field on the rescaled spacetime admits, at every event, a smooth solution
 > nonvanishing there.
