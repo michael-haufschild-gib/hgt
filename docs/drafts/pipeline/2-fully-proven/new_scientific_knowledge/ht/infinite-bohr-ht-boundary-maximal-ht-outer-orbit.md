@@ -2778,3 +2778,65 @@ makes it instant.  Same for `fiberAmplitude_sigma`.
 What remains is only: quantify over injective tuples drawn from the infinite set of nonvanishing
 amplitudes, apply `mvPolynomial_eq_zero_of_eval_eq_zero_on_infinite_pow_injective`, and finish with
 `eq_zero_of_permSum_combination`.
+
+## Ostrowski's core is proved
+
+    eq_zero_of_monomialCombination_vanishing :
+      RationallyIndependentSequence omega -> ExpSeriesNormallySummable a omega ->
+      {i | a i /= 0}.Infinite ->
+      (the exponent tuples in K have pairwise distinct multisets) ->
+      (forall t : R, sum_{s in K} c s * prod_j iteratedDeriv (s j) (cexpSeriesCarrier a omega) t = 0) ->
+      forall s in K, c s = 0
+
+No nonzero finite combination of distinct differential monomials of an exponential carrier with
+rationally independent frequencies and infinitely many nonvanishing amplitudes can vanish
+identically.  This is the theorem the card imports as "Ostrowski", and it is now proved in the
+corpus, unconditionally, from:
+
+- the analytic side -- `eq_zero_of_polynomialCombination_bohr`,
+  `fiberAmplitude_eq_zero_of_expSeriesCarrier_eq_zero`, and the expansion algebra
+  (`iteratedDeriv_cexpSeriesCarrier`, `prod_expSeriesCarrier`, `sum_expSeriesCarrier`);
+- the arithmetic side -- `characterDetuning_eq_zero_iff` through
+  `monomialFrequency_injective` and `tupleCount_eq_of_frequency_eq`;
+- the algebraic side -- `mvPolynomial_eq_zero_of_eval_eq_zero_on_infinite_pow_injective` and
+  `eq_zero_of_permSum_combination`.
+
+Only two gaps now separate this from the card's claim (2): the coefficients of a relation may carry
+powers of `z` (handled by `eq_zero_of_polynomialCombination_bohr`, not yet threaded through), and the
+corpus's `DifferentiallyAlgebraicOn` writes a relation as an `MvPolynomial` in the jets rather than
+as a combination of monomial tuples, so the two shapes must be matched.
+
+## Ostrowski with polynomial coefficients
+
+    eq_zero_of_polynomialMonomialCombination_vanishing :
+      RationallyIndependentSequence omega -> ExpSeriesNormallySummable a omega ->
+      {i | a i /= 0}.Infinite -> (distinct multisets in K) ->
+      (forall t : R, sum_{d <= D} t^d * sum_{s in K}
+          c d s * prod_j iteratedDeriv (s j) (cexpSeriesCarrier a omega) t = 0) ->
+      forall d <= D, forall s in K, c d s = 0
+
+This is the shape a differential relation actually has: coefficients in `C[z]`.  Each degree's
+combination is one exponential series (`monomialCombination_eq_expSeriesCarrier`), hence bounded
+(`norm_expSeriesCarrier_le`) and Bohr almost periodic
+(`isBohrAlmostPeriodic_expSeriesCarrier`), so `eq_zero_of_polynomialCombination_bohr` separates the
+degrees, and the frequency argument kills each one.
+
+Claim (2)'s remaining distance to the card is now purely a change of notation: matching the corpus's
+`MvPolynomial`-shaped relation against this monomial-tuple shape.
+
+## Degrees separate themselves
+
+    card_eq_of_tupleCount_eq : tupleCount n = tupleCount n' -> M = M'
+    card_eq_of_frequency_eq :
+      RationallyIndependentSequence omega -> sum_j omega (n j) = sum_j omega (n' j) -> M = M'
+
+A relation's monomials do not all have the same total degree, and the fixed-degree theorem needs
+them to.  This is not an obstruction: rational independence makes the frequency determine the
+multiset, the multiset determines its size (test against the constant frequency family
+`omega = 1`, where `monomialFrequency` *is* the degree), so monomials of different total degree
+occupy disjoint frequency sets.
+
+So the frequency argument separates the degrees by itself, exactly as it separates the powers of
+`z`.  The remaining assembly for (2) is therefore: index the expansion by
+`Sigma (degree, monomial)` rather than by monomials of one degree, and match the corpus's
+`MvPolynomial` relation to that index.

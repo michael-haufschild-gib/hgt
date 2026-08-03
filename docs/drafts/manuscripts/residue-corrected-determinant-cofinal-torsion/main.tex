@@ -26,7 +26,7 @@
 \newcommand{\Div}{\operatorname{Div}}
 \newcommand{\norm}[1]{\lVert #1\rVert}
 
-\title{Universal Cofinal Torsion Spectra over Number Fields}
+\title{Cofinal Residue-Jet Universality for Zeta Determinants}
 \author{}
 \date{Draft of August 3, 2026}
 
@@ -34,8 +34,28 @@
 \maketitle
 
 \begin{abstract}
-For a number field $K$ with Dedekind-zeta residue $\rho_K$, and a finite set $P$ of prime ideals,
-let
+We identify complete cofinal defect of zeta determinants under Schatten convergence.  Let
+$L_n$ be positive operators with $L_n^{-1}\in\mathcal S_p$, with spectral zeta functions having
+at most simple poles at $1,\ldots,p-1$, and suppose $L_n^{-1}\to A$ in $\mathcal S_p$.  Define
+corrected finite-part residue jet
+\[
+ b_j(L_n)=-\frac1j\left(\FP_{s=j}\zeta_{L_n}(s)
+       +H_{j-1}\Res_{s=j}\zeta_{L_n}(s)\right),\qquad 1\leq j<p.
+\]
+The fixed-operator factorization of Hartmann--Lesch writes normalized zeta determinant as an
+exponential polynomial with these coefficients times $\det_p(I-zL_n^{-1})$.  We prove new
+cofinal law: compact-open cluster set of normalized determinants is homeomorphic to cluster set
+of vectors $b(L_n)$, via
+\[
+ b\longmapsto \exp\!\left(\sum_{j=1}^{p-1}b_jz^j\right)\det{}_p(I-zA).
+\]
+Every convergent determinant subsequence forces, and is forced by, convergence of entire
+residue jet.  All limits have common divisor; after divisor cancellation relative determinant
+torsion is exactly exponential-polynomial character of jet difference.  Thus residue jet is
+complete invariant of cofinal discontinuity invisible to limiting operator and determinant line.
+
+We then prove sharp arithmetic realization at first non-trace-class threshold $p=2$.  For a
+number field $K$ with Dedekind-zeta residue $\rho_K$, and finite set $P$ of prime ideals, let
 \[
  \kappa_K(P)=\rho_K
  \prod_{\mathfrak p\in P}\left(1-\frac1{N\mathfrak p}\right)
@@ -53,7 +73,7 @@ comeagre; cluster-spectrum map is nowhere continuous.  More generally, same inte
 holds for every proper Euler-atom system satisfying two Mertens asymptotics, with endpoint equal
 to its residue-normalized Mertens constant.
 
-Classification has a determinant-theoretic lift.  On integral ideals coprime to $P$, let
+On integral ideals coprime to $P$, let
 $D_{K,P}$ have eigenvalues $N\mathfrak a$.  We prove that relative zeta
 determinant
 \[
@@ -73,18 +93,18 @@ cluster germs are
 \[
  \Delta_c(z)=e^{(1-c)z}(1-z),\qquad c\in C.
 \]
-Consequently their relative determinant torsions are $e^{(d-c)z}$, and the group-completed
-torsion fibre is all of $\R$.  Hilbert--Schmidt convergence, primary residue correction, and
-determinant-line triviality do not determine the cofinal zeta determinant.  Missing datum is the
-finite part at the critical zeta pole.
+Consequently relative torsions are $e^{(d-c)z}$ and group-completed torsion fibre is all of
+$\R$.  This realizes maximal one-dimensional form of universal law: Hilbert--Schmidt limit,
+primary Wodzicki-type residue, limiting divisor, and determinant-line triviality are fixed while
+complete real torsion spectrum survives.
 \end{abstract}
 
 \paragraph{Logical status.}
-All numbered results are unconditional.  Prime number theorem, Mertens' theorems, standard
-properties of Hilbert--Schmidt determinant, and Hurwitz-zeta determinant formula are used as
-classical inputs.  No statement assumes Riemann hypothesis.  Section~\ref{sec:boundary}
-separates new cofinal theorem from established determinant-line, Wodzicki-residue, and
-analytic-torsion theory.
+All numbered results are unconditional.  Hartmann--Lesch factorization, prime number theorem,
+Mertens' theorems, continuity of regularized Fredholm determinant, and Hurwitz-zeta determinant
+formula are classical inputs.  No statement assumes Riemann hypothesis.  Section~\ref{sec:boundary}
+separates new cofinal theorem from established fixed-operator determinant, determinant-line,
+Wodzicki-residue, and analytic-torsion theory.
 
 \section{Introduction and main results}
 \label{sec:intro}
@@ -96,6 +116,49 @@ parts and gluing data~\cite{Quillen1985,BismutFreed1986,PaychaRosenberg2000,Scot
 At the level of pseudodifferential operators, Wodzicki residue produces a local multiplicative
 determinant, whereas zeta determinant is nonlocal and generally nonmultiplicative
 \cite{KontsevichVishik1994,Scott2005}.  Two types of information cannot be interchanged.
+
+Write $H_0=0$ and $H_j=1+\cdots+1/j$.  For integer $p\geq2$, call positive invertible
+$L$ an admissible $p$-datum if $L^{-1}\in\mathcal S_p$, its spectral zeta function is regular
+at zero and meromorphic with at most simple poles at $1,\ldots,p-1$, and standard
+discrete-dimension-spectrum hypotheses of Hartmann--Lesch hold.  Put
+\begin{equation}
+ b_j(L)=-\frac1j\left(\FP_{s=j}\zeta_L(s)
+     +H_{j-1}\Res_{s=j}\zeta_L(s)\right),\qquad
+ P_{b(L)}(z)=\sum_{j=1}^{p-1}b_j(L)z^j.                 \tag{1.0}
+\end{equation}
+At regular $j$, finite part means $\zeta_L(j)$.  For classical elliptic operators residue in
+(1.0) is local Wodzicki residue; finite part is global.
+
+\begin{theorem}[Universal cofinal residue-jet law]
+\label{thm:universal-law}
+Let $L_n$ be admissible $p$-data and suppose $A_n=L_n^{-1}\to A$ in $\mathcal S_p$.  Set
+\[
+ \mathcal D_n(z)=\frac{\det_\zeta(L_n-z)}{\det_\zeta L_n},\qquad
+ \Phi_A(b)(z)=e^{P_b(z)}\det{}_p(I-zA).
+\]
+Then $\Phi_A:\R^{p-1}\to\operatorname{Hol}_1(\C)$ is topological embedding for compact-open
+topology, where subscript means value one at zero, and
+\[
+ \operatorname{Clust}_{\rm co}(\mathcal D_n)
+ =\Phi_A\!\left(\operatorname{Clust}_{\R^{p-1}}(b(L_n))\right). \tag{1.U}
+\]
+In particular, locally uniform convergence of $\mathcal D_{n_k}$ occurs if and only if
+$b(L_{n_k})$ converges, and every determinant limit has divisor of $\det_p(I-zA)$.  For two
+finite jet limits $b,c$, divisor-cancelled relative torsion is
+\[
+ \mathcal T_{b,c}(z)=\frac{\Phi_A(b)(z)}{\Phi_A(c)(z)}
+ =e^{P_b(z)-P_c(z)},\qquad
+ \mathcal T_{b,c}\mathcal T_{c,d}=\mathcal T_{b,d}.      \tag{1.T}
+\]
+If jet cluster set has nonempty interior in $\R^{p-1}$, generated torsion group is full group of
+characters $\exp(\sum_{j=1}^{p-1}v_jz^j)$, $v\in\R^{p-1}$.
+\end{theorem}
+
+Fixed-operator polynomial factorization behind theorem is established
+in~\cite{HartmannLesch2022}.  New assertion is cofinal completeness: no discontinuity beyond
+finite-part residue jet is possible, none of jet can be discarded, and cluster topology and
+relative torsion are transported exactly.  Number-field theorem below gives natural sharp
+realization with fixed limiting operator, residue, and divisor but maximal jet ambiguity.
 
 Let $p_1<p_2<\cdots$ denote natural ordering of primes and put
 \[
@@ -488,8 +551,63 @@ $2j(1-1/q_j)$, hence at least $j$ for all sufficiently large $j$.  A far upward 
 value above $2(j+1)$.  All later terms tend to infinity, while one least missing prime is consumed
 at every stage.  This completes proof of Theorem~\ref{thm:classification}.
 
-\section{Residue-corrected determinants}
+\section{Universal residue-jet law and residue-corrected determinants}
 \label{sec:determinants}
+
+We first prove Theorem~\ref{thm:universal-law}.  For $|z|$ below spectrum, relative spectral
+zeta function has binomial expansion
+\begin{equation}
+ \Tr\bigl((L-z)^{-s}-L^{-s}\bigr)
+ =\sum_{j\geq1}\frac{(s)_j}{j!}z^j\zeta_L(s+j).          \tag{6.0a}
+\end{equation}
+At a simple pole $s=j$ write
+$\zeta_L(j+s)=r_j/s+\kappa_j+O(s)$.  Since
+\[
+ \frac{(s)_j}{j!}=\frac{s}{j}+\frac{H_{j-1}}j s^2+O(s^3),
+\]
+$j$th coefficient in negative derivative at zero of (6.0a) is
+$-(\kappa_j+H_{j-1}r_j)/j=b_j(L)$.  Same formula holds at regular point with $r_j=0$.
+Terms $j\geq p$ sum to logarithm of $p$-regularized Fredholm determinant.  Thus established
+zeta--Fredholm formula~\cite{HartmannLesch2022} becomes, with present sign convention,
+\begin{equation}
+ \frac{\det_\zeta(L-z)}{\det_\zeta L}
+ =e^{P_{b(L)}(z)}\det{}_p(I-zL^{-1}).                    \tag{6.0b}
+\end{equation}
+
+Now let $A_n=L_n^{-1}\to A$ in $\mathcal S_p$.  Continuity estimate for regularized Fredholm
+determinants~\cite{Simon2005} gives
+\begin{equation}
+ F_n(z):=\det{}_p(I-zA_n)\longrightarrow
+ F(z):=\det{}_p(I-zA)                                   \tag{6.0c}
+\end{equation}
+locally uniformly.  Therefore $b(L_{n_k})\to b$ implies
+$\mathcal D_{n_k}\to\Phi_A(b)$ locally uniformly.
+
+Conversely suppose $\mathcal D_{n_k}\to G$ locally uniformly.  All functions in sight equal one
+at zero.  Hence on one fixed disc about zero, $G,F$, and, eventually, $\mathcal D_{n_k},F_{n_k}$
+are zero-free.  Choose logarithms vanishing at zero.  Equations (6.0b)--(6.0c) give
+\begin{equation}
+ P_{b(L_{n_k})}=\log\mathcal D_{n_k}-\log F_{n_k}
+ \longrightarrow \log G-\log F                         \tag{6.0d}
+\end{equation}
+uniformly on smaller discs.  Differentiating at zero shows every coefficient $b_j(L_{n_k})$
+converges.  Limit on right of (6.0d) is corresponding polynomial $P_b$, so $G=\Phi_A(b)$ by
+analytic continuation.  This proves cluster identity (1.U).
+
+Continuity of $\Phi_A$ is immediate.  Its inverse on image is continuous because coefficients
+are recovered by
+\[
+ b_j=\frac1{j!}\frac{d^j}{dz^j}\bigg|_{z=0}
+       \log\frac{\Phi_A(b)(z)}{F(z)}.
+\]
+Thus $\Phi_A$ is topological embedding.  Exponential factor is zero-free, proving common-divisor
+claim.  Cancelling $F$ gives (1.T), and cocycle law is additive identity for polynomials.  If jet
+cluster set has nonempty interior, its difference set contains a neighborhood of zero; finite
+sums of that neighborhood fill $\R^{p-1}$, proving full generated character group.  This
+completes proof of Theorem~\ref{thm:universal-law}.
+
+At $p=2$, (1.0) reads $b_1(L)=-\FP_{s=1}\zeta_L(s)$.  We now compute and realize this coordinate
+for arithmetic operators.
 
 Expanding finite Euler factor in (1.4) at $s=1$ gives
 \[
@@ -670,7 +788,7 @@ Moreover,
 \end{equation}
 and
 \begin{equation}
- r_K(E_r^K)b_K(E_r^K)=\kappa_K(E_r^K)longrightarrow e^{-\gamma}.
+ r_K(E_r^K)b_K(E_r^K)=\kappa_K(E_r^K)\longrightarrow e^{-\gamma}.
                                                                     \tag{8.7}
 \end{equation}
 In particular, endpoint is independent of $K$.
@@ -789,7 +907,7 @@ finite.  Fix $\rho>0$ and $\gamma_0\in\R$.  For finite $P\subset\mathcal A$, put
 \end{equation}
 For $x>1$, write $\mathcal A(x)=\{v:q(v)\leq x\}$ and suppose
 \begin{equation}
- \rho a(\mathcal A(x))\log x\longrightarrow c_*>0,qquad
+ \rho a(\mathcal A(x))\log x\longrightarrow c_*>0,\qquad
  \sum_{q(v)\leq x}\frac{\log q(v)}{q(v)-1}-\log x
  \longrightarrow C.                                    \tag{8.18}
 \end{equation}
@@ -984,14 +1102,50 @@ pseudodifferential counterpart of $\Res_{s=1}Z_P(s)=a(P)$.  We do not claim diag
 operator $Q_P$ is a classical pseudodifferential operator.  Common structure is a simple critical
 zeta pole and a residue-controlled logarithmic counterterm.
 
+More generally, for positive elliptic $L$ of order $m$,
+\[
+ \Res_{s=j}\zeta_L(s)=\frac1m\operatorname{res}_W(L^{-j}).
+\]
+Consequently universal coordinate (1.0) splits canonically into nonlocal finite part and local
+Wodzicki correction:
+\[
+ b_j(L)=-\frac1j\FP_{s=j}\zeta_L(s)
+        -\frac{H_{j-1}}{jm}\operatorname{res}_W(L^{-j}).
+\]
+Theorem~\ref{thm:universal-law} says entire vector of these mixed coordinates, rather than
+determinant line or residue vector alone, is complete cofinal datum.
+
 Paycha--Rosenberg prove regularized first Chern form of an infinite-dimensional bundle differs
 from Bismut--Freed curvature by Wodzicki-residue terms~\cite{PaychaRosenberg2000}.  Scott residue
 determinant is local and multiplicative, in sharp contrast with nonlocal zeta determinant
 \cite{Scott2005}.  Corollary~\ref{cor:nodescent} shows complementary arithmetic fact: even after
 primary residue and limiting divisor are fixed, finite part at pole supplies a full real torsion
-fibre.  This paper does not propose adding a Wodzicki residue to a determinant line as a new
-construction; that general principle is established.  New content is complete cofinal spectrum
-of secondary coordinate in this arithmetic spectral model.
+fibre.  This paper does not propose adding a Wodzicki residue to determinant line as new
+construction; that general principle is established.  New content is universal cofinal
+completeness of corrected jet and sharp arithmetic realization of its secondary spectrum.
+
+\begin{corollary}[Metric and connection defect]
+\label{cor:metric-connection}
+Suppose two finite cofinal jet limits $b,c:B\to\R^{p-1}$ vary $C^1$ over parameter manifold $B$
+and have same limiting $\det_p$ core in common local determinant-line trivialization.  At fixed
+spectral parameter $z$, quotient section, Quillen-norm ratio, and connection-form difference are
+\[
+ \mathcal T_{b,c}(z)=e^{P_b(z)-P_c(z)},\qquad
+ \frac{\|\Phi_A(b)(z)\|_Q}{\|\Phi_A(c)(z)\|_Q}
+   =e^{\operatorname{Re}(P_b(z)-P_c(z))},
+\]
+\[
+ \omega_b(z)-\omega_c(z)=d_B(P_b(z)-P_c(z)).             \tag{10.M}
+\]
+Thus triviality and common divisor do not determine Quillen metric or Bismut--Freed-type
+connection data; corrected residue jet determines exact missing gauge character.
+\end{corollary}
+
+\begin{proof}
+First identity is (1.T).  Hermitian norm transforms by modulus of transition section, and
+connection one-form transforms by its logarithmic differential.  Since exponential never
+vanishes, logarithm is global polynomial $P_b-P_c$ in this trivialization.
+\end{proof}
 
 For fixed $P$, holomorphic Fredholm family $D_P-z$ has index zero.  Away from spectrum, (1.9) is
 scalar of its relative determinant section against $D_P$ in spectral trivialization.  At
@@ -1014,16 +1168,28 @@ complex parameters same scalar is a refined determinant torsion, retaining phase
 only Ray--Singer norm; compare~\cite{DaiFreed1994,BravermanKappeler2007}.  No geometric gluing
 theorem is claimed for this diagonal model.
 
+For finite graded family satisfying hypotheses of Theorem~\ref{thm:universal-law} degreewise,
+same argument gives universal relative analytic-torsion character
+\[
+ \exp\!\left(\frac12\sum_q(-1)^q q
+       \bigl(P_{b^{(q)}}(z)-P_{c^{(q)}}(z)\bigr)\right). \tag{10.A}
+\]
+This is relative determinant torsion after common degreewise divisors are cancelled.  Formula
+(10.2) is $p=2$ two-term specialization.
+
 \section{Novelty boundary and significance}
 \label{sec:boundary}
 
 Following ingredients are established and are not claimed as contributions:
 \begin{itemize}
+\setlength{\itemsep}{0.35em}
 \item formula (1.1), finite-set density, extremal reduction to initial prime segments, and RH
       equivalence for generalized Euler constants~\cite{DiamondFord2008};
 \item finite-set generalized Euler--Kronecker constants over number fields
       \cite{KandhilLunia2024}, and number-field Mertens asymptotics
       \cite{Rosen1999,GarciaLee2022};
+\item fixed-operator factorization of normalized zeta determinant into exponential corrected
+      residue polynomial and regularized Fredholm determinant~\cite{HartmannLesch2022};
 \item Quillen and Bismut--Freed determinant lines, metrics, and connections
       \cite{Quillen1985,BismutFreed1986};
 \item Wodzicki corrections to regularized Chern forms and determinant-bundle curvature
@@ -1033,6 +1199,13 @@ Following ingredients are established and are not claimed as contributions:
 \item relative zeta determinants, analytic torsion, and determinant-line refinements
       \cite{Scott1999,Muller1998,DaiFreed1994,BravermanKappeler2007}.
 \end{itemize}
+
+New general statement is Theorem~\ref{thm:universal-law}: under $\mathcal S_p$ convergence,
+corrected finite-part residue jet is complete cofinal discontinuity invariant.  It identifies
+compact-open determinant cluster set homeomorphically, forces converse convergence of every jet
+coefficient, fixes common divisor, and classifies divisor-cancelled torsion by polynomial
+characters.  This is not fixed-operator factorization: it is stability-and-defect theorem for
+sequences whose zeta determinants need not converge although operators do.
 
 New arithmetic statements are Theorems~\ref{thm:classification} and
 \ref{thm:numberfield-main}: arbitrary finite-set density does not imply, and does not contain,
@@ -1057,7 +1230,21 @@ cofinal ordering.
 
 \section{Conclusion}
 
-Dropping prime-ideal Euler factors creates two analytically different boundary data at $s=1$:
+Universal law is
+\[
+ L_n^{-1}\to A\text{ in }\mathcal S_p
+ \quad\Longrightarrow\quad
+ \operatorname{Clust}_{\rm co}(\mathcal D_n)
+ =\left\{e^{P_b}\det{}_p(I-zA):
+ b\in\operatorname{Clust}(b(L_n))\right\}.
+\]
+Limiting operator fixes divisor-carrying core.  Corrected finite-part residue jet fixes entire
+remaining ambiguity, and relative determinant torsion is exponential polynomial of jet
+difference.  Wodzicki residues supply local part of jet; finite parts supply nonlocal part.
+Neither determinant-line triviality nor residue data alone is complete.
+
+Prime-ideal arithmetic realizes law sharply.  Dropping Euler factors creates two analytically
+different boundary data at $s=1$:
 \[
  \Res_{s=1}Z_{K,P}(s)=r_K(P),\qquad
  \FP_{s=1}Z_{K,P}(s)=\kappa_K(P).
@@ -1070,8 +1257,8 @@ independent of number field.  Limiting divisor is rigid but zeta determinant is 
  \Delta_c(z)=e^{(1-c)z}(1-z),\qquad
  \frac{\Delta_c}{\Delta_d}=e^{(d-c)z}.
 \]
-This is missing residue correction at cofinal level: not another trivialization of line, but
-finite-part coordinate needed to compare determinant sections.
+Thus natural arithmetic cofinal systems realize every interval of complete defect coordinate,
+while maximal interval and full real torsion group are Baire-generic.
 
 \begin{thebibliography}{99}
 
@@ -1110,6 +1297,12 @@ S.~R.~Garcia and E.~S.~Lee,
 \emph{Unconditional explicit Mertens' theorems for number fields and Dedekind zeta residue bounds},
 Ramanujan Journal \textbf{57} (2022), 1169--1191,
 \href{https://doi.org/10.1007/s11139-021-00435-6}{doi:10.1007/s11139-021-00435-6}.
+
+\bibitem{HartmannLesch2022}
+L.~Hartmann and M.~Lesch,
+\emph{Zeta and Fredholm determinants of self-adjoint operators},
+Journal of Functional Analysis \textbf{283} (2022), 109491,
+\href{https://doi.org/10.1016/j.jfa.2022.109491}{doi:10.1016/j.jfa.2022.109491}.
 
 \bibitem{KandhilLunia2024}
 N.~Kandhil and R.~Lunia,

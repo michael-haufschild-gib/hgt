@@ -1464,6 +1464,46 @@ available from hypotheses the iterates actually satisfy, at a fixed radius. Noth
 point of the strip the intermediate radius is chosen between `|Im z|` and the radius of the strip,
 so every statement holds on the whole strip.
 
+`ClockIterates.lean` defines the iteration and proves exactly that:
+
+- `clockIterate` — `W₀ = 1` and
+  `W_{m+1}(ξ,η) = ∫₀^ξ ∫₀^η (W_m(s,t)'' + V·W_m(s,t))/4 ds dt`, with `clockIterate_zero` and
+  `clockIterate_succ`;
+- **`clockIterate_regular`** — *for a potential holomorphic and continuous on the strip, every
+  iterate is holomorphic in the transverse variable on that same strip, and the family is continuous
+  jointly in the two null coordinates and that variable.*
+
+The induction is exactly as designed: the step operator applied to the previous iterate is
+continuous by the localised second-derivative continuity; the inner integral is then holomorphic and
+jointly continuous; and the outer integral inherits both. No radius is lost at any stage.
+
+`ClockIterateBound.lean` then proves that the iterates obey the bound the scheme predicts:
+
+- `continuousAt_clockStripStep_clockIterate`, `continuous_clockStripStep_slice` — the step operator
+  applied to an iterate is continuous, in the form the double-integration estimate requires;
+- **`clockIterate_norm_le`** — *for a potential holomorphic, continuous and bounded by `Mv` on the
+  strip of radius `ρ₀`,*
+
+  `‖W_m(s,t,z)‖ ≤ Kᵐ m^{2m} sᵐ tᵐ / ((m!)² (ρ₀-ρ)^{2m})`  for `|Im z| ≤ ρ < ρ₀`,
+
+  *with `K = 4 + Mv ρ₀²/4`.* Each step is taken at the intermediate radius
+  `σ = ρ + (ρ₀-ρ)/(m+1)`; the step operator loses `4/(σ-ρ)²` and the potential contributes `Mv/4`,
+  which together are at most `K/(σ-ρ)²` because `σ-ρ ≤ ρ₀`; the double integration supplies
+  `s^{m+1}t^{m+1}/(m+1)²`; and the closing algebra is the step identity already proved. The stage
+  `m = 0` uses the normalisation `W₀ = 1`, which holds on the whole plane, since there the
+  intermediate radius is `ρ₀` itself.
+
+Combined with the convergence estimate, the series `∑ₘ W_m` therefore converges. `ClockSolution.lean`
+records that:
+
+- `clockSolution V ξ η z = ∑ₘ W_m(ξ, η, z)`;
+- **`summable_clockIterate`** — *the series converges absolutely for `|Im z| ≤ ρ < ρ₀` on any
+  rectangle of side at most `T` with `K T² e² < (ρ₀ - ρ)²`*, by domination against the geometric
+  series of the convergence estimate.
+
+What remains is to check that the sum solves `∂ξ∂η u = (u'' + V u)/4` and to convert it to a clock
+probe.
+
 The first genuinely coupled target this reaches is dimension three: a potential
 `V(x⁰, x¹, x²)` with arbitrary continuously differentiable dependence on the null coordinates and
 periodic-analytic dependence on the transverse one. The last open input of the whole programme is

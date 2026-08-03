@@ -35,8 +35,8 @@ theorem clockIterate_succ (V : ℂ → ℂ) (m : ℕ) (ξ η : ℝ) (z : ℂ) :
     clockIterate V (m + 1) ξ η z
       = ∫ s in (0 : ℝ)..ξ, ∫ t in (0 : ℝ)..η, clockStripStep V (clockIterate V m s t) z := rfl
 
-/-- **The iterates are holomorphic on the strip and jointly continuous there.** -/
 set_option maxHeartbeats 1000000 in
+/-- **The iterates are holomorphic on the strip and jointly continuous there.** -/
 theorem clockIterate_regular {ρ : ℝ} {V : ℂ → ℂ}
     (hVc : ContinuousOn V (imStrip ρ)) (hVd : DifferentiableOn ℂ V (imStrip ρ)) :
     ∀ m : ℕ,
@@ -88,7 +88,9 @@ theorem clockIterate_regular {ρ : ℝ} {V : ℂ → ℂ}
             (fun q' : ℝ × ℂ => (((s, q'.1), q'.2) : (ℝ × ℝ) × ℂ)) q :=
           Continuous.continuousAt
             ((continuous_const.prodMk continuous_fst).prodMk continuous_snd)
-        exact ((hstepAt ((s, q.1), q.2) hq.2).comp hmap).continuousWithinAt
+        have hcomp := (hstepAt ((s, q.1), q.2) hq.2).comp (x := q)
+          (f := fun q' : ℝ × ℂ => (((s, q'.1), q'.2) : (ℝ × ℝ) × ℂ)) hmap
+        exact hcomp.continuousWithinAt
       · exact fun t => differentiableOn_clockStripStep hVd (holo s t)
     have hinnerCont : ∀ η : ℝ, ContinuousOn
         (fun q : ℝ × ℂ => ∫ t in (0 : ℝ)..η, clockStripStep V (clockIterate V m q.1 t) q.2)

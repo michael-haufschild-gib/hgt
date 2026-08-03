@@ -10,6 +10,11 @@
 - **Lean status:** finite sign-extraction and collision-normalization skeleton in
   `MobiusCoprimeProductSignExtraction.lean`; the Euler margin `(13)` `A <= 13/36 < 1/2` and the
   identities `(8)`, `(9)` are formalized unconditionally in `MobiusCoprimeEulerMargin.lean`;
+  the sign-count identity and its conclusion are in `Sieve/MoebiusSignCount.lean`,
+  `Sieve/MoebiusSignLower.lean`; the short-interval variance layer (`Sieve/Window*.lean`,
+  `Sieve/RealWindow*.lean`, `Sieve/CorrelationToVariance.lean`) proves the mean-square input
+  *equivalent* to cancellation in the shifted Moebius correlations at the `L-1` shifts `h < L`, and
+  rules out both non-arithmetic routes to it;
   the sole remaining input is Matomaki--Radziwill's published Theorem 2
 
 ## Statement
@@ -3138,3 +3143,98 @@ arithmetic cancellation in `∑_n μ(n)μ(n+h)`.
 
 That is a useful negative result to have proved rather than assumed — it shows the cited input is
 *necessary*, not an artefact of a lossy reduction.
+
+### Formal layer — the variance *equals* the correlations
+
+`formal/GaloisForLFunctions/RHTower/Sieve/WindowExactAutocorrelation.lean`.
+
+- `re_mul_conj_comm`, `re_mul_conj_self` — the Hermitian pair weight is symmetric, and its diagonal
+  is `‖a_n‖²`.
+- `sum_normSq_window_eq_autocorrelation` — **an equality**:
+  `∑_{x<X}‖∑_{x<n≤x+L} a_n‖² = ∑_n K(n,n)‖a_n‖² + 2∑_{h≥1}∑_n K(n,n+h)·Re(a_n conj a_{n+h})`.
+
+Unconditional.
+
+This upgrades the earlier autocorrelation *bound* to an identity. The previous version replaced
+`Re(a_n conj a_{n+h})` by `‖a_n‖‖a_{n+h}‖` and so discarded every cancellation; here nothing is
+discarded.
+
+The consequence is a two-way statement rather than a one-way estimate: since `K` is `L` on the
+diagonal and `L−h` at shift `h` in the bulk (`WindowKernelExact`), the short-interval variance is
+**determined** by the shifted correlations — it is small exactly when `∑_n μ(n)μ(n+h)` cancels.
+Small variance and correlation cancellation are the same statement, so the cited input is not merely
+sufficient for `(6)`/`(15)`, it is equivalent to it.
+
+### Formal layer — only the shifts below L matter
+
+`formal/GaloisForLFunctions/RHTower/Sieve/WindowShiftRange.lean`.
+
+- `windowOverlap_shift_eq_zero` — shifts `h ≥ L` contribute nothing.
+- `sum_normSq_window_eq_autocorrelation_lt` — the identity with the correlation sum restricted:
+  **`variance = ∑_n K(n,n)‖a_n‖² + 2∑_{h=1}^{L−1}∑_n K(n,n+h)·Re(a_n conj a_{n+h})`**.
+
+Unconditional.
+
+The number of correlations involved is `L − 1`, **independent of the averaging length `X`**. That is
+what makes the reduction usable: a bound at the finitely many shifts `h < L` suffices, and no
+statement about long-range correlations is needed.
+
+Combined with the previous section, the position on these cards is now completely explicit. `(6)`/`(15)`
+is *equivalent* to cancellation in the `L−1` shifted Möbius correlations `∑_n μ(n)μ(n+h)`,
+`1 ≤ h < L`; the kernel weights are known exactly; and both non-arithmetic routes to a saving have
+been ruled out by proof.
+
+### Formal layer — the reduction as an implication
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CorrelationToVariance.lean`.
+
+- `sum_normSq_window_le_of_correlation` — **if `|∑_n K(n,n+h)·Re(a_n conj a_{n+h})| ≤ δ` for every
+  `1 ≤ h < L`, then `∑_{x<X}‖∑_{x<n≤x+L} a_n‖² ≤ L∑_n‖a_n‖² + 2Lδ`.**
+
+Unconditional (as an implication).
+
+This is the reduction in usable form. Everything to the left of the implication is proved: the exact
+identity, the diagonal bound `K(n,n) ≤ L`, and the restriction to fewer than `L` shifts. Only the
+hypothesis — the correlation estimate — is open, and it is exactly the published input these cards
+cite.
+
+Applied to `a = μ` with `Q` the squarefree count, a correlation bound `δ` yields
+`variance ≤ L·Q + 2Lδ`, which is `(6)`/`(15)` once `δ` is of the required size. The elementary side of
+these cards is therefore complete: no further unconditional work can shorten the gap, and the gap is
+a single named hypothesis rather than a body of missing theory.
+
+### Formal layer — the sign-count identity (14)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/MoebiusSignCount.lean`.
+
+- `moebius_trichotomy` — `μ(n) ∈ {0, 1, −1}`.
+- `moebius_eq_sub_indicator`, `moebius_sq_eq_add_indicator` — `μ = [μ=1] − [μ=−1]` and
+  `μ² = [μ=1] + [μ=−1]`.
+- `two_mul_card_moebius_eq_one`, `two_mul_card_moebius_eq_neg_one` — **equation (14)**:
+  `#{n ∈ (t,t+L] : μ(n) = ±1} = (Q(t,L) ± M(t,L))/2`.
+
+All unconditional.
+
+Found by a numbered-statement audit of this card rather than by reading the Lean-status line: `(14)`
+was not formalized anywhere in the corpus, although it is the step that converts the two summatory
+estimates into the sign counts the theorem is about.
+
+Its role is exactly the conversion the proof needs: a lower bound for `Q` (elementary, `(11)`/`(13)`,
+already formalized) together with an upper bound for `|M|` (the cited input, `(6)`) bounds **both**
+sign counts from below simultaneously. Without `(14)` the two estimates do not combine.
+
+### Formal layer — both signs occur linearly often
+
+`formal/GaloisForLFunctions/RHTower/Sieve/MoebiusSignLower.lean`.
+
+- `card_moebius_sign_ge` — **if `Q(t,L) ≥ ½DL` and `|M(t,L)| ≤ ⅛DL` then both sign counts are at
+  least `(3/16)DL`** — the conclusion of `(14)`.
+
+Unconditional (as an implication).
+
+This closes the `(14)` step of the proof. Its two hypotheses come from opposite sources: the lower
+bound on `Q` is elementary sieve theory (`(11)`/`(13)`, formalized), and the upper bound on `|M|` is
+the mean-square input `(6)` via Markov `(10)`. The sign-count identity is exactly what allows them to
+be used together, and this lemma performs that combination.
+
+The constant `3/16` is not sharp and the card says so; only its positivity is used downstream.

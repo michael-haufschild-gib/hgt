@@ -76,6 +76,7 @@ theorem residueFinitePart_insert_sub {ι : Type*} [DecidableEq ι]
   have hq1 : q v - 1 ≠ 0 := sub_ne_zero.mpr (ne_of_gt hq)
   rw [inv_eq_one_div]
   field_simp
+  ring
 
 /-- Affine form of one-atom update, used by determinant excision. -/
 theorem residueFinitePart_insert_affine {ι : Type*} [DecidableEq ι]
@@ -91,7 +92,6 @@ theorem residueFinitePart_insert_affine {ι : Type*} [DecidableEq ι]
   have hq1 : q v - 1 ≠ 0 := sub_ne_zero.mpr (ne_of_gt hq)
   rw [inv_eq_one_div]
   field_simp
-  ring
 
 /-- Insertion raises finite part exactly when atom log-height exceeds current base coordinate. -/
 theorem residueFinitePart_insert_lt_iff {ι : Type*} [DecidableEq ι]
@@ -136,7 +136,7 @@ theorem residueCorrectedDeterminant_excision
 
 /-- Limiting residue-corrected determinant germ with finite-part coordinate c. -/
 def residueDeterminantClusterGerm (c z : ℂ) : ℂ :=
-  Complex.exp ((1 - c) * z) * (1 - z)
+  Complex.exp ((1 - c) * z) * (-z + 1)
 
 /-- Canonically divisor-cancelled relative determinant torsion. -/
 def residueRelativeDeterminantTorsion (c d z : ℂ) : ℂ :=
@@ -184,12 +184,13 @@ theorem residueDeterminantClusterGerm_hasDerivAt_zero (c : ℂ) :
   have hhead :
       HasDerivAt (fun z : ℂ => Complex.exp ((1 - c) * z)) (1 - c) 0 := by
     simpa only [mul_zero, Complex.exp_zero, one_mul] using hlin.cexp
-  have htail : HasDerivAt (fun z : ℂ => 1 - z) (-1) 0 := by
-    simpa using! (hasDerivAt_const (x := (0 : ℂ)) (c := (1 : ℂ))).sub
-      (hasDerivAt_id (0 : ℂ))
+  have htail : HasDerivAt (fun z : ℂ => -z + 1) (-1) 0 :=
+    (hasDerivAt_id (0 : ℂ)).neg.add_const (1 : ℂ)
   change HasDerivAt
-    (fun z : ℂ => Complex.exp ((1 - c) * z) * (1 - z)) (-c) 0
-  convert hhead.mul htail using 1 <;> ring
+    (fun z : ℂ => Complex.exp ((1 - c) * z) * (-z + 1)) (-c) 0
+  apply (hhead.mul htail).congr_deriv
+  simp only [mul_zero, Complex.exp_zero, one_mul]
+  ring
 
 /-- Determinant cluster germ parameterization is injective. -/
 theorem residueDeterminantClusterGerm_injective :

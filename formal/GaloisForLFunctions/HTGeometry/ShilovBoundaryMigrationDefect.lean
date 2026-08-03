@@ -21,7 +21,7 @@ The main results are:
   countable inverse system.
 
 These statements are the algebraic, non-topological proof obligations in Theorems A, B, and D of
-`docs/drafts/pipeline/2-fully-proven/spectral-boundary-migration-shilov-exactness.md`.
+`docs/drafts/pipeline/1-in-progress/spectral-boundary-migration-shilov-exactness.md`.
 -/
 
 open Function
@@ -327,6 +327,137 @@ section CoherentLifting
 
 variable (A : ℕ → Type v)
 variable [∀ n, AddCommGroup (A n)] [∀ n, Module 𝕜 (A n)]
+
+/-- Roos difference `1 - shift` for a countable inverse sequence.  Its kernel is the
+inverse limit and its cokernel is the algebraic first derived inverse limit. -/
+def inverseDifference (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n) :
+    (∀ n, A n) →ₗ[𝕜] (∀ n, A n) where
+  toFun x n := x n - bond n (x (n + 1))
+  map_add' x y := by
+    funext n
+    simp only [Pi.add_apply, map_add]
+    abel
+  map_smul' c x := by
+    funext n
+    simp only [Pi.smul_apply, map_smul, smul_sub, RingHom.id_apply]
+
+/-- Algebraic `lim¹` of a countable inverse sequence, presented as the cokernel of the
+Roos difference. -/
+abbrev DerivedLimitOne (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n) : Type v :=
+  (∀ n, A n) ⧸ LinearMap.range (inverseDifference A bond)
+
+/-- Restriction of a bonding map to a compatible inverse sequence of submodules. -/
+def restrictedBond (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n) :
+    ∀ n, J (n + 1) →ₗ[𝕜] J n :=
+  fun n => ((bond n).domRestrict (J (n + 1))).codRestrict (J n)
+    (fun x => hstable n x x.2)
+
+/-- Boundary mismatch attached to arbitrary representatives of compatible quotient classes. -/
+def boundaryMismatch (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (b : ∀ n, A n)
+    (hmod : ∀ n, bond n (b (n + 1)) - b n ∈ J n) :
+    ∀ n, J n :=
+  fun n => ⟨bond n (b (n + 1)) - b n, hmod n⟩
+
+/-- Representatives can be corrected to a coherent sequence exactly when their boundary
+mismatch is a Roos coboundary.  This is the elementwise derived-limit obstruction law. -/
+theorem exists_coherent_representatives_iff_mismatch_mem_range
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n)
+    (b : ∀ n, A n)
+    (hmod : ∀ n, bond n (b (n + 1)) - b n ∈ J n) :
+    (∃ a : ∀ n, A n,
+      (∀ n, a n - b n ∈ J n) ∧
+      ∀ n, bond n (a (n + 1)) = a n) ↔
+      boundaryMismatch A bond J b hmod ∈
+        LinearMap.range
+          (inverseDifference (fun n => J n)
+            (restrictedBond A bond J hstable)) := by
+  constructor
+  · rintro ⟨a, haJ, hcoh⟩
+    let j : ∀ n, J n := fun n => ⟨a n - b n, haJ n⟩
+    refine ⟨j, ?_⟩
+    funext n
+    apply Subtype.ext
+    change (a n - b n) - bond n (a (n + 1) - b (n + 1)) =
+      bond n (b (n + 1)) - b n
+    rw [map_sub, hcoh]
+    abel
+  · rintro ⟨j, hj⟩
+    let a : ∀ n, A n := fun n => b n + j n
+    refine ⟨a, ?_, ?_⟩
+    · intro n
+      have hjmem : (j n : A n) ∈ J n := (j n).2
+      simpa only [a, add_sub_cancel_left] using hjmem
+    · intro n
+      have hn := congrFun hj n
+      have hn' := congrArg Subtype.val hn
+      change (j n : A n) - bond n (j (n + 1)) =
+        bond n (b (n + 1)) - b n at hn'
+      change bond n (b (n + 1) + j (n + 1)) = b n + j n
+      rw [map_add]
+      calc
+        bond n (b (n + 1)) + bond n (j (n + 1)) =
+            (bond n (b (n + 1)) - b n) + b n + bond n (j (n + 1)) := by
+              abel
+        _ = ((j n : A n) - bond n (j (n + 1))) + b n +
+            bond n (j (n + 1)) := by rw [hn']
+        _ = b n + j n := by abel
+
+/-- The canonical derived Shilov class of a compatible family of quotient representatives. -/
+def boundaryObstruction (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n)
+    (b : ∀ n, A n)
+    (hmod : ∀ n, bond n (b (n + 1)) - b n ∈ J n) :
+    DerivedLimitOne (fun n => J n) (restrictedBond A bond J hstable) :=
+  Submodule.Quotient.mk (boundaryMismatch A bond J b hmod)
+
+theorem boundaryObstruction_eq_zero_iff
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n)
+    (b : ∀ n, A n)
+    (hmod : ∀ n, bond n (b (n + 1)) - b n ∈ J n) :
+    boundaryObstruction A bond J hstable b hmod = 0 ↔
+      ∃ a : ∀ n, A n,
+        (∀ n, a n - b n ∈ J n) ∧
+        ∀ n, bond n (a (n + 1)) = a n := by
+  rw [boundaryObstruction, Submodule.Quotient.mk_eq_zero]
+  exact (exists_coherent_representatives_iff_mismatch_mem_range
+    A bond J hstable b hmod).symm
+
+/-- Surjective bonding maps make the Roos difference surjective by recursive correction. -/
+theorem inverseDifference_surjective
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (hsurj : ∀ n, Function.Surjective (bond n)) :
+    Function.Surjective (inverseDifference A bond) := by
+  classical
+  intro y
+  let step : ∀ n, A n → A (n + 1) :=
+    fun n x => Classical.choose (hsurj n (x - y n))
+  let x : ∀ n, A n := fun n => Nat.rec 0 (fun k xk => step k xk) n
+  refine ⟨x, ?_⟩
+  funext n
+  change x n - bond n (x (n + 1)) = y n
+  rw [show x (n + 1) = step n (x n) by rfl]
+  have hstep : bond n (step n (x n)) = x n - y n :=
+    Classical.choose_spec (hsurj n (x n - y n))
+  rw [hstep]
+  abel
+
+/-- Mittag--Leffler vanishing in the strong linkwise-surjective case. -/
+theorem derivedLimitOne_subsingleton_of_surjective
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (hsurj : ∀ n, Function.Surjective (bond n)) :
+    Subsingleton (DerivedLimitOne A bond) := by
+  change Subsingleton ((∀ n, A n) ⧸ LinearMap.range (inverseDifference A bond))
+  rw [Submodule.Quotient.subsingleton_iff]
+  exact LinearMap.range_eq_top.mpr (inverseDifference_surjective A bond hsurj)
 
 /-- Linkwise surjectivity on boundary ideals corrects arbitrary compatible quotient classes to a
 coherent sequence of representatives.  This is the constructive surjectivity step for the local

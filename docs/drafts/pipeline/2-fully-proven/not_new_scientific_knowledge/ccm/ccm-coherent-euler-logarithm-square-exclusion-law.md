@@ -240,12 +240,75 @@ completion-of-squares identity. It is a route bridge, not new scientific knowled
 positive route selection: it proves that the Euler logarithm must remain channel-resolved through
 the factorization rather than being coherently summed and then squared.
 
-## Lean decision
+## Lean status
 
-The formal tree does not yet contain the weighted logarithmic shift carrier, the completed
-archimedean form, or the aperture-dependent Euler logarithm. Formalizing only `(15)` would be a
-generic algebraic wrapper and would not certify the exclusion theorem. No Lean file is added before
-the actual analytic carrier is represented.
+**Superseded, 2026-08-03.**  Formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/CCMCoherentSquareExclusion.lean`.  The previous decision said the
+weighted logarithmic shift carrier, the completed archimedean form and the aperture-dependent Euler
+logarithm were all absent, so that only `(15)` could be stated.  That was wrong about the shape of the
+theorem: the exclusion never uses the completed form, only that its value on **one fixed packet** does
+not depend on the aperture, and the shift carrier is an explicit family of translates of that packet.
+Both are elementary objects.
+
+### The prime number theorem is not needed
+
+The card derives `(14)` from `#P_A >= c_delta e^A/A`.  The exclusion `(17)`--`(19)` consumes only
+divergence of the coherent energy, and divergence follows from Euler's `sum 1/p = infinity` with no
+prime-counting rate at all:
+
+```text
+||Z_A f||^2 = sum_(p,q) (pq)^(-1/2) <f(.-log p),f(.-log q)>
+           >= sum_p (1/p) ||f||^2,
+```
+
+because the packet is nonnegative and every Euler coefficient is positive, so every cross term is
+nonnegative and the energy dominates its own diagonal.  The Lean proof uses this; the PNT rate is
+therefore recorded as a sharpening of the card, not as an input.
+
+- `fwdShift`, `bwdShift`, **`bwdShift_eq_zero_of_support`**, **`fwdShift_mul_eq_zero`**,
+  **`integral_fwdShift_mul_eq_zero`**, **`commutatorForm_eq_zero`** — equations `(7)`--`(8)`: on a
+  packet supported in `(0, delta)` with every shift at least `delta`, the backward shift annihilates
+  the packet and the forward shift leaves its support, so the whole prime commutator form `(4)` is
+  identically zero on the packet.  No measure theory is used beyond `integral_zero`: the integrand is
+  pointwise zero.
+- **`star_combo_expand`** — equation `(15)`, for a self-adjoint `X` and a skew-adjoint `Z`:
+  `star (X - Z) * (X - Z) = X² - [X, Z] + (star Z) Z`.  With `star_smul_selfAdjoint` and
+  `star_smul_skewAdjoint` it applies to `a • X` and `b • Z`, which is the balanced identity.
+- `BoundaryPacket`, `tentPacket`, **`boundaryPacket_tentPacket`** — equations `(5)`--`(6)`, and the
+  witness: the packet class is inhabited at every width, so nothing below is vacuous.
+- `primeChannel`, `eulerShellApply`, **`eulerShellApply_eq_sum_primeChannel`** — equation `(2)` at
+  exponent one.  Inside a large enough aperture the shell is exactly the sum of the translates, which
+  is where the aperture cutoff becomes invisible to the packet.
+- `primeReciprocalSum`, **`tendsto_primeReciprocalSum_atTop`** — Euler's divergence, the only
+  arithmetic input.
+- **`integral_sq_primeChannel`** — the mass of one channel is `1/p` times the packet mass, by
+  translation invariance of Lebesgue measure.  It needs no hypothesis on the packet at all.
+- **`primeReciprocalSum_mul_mass_le`** — equations `(12)`--`(14)`, in the sharpened form above.
+- **`tendsto_energy_atTop`**, **`tendsto_energy_atTop_natAperture`** — the coherent energy diverges
+  along every aperture schedule that keeps the visible shifts inside the aperture, and `A = N + delta`
+  is such a schedule.
+- **`positionApply_mass_pos`** — the position energy is positive and aperture-independent, which is the
+  fixed factor `||X_A f||` of `(16)`.
+- **`positionApply_mul_primeChannel_eq_zero`**,
+  **`integral_positionApply_mul_eulerShellApply`** — equation `(7)` again, now as exact orthogonality
+  of the two outputs.  This is where `delta <= log 2` of `(5)` is used, and it is used nowhere else.
+- **`integral_sq_sub_of_orthogonal`**, **`two_mul_sqrt_mul_sqrt_le`** — equation `(16)`: the mixed
+  square splits exactly on orthogonal outputs, and no balancing scalar brings the split below twice the
+  geometric mean of the two energies.
+- **`not_exists_coherent_square_packet`** — equations `(17)`--`(19)`, the exclusion in the concrete
+  model: `2 sqrt(X) sqrt(Z_N) -> infinity` while `q_N` is constant.
+- **`not_exists_coherent_square`**, **`not_exists_coherent_square_of_divergence`** — the same
+  conclusion abstractly, in a real inner product space, which is the form in which it applies to any
+  other realization of the two outputs.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+Not formalized, and not needed for the exclusion: the identification of `(2)` as the unitary image of
+the weighted skew Euler logarithm, the commutator computation `(4)` for the actual operators, the
+transport of the completed archimedean form `q_arch` to the unweighted carrier `(18)`, the prime number
+theorem rate `(13)`--`(14)`, and the channel-resolution alternatives `(20)`--`(22)`, which are the
+open route content of the card and not part of the proved theorem.
 
 ## Gates
 
@@ -255,6 +318,12 @@ the actual analytic carrier is represented.
 - [x] arbitrary scalar balancing excluded
 - [x] positive channel-resolution alternative stated
 - [x] singular autonomous jet-capacity floor attached
+- [x] Lean: zero prime commutator form on the packet `(7)`--`(8)` unconditional
+- [x] Lean: completion-of-squares identity `(15)` unconditional
+- [x] Lean: boundary packet class inhabited
+- [x] Lean: coherent energy divergence `(12)`--`(14)` unconditional, without prime counting
+- [x] Lean: exact orthogonality and the split `(16)` unconditional
+- [x] Lean: exclusion `(17)`--`(19)` unconditional, concretely and abstractly
 - [ ] construct the growing channel contraction or exact covariance cancellation
 - [ ] transport its negative index to Suzuki's restricted-Weil operator
 - [ ] prove RH

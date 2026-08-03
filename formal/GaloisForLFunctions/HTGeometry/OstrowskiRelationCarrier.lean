@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.MonomialFiberAmplitude
 import GaloisForLFunctions.HTGeometry.ExponentialSeriesSigmaSum
 import GaloisForLFunctions.HTGeometry.MvPolynomialInfiniteVanishing
+import GaloisForLFunctions.HTGeometry.PolynomialBohrVanishing
 
 /-!
 # A differential monomial combination of a carrier is one exponential series
@@ -58,6 +59,29 @@ theorem monomial_eq_expSeriesCarrier {a : ι → ℂ} {omega : ι → ℝ}
   rfl
 
 omit [DecidableEq ι] in
+/-- **A finite combination of monomials is one exponential series.** -/
+theorem monomialCombination_eq_expSeriesCarrier {a : ι → ℂ} {omega : ι → ℝ}
+    (ha : ExpSeriesNormallySummable a omega) {M : ℕ} {K : Finset (Fin M → ℕ)}
+    (c : (Fin M → ℕ) → ℂ) (t : ℝ) :
+    ∑ s ∈ K, c s * ∏ j, iteratedDeriv (s j) (cexpSeriesCarrier a omega) (t : ℂ)
+      = expSeriesCarrier
+        (fun p : Σ _ : {s // s ∈ K}, Fin M → ι =>
+          monomialAmplitude a omega (c p.1.1) p.1.1 p.2)
+        (fun p : Σ _ : {s // s ∈ K}, Fin M → ι => tupleFrequency omega p.2) t := by
+  have hnorm : ∀ s : {s // s ∈ K},
+      Summable fun n : Fin M → ι => ‖monomialAmplitude a omega (c s.1) s.1 n‖ :=
+    fun s => summable_norm_monomialAmplitude ha (c s.1) s.1
+  rw [← sum_expSeriesCarrier (fun s : {s // s ∈ K} => monomialAmplitude a omega (c s.1) s.1)
+    (fun _ : {s // s ∈ K} => tupleFrequency omega) hnorm t]
+  have hterm : ∀ s : {s // s ∈ K},
+      expSeriesCarrier (monomialAmplitude a omega (c s.1) s.1) (tupleFrequency omega) t
+        = c s.1 * ∏ j, iteratedDeriv (s.1 j) (cexpSeriesCarrier a omega) (t : ℂ) :=
+    fun s => (monomial_eq_expSeriesCarrier ha (c s.1) s.1 t).symm
+  rw [Finset.sum_congr rfl fun s _ => hterm s]
+  exact (Finset.sum_coe_sort K
+    (fun s => c s * ∏ j, iteratedDeriv (s j) (cexpSeriesCarrier a omega) (t : ℂ))).symm
+
+omit [DecidableEq ι] in
 /-- **A vanishing combination of monomials is a vanishing exponential series.** -/
 theorem expSeriesCarrier_sigma_eq_zero {a : ι → ℂ} {omega : ι → ℝ}
     (ha : ExpSeriesNormallySummable a omega) {M : ℕ} {K : Finset (Fin M → ℕ)}
@@ -69,20 +93,8 @@ theorem expSeriesCarrier_sigma_eq_zero {a : ι → ℂ} {omega : ι → ℝ}
         (fun p : Σ _ : {s // s ∈ K}, Fin M → ι =>
           monomialAmplitude a omega (c p.1.1) p.1.1 p.2)
         (fun p : Σ _ : {s // s ∈ K}, Fin M → ι => tupleFrequency omega p.2) t = 0 := by
-  have hnorm : ∀ s : {s // s ∈ K},
-      Summable fun n : Fin M → ι => ‖monomialAmplitude a omega (c s.1) s.1 n‖ :=
-    fun s => summable_norm_monomialAmplitude ha (c s.1) s.1
-  rw [← sum_expSeriesCarrier (fun s : {s // s ∈ K} => monomialAmplitude a omega (c s.1) s.1)
-    (fun _ : {s // s ∈ K} => tupleFrequency omega) hnorm t]
-  have hterm : ∀ s : {s // s ∈ K},
-      expSeriesCarrier (monomialAmplitude a omega (c s.1) s.1) (tupleFrequency omega) t
-        = c s.1 * ∏ j, iteratedDeriv (s.1 j) (cexpSeriesCarrier a omega) (t : ℂ) :=
-    fun s => (monomial_eq_expSeriesCarrier ha (c s.1) s.1 t).symm
-  rw [Finset.sum_congr rfl fun s _ => hterm s]
-  have hz := hzero t
-  rw [← Finset.sum_coe_sort K
-    (fun s => c s * ∏ j, iteratedDeriv (s j) (cexpSeriesCarrier a omega) (t : ℂ))] at hz
-  exact hz
+  rw [← monomialCombination_eq_expSeriesCarrier ha c t]
+  exact hzero t
 
 /-! ## The coefficients of a vanishing combination -/
 
@@ -174,6 +186,60 @@ theorem eq_zero_of_monomialCombination_vanishing {a : ι → ℂ} {omega : ι �
     have hkey := eval_permSum_combination_eq_zero hom ha c hzero hiinj hi0
     rwa [show (fun l => Complex.I * (omega (i l) : ℂ)) = x from funext hival] at hkey
   exact eq_zero_of_permSum_combination c hdistinct hQ
+
+/-! ## Polynomial coefficients -/
+
+omit [DecidableEq ι] in
+theorem norm_expSeriesCarrier_le {J : Type*} {B : J → ℂ} {Omega : J → ℝ}
+    (hB : Summable fun j => ‖B j‖) (t : ℝ) :
+    ‖expSeriesCarrier B Omega t‖ ≤ ∑' j, ‖B j‖ := by
+  have hsum : Summable fun j => B j * expChar (Omega j) t := by
+    refine Summable.of_norm ?_
+    simpa using hB
+  refine le_trans (norm_tsum_le_tsum_norm ?_) ?_
+  · simpa using hB
+  · exact le_of_eq (tsum_congr fun j => by simp)
+
+/-- **A polynomial combination of differential monomials of a carrier has zero coefficients.**
+The coefficients may be polynomials in the variable: each degree is separated by the top-degree
+argument, and each separated combination dies by the frequency argument. -/
+theorem eq_zero_of_polynomialMonomialCombination_vanishing {a : ι → ℂ} {omega : ι → ℝ}
+    (hom : RationallyIndependentSequence omega) (ha : ExpSeriesNormallySummable a omega)
+    (hinf : {i : ι | a i ≠ 0}.Infinite) {M : ℕ} {K : Finset (Fin M → ℕ)}
+    (hdistinct : ∀ s ∈ K, ∀ s' ∈ K, tupleCount s = tupleCount s' → s = s')
+    (D : ℕ) (c : ℕ → (Fin M → ℕ) → ℂ)
+    (hzero : ∀ t : ℝ, ∑ d ∈ Finset.range (D + 1), (t : ℂ) ^ d *
+      ∑ s ∈ K, c d s * ∏ j, iteratedDeriv (s j) (cexpSeriesCarrier a omega) (t : ℂ) = 0) :
+    ∀ d ≤ D, ∀ s ∈ K, c d s = 0 := by
+  classical
+  set G : ℕ → ℝ → ℂ := fun d t =>
+    ∑ s ∈ K, c d s * ∏ j, iteratedDeriv (s j) (cexpSeriesCarrier a omega) (t : ℂ) with hG
+  have hnorm : ∀ d : ℕ, Summable fun p : Σ _ : {s // s ∈ K}, Fin M → ι =>
+      ‖monomialAmplitude a omega (c d p.1.1) p.1.1 p.2‖ := by
+    intro d
+    exact summable_norm_sigma (J := fun _ : {s // s ∈ K} => (Fin M → ι))
+      (b := fun s n => monomialAmplitude a omega (c d s.1) s.1 n)
+      fun s => summable_norm_monomialAmplitude ha (c d s.1) s.1
+  have hGcarrier : ∀ d : ℕ, G d = expSeriesCarrier
+      (fun p : Σ _ : {s // s ∈ K}, Fin M → ι =>
+        monomialAmplitude a omega (c d p.1.1) p.1.1 p.2)
+      (fun p : Σ _ : {s // s ∈ K}, Fin M → ι => tupleFrequency omega p.2) :=
+    fun d => funext fun t => monomialCombination_eq_expSeriesCarrier ha (c d) t
+  have hap : ∀ d, HTGeometry.IsBohrAlmostPeriodic (G d) := by
+    intro d
+    rw [hGcarrier d]
+    exact isBohrAlmostPeriodic_expSeriesCarrier (hnorm d) _
+  have hbdd : ∀ d, ∃ C : ℝ, ∀ t : ℝ, ‖G d t‖ ≤ C := by
+    intro d
+    refine ⟨∑' p : Σ _ : {s // s ∈ K}, Fin M → ι,
+      ‖monomialAmplitude a omega (c d p.1.1) p.1.1 p.2‖, fun t => ?_⟩
+    rw [hGcarrier d]
+    exact norm_expSeriesCarrier_le (hnorm d) t
+  have hGzero := eq_zero_of_polynomialCombination_bohr G hap hbdd D hzero
+  intro d hd s hs
+  refine eq_zero_of_monomialCombination_vanishing hom ha hinf hdistinct (c d) ?_ s hs
+  intro t
+  exact congrFun (hGzero d hd) t
 
 end
 

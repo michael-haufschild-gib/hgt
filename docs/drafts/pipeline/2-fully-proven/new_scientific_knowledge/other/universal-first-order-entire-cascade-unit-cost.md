@@ -1424,3 +1424,49 @@ is `sqrt(2 L^{3/2}) sqrt(sqrt L) / A = sqrt(2) L / A`.  So the estimate closes a
 when `A` grows, and the classical lower bound `M(r) >> mu(r) sqrt(nu)` is what supplies it.  That
 lower bound is the next target: it is false for lacunary series, so it must be proved off the same
 exceptional set, from the very Lipschitz regularity that `exists_good_point_increment_le` produces.
+
+### Log — the accounting closes: Parseval supplies the missing lower bound
+
+Reworking the constants shows the open point is not a lower bound of the form `M >> mu sqrt(nu)` at
+all.  Writing `b_k` for the normalised coefficients, `Sigma_0 = sum |b_k|`, `Sigma_2 = sum k^2 |b_k|`,
+`A = M(r)/mu(r) = |sum b_k|`, and `D = Sigma_0 - A`, the corpus estimate is really
+
+`|z f'/f - nu| <= (Sigma_0 / A) |Lambda - nu| + sqrt(2 Sigma_2 D) / A`
+
+(the `1 + D` in `norm_mul_logDeriv_sub_centralIndex_le_meanIndex` is `Sigma_0 / A` bounded by `A >= 1`,
+and the second term is the corpus's quadratic transverse route).  What is needed is therefore a lower
+bound on `A` **relative to `Sigma_0`**, and Gutzmer/Parseval gives it unconditionally:
+
+`A >= ||b||_2`, because `sum |b_k|^2 = (1/2pi) int |f(r e^{i theta})/(a_nu z^nu)|^2 d theta <= A^2`.
+
+Combining with Cauchy--Schwarz over the window of half-width `N`,
+`Sigma_0 <= sqrt(2N+1) ||b||_2 + tails <= sqrt(2N+1) A + tails`, so `Sigma_0/A <= sqrt(2N+1) + o(1)`,
+and `Sigma_2 <= N^2 Sigma_0 + tails`.  With `N` of order `sqrt(L)`:
+
+- `(Sigma_0/A) |Lambda - nu| = O(L^{1/4}) * O(sqrt(L log nu)) = O(L^{3/4} sqrt(log nu))`;
+- `sqrt(2 Sigma_2 D)/A <= sqrt(2 N^2 Sigma_0^2)/A = sqrt 2 N (Sigma_0/A) = O(L^{3/4})`.
+
+Both are `o(L)` and `L` is of order `nu`, so the estimate closes at `o(nu)` — the Wiman--Valiron
+conclusion — and in fact at `O(nu^{3/4 + o(1)})`.
+
+**Remaining Lean bricks, in order.**
+1. `M(r)^2 >= sum_n |a_n|^2 r^{2n}` (Gutzmer / Parseval on the circle).  Not in the corpus; mathlib
+   has the circle integral and the `AddCircle` Fourier basis, so this is a genuine but bounded build.
+2. `Sigma_0 <= sqrt(2N+1) * ||b||_2 + (Gaussian tail)` — Cauchy--Schwarz on the window plus the tail
+   bound already proved in `MaximumTermGaussianTail`.
+3. `Sigma_2 <= N^2 Sigma_0 + (Gaussian tail)` — same split.
+4. Assemble into `norm_mul_logDeriv_sub_centralIndex_le_meanIndex` with
+   `abs_meanIndex_sub_centralIndex_le_lipschitz` for the signed gap, and instantiate the Lipschitz
+   hypotheses from `exists_good_point_increment_le`.
+
+### Log — bricks 1 and the signed gap are built
+
+- `HTGeometry/MeanIndexLipschitz.lean` — `abs_meanIndex_sub_centralIndex_le_lipschitz`.
+- `HTGeometry/GutzmerEntire.lean` — `tendstoUniformlyOn_partialSum_coeffFun_circleMap`,
+  `hasSum_gutzmer_coeffFun`, `tsum_normSq_coeff_le_of_bound` (Bessel on a circle).
+  The disk-only `GutzmerIdentity` module already had the general passage-to-the-limit interface
+  `tendsto_integral_normSq_partialSum_of_radius_of_uniform`, stated for an arbitrary formal
+  multilinear series, so the entire case only had to supply the radius and the uniform convergence.
+
+All three modules build and are axiom-clean.  Remaining: bricks 2-4 of the previous entry
+(`Sigma_0 <= sqrt(2N+1) ||b||_2 + tail`, `Sigma_2 <= N^2 Sigma_0 + tail`, and the assembly).

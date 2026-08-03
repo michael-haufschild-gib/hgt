@@ -223,7 +223,13 @@
   `GaloisForLFunctions.RHTower.DeningerRootUniqueRoots` (a root adjunction preserves unique roots),
   `GaloisForLFunctions.RHTower.DeningerCentralizerZpow` (centralizers of powers in a group with
   unique roots),
-  `GaloisForLFunctions.RHTower.DeningerRootEltCentral` (the adjoined root is self-centralizing)
+  `GaloisForLFunctions.RHTower.DeningerRootEltCentral` (the adjoined root is self-centralizing),
+  `GaloisForLFunctions.RHTower.DeningerRootEltIsolated` (the adjoined root is isolated),
+  `GaloisForLFunctions.RHTower.DeningerRootStageTower` (a tower of root adjunctions at the adjoined
+  root),
+  `GaloisForLFunctions.RHTower.DeningerRootTowerGood` (the tower runs, and its invariant is not
+  vacuous),
+  `GaloisForLFunctions.RHTower.DeningerStepEmbed` (the stages of the tower embed in one another)
 
 ## Statement
 
@@ -3179,3 +3185,59 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   which the same dichotomy should give: an element whose power is a power of `t` centralizes that
   power, so it lies in the cyclic factor unless the power is in the base group, where the
   exceptional-factor centralizer theorem places it in the cyclic factor as well.
+- 2026-08-03 — **The adjoined root is isolated, and the tower's inductive step is complete.**
+  `deningerRootElt_isolated` runs the dichotomy on the power.  An element whose positive power is a
+  power of the adjoined root commutes with that power, and the power is either outside the base
+  group, where the centralizer criterion for factor elements places the element in the infinite
+  cyclic factor — the escape clause asking a power of the generator to conjugate into the base group
+  inside an abelian factor, where it would already be — or inside it, where either the power is
+  trivial and torsion freeness makes the element trivial, or the exceptional-factor centralizer
+  theorem places the element in the same cyclic factor.  `deningerOfFalse_mem_zpowers` reads that
+  factor as the powers of the adjoined root.
+  So both hypotheses the root adjunction theorem needs are inherited by the root just adjoined:
+  `deningerRootElt_centralizer` gives self-centralization and this gives isolation.  Together with
+  `deningerRootAdjunction_uniqueRoots`, `deningerRootAdjunction_torsionFree` and
+  `deningerInfiniteOrder`, every ingredient of the inductive step of a tower which adjoins roots to
+  the previously adjoined root is proved; what remains is to state the tower and run the induction.
+- 2026-08-03 — **The inductive step of the tower is proved.**  `DeningerRootStage` is a group with a
+  distinguished element, `deningerRootStep` adjoins an `m`-th root to that element and takes the root
+  as the new distinguished element, and `DeningerGoodStage` bundles the five properties the step
+  consumes: unique roots, torsion freeness, infinite order of the distinguished element, isolation of
+  its cyclic subgroup, and that subgroup being its own centralizer.
+  `deningerRootStep_good` proves the step preserves all five, for any exponent of absolute value at
+  least two.  Unique roots is `deningerRootAdjunction_uniqueRoots`, whose centralizer hypothesis
+  comes from the stage's by `deningerCentralizer_zpow_subset`; torsion freeness is
+  `deningerRootAdjunction_torsionFree`; infinite order of the new root follows from torsion freeness
+  once the root is seen to be nontrivial, which is injectivity of the structure map applied to the
+  generator; isolation is `deningerRootElt_isolated`; and self-centralization is
+  `deningerRootElt_centralizer`.
+  So a tower which repeatedly adjoins a root to the root last adjoined stays inside the class of
+  groups with unique roots.  Iterating the step and taking the union is what remains, and the union
+  of an increasing chain of groups with unique roots has unique roots for the trivial reason that any
+  two elements lie in a common stage.
+- 2026-08-03 — **The tower runs, and its invariant is not vacuous.**  `deningerRootTower` iterates
+  the step along a choice of exponent at each stage, and `deningerRootTower_good` carries the
+  invariant up the tower by induction, so `deningerRootTower_uniqueRoots` says every stage has unique
+  roots.  `deningerGoodStage_int` exhibits a starting stage: an infinite cyclic group with a
+  generator, where isolation and self-centralization hold because the cyclic subgroup generated is
+  everything.  The hypothesis class of the step is therefore inhabited, and the tower is a genuine
+  construction rather than an empty one — the check the corpus records as necessary for any no-go or
+  conditional theorem.
+  What is left of the identification with `Bau(F)` is the passage to the union.  The stages embed in
+  one another by `PushoutI.of_injective`, and the union of an increasing chain of groups with unique
+  roots has unique roots because any two elements already lie in a common stage; the divisibility of
+  the union is what the choice of exponents has to arrange, by a bookkeeping which enumerates the
+  pairs of an element and an exponent.
+- 2026-08-03 — **The stages embed in one another and the root is acquired at each step.**
+  `deningerStepEmbed` is the embedding of a stage in the next as the group factor of the amalgam;
+  `deningerStepEmbed_injective` is `PushoutI.of_injective` applied to the structure maps, whose
+  injectivity is the infinite order of the distinguished element; and `deningerStepEmbed_root` is
+  `deningerRootElt_zpow`, which says the new distinguished element is an `m`-th root of the image of
+  the old one.  `deningerTowerEmbed` and its two companions transport this along the tower.
+  So the tower is an increasing chain of groups with unique roots in which the chosen element
+  acquires the chosen root at every step.  The colimit is what remains, and it is the one place where
+  mathlib has nothing to offer: direct limits of arbitrary groups over a directed index are not in
+  the library, so the union has to be built — as the quotient of the sigma type by the equivalence
+  generated by the embeddings, or equivalently as a colimit in the category of groups.  Unique roots
+  and divisibility then transfer to it for the same reason: any finite set of elements already lies
+  in a common stage.

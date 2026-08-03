@@ -84,6 +84,19 @@ theorem fiberAmplitude_monomial {omega : ι → ℝ} (h : RationallyIndependentS
   exact Fintype.prod_equiv sigma (fun j => x (sigma j) ^ s j)
     (fun j => x j ^ s (sigma⁻¹ j)) fun j => by simp
 
+/-- **A monomial of the wrong total degree carries nothing at a frequency.**  Its tuples have the
+wrong length, so the fibre is empty. -/
+theorem fiberAmplitude_eq_zero_of_card_ne {omega : ι → ℝ}
+    (h : RationallyIndependentSequence omega) {M M' : ℕ} (hne : M' ≠ M)
+    (B : (Fin M' → ι) → ℂ) (i : Fin M → ι) :
+    fiberAmplitude B (tupleFrequency omega) (tupleFrequency omega i) = 0 := by
+  have hempty : IsEmpty {n : Fin M' → ι //
+      tupleFrequency omega n = tupleFrequency omega i} := by
+    refine ⟨fun n => ?_⟩
+    exact hne (card_eq_of_frequency_eq h n.2)
+  rw [fiberAmplitude]
+  exact tsum_empty
+
 end
 
 end GaloisForLFunctions.HTGeometry

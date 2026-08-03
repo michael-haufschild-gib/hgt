@@ -159,6 +159,26 @@ theorem injective_of_rationallyIndependentSequence [DecidableEq ι] {omega : ι 
   rw [hcoeff i, if_pos rfl, if_neg hne] at hi
   norm_num at hi
 
+/-- **The multiset a tuple uses determines its length.**  Testing against the constant frequency
+family reads the length off the multiset. -/
+theorem card_eq_of_tupleCount_eq [DecidableEq ι] {M M' : ℕ} {n : Fin M → ι} {n' : Fin M' → ι}
+    (h : tupleCount n = tupleCount n') : M = M' := by
+  have h1 := monomialFrequency_tupleCount (fun _ : ι => (1 : ℝ)) n
+  have h2 := monomialFrequency_tupleCount (fun _ : ι => (1 : ℝ)) n'
+  rw [h, h2] at h1
+  have hM : ((M' : ℕ) : ℝ) = ((M : ℕ) : ℝ) := by
+    simpa using h1
+  exact_mod_cast hM.symm
+
+/-- **Tuples of different lengths have different frequencies.** -/
+theorem card_eq_of_frequency_eq [DecidableEq ι] {omega : ι → ℝ}
+    (h : RationallyIndependentSequence omega) {M M' : ℕ} {n : Fin M → ι} {n' : Fin M' → ι}
+    (hfreq : ∑ j, omega (n j) = ∑ j, omega (n' j)) : M = M' := by
+  refine card_eq_of_tupleCount_eq (n := n) (n' := n') ?_
+  refine monomialFrequency_injective h ?_
+  rw [monomialFrequency_tupleCount, monomialFrequency_tupleCount]
+  exact hfreq
+
 end
 
 end GaloisForLFunctions.HTGeometry

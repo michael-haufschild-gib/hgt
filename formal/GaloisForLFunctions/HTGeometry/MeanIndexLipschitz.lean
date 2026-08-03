@@ -32,7 +32,7 @@ private theorem exp_ratio_correction {h : ℝ} (hh : 0 < h) (y : ℝ) :
     congr 1
     ring
   have hpos : (0 : ℝ) < Real.exp h := Real.exp_pos h
-  have hgt : 1 < Real.exp h := Real.one_lt_exp_iff_of_pos hh |>.mpr hh
+  have hgt : (1 : ℝ) < Real.exp h := by simpa using Real.exp_lt_exp.mpr hh
   have hne : Real.exp h - 1 ≠ 0 := by linarith
   rw [hq, Real.exp_neg]
   rw [div_eq_div_iff (by
@@ -75,9 +75,8 @@ theorem abs_meanIndex_sub_centralIndex_le_lipschitz
     exact exp_ratio_correction hh (x + h)
   have hcorr2 : (Real.exp (x - h) / Real.exp x) / (1 - Real.exp (x - h) / Real.exp x)
       = 1 / (Real.exp h - 1) := by
-    have h2 : x = (x - h) + h := by ring
-    nth_rewrite 1 [h2]
-    nth_rewrite 2 [h2]
+    have h2 : Real.exp x = Real.exp (x - h + h) := by rw [show x - h + h = x from by ring]
+    rw [h2]
     exact exp_ratio_correction hh (x - h)
   rw [hlog1, hlog2, hcorr1, hcorr2] at hbase
   refine le_trans hbase ?_
@@ -89,7 +88,7 @@ theorem abs_meanIndex_sub_centralIndex_le_lipschitz
     linarith
   -- the two logarithms
   have hcpos : (0 : ℝ) < Real.exp h - 1 := by
-    have : (1 : ℝ) < Real.exp h := Real.one_lt_exp_iff_of_pos hh |>.mpr hh
+    have : (1 : ℝ) < Real.exp h := by simpa using Real.exp_lt_exp.mpr hh
     linarith
   have hAnn : (0 : ℝ) < (centralIndex a (Real.exp x) : ℝ) + 2 * L * h + 1
       + 1 / (Real.exp h - 1) := by
@@ -122,11 +121,18 @@ theorem abs_meanIndex_sub_centralIndex_le_lipschitz
         + 1 / (Real.exp h - 1)) / h
       ≤ Real.log ((centralIndex a (Real.exp x) : ℝ) + 2 * L * h + 1
         + 1 / (Real.exp h - 1)) / h :=
-    div_le_div_of_nonneg_right hlogA hh
+    div_le_div_of_nonneg_right hlogA hh.le
   have hdiv2 : Real.log (((centralIndex a (Real.exp x) : ℝ) + 1) + 1 / (Real.exp h - 1)) / h
       ≤ Real.log ((centralIndex a (Real.exp x) : ℝ) + 2 * L * h + 1
         + 1 / (Real.exp h - 1)) / h :=
-    div_le_div_of_nonneg_right hlogB hh
+    div_le_div_of_nonneg_right hlogB hh.le
+  have hdouble : 2 * Real.log ((centralIndex a (Real.exp x) : ℝ) + 2 * L * h + 1
+        + 1 / (Real.exp h - 1)) / h
+      = Real.log ((centralIndex a (Real.exp x) : ℝ) + 2 * L * h + 1
+          + 1 / (Real.exp h - 1)) / h
+        + Real.log ((centralIndex a (Real.exp x) : ℝ) + 2 * L * h + 1
+            + 1 / (Real.exp h - 1)) / h := by
+    ring
   linarith
 
 end GaloisForLFunctions.HTGeometry

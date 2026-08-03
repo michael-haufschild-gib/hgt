@@ -165,7 +165,7 @@ marked explicitly; all others remain live at their stated open core.
 | O | open | literal cofinal restricted-Weil floor convergence/nonnegativity |
 | P | open | source-built compact completed-seam moment/Markov carrier |
 | Q | open/secondary | source boundary Jensen/jet saturation |
-| R | open; hyperbolic Cartier trivialization constructed | source positive same-fibre polarization and independent Stokes-flatness law on the actual Xi conormal |
+| R | open; positive resolved Stokes polarization constructed | source rigidity identifying the parallel metric field with the fixed same-fibre Cartier metric on the actual Xi conormal |
 | S | upstream/secondary | independent source algebraicity or divisor-preserving dynamics |
 
 ### Corpus-native route space beyond classical templates
@@ -177,16 +177,18 @@ zero-fed spectra, or determinant limits:
 | Corpus-forced primitive | Formal evidence | Present status |
 |---|---|---|
 | pre-projection principal-relative current | Route-J energy divergence, diagonal-retention, and endpoint-completeness theorems exclude every advertised post-projection capacity repair | positive survivor of retired J; a new route if constructed |
-| nonseparable prime/depth--divisor arithmetic differential | `θ(i,j)=m_iλ_j-m_jλ_i` has exact curvature `-log(2)/8`, no vertex potential, and no clock-difference representation; crossed BV/clock occupation legs produce an independent equal-grade graded-`det2` counterboundary; reflection double is determinant-one and hyperbolic-Stokes flat at every rate | constructed Route R corrected square and nonselective Cartier trivialization; positive same-fibre producer remains open |
+| nonseparable prime/depth--divisor arithmetic differential | `θ(i,j)=m_iλ_j-m_jλ_i` has exact curvature `-log(2)/8`, no vertex potential, and no clock-difference representation; crossed BV/clock occupation legs produce an independent equal-grade graded-`det2` counterboundary; resolved frames carry a positive definite parallel Hermitian metric; its fixed-source excess is the exact square `a²θ(i,j)²|c|²/(λ_i²λ_j²)` | constructed Route R corrected square, positive resolved Stokes polarization, and sharp fixed-Cartier descent obstruction; source rigidity of the two metrics remains open |
 | source-first chain descent rather than post hoc cohomology | the ordinary Wold/BV Hochschild boundary exists, but physical landing reads exactly the nonzero Burnol/Deninger radial defect | live Route L open core |
 | moving, all-order, provenance-preserving carrier | finite Möbius/Wold moments are parity-blind and fixed finite selectors are saturated | live Routes E and P at distinct source laws |
 | source algebraicity or divisor-preserving dynamics | HTGeometry supplies independent rigidity and transversality but no Xi-source handoff | upstream Route S; not yet a proof route |
 
 This table mixes constructed routes with exact design constraints. Route R's differential,
-independent equal-grade corrected square, and reflection-hyperbolic Cartier trivialization exist
-unconditionally in Lean. Positive diagonal descent has a complete boundary-triviality-to-RH
-endpoint; what does not exist is the source theorem creating that positive same-fibre line and
-proving it Stokes-flat. Route L likewise has an exact tail to RH but not its strict
+independent equal-grade corrected square, reflection-hyperbolic Cartier trivialization, and
+positive resolved Hermitian polarization with unconditional Stokes parallelism exist in Lean.
+The fixed source/Cartier metric differs on the literal vertical conormal by one explicit
+nonnegative BV--Wold square; global vanishing of that square is RH. What does not exist is source
+rigidity identifying the transported metric field with that fixed same-fibre metric. Route L
+likewise has an exact tail to RH but not its strict
 descent. The post-J pre-projection current is only a falsifiable successor class until a literal
 source object and unconditional handoff are built. Its construction must be recorded as a new
 route unless it is literally Route R, not used to reopen J. The ambient discrete-connection
@@ -4091,23 +4093,28 @@ unordered scalar sums, scalar distributions after frequency separation, and boun
 label-blind fusion. The constructed BV--Wold connection proves that their surviving
 sign-indefinite, relation-valued category is nonempty.
 
-**Exact open core.** Construct from literal arithmetic source data a positive same-fibre
-polarization for the reflection double and prove that this line is Stokes-flat on the actual
-leading Xi conormal without assuming divisor location. Reflection already supplies reciprocal
-anomalies `diag(A,A⁻¹)`, determinant one, and a preserved hyperbolic pairing for every centered
-rate. The positive diagonal is preserved exactly when `A=1`; on the witness this is exactly
-criticality. Thus “source Stokes/Cartier trivialization” without a positivity and same-fibre
-requirement is now closed as nonselective. Constructing the nonseparable differential, an
-equal-grade counterboundary, or an indefinite trivialization is no longer the gap.
+**Exact open core.** Prove from literal arithmetic source structure that the constructed positive
+parallel polarization is the fixed same-fibre Cartier polarization on the actual leading Xi
+conormal, without assuming divisor location.  The resolved frame now supplies
+`H_(a,i)(z)=‖G_(a,i)z‖²`, strict positivity, and
+`H_(a,i)(R_(a,ij)z)=H_(a,j)(z)` for every centered rate.  Freezing the source metric at `a=0`
+and transporting the clock-normalized vertical conormal gives exact excess
+`a² θ(i,j)² |c|²/(λ_i² λ_j²)`.  On the nonzero Xi conormal and witness edge this vanishes exactly
+at criticality.  Thus positivity and Stokes flatness separately are no longer missing; their
+same-fibre identification is the RH-bearing law. Constructing another nonseparable differential,
+equal-grade counterboundary, indefinite trivialization, or transported metric is no longer the
+gap.
 
 **Strongest survivor.** Route R contains a complete source-to-Xi Krein producer, a constructed
 pre-scalar nonseparable curved differential, exact reflection covariance, and an independently
 defined equal-grade graded-`det2` counterboundary whose corrected square vanishes unconditionally
 on the actual Xi conormal. Its reflection double has determinant one and preserves its hyperbolic
-Stokes form unconditionally. A concrete nonzero-rate witness proves these facts do not preserve
-the positive diagonal. Positive diagonal descent is equivalent to boundary triviality and hence
-globally to RH. A successful Route-R theorem must now create that positive same-fibre polarization
-and its flatness from source structure not already present.
+Stokes form unconditionally.  Its resolved frame also carries a positive definite Hermitian
+polarization preserved by every resolved transition.  A concrete nonzero-rate witness proves
+that this transported positive field is not the fixed source metric: their vertical-conormal
+energy difference is a strict square. Positive fixed-metric descent is equivalent to boundary
+triviality and hence globally to RH. A successful Route-R theorem must now prove the source
+rigidity identifying those two already constructed polarizations.
 
 **Formal anchors.** `WoldSieveNormalConeVonMangoldt.lean`,
 `WoldEulerActivationHolonomy.lean`, `EulerActivationSquarefreeDisintegration.lean`,
@@ -4125,7 +4132,8 @@ and its flatness from source structure not already present.
 `PrimeDepthBVWoldCurvedSourceDifferential.lean`,
 `PrimeDepthBVWoldResolvedXiLandingAnnihilation.lean`,
 `PrimeDepthBVWoldGradedDet2ScalarDescentBoundary.lean`,
-`PrimeDepthBVWoldGradedDet2StokesCartierTrivialization.lean`, and
+`PrimeDepthBVWoldGradedDet2StokesCartierTrivialization.lean`,
+`PrimeDepthBVWoldPositiveStokesPolarization.lean`, and
 `GammaSewnMobiusXiWardCofinalBoundaryLift.lean`.
 
 **Essential-edge `det2` / BV classification.** The sharp `ell2`/not-`ell1`
@@ -4187,8 +4195,8 @@ Xi conormal.  This is not RH: on the exact three-depth witness, `Boundary=0` iff
 `Re(rho)=1/2`, and its global triviality is equivalent to RH. Reflection gives the reciprocal
 double `diag(Anom,Anom⁻¹)`. Its determinant and hyperbolic Stokes form trivialize for every rate,
 while its positive diagonal descends exactly at rate zero. The frontier has therefore moved from
-an unspecified Stokes/Cartier trivialization to construction and flatness of a positive
-same-fibre polarization.
+an unspecified positive Stokes polarization to source rigidity of two explicit positive metrics:
+the unconditionally parallel resolved field and the fixed same-fibre Cartier field.
 
 ### Non-route coordinate — divisor-fed prime-seam submass
 
