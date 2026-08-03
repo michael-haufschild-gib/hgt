@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.FunctionFieldPullback
 import Mathlib.AlgebraicGeometry.Scheme
 import Mathlib.CategoryTheory.Limits.Shapes.Equalizers
 
@@ -41,6 +42,20 @@ theorem projection_desc {Y : Scheme.{u}} (f : X ⟶ Y) (hf : s ≫ f = t ≫ f) 
 theorem hom_ext {Y : Scheme.{u}} {f g : Q.quotient ⟶ Y}
     (h : Q.projection ≫ f = Q.projection ≫ g) : f = g :=
   Cofork.IsColimit.hom_ext Q.isColimit h
+
+/-- A dominant morphism descended from an integral scheme quotient induces the canonical
+injective pullback on function fields. -/
+noncomputable def descendedFunctionFieldPullback
+    {Y : Scheme.{u}} [IsIntegral Q.quotient] [IsIntegral Y]
+    (f : X ⟶ Y) (hf : s ≫ f = t ≫ f) [IsDominant (Q.desc f hf)] :
+    Y.functionField ⟶ Q.quotient.functionField :=
+  (Q.desc f hf).functionFieldPullback
+
+theorem descendedFunctionFieldPullback_injective
+    {Y : Scheme.{u}} [IsIntegral Q.quotient] [IsIntegral Y]
+    (f : X ⟶ Y) (hf : s ≫ f = t ≫ f) [IsDominant (Q.desc f hf)] :
+    Function.Injective (Q.descendedFunctionFieldPullback f hf) :=
+  Scheme.Hom.functionFieldPullback_injective (Q.desc f hf)
 
 /-- An endomorphism preserving both legs of the quotient relation descends. -/
 def descendEndomorphism (alpha : X ⟶ X) (beta : R ⟶ R)
@@ -147,6 +162,15 @@ theorem descendIso_hom (alpha : X ≅ X) (beta : R ≅ R)
     (Q.descendIso alpha beta hs ht hsInv htInv).hom =
       Q.descendEndomorphism alpha.hom beta.hom hs ht :=
   rfl
+
+/-- A descended quotient automorphism acts contravariantly on the quotient function field. -/
+noncomputable def descendIsoFunctionFieldEquiv [IsIntegral Q.quotient]
+    (alpha : X ≅ X) (beta : R ≅ R)
+    (hs : beta.hom ≫ s = s ≫ alpha.hom) (ht : beta.hom ≫ t = t ≫ alpha.hom)
+    (hsInv : beta.inv ≫ s = s ≫ alpha.inv) (htInv : beta.inv ≫ t = t ≫ alpha.inv) :
+    Q.quotient.functionField ≃+* Q.quotient.functionField :=
+  Scheme.Iso.functionFieldPullbackRingEquiv
+    (Q.descendIso alpha beta hs ht hsInv htInv)
 
 end SchemeQuotientPresentation
 

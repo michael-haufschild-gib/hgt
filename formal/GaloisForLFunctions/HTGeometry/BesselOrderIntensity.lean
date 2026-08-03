@@ -142,6 +142,22 @@ theorem realModifiedBesselKOrder_not_eventually_polynomialExponential_upper
     (realModifiedBesselKOrder_pos hs x) (div_pos (by norm_num) hs)
     (fun n hn => realModifiedBesselKOrder_factorial_lower hs hx hn) hC hA d
 
+/-- No polynomial-times-exponential upper envelope can hold after sampling a positive integer
+period. -/
+theorem realModifiedBesselKOrder_not_eventually_polynomialExponential_upper_multiple
+    {s x C A : ℝ} (hs : 0 < s) (hx : 1 ≤ x)
+    {ell : ℕ} (hell : 1 ≤ ell) (hC : 0 < C) (hA : 0 < A) (d : ℕ) :
+    ¬ (∀ᶠ n : ℕ in atTop,
+      realModifiedBesselKOrder s (x + (ell * n : ℕ)) ≤
+        C * ((n : ℝ) + 1) ^ d * A ^ n) := by
+  exact not_eventually_polynomial_exponential_upper_of_factorial_lower_multiple
+    (g := fun n => realModifiedBesselKOrder s (x + (ell * n : ℕ)))
+    (realModifiedBesselKOrder_pos hs x) (div_pos (by norm_num) hs) hell
+    (fun n hn => realModifiedBesselKOrder_factorial_lower hs hx
+      (by exact Nat.one_le_iff_ne_zero.mpr (mul_ne_zero
+        (Nat.one_le_iff_ne_zero.mp hell) (Nat.one_le_iff_ne_zero.mp hn))))
+    hC hA d
+
 /-- The reflected real intensity likewise admits no polynomial-times-exponential upper envelope. -/
 theorem realModifiedBesselOrderIntensity_not_eventually_polynomialExponential_upper
     {s x C A : ℝ} (hs : 0 < s) (hx : 3 ≤ x) (hC : 0 < C) (hA : 0 < A)
@@ -171,6 +187,40 @@ theorem realModifiedBesselOrderIntensity_not_eventually_polynomialExponential_up
         exact mul_le_mul_of_nonneg_left hfac
           (mul_nonneg hy₀.le
             (pow_nonneg (div_pos (by norm_num) hs).le (2 * n)))) hC hA d
+
+/-- The reflected intensity also excludes polynomial-times-exponential growth on every positive
+integer-period progression. -/
+theorem realModifiedBesselOrderIntensity_not_eventually_polynomialExponential_upper_multiple
+    {s x C A : ℝ} (hs : 0 < s) (hx : 3 ≤ x)
+    {ell : ℕ} (hell : 1 ≤ ell) (hC : 0 < C) (hA : 0 < A) (d : ℕ) :
+    ¬ (∀ᶠ n : ℕ in atTop,
+      realModifiedBesselKOrder s (x + (ell * n : ℕ)) *
+          realModifiedBesselKOrder s (x - 2 + (ell * n : ℕ)) ≤
+        C * ((n : ℝ) + 1) ^ d * A ^ n) := by
+  let c : ℝ := (2 / s) ^ 2
+  have hc : 0 < c := pow_pos (div_pos (by norm_num) hs) 2
+  have hy₀ : 0 < realModifiedBesselKOrder s x * realModifiedBesselKOrder s (x - 2) :=
+    mul_pos (realModifiedBesselKOrder_pos hs x)
+      (realModifiedBesselKOrder_pos hs (x - 2))
+  exact not_eventually_polynomial_exponential_upper_of_factorial_lower_multiple
+    (g := fun n => realModifiedBesselKOrder s (x + (ell * n : ℕ)) *
+      realModifiedBesselKOrder s (x - 2 + (ell * n : ℕ))) hy₀ hc hell (by
+        intro n hn
+        have hN : 1 ≤ ell * n := Nat.one_le_iff_ne_zero.mpr (mul_ne_zero
+          (Nat.one_le_iff_ne_zero.mp hell) (Nat.one_le_iff_ne_zero.mp hn))
+        have hsq := realModifiedBesselOrderIntensity_factorialSq_lower hs hx hN
+        have hfac : (((ell * n).factorial : ℝ)) ≤
+            ((ell * n).factorial : ℝ) ^ 2 := by
+          have h1 : (1 : ℝ) ≤ (ell * n).factorial := by
+            exact_mod_cast Nat.factorial_pos (ell * n)
+          nlinarith
+        refine lt_of_le_of_lt ?_ hsq
+        dsimp [c]
+        rw [← pow_mul]
+        exact mul_le_mul_of_nonneg_left hfac
+          (mul_nonneg hy₀.le
+            (pow_nonneg (div_pos (by norm_num) hs).le (2 * (ell * n)))))
+    hC hA d
 
 end
 

@@ -6,7 +6,8 @@
 - **Parent:** `../../1-in-progress/continuum-chronometric-equivalence-theorem.md`
 - **Lean:**
   `formal/GaloisForLFunctions/HTGeometry/ClockPropagatorSelfCalibration.lean`,
-  `formal/GaloisForLFunctions/HTGeometry/ClockPrincipalSymbolCalibration.lean`
+  `formal/GaloisForLFunctions/HTGeometry/ClockPrincipalSymbolCalibration.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockCalibrationFailureModes.lean`
 - **Status:** operator and principal-symbol reconstruction paper-proved and formalized
   unconditionally in Lean; physical recovery of complete dressed Green operators remains open.
 
@@ -224,7 +225,32 @@ Required hypotheses are load-bearing:
 
 If either endpoint gain varies independently by species, two masses do not identify a common
 \(\kappa\). If nonminimal couplings differ, \(P_{\mu_1}-P_{\mu_2}\) need not be a pure mass
-multiple. These are exact failure modes, not technicalities.
+multiple. These are exact failure modes, not technicalities, and both are now proved sharp:
+
+- the two-mass residual is free of the geometric operator **exactly when** the two species dress it
+  identically, \(B_1XA_1=B_2XA_2\) for every \(X\); explicit unequal gains make the residual depend
+  on \(P_0\), so it is not a calibration datum at all;
+- with invertible endpoint gains, the dressed difference is the calibration product scaled by a
+  constant **exactly when** the undressed coupling difference is that constant; a non-scalar
+  coupling difference — a differing principal part or a nonminimal curvature coupling — leaves a
+  residual that is not a calibration for any constant.
+
+## Lean status of the failure modes
+
+`formal/GaloisForLFunctions/HTGeometry/ClockCalibrationFailureModes.lean`:
+
+- `speciesMeasuredInverse`, `speciesResidual`, `speciesResidual_eq`, `speciesResidual_zero` — the
+  residual with species-dependent endpoint gains, split into its geometric and mass parts;
+- `speciesResidual_geometryFree_iff` — geometry cancels iff the dressings agree;
+- `exists_speciesResidual_depends_on_geometry` — explicit gains for which it does not;
+- `dressedCouplingDifference_eq_calibration_iff` — the residual is a pure calibration iff the
+  coupling difference is a constant;
+- `dressedCouplingDifference_ne_calibration_of_ne_algebraMap`, `exists_ne_algebraMap_prod`,
+  `exists_dressedCouplingDifference_ne_calibration` — a non-scalar coupling difference defeats
+  calibration, with an explicit witness.
+
+All depend only on `propext`, `Classical.choice`, `Quot.sound`; the two `iff` theorems need no
+choice.
 
 Published detector protocols can, at leading perturbative order and with known trajectories,
 recover both real and imaginary parts of a Wightman two-point function

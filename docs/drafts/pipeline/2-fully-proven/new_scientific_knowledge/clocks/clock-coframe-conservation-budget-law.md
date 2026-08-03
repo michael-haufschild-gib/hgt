@@ -5,7 +5,9 @@
 - **Type:** THEOREM / CONSERVATION / RELATIONAL CLOCKS / ACTIVE GRAVITY
 - **Novelty:** adaptive-source mechanism `[REDISCOVERED]`; integration into clock-only gravity
   program `[DEPENDENCY-CLOSURE]`
-- **Lean:** `formal/GaloisForLFunctions/HTGeometry/ChronometricCausalSusceptibility.lean`
+- **Lean:**
+  `formal/GaloisForLFunctions/HTGeometry/ChronometricCausalSusceptibility.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockCoframeDegeneracy.lean`
 
 ## Headline
 
@@ -93,4 +95,46 @@ row in a \(5\times5\) adaptive-source matrix:
 4. It does not remove nonlinear gauge constraints; it closes only the pointwise linear
    conservation budget used by the active-measurement theorem.
 5. Degenerate clock gradients destroy the construction. Such degeneracy is an operational
-   boundary of the proposed gravity reconstruction, not a removable technicality.
+   boundary of the proposed gravity reconstruction, not a removable technicality. This is now
+   proved sharp in both halves — see below.
+
+## Exact degeneracy boundary
+
+Drop the assumption that `(1)` is an equivalence and keep only a linear map \(\Theta:C\to V\). Call
+a defect \(b\) *absorbable* when some adaptive source cancels it, \(\exists a,\;b+\Theta(a)=0\).
+Then
+
+\[
+  \text{every defect absorbable}
+  \iff\Theta\ \text{surjective}
+  \iff\operatorname{span}\{d\phi_\ell\}=V,
+\]
+\[
+  \text{absorbing source unique}
+  \iff\Theta\ \text{injective}
+  \iff\{d\phi_\ell\}\ \text{linearly independent}.
+\]
+
+Each half of the coframe hypothesis is therefore equivalent to one half of the conservation budget,
+not merely sufficient for it. If there are fewer clock channels than defect dimensions then
+\(\operatorname{rank}\Theta<\dim V\) and some conservation defect survives every adaptive source. If
+the gradients are dependent, one defect is absorbed by many sources, so the adaptive source is not a
+datum and the separated signal channel of `(5)` is not well posed.
+
+### Lean status of the degeneracy boundary
+
+`formal/GaloisForLFunctions/HTGeometry/ClockCoframeDegeneracy.lean`:
+
+- `AbsorbsDefect`, `absorbsDefect_iff_mem_range` — absorbability is membership of the range;
+- `forall_absorbsDefect_iff_surjective` — every defect absorbable iff `Θ` is surjective;
+- `absorbing_source_unique_iff_injective` — uniqueness of the absorbing source iff `Θ` is injective;
+- `clockGradientMap`, `forall_absorbsDefect_iff_span_eq_top`,
+  `absorbing_source_unique_iff_linearIndependent` — the same two criteria stated directly on the
+  family of clock gradients, as spanning and as linear independence;
+- `exists_two_absorbing_sources_of_not_injective` — degenerate gradients give many absorbing
+  sources for one defect;
+- `exists_unabsorbable_defect_of_finrank_lt` — fewer clock channels than defect dimensions leaves
+  an unabsorbable defect;
+- `exists_unabsorbable_defect_single_clock` — an explicit witness.
+
+All depend only on `propext`, `Classical.choice`, `Quot.sound`.

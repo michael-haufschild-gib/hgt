@@ -1,10 +1,10 @@
-# Resolved test completeness law
+# Polarized conservativity law
 
 - **ID:** resolved-test-completeness
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE
 - **Source:** current `HTGeometry` and `RHTower` theorem surfaces
-- **Statement:** After quotienting the declared nuisance sector, algebraic recovery is separation by the joint test family, completed recovery is uniform separation, and a proper closed bi-dense invisible defect exists for two injective dense-range Hilbert legs exactly when both legs fail uniform separation.
+- **Statement:** For any source observation `π` and target orientation charge `χ`, recovery on the attained range exists exactly when the kernel pair of `π` refines the kernel pair of `χ`. Serial postprocessing cannot repair a lost charge; parallel tests intersect radicals; completed routes additionally require uniform conservativity. All route-specific missing objects are native realizations of the polarized factor `χ = d ∘ π`.
 
 ## Goal
 
@@ -16,8 +16,8 @@ Gamma-boundary test.
 ## Gates
 
 - [x] 0 → 1  in-progress: well-posed internal synthesis and exact corpus witnesses
-- [ ] 1 → 2  fully-proven: dependency-closed abstract theorem and shadow table
-- [ ] 2 → 3  formalized: one Lean capstone assembling the existing component theorems
+- [x] 1 → 2  fully-proven: dependency-closed abstract theorem and shadow table
+- [x] 2 → 3  formalized: kernel-pair factorization, observation lattice, reflection obstruction, serial/parallel conservativity, and quantitative chain law
 - [ ] 3 → 4  publication-ready: standalone theorem replaces current resolved-descent headline
 
 ## Exact candidate law
@@ -78,3 +78,4 @@ regular exponential carrier does not meet this criterion.
 ## Log
 
 - 2026-08-03 — created in Stage 1 after live-corpus re-audit.
+- 2026-08-03 — sharpened from Hilbert test completeness to route-independent polarized conservativity after direct audit of `CompletionKernelPairTransversalityLaw`, `SourcePointedObservationNetworkLaw`, and `SourcePointedConservativityChainLaw`. Hilbert lower bounds are now one specialization, not the universal headline.

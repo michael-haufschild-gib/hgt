@@ -251,6 +251,8 @@ formal/GaloisForLFunctions/HTGeometry/OnePowerCanonicalProductHypertranscendence
 formal/GaloisForLFunctions/HTGeometry/PowerSubstitutionForwardJet.lean
 formal/GaloisForLFunctions/HTGeometry/PowerSubstitutionForwardDA.lean
 formal/GaloisForLFunctions/HTGeometry/RationalPowerNormDichotomy.lean
+formal/GaloisForLFunctions/HTGeometry/OddPowerCanonicalProductGammaRay.lean
+formal/GaloisForLFunctions/HTGeometry/MeromorphicGammaComplexScale.lean
 ```
 
 Principal declarations:
@@ -271,6 +273,10 @@ differentiallyAlgebraic_comp_const_mul_pow_iff -- (7) in full, as an iff
 differentiallyAlgebraic_cyclicNorm_of_even     -- the even branch of (9)
 hypertranscendental_cyclicNorm_of_hypertranscendental -- the other branch of (9)
 hypertranscendental_powerCanonicalProduct_ratio -- (10) modulo (8)
+sum_inv_sub_primitiveRoot_mul             -- root-of-unity partial fractions
+inv_pow_sub_pow_eq_weighted_sum           -- residue decomposition of 1/(m^p - n^p)
+gammaScaleShiftMero, gammaRayProductMero  -- Gamma at arbitrary complex scale
+hypertranscendental_powerCanonicalProduct_odd_iff_mero -- the open core, in the mero field
 sincProduct, pi_mul_sincProduct, sincProduct_ade,
 differentiallyAlgebraic_sincProduct       -- the Euler sine product and its ADE
 powerCanonicalProduct_even_eq_prod_sinc   -- W_(2m)(-w^(2m)) = prod_(k<m) sinc(alpha^k w)
@@ -355,7 +361,29 @@ W_p(w^p) = product_(gamma^p=1) Gamma(1+gamma w)^(-1).
 ```
 
 So `W_p` HT for odd `p >= 3` is *equivalent* to hypertranscendence of a finite reciprocal-Gamma
-product at the `p`-th roots of unity — a **multi-scale** Gamma product.  The corpus owns the
+product at the `p`-th roots of unity — a **multi-scale** Gamma product.  Both the identity and the
+equivalence are now formalized (`powerCanonicalProduct_odd_pow_eq`,
+`hypertranscendental_powerCanonicalProduct_odd_iff`), so the open core is a single Lean statement:
+
+```text
+Hypertranscendental (fun z => prod_(j<p) (Gamma (omega^j * z + 1))^(-1))    for odd p >= 3.
+```
+
+The same core is also now stated inside the corpus's global meromorphic differential field.
+`MeromorphicGammaComplexScale` adds `Gamma(a z + b)` at an **arbitrary nonzero complex scale** —
+obtained by transporting `gammaShiftMero` along the existing scaling automorphism
+`complexScaleMeroEquiv` — together with the ray product `gammaRayProductMero` and the analytic
+bridge, giving
+
+```text
+hypertranscendental_powerCanonicalProduct_odd_iff_mero :
+  Hypertranscendental (powerCanonicalProduct p)
+    <-> HypertranscendentalOver (RatFunc C) (gammaRayProductMero p omega _)
+```
+
+so the gate can be attacked with the corpus's own superselection machinery.  Before this file the
+corpus had `Gamma(z+b)` (`MeromorphicGammaOrbit`) and `Gamma(n z + a)` for natural `n`
+(`MeromorphicGammaNatScale`) only; arbitrary complex scale was missing.  The corpus owns the
 common-scale and natural-scale superselection layers but not the arbitrary-complex-scale one; that
 layer is the single mathematical input still missing.
 
@@ -365,8 +393,106 @@ Milestones, in dependency order:
 O1  W_1(z) = exp(-gamma_E z) * Gamma(z+1)^(-1)        [DONE: powerCanonicalProduct_one_eq]
 O2  W_1 hypertranscendental              [DONE: hypertranscendental_powerCanonicalProduct_one]
 O3  W_(1/q) HT for every q >= 1     [DONE: hypertranscendental_powerCanonicalProduct_inv_nat]
-O4  multi-scale root-of-unity reciprocal-Gamma product is HT   (open layer)
+O4  multi-scale root-of-unity reciprocal-Gamma product is HT   (OPEN; statement now in Lean as
+    the right-hand side of hypertranscendental_powerCanonicalProduct_odd_iff, and in the
+    meromorphic field as hypertranscendental_powerCanonicalProduct_odd_iff_mero)
 O5  W_p hypertranscendental for every odd p             (O4 + the p=q cyclic norm)
+```
+
+### Attack plan for `O4`
+
+Three equivalent forms of the open core (all three equivalences are formalized, via the monomial
+invariance of `(7)`):
+
+```text
+(a)  W_p is hypertranscendental,                                p odd, p >= 3;
+(b)  prod_(j<p) Gamma(omega^j z + 1)^(-1) is hypertranscendental;
+(c)  T_p(u) = sum_(n>=1) 1/(n^p + u) is hypertranscendental.
+```
+
+Form `(c)` is the sharpest formulation: `T_p` is meromorphic with simple poles exactly at `-n^p`,
+all residues `1`.  For even `p` it is elementary in `u^(1/p)` (the `p`-th roots of unity pair off
+into sines) and hence DA; parity, not pole spacing, is what decides the dichotomy, so any proof must
+see the pairing.
+
+The corpus's several-automorphism Ostrowski layer is the natural engine:
+
+```text
+ElementaryOstrowski.differentialIndependent_of_no_constant_simultaneous_jet_telescoping
+AutomorphismFamilyOstrowski.automorphismFamily_differentialIndependent_of_no_constant_simultaneous_jet_telescoping
+SourceLogarithmicBoundary.automorphismFamily_differentialIndependent_iff_no_constant_simultaneous_jet_telescoping
+```
+
+It reduces hypertranscendence to non-solvability of a coboundary equation, but it requires
+*base-field* increments for **every** (automorphism, primitive) pair.  With the single translation
+`sigma : z |-> z+1` only the `j = 0` factor has a rational increment, `sigma(psi(z+1)) - psi(z+1) =
+1/(z+1)`; for `j != 0` the increment `psi(omega^j z + omega^j + 1) - psi(omega^j z + 1)` is not
+rational.  The workable shape is therefore:
+
+```text
+base field   K = the sigma-stable differential subfield generated by C(z) and
+                 { psi^(r)(omega^j z + m omega^j + 1) : 1 <= j <= p-1, m in Z, r >= 0 },
+primitive    u_0 = psi(z+1),   increment  1/(z+1) in C(z) subset K,
+conclusion   u_0 differentially independent over K, hence Phi = sum_j omega^j u_j is HT over C(z),
+             because Phi - u_0 lies in K.
+```
+
+The one genuine obligation is the non-telescoping hypothesis: no nonzero constant-coefficient
+combination of the jets of `1/(z+1)` is `sigma(k) - k` for `k in K`.
+
+**Negative finding (2026-08-03).**  The Ostrowski route above cannot be completed in the corpus's
+framework as it stands, and neither can the superselection route.  Both engines require *base-field*
+increments for **every** (automorphism, primitive) pair, and for a multi-scale Gamma family the
+increment `psi(lambda z + a + lambda h) - psi(lambda z + a)` is rational only when `lambda h` is an
+integer.  With scales `omega^j` and translations `omega^(-k)` this happens exactly on the diagonal
+`j = k`, because `omega^(j-k)` is real only for `j = k` when `p` is odd.  No enlargement of the
+automorphism family repairs this: the shift group `Z[omega]` never makes two different scales
+integral simultaneously.  So the multi-scale statement is *not* a missing instantiation of existing
+machinery — it needs a different mechanism.
+
+**Correction (2026-08-03): the Laurent constant does *not* see the parity.**  An earlier note on
+this card claimed a surviving `log N` in the Laurent constant for odd `p`.  That is wrong; the
+logarithms cancel for every `p`.  The exact computation, from the residue decomposition
+`inv_pow_sub_pow_eq_weighted_sum`, is
+
+```text
+h_N := sum_(m>=1, m != N) 1/(m^p - N^p)
+     = (1/(p N^(p-1))) [ -H_(N-1) + gamma
+                         - sum_(j != 0) omega^(-j) psi(1 - omega^(-j) N)
+                         - (1/N) sum_(j != 0) omega^(-j)/(1 - omega^(-j)) ].
+```
+
+The `j = 0` branch supplies `-H_(N-1) ~ -log N`; the branches `j != 0` supply
+`-sum_(j != 0) omega^(-j) log N = +log N` because `sum_(j != 0) omega^(-j) = -1`.  The two cancel,
+leaving
+
+```text
+h_N = ( -C_1 + p/(2N) - C_2/N + O(1/N^2) ) / (p N^(p-1)),
+C_1 = sum_(j != 0) omega^(-j) log(-omega^(-j)),  C_2 = sum_(j != 0) omega^(-j)/(1 - omega^(-j)).
+```
+
+Two independent checks: for `p = 2` the formula gives `h_N = 3/(4 N^2)` exactly, matching a direct
+telescoping evaluation; for `p = 4` it gives `h_N * 4 N^3 = (2 - C_2)/N - pi coth(pi N)`, whose
+asymptotic constant is `-C_1 = -pi != 0`.  Since `W_4` is differentially algebraic, a nonzero
+asymptotic constant is *not* an obstruction, and neither is irrationality of the constant.  So no
+purely local pole-data invariant decides the dichotomy: `W_2` and `W_4` are DA with the same kind of
+Laurent data as `W_3`.
+
+**Where the parity actually sits.**  It is a property of the *multiset of scales*, not of any single
+pole: `prod_(j<p) Gamma(omega^j z + 1)^(-1)` collapses to elementary sine factors exactly when the
+scales are closed under negation with matching charges, i.e. exactly when `p` is even, via
+`Gamma(1+x) Gamma(1-x) = pi x / sin(pi x)`.  The theorem to prove is therefore a genuine
+**multi-scale Gamma superselection**: a finite product `prod_i Gamma(lambda_i z + mu_i)^(m_i)` times
+a DA gauge is DA iff the reflection pairing cancels every charge.  The corpus proves this for a
+common scale and for natural scales; the root-of-unity scale case is the open gate.
+
+Revised milestones:
+
+```text
+O4a  the reflection norm law  W_p(u) W_p(-u) = W_(2p)(-u^2)                 [DONE]
+O4b  root-of-unity partial fractions and the residue decomposition          [DONE]
+O4c  the reflection collapse at the level of scales, Gamma(1+x)Gamma(1-x)
+O4d  multi-scale Gamma superselection at root-of-unity scales               (the open gate)
 ```
 
 `O3` is proved, so the card's headline consequence `(10)` now holds unconditionally in Lean for the

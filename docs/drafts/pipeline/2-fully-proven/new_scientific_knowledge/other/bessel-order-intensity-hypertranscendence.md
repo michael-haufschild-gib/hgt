@@ -6,9 +6,10 @@
 - **Statement:** For every real `s > 0`, both `ν ↦ K_ν(s)` and
   `ν ↦ K_ν(s) K_{ν-2}(s)` are hypertranscendental over `ℂ(ν)`.
 - **Status:** `[PROVED HERE]` on paper; novelty search found no collision; Lean formalization has
-  closed every analytic, recurrence, scalar-annihilator, progression-growth, and factorial-growth
-  obligation. The exact Dreyfus higher-order classification theorem remains unformalized, so this
-  card is not promoted.
+  closed every analytic, recurrence, scalar-annihilator, arbitrary-period progression-growth,
+  factorial-growth, rational-Riccati, meromorphic intensity-recovery, and physical-scan obligation.
+  The exact Dreyfus higher-order classification theorem remains unformalized, so this card is not
+  promoted.
 
 ## Theorem
 
@@ -208,7 +209,7 @@ backreaction, and collapse stability remain outside the model.
 - [x] Formalize the symmetric-square system `(5)` and scalar-annihilator existence `(7)`.
 - [x] Formalize periodic-progression rational-exponential upper growth.
 - [x] Formalize recurrence lower bounds `(10)`--`(11)` and the growth contradiction.
-- [ ] Prove affine-change and nonzero-DA-factor preservation for the physical scan.
+- [x] Prove affine-change and nonzero-DA-factor preservation for the physical scan.
 
 ## Primary sources
 
@@ -247,3 +248,17 @@ backreaction, and collapse stability remain outside the model.
 - 2026-08-03 — formal audit isolated one remaining dependency: Dreyfus Theorem 1/Corollary 2 itself
   (parameterized Picard--Vessiot/difference-Galois classification). No corresponding formal theory
   exists in mathlib or this repository; no axiom or conditional substitute was introduced.
+- 2026-08-03 — closed the exact meromorphic recurrence and quartic intensity-to-order recovery in
+  `BesselOrderMeromorphic`: differential algebraicity of the intensity now forces differential
+  algebraicity of the order carrier, so a separate rank-three classification theorem is unnecessary.
+- 2026-08-03 — closed the omitted positive-integer-period case in `BesselOrderFactorialGrowth`,
+  `BesselOrderIntensity`, and `BesselOrderDreyfusSeam`.  The contradiction now applies to the
+  `ell`-period progressions produced by Dreyfus, not only to a unit-step progression.
+- 2026-08-03 — proved in `BesselOrderRiccati` that the rank-two order recurrence has no rational
+  Riccati solution for every nonzero slope, including `2 / s` for `s > 0`.  Reduced numerator and
+  denominator divisibility force a common nonunit factor; the remaining unit case contradicts
+  polynomial degree.  This supplies the exact ordinary irreducibility obstruction but does not
+  replace the missing parameterized Picard--Vessiot classification.
+- 2026-08-03 — closed the exact extremal physical scan in `BesselOrderPhysicalScan`: affine order
+  transport, multiplication by the nonzero entire DA Good prefactor, and the physical prefactor
+  identity are all Lean-proved.

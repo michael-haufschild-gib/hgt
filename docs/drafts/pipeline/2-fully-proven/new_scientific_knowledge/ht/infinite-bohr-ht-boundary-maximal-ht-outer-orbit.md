@@ -597,9 +597,28 @@ Remaining on this card:
      `closure O ⊆ O ∪ ⋂_M closure (G '' {|t| > M})`: a limit of orbit points is either an orbit point
      or a cluster point of the orbit at arbitrarily large times.
 
-   What is left of the closure step is the identification of that cluster set with `B`: an
-   ultrafilter along the cocompact filter converges on the compact phase torus, and the asymptotic
-   comparison then identifies its limit with the corresponding boundary state;
+   That identification is now proved too:
+
+   - **`clusterAtInfinity_subset_range`** -- on a compact parameter space, every cluster point at
+     infinity of an asymptotic orbit is a value of the family.  An ultrafilter refining
+     `comap G (𝓝 y) ⊓ cocompact ℝ` converges on the compact parameter space, and
+     `Tendsto.congr_uniformity` transports its limit through the asymptotic comparison;
+   - **`closure_range_subset_union_range`** and **`closure_range_eq_union_range`** -- hence
+     `closure O = O ∪ B` for an orbit asymptotic to a continuous family along a flow with dense
+     forward tails.  This is equation (12) of the card, with disjointness supplied separately by
+     `expSeriesCarrier_phase_eq_of_tendsto_zero`.
+
+   The concrete statement is assembled too: `circlePhaseFlow` reads the phase flow in the circle
+   group of each coordinate, `unitTorusHomeomorphCircles` identifies the two models of the torus,
+   `dense_forwardOrbit_circlePhaseFlow` transports forward density through that homeomorphism, and
+
+   - **`bohrHull_closure_range_eq`** -- for an exponential carrier with summable weights and
+     rationally independent frequencies, an orbit asymptotic to the phase hull along the phase flow
+     has closure exactly the orbit together with the whole hull.
+
+   The only input left is the Stieltjes comparison `dist(G_t, hull(phase t)) → 0` along the cocompact
+   filter, which the card imports from the Herglotz engine and which enters this theorem as its one
+   explicit hypothesis;
 2. all-power differential independence -- claim (1) -- which needs a *power gauge* for the corpus's
    `FamilyDifferentiallyAlgebraicOn`: a relation among `N`-th powers pulls back to a relation among
    the functions, by injectivity of the jet substitution `y_k ↦ (y^N)^(k)`.  The existing gauge

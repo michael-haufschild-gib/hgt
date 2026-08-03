@@ -7,7 +7,8 @@
 - **Lean:**
   `formal/GaloisForLFunctions/HTGeometry/ClockPropagatorSelfCalibration.lean`,
   `formal/GaloisForLFunctions/HTGeometry/ClockPrincipalSymbolCalibration.lean`,
-  `formal/GaloisForLFunctions/HTGeometry/ClockLocalityDistributionKernel.lean`
+  `formal/GaloisForLFunctions/HTGeometry/ClockLocalityDistributionKernel.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockLocalityNullTest.lean`
 - **Status:** complete mathematical locality law and differential-algebraic residual obstruction
   formalized unconditionally in Lean; experimental response reconstruction remains open.
 
@@ -88,6 +89,14 @@ This is exact in a noncommutative operator algebra. \(\square\)
 Within the stated two-species model class, any measured residual containing an order-one or
 order-two derivative term, or any kernel support away from \(x=y\), contradicts `(1)`.
 
+This converse is now formalized rather than asserted:
+
+- `ScalarSecondOrderOperator.ne_twoMassDifference_of_first_ne_zero` and
+  `ne_twoMassDifference_of_second_ne_zero` — a residual carrying a nonzero first- or second-order
+  coefficient is not a two-mass inverse difference of the model class;
+- `notMem_dsupport_twoMassClockLocalityKernel_of_ne` — no point off the diagonal lies in the
+  support of a two-mass residual kernel fiber.
+
 At least one premise must then fail:
 
 - no common local metric principal part;
@@ -100,6 +109,24 @@ At least one premise must then fail:
 
 Thus a nonlocal residual is not by itself proof of quantum gravity. It is a sharp falsification of
 the complete single-metric, minimal-coupling, common-calibration hypothesis.
+
+## No memory tail
+
+Claim 4 of the kernel list is the only one that is not a restatement of the operator identity, and
+it is where the physical content lives. Call a response operator *memoryless* when its output at
+each instant depends only on the input at that instant. Then:
+
+- a residual acting by pointwise multiplication is memoryless;
+- there are response operators that both carry genuine memory whose difference is nevertheless a
+  pointwise multiplication, hence memoryless.
+
+So locality of the residual is not inherited from locality of the responses. It is **created by the
+cancellation**. This is the exact sense of the public translation below.
+
+`formal/GaloisForLFunctions/HTGeometry/ClockLocalityNullTest.lean`: `Memoryless`,
+`memoryless_pointwiseMul`, `memoryless_residual_of_pointwiseMul`, `not_memoryless_delay`,
+`exists_memoryful_responses_with_memoryless_residual`. All depend only on `propext`,
+`Classical.choice`, `Quot.sound`.
 
 ## Hypertranscendental strengthening
 

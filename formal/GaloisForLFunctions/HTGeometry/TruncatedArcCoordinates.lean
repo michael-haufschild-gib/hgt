@@ -82,6 +82,66 @@ theorem truncatedArcLinearEquiv_apply_zero (n : ℕ) (z : TruncatedArcAlgebra R 
     rfl]
   exact truncatedArcLinearEquivRaw_apply_zero R n z
 
+/-- Coefficient coordinates of a polynomial class are its coefficients below the truncation
+order. -/
+theorem truncatedArcLinearEquiv_mk_apply (n : ℕ) (p : R[X]) (j : Fin (n + 1)) :
+    truncatedArcLinearEquiv R n (Ideal.Quotient.mk (truncatedArcIdeal R n) p) j =
+      p.coeff j := by
+  change (AdjoinRoot.powerBasisAux' (monic_X.pow (n + 1))).repr
+      (Ideal.Quotient.mk (truncatedArcIdeal R n) p)
+      ((truncatedArcIndexEquiv R n).symm j) = p.coeff j
+  rw [AdjoinRoot.powerBasisAux'_repr_apply_to_fun]
+  change (p %ₘ (X ^ (n + 1))).coeff ((truncatedArcIndexEquiv R n).symm j) = p.coeff j
+  have hj : (((truncatedArcIndexEquiv R n).symm j : Fin _) : ℕ) = j := rfl
+  rw [hj]
+  have hdvd : X ^ (n + 1) ∣ p %ₘ (X ^ (n + 1)) - p :=
+    dvd_modByMonic_sub p (X ^ (n + 1))
+  have hc := (X_pow_dvd_iff.mp hdvd) j j.isLt
+  simpa [coeff_sub, sub_eq_zero] using hc
+
+variable {K S : Type u} [CommRing K] [CommRing S]
+variable [Nontrivial S] [Algebra K R] [Algebra K S]
+
+/-- Truncated-disc coefficient coordinates commute with extension of coefficient algebras. -/
+theorem truncatedArcLinearEquiv_map (n : ℕ) (f : R →ₐ[K] S)
+    (z : TruncatedArcAlgebra R n) (j : Fin (n + 1)) :
+    truncatedArcLinearEquiv S n (mapTruncatedArcAlgHom n f z) j =
+      f (truncatedArcLinearEquiv R n z j) := by
+  obtain ⟨p, rfl⟩ := Ideal.Quotient.mk_surjective z
+  rw [mapTruncatedArcAlgHom_mk, truncatedArcLinearEquiv_mk_apply,
+    truncatedArcLinearEquiv_mk_apply, coeff_map]
+  rfl
+
+/-- Coefficient coordinates valid uniformly for all commutative rings, including the zero ring. -/
+noncomputable def truncatedArcCoordinateEquiv (R : Type u) [CommRing R] (n : ℕ) :
+    TruncatedArcAlgebra R n ≃ₗ[R] (Fin (n + 1) → R) := by
+  by_cases h : Nontrivial R
+  · letI : Nontrivial R := h
+    exact truncatedArcLinearEquiv R n
+  · letI : Subsingleton R := not_nontrivial_iff_subsingleton.mp h
+    exact
+      { toFun := fun _ _ => 0
+        invFun := fun _ => 0
+        left_inv := fun _ => Subsingleton.elim _ _
+        right_inv := fun _ => Subsingleton.elim _ _
+        map_add' := fun _ _ => Subsingleton.elim _ _
+        map_smul' := fun _ _ => Subsingleton.elim _ _ }
+
+/-- Uniform coefficient coordinates commute with every coefficient-algebra morphism. -/
+theorem truncatedArcCoordinateEquiv_map
+    {R S K : Type u} [CommRing R] [CommRing S] [CommRing K]
+    [Algebra K R] [Algebra K S]
+    (n : ℕ) (f : R →ₐ[K] S) (z : TruncatedArcAlgebra R n) (j : Fin (n + 1)) :
+    truncatedArcCoordinateEquiv S n (mapTruncatedArcAlgHom n f z) j =
+      f (truncatedArcCoordinateEquiv R n z j) := by
+  by_cases hS : Nontrivial S
+  · letI : Nontrivial S := hS
+    letI : Nontrivial R := f.toRingHom.domain_nontrivial
+    simp only [truncatedArcCoordinateEquiv, dif_pos]
+    exact truncatedArcLinearEquiv_map R n f z j
+  · letI : Subsingleton S := not_nontrivial_iff_subsingleton.mp hS
+    exact Subsingleton.elim _ _
+
 /-- The augmentation ideal of the order-`n` truncated disc consists exactly of its
 positive-degree coefficients. -/
 noncomputable def basedTruncatedArcLinearEquiv (n : ℕ) :

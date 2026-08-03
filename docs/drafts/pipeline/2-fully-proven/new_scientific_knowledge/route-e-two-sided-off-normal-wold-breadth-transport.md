@@ -907,3 +907,206 @@ ingredient is `|selbergOptimalWeight s d| ≤ 1` — the boundedness of the opti
 coefficients, which needs the factorisation `λ_d = (μ(d) g_d / ν_d)·(S_d / S)` with
 `S_d = ∑_{(l,d)=1} g_l`, and the multiplicativity of `selbergTerms` (already in mathlib as
 `selbergTerms_isMultiplicative`).
+
+### Truncated Selberg sieve (2026-08-03) — `Sieve/SelbergError.lean`
+
+**Correction to the previous entry.**  Working out `|selbergOptimalWeight s d| ≤ 1` showed that the
+*untruncated* optimum is degenerate: `S = (∑_{a ∣ d} g_a)·S_d = (g_d/ν_d)·S_d` by
+`sum_divisors_selbergTerms_eq_selbergTerms_mul_nu_inv`, so
+`w_d = μ(d) g_d S_d/(ν_d S) = μ(d)` exactly.  Without a level restriction the Selberg optimum *is*
+plain inclusion–exclusion, and its error sum runs over every divisor of `P` — useless.
+**All of Selberg's gain comes from the truncation**, so the truncated construction is the one that
+matters:
+
+- `selbergMassLE s Y = ∑_{l ∣ P, l ≤ Y} g_l`, `selbergMassLE_pos`;
+- `selbergTruncY s Y l = [l ≤ Y]·μ(l) g_l / S_Y`, `selbergTruncWeight s Y = selbergW s (…)`;
+- **`selbergTruncWeight_eq_zero_of_lt`** : the weight vanishes above `Y` — automatic, since
+  `d ∣ l` forces `l ≥ d`, so a truncated profile yields a truncated weight with no extra work;
+- `selbergTruncWeight_one` : admissible;
+- **`mainSum_selbergTruncWeight`** : `mainSum (Λ² w) = S_Y⁻¹`;
+- **`siftedSum_le_selbergTrunc`** : `siftedSum ≤ totalMass / S_Y + errSum (Λ² w)`;
+- **`lambdaSquared_selbergTruncWeight_eq_zero`** : `Λ²_d = 0` for `d > Y²`, i.e. **the sieve has
+  level `D = Y²`**.
+
+All built, wired, axiom-clean.
+
+This is the shape that beats Brun: the error sum runs only over `d ≤ Y²`, and `Y` may be taken as
+large as `√(b−a)`, so `log D ≍ log X` with no `log log X` penalty — whereas Brun's pure sieve forces
+`log z · log log z ≲ log X`.
+
+The remaining classical ingredient is the coefficient bound `|w_d| ≤ 1`, which for the truncated
+weight is *not* automatic.  The proof is now clear: with `T = ∑_{m ∣ P/d, dm ≤ Y} g_m` one has
+`w_d = μ(d) g_d T/(ν_d S_Y)`, and the injection `(a,m) ↦ a·m` from `{a ∣ d} × {m ∣ P/d, dm ≤ Y}`
+into `{l ∣ P, l ≤ Y}` (using `a ≤ d`, so `am ≤ dm ≤ Y`) gives
+`S_Y ≥ (∑_{a ∣ d} g_a)·T = (g_d/ν_d)·T`, whence `|w_d| ≤ 1`.
+
+### Closed form of the truncated Selberg coefficients (2026-08-03) — `Sieve/SelbergCoefficient.lean`
+
+- `coprime_div_of_dvd_squarefree` : `d ∣ l`, `l` squarefree ⟹ `gcd(d, l/d) = 1`, from
+  `Nat.coprime_of_squarefree_mul` applied to `l = d·(l/d)`;
+- **`moebius_div_mul_moebius`** : `μ(l/d)·μ(l) = μ(d)` for `d ∣ l ∣ P` — multiplicativity plus
+  `μ(l/d)² = 1`;
+- `selbergTerms_mul_div` : `g_l = g_d · g_{l/d}`, from `selbergTerms_isMultiplicative`;
+- `selbergTruncU s Y d = ∑_{l ∣ P, d ∣ l, l ≤ Y} g_l`, `selbergTruncU_nonneg`;
+- **`selbergTruncWeight_mul_nu_mul_mass`** : the alternating sum defining the weight **collapses
+  to a positive one**,
+
+```text
+w_d · ν_d · S_Y = μ(d) · U_d.
+```
+
+- **`abs_selbergTruncWeight_mul`** : `|w_d| · (ν_d · S_Y) = U_d`.
+
+Built, wired, axiom-clean.
+
+So the coefficient bound `|w_d| ≤ 1` is now *exactly* the inequality `U_d ≤ ν_d · S_Y`, with both
+sides positive and explicit — no signs left anywhere.  The remaining step is the product injection
+`(a, m) ↦ a·m` from `{a ∣ d} × {m ∣ P/d : dm ≤ Y}` into `{l ∣ P : l ≤ Y}`, which gives
+`S_Y ≥ (∑_{a ∣ d} g_a)·T_d = (g_d/ν_d)·T_d` while `U_d = g_d·T_d`.
+
+### Selberg coefficient bound proved (2026-08-03)
+
+- `sum_divisors_selbergTerms` : `∑_{a ∣ d} g_a = g_d · ν_d⁻¹` (mathlib's statement, restated over
+  `d.divisors`);
+- **`selbergTruncU_le`** : `U_d ≤ ν_d · S_Y`.
+
+  Proved by the product injection `ι(a,l) = a·(l/d)` from `d.divisors ×ˢ {l ∣ P : d ∣ l, l ≤ Y}`
+  into `{l ∣ P : l ≤ Y}`.  Injectivity is the point: `a ∣ d` and `l/d` coprime to `d` give
+  `gcd(ι(a,l), d) = a` via `Nat.Coprime.gcd_mul_left_cancel`, so `a` is recoverable from the image,
+  and then `l` is too.  Multiplicativity of `selbergTerms` turns the summand into `g_{ι(a,l)}`, and
+  `a·(l/d) ∣ l ≤ Y` keeps the image inside the truncation.
+
+- **`abs_selbergTruncWeight_le_one`** : `|w_d| ≤ 1` for every `d ∣ P`.
+
+Built, wired, axiom-clean.
+
+**The Selberg sieve is now complete in this corpus**: optimality (`inv_sum_selbergTerms_le_mainSum`),
+the inversion kernel, the truncated optimum with `mainSum = 1/S_Y`, level `D = Y²`
+(`lambdaSquared_selbergTruncWeight_eq_zero`), the error bound `errSum ≤ B·∑(∑|w|)²`, and now the
+coefficient bound `|w_d| ≤ 1` which makes that error `≤ B·∑_{d ≤ Y²} τ(d)²`.
+
+That is the `log D ≍ log X` error shape.  What remains for the card's sharpening is arithmetic
+rather than sieve theory: instantiate the sieve at the interval `Ioc a b` with `nu d = 1/d`,
+evaluate `S_Y` for the primes up to `z`, and feed the result back into the `ω`-tail argument in
+place of `card_rough_Ioc_le`.
+
+### The Selberg sieve instantiated on an interval (2026-08-03) — `Sieve/IntervalSelberg.lean`
+
+- `invNat` : the density `d ↦ 1/d` as an `ArithmeticFunction ℝ`, with
+  `isMultiplicative_invNat`;
+- **`intervalSieve a b z`** : the `BoundingSieve` with support `Ioc a b`, unit weights, total mass
+  `b − a`, sifting modulus `z#`, density `ν = invNat`;
+- `intervalSieve_multSum`, `intervalSieve_siftedSum` : its multiple sums and sifted sum are the
+  interval counts;
+- **`abs_intervalSieve_rem_le`** : `|R_d| ≤ 1` for every `d` — supplied directly by
+  `abs_card_filter_dvd_Ioc_sub_lt` from the very first module of this programme;
+- `intervalSieve_selbergTerms` : `g_d = d⁻¹ ∏_{p ∣ d}(1 − p⁻¹)⁻¹`, i.e. `∏_{p ∣ d} 1/(p−1)`
+  on squarefree `d`;
+- **`card_coprime_Ioc_le_selberg`** :
+
+```text
+#{n ∈ (a,b] : gcd(z#, n) = 1}
+  ≤ (b−a)/S_Y + ∑_{d ∣ z#} |Λ²_d|,
+```
+  with `Λ²` supported on `d ≤ Y²` (`lambdaSquared_selbergTruncWeight_eq_zero`) and every
+  `|Λ²_d| ≤ τ(d)²` (`abs_lambdaSquared_le_card_sq` with `abs_selbergTruncWeight_le_one`).
+
+Built, wired, axiom-clean.
+
+This is the Selberg analogue of `card_rough_Ioc_le`, and the comparison is the whole point:
+
+| | Brun (`RoughCount.lean`) | Selberg (`IntervalSelberg.lean`) |
+|-|-|-|
+| main term | `(b−a)·e^{c₀}/log z` | `(b−a)/S_Y` |
+| error | `(b−a)λ^{−r}∏(1+λ/p) + #{d ∣ z# : ω d ≤ r}` | `∑_{d ≤ Y²} τ(d)²` |
+| level | `r·log z ≲ log(b−a)` **and** `r ≳ log log z` | `Y² ≤ b−a`, no second constraint |
+
+The Brun row has two competing constraints, which is exactly why `log z ≍ log X/log log X` is
+forced there.  The Selberg row has one, so `Y` may be taken up to `√(b−a)` and `log(Y²) ≍ log X`.
+
+Remaining: the lower bound `S_Y ≥ ∑_{n ≤ Y} 1/n ≥ log Y` (via `g_l = ∑_{rad m = l} 1/m` for
+`z`-smooth `m`), and the divisor-sum bound `∑_{d ≤ D} τ(d)² ≪ D(log D)³`.  Both are elementary and
+independent of everything above.
+
+### Selberg mass lower bound (2026-08-03)
+
+Added to `Sieve/IntervalSelberg.lean`:
+
+- **`inv_le_intervalSieve_selbergTerms`** : `l⁻¹ ≤ g_l` for `l ∣ z#` — since
+  `g_l = l⁻¹ ∏_{p ∣ l}(1 − p⁻¹)⁻¹` and every factor is `≥ 1`;
+- `dvd_primorial_of_squarefree` : a squarefree `l ≤ z` divides `z#`, because each of its prime
+  factors is `≤ l ≤ z`;
+- **`sum_inv_squarefree_le_selbergMassLE`** : for `Y ≤ z`,
+
+```text
+∑_{l ≤ Y, l squarefree} 1/l  ≤  S_Y.
+```
+
+Built, wired, axiom-clean.
+
+The crude bound `g_l ≥ 1/l` is enough: it loses only the Euler factor
+`∏(1 − 1/p)⁻¹ ≍ 1`, and the squarefree reciprocal sum is still `≍ log Y`.  Chasing the exact
+`g_l = ∑_{rad m = l} 1/m` would need an infinite series and buys nothing here.
+
+Remaining for a fully explicit Brun–Titchmarsh: `∑_{l ≤ Y squarefree} 1/l ≥ ½ ∑_{n ≤ Y} 1/n`
+(write `n = l m²` with `l` squarefree, using mathlib's `Nat.sq_mul_squarefree`, and
+`∑ 1/m² ≤ 2` by the telescoping bound already used in `SmoothTilt.lean`), and the harmonic lower
+bound `∑_{n ≤ Y} 1/n ≥ log Y`; then the divisor-sum error bound `∑_{d ≤ D} τ(d)² ≪ D(log D)³`.
+
+### Squarefree part of the harmonic sum (2026-08-03) — `Sieve/SquarefreeHarmonic.lean`
+
+- **`sum_inv_sq_le_two`** : `∑_{m ≤ Y} 1/m² ≤ 2`, by the same telescope `1/m² ≤ 1/(m(m−1))`
+  already used for the shifted prime reciprocal sum in `SmoothTilt.lean`;
+- `sqfreeSplit` / `sqfreeSplit_spec` : a choice of factorisation `n = m² l` with `l` squarefree,
+  from mathlib's `Nat.sq_mul_squarefree_of_pos`;
+- **`sum_inv_le_two_mul_sum_inv_squarefree`** :
+
+```text
+∑_{n ≤ Y} 1/n  ≤  2 · ∑_{l ≤ Y, l squarefree} 1/l.
+```
+
+  The map `n ↦ (l, m)` is injective because `n = m² l` recovers `n` from the pair, so the
+  harmonic sum embeds into the product `A ×ˢ B` and factors as
+  `(∑_{l ∈ A} 1/l)·(∑_{m ∈ B} 1/m²)`.
+
+Built, wired, axiom-clean.
+
+Chained with `sum_inv_squarefree_le_selbergMassLE` this gives, for `Y ≤ z`,
+
+```text
+S_Y  ≥  ∑_{l ≤ Y sqfree} 1/l  ≥  ½ ∑_{n ≤ Y} 1/n,
+```
+so the Selberg main term `(b−a)/S_Y` is at most `2(b−a)/∑_{n ≤ Y} 1/n`.  The only remaining
+analytic input for Brun–Titchmarsh is the harmonic lower bound `∑_{n ≤ Y} 1/n ≥ log Y`, and then
+the divisor-sum error bound `∑_{d ≤ D} τ(d)² ≪ D(log D)³`.
+
+### Brun–Titchmarsh shape reached (2026-08-03) — `Sieve/BrunTitchmarsh.lean`
+
+- `log_le_sum_inv` : `log Y ≤ ∑_{n ≤ Y} 1/n` — mathlib's `log_add_one_le_harmonic` supplies this
+  outright, no work needed;
+- **`half_log_le_selbergMassLE`** : `(log Y)/2 ≤ S_Y`, chaining
+  `S_Y ≥ ∑_{l ≤ Y sqfree} 1/l ≥ ½ ∑_{n ≤ Y} 1/n ≥ ½ log Y`;
+- **`card_coprime_Ioc_le_log`** :
+
+```text
+#{n ∈ (a,b] : gcd(z#, n) = 1}
+  ≤ 2(b−a)/log Y + ∑_{d ∣ z#} |Λ²_d|,     for 1 ≤ Y ≤ z,
+```
+  with `Λ²` supported on `d ≤ Y²` and every coefficient of modulus `≤ 1`.
+
+Built, wired, axiom-clean.
+
+**This is the Brun–Titchmarsh shape.**  Compare the two sieves now available for the same count:
+
+```text
+Brun    (card_rough_Ioc_le)      main (b−a)·e^{c₀}/log z,  constraints  r·log z ≲ log(b−a)  and  r ≳ log log z
+Selberg (card_coprime_Ioc_le_log) main 2(b−a)/log Y,       constraint   Y² ≤ level only
+```
+
+Brun's two constraints force `log z ≍ log X/log log X`, which is the entire source of the
+`(log log X)^{Θ(1)}` factor in `(7)`–`(8)`.  Selberg has one, so `Y` runs up to `√(b−a)` and
+`log Y ≍ log X`.
+
+Remaining for the sharpening: the divisor-sum bound `∑_{d ≤ D} τ(d)² ≪ D(log D)³` to make the
+error term explicit, then substitute `card_coprime_Ioc_le_log` for `card_rough_Ioc_le` in
+`OmegaTail.lean` and re-run the parameter choice with `log Y ≍ log X`.

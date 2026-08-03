@@ -99,6 +99,122 @@ theorem closure_range_subset_union_clusterAtInfinity {Y : Type*} [TopologicalSpa
   · exact absurd (mem_range_of_mem_closure_image_compact hG hy) hrange
   · exact hy
 
+
+/-- **The cluster set at infinity is the boundary family.**  On a compact parameter space, an orbit
+asymptotic to a continuous family has all its cluster points at infinity in the range of that
+family: an ultrafilter refining the cocompact filter converges on the parameter space, and the
+asymptotic comparison transports its limit. -/
+theorem clusterAtInfinity_subset_range {T Y : Type*} [TopologicalSpace T] [CompactSpace T]
+    [UniformSpace Y] [T2Space Y] {α : T → Y} {θ : ℝ → T} {G : ℝ → Y} (hα : Continuous α)
+    (hasym : Tendsto (fun t => (α (θ t), G t)) (Filter.cocompact ℝ) (uniformity Y))
+    {y : Y} (hy : ∀ M : ℝ, y ∈ closure (G '' {t : ℝ | M < |t|})) :
+    y ∈ Set.range α := by
+  classical
+  have hne : (Filter.comap G (nhds y) ⊓ Filter.cocompact ℝ).NeBot := by
+    rw [Filter.inf_neBot_iff]
+    intro s hs s' hs'
+    obtain ⟨N, hN, hNs⟩ := Filter.mem_comap.mp hs
+    obtain ⟨K, hK, hKs⟩ := Filter.hasBasis_cocompact.mem_iff.mp hs'
+    obtain ⟨M, hM⟩ := hK.isBounded.subset_closedBall (0 : ℝ)
+    have hcompl : {t : ℝ | M < |t|} ⊆ Kᶜ := by
+      intro t ht hcon
+      have := hM hcon
+      rw [Metric.mem_closedBall, Real.dist_eq, sub_zero] at this
+      exact absurd this (not_le.mpr ht)
+    obtain ⟨w, hwN, hwimg⟩ := (mem_closure_iff_nhds.mp (hy M)) N hN
+    obtain ⟨t, ht, rfl⟩ := hwimg
+    exact ⟨t, hNs hwN, hKs (hcompl ht)⟩
+  haveI : (Filter.comap G (nhds y) ⊓ Filter.cocompact ℝ).NeBot := hne
+  set U : Ultrafilter ℝ := Ultrafilter.of (Filter.comap G (nhds y) ⊓ Filter.cocompact ℝ) with hU
+  have hUF : (↑U : Filter ℝ) ≤ Filter.comap G (nhds y) ⊓ Filter.cocompact ℝ :=
+    Ultrafilter.of_le _
+  have hGy : Tendsto G (↑U : Filter ℝ) (nhds y) :=
+    le_trans (Filter.map_mono (le_trans hUF inf_le_left)) Filter.map_comap_le
+  have hcocompact : (↑U : Filter ℝ) ≤ Filter.cocompact ℝ := le_trans hUF inf_le_right
+  obtain ⟨lam, -, hlam⟩ := isCompact_univ.ultrafilter_le_nhds (U.map θ) (by simp)
+  have hθ : Tendsto θ (↑U : Filter ℝ) (nhds lam) := by
+    rw [Ultrafilter.coe_map] at hlam
+    exact hlam
+  have hαθ : Tendsto (fun t => α (θ t)) (↑U : Filter ℝ) (nhds (α lam)) :=
+    (hα.tendsto lam).comp hθ
+  have hclose : Tendsto (fun t => (α (θ t), G t)) (↑U : Filter ℝ) (uniformity Y) :=
+    hasym.mono_left hcocompact
+  have hGlam : Tendsto G (↑U : Filter ℝ) (nhds (α lam)) := hαθ.congr_uniformity hclose
+  exact ⟨lam, tendsto_nhds_unique hGlam hGy⟩
+
+/-- **The closure of an asymptotic orbit is the orbit together with the boundary family.** -/
+theorem closure_range_subset_union_range {T Y : Type*} [TopologicalSpace T] [CompactSpace T]
+    [UniformSpace Y] [T2Space Y] {α : T → Y} {θ : ℝ → T} {G : ℝ → Y} (hα : Continuous α)
+    (hG : Continuous G)
+    (hasym : Tendsto (fun t => (α (θ t), G t)) (Filter.cocompact ℝ) (uniformity Y)) :
+    closure (Set.range G) ⊆ Set.range G ∪ Set.range α := by
+  intro y hy
+  rcases closure_range_subset_union_clusterAtInfinity hG hy with horbit | hcluster
+  · exact Or.inl horbit
+  · exact Or.inr (clusterAtInfinity_subset_range hα hasym (Set.mem_iInter.mp hcluster))
+
+
+/-- **The orbit closure decomposition.**  An orbit asymptotic to a continuous family on a compact
+parameter space, along a flow with dense forward tails, has closure exactly the orbit together with
+the family. -/
+theorem closure_range_eq_union_range {T Y : Type*} [TopologicalSpace T] [CompactSpace T]
+    [UniformSpace Y] [T2Space Y] {α : T → Y} {θ : ℝ → T} {G : ℝ → Y} (hα : Continuous α)
+    (hG : Continuous G)
+    (htails : ∀ T₀ : ℝ, Dense {x : T | ∃ t : ℝ, T₀ ≤ t ∧ θ t = x})
+    (hasym : Tendsto (fun t => (α (θ t), G t)) (Filter.cocompact ℝ) (uniformity Y)) :
+    closure (Set.range G) = Set.range G ∪ Set.range α := by
+  refine Set.Subset.antisymm (closure_range_subset_union_range hα hG hasym) ?_
+  have hatTop : (Filter.atTop : Filter ℝ) ≤ Filter.cocompact ℝ := by
+    rw [cocompact_eq_atBot_atTop]
+    exact le_sup_right
+  have hasymTop : ∀ V ∈ uniformity Y, ∀ᶠ t in Filter.atTop, (α (θ t), G t) ∈ V := by
+    intro V hV
+    exact hatTop (hasym hV)
+  refine Set.union_subset subset_closure ?_
+  rintro - ⟨x, rfl⟩
+  exact mem_closure_range_of_dense_tails hα htails hasymTop x
+
+
+/-- The phase flow read in the circle group of each coordinate. -/
+def circlePhaseFlow {ι : Type*} (omega : ι → ℝ) (t : ℝ) : ι → Circle :=
+  fun i => AddCircle.homeomorphCircle (one_ne_zero) (HTGeometry.clockPhasePoint omega t i)
+
+/-- Coordinatewise the unit torus is the product of circles. -/
+def unitTorusHomeomorphCircles (ι : Type*) : UnitAddTorus ι ≃ₜ (ι → Circle) :=
+  Homeomorph.piCongrRight fun _ => AddCircle.homeomorphCircle one_ne_zero
+
+theorem circlePhaseFlow_eq {ι : Type*} (omega : ι → ℝ) (t : ℝ) :
+    circlePhaseFlow omega t
+      = unitTorusHomeomorphCircles ι (HTGeometry.clockPhasePoint omega t) := rfl
+
+/-- **Forward tails of the circle phase flow are dense.** -/
+theorem dense_forwardOrbit_circlePhaseFlow {ι : Type*} [Countable ι] [DecidableEq ι]
+    {omega : ι → ℝ} (hindep : HTGeometry.RationallyIndependentSequence omega) (T₀ : ℝ) :
+    Dense {x : ι → Circle | ∃ t : ℝ, T₀ ≤ t ∧ circlePhaseFlow omega t = x} := by
+  have hbase := HTGeometry.dense_forwardOrbit hindep T₀
+  have himage : (unitTorusHomeomorphCircles ι) ''
+      {x : UnitAddTorus ι | ∃ t : ℝ, T₀ ≤ t ∧ HTGeometry.clockPhasePoint omega t = x}
+      ⊆ {x : ι → Circle | ∃ t : ℝ, T₀ ≤ t ∧ circlePhaseFlow omega t = x} := by
+    rintro - ⟨y, ⟨t, ht, rfl⟩, rfl⟩
+    exact ⟨t, ht, (circlePhaseFlow_eq omega t)⟩
+  refine Dense.mono himage ?_
+  exact (unitTorusHomeomorphCircles ι).surjective.denseRange.dense_image
+    (unitTorusHomeomorphCircles ι).continuous hbase
+
+/-- **The orbit closure of an asymptotic Bohr orbit.**  For an exponential carrier with summable
+weights and rationally independent frequencies, an orbit asymptotic to the phase hull along the
+phase flow has closure exactly the orbit together with the whole hull, a homeomorphic copy of the
+phase torus. -/
+theorem bohrHull_closure_range_eq {ι : Type*} [Countable ι] [DecidableEq ι]
+    {a : ι → ℂ} {omega : ι → ℝ} (h : ExpSeriesNormallySummable a omega)
+    (hindep : HTGeometry.RationallyIndependentSequence omega)
+    {G : ℝ → C(ℂ, ℂ)} (hG : Continuous G)
+    (hasym : Tendsto (fun t => (bohrHullMap a omega h (circlePhaseFlow omega t), G t))
+      (Filter.cocompact ℝ) (uniformity C(ℂ, ℂ))) :
+    closure (Set.range G) = Set.range G ∪ Set.range (bohrHullMap a omega h) :=
+  closure_range_eq_union_range (continuous_bohrHullMap h) hG
+    (dense_forwardOrbit_circlePhaseFlow hindep) hasym
+
 end
 
 end GaloisForLFunctions

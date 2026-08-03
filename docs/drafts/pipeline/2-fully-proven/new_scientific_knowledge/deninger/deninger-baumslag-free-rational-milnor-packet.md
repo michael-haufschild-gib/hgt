@@ -89,7 +89,17 @@
   `GaloisForLFunctions.RHTower.DeningerMergeDichotomy` (the merge dichotomy),
   `GaloisForLFunctions.RHTower.DeningerLeadSurvives` (the leading letter survives a short factor),
   `GaloisForLFunctions.RHTower.DeningerPrefixConj` (the conjugator is a prefix),
-  `GaloisForLFunctions.RHTower.DeningerAbsorbRight` (absorbing the base group into the last letter)
+  `GaloisForLFunctions.RHTower.DeningerAbsorbRight` (absorbing the base group into the last letter),
+  `GaloisForLFunctions.RHTower.DeningerCycStepCases` (the two cases of a reduction step),
+  `GaloisForLFunctions.RHTower.DeningerCycData` (the cyclic reduction data),
+  `GaloisForLFunctions.RHTower.DeningerSuffixIndex` (suffixes of words differing in the last letter),
+  `GaloisForLFunctions.RHTower.DeningerPrefixTransfer` (transferring a prefix),
+  `GaloisForLFunctions.RHTower.DeningerPrefixTransferGen` (transferring a prefix across a changed
+  tail),
+  `GaloisForLFunctions.RHTower.DeningerCycReassemble` (reassembling the data after a step),
+  `GaloisForLFunctions.RHTower.DeningerCycBase` (the base case),
+  `GaloisForLFunctions.RHTower.DeningerCycDecomp` (decomposing a non cyclically reduced word),
+  `GaloisForLFunctions.RHTower.DeningerCycRecursion` (the cyclic reduction recursion)
 
 ## Statement
 
@@ -1029,6 +1039,89 @@ left by `deningerAbsorb`, and on the right by `DeningerAbsorbRight.lean`:
 This is what keeps the cyclic reduction step inside the class of reduced alternating words when the
 merged letter falls into the base group and the word shortens by two.
 
+`DeningerCycStepCases.lean` states the step in both cases:
+
+- `deningerCycStep_notMem` — the merged letter survives and the word shortens by one;
+- `deningerCycStep_mem` — **the merged letter falls into the base group, the word shortens by two,
+  and the base group element is absorbed into the new last letter.**
+
+The junction condition of the power word follows in either case from the same fact: the tail `B` is
+the suffix of the word after the conjugator, and both it and the cyclically reduced part `V` are
+obtained from that suffix by operations at its *end*, so they begin in the same factor.  The
+junction `last(V) ≠ first(B)` is then cyclic reducedness of `V`.
+
+`DeningerCycData.lean` makes the tail's identification exact rather than approximate:
+
+- `deningerCycData_iff` — **writing the element as `C · V · C⁻¹` is *equivalent* to identifying the
+  tail of its word with `V · C⁻¹`.**  So the tail is not merely close to the suffix of the word after
+  the conjugator, it *is* that suffix;
+- `deningerCycData_base`, `deningerCycData_step` — the data of an already cyclically reduced word,
+  and its inheritance under a conjugation step, where prepending a letter to the conjugator
+  corresponds to multiplying the tail by the inverse of that letter.
+
+This removes the need for the separate tail `B` altogether: the word of the element splits as
+`C ++ R`, the power word is `C ++ Vᵏ ++ R`, and both junctions are consequences of the alternation
+of `C ++ R` together with cyclic reducedness of `V`.
+
+That leaves exactly one invariant for the recursion to carry: the cyclically reduced part and the
+tail begin in the same factor.  `DeningerSuffixIndex.lean` is what propagates it:
+
+- `deningerHead_map_fst_of_append` — **two words with a common prefix that differ only in their last
+  letter have suffixes beginning in the same factor**, provided the differing letters lie in the same
+  factor.
+
+A reduction step changes only the tail of the word, so this is exactly the shape of each step, in
+both of its cases.
+
+`DeningerPrefixTransfer.lean` is the matching surgery on the conjugator side:
+
+- `deningerPrefix_le` — a prefix leaving a nonempty suffix does not reach the last letter;
+- `deningerPrefix_transfer` — **hence the conjugator produced for the reduced word is also a prefix
+  of the original word**, and
+- `deningerSuffix_length` — the two suffixes have the same length.
+
+Together with the suffix index lemma this is everything the reassembly step of the recursion needs
+in the first case.  The second case replaces the last letter by *two* letters rather than one, so
+both statements are generalized in `DeningerPrefixTransferGen.lean` to an arbitrary changed tail:
+
+- `deningerPrefix_take`, `deningerPrefix_transfer'` — a prefix stopping inside the common part
+  transfers between the two words;
+- `deningerHead_map_fst_of_append'` — **the suffixes begin in the same factor as soon as the changed
+  tails do.**
+
+With the tail allowed to be arbitrary, one statement covers both cases of a reduction step.
+
+`DeningerCycReassemble.lean` performs the reassembly itself:
+
+- `deningerCycData_reassemble` — **given the data of the word obtained by one reduction step, the
+  data of the original word is obtained by prepending the stripped letter to the conjugator and
+  taking the corresponding suffix as the tail.**
+
+All four conclusions come out at once: the splitting, the nonemptiness of the tail, the shared first
+factor, and the product identity, the last by cancelling the conjugator from both descriptions of
+the element.  The statement takes the replacement tail as a parameter, so the same reassembly serves
+both reduction cases.
+
+The two ends of the recursion are also in place:
+
+- `deningerCycData_of_cycRed` — a word that is already cyclically reduced, or is a single letter, is
+  its own cyclically reduced part, with empty conjugator and itself as tail;
+- `deningerNotCycRed_decomp` — **a reduced alternating word of length at least two whose first and
+  last letters lie in the same factor is a first letter, a nonempty middle, and a last letter in
+  that factor.**  The middle is nonempty because a two letter word alternates, so its first and last
+  letters are in different factors.
+
+`DeningerCycRecursion.lean` runs the recursion:
+
+- `deningerExists_cycData` — **every nonempty reduced alternating word splits as a conjugator
+  followed by a tail, together with a cyclically reduced part or a single letter, the tail and the
+  cyclically reduced part beginning in the same factor, and the tail equal to the cyclically reduced
+  part times the inverse conjugator.**
+
+This is the production of the cyclic reduction data that the two-exponent comparison consumes.  With
+it, the shape `C · Vᵏ · R` is available for an arbitrary element, its junction conditions coming
+from the alternation of `C ++ R` and the cyclic reducedness of `V`.
+
 Step 1 still needs Baumslag's inductive step (root adjunction preserves unique roots), which rests
 on the same normal-form machinery.
 
@@ -1601,3 +1694,55 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   is absorbed into a neighbouring letter: on the left by the existing absorption, and on the right by
   the one proved here, which is what keeps the step inside the class when a merged letter falls into
   the base group and the word shortens by two.
+- 2026-08-03 — Stated the cyclic reduction step in both of its cases, the merged letter surviving or
+  falling into the base group.  Also identified the invariant the recursion should carry, after
+  finding that the natural-looking one fails: it is *not* true that the last letter of the
+  cyclically reduced part always carries the index of the last letter of the conjugator — that fails
+  exactly in the shortening-by-two case.  What is true in both cases is that `V` and the tail `B`
+  begin in the same factor, because both are obtained from the suffix of the word after the
+  conjugator by operations at its end, and then the junction is just cyclic reducedness of `V`.
+- 2026-08-03 — Identified the tail of the power word exactly: writing an element as `C · V · C⁻¹` is
+  equivalent to identifying the tail of its word with `V · C⁻¹`, so the tail *is* the suffix of the
+  word after the conjugator rather than merely resembling it.  This removes the separate tail `B`
+  from the argument — the word splits as `C ++ R`, the power word is `C ++ Vᵏ ++ R`, and both
+  junction conditions follow from the alternation of `C ++ R` together with cyclic reducedness of
+  `V`.  With the base case and the step's inheritance also proved, the algebraic bookkeeping of the
+  recursion is complete; what is left is the index bookkeeping.
+- 2026-08-03 — Proved the index bookkeeping of the recursion: two words with a common prefix
+  differing only in their last letter have suffixes beginning in the same factor, provided the
+  differing letters lie in the same factor.  This is what propagates the one remaining invariant —
+  that the cyclically reduced part and the tail begin in the same factor — since a reduction step
+  changes only the tail of the word, in both of its cases.  The three cases of the proof are the
+  prefix ending strictly inside the common part, exactly at its end, or beyond it, the last being
+  excluded because the suffix is nonempty.
+- 2026-08-03 — Proved the conjugator-side surgery: a prefix leaving a nonempty suffix cannot reach
+  the last letter, so the conjugator produced for the reduced word is also a prefix of the word
+  before the step, and the two suffixes have the same length.  Together with the suffix index lemma
+  this is everything the reassembly step needs — the recursion's outputs transfer backwards across a
+  reduction step without recomputation.
+- 2026-08-03 — Generalized the prefix and suffix surgery to an arbitrary changed tail.  The two cases
+  of a reduction step change the end of the word differently — one letter is replaced by one, or by
+  two — so the earlier statements, which assumed a single changed letter, only covered the first.
+  With the tail arbitrary a single pair of statements covers both: the prefix transfers whenever it
+  stops inside the common part, and the suffixes begin in the same factor as soon as the changed
+  tails do.
+- 2026-08-03 — Proved the reassembly of the cyclic reduction data after a step: from the data of the
+  reduced word, the data of the original is obtained by prepending the stripped letter to the
+  conjugator and taking the corresponding suffix as the tail.  All four conclusions come out
+  together — the splitting, the nonemptiness of the tail, the shared first factor, and the product
+  identity, the last by cancelling the conjugator from the two descriptions of the element.  Taking
+  the replacement tail as a parameter lets one reassembly serve both reduction cases.  What is left
+  is the induction that applies it.
+- 2026-08-03 — Proved the two ends of the recursion: the base case, where a cyclically reduced word
+  or a single letter is its own data, and the decomposition of a word that is not cyclically
+  reduced into first letter, middle and last letter.  The middle is automatically nonempty, since a
+  two letter word alternates and so has its first and last letters in different factors — which is
+  what makes the reduction step always applicable when it is invoked.
+- 2026-08-03 — Completed the cyclic reduction recursion: every nonempty reduced alternating word
+  splits as a conjugator followed by a tail, with a cyclically reduced part or a single letter, the
+  tail and the cyclically reduced part beginning in the same factor, and the tail equal to the
+  cyclically reduced part times the inverse conjugator.  Having proved the base case, the
+  decomposition, the two step cases and the reassembly separately, the recursion itself came out as
+  a short wrapper.  This is the production of the data the two-exponent comparison consumes, so the
+  shape `C · Vᵏ · R` is now available for an arbitrary element, with its junction conditions coming
+  from the alternation of `C ++ R` and cyclic reducedness of `V`.

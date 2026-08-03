@@ -287,8 +287,12 @@ laboratory determines `(3)` on its causal diamond.
 3. **Clock-only realization:** resolved. Proper time supplies the timelike values of `(1)`, and by
    Lemma 1b those alone determine the whole signed quadratic germ. What remains is the operational
    question of measuring the timelike values, not a missing reconstruction step.
-4. **Partial laboratories:** data only inside a worldtube do not automatically supply `(3)` in a
-   causal diamond. Nonlinear Lorentzian inverse theorems must close that bridge.
+4. **Partial laboratories:** made exact. Region data determine the chronometric field of that
+   region, hence every law that is a function of it. They determine the field outside the region
+   exactly when unique continuation from the region holds — and in this model class, where nothing
+   relates different events, unique continuation is *false* for every proper subregion: a form
+   planted at one outside event is invisible. Supplying the continuation is the role of a field
+   equation, and closing it is the nonlinear Lorentzian inverse theorem this card does not prove.
 5. **Source calibration:** proved sharp. Relabelling the calibrated source set by a bijection
    changes the operator but only transports its graph, so graph comparison up to a theory-chosen
    relabelling carries no information. Operational source channels must be fixed independently.
@@ -318,7 +322,9 @@ Formalize unconditionally:
 11. [complete] sharpness of `(5)`: injectivity of the encoding is necessary, clock-dark sectors
     defeat rigidity, and theory-dependent source relabelling only transports the graph;
 12. [complete] extra gravitational sectors: fibre-constant rigidity, reporter completeness up to
-    gauge, and the reported/clock-dark dichotomy.
+    gauge, and the reported/clock-dark dichotomy;
+13. [complete] bounded laboratory regions: region rigidity, the exact continuation criterion, and
+    the proper-subregion no-go.
 
 The existing all-orders symmetric multilinear polarization theorem supplies a stronger reusable
 dependency for item 1.
@@ -347,6 +353,21 @@ polarization argument is fiberwise, so it lifts to a family of fibers indexed by
 - `law_eq_invFun_encode_comp_symm`, `injective_encode_comp_symm` — Corollary 3, equation `(6)`:
   on a region where the law is bijective it equals the inverse of the induced source-to-clock map
   composed with the clock encoding.
+
+`formal/GaloisForLFunctions/HTGeometry/ChronometricRegionLocalization.lean` — item 13, which makes
+hostile-audit point 4 exact:
+
+- `restrictRegion`, `regionObservation`, `restrictRegion_eq_of_regionObservation_eq` — squared
+  clock intervals inside a region determine the chronometric field inside that region;
+- `FactorsThroughRegion`, `chronometricRegionRigidity` — a laboratory identifies every law that is
+  a function of the field over its own region;
+- `UniqueContinuation`, `injective_regionObservation_iff_uniqueContinuation`,
+  `chronometricRegionRigidity_of_uniqueContinuation` — region data give unrestricted rigidity
+  **exactly when** unique continuation from the region holds;
+- `pointForm`, `not_uniqueContinuation_of_exists_notMem`, `exists_ne_law_regionGraph_eq` — in this
+  model class unique continuation fails for every proper subregion, so worldtube data alone cannot
+  determine an arbitrary nonlinear law;
+- `exists_ne_zero_symmetric_bilinForm_real` — the no-go's hypothesis is inhabited.
 
 `formal/GaloisForLFunctions/HTGeometry/ChronometricGaugeRigidity.lean` — item 12, which answers
 hostile-audit point 2. Injectivity of the complete encoding is the wrong hypothesis once an extra

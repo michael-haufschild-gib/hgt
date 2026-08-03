@@ -127,7 +127,7 @@ private theorem analyticMeroElement_ne_zero_of_value
     apply IsFractionRing.injective (analyticSubring Set.univ) (meroField Set.univ)
     simpa [analyticMeroElement] using hzero
   have hgerm := congrArg Subtype.val hanalytic
-  change (↑(fun w => f w) : Germ (Filter.principal Set.univ) ℂ) = 0 at hgerm
+  change Germ.ofFun (l := Filter.principal Set.univ) f = 0 at hgerm
   rw [← Germ.coe_zero, Germ.coe_eq] at hgerm
   exact hz (eventually_principal.mp hgerm z (Set.mem_univ z))
 
@@ -138,7 +138,7 @@ theorem extremalBesselIntensityPrefactorMero_ne_zero
   apply analyticMeroElement_ne_zero_of_value
     (analyticOnNhd_extremalBesselIntensityPrefactor kappa s) (z := 0)
   simp only [extremalBesselIntensityPrefactor, mul_zero, Complex.exp_zero,
-    one_mul, Polynomial.eval_zero]
+    one_mul]
   have hpoly := extremalBesselIntensityPrefactorPolynomial_ne_zero
     (s := s) hkappa
   have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
@@ -214,7 +214,7 @@ theorem extremalBesselIntensityPrefactor_eq_good
       Complex.exp ((-2 * (Real.pi : ℂ) / (kappa : ℂ)) * omega) *
         (((kappa : ℂ) ^ 2 * (s : ℂ) ^ 2 / (4 * omega) - omega) /
           ((Real.pi : ℂ) ^ 2 * (kappa : ℂ) ^ 2 *
-            ((kappa : ℂ) ^ 2 * (s : ℂ) ^ 2 / (4 * omega))) := by
+            ((kappa : ℂ) ^ 2 * (s : ℂ) ^ 2 / (4 * omega)))) := by
   have hkappaC : (kappa : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt hkappa
   have hsC : (s : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt hs
   unfold extremalBesselIntensityPrefactor
@@ -223,7 +223,6 @@ theorem extremalBesselIntensityPrefactor_eq_good
     Polynomial.eval_X]
   congr 1
   field_simp [hkappaC, hsC, homega]
-  ring
 
 end
 

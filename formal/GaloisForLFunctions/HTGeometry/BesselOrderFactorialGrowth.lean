@@ -162,6 +162,34 @@ theorem not_eventually_polynomial_exponential_upper_of_factorial_lower
   exact (lt_irrefl _)
     ((hlower n hn).trans (hu.trans_lt hcompare))
 
+/-- A factorial lower envelope sampled at every positive integer multiple is still incompatible
+with polynomial-times-exponential growth in the progression index.  This is the exact form needed
+when a periodic coefficient field has period `ell`. -/
+theorem not_eventually_polynomial_exponential_upper_of_factorial_lower_multiple
+    {g : ℕ → ℝ} {y₀ c : ℝ} (hy₀ : 0 < y₀) (hc : 0 < c)
+    {ell : ℕ} (hell : 1 ≤ ell)
+    (hlower : ∀ n : ℕ, 1 ≤ n →
+      y₀ * c ^ (ell * n) * ((ell * n).factorial : ℝ) < g n)
+    {C A : ℝ} (hC : 0 < C) (hA : 0 < A) (d : ℕ) :
+    ¬ (∀ᶠ n : ℕ in atTop,
+      g n ≤ C * ((n : ℝ) + 1) ^ d * A ^ n) := by
+  refine not_eventually_polynomial_exponential_upper_of_factorial_lower
+    hy₀ (pow_pos hc ell) ?_ hC hA d
+  intro n hn
+  have hnle : n ≤ ell * n := by
+    simpa only [one_mul] using Nat.mul_le_mul_right n hell
+  have hfacNat : n.factorial ≤ (ell * n).factorial :=
+    Nat.factorial_le hnle
+  have hfac : (n.factorial : ℝ) ≤ ((ell * n).factorial : ℝ) := by
+    exact_mod_cast hfacNat
+  calc
+    y₀ * (c ^ ell) ^ n * (n.factorial : ℝ) ≤
+        y₀ * c ^ (ell * n) * ((ell * n).factorial : ℝ) := by
+      rw [pow_mul]
+      exact mul_le_mul_of_nonneg_left hfac
+        (mul_nonneg hy₀.le (pow_nonneg (pow_nonneg hc.le ell) n))
+    _ < g n := hlower n hn
+
 /-- Product form used by the reflected Bessel intensity.  Two independently iterated positive
 solutions have a factorial-squared lower envelope. -/
 theorem mul_realAffineOrderShiftRecurrence_factorial_lower

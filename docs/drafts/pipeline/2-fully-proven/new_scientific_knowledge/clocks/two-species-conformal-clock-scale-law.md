@@ -188,11 +188,14 @@ are distinct.
 ## Hostile audit
 
 1. **Conformal coupling:** `(3)` is for minimally coupled Klein--Gordon operators. A conformally
-   coupled massless scalar has extra covariance and can be scale-blind.
+   coupled massless scalar has extra covariance and can be scale-blind. Proved sharp: a single
+   species — equivalently two species of equal calibrated mass — determines only the combination
+   `μ e^{2σ} - D_σ`, and explicit distinct `(e^{2σ}, D_σ)` states share one potential.
 2. **Mass renormalization:** \(\mu_i\) must be independently calibrated physical pole masses, not
    theory-dependent coordinate labels.
 3. **Field redefinitions:** the common conjugation weight in `(2)` must be fixed by the same
-   reporter normalization for both species.
+   reporter normalization for both species. Proved sharp: the geometric defect cancels from the
+   potential difference for all geometric data **exactly when** the two conjugation weights agree.
 4. **Backreaction:** the inverse experiment must separate each probe potential while both fields
    alter the metric.
 5. **Potential recovery:** wavefront locations alone recover conformal geometry, not the
@@ -283,6 +286,30 @@ Missing:
 
 1. coupled inverse theorem recovering both effective potentials from clock data (open research;
    step 1 of the continuum-gravity bridge below).
+
+## Exact boundary of the reconstruction
+
+`formal/GaloisForLFunctions/HTGeometry/ConformalClockScaleBlindness.lean` isolates the effective
+potential's independent algebraic channels — conjugation weight, calibrated squared mass, conformal
+scale, and the two geometric defect channels — and proves both hypotheses of `(7)` necessary:
+
+- `conformalPotentialData`, `SmoothMetricChart.conformalPotential_eq_data` — the chart potential is
+  the algebraic potential evaluated on `(e^{2σ}, □_g σ, Γ_g(σ,σ))`;
+- `conformalPotentialData_difference` — with a shared weight the difference is the pure scale term
+  of `(7)`;
+- `conformalPotentialData_difference_eq_zero_of_eq_mass`,
+  `conformalPotentialData_eq_of_eq_mass` — equal calibrated masses give an identically vanishing
+  difference, so two such species are exactly as blind as one;
+- `exists_ne_scaleDefect_with_eq_conformalPotentialData` — **one species separates neither scale
+  nor defect**: for every weight and mass two distinct `(scale, defect)` states share a potential.
+  This is audit points 1 and 2;
+- `conformalPotentialData_difference_of_weights`,
+  `conformalPotentialData_difference_pure_iff_weight_eq` — the defect cancels for all geometric
+  data **iff** the two conjugation weights agree. This is audit point 3;
+- `exists_conformalPotentialData_difference_ne_scale` — an explicit weight mismatch that destroys
+  the scale channel.
+
+All depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Closest SOTA
 
