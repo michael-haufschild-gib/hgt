@@ -359,6 +359,19 @@ nonvanishing behaviour for the *given* clock species. Supplying normalized Cauch
 backreacting Einstein--scalar geometry is a hyperbolic-PDE construction, and is what the bridge
 still lacks.
 
+### Scope of the one-dimensional results
+
+The one-dimensional cases above — constant, oscillatory, Riccati — are illustrations that the
+`NoCommonZero` condition is realizable and two-sided. They are **not** progress on the bridge, whose
+bottleneck is the four-dimensional coupled Einstein--scalar system.
+
+A further one-dimensional generalization is available and was deliberately not taken: mathlib's
+`ContDiffAt.exists_forall_mem_closedBall_exists_eq_forall_mem_Ioo_hasDerivAt₀` applied to the
+autonomised field `(x,u,v) ↦ (1, v, -(V x)·u)`, with `IsOpen.is_const_of_fderiv_eq_zero` on an open
+interval supplying the affine identification `(α t)₁ = a + t`, would upgrade `NoCommonZero` from the
+Riccati class to every `C¹` potential, locally, in one dimension. That is a real but modest
+extension of an illustrative corner; it does not advance step 1 itself.
+
 All depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Hypertranscendence role

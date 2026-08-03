@@ -919,3 +919,39 @@ What remains for (9) is the *bridge*: exhibiting the mass parameter's jet observ
 together with the rank/minor reduction which replaces the uncountable family of coefficient vectors
 of a fixed shape by a single determinant polynomial per choice of nodes (corpus:
 `expandedPolyMatrix`, `exists_injective_nodes_expandedMatrix_mulVec_injective`).
+
+## Lean progress: the exponential jet map
+
+`ExponentialJetMap.lean` (wired, axiom-clean) builds the first factor of the `chi`-jet chart.  The
+corpus had no composition jet map at all -- only the first-nonzero-inner-jet special case -- so this
+is new infrastructure.
+
+- `expJetScalar` -- the Leibniz recursion `E_(k+1) = sum_i C(k,i) E_i y_(k-i+1)` with `E_0 =
+  exp(y_0)`, coming from `(exp o f)' = (exp o f) f'`.  Defined by well-founded recursion with the
+  attached-sum idiom, with `expJetScalar_succ` restoring the plain sum;
+- `expJetScalar_congr` -- the `k`-th jet depends only on the jets up to order `k`;
+- **`expJetScalar_succ_sub_diagonal`** -- the map is *triangular*: past `exp(y_0) y_(k+1)` the
+  `(k+1)`-st entry uses only jets of order at most `k`;
+- **`expJetScalar_iteratedDeriv`** -- the recursion really computes the derivatives of `exp o f` for
+  any smooth `f` on an open set.  The proof differentiates once, replaces `deriv (exp o f)` by
+  `(exp o f) f'` on a neighbourhood, and applies Leibniz;
+- **`exists_expJetScalar_eq`** -- the jet map is onto every packet whose zeroth entry has a
+  logarithm: the zeroth equation fixes the branch, the rest is the corpus's triangular solver with
+  nonvanishing diagonal `exp(y_0)`.
+
+### Why this decomposition
+
+`chi = exp o mu` with `mu(w) = (w - i)/(w + i)`, and `mu` is affine-inversion-affine.  So the full
+`chi`-jet chart factors into three pieces each of which is invertible *without* a Faa di Bruno
+formula or an implicit function theorem:
+
+- affine jet maps are linear isomorphisms of jet space;
+- the inversion jet map is an involution, hence a homeomorphism;
+- the exponential jet map is triangular with nonvanishing diagonal, so it is bijective onto the
+  packets with nonzero zeroth entry once a branch of `log` is fixed -- and the branch can be chosen
+  *relative to the base point*, `Lambda(v) = y_0 + log(v / exp y_0)`, which is continuous near the
+  base value and needs no global slit.
+
+The remaining work on this factor is the continuity of the triangular inverse, which gives openness
+of the exponential jet map; then the inversion and affine jet maps; then the assembly with
+`spanCombination_expBox_mem_nhds` and `residual_setOf_forall_eval_observation_ne_zero`.

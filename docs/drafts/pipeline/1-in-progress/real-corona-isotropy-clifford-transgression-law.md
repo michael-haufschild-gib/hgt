@@ -85,6 +85,51 @@ The boundedness equivalence is immediate from equality of pointwise norms on the
 This bridge is not the primary conjecture: its proof route is visible and it supplies a hostile
 constraint on possible realizations.
 
+## Proven universal law: smoothness--detectability conservation
+
+`[THEOREM] [C2_SMOOTHNESS_DETECTABILITY_CONSERVATION]`
+
+For every domain-preserving isometric involution `m` and partially defined complex-linear
+operator `D`, define
+
+```text
+D_even = (D + m D m)/2,      D_odd = (D - m D m)/2.
+```
+
+On the exact common domain,
+
+```text
+D = D_even + D_odd,
+D_even m = m D_even,
+D_odd m = -m D_odd,
+[D,m] = 2 D_odd m,
+||[D,m]x|| = 2 ||D_odd x||.                            (U)
+```
+
+Thus `m` is Lipschitz exactly when the detecting component `D_odd` is bounded.  If `D` is
+genuinely unbounded and `m` is Lipschitz, every unbounded direction is forced into `D_even`, where
+the first local commutator cannot see it.  Exact commutation promotes a bounded operator to an
+all-orders smooth element whose positive iterated commutators are all zero; a genuinely unbounded
+first commutator excludes every all-orders smooth representative.
+
+For the actual multiplicity-exact Xi divisor this yields both extremal realizations:
+
+```text
+absolute energy |rho-1/2|:
+    reflection is all-orders smooth, but orientation is erased;
+
+signed energy eps(rho)|rho-1/2|:
+    reflection detects the sign and is genuinely non-Lipschitz,
+    diagonal Real-corona orientation remains all-orders smooth but locally blind.
+```
+
+Functional-equation reflection conjugates the diagonal orientation to its negative.  Therefore
+the crossed-product generator carrying cyclic transgression is precisely the generator excluded
+from the signed local smooth algebra.  P1 trace blindness, P2 need for a nonlocal bivariant
+transgression, and P3 smoothness failure are three consequences of `(U)`.  Fixed orbits form the
+collateral channel through `m^2=1-e_fixed`; ordinary `K_0` records its support while cyclic pairing
+records multiplicity, with exact difference equal to multiplicity excess.
+
 ## Existing findings as shadows
 
 | Existing finding | Universal shadow map |
@@ -128,9 +173,14 @@ orientation-weighted Lefschetz character. A homology-level spectral projector do
 
 ### P3: smoothness classification
 
-Classify smoothness relative to the actual derivation used by the unbounded realization. Equation
-`(F)` predicts emptiness for the intrinsic non-doubled graded realization with infinite divisor;
-boundedness of the corona representative alone cannot imply spectral smoothness.
+Smoothness is now defined in Lean at all orders: every iterated commutator must have an
+everywhere-defined bounded extension preserving the exact Dirac domain.  On the actual Xi divisor,
+absolute energy makes reflection all-orders smooth; signed detecting energy makes any smooth
+reflection representative impossible already at first derivative; diagonal orientation is
+all-orders smooth but has identically zero positive derivatives.  Remaining classification task
+is automorphic uniformity: construct the complete multiplicity divisor for the stated completed
+automorphic class and prove its signed energies are bounded exactly in the exceptional finite-
+divisor cases.
 
 ### P4: fixed sector and analytic rank
 
@@ -236,3 +286,15 @@ stabilization or a different Dirac parity.
   commutes exactly with this operator, and has zero odd part and zero first commutator.  Selected
   theorems pass `#print axioms` with only `propext`, `Classical.choice`, and `Quot.sound`.  This is
   an actual complete-divisor P1 obstruction, not an everywhere-defined operator surrogate.
+- 2026-08-03 — `RealCoronaSpectralSmoothness.lean` adds the missing all-orders notion rather than
+  treating first commutation as a synonym for smoothness: a witness stores every bounded iterated
+  commutator extension and exact domain invariance. Exact commutation constructs such a witness;
+  a genuinely unbounded first commutator excludes all witnesses.  In
+  `RealCoronaCrossedProductSmoothnessFracture.lean`, functional-equation reflection, absolute and
+  signed self-adjoint complete-divisor Dirac operators, their maximal domains, and the signed
+  energy reversal are all constructed on the actual Xi-zero Hilbert carrier. Lean proves the
+  absolute reflection is all-orders smooth, the signed reflection has genuinely unbounded first
+  commutator and no smooth representative, diagonal orientation is all-orders smooth but
+  commutator-blind, and reflection conjugates orientation to its negative.  This establishes the
+  smoothness--detectability conservation law on the genuine complete divisor. Selected axioms are
+  again only `propext`, `Classical.choice`, and `Quot.sound`.

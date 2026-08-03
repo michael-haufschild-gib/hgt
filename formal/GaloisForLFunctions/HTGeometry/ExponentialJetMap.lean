@@ -127,6 +127,42 @@ theorem expJetScalar_iteratedDeriv {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen 
           congr 1
           rw [← iteratedDeriv_succ']
 
+/-! ## Solving the jet system -/
+
+/-- **The exponential jet map is onto every packet whose zeroth entry has a logarithm.**  The
+zeroth equation fixes the branch, and the remaining triangular system has nonvanishing diagonal
+`exp(y_0)`. -/
+theorem exists_expJetScalar_eq {y₀ : ℂ} {w : ℕ → ℂ} (hw : Complex.exp y₀ = w 0) :
+    ∃ y : ℕ → ℂ, y 0 = y₀ ∧ ∀ k, expJetScalar y k = w k := by
+  classical
+  have hd : Complex.exp y₀ ≠ 0 := Complex.exp_ne_zero y₀
+  set ext : (ℕ → ℂ) → ℕ → ℂ := fun u j => if j = 0 then y₀ else u (j - 1) with hext
+  have hext0 : ∀ u, ext u 0 = y₀ := by intro u; simp [hext]
+  have hextsucc : ∀ (u : ℕ → ℂ) (j : ℕ), ext u (j + 1) = u j := by intro u j; simp [hext]
+  have hL : ∀ (k : ℕ) (u u' : ℕ → ℂ), (∀ j, j < k → u j = u' j) →
+      expJetScalar (ext u) (k + 1) - Complex.exp y₀ * u k
+        = expJetScalar (ext u') (k + 1) - Complex.exp y₀ * u' k := by
+    intro k u u' hagree
+    have hcoord : ∀ j, j ≤ k → ext u j = ext u' j := by
+      intro j hj
+      cases j with
+      | zero => rw [hext0, hext0]
+      | succ l => rw [hextsucc, hextsucc, hagree l (by omega)]
+    have hstep := expJetScalar_succ_sub_diagonal k (ext u) (ext u') hcoord
+    rwa [hext0, hext0, hextsucc, hextsucc] at hstep
+  obtain ⟨u, hu⟩ := exists_triangular_solution hd
+    (fun k u => expJetScalar (ext u) (k + 1) - Complex.exp y₀ * u k) hL
+    (fun k => w (k + 1))
+  refine ⟨ext u, hext0 u, ?_⟩
+  intro k
+  cases k with
+  | zero =>
+      rw [expJetScalar_zero, hext0]
+      exact hw
+  | succ k =>
+      have hk := hu k
+      linear_combination hk
+
 end
 
 end GaloisForLFunctions.HTGeometry

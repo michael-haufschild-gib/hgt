@@ -272,6 +272,111 @@ theorem hierarchy_eq_of_contact_eq {n : ℕ} (s t : RootedContactTree n)
   · rintro ⟨a, i, rfl⟩
     exact ⟨a, i, (hcluster a i).symm⟩
 
+/-- Labels descending from one vertex of the rooted tree. -/
+def descendantCluster {n : ℕ} (t : RootedContactTree n) (v : t.tree) : Set (Fin n) :=
+  {i | v ≤ t.leaf i}
+
+/-- Comparing two contacts from one fixed leaf is exactly comparing the corresponding meet with
+the opposite leaf. -/
+theorem contact_le_contact_iff_le_leaf {n : ℕ} (t : RootedContactTree n)
+    (i j k : Fin n) :
+    t.contact i k ≤ t.contact i j ↔ t.leaf i ⊓ t.leaf j ≤ t.leaf k := by
+  let x := t.leaf i ⊓ t.leaf k
+  let y := t.leaf i ⊓ t.leaf j
+  constructor
+  · intro hcontact
+    change t.kappa x ≤ t.kappa y at hcontact
+    change y ≤ t.leaf k
+    have hx : x ≤ t.leaf i := inf_le_left
+    have hy : y ≤ t.leaf i := inf_le_left
+    rcases le_total_of_directed hx hy with hyx | hxy
+    · exact hyx.trans inf_le_right
+    · by_cases heq : x = y
+      · rw [← heq]
+        exact inf_le_right
+      · have hlt : x < y := lt_of_le_of_ne hxy heq
+        have hkappa := t.kappa_strictAnti hlt
+        exact False.elim ((not_lt_of_ge hcontact) hkappa)
+  · intro hleaf
+    change y ≤ t.leaf k at hleaf
+    change t.kappa x ≤ t.kappa y
+    have hyx : y ≤ x := le_inf inf_le_left hleaf
+    exact t.kappa_strictAnti.antitone hyx
+
+/-- A contact-threshold class taken at an actual pair contact is precisely the descendant cluster
+of that pair's least common ancestor. -/
+theorem cluster_at_contact {n : ℕ} (t : RootedContactTree n) (i j : Fin n) :
+    t.cluster (t.contact i j) i = t.descendantCluster (t.leaf i ⊓ t.leaf j) := by
+  ext k
+  simp only [cluster, thresholdRel, descendantCluster, Set.mem_setOf_eq]
+  constructor
+  · rintro (rfl | hcontact)
+    · exact inf_le_left
+    · exact (t.contact_le_contact_iff_le_leaf i j k).mp hcontact
+  · intro hleaf
+    exact Or.inr ((t.contact_le_contact_iff_le_leaf i j k).mpr hleaf)
+
+/-- Actual labelled meet-cluster hierarchy of the rooted tree. -/
+def visibleHierarchy {n : ℕ} (t : RootedContactTree n) : Set (Set (Fin n)) :=
+  {A | ∃ i j, A = t.descendantCluster (t.leaf i ⊓ t.leaf j)}
+
+/-- Every arbitrary threshold class equals an actual leaf or pair-meet descendant cluster. -/
+theorem cluster_mem_visibleHierarchy {n : ℕ} (t : RootedContactTree n)
+    (a : ℝ) (i : Fin n) : t.cluster a i ∈ t.visibleHierarchy := by
+  classical
+  let candidates : Finset (Fin n) :=
+    Finset.univ.filter fun j => j ≠ i ∧ t.contact i j ≤ a
+  by_cases hempty : candidates = ∅
+  · refine ⟨i, i, ?_⟩
+    rw [← t.cluster_at_contact i i]
+    ext k
+    simp only [cluster, thresholdRel, Set.mem_setOf_eq]
+    constructor
+    · rintro (rfl | hcontact)
+      · exact Or.inl rfl
+      · by_cases hki : k = i
+        · exact Or.inl hki.symm
+        have hkCandidate : k ∈ candidates := by
+          simp [candidates, hki, hcontact]
+        rw [hempty] at hkCandidate
+        simp at hkCandidate
+    · rintro (rfl | hcontact)
+      · exact Or.inl rfl
+      · by_cases hki : k = i
+        · exact Or.inl hki.symm
+        exact False.elim ((not_le_of_gt (t.contact_diagonal_lt (Ne.symm hki))) hcontact)
+  · have hnonempty : candidates.Nonempty := Finset.nonempty_iff_ne_empty.mpr hempty
+    obtain ⟨j, hj, hmax⟩ := Finset.exists_max_image candidates (t.contact i) hnonempty
+    refine ⟨i, j, ?_⟩
+    rw [← t.cluster_at_contact i j]
+    ext k
+    simp only [cluster, thresholdRel, Set.mem_setOf_eq]
+    have hjData : j ≠ i ∧ t.contact i j ≤ a := by
+      simpa [candidates] using hj
+    constructor
+    · rintro (rfl | hk)
+      · exact Or.inl rfl
+      · by_cases hki : k = i
+        · exact Or.inl hki.symm
+        right
+        apply hmax
+        simp [candidates, hki, hk]
+    · rintro (rfl | hk)
+      · exact Or.inl rfl
+      · exact Or.inr (hk.trans hjData.2)
+
+/-- Threshold tomography recovers exactly the actual labelled meet hierarchy, not merely an
+abstract laminar family. -/
+theorem hierarchy_eq_visibleHierarchy {n : ℕ} (t : RootedContactTree n) :
+    t.hierarchy = t.visibleHierarchy := by
+  ext A
+  constructor
+  · rintro ⟨a, i, rfl⟩
+    exact t.cluster_mem_visibleHierarchy a i
+  · rintro ⟨i, j, rfl⟩
+    rw [← t.cluster_at_contact i j]
+    exact ⟨t.contact i j, i, rfl⟩
+
 /-- Polarized complementary-contact energy. -/
 def energy {n : ℕ} (t : RootedContactTree n) (i j : Fin n) : ℝ :=
   2 * t.contact i j - t.contact i i - t.contact j j

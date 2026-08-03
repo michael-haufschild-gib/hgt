@@ -7,9 +7,13 @@
 - **Source:** `OPEN-SOURCE-001`
 - **RH used:** no
 - **Computation used:** no
-- **Lean status:** finite window, sign reversal, marker decoding, and arbitrary finite-family
-  distinctness are formalized in `MobiusReciprocalMarkerPrimeCapacity.lean`; analytic
-  distribution inputs remain paper-level
+- **Lean status:** finite window, sign reversal, marker decoding and finite-family distinctness in
+  `MobiusReciprocalMarkerPrimeCapacity.lean`; the window prime count `(11)`/`(28)`, the reciprocal
+  fibre bound `(25)`-`(26)`, the short-interval squarefree count `(19)`-`(21)` with the density
+  `6/pi^2`, and the averaged truncation tail `(22)`-`(23)` are now formalized unconditionally in
+  `Sieve/PrimeWindow.lean`, `Sieve/ReciprocalFibre.lean`, `Sieve/InverseSquareTail.lean`,
+  `Sieve/SquarefreeCount.lean`, `Sieve/AveragedSquarefreeTail.lean`; Menon's mean-square input
+  `(15)` remains the cited published theorem
 
 ## Result
 
@@ -329,3 +333,71 @@ consequence `(34)`--`(36)`.
 Inputs are classical or published; their combination and Route E extraction
 appear new.  External priority is unverified.  The result is recorded as new
 scientific synthesis, not as a closure of `OPEN-SOURCE-001`.
+
+## Lean completion programme (opened 2026-08-03)
+
+Corpus audit before starting.  `MobiusReciprocalMarkerPrimeCapacity.lean` already owns the finite
+skeleton: `reciprocalMarker_product_mem_window` is `(29)`, `reciprocalMarker_target_sign_flip` is the
+sign law of `(5)`, and `largePrimeMarker_pairProduct_injective` / `card_markerProducts_eq` are the
+injectivity of `(30)`.  The `Sieve/` layer built for the two-sided card owns Mertens I and II,
+Brun's pure sieve, the Selberg sieve and the Chernoff tails.  Missing were the three arithmetic
+inputs of this card's own proof: the window prime count `(11)`/`(28)`, the reciprocal fibre bound
+`(25)`–`(26)`, and the squarefree count `(19)`–`(23)`.
+
+### `(11)`, `(28)` landed — `Sieve/PrimeWindow.lean`
+
+- `sum_logDiv_bigPrimeSet` : `∑_{M<p≤N} (log p)/p = mertensA N − mertensA M`;
+- `logDiv_le_of_lt` : beyond `e` the weight `(log p)/p` is maximised at the left endpoint;
+- **`card_bigPrimeSet_ge`** :
+  `#{p : M < p ≤ N} ≥ (log(N/M) − 2c₁)·M/log M`, with `c₁ = mertensFirstConst`;
+- **`card_bigPrimeSet_ratio_ge`** : the same for a ratio window `N = QM`.
+
+This is a Chebyshev-type lower bound with *named* constants.  Note the honest constraint it exposes:
+Mertens' first theorem carries `c₁ = max(log 4, 1 + 2·logSqTailConst)`, so the bound is vacuous for a
+literal dyadic block and becomes positive once the block ratio exceeds `exp(2c₁)`.  The card's
+construction is unaffected — replacing base `2` by a larger fixed base changes `K ≍ log h` only by a
+constant factor — but the card's `(10)` should be read with that base.
+
+### `(25)`, `(26)` landed — `Sieve/ReciprocalFibre.lean`
+
+- `reciprocalFibre_subset` : `⌊X/p⌋ = t` is exactly `X/(t+1) < p ≤ X/t`;
+- **`card_reciprocalFibre_le`** : the fibre has at most `X/(t(t+1)) + 1` members.
+
+Exact arithmetic, no asymptotics; this is the growing-fibre charge of hostile-audit item 2.
+
+### `(19)`–`(21)` landed — `Sieve/InverseSquareTail.lean`, `Sieve/SquarefreeCount.lean`
+
+- `sum_range_inv_sq_shift_le`, `summable_inv_sq_shift`, **`tsum_inv_sq_shift_le`** :
+  `∑_{d > R} d^{−2} ≤ 1/R`, by the telescoping invariant `1/R − 1/(N+R)`;
+- `summable_moebius_div_sq`, `squarefreeDensity := ∑_{d≥1} μ(d)/d²`;
+- `abs_sum_Icc_moebius_div_sq_sub_le` : truncating the density at `R` costs at most `1/R`;
+- `sum_truncated_moebius_eq` : the exact exchange
+  `∑_{n∈(t,t+L]} ∑_{d≤R, d²∣n} μ(d) = ∑_{d≤R} μ(d)·#{n∈(t,t+L] : d²∣n}`;
+- **`abs_truncated_squarefree_sub_le`** :
+  `|∑_{n∈(t,t+L]} ∑_{d≤R, d²∣n} μ(d) − L·C| ≤ R + L/R`, **uniformly in `t`** — this is `(21)`, and at
+  `R ≍ √L` the error is `O(√L)`;
+- `lseries_moebius_two_eq`, **`squarefreeDensity_eq`** : `C = 6/π²`, obtained from the corpus's own
+  `LSeries_moebius_eq_inv_riemannZeta` at `s = 2` together with mathlib's `riemannZeta_two`.
+
+### `(22)`, `(23)` landed — `Sieve/AveragedSquarefreeTail.lean`
+
+- `card_start_window_le` : an integer lies in at most `L` of the windows `(t, t+L]`;
+- **`sum_card_filter_dvd_le`** : `∑_{A ≤ t < B} #{n∈(t,t+L] : m ∣ n} ≤ L·#{n∈(A,B+L] : m ∣ n}`,
+  the double counting that makes the tail affordable on average;
+- `sum_Icc_inv_sq_le` : the truncated inverse-square tail;
+- **`sum_tail_divisor_count_le`** :
+  `∑_{A ≤ t < B} ∑_{R < d ≤ M} #{n∈(t,t+L] : d²∣n} ≤ L·((B+L−A)/R + M)`,
+  which at `R ≍ √L`, `M ≍ √(B+L)` is exactly `(22)`, hence `(23)`.
+
+Built, wired into `GaloisForLFunctions/RHTower.lean`, axiom-clean (nineteen theorems, every one
+`[propext, Classical.choice, Quot.sound]`).
+
+### What remains
+
+`(15)`–`(18)` rest on Menon's 2026 mean-square theorem for Möbius in short intervals, a cited
+published analytic result; nothing in mathlib or the corpus approaches it, and `(18)` is its Markov
+consequence.  `(32)`/`(34)` are Shiu's bound, for which the corpus now owns an unconditional
+substitute (`Sieve/RateBridge.card_omega_le_le_rate`) that is weaker by `(log log X)^{Θ(1)}` — still
+enough here, since `(34)` is used only as `o(H/log log X)` and `(log X)^{−I(c₀)}(log log X)^{I(c₀)+1}`
+tends to zero.  `(35)`/`(36)` are `MobiusWoldBreadthGibbsCost.abs_gibbsEdge_le` and
+`sum_abs_gibbsEdge_le`.
