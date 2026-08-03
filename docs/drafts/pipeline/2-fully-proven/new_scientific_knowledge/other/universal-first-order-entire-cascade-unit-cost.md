@@ -549,6 +549,8 @@ norm_sub_re_mul_eq, norm_sub_re_mul_sq_le -- and the same in geometric form
 sum_weighted_sqrt_sq_le                   -- Cauchy--Schwarz against square roots
 norm_weighted_sum_sub_le                  -- the weighted sum, minus a real multiple of u
 exists_unit_tsum_normalised_alignment_defect -- total misalignment = (S(r) - |f(z)|) / mu(r)
+exists_unit_tsum_normalised_defect_le     -- hence the defect is at most nu(s) + C(r/s)
+norm_normalised_transverse_sq_le          -- so every transverse part is at most sqrt(2 D)
 ```
 
 The bridge is now explicit: the total misalignment of the normalised coefficients equals
@@ -976,3 +978,10 @@ triangularity package, which is exactly how the paper proof uses them.
   was built to produce, and both of its ingredients are already bounded -- `S(r) <= mu(r)(nu(s)+C)`
   from the coefficient side, and `|f(z)| >= mu(r)` at a maximum-modulus point.  The remaining work is
   to combine this with the weighted aggregation and pick the window.
+- 2026-08-03 -- Bounded the defect and its per-term consequence.  At a point where the function
+  reaches the maximum term, `(S(r) - |f(z)|)/mu(r) <= nu(s) + (r/s)/(1-r/s)`, using the majorant
+  bound from the coefficient side and `|f(z)| >= mu(r)`; so the total misalignment of the normalised
+  phases is at most the central index plus a constant.  Feeding that into the quadratic transverse
+  bound, and using `||c_n|| <= 1`, every normalised coefficient lies within `sqrt(2 D)` of a
+  nonnegative multiple of the common direction.  Both halves of the local expansion are now
+  quantitative; what is left is to assemble them with the weighted aggregation over a window.

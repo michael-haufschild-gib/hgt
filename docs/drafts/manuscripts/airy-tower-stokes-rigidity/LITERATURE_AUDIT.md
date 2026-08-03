@@ -6,12 +6,16 @@ Audit date: 2026-08-03
 
 Does prior literature already contain any of the following exact results?
 
-1. Lexicographic sign law for the diagonal nonabelian Hodge multiplicity of a ramified Stokes circle.
-2. Zero-loop classification `beta_i=e_{i-1}+e_i`.
-3. Bijection of zero-loop ramified characteristics with ordered multiplicative factorizations.
-4. Exact two-circle edge spectra for simple ramified zero-loop circles.
-5. Local-spectrum plus rescaled-ultrametric sufficiency for arbitrary finite elementary decorated graphs.
-6. Decorated finite-fibre theorem for fission trees over a fixed nonabelian Hodge diagram.
+1. Tangent-Laurent covariance of the full Stokes contact hierarchy and its exact negative-Fourier
+   coordinate realization.
+2. Strict reconstruction of the visible labelled branching hierarchy and its additive
+   negative-type energy metric from the decorated core.
+3. Lexicographic sign law for the diagonal nonabelian Hodge multiplicity of a ramified Stokes circle.
+4. Zero-loop classification `beta_i=e_{i-1}+e_i`.
+5. Bijection of zero-loop ramified characteristics with ordered multiplicative factorizations.
+6. Exact two-circle edge spectra for simple ramified zero-loop circles.
+7. Local-spectrum plus rescaled-ultrametric sufficiency for arbitrary finite elementary decorated graphs.
+8. Decorated finite-fibre theorem for fission trees over a fixed nonabelian Hodge diagram.
 
 ## Primary sources checked
 
@@ -98,10 +102,12 @@ Does prior literature already contain any of the following exact results?
 
 ## Novelty verdict
 
-No collision located through 2026-08-03. The exact source formulas are known; the equality case,
-strict sign classification, arithmetic factorization, pair spectra, and elementary sufficiency theorem
-appear new. This remains a documented search result, not a guarantee against unpublished work or
-different terminology in singularity theory.
+No collision located through 2026-08-03. Valuation invariance under tangent substitution is
+standard in spirit, so it is not claimed as an isolated novelty. No source located its exact
+negative-Fourier/contact-hierarchy package, the strict core tomography and energy consequences,
+the zero-loop equality/sign classification, arithmetic factorization, pair spectra, decorated
+finite fibres, or elementary sufficiency theorem. This remains a documented search result, not a
+guarantee against unpublished work or different terminology in singularity theory.
 
 ## Significance assessment
 
@@ -109,6 +115,8 @@ Local sign law alone is too small for a renowned general journal. Combined packa
 stronger:
 
 - exact local classification of every ramified zero-loop vertex;
+- one covariance principle connecting contact thresholds to the exact Airy Fourier chart;
+- strict recovery of the visible labelled fission hierarchy and its additive negative-type metric;
 - explicit Fourier and knot-theoretic structure;
 - exact hidden fibres of a Cartan shadow;
 - infinitely many two-vertex obstructions absent from current ultrametric criteria;

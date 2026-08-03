@@ -206,3 +206,72 @@ equation, positivity postulate, or spectral conjecture enters this proof.
 - **Kill condition for the successor:** if literal Fourier/Morita comparison swaps unrelated source
   fibres, erases the `ell^2/ell^1` class, or preserves only reciprocal product gain, then it cannot
   supply clause 3 and this successor route remains open rather than proving RH.
+
+## Source provenance found: occupancy Fisher equals the essential edge modulo trace class
+
+The apparent gap between the activation/Möbius/Gamma source and the strict-preclosure edge is not
+real.  Put `q_p=1/p` and let
+
+```text
+F_p = q_p/(1+q_p)^2
+    = (xiMobiusPrimeSchurValuationDamping p)^2.
+```
+
+The second equality is the already proved activation-disintegration law: `F_p` is simultaneously
+squarefree occupancy Fisher information and the square of the Möbius-to-Gamma damping.  Direct
+algebra gives
+
+```text
+0 <= 1/p-F_p = (2p+1)/(p(p+1)^2) <= 3/p^2.                 (F1)
+```
+
+Together with (E2),
+
+```text
+|c_p-F_p| <= |1/p-F_p| + |1/p-c_p| <= 4/p^2.              (F2)
+```
+
+For the modular twists `c_t(p)=p^t c_p` and `F_t(p)=p^t F_p`, positivity of real powers and (F2)
+give
+
+```text
+|c_t(p)-F_t(p)| <= 4 p^(t-2).
+```
+
+Hence, whenever `t<1`, the difference `c_t-F_t` is in `ell^1`.  Every Xi divisor lies in the open
+critical strip, so its centered rate `t_rho=2 Re(rho)-1` satisfies `|t_rho|<1`.  Consequently both
+reflected actual edges have literal source representatives:
+
+```text
+[c_(t_rho)]  = [F_(t_rho)]  in ell^2/ell^1,
+[c_(-t_rho)] = [F_(-t_rho)] in ell^2/ell^1.                (F3)
+```
+
+This closes clauses 1 and 2 of `ORDINARY_PRIME_POLARIZED_IDEAL_PROVENANCE`: the two endpoint
+classes are no longer unrelated analytic decorations.  They are modular transports of one
+ordinary-prime Fisher density already selected by diagonal Wold activation, squarefree occupancy,
+Möbius depth differences, and Gamma valuation damping.
+
+### Sharpened sole open producer
+
+The current algebraic CCM Morita representation cannot prove the remaining conservation law.  It
+lands entirely in trace-class operators, while (E3) says the retained critical Fisher/essential
+class is not trace class.  Its ordinary trace and higher restriction formulas therefore consume
+an `ell^1` orbit coefficient before the relative class is formed.  The coefficientwise CCM Real
+structure preserves scaling degree; analytic Fourier reflection swaps fibres; neither acts on the
+retained `ell^2/ell^1` class.
+
+The exact remaining statement is now:
+
+`[OPEN CORE -- POLARIZED FISHER-IDEAL CONSERVATION]` Construct, before divisor specialization, a
+singular completion of the literal adelic cyclic source which contains the occupancy Fisher class
+`[F]`, and a source-inverse/analytic-Fourier correspondence on that completion such that at every
+Xi divisor its two polarized endpoint maps are `[F_t]` and `[F_-t]` and the correspondence
+preserves membership of `ell^1`.  Then (E3) and (F3) force `t=0`, hence RH.
+
+This is strictly narrower than “construct a source” or “prove positivity.”  Source, arithmetic
+atom, Gamma ancestry, non-erasure class, both endpoint representatives, critical-strip
+moderateness, and ideal classifier are now explicit.  Missing mathematics is one polarized
+conservation theorem on a singular relative ideal.  Defining that conservation by declaring the
+two endpoint statuses equal is circular; it must follow from a literal Fourier/cyclic operator or
+correspondence on the completed arithmetic source.

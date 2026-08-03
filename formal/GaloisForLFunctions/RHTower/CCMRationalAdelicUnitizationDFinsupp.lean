@@ -26,11 +26,20 @@ inductive CCMRationalAdelicUnitizedLabel
   | crossed (k : Scale)
 deriving DecidableEq
 
-/-- Dependent coefficient module of one unitized label. -/
-def CCMRationalAdelicUnitizedFiber :
-    CCMRationalAdelicUnitizedLabel → ModuleCat ℂ
-  | .scalar => ModuleCat.of ℂ ℂ
-  | .crossed _ => ModuleCat.of ℂ Core
+/-- Dependent coefficient space of one unitized label. -/
+abbrev CCMRationalAdelicUnitizedFiber : CCMRationalAdelicUnitizedLabel → Type
+  | .scalar => ℂ
+  | .crossed _ => Core
+
+instance : (label : CCMRationalAdelicUnitizedLabel) →
+    AddCommMonoid (CCMRationalAdelicUnitizedFiber label)
+  | .scalar => inferInstanceAs (AddCommMonoid ℂ)
+  | .crossed _ => inferInstanceAs (AddCommMonoid Core)
+
+instance : (label : CCMRationalAdelicUnitizedLabel) →
+    Module ℂ (CCMRationalAdelicUnitizedFiber label)
+  | .scalar => inferInstanceAs (Module ℂ ℂ)
+  | .crossed _ => inferInstanceAs (Module ℂ Core)
 
 abbrev CCMRationalAdelicUnitizedDFinsupp :=
   Π₀ label : CCMRationalAdelicUnitizedLabel,
@@ -40,7 +49,7 @@ private def ccmRationalAdelicCrossedToUnitizedDFinsupp :
     Crossed →ₗ[ℂ] CCMRationalAdelicUnitizedDFinsupp :=
   (Finsupp.lsum ℂ) fun k =>
     DFinsupp.lsingle
-      (M := fun label => (CCMRationalAdelicUnitizedFiber label : Type))
+      (M := CCMRationalAdelicUnitizedFiber)
       (CCMRationalAdelicUnitizedLabel.crossed k)
 
 private def ccmRationalAdelicScalarToSource : ℂ →ₗ[ℂ] Source where
@@ -67,6 +76,7 @@ def ccmRationalAdelicSourceToUnitizedDFinsupp :
   map_smul' z x := by
     simp only [Unitization.fst_smul, Unitization.snd_smul, map_smul]
     rw [DFinsupp.single_smul]
+    simp only [RingHom.id_apply]
     module
 
 /-- Reassembly of the dependent coefficient family into the minimal unitization. -/
@@ -75,18 +85,29 @@ def ccmRationalAdelicUnitizedDFinsuppToSource :
   (DFinsupp.lsum ℂ) ccmRationalAdelicUnitizedLabelToSource
 
 @[simp]
+theorem ccmRationalAdelicCrossedToUnitizedDFinsupp_single
+    (k : Scale) (t : Core) :
+    ccmRationalAdelicCrossedToUnitizedDFinsupp (Finsupp.single k t) =
+      DFinsupp.single (CCMRationalAdelicUnitizedLabel.crossed k) t := by
+  classical
+  simp [ccmRationalAdelicCrossedToUnitizedDFinsupp]
+
+@[simp]
 theorem ccmRationalAdelicCrossedToUnitizedDFinsupp_apply_crossed
     (F : Crossed) (k : Scale) :
     ccmRationalAdelicCrossedToUnitizedDFinsupp F
         (CCMRationalAdelicUnitizedLabel.crossed k) = F k := by
   classical
   induction F using Finsupp.induction with
-  | zero => simp [ccmRationalAdelicCrossedToUnitizedDFinsupp]
+  | zero => simp
   | @single_add l t F hlt ht hF =>
+      rw [map_add, ccmRationalAdelicCrossedToUnitizedDFinsupp_single]
+      simp only [DFinsupp.add_apply, Finsupp.add_apply]
+      rw [hF]
       by_cases hlk : l = k
       · subst l
-        simp [ccmRationalAdelicCrossedToUnitizedDFinsupp, hF]
-      · simp [ccmRationalAdelicCrossedToUnitizedDFinsupp, hF, hlk]
+        simp
+      · simp [hlk]
 
 @[simp]
 theorem ccmRationalAdelicCrossedToUnitizedDFinsupp_apply_scalar
@@ -95,9 +116,12 @@ theorem ccmRationalAdelicCrossedToUnitizedDFinsupp_apply_scalar
         CCMRationalAdelicUnitizedLabel.scalar = 0 := by
   classical
   induction F using Finsupp.induction with
-  | zero => simp [ccmRationalAdelicCrossedToUnitizedDFinsupp]
+  | zero => simp
   | @single_add k t F hkt ht hF =>
-      simp [ccmRationalAdelicCrossedToUnitizedDFinsupp, hF]
+      rw [map_add, ccmRationalAdelicCrossedToUnitizedDFinsupp_single]
+      simp only [DFinsupp.add_apply]
+      rw [hF]
+      simp
 
 @[simp]
 theorem ccmRationalAdelicSourceToUnitizedDFinsupp_apply_scalar (x : Source) :
@@ -122,7 +146,6 @@ theorem ccmRationalAdelicUnitizedDFinsuppToSource_single_scalar (z : ℂ) :
   classical
   simp [ccmRationalAdelicUnitizedDFinsuppToSource,
     ccmRationalAdelicUnitizedLabelToSource, ccmRationalAdelicScalarToSource]
-  rfl
 
 @[simp]
 theorem ccmRationalAdelicUnitizedDFinsuppToSource_single_crossed
@@ -133,7 +156,44 @@ theorem ccmRationalAdelicUnitizedDFinsuppToSource_single_crossed
   classical
   simp [ccmRationalAdelicUnitizedDFinsuppToSource,
     ccmRationalAdelicUnitizedLabelToSource]
-  rfl
+
+theorem ccmRationalAdelicUnitizedDFinsuppToSource_fst
+    (d : CCMRationalAdelicUnitizedDFinsupp) :
+    (ccmRationalAdelicUnitizedDFinsuppToSource d).fst =
+      d CCMRationalAdelicUnitizedLabel.scalar := by
+  classical
+  induction d using DFinsupp.induction with
+  | h0 => simp
+  | ha label value d hvalue hd hInd =>
+      rw [map_add, Unitization.fst_add, hInd, DFinsupp.add_apply]
+      cases label with
+      | scalar =>
+          rw [ccmRationalAdelicUnitizedDFinsuppToSource_single_scalar]
+          rfl
+      | crossed k =>
+          rw [ccmRationalAdelicUnitizedDFinsuppToSource_single_crossed]
+          simp
+
+theorem ccmRationalAdelicUnitizedDFinsuppToSource_snd_apply
+    (d : CCMRationalAdelicUnitizedDFinsupp) (k : Scale) :
+    (ccmRationalAdelicUnitizedDFinsuppToSource d).snd k =
+      d (CCMRationalAdelicUnitizedLabel.crossed k) := by
+  classical
+  induction d using DFinsupp.induction with
+  | h0 => simp
+  | ha label value d hvalue hd hInd =>
+      rw [map_add, Unitization.snd_add, Finsupp.add_apply, hInd,
+        DFinsupp.add_apply]
+      cases label with
+      | scalar =>
+          rw [ccmRationalAdelicUnitizedDFinsuppToSource_single_scalar]
+          rfl
+      | crossed l =>
+          rw [ccmRationalAdelicUnitizedDFinsuppToSource_single_crossed]
+          by_cases hlk : l = k
+          · subst l
+            simp
+          · simp [hlk]
 
 /-- Exact linear equivalence between the minimal unitization and scalar/crossed dependent
 coefficients. -/
@@ -143,23 +203,32 @@ def ccmRationalAdelicSourceUnitizedDFinsuppEquiv :
   invFun := ccmRationalAdelicUnitizedDFinsuppToSource
   left_inv x := by
     apply Unitization.ext
-    · change (ccmRationalAdelicUnitizedDFinsuppToSource
-          (ccmRationalAdelicSourceToUnitizedDFinsupp x)).fst = x.fst
-      simp [ccmRationalAdelicUnitizedDFinsuppToSource,
-        ccmRationalAdelicUnitizedLabelToSource]
-    · change (ccmRationalAdelicUnitizedDFinsuppToSource
-          (ccmRationalAdelicSourceToUnitizedDFinsupp x)).snd = x.snd
-      ext k
-      simp [ccmRationalAdelicUnitizedDFinsuppToSource,
-        ccmRationalAdelicUnitizedLabelToSource]
+    · rw [ccmRationalAdelicUnitizedDFinsuppToSource_fst]
+      change ccmRationalAdelicSourceToUnitizedDFinsupp x
+          CCMRationalAdelicUnitizedLabel.scalar = x.fst
+      rw [ccmRationalAdelicSourceToUnitizedDFinsupp_apply_scalar]
+    · apply Finsupp.ext
+      intro k
+      rw [ccmRationalAdelicUnitizedDFinsuppToSource_snd_apply]
+      change ccmRationalAdelicSourceToUnitizedDFinsupp x
+          (CCMRationalAdelicUnitizedLabel.crossed k) = x.snd k
+      rw [ccmRationalAdelicSourceToUnitizedDFinsupp_apply_crossed]
   right_inv d := by
     apply DFinsupp.ext
     intro label
     cases label with
     | scalar =>
-        simp
+        change ccmRationalAdelicSourceToUnitizedDFinsupp
+          (ccmRationalAdelicUnitizedDFinsuppToSource d)
+            CCMRationalAdelicUnitizedLabel.scalar = _
+        rw [ccmRationalAdelicSourceToUnitizedDFinsupp_apply_scalar,
+          ccmRationalAdelicUnitizedDFinsuppToSource_fst]
     | crossed k =>
-        simp
+        change ccmRationalAdelicSourceToUnitizedDFinsupp
+          (ccmRationalAdelicUnitizedDFinsuppToSource d)
+            (CCMRationalAdelicUnitizedLabel.crossed k) = _
+        rw [ccmRationalAdelicSourceToUnitizedDFinsupp_apply_crossed,
+          ccmRationalAdelicUnitizedDFinsuppToSource_snd_apply]
 
 end RHTower
 end GaloisForLFunctions

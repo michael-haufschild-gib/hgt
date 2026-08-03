@@ -279,18 +279,56 @@ false.  `ccm-screw-kernel-positivity-improving-breakdown.md` built, unconditiona
 `K_reg` of `(6)` is therefore `screwRegularKernel`, and `(12)`'s right-hand pairing is
 `screwCorrelationForm` specialised to `φ = ψ`.
 
-Formalization plan for this card, in order:
+Every proved theorem of this card is now formalized unconditionally.
 
-1. `(4)`--`(5)`: the parity lifts `U_±` and the exact decomposition `Q_even = T_a + H_a`,
-   `Q_odd = T_a - H_a`, by splitting both variables of the double integral over `(-a,a)` into their
-   positive and negative halves and using evenness of `K`.  This needs no arithmetic input and no
-   screw-specific hypothesis — only `K` even and locally integrable on the relevant compact set.
-2. `(7)`--`(9)`: split `H_a` for a kernel of the form `K_reg` minus a finite atomic measure, giving
-   the explicit prime-power sum with the standard half-weight convention.
-3. `(10)`: the cutoff — for `log n ≥ 2a` the atom's integration range is empty, so only
-   `n < lambda^2 = e^(2a)` occurs.
-4. `(12)`: the autocorrelation form, from the already-built shear identity.
-5. `(16)`: the coefficient cocycle, immediate from `(9)` once `(12)` is available.
+`formal/GaloisForLFunctions/RHTower/SuzukiParityHankelDecomposition.lean`
+
+- `diffBilinForm K f g = ∫∫ K(x−y) f y g x` and `sumBilinForm K f g = ∫∫ K(x+y) f y g x` — the
+  Toeplitz and Hankel forms.  For `φ, ψ` supported in `(0,a)` these are exactly `T_a` and `H_a`,
+  the zero extension being harmless.
+- `evenParityLift`, `oddParityLift` — the lifts `(2)`, defined with `|x|` and `Real.sign` as
+  published; `evenParityLift_eq_of_vanishing` / `oddParityLift_eq_of_vanishing` prove that on
+  functions vanishing on `(-∞,0]` they are exactly symmetrisation and antisymmetrisation
+  `(φ ± φ∘(-·))/√2`.  This is the step that replaces the four-quadrant split.
+- `measurePreserving_negSnd` / `negFst` / `negBoth` and the corresponding `integral_comp_*`,
+  `integrable_comp_*` — the three reflections of `ℝ × ℝ` are measure preserving, so
+  `diffBilinForm_negReflect_left` (no evenness needed), `diffBilinForm_negReflect_right` and
+  `diffBilinForm_negReflect_both` hold with no integrability hypothesis at all.
+- **`diffBilinForm_evenParityLift`** and **`diffBilinForm_oddParityLift`** — equations `(4)`:
+  `Q_even = T + H` and `Q_odd = T - H`; **`diffBilinForm_parity_difference`** — equation `(5)`:
+  the gap is `2 H`.  The only hypotheses are evenness of `K`, vanishing of `φ, ψ` on `(-∞,0]`, and
+  integrability of the two basic integrands.
+
+`formal/GaloisForLFunctions/RHTower/SuzukiPrimeHankelCarrier.lean`
+
+- `screwConvolve φ ψ t = ∫ φ y * ψ (t − y) dy` — the carrier `c_(φ,ψ)` of `(11)`;
+  `screwCrossCorr_negReflect` identifies it with the reflected correlation.
+- **`screwConvolve_eq_zero_of_two_mul_le`** — equation `(10)`: the convolution vanishes at every
+  `t ≥ 2a`, hence only prime powers with `log n < 2a`, i.e. `n < lambda^2`, contribute.
+- **`screwConvolve_eq_intervalIntegral`** — equation `(9)`: at `0 < t < 2a` the carrier is the
+  integral over the explicit window `(max 0 (t−a), min a t)`.
+- **`diffBilinForm_eq_correlation_pairing`**, **`sumBilinForm_eq_convolution_pairing`** — the shear
+  identities `(8)`/`(12)`: each two-variable form is the kernel paired against the one-variable
+  carrier, by two Fubini applications and one translation.
+- `atomicHankelPart`, `primeHankelPart`, **`atomicHankelPart_eq_primeHankelPart`** — the atomic part
+  `(9)` and the fact that enlarging the index range past `e^(2a)` adds nothing.
+- **`atomicHankelPart_add`**, **`atomicHankelPart_sub`** — equation `(16)`, the exact coefficient
+  cocycle `H_(b+δb) − H_b = −∑ δb n * c(log n)`.
+- **`sumBilinForm_sub_atomic`** — equation `(7)`: the Hankel carrier is the regular convolution
+  pairing minus the finite prime-power samples.
+- **`parityGap_eq_regular_sub_atomic`**, **`parityGap_autocorrelation`** — `(5)` combined with
+  `(7)`/`(12)`: the even sector exceeds the odd sector by exactly twice the difference between the
+  archimedean convolution pairing and the finite prime-power convolution samples.  This is the
+  arithmetic invariant of `(13)`.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]` for every theorem above.
+
+Not formalizable at this card's level: the passage from a kernel that is a genuine distribution
+(Suzuki's `-g''`, whose Toeplitz part is singular on the diagonal) to the closed parity forms.  The
+card itself only claims this "by form-core density"; the Lean statements above are the exact
+integrable-kernel content, and `ccm-screw-kernel-positivity-improving-breakdown.md` supplies the
+distributional identification `-∫ g φ'' = ∫ K φ` on atom-free intervals.
 
 ## Gates
 
@@ -300,6 +338,9 @@ Formalization plan for this card, in order:
 - [x] source-specific positive parity inequality isolated
 - [x] finite Euler-unit incidence cocycle identified
 - [x] pointed global carrier and stronger topology specified
+- [x] Lean: parity lifts, `T+H`/`T-H` decomposition `(4)`--`(5)` unconditional
+- [x] Lean: convolution carrier, shear identities `(8)`/`(12)`, cutoff `(10)`, window `(9)`
+- [x] Lean: regular-minus-atomic split `(7)` and the coefficient cocycle `(16)`
 - [ ] prove the radial-prolate Hankel margin `(14)`
 - [ ] prove the competing odd-sector lower bound
 - [ ] transfer the `lambda^(-4)` source parity gap to the true Weil form

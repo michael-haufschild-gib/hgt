@@ -372,3 +372,10 @@ stabilization or a different Dirac parity.
   nonunital cyclic-chain degree. Remaining P2 gate is the normalized unitized mixed-sector
   extension, proof of all face/degeneracy/rotation naturality identities, strong-Schwartz target
   completion and closed-range cokernel, then the concrete `κ`/bivariant-Chern/Lefschetz comparison.
+- 2026-08-03 — `CCMRationalAdelicUnitizationDFinsupp.lean` adds the next non-negotiable mixed-
+  sector layer. It proves an exact linear equivalence between the actual minimal unitization
+  `ℂ ⊕ (𝒮(𝔸_ℚ)⋊ℚˣ)` and a dependent finitely supported family with one scalar label and one
+  Bruhat-core fiber over every `k∈ℚˣ`. This makes the scalar unit algebraic and separate from the
+  trace-class sectors while enabling mathlib's dependent tensor/Finsupp distribution theorem in
+  every cyclic degree. The module compiles unconditionally; next construction is the normalized
+  mixed-label generalized trace (all-scalar branch plus convergent non-scalar branches).

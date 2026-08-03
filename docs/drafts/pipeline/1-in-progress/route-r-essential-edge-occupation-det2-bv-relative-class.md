@@ -3,7 +3,7 @@
 - **ID:** `route-r-essential-edge-occupation-det2-bv-relative-class`
 - **Stage:** 1 — in progress
 - **Type:** SOURCE-DERIVED OPERATOR REALIZATION / RELATIVE SPECTRAL-ZETA CLASS
-- **Status:** `[PAPER-PROVED CORE] [PRIMARY SOURCE MAP] [ANNIHILATION OPEN] [NOT RH]`
+- **Status:** `[CORE FORMALIZED] [PRIMARY SOURCE MAP] [ANNIHILATION OPEN] [NOT RH]`
 - **Parent:**
   `../3-formalized/new_scientific_knowledge/route-r-prime-essential-edge-schatten-threshold.md`
 
@@ -41,7 +41,7 @@ integer spectrum.
 
 ## Frozen claims
 
-`[CONJECTURE: ESSENTIAL_EDGE_EXACT_NOME_EXTRACTION]`
+`[THEOREM: ESSENTIAL_EDGE_EXACT_NOME_EXTRACTION]`
 
 For every ordinary prime,
 
@@ -51,7 +51,7 @@ a_p(2) = 1/p - p/r_p^2,
 q_p = a_p(2) - a_p(1)/r_p = 1/p.
 ```
 
-`[CONJECTURE: ESSENTIAL_EDGE_OCCUPATION_DIAGONAL]`
+`[THEOREM: ESSENTIAL_EDGE_OCCUPATION_DIAGONAL]`
 
 Unique factorization gives `q(nu)=1/N(nu)`.  Hence `Q_edge` is Hilbert--Schmidt and not trace
 class, and under the occupation/positive-integer equivalence it is exactly
@@ -70,7 +70,7 @@ det2(I - t Q_edge)
 
 Its polarized ratio is the regular Wold--Gamma phase.
 
-`[CONJECTURE: WOLD_SPECTRAL_ZETA_RELATIVE_CLASS]`
+`[THEOREM: WOLD_SPECTRAL_ZETA_RELATIVE_CLASS]`
 
 For a prime `p`, let `E_p` delete occupation modes whose represented integer is divisible by
 `p`.  The single relative spectral-zeta character
@@ -203,6 +203,27 @@ machinery, but no source-specific essential-edge extraction or Xi annihilation t
 keeps novelty restricted to the exact source map and its corpus weld; it does not label parent
 determinant or residue theory new.
 
+## Lean status
+
+The dependency-closed unconditional core is formalized in
+`GaloisForLFunctions.RHTower.PrimeEssentialEdgeOccupationDet2BVRelativeClass`:
+
+- `primeFirstTraceEssentialEdgeNomeReal_eq` proves exact nome recovery;
+- `primeFirstTraceEssentialEdgeOccupationEntry_eq` proves reciprocal-integer occupation spectrum;
+- `primeFirstTraceEssentialEdgeOccupationKernel_isHS` constructs diagonal Hilbert--Schmidt kernel;
+- `primeFirstTraceEssentialEdgeOccupationKernel_quadraticTrace` and
+  `primeFirstTraceEssentialEdgeOccupationQuadraticCocycle_eq_woldGammaAnomaly` identify quadratic
+  trace/cocycle with `zeta(2)`;
+- `primeFirstTraceEssentialEdgeOccupationFredholmDet_eq_gamma` proves local `det2`/Gamma identity;
+- `primeWoldBVRelativeDefectKernel_quadraticTrace` proves regular prime-decimated trace;
+- `primeWoldBVRelativeSpectralZeta_residue_one_eq_woldBoundaryMass` and
+  `primeWoldBVRelative_regularSingularClass` prove singular Wold--BV weld;
+- `primeFirstTraceEssentialEdgeOccupationFredholmDet_ne_zero` formalizes why diagonal determinant
+  cannot itself supply arithmetic Xi annihilation.
+
+All declarations are theorem/definition based; no new axiom, `sorry`, or conditional RH premise is
+used. The surviving annihilation conjecture is deliberately absent from Lean.
+
 ## Hostile falsifiers
 
 1. Kill exact nome extraction if the first coordinate is not `-p/r_p` or the displayed
@@ -239,4 +260,4 @@ class.  The RH-bearing mixed boundary remains a separate claim.
 - [x] regular Wold moments / singular BV residue weld paper-proof
 - [ ] source-to-Xi mixed boundary constructed
 - [ ] arithmetic annihilation proved
-- [ ] Lean formalization of dependency-closed unconditional claims
+- [x] Lean formalization of dependency-closed unconditional claims

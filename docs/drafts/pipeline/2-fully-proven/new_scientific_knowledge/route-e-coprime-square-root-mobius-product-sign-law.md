@@ -1837,3 +1837,95 @@ no Parseval for Dirichlet polynomials on a finite interval. `∫_0^T |F|²` is *
 error term is exactly the Montgomery–Vaughan mean value theorem, whose sharp form needs the Hilbert
 inequality this folder does not own. So the reduction to the integrals is what this layer supplies;
 their evaluation is a separate obligation and is not smuggled in.
+
+### Formal layer — Gallagher's reduction for Dirichlet polynomials
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DirichletGallagher.lean`:
+
+- `gallagher_dirPoly_at_point` — `|F(x)|² ≤ δ^{-1} ∫_{x−δ/2}^{x+δ/2} |F|² + ∫ 2|F||F'|`.
+- `gallagher_dirPoly_sum` — **`∑_{r ≤ R} |F(t_r)|² ≤ δ^{-1} ∫_A^{t_R+δ/2} |F|² + ∫_A^{t_R+δ/2}
+  2|F||F'|`** for points with consecutive gaps at least `δ`.
+
+Both unconditional, and both are instantiations of the *general* `gallagher_sobolev` and
+`sum_window_le` — those were stated for an arbitrary continuous function, so the Dirichlet case
+needed no new analysis, only the derivative facts of `DirichletPoly.lean`.
+
+The right-hand side depends on the points only through the enclosing interval: the discrete sum has
+been traded for a continuous mean, which is the standard first step of a large-values argument.
+
+The two integrals are *not* evaluated, and cannot be by the trigonometric route: Parseval has no
+finite-interval analogue for Dirichlet polynomials. Supplying one is the Montgomery–Vaughan mean
+value theorem, which remains open in this corpus alongside Matomäki–Radziwiłł.
+
+### Formal layer — integrals of a pure phase
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PhaseIntegral.lean`:
+
+- `integral_exp_phase_zero` — `∫_0^T e^{it·0} dt = T`.
+- `integral_exp_phase` — `∫_0^T e^{itL} dt = (e^{iTL} − 1)/(iL)` for `L ≠ 0`.
+- `norm_integral_exp_phase_le` — **`‖∫_0^T e^{itL} dt‖ ≤ 2/|L|`**.
+
+All unconditional. These are the cross-term integrals of `∫_0^T |F|²` for a Dirichlet polynomial:
+the diagonal terms have `L = 0` and contribute `T ∑_n |a_n|²`, while the off-diagonal terms carry
+`L = log m − log n` and are bounded by `2/|log(m/n)|`.
+
+This is the dichotomy that extracts the diagonal from the mean square — the identity underlying the
+Montgomery–Vaughan mean value theorem. What that theorem adds beyond this is the bound on the
+resulting off-diagonal sum `∑_{m≠n} |a_m||a_n| / |log(m/n)|`, which is a Hilbert inequality for the
+frequencies `log n` and remains the open input.
+
+### Formal layer — the squared modulus of a Dirichlet polynomial
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DirichletExpansion.lean`:
+
+- `exp_phase_mul_conj` — a phase times the conjugate of a phase is the phase of the difference.
+- `log_succ_injective` — distinct indices give distinct frequencies, so the off-diagonal bound
+  `2/|log(m/n)|` never divides by zero.
+- `normSq_dirPoly_eq` — **`|F(t)|² = ∑_m ∑_n a_m conj(a_n) e^{it(log m − log n)}`**.
+
+All unconditional. Each cross term is a pure phase, so integrating over `[0,T]` and applying the
+dichotomy of `PhaseIntegral.lean` separates the diagonal (frequency zero, integral `T`) from the
+off-diagonal (integral at most `2/|log(m/n)|`).
+
+`log_succ_injective` is recorded separately because it is the fact that makes the off-diagonal bound
+meaningful at all: without it the frequencies could coincide for distinct indices and the `2/|L|`
+estimate would be vacuous.
+
+### Formal layer — the mean square of a Dirichlet polynomial
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DirichletMeanSquare.lean`:
+
+- `integral_normSq_dirPoly_eq` — **`∫_0^T |F|² = ∑_m ∑_n a_m conj(a_n) ∫_0^T e^{it(log m − log n)}`**,
+  the termwise integration of the expansion.
+- `integral_dirPhase_diag` — the diagonal phase integral is `T`.
+- `norm_integral_dirPhase_off` — the off-diagonal ones are at most `2/|log(m/n)|`.
+
+All unconditional. The diagonal therefore contributes `T ∑_n |a_n|²` and the remainder is an
+off-diagonal sum of reciprocal logarithmic separations, weighted by `|a_m||a_n|`.
+
+That remainder is exactly where Montgomery–Vaughan enters, and it is *not* bounded here. Controlling
+`∑_{m≠n} |a_m||a_n| / |log(m/n)|` by `∑_n |a_n|²·O(n)` is a Hilbert inequality for the frequencies
+`log n` — the same obstruction `sum_inv_abs_dist_le` proves fatal to term-by-term arguments. On the
+circle that obstruction was bypassed by Gallagher's method using periodicity; the frequencies `log n`
+are not periodic, so the bypass does not transfer, and this is the honest boundary of the corpus's
+Dirichlet layer.
+
+### Formal layer — the diagonal extracted
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DirichletDiagonal.lean`:
+
+- `integral_normSq_dirPoly_sub_diag` — **`∫_0^T |F|² − T ∑_n |a_n|² = ∑_m ∑_{n ≠ m} a_m conj(a_n)
+  ∫_0^T e^{it(log m − log n)}`**, an exact identity.
+- `norm_integral_normSq_dirPoly_sub_diag_le` — **`‖∫_0^T |F|² − T ∑_n |a_n|²‖ ≤
+  ∑_m ∑_{n ≠ m} |a_m||a_n| · 2/|log(m/n)|`**.
+
+Both unconditional. The mean value theorem for Dirichlet polynomials is now reduced to a single
+inequality: everything still missing is a bound for that off-diagonal sum.
+
+Stated plainly, the corpus's position on this problem: the reduction is complete and exact, and the
+remaining input is a Hilbert inequality for the frequencies `log n`. The circle case was settled by
+Gallagher's method, but that method used periodicity — disjoint windows inside one period, and
+Parseval to evaluate the resulting integrals — and neither ingredient exists for `log n`. So the
+Dirichlet mean value theorem is not a corollary of what this folder proved for the large sieve; it
+is a genuinely separate obligation, and it sits alongside Matomäki–Radziwiłł as the route's open
+input.

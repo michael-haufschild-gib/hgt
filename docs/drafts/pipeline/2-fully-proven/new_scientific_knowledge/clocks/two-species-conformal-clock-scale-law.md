@@ -1130,9 +1130,46 @@ a solution on an open region. The construction delivers that:
   species' probe families consisting of genuine solutions on open regions, and the massive family
   proved to exist rather than assumed.
 
-What remains open is therefore dimension `≥ 3`, where the characteristic reduction to a Goursat
-problem is unavailable; and the last open input of the whole programme is stated in its physical
-form:
+### The characteristic reduction is not confined to two dimensions
+
+`ClockSlabProbe.lean` and `ClockSlabExistence.lean` carry the whole construction into arbitrary
+dimension `n + 2`, for fields and potentials depending only on the two null coordinates
+`ξ = x⁰ + x¹`, `η = x⁰ - x¹`. The transverse directions contribute nothing and the two pure second
+derivatives cancel between the timelike and the spacelike direction, exactly as in two dimensions:
+
+- `slabEps`, `slabCLM`, `slabLift`, `slabBox` — the Minkowski signature in dimension `n + 2`, the
+  null projection as a continuous linear map, the lift of a bivariate function, and the (open)
+  preimage of a planar set;
+- `coordPartial_slabLift_zero/_one/_transverse` — the chain rule through the null projection:
+  `∂₀ = ∂ξ + ∂η`, `∂₁ = ∂ξ - ∂η`, and every transverse partial derivative vanishes identically;
+- `differentiableAt_coordPartial_slabLift`, `IsC1On.add`, `IsC1On.sub`;
+- **`dalembert_slabLift`** — `□(slab lift) = -2(∂η∂ξ u + ∂ξ∂η u)` in every dimension;
+- **`exists_clockProbe_on_slab`** — *for every continuously differentiable slab potential and every
+  dimension `n + 2`, there is a clock probe on an open neighbourhood of any prescribed event,
+  nonvanishing there and equal to `1` at the event*;
+- `slabPotential_eq_of_probes_on` — hence slab potentials are determined by their probes, in every
+  dimension.
+
+`ClockSlabConformal.lean` then closes the card's own reconstruction on a slab, in every dimension:
+
+- `gradPair_slabLift` — `Γ(σ, σ) = -4 ∂ξσ ∂ησ` for a slab lift; the null directions pair only with
+  each other;
+- `isC1On_univ_of_contDiff`, `planarFstU`, `planarSndU`, `contDiff_planarFstU/SndU` — a smooth
+  bivariate function packaged with its partial derivatives to all orders;
+- **`exists_slab_conformalPotential`** — the effective potential `μ e^{2σ} - (a □σ + a² Γ(σ,σ))` of a
+  slab conformal factor is itself a slab potential, and continuously differentiable. This is what
+  keeps the statement from being vacuous: the hypothesis class is inhabited by every smooth `σ` of
+  slab form;
+- `openProbes_conformalPotential_slab` — hence a slab clock species has probes on open regions at
+  every event, in every dimension;
+- **`twoSpecies_scale_reconstruction_slab`** — *the two-species conformal clock scale law holds
+  unconditionally, in every dimension, for a conformal factor depending only on the two null
+  coordinates*. No hypothesis on the probe families: the required probes are proved to exist.
+
+In dimension two every conformal factor is of slab form, so this contains the two-dimensional
+theorem. What remains open is a conformal factor with genuine transverse dependence in dimension
+`≥ 3`, where the characteristic reduction to a Goursat problem is unavailable; and the last open
+input of the whole programme is stated in its physical form:
 
 > the massive Klein–Gordon field on the rescaled spacetime admits, at every event, a smooth solution
 > nonvanishing there.

@@ -407,4 +407,66 @@ theorem exists_unit_tsum_normalised_alignment_defect
     ring
 
 
+set_option maxHeartbeats 1000000 in
+/-- **The defect is bounded by the central index.**  At a point where the function is at least the
+maximum term, the total misalignment is at most `nu(s)` plus a constant fixed by the radius ratio. -/
+theorem exists_unit_tsum_normalised_defect_le
+    (ha : EntireCoeffs a) (hr : 0 < r) (hrs : r < s) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
+    {z : ℂ} (hz : ‖z‖ = r) (hfz : maxTerm a r ≤ ‖coeffFun a z‖) :
+    ∃ u : ℂ, ‖u‖ = 1 ∧
+      ∑' n : ℕ,
+          (‖a n * z ^ n / (a (centralIndex a r) * z ^ centralIndex a r)‖
+            - ((starRingEnd ℂ) u
+                * (a n * z ^ n / (a (centralIndex a r) * z ^ centralIndex a r))).re)
+        ≤ (centralIndex a s : ℝ) + (r / s) / (1 - r / s) := by
+  obtain ⟨-, -, hμpos⟩ := exists_maxTerm_eq ha hr hn₀
+  have hfzne : coeffFun a z ≠ 0 := by
+    intro h
+    rw [h, norm_zero] at hfz
+    exact absurd (lt_of_lt_of_le hμpos hfz) (lt_irrefl 0)
+  obtain ⟨u, hu, hdef⟩ :=
+    exists_unit_tsum_normalised_alignment_defect ha hr hn₀ hz hfzne
+  refine ⟨u, hu, ?_⟩
+  rw [hdef, div_le_iff₀ hμpos]
+  have hS := coeffSum_le_maxTerm_mul_centralIndex ha hr hrs hn₀
+  nlinarith [hS, hfz, hμpos]
+
+/-- **The transverse component at a maximum-modulus point.**  Every normalised coefficient lies
+within `sqrt(2 D)` of a nonnegative multiple of the common direction, where `D` bounds the total
+misalignment. -/
+theorem norm_normalised_transverse_sq_le
+    (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hz : ‖z‖ = r)
+    {u : ℂ} (hu : ‖u‖ = 1) {D : ℝ}
+    (hD : ∑' n : ℕ,
+        (‖a n * z ^ n / (a (centralIndex a r) * z ^ centralIndex a r)‖
+          - ((starRingEnd ℂ) u
+              * (a n * z ^ n / (a (centralIndex a r) * z ^ centralIndex a r))).re) ≤ D)
+    (n : ℕ) :
+    ‖a n * z ^ n / (a (centralIndex a r) * z ^ centralIndex a r)
+        - (((((starRingEnd ℂ) u
+              * (a n * z ^ n / (a (centralIndex a r) * z ^ centralIndex a r))).re) : ℝ) : ℂ) * u‖ ^ 2
+      ≤ 2 * D := by
+  set C : ℂ := a (centralIndex a r) * z ^ centralIndex a r with hC
+  have hCne : C ≠ 0 := central_term_ne_zero ha hr hn₀ hz
+  have hCnorm : ‖C‖ = maxTerm a r := by
+    rw [hC, norm_mul, norm_pow, hz]
+    exact term_centralIndex_eq ha hr hn₀
+  set c : ℕ → ℂ := fun n => a n * z ^ n / C with hc
+  have hcnorm : ∀ m, ‖c m‖ = (‖a m‖ * r ^ m) / maxTerm a r := by
+    intro m
+    rw [hc, norm_div, hCnorm, norm_mul, norm_pow, hz]
+  have hnsum : Summable fun m => ‖c m‖ := by
+    refine ((summable_term ha hr).div_const (maxTerm a r)).congr fun m => ?_
+    rw [hcnorm m]
+  have hcsum : Summable c := Summable.of_norm hnsum
+  have hd : Summable fun m => ‖c m‖ - ((starRingEnd ℂ) u * c m).re :=
+    hnsum.sub (Complex.reCLM.summable (hcsum.mul_left _))
+  have hterm : ‖c n‖ - ((starRingEnd ℂ) u * c n).re ≤ D :=
+    le_trans (hd.le_tsum n fun m _ => alignment_defect_nonneg (c m) hu) hD
+  have hle1 : ‖c n‖ ≤ 1 := norm_normalised_coeff_le_one ha hr hn₀ hz n
+  have hsq := norm_sub_re_mul_sq_le (c n) hu
+  have hnn : (0 : ℝ) ≤ ‖c n‖ - ((starRingEnd ℂ) u * c n).re := alignment_defect_nonneg (c n) hu
+  nlinarith [hsq, hterm, hle1, hnn]
+
+
 end GaloisForLFunctions.HTGeometry

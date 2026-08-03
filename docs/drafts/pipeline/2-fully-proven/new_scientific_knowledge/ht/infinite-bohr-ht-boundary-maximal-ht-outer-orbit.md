@@ -2132,3 +2132,70 @@ Next: the uniform spanning atom family, then `hparameter`, then the instantiatio
 `compactConfigurationAvoidance_dense_of_finiteRegularStratification` with `P` = the atom
 coefficients, `H` = the shift tuples, `bad` = the rank-defect locus (stratified with real
 codimension `2*(rows - cols - q + 1)`, so `hdim` is arranged by taking enough evaluation rows).
+
+## Lean progress: one finite atom family for a whole compact shift patch
+
+`UniformSpanningAtoms.lean` (wired, axiom-clean) removes the obstacle recorded above:
+
+    exists_uniform_spanning_atoms :
+      (col : N -> H -> Y) -> (forall n, Continuous (col n)) -> IsCompact K ->
+      (forall h in K, span R (range fun n => col n h) = top) ->
+      exists (M : N) (a : Fin M -> N), forall h in K,
+        span R (range fun l => col (a l) h) = top
+
+Two steps.  `exists_finite_spanning_subfamily`: a spanning column system spans with finitely many of
+its columns, because the target is finite dimensional, so a finite generating set of the target is
+covered by finitely many finite subsets of the column range
+(`Submodule.mem_span_finite_of_mem_span`).  Then the corpus's
+`exists_local_finiteProbe_of_continuous_surjectiveControl` -- whose neighbourhood comes from a
+determinant -- makes spanning by a *fixed* finite family an open condition, and compactness replaces
+the local families by their union.
+
+The bridge object is `columnControl`, the continuous linear map sending real coefficients to the
+corresponding combination of finitely many columns, with `surjective_columnControl_iff` identifying
+its surjectivity with spanning and `continuous_columnControl` giving continuity in the patch
+parameter (through `continuous_clm_apply`, valid since the coefficient space is finite dimensional).
+
+What remains for (9) shift-uniform: instantiate `col` with the mass columns
+`massJetColumn (combinedNodes z t) ord x w n` -- continuous in `t` by
+`contDiff_massJetColumn` -- verify the spanning hypothesis from
+`cauchyJetRealLinearCombination_surjective`, then read off `hparameter` (the parameter derivative is
+a positive diagonal times these columns) and feed
+`compactConfigurationAvoidance_dense_of_finiteRegularStratification`.
+
+## Lean progress: the mass parameter is a submersion, uniformly in the shift
+
+`ShiftedMassJetSubmersion.lean` (wired, axiom-clean) finishes step 4:
+
+    hasFDerivAt_shiftedMassJetPacket -- the parameter derivative is
+      sum_k (exp (s0 k) . proj k) .smulRight (massJetColumn (combinedNodes z t) ord x w (a k))
+
+    surjective_fderiv_shiftedMassJetPacket :
+      span R (range fun k => massJetColumn (combinedNodes z t) ord x w (a k)) = top ->
+      Function.Surjective (fderiv R (fun s => shiftedMassJetPacket z ord x w a (s, t)) s0)
+
+    exists_uniform_massJet_atoms :
+      IsCompact Kset -> (forall t in Kset, Function.Injective t) ->
+      exists (K : N) (a : Fin K -> N), forall t in Kset,
+        span R (range fun l => massJetColumn (combinedNodes z t) ord x w (a l)) = top
+
+The derivative is a *positive diagonal* times the mass columns -- the exponential factors never
+vanish -- so its image is the column span at every parameter value, which is exactly what the
+avoidance engine's `hparameter` demands (surjectivity at all `p`, not just at the base point).  The
+uniform atom family comes from `exists_uniform_spanning_atoms` fed with the corpus's
+`span_range_massJetColumn_eq_top`, whose hypothesis "the combined nodes are distinct and above the
+axis" is supplied by `injective_combinedNodes` -- i.e. by distinct heights plus distinct shifts.
+
+Steps 1--4 of the shift-uniform plan are now complete.  What is left is bookkeeping of a single
+instantiation:
+
+- compose the chart with the mass jets: `F (s, t) := foldedChart (shiftedMassJetPacket z ord x w a
+  (s, t)) + carrier t`, smooth by `contDiffOn_chiJetPacket` and `contDiff_shiftedMassJetPacket`,
+  with surjective parameter derivative by the chain rule from
+  `surjective_fderiv_chiJetPacket` and `surjective_fderiv_shiftedMassJetPacket`;
+- feed `compactConfigurationAvoidance_dense_of_finiteRegularStratification` with
+  `bad = expandedDifferentialEvaluationRankDefect` and its unconditional stratification, choosing
+  enough evaluation rows that `finrank R (Fin r -> R) = r` is below the codimension;
+- globalize over the shift space by `globalConfigurationAvoidance_dense_residual_of_sigmaCompact`,
+  transfer density from the finite atom slice back to the bounded exponential parameter, and descend
+  through `eq_zero_of_relation_of_rigid_jets` (already proved, and already general in the row type).

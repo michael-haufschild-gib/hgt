@@ -751,25 +751,43 @@ below.
 
 ## 17. Final formal, manuscript, and journal audit
 
-Six unconditional Lean modules now formalise the sign/zero theorem, divisor-chain and ordered-factor
-constructions, separated-core arithmetic, local finiteness, exact elementary pair presentations,
-and finite cophenetic recognition. Every module passed its targeted `lake build`; the
-`GaloisForLFunctions.HTGeometry` umbrella passed with 13,635 targets; authoritative formal lint
-passed. A `/tmp` `#print axioms` audit found only standard mathlib foundations and no project axiom.
+The unconditional development now covers the genuine cyclic Galois source, two-orbit coarea and
+edge source, universal tangent-coordinate covariance, strict contact tomography and energy,
+sign/zero theorem, divisor-chain and ordered-factor constructions, exact Weyl/Laurent Fourier
+steps, separated-core arithmetic, decorated finiteness, exact elementary pair presentations,
+global collected-coefficient reconstruction, and recognition complexity.
+
+The final hostile audit found that the first global-reconstruction capstone returned only an
+uninterpreted highest exponent. This was not accepted. The missing infrastructure now proves:
+
+- each collected output polynomial has elementary support and a nonzero mandatory Airy monomial
+  at ramified labels;
+- its actual highest pairwise difference is exponent-isolated after all collisions are collected;
+- a stage-free relation recovers the prescribed edge directly from that exponent and the two
+  ramifications by the high, mandatory, or lower edge formula.
+- signed diagonal loops are retained in `ℤ`; negative forced local weight gives an empty fibre,
+  and the finite enumeration theorem covers every remaining signed decorated fibre.
+
+Direct `lake env lean` checks and targeted builds passed for every affected module. A `/tmp`
+`#print axioms` audit found only `propext`, `Classical.choice`, and `Quot.sound`, with no project
+axiom. Repository lint reports no Stokes error; its current global exit is nonzero only because
+unrelated concurrently added `RHTower` modules are not yet wired into their own umbrella. No full
+build was run, in accordance with this task’s targeted-build rule.
 
 The final manuscript is:
 
 `docs/drafts/manuscripts/airy-tower-stokes-rigidity/main.pdf`.
 
-It has 12 pages, compiles without TeX warnings, and passed page-by-page rendering inspection after
-the final mathematical revision. `CLAIM_TRACE.md` records theorem-level source and Lean boundaries;
-`LITERATURE_AUDIT.md` records the current primary-source search through 2026-08-03.
+It has 17 A4 pages, compiles without TeX warnings, and passed page-by-page rendering inspection
+after the final mathematical revision. The manuscript contains no mention of Lean, proof
+assistants, formal verification, toolchains, or internal declaration names. `CLAIM_TRACE.md`
+records private theorem-level proof evidence; `LITERATURE_AUDIT.md` records the current
+primary-source search through 2026-08-03.
 
-The hostile review in `HOSTILE_REVIEW.md` attacked the finite-fibre and recognition sufficiency
-steps, exact pair-spectrum exhaustiveness, Fourier-source normalization, novelty, significance, and
-formalisation scope. Two initial objections caused explicit manuscript revisions: display of the
-positive-slope edge coefficient in the finite-fibre proof and exact coordinates for the
-fission-tree realization theorem. After those revisions, the final verdict is:
+The final hostile review in `HOSTILE_REVIEW.md` attacks the universal-law framing, source semantics,
+finite-fibre encoding, exact pair-spectrum exhaustiveness, Fourier-source normalization, global
+coefficient collection, stage-free edge recovery, novelty, significance, and venue fit. After all
+identified gaps were closed, the verdict is:
 
 **publishable at a renowned general-journal level in the Compositio/IMRN/Advances range, subject to
 ordinary external peer review; no unresolved major revision.**
