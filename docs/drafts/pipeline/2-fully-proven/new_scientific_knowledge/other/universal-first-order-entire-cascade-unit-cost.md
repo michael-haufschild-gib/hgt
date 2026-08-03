@@ -416,6 +416,7 @@ It also identifies the mechanism and the sharp wall.  The analytic growth invari
 - [x] Lean: geometric decay of the terms away from the central index, and the upper tail sum
 - [x] Lean: the lower tail sum, and the "central terms dominate" window decomposition
 - [x] Lean: the Borel growth lemma, and the unbounded supply of good radii it yields
+- [x] Lean: continuity of the maximum term, the hypothesis the Borel lemma needs
 - [ ] Lean: the Wiman--Valiron estimate `f'(z_r)/f(z_r) ~ nu(r)/z_r` outside the exceptional set
 - [ ] Lean: Newton--Puiseux places at `U = infinity`, hence the nondegenerate Wiman place
 - [ ] Lean: Clunie--Steinmetz composition separation and state algebraic independence
@@ -496,7 +497,14 @@ coeffSum_le_window_add_tails              -- the central window carries everythi
 borel_growth                              -- the exceptional set has Lebesgue measure at most 2
 exists_ge_lt_two_mul                      -- hence good radii exist beyond every bound
 exists_ge_lt_two_mul_scaled               -- the same with the multiplicative step 1 + 1/T(r)
+exists_finset_maxTerm_eq_sup'             -- on a compact positive interval mu is a finite max
+continuousOn_maxTerm                      -- hence mu is continuous on (0, infinity)
 ```
+
+Continuity is not cosmetic: the Borel growth lemma in the corpus requires a **continuous** `T`, and
+the central index `nu` is a step function, so the growth lemma can only be applied to `log mu` and
+then transferred to `nu` through the two-sided growth law.  `continuousOn_maxTerm` is what makes that
+route available.
 
 `coeffSum_le_window_add_tails` is the quantitative form of "the central terms dominate": for any
 `t < r < s` the whole majorant at radius `r` is the sum over the window `[nu(t), nu(s)]` plus two
@@ -682,3 +690,11 @@ triangularity package, which is exactly how the paper proof uses them.
   that are what actually gets used -- a set of measure `2` cannot contain a ray, so good radii exist
   beyond every bound (`exists_ge_lt_two_mul`), and the multiplicative form with the step
   `1 + 1/T(r)` obtained in the logarithmic variable.  The exceptional set never has to be described.
+- 2026-08-03 -- Proved that the maximum term is continuous on `(0, infinity)`.  On a compact interval
+  `[r1, r2]` with `r1 > 0` only finitely many indices can compete: any `n` with
+  `||a_n|| r2^n < mu(r1)` is beaten everywhere on the interval by the index attaining `mu(r1)`, and
+  the decay hypothesis makes the complementary set finite.  So `mu` is locally the maximum of a fixed
+  finite family of monomials and `Continuous.finset_sup'_apply` applies.  This matters because the
+  corpus's Borel growth lemma requires a continuous `T` while the central index is a step function --
+  the growth lemma has to be applied to `log mu` and transferred to `nu` through the two-sided growth
+  law, and continuity is exactly what was missing for that.

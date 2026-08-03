@@ -26,6 +26,8 @@ noncomputable section
 
 namespace DeningerNormalizedCocycle
 
+section Scaling
+
 variable {G A : Type} {M : Type*}
   [Group G] [Group A] [AddCommGroup M] [Module ℂ M]
 
@@ -77,7 +79,239 @@ theorem forall_csmul_relationValue_eq_zero_iff
   · rintro rfl
     simp
 
+end Scaling
+
+section Commutator
+
+variable {G A : Type} {M : Type*}
+  [Group G] [CommGroup A] [AddCommGroup M]
+
+/-- Relation word comparing the two orders of a source pair. -/
+def relationCommutator (g h : G) : G :=
+  g * h * (h * g)⁻¹
+
+theorem relationCommutator_mem_ker (pi : G →* A) (g h : G) :
+    relationCommutator g h ∈ pi.ker := by
+  rw [MonoidHom.mem_ker]
+  simp only [relationCommutator, map_mul, map_inv]
+  rw [mul_comm (pi h) (pi g), mul_inv_cancel]
+
+/-- A primitive records the skew cocycle on the canonical commutator relation. -/
+theorem primitive_relationCommutator_eq_skew
+    (c : DeningerNormalizedCocycle A M) (pi : G →* A)
+    {b : G → M} (hb : (c.pullback pi).IsPrimitive b) (g h : G) :
+    b (relationCommutator g h) =
+      c.f (pi g, pi h) - c.f (pi h, pi g) := by
+  let k := relationCommutator g h
+  have hk : pi k = 1 := MonoidHom.mem_ker.mp
+    (relationCommutator_mem_ker pi g h)
+  have hprod : k * (h * g) = g * h := by
+    dsimp only [k, relationCommutator]
+    group
+  have hboundary := hb k (h * g)
+  change c.f (pi k, pi (h * g)) =
+    b (k * (h * g)) - b k - b (h * g) at hboundary
+  rw [hk, c.one_fst, hprod] at hboundary
+  have hcompare : b k = b (g * h) - b (h * g) := by
+    apply eq_sub_iff_add_eq.mpr
+    calc
+      b k + b (h * g) =
+          (b (g * h) - b k - b (h * g)) + b k + b (h * g) := by
+            rw [← hboundary]
+            simp
+      _ = b (g * h) := by abel
+  have hgh := hb g h
+  have hhg := hb h g
+  change c.f (pi g, pi h) = b (g * h) - b g - b h at hgh
+  change c.f (pi h, pi g) = b (h * g) - b h - b g at hhg
+  calc
+    b (relationCommutator g h) = b (g * h) - b (h * g) := hcompare
+    _ = c.f (pi g, pi h) - c.f (pi h, pi g) := by
+      rw [hgh, hhg]
+      abel
+
+/-- The commutator transgression is primitive-independent without any
+degree-one descent hypothesis. -/
+theorem primitive_relationCommutator_eq_of_primitives
+    (c : DeningerNormalizedCocycle A M) (pi : G →* A)
+    {b d : G → M}
+    (hb : (c.pullback pi).IsPrimitive b)
+    (hd : (c.pullback pi).IsPrimitive d) (g h : G) :
+    b (relationCommutator g h) = d (relationCommutator g h) := by
+  rw [primitive_relationCommutator_eq_skew c pi hb,
+    primitive_relationCommutator_eq_skew c pi hd]
+
+/-- For an alternating cocycle, the commutator relation stores two copies of the cup value. -/
+theorem primitive_relationCommutator_eq_add_of_alternating
+    (c : DeningerNormalizedCocycle A M) (pi : G →* A)
+    {b : G → M} (hb : (c.pullback pi).IsPrimitive b)
+    (halt : c.IsAlternating) (g h : G) :
+    b (relationCommutator g h) =
+      c.f (pi g, pi h) + c.f (pi g, pi h) := by
+  rw [primitive_relationCommutator_eq_skew c pi hb g h,
+    halt (pi h) (pi g)]
+  abel
+
+end Commutator
+
 end DeningerNormalizedCocycle
+
+/-- Canonical free-rational cover pointed by every vector of the source. -/
+def deningerSourcePointedBauMap
+    (V : Type) [AddCommGroup V] [Module ℚ V] :
+    DeningerBau (FreeGroup V) →* Multiplicative V :=
+  deningerBauFreeMap (fun v : V => v)
+
+/-- Canonical lift of one source vector to its namesake free generator. -/
+def deningerSourcePointedBauLift
+    {V : Type} [AddCommGroup V] [Module ℚ V] (v : V) :
+    DeningerBau (FreeGroup V) :=
+  DeningerBau.of (FreeGroup.of v)
+
+@[simp]
+theorem deningerSourcePointedBauMap_lift
+    {V : Type} [AddCommGroup V] [Module ℚ V] (v : V) :
+    deningerSourcePointedBauMap V (deningerSourcePointedBauLift v) =
+      Multiplicative.ofAdd v := by
+  rw [deningerSourcePointedBauMap, deningerSourcePointedBauLift,
+    deningerBauFreeMap, deningerBauLift_of, FreeGroup.lift_apply_of]
+
+/-- The source-pointed free-rational map is an actual quotient cover. -/
+theorem deningerSourcePointedBauMap_surjective
+    (V : Type) [AddCommGroup V] [Module ℚ V] :
+    Function.Surjective (deningerSourcePointedBauMap V) := by
+  apply deningerBauFree_surjective (fun v : V => v)
+  rw [show Set.range (fun v : V => v) = Set.univ by ext; simp,
+    Submodule.span_univ]
+
+/-- Canonical Calderon generator of the source-pointed free cover. -/
+def deningerCalderonWittDefectGenerator (p : Nat.Primes) :
+    DeningerCalderonWittDegreeOne p :=
+  (deningerCalderonWittUnitDefect p, 0)
+
+/-- Canonical rational-Witt generator of the source-pointed free cover. -/
+def deningerCalderonWittPacketGenerator (p : Nat.Primes) :
+    DeningerCalderonWittDegreeOne p :=
+  (0, deningerCalderonWittUnitPacket p)
+
+/-- Presentation-independent commutator transgression calibrator. -/
+def deningerCalderonWittSourcePointedTau (p : Nat.Primes) :
+    DeningerCalderonWittDegreeTwo p :=
+  deningerCalderonWittCup p
+      (deningerCalderonWittDefectGenerator p)
+      (deningerCalderonWittPacketGenerator p) +
+    deningerCalderonWittCup p
+      (deningerCalderonWittDefectGenerator p)
+      (deningerCalderonWittPacketGenerator p)
+
+theorem deningerCalderonWittSourcePointedTau_ne_zero (p : Nat.Primes) :
+    deningerCalderonWittSourcePointedTau p ≠ 0 := by
+  have hcross :
+      deningerMeyerCalderonGaugePacketCrossEffect p
+          (deningerCalderonWittUnitDefect p)
+          (deningerCalderonWittUnitPacket p) ≠ 0 := by
+    intro hzero
+    apply deningerCalderonWittUnitPacket_ne_zero p
+    apply deningerMeyerCalderonGaugePacketCrossEffect_unit_injective p
+    simpa using hzero
+  have hcup :
+      deningerCalderonWittCup p
+          (deningerCalderonWittDefectGenerator p)
+          (deningerCalderonWittPacketGenerator p) ≠ 0 := by
+    simpa [deningerCalderonWittDefectGenerator,
+      deningerCalderonWittPacketGenerator,
+      deningerCalderonWittCup_apply] using hcross
+  intro hzero
+  have htwo :
+      (2 : ℂ) • deningerCalderonWittCup p
+          (deningerCalderonWittDefectGenerator p)
+          (deningerCalderonWittPacketGenerator p) = 0 := by
+    simpa [two_smul, deningerCalderonWittSourcePointedTau] using hzero
+  exact (smul_ne_zero (by norm_num) hcup) htwo
+
+/-- The actual cup has a primitive on the canonical source-pointed cover,
+and its canonical commutator value is exactly `tau_p`. -/
+theorem exists_deningerCalderonWitt_sourcePointedTau_primitive
+    (p : Nat.Primes) :
+    let pi := deningerSourcePointedBauMap (DeningerCalderonWittDegreeOne p)
+    let x := deningerCalderonWittDefectGenerator p
+    let y := deningerCalderonWittPacketGenerator p
+    let k : pi.ker :=
+      ⟨DeningerNormalizedCocycle.relationCommutator
+          (deningerSourcePointedBauLift x)
+          (deningerSourcePointedBauLift y),
+        DeningerNormalizedCocycle.relationCommutator_mem_ker pi _ _⟩
+    ∃ (b : DeningerBau (FreeGroup (DeningerCalderonWittDegreeOne p)) →
+          DeningerCalderonWittDegreeTwo p)
+      (hb : ((deningerCalderonWittCupCocycle p).pullback pi).IsPrimitive b),
+      Multiplicative.toAdd
+          (DeningerNormalizedCocycle.kernelTransgression
+            (deningerCalderonWittCupCocycle p) pi b hb k) =
+        deningerCalderonWittSourcePointedTau p := by
+  dsimp only
+  let pi := deningerSourcePointedBauMap (DeningerCalderonWittDegreeOne p)
+  obtain ⟨b, hb⟩ :=
+    deningerBauFree_cocycle_trivial
+      ((deningerCalderonWittCupCocycle p).pullback pi)
+  change ((deningerCalderonWittCupCocycle p).pullback pi).IsPrimitive b at hb
+  refine ⟨b, hb, ?_⟩
+  change b (DeningerNormalizedCocycle.relationCommutator
+      (deningerSourcePointedBauLift (deningerCalderonWittDefectGenerator p))
+      (deningerSourcePointedBauLift (deningerCalderonWittPacketGenerator p))) = _
+  rw [DeningerNormalizedCocycle.primitive_relationCommutator_eq_add_of_alternating
+    (deningerCalderonWittCupCocycle p) pi hb
+    (deningerCalderonWittCupCocycle_alternating p),
+    deningerSourcePointedBauMap_lift,
+    deningerSourcePointedBauMap_lift]
+  rfl
+
+/-- **Source-defined comparison.**  On the canonical commutator relation,
+transgression of the Green-scaled actual cup is exactly `D_rho tau_p`. -/
+theorem exists_deningerCalderonWitt_sourcePointed_greenComparison
+    (p : Nat.Primes) (rho : XiDivisorSupport) :
+    let pi := deningerSourcePointedBauMap (DeningerCalderonWittDegreeOne p)
+    let x := deningerCalderonWittDefectGenerator p
+    let y := deningerCalderonWittPacketGenerator p
+    let k : pi.ker :=
+      ⟨DeningerNormalizedCocycle.relationCommutator
+          (deningerSourcePointedBauLift x)
+          (deningerSourcePointedBauLift y),
+        DeningerNormalizedCocycle.relationCommutator_mem_ker pi _ _⟩
+    ∃ (b : DeningerBau (FreeGroup (DeningerCalderonWittDegreeOne p)) →
+          DeningerCalderonWittDegreeTwo p)
+      (hb : ((deningerCalderonWittCupCocycle p).pullback pi).IsPrimitive b),
+      Multiplicative.toAdd
+          (DeningerNormalizedCocycle.kernelTransgression
+            ((deningerCalderonWittCupCocycle p).csmul
+              (xiNearbyPoleDualityAdjunctionFracture (rho : ℂ)))
+            pi
+            (fun g => xiNearbyPoleDualityAdjunctionFracture (rho : ℂ) • b g)
+            (DeningerNormalizedCocycle.pullback_isPrimitive_csmul
+              (deningerCalderonWittCupCocycle p) pi hb
+              (xiNearbyPoleDualityAdjunctionFracture (rho : ℂ))) k) =
+        xiNearbyPoleDualityAdjunctionFracture (rho : ℂ) •
+          deningerCalderonWittSourcePointedTau p := by
+  dsimp only
+  let pi := deningerSourcePointedBauMap (DeningerCalderonWittDegreeOne p)
+  obtain ⟨b, hb⟩ :=
+    deningerBauFree_cocycle_trivial
+      ((deningerCalderonWittCupCocycle p).pullback pi)
+  change ((deningerCalderonWittCupCocycle p).pullback pi).IsPrimitive b at hb
+  refine ⟨b, ?_, ?_⟩
+  · simpa [pi] using hb
+  · change xiNearbyPoleDualityAdjunctionFracture (rho : ℂ) •
+        b (DeningerNormalizedCocycle.relationCommutator
+          (deningerSourcePointedBauLift (deningerCalderonWittDefectGenerator p))
+          (deningerSourcePointedBauLift (deningerCalderonWittPacketGenerator p))) =
+      xiNearbyPoleDualityAdjunctionFracture (rho : ℂ) •
+        deningerCalderonWittSourcePointedTau p
+    congr 1
+    rw [DeningerNormalizedCocycle.primitive_relationCommutator_eq_add_of_alternating
+      (deningerCalderonWittCupCocycle p) pi hb
+      (deningerCalderonWittCupCocycle_alternating p),
+      deningerSourcePointedBauMap_lift,
+      deningerSourcePointedBauMap_lift]
+    rfl
 
 /-- **Actual source/Green relation-kernel comparison.**  Scaling the
 Calderon--Witt cup by the unsquared completed Green fracture scales its
@@ -211,6 +445,23 @@ theorem deningerMeyer_literalBoundary_eq_greenFracture_smul_iff
   · intro hline
     rw [(xiNearbyPoleDualityAdjunctionFracture_eq_zero_iff (rho : ℂ)).2 hline,
       zero_smul]
+
+/-- **Literal-kernel verdict for the source-pointed calibrator.**  The actual
+Meyer boundary and the source-defined Green-scaled commutator transgression
+coincide exactly when the divisor support is on the critical line. -/
+theorem deningerMeyer_literalBoundary_eq_sourcePointedGreenTransgression_iff
+    (p : Nat.Primes) (f : DeningerMeyerCap) (rho : XiDivisorSupport) :
+    deningerMeyerCalderonWittGaugeBoundaryComparison p
+        (deningerCalderonWittUnitPacket p)
+        (deningerMeyerPoissonCollarTrace (p : ℝ)
+          (by exact_mod_cast p.2.pos) f) =
+        xiNearbyPoleDualityAdjunctionFracture (rho : ℂ) •
+          deningerCalderonWittSourcePointedTau p ↔
+      (rho : ℂ).re = 1 / 2 :=
+  deningerMeyer_literalBoundary_eq_greenFracture_smul_iff
+    p (deningerCalderonWittUnitPacket p) f rho
+      (deningerCalderonWittSourcePointedTau p)
+      (deningerCalderonWittSourcePointedTau_ne_zero p)
 
 /-- The reflected Gaussian source is a nonzero Meyer class, not a literal Meyer boundary. -/
 theorem deningerMeyerReflectedLogGaussianSource_not_mem_literalBoundaryRange

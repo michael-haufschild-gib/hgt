@@ -696,3 +696,67 @@ Names that do **not** exist here (checked, so they are not retried): `Orthonorma
 
 Note the scale: the family has norm² `Q`, not `1`, so the orthonormal family is `Q^{-1/2} • expRow`,
 and the `1/Q` in the Parseval statement is that normalisation — not a convention.
+
+### Exact discrete Parseval landed — `Sieve/DiscreteParseval.lean` (2026-08-03)
+
+The identity scoped in the previous entry is now proved.
+
+- `unitRow Q ζ j := Q^{-1/2} • expRow Q (ζ^j)`;
+- `orthonormal_unitRow` : the rescaled rows are orthonormal;
+- `span_unitRow`, `rootBasis`, `rootBasis_apply` : `Q` orthonormal vectors in a `Q`-dimensional
+  space form an orthonormal basis;
+- **`sum_norm_inner_expRow_root`** :
+  `∑_{j < Q} |⟪expRow Q (ζ^j), x⟫|² = Q ‖x‖²`.
+
+Built, wired, axiom-clean (four theorems).  Parseval is `OrthonormalBasis.sum_inner_mul_inner` at
+`y = x`, using `⟪x, b j⟫⟪b j, x⟫ = |⟪b j, x⟫|²`; the factor `Q` is the rescaling, since the
+unnormalised rows have squared norm `Q`.
+
+With this and `HarmonicSineBound.abs_sum_sin_div_le_uniform` both unconditional, the two halves of
+the Toeplitz argument are in place: the symbol of `1/(m−n)` is bounded by an absolute constant, and
+the quadratic form is an exact average of that symbol against `|∑ x_n ζ^{jn}|²` which Parseval
+returns to `∑|x_n|²`.  Assembling them into
+`|∑_{m≠n} x_m x̄_n/(m−n)| ≤ C ∑|x_n|²` — and hence `Δ = N + O(δ^{-1})` — is the remaining step.
+
+### Bounded symbol gives bounded form — `Sieve/SymbolBound.lean` (2026-08-03)
+
+- **`abs_sum_symbol_mul_norm_inner_le`** :
+  `|∑_j c_j |⟪expRow Q (ζ^j), x⟫|²| ≤ C · Q ‖x‖²` whenever `|c_j| ≤ C`.
+
+Built, wired, axiom-clean.  Triangle inequality followed by exact discrete Parseval; no cancellation
+is used, so the constant is exactly the sup-norm of the symbol.
+
+This is the abstract half of Hilbert's inequality, and it now sits directly on top of the concrete
+half: `HarmonicSineBound.abs_sum_sin_div_le_uniform` bounds the symbol of the Toeplitz kernel
+`1/(m−n)` by an absolute constant.
+
+**What remains is one identification, stated precisely.**  To apply the above to that kernel one
+must exhibit the quadratic form `∑_{m≠n} x_m x̄_n/(m−n)` as `(1/Q)∑_j c_j |⟪expRow Q (ζ^j), x⟫|²`
+with `c_j` the kernel's symbol at `ζ^j`.  That is the finite convolution identity — an exact
+computation using the same roots-of-unity orthogonality already in
+`RootsOfUnityFrequencies.lean`, valid once `Q` exceeds twice the support length so that no
+wraparound occurs.  It is bookkeeping over an established orthogonality relation, not a new
+estimate.
+
+### Coefficient expansion — `Sieve/CoefficientExpansion.lean` (2026-08-03)
+
+- **`inner_expRow_apply`** : `⟪expRow Q ξ, x⟫ = ∑_m conj(ξ^m) x_m` — the coefficient is the finite
+  Fourier coefficient;
+- **`normSq_inner_expRow`** :
+  `|⟪expRow Q ξ, x⟫|² = ∑_m ∑_n (conj(ξ^m) x_m) · conj(conj(ξ^n) x_n)`.
+
+Built, wired, axiom-clean.  Both are exact and use *no* orthogonality — the first is the definition
+of the inner product on `EuclideanSpace`, the second is `|z|² = z·conj z` with the sum expanded.
+
+**Remaining bookkeeping, stated exactly.**  Summing `normSq_inner_expRow` against a symbol `c_j` and
+exchanging the order of summation gives
+
+    ∑_j c_j |⟪expRow Q (ζ^j), x⟫|² = ∑_m ∑_n x_m conj(x_n) · (∑_j c_j conj(ζ^{jm}) ζ^{jn}),
+
+so the multiplier with symbol `c` *is* the kernel `Ǩ(m,n) = ∑_j c_j ζ^{j(n−m)}`.  Identifying that
+kernel with `1/(m−n)` — for `Q` past twice the support length, via the roots-of-unity orthogonality
+of `RootsOfUnityFrequencies.lean` — then combines with `SymbolBound.lean` and
+`HarmonicSineBound.lean` to give `|∑_{m≠n} x_m x̄_n/(m−n)| ≤ C ∑|x_n|²`.
+
+Every ingredient of that chain is now unconditional in the corpus; what is left is index
+manipulation over identities already proved, with no further estimate required.

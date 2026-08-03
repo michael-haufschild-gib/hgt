@@ -134,7 +134,10 @@
   `GaloisForLFunctions.RHTower.DeningerRootTwo` (degree two across a root adjunction),
   `GaloisForLFunctions.RHTower.DeningerRootElement` (the adjoined root),
   `GaloisForLFunctions.RHTower.DeningerTower` (a tower of root adjunctions),
-  `GaloisForLFunctions.RHTower.DeningerFlattenPeriodic` (periodicity of a repeated word)
+  `GaloisForLFunctions.RHTower.DeningerFlattenPeriodic` (periodicity of a repeated word),
+  `GaloisForLFunctions.RHTower.DeningerFlattenTake` (prefixes of a repeated word),
+  `GaloisForLFunctions.RHTower.DeningerConjPowCycRed` (conjugates of powers),
+  `GaloisForLFunctions.RHTower.DeningerWordUnique` (two words with the same product)
 
 ## Statement
 
@@ -2219,3 +2222,30 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   with the repetition built from the right (`deningerFlatten_snoc`).  These are what turn a rotation
   of a power into a power of a rotation, which is how the two exponent comparison pins the rotation
   down.
+- 2026-08-03 — **A rotation of a power is a conjugate of that power by a prefix of the word**
+  (`deningerRotate_flatten_conj`).  A prefix of a repetition is a whole number of copies followed by
+  a prefix of the word (`deningerFlatten_take`), and the whole copies commute with the power, so they
+  drop out of the conjugation: only the prefix of one period survives.  This is what makes the
+  rotation in the conjugacy criterion harmless at the level of powers — the criterion returns a
+  rotation by an arbitrary amount, and this identifies it with a rotation by less than one period.
+  Working at the level of elements rather than lists is what makes it come out cleanly; the
+  corresponding statement about lists needs a nested induction that this avoids.
+- 2026-08-03 — **A conjugate of a power of a cyclically reduced word, no longer than that power, is a
+  conjugate by a prefix of one period, up to the base group** (`deningerConj_pow_cycRed`).  The
+  conjugacy criterion is applied to the repetition, which is cyclically reduced because its ends are
+  the ends of the word; it returns a rotation by an arbitrary amount, and the previous cycle's
+  identity strips the whole periods off that rotation.  A rotation by the full length is replaced by
+  no rotation at all, which keeps the quotient of the rotation amount strictly below the number of
+  copies and lets the prefix lemma apply.  This is the shape the two exponent comparison needs: the
+  conjugating data is now a single prefix and a base element, both bounded by one period.
+- 2026-08-03 — **Where the remaining endgame actually stands.**  Two cyclically reduced elements with
+  the same `n`-th power are *not* related by the conjugacy criterion — that criterion compares a word
+  with a conjugate of it, and here the two words are unrelated, merely having the same product.  So
+  the last step is not another application of the criterion but a statement about words with equal
+  products, which is a different mechanism: `deningerWords_map_fst_eq` and
+  `deningerWords_length_eq` — two reduced alternating words with the same product run through the
+  same factors and have the same length, since the sequence of factors is read off the normal form.
+  What such words do *not* share is their letters: those can differ by base group elements pushed
+  along the word.  Finishing needs that shift to be pinned down, and its periodicity when both words
+  are powers.  This is the correct description of the remaining gap, replacing the earlier
+  expectation that the criterion would close it.

@@ -77,7 +77,8 @@ theorem continuous_discreteJetPacket_expParameter {ι : Type*} [Fintype ι]
       have hexp : Real.exp ((u : ℕ → ℝ) n) ≤ Real.exp M := Real.exp_le_exp.mpr huval
       calc ε n * Real.exp ((u : ℕ → ℝ) n) * ‖K n‖
           ≤ ε n * Real.exp M * C := by
-            refine mul_le_mul ?_ (hKle n) (norm_nonneg _) (by positivity)
+            refine mul_le_mul ?_ (hKle n) (norm_nonneg _)
+              (mul_nonneg (hεpos n).le (Real.exp_nonneg _))
             exact mul_le_mul_of_nonneg_left hexp (hεpos n).le
         _ = ε n * (Real.exp M * C) := by ring
   exact hcon.continuousAt (Metric.isOpen_ball.mem_nhds (Metric.mem_ball_self one_pos))

@@ -91,23 +91,23 @@ theorem sum_norm_inner_expRow_root {ζ : ℂ} {Q : ℕ} (hQ : 0 < Q) (hζ : IsPr
   have hpar := b.sum_inner_mul_inner x x
   have hterm : ∀ j : Fin Q, ⟪x, b j⟫_ℂ * ⟪b j, x⟫_ℂ = ((‖⟪b j, x⟫_ℂ‖ ^ 2 : ℝ) : ℂ) := by
     intro j
-    rw [← inner_conj_symm (b j) x, conj_mul_self]
+    rw [← inner_conj_symm x (b j), conj_mul_self]
   rw [Finset.sum_congr rfl (fun j _ => hterm j), inner_self_eq_norm_sq_to_K] at hpar
   have hreal : ∑ j : Fin Q, ‖⟪b j, x⟫_ℂ‖ ^ 2 = ‖x‖ ^ 2 := by
     have hcast : ((∑ j : Fin Q, ‖⟪b j, x⟫_ℂ‖ ^ 2 : ℝ) : ℂ) = ((‖x‖ ^ 2 : ℝ) : ℂ) := by
-      rw [Complex.ofReal_sum]
-      rw [hpar]
-      push_cast
-      ring
+      rw [Complex.ofReal_sum, hpar]
+      norm_cast
     exact_mod_cast hcast
   have hscale : ∀ j : Fin Q,
       ‖⟪b j, x⟫_ℂ‖ ^ 2 = (1 / (Q : ℝ)) * ‖⟪expRow Q (ζ ^ (j : ℕ)), x⟫_ℂ‖ ^ 2 := by
     intro j
-    rw [hbcoe j, unitRow, inner_smul_left, Complex.conj_ofReal, norm_mul, Complex.norm_real,
-      abs_of_nonneg (by positivity : (0 : ℝ) ≤ (Real.sqrt Q)⁻¹), mul_pow]
-    congr 1
-    rw [inv_pow, ← Real.sqrt_mul_self hQR.le]
-    field_simp
+    rw [hbcoe j, unitRow, inner_smul_left, Complex.conj_ofReal, norm_mul]
+    have hnr : ‖(((Real.sqrt Q)⁻¹ : ℝ) : ℂ)‖ = (Real.sqrt Q)⁻¹ := by
+      simp
+    rw [hnr, mul_pow]
+    have hinv : ((Real.sqrt Q)⁻¹) ^ 2 = 1 / (Q : ℝ) := by
+      rw [inv_pow, Real.sq_sqrt hQR.le, one_div]
+    rw [hinv]
   rw [Finset.sum_congr rfl (fun j _ => hscale j), ← Finset.mul_sum] at hreal
   field_simp at hreal
   linarith [hreal]

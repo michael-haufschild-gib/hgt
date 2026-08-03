@@ -1394,3 +1394,59 @@ intersect, over the countably many shapes, the residual sets produced by
 `residual_setOf_forall_eval_observation_ne_zero` from the shape determinants; on that intersection no
 relation of any shape holds, which is the freeness of the translated outer family.  Adding the fixed
 carrier translates `eps A(. + t_i)` changes nothing, since it only translates the observed packet.
+
+## Lean progress: the Baire step over shapes, and continuity of the observation
+
+`ShapeResidualAvoidance.lean` (wired, axiom-clean) is the parameter-space conclusion:
+
+- **`residual_forall_shape_avoidance`** -- for a continuous, locally surjective observation, the
+  parameters whose observation avoids *every* shape's determinant hypersurface form a residual set.
+  The observed coordinate system is allowed to depend on the shape, since deeper relations need
+  deeper jets; the countability of `RelationShape` is what makes the intersection legitimate;
+- **`dense_forall_shape_avoidance`** -- and that set is dense.
+
+`DiscreteJetPacketContinuity.lean` (wired, axiom-clean) discharges the one hypothesis that was still
+outstanding:
+
+- `continuous_massParameter_apply` -- evaluation of a bounded sequence at one coordinate is
+  `1`-Lipschitz;
+- **`continuous_discreteJetPacket_expParameter`** -- the jet packet is continuous in the mass
+  parameter.  On any ball the masses are bounded by their value at the centre times a fixed
+  exponential and the kernel powers are bounded off the real axis, so the defining series converges
+  uniformly there (`continuousOn_tsum`); continuity is local, so this suffices.
+
+Every hypothesis of the transversality theorem is now supplied by a corpus theorem: the observation
+is continuous, it is locally surjective, the shape determinants are nonzero polynomials, and the
+shapes are countable.  What remains for (9) is only to *instantiate* the theorem -- to name, for each
+shape, the node packet from `exists_injective_nodes_shapeDeterminant_ne_zero` and the corresponding
+outer jet observation in the reindexed coordinates -- and then to read the conclusion back as the
+absence of a differential relation, which is `coeff_eq_zero_of_shapeDeterminant_ne_zero`.
+
+## Lean progress: residual coefficient rigidity
+
+`ResidualShapeCoefficientRigidity.lean` (wired, axiom-clean) is the capstone of the transversality
+programme -- the two halves joined:
+
+- `ShapeJetIndex` -- the jet variables of a shape, one packet per row of its evaluation matrix;
+- **`residual_forall_shape_coeff_eq_zero`** -- for a continuous, locally surjective jet observation
+  there is a *residual* set of parameters at which, for **every** relation shape, the only
+  coefficient vector annihilated by the expanded evaluation matrix at that shape's node packet is
+  zero;
+- **`dense_forall_shape_coeff_eq_zero`** -- and that set is dense;
+- **`exists_nodeOf_of_injective_exponent`** -- every shape with distinct monomials admits an
+  admissible node packet, so the `nodeOf` and determinant-nonvanishing data the theorem takes can
+  always be produced by choice over the countably many shapes.
+
+This is exactly the parameter statement the card's transversality argument is supposed to deliver:
+*for a residual set of positive mass parameters, no differential relation of any shape survives.*
+Its hypotheses are the corpus theorems built in this run --
+`continuous_discreteJetPacket_expParameter`, `locallySurjective_outerJetObservation`,
+`exists_injective_nodes_shapeDeterminant_ne_zero` -- and its index is the countable
+`RelationShape`.
+
+What is left is the final translation, in the corpus's own pattern vocabulary: reading
+"`mulVec c = 0` at the shape's node packet" as "the expanded pattern relation holds", so that the
+conclusion becomes the corpus's `universalPhase` membership and hence, through
+`not_familyDifferentiallyAlgebraicOn_expWeightedCauchy_of_allFinitePatterns_relationFree` and the
+Cayley outer gauge, the freeness of the translated outer family.  Adding `eps A(. + t_i)` then
+changes nothing, since it only translates the observed packet.

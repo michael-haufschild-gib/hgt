@@ -612,6 +612,66 @@ theorem coeffSum_le_window_add_tails
         ring
 
 
+/-! ## Continuity
+
+On a compact positive interval only finitely many terms can compete for the maximum, so the maximum
+term is locally the maximum of finitely many monomials, hence continuous.  Continuity is what lets
+the Borel growth lemma be applied to `log mu`. -/
+
+set_option maxHeartbeats 1000000 in
+/-- On `[r₁, r₂]` the maximum term is the maximum of a fixed finite family of monomials. -/
+theorem exists_finset_maxTerm_eq_sup'
+    (ha : EntireCoeffs a) {r₁ r₂ : ℝ} (hr₁ : 0 < r₁) (hle : r₁ ≤ r₂)
+    {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
+    ∃ (F : Finset ℕ) (hF : F.Nonempty),
+      ∀ x ∈ Set.Icc r₁ r₂, maxTerm a x = F.sup' hF fun n => ‖a n‖ * x ^ n := by
+  classical
+  have hr₂ : 0 < r₂ := lt_of_lt_of_le hr₁ hle
+  obtain ⟨N, hN, hpos⟩ := exists_maxTerm_eq ha hr₁ hn₀
+  have hfin : {n : ℕ | maxTerm a r₁ ≤ ‖a n‖ * r₂ ^ n}.Finite :=
+    finite_setOf_le_term ha hr₂ hpos
+  have hNmem : N ∈ hfin.toFinset := by
+    rw [Set.Finite.mem_toFinset]
+    show maxTerm a r₁ ≤ ‖a N‖ * r₂ ^ N
+    rw [← hN]
+    exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hr₁.le hle N) (norm_nonneg _)
+  refine ⟨hfin.toFinset, ⟨N, hNmem⟩, fun x hx => ?_⟩
+  obtain ⟨hx1, hx2⟩ := hx
+  have hxpos : 0 < x := lt_of_lt_of_le hr₁ hx1
+  have hNle : maxTerm a r₁ ≤ ‖a N‖ * x ^ N := by
+    rw [← hN]
+    exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hr₁.le hx1 N) (norm_nonneg _)
+  refine le_antisymm (ciSup_le fun n => ?_)
+    (Finset.sup'_le _ _ fun n _ => term_le_maxTerm ha hxpos n)
+  by_cases hn : n ∈ hfin.toFinset
+  · exact Finset.le_sup' (fun n => ‖a n‖ * x ^ n) hn
+  · have hnot : ¬ (maxTerm a r₁ ≤ ‖a n‖ * r₂ ^ n) := by
+      rw [Set.Finite.mem_toFinset] at hn
+      exact hn
+    have h1 : ‖a n‖ * x ^ n ≤ ‖a n‖ * r₂ ^ n :=
+      mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hxpos.le hx2 n) (norm_nonneg _)
+    have h2 : ‖a n‖ * x ^ n ≤ ‖a N‖ * x ^ N := by
+      have := not_le.mp hnot
+      linarith
+    exact le_trans h2 (Finset.le_sup' (fun n => ‖a n‖ * x ^ n) hNmem)
+
+/-- **The maximum term is continuous on the positive ray.** -/
+theorem continuousOn_maxTerm (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
+    ContinuousOn (maxTerm a) (Set.Ioi 0) := by
+  intro r hr
+  have hr0 : (0 : ℝ) < r := hr
+  obtain ⟨F, hF, hEq⟩ := exists_finset_maxTerm_eq_sup' ha (r₁ := r / 2) (r₂ := 2 * r)
+    (by linarith) (by linarith) hn₀
+  have hcont : Continuous fun x : ℝ => F.sup' hF fun n => ‖a n‖ * x ^ n :=
+    Continuous.finset_sup'_apply hF fun n _ => continuous_const.mul (continuous_pow n)
+  have hmem : Set.Ioo (r / 2) (2 * r) ∈ nhds r :=
+    Ioo_mem_nhds (by linarith) (by linarith)
+  have heq : (fun x : ℝ => F.sup' hF fun n => ‖a n‖ * x ^ n) =ᶠ[nhds r] maxTerm a := by
+    filter_upwards [hmem] with x hx
+    exact (hEq x ⟨le_of_lt hx.1, le_of_lt hx.2⟩).symm
+  exact (hcont.continuousAt.congr heq).continuousWithinAt
+
+
 /-! ## Entire functions -/
 
 /-- The coefficients of a power series with infinite radius of convergence satisfy the decay

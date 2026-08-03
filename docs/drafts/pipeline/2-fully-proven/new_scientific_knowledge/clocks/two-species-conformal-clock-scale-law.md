@@ -11,8 +11,9 @@
   (`twoSpecies_foliation_reconstruction`) — cosmological, static and curved alike — with the probes
   constructed rather than assumed, and the massless species is free on every chart
   (`noCommonZero_conformalPotential_zero`), so the remaining content is a probe family for a single
-  massive species. What remains open is exactly that: open research, not a proved statement awaiting
-  formalization.
+  massive species — equivalently, by `noCommonZero_of_rescaled_probeFamily`, a local existence
+  theorem for the physical massive Klein--Gordon field. What remains open is exactly that: open
+  research, not a proved statement awaiting formalization.
 
 ## Headline
 
@@ -768,11 +769,35 @@ remaining content of the inverse step is a probe family for a **single** massive
 contrast with `(8)`, which recovers `D_σ` only after the scale is known — the massless species gives
 `D_σ` directly and unconditionally.
 
+### The remaining input, transported to the physical Klein–Gordon equation
+
+Theorem 1 is an identity between operators; read as a statement about *solutions* it is a bijection.
+`formal/GaloisForLFunctions/HTGeometry/ClockRescaledProbeTransfer.lean`:
+
+- `SolvesRescaledKleinGordon` — solutions of the physical equation `□_{g̃} f + μ f = 0` on the
+  rescaled chart;
+- `solvesPotentialWave_of_rescaled`, `rescaled_of_solvesPotentialWave` — `u ↦ e^{-aσ}u` and
+  `f ↦ e^{aσ}f` are mutually inverse between probes of `V_μ^σ` and physical solutions, and both
+  preserve smoothness and zeros because `e^{aσ}` is smooth and nowhere zero;
+- `noCommonZero_of_rescaled_probeFamily`, `exists_rescaled_probe_of_noCommonZero` — hence the
+  probe-family condition for the effective potential **is** the physical condition;
+- `scale_reconstruction_of_rescaled_probeFamily` — the conformal scale from that single physical
+  hypothesis, the massless reference contributing nothing.
+
+So the last open input of the whole programme is now stated in its physical form:
+
+> the massive Klein–Gordon field on the rescaled spacetime admits, at every event, a smooth solution
+> nonvanishing there.
+
+That is what a local hyperbolic existence theorem supplies, and it is the only thing still missing.
+
 Missing:
 
-1. coupled inverse theorem recovering the effective potential of a **single massive** species from
-   clock data, for a potential admitting **no** probe family without a common zero (the massless
-   species needs nothing) (open research; step 1 of the
+1. a local existence theorem for the physical massive Klein--Gordon field: at every event, a smooth
+   solution of `□_{g̃} f + μ f = 0` nonvanishing there, for a **single** massive species (the
+   massless species needs nothing, and the transfer
+   `noCommonZero_of_rescaled_probeFamily` shows this is equivalent to the probe-family condition on
+   the effective potential) (open research; step 1 of the
    continuum-gravity bridge below). The one-dimensional, homogeneous, static, leaf-inhomogeneous,
    globally-nonvanishing-probe, flat constant-potential, and general foliated-conformal cases are
    now proved outright, the last end to end through the scale reconstruction. Note the boundary
