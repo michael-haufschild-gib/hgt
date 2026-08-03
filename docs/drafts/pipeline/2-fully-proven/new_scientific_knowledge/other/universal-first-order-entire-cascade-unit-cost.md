@@ -1381,3 +1381,46 @@ as `L = o(nu^2)`.  The measure input `exists_good_point_increment_le` supplies e
 `sum |n - nu| |a_n| r^n` into `|n - nu| <= N` (bounded by `N` times the window sum) and the two
 tails (bounded by `2 mu sum_j (N+1+j) q^{N+1+j}` with `q = exp(-N/(4L))`), then feed the result to
 `norm_mul_logDeriv_sub_le_of_deviation_le`.
+
+### Log — Gaussian tail assembled; the remaining accounting
+
+`HTGeometry/MaximumTermGaussianTail.lean` (new, axiom-clean): `tsum_index_deviation_le_gaussian`.
+With a window half-width `N` and the Lipschitz constant `L`, the whole deviation series is at most
+`N * (window sum) + 2 mu * sum_j (N+1+j) q^{N+1+j}` with `q = exp(-N/(4L))`.  Both tails come from
+`term_le_maxTerm_exp_uniform_above/below`; the window weight is at most `N` by construction.
+(Profiling note: the module elaborates in well under a second — a ten-minute wall time was
+contention from other agents' Lean processes, not proof cost.)
+
+**Quantitative accounting, done in the Gaussian model.**  Under `|b_k| <= exp(-k^2/(4L))` for the
+normalised coefficients:
+
+- `sum_k |b_k| ~ sqrt(4 pi L)`, so the total misalignment obeys `D <= 2N + O(1)`;
+- `sum_k |k| |b_k| ~ 4L`, so **the absolute-value route is capped at `O(L)`**, and since `L` is of
+  the same order as `nu` for every function of finite positive order, that route can never reach
+  `o(nu)`.  This is the same wall the one-radius bound hit, now measured exactly rather than
+  inferred: it is a property of the true term profile, not of the estimate used.
+
+Hence the only viable route is the corpus's mean-index form
+`norm_mul_logDeriv_sub_centralIndex_le_meanIndex`:
+
+`|z f'/f - nu| <= (1 + D) |Lambda - nu| + E`,
+
+where `Lambda - nu` is a **signed** first moment — small by the near-symmetry of the profile — and
+`E` is the weighted misalignment.
+
+**Brick built for the signed gap.**  `HTGeometry/MeanIndexLipschitz.lean`:
+`abs_meanIndex_sub_centralIndex_le_lipschitz` gives, for any sampling width `h` with `2h <= H`,
+
+`|Lambda(r) - nu(r)| <= 2 L h + 2 log(nu(r) + 2 L h + 1 + 1/(e^h - 1)) / h`.
+
+At `h` of order `sqrt(log nu / L)` this is `O(sqrt(L log nu))` — square-root small in `L`, where
+every window bound is linear in it.
+
+**The one open accounting point.**  `E = sum |k| d_k` with `d_k` the per-term misalignment.  The
+naive bound `E <= N D` is `O(N^2) = O(L)` and loses everything.  The corpus already owns the
+quadratic route (`sq_im_conj_mul_le`, `norm_weighted_sum_sub_le`, `sum_weighted_sqrt_sq_le`), which
+gives `E <= sqrt(2 * sum k^2 |b_k|) * sqrt(D) / A` with `A = M(r)/mu(r)`; in the Gaussian model that
+is `sqrt(2 L^{3/2}) sqrt(sqrt L) / A = sqrt(2) L / A`.  So the estimate closes at `o(nu)` exactly
+when `A` grows, and the classical lower bound `M(r) >> mu(r) sqrt(nu)` is what supplies it.  That
+lower bound is the next target: it is false for lacunary series, so it must be proved off the same
+exceptional set, from the very Lipschitz regularity that `exists_good_point_increment_le` produces.

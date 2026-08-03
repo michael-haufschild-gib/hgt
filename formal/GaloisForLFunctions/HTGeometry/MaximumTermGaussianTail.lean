@@ -85,7 +85,8 @@ theorem tsum_index_deviation_le_gaussian
   -- the pointwise bound outside the window, in the two directions
   have hdecay_up : ∀ j : ℕ, D (j + (v + N + 1)) ≤ μ * f j := by
     intro j
-    set n : ℕ := j + (v + N + 1) with hn
+    obtain ⟨n, hn⟩ : ∃ n : ℕ, n = j + (v + N + 1) := ⟨_, rfl⟩
+    rw [← hn]
     have hk : ((N : ℝ) + 1 + j) = (n : ℝ) - (v : ℝ) := by
       rw [hn]; push_cast; ring
     have hkK : (N : ℝ) ≤ (n : ℝ) - (v : ℝ) := by
@@ -95,8 +96,7 @@ theorem tsum_index_deviation_le_gaussian
     have hterm := term_le_maxTerm_exp_uniform_above (x := x) ha hn₀ hH hL hNpos hNK hlipA
       (n := n) (k := (n : ℝ) - (v : ℝ)) rfl hkK
     have habs : |(n : ℝ) - (v : ℝ)| = (N : ℝ) + 1 + j := by
-      rw [← hk] at *
-      rw [abs_of_nonneg (by positivity)]
+      rw [← hk, abs_of_nonneg (by positivity)]
     have hexp : Real.exp (-(((n : ℝ) - (v : ℝ)) * (N : ℝ) / (4 * L))) = q ^ (N + 1 + j) := by
       have hcast : ((N + 1 + j : ℕ) : ℝ) = (n : ℝ) - (v : ℝ) := by
         rw [← hk]; push_cast; ring
@@ -109,13 +109,13 @@ theorem tsum_index_deviation_le_gaussian
   have hdecay_down : ∀ j : ℕ, j < v - N → D (v - N - 1 - j) ≤ μ * f j := by
     intro j hj
     have hvN : N < v := by omega
-    set n : ℕ := v - N - 1 - j with hn
+    obtain ⟨n, hn⟩ : ∃ n : ℕ, n = v - N - 1 - j := ⟨_, rfl⟩
+    rw [← hn]
+    have hle : N + 1 + j ≤ v := by omega
     have hnv : (n : ℝ) = (v : ℝ) - ((N : ℝ) + 1 + j) := by
-      rw [hn]
-      have : n = v - (N + 1 + j) := by omega
-      rw [this]
-      have hle : N + 1 + j ≤ v := by omega
-      push_cast [Nat.cast_sub hle]
+      have hne : n = v - (N + 1 + j) := by omega
+      rw [hne, Nat.cast_sub hle]
+      push_cast
       ring
     have hk : ((N : ℝ) + 1 + j) = (v : ℝ) - (n : ℝ) := by rw [hnv]; ring
     have hkK : (N : ℝ) ≤ (v : ℝ) - (n : ℝ) := by

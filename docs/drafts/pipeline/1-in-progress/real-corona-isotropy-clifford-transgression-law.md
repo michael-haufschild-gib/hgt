@@ -450,3 +450,17 @@ stabilization or a different Dirac parity.
   trace of `y` lies in the locally constant, all-derivative, all-exponential-weight class-space
   target. Remaining P2 gate is precisely that finite-adelic Poisson theorem, followed by closed
   strong cokernel descent and concrete `κ`/bivariant-Chern/CCM-Lefschetz comparison.
+- 2026-08-03 — Anti-theatre source audit corrected the cyclic source and closed the periodic
+  analytic theorem. Primary CCM uses the cyclic module of the nonunital algebra
+  `S(G_Q)`, hence the augmentation kernel inside the cyclic bar of its unitization—not the full
+  unitized cyclic bar. The former model admitted a compensating scalar whose rational-orbit trace
+  tends to a nonzero constant, making strong landing impossible. `CCMRationalAdelicEpsilonZeroCyclic.lean`,
+  `CCMRationalAdelicEpsilonOneCyclic.lean`, `CCMRationalAdelicEndpointReal.lean`, and the downstream
+  degree-reduction modules now use the exact nested augmentation kernels.
+  `CCMRationalPeriodicWeightedStrongLogDecay.lean` proves the universal periodic law: the two
+  weighted endpoint products are sufficient for smoothness and arbitrary exponential decay of
+  every logarithmic derivative. The negative-end proof differentiates the exact weighted Poisson
+  reflection and transports derivatives through `A = -(1+E)`; it does not assume Euler iteration
+  preserves the Fourier zero mode. Module compiles unconditionally. Remaining analytic gate is
+  finite-adèlic: every actual Bruhat factor must furnish a period and locally constant profinite
+  dependence, after which this theorem supplies the full strong radial landing.

@@ -222,7 +222,8 @@
   exceptional factor),
   `GaloisForLFunctions.RHTower.DeningerRootUniqueRoots` (a root adjunction preserves unique roots),
   `GaloisForLFunctions.RHTower.DeningerCentralizerZpow` (centralizers of powers in a group with
-  unique roots)
+  unique roots),
+  `GaloisForLFunctions.RHTower.DeningerRootEltCentral` (the adjoined root is self-centralizing)
 
 ## Statement
 
@@ -3164,3 +3165,17 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   a statement about a single element, `C(a) ⊆ ⟨a⟩`, alongside isolation of `⟨a⟩`.  Both are
   conditions of the kind the structure theory of amalgams computes, and they are what the next stage
   of the tower has to inherit.
+- 2026-08-03 — **The adjoined root is self-centralizing in the new group.**  For the tower, the two
+  conditions the root adjunction theorem needs — isolation and self-centralization — have to be
+  re-established at the element to which the next root is adjoined, and the natural such element is
+  the root just adjoined.  `deningerRootGen_not_mem` records that the generator of the cyclic factor
+  is not in the base group when the exponent is at least two in absolute value, since otherwise the
+  exponent would divide one.  `deningerRootElt_centralizer` then applies the centralizer criterion
+  for factor elements: the escape clause asks the generator to conjugate into the base group inside
+  its own factor, which is abelian, so it would already be there; hence every element commuting with
+  the adjoined root lies in the cyclic factor, which is the group it generates.
+  So `C(t) = ⟨t⟩` at the new stage, which by `deningerCentralizer_zpow_subset` is the full
+  self-centralizing hypothesis.  What the tower still needs is isolation of `⟨t⟩` in the new group,
+  which the same dichotomy should give: an element whose power is a power of `t` centralizes that
+  power, so it lies in the cyclic factor unless the power is in the base group, where the
+  exceptional-factor centralizer theorem places it in the cyclic factor as well.

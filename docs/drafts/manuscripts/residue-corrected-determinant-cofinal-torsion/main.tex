@@ -47,7 +47,11 @@ defined number-field finite-set constants.  We impose missing cofinal constraint
 consists of first $n$ prime ideals in an arbitrary ordering of all prime ideals, we prove that
 cluster set of $\kappa_K(P_n)$ is a closed interval in $[e^{-\gamma},\infty]$, and that every
 nonempty closed interval in this extended half-line occurs.  Endpoint is universal: Dedekind
-residue cancels field-dependent Mertens constant.
+residue cancels field-dependent Mertens constant.  In Polish space of all prime-ideal orderings,
+every prescribed interval fibre is dense, while full interval $[e^{-\gamma},\infty]$ is
+comeagre; cluster-spectrum map is nowhere continuous.  More generally, same interval theorem
+holds for every proper Euler-atom system satisfying two Mertens asymptotics, with endpoint equal
+to its residue-normalized Mertens constant.
 
 Classification has a determinant-theoretic lift.  On integral ideals coprime to $P$, let
 $D_{K,P}$ have eigenvalues $N\mathfrak a$.  We prove that relative zeta
@@ -177,6 +181,11 @@ If $p\notin P$, then
  \Delta_{P\cup\{p\}}(z)
  =p^{-a(P)z/p}\frac{\Delta_P(z)}{\Delta_P(z/p)}.}         \tag{1.10}
 \end{equation}
+The quotient in (1.10) has its removable singularities filled.  Equivalently, the global
+entire identity is
+\[
+ p^{a(P)z/p}\Delta_{P\cup\{p\}}(z)\Delta_P(z/p)=\Delta_P(z).
+\]
 \end{theorem}
 
 \begin{theorem}[Determinant clusters and relative torsion]
@@ -199,6 +208,9 @@ For finite $c,d$ relative determinant torsion is
  =e^{(d-c)z},\qquad
  \cT_{c,d}\cT_{d,e}=\cT_{c,e}.                           \tag{1.13}
 \end{equation}
+Here and below quotient of determinant sections means unique holomorphic extension after
+cancelling their common divisor; equivalently
+$\Delta_c=\cT_{c,d}\Delta_d$ everywhere.  This convention removes apparent $0/0$ at $z=1$.
 All limiting determinants have same divisor $[1]$, while pairwise torsions realize every real
 logarithmic slope.
 \end{theorem}
@@ -216,6 +228,20 @@ $[\alpha,\beta]\subset[e^{-\gamma},\infty]$.  For the ideal-norm operator $D_{K,
 determinant cluster germs are $e^{(1-c)z}(1-z)$ with $c$ in corresponding interval, and all
 relative torsions are $e^{(d-c)z}$.  Hilbert--Schmidt limit, primary residue, and divisor are
 independent of ordering.
+\end{theorem}
+
+\begin{theorem}[Generic maximal torsion and nowhere continuity]
+\label{thm:generic}
+Give space $\mathfrak S_K$ of all orderings of $\mathcal P_K$ pointwise-convergence topology.
+For every nonempty closed interval $I\subset[e^{-\gamma},\infty]$, fibre
+\[
+ \{\sigma\in\mathfrak S_K:C_K(\sigma)=I\}
+\]
+is dense.  Full-spectrum fibre $C_K(\sigma)=[e^{-\gamma},\infty]$ is comeagre; every proper
+interval fibre is dense and meagre.  Map $\sigma\mapsto C_K(\sigma)$ to hyperspace of nonempty
+compact subsets is nowhere continuous.  On comeagre full-spectrum fibre, determinant cluster
+germs contain every $e^{(1-c)z}(1-z)$ with finite $c\geq e^{-\gamma}$ and relative-torsion slopes
+are all of $\R$.
 \end{theorem}
 
 \section{Finite-set identities and extremality}
@@ -751,6 +777,64 @@ Hence, for fixed $\alpha>e^{-\gamma}$ and all large $k$, every least-missing ins
 $\kappa_K(P)\geq\alpha$ decreases value.  For $\alpha=e^{-\gamma}$ same holds outside any fixed
 neighborhood of endpoint.
 
+\subsection{Abstract Mertens-system universality}
+
+Concrete number-field proof exposes exact general mechanism.  Let $\mathcal A$ be countably
+infinite atom set with proper height $q:\mathcal A\to(1,\infty)$, meaning each bounded sublevel is
+finite.  Fix $\rho>0$ and $\gamma_0\in\R$.  For finite $P\subset\mathcal A$, put
+\begin{equation}
+ a(P)=\prod_{v\in P}(1-q(v)^{-1}),\quad
+ b(P)=\gamma_0+\sum_{v\in P}\frac{\log q(v)}{q(v)-1},\quad
+ \kappa(P)=\rho a(P)b(P).                                \tag{8.17}
+\end{equation}
+For $x>1$, write $\mathcal A(x)=\{v:q(v)\leq x\}$ and suppose
+\begin{equation}
+ \rho a(\mathcal A(x))\log x\longrightarrow c_*>0,qquad
+ \sum_{q(v)\leq x}\frac{\log q(v)}{q(v)-1}-\log x
+ \longrightarrow C.                                    \tag{8.18}
+\end{equation}
+
+\begin{theorem}[Mertens-system universality]
+\label{thm:mertens-system}
+Under (8.18), cluster sets of $\kappa(P_n)$ along arbitrary orderings of all atoms are exactly
+nonempty closed intervals in $[c_*,\infty]$.  Every interval occurs.  Every interval fibre is
+dense in ordering space, full interval $[c_*,\infty]$ is comeagre, and cluster-spectrum map is
+nowhere continuous.
+\end{theorem}
+
+\begin{proof}
+Order atoms by nondecreasing height, with arbitrary tie-breaking.  Second limit in (8.18) implies
+total jump across every equal-height tie tends to zero; first then implies, also through partial
+ties,
+\begin{equation}
+ \kappa(E_n)\to c_*,\qquad
+ \rho a(E_{n-1})\log q(v_n)\to c_*.                      \tag{8.19}
+\end{equation}
+Indeed $b(\mathcal A(x))/\log x\to1$; convergence of second expression in (8.18) forces
+$\log(q(v_{n+1})/q(v_n))\to0$ and makes every tie negligible.
+
+One-atom update is
+\[
+ \kappa(P\cup\{v\})-\kappa(P)
+ =\frac{\rho a(P)}{q(v)}(\log q(v)-b(P)).
+\]
+Relative extremal descent of Lemma~\ref{lem:K-extremal} uses only this formula, height order, and
+eventual positivity of $b(E_n)$; its reference-index potential also handles ties.  Thus every
+cofinal liminf is at least $c_*$.  On bounded windows, jump is at most
+$(M+\rho\log q(v))/q(v)$ and hence tends to zero.
+
+For fixed $u\geq0$, divide first limit in (8.18) at $e^uy$ and $y$, and subtract second limit.
+This gives
+\begin{align*}
+ \prod_{y<q(v)\leq e^uy}(1-q(v)^{-1})&\to1,\\
+ \sum_{y<q(v)\leq e^uy}\frac{\log q(v)}{q(v)-1}&\to u.
+\end{align*}
+These are remote upward control; (8.19) is downward control.  Crossing proof and alternating
+block construction used above now apply word for word with $c_*$ in place of $e^{-\gamma}$.
+Finite-prefix extension and Baire proof of Section~\ref{sec:generic} use only same controls, so
+density, genericity, and nowhere continuity follow as well.
+\end{proof}
+
 \begin{proof}[Proof of Theorem~\ref{thm:numberfield-main}]
 Let $(\mathfrak q_n)$ be any permutation of $\mathcal P_K$.  Closedness of cluster set is
 automatic in compact space $[0,\infty]$, and (8.10) gives lower bound.  If two finite cluster
@@ -782,8 +866,8 @@ function.  From (8.6), same factorization as (6.2) gives locally uniformly on $\
  \Delta_{K,P}(z)
  &:=\lim_{X\to\infty}X^{r_K(P)z}
  \prod_{\substack{N\mathfrak a\leq X\\(\mathfrak a,P)=1}}
-       \left(1-\frac z{N\mathfrak a}\right)                       \tag{8.17}\\
- &=e^{-\kappa_K(P)z}\det{}_2(I-zQ_{K,P}).                         \tag{8.18}
+       \left(1-\frac z{N\mathfrak a}\right)                       \tag{8.20}\\
+ &=e^{-\kappa_K(P)z}\det{}_2(I-zQ_{K,P}).                         \tag{8.21}
 \end{align}
 
 This is exactly relative zeta determinant, not merely a cutoff analogy.  For $|z|<1$, set
@@ -793,7 +877,7 @@ This is exactly relative zeta determinant, not merely a cutoff analogy.  For $|z
 Binomial expansion gives meromorphic identity near $s=0$
 \begin{equation}
  \Xi_{K,P}(s,z)=\sum_{m\geq1}\frac{(s)_m}{m!}z^mZ_{K,P}(s+m).
-                                                                    \tag{8.19}
+                                                                    \tag{8.22}
 \end{equation}
 Since $sZ_{K,P}(1+s)=r_K(P)+\kappa_K(P)s+O(s^2)$ and
 $(s)_m'|_{s=0}=(m-1)!$ for $m\geq2$,
@@ -804,7 +888,7 @@ $(s)_m'|_{s=0}=(m-1)!$ for $m\geq2$,
 Thus
 \begin{equation}
  \Delta_{K,P}(z)=\frac{\det_\zeta(D_{K,P}-z)}{\det_\zeta D_{K,P}},
-                                                                    \tag{8.20}
+                                                                    \tag{8.23}
 \end{equation}
 first for $|z|<1$ and then by entire continuation.  If $\mathfrak p\notin P$ and
 $q=N\mathfrak p$, ideals divisible by $\mathfrak p$ are $\mathfrak p\mathfrak a$ uniquely.
@@ -813,12 +897,18 @@ Using
  \kappa_K(P\cup\{\mathfrak p\})=\left(1-\frac1q\right)\kappa_K(P)
  +\frac{r_K(P)\log q}{q}
 \]
-in (8.18) yields exact prime-ideal excision
+in (8.21) yields exact prime-ideal excision
 \begin{equation}
  \boxed{\displaystyle
  \Delta_{K,P\cup\{\mathfrak p\}}(z)
- =q^{-r_K(P)z/q}\frac{\Delta_{K,P}(z)}{\Delta_{K,P}(z/q)}.}       \tag{8.21}
+ =q^{-r_K(P)z/q}\frac{\Delta_{K,P}(z)}{\Delta_{K,P}(z/q)}.}       \tag{8.24}
 \end{equation}
+Equation (8.24) is identity of meromorphic quotients with removable singularities; globally
+equivalent entire identity is
+\[
+ q^{r_K(P)z/q}\Delta_{K,P\cup\{\mathfrak p\}}(z)
+ \Delta_{K,P}(z/q)=\Delta_{K,P}(z).
+\]
 
 Embed all operators in $\ell^2$ of nonzero integral ideals.  Along every exhaustion,
 \[
@@ -835,6 +925,51 @@ Derivative at zero equals $-\kappa_K(P)$, proving converse.  Quotients are $e^{(
 Ordering-independence of primary data and all remaining claims follow.
 \end{proof}
 
+\section{Generic maximal torsion and topological instability}
+\label{sec:generic}
+
+Topology on $\mathfrak S_K$ has basic cylinders obtained by fixing a finite ordered prefix.
+It is Polish: identify an ordering with a bijection $\N_{>0}\to\mathcal P_K$ inside product of
+countable discrete spaces.  Write $C_K(\sigma)$ for cluster set of $\kappa_K(P_n^\sigma)$.
+
+\begin{lemma}[Finite-prefix extension]
+\label{lem:prefix}
+Every finite ordered prefix extends to an ordering with any prescribed cluster interval
+$I\subset[e^{-\gamma},\infty]$.
+\end{lemma}
+
+\begin{proof}
+Start interval-realization construction in proof of Theorem~\ref{thm:numberfield-main} from set
+already used by prefix.  If necessary, first insert least missing prime ideals through a large
+reference cutoff.  This finite initialization does not affect cluster set.  Remote blocks can
+then be chosen beyond all used norms, while every downward stage consumes new least missing
+ideal.  Result is permutation extending prefix and has prescribed cluster interval.
+\end{proof}
+
+For open interval $J\subset(e^{-\gamma},\infty)$ and $N\geq1$, let
+\[
+ U(J,N)=\{\sigma:\kappa_K(P_n^\sigma)\in J\text{ for some }n\geq N\}.
+\]
+This set is open because witness uses finite prefix, and dense by
+Lemma~\ref{lem:prefix}, choosing any interval meeting $J$.  Likewise
+\[
+ U_\infty(M,N)=\{\sigma:\kappa_K(P_n^\sigma)>M\text{ for some }n\geq N\}
+\]
+is open dense.  Intersect $U(J,N)$ over countable rational basis $J$, all $N$, and intersect
+$U_\infty(M,N)$ over positive integers $M,N$.  Baire theorem shows resulting set is comeagre.
+Every ordering in it has every finite $c\geq e^{-\gamma}$ and $\infty$ as cluster values; lower
+bound (8.10) excludes others.  Thus full-spectrum fibre is comeagre.  Lemma~\ref{lem:prefix}
+makes every interval fibre dense, while each proper fibre lies in meagre complement of full one.
+
+Equip $[e^{-\gamma},\infty]$ with any compatible compact metric and its nonempty-compact
+hyperspace with Hausdorff metric.  Every cylinder contains, by Lemma~\ref{lem:prefix}, orderings
+with cluster sets $\{e^{-\gamma}\}$ and $\{\infty\}$.  These two hyperspace points have positive
+distance.  Triangle inequality prevents both from lying in arbitrarily small neighborhood of
+single $C_K(\sigma)$.  Cluster-spectrum map is therefore continuous nowhere.  Determinant
+claim follows from Theorem~\ref{thm:numberfield-main}: every finite cluster parameter $c$ gives
+$e^{(1-c)z}(1-z)$ and pairwise quotients give every slope.  This proves
+Theorem~\ref{thm:generic}.
+
 \section{Quillen metrics, Wodzicki residues, and analytic torsion}
 \label{sec:geometry}
 
@@ -842,9 +977,9 @@ We record precise relation to geometric determinant literature and limit of that
 $A$ is a positive classical pseudodifferential operator of order $-d$ on a closed $d$-manifold,
 then canonical trace of holomorphic family $A^s$ has
 \begin{equation}
- \Res_{s=1}\Tr(A^s)=\frac1d\operatorname{res}_W(A),        \tag{9.1}
+ \Res_{s=1}\Tr(A^s)=\frac1d\operatorname{res}_W(A),        \tag{10.1}
 \end{equation}
-where $\operatorname{res}_W$ is Wodzicki residue~\cite{PaychaScott2007}.  Equation (9.1) is classical
+where $\operatorname{res}_W$ is Wodzicki residue~\cite{PaychaScott2007}.  Equation (10.1) is classical
 pseudodifferential counterpart of $\Res_{s=1}Z_P(s)=a(P)$.  We do not claim diagonal arithmetic
 operator $Q_P$ is a classical pseudodifferential operator.  Common structure is a simple critical
 zeta pole and a residue-controlled logarithmic counterterm.
@@ -872,7 +1007,7 @@ two-term Hilbert complex
 Its zeta analytic torsion is $\det_\zeta(D_P-z)$ under standard two-term
 convention~\cite{RaySinger1971}.  Hence
 \begin{equation}
- \Delta_P(z)=\frac{T_{\rm an}(D_P-z)}{T_{\rm an}(D_P)},\qquad z<1.  \tag{9.2}
+ \Delta_P(z)=\frac{T_{\rm an}(D_P-z)}{T_{\rm an}(D_P)},\qquad z<1. \tag{10.2}
 \end{equation}
 At two cofinal finite-part values $c,d$, relative analytic torsion ratio is $e^{(d-c)z}$.  For
 complex parameters same scalar is a refined determinant torsion, retaining phase rather than
@@ -914,6 +1049,11 @@ not converge.  Its entire failure is measured by one finite-part coordinate, and
 Theorem~\ref{thm:classification} determines every possible cluster geometry of that coordinate.
 Plain determinant-line triviality is insufficient in strongest possible sense for this model: it
 forgets a complete real relative-torsion group.
+
+Theorem~\ref{thm:generic} strengthens existence classification: maximal torsion ambiguity is
+Baire-generic, every smaller ambiguity remains dense, and no ordering is point of continuity for
+cluster spectrum.  Thus instability cannot be removed by selecting a topologically typical
+cofinal ordering.
 
 \section{Conclusion}
 

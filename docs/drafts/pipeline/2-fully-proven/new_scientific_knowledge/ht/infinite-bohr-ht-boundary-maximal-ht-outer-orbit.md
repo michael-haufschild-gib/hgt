@@ -2755,3 +2755,26 @@ So a vanishing monomial combination is literally a vanishing exponential series,
 evaluate that fibre amplitude at the frequency of an injective tuple -- where `fiberAmplitude_sigma`
 splits it over the monomials and `fiberAmplitude_monomial` turns each piece into `permSum` -- and
 then conclude by the two vanishing theorems.
+
+## Claim (2): the polynomial identity a vanishing relation forces
+
+`OstrowskiRelationCarrier.lean` now carries the analytic conclusion all the way to algebra:
+
+    eval_permSum_combination_eq_zero :
+      RationallyIndependentSequence omega -> ExpSeriesNormallySummable a omega ->
+      (forall t, sum_{s in K} c s * prod_j iteratedDeriv (s j) (cexpSeriesCarrier a omega) t = 0) ->
+      Function.Injective i -> (forall l, a (i l) /= 0) ->
+      eval (fun l => I omega (i l)) (sum_{s in K} c s . permSum s) = 0
+
+The vanishing relation is one exponential series, its fibre amplitude at the frequency of the
+injective tuple vanishes, that amplitude splits over the monomials (`fiberAmplitude_sigma`), each
+piece is `c s * (prod_l a (i l)) * eval (permSum s)` (`fiberAmplitude_monomial`), and the nonvanishing
+amplitude product cancels.
+
+Lean note worth keeping: the higher-order implicit `b` in `summable_norm_sigma` made elaboration
+diverge (a whnf timeout no heartbeat budget could absorb); pinning `(b := ...)` and `(J := ...)`
+makes it instant.  Same for `fiberAmplitude_sigma`.
+
+What remains is only: quantify over injective tuples drawn from the infinite set of nonvanishing
+amplitudes, apply `mvPolynomial_eq_zero_of_eval_eq_zero_on_infinite_pow_injective`, and finish with
+`eq_zero_of_permSum_combination`.

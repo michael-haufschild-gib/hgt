@@ -3122,3 +3122,61 @@ term and no approximation**.
 
 The discrete layer and the cited statement are now formally the same object, so the only remaining
 gap on these cards is the arithmetic one — cancellation in `∑_n μ(n)μ(n+h)`.
+
+### Formal layer — the continuous mean square IS the discrete variance
+
+`formal/GaloisForLFunctions/RHTower/Sieve/WindowStepIntegral.lean`.
+
+- `stepWindow c L k := ‖∑_{k<n≤k+L} c_n‖²`, and `stepWindow_floor_const` — the integrand `g ∘ ⌊·⌋`
+  is constant on each **open** unit interval.
+- `intervalIntegrable_stepWindow`, `integral_unit_stepWindow` — integrable, with
+  `∫_k^{k+1} g⌊x⌋ dx = g k`.
+- `integral_stepWindow_eq_sum` — **`∫_Y^{Y+K} g⌊x⌋ dx = ∑_{k<K} g(Y+k)`**.
+
+All unconditional.
+
+The bridge from `RealWindow.lean` is now complete in both directions: the mean square taken as an
+integral over real starts — the form in which `(6)`/`(15)` are stated — equals the discrete variance
+of the modules above **exactly**, with no error term.
+
+The proof turns on using mathlib's *open*-interval congruences (`integral_congr_uIoo`,
+`IntervalIntegrable.congr_uIoo`): the step function is constant precisely on `(k, k+1)` and jumps at
+the right endpoint, so the open interval is the correct object and no null-set argument is needed.
+
+### Formal layer — the bridge, stated for the real window
+
+`formal/GaloisForLFunctions/RHTower/Sieve/RealWindowVariance.lean`.
+
+- `integral_realWindow_eq_sum` — **`∫_Y^{Y+K} ‖∑_{x<n≤x+L} c_n‖² dx =
+  ∑_{k<K} ‖∑_{Y+k<n≤Y+k+L} c_n‖²`**, for any cutoff `M > Y+K+L`.
+
+Unconditional.
+
+This states the bridge directly for the real-start window `(x, x+L]` rather than for the auxiliary
+step function, so it is the identity the cited estimates `(6)`/`(15)` are literally about. The
+hypothesis on `M` is only that every window met on `[Y, Y+K]` fits below the cutoff.
+
+The short-interval layer is now closed as a chain of exact statements: continuous mean square =
+discrete variance = pair sum against the overlap kernel = (kernel exact) triangular weight =
+diagonal + shifted correlations, with the diagonal evaluated for μ as the squarefree count. The
+single open link is arithmetic cancellation in `∑_n μ(n)μ(n+h)`.
+
+### Formal layer — the trivial variance bound is attained
+
+`formal/GaloisForLFunctions/RHTower/Sieve/WindowVarianceSharp.lean`.
+
+- `sum_window_one` — every window of length `L` carries mass `L` for the constant sequence.
+- `sum_normSq_window_one` — **`∑_{x<X} ‖∑_{x<n≤x+L} 1‖² = X·L²`**.
+
+Unconditional.
+
+The general bound gives `L²·(X+L+1)` for this sequence, so the two agree up to the boundary factor
+`(X+L+1)/X → 1`. **No coefficient-free improvement of the trivial bound exists.**
+
+This is the second no-go of the layer, and together with the exactness of the overlap kernel
+(`WindowKernelExact`) it closes off the non-arithmetic routes completely: neither a sharper treatment
+of the windows nor a better general inequality can help. Every remaining saving must come from
+arithmetic cancellation in `∑_n μ(n)μ(n+h)`.
+
+That is a useful negative result to have proved rather than assumed — it shows the cited input is
+*necessary*, not an artefact of a lossy reduction.

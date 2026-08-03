@@ -1527,6 +1527,8 @@ import GaloisForLFunctions.RHTower.DeningerBaseCentralizerOne
 import GaloisForLFunctions.RHTower.DeningerAmalgamRootsOne
 import GaloisForLFunctions.RHTower.DeningerRootUniqueRoots
 import GaloisForLFunctions.RHTower.DeningerCentralizerZpow
+import GaloisForLFunctions.RHTower.DeningerRootEltCentral
+import GaloisForLFunctions.RHTower.DeningerRootEltIsolated
 import GaloisForLFunctions.RHTower.DeningerUnitaryFlowRieszPurity
 import GaloisForLFunctions.RHTower.DeningerUnitaryHarmonicAction
 import GaloisForLFunctions.RHTower.DeningerWeightOnePolarization
@@ -2967,6 +2969,7 @@ import GaloisForLFunctions.RHTower.RelativeShellProvenanceUltrametric
 import GaloisForLFunctions.RHTower.RelativeShellSummableProvenanceTopology
 import GaloisForLFunctions.RHTower.RelativeTorsor
 import GaloisForLFunctions.RHTower.RelayLedger
+import GaloisForLFunctions.RHTower.ResidueCorrectedDeterminantCofinalTorsion
 import GaloisForLFunctions.RHTower.RescaleLimit
 import GaloisForLFunctions.RHTower.RescaleTannery
 import GaloisForLFunctions.RHTower.ResidualFaces
@@ -3306,6 +3309,9 @@ import GaloisForLFunctions.RHTower.Sieve.MoebiusWindowVariance
 import GaloisForLFunctions.RHTower.Sieve.MoebiusPairVariance
 import GaloisForLFunctions.RHTower.Sieve.RealWindow
 import GaloisForLFunctions.RHTower.Sieve.RealWindowIntegral
+import GaloisForLFunctions.RHTower.Sieve.WindowStepIntegral
+import GaloisForLFunctions.RHTower.Sieve.RealWindowVariance
+import GaloisForLFunctions.RHTower.Sieve.WindowVarianceSharp
 import GaloisForLFunctions.RHTower.Sieve.ChernoffTails
 import GaloisForLFunctions.RHTower.Sieve.GeometricMeanDivisor
 import GaloisForLFunctions.RHTower.Sieve.IntervalMultiples

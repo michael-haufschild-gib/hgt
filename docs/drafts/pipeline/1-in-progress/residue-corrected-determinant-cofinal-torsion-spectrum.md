@@ -5,10 +5,12 @@
 **Opened:** 2026-08-03  
 **Route:** R / Program 4 (`ROUTE_R_ARAKELOV_RESIDUE_DETERMINANT_CHARACTER`)  
 **Primary carrier:** nested prime-sieve Wold operator  
-**Formalization status:** not started; paper proof must close first  
-**Novelty status:** exact permutation/cluster-set statement not found in audit; scalar finite-set law is `[REDISCOVERED]`
+**Formalization status:** starting; dependency-closed paper proof exists  
+**Novelty status:** no collision found for cofinal classification, Mertens-system universality,
+number-field lift, determinant excision, or Baire-generic maximal spectrum; scalar finite-set law
+is `[REDISCOVERED]`
 
-## One exact claim
+## Rational special case
 
 Let \(\mathbb P\) be the set of rational primes. For a finite set
 \(P\subset\mathbb P\), put
@@ -24,7 +26,7 @@ For a permutation \(\sigma=(q_1,q_2,\ldots)\) of the primes, let
 \(C(\sigma)\) be the cluster set of \(\kappa(P_n^\sigma)\) in the extended
 half-line \([0,\infty]\).
 
-> **[CONJECTURE] [OPEN CORE] Cofinal torsion-spectrum theorem.**
+> **[PROVED ON PAPER] Cofinal torsion-spectrum theorem.**
 > The sets \(C(\sigma)\), as \(\sigma\) ranges over all permutations of the
 > primes, are exactly the nonempty closed intervals
 > \[
@@ -32,8 +34,39 @@ half-line \([0,\infty]\).
 > \qquad e^{-\gamma}\le \alpha\le\beta\le\infty.
 > \]
 
-This is one claim. Determinant, residue, and relative-torsion statements below
-are claimed consequences and the intended intrinsic interpretation.
+This is rational special case. Determinant, residue, and relative-torsion
+statements below are proved consequences and intrinsic interpretation.
+
+## Strengthened exact claim
+
+For every number field \(K\), with Dedekind-zeta residue \(\rho_K\), Euler--Kronecker
+constant \(\gamma_K\), and finite prime-ideal set \(P\), put
+
+\[
+ \kappa_K(P)=\rho_K\prod_{\mathfrak p\in P}
+ \left(1-\frac1{N\mathfrak p}\right)
+ \left(\gamma_K+\sum_{\mathfrak p\in P}
+ \frac{\log N\mathfrak p}{N\mathfrak p-1}\right).
+\]
+
+> **[PROVED ON PAPER] Number-field cofinal universality.** Along arbitrary
+> orderings of all nonzero prime ideals, cluster sets of \(\kappa_K(P_n)\) are
+> exactly nonempty closed intervals in \([e^{-\gamma},\infty]\). Every interval
+> occurs. Endpoint is independent of \(K\).
+
+This is instance of abstract Mertens-system theorem: same classification holds
+for every proper Euler-atom system with
+
+\[
+ \rho a(\mathcal A(x))\log x\to c_*>0,
+ \qquad
+ \sum_{q(v)\le x}\frac{\log q(v)}{q(v)-1}-\log x\to C.
+\]
+
+Every interval fibre is dense in ordering space, full spectrum is comeagre,
+all proper fibres are dense meagre, and cluster-spectrum map is nowhere
+continuous. Number-field determinant lift uses ideal-norm operator and has
+exact prime-ideal excision.
 
 ## Exact determinant package
 
@@ -163,8 +196,8 @@ Since the right side tends to \(e^{-\gamma}\), every cofinal cluster point is
 at least \(e^{-\gamma}\), even if RH is false and the unrestricted finite-set
 infimum \(\Gamma\) is smaller.
 
-**Status:** proof obligation; inspect every step of extremal descent rather
-than cite a stronger statement than published.
+**Status:** proved on paper, including repeated prime-ideal norm ties via
+strictly decreasing reference-index potential.
 
 ### Attack 5: cluster sets may be disconnected
 
@@ -180,8 +213,8 @@ Along a permutation, the inserted primes tend to infinity. On any bounded
 visiting two finite cluster values must accumulate at every intermediate
 value.
 
-**Status:** proof obligation; unbounded excursions require a local crossing
-argument, not a global boundedness assumption.
+**Status:** proved on paper with bounded local crossing argument, including
+infinite endpoint.
 
 ### Attack 6: every interval is realizable
 
@@ -199,9 +232,8 @@ Alternating increasingly accurate downward and upward controls should realize
 every \([\alpha,\beta]\), while forcing inclusion of the least omitted prime at
 each stage.
 
-**Status:** main constructive proof obligation. Need quantitative blocks,
-disjointness, no overshoot, vanishing mesh, and \(\beta=\infty\) treated
-separately.
+**Status:** proved on paper. Finite, infinite, singleton, and \(\{\infty\}\)
+cases separated; every downward stage consumes a least missing atom.
 
 ## Novelty audit
 
@@ -237,20 +269,20 @@ literature around Diamond--Ford.
 
 ## Paper-proof dependency graph
 
-1. Finite-part trace formula for \(Z_P\).
-2. Existence, det2 identity, and Gamma product for \(\Delta_P\).
-3. Exact one-prime excision and cubical coherence.
-4. Hilbert--Schmidt cofinal convergence of \(Q_P\).
-5. Relative extremal lemma for supersets of initial prime segments.
-6. Vanishing local jump lemma on bounded windows.
-7. Localized upward block lemma with quantitative error.
-8. Downward cutoff lemma from arbitrary finite source.
-9. Interval realization construction, finite upper endpoint.
-10. Infinite upper endpoint and singleton cases.
-11. Necessity/classification theorem.
-12. Compact-open determinant cluster theorem.
-13. Relative torsion cocycle and no-descent theorem.
-14. Quillen/Bismut--Freed/Wodzicki comparison with claims sharply separated
+1. [done] Finite-part trace formula for \(Z_P\).
+2. [done] Existence, det2 identity, and Gamma product for \(\Delta_P\).
+3. [done] Exact one-prime excision and cubical coherence.
+4. [done] Hilbert--Schmidt cofinal convergence of \(Q_P\).
+5. [done] Relative extremal lemma for supersets of initial prime segments.
+6. [done] Vanishing local jump lemma on bounded windows.
+7. [done] Localized upward block lemma with quantitative error.
+8. [done] Downward cutoff lemma from arbitrary finite source.
+9. [done] Interval realization construction, finite upper endpoint.
+10. [done] Infinite upper endpoint and singleton cases.
+11. [done] Necessity/classification theorem.
+12. [done] Compact-open determinant cluster theorem.
+13. [done] Relative torsion cocycle and no-descent theorem.
+14. [done] Quillen/Bismut--Freed/Wodzicki comparison with claims sharply separated
     into established general theory and new arithmetic spectral theorem.
 
 ## Lean plan
@@ -305,3 +337,12 @@ and verify every mathlib name in `/tmp` with `lake env lean`.
   classification plus determinant-torsion interpretation.
 - Open core: relative extremal lemma and interval realization with nested
   exhaustive blocks.
+- Rational open core closed. Strengthened theorem covers every number field;
+  Dedekind residue cancels number-field Mertens constant at universal endpoint
+  \(e^{-\gamma}\).
+- Abstract Mertens-system theorem isolated two sufficient asymptotics.
+- Baire audit proves full torsion spectrum is generic, every prescribed
+  interval fibre dense, and spectrum map nowhere continuous.
+- Paper draft compiles and rendered PDF passed full-page visual inspection.
+- Remaining open core: unconditional Lean formalization plus hostile review at
+  renowned-general-journal bar.

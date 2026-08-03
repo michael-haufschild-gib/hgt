@@ -100,12 +100,20 @@ theorem eval_permSum_combination_eq_zero {a : ι → ℂ} {omega : ι → ℝ}
   have hnorm : ∀ s : {s // s ∈ K},
       Summable fun n : Fin M → ι => ‖monomialAmplitude a omega (c s.1) s.1 n‖ :=
     fun s => summable_norm_monomialAmplitude ha (c s.1) s.1
+  have hvan : ∀ t : ℝ, expSeriesCarrier
+      (fun p : Σ _ : {s // s ∈ K}, Fin M → ι => monomialAmplitude a omega (c p.1.1) p.1.1 p.2)
+      (fun p : Σ _ : {s // s ∈ K}, Fin M → ι => tupleFrequency omega p.2) t = 0 :=
+    fun t => expSeriesCarrier_sigma_eq_zero ha c hzero t
+  have hsum : Summable fun p : Σ _ : {s // s ∈ K}, Fin M → ι =>
+      ‖monomialAmplitude a omega (c p.1.1) p.1.1 p.2‖ :=
+    summable_norm_sigma (J := fun _ : {s // s ∈ K} => (Fin M → ι))
+      (b := fun s n => monomialAmplitude a omega (c s.1) s.1 n) hnorm
   have hfib := fiberAmplitude_eq_zero_of_expSeriesCarrier_eq_zero
     (fun p : Σ _ : {s // s ∈ K}, Fin M → ι => monomialAmplitude a omega (c p.1.1) p.1.1 p.2)
     (fun p : Σ _ : {s // s ∈ K}, Fin M → ι => tupleFrequency omega p.2)
-    (summable_norm_sigma hnorm) (expSeriesCarrier_sigma_eq_zero ha c hzero)
-    (tupleFrequency omega i)
-  rw [fiberAmplitude_sigma (fun s : {s // s ∈ K} => monomialAmplitude a omega (c s.1) s.1)
+    hsum hvan (tupleFrequency omega i)
+  rw [fiberAmplitude_sigma (J := fun _ : {s // s ∈ K} => (Fin M → ι))
+    (fun s : {s // s ∈ K} => monomialAmplitude a omega (c s.1) s.1)
     (fun _ : {s // s ∈ K} => tupleFrequency omega) hnorm] at hfib
   have hterm : ∀ s : {s // s ∈ K},
       fiberAmplitude (monomialAmplitude a omega (c s.1) s.1) (tupleFrequency omega)
@@ -126,11 +134,46 @@ theorem eval_permSum_combination_eq_zero {a : ι → ℂ} {omega : ι → ℝ}
       (fun s => (∏ l, a (i l)) *
         MvPolynomial.eval (fun l => Complex.I * (omega (i l) : ℂ)) (c s • permSum s))]
     refine Finset.sum_congr rfl fun s _ => ?_
-    rw [map_smul, smul_eq_mul]
+    rw [MvPolynomial.smul_eval]
     ring
   rw [hsplit] at hfib
   have hprodne : (∏ l, a (i l)) ≠ 0 := Finset.prod_ne_zero_iff.2 fun l _ => hane l
   exact (mul_eq_zero.mp hfib).resolve_left hprodne
+
+/-- **Ostrowski's core: a vanishing monomial combination has vanishing coefficients.**  The
+frequencies being rationally independent and infinitely many amplitudes nonzero, no nonzero finite
+combination of distinct differential monomials of the carrier vanishes identically. -/
+theorem eq_zero_of_monomialCombination_vanishing {a : ι → ℂ} {omega : ι → ℝ}
+    (hom : RationallyIndependentSequence omega) (ha : ExpSeriesNormallySummable a omega)
+    (hinf : {i : ι | a i ≠ 0}.Infinite) {M : ℕ} {K : Finset (Fin M → ℕ)}
+    (hdistinct : ∀ s ∈ K, ∀ s' ∈ K, tupleCount s = tupleCount s' → s = s')
+    (c : (Fin M → ℕ) → ℂ)
+    (hzero : ∀ t : ℝ,
+      ∑ s ∈ K, c s * ∏ j, iteratedDeriv (s j) (cexpSeriesCarrier a omega) (t : ℂ) = 0) :
+    ∀ s ∈ K, c s = 0 := by
+  classical
+  have hmapinj : Function.Injective fun i : ι => Complex.I * (omega i : ℂ) := by
+    intro i j hij
+    have hreal : ((omega i : ℝ) : ℂ) = ((omega j : ℝ) : ℂ) :=
+      mul_left_cancel₀ Complex.I_ne_zero hij
+    exact injective_of_rationallyIndependentSequence hom (by exact_mod_cast hreal)
+  have hSinf : ((fun i : ι => Complex.I * (omega i : ℂ)) '' {i : ι | a i ≠ 0}).Infinite :=
+    hinf.image hmapinj.injOn
+  have hQ : (∑ s ∈ K, c s • permSum s) = 0 := by
+    refine mvPolynomial_eq_zero_of_eval_eq_zero_on_infinite_pow_injective hSinf _ ?_
+    intro x hx hxinj
+    have hchoice : ∀ l : Fin M, ∃ i₀ : ι, a i₀ ≠ 0 ∧ Complex.I * (omega i₀ : ℂ) = x l := by
+      intro l
+      obtain ⟨i₀, hi₀, hval⟩ := hx l
+      exact ⟨i₀, hi₀, hval⟩
+    choose i hi0 hival using hchoice
+    have hiinj : Function.Injective i := by
+      intro l l' hll
+      refine hxinj ?_
+      rw [← hival l, ← hival l', hll]
+    have hkey := eval_permSum_combination_eq_zero hom ha c hzero hiinj hi0
+    rwa [show (fun l => Complex.I * (omega (i l) : ℂ)) = x from funext hival] at hkey
+  exact eq_zero_of_permSum_combination c hdistinct hQ
 
 end
 
