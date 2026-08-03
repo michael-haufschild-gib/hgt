@@ -3953,6 +3953,38 @@ its consumer already proves RH.
 `PrimeSchattenReflectionDuality`, `XiSourceModularTypeSuperselectionLaw`, and
 `GammaSewnMobiusXiWardCofinalBoundaryLift`.
 
+**2026-08-03 joint-depth Hilbert landing correction.** The countable squarefree Fisher reporter
+has now been classified at its actual information boundary.  Every contraction reporter depends
+only on the selected vector's squarefree coordinate projection; in particular every genuine
+valuation-depth coordinate `p^(e+2)` is deleted before the Hardy transform.  Thus no choice of
+operator, including arbitrary rank-one selections, can carry Route R's primitive-depth incidence
+through that reporter.
+
+The positive replacement is constructed on the full `(prime, valuation)` carrier.  The literal
+primitive-promoted amplitude is an `ell^2(Primes x Nat)` vector exactly for positive displacement
+`u > 0`; nonpositive displacement already diverges on the depth-zero prime face.  Every
+prime-power coordinate is nonzero in the positive chamber.  An explicit reciprocal-promotion
+co-source is also `ell^2`, and their Hilbert pairing is exactly the complete von Mangoldt current
+`-zeta'/zeta(1+u)`.  Adding the archimedean logarithmic derivative gives the continued completed Xi
+source trace unconditionally.  This closes joint-depth source construction, its sharp singular
+chamber, and safe source-to-Xi landing without squarefree scalarization.
+
+The correction does not prove RH.  It removes reporter selection and safe landing from the open
+core.  Remaining arrow is singular horizontal arithmetic null-homotopy at the boundary: a
+source-derived, reflection-compatible packet observation must annihilate the actual Green defect
+before the now-proved squarefree quotient or any other scalar consumer.  Formal anchors:
+`EulerPrimitiveJointDepthHilbertSource`, `MobiusCriticalFisherReporterRankOneReduction`, and
+`MobiusGammaXiSingularGraphNormalLanding`.
+
+**2026-08-03 weighted-Euler rate-barrier correction.**  The previously recorded
+prime-log oversampling/carrier-elimination implication has no nonempty positive-strip instance.
+Its strip hypotheses give `alpha <= beta`, while its separation hypothesis requires
+`beta < min(sigma, alpha/2) <= alpha/2 < alpha`.  Therefore it cannot furnish Route R's
+arithmetic annihilator.  The exact obstruction is formalized by
+`not_beta_lt_min_sigma_half_alpha_of_nonempty_positiveStrip`; the card has been retired to
+Stage 5.  A viable sampling replacement would need source-derived decay strictly beyond the
+upper carrier wall, not the present lower-wall half-rate.
+
 **Antagonist boundary.**  The primitive--fibre identities are elementary once the correct three
 source levels have been separated.  Their cross-factorization alone is only frontier
 localization: it gives no zero exclusion, new zero-free region, or one-sided Ward/Weil sign.
@@ -6430,4 +6462,1411 @@ DeningerMeyerGaussianGreenPrimitive.lean
 DeningerMeyerXiGaussianSingularPoissonLift.lean
 DeningerMeyerXiGaussianGammaResidue.lean
 DeningerMeyerMobiusGaussianNeumannSource.lean
+```
+
+## 2026-08-03 Route L frontier update: unweighted residue nonadmission and forced horizon grade
+
+The updated Hellinger--Hodge--Green descent paper moves the shared frontier to polarized singular
+completion. Route L now contributes a Deninger-specific obstruction at exactly that point.
+
+At fixed source-safe centre `c = 2`, let `R(q)` be the actual completed Xi/Green residue on each
+Xi divisor-multiplicity copy and `W(q)` its coefficient-faithful analytic inverse:
+
+```text
+R(q) = -2*pi*archFactor(rho_q)/(chi_2(rho_q)*(rho_q-2)),
+W(q) = -chi_2(rho_q)*(rho_q-2)/(2*pi*archFactor(rho_q)).
+```
+
+The new formal theorem proves the cofinal laws
+
+```text
+W(q)*R(q) = 1,
+W(q) -> 0,
+norm(R(q)) -> +infinity,
+not Summable (fun q => norm(R(q))^2).
+```
+
+Therefore the source Green primitive does not land in raw unweighted `l2` incidence. The existing
+completed Xi-to-incidence isometry is downstream infrastructure; it cannot establish admission of
+this actual source packet because that admission is false.
+
+The obstruction has an exact positive survivor. Every source-faithful diagonal admission splits as
+
+```text
+d(q) = h(q)*W(q),
+d(q)*R(q) = h(q),
+weighted residue is l2 <-> h is l2.
+```
+
+`W` is uniquely forced by the analytic source residue. The remaining factor `h` is an independent
+source-horizon grade. Setting `h=1` leaves the constant packet and still fails `l2` on the infinite
+Xi divisor.
+
+Route L's hard frontier is now exact:
+
+```text
+Construct h before Xi-divisor restriction from the literal ordinary-prime/Gamma/co-Poisson source;
+prove h is square-summable; prove the h*W weighted incidence sector is conservative before
+codiagonal augmentation; prove the required Hermitian Gram domination.
+```
+
+This rules out arbitrary rapidly decaying weights, divisor-indexed norm pullbacks, and generic
+Mittag--Leffler interpolation as closure arguments: each can manufacture summability but none
+derives the missing source grade.
+
+Paper proof:
+`deninger-meyer-gaussian-residue-incidence-nonadmission.md`.
+
+Lean:
+
+```text
+DeningerMeyerXiGaussianResidueNonadmission.lean
+```
+
+## 2026-08-03 Route L frontier update: source grade and resolved incidence are closed
+
+The fixed reflected Meyer Gaussian now supplies the independent grade forced by residue
+nonadmission:
+
+```text
+h(q) = Mellin(g_ref)(rho_q)
+     = xiGaussianHeatTerm(1/(4*pi),q),
+sum_q |h(q)|^2 < infinity.
+```
+
+This is a pre-divisor source construction, not a divisor-indexed damping choice. The singular
+residue weight `hW` produces exactly `h`, hence an honest completed Xi vector. Its image in actual
+cross-prime Calderon--Witt incidence has nonzero decoded value `h(r) w_pq` at every divisor copy.
+
+Resolved Hellinger--Gamma provenance retains the packet at every displacement: the quotient source
+map has a descended left inverse. The associated unsquared defect is a nonzero antidiagonal even
+though its codiagonal vanishes. Thus direct Green covariance remains blind, while the resolved
+packet is coefficient-faithful and conservative.
+
+Route L no longer lacks a horizon grade or resolved incidence completion. Remaining hard frontier:
+
+```text
+actual source-graded singular range = actual global Deninger Green resolved range,
+followed by source-derived Hermitian Gram domination on that range.
+```
+
+Formalized in:
+
+```text
+DeningerMeyerReflectedGaussianHorizonAdmission.lean
+DeningerMeyerReflectedGaussianResolvedAdmission.lean
+```
+
+## 2026-08-03 Deninger compact-source range wall
+
+Route L now has an exact range classification, not an aspirational Green-range comparison:
+
+```text
+range(current compact-source Green)
+  = finite-support Xi vectors,
+reflected-Gaussian admitted vector
+  in closure(range) \ range.
+```
+
+The classification transports through completed Calderon--Witt incidence and through the
+split-injective resolved Hellinger--Gamma provenance source.  Thus present compact dual cannot
+contain the requested Green primitive.  This is a source-topology obstruction, not failure of the
+horizon grade, residue normalization, incidence landing, or resolved quotient.
+
+Updated Route-L frontier, aligned with the revised Hellinger--Hodge--Green paper:
+
+```text
+nonlocal completion of finite compact-source dual
+  -> continuous completed Green extension containing reflected-Gaussian primitive
+  -> exact compatible-range intertwiner with closed adaptive prime-normal source range
+  -> source-derived Hermitian Gram domination.
+```
+
+The first two arrows are forced functional-analytic infrastructure; exact prime--divisor range
+identification is first remaining arithmetic knowledge gap.  Reasserting membership in current
+compact Green range is now formally disproved.
+
+Lean:
+
+```text
+DeningerMeyerReflectedGaussianGreenRangeWall.lean
+```
+
+## 2026-08-03 Deninger Hilbert completion and primitive are closed
+
+Canonical source-jet Hilbert middle now carries unique isometric extension of finite oriented Green
+reflection:
+
+```text
+Ghat(a)(q) = epsilon(q) a(Rq),
+Ghat^2 = -1,
+Ghat(-Ghat(h_ref)) = h_ref.
+```
+
+Extension agrees with current compact-source Green map on dense embedded compact source and is
+uniquely forced by finite jets.  Its explicit reflected-Gaussian primitive maps to actual
+Calderon--Witt incidence and resolved Hellinger--Gamma class.
+
+Route L no longer lacks completion or Green primitive.  First open scientific edge is exact
+arithmetic range identification between compatible completed Green/provenance sector and closed
+adaptive prime-normal source range.  After that comes Hermitian Gram domination.  Another ambient
+completion, another arbitrary grade, or Green surjectivity is no progress on this edge.
+
+Lean:
+
+```text
+DeningerMeyerReflectedGaussianCompletedSourceGreen.lean
+```
+
+## 2026-08-03 Route J frontier update: exact adaptive horizon graph and Hilbert no-go
+
+Latest Hellinger--Hodge--Green range target has now been tested at its actual Banach geometry.
+An infinite `ell^1` source admits no bounded-below linear map into any complex inner-product
+space.  Quantitatively, every finite label set of size `n` has a signed unit packet with source norm
+`n` and Hilbert image energy at most `n||T||^2`.  Therefore the adaptive codiagonal's `3/4` lower
+modulus cannot survive a bounded comparison with the completed Xi/Green Hilbert carrier.  Literal
+stable-range equality in the Hilbert norm is closed.
+
+Positive survivor is constructed rather than reassigned.  At each actual divisor copy, exact
+augmentation of a divisor-adapted prime-normal codiagonal equals the complete residual multiplier
+and has prime-column modulus in `[3/4,5/4]`.  The fixed reflected-Gaussian horizon grade assembles
+these readers into
+
+```text
+T_hor: ell^1(primes) -> ell^2(Div Xi),
+(T_hor x)(q)=A_q(x)h_ref(q).
+```
+
+Every prime column is pointwise nonzero.  Its completed Green provenance, Calderon--Witt incidence,
+and resolved Hellinger--Gamma class are all explicit, and that class is zero exactly under RH.
+The stable carrier is the closed non-Hilbert provenance graph `(x,T_hor x)`, with lower modulus one
+and uniform upper capacity; Hilbert projection is provably not bounded below.
+
+For each fixed prime label `p`, the exact residual multiplier field is nevertheless bounded above
+by `5/4` and below by `3/4` at every divisor copy.  It defines a bounded automorphism of the entire
+completed divisor Hilbert carrier, inverse bound `4/3`, and sends `h_ref` exactly to the adaptive
+column.  Hence fixed-label compatible-range identification is closed unconditionally.  No-go is
+specifically simultaneous stable recovery of the whole infinite `ell^1` source.
+
+Route J remains open.  First missing scientific theorem is now sharply typed: construct the
+source-selected closed-graph/compatibility relation forcing the Green fracture of one adaptive
+prime column to vanish.  This must follow from prime-power source differential and Hodge
+compatibility; assuming class vanishing, bounded Hilbert recovery, or full-range identification is
+respectively RH itself or formally impossible.
+
+Lean:
+
+```text
+MobiusThetaAdaptivePrimeNormalHilbertNoGo.lean
+MobiusThetaAdaptivePrimeNormalHorizonIntertwiner.lean
+```
+
+## 2026-08-03 Route J frontier update: reflected full-source Green transport
+
+Updated Hellinger--Hodge--Green paper's common-test problem `(7.17c)` now has
+an explicit canonical comparison.  Scalar Green line maps into actual closed
+adaptive resolved sector, and comparison is faithful.  Exact codiagonal law
+is multiplication by nonzero adaptive source column, so its vanishing is
+equivalent to local critical-line statement.  Landing and faithfulness are
+closed; arithmetic codiagonal vanishing is sole RH-bearing clause.
+
+Functional-equation reflection exposed one remaining construction defect in
+unsymmetrized divisor-adapted depths.  It is closed at full source level by
+averaging exact adaptive tail operators at `q` and `Rq` before augmentation.
+Resulting reflected codiagonal remains `3/4`-lower, its resolved head--tail
+range is closed and codiagonal-conservative, and every fixed-prime augmented
+reader lies in radius `1/4` around `-1`.
+
+Reflected reader defines divisor-Hilbert automorphism with capacities
+`3/4`, `5/4`, inverse bound `4/3`.  Because reader is reflection-even,
+automorphism commutes exactly with completed source Green and physical
+harmonic Hodge operators.  Literal prime--Gamma Cauchy boundary transports to
+reflected adaptive horizon; oriented boundary transports to exact completed
+Green primitive.  Green provenance remains zero exactly under RH.
+
+First missing knowledge is now strictly smaller:
+
+```text
+derive from ordinary-prime/Gamma/co-Poisson source differential
+that explicit reflected resolved comparison has zero codiagonal.
+```
+
+Primitive existence, Green commutation, harmonic preservation, uniform
+capacity, closed source sector, and coefficient faithfulness are all
+unconditional and formally insufficient by themselves: for actual comparison,
+codiagonal zero is exactly `Re(rho)=1/2`.
+
+Lean:
+
+```text
+MobiusThetaAdaptivePrimeNormalGreenResolvedLineComparison.lean
+MobiusThetaAdaptivePrimeNormalReflectedGreenSource.lean
+```
+
+Global completion of reflected common-test lines is also closed.  For each
+fixed prime, local resolved unit sources have exact norm one, giving an
+isometric embedding from Xi divisor `ell^2` into `ell^2` field of resolved
+arithmetic `ell^1` sources.  Fiberwise codiagonal is globally bounded above
+by `5/4` and below by `3/4`.  Hence global range is closed, global observation
+is injective, and its value on actual Green provenance vanishes exactly under
+RH.  Pointwise-to-global assembly introduces no radical or summability loss.
+
+Lean:
+
+```text
+MobiusThetaAdaptivePrimeNormalGlobalReflectedComparison.lean
+```
+
+## 2026-08-03 Route L frontier update: adaptive/Gamma common Green boundary
+
+The Deninger route now contributes more than an abstract Hilbert primitive.  Physical harmonic
+orientation and the literal two-line prime--Gamma Cauchy source obey the pointwise source law
+
+```text
+B_x(Rq) = B_(-x)(q),
+Ghat(i W B_x) = B_(-x).
+```
+
+For every fixed ordinary-prime label, honest cofinal adaptive prime-normal columns `H_K(p)` satisfy
+
+```text
+-i W H_K(p) -> e_ref,
+Ghat(-i W H_K(p))(q) = -H_K(p)(Rq).
+```
+
+The actual completed Green provenance is now an explicit bounded operator
+
+```text
+D_G = -M_kappa o Ghat.
+```
+
+Applying it before completion gives the stronger common-boundary identity
+
+```text
+integral_R D_G(B_x) dx = g_G = lim_K (-D_G(H_K(p))).
+```
+
+Thus Route L and the adaptive prime-normal route meet on the actual global RH detector, not merely
+on its Gaussian input.  Deninger's unique role is source-frequency Green transport and the
+Bochner-integrable Gamma/Cauchy realization; adaptive source retains the ordinary-prime label at
+every finite depth.
+
+This does not close RH.  Pointwise Green covariance of the full symmetric Cauchy field is automatic
+parameter reversal, hence carries no purity selection by itself.  Likewise the canonical scalar
+line embedding into one adaptive resolved sector has codiagonal zero exactly when its Green scalar
+is already zero.  Exact remaining scientific theorem is the revised paper's source-pointed
+common-test factorization: the now-common `g_G` boundary must acquire one or several routewise
+conservative records whose boundary observations vanish for source-arithmetic reasons and whose
+joint record reflects zero before Hilbert polarization.  Restating that vanishing as an
+RH-equivalent predicate is not progress.
+
+Lean:
+
+```text
+DeningerMeyerAdaptiveHarmonicGreenBoundary.lean
+MobiusThetaAdaptiveInfiniteDepthGaussianBoundary.lean
+```
+
+## 55. Route J double-odd reflection obstruction
+
+Updated observation-order descent theorem does not annihilate actual
+reflected adaptive Green record. Its odd-target premise fails exactly.
+Reflected adaptive horizon is reflection-fixed, while completed Green
+provenance contains two reflection-odd factors: boundary fracture `kappa`
+and oriented Hodge sign `epsilon`. Their product is even:
+
+```text
+kappa(Rq) = -kappa(q),
+epsilon(Rq) = -epsilon(q),
+h_p(Rq) = h_p(q),
+g_p(Rq) = g_p(q).
+```
+
+Reflection also fixes averaged tail operator, resolved source unit,
+assembled global source record, and its `3/4`-lower codiagonal. Therefore
+antisymmetrization kills only reflection difference, which is already zero;
+it does not kill Green record itself.
+
+Obstruction is sharp and unconditional:
+
+```text
+(forall q, g_p(Rq) = -g_p(q)) <-> RH,
+(forall q, C_p(g_p)(Rq) = -C_p(g_p)(q)) <-> RH.
+```
+
+Any proof inserting reflection-oddness here has assumed RH-equivalent
+annihilation it was meant to derive. This closes reflection-quotient
+candidate, but not Route J. Remaining frontier is paper's transverse
+arithmetic annihilator `(7.17i)`: source-derived, off-diagonal packet/cycle
+differential that annihilates actual even resolved record and whose joint
+kernel meets closed common-test sector only at zero.
+
+Lean:
+
+```text
+MobiusThetaAdaptivePrimeNormalGreenParityObstruction.lean
+```
+
+## 56. Route J global countertransport capacity separation
+
+Cofinal depth-nonlocal reflected Gaussian countertransport now has a literal
+global Xi realization. At every fixed depth,
+
+```text
+H_c(q) = (exp(c(rho_q-1/2)) + exp(-c(rho_q-1/2))) h_ref(q)
+```
+
+belongs to `ell^2(Div Xi)`, is reflection-even, and is exactly evaluation of
+the source cohomology countertransport class. Source capacity is uniformly at
+most two, independently of depth.
+
+Uniform global Hilbert capacity has an exact phase law:
+
+```text
+sup_c ||H_c||_ell2 < infinity <-> RH.
+```
+
+Under failure of RH, these norms exceed every finite ceiling. Applying the
+fixed-prime global resolved comparison preserves norms exactly; applying the
+global codiagonal changes them only by explicit factors between `3/4` and
+`5/4`. Therefore both resolved-record capacity and observed-codiagonal
+capacity are uniformly bounded exactly under RH.
+
+This rules out a global-completion loophole in the requested
+countertransport. Reflected Hodge preservation and uniform source capacity
+are unconditional, but continuity into the completed divisor/common-test
+carrier is precisely the RH-bearing statement. Remaining Route J frontier is
+still `(7.17i)`: an arithmetic off-diagonal differential annihilating actual
+record, not another capacity-bounded comparison.
+
+Lean:
+
+```text
+DeningerMeyerReflectedGaussianCountertransportXiCapacity.lean
+```
+
+## 57. Route J weighted global evaluation criterion
+
+Forced reflected Gaussian horizon upgrades pointwise continuity question to
+one canonical operator problem. Let `E_rho` be zeroth Xi evaluation on literal
+Meyer cohomology and `h_ref` source-derived square-summable horizon. Define
+weighted coordinate prescription
+
+```text
+(E_h u)(q) = E_(rho_q)(u) h_ref(q).
+```
+
+There exists a continuous linear extension
+
+```text
+E_h : half-density completion -> ell^2(Div Xi)
+```
+
+agreeing with this prescription on every literal class if and only if RH.
+Critical-line contractivity proves sufficiency with operator bound
+`||h_ref||_2`. Necessity is witnessed by reflected Gaussian
+countertransport: source norms remain at most two; boundedness of `E_h`,
+coordinate evaluation, and nonvanishing of `h_ref(q)` force every actual Xi
+evaluation orbit to be bounded, hence every divisor point lies on line.
+
+This makes global source-to-divisor continuity an exact RH-equivalent gate.
+It cannot be supplied by completion, horizon grading, reflection symmetry, or
+uniform source capacity alone. Route J remains open until source arithmetic
+proves this operator exists—or constructs a genuinely different transverse
+annihilator satisfying `(7.17i)`.
+
+Lean:
+
+```text
+DeningerMeyerHalfDensityGaussianXiEvaluationCriterion.lean
+```
+
+## 58. Route J arbitrary weighted descent rigidity
+
+Global weighted evaluation admits a class-complete diagonal classification.
+For arbitrary `w in ell^2(Div Xi)`, let
+
+```text
+(E_w u)(q)=Eval_(rho_q)(u) w(q).
+```
+
+Then
+
+```text
+E_w extends continuously through half-density completion
+<-> support(w) is contained in critical-line divisor copies.
+```
+
+Proof is two-sided. Critical retained coordinates give a Bessel bound
+`||E_w u||_2 <= ||w||_2 p_half(u)`. Any retained off-line coordinate sees
+the capacity-two reflected Gaussian countertransport escape; bounded global
+descent would bound that coordinate after division by nonzero `w(q)`, a
+contradiction.
+
+Consequently every pointwise nonzero `ell^2` horizon gives weighted descent
+exactly under RH. Rapid decay does not help. Vanishing precisely at off-line
+divisor copies does help analytically, but is target-selected and loses
+conservativity, so it cannot be a source proof. This eliminates entire
+diagonal-weighting strategy class and confirms paper's frontier: surviving
+annihilator must retain off-diagonal packet/cycle provenance.
+
+Lean:
+
+```text
+DeningerMeyerHalfDensityWeightedXiEvaluationRigidity.lean
+```
+
+## 59. Route L resolved-provenance quotient rigidity
+
+The updated Hellinger--Hodge--Green descent paper leaves open whether the
+resolved Hellinger--Gamma coface span might carry an off-axis mixed Hodge
+channel capable of annihilating the completed Xi Green class.  It does not.
+For displacement `a != 0`, the closed span of resolved adjacent cofaces is
+exactly the kernel of provenance projection:
+
+```text
+C_tilde(a) = ker(P) = (H + H) + 0.
+```
+
+Hence provenance projection induces a canonical linear equivalence
+
+```text
+((H + H) + H) / C_tilde(a)  ~=  H,
+```
+
+whose inverse sends `x` to the quotient class of `((0,0),x)`.  At the
+singular displacement `a = 0`, the closed span is instead exactly the
+diagonal Hodge submodule `Delta_H + 0`.  Both phase laws are unconditional.
+
+This is a positive classification, not an annihilation theorem.  It removes
+the last Hodge-sector escape: away from the singular phase, every operator on
+the resolved coface quotient is necessarily an operator on completed
+Calderón--Witt incidence provenance.  Another Hellinger coface, parity grade,
+or scalar trace therefore cannot close Route L.
+
+Remaining hard frontier is now source-typed: construct an arithmetic,
+packet-valued differential on completed incidence provenance, retaining
+ordinary-prime and Tate--Milnor grade data, and prove that it annihilates the
+actual completed Xi Green provenance.  Conservativity of that differential's
+kernel is the subsequent RH-closing gate.
+
+Paper proof:
+
+```text
+docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/deninger/
+deninger-resolved-provenance-off-axis-quotient-rigidity.md
+```
+
+Lean:
+
+```text
+DeningerCompletedXiHellingerGammaResolvedProvenanceSaturation.lean
+```
+
+## 60. Route L all-cross-prime incidence Koszul exactness
+
+The fixed-pair completed Calderón--Witt comparison is coefficient-faithful,
+but every divisor coordinate multiplies one fixed Milnor-incidence witness.
+It is therefore a rank-one packet line, not yet the genuinely off-diagonal
+all-prime carrier required by `(7.17i)`.
+
+Let `I={(p,q): p and q prime, p != q}` and choose the canonical normalized
+full-support horizon
+
+```text
+eta(i) = c * 2^(-encode(i)),   eta(i) != 0,   ||eta||_2 = 1.
+```
+
+The simultaneous completed incidence carrier and comparison are
+
+```text
+P_CW = ell2(Div Xi; ell2(I)),
+(Phi_CW x)(r)(i) = x(r) eta(i).
+```
+
+Every coordinate decodes to the actual ordered Calderón--Witt source value
+`x(r) eta(i) w_i`, so every cross-prime Milnor witness survives.  `Phi_CW`
+is an isometry with closed range.
+
+Fix the base pair `i0=(2,3)` and define the packet Koszul differential
+
+```text
+(partial_eta z)(i) = eta(i0) z(i) - eta(i) z(i0).
+```
+
+Its fibrewise completion `Delta_eta` satisfies the exact laws
+
+```text
+Delta_eta Phi_CW = 0,
+ker(partial_eta) = C eta,
+ker(Delta_eta) = range(Phi_CW).
+```
+
+This supplies an unconditional, genuinely packet-valued differential that
+annihilates the completed Xi Green comparison.  Exactness also prevents a
+false closure claim: packet compatibility removes every transverse
+cross-prime variation but leaves the entire scalar Xi coefficient as
+residual cohomology.  Consequently no observation generated only by these
+pair-compatibility relations is conservative on `range(Phi_CW)`.
+
+Route L's remaining hard object is now smaller: construct an additional
+arithmetic differential on the residual line `C eta`, retaining
+Tate--Milnor/source orientation, prove source-derived annihilation of the
+actual Green coefficient, and prove zero kernel on that residual Green
+sector.  This is the irreducible `(7.17i)` selection gate.
+
+Paper proof:
+
+```text
+docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/deninger/
+deninger-all-cross-prime-incidence-koszul-exactness.md
+```
+
+Lean:
+
+```text
+DeningerCalderonWittAllCrossPrimeIncidenceKoszul.lean
+```
+
+## 61. Route J source-native third odd grade
+
+The reflection-parity gap identified by Hellinger--Hodge--Green audit is now
+closed at source level.  Antisymmetric centered flow of fixed reflected Meyer
+Gaussian,
+
+```text
+A_c = V_c h_ref - V_(-c) h_ref,
+```
+
+is reflection-anti-fixed and has source/cohomology half-density capacity at
+most two uniformly over all real depths.  Its Mellin multiplier is
+
+```text
+exp(c(s-1/2)) - exp(-c(s-1/2)).
+```
+
+At every nonzero depth this is nonzero on each off-critical Xi divisor copy.
+Unit-depth evaluations form an actual odd `ell^2(Div Xi)` field.  Product
+with reflection-even adaptive Green record is odd and retains exactly Green
+zero set.  Source construction, uniform capacity, global landing, oddness,
+and support faithfulness required by paper `(7.17hb)`--`(7.17hd)` are
+therefore unconditional.
+
+Only `(7.17he)` remains: source-derived factorization of this explicit odd
+product through reflection-invariant arithmetic observation.  Such
+factorization immediately implies RH, so it cannot be inserted as formal
+compatibility.  Route J stays open.
+
+Lean:
+
+```text
+DeningerMeyerAntiReflectedGaussianOddMultiplier.lean
+```
+
+## 62. Route J Gaussian even--odd cohomology Wronskian
+
+A genuinely off-diagonal source packet now couples Meyer cohomology to
+actual Green fracture.  Fixed source pair is
+
+```text
+h(t)=exp(-t/2)exp(-pi t^2),
+m(t)=t h(t)=-(h'(t)+h(t)/2)/(2*pi).
+```
+
+All-weight derivative closure proves `m` is an honest Meyer source.  Classes
+`[h]` and `[m]` are respectively Paugam-reflection fixed and anti-fixed.
+Zeroth evaluation of `[m]` equals first Mellin jet of `h`, so construction
+uses only quotient-descended zeroth Xi evaluations even at simple zeros.
+
+For `q#=1-conj(q)`, exterior determinant
+
+```text
+W(q)=Eval_q([m])Eval_q#([h])-Eval_q([h])Eval_q#([m])
+```
+
+satisfies
+
+```text
+W(q)=2 Re(Eval_q([m]) conj(Eval_q([h])))
+    =kappa(q)|Eval_q([h])|^2/(2*pi).
+```
+
+Gaussian Hermitian factor is strictly positive.  Consequently Wronskian
+retains exact sign and zero set of Green displacement.  With nonzero actual
+adaptive Riesz--Hodge factor `K_p`, division-free comparison is
+
+```text
+W(q)K_p(q)=Green_p(q)|Eval_q([h])|^2/(2*pi).
+```
+
+Global Wronskian field belongs to `ell^2(Div Xi)`, is coordinatewise literal
+two-class cohomology determinant, and vanishes exactly under RH.
+
+This removes source/Green coupling gap and isolates exact surviving theorem:
+derive from ordinary-prime/Gamma/co-Poisson source relations an arithmetic
+boundary annihilating this explicit even--odd exterior packet, or its
+factorization through line-reflection-invariant observation.  Existing
+all-cross-prime packet Koszul exactness annihilates only transverse packet
+variation and leaves this scalar orientation line, so it is not enough.
+Route J remains open while this arithmetic incidence conjecture survives.
+
+Paper proof:
+
+```text
+docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/deninger/
+deninger-meyer-gaussian-cohomology-wronskian-green-comparison.md
+```
+
+Lean:
+
+```text
+DeningerMeyerGaussianLineWronskianGreenComparison.lean
+```
+
+## 63. Route L ordered Calderón--Witt witness separation
+
+Hostile audit of the all-cross-prime packet leaves one possible theatre
+failure: distinct packet labels could represent dependent or duplicated
+Milnor-incidence sources.  This is now excluded by an exact source theorem.
+For every ordered distinct-prime pairs `i=(p,q)` and `j=(r,s)`, the actual
+normalized Gamma--modular coordinate and actual Calderón--Witt witness obey
+
+```text
+lambda_i(w_j) = 1  if i=j,
+lambda_i(w_j) = 0  if i!=j.
+```
+
+In particular `lambda_(p,q)(w_(q,p))=0`: orientation reversal is not a
+duplicate label.  Therefore finite source realization
+
+```text
+W(a) = sum_i a(i) w_i
+```
+
+has coordinate left inverse `lambda_i(W(a))=a(i)`, is injective, and the
+entire actual ordered cross-prime witness family is linearly independent.
+The simultaneous packet direction is thus forced by source arithmetic, not
+manufactured by the Hilbert carrier.
+
+This sharpens, but does not remove, Route L's residual obstruction.  Packet
+Koszul cohomology is still the scalar line `C eta` over every Xi-divisor
+coordinate.  Cross-prime incidence has now exhausted all transverse source
+information available from these degree-two witnesses.  The remaining
+differential must use source orientation not visible to their normalized
+coordinate matrix—Tate--Milnor/Gamma/co-Poisson boundary data acting on the
+residual coefficient—and must be both source-annihilating and conservative
+on the actual completed Green range.  That remains the RH-bearing theorem.
+
+Lean capstones:
+
+```text
+deningerCalderonWittCrossPrimePacketCoordinate_witness
+deningerCalderonWittCrossPrimePacketCoordinate_sourceRealization
+deningerCalderonWittCrossPrimeAlgebraicSourceRealization_injective
+deningerCalderonWittCrossPrimeGammaWitness_linearIndependent
+```
+
+Paper proof remains in the strengthened all-cross-prime exactness card.
+
+## 64. Route L arithmetic source completion and boundary-extension no-go
+
+The ordered-pair packet now has a concrete source completion.  If `w_i` is
+the actual Calderón--Witt witness and `lambda_i` its normalized
+Gamma--modular coordinate, then `lambda_i(w_j)=delta_ij`.  Therefore
+
+```text
+c00(I)  ~=  span{w_i : i in I}
+```
+
+canonically, and coefficient realization of this actual witness span in
+`ell2(I)` is injective with dense range.  The simultaneous packet Hilbert
+space is thus a genuine completion presentation of the arithmetic witness
+span; no dependent label or ambient-topology shortcut remains.
+
+This construction exposes a sharp no-go for the apparent Deninger next
+step.  Existing all-prime oriented source boundary `d1` has exact kernel the
+Milnor-incidence space.  Hence it vanishes on the entire actual cross-prime
+source span.  Since that span is dense in the packet completion, every
+continuous operator on `ell2(I)` agreeing there with any linear observation
+of `d1` is identically zero.
+
+Consequently Deninger's top orientation line cannot be reused as a
+continuous residual packet differential.  That would be zero and maximally
+nonconservative.  Unique remaining Deninger object is now more narrowly
+typed: a **horizontal relative transgression** coupling Xi divisor/reflection
+fibres and not equal on the dense arithmetic core to the vertical algebraic
+oriented boundary.  Its arithmetic source identity must kill the actual
+completed Green primitive, while its joint observation must be conservative
+on the residual Xi coefficient line.  Constructing this new transgression,
+not extending `d1`, is the Route-L RH gate.
+
+Paper proof:
+
+```text
+docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/deninger/
+deninger-cross-prime-arithmetic-source-completion.md
+```
+
+Lean:
+
+```text
+DeningerCalderonWittAllCrossPrimeArithmeticSourceCompletion.lean
+```
+
+## 64. Route J universal involutive defect and horizontal null-homotopy
+
+Updated Hellinger--Hodge--Green synthesis identifies the exact parent object
+behind Gaussian projective curvature.  For line reflection `tau(q)=q#` and
+the fixed-source logarithmic jet
+
+```text
+r_G(q)=Eval_q([m])/Eval_q([h]),
+```
+
+one has unconditionally
+
+```text
+r_G(q)=(rho_q-1/2)/(2*pi),
+delta_tau r_G(q)=(Re(rho_q)-1/2)/pi,
+W(q)=Eval_q([h])Eval_q#([h]) delta_tau r_G(q).
+```
+
+The endpoint gauge is nowhere zero.  Thus zero of the universal reflection
+defect, zero of the cohomological Wronskian, zero of the completed Green
+fracture, and the critical-line equation are identical pointwise statements.
+The general involutive coequalizer sequence is split exact, and the Gaussian
+logarithmic jet factors through the maximal reflection-orbit observation iff
+RH.  These statements are now formalized unconditionally.
+
+Exact surviving Route J theorem is no longer an unspecified arithmetic
+incidence law: construct from ordinary-prime/Gamma/co-Poisson source data a
+horizontal arithmetic null-homotopy of `delta_tau r_G`, or equivalently a
+source-derived reflection-invariant all-prime observation through which
+`r_G` factors.  Vertical divisor faithfulness and fibrewise packet exactness
+do not identify residual rays across `q` and `q#`.  Route J stays open.
+
+Lean:
+
+```text
+GaloisForLFunctions/HTGeometry/InvolutiveDescentExactSequenceLaw.lean
+GaloisForLFunctions/RHTower/RiemannGaussianProjectiveDescentLaw.lean
+```
+
+## 65. Route J pair-groupoid bidescent and exact vertical-gluing no-go
+
+Universal defect extends from involution edges to every ordered pair:
+
+```text
+D_f(x,y)=f(x)-f(y).
+```
+
+It is an additive pair-groupoid cocycle, vanishes on an equivalence relation
+iff `f` factors through its quotient, and obeys the exact point-dependent
+connection law.  For a field with vertical source/divisor and horizontal
+reflection directions, the two differences commute.  Hence exact vertical
+gluing at both horizontal endpoints conserves an arbitrary horizontal
+defect.  A separate horizontal anchor is necessary to force vanishing.
+
+Actual Hedenmalm causal and anti-causal Volterra primitives realize the
+vertical edge exactly:
+
+```text
+C_alpha(x)-A_alpha(x)=-i exp(-i alpha x) XiC(alpha),
+forall x, C_alpha(x)=A_alpha(x) <-> XiC(alpha)=0.
+```
+
+Therefore two-ended coincidence closes divisor gluing precisely at a Xi
+zero but cannot annihilate `delta_tau r_G`; it transports that class across
+the vertical square.  This formally excludes another apparent closure and
+leaves same hard frontier: construct a source-derived all-prime horizontal
+arithmetic anchor/null-homotopy.  Route J remains open.
+
+Lean:
+
+```text
+GaloisForLFunctions/HTGeometry/PairGroupoidBidescentLaw.lean
+GaloisForLFunctions/RHTower/HedenmalmTwoEndedVolterraDefect.lean
+```
+
+## 66. Route J all-cross-prime inverse-horizon normalization wall
+
+Residual ray left by all-cross-prime Koszul exactness now has a concrete
+source realization.  On unit full-support Calderón--Witt packet horizon
+`eta`, two fixed Gaussian source jets define division-free packet Wronskian
+
+```text
+Omega_packet(q)=Omega_G(q) eta.
+```
+
+This packet is an exact vertical Koszul cycle for every divisor copy and has
+weighted norm exactly `|Omega_G(q)|`; it is nonzero precisely off critical
+line.  Weighted all-prime completion therefore preserves horizontal
+obstruction.
+
+Coefficientwise inverse-horizon normalization exposes residual scalar on
+every ordered cross-prime coordinate.  Since index is infinite, normalized
+constant packet is square-summable iff scalar is zero:
+
+```text
+unweightedNormalizable(c eta) <-> c=0,
+unweightedNormalizable(Omega_packet(q)) <-> Re(rho_q)=1/2.
+```
+
+Old oriented boundary supplies no alternative: actual arithmetic witness
+span is dense and boundary vanishes there, so every continuous extension
+kills `Omega_packet(q)` identically, including off line.  This closes exact
+weighted-completion/old-boundary candidate class.
+
+Universal Gaussian defect is concrete shell-source entropy coordinate
+
+```text
+delta_tau r_G(q)=-riemannReflectedSourceEntropy(rho_q)/(2*pi).
+```
+
+Remaining theorem is source admission of this concrete packet into
+inverse-horizon domain, or construction of genuinely relative horizontal
+transgression nonzero on dense arithmetic core.  Global admission is
+equivalent to RH and is not assumed.  Route J remains open.
+
+Lean:
+
+```text
+GaloisForLFunctions/RHTower/
+DeningerCalderonWittGaussianHorizontalNormalization.lean
+```
+
+Complete diagonal-weight classification strengthens wall:
+
+```text
+weightedNormalizable_w(c eta) <-> c=0 or Summable(w).
+```
+
+Summable weights admit every residual scalar and have no selecting content.
+Nonsummable weights admit only zero, so claiming admission is already
+critical-line theorem.  Diagonal topology repair class is closed; viable
+horizontal transgression must be genuinely off-diagonal or supply new
+source admission into a nonsummable inverse-horizon domain.
+
+## 67. Route L actual Gamma--Green positive-gauge admission
+
+The updated Hellinger--Hodge--Green paper asks for a transverse arithmetic
+observation whose joint kernel is conservative and whose value on actual
+Green provenance vanishes for a source reason.  Deninger's actual
+Gamma/co-Poisson boundary now supplies the first clause on the genuine
+all-cross-prime completion, but a new signed comparison proves it cannot
+supply the second clause by positivity.
+
+At canonical ordered Calderón--Witt witness `(2,3)`, actual Gamma reflection
+defect has exact form
+
+```text
+Gamma_23(a) = A_23 sinh(a R_23),
+A_23 < 0,
+R_23 < 0.
+```
+
+Its derivative-filled quotient
+
+```text
+g_Gamma(0) = A_23 R_23,
+g_Gamma(a) = A_23 sinh(a R_23)/a  (a != 0)
+```
+
+is strictly positive for every real `a`.  Therefore, on every actual Xi
+divisor copy,
+
+```text
+Gamma_CW(q) = kappa(q) g_Gamma(q),
+g_Gamma(q) > 0.
+```
+
+Fixed Gaussian cohomology Wronskian independently satisfies
+
+```text
+Omega_G(q) = kappa(q) s_G(q),
+s_G(q) > 0.
+```
+
+Hence actual source comparison is division-free and orientation-preserving:
+
+```text
+Gamma_CW(q) s_G(q) = Omega_G(q) g_Gamma(q).
+```
+
+This is stronger than equality of zero sets.  Gamma/co-Poisson boundary and
+Meyer/Gaussian Green transport are positive gauges of same signed horizontal
+fracture.  Gamma transport reinforces the obstruction; it is not an
+arithmetic null-homotopy.
+
+Normalize Gamma coefficient by `1 + norm` and multiply fibrewise on
+
+```text
+P_CW = ell2(Div Xi; ell2(ordered distinct prime pairs)).
+```
+
+Result is bounded continuous operator `A_Gamma`.  On actual simultaneous
+comparison `Phi_CW`, exact kernel is critical-line-supported Xi vectors:
+
+```text
+A_Gamma(Phi_CW x)=0
+<-> x(q)=0 at every off-line divisor copy.
+```
+
+Every completed Green provenance has complementary support law: it vanishes
+on critical-line fibres because it contains `kappa`.  Therefore
+
+```text
+A_Gamma(Phi_CW(Green(a)))=0 <-> Green(a)=0.
+```
+
+For fixed reflected-Gaussian Green vector, this specializes to
+
+```text
+A_Gamma(Phi_CW(g_G))=0 <-> RH.
+```
+
+Route L remains open.  Concrete Gamma/Hardy observation and its
+conservativity are closed; requested source annihilation is now formally
+classified as full RH-bearing statement.  Positive-gauge comparison also
+rules out every positive rescaling of actual Gamma boundary as source
+null-homotopy.  Surviving object must be genuinely horizontal/off-diagonal
+and introduce a source relation not contained in current positive Gamma or
+Gaussian Green gauges.
+
+### 67.1 All-cell positive-cone shorting is excluded
+
+Fixed `(2,3)` positivity is now upgraded to every distinct prime-power cell
+pair and to complete summable pair fields. If `D_a(i,j)` is actual
+reflection-odd promoted Gamma exterior, coorient it by its own source height:
+
+```text
+C_a(i,j) = (h_j-h_i) D_a(i,j).
+```
+
+There is an explicit removable source gauge `G_a(i,j)` satisfying
+
+```text
+C_a(i,j) = a G_a(i,j),
+G_a(i,j) > 0
+```
+
+for every distinct pair and every real displacement `a`, including positive
+derivative value at `a=0`. Therefore every nonzero nonnegative finite packet,
+and every nonzero nonnegative summable all-pair field, obeys
+
+```text
+a * sum w_ij C_a(i,j) = a^2 * sum w_ij G_a(i,j) > 0  (a != 0).
+```
+
+This closes positive global Gamma shorting, not only positive rescaling of one
+witness. Any source null-homotopy must now use sign-indefinite cross-pair
+incidence before completion while retaining packet provenance; a completely
+positive or orthogonal all-cell sum cannot annihilate horizontal fracture.
+
+Paper/Lean:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+route-r-gamma-cooriented-positive-cone-no-shorting.md
+
+GaloisForLFunctions/RHTower/
+GammaCoorientedPositiveConeNoShorting.lean
+```
+
+### 67.2 Deninger quadratic mate-curvature law
+
+Actual Gamma admission and completed Green provenance contain the same
+Deninger source-inverse/analytic-adjoint fracture.  Their composition is now
+computed pointwise on the genuine all-cross-prime incidence completion.
+With
+
+```text
+gHat(q) = gGamma(q) / (1 + norm(Gamma_CW(q))) > 0,
+E(q) = kappa(q)^2 gHat(q),
+```
+
+one has, for arbitrary completed Xi coefficient `a`,
+
+```text
+A_Gamma(Phi_CW(Green(a)))(q,i)
+  = E(q) Hodge(Riesz(a))(q) h_CW(i).
+```
+
+The scalar curvature satisfies
+
+```text
+E(q) >= 0,
+E(q) = 0 <-> Re(rho_q)=1/2,
+E(q) > 0 <-> Re(rho_q)!=1/2.
+```
+
+For fixed reflected Gaussian, both Hodge factor and every packet-horizon
+coordinate are nonzero.  Therefore the pointwise output at every individual
+cross-prime coordinate vanishes exactly on critical line.  No packet
+cancellation, reflection-odd cancellation, bar parity, scalar codiagonal, or
+nowhere-zero Frobenius/Nakayama gauge can produce missing source
+null-homotopy.
+
+This isolates Deninger's unique surviving Route-L task: construct actual
+finite prime/depth failure-nerve mate, pass it strictly and nonannihilatingly
+through cofinal Cartier base change, identify its analytic image with this
+Gamma--Green curvature, and derive a source Bianchi/null-homotopy law that
+kills positive quadratic class.  Defining comparison from Xi divisor or
+requiring its image to vanish is circular and rejected.
+
+Paper proof:
+
+```text
+docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/deninger/
+deninger-gamma-green-quadratic-mate-curvature.md
+```
+
+Lean:
+
+```text
+GaloisForLFunctions/RHTower/
+DeningerCalderonWittGammaGreenQuadraticMateCurvature.lean
+```
+
+### 67.3 Exact Deninger mate identification of actual Gamma reporter
+
+The radial associated-grade part of
+`FINITE_EPG_FAILURE_NERVE_MATE_COMPARISON` is now exact.  For Deninger
+half-density character
+
+```text
+lambda_n(s) = n^(1/2-s),
+K_n(s) = norm(lambda_n(s))^(-2) - norm(lambda_n(s))^2,
+```
+
+unconditional Lean proves
+
+```text
+K_n(s) = 2 sinh((2 Re(s)-1) log n),
+K_n(s) = 0 <-> Re(s)=1/2       (n >= 2).
+```
+
+At canonical ordered `(2,3)` Gamma/co-Poisson Calderon--Witt witness, the
+two physical depth-zero modular rates have forced sum
+
+```text
+R_23 = -log 2 - log 3 = -log 6.
+```
+
+If `A_23 < 0` is undeformed exterior amplitude, actual boundary coefficient
+is exactly
+
+```text
+b_Gamma(q) = (-A_23/2) K_6(rho_q),
+-A_23/2 > 0.
+```
+
+This equality is new comparison, not a new claim for scalar hyperbolic-sine
+formula already present in Burnol/Sonin corpus.  It uniquely connects
+Deninger source-inverse/analytic-dagger mate with actual Gamma reporter,
+including composite degree, sign, and positive calibration.  Consequently,
+radial associated grade is no longer open or eligible for re-derivation.
+
+Hard frontier is now strictly filtered/cofinal:
+
+1. construct full finite prime/depth failure-nerve mate, retaining Euler
+   zero-rate gauge and terminal pole;
+2. prove compatibility in prime cutoff, exponent depth, and Gamma aperture;
+3. pass mate through Xi Cartier base change without annihilating nonzero
+   associated grade;
+4. identify resulting analytic class with positive Gamma--Green curvature;
+5. derive source Bianchi/null-homotopy identity rather than assume its
+   vanishing.
+
+Paper/Lean:
+
+```text
+docs/drafts/pipeline/3-formalized/
+deninger-gamma-tensor-square-mate-identification.md
+
+GaloisForLFunctions/RHTower/
+DeningerCalderonWittGammaTensorSquareMateIdentification.lean
+```
+
+### 67.4 Forced failure-nerve metric and singular Cartier landing
+
+Actual Euler gauge layer is now constructed rather than discarded.  For
+
+```text
+G_(p,m)(s) = (1-p^(-s))/(1-p^(-(m+1)s)),
+Q_(p,m)(s) = G_(p,m)(s)/sqrt(G_(p,m)(1)),
+Rhat_(p,m)(s) = p^(-m(s-1/2)) Q_(p,m)(s),
+```
+
+unconditional Lean proves `G` and `Q` nonzero on `Re(s)>0` and verifies that
+the positive normalizer is exactly actual real `sqrt(G_(p,m)(1))`.  For every
+finite prime face,
+
+```text
+h_(F,m)(s) = |product_(p in F) Q_(p,m)(s)|^(-2)
+```
+
+is strictly positive and satisfies exact edge purification
+
+```text
+h_(F union {p},m) |Rhat_(p,m)|^2
+  = h_(F,m) |p^(-m(s-1/2))|^2.
+```
+
+It is the unique real diagonal metric with empty-face weight one satisfying
+these laws.  Lean strengthens paper statement: competitor positivity is not
+needed.  Relative edge curvature in this forced metric is exactly
+
+```text
+K_(p^m)(s)
+  = |p^(-m(s-1/2))|^(-2) - |p^(-m(s-1/2))|^2.
+```
+
+Thus finite Euler gauge/associated-grade decomposition and radial mate are
+closed; repeating scalar hyperbolic-sine calculation or replacing `Q` by a
+zero-fitted normalization is now rediscovery.
+
+Paper-level cofinal composition gives a new rigidity law.  Mertens face
+asymptotic followed by Gamma completion forces normal-cone metric
+
+```text
+h_nc,m(u) = exp(-gamma) zeta(m+1) / (4 |Xi(u)|^2).
+```
+
+At Xi zero `rho` of analytic multiplicity `d`, this metric has pole order
+exactly `2d`, while
+
+```text
+|u-rho|^(2d) h_nc,m(u)
+  -> exp(-gamma) zeta(m+1)/(4 |g_rho(rho)|^2) > 0,
+Xi(u)=(u-rho)^d g_rho(u).
+```
+
+Generic multiplicity-exact Cartier renormalization is formalized.  Actual
+Mertens/Euler cofinal limit remains separate analytic Lean infrastructure and
+is not encoded as an assumption.
+
+This rules out ordinary bounded-Hilbert-metric landing.  Remaining hard core
+is narrower and source-specific:
+
+1. construct source transpose and analytic dagger on full filtered
+   prime/depth bicomplex, not only its radial one-edge associated grade;
+2. prove their mate defect is compatible under prime cutoff, depth successor,
+   and Gamma aperture;
+3. transport that defect through the forced singular Cartier metric after
+   top-conormal renormalization;
+4. prove source Bianchi/null-homotopy law there and compare it with positive
+   Gamma--Green curvature.
+
+Paper/Lean:
+
+```text
+docs/drafts/pipeline/3-formalized/
+deninger-failure-nerve-singular-cartier-metric.md
+
+GaloisForLFunctions/RHTower/
+DeningerFailureNerveSingularCartierMetric.lean
+```
+
+## 67. Route J fixed prime-cycle tensor boundary
+
+The updated Hellinger paper closes arbitrary diagonal inverse-horizon
+weights.  Moving from diagonal coordinates to a fixed off-diagonal prime
+carrier does not yet escape residual rank one.  For any selected triangle
+holonomy and scalar operator ray,
+
+```text
+Hol_n(c K)=c^3 Hol_n(K).
+```
+
+This gives a complete dichotomy.  Nonzero base holonomy detects `c=0`
+exactly; zero base holonomy annihilates every `c` and is nonconservative.
+No fixed prime-fibre homogeneous triangle can be both an independent
+annihilator of actual residual and faithful on its ray.
+
+Concrete source specialization uses cofinal self-adjoint Schatten-one
+triangle tail `K_M` and reflected prime-shell entropy
+`E(q)=1-2 Re(rho_q)`:
+
+```text
+T_M(q)=E(q) K_M,
+diag(T_M(q))=0,
+||T_M(q)|| <= ||K_M||,
+T_M(q#)=-T_M(q),
+Hol_n(T_M(q))=0 <-> Re(rho_q)=1/2.
+```
+
+Off line, nonzero holonomy occurs beyond every finite prime cut.  Global
+vanishing of any retained selected cycle is equivalent to RH.  Hence scalar
+coupling of prime-cycle survivor to Gaussian/Green displacement is formally
+excluded as an annihilation mechanism: it creates uniform cofinal detector
+only.
+
+Open core is correspondingly sharper.  Required transverse arithmetic
+annihilator must mix divisor/horizontal and prime-cycle provenance
+nonseparably, or use a nonhomogeneous identity whose zero fibre is
+conservative on actual resolved sector.  Fixed-prime carrier tensor
+`horizontal scalar` is closed; Route J remains open on entangled source
+identity.
+
+Lean:
+
+```text
+DeningerCalderonWittGaussianPrimeCycleTensorNoGo.lean
+```
+
+Paper proof:
+
+```text
+docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/deninger/
+deninger-gamma-green-positive-gauge-admission.md
+```
+
+Lean:
+
+```text
+GaloisForLFunctions/RHTower/
+DeningerCalderonWittAllCrossPrimeGammaAdmissionOperator.lean
+```
+
+## 2026-08-03 Route R frontier update: signed finite modular-orbit rigidity
+
+The all-cell positive-cone theorem left signed cross-pair incidence as the
+smallest finite cancellation class.  That entire displacement-independent
+finite class is now closed.
+
+Orient cross-prime depth edges canonically by `p<q`.  Their actual
+cooriented Gamma orbit is
+
+```text
+C_(p,e;q,f)(a)
+  = A_(p,e;q,f) sinh(a log(p^(e+1) q^(f+1))),
+A_(p,e;q,f)>0.
+```
+
+Unique factorization makes
+
+```text
+(p,e;q,f) |-> p^(e+1) q^(f+1)
+```
+
+injective on canonical cross-prime edges.  Hence the positive frequencies
+`log(p^(e+1)q^(f+1))` are distinct.  Splitting each `sinh` into its positive
+and negative exponential frequencies and applying Vandermonde independence
+proves the complete signed classification:
+
+```text
+forall z : C,
+  sum_E c_E C_E^hol(z)=0
+  ->
+forall E, c_E=0
+```
+
+for every finitely supported complex coefficient field.  This is an exact
+source-kernel theorem, not another zero detector.  A fixed finite signed
+prime cycle, finite cross-pair boundary, or compatible system whose every
+finite aperture is already null cannot supply the Route-R source
+null-homotopy.
+
+Surviving producer is now forced to satisfy both conditions:
+
+1. cancellation occurs only after a genuinely infinite/singular completion;
+2. coefficients are coupled nonseparably to divisor provenance if identity
+   is not universal across modular displacement.
+
+Paper/Lean:
+
+```text
+docs/drafts/pipeline/3-formalized/new_scientific_knowledge/
+route-r-gamma-signed-finite-orbit-no-shorting.md
+
+GaloisForLFunctions/RHTower/
+GammaSignedFiniteOrbitNoShorting.lean
+```
+
+### 2026-08-03 countable strengthening
+
+Bohr--Cesaro coefficient extraction upgrades finite signed rigidity to every
+countable canonical edge chain satisfying
+
+```text
+sum_n |c_n A_(E_n)| < infinity.
+```
+
+Vanishing of its entire orbit even only on the imaginary modular axis forces
+every coefficient to vanish.  The proof doubles `sinh(i lambda_n y)` into
+the unitary frequencies `+lambda_n` and `-lambda_n`; injectivity isolates the
+chosen positive-frequency coefficient and positivity excludes a cross-sign
+collision.
+
+Consequently normal convergence, an `ell1` physical packet, or any other
+absolutely summable signed completion cannot supply the source
+null-homotopy.  Infinite alone is insufficient.  Remaining producer must be
+singular beyond absolute orbit summability or divisor-coupled before the
+Bohr decomposition.
+
+Lean:
+
+```text
+GaloisForLFunctions/RHTower/
+GammaSignedSummableOrbitNoShorting.lean
+```
+
+## 68. Route J doubled-window co-Poisson conormal tomography
+
+The updated Hellinger--Hodge--Green paper sharpens its full-source statement:
+zero-order completed Mellin evaluation is horizontally mute at every zeta
+divisor because the entire infinite-dimensional Burnol source carries one
+common zeta factor.  Resolving the first nonzero divisor conormal changes the
+answer.  For the literal nested windows `[exp(-L),1]` and `[exp(-2L),1]`,
+
+```text
+C_L(rho)   = (exp(L rho)-1) lambda_rho,
+C_2L(rho)  = (exp(2L rho)-1) lambda_rho,
+C_2L(rho)/C_L(rho)-1 = exp(L rho),
+```
+
+where `lambda_rho` is the same nonzero multiplicity-sensitive conormal
+factor.  Thus the resolved source labels cancel every common divisor jet and
+recover the full transverse exponential coordinate.  After half-density
+centering,
+
+```text
+U_L(rho)=exp(L(rho-1/2)),
+log |U_L(rho)| / L = Re(rho)-1/2,
+exp(-L/2) < |U_L(rho)|, |U_L(rho)^(-1)| < exp(L/2).
+```
+
+Reflection sends `U_L` to its conjugate inverse.  Orbit sum and product give
+a reflection-invariant quadratic cover; its product has unit modulus and its
+discriminant is
+
+```text
+Delta_L(rho)=(U_L(rho)-U_L(1-conj(rho)))^2,
+Delta_L(rho)=0 <-> Re(rho)=1/2.
+```
+
+This closes source construction, horizontal tomography, uniform fixed-depth
+capacity, and invariant-quotient classification.  It also corrects the exact
+boundary of the common-factor no-go: co-Poisson sources are mute at value
+grade, not at resolved first-conormal grade.
+
+Route J remains open on one sharply typed scientific theorem.  Arithmetic
+source incidence must force `Delta_L(rho)=0` at every actual divisor point,
+or equivalently identify the two oriented roots by a relation independent of
+the already recovered radial coordinate.  Reflection, Fourier unitarity,
+bounded transport, invariant orbit coefficients, and zero-order source
+enlargement are conservative and cannot provide this ramification.  The
+surviving producer must be a divisor-dependent or singular non-absolutely-
+summable off-diagonal prime--Gamma relation, or an independent source-support
+exclusion law.  Declaring ramification is exactly RH and is not assumed.
+
+Paper/Lean:
+
+```text
+docs/drafts/pipeline/1-in-progress/
+route-j-principal-relative-julia-current.md, Section 55
+
+GaloisForLFunctions/RHTower/
+BurnolCoPoissonConormalReflectionCover.lean
 ```

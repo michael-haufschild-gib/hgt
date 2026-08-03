@@ -20,9 +20,9 @@ namespace RHTower
 
 section UniquelyDivisible
 
-universe u
+universe u v
 
-variable {R A : Type u} [Group R] [Group A]
+variable {R : Type u} {A : Type v} [Group R] [Group A]
 
 /-- Every element has a unique `n`-th root for every `n ≥ 1`. -/
 def DeningerUniquelyDivisible (R : Type u) [Group R] : Prop :=

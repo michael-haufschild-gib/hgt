@@ -192,8 +192,12 @@ declarations: `propext, Classical.choice, Quot.sound`.
 
 ### What cannot be stated in Lean, and why
 
-`(1)` and `(2)` are not formalized and are not formalizable in this toolchain: mathlib has neither
-motivic cohomology nor Milnor `K`-theory, so `H_M^{q,q}` and `K_q^M` cannot even be written down.
+`(1)` and `(2)` are not formalized.  Half of the stated reason is now removed: Milnor `K`-theory is
+built in `formal/GaloisForLFunctions/HTGeometry/MilnorKTheory.lean` — `MilnorK` as the tensor
+algebra on `Fˣ` modulo Steinberg, with `milnorSymbol` and its additivity, the Steinberg relation
+`milnorSymbol_mul_oneSub`, `{a, -a} = 0`, and anticommutativity `{a, b} = -{b, a}`.  So `K_q^M` can
+now be written down.  What remains missing is motivic cohomology, so `H_M^{q,q}` still cannot be
+stated.
 Independently of that, `(1)` is not proved on this card — it is imported from Gallauer's Remark 6.8
 together with Borel's computation of the rational algebraic `K`-theory of number fields, and
 formalizing Borel's theorem is a research-scale project of its own.  `(4)` as an equivalence of
@@ -202,3 +206,11 @@ formalizing Borel's theorem is a research-scale project of its own.  `(4)` as an
 
 The card therefore stays at stage 2: its two statable algebraic ingredients are proved and audited,
 its headline vanishing remains an import.
+
+- 2026-08-03 — Built Milnor `K`-theory, which this card and `deninger-geometric-mw-rank-collapse`
+  both named as a reason their statements could not be written down.  The ring is the tensor algebra
+  on the unit group modulo the Steinberg relation, so the symbol is additive by construction; the
+  classical consequences `{a, -a} = 0` and `{a, b} = -{b, a}` follow from Steinberg applied at `a`
+  and at `a⁻¹`, using the unit identity `(-a)(1 - a⁻¹) = 1 - a`.  This does not close either card:
+  the amplitude card's `(1)` is an import from Gallauer and Borel, and the rank-collapse card needs
+  Milnor--Witt `K`-theory and the Witt ring on top of this.

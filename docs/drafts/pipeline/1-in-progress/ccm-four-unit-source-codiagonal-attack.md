@@ -2333,3 +2333,29 @@ promotion.
 Therefore none of these three calculations is new scientific knowledge.
 The live theorem remains the explicit finite-`sigma`, pre-divisor,
 noncompact incidence `(C49.1)--(C49.3)`.
+
+## C51 all-jet physical horizon admission `[PROVED AND LEAN-FORMALIZED; ORIENTATION OPEN]`
+
+The target-free internally promoted Möbius--theta exponent chain now supplies a literal
+source-derived completion grade before divisor evaluation. For every internal jet order `k`, its
+physical cofaces `Delta_k(j)` satisfy
+
+```text
+sum_j ||Delta_k(j)||_L2 < infinity,
+sum_j ||Delta_k(j)||_L2^2 < infinity,
+sum'_j Delta_k(j) = thetaJetSource_k,
+Fourier(sum'_j Delta_k(j)) = XiC^(k) in L2.             (C51.1)
+```
+
+Thus `j |-> Delta_k(j)` is an actual element of `ell2(N;L2)`, with grade forced by the physical
+exponent cofaces rather than a divisor enumeration or an external Gaussian weight. This closes
+the countable source-horizon admission problem for all multiplicity jets and strengthens the
+previous strong-limit landing to an unconditional Banach/Hilbert graph input.
+
+The theorem is formalized in
+`formal/GaloisForLFunctions/RHTower/MobiusThetaInternalJetPhysicalHorizonAdmission.lean`.
+
+It does not prove `(C49.2)` or the Ward sign. The exact remaining map must transport the admitted
+physical horizon through polarized Gamma/co-Poisson/Hodge descent to the resolved Green
+antidiagonal, identify its boundary column with `continuedXiAntiCausalWardResponse`, and preserve
+the four-unit energy. Any post-divisor weighting or bounded scalar projection remains excluded.

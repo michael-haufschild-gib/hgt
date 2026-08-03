@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ConePeriodSummability
 import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
+import Mathlib.Analysis.Complex.LocallyUniformLimit
 
 /-!
 # The Barnes cone product is entire
@@ -37,6 +38,7 @@ def barnesConeFactor (ω : ι → ℂ) (n : ι → ℕ) (z : ℂ) : ℂ :=
 normalization. -/
 def barnesConeProduct (ω : ι → ℂ) (z : ℂ) : ℂ := ∏' n : ι → ℕ, barnesConeFactor ω n z
 
+omit [Nonempty ι] in
 theorem differentiable_barnesConeFactor (ω : ι → ℂ) (n : ι → ℕ) :
     Differentiable ℂ (barnesConeFactor ω n) := by
   unfold barnesConeFactor
@@ -45,6 +47,7 @@ theorem differentiable_barnesConeFactor (ω : ι → ℂ) (n : ι → ℕ) :
   · exact (differentiable_weierstrassFactor (Fintype.card ι)).comp
       ((differentiable_id.div_const (conePeriod ω n)).neg)
 
+omit [Nonempty ι] in
 theorem barnesConeFactor_sub_one_zero (ω : ι → ℂ) (z : ℂ) :
     barnesConeFactor ω 0 z - 1 = 0 := by
   rw [barnesConeFactor, if_pos rfl, sub_self]
@@ -100,7 +103,6 @@ theorem hasProdLocallyUniformlyOn_barnesConeFactor (ω : ι → ℂ) (hω : ∀ 
     rw [Set.mem_setOf_eq]
     intro hcone
     apply hn
-    rw [Set.mem_setOf_eq]
     intro z hz
     by_cases h0 : n = 0
     · rw [h0, barnesConeFactor_sub_one_zero, norm_zero, hu]
@@ -109,22 +111,18 @@ theorem hasProdLocallyUniformlyOn_barnesConeFactor (ω : ι → ℂ) (hω : ∀ 
         have := hKR z hz
         linarith
       have hmaj := norm_weierstrassFactor_conePeriod_sub_one_le ω z n hz2
-      rw [barnesConeFactor, if_neg h0, hu, if_neg h0, hA]
-      refine hmaj.trans ?_
+      rw [barnesConeFactor, if_neg h0]
+      simp only [hu, if_neg h0, hA]
       have hpow : ‖z‖ ^ (N + 1) ≤ R ^ (N + 1) :=
         pow_le_pow_left₀ (norm_nonneg z) (hKR z hz) _
       have hinv : (0 : ℝ) ≤ (‖conePeriod ω n‖ ^ (N + 1))⁻¹ := by positivity
       have hexp : (0 : ℝ) ≤ Real.exp (weierstrassLogBound N) := (Real.exp_pos _).le
-      calc Real.exp (weierstrassLogBound N) * ‖z‖ ^ (N + 1) *
-            (‖conePeriod ω n‖ ^ (N + 1))⁻¹
-          ≤ Real.exp (weierstrassLogBound N) * R ^ (N + 1) *
-            (‖conePeriod ω n‖ ^ (N + 1))⁻¹ := by
-            exact mul_le_mul_of_nonneg_right
-              (mul_le_mul_of_nonneg_left hpow hexp) hinv
-        _ = Real.exp (weierstrassLogBound N) * R ^ (N + 1) *
-            (‖conePeriod ω n‖ ^ (N + 1))⁻¹ := rfl
-  have hcont : ∀ n : ι → ℕ, ContinuousOn (fun z => barnesConeFactor ω n z - 1) K :=
-    fun n => ((differentiable_barnesConeFactor ω n).continuous.sub continuous_const).continuousOn
+      exact hmaj.trans
+        (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hpow hexp) hinv)
+  have hcont : ∀ n : ι → ℕ, ContinuousOn (fun z => barnesConeFactor ω n z - 1) K := by
+    intro n
+    exact ((differentiable_barnesConeFactor ω n).continuous.sub
+      continuous_const).continuousOn
   have hprod := Summable.hasProdUniformlyOn_one_add hK husum hbound hcont
   have heq : (fun (n : ι → ℕ) (z : ℂ) => 1 + (barnesConeFactor ω n z - 1)) =
       barnesConeFactor ω := by
@@ -135,13 +133,17 @@ theorem hasProdLocallyUniformlyOn_barnesConeFactor (ω : ι → ℂ) (hω : ∀ 
     funext z
     rw [barnesConeProduct]
     exact tprod_congr fun n => by ring
-  rwa [heq, heq2] at hprod
+  rw [heq, heq2] at hprod
+  exact hprod
 
 /-- **The Barnes cone product is entire.** -/
 theorem differentiable_barnesConeProduct (ω : ι → ℂ) (hω : ∀ i, 0 < (ω i).im) :
     Differentiable ℂ (barnesConeProduct ω) := by
-  have ht := hasProdLocallyUniformlyOn_iff_tendstoLocallyUniformlyOn.mp
-    (hasProdLocallyUniformlyOn_barnesConeFactor ω hω)
+  have ht : TendstoLocallyUniformlyOn
+      (fun (S : Finset (ι → ℕ)) (z : ℂ) => ∏ n ∈ S, barnesConeFactor ω n z)
+      (barnesConeProduct ω) atTop Set.univ :=
+    hasProdLocallyUniformlyOn_iff_tendstoLocallyUniformlyOn.mp
+      (hasProdLocallyUniformlyOn_barnesConeFactor ω hω)
   have hd : ∀ᶠ S : Finset (ι → ℕ) in atTop,
       DifferentiableOn ℂ (fun z => ∏ n ∈ S, barnesConeFactor ω n z) Set.univ := by
     filter_upwards with S
@@ -149,7 +151,7 @@ theorem differentiable_barnesConeProduct (ω : ι → ℂ) (hω : ∀ i, 0 < (ω
       (differentiable_barnesConeFactor ω n).differentiableOn
   intro z
   simpa only [differentiableWithinAt_univ] using
-    ht.differentiableOn hd isOpen_univ z (Set.mem_univ z)
+    TendstoLocallyUniformlyOn.differentiableOn ht hd isOpen_univ z (Set.mem_univ z)
 
 end
 

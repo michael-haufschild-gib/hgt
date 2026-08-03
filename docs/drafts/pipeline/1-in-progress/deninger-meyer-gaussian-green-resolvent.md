@@ -607,3 +607,190 @@ verticality of the off-line Xi graph.
 - 2026-08-02 -- Extracted and formalized the exact nonzero completed Gamma residue
   `-2*pi*archFactor(rho)/(chi_c(rho)*(rho-c))`; continuation now has forced normalization, not only
   forced pole order.
+
+## 2026-08-03 source-topology obstruction and exact survivor
+
+The updated Hellinger--Hodge--Green paper makes the global polarized singular completion the live
+gate. The raw Gaussian--Gamma residue packet cannot be placed in the ordinary unweighted Xi
+incidence completion. At fixed safe centre `c = 2`, define
+
+```text
+R(q) = -2*pi*archFactor(rho_q)/(chi_2(rho_q)*(rho_q-2)),
+W(q) = -chi_2(rho_q)*(rho_q-2)/(2*pi*archFactor(rho_q)).
+```
+
+`DeningerMeyerXiGaussianResidueNonadmission.lean` proves unconditionally:
+
+```text
+W(q) * R(q) = 1,
+W(q) -> 0       along the cofinite filter on XiZeroCopy,
+norm(R(q)) -> +infinity along that filter,
+not Summable (fun q => norm(R(q))^2).
+```
+
+The decisive analytic estimate is a uniform strip bound obtained from Euler reflection rather than
+Stirling:
+
+```text
+norm(GammaR(rho))^(-1) <= exp((pi/2)*norm(rho)).
+```
+
+The Gaussian character then contributes a negative quadratic in centered spectral norm, forcing
+`W -> 0`. This is a genuine no-go for raw unweighted admission, not another equivalence with RH.
+
+The strongest positive survivor is exact. For every horizon grade `h`, the source-faithful diagonal
+weight `d = h*W` satisfies
+
+```text
+(d(q)*R(q)) = h(q),
+Summable (fun q => norm(d(q)*R(q))^2)
+  <-> Summable (fun q => norm(h(q))^2).
+```
+
+Thus analytic residue normalization and infinite-divisor grading are independent. `W` is forced by
+the literal Möbius--Gaussian source; it leaves the constant packet and cannot itself provide
+admission. The next hard theorem is no longer an unspecified singular completion:
+
+```text
+Construct h from the ordinary-prime/Gamma/co-Poisson source before divisor restriction; prove
+h in l2; prove the h*W weighted sector is conservative under resolved augmentation; then prove its
+Hermitian/Gram domination.
+```
+
+Arbitrary rapid weights, divisor-indexed Hilbert norms, and ordinary meromorphic interpolation fail
+source provenance and do not address this theorem.
+
+## 2026-08-03 reflected-Gaussian resolved admission
+
+The independent horizon grade is now constructed from the fixed Paugam-invariant reflected Meyer
+Gaussian before Xi-divisor restriction:
+
+```text
+h(q) = Mellin(g_ref)(rho_q)
+     = xiGaussianHeatTerm(1/(4*pi), q).
+```
+
+It is nonzero, reflection invariant, line-conjugation compatible, and square-summable. With the
+forced analytic residue inverse `W` and singular residue `R`, the weighted packet satisfies
+
+```text
+(h(q) W(q)) R(q) = h(q),
+sum_q |h(q)|^2 < infinity.
+```
+
+This admitted vector now lands coefficient-faithfully in actual cross-prime Calderon--Witt
+incidence. Each decoded divisor coefficient is `h(r) * w_pq != 0`. Its pre-codiagonal resolved
+defect is the nonzero antidiagonal
+
+```text
+(h(r) w_pq, -h(r) w_pq),
+```
+
+whose raw codiagonal is zero. The resolved-provenance quotient retains the entire admitted
+incidence vector through an explicit left inverse, so its quotient class is nonzero for every
+Hellinger displacement.
+
+Closed gates: source-derived horizon grade, `ell^2` singular admission, actual incidence landing,
+and resolved-coface conservativity for the fixed source. Remaining Route-L frontier is narrower:
+identify this source-graded completed singular vector with the actual global Deninger Green
+resolved range, then derive its Hermitian Gram domination. No RH or positivity conclusion is
+claimed before those two steps.
+
+Lean:
+
+```text
+DeningerMeyerReflectedGaussianHorizonAdmission.lean
+DeningerMeyerReflectedGaussianResolvedAdmission.lean
+```
+
+## 2026-08-03 exact compact-source Green range wall
+
+The updated Hellinger--Hodge--Green paper correctly moves the shared frontier to a joint
+prime--divisor range intertwiner.  A corpus audit now proves why the reflected-Gaussian admitted
+vector cannot first be identified with the range of the existing compact-source comparison Green
+map.
+
+Continuous compact-support arithmetic cohomology in the present model is exactly the algebraic
+direct sum of finite Xi jets.  Oriented Green reflection is an automorphism of that direct sum.
+Therefore its completed comparison range is exactly
+
+```text
+range(deningerArithmeticSourceGreen)
+  = range(Finsupp(XiZeroCopy,C) -> ell^2(XiZeroCopy,C)).
+```
+
+The reflected-Gaussian horizon vector is nonzero at every copy of the infinite Xi divisor.  Hence
+it is outside this range.  Dense range proves the sharp survivor: it is in the closure.  Both facts
+survive the actual completed Calderon--Witt incidence equivalence and the split-injective resolved
+Hellinger--Gamma provenance quotient:
+
+```text
+admitted resolved class in closure(resolved compact Green range)
+                         \ resolved compact Green range.
+```
+
+This kills the previous wording "identify the admitted vector with the current compact-dual Green
+range."  No coefficient adjustment can make that true.  The current module is explicitly a Xi
+comparison model, not an independently constructed global arithmetic Green complex.
+
+Correct Route-L frontier is now ordered:
+
+```text
+construct source-native nonlocal completion of compact-support cohomology;
+extend finite oriented Green reflection to it, with the admitted horizon vector in its range;
+identify that completed range with the compatible part of the closed adaptive prime-normal range;
+derive Hermitian Gram domination on the common resolved range.
+```
+
+The first genuinely arithmetic missing theorem is the third line.  Density makes any continuous
+extension unique, so the completion cannot hide a new coefficient choice.
+
+Formalized in:
+
+```text
+DeningerMeyerReflectedGaussianGreenRangeWall.lean
+```
+
+## 2026-08-03 canonical completed source Green primitive
+
+The nonlocal source completion and its Green primitive are now constructed, not left as a name.
+The source Gelfand triple's Hilbert middle is the multiplicity-exact Xi-jet `ell^2` carrier, with
+dense finite source jets.  Finite oriented Green reflection extends uniquely to the isometric
+operator
+
+```text
+(Ghat a)(q) = epsilon(q) a(Rq),
+Ghat^2 = -1.
+```
+
+It agrees with current compact-source Green transport after the canonical Riesz source embedding.
+Hence it is surjective and is the only continuous extension with the correct finite coefficients.
+
+For admitted reflected-Gaussian residue `h_ref`, explicit completed source primitive is
+
+```text
+u_ref = -Ghat(h_ref),
+u_ref(q) = -epsilon(q) h_ref(q),
+Ghat(u_ref) = h_ref.
+```
+
+This primitive is unique, nonzero, and maps exactly to already constructed actual incidence and
+resolved provenance classes.  Therefore completion, Green extension, and primitive existence are
+closed.  They cannot be revisited as Route-L frontier.
+
+Remaining hard theorem is genuinely arithmetic:
+
+```text
+identify compatible range of completed source Green/provenance
+  with closed adaptive prime-normal source range,
+then prove Hermitian Gram domination on that common range.
+```
+
+Surjectivity of `Ghat` alone proves no RH statement; it makes clear why arithmetic range restriction
+is indispensable.
+
+Formalized in:
+
+```text
+DeningerMeyerReflectedGaussianCompletedSourceGreen.lean
+```

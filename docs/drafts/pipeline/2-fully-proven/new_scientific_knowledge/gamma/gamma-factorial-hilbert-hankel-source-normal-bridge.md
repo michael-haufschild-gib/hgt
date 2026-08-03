@@ -831,3 +831,137 @@ lake build GaloisForLFunctions.RHTower.EulerGammaCoPoissonDividedLogJetWeld
 Both passed.  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
 The repository lint still exits nonzero only on pre-existing unrelated unreachable modules; the
 new module is imported by the `RHTower` umbrella and produced no lint diagnostic.
+
+### Lean: the boxed intertwining
+
+The identity `HS = S^*H` of the Result section is now Lean, unconditionally, on the finite core
+(`HTGeometry/HilbertMatrixShiftIntertwining.lean`):
+
+```text
+hilbertKernel m n            = 1/(m+n+1);
+hilbertApply a m             = sum_n hilbertKernel m n * a n   (a finitely supported);
+forwardShift                 = the unilateral shift, mapDomain (.+1);
+
+hilbertKernel_succ_right     : hilbertKernel m (n+1) = hilbertKernel (m+1) n;
+hilbertApply_forwardShift    : hilbertApply (forwardShift a) m = hilbertApply a (m+1).
+```
+
+The second is exactly `H S = S^* H`: applying the Hilbert matrix to a shifted sequence is the same as
+raising the row index, which is the backward shift on the image.  The proof is the Hankel symmetry of
+the kernel -- it depends on `m + n` only -- transported across the injective reindexing; no
+convergence question arises on the finite core.  `#print axioms` clean.
+
+- 2026-08-03 -- Formalized the boxed intertwining `HS = S^*H` on the finite-sequence core.  This is
+  the algebraic heart of the bridge; what the remaining formalization gate still asks for is the
+  analytic half (boundedness and the Hilbert-matrix norm), not this identity.
+
+### Lean: the two moment readings of `(1)`
+
+`RHTower/HilbertHankelMomentRepresentation.lean` proves equation `(1)` unconditionally:
+
+```text
+hilbertMoment_eq_integral_pow  : int_0^1 t^k dt          = 1/(k+1);
+hilbertMoment_eq_integral_exp  : int_0^infty e^(-(k+1)x) dx = 1/(k+1);
+integral_pow_eq_integral_exp   : the two readings agree;
+hilbertKernel_eq_ofReal        : the kernel of the intertwining module is their complex cast.
+```
+
+The first reading is the factorial Gamma/co-Poisson interval cell, the second is the prime
+first-trace Hardy ladder, and their equality is exactly the coordinate identification the card
+asserts is not fundamental.  The Laplace value reuses the corpus's own elementary integral
+`RHTower.integral_exp_neg_mul_Ioi` rather than reproving it.  `#print axioms` clean.
+
+- 2026-08-03 -- Equation `(1)` is Lean in both readings, so the apparent coordinate mismatch is now a
+  proved identity in the corpus rather than a remark.  Together with the boxed intertwining this
+  makes the algebraic half of the bridge complete; the formalization gate's remaining content is the
+  analytic half -- boundedness of the Hilbert matrix and the norm bound.
+
+### Lean: positivity from the interval-cell reading
+
+The same module proves the classical positivity of the kernel, and proves it *from* the moment
+reading rather than by an inequality:
+
+```text
+hilbertQuadraticForm_nonneg :
+  0 <= sum_(m,n in supp a) a_m a_n / (m + n + 1)     for every finitely supported real a.
+```
+
+Expanding the square of the generating polynomial and exchanging the two finite sums with the
+integral turns the quadratic form into `int_0^1 (sum_m a_m t^m)^2 dt`, which is nonnegative because
+the integrand is a square.  So the positivity of the Hilbert--Hankel kernel is the interval-cell
+reading of `(1)` and nothing more.  `#print axioms` clean.
+
+- 2026-08-03 -- Positivity of the Hilbert matrix formalized as a consequence of the moment reading.
+  The algebraic and positivity content of the bridge is now Lean; the outstanding formalization gate
+  is the operator-norm half (boundedness, and the classical value pi).
+
+### Lean: the weighted Schur test
+
+The operator-norm half of the bridge needs a test that survives divergent plain row sums, since the
+rows of `1/(m+n+1)` are not summable.  `HTGeometry/WeightedSchurTest.lean` supplies it:
+
+```text
+weighted_double_sum_le_weightedRowBound :
+  K symmetric and nonnegative, w > 0, and  sum_s K r s * w s <= H * w r  for every r
+     ==>  sum_(r,s) |b r| |b s| K r s <= H * sum_r (b r)^2.
+```
+
+The corpus already had the unweighted case (`weighted_double_sum_le_rowBound`); the weight is exactly
+what the Hilbert kernel needs.  The proof is the weighted arithmetic--geometric inequality
+`|b_r| |b_s| <= (b_r^2 w_s / w_r + b_s^2 w_r / w_s)/2`, which after clearing the positive weights is
+`(|b_r| w_s - |b_s| w_r)^2 >= 0`, followed by symmetry to recognise both halves as weighted row sums.
+No cancellation is used.  `#print axioms` clean.
+
+- 2026-08-03 -- Weighted Schur test formalized.  With it, the outstanding operator-norm gate reduces
+  to one estimate: the weighted row bound `sum_n 1/((m+n+1) sqrt(n+1/2)) <= pi / sqrt(m+1/2)` for the
+  weight `w_n = 1/sqrt(n+1/2)`, which is a monotone comparison of the row sum with
+  `int_0^infty dt / ((m+1/2+t) sqrt t) = pi / sqrt(m+1/2)`.
+
+### Lean: the antiderivative behind the constant `pi`
+
+`HTGeometry/ArctanSqrtAntiderivative.lean` computes the antiderivative the weighted row comparison
+integrates:
+
+```text
+hasDerivAt_arctan_sqrt_div :
+  d/dt [ (2/sqrt a) * arctan(sqrt t / sqrt a) ] = 1 / ((a + t) sqrt t)     (a > 0, t > 0).
+```
+
+Since `arctan(sqrt t / sqrt a)` tends to `0` at the origin and to `pi/2` at infinity, the improper
+integral over `(0,infty)` is `pi / sqrt a`.  That is where the constant `pi` of the Hilbert inequality
+comes from, and with the weighted Schur test it is the whole numerical content of the norm bound.
+`#print axioms` clean.
+
+- 2026-08-03 -- Antiderivative formalized.  The operator-norm gate is now reduced to two mechanical
+  steps: the endpoint limits of `arctan` giving `int_0^infty dt/((a+t) sqrt t) = pi/sqrt a`, and the
+  monotone term-by-integral comparison `f(n+1/2) <= int_n^(n+1) f` for the decreasing convex
+  integrand, which turns the weighted row sum into that integral.
+
+The endpoint values are now Lean as well:
+
+```text
+arctan_sqrt_div_zero        : the antiderivative vanishes at the origin;
+tendsto_arctan_sqrt_div_atTop : it tends to pi / sqrt a at infinity.
+```
+
+So the value `pi / sqrt a` of the improper integral is pinned down at both ends; what is left to state
+it as an integral identity is the fundamental-theorem step on `(0,infty)` together with the
+integrability of the singular integrand near the origin.
+
+### Lean: the improper integral is `pi / sqrt a`
+
+```text
+integral_Ioi_one_div_add_mul_sqrt :
+  int_(t > 0) dt / ((a + t) sqrt t) = pi / sqrt a        (a > 0).
+```
+
+The integrand is nonnegative on `(0,infty)`, so mathlib's improper fundamental theorem for
+nonnegative derivatives applies directly to the antiderivative above: no separate integrability
+argument is needed, and the value is the difference of the two endpoint values already proved.
+`#print axioms` clean.
+
+- 2026-08-03 -- The constant `pi` of the Hilbert inequality is now a proved integral identity in the
+  corpus.  With the weighted Schur test, the operator-norm gate is reduced to a single discrete step:
+  the monotone comparison `f(n+1/2) <= int_n^(n+1) f` for the decreasing convex integrand
+  `f(t) = 1/((m+1/2+t) sqrt t)`, summed over `n`, which turns the weighted row sum into the integral
+  just computed.

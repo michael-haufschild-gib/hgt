@@ -2242,6 +2242,8 @@ exactly the source-effective landing theorem left open above.
 - [x] construct finite labelled Boolean--Sonin history coupling and quantify its adjoint-mate
   fracture
 - [ ] construct finite EPG failure-nerve mate comparison
+- [x] construct actual finite Euler face gauge, prove unique inverse-square metric purification,
+  and identify its radial associated-grade mate curvature
 - [ ] construct source-first exponential filtration and raw/graded gauge separation
 - [ ] assemble finite Gibbs--Möbius pairs into a source-canonical adiabatic Poisson/Gamma field
 - [ ] extend that field to the rapid/Stokes character face and prove the C49 moving incidence

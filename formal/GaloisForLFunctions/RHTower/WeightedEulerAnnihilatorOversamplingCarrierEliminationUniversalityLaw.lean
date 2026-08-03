@@ -209,4 +209,21 @@ theorem compactFourierBorel_eq_zero_of_primeLog_graph_annihilation
   exact ⟨hzero, fun m =>
     map_coordinate_pow_eq_zero_of_fourierBorel_zero L s hzero m⟩
 
+/-- **Positive-strip rate barrier.**  On a nonempty carrier, the lower and
+upper strip walls force `α ≤ β`, whereas the oversampling decay supplied above is
+at most `α / 2`.  Hence the separation hypothesis of
+`compactFourierBorel_eq_zero_of_primeLog_graph_annihilation` has no
+nonempty positive-strip instance. -/
+theorem not_beta_lt_min_sigma_half_alpha_of_nonempty_positiveStrip
+    {K : Type*} [TopologicalSpace K] [CompactSpace K] [Nonempty K]
+    (s : C(K, ℂ)) {α β σ : ℝ}
+    (hα : 0 < α)
+    (hstrip : ∀ k, α ≤ (s k).re ∧ (s k).re ≤ β) :
+    ¬ β < min σ (α / 2) := by
+  intro hβκ
+  let k : K := Classical.choice inferInstance
+  have hαβ : α ≤ β := (hstrip k).1.trans (hstrip k).2
+  have hβhalf : β < α / 2 := hβκ.trans_le (min_le_right _ _)
+  linarith
+
 end RHTower

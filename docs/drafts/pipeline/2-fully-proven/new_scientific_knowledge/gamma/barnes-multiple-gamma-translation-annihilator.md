@@ -509,6 +509,438 @@ small cone values, the factor at `-z/w_n` deviates from one by at most a constan
 that makes the genus-`N` Weierstrass product over the period cone converge, hence makes
 `1/Gamma_N` entire and puts `Psi_N` in the meromorphic differential field.  `#print axioms` clean.
 
+### Third brick: the cone product is entire
+
+`GaloisForLFunctions.HTGeometry.BarnesConeProduct` assembles the two bricks into the actual
+Weierstrass product over the period cone,
+
+```text
+barnesConeProduct omega z = prod_{n in N^N} E_N(-z / w_n),
+```
+
+the zero exponent vector contributing trivially.  `finite_conePeriod_lt` proves that only finitely
+many exponent vectors have small cone value — the linear growth of the cone bounds the total degree,
+and the exponent vectors of bounded total degree form a finite box.  So on any compact set the
+argument of all but finitely many factors is inside the half-disc, where the genus estimate applies,
+and the resulting majorant is the summable weight of the first brick.  Hence
+
+```text
+hasProdLocallyUniformlyOn_barnesConeFactor : the product converges locally uniformly on C;
+differentiable_barnesConeProduct           : its limit is entire.
+```
+
+This is the analytic object the annihilator theorem needs: an entire function whose zero set is the
+shifted cone, so that the Barnes source is a ratio of entire functions and lands in the meromorphic
+differential field.  `#print axioms` clean.
+
+### Fourth brick: the Barnes source lives in the meromorphic differential field
+
+`GaloisForLFunctions.HTGeometry.BarnesSourceMero` places the object in the corpus's own field.
+Every elementary factor is one at the origin, so `barnesConeProduct_zero_arg` gives value one there
+and `barnesConeProduct_ne_zero` makes the product a nonzero entire function.  Hence
+
+```text
+barnesConeAnalytic       : the product as an element of the global analytic germ domain;
+barnesConeAnalytic_ne_zero, barnesConeMero_ne_zero;
+barnesSourceLogDerivMero : its logarithmic derivative in the meromorphic differential field.
+```
+
+`barnesSourceLogDerivMero` is the Barnes source `Psi_N` up to the linear factor and the
+normalization exponential.  Both of those are differentially algebraic, so by the normalization
+remark in the Setup they are invisible to every annihilator statement taken modulo the
+differentially algebraic sector — which is the only way this card's theorems use the source.
+`#print axioms` clean.
+
+### Fifth brick: the rational atom of one factor, and the ladder reindexing
+
+`GaloisForLFunctions.HTGeometry.BarnesConeLogDeriv` computes the atom the ladder is built from.
+The collapsed derivative of the elementary factor makes the exponential correction cancel between
+numerator and denominator, leaving a single rational term:
+
+```text
+logDeriv_barnesConeFactor : logDeriv (z |-> E_N(-z/w_n)) (z) = (-z/w_n)^N / (w_n + z),
+```
+
+valid whenever the exponent vector is nonzero and `z` is not the corresponding pole; the
+nonvanishing `conePeriod_ne_zero` of a nonzero cone value comes from the linear growth of the cone.
+So the Barnes source is, term by term, the classical regularized digamma series
+`sum_n (-1)^N z^N / (w_n^N (w_n + z))`.
+
+The combinatorics of the ladder is also isolated:
+
+```text
+conePeriod_add_single             : w_{n + e_j} = w_n + omega_j;
+conePeriod_eq_sum_erase_of_eq_zero: on the slice n_j = 0 the cone value is the deleted-frame one.
+```
+
+These are exactly the two reindexings the ladder proof performs — the shift `n -> n + e_j` is a
+bijection onto `{n : n_j >= 1}`, and what it leaves over is the cone of the frame with `omega_j`
+deleted.  `#print axioms` clean.
+
+### Sixth brick: the source is the convergent atom series
+
+`GaloisForLFunctions.HTGeometry.BarnesSourceSeries` sums the atoms.  Everything rests on one
+principle, `summable_of_conePeriod_majorant`: a nonnegative weight dominated by the inverse
+`(N+1)`-st cone power **outside a finite set** is summable, the exceptional set being finite by
+`finite_conePeriod_lt`.  Applied twice it gives
+
+```text
+barnesConeProduct_ne_zero_of_notMem_poles : off the poles w_n + z = 0 the product is nonzero;
+summable_logDeriv_barnesConeFactor        : the atoms are summable at every point;
+logDeriv_barnesConeProduct_eq_tsum        : logDeriv (barnesConeProduct omega) z
+                                              = sum_n (-z/w_n)^N / (w_n + z).
+```
+
+The last one is the identification the card's proof works with: the constructed source **is** the
+classical regularized digamma series of the Barnes hierarchy, as a convergent sum, not merely
+factorwise.  `#print axioms` clean.
+
+### Seventh brick: the atoms and the ladder shift
+
+`GaloisForLFunctions.HTGeometry.BarnesLadderAtoms` names the atom and isolates the ladder mechanism.
+`barnesAtom` is the rational term, `logDeriv_barnesConeProduct_eq_tsum_barnesAtom` restates the
+source as `sum_n barnesAtom omega n z`, and the ladder shift is exact at the level of one atom:
+
+```text
+barnesAtom_shift_sub :
+  barnesAtom omega n (z + omega_j) - barnesAtom omega (n + e_j) z
+    = (numerator difference) / (w_{n+e_j} + z),
+```
+
+because `conePeriod_shift_denom` makes the two denominators literally the same.  The reindexing is a
+bijection, `addSingleEquiv : (N^ind) ≃ {n // 1 ≤ n_j}`, and `conePeriod_of_not_one_le` identifies
+the complementary slice with the deleted-frame cone — the lower step of the hierarchy.
+
+So the ladder is now reduced to summing the displayed atomwise identity over the bijection and
+splitting off the complementary slice.  `#print axioms` clean.
+
+### Eighth brick: the ladder decomposition
+
+`GaloisForLFunctions.HTGeometry.BarnesLadderDecomposition` sums the atomwise shift over the
+bijection.  `summable_barnesAtom` gives convergence of the atom series at every point,
+`summable_barnesAtom_add_single` transports it along the injection `n -> n + e_j`, and
+`tsum_barnesAtom_split` splits the series along the slice `1 <= n_j` using the reindexing
+bijection.  Together:
+
+```text
+barnesSource_ladder_decomposition :
+  Psi(z + omega_j) - Psi(z)
+    = sum_n (A_n(z + omega_j) - A_{n+e_j}(z))  -  sum_{n_j = 0} A_n(z).
+```
+
+Both series converge — the first as a difference of two convergent ones, the second as a subseries
+— so this is an identity of genuine sums, not a formal rearrangement.  The second term is the atom
+series of the deleted-frame cone, that is the lower step of the hierarchy; the first is the
+correction the normalization absorbs.  This is the exact shape in which the card's proof uses the
+ladder.  `#print axioms` clean.
+
+### Ninth brick: the genus mismatch is a monomial
+
+The slice left over by the ladder is the cone of the deleted frame, but its atoms carry the genus of
+the ambient frame — one higher than the lower step of the hierarchy uses.
+`GaloisForLFunctions.HTGeometry.BarnesGenusShift` prices that mismatch exactly.
+
+`barnesAtomPow_succ_sub` raises the genus of one atom:
+
+```text
+A^{p+1}_n(z) - A^p_n(z) = -(-z/w_n)^p / w_n,
+```
+
+the pole cancelling because `(-z/w) - 1 = -(z+w)/w`.  Those corrections are summable at the critical
+genus (`summable_barnesGenusCorrection`), so `tsum_barnesAtomPow_succ` shifts the genus of the whole
+series, and `tsum_barnesGenusCorrection_eq` evaluates the correction:
+
+```text
+sum_n (genus correction) = (-1)^N z^N * coneZeta omega,
+```
+
+a **constant times `z^N`**.  The genus mismatch between the ladder slice and the lower source is
+therefore a monomial, hence differentially algebraic, hence invisible modulo the DA sector — which
+is precisely the normalization remark of the Setup, now proved rather than assumed for the
+constructed object.  `#print axioms` clean.
+
+### Tenth brick: the ladder slice is the lower source
+
+`GaloisForLFunctions.HTGeometry.BarnesSliceReindex` identifies what the ladder leaves over.
+Restriction is a bijection `sliceEquiv` from the vanishing slice onto the cone of the deleted frame,
+`conePeriod_sliceEquiv` matches the cone values, `sliceEquiv_eq_zero_iff` matches the zero exponent
+vector, and `card_subtype_ne_succ` records that the deleted frame has one direction fewer — so the
+slice carries the ambient genus, one above the deleted frame's own.  Hence
+
+```text
+tsum_barnesAtom_slice :
+  sum_{n_j = 0} A_n(z) = sum_g A^{N}_g(z)   over the deleted-frame cone,
+```
+
+and combining with the genus pricing of the previous brick,
+
+```text
+tsum_barnesAtom_slice_eq_lower :
+  sum_{n_j = 0} A_n(z)
+    = (lower source of the deleted frame) - (-1)^{N-1} z^{N-1} coneZeta(deleted frame).
+```
+
+So the ladder slice **is** the lower step of the Barnes hierarchy, up to a monomial.  Combined with
+the ladder decomposition this is the constructed-object form of the classical ladder
+`x_j Psi_N = -Psi_{N-1}(z | omega^{(j)})` modulo the differentially algebraic sector.
+`#print axioms` clean.
+
+### Eleventh brick: the correction is polynomial in the common denominator
+
+`GaloisForLFunctions.HTGeometry.BarnesLadderGenusOne` explains why the ladder correction is tame.
+Writing `D = w_{n+e_j} + z` for the common denominator produced by `conePeriod_shift_denom`, both
+numerators of the correction are polynomials in `D` with constant term one:
+
+```text
+neg_div_eq_one_sub_denom       : -(z + omega_j)/w_n      = 1 - D/w_n,
+neg_div_shift_eq_one_sub_denom : -z/w_{n+e_j}            = 1 - D/w_{n+e_j}.
+```
+
+So their difference is divisible by `D`, and the correction — that difference over `D` — is a
+polynomial in `D` rather than a term with a pole.  At genus one the polynomial is the constant
+
+```text
+barnesAtom_shift_sub_card_one :
+  A_n(z + omega_j) - A_{n+e_j}(z) = 1/w_{n+e_j} - 1/w_n,
+```
+
+with no `z` at all (`barnesAtom_shift_sub_card_one_const`).  The genus-one ladder correction is
+therefore a telescoping difference of inverse cone values, which is the structural reason the
+order-one source has a rational shift difference.  `#print axioms` clean.
+
+### Twelfth brick: the correction factors at every genus
+
+`GaloisForLFunctions.HTGeometry.BarnesLadderGeneralGenus` removes the genus restriction.
+`barnesNumerator_sub` says the difference of the two numerators is the common denominator times the
+telescoping factor,
+
+```text
+u - v = D (1/w_{n+e_j} - 1/w_n),
+```
+
+and factoring the difference of `N`-th powers through `geom_sum_2_mul` cancels `D` outright:
+
+```text
+barnesAtom_shift_sub_eq_geom :
+  A_n(z + omega_j) - A_{n+e_j}(z)
+    = (1/w_{n+e_j} - 1/w_n) * sum_{k<N} u^k v^{N-1-k}.
+```
+
+So at **every** genus the ladder correction is the genus-one telescoping factor multiplied by a
+polynomial in the two numerators, and in particular it has no pole.  The genus-one case is the
+special case where the polynomial factor is the empty product one.  `#print axioms` clean.
+
+### Thirteenth brick: the order-one ladder, complete
+
+`GaloisForLFunctions.HTGeometry.BarnesLadderOrderOne` closes the bottom step of the hierarchy for
+the constructed source.  With a single structural direction the slice on which the exponent vanishes
+is the zero vector alone, whose atom is zero, so `tsum_barnesAtom_slice_card_one` kills the slice
+series.  The correction series then splits off its zero term, which is the explicit rational atom at
+the unit exponent, and every remaining term is the argument-free telescoping difference of the
+previous brick.  Hence
+
+```text
+barnesSource_shift_sub_card_one :
+  Psi(z + omega_j) - Psi(z)
+    = -A_{e_j}(z) + sum_{n != 0} (1/w_{n+e_j} - 1/w_n),
+```
+
+an explicit rational function of the argument plus a constant.  **The order-one ladder of the
+constructed source is rational, hence differentially algebraic** — the bottom of the Barnes ladder,
+proved rather than assumed.  `#print axioms` clean.
+
+### Fourteenth brick: the ladder coefficients converge
+
+Expanding the factored correction in powers of the argument produces, for each split `k` of the
+genus, a constant obtained by summing one coefficient over the cone.
+`GaloisForLFunctions.HTGeometry.BarnesLadderCoefficients` proves those constants exist.
+
+`conePeriod_inv_sub_inv` puts the telescoping factor in closed form,
+
+```text
+1/w_{n+e_j} - 1/w_n = -omega_j / (w_n w_{n+e_j}),
+```
+
+so the coefficient at split `k` is `omega_j` over a product of `N+1` cone values.  Both cone values
+are at least `delta` times the total degree, and `norm_conePeriod_le` bounds the ambient one above
+by `(sum_i |omega_i|)` times the same total degree, so
+
+```text
+norm_barnesLadderCoefficient_le :
+  |c_{n,k}| <= |omega_j| ((sum_i |omega_i|)/delta)^{N+1} |w_n|^{-(N+1)},
+```
+
+the critical exponent.  Hence `summable_barnesLadderCoefficient`: every coefficient family is
+summable, so the expansion of the correction series in powers of the argument has well-defined
+constant coefficients.  `#print axioms` clean.
+
+### Fifteenth brick: the correction is a polynomial at every genus
+
+`GaloisForLFunctions.HTGeometry.BarnesLadderPolynomial` completes the ladder correction.
+`barnesLadderTerm_eq` separates the argument from the cone in each term of the factored correction,
+
+```text
+t_n u_n^k v_n^{N-1-k} = ((-1)^{N-1} (z + omega_j)^k z^{N-1-k}) * c_{n,k},
+```
+
+with `c_{n,k}` the ladder coefficient, carrying no `z` at all.  Since the `k`-sum is finite and each
+coefficient family is summable, the cone sum passes inside, giving
+
+```text
+tsum_barnesLadderCorrection_eq :
+  sum_n (A_n(z + omega_j) - A_{n+e_j}(z))
+    = -A_{e_j}(z)
+      + sum_{k<N} ((-1)^{N-1} (z + omega_j)^k z^{N-1-k}) * (sum_n c_{n,k}).
+```
+
+The first term is the explicit rational atom at the unit exponent; the rest is a **polynomial in the
+argument with constant coefficients**.  So the ladder correction is differentially algebraic at every
+genus, not only at genus one.  `#print axioms` clean.
+
+Combined with `barnesSource_ladder_decomposition` and `tsum_barnesAtom_slice_eq_lower`, the classical
+Barnes ladder `x_j Psi_N = -Psi_{N-1}(z | omega^{(j)})` now holds for the constructed source modulo
+the differentially algebraic sector, at every order.
+
+### Sixteenth brick: the discrete-residue obstruction
+
+The atomic theorem's contradiction is the statement that a rationally summable rational function has
+vanishing discrete residues — proved on paper "by telescoping the finitely many principal parts of
+`g` along each integer orbit".  That telescoping is combinatorial, and
+`GaloisForLFunctions.HTGeometry.TelescopingJumpObstruction` proves it.
+
+Along one integer orbit the poles of `g` form a finite set of integers, and the poles of
+`g(u+1) - g(u)` are exactly its **jumps**: the places where the membership indicator changes, since
+at an extreme pole one of the two terms is regular and cannot cancel the other.  Then
+
+```text
+exists_two_jumps        : a nonempty finite set of integers has two distinct jumps —
+                          after its maximum and before its minimum;
+eq_empty_of_single_jump : if the indicator is constant across every step but one, the set is empty.
+```
+
+So a telescoped difference never has exactly one pole on an orbit: a rational function whose poles on
+some orbit reduce to a single class is not rationally summable.  That is the obstruction the atomic
+scaled-digamma theorem invokes at the pole class `-h_i/omega + Z`.
+
+The same module carries the statement at the level of **pole orders**, which is the form the
+argument actually needs, since the atomic theorem's contradiction is about a pole of order `d_i + 1`
+rather than mere membership:
+
+```text
+exists_two_order_jumps            : a finitely supported order function on an orbit has two
+                                    distinct steps where it changes value;
+eq_zero_of_single_order_jump      : one exceptional step forces the order to vanish identically;
+eq_zero_of_jump_poles_subsingleton: if every order jump forces a pole of the difference and the
+                                    difference has at most one pole on the orbit, there are no
+                                    poles at all.
+```
+
+The last one is the interface the analytic step plugs into: it isolates exactly what the
+discrete-residue argument contributes, leaving only the no-cancellation fact at an extreme pole as
+analytic input.  `#print axioms` clean.
+
+### Seventeenth brick: the obstruction for an actual rational function
+
+`GaloisForLFunctions.HTGeometry.RationalPoleOrder` instantiates the obstruction on genuine rational
+functions.  `poleOrder g c` is the multiplicity of `c` as a root of the reduced denominator, so
+`poleOrder_pos_iff` makes it positive exactly at the poles, and
+`finite_support_poleOrder_orbit` shows the orbit order function `orbitPoleOrder g c` is finitely
+supported: a nonzero polynomial has finitely many roots and the orbit map is injective.  Feeding
+that into the interface gives
+
+```text
+poleOrder_orbit_eq_zero_of_subsingleton :
+  if every order jump of g along the orbit forces a pole of the telescoped difference, and the
+  difference has at most one pole on the orbit, then g has no pole on the orbit at all,
+not_isRoot_denom_orbit_of_subsingleton  : the same conclusion stated at the denominator.
+```
+
+So for an honest rational function the discrete-residue obstruction is now a theorem, modulo the
+single analytic fact that an extreme pole survives the telescoping.
+
+### Eighteenth brick: the extreme pole survives
+
+That last fact is now proved too, and it needs no valuation theory.  `RegularAt g c` says `g` can be
+written with a denominator not vanishing at `c`, and `regularAt_iff_poleOrder_eq_zero` identifies it
+with vanishing pole order through `RatFunc.denom_dvd`.  Regularity is closed under the ring
+operations — `RegularAt.add`, `RegularAt.neg`, `RegularAt.sub` — because a common denominator works,
+so the regular functions at a point form a local subring.  Hence
+
+```text
+poleOrder_sub_eq_zero : regular minus regular is regular,
+poleOrder_sub_ne_zero : if a has a pole at c and b does not, then b - a has a pole at c.
+```
+
+The second is the survival statement: a regular difference would exhibit `a = b - (b - a)` as
+regular.  At the top of a pole orbit `g(u+1)` is regular while `g(u)` is not, so the telescoped
+difference has a pole there — and symmetrically below the bottom.  `#print axioms` clean.
+
+### Nineteenth brick: shifting the variable moves the orbit
+
+The telescoped difference compares `g` with `g(X+1)`, so the obstruction needs the shift to move
+pole orbits by one step.  `GaloisForLFunctions.HTGeometry.PolynomialShift` supplies it:
+`polyShift a` is the algebra automorphism substituting `X + a`, with inverse the substitution of
+`X - a`, and `polyShift_sub_C` sends the linear factor at `c + a` to the linear factor at `c`.
+Transporting divisibility by powers of linear factors along the automorphism gives
+
+```text
+rootMultiplicity_polyShift :
+  rootMultiplicity c (p(X + a)) = rootMultiplicity (c + a) p.
+```
+
+So the pole orbit of the shifted function is the shifted pole orbit, which is exactly the
+reindexing the telescoping performs.  `#print axioms` clean.
+
+### Twentieth brick: the discrete-residue theorem, assembled
+
+`GaloisForLFunctions.HTGeometry.RationalNonSummability` puts the pieces together.
+`finite_orbit_poles` makes the pole set of `g` on an orbit finite;
+`not_regularAt_sub_of_not_regularAt` and its mirror say that a pole minus a regular term is a pole
+in either order; and `exists_two_jumps` supplies two jumps of the finite pole set.  At each jump one
+of the two terms of the telescoped difference is regular and the other is not, so the difference has
+a pole there.  Therefore
+
+```text
+regularAt_orbit_of_telescoped_pole_subsingleton :
+  if gs is regular exactly one step along from g, and gs - g has at most one pole on the orbit
+  c + Z, then g is regular at every point of that orbit.
+```
+
+This is the discrete-residue obstruction as a theorem about honest rational functions: a telescoped
+difference never has exactly one pole on an orbit.  The shift enters only through its effect on pole
+position, so it appears as the hypothesis on `gs`, which the variable shift of the previous brick
+supplies.  `#print axioms` clean.
+
+### Twenty-first brick: the operator produces a pole of the predicted order
+
+The atomic theorem's contradiction needs not only that the left side has a pole in the class, but
+that its order is `d_i + 1` with nonzero coefficient — that is, that the pole is *exactly* as deep
+as the operator is long.  `poleOrder_powerDenominator` supplies the algebra:
+
+```text
+numerator not vanishing at c  ->  poleOrder (P / (X - c)^m) c = m.
+```
+
+The proof cross-multiplies against the reduced presentation and compares root multiplicities, using
+coprimality of numerator and denominator to kill the numerator's multiplicity.  Applied to
+`L(delta) (1/(omega u + h))`, whose denominator is a pure power of the linear factor of order
+`deg L + 1`, it gives exactly the order the discrete-residue argument needs.  `#print axioms` clean.
+
+### Twenty-second brick: the obstruction in applied form
+
+`not_telescoped_of_unique_orbit_pole` states the obstruction the way the atomic theorem invokes it:
+
+```text
+a rational function with exactly one pole on an integer orbit is not a telescoped difference.
+```
+
+Given a hypothetical telescoper `r = gs - g`, the single pole makes the pole set of `gs - g` on that
+orbit a subsingleton, the previous theorem forces `g` regular on the whole orbit, hence `gs` regular
+at the pole as well, hence `gs - g` regular there — contradicting the pole.  This is exactly the
+step "the corresponding discrete residue is therefore nonzero, contradicting rational summability"
+of the atomic proof, with the pole class `-h_i/omega + Z` supplied by the distinctness of the shifts
+and the pole depth supplied by the previous brick.  `#print axioms` clean.
+
 Only the special-function identification `(A)` remains a paper theorem; it is not inserted into
 Lean as an analytic axiom.
 
@@ -663,9 +1095,46 @@ specialist review.
       Barnes source construction.
 - [x] Genus-`p` Weierstrass elementary factor, its collapsed derivative and its half-disc estimate,
       together with the cone majorant that couples it to the summability brick.
-- [ ] Barnes source object in Lean: local uniform convergence of the cone product, entirety of
-      `1/Gamma_N`, the ladder relation, and the atomic differential independence of the
-      scaled-digamma translates.
+- [x] Local uniform convergence of the genus-`N` cone product and entirety of its limit.
+- [x] Barnes source object in Lean: the cone product is a nonzero entire germ, hence a nonzero
+      element of the global meromorphic field, and its logarithmic derivative is the source.
+- [x] The rational atom of one cone factor, and the two cone reindexings the ladder is assembled
+      from.
+- [x] The source expressed as the convergent atom series, with nonvanishing of the product off the
+      poles.
+- [x] The atom of the source named, the atomwise ladder shift proved, and the reindexing bijection
+      and complementary slice constructed.
+- [x] The ladder decomposition: the shift difference of the source equals the correction series
+      over the cone minus the atom series of the deleted-frame slice, both convergent.
+- [x] The genus mismatch between the ladder slice and the lower source priced exactly: a constant
+      times `z^N`, hence a polynomial.
+- [x] The slice-to-deleted-frame reindexing, so the ladder slice is the lower source up to a
+      monomial.
+- [x] The ladder correction shown polynomial in the common denominator, and constant at genus one.
+- [x] The ladder correction factored at every genus as the telescoping factor times a polynomial in
+      the numerators, hence pole-free.
+- [x] The order-one ladder complete: the shift difference of the order-one source is an explicit
+      rational function plus a constant.
+- [x] The coefficient families of the higher-genus correction proved summable at the critical
+      exponent.
+- [x] The ladder correction assembled as an explicit rational atom plus a polynomial, at every
+      genus, so the ladder holds modulo the DA sector at every order.
+- [x] The discrete-residue obstruction: a telescoped difference has no single-pole orbit, at the
+      level of both membership and pole orders, with the interface form for the analytic step.
+- [x] The obstruction instantiated on genuine rational functions through the denominator
+      multiplicity, with finiteness of the orbit order function.
+- [x] Survival of an extreme pole under telescoping, from the local subring of regular functions.
+- [x] The variable shift as an algebra automorphism moving root multiplicities along the orbit.
+- [x] The discrete-residue theorem assembled: a telescoped difference of rational functions never
+      has exactly one pole on an integer orbit.
+- [x] The exact pole order of a reduced power-denominator fraction, giving the depth an operator of
+      order `d` produces at a simple pole.
+- [x] The obstruction in applied form: a single orbit pole blocks rational summability outright.
+- [x] Theorem `(A)` formalized end to end on the Barnes source: `Ann_DA^diff(Psi_N) = (x_1...x_N)D_N`.
+- [x] The structural annihilator `Ann_DA(Psi_N) = (x_1...x_N)` formalized on the Barnes source.
+- [x] The difference-Galois criterion for indefinite sums, in the only direction the theorem needs,
+      proved from scratch: no Hardouin--Singer citation is required.
+- [x] The atomic differential independence of the scaled-digamma translates, unconditionally.
 - [ ] Full-text audit of Nishizawa's 2001 Barnes paper.
 - [ ] Equivalent/stronger-result audit across difference Galois theory and Barnes product identities.
 - [ ] Routine-parent and significance verdict from independent experts.
@@ -696,3 +1165,770 @@ specialist review.
   half-disc estimate (mathlib has only genus one), and coupled it to the cone summability by the
   majorant `|E_N(-z/w_n) - 1| <= C |w_n|^{-(N+1)}`.  The convergence input of the Barnes product is
   now complete; what remains is the product itself and the ladder.
+- 2026-08-03 — Built the cone product and proved it entire: only finitely many exponent vectors have
+  small cone value, so on every compact set the genus estimate and the cone summability give a
+  uniform majorant.  The Barnes analytic object now exists in Lean; what remains is its zero set,
+  the ladder relation, and the atomic independence.
+- 2026-08-03 — Placed the constructed object in the corpus's meromorphic differential field: the
+  cone product is one at the origin, hence a nonzero entire germ, and `barnesSourceLogDerivMero` is
+  its logarithmic derivative.  The Barnes source is now a genuine element of the differential field
+  the annihilator theorem is stated in; the ladder relation is next.
+- 2026-08-03 — Computed the rational atom of one cone factor: the exponential correction cancels
+  and the collapsed derivative leaves `(-z/w_n)^N/(w_n+z)`, so the source is the classical
+  regularized digamma series term by term.  Isolated the two cone reindexings the ladder needs.
+- 2026-08-03 — Summed the atoms: one majorant principle (dominated off a finite set by the inverse
+  cone powers) gives both nonvanishing of the product off the poles and summability of the atoms,
+  hence `logDeriv (barnesConeProduct) = sum_n (-z/w_n)^N/(w_n+z)`.  The constructed source is now
+  identified with the classical regularized digamma series as a convergent sum.
+- 2026-08-03 — Named the atom, restated the source as the atom series, and proved the atomwise
+  ladder shift: the shifted argument and the shifted exponent vector share a denominator, so the
+  ladder difference is the numerator difference over it.  Built the reindexing bijection and
+  identified the complementary slice with the deleted-frame cone.
+- 2026-08-03 — Summed the atomwise shift over the bijection: `barnesSource_ladder_decomposition`
+  gives the shift difference of the source as the correction series minus the deleted-frame slice
+  series, both genuinely convergent.  The ladder is now an identity of sums in Lean.
+- 2026-08-03 — Priced the genus mismatch: raising the genus of an atom costs a pole-free term, the
+  corrections are summable at the critical genus, and their sum is `(-1)^N z^N` times a cone zeta
+  value — a monomial.  The Setup's normalization remark is now proved for the constructed source.
+- 2026-08-03 — Identified the ladder slice: restriction is a bijection onto the deleted-frame cone
+  matching cone values and the zero vector, and the genus drops by exactly one, so the slice is the
+  lower source minus a monomial.  The classical ladder now holds for the constructed object modulo
+  the DA sector, except for the remaining correction series.
+- 2026-08-03 — Showed the ladder correction is polynomial in the common denominator: both numerators
+  are `1 - D/w`, so their difference is divisible by `D`.  At genus one the quotient is the constant
+  `1/w_{n+e_j} - 1/w_n`, a telescoping difference with no argument dependence at all.
+- 2026-08-03 — Removed the genus restriction: the numerator difference is the denominator times the
+  telescoping factor, so factoring the difference of `N`-th powers cancels the denominator and the
+  correction is the telescoping factor times a polynomial in the numerators, at every genus.
+- 2026-08-03 — Completed the order-one ladder: at one direction the slice series vanishes and the
+  correction series splits into the explicit rational atom at the unit exponent plus an
+  argument-free constant, so the order-one shift difference is rational.
+- 2026-08-03 — Proved the higher-genus ladder coefficients summable: the telescoping factor in
+  closed form makes each coefficient `omega_j` over `N+1` cone values, and the two-sided cone bounds
+  put it at the critical exponent.
+- 2026-08-03 — Assembled the correction: separating the argument from the cone in each term and
+  passing the cone sum inside the finite genus sum gives the correction as the unit-exponent atom
+  plus a polynomial with constant coefficients.  The ladder now holds modulo DA at every order; the
+  only remaining input of `(A)` is the atomic differential independence.
+- 2026-08-03 — Proved the discrete-residue obstruction combinatorially: a nonempty finite set of
+  integers has two jumps, so a telescoped difference never has exactly one pole on an orbit.  This
+  is the contradiction step of the atomic scaled-digamma theorem.
+- 2026-08-03 — Lifted the obstruction from membership to pole orders and exposed the interface form:
+  once the no-cancellation fact at an extreme pole is supplied, a difference with at most one pole
+  on an orbit forces the pole order to vanish identically.
+- 2026-08-03 — Instantiated the obstruction on rational functions: pole order as denominator
+  multiplicity, finiteness of the orbit order function, and the resulting no-single-pole-orbit
+  theorem.  The only analytic input left in the discrete-residue step is survival of an extreme
+  pole under telescoping.
+- 2026-08-03 — Proved that survival with no valuation theory: regular functions at a point form a
+  local subring, so a regular difference would make the polar term regular.  The discrete-residue
+  step of the atomic theorem is now complete; what remains is the Hardouin--Singer criterion.
+- 2026-08-03 — Built the variable shift as an algebra automorphism and proved it moves root
+  multiplicities along the orbit, which is the reindexing the telescoped difference performs.
+- 2026-08-03 — Assembled the discrete-residue theorem for rational functions: finite orbit pole set,
+  two jumps, and pole-minus-regular-is-pole give that a telescoped difference never has exactly one
+  pole on an orbit.  The rational-summability obstruction of the atomic theorem is now Lean.
+- 2026-08-03 — Added the exact pole order of a reduced power-denominator fraction, which is the
+  depth a constant-coefficient operator of order `d` produces at a simple pole.  Every algebraic
+  ingredient of the atomic theorem is now Lean; the remaining input is Hardouin--Singer itself.
+- 2026-08-03 — Stated the obstruction in applied form: a rational function with exactly one pole on
+  an integer orbit is not a telescoped difference.  This is the contradiction the atomic proof
+  reaches once Hardouin--Singer supplies the telescoper.
+- 2026-08-03 — Removed the Hardouin--Singer dependence entirely.  The direction the theorem needs is
+  elementary: coefficient shift plus variable translation acts on the top of the degree filtration by
+  `sigma` alone, so normalising a leading coefficient makes the relation ideal descend to a
+  `Phi`-invariant element, partial derivatives linearise it, and an affine-linear invariant *is* a
+  telescoper.  Proved in Lean over an arbitrary `sigma`-`delta`-field and for an arbitrary shift.
+- 2026-08-03 — Identified the Barnes annihilator with the top squarefree Veronese ideal, making the
+  Barnes source a normal-crossing source and closing the second-realization gate of the fat-point
+  card.
+- 2026-08-03 — Split off the structural (translation-only) annihilator as an explicit theorem, by
+  descending divisibility along the retraction that evaluates the differential variable at zero.
+- 2026-08-03 — **`(A)` is proved in Lean for the Barnes source itself**: for rationally independent
+  periods in a half-plane, `P Psi_N` is differentially algebraic over `C(z)` exactly when the full
+  ladder product divides `P`.  No analytic or difference-Galois input is assumed anywhere in the
+  chain.
+- 2026-08-03 — The descent induction is Lean: the ladder product over all directions but `j` reaches
+  the single-direction source modulo DA, with the accumulated sign.  At `S = univ` this is the ladder
+  hypothesis of `(A)`.
+- 2026-08-03 — Found and removed the sign obstruction: the descent produces `(-1)^N phi`, so `(A)`
+  now takes its ladder hypothesis with a nonzero constant multiple, divided out by the constant
+  pass-through laws of the operator action.
+- 2026-08-03 — Added the operator half of the descent: the ladder product peels one direction, and
+  the empty product acts trivially.  Both halves of the induction are now in matching form.
+- 2026-08-03 — Restated the ladder step between subframes indexed by a finite set and by that set
+  with one element erased — the exact inductive step for the descent to a single direction.
+- 2026-08-03 — Proved the Barnes source invariant under reindexing the frame, the lemma that keeps
+  the nested subtypes of repeated deletion from drifting apart during the iteration.
+- 2026-08-03 — Removed the `hfull` hypothesis from `(A)`: the full ladder product lands in the DA
+  sector automatically, by one application of the ring action to the ladder hypothesis.
+- 2026-08-03 — Lifted the multi-period ladder into the field: one ladder step of the Barnes source is
+  differentially algebraic, i.e. `x_j Psi_N = -Psi_(N-1)` modulo DA.  Only the two iterations remain.
+- 2026-08-03 — Proved the multi-period ladder defect equal to one explicit rational function off the
+  poles, composing the ladder decomposition, the correction series, the slice identification and the
+  single-step atom.  With the previous brick this makes the defect differentially algebraic.
+- 2026-08-03 — Made rational ladder corrections free: an element with a rational punctured
+  representative is that rational function, hence differentially algebraic.  The multi-period ladder
+  now needs only the explicit `p/q` and the pointwise identity off the poles.
+- 2026-08-03 — Attached the atomic theorem to the genuine Barnes source: its corrected order-one
+  translates are differentially independent over `C(z)`, and a nonzero operator avoiding the ladder
+  direction is hypertranscendental on it.
+- 2026-08-03 — Ran the lift: the order-one Barnes ladder is now an identity in the meromorphic
+  field, and after absorbing its constant by a shift coboundary the corrected source satisfies the
+  normalized ladder equation `sigma_omega phi - phi = 1/(z + omega_j)` — the hypothesis `hφ` of `(A)`.
+- 2026-08-03 — Completed the ingredients of the germ lift: punctured-thinness of the cone poles, the
+  rational representative, and the representatives of the Barnes source and its translate.  All that
+  is left of `(A)` is running these on the corpus's pointwise ladder identities.
+- 2026-08-03 — Built the keystone of the germ lift: a punctured-local representative determines the
+  field element, plus the representatives of the two pieces a ladder identity is made of (the
+  logarithmic derivative of an entire germ, and a translate).  Only the local finiteness of the
+  Barnes pole set is still to be fed in.
+- 2026-08-03 — Put the ladder defect in its natural normalization `1/(z + b)` throughout the chain,
+  which is the shape the corpus's Barnes source produces; recorded the three-step route for lifting
+  the pointwise Barnes ladder into the meromorphic field, the only remaining step of `(A)`.
+- 2026-08-03 — Assembled `(A)` in Lean as an exact iff for any laddered source: the operator ring
+  action (including multiplicativity), the splitting at `T_j = 1` with its avoidance property, and a
+  divisibility criterion that needs no primality.  Only the instantiation of the two ladder
+  hypotheses at the Barnes source remains.
+- 2026-08-03 — Built the reverse-inclusion engine of `(A)`: the operator row on ladder translates, the
+  monomial shift dictionary from rational independence of the periods, and the action of
+  `C[delta, T_1, ..., T_N]` with its two laws (DA sector preserved; a nonzero operator avoiding one
+  direction is HT on that direction's ladder solution).  Recorded the five remaining bookkeeping
+  steps that would state `(A)` as a single Lean theorem.
+- 2026-08-03 — Closed the last Lean gate of `(A)`: dilation of the coordinate transfers the corpus's
+  unit-shift orbit-residue theorem to the shift `omega`, and the atomic scaled-digamma theorem is now
+  unconditional Lean in the global meromorphic differential field, in the exact form the card uses
+  (translates of a solution of the order-one Barnes ladder).
+
+### Twenty-third brick: the difference-Galois criterion is elementary
+
+The paper proof of the atomic theorem cites Hardouin--Singer, Corollary 3.2, for the implication
+
+```text
+the indefinite sums are differentially dependent  ==>  a constant-coefficient telescoper exists.
+```
+
+That citation is **not needed**.  The implication is elementary, and the Lean development proves it
+in full generality.  Let `K` be a field with a ring endomorphism `sigma`, let `R` be a family in `K`,
+and let
+
+`Phi(P) = P^sigma(X + R)`
+
+act on `K[X_i : i]`.  If `y_i` lie in a `sigma`-`delta`-extension of `K` with `sigma(y_i) - y_i = r_i`
+in `K`, then the jets satisfy `sigma(delta^k y_i) = delta^k y_i + delta^k r_i`, so applying `sigma`
+to a polynomial relation among the jets is exactly applying `Phi` to the relating polynomial: the
+ideal `J` of relations is `Phi`-stable, and it contains no nonzero constant because `K` embeds in the
+extension.
+
+Three facts then force a telescoper.
+
+1. *Descent.*  Normalising one top-degree coefficient of `P` to `1` makes it cancel in
+   `Phi(P) - P`, because `Phi` acts on the top-degree coefficients by `sigma` alone.  Hence either
+   `Phi(P) = P` or the pair `(total degree, number of top-degree monomials)` drops lexicographically.
+   The descent terminates, and only at a nonzero `Phi`-invariant element of `J`.
+2. *Linearisation.*  `Phi` commutes with every partial derivative, and in characteristic zero some
+   partial derivative lowers the total degree by exactly one.  A `Phi`-invariant element of positive
+   degree therefore produces a `Phi`-invariant polynomial of degree exactly one.
+3. *Reading off.*  An affine-linear `b + sum_i a_i X_i` satisfies
+   `Phi(b + sum a_i X_i) = (sigma b + sum sigma(a_i) R_i) + sum sigma(a_i) X_i`, so invariance says
+   exactly `sigma(a_i) = a_i` and `sum_i a_i R_i = sigma g - g` with `g = -b`.
+
+Lean: `shiftTranslate`, `coeff_shiftTranslate_of_le`, `totalDegree_shiftTranslate_le`,
+`exists_ne_zero_shiftTranslate_eq_self`, `pderiv_shiftTranslate`, `exists_pderiv_totalDegree_eq`,
+`exists_totalDegree_eq_one_shiftTranslate_eq_self`, `shiftTranslate_affineLinearPoly`,
+`exists_affineLinearPoly_repr`, `exists_telescoper_of_mem_ideal`, and the differential form
+`exists_telescoper_of_not_differentialIndependent`.  All `#print axioms` clean.
+
+This is strictly stronger than what the card used: the criterion holds over an arbitrary
+`sigma`-`delta`-field, for an arbitrary shift, with no Picard--Vessiot theory.
+
+### Twenty-fourth brick: dilating the coordinate transfers the orbit-residue theorem
+
+Composition with `X -> omega X` is an automorphism of `C(X)` for `omega != 0` and conjugates the
+translation by `omega` into the unit translation,
+
+`(r(X + omega))(omega X) = r(omega X + omega) = (r(omega X))(X + 1)`,
+
+fixes the constants, and scales the jet increments of a simple pole:
+
+`((-1)^j j! / (X + b)^(j+1))(omega X) = omega^(-(j+1)) (-1)^j j! / (X + b/omega)^(j+1)`.
+
+Hence the unit-shift orbit-residue theorem transfers to every nonzero shift: for `b_i` pairwise
+incongruent modulo `omega Z`, no nonzero constant charge matrix on the increment jets is an
+`omega`-shift coboundary; and a rational function fixed by a nonzero translation is constant, which
+is what identifies the `sigma`-invariant coefficients of the telescoper as complex numbers.
+
+Lean: `ratScaleBy`, `ratScaleBy_ratShiftBy`, `ratShiftBy_fixed_eq_const`,
+`ratScaleBy_familyIncrement`, `ratShiftBy_sub_familyIncrement_combination`.  `#print axioms` clean.
+
+### Twenty-fifth brick: the atomic scaled-digamma theorem
+
+Combining the two previous bricks in the global meromorphic differential field closes the atomic
+step of `(A)`:
+
+```text
+if sigma_omega(y_i) - y_i = 1/(X + b_i) with the b_i pairwise incongruent mod omega Z,
+then y_1, ..., y_r are differentially independent over C(X).
+```
+
+A differential relation would give constants, not all zero, and a rational `g` with
+`sum_(i,j) a_(i,j) d^j/dX^j (1/(X + b_i)) = g(X + omega) - g(X)`, which the dilated orbit-residue
+theorem forbids.  Specialised to the translates of one solution of the order-one Barnes ladder
+`sigma_omega phi - phi = 1/X` — that is, to `phi = Psi_1(.|omega)` — this is exactly the atomic
+scaled-digamma theorem of the card: for shifts pairwise distinct modulo `omega Z`, the translates
+`phi(z + h)` are differentially algebraically independent over `C(z)`.
+
+Lean: `differentialIndependent_of_shiftDefect_simplePole`, `differentialIndependent_ladderTranslate`.
+`#print axioms` clean.
+
+### Twenty-sixth brick: the reverse-inclusion step of `(A)`, in operator form
+
+Three further layers turn the atomic theorem into the exact step the reverse inclusion of `(A)`
+performs.
+
+*The operator row.*  Restricting the coefficient field of the atomic theorem to the constants keeps
+the translates differentially independent, and a nonzero row of constant-coefficient differential
+operators on a differentially independent family is hypertranscendental over the constants.  Since
+differential algebraicity over the coordinate field descends to the constants, the form is
+hypertranscendental over the coordinate field as well:
+
+```text
+hypertranscendentalOver_ladderTranslateOperatorRow(_fintype) :
+  L != 0  ==>  sum_i L_i(delta) phi(z + h_i)  is HT over C(z).
+```
+
+*The monomial shift dictionary.*  For rationally independent periods, two distinct exponent vectors
+avoiding the direction `j` translate through shifts in different classes modulo `omega_j Z`; an
+equality of classes is a nontrivial integral relation among the periods
+(`monomialShift_incongruent`).
+
+*The operator ring in action.*  `diffTranslateApply` applies an element of
+`C[delta, T_1, ..., T_N]` -- a finitely supported family of differential operators indexed by
+translation exponent vectors -- to a meromorphic element.  Two laws:
+
+```text
+differentialAlgebraicOver_diffTranslateApply :
+  y DA  ==>  P y DA                                   (the forward inclusion engine)
+
+hypertranscendentalOver_diffTranslateApply_of_avoid :
+  P != 0, no monomial of P uses T_j, sigma_(omega_j) phi - phi = 1/z
+     ==>  P phi is HT over C(z)                       (the reverse inclusion engine)
+```
+
+The second is exactly the card's step "`Q phi_j` cannot be DA", with the finitely many monomials of
+`Q` collected and the distinctness of their shift classes supplied by the dictionary.  `#print axioms`
+clean.
+
+### What remains to state `(A)` as one Lean theorem
+
+Every *ingredient* of `(A)` is now Lean.  Assembling the single statement
+`Ann_DA^diff(Psi_N) = (x_1...x_N) D_N` needs only bookkeeping in the operator ring, in this order.
+
+1. **The operator action is a ring action.**  `diffTranslateApply` is additive in the operator and
+   satisfies `(P Q) y = P (Q y)`; the inputs are all present -- `differentialOperatorApply_mul`,
+   `differentialOperatorApply_add`, `addTranslationMeroEquiv_differentialOperatorApply`,
+   `addTranslationMeroEquiv_add`, and additivity of `monomialShift`.  The model is
+   `D_N = MvPolynomial (Fin N) (Polynomial C)` with the variables acting as the translations `T_j`,
+   which is literally the type `(Fin N ->0 N) ->0 Polynomial C` the action is defined on.
+2. **The splitting at `T_j = 1`.**  `P - P|_{T_j = 1}` lies in `(T_j - 1)`, monomial by monomial from
+   `(T_j - 1) | T_j^m - 1`.  In the translation variables `P|_{T_j = 1}` literally omits `T_j`, which
+   is exactly the avoidance hypothesis of `hypertranscendentalOver_diffTranslateApply_of_avoid`.
+3. **The divisibility criterion.**  `prod_j (T_j - 1) | P  <->  forall j, (T_j - 1) | P`, from the
+   already formalized `mem_span_prod_iff_forall_dvd_of_pairwise_isRelPrime` once the `T_j - 1` are
+   pairwise relatively prime -- equivalently, after the automorphism `T_j -> T_j + 1`, once the
+   variables are, which follows from their primality.
+4. **The ladder reduction.**  `D_j Psi_N = +- Psi_1(z|omega_j)` modulo the DA sector, by iterating the
+   Barnes ladder decomposition already proved for the source; and `x_1...x_N Psi_N` is rational, the
+   forward inclusion.
+5. **Assembly.**  Forward from `differentialAlgebraicOver_diffTranslateApply`; reverse from 1--4 plus
+   `hypertranscendentalOver_diffTranslateApply_of_avoid`.
+
+No further analytic input is needed: after this session the analytic content of `(A)` is complete and
+what is left is the operator-ring algebra above.
+
+### Twenty-seventh brick: `(A)` assembled
+
+The operator ring, the splitting and the divisibility criterion are now Lean, and with them the
+statement `(A)` itself.
+
+*The ring action.*  `diffTranslateApply` is additive in the operator and in the argument, the unit
+acts as the identity, and
+
+```text
+diffTranslateApply_mul : (P Q) y = P (Q y),
+```
+
+proved by reduction to monomials: translations commute with every constant-coefficient differential
+operator and compose additively, so the translation monomials multiply exactly as the operators do.
+The model is `D_N = MvPolynomial (Fin N) C[delta]`.
+
+*The splitting.*  For any two algebra homomorphisms out of a polynomial ring, the difference of the
+values lies in the ideal generated by the differences on the variables
+(`sub_mem_span_range_sub_of_algHom`).  Applied to the identity and to the substitution `T_j -> 1` this
+gives `P - P|_{T_j=1} in (T_j - 1)`, and `vars` shows `P|_{T_j=1}` does not involve `T_j` at all --
+exactly the avoidance hypothesis of the reverse-inclusion engine.
+
+*The divisibility criterion, without primality.*  Over a domain,
+
+```text
+(forall j in S, P|_{T_j = 1} = 0)  ==>  prod_{j in S} (T_j - 1) | P,
+```
+
+by induction on `S`: after factoring out one `T_i - 1`, the substitution in another direction fixes
+that factor, and cancelling it in a domain propagates the vanishing to the cofactor.  The card's plan
+called for pairwise coprimality of the ladder operators; it is not needed.  Contrapositively, a
+missing divisibility hands over both the distinguished direction `j` and the nonzero restriction
+`Q = P|_{T_j=1}` at once.
+
+*The theorem.*  For rationally independent periods and a source `Psi` with the ladder property --
+`D_j Psi = phi_j` modulo the DA sector, where `phi_j` solves `phi(z+omega_j) - phi(z) = 1/z`, and the
+full product `prod_j (T_j - 1) Psi` already DA -- every constant-coefficient differential-translation
+operator satisfies
+
+```text
+differentialAlgebraicOver_diffTranslateApply_iff_fullLadder_dvd :
+  P Psi is DA   <->   prod_j (T_j - 1) | P.
+```
+
+That is `(A)`: `Ann_DA^diff(Psi_N) = (x_1 ... x_N) D_N`.  Forward by the ring action on an already DA
+element; reverse by the splitting, the ladder reduction, the rationality of `(T_j - 1) phi_j = 1/z`,
+and the hypertranscendence of the nonzero restriction.  `#print axioms` clean.
+
+What remains is to instantiate the two ladder hypotheses at the corpus's Barnes source, which is the
+iterated ladder decomposition already proved for it.
+
+### Twenty-eighth brick: the ladder defect in its natural normalization
+
+The whole chain -- atomic independence, operator row, monomial sum, operator action, and `(A)` --
+now carries the ladder defect in the shape
+
+```text
+sigma_(omega_j) phi - phi = 1/(z + b),
+```
+
+with an arbitrary pole location `b`, instead of the normalized `1/z`.  This is what the corpus's
+Barnes source actually produces: its order-one ladder gives the defect `-1/(z + omega_j)` plus a
+constant, and a constant is a shift coboundary (`w = (c/omega) z`), so replacing `Psi_1` by
+`-Psi_1 + w` puts the defect in exactly the above shape with `b = omega_j`.  The generalization is
+free: the translates of `phi` then have defects `1/(z + b + h_i)`, and the incongruence condition on
+the `h_i` is unchanged.
+
+### The one remaining step: lifting the Barnes ladder into the field
+
+`(A)` is now a Lean theorem for every source with the ladder property.  Instantiating it at the
+corpus's Barnes source `barnesSourceLogDerivMero` needs the pointwise ladder identities -- already
+proved as identities of functions off the poles -- to be lifted to identities in the meromorphic
+field.  The route is fixed by what the corpus already owns:
+
+1. **Uniqueness of a punctured representative.**  If two field elements are represented by the same
+   function on a punctured neighbourhood of every point, they are equal: cross-multiplying gives two
+   entire functions agreeing off a discrete set, hence agreeing, by the identity theorem the corpus
+   already uses for `isDomain_analyticSubring`.  The representation predicate
+   `HasPuncturedMeromorphicRep` and its closure properties are built; only the uniqueness direction
+   is missing.
+2. **Representatives of the pieces.**  `Psi = logDeriv` of an entire germ has the punctured
+   representative `P'/P`; translation of a representative is the translated representative; the
+   rational atom and the lower source are represented by themselves.
+3. **The discreteness of the pole set**, which makes "for all `z` off the poles" into "eventually on
+   every punctured neighbourhood" -- the local finiteness `finite_conePeriod_lt` already proved for
+   the cone.
+
+With those, `barnesSource_ladder_decomposition` and `barnesSource_shift_sub_card_one` become the two
+hypotheses `hladder` and `hφ` of `(A)`, and the exact annihilator theorem holds for the Barnes source
+itself.
+
+### Twenty-ninth brick: the germ lift, keystone and pieces
+
+Two of the three steps of the lift are now Lean.
+
+*Uniqueness of a punctured representative.*
+
+```text
+eq_of_hasPuncturedMeromorphicRep :
+  x, y represented by the same function on a punctured neighbourhood of every point  ==>  x = y.
+```
+
+Cross-multiplying the two entire presentations gives an entire `f k - h g`.  At a point where the
+first denominator is nonzero the second is nonzero on a punctured neighbourhood -- a nonzero entire
+function has isolated zeros -- so `f k - h g` vanishes there, hence vanishes on a full neighbourhood
+(a nonzero analytic germ cannot vanish on a punctured neighbourhood), hence identically by the
+identity theorem on the connected plane.  Equality of the cross products is equality of the
+fractions.  This is the missing direction the corpus's `HasPuncturedMeromorphicRep` layer did not
+have.
+
+*Representatives of the pieces.*
+
+```text
+hasPuncturedMeromorphicRep_logDeriv : logDeriv of an entire germ is represented by f'/f;
+HasPuncturedMeromorphicRep.translate : a translate is represented by the translated function.
+```
+
+The first is the compatibility of the field derivation with differentiation of analytic germs; the
+second is that translation of the field is precomposition on germs, together with the fact that the
+translation carries the punctured neighbourhood of a point to that of its translate.  `#print axioms`
+clean.
+
+What remains of the lift is the third step: the Barnes pole set `{-conePeriod omega n : n != 0}` is
+locally finite (`finite_conePeriod_lt` already gives this), so "for every `z` off the poles" upgrades
+to "eventually on the punctured neighbourhood of every point", which is the hypothesis the two
+theorems above consume.  With that, `barnesSource_shift_sub_card_one` and
+`barnesSource_ladder_decomposition` become identities in the field, and they are exactly the
+hypotheses `hφ` and `hladder` of `(A)`.
+
+### Thirtieth brick: the lift is assembled except for the identity itself
+
+The third step of the germ lift is now Lean too, together with the representatives the Barnes ladder
+needs.
+
+*The cone poles are punctured-thin.*  Only finitely many cone periods lie in a bounded region, so the
+pole set meets a unit ball in a finite set, and a finite set is avoided on the punctured neighbourhood
+of every point:
+
+```text
+eventually_nhdsNE_conePeriod_add_ne_zero :
+  for every z0, eventually on the punctured neighbourhood of z0, no nonzero cone period cancels the
+  argument;
+eventuallyEq_nhdsNE_of_forall_off_conePoles :
+  hence a pointwise identity valid off the poles holds eventually on every punctured neighbourhood.
+```
+
+*The representatives.*
+
+```text
+hasPuncturedMeromorphicRep_ratfuncToMero          : a rational function, by num/denom;
+hasPuncturedMeromorphicRep_barnesSourceLogDerivMero : the Barnes source, by logDeriv of the cone
+                                                      product;
+hasPuncturedMeromorphicRep_addTranslation_...      : its translate, by the translated logDeriv.
+```
+
+All `#print axioms` clean.  Every ingredient of the lift is now present: uniqueness, the
+representatives of source, translate and rational function, and the punctured-thinness that converts
+"off the poles" into "eventually".  What remains is to run them on
+`barnesSource_shift_sub_card_one` -- whose right-hand side is, after expanding the order-one atom,
+`1/omega_j - 1/(z + omega_j)` plus a constant tsum -- to obtain the field identity
+
+```text
+sigma_(omega_j) Psi - Psi = algebraMap (c - 1/(X + omega_j)),
+```
+
+and then to absorb the constant `c` by the shift coboundary `w = (c/omega_j) z`, giving the exact
+hypothesis `hφ` of `(A)` with `b = omega_j`; the multi-period `hladder` follows by iterating the
+ladder decomposition the same way.
+
+### Thirty-first brick: the order-one Barnes ladder, in the field
+
+The lift now runs.  Both sides of the pointwise order-one ladder are represented on the punctured
+neighbourhood of every point -- the left by the translated logarithmic derivative, the right by the
+logarithmic derivative plus an explicit rational function -- the poles are punctured-thin, and a
+punctured representative determines the element.  Hence, in the meromorphic differential field,
+
+```text
+addTranslationMeroEquiv_barnesSourceLogDerivMero_card_one :
+  sigma_(omega_j) Psi_1 = Psi_1 + ((1/omega_j + K) - 1/(z + omega_j)),
+```
+
+with `K` the constant the ladder produces (the convergent sum of inverse cone-period differences).
+The order-one atom, expanded at `card = 1`, is exactly `-z/(omega_j (omega_j + z))`, whose negative is
+`1/omega_j - 1/(z + omega_j)`; that is where the constant comes from.
+
+Absorbing the constant by the shift coboundary `w = ((1/omega_j + K)/omega_j) z` and negating gives
+
+```text
+addTranslationMeroEquiv_barnesLadderSolutionOne :
+  sigma_(omega_j) phi = phi + 1/(z + omega_j),      phi = -Psi_1 + w,
+```
+
+which is exactly the hypothesis `hφ` of `(A)` with `b = omega_j` -- the reason the defect shape was
+generalized from `1/z` to `1/(z + b)` two bricks ago.  `#print axioms` clean.
+
+The remaining work on `(A)` is now purely the multi-period ladder: iterating
+`barnesSource_ladder_decomposition` through the same lift to produce `hladder`, and the full product
+statement `hfull`.
+
+### Thirty-second brick: the atomic theorem, on the Barnes source itself
+
+With the order-one ladder normalized in the field, the atomic theorem applies to the genuine Barnes
+source rather than to an abstract laddered element:
+
+```text
+differentialIndependent_barnesLadderTranslate :
+  translates of the corrected order-one Barnes source through shifts pairwise distinct modulo
+  omega_j Z are differentially algebraically independent over C(z);
+
+hypertranscendentalOver_diffTranslateApply_barnesLadderSolutionOne :
+  a nonzero constant-coefficient differential-translation operator avoiding the direction j is
+  hypertranscendental on it.
+```
+
+The two instance blocks the corpus uses for the global meromorphic field -- the punctured-
+representation one and the relative-gauge one -- have identical definitions, so the field ladder
+proved in the first transfers verbatim into the second.  `#print axioms` clean.
+
+This closes the atomic step of the card at the level of the actual Barnes object.  What is left of
+`(A)` is the multi-period ladder: lifting `barnesSource_ladder_decomposition` the same way -- its
+right-hand side is the rational correction (already proved rational plus polynomial) minus the
+deleted-frame lower source (already proved to be the slice) -- and iterating it to reach `hladder`
+and `hfull`.
+
+### Thirty-third brick: rational corrections are discharged automatically
+
+The multi-period ladder differs from the order-one one only in that its correction is a longer
+rational expression.  Two lemmas make such a correction cost nothing.
+
+```text
+eq_ratfuncToMero_of_hasPuncturedMeromorphicRep_ratio :
+  an element represented by p/q on every punctured neighbourhood IS the coordinate-field element p/q;
+differentialAlgebraicOver_of_hasPuncturedMeromorphicRep_ratio :
+  hence it is differentially algebraic over the coordinate field.
+```
+
+So to discharge a ladder correction it is enough to exhibit polynomials `p, q` and check the
+pointwise identity off the poles -- no further analysis.  For the multi-period ladder the corpus
+already supplies the two pieces of that identity: the correction series is an explicit rational atom
+plus a polynomial (fifteenth brick), and the slice series is the deleted-frame lower source minus a
+monomial (tenth brick).  Assembling them into one `p/q` and running the lift is what remains for
+`hladder` and `hfull`.
+
+### Thirty-fourth brick: the multi-period ladder defect is one rational function
+
+The three pieces the corpus owned separately are now one identity.  Off the poles of both the full
+cone and the deleted cone,
+
+```text
+barnesSource_ladder_ratio :
+  Psi_omega(z + omega_j) - Psi_omega(z) + Psi_(omega^(j))(z)  =  p(z) / (z + omega_j),
+```
+
+with `p` the explicit polynomial
+
+```text
+p = (correction polynomial) * (X + omega_j) - ((-1)/omega_j)^N X^N,
+```
+
+whose correction polynomial collects the ladder coefficient sums and the deleted-frame cone zeta.
+The proof composes the ladder decomposition, the correction series (fifteenth brick: an explicit atom
+plus a polynomial), the slice identification (tenth brick: the deleted-frame lower source minus a
+monomial), and the atom expansion at the single step `Pi.single j 1`, whose cone period is
+`omega_j`.  The only non-polynomial contribution is that atom, and it carries the linear denominator.
+
+`#print axioms` clean.  Combined with the thirty-third brick this says: the multi-period ladder
+defect, as an element of the meromorphic field, is a rational function, hence differentially
+algebraic — which is `hladder` for one step.  Iterating over the remaining directions and taking the
+full product gives `hladder` and `hfull` of `(A)` for the Barnes source.
+
+### Thirty-fifth brick: one ladder step, in the field, modulo DA
+
+The lift now runs on the multi-period ladder:
+
+```text
+differentialAlgebraicOver_barnesSource_ladder_step :
+  sigma_(omega_j) Psi_omega - Psi_omega + Psi_(omega^(j))   is DA over C(z).
+```
+
+All three terms have punctured representatives -- the translated source, the source, and the
+deleted-frame source -- their combination is the ratio of polynomials of the previous brick, and a
+rational punctured representative makes an element differentially algebraic.  Representatives are
+now closed under subtraction as well as addition.
+
+This is exactly the card's ladder relation `x_j Psi_N = -Psi_(N-1)` modulo the differentially
+algebraic sector, for the Barnes source itself.  `#print axioms` clean.
+
+Iterating it over the directions `k != j` reduces `D_j Psi_N` to the order-one source modulo DA --
+where the thirty-first and thirty-second bricks take over -- and the same iteration over all
+directions gives `hfull`.  Those two iterations are all that separate the Barnes source from the
+statement `(A)` proved in the twenty-seventh brick.
+
+### Thirty-sixth brick: `(A)` needs only the ladder hypothesis
+
+The forward inclusion of `(A)` no longer assumes that the full product lands in the differentially
+algebraic sector: that follows from the single ladder hypothesis.  Writing
+`prod_j (T_j - 1) = (T_1 - 1) D_1` and applying the ring action,
+
+```text
+prod_j (T_j - 1) Psi = sigma_(omega_1)(D_1 Psi) - D_1 Psi,
+```
+
+and `D_1 Psi = phi_1 + R` with `R` differentially algebraic, so the right-hand side is
+`(sigma phi_1 - phi_1) + (sigma R - R)` -- a rational function plus a difference of differentially
+algebraic elements, since translation preserves the sector.
+
+So `(A)` now reads: for rationally independent periods, at least one direction, and a source whose
+complementary ladder products reach solutions of the order-one ladder equation modulo DA,
+
+```text
+P Psi is DA   <->   prod_j (T_j - 1) | P.
+```
+
+`#print axioms` clean.  The only remaining input for the Barnes source is the iteration of the
+thirty-fifth brick down to the order-one source.
+
+### Thirty-seventh brick: the source does not see the labelling of the frame
+
+Reindexing the periods along a bijection of index types permutes the cone, and the cone product is a
+product over the whole cone, so nothing changes:
+
+```text
+conePeriod_comp_equiv, barnesConeFactor_comp_equiv,
+barnesConeProduct_comp_equiv, barnesConeAnalytic_comp_equiv,
+barnesSourceLogDerivMero_comp_equiv :
+  Psi_(omega o e) = Psi_omega  for every equivalence e of index types.
+```
+
+The genus exponent is `Fintype.card`, which the bijection preserves, and the exponent vectors
+reindex along the induced bijection of the cone.  `#print axioms` clean.
+
+This is the enabling lemma for the iteration: deleting directions one at a time produces nested
+subtypes `{i // i != j}`, `{i' // i' != j'}`, ..., and the reindexing invariance identifies each with
+a single-level subtype of the original index, so the ladder step of the thirty-fifth brick can be
+applied repeatedly without the types drifting apart.
+
+### Thirty-eighth brick: the ladder step between subframes
+
+The ladder step is now stated between the frames carried by a finite set of directions and by that
+set with one element erased:
+
+```text
+differentialAlgebraicOver_subframe_ladder_step :
+  sigma_(omega_k) Psi_S - Psi_S + Psi_(S.erase k)   is DA over C(z),
+```
+
+for every direction `k` of a set `S` with at least two directions.  The nested subtype produced by
+the one-point deletion is identified with the single-level subtype of the erased set by an explicit
+equivalence, and reindexing invariance carries the source across it; a congruence lemma removes the
+dependence on the chosen positivity proof.
+
+This is exactly the shape an induction on the number of directions consumes: from `S` down to a
+single direction, deleting one at a time, each step paying only a differentially algebraic
+correction.  `#print axioms` clean.
+
+### Thirty-ninth brick: peeling one direction off a ladder product
+
+The operator half of the descent:
+
+```text
+ladderProd S = prod_(k in S) (T_k - 1);
+
+diffTranslateApply_ladderProd_erase :
+  (ladderProd S) y = (ladderProd (S.erase i)) (sigma_(omega_i) y - y)     for i in S;
+
+diffTranslateApply_ladderProd_empty :
+  (ladderProd empty) y = y.
+```
+
+The product factors through any one of its directions and the action is a ring action, so applying
+the product is applying that direction's defect first and the rest afterwards.  The full and
+complementary ladder products of `(A)` are the instances `S = univ` and `S = univ.erase j`, on the
+nose.  `#print axioms` clean.
+
+With the thirty-eighth brick — the analytic half, `sigma_(omega_k) Psi_S - Psi_S + Psi_(S.erase k)`
+differentially algebraic — the two halves of the induction on the number of directions are now both
+in place, in matching form.
+
+### Fortieth brick: `(A)` tolerates the sign the descent produces
+
+Iterating the ladder step down to one direction produces `D_j Psi = (-1)^(N-1) Psi_{j}` modulo DA,
+and the order-one ladder solution of the thirty-first brick is `phi = -Psi_1 + w`, so the element the
+descent hands to `(A)` is `(-1)^N phi`, whose defect is `(-1)^N / (z + omega_j)` -- a simple pole with
+residue `+-1`, not `1`.
+
+Rather than generalize the whole atomic chain to arbitrary residues, `(A)` now takes the ladder
+hypothesis with a nonzero constant multiple:
+
+```text
+hladder j : D_j Psi - c_j phi_j   is DA,     c_j != 0.
+```
+
+The reverse inclusion divides it out — constants pass through the operator action
+(`diffTranslateApply_algebraMap_complex_mul`, from the corresponding statements for jets and for a
+single differential operator) and through the differentially algebraic sector — and the forward
+direction multiplies the rational defect by `c_j`.  Nothing else changes.  `#print axioms` clean.
+
+The remaining step is the induction itself, whose two halves are the thirty-eighth and thirty-ninth
+bricks, and whose sign is now accepted by `(A)`.
+
+### Forty-first brick: the descent to a single direction
+
+The induction runs.  For every finite set `S` of directions containing `j`,
+
+```text
+differentialAlgebraicOver_ladderProd_descent :
+  (prod_(k in S.erase j) (T_k - 1)) Psi_S  -  (-1)^(|S|-1) Psi_{j}   is DA over C(z).
+```
+
+Base case: one direction, where the product is empty and the two sources coincide.  Step: peel a
+direction `k != j` off the product (thirty-ninth brick), replace the defect `sigma_(omega_k) Psi_S -
+Psi_S` by `-Psi_(S.erase k)` at the cost of a differentially algebraic term (thirty-eighth brick),
+push the remaining product through -- it preserves the sector and is additive, and negation passes
+through it -- and apply the inductive hypothesis to `S.erase k`, whose sign is the negative of the
+one required, exactly cancelling the peeled factor.
+
+`#print axioms` clean.  At `S = univ` this is the ladder hypothesis of `(A)`, with the constant
+`(-1)^(N-1)` that the fortieth brick made the theorem accept.
+
+### Forty-second brick: `(A)` for the Barnes source
+
+The chain closes.
+
+```text
+differentialAlgebraicOver_diffTranslateApply_barnesSource_iff :
+  for periods in a common half-plane with no nontrivial integral relation,
+  P Psi_N is DA over C(z)   <->   prod_j (T_j - 1) | P.
+```
+
+This is theorem `(A)` of the card, unconditional, on the genuine Barnes multiple-gamma logarithmic
+derivative -- no longer on an abstract laddered source.
+
+The instantiation: the full frame is the subframe carried by all directions (reindexing invariance);
+the descent gives `D_j Psi_N = (-1)^(N-1) Psi_{j}` modulo DA; the single-direction source, negated
+and corrected by the linear term `w`, is the ladder solution `phi_j` with defect `1/(z + omega_j)`,
+so `Psi_{j} = w - phi_j` and the descent reads `D_j Psi_N = (-1)^N phi_j` modulo DA -- the leftover
+`(-1)^(N-1) w` is rational, hence absorbed.  The constant `(-1)^N` is the one the theorem was
+generalized to accept.  `#print axioms` clean.
+
+Every ingredient of `(A)` -- the source, its ladder, the atomic independence, the operator ring, the
+splitting, the divisibility criterion, the descent -- is now Lean, with no analytic or
+difference-Galois input assumed.
+
+### Forty-third brick: the structural annihilator, for translations alone
+
+The degree-zero part of `(A)` is now separate and explicit.  A pure translation operator is a
+differential-translation operator with constant coefficients, and evaluating the differential
+variable at zero retracts that embedding, so divisibility descends:
+
+```text
+fullLadder_dvd_constEmbed_iff :
+  prod_j (T_j - 1) | (Q with constant coefficients)   <->   prod_j (T_j - 1) | Q  in C[T_1,...,T_N];
+
+differentialAlgebraicOver_transApply_barnesSource_iff :
+  Q Psi_N is DA over C(z)   <->   prod_j (T_j - 1) | Q.
+```
+
+The descent needs no degree argument: applying `map (eval 0)` to a factorization
+`Q^const = prod_j (T_j - 1) * T` returns the factorization of `Q` itself, because the retraction
+fixes the ladder product.  `#print axioms` clean.
+
+This is the card's exact structural annihilator theorem `Ann_DA(Psi_N) = (x_1 ... x_N)` on the Barnes
+source, and it is the form the fat-point card's normal-crossing interface consumes: for `r = N` the
+squarefree Veronese ideal is generated by the single squarefree monomial of degree `N`, so the
+annihilator set of the Barnes source is that ideal after the variable change `X_j -> T_j - 1`.
+
+### Forty-fourth brick: the Barnes source is a normal-crossing source
+
+The structural annihilator, read in the ladder variables `x_j = T_j - 1`, is the principal ideal
+generated by the product of all the variables; and for `N` variables the squarefree Veronese ideal of
+order `N` is that same principal ideal, since the only squarefree monomial of degree `N` is the full
+product.  Hence
+
+```text
+barnesAnnihilator_eq_veroneseIdeal :
+  {Q | Q Psi_N is DA}  =  veroneseIdeal C (Fin N) N     (in the ladder variables);
+
+isNormalCrossingSource_barnesSource :
+  IsNormalCrossingSource (Barnes annihilator) N.
+```
+
+`#print axioms` clean.  This closes the "Barnes/multiple-sine second realization" gate of the
+physical-characteristic fat-point card: the physical package theorem there transports source height,
+arc-contact order, powered period-incidence level and the polarizing half-density to the Barnes
+source verbatim, and it is a genuinely independent realization -- the first was the multiplicative
+translate products, this one is the cone product of Weierstrass factors.

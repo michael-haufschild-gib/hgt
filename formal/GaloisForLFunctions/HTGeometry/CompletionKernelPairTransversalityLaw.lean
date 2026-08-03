@@ -16,6 +16,8 @@ one-point continuity of a separated downstream reporter forces constancy.
 
 namespace GaloisForLFunctions.HTGeometry
 
+universe u
+
 /-- Kernel pair of a map, viewed as the information it discards. -/
 def MapKernelPair {X Y : Type*} (f : X → Y) (x y : X) : Prop :=
   f x = f y
@@ -186,6 +188,47 @@ def InvariantUnder
 def OddUnder (X : Type*) (σ : X → X) (χ : X → ℝ) : Prop :=
   ∀ x, χ (σ x) = -χ x
 
+/-! ## Reflection-grade conservation -/
+
+/-- `Bool`-valued reflection grade: `false` is even and `true` is odd. -/
+def ReflectionParity {X R : Type*} [Neg R]
+    (odd : Bool) (σ : X → X) (f : X → R) : Prop :=
+  ∀ x, f (σ x) = if odd then -f x else f x
+
+theorem reflectionParity_false_iff_invariantUnder
+    {X R : Type*} [Neg R] (σ : X → X) (f : X → R) :
+    ReflectionParity false σ f ↔ InvariantUnder σ f := by
+  rfl
+
+theorem reflectionParity_true_iff_oddUnder
+    {X : Type*} (σ : X → X) (f : X → ℝ) :
+    ReflectionParity true σ f ↔ OddUnder X σ f := by
+  rfl
+
+/-- **Reflection-grade product law.**  Multiplication adds the two
+`Z/2`-grades.  In particular, the product of two odd source factors is
+reflection-even. -/
+theorem reflectionParity_mul
+    {X R : Type*} [CommRing R]
+    {a b : Bool} {σ : X → X} {f g : X → R}
+    (hf : ReflectionParity a σ f)
+    (hg : ReflectionParity b σ g) :
+    ReflectionParity (Bool.xor a b) σ (fun x => f x * g x) := by
+  rcases a with _ | _ <;> rcases b with _ | _ <;>
+    simp_all [ReflectionParity, Bool.xor]
+
+/-- Equivariant additive transport preserves reflection grade. -/
+theorem reflectionParity_addHom
+    {X A B : Type*} [AddCommGroup A] [AddCommGroup B]
+    {odd : Bool} {σ : X → X} {f : X → A}
+    (hf : ReflectionParity odd σ f) (T : A →+ B) :
+    ReflectionParity odd σ (T ∘ f) := by
+  intro x
+  rw [Function.comp_apply, Function.comp_apply, hf x]
+  by_cases hodd : odd
+  · simp [hodd]
+  · simp [hodd]
+
 /-- **Orientation-before-completion law.** A reflection-odd real charge which
 factors through a reflection-invariant completion vanishes identically. -/
 theorem oddTarget_eq_zero_of_factorsThrough_invariantCompletion
@@ -197,6 +240,49 @@ theorem oddTarget_eq_zero_of_factorsThrough_invariantCompletion
   have hsame : χ (σ x) = χ x :=
     mapKernelPair_mono_of_factorsThrough hfactor (hπ x)
   linarith [hχ x]
+
+/-- Characteristic-zero field-valued form of odd-target descent. -/
+theorem target_eq_zero_of_reflectionParity_factorsThrough_invariantCompletion
+    {X Q R : Type*} [Field R] [CharZero R]
+    {σ : X → X} {π : X → Q} {χ : X → R}
+    (hπ : InvariantUnder σ π)
+    (hχ : ReflectionParity true σ χ)
+    (hfactor : FactorsThrough π χ) :
+    ∀ x, χ x = 0 := by
+  intro x
+  have hsame : χ (σ x) = χ x :=
+    mapKernelPair_mono_of_factorsThrough hfactor (hπ x)
+  have hodd : χ (σ x) = -χ x := by
+    simpa [ReflectionParity] using hχ x
+  rw [hsame] at hodd
+  have htwo : (2 : R) * χ x = 0 := by
+    linear_combination hodd
+  exact (mul_eq_zero.mp htwo).resolve_left (by norm_num)
+
+/-- **Odd-multiplier selector law.**  Let `g` be a reflection-even defect.
+If a reflection-odd source multiplier `a`, nonzero everywhere `g` is
+nonzero, makes `a * g` factor through a reflection-invariant observation,
+then `g` vanishes.  Thus an extra odd source grade can restore the
+orientation consumed by a double-odd contraction without requiring a
+nonzero odd value at reflection-fixed points. -/
+theorem evenTarget_eq_zero_of_supportNonzero_oddMultiplier_factorsThrough_invariantCompletion
+    {X Q R : Type*} [Field R] [CharZero R]
+    {σ : X → X} {π : X → Q} {a g : X → R}
+    (hπ : InvariantUnder σ π)
+    (ha : ReflectionParity true σ a)
+    (hg : ReflectionParity false σ g)
+    (ha0 : ∀ x, g x ≠ 0 → a x ≠ 0)
+    (hfactor : FactorsThrough π (fun x => a x * g x)) :
+    ∀ x, g x = 0 := by
+  have hproductParity :
+      ReflectionParity true σ (fun x => a x * g x) := by
+    simpa using reflectionParity_mul ha hg
+  have hzero :=
+    target_eq_zero_of_reflectionParity_factorsThrough_invariantCompletion
+      hπ hproductParity hfactor
+  intro x
+  by_contra hg0
+  exact (ha0 x hg0) ((mul_eq_zero.mp (hzero x)).resolve_right hg0)
 
 /-- Every sufficient transverse channel separates a reflected pair carrying
 nonzero odd charge. -/
@@ -256,5 +342,211 @@ theorem downstreamReporter_constant_of_dense_completionFibers
   obtain ⟨y, rfl⟩ := hπsurj q₁
   obtain ⟨z, rfl⟩ := hπsurj q₂
   exact (hconstant y).trans (hconstant z).symm
+
+/-! ## The observation preorder
+
+The kernel-pair law is most economical when observations are ordered by the
+distinctions they retain.  In this order serial postprocessing moves upward
+(towards less information), while a parallel record is the meet of its
+channels.  Recoverability of a target is exactly comparison with that target
+in the same order. -/
+
+/-- `π` refines `ψ` when every distinction retained by `ψ` is already
+retained by `π`.  Equivalently, the kernel pair of `π` is contained in the
+kernel pair of `ψ`. -/
+def ObservationRefines
+    {X Q R : Type*} (π : X → Q) (ψ : X → R) : Prop :=
+  KernelRefines π ψ
+
+theorem observationRefines_refl
+    {X Q : Type*} (π : X → Q) :
+    ObservationRefines π π := by
+  intro x y hxy
+  exact hxy
+
+theorem observationRefines_trans
+    {X Q R C : Type*} {π : X → Q} {ψ : X → R} {χ : X → C}
+    (hπψ : ObservationRefines π ψ)
+    (hψχ : ObservationRefines ψ χ) :
+    ObservationRefines π χ := by
+  intro x y hπ
+  exact hψχ x y (hπψ x y hπ)
+
+/-- Every serial consumer is above its input in the observation order: it can
+only identify more source pairs. -/
+theorem observationRefines_postprocess
+    {X Q R : Type*} (π : X → Q) (f : Q → R) :
+    ObservationRefines π (f ∘ π) := by
+  intro x y hπ
+  exact congrArg f hπ
+
+/-- Injective postprocessing preserves the complete kernel pair of an
+observation.  It changes representation but no retained distinction. -/
+theorem mapKernelPair_comp_iff_of_injective
+    {X Q R : Type*} (π : X → Q) (f : Q → R)
+    (hf : Function.Injective f) (x y : X) :
+    MapKernelPair (f ∘ π) x y ↔ MapKernelPair π x y := by
+  constructor
+  · exact fun h => hf h
+  · exact fun h => congrArg f h
+
+/-- **Injective-transport neutrality.**  An injective change of carrier is an
+isomorphism in the observation preorder: it neither creates nor destroys
+recoverability of any target. -/
+theorem factorsThroughRange_comp_iff_of_injective
+    {X Q R C : Type*} (π : X → Q) (f : Q → R)
+    (hf : Function.Injective f) (χ : X → C) :
+    FactorsThroughRange (f ∘ π) χ ↔ FactorsThroughRange π χ := by
+  rw [factorsThroughRange_iff_kernelRefines,
+    factorsThroughRange_iff_kernelRefines]
+  constructor
+  · intro h x y hπ
+    exact h x y (congrArg f hπ)
+  · intro h x y hpost
+    exact h x y (hf hpost)
+
+/-- Recoverability is downward closed in the observation order.  A more
+informative observation retains every target recoverable from a coarser one. -/
+theorem factorsThroughRange_of_refines_of_factorsThroughRange
+    {X Q R C : Type*} {π : X → Q} {ψ : X → R} {χ : X → C}
+    (hπψ : ObservationRefines π ψ)
+    (hψχ : FactorsThroughRange ψ χ) :
+    FactorsThroughRange π χ := by
+  rw [factorsThroughRange_iff_kernelRefines] at hψχ ⊢
+  exact observationRefines_trans hπψ hψχ
+
+/-- Serial postprocessing cannot create recovery of a target which was not
+already recoverable from the unprocessed observation. -/
+theorem not_factorsThroughRange_postprocess_of_not_factorsThroughRange
+    {X Q R C : Type*} (π : X → Q) (f : Q → R) (χ : X → C)
+    (hπχ : ¬ FactorsThroughRange π χ) :
+    ¬ FactorsThroughRange (f ∘ π) χ := by
+  intro hpost
+  exact hπχ
+    (factorsThroughRange_of_refines_of_factorsThroughRange
+      (observationRefines_postprocess π f) hpost)
+
+/-- The heterogeneous parallel record is the meet of its component
+observations in the observation preorder. -/
+theorem observationRefines_record_iff
+    {J X Q : Type*} {Y : J → Type*}
+    (π : X → Q) (obs : ∀ j, X → Y j) :
+    ObservationRefines π (observationRecord obs) ↔
+      ∀ j, ObservationRefines π (obs j) := by
+  constructor
+  · intro h j x y hπ
+    exact congrFun (h x y hπ) j
+  · intro h x y hπ
+    funext j
+    exact h j x y hπ
+
+/-! ## The complete observation lattice
+
+Modulo equality of kernel pairs, observations on a fixed source realize the
+complete lattice of equivalence relations on that source.  Parallel records
+are meets.  The quotient by the join of two kernel relations is their least
+common coarsening. -/
+
+/-- Kernel pair of an observation, packaged as a source equivalence relation. -/
+def ObservationKernelSetoid {X Q : Type*} (π : X → Q) : Setoid X where
+  r := MapKernelPair π
+  iseqv := ⟨fun _ => rfl, fun h => h.symm, fun h₁ h₂ => h₁.trans h₂⟩
+
+/-- Canonical observation realizing a prescribed source equivalence relation. -/
+def quotientObservation {X : Type*} (r : Setoid X) : X → Quotient r :=
+  Quotient.mk'
+
+theorem mapKernelPair_quotientObservation_iff
+    {X : Type*} (r : Setoid X) (x y : X) :
+    MapKernelPair (quotientObservation r) x y ↔ r x y :=
+  Quotient.eq'
+
+@[simp]
+theorem observationKernelSetoid_quotientObservation
+    {X : Type*} (r : Setoid X) :
+    ObservationKernelSetoid (quotientObservation r) = r := by
+  apply Setoid.ext
+  intro x y
+  exact mapKernelPair_quotientObservation_iff r x y
+
+/-- Every equivalence relation on a source is the kernel pair of an
+observation.  Hence observations modulo kernel-pair equality realize the
+entire complete lattice of source equivalence relations. -/
+theorem every_setoid_is_observationKernel
+    {X : Type u} (r : Setoid X) :
+    ∃ (Q : Type u) (π : X → Q), ObservationKernelSetoid π = r := by
+  exact
+    ⟨Quotient r, quotientObservation r,
+      observationKernelSetoid_quotientObservation r⟩
+
+theorem observationKernelSetoid_le_iff
+    {X Q R : Type*} (π : X → Q) (ψ : X → R) :
+    ObservationKernelSetoid π ≤ ObservationKernelSetoid ψ ↔
+      ObservationRefines π ψ := by
+  rfl
+
+/-- An arbitrary heterogeneous record realizes the infimum of its channel
+kernel relations. -/
+theorem observationKernelSetoid_record
+    {J X : Type*} {Y : J → Type*}
+    (obs : ∀ j, X → Y j) :
+    ObservationKernelSetoid (observationRecord obs) =
+      ⨅ j, ObservationKernelSetoid (obs j) := by
+  apply le_antisymm
+  · apply le_iInf
+    intro j
+    rw [observationKernelSetoid_le_iff]
+    intro x y hxy
+    exact congrFun hxy j
+  · let q := quotientObservation (⨅ j, ObservationKernelSetoid (obs j))
+    have hq : ObservationRefines q (observationRecord obs) :=
+      (observationRefines_record_iff q obs).2 (fun j => by
+        rw [← observationKernelSetoid_le_iff]
+        simpa [q] using
+          (iInf_le (fun j => ObservationKernelSetoid (obs j)) j))
+    rw [← observationKernelSetoid_le_iff] at hq
+    simpa [q] using hq
+
+/-- Canonical least common coarsening of two observations. -/
+def observationJoin
+    {X Q R : Type*} (π : X → Q) (ψ : X → R) :
+    X → Quotient (ObservationKernelSetoid π ⊔ ObservationKernelSetoid ψ) :=
+  quotientObservation (ObservationKernelSetoid π ⊔ ObservationKernelSetoid ψ)
+
+/-- **Observation-lattice join law.**  The join is above both inputs and
+below every common coarsening. -/
+theorem observationJoin_law
+    {X Q R : Type*} (π : X → Q) (ψ : X → R) :
+    ObservationRefines π (observationJoin π ψ) ∧
+      ObservationRefines ψ (observationJoin π ψ) ∧
+      ∀ {C : Type*} (χ : X → C),
+        ObservationRefines π χ → ObservationRefines ψ χ →
+          ObservationRefines (observationJoin π ψ) χ := by
+  constructor
+  · rw [← observationKernelSetoid_le_iff]
+    simp [observationJoin]
+  constructor
+  · rw [← observationKernelSetoid_le_iff]
+    simp [observationJoin]
+  · intro C χ hπ hψ
+    rw [← observationKernelSetoid_le_iff] at hπ hψ ⊢
+    simpa [observationJoin] using (sup_le hπ hψ)
+
+theorem observationJoin_refines_iff
+    {X Q R C : Type*} (π : X → Q) (ψ : X → R) (χ : X → C) :
+    ObservationRefines (observationJoin π ψ) χ ↔
+      ObservationRefines π χ ∧ ObservationRefines ψ χ := by
+  rw [← observationKernelSetoid_le_iff,
+    ← observationKernelSetoid_le_iff,
+    ← observationKernelSetoid_le_iff]
+  simp [observationJoin]
+
+/-- The complete observation-order law.  A target is recoverable precisely
+when it lies above the observation; serial consumers move upward, and
+parallel resolution takes meets. -/
+theorem observationOrder_recovery_iff
+    {X Q C : Type*} (π : X → Q) (χ : X → C) :
+    FactorsThroughRange π χ ↔ ObservationRefines π χ :=
+  factorsThroughRange_iff_kernelRefines π χ
 
 end GaloisForLFunctions.HTGeometry

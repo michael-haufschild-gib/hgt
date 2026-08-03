@@ -3485,3 +3485,416 @@ part of `(207)` would restate landing.  Lean certificate:
 formal/GaloisForLFunctions/RHTower/
   CCMFirstClockPrimitivePromotedHellingerGammaPureHodgeCoface.lean
 ```
+
+## 52. Adaptive prime-normal horizon intertwiner and forced non-Hilbert provenance
+
+`[PAPER+LEAN-PROVED SOURCE--DIVISOR CONSTRUCTION]`
+`[PAPER+LEAN-PROVED HILBERT STABILITY NO-GO]`
+`[OPEN SOURCE-FORCED GREEN VANISHING]`
+
+The latest Hellinger--Hodge--Green paper asks to identify the closed adaptive
+prime-normal `ell^1` range with the compatible reflected-Gaussian-graded Green quotient and only
+then polarize.  Taken literally in the Hilbert quotient norm, this is impossible.  For every
+bounded linear map `T:ell^1(I)->H` into a complex inner-product space and every finite label set
+`S`, recursive sign selection and the parallelogram law give a signed packet `x_S` with
+
+```text
+||x_S||_1=|S|,            ||T x_S||^2<=|S| ||T||^2.                (208)
+```
+
+For infinite `I`, `(208)` excludes every positive lower modulus.  In particular, every bounded
+Hilbert postcomparison after the adaptive codiagonal destroys its `3/4` lower bound.  Thus the
+full stable `ell^1` source range cannot literally be a closed Hilbert subrange.  Compatibility
+must quotient source directions before Hilbertization, or unchanged source provenance must remain
+in a finer non-Hilbert norm.
+
+The positive replacement is now constructed from the actual arithmetic source.  For each Xi
+divisor copy `q`, choose the source-derived adaptive scale `N(q)` in the honest convergence
+chamber and let `A_q` be coefficient augmentation after the exact adaptive codiagonal.  For every
+prime label `ell`,
+
+```text
+A_q(e_ell)
+ =R_(ell,d(ell,N(q)))(lambda_q),
+3/4<=|A_q(e_ell)|<=5/4.                                      (209)
+```
+
+The first equality is the literal complete prime-normal residual multiplier, not an abstract
+interpolation coefficient.  Let `h_ref(q)` be the fixed reflected-Gaussian horizon grade.  Column
+synthesis gives one unconditional bounded source--divisor operator
+
+```text
+T_hor: ell^1(primes) -> ell^2(Div Xi),
+(T_hor x)(q)=A_q(x) h_ref(q),
+||T_hor x||_2 <= (5/4)||h_ref||_2 ||x||_1.                    (210)
+```
+
+Every prime column is nonzero at every divisor copy by `(209)` and `h_ref(q)!=0`.  Applying the
+completed Green fracture, actual Calderon--Witt incidence, and split-injective resolved
+Hellinger--Gamma quotient produces for every prime label `ell` a completely explicit class
+`[G T_hor(e_ell)]_a` satisfying
+
+```text
+[G T_hor(e_ell)]_a=0  <->  RH.                               (211)
+```
+
+No displacement-zero hypothesis occurs in `(211)`.  The proof uses the stronger generic theorem:
+the completed Green fracture of any divisor `ell^2` field nonzero at every actual divisor copy
+vanishes exactly under RH.
+
+There is an exact positive range theorem between the full-source no-go and `(211)`.  For each
+fixed prime label `ell`, multiplication by `q |-> A_q(e_ell)` defines a bounded automorphism
+`M_ell` of the entire completed Xi divisor carrier, with bounded inverse and capacities
+
+```text
+(3/4)||v||_2 <= ||M_ell v||_2 <= (5/4)||v||_2,
+||M_ell^(-1)v||_2 <= (4/3)||v||_2.                           (211a)
+```
+
+In particular `T_hor(e_ell)=M_ell h_ref`.  Thus compatible divisor-range identification is fully
+constructed after quotienting the source to any one labelled column.  What is impossible is doing
+this bounded-below on the whole infinite `ell^1` source simultaneously.  This separates the exact
+survivor from the overstrong target without discarding Route J.
+
+Stability survives only in the source-resolved graph
+
+```text
+Gamma_hor(x)=(x,T_hor x) in ell^1(primes) x ell^2(Div Xi).    (212)
+```
+
+It is injective, has closed range, obeys `||x||_1<=||Gamma_hor(x)||`, and has uniform upper
+capacity `max(1,(5/4)||h_ref||_2)||x||_1`.  Its Hilbert projection is exactly `T_hor` and is not
+bounded below.  This is the forced topology change exposed by `(208)`, not a choice of another
+ambient completion.
+
+Route J remains open.  The source object, completed divisor landing, resolved quotient class,
+fixed-label compatible range equivalence, and RH equivalence are no longer missing.  Exact hard
+frontier is now to derive from prime-power
+source/Hodge compatibility that one class in `(211)` vanishes, or equivalently to prove the
+source-selected closed-graph/quotient relation which forces the completed Green fracture of an
+adaptive column to be zero.  Merely assuming that relation would restate RH.  The remaining
+theorem must construct it from source differential and compatibility boundaries.
+
+Lean certificates:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  MobiusThetaAdaptivePrimeNormalHilbertNoGo.lean
+  MobiusThetaAdaptivePrimeNormalHorizonIntertwiner.lean
+```
+
+## 53. Reflected adaptive common-test source and exact Green primitive
+
+`[PAPER+LEAN-PROVED FULL SOURCE CONSTRUCTION]`
+`[PAPER+LEAN-PROVED REFLECTED GREEN COMPATIBILITY]`
+`[OPEN ARITHMETIC CODIAGONAL VANISHING]`
+
+The updated Hellinger--Hodge--Green descent paper identifies the exact local
+common-test obligation `(7.17c)`.  The unsymmetrized canonical line map already
+closes its landing and faithfulness clauses: for local Green coefficient
+`g_(p,q)`, scalar multiplication of the resolved adaptive prime source gives
+
+```text
+Phi_(p,q)(g_(p,q)) in S_(N(q),w(q)),
+Phi_(p,q)(g_(p,q))=0 -> g_(p,q)=0.                    (213)
+```
+
+Its codiagonal is computed rather than postulated:
+
+```text
+Sigma_2 Phi_(p,q)(c)=c C_(N(q),w(q))(e_p),
+Sigma_2 Phi_(p,q)(c)=0 <-> c=0.                       (214)
+```
+
+Thus `(7.17c).1` and `(7.17c).3` are unconditional.  Clause `.2` is exactly
+the local critical-line statement, not a hidden range or faithfulness gap.
+
+Direct transport through the divisor-adapted reader still left a genuine
+source question: the chosen depths at `q` and functional-equation mate `Rq`
+need not agree, so the resulting multiplier need not commute with completed
+source Green reflection.  The forced correction is made before scalar
+augmentation.  Average the two exact post-prime source tails and retain the
+common Möbius head:
+
+```text
+T_ref,q=(T_q+T_Rq)/2,
+C_ref,q=D+T_ref,q,
+R_ref,q(x)=(Dx,T_ref,q x).                            (215)
+```
+
+Both literal tails have norm at most `1/4`; consequently
+
+```text
+||T_ref,q x||_1 <= (1/4)||x||_1,
+||C_ref,q x||_1 >= (3/4)||x||_1.                      (216)
+```
+
+The range of `R_ref,q` is closed, and its intersection with the universal
+codiagonal kernel is zero.  This is a full source operator and conservative
+resolved sector, not divisor-side coefficient interpolation.
+
+After coefficient augmentation on prime basis vector `e_p`, the reflected
+reader is
+
+```text
+A_ref,p(q)=(A_q(e_p)+A_Rq(e_p))/2,
+||A_ref,p(q)+1|| <= 1/4,
+3/4 <= |A_ref,p(q)| <= 5/4.                           (217)
+```
+
+It is exactly reflection-even.  Hence multiplication by `A_ref,p` is a
+bounded automorphism `M_ref,p` of the complete Xi carrier with
+
+```text
+(3/4)||v||_2 <= ||M_ref,p v||_2 <= (5/4)||v||_2,
+||M_ref,p^(-1)v||_2 <= (4/3)||v||_2,                  (218)
+Ghat M_ref,p = M_ref,p Ghat,
+W M_ref,p = M_ref,p W.                               (219)
+```
+
+Equations `(219)` close the previously missing reflected source-primitive
+compatibility.  Applying `M_ref,p` to the literal two-line prime--Gamma
+Cauchy boundary gives a Bochner-integrable source whose integral is the
+reflected adaptive horizon column.  Applying it to the oriented boundary
+gives an integral equal to
+
+```text
+e_ref,p=M_ref,p e_ref,
+Ghat e_ref,p=M_ref,p h_ref,
+e_ref,p=i W(M_ref,p h_ref).                           (220)
+```
+
+Every coefficient of `M_ref,p h_ref` is nonzero, so its completed Green
+provenance still satisfies
+
+```text
+D_G(M_ref,p h_ref)=0 <-> RH.                          (221)
+```
+
+This is important negative information as well as positive infrastructure:
+exact prime--Gamma landing, harmonic preservation, Green commutation,
+invertible capacity, closed resolved source, and line faithfulness do not
+force `(221)` to vanish.  For the actual reflected comparison,
+
+```text
+Sigma_2 Phi_ref,p,q(g_ref,p,q)=0
+  <-> g_ref,p,q=0
+  <-> Re(rho_q)=1/2.                                  (222)
+```
+
+Therefore Route J remains open.  Exact surviving hard theorem is no longer
+construction of source object, completion, reflected primitive, or
+Green-compatible transport.  It is the arithmetic differential identity
+which forces the already explicit source coordinate in `(222)` to be zero.
+Any proof using only Green commutation or primitive existence is now formally
+shown insufficient; it must use additional prime--Gamma/co-Poisson incidence
+that annihilates this exact coordinate.
+
+Lean certificates:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  MobiusThetaAdaptivePrimeNormalGreenResolvedLineComparison.lean
+  MobiusThetaAdaptivePrimeNormalReflectedGreenSource.lean
+```
+
+## 54. Global square-summable common-test record
+
+`[PAPER+LEAN-PROVED GLOBAL ASSEMBLY]`
+`[PAPER+LEAN-PROVED CLOSED GLOBAL SECTOR]`
+`[OPEN SOURCE DIFFERENTIAL ANNIHILATION]`
+
+Pointwise construction `(213)--(222)` globalizes without loss.  For fixed
+prime `p`, let `v_(p,q)` be the reflected resolved source generated by `e_p`
+at divisor copy `q`.  Its head has norm one while reflected tail has norm at
+most `1/4`; with product max norm,
+
+```text
+||v_(p,q)||=1                                                   (223)
+```
+
+at every divisor copy.  Therefore coordinatewise scalar multiplication is
+an isometric source comparison
+
+```text
+J_p:ell^2(Div Xi) -> ell^2_q(ell^1(N) x ell^1(N)),
+(J_p a)(q)=a(q)v_(p,q),
+||J_p a||=||a||.                                                (224)
+```
+
+Its range is a closed global source sector.  Fiberwise codiagonalization on
+that range is represented by a bounded linear map
+
+```text
+C_p:ell^2(Div Xi) -> ell^2_q(ell^1(N)),
+(C_p a)(q)=a(q) C_ref,q(e_p),
+(3/4)||a|| <= ||C_p a|| <= (5/4)||a||.                          (225)
+```
+
+Thus `C_p` is injective and global common-test record has no hidden
+completion radical.  Applying `(224)` to actual reflected adaptive Green
+provenance `g_ref,p` gives one explicit global record in closed sector, with
+
+```text
+C_p(g_ref,p)=0 <-> g_ref,p=0 <-> RH.                            (226)
+```
+
+This removes possible escape that pointwise comparisons fail to assemble,
+lose square summability, or acquire closure kernel.  They assemble
+isometrically, and codiagonal retains same quantitative lower modulus after
+global completion.  Exact remaining problem is now literally to prove the
+left side of `(226)` from arithmetic source differential.  No further range,
+topology, or faithfulness construction can affect that gate.
+
+Lean:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  MobiusThetaAdaptivePrimeNormalGlobalReflectedComparison.lean
+```
+
+## 55. Doubled-window co-Poisson conormal tomography and the quadratic reflection cover
+
+`[PAPER+LEAN-PROVED SOURCE CONSTRUCTION]`
+`[PAPER+LEAN-PROVED UNIFORM CAPACITY]`
+`[PAPER+LEAN-PROVED QUADRATIC COVER CLASSIFICATION]`
+`[CANDIDATE SOURCE-SPECIFIC NEW KNOWLEDGE]`
+`[OPEN ARITHMETIC RAMIFICATION]`
+
+The updated Hellinger--Hodge--Green paper proves a stronger zero-order no-go than the previous
+finite-window audit: at every zeta divisor point, completed Mellin evaluation annihilates the
+entire infinite-dimensional Burnol co-Poisson source space because every seed carries the same
+factor `zeta(w)`.  That statement is exact at value grade, but it does not survive passage to the
+first nonzero divisor conormal while source labels remain resolved.
+
+Fix `L>0` and take the two literal reciprocal sub-window seeds
+
+```text
+[exp(-L),1],      [exp(-2L),1].
+```
+
+Their critical-strip Mellin transforms before the nonzero completion factor are
+
+```text
+M_L(w)  =(exp(Lw)-1) zeta(w)/w,
+M_2L(w) =(exp(2Lw)-1) zeta(w)/w.                       (227)
+```
+
+Let `rho` be a nontrivial zeta zero of analytic order `m>=1`.  All derivatives of `zeta` below
+order `m` vanish.  Leibniz therefore gives, with one common nonzero conormal scalar `lambda_rho`
+which also absorbs the completed Mellin factor,
+
+```text
+D^m M_L(rho)  =(exp(L rho)-1) lambda_rho,
+D^m M_2L(rho) =(exp(2L rho)-1) lambda_rho.              (228)
+```
+
+Because `0<Re(rho)<1`, the first coefficient in `(228)` is nonzero.  The projective conormal ratio
+is consequently defined and satisfies the exact source identity
+
+```text
+R_L(rho)
+ :=D^m M_2L(rho)/D^m M_L(rho)-1
+ =exp(L rho).                                           (229)
+```
+
+No zeta derivative, multiplicity normalization, divisor enumeration, or fitted interpolation
+survives in `(229)`.  The identity uses the resolved labels of two actual co-Poisson windows and
+the first nonvanishing source conormal before the common zeta factor is quotiented away.
+
+Half-density centering produces the source character
+
+```text
+U_L(rho)=exp(-L/2) R_L(rho)=exp(L(rho-1/2)).            (230)
+```
+
+It has uniform two-sided capacity on the full open strip:
+
+```text
+exp(-L/2)<|U_L(rho)|<exp(L/2),
+exp(-L/2)<|U_L(rho)^(-1)|<exp(L/2).                    (231)
+```
+
+More importantly, its radial coordinate is exactly the missing horizontal displacement:
+
+```text
+log|U_L(rho)|/L=Re(rho)-1/2,
+delta_tau r_G(rho)=log|U_L(rho)|/(pi L).               (232)
+```
+
+Thus the Burnol source is horizontally mute only after zero-order scalar evaluation.  Its
+resolved first conormal supplies a literal, uniformly bounded transverse divisor coordinate.
+This is not another principal scalar multiple of the Green packet: it is a projective ratio of
+two independently labelled source windows after their common divisor factor has been removed.
+
+The hostile reflection audit identifies exactly what this construction still lacks.  For
+`tau(rho)=1-conj(rho)`, equation `(230)` gives
+
+```text
+U_L(tau(rho))=1/conj(U_L(rho)).                         (233)
+```
+
+Put
+
+```text
+S_L(rho)=U_L(rho)+U_L(tau(rho)),
+P_L(rho)=U_L(rho)U_L(tau(rho)).                        (234)
+```
+
+Both `S_L` and `P_L` are reflection-invariant, `|P_L|=1`, and the two reflected source characters
+are exactly the roots of
+
+```text
+X^2-S_L(rho)X+P_L(rho)=0.                              (235)
+```
+
+The discriminant is
+
+```text
+Delta_L(rho)=S_L(rho)^2-4P_L(rho)
+            =(U_L(rho)-U_L(tau(rho)))^2,               (236)
+
+Delta_L(rho)=0
+  <-> U_L(rho)=U_L(tau(rho))
+  <-> Re(rho)=1/2.                                     (237)
+```
+
+Equations `(234)--(237)` are the exact quadratic reflection cover of the co-Poisson conormal
+source.  The invariant observation exists and has uniform capacity; what fails is single-valued
+descent of one oriented root.  Fourier unitarity does not repair this: off line it exchanges the
+two conormal fibres instead of making either fibre character unitary.  Declaring `|U_L|=1`,
+declaring the cover ramified, or choosing the same root on both sheets is precisely the RH
+statement in `(237)`.
+
+This materially sharpens the Route-J frontier.  Construction of a transverse co-Poisson source
+coordinate is no longer missing, and the paper's common-factor no-go applies only before
+conormalization.  Exact remaining producer is an arithmetic differential or off-diagonal
+prime--Gamma incidence which forces the explicit quadratic cover `(235)` to ramify at every
+actual divisor point.  Equivalently, it must prove `Delta_L=0` from a source relation independent
+of `(232)`.  Merely transporting, bounding, or taking the invariant coefficients of the cover is
+conservative and cannot supply that ramification.
+
+Novelty audit: Burnol's co-Poisson papers supply the Mellin factorization and Sonine source
+spaces; the updated internal paper proves whole-source zero-order annihilation.  Targeted primary
+and internal searches located no doubled-window first-conormal ratio `(229)`, uniform centered
+character `(231)`, or quadratic reflection-cover classification `(234)--(237)`.  Algebraic
+factorization itself is elementary; candidate new content is its exact actual-source conormal
+specialization and the resulting correction of the zero-order horizontal-muteness boundary.
+
+Lean realization:
+
+```text
+formal/GaloisForLFunctions/RHTower/
+  BurnolCoPoissonConormalReflectionCover.lean
+```
+
+The formal module binds the construction to the existing literal co-Poisson--Sonin source by
+proving the exact uncompleted and completed Mellin evaluations for `[exp(-L),1]`.  At every
+multiplicity-exact Xi support point it proves that the zeta jet of exact order is nonzero, applies
+the full Leibniz formula, and derives `(228)` with the explicit common factor
+`iteratedDeriv(m,zeta,rho)/rho`; hence the actual ratio of the two literal Mellin jets is `(229)`.
+It then proves the exact logarithmic horizontal coordinate, two-sided strip capacity for the
+character and its inverse, conjugate-inverse reflection law, reflection-invariant orbit
+coefficients and discriminant, unit-modulus orbit product, both quadratic-root laws, and the
+ramification equivalence `(237)`.  No abstract replacement for the source conormal, universal
+ramification premise, zeta-zero classification, or RH axiom enters any theorem.

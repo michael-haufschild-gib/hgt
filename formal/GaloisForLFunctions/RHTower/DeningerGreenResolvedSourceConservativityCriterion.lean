@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerGreenInternalDefectCancellationLaw
+import GaloisForLFunctions.RHTower.DeningerGreenResolvedDefectLaw
 import GaloisForLFunctions.HTGeometry.ResolvedDefectConservationLaw
 
 /-!
@@ -17,15 +17,6 @@ namespace RHTower
 noncomputable section
 
 open GaloisForLFunctions.HTGeometry
-
-/-- The two transported internal Green defects before their codiagonal cancellation. -/
-def deningerArithmeticGreenResolvedDefect
-    (a : DeningerArithmeticGradedH1) :
-    DeningerArithmeticGradedH1 × DeningerArithmeticGradedH1 :=
-  (deningerArithmeticGradedHodgeCovarianceDefect
-      (deningerArithmeticGradedRieszConjugation a),
-    deningerArithmeticGradedOrientedHodge.sigma
-      (deningerArithmeticGradedRieszCovarianceDefect a))
 
 /-- Total Green covariance is the zero codiagonal of the resolved defect, unconditionally. -/
 @[simp]

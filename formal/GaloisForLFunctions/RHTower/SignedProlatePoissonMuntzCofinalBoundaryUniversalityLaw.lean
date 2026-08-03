@@ -15,15 +15,6 @@ namespace RHTower
 
 noncomputable section
 
-/-- Every fixed actual signed Prolate eigenvalue is nonzero cofinally in aperture. -/
-theorem eventually_evenProlateSignedValue_ne_zero (n : ℕ) :
-    ∀ᶠ a : ℝ in atTop, evenProlateSignedValue a n ≠ 0 := by
-  have hopen : {x : ℝ | x ≠ 0} ∈ nhds (1 : ℝ) :=
-    isOpen_compl_singleton.mem_nhds (by norm_num)
-  have hsquare := (evenProlateSignedValue_sq_tendsto_one n).eventually hopen
-  filter_upwards [hsquare] with a ha
-  exact fun hzero => ha (by simp [hzero])
-
 /-- Canonical constrained real source made from two actual signed Prolate eigenmodes. -/
 noncomputable def signedProlateTwoModeConstrainedRealSource
     (a : ℝ) (n₀ n₁ : ℕ)

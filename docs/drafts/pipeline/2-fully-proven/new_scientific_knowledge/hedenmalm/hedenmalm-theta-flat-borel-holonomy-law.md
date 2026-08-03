@@ -470,6 +470,30 @@ sibling card's modules from the exact dilation character; its only hypothesis is
 evaluation vector is nonzero, which is Burnol's `(10)`.  So `(16f)` is now formalized as an equality
 of two independently constructed exponents rather than quoted as an external estimate.
 
+That hypothesis is no longer open off the zero set of zeta.  The sibling card now constructs the
+witness explicitly --- the co-Poisson vector of the reciprocal function on a multiplicative window,
+whose value is the fractional-part kernel `(fract(t/d) - fract(t/c))/t` --- computes its completed
+Mellin evaluation in closed form as `Gamma_R(w) (d^(-w) - c^(-w)) zeta(w)/w`, and concludes:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonMellinNonvanishing.lean
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonSubWindowSource.lean
+
+burnolExtendedSoninEvaluationVector_ne_zero_of_riemannZeta_ne_zero,
+burnolExtendedSoninEvaluationVector_ne_zero_of_subWindow
+  : the evaluation vector is nonzero at every point of the strip where zeta does not
+    vanish, witnessed by a two-parameter family at every aperture,
+burnolExtendedSoninReflectedEvaluationVector_ne_zero_of_riemannZeta_ne_zero
+  : the same below the critical line, via the reflected Riesz vector,
+tendsto_log_norm_burnolExtendedSoninEvaluationVector_of_riemannZeta_ne_zero
+  : hence `(13)`, and with it `(16f)`, is unconditional off the zero set.
+```
+
+At a hypothetical zero the construction provably cannot help: every co-Poisson Mellin transform
+carries the factor `zeta(w)`, so the evaluator annihilates the entire explicit family and its closed
+span there.  A witness would have to come from the orthogonal complement of the co-Poisson subspace,
+which is Burnol's quotient dimension count.  That is the exact boundary of the present formalization.
+
 The Burnol side of `(16f)` now has its own module,
 
 ```text
@@ -542,6 +566,17 @@ both reflected holonomies forces `alpha` real, not that it holds.
 - [x] Burnol completed-Mellin evaluator and ambient aperture bound in Lean (sibling card `(3)`)
 - [x] Burnol lower bound `(11)`, two-sided law `(12)` and exponent limit `(13)` in Lean
 - [x] Lean identification of the two aperture exponents `(16f)`
-- [ ] Burnol nonvanishing `(10)`, now reduced in Lean to a single Sonine witness at one aperture
+- [x] Burnol nonvanishing `(10)` off the zero set of zeta: the Sonine witnesses are constructed in
+      Lean --- a two-parameter family, one for each multiplicative sub-window `[c,d]` with `c < d`,
+      each readable at every smaller aperture --- with completed Mellin evaluation in closed form
+      `Gamma_R(w) (d^(-w) - c^(-w)) zeta(w)/w`; the exponent limit `(13)` is unconditional there,
+      and the dichotomy holds on both halves of the open strip
+- [ ] Burnol nonvanishing `(10)` **at a hypothetical zeta zero**: provably not reachable from the
+      co-Poisson side.  This is now a *theorem*, not a heuristic: the completed Mellin evaluation of
+      **every** co-Poisson source vector is `Gamma_R(w) zeta(w) M(g)(w)`
+      (`soninMellinEvaluation_burnolCoPoissonSource`, proved for an arbitrary integrable seed
+      supported in `[b,1/b]`), so at a zero the evaluator annihilates every source vector and every
+      limit of their combinations.  A witness must therefore come from the orthogonal complement ---
+      Burnol's quotient dimension count, which remains the open item
 - [ ] `[OPEN CORE: THETA_BOREL_REFLECTED_COMMON_DOMAIN]`
 - [ ] independent specialist novelty audit

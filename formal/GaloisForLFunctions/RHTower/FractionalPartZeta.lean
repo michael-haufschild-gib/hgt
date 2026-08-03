@@ -417,4 +417,74 @@ theorem integral_Ioi_zero_fract_dilate_cpow {w : ℂ} (hw0 : 0 < w.re) (hw1 : w.
   rw [hX, hfin, hAinv, Complex.cpow_add _ _ hcne, Complex.cpow_one, mul_assoc,
     ← mul_assoc ((c : ℝ) : ℂ) (((c : ℝ) : ℂ))⁻¹, mul_inv_cancel₀ hcne, one_mul]
 
+theorem ofReal_fract_rpow {σ : ℝ} {u : ℝ} (hu : 0 < u) :
+    ((Int.fract u * u ^ (-(σ + 1)) : ℝ) : ℂ)
+      = ((Int.fract u : ℝ) : ℂ) * (u : ℂ) ^ (-(((σ : ℝ) : ℂ) + 1)) := by
+  rw [Complex.ofReal_mul, Complex.ofReal_cpow hu.le]
+  push_cast
+  ring
+
+/-- **Zeta has no zero on the real segment `(0,1)`.**  The fractional-part representation
+`zeta(s)/s = - integral_0^infinity fract(u) u^(-s-1) du` has a strictly positive integrand for a
+real exponent, so the integral cannot vanish. -/
+theorem riemannZeta_ne_zero_of_ofReal_mem_Ioo {σ : ℝ} (h0 : 0 < σ) (h1 : σ < 1) :
+    riemannZeta ((σ : ℝ) : ℂ) ≠ 0 := by
+  intro hz
+  have hre : (((σ : ℝ) : ℂ)).re = σ := Complex.ofReal_re σ
+  have hw0 : 0 < (((σ : ℝ) : ℂ)).re := by rw [hre]; exact h0
+  have hw1 : (((σ : ℝ) : ℂ)).re < 1 := by rw [hre]; exact h1
+  set f : ℝ → ℝ := fun u => Int.fract u * u ^ (-(σ + 1)) with hf
+  have hcongr : EqOn (fun u : ℝ => ((f u : ℝ) : ℂ))
+      (fun u : ℝ => ((Int.fract u : ℝ) : ℂ) * (u : ℂ) ^ (-(((σ : ℝ) : ℂ) + 1))) (Ioi 0) := by
+    intro u hu
+    exact ofReal_fract_rpow (mem_Ioi.mp hu)
+  -- integrability
+  have hIC : IntegrableOn
+      (fun u : ℝ => ((Int.fract u : ℝ) : ℂ) * (u : ℂ) ^ (-(((σ : ℝ) : ℂ) + 1))) (Ioi 0) :=
+    integrableOn_Ioi_zero_fract_cpow hw0 hw1
+  have hICf : IntegrableOn (fun u : ℝ => ((f u : ℝ) : ℂ)) (Ioi 0) :=
+    hIC.congr_fun (fun u hu => (hcongr hu).symm) measurableSet_Ioi
+  have hIf : IntegrableOn f (Ioi 0) := by
+    exact hICf.re
+  -- the integral vanishes
+  have hint := integral_Ioi_zero_fract_cpow hw0 hw1
+  rw [hz] at hint
+  have hzeroC : (∫ u in Ioi (0:ℝ), ((f u : ℝ) : ℂ)) = 0 := by
+    rw [setIntegral_congr_fun measurableSet_Ioi hcongr, hint]
+    simp
+  have hzeroR : (∫ u in Ioi (0:ℝ), f u) = 0 := by
+    have : ((∫ u in Ioi (0:ℝ), f u : ℝ) : ℂ) = 0 := by
+      rw [← integral_complex_ofReal]; exact hzeroC
+    exact_mod_cast this
+  -- nonnegativity forces the integrand to vanish a.e.
+  have hnonneg : 0 ≤ᵐ[volume.restrict (Ioi (0:ℝ))] f := by
+    refine (ae_restrict_iff' measurableSet_Ioi).mpr ?_
+    filter_upwards with u hu
+    exact mul_nonneg (Int.fract_nonneg u) (Real.rpow_nonneg (le_of_lt (mem_Ioi.mp hu)) _)
+  have hae : f =ᵐ[volume.restrict (Ioi (0:ℝ))] 0 :=
+    (integral_eq_zero_iff_of_nonneg_ae hnonneg hIf).mp hzeroR
+  have hae' : ∀ᵐ u ∂volume, u ∈ Ioi (0:ℝ) → f u = 0 :=
+    (ae_restrict_iff' measurableSet_Ioi).mp hae
+  -- but the integrand is strictly positive on `(1,2)`
+  have hnull : volume (Ioo (1:ℝ) 2) = 0 := by
+    refine measure_eq_zero_iff_ae_notMem.mpr ?_
+    filter_upwards [hae'] with u hu hmem
+    have hu1 : (1:ℝ) < u := hmem.1
+    have hu2 : u < 2 := hmem.2
+    have hupos : 0 < u := by linarith
+    have hfl : ⌊u⌋ = 1 := by
+      refine Int.floor_eq_iff.mpr ⟨?_, ?_⟩
+      · push_cast; linarith
+      · push_cast; linarith
+    have hfract : Int.fract u = u - 1 := by
+      have : Int.fract u = u - (⌊u⌋ : ℝ) := rfl
+      rw [this, hfl]; norm_num
+    have hpos : 0 < f u := by
+      rw [hf]
+      refine mul_pos ?_ (Real.rpow_pos_of_pos hupos _)
+      rw [hfract]; linarith
+    exact absurd (hu (mem_Ioi.mpr hupos)) (ne_of_gt hpos)
+  rw [Real.volume_Ioo] at hnull
+  norm_num at hnull
+
 end RHTower

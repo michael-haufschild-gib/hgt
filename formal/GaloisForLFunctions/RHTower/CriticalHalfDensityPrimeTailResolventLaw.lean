@@ -522,7 +522,7 @@ theorem summable_integral_norm_criticalPrimeTailTestAdvancedTerm
     intro n L
     by_cases hn : L ≤ deningerPrimePowerTime n
     · by_cases hφ : φ L = 0
-      · simp only [criticalPrimeTailTestAdvancedTerm, hφ, ofReal_zero, zero_mul]
+      · simp only [criticalPrimeTailTestAdvancedTerm, hφ, ofReal_zero, zero_mul, norm_zero]
         exact mul_nonneg
           (mul_nonneg hD (norm_nonneg (criticalPrimeTailDirichletCoefficient z n)))
           (norm_nonneg (u L))

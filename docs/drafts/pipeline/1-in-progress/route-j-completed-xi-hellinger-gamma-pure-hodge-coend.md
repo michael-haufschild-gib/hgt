@@ -100,3 +100,522 @@ coface separately.  No existing theorem forms their two-channel completed coend,
 actual-cell coordinate realization, or recovers the completed Xi Green primitive as a continuous
 telescoping coface limit.
 
+## 2026-08-03 adaptive source--divisor replacement of raw Hilbert landing
+
+The updated Hellinger--Hodge--Green target cannot identify the entire stable adaptive `ell^1`
+range with a Hilbert subrange: finite Hilbert sign selection gives packets of `ell^1` norm `n`
+whose image norm grows at most as `sqrt(n)`.  Hence no bounded Hilbert postcomparison preserves a
+positive lower modulus on the infinite source.
+
+The exact positive replacement now exists.  Divisorwise augmentation of the adaptive codiagonal
+is the literal complete prime-normal residual multiplier.  Multiplication by the fixed
+reflected-Gaussian horizon grade and `ell^1` column synthesis gives a bounded global operator
+`T_hor` with exact coordinate law `(T_hor x)(q)=A_q(x)h_ref(q)`.  Every prime basis column is
+nonzero at every divisor coordinate.  Its completed Green image, actual incidence image, and
+resolved provenance quotient class vanish exactly under RH.
+
+For every fixed prime label, `q |-> A_q(e_p)` is uniformly bounded above by `5/4` and below by
+`3/4`.  Its diagonal action is therefore a bounded automorphism of the whole completed divisor
+carrier with inverse norm at most `4/3`, sending `h_ref` exactly to the corresponding adaptive
+column.  Fixed-label compatible range is closed; only simultaneous full-`ell^1` Hilbert stability
+is impossible.
+
+Stable recovery belongs to the non-Hilbert provenance graph `(x,T_hor x)`, which is closed and
+bounded below by one; its Hilbert projection cannot be bounded below.  This supersedes the former
+raw-Hilbert range-identification wording.  Remaining coend theorem is not another convergence
+claim: derive, from source differential/compatibility, vanishing of one explicit adaptive Green
+quotient class without assuming its RH-equivalent conclusion.
+
+Lean:
+
+```text
+MobiusThetaAdaptivePrimeNormalHilbertNoGo.lean
+MobiusThetaAdaptivePrimeNormalHorizonIntertwiner.lean
+```
+
+## 2026-08-03 observation-order audit: double-odd Green parity
+
+The updated observation-order theorem suggests a possible shortcut: factor a
+reflection-odd Green target through a reflection-invariant source observation.
+For the actual reflected adaptive source, that hypothesis is false for a
+structural reason. Functional-equation reflection reverses both Green
+fracture and oriented Hodge sign,
+
+```text
+kappa(Rq) = -kappa(q),
+epsilon(Rq) = -epsilon(q),
+h_p(Rq) = h_p(q).
+```
+
+Hence actual completed Green provenance
+
+```text
+g_p(q) = -kappa(q) epsilon(q) h_p(q)
+```
+
+is reflection-even, not reflection-odd. Reflected head--tail source,
+resolved unit, global record, and conservative codiagonal are
+reflection-even as well. This is an exact double-odd parity law, not a
+missing estimate.
+
+There is a sharp no-go endpoint. If either actual Green provenance or its
+global conservative codiagonal is additionally assumed reflection-odd, then
+evenness and oddness force pointwise zero. Conversely RH makes the field zero
+and therefore odd. Thus
+
+```text
+actual Green provenance is reflection-odd <-> RH,
+actual global codiagonal is reflection-odd <-> RH.
+```
+
+Reflection-odd clause required by observation-order cancellation cannot be
+obtained merely from reflection-invariant source completion; on this record
+it is already equivalent to desired arithmetic annihilation. Route J remains
+open. Surviving source object must carry genuinely off-diagonal packet/cycle
+data and produce a transverse arithmetic differential, rather than
+antisymmetrizing already even Green field.
+
+Lean:
+
+```text
+MobiusThetaAdaptivePrimeNormalGreenParityObstruction.lean
+```
+
+## 2026-08-03 global countertransport capacity separation
+
+Requested cofinal depth-nonlocal source object is now audited at global Xi
+level. For every real depth `c`, evaluations of reflected Gaussian
+countertransport assemble over all multiplicity-exact divisor copies as an
+honest `ell^2(Div Xi)` field
+
+```text
+H_c(q) = (exp(c(rho_q-1/2)) + exp(-c(rho_q-1/2))) h_ref(q).
+```
+
+Gaussian horizon decay gives membership for each fixed `c`, with coordinate
+multiplier bound `2 exp(|c|/2)`. Each field is reflection-even. Source-side
+half-density cohomology capacity remains at most two uniformly in `c`.
+
+Global target behavior is classified exactly:
+
+```text
+exists C, forall c, ||H_c||_ell2 <= C  <-> RH.
+```
+
+The same equivalence holds after fixed-prime isometric resolved comparison
+and after its conservative codiagonal. If RH fails, their norms escape every
+finite ceiling although source capacity remains at most two. Thus global
+completion cannot hide pointwise off-line exponential escape.
+
+This closes another false producer: uniform source capacity plus reflected
+Hodge-sector preservation does not imply uniform Xi/common-test capacity.
+The missing implication is itself RH-equivalent. Route J remains open on a
+transverse source-derived annihilation law; another bounded transport or
+capacity estimate cannot supply it.
+
+Lean:
+
+```text
+DeningerMeyerReflectedGaussianCountertransportXiCapacity.lean
+```
+
+## 2026-08-03 operator-level weighted evaluation criterion
+
+Global capacity separation extends from one countertransport orbit to an
+exact source-operator classification. Weight every zeroth Xi evaluation of a
+literal Meyer cohomology class by the nonzero square-summable reflected
+Gaussian horizon. Then the following are equivalent:
+
+```text
+there exists a continuous linear map
+  T : half-density source completion -> ell^2(Div Xi)
+agreeing on literal classes with
+  (T u)(q) = Eval_(rho_q)(u) h_ref(q);
+
+RH.
+```
+
+Under RH, critical-line evaluation is contractive for half-density capacity,
+so the pointwise product has norm at most
+`||h_ref||_2 p_half(u)` and extends uniquely through completion. Conversely,
+any such `T` bounds every source-capacity-two reflected countertransport.
+Evaluating one divisor coordinate and dividing by its nonzero horizon value
+gives uniform boundedness of that Xi character, forcing its real part to
+`1/2`. This works for every divisor support point.
+
+This is the exact operator absent from Route J, not an RH proof: constructing
+it unconditionally would prove RH by the equivalence. It rules out describing
+weighted global evaluation descent as routine completion. Missing new science
+must establish this bounded descent from an independent arithmetic
+differential, or produce a different transverse annihilator.
+
+Lean:
+
+```text
+DeningerMeyerHalfDensityGaussianXiEvaluationCriterion.lean
+```
+
+## 2026-08-03 arbitrary weighted descent rigidity
+
+Gaussian formula is not responsible for operator obstruction. Let `w` be
+any `ell^2(Div Xi)` weight and prescribe
+
+```text
+(E_w u)(q) = Eval_(rho_q)(u) w(q).
+```
+
+There is an exact unconditional support classification:
+
+```text
+E_w extends continuously from half-density completion to ell^2(Div Xi)
+<->
+every q with w(q) != 0 satisfies Re(rho_q)=1/2.
+```
+
+On retained critical coordinates, pointwise contractivity yields global bound
+`||E_w u||_2 <= ||w||_2 p_half(u)`. Conversely, at any retained off-line
+coordinate, capacity-two reflected countertransport makes evaluation
+unbounded; bounded global descent and coordinate evaluation would contradict
+this after division by `w(q)`.
+
+Hence for every coordinatewise nonzero `ell^2` weight,
+
+```text
+weighted descent exists <-> RH.
+```
+
+No arbitrary fast diagonal damping, divisor-indexed norm pullback, or
+alternative nonzero horizon can repair source-to-Xi continuity. A weight can
+hide an off-line zero only by vanishing exactly there, which is
+target-selected and nonconservative. Surviving Route J construction must be
+genuinely off-diagonal and source-derived.
+
+Lean:
+
+```text
+DeningerMeyerHalfDensityWeightedXiEvaluationRigidity.lean
+```
+
+## 2026-08-03 source-native third odd grade
+
+The updated Hellinger--Hodge--Green paper's formerly missing third odd grade
+is now constructed from the same fixed reflected Gaussian.  For centered
+flow `V_c`, set
+
+```text
+A_c = V_c h_ref - V_(-c) h_ref.
+```
+
+This is a literal Meyer source class, is Paugam-reflection anti-fixed, and
+has half-density source and cohomology capacity at most two for every real
+depth.  Its exact Mellin profile is
+
+```text
+(exp(c(s-1/2)) - exp(-c(s-1/2)))
+  exp((s-1/2)^2/(4*pi)).
+```
+
+For every fixed `c != 0`, its centered-flow multiplier is nonzero at every
+off-line divisor copy.  At unit depth the evaluations assemble as an honest
+reflection-odd `ell^2(Div Xi)` field.  Multiplying by actual reflection-even
+adaptive Green provenance gives a reflection-odd field with exactly same
+zero set as Green coefficient.  Therefore factorization through any
+reflection-invariant arithmetic observation implies RH.
+
+This closes source, uniform capacity, global landing, parity, and support
+faithfulness.  It does **not** close Route J: missing clause is independent
+source-derived invariant factorization/annihilation, exactly as updated paper
+states in `(7.17he)` and `(7.17i)`.
+
+Lean:
+
+```text
+DeningerMeyerAntiReflectedGaussianOddMultiplier.lean
+```
+
+## 2026-08-03 Gaussian even--odd cohomology Wronskian
+
+The missing off-diagonal coupling to actual Green displacement is now
+explicit.  Besides fixed reflected Gaussian
+
+```text
+h(t)=exp(-t/2) exp(-pi t^2),
+```
+
+construct fixed logarithmic-moment source
+
+```text
+m(t)=t h(t)=-(h'(t)+h(t)/2)/(2*pi).
+```
+
+Derivative closure of all-weight Meyer target proves `m` is a genuine
+source.  Paugam reflection fixes `h` and anti-fixes `m`, so both give honest
+Meyer cohomology classes in opposite Hodge grades.  Zeroth evaluation of
+`[m]` is first Mellin jet of `h`; hence no multiple-zero hypothesis occurs.
+
+For critical-line reflection `q#=1-conj(q)`, define two-class exterior
+packet
+
+```text
+W(q) = Eval_q([m]) Eval_q#([h])
+     - Eval_q([h]) Eval_q#([m]).
+```
+
+It obeys exact unconditional laws
+
+```text
+W(q) = 2 Re(Eval_q([m]) conj(Eval_q([h])))
+     = kappa(q) |Eval_q([h])|^2/(2*pi),
+W(q#) = -W(q),
+W(q)=0 <-> Re(rho_q)=1/2.
+```
+
+Gaussian factor is strictly positive.  If `K_p(q)` is nonzero completed
+Riesz--Hodge factor of actual reflected adaptive horizon, then division-free
+source/Green comparison is
+
+```text
+W(q) K_p(q) = Green_p(q) |Eval_q([h])|^2/(2*pi).
+```
+
+Wronskian field lands globally in `ell^2(Div Xi)`, every coordinate remains
+literal cohomology determinant, and
+
+```text
+W_global=0 <-> RH.
+```
+
+This is new source knowledge, not another abstract detector: actual
+even/odd Meyer classes now produce unsquared Hermitian orientation whose
+value is exactly Green fracture.  Existing packet-compatibility Koszul
+differential still leaves scalar coefficient line untouched, so it cannot
+annihilate this orientation conservatively.  Remaining hard theorem is
+Gaussian even--odd arithmetic incidence: derive from ordinary-prime/Gamma/
+co-Poisson source relations that this explicit exterior packet factors
+through line-reflection-invariant observation, or is value of an arithmetic
+boundary proved zero.  Route J remains open.
+
+Paper proof:
+
+```text
+docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/deninger/
+deninger-meyer-gaussian-cohomology-wronskian-green-comparison.md
+```
+
+Lean:
+
+```text
+DeningerMeyerGaussianLineWronskianGreenComparison.lean
+```
+
+## 2026-08-03 involutive descent and exact horizontal survivor
+
+The latest Hellinger--Hodge--Green paper identifies the Gaussian exterior
+packet as a gauge of one universal coequalizer defect, rather than an
+independent obstruction.  For line reflection `tau(q)=q#`, define
+
+```text
+r_G(q) = Eval_q([m]) / Eval_q([h]).
+```
+
+The denominator never vanishes, and the formalized exact identities are
+
+```text
+r_G(q) = (rho_q-1/2)/(2*pi),
+delta_tau r_G(q) = r_G(q)-r_G(q#)
+                 = (Re(rho_q)-1/2)/pi,
+W(q) = Eval_q([h]) Eval_q#([h]) * delta_tau r_G(q).
+```
+
+The general involutive defect is split exact: its kernel is the even sector,
+its image is the odd sector, and it is twice the odd projector.  Consequently
+the Gaussian logarithmic jet factors through the finest line-reflection orbit
+observation exactly when RH holds.  More generally, factorization through any
+line-reflection-invariant observation implies RH.
+
+This removes ambiguity from Route J's survivor.  Missing theorem is a
+**source-derived all-prime horizontal arithmetic null-homotopy** of
+`delta_tau r_G`, equivalently a divisor-independent arithmetic observation
+carrying `r_G` and identifying every reflected pair.  Fibrewise Koszul
+exactness leaves one arbitrary residual ray at each divisor copy and cannot
+provide this horizontal identification.  No such arithmetic null-homotopy is
+proved, so Route J remains open.
+
+Lean:
+
+```text
+GaloisForLFunctions/HTGeometry/InvolutiveDescentExactSequenceLaw.lean
+GaloisForLFunctions/RHTower/RiemannGaussianProjectiveDescentLaw.lean
+```
+
+Capstones:
+
+```text
+deningerMeyerReflectedGaussianLogJet_descentDefect_eq
+deningerMeyerReflectedGaussianLineWronskian_eq_gauge_mul_descentDefect
+gaussianLogJet_factorsThrough_lineConjOrbit_iff_riemannHypothesis
+riemannHypothesis_of_gaussianLogJet_invariant_factorization
+```
+
+## 2026-08-03 pair-groupoid bidescent and Hedenmalm vertical no-go
+
+Latest paper revision enlarges the involutive defect to the universal
+pair-groupoid cocycle
+
+```text
+D_f(x,y)=f(x)-f(y).
+```
+
+It classifies descent through every equivalence quotient.  For a
+two-directional source/divisor field, vertical and horizontal differences
+commute.  Exact gluing at both horizontal endpoints therefore transports the
+horizontal defect unchanged between vertical levels; it does not make that
+defect zero.  One independent horizontal zero anchor is necessary and
+sufficient.
+
+This applies to the actual Hedenmalm source.  Its causal and anti-causal
+Volterra primitives satisfy
+
+```text
+C_alpha(x)-A_alpha(x)=-i exp(-i alpha x) XiC(alpha),
+forall x, C_alpha(x)=A_alpha(x) <-> XiC(alpha)=0.
+```
+
+Thus a Xi zero is exact two-ended source gluing, but bidescent proves that
+this vertical coincidence conserves the independent horizontal Gaussian
+class `delta_tau r_G`.  It cannot be the missing Route J annihilator.
+Survivor remains an all-prime horizontal arithmetic anchor/null-homotopy.
+
+Lean:
+
+```text
+GaloisForLFunctions/HTGeometry/PairGroupoidBidescentLaw.lean
+GaloisForLFunctions/RHTower/HedenmalmTwoEndedVolterraDefect.lean
+```
+
+## 2026-08-03 all-cross-prime Gaussian residual normalization
+
+The latest paper revision makes the residual ray left by fibrewise Koszul
+exactness concrete.  Let `eta` be the unit full-support all-cross-prime
+Calderón--Witt horizon and put
+
+```text
+J0_packet(q)=J0(q) eta,
+J1_packet(q)=J1(q) eta.
+```
+
+Their division-free reflected exterior packet is
+
+```text
+Omega_packet(q)
+ =J1(q) J0_packet(q#)-J0(q) J1_packet(q#)
+ =Omega_G(q) eta.
+```
+
+It lies in the packet Koszul kernel for every `q`, and its weighted Hilbert
+norm is exactly `|Omega_G(q)|`.  Thus the actual all-cross-prime completion
+contains a nonzero horizontal cycle at every off-line divisor copy;
+vertical exactness preserves rather than removes it.
+
+Coefficientwise inverse-horizon normalization sends `c eta` to the constant
+family `c` on the infinite ordered cross-prime set.  Therefore
+
+```text
+inverse-horizon-normalizable(c eta) <-> c=0,
+inverse-horizon-normalizable(Omega_packet(q))
+  <-> Re(rho_q)=1/2.
+```
+
+The inverse-horizon domain meets the residual Koszul ray only at zero.  In
+contrast, every continuous extension of the old algebraic oriented boundary
+is zero on the whole weighted packet completion, so it kills
+`Omega_packet(q)` even when that packet is nonzero.  This closes weighted
+packet compatibility plus continuous reuse of the old vertical boundary as
+a horizontal-anchor class.
+
+The same horizontal class is literal prime-shell source entropy before
+squaring:
+
+```text
+delta_tau r_G(q)=-E_shell(rho_q)/(2*pi).
+```
+
+Open object is now a source theorem placing the actual Gaussian Wronskian
+packet in the inverse-horizon arithmetic domain, or a new relative
+horizontal transgression nonzero on the dense arithmetic witness core.
+Global inverse-horizon admission is equivalent to RH; it is not proved, so
+Route J remains open.
+
+Lean:
+
+```text
+GaloisForLFunctions/RHTower/
+DeningerCalderonWittGaussianHorizontalNormalization.lean
+```
+
+The diagonal-weight audit is also complete.  For any coordinate weight
+`w(i)`, weighted inverse-horizon admission of a residual ray satisfies
+
+```text
+weightedNormalizable_w(c eta) <-> c=0 or Summable(w).
+```
+
+Hence summable diagonal weights admit every horizontal residual and select
+nothing; nonsummable weights admit only zero and make admission exactly the
+critical-line statement.  No diagonal reweighting can derive the missing
+anchor.  Survivor must use genuinely off-diagonal packet/cycle incidence or
+a source theorem establishing the nonsummable-domain admission.
+
+## 2026-08-03 fixed prime-cycle scalar-tensor no-go
+
+The first off-diagonal candidate is now class-complete.  Let `K_M` be the
+source-defined self-adjoint Schatten-one cofinal triangle carrier after an
+arbitrary finite block cut, and let `Hol_n` be a selected three-edge cycle.
+For every scalar `c`,
+
+```text
+Hol_n(c K_M) = c^3 Hol_n(K_M).
+```
+
+Therefore a fixed prime-fibre triangle has only two possible behaviours on
+the one-dimensional Calderón--Witt residual ray:
+
+```text
+Hol_n(K_M) != 0  ->  Hol_n(c K_M)=0 <-> c=0;
+Hol_n(K_M)  = 0  ->  Hol_n(c K_M)=0 for every c.
+```
+
+Apply this to actual reflected prime-shell entropy
+`E(q)=1-2 Re(rho_q)` and put `T_M(q)=E(q) K_M`.  This constructs a literal
+depth-nonlocal prime-cycle object.  It remains self-adjoint and trace class,
+has zero diagonal, is reflection-odd, and has uniform operator capacity
+because `|E(q)|<1` throughout open critical strip.  Its cofinal holonomy is
+
+```text
+Hol_n(T_M(q)) = E(q)^3 Hol_n(K_M),
+Hol_n(T_M(q))=0 <-> Re(rho_q)=1/2.
+```
+
+Thus scalar coupling to known prime triangle is a faithful detector, not a
+source annihilator; declaring its holonomy zero is already RH.  If base
+holonomy is killed instead, whole residual ray is lost.  This closes every
+fixed-prime-carrier homogeneous triangle attack, including multiplication
+of Route K positive survivor by Gaussian Wronskian, Green fracture, or shell
+entropy.  “Off-diagonal” is necessary but not sufficient.  Surviving Route J
+object must entangle divisor/horizontal provenance with prime-cycle data
+nonseparably (or be genuinely nonhomogeneous), rather than tensoring fixed
+prime carrier by residual scalar.
+
+Paper proof:
+
+```text
+docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/deninger/
+deninger-meyer-gaussian-cohomology-wronskian-green-comparison.md
+```
+
+Lean:
+
+```text
+GaloisForLFunctions/RHTower/
+DeningerCalderonWittGaussianPrimeCycleTensorNoGo.lean
+```

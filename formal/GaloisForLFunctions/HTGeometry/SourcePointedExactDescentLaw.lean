@@ -125,6 +125,51 @@ theorem IsStableSourcePointedExactDescent.existsUnique_lift_with_bound
   · intro z hz
     exact hxunique z ⟨hz.1, hz.2.1⟩
 
+/-! ## Source-pointed conservative factorization -/
+
+/-- A comparison need not identify two entire completed ranges in order to force one target point
+to vanish.  It is enough that the comparison lands that point in a conservative source sector,
+intertwines it into the zero observation fibre, and reflects zero on that point. -/
+theorem eq_zero_of_sourcePointed_conservativeFactorization
+    {X E₂ F₂ : Type*} [Zero X]
+    [AddCommGroup E₂] [Module R E₂]
+    [AddCommGroup F₂] [Module R F₂]
+    (observe : E₂ →ₗ[R] F₂) (source : Submodule R E₂)
+    (compare : X → E₂) {x : X}
+    (hconservative : IsConservativeOn observe source)
+    (hsource : compare x ∈ source)
+    (hzero : observe (compare x) = 0)
+    (hreflect : compare x = 0 → x = 0) :
+    x = 0 := by
+  apply hreflect
+  rw [IsConservativeOn, Submodule.disjoint_def] at hconservative
+  apply hconservative (compare x) hsource
+  exact hzero
+
+/-- Several source geometries need not be globally identified with one
+another.  If each comparison lands the distinguished point in a conservative
+zero fibre and their complete comparison record reflects zero, then the
+point vanishes.  Individual comparisons may have nontrivial kernels; only
+their intersection at the source point must be trivial. -/
+theorem eq_zero_of_sourcePointed_parallelConservativeFactorizations
+    {J X : Type*} [Zero X]
+    {E₂ F₂ : J → Type*}
+    [∀ j, AddCommGroup (E₂ j)] [∀ j, Module R (E₂ j)]
+    [∀ j, AddCommGroup (F₂ j)] [∀ j, Module R (F₂ j)]
+    (observe : ∀ j, E₂ j →ₗ[R] F₂ j)
+    (source : ∀ j, Submodule R (E₂ j))
+    (compare : ∀ j, X → E₂ j) {x : X}
+    (hconservative : ∀ j, IsConservativeOn (observe j) (source j))
+    (hsource : ∀ j, compare j x ∈ source j)
+    (hzero : ∀ j, observe j (compare j x) = 0)
+    (hreflect : (∀ j, compare j x = 0) → x = 0) :
+    x = 0 := by
+  apply hreflect
+  intro j
+  have hj := hconservative j
+  rw [IsConservativeOn, Submodule.disjoint_def] at hj
+  exact hj (compare j x) (hsource j) (hzero j)
+
 end
 
 end GaloisForLFunctions.HTGeometry

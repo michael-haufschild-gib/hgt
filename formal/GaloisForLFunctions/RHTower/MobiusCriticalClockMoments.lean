@@ -414,4 +414,222 @@ theorem tendsto_squarefreeMobiusLogMoment_two_critical :
     simp only [Function.comp_apply, Complex.ofReal_re, pow_two]
   · norm_num
 
+private theorem third_ratio_from_logCurrent
+    {F C : ℂ → ℂ} {U : Set ℂ} {s : ℂ}
+    (hU : IsOpen U) (hs : s ∈ U)
+    (hFana : ∀ z ∈ U, AnalyticAt ℂ F z)
+    (hCana : ∀ z ∈ U, AnalyticAt ℂ C z)
+    (hFne : ∀ z ∈ U, F z ≠ 0)
+    (hcurrent : ∀ z ∈ U, -logDeriv F z = C z) :
+    -(iteratedDeriv 3 F s / F s) =
+      C s ^ 3 - 3 * C s * deriv C s + deriv (deriv C) s := by
+  have hODE_at (z : ℂ) (hz : z ∈ U) :
+      deriv F z = -C z * F z := by
+    rw [← hcurrent z hz, logDeriv_apply]
+    field_simp [hFne z hz]
+  have hODE_eventually (z : ℂ) (hz : z ∈ U) :
+      deriv F =ᶠ[nhds z] fun w => -C w * F w := by
+    filter_upwards [hU.mem_nhds hz] with w hw
+    exact hODE_at w hw
+  have hF2_at (z : ℂ) (hz : z ∈ U) :
+      deriv (deriv F) z =
+        -(deriv C z * F z + C z * deriv F z) := by
+    rw [(hODE_eventually z hz).deriv_eq]
+    have hderiv :=
+      ((hCana z hz).differentiableAt.hasDerivAt.neg.mul
+        (hFana z hz).differentiableAt.hasDerivAt).deriv
+    change deriv (-C * F) z = _
+    rw [hderiv]
+    simp only [Pi.neg_apply]
+    ring
+  have hF2_eventually :
+      deriv (deriv F) =ᶠ[nhds s]
+        fun z => -(deriv C z * F z + C z * deriv F z) := by
+    filter_upwards [hU.mem_nhds hs] with z hz
+    exact hF2_at z hz
+  have hF3 : deriv (deriv (deriv F)) s =
+      -(deriv (deriv C) s * F s +
+        2 * deriv C s * deriv F s + C s * deriv (deriv F) s) := by
+    rw [hF2_eventually.deriv_eq]
+    have hleft :=
+      ((hCana s hs).deriv.differentiableAt.hasDerivAt.mul
+        (hFana s hs).differentiableAt.hasDerivAt)
+    have hright :=
+      ((hCana s hs).differentiableAt.hasDerivAt.mul
+        (hFana s hs).deriv.differentiableAt.hasDerivAt)
+    have hderiv := (hleft.add hright).neg.deriv
+    change deriv (-(deriv C * F + C * deriv F)) s = _
+    rw [hderiv]
+    ring
+  have hiter3 : iteratedDeriv 3 F s = deriv (deriv (deriv F)) s := by
+    rw [show 3 = Nat.succ 2 by omega, iteratedDeriv_succ,
+      show 2 = Nat.succ 1 by omega, iteratedDeriv_succ, iteratedDeriv_one]
+  rw [hiter3, hF3, hF2_at s hs, hODE_at s hs]
+  field_simp [hFne s hs]
+  ring
+
+/-- The third squarefree logarithmic moment is the third raw moment generated
+by the fixed-current logarithmic derivative. -/
+theorem ofReal_squarefreeMobiusLogMoment_three_eq_fixedCurrent
+    {sigma : ℝ} (hsigma : 1 < sigma) :
+    (squarefreeMobiusLogMoment 3 sigma : ℂ) =
+      _root_.GaloisForLFunctions.squarefreeFixedCurrent sigma ^ 3 -
+        3 * _root_.GaloisForLFunctions.squarefreeFixedCurrent sigma *
+          deriv _root_.GaloisForLFunctions.squarefreeFixedCurrent sigma +
+        deriv (deriv _root_.GaloisForLFunctions.squarefreeFixedCurrent) sigma := by
+  let F := _root_.GaloisForLFunctions.squarefreePartition
+  let C := _root_.GaloisForLFunctions.squarefreeFixedCurrent
+  let U : Set ℂ := {z | 1 < z.re}
+  let s : ℂ := sigma
+  have hU : IsOpen U :=
+    isOpen_lt continuous_const Complex.continuous_re
+  have hs : s ∈ U := by simpa [s, U] using hsigma
+  have hFana (z : ℂ) (hz : z ∈ U) : AnalyticAt ℂ F z := by
+    simpa [F, U] using analyticAt_squarefreePartition_of_one_lt_re hz
+  have hFne (z : ℂ) (hz : z ∈ U) : F z ≠ 0 := by
+    simpa [F, U] using
+      _root_.GaloisForLFunctions.squarefreePartition_ne_zero hz
+  have hcurrent (z : ℂ) (hz : z ∈ U) : -logDeriv F z = C z := by
+    simpa [F, C, U] using
+      (_root_.GaloisForLFunctions.neg_logDeriv_squarefreePartition_eq_squarefreeFixedCurrent
+        (s := z) hz)
+  have hCana (z : ℂ) (hz : z ∈ U) : AnalyticAt ℂ C z := by
+    have hlog : AnalyticAt ℂ (logDeriv F) z := by
+      simpa [logDeriv_apply] using!
+        (hFana z hz).deriv.div (hFana z hz) (hFne z hz)
+    have heq : (fun w => -logDeriv F w) =ᶠ[nhds z] C := by
+      filter_upwards [hU.mem_nhds hz] with w hw
+      exact hcurrent w hw
+    exact hlog.neg.congr heq
+  rw [ofReal_squarefreeMobiusLogMoment_eq_iteratedDeriv_div 3 hsigma]
+  have hthird :=
+    third_ratio_from_logCurrent hU hs hFana hCana hFne hcurrent
+  calc
+    (-1 : ℂ) ^ 3 * iteratedDeriv 3 F s / F s =
+        -(iteratedDeriv 3 F s / F s) := by ring
+    _ = _ := hthird
+
+private theorem hasDerivAt_neg_inv_sq_sub_one
+    {s : ℂ} (hs : s - 1 ≠ 0) :
+    HasDerivAt (fun z : ℂ => -1 / (z - 1) ^ 2)
+      (2 / (s - 1) ^ 3) s := by
+  have hbase : HasDerivAt (fun z : ℂ => (z - 1) ^ 2)
+      (2 * (s - 1)) s := by
+    have hlinear : HasDerivAt (fun z : ℂ => z - 1) 1 s :=
+      (hasDerivAt_id s).sub_const 1
+    exact (hlinear.pow 2).congr_deriv (by ring)
+  have hinv := hbase.inv (pow_ne_zero 2 hs)
+  have hneg := hinv.neg
+  have hvalue :
+      -(-(2 * (s - 1)) / ((s - 1) ^ 2) ^ 2) =
+        2 / (s - 1) ^ 3 := by
+    field_simp
+  rw [hvalue] at hneg
+  refine hneg.congr_of_eventuallyEq ?_
+  filter_upwards with z
+  simp only [Pi.neg_apply, Pi.inv_apply]
+  rw [neg_div, one_div]
+
+private theorem deriv2_squarefreeFixedCurrent_eq_regularCurrent
+    {s : ℂ} (hs : s ≠ 1) (hG : zetaResidueUnit s ≠ 0)
+    (hregular : AnalyticAt ℂ squarefreeMobiusRegularCurrent s) :
+    deriv (deriv _root_.GaloisForLFunctions.squarefreeFixedCurrent) s =
+      2 / (s - 1) ^ 3 +
+        deriv (deriv squarefreeMobiusRegularCurrent) s := by
+  have hGcont : ContinuousAt zetaResidueUnit s :=
+    (zetaResidueUnit_diffAt hs).continuousAt
+  have hderivEq :
+      deriv _root_.GaloisForLFunctions.squarefreeFixedCurrent =ᶠ[nhds s]
+        fun z => -1 / (z - 1) ^ 2 + deriv squarefreeMobiusRegularCurrent z := by
+    filter_upwards [eventually_ne_nhds hs, hGcont.eventually_ne hG,
+      hregular.eventually_analyticAt] with z hz hGz hBz
+    exact deriv_squarefreeFixedCurrent_eq_regularCurrent hz hGz hBz
+  rw [hderivEq.deriv_eq]
+  have hsum :=
+    (hasDerivAt_neg_inv_sq_sub_one (sub_ne_zero.mpr hs)).add
+      hregular.deriv.differentiableAt.hasDerivAt
+  exact hsum.deriv
+
+/-- The rescaled third logarithmic moment tends to the third unit-exponential
+moment.  This supplies the uniform-integrability order needed by the
+countable one-corner Hardy reporter. -/
+theorem tendsto_squarefreeMobiusLogMoment_three_critical :
+    Tendsto (fun sigma : ℝ =>
+      (sigma - 1) ^ 3 * squarefreeMobiusLogMoment 3 sigma)
+      (nhdsWithin 1 (Ioi 1)) (nhds 6) := by
+  let B := squarefreeMobiusRegularCurrent
+  have hB : AnalyticAt ℂ B 1 := by
+    simpa [B] using analyticAt_squarefreeMobiusRegularCurrent_one
+  have hepsilon : Tendsto (fun sigma : ℝ => (((sigma - 1 : ℝ) : ℂ)))
+      (nhdsWithin 1 (Ioi 1)) (nhds 0) := by
+    have hone : Tendsto (fun _ : ℝ => (1 : ℂ))
+        (nhdsWithin 1 (Ioi 1)) (nhds 1) := tendsto_const_nhds
+    simpa using (tendsto_ofReal_nhdsWithin_one.sub hone)
+  have hBlim : Tendsto (fun sigma : ℝ => B sigma)
+      (nhdsWithin 1 (Ioi 1)) (nhds (B 1)) :=
+    hB.continuousAt.tendsto.comp tendsto_ofReal_nhdsWithin_one
+  have hBderivLim : Tendsto (fun sigma : ℝ => deriv B sigma)
+      (nhdsWithin 1 (Ioi 1)) (nhds (deriv B 1)) :=
+    hB.deriv.continuousAt.tendsto.comp tendsto_ofReal_nhdsWithin_one
+  have hBderiv2Lim : Tendsto (fun sigma : ℝ => deriv (deriv B) sigma)
+      (nhdsWithin 1 (Ioi 1)) (nhds (deriv (deriv B) 1)) :=
+    hB.deriv.deriv.continuousAt.tendsto.comp tendsto_ofReal_nhdsWithin_one
+  have hlinear : Tendsto (fun sigma : ℝ =>
+      (6 : ℂ) * ((sigma - 1 : ℝ) : ℂ) * B sigma)
+      (nhdsWithin 1 (Ioi 1)) (nhds 0) := by
+    simpa using (tendsto_const_nhds.mul hepsilon).mul hBlim
+  have hquadratic : Tendsto (fun sigma : ℝ =>
+      (3 : ℂ) * ((sigma - 1 : ℝ) : ℂ) ^ 2 *
+        (B sigma ^ 2 - deriv B sigma))
+      (nhdsWithin 1 (Ioi 1)) (nhds 0) := by
+    simpa using ((tendsto_const_nhds.mul (hepsilon.pow 2)).mul
+      (hBlim.pow 2 |>.sub hBderivLim))
+  have hcubic : Tendsto (fun sigma : ℝ =>
+      ((sigma - 1 : ℝ) : ℂ) ^ 3 *
+        (B sigma ^ 3 - 3 * B sigma * deriv B sigma +
+          deriv (deriv B) sigma))
+      (nhdsWithin 1 (Ioi 1)) (nhds 0) := by
+    simpa using (hepsilon.pow 3).mul
+      (((hBlim.pow 3).sub
+        ((tendsto_const_nhds.mul hBlim).mul hBderivLim)).add hBderiv2Lim)
+  have hmodel : Tendsto (fun sigma : ℝ =>
+      (6 : ℂ) +
+        6 * ((sigma - 1 : ℝ) : ℂ) * B sigma +
+        3 * ((sigma - 1 : ℝ) : ℂ) ^ 2 *
+          (B sigma ^ 2 - deriv B sigma) +
+        ((sigma - 1 : ℝ) : ℂ) ^ 3 *
+          (B sigma ^ 3 - 3 * B sigma * deriv B sigma +
+            deriv (deriv B) sigma))
+      (nhdsWithin 1 (Ioi 1)) (nhds 6) := by
+    simpa using (((tendsto_const_nhds.add hlinear).add hquadratic).add hcubic)
+  have hcomplex : Tendsto (fun sigma : ℝ =>
+      ((((sigma - 1) ^ 3 * squarefreeMobiusLogMoment 3 sigma : ℝ) : ℂ)))
+      (nhdsWithin 1 (Ioi 1)) (nhds 6) := by
+    apply hmodel.congr'
+    have hGeventually : ∀ᶠ sigma : ℝ in nhdsWithin (1 : ℝ) (Ioi (1 : ℝ)),
+        zetaResidueUnit (sigma : ℂ) ≠ 0 :=
+      tendsto_ofReal_nhdsWithin_one.eventually zetaResidueUnit_ne_zero_eventually
+    have hBeventually : ∀ᶠ sigma : ℝ in nhdsWithin (1 : ℝ) (Ioi (1 : ℝ)),
+        AnalyticAt ℂ B (sigma : ℂ) :=
+      tendsto_ofReal_nhdsWithin_one.eventually hB.eventually_analyticAt
+    filter_upwards [self_mem_nhdsWithin, hGeventually, hBeventually] with
+      sigma hsigma hGsigma hBsigma
+    have hsigmaOne : (sigma : ℂ) ≠ 1 := by
+      exact_mod_cast hsigma.ne'
+    rw [Complex.ofReal_mul, Complex.ofReal_pow,
+      ofReal_squarefreeMobiusLogMoment_three_eq_fixedCurrent hsigma]
+    rw [squarefreeFixedCurrent_eq_inv_add_regularCurrent hsigmaOne hGsigma]
+    rw [deriv_squarefreeFixedCurrent_eq_regularCurrent hsigmaOne hGsigma
+      (by simpa [B] using hBsigma)]
+    rw [deriv2_squarefreeFixedCurrent_eq_regularCurrent hsigmaOne hGsigma
+      (by simpa [B] using hBsigma)]
+    simp only [B, Complex.ofReal_sub, Complex.ofReal_one]
+    field_simp [sub_ne_zero.mpr hsigmaOne]
+    ring
+  have hre := Complex.continuous_re.continuousAt.tendsto.comp hcomplex
+  convert hre using 1
+  · funext sigma
+    simp only [Function.comp_apply, Complex.ofReal_re]
+  · norm_num
+
 end RHTower

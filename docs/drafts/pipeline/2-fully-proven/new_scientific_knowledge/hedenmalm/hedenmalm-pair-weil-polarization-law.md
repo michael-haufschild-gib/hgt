@@ -363,6 +363,21 @@ still lacks the extension of the prime-plus-Gamma equality from the Cauchy/resol
 full Guinand--Weil test algebra, and the closability/domain theorem for the full unbounded
 Hedenmalm pair. No source-side or positivity claim is represented by an assumption.
 
+`formal/GaloisForLFunctions/RHTower/XiQuotientRealDecay.lean` supplies the admissibility half of
+`(18a)` on the real axis:
+
+```text
+exists_norm_xiThetaEigenFourier_ofReal_le
+  : ||xiThetaEigenFourier alpha t|| <= C exp(-delta |t|) for every delta < pi/4.
+```
+
+The exponential factor of `(18a)` is therefore unconditional, and the polynomial factor is not
+needed for it: away from the removed point the linear denominator is bounded below, so the quotient
+simply inherits the exponential decay of `XiC` proved in
+`RHTower/ThetaCuspComplexStrip.lean`, and on the remaining compact interval continuity gives a bound.
+What `(18a)` still lacks in Lean is the same estimate on closed *horizontal strips* rather than the
+real axis alone; that needs the contour shift at a complex frequency.
+
 ## Gates
 
 - [x] completed centered Weil distribution fixed
@@ -380,7 +395,8 @@ Hedenmalm pair. No source-side or positivity claim is represented by an assumpti
 - [ ] independent specialist novelty audit
 - [x] multiplicity-exact zero-side Weil polarization and theta radical in Lean
 - [x] Lean prime-plus-Gamma realization on the Cauchy/resolvent core
-- [ ] Lean extension to the full Guinand--Weil test algebra
+- [ ] Lean extension to the full Guinand--Weil test algebra (the real-axis admissibility bound for
+      the eigenfunction quotients is now proved; the strip version and the algebra extension remain)
 - [x] Lean entire eigenfunction quotient and pointwise derivative law
 - [x] Lean multiplicity-summed eigenfunction norm and orthogonality law
 - [x] Lean `ell^2` evaluation carrier, Cauchy completion, and exact Hedenmalm Hilbert norm

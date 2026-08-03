@@ -56,3 +56,10 @@ prime/Gamma terms before division, converge locally uniformly to
 `continuedXiAntiCausalWardResponse`, and preserve the critical four-unit energy.  Landing the full
 completed Xi trace is excluded by `XiWardInteriorSourceBudgetDivergence`; identifying a target
 divisor factor before this construction is circular.
+
+The internal Möbius--theta exponent cofaces now also form a literal all-order
+`ell2(N;L2)` physical horizon, with exact codiagonal equal to every theta/Xi jet; see
+`../3-formalized/riemann-mobius-theta-internal-jet-source-horizon-admission.md`. Hence the missing
+infinite object is no longer an arbitrary countable completion grade. It is the specific
+polarized Gamma/co-Poisson/Hodge comparison from that admitted horizon to the Ward column, with
+four-unit energy preservation.

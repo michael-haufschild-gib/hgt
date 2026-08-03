@@ -1122,8 +1122,355 @@ discharged from the co-Poisson side at all --- every co-Poisson Mellin transform
 subspace, which is where Burnol's dimension count for the quotient lives.  That is the honest
 boundary of the present construction.
 
-Still outside the formal tree: a witness at a hypothetical zero (equivalently, the dimension count
-for the co-Poisson quotient), and the transfer of the two-sided law to the co-Poisson quotient
+The boundary itself is now machine-checked, as a dichotomy:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonMellinNonvanishing.lean
+
+soninMellinEvaluation_coPoissonIndicatorSoninCosine_ne_zero_iff
+  : the explicit witness has nonzero evaluation exactly when zeta(w) /= 0,
+inner_burnolExtendedSoninEvaluationVector_coPoissonIndicatorSoninCosine_eq_zero
+  : at a zero the evaluator is orthogonal to the explicit co-Poisson vector.
+```
+
+So the construction decides `(10)` off the zero set and provably cannot decide it on the zero set:
+the witness there must be orthogonal to the whole co-Poisson subspace.  That is precisely the
+content Burnol supplies by the orthogonal-complement theorem, and it is what `(10)` asserts in the
+displayed form `y_{rho,N} = k_{rho,a_N} /= 0`.
+
+One point of the general argument is not reachable from the explicit seed alone.  The orthogonality
+above is proved for the explicit inhabitant; extending it to *every* co-Poisson source needs the
+Mellin transform `zeta(w) M g(w)` for a general window seed, and that identity has no
+fractional-part shortcut --- for a merely integrable seed the co-Poisson value need not even be
+`O(1/t)`, so the continuation has to be run through Mellin--Plancherel rather than through an
+explicit kernel.
+
+The dichotomy extends across the critical line without any new analysis.  Below the line the
+reflected Riesz vector *is* the cosine transform of the evaluation vector at the reflected point
+(`burnolExtendedSoninReflectedEvaluationVector_eq_cosine`), the cosine transform is an isometric
+equivalence, and the zeta zero locus is invariant under `s |-> 1 - s` --- a fact the corpus already
+owned in `ReflectionCocycleClass`:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonMellinNonvanishing.lean
+
+burnolExtendedSoninReflectedEvaluationVector_ne_zero_of_riemannZeta_ne_zero
+  : below the line the reflected evaluation vector is nonzero wherever zeta is,
+burnolExtendedSoninEvaluationVector_ne_zero_of_riemannZeta_ne_zero_upper
+  : the reflected form of the same statement above the line.
+```
+
+So `(10)` is settled on both halves of the open strip, off the zero set, from the single explicit
+inhabitant.
+
+The explicit family is not a single vector: the reciprocal function on *any* multiplicative
+sub-window `[c,d]` is a seed of the same kind, with the same fractional-part form and the same
+zeta factor:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonSubWindow.lean
+
+coPoissonSubWindowSeed c d           = the reciprocal function on [c,d],
+coPoissonSubWindowSum_eq             : its co-Poisson sum counts the window indices,
+coPoissonCorrectionConstant_coPoissonSubWindowSeed
+  : its correction constant is the length 1/c - 1/d of the inverted window,
+burnolCoPoissonRightSum_coPoissonSubWindowSeed_eq_fract
+  : so its co-Poisson value is (fract(t/d) - fract(t/c))/t,
+integral_Ioi_burnolCoPoisson_subWindow_cpow
+  : with Mellin transform (d^(-w) - c^(-w)) * (-zeta(w)/w) on the strip,
+integral_Ioi_burnolCoPoisson_subWindow_cpow_eq_zero
+  : and therefore zero at every zeta zero.
+```
+
+Taking `d = 1/c` recovers the symmetric window.  So the annihilation at a zero is not an accident of
+one seed: it holds across a two-parameter family of explicit inhabitants of every aperture, which is
+the concrete form of the statement that the whole co-Poisson subspace is annihilated there.
+
+The full analytic size data for the family is proved as well, so each member is a genuine `L^2`
+vector of the carrier and not merely a formal expression:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonSubWindow.lean
+
+abs_subWindowCard_sub_le    : the index count is the expected count up to one unit,
+norm_..._le                 : hence the value is bounded by 1/t,
+norm_..._le_global          : and by 2/c everywhere (the window has at most t/c indices),
+support_..._symmetric       : a sub-window sits inside the symmetric window of aperture min(c, 1/d),
+measurable_..., norm_..._le_profile, memLp_two_..., star_...
+  : measurable, dominated by a multiple of (1 + |t|)^(-1), square integrable, and real.
+```
+
+The `1/t` bound here needs no harmonic comparison at all: both fractional parts lie in `[0,1)`, so
+the numerator of `(fract(t/d) - fract(t/c))/t` is bounded by one outright.
+
+The other member of each co-Poisson pair is the plain indicator of the inverted window, and it is
+now built at the same generality:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonWindowIndicator.lean
+
+coPoissonWindowIndicatorSeed c d      = the indicator of [c,d],
+coPoissonReciprocalSeed_coPoissonSubWindowSeed
+  : the reciprocal seed of the sub-window reciprocal is exactly the indicator of the
+    inverted window, so the two form a co-Poisson pair,
+integral_Icc_inv_ofReal               : the logarithmic length of a window,
+coPoissonCorrectionConstant_coPoissonWindowIndicatorSeed
+  : hence its correction constant is log d - log c,
+coPoissonWindowIndicatorSum_eq_finset_sum, coPoissonWindowIndicatorSum_eq_harmonic
+  : its co-Poisson sum is the harmonic window sum,
+burnolCoPoissonRightSum_coPoissonWindowIndicatorSeed
+  : giving the value harmonic(floor(t/c)) - harmonic(ceil(t/d) - 1) - (log d - log c).
+```
+
+Taking `d = 1/c` recovers the symmetric window throughout, so the earlier one-parameter results are
+the diagonal of this family.
+
+The decay estimate for the general window indicator is proved by the same three-comparison
+argument, now with the constant `log d - log c` at the two endpoints:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonWindowIndicator.lean
+
+log_window_eq_log_div_sub_log_div
+  : log d - log c = log(t/c) - log(t/d) at every positive scale,
+norm_..._le               : hence the value is O(1/t) beyond the scale 2d,
+norm_..._le_local         : with the uniform local bound |t|/c + (log d - log c),
+norm_..._le_profile       : dominated by a multiple of (1 + |t|)^(-1),
+memLp_two_..., star_...   : square integrable and real,
+integrable_coPoissonSubWindowSeed
+  : and the partner seed is integrable, closing the analytic data for the pair.
+```
+
+Both members of every co-Poisson pair now carry full analytic data --- integrability, support in a
+symmetric window, measurability, boundedness, reality and square integrability --- which is exactly
+the hypothesis list of the `L^2` intertwining theorem.
+
+That assembly is done: every sub-window now yields a genuine source and a genuine Sonine vector.
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonSubWindowSource.lean
+
+subWindowAperture c d                = min (c, 1/d),
+fourierUnitary_coPoissonSubWindowVector
+  : the intertwining for the pair (reciprocal on [c,d], indicator of [1/d,1/c]),
+coPoissonSubWindowEven, soninHeadConstant_coPoissonSubWindowEven,
+soninHeadConstant_cosine_coPoissonSubWindowEven
+  : both Sonine conditions,
+coPoissonSubWindowSonin              : the vector of the extended Sonine space,
+coPoissonSubWindowSource             : a literal BurnolCoPoissonSource at that aperture,
+soninMellinEvaluation_coPoissonSubWindowSonin
+  : its completed Mellin evaluation is Gamma_R(w) (d^(-w) - c^(-w)) (-zeta(w)/w),
+subWindowFactor_ne_zero              : the window factor is nonzero whenever c < d,
+burnolExtendedSoninEvaluationVector_ne_zero_of_subWindow
+  : so every sub-window with c < d is a witness, at every aperture below min (c, 1/d).
+```
+
+The window factor is nonzero for the same metric reason as before: `|c^(-w)| = c^(-Re w)` and
+`|d^(-w)| = d^(-Re w)`, and for `0 < c < d` and `Re w > 0` those are different.  So `(10)` off the
+zero set is witnessed not by one vector but by a two-parameter family, at every aperture.
+
+The dichotomy is exact for every member of the family:
+
+```text
+soninMellinEvaluation_coPoissonSubWindowSonin_ne_zero_iff
+  : the evaluation of a sub-window vector is nonzero exactly when zeta(w) /= 0,
+soninMellinEvaluation_coPoissonSubWindowSonin_eq_zero,
+inner_burnolExtendedSoninEvaluationVector_coPoissonSubWindowSonin_eq_zero
+  : at a zero the evaluator annihilates every sub-window vector.
+```
+
+So the entire explicit family --- and by linearity its span --- lies in the kernel of the evaluation
+at a zero.  This is the precise sense in which the co-Poisson side cannot decide `(10)` there.
+
+Because aperture monotonicity lets a Sonine vector be read at any smaller aperture, the whole family
+can be placed in a single extended Sonine space, which is the shape the quotient discussion needs:
+
+```text
+coPoissonSubWindowSoninAt        : a sub-window vector read at any aperture A <= min(c,1/d),
+subWindowAperture_left_eq        : for a <= d <= 1/a the window [a,d] has aperture exactly a,
+                                   so the family {[a,d]} is a one-parameter family at aperture a,
+inner_burnolExtendedSoninEvaluationVector_subWindowAt_eq_zero,
+inner_burnolExtendedSoninEvaluationVector_subWindowAt_ne_zero
+  : at one fixed aperture, the evaluator annihilates the whole family at a zeta zero and
+    is nonzero against it off the zero set.
+```
+
+That family generates a closed subspace, and the two halves of the dichotomy become statements
+about it:
+
+```text
+burnolSubWindowGenerators A, burnolSubWindowSpace A
+  : the sub-window vectors readable at aperture A, and their closed span,
+inner_eq_zero_of_mem_burnolSubWindowSpace
+  : at a zeta zero the evaluator annihilates the whole closed span --- the concrete
+    form of `y_{rho,N} = k_{rho,a_N}` for the explicit part of the source space,
+burnolExtendedSoninEvaluationVector_notMem_orthogonal_of_ne_zero
+  : off the zero set the span already detects the evaluator.
+```
+
+Passing from the generators to the closed span is the standard argument: the functional
+`u |-> <k, u>` is continuous, so its kernel is a closed submodule containing the generators, hence
+containing their closed span.
+
+That span is not the zero space, so the orthogonality is a genuine constraint and not vacuous:
+
+```text
+burnolCoPoissonRightSum_coPoissonSubWindowSeed_eq_const
+  : below the lower window end the co-Poisson value is the constant -(1/c - 1/d),
+coPoissonSubWindowEven_ne_zero
+  : hence the vector is nonzero for c < d --- it is a nonzero constant on the whole
+    segment (0,c), a set of positive measure,
+burnolSubWindowSpace_ne_bot
+  : so the explicit co-Poisson subspace is nontrivial at every aperture.
+```
+
+This is the quantitative form of the earlier inhabitation result: the collapse theorems of the
+inhabitation audit asserted that an empty source type forces the source space to be `bot`; the
+source type is now not only inhabited but supplies vectors that are provably nonzero.
+
+The same constant separates different windows, so the family is genuinely a family:
+
+```text
+coPoissonSubWindowEven_inj_right
+  : if two sub-window vectors with the same lower end agree, the upper ends agree.
+```
+
+The constant `-(1/c - 1/d)` on `(0,c)` is a complete invariant of the upper window end, so the
+one-parameter family `d |-> P_{[c,d]}` is injective and the explicit inhabitants are pairwise
+distinct.
+
+Distinctness is upgraded to independence by the Mellin transform.  Pairing a vanishing linear
+combination of sub-window vectors against the Mellin evaluator gives, at every strip point where
+zeta does not vanish, the relation `sum_i lambda_i (d_i^(-w) - c^(-w)) = 0`.  The left side is the
+restriction of an entire function of `w`; it vanishes on a whole neighbourhood of any strip point
+where zeta does not vanish, so the identity theorem propagates it to the whole plane, and there
+Dedekind's independence of characters applies to the monoid homomorphisms
+`w |-> exp(-w log x)` of the additive group of the complex plane:
+
+```text
+riemannZeta_ne_zero_of_ofReal_mem_Ioo
+  : zeta has no zero on the real segment (0,1).
+linearIndependent_coPoissonSubWindowSoninAt
+  : sub-window vectors with a common lower end and distinct upper ends are linearly independent.
+not_finiteDimensional_burnolSubWindowSpace
+  : the explicit co-Poisson subspace at aperture A is infinite dimensional, for every 0 < A < 1.
+not_finiteDimensional_burnolCoPoissonSourceSpace
+  : Burnol's own co-Poisson source space at aperture A is infinite dimensional.
+```
+
+The residual analytic item of the whole layer --- the Mellin transform of the co-Poisson sum of a
+*general* integrable seed --- is now proved, and the route is worth recording because four earlier
+routes had been ruled out.  The obstruction in all of them was that the co-Poisson sum and its
+correction constant are separately non-integrable against `t^(-w)` on the strip: only their
+difference is.  Every route that tried to bound the two halves separately produced the divergent
+`sum_k k^(-Re w)`.
+
+The fix is to truncate the `t`-integral at a finite cutoff `T` **before** doing anything else.  For
+`t <= T` the seed's support forces `k <= T/b`, so the co-Poisson sum is a *fixed finite* `Finset`
+sum on the whole range of integration and the interchange with the integral is elementary --- no
+Fubini, no dominated convergence in `k`, no interchange of an infinite sum with an integral.
+Substituting `t = k u` in each of the finitely many terms leaves
+
+`integral_{Ioc 0 T} P_g(t) t^(-w) dt = integral_{Ioi 0} g(u) kappa_T(u) du`,
+`kappa_T(u) = u^(-w) sum_(k <= floor(T/u)) k^(-w) - u^(-1) T^(1-w)/(1-w)`.
+
+The two divergent halves of `kappa_T` cancel *identically*, not asymptotically, because
+`u^(-w) (T/u)^(1-w) = u^(-1) T^(1-w)` exactly; what is left after subtracting `zeta(w) u^(-w)` is
+the partial-sum error of `sum_(k<=N) k^(-w) - N^(1-w)/(1-w)` plus the floor error
+`N^(1-w) - (T/u)^(1-w)`, and both are `O(N^(-sigma))`.  The first is the corpus asset
+`tendsto_sum_cpow_sub_pow`; the second is `exp` applied to `log(M/N) <= 1/N`.  So `kappa_T`
+converges pointwise to `zeta(w) u^(-w)` with the uniform bound
+`|kappa_T(u)| <= u^(-sigma)(|zeta(w)| + sup|eps_N| + 2)` on the window, and one application of
+dominated convergence against `|g| in L^1` finishes it.  The `L^2` hypothesis of
+`BurnolCoPoissonSource` is never used for the identity --- only integrability of the seed, and
+Mellin integrability of the co-Poisson sum, which the extended Sonine space supplies for free.
+
+The one point where zeta is known not to vanish is supplied by the fractional-part formula itself:
+for real `s` in `(0,1)` the integrand of `-zeta(s)/s = integral_0^infinity fract(u) u^(-s-1) du` is
+nonnegative and strictly positive on `(1,2)`, so `zeta(s) < 0` there.  No zero-free region and no
+density estimate is used --- a single real point suffices, because the identity theorem does the
+rest.  The window ends are supplied by an explicit ladder inside `(A, 1/A)`, and the sources are
+read at the common aperture `A` through `coPoissonSubWindowSourceAt`, so the independent vectors
+are honest members of `burnolCoPoissonSourceSpace A` and not merely of the explicit sub-object.
+
+The co-Poisson sum is linear in its seed, so the annihilation at a zero is a property of the whole
+span of the explicit family, not of individual seeds:
+
+```text
+formal/GaloisForLFunctions/RHTower/BurnolCoPoissonLinearity.lean
+
+burnolCoPoissonRightSum_const_smul  : scaling the seed scales the sum (unconditional),
+burnolCoPoissonRightSum_add         : adding seeds adds the sums, given summability and
+                                      integrability of the two correction integrands,
+correction_integrand_coPoissonSubWindowSeed, integrableOn_correction_...
+  : for a sub-window seed the correction integrand is literally the indicator of the
+    inverted window, so both conditions are explicit,
+ae_burnolCoPoisson_subWindow_cpow, integrableOn_burnolCoPoisson_subWindow_cpow
+  : the paired Mellin integrand is integrable, being a difference of two dilated
+    fractional-part kernels,
+integral_Ioi_burnolCoPoisson_subWindow_pair_cpow_eq_zero
+  : hence a two-term combination is annihilated at every zeta zero.
+```
+
+Scaling is unconditional because both `tsum_mul_left` and `integral_const_mul` are; additivity is
+the step that needs the correction integrand to be integrable.  That change of variables is now
+proved in general, by the `rpow` substitution of exponent `-1`:
+
+```text
+integrableOn_logMass_of_window_seed
+  : the logarithmic integrand y |-> g(y)/y of a window seed is integrable, because
+    the seed lives above the aperture and the reciprocal weight is bounded there,
+integrableOn_correction_of_window_seed
+  : inverting the ray carries that to the correction integrand y |-> g(1/y)/y,
+burnolCoPoissonRightSum_add_of_window
+  : so additivity holds for arbitrary integrable window seeds, with no side conditions.
+```
+
+The substitution is exactly mathlib's `integrableOn_Ioi_comp_rpow_iff` at `p = -1`: its weight
+`|p| x^(p-1)` becomes `x^(-2)`, which is what converts `g(u)/u` into `g(1/x)/x`.  So the co-Poisson
+sum is linear in the seed on the whole space of integrable window seeds; what a general seed still
+lacks is not linearity but the *identification* of its Mellin transform with `zeta(w) M g(w)`.
+
+The one identification that a general seed still needs rests on the partial-sum asymptotic for zeta
+inside the strip --- the statement the Dirichlet series cannot supply, because it does not converge
+there.  Its Abel-summation half is now formal:
+
+```text
+formal/GaloisForLFunctions/RHTower/ZetaPartialSumStrip.lean
+
+zetaCoeff, sum_zetaCoeff        : the zeta coefficient sequence, normalized at zero,
+integrableOn_deriv_cpow_Icc     : the derivative of t |-> t^(-w) is integrable on a window,
+sum_cpow_eq_abel
+  : sum_{k=1}^{N} k^(-w) = N^(-w) N + w * integral_1^N floor(t) t^(-w-1) dt.
+```
+
+Replacing `floor t` by `t - fract t` in that identity splits off the elementary integral, and the
+`N^(1-w)` terms cancel *exactly* --- the coefficient is `(1 - w) + w - 1 = 0` --- leaving only a
+constant and the fractional-part integral:
+
+```text
+sum_cpow_sub_pow_eq
+  : sum_{k<=N} k^(-w) - N^(1-w)/(1-w)
+      = -w/(1-w) - w * integral_1^N fract(t) t^(-w-1) dt,
+tendsto_sum_cpow_sub_pow
+  : hence sum_{k<=N} k^(-w) - N^(1-w)/(1-w) -> zeta(w) on the whole punctured
+    right half-plane Re w > 0, w /= 1.
+```
+
+The hypothesis `Re w < 1` is not needed: the elementary integral `integral_1^N t^(-w)` is proper on a
+bounded interval away from the origin, so only `w /= 1` is required there, and the fractional-part
+integral converges throughout `Re w > 0`.  The statement therefore covers the strip and the
+half-plane of absolute convergence in one form.
+
+The truncated fractional-part integrals converge to the full one, whose value `1/(w-1) - zeta(w)/w`
+is the formula proved earlier, and the remaining constants collapse to `zeta(w)`.  This is the
+partial-sum asymptotic that the Dirichlet series cannot supply, and it is the missing input to the
+general-seed Mellin transform.
+
+Still outside the formal tree: the Mellin transform of the co-Poisson sum for a *general* window
+seed (the fractional-part form needs the seed to be of bounded variation, not merely integrable, so
+this requires Mellin--Plancherel); a witness at a hypothetical zero (equivalently, the dimension
+count for the co-Poisson quotient); and the transfer of the two-sided law to the co-Poisson quotient
 vectors `y_{rho,N}` of the parent boundary-transgression theorem.
 
 ## Gates
@@ -1171,6 +1518,48 @@ vectors `y_{rho,N}` of the parent boundary-transgression theorem.
 - [x] Lean: the Mellin transform of the co-Poisson value, `(b^(-w) - b^w) zeta(w)/w` on the strip
 - [x] Lean: nonvanishing of the completed Mellin evaluation on that inhabitant, off the zero set of zeta
 - [x] Lean: the aperture-type exponent law `(13)`, unconditional off the zero set of zeta
+- [x] Lean: the same dichotomy below the critical line, via the reflected Riesz vector
+- [x] Lean: the dichotomy at a zero --- the explicit witness is exactly the nonvanishing of zeta,
+      and at a zero the evaluator is orthogonal to it
+- [x] Lean: the two-parameter sub-window family --- fractional-part form, Mellin transform, and
+      annihilation at every zeta zero
+- [x] Lean: analytic size data for the sub-window family (bounds, `L^2`, measurability, reality)
+- [x] Lean: the general window indicator seed --- co-Poisson pair relation, correction constant,
+      harmonic form and value
+- [x] Lean: decay, local bound, profile, `L^2` and reality for the general window indicator
+- [x] Lean: sub-window sources, Sonine vectors, Mellin evaluation and the two-parameter witness family
+- [x] Lean: linearity of the co-Poisson sum in the seed, and annihilation at a zero on the span
+- [x] Lean: integrability of the correction integrand for an arbitrary window seed (ray inversion),
+      hence unconditional additivity
+- [x] Lean: the partial-sum asymptotic for zeta on the punctured right half-plane (Abel summation
+      plus the fractional-part integral)
+- [x] Lean: **the Mellin transform of the co-Poisson sum for a general window seed** ---
+      `M(P_g)(w) = zeta(w) M(g)(w)` on the strip, for every integrable seed supported in `[b,1/b]`
+      whose co-Poisson sum is Mellin integrable (`integral_Ioi_burnolCoPoisson_cpow`), and its
+      source form `soninMellinEvaluation_burnolCoPoissonSource`, where the integrability hypothesis
+      is discharged for free by `integrableOn_extendedSonin_mul_mellinKernel`
+- [x] Lean: **the transfer of `(12)`,`(13)` to the whole source space** --- at a zeta zero the Riesz
+      evaluator annihilates *every* co-Poisson source vector
+      (`inner_burnolExtendedSoninEvaluationVector_source_eq_zero`), and off the zero set it detects
+      every source whose seed has nonvanishing Mellin transform
+      (`soninMellinEvaluation_burnolCoPoissonSource_ne_zero`)
 - [ ] Lean: a witness at a hypothetical zero (the co-Poisson quotient dimension count)
-- [ ] Lean: transfer of `(12)`,`(13)` to the co-Poisson quotient vectors `y_{rho,N}`
-
+- [x] Lean: the explicit co-Poisson subspace at a fixed aperture, and the evaluator's orthogonality
+      to it at a zeta zero (the explicit part of `y_{rho,N} = k_{rho,a_N}`)
+- [x] Lean: nontriviality --- the sub-window vectors are nonzero, so that subspace is not `bot`,
+      and distinct windows give distinct vectors
+- [ ] Lean: identification of the co-Poisson *quotient* vectors `y_{rho,N}` themselves (this is the
+      dimension count, not the annihilation --- the annihilation half is proved above)
+- [x] Lean: zeta has no zero on the real segment `(0,1)`, from the fractional-part formula
+- [x] Lean: linear independence of the sub-window family (Mellin evaluator, identity theorem,
+      Dedekind independence of characters)
+- [x] Lean: the explicit co-Poisson subspace and Burnol's own source space are **infinite
+      dimensional** at every aperture `0 < A < 1`, via an explicit ladder of window ends
+- [x] Lean: the truncated Mellin identity `integral_Ioc 0 T` against the finite kernel `kappa_T`,
+      and the exact cancellation `u^(-w) (T/u)^(1-w) = u^(-1) T^(1-w)` behind it
+- [x] Lean: the partial-sum error `zetaStripError` is bounded, and the floor error of a complex
+      power is `O(N^(Re s - 1))`
+- [x] Lean: the closed span of **all** co-Poisson source vectors at a fixed aperture, its
+      annihilation by the evaluator at a zeta zero, and the sharp characterization
+      `evaluator orthogonal to the span  <->  zeta(w) = 0` for `0 < b < 1` on the upper half strip
+- [x] Lean: that span is infinite dimensional (the sub-window ladder sits inside it)

@@ -284,6 +284,21 @@ Already formalized unconditionally:
 - maximally vertical closed-relation consequence:
   `DeningerMeyerHalfDensityXiGraphClosure.lean` and the current publication paper certificate.
 
+**The finite serial route law `(0)` itself**, which the card obtained from the two-stage law "by
+induction", is now formalized in `SourcePointedFiniteRouteLaw.lean`:
+
+- `routeComp`, `routeSector` — the composite of the first `m` edges and the sector propagated to
+  stage `m`, with `routeSector_eq_map`: propagating the sector is mapping it along the composite.
+- `isConservativeOn_routeComp_iff` — **`(0)` for a route of any finite length**: the route is
+  conservative on its initial source sector exactly when every edge is conservative on the sector
+  propagated to that edge.  This is the statement that every serial route has a unique logical
+  audit.
+- `not_isConservativeOn_routeComp_of_edge` — failure at one edge is failure of the whole route.
+- `norm_routeComp_lower` — **the quantitative form**: a route whose `i`-th edge has source-relative
+  lower bound `c i` has lower bound `∏ c i`.  This is what makes the card's point about cofinal
+  families precise — every finite stage can be injective while the product tends to zero.
+- `isUniformlyConservativeOn_routeComp` — the corresponding uniform conservativity.
+
 The remaining source-specific theorem is not abstract infrastructure: construct the arithmetic
 sector in `(12)`.  Arbitrary finite exactness, homogeneous arbitrary-factor telescoping, and the
 uniform normed sufficient criterion for `(9)` are now formalized in
@@ -299,3 +314,11 @@ uniform normed sufficient criterion for `(9)` are now formalized in
 - Law does not prove `(12)` and therefore does not prove RH.
 - Scientific value depends on demonstrating that all cited route maps really factor through the
   stated augmentation; paper must give exact maps, not analogy.
+
+## Log
+
+- 2026-08-03 — Audited the Lean correspondence against the numbered statements rather than the
+  module list.  Every claimed module exists and audits clean, but only the *two-stage* chain law and
+  its two-stage lower-bound product were formalized; the card's `(0)` is the finite `m`-stage
+  statement, obtained "by induction", and that induction was missing.  Formalized it, together with
+  the explicit product lower bound `∏ c i` rather than only the existential uniform bound.

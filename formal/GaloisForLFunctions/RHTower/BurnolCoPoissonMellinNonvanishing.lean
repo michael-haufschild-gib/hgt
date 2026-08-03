@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.BurnolCoPoissonMellinZeta
 import GaloisForLFunctions.RHTower.BurnolCoPoissonIndicatorSource
 import GaloisForLFunctions.RHTower.BurnolSoninApertureMonotone
 import GaloisForLFunctions.RHTower.BurnolSoninCrossApertureRiesz
+import GaloisForLFunctions.RHTower.ReflectionCocycleClass
 
 /-!
 # Nonvanishing of the completed Mellin evaluation
@@ -153,5 +154,45 @@ theorem inner_burnolExtendedSoninEvaluationVector_coPoissonIndicatorSoninCosine_
   rw [inner_burnolExtendedSoninEvaluationVector,
     soninMellinEvaluation_coPoissonIndicatorSoninCosine ha ha1 (by linarith) hhi, hz]
   simp
+
+
+/-! ## The reflected half of the strip -/
+
+/-- **Nonvanishing of the reflected evaluation vector.**  Below the critical line the reflected
+Riesz vector is the cosine transform of the evaluation vector at the reflected point, and the zeta
+zero locus is invariant under `s |-> 1 - s`, so the same dichotomy holds there. -/
+theorem burnolExtendedSoninReflectedEvaluationVector_ne_zero_of_riemannZeta_ne_zero
+    {w : ℂ} (hlo : 0 < w.re) (hhi : w.re < 1 / 2) (hz : riemannZeta w ≠ 0)
+    {a : ℝ} (ha : 0 < a) (ha1 : a < 1) :
+    burnolExtendedSoninReflectedEvaluationVector w a hlo hhi ha ≠ 0 := by
+  have hRlo : 1 / 2 < (1 - w).re := by
+    rw [Complex.sub_re, Complex.one_re]
+    linarith
+  have hRhi : (1 - w).re < 1 := by
+    rw [Complex.sub_re, Complex.one_re]
+    linarith
+  have hzR : riemannZeta (1 - w) ≠ 0 := by
+    intro hzero
+    exact hz ((riemannZeta_one_sub_eq_zero_iff hlo (by linarith)).mp hzero)
+  rw [burnolExtendedSoninReflectedEvaluationVector_eq_cosine]
+  intro h
+  have hk : burnolExtendedSoninEvaluationVector (1 - w) a hRlo hRhi ha = 0 := by
+    have hsymm := congrArg (burnolExtendedSoninCosine a).symm h
+    rw [LinearIsometryEquiv.symm_apply_apply] at hsymm
+    rw [hsymm]
+    exact (burnolExtendedSoninCosine a).symm.map_zero
+  exact burnolExtendedSoninEvaluationVector_ne_zero_of_riemannZeta_ne_zero'
+    hRlo hRhi hzR ha ha1 hk
+
+/-- **The dichotomy on the whole open strip.**  Off the critical line the evaluation vector --- in
+its right-half form above the line and its reflected form below --- is nonzero at every point where
+zeta does not vanish. -/
+theorem burnolExtendedSoninEvaluationVector_ne_zero_of_riemannZeta_ne_zero_upper
+    {w : ℂ} (hlo : 1 / 2 < w.re) (hhi : w.re < 1) (hz : riemannZeta (1 - w) ≠ 0)
+    {a : ℝ} (ha : 0 < a) (ha1 : a < 1) :
+    burnolExtendedSoninEvaluationVector w a hlo hhi ha ≠ 0 := by
+  refine burnolExtendedSoninEvaluationVector_ne_zero_of_riemannZeta_ne_zero' hlo hhi ?_ ha ha1
+  intro hzero
+  exact hz ((riemannZeta_one_sub_eq_zero_iff (by linarith) hhi).mpr hzero)
 
 end RHTower

@@ -254,6 +254,14 @@ Lean certificate:
   itself non-Hilbert for every nonzero scalar. The missing positivity is
   therefore a pre-Hilbert cross-prime cancellation/shorting of a reflected
   negative sector, not construction of more local positive features.
+- **Global positive-cone correction:** coorienting every actual promoted
+  Gamma cell pair by its own source half-height difference gives
+  `C_a(i,j)=a G_a(i,j)` with `G_a(i,j)>0`. Every nonzero nonnegative finite
+  packet and every nonzero nonnegative summable all-pair field is therefore
+  nonvanishing for `a != 0`. Positive global Gamma shorting is impossible;
+  surviving shorting must use sign-indefinite cross-pair incidence before
+  completion. This is formalized in
+  `GammaCoorientedPositiveConeNoShorting.lean`.
 - **Status:** Stage 1. Local determinant and scalar critical-completion
   trilemma are formalized unconditionally. The RH-bearing global shorting
   theorem remains open.
@@ -272,3 +280,21 @@ Lean certificate:
   zero correction leaves negativity; every nonzero scalar correction is not
   cofinally square-summable.  This forces cancellation before Hilbert
   completion.
+- 2026-08-03 — Proved and formalized arbitrary-cell cooriented Gamma/Green
+  factorization and finite/countable positive-cone no-shorting. This removes
+  positive all-pair shorting from the open core and forces a signed
+  off-diagonal arithmetic differential.
+- 2026-08-03 — Closed every finitely supported, displacement-independent
+  signed cross-prime Gamma null-homotopy. Canonical edge frequencies are
+  `log(p^(e+1)q^(f+1))`; unique factorization makes them simple and
+  exponential Vandermonde independence forces every universal finite signed
+  coefficient to vanish. The surviving source differential must cancel only
+  after infinite/singular completion or couple coefficients nonseparably to
+  divisor provenance. Formalized in
+  `GammaSignedFiniteOrbitNoShorting.lean`.
+- 2026-08-03 — Strengthened signed rigidity from finite support to every
+  absolutely summable physical orbit. Bohr--Cesaro extraction on the
+  imaginary modular axis forces each signed coefficient to vanish; hence
+  normal/`ell1` infinite completion is also dead. Surviving shorting must be
+  non-absolutely-summable/singular or divisor-coupled. Formalized in
+  `GammaSignedSummableOrbitNoShorting.lean`.

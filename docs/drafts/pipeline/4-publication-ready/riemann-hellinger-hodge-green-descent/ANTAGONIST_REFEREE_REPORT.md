@@ -1,268 +1,407 @@
-# Antagonist referee report: The descent-before-polarization law for the Riemann divisor
+# Antagonist referee report: Regular tomography conservation at the Riemann boundary
 
 ## Verdict
 
-Major revision. Manuscript now has one broader theorem hierarchy and a materially sharper frontier.
-It does not prove RH and is not yet ready for a renowned general scientific journal.
+**Major revision; not ready for a renowned general scientific journal.**
 
-Parent law is no longer augmentation-specific, purely serial, or restricted to injectivity:
+Manuscript now has a more universal apex than finite resolved grading. Its central object is an
+absolutely summable countable packet observed through real characters. Identical vanishing forces
+zero coefficient sum in every observed-frequency fibre; every nonzero atom needs a distinct
+equal-observed-grade mate; injective resolution upgrades this to equal full grade; and cancellation
+after a noninjective reader has an explicit collision witness. With distinct frequencies the
+character response is faithful. Finite gradewise conservation, principal degrees, and
+all-orders-flat Rees radicals are shadows of this regular-tomography law.
 
-> A source-pointed observation complex gives exact descent precisely when it separates the actual
-> source and its observed range equals the admissible compatible sector. This is equivalent to
-> unique lifting of every compatible datum. A positive lower modulus gives stable lifting. Serial
-> edges propagate separation, parallel readers intersect radicals, and Hilbert Gram order is
-> equivalent to contractive factorization. Topology determines only the projective conormal line,
-> not Hermitian scale.
+Exact first loss is support shadow of this law. Every terminal zero is either a source zero or
+appears at one unique first killing edge; a heterogeneous parallel record loses exactly its common
+radical. Stagewise conservative routes preserve source zero locus. Nowhere-zero gauge families and
+nonzero homogeneous fixed-carrier responses faithfully report same principal zero locus, while
+cooriented positive mixtures cannot short nonzero real defect. Observation kernel lattice is the
+collision shadow.
 
-Resolved augmentation, Cartan fate, face/Sullivan gluing, vertical completion, Douglas positivity,
-and route-specific no-gos are specializations. This better answers prior collage objection:
-support topology, source clocks, positivity, and superselection are gate audits rather than
-competing “main theorems.”
+Pair-groupoid cocycle \(D_f(x,y)=f(x)-f(y)\) is additive collision coordinate of this law: quotient
+descent is its vanishing on related pairs, moving transport adds one connection term, and two
+descent directions commute. The involutive split sequence
+\[
+0\to\mathcal F^+\to\mathcal F\xrightarrow{\delta_\tau}\mathcal F^-\to0,
+\qquad \delta_\tau f=f-f\circ\tau,\qquad \delta_\tau^2=2\delta_\tau,
+\]
+together with moving-transport identity
+\[
+\delta_\tau(af)=a\,\delta_\tau f+(\delta_\tau a)(f\circ\tau).
+\]
+Exterior-square transport is now a projective realization:
+\[
+  \Omega_{AJ}(q)=\det(A_q)\Omega_J(q)
+   +[A_qJ(q),(A_{\tau q}-A_q)J(\tau q)].
+\]
+is its reflection-edge specialization. Together these genuinely subsume static kernel enlargement,
+reflection-grade loss, connection codiagonals, contracted Koszul exactness, projective Fisher
+determinants, and the new Hedenmalm causal/anti-causal boundary jump. Riemann realization is sharper:
+the fixed Gaussian source ratio itself satisfies
+\[
+\delta_\tau r_G(q)=\frac{\Re\rho_q-1/2}{\pi},
+\]
+and its unsquared determinant is this universal defect times a strictly positive endpoint gauge.
+Actual cooriented Gamma cell pairs are displacement times strictly positive gauges, so no finite
+nonnegative packet cancels off line. Actual prime-cycle tensor holonomy is cubic on scalar carrier
+rays, so coupling a fixed nonzero carrier to reflected entropy gives another faithful detector whose
+global vanishing is RH. More sharply, Gamma admission of completed Green provenance multiplies two
+degree-one fractures into positive degree-two mate curvature. Every individual cross-prime
+coordinate is nonzero off line. Degree-one orientation, degree-two curvature, and degree-three
+holonomy share a radical but cannot cancel in the resolved grading. These theorems sharply
+constrain cancellation-based producers: absolutely summable
+displacement-independent Gamma-cell shorting is impossible even with signed countable
+coefficients; a survivor must be singular beyond absolute summability or divisor-dependent.
+The canonical diagonal singular repair is also closed: failure-nerve
+purification forces an inverse-square metric whose top-conormal
+renormalization is strictly positive. Any singular selector must retain
+polarized off-diagonal data.
+Prime-cycle coupling must be nonseparable rather than fixed scalar tensoring. They do not
+exclude an independent global support-exclusion identity; such identity would prove RH directly.
 
-## Main network theorem and proof audit
+Paper does **not** prove RH. Actual horizontal packet and bounded Gamma/co-Poisson admission operator
+now exist; operator kernel is exact and it is conservative on completed Green sector. Remaining
+statement has an exact fork: prove off-line supporting divisors absent, or construct a new signed
+same-full-grade source mate before singleton packet formation. Factorization of Gaussian
+logarithmic jet through one source-derived reflection-invariant observation, or through attained
+range of an arbitrary invariant record, is sufficient equivalent form. Capacity-independent
+theorem is sharp but produces neither branch. Unless manuscript supplies an independently
+motivated, noncircular proof of one branch, referee can still call Riemann specialization an exact
+reformulation of RH rather than a proof mechanism.
 
-For linear maps
+## Strongest proved result
 
-```text
-E_0 --T_0--> E_1 --T_1--> ... --T_(m-1)--> E_m
-```
+For an absolutely summable packet
+\[
+ F(y)=\sum_{n\ge0}c_ne^{iy\omega_n},
+\]
+identical vanishing forces
+\[
+ \sum_{\omega_n=\omega_m}c_n=0
+\]
+for every \(m\). Every nonzero atom therefore has a distinct nonzero
+equal-frequency mate. Injective frequency resolution is faithful, while
+vanishing after a noninjective resolution supplies an explicit collision of
+distinct source grades. This extends finite grade bookkeeping to countable
+regular character tomography and makes the singular/divisor-dependent
+frontier precise.
 
-and propagated sectors `S_(i+1)=T_i(S_i)`, define conservativity by
+For a finite packet \((\gamma_i,c_i)\), the resolved value
+\[
+  \mathcal R_\gamma=\sum_{\gamma_i=\gamma}c_i
+\]
+vanishes exactly when every grade fibre cancels. Every nonzero term in such a zero packet has a
+distinct equal-grade mate; if full grades are distinct, the packet cannot vanish. If a coarsened
+packet vanishes, coarsening has merged two distinct source grades. This is stronger than a
+zero-locus law: it identifies the only grade in which a missing cancellation term may live.
+Products of principal responses add degrees, even degree erases orientation, odd degree retains
+it, and all positive degrees retain exact source radical.
 
-```text
-S_i intersect ker(T_i) = {0}.
-```
+For a finite zero-preserving chain \(\omega_{k+1}=T_k\omega_k\), manuscript proves
+\[
+ Z(\omega_n)=Z(\omega_0)\,\dot\cup\,
+ \coprod_{k<n}\{p:\omega_k(p)\ne0,\ \omega_{k+1}(p)=0\}.
+\]
+Every non-source terminal zero has one unique first-loss stage. Parallel zero locus is source zero
+locus disjoint-unioned with common killed radical. This is exact causal classification of apparent
+solutions, not merely monotonicity. Its scalar consequences show that arbitrary unit-gauge
+families and fixed-carrier homogeneous detectors add no independent zero condition, while positive
+coorientation mixtures cannot cancel a nonzero defect.
 
-Then
+For arbitrary \(\pi:X\to Q\) and target \(\chi:X\to C\), collision shadow proves recovery on
+attained range exactly when \(\kerpair(\pi)\subseteq\kerpair(\chi)\). Observations modulo equal
+kernel pairs are all equivalence relations on \(X\), serial consumers move monotonically toward
+less information, and arbitrary parallel records are meets.
 
-```text
-T_(m-1)...T_0 is conservative on S_0
-iff
-every T_i is conservative on S_i.
-```
+Its strongest symmetry corollary is capacity independent. An arbitrary family of
+reflection-invariant observations cannot recover a nonzero reflection-odd target. Conversely every
+family recovering such target must contain a transverse channel at each point where target is
+nonzero. Exact vertical gluing preserves complete horizontal kernel pair and can carry arbitrary
+horizontal observation, so vertical exactness alone never supplies transverse channel.
 
-Two-stage proof is the exact pullback identity `ker(gf)=f^(-1)(ker g)`; finite form is induction.
-If `||T_i x|| >= c_i ||x||` on `S_i`, the composite lower bound is `product c_i`. Proof is complete
-and unconditional. It covers linear routes and source-relative linearizations; it does not cover
-arbitrary nonlinear or nonfunctorial arguments without an explicit conservative-edge model.
+For every equivalence relation \(R\), additive coordinate says
+\[
+f\text{ factors through }X/R
+\quad\Longleftrightarrow\quad
+D_f(x,y)=0\ \text{for all }xRy.
+\]
+Pair defect is antisymmetric additive cocycle, obeys exact moving-transport and consumer-kernel
+laws, and commutes in two independent descent directions.
 
-For parallel readers `(f,h)`, `ker(f,h)=ker(f) intersect ker(h)`. Hence the pair may be
-conservative even if neither marginal is, but only because complementary information was retained
-before quotienting. Since `ker(f)<=ker(gf)`, postprocessing never repairs loss. Composition and
-parallel product therefore give an exact radical calculus for finite linear observation networks.
+For an involution \(\tau\), every complex observable splits uniquely into
+its even and odd parts, \(\ker\delta_\tau=\mathcal F^+\),
+\(\operatorname{im}\delta_\tau=\mathcal F^-\), and factorization through finest orbit quotient is
+equivalent to \(\delta_\tau f=0\). Additive consumers commute with \(\delta_\tau\); injective ones
+preserve its zero locus and arbitrary ones erase it exactly on their kernel. Point-dependent
+transport has exactly one inhomogeneous connection term.
 
-## Exact-descent and polarization audit
+For \(J=(J_0,J_1)\), put
+\[
+  \Omega_J(q)=J_1(q)J_0(\tau q)-J_0(q)J_1(\tau q).
+\]
+Where \(J_0\) is nonzero,
+\[
+\Omega_J(q)=J_0(q)J_0(\tau q)\,
+\delta_\tau(J_1/J_0)(q).
+\]
+Projective consequences are:
 
-For `E --O--> F --delta--> G`, source sector `S`, and admissible sector `A`, manuscript uses
+1. \(\Omega_J(\tau q)=-\Omega_J(q)\).
+2. Nonzero scalar gauge preserves its zero locus.
+3. Pair-invariant invertible frame transport preserves its zero locus.
+4. Every change under a moving frame is exactly relative-frame connection term.
+5. If \(J_0\) is nonzero, \(\Omega_J=0\) iff \(J_1/J_0\) descends across involutive pair.
+6. Any factorization of this logarithmic jet through a reflection-invariant observation forces
+   \(\Omega_J=0\).
+7. Contracted Koszul differential \(\eta(i_0)z-z(i_0)\eta\) has kernel exactly \(\mathbb C\eta\).
 
-```text
-S intersect ker(O) = 0,
-O(S) = A intersect ker(delta).
-```
+Proof is elementary but exact. Scientific value cannot rest on algebra alone; it rests on breadth
+and nontriviality of Riemann realization.
 
-These identities are equivalent to existence and uniqueness of one source lift for every
-admissible compatible datum. Adding `||O x|| >= c ||x||` gives a common recovery estimate. Proof is
-complete and unconditional. This is a real improvement over the prior network-only formulation:
-the earlier law classified ambiguity but not missing compatible data.
+For actual Xi divisor copy \(q\), manuscript constructs two honest fixed Meyer classes: reflected
+Gaussian and anti-reflected logarithmic moment. Their evaluations satisfy
+\[
+ J_0(q)=e^{(\rho_q-1/2)^2/(4\pi)},\qquad
+ J_1(q)=\frac{\rho_q-1/2}{2\pi}J_0(q),
+\]
+and therefore
+\[
+ \delta_\tau(J_1/J_0)(q)=\frac{\Re\rho_q-1/2}{\pi},\qquad
+ \Omega_G(q)=\left(\Re\rho_q-\frac12\right)
+              \frac{|J_0(q)|^2}{\pi}.
+\]
+Thus determinant retains sign, not only zero set. It equals completed Green fracture times positive
+Hermitian scale. Local vanishing is critical-line equation; global vanishing is RH.
 
-In Hilbert geometry, `B B* - A A* >= 0` is equivalent to `A=B C` for a contraction `C`. Manuscript
-correctly identifies positive descent with factorization, and separately proves that rescaling a
-source conormal leaves its induced topology unchanged while changing its squared norm. Therefore
-exactness, stable topology, and Hermitian calibration cannot be silently identified.
+This is strongest conceptual advance in manuscript: Green orientation is first exterior
+obstruction of two fixed source classes. It is no longer missing, squared away, or inserted as
+target-selected weight.
 
-New order theorem is stronger. If a test family is total, equality of its complete coefficient
-packet forces equality of reporters; every coefficient-preserving endomorphism is identity. Hence
-a reporter above a prescribed energy budget cannot be replaced by a lower-energy same-carrier
-reporter while retaining all coefficients. This proves a genuine noncommutation law: exact descent
-to a changed carrier or incidence must precede strict Hermitian recalibration.
+## Corpus-wide unification audit
 
-Normal-crossing face ideals realize both algebraic gates: atomic restrictions are injective modulo
-the squarefree product and pairwise compatible data glue. Relative Sullivan attachment supplies a
-second exactness mechanism over characteristic zero. These results broaden the law beyond an
-abstract kernel slogan. They do not by themselves create the arithmetic comparison required for
-RH.
+Regular tomography conservation explains following results without pretending they are identical
+theorems:
 
-Finite resolved augmentation is a corollary. For `n` channels,
+- **Grade matching:** every source identity is fibrewise in complete grade; apparent cancellation
+  after scalarization has no source-level force unless equal-grade terms already cancel.
+- **Invariant-family closure:** any number of reflection-invariant source channels, even with
+  heterogeneous codomains, remains invariant as one record and cannot recover nonzero odd
+  orientation. This removes source-family size as possible escape.
+- **Exact admission:** target zero locus equals source zero locus disjoint union nonzero classes
+  killed by transport.
+- **Support escape:** bounded analytic descent cannot retain a coordinate whose evaluation escapes
+  every bounded source-capacity set.
+- **Green cancellation:** total covariance may hold because opposite resolved defects augment to
+  zero; exterior source pair retains orientation before augmentation.
+- **Calderón--Witt:** all-cross-prime packet differential is same projective wedge with one vector
+  fixed. Exact fibre kernel is one full-support ray; global kernel is complete Xi comparison range.
+- **Dense arithmetic completion:** actual cross-prime witnesses span dense packet core, but old
+  oriented boundary is zero there. Every continuous extension is zero, so missing horizontal
+  differential must be new on source core rather than manufactured by completion.
+- **Arithmetic horizontal packet:** Gaussian Wronskian is now literally scalar coefficient on unit
+  full-support residual Koszul horizon. Its norm and sign survive weighted completion; inverse-horizon
+  normalization produces constant family and is admissible exactly when coefficient vanishes. Old
+  boundary kills packet regardless, proving existing completion cannot select it.
+- **Gamma positive cone:** every cooriented cell-pair exterior is horizontal displacement times a
+  strictly positive gauge. No finite nonnegative packet can cancel off line.
+- **Gamma signed summable orbit:** canonical prime-depth frequencies are injective. Finite
+  hyperbolic-sine orbit functions are linearly independent, and Bohr--Ces\`aro coefficient
+  extraction extends rigidity to every countable packet with absolutely summable physical
+  amplitudes. A surviving chain must be singular beyond absolute summability or
+  divisor-dependent.
+- **Failure-nerve Cartier metric:** Euler-gauge purification uniquely forces the diagonal
+  inverse-square face metric and reduces its mate curvature to the same Deninger radial
+  curvature. A divisor zero of order \(d\) creates exact pole order \(2d\), but top-conormal
+  renormalization is finite and strictly positive. Singular diagonal geometry is therefore
+  another detector, not the signed mate.
+- **Gamma--Green mate curvature:** two degree-one fractures multiply to a positive degree-two
+  curvature. Every reflected-Gaussian packet coordinate has exact critical-line radical, so no
+  local packet cancellation survives.
+- **Prime-cycle tensor:** triangle holonomy is cubic on scalar carrier rays. Fixed nonzero cofinal
+  prime carrier coupled to reflected entropy remains faithful to same critical-line zero set; it
+  detects but does not annihilate. Surviving chain must entangle divisor and prime data
+  non-principally.
+- **One-knob recurrence:** at each fixed replica order, an affine finite Hermitian family has only
+  finitely many exceptional collision parameters; compact parameter sets away from them share one
+  uniform finite-window bound. This closes generic compact-axis stability but has no implication
+  for the split Cartan coordinate.
+- **Joint prime--valuation source:** primitive-promoted full-depth source and reciprocal co-source
+  are Hilbert for every positive displacement, pair to exact von Mangoldt current, and land in
+  completed-Xi trace. Sharp failure is departure from Hilbert chamber at critical boundary.
+- **Fisher/QFI:** pointed-Fisher determinant is negative half-square of projective energy and tends
+  to \(-8\); scalar determinant is quadratic shadow of exterior defect.
+- **Euler budget:** actual pre-scalar reporter splits orthogonally \(4+4=8\). Totality forbids
+  same-carrier coefficient-preserving compression to four.
+- **Contraction saturation:** asymptotically lossless detail transport preserves zero codiagonal;
+  nonzero target column must come from moving connection term.
+- **Co-Poisson:** the closed source span is infinite-dimensional, but the evaluator is orthogonal
+  to the entire span exactly at a zeta zero. Enlarging a common-factor source does not produce a
+  transverse orientation.
+- **Burnol conormal cover:** two actual nested source windows cancel their common divisor
+  conormal and recover the full exponential spectral coordinate with uniform strip capacity.
+  Reflection produces an invariant quadratic cover ramified exactly on the critical line. This
+  proves source recovery is complete, but it remains a classifier: asserting ramification at
+  every divisor point is RH.
+- **Hedenmalm invariant homogenization:** removable Xi quotient is never a polynomial multiple of
+  Xi and therefore every divisor mode survives the invariant polynomial quotient. This proves
+  vertical faithfulness, not equality of reflected modes.
+- **Hedenmalm completion fracture:** polynomial multiples of the real centered Xi function are
+  dense in \(L^2(\mathbb R)\). The analytic polynomial quotient retains every divisor mode, but
+  its Hilbert-closed quotient is zero. Thus no bounded Hilbert reader transports that vertical
+  mode through completion, and horizontal selection must occur earlier.
+- **Hedenmalm two-ended gluing:** causal and anti-causal Volterra primitives differ exactly by
+  \(-ie^{-i\alpha x}\Xi_C(\alpha)\) and coincide exactly at a Xi zero. This closes the vertical
+  divisor edge while bidescent conservation leaves horizontal defect untouched.
+- **Odd Gaussian grade:** explicit antisymmetric countertransport has uniform source capacity,
+  lands globally, and is nonzero on every off-line divisor. Its product with actual Green record is
+  an odd faithful detector, but invariant factorization remains the missing arithmetic step.
+- **Phase-node no-go:** fixed nonzero phase frequency cannot represent global all-prime depth-zero
+  Route E current.
+- **Hypertranscendental jet obstruction:** nonzero degree-one logarithmic connection cannot live in
+  finite differential-rational jet field.
+- **Translation/Barnes annihilator:** finite face data retain full ladder divisibility. Horizontal
+  all-prime descent cannot be replaced by finite translation packet; the scalar translation
+  annihilator is exactly the full ladder product.
+- **Rees superselection:** all-orders-flat reflected face is a proper ideal under finite-grade
+  operators and cannot be sewn to the nonflat finite-grade face.
+- **Hedenmalm, Wold--Poisson, Sonin/Calkin, Ward:** these supply source reachability, consumers,
+  radicals, or positive bounds. None identifies residual projective ray across line reflection.
 
-```text
-0 -> Z^(n-1) --boundary--> Z^n --sum--> Z -> 0
-```
+This is a credible unification. Paper must distinguish theorem, corollary, and analogy. “Shadow”
+cannot mean mere verbal resemblance; each claimed shadow needs explicit map from its objects to
+kernel, wedge, connection term, or Koszul differential.
 
-is exact. Thus total conservation controls component defects exactly when actual source sector is
-disjoint from zero-sum boundary. No post-augmentation observer can repair a nonzero zero-sum packet.
+## Frontier audit
 
-## Riemann frontier correction
+Source, orientation, and singular landing are now present:
 
-Finite arithmetic Green factorization has resolved defect `(D_H,D_R)` with
+- fixed Gaussian source and anti-reflected moment source;
+- exact signed exterior determinant;
+- division-free comparison to Green fracture;
+- singular graph-normal Gamma/Xi source landing contractive before inverse normal factor;
+- complete all-cross-prime incidence carrier and exact fibrewise Koszul kernel;
+- actual Gaussian horizontal Wronskian packet on residual full-support Koszul ray;
+- exact inverse-horizon domain classification and source-entropy identification;
+- positive quadratic Gamma--Green mate curvature with pointwise critical-line radical;
+- faithful source/provenance comparisons;
+- four-unit transverse detail and rigid eight-unit pre-scalar reporter.
 
-```text
-D_H + D_R = 0                     unconditionally,
-(D_H,D_R)=0                       iff RH.
-```
+Missing datum is source support exclusion or an equal-grade horizontal relation, not horizontal
+representation. Reflected Gaussian jets
+are now inserted into actual all-cross-prime arithmetic completion and their division-free
+Wronskian is
+\[
+W_{\rm CW}(q)=\Omega_G(q)h_{\rm CW},\qquad d_KW_{\rm CW}(q)=0,
+\qquad \|W_{\rm CW}(q)\|=|\Omega_G(q)|.
+\]
+Thus residual ray and reflected comparison are explicit. Universal defect identifies its scalar
+without projective decoration:
+\[
+\delta_\tau r_G(q)=\frac{\Re\rho_q-1/2}{\pi}.
+\]
+Inverse-horizon normalization sends residual ray to constant family on infinite index set, hence
+\[
+W_{\rm CW}(q)\in\mathcal D_{h^{-1}}
+\Longleftrightarrow W_{\rm CW}(q)=0
+\Longleftrightarrow \Re\rho_q=\tfrac12.
+\]
+Existing oriented boundary vanishes on dense actual arithmetic core, so every continuous extension
+kills packet even off line. Gamma--Green output is additionally a singleton nonzero degree-two
+term at each off-line packet coordinate. Required theorem is therefore either a new signed
+same-full-grade horizontal transgression on source core or an independent arithmetic theorem
+excluding off-line support. One equivalent observation form is
+\[
+  \pi(q^\#)=\pi(q),\qquad
+  \frac{J_1(q)}{J_0(q)}=F(\pi(q)),
+\]
+where \(\pi\) and \(F\) arise from prime/Gamma/co-Poisson source before divisor selection. Universal
+law then forces \(\Omega_G=0\), hence RH. Arbitrary-family theorem shows increasing number or
+codomains of invariant channels cannot evade this obligation.
 
-At divisor copy `rho`, one coordinate is signed fracture `2 Re(rho)-1`. Therefore total Green
-Frobenius covariance is automatic cancellation and cannot be RH target. This remains manuscript's
-strongest conceptual correction.
+This is exact, but danger of circularity is severe. Choosing
+\(\pi(q)=\{q,q^\#\}\) and postulating factorization merely restates equality of two logarithmic
+jets, which is RH. Publication-grade completion requires:
 
-Frontier has moved further than previous report stated. Recent source results prove:
+1. concrete equal-full-grade relative transgression on actual dense arithmetic source core, not
+   old zero boundary, or a direct support-exclusion law;
+2. proof from source symmetry that it excludes or cancels \(W_{\rm CW}\), not from line equation;
+3. domain theorem independent of already-equivalent inverse-horizon admission statement;
+4. explanation why dense-core continuity no-go and invariant-family closure do not forbid candidate;
+5. at least one new consequence outside immediate RH equivalence.
 
-1. one raw prime-head graph retains arithmetic label, unsquared reflection orientation, and
-   multiplicity before projectivization;
-2. a singular source-normal reader exactly recovers its oriented theta jet;
-3. a leading physical Xi jet `c_rho=Xi^(m_rho)(rho)` is nonzero;
-4. it lands coefficient-faithfully in completed Calderon--Witt/Hellinger--Gamma incidence;
-5. decoded value carries same coefficient times actual Gamma witness;
-6. completed adjacent cofaces recover incidence;
-7. corresponding unsquared local Hodge trace vanishes exactly at zero modular displacement;
-8. local Poisson--Gaussian recovery at multiplicity `m` has forced pole order exactly `m+1`;
-9. that singular lift is a literal summable Möbius--Gaussian Neumann source on its safe chamber;
-10. the direct full-Euler Fisher source has critical energy four;
-11. the division-free pole-cancelled reporter has limiting energy eight and an exact Xi graph
-    factorization;
-12. physical Euler clock and essential CCM cusp select the same exponential clock and four-unit
-    normalization; and
-13. Burnol quotient positivity is exactly contractive forward/inverse channel factorization.
+No current theorem supplies items 1--3. Full co-Poisson span, dense arithmetic completion, and
+Hedenmalm invariant quotient close three tempting evasions: source enlargement can remain entirely
+in evaluator kernel, continuous extension can remain identically zero, and exact divisor-mode
+faithfulness still need not annihilate horizontal coefficient.
 
-Therefore “construct source,” “land in Hodge incidence,” and “find local orientation detector” are
-not honest remaining problems. Raw recovery still holds for every displacement, including off line.
+## Proof and evidence audit
 
-## Exact remaining mathematics
+Central exterior identity is algebraic expansion and proof is sound on paper. Gaussian formulas
+follow by differentiation of explicit Mellin transform; positive scale and sign criterion follow
+directly. Koszul ray-kernel proof is exact when pointed coordinate is nonzero. Observation and
+support-escape laws are logically independent lower-degree/bounded shadows.
 
-First unresolved global object is now:
+Claims remain subject to final direct checks for newest modules. Until those complete, manuscript
+does not satisfy own unconditional-claim gate. Claim map correctly marks final audit pending.
 
-```text
-coefficient-faithful physical/Hodge incidence
-    -- source-derived factor-provenance comparison -->
-actual Green resolved defect
-    -- exact nonlocal singular gluing -->
-correctly calibrated contractive factor
-    -- or source-forced trace vanishing -->
-zero displacement.
-```
+Specific checks still required:
 
-Equivalent resolved criterion remains
+- direct foreground check of InvolutiveProjectiveWedgeTransportLaw.lean;
+- direct check of RelativeAdmissionExactKernelLaw.lean;
+- direct check of EulerPreScalarGammaOrthogonalFourPlusFourLaw.lean;
+- direct check of countable reporter selection criterion;
+- axiom printout for central capstones;
+- whole-tree lint;
+- final targeted module builds after concurrent corpus work stops;
+- LaTeX label, citation, and forbidden-formalization-language scan.
 
-```text
-range(Green resolved defect) <= S_ar,
-closure(S_ar) intersect ker(codiagonal) = {0}.
-```
+## Strongest objections from general-journal referee
 
-But manuscript must state why this is not decorative: local incidence and safe-chamber source
-sections already exist, the singular Gamma/Green residue is fixed, a literal co-Poisson source
-lands on zeta throughout the critical strip, regular recovery is impossible, and projective
-topology cannot choose four-unit normalization. Totality additionally rules out every
-same-carrier coefficient-preserving compression. Missing content is therefore an exact
-compatibility quotient followed by global comparison, assembly of fixed successor principal
-parts without destroying source conservativity, and source-derived Hermitian Gram domination on
-the descended carrier, or a source-derived vanishing mechanism.
-Three scalar RH-equivalent selectors
-remain useful diagnostics, not proofs:
-
-- bounded centered orbit of one nonvanishing logarithmic Gaussian;
-- bounded reflection-fixed uniform-capacity countertransport;
-- continuity of every actual Xi evaluation in canonical half-density topology.
-
-## Corpus unification under chain law
-
-1. **Complete shell source:** injective at each finite depth; ordinary source sectors collapse
-   cofinally. Internal two-clock normal reader stays faithful, hence cannot have uniform Lipschitz
-   modulus. This is algebraic conservativity with failed stable conservativity.
-2. **Möbius--theta/Hodge bridge:** solves local reachability and local separation edge. It does not
-   force actual displacement to zero. Complete prime-normal residual graph retains label, sign,
-   and multiplicity by source-derived prime isolation, eliminating “orientation was squared away”
-   or “nonannihilation was assumed” as remaining excuses.
-3. **Euler/CCM source:** direct full-Euler Fisher carrier and essential CCM cusp both have four-unit
-   capacity, while the division-free pre-scalar Gamma reporter has energy eight. Its damping orbit
-   is total, so preserving every coefficient forces that reporter and makes same-carrier four-unit
-   compression impossible. Open object must change carrier/incidence before factorization.
-4. **Calderón--Witt:** ordered cross-effect is nonzero before cup codiagonal and zero afterward;
-   exact failed augmentation edge.
-5. **Hellinger--Gamma:** each finite balanced sector is codiagonal-conservative but cannot contain a
-   nonzero Green antidiagonal. It solves separation but not Green support. Naive depth completion
-   develops vertical fibre.
-6. **Hypertranscendental germs:** valuation and fat-point order survive quotient while source units
-   and reversal orientation enter its kernel. Natural resonance exhibits actual leading
-   cancellation and tangency excess. Atomic normal-crossing faces nevertheless have exact unique
-   gluing, so quotient blindness and face descent are distinct gates.
-7. **Meyer/half-density:** positive source completion exists; actual off-line evaluation has full
-   vertical graph. Explicit Gaussian Green partials give bounded source mass with divergent reader;
-   forced local Poisson--Gaussian inverse has successor pole order `m+1` and a literal Neumann
-   source before continuation. Its completed Gamma/Green residue is fixed, nonzero, and independent
-   of multiplicity; arbitrary local renormalization is excluded.
-8. **Burnol--Sonin/co-Poisson:** reciprocal-indicator seed is an explicit fractional-part source
-   whose critical-strip Mellin transform is `(b^(-w)-b^w) zeta(w)/w`; source-to-divisor relevance is
-   proved. Even/odd readers and Gram identities then test the polarized edge. Nonpositive compressed
-   holonomy is exactly contractive full-channel factorization, and Fourier oddness forces flatness.
-   Arithmetic derivation of that factor on the correctly descended carrier remains open.
-9. **Hedenmalm/Wold/Rees/Calkin/Ward:** radicals, grades, quotients, and positivity consumers expose
-   edge kernels or lower moduli. None supplies missing global Green comparison.
-10. **Quantum recurrence:** compact phase rank is propagated source data independent of split
-   orientation; no contradiction and no zero-exclusion mechanism follows without comparison edge.
-11. **Quasi-abelian positive factors:** all-order jet ampleness is source reachability. It does not
-    imply observer conservativity and therefore fits, rather than escapes, chain law.
-12. **Normal-crossing HT sources:** additive and multiplicative realizations share one physical
-    package, but package is frame-blind. Bounded symbol spectrum restores period-module separation;
-    the conservative invariant is the pair, exactly as chain law predicts.
-13. **Relative Sullivan source:** augmentation-kernel cocycles are killed stagewise and the limit is
-    a surjective quasi-isomorphism. This is a universal gluing machine, but target exactness does not
-    recover source orientation erased before augmentation.
-
-This is a genuine unification because every item has a specified source sector and an explicit
-map, kernel, lower-modulus failure, or conservative image. Manuscript should reject any item that
-cannot be presented at that level.
-
-## Strongest objections
-
-1. **RH-bearing edge remains open.** Paper locates it more sharply but does not construct it.
-2. **Abstract law remains structurally elementary.** Unique lifting, total-family rigidity,
-   exactness, lower bounds, and Douglas factorization cannot carry journal significance alone.
-   Scientific force must come from the proved Riemann instantiations: especially the total
-   eight-unit reporter versus four-unit budget, fixed singular residue, and critical-strip
-   co-Poisson source, which now force the order and carrier change.
-3. **“Universal” remains scoped.** It is universal for source-pointed linear observation complexes
-   and Hilbert polarization, not all mathematical reasoning.
-4. **Local bridge is not global descent.** Coefficient-faithful incidence and zero-displacement
-   detection do not imply trace vanishing.
-5. **Finite injectivity is not completed stability.** Complete source and Hellinger depth both show
-   why inverse conditioning matters.
-6. **Positive consumer is not source theorem.** Burnol source-to-zeta landing is now exact and
-   Douglas makes its operator hypothesis exact, but neither proves arithmetic Gram domination on
-   the required descended carrier. Ward positivity or Meyer boundedness must still be derived from
-   source input.
-7. **Multiple equivalent RH selectors remain equivalences.** They clarify first failed edge but do
-   not answer it.
-8. **Manuscript is still dense.** One theorem hierarchy fixes collage architecture, but several
-   arithmetic realizations are summarized too briefly for external verification.
-9. **Terminology risks overselling.** “Conservative” should remain explicitly source-relative
-   injectivity; “stable” should mean an actual positive lower modulus.
-10. **Novelty/priority not audited.** Deliberately deferred. Submission recommendation is impossible
-    without conventional references and external comparison.
+1. **Main arithmetic theorem remains open.** Structural law locates missing edge but does not cross
+   it.
+2. **Potential tautology.** Vanishing of Gaussian reflection defect is literally RH. Without a
+   natural arithmetic same-grade relation, support-exclusion theorem, or observation \(\pi\), the
+   criterion remains a repackaging.
+3. **Classical-shaped parent law.** Bohr--Ces\`aro coefficient extraction, gradewise
+   cancellation, first-loss stratification, and the kernel-equivalence lattice are universal but
+   structurally familiar. Significance must come from their joint Riemann realization and
+   route-wide exclusion consequences---especially exclusion of every absolutely summable fixed
+   Gamma chain, the exact same-grade necessity, and the quadratic mate-curvature singleton---not
+   terminology.
+4. **Manuscript remains collage-prone.** Thousands of lines and many theorem blocks overwhelm
+   central narrative. General journal needs ruthless compression around projective law, Gaussian
+   curvature, vertical-versus-horizontal exactness, and precise missing factorization.
+5. **Too many RH equivalences.** Keep only equivalences that change frontier. Remove decorative
+   detector criteria.
+6. **Scope inflation.** Hedenmalm, CCM, Wold, Sonin, Calkin, recurrence, Ward, and HT claims must be
+   explicit corollaries or moved to appendices.
+7. **Novelty unverified.** External literature audit is intentionally deferred. Submission cannot
+   proceed without it.
+8. **No RH proof.** Manuscript must state this in abstract, introduction, conclusion, and title
+   metadata without ambiguity.
 
 ## Quality-gate decision
 
-- One universal ordered polarized exact-descent hierarchy: **met**.
-- Explains audited positive and negative corpus results as shadows: **substantially met**.
-- Unconditional-claim criterion: **met for mapped claims after targeted build/axiom/lint audit**.
-- Correct current frontier: **met; now proves descent must precede calibration and separates the
-  compatibility quotient, singular stability, and Hermitian factorization**.
-- RH proof: **not met**.
-- High-interest RH progress: **plausible, not established externally**.
-- Renowned general scientific journal: **not met**; missing global arithmetic edge,
-  self-containedness, literature positioning, and priority audit.
+- Only unconditional claims: **pending final Lean/axiom/lint audit**.
+- Universal law subsuming corpus: **substantially met**.
+- Clear narrative locating exact missing mathematics: **met**.
+- Proves RH: **not met**.
+- High-interest progress toward RH: **plausible but not yet demonstrated to journal standard**.
+- Opens a genuinely productive new route: **unresolved until a natural equal-grade relation or
+  support-exclusion law is constructed**.
+- General scientific journal quality: **not met**.
+- “No open questions”: **not met; horizontal projective factorization is explicitly open**.
 
-Goal remains open. Strongest honest result is the descent-before-polarization law plus proof that
-total Green covariance is automatic cancellation, together with coefficient-faithful local
-physical/Hodge incidence, literal Burnol and safe-chamber singular sources, fixed nonzero singular
-residue, and a rigid four-versus-eight obstruction. Missing frontier is one changed-carrier exact
-compatibility quotient followed by global provenance/gluing/stability/factorization, or an
-equivalent source-forced vanishing theorem.
+## Final recommendation
 
-## Formal-evidence audit
-
-Direct checks pass for source-pointed serial/parallel/exact-descent laws and resolved Green
-criterion; targeted serial/network and Green builds pass.
-Axiom printouts use only `propext`, `Classical.choice`, and `Quot.sound`. Whole-tree formal lint
-passes. Claim map identifies exact modules for complete-source singularity, local physical/Hodge
-bridge, Hellinger finite/completed behavior, hypertranscendental unit/order laws, Meyer graph
-closure, Burnol channels, and Gaussian Green primitive. External novelty/priority audit remains
-intentionally deferred.
+Do not submit current manuscript. Keep regular tomography conservation, Gaussian source defect,
+quadratic mate curvature, and exact non-shorting theorems as central paper. Compress route catalogue
+into corollary table or supplement. Next research should not construct another source, positive
+form, unit gauge, fixed-carrier tensor, or divisor detector. Smallest unexcluded cancellation
+mechanism is a signed non-principal same-full-grade arithmetic relation that either entangles
+divisor provenance with cross-prime incidence or is singular beyond absolute summability before
+completion, and in either case retains polarized off-diagonal data beyond the forced positive
+Cartier metric. Alternative is an independently derived
+global support-exclusion identity, or a broad impossibility theorem for these classes. Either
+successful source theorem would imply RH.

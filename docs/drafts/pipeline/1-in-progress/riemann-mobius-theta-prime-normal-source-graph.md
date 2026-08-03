@@ -360,3 +360,28 @@ prove that this labelled complete residual graph lies in an arithmetic sector tr
 codiagonal kernel, or equivalently establish R-PN-Ward (R-PN.10).  Uniform capacity, ordinary
 closed-graph completion, and ungraded product topology remain ruled out by the updated
 Hellinger--Hodge countertransport results.
+
+## 2026-08-02 adaptive all-prime coefficient conservativity update `[FORMALIZED]`
+
+The divisor-independent global schedule `m(p,N)=8pN` upgrades separate-prime residual
+nonannihilation to simultaneous countable coefficient conservativity.  At every fixed strip point
+with `N Re(s)>=1/2`, each exact strict residual column has `l1` norm at most `1/4`; the proof uses
+Bernoulli's inequality and a telescoping quartic majorant, without prime-density input.  Therefore
+the exact all-prime spectral codiagonal is the isometric Mobius prime head plus a quarter-contraction:
+
+```text
+||A_(N,s)a||_1 >= (3/4)||a||_1.
+```
+
+It is injective and has closed range on the completed `l1` prime coefficient space.  The exact
+basis-column theorem rules out an abstract triangular recoding: every column is the head plus the
+full physical residual already landed in (R-PN.18).
+
+Lean module:
+`RHTower/MobiusThetaAdaptivePrimeNormalCodiagonal.lean`.
+
+This closes completed coefficient-space codiagonal instability, not R-PN-Ward.  The operator still
+depends on spectral evaluation through `s`; it has not been identified with a divisor-independent
+Gamma/co-Poisson source norm or the actual Green resolved range.  Exact remaining arrow is the
+coefficient-faithful map from the physical affine-head-plus-interval source completion into the
+Gamma/co-Poisson Hellinger/Hodge space, with unsquared orientation and four-unit Gram order retained.
