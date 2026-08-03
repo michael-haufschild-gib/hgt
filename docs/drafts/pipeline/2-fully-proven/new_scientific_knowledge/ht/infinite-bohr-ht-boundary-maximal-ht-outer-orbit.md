@@ -2393,3 +2393,31 @@ Only two entries of the status table are not Lean-complete:
   series by `not_differentiallyAlgebraicOn_pow`; the reduction is formal, the external theorem is
   not formalized.
 - **Ostrowski** itself -- imported.
+
+## Claim (2): what is actually left, and the start of it
+
+With (1) and (9) closed, the only card entry that is not Lean-complete is (2), and its content is
+exactly Ostrowski's theorem: the exponential carrier `A_lambda = sum a_n lambda_n e^{i omega_n z}`
+with rationally independent frequencies is hypertranscendental.  The card's own step
+(`b_lambda = c + eps A_lambda`, so `b_lambda` is HT iff `A_lambda` is, and powers by
+`not_differentiallyAlgebraicOn_pow`) is already formal; the classical theorem is not.
+
+The corpus already owns most of the analytic side of a Bohr-theoretic proof:
+`isBohrAlmostPeriodic_expSeriesCarrier`, `bohrCoefficient_expSeriesCarrier`,
+`RationallyIndependentSequence`, `characterDetuning_eq_zero_iff`.  What it does not own is the
+extraction of *polynomial* coefficients: a differential relation has coefficients in `C[z]`, and the
+Bohr mean of `p(t) e^{i nu t}` diverges for `deg p >= 1`.  The fix is the standard rescaled mean:
+divide by `T^d` to read off the leading coefficient of the polynomial attached to a frequency, then
+induct on the degree.
+
+Started, and now formal:
+
+- `MonomialFrequencySeparation.lean` -- `monomialFrequency_injective`: for rationally independent
+  frequencies distinct monomials in the characters have distinct frequencies, because their
+  difference is an integer character whose detuning cannot vanish
+  (`characterDetuning_eq_zero_iff`).  This is the combinatorial half of the argument: it is what
+  lets a single Fourier coefficient of a relation see a single monomial.
+
+Remaining for (2): the rescaled-mean extraction of polynomial coefficients, the expansion of a
+differential relation into an almost periodic series with polynomial coefficients, and the
+conclusion.

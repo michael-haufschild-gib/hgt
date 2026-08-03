@@ -80,4 +80,36 @@ theorem mulDistSqPair_nonneg {f g : ℕ → ℂ} {P : Finset ℕ} (hf : ∀ p �
   rw [← this]
   positivity
 
+/-- The character `n ↦ n^{it}`. -/
+noncomputable def charFn (t : ℝ) (n : ℕ) : ℂ :=
+  Complex.exp (((t * Real.log (n : ℝ) : ℝ) : ℂ) * Complex.I)
+
+/-- The character is unimodular. -/
+@[simp] theorem norm_charFn (t : ℝ) (n : ℕ) : ‖charFn t n‖ = 1 :=
+  Complex.norm_exp_ofReal_mul_I _
+
+/-- Conjugating the character reverses the frequency. -/
+theorem conj_charFn (t : ℝ) (n : ℕ) :
+    (starRingEnd ℂ) (charFn t n)
+      = Complex.exp (((-(t * Real.log (n : ℝ)) : ℝ) : ℂ) * Complex.I) := by
+  rw [charFn, ← Complex.exp_conj, map_mul, Complex.conj_ofReal, Complex.conj_I]
+  congr 1
+  push_cast
+  ring
+
+/-- **The distance from a character is the pairwise distance to it.** -/
+theorem mulDistSq_eq_pair (f : ℕ → ℂ) (t : ℝ) (P : Finset ℕ) :
+    mulDistSq f t P = mulDistSqPair f (charFn t) P := by
+  simp only [mulDistSq, mulDistSqPair, conj_charFn]
+
+/-- **Distance to a character obeys the triangle inequality through any unimodular function.** -/
+theorem sqrt_mulDistSq_triangle_char {f : ℕ → ℂ} {P : Finset ℕ} (hf : ∀ p ∈ P, ‖f p‖ = 1)
+    (t u : ℝ) (hP : ∀ p ∈ P, 0 < p) :
+    Real.sqrt (mulDistSq f t P)
+      ≤ Real.sqrt (mulDistSqPair f (charFn u) P)
+        + Real.sqrt (mulDistSqPair (charFn u) (charFn t) P) := by
+  rw [mulDistSq_eq_pair]
+  exact sqrt_mulDistSqPair_triangle hf (fun p _ => norm_charFn u p)
+    (fun p _ => norm_charFn t p) hP
+
 end RHTower.Sieve

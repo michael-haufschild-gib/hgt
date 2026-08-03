@@ -193,7 +193,10 @@
   group),
   `GaloisForLFunctions.RHTower.DeningerRootCentral` (a root adjunction does not move its base
   group),
-  `GaloisForLFunctions.RHTower.DeningerShiftFixed` (the shift preserves differences)
+  `GaloisForLFunctions.RHTower.DeningerShiftFixed` (the shift preserves differences),
+  `GaloisForLFunctions.RHTower.DeningerBlockInv` (the block data of a power decomposes),
+  `GaloisForLFunctions.RHTower.DeningerBaseHeadEq` (equal powers of cyclically reduced elements are
+  equal)
 
 ## Statement
 
@@ -2845,3 +2848,22 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   words agree at every stage, which the suffix splitting supplies, and the base case is the identity
   of the heads at exponent one.  Equality of the two powers then reads `(j k⁻¹)^{n+1} = 1`, and
   torsion freeness gives `j = k`, closing the length `≥ 2` case of Baumslag's theorem.
+- 2026-08-03 — **The cyclically reduced case of Baumslag's theorem is proved.**
+  `deningerBlock_succ_inv` inverts the block recursion: since the head and the word of a power are
+  read off its normal form and the length says where the last block begins, the data at one exponent
+  higher is the data below with one shift block prepended and the head multiplied by the shift.
+  `deningerBlockHead_rel` then runs the induction the inversion makes possible — if the two words
+  agree, the suffix splitting hands the same statement down one exponent, and
+  `deningerShift_diff_fixed` says the difference of the heads is multiplied by the original
+  difference at each step — so the head difference at exponent `n+1` is `(j k⁻¹)^{n+1}`.
+  `deningerBaseHead_pow_eq` closes it: two elements `base j · M` and `base k · M` with the same
+  positive power have the same head by `deningerBaseWord_head_eq`, so `(j k⁻¹)^{n+1} = 1`, and a
+  torsion free base group gives `j = k`.  Together with `deningerBaseHead_pow_word_eq`, which
+  already gave the equality of the words, this is uniqueness of roots for every element of an
+  amalgam whose normal word is cyclically reduced — the case the whole word combinatorics of this
+  card was built for, and the one the classical proof spends its length on.
+  The hypotheses are exactly the three that a root adjunction at an isolated element satisfies: the
+  base group is abelian and torsion free, and conjugation by a factor element that lands in the base
+  group does not move it, which is `deningerRootHcent`.  What is left of the theorem is the
+  reduction of an arbitrary element to this case — conjugating it to its cyclic reduction, which
+  `deningerExists_cycData` supplies, and transporting the conclusion back along the conjugator.

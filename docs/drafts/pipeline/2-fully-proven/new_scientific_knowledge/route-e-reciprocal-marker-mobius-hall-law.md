@@ -2423,3 +2423,34 @@ This is the *object*, not the theorem. Halász's bound — that a multiplicative
 value unless it is close to some `n^{it}` in this distance — is a separate result and is not proved
 here. Defining the distance and establishing that it is well-behaved is the prerequisite; the
 inequality itself remains the route's open input, alongside nothing else.
+
+### Formal layer — the distance is a genuine distance
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DistancePointwise.lean` and `.../DistanceTriangle.lean`.
+
+Pointwise (`DistancePointwise`):
+
+- `normSq_sub_eq` — the polarisation identity `‖u−v‖² = ‖u‖² + ‖v‖² − 2 Re(u conj v)`.
+- `half_normSq_sub_le` — on the closed unit disc, `‖u−v‖²/2 ≤ 1 − Re(u conj v)`.
+- `one_sub_re_eq_half_normSq` — on the unit circle the two are **equal**.
+
+Global (`DistanceTriangle`):
+
+- `mulDistSqPair` — `D(f,g;P)² = ∑_{p∈P}(1 − Re(f(p) conj g(p)))/p`.
+- `distVec`, `distVec_add`, `norm_distVec` — the distance is exactly the Euclidean norm of the vector
+  `p ↦ (f(p) − g(p))/√(2p)` in `EuclideanSpace ℂ P`, and that vector is additive in the middle
+  argument.
+- `sqrt_mulDistSqPair_triangle` — **the Granville–Soundararajan triangle inequality**
+  `D(f,h;P) ≤ D(f,g;P) + D(g,h;P)` for unimodular `f, g, h`.
+- `charFn`, `norm_charFn`, `conj_charFn`, `mulDistSq_eq_pair` — the character `n ↦ n^{it}` is
+  unimodular and `mulDistSq f t P` is the pairwise distance to it.
+- `sqrt_mulDistSq_triangle_char` — distance to a character is transitive through any unimodular
+  function.
+
+All unconditional.
+
+The equality on the unit circle is what makes this work: it turns the distance into a norm, so the
+triangle inequality is `norm_add_le` rather than an inequality needing proof. On the open disc only
+the inequality `half_normSq_sub_le` survives, in the direction that does *not* give the triangle
+inequality — so the unimodular hypothesis in the triangle theorem is doing real work, not tidiness.
+The disc case is the Granville–Soundararajan lemma proper and is not proved here.

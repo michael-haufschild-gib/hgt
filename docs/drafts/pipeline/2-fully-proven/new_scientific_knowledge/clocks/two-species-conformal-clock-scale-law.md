@@ -1292,10 +1292,22 @@ transverse circle and checks that multiplication by `-k²` really is the second 
   transverse Laplacian of the synthesised field is exactly the multiplication that the coefficient
   iteration performs.
 
-What remains is the iteration itself — the doubly-integrated recursion on coefficient-valued
-functions of the null coordinates — and the product rule `cosSeries (V ⋆ g) = cosSeries V · cosSeries g`
-for even coefficient sequences, which is what lets the synthesised potential multiply the
-synthesised field.
+`ClockFourierProduct.lean` supplies the other half of the dictionary — synthesis turns convolution
+into multiplication, which is what lets the synthesised potential multiply the synthesised field:
+
+- `EvenCoeff`, `evenCoeff_sqMul`, `evenCoeff_wienerConv` — evenness is preserved by multiplication by
+  `k²` and by convolution, so a potential even in the transverse variable produces an even state at
+  every step of the iteration and every quantity stays real. The restriction costs nothing;
+- `summable_prod_of_abs_bound`;
+- **`cosSeries_wienerConv`** — *`(∑ⱼ Vⱼ cos jz)(∑ₘ gₘ cos mz) = ∑ₖ (V ⋆ g)ₖ cos kz`*. The proof is the
+  Cauchy product on `ℤ × ℤ`, the product-to-sum identity `2 cos a cos b = cos(a+b) + cos(a-b)`, the
+  involution `m ↦ -m` which identifies the two halves using evenness, and the shear `(k,j) ↦ (j,k-j)`
+  which folds the result back into a convolution.
+
+The dictionary between the coefficient picture and the field picture is now complete in both
+directions: `-k²` is the transverse Laplacian, and `⋆` is multiplication. What remains is the
+iteration itself — the doubly-integrated recursion on coefficient-valued functions of the null
+coordinates — and the identification of its limit with a clock probe.
 
 The first genuinely coupled target this reaches is dimension three: a potential
 `V(x⁰, x¹, x²)` with arbitrary continuously differentiable dependence on the null coordinates and

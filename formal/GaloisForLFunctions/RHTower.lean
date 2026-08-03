@@ -1500,6 +1500,8 @@ import GaloisForLFunctions.RHTower.DeningerRGroupConjugation
 import GaloisForLFunctions.RHTower.DeningerConjBase
 import GaloisForLFunctions.RHTower.DeningerRootCentral
 import GaloisForLFunctions.RHTower.DeningerShiftFixed
+import GaloisForLFunctions.RHTower.DeningerBlockInv
+import GaloisForLFunctions.RHTower.DeningerBaseHeadEq
 import GaloisForLFunctions.RHTower.DeningerUnitaryFlowRieszPurity
 import GaloisForLFunctions.RHTower.DeningerUnitaryHarmonicAction
 import GaloisForLFunctions.RHTower.DeningerWeightOnePolarization

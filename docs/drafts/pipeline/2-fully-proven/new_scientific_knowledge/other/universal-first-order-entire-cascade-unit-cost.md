@@ -564,7 +564,12 @@ tsum_index_sub_mul_term                   -- the first moment: r S'(r) - k S(r)
 exp_tsum_mul_le_tsum_mul_exp              -- discrete Jensen for the exponential
 meanIndex                                 -- Lambda(r) = r S'(r) / S(r)
 meanIndex_mul_log_le_log_coeffSum_sub     -- Lambda(r) log(s/r) <= log S(s) - log S(r)
+meanIndex_le_slope, slope_le_meanIndex    -- Lambda(r) sits between adjacent slopes of log S
 ```
+
+`Lambda(r)` is therefore sandwiched by the difference quotients of `log S` on either side, exactly as
+`nu(r)` is sandwiched by those of `log mu`.  Since `mu <= S <= mu (nu + C)`, the two sandwiches
+overlap up to `log(nu+C)/log(s/r)`, which is what bounds `Lambda - nu`.
 
 So the mean index now satisfies the same lower growth law as the modal index does for the maximum
 term.  Comparing the two against the sandwich `mu <= S <= mu (nu + C)` is what bounds their
@@ -1077,3 +1082,11 @@ triangularity package, which is exactly how the paper proof uses them.
   for `mu`, so the two can be compared through the sandwich `mu <= S <= mu (nu + C)`: that comparison
   is the remaining step, and it is now a matter of combining growth laws rather than of new
   mechanism.
+- 2026-08-03 -- Two-sided bound on the mean index.  The Jensen inequality needed no ordering of the
+  radii at all -- only `s > 0` -- so weakening its hypothesis from `r <= s` to `0 < s` immediately
+  gives both directions: for `s > r` divide by `log(s/r) > 0`, and for `t < r` use
+  `log(t/r) = -log(r/t)` and divide by the positive `log(r/t)`, which flips the inequality.  So
+  `Lambda(r)` sits between the backward and forward difference quotients of `log S`, exactly as
+  `nu(r)` sits between those of `log mu`.  The two sandwiches then overlap up to
+  `log(nu+C)/log(s/r)`, coming from `mu <= S <= mu (nu + C)` -- that is the bound on `Lambda - nu`,
+  and assembling it is the next step.

@@ -7,7 +7,7 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 
 | Area | Umbrella | Declarations | Capstones |
 |---|---|---:|---|
-| `rh_tower` | `GaloisForLFunctions.RHTower` | 60762 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
+| `rh_tower` | `GaloisForLFunctions.RHTower` | 60772 | `RHTower.rh_iff_tower`, `RHTower.rh_iff_forall_ladder` |
 | `ht_geometry` | `GaloisForLFunctions.HTGeometry` | 44788 | `hypertranscendental_gamma`, `HTGeometry.exists_wedgeFacetSewnUpperEndSystem` |
 | `hurwitz` | `GaloisForLFunctions.Hurwitz` | 547 | `hurwitz_n2_unconditional` |
 | `u0_pui` | `GaloisForLFunctions.U0` | 892 | `U0PhiIndep.u0_phi_independence`, `U0CardTheorems.u0_phi_independence_all_parameters` |
@@ -12064,6 +12064,8 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `deningerCyc_of_map_fst` | `GaloisForLFunctions.RHTower.DeningerBaseConjWord` | `formal/GaloisForLFunctions/RHTower/DeningerBaseConjWord.lean:28` | The cyclic condition depends only on the indices.** |
 | theorem | `deningerBaseConj_word` | `GaloisForLFunctions.RHTower.DeningerBaseConjWord` | `formal/GaloisForLFunctions/RHTower/DeningerBaseConjWord.lean:56` | The base conjugate of a word, as a word.** Its letters run through the same factors, so it is cyclically reduced whenever the original is. |
 | theorem | `deningerBaseConj_cycRed` | `GaloisForLFunctions.RHTower.DeningerBaseConjWord` | `formal/GaloisForLFunctions/RHTower/DeningerBaseConjWord.lean:93` | The base conjugate of a cyclically reduced word is the product of a cyclically reduced word of the same length.** |
+| theorem | `deningerBlockHead_rel` | `GaloisForLFunctions.RHTower.DeningerBaseHeadEq` | `formal/GaloisForLFunctions/RHTower/DeningerBaseHeadEq.lean:26` | The head difference is a power of the original difference.** |
+| theorem | `deningerBaseHead_pow_eq` | `GaloisForLFunctions.RHTower.DeningerBaseHeadEq` | `formal/GaloisForLFunctions/RHTower/DeningerBaseHeadEq.lean:97` | Equal powers of cyclically reduced elements are equal.** |
 | theorem | `deningerCyc_of_map_fst_cross` | `GaloisForLFunctions.RHTower.DeningerBaseHeadPow` | `formal/GaloisForLFunctions/RHTower/DeningerBaseHeadPow.lean:29` | The cyclic condition compared across two words** whose ends match those of a cyclically reduced one. |
 | theorem | `deningerShift_transversal` | `GaloisForLFunctions.RHTower.DeningerBaseHeadPow` | `formal/GaloisForLFunctions/RHTower/DeningerBaseHeadPow.lean:57` | Moving a base element from the right of a word to its left.** The letters shift and a new base element appears on the left; the sequence of factors is unchanged. |
 | theorem | `deningerBaseHead_pow_word` | `GaloisForLFunctions.RHTower.DeningerBaseHeadPow` | `formal/GaloisForLFunctions/RHTower/DeningerBaseHeadPow.lean:84` | The block form of a power.** A power of a base element times a cyclically reduced transversal word is a base element times a word which ends in that word and is one block longer fo |
@@ -39244,6 +39246,14 @@ Use this before proving a lemma; search by declaration name, module, or docstrin
 | theorem | `normSq_sub_eq` | `GaloisForLFunctions.RHTower.Sieve.DistancePointwise` | `formal/GaloisForLFunctions/RHTower/Sieve/DistancePointwise.lean:20` | The polarisation identity. |
 | theorem | `half_normSq_sub_le` | `GaloisForLFunctions.RHTower.Sieve.DistancePointwise` | `formal/GaloisForLFunctions/RHTower/Sieve/DistancePointwise.lean:27` | On the unit disc the distance summand dominates the Euclidean separation.** |
 | theorem | `one_sub_re_eq_half_normSq` | `GaloisForLFunctions.RHTower.Sieve.DistancePointwise` | `formal/GaloisForLFunctions/RHTower/Sieve/DistancePointwise.lean:37` | On the unit circle the two agree.** |
+| theorem | `distVec_add` | `GaloisForLFunctions.RHTower.Sieve.DistanceTriangle` | `formal/GaloisForLFunctions/RHTower/Sieve/DistanceTriangle.lean:37` | The vector is additive in the middle argument.** |
+| theorem | `norm_distVec_term_sq` | `GaloisForLFunctions.RHTower.Sieve.DistanceTriangle` | `formal/GaloisForLFunctions/RHTower/Sieve/DistanceTriangle.lean:44` | Each coordinate of the vector has the right size. |
+| theorem | `norm_distVec` | `GaloisForLFunctions.RHTower.Sieve.DistanceTriangle` | `formal/GaloisForLFunctions/RHTower/Sieve/DistanceTriangle.lean:55` | The distance is the norm of the vector.** |
+| theorem | `sqrt_mulDistSqPair_triangle` | `GaloisForLFunctions.RHTower.Sieve.DistanceTriangle` | `formal/GaloisForLFunctions/RHTower/Sieve/DistanceTriangle.lean:67` | The Granville–Soundararajan triangle inequality for the multiplicative distance.** |
+| theorem | `mulDistSqPair_nonneg` | `GaloisForLFunctions.RHTower.Sieve.DistanceTriangle` | `formal/GaloisForLFunctions/RHTower/Sieve/DistanceTriangle.lean:76` | The distance is nonnegative, being a sum of squares in disguise. |
+| theorem | `conj_charFn` | `GaloisForLFunctions.RHTower.Sieve.DistanceTriangle` | `formal/GaloisForLFunctions/RHTower/Sieve/DistanceTriangle.lean:92` | Conjugating the character reverses the frequency. |
+| theorem | `mulDistSq_eq_pair` | `GaloisForLFunctions.RHTower.Sieve.DistanceTriangle` | `formal/GaloisForLFunctions/RHTower/Sieve/DistanceTriangle.lean:101` | The distance from a character is the pairwise distance to it.** |
+| theorem | `sqrt_mulDistSq_triangle_char` | `GaloisForLFunctions.RHTower.Sieve.DistanceTriangle` | `formal/GaloisForLFunctions/RHTower/Sieve/DistanceTriangle.lean:106` | Distance to a character obeys the triangle inequality through any unimodular function.** |
 | theorem | `card_divisors_of_squarefree` | `GaloisForLFunctions.RHTower.Sieve.DivisorSquareSum` | `formal/GaloisForLFunctions/RHTower/Sieve/DivisorSquareSum.lean:25` | A squarefree number has `2^{ω}` divisors. |
 | theorem | `abs_lambdaSquared_le_four_pow` | `GaloisForLFunctions.RHTower.Sieve.DivisorSquareSum` | `formal/GaloisForLFunctions/RHTower/Sieve/DivisorSquareSum.lean:33` | The `Λ²` coefficients of a squarefree modulus are bounded by `4^{ω d}`. |
 | theorem | `sum_four_pow_le` | `GaloisForLFunctions.RHTower.Sieve.DivisorSquareSum` | `formal/GaloisForLFunctions/RHTower/Sieve/DivisorSquareSum.lean:43` | Level-restricted divisor-square sum.** |
