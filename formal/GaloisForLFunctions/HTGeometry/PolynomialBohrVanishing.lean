@@ -67,9 +67,14 @@ theorem eq_zero_of_polynomialCombination_bohr (G : ℕ → ℝ → ℂ)
         have hkey : t ^ (D + 1) * ‖G (D + 1) t‖ ≤ t ^ D * B := by
           rw [← hlhs]
           exact le_trans hnorm hsum2
-        rw [le_div_iff₀ htpos]
         have htD : (0 : ℝ) < t ^ D := by positivity
-        nlinarith [hkey, htD]
+        have hpow : t ^ (D + 1) * ‖G (D + 1) t‖ = t ^ D * (t * ‖G (D + 1) t‖) := by
+          rw [pow_succ]
+          ring
+        rw [hpow] at hkey
+        have hfinal : t * ‖G (D + 1) t‖ ≤ B := le_of_mul_le_mul_left hkey htD
+        rw [le_div_iff₀ htpos]
+        linarith
       have htend : Tendsto (fun t : ℝ => G (D + 1) t) atTop (nhds 0) := by
         have hBt : Tendsto (fun t : ℝ => B / t) atTop (nhds 0) :=
           tendsto_const_nhds.div_atTop tendsto_id

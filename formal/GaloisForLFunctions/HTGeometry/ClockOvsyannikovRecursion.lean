@@ -103,7 +103,15 @@ theorem ovsyannikov_induction {ρ₀ K : ℝ} (hK : 0 ≤ K) (N : ℕ → ℝ �
         have hratio := sq_pow_ratio_intermediate hG m
         rw [div_eq_div_iff (ne_of_gt hd1) (ne_of_gt hd2)] at hratio
         rw [hcdef, hrem, div_eq_div_iff (by positivity) (by positivity)]
-        linear_combination (K ^ m * (m.factorial : ℝ) ^ 2) * hratio
+        calc K ^ m * (m : ℝ) ^ (2 * m) * ((m.factorial : ℝ) ^ 2 * (ρ₀ - ρ) ^ (2 * m))
+            = K ^ m * (m.factorial : ℝ) ^ 2 * ((m : ℝ) ^ (2 * m) * (ρ₀ - ρ) ^ (2 * m)) := by
+              ring
+          _ = K ^ m * (m.factorial : ℝ) ^ 2
+              * (((m : ℝ) + 1) ^ (2 * m)
+                * ((ρ₀ - ρ) * (m : ℝ) / ((m : ℝ) + 1)) ^ (2 * m)) := by rw [hratio]
+          _ = K ^ m * ((m : ℝ) + 1) ^ (2 * m)
+              * ((m.factorial : ℝ) ^ 2
+                * ((ρ₀ - ρ) * (m : ℝ) / ((m : ℝ) + 1)) ^ (2 * m)) := by ring
     rw [hloss, hcval] at hstepped
     have hident := ovsyannikov_step_identity (K := K) (G := ρ₀ - ρ) (x := x) (y := y) hG m
     rw [hident] at hstepped

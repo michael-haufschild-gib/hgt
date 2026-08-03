@@ -69,6 +69,18 @@ theorem deningerCalderonWittRelativeBoundaryClass_eq_zero_iff
       (x := w)
       hcocycle)
 
+/-- On the exact Milnor-incidence source, cocycle closure is intrinsic to
+the type, so the local boundary-transgression law has no separate closure
+premise. -/
+theorem deningerCalderonWittRelativeBoundaryClass_incidence_eq_zero_iff
+    (p : Nat.Primes)
+    (S : Submodule ℂ (deningerCalderonWittMilnorIncidence p))
+    (w : deningerCalderonWittMilnorIncidence p) :
+    deningerCalderonWittRelativeBoundaryClass p S w.1 = 0 ↔
+      deningerCalderonWittMilnorGreenRetraction p w.1 ∈ S :=
+  deningerCalderonWittRelativeBoundaryClass_eq_zero_iff
+    p S w.1 w.2
+
 /--
 Equivalent local existence form: vanishing means precisely that the exterior
 cocycle has an incidence primitive in the admitted sector.
@@ -142,6 +154,16 @@ theorem deningerCalderonWittGlobalRelativeBoundaryClass_eq_zero_iff
         deningerCalderonWittGlobalMilnorIncidence.subtype_injective)
       (x := w)
       hcocycle)
+
+/-- On global exact incidence, the type itself discharges the all-prime
+cocycle premise. -/
+theorem deningerCalderonWittGlobalRelativeBoundaryClass_incidence_eq_zero_iff
+    (S : Submodule ℂ deningerCalderonWittGlobalMilnorIncidence)
+    (w : deningerCalderonWittGlobalMilnorIncidence) :
+    deningerCalderonWittGlobalRelativeBoundaryClass S w.1 = 0 ↔
+      deningerCalderonWittGlobalMilnorGreenRetraction w.1 ∈ S :=
+  deningerCalderonWittGlobalRelativeBoundaryClass_eq_zero_iff
+    S w.1 w.2
 
 /--
 Equivalent all-prime existence form: the relative class vanishes precisely
