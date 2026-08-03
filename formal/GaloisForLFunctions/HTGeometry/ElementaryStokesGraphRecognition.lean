@@ -56,6 +56,30 @@ def HasAcuteIsoscelesRescaling {n : ℕ} (g : ElementaryDecoratedGraph n) : Prop
 def HasElementaryRecognitionCertificate {n : ℕ} (g : ElementaryDecoratedGraph n) : Prop :=
   g.HasPairSpectra ∧ g.HasAcuteIsoscelesRescaling
 
+theorem rescaledEdge_nonneg {n : ℕ} (g : ElementaryDecoratedGraph n) (i j : Fin n) :
+    0 ≤ g.rescaledEdge i j := by
+  exact div_nonneg (by positivity) (by positivity)
+
+/-- Canonical cluster partition at rescaled height `t`.  Acute isosceles is exactly what makes
+threshold adjacency transitive, so these partitions are the dendrogram underlying the fission
+encoding. -/
+def thresholdSetoid {n : ℕ} (g : ElementaryDecoratedGraph n)
+    (hacute : g.HasAcuteIsoscelesRescaling) (t : ℚ) (ht : 0 ≤ t) : Setoid (Fin n) where
+  r i j := g.rescaledEdge i j ≤ t
+  iseqv := {
+    refl := fun i => by simpa using ht
+    symm := fun {i j} hij => by simpa [g.rescaledEdge_symm i j] using hij
+    trans := fun {i j k} hij hjk =>
+      (hacute i j k).2.1.trans (max_le hij hjk) }
+
+/-- Dendrogram partitions coarsen monotonically with threshold. -/
+theorem thresholdSetoid_mono {n : ℕ} (g : ElementaryDecoratedGraph n)
+    (hacute : g.HasAcuteIsoscelesRescaling) {s t : ℚ} (hs : 0 ≤ s) (hst : s ≤ t)
+    {i j : Fin n} :
+    (g.thresholdSetoid hacute s hs).r i j →
+      (g.thresholdSetoid hacute t (hs.trans hst)).r i j :=
+  fun hij => hij.trans hst
+
 end ElementaryDecoratedGraph
 
 /-- Exact finite cophenetic encoding of an elementary fission tree.

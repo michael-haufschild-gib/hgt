@@ -2418,6 +2418,7 @@ import GaloisForLFunctions.RHTower.PositiveSubsetFidelityRawEulerNonWickUniversa
 import GaloisForLFunctions.RHTower.PositivityForcesMultipleZeros
 import GaloisForLFunctions.RHTower.PowerSupportedPrimeMassFiniteWindowUniversalityLaw
 import GaloisForLFunctions.RHTower.PrecisionGapExponent
+import GaloisForLFunctions.RHTower.PreQuasiGelfandTwoSidedSingularDefect
 import GaloisForLFunctions.RHTower.PrimeAlgebraicTranslationWeylPhase
 import GaloisForLFunctions.RHTower.PrimeAmplitudeUniformBound
 import GaloisForLFunctions.RHTower.PrimeArchAntiHerglotzGate
@@ -3000,6 +3001,7 @@ import GaloisForLFunctions.RHTower.Sieve.Mertens
 import GaloisForLFunctions.RHTower.Sieve.MertensFirst
 import GaloisForLFunctions.RHTower.Sieve.MertensSecond
 import GaloisForLFunctions.RHTower.Sieve.RoughCount
+import GaloisForLFunctions.RHTower.Sieve.SmoothRough
 import GaloisForLFunctions.RHTower.Sieve.TruncatedMoebius
 import GaloisForLFunctions.RHTower.Sieve.TruncationDefect
 import GaloisForLFunctions.RHTower.SigmaBlockContraction

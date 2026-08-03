@@ -351,3 +351,18 @@ Remaining for `(6)`: the smooth/rough factorization `n = d·m`, the observation 
 `m ≤ 2X` with `z = X^{1/L}` has `ω m ≤ L`, the smooth-part sum
 `∑_{d z-smooth} z₀^{ω d}/d ≤ ∏_{p ≤ z}(1 + z₀/p + z₀/p² + …)`, and the parameter choice
 `log z ≍ log X / log log X` with `r ≍ log log z`.
+
+### Smooth–rough splitting landed (2026-08-03) — `Sieve/SmoothRough.lean`
+
+- `smoothPart z n`, `roughPart z n` (prime powers with `p ≤ z`, resp. `p > z`);
+- `smoothPart_mul_roughPart` : `smoothPart z n * roughPart z n = n` for `n ≠ 0`;
+- `primeFactors_roughPart` : `(roughPart z n).primeFactors = {p ∈ n.primeFactors | ¬ p ≤ z}`;
+- `not_dvd_roughPart` : no prime `≤ z` divides the rough part — this is exactly the hypothesis
+  `card_rough_Ioc_le` sieves for;
+- `card_primeFactors_roughPart_add` : `ω(smooth) + ω(rough) = ω n`;
+- **`pow_card_primeFactors_roughPart_le`** : `z ^ ω(roughPart z n) ≤ n`.  With `z = X^{1/L}` this
+  caps the rough prime count by `L`, so `z₀^{ω(rough)} ≤ max(1,z₀)^L` is a constant.
+
+Built, wired, axiom-clean.  Every structural ingredient of `(6)` is now in the corpus; what remains
+is the smooth-part sum `∑_{d z-smooth} z₀^{ω d}/d ≤ ∏_{p ≤ z}(1 + z₀/p + z₀/p² + …)` and the
+parameter bookkeeping (`log z ≍ log X/log log X`, `r ≍ log log z`, `λ` fixed).
