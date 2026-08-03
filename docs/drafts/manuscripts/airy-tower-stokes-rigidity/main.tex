@@ -11,6 +11,9 @@
 \usepackage{xcolor}
 \definecolor{linkcol}{rgb}{0.10,0.20,0.50}
 \usepackage[colorlinks=true,linkcolor=linkcol,citecolor=linkcol,urlcolor=linkcol]{hyperref}
+\makeatletter
+\g@addto@macro\UrlBreaks{\do\_\do\.}
+\makeatother
 
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
@@ -35,7 +38,8 @@
 \newcommand{\lcm}{\operatorname{lcm}}
 \newcommand{\den}{\operatorname{den}}
 \newcommand{\muR}{\boldsymbol\mu}
-\newcommand{\leanname}[1]{\nolinkurl{#1}}
+\newcommand{\leanname}[1]{{\Urlmuskip=0mu plus 1mu\nolinkurl{#1}}}
+\newcommand{\leansep}{\allowbreak}
 \emergencystretch=1.5em
 
 \begin{document}
@@ -162,11 +166,13 @@ monomial and a unit proves valuation invariance, and applying this to $f-g$ prov
 invariance.  The Fourier coordinate identities are direct Laurent multiplication and inversion.
 The Weyl identity follows from $X\mapsto D$, $D\mapsto-X$.  Recursive application to the exact
 characteristic tail produces the finite resolution.  These arguments are formalized by
-\leanname{laurentAlgReparametrization_order},
-\leanname{laurentAlgReparametrization_contactTop},
-\leanname{laurentContactHierarchy_reparametrization},
-\leanname{airyTower_negativeFourier_contact_transport}, and
-\leanname{airyTower_exact_negativeFourier_resolution}.
+\leanname{FormalUniformizer.}\leansep\leanname{laurentAlgReparametrization_order},
+\leanname{FormalUniformizer.}\leansep\leanname{laurentAlgReparametrization_contactTop},
+\leanname{FormalUniformizer.}\leansep\leanname{laurentContactHierarchy_reparametrization},
+\leanname{Characteristic.}\leansep\leanname{airyTower_negativeFourier_}\leansep
+\leanname{contact_transport}, and
+\leanname{Characteristic.}\leansep\leanname{airyTower_exact_negativeFourier_}\leansep
+\leanname{resolution}.
 \end{proof}
 
 \begin{theorem}[Contact tomography; informal form]\label{thm:intro-tomography}
@@ -846,7 +852,7 @@ $\beta_i>e_{i-1}$ at every level, then it is an Airy tower.
 For an Airy tower, \eqref{eq:negative-congruence} is the identity
 $\beta_i=e_{i-1}+e_i$.  The exact Weyl, Laurent and contact assertions are the corresponding clauses
 of Theorem~\ref{thm:intro-covariance}; recursive descent is
-\leanname{airyTower_exact_negativeFourier_resolution}.  Loop preservation is the canonical clause
+\leanname{Characteristic.airyTower_exact_negativeFourier_resolution}.  Loop preservation is the canonical clause
 of Lemma~\ref{lem:first-deviation}.
 
 For the converse, the congruence says $\beta_i\mid e_{i-1}+e_i$.  Since
@@ -860,6 +866,11 @@ $\beta_i=e_{i-1}+e_i$ at every level.
 
 For comparison, Hiroe relates the same negative congruences to dual-Puiseux Fourier reduction and
 iterated cabling \cite{Hiroe2017}.  No knot-theoretic statement is used in any theorem here.
+Fourier invariance of the global nonabelian Hodge diagram is known in much greater generality, and
+its role in a recent classification of type-$A$ Argyres--Douglas dualities is made explicit in
+\cite{Doucot2026Fourier}.  The assertion above is different: it identifies the actual tangent
+Laurent automorphism preserving every contact threshold and couples it to an exact Weyl-operator
+resolution on the zero-loop Airy locus.
 
 \section{Leading-separated loopless cores}\label{sec:separated}
 
@@ -1066,11 +1077,11 @@ The local bound, pair bounds, uniqueness,
 global finiteness and enumeration are respectively:
 \begin{flushleft}\small
 \leanname{finite_fixedWeightedCharacteristic},
-\leanname{PairFissionDatum.fixedPart_le},\\
-\leanname{PairFissionDatum.fissionNumerator_le},
-\leanname{PairFissionDatum.fissionNumerator_unique},\\
-\leanname{decorated_fissionTree_fiber_finite},
-\leanname{mem_enumerateDecoratedFissionTreeFiber}.
+\leanname{DecoratedDiagram.PairFissionDatum.fixedPart_le},\\
+\leanname{DecoratedDiagram.PairFissionDatum.fissionNumerator_le},
+\leanname{DecoratedDiagram.PairFissionDatum.fissionNumerator_unique},\\
+\leanname{DecoratedDiagram.decorated_fissionTree_fiber_finite},
+\leanname{DecoratedDiagram.mem_enumerateDecoratedFissionTreeFiber}.
 \end{flushleft}
 \end{proof}
 
@@ -1141,7 +1152,7 @@ The formal statements are:
 \leanname{FiniteContactDendrogram.strictThresholdSetoid},
 \leanname{FiniteContactDendrogram.threshold_mono},\\
 \leanname{FiniteContactDendrogram.exact_highestDifference},
-\leanname{finiteDistinctCoefficients_injective}.
+\leanname{ElementaryDecoratedGraph.finiteDistinctCoefficients_injective}.
 \end{flushleft}
 \end{proof}
 
@@ -1220,12 +1231,17 @@ within one range the ramification and numerator identities force equality of the
 selected stage is exponent-isolated.  Summing all stages gives actual finite Puiseux polynomials
 $q_i$ whose coefficient at the selected exponent differs and whose coefficients at every larger
 exponent agree.  Hence every pair realizes exactly $B_{ij}$ simultaneously.  This is
-\leanname{fissionEncoding_globalPuiseux_realizes_all_pairs}, and certificate-form sufficiency is
-\leanname{globalPuiseux_realization_of_certificate}.
+\leanname{ElementaryDecoratedGraph.}\leansep\leanname{fissionEncoding_globalPuiseux_}\leansep
+\leanname{realizes_all_pairs}, and certificate-form sufficiency is
+\leanname{ElementaryDecoratedGraph.}\leansep\leanname{globalPuiseux_realization_of_}\leansep
+\leanname{certificate}.
 
-Finally \leanname{all_recognitionQueries_iff_certificate} proves that the complete ordered query
+Finally \leanname{ElementaryDecoratedGraph.}\leansep
+\leanname{all_recognitionQueries_iff_certificate} proves that the complete ordered query
 set is exactly the recognition certificate;
-\leanname{card_recognitionQuery} gives $|N|^2+|N|^3$, and
+\leanname{ElementaryDecoratedGraph.}\leansep\leanname{card_recognitionQuery} gives
+$|N|^2+|N|^3$, and
+\leanname{ElementaryDecoratedGraph.}\leansep
 \leanname{recognitionComparisonBudget_le_two_cubes} gives the stated cubic bound.
 \end{proof}
 
@@ -1267,8 +1283,9 @@ Fix a separated vertex of ramification $p^k$ and first factor $p^j$.  The graph 
 ramification drop forget the remaining factorization of $p^{k-j}$, leaving
 $2^{k-j-1}$ possibilities when $k-j\ge1$ and one possibility when $k=j$.  Products of such
 vertices give exponentially large labelled fibres with an unchanged core matrix.  This follows
-from \leanname{airyTowerCount_primePower}, \leanname{hiddenFiber_card}, and
-\leanname{realizedCoreEdge_independent_of_hidden}.
+from \leanname{OrderedFactorization.airyTowerCount_primePower},
+\leanname{SeparatedFiberDatum.hiddenFiber_card}, and
+\leanname{SeparatedFiberDatum.realizedCoreEdge_independent_of_hidden}.
 \end{example}
 
 The finite-fibre theorem and these examples isolate the role of decoration.  The undecorated Cartan
@@ -1297,31 +1314,31 @@ Mathematical statement & Lean declaration \\
 \midrule
 Cyclic Galois stabilizers, orbit size and source loop &
 \leanname{cyclicStabilizer_card},
-\leanname{canonical_galoisOrbit_card},
-\leanname{endomorphismIrregularityFromSheets_eq},
-\leanname{diagonalLoopFromSheets_eq} \\
+\leanname{Characteristic.canonical_galoisOrbit_card},
+\leanname{Characteristic.endomorphismIrregularityFromSheets_eq},
+\leanname{Characteristic.diagonalLoopFromSheets_eq} \\
 Two-orbit phase kernel, common-level coarea and edge source formula &
-\leanname{phase_eq_iff_modEq},
+\leanname{ReducedCommonExponent.phase_eq_iff_modEq},
 \leanname{commonDifferenceKernel_card},
 \leanname{commonPairIrregularityFromSheets_eq_coarea},
 \leanname{commonPairEdgeFromSheets_eq_sourceFormula},
 \leanname{galois_sheet_pair_coarea_master_law} \\
-Gcd gap below $R+E$ & \leanname{le_sub_of_lt_add_gcd} \\
-Gap above $R+E$ & \leanname{add_twice_le_of_add_lt_of_dvd} \\
+Gcd gap below $R+E$ & \leanname{Characteristic.le_sub_of_lt_add_gcd} \\
+Gap above $R+E$ & \leanname{Characteristic.add_twice_le_of_add_lt_of_dvd} \\
 Negative/positive first-deviation laws &
-\leanname{diagonalLoop_neg_of_first_lt},
-\leanname{diagonalLoop_pos_of_first_gt} \\
-Zero-loop rigidity & \leanname{diagonalLoop_eq_zero_iff_isAiryTower} \\
+\leanname{Characteristic.diagonalLoop_neg_of_first_lt},
+\leanname{Characteristic.diagonalLoop_pos_of_first_gt} \\
+Zero-loop rigidity & \leanname{Characteristic.diagonalLoop_eq_zero_iff_isAiryTower} \\
 Negative Fourier characterization &
-\leanname{isAiryTower_iff_negativeFourier_and_largeSteps},
-\leanname{airyTower_exact_negativeFourier_resolution} \\
+\leanname{Characteristic.isAiryTower_iff_negativeFourier_and_largeSteps},
+\leanname{Characteristic.airyTower_exact_negativeFourier_resolution} \\
 Weyl and Laurent Fourier source &
-\leanname{fourier_generalizedAiryOperator},
-\leanname{airyTower_negativeFourier_exact_uniformizer} \\
+\leanname{WeylFourier.fourier_generalizedAiryOperator},
+\leanname{Characteristic.airyTower_negativeFourier_exact_uniformizer} \\
 Universal tangent-coordinate covariance &
-\leanname{laurentAlgReparametrization_order},
-\leanname{laurentAlgReparametrization_contactTop},
-\leanname{laurentContactHierarchy_reparametrization} \\
+\leanname{FormalUniformizer.laurentAlgReparametrization_order},
+\leanname{FormalUniformizer.laurentAlgReparametrization_contactTop},
+\leanname{FormalUniformizer.laurentContactHierarchy_reparametrization} \\
 Divisor-chain construction & \leanname{StrictDivisorChain.toCharacteristic} \\
 Ordered factorization construction &
 \leanname{OrderedFactorization.toAiryCharacteristic} \\
@@ -1332,17 +1349,18 @@ Exact elementary pair spectrum &
 \leanname{nonempty_elementaryPairPresentation_iff_spectrum} \\
 Elementary finite recognition &
 \leanname{nonempty_elementaryFissionEncoding_iff_certificate} \\
-Canonical threshold dendrogram & \leanname{thresholdSetoid}, \leanname{thresholdSetoid_mono} \\
+Canonical threshold dendrogram & \leanname{RootedContactTree.thresholdSetoid},
+\leanname{ElementaryDecoratedGraph.thresholdSetoid_mono} \\
 Simultaneous global Puiseux realization &
-\leanname{globalPuiseux_realization_of_certificate},
-\leanname{uncancelledStage_gives_highestDifferenceExponent} \\
+\leanname{ElementaryDecoratedGraph.globalPuiseux_realization_of_certificate},
+\leanname{ElementaryDecoratedGraph.uncancelledStage_gives_highestDifferenceExponent} \\
 Decorated finite fibres and enumeration &
 \leanname{finite_fixedWeightedCharacteristic},
-\leanname{decorated_fissionTree_fiber_finite},
-\leanname{mem_enumerateDecoratedFissionTreeFiber} \\
+\leanname{DecoratedDiagram.decorated_fissionTree_fiber_finite},
+\leanname{DecoratedDiagram.mem_enumerateDecoratedFissionTreeFiber} \\
 Exact recognition query count &
-\leanname{card_recognitionQuery},
-\leanname{recognitionComparisonBudget_le_two_cubes} \\
+\leanname{ElementaryDecoratedGraph.card_recognitionQuery},
+\leanname{ElementaryDecoratedGraph.recognitionComparisonBudget_le_two_cubes} \\
 \bottomrule
 \end{tabular}
 \caption{Principal paper-to-Lean theorem map.}
@@ -1431,6 +1449,13 @@ J.~Dou\c cot,
 \emph{Basic representations of genus zero nonabelian Hodge spaces},
 SIGMA \textbf{22} (2026), 027, 43 pp.
 \href{https://doi.org/10.3842/SIGMA.2026.027}{doi:10.3842/SIGMA.2026.027}.
+
+\bibitem{Doucot2026Fourier}
+J.~Dou\c cot,
+\emph{Fourier transform of irregular connections on $\mathbb P^1$ and classification of
+Argyres--Douglas theories},
+arXiv:2603.15942 (2026).
+\href{https://arxiv.org/abs/2603.15942}{arXiv:2603.15942}.
 
 \bibitem{GarciaBarrosoGonzalezPopescu2019}
 E.~R.~Garc\'ia Barroso, P.~D.~Gonz\'alez P\'erez and P.~Popescu-Pampu,

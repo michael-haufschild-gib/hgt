@@ -508,7 +508,9 @@ theorem ccmRationalAdelicOrderedTwoLegComparison_primeCycle
       thetaInternalJetLeadingSourceAtom,
       ccmRationalAdelicOrdinaryPrimeCycleAtom_trace_eq_one]
 
-/-- Cyclic homology residue on the ordered two-leg target. -/
+/-- Cyclic chain residue on the ordered two-leg target.  It kills the
+untwisted rotation defect below; it is not asserted to annihilate ordinary
+degree-two Hochschild boundaries. -/
 def ccmRationalAdelicTwoLegCyclicResidue : (ℂ × ℂ) →ₗ[ℂ] ℂ where
   toFun z := z.1 + z.2
   map_add' x y := by simp; ring

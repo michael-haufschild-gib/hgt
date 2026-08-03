@@ -1025,10 +1025,59 @@ integrand with a continuous limit of integration:
   integration.
 
 So a `C¹` kernel already forces the Goursat solution to be `C²`, and all four second derivatives of
-the solution are now available. What remains is to feed them to `hasFDerivAt_bivariateChart` and let
-`solvesPotentialWaveAt_iff_characteristic` convert the solution into a clock probe.
+the solution are available.
 
-So the last open input of the whole programme is now stated in its physical form:
+`ClockBivariateSecondOrder.lean` turns that into chart calculus. `chartFun` reads a bivariate
+function as a function on a two-dimensional coordinate space, `chartBox` is the coordinate preimage
+of a planar set, and `IsC1On u A B Ω` records that `u` has the continuous partial derivatives `A`
+and `B` on the open set `Ω`:
+
+- `hasFDerivAt_chartFun`, `differentiableAt_chartFun`, `coordPartial_chartFun_zero/_one` — first
+  order;
+- `differentiableAt_coordPartial_chartFun` and the four
+  `coordPartial_coordPartial_chartFun_*` — second order, from three `IsC1On` records on one set.
+  The step that makes this work is that `coordPartial 0 (chartFun u)` agrees with `chartFun A` on a
+  whole neighbourhood, not only at the point, so `Filter.EventuallyEq.fderiv_eq` transports both the
+  differentiability and the value.
+
+`ClockCharacteristicProbe.lean` feeds that into the null-frame equivalence:
+
+- `nullChartFun`, `nullChartFun_comp_invNullFrame`;
+- `solvesPotentialWaveAt_nullChartFun` — **a twice continuously differentiable solution of the
+  characteristic equation is a clock probe.**
+
+`ClockGoursatC2.lean` assembles the Goursat data into exactly that package:
+
+- `exists_goursat_C2` — for a kernel with jointly continuous partial derivatives, the normalised
+  Goursat solution together with `A = ∂ξu`, `B = ∂ηu`, `Aa = ∂ξ²u`, `Ab = Ba = K·u`, `Bb = ∂η²u`
+  and the three `IsC1On` records on the rectangle where all the construction's derivative statements
+  hold at once.
+
+`ClockTwoDimensionalProbe.lean` closes the two-dimensional inverse step:
+
+- `nullKernel`, `contDiff_nullKernel` — the kernel `V/4` read in null coordinates is as regular as
+  the potential;
+- `planarFst`, `planarSnd`, `hasDerivAt_planarFst/Snd`, `continuous_planarFst/Snd` — the partial
+  derivatives of a `C¹` function of two variables, read off its total derivative;
+- **`exists_clockProbe_two_dimensional`** — *every continuously differentiable potential on a
+  two-dimensional clock spacetime admits a clock probe taking the value `1` at any prescribed
+  event*. The normalisation `u(ξ₀,·) = 1` of the Goursat data is what makes the probe nonvanishing
+  at the event, with no continuity argument needed;
+- `localProbesOn_univ_two_dimensional` — hence `LocalProbesOn … Set.univ`;
+- **`potential_eq_of_probes_two_dimensional`** — *the clock probes determine a two-dimensional
+  potential completely*: if every probe of a `C¹` potential is a probe of a second potential, the
+  two potentials agree everywhere. No regularity whatever is assumed of the second potential.
+
+So in two dimensions the inverse step is **closed unconditionally**, with the sole hypothesis that
+the potential has one derivative. This is not a determined *class* of potentials in the sense of the
+earlier sections — it is all of them, in that dimension. It also settles the status of the
+Riccati characterisation: `chartRiccati_iff` says that a *globally* nonvanishing probe forces the
+Riccati form, and the theorem here produces a probe nonvanishing only at the event in question, which
+is all local determination needs.
+
+What remains open is therefore dimension `≥ 3`, where the characteristic reduction to a Goursat
+problem is unavailable; and the last open input of the whole programme is stated in its physical
+form:
 
 > the massive Klein–Gordon field on the rescaled spacetime admits, at every event, a smooth solution
 > nonvanishing there.
@@ -1048,6 +1097,8 @@ Missing:
    is *not* "no nowhere-vanishing probe" — the oscillatory potential has none and is still
    determined; what is still absent is local solvability of `□u + Vu = 0` for the remaining
    potentials, which is a hyperbolic Cauchy problem.
+   **In dimension two this is now proved outright**, for every `C¹` potential, by
+   `exists_clockProbe_two_dimensional`; what is left is dimension `≥ 3`.
 
 ## Exact boundary of the reconstruction
 

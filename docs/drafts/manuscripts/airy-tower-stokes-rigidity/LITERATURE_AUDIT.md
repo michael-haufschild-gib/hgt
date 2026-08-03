@@ -74,8 +74,27 @@ Does prior literature already contain any of the following exact results?
 ### Douçot (2026), Fourier/Argyres--Douglas classification
 
 - URL: https://arxiv.org/abs/2603.15942
-- Scope: Fourier/Möbius operations and type-A Argyres--Douglas classification.
-- Boundary: no collision with zero-loop equality/sign law or elementary graph recognition.
+- Version checked: v1, 16 March 2026; 31 pages.
+- Scope: explicit stationary-phase transformation of generalized type-A Argyres--Douglas
+  singularity data under Fourier/Möbius/Kummer operations; global nonabelian Hodge diagram
+  invariance under Fourier is part of the surrounding framework.
+- Closest overlap: rank/ramification changes under Fourier and the already-known invariance of the
+  global diagram.
+- Boundary: no contact-threshold covariance theorem, tangent-Laurent conjugacy theorem, Airy
+  zero-loop equality/sign law, divisor-chain classification, exact two-circle spectrum, or
+  elementary graph recognition theorem was located. The manuscript now cites this paper explicitly
+  next to its Fourier theorem and distinguishes the claims.
+
+### Exact-phrase and neighboring-concept search
+
+- Searches through arXiv and journal-indexed results for `"contact hierarchy" + local Fourier`,
+  `Stokes circles + ordered factorization`, `nonabelian Hodge diagram + finite fibre`,
+  `Puiseux + zero loop + nonabelian Hodge graph`, and `Airy tower + Stokes geometry` found no
+  mathematical collision.
+- `Airy tower` did not appear as established terminology for this divisor-chain locus; it is defined
+  in the manuscript rather than presumed standard.
+- This negative search is evidence of novelty, not a completeness guarantee across unpublished or
+  differently worded work.
 
 ## Novelty verdict
 

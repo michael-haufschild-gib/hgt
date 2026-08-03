@@ -765,7 +765,7 @@ theorem for the object itself:
 | (4) `closure(O_n) = O_n ⊔ B_n` | `closure_range_outerCauchyOrbit` + `disjoint_range_outerCauchyOrbit` |
 | (5) `B_n` is the cluster set | `clusterAtInfinity_outerCauchyOrbit_eq` |
 | (16) Haar limiting law | `tendsto_windowAverage_outerCauchyOrbit` |
-| (9) residual transversality | open: the perturbed positive-mass Baire argument |
+| (9) residual transversality | `residual_not_familyDifferentiallyAlgebraicOn_perturbedOuterOrbit` -- one residual set per tuple of distinct shifts; the shift-uniform version is open |
 | Ostrowski | imported, not formalized |
 
 Claims (3), (4), (5) and (16) are unconditional in Lean for the card's own object -- a Cayley
@@ -1931,3 +1931,128 @@ This is the last of the three identities behind the `hjets` hypothesis of
 
 and the carrier `eps A` contributes the fixed summand, which `LocallySurjectiveObservation.add_const`
 already showed is invisible to the argument.
+
+## Lean: claim (9) proved for each tuple of distinct shifts
+
+`PerturbedOuterFamilyFreeness.lean` (wired, axiom-clean) closes the transversality argument:
+
+    residual_not_familyDifferentiallyAlgebraicOn_perturbedOuterOrbit :
+      Function.Injective t -> Function.Injective x -> (all k, 0 < eps k) -> Summable eps ->
+      ExpSeriesNormallySummable a omega ->
+      {u | not FamilyDifferentiallyAlgebraicOn
+             (perturbedOuterFamily x eps u c (cexpSeriesCarrier a omega) t) {zeta | 0 < zeta.im}}
+        in residual MassParameter
+
+with `dense_...` its density form.  For a fixed tuple `t` of distinct real shifts and an arbitrary
+fixed multiple of the exponential carrier, the real translates of `G_u = S_u + eps A` satisfy **no**
+nonzero differential relation of any order, for a residual -- hence dense -- set of bounded
+exponential mass parameters.
+
+The three missing links were built in this pass:
+
+- `exists_distinctIm_nodes_shapeDeterminant_ne_zero` -- admissible nodes may be taken at pairwise
+  distinct heights, since the determinant is a nonzero polynomial and "above the axis at distinct
+  heights" is a nonempty open condition;
+- `injective_combinedNodes` -- real shifts do not move imaginary parts, so distinct heights plus
+  distinct shifts make the combined nodes distinct, which is what the Cauchy-jet spanning lemma
+  needs;
+- `familyOuterObservation_apply` and `familyOuterObservation_add_carrier_apply` -- the observation of
+  the mass parameter *is* the jet packet of the translated perturbed family, via the packet chart
+  (`chiJetPacket_iteratedDeriv`), the Cauchy jets at the combined nodes, and the translation identity
+  `iteratedDeriv_translate`; the fixed correction contributes a constant vector by
+  `iteratedDeriv_add` and `iteratedDeriv_const_mul`.
+
+The relation-to-coefficients half (`eq_zero_of_relation_of_rigid_jets`) and the parameter half
+(`residual_familyOuterJet_rigidity`) then meet, and the countably many jet depths are intersected by
+`residual_iInter`.
+
+### The remaining quantifier gap, and why it is not cosmetic
+
+The card's (9) asserts **one** comeager set `U_infty` that works for **every** finite tuple of
+distinct shifts.  What is proved in Lean is the tuple-wise statement: for each fixed tuple, a
+residual set of mass parameters.  The two differ by an uncountable intersection, and that
+intersection is exactly what the card's proof buys with its codimension count
+(`codim_C >= N-q-R+1`, `N > m+q+R-1`): parametric transversality over a compact shift patch, so that
+the bad preimage is *empty* for all shifts in the patch rather than merely for one shift.
+
+Two cheap routes were checked and both fail to close the gap:
+
+- *Identity theorem in the shift.*  For fixed `u` the bad shift tuples form the common zero set of
+  the Wronskians of the monomial functions, jointly analytic in `(z, tau)`.  So either every tuple is
+  bad -- which the tuple-wise theorem already excludes, since rational tuples are covered -- or the
+  bad tuples form a proper analytic subset.  Proper analytic is closed and nowhere dense, not empty.
+- *Kuratowski--Ulam.*  Meagre slices give a meagre product and hence meagre slices in the shift for
+  comeager many `u`.  Again meagre, not empty.
+
+So the shift-uniform statement needs the genuine codimension input: with `N` evaluation rows the
+rank-deficiency locus of the `N x R(q+1)` evaluation matrix has complex codimension
+`N - R(q+1) + 1`, and once that exceeds the number of shift parameters a generic mass perturbation
+moves the whole shift patch off it at once.  In Lean that means building determinantal codimension
+and a parametric-transversality (Thom) statement, neither of which mathlib has.  Recorded as the
+open core of (9); everything upstream of it is now formal and unconditional.
+
+## Plan: closing the shift-uniform half of (9) with corpus machinery
+
+The corpus already owns the whole parametric-transversality engine, and it is not restricted to a
+single shift tuple:
+
+- `StratifiedParametricAvoidance.compactConfigurationAvoidance_dense_of_finiteRegularStratification`
+  -- for finite-dimensional `P`, `H`, `Y`: if `F : P x H -> Y` is smooth, its parameter derivative is
+  surjective at every point, the bad set carries a `FiniteRegularStratification` of real codimension
+  `c`, and `finrank H < c`, then the parameters avoiding the bad set *for the whole compact patch*
+  are dense.  This is Hirsch parametric transversality, and it is the "empty, not merely nowhere
+  dense" step that the tuple-wise argument lacks.
+- `ProjectiveIncidenceHausdorffDimension`
+  `.expandedDifferentialEvaluationRankDefect_finiteRegularStratification_unconditional` -- the
+  evaluation rank-defect locus has real codimension `2*(card row - card(kappa x Fin(q+1)) - q + 1)`,
+  unconditionally, given injective nodes and injective exponents.  The row count is ours to choose,
+  so `finrank H < c` is arranged by taking enough evaluation points.
+- `CompactConfigurationBaire.globalConfigurationAvoidance_dense_residual_of_sigmaCompact` and
+  `.countablePattern_globalConfigurationAvoidance_dense_residual` -- openness by the tube lemma plus
+  sigma-compact exhaustion turn patchwise density into one dense residual set good for *every* shift.
+
+That is exactly how `herglotz_fullTranslationCauchyFamilyFreeness_denseResidual` and
+`outerCauchy_fullTranslationFreeness_denseResidual` are proved, so the `eps = 0` case of (9) is
+already shift-uniform in the corpus.
+
+### Why the carrier cannot be routed through the existing statements
+
+Two routes were examined and rejected:
+
+- *Shear gauge.*  `not_familyDifferentiallyAlgebraicOn_shear` reduces freeness of `S_i + eps A_i` to
+  freeness of the **doubled** family `{S_i} u {A_i}`.  That is joint independence over the field
+  generated by the carrier's translates, which is strictly more than the card proves, and it is not
+  obtainable from the corpus engine: the parameter cannot move the carrier block, so the parameter
+  derivative is not surjective onto the joint jet space.  This is not a formalization artefact --
+  joint freeness genuinely needs the carrier family's own independence as an input.
+- *Inner background.*  The corpus's `actualNevanlinnaExpandedPacketValue` already carries a fixed
+  additive background `m0`, but it is added **before** the Cayley chart, whereas the card's carrier is
+  added after it, and no inner background reproduces `chi(m_u) + eps A`.
+
+The card's own argument is the third route and the correct one: run the transversality with the
+observation `chi-chart(jets of m_u at the shifted nodes) + carrier jets`.  A fixed additive vector
+does not disturb the parameter derivative, which is the content of
+`LocallySurjectiveObservation.add_const` in the tuple-wise layer.
+
+### What must be built
+
+The engine wants the *derivative* of the observation to be surjective, not merely the map to be open.
+The observation is `chart o (affine in the masses)`, so by the chain rule it suffices that the Cayley
+jet chart has surjective derivative.  Cheapest unconditional route: an explicit smooth right inverse.
+
+1. `logJetScalar` -- the jets of a logarithm, by the triangular recursion
+   `L(w)_{k+1} = (w_{k+1} - sum_{i=1..k} C(k,i) w_i L(w)_{k-i+1}) / w_0`, with
+   `expJetScalar (logJetScalar w) = w` whenever `w_0 /= 0` (strong induction on the corpus's own
+   recursion for `expJetScalar`).
+2. The chart inverse `chiInvJetPacket` -- compose the affine inverses, the corpus's involution
+   `invJetScalar_invJetScalar`, and `logJetScalar`; then `chiJetPacket o chiInvJetPacket = id`.
+3. Smoothness of `chiJetPacket` and of the inverse, hence `Surjective (fderiv R (chiJetPacket n) y)`
+   at every `y` with `y 0 + i /= 0`.
+4. The parameter derivative of the discrete mass jets: linear in the masses, surjective by the
+   corpus's Cauchy jet controllability.
+5. Instantiate the avoidance engine with `P` = finitely many masses, `H` = the shift tuples,
+   `Y` = the jet packet, `bad` = the rank-defect locus, then globalize and transfer density from the
+   finite-dimensional mass slice back to the bounded exponential parameter.
+6. Feed the resulting all-shift full-rank witness into `eq_zero_of_relation_of_rigid_jets`, which is
+   already proved, to get `not FamilyDifferentiallyAlgebraicOn` for every tuple of distinct shifts at
+   one residual set of mass parameters.

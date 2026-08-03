@@ -1335,6 +1335,52 @@ theorem coeffSum_le_maxTerm_mul_centralIndex
     _ = maxTerm a r * (((k : ℝ) + 1) + (r / s) / (1 - r / s)) := by ring
 
 
+/-! ## The normalised coefficients
+
+Dividing the series by its central term normalises every coefficient to modulus at most one, with
+the central one equal to one.  This is the starting point of the local analysis: the function is the
+central term times a series whose coefficients are all bounded by one. -/
+
+/-- **Every term is dominated by the central term.** -/
+theorem term_le_central_term (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
+    (n : ℕ) :
+    ‖a n‖ * r ^ n ≤ ‖a (centralIndex a r)‖ * r ^ centralIndex a r := by
+  rw [term_centralIndex_eq ha hr hn₀]
+  exact term_le_maxTerm ha hr n
+
+/-- The same bound for the values on a circle of radius `r`. -/
+theorem norm_term_le_norm_central_term (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ}
+    (hn₀ : a n₀ ≠ 0) {z : ℂ} (hz : ‖z‖ = r) (n : ℕ) :
+    ‖a n * z ^ n‖ ≤ ‖a (centralIndex a r) * z ^ centralIndex a r‖ := by
+  rw [norm_mul, norm_mul, norm_pow, norm_pow, hz]
+  exact term_le_central_term ha hr hn₀ n
+
+/-- The central term is nonzero on a circle of positive radius. -/
+theorem central_term_ne_zero (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
+    {z : ℂ} (hz : ‖z‖ = r) :
+    a (centralIndex a r) * z ^ centralIndex a r ≠ 0 := by
+  have hzne : z ≠ 0 := by
+    intro h
+    rw [h, norm_zero] at hz
+    exact absurd hz.symm (ne_of_gt hr)
+  exact mul_ne_zero (coeff_centralIndex_ne_zero ha hr hn₀) (pow_ne_zero _ hzne)
+
+/-- **The normalised coefficients have modulus at most one**, and the central one is one. -/
+theorem norm_normalised_coeff_le_one (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ}
+    (hn₀ : a n₀ ≠ 0) {z : ℂ} (hz : ‖z‖ = r) (n : ℕ) :
+    ‖a n * z ^ n / (a (centralIndex a r) * z ^ centralIndex a r)‖ ≤ 1 := by
+  rw [norm_div, div_le_one (by
+    have := central_term_ne_zero ha hr hn₀ hz
+    positivity)]
+  exact norm_term_le_norm_central_term ha hr hn₀ hz n
+
+@[simp] theorem normalised_coeff_centralIndex (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ}
+    (hn₀ : a n₀ ≠ 0) {z : ℂ} (hz : ‖z‖ = r) :
+    a (centralIndex a r) * z ^ centralIndex a r / (a (centralIndex a r) * z ^ centralIndex a r)
+      = 1 :=
+  div_self (central_term_ne_zero ha hr hn₀ hz)
+
+
 /-! ## Entire functions -/
 
 /-- The coefficients of a power series with infinite radius of convergence satisfy the decay

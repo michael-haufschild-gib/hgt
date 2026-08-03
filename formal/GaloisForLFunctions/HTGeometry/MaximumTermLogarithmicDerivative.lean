@@ -278,4 +278,68 @@ theorem norm_mul_logDeriv_sub_centralIndex_le
         div_le_div_of_nonneg_left hBnonneg hμpos hf
 
 
+/-! ## The central factorisation
+
+On a circle of radius `r` the function is its central term times a series whose coefficients all
+have modulus at most one.  This is the normalised form in which the local expansion is carried
+out. -/
+
+/-- **Central factorisation.**  `f(z) = a_nu z^nu * sum_n b_n` with `||b_n|| <= 1` and `b_nu = 1`. -/
+theorem coeffFun_eq_central_term_mul_tsum
+    (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hz : ‖z‖ = r) :
+    coeffFun a z
+      = (a (centralIndex a r) * z ^ centralIndex a r)
+        * ∑' n : ℕ, a n * z ^ n / (a (centralIndex a r) * z ^ centralIndex a r) := by
+  have hc := central_term_ne_zero ha hr hn₀ hz
+  rw [coeffFun_eq_tsum, ← tsum_mul_left]
+  refine tsum_congr fun n => ?_
+  have hcancel : a (centralIndex a r) * z ^ centralIndex a r
+      * (a n * z ^ n / (a (centralIndex a r) * z ^ centralIndex a r)) = a n * z ^ n := by
+    rw [mul_comm, div_mul_cancel₀ _ hc]
+  exact hcancel.symm
+
+
+/-! ## Scaling the normalised series
+
+Moving off the circle multiplies the `n`-th normalised coefficient by `zeta^(n-k)`.  The local
+expansion of Wiman--Valiron is exactly this series in the variable `zeta`, with all coefficients in
+the closed unit disc and the `k`-th equal to one. -/
+
+/-- Factorisation at an arbitrary index with a nonzero coefficient. -/
+theorem coeffFun_eq_term_mul_tsum {k : ℕ} (hak : a k ≠ 0)
+    {z : ℂ} (hz : z ≠ 0) :
+    coeffFun a z = (a k * z ^ k) * ∑' n : ℕ, a n * z ^ n / (a k * z ^ k) := by
+  have hc : a k * z ^ k ≠ 0 := mul_ne_zero hak (pow_ne_zero _ hz)
+  rw [coeffFun_eq_tsum, ← tsum_mul_left]
+  refine tsum_congr fun n => ?_
+  have hcancel : a k * z ^ k * (a n * z ^ n / (a k * z ^ k)) = a n * z ^ n := by
+    rw [mul_comm, div_mul_cancel₀ _ hc]
+  exact hcancel.symm
+
+/-- **The scaling law for normalised coefficients.**  Scaling the coordinate by `zeta` multiplies the
+`n`-th normalised coefficient by `zeta^(n-k)`. -/
+theorem normalised_coeff_scale (a : ℕ → ℂ) (k n : ℕ) {z ζ : ℂ} (hz : z ≠ 0) (hζ : ζ ≠ 0)
+    (hak : a k ≠ 0) :
+    a n * (ζ * z) ^ n / (a k * (ζ * z) ^ k)
+      = (a n * z ^ n / (a k * z ^ k)) * ζ ^ ((n : ℤ) - (k : ℤ)) := by
+  have hzn : (z : ℂ) ^ n ≠ 0 := pow_ne_zero _ hz
+  have hzk : (z : ℂ) ^ k ≠ 0 := pow_ne_zero _ hz
+  have hζn : (ζ : ℂ) ^ n ≠ 0 := pow_ne_zero _ hζ
+  have hζk : (ζ : ℂ) ^ k ≠ 0 := pow_ne_zero _ hζ
+  rw [mul_pow, mul_pow, zpow_sub₀ hζ, zpow_natCast, zpow_natCast]
+  field_simp
+
+/-- **The local expansion.**  Off the circle the function is the `k`-th term times the normalised
+series in the scaling variable. -/
+theorem coeffFun_scale_eq_tsum {k : ℕ} (hak : a k ≠ 0)
+    {z ζ : ℂ} (hz : z ≠ 0) (hζ : ζ ≠ 0) :
+    coeffFun a (ζ * z)
+      = (a k * (ζ * z) ^ k)
+        * ∑' n : ℕ, (a n * z ^ n / (a k * z ^ k)) * ζ ^ ((n : ℤ) - (k : ℤ)) := by
+  have hzζ : ζ * z ≠ 0 := mul_ne_zero hζ hz
+  rw [coeffFun_eq_term_mul_tsum hak hzζ]
+  congr 1
+  exact tsum_congr fun n => normalised_coeff_scale a k n hz hζ hak
+
+
 end GaloisForLFunctions.HTGeometry

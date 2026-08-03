@@ -535,6 +535,12 @@ centralIndex_between_log_increments       -- nu(e^v) sits between adjacent incre
 exists_increment_le_average               -- telescoping pigeonhole on a chain
 exists_small_centralIndex_increment       -- a radius across which nu barely moves
 coeffSum_le_maxTerm_mul_centralIndex      -- S(r) <= mu(r)(nu(s)+1+(r/s)/(1-r/s))
+term_le_central_term                      -- every term is dominated by the central one
+norm_normalised_coeff_le_one              -- so the normalised coefficients have modulus <= 1
+coeffFun_eq_central_term_mul_tsum         -- f(z) = a_nu z^nu times a normalised series
+coeffFun_eq_term_mul_tsum                 -- the same at any index with a nonzero coefficient
+normalised_coeff_scale                    -- scaling by zeta multiplies the n-th one by zeta^(n-k)
+coeffFun_scale_eq_tsum                    -- hence the local expansion in the scaling variable
 ```
 
 With this the three quantities are pinned to each other: `mu(r) <= M(r) <= S(r) <= mu(r)(nu(s)+C)`,
@@ -897,3 +903,19 @@ triangularity package, which is exactly how the paper proof uses them.
   `S(r) <= mu(r)(nu(s)+1+(r/s)/(1-r/s))`, closing the chain `mu <= M <= S <= mu (nu + C)`: the three
   growth measures differ by at most a factor linear in the central index.  The remaining Lean gate is
   therefore the local Gaussian expansion, not a sharper term-by-term bound.
+- 2026-08-03 -- Opened the local-expansion branch with its normalisation.  Dividing the series by its
+  central term `a_nu z^nu` makes every coefficient have modulus at most one -- that is exactly the
+  defining property of the central index, `||a_n|| r^n <= mu(r) = ||a_nu|| r^nu` -- with the central
+  coefficient equal to one.  So on any circle of radius `r`,
+  `f(z) = a_nu z^nu * sum_n (a_n z^n / a_nu z^nu)` with all summands in the closed unit disc.  This
+  is the normalised form the Gaussian expansion is carried out in, and it replaces the discarded
+  triangle-inequality route: the cancellation the main estimate needs lives in the phases of these
+  normalised coefficients, which the absolute-value bound throws away.
+- 2026-08-03 -- The local expansion is now in place as an identity.  Scaling the coordinate by `zeta`
+  multiplies the `n`-th normalised coefficient by `zeta^(n-k)`, so with `k = nu(r)` and `|zeta|` near
+  one the function is its central term times `sum_n c_n zeta^(n-nu)`, where every `c_n` lies in the
+  closed unit disc and `c_nu = 1`.  That is the Wiman--Valiron local series, with the phases intact.
+  Two of the three lemmas turned out to need no analytic hypothesis at all -- `tsum_mul_left` holds
+  unconditionally in a division ring -- so the factorisation and the scaling law are pure algebra;
+  what the analysis has to supply is only the bound `|c_n| <= 1`, which is the defining property of
+  the central index and is already proved.

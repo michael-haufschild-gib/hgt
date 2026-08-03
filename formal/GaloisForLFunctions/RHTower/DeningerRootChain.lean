@@ -12,6 +12,7 @@ the rationalization: each element of the chain is a power of the next.
 * `deningerRootChain_exists_pow_dvd` : the exponent can be taken divisible by any prescribed number.
 * `deningerRootChain_root_mem` : the union of the chain's cyclic subgroups is closed under the roots.
 * `deningerRootChain_iSup_eq_top` : for a cyclic group the union is the whole rationalization.
+* `deningerRootChain_zpowers_equiv` : each subgroup of the chain is infinite cyclic.
 -/
 
 namespace RHTower
@@ -121,5 +122,45 @@ theorem deningerRootChain_iSup_eq_top (g : α) (hgen : ∀ a : α, a ∈ Subgrou
     show (DeningerBau.of g) ^ t = DeningerBau.of a
     rw [← map_zpow]
     exact congrArg DeningerBau.of ht
+
+/-- Each element of the chain has infinite order, provided the image of the generator is
+nontrivial. -/
+theorem deningerRootChain_ne_one (g : α) (hg : DeningerBau.of g ≠ 1) (m : ℕ) :
+    ∀ k : ℤ, (deningerRootChain g m) ^ k = 1 → k = 0 := by
+  intro k hk
+  by_contra hne
+  refine hg ?_
+  have hone : deningerRootChain g m = 1 := by
+    refine DeningerBau.torsionFree _ k.natAbs (Int.natAbs_pos.2 hne) ?_
+    rcases Int.natAbs_eq k with h | h
+    · rw [← zpow_natCast, ← h]
+      exact hk
+    · have : (deningerRootChain g m) ^ ((k.natAbs : ℤ)) = 1 := by
+        rw [show ((k.natAbs : ℤ)) = -k by omega, zpow_neg, hk, inv_one]
+      rwa [zpow_natCast] at this
+  obtain ⟨c, -, hc⟩ := deningerRootChain_exists_pow g 0 m (by omega)
+  rw [← deningerRootChain_zero g, ← hc, hone, one_pow]
+
+/-- **Each subgroup of the chain is infinite cyclic.** -/
+theorem deningerRootChain_zpowers_equiv (g : α) (hg : DeningerBau.of g ≠ 1) (m : ℕ) :
+    Nonempty ((Subgroup.zpowers (deningerRootChain g m)) ≃* Multiplicative ℤ) := by
+  have hinj : Function.Injective (zpowersHom (DeningerBau α) (deningerRootChain g m)) := by
+    intro a b hab
+    have h1 : (deningerRootChain g m) ^ (Multiplicative.toAdd a - Multiplicative.toAdd b) = 1 := by
+      rw [zpow_sub]
+      show (zpowersHom (DeningerBau α) (deningerRootChain g m)) a *
+        ((zpowersHom (DeningerBau α) (deningerRootChain g m)) b)⁻¹ = 1
+      rw [hab, mul_inv_cancel]
+    have h2 := deningerRootChain_ne_one g hg m _ h1
+    exact Multiplicative.toAdd.injective (by omega)
+  have hrange : (zpowersHom (DeningerBau α) (deningerRootChain g m)).range =
+      Subgroup.zpowers (deningerRootChain g m) := by
+    ext y
+    constructor
+    · rintro ⟨a, rfl⟩
+      exact ⟨Multiplicative.toAdd a, rfl⟩
+    · rintro ⟨k, rfl⟩
+      exact ⟨Multiplicative.ofAdd k, rfl⟩
+  exact ⟨((MonoidHom.ofInjective hinj).trans (MulEquiv.subgroupCongr hrange)).symm⟩
 
 end RHTower

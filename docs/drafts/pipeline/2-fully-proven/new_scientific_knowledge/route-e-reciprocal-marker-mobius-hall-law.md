@@ -1392,3 +1392,98 @@ rather than `O(1)`, and it is the source of the `N` in the mean value theorem.
 Remaining for the far-field estimate: the fundamental theorem of calculus on `[k, k+1]`, the
 correction bound `‖x^{iv} − k^{iv}‖ ≤ |v|/k` (which follows from `norm_exp_phase_sub_le` already
 proved), telescoping, and the harmonic sum — for which `sum_Icc_one_div_le_one_add_log` is in place.
+
+### Formal layer — the far-field estimate
+
+`formal/GaloisForLFunctions/RHTower/Sieve/ZeroLineSum.lean` proves the estimate the mean value
+theorem was waiting on.
+
+- `integral_zpow0_eq` — FTC for the zero-line power.
+- `norm_zpow0_sub_le` — `‖x^{iv} − k^{iv}‖ ≤ |v|/k` on `[k, k+1]`, from the 1-Lipschitz phase bound
+  and `log(x/k) ≤ 1/k`.
+- `norm_zpow0_sub_integral_le` — the Euler–Maclaurin correction at one step.
+- `norm_sum_zpow0_le` — **`‖∑_{n ≤ N} n^{iv}‖ ≤ (N+2)/‖1+iv‖ + |v|(1 + log N)`**.
+
+All unconditional. For a frequency difference with `1 ≪ |v| ≪ N/log N` this is far below the trivial
+bound `N` of `DirichletTrivial.lean`, so the Gram row of a separated family of frequencies is
+dominated by its diagonal term — which is precisely the content a mean value theorem needs and which
+nothing in the corpus previously supplied.
+
+The two competing terms `N/‖1+iv‖` and `|v| log N` are why a mean value theorem carries both an `N`
+and a term growing with the number of frequencies; they cross at `|v| ≍ √(N/log N)`.
+
+### Formal layer — the Gram entry bracketed on both sides
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DirichletFarField.lean` connects the analytic estimate to
+the Halász–Montgomery frame.
+
+- `inner_dirRow_eq_sum_zpow0` — **the Gram entry is the zero-line exponential sum**,
+  `⟪dirRow N t, dirRow N u⟫ = ∑_{n ≤ N} n^{i(u−t)}`.
+- `norm_inner_dirRow_le_far`, `abs_le_norm_one_add_mul_I`, `norm_inner_dirRow_le_gap` —
+  **`‖⟪dirRow N t, dirRow N u⟫‖ ≤ (N+2)/|u−t| + |u−t|(1 + log N)`**.
+
+All unconditional. With `DirichletLipschitz.norm_inner_dirRow_sub_card_le` the Gram entry is now
+bracketed from both sides: within `|u−t| ≪ 1/log N` of the diagonal it is close to `N`, and once
+`|u−t|` exceeds `1` while staying below `N/log N` it is much smaller than `N`. That transition is
+the whole content a mean value theorem exploits, and both halves are now proved in the corpus.
+
+### Formal layer — a mean value theorem for Dirichlet polynomials
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DirichletMeanValue.lean`:
+
+- `ne_of_gap` — separated frequencies are pairwise distinct.
+- `dirichlet_meanValue` — for `F(t) = ∑_{n ≤ N} a_n n^{it}` and frequencies `τ` with consecutive
+  gaps at least `δ`, all within a window of length `V`:
+
+  **`∑_{r < R} |F(τ_r)|² ≤ (N + 2(N+2)(1 + log R)/δ + R V (1 + log N)) ∑_n |a_n|²`.**
+
+Unconditional. The diagonal contributes `N`, the reciprocal separations a harmonic sum (bounded by
+`SeparatedRowSum.lean`), and the linear term of the far-field estimate the spread. This beats the
+trivial `R N` of `DirichletTrivial.lean` whenever `R` is large compared with `log R`, so it is a
+genuine mean value theorem rather than a restatement.
+
+It is *not* the sharp Montgomery–Vaughan form. The factor `log R` multiplying `N` is the price of
+bounding `∑_{t ≠ r} |τ_t − τ_r|^{-1}` term by term, and `sum_inv_abs_dist_le` proves that price is
+unavoidable for any absolute-values argument. That is the same obstruction that caps the large sieve
+constant in this folder: the two open quantitative problems in the corpus's analytic layer are one
+problem, namely obtaining cancellation in a sum of reciprocal separations rather than bounding it.
+
+### Formal layer — Gallagher's Sobolev lemma
+
+`formal/GaloisForLFunctions/RHTower/Sieve/GallagherSobolev.lean`:
+
+- `gallagher_sobolev` — **`|f(a)| ≤ (2h)^{-1} ∫_{a−h}^{a+h} |f| + ∫_{a−h}^{a+h} |f'|`** for `f` with a
+  derivative on the interval and `f'` continuous there.
+
+Unconditional. FTC plus averaging: `f(a) = f(x) + ∫_x^a f'` for every `x` in the interval, so
+`|f(a)| ≤ |f(x)| + ∫|f'|`, and integrating in `x` over a window of length `2h` gives the bound.
+
+This opens the route past the obstruction that caps every other constant in this folder. The bound
+`sum_inv_abs_dist_le` proves unavoidable applies to arguments that form a sum of reciprocal
+separations; Gallagher's proof of the large sieve never forms one. Applied to `|S|²` at separated
+points the surrounding intervals are *disjoint*, so the local averages assemble into `∫_0^1 |S|²` and
+`∫_0^1 |S||S'|`, which Parseval evaluates — yielding a constant of the sharp shape `N + δ^{-1}` with
+no logarithm, for both the large sieve and the Dirichlet mean value theorem.
+
+Remaining for that route: Parseval on the circle for trigonometric polynomials and the derivative
+identity `∫ |S'|² = ∑ (2πn)² |a_n|²`, then the disjointness assembly.
+
+### Formal layer — orthogonality of the characters
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CircleOrthogonality.lean`:
+
+- `circleFreq_intCast` — the characters take the value `1` at the integers.
+- `circleAnti`, `hasDerivAt_circleAnti` — the explicit antiderivative `e(kt)/(2πik)` of a nonzero
+  character.
+- `intervalIntegrable_circleFreq_mul` — continuity, hence interval-integrability.
+- `integral_circleFreq_intCast` — **`∫_0^1 e(kt) dt = 1` if `k = 0`, else `0`.**
+
+All unconditional, and proved entirely on `[0,1]` with Lebesgue measure via the fundamental theorem
+of calculus. This deliberately avoids the additive circle: mathlib's torus Fourier development uses
+a file-local `MeasureSpace` instance on `AddCircle` that is not defeq to the global one, so
+importing its orthogonality would force the corpus to re-declare that instance. The antiderivative
+argument needs none of it — the periodicity that makes the endpoints cancel is just
+`e(k) = 1` for integral `k`.
+
+This is the orthogonality that converts `∫_0^1 |S|²` into `∑_n |a_n|²`, the remaining analytic input
+for Gallagher's route to the sharp constant.

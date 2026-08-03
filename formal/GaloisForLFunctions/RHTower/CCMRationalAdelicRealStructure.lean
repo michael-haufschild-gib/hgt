@@ -51,9 +51,8 @@ theorem ccmRationalAdelicMonomialRealTwist_smul
       star z • ccmRationalAdelicMonomialRealTwist k a := by
   rw [ccmRationalAdelicMonomialRealTwist,
     ccmRationalAdelicBruhatSimpleTensorKRealEven.sigma.map_smulₛₗ]
-  rw [ccmRationalAdelicMonomialRealTwist, smul_smul]
-  rw [show star z • ccmRationalUnitSign k.val =
-      star z * ccmRationalUnitSign k.val by rfl]
+  rw [ccmRationalAdelicMonomialRealTwist]
+  simp only [smul_smul]
   change (ccmRationalUnitSign k.val * star z) •
       ccmRationalAdelicBruhatSimpleTensorKRealEven.sigma a =
     (star z * ccmRationalUnitSign k.val) •
