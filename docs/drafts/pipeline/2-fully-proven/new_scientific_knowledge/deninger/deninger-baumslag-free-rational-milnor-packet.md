@@ -141,7 +141,8 @@
   `GaloisForLFunctions.RHTower.DeningerConjLetterForm` (the form of a conjugating letter),
   `GaloisForLFunctions.RHTower.DeningerConjInvariant` (the conjugator invariant),
   `GaloisForLFunctions.RHTower.DeningerConjLetterCases` (which cancellation happened),
-  `GaloisForLFunctions.RHTower.DeningerRotateLen` (the length of a rotation)
+  `GaloisForLFunctions.RHTower.DeningerRotateLen` (the length of a rotation),
+  `GaloisForLFunctions.RHTower.DeningerConjugator` (the conjugator of a single letter)
 
 ## Statement
 
@@ -2325,3 +2326,14 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   the missing step: in its rotating branch the conjugate is a base conjugate of a rotation, and this
   lemma reads off its length, which is exactly the hypothesis the cancellation data needs.  So the
   step runs: trichotomy, then length, then cancellation data, then the matching invariant step.
+- 2026-08-03 — **The invariant as stated is not strong enough to carry the induction, and the reason
+  is now precise.**  Drafting the induction showed where it fails: in the back cancellation the
+  inverted word loses its first letter, and the step needs to know *which* letter that is — that it
+  matches the letter of the word being cancelled.  The invariant records only that some inverted word
+  exists, not its relation to the word being conjugated, so the hypothesis of the back step cannot be
+  discharged.  The front case has no such problem, which is why it looked as though the whole
+  induction would go through.  Carrying the relation to the rotations of the word is the missing
+  layer.
+  Proved the base case honestly rather than committing the draft: `deningerConjugator_letter` — a
+  single conjugating letter is an inverted letter of the word, up to the base group, at whichever end
+  it cancelled.

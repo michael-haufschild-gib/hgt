@@ -246,6 +246,7 @@ theorem cyclicBar_wrap_insert {n : ℕ} (j : Fin (n + 1)) (x : Fin (n + 2) → A
             rw [Fin.castSucc_succ]
             exact cyclicBarDegeneracyTuple_apply_gt j.castSucc k.succ.castSucc hkjv x
 
+omit [Ring A] in
 /-- Two ordered unit insertions commute after the standard index shift. -/
 theorem cyclicBar_insert_insert {n : ℕ} (i j : Fin (n + 1)) (hij : i ≤ j)
     (a b : A) (x : Fin (n + 1) → A) :
@@ -348,6 +349,48 @@ theorem cyclicBarFaceTuple_degeneracyTuple_succ {n : ℕ} (i : Fin (n + 1))
           change i.val < k.val
           simp only [Fin.val_succ] at *
           omega) x
+
+/-- Face and degeneracy commute in the ordered case before the inserted unit. -/
+theorem cyclicBarFaceTuple_degeneracyTuple_of_le {n : ℕ} (i : Fin (n + 2))
+    (j : Fin (n + 1)) (hij : i ≤ j.castSucc) (x : Fin (n + 2) → A) :
+    cyclicBarFaceTuple i.castSucc (cyclicBarDegeneracyTuple j.succ x) =
+      cyclicBarDegeneracyTuple j (cyclicBarFaceTuple i x) := by
+  induction i using Fin.lastCases with
+  | last => exact False.elim ((not_le_of_gt (Fin.castSucc_lt_last j)) hij)
+  | cast i =>
+      simp only [cyclicBarFaceTuple, Fin.lastCases_castSucc]
+      rw [cyclicBarFaceNonwrapTuple_eq_contract,
+        cyclicBarFaceNonwrapTuple_eq_contract]
+      exact cyclicBar_contract_insert_before i j
+        (Fin.castSucc_le_castSucc_iff.mp hij) x
+
+/-- Face and degeneracy commute in the ordered case after the inserted unit, including the wrap
+face. -/
+theorem cyclicBarFaceTuple_degeneracyTuple_of_gt {n : ℕ} (i : Fin (n + 2))
+    (j : Fin (n + 1)) (hji : j.castSucc < i) (x : Fin (n + 2) → A) :
+    cyclicBarFaceTuple i.succ (cyclicBarDegeneracyTuple j.castSucc x) =
+      cyclicBarDegeneracyTuple j (cyclicBarFaceTuple i x) := by
+  induction i using Fin.lastCases with
+  | last =>
+      have hsucc : (Fin.last (n + 1)).succ = Fin.last (n + 2) := by ext; simp
+      rw [hsucc]
+      simp only [cyclicBarFaceTuple, Fin.lastCases_last]
+      exact cyclicBar_wrap_insert j x
+  | cast i =>
+      have hsucc : i.castSucc.succ = i.succ.castSucc := by ext; rfl
+      rw [hsucc]
+      simp only [cyclicBarFaceTuple, Fin.lastCases_castSucc]
+      rw [cyclicBarFaceNonwrapTuple_eq_contract,
+        cyclicBarFaceNonwrapTuple_eq_contract]
+      exact cyclicBar_contract_insert_after i j
+        (Fin.castSucc_lt_castSucc_iff.mp hji) x
+
+/-- All cyclic-bar degeneracies satisfy the degeneracy--degeneracy simplicial identity. -/
+theorem cyclicBarDegeneracyTuple_degeneracyTuple {n : ℕ} (i j : Fin (n + 1))
+    (hij : i ≤ j) (x : Fin (n + 1) → A) :
+    cyclicBarDegeneracyTuple i.castSucc (cyclicBarDegeneracyTuple j x) =
+      cyclicBarDegeneracyTuple j.succ (cyclicBarDegeneracyTuple i x) := by
+  exact cyclicBar_insert_insert i j hij 1 1 x
 
 end RHTower
 end GaloisForLFunctions

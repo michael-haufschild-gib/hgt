@@ -1595,3 +1595,25 @@ The transversality half of (9) is therefore complete for the card's actual famil
 remaining item is bookkeeping in the corpus's relation vocabulary: expanding a nonzero
 `MvPolynomial (FamilyJetIndex m n)` relation into a reduced shape with a nonzero coefficient vector,
 so that `residual_perturbedOuterJet_shape_rigidity` contradicts its existence.
+
+## Lean progress: splitting a relation into spectral power times jet monomial
+
+`FamilyJetRelationExpansion.lean` (wired, axiom-clean) starts the last bridge -- the algebraic
+expansion which lets a differential relation be read as a column vector against an expanded
+evaluation matrix:
+
+- `FamilyJetVariables` -- the jet variables of a family, without the spectral variable;
+- **`eval_familySplit_eq_sum`** -- evaluating a relation at a point splits each monomial into a power
+  of the spectral variable times a monomial in the jet variables, because the jet index of a family
+  is a sum type and a product over a sum type splits;
+- **`eval_familyJetVec_eq_sum`** -- the same for the actual jet vector of a family.
+
+So a relation `P` evaluated along a family reads
+
+  `sum over the support of P: coeff(s) * z^(spectral part of s) * (jet monomial of s)`,
+
+which is exactly a coefficient vector paired with the columns of an expanded evaluation matrix.  What
+remains is the regrouping: collecting the support by its jet part gives a *reduced shape* (the jet
+exponents that occur are distinct) and a coefficient vector indexed by (jet exponent, spectral
+power), nonzero because `P` is; feeding that to `residual_perturbedOuterJet_shape_rigidity`
+contradicts the existence of the relation, which is (9).

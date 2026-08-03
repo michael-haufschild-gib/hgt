@@ -895,3 +895,37 @@ A symbol built from coefficients therefore *has* those coefficients as its kerne
 `Q` of the transform.  Together with `BilinearMultiplier.abs_sum_kernel_bilinear_le` — which bounds
 any such bilinear form by the sup-norm of the symbol — the apparatus is complete: prescribing `K_d`
 and bounding the resulting symbol gives a bilinear inequality for that kernel.
+
+### Why the kernel must be antisymmetric — `Sieve/AntisymmetricSymbol.lean` (2026-08-03)
+
+- **`antisym_pow_eq`** : `ζ^{jd} − ζ^{j(Q−d)} = 2i · Im(ζ^{jd})`, since the second term is the
+  conjugate of the first;
+- **`antisym_symbol_eq`** : hence the antisymmetrised symbol of a real coefficient sequence is `2i`
+  times a real sine sum.
+
+Built, wired, axiom-clean.
+
+This records a structural point that the earlier entries left implicit and that would otherwise be
+easy to get wrong.  The *full* symbol of a one-sided sequence `K_d = 1/d` is **not** bounded: its
+real part is `∑_d cos(dθ)/d`, which diverges like `−log|2 sin(θ/2)|`.  Only the imaginary part is
+uniformly bounded.  That is precisely why Hilbert's inequality concerns `1/(m−n)` — an
+*antisymmetric* kernel — and not `1/|m−n|`, and it is why `HarmonicSineBound.lean` bounds a **sine**
+sum rather than a full exponential sum.
+
+So the coefficient sequence to feed into `KernelValue.kernel_value` is the antisymmetric one, whose
+symbol is `2i` times the quantity already bounded by `1 + 3π`.
+
+### Symbol's imaginary part is the sine sum — `Sieve/SymbolImaginaryPart.lean` (2026-08-03)
+
+- `im_exp_pow` : `Im((exp(iθ))^k) = sin(kθ)`;
+- **`abs_sum_im_exp_pow_div_le`** :
+  `|∑_{d < M} Im((exp(iθ))^d)/(d+1)| ≤ 1 + 3π`, uniformly in `M` and `0 < θ ≤ π`.
+
+Built, wired, axiom-clean.  The multiplier apparatus produces the antisymmetrised symbol as `2i`
+times `∑_d K_d Im(ζ^{jd})`, whereas `HarmonicSineBound.lean` bounds a sum of `Real.sin`; this
+identifies the two, so the uniform bound now sits directly on the quantity the kernel dictionary
+consumes rather than on a paraphrase of it.
+
+Every piece of the Hilbert-inequality argument is now expressed in the *same* vocabulary — powers of
+a root of unity, their imaginary parts, and the kernel dictionary — with no remaining translation
+step between the analytic estimate and the algebraic apparatus.

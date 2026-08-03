@@ -835,6 +835,21 @@ Two orthogonal factors extend to a whole orthogonal frame.
 In four dimensions that is a potential varying independently in time and in all three spatial
 directions.
 
+All of these constructions are tied to the coordinate frame.
+`formal/GaloisForLFunctions/HTGeometry/ClockFlatFrameCovariance.lean` removes that tie:
+
+- `fderiv_apply_eq_sum` — the differential is the coordinate expansion of the partial derivatives;
+- `frameMap`, `frameCLM`, `coordPartial_comp_frame` — the chain rule through a linear change of
+  frame `y ↦ (⟪n_k,y⟫)_k`, at Picard--Lindelöf regularity;
+- `dalembert_comp_frame` — **`□(u∘F)(x) = ∑_{k,l} ⟨n_k,n_l⟩_G · (∂_l∂_k u)(Fx)`**: the transformed
+  operator has the metric pairings of the frame covectors as coefficients;
+- `dalembert_comp_orthogonal_frame` — for a `G`-orthogonal frame only the pure second derivatives
+  survive, so every flat construction above transports verbatim to that frame.
+
+The same formula is the entry point to the characteristic route: for a **null** frame in two
+dimensions the diagonal pairings vanish and only the mixed derivative survives, which is the form in
+which the wave equation is solved by Riemann's method.
+
 So the last open input of the whole programme is now stated in its physical form:
 
 > the massive Klein–Gordon field on the rescaled spacetime admits, at every event, a smooth solution
