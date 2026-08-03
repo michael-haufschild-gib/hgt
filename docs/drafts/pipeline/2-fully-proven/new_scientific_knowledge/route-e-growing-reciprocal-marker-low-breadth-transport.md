@@ -2231,3 +2231,136 @@ Dirichlet polynomial.
 The short-interval side of the route is therefore assembled from proved parts: pairing identity,
 explicit kernel, decay and cap. What is not yet built is the quantitative localisation — turning
 these into an approximation of the short-interval sum with a controlled error.
+
+### Formal layer — linear weights against a phase
+
+`formal/GaloisForLFunctions/RHTower/Sieve/LinearPhaseIntegral.lean`:
+
+- `linPhaseAnti`, `hasDerivAt_linPhaseAnti` — the explicit antiderivative
+  `t e^{itL}/(iL) − e^{itL}/(iL)²` of `t e^{itL}`.
+- `intervalIntegrable_linPhase`, `integral_linPhase` — the resulting closed-form integral on any
+  interval.
+
+All unconditional. With the constant case of `SymmetricPhaseIntegral.lean` this computes the
+transform of *every piecewise-linear kernel* in closed form.
+
+Why that matters here rather than being a convenience: the sharp kernel `2 sin(TL)/L` decays only
+like `|L|^{-1}`, so its tail over the frequencies `log(n/x)` is not absolutely summable and a
+localisation argument cannot simply discard it. The triangular (Fejér) weight `1 − |t|/T` decays like
+`|L|^{-2}` and is nonnegative, which is what makes the discard legitimate. Building its transform
+needs exactly the linear-times-phase antiderivative proved here.
+
+### Formal layer — the triangular weight on a half interval
+
+`formal/GaloisForLFunctions/RHTower/Sieve/FejerHalf.lean`:
+
+- `integral_fejerHalf_split` — **`∫_0^T (1 − t/T)e^{itL} dt = ∫_0^T e^{itL} dt −
+  T^{-1} ∫_0^T t e^{itL} dt`**.
+
+Unconditional. Both pieces on the right have closed forms already in the corpus
+(`PhaseIntegral.integral_exp_phase` and `LinearPhaseIntegral.integral_linPhase`), so the triangular
+weight's transform is now explicit.
+
+Reflecting and adding gives the symmetric Fejér transform `2(1 − cos TL)/(TL²)`, which is
+nonnegative — because `cos ≤ 1` — and decays like `|L|^{-2}`. Those are precisely the two properties
+the sharp kernel lacks and that a localisation argument needs: nonnegativity to discard tails
+without sign cancellation, and square-summable decay so the discard is quantitatively small.
+
+### Formal layer — the half-interval Fejér transform in closed form
+
+`formal/GaloisForLFunctions/RHTower/Sieve/FejerHalf.lean`, second theorem:
+
+- `integral_fejerHalf` — **`∫_0^T (1 − t/T)e^{itL} dt = i/L − (e^{iTL} − 1)/(TL²)`** for `L ≠ 0`,
+  `T > 0`.
+
+Unconditional. Obtained by substituting the two closed forms into `integral_fejerHalf_split`; the
+whole content is complex algebra with `i² = −1`.
+
+Adding this to its reflection gives the symmetric Fejér transform: the `i/L` terms cancel (they are
+purely imaginary and odd), leaving `2(1 − cos TL)/(TL²)` — real, nonnegative, and `O(|L|^{-2})`. The
+cancellation of the `i/L` term is the point: it is the part that decays only like `|L|^{-1}`, and it
+is exactly what symmetrising removes.
+
+### Formal layer — the symmetric Fejér transform
+
+`formal/GaloisForLFunctions/RHTower/Sieve/FejerSymmetric.lean`:
+
+- `exp_phase_add_neg` — `e^{iθ} + e^{−iθ} = 2 cos θ`.
+- `integral_fejer_symm` — **the half-interval transform at `L` plus its value at `−L` equals
+  `(2 − 2 cos TL)/(TL²)`**.
+
+Unconditional. The `i/L` terms cancel — purely imaginary and odd — and they are exactly the part
+decaying only like `|L|^{-1}`. What survives is real, nonnegative (`cos ≤ 1`) and `O(|L|^{-2})`.
+
+The transform at `−L` is what the reflection `t ↦ −t` turns the left half of a symmetric triangular
+weight into, so this is the Fejér transform; stating it as a sum over the two signs avoids carrying
+`|t|` through the computation and needs no change-of-variables lemma.
+
+The smoothed kernel with the properties a localisation argument requires is therefore now explicit
+and proved in the corpus.
+
+### Formal layer — the Fejér transform's two properties
+
+`formal/GaloisForLFunctions/RHTower/Sieve/FejerBounds.lean`:
+
+- `fejer_transform_nonneg` — **`0 ≤ (2 − 2cos TL)/(TL²)`**.
+- `fejer_transform_le_inv` — **`≤ 4/(TL²)`**, the decay.
+- `fejer_transform_le_len` — **`≤ T`**, the cap near the trivial frequency.
+
+All unconditional. The first two follow from `−1 ≤ cos ≤ 1`; the third is the quadratic bound
+`1 − θ²/2 ≤ cos θ` (mathlib's `Real.one_sub_sq_div_two_le_cos`) at `θ = TL`.
+
+Together these say the transform is a *nonnegative weight of total size `T` concentrated on
+`|L| ≲ T^{-1}`, with a square-summable tail* — the three facts a localisation argument cites, now
+proved rather than assumed. The sharp Dirichlet kernel satisfies the analogue of the cap but neither
+of the other two.
+
+### Formal layer — pairing a Dirichlet polynomial with the Fejér weight
+
+`formal/GaloisForLFunctions/RHTower/Sieve/FejerPairing.lean`:
+
+- `integral_fejerHalf_dirPoly` — **`∫_0^T F(t)(1 − t/T) dt = ∑_{n<N} a_n ∫_0^T n^{it}(1 − t/T) dt`**.
+- `integral_fejer_comm` — the inner integrals in the order the closed form uses.
+- `integral_fejer_zero` — **the term whose frequency vanishes contributes `T/2`**.
+
+All unconditional. The Fejér-weighted average of a Dirichlet polynomial is therefore the coefficient
+sum weighted by an explicit, nonnegative, rapidly decaying kernel, with the `n = 1` term (frequency
+`log 1 = 0`) contributing the main term `a_1 · T/2` and every other term controlled by
+`FejerBounds.lean`.
+
+That separation — main term from the vanishing frequency, error from the rest — is the structure a
+short-interval argument needs, and it is now proved rather than asserted.
+
+### Formal layer — bounding the half-interval Fejér transform
+
+`formal/GaloisForLFunctions/RHTower/Sieve/FejerHalfBound.lean`:
+
+- `norm_integral_fejerHalf_le` — **`‖∫_0^T (1 − t/T)e^{itL} dt‖ ≤ |L|^{-1} + 2/(TL²)`**.
+
+Unconditional. Both terms of the closed form are bounded separately: `i/L` has modulus exactly
+`|L|^{-1}`, and the second term at most `2/(TL²)`.
+
+Recorded precisely because the half-interval bound is *weaker* than the symmetric one: the
+`|L|^{-1}` term is odd and cancels on symmetrising, which is what leaves the pure `|L|^{-2}` decay of
+`FejerBounds.lean`. On a half interval it survives, and this is the honest bound there. A localisation
+argument that works on `[0,T]` rather than `[−T,T]` therefore carries the weaker tail, and the
+difference is not cosmetic — `|L|^{-1}` is not summable over the frequencies `log n` while `|L|^{-2}`
+is.
+
+### Formal layer — the symmetric Fejér pairing is real and small
+
+`formal/GaloisForLFunctions/RHTower/Sieve/FejerSymmBound.lean`:
+
+- `integral_fejer_symm_real` — the symmetric pairing is the cast of the real number
+  `(2 − 2cos TL)/(TL²)`.
+- `norm_integral_fejer_symm_le_inv` — **its modulus is at most `4/(TL²)`**.
+- `norm_integral_fejer_symm_le_len` — **and at most `T`**.
+
+All unconditional. This is the pairing a localisation argument must use, for the reason recorded on
+the previous entry: the half-interval bound carries a `|L|^{-1}` term that is not summable over the
+frequencies `log n`, and symmetrising cancels it exactly.
+
+With these the short-interval side of the route is complete as a *toolkit*: pairing identity
+(`integral_dirPoly_mul`), explicit kernel with closed form (`FejerHalf`, `FejerSymmetric`), the two
+kernel properties (`FejerBounds`), the main-term separation (`FejerPairing`), and now the bounds in
+the form a sum over `n` consumes.

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.CCMRationalAdelicMoritaRepresentation
 import GaloisForLFunctions.RHTower.CyclicBarTraceMorphism
+import Mathlib.Analysis.Normed.Algebra.UnitizationL1
 
 /-!
 # Trace-class Morita algebra and normalized unitized trace
@@ -59,6 +60,12 @@ def ccmRationalMoritaTraceClassSubalgebra :
 abbrev CCMRationalMoritaTraceClassOperator :=
   ccmRationalMoritaTraceClassSubalgebra
 
+noncomputable instance ccmRationalMoritaTraceClassNormedSpace :
+    NormedSpace ℂ CCMRationalMoritaTraceClassOperator where
+  norm_smul_le z T := by
+    change ‖z • (T : MoritaOperator)‖ ≤ ‖z‖ * ‖(T : MoritaOperator)‖
+    exact norm_smul_le z (T : MoritaOperator)
+
 /-- Ordinary operator trace restricted to the trace-class Morita ideal. -/
 def ccmRationalMoritaOperatorTrace :
     CCMRationalMoritaTraceClassOperator →ₗ[ℂ] ℂ where
@@ -85,6 +92,22 @@ theorem ccmRationalMoritaOperatorTrace_isTrace
 /-- Minimal unitization of the actual trace-class Morita ideal. -/
 abbrev CCMRationalMoritaTraceClassUnitization :=
   Unitization ℂ CCMRationalMoritaTraceClassOperator
+
+/-- Minimal unitization with its natural `ℓ¹` norm `|z| + ‖T‖`. -/
+abbrev CCMRationalMoritaTraceClassL1Unitization :=
+  WithLp 1 CCMRationalMoritaTraceClassUnitization
+
+noncomputable instance ccmRationalMoritaTraceClassL1NormedAddCommGroup :
+    NormedAddCommGroup CCMRationalMoritaTraceClassL1Unitization :=
+  WithLp.instUnitizationNormedAddCommGroup ℂ CCMRationalMoritaTraceClassOperator
+
+noncomputable instance ccmRationalMoritaTraceClassL1NormedRing :
+    NormedRing CCMRationalMoritaTraceClassL1Unitization :=
+  WithLp.instUnitizationNormedRing
+
+noncomputable instance ccmRationalMoritaTraceClassL1NormedAlgebra :
+    NormedAlgebra ℂ CCMRationalMoritaTraceClassL1Unitization :=
+  WithLp.instUnitizationNormedAlgebra
 
 /-- Normalized trace on the unitization: scalar unit plus trace-class operator trace. -/
 def ccmRationalMoritaUnitizedTrace :
@@ -153,6 +176,21 @@ def ccmRationalAdelicMoritaUnitizedHom
   Unitization.lift
     ((Unitization.inrNonUnitalAlgHom ℂ CCMRationalMoritaTraceClassOperator).comp
       (ccmRationalAdelicMoritaTraceClassHom hbInf b))
+
+/-- Normed `ℓ¹`-unitized form of the exact fixed-base CCM representation. -/
+def ccmRationalAdelicMoritaL1UnitizedHom
+    {bInf : ℝ} (hbInf : bInf ≠ 0) (b : CCMRationalFiniteAdeleˣ) :
+    Source →ₐ[ℂ] CCMRationalMoritaTraceClassL1Unitization :=
+  (WithLp.unitizationAlgEquiv ℂ).symm.toAlgHom.comp
+    (ccmRationalAdelicMoritaUnitizedHom hbInf b)
+
+@[simp]
+theorem ccmRationalAdelicMoritaL1UnitizedHom_ofLp
+    {bInf : ℝ} (hbInf : bInf ≠ 0) (b : CCMRationalFiniteAdeleˣ)
+    (x : Source) :
+    WithLp.ofLp (ccmRationalAdelicMoritaL1UnitizedHom hbInf b x) =
+      ccmRationalAdelicMoritaUnitizedHom hbInf b x :=
+  rfl
 
 /-- Fixed-base normalized Morita trace on the exact CCM cyclic source. -/
 def ccmRationalAdelicMoritaTrace

@@ -241,3 +241,29 @@ Write a review paper whose route claims are traceable to exact Lean declarations
 - 2026-08-03 — Documentation-only maintenance used no Lean process, computation, build, or lint.
   Concurrent uncommitted modules were treated as provisional and excluded from established corpus
   claims until umbrella-wired and committed.
+- 2026-08-03 — Commit `bf6a9e5dd` audit added four umbrella-reachable frontier refinements without
+  changing route status. Route E gains exact finite Dirichlet-polynomial/kernel pairing, symmetric
+  phase transform, and `2T`/`2/|L|` localization bounds. Route L gains stability of cyclically
+  reduced amalgamated words under base conjugation. HTGeometry gains dense compact-patch
+  outer-shift rank avoidance, strip Cauchy derivative costs, Ovsyannikov-term summability, and
+  termwise differentiation of the maximum-term majorant. Each is recorded at its exact remaining
+  boundary; none supplies an RH-bearing sign, annihilator, strict descent, or source handoff.
+- 2026-08-03 — Committed files `CCMRationalAdelicEndpointReal.lean`,
+  `KRealCyclicDoubleKernel.lean`, and `Sieve/LinearPhaseIntegral.lean` are not reachable from the
+  audited HEAD umbrellas. Their Real endpoint/double-kernel and linear-weight transform statements
+  remain provisional under this paper's declared corpus rule. Concurrent worktree additions are
+  likewise excluded until committed and umbrella-reachable.
+- 2026-08-03 — Route ontology corrected against the exact Route-J no-go and user-supplied closure.
+  Route J is retired as an independent Julia coherent-energy/capacity mechanism: unrenormalized
+  energy diverges uniformly, diagonal subtraction loses one-node capacity, separable incidence is
+  gauge-blind, and the unrestricted residual capacity is exactly RH. Earlier audit entries saying
+  that a pre-projection survivor “remains Route J” are superseded. A genuinely nonseparable,
+  non-coboundary current defined before good/bad projection changes the primitive and is a new
+  route candidate; the existing singular joint-depth/Ward carrier is Route R.
+- 2026-08-03 — Completeness language narrowed honestly. The route quotient is exhaustive for
+  umbrella-reachable and explicitly recorded corpus mechanisms, not for every possible future
+  mathematical representation. A new present-state section records the nonclassical possibility
+  space forced by Lean no-gos: pre-projection relative currents, pre-frequency joint-depth
+  differentials, source-first chain descent, moving all-order provenance carriers, and upstream
+  source algebraicity/dynamics. These are exact design constraints or live routes, not RH proofs;
+  external novelty remains unverified.

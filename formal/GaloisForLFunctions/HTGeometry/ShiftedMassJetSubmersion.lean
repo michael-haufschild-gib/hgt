@@ -94,7 +94,7 @@ theorem exists_uniform_massJet_atoms {row : Type*} [Fintype row] [DecidableEq ro
     (ord : row × Fin r → ℕ) {x : ℕ → ℝ} (hx : Function.Injective x) {w : ℕ → ℝ}
     (hwne : ∀ n, w n ≠ 0) {Kset : Set (Fin r → ℝ)} (hK : IsCompact Kset)
     (hKinj : ∀ t ∈ Kset, Function.Injective t) :
-    ∃ (K : ℕ) (a : Fin K → ℕ), ∀ t ∈ Kset,
+    ∃ (K : ℕ) (a : Fin K → ℕ), Function.Injective a ∧ ∀ t ∈ Kset,
       Submodule.span ℝ (Set.range fun l =>
         massJetColumn (combinedNodes z t) ord x w (a l)) = ⊤ := by
   classical

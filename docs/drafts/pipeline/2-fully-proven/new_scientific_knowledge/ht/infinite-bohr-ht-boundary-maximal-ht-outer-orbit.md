@@ -2272,3 +2272,36 @@ in `WithTop N-infinity` is **real-analyticity**, not `C^infinity`.  Its proof us
 `omega`-hypothesis through `of_le`, so nothing downstream weakens.  Without this the whole
 observation would have had to be proved real-analytic, which the Cayley chart and the exponential
 mass parametrization make far more expensive than they need to be.
+
+## Lean: one residual set of mass parameters for EVERY tuple of distinct shifts
+
+This is the shift-uniform step the tuple-wise argument could not reach.  Two modules (wired,
+axiom-clean):
+
+- `MassShiftObservationContinuity.lean` -- joint continuity in `(u, t)`.  The jets are a weighted
+  kernel series, and a *real* translation does not move the imaginary part of a node, so the kernel
+  bound `(|Im z_b|^-1)^(k+1)` is uniform in the shift; `continuousOn_tsum` on
+  `ball u_0 1 x univ` then gives continuity in both variables at once.  Also
+  `massShiftObservation_pertParameter`: a finitely supported perturbation of the bounded parameter is
+  exactly an exponential rescaling of finitely many masses, which is what links the
+  finite-dimensional slice to the infinite-dimensional parameter.
+- `MassShiftGlobalAvoidance.lean`:
+
+      residual_globalAvoidance_massShift :
+        {u : MassParameter | forall tau : RealShiftConfiguration r,
+            massShiftObservation z d x eps carrier (u, tau.1)
+              not-in outerShiftBad row r d D q hD z exponent}
+          in residual MassParameter
+
+  Patchwise density transfers from the atom slice (the perturbation's sup norm is the size of the
+  rescaling, `norm_pertParameter_le`), joint continuity makes patchwise avoidance open by the tube
+  lemma, the collision-free real shift tuples are sigma-compact
+  (`realShiftConfigurationSigmaCompactSpace`, an open subset of `R^r`), and Baire does the rest.
+
+So for a residual set of bounded exponential mass parameters, the expanded evaluation matrix has
+full column rank at **every** tuple of distinct real shifts -- not one tuple at a time.  This is the
+statement whose absence was recorded above as the open core of (9).
+
+What remains is the descent: read "full rank at every shift" as "no nonzero differential relation",
+via `eq_zero_of_relation_of_rigid_jets` (already proved, already general in the row type), and
+intersect over the countably many relation shapes with `residual_iInter`.

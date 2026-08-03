@@ -1442,6 +1442,33 @@ theorem hasDerivAt_coeffSum (ha : EntireCoeffs a) (hr : 0 < r) :
     exact hsummable.hasSum
 
 
+/-- The index-weighted majorant, `r S'(r) = sum n ||a_n|| r^n`. -/
+theorem mul_deriv_coeffSum_eq (r : ℝ) :
+    r * (∑' n : ℕ, (n : ℝ) * ‖a n‖ * r ^ (n - 1))
+      = ∑' n : ℕ, (n : ℝ) * (‖a n‖ * r ^ n) := by
+  rw [← tsum_mul_left]
+  refine tsum_congr fun n => ?_
+  cases n with
+  | zero => simp
+  | succ m =>
+      simp only [Nat.add_sub_cancel]
+      rw [pow_succ]
+      ring
+
+/-- **The first moment of the modulus profile.**  The deviation of the index from any fixed centre,
+weighted by the terms, is the index-weighted majorant minus the centre times the majorant. -/
+theorem tsum_index_sub_mul_term (ha : EntireCoeffs a) (hr : 0 < r) (k : ℕ) :
+    ∑' n : ℕ, ((n : ℝ) - (k : ℝ)) * (‖a n‖ * r ^ n)
+      = (∑' n : ℕ, (n : ℝ) * (‖a n‖ * r ^ n)) - (k : ℝ) * coeffSum a r := by
+  have hidx : Summable fun n : ℕ => (n : ℝ) * (‖a n‖ * r ^ n) := by
+    refine (summable_term (entireCoeffs_mul_index ha) hr).congr fun n => ?_
+    rw [norm_mul, Complex.norm_natCast, mul_assoc]
+  have hbase : Summable fun n : ℕ => (k : ℝ) * (‖a n‖ * r ^ n) :=
+    (summable_term ha hr).mul_left _
+  rw [coeffSum, ← tsum_mul_left, ← Summable.tsum_sub hidx hbase]
+  exact tsum_congr fun n => by ring
+
+
 /-! ## Entire functions -/
 
 /-- The coefficients of a power series with infinite radius of convergence satisfy the decay

@@ -98,7 +98,7 @@ theorem exists_uniform_spanning_atoms {H Y : Type*} [TopologicalSpace H]
     (col : ℕ → H → Y) (hcol : ∀ n, Continuous (col n))
     {K : Set H} (hK : IsCompact K)
     (hspan : ∀ h ∈ K, Submodule.span ℝ (Set.range fun n => col n h) = ⊤) :
-    ∃ (N : ℕ) (a : Fin N → ℕ), ∀ h ∈ K,
+    ∃ (N : ℕ) (a : Fin N → ℕ), Function.Injective a ∧ ∀ h ∈ K,
       Submodule.span ℝ (Set.range fun l => col (a l) h) = ⊤ := by
   classical
   have hlocal : ∀ h : K, ∃ U : Set H, ∃ (N : ℕ) (a : Fin N → ℕ),
@@ -121,7 +121,9 @@ theorem exists_uniform_spanning_atoms {H Y : Type*} [TopologicalSpace H]
     intro h hh
     exact Set.mem_iUnion.mpr ⟨⟨h, hh⟩, hhU ⟨h, hh⟩⟩)
   let A : Finset ℕ := s.biUnion fun j => Finset.image (a j) Finset.univ
-  refine ⟨A.card, fun l => (A.equivFin.symm l : ℕ), fun h hh => ?_⟩
+  refine ⟨A.card, fun l => (A.equivFin.symm l : ℕ), ?_, fun h hh => ?_⟩
+  · intro l₁ l₂ hl
+    exact A.equivFin.symm.injective (Subtype.ext hl)
   obtain ⟨j, hjs, hjU⟩ := Set.mem_iUnion.mp (hscover hh) |>.imp fun j hj => by
     simpa using hj
   refine top_unique ?_

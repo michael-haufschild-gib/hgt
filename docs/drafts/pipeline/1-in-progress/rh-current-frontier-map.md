@@ -18,9 +18,9 @@ equivalences, completed connectors, and no-go classifications. Route A is termin
 source-faithful physical-phase transports are identity, nonidentity transports have an explicit
 phase-connection defect, and arbitrary aperture-dependent positive Markov orientation is feasible
 exactly when the original source scalar is nonnegative; universal completed feasibility is RH.
-Routes B, C2, D, F, G2, H, I, and K are retired as independent mechanisms. Route M is
+Routes B, C2, D, F, G2, H, I, J, and K are retired as independent mechanisms. Route M is
 terminalized at an explicit source-faithful reader whose remaining flatness statement is exactly
-RH. The live independent routes are C1, D2, E, G, J, L, N, O, P, Q, and R, with S retained as an
+RH. The live independent routes are C1, D2, E, G, L, N, O, P, Q, and R, with S retained as an
 upstream algebraic/dynamical program.
 
 Source formation is substantially complete. Wold activation gives `ζ(s)/ζ(s+h)` and first
@@ -40,15 +40,15 @@ Selberg bounds, explicit Mertens prime-sum estimates, Hardy--Ramanujan tail mach
 large-sieve/Farey infrastructure. None supplies critical low-frequency Möbius cancellation,
 central normal-breadth seam control, exceptional Carleson control, or co-moving signed flux.
 
-Route J remains open only beyond its regular scalar and separable incidence classes. Uniform
-unrenormalized coherent energy is impossible, bounded polarizations have insufficient capacity,
-and post hoc diagonal subtraction destroys one-node capacity. Completed relative-current
-constructions recover the horizontal detector, but scalar codiagonal readout and diagonal
-inverse-horizon admission either erase all nonzero data or become RH-equivalent. The normalized
-joint prime-depth incidence `exp(a(λ_j-λ_i))` is a vertex-gauge coboundary: every cycle holonomy
-is one and every finite determinant or trace moment is horizontally blind. A successor must be
-genuinely nonseparable and non-coboundary before codiagonalization, or provide a source-derived
-arithmetic null-homotopy for the retained reflection defect.
+Route J closes negatively as an independent Julia-energy mechanism. Uniform unrenormalized
+coherent energy is impossible, bounded polarizations have insufficient capacity, post hoc
+diagonal subtraction destroys one-node capacity, and the unrestricted residual capacity is
+exactly RH. The normalized joint prime-depth incidence `exp(a(λ_j-λ_i))` is also a vertex-gauge
+coboundary: every cycle holonomy is one and every finite determinant or trace moment is
+horizontally blind. The strongest positive survivor is not an unfinished Route-J lemma: it is the
+design requirement for a new principal-relative current defined before good/bad projection,
+genuinely nonseparable and non-coboundary. The existing singular joint-depth/Ward realization is
+owned by Route R; any different realization would constitute an additional route.
 
 Route L has a concrete relative cohomological detector. Centered-flow countertransport flattens
 absolute curvature, while raw-minus-flat relative curvature retains the Deninger mate
@@ -91,8 +91,6 @@ The shortest current chains are:
 
 - Route R: construct a sign-indefinite, nonseparable joint-depth arithmetic null-homotopy and feed
   it to the proved four-unit Ward equivalence;
-- Route J: construct a genuinely non-coboundary principal-relative current, or derive a
-  source-native annihilation of its Burnol/Deninger reflection discriminant;
 - Route L: construct strict source-first BV Green--Stokes descent after the ordinary boundary and
   its exact physical radial obstruction;
 - Route E: prove critical low-frequency Möbius cancellation and co-moving central-breadth flux
@@ -100,10 +98,11 @@ The shortest current chains are:
 - Routes C1, D2, G, N, O, P, and Q: supply their stated singular boundary, high-frequency,
   meromorphic producer, prime-normal, cofinal Weil, compact moment, or saturation theorem.
 
-Sharp dyadic Route I and quadratic Route K are not live alternatives: Route I collides exactly
-with retired Route C2, while Route K's all-order continuation is Route P. Route A remains a useful
-exact endpoint but no independent positive-factorization mechanism survives. Route M remains a
-terminalized interface, not an RH proof.
+Sharp dyadic Route I, Julia-energy Route J, and quadratic Route K are not live alternatives:
+Route I collides exactly with retired Route C2, Route J closes at an unbounded coherent-energy
+floor and an RH-equivalent unrestricted residual, and Route K's all-order continuation is Route P.
+Route A remains a useful exact endpoint but no independent positive-factorization mechanism
+survives. Route M remains a terminalized interface, not an RH proof.
 
 ## 2. What the foundational tower actually proves
 
@@ -127,12 +126,14 @@ must establish one coordinate from information that does not already contain Xi 
 location. The same rule applies to the hundreds of later `↔ RiemannHypothesis`
 theorems.
 
-## 3. Complete quotient of proof-route coordinates and one source-adjacent coordinate
+## 3. Complete quotient of corpus-identified proof routes and one source-adjacent coordinate
 
 This section quotients thousands of declarations by their first unresolved premise. Two
 criteria belong to the same route when their proved chains return to the same missing
-source law. Retired coordinates are marked explicitly; all others remain live at their stated open
-core.
+source law. “Complete” means complete for umbrella-reachable mechanisms and explicitly recorded
+successors in the audited corpus. It does not mean that Lean, this paper, or existing literature
+can quantify over every mathematical representation not yet conceived. Retired coordinates are
+marked explicitly; all others remain live at their stated open core.
 
 | Route | Current status | First unresolved source premise |
 |---|---|---|
@@ -148,7 +149,7 @@ core.
 | G2 | retired | required analytic germ is already RH-equivalent |
 | H | retired | moving indefinite/relation-valued successor is a new route |
 | I | retired | exact collision with Route C2 width |
-| J | open | nonseparable, non-coboundary relative current plus arithmetic null-homotopy |
+| J | retired | unrenormalized and residual Julia-capacity mechanisms are closed; successor changes primitive |
 | K | retired | all-order continuation is Route P |
 | L | open | `XI_BV_GREEN_STOKES_STRICT_DESCENT` |
 | M | terminalized coordinate | anchored cofinal flatness is exactly RH |
@@ -158,6 +159,27 @@ core.
 | Q | open/secondary | source boundary Jensen/jet saturation |
 | R | open | sign-indefinite nonseparable pre-frequency arithmetic null-homotopy |
 | S | upstream/secondary | independent source algebraicity or divisor-preserving dynamics |
+
+### Corpus-native route space beyond classical templates
+
+The formal corpus does not merely repackage classical RH criteria. Its no-go theorems force a
+route-design space whose primitives are not scalar Dirichlet estimates, positive operators,
+zero-fed spectra, or determinant limits:
+
+| Corpus-forced primitive | Formal evidence | Present status |
+|---|---|---|
+| pre-projection principal-relative current | Route-J energy divergence, diagonal-retention, and endpoint-completeness theorems exclude every advertised post-projection capacity repair | positive survivor of retired J; a new route if constructed |
+| nonseparable prime/depth--divisor arithmetic differential | separable incidence is a vertex-gauge coboundary; characteristic polynomials, determinants, cyclic trace moments, and cycle holonomy are horizontally blind | live Route R open core |
+| source-first chain descent rather than post hoc cohomology | the ordinary Wold/BV Hochschild boundary exists, but physical landing reads exactly the nonzero Burnol/Deninger radial defect | live Route L open core |
+| moving, all-order, provenance-preserving carrier | finite Möbius/Wold moments are parity-blind and fixed finite selectors are saturated | live Routes E and P at distinct source laws |
+| source algebraicity or divisor-preserving dynamics | HTGeometry supplies independent rigidity and transversality but no Xi-source handoff | upstream Route S; not yet a proof route |
+
+These are mathematically possible architectures exposed by Lean, not proofs that the missing
+objects exist. Route R and Route L already have exact tails to RH and therefore are genuine live
+routes. The post-J pre-projection current is only a falsifiable successor class until a literal
+source object and unconditional handoff are built. Its construction must be recorded as a new
+route, not used to reopen J. External scientific priority for corpus-specific theorems remains
+`NOVELTY UNVERIFIED`; absence of an exact located literature collision is not a proof of novelty.
 
 ### Route A — literal CCM first clock `[TERMINALIZED]`
 
@@ -1034,9 +1056,13 @@ constant `Q²+4πN` and yields Montgomery's sieve and the corresponding omitted-
 The Dirichlet-polynomial branch proves mean-value, Gallagher reduction, derivative-energy,
 large-values, and large-values-count estimates; its absolute row-sum proof retains the explicit
 logarithmic loss and does not claim the sharp Montgomery--Vaughan form. These are unconditional
-counting and energy inputs. They do **not** estimate the Mertens function at critical strength,
-suppress the zero or near-zero Möbius frequency, prove exceptional Carleson control, or construct
-the co-moving central-breadth flux.
+counting and energy inputs. The finite localization bridge is also exact: an arbitrary continuous
+kernel pairs termwise with a finite Dirichlet polynomial, the symmetric phase integral is
+`2 sin(TL)/L` away from `L=0` and `2T` at zero, and its norm is bounded by both `2T` and
+`2/|L|`. Thus the corpus can isolate finite logarithmic-frequency packets without a convergence
+assumption. This bridge remains unsigned and finite; it does **not** estimate the Mertens function
+at critical strength, suppress the zero or near-zero Möbius frequency, prove exceptional Carleson
+control, or construct the co-moving central-breadth flux.
 
 **Endpoints.**
 
@@ -1290,8 +1316,7 @@ additive term, and more generally every term eventually below the proved positiv
 inside the typed completed-packet model also fails. Mere unboundedness or merely nonzero normalized
 limsup below that slope is insufficient within that model.
 
-### Route G — Suzuki Hermite–Biehler, anti-Pick, and Ward realization
-`[OPEN / NARROWED — ONE-ANGLE HOLOMORPHIC-GAUGE LIMIT RETIRED; TWO-ANGLE MEROMORPHIC PRODUCER LIVE]`
+### Route G — Suzuki Hermite–Biehler, anti-Pick, and Ward realization `[OPEN / NARROWED]`
 
 **Endpoint.** `SuzukiHermiteBiehler xiHedenmalmDeBrangesE` implies RH without a
 simplicity hypothesis.  This remains a valid consumer theorem.  It is not Suzuki's published
@@ -2453,9 +2478,10 @@ Paper certificate:
 Unconditional downstream Lean certificate:
 `RHTower/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean`.
 
-### Route J — Julia compound-Poisson coherent energy  [OPEN — COMPLETED RELATIVE CURRENT]
+### Route J — Julia compound-Poisson coherent energy `[RETIRED — NEGATIVE CLOSURE]`
 
-This route is distinct from older diagonal Julia attenuation.
+This route is distinct from older diagonal Julia attenuation. It is closed as an independent
+source-producing mechanism, not as a proof of RH.
 
 **Endpoint.** There is no standalone Julia-to-RH theorem. Its handoff is the terminal Route-A
 coordinate: use a source-defined Julia current to prove the literal completed first-clock source
@@ -2626,7 +2652,8 @@ the value row
 convergent, separated, reflection-projectively coherent two-active-atom scalar screens, not merely
 the quarter-turn palette.  An off-line coherent survivor must use at least three asymptotically
 active atoms, coalescing/escaping/nonconvergent support, break the leading reflection profile, be
-singular, or be relation-valued; all remain Route J rather than being reassigned.
+singular, or be relation-valued. Those escape classes survive only as design inputs to a new
+pre-projection route; they do not reopen Route J.
 
 That minimal three-atom survivor is now explicit.  At full-turn supports `T,2T,3T`, with
 `r=exp(-Ty)!=1`, the vector
@@ -2833,16 +2860,14 @@ Endpoint equivalence to the Ward law does not identify that Gram with `R_x(L)`, 
 moving-block floor, or prove either bound without an RH-equivalent sign. It is a bridge, not route
 closure.
 
-**Exact open core.** Construct a genuinely nonseparable, non-coboundary prime/depth--divisor
-incidence before codiagonalization, together with an unconditional source-derived arithmetic
-differential or null-homotopy that forces the retained Burnol/Deninger reflection discriminant to
-vanish. The object may be singular, relation-valued, nonlinear, or source-co-moving, but it must
-retain divisor provenance and avoid bounded-polarization, scalar-frequency, and vertex-gauge
-closures. Alternatively prove a class-complete no-go for every remaining such category. Endpoint
-equivalence to Route A and overlap with Route R do not discharge this source construction; Route J
-remains open.
+**Positive survivor and route boundary.** A genuinely nonseparable, non-coboundary
+prime/depth--divisor incidence before good/bad projection could evade the proved diagonal,
+bounded-polarization, scalar-frequency, and vertex-gauge closures. That object changes the
+primitive and is not Route J. The existing singular Möbius--Gamma/Ward realization belongs to
+Route R; any different source-defined principal-relative current must enter the map as a new route
+after its source object and handoff are stated. Route J has no remaining open core.
 
-Open principal-relative owner card:
+Historical principal-relative audit card:
 `route-j-principal-relative-julia-current.md`.
 
 Failed unrenormalized subroute:
@@ -3706,9 +3731,11 @@ independent proof.
 The algebraic Deninger layer also proves homology/cohomology vanishing for cyclic rationalizations,
 one-generator free packets, individual root adjunctions, and finite root-adjunction towers under
 their exact torsion and base-vanishing hypotheses. Duality transfers positive-degree homology
-vanishing to cohomology over a field. These results close the cyclic/subsingleton and conditional
-retract cases; they do not construct the higher-rank arithmetic relevant complex or the
-source-first strict descent below.
+vanishing to cohomology over a field. Base conjugation of a cyclically reduced amalgamated word is
+now represented by a cyclically reduced word of the same length and factor-index sequence, so the
+word class is stable under the conjugacy operation needed by the rationalization induction. These
+results close the cyclic/subsingleton and conditional retract cases; they do not construct the
+higher-rank arithmetic relevant complex or the source-first strict descent below.
 
 **Physical Burnol/Deninger comparison.** For the literal Burnol window
 `B_L(w)=ζ(w)(exp(Lw)-1)/w`, the first nonzero jet at a Xi divisor `ρ` of multiplicity `m`
@@ -3938,8 +3965,7 @@ existence.
 `α=1` carrier fails at degree one; one-particle infinite divisibility fails by atomic
 support. A two-particle completion survives but has no transform identification.
 
-### Route R — primitive-current singular continuation
-`[OPEN — SOURCE, COMPLETION, AND XI LANDING CLOSED]`
+### Route R — primitive-current singular continuation `[OPEN — SOURCE AND XI LANDING CLOSED]`
 
 **Endpoint.** `ContinuedXiWardFourUnitBoundaryLiftLaw ↔ RiemannHypothesis`: the actual augmented
 four-unit Julia/Ward boundary Gram is positive semidefinite on every finite packet. One
@@ -4229,7 +4255,16 @@ source.
   and power-dominance laws; simultaneous incommensurable Gamma scales are not treated;
 - reflected-digamma orientation;
 - weighted Cauchy-jet smoothness and compact-patch finite-probe transversality, now lifted
-  to nonlinear exponential Herglotz charts for arbitrary base measures;
+  to nonlinear exponential Herglotz charts for arbitrary base measures and instantiated for the
+  shifted outer observation: below the explicit rank-defect codimension, full-rank avoidance on a
+  whole compact shift patch is dense;
+- the analytic-scale prerequisites for the two-species conformal-clock equation: one and two strip
+  derivatives cost respectively `2/(rho-rho')` and `16/(rho-rho')^2`, while the abstract
+  Ovsyannikov iteration terms are summable when `A exp(2)<1`; the actual shrinking-radius solution
+  operator and any RH source handoff remain absent;
+- the maximum-term/Wiman--Valiron cascade through local expansion, circle-maximal criticality, and
+  termwise differentiation of the coefficient majorant; the first longitudinal modulus moment
+  `r S'(r)-nu(r)S(r)` remains uncontrolled, and no Xi-facing source theorem uses the cascade;
 - generic transported-parent energy barriers for unitary dynamics;
 - conversion of the now-proved literal-zeta Gamma-field nonrelation into divisor or
   zero-location information;
@@ -4676,8 +4711,8 @@ primary literature audited in Section 9 and the route-by-route companion paper.
 
 ### Terminal coordinates, not research hypotheses
 
-Route A's first-clock floor and Bohr asymptote, Route M's cofinal reader flatness, Route J's
-uniform separable-incidence capacity, Route P's completed all-order moment condition, and every
+Route A's first-clock floor and Bohr asymptote, Route M's cofinal reader flatness, retired Route
+J's unrestricted residual capacity, Route P's completed all-order moment condition, and every
 criterion stated directly on Xi divisor support are exact RH coordinates. Proving another
 equivalent wrapper around one of them does not advance source acquisition.
 
@@ -4686,9 +4721,11 @@ equivalent wrapper around one of them does not advance source acquisition.
 1. **Route R pre-frequency null-homotopy.** Construct a source-derived, sign-indefinite,
    nonseparable prime/depth--divisor differential before vertex gauge and scalar frequency
    separation, and prove the four-unit Ward sign.
-2. **Route J non-coboundary relative current.** Construct an incidence whose cycle class is not a
-   vertex-gauge coboundary and derive an arithmetic null-homotopy forcing its
-   Burnol/Deninger reflection discriminant to vanish.
+2. **Post-J corpus-native successor `[NEW ROUTE IF INSTANTIATED]`.** Construct before good/bad
+   projection a literal source-defined principal-relative current whose incidence is not a
+   vertex-gauge coboundary, and derive an arithmetic null-homotopy forcing its Burnol/Deninger
+   reflection discriminant to vanish. If it is not the existing Route-R current, it must receive
+   separate route ownership.
 3. **Route L strict BV Green--Stokes descent.** Construct a source-first chain map from completed
    Xi Green source tensored with the Wold/BV Hochschild complex to resolved Calderón--Witt
    incidence, making physical degree-zero landing a strict specialization and the explicit
@@ -4825,8 +4862,8 @@ The cited primary sources close no Tier-1 or Tier-2 open core above.
    sign;
 2. Route L strict source-first BV Green--Stokes descent through the exact physical radial
    obstruction;
-3. Route J genuinely non-coboundary prime/depth--divisor current and source-native horizontal
-   annihilation;
+3. post-J pre-projection principal-relative current as a separately owned route, unless its exact
+   construction is the existing Route-R source;
 4. Route E central normal-breadth Möbius cancellation and co-moving seam flux;
 5. Hedenmalm singular completion or prime-normal domain theorem;
 6. corrected pole-compatible two-angle Suzuki source-selected full jump kernel;
@@ -4856,7 +4893,7 @@ These routes begin with literal source and have short, formally closed tails to 
 - absolute covariant curvature, generic mapping-cone exactness, or finite top-boundary
   non-erasure presented as Route L's source Stokes theorem;
 - unrenormalized Julia energy, post hoc diagonal subtraction, bounded polarizations, or
-  separable cycle holonomy presented as Route J's remaining current;
+  separable cycle holonomy presented as an unfinished Route-J current;
 - Connes/prolate determinant transfers that do not first prove a new literal cofinal Weil-floor
   inequality;
 - legacy Suzuki entire-limit, any finite-height geometric Sonin/Burnol completion, or
@@ -4884,9 +4921,9 @@ The first unresolved theorem is therefore route-dependent but consistently pre-s
 
 - Route R needs a source-derived, sign-indefinite, nonseparable arithmetic differential or
   null-homotopy before vertex gauge and frequency separation; its Ward consumer is complete.
-- Route J needs a genuinely non-coboundary principal-relative current and an arithmetic
-  annihilation of the retained reflection discriminant. Its unrenormalized energy route is closed
-  negatively, but this successor is not class-completely excluded.
+- Retired Route J has no open premise. A different pre-projection principal-relative current is a
+  corpus-native new-route candidate; it belongs to Route R only if its literal source and handoff
+  are the existing Route-R construction.
 - Route L needs a strict source-first BV Green--Stokes chain map. Source, relative curvature,
   Green primitive, ordinary boundary, physical Burnol/Deninger comparison, and
   coefficient-faithful landing exist; descent fails by exactly the RH-bearing radial coefficient.
@@ -4896,7 +4933,7 @@ The first unresolved theorem is therefore route-dependent but consistently pre-s
 - Routes C1, D2, G, N, O, P, and Q retain the distinct open cores stated in Section 8.
 
 Route A is terminalized as an exact RH coordinate after phase-natural rigidity and barycentric
-completeness. Routes B, C2, D, F, G2, H, I, and K are retired as independent mechanisms. Route M
+completeness. Routes B, C2, D, F, G2, H, I, J, and K are retired as independent mechanisms. Route M
 is terminalized at a source-faithful reader whose remaining flatness is RH. Route K's strongest
 quadratic/quartic marked-prime survivor transfers to Route P at all orders. Retired routes can
 motivate new mechanisms only through their recorded positive survivors; they contain no
@@ -4905,8 +4942,8 @@ unfinished connector whose completion would prove RH.
 The external literature audited through 3 August 2026 contributes useful finite spectral,
 sieve, Hedenmalm, Suzuki, Möbius-moment, and Deninger/Connes infrastructure. Where a theorem was
 both unconditional and useful, the corpus has formalized or scheduled its precise reusable
-content. No located primary source supplies Route R's pre-frequency annihilator, Route J's
-non-coboundary arithmetic current, Route L's strict source-first BV descent, Route E's critical Möbius
+content. No located primary source supplies Route R's pre-frequency annihilator, the post-J
+pre-projection current, Route L's strict source-first BV descent, Route E's critical Möbius
 cancellation, or another live route's first open premise.
 
 The disproof map is equally closed at the connector level: one certified off-line Xi zero or an
@@ -5117,6 +5154,10 @@ the moving-prime comparison for `n≥19` is open.
 - `HTGeometry/HerglotzJetMapSmoothness.lean`
 - `HTGeometry/WeightedCauchyTranslatedExpandedEvaluationCompactPatch.lean`
 - `HTGeometry/HerglotzTranslatedExpandedEvaluationCompactPatch.lean`
+- `HTGeometry/OuterShiftAvoidance.lean`
+- `HTGeometry/ClockStripCauchyScale.lean`
+- `HTGeometry/ClockOvsyannikovSeries.lean`
+- `HTGeometry/MaximumTermCentralIndex.lean`
 - `HTGeometry/HypertranscendentalHochsterSourceCoherenceDuality.lean`
 - `HTGeometry/AnalyticEulerTailExactFaithfulnessUniversalityLaw.lean`
 - `HTGeometry/PrimeOrientationCompletedRingSignNoGo.lean`
@@ -5170,8 +5211,12 @@ the moving-prime comparison for `n≥19` is open.
 - `RHTower/Sieve/DirichletMeanValue.lean`
 - `RHTower/Sieve/DirichletLargeValues.lean`
 - `RHTower/Sieve/DirichletLargeValuesCount.lean`
+- `RHTower/Sieve/DirichletPairing.lean`
+- `RHTower/Sieve/SymmetricPhaseIntegral.lean`
+- `RHTower/Sieve/DirichletKernelPairing.lean`
 - `RHTower/MobiusThetaSourceDaggerMinimalBoundaryLaw.lean`
 - `RHTower/MobiusThetaPhysicalParacyclicSourceNullHomology.lean`
 - `RHTower/DeningerHomologyCohomology.lean`
 - `RHTower/DeningerVanishingCohomology.lean`
 - `RHTower/DeningerBauCohomologyCriterion.lean`
+- `RHTower/DeningerBaseConjWord.lean`

@@ -34,6 +34,13 @@ functional analysis is not called a formalization of a paper's concrete operator
 Formalization is recommended only when an unconditional external theorem exists, is absent from
 the Lean corpus, narrows a named open core, and is not merely another coordinate equivalent to RH.
 
+“Every route” means every route instantiated or explicitly proposed in the audited corpus, not
+every representation mathematics might later invent. Several corpus no-gos force changes of
+primitive—pre-projection relation-valued currents, nonseparable prime/depth differentials, and
+source-first chain descent—that are not exhausted by the classical route names used to organize
+their parent literature. They are compared to their closest external languages without treating
+those languages as definitions of what a proof route is.
+
 ## 2. Route-by-route exchange
 
 ### Route A — first clock [TERMINALIZED]
@@ -192,7 +199,9 @@ Brun/Selberg bounds, explicit Mertens prime-sum estimates, smooth/rough and
 Hardy--Ramanujan--Shiu tail machinery, the sharp proper-Farey `Q²+4πN` large sieve and
 Montgomery omitted-class inequality, and Dirichlet mean-value/Gallagher/large-values/counting
 estimates. The Dirichlet row-sum branch explicitly retains its logarithmic loss and does not claim
-the sharp Montgomery--Vaughan form. These results close local counting, off-normal breadth, and
+the sharp Montgomery--Vaughan form. Exact finite kernel pairing and the symmetric Dirichlet-kernel
+formula now supply the classical localization bridge, including the bounds `2T` and `2/|L|`.
+These results close local counting, off-normal breadth, finite-frequency localization, and
 prime-anchor capacity gates. They do not estimate the Mertens function at critical strength or
 control the central co-moving signed seam.
 
@@ -400,7 +409,7 @@ source mechanisms. Paper/Lean certificates:
 `../2-fully-proven/not_new_scientific_knowledge/sharp-dyadic-prime-window-zero-width-collision.md`
 and `RHTower/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean`.
 
-### Route J — arithmetic Julia principal-relative current [OPEN — UNRENORMALIZED ENERGY CLOSED]
+### Route J — arithmetic Julia coherent-energy mechanism [RETIRED — NEGATIVE CLOSURE]
 
 **Local contribution beyond located literature.** The arithmetic Julia assembly and its
 quantitative no-go are stronger than a generic dilation observation. For
@@ -409,7 +418,7 @@ instead converges to the rank-one square of total bad mass. Positive unit-diagon
 off-diagonal cancellation, while post hoc diagonal subtraction destroys one-node anchor capacity.
 No exact external collision was located.
 
-The successor relative-current audit is also source-specific. The corpus constructs cofinal
+The successor audit is also source-specific. The corpus constructs cofinal
 depth countertransport, pure-Hodge admitted pairs, Hellinger--Gamma cofaces, adaptive
 prime-normal Green packets, source-native Gaussian/Meyer Wronskians, Burnol doubled-window
 conormal tomography, and reflected biorthogonal comparisons. It then proves that bounded scalar
@@ -426,12 +435,13 @@ theory supply parent components. None proves an arithmetic non-coboundary prime/
 incidence or a source-derived null-homotopy forcing the retained reflection discriminant to
 vanish.
 
-**Exchange verdict and Lean action.** Route J is not reopened by generic dilation, frame,
-Wronskian, or graph-cohomology imports. The unrenormalized route is closed negatively. The live
-core is a genuinely nonseparable, non-coboundary principal-relative current before
-codiagonalization plus unconditional arithmetic annihilation, or a class-complete no-go for that
-remaining category. No external theorem meeting this premise was found, so no literature-driven
-Lean addition is selected.
+**Exchange verdict and Lean action.** Route J is closed negatively. Its unrestricted residual
+capacity is exactly RH, so generic dilation, frame, Wronskian, or graph-cohomology imports cannot
+reopen it. A genuinely nonseparable, non-coboundary principal-relative current defined before
+good/bad projection changes the primitive and is a new-route candidate, not an unfinished Route-J
+lemma. The existing singular joint-depth/Ward carrier is Route R; a different construction must
+receive separate ownership. No external theorem constructs either missing arithmetic
+null-homotopy, so no literature-driven Lean addition is selected from Route J.
 
 ### Route K — quadratic spectral realization [RETIRED — QUARTIC SURVIVOR; ALL-ORDER IS ROUTE P]
 
@@ -489,7 +499,10 @@ Calderón--Witt incidence, and source-to-Xi graph landing. It also proves severa
   source-null-homology and minimal-boundary annihilation are exactly the critical-line condition;
 - homology/cohomology vanishing is formalized for cyclic rationalizations, one-generator packets,
   root adjunctions, and finite root towers under their stated hypotheses. It does not instantiate
-  the higher-rank arithmetic relevant complex.
+  the higher-rank arithmetic relevant complex;
+- base conjugation preserves cyclic reduction, word length, and factor-index sequence in the
+  amalgamated-word model, closing one rationalization-induction interface but not the arithmetic
+  relevant-complex comparison.
 
 No exact external collision was located for this source-specific relative-curvature,
 top-boundary, and non-erasure classification.
@@ -823,9 +836,13 @@ route.
 ## 7. Present conclusion
 
 The corpus's strongest plausible new science lies mainly in source-specific finite identities,
-complete scalar tomography, obstruction classifications, and exact survivor theorems. External
-SOTA contributes powerful finite operator and boundary-value architectures, but no published
-unconditional theorem closes a current source-level RH premise.
+complete scalar tomography, obstruction classifications, exact survivor theorems, and the
+nonclassical route architectures those obstructions force. Route R's pre-frequency joint-depth
+arithmetic differential, Route L's source-first strict chain descent, and the post-J
+pre-projection current class are not reductions to a classical scalar estimate or determinant
+limit. External SOTA contributes powerful parent operator and boundary-value languages, but no
+published unconditional theorem closes these current source-level RH premises. Scientific
+priority remains unverified.
 
 The next rational exchange is therefore not to add more RH equivalences. It is to complete the
 ordered finite operator/carrier imports above, then attack the independently named

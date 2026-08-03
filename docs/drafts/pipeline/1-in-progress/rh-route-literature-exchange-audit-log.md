@@ -99,3 +99,12 @@
   Deninger generalized-divisor support are retained only at their exact live-route interfaces.
 - 2026-08-03 — Targeted primary-source search found no 1--3 August 2026 theorem closing or
   shortening a live route's first open premise. No new literature-driven Lean theorem was selected.
+- 2026-08-03 — Commit `bf6a9e5dd` adds classical finite Dirichlet-kernel localization to Route E
+  and base-conjugacy stability to Route L's rationalization algebra. These are useful internal
+  formal interfaces, not located external novelties and not reductions of the critical Möbius or
+  strict-BV-descent open cores. No additional literature import is selected from this delta.
+- 2026-08-03 — Route-J exchange corrected from “open survivor” to negative retirement. The
+  pre-projection non-coboundary current is classified as a new-route candidate, or Route R only
+  when it is literally Route R's singular joint-depth/Ward source. Literature comparison now
+  treats classical dilation, co-Poisson, cohomology, and graph theory as parent languages rather
+  than an exhaustive taxonomy of possible RH mechanisms.

@@ -1229,8 +1229,43 @@ since there the transverse Laplacian must be the actual second derivative:
   applications the derivative must be known holomorphic, which is `AnalyticOnNhd.deriv_of_isOpen`.
 
 The two forms are the same scale seen from opposite sides: the coefficient form supplies the algebra
-estimate, the sup-norm form the passage back to functions. What remains is the Ovsyannikov iteration
-itself, with geometrically shrinking radii.
+estimate, the sup-norm form the passage back to functions.
+
+`ClockOvsyannikovSeries.lean` supplies the convergence estimate that makes the iteration close. Each
+step pays two transverse derivatives and earns a double integration, so after `m` steps, with the
+radius shrunk in `m` equal instalments,
+
+`(loss) × (gain) = (m/δ)^{2m} × T^{2m}/(m!)² = (m^m/m!)² (T/δ)^{2m}`.
+
+Everything therefore rests on `m^m/m! ≤ e^m`, which is nothing but the single term `m^m/m!` of the
+exponential series evaluated at `m`:
+
+- `pow_self_le_exp_mul_factorial`, `pow_self_div_factorial_le_exp` — that bound;
+- `sq_pow_self_div_factorial_le` — squared, so the loss–gain product becomes geometric;
+- **`ovsyannikov_term_le`**, **`summable_ovsyannikov`** — the `m`-th term is at most `(A e²)^m`, and
+  the iteration converges as soon as `A e² < 1`, that is as soon as the rectangle is small compared
+  with the radius of analyticity.
+
+The statement is in terms of an abstract ratio `A`, so it serves either form of the scale — the
+coefficient form, where two derivatives cost `4/(ρ-ρ')²`, or the sup-norm form, where they cost
+`16/(ρ-ρ')²`.
+
+`ClockOvsyannikovInduction.lean` pins the step down exactly. The step is performed at the
+intermediate radius `σ = ρ + (ρ₀-ρ)/(m+1)`, so that the loss factor `K/(σ-ρ)²` is exactly
+`K(m+1)²/(ρ₀-ρ)²` while the gap remaining above `σ` is `(ρ₀-ρ)·m/(m+1)`, and the two integrations
+contribute `1/(m+1)²`:
+
+- `sq_pow_ratio_intermediate` — the shrunken gap cancels the `m^{2m}` carried by the induction
+  hypothesis;
+- **`ovsyannikov_step_identity`** — the three factors multiply to *exactly* the next bound. Not an
+  inequality with room to spare: the leftover `(m+1)²` is absorbed precisely by
+  `((m+1)!)² = (m!)²(m+1)²`. That is what makes the scheme close rather than merely almost close;
+- `ovsyannikov_bound_le`, **`summable_ovsyannikov_bound`** — the bound carried by the induction,
+  `Kᵐ m^{2m} T^{2m}/((m!)²(ρ₀-ρ)^{2m})`, is dominated by `(K T² e²/(ρ₀-ρ)²)ᵐ` and hence summable
+  whenever `K T² e² < (ρ₀-ρ)²`.
+
+What remains is to run the iteration itself against these estimates and identify its limit with a
+clock probe.
 
 The first genuinely coupled target this reaches is dimension three: a potential
 `V(x⁰, x¹, x²)` with arbitrary continuously differentiable dependence on the null coordinates and

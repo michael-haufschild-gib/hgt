@@ -423,7 +423,7 @@ It also identifies the mechanism and the sharp wall.  The analytic growth invari
 - [x] Lean: log-convexity of `mu` in `log r`, the second-order input the decay bounds lack
 - [x] Lean: the majorant bounded back by the maximum term times the central index
 - [x] Lean: the local expansion, the alignment mechanism, and criticality at a circle maximum
-- [ ] Lean: the first moment of the modulus profile, `r S'(r) - nu(r) S(r)` (see the log entry)
+- [ ] Lean: the mean index `Lambda(r) = r S'(r)/S(r)` is close to the modal index `nu(r)`
 - [ ] Lean: Newton--Puiseux places at `U = infinity`, hence the nondegenerate Wiman place
 - [ ] Lean: Clunie--Steinmetz composition separation and state algebraic independence
 - [x] Lean: the order lower bound `ord_DA >= n` from `n` algebraically independent jets
@@ -453,6 +453,7 @@ formal/GaloisForLFunctions/HTGeometry/MaximumTermCentralIndex.lean (new)
 formal/GaloisForLFunctions/HTGeometry/MaximumTermLogarithmicDerivative.lean (new)
 formal/GaloisForLFunctions/HTGeometry/TriangleInequalityDefect.lean (new)
 formal/GaloisForLFunctions/HTGeometry/CircleMaximumCriticality.lean (new)
+formal/GaloisForLFunctions/HTGeometry/DiscreteJensenExp.lean (new)
 formal/GaloisForLFunctions/HTGeometry/BorelGrowthLemma.lean (already existed; extended)
 ```
 
@@ -558,7 +559,14 @@ hasDerivAt_normSq_circlePath              -- d/dt |f(z e^(it))|^2 = -2 Im(conj f
 im_conj_mul_eq_zero_of_isLocalMax         -- so at a circle maximum that pairing is real
 im_mul_deriv_div_eq_zero_of_isLocalMax    -- hence z f'(z)/f(z) is real there
 hasDerivAt_coeffSum                       -- the majorant is differentiated term by term
+mul_deriv_coeffSum_eq                     -- r S'(r) = sum n ||a_n|| r^n
+tsum_index_sub_mul_term                   -- the first moment: r S'(r) - k S(r)
+exp_tsum_mul_le_tsum_mul_exp              -- discrete Jensen for the exponential
 ```
+
+So the open quantity has a name and a formula: the deviation of the mean index
+`Lambda(r) = r S'(r) / S(r)` from the modal index `nu(r)`, since
+`sum (n - nu) ||a_n|| r^n = S(r) (Lambda(r) - nu(r))`.
 
 The assembled bound over a window `F` with weights `w` is
 
@@ -1035,3 +1043,23 @@ triangularity package, which is exactly how the paper proof uses them.
   maximum the transverse part of `V` vanishes identically, so the whole deviation sits in the
   longitudinal direction.  Built the prerequisite for attacking it, `hasDerivAt_coeffSum`: the
   majorant is differentiated term by term, by the same Weierstrass argument used for the function.
+- 2026-08-03 -- Named the open quantity.  `r S'(r) = sum n ||a_n|| r^n` (absorbing `r` into
+  `r^(n-1)`, the `n = 0` term vanishing), so the first moment of the modulus profile about any centre
+  `k` is `r S'(r) - k S(r)`.  With `k = nu(r)` this is `S(r) (Lambda(r) - nu(r))` where
+  `Lambda(r) = r S'(r)/S(r)` is the **mean** index -- the average of `n` against the weights
+  `||a_n|| r^n` -- and `nu(r)` is the **modal** index, where those weights peak.  The whole remaining
+  gap is that the mean and the mode of the profile are close.  The route to it is Jensen: for
+  `q = s/r >= 1`, `S(s)/S(r)` is the weighted average of `q^n`, which is at least `q^Lambda(r)` by
+  convexity of `x |-> q^x`, so `Lambda(r) log(s/r) <= log S(s) - log S(r)`; the mirror inequality
+  bounds `Lambda` below, and the sandwich `mu <= S <= mu (nu + C)` converts both into `nu` up to a
+  logarithmic term.  Both identities proved here are pure algebra -- neither needs the decay
+  hypothesis -- which is a good sign that the remaining content is exactly the Jensen step.
+- 2026-08-03 -- Proved the Jensen step, in the general form it is needed in:
+  `exp(sum p_i x_i) <= sum p_i exp(x_i)` for nonnegative weights summing to one.  No convexity API is
+  involved -- shift by the mean `m`, apply `1 + t <= exp t` to each `x_i - m`, and note that the
+  linear lower bound sums to exactly `1`, so the whole thing collapses to `exp m * 1 <= exp m * (...)`.
+  New module `DiscreteJensenExp.lean`, stated for an arbitrary index type with explicit summability
+  hypotheses, so it is reusable anywhere a discrete weighting appears.  Instantiated with
+  `p_n = ||a_n|| r^n / S(r)` and `x_n = n log(s/r)` it will give
+  `Lambda(r) log(s/r) <= log S(s) - log S(r)`, the growth law for the mean index matching the one the
+  modal index already satisfies.

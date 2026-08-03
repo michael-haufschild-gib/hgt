@@ -181,7 +181,11 @@
   factors of a root adjunction at an isolated element,
   `GaloisForLFunctions.RHTower.DeningerCycRedPowInj` (equal powers of cyclically reduced words of
   equal length are equal),
-  `GaloisForLFunctions.RHTower.DeningerBaseConjWord` (base conjugates of cyclically reduced words)
+  `GaloisForLFunctions.RHTower.DeningerBaseConjWord` (base conjugates of cyclically reduced words),
+  `GaloisForLFunctions.RHTower.DeningerBaseHeadPow` (the block form of a power of a cyclically
+  reduced element),
+  `GaloisForLFunctions.RHTower.DeningerBaseHeadSuffix` (equal powers of cyclically reduced elements
+  have the same word)
 
 ## Statement
 
@@ -2744,3 +2748,34 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   the same length.  Together with `deningerRotate_cycRed`, which says the same of rotations, the
   output of the conjugacy criterion is now always back in the class the criterion consumes, which is
   what an induction on the conjugator needs.
+- 2026-08-03 — **Fourth brick: the block form of a power.**  The class the comparison has to be
+  carried out in is not products of cyclically reduced transversal words — that class is not closed
+  under conjugation by the base group — but base group elements times such words, which is exactly
+  the class of elements whose normal word is cyclically reduced.  `deningerShift_transversal` is the
+  one move available in that class: multiplying a transversal word on the right by a base element and
+  renormalizing shifts every letter and deposits a new base element on the left, leaving the sequence
+  of factors untouched.  `deningerBaseHead_pow_word` iterates it: the `n`-th power of `base j · M` is
+  a base element times a word of `n` blocks, each of the length of `M` and running through the same
+  factors, and — this is the point of the induction — **the last block is `M` itself**, because each
+  further power prepends a block on the left and never touches the blocks already produced.
+  So comparing two such powers compares their normal words, and reading off the last block gives the
+  two words directly.  What that leaves is the heads: two elements `base j · M` and `base k · M` with
+  the same `n`-th power, where the block decomposition alone does not force `j = k`, and the argument
+  has to use the hypothesis on the base group.  That is where isolation of the adjoined element
+  enters the length `≥ 2` case, exactly as it entered the factor case.
+- 2026-08-03 — **Fifth brick: equal powers force equal words, and the residue is exactly the base
+  head.**  `deningerBaseWord_eq` says the pair (base head, transversal word) is read off the normal
+  form, so it is determined by the element; `deningerBaseWord_head_eq` adds the head, by cancelling
+  the common word and using injectivity of the base map.  Feeding the block form into it,
+  `deningerBaseHead_pow_word_eq` concludes: if `base j · M` and `base k · W` have the same positive
+  power and `M`, `W` are cyclically reduced transversal words of the same length, then `M = W`.
+  The two elements therefore differ only by a base group element, and the whole length `≥ 2` case of
+  Baumslag's theorem has been reduced to a single question about the base group: for
+  `x = base j · M` and `y = base k · M` with `x^n = y^n`, must `j = k`?  Writing `y = base c · x`
+  with `c = k j⁻¹`, the hypothesis says the twisted norm
+  `c · (x c x⁻¹) · (x² c x⁻²) ⋯ (x^{n-1} c x^{-(n-1)})` is trivial, and unwinding the block
+  recursion turns that into the statement that conjugation by the word `M` carries the base element
+  `c` back into the base group.  That is a malnormality question about the amalgamated subgroup, and
+  for a root adjunction it is exactly where isolation of the adjoined element has to be used a second
+  time — the same hypothesis that settled the factor case.  Identifying the precise form of that step
+  is the next piece of mathematics; every combinatorial ingredient around it is now proved.

@@ -31,16 +31,34 @@ theorem hasDerivAt_linPhaseAnti (L : ℝ) (hL : L ≠ 0) (t : ℝ) :
   have hne : ((L : ℂ) * Complex.I) ≠ 0 := mul_ne_zero hL' Complex.I_ne_zero
   have hid : HasDerivAt (fun s : ℝ => (s : ℂ)) ((1 : ℝ) : ℂ) t := (hasDerivAt_id t).ofReal_comp
   have hE := hasDerivAt_exp_phase L t
-  have hprod := hid.mul hE
-  have h1 := hprod.div_const ((L : ℂ) * Complex.I)
-  have h2 := hE.div_const (((L : ℂ) * Complex.I) ^ 2)
-  have hd := h1.sub h2
+  have hprod : HasDerivAt (fun s : ℝ => (s : ℂ) * Complex.exp (((s * L : ℝ) : ℂ) * Complex.I))
+      (((1 : ℝ) : ℂ) * Complex.exp (((t * L : ℝ) : ℂ) * Complex.I)
+        + (t : ℂ) * (Complex.exp (((t * L : ℝ) : ℂ) * Complex.I) * ((L : ℂ) * Complex.I))) t :=
+    hid.mul hE
+  have h1 : HasDerivAt (fun s : ℝ =>
+      (s : ℂ) * Complex.exp (((s * L : ℝ) : ℂ) * Complex.I) / ((L : ℂ) * Complex.I))
+      ((((1 : ℝ) : ℂ) * Complex.exp (((t * L : ℝ) : ℂ) * Complex.I)
+        + (t : ℂ) * (Complex.exp (((t * L : ℝ) : ℂ) * Complex.I) * ((L : ℂ) * Complex.I)))
+          / ((L : ℂ) * Complex.I)) t :=
+    hprod.div_const _
+  have h2 : HasDerivAt (fun s : ℝ =>
+      Complex.exp (((s * L : ℝ) : ℂ) * Complex.I) / ((L : ℂ) * Complex.I) ^ 2)
+      (Complex.exp (((t * L : ℝ) : ℂ) * Complex.I) * ((L : ℂ) * Complex.I)
+        / ((L : ℂ) * Complex.I) ^ 2) t :=
+    hE.div_const _
+  have hd : HasDerivAt (linPhaseAnti L)
+      ((((1 : ℝ) : ℂ) * Complex.exp (((t * L : ℝ) : ℂ) * Complex.I)
+        + (t : ℂ) * (Complex.exp (((t * L : ℝ) : ℂ) * Complex.I) * ((L : ℂ) * Complex.I)))
+          / ((L : ℂ) * Complex.I)
+        - Complex.exp (((t * L : ℝ) : ℂ) * Complex.I) * ((L : ℂ) * Complex.I)
+          / ((L : ℂ) * Complex.I) ^ 2) t := h1.sub h2
   have hval : (((1 : ℝ) : ℂ) * Complex.exp (((t * L : ℝ) : ℂ) * Complex.I)
         + (t : ℂ) * (Complex.exp (((t * L : ℝ) : ℂ) * Complex.I) * ((L : ℂ) * Complex.I)))
           / ((L : ℂ) * Complex.I)
         - Complex.exp (((t * L : ℝ) : ℂ) * Complex.I) * ((L : ℂ) * Complex.I)
           / ((L : ℂ) * Complex.I) ^ 2
       = (t : ℂ) * Complex.exp (((t * L : ℝ) : ℂ) * Complex.I) := by
+    push_cast
     field_simp
     ring
   rw [hval] at hd

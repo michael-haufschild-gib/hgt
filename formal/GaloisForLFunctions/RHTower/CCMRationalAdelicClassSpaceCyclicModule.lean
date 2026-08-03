@@ -22,52 +22,52 @@ private abbrev Source := CCMRationalAdelicCyclicSourceAlgebra
 
 /-- Algebra of normalized trace-class Morita sections over all genuine adelic bases. -/
 abbrev CCMRationalAdelicMoritaClassSpaceAlgebra :=
-  CCMRationalAdelicMoritaBase → CCMRationalMoritaTraceClassUnitization
+  CCMRationalAdelicMoritaBase → CCMRationalMoritaTraceClassL1Unitization
 
 /-- Exact pointwise Morita restriction to the rational adeles class space. -/
 def ccmRationalAdelicMoritaClassSpaceAlgHom :
     Source →ₐ[ℂ] CCMRationalAdelicMoritaClassSpaceAlgebra where
   toFun x base :=
-    ccmRationalAdelicMoritaUnitizedHom base.bInf_ne_zero base.bFin x
+    ccmRationalAdelicMoritaL1UnitizedHom base.bInf_ne_zero base.bFin x
   map_one' := by
     funext base
-    change ccmRationalAdelicMoritaUnitizedHom
+    change ccmRationalAdelicMoritaL1UnitizedHom
       base.bInf_ne_zero base.bFin 1 = 1
-    exact (ccmRationalAdelicMoritaUnitizedHom
+    exact (ccmRationalAdelicMoritaL1UnitizedHom
       base.bInf_ne_zero base.bFin).map_one
   map_mul' x y := by
     funext base
-    change ccmRationalAdelicMoritaUnitizedHom
+    change ccmRationalAdelicMoritaL1UnitizedHom
         base.bInf_ne_zero base.bFin (x * y) =
-      ccmRationalAdelicMoritaUnitizedHom base.bInf_ne_zero base.bFin x *
-        ccmRationalAdelicMoritaUnitizedHom base.bInf_ne_zero base.bFin y
-    exact map_mul (ccmRationalAdelicMoritaUnitizedHom
+      ccmRationalAdelicMoritaL1UnitizedHom base.bInf_ne_zero base.bFin x *
+        ccmRationalAdelicMoritaL1UnitizedHom base.bInf_ne_zero base.bFin y
+    exact map_mul (ccmRationalAdelicMoritaL1UnitizedHom
       base.bInf_ne_zero base.bFin) x y
   map_zero' := by
     funext base
-    change ccmRationalAdelicMoritaUnitizedHom
+    change ccmRationalAdelicMoritaL1UnitizedHom
       base.bInf_ne_zero base.bFin 0 = 0
-    exact map_zero (ccmRationalAdelicMoritaUnitizedHom
+    exact map_zero (ccmRationalAdelicMoritaL1UnitizedHom
       base.bInf_ne_zero base.bFin)
   map_add' x y := by
     funext base
-    change ccmRationalAdelicMoritaUnitizedHom
+    change ccmRationalAdelicMoritaL1UnitizedHom
         base.bInf_ne_zero base.bFin (x + y) =
-      ccmRationalAdelicMoritaUnitizedHom base.bInf_ne_zero base.bFin x +
-        ccmRationalAdelicMoritaUnitizedHom base.bInf_ne_zero base.bFin y
-    exact map_add (ccmRationalAdelicMoritaUnitizedHom
+      ccmRationalAdelicMoritaL1UnitizedHom base.bInf_ne_zero base.bFin x +
+        ccmRationalAdelicMoritaL1UnitizedHom base.bInf_ne_zero base.bFin y
+    exact map_add (ccmRationalAdelicMoritaL1UnitizedHom
       base.bInf_ne_zero base.bFin) x y
   commutes' z := by
     funext base
     rw [Pi.algebraMap_apply]
-    exact (ccmRationalAdelicMoritaUnitizedHom
+    exact (ccmRationalAdelicMoritaL1UnitizedHom
       base.bInf_ne_zero base.bFin).commutes z
 
 @[simp]
 theorem ccmRationalAdelicMoritaClassSpaceAlgHom_apply
     (x : Source) (base : CCMRationalAdelicMoritaBase) :
     ccmRationalAdelicMoritaClassSpaceAlgHom x base =
-      ccmRationalAdelicMoritaUnitizedHom
+      ccmRationalAdelicMoritaL1UnitizedHom
         base.bInf_ne_zero base.bFin x :=
   rfl
 
