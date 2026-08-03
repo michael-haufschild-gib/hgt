@@ -1617,3 +1617,144 @@ remains is the regrouping: collecting the support by its jet part gives a *reduc
 exponents that occur are distinct) and a coefficient vector indexed by (jet exponent, spectral
 power), nonzero because `P` is; feeding that to `residual_perturbedOuterJet_shape_rigidity`
 contradicts the existence of the relation, which is (9).
+
+## Lean progress: a relation monomial is its spectral degree and its jet exponent
+
+`FamilyJetRelationExpansion.lean` gained the coordinates of the regrouping:
+
+- `jetPart` -- the jet exponent of a family jet monomial, obtained by restricting the exponent
+  function to the jet variables;
+- `combineMonomial d a` -- the monomial with spectral degree `d` and jet exponent `a`, with
+  `combineMonomial_inl` and `combineMonomial_inr` reading off its two parts;
+- **`combineMonomial_jetPart`** -- a family jet monomial *is* its spectral degree together with its
+  jet exponent, and **`familyMonomial_injective`** -- so the pair determines it.
+
+That is the injection which turns the sum over `P.support` into a sum over
+(jet exponent, spectral degree) pairs.  With `eval_familySplit_eq_sum` the remaining regrouping is a
+`Finset` computation: the jet exponents occurring in `P` form a finite set, distinct by construction,
+so they are a *reduced shape*; the coefficient at a pair outside the support is zero, so the sum may
+be extended to the full rectangle; and the coefficient vector is nonzero because `P` is.
+
+## Lean progress: a relation is its coefficient rectangle
+
+`FamilyJetRelationExpansion.lean` completes the algebraic bridge:
+
+- `jetExponents P` -- the finite set of jet exponents occurring in a relation.  Being a `Finset`,
+  its elements are automatically distinct, so it *is* a reduced shape;
+- `spectralBound P` -- the largest spectral degree occurring;
+- `relationCoeff P a d = P.coeff (combineMonomial d a)` -- the coefficient at a
+  (jet exponent, spectral degree) pair;
+- **`eval_familySplit_eq_rectangle`** -- evaluating a relation at a point is the double sum over that
+  rectangle.  The support injects into the rectangle by `familyMonomial_injective`, and the pairs it
+  misses contribute nothing because their coefficient is zero;
+- **`exists_relationCoeff_ne_zero`** -- a nonzero relation has a nonzero coefficient in its
+  rectangle.
+
+So a differential relation for the family, evaluated at a point `z`, is exactly
+
+  `sum over (a, d) of coeff(a,d) * z^d * (jet monomial a)  =  0`,
+
+which is one row of `expandedDifferentialEvaluationMatrix` applied to the coefficient vector
+`coeff`.  Since that vector is nonzero, `residual_perturbedOuterJet_shape_rigidity` -- which says
+every such vector vanishes for a residual set of mass parameters -- forbids the relation.  Both ends
+of (9) are now formal; what is left is to write the composition, matching the column indexing of the
+corpus's matrix (`monomial x spectral power`) with the pairs above.
+
+## Lean progress: folding the jet variables
+
+`FamilyJetRelationExpansion.lean` gained the last coordinate change:
+
+- `foldExponent` -- folding the (member, order) jet variables of a family into the single index the
+  expanded evaluation matrix uses, by transporting the exponent along `finProdFinEquiv`;
+- **`foldExponent_injective`** -- the fold does not identify distinct exponents, so the reduced shape
+  stays reduced;
+- **`prod_foldExponent`** -- and the jet monomial is unchanged by it.
+
+Every object in (9) is now expressed in the matrix's own indexing:
+
+| object | in matrix coordinates |
+|---|---|
+| jet variables | `foldExponent`, `prod_foldExponent` |
+| jet exponents of a relation | `jetExponents`, distinct by construction |
+| spectral degrees | `Finset.range (spectralBound P + 1)` |
+| coefficient vector | `relationCoeff`, nonzero by `exists_relationCoeff_ne_zero` |
+| one row of the relation | `eval_familySplit_eq_rectangle` at that row's node |
+| the observation | `familyOuterObservation`, continuous and locally surjective |
+| the conclusion | `residual_perturbedOuterJet_shape_rigidity` |
+
+The remaining step is the assembly itself: package a nonzero relation as a `ReducedShape` together
+with its coefficient vector, check that the matrix relation holds at the chosen nodes because the
+differential relation holds on the whole upper half plane, and conclude that the coefficient vector
+is zero -- a contradiction.
+
+## Lean progress: a relation carries a reduced shape
+
+`FamilyJetRelationExpansion.lean` now produces, from a relation, the very object the rigidity theorem
+quantifies over:
+
+- `foldExponentEquiv`, `foldExponentEquiv_injective`, `prod_foldExponentEquiv` -- the fold of the jet
+  variables along an *arbitrary* identification with a single index, so the target index can be put
+  in the `Fin (d + 1)` form a shape carries;
+- `familyJetVariablesEquiv` -- that identification for a nonempty family: the `(m'+1)(n+1)` jet
+  variables become `Fin (m'(n+1) + n + 1)`;
+- **`relationShapeOf`** -- the shape of a relation: its spectral degree, its jet depth, and an
+  enumeration of the jet exponents that actually occur;
+- **`injective_relationShapeOf_exponent`** -- that shape is *reduced*: the exponents are pairwise
+  distinct, because they enumerate a finite set and the fold is injective.
+
+So every nonzero relation of a nonempty family yields a `ReducedShape` together with a nonzero
+coefficient vector (`exists_relationCoeff_ne_zero`) and the identity
+`eval = sum over the rectangle` (`eval_familySplit_eq_rectangle`).  The final assembly is now a
+matter of writing the matrix relation: at each admissible node the differential relation holds --
+those nodes lie in the upper half plane, which for real translates *is* the family's common domain --
+so the coefficient vector is annihilated, and `residual_perturbedOuterJet_shape_rigidity` forces it
+to be zero.
+
+## Lean progress: the coefficient vector of a relation
+
+`FamilyJetRelationExpansion.lean`:
+
+- **`relationCoeffVector`** -- the coefficient vector of a relation, indexed exactly by the columns
+  of its shape's evaluation matrix, `monomial index x spectral power`;
+- **`relationCoeffVector_ne_zero`** -- it is nonzero whenever the relation is.
+
+Combining with what is already proved, a nonzero relation `P` of a nonempty family now supplies, in
+one package:
+
+- a `ReducedShape` -- `relationShapeOf P` with `injective_relationShapeOf_exponent`;
+- a nonzero vector in that shape's column space -- `relationCoeffVector P`,
+  `relationCoeffVector_ne_zero`;
+- and the evaluation identity that turns "the relation holds at a point" into "that vector is
+  annihilated by the shape's evaluation matrix at that row" -- `eval_familySplit_eq_rectangle`
+  together with `prod_foldExponentEquiv`.
+
+`residual_perturbedOuterJet_shape_rigidity` says the third of these forces the second to vanish, for
+a residual set of mass parameters.  So (9) is the contradiction between those two facts, and the only
+remaining Lean work is to write that contradiction down: expand `Matrix.mulVec` into the rectangle
+sum and reindex the monomial sum through `Finset.equivFin`.
+
+## Lean progress: the relation as a matrix row, and a note on how to finish
+
+**`sum_rectangle_eq_eval`** -- a relation, evaluated at a node with prescribed jets, is the sum over
+its rectangle of `(node^d * jet monomial in the folded coordinates) * coefficient`.  Each factor in
+brackets is *exactly* an entry of `expandedDifferentialEvaluationMatrix` in the corresponding column,
+for any identification `e` of the jet variables with a single index.
+
+A note for whoever writes the final composition.  The natural formulation --
+
+  `mulVec (matrix of (relationShapeOf P)) (relationCoeffVector P) b = eval ... P`
+
+-- is *not* the convenient one to prove directly: `simp` unfolding of the `relationShapeOf` structure
+projections rewrites the index types of the `Fintype` instances underneath `Finset.univ`, and the
+goal stops being type-correct at `instances` transparency.  The safe route is to keep the shape
+opaque and do the reindexing separately:
+
+1. `sum_rectangle_eq_eval` gives the identity with the sums over `jetExponents P` and
+   `Finset.range (spectralBound P + 1)` -- no structure projections, no `Fintype` instances;
+2. convert `∑ i : Fin (jetExponents P).card` to `∑ a ∈ jetExponents P` with
+   `Equiv.sum_comp (jetExponents P).equivFin.symm` and `Finset.sum_coe_sort`, and
+   `∑ d : Fin (q+1)` to `∑ d ∈ Finset.range (q+1)` with `Fin.sum_univ_eq_sum_range`, *as separate
+   rewrites on the matrix side*;
+3. only then match the two, using `expandedDifferentialEvaluationMatrix_apply` to expose the entry.
+
+Keeping steps 1 and 2 apart is what avoids the instance mismatch.

@@ -142,7 +142,14 @@
   `GaloisForLFunctions.RHTower.DeningerConjInvariant` (the conjugator invariant),
   `GaloisForLFunctions.RHTower.DeningerConjLetterCases` (which cancellation happened),
   `GaloisForLFunctions.RHTower.DeningerRotateLen` (the length of a rotation),
-  `GaloisForLFunctions.RHTower.DeningerConjugator` (the conjugator of a single letter)
+  `GaloisForLFunctions.RHTower.DeningerConjugator` (the conjugator of a single letter),
+  `GaloisForLFunctions.RHTower.DeningerRootBase` (roots in the base group),
+  `GaloisForLFunctions.RHTower.DeningerRootsNotUnique` (roots in an amalgam need not be unique),
+  `GaloisForLFunctions.RHTower.DeningerRootFactor` (roots of elements of the factors),
+  `GaloisForLFunctions.RHTower.DeningerRootNotIsolated` (a root adjunction is never isolated),
+  `GaloisForLFunctions.RHTower.DeningerGaloisPacket` (the packet at a Galois action),
+  `GaloisForLFunctions.RHTower.DeningerFreeProductVanishing` (a free product of two infinite cyclic
+  groups)
 
 ## Statement
 
@@ -1361,7 +1368,8 @@ fixes no Galois action of its own.
   (`GaloisForLFunctions.RHTower.DeningerBaumslagFunctorial`)
 - [x] equivariance of the packet under any group acting on the index set and on `A`
   (`GaloisForLFunctions.RHTower.DeningerBaumslagEquivariance`)
-- [ ] 3 → 4 publication-ready: instantiate the equivariance at an actual Galois action
+- [x] 3 → 4 publication-ready: instantiate the equivariance at an actual Galois action
+  (`GaloisForLFunctions.RHTower.DeningerGaloisPacket`)
 
 ## Hostile audit
 
@@ -2337,3 +2345,80 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   Proved the base case honestly rather than committing the draft: `deningerConjugator_letter` — a
   single conjugating letter is an inverted letter of the word, up to the base group, at whichever end
   it cancelled.
+- 2026-08-03 — `deningerPow_eq_of_len_zero`: two elements of the base group with the same power are
+  equal, provided the base group has unique roots.  This is the first place in the whole endgame
+  where the hypothesis that the *factors and base have unique roots* is used at all — every earlier
+  cycle proved word combinatorics that never touched it.  That is a useful check on the shape of the
+  argument: the combinatorics reduces the general case to comparisons inside a factor or the base,
+  and only there does the hypothesis enter.  It also means the elliptic case of the theorem — where
+  the element is conjugate into a factor — is close, since it is this lemma plus conjugation, whereas
+  the hyperbolic case is what needs the conjugator reconstruction.
+- 2026-08-03 — **The target the endgame was aiming at is false, and here is the proof.**  Trying to
+  state the elliptic case exposed it: an amalgam of groups with unique roots need **not** have unique
+  roots.  `deningerPow_eq_ne` — if two factors contain elements outside the base group whose `n`-th
+  powers are the *same* element of the base group, those elements have the same `n`-th power in the
+  amalgam and are distinct, since their words run through different factors.  The concrete instance
+  is `⟨a, t | a² = t⁴⟩`, an amalgam of two infinite cyclic groups over an infinite cyclic group, in
+  which `t²` and `a` are distinct with equal squares.  Both factors and the base have unique roots.
+  So the plan pursued over the last several cycles — prove `IsMulTorsionFree (PushoutI φ)` in general
+  and use it for the tower identification — was aiming at a false statement, which is why the endgame
+  kept failing to close at a different point each time.  Baumslag's theorem needs the amalgamated
+  subgroup to be **isolated** in the factors: no element outside it may have a power inside it.  For
+  the root adjunction tower that holds by construction, so the route survives, but the statement to
+  prove is the isolated one, not the general one.  Everything proved for the general case — the
+  lengths, the conjugacy criterion, the cancellation analysis — remains valid and is used unchanged;
+  what changes is the hypothesis under which the endgame is attempted.
+- 2026-08-03 — **Uniqueness of roots for elements of the factors, over an isolated base group**
+  (`deningerPow_eq_of_factors`).  This is the first theorem stated under the corrected hypothesis,
+  and it shows the hypothesis is exactly the right one: isolation is used precisely where the
+  counterexample lives.  If the two elements lie in the same factor the factor's own uniqueness
+  settles it; if in different factors, either both powers avoid the base group — impossible, since
+  the two one letter words would then run through different factors while having the same product —
+  or one power lies in the base group, and isolation drags both elements into it, where the base
+  group's uniqueness applies.  Without isolation that last step fails and the elements can be
+  genuinely different, which is the counterexample proved last cycle.
+- 2026-08-03 — **A root adjunction is never isolated, so it does not preserve unique roots**
+  (`deningerZpow_not_isolated`): in an infinite cyclic group the `m`-th powers are not an isolated
+  subgroup for `|m| ≥ 2`, since the generator has its `|m|`-th power inside while lying outside.
+  Combined with the counterexample, this settles the structural question: adjoining an `m`-th root of
+  an element by an amalgam **can destroy uniqueness of roots**, and `⟨g, t | g² = t⁴⟩` is an actual
+  root adjunction in which it does.  So Baumslag's rationalization is *not* an increasing union of
+  root adjunctions along injective maps preserving the property — the construction must adjoin roots
+  in an order that keeps the relevant subgroups isolated, or pass to a quotient.
+  This invalidates the tower identification as planned for clause (4), and the invalidation is a
+  fact about the mathematics, not about the formalization.  The tower machinery itself stands: every
+  stage is torsion free and has vanishing homology in degrees at least two, whatever roots are
+  chosen.  What no longer follows is that such a tower has `Bau(F)` as its union.
+- 2026-08-03 — **The equivariance is instantiated at an actual Galois action**
+  (`deningerPacket_galois`), closing that gate.  The Galois group of a field extension acts on the
+  field; taking the field as the index set, that action induces one on the free group and on its
+  rationalization, and the packet intertwines it with the action on the rational permutation module
+  of the same set.  The permutation module is built here (`DeningerPermModule`) with the action given
+  by pushing forward along the permutation, and its basis is equivariant by construction, which is
+  the hypothesis the abstract equivariance asks for.  The instantiation is not degenerate: both
+  actions are the genuine Galois action, not a trivial one.
+- 2026-08-03 — **The clause (4) route is settled, negatively for the tower and positively for the
+  machinery.**  With the counterexample and the failure of isolation both proved, the position is
+  this.  The maps of a tower of root adjunctions *are* injective — a factor always embeds in an
+  amalgam — so the tower is an increasing union and the union lemma applies to it.  What fails is the
+  identification of that union with `Bau(F)`: two elements that acquire a common power at some stage
+  stay distinct at every later stage, so the union has non unique roots and is not a D-group.
+  `Bau(F)` is therefore a proper quotient of such a union, and homology does not pass to quotients.
+  The literature proof runs instead through homological localization — the rationalization induces an
+  isomorphism on rational homology — which is the deep input the card already cites.  So the gate is
+  correctly marked as proof missing, and the tower machinery, which is complete and unconditional,
+  proves a different theorem: the union of a tower of root adjunctions is a group containing the free
+  group in which every element has all roots, torsion free, with vanishing homology in all degrees at
+  least two.
+  Proved as a check on that machinery, and as a statement of independent interest:
+  `deningerFreeProduct_isZero` — the homology of a free product of two infinite cyclic groups
+  vanishes in degrees at least two, obtained by amalgamating over the trivial group, where the tree
+  has trivial edge stabilizers.
+- 2026-08-03 — **Vanishing passes from the factors to a free product**
+  (`deningerFreeProduct_isZero_of_factors`): if both factors have vanishing homology in a degree at
+  least two, so does their free product.  Amalgamating over the trivial group leaves nothing on the
+  edges of the tree, so the long exact sequence has only the vertex terms to cancel.  The infinite
+  cyclic case is now a corollary rather than a separate argument.  This is the shape the localization
+  route needs on the source side — the free group's own rational homology — and it reduces that to
+  the same statement for an arbitrary index set, where the remaining work is the decomposition of the
+  vertex representation into infinitely many summands.

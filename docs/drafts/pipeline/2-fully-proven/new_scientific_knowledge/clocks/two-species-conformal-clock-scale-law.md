@@ -846,9 +846,65 @@ All of these constructions are tied to the coordinate frame.
 - `dalembert_comp_orthogonal_frame` — for a `G`-orthogonal frame only the pure second derivatives
   survive, so every flat construction above transports verbatim to that frame.
 
-The same formula is the entry point to the characteristic route: for a **null** frame in two
-dimensions the diagonal pairings vanish and only the mixed derivative survives, which is the form in
-which the wave equation is solved by Riemann's method.
+The same formula is the entry point to the characteristic route, taken in
+`formal/GaloisForLFunctions/HTGeometry/ClockNullFrameReduction.lean`:
+
+- `nullCovectors`, `covectorPairing_null_zero_zero`, `covectorPairing_null_one_one` — in the null
+  frame `ξ = x⁰+x¹`, `η = x⁰-x¹` of two-dimensional Minkowski space **both frame covectors are
+  null**, so the diagonal pairings vanish;
+- `dalembert_nullFrame` — hence **`□(u∘F)(x) = -2·((∂₁∂₀u) + (∂₀∂₁u))(Fx)`**, the characteristic
+  form;
+- `nullFrame_zero`, `nullFrame_one`, `exists_event_of_nullPoint` — the frame and its inverse;
+- `solvesPotentialWaveAt_of_characteristic` — a solution of `∂₁∂₀u + ∂₀∂₁u = ½V·u` at a null point
+  is a clock probe at the corresponding event;
+- `potential_eq_of_characteristic_family` — a family of such solutions without a common zero
+  determines the potential.
+
+The reduction is exact, not merely sufficient.
+`formal/GaloisForLFunctions/HTGeometry/ClockNullFrameEquivalence.lean`:
+
+- `invNullCovectors`, `invNullFrame`, `nullFrame_invNullFrame`, `invNullFrame_nullFrame` — the null
+  frame is invertible, `x⁰ = (ξ+η)/2`, `x¹ = (ξ-η)/2`;
+- `characteristic_of_solvesPotentialWaveAt` — a clock probe transports to a characteristic solution;
+- `solvesPotentialWaveAt_iff_characteristic` — **the two are the same data**.
+
+One apparent gap in the foliation reconstruction turns out to be empty. That theorem requires the
+foliation to be **non-null**, so a potential constant along a null direction falls outside it.
+`formal/GaloisForLFunctions/HTGeometry/ClockNullFoliationRiccati.lean` shows the null case is
+nevertheless covered, by a different mechanism:
+
+- `nullExponent`, `gradPair_nullExponent`, `dalembert_nullExponent` — for `w = F(ξ) + η` one has
+  `□w = 0` and `Γ(w,w) = -4F'(ξ)`;
+- `chartRiccatiPotential_nullExponent` — hence `-(□w + Γ(w,w)) = 4F'(ξ)`, a potential constant along
+  the null direction `ξ`, carried by the globally nonvanishing probe `e^{w}`;
+- `noCommonZero_nullFoliated`, `potential_eq_nullFoliated` — every such potential is in the Riccati
+  class and is determined outright.
+
+So the non-nullity hypothesis of `twoSpecies_foliation_reconstruction` is a limitation of that route,
+not of the result: in two dimensions the null-foliated potentials are reached through the Riccati
+class instead.
+
+So in 1+1 dimensions the card's last open input is now **exactly the Goursat problem**: local
+solvability of `∂ξ∂η u = ¼ V u` with prescribed nonzero data on the characteristics — and nothing
+weaker, since the equivalence runs both ways. That is the equation Riemann's method solves by Picard
+iteration on a rectangle, and it is the concrete target that would close the remaining gap in two
+dimensions.
+
+The first layer of that construction is built.
+`formal/GaloisForLFunctions/HTGeometry/ClockVolterraOperator.lean` integrates the characteristic
+equation once in `η`, turning it into an ordinary differential equation in `ξ` whose values are
+functions of `η`, `∂ξ U(ξ) = A(ξ)U(ξ)` with `(A(ξ)v)(η) = ∫_b^η K(ξ,t)v(t)dt`:
+
+- `clampTo`, `volterraFun`, `continuous_primitive_of_continuous`, `continuous_volterraFun` — the
+  operator, with the range of integration clamped to a fixed compact interval so that it is bounded;
+- `abs_volterraFun_le`, `abs_volterraFun_sub_le` — the pointwise norm and difference estimates;
+- `volterraBCF`, `norm_volterraBCF_le`, `dist_volterraBCF_le` — the operator on the Banach space of
+  bounded continuous functions, with **`‖A(ξ)U‖ ≤ M(b'-b)‖U‖`** and the matching Lipschitz bound.
+
+Those two estimates are exactly the hypotheses `IsPicardLindelof` requires of a vector field, and
+mathlib's Picard–Lindelöf theorem is stated for an arbitrary Banach space. What remains for the
+two-dimensional case is the continuity of `ξ ↦ A(ξ)U`, the assembly into `IsPicardLindelof`, and the
+recovery of the mixed second derivative from the resulting integral equation.
 
 So the last open input of the whole programme is now stated in its physical form:
 

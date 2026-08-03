@@ -418,7 +418,9 @@ It also identifies the mechanism and the sharp wall.  The analytic growth invari
 - [x] Lean: the Borel growth lemma, and the unbounded supply of good radii it yields
 - [x] Lean: continuity of the maximum term, the hypothesis the Borel lemma needs
 - [x] Lean: the Borel bridge -- good radii for `mu`, and the resulting bound on `nu`
-- [ ] Lean: the Wiman--Valiron estimate `f'(z_r)/f(z_r) ~ nu(r)/z_r` outside the exceptional set
+- [x] Lean: `z f'(z) - k f(z)` is the index-deviation series, and its bound
+- [x] Lean: the logarithmic-derivative estimate at a maximum-modulus point, with explicit remainder
+- [ ] Lean: choose `t` and `s` at a Borel-good radius to make the remainder `o(nu(r))`
 - [ ] Lean: Newton--Puiseux places at `U = infinity`, hence the nondegenerate Wiman place
 - [ ] Lean: Clunie--Steinmetz composition separation and state algebraic independence
 - [x] Lean: the order lower bound `ord_DA >= n` from `n` algebraically independent jets
@@ -508,7 +510,21 @@ maxTerm_mul_index_le                      -- mu'(r) <= mu(r) (nu(s) + geometric 
 summable_index_deviation                  -- the deviation series sum |n - k| ||a_n|| r^n converges
 sum_window_index_deviation_le             -- inside the window the deviation is the window width
 tsum_index_deviation_le                   -- the complete deviation estimate, window plus two tails
+ofScalars_radius_eq_top                   -- an entire coefficient sequence has infinite radius
+coeffFun, differentiable_coeffFun         -- its sum is an entire function
+norm_coeffFun_le                          -- dominated by the majorant S(|z|)
+hasDerivAt_coeffFun                       -- and is differentiated term by term
+mul_deriv_coeffFun_eq                     -- z f'(z) = sum n a_n z^n
+mul_deriv_sub_eq_tsum                     -- z f'(z) - k f(z) = sum (n - k) a_n z^n
+norm_mul_deriv_sub_le                     -- bounded by the deviation series
+sum_window_le_card_mul_maxTerm            -- the window sum is at most its count times mu(r)
+norm_mul_logDeriv_sub_centralIndex_le     -- the Wiman--Valiron logarithmic-derivative estimate
 ```
+
+With `norm_mul_deriv_sub_le` the coefficient estimate becomes a statement about the function:
+combining it with `tsum_index_deviation_le` at `k = nu(r)` bounds `|z f'(z) - nu(r) f(z)|` by the
+window width times the majorant plus two multiples of the maximum term.  Dividing by `f(z)` at a
+maximum-modulus point -- where `|f(z)| = M(r) >= mu(r)` -- is the Wiman--Valiron estimate.
 
 `tsum_index_deviation_le` is the coefficient-side Wiman--Valiron estimate in full:
 
@@ -753,3 +769,42 @@ triangularity package, which is exactly how the paper proof uses them.
   decay leaves a constant `sum_j (1+j) q^(j+1)` fixed by the radius ratio.  Every remainder is a
   multiple of `mu(r)`, so the estimate reduces the Wiman--Valiron main theorem to making the window
   width small at a Borel-good radius.
+- 2026-08-03 -- Attached the function to the coefficients.  `ofScalars_radius_eq_top` shows the decay
+  hypothesis gives infinite radius of convergence (via `radius_eq_top_of_summable_norm`, discarding
+  the zeroth term with `summable_nat_add_iff` since `ofScalars_norm_le` only bounds positive
+  indices), so `coeffFun a = (ofScalars C a).sum` is entire and `norm_coeffFun_le` bounds it by the
+  majorant.  This closes the loop with `entireCoeffs_coeff_of_radius_eq_top` from the other
+  direction: entire functions and entire coefficient sequences are now interchangeable, and the
+  deviation estimate can be read as a statement about `z f'(z) - nu(r) f(z)` once the termwise
+  derivative identity is available.
+- 2026-08-03 -- Proved termwise differentiation, `hasDerivAt_coeffFun`.  Mathlib has no lemma giving
+  the derivative of a scalar power series away from its centre, so the proof is the Weierstrass
+  limit theorem: the partial sums over `Finset` are polynomials with the obvious derivative, and both
+  they and their derivatives converge uniformly on each ball `|z| < |z0| + 1` -- the derivative
+  majorant `n ||a_n|| R^(n-1)` is summable because `n a_n` is again an entire coefficient sequence --
+  so `hasDerivAt_of_tendstoLocallyUniformlyOn` applies.  The remaining assembly is
+  `z f'(z) - k f(z) = sum (n-k) a_n z^n` and the norm bound by the deviation series, at which point
+  the deviation estimate becomes a statement about the logarithmic derivative.
+- 2026-08-03 -- Assembled the logarithmic derivative.  `z f'(z) = sum n a_n z^n` follows from
+  termwise differentiation after absorbing `z` into `z^(n-1)` (the `n = 0` term vanishes, so the
+  truncated subtraction is harmless), and subtracting `k f(z)` term by term gives
+  `z f'(z) - k f(z) = sum (n-k) a_n z^n`.  Its norm is bounded by the deviation series, so combining
+  with `tsum_index_deviation_le` at `k = nu(r)` bounds `|z f'(z) - nu(r) f(z)|` by the window width
+  times the majorant plus two multiples of `mu(r)`.  What is left is to divide by `f(z)` at a
+  maximum-modulus point, where `|f(z)| = M(r) >= mu(r)` makes every remainder a bounded multiple of
+  the left side.
+- 2026-08-03 -- The Wiman--Valiron logarithmic-derivative estimate is proved with an explicit
+  remainder.  At any point of the circle of radius `r` where `|f(z)| >= mu(r)` -- in particular at a
+  maximum-modulus point, since `mu(r) <= M(r)` -- dividing the index-deviation identity by `f(z)`
+  gives
+
+  ```text
+  | z f'(z)/f(z) - nu(r) |
+      <= [ (nu(s)-nu(t)) S(r) + nu(r) mu(r) (t/r)/(1-t/r) + mu(r)(nu(s)+1) C(r/s) ] / mu(r)
+  ```
+
+  for every `t < r < s`.  Also added `sum_window_le_card_mul_maxTerm`, which bounds the window sum by
+  its term count times `mu(r)` -- the alternative to `S(r)` in the first summand, and the one that
+  makes the whole remainder a multiple of `mu(r)`.  The only step left is quantitative: choose `t`
+  and `s` at a Borel-good radius so that the window width and the two ratios shrink fast enough for
+  the right-hand side to be `o(nu(r))`.

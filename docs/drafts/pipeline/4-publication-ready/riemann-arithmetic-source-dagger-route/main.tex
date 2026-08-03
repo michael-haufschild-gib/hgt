@@ -1,0 +1,757 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,margin=30mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,tabularx,array,float}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{problem}[theorem]{Open source law}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\XiC}{\mathcal X}
+\newcommand{\RH}{\mathrm{RH}}
+\newcommand{\Div}{\operatorname{Div}}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\ran}{\operatorname{ran}}
+\newcommand{\mul}{\operatorname{mul}}
+\newcommand{\dom}{\operatorname{dom}}
+\newcommand{\Span}{\operatorname{span}}
+\newcommand{\Rea}{\operatorname{Re}}
+\newcommand{\Ima}{\operatorname{Im}}
+
+\title{\textbf{Arithmetic source descent toward the Riemann hypothesis}\\
+\large Completed conormal non-erasure and the remaining source--dagger law}
+\author{Michael Haufschild}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We give a source-first route to the Riemann hypothesis and separate its
+constructed part from its one unresolved arithmetic law.  The organizing
+principle is source-descent conservation: a distinction erased by one edge of
+a transport chain cannot be recreated downstream, while a resolved packet can
+cancel only against another term in the same full grade.  This identifies a
+forced order for a Riemann construction: arithmetic source, exact analytic
+landing, conormal retention, source-preserving singular completion, and only
+then Hermitian polarization.
+
+All stages before the final selection law are realized explicitly.  A
+target-free M\"obius--theta source has Fourier--Laplace transform
+\[
+ \zeta\!\left(m\left(\tfrac12+iw\right)\right)^{-1}
+ \XiC^{(k)}(w),
+\]
+and its complete high-exponent cofaces converge to every jet of the centered
+completed zeta function.  At a zero of arbitrary multiplicity (r), the
+division-free conormal landing is the nonzero vertical pair
+\((0,\XiC^{(r)}(w_\rho))\).  The first nonzero physical jet lands
+coefficient-faithfully in a completed Hellinger--Gamma/Calder\'on--Witt
+incidence vector and is nonzero at every divisor stalk.  Its unsquared Hodge
+trace vanishes exactly when \(\Rea\rho=1/2\).  A separate adaptive
+prime-normal construction yields a boundedly invertible reflected Green
+transport with pointwise lower modulus \(3/4\); it commutes with source Green
+reflection and harmonic Hodge rotation and loses no divisor atom.
+
+These results close source existence, source-to-
+\(\Xi\) landing, multiplicity retention, Gamma incidence, co-Poisson transport, reflected
+Green transport, and atomic non-erasure.  They do not prove the Riemann
+hypothesis.  The remaining theorem is a strict, unsymmetrized law in one full grade:
+intertwining law: on the same retained top-conormal atom, source inverse must
+be identified with analytic dagger before reflection averaging or positive
+scalarization.  Its degree-one target rotation has square
+\[
+ \delta_n(\rho)=\exp\!\left((2\Rea\rho-1)\log n\right).
+\]
+Nonzero cyclic equivariance forces \(\delta_n(\rho)=1\), hence
+\(\Rea\rho=1/2\).  We prove that ordinary Hilbert completion, product-topology
+closure, finite-Rees transport, reflection averaging, and positive
+Gamma scalarization cannot manufacture this identity.  The route therefore
+does not seek a hidden self-adjoint operator or another positivity criterion.
+It seeks one arithmetic boundary identity upstream of every operation known
+to erase the required orientation.
+\end{abstract}
+
+\medskip
+\noindent\textbf{Keywords.}
+Riemann hypothesis; M\"obius--theta source; conormal; Gamma/co-Poisson
+boundary; source descent; cyclic monodromy; singular completion.
+
+\section{The problem is selection, not representation}
+
+Write
+\[
+ \xi(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s),
+ \qquad
+ \XiC(w)=\xi\!\left(\frac12+iw\right).
+\]
+For a nontrivial zero \(\rho\) of \(\xi\), put
+\[
+ w_\rho=(\rho-\tfrac12)(-i),
+ \qquad
+ a_\rho=\Rea\rho-\frac12.
+\]
+Then \(\XiC(w_\rho)=0\), and the Riemann hypothesis is the assertion
+\(a_\rho=0\) for every divisor point.  Let \(r_\rho\geq1\) be the analytic
+multiplicity of \(\XiC\) at \(w_\rho\).  Thus
+\[
+ \XiC^{(j)}(w_\rho)=0\quad(0\leq j<r_\rho),
+ \qquad
+ \XiC^{(r_\rho)}(w_\rho)\neq0.
+\tag{1.1}\label{eq:first-jet}
+\]
+
+The constructions below show that the arithmetic source reaches the entire
+local Cartier package \eqref{eq:first-jet}, retains its leading conormal, and
+places it in the Gamma/co-Poisson incidence geometry without annihilation.
+Consequently the unresolved issue is not whether a source reaches a zero.
+It is why one particular real character carried by that nonzero source atom
+must be unitary.
+
+The distinction matters because a representation theorem and a selection
+theorem have opposite logical directions.  Representation constructs a
+carrier for every possible divisor, including a hypothetical off-line one.
+Selection proves that the arithmetic source cannot support the off-line
+character.  A faithful representation can therefore be complete and still
+make no progress on zero exclusion.
+
+\section{The source-descent conservation law}
+
+We first state the universal mechanism used to audit every transport in the
+route.
+
+\begin{definition}
+Let \(T:E\to F\) be a linear map and \(S\subseteq E\) a source sector.  We
+say that \(T\) is \emph{conservative on \(S\)} when
+\[
+                 S\cap\ker T=\{0\}.
+\]
+For a grade map \(g:I\to\Gamma\) and a finite packet
+\((c_i)_{i\in A}\), its resolved realization is
+\[
+ P(\gamma)=\sum_{\substack{i\in A\\g(i)=\gamma}}c_i.
+\]
+\end{definition}
+
+\begin{theorem}[Source-descent conservation]
+\label{thm:source-descent}
+Let \(E\xrightarrow{T}F\xrightarrow{U}G\) be linear maps and
+\(S\subseteq E\) a source sector.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item The composite \(UT\) is conservative on \(S\) if and only if
+      \(T\) is conservative on \(S\) and \(U\) is conservative on
+      \(T(S)\).
+\item A finite resolved packet vanishes if and only if it vanishes in each
+      full grade separately.  In particular, every nonzero term of a
+      vanishing packet has a distinct, oppositely signed mate of the same
+      full grade.
+\item If a coarsening of grades creates a zero that was absent before
+      coarsening, then two distinct full grades have collided.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+For (i),
+\[
+ \ker(UT)=T^{-1}(\ker U).
+\]
+Intersecting with \(S\) gives the forward implication.  Conversely, if
+\(x\in S\) and \(UTx=0\), conservativity of \(U\) on \(T(S)\) gives
+\(Tx=0\), and conservativity of \(T\) on \(S\) gives \(x=0\).
+
+For (ii), equality in the product \(\prod_{\gamma\in\Gamma}A_\gamma\) is
+coordinatewise.  If the coefficient at \(i\) is nonzero while its grade
+coordinate sums to zero, at least one other nonzero coefficient occurs in
+the same grade.  Part (iii) is the contrapositive: if the coarsening is
+injective on the grades appearing in the packet, its fibre sums are exactly
+the original grade coordinates and cannot create a new zero.
+\end{proof}
+
+\begin{corollary}[Forced order]
+\label{cor:forced-order}
+Suppose orientation is carried by a resolved source coordinate.  Any route
+that first passes through an orientation-invariant quotient, a positive
+quadratic response, or a completion whose graph has a nonzero vertical
+fibre must recover orientation from an additional transverse channel.  No
+later injective postprocessing of the reduced record repairs the lost edge.
+\end{corollary}
+
+This is not a Riemann-specific no-go.  It is the reason that the order
+\[
+ \boxed{\begin{gathered}
+   \text{resolve source}\ \longrightarrow\
+   \text{land analytically}\ \longrightarrow\
+   \text{retain conormal}\\[-1mm]
+   \longrightarrow\ \text{strictify singular range}\
+   \longrightarrow\ \text{polarize}
+ \end{gathered}}
+\tag{2.1}\label{eq:forced-order}
+\]
+is forced rather than stylistic.
+
+\section{A target-free arithmetic source reaches every Xi jet}
+
+Let \(\Theta\) denote the fixed theta-cusp half-density on the logarithmic
+line, and let \(\mu\) be the M\"obius function.  For an integer \(m\geq3\),
+write \(\mu_m(n)\) for the component of \(\mu(n)\) supported on perfect
+\(m\)-th powers.  Define the physical rung
+\[
+ \Psi_m(x)=\sum_{n\geq1}\mu_m(n)n^{-1/2}\Theta(x-\log n).
+\tag{3.1}\label{eq:physical-rung}
+\]
+The series is absolutely convergent in the source Hilbert space.  It is
+formed before a spectral point, a zero, or a divisor is chosen.
+
+Internal polynomial promotion of \(\Theta\) gives sources
+\(\Psi_{m,k}\) for every derivative order \(k\geq0\).  Translation on the
+logarithmic line becomes multiplication by a Mellin character.  The M\"obius
+Dirichlet series then gives the following exact transform.
+
+\begin{proposition}[Physical source-to-Xi landing]
+\label{prop:source-landing}
+For \(|\Ima w|<1\) and
+\(\Rea(\tfrac12+iw)>1/m\),
+\[
+ \mathcal{FL}(\Psi_{m,k})(w)
+ =\zeta\!\left(m\left(\tfrac12+iw\right)\right)^{-1}
+  \XiC^{(k)}(w).
+\tag{3.2}\label{eq:source-transform}
+\]
+For every fixed \(w\) with
+\(\Rea(\tfrac12+iw)>0\), the right-hand side converges to
+\(\XiC^{(k)}(w)\) as \(m\to\infty\) through the integer rungs.
+\end{proposition}
+
+\begin{proof}
+Absolute summability permits termwise Fourier--Laplace transform in
+\eqref{eq:physical-rung}.  The logarithmic translate contributes
+\(n^{-iw}\); the theta source contributes \(\XiC(w)\), and internal
+promotion contributes its \(k\)-th derivative.  The remaining Dirichlet
+series is
+\[
+ \sum_{n\geq1}\mu_m(n)n^{-1/2-iw}
+ =\zeta\!\left(m\left(\tfrac12+iw\right)\right)^{-1},
+\]
+in its absolute-convergence domain, proving \eqref{eq:source-transform}.
+For fixed positive real part, the scaled argument tends to the far right
+half-plane and \(\zeta(ms)^{-1}\to1\).  The same domination gives convergence
+of the transformed source.
+\end{proof}
+
+There is also a complete positive resolution.  For a base \(K\geq12\), let
+\(M_{K,j}(s)\) be its high-exponent multiplier coordinates.  They satisfy
+\[
+ \sum_{j\geq0}|M_{K,j}(s)|<\infty,
+ \qquad
+ \sum_{j\geq0}M_{K,j}(s)=1
+\tag{3.3}\label{eq:mass-one}
+\]
+throughout the closed right half of the critical strip.  Thus at least one
+coordinate is nonzero at every point, and multiplication by that analytic
+coordinate preserves exact analytic order.
+
+\begin{theorem}[Cofinal conormal non-erasure]
+\label{thm:conormal}
+Let \(\rho\) be any nontrivial zero and \(r=r_\rho\).  The complete
+M\"obius--theta source satisfies
+\[
+ \sum_{j=0}^{N}\mathcal{FL}(C_{K,j,k})(w_\rho)
+ \longrightarrow \XiC^{(k)}(w_\rho)
+\]
+for every \(k\), where \(C_{K,j,k}\) are the exact adjacent complete-source
+cofaces.  Its adjacent division-free conormal pair at the leading
+order satisfies
+\[
+ \bigl(\mathcal{FL}(\Psi_{K+N,r-1})(w_\rho),
+       \mathcal{FL}(\Psi_{K+N,r})(w_\rho)\bigr)
+ \longrightarrow
+ \bigl(0,\XiC^{(r)}(w_\rho)\bigr),
+\tag{3.4}\label{eq:vertical-conormal}
+\]
+and the second coordinate is nonzero.
+\end{theorem}
+
+\begin{proof}
+Apply Proposition~\ref{prop:source-landing} to the internally promoted
+orders \(r-1\) and \(r\), use the mass-one telescoping
+\eqref{eq:mass-one}, and pass to the high-exponent limit.  Equation
+\eqref{eq:first-jet} gives the two limiting coordinates and proves
+non-erasure.
+\end{proof}
+
+Theorem~\ref{thm:conormal} is stronger than pointwise value landing.  It
+retains arbitrary multiplicity without dividing by \(\XiC\) or selecting a
+nonzero coordinate after the fact.
+
+\section{Coefficient-faithful Gamma/co-Poisson incidence}
+
+Fix two distinct ordinary primes \(p\neq q\).  Let \(V_{p,q,\rho}\) be the
+canonical completed Calder\'on--Witt incidence vector at the first
+multiplicity copy of \(\rho\).  Normalize its distinguished coefficient to
+one.  Define
+\[
+ c_\rho=\XiC^{(r_\rho)}(w_\rho),
+ \qquad
+ \mathcal L_{p,q}(\rho)=c_\rho V_{p,q,\rho}.
+\tag{4.1}\label{eq:gamma-landing}
+\]
+The coefficient \(c_\rho\) is not an auxiliary divisor weight: it is the
+diagonal physical moment of the internally promoted source.
+
+\begin{theorem}[Global atomic Gamma incidence]
+\label{thm:gamma-atomic}
+For every nontrivial divisor point \(\rho\),
+\[
+ \mathcal L_{p,q}(\rho)\neq0.
+\tag{4.2}\label{eq:gamma-nonzero}
+\]
+Decoding \(\mathcal L_{p,q}(\rho)\) gives
+\[
+ c_\rho\,W_{p,q},
+\tag{4.3}\label{eq:decoded-witness}
+\]
+where \(W_{p,q}\) is the actual Gamma/Calder\'on--Witt incidence witness.
+For every real modular displacement \(a\), the completed adjacent
+Hellinger--Gamma cofaces recover \(\mathcal L_{p,q}(\rho)\) in the cofinal
+depth limit.
+\end{theorem}
+
+\begin{proof}
+The distinguished coefficient of \(V_{p,q,\rho}\) is one.  Therefore the
+same coefficient of \(\mathcal L_{p,q}(\rho)\) is \(c_\rho\), which is
+nonzero by \eqref{eq:first-jet}.  This proves \eqref{eq:gamma-nonzero}.
+Linearity of the incidence decoder gives \eqref{eq:decoded-witness}.
+The adjacent cofaces telescope to the normalized depth vertices; their
+completed recovery map converges to the original incidence vector, and
+scalar multiplication by \(c_\rho\) commutes with this limit.
+\end{proof}
+
+Let \(\mathfrak G_{p,q,n}(a)\) denote the unsquared secondary Hodge trace of
+the gauged depth-\(n\) Gamma cell.  Its exact radical is
+\[
+                 \mathfrak G_{p,q,n}(a)=0
+                 \quad\Longleftrightarrow\quad a=0.
+\tag{4.4}\label{eq:hodge-radical}
+\]
+
+\begin{corollary}[Source-native unsquared detector]
+\label{cor:unsquared-detector}
+The Hodge trace of the physical landing is
+\[
+ \operatorname{Tr}_{H}\mathcal L_{p,q,n}(\rho,a)
+ =c_\rho\,\mathfrak G_{p,q,n}(a),
+\tag{4.5}\label{eq:joined-trace}
+\]
+and hence
+\[
+ \operatorname{Tr}_{H}\mathcal L_{p,q,n}(\rho,a)=0
+ \quad\Longleftrightarrow\quad a=0.
+\tag{4.6}\label{eq:joined-radical}
+\]
+In particular, at \(a=a_\rho\), the trace vanishes exactly on the critical
+line.
+\end{corollary}
+
+This closes a frequent ambiguity.  Gamma normalization is not a missing
+arithmetic source: it is a boundary coordinate on an already constructed
+physical jet.  Nor is zero exclusion hidden in the decoder: off-line source
+atoms are retained and produce nonzero unsquared trace.
+
+\section{Reflected Green transport without atom loss}
+
+The source also supplies a global reflected transport.  For a fixed prime
+\(p\), let \(r_p(\rho)\) be the average of the exact adaptive prime-normal
+reader at \(\rho\) and its functional-equation mate.  The arithmetic tail
+estimate gives
+\[
+             |r_p(\rho)+1|\leq\frac14,
+\tag{5.1}\label{eq:reader-quarter}
+\]
+therefore
+\[
+       \frac34\leq |r_p(\rho)|\leq\frac54
+       \qquad\text{for every divisor copy }\rho.
+\tag{5.2}\label{eq:reader-bounds}
+\]
+Multiplication by \(r_p\) defines an operator \(U_p\) on the complete
+divisor Hilbert carrier.
+
+\begin{theorem}[Reflected Green automorphism]
+\label{thm:green-auto}
+The operator \(U_p\) is boundedly invertible, with
+\[
+ \|U_p\|\leq\frac54,
+ \qquad
+ \|U_p^{-1}\|\leq\frac43,
+ \qquad
+ \|U_px\|\geq\frac34\|x\|.
+\tag{5.3}\label{eq:green-bounds}
+\]
+It commutes with completed source Green reflection and with the physical
+harmonic Hodge rotation.  If \(h\) is the fixed reflected Gaussian horizon,
+then
+\[
+ (U_ph)(\rho)\neq0
+ \qquad\text{at every divisor copy}.
+\tag{5.4}\label{eq:green-atomic}
+\]
+The transported Green provenance vanishes globally if and only if the
+Riemann hypothesis holds; locally, its coefficient at \(\rho\) vanishes if
+and only if \(a_\rho=0\).
+\end{theorem}
+
+\begin{proof}
+The pointwise bounds \eqref{eq:reader-bounds} imply
+\eqref{eq:green-bounds} for the diagonal multiplier and its reciprocal.
+Reflection invariance of \(r_p\) gives commutation with source Green
+reflection; scalar diagonal multiplication gives commutation with harmonic
+Hodge rotation.  Both factors in
+\((U_ph)(\rho)=r_p(\rho)h(\rho)\) are nonzero, proving
+\eqref{eq:green-atomic}.  The Green coefficient is a product of this nonzero
+horizon with the oriented horizontal defect.  Its radical is therefore
+exactly \(a_\rho=0\), and the global statement follows by quantifying over
+the divisor support.
+\end{proof}
+
+Theorem~\ref{thm:green-auto} solves reflection compatibility and stability.
+It deliberately does not solve selection.  The symmetrized reader is
+reflection-even, so it transports the Green defect faithfully rather than
+annihilating it.
+
+\section{The source--dagger monodromy consumer}
+
+We now isolate the only remaining identity needed by this route.  Let a
+degree-one source carry a cyclic rotation \(\tau\) with \(\tau^2=1\).  For
+an integer clock \(n\geq2\), define the normalized target rotation
+\[
+ R_{n,s}(x,y)=\bigl(y,\delta_n(s)x\bigr),
+ \qquad
+ \delta_n(s)=\exp\!\left((2\Rea s-1)\log n\right).
+\tag{6.1}\label{eq:target-rotation}
+\]
+Then
+\[
+                   R_{n,s}^2=\delta_n(s)\,\mathrm{id}.
+\tag{6.2}\label{eq:paracyclic-square}
+\]
+The scalar \(\delta_n(s)\) is the radial mate gain: it measures the mismatch
+between source inverse and analytic Hilbert adjoint for the half-density
+character.
+
+\begin{theorem}[Retained cyclicity forces the critical line]
+\label{thm:cyclic-rigidity}
+Let \(L_s:S\to\C^2\) satisfy
+\[
+ L_s(\tau x)=R_{n,s}L_s(x)
+\tag{6.3}\label{eq:intertwining}
+\]
+for every \(x\in S\).  If \(L_s(x_0)\neq0\) for one source atom, then
+\[
+                        \Rea s=\frac12.
+\]
+Consequently, if a single source-defined family \(L_\rho\) satisfies
+\eqref{eq:intertwining} and retains one atom at every nontrivial divisor
+point, then the Riemann hypothesis follows.
+\end{theorem}
+
+\begin{proof}
+Apply \eqref{eq:intertwining} twice.  Source cyclicity and
+\eqref{eq:paracyclic-square} give
+\[
+ L_s(x_0)=L_s(\tau^2x_0)
+ =R_{n,s}^2L_s(x_0)
+ =\delta_n(s)L_s(x_0).
+\]
+Since \(L_s(x_0)\neq0\), \(\delta_n(s)=1\).  The real exponential is one
+only at zero, and \(\log n>0\); hence \(2\Rea s-1=0\).
+\end{proof}
+
+\begin{remark}[What this theorem does not construct]
+Theorem~\ref{thm:cyclic-rigidity} is a consumer.  It does not identify the
+physical M\"obius--theta rotation with \(R_{n,\rho}\).  Atomic non-erasure
+from Theorem~\ref{thm:gamma-atomic} cannot be substituted for equivariance,
+and reflected commutation from Theorem~\ref{thm:green-auto} cannot be
+substituted for the unsymmetrized source-inverse/analytic-dagger identity.
+\end{remark}
+
+\section{Why regular completion cannot supply the missing identity}
+
+The existing constructions sharply constrain the missing arrow.
+
+\begin{theorem}[Regular-completion exclusion]
+\label{thm:no-go}
+The following statements hold for the constructed source and boundary
+systems.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item After physical-jet normalization, every Hellinger--Gamma depth vertex
+      has boundary charge one, while its Hilbert norm tends to zero.  Hence
+      the graph closure contains \((0,1)\) and the boundary graph is not
+      closed.
+\item In the coefficient product topology, any closed linear relation that
+      retains every leading finite prime block is maximally vertical:
+      \[
+          \mathcal R=\dom(\mathcal R)\times\C^{\N}.
+      \tag{7.1}\label{eq:max-vertical}
+      \]
+      It transports no output information.
+\item The old oriented Calder\'on--Witt boundary vanishes on the dense
+      arithmetic cross-prime source span.  Every continuous extension to the
+      completed packet is therefore the zero operator.
+\item Reflection averaging commutes with Green and Hodge transport and is
+      boundedly invertible, but it is even under reflection.  It preserves
+      the off-line Green coefficient instead of forcing it to vanish.
+\item A finite resolved packet can cancel only inside one full grade.
+      Degree-one orientation, degree-two positive curvature, and higher
+      fixed-carrier responses cannot cancel one another merely because they
+      share the same radical.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+For (i), let \(v_n\) be the normalized depth vertex.  Its boundary is one
+for every \(n\), while factorial Hellinger damping gives \(v_n\to0\) in the
+completed carrier.  Thus \((v_n,1)\to(0,1)\), proving nonclosedness.
+
+For (ii), finite-block surjectivity places every finite-support output in the
+vertical multivalued part.  Finite-support sequences are dense in the
+product topology, and closedness makes the multivalued part all of
+\(\C^\N\).  A linear relation with full vertical part is its domain times the
+entire output space.
+
+For (iii), continuity and density determine an extension uniquely.  Since
+the algebraic boundary is zero on the dense source span, its only continuous
+extension is zero.  Part (iv) follows from
+Theorem~\ref{thm:green-auto}.  Part (v) is
+Theorem~\ref{thm:source-descent}(ii).
+\end{proof}
+
+The no-go theorem identifies the topology of a viable successor.  It must be
+singular enough to retain the nonclosed source boundary, strict enough not to
+become vertically indeterminate, source-pointed enough not to extend the old
+zero boundary, and resolved enough to preserve the unsquared full grade.
+
+\section{Exact status of the arithmetic route}
+
+The route can now be stated without mixing proved producers with conditional
+consumers.
+
+\begin{theorem}[Proved route envelope]
+\label{thm:route-envelope}
+There exists a target-free arithmetic source with all of the following
+unconditional properties.
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item It lands cofinally in every completed-zeta jet at every divisor point.
+\item It retains the first nonzero multiplicity jet and the corresponding
+      division-free top conormal.
+\item Its leading coefficient lands nontrivially in the completed
+      Gamma/co-Poisson incidence at every divisor stalk.
+\item The landing has exact Hellinger coface recovery, and its unsquared
+      Hodge trace has radical precisely \(a=0\).
+\item A reflected adaptive source transport is boundedly invertible,
+      commutes with Green reflection and harmonic Hodge, and is pointwise
+      nonzero at every divisor copy.
+\item Every ordinary closed, bounded, reflection-averaged, product-topology,
+      or positive scalar completion covered by
+      Theorem~\ref{thm:no-go} fails to create the missing odd identity.
+\end{enumerate}
+\end{theorem}
+
+\begin{problem}[Arithmetic source--dagger law]
+\label{prob:source-dagger}
+Construct, before selecting a zero, one global landing of the physical
+source into the Gamma/co-Poisson top-conormal boundary such that:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item the landing uses the same source provenance as
+      \eqref{eq:source-transform}--\eqref{eq:gamma-landing};
+\item it retains a nonzero atom in every reduced Cartier stalk;
+\item on the unsymmetrized reduced character channel, source inverse and
+      analytic dagger are the two realizations of one degree-one cyclic
+      rotation;
+\item the equality is internal to one full source--divisor--boundary grade,
+      rather than an equality after averaging reflected fibres;
+\item multiplicity jets are retained in a separate compatible filtered
+      channel, without demanding unitary Jordan action and therefore without
+      silently assuming simplicity of zeros.
+\end{enumerate}
+\end{problem}
+
+The word \emph{source} in Problem~\ref{prob:source-dagger} is load-bearing.
+One may always define a divisor-dependent identification that is unitary on
+the critical line; that merely rewrites RH.  The required identity must be a
+chain or boundary law of the ordinary-prime source before divisor
+specialization.  The word \emph{unsymmetrized} is equally load-bearing:
+functional-equation reflection pairs an off-line zero with another allowed
+zero, while same-grade cyclicity acts twice on one retained source atom and
+forces its radial monodromy to be trivial.
+
+\begin{corollary}[Only remaining implication]
+If Problem~\ref{prob:source-dagger} is solved, then the Riemann hypothesis
+follows from Theorem~\ref{thm:cyclic-rigidity}.
+\end{corollary}
+
+This corollary does not assert that Problem~\ref{prob:source-dagger} has been
+solved.  It states the exact remaining implication after all preceding route
+gates have been discharged.
+
+\section{Comparison with classical routes}
+
+Table~\ref{tab:routes} compares logical inputs, not historical priority.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.17\textwidth}
+                              >{\raggedright\arraybackslash}p{0.24\textwidth}
+                              >{\raggedright\arraybackslash}X
+                              >{\raggedright\arraybackslash}p{0.23\textwidth}}
+\toprule
+Program & Typical decisive object & What is already available here & Different unresolved gate \\
+\midrule
+Hilbert--P\'olya & A self-adjoint operator whose spectral parameters encode zeros & A complete divisor carrier, reflected Green transport, harmonic Hodge rotation, and exact local non-erasure & No spectral realization or self-adjointness is assumed.  Need arithmetic equality of source inverse and analytic dagger before an operator is formed. \\
+\addlinespace
+Weil positivity & Positivity of an explicit-formula quadratic form & Positive Gamma/Green consumers with exact critical-line radical & Positivity squares the horizontal orientation.  Need an unsquared equal-grade source identity upstream of the quadratic form. \\
+\addlinespace
+Nyman--Beurling and Hedenmalm density & Closure or cyclicity of a function system & Dense arithmetic common tests, source-to-Xi landing, and divisor-faithful evaluation & Density controls representation.  The normalized Hodge boundary is nonclosable, so closure alone cannot impose same-fibre dagger. \\
+\addlinespace
+Sonin/co-Poisson & Fourier/Mellin duality and invariant subspaces & Exact Gamma/co-Poisson incidence, Green primitive, and reflected source transport & Reflection duality naturally relates mate fibres.  Need internal cyclic equality on one retained unsymmetrized grade. \\
+\addlinespace
+CCM/Meyer & Quotient trace, absorption spectrum, or cohomological boundary & Literal arithmetic cross-prime source span and exact relative Green transgression & Continuous extension of the old oriented boundary is zero; the new boundary must be singular and horizontal rather than another regular quotient trace. \\
+\addlinespace
+Deninger-type cohomology & Frobenius flow with a Hodge star or weight formalism & Half-density character, explicit mate gain, top conormal, and the monodromy consumer & The missing cohomology is not postulated.  Its required content is reduced to a source-generated same-grade dagger identity. \\
+\bottomrule
+\end{tabularx}
+\caption{Logical comparison of the arithmetic source--dagger route with classical programs.}
+\label{tab:routes}
+\end{table}
+
+The present route is therefore not a disguised Hilbert--P\'olya program.
+It does not search for an operator and then demand self-adjointness.  It
+first constructs arithmetic source atoms and their singular conormal
+landing.  A Hilbert object may appear only after the source inverse has been
+identified with analytic dagger.  If that identification is proved at the
+source boundary, unitarity is a consequence; if it is assumed at the Hilbert
+level, it is RH in operator language.
+
+The route also differs from a positivity criterion.  The sign of
+\(a_\rho\) is present in the unsquared Hodge trace
+\eqref{eq:joined-trace}.  Positive Gamma--Green curvature has the same
+radical but degree two.  Resolved-grade conservation forbids using the
+positive consumer as the missing oppositely signed degree-one term.
+
+Finally, the route explains why repeated source reconstructions and density
+theorems did not finish zero exclusion.  Those results solve attainment and
+faithfulness.  Problem~\ref{prob:source-dagger} is a selection law: it must
+show that ordinary-prime source topology permits only the unitary reduced
+character, while still retaining the filtered multiplicity package.
+
+\section{A falsifiable proof program}
+
+Problem~\ref{prob:source-dagger} is narrower than ``construct a cohomology
+theory for the zeta function.''  A candidate construction must pass all of
+the following tests.
+
+\begin{enumerate}[leftmargin=2.2em]
+\item \textbf{Pre-divisor definition.}  Its source, differential, and
+      involution are defined from the ordinary-prime/theta/Gamma data before
+      a zero is chosen.
+\item \textbf{Physical comparison.}  Its analytic realization agrees with
+      the M\"obius--theta landing \eqref{eq:source-transform} and with the
+      coefficient \(c_\rho\) in \eqref{eq:gamma-landing}.
+\item \textbf{Strict singular base change.}  The reduced Cartier atom
+      survives.  The construction does not factor through the nonclosed
+      Hodge marginal, a product-topology closed relation, or the continuous
+      extension of the old oriented boundary.
+\item \textbf{Same-grade dagger.}  Source inverse and analytic dagger are
+      equal on one unsymmetrized degree-one atom, not merely paired across
+      functional-equation mates.
+\item \textbf{Multiplicity separation.}  Nilpotent jets remain in a
+      filtered channel, while unitarity is asserted only for the reduced
+      continuous character.  A proof that forces diagonalizable multiplicity
+      action has proved more than RH and must justify that extra conclusion.
+\item \textbf{Off-line falsifier.}  Any model that reproduces only an entire
+      functional equation, reflection symmetry, positive Gamma factors, or
+      hypertranscendence but admits off-line quartets must fail at a named
+      source step.  Otherwise the proposed law is fitted target structure,
+      not arithmetic selection.
+\end{enumerate}
+
+These tests locate useful future work.  Building another faithful divisor
+carrier, positive form, or reflection-equivariant completion does not attack
+the open theorem.  A useful advance must construct or obstruct one
+source-level boundary operator whose square is simultaneously source cyclic
+and analytically paracyclic.  Its nonzero top-conormal image is already
+available.
+
+\section{Conclusion}
+
+The arithmetic source route has crossed a sharper frontier than a list of
+equivalent criteria suggests.  A target-free M\"obius--theta source reaches
+every completed-zeta jet.  Its complete resolution retains arbitrary
+multiplicity and lands in a nonzero top conormal.  The leading physical jet
+enters the Gamma/co-Poisson incidence coefficient-faithfully at every divisor
+stalk, and its unsquared Hodge trace detects horizontal displacement exactly.
+A reflected adaptive transport is boundedly invertible, Green- and
+Hodge-equivariant, and pointwise non-erasing.
+
+Thus source, landing, conormal, Gamma incidence, reflected transport, and
+atomic non-erasure are not open.  Neither are they an RH proof.  Source
+descent shows why: each constructed regular transport faithfully carries the
+off-line atom as well.  Reflection averaging removes odd orientation;
+positive scalarization squares it; Hilbert closure makes the normalized
+boundary nonclosable; product closure becomes maximally vertical; continuous
+extension of the old boundary is zero.
+
+The surviving route is one precise arithmetic statement.  The ordinary-prime
+source must identify source inverse with analytic dagger on the same retained,
+unsymmetrized, reduced top-conormal grade.  Atomic non-erasure then turns
+degree-one cyclicity into trivial radial monodromy, forcing
+\(\Rea\rho=1/2\) at every divisor point.  This is the only unproved step
+claimed by the route, and no result in this paper assumes it.
+
+\begin{thebibliography}{9}
+
+\bibitem{Beurling1955}
+A.~Beurling,
+\newblock A closure problem related to the Riemann zeta-function,
+\newblock \emph{Proc. Natl. Acad. Sci. USA} \textbf{41} (1955), 312--314.
+
+\bibitem{Connes1999}
+A.~Connes,
+\newblock Trace formula in noncommutative geometry and the zeros of the
+Riemann zeta function,
+\newblock \emph{Selecta Math. (N.S.)} \textbf{5} (1999), 29--106.
+
+\bibitem{Edwards1974}
+H.~M.~Edwards,
+\newblock \emph{Riemann's Zeta Function},
+\newblock Academic Press, 1974.
+
+\bibitem{HLS1997}
+H.~Hedenmalm, P.~Lindqvist, and K.~Seip,
+\newblock A Hilbert space of Dirichlet series and systems of dilated
+functions in \(L^2(0,1)\),
+\newblock \emph{Duke Math. J.} \textbf{86} (1997), 1--37.
+
+\bibitem{Titchmarsh1986}
+E.~C.~Titchmarsh,
+\newblock \emph{The Theory of the Riemann Zeta-Function}, 2nd ed.,
+revised by D.~R.~Heath-Brown,
+\newblock Oxford University Press, 1986.
+
+\end{thebibliography}
+
+\end{document}
