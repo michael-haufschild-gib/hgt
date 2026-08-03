@@ -1,4 +1,5 @@
 import Mathlib
+import GaloisForLFunctions.HTGeometry.BorelGrowthLemma
 
 /-!
 # The maximum term and the central index
@@ -670,6 +671,264 @@ theorem continuousOn_maxTerm (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ 
     filter_upwards [hmem] with x hx
     exact (hEq x ⟨le_of_lt hx.1, le_of_lt hx.2⟩).symm
   exact (hcont.continuousAt.congr heq).continuousWithinAt
+
+
+/-! ## Good radii for the maximum term
+
+The Borel growth lemma needs a continuous monotone majorant, which the central index -- a step
+function -- is not.  The maximum term is continuous, so the lemma applies to `1 + log mu` and the
+resulting bound is transferred to the central index through the two-sided growth law. -/
+
+/-- The continuous monotone majorant `1 + log mu`, clamped below at `r₀`. -/
+noncomputable def logMaxTermMajorant (a : ℕ → ℂ) (r₀ : ℝ) : ℝ → ℝ :=
+  fun x => 1 + Real.log (maxTerm a (max x r₀))
+
+set_option maxHeartbeats 1000000 in
+/-- **Good radii for the maximum term.**  Beyond every bound there is a radius at which `1 + log mu`
+does not double when the radius is scaled by `1 + 1/(1 + log mu(r))`. -/
+theorem exists_ge_borel_maxTerm
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
+    {r₀ : ℝ} (hr₀ : 0 < r₀) (hμ₀ : 1 ≤ maxTerm a r₀) (R : ℝ) :
+    ∃ r, max r₀ R ≤ r ∧
+      Real.log (maxTerm a (r * (1 + (1 + Real.log (maxTerm a r))⁻¹)))
+        < 1 + 2 * Real.log (maxTerm a r) := by
+  have hbig : ∀ x : ℝ, (1 : ℝ) ≤ maxTerm a (max x r₀) :=
+    fun x => le_trans hμ₀ (maxTerm_mono ha hr₀ (le_max_right x r₀))
+  have hposμ : ∀ x : ℝ, (0 : ℝ) < maxTerm a (max x r₀) :=
+    fun x => lt_of_lt_of_le one_pos (hbig x)
+  have hmonoT : Monotone (logMaxTermMajorant a r₀) := by
+    intro x y hxy
+    have hx : (0 : ℝ) < max x r₀ := lt_of_lt_of_le hr₀ (le_max_right _ _)
+    have hlog := Real.log_le_log (hposμ x) (maxTerm_mono ha hx (max_le_max hxy le_rfl))
+    simp only [logMaxTermMajorant]
+    linarith
+  have hcontT : Continuous (logMaxTermMajorant a r₀) := by
+    have h1 : Continuous fun x : ℝ => max x r₀ := continuous_id.max continuous_const
+    have h3 : Continuous fun x : ℝ => maxTerm a (max x r₀) :=
+      (continuousOn_maxTerm ha hn₀).comp_continuous h1
+        (fun x => lt_of_lt_of_le hr₀ (le_max_right x r₀))
+    exact continuous_const.add (h3.log fun x => ne_of_gt (hposμ x))
+  have hT1 : ∀ x : ℝ, (1 : ℝ) ≤ logMaxTermMajorant a r₀ x := by
+    intro x
+    have := Real.log_nonneg (hbig x)
+    simp only [logMaxTermMajorant]
+    linarith
+  obtain ⟨r, hr, hlt⟩ :=
+    GaloisForLFunctions.Nevanlinna.exists_ge_lt_two_mul_scaled hcontT hmonoT hT1
+      (R := max r₀ R) (lt_of_lt_of_le hr₀ (le_max_left r₀ R))
+  refine ⟨r, hr, ?_⟩
+  have hrr₀ : r₀ ≤ r := le_trans (le_max_left r₀ R) hr
+  have hmaxr : max r r₀ = r := max_eq_left hrr₀
+  have hTr : logMaxTermMajorant a r₀ r = 1 + Real.log (maxTerm a r) := by
+    simp only [logMaxTermMajorant, hmaxr]
+  have hTrpos : (0 : ℝ) < logMaxTermMajorant a r₀ r := lt_of_lt_of_le one_pos (hT1 r)
+  have hrpos : (0 : ℝ) < r := lt_of_lt_of_le hr₀ hrr₀
+  have hstepge : r ≤ r * (1 + (logMaxTermMajorant a r₀ r)⁻¹) := by
+    nlinarith [inv_pos.mpr hTrpos]
+  have hmaxs : max (r * (1 + (logMaxTermMajorant a r₀ r)⁻¹)) r₀
+      = r * (1 + (logMaxTermMajorant a r₀ r)⁻¹) :=
+    max_eq_left (le_trans hrr₀ hstepge)
+  rw [logMaxTermMajorant, hmaxs, hTr] at hlt
+  linarith
+
+/-- **The central index at a good radius.**  At the radii produced by the growth lemma the central
+index is bounded by twice the square of `1 + log mu`. -/
+theorem centralIndex_le_of_borel_maxTerm
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {r : ℝ} (hr : 0 < r)
+    (hμ : 1 ≤ maxTerm a r)
+    (hgood : Real.log (maxTerm a (r * (1 + (1 + Real.log (maxTerm a r))⁻¹)))
+        < 1 + 2 * Real.log (maxTerm a r)) :
+    (centralIndex a r : ℝ) ≤ 2 * (1 + Real.log (maxTerm a r)) ^ 2 := by
+  set L : ℝ := Real.log (maxTerm a r) with hL
+  have hL0 : 0 ≤ L := Real.log_nonneg hμ
+  set T : ℝ := 1 + L with hT
+  have hT1 : (1 : ℝ) ≤ T := by rw [hT]; linarith
+  have hTpos : (0 : ℝ) < T := lt_of_lt_of_le one_pos hT1
+  set x : ℝ := T⁻¹ with hx
+  have hx0 : 0 < x := inv_pos.mpr hTpos
+  have hx1 : x ≤ 1 := by
+    rw [hx, inv_le_one_iff₀]
+    exact Or.inr hT1
+  set s : ℝ := r * (1 + x) with hs
+  have hrs : r ≤ s := by rw [hs]; nlinarith
+  -- the growth law bounds the central index by the increment of `log mu`
+  have hgrow := centralIndex_mul_log_le_log_maxTerm_sub ha hr hrs hn₀
+  have hsr : s / r = 1 + x := by
+    rw [hs, mul_comm, mul_div_assoc, div_self (ne_of_gt hr), mul_one]
+  -- `log (1 + x) ≥ x / 2` for `0 ≤ x ≤ 1`
+  have hlog : x / 2 ≤ Real.log (1 + x) := by
+    have hy : (0 : ℝ) < 1 / (1 + x) := by positivity
+    have hle := Real.log_le_sub_one_of_pos hy
+    rw [Real.log_div one_ne_zero (by positivity), Real.log_one, zero_sub] at hle
+    have hfrac : x / (1 + x) ≤ Real.log (1 + x) := by
+      have hrw : (1 : ℝ) / (1 + x) - 1 = -(x / (1 + x)) := by
+        field_simp
+        ring
+      rw [hrw] at hle
+      linarith
+    have hcmp : x / 2 ≤ x / (1 + x) := by
+      apply div_le_div_of_nonneg_left hx0.le (by positivity)
+      linarith
+    linarith
+  rw [hsr, ← hL] at hgrow
+  have hnum : Real.log (maxTerm a s) - L < 1 + L := by linarith
+  have hν0 : (0 : ℝ) ≤ (centralIndex a r : ℝ) := Nat.cast_nonneg _
+  have hstep : (centralIndex a r : ℝ) * (x / 2) ≤ (centralIndex a r : ℝ) * Real.log (1 + x) :=
+    mul_le_mul_of_nonneg_left hlog hν0
+  have hcomb : (centralIndex a r : ℝ) * (x / 2) < T := by
+    rw [hT]
+    linarith
+  have h2T : (0 : ℝ) < 2 * T := by linarith
+  have hmul := mul_lt_mul_of_pos_right hcomb h2T
+  have hxT : (x / 2) * (2 * T) = 1 := by
+    rw [hx]
+    field_simp
+  have hfinal : (centralIndex a r : ℝ) < 2 * T ^ 2 := by
+    calc (centralIndex a r : ℝ) = (centralIndex a r : ℝ) * ((x / 2) * (2 * T)) := by
+          rw [hxT, mul_one]
+      _ = ((centralIndex a r : ℝ) * (x / 2)) * (2 * T) := by ring
+      _ < T * (2 * T) := hmul
+      _ = 2 * T ^ 2 := by ring
+  rw [hT] at hfinal
+  linarith
+
+
+/-! ## The derivative coefficients
+
+`z f'(z) = sum n a_n z^n`, so the local analysis at a maximum-modulus point runs on the sequence
+`n a_n`.  It satisfies the same decay hypothesis, and its maximum term is controlled by the central
+index times the maximum term of `a`. -/
+
+/-- **The derivative coefficients are again entire.**  Multiplying by the index costs only a
+geometric factor, which the doubled radius absorbs. -/
+theorem entireCoeffs_mul_index (ha : EntireCoeffs a) :
+    EntireCoeffs (fun n => (n : ℂ) * a n) := by
+  intro r hr
+  have h2r : (0 : ℝ) < 2 * r := by linarith
+  have hsummable : Summable fun n : ℕ => (n : ℝ) ^ 1 * ((1 : ℝ) / 2) ^ n :=
+    summable_pow_mul_geometric_of_norm_lt_one 1 (by rw [Real.norm_eq_abs]; norm_num)
+  have hzero : Filter.Tendsto
+      (fun n : ℕ => maxTerm a (2 * r) * ((n : ℝ) * ((1 : ℝ) / 2) ^ n)) atTop (nhds 0) := by
+    have h := (hsummable.tendsto_atTop_zero).const_mul (maxTerm a (2 * r))
+    simpa using h
+  refine squeeze_zero (fun n => term_nonneg (fun n => (n : ℂ) * a n) hr n) (fun n => ?_) hzero
+  have hnorm : ‖(n : ℂ) * a n‖ = (n : ℝ) * ‖a n‖ := by
+    rw [norm_mul, Complex.norm_natCast]
+  rw [hnorm, mul_assoc]
+  have hbase := term_le_maxTerm_two_mul ha hr n
+  calc (n : ℝ) * (‖a n‖ * r ^ n)
+      ≤ (n : ℝ) * (maxTerm a (2 * r) * ((1 : ℝ) / 2) ^ n) :=
+        mul_le_mul_of_nonneg_left hbase (Nat.cast_nonneg n)
+    _ = maxTerm a (2 * r) * ((n : ℝ) * ((1 : ℝ) / 2) ^ n) := by ring
+
+set_option maxHeartbeats 1000000 in
+/-- **The derivative maximum term.**  Beyond the central index at a larger radius the extra factor
+`n` is absorbed by the geometric decay, so `mu'` is at most `mu` times the central index plus a
+constant depending only on the radius ratio. -/
+theorem maxTerm_mul_index_le
+    (ha : EntireCoeffs a) (hr : 0 < r) (hrs : r < s) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
+    maxTerm (fun n => (n : ℂ) * a n) r
+      ≤ maxTerm a r * ((centralIndex a s : ℝ) + ∑' j : ℕ, (j : ℝ) * (r / s) ^ j) := by
+  have hs : 0 < s := lt_trans hr hrs
+  set k := centralIndex a s with hk
+  set q : ℝ := r / s with hq
+  have hq0 : 0 < q := by rw [hq]; positivity
+  have hq1 : q < 1 := by
+    rw [hq, div_lt_one hs]
+    exact hrs
+  have hμ : (0 : ℝ) ≤ maxTerm a r :=
+    le_trans (term_nonneg a hr 0) (term_le_maxTerm ha hr 0)
+  have hsummable : Summable fun j : ℕ => (j : ℝ) * q ^ j := by
+    have h := summable_pow_mul_geometric_of_norm_lt_one (R := ℝ) 1
+      (by rw [Real.norm_eq_abs, abs_of_pos hq0]; exact hq1)
+    simpa using h
+  have hgeo : ∀ j : ℕ, (j : ℝ) * q ^ j ≤ ∑' i : ℕ, (i : ℝ) * q ^ i := fun j =>
+    hsummable.le_tsum j fun i _ => by positivity
+  have htail : (0 : ℝ) ≤ ∑' i : ℕ, (i : ℝ) * q ^ i :=
+    le_trans (by positivity) (hgeo 0)
+  refine ciSup_le fun n => ?_
+  have hnorm : ‖(n : ℂ) * a n‖ = (n : ℝ) * ‖a n‖ := by
+    rw [norm_mul, Complex.norm_natCast]
+  rw [hnorm, mul_assoc]
+  rcases Nat.lt_or_ge n (k + 1) with hlt | hge
+  · -- inside the window: the index is at most `k`
+    have hnk : (n : ℝ) ≤ (k : ℝ) := by exact_mod_cast Nat.lt_succ_iff.mp hlt
+    calc (n : ℝ) * (‖a n‖ * r ^ n)
+        ≤ (k : ℝ) * maxTerm a r := by
+          refine mul_le_mul hnk (term_le_maxTerm ha hr n) (term_nonneg a hr n)
+            (le_trans (Nat.cast_nonneg n) hnk)
+      _ ≤ maxTerm a r * ((k : ℝ) + ∑' i : ℕ, (i : ℝ) * q ^ i) := by nlinarith
+  · -- beyond the window: geometric decay beats the factor `n`
+    have hdecay := term_le_maxTerm_mul_pow_of_centralIndex_le ha hr hrs.le hn₀
+      (n := n) (by omega)
+    rw [← hk, ← hq] at hdecay
+    have hsplit : (n : ℝ) = (k : ℝ) + ((n - k : ℕ) : ℝ) := by
+      have : k ≤ n := by omega
+      push_cast [Nat.cast_sub this]
+      ring
+    have hqpow : q ^ (n - k) ≤ 1 := pow_le_one₀ hq0.le hq1.le
+    calc (n : ℝ) * (‖a n‖ * r ^ n)
+        ≤ (n : ℝ) * (maxTerm a r * q ^ (n - k)) :=
+          mul_le_mul_of_nonneg_left hdecay (Nat.cast_nonneg n)
+      _ = maxTerm a r * ((k : ℝ) * q ^ (n - k) + ((n - k : ℕ) : ℝ) * q ^ (n - k)) := by
+          rw [hsplit]; ring
+      _ ≤ maxTerm a r * ((k : ℝ) + ∑' i : ℕ, (i : ℝ) * q ^ i) := by
+          refine mul_le_mul_of_nonneg_left ?_ hμ
+          have h1 : (k : ℝ) * q ^ (n - k) ≤ (k : ℝ) := by
+            nlinarith [Nat.cast_nonneg (α := ℝ) k, pow_nonneg hq0.le (n - k)]
+          have h2 := hgeo (n - k)
+          linarith
+
+
+/-! ## The index deviation
+
+`z f'(z) - k f(z) = sum (n - k) a_n z^n`, so the logarithmic derivative is close to `k/z` exactly
+when the deviation series `sum |n - k| ||a_n|| r^n` is small compared with the function.  Inside the
+window the deviation is at most the window width. -/
+
+/-- The deviation series converges at every radius. -/
+theorem summable_index_deviation (ha : EntireCoeffs a) (hr : 0 < r) (k : ℕ) :
+    Summable fun n : ℕ => |(n : ℝ) - (k : ℝ)| * (‖a n‖ * r ^ n) := by
+  have h1 : Summable fun n : ℕ => ‖a n‖ * r ^ n := summable_term ha hr
+  have h2 : Summable fun n : ℕ => (n : ℝ) * (‖a n‖ * r ^ n) := by
+    refine (summable_term (entireCoeffs_mul_index ha) hr).congr fun n => ?_
+    rw [norm_mul, Complex.norm_natCast, mul_assoc]
+  refine Summable.of_nonneg_of_le (fun n => by positivity) (fun n => ?_)
+    (h2.add (h1.mul_left (k : ℝ)))
+  have hn0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+  have hk0 : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
+  have habs : |(n : ℝ) - (k : ℝ)| ≤ (n : ℝ) + (k : ℝ) :=
+    abs_le.mpr ⟨by linarith, by linarith⟩
+  have hT : (0 : ℝ) ≤ ‖a n‖ * r ^ n := term_nonneg a hr n
+  calc |(n : ℝ) - (k : ℝ)| * (‖a n‖ * r ^ n)
+      ≤ ((n : ℝ) + (k : ℝ)) * (‖a n‖ * r ^ n) := mul_le_mul_of_nonneg_right habs hT
+    _ = (n : ℝ) * (‖a n‖ * r ^ n) + (k : ℝ) * (‖a n‖ * r ^ n) := by ring
+
+/-- **The window width controls the deviation.**  Inside the window between the central indices at
+`t < r` and `s > r` every index differs from `nu(r)` by at most the window width. -/
+theorem sum_window_index_deviation_le
+    (ha : EntireCoeffs a) (ht : 0 < t) (htr : t < r) (hrs : r < s)
+    {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
+    ∑ n ∈ Finset.Ico (centralIndex a t) (centralIndex a s + 1),
+        |(n : ℝ) - (centralIndex a r : ℝ)| * (‖a n‖ * r ^ n)
+      ≤ ((centralIndex a s : ℝ) - (centralIndex a t : ℝ))
+        * ∑ n ∈ Finset.Ico (centralIndex a t) (centralIndex a s + 1), ‖a n‖ * r ^ n := by
+  have hr : 0 < r := lt_trans ht htr
+  have hνtr : centralIndex a t ≤ centralIndex a r := centralIndex_mono ha ht htr.le hn₀
+  have hνrs : centralIndex a r ≤ centralIndex a s := centralIndex_mono ha hr hrs.le hn₀
+  rw [Finset.mul_sum]
+  refine Finset.sum_le_sum fun n hn => ?_
+  obtain ⟨hn1, hn2⟩ := Finset.mem_Ico.mp hn
+  have hnt : (centralIndex a t : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn1
+  have hns : (n : ℝ) ≤ (centralIndex a s : ℝ) := by
+    have : n ≤ centralIndex a s := by omega
+    exact_mod_cast this
+  have hrt : (centralIndex a t : ℝ) ≤ (centralIndex a r : ℝ) := by exact_mod_cast hνtr
+  have hrs' : (centralIndex a r : ℝ) ≤ (centralIndex a s : ℝ) := by exact_mod_cast hνrs
+  have habs : |(n : ℝ) - (centralIndex a r : ℝ)|
+      ≤ (centralIndex a s : ℝ) - (centralIndex a t : ℝ) :=
+    abs_le.mpr ⟨by linarith, by linarith⟩
+  exact mul_le_mul_of_nonneg_right habs (term_nonneg a hr n)
 
 
 /-! ## Entire functions -/

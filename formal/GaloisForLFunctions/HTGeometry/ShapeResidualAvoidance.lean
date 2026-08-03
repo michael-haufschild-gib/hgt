@@ -22,8 +22,8 @@ noncomputable section
 /-- **Simultaneous avoidance of one hypersurface per shape.**  Note that the observed coordinate
 system is allowed to depend on the shape, since deeper relations need deeper jets. -/
 theorem residual_forall_shape_avoidance {P : Type*} [TopologicalSpace P] [BaireSpace P]
-    {σ : RelationShape → Type} [∀ S, Fintype (σ S)]
-    (J : ∀ S : RelationShape, P → (σ S → ℂ))
+    {Sh : Type*} [Countable Sh] {σ : Sh → Type} [∀ S, Fintype (σ S)]
+    (J : ∀ S : Sh, P → (σ S → ℂ))
     (hcont : ∀ S, Continuous (J S)) (hJ : ∀ S, LocallySurjectiveObservation (J S))
     (D : ∀ S, MvPolynomial (σ S) ℂ) (hD : ∀ S, D S ≠ 0) :
     {p : P | ∀ S, MvPolynomial.eval (J S p) (D S) ≠ 0} ∈ residual P := by
@@ -39,8 +39,8 @@ theorem residual_forall_shape_avoidance {P : Type*} [TopologicalSpace P] [BaireS
 
 /-- **The avoiding parameters are dense.** -/
 theorem dense_forall_shape_avoidance {P : Type*} [TopologicalSpace P] [BaireSpace P]
-    {σ : RelationShape → Type} [∀ S, Fintype (σ S)]
-    (J : ∀ S : RelationShape, P → (σ S → ℂ))
+    {Sh : Type*} [Countable Sh] {σ : Sh → Type} [∀ S, Fintype (σ S)]
+    (J : ∀ S : Sh, P → (σ S → ℂ))
     (hcont : ∀ S, Continuous (J S)) (hJ : ∀ S, LocallySurjectiveObservation (J S))
     (D : ∀ S, MvPolynomial (σ S) ℂ) (hD : ∀ S, D S ≠ 0) :
     Dense {p : P | ∀ S, MvPolynomial.eval (J S p) (D S) ≠ 0} :=

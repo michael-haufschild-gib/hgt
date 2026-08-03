@@ -286,6 +286,59 @@ theorem chiJetPacket_image_mem_nhds {n : ℕ} {y : Fin (n + 1) → ℂ}
   show (if h : j < n + 1 then (res v) ⟨j, h⟩ else 0) = v j
   rw [dif_pos (Nat.lt_succ_of_le hj)]
 
+/-! ## Continuity of the chart -/
+
+/-- **The Cayley outer chart is continuous where it is defined.**  Its only singular locus is the
+packets whose zeroth jet meets `-i`. -/
+theorem continuousOn_chiJetScalar (k : ℕ) :
+    ContinuousOn (fun y : ℕ → ℂ => chiJetScalar y k) {y : ℕ → ℂ | y 0 + Complex.I ≠ 0} := by
+  set V : Set (ℕ → ℂ) := {y : ℕ → ℂ | y 0 + Complex.I ≠ 0} with hV
+  have hA₁cont : Continuous fun y : ℕ → ℂ => fun m => affJetScalar 1 Complex.I y m :=
+    continuous_affJetScalar 1 Complex.I
+  have hmaps : Set.MapsTo (fun y : ℕ → ℂ => fun m => affJetScalar 1 Complex.I y m) V
+      {w : ℕ → ℂ | w 0 ≠ 0} := by
+    intro y hy
+    show affJetScalar 1 Complex.I y 0 ≠ 0
+    rw [affJetScalar_apply_zero, one_mul]
+    exact hy
+  have hR : ∀ l, ContinuousOn
+      (fun y : ℕ → ℂ => invJetScalar (fun m => affJetScalar 1 Complex.I y m) l) V := fun l =>
+    (continuousOn_invJetScalar l).comp hA₁cont.continuousOn hmaps
+  have hA₂ : ∀ j, ContinuousOn (fun y : ℕ → ℂ =>
+      affJetScalar (-(2 * Complex.I)) 1
+        (fun l => invJetScalar (fun m => affJetScalar 1 Complex.I y m) l) j) V := by
+    intro j
+    by_cases hj : j = 0
+    · subst hj
+      simp only [affJetScalar_apply_zero]
+      exact (continuousOn_const.mul (hR 0)).add continuousOn_const
+    · simp only [affJetScalar_apply_of_ne _ _ _ hj]
+      exact continuousOn_const.mul (hR j)
+  simp only [chiJetScalar]
+  exact continuousOn_expJetScalar hA₂ k
+
+/-- **The chart on packets is continuous where it is defined.** -/
+theorem continuousOn_chiJetPacket (n : ℕ) :
+    ContinuousOn (chiJetPacket n) {y : Fin (n + 1) → ℂ | y 0 + Complex.I ≠ 0} := by
+  have hext : Continuous fun v : Fin (n + 1) → ℂ =>
+      fun j : ℕ => if h : j < n + 1 then v ⟨j, h⟩ else 0 := by
+    refine continuous_pi fun j => ?_
+    by_cases hj : j < n + 1
+    · simp only [dif_pos hj]
+      exact continuous_apply _
+    · simp only [dif_neg hj]
+      exact continuous_const
+  have hmaps : Set.MapsTo (fun v : Fin (n + 1) → ℂ =>
+      fun j : ℕ => if h : j < n + 1 then v ⟨j, h⟩ else 0)
+      {y : Fin (n + 1) → ℂ | y 0 + Complex.I ≠ 0} {w : ℕ → ℂ | w 0 + Complex.I ≠ 0} := by
+    intro y hy
+    show (if h : (0 : ℕ) < n + 1 then y ⟨0, h⟩ else 0) + Complex.I ≠ 0
+    rw [dif_pos (Nat.succ_pos n)]
+    exact hy
+  rw [continuousOn_pi]
+  intro k
+  exact (continuousOn_chiJetScalar (k : ℕ)).comp hext.continuousOn hmaps
+
 end
 
 end GaloisForLFunctions.HTGeometry

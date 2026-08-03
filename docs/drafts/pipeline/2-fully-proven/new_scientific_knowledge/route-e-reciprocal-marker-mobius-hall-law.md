@@ -709,3 +709,119 @@ of `RootsOfUnityFrequencies.lean` — then combines with `SymbolBound.lean` and
 
 Every ingredient of that chain is now unconditional in the corpus; what is left is index
 manipulation over identities already proved, with no further estimate required.
+
+### Multiplier is a kernel — `Sieve/CoefficientExpansion.lean`, second theorem (2026-08-03)
+
+- **`sum_symbol_mul_normSq_eq`** :
+  `∑_j c_j |⟪expRow Q (ζ^j), x⟫|² = ∑_m ∑_n x_m conj(x_n) · (∑_j c_j conj(ζ^{jm}) ζ^{jn})`.
+
+Built, wired, axiom-clean.  This is the bookkeeping step flagged in the previous entry, now proved:
+summing the coefficient expansion against a symbol and exchanging the order of summation exhibits
+the Fourier multiplier with symbol `c` as the kernel `Ǩ(m,n) = ∑_j c_j ζ^{j(n−m)}`.  Exact — no
+orthogonality, no estimate.
+
+**Status of the Toeplitz argument.**  Every analytic ingredient is unconditional in the corpus:
+
+| step | module |
+|-|-|
+| symbol of `1/(m−n)` is bounded by an absolute constant | `HarmonicSineBound.lean` |
+| bounded symbol ⟹ bounded quadratic form | `SymbolBound.lean` |
+| exact discrete Parseval | `DiscreteParseval.lean` |
+| multiplier ⟹ kernel | `CoefficientExpansion.lean` |
+| roots-of-unity orthogonality | `RootsOfUnityFrequencies.lean` |
+
+What remains is to run the kernel identification in the one direction not yet written out: choosing
+`c_j` as the partial sums of `1/d` against `ζ^{jd}` and checking, via the orthogonality above, that
+`Ǩ(m,n) = 1/(m−n)` once `Q` exceeds twice the support length.  That is a choice of `c` plus an
+orthogonality computation over identities already proved.
+
+### Orthogonality in divisibility form — `Sieve/RootOrthogonality.lean` (2026-08-03)
+
+- **`sum_pow_mul_eq`** : `∑_{j < Q} (ζ^k)^j = Q` if `Q ∣ k`, else `0`;
+- `sum_pow_mul_index_eq` : the same with the exponent written `ζ^{jk}`, the form it takes after
+  exchanging summation order.
+
+Built, wired, axiom-clean.  Stating the relation with an `if` on `Q ∣ k` — rather than as two
+separate lemmas — is what makes it usable as a *rewrite inside a sum over `k`*, which is exactly what
+the inverse discrete Fourier transform needs: summing a symbol against `ζ^{jk}` and exchanging
+returns the coefficient at the surviving index.
+
+Note both theorems hold without any positivity hypothesis on `Q`; the `0 < Q` I first assumed turned
+out to be unnecessary, so the statements are the general ones.
+
+With `CoefficientExpansion.sum_symbol_mul_normSq_eq` this closes the multiplier/kernel dictionary in
+both directions: a symbol determines its kernel, and orthogonality recovers the symbol's
+coefficients from it.
+
+### Kernel recovery — `Sieve/InverseDFT.lean` (2026-08-03)
+
+- **`kernel_of_symbol`** :
+  `∑_j (∑_d K_d ζ^{jd}) ζ^{jk} = Q · ∑_{d : Q ∣ d + k} K_d`.
+
+Built, wired, axiom-clean.  One exchange of summation followed by the divisibility form of
+orthogonality; the `if` in `RootOrthogonality.sum_pow_mul_eq` collapses the inner sum to the
+surviving residue class.  When `K` is supported on `range Q` the congruence pins down a single `d`,
+so the right-hand side is `Q · K_{(−k) mod Q}` — the inverse discrete Fourier transform.
+
+That is the reason the orthogonality lemma was stated with an `if` rather than as two branches: the
+`if` is what survives the exchange and becomes the filter on the right.
+
+The multiplier/kernel dictionary is now complete and unconditional in both directions —
+`CoefficientExpansion.sum_symbol_mul_normSq_eq` sends a symbol to its kernel, `kernel_of_symbol`
+recovers the coefficients — alongside the bounded-symbol bound (`SymbolBound`), exact Parseval
+(`DiscreteParseval`), and the absolute bound on the symbol of `1/(m−n)` (`HarmonicSineBound`).
+
+### Inverse DFT completed — `Sieve/ResidueSingleton.lean` (2026-08-03)
+
+- `filter_dvd_add_eq` : for `k < Q` the surviving residue class `{d < Q : Q ∣ d + k}` is the
+  singleton `{(Q − k) % Q}` — since `d + k < 2Q`, the only multiples of `Q` it can equal are `0`
+  and `Q`;
+- `sum_filter_dvd_add` : hence the filtered sum is a single coefficient;
+- **`kernel_of_symbol_singleton`** :
+  `∑_j (∑_d K_d ζ^{jd}) ζ^{jk} = Q · K_{(Q−k) % Q}`.
+
+Built, wired, axiom-clean.  The `(Q − k) % Q` form covers both branches uniformly: it is `0` when
+`k = 0` and `Q − k` otherwise, so no case split leaks into the statement.
+
+This completes the inverse discrete Fourier transform.  Every component of the Toeplitz argument now
+exists unconditionally in the corpus:
+
+| step | module |
+|-|-|
+| symbol of `1/(m−n)` bounded absolutely | `HarmonicSineBound.lean` |
+| bounded symbol ⟹ bounded quadratic form | `SymbolBound.lean` |
+| exact discrete Parseval | `DiscreteParseval.lean` |
+| symbol ⟹ kernel | `CoefficientExpansion.lean` |
+| kernel ⟹ coefficients (inverse DFT) | `RootOrthogonality.lean`, `InverseDFT.lean`, `ResidueSingleton.lean` |
+
+What remains is to choose the coefficient sequence `K_d` matching `1/d` on the relevant range and
+read the bilinear inequality off the dictionary — an instantiation, with every supporting identity
+and estimate already proved.
+
+### Bilinear bound on the kernel side — `Sieve/BilinearMultiplier.lean` (2026-08-03)
+
+- **`abs_sum_kernel_bilinear_le`** :
+  `‖∑_m ∑_n x_m conj(x_n) Ǩ(m,n)‖ ≤ C · Q ‖x‖²` for `Ǩ(m,n) = ∑_j c_j conj(ζ^{jm}) ζ^{jn}`
+  and any real symbol with `|c_j| ≤ C`.
+
+Built, wired, axiom-clean.  This is Hilbert's inequality in its structural form: the left side is an
+arbitrary sesquilinear form built from a Toeplitz-type kernel, and the bound depends only on the
+sup-norm of that kernel's symbol.  No property of the particular kernel enters.
+
+The whole multiplier apparatus is now closed.  Specialising to `1/(m−n)` means choosing the
+coefficient sequence and invoking `HarmonicSineBound.abs_sum_sin_div_le_uniform` for its symbol —
+the one remaining instantiation, with every identity and estimate it needs already proved.
+
+### Matching the two kernel shapes — `Sieve/KernelReshape.lean` (2026-08-03)
+
+The multiplier side produces the kernel as `∑_j c_j conj(ζ^{jm}) ζ^{jn}`; the inverse transform
+consumes it as `∑_j c_j ζ^{jk}`.  The bridge is that conjugation is inversion on the unit circle.
+
+- **`conj_pow_eq`** : `conj(ζ^{jm}) = ζ^{j(Q−m)}` for `m ≤ Q` — both sides are inverses of `ζ^{jm}`,
+  the first because `|ζ| = 1`, the second because `ζ^{j(Q−m)}ζ^{jm} = (ζ^Q)^j = 1`;
+- **`kernel_pairing_eq`** : substituting turns the conjugate pairing into the single character
+  `ζ^{j((Q−m)+n)}`.
+
+Built, wired, axiom-clean.  `(Q−m)+n` is precisely the index at which
+`ResidueSingleton.kernel_of_symbol_singleton` reads off a coefficient, so the two halves of the
+dictionary now compose without any remaining shape mismatch.

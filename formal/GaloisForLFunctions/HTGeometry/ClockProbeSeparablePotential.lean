@@ -180,8 +180,10 @@ theorem dalembert_mul_transverse (eps : Fin (d + 1) → ℝ) (heps : ∀ i, eps 
         = f x * coordPartial i (coordPartial i g) x
           + g x * coordPartial i (coordPartial i f) x := by
     intro i
-    rw [coordPartial_congr (hev i) i,
-      coordPartial_add ((hfU x hxU).mul (hgd i)) ((hgU x hxU).mul (hfd i)) i,
+    have hadd := coordPartial_add (f := fun y => f y * coordPartial i g y)
+      (g := fun y => g y * coordPartial i f y) (x := x)
+      ((hfU x hxU).mul (hgd i)) ((hgU x hxU).mul (hfd i)) i
+    rw [coordPartial_congr (hev i) i, hadd,
       coordPartial_mul (hfU x hxU) (hgd i) i, coordPartial_mul (hgU x hxU) (hfd i) i]
     by_cases hi : i = i₀
     · rw [hi, hgT x]
@@ -220,9 +222,11 @@ theorem exists_separable_localProbe (eps : Fin (d + 1) → ℝ) (heps : ∀ i, e
         SolvesPotentialWaveAt (SmoothPseudoMetric.ofSignature eps heps).chart.dalembert
           (fun y => V₁ (covectorPhase n₁ y) + V₂ (covectorPhase n₂ y)) u x) := by
   obtain ⟨w₁, dw₁, ddw₁, ε₁, hε₁, hw₁a, hd₁, hdd₁, heq₁⟩ :=
-    exists_localLinearProbe contDiff_const (hV₁.div contDiff_const fun _ => hQ₁) b₁
+    exists_localLinearProbe (p := fun _ => (0 : ℝ)) contDiff_const
+      (hV₁.div contDiff_const fun _ => hQ₁) b₁
   obtain ⟨w₂, dw₂, ddw₂, ε₂, hε₂, hw₂a, hd₂, hdd₂, heq₂⟩ :=
-    exists_localLinearProbe contDiff_const (hV₂.div contDiff_const fun _ => hQ₂) b₂
+    exists_localLinearProbe (p := fun _ => (0 : ℝ)) contDiff_const
+      (hV₂.div contDiff_const fun _ => hQ₂) b₂
   refine ⟨fun y => covectorLift n₁ w₁ y * covectorLift n₂ w₂ y, min ε₁ ε₂,
     lt_min hε₁ hε₂, ?_, ?_⟩
   · intro x h1 h2

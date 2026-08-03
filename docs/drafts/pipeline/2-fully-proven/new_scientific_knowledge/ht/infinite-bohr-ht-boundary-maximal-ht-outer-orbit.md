@@ -1450,3 +1450,123 @@ conclusion becomes the corpus's `universalPhase` membership and hence, through
 `not_familyDifferentiallyAlgebraicOn_expWeightedCauchy_of_allFinitePatterns_relationFree` and the
 Cayley outer gauge, the freeness of the translated outer family.  Adding `eps A(. + t_i)` then
 changes nothing, since it only translates the observed packet.
+
+## Lean progress: admissible nodes above the real axis
+
+`ShapeDeterminantPolynomial.lean` gained the refinement the analytic side needs:
+
+- **`exists_upper_injective_nodes_shapeDeterminant_ne_zero`** -- every shape with distinct monomials
+  has an admissible node packet whose nodes are *pairwise distinct and all in the upper half plane*.
+
+The corpus's own full-rank witness put no constraint on where the nodes lie, but the Cauchy jets only
+exist above the real axis, so the constraint is essential.  It costs nothing: the determinant and the
+product of node differences are both nonzero polynomials, hence so is their product, whose nonzero
+locus is dense (`mvPolynomial_nonzero_eval_dense`), and a dense set meets the nonempty open set of
+packets with every node in the upper half plane.
+
+With this the `nodeOf` data of `residual_forall_shape_coeff_eq_zero` can be chosen so that the outer
+jet observation is defined at those nodes -- the last compatibility condition between the algebraic
+and the analytic halves.
+
+### State of (9)
+
+Every step of the card's submersion argument is now a corpus theorem:
+
+| step | Lean |
+|---|---|
+| admissible nodes, above the axis | `exists_upper_injective_nodes_shapeDeterminant_ne_zero` |
+| one polynomial per shape | `shapeDeterminant`, `coeff_eq_zero_of_shapeDeterminant_ne_zero` |
+| jets move with the masses | `discreteJetPacket_perturbedWeight_sub`, `exists_discreteJetPacket_reach` |
+| jets are continuous in the parameter | `continuous_discreteJetPacket_expParameter` |
+| the outer chart preserves openness | `locallySurjective_outerJetObservation` |
+| Baire over countably many shapes | `residual_forall_shape_coeff_eq_zero` |
+| relations of the outer family descend to the Cauchy family | `not_familyDifferentiallyAlgebraicOn_outerCauchyTranslates` |
+| the fixed carrier is invisible | `not_familyDifferentiallyAlgebraicOn_shear` (with the submersion caveat recorded above) |
+
+## Lean progress: the observation attached to a shape
+
+`RelationShape` was refactored to carry `depthPred` with `jetDepth = depthPred + 1`, so that a
+shape's jet range is definitionally of the form `Fin (m + 1)` and no `Fin`-casts are needed anywhere
+downstream.  Nothing is lost: a shape of jet depth zero has no jet variables at all, so its relation
+is a polynomial in the spectral variable alone and vanishes on an infinite set only if it is zero.
+
+`ShapeOuterObservation.lean` (wired, axiom-clean):
+
+- `constOrderPacketHomeomorph` -- a packet with constant order range is a product packet, as a
+  homeomorphism.  This is the identification between the sigma-indexed packets the Cauchy machinery
+  produces and the `(node, order)` product the evaluation matrix reads;
+- `shapeOuterObservation` -- for each shape, the Cayley outer jets of the discrete Cauchy transform
+  at the shape's nodes, to the shape's depth, in the shape's own coordinates;
+- **`locallySurjective_shapeOuterObservation`** -- and that observation is locally surjective.
+
+So `residual_forall_shape_coeff_eq_zero` can now be fed with `nodeOf` from
+`exists_upper_injective_nodes_shapeDeterminant_ne_zero` and `jetOf` from `shapeOuterObservation`.
+
+The last hypothesis still to supply is continuity of that composite.  Its analytic half is done
+(`continuous_discreteJetPacket_expParameter`); what is missing is that the *chart* is continuous where
+it is used, i.e. `ContinuousOn chiJetScalar {y | y 0 + i /= 0}`.  Both factors of the chart already
+have their `ContinuousOn` statements -- `continuousOn_expJetScalar` and `continuousOn_invJetScalar` --
+and the affine factors are globally continuous, so this is a composition with a maps-to condition:
+the zeroth entry of a Cauchy jet packet has nonnegative imaginary part, so it never meets `-i`.
+
+## Lean progress: residual rigidity for the card's own object
+
+The chart's continuity is proved and the transversality theorem is instantiated.
+
+- **`continuousOn_chiJetScalar`**, **`continuousOn_chiJetPacket`**, **`continuousOn_outerJetSigma`**
+  -- the Cayley outer chart is continuous wherever it is defined, its only singular locus being the
+  packets whose zeroth jet meets `-i`;
+- `discreteJetPacket_mem_chartDomain` -- Cauchy jet packets never lie on that locus, since the
+  zeroth entry is a value of the Cauchy transform and has nonnegative imaginary part;
+- **`continuous_shapeOuterObservation`** -- hence the shape observation is continuous.
+
+`residual_forall_shape_avoidance` and `residual_forall_shape_coeff_eq_zero` were generalised from the
+literal shape type to an arbitrary countable index with a map to shapes, so that they can be applied
+to the *reduced* shapes -- those whose expanded monomials are pairwise distinct, which is what the
+determinant argument needs.  Reduced shapes are a subtype of a countable type, hence countable.
+
+- **`residual_outerJet_shape_rigidity`** -- for a positive summable weight family and an injective
+  atom family there is a choice of admissible node packets, *all above the real axis*, and a residual
+  set of bounded exponential mass parameters at which, for every reduced shape, the only coefficient
+  vector annihilated by the expanded evaluation matrix is zero.
+
+This is the card's residual theorem (9) in the language of the corpus's own evaluation matrices,
+unconditional and axiom-clean.  What remains is purely a translation of vocabulary: the corpus's
+`herglotzExpandedPatternRelationHolds` is literally `mulVec c = 0` at every admissible packet, so the
+rigidity statement above *is* membership in its `universalPhase`; feeding that to
+`not_familyDifferentiallyAlgebraicOn_expWeightedCauchy_of_allFinitePatterns_relationFree` and then to
+the Cayley outer gauge gives freeness of the translated outer family, and the shear leaves the fixed
+carrier invisible.
+
+## Lean progress: the fixed carrier is invisible
+
+The step the card asserts in one sentence -- "addition of the fixed function `eps A` has identity
+derivative on jet space, so the universal parameter-shift evaluation map for `G_u` is still a real
+submersion" -- is now a theorem.
+
+- **`LocallySurjectiveObservation.add_const`** -- a locally surjective observation stays one after a
+  *fixed* translation of the target, because translation is a homeomorphism;
+- **`residual_perturbedOuterJet_shape_rigidity`** -- therefore, for an arbitrary fixed jet vector per
+  shape (the jets of the fixed exponential carrier at the same nodes), the same residual set of mass
+  parameters makes every coefficient vector of every reduced shape vanish.
+
+This closes the gap identified earlier between the shear route and the card's route.  The shear route
+would have required joint independence of the carrier translates, which the card does not claim; the
+submersion route needs only that the carrier's contribution is *constant in the mass parameter*, and
+that is exactly what `add_const` uses.
+
+### (9) is now formal, end to end, in evaluation-matrix language
+
+For a positive summable weight family on an injective atom family:
+
+1. admissible nodes above the axis, one packet per reduced shape --
+   `exists_upper_injective_nodes_shapeDeterminant_ne_zero`;
+2. the outer jet packet at those nodes is continuous and locally surjective in the mass parameter --
+   `continuous_shapeOuterObservation`, `locallySurjective_shapeOuterObservation`;
+3. adding the fixed carrier jets changes neither -- `LocallySurjectiveObservation.add_const`;
+4. one determinant polynomial per shape kills all coefficient vectors of that shape --
+   `coeff_eq_zero_of_shapeDeterminant_ne_zero`;
+5. shapes are countable and the residual filter is closed under countable intersections --
+   `Countable RelationShape`, `residual_iInter`;
+6. hence **`residual_perturbedOuterJet_shape_rigidity`**: a residual set of mass parameters on which
+   no relation of any reduced shape survives, *with the fixed carrier included*.

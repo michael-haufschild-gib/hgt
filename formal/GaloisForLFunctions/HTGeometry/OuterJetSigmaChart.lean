@@ -67,6 +67,24 @@ theorem outerJetSigma_image_mem_nhds {ι : Type*} [Fintype ι] {m : ι → ℕ}
 
 /-! ## The outer jet observation of the mass parameter -/
 
+/-- The zeroth entries of a Cauchy jet packet never meet `-i`: they are values of the Cauchy
+transform, whose imaginary part is nonnegative above the real axis. -/
+theorem discreteJetPacket_mem_chartDomain {ι : Type*} [Fintype ι] (nodes : ι → ℂ)
+    (hupper : ∀ i, 0 < (nodes i).im) (m : ι → ℕ) (x : ℕ → ℝ) {ε : ℕ → ℝ} (hεpos : ∀ n, 0 < ε n)
+    (hε : Summable ε) (u : MassParameter) (i : ι) :
+    discreteJetPacket nodes (fun i => m i + 1) x
+        (fun n => ε n * Real.exp (u n)) ⟨i, 0⟩ + Complex.I ≠ 0 := by
+  haveI := isFiniteMeasure_countableWeightedDirac (x := x)
+    (fun n => (mul_pos (hεpos n) (Real.exp_pos _)).le)
+    (summable_expParameter (fun n => (hεpos n).le) hε u)
+  have hzero : discreteJetPacket nodes (fun i => m i + 1) x
+      (fun n => ε n * Real.exp (u n)) ⟨i, 0⟩
+      = cauchyTransform (_root_.HTGeometry.countableWeightedDirac
+          (fun n => ε n * Real.exp (u n)) x) (nodes i) := by
+    simp [discreteJetPacket]
+  rw [hzero]
+  exact add_I_ne_zero_of_im_nonneg (im_cauchyTransform_nonneg _ (hupper i))
+
 /-- **The outer jet packet is a locally surjective observation of the mass parameter.**  The Cauchy
 jet packet already is, by mass controllability, and the Cayley outer chart carries neighbourhoods to
 neighbourhoods because its zeroth entries never meet `-i` above the real axis. -/
@@ -80,21 +98,24 @@ theorem locallySurjective_outerJetObservation {ι : Type*} [Fintype ι] [Decidab
   intro u N hN
   have hbase := locallySurjective_discreteJetObservation nodes hnodesinj hupper
     (fun i => m i + 1) x hx hεpos hε u N hN
-  haveI := isFiniteMeasure_countableWeightedDirac (x := x)
-    (fun n => (mul_pos (hεpos n) (Real.exp_pos _)).le)
-    (summable_expParameter (fun n => (hεpos n).le) hε u)
   have hy : ∀ i, discreteJetPacket nodes (fun i => m i + 1) x
-      (fun n => ε n * Real.exp (u n)) ⟨i, 0⟩ + Complex.I ≠ 0 := by
-    intro i
-    have hzero : discreteJetPacket nodes (fun i => m i + 1) x
-        (fun n => ε n * Real.exp (u n)) ⟨i, 0⟩
-        = cauchyTransform (_root_.HTGeometry.countableWeightedDirac
-            (fun n => ε n * Real.exp (u n)) x) (nodes i) := by
-      simp [discreteJetPacket]
-    rw [hzero]
-    exact add_I_ne_zero_of_im_nonneg (im_cauchyTransform_nonneg _ (hupper i))
+      (fun n => ε n * Real.exp (u n)) ⟨i, 0⟩ + Complex.I ≠ 0 :=
+    discreteJetPacket_mem_chartDomain nodes hupper m x hεpos hε u
   have hstep := outerJetSigma_image_mem_nhds (m := m) hy hbase
   rwa [← Set.image_comp] at hstep
+
+/-- **The multi-node chart is continuous where it is defined.** -/
+theorem continuousOn_outerJetSigma {ι : Type*} (m : ι → ℕ) :
+    ContinuousOn (outerJetSigma m)
+      {y : (Σ i, Fin (m i + 1)) → ℂ | ∀ i, y ⟨i, 0⟩ + Complex.I ≠ 0} := by
+  rw [continuousOn_pi]
+  intro t
+  have hres : Continuous fun y : (Σ i, Fin (m i + 1)) → ℂ => fun k => y ⟨t.1, k⟩ :=
+    continuous_pi fun _ => continuous_apply _
+  have hmaps : Set.MapsTo (fun y : (Σ i, Fin (m i + 1)) → ℂ => fun k => y ⟨t.1, k⟩)
+      {y : (Σ i, Fin (m i + 1)) → ℂ | ∀ i, y ⟨i, 0⟩ + Complex.I ≠ 0}
+      {v : Fin (m t.1 + 1) → ℂ | v 0 + Complex.I ≠ 0} := fun y hy => hy t.1
+  exact (continuousOn_pi.mp (continuousOn_chiJetPacket (m t.1)) t.2).comp hres.continuousOn hmaps
 
 end
 

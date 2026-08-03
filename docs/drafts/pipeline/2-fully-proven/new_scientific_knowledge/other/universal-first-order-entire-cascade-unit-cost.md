@@ -417,6 +417,7 @@ It also identifies the mechanism and the sharp wall.  The analytic growth invari
 - [x] Lean: the lower tail sum, and the "central terms dominate" window decomposition
 - [x] Lean: the Borel growth lemma, and the unbounded supply of good radii it yields
 - [x] Lean: continuity of the maximum term, the hypothesis the Borel lemma needs
+- [x] Lean: the Borel bridge -- good radii for `mu`, and the resulting bound on `nu`
 - [ ] Lean: the Wiman--Valiron estimate `f'(z_r)/f(z_r) ~ nu(r)/z_r` outside the exceptional set
 - [ ] Lean: Newton--Puiseux places at `U = infinity`, hence the nondegenerate Wiman place
 - [ ] Lean: Clunie--Steinmetz composition separation and state algebraic independence
@@ -499,7 +500,18 @@ exists_ge_lt_two_mul                      -- hence good radii exist beyond every
 exists_ge_lt_two_mul_scaled               -- the same with the multiplicative step 1 + 1/T(r)
 exists_finset_maxTerm_eq_sup'             -- on a compact positive interval mu is a finite max
 continuousOn_maxTerm                      -- hence mu is continuous on (0, infinity)
+logMaxTermMajorant                        -- the continuous monotone majorant 1 + log mu
+exists_ge_borel_maxTerm                   -- good radii for the maximum term, from Borel
+centralIndex_le_of_borel_maxTerm          -- at those radii, nu(r) <= 2 (1 + log mu(r))^2
+entireCoeffs_mul_index                    -- the derivative coefficients n a_n are again entire
+maxTerm_mul_index_le                      -- mu'(r) <= mu(r) (nu(s) + geometric constant)
+summable_index_deviation                  -- the deviation series sum |n - k| ||a_n|| r^n converges
+sum_window_index_deviation_le             -- inside the window the deviation is the window width
 ```
+
+The last two open the local analysis: `z f'(z) = sum n a_n z^n`, so everything proved for `a` applies
+verbatim to `n a_n`, and the extra factor `n` costs only the central index plus a constant fixed by
+the radius ratio -- beyond the window the geometric decay beats the linear growth of `n`.
 
 Continuity is not cosmetic: the Borel growth lemma in the corpus requires a **continuous** `T`, and
 the central index `nu` is a step function, so the growth lemma can only be applied to `log mu` and
@@ -698,3 +710,26 @@ triangularity package, which is exactly how the paper proof uses them.
   corpus's Borel growth lemma requires a continuous `T` while the central index is a step function --
   the growth lemma has to be applied to `log mu` and transferred to `nu` through the two-sided growth
   law, and continuity is exactly what was missing for that.
+- 2026-08-03 -- Connected the Borel growth lemma to the central index.  The lemma cannot be applied to
+  `nu` directly -- it is a step function and the corpus lemma requires continuity -- so it is applied
+  to the continuous monotone majorant `1 + log mu` (clamped below at a radius where `mu >= 1`), and
+  the conclusion is carried to `nu` by the two-sided growth law: at the resulting radii
+  `nu(r) log(1 + 1/T(r)) <= log mu(s) - log mu(r) < T(r)` with `T = 1 + log mu`, and
+  `log(1+x) >= x/2` on `[0,1]` gives `nu(r) <= 2 T(r)^2`.  The `log(1+x) >= x/(1+x)` step is
+  `Real.log_le_sub_one_of_pos` applied to `1/(1+x)`.  This is the selection of Wiman--Valiron radii
+  that Reduction I asks for; what is left is the local analysis at a maximum-modulus point.
+- 2026-08-03 -- Opened the local analysis.  Since `z f'(z) = sum n a_n z^n`, the whole maximum-term
+  theory has to be available for the sequence `n a_n`; `entireCoeffs_mul_index` shows it satisfies
+  the same decay hypothesis (the factor `n` is absorbed by the doubled radius, via
+  `summable_pow_mul_geometric_of_norm_lt_one`).  `maxTerm_mul_index_le` then bounds its maximum term:
+  inside the window the factor is at most `nu(s)`, and beyond it the geometric decay proved earlier
+  beats the linear growth of `n`, leaving a constant `sum j (r/s)^j` that depends only on the radius
+  ratio.  So `mu'(r) <= mu(r) (nu(s) + C)`, the estimate the logarithmic derivative needs.
+- 2026-08-03 -- Set up the index deviation, which is what the logarithmic-derivative estimate
+  measures: `z f'(z) - k f(z) = sum (n - k) a_n z^n`, so `f'/f` is close to `k/z` exactly when
+  `sum |n - k| ||a_n|| r^n` is small compared with the function.  `summable_index_deviation` shows the
+  series converges at every radius (dominate `|n - k|` by `n + k` and use the derivative sequence),
+  and `sum_window_index_deviation_le` gives the window estimate: for `t < r < s` both `n` and `nu(r)`
+  lie in `[nu(t), nu(s)]`, so inside the window the deviation never exceeds the window width
+  `nu(s) - nu(t)`.  The two tails are already geometric by the earlier decay bounds, so the remaining
+  step is to choose `t` and `s` at a Borel-good radius and see the window width become `o(nu(r))`.

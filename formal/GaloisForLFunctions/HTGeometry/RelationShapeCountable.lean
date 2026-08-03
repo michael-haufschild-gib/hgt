@@ -26,17 +26,20 @@ vectors of its expanded monomials. -/
 structure RelationShape where
   /-- The degree in the spectral variable. -/
   spectralDegree : ℕ
-  /-- The jet depth. -/
-  jetDepth : ℕ
+  /-- One less than the jet depth; a relation always has at least one jet variable. -/
+  depthPred : ℕ
   /-- The number of expanded monomials. -/
   monomialCount : ℕ
   /-- The exponent vector of each monomial. -/
-  exponent : Fin monomialCount → (Fin jetDepth →₀ ℕ)
+  exponent : Fin monomialCount → (Fin (depthPred + 1) →₀ ℕ)
+
+/-- The jet depth of a shape. -/
+abbrev RelationShape.jetDepth (S : RelationShape) : ℕ := S.depthPred + 1
 
 /-- The shape data, flattened. -/
 def relationShapeEquiv :
-    RelationShape ≃ Σ _q : ℕ, Σ n : ℕ, Σ R : ℕ, Fin R → (Fin n →₀ ℕ) where
-  toFun S := ⟨S.spectralDegree, S.jetDepth, S.monomialCount, S.exponent⟩
+    RelationShape ≃ Σ _q : ℕ, Σ n : ℕ, Σ R : ℕ, Fin R → (Fin (n + 1) →₀ ℕ) where
+  toFun S := ⟨S.spectralDegree, S.depthPred, S.monomialCount, S.exponent⟩
   invFun p := ⟨p.1, p.2.1, p.2.2.1, p.2.2.2⟩
   left_inv := by
     intro S

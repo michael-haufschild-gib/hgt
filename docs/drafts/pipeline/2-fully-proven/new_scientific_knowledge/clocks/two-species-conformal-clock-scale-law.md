@@ -784,6 +784,57 @@ Theorem 1 is an identity between operators; read as a statement about *solutions
 - `scale_reconstruction_of_rescaled_probeFamily` — the conformal scale from that single physical
   hypothesis, the massless reference contributing nothing.
 
+### Separable potentials: probes varying in two directions at once
+
+Every determination result above uses probes constant on the leaves of one foliation. Products break
+that restriction, and the obstruction to using them was regularity, not mathematics: the chart
+calculus of the corpus is stated at `ContDiff ℝ ∞`, which Picard--Lindelöf probes do not satisfy.
+`formal/GaloisForLFunctions/HTGeometry/ClockProbeSeparablePotential.lean` rebuilds what is needed at
+the regularity those probes actually have:
+
+- `coordPartial_congr`, `ofSignature_flux_eq`, `ofSignature_dalembert_of_differentiableAt` — the flat
+  d'Alembertian from **pointwise differentiability of the first partials** alone;
+- `coordPartial_covectorLift_of_zero` — transverse constancy of a covector lift, with no
+  differentiability hypothesis at all;
+- `dalembert_covectorLift_flat` — `□(w∘⟪n,·⟫) = G(n,n)·w''(⟪n,x⟫)` at that regularity;
+- `dalembert_mul_transverse` — **`□(fg) = g□f + f□g`** when `f` varies only along `i₀` and `g` not at
+  all along `i₀`, because the carré du champ of transverse factors vanishes on a diagonal chart;
+- `exists_separable_localProbe`, `separable_potential_determined` — hence probes for
+  `V(x) = V₁(⟪n₁,x⟫) + V₂(⟪n₂,x⟫)` with **arbitrary `C¹` profiles**, and the determination of that
+  potential.
+
+This is the first class on the card whose probes are not constant on any single foliation: both
+factors vary, in independent directions.
+
+The support condition on the first factor is an artefact.
+`formal/GaloisForLFunctions/HTGeometry/ClockProbeOrthogonalSeparable.lean` isolates the real one:
+
+- `dalembert_mul_of_differentiableAt` — the **full** Leibniz rule at that regularity,
+  `□(fg) = f□g + g□f + 2Γ(f,g)`, with no support hypothesis;
+- `covectorPairing`, `gradPair_covectorLift_pair` — for covector lifts the cross term is
+  `⟨n₁,n₂⟩_G · w₁'w₂'`, so what the product needs is exactly **metric orthogonality**
+  `⟨n₁,n₂⟩_G = ∑ᵢ (εᵢ)⁻¹ n₁ᵢ n₂ᵢ = 0`;
+- `exists_orthogonal_separable_localProbe`, `orthogonal_separable_potential_determined` — probes and
+  determination for `V(x) = V₁(⟪n₁,x⟫) + V₂(⟪n₂,x⟫)` for **any** non-null `G`-orthogonal pair;
+- `covectorPairing_twoIndex`, `exists_boosted_orthogonal_pair` — the class is not confined to
+  coordinate directions: `(2,1,0,…)` and `(1,2,0,…)` on Minkowski space are non-null, orthogonal, and
+  neither is a coordinate covector.
+
+Two orthogonal factors extend to a whole orthogonal frame.
+`formal/GaloisForLFunctions/HTGeometry/ClockProbeFullySeparable.lean`:
+
+- `coordPartial_eq_zero_of_invariant` — a field invariant under translation in a direction has no
+  derivative there, with **no** differentiability hypothesis; this is what makes the induction cheap;
+- `coordFactor`, `boxProduct`, `coordPartial_boxProduct_of_notMem` — the partial product over a set
+  of coordinates is literally invariant transversally to that set;
+- `boxProduct_solves` — the induction over subsets: `∏ᵢ wᵢ(xᵢ)` solves the equation with the sum
+  potential as soon as each factor solves `(εᵢ)⁻¹wᵢ'' + Vᵢwᵢ = 0`;
+- `exists_fullySeparable_localProbe`, `fullySeparable_potential_determined` — hence **every fully
+  separable potential** `V(x) = ∑ᵢ Vᵢ(xᵢ)` with arbitrary `C¹` profiles is determined.
+
+In four dimensions that is a potential varying independently in time and in all three spatial
+directions.
+
 So the last open input of the whole programme is now stated in its physical form:
 
 > the massive Klein–Gordon field on the rescaled spacetime admits, at every event, a smooth solution

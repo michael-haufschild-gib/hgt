@@ -59,6 +59,18 @@ theorem LocallySurjectiveObservation.congr_homeomorph {P : Type*} [TopologicalSp
   rw [himg]
   exact e.isOpenMap.image_mem_nhds (hJ p N hN)
 
+/-- **A locally surjective observation stays one after a fixed translation of the target.**  This is
+what makes a fixed additive perturbation invisible to a transversality argument. -/
+theorem LocallySurjectiveObservation.add_const {P : Type*} [TopologicalSpace P] {σ : Type*}
+    {J : P → (σ → ℂ)} (hJ : LocallySurjectiveObservation J) (v : σ → ℂ) :
+    LocallySurjectiveObservation fun p => J p + v := by
+  intro p N hN
+  have himg : (fun p => J p + v) '' N = (fun y : σ → ℂ => y + v) '' (J '' N) := by
+    rw [← Set.image_comp]
+    rfl
+  rw [himg]
+  exact (Homeomorph.addRight v).isOpenMap.image_mem_nhds (hJ p N hN)
+
 /-- The jet packet of a family of translates, read in the coordinates of the evaluation matrix. -/
 theorem locallySurjectiveObservation_reindex {P : Type*} [TopologicalSpace P] {row : Type*}
     (r d : ℕ) {J : P → ((Σ _ : row × Fin r, Fin (d + 1)) → ℂ)}

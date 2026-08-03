@@ -1453,6 +1453,8 @@ import GaloisForLFunctions.RHTower.DeningerFlattenPeriodic
 import GaloisForLFunctions.RHTower.DeningerFlattenTake
 import GaloisForLFunctions.RHTower.DeningerConjPowCycRed
 import GaloisForLFunctions.RHTower.DeningerWordUnique
+import GaloisForLFunctions.RHTower.DeningerConjLetterForm
+import GaloisForLFunctions.RHTower.DeningerConjInvariant
 import GaloisForLFunctions.RHTower.DeningerUnitaryFlowRieszPurity
 import GaloisForLFunctions.RHTower.DeningerUnitaryHarmonicAction
 import GaloisForLFunctions.RHTower.DeningerWeightOnePolarization
@@ -3108,6 +3110,11 @@ import GaloisForLFunctions.RHTower.Sieve.HarmonicSineBound
 import GaloisForLFunctions.RHTower.Sieve.DiscreteParseval
 import GaloisForLFunctions.RHTower.Sieve.SymbolBound
 import GaloisForLFunctions.RHTower.Sieve.CoefficientExpansion
+import GaloisForLFunctions.RHTower.Sieve.RootOrthogonality
+import GaloisForLFunctions.RHTower.Sieve.InverseDFT
+import GaloisForLFunctions.RHTower.Sieve.ResidueSingleton
+import GaloisForLFunctions.RHTower.Sieve.BilinearMultiplier
+import GaloisForLFunctions.RHTower.Sieve.KernelReshape
 import GaloisForLFunctions.RHTower.Sieve.ChernoffTails
 import GaloisForLFunctions.RHTower.Sieve.GeometricMeanDivisor
 import GaloisForLFunctions.RHTower.Sieve.IntervalMultiples

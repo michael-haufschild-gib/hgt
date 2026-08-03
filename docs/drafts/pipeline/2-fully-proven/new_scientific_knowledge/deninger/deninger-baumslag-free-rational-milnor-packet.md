@@ -137,7 +137,9 @@
   `GaloisForLFunctions.RHTower.DeningerFlattenPeriodic` (periodicity of a repeated word),
   `GaloisForLFunctions.RHTower.DeningerFlattenTake` (prefixes of a repeated word),
   `GaloisForLFunctions.RHTower.DeningerConjPowCycRed` (conjugates of powers),
-  `GaloisForLFunctions.RHTower.DeningerWordUnique` (two words with the same product)
+  `GaloisForLFunctions.RHTower.DeningerWordUnique` (two words with the same product),
+  `GaloisForLFunctions.RHTower.DeningerConjLetterForm` (the form of a conjugating letter),
+  `GaloisForLFunctions.RHTower.DeningerConjInvariant` (the conjugator invariant)
 
 ## Statement
 
@@ -2249,3 +2251,59 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   along the word.  Finishing needs that shift to be pinned down, and its periodicity when both words
   are powers.  This is the correct description of the remaining gap, replacing the earlier
   expectation that the criterion would close it.
+- 2026-08-03 — **The shift between two words with the same product is a base group element, one
+  letter at a time** (`deningerWords_head_shift`): the first letters differ by the base group, and
+  the difference passes to the rest of the word.  The proof is a length argument rather than a
+  normalization: were the difference of the first letters *not* in the base group, prefixing it to
+  the tail of the first word would give a reduced alternating word with the same product as the tail
+  of the second and one letter more, contradicting that words with equal products have equal length.
+  This is the inductive step for pinning down the shift, which is what the remaining half of
+  Baumslag's theorem needs.
+- 2026-08-03 — `deningerWords_singleton`: a single letter is determined by its product, which is the
+  base case of the shift recursion — there the shift has nowhere left to go and must be trivial.
+  Tracing the recursion on an example clarified what the iterated statement can and cannot say: the
+  shift accumulates from the front, so the *last* letters of two words with the same product need not
+  agree; what agrees is the last letter after the accumulated shift has been applied.  The clean
+  global statement is therefore about the shifted words, not the original ones.
+  The remaining obstacle is unchanged and now sharply located: the conjugacy criterion returns the
+  rotation but forgets the conjugating element, and the endgame needs its form — that it is, up to
+  the base group and powers of the word, a prefix of one period.  Recovering it means re-running the
+  criterion's induction while tracking the conjugator, where the front and back cases move the
+  rotation index by plus or minus one.
+- 2026-08-03 — Proved the two identities that would let the conjugacy criterion remember its
+  conjugator: a letter cancelling the front letter of a cyclically reduced word **is** the inverse of
+  that letter up to the base group (`deningerConjLetter_front`), and a letter cancelling the last
+  letter **is** that letter up to the base group (`deningerConjLetter_back`).  Each step of the
+  criterion's induction therefore multiplies the conjugator by one letter of the word or its inverse,
+  which is why the accumulated conjugator is a prefix of the periodic word.
+  Recording the cost honestly: turning this into the strengthened criterion means carrying a
+  conjugator through the induction whose base group factors do not commute past the word, so the
+  invariant is not simply `base · prefix⁻¹ · power`.  That is the reason the strengthened statement
+  has not been attempted as a whole.
+- 2026-08-03 — Found the invariant that makes a conjugator trackable, and proved the identity it
+  rests on.  The obstruction recorded last cycle was that base group factors do not commute past the
+  word; the answer is that they do not have to — they absorb.  A base element multiplying an
+  inverted word absorbs into that word's last letter (`deningerBase_mul_inv_letterProd`), and into an
+  inverted letter (`deningerBase_mul_inv_of`), so a conjugator of the form *base times inverse word*
+  stays of that form when another letter is cancelled.  This is the invariant the strengthened
+  criterion needs: the conjugator is an inverted word whose factors are those of the periodic word,
+  with the base group absorbed into its last letter at each step.
+- 2026-08-03 — **The conjugator invariant is preserved by a front cancellation**
+  (`deningerConjInvariant_front`): if the conjugator built so far is a base group element times an
+  inverted word, then after cancelling one more front letter it is again of that shape, with one more
+  letter in the word — the letter being the front letter of the word with the accumulated base
+  element absorbed into it.  This is the induction step of the strengthened criterion, and it is
+  exactly where the previous formulation failed: the base elements are not commuted past anything,
+  they are absorbed.
+  The back cancellation behaves differently, as expected: instead of adding a letter it removes one,
+  the conjugator retreating along the word.  That case therefore needs the inverted word to be
+  nonempty, and when it is not, the conjugator moves past the start of the period — which is why the
+  full criterion has to be stated for a power of the word rather than the word itself.
+- 2026-08-03 — **The back cancellation also preserves the conjugator invariant**
+  (`deningerConjInvariant_back`), shortening the inverted word instead of lengthening it: the letter
+  cancelled at the back meets the first letter of that word, and the two combine into the base group,
+  which is carried along.  Stating the invariant with a trailing base group factor on the left hand
+  side — the conjugator times a base element equals a base element times an inverted word — makes it
+  self propagating: the front step consumes a trivial trailing factor and the back step produces one,
+  so both cases land in the same form.  With both steps proved, the strengthened criterion is an
+  induction over the two of them.
