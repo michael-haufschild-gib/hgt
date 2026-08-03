@@ -125,7 +125,7 @@ for all sufficiently large \(n\),
 
 ### 4. Exact recurrence forces factorial growth
 
-Iterating `(4)` gives, for every integer \(N\ge0\),
+Iterating `(4)` gives, for every integer \(N\ge1\),
 
 \[
   y(\nu_0+N)>
@@ -149,7 +149,14 @@ hypertranscendental. This proves the theorem.
 
 ## Exact extremal-radiation corollary
 
-For the all-time extremal Reissner--Nordström moving-mirror kernel of Good, let
+For the all-time extremal Reissner--Nordström moving-mirror kernel of Good, fix
+\(\kappa>0\), and, for
+
+\[
+  0<\omega<\frac{\kappa s}{2},
+\]
+
+let
 
 \[
   \omega_p=\omega+\omega',\qquad
@@ -158,11 +165,21 @@ For the all-time extremal Reissner--Nordström moving-mirror kernel of Good, let
   \omega'(\omega)=\frac{\kappa^2s^2}{4\omega}-\omega>0.    \tag{12}
 \]
 
-Then the modified-Bessel argument is exactly \(s\). The nonzero elementary prefactor in
-\(|\beta_{\omega\omega'}|^2\) is differentially algebraic, while its Bessel intensity is `(1)`.
+Then the modified-Bessel argument is exactly \(s\), and Good's exact all-time coefficient gives
+
+\[
+ |\beta_{\omega\omega'(\omega)}|^2
+ = \frac{e^{-2\pi\omega/\kappa}\,\omega'(\omega)}
+        {\pi^2\kappa^2\omega_p(\omega)}
+   I_s\!\left(1+\frac{2i\omega}{\kappa}\right).           \tag{13}
+\]
+
+The displayed prefactor is nonzero and differentially algebraic on this interval, while its
+Bessel intensity is `(1)`.
 Nonzero affine substitution and multiplication or division by a nonzero differentially algebraic
-function preserve differential transcendence. Therefore the calibrated intensity scan in `(12)`
-is hypertranscendental over \(\mathbb C(\omega)\).
+function preserve differential transcendence. Therefore the calibrated intensity scan in
+`(12)`--`(13)` is hypertranscendental over \(\mathbb C(\omega)\) (equivalently, it satisfies no
+algebraic differential equation on any nonempty open subinterval of the displayed domain).
 
 Here \(\kappa=1/(2M)\) is the scale used in the extremal moving-mirror model; it is not the physical
 surface gravity, which vanishes.

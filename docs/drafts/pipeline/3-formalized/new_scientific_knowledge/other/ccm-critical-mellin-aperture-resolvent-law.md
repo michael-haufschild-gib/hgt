@@ -1,9 +1,9 @@
 # CCM critical-Mellin aperture-resolvent law
 
 - **ID:** `ccm-critical-mellin-aperture-resolvent-law`
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Scientific status:** `[PROVED HERE] [CONNES/CCM SOURCE-SPECIFIC] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Scientific status:** `[LEAN-PROVED] [CONNES/CCM SOURCE-SPECIFIC] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Source:** `../../1-in-progress/ccm-critical-mellin-adjacent-block-subpower-lower.md`
 - **Statement:** Exponential averaging over the CCM rectangular aperture turns the exact
   Volterra--Haar multiplier into a rational resolvent; at unit rate it is `-1/(w+1)` and its causal

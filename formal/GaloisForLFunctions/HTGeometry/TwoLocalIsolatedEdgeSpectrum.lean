@@ -234,7 +234,7 @@ private theorem intCast_starIsingBinaryCode_eq_affine {m : ℕ}
   rw [← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro i _hi
-  cases hzi : z₀ i <;> cases hz : z i <;> simp [hzi, hz]
+  cases hzi : z₀ i <;> cases hz : z i <;> simp []
 
 /-- The isolated-edge spectrum is realized by an explicit two-local
 distinguished-star Hamiltonian. -/
@@ -260,12 +260,12 @@ theorem twoLocalIsolatedEdgeEnergy_isDistinguishedStarTwoLocal {m : ℕ}
     intro i _hi
     ring
   cases s
-  · simp only [twoLocalIsolatedEdgeEnergy, ↓reduceIte,
-      boolOccupation, zero_mul, add_zero]
+  · simp only [twoLocalIsolatedEdgeEnergy, 
+      boolOccupation]
     simpa [S, boolOccupation] using hcode'
   · simp only [twoLocalIsolatedEdgeEnergy, ↓reduceIte,
       boolOccupation, Nat.cast_mul, Nat.cast_pow, Nat.cast_ofNat,
-      one_mul, mul_one]
+      mul_one]
     change
       B * (starIsingBinaryCode z₀ z : ℤ) =
         c + (B - 1) * c + S +
@@ -309,7 +309,7 @@ theorem twoLocalSymmetricIsolatedEdgeEnergy_eq_iff {m : ℕ}
   rcases x with ⟨sx, z⟩
   rcases y with ⟨sy, w⟩
   cases sx <;> cases sy
-  · simp only [twoLocalSymmetricIsolatedEdgeEnergy, ↓reduceIte,
+  · simp only [twoLocalSymmetricIsolatedEdgeEnergy, 
       Prod.mk.injEq, true_and]
     constructor
     · intro h
@@ -375,11 +375,11 @@ theorem twoLocalSymmetricIsolatedEdgeEnergy_isDistinguishedStarTwoLocal
         -2 * S := by
     simpa [boolOccupation] using hpair
   cases s
-  · simp only [twoLocalSymmetricIsolatedEdgeEnergy, ↓reduceIte,
-      boolOccupation, zero_mul, add_zero]
+  · simp only [twoLocalSymmetricIsolatedEdgeEnergy, 
+      boolOccupation]
     simpa [S, boolOccupation] using hcode'
   · simp only [twoLocalSymmetricIsolatedEdgeEnergy, ↓reduceIte,
-      boolOccupation, one_mul, mul_one]
+      boolOccupation, mul_one]
     rw [hcode', hS_bool, hpair_bool]
     ring
 
@@ -457,6 +457,6 @@ theorem twoLocalEdgeBranchPolynomial_selected_simple {m : ℕ}
   constructor
   · exact (twoLocalEdgeBranchPolynomial_isRoot_I_iff z₀ z₀).mpr rfl
   · simp [twoLocalEdgeBranchPolynomial,
-      Polynomial.derivative_X_add_C_pow]
+      ]
 
 end GaloisForLFunctions.HTGeometry

@@ -83,8 +83,7 @@ theorem continuous_twoLocalSelectedEdgeParameter :
 
 @[simp] theorem twoLocalMonodromyPhase_one :
     twoLocalMonodromyPhase 1 = 1 := by
-  simpa [twoLocalMonodromyPhase] using
-    Complex.exp_two_pi_mul_I
+  simp [twoLocalMonodromyPhase]
 
 /-- The Hamiltonian parameter itself closes after one circuit. -/
 theorem twoLocalSelectedEdgeParameter_closed :
@@ -250,7 +249,7 @@ theorem twoLocalSelectedEigenvalueLift_endpoint_swap :
   unfold twoLocalSelectedEigenvalueLift
   rw [show
     Complex.exp (((Real.pi : ℂ) * Complex.I) * ((1 : I) : ℝ)) =
-      -1 by simpa using Complex.exp_pi_mul_I]
+      -1 by simp]
   simp
 
 /-- The sheet swap is forced by odd winding, not by a branch convention:
@@ -280,8 +279,8 @@ theorem twoLocalSelectedEigenvalueLift_endpoint_swap_of_oddWinding :
         (Pi1CMinusZero.circleLoop s : ℂ)
     simp [twoLocalSelectedEigenvalueLift,
       Pi1CMinusZero.circleLoop, Pi1CMinusZero.pexp,
-      twoLocalMonodromyPhase, div_pow,
-      ← Complex.exp_add]
+      
+      ]
     rw [show
       (2 : ℂ)⁻¹ *
           Complex.exp ((Real.pi : ℂ) * Complex.I * (s : ℝ)) *

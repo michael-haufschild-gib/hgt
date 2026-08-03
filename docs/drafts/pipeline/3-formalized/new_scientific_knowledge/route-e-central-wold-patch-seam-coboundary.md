@@ -101,3 +101,11 @@ Polynomial interpolation, falling factorials, and telescoping coboundaries are c
 No novelty is claimed for those ingredients. Project-new content is exact correction of Route E
 frontier: central Wold patching has no independent scalar seam, and surviving obstruction is
 physical source-pointed Hall expansion on paired breadth--depth data.
+
+## Stage 2 → 3 audit (2026-08-03)
+
+- `lake build GaloisForLFunctions.RHTower.MobiusWoldPatchSeamCoboundary` — `Build completed successfully`.
+- `#print axioms` on all six listed theorems: only `[propext, Classical.choice, Quot.sound]`.
+- Umbrella wiring: `GaloisForLFunctions/RHTower.lean:2293`.
+
+Card promoted to `3-formalized/new_scientific_knowledge`.

@@ -103,3 +103,14 @@ correspondence is parent project theorem. Candidate project-new content is its R
 specialization: precise depth-zero all-prime profile left by Möbius/Gamma reduction is a free
 infinite prime-clock module and therefore cannot be replaced by any finite-local
 differential-algebraic Euler circuit. No priority claim is made for abstract algebra.
+
+## Stage 2 → 3 audit (2026-08-03)
+
+- `lake build GaloisForLFunctions.RHTower.MobiusDepthZeroPrimeClockOrbitFreeness
+  GaloisForLFunctions.HTGeometry.PrimeClockCyclicOrbitFreeness` — `Build completed successfully`.
+- `#print axioms` on `rayClockPolynomialOrbit_linearIndependent_of_not_local` and all four Route E
+  specializations: only `[propext, Classical.choice, Quot.sound]`.
+- Umbrella wiring: `GaloisForLFunctions/RHTower.lean:2211`,
+  `GaloisForLFunctions/HTGeometry.lean:2905`.
+
+Card promoted to `3-formalized/new_scientific_knowledge`.

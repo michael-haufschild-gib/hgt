@@ -1,7 +1,7 @@
 # Route E depth-zero prime-clock phase-node no-go
 
 - **ID:** ROUTE-E-DEPTH-ZERO-PHASE-NODE-NOGO
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper), Lean proof pending final audit
 - **Source:** `OPEN-SOURCE-001`; updated modular-superselection equations (6.61d)--(6.61e)
 - **Statement:** Canonical all-prime depth-zero Route E current is nonzero modulo finite-prime
@@ -16,7 +16,7 @@ Route E breadth orientation after positive valuation depths have been removed at
 
 - [x] 0 → 1 in-progress: source-pure profile and exact prime-clock quotient identified
 - [x] 1 → 2 fully-proven: dependency-closed paper proof below
-- [ ] 2 → 3 formalized: targeted module build and axiom audit
+- [x] 2 → 3 formalized: targeted module build and axiom audit
 - [ ] 3 → 4 publication-ready: external priority audit and integration in paper
 
 ## Theorem `[PROVED HERE]`
@@ -117,3 +117,13 @@ External priority remains unverified; claim is limited to this synthesis.
 
 - 2026-08-01 — extracted after updated modular-superselection paper closed infinite one-prime
   phase-node tower; proved paper theorem and direct Lean module.
+
+## Stage 2 → 3 audit (2026-08-03)
+
+- Targeted module build: `lake build GaloisForLFunctions.RHTower.MobiusDepthZeroPrimeClockPhaseNodeNoGo`
+  — `Build completed successfully`.
+- Axiom audit (in-file `#print axioms` via `lake env lean`): all five listed unconditional theorems
+  depend only on `[propext, Classical.choice, Quot.sound]`.
+- Umbrella wiring confirmed: `GaloisForLFunctions/RHTower.lean:2211`.
+
+Card promoted to `3-formalized/new_scientific_knowledge`.

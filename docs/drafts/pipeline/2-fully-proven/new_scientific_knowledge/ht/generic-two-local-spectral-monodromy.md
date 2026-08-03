@@ -721,3 +721,55 @@ What remains for the `V_(n,2)` and fixed-`q` statements:
 Then `polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure_of_twoLocalEmbedding`
 applies verbatim and the card's statement holds for `V_(n,2)` and for every fixed-`q`
 ensemble with `q >= 2`.
+
+## Fixed-`q` Pauli ensembles: formalized (identity included)
+
+`PauliTwoLocalEmbedding.lean` (wired, axiom-clean) closes the Pauli bridge for every
+`q >= 2`:
+
+- `boolOccupation_eq_zSign`, `boolOccupation_sq`, `boolOccupation_mul` -- the occupation
+  to sign dictionary, `occ = (1-Z)/2` and `occ_i occ_j = (1 - ζ_i - ζ_j + ζ_iζ_j)/4`;
+- `pauliIdentityCoefficient`, `pauliZCoefficient`, `pauliZZCoefficient` and
+  **`hypercubeTwoLocalMatrix_diagonal_pauli`** -- the diagonal energy of the occupation
+  form equals its Pauli expansion.  The `i = j` interaction terms feed the identity and
+  `Z_i` coefficients (because `occ^2 = occ`), and one index swap
+  (`sum_erase_swap`) accounts for the two orientations of each pair;
+- `PauliBoundedLabel`, `pauliBoundedPolynomialMatrix`, `sum_ite_label_mul`,
+  `sum_ite_family_mul`, `pauliBoundedCoefficient` and
+  **`eval_pauliBoundedCoefficient_eq_hypercubeTwoLocalMatrix`** -- the full matrix
+  identity: the two-local occupation Hamiltonian *is* the Pauli combination;
+- `pauliBoundedFinPolynomialMatrix`, `isHermitian_pauliBoundedFinEval` and
+  **`pauliBounded_simple_and_projectivelyIndependent_generically`**,
+  **`pauliBounded_projectivelyIndependent_ae`** -- for `q >= 2`, the real coefficients of
+  the Pauli strings of weight at most `q` whose `2^n` energies are pairwise distinct and
+  admit no balanced integer relation are dense, residual and of full measure, so every law
+  with a density gives that event probability one.
+
+Note the identity string is a member of the ensemble here, so the parameter space is
+`V_(n,q) ⊕ ℂ·I` rather than `V_(n,q)` itself.
+
+### The one remaining step: the traceless ensemble
+
+The card's `V_(n,2)` is spanned by the *nonidentity* strings, and a full-measure statement
+on a space does not descend to a hyperplane.  The mechanism is available and cheap, and
+rests on one computation already implicit above: the identity coefficient is *invariant
+along the edge slice*.  The slice moves `constant` by `t` and `onsite i` by `-2t`, and
+`pauliIdentityCoefficient` weights them by `1` and `1/2`, so its value is unchanged.
+
+Therefore:
+
+1. weaken the hypothesis of
+   `polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure_of_twoLocalEmbedding`
+   from `M.map (eval at embed v) = hypercubeTwoLocalMatrix v` to
+   `= hypercubeTwoLocalMatrix v - (shift v) • 1`, with `shift` real on real vectors and
+   constant along each edge slice.  Inside the proof this only replaces the base energy
+   function `e` by `e - shift(base)`: gaps, positivity, gap-distinctness and injectivity
+   are all unchanged by a uniform shift, and the block means simply move by that constant;
+2. instantiate with the traceless label type `{P // pauliWeight P <= q ∧ P ≠ identity}`,
+   `embed` the nonidentity Pauli coefficients, and `shift := pauliIdentityCoefficient`.
+
+That yields the card's statement verbatim for `V_(n,q)`, `q >= 2`.
+
+Also cleared in this pass: every `TwoLocal*` module of this card's lineage is now free of
+Lean lint warnings (unused simp arguments, `simpa` where `simp` suffices, and one
+`<;>`-versus-`;` site), so the card's own area no longer contributes to the formal gate.

@@ -261,3 +261,12 @@ pointwise moving signed interpolation receives no source-construction credit; wi
 quarter-turn scalar channel an off-line survivor must break functional-equation reflection
 equivariance in its leading normalized weights.
 ```
+
+## Stage 2 → 3 audit (2026-08-03)
+
+- `lake build GaloisForLFunctions.RHTower.XiCTaylorSignedAtomicJetControllability`
+  — `Build completed successfully`.
+- `#print axioms` on all 39 theorems of the module: only `[propext, Classical.choice, Quot.sound]`.
+- Umbrella wiring: `GaloisForLFunctions/RHTower.lean:3985`.
+
+Card promoted to `3-formalized/new_scientific_knowledge`.

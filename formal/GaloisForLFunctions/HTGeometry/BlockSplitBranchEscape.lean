@@ -322,6 +322,38 @@ theorem exists_shifted_split_branch_relation_ne_zero (m d : Z → ℝ) (hd : ∀
   intro hcon
   exact hune (Complex.ofReal_eq_zero.mp hcon)
 
+
+omit [Fintype Z] in
+/-- Subtracting a scalar from a block splitting shifts every block mean. -/
+theorem blockSplitMatrix_sub_smul_one (m d : Z → ℝ) (u : ℂ) (c : ℝ) :
+    blockSplitMatrix m d u - ((c : ℝ) : ℂ) • (1 : Matrix (Fin 2 × Z) (Fin 2 × Z) ℂ)
+      = blockSplitMatrix (fun z => m z - c) d u := by
+  classical
+  ext p q
+  obtain ⟨i, z⟩ := p
+  obtain ⟨j, y⟩ := q
+  by_cases hz : z = y
+  · subst hz
+    simp only [blockSplitMatrix, Matrix.blockDiagonal_apply_eq, Matrix.sub_apply,
+      Matrix.smul_apply, smul_eq_mul, Matrix.one_apply, Prod.mk.injEq, and_true]
+    fin_cases i <;> fin_cases j <;> simp [splitBlock] <;> ring
+  · have hpq : ((i, z) : Fin 2 × Z) ≠ (j, y) := fun h => hz (congrArg Prod.snd h)
+    simp only [blockSplitMatrix, Matrix.blockDiagonal_apply, if_neg hz, Matrix.sub_apply,
+      Matrix.smul_apply, smul_eq_mul, Matrix.one_apply, if_neg hpq]
+    ring
+
+omit [Fintype Z] in
+theorem shiftedBlockSplitMatrix_sub_smul_one (m d : Z → ℝ) (q : ℝ × ℝ) (c : ℝ) :
+    shiftedBlockSplitMatrix m d q - ((c : ℝ) : ℂ) • (1 : Matrix (Fin 2 × Z) (Fin 2 × Z) ℂ)
+      = shiftedBlockSplitMatrix (fun z => m z - c) d q :=
+  blockSplitMatrix_sub_smul_one m (fun z => d z + q.1) (q.2 : ℂ) c
+
+omit [Fintype Z] [DecidableEq Z] in
+theorem blockEnergy_sub_const (m d : Z → ℝ) (c : ℝ) (p : Fin 2 × Z) :
+    blockEnergy (fun z => m z - c) d p = blockEnergy m d p - c := by
+  rw [blockEnergy, blockEnergy]
+  ring
+
 end
 
 end GaloisForLFunctions.HTGeometry

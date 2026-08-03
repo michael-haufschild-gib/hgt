@@ -663,6 +663,41 @@ different.  The remaining half of the eigenfunction package, `(18)`, is the Four
 that solution; the Fourier-side object `-i Xi(z)/(alpha - z)` is already fully formalized and is
 what the Gram law above is stated about.
 
+## `(18)`: the time side and the Fourier side are the same object
+
+The last numbered statement without a Lean counterpart was `(18)`, the transform of the time-side
+eigenfunction.  It is now proved, and the route avoids the convolution theorem entirely.
+
+First, the eigenfunction is exponentially localized, and *only* at a zero:
+
+```text
+norm_hedenmalmCausalVolterra_le_of_nonpos      : x <= 0  ->  ||u(x)|| <= C/(1-b) exp x
+norm_hedenmalmAntiCausalVolterra_le_of_nonneg  : x >= 0  ->  ||u(x)|| <= C/(1+b) exp(-x)
+norm_hedenmalmCausalVolterra_le_of_XiC_eq_zero : XiC alpha = 0  ->  ||u(x)|| <= C/(1-|b|) exp(-|x|)
+```
+
+with `b = Im alpha`.  The two one-sided bounds come from the pointwise `exp(-|t|)` decay of the
+theta source against the free mode, integrated on the respective half-line; the two-sided bound is
+where the divisor enters, because the causal and anti-causal solutions coincide exactly at a zero
+and only then does one function enjoy both decays.
+
+Then `(18)` follows from `(17)` by integrating the equation itself against the free mode.  With no
+boundary terms, the whole-line fundamental theorem of calculus applied to `u(x) exp(-izx)` gives
+
+```text
+mul_hedenmalmThetaEigenTransform
+  : (alpha + z) * F(alpha, z) = -XiC z      for |Im alpha| < 1, |Im z| < 1, XiC alpha = 0,
+    where F(alpha, z) = integral of u(x) exp(-i z x) dx.
+hedenmalmThetaEigenTransform_eq_xiThetaEigenFourier
+  : F(alpha, z) = i * xiThetaEigenFourier (-alpha) z      for z != -alpha.
+```
+
+The first form is pole-free: at `z = -alpha` both sides vanish, because `XiC` is even and `alpha` is
+a zero.  The second identifies the transform with the entire removable quotient the corpus already
+carried on the Fourier side --- the same object the Gram law above is stated about.  So the
+eigenfunction package `(17)`--`(22)` is now closed end to end in Lean: the time-side solution, its
+localization, its transform, and the Gram values of that transform, all unconditionally.
+
 ## Gates
 
 - [x] completed centered Weil distribution fixed
@@ -688,6 +723,9 @@ what the Gram law above is stated about.
 - [x] Lean multiplicity-summed eigenfunction norm and orthogonality law
 - [x] Lean unconditional theta-eigenfunction Gram law (`(19)`--`(22)` with no RH hypothesis)
 - [x] Lean time-side eigenfunction equation `(17)` for both source-pointed inverses
+- [x] Lean exponential localization of the time-side eigenfunction at a Xi zero
+- [x] Lean transform identity `(18)`: the time-side eigenfunction transforms to the removable
+      quotient
 - [x] Lean finite sesquilinear expansion on the eigen-span
 - [x] Lean unconditional equivalence `(23)`/`(24)`: positive definiteness on the eigen-span iff
       RH plus simplicity

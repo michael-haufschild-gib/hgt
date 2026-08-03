@@ -1,7 +1,7 @@
 # Route E central Wold finite-moment parity blindness
 
 - **ID:** ROUTE-E-CENTRAL-WOLD-MOMENT-BLINDNESS
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper) / THEOREM (Lean pending final audit)
 - **Source:** central normal-order survivor of `OPEN-SOURCE-001`
 - **Statement:** Every fixed polynomial panel in Wold breadth admits two positive measures on
@@ -16,7 +16,7 @@ finite panel of normal-order Wold moments can orient the remaining squarefree M�
 
 - [x] 0 → 1 in-progress: exact adjacent-layer packet identified
 - [x] 1 → 2 fully-proven: complete finite-difference proof
-- [ ] 2 → 3 formalized: targeted module build and axiom audit
+- [x] 2 → 3 formalized: targeted module build and axiom audit
 - [ ] 3 → 4 publication-ready: external priority audit and paper integration
 
 ## Theorem `[PROVED HERE]`
@@ -251,3 +251,13 @@ localized the hard current.  Claim is project-new synthesis; external priority u
 
 - 2026-08-01 — constructed adjacent-binomial central-layer witness; proved fixed-moment
   blindness and maximal parity response on paper and in Lean.
+
+## Stage 2 → 3 audit (2026-08-03)
+
+- Targeted module build: `lake build GaloisForLFunctions.RHTower.MobiusWoldFiniteMomentParityBlindness`
+  — `Build completed successfully`.
+- Axiom audit (in-file `#print axioms` via `lake env lean`): all fourteen listed unconditional
+  theorems depend only on `[propext, Classical.choice, Quot.sound]`.
+- Umbrella wiring confirmed: `GaloisForLFunctions/RHTower.lean:2291`.
+
+Card promoted to `3-formalized/new_scientific_knowledge`.

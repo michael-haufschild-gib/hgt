@@ -1,9 +1,11 @@
 # Route J moving positive-completion gauge rigidity
 
 - **ID:** `route-j-moving-positive-completion-gauge-rigidity`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM / CLASS NO-GO / POSITIVE SURVIVOR
-- **Scientific status:** `[PAPER-PROVED] [NEW INTERNAL SYNTHESIS] [EXTERNAL NOVELTY UNVERIFIED] [NOT RH]`
+- **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED UNCONDITIONALLY] [NEW INTERNAL SYNTHESIS] [EXTERNAL NOVELTY UNVERIFIED] [NOT RH]`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/XiCTaylorMovingPositiveCompletionGaugeNoGo.lean`,
+  `formal/GaloisForLFunctions/RHTower/XiCTaylorMovingSignedCompletionConditioningNoGo.lean`
 - **Parent:** `../../1-in-progress/route-j-principal-relative-julia-current.md`, `J-SF6`
 - **Prior boundary:** `route-h-finite-theta-core-divisor-charge-rigidity.md` closes fixed
   meromorphic gauges. This card treats genuinely moving positive-source gauges; no local
@@ -307,3 +309,42 @@ Formalize:
 2. exact condition-number logarithmic-current bound `(J.72)`;
 3. exact transfer of screening to gauge charge;
 4. eventual linear lower bound `(J.73)`.
+
+## Lean certificate — COMPLETE (2026-08-03)
+
+Both target lists above are formalized unconditionally.  No axiom beyond Lean's own
+`propext, Classical.choice, Quot.sound` occurs; no zero hypothesis, RH hypothesis,
+normal-family hypothesis, or numerical computation occurs.
+
+### Positive class — `XiCTaylorMovingPositiveCompletionGaugeNoGo.lean`
+
+| card target | Lean name |
+|-|-|
+| source datum `(J.61)`--`(J.62)` | `RHTower.PositiveTailCompletionGaugeAt` |
+| `(J.63)` pointwise current bound | `RHTower.PositiveTailCompletionGaugeAt.abs_im_derivative_div_value_le` |
+| `(J.64)` moving-family zero charge | `RHTower.tendsto_movingPositiveTailCompletionGauge_horizontalCharge_zero` |
+| `(J.65)` exact Taylor transfer | `RHTower.xiCTaylor_movingPositiveTailCompletionGaugeTransferCharge_tendsto` |
+| screening iff `xi sigma ≠ 0` | `RHTower.xiCTaylor_movingPositiveTailCompletionGaugeChargeScreenedAt_iff_xi_ne_zero` |
+| literal theta-packet instantiation | `RHTower.criticalLogPhaseTailPacket_positiveTailCompletionGaugeAt`, `RHTower.eventually_criticalLogPhaseTailPacket_positiveTailCompletionGaugeAt` |
+| arbitrary `L n ≥ 0`, `M n > 0` corollary | `RHTower.xiCTaylor_movingCriticalLogPhaseTailPacketTransferCharge_tendsto`, `RHTower.xiCTaylor_movingCriticalLogPhaseTailPacketChargeScreenedAt_iff_xi_ne_zero` |
+
+### Signed extension — `XiCTaylorMovingSignedCompletionConditioningNoGo.lean`
+
+| card target | Lean name |
+|-|-|
+| `(J.69)` absolute completion mass | `RHTower.signedTailCompletionVariation` |
+| `(J.70)` signed derivative variation bound | `RHTower.norm_positiveTailCompletionDerivative_le_signedVariation_div` |
+| `(J.71)` condition number | `RHTower.signedTailCompletionConditionNumber` |
+| `(J.72)` condition-number current bound | `RHTower.norm_derivative_le_conditionNumber_add_one_div_im`, `RHTower.SignedTailCompletionGaugeAt.abs_im_derivative_div_value_le` |
+| screening transfers to gauge charge | `RHTower.tendsto_movingGauge_horizontalCharge_of_screened` |
+| `(J.73)` eventual linear lower bound | `RHTower.eventually_linear_conditionNumber_of_screened_at_xi_zero`, `RHTower.eventually_linear_exactSignedConditionNumber_of_screened_at_xi_zero` |
+
+### Audit
+
+- `lake build GaloisForLFunctions.RHTower.XiCTaylorMovingPositiveCompletionGaugeNoGo
+  GaloisForLFunctions.RHTower.XiCTaylorMovingSignedCompletionConditioningNoGo`
+  — `Build completed successfully`.
+- `#print axioms` on all fifteen theorems above: only `[propext, Classical.choice, Quot.sound]`.
+- Umbrella wiring: `GaloisForLFunctions/RHTower.lean:3981-3982`.
+
+Card promoted to `3-formalized/new_scientific_knowledge`.

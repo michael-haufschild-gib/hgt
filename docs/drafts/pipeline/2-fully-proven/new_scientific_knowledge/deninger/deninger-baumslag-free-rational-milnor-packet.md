@@ -58,7 +58,11 @@
   `GaloisForLFunctions.RHTower.DeningerCyclicHomology` (the regular representation and the infinite
   cyclic group),
   `GaloisForLFunctions.RHTower.DeningerAmalgamCyclic` (the root adjunction step),
-  `GaloisForLFunctions.RHTower.DeningerHomologyUnion` (homology of an increasing union)
+  `GaloisForLFunctions.RHTower.DeningerHomologyUnion` (homology of an increasing union),
+  `GaloisForLFunctions.RHTower.DeningerPushoutConcat` (length of a product of alternating letters),
+  `GaloisForLFunctions.RHTower.DeningerPushoutPower` (length of a power),
+  `GaloisForLFunctions.RHTower.DeningerPushoutDecomp` (the letter decomposition of an element),
+  `GaloisForLFunctions.RHTower.DeningerPushoutInv` (word length of an inverse)
 
 ## Statement
 
@@ -653,7 +657,59 @@ involves finitely many group elements and therefore lives in one member of the c
   pushforward, bounds there, and the bounding chain is pushed forward.
 
 What is left for clause (4) is Baumslag's theorem, which is what identifies each step of that chain
-as a root adjunction in the sense above rather than merely a quotient of one.
+as a root adjunction in the sense above rather than merely a quotient of one.  Note that the card's
+own proof does not prove this: it cites Casacuberta–Peschke for free groups.  Formalizing clause (4)
+therefore means proving that theorem, which is what the whole Bass–Serre layer above is for.
+
+The normal-form layer Baumslag's theorem needs is being built alongside.
+`DeningerPushoutConcat.lean`:
+
+- `deningerFstIdx_of_mul` — prepending a letter outside the base group, in a factor not already at
+  the front, puts that factor at the front of the normal form;
+- `deningerLetterProd`, `deningerLen_prepend` — **the length of a product of alternating letters**:
+  prepending a reduced alternating word of `ℓ` letters to an element whose normal form does not
+  begin in the last factor used adds exactly `ℓ`, and the first letter ends up at the front.  The
+  two statements have to be proved simultaneously, since the induction step needs the first-letter
+  claim for the tail to know the next letter does not merge.
+
+This is the growth statement that makes powers of a cyclically reduced element have growing length.
+`DeningerPushoutPower.lean` draws that conclusion:
+
+- `deningerAbsorb` and its laws — absorbing an element of the base group into the first letter of a
+  word changes neither the indices, nor the length, nor reducedness, nor alternation;
+- `deningerBase_mul_letterProd` — so multiplying a nonempty word by the base group on the left is
+  again a word with the same indices;
+- `deningerLen_pow` — **if the reduced alternating word of `g` begins and ends in different factors,
+  then `len(gⁿ) = n · len(g)`.**  The words of the powers are literally the concatenations: the
+  induction carries the word together with its first and last indices, and the junction condition
+  for the concatenation is exactly the hypothesis that the first and last factors differ.
+
+This is the engine of both torsion-freeness and uniqueness of roots in an amalgam.
+
+`DeningerPushoutDecomp.lean` supplies the input those statements need — that every element actually
+has such a word:
+
+- `deningerTransversal_notMem_range` — a transversal element other than the identity is not in the
+  base group, since it would then admit two factorizations through the complement;
+- `deningerOfCoprodI_prod` — the product of the letters of a normal word, read in the pushout, is
+  the product of the corresponding list;
+- `deningerExists_letterProd` — **every element is either in the image of the base group, or is the
+  product of a nonempty reduced alternating list of letters whose length is its word length.**  The
+  element of the base group sitting in front of the normal form is absorbed into the first letter,
+  which is why the decomposition has no leftover factor.
+
+`DeningerPushoutInv.lean` closes the loop between the two descriptions of the length, and opens the
+right-handed direction:
+
+- `deningerLen_letterProd` — the word length of a product of a reduced alternating list is the
+  number of letters, which is the prepending lemma applied to the identity;
+- `deningerInvList`, `deningerLetterProd_inv` and their laws — the word of an inverse is the
+  reversed list of inverted letters, which is again reduced and alternating;
+- `deningerLen_inv` — **inversion preserves the word length.**
+
+The last one matters out of proportion to its difficulty: all the normal-form machinery is
+left-handed, because mathlib's normal words carry a left action.  Conjugating to shorten a word
+needs multiplication on the *right*, and `deningerLen_inv` is what converts one into the other.
 
 Step 1 still needs Baumslag's inductive step (root adjunction preserves unique roots), which rests
 on the same normal-form machinery.
@@ -1029,3 +1085,34 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   is `mapDomain` along an injection, is what makes the pulled back chain a cycle.  The only thing
   still missing for clause (4) is Baumslag's theorem: it is what makes each step of the chain a root
   adjunction in the amalgam sense, rather than merely a quotient of one.
+- 2026-08-03 — Recorded that the card's own proof of clause (4) cites Casacuberta–Peschke rather
+  than proving it, so the formalization has to prove that theorem outright; the Bass–Serre layer is
+  that proof, and Baumslag's unique-roots theorem is its last missing input.  Built the growth
+  statement its normal-form layer needs: prepending a reduced alternating word of `ℓ` letters to an
+  element whose normal form does not begin in the last factor used adds exactly `ℓ` to the length,
+  and puts the first letter at the front.  The length and first-letter claims must be proved
+  simultaneously — the induction step needs the first-letter claim for the tail in order to know the
+  next letter does not merge into it.
+- 2026-08-03 — Proved that the length of a power of a cyclically reduced element grows linearly:
+  `len(gⁿ) = n · len(g)` whenever the reduced alternating word of `g` begins and ends in different
+  factors.  Once the prepending lemmas of the previous step are in place this is pure list
+  bookkeeping — the word of `gⁿ` is the concatenation of `n` copies, the element of the base group
+  sitting at the end of each copy being absorbed into the first letter of the next, which changes
+  neither indices nor length nor reducedness.  The induction has to carry the first and last index
+  of the accumulated word, since the junction condition for each concatenation is exactly that they
+  differ.
+- 2026-08-03 — Built the bridge from mathlib's normal form to the list statements: every element of
+  a pushout is either in the base group or the product of a nonempty reduced alternating list of
+  letters, of length its word length.  Two things make it come out clean.  A transversal element
+  other than the identity is automatically outside the base group — otherwise it would have two
+  factorizations through the complement — which is what gives reducedness.  And the element of the
+  base group that sits in front of the normal form is absorbed into the first letter by the machinery
+  from the previous step, so the decomposition has no leftover factor and matches the shape the
+  power lemma wants.
+- 2026-08-03 — Proved that the word length of a reduced alternating product is its number of
+  letters, and that inversion preserves the word length.  The second is the useful one, out of
+  proportion to its difficulty: every lemma in this layer is left-handed, because mathlib's normal
+  words carry a left action, whereas cyclic reduction conjugates and so needs multiplication on the
+  right.  Inversion converts one into the other, so no right-handed normal-form theory has to be
+  built.  The word of an inverse is the reversed list of inverted letters, which is reduced and
+  alternating because the alternation relation is symmetric.

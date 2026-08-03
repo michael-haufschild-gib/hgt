@@ -151,3 +151,40 @@ made for `(4)`--`(8)`.
 
 - 2026-08-01 — symmetric hostile audit found upper-tail omission in prior low-breadth theorem;
   proved two-sided transport and formalized exact rate positivity.
+
+## Lean completion programme (opened 2026-08-03)
+
+The only paper-level step left in this card is the Shiu-type short-interval upper bound `(6)`.
+It is being built unconditionally in the corpus rather than cited.  Corpus/mathlib audit done
+before starting:
+
+- mathlib `Mathlib/NumberTheory/SelbergSieve.lean` stops at the diagonalized Λ² quadratic form
+  (`mainSum_lambdaSquared_eq_sum_mul_sum_sq`).  No optimized level, no fundamental lemma, no
+  Brun–Titchmarsh.
+- mathlib has `Nat.Ioc_filter_dvd_card_eq_div` (multiples of `d` in `Ioc 0 n`) and the Möbius
+  arithmetic function, but **no** Bonferroni / truncated-Möbius inequality
+  (`rg -il bonferroni` over mathlib: no hit).
+- corpus `rg -il "selbergsieve|BoundingSieve|brun.?titchmarsh|shiu"` hits only
+  `PrimeWindowBinomialBound.lean` (an elementary `log`-window bound, not a sieve) and this card's
+  own `MobiusWoldBreadthTwoSidedDeviationRate.lean`.  No sieve exists in the corpus.
+
+Chosen route: **Brun's pure sieve** (truncated inclusion–exclusion), not Selberg.  It is
+combinatorial, needs no optimization step, and its output — the fundamental lemma — is exactly the
+input Shiu's argument consumes.  It also supplies Brun–Titchmarsh, which
+`route-e-reciprocal-marker-mobius-hall-law.md` `(26)` needs.
+
+Stages (each unconditional, each wired into the umbrella when it lands):
+
+1. `Sieve/IntervalMultiples.lean` — exact count of multiples of `d` in `Ioc X (X+H)`, and the
+   `|#− H/d| ≤ 1` form.
+2. `Sieve/TruncatedMoebius.lean` — the partial alternating binomial identity
+   `∑_{j≤r} (-1)^j C(k,j) = (-1)^r C(k-1,r)` and the resulting Bonferroni inequalities for
+   `∑_{d ∣ m, ω d ≤ r} μ d` against `[m = 1]`.
+3. `Sieve/BrunPure.lean` — `S(A,z) ≤ H ∏_{p<z}(1−1/p) + (tail) + O(z^r)` for even truncation
+   level `r`, with the explicit tail bound `∑_{j>r} (∑_{p<z} 1/p)^j / j!`.
+4. `Sieve/FundamentalLemma.lean` — the usual `S(A,z) = H ∏_{p<z}(1−1/p)(1+O(e^{−u}))` form.
+5. `Sieve/Shiu.lean` — `(6)` for `z^{ω(n)}` on `Ioc X (X+H)` with `H ≥ √X`.
+6. `MobiusWoldBreadthTwoSidedTail.lean` — `(7)`, `(8)`, `(9)` from `(6)` and the already-proved
+   `woldBreadthDeviationRate_pos`.
+
+Stage 1 and 2 are elementary and start now.

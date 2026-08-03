@@ -274,3 +274,12 @@ profile either is not quarter-turn finite-atomic or breaks functional-equation r
 equivariance; any reflection-equivariant quarter-turn scalar screen already selects the
 critical line.
 ```
+
+## Stage 2 → 3 audit (2026-08-03)
+
+- `lake build GaloisForLFunctions.RHTower.XiCTaylorSignedAtomicJetControllability`
+  — `Build completed successfully`.
+- `#print axioms` on all 39 theorems of the module: only `[propext, Classical.choice, Quot.sound]`.
+- Umbrella wiring: `GaloisForLFunctions/RHTower.lean:3985`.
+
+Card promoted to `3-formalized/new_scientific_knowledge`.

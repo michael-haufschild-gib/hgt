@@ -125,15 +125,18 @@ theorem eval_twoLocalFinCoefficients (p : HypercubeTwoLocalParameter n → ℝ) 
   simp [twoLocalFinCoefficients]
 
 
-/-- **One analytic chart around a two-local diagonal base.**  For any polynomial matrix family into
-which the two-local coefficients embed, there is a connected open set of complex parameters around
-the image of a diagonal base carrying analytic eigenvalue branches through every base energy, simple
-and root-valued throughout. -/
+/-- **One analytic chart around a two-local diagonal base.**  For any polynomial matrix family which
+realizes the two-local coefficients up to a constant energy offset, there is a connected open set of
+complex parameters around the image of a diagonal base carrying analytic eigenvalue branches through
+every base energy, simple and root-valued throughout. -/
 theorem exists_embeddedTwoLocalAnalyticChart {m : ℕ}
     (M : Matrix (Fin n → Bool) (Fin n → Bool) (MvPolynomial (Fin m) ℂ))
     (embed : (HypercubeTwoLocalParameter n → ℂ) → (Fin m → ℂ))
-    (hembed : ∀ v, M.map (MvPolynomial.eval₂Hom (RingHom.id ℂ) (embed v))
-      = hypercubeTwoLocalMatrix v) :
+    (shiftReal : (HypercubeTwoLocalParameter n → ℝ) → ℝ)
+    (hembedBase : ∀ p : HypercubeTwoLocalParameter n → ℝ,
+      M.map (MvPolynomial.eval₂Hom (RingHom.id ℂ) (embed fun θ => (p θ : ℂ)))
+        = hypercubeTwoLocalMatrix (fun θ => (p θ : ℂ))
+          - ((shiftReal p : ℝ) : ℂ) • (1 : Matrix (Fin n → Bool) (Fin n → Bool) ℂ)) :
     ∃ (p : HypercubeTwoLocalParameter n → ℝ) (V : Set (Fin m → ℂ))
       (branch : (Fin n → Bool) → (Fin m → ℂ) → ℂ),
       (∀ i : Fin n, p (.transverse i) = 0) ∧
@@ -142,23 +145,28 @@ theorem exists_embeddedTwoLocalAnalyticChart {m : ℕ}
       (∀ i : Fin n, Function.Injective (edgeGap i (hypercubeTwoLocalEnergy p))) ∧
       IsOpen V ∧ IsPreconnected V ∧ V.Nonempty ∧ (embed fun θ => (p θ : ℂ)) ∈ V ∧
       (∀ x, AnalyticOnNhd ℂ (branch x) V) ∧
-      (∀ x, branch x (embed fun θ => (p θ : ℂ)) = ((hypercubeTwoLocalEnergy p x : ℝ) : ℂ)) ∧
+      (∀ x, branch x (embed fun θ => (p θ : ℂ))
+        = ((hypercubeTwoLocalEnergy p x - shiftReal p : ℝ) : ℂ)) ∧
       (∀ z ∈ V, Function.Injective fun x => branch x z) ∧
       (∀ x, ∀ z ∈ V, matrixCharpolyRelation
         (M.map (MvPolynomial.eval₂Hom (RingHom.id ℂ) z), branch x z) = 0) := by
   classical
   obtain ⟨p, htr, hinj, hgappos, hgapinj⟩ := exists_twoLocalDiagonalBase_zeroTransverse n
   set z₀ : Fin m → ℂ := embed (fun θ => (p θ : ℂ)) with hz₀def
-  set energy : (Fin n → Bool) → ℂ := fun x => ((hypercubeTwoLocalEnergy p x : ℝ) : ℂ) with hedef
-  have henergyInj : Function.Injective energy := fun a b h =>
-    hinj (Complex.ofReal_injective h)
+  set energy : (Fin n → Bool) → ℂ :=
+    fun x => ((hypercubeTwoLocalEnergy p x - shiftReal p : ℝ) : ℂ) with hedef
+  have henergyInj : Function.Injective energy := by
+    intro a b hab
+    have hab' : hypercubeTwoLocalEnergy p a - shiftReal p
+        = hypercubeTwoLocalEnergy p b - shiftReal p := Complex.ofReal_injective hab
+    exact hinj (by linarith [hab'])
   have hone : (1 : Matrix (Fin n → Bool) (Fin n → Bool) ℂ)⁻¹ = 1 :=
     Matrix.inv_eq_right_inv (by simp)
   have hbase : (1 : Matrix (Fin n → Bool) (Fin n → Bool) ℂ)⁻¹ *
       (M.map (MvPolynomial.eval₂Hom (RingHom.id ℂ) z₀)) * 1
       = Matrix.diagonal energy := by
-    rw [hone, one_mul, mul_one, hz₀def, hembed,
-      hypercubeTwoLocalMatrix_diagonal_of_zeroTransverse p htr]
+    rw [hone, one_mul, mul_one, hz₀def, hembedBase p,
+      hypercubeTwoLocalMatrix_diagonal_sub_of_zeroTransverse p htr]
   obtain ⟨U, branch, hUopen, hz₀U, hbranchA, hbranch0, hbranchRoot⟩ :=
     exists_simultaneous_eigenvalueBranches (analyticAt_polynomialMatrixFamily M z₀) energy
       henergyInj (S := 1) (by rw [Matrix.det_one]; exact isUnit_one) hbase
@@ -191,8 +199,8 @@ theorem exists_embeddedTwoLocalAnalyticChart {m : ℕ}
     exact (hball hz).2.1 x
 
 /-- **Real-slice genericity through a two-local embedding.**  Outside a meagre Lebesgue-null set of
-real parameters of any polynomial matrix family into which the two-local coefficients embed, the
-`2^n` energies satisfy no nonzero balanced integer relation.
+real parameters of any polynomial matrix family realizing the two-local coefficients up to a
+constant energy offset, the `2^n` energies satisfy no nonzero balanced integer relation.
 
 Every labelling of every such relation is escaped inside one chart around a diagonal base: a nonzero
 balanced character is nonconstant, so it differs across some hypercube edge, and switching on that
@@ -201,15 +209,23 @@ relation off zero. -/
 theorem polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure_of_twoLocalEmbedding
     {m : ℕ} (M : Matrix (Fin n → Bool) (Fin n → Bool) (MvPolynomial (Fin m) ℂ))
     (embed : (HypercubeTwoLocalParameter n → ℂ) → (Fin m → ℂ))
+    (shiftReal : (HypercubeTwoLocalParameter n → ℝ) → ℝ)
     (hembedCont : Continuous embed)
-    (hembed : ∀ v, M.map (MvPolynomial.eval₂Hom (RingHom.id ℂ) (embed v))
-      = hypercubeTwoLocalMatrix v) :
+    (hembedBase : ∀ p : HypercubeTwoLocalParameter n → ℝ,
+      M.map (MvPolynomial.eval₂Hom (RingHom.id ℂ) (embed fun θ => (p θ : ℂ)))
+        = hypercubeTwoLocalMatrix (fun θ => (p θ : ℂ))
+          - ((shiftReal p : ℝ) : ℂ) • (1 : Matrix (Fin n → Bool) (Fin n → Bool) ℂ))
+    (hembedSlice : ∀ (p : HypercubeTwoLocalParameter n → ℝ) (i : Fin n) (q : ℝ × ℝ),
+      M.map (MvPolynomial.eval₂Hom (RingHom.id ℂ) (embed (twoLocalEdgeSlice p i q)))
+        = hypercubeTwoLocalMatrix (twoLocalEdgeSlice p i q)
+          - ((shiftReal p : ℝ) : ℂ) • (1 : Matrix (Fin n → Bool) (Fin n → Bool) ℂ)) :
     Dense (polynomialMatrixProjectiveGenericSet M) ∧
       polynomialMatrixProjectiveGenericSet M ∈ residual (Fin m → ℝ) ∧
       volume (polynomialMatrixProjectiveGenericSet M)ᶜ = 0 := by
   classical
   obtain ⟨p, V, branch, htr, hinj, hgappos, hgapinj, hVopen, hVconn, hVne, hz₀V,
-    hbranchA, hbranch0, hbranchInj, hbranchRoot⟩ := exists_embeddedTwoLocalAnalyticChart M embed hembed
+    hbranchA, hbranch0, hbranchInj, hbranchRoot⟩ :=
+      exists_embeddedTwoLocalAnalyticChart M embed shiftReal hembedBase
   refine polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure_of_analyticBranchEscape
     M V hVopen hVconn hVne branch hbranchA hbranchInj hbranchRoot ?_
   intro k hbalanced hk σ
@@ -259,6 +275,9 @@ theorem polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure_of_twoLo
     rw [hκcast, hκcast, edgeEquiv_zero, edgeEquiv_one] at h
     exact h
   set slice : ℝ × ℝ → (Fin m → ℂ) := fun q => embed (twoLocalEdgeSlice p i q) with hslicedef
+  set E : (Fin n → Bool) → ℝ := hypercubeTwoLocalEnergy p with hEdef
+  set s : ℝ := shiftReal p with hsdef
+  set mBlk : qubitEnvironment n i → ℝ := fun z => edgeMean i E z - s with hmBlk
   have hsliceParam0 : twoLocalEdgeSlice p i (0, 0) = fun θ => (p θ : ℂ) := by
     funext θ
     simp [twoLocalEdgeSlice]
@@ -272,36 +291,47 @@ theorem polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure_of_twoLo
     fun_prop
   have hHslice : ∀ q : ℝ × ℝ, (M.map
         (MvPolynomial.eval₂Hom (RingHom.id ℂ) (slice q))).submatrix (edgeEquiv i) (edgeEquiv i)
-      = shiftedBlockSplitMatrix (edgeMean i (hypercubeTwoLocalEnergy p))
-          (edgeGap i (hypercubeTwoLocalEnergy p)) q := by
+      = shiftedBlockSplitMatrix mBlk (edgeGap i E) q := by
     intro q
-    rw [hslicedef, hembed]
-    exact submatrix_hypercubeTwoLocalMatrix_twoLocalEdgeSlice p i htr q
-  have hblockinj : Function.Injective fun q : Fin 2 × qubitEnvironment n i =>
-      ((blockEnergy (edgeMean i (hypercubeTwoLocalEnergy p))
-        (edgeGap i (hypercubeTwoLocalEnergy p)) q : ℝ) : ℂ) := by
+    have hsub : ((hypercubeTwoLocalMatrix (twoLocalEdgeSlice p i q)
+          - ((shiftReal p : ℝ) : ℂ) • (1 : Matrix (Fin n → Bool) (Fin n → Bool) ℂ)).submatrix
+            (edgeEquiv i) (edgeEquiv i))
+        = (hypercubeTwoLocalMatrix (twoLocalEdgeSlice p i q)).submatrix
+              (edgeEquiv i) (edgeEquiv i)
+          - ((shiftReal p : ℝ) : ℂ) •
+            (1 : Matrix (Fin 2 × qubitEnvironment n i) (Fin 2 × qubitEnvironment n i) ℂ) := by
+      ext a b
+      simp [Matrix.submatrix_apply, Matrix.sub_apply, Matrix.smul_apply, Matrix.one_apply,
+        (edgeEquiv i).injective.eq_iff]
+    rw [hslicedef, hembedSlice p i q, hsub,
+      submatrix_hypercubeTwoLocalMatrix_twoLocalEdgeSlice p i htr q, hmBlk, hsdef,
+      shiftedBlockSplitMatrix_sub_smul_one]
+  have hblockEnergy : ∀ q' : Fin 2 × qubitEnvironment n i,
+      blockEnergy mBlk (edgeGap i E) q' = E (edgeEquiv i q') - s := by
+    intro q'
+    rw [hmBlk, blockEnergy_sub_const, blockEnergy_edge]
+  have hblockinj : Function.Injective fun q' : Fin 2 × qubitEnvironment n i =>
+      ((blockEnergy mBlk (edgeGap i E) q' : ℝ) : ℂ) := by
     intro a b hab
-    have hab' : ((blockEnergy (edgeMean i (hypercubeTwoLocalEnergy p))
-        (edgeGap i (hypercubeTwoLocalEnergy p)) a : ℝ) : ℂ)
-        = ((blockEnergy (edgeMean i (hypercubeTwoLocalEnergy p))
-          (edgeGap i (hypercubeTwoLocalEnergy p)) b : ℝ) : ℂ) := hab
-    rw [blockEnergy_edge, blockEnergy_edge] at hab'
-    exact (edgeEquiv i).injective (hinj (Complex.ofReal_injective hab'))
+    have hab' : ((blockEnergy mBlk (edgeGap i E) a : ℝ) : ℂ)
+        = ((blockEnergy mBlk (edgeGap i E) b : ℝ) : ℂ) := hab
+    rw [hblockEnergy, hblockEnergy] at hab'
+    have hreal : E (edgeEquiv i a) - s = E (edgeEquiv i b) - s := Complex.ofReal_injective hab'
+    exact (edgeEquiv i).injective (hinj (by linarith [hreal]))
   have hWmem : slice ⁻¹' V ∈ 𝓝 ((0, 0) : ℝ × ℝ) := by
     refine hsliceCont.continuousAt.preimage_mem_nhds ?_
     rw [hslice0]
     exact hVopen.mem_nhds hz₀V
   obtain ⟨q, hqW, hqne⟩ :=
-    exists_shifted_split_branch_relation_ne_zero (edgeMean i (hypercubeTwoLocalEnergy p))
-      (edgeGap i (hypercubeTwoLocalEnergy p)) (hgappos i) (hgapinj i) hblockinj
-      (fun q' qq => branch (edgeEquiv i q') (slice qq))
+    exists_shifted_split_branch_relation_ne_zero mBlk (edgeGap i E) (hgappos i) (hgapinj i)
+      hblockinj (fun q' qq => branch (edgeEquiv i q') (slice qq))
       (fun q' => by
         have h1 : ContinuousAt (branch (edgeEquiv i q')) (slice (0, 0)) := by
           rw [hslice0]
           exact (hbranchA (edgeEquiv i q') _ hz₀V).continuousAt
         exact h1.comp hsliceCont.continuousAt)
       (fun q' => by
-        rw [hslice0, hbranch0 (edgeEquiv i q'), blockEnergy_edge])
+        rw [hslice0, hbranch0 (edgeEquiv i q'), hblockEnergy])
       (fun q' => by
         filter_upwards [hWmem] with qq hqq
         rw [← hHslice qq, matrixCharpolyRelation_submatrix_equiv]
@@ -333,11 +363,17 @@ theorem twoLocalFinPolynomialMatrix_dense_residual_fullMeasure (n : ℕ) :
       polynomialMatrixProjectiveGenericSet (hypercubeTwoLocalFinPolynomialMatrix n) ∈
         residual (Fin (Fintype.card (HypercubeTwoLocalParameter n)) → ℝ) ∧
       volume (polynomialMatrixProjectiveGenericSet
-        (hypercubeTwoLocalFinPolynomialMatrix n))ᶜ = 0 :=
-  polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure_of_twoLocalEmbedding
+        (hypercubeTwoLocalFinPolynomialMatrix n))ᶜ = 0 := by
+  refine polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure_of_twoLocalEmbedding
     (hypercubeTwoLocalFinPolynomialMatrix n)
-    (fun v t => v ((twoLocalParameterEquivFin n).symm t))
-    (continuous_pi fun _ => continuous_apply _) map_eval_embed_twoLocalFin
+    (fun v t => v ((twoLocalParameterEquivFin n).symm t)) (fun _ => 0)
+    (continuous_pi fun _ => continuous_apply _) ?_ ?_
+  · intro p
+    rw [show (((0 : ℝ) : ℂ)) • (1 : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) = 0 by simp, sub_zero]
+    exact map_eval_embed_twoLocalFin fun θ => (p θ : ℂ)
+  · intro p i q
+    rw [show (((0 : ℝ) : ℂ)) • (1 : Matrix (Fin n → Bool) (Fin n → Bool) ℂ) = 0 by simp, sub_zero]
+    exact map_eval_embed_twoLocalFin (twoLocalEdgeSlice p i q)
 
 /-- At real coefficients the numbered two-local family is Hermitian. -/
 theorem isHermitian_twoLocalFinEval

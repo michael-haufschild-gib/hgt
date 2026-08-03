@@ -83,7 +83,7 @@ theorem twoLocalVariableStar_eq_variableSelectedEdgeStarParameters
         henv, hbit, hne]
   · have hne : x ≠ y := fun h => henv (congrArg Prod.snd h)
     simp [twoLocalVariableStarHamiltonianMatrix,
-      variableSelectedEdgeStarParameters,
+      
       distinguishedStarTwoLocalHamiltonian, henv, hne]
 
 noncomputable def variableSelectedEdgeHypercubeParameters {m : ℕ}
@@ -376,7 +376,7 @@ theorem eval_anchoredDiagonalHypercubeParameters {m : ℕ}
       (boolEnvironmentEquiv m).symm x ≠
         (boolEnvironmentEquiv m).symm y :=
       (boolEnvironmentEquiv m).symm.injective.ne hxy
-    simp [Matrix.reindex_apply, Matrix.diagonal_apply,
+    simp [Matrix.reindex_apply, 
       hxy, hsymm]
 
 noncomputable def commonTwoLocalDiagonalParameters (m : ℕ) :
@@ -445,7 +445,7 @@ theorem eval_relabeledAnchoredDiagonalParameters {m : ℕ}
       (cubeCoordinateRelabel e).symm x ≠
         (cubeCoordinateRelabel e).symm y :=
       (cubeCoordinateRelabel e).symm.injective.ne hxy
-    simp [Matrix.reindex_apply, Matrix.diagonal_apply,
+    simp [Matrix.reindex_apply, 
       hxy, hsymm]
 
 /-- Evaluation of the universal linear two-local family commutes with the
@@ -595,11 +595,11 @@ theorem eval_edgeToCommonDiagonalParameterPath {m : ℕ}
   ext x y
   by_cases hxy : x = y
   · subst y
-    simp [Matrix.diagonal_apply,
+    simp [
       edgeToCommonDiagonalRoot,
       diagonalParabolicSpectralBridge]
     ring
-  · simp [Matrix.diagonal_apply, hxy]
+  · simp [hxy]
 
 theorem edgeToCommonDiagonalRoot_root {m : ℕ}
     (z₀ : Fin m → Bool)

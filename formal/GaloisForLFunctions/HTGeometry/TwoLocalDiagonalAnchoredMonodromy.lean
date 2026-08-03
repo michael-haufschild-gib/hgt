@@ -85,7 +85,8 @@ theorem twoLocalVariableBlockCharacteristicMatrix_eq {m : ℕ}
         twoLocalVariableEdgeHamiltonianBlock,
         twoLocalVariableEdgeCharacteristicMatrix,
         Matrix.blockDiagonal_apply, Matrix.scalar_apply,
-        Matrix.diagonal_apply] <;> ring
+        ]
+    ring
   · have hp : (i, z) ≠ (j, y) := by
       intro h
       exact hzy (congrArg Prod.snd h)
@@ -755,11 +756,11 @@ theorem twoLocalAnchoredRoot_eq_connectorRoot_at_zero {m : ℕ}
     cases b
     · simp only [twoLocalAnchoredGlobalRoot,
         twoLocalDiagonalConnectorGlobalRoot, Bool.false_eq_true,
-        ↓reduceIte, Prod.snd]
+        ↓reduceIte]
       rw [twoLocalAnchoredBaseRoot, if_pos rfl, hconnector]
       simp [twoLocalSelectedEigenvalueLift]
     · simp only [twoLocalAnchoredGlobalRoot,
-        twoLocalDiagonalConnectorGlobalRoot, ↓reduceIte, Prod.snd]
+        twoLocalDiagonalConnectorGlobalRoot, ↓reduceIte]
       rw [twoLocalAnchoredBaseRoot, if_pos rfl, hconnector]
       simp [twoLocalSelectedEigenvalueLift]
   · cases b <;>
@@ -827,15 +828,15 @@ theorem twoLocalVariableStar_diagonalAnchor {m : ℕ}
     cases b <;>
       simp [twoLocalVariableStarHamiltonianMatrix,
         twoLocalAnchoredDiagonalEnergy,
-        Matrix.diagonal_apply]
+        ]
   · by_cases henv : x.2 = y.2
     · have hbit : x.1 ≠ y.1 := by
         intro hb
         exact hxy (Prod.ext hb henv)
       simp [twoLocalVariableStarHamiltonianMatrix,
-        Matrix.diagonal_apply, hxy, henv, hbit]
+        hxy, henv, hbit]
     · simp [twoLocalVariableStarHamiltonianMatrix,
-        Matrix.diagonal_apply, hxy, henv]
+        hxy, henv]
 
 /-- Controlled local certificate: a closed simple-spectrum two-local loop
 performs exactly the selected edge swap, and a simple-spectrum connector

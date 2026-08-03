@@ -257,7 +257,7 @@ theorem twoLocalSelectedEdgeSwap_eq_swap {m : ℕ}
   by_cases hz : z = z₀
   · subst z
     cases b <;>
-      simp [twoLocalSelectedEdgeSwap, Equiv.swap_apply_def]
+      simp [twoLocalSelectedEdgeSwap]
   · cases b <;>
       simp [twoLocalSelectedEdgeSwap, Equiv.swap_apply_def, hz]
 

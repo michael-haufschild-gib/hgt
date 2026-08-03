@@ -157,4 +157,24 @@ theorem submatrix_edgeEquiv_eq_blockSplitMatrix (i : Fin n)
     rw [hoff _ _ hne, if_neg hnotoggle]
     simp only [blockSplitMatrix, Matrix.blockDiagonal_apply, if_neg hzy]
 
+
+theorem edgeMean_sub_const (i : Fin n) (e : (Fin n → Bool) → ℝ) (c : ℝ) :
+    edgeMean i (fun x => e x - c) = fun z => edgeMean i e z - c := by
+  funext z
+  rw [edgeMean, edgeMean]
+  ring
+
+theorem edgeGap_sub_const (i : Fin n) (e : (Fin n → Bool) → ℝ) (c : ℝ) :
+    edgeGap i (fun x => e x - c) = edgeGap i e := by
+  funext z
+  rw [edgeGap, edgeGap]
+  ring
+
+/-- Reindexing does not see a scalar matrix. -/
+theorem submatrix_smul_one {ι κ : Type*} [Fintype ι] [DecidableEq ι]
+    [Fintype κ] [DecidableEq κ] (E : ι ≃ κ) (c : ℂ) :
+    ((c • (1 : Matrix κ κ ℂ)).submatrix E E) = c • (1 : Matrix ι ι ℂ) := by
+  ext p q
+  simp [Matrix.submatrix_apply, Matrix.smul_apply, Matrix.one_apply, E.injective.eq_iff]
+
 end GaloisForLFunctions.HTGeometry

@@ -169,4 +169,24 @@ theorem hypercubeTwoLocalMatrix_diagonal_of_zeroTransverse (p : HypercubeTwoLoca
     · rw [if_pos hy, htr i, Complex.ofReal_zero]
     · rw [if_neg hy]
 
+
+/-- With every transverse coefficient switched off, subtracting a scalar keeps the Hamiltonian
+diagonal and shifts every energy. -/
+theorem hypercubeTwoLocalMatrix_diagonal_sub_of_zeroTransverse
+    (p : HypercubeTwoLocalParameter n → ℝ) (htr : ∀ i : Fin n, p (.transverse i) = 0) (c : ℝ) :
+    hypercubeTwoLocalMatrix (fun θ => (p θ : ℂ))
+        - ((c : ℝ) : ℂ) • (1 : Matrix (Fin n → Bool) (Fin n → Bool) ℂ)
+      = Matrix.diagonal fun x => ((hypercubeTwoLocalEnergy p x - c : ℝ) : ℂ) := by
+  classical
+  rw [hypercubeTwoLocalMatrix_diagonal_of_zeroTransverse p htr]
+  ext x y
+  by_cases hxy : x = y
+  · subst hxy
+    simp only [Matrix.sub_apply, Matrix.diagonal_apply_eq, Matrix.smul_apply, smul_eq_mul,
+      Matrix.one_apply_eq, mul_one]
+    push_cast
+    ring
+  · simp only [Matrix.sub_apply, Matrix.diagonal_apply_ne _ hxy, Matrix.smul_apply,
+      smul_eq_mul, Matrix.one_apply_ne hxy, mul_zero, sub_zero]
+
 end GaloisForLFunctions.HTGeometry
