@@ -3,7 +3,7 @@
 - **ID:** `rh-route-literature-exchange-august-2026`
 - **Stage:** 1-in-progress
 - **Scope:** Every live, secondary, retired, and disproof route in `rh-current-frontier-map.md`
-- **Cutoff:** 2026-08-01
+- **Cutoff:** 2026-08-03
 
 ## Decision rule
 
@@ -75,3 +75,27 @@
   External/internal audit must continue over symmetric sign-changing completed prime--Gamma and
   co-Poisson currents, Krein/Pontryagin scalarizations, Schur-complement cancellations, and
   genuinely nonlinear source functionals. Route J stays `OPEN` while any such survivor remains.
+- 2026-08-03 — Literature paper synchronized to current route ownership and closure state.
+  Routes B, C2, D, and K are retired; A and M are terminalized; J, L, and R remain open at their
+  exact successor cores. Route R now has its own source route section rather than being omitted.
+- 2026-08-03 — Route E exchange now distinguishes local formal sieve/counting advances from the
+  absent critical Möbius source theorem. Menon/Shiu/Hardy--Ramanujan/large-sieve ancestry supports
+  the local gates; Liflandsky and Verjovsky add connectors/equivalences; no located external theorem
+  supplies every-scale central-breadth cancellation or co-moving flux.
+- 2026-08-03 — Route J exchange records the local unrenormalized energy no-go and the separable
+  vertex-coboundary classification. Classical Julia dilation, Burnol, Deninger, and graph
+  cohomology supply parent language but no source-derived non-coboundary incidence or horizontal
+  null-homotopy.
+- 2026-08-03 — Route L exchange updated after physical Burnol/Deninger comparison and ordinary BV
+  boundary formalization. Deninger Theorem 7.10 prime-fibre and Theorem 10.2 endpoint-purity content
+  are represented; Proposition 11.7 remains a conditional infrastructure priority only when wired
+  to strict source-first descent. No external theorem proves that descent.
+- 2026-08-03 — Route R exchange includes the source-to-Xi Krein producer, regular scalar no-gos,
+  and essential-edge `det2` relative class. Generic Krein, distribution, determinant, or
+  graph-cohomology imports do not advance its pre-frequency relation-valued annihilator.
+- 2026-08-03 — Frontier formalization priorities remove remaining Groskin Route-B work from
+  live-route leverage and remove already-represented Deninger Theorems 7.10/10.2. Remaining
+  source-faithful Suzuki/CCM concrete operators, Suzuki localized trace-class handoff, and
+  Deninger generalized-divisor support are retained only at their exact live-route interfaces.
+- 2026-08-03 — Targeted primary-source search found no 1--3 August 2026 theorem closing or
+  shortening a live route's first open premise. No new literature-driven Lean theorem was selected.

@@ -422,8 +422,8 @@ It also identifies the mechanism and the sharp wall.  The analytic growth invari
 - [x] Lean: the logarithmic-derivative estimate at a maximum-modulus point, with explicit remainder
 - [x] Lean: log-convexity of `mu` in `log r`, the second-order input the decay bounds lack
 - [x] Lean: the majorant bounded back by the maximum term times the central index
-- [ ] Lean: the local Gaussian expansion of `f` near a maximum-modulus point (see the log entry --
-      the term-by-term route provably cannot reach the main estimate)
+- [x] Lean: the local expansion, the alignment mechanism, and criticality at a circle maximum
+- [ ] Lean: the first moment of the modulus profile, `r S'(r) - nu(r) S(r)` (see the log entry)
 - [ ] Lean: Newton--Puiseux places at `U = infinity`, hence the nondegenerate Wiman place
 - [ ] Lean: Clunie--Steinmetz composition separation and state algebraic independence
 - [x] Lean: the order lower bound `ord_DA >= n` from `n` algebraically independent jets
@@ -557,6 +557,7 @@ norm_weighted_window_sub_le               -- the weighted window sum, with l^2 w
 hasDerivAt_normSq_circlePath              -- d/dt |f(z e^(it))|^2 = -2 Im(conj f . z f')
 im_conj_mul_eq_zero_of_isLocalMax         -- so at a circle maximum that pairing is real
 im_mul_deriv_div_eq_zero_of_isLocalMax    -- hence z f'(z)/f(z) is real there
+hasDerivAt_coeffSum                       -- the majorant is differentiated term by term
 ```
 
 The assembled bound over a window `F` with weights `w` is
@@ -1019,3 +1020,18 @@ triangularity package, which is exactly how the paper proof uses them.
   the pointwise one is `HasDerivAt.fun_pow`, and `convert ... using 1` on a `HasDerivAt` goal spawns
   instance-equality subgoals -- normalise the derivative value in the hypothesis with `norm_num at h`
   and close with plain `exact`.
+- 2026-08-03 -- Located precisely what is left, and built its prerequisite.  Combining the two halves:
+  at a circle maximum `z f'(z)/f(z) - nu` is real and equals `Re(conj(u) V)/||W||` where
+  `V = sum (n-nu) c_n` and `W = sum c_n`; and since `Re(conj(u) c_n) = ||c_n|| - d_n` this splits as
+
+  ```text
+  Re(conj(u) V)  =  sum_n (n - nu) ||c_n||   -   sum_n (n - nu) d_n .
+  ```
+
+  The second term is exactly what the alignment machinery bounds, by `sqrt(sum w^2) sqrt D`.  The
+  first is a purely real quantity -- the first moment of the modulus profile about its peak, equal to
+  `(r S'(r) - nu(r) S(r)) / mu(r)` -- and it is **not** controlled by anything proved so far; it is
+  the last genuinely open point.  Note the transverse estimates alone cannot reach it: at a circle
+  maximum the transverse part of `V` vanishes identically, so the whole deviation sits in the
+  longitudinal direction.  Built the prerequisite for attacking it, `hasDerivAt_coeffSum`: the
+  majorant is differentiated term by term, by the same Weierstrass argument used for the function.

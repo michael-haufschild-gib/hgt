@@ -80,15 +80,16 @@ exact vector-to-bandlimited-test and zero-sum dictionary (Theorem 2.5), quotient
 positive-definite, strictly totally positive Cauchy–Stieltjes archimedean-tail increment with
 cutoff budget (Theorem 3.2 and Corollary 3.3).
 
-**Lean status and remaining action.** `GroskinArchimedeanTailOrder` now formalizes the literal
+**Lean status and disposition.** `GroskinArchimedeanTailOrder` formalizes the literal
 digamma density, proves it eventually positive without a numerical computation, defines the two
 Cauchy feature vectors and exact rank-two compact-window kernel, and proves every such tail
 increment positive semidefinite. This is the Loewner-order core of Theorem 3.2. Strict positive
 definiteness, strict total positivity, the convergent improper tail, and Corollary 3.3's trace and
-eigenvalue budget remain to be formalized before comparison with the local boundary charge. The
-external result still does not resolve grouped apex/flank capacity-one transport.
+eigenvalue budget remain absent. Route B is retired, so these are bibliography/completeness
+imports, not frontier actions, unless another live route identifies a concrete dependency on
+them. The external result does not resolve grouped apex/flank capacity-one transport.
 
-### Route C1 — complete Xi–Weil positivity
+### Route C1 — complete Xi–Weil positivity [OPEN — SINGULAR BOUNDARY SURVIVOR]
 
 **Local contribution beyond located literature.** The route endpoint is Weil's classical
 criterion. Formal multiplicity-aware polarization and exact typed equivalence are verification
@@ -156,7 +157,7 @@ frontier priority: formalizing it and proving the exact transform or noncollisio
 moment family would clarify provenance, but would not prove the missing source PSD or
 reconstruction.
 
-### Route D2 — prime–archimedean high-frequency ceiling
+### Route D2 — prime–archimedean high-frequency ceiling [OPEN]
 
 **Local contribution beyond located literature.** The exact equivalence between RH and any finite
 uniform ceiling above frequency four, together with the false-RH cofinal-unboundedness
@@ -188,9 +189,12 @@ source-specific boundaries not found as one external package:
 
 The formal `RHTower/Sieve` layer further contains unconditional interval Bonferroni and
 Brun/Selberg bounds, explicit Mertens prime-sum estimates, smooth/rough and
-Hardy--Ramanujan--Shiu tail machinery, and Farey/Parseval/large-sieve infrastructure. These results
-close local counting, off-normal breadth, and prime-anchor capacity gates. They do not estimate
-the Mertens function at critical strength or control the central co-moving signed seam.
+Hardy--Ramanujan--Shiu tail machinery, the sharp proper-Farey `Q²+4πN` large sieve and
+Montgomery omitted-class inequality, and Dirichlet mean-value/Gallagher/large-values/counting
+estimates. The Dirichlet row-sum branch explicitly retains its logarithmic loss and does not claim
+the sharp Montgomery--Vaughan form. These results close local counting, off-normal breadth, and
+prime-anchor capacity gates. They do not estimate the Mertens function at critical strength or
+control the central co-moving signed seam.
 
 **External contribution.** Liflandsky's
 [discrete Möbius--Laplace criterion](https://arxiv.org/abs/2607.09797) proves that a half-power
@@ -209,6 +213,7 @@ be selected only when they discharge a named composite-cube or exceptional-set p
 external theorem currently advances `OPEN-SOURCE-001`; no new formalization is selected merely
 to add another RH-equivalent Möbius criterion. Route E remains open at critical signed
 cancellation on the exact normal Wold seam.
+
 ### Route F — all-prime Sonin transfer [RETIRED]
 
 **Local contribution beyond located literature.** The shell-cut completion classification,
@@ -263,7 +268,7 @@ order obstruction for the full finite-height geometric conductor. Formalize them
 pipeline route first supplies either a source-built order-one operator or a renormalization that
 removes the Sonin Weyl-volume term before Gamma attachment; that successor is not Route F.
 
-### Route G — Suzuki Hermite–Biehler, anti-Pick, and Ward realization
+### Route G — Suzuki Hermite–Biehler, anti-Pick, and Ward realization [OPEN]
 
 **Local contribution beyond located literature.** Beyond Suzuki's finite interval theorem, the
 corpus proves projective defect boundaries, two-sided escape no-gos, prime tangent and Clark-atom
@@ -271,6 +276,14 @@ tomography, flat shift holonomy, phase compactification, one-sided Carleman pari
 source-specific wall/light-cone Gram completions, sharp depth floors, unique least negative-part
 completion, and exact Ward/source obstructions. No exact external collision was located for these
 source-specific refinements.
+The literal external screw formula is now represented more concretely: Lean constructs `g`,
+computes its regular kernel away from prime-power atoms, proves its exact plastic-number sign
+threshold and atom-free distributional identity, rewrites the two-variable form as
+cross-correlation, and constructs disjoint positive cross couplings. Hence no scalar `L²` shift
+gives a Beurling--Deny positivity-preserving semigroup above the threshold aperture. Exact parity
+decomposition gives `Q_even=T+H`, `Q_odd=T-H`, with `H` equal to a regular pairing minus a
+finite explicit von Mangoldt prime-power sum. These close kernel and parity provenance, not the
+cofinal operator limit.
 Generic rectangular algebra now isolates the remaining Schur debt: a variable confined to one
 matrix entry gives an exact degree-one determinant expansion, and coprime linear coefficients give
 irreducibility. Multivariable reduction is also proved: an irreducible cofactor and a specialization
@@ -295,12 +308,13 @@ finite-to-`z²ξ/ξ′` limit is conjectural. The July finite-element
 coefficient but labels the spectral convergence, ground-state, and zero observations numerical and
 universal rather than new arithmetic.
 
-**Lean action.** Formalize Suzuki Theorems 1.1 and 1.5 source-faithfully: concrete screw Hilbert
-space, closed form domain, Friedrichs operator, deficiency vectors, self-adjoint extensions, and
-literal `W`. Abstract Hermite–Biehler, Livšic, Donoghue, and real-zero consequences are already in
-Lean, but cannot stand in for Suzuki's objects. Corollary 1.6 must remain conditional; the corpus
-proves that its proposed entire `z²ξ/ξ′` limit target has unavoidable real poles. Numerical
-finite-element claims are not imported.
+**Lean action.** The explicit screw function, regular/distributional kernel, correlation pairing,
+parity split, and prime Hankel carrier are now formalized. Remaining source-faithful import from
+Suzuki Theorems 1.1 and 1.5 is the concrete screw Hilbert space, closed form domain, Friedrichs
+operator, deficiency vectors, self-adjoint extensions, and literal `W`. Abstract
+Hermite--Biehler, Livšic, Donoghue, and real-zero consequences cannot stand in for those objects.
+Corollary 1.6 remains conditional; the corpus proves that its proposed entire `z²ξ/ξ′` limit
+target has unavoidable real poles. Numerical finite-element claims are not imported.
 
 ### Route G2 — relative-Volterra phase source-germ weld [RETIRED]
 
@@ -386,8 +400,7 @@ source mechanisms. Paper/Lean certificates:
 `../2-fully-proven/not_new_scientific_knowledge/sharp-dyadic-prime-window-zero-width-collision.md`
 and `RHTower/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean`.
 
-### Route J — arithmetic Julia principal-relative current
-`[OPEN — UNRENORMALIZED ENERGY CLOSED]`
+### Route J — arithmetic Julia principal-relative current [OPEN — UNRENORMALIZED ENERGY CLOSED]
 
 **Local contribution beyond located literature.** The arithmetic Julia assembly and its
 quantitative no-go are stronger than a generic dilation observation. For
@@ -419,8 +432,8 @@ core is a genuinely nonseparable, non-coboundary principal-relative current befo
 codiagonalization plus unconditional arithmetic annihilation, or a class-complete no-go for that
 remaining category. No external theorem meeting this premise was found, so no literature-driven
 Lean addition is selected.
-### Route K — quadratic spectral realization
-`[RETIRED — QUARTIC SURVIVOR; ALL-ORDER CONTINUATION IS ROUTE P]`
+
+### Route K — quadratic spectral realization [RETIRED — QUARTIC SURVIVOR; ALL-ORDER IS ROUTE P]
 
 **Local contribution beyond located literature.** The corpus proves the quadratic-parameter RH
 connector, closes the regular weight-one Clifford realization, and proves that every nonzero
@@ -445,6 +458,7 @@ independent determinant route.
 exact quadratic/quartic marked-prime cycle carrier; its all-order research question is owned by
 Route P. No external theorem revives K at the killed quantifier level, so no Route-K
 formalization is selected.
+
 ### Route L — Deninger/Hodge/cohomological realization [OPEN]
 
 **Local contribution beyond located literature.** The corpus now goes well beyond generic
@@ -466,6 +480,16 @@ Calderón--Witt incidence, and source-to-Xi graph landing. It also proves severa
   lower bound;
 - centered-flow capacity is conserved unconditionally, whereas static raw capacity and
   countercharacter triviality are RH-equivalent.
+- the literal Burnol nested-window conormal equals the Deninger radial mate coordinate, and its
+  reflected norm discriminant is exactly `K_n(s)`;
+- an ordinary-integer Wold/BV Hochschild boundary exists explicitly, but physical conormal
+  landing fails to descend through it by exactly the same `K_n(s)`.
+- the cofinal source--dagger receiver is a one-dimensional Tate top-coordinate cokernel. The
+  literal rational-adelic prime cycle lands in its Bockstein generator, while pointwise
+  source-null-homology and minimal-boundary annihilation are exactly the critical-line condition;
+- homology/cohomology vanishing is formalized for cyclic rationalizations, one-generator packets,
+  root adjunctions, and finite root towers under their stated hypotheses. It does not instantiate
+  the higher-rank arithmetic relevant complex.
 
 No exact external collision was located for this source-specific relative-curvature,
 top-boundary, and non-erasure classification.
@@ -476,18 +500,20 @@ top-boundary, and non-erasure classification.
 (Theorem 10.2), and generalized-divisor support (Proposition 11.7). The prime-fibre and coherent
 cyclotomic descent needed by the current source carrier are represented locally. Remaining
 `H⁰`/flow and divisor-support statements can strengthen the arithmetic relevant-complex
-interface, but Deninger's paper does not prove the required ordinary-integer source Stokes
-annihilation. Generic cyclic, mapping-cone, and Hodge theory cannot supply that arithmetic
-vanishing because the local top reader is coefficient-faithful.
+interface, but Deninger's paper does not prove strict source-first descent of the completed Xi
+Green/BV chain. Generic cyclic, mapping-cone, and Hodge theory cannot supply it because the local
+top reader computes the exact nonzero descent obstruction.
 
 **Exchange verdict and Lean action.** The exact Route-L core is
-`ORDINARY_INTEGER_GREEN_STOKES_ANNIHILATION`: compare the completed/cofinal Xi Green primitive
-with the relative Tate top-boundary class, prove compatibility with the Gamma/co-Poisson Hodge
-boundary and Calderón--Witt incidence, and prove source-boundary vanishing without assuming
-`K_6=0`, kernel membership, countercharacter triviality, static capacity, or RH. Remaining
-Deninger Theorem 10.2 and Proposition 11.7 are legitimate infrastructure imports only when wired
-to this comparison. Theorem 7.10 is no longer a missing prime-fibre action. No located external
-theorem closes or shortens the annihilation premise.
+`XI_BV_GREEN_STOKES_STRICT_DESCENT`: construct a source-first chain map from the completed Xi
+Green source tensored with the Wold/BV Hochschild complex to resolved Calderón--Witt incidence,
+make the physical degree-zero landing its strict specialization, and send the explicit primitive
+to a target boundary while retaining multiplicity and prime provenance. It may not assume the
+Burnol/Deninger radial coefficient vanishes. Deninger Proposition 11.7 is a legitimate
+infrastructure import only when wired to this comparison. Theorem 7.10's prime fibre and Theorem
+10.2's endpoint-purity content are already represented. No located external theorem closes or
+shortens the strict-descent premise.
+
 ### Route M — Gamma–Jacobi singular reader [FORMALIZED — TERMINALIZED]
 
 **Closed predecessor.** Inoue's
@@ -523,7 +549,7 @@ exact RH coordinate, not retired and not proved.  The literature audit located n
 containing this exact Gamma--Jacobi/von-Mangoldt/FE--Schwarz composition; project-level novelty
 remains provisional rather than asserted globally.
 
-### Route N — Hedenmalm prime-normal estimate
+### Route N — Hedenmalm prime-normal estimate [OPEN]
 
 **Local contribution beyond located literature.** The exact Wick/Fock boundary-energy reduction
 and sub-log-square source-domain threshold are corpus-specific.
@@ -539,12 +565,17 @@ already cover this conditional mechanism. Do not add another abstract endpoint. 
 must be the unconditional source-domain all-prime `o((log X)²)` estimate, including Jordan-tower
 terms; no such external theorem exists.
 
-### Route O — Connes/CCM restricted-Weil and prolate limit
+### Route O — Connes/CCM restricted-Weil and prolate limit [OPEN]
 
 **Local contribution beyond located literature.** The corpus proves extensive constrained-prolate
 finite algebra, exact two-mode distance reductions, determinant/ground-state limit consumers, and
 multiple source-specific no-gos. These sharpen the location of the convergence wall but do not
-prove it.
+prove it. The nested-floor theorem is now exact: Rayleigh floors are antitone, repair threshold is
+their negative part, one negative compact trial persists uniformly through every later aperture,
+and any cofinal floor limit zero forces nonnegativity on every trial domain. An
+`O(1/λ)` excess-to-gap comparison collapses directly to the same positivity theorem, so a
+determinant adds no independent implication. No exact external collision was located for this
+quantitative no-evacuation package.
 
 **External contribution.** Connes–Consani–Moscovici's
 [Zeta Spectral Triples](https://arxiv.org/abs/2511.22755) gives concrete finite-prime self-adjoint
@@ -558,7 +589,7 @@ already present, so a second generic real-zero endpoint is not selected for fron
 source-defined CCM family is the missing object. Do not encode numerical finite-to-Xi convergence
 as a theorem.
 
-### Route P — completed-seam Thorin/Markov carrier
+### Route P — completed-seam Thorin/Markov carrier [OPEN]
 
 **Local contribution beyond located literature.** The corpus isolates a source-pure compact
 Thorin/Markov carrier and an infinite-support moment consumer, while proving finite-moment and
@@ -574,7 +605,7 @@ supercritical regime, while the corpus already formalizes the sharp quarter-tilt
 proposed critical transport. Importing the safe control case would improve bibliographic coverage
 but would not narrow construction of the critical compact measure.
 
-### Route Q — theta–Cassini likelihood hierarchy
+### Route Q — theta–Cassini likelihood hierarchy [OPEN / SECONDARY]
 
 **Local contribution beyond located literature.** Exact reciprocal-moment calibration, Cassini
 likelihood/Markov obstructions, low-order strict chambers, and the all-order extrapolation boundary
@@ -587,8 +618,7 @@ asymptotic hyperbolicity do not imply the all-order source condition.
 **Lean action.** None. Importing more finite orders would not discharge the quantified wall unless
 paired with a valid all-order closure theorem.
 
-### Route R — primitive-current singular continuation
-`[OPEN — SOURCE, COMPLETION, AND XI LANDING CLOSED]`
+### Route R — primitive-current singular continuation [OPEN — SOURCE AND XI LANDING CLOSED]
 
 **Local contribution beyond located literature.** The corpus constructs the literal joint
 prime-depth Hilbert source and reciprocal co-source, their full von Mangoldt pairing, Gamma
@@ -599,6 +629,15 @@ scalar orbit, scalar distribution after isolated-frequency separation, and bound
 common-divisor codiagonal. No exact external collision was located for this complete
 source-to-Xi producer plus annihilation-classification package.
 
+The strict essential-edge carrier is now exact as well. Its literal prime-indexed correction is
+`ℓ²` but not `ℓ¹`; a source-fixed contraction recovers the inverse-prime nome, and occupation
+condensation gives the diagonal spectrum `1/N(ν)`. The resulting operator is Hilbert--Schmidt,
+not trace class. Its quadratic Hilbert--Carleman cocycle is `t²ζ(2)/2`, its local
+`det₂` is `exp(γt)/Γ(1-t)`, and prime decimation identifies the regular Wold quadratic trace
+and singular BV first residue as two boundaries of `(1-p^{-s})ζ(s)`. This closes the operator
+realization and regular/singular comparison, but the determinant is an everywhere-nonzero
+exponential and cannot be the missing annihilator.
+
 **External contribution.** Explicit-formula theory provides the Euler/Gamma source identity;
 Deninger, Connes--Consani, Burnol, Krein-space, and modular-flow literature provide parent
 geometric languages. None constructs an unconditional sign-indefinite nonseparable
@@ -606,7 +645,8 @@ prime/depth--divisor differential acting before vertex gauge and frequency separ
 proves the four-unit Ward boundary sign from source data.
 
 **Exchange verdict and Lean action.** Source formation, Gamma completion, and Xi landing need no
-replacement import. Route R's remaining theorem is a pre-frequency arithmetic null-homotopy
+replacement import. The essential-edge `det₂` realization also needs no replacement import.
+Route R's remaining theorem is a pre-frequency arithmetic null-homotopy
 retaining divisor provenance and forcing horizontal annihilation, or a class-complete no-go for
 that relation-valued category. No located primary theorem advances this premise; generic
 Krein-space, trace, distribution, or graph-cohomology imports would only reproduce classes already
@@ -758,18 +798,17 @@ with the completed Gamma/polar source. No external import advances that open cor
 
 ## 6. Formalization priorities
 
-External results that genuinely strengthen a live route, in dependency order, are:
+External results that can still strengthen a live route, in dependency order, are:
 
 1. Suzuki Theorems 1.1 and 1.5: concrete finite screw space, Friedrichs and deficiency operators,
    self-adjoint extensions, and literal `W` (Route G; not retired G2).
 2. CCM Theorem 1.1: concrete finite restricted-Weil operator and determinant, connected to the
    already-formalized finite real-zero transfer (Route O; terminalized Route A only gains background).
-3. Complete the Groskin import after the now-formalized semidefinite compact-window core: strict
-   positive/total positivity, improper tail, and Corollary 3.3's cutoff budget (Route B).
-4. Deninger Theorem 7.10, Theorem 10.2, and Proposition 11.7: concrete prime-fibre topology and
-   divisor support (Route L).
-5. Suzuki 2022 Theorem 1.5: trace-class localized screw carrier and its Weil-polarization handoff
+3. Suzuki 2022 Theorem 1.5: trace-class localized screw carrier and its Weil-polarization handoff
    (Route C1).
+4. Deninger Proposition 11.7: generalized-divisor support, but only as an input wired to the
+   arithmetic relevant-complex/strict BV descent interface (Route L). Theorem 7.10's prime fibre
+   and Theorem 10.2's endpoint purity are already represented.
 
 Suzuki's screw-moment Hankel criterion, full Li, Hardy, theta-at-infinity, and Romik's coefficient
 asymptotic are corpus-completeness imports, not first-order route advances. Bellotti, Mangerel, fixed
@@ -777,7 +816,9 @@ Jensen degrees, numerical Suzuki/CCM convergence, and conditional critical Thori
 meet a current route premise and should not be formalized for frontier leverage. Platt--Trudgian
 certificate replay and Michalowski's directed-rounding wedge certificates are excluded by the
 no-computation rule. Verjovsky adds an exact Route E coordinate but no moment estimate; Gaber's
-contradicted theorem is rejected rather than imported.
+contradicted theorem is rejected rather than imported. Groskin's remaining strict-tail and cutoff
+budget results belong to retired Route B and are now bibliography-only unless reused by a live
+route.
 
 ## 7. Present conclusion
 

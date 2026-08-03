@@ -125,15 +125,43 @@ absorbed the whole RH burden and when divisor-preserving determinant convergence
   Institute.
 - A. Connes, C. Consani, H. Moscovici, *Zeta Spectral Triples*, arXiv:2511.22755.
 
-## Lean decision
+## Lean status
 
-The formal tree contains abstract positivity and infimum tools but no formalized global Weil form,
-no exhaustion by CCM apertures, and no bridge from Weil positivity to RH. Formalizing the one-line
-min--max shadow would not certify the analytic theorem. No Lean file is added.
+**Superseded, 2026-08-03.**  Both proved halves of the criterion are formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/CCMCofinalFloorCriterion.lean`, on the nested-floor layer of
+`CCMNestedFloorNoEvacuation.lean`.
+
+The previous objection was that there is "no exhaustion by CCM apertures".  The exhaustion is
+supplied by representing the aperture domains as subsets of one fixed function space,
+`apertureDomain a = {v | ∀ x, v x ≠ 0 → x ∈ (-a, a)}`, so zero extension is literal inclusion and a
+compactly supported test lies in every later aperture by `apertureDomain_mono`.
+
+- **`nonneg_of_rayleighFloor_tendsto_zero`** — equation `(2)`: if the floor tends to zero along any
+  apertures tending to infinity, then the energy is nonnegative on every trial domain.  This is the
+  variational argument of the card, and it needs the nonemptiness of the trial set only at the one
+  aperture where the conclusion is drawn.
+- **`exists_uniform_negative_rayleighFloor`** — equation `(3)`: one trial vector with negative energy
+  produces an explicit `δ = -QW(f,f)/||f||²  > 0` with `epsilon(lambda) ≤ -δ` for every later
+  aperture.
+- `diffBilinForm_nonneg_of_restrictedKernelFloor_tendsto_zero` and
+  `exists_uniform_negative_restrictedKernelFloor` — the same two statements for the concrete
+  restricted kernel form `QW(v,v) = diffBilinForm K v v` with mass `sqMass v = ∫ v²`, whose trial set
+  is proved nonempty at every positive aperture by a bump function.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+Not formalized, and not a theorem of this card: Weil's criterion itself (the equivalence between
+positivity of `QW` on all admissible tests and RH), and the CCM compact-resolvent identification of
+`epsilon(lambda)` with a lowest eigenvalue.  The Lean statements deliver exactly the variational
+content — "cofinal floor limit zero implies form positivity", and its quantitative converse — with
+the RH translation left where the card leaves it, in Weil's criterion.
 
 ## Gates
 
 - [x] cofinal spectral-floor criterion proved
 - [x] quantitative `not RH` alternative proved
 - [x] determinant and spectral-floor branches separated
+- [x] Lean: cofinal criterion `(2)` and quantitative alternative `(3)` unconditional
+- [x] Lean: both instantiated on the restricted kernel form with a nonempty trial set
 - [ ] prove the true CCM floor tends to zero, or prove divisor-preserving determinant convergence

@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.CCMRationalMoritaTraceClassAlgebra
 import GaloisForLFunctions.RHTower.CCMRationalAdelicEpsilonOneCyclic
 import GaloisForLFunctions.RHTower.CCMRationalAdelicCyclicRestrictionFormula
 import GaloisForLFunctions.RHTower.CyclicBarAlgHomMorphism
+import GaloisForLFunctions.RHTower.CyclicModuleCokernel
 
 /-!
 # Exact rational adeles class-space cyclic module

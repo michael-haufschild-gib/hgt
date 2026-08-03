@@ -2111,3 +2111,81 @@ Dirichlet polynomial can be large — rather than a bound on a sum the caller wo
 With this the corpus's analytic layer for Route E stands complete at usable strength: the large sieve
 (sharp), Montgomery's sieve (sharp), the Dirichlet mean value theorem, and the large-values estimate
 with its counting form. The card's stated remaining input is unchanged: Matomäki–Radziwiłł Theorem 2.
+
+### Corpus check — Plancherel IS in mathlib (2026-08-03)
+
+Recorded to prevent a future session from building it.
+
+`Mathlib/Analysis/Fourier/LpSpace.lean` supplies the `L²` Fourier theory this route's remaining
+input needs:
+
+- `fourierTransformₗᵢ : Lp F 2 ≃ₗᵢ[ℂ] Lp F 2` — the Fourier transform as a linear *isometric
+  equivalence* on `L²`;
+- `norm_fourier_eq : ‖𝓕 f‖ = ‖f‖` — Plancherel;
+- `inner_fourier_eq : ⟪𝓕 f, 𝓕 g⟫ = ⟪f, g⟫` — Parseval;
+- `SchwartzMap.toLp_fourier_eq`, `fourier_toTemperedDistribution_eq` — compatibility with the
+  Schwartz and tempered-distribution pictures.
+
+So the Parseval bridge Matomäki–Radziwiłł uses — passing from a short-interval average to an
+integral of a Dirichlet polynomial — is an **instantiation** problem, not a construction problem.
+The analytic engine exists; what has to be built is the arithmetic side: exhibiting the
+short-interval average as an `L²` Fourier pair, which means a logarithmic change of variable turning
+the Dirichlet series into a function on `ℝ` and identifying the resulting kernel.
+
+Note the earlier assessment on these cards that "nothing in mathlib approaches" the remaining input
+is correct about Matomäki–Radziwiłł itself and about Menon's theorem, but should not be read as
+covering their analytic prerequisites: Plancherel, the large sieve, the Dirichlet mean value theorem
+and the large-values estimate are all now available, the last three from this corpus.
+
+### Formal layer — pairing a Dirichlet polynomial against a kernel
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DirichletPairing.lean`:
+
+- `integral_dirPoly_mul` — **`∫_A^B F(t)K(t) dt = ∑_{n<N} a_n ∫_A^B n^{it} K(t) dt`** for continuous
+  `K`.
+
+Unconditional. For a *finite* Dirichlet polynomial this is linearity of the integral, so no
+convergence question arises — which is why it can be stated with no hypothesis on `K` beyond
+continuity, and on any interval.
+
+This is the finite form of the Parseval bridge. The inner integral is the transform of the kernel at
+the frequency `log n`, so pairing against a kernel evaluates the coefficient sum against that
+transform. Choosing `K` to concentrate near a point turns the left side into a short-interval average
+and the right side into a weighted coefficient sum — the shape Matomäki–Radziwiłł's argument works
+in. With `norm_fourier_eq` available from mathlib, what remains on this route is the choice of kernel
+and the estimation of its transform, not the construction of the transform theory.
+
+### Formal layer — the symmetric phase integral (Dirichlet kernel)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/SymmetricPhaseIntegral.lean`:
+
+- `exp_phase_sub_neg` — `e^{iθ} − e^{−iθ} = 2i sin θ`.
+- `integral_exp_phase_symm_zero` — `∫_{−T}^{T} e^{it·0} dt = 2T`.
+- `integral_exp_phase_symm` — **`∫_{−T}^{T} e^{itL} dt = 2 sin(TL)/L`** for `L ≠ 0`.
+
+All unconditional. Paired with a Dirichlet polynomial through `integral_dirPoly_mul`, this *is* the
+Dirichlet kernel: `∫_{−T}^{T} F(t) dt = ∑_n a_n · 2 sin(T log n)/log n`, and twisting by `x^{−it}`
+moves the frequencies to `log(n/x)`, so the kernel concentrates on `n ≈ x` with width `e^{1/T}`. Its
+modulus is at most `min(2T, 2/|L|)`, which is what makes far frequencies negligible.
+
+That is the concrete kernel the Parseval bridge needs; with `integral_dirPoly_mul` supplying the
+pairing and mathlib supplying Plancherel, the short-interval side of Matomäki–Radziwiłł is now a
+matter of estimating this kernel rather than of building transform theory.
+
+### Formal layer — the Dirichlet kernel against a Dirichlet polynomial
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DirichletKernelPairing.lean`:
+
+- `norm_integral_exp_phase_symm_le_inv` — the kernel decays: `‖∫_{−T}^{T} e^{itL}‖ ≤ 2/|L|`.
+- `norm_integral_exp_phase_symm_le_len` — and is capped by the interval: `≤ 2T`.
+- `integral_dirPoly_symm` — **`∫_{−T}^{T} F(t) dt = ∑_{n<N} a_n ∫_{−T}^{T} n^{it} dt`**.
+
+All unconditional. The two bounds are what make the pairing *selective*: near the trivial frequency
+the kernel has size `2T`, and away from it the kernel decays like the reciprocal of the frequency.
+After a twist by `x^{−it}` the frequencies become `log(n/x)`, so the pairing localises the
+coefficient sum to `n ≈ x` — which is the mechanism by which a short-interval average is read off a
+Dirichlet polynomial.
+
+The short-interval side of the route is therefore assembled from proved parts: pairing identity,
+explicit kernel, decay and cap. What is not yet built is the quantitative localisation — turning
+these into an approximation of the short-interval sum with a controlled error.

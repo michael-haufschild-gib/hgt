@@ -1381,6 +1381,67 @@ theorem norm_normalised_coeff_le_one (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : 
   div_self (central_term_ne_zero ha hr hn₀ hz)
 
 
+/-! ## Differentiating the majorant
+
+The majorant `S(r) = sum ||a_n|| r^n` is differentiated term by term, exactly as the function itself
+was.  The combination `r S'(r)` is the first moment of the modulus profile, which is the quantity the
+logarithmic-derivative estimate still has to control. -/
+
+set_option maxHeartbeats 1000000 in
+/-- **Termwise differentiation of the majorant.** -/
+theorem hasDerivAt_coeffSum (ha : EntireCoeffs a) (hr : 0 < r) :
+    HasDerivAt (coeffSum a) (∑' n : ℕ, (n : ℝ) * ‖a n‖ * r ^ (n - 1)) r := by
+  classical
+  set R : ℝ := 2 * r with hRdef
+  have hR0 : (0 : ℝ) < R := by rw [hRdef]; linarith
+  have hpow : ∀ n : ℕ, (n : ℝ) * R ^ (n - 1) = (1 / R) * ((n : ℝ) * R ^ n) := by
+    intro n
+    cases n with
+    | zero => simp
+    | succ m =>
+        simp only [Nat.add_sub_cancel]
+        field_simp
+        ring
+  have hidx : Summable fun n : ℕ => (n : ℝ) * (‖a n‖ * R ^ n) := by
+    refine (summable_term (entireCoeffs_mul_index ha) hR0).congr fun n => ?_
+    rw [norm_mul, Complex.norm_natCast, mul_assoc]
+  have hu' : Summable fun n : ℕ => (1 / R) * ((n : ℝ) * (‖a n‖ * R ^ n)) := hidx.mul_left _
+  have hu : Summable fun n : ℕ => ‖a n‖ * R ^ n := summable_term ha hR0
+  refine hasDerivAt_of_tendstoLocallyUniformlyOn (l := (atTop : Filter (Finset ℕ)))
+    (f := fun t (x : ℝ) => ∑ n ∈ t, ‖a n‖ * x ^ n)
+    (f' := fun t (x : ℝ) => ∑ n ∈ t, (n : ℝ) * ‖a n‖ * x ^ (n - 1))
+    (g := coeffSum a)
+    (g' := fun x : ℝ => ∑' n : ℕ, (n : ℝ) * ‖a n‖ * x ^ (n - 1))
+    (s := Set.Ioo (r / 2) R) isOpen_Ioo ?_ ?_ ?_ (by constructor <;> [linarith; linarith])
+  · refine TendstoUniformlyOn.tendstoLocallyUniformlyOn ?_
+    refine tendstoUniformlyOn_tsum hu' fun n x hx => ?_
+    have hx0 : (0 : ℝ) < x := by linarith [hx.1, hr]
+    have hxR : x ≤ R := le_of_lt hx.2
+    have hbase : (n : ℝ) * ‖a n‖ * x ^ (n - 1) ≤ (n : ℝ) * ‖a n‖ * R ^ (n - 1) := by
+      gcongr
+    calc ‖(n : ℝ) * ‖a n‖ * x ^ (n - 1)‖ = (n : ℝ) * ‖a n‖ * x ^ (n - 1) := by
+          rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+      _ ≤ (n : ℝ) * ‖a n‖ * R ^ (n - 1) := hbase
+      _ = (1 / R) * ((n : ℝ) * (‖a n‖ * R ^ n)) := by
+          rw [show (n : ℝ) * ‖a n‖ * R ^ (n - 1) = ‖a n‖ * ((n : ℝ) * R ^ (n - 1)) by ring,
+            hpow n]
+          ring
+  · refine Filter.Eventually.of_forall fun t x _ => ?_
+    have hterm : ∀ n : ℕ, HasDerivAt (fun y : ℝ => ‖a n‖ * y ^ n)
+        ((n : ℝ) * ‖a n‖ * x ^ (n - 1)) x := by
+      intro n
+      have h := (hasDerivAt_pow n x).const_mul ‖a n‖
+      simpa [mul_comm, mul_left_comm, mul_assoc] using h
+    exact HasDerivAt.fun_sum fun n _ => hterm n
+  · intro x hx
+    have hx0 : (0 : ℝ) < x := by linarith [hx.1, hr]
+    have hxR : x ≤ R := le_of_lt hx.2
+    have hsummable : Summable fun n : ℕ => ‖a n‖ * x ^ n := by
+      refine Summable.of_nonneg_of_le (fun n => term_nonneg a hx0 n) (fun n => ?_) hu
+      gcongr
+    exact hsummable.hasSum
+
+
 /-! ## Entire functions -/
 
 /-- The coefficients of a power series with infinite radius of convergence satisfy the decay

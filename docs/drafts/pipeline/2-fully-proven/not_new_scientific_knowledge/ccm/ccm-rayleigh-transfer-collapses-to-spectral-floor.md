@@ -158,11 +158,35 @@ constructed, but they cannot reduce the remaining RH burden.
 The collapse is elementary min--max algebra once the two vanishing trial levels are available. It
 is a route bridge, not new scientific knowledge.
 
-## Lean decision
+## Lean status
 
-`RayleighScalarShift.lean` already formalizes the scalar algebra, but the collapse theorem needs a
-min--max/eigenvalue interface not yet represented in the formal CCM operator. Formalizing an
-abstract wrapper would not certify `(10)`. No Lean file is added.
+**Superseded, 2026-08-03.**  The abstract collapse `(1)`--`(7)` and the composition `(14)` with the
+cofinal criterion are formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/CCMCofinalFloorCriterion.lean`.
+
+- **`tendsto_ground_zero_of_excess_gap_ratio`** — equations `(1)`--`(7)`: from `d = r - eps_0 ≥ 0`,
+  an eventual bound `d ≤ C * (eps_1 - eps_0) / lambda`, and `r → 0`, `eps_1 → 0`, it concludes
+  `eps_0 → 0`.  The proof is the card's: rewrite the gap as `(eps_1 - r) + d` so that for
+  `lambda > 2C` half the excess is absorbed into itself, leaving
+  `d ≤ 2 C |eps_1 - r| / lambda`, which tends to zero because the numerator tends to zero and
+  `lambda → ∞`; then `eps_0 = r - d`.
+  Note the hypothesis is stated as the eventual inequality itself, so no `Gap > 0` assumption is
+  needed — the absorption step supplies it.
+- **`nonneg_of_excess_gap_ratio`** — the chain `(14)`: an `O(1/lambda)` excess-to-gap estimate on the
+  floors of a nested trial family already forces nonnegativity of the energy on every trial domain.
+  The determinant lane contributes nothing after this arrow, which is the card's verdict.
+- The cofinal criterion consumed here is `nonneg_of_rayleighFloor_tendsto_zero`, and the floor layer
+  is `CCMNestedFloorNoEvacuation.lean`; the objection that the tree had "no min--max/eigenvalue
+  interface" is answered by working with the variational floor `rayleighFloor` directly, which is
+  what the card's `epsilon_0` is.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+Not formalized: the CCM-specific inputs `(8)`--`(12)` — the fixed-depth constrained-prolate ladder,
+its exterior deficit asymptotics, and the two-dimensional min--max bound `(10)`--`(11)`.  Those are
+imported analytic facts about the prolate family, not theorems of the collapse; the collapse is
+stated for arbitrary real level functions and applies to them verbatim once they are available.
 
 ## Gates
 
@@ -170,4 +194,6 @@ abstract wrapper would not certify `(10)`. No Lean file is added.
 - [x] two fixed-depth CCM trial levels shown to vanish
 - [x] cofinal spectral-floor criterion connected
 - [x] determinant last mile shown redundant
+- [x] Lean: abstract collapse `(1)`--`(7)` unconditional
+- [x] Lean: composed chain `(14)` to energy nonnegativity unconditional
 - [ ] prove the direct cofinal true-Weil floor theorem

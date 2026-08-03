@@ -180,7 +180,8 @@
   `GaloisForLFunctions.RHTower.DeningerRootIsolated` (uniqueness of roots for elements of the
   factors of a root adjunction at an isolated element,
   `GaloisForLFunctions.RHTower.DeningerCycRedPowInj` (equal powers of cyclically reduced words of
-  equal length are equal)
+  equal length are equal),
+  `GaloisForLFunctions.RHTower.DeningerBaseConjWord` (base conjugates of cyclically reduced words)
 
 ## Statement
 
@@ -2732,3 +2733,14 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   `x = y` after transporting the conjugators.  The remaining case, elements whose cyclic word has
   length at most one, is the conjugacy of factor elements, and reduces to the factor case already
   proved.
+- 2026-08-03 — **Third brick: base conjugates stay cyclically reduced.**  The conjugacy criterion for
+  powers returns its answer twisted by the base group — a conjugate of a cyclically reduced word is a
+  rotation of it conjugated by a base element — so every comparison downstream has to absorb such a
+  twist before the word level arguments apply.  `deningerBaseConj_word` does the absorption: the base
+  element goes into the first letter and its inverse into the last, both absorptions preserve
+  reducedness, and the sequence of factors is untouched.  `deningerCyc_of_map_fst` records that the
+  cyclic condition is a condition on that sequence alone, so `deningerBaseConj_cycRed` concludes that
+  a base conjugate of a cyclically reduced word is again the product of a cyclically reduced word of
+  the same length.  Together with `deningerRotate_cycRed`, which says the same of rotations, the
+  output of the conjugacy criterion is now always back in the class the criterion consumes, which is
+  what an induction on the conjugator needs.

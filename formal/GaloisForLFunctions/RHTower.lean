@@ -1489,6 +1489,7 @@ import GaloisForLFunctions.RHTower.DeningerVanishingCohomology
 import GaloisForLFunctions.RHTower.DeningerFactorMix
 import GaloisForLFunctions.RHTower.DeningerRootIsolated
 import GaloisForLFunctions.RHTower.DeningerCycRedPowInj
+import GaloisForLFunctions.RHTower.DeningerBaseConjWord
 import GaloisForLFunctions.RHTower.DeningerUnitaryFlowRieszPurity
 import GaloisForLFunctions.RHTower.DeningerUnitaryHarmonicAction
 import GaloisForLFunctions.RHTower.DeningerWeightOnePolarization
@@ -3221,6 +3222,9 @@ import GaloisForLFunctions.RHTower.Sieve.DirichletIntegralBound
 import GaloisForLFunctions.RHTower.Sieve.AmGmDirichlet
 import GaloisForLFunctions.RHTower.Sieve.DirichletLargeValues
 import GaloisForLFunctions.RHTower.Sieve.DirichletLargeValuesCount
+import GaloisForLFunctions.RHTower.Sieve.DirichletPairing
+import GaloisForLFunctions.RHTower.Sieve.SymmetricPhaseIntegral
+import GaloisForLFunctions.RHTower.Sieve.DirichletKernelPairing
 import GaloisForLFunctions.RHTower.Sieve.ChernoffTails
 import GaloisForLFunctions.RHTower.Sieve.GeometricMeanDivisor
 import GaloisForLFunctions.RHTower.Sieve.IntervalMultiples

@@ -79,17 +79,21 @@ theorem norm_deriv_deriv_le_on_imStrip {ρ ρ' M : ℝ} (hρ : ρ' < ρ) {f : �
   -- the derivative is holomorphic on the strip
   have hana : AnalyticOnNhd ℂ f (imStrip ρ) := hf.analyticOnNhd (isOpen_imStrip ρ)
   have hderiv : DifferentiableOn ℂ (deriv f) (imStrip ((ρ + ρ') / 2)) :=
-    ((hana.deriv (isOpen_imStrip ρ)).mono (imStrip_mono hmid'.le)).differentiableOn
+    ((hana.deriv_of_isOpen (isOpen_imStrip ρ)).mono (imStrip_mono hmid'.le)).differentiableOn
   -- and bounded there by the first estimate
   have hMd : ∀ w ∈ imStrip ((ρ + ρ') / 2), ‖deriv f w‖ ≤ 4 * M / (ρ - ρ') := by
     intro w hw
     have hb := norm_deriv_le_on_imStrip hmid' hf hM (le_of_lt (mem_imStrip.mp hw))
+    have hne : ρ - ρ' ≠ 0 := ne_of_gt hgap
     have hrw : 2 * M / (ρ - (ρ + ρ') / 2) = 4 * M / (ρ - ρ') := by
+      rw [show ρ - (ρ + ρ') / 2 = (ρ - ρ') / 2 by ring]
       field_simp
       ring
     rwa [hrw] at hb
   have hsecond := norm_deriv_le_on_imStrip hmid hderiv hMd hz
+  have hne : ρ - ρ' ≠ 0 := ne_of_gt hgap
   have hrw : 2 * (4 * M / (ρ - ρ')) / ((ρ + ρ') / 2 - ρ') = 16 * M / (ρ - ρ') ^ 2 := by
+    rw [show (ρ + ρ') / 2 - ρ' = (ρ - ρ') / 2 by ring]
     field_simp
     ring
   rwa [hrw] at hsecond

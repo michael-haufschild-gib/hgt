@@ -209,3 +209,35 @@ Write a review paper whose route claims are traceable to exact Lean declarations
   prime--Gamma/co-Poisson current, or a genuinely nonlinear Julia source functional, satisfying
   all Route-J gates. Closure requires unconditional construction or a class-complete unconditional
   no-go covering every surviving class; assigning a survivor to another route is not closure.
+- 2026-08-03 — Main paper converted from mixed paper/chronology format to a present-state research
+  map. More than 3,500 lines of dated route updates were consolidated into route bodies and removed;
+  chronology remains in this audit log, Git history, and pipeline cards. Abstract, priorities,
+  hypotheses, final statement, and Lean anchors now use the 3 August corpus state.
+- 2026-08-03 — Route A terminal status synchronized with
+  `CCMFirstClockPhaseNaturalTransportRigidity` and
+  `CCMFirstClockBarycentricOrientationCompleteness`: fixed source-faithful physical-phase
+  transport is identity, nonidentity has explicit connection defect, and arbitrary positive
+  Markov feasibility is exactly source sign; completed universal feasibility is RH.
+- 2026-08-03 — Route E synchronized with coprime opposite-sign product supply, reciprocal-marker
+  prime-anchor Hall capacity, two-sided off-normal Wold deviation transport, finite-moment parity
+  blindness, and the formal sieve layer. These close local counting and off-normal gates, not
+  critical low-frequency Möbius cancellation, exceptional Carleson control, or central co-moving
+  seam flux. Route E remains open.
+- 2026-08-03 — Route J synchronized with completed relative-current classification. Unrenormalized
+  coherent energy is closed negatively. Separable normalized joint-depth incidence is a vertex
+  coboundary; finite cycle, determinant, and trace invariants are horizontally blind, while uniform
+  capacity is RH-equivalent. Live core is a genuinely nonseparable, non-coboundary pre-codiagonal
+  source current plus arithmetic null-homotopy, or a class-complete no-go.
+- 2026-08-03 — Route L synchronized twice as the corpus advanced. Relative Tate top-boundary and
+  physical Burnol/Deninger radial comparison are coefficient-faithful. Ordinary-integer Wold/BV
+  Hochschild boundary now exists, but physical landing fails to descend through it by exactly
+  `K_n(s)`. Open core is `XI_BV_GREEN_STOKES_STRICT_DESCENT`, a source-first chain map retaining
+  multiplicity and prime provenance; ordinary boundary construction is no longer open.
+- 2026-08-03 — Route R synchronized with joint-depth Hilbert/Krein Xi landing, positive/signed
+  scalar no-shorting, finite gauge blindness, and essential-edge Schatten classification. The
+  strict edge is `ell2` not `ell1`; its diagonal `det2` realization and regular Wold/singular BV
+  boundary identification are closed. Its determinant is zero-free and cannot annihilate Xi.
+  Open core remains a sign-indefinite, nonseparable, pre-frequency arithmetic null-homotopy.
+- 2026-08-03 — Documentation-only maintenance used no Lean process, computation, build, or lint.
+  Concurrent uncommitted modules were treated as provisional and excluded from established corpus
+  claims until umbrella-wired and committed.

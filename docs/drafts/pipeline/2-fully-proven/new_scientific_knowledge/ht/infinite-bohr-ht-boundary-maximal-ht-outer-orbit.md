@@ -2234,3 +2234,41 @@ Step 5 of the plan is therefore reduced to bookkeeping: feed
 `sigmaJetIndexEquiv` -- whose stratification transports by
 `FiniteRegularStratification.image_continuousLinearEquiv` -- and `hdim` arranged by taking more
 evaluation rows than `r + card(monomials) + degree`.
+
+## Lean: the avoidance engine instantiated, and a hypothesis that was too strong
+
+`OuterShiftAvoidance.lean` instantiates the corpus's parametric transversality engine at the shifted
+outer observation:
+
+    dense_avoidance_outerShiftObservation :
+      Function.Injective z -> (forall b, 0 < (z b).im) -> r * (d+1) = D ->
+      Function.Injective exponent ->
+      card (kappa x Fin (q+1)) + q < card row ->
+      r < 2 * (card row - card (kappa x Fin (q+1)) - q + 1) ->
+      (forall t in Kset, the mass columns at t span) ->
+      Dense (compactConfigurationAvoidance (outerShiftObservation z d x w a carrier)
+              (outerShiftBad row r d D q hD z exponent) Kset)
+
+Three supporting pieces:
+
+- `sigmaJetCLE` -- the fold `sigmaJetIndexEquiv` as a *continuous linear* equivalence, so the
+  rank-defect locus can be read in the sigma-indexed jet coordinates;
+- `outerShiftBad_finiteRegularStratification` -- the transported locus is still stratified, by
+  `FiniteRegularStratification.image_continuousLinearEquiv` on top of the corpus's unconditional
+  codimension `2 (rows - columns - degree + 1)`;
+- `isOpen_setOf_span_eq_top` -- spanning by a fixed finite family is an open condition, which is what
+  supplies the engine's open `U` around the compact shift patch (the engine wants the parameter
+  derivative surjective at *every* shift of `U`, not only on the patch).
+
+Note the codimension hypothesis is now literally the card's inequality `N > m + q + R - 1`: `r`, the
+number of shift parameters, must be below twice the row surplus.
+
+### An over-strong hypothesis in the corpus engine
+
+`StratifiedParametricAvoidance` stated the family's smoothness as `ContDiffOn R top F`, where `top`
+in `WithTop N-infinity` is **real-analyticity**, not `C^infinity`.  Its proof uses only
+`differentiableAt` and `continuousAt` of `F`, so the hypothesis was weakened to
+`ContDiffOn R (top : N-infinity)` -- genuine `C^infinity`.  The only other caller passes its own
+`omega`-hypothesis through `of_le`, so nothing downstream weakens.  Without this the whole
+observation would have had to be proved real-analytic, which the Cayley chart and the exponential
+mass parametrization make far more expensive than they need to be.

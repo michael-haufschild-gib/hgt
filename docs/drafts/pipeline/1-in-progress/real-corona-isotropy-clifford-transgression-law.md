@@ -240,7 +240,7 @@ stabilization or a different Dirac parity.
 - [ ] exact chain-level P2 lift
 - [x] P1 complete-divisor local-index no-go
 - [ ] P3 smoothness classification
-- [ ] P4 family analytic-rank theorem
+- [x] P4 family analytic-rank theorem
 - [ ] full universal Chern-character factorization
 - [ ] all-paper-claims Lean coverage
 
@@ -379,3 +379,30 @@ stabilization or a different Dirac parity.
   trace-class sectors while enabling mathlib's dependent tensor/Finsupp distribution theorem in
   every cyclic degree. The module compiles unconditionally; next construction is the normalized
   mixed-label generalized trace (all-scalar branch plus convergent non-scalar branches).
+- 2026-08-03 — The normalized mixed-label gate is now dependency-closed.
+  `CCMRationalAdelicUnitizedCyclicRestrictionFormula.lean` separates the finite all-scalar
+  normalized trace from the orbit sum and reduces the all-crossed sector to the primary CCM
+  formula. `CCMRationalAdelicUnitizedCyclicSummability.lean` proves absolute convergence of every
+  non-all-scalar sector: an arbitrary crossed position supplies the translated `ℓ¹` head and every
+  remaining scalar or crossed position has a uniform bound. No trace of an infinite-dimensional
+  identity is used. `CCMRationalAdelicUnitizedCyclicRestrictionLinear.lean` proves dependent
+  multilinearity, passes sums and scalar multiples through the absolutely convergent series, and
+  distributes the result through dependent `DFinsupp`, tensor powers, and the exact source
+  unitization equivalence.
+- 2026-08-03 — Missing cyclic functoriality and the genuine class-space target are now present.
+  `CyclicBarAlgHomMorphism.lean` proves that every algebra homomorphism induces a morphism of the
+  full presented cyclic-bar modules, including every face, degeneracy, arbitrary simplex morphism,
+  and Connes rotation. `CCMRationalAdelicClassSpaceCyclicModule.lean` assembles the fixed-base
+  Morita representations into the pointwise algebra homomorphism from the actual unitized adelic
+  crossed product to trace-class Morita sections over all nonzero adelic bases. It then constructs
+  the literal all-degree cyclic restriction, its composition with `ker ε₀ ∩ ker ε₁`, and the exact
+  algebraic cyclic cokernel. This replaces the earlier independent-base scalar formula as the
+  target object: that formula is pairing data on the genuine class-space cyclic module, not a
+  surrogate cyclic module. Remaining P2 gates are the strong-Schwartz locally convex target and
+  closed-range cokernel, followed by the concrete `κ`/bivariant-Chern/CCM-Lefschetz comparison.
+- 2026-08-03 — `SelfDualFixedSectorVariation.lean` closes P4 at family level. For arbitrary
+  parameters it proves that cyclic fixed-sector defect variation is analytic-rank variation plus
+  twice upper off-central multiplicity variation. The central Real-corona `K₀` evaluation varies
+  only with the support indicator, and analytic-rank variation is exactly this `K₀` variation plus
+  variation of central multiplicity excess. Thus `[e_R]` and analytic rank agree only in the
+  multiplicity-free central sector; their general discrepancy is computed, not suppressed.

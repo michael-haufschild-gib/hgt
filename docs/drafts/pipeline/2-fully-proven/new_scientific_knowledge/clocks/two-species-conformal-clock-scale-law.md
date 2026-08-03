@@ -1216,13 +1216,21 @@ coefficients are summable against `e^{ρ|k|}`:
   how the potential enters the iteration. The proof runs on `ℤ × ℤ` through the shear
   `(k, j) ↦ (j, k - j)`.
 
-Still to build on this base: the Ovsyannikov iteration with geometrically shrinking radii, and the
-passage back to functions. For the second, the sup-norm form of the scale looks better adapted than
-the coefficient form — an element of the radius-`ρ` space is then literally a holomorphic function
-on a strip of half-width `ρ`, its second derivative is the actual second derivative, and the
-derivative-loss estimate is Cauchy's estimate applied twice, giving `8M/(ρ-ρ')²`. The two forms are
-the same scale seen from opposite sides, and the coefficient form proved here supplies the algebra
-estimate in either.
+`ClockStripCauchyScale.lean` builds the same scale in its sup-norm form, where the elements are
+functions rather than sequences — this is the form the passage back to the clock equation needs,
+since there the transverse Laplacian must be the actual second derivative:
+
+- `imStrip`, `isOpen_imStrip`, `imStrip_mono`, `closedBall_subset_imStrip` — the open strip
+  `|Im z| < ρ` and the discs it contains;
+- **`norm_deriv_le_on_imStrip`** — one derivative costs one power of the gap: `‖f'‖ ≤ 2M/(ρ-ρ')` on
+  the strip of half-width `ρ'`, by Cauchy's estimate on a disc of radius `(ρ-ρ')/2`;
+- **`norm_deriv_deriv_le_on_imStrip`** — two derivatives cost two powers: `‖f''‖ ≤ 16M/(ρ-ρ')²`,
+  applying the first estimate twice through the intermediate half-width `(ρ+ρ')/2`. Between the two
+  applications the derivative must be known holomorphic, which is `AnalyticOnNhd.deriv_of_isOpen`.
+
+The two forms are the same scale seen from opposite sides: the coefficient form supplies the algebra
+estimate, the sup-norm form the passage back to functions. What remains is the Ovsyannikov iteration
+itself, with geometrically shrinking radii.
 
 The first genuinely coupled target this reaches is dimension three: a potential
 `V(x⁰, x¹, x²)` with arbitrary continuously differentiable dependence on the null coordinates and
