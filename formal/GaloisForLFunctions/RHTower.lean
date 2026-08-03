@@ -424,6 +424,7 @@ import GaloisForLFunctions.RHTower.CCMFirstClockWoldXiDepthCapacityNoGo
 import GaloisForLFunctions.RHTower.CCMFullCharpolyCentralZeroNoGo
 import GaloisForLFunctions.RHTower.CCMGradedIndexDeterminantBalance
 import GaloisForLFunctions.RHTower.CCMHalfGapFutureDressingCone
+import GaloisForLFunctions.RHTower.CCMHalfUnitExtrapolationCost
 import GaloisForLFunctions.RHTower.CCMHypothesisDischarge
 import GaloisForLFunctions.RHTower.CCMInfiniteConvolutionPrimeFaceRigidity
 import GaloisForLFunctions.RHTower.CCMInverseTiltedCriticalMellinFactorization
@@ -1496,6 +1497,9 @@ import GaloisForLFunctions.RHTower.DeningerBaseHeadPow
 import GaloisForLFunctions.RHTower.DeningerBaseHeadSuffix
 import GaloisForLFunctions.RHTower.DeningerShiftDiff
 import GaloisForLFunctions.RHTower.DeningerRGroupConjugation
+import GaloisForLFunctions.RHTower.DeningerConjBase
+import GaloisForLFunctions.RHTower.DeningerRootCentral
+import GaloisForLFunctions.RHTower.DeningerShiftFixed
 import GaloisForLFunctions.RHTower.DeningerUnitaryFlowRieszPurity
 import GaloisForLFunctions.RHTower.DeningerUnitaryHarmonicAction
 import GaloisForLFunctions.RHTower.DeningerWeightOnePolarization
@@ -3243,6 +3247,11 @@ import GaloisForLFunctions.RHTower.Sieve.FejerIntegralPair
 import GaloisForLFunctions.RHTower.Sieve.FejerShortInterval
 import GaloisForLFunctions.RHTower.Sieve.RamarePrimeFactor
 import GaloisForLFunctions.RHTower.Sieve.RamareBilinearSplit
+import GaloisForLFunctions.RHTower.Sieve.RamareRemainder
+import GaloisForLFunctions.RHTower.Sieve.RamareDecomposition
+import GaloisForLFunctions.RHTower.Sieve.MultiplicativeDistance
+import GaloisForLFunctions.RHTower.Sieve.DistancePointwise
+import GaloisForLFunctions.RHTower.Sieve.DistanceTriangle
 import GaloisForLFunctions.RHTower.Sieve.ChernoffTails
 import GaloisForLFunctions.RHTower.Sieve.GeometricMeanDivisor
 import GaloisForLFunctions.RHTower.Sieve.IntervalMultiples

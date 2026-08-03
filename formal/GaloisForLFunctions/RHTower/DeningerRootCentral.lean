@@ -29,7 +29,7 @@ theorem deningerUliftInt_conj (x y z : ULift.{u} (Multiplicative ℤ))
   rw [← h]
   apply MulEquiv.ulift.injective
   apply Multiplicative.toAdd.injective
-  simp [mul_comm]
+  simp
 
 variable (A : Type u) [Group A] (a : A) (m : ℤ)
 
@@ -73,8 +73,7 @@ theorem deningerRootHcent (hm : m ≠ 0) (ha : ∀ n : ℤ, a ^ n = 1 → n = 0)
   have hφ := deningerRootMap_injective A a m hm ha
   obtain ⟨b⟩ := i
   cases b
-  · exact (deningerRootFactorFalse_conj A a m x _ _ h).symm ▸
-      hφ (ULift.up false) (deningerRootFactorFalse_conj A a m x _ _ h).symm
+  · exact (hφ (ULift.up false) (deningerRootFactorFalse_conj A x _ _ h)).symm
   · refine hφ (ULift.up true) ?_
     have hcu : deningerRootMap A a m (ULift.up true) u =
         a ^ (Multiplicative.toAdd (MulEquiv.ulift u)) := deningerRootMap_true_apply A a m u

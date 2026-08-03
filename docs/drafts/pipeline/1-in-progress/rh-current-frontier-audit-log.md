@@ -267,3 +267,9 @@ Write a review paper whose route claims are traceable to exact Lean declarations
   differentials, source-first chain descent, moving all-order provenance carriers, and upstream
   source algebraicity/dynamics. These are exact design constraints or live routes, not RH proofs;
   external novelty remains unverified.
+- 2026-08-03 — Route-R taxonomy corrected after the formalized prime/depth BV--Wold differential.
+  The exact connection `θ(i,j)=m_iλ_j-m_jλ_i`, curvature `-log(2)/8`, vertex-potential no-go,
+  clock-difference no-go, covariant-square law, and global-flatness iff RH theorem construct Route
+  R's nonclassical architecture. They are not a separate route and not a post-J successor. The
+  remaining Route-R premise is source-derived global curvature annihilation/flatness, not
+  construction of a nonseparable differential.

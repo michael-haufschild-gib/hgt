@@ -106,11 +106,39 @@ cancel against correlated prime and archimedean channels before norms are taken.
 linear scalar continuation controlled by the sum of separate absolute-value estimates.  That
 distinction is exactly where the surviving RH mechanism must live.
 
-## Lean decision
+## Lean status
 
-The proof is the finite triangle inequality plus `exp(-omega*h)<=1`.  Formalizing only this generic
-norm estimate would add a wrapper without representing the shifted Euler source or its half-unit
-conjugation.  No Lean file is added until the source-coupled extrapolator itself is defined.
+**Superseded, 2026-08-03.**  The theorem is formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/CCMHalfUnitExtrapolationCost.lean`.  The previous decision
+declined it as a "generic norm estimate"; the estimate is in fact the entire content of the no-go,
+and formalizing it settles the gates independently of how the source-coupled extrapolator is later
+defined — the statements quantify over *every* finite node family.
+
+- `norm_sum_shift_le_coefficient_mass` — the damped atoms have modulus at most one, so the modulus
+  of any combination is dominated by the coefficient mass.  Nodes are an arbitrary `Finset ι` with
+  arbitrary nonnegative shifts, which is gate 1: node count and placement are unconstrained and may
+  depend arbitrarily on `h`.
+- **`halfUnit_exact_cost`** — equations `(1)`--`(2)`: exact reproduction forces
+  `∑ ‖a j‖ ≥ exp (h/2)`.
+- **`halfUnit_approx_cost`** — equations `(3)`--`(4)`: relative error at most `eta` forces
+  `∑ ‖a j‖ ≥ (1 - eta) exp (h/2)`.
+- **`halfUnit_exact_cost_sqrt`** — the multiplicative aperture form: at `n = exp h > 1` the cost is
+  at least `√n`, via `exp (log n / 2) = √n`.
+- **`halfUnit_cost_attained`** — **sharpness**: a single node at shift zero reproduces the atom
+  exactly with coefficient mass exactly `exp (h/2)`.  This is the non-vacuity certificate: the
+  admissible class is inhabited and the bound is attained, so the no-go is a genuine equality
+  threshold rather than an empty hypothesis.
+- **`tendsto_halfUnit_cost_atTop`** and **`exists_aperture_halfUnit_cost_gt`** — the cost is
+  unbounded in `h`: beyond any prescribed condition number there are apertures at which every exact
+  scalar extrapolator exceeds it.  This is the quantitative form of "growing interpolation order
+  does not help".
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+Nothing of the card's proved content is left out.  What remains open is the positive dual `(6)` — a
+source-coupled non-diagonal cancellation — which is by construction outside the scalar class the
+theorem excludes.
 
 ## Gates
 
@@ -118,6 +146,9 @@ conjugation.  No Lean file is added until the source-coupled extrapolator itself
 - [x] exact and approximate reproduction costs proved
 - [x] square-root aperture cost identified
 - [x] positive non-diagonal source obligation extracted
+- [x] Lean: exact and approximate costs `(2)`, `(4)` unconditional for arbitrary node families
+- [x] Lean: square-root aperture form and unbounded condition number
+- [x] Lean: sharpness witness, so the no-go is not vacuous
 - [ ] construct the source-coupled cancellation which evades scalar extrapolation
 - [ ] prove its remaining boundary loss is subpower
 - [ ] RH

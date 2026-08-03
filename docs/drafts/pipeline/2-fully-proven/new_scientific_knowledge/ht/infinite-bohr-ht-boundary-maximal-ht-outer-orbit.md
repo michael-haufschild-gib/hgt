@@ -759,13 +759,13 @@ theorem for the object itself:
 
 | claim | Lean |
 |---|---|
-| (1) all-power independence | reduced to (9) by `not_familyDifferentiallyAlgebraicOn_translates_pow` |
+| (1) all-power independence | `residual_shiftUniform_perturbedOuterOrbit_pow` -- unconditional, every power, every tuple |
 | (2) boundary HT | reduced to Ostrowski by `not_differentiallyAlgebraicOn_pow` |
 | (3) `B_n` is the infinite torus | `isClosedEmbedding_perturbedBoundary` |
 | (4) `closure(O_n) = O_n ⊔ B_n` | `closure_range_outerCauchyOrbit` + `disjoint_range_outerCauchyOrbit` |
 | (5) `B_n` is the cluster set | `clusterAtInfinity_outerCauchyOrbit_eq` |
 | (16) Haar limiting law | `tendsto_windowAverage_outerCauchyOrbit` |
-| (9) residual transversality | `residual_not_familyDifferentiallyAlgebraicOn_perturbedOuterOrbit` -- one residual set per tuple of distinct shifts; the shift-uniform version is open |
+| (9) residual transversality | `residual_shiftUniform_perturbedOuterOrbit` -- one residual set for **every** tuple of distinct shifts |
 | Ostrowski | imported, not formalized |
 
 Claims (3), (4), (5) and (16) are unconditional in Lean for the card's own object -- a Cayley
@@ -2335,3 +2335,61 @@ as the card's `N > m + q + R - 1` requires.
 What is left is the final assembly: instantiate at the shape of a given relation, intersect the
 residual sets over the countably many shapes, and read the conclusion as
 `not FamilyDifferentiallyAlgebraicOn` for every tuple of distinct real shifts.
+
+## Claim (9) is closed, shift-uniformly
+
+`ShiftUniformPerturbedFreeness.lean` (wired, axiom-clean):
+
+    residual_shiftUniform_perturbedOuterOrbit :
+      Function.Injective x -> (forall k, 0 < eps k) -> Summable eps ->
+      ExpSeriesNormallySummable a omega ->
+      {u : MassParameter | forall (m' : N) (t : Fin (m'+1) -> R), Function.Injective t ->
+          not FamilyDifferentiallyAlgebraicOn
+            (perturbedOuterFamily x eps u c (cexpSeriesCarrier a omega) t) {zeta | 0 < zeta.im}}
+        in residual MassParameter
+
+with `dense_shiftUniform_perturbedOuterOrbit` its density form.  **One** residual set of bounded
+exponential mass parameters, good for **every** finite tuple of distinct real shifts at once -- the
+card's `U_infty`.  This closes the quantifier gap recorded earlier as the open core of (9).
+
+The final assembly:
+
+- `descentRowCount S = card(kappa x Fin(q+1)) + q + (m'+1) + 1` -- the row count forced by the two
+  hypotheses of the engine, giving codimension `2(m'+3)`, comfortably above the `m'+1` shift
+  parameters;
+- `descentGood` and `residual_descentGood` -- the residual set attached to one shape, from
+  `residual_globalAvoidance_massShift` at `gridNodes`;
+- `eq_zero_of_relation_of_descentGood` -- the descent at one shape: avoidance gives full column rank
+  (`mulVec_injective_of_notMem_outerShiftBad`), the observation is the family's jets
+  (`familyOuterObservation_add_carrier_apply` with `sigmaCarrierJets_fold`), and
+  `eq_zero_of_relation_of_rigid_jets_row` kills the relation;
+- `shiftUniformGood` -- the intersection over `DescentIndex = Sigma m' n, FamilyShape m' n`, which is
+  countable, so `residual_iInter` applies.
+
+Every step is unconditional; the only axioms are `propext`, `Classical.choice`, `Quot.sound`.
+
+## Claim (1) is closed too
+
+With (9) shift-uniform, the power gauge closes (1) outright.
+`ShiftUniformPowerFreeness.lean` (wired, axiom-clean):
+
+    residual_shiftUniform_perturbedOuterOrbit_pow :
+      {u : MassParameter | forall N /= 0, forall (m' : N) (t : Fin (m'+1) -> R),
+          Function.Injective t -> not FamilyDifferentiallyAlgebraicOn
+            (fun i w => perturbedOuterFamily x eps u c (cexpSeriesCarrier a omega) t i w ^ N)
+            {zeta | 0 < zeta.im}}
+        in residual MassParameter
+
+`not_familyDifferentiallyAlgebraicOn_pow` supplies the reduction -- a function is algebraic over any
+nonzero power, so adjoining the roots cannot raise the differential transcendence degree -- and its
+smoothness hypothesis is `contDiffAt_perturbedOuterFamily`, assembled from
+`contDiffAt_massOuterBackground` and the analyticity of the carrier.  This is the card's
+`O_n` statement: for `n >= 1`, every finite set of distinct functions in `O_n` is differentially
+algebraically independent, at one residual set of mass parameters.
+
+Only two entries of the status table are not Lean-complete:
+
+- **(2) boundary HT** -- reduced to Ostrowski's hypertranscendence theorem for generalized Dirichlet
+  series by `not_differentiallyAlgebraicOn_pow`; the reduction is formal, the external theorem is
+  not formalized.
+- **Ostrowski** itself -- imported.

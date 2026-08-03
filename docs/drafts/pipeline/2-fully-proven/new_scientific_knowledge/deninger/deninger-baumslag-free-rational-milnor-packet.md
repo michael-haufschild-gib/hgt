@@ -188,7 +188,12 @@
   have the same word),
   `GaloisForLFunctions.RHTower.DeningerShiftDiff` (two shifts producing the same word),
   `GaloisForLFunctions.RHTower.DeningerRGroupConjugation` (conjugation of an isolated element in a
-  group with unique roots)
+  group with unique roots),
+  `GaloisForLFunctions.RHTower.DeningerConjBase` (conjugating a base element back into the base
+  group),
+  `GaloisForLFunctions.RHTower.DeningerRootCentral` (a root adjunction does not move its base
+  group),
+  `GaloisForLFunctions.RHTower.DeningerShiftFixed` (the shift preserves differences)
 
 ## Statement
 
@@ -2806,3 +2811,37 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   What remains for this half is the normal form step: that a conjugate of a base element which lies
   in the base group is obtained by conjugating letter by letter, so that the two factor cases above
   compose.
+- 2026-08-03 — **The centralizing hypothesis is proved, for words and for a root adjunction.**  Two
+  modules close the step that was named as missing last cycle.
+  `deningerConj_base_eq` propagates the hypothesis from letters to words.  If conjugating a base
+  element by a word lands back in the base group, then absorbing the element at the right end of the
+  word and its partner at the left end produces two reduced alternating words with the same product;
+  `deningerWords_head_shift` compares their first letters, which differ by a base element, and that
+  base element is identified by the hypothesis on the leading letter.  The remainder of the
+  comparison is the same statement for the shorter word, so the induction runs on the length.  The
+  hypothesis it propagates is exactly: a factor element conjugating a base element into the base
+  group does not move it.
+  `deningerRootHcent` verifies that hypothesis for a root adjunction.  On the infinite cyclic factor
+  it is commutativity.  On the group factor it is `deningerRootTrue_conj`, which is the rigidity
+  proved last cycle: for a nonzero exponent, `deningerConj_zpow_fixes` turns the relation
+  `x aᶜ x⁻¹ = aᵈ` into `x a x⁻¹ = a`, whence `d = c` because `a` has infinite order; the zero
+  exponent case is the same statement read off directly.
+  So the three inputs to the head argument are now all proved: `deningerShift_diff` for the
+  conjugation identity, `deningerConj_base_eq` with `deningerRootHcent` for the centralizing, and
+  torsion freeness of the base group.  What is left is to expose the block recursion of
+  `deningerBaseHead_pow_word` — currently it returns only the existence of a head and a word — so
+  that the identity `h_s k_s⁻¹ = (j k⁻¹)^{s+1}` can be run as an induction, and then assemble.
+- 2026-08-03 — **The shift preserves differences.**  `deningerShift_diff_fixed` combines the last two
+  cycles: if two base elements are pushed through the same word and produce the same word, then
+  `deningerShift_diff` conjugates their difference into the difference of the outputs, and
+  `deningerConj_base_eq` — whose hypothesis a root adjunction satisfies by `deningerRootHcent` —
+  says that conjugation does not move it.  So `σ(a)σ(b)⁻¹ = a b⁻¹` exactly when the two shifts agree
+  on the word, which is the invariant the head induction runs on.
+  The assembly that remains is one inversion lemma, and it is now sharply stated.  The block data of
+  a power is unique — `deningerBaseWord_head_eq` determines the head and the word, and the length
+  determines where the last block starts — so the block data at exponent `n+2` decomposes: its word
+  is a shift block followed by the word at exponent `n+1`, and its head is `j` times the shift.  With
+  that inversion, the induction `h_s h'_s⁻¹ = (j k⁻¹)^{s+1}` runs on the hypothesis that the two
+  words agree at every stage, which the suffix splitting supplies, and the base case is the identity
+  of the heads at exponent one.  Equality of the two powers then reads `(j k⁻¹)^{n+1} = 1`, and
+  torsion freeness gives `j = k`, closing the length `≥ 2` case of Baumslag's theorem.

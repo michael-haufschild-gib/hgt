@@ -65,10 +65,14 @@ Route R's source, joint-depth Hilbert/Krein carrier, Gamma completion, and regul
 source-to-Xi landings are closed. Positive or nonnegative Gamma shorting cannot annihilate an
 off-line displacement. Neither unordered scalar summation nor scalar distributional completion
 can evade isolated prime-depth frequency uniqueness. Finite clock/incidence expressions are
-gauge-conjugate to zero displacement and spectrally blind. Route R's exact open core is therefore
-a source-derived, sign-indefinite, genuinely off-diagonal, nonseparable arithmetic differential
-or null-homotopy acting on divisor provenance before vertex gauge and frequency separation, then
-feeding the already-proved four-unit Ward sign.
+gauge-conjugate to zero displacement and spectrally blind. Route R now escapes that closed class:
+the source records `m_(p,e)=(1-p⁻¹)p⁻ᵉ` and `λ_(p,e)=log(p^(e+1))` define the alternating
+connection `θ(i,j)=m_iλ_j-m_jλ_i`. Lean proves exact triangle curvature `-log(2)/8`, no vertex
+potential, and no representation as a function of clock difference. Its divisor-resolved
+covariant square vanishes globally exactly when RH holds. Route R is therefore a constructed,
+corpus-native proof architecture, not merely a requested design. Its exact open core is the
+unconditional arithmetic theorem forcing global curvature annihilation/flatness from the literal
+source, without assuming critical-line divisor location.
 
 The disproof frontier is exact but empty: one certified off-line Xi zero, or any of several
 equivalent finite negative witnesses, would disprove RH. The most source-explicit current candidate
@@ -89,8 +93,8 @@ frequency separation erases the horizontal source defect.
 
 The shortest current chains are:
 
-- Route R: construct a sign-indefinite, nonseparable joint-depth arithmetic null-homotopy and feed
-  it to the proved four-unit Ward equivalence;
+- Route R: prove source-derived global curvature annihilation for the constructed sign-indefinite,
+  nonseparable BV--Wold differential; its flatness criterion and four-unit Ward endpoint are exact;
 - Route L: construct strict source-first BV Green--Stokes descent after the ordinary boundary and
   its exact physical radial obstruction;
 - Route E: prove critical low-frequency Möbius cancellation and co-moving central-breadth flux
@@ -157,7 +161,7 @@ marked explicitly; all others remain live at their stated open core.
 | O | open | literal cofinal restricted-Weil floor convergence/nonnegativity |
 | P | open | source-built compact completed-seam moment/Markov carrier |
 | Q | open/secondary | source boundary Jensen/jet saturation |
-| R | open | sign-indefinite nonseparable pre-frequency arithmetic null-homotopy |
+| R | open; route architecture constructed | source-derived global annihilation of the constructed BV--Wold curvature |
 | S | upstream/secondary | independent source algebraicity or divisor-preserving dynamics |
 
 ### Corpus-native route space beyond classical templates
@@ -169,17 +173,20 @@ zero-fed spectra, or determinant limits:
 | Corpus-forced primitive | Formal evidence | Present status |
 |---|---|---|
 | pre-projection principal-relative current | Route-J energy divergence, diagonal-retention, and endpoint-completeness theorems exclude every advertised post-projection capacity repair | positive survivor of retired J; a new route if constructed |
-| nonseparable prime/depth--divisor arithmetic differential | separable incidence is a vertex-gauge coboundary; characteristic polynomials, determinants, cyclic trace moments, and cycle holonomy are horizontally blind | live Route R open core |
+| nonseparable prime/depth--divisor arithmetic differential | `θ(i,j)=m_iλ_j-m_jλ_i` has exact curvature `-log(2)/8`, no vertex potential, and no clock-difference representation; its Xi covariant square retains divisor and endpoint provenance | constructed Route R architecture; source-derived global flatness remains open |
 | source-first chain descent rather than post hoc cohomology | the ordinary Wold/BV Hochschild boundary exists, but physical landing reads exactly the nonzero Burnol/Deninger radial defect | live Route L open core |
 | moving, all-order, provenance-preserving carrier | finite Möbius/Wold moments are parity-blind and fixed finite selectors are saturated | live Routes E and P at distinct source laws |
 | source algebraicity or divisor-preserving dynamics | HTGeometry supplies independent rigidity and transversality but no Xi-source handoff | upstream Route S; not yet a proof route |
 
-These are mathematically possible architectures exposed by Lean, not proofs that the missing
-objects exist. Route R and Route L already have exact tails to RH and therefore are genuine live
-routes. The post-J pre-projection current is only a falsifiable successor class until a literal
+This table mixes constructed routes with exact design constraints. Route R's differential exists
+unconditionally in Lean and has a complete flatness-to-RH endpoint; what does not exist is the
+source theorem forcing its flatness. Route L likewise has an exact tail to RH but not its strict
+descent. The post-J pre-projection current is only a falsifiable successor class until a literal
 source object and unconditional handoff are built. Its construction must be recorded as a new
-route, not used to reopen J. External scientific priority for corpus-specific theorems remains
-`NOVELTY UNVERIFIED`; absence of an exact located literature collision is not a proof of novelty.
+route unless it is literally Route R, not used to reopen J. The ambient discrete-connection
+formalism is classical; the exact BV--Wold arithmetic coupling is recorded by the corpus as new
+scientific knowledge after internal and external collision audits. That scoped result does not
+turn absence of a located collision into an unrestricted historical-priority claim.
 
 ### Route A — literal CCM first clock `[TERMINALIZED]`
 
@@ -3965,7 +3972,7 @@ existence.
 `α=1` carrier fails at degree one; one-particle infinite divisibility fails by atomic
 support. A two-particle completion survives but has no transform identification.
 
-### Route R — primitive-current singular continuation `[OPEN — SOURCE AND XI LANDING CLOSED]`
+### Route R — primitive-current singular continuation `[OPEN — DIFFERENTIAL BUILT; ANNIHILATION OPEN]`
 
 **Endpoint.** `ContinuedXiWardFourUnitBoundaryLiftLaw ↔ RiemannHypothesis`: the actual augmented
 four-unit Julia/Ward boundary Gram is positive semidefinite on every finite packet. One
@@ -3982,8 +3989,11 @@ Wold activation holonomy ζ(s)/ζ(s+h)
 → full joint prime-depth Hilbert/Krein source and co-source
 → Euler plus archimedean Gamma completion
 → regular and singular completed Xi relative-resolvent landing
-→ four-unit Ward boundary correspondence
-→ RH, once source-derived horizontal annihilation/sign is proved.
+→ paired BV first-trace depth mass m_(p,e) and Wold--Gamma clock λ_(p,e)
+→ alternating source connection θ(i,j)=m_iλ_j-m_jλ_i
+→ exact nonzero labelled curvature and escape from vertex-gauge/difference-only classes
+→ divisor-resolved covariant square
+→ global flatness iff RH.
 ```
 
 The primitive promotion is independent of Fisher whitening and grows like `p^(e/2)`. Reflected
@@ -3999,6 +4009,47 @@ Hermitian Krein form with positive diagonal and negative anti-diagonal. The lite
 pair gives the full complex Laplace channel and completed Xi relative-resolvent trace.
 `EulerPrimitiveJointDepthSingularXiLanding.lean` closes the singular landing. Source formation,
 Gamma completion, and source-to-Xi transport are therefore not open Route-R premises.
+
+**Constructed nonclassical differential.**
+`PrimeDepthBVWoldCurvedSourceDifferential.lean` couples two records from the same literal
+prime/depth source:
+
+```text
+m_(p,e)=(1-p⁻¹)p⁻ᵉ,
+λ_(p,e)=log(p^(e+1)),
+θ(i,j)=m_iλ_j-m_jλ_i.
+```
+
+On `(2,0),(2,1),(2,2)`, Lean proves additive curvature `-log(2)/8`. Therefore `θ` is not a
+vertex coboundary. Equal adjacent clock gaps together with connection difference `log(2)/4` prove
+the stronger statement that no function of `λ_j-λ_i` generates it. Exponentiation gives a
+sign-sensitive transport, and the complex-linear covariant maps satisfy the exact labelled-square
+law
+
+```text
+(D1_a D0_a f)(i,j,k)=(U_a(i,j)U_a(j,k)-U_a(i,k))f(k).
+```
+
+After the uniform Xi specialization `a_ρ=2 Re(ρ)-1`, reflection inverts transport and the output
+retains divisor plus all prime/depth vertices. Witness-square vanishing is equivalent to
+`Re(ρ)=1/2`; global differential flatness is equivalent to RH. These are unconditional structure
+and endpoint theorems. They do not prove flatness.
+
+**Novelty classification.** Route R is novel at the architecture level in the scoped sense used
+by this audit. Euler/Gamma explicit formulas, Krein spaces, discrete covariant derivatives,
+curvature as `D²`, and cohomological or flatness aspirations for RH all have classical parents.
+What the located literature does not contain is this source chain: two independent records of the
+same prime/depth `det₂`--BV class, their unsummed alternating coupling, its proved escape from both
+vertex gauges and all clock-difference functions, and the resulting divisor/provenance-resolved
+covariant square. That is more than a parameter change inside Hilbert--Pólya, Weil positivity,
+Connes trace-formula, or Deninger cohomology routes.
+
+The qualification is essential. The Xi specialization inserts
+`a_ρ=2 Re(ρ)-1`; therefore the theorem “global flatness iff RH” is an exact detector, not by itself
+an independent arithmetic proof advance. Route R becomes a proof route only at its stated open
+core: derive flatness from the literal source without using divisor location. Thus the honest
+labels are `[CORPUS-NEW ARCHITECTURE] [EXACT DETECTOR BUILT] [SOURCE ANNIHILATION OPEN]`, not
+`[RH ADVANCED]` or `[RH PROVED]`.
 
 **Closed regular annihilation classes.**
 
@@ -4024,22 +4075,21 @@ Gamma completion, and source-to-Xi transport are therefore not open Route-R prem
 
 These no-gos exclude positive cones, finite clock-jet invariants, separable vertex gauges,
 unordered scalar sums, scalar distributions after frequency separation, and bounded
-label-blind fusion. They do not exclude a sign-indefinite relation-valued differential that couples
-divisor provenance before those reductions.
+label-blind fusion. The constructed BV--Wold connection proves that their surviving
+sign-indefinite, relation-valued category is nonempty.
 
-**Exact open core.** Construct, from the literal source rather than Xi-zero coordinates, a
-sign-indefinite, genuinely off-diagonal and nonseparable prime/depth--divisor arithmetic
-differential or null-homotopy. It must act before vertex-gauge normalization, codiagonalization,
-and isolated-frequency separation; retain the full breadth/depth provenance; be compatible with
-Gamma/co-Poisson reflection; and prove horizontal annihilation strong enough to give the existing
-four-unit Ward sign. Alternatively prove a class-complete no-go for this remaining pre-frequency,
-relation-valued category.
+**Exact open core.** Prove from literal arithmetic source data that the constructed
+divisor-resolved BV--Wold curvature vanishes globally, or construct a compatible source-derived
+null-homotopy that forces the same conclusion. The theorem must not assume divisor location or
+insert the RH-equivalent flatness/Ward sign as a premise. A class-complete no-go for all such
+source-derived annihilators would instead retire Route R negatively. Constructing a nonseparable
+differential is no longer the gap.
 
-**Strongest survivor.** The corpus contains a complete source-to-Xi Krein producer whose horizontal
-defect is exact and whose regular scalar erasures are classified. A successful Route-R theorem no
-longer needs to invent source, completion, or landing; it must supply the arithmetic
-null-homotopy. This is a materially narrower and more source-faithful target than an abstract
-Hilbert--Pólya operator.
+**Strongest survivor.** Route R contains a complete source-to-Xi Krein producer, a constructed
+pre-scalar nonseparable curved differential, exact reflection covariance, and two exact terminal
+readers: global differential flatness and the four-unit Ward law are each equivalent to RH. A
+successful Route-R theorem must now supply the independent arithmetic annihilation law. This is a
+materially narrower and more source-faithful target than an abstract Hilbert--Pólya operator.
 
 **Formal anchors.** `WoldSieveNormalConeVonMangoldt.lean`,
 `WoldEulerActivationHolonomy.lean`, `EulerActivationSquarefreeDisintegration.lean`,
@@ -4053,7 +4103,8 @@ Hilbert--Pólya operator.
 `GammaSignedUnconditionalOrbitNoShorting.lean`,
 `GammaSignedDistributionalOrbitNoShorting.lean`,
 `PrimeFirstTraceEssentialEdgeSchattenThreshold.lean`,
-`PrimeEssentialEdgeOccupationDet2BVRelativeClass.lean`, and
+`PrimeEssentialEdgeOccupationDet2BVRelativeClass.lean`,
+`PrimeDepthBVWoldCurvedSourceDifferential.lean`, and
 `GammaSewnMobiusXiWardCofinalBoundaryLift.lean`.
 
 **Essential-edge `det2` / BV classification.** The sharp `ell2`/not-`ell1`
@@ -4086,9 +4137,10 @@ regular/singular Wold--Gamma/BV identification in
 `PrimeEssentialEdgeOccupationDet2BVRelativeClass.lean`.
 
 It does **not** close Route R. The formal determinant is an exponential and is proved nowhere zero.
-Hence this diagonal construction cannot annihilate the completed Xi landing. The exact open core
-remains the pre-scalar, sign-indefinite, nonseparable arithmetic null-homotopy already stated
-above; calling the zero-free determinant an annihilator would be false.
+Hence this diagonal construction cannot annihilate the completed Xi landing. Its paired regular
+clock and singular BV mass instead produce the curved differential above. The exact open core is
+annihilation of that constructed curvature from source data; calling either the zero-free
+determinant or the RH-equivalent flatness endpoint an annihilator would be false.
 
 ### Non-route coordinate — divisor-fed prime-seam submass
 
@@ -4718,9 +4770,10 @@ equivalent wrapper around one of them does not advance source acquisition.
 
 ### Tier 1 — shortest live chains
 
-1. **Route R pre-frequency null-homotopy.** Construct a source-derived, sign-indefinite,
-   nonseparable prime/depth--divisor differential before vertex gauge and scalar frequency
-   separation, and prove the four-unit Ward sign.
+1. **Route R arithmetic curvature annihilation.** Prove from literal source data that the
+   constructed sign-indefinite, nonseparable BV--Wold covariant square vanishes globally, without
+   assuming the equivalent critical-line divisor condition; alternatively derive the four-unit
+   Ward sign from an independent compatible null-homotopy.
 2. **Post-J corpus-native successor `[NEW ROUTE IF INSTANTIATED]`.** Construct before good/bad
    projection a literal source-defined principal-relative current whose incidence is not a
    vertex-gauge coboundary, and derive an arithmetic null-homotopy forcing its Burnol/Deninger
@@ -4859,8 +4912,8 @@ The cited primary sources close no Tier-1 or Tier-2 open core above.
 
 ### Highest expected leverage
 
-1. Route R pre-frequency, sign-indefinite joint-depth arithmetic null-homotopy and four-unit Ward
-   sign;
+1. Route R source-derived global annihilation of the constructed sign-indefinite BV--Wold
+   curvature, or an independent compatible null-homotopy yielding the four-unit Ward sign;
 2. Route L strict source-first BV Green--Stokes descent through the exact physical radial
    obstruction;
 3. post-J pre-projection principal-relative current as a separately owned route, unless its exact
@@ -4920,8 +4973,10 @@ absolute covariant curvature         → flat after canonical countertransport.
 
 The first unresolved theorem is therefore route-dependent but consistently pre-scalar:
 
-- Route R needs a source-derived, sign-indefinite, nonseparable arithmetic differential or
-  null-homotopy before vertex gauge and frequency separation; its Ward consumer is complete.
+- Route R already has a source-derived, sign-indefinite, nonseparable arithmetic differential
+  before vertex gauge and frequency separation. It needs an unconditional arithmetic theorem
+  forcing that differential globally flat, or a compatible null-homotopy yielding its complete
+  Ward consumer.
 - Retired Route J has no open premise. A different pre-projection principal-relative current is a
   corpus-native new-route candidate; it belongs to Route R only if its literal source and handoff
   are the existing Route-R construction.
@@ -4943,7 +4998,7 @@ unfinished connector whose completion would prove RH.
 The external literature audited through 3 August 2026 contributes useful finite spectral,
 sieve, Hedenmalm, Suzuki, Möbius-moment, and Deninger/Connes infrastructure. Where a theorem was
 both unconditional and useful, the corpus has formalized or scheduled its precise reusable
-content. No located primary source supplies Route R's pre-frequency annihilator, the post-J
+content. No located primary source supplies Route R's curvature annihilator, the post-J
 pre-projection current, Route L's strict source-first BV descent, Route E's critical Möbius
 cancellation, or another live route's first open premise.
 
@@ -4965,6 +5020,7 @@ the moving-prime comparison for `n≥19` is open.
 - `RHTower/WoldEulerActivationHolonomy.lean`
 - `RHTower/EulerActivationSquarefreeDisintegration.lean`
 - `RHTower/PrimitiveFibreModularRenormalizationLaw.lean`
+- `RHTower/PrimeDepthBVWoldCurvedSourceDifferential.lean`
 - `RHTower/EulerPrimeCurrentClockLaw.lean`
 - `RHTower/CCMFirstClockJuliaKMSPrimePowerResolution.lean`
 - `RHTower/PrimeSchattenReflectionDuality.lean`

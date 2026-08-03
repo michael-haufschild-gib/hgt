@@ -2368,3 +2368,58 @@ The second part is isolated deliberately rather than absorbed. There `p` occurs 
 `f` does **not** factor, and a sieve must bound it separately. Quoting the Ramaré decomposition as
 bilinear throughout would hide exactly the term an argument has to control, so the split is stated
 with the remainder explicit.
+
+### Formal layer — bounding the Ramaré remainder
+
+`formal/GaloisForLFunctions/RHTower/Sieve/RamareRemainder.lean`:
+
+- `one_le_card_primeFactorsIn_mul` — the designated prime always divides its own multiple, so
+  `ω_P(pm) ≥ 1`.
+- `abs_ramare_remainder_le` — **`|∑_{p ∣ m} f(pm)/ω_P(pm)| ≤ #{m ∈ T : p ∣ m}`** for `|f| ≤ 1`.
+
+Both unconditional. This bounds the term that `RamareBilinearSplit.lean` isolates, so the
+decomposition is now complete: bilinear main part plus a controlled remainder.
+
+The bound is deliberately crude — no cancellation is used, each term simply has modulus at most one.
+It suffices because the count on the right is the number of multiples of `p` in the cofactor range,
+which is itself small; the corpus's `Sieve/IntervalMultiples` supplies that count. Claiming anything
+sharper here would require cancellation in a sum where `f` does not factor, which is precisely what
+is unavailable.
+
+### Formal layer — THE COMPLETE MULTIPLICATIVE RAMARÉ DECOMPOSITION
+
+`formal/GaloisForLFunctions/RHTower/Sieve/RamareDecomposition.lean`:
+
+- `abs_ramare_inner_sub_bilinear_le` —
+  **`|∑_{m∈T} f(pm)/ω_P(pm) − f(p)·B_p| ≤ #{m ∈ T : p ∣ m}`**.
+- `abs_sum_ramare_sub_bilinear_le` — the same summed over the designated primes, with total error
+  `∑_{p∈P} #{m ∈ T_p : p ∣ m}`.
+
+Both unconditional, for any bounded multiplicative `f`.
+
+Ramaré's weighted factorisation of such an `f` is therefore **bilinear up to a term counted by
+multiples** — the structure Matomäki–Radziwiłł's argument requires, with its error explicit rather
+than absorbed.
+
+Route status. The corpus now owns, all unconditionally: the sharp large sieve, Montgomery's sieve,
+the Dirichlet mean value theorem, the large-values estimate, the short-interval localisation, and
+this multiplicative decomposition. The remaining input is the Halász-type bound — a mean-value
+theorem for multiplicative functions in terms of their distance from `n^{it}` — which is a separate
+theorem and not a consequence of the layers above.
+
+### Formal layer — the distance from a character
+
+`formal/GaloisForLFunctions/RHTower/Sieve/MultiplicativeDistance.lean` opens the Halász layer.
+
+- `mulDistSq` — **`D(f,t;P)² = ∑_{p ∈ P} (1 − Re(f(p)p^{-it}))/p`**, the quantity Halász's theorem
+  is stated in.
+- `one_sub_re_nonneg`, `mulDist_term_nonneg` — each summand is nonnegative when `|f(p)| ≤ 1`.
+- `mulDistSq_nonneg`, `mulDistSq_mono` — the distance is a genuine nonnegative quantity, monotone in
+  the set of primes.
+
+All unconditional.
+
+This is the *object*, not the theorem. Halász's bound — that a multiplicative function has small mean
+value unless it is close to some `n^{it}` in this distance — is a separate result and is not proved
+here. Defining the distance and establishing that it is well-behaved is the prerequisite; the
+inequality itself remains the route's open input, alongside nothing else.

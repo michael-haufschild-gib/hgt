@@ -631,7 +631,7 @@ asymptotic hyperbolicity do not imply the all-order source condition.
 **Lean action.** None. Importing more finite orders would not discharge the quantified wall unless
 paired with a valid all-order closure theorem.
 
-### Route R — primitive-current singular continuation [OPEN — SOURCE AND XI LANDING CLOSED]
+### Route R — primitive-current singular continuation [OPEN — DIFFERENTIAL BUILT; ANNIHILATION OPEN]
 
 **Local contribution beyond located literature.** The corpus constructs the literal joint
 prime-depth Hilbert source and reciprocal co-source, their full von Mangoldt pairing, Gamma
@@ -641,6 +641,22 @@ Gamma shorting, finite clock-jet spectral invariant, separable incidence gauge, 
 scalar orbit, scalar distribution after isolated-frequency separation, and bounded
 common-divisor codiagonal. No exact external collision was located for this complete
 source-to-Xi producer plus annihilation-classification package.
+
+Route R also constructs the previously missing nonseparable pre-frequency architecture. From the
+singular BV depth mass `m_(p,e)=(1-p⁻¹)p⁻ᵉ` and Wold--Gamma clock
+`λ_(p,e)=log(p^(e+1))`, it forms `θ(i,j)=m_iλ_j-m_jλ_i`. Lean proves exact triangle
+curvature `-log(2)/8`, absence of a vertex potential, and absence of any clock-difference-only
+representation. The Xi-specialized covariant square preserves divisor and prime/depth provenance;
+its global flatness is exactly RH. Thus Route R's architecture is constructed. Only the
+source-derived flatness theorem is open.
+
+The novelty verdict is architectural, not ingredient-wise. Discrete curvature, covariant
+differentials, Krein geometry, explicit-formula source terms, and geometric/cohomological RH
+programs are classical. The corpus-specific object is their exact unsummed arithmetic coupling:
+the two `det₂`--BV/Wold source records, the proved non-coboundary and non-difference-only
+connection, and its label-preserving Xi covariant square. The Xi rate
+`a_ρ=2 Re(ρ)-1` also means the flatness equivalence itself is a detector; no novelty or progress
+claim is based merely on rewriting the critical-line equation.
 
 The strict essential-edge carrier is now exact as well. Its literal prime-indexed correction is
 `ℓ²` but not `ℓ¹`; a source-fixed contraction recovers the inverse-prime nome, and occupation
@@ -653,17 +669,18 @@ exponential and cannot be the missing annihilator.
 
 **External contribution.** Explicit-formula theory provides the Euler/Gamma source identity;
 Deninger, Connes--Consani, Burnol, Krein-space, and modular-flow literature provide parent
-geometric languages. None constructs an unconditional sign-indefinite nonseparable
-prime/depth--divisor differential acting before vertex gauge and frequency separation, and none
-proves the four-unit Ward boundary sign from source data.
+geometric languages, while discrete-connection literature supplies the ambient covariant
+differential formalism. No exact external collision was located for the BV-first-trace/Wold-depth
+arithmetic coupling or its curvature witnesses. No located source proves its global flatness or
+the four-unit Ward boundary sign from arithmetic data.
 
 **Exchange verdict and Lean action.** Source formation, Gamma completion, and Xi landing need no
 replacement import. The essential-edge `det₂` realization also needs no replacement import.
-Route R's remaining theorem is a pre-frequency arithmetic null-homotopy
-retaining divisor provenance and forcing horizontal annihilation, or a class-complete no-go for
-that relation-valued category. No located primary theorem advances this premise; generic
-Krein-space, trace, distribution, or graph-cohomology imports would only reproduce classes already
-closed locally.
+Route R's remaining theorem is source-derived global annihilation of its constructed pre-frequency
+curvature, or a compatible arithmetic null-homotopy forcing the same horizontal conclusion. A
+class-complete no-go for all such annihilators would retire the route negatively. No located
+primary theorem advances this premise; generic Krein-space, trace, distribution, or
+graph-cohomology imports would only reproduce ambient language or classes already closed locally.
 
 ### Non-route coordinate — prime-seam divisor-fed submass
 
@@ -837,8 +854,8 @@ route.
 
 The corpus's strongest plausible new science lies mainly in source-specific finite identities,
 complete scalar tomography, obstruction classifications, exact survivor theorems, and the
-nonclassical route architectures those obstructions force. Route R's pre-frequency joint-depth
-arithmetic differential, Route L's source-first strict chain descent, and the post-J
+nonclassical route architectures those obstructions force. Route R's constructed pre-frequency
+joint-depth arithmetic differential, Route L's source-first strict chain descent, and the post-J
 pre-projection current class are not reductions to a classical scalar estimate or determinant
 limit. External SOTA contributes powerful parent operator and boundary-value languages, but no
 published unconditional theorem closes these current source-level RH premises. Scientific

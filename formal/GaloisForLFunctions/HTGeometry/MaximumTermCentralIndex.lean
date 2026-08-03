@@ -1484,10 +1484,9 @@ set_option maxHeartbeats 1000000 in
 /-- **Growth law for the mean index.**  By Jensen, the majorant grows at least like `(s/r)` to the
 mean index. -/
 theorem meanIndex_mul_log_le_log_coeffSum_sub
-    (ha : EntireCoeffs a) (hr : 0 < r) (hrs : r ≤ s) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
+    (ha : EntireCoeffs a) (hr : 0 < r) (hs : 0 < s) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
     meanIndex a r * Real.log (s / r)
       ≤ Real.log (coeffSum a s) - Real.log (coeffSum a r) := by
-  have hs : 0 < s := lt_of_lt_of_le hr hrs
   obtain ⟨-, -, hμr⟩ := exists_maxTerm_eq ha hr hn₀
   obtain ⟨-, -, hμs⟩ := exists_maxTerm_eq ha hs hn₀
   have hSr : 0 < coeffSum a r := lt_of_lt_of_le hμr (maxTerm_le_coeffSum ha hr hn₀)
@@ -1534,6 +1533,33 @@ theorem meanIndex_mul_log_le_log_coeffSum_sub
   have hlog := Real.log_le_log (Real.exp_pos _) hjensen
   rw [Real.log_exp, Real.log_div (ne_of_gt hSs) (ne_of_gt hSr)] at hlog
   exact hlog
+
+
+/-- **The mean index is below the forward difference quotient of `log S`.** -/
+theorem meanIndex_le_slope (ha : EntireCoeffs a) (hr : 0 < r) (hrs : r < s)
+    {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
+    meanIndex a r
+      ≤ (Real.log (coeffSum a s) - Real.log (coeffSum a r)) / Real.log (s / r) := by
+  have hs : 0 < s := lt_trans hr hrs
+  have hL : 0 < Real.log (s / r) := Real.log_pos (by rw [lt_div_iff₀ hr]; linarith)
+  rw [le_div_iff₀ hL]
+  exact meanIndex_mul_log_le_log_coeffSum_sub ha hr hs hn₀
+
+/-- **The mean index is above the backward difference quotient of `log S`.** -/
+theorem slope_le_meanIndex (ha : EntireCoeffs a) (ht : 0 < t) (htr : t < r)
+    {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
+    (Real.log (coeffSum a r) - Real.log (coeffSum a t)) / Real.log (r / t)
+      ≤ meanIndex a r := by
+  have hr : 0 < r := lt_trans ht htr
+  have hL : 0 < Real.log (r / t) := Real.log_pos (by rw [lt_div_iff₀ ht]; linarith)
+  have hneg : Real.log (t / r) = -Real.log (r / t) := by
+    rw [← Real.log_inv]
+    congr 1
+    rw [inv_div]
+  have h := meanIndex_mul_log_le_log_coeffSum_sub ha hr ht hn₀
+  rw [hneg] at h
+  rw [div_le_iff₀ hL]
+  linarith
 
 
 /-! ## Entire functions -/

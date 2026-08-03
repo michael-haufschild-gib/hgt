@@ -27,6 +27,9 @@ The committed corpus proves the constraints, not existence of the required curre
 - `EulerPrimitiveJointDepthOffDiagonalCountertransport.lean` proves that the normalized separable
   joint prime-depth incidence is diagonally similar to zero displacement, with trivial cycle
   holonomy and horizontally blind determinant/trace data;
+- `PrimeDepthBVWoldCurvedSourceDifferential.lean` constructs Route R's exact nonseparable
+  BV-first-trace/Wold-depth connection and proves its global flatness equivalent to RH; reusing
+  that carrier is Route R, not a new post-J route;
 - `GammaSewnMobiusXiWardCofinalBoundaryLift.lean` supplies the exact four-unit Ward endpoint
   equivalent to RH;
 - `DeningerOrdinaryIntegerBVGreenStokesRadialComparison.lean` identifies the ordinary boundary

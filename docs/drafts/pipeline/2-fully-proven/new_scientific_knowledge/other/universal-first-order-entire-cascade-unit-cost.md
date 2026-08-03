@@ -562,7 +562,13 @@ hasDerivAt_coeffSum                       -- the majorant is differentiated term
 mul_deriv_coeffSum_eq                     -- r S'(r) = sum n ||a_n|| r^n
 tsum_index_sub_mul_term                   -- the first moment: r S'(r) - k S(r)
 exp_tsum_mul_le_tsum_mul_exp              -- discrete Jensen for the exponential
+meanIndex                                 -- Lambda(r) = r S'(r) / S(r)
+meanIndex_mul_log_le_log_coeffSum_sub     -- Lambda(r) log(s/r) <= log S(s) - log S(r)
 ```
+
+So the mean index now satisfies the same lower growth law as the modal index does for the maximum
+term.  Comparing the two against the sandwich `mu <= S <= mu (nu + C)` is what bounds their
+difference.
 
 So the open quantity has a name and a formula: the deviation of the mean index
 `Lambda(r) = r S'(r) / S(r)` from the modal index `nu(r)`, since
@@ -1063,3 +1069,11 @@ triangularity package, which is exactly how the paper proof uses them.
   `p_n = ||a_n|| r^n / S(r)` and `x_n = n log(s/r)` it will give
   `Lambda(r) log(s/r) <= log S(s) - log S(r)`, the growth law for the mean index matching the one the
   modal index already satisfies.
+- 2026-08-03 -- Instantiated Jensen: `meanIndex_mul_log_le_log_coeffSum_sub` gives
+  `Lambda(r) log(s/r) <= log S(s) - log S(r)`, the growth law for the mean index.  The weights are
+  `p_n = ||a_n|| r^n / S(r)` and the exponents `x_n = n log(s/r)`, so `sum p_n x_n = Lambda(r) log(s/r)`
+  and `sum p_n exp(x_n) = S(s)/S(r)` -- the second because `r^n (s/r)^n = s^n`, which is the only
+  computation in the proof.  The mean index now satisfies exactly the law the modal index satisfies
+  for `mu`, so the two can be compared through the sandwich `mu <= S <= mu (nu + C)`: that comparison
+  is the remaining step, and it is now a matter of combining growth laws rather than of new
+  mechanism.

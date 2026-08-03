@@ -108,3 +108,9 @@
   when it is literally Route R's singular joint-depth/Ward source. Literature comparison now
   treats classical dilation, co-Poisson, cohomology, and graph theory as parent languages rather
   than an exhaustive taxonomy of possible RH mechanisms.
+- 2026-08-03 — Route R corrected from a requested differential category to a constructed route.
+  The formal BV-first-trace/Wold-depth connection escapes vertex gauges and all clock-difference
+  functions by exact witnesses; external discrete-connection theory supplies ambient language but
+  no located collision for this arithmetic coupling and no theorem forcing global flatness. The
+  literature exchange now names arithmetic curvature annihilation, not differential construction,
+  as Route R's open core.

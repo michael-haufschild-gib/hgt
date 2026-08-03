@@ -496,5 +496,95 @@ theorem ccmRationalMoritaTraceNormOperatorTrace_real
   ccmRationalMoritaHilbertOperatorRealStructure_opTrace
     T.toTraceClass.property
 
+/-- Cyclicity of trace on the genuine trace-norm ideal. -/
+theorem ccmRationalMoritaTraceNormOperatorTrace_isTrace
+    (S T : CCMRationalMoritaTraceNormOperator) :
+    ccmRationalMoritaTraceNormOperatorTrace (S * T) =
+      ccmRationalMoritaTraceNormOperatorTrace (T * S) := by
+  change opTrace
+      ((S.toTraceClass : Op) * (T.toTraceClass : Op)) =
+    opTrace ((T.toTraceClass : Op) * (S.toTraceClass : Op))
+  rw [ContinuousLinearMap.mul_def, ContinuousLinearMap.mul_def]
+  exact _root_.RHTower.MemSchattenClass.one_opTrace_comp_comm
+    (_root_.RHTower.IsTraceClass.memSchattenClass_one
+      T.toTraceClass.property)
+    (S.toTraceClass : Op)
+
+/-- Normalized trace on the exact normed minimal unitization. -/
+def ccmRationalMoritaTraceNormL1TraceLinear :
+    CCMRationalMoritaTraceNormL1Unitization →ₗ[ℂ] ℂ where
+  toFun x := (WithLp.ofLp x).fst +
+    ccmRationalMoritaTraceNormOperatorTrace (WithLp.ofLp x).snd
+  map_add' x y := by
+    simp only [WithLp.ofLp_add, Unitization.fst_add, Unitization.snd_add,
+      map_add]
+    ring
+  map_smul' z x := by
+    simp only [WithLp.ofLp_smul, Unitization.fst_smul,
+      Unitization.snd_smul, map_smul, RingHom.id_apply, smul_eq_mul]
+    ring
+
+/-- The normalized unitized trace is continuous, with operator norm at most one. -/
+def ccmRationalMoritaTraceNormL1Trace :
+    CCMRationalMoritaTraceNormL1Unitization →L[ℂ] ℂ :=
+  ccmRationalMoritaTraceNormL1TraceLinear.mkContinuous 1 fun x => by
+    change ‖(WithLp.ofLp x).fst +
+        opTrace ((WithLp.ofLp x).snd.toTraceClass : Op)‖ ≤
+      1 * ‖x‖
+    rw [one_mul, ccmRationalMoritaTraceNormL1_norm]
+    exact (norm_add_le _ _).trans (add_le_add le_rfl
+      (_root_.RHTower.norm_opTrace_le_traceNorm
+        (_root_.RHTower.IsTraceClass.memSchattenClass_one
+          (WithLp.ofLp x).snd.toTraceClass.property)))
+
+@[simp]
+theorem ccmRationalMoritaTraceNormL1Trace_apply
+    (x : CCMRationalMoritaTraceNormL1Unitization) :
+    ccmRationalMoritaTraceNormL1Trace x =
+      (WithLp.ofLp x).fst +
+        opTrace ((WithLp.ofLp x).snd.toTraceClass : Op) :=
+  rfl
+
+@[simp]
+theorem ccmRationalMoritaTraceNormL1Trace_one :
+    ccmRationalMoritaTraceNormL1Trace
+      (1 : CCMRationalMoritaTraceNormL1Unitization) = 1 := by
+  change (WithLp.ofLp (1 : CCMRationalMoritaTraceNormL1Unitization)).fst +
+      opTrace
+        ((WithLp.ofLp (1 : CCMRationalMoritaTraceNormL1Unitization)).snd.toTraceClass : Op) = 1
+  change 1 + opTrace (0 : Op) = 1
+  rw [_root_.RHTower.opTrace_zero, add_zero]
+
+/-- Normalized trace is cyclic on the exact normed unitization. -/
+theorem ccmRationalMoritaTraceNormL1Trace_isTrace
+    (x y : CCMRationalMoritaTraceNormL1Unitization) :
+    ccmRationalMoritaTraceNormL1Trace (x * y) =
+      ccmRationalMoritaTraceNormL1Trace (y * x) := by
+  change (WithLp.ofLp (x * y)).fst +
+      ccmRationalMoritaTraceNormOperatorTrace (WithLp.ofLp (x * y)).snd =
+    (WithLp.ofLp (y * x)).fst +
+      ccmRationalMoritaTraceNormOperatorTrace (WithLp.ofLp (y * x)).snd
+  rw [WithLp.unitization_mul, WithLp.unitization_mul,
+    Unitization.fst_mul, Unitization.fst_mul,
+    Unitization.snd_mul, Unitization.snd_mul]
+  simp only [map_add, map_smul, smul_eq_mul]
+  rw [ccmRationalMoritaTraceNormOperatorTrace_isTrace
+    (WithLp.ofLp x).snd (WithLp.ofLp y).snd]
+  ring
+
+/-- Real conjugation of the normalized trace. -/
+theorem ccmRationalMoritaTraceNormL1Trace_real
+    (x : CCMRationalMoritaTraceNormL1Unitization) :
+    ccmRationalMoritaTraceNormL1Trace
+        (ccmRationalMoritaTraceNormL1RealStructure x) =
+      star (ccmRationalMoritaTraceNormL1Trace x) := by
+  change star (WithLp.ofLp x).fst +
+      ccmRationalMoritaTraceNormOperatorTrace
+        (ccmRationalMoritaTraceNormRealStructure (WithLp.ofLp x).snd) =
+    star ((WithLp.ofLp x).fst +
+      ccmRationalMoritaTraceNormOperatorTrace (WithLp.ofLp x).snd)
+  rw [ccmRationalMoritaTraceNormOperatorTrace_real]
+  exact (map_add (starRingEnd ℂ) _ _).symm
+
 end RHTower
 end GaloisForLFunctions

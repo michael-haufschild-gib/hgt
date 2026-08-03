@@ -1276,10 +1276,26 @@ system of Goursat problems whose right-hand side is the image of the state under
   radius `ρ'` with norm at most `1/(ρ-ρ')² + ‖V‖_ρ/4`*. The Laplacian part is the derivative loss of
   the scale, the potential part is the Banach-algebra estimate, and nothing else enters.
 
-That is precisely the hypothesis the step identity consumes, with `K = 1 + ‖V‖_ρ(ρ₀-ρ)²/4`. What
-remains is to run the iteration itself — the doubly-integrated recursion on coefficient-valued
-functions of the null coordinates — and to identify its limit with a clock probe, which needs the
-Fourier synthesis back to functions on the transverse circle.
+That is precisely the hypothesis the step identity consumes, with `K = 1 + ‖V‖_ρ(ρ₀-ρ)²/4`.
+
+`ClockFourierSynthesis.lean` closes the other end: it turns coefficients back into a field on the
+transverse circle and checks that multiplication by `-k²` really is the second derivative there:
+
+- `mul_exp_neg_le`, `abs_le_exp_weight`, `sq_le_exp_weight` — one power of `k` costs `1/ρ`, two cost
+  `4/ρ²`, against the exponential weight;
+- `summable_abs_of_wienerSummable`, `summable_of_wienerSummable`, `summable_absMul`,
+  `summable_absSq` — hence a sequence in the scale has coefficients summable against any power;
+- `cosSeries`, `sinSeries`, `hasDerivAt_cos_term`, `hasDerivAt_sin_term`;
+- `hasDerivAt_cosSeries`, `hasDerivAt_sinSeries` — the series may be differentiated term by term,
+  by mathlib's `hasDerivAt_tsum` with the summable dominating bound `|gₖ||k|`;
+- `abs_int_le_sq`, **`deriv_deriv_cosSeries`** — *`(∑ₖ gₖ cos kz)'' = -∑ₖ k² gₖ cos kz`*. The
+  transverse Laplacian of the synthesised field is exactly the multiplication that the coefficient
+  iteration performs.
+
+What remains is the iteration itself — the doubly-integrated recursion on coefficient-valued
+functions of the null coordinates — and the product rule `cosSeries (V ⋆ g) = cosSeries V · cosSeries g`
+for even coefficient sequences, which is what lets the synthesised potential multiply the
+synthesised field.
 
 The first genuinely coupled target this reaches is dimension three: a potential
 `V(x⁰, x¹, x²)` with arbitrary continuously differentiable dependence on the null coordinates and
