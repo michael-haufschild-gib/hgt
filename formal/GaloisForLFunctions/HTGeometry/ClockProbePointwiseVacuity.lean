@@ -5,62 +5,56 @@ import GaloisForLFunctions.HTGeometry.ClockProbeRiccati
 
 `LocalProbesOn` asks, at each event of a region, for a probe solving the equation *for one
 potential* at that event and nonvanishing there. For the second-derivative operator that demand is
-empty: a quadratic can be fitted to any prescribed potential value at any single event.
+empty: a cosine or hyperbolic cosine of the right frequency, centred at the event, matches any
+prescribed potential value there.
 
-So the pointwise condition is satisfied by every potential whatsoever, and cannot by itself separate
-two candidates. The content lives entirely in the *shared* requirement of
+So the pointwise condition holds for every potential whatsoever and cannot by itself separate two
+candidates. The content lives entirely in the *shared* requirement of
 `potential_eqOn_of_localProbes`: the probe must solve the equation for **both** candidate potentials
 at the event. Physically that is the right reading — the probe is an observed solution of the actual
-species, and the candidate potentials are both tested against that same observation.
+species, and both candidate potentials are tested against that same observation.
 
-This file proves the vacuity, so the distinction is on the record rather than implicit.
+Indeed a probe nonvanishing at an event is shared by two potentials exactly when they already agree
+there, so sharedness is the whole of the hypothesis.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
 
-/-- Quadratic probe matching a prescribed potential value at one event. -/
-noncomputable def quadraticProbe (value a : ℝ) : ℝ → ℝ :=
-  fun x => 1 - (value / 2) * (x - a) ^ 2
+theorem coshProbe_self (s a : ℝ) : coshProbe s a a = 1 := by
+  simp [coshProbe]
 
-theorem quadraticProbe_self (value a : ℝ) : quadraticProbe value a a = 1 := by
-  simp [quadraticProbe]
-
-theorem hasDerivAt_quadraticProbe (value a x : ℝ) :
-    HasDerivAt (quadraticProbe value a) (-(value * (x - a))) x := by
-  have hbase : HasDerivAt (fun t : ℝ => (t - a) ^ 2) (2 * (x - a)) x := by
-    simpa using ((hasDerivAt_id x).sub_const a).pow 2
-  have hmul : HasDerivAt (fun t : ℝ => (value / 2) * (t - a) ^ 2)
-      ((value / 2) * (2 * (x - a))) x := hbase.const_mul (value / 2)
-  have hsub : HasDerivAt (quadraticProbe value a) (0 - (value / 2) * (2 * (x - a))) x := by
-    simpa [quadraticProbe] using (hasDerivAt_const x (1 : ℝ)).sub hmul
-  have hval : (0 : ℝ) - (value / 2) * (2 * (x - a)) = -(value * (x - a)) := by ring
-  rwa [hval] at hsub
-
-theorem deriv_quadraticProbe (value a : ℝ) :
-    deriv (quadraticProbe value a) = fun x => -(value * (x - a)) := by
-  funext x
-  exact (hasDerivAt_quadraticProbe value a x).deriv
-
-theorem secondDeriv_quadraticProbe (value a x : ℝ) :
-    secondDeriv (quadraticProbe value a) x = -value := by
-  have h : HasDerivAt (fun t : ℝ => -(value * (t - a))) (-(value * 1)) x := by
-    exact (((hasDerivAt_id x).sub_const a).const_mul value).neg
-  rw [secondDeriv, deriv_quadraticProbe, h.deriv]
+/-- **A centred cosine matches any nonnegative potential value at its centre.** -/
+theorem solvesPotentialWaveAt_cosProbe_self (potential : ℝ → ℝ) (a : ℝ)
+    (hpos : 0 ≤ potential a) :
+    SolvesPotentialWaveAt secondDeriv potential
+      (cosProbe (Real.sqrt (potential a)) a) a := by
+  rw [SolvesPotentialWaveAt, secondDeriv_cosProbe, cosProbe_self,
+    Real.sq_sqrt hpos]
   ring
 
-/-- **A quadratic solves any prescribed potential at a single event.** -/
-theorem solvesPotentialWaveAt_quadraticProbe (potential : ℝ → ℝ) (a : ℝ) :
-    SolvesPotentialWaveAt secondDeriv potential (quadraticProbe (potential a) a) a := by
-  rw [SolvesPotentialWaveAt, secondDeriv_quadraticProbe, quadraticProbe_self]
+/-- **A centred hyperbolic cosine matches any negative potential value at its centre.** -/
+theorem solvesPotentialWaveAt_coshProbe_self (potential : ℝ → ℝ) (a : ℝ)
+    (hneg : potential a ≤ 0) :
+    SolvesPotentialWaveAt secondDeriv potential
+      (coshProbe (Real.sqrt (-potential a)) a) a := by
+  have hnn : 0 ≤ -potential a := by linarith
+  rw [SolvesPotentialWaveAt, secondDeriv_coshProbe, coshProbe_self,
+    Real.sq_sqrt hnn]
   ring
 
 /-- **The pointwise probe condition holds for every potential.** -/
 theorem localProbesOn_trivial (potential : ℝ → ℝ) (region : Set ℝ) :
     LocalProbesOn secondDeriv potential region := by
   intro a _
-  refine ⟨quadraticProbe (potential a) a, solvesPotentialWaveAt_quadraticProbe potential a, ?_⟩
-  rw [quadraticProbe_self]
-  exact one_ne_zero
+  rcases le_or_gt 0 (potential a) with hpos | hneg
+  · refine ⟨cosProbe (Real.sqrt (potential a)) a,
+      solvesPotentialWaveAt_cosProbe_self potential a hpos, ?_⟩
+    rw [cosProbe_self]
+    exact one_ne_zero
+  · refine ⟨coshProbe (Real.sqrt (-potential a)) a,
+      solvesPotentialWaveAt_coshProbe_self potential a (le_of_lt hneg), ?_⟩
+    rw [coshProbe_self]
+    exact one_ne_zero
 
 /-- **Hence the pointwise condition separates nothing.** Two different potentials both satisfy it
 on every region. -/
@@ -75,24 +69,30 @@ theorem exists_ne_potential_with_localProbesOn (region : Set ℝ) :
   have := congrFun hEq 0
   norm_num at this
 
-/-- **The shared requirement is what has content.** A probe solving the equation for two potentials
-at one event, and nonvanishing there, forces them to agree there. -/
-theorem potential_eq_of_shared_probe {potential₁ potential₂ u : ℝ → ℝ} {a : ℝ}
-    (h₁ : SolvesPotentialWaveAt secondDeriv potential₁ u a)
-    (h₂ : SolvesPotentialWaveAt secondDeriv potential₂ u a) (hu : u a ≠ 0) :
-    potential₁ a = potential₂ a :=
-  potential_eq_of_solvesPotentialWaveAt h₁ h₂ hu
+/-! ## Sharedness is the whole hypothesis -/
 
-/-- The quadratic probe is shared only when the two potentials already agree at the event. -/
-theorem solvesPotentialWaveAt_quadraticProbe_iff (potential₁ potential₂ : ℝ → ℝ) (a : ℝ) :
-    SolvesPotentialWaveAt secondDeriv potential₂ (quadraticProbe (potential₁ a) a) a ↔
-      potential₂ a = potential₁ a := by
-  rw [SolvesPotentialWaveAt, secondDeriv_quadraticProbe, quadraticProbe_self]
+/-- **A probe nonvanishing at an event is shared by two potentials exactly when they agree there.**
+
+So the useful hypothesis is not that a probe exists for each candidate separately, but that one and
+the same probe solves for both — which is what an observed solution supplies. -/
+theorem solvesPotentialWaveAt_iff_of_ne_zero {X : Type*} {wave : (X → ℝ) → (X → ℝ)}
+    {potential₁ potential₂ u : X → ℝ} {a : X}
+    (h₁ : SolvesPotentialWaveAt wave potential₁ u a) (hu : u a ≠ 0) :
+    SolvesPotentialWaveAt wave potential₂ u a ↔ potential₂ a = potential₁ a := by
   constructor
-  · intro h
-    linarith
-  · intro h
-    rw [h]
-    ring
+  · intro h₂
+    exact potential_eq_of_solvesPotentialWaveAt h₂ h₁ hu
+  · intro hEq
+    rw [SolvesPotentialWaveAt, hEq]
+    exact h₁
+
+/-- The corrected reading of local determination: shared probes, not per-potential probes. -/
+theorem potential_eqOn_of_shared_localProbes {X : Type*} {wave : (X → ℝ) → (X → ℝ)}
+    {potential other : X → ℝ} {region : Set X}
+    (hshared : ∀ x ∈ region, ∃ u : X → ℝ,
+      SolvesPotentialWaveAt wave potential u x ∧
+        SolvesPotentialWaveAt wave other u x ∧ u x ≠ 0) :
+    Set.EqOn other potential region :=
+  potential_eqOn_of_localProbes hshared
 
 end GaloisForLFunctions.HTGeometry

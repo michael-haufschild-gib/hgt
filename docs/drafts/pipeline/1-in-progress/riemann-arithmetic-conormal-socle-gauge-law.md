@@ -4,7 +4,7 @@
 - **Short name:** arithmetic conormal socle-gauge conservation (`ACSG`)
 - **Stage:** `1-in-progress`
 - **Type:** UNIVERSAL SUPPORT THEOREM + FROZEN ARITHMETIC SOURCE LAW
-- **Status:** `[UNIVERSAL CONSUMER PAPER-PROVED] [SOURCE LAW OPEN] [NOT RH]`
+- **Status:** `[UNIVERSAL CONSUMER PAPER-PROVED] [COMPLETION-CLASS NO-GO LEAN-PROVED] [SOURCE LAW OPEN] [NOT RH]`
   `[NO DIVISOR-SELECTED METRIC] [NOVELTY UNVERIFIED]`
 - **Lean:** none until the source comparison is constructed on paper
 - **Parents:**
@@ -342,6 +342,104 @@ nonvanishing on every $G$-character line.  The all-$G$ form is retained as the f
 failure at any other generator would diagnose a defective arithmetic construction, not block the
 one-prime RH implication.
 
+## Lean-proved completion-class impossibility and corrected open cores
+
+The earlier formulation stopped too soon at “a singular completion is required.”  The current
+Lean corpus proves substantially more: ordinary closure and arbitrary operator growth are not live
+escapes for the actual first-trace source.
+
+### `[CORPUS]` Actual first-trace complete no-escape theorem
+
+`primeFirstTraceClock_completeNoEscapeUniversality` in
+`formal/GaloisForLFunctions/RHTower/PrimeFirstTraceCompleteNoEscapeUniversalityLaw.lean` proves,
+unconditionally and for the literal ordinary-prime first-trace graph, all of the following at once:
+
+1. its ordinary graph closure is exactly the full source space times the zero-vacuum response
+   hyperplane;
+2. every closed linear relation extending it contains that entire vertical hyperplane;
+3. no closed linear extension is single-valued;
+4. no arbitrary closed single-valued relation containing the graph exists;
+5. no nonlinear extension has closed graph;
+6. every topology-preserving realization has nonclosed graph; and
+7. every complete rigging preserving the exact source and clock norms remains sequentially
+   nonclosable.
+
+Thus an `(ASPW)` comparison which first passes to an ordinary closed boundary graph is impossible:
+the closure has already erased source--response provenance.  Replacing boundedness by unbounded,
+essential, nonlinear, multivalued, or differently presented ordinary closure does not repair it.
+
+The abstract source-linear strengthening is `[PAPER-PROVED]`, not yet specialized in Lean to the
+infinite prime product representation: every closed relation invariant under two disjoint
+multiplication representations splits blockwise.  Applied to the reflected product-Poisson sectors,
+this excludes every closed untwisted source-linear off-line relation, regardless of growth.  The
+remaining escapes are therefore loss or twisting of the fixed source action, nonclosedness, or
+passage to the relative extension before the boundary quotient.
+
+### `[LEAN-PROVED]` Positive survivor: the preclosure essential edge
+
+The no-go has a nontrivial positive survivor.  In
+`formal/GaloisForLFunctions/RHTower/PrimeFirstTraceEssentialNormalBoundary.lean`,
+`tendsto_primeFirstTrace_anisotropicEssentialGraph` proves that after removing the already attained
+first response face and rescaling source and response at their distinct natural rates,
+
+\[
+ \bigl((\log p)X_p,\;p\Pi_1^\perp Y_p\bigr)
+ \longrightarrow (e_1,Se_1)=(e_1,e_2).
+\tag{10a}
+\]
+
+This is a genuine nonzero source-defined relative edge.  It exists only before ordinary closure;
+ordinary closure also contains `(0,e_2)` and hence forgets which source produced the response.  The
+mathematical lesson is exact: the required source object is an associated-graded/Bockstein of the
+failure of source-normal specialization to commute with closure, not a more rapidly growing closed
+operator.
+
+### Further `[CORPUS]` exclusions on the surviving preclosure site
+
+Three independent Lean theorems narrow that site further.
+
+1. `no_finiteReesOperator_sews_flat_to_nonflat` and its actual Xi-sector specializations prove that
+   every finite-Rees comparison preserves the all-orders-flat radical.  Any exact reflected sewing
+   has norm beyond every inverse Wold Rees power.
+2. `xiGammaEulerCanonicalCrossPrimeComplexifiedCoorientedOrbit_summable_noShorting` proves that an
+   orbit-universal signed Gamma cancellation with fixed separated prime-depth coefficients is
+   coefficientwise zero whenever its physical amplitudes are absolutely summable.  A nontrivial
+   cancellation is therefore singular beyond `ell1`, or its coefficients must couple
+   nonseparably to divisor/source provenance before frequency separation.
+3. `xiGammaEulerPrimitiveReflectedFiniteOffDiagonalIncidence_similarity`, together with its
+   characteristic-polynomial, determinant, cyclic-trace, and triangle-holonomy corollaries, proves
+   that normalized rank-one prime-depth incidence is a flat coboundary.  Finite spectral and cycle
+   invariants are horizontally blind.
+
+These results give a completion-class impossibility theorem for the current producer architecture:
+
+\[
+\boxed{
+\begin{array}{c}
+\text{ordinary closed boundary comparison}\;\;\text{impossible},\\
+\text{finite-Rees comparison}\;\;\text{impossible},\\
+\text{fixed separated-frequency }\ell^1\text{ Gamma shorting}\;\;\text{impossible},\\
+\text{finite rank-one/coboundary incidence selector}\;\;\text{blind}.
+\end{array}}
+\tag{10b}
+\]
+
+The real producer problem consequently has three irreducible `[OPEN CORE]` clauses:
+
+1. **Preclosure extension landing.**  Globalize the actual local edge `(10a)` over the full
+   squarefree action spectrum and construct the restricted Wold--Gamma/BV source extension to
+   relative Contou--Carrere/Meyer comparison before ordinary closure or divisor localization.
+2. **Nonseparable singular anomaly cancellation.**  Identify the Gamma determinant and BV first
+   trace as boundary values of one relative class whose cancellation is neither finite-Rees,
+   rank-one coboundary, nor fixed separated-frequency `ell1` summation.
+3. **Atomic positive descent.**  Construct the source-pointed invariant positive weight only after
+   that relative cancellation and prove that its comparison remains finite and strictly positive
+   on every exact top conormal character line, uniformly before a divisor is selected.
+
+Clauses 1--2 construct the only completion category not excluded by `(10b)`.  Clause 3 is still the
+load-bearing RH implication: it is the global atomic non-erasure theorem.  None is supplied by an
+ordinary Hilbert completion, an unbounded closed operator, or the already formalized consumer law.
+
 ## Proven arithmetic half of the source law
 
 Recent source constructions close the finite-stage half of `(ACSG)` unconditionally:
@@ -418,6 +516,11 @@ dense-radical, Krein, and maximal-vertical no-go results.
 - [x] deduction `(ACSG) -> forall rho, D_rho=0 -> RH` proved on paper
 - [x] bounded, plain-module, scalar-Hilbert, finite-Rees, and divisor-GNS shortcuts excluded
 - [x] overpowered full-injectivity candidate retired
+- [x] actual first-trace ordinary closed, nonlinear, topological, and exact-norm completion escapes excluded in Lean
+- [x] actual source-normal preclosure edge `e_1 -> e_2` constructed in Lean
+- [x] finite rank-one/coboundary and fixed separated-frequency `ell1` Gamma shorting excluded in Lean
+- [ ] globalize the essential edge through the preclosure Wold--Gamma/BV relative extension
+- [ ] construct nonseparable beyond-`ell1` anomaly cancellation before frequency separation
 - [x] finite-stage ramified top-conormal dagger/isometry law proved
 - [x] finite-stage rational-Witt top-sector landing proved coefficient-faithful
 - [x] local Gamma/co-Poisson receiver proved noncensoring at every multiplicity

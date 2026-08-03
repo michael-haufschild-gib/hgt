@@ -44,6 +44,15 @@ theorem Characteristic.levelNumerators_pairwise {R beta : ℕ} (c : Characterist
       simp only [Characteristic.levelNumerators, List.pairwise_cons]
       exact ⟨fun a ha => lt_of_le_of_lt (tail.mem_levelNumerators_le_first ha) hgamma, ih⟩
 
+/-- Successively adjoining every level numerator lowers the cumulative gcd to one.  Hence the
+common denominator `R` is minimal for the represented Puiseux polynomial. -/
+theorem Characteristic.foldl_gcd_levelNumerators {R beta : ℕ} (c : Characteristic R beta) :
+    c.levelNumerators.foldl Nat.gcd R = 1 := by
+  induction c with
+  | terminal hR hbeta hgcd => simpa [Characteristic.levelNumerators] using hgcd
+  | @step R E beta gamma hER hE hbeta hgcd hgamma tail ih =>
+      simpa [Characteristic.levelNumerators, hgcd] using ih
+
 /-- With the common original denominator, the Puiseux slopes remain pairwise strictly
 decreasing. -/
 theorem Characteristic.slopes_pairwise {R beta : ℕ} (c : Characteristic R beta) :
@@ -94,6 +103,17 @@ theorem StrictDivisorChain.coefficient_of_mem_airyPolynomial {R : ℕ}
   obtain ⟨x, _, hx⟩ := h
   exact congrArg Prod.snd hx.symm
 
+/-- The first slope in the explicit polynomial is its Airy first exponent over the original
+ramification. -/
+theorem StrictDivisorChain.headD_slope_airyPolynomial {R : ℕ}
+    (d : StrictDivisorChain R) (coefficient : ℂ) :
+    ((d.airyPolynomial coefficient).map Prod.fst).headD 0 =
+      (d.firstExponent : ℚ) / (R : ℚ) := by
+  rw [d.map_fst_airyPolynomial]
+  cases d <;>
+    simp [Characteristic.slopes, Characteristic.levelNumerators,
+      StrictDivisorChain.toCharacteristic, StrictDivisorChain.firstExponent]
+
 /-- Finite labelled family of strict divisor chains. -/
 structure AiryChainFamily (n : ℕ) where
   ramification : Fin n → ℕ
@@ -108,6 +128,22 @@ def firstFactor {n : ℕ} (family : AiryChainFamily n) (i : Fin n) : ℕ :=
 theorem firstFactor_pos {n : ℕ} (family : AiryChainFamily n) (i : Fin n) :
     0 < family.firstFactor i := by
   exact lt_of_lt_of_le Nat.zero_lt_two (family.chain i).toAiryHead.factor_ge_two
+
+/-- Leading Airy slope in first-factor coordinates. -/
+def leadingSlope {n : ℕ} (family : AiryChainFamily n) (i : Fin n) : ℚ :=
+  1 + 1 / (family.firstFactor i : ℚ)
+
+/-- Distinct first factors have distinct leading slopes. -/
+theorem leadingSlope_ne_of_firstFactor_ne {n : ℕ} (family : AiryChainFamily n)
+    {i j : Fin n} (hfactor : family.firstFactor i ≠ family.firstFactor j) :
+    family.leadingSlope i ≠ family.leadingSlope j := by
+  intro hslope
+  have hinv : ((family.firstFactor i : ℚ)⁻¹) =
+      (family.firstFactor j : ℚ)⁻¹ := by
+    simpa [leadingSlope, one_div] using add_left_cancel hslope
+  have hcast : (family.firstFactor i : ℚ) = family.firstFactor j := inv_injective hinv
+  apply hfactor
+  exact_mod_cast hcast
 
 /-- Explicit coefficient assigned to label `i`. -/
 def separatedCoefficient {n : ℕ} (_family : AiryChainFamily n) (i : Fin n) : ℂ :=
@@ -149,6 +185,19 @@ theorem leading_power_orbits_pairwise_distinct {n : ℕ} (family : AiryChainFami
   rw [← hfactor]
   exact family.separatedCoefficient_pow_ne (family.firstFactor_pos i) hij
 
+/-- Pairwise leading separation: unequal slopes separate automatically, while equal slopes have
+coefficients in distinct power-orbits. -/
+def LeadingSeparated {n : ℕ} (family : AiryChainFamily n) (i j : Fin n) : Prop :=
+  family.leadingSlope i ≠ family.leadingSlope j ∨
+    family.separatedCoefficient i ^ family.firstFactor i ≠
+      family.separatedCoefficient j ^ family.firstFactor j
+
+theorem pairwise_leadingSeparated {n : ℕ} (family : AiryChainFamily n)
+    {i j : Fin n} (hij : i ≠ j) : family.LeadingSeparated i j := by
+  by_cases hfactor : family.firstFactor i = family.firstFactor j
+  · exact Or.inr (family.leading_power_orbits_pairwise_distinct hij hfactor)
+  · exact Or.inl (family.leadingSlope_ne_of_firstFactor_ne hfactor)
+
 /-- Constructive simultaneous realization certificate for a family of strict divisor chains. -/
 structure SeparatedRealization {n : ℕ} (family : AiryChainFamily n) where
   polynomial : Fin n → PuiseuxPolynomial
@@ -157,6 +206,7 @@ structure SeparatedRealization {n : ℕ} (family : AiryChainFamily n) where
   leading_power_separated : ∀ i j, i ≠ j → family.firstFactor i = family.firstFactor j →
     family.separatedCoefficient i ^ family.firstFactor i ≠
       family.separatedCoefficient j ^ family.firstFactor j
+  pairwise_leading_separated : ∀ i j, i ≠ j → family.LeadingSeparated i j
 
 /-- Every finite divisor-chain family has an explicit simultaneous leading-separated Puiseux
 realization. -/
@@ -167,6 +217,7 @@ def simultaneousSeparatedRealization {n : ℕ} (family : AiryChainFamily n) :
   coefficients_nonzero := fun i _ _ h => family.separatedPolynomial_coefficients_ne_zero i h
   leading_power_separated := fun _ _ hij hfactor =>
     family.leading_power_orbits_pairwise_distinct hij hfactor
+  pairwise_leading_separated := fun _ _ hij => family.pairwise_leadingSeparated hij
 
 end AiryChainFamily
 

@@ -111,7 +111,9 @@
   `GaloisForLFunctions.RHTower.DeningerConjTrichotomy` (the one letter trichotomy),
   `GaloisForLFunctions.RHTower.DeningerConjWordLength` (conjugating by a whole word),
   `GaloisForLFunctions.RHTower.DeningerConjWordForm` (the trichotomy in word form),
-  `GaloisForLFunctions.RHTower.DeningerConjugacyCriterion` (the conjugacy criterion)
+  `GaloisForLFunctions.RHTower.DeningerConjugacyCriterion` (the conjugacy criterion),
+  `GaloisForLFunctions.RHTower.DeningerRootTorsionFree` (a root adjunction preserves torsion
+  freeness)
 
 ## Statement
 
@@ -1975,3 +1977,23 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   outright by the non-cancellation lemma.  Composing the rotations and reducing modulo the length of
   the word gives the single rotation.  This was the last structural obstacle between the two exponent
   comparison and Baumslag's theorem.
+- 2026-08-03 — **Course correction on what clause (4) needs.**  Auditing the Bass–Serre chain against
+  its own hypotheses shows the root adjunction step (`deningerRootAdjunction_isZero`) asks only that
+  the element whose root is adjoined have infinite order — not that roots be unique.  Torsion
+  freeness supplies exactly that, and the amalgam of torsion free groups over a torsion free base is
+  already proved torsion free in the corpus.  So Baumslag's uniqueness of roots, which the last
+  several cycles were building towards, is **not** on the critical path for clause (4); it belongs to
+  the clauses about the rationalization being a D-group.  The conjugacy criterion built for it stands
+  on its own and remains the deepest word-combinatorial result in the folder.
+  Proved the step this actually needs: `deningerRootAdjunction_torsionFree` — adjoining a root to a
+  torsion free group leaves a torsion free group, so every stage of a tower of root adjunctions is
+  torsion free and every nontrivial element of a stage has infinite order, which is what the next
+  stage requires.
+  Two obstacles remain for clause (4), now correctly identified.  (i) The chain gives vanishing in
+  degrees at least three; **degree two is not covered**, because there the long exact sequence needs
+  the map `H₁(edge) → H₁(A) ⊕ H₁(ℤ)` to be injective rather than merely the two ends to vanish.  For
+  a root adjunction that map is `1 ↦ (a, m)`, injective because `m ≠ 0`, so degree two is provable —
+  but it needs the maps of the sequence, which the degree ≥ 3 argument deliberately avoided.  (ii)
+  The tower itself: exhibiting `Bau(F)` as an increasing union of stages, each obtained from the
+  previous by one root adjunction.  The union lemma is already proved for increasing chains indexed
+  by ℕ.

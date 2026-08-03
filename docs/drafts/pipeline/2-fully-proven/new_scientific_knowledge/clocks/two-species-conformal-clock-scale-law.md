@@ -328,6 +328,30 @@ pointwise one, which is what the argument actually reads:
 This is the form an existence theorem plugs into: solutions of wave equations come with a domain,
 and a laboratory works in a worldtube, so both sides now speak about regions.
 
+One caution is recorded in
+`formal/GaloisForLFunctions/HTGeometry/ClockProbePointwiseVacuity.lean`. The bare pointwise
+condition `LocalProbesOn`, which asks only for a probe solving *one* candidate potential at each
+event, is **empty**: a cosine or hyperbolic cosine of the right frequency centred at the event
+matches any prescribed potential value there (`localProbesOn_trivial`), so two different potentials
+both satisfy it on every region (`exists_ne_potential_with_localProbesOn`). The content is entirely
+in the *shared* requirement — one and the same probe solving for both candidates — and
+`solvesPotentialWaveAt_iff_of_ne_zero` shows a probe nonvanishing at an event is shared exactly when
+the two potentials already agree there. Physically that is the right reading: the probe is an
+observed solution of the actual species, and both candidates are tested against that observation.
+
+The condition the determination theorems actually rest on, `NoCommonZero`, survives the same audit.
+`formal/GaloisForLFunctions/HTGeometry/ClockProbeConditionAudit.lean`:
+
+- `solutionSet_identityWave_eq_singleton`, `not_noCommonZero_identityWave` — for a degenerate
+  operator whose only solution is zero, `NoCommonZero` **fails**;
+- `exists_ne_potential_with_eq_solutionSet` — and then the solution space genuinely fails to pin the
+  potential: two visibly different potentials share it;
+- `noCommonZero_satisfiable_and_falsifiable` — the condition holds in the oscillatory case and fails
+  in the degenerate one, so it is two-sided.
+
+`NoCommonZero` is therefore a genuine hypothesis, not a formality, and the determination theorems
+built on it are not vacuous.
+
 So the identifiability content of step 1 is settled in full generality, and the reachable potential
 class is characterized. What remains open is the physical selection problem: a laboratory does not
 choose `u` and read off `-(□u)/u`; it prepares sources and must obtain solutions with the required

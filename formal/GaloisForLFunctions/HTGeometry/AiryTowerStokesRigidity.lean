@@ -67,6 +67,51 @@ def HasLargeFourierSteps {R beta : ℕ} : Characteristic R beta → Prop
   | .terminal .. => R < beta
   | .step _ _ _ _ _ tail => R < beta ∧ tail.HasLargeFourierSteps
 
+/-- Every intermediate characteristic reached by successive rank drops has zero diagonal loop. -/
+def AllSuffixLoopsZero {R beta : ℕ} : Characteristic R beta → Prop
+  | c@(.terminal ..) => c.diagonalLoop = 0
+  | c@(.step _ _ _ _ _ tail) => c.diagonalLoop = 0 ∧ tail.AllSuffixLoopsZero
+
+/-- Ramification ranks visited by the characteristic, including terminal rank one. -/
+def ramificationTrace {R beta : ℕ} : Characteristic R beta → List ℕ
+  | .terminal .. => [R, 1]
+  | .step _ _ _ _ _ tail => R :: tail.ramificationTrace
+
+@[simp] theorem ramificationTrace_head {R beta : ℕ} (c : Characteristic R beta) :
+    c.ramificationTrace.headD 0 = R := by
+  cases c <;> simp [ramificationTrace]
+
+@[simp] theorem ramificationTrace_getLast {R beta : ℕ} (c : Characteristic R beta) :
+    c.ramificationTrace.getLast? = some 1 := by
+  induction c with
+  | terminal => simp [ramificationTrace]
+  | step hER hE hbeta hgcd hgamma tail ih =>
+      cases tail <;> simp [ramificationTrace] at ih ⊢
+
+/-- Every rank in the trace is at most the initial rank. -/
+theorem ramificationTrace_le {R beta : ℕ} (c : Characteristic R beta)
+    {a : ℕ} (ha : a ∈ c.ramificationTrace) : a ≤ R := by
+  induction c with
+  | terminal => simp [ramificationTrace] at ha; omega
+  | @step R E beta gamma hER hE hbeta hgcd hgamma tail ih =>
+      simp only [ramificationTrace, List.mem_cons] at ha
+      rcases ha with rfl | ha
+      · exact le_rfl
+      · exact (ih ha).trans (Nat.le_of_lt hER)
+
+/-- Successive Fourier ranks strictly decrease. -/
+theorem ramificationTrace_pairwise {R beta : ℕ} (c : Characteristic R beta) :
+    c.ramificationTrace.Pairwise (· > ·) := by
+  induction c with
+  | terminal hR => simp [ramificationTrace, hR]
+  | @step R E beta gamma hER hE hbeta hgcd hgamma tail ih =>
+      simp only [ramificationTrace, List.pairwise_cons]
+      constructor
+      · intro a ha
+        have ha_le : a ≤ E := tail.ramificationTrace_le ha
+        exact lt_of_le_of_lt ha_le hER
+      · exact ih
+
 @[simp] theorem nextRamification_terminal {R beta : ℕ} (hR : 1 < R) (hbeta : 0 < beta)
     (hgcd : Nat.gcd R beta = 1) :
     (Characteristic.terminal hR hbeta hgcd).nextRamification = 1 := rfl
@@ -384,6 +429,27 @@ theorem isAiryTower_iff_negativeFourier_and_largeSteps {R beta : ℕ}
       c.hasLargeFourierSteps_of_isAiryTower h⟩
   · rintro ⟨hFourier, hLarge⟩
     exact c.isAiryTower_of_negativeFourier_of_largeSteps hFourier hLarge
+
+/-- Airy/Fourier reduction preserves zero diagonal multiplicity at every intermediate rank. -/
+theorem allSuffixLoopsZero_of_isAiryTower {R beta : ℕ}
+    (c : Characteristic R beta) (hAiry : c.IsAiryTower) : c.AllSuffixLoopsZero := by
+  induction c with
+  | terminal hR hbeta hgcd =>
+      exact (Characteristic.diagonalLoop_eq_zero_iff_isAiryTower _).2 hAiry
+  | @step R E beta gamma hER hE hbeta hgcd hgamma tail ih =>
+      exact ⟨(Characteristic.diagonalLoop_eq_zero_iff_isAiryTower _).2 hAiry,
+        ih hAiry.2⟩
+
+/-- Full combinatorial negative-Fourier package: congruence branch, large-step branch, zero loops
+at every suffix, strict rank decrease, and termination at rank one. -/
+theorem negativeFourier_reduction_package {R beta : ℕ} (c : Characteristic R beta)
+    (hAiry : c.IsAiryTower) :
+    c.SatisfiesNegativeFourier ∧ c.HasLargeFourierSteps ∧ c.AllSuffixLoopsZero ∧
+      c.ramificationTrace.Pairwise (· > ·) ∧ c.ramificationTrace.getLast? = some 1 := by
+  exact ⟨c.satisfiesNegativeFourier_of_isAiryTower hAiry,
+    c.hasLargeFourierSteps_of_isAiryTower hAiry,
+    c.allSuffixLoopsZero_of_isAiryTower hAiry,
+    c.ramificationTrace_pairwise, c.ramificationTrace_getLast⟩
 
 end Characteristic
 

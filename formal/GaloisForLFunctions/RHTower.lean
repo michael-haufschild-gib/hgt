@@ -1430,6 +1430,7 @@ import GaloisForLFunctions.RHTower.DeningerConjTrichotomy
 import GaloisForLFunctions.RHTower.DeningerConjWordLength
 import GaloisForLFunctions.RHTower.DeningerConjWordForm
 import GaloisForLFunctions.RHTower.DeningerConjugacyCriterion
+import GaloisForLFunctions.RHTower.DeningerRootTorsionFree
 import GaloisForLFunctions.RHTower.DeningerUnitaryFlowRieszPurity
 import GaloisForLFunctions.RHTower.DeningerUnitaryHarmonicAction
 import GaloisForLFunctions.RHTower.DeningerWeightOnePolarization
@@ -3056,6 +3057,10 @@ import GaloisForLFunctions.RHTower.Sieve.PrimePowerSum
 import GaloisForLFunctions.RHTower.Sieve.HardyRamanujanCut
 import GaloisForLFunctions.RHTower.Sieve.HardyRamanujanStep
 import GaloisForLFunctions.RHTower.Sieve.PrimeInterval
+import GaloisForLFunctions.RHTower.Sieve.PrimeWindow
+import GaloisForLFunctions.RHTower.Sieve.ReciprocalFibre
+import GaloisForLFunctions.RHTower.Sieve.InverseSquareTail
+import GaloisForLFunctions.RHTower.Sieve.SquarefreeCount
 import GaloisForLFunctions.RHTower.Sieve.ChernoffTails
 import GaloisForLFunctions.RHTower.Sieve.GeometricMeanDivisor
 import GaloisForLFunctions.RHTower.Sieve.IntervalMultiples
