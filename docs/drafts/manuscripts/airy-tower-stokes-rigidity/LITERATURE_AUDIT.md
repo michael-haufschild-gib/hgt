@@ -27,7 +27,10 @@ Does prior literature already contain any of the following exact results?
 - URL: https://arxiv.org/abs/1406.5788
 - Published: *Josai Mathematical Monographs* 10 (2017), 161--192.
 - Scope: dual Puiseux characteristics, irregularity/Milnor formulas, local Fourier resolution criterion, Stokes structure and iterated torus knots.
-- Closest overlap: formula for the endomorphism irregularity and the negative Fourier congruence.
+- Exact check: Theorem 3.10 gives resolution by local Fourier transforms and additions iff
+  `e_{i-1} congruent to +/- e_i (mod beta_i)` at every characteristic step. The paper uses the
+  negative congruence forced by `beta_i=e_{i-1}+e_i`.
+- Closest overlap: formula for the endomorphism irregularity and this Fourier congruence.
 - Boundary: no zero-loop nonabelian Hodge equality classification, no first-deviation sign law, no graph recognition theorem located.
 
 ### Boalch--Yamakawa (2020)
@@ -42,6 +45,8 @@ Does prior literature already contain any of the following exact results?
 - URL: https://ems.press/doi/10.4171/prims/61-3-4
 - DOI: 10.4171/PRIMS/61-3-4
 - Scope: arbitrary twisted type-A configuration spaces, exact fission-tree axioms and sharp parameterization of admissible deformation classes.
+- Exact check: Lemma 3.21 gives uniqueness from labelled fission data; Theorem 3.27 gives the
+  coefficient realization criterion; Corollary 3.28 says every fission tree admits a realization.
 - Closest overlap: realizes the trees constructed in the paper.
 - Boundary: does not classify zero-loop leaves or elementary Cartan shadows by local spectra.
 
@@ -91,4 +96,6 @@ stronger:
 - complete arbitrary-size recognition on a natural twisted locus;
 - unconditional formal verification of arithmetic/combinatorial core.
 
-Final venue-level verdict remains subject to hostile review of recognition sufficiency and source-normalization details.
+Hostile review of recognition sufficiency and source-normalization details passed after the
+finite-fibre affine formula and exact realization citations were made explicit. See
+`HOSTILE_REVIEW.md`.

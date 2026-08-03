@@ -13,8 +13,8 @@ Scope: every theorem advertised in `main.tex`, its source inputs, proof location
 | Loop formula | Equation `B_II = sum beta_i(e_{i-1}-e_i)-r^2+1` | Douçot, arXiv:2509.24861, Lemma 2.1 |
 | Edge formula | Zero-common-part and common-level calculations | Douçot, arXiv:2509.24861, Lemma 2.2, equations (2.5)--(2.7), (4.6) |
 | Rescaled ultrametric necessity | Necessity in recognition theorem | Douçot, arXiv:2509.24861, Theorem 4.2 |
-| Fission-tree sharp classification/realization | From constructed sibling data to an irregular class; finite compatibility | Boalch--Douçot--Rembado, *PRIMS* 61 (2025), 391--445, DOI 10.4171/PRIMS/61-3-4 |
-| Dual Puiseux/Fourier criterion/cabling direction | Fourier corollary and iterated-torus-knot interpretation | Hiroe, *Josai Math. Monogr.* 10 (2017), 161--192; arXiv:1406.5788 |
+| Fission-tree sharp classification/realization | From constructed sibling data to an irregular class; finite compatibility | Boalch--Douçot--Rembado, *PRIMS* 61 (2025), Lemma 3.21, Theorem 3.27, Corollary 3.28; DOI 10.4171/PRIMS/61-3-4 |
+| Dual Puiseux/Fourier criterion/cabling direction | Fourier corollary and iterated-torus-knot interpretation | Hiroe, *Josai Math. Monogr.* 10 (2017), Theorem 3.10 and Section 4; arXiv:1406.5788 |
 | Diagram loses fission data | Scope warning only | Douçot, *SIGMA* 22 (2026), 027, DOI 10.3842/SIGMA.2026.027 |
 | Existing untwisted counts | Comparison only | Boalch, *J. Geom. Phys.* 214 (2025), 105512, DOI 10.1016/j.geomphys.2025.105512 |
 
@@ -50,6 +50,15 @@ Scope: every theorem advertised in `main.tex`, its source inputs, proof location
 
 ## Build evidence
 
-- `tectonic --keep-intermediates main.tex`: passed; PDF produced.
+- `tectonic main.tex`: passed without warnings; final PDF has 12 pages.
+- Final PDF was rendered to PNG page by page after the last mathematical revision; all pages passed
+  visual inspection with no clipping, overlap, broken glyph, orphan page, or unreadable table.
 - Each new Lean source passed `lake env lean <file>` during development.
-- Final module builds, formal lint, umbrella check, and hostile review must be recorded before promotion.
+- Targeted `lake build` passed for all six new modules.
+- `lake build GaloisForLFunctions.HTGeometry`: passed, 13,635 targets.
+- `scripts/formal_tools.py lint`: passed. Reported large-file warnings are repository-wide and do not
+  concern these modules.
+- `/tmp/hgt-airy-axioms.lean` `#print axioms` audit: only standard mathlib foundations (`propext`,
+  `Classical.choice`, `Quot.sound` where applicable); no project axiom.
+- `HOSTILE_REVIEW.md`: final recommendation is publishable at the stated renowned general-journal bar;
+  no unresolved major revision.

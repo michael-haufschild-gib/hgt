@@ -81,7 +81,8 @@
   `GaloisForLFunctions.RHTower.DeningerConjSplit` (splitting a conjugated power),
   `GaloisForLFunctions.RHTower.DeningerPowWord` (the normal word of a power),
   `GaloisForLFunctions.RHTower.DeningerRotate` (rotation is conjugation),
-  `GaloisForLFunctions.RHTower.DeningerFlattenRotate` (dropping from a concatenation of copies)
+  `GaloisForLFunctions.RHTower.DeningerFlattenRotate` (dropping from a concatenation of copies),
+  `GaloisForLFunctions.RHTower.DeningerFlattenDrop` (dropping whole and partial copies)
 
 ## Statement
 
@@ -929,6 +930,17 @@ So when the two conjugators have different lengths, shifting one word against th
 difference turns the copies of one cyclically reduced word into copies of a rotation of it, and the
 rotation is read off directly.
 
+`DeningerFlattenDrop.lean` refines that into the form the comparison uses, splitting the shift into
+its whole and partial parts:
+
+- `deningerFlatten_inj` — a concatenation of copies determines the word, given its length;
+- `deningerDrop_mul_flatten` — dropping a multiple of the length removes whole copies;
+- `deningerDrop_flatten_succ` — dropping a further partial amount rotates the word.
+
+So a shift by `t = qℓ + r` removes `q` copies and rotates by `r`, and the rotation that appears is
+`r`, the remainder of the difference of the conjugator lengths modulo the length of the cyclically
+reduced word.
+
 Step 1 still needs Baumslag's inductive step (root adjunction preserves unique roots), which rests
 on the same normal-form machinery.
 
@@ -1445,3 +1457,9 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   over the free group case — when the two conjugators differ in length, shifting one word against
   the other by the difference converts copies of one cyclically reduced word into copies of a
   rotation of it, and rotation is conjugation.
+- 2026-08-03 — Split the shift into whole and partial copies: dropping a multiple of the length
+  removes whole copies, dropping a further partial amount rotates the word, and a concatenation of
+  copies determines the word given its length.  So a shift by `t = qℓ + r` removes `q` copies and
+  rotates by `r` — the rotation that appears in the comparison is the remainder of the difference of
+  the conjugator lengths modulo the length of the cyclically reduced word.  All the list ingredients
+  of the comparison are now in place.

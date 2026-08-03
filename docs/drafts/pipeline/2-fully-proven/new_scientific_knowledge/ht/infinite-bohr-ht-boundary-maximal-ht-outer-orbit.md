@@ -512,6 +512,17 @@ flow, which mathlib has only for finite tori.
      compact and `C(C, C)` is Hausdorff.  The hull is a homeomorphic copy of the infinite phase
      torus, which is claim (3) of the boundary theorem.
 
+2'. **Decay of the carrier high in the upper half plane.**  `ComplexExponentialSeriesCarrier.lean`
+   also proves `summable_norm_weight`, `norm_cexpSeriesCarrier_le_tsum` and
+
+   - **`exists_im_bound_norm_cexpSeriesCarrier_le`** -- for strictly positive frequencies and
+     summable amplitudes the carrier is uniformly small above a height: for every `ε` there is a
+     `Y` with `‖A_λ(z)‖ ≤ ε` whenever `Im z ≥ Y`.  The tail is uniform in the height because each
+     weight is at most one there, and the remaining head is a finite sum of decaying exponentials.
+
+   This is the input for the card's `b_λ → c` limit as `Im z → ∞`, which drives both the power
+   injectivity of `B_n` and the disjointness argument.
+
 3'. **Disjointness is now available in the form the card uses.**
    **`expSeriesCarrier_phase_eq_of_tendsto_zero`** (in `BohrExponentialSeriesCoefficient.lean`):
    if two phase-modulated carriers of the same nonvanishing amplitude family differ by a function
@@ -524,3 +535,32 @@ flow, which mathlib has only for finite tori.
 4. **Imported inputs.**  Ostrowski's hypertranscendence theorem for generalized Dirichlet series and
    the positive-mass Baire transversality engine (the latter already exists in the corpus as the
    Herglotz card's machinery) enter as explicit hypotheses, exactly as the card's proof uses them.
+
+## Powers do not merge boundary states
+
+`BohrPowerBoundary.lean` (wired, axiom-clean) formalizes the card's power argument, the step that
+makes claim (3) hold *at every power* rather than only at `n = 1`:
+
+- `finite_setOf_pow_eq_one` and **`constant_of_pow_eq_one`** -- a continuous function whose `n`-th
+  power is one takes values in a finite set of roots of unity, hence is constant on a preconnected
+  space (the finite subtype is discrete, so `IsPreconnected.constant` applies);
+- **`eq_of_pow_eq_of_tendsto_ratio_one`** -- if two nonvanishing continuous functions have equal
+  `n`-th powers and their ratio tends to one along any nontrivial filter, they are equal.  This is
+  the card's "quotient is a constant root of unity, and the common limit makes it `1`";
+- **`tendsto_cexpSeriesCarrier_vertical`** -- the carrier decays along the vertical axis, the
+  concrete instance of the uniform half-plane decay;
+- **`cexpSeriesCarrier_phase_injective_pow`** -- consequently, for a nonzero constant term, equal
+  `n`-th powers of two shifted carriers force equal phases.  Composed with the hull embedding this
+  is exactly `B_n ≅ T^N` for every `n >= 1`.
+
+Remaining on this card:
+
+1. the closure equality `closure(O_n) = O_n ⊔ B_n`, whose ingredients (the Stieltjes decay (7), the
+   phase-uniform estimate, the disjointness theorem) are in place;
+2. all-power differential independence -- claim (1) -- which needs a *power gauge* for the corpus's
+   `FamilyDifferentiallyAlgebraicOn`: a relation among `N`-th powers pulls back to a relation among
+   the functions, by injectivity of the jet substitution `y_k ↦ (y^N)^(k)`.  The existing gauge
+   library (`FamilyPolynomialGauge`, `FamilyInversionGauge`, `FamilyMobiusGauge`) is the pattern to
+   follow;
+3. the two imported inputs: Ostrowski's hypertranscendence theorem and the positive-mass Baire
+   transversality engine, both entering as explicit hypotheses exactly as the paper proof uses them.

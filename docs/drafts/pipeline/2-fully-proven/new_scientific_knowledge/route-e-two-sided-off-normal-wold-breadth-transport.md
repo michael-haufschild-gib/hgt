@@ -579,3 +579,101 @@ negligible.
 Remaining: bound `∑_{d ∈ bigDivisors} 1/d` by the tilted Euler product over the primes in `(z,b]`
 (the same `prod_one_add_mul_le_exp` device), then instantiate parameters to combine `(8a)` and
 `(8b)` into `(8)`, and conclude `(9)`.
+
+### `(8)` assembled (2026-08-03) — `Sieve/OmegaUpperTail.lean`
+
+New in `SmallestPart.lean`:
+
+- `bigPrimeSet z b`, `bigModulus z b` (squarefree, `primeFactors = bigPrimeSet`),
+  `bigDivisors_subset`, and **`sum_bigDivisors_inv_le`** :
+  `∑_{d ∈ bigDivisors} 1/d ≤ (∏_{z < p ≤ b}(1 + v/p)) / v^J` for `v ≥ 1`, reusing
+  `sum_divisors_pow_card_primeFactors_div_eq_prod`;
+- `primeFactors_gcd_primorial` : `(gcd n z#).primeFactors = {p ∈ n.primeFactors | p ≤ z}`;
+- `omegaSmall_add_card_filter` : `ω_{≤z} n + ω_{>z} n = ω n`;
+- **`card_omega_ge_le_add`** : `#{n : k ≤ ω n} ≤ #{n : k' ≤ ω_{≤z} n} + #{n : c·J ≤ ω_{>z} n}`
+  whenever `k' + c·J ≤ k + 1`.
+
+**Capstone `card_omega_ge_le`** (`Sieve/OmegaUpperTail.lean`), unconditional, built, wired,
+axiom-clean:
+
+```text
+#{n ∈ (a,b] : k ≤ ω n}
+  ≤ [ (b−a)·∑_{i ≤ k'} (u−1)^i e_i(z) + ∑_{i ≤ k'} (u−1)^i · #levelDivisors z i ] / u^{k'}
+    + [ (b−a)·(∏_{z < p ≤ b}(1 + v/p)) / v^J + D ]
+```
+for all `a ≤ b`, `1 ≤ J`, `1 ≤ c`, `b < (D+1)^c`, `k' + c·J ≤ k + 1`, `u ≥ 1`, `v ≥ 1`.
+
+Every parameter is free: the cut `z`, both tilts, the level `k'`, the block size `J`, the
+compression `c`, the root bound `D`.  The first bracket carries the sharp Chernoff rate (optimise
+`u` at `k'/∑_{p≤z}1/p`); the second is negligible once `J ≍ log log X / log log log X` and
+`c = 4`, since then `D ≍ b^{1/4}`.
+
+**Both tails of the card now exist as unconditional Lean theorems**: `card_omega_le_le`
+(`OmegaTail.lean`, fibring route), `card_omegaSmall_le_mul_pow_le` (`OmegaMGF.lean`, second and
+simpler proof of the same), and `card_omega_ge_le` (`OmegaUpperTail.lean`).
+
+Remaining: the parameter instantiation — choose `z, r, λ, t, u, v, J, c, D` as functions of `X`,
+verify the resulting numeric inequalities, and read off `(7)`, `(8)`, `(9)`.
+
+### Euler form of both tails (2026-08-03) — `Sieve/LevelRegroup.lean`
+
+- `truncDivisors_biUnion`, `sum_levelDivisors_regroup`, **`sum_pow_mul_sum_levelDivisors_inv`** :
+  `∑_{i ≤ r} w^i ∑_{d ∣ z#, ω d = i} 1/d = ∑_{d ∣ z#, ω d ≤ r} w^{ω d}/d`, and
+  `sum_card_levelDivisors` for the matching error terms;
+- **`card_omega_ge_le_euler`** — the upper tail with the level sums replaced by Euler products:
+
+```text
+#{n ∈ (a,b] : k ≤ ω n}
+  ≤ [ (b−a)·∏_{p ≤ z}(1 + (u−1)/p) + #{d ∣ z# : ω d ≤ k'} ] / u^{k'}
+    + [ (b−a)·(∏_{z < p ≤ b}(1 + v/p)) / v^J + D ]
+```
+for `1 ≤ u ≤ 2`, `v ≥ 1`, `1 ≤ J`, `1 ≤ c`, `b < (D+1)^c`, `k' + c·J ≤ k + 1`;
+
+- **`card_omega_le_le_euler`** — the lower tail likewise:
+
+```text
+#{n ∈ (a,b] : ω n ≤ k} · t^k
+  ≤ (b−a)·[ ∏_{p ≤ z}(1 − (1−t)/p) + (∏_{p ≤ z}(1 + λ/p))/λ^r ] + #{d ∣ z# : ω d ≤ r}
+```
+for `0 < t ≤ 1`, `λ ≥ 1`, even `r`; the second Euler product is exactly the Brun truncation defect
+already proved in `TruncationDefect.lean`.
+
+Both built, wired, axiom-clean.  Every quantity is now an Euler product over `primesLE z` (or over
+the primes in `(z,b]`), which `Sieve/RoughCount.lean` and `Sieve/Mertens.lean` evaluate through
+Mertens' second theorem.
+
+Remaining: substitute those evaluations, choose `z, r, λ, t, u, v, J, c, D, k'` as functions of
+`X`, and read off `(7)`, `(8)`, `(9)`.
+
+### Chernoff form of both tails (2026-08-03) — `Sieve/ChernoffTails.lean`
+
+Mertens' second theorem now evaluates every Euler product:
+
+- `prod_one_sub_mul_le_exp_neg`, **`prod_one_sub_mul_primesLE_le`** :
+  `∏_{p ≤ z}(1 − c/p) ≤ exp(c·c₀)·(log z)^{−c}` for `0 ≤ c ≤ 1`;
+- `prod_one_add_primesLE_chernoff` : `∏_{p ≤ z}(1 + c/p) ≤ exp(c·c₁)·(log z)^{c}`;
+- `bigPrimeSet_eq_sdiff`, `sum_inv_bigPrimeSet` (`= mertensS b − mertensS z`),
+  **`prod_one_add_bigPrimeSet_le`** : `∏_{z < p ≤ b}(1 + v/p) ≤ exp(v(mertensS b − mertensS z))`.
+
+**Capstones**, both built, wired, axiom-clean:
+
+```text
+card_omega_le_le_chernoff :
+  #{n ∈ (a,b] : ω n ≤ k} · t^k
+    ≤ (b−a)·[ exp((1−t)c₀)·(log z)^{−(1−t)} + exp(λc₁)·(log z)^λ / λ^r ]
+      + #{d ∣ z# : ω d ≤ r}
+
+card_omega_ge_le_chernoff :
+  #{n ∈ (a,b] : k ≤ ω n}
+    ≤ [ (b−a)·exp((u−1)c₁)·(log z)^{u−1} + #{d ∣ z# : ω d ≤ k'} ] / u^{k'}
+      + [ (b−a)·exp(v(mertensS b − mertensS z)) / v^J + D ]
+```
+
+for `0 < t ≤ 1`, `λ ≥ 1`, even `r`; and `1 ≤ u ≤ 2`, `v ≥ 1`, `1 ≤ J`, `1 ≤ c`, `b < (D+1)^c`,
+`k' + c·J ≤ k + 1`, `2 ≤ z ≤ b`.
+
+**This is the full analytic content of `(7)` and `(8)`**, unconditional and with the sharp entropy
+rate visible: `t^{-k}(log z)^{-(1-t)}` optimised at `t = k/log log z` is `(log z)^{-I(c)}` with
+`I(c) = 1 − c + c log c`, and likewise `u^{-k'}(log z)^{u-1}` on the upper side.  Nothing analytic
+remains — only the choice of `z, r, λ, t, u, v, J, c, D, k'` as functions of `X` and the resulting
+numeric verification.

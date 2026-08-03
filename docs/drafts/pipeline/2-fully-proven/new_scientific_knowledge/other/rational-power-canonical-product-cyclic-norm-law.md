@@ -246,6 +246,7 @@ formal/GaloisForLFunctions/HTGeometry/PowerSubstitutionJet.lean
 formal/GaloisForLFunctions/HTGeometry/PowerSubstitutionDifferentialDescent.lean
 formal/GaloisForLFunctions/HTGeometry/RationalPowerHypertranscendenceTransfer.lean
 formal/GaloisForLFunctions/HTGeometry/EvenPowerCanonicalProductDA.lean
+formal/GaloisForLFunctions/HTGeometry/GammaWeierstrassCanonicalProduct.lean
 ```
 
 Principal declarations:
@@ -347,7 +348,7 @@ layer is the single mathematical input still missing.
 Milestones, in dependency order:
 
 ```text
-O1  W_1(z) = exp(-gamma_E z) * Gamma(z+1)^(-1)        (Euler limit + Euler-Mascheroni)
+O1  W_1(z) = exp(-gamma_E z) * Gamma(z+1)^(-1)        [DONE: powerCanonicalProduct_one_eq]
 O2  W_1 hypertranscendental                            (O1 + Hoelder, in the meromorphic field)
 O3  W_(1/q) hypertranscendental for every q >= 1        (O2 + the proved transfer (10))
 O4  multi-scale root-of-unity reciprocal-Gamma product is HT   (open layer)

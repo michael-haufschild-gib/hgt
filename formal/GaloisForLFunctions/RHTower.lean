@@ -1401,6 +1401,8 @@ import GaloisForLFunctions.RHTower.DeningerConjSplit
 import GaloisForLFunctions.RHTower.DeningerPowWord
 import GaloisForLFunctions.RHTower.DeningerRotate
 import GaloisForLFunctions.RHTower.DeningerFlattenRotate
+import GaloisForLFunctions.RHTower.DeningerFlattenDrop
+import GaloisForLFunctions.RHTower.DeningerRotateCompare
 import GaloisForLFunctions.RHTower.DeningerUnitaryFlowRieszPurity
 import GaloisForLFunctions.RHTower.DeningerUnitaryHarmonicAction
 import GaloisForLFunctions.RHTower.DeningerWeightOnePolarization
@@ -3005,9 +3007,11 @@ import GaloisForLFunctions.RHTower.ShortWindowNoGo
 import GaloisForLFunctions.RHTower.ShortWindowNoGoGeneral
 import GaloisForLFunctions.RHTower.ShrinkingWindowPrimeSupply
 import GaloisForLFunctions.RHTower.Sieve.BrunPure
+import GaloisForLFunctions.RHTower.Sieve.ChernoffTails
 import GaloisForLFunctions.RHTower.Sieve.GeometricMeanDivisor
 import GaloisForLFunctions.RHTower.Sieve.IntervalMultiples
 import GaloisForLFunctions.RHTower.Sieve.LogLogTelescope
+import GaloisForLFunctions.RHTower.Sieve.LevelRegroup
 import GaloisForLFunctions.RHTower.Sieve.MainTerm
 import GaloisForLFunctions.RHTower.Sieve.Mertens
 import GaloisForLFunctions.RHTower.Sieve.MertensFirst

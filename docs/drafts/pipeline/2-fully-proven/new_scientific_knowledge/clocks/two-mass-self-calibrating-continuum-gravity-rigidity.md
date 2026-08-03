@@ -6,7 +6,12 @@
 - **Parents:**
   `two-mass-self-calibrating-clock-metric-law.md`,
   `chronometric-continuum-operator-rigidity.md`
-- **Status:** paper-proved and formalized unconditionally in Lean.
+- **Lean:**
+  `formal/GaloisForLFunctions/HTGeometry/ClockPropagatorSelfCalibration.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/SelfCalibratingBundleQuotientRigidity.lean`
+- **Status:** paper-proved and formalized unconditionally in Lean, including the lift off
+  coordinate-trivialized fields to tangent bundles and coordinate charts, and the descent to the
+  quotient by clock-label-preserving frame automorphisms.
 
 ## Headline
 
@@ -132,9 +137,53 @@ The remaining open core is not algebraic identifiability. It is physical realiza
    worldtube;
 2. split causal/retarded support without assuming the unknown geometry;
 3. prove common or known relative endpoint gain for two physical species;
-4. include backreaction and conservation-constrained active sources;
-5. pass from coordinate-trivialized fields to smooth Lorentzian bundles modulo diffeomorphism and
-   gauge.
+4. include backreaction and conservation-constrained active sources.
 
-Until those steps close, `(7)` is a conditional continuum reconstruction theorem, not a claim that
-Nature has already been experimentally reduced to two clock species.
+Item 5 of the earlier list — passing from coordinate-trivialized fields to smooth bundles modulo
+diffeomorphism and gauge — is now closed mathematically; see below.
+
+Until the remaining steps close, `(7)` is a conditional continuum reconstruction theorem, not a
+claim that Nature has already been experimentally reduced to two clock species.
+
+## Lean status
+
+`formal/GaloisForLFunctions/HTGeometry/ClockPropagatorSelfCalibration.lean` carries Theorems 1
+and 2 on coordinate-trivialized fields: `SelfCalibratingMetricField`, `twoMassObservation`,
+`twoMassObservation_injective` (equation `(2)`), and
+`twoMassSelfCalibratingContinuumGravityRigidity` (equation `(7)`).
+
+`formal/GaloisForLFunctions/HTGeometry/SelfCalibratingBundleQuotientRigidity.lean` removes both
+restrictions the coordinate-trivialized statement carried.
+
+**Bundle lift.** The calibration channel is pointwise and the symbol channel is fiberwise, so the
+argument lifts verbatim to a family of fibers indexed by the event set:
+
+- `BundleSelfCalibratingMetric Event Fiber` with `Fiber : Event → Type`, its
+  `twoMassObservation` and `twoMassObservation_injective`;
+- `bundleTwoMassSelfCalibratingRigidity` — `(7)` over an arbitrary fiber bundle;
+- `TangentSelfCalibratingMetric`, `tangentTwoMassObservation_injective`,
+  `tangentTwoMassSelfCalibratingRigidity` — the same with `Fiber = TangentSpace I x` on a charted
+  smooth manifold;
+- `SmoothSelfCalibratingChart`, `SmoothSelfCalibratingChart.twoMassObservation_injective`,
+  `SmoothSelfCalibratingChart.twoMassSelfCalibratingRigidity` — the coordinate-chart case, with a
+  smooth nowhere-vanishing calibration and a smooth nondegenerate symmetric inverse-metric field.
+
+**Quotient lift.** A clock-label-preserving frame automorphism — a relabelling of events together
+with a linear reframing of each tangent fiber — pulls back the calibration as a scalar and the
+inverse metric as a quadratic form:
+
+- `MulAction (ClockFrameAut Event Tangent)` on `SelfCalibratingMetricField` and on
+  `SelfCalibratingObservation`;
+- `twoMassObservationOf_equivariant`, `twoMassObservationOf_injective`;
+- `twoMassSelfCalibratingRigidity_mod_frameAut` — `(7)` on the orbit quotients: equality of
+  gravity operators is replaced by equality up to a frame automorphism of the source labels;
+- `smul_scaling_selfCalibrating_form`, `smul_scaling_selfCalibrating_ne_self` — a conformal
+  reframing with `c⁻² ≠ 1` moves every field with a nonzero symbol component, so the quotient
+  statement is a genuine weakening of equality rather than a restatement.
+
+The quotient theorem it rests on, `chronometricSolutionGraph_orbitQuotient_eq_iff`, holds for an
+arbitrary group acting equivariantly with an injective equivariant observation encoding. Any gauge
+group of local field redefinitions that preserves the two-mass observation channel is therefore
+covered by the same statement; the frame-automorphism group is the instance constructed here.
+
+All of these depend only on `propext`, `Classical.choice`, `Quot.sound`.

@@ -1,10 +1,10 @@
 # Airy-tower zero-loop rigidity for ramified Stokes circles
 
-- **Status:** fully proven on paper; awaiting Lean formalisation
-- **Knowledge label:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [PAPER PROOF COMPLETE]`
+- **Status:** publication-ready preprint; paper proof, Lean formalisation, source audit, and hostile review complete
+- **Knowledge label:** `[PROVED HERE] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [PAPER PROOF COMPLETE] [FORMALISED] [PUBLICATION READY]`
 - **Created:** 2026-08-03
 - **Area:** irregular nonabelian Hodge theory; Stokes geometry; twisted fission trees
-- **Exact open core:** prove the zero-loop/sign theorem below, then derive and audit its global graph, Fourier-resolution, and Stokes-knot consequences.
+- **Exact open core:** closed; only ordinary external peer review remains.
 
 ## 1. Exact frozen claim
 
@@ -746,6 +746,32 @@ crosses the significance threshold provisionally:
 4. infinitely many new local obstructions invisible to current ultrametric tests;
 5. an exact constructive recognition theorem for arbitrary-size elementary decorated graphs.
 
-Paper-proof verdict: **accept for Stage 2**. Publication verdict remains withheld until exact Lean
-formalisation, full manuscript, claim trace, current-source bibliography, and a hostile journal
-review are complete.
+Paper-proof verdict: **accept for Stage 2**. This interim verdict is superseded by the final audit
+below.
+
+## 17. Final formal, manuscript, and journal audit
+
+Six unconditional Lean modules now formalise the sign/zero theorem, divisor-chain and ordered-factor
+constructions, separated-core arithmetic, local finiteness, exact elementary pair presentations,
+and finite cophenetic recognition. Every module passed its targeted `lake build`; the
+`GaloisForLFunctions.HTGeometry` umbrella passed with 13,635 targets; authoritative formal lint
+passed. A `/tmp` `#print axioms` audit found only standard mathlib foundations and no project axiom.
+
+The final manuscript is:
+
+`docs/drafts/manuscripts/airy-tower-stokes-rigidity/main.pdf`.
+
+It has 12 pages, compiles without TeX warnings, and passed page-by-page rendering inspection after
+the final mathematical revision. `CLAIM_TRACE.md` records theorem-level source and Lean boundaries;
+`LITERATURE_AUDIT.md` records the current primary-source search through 2026-08-03.
+
+The hostile review in `HOSTILE_REVIEW.md` attacked the finite-fibre and recognition sufficiency
+steps, exact pair-spectrum exhaustiveness, Fourier-source normalization, novelty, significance, and
+formalisation scope. Two initial objections caused explicit manuscript revisions: display of the
+positive-slope edge coefficient in the finite-fibre proof and exact coordinates for the
+fission-tree realization theorem. After those revisions, the final verdict is:
+
+**publishable at a renowned general-journal level in the Compositio/IMRN/Advances range, subject to
+ordinary external peer review; no unresolved major revision.**
+
+Pipeline verdict: **promote directly through Stage 3 to Stage 4.**
