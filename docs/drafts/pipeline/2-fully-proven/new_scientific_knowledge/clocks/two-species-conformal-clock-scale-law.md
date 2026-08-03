@@ -1387,7 +1387,17 @@ depend on `z`:
   parameters and the point.* The representation is valid only on the strip, so the transfer is by
   congruence on the neighbourhood where it holds.
 
-This is what makes the iterated integrals defining the iterates well defined.
+This is what makes the iterated integrals defining the iterates well defined. The parameter space is
+an arbitrary topological space — no countability or local compactness is needed anywhere — so the
+same statements serve the null-coordinate pair, a single coordinate, or the pair together with the
+transverse point.
+
+The one remaining analytic gap on this route is the holomorphy of the iterates themselves: the
+integral of a family holomorphic in `z` is again holomorphic in `z`. mathlib's
+`intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_deriv_le` is stated over any `RCLike`
+field, so it applies with a *complex* parameter and yields the complex derivative directly; the
+domination it requires is Cauchy's estimate on a disc, with the bound uniform in the integration
+variable by compactness.
 
 The first genuinely coupled target this reaches is dimension three: a potential
 `V(x⁰, x¹, x²)` with arbitrary continuously differentiable dependence on the null coordinates and

@@ -1,9 +1,9 @@
 # Route R graded `det2` scalar-descent counterboundary
 
 - **ID:** `route-r-graded-det2-scalar-descent-counterboundary`
-- **Stage:** 2 — fully proved on paper
+- **Stage:** 3 — formalised in Lean 4
 - **Type:** REGULAR/SINGULAR CONNECTING CLASS / EQUAL-GRADE SCALAR COUNTERBOUNDARY
-- **Status:** `[PAPER-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
+- **Status:** `[LEAN-PROVED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT RH]`
 - **Parents:**
   - `../3-formalized/new_scientific_knowledge/route-r-essential-edge-occupation-det2-bv-relative-class.md`;
   - `../3-formalized/new_scientific_knowledge/route-r-prime-depth-bv-wold-curved-source-differential.md`;
@@ -241,6 +241,27 @@ Boundary_(a_rho)(c_rho)=0
 
 Thus the counterboundary is non-vacuous and its global triviality remains equivalent to RH.
 
+## Lean realization
+
+Formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/PrimeDepthBVWoldGradedDet2ScalarDescentBoundary.lean`.
+The module proves:
+
+1. consecutive source-increment area equals scalar Route-R curvature;
+2. actual occupation quadratic trace is `zeta(2)` and is nonzero;
+3. crossed graded occupation supertrace equals `a * curvature`;
+4. graded `det2` anomaly is exact inverse scalar holonomy;
+5. `D1 D0 + Boundary = 0` for every cochain and triangle;
+6. the same corrected square vanishes on the actual leading Xi conormal;
+7. boundary vanishing on the exact witness is equivalent to the critical line;
+8. global boundary triviality is equivalent to RH.
+
+Targeted `lake build` passed.  `#print axioms` on all frontier theorems reports only Lean's
+standard `propext`, `Classical.choice`, and `Quot.sound`.  The module contains no `sorry`,
+`admit`, `axiom`, `opaque`, or `unsafe` declaration and is imported by the `RHTower` umbrella.
+Repository-wide lint remains red only because unrelated pre-existing owned modules are not wired
+into their umbrellas; this module is reachable and appears in no lint error.
+
 ## Hostile proof audit
 
 1. **Odd-operator version rejected.**  `I-A` for an odd complex-linear operator is not an even
@@ -293,6 +314,6 @@ object from an unspecified equal-grade term to one canonical graded determinant 
 - [x] external parent-theory and exact-collision audit
 - [x] dependency-closed paper proof
 - [x] hostile proof audit
-- [ ] unconditional Lean formalization
+- [x] unconditional Lean formalization
 - [ ] boundary trivialization on Xi conormal
 - [ ] RH

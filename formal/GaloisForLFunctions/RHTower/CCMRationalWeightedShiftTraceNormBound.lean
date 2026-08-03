@@ -48,8 +48,8 @@ theorem ccmRationalMoritaWeightedShift_hsNormSq
         intro q
         rw [ccmRationalMoritaWeightedShift_basis_norm]
     _ = ∑' q, ‖a q‖ ^ (2 : ℕ) := by
-      simpa only [Function.comp_apply, mul_comm] using
-        (Equiv.mulLeft k).tsum_eq (fun q => ‖a q‖ ^ (2 : ℕ))
+      change (∑' q, ‖a ((Equiv.mulLeft k) q)‖ ^ (2 : ℕ)) = _
+      exact (Equiv.mulLeft k).tsum_eq (fun q => ‖a q‖ ^ (2 : ℕ))
 
 /-- Exact Hilbert--Schmidt norm of a rational weighted shift. -/
 theorem ccmRationalMoritaWeightedShift_hsNorm
@@ -129,6 +129,71 @@ theorem ccmRationalMoritaWeightedShift_traceNorm_le_lOne
       (ccmRationalMoritaCoefficientLOneBound_nonneg a)
     _ = ∑' q, ‖a q‖ := rfl
 
+/-- **Exact nuclear transport law.**  A weighted rational shift transports the `ℓ1` norm of
+its coefficient exactly into the Schatten-`1` norm.  The upper bound is Hilbert--Schmidt
+factorization; the reverse bound pairs the shift against the two permuted rational Hilbert
+bases. -/
+theorem ccmRationalMoritaWeightedShift_traceNorm_eq_lOne
+    (a : CCMRationalUnit → ℂ) (k : CCMRationalUnit)
+    (C : ℝ) (hC : 0 ≤ C) (ha : ∀ q, ‖a q‖ ≤ C)
+    (hsum : Summable (fun q => ‖a q‖)) :
+    _root_.RHTower.traceNorm H
+        (ccmRationalMoritaWeightedShift a k C hC ha) =
+      ∑' q, ‖a q‖ := by
+  let T := ccmRationalMoritaWeightedShift a k C hC ha
+  have htrace : T.IsTraceClass :=
+    ccmRationalMoritaWeightedShift_isTraceClass_of_summable
+      a k C hC ha hsum
+  have hmem := _root_.RHTower.IsTraceClass.memSchattenClass_one htrace
+  have hcpt : IsCompactOperator T :=
+    hmem.isCompactOperator one_pos
+  have hgNorm : ∀ q : CCMRationalUnit,
+      ccmRationalMoritaHilbertBasis (k * q) = 0 ∨
+        ‖ccmRationalMoritaHilbertBasis (k * q)‖ = 1 :=
+    fun q => Or.inr (ccmRationalMoritaHilbertBasis.orthonormal.1 (k * q))
+  have hgOrth : ∀ q r : CCMRationalUnit, q ≠ r →
+      inner ℂ (ccmRationalMoritaHilbertBasis (k * q))
+        (ccmRationalMoritaHilbertBasis (k * r)) = 0 := by
+    intro q r hqr
+    exact ccmRationalMoritaHilbertBasis.orthonormal.2
+      (fun h => hqr (mul_left_cancel h))
+  have hhNorm : ∀ q : CCMRationalUnit,
+      ccmRationalMoritaHilbertBasis q = 0 ∨
+        ‖ccmRationalMoritaHilbertBasis q‖ = 1 :=
+    fun q => Or.inr (ccmRationalMoritaHilbertBasis.orthonormal.1 q)
+  have hhOrth : ∀ q r : CCMRationalUnit, q ≠ r →
+      inner ℂ (ccmRationalMoritaHilbertBasis q)
+        (ccmRationalMoritaHilbertBasis r) = 0 :=
+    fun q r hqr => ccmRationalMoritaHilbertBasis.orthonormal.2 hqr
+  have hpair : ∀ q : CCMRationalUnit,
+      ‖inner ℂ (ccmRationalMoritaHilbertBasis (k * q))
+        (T (ccmRationalMoritaHilbertBasis q))‖ = ‖a (k * q)‖ := by
+    intro q
+    rw [ccmRationalMoritaHilbert_inner_basis]
+    simp [T, ccmRationalMoritaWeightedShift_basis,
+      ccmRationalMoritaHilbertBasis_apply]
+  have hlower : (∑' q, ‖a (k * q)‖) ≤ _root_.RHTower.traceNorm H T := by
+    apply Real.tsum_le_of_sum_le (fun q => norm_nonneg (a (k * q)))
+    intro s
+    calc
+      ∑ q ∈ s, ‖a (k * q)‖ =
+          ∑ q ∈ s, ‖inner ℂ (ccmRationalMoritaHilbertBasis (k * q))
+            (T (ccmRationalMoritaHilbertBasis q))‖ := by
+        apply Finset.sum_congr rfl
+        intro q hq
+        exact (hpair q).symm
+      _ ≤ _root_.RHTower.traceNorm H T :=
+        _root_.RHTower.sum_norm_inner_le_traceNorm hcpt
+          hmem.one_summable_approxNumber hgNorm hgOrth hhNorm hhOrth s
+  have hreindex : (∑' q, ‖a (k * q)‖) = ∑' q, ‖a q‖ := by
+    change (∑' q, ‖a ((Equiv.mulLeft k) q)‖) = _
+    exact (Equiv.mulLeft k).tsum_eq (fun q => ‖a q‖)
+  apply le_antisymm
+  · exact ccmRationalMoritaWeightedShift_traceNorm_le_lOne
+      a k C hC ha hsum
+  · rw [← hreindex]
+    exact hlower
+
 /-- A weighted shift is independent of the chosen certified uniform bound. -/
 theorem ccmRationalMoritaWeightedShift_congr_bound
     (a : CCMRationalUnit → ℂ) (k : CCMRationalUnit)
@@ -176,6 +241,27 @@ theorem ccmRationalMoritaWeightedShift_traceNorm_sub_le_lOne
       ((summable_norm_iff.mp hsumA).sub (summable_norm_iff.mp hsumD))
   rw [ccmRationalMoritaWeightedShift_sub]
   exact ccmRationalMoritaWeightedShift_traceNorm_le_lOne
+    (fun q => a q - d q) k (C + D) (add_nonneg hC hD)
+    (fun q => (norm_sub_le (a q) (d q)).trans
+      (add_le_add (ha q) (hd q))) hsumSub
+
+/-- **Exact trace-norm distance law.**  For a fixed shift label, Schatten-`1` distance is
+exactly coefficient `ℓ1` distance. -/
+theorem ccmRationalMoritaWeightedShift_traceNorm_sub_eq_lOne
+    (a d : CCMRationalUnit → ℂ) (k : CCMRationalUnit)
+    (C D : ℝ) (hC : 0 ≤ C) (hD : 0 ≤ D)
+    (ha : ∀ q, ‖a q‖ ≤ C) (hd : ∀ q, ‖d q‖ ≤ D)
+    (hsumA : Summable (fun q => ‖a q‖))
+    (hsumD : Summable (fun q => ‖d q‖)) :
+    _root_.RHTower.traceNorm H
+        (ccmRationalMoritaWeightedShift a k C hC ha -
+          ccmRationalMoritaWeightedShift d k D hD hd) =
+      ∑' q, ‖a q - d q‖ := by
+  have hsumSub : Summable (fun q => ‖a q - d q‖) :=
+    summable_norm_iff.mpr
+      ((summable_norm_iff.mp hsumA).sub (summable_norm_iff.mp hsumD))
+  rw [ccmRationalMoritaWeightedShift_sub]
+  exact ccmRationalMoritaWeightedShift_traceNorm_eq_lOne
     (fun q => a q - d q) k (C + D) (add_nonneg hC hD)
     (fun q => (norm_sub_le (a q) (d q)).trans
       (add_le_add (ha q) (hd q))) hsumSub

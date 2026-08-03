@@ -125,6 +125,7 @@ theorem primeDepthBVWoldGradedOccupationSupertracePair_source_cross
   push_cast
   rw [← primeDepthBVWoldConsecutiveIncrementArea_eq_curvature]
   rw [primeDepthBVWoldConsecutiveIncrementArea]
+  push_cast
   ring
 
 /-! ## Multiplicative anomaly and scalar counterboundary -/
@@ -146,8 +147,11 @@ theorem primeDepthBVWoldGradedDet2Anomaly_eq_supertraceExp
           (primeDepthBVWoldGradedOccupationSourceLeg a i j)
           (primeDepthBVWoldGradedOccupationCrossLeg j k)) := by
   rw [primeDepthBVWoldGradedOccupationSupertracePair_source_cross]
+  rw [← primeDepthBVWoldConsecutiveIncrementArea_eq_curvature]
   simp only [primeDepthBVWoldGradedDet2Anomaly, Complex.ofReal_exp,
     Complex.ofReal_neg, Complex.ofReal_mul]
+  congr 1
+  ring
 
 theorem primeDepthBVWoldGradedDet2Anomaly_pos
     (a : ℝ) (i j k : PrimeDepthBVWoldCell) :
@@ -197,11 +201,19 @@ theorem primeDepthBVWoldCovariantD1_comp_D0_add_gradedDet2Boundary
     primeDepthBVWoldCovariantD1 a
           (primeDepthBVWoldCovariantD0 a f) i j k +
         primeDepthBVWoldGradedDet2ScalarDescentBoundary a f i j k = 0 := by
-  rw [primeDepthBVWoldCovariantD1_comp_D0_apply,
-    primeDepthBVWoldGradedDet2ScalarDescentBoundary]
+  rw [primeDepthBVWoldCovariantD1_comp_D0_apply]
+  change
+    ((((primeDepthBVWoldTransport a i j *
+          primeDepthBVWoldTransport a j k -
+            primeDepthBVWoldTransport a i k : ℝ) : ℂ) * f k) +
+      ((primeDepthBVWoldTransport a i j *
+          primeDepthBVWoldTransport a j k : ℝ) : ℂ) *
+        ((primeDepthBVWoldGradedDet2Anomaly a i j k : ℂ) - 1) *
+          f k) = 0
   have h := primeDepthBVWoldTransport_mul_gradedDet2Anomaly a i j k
-  push_cast at h ⊢
-  linear_combination h * f k
+  have hC := congrArg (fun x : ℝ => (x : ℂ)) h
+  push_cast at hC ⊢
+  linear_combination hC * f k
 
 /-! ## Divisor resolution and the actual Xi conormal -/
 
@@ -260,12 +272,14 @@ theorem primeDepthBVWoldXiGradedDet2Boundary_leadingConormal_eq_zero_iff
     primeDepthBVWoldXiCovariant_square_scalarLeadingConormal_eq_zero_iff rho
   constructor
   · intro hb
+    change boundary = 0 at hb
     apply hsquare.mp
     rw [hb, add_zero] at hsum
     exact hsum
   · intro hline
     have hs : square = 0 := hsquare.mpr hline
     rw [hs, zero_add] at hsum
+    change boundary = 0
     exact hsum
 
 /-- Global triviality of the explicit counterboundary on the actual leading

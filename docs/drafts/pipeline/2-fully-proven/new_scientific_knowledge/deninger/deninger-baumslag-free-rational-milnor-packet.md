@@ -207,7 +207,10 @@
   `GaloisForLFunctions.RHTower.DeningerCycRedWordOfPow` (elements with a cyclically reduced power),
   `GaloisForLFunctions.RHTower.DeningerConjCycRed` (reducing an equality of powers to the cyclically
   reduced case),
-  `GaloisForLFunctions.RHTower.DeningerFactorConjOfPow` (elements with a short power)
+  `GaloisForLFunctions.RHTower.DeningerFactorConjOfPow` (elements with a short power),
+  `GaloisForLFunctions.RHTower.DeningerShortConj` (conjugating a factor element by a letter),
+  `GaloisForLFunctions.RHTower.DeningerCrossConjWord` (conjugating a factor element by a word
+  starting in another factor)
 
 ## Statement
 
@@ -2986,3 +2989,29 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   base elements or conjugates of factor elements, where the factor case
   `deningerRootAdjunction_pow_eq_of_factors` applies once the common conjugator is stripped.
   Matching the conjugators of the two elements in the second branch is the last step.
+- 2026-08-03 — **The case distinction for short conjugation.**  The branch of the dichotomy the
+  cyclically reduced case does not reach is the conjugacy of elements of the factors, and its
+  mechanism is one letter at a time.  `deningerConj_letter_same` is the harmless case: conjugating an
+  element of a factor by a letter of the same factor stays in that factor, the conjugate being the
+  conjugate computed inside it.  `deningerLen_conj_letter_cross` is the obstruction: conjugating by a
+  letter of a *different* factor produces a word of three alternating letters, none in the base
+  group, so its length is three and the conjugate is not short.
+  Together these say that a conjugator carrying a factor element to a short element cannot begin with
+  a letter of another factor.  That is the induction step of the conjugacy criterion for short
+  elements, which is what the remaining branch of the dichotomy needs: it forces the conjugator into
+  the factor times the base group, where `deningerPow_eq_of_factors_mix` — and for a root adjunction
+  at an isolated element, `deningerRootAdjunction_pow_eq_of_factors` — settles the equality.
+- 2026-08-03 — **The cross conjugation lemma, for a whole word.**  `deningerLen_conj_word_letter`
+  generalizes the single letter obstruction to an arbitrary conjugator: if the conjugator is a
+  reduced alternating word whose first letter lies outside the factor of the element being
+  conjugated, then the inverse word, the letter and the word meet without cancellation at either
+  junction — the junction indices are the first index of the conjugator on both sides, and both
+  differ from the factor — so the conjugate is a reduced word of `2|L| + 1` letters.
+  `deningerInvList_getLast_fst`, the observation that the last index of an inverse word is the first
+  index of the word, is what makes the left junction computable.
+  So a conjugator carrying a factor element to a short element must have its first letter in that
+  same factor, and by `deningerConj_letter_same` peeling that letter leaves a conjugation of the same
+  shape by a shorter word.  The induction that this sets up is the conjugacy criterion for short
+  elements, and its only escape is the step at which the conjugated element falls into the base
+  group — which for the group factor of a root adjunction is exactly what isolation of the adjoined
+  element controls.

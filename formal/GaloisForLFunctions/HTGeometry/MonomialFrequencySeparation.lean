@@ -129,6 +129,36 @@ theorem tupleCount_eq_of_frequency_eq [DecidableEq ι] {omega : ι → ℝ}
   rw [monomialFrequency_tupleCount, monomialFrequency_tupleCount]
   exact hfreq
 
+/-- **Rationally independent frequencies are pairwise distinct.** -/
+theorem injective_of_rationallyIndependentSequence [DecidableEq ι] {omega : ι → ℝ}
+    (h : RationallyIndependentSequence omega) : Function.Injective omega := by
+  classical
+  intro i j hij
+  by_contra hne
+  set n : ι →₀ ℤ := Finsupp.single i 1 - Finsupp.single j 1 with hn
+  have hcoeff : ∀ k, n k = (if k = i then (1 : ℤ) else 0) - (if k = j then (1 : ℤ) else 0) := by
+    intro k
+    simp [hn, Finsupp.single_apply, eq_comm]
+  have hsupp : n.support ⊆ ({i, j} : Finset ι) := by
+    intro k hk
+    by_contra hkij
+    have hki : k ≠ i := fun hcon => hkij (by simp [hcon])
+    have hkj : k ≠ j := fun hcon => hkij (by simp [hcon])
+    have hzero : n k = 0 := by
+      rw [hcoeff k, if_neg hki, if_neg hkj]
+      ring
+    exact (Finsupp.mem_support_iff.mp hk) hzero
+  have hdet : characterDetuning n omega = 0 := by
+    rw [characterDetuning_eq_sum omega n hsupp, Finset.sum_pair hne]
+    rw [hcoeff i, hcoeff j, if_pos rfl, if_neg (Ne.symm hne), if_pos rfl,
+      if_neg hne, hij]
+    push_cast
+    ring
+  have hzero : n = 0 := (characterDetuning_eq_zero_iff h n).mp hdet
+  have hi : n i = 0 := by rw [hzero]; rfl
+  rw [hcoeff i, if_pos rfl, if_neg hne] at hi
+  norm_num at hi
+
 end
 
 end GaloisForLFunctions.HTGeometry

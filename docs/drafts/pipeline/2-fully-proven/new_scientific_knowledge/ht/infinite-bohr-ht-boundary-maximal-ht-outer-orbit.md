@@ -2558,3 +2558,46 @@ The chain for (2) is now: a relation restricted to the real line is
 
 Left: the bookkeeping that assembles a relation into that shape and reads "all fibre sums vanish"
 as "the relation polynomial is zero".
+
+## Claim (2): a fibre is one multiset of indices
+
+`MonomialFrequencySeparation.lean` now carries the tuple side:
+
+    tupleCount n = sum_j single (n j) 1          -- the multiset a tuple uses
+    monomialFrequency_tupleCount : monomialFrequency omega (tupleCount n) = sum_j omega (n j)
+    tupleCount_eq_of_frequency_eq :
+      RationallyIndependentSequence omega -> sum_j omega (n j) = sum_j omega (n' j) ->
+      tupleCount n = tupleCount n'
+
+The frequency map is additive (`monomialFrequencyHom`) and sends a single to its frequency, so a
+tuple's frequency is the frequency of its multiset; rational independence then makes the multiset a
+function of the frequency.  Combined with `bohrCoefficient_expSeriesCarrier_fiber`, one Bohr
+coefficient of a monomial expansion sees exactly the tuples that use one fixed multiset -- finitely
+many of them, the permutations distributing that multiset over the jet orders.
+
+That is the last structural fact.  The remaining work on (2) is bookkeeping: assemble a relation into
+`sum_d t^d G_d(t) = 0` with `G_d` carriers, and read the vanishing of every fibre sum back as
+vanishing of the relation's coefficients.
+
+## Claim (2): rational independence gives distinct frequencies
+
+    injective_of_rationallyIndependentSequence :
+      RationallyIndependentSequence omega -> Function.Injective omega
+
+If two frequencies coincided, the integer character `single i 1 - single j 1` would have zero
+detuning, which `characterDetuning_eq_zero_iff` forbids.  This is the hypothesis every use of
+`bohrCoefficient_expSeriesCarrier` needs, and it was previously only available by assumption.
+
+### The remaining combinatorial core of (2), stated exactly
+
+With every structural piece in place, the descent at one degree `d` reads: for every frequency,
+
+    sum over monomials s of degree d, and over tuples n with sum_j omega(n_j) = nu,
+      c_s * prod_j a_{n_j} (i omega_{n_j})^{k_j(s)}  =  0.
+
+Rational independence makes the inner condition "the multiset of `n` is fixed", so the identity is a
+*symmetric function* identity in the finitely many variables `i omega_{i_1}, ..., i omega_{i_m}`,
+with one such identity for every choice of `m` indices with nonvanishing amplitudes.  Since the
+amplitude family has infinitely many nonzero terms and the frequencies are distinct, the classical
+step is: monomial symmetric functions of distinct exponent partitions are linearly independent, and
+a polynomial vanishing at infinitely many points is zero.  That is what is left to formalize.

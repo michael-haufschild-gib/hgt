@@ -575,7 +575,17 @@ coeffSum_le_one_add_defect_mul_norm       -- S <= (1 + D) |f(z)|, not (nu + C) |
 summable_index_deviation_normalised       -- the weighted normalised series converges absolutely
 tsum_index_weighted_re_eq                 -- weighted projection = mean-mode gap - weighted defect
 mul_logDeriv_sub_centralIndex_eq_div      -- z f'/f - nu = (weighted normalised) / (normalised)
+norm_eq_abs_re_of_im_eq_zero              -- a real complex number has norm |Re|
+div_ofReal_mul_unit                       -- dividing by M u is conjugating by u and scaling by M
+norm_mul_logDeriv_sub_centralIndex_eq     -- |z f'/f - nu| = |weighted projection| / ||W||
+tsum_normalised_defect_eq                 -- total misalignment = S/mu - ||sum c_n||
+abs_tsum_index_weighted_re_le             -- numerator <= (S/mu)|Lambda - nu| + E
 ```
+
+That is an **identity**, not an estimate: at a maximum of the modulus along the circle the deviation
+from the central index is exactly the weighted sum of the projections of the normalised coefficients,
+divided by the norm of their sum.  Combined with the weighted-projection split it separates into the
+mean-minus-mode gap and the weighted misalignment, both of which are already bounded.
 
 `Lambda(r)` is therefore sandwiched by the difference quotients of `log S` on either side, exactly as
 `nu(r)` is sandwiched by those of `log mu`.  Since `mu <= S <= mu (nu + C)`, the two sandwiches
@@ -1172,3 +1182,29 @@ triangularity package, which is exactly how the paper proof uses them.
   (the ratio is real, so its modulus is the modulus of its real part), the weighted-projection split
   from the previous step, and `S <= (1+D)|f(z)|`, it gives
   `|z f'/f - nu| <= (1+D)|Lambda - nu| + sum |n-nu| d_n`.
+- 2026-08-03 -- Two general reduction lemmas for the capstone.  `norm_eq_abs_re_of_im_eq_zero` turns
+  criticality into a statement about the real part; `div_ofReal_mul_unit` rewrites `V / (M u)` as
+  `conj(u) V / M`, which is how the denominator `sum c_n = ||W|| u` is removed.  Together with the
+  ratio identity these reduce `|z f'/f - nu|` to `|sum (n-nu) Re(conj(u) c_n)| / ||W||`, and the
+  numerator is exactly what the weighted-projection split evaluates.  Note the second lemma is proved
+  by cross-multiplying with `div_eq_div_iff` rather than by `field_simp`: `field_simp` normalises the
+  goal into a form where the `conj(u) u = 1` cancellation is no longer syntactically available.
+- 2026-08-03 -- The capstone reduction is proved, and it is an identity:
+
+  ```text
+  |z f'/f - nu|  =  | sum (n-nu) Re(conj(u) c_n) |  /  || sum c_n ||
+  ```
+
+  at any point where the logarithmic derivative is real -- in particular at a maximum of the modulus
+  along the circle.  Three traps in the assembly, all worth remembering: rewriting with
+  `hWdir : W = ||W|| u` rewrites the `W` inside `||W||` as well, so the rewrite must be confined with
+  `conv_lhs`; `Complex.reCLM.map_tsum` produces `reCLM (...)` which is only definitionally `(...).re`,
+  so it has to be introduced as a `have` with the `.re` form rather than rewritten into the goal; and
+  a stale olean for a dependency silently reports the new lemma as an unknown identifier -- the cure
+  is `lake build` on that one module, not on anything larger.
+- 2026-08-03 -- The numerator of the identity is bounded:
+  `|sum (n-nu) Re(conj(u) c_n)| <= (S/mu) |Lambda - nu| + E`, where `E` bounds the weighted
+  misalignment.  Also recorded the misalignment identity for an arbitrary unit direction
+  (`tsum_normalised_defect_eq`), which the earlier existence form did not give -- the final assembly
+  needs it for the *same* `u` that the identity uses, not for some `u` produced separately.  All that
+  remains is to divide by `||sum c_n|| = |f(z)|/mu` and apply `S <= (1+D)|f(z)|`.

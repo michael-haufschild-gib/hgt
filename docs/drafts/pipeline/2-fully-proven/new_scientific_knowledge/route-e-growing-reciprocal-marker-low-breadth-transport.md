@@ -2765,3 +2765,64 @@ Note what this does and does not give. The smooth-number restriction is essentia
 about squarefree integers all of whose prime factors lie below `N`, not about `∑_{n ≤ N} μ(n)/n`,
 which is a different (and already corpus-owned, `abs_sum_moebius_div_le_one`) quantity. The
 corresponding limit at `t ≠ 0` remains out of reach from this chain, for the reason recorded above.
+
+### Formal layer — at most one character can be close
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CharacterSeparation.lean`.
+
+- `mulDistSqPair_comm` — the pairwise distance is symmetric.
+- `mulDistSqPair_charFn` — **`D(n^{it}, n^{iu}; P)² = ∑_{p∈P}(1 − cos((t−u) log p))/p`**.
+- `char_separation_of_close` — if `D(f, n^{it};P) ≤ δ` and `D(f, n^{iu};P) ≤ δ` then
+  `D(n^{it}, n^{iu};P) ≤ 2δ`.
+- `sum_one_sub_cos_le_of_close` — explicitly, **`∑_{p∈P}(1 − cos((t−u) log p))/p ≤ 4δ²`**.
+
+All unconditional.
+
+This is why a Halász-type argument only ever needs one distinguished frequency: the set of characters
+within `δ` of a given `f` has diameter `2δ`, and `mulDistSqPair_charFn` converts that diameter bound
+into a genuine constraint on `t − u`.
+
+The hypothesis is only `‖f(p)‖ ≤ 1` — no multiplicativity — because the disc triangle inequality was
+proved without it. This is where that earlier work pays: with only the unimodular version, the result
+would not apply to μ.
+
+### Formal layer — quantitative frequency separation
+
+`formal/GaloisForLFunctions/RHTower/Sieve/FrequencySeparation.lean`.
+
+- `two_div_pi_sq_mul_sq_le_one_sub_cos` — Jordan's inequality as `1 − cos x ≥ (2/π²)x²` on `|x| ≤ π`.
+- `sq_mul_sum_sq_log_le_of_close` — **if `D(f, n^{it};P) ≤ δ` and `D(f, n^{iu};P) ≤ δ` and
+  `|(t−u) log p| ≤ π` on `P`, then `(t−u)² ∑_{p∈P}(log p)²/p ≤ 2π²δ²`.**
+
+Both unconditional.
+
+This converts the qualitative uniqueness statement into a bound on the frequency itself: since the
+weight `∑_p (log p)²/p` grows with `P`, the window of admissible `t − u` shrinks. A multiplicative
+function cannot be close to two genuinely distinct characters, with an explicit rate.
+
+The `|x| ≤ π` restriction is intrinsic, not an artefact — `1 − cos x` is periodic while `x²` is not,
+so no inequality of this shape can hold globally. It is carried as a hypothesis on `P` rather than
+silently assumed.
+
+mathlib's `Real.cos_le_one_sub_mul_cos_sq` supplied the inequality; `Real.mul_le_sin` (Jordan) is
+also present. Neither needed rebuilding.
+
+### Formal layer — the Halász dichotomy
+
+`formal/GaloisForLFunctions/RHTower/Sieve/HalaszDichotomy.lean`.
+
+- `eq_of_both_close` — **uniqueness**: under the separation hypothesis, two frequencies both within
+  `δ` of `f` are equal.
+- `norm_sum_smooth_le_exp_of_far` — **damping**: a frequency at distance at least `δ` gives
+  `‖∑_{n sf, P-smooth} f(n)n^{−it}/n‖ ≤ exp(∑_{p∈P}1/p + ∑_{p∈P}1/p² − δ²)`.
+
+Both unconditional.
+
+Together these are the dichotomy Halász's theorem rests on: for every frequency except at most one,
+the Dirichlet sum is damped, and the bound away from the exceptional frequency is uniform in `t`.
+
+What this does **not** do, stated plainly: it neither identifies the exceptional frequency nor gives
+any lower bound on `δ`. Those are the analytic content, and no part of the elementary chain built
+here supplies them. The formal layer now separates the two cleanly — the combinatorial/metric half is
+complete and unconditional, and the remaining gap is exactly the analytic half named on these cards
+as Menon 2026 / Matomäki–Radziwiłł.

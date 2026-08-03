@@ -184,6 +184,3 @@ theorem div_ofReal_mul_unit (V : ℂ) {u : ℂ} (hu : ‖u‖ = 1) {M : ℝ} (hM
 
 
 end GaloisForLFunctions.HTGeometry
-
-#print axioms GaloisForLFunctions.HTGeometry.norm_eq_abs_re_of_im_eq_zero
-#print axioms GaloisForLFunctions.HTGeometry.div_ofReal_mul_unit
