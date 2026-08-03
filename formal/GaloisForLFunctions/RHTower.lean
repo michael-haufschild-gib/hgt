@@ -1506,6 +1506,7 @@ import GaloisForLFunctions.RHTower.DeningerBaseHeadEq
 import GaloisForLFunctions.RHTower.DeningerCycRedEltEq
 import GaloisForLFunctions.RHTower.DeningerCycLenBound
 import GaloisForLFunctions.RHTower.DeningerPowCycRed
+import GaloisForLFunctions.RHTower.DeningerFactorConjPow
 import GaloisForLFunctions.RHTower.DeningerUnitaryFlowRieszPurity
 import GaloisForLFunctions.RHTower.DeningerUnitaryHarmonicAction
 import GaloisForLFunctions.RHTower.DeningerWeightOnePolarization
@@ -3261,6 +3262,7 @@ import GaloisForLFunctions.RHTower.Sieve.DistanceTriangle
 import GaloisForLFunctions.RHTower.Sieve.DistanceDiscTriangle
 import GaloisForLFunctions.RHTower.Sieve.DivisorSwap
 import GaloisForLFunctions.RHTower.Sieve.MoebiusLogRecursion
+import GaloisForLFunctions.RHTower.Sieve.ChebyshevMoebius
 import GaloisForLFunctions.RHTower.Sieve.ChernoffTails
 import GaloisForLFunctions.RHTower.Sieve.GeometricMeanDivisor
 import GaloisForLFunctions.RHTower.Sieve.IntervalMultiples

@@ -201,7 +201,9 @@
   words),
   `GaloisForLFunctions.RHTower.DeningerCycLenBound` (the length bound of the cyclic reduction),
   `GaloisForLFunctions.RHTower.DeningerPowCycRed` (an element whose power is cyclically reduced is
-  cyclically reduced)
+  cyclically reduced),
+  `GaloisForLFunctions.RHTower.DeningerFactorConjPow` (a conjugate of a factor element has no
+  cyclically reduced power)
 
 ## Statement
 
@@ -2920,3 +2922,20 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   of length one, where the length formula is unavailable because a single letter is not cyclically
   reduced; there the element is conjugate into a factor, and the factor case
   `deningerRootAdjunction_pow_eq_of_factors` applies instead.
+- 2026-08-03 — **The remaining branch is excluded.**  The cyclic reduction of an element returns
+  either a cyclic word of length at least two — the case the length formula and everything built on
+  it covers — or a single letter, in which case the element is a conjugate of a factor element and
+  the formula is unavailable.  `deningerFactorConj_pow_ne_cycRed` rules that branch out whenever the
+  power in question is a nonempty cyclically reduced word: every power of a conjugate of a factor
+  element is again a conjugate of a factor element, so by `deningerLen_conj_le` and
+  `deningerLen_of_le_one` its length never exceeds one plus twice the length of the conjugator, while
+  the powers of a nonempty cyclically reduced word have length growing linearly
+  (`deningerLen_pow`).  Raising to a high enough exponent — twice the conjugator length plus two —
+  contradicts the bound.
+  With that the case analysis of the reduction is complete.  Given `x^N = y^N`, cyclically reduce the
+  common power and conjugate both elements by the conjugator that does it; each of them then has a
+  cyclically reduced power, so by `deningerCycRed_of_pow` each is a cyclically reduced word, the
+  single letter branch being impossible by this cycle's theorem; the two words have the same length
+  because the powers do, and `deningerCycRedWord_pow_eq` identifies them.  Every ingredient of
+  Baumslag's theorem for a root adjunction at an isolated element is now proved; what is left is to
+  write the chain down.

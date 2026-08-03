@@ -170,6 +170,14 @@ theorem ExpSeriesNormallySummable.iteratedDeriv {a : ι → ℂ} {omega : ι →
 
 /-! ## Finite products -/
 
+theorem consEquiv_apply {m : ℕ} (p : ι × (Fin m → ι)) (j : Fin (m + 1)) :
+    (Fin.consEquiv (fun _ : Fin (m + 1) => ι) p) j
+      = Fin.cons (α := fun _ : Fin (m + 1) => ι) p.1 p.2 j := rfl
+
+theorem expChar_zero (t : ℝ) : expChar 0 t = 1 := by
+  simp [expChar]
+
+set_option maxHeartbeats 1000000 in
 theorem summable_norm_prod_expSeries : ∀ (m : ℕ) (b : Fin m → ι → ℂ),
     (∀ j, Summable fun i => ‖b j i‖) →
     Summable fun n : Fin m → ι => ‖∏ j, b j (n j)‖ := by
@@ -180,20 +188,21 @@ theorem summable_norm_prod_expSeries : ∀ (m : ℕ) (b : Fin m → ι → ℂ),
       exact Summable.of_finite
   | succ m ih =>
       intro b hb
-      have hrest := ih (fun j => b j.succ) (fun j => hb j.succ)
-      have hpair : Summable fun p : ι × (Fin m → ι) => ‖b 0 p.1 * ∏ j, b j.succ (p.2 j)‖ :=
-        Summable.mul_norm (hb 0) hrest
-      rw [← (Fin.consEquiv (fun _ : Fin (m + 1) => ι)).summable_iff]
+      have hrest : Summable fun n : Fin m → ι => ‖∏ j, b j.succ (n j)‖ :=
+        ih (fun j => b j.succ) (fun j => hb j.succ)
+      have hpair : Summable fun p : ι × (Fin m → ι) => ‖b 0 p.1 * ∏ j, b j.succ (p.2 j)‖ := by
+        have hmul : Summable fun p : ι × (Fin m → ι) =>
+            ‖b 0 p.1‖ * ‖∏ j, b j.succ (p.2 j)‖ :=
+          Summable.mul_of_nonneg (hb 0) hrest (fun i => norm_nonneg _) (fun n => norm_nonneg _)
+        refine hmul.congr fun p => ?_
+        rw [norm_mul]
+      have hiff := (Fin.consEquiv (fun _ : Fin (m + 1) => ι)).summable_iff
+        (f := fun n : Fin (m + 1) → ι => ‖∏ j, b j (n j)‖)
+      rw [← hiff]
       refine hpair.congr fun p => ?_
       show ‖b 0 p.1 * ∏ j, b j.succ (p.2 j)‖
         = ‖∏ j, b j ((Fin.consEquiv (fun _ : Fin (m + 1) => ι) p) j)‖
       simp only [consEquiv_apply, Fin.prod_univ_succ, Fin.cons_zero, Fin.cons_succ]
-
-theorem consEquiv_apply {m : ℕ} (p : ι × (Fin m → ι)) (j : Fin (m + 1)) :
-    (Fin.consEquiv (fun _ : Fin (m + 1) => ι) p) j = Fin.cons p.1 p.2 j := rfl
-
-theorem expChar_zero (t : ℝ) : expChar 0 t = 1 := by
-  simp [expChar]
 
 /-- **A finite product of exponential series is an exponential series indexed by tuples.**  The
 amplitudes multiply and the frequencies add. -/
@@ -206,8 +215,9 @@ theorem prod_expSeriesCarrier : ∀ (m : ℕ) (b : Fin m → ι → ℂ) (omega 
   induction m with
   | zero =>
       intro b omega _ t
-      rw [Fin.prod_univ_zero, expSeriesCarrier, tsum_unique, Fin.prod_univ_zero,
-        Fin.sum_univ_zero, expChar_zero]
+      rw [Fin.prod_univ_zero, expSeriesCarrier,
+        tsum_eq_single (default : Fin 0 → ι) (fun n hn => absurd (Subsingleton.elim n default) hn),
+        Fin.prod_univ_zero, Fin.sum_univ_zero, expChar_zero]
       simp
   | succ m ih =>
       intro b omega hb t
@@ -216,7 +226,8 @@ theorem prod_expSeriesCarrier : ∀ (m : ℕ) (b : Fin m → ι → ℂ) (omega 
       rw [Fin.prod_univ_succ, hrest,
         expSeriesCarrier_mul omega (fun n : Fin m → ι => ∑ j, omega (n j)) (hb 0) hprodsum t,
         expSeriesCarrier, expSeriesCarrier]
-      rw [← (Fin.consEquiv (fun _ : Fin (m + 1) => ι)).tsum_eq]
+      rw [← (Fin.consEquiv (fun _ : Fin (m + 1) => ι)).tsum_eq
+        (fun n : Fin (m + 1) → ι => (∏ j, b j (n j)) * expChar (∑ j, omega (n j)) t)]
       refine tsum_congr fun p => ?_
       have hprod : ∏ j, b j ((Fin.consEquiv (fun _ : Fin (m + 1) => ι) p) j)
           = b 0 p.1 * ∏ j, b j.succ (p.2 j) := by

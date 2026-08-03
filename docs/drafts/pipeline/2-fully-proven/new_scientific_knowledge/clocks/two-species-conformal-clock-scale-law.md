@@ -1328,10 +1328,28 @@ the induction hypothesis, since there the intermediate radius is `ρ₀` itself.
   to at most `c x^{m+1} y^{m+1}/(m+1)²`*. Both factorials of the recursion come from here, one from
   each characteristic direction, and they are exactly what compensates the derivative loss.
 
+`ClockStripStepOperator.lean` moves the operator itself into the sup-norm form, which is where the
+iteration should be run. The reason is the double integration: in a supremum norm
+
+`‖∫∫ F‖ ≤ ∫∫ ‖F‖`
+
+is the pointwise monotonicity of the integral, whereas in an `ℓ¹` norm it is an exchange of a sum
+and an integral. So the iterates are functions holomorphic on a strip, and the operator is the
+honest differential operator:
+
+- `clockStripStep V w = (w'' + V w)/4`;
+- `differentiableOn_clockStripStep` — it preserves holomorphy, since the derivative of a holomorphic
+  function on an open set is holomorphic;
+- **`norm_clockStripStep_le`** — *it maps radius `ρ'` to radius `ρ` with norm at most
+  `4/(ρ'-ρ)² + ‖V‖/4`*, by Cauchy's estimate for the second derivative together with the product
+  bound. This is the sup-norm counterpart of the coefficient estimate, and it is the form the
+  recursion consumes.
+
 Everything the construction needs is now proved: the algebra estimate, the derivative loss in both
-forms, the exact step identity, the convergence bound, the step operator, the recursion, the double
-integration, and both halves of the synthesis dictionary. What remains is to define the iterates
-themselves, assemble these into the step hypothesis, and identify the limit with a clock probe.
+forms, the step operator in both forms, the exact step identity, the convergence bound, the
+recursion, the double integration, and both halves of the synthesis dictionary. What remains is to
+define the iterates themselves, assemble these into the step hypothesis, and identify the limit
+with a clock probe.
 
 The first genuinely coupled target this reaches is dimension three: a potential
 `V(x⁰, x¹, x²)` with arbitrary continuously differentiable dependence on the null coordinates and

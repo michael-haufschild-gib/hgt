@@ -455,6 +455,7 @@ formal/GaloisForLFunctions/HTGeometry/MaximumTermLogarithmicDerivative.lean (new
 formal/GaloisForLFunctions/HTGeometry/TriangleInequalityDefect.lean (new)
 formal/GaloisForLFunctions/HTGeometry/CircleMaximumCriticality.lean (new)
 formal/GaloisForLFunctions/HTGeometry/DiscreteJensenExp.lean (new)
+formal/GaloisForLFunctions/HTGeometry/MeanIndexComparison.lean (new)
 formal/GaloisForLFunctions/HTGeometry/BorelGrowthLemma.lean (already existed; extended)
 ```
 
@@ -568,6 +569,8 @@ meanIndex_mul_log_le_log_coeffSum_sub     -- Lambda(r) log(s/r) <= log S(s) - lo
 meanIndex_le_slope, slope_le_meanIndex    -- Lambda(r) sits between adjacent slopes of log S
 meanIndex_le_centralIndex_add             -- Lambda(r) <= nu(s) + log(nu(s')+C)/log(s/r)
 centralIndex_sub_le_meanIndex             -- Lambda(r) >= nu(t) - log(nu(r)+C)/log(r/t)
+abs_meanIndex_sub_centralIndex_le         -- |Lambda(r) - nu(r)| <= window width + two logs
+tsum_index_sub_centralIndex_mul_normalised_norm -- (S/mu)(Lambda - nu) as a normalised first moment
 ```
 
 `Lambda(r)` is therefore sandwiched by the difference quotients of `log S` on either side, exactly as
@@ -1114,3 +1117,23 @@ triangularity package, which is exactly how the paper proof uses them.
   `MaximumTermLogarithmicDerivative.lean` in ~12s.  Method worth reusing: remove every bump at once,
   compile once, and re-add only at the line the timeout names -- cascading "unknown constant" errors
   downstream of the real failure are not additional sites.
+- 2026-08-03 -- Combined the two one-sided bounds into
+  `|Lambda(r) - nu(r)| <= (nu(s) - nu(t)) + log(nu(s')+C)/log(s/r) + log(nu(r)+C)/log(r/t)`.  Both
+  corrections are nonnegative and the central index is monotone, so each direction of the absolute
+  value follows from one of the one-sided bounds by discarding the other correction.  The mean index
+  and the modal index are therefore separated by the window width plus two logarithms -- no longer by
+  anything of size `nu`.
+- 2026-08-03 -- Split the mean-index material into `MeanIndexComparison.lean` (base module back under
+  the 1500-line guideline at 1483 lines) and added the identity
+  `sum (n - nu) ||c_n|| = (S/mu)(Lambda - nu)` connecting the mean-mode gap to the normalised
+  coefficients.
+
+  **A limitation of this route, recorded so it is not re-attempted.**  At a circle maximum the
+  deviation is `Re(conj(u) V)/||W||` with `Re(conj(u) V) = sum (n-nu) Re(conj(u) c_n)`, and the
+  temptation is to split `Re(conj(u) c_n) = ||c_n|| - d_n` and bound the two pieces separately.  That
+  fails: the first piece is `(S/mu)(Lambda - nu)`, and after dividing by `||W|| = M/mu` it is
+  `(S/M)(Lambda - nu)` with `S/M` as large as `nu`, so one would need `Lambda - nu = o(1)` rather
+  than the true `O(sqrt(nu))`.  The split is lossy because `Re(conj(u) c_n)` can be negative and the
+  two pieces cancel each other; bounding them separately discards exactly that cancellation.  The
+  weighted sum has to be estimated with the phases intact -- which is what the local expansion and
+  the transverse bounds are for.

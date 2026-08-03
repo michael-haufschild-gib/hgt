@@ -39,7 +39,7 @@ theorem differentiableOn_clockStripStep {ρ : ℝ} {V w : ℂ → ℂ}
 
 /-- **The estimate of the step operator in the scale.** Two derivatives cost two powers of the gap;
 the potential contributes its supremum. -/
-theorem norm_clockStripStep_le {ρ ρ' Mv Mw : ℝ} (hρ : ρ < ρ') (hMv0 : 0 ≤ Mv) (hMw0 : 0 ≤ Mw)
+theorem norm_clockStripStep_le {ρ ρ' Mv Mw : ℝ} (hρ : ρ < ρ') (hMv0 : 0 ≤ Mv)
     {V w : ℂ → ℂ} (hw : DifferentiableOn ℂ w (imStrip ρ'))
     (hMw : ∀ z ∈ imStrip ρ', ‖w z‖ ≤ Mw) (hMv : ∀ z ∈ imStrip ρ', ‖V z‖ ≤ Mv)
     {z : ℂ} (hz : |z.im| ≤ ρ) :

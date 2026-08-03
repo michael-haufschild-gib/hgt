@@ -2554,3 +2554,47 @@ The recursion is the identity the mean-value theory turns on: it expresses the l
 about `f` at primes into information about its partial sums. Complete multiplicativity is used
 exactly once, to split `f(m) = f(d) f(m/d)` — for merely multiplicative `f` the same shape holds
 with `Λ` replaced by the Dirichlet inverse `f^{-1} * (f·log)`, which is not built here.
+
+### Formal layer — the Möbius log recursion
+
+`formal/GaloisForLFunctions/RHTower/Sieve/MoebiusLogRecursion.lean`.
+
+- `one_pmul_log` — the logarithmic derivation kills the convolution identity.
+- `moebius_pmul_log` — **`μ·log = −(Λ * μ)`**.
+- `moebius_mul_log_apply` — pointwise: `μ(n) log n = −∑_{d ∣ n} Λ(d) μ(n/d)`.
+- `sum_moebius_mul_log_eq` — **the recursion**:
+  `∑_{m ≤ N} μ(m) log m = −∑_{d ≤ N} Λ(d) ∑_{k ≤ N/d} μ(k)`,
+  the log-weighted Möbius sum expressed through the Mertens function on the ranges `N/d`.
+
+All unconditional.
+
+This is the identity these cards actually need. `sum_mul_log_eq_vonMangoldt` (previous section)
+assumes complete multiplicativity, which **μ does not have** — `μ(4) = 0` while `μ(2)² = 1` — so it
+does not apply to μ at all. The replacement is obtained by applying the logarithmic derivation to
+`μ * ζ = 1`: the derivation kills the identity element, `ζ·log = log` and `μ * log = Λ`, giving
+`(μ·log) * ζ = −Λ`, and multiplying by μ finishes.
+
+`RHTower.pmul_log_mul` and `RHTower.zeta_pmul_log` (`DirichletLogDerivation.lean`, built for
+Selberg's identity) supplied the derivation; only the Möbius specialisation was missing.
+
+### Formal layer — Chebyshev's ψ through the Möbius function
+
+`formal/GaloisForLFunctions/RHTower/Sieve/ChebyshevMoebius.lean`.
+
+- `vonMangoldt_eq_sum_moebius_mul_log` — `Λ(n) = ∑_{d ∣ n} μ(d) log(n/d)`.
+- `vonMangoldt_eq_sum_log_mul_moebius` — `Λ(n) = ∑_{d ∣ n} log d · μ(n/d)`.
+- `sum_vonMangoldt_eq_moebius_logSummatory` — **`ψ(N) = ∑_{d ≤ N} μ(d) ∑_{k ≤ N/d} log k`**.
+- `sum_vonMangoldt_eq_log_mertens` — **`ψ(N) = ∑_{d ≤ N} log d ∑_{k ≤ N/d} μ(k)`**.
+
+All unconditional.
+
+These are the two elementary bridges between the prime count and the Möbius function. The first
+carries a cancellation hypothesis on μ into ψ (with Stirling controlling the inner log summatory);
+the second carries prime information back to the Mertens function. Both are exact finite identities;
+no estimate is made.
+
+Corpus check: `RHTower.MobiusLogDivisorParaproduct` already applies `μ * log = Λ` but deliberately
+keeps the result in *pair-labelled* antidiagonal form and never performs the reindexing, so the
+summed identities above were absent. `RHTower.MoebiusFloorSummatory` already owns
+`moebius_floor_summatory` (`∑_{d≤N} μ(d)⌊N/d⌋ = 1`) and `abs_sum_moebius_div_le_one`
+(`|∑_{d≤N} μ(d)/d| ≤ 1`) — those were not rebuilt.
