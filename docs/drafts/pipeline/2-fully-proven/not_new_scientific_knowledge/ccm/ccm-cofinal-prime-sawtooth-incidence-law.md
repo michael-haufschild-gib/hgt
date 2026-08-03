@@ -324,11 +324,62 @@ not new scientific knowledge.
 - M. Th. Rassias, L. Toth, *Trigonometric representations of generalized Dedekind and Hardy sums
   via the discrete Fourier transform*, arXiv:1512.01466.
 
-## Lean decision
+## Lean status
 
-The formal tree contains related Euler--Maclaurin sawtooth lemmas but no periodic `L2` Fourier
-series interface or von Mangoldt Euler logarithmic derivative. Formalizing only the bounded
-primitive calculation would not certify the radial-prolate remainder. No Lean file is added.
+**Superseded, 2026-08-03.**  Being formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/CCMSawtoothDilationIncidence.lean`.  The previous decision said no
+periodic `L²` Fourier interface exists in the tree, so nothing could be certified.  That was the wrong
+frame: `S` is the `2π`-periodic extension of a linear ramp, so taking
+
+```text
+S(x) = pi * (1/2 - {x/(2 pi)})
+```
+
+as the definition makes `(1)` immediate and the whole mean computation `(2)` an exact interval
+integral, with no Parseval and no `L²` Fourier basis.  What the card derives from Parseval is derived
+here from one change of variables and `n` polynomial integrals.
+
+Proved so far, all unconditional (`#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`):
+
+- `sawUnit`, `sawWave`, **`sawWave_eq_of_mem_Ioo`**, **`abs_sawWave_le`**, `sawWave_add_two_pi` —
+  equation `(1)`, in closed form, with the sup bound and the period.
+- **`integral_sawUnit_dilate_piece`**, **`integral_sawUnit_dilate`**, **`integral_sawWave_dilate`** —
+  equation `(2)`.  The `j`-th period of the fast factor contributes exactly `1/(12 n²)`, uniformly in
+  `j`, and there are `n` of them.  The card's `(7)` uses Parseval on the sine series; the Lean proof
+  instead pushes the dilation out of the integrand, translates each period to the origin, and
+  integrates a quadratic — the mean is elementary, not spectral.
+- `integral_quadratic`, `integral_congr_of_Ioo`, `intervalIntegrable_sawUnit`,
+  `intervalIntegrable_sawUnit_dilate` — the integration infrastructure.  Interval integrals do not see
+  the endpoint where the periodic closed form breaks, which is why the discontinuity of `S` costs
+  nothing.
+- **`periodic_sawUnitDilate`**, `sawDilatePrimitive`, **`sawDilatePrimitive_periodic`**,
+  **`abs_sawDilatePrimitive_le`** — equations `(3)`--`(4)`.  The centered product has period one and
+  mean zero, hence a periodic primitive, and `1/3` is an admissible uniform constant in unit
+  normalization (the card's `C₀ = 2π³/3` is the same statement in the `2π` normalization and is not
+  sharp).
+- **`integral_sawUnit_comp_mul`**, **`abs_integral_sawUnit_le`** — equation `(24)`: dilation divides
+  the sawtooth primitive by the dilation, and the undilated primitive is bounded by `1/8` on the whole
+  line.  The card asserts the sup norm identity; the Lean version proves the scaling identity plus the
+  explicit bound `1/8`, which is what the estimate consumes.
+- `endpointProfile`, **`endpointProfile_mul_shift`** — equations `(10)` and `(15)`.
+- **`sum_one_div_Icc_le_log`**, **`sum_vonMangoldt_div_le_log_sq`** — equation `(16)`, sharpened to an
+  inequality with no error term: `∑_{2 ≤ n ≤ N} 1/n ≤ log N` follows from
+  `log(N/(N+1)) ≤ -1/(N+1)`, so the visible weight is at most `log² N` exactly.
+- **`lseriesSummable_vonMangoldt_two`**, **`lseries_vonMangoldt_two`** — equation `(17)`, absolute
+  summability and the value `-ζ'(2)/ζ(2)`, from mathlib's von Mangoldt L-series identity.
+
+Still to formalize, and each is a genuine analytic step rather than a missing interface:
+
+- equations `(5)`--`(6)`: the averaging estimate.  The card integrates by parts using `(9)`, which
+  holds only almost everywhere because `S` jumps.  The Lean route is a distributional integration by
+  parts against a bounded primitive, proved by Fubini on the triangle `{a ≤ t ≤ u ≤ b}`, so that only
+  the smooth factor is ever differentiated.  This is the one piece of missing infrastructure.
+- equations `(12)`--`(14)` and `(18)`--`(19)`: the growing-cutoff synthesis, which is `(5)`--`(6)`
+  summed against the arithmetic weight already proved.
+- equations `(20)`--`(23)`: the full exterior series.  `(21)` is a Stieltjes integration by parts
+  against the bounded variation of `L x^{-2} S(x)` on `[L, ∞)`, and `(23)` is dominated convergence
+  over the weight `Λ(n)/n²` already shown summable.
 
 ## Gates
 
@@ -337,6 +388,17 @@ primitive calculation would not certify the radial-prolate remainder. No Lean fi
 - [x] growing von Mangoldt cutoff summed
 - [x] full exterior von Mangoldt series dominated and summed
 - [x] exact Euler scalar identified
+- [x] Lean: closed form, sup bound and period of the sawtooth `(1)` unconditional
+- [x] Lean: exact integer-dilation mean `(2)` unconditional, without Parseval
+- [x] Lean: bounded zero-mean periodic primitive `(3)`--`(4)` unconditional
+- [x] Lean: dilated primitive scaling and bound `(24)` unconditional
+- [x] Lean: endpoint profile shift identity `(10)`, `(15)` unconditional
+- [x] Lean: visible arithmetic weight bound `(16)` unconditional, with no error term
+- [x] Lean: Euler logarithmic-derivative moment `(17)` unconditional
+- [ ] Lean: distributional integration by parts against a bounded primitive
+- [ ] Lean: averaging estimate `(5)`--`(6)` unconditional
+- [ ] Lean: growing-cutoff synthesis `(12)`--`(14)`, `(18)`--`(19)` unconditional
+- [ ] Lean: full exterior bound and limit `(20)`--`(23)` unconditional
 - [ ] actual constrained-prolate endpoint amplitude asymptotics
 - [ ] subleading/interior incidence estimate beyond the one-moment leading layer
 - [ ] true Weil Rayleigh-excess or parity-margin transfer

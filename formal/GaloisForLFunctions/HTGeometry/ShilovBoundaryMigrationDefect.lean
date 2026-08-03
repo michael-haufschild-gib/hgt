@@ -362,6 +362,159 @@ def boundaryMismatch (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
     ∀ n, J n :=
   fun n => ⟨bond n (b (n + 1)) - b n, hmod n⟩
 
+/-- Sequences that are coherent modulo the designated boundary submodules. -/
+def compatibleModuloSubmodule (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n)) : Submodule 𝕜 (∀ n, A n) where
+  carrier := {b | ∀ n, bond n (b (n + 1)) - b n ∈ J n}
+  zero_mem' := by simp
+  add_mem' := by
+    intro x y hx hy n
+    have h := (J n).add_mem (hx n) (hy n)
+    convert h using 1
+    simp only [Pi.add_apply, map_add]
+    abel
+  smul_mem' := by
+    intro c x hx n
+    have h := (J n).smul_mem c (hx n)
+    convert h using 1
+    simp only [Pi.smul_apply, map_smul, smul_sub]
+
+/-- Coordinatewise product of boundary submodules. -/
+abbrev productSubmodule (J : ∀ n, Submodule 𝕜 (A n)) :
+    Submodule 𝕜 (∀ n, A n) :=
+  Submodule.pi Set.univ J
+
+/-- Boundary-valued representatives inside the space of sequences coherent modulo boundary. -/
+def compatibleProductSubmodule (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n)) :
+    Submodule 𝕜 (compatibleModuloSubmodule A bond J) :=
+  (productSubmodule A J).comap (compatibleModuloSubmodule A bond J).subtype
+
+/-- Compatible quotient classes represented intrinsically as boundary-compatible sequences modulo
+coordinatewise boundary perturbations. -/
+abbrev CompatibleClassSpace (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n)) : Type v :=
+  compatibleModuloSubmodule A bond J ⧸ compatibleProductSubmodule A bond J
+
+/-- Linear boundary mismatch on the representative space. -/
+def representativeBoundary (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n)) :
+    compatibleModuloSubmodule A bond J →ₗ[𝕜] (∀ n, J n) where
+  toFun b n := ⟨bond n (b.1 (n + 1)) - b.1 n, by
+    have hb := b.property
+    change ∀ n, bond n (b.1 (n + 1)) - b.1 n ∈ J n at hb
+    exact hb n⟩
+  map_add' x y := by
+    funext n
+    apply Subtype.ext
+    change bond n (x.1 (n + 1) + y.1 (n + 1)) - (x.1 n + y.1 n) =
+      (bond n (x.1 (n + 1)) - x.1 n) + (bond n (y.1 (n + 1)) - y.1 n)
+    rw [map_add]
+    abel
+  map_smul' c x := by
+    funext n
+    apply Subtype.ext
+    change bond n (c • x.1 (n + 1)) - c • x.1 n =
+      c • (bond n (x.1 (n + 1)) - x.1 n)
+    simp only [map_smul, smul_sub]
+
+/-- Connecting map from compatible quotient classes to the derived boundary obstruction. -/
+def boundaryConnectingMap (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n) :
+    CompatibleClassSpace A bond J →ₗ[𝕜]
+      DerivedLimitOne (fun n => J n) (restrictedBond A bond J hstable) :=
+  (compatibleProductSubmodule A bond J).mapQ
+    (LinearMap.range
+      (inverseDifference (fun n => J n) (restrictedBond A bond J hstable)))
+    (representativeBoundary A bond J) (by
+      intro x hx
+      change x.1 ∈ productSubmodule A J at hx
+      rw [Submodule.mem_pi] at hx
+      change representativeBoundary A bond J x ∈
+        LinearMap.range
+          (inverseDifference (fun n => J n) (restrictedBond A bond J hstable))
+      let j : ∀ n, J n := fun n =>
+        ⟨-x.1 n, (J n).neg_mem (hx n (Set.mem_univ n))⟩
+      refine ⟨j, ?_⟩
+      funext n
+      apply Subtype.ext
+      change (-x.1 n) - bond n (-x.1 (n + 1)) =
+        bond n (x.1 (n + 1)) - x.1 n
+      rw [map_neg]
+      abel)
+
+/-- Linear inverse limit, realized as the kernel of the Roos difference. -/
+abbrev InverseLimit (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n) : Type v :=
+  LinearMap.ker (inverseDifference A bond)
+
+/-- A coherent sequence is, in particular, coherent modulo every stable boundary system. -/
+def coherentRepresentative (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n)) :
+    InverseLimit A bond →ₗ[𝕜] compatibleModuloSubmodule A bond J where
+  toFun a := ⟨a.1, by
+    intro n
+    have hn := congrFun a.property n
+    change a.1 n - bond n (a.1 (n + 1)) = 0 at hn
+    have hzero : bond n (a.1 (n + 1)) - a.1 n = 0 := by
+      rw [sub_eq_zero]
+      exact (sub_eq_zero.mp hn).symm
+    rw [hzero]
+    exact (J n).zero_mem⟩
+  map_add' x y := by rfl
+  map_smul' c x := by rfl
+
+/-- Natural map from coherent sequences to compatible boundary-quotient classes. -/
+def coherentClassMap (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n)) :
+    InverseLimit A bond →ₗ[𝕜] CompatibleClassSpace A bond J :=
+  (compatibleProductSubmodule A bond J).mkQ.comp
+    (coherentRepresentative A bond J)
+
+/-- Coherent boundary sequences, i.e. the inverse limit of the boundary submodules. -/
+def inverseLimitBoundarySubmodule (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n)) : Submodule 𝕜 (InverseLimit A bond) :=
+  (productSubmodule A J).comap (LinearMap.ker (inverseDifference A bond)).subtype
+
+/-- Algebraic local boundary quotient `(lim Aₙ)/(lim Jₙ)`. -/
+abbrev LocalBoundaryQuotient (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n)) : Type v :=
+  InverseLimit A bond ⧸ inverseLimitBoundarySubmodule A bond J
+
+/-- Canonical comparison from the local boundary quotient to compatible stage-quotient classes. -/
+def localBoundaryComparison (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n)) :
+    LocalBoundaryQuotient A bond J →ₗ[𝕜] CompatibleClassSpace A bond J :=
+  (inverseLimitBoundarySubmodule A bond J).liftQ
+    (coherentClassMap A bond J) (by
+      intro x hx
+      rw [LinearMap.mem_ker]
+      change Submodule.Quotient.mk (coherentRepresentative A bond J x) = 0
+      rw [Submodule.Quotient.mk_eq_zero]
+      change x.1 ∈ productSubmodule A J at hx
+      change (coherentRepresentative A bond J x).1 ∈ productSubmodule A J
+      exact hx)
+
+/-- The canonical comparison is always injective. -/
+theorem localBoundaryComparison_injective
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n)) :
+    Function.Injective (localBoundaryComparison A bond J) := by
+  rw [← LinearMap.ker_eq_bot]
+  apply le_antisymm
+  · intro y hy
+    rw [Submodule.mem_bot]
+    induction y using Submodule.Quotient.induction_on with
+    | _ x =>
+      change coherentClassMap A bond J x = 0 at hy
+      change Submodule.Quotient.mk (coherentRepresentative A bond J x) = 0 at hy
+      rw [Submodule.Quotient.mk_eq_zero] at hy
+      rw [Submodule.Quotient.mk_eq_zero]
+      change x.1 ∈ productSubmodule A J
+      change (coherentRepresentative A bond J x).1 ∈ productSubmodule A J at hy
+      exact hy
+  · exact bot_le
+
 /-- Representatives can be corrected to a coherent sequence exactly when their boundary
 mismatch is a Roos coboundary.  This is the elementwise derived-limit obstruction law. -/
 theorem exists_coherent_representatives_iff_mismatch_mem_range
@@ -408,6 +561,90 @@ theorem exists_coherent_representatives_iff_mismatch_mem_range
             bond n (j (n + 1)) := by rw [hn']
         _ = b n + j n := by abel
 
+/-- Universal derived-limit law at the middle term: a compatible boundary-quotient class has
+zero connecting class exactly when it comes from a coherent sequence. -/
+theorem boundarySequence_exact
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n) :
+    Function.Exact (coherentClassMap A bond J)
+      (boundaryConnectingMap A bond J hstable) := by
+  intro y
+  induction y using Submodule.Quotient.induction_on with
+  | _ b =>
+    constructor
+    · intro hy
+      change Submodule.Quotient.mk (representativeBoundary A bond J b) = 0 at hy
+      rw [Submodule.Quotient.mk_eq_zero] at hy
+      have hmod : ∀ n, bond n (b.1 (n + 1)) - b.1 n ∈ J n := by
+        have hb := b.property
+        change ∀ n, bond n (b.1 (n + 1)) - b.1 n ∈ J n at hb
+        exact hb
+      have hmismatch : boundaryMismatch A bond J b.1 hmod ∈
+          LinearMap.range
+            (inverseDifference (fun n => J n)
+              (restrictedBond A bond J hstable)) := by
+        have heq : boundaryMismatch A bond J b.1 hmod =
+            representativeBoundary A bond J b := by
+          funext n
+          apply Subtype.ext
+          rfl
+        rw [heq]
+        exact hy
+      rcases (exists_coherent_representatives_iff_mismatch_mem_range
+        A bond J hstable b.1 hmod).mpr hmismatch with ⟨a, haJ, hcoh⟩
+      have hker : inverseDifference A bond a = 0 := by
+        funext n
+        change a n - bond n (a (n + 1)) = 0
+        rw [hcoh]
+        exact sub_self _
+      let aLim : InverseLimit A bond := ⟨a, hker⟩
+      refine ⟨aLim, ?_⟩
+      change Submodule.Quotient.mk (coherentRepresentative A bond J aLim) =
+        Submodule.Quotient.mk b
+      rw [Submodule.Quotient.eq]
+      change (fun n => a n - b.1 n) ∈ productSubmodule A J
+      rw [Submodule.mem_pi]
+      intro n _
+      exact haJ n
+    · rintro ⟨a, ha⟩
+      rw [← ha]
+      change Submodule.Quotient.mk
+        (representativeBoundary A bond J (coherentRepresentative A bond J a)) = 0
+      rw [Submodule.Quotient.mk_eq_zero]
+      have hzero : representativeBoundary A bond J
+          (coherentRepresentative A bond J a) = 0 := by
+        funext n
+        apply Subtype.ext
+        have hn := congrFun a.property n
+        change a.1 n - bond n (a.1 (n + 1)) = 0 at hn
+        change bond n (a.1 (n + 1)) - a.1 n = 0
+        rw [sub_eq_zero]
+        exact (sub_eq_zero.mp hn).symm
+      rw [hzero]
+      exact (LinearMap.range
+        (inverseDifference (fun n => J n)
+          (restrictedBond A bond J hstable))).zero_mem
+
+/-- Exact derived Shilov-limit sequence
+`0 → (lim Aₙ)/(lim Jₙ) → lim(Aₙ/Jₙ) → lim¹ Jₙ` in its intrinsic representative model. -/
+theorem localBoundaryDerivedSequence_exact
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n) :
+    Function.Exact (localBoundaryComparison A bond J)
+      (boundaryConnectingMap A bond J hstable) := by
+  intro y
+  constructor
+  · intro hy
+    rcases (boundarySequence_exact A bond J hstable y).mp hy with ⟨a, ha⟩
+    exact ⟨Submodule.Quotient.mk a, ha⟩
+  · rintro ⟨z, hz⟩
+    induction z using Submodule.Quotient.induction_on with
+    | _ a =>
+      apply (boundarySequence_exact A bond J hstable y).mpr
+      exact ⟨a, hz⟩
+
 /-- The canonical derived Shilov class of a compatible family of quotient representatives. -/
 def boundaryObstruction (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
     (J : ∀ n, Submodule 𝕜 (A n))
@@ -450,6 +687,81 @@ theorem inverseDifference_surjective
   rw [hstep]
   abel
 
+/-- Surjective cover bonding maps make the derived boundary connecting map onto.  Together with
+`boundarySequence_exact`, this is the universal right-hand exact sequence for local boundary
+migration. -/
+theorem boundaryConnectingMap_surjective
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n)
+    (hsurj : ∀ n, Function.Surjective (bond n)) :
+    Function.Surjective (boundaryConnectingMap A bond J hstable) := by
+  classical
+  intro z
+  induction z using Submodule.Quotient.induction_on with
+  | _ c =>
+    let step : ∀ n, A n → A (n + 1) :=
+      fun n x => Classical.choose (hsurj n (x + (c n : A n)))
+    let b : ∀ n, A n := fun n => Nat.rec 0 (fun k xk => step k xk) n
+    have hstep (n : ℕ) : bond n (step n (b n)) = b n + (c n : A n) :=
+      Classical.choose_spec (hsurj n (b n + (c n : A n)))
+    have hmod : ∀ n, bond n (b (n + 1)) - b n ∈ J n := by
+      intro n
+      rw [show b (n + 1) = step n (b n) by rfl, hstep]
+      simpa only [add_sub_cancel_left] using (c n).2
+    let br : compatibleModuloSubmodule A bond J := ⟨b, hmod⟩
+    refine ⟨Submodule.Quotient.mk br, ?_⟩
+    change Submodule.Quotient.mk (representativeBoundary A bond J br) =
+      Submodule.Quotient.mk c
+    apply congrArg Submodule.Quotient.mk
+    funext n
+    apply Subtype.ext
+    change bond n (b (n + 1)) - b n = (c n : A n)
+    rw [show b (n + 1) = step n (b n) by rfl, hstep]
+    exact add_sub_cancel_left _ _
+
+/-- Universal short exact derived Shilov-limit law for a countable tower with surjective cover
+bonding maps. -/
+theorem localBoundaryDerivedSequence_shortExact
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n)
+    (hsurj : ∀ n, Function.Surjective (bond n)) :
+    Function.Injective (localBoundaryComparison A bond J) ∧
+      Function.Exact (localBoundaryComparison A bond J)
+        (boundaryConnectingMap A bond J hstable) ∧
+      Function.Surjective (boundaryConnectingMap A bond J hstable) :=
+  ⟨localBoundaryComparison_injective A bond J,
+    localBoundaryDerivedSequence_exact A bond J hstable,
+    boundaryConnectingMap_surjective A bond J hstable hsurj⟩
+
+/-- The local boundary comparison is onto exactly when the global derived boundary obstruction
+vanishes. -/
+theorem localBoundaryComparison_surjective_iff
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n)
+    (hsurj : ∀ n, Function.Surjective (bond n)) :
+    Function.Surjective (localBoundaryComparison A bond J) ↔
+      Subsingleton
+        (DerivedLimitOne (fun n => J n) (restrictedBond A bond J hstable)) := by
+  constructor
+  · intro hcomparison
+    constructor
+    intro x y
+    apply sub_eq_zero.mp
+    let z := x - y
+    rcases boundaryConnectingMap_surjective A bond J hstable hsurj z with ⟨c, hc⟩
+    rcases hcomparison c with ⟨a, ha⟩
+    have hzero : boundaryConnectingMap A bond J hstable c = 0 :=
+      (localBoundaryDerivedSequence_exact A bond J hstable c).mpr ⟨a, ha⟩
+    change z = 0
+    exact hc.symm.trans hzero
+  · intro hderived c
+    have hzero : boundaryConnectingMap A bond J hstable c = 0 :=
+      Subsingleton.elim _ _
+    exact (localBoundaryDerivedSequence_exact A bond J hstable c).mp hzero
+
 /-- Mittag--Leffler vanishing in the strong linkwise-surjective case. -/
 theorem derivedLimitOne_subsingleton_of_surjective
     (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
@@ -458,6 +770,36 @@ theorem derivedLimitOne_subsingleton_of_surjective
   change Subsingleton ((∀ n, A n) ⧸ LinearMap.range (inverseDifference A bond))
   rw [Submodule.Quotient.subsingleton_iff]
   exact LinearMap.range_eq_top.mpr (inverseDifference_surjective A bond hsurj)
+
+/-- Vanishing can be genuinely global: a zero bonding sequence has vanishing `lim¹` although its
+individual bonding maps need not be onto. -/
+theorem derivedLimitOne_subsingleton_of_zero_bond
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (hzero : ∀ n, bond n = 0) :
+    Subsingleton (DerivedLimitOne A bond) := by
+  change Subsingleton ((∀ n, A n) ⧸ LinearMap.range (inverseDifference A bond))
+  rw [Submodule.Quotient.subsingleton_iff]
+  apply LinearMap.range_eq_top.mpr
+  intro y
+  refine ⟨y, ?_⟩
+  funext n
+  change y n - bond n (y (n + 1)) = y n
+  rw [hzero]
+  simp
+
+/-- Concrete separation of linkwise and global exactness over every field: every scalar zero bond
+is non-surjective, while the derived inverse limit of the tower is zero. -/
+theorem zero_scalar_bond_global_vanishing :
+    (∀ _n : ℕ, ¬Function.Surjective (0 : 𝕜 →ₗ[𝕜] 𝕜)) ∧
+      Subsingleton
+        (DerivedLimitOne (fun _ : ℕ => 𝕜) (fun _ => (0 : 𝕜 →ₗ[𝕜] 𝕜))) := by
+  constructor
+  · intro n hsurj
+    rcases hsurj 1 with ⟨x, hx⟩
+    simp at hx
+  · apply derivedLimitOne_subsingleton_of_zero_bond
+    intro n
+    rfl
 
 /-- Linkwise surjectivity on boundary ideals corrects arbitrary compatible quotient classes to a
 coherent sequence of representatives.  This is the constructive surjectivity step for the local

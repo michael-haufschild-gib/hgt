@@ -1501,8 +1501,22 @@ records that:
   rectangle of side at most `T` with `K T² e² < (ρ₀ - ρ)²`*, by domination against the geometric
   series of the convergence estimate.
 
-What remains is to check that the sum solves `∂ξ∂η u = (u'' + V u)/4` and to convert it to a clock
-probe.
+Checking that the sum solves `∂ξ∂η u = (u'' + V u)/4` needs the sum to be differentiable twice in
+the transverse variable, term by term. `ClockSeriesDerivative.lean` supplies that:
+
+- `convex_imStrip`, `isPreconnected_imStrip` — the strip is convex, hence preconnected, which is what
+  the localised form of mathlib's term-by-term differentiation requires;
+- **`hasDerivAt_tsum_of_holomorphic`**, `differentiableOn_tsum_of_holomorphic`,
+  `deriv_tsum_of_holomorphic` — *a series of functions holomorphic on a strip with summable
+  sup-bounds may be differentiated term by term on any smaller strip*, the bound on the derivatives
+  being Cauchy's estimate applied to the bound on the functions.
+
+- `differentiableOn_deriv_of_holomorphic`, **`deriv_deriv_tsum_of_holomorphic`** — iterating it on
+  the family of first derivatives, which is again holomorphic and carries the summable bound Cauchy's
+  estimate supplies, gives *the second derivative of the sum as the sum of the second derivatives*.
+
+What then remains is the exchange of the sum with the double integral, after which the sum solves the
+equation and can be converted to a clock probe.
 
 The first genuinely coupled target this reaches is dimension three: a potential
 `V(x⁰, x¹, x²)` with arbitrary continuously differentiable dependence on the null coordinates and

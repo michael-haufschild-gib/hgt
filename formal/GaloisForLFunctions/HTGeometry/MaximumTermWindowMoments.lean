@@ -75,8 +75,10 @@ theorem sum_window_normalised_le_sqrt_card
     intro n
     rw [normalisedCoeff_def, norm_div, hCn, norm_mul, norm_pow, hz]
   rw [Finset.sum_congr rfl (fun n _ => hrw n), ← Finset.sum_div]
-  refine div_le_div_of_nonneg_right ?_ hμpos.le |>.trans (le_of_eq ?_)
-  · exact sum_window_le_sqrt_card_mul_bound ha hr.le (norm_nonneg _) hmax s
-  · rw [mul_div_assoc]
+  calc (∑ n ∈ s, ‖a n‖ * r ^ n) / maxTerm a r
+      ≤ (Real.sqrt (s.card) * ‖coeffFun a z‖) / maxTerm a r :=
+        div_le_div_of_nonneg_right
+          (sum_window_le_sqrt_card_mul_bound ha hr.le (norm_nonneg _) hmax s) hμpos.le
+    _ = Real.sqrt (s.card) * (‖coeffFun a z‖ / maxTerm a r) := by rw [mul_div_assoc]
 
 end GaloisForLFunctions.HTGeometry

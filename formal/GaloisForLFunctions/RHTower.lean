@@ -1533,6 +1533,8 @@ import GaloisForLFunctions.RHTower.DeningerRootEltIsolated
 import GaloisForLFunctions.RHTower.DeningerRootStageTower
 import GaloisForLFunctions.RHTower.DeningerRootTowerGood
 import GaloisForLFunctions.RHTower.DeningerStepEmbed
+import GaloisForLFunctions.RHTower.DeningerChainUniqueRoots
+import GaloisForLFunctions.RHTower.DeningerTowerColimit
 import GaloisForLFunctions.RHTower.DeningerUnitaryFlowRieszPurity
 import GaloisForLFunctions.RHTower.DeningerUnitaryHarmonicAction
 import GaloisForLFunctions.RHTower.DeningerWeightOnePolarization
@@ -3321,6 +3323,10 @@ import GaloisForLFunctions.RHTower.Sieve.WindowShiftRange
 import GaloisForLFunctions.RHTower.Sieve.CorrelationToVariance
 import GaloisForLFunctions.RHTower.Sieve.MoebiusSignCount
 import GaloisForLFunctions.RHTower.Sieve.MoebiusSignLower
+import GaloisForLFunctions.RHTower.Sieve.ShiftedCongruenceCount
+import GaloisForLFunctions.RHTower.Sieve.JointCongruence
+import GaloisForLFunctions.RHTower.Sieve.JointCongruenceClass
+import GaloisForLFunctions.RHTower.Sieve.TruncatedPairSwap
 import GaloisForLFunctions.RHTower.Sieve.ChernoffTails
 import GaloisForLFunctions.RHTower.Sieve.GeometricMeanDivisor
 import GaloisForLFunctions.RHTower.Sieve.IntervalMultiples

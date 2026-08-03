@@ -24,6 +24,16 @@ and the Fourier series a consequence, which is what lets the whole layer be comp
   contributes `1/(12 n²)`, uniformly in `j`, and there are `n` of them.
 * `integral_sawWave_dilate` — equation `(2)` itself: the mean of `S(x) S(nx)` over a period is
   `π²/(12 n)`.
+* `periodic_sawUnitDilate`, `sawDilatePrimitive`, `sawDilatePrimitive_periodic`,
+  `abs_sawDilatePrimitive_le` — equations `(3)`--`(4)`: the centered product has period one and mean
+  zero, so its primitive is periodic, and `1/3` bounds it uniformly in the dilation.
+* `integral_sawUnit_comp_mul`, `abs_integral_sawUnit_le` — equation `(24)`: dilating divides the
+  primitive by the dilation, and the undilated primitive is bounded by `1/8`.
+* `endpointProfile`, `endpointProfile_mul_shift` — equations `(10)` and `(15)`.
+* `sum_one_div_Icc_le_log`, `sum_vonMangoldt_div_le_log_sq` — equation `(16)`, with no error term:
+  the harmonic bound is proved from `log(N/(N+1)) ≤ -1/(N+1)`, so the visible weight is at most
+  `log² N`.
+* `lseriesSummable_vonMangoldt_two`, `lseries_vonMangoldt_two` — equation `(17)`.
 -/
 
 noncomputable section
@@ -360,6 +370,206 @@ theorem abs_integral_sawUnit_le (x : ℝ) : |∫ t in (0 : ℝ)..x, sawUnit t| �
   rw [abs_le]
   constructor <;> nlinarith [sq_nonneg (Int.fract x - 1 / 2), sq_nonneg (Int.fract x)]
 
+/-! ## Distributional integration by parts against a bounded primitive -/
+
+theorem intervalIntegrable_of_bound {f : ℝ → ℝ} (hf : Measurable f) {C : ℝ}
+    (hb : ∀ t, |f t| ≤ C) (a b : ℝ) : IntervalIntegrable f volume a b := by
+  constructor <;>
+  · refine MeasureTheory.Measure.integrableOn_of_bounded (M := C) (by simp)
+      hf.aestronglyMeasurable ?_
+    exact Filter.Eventually.of_forall fun t => by rw [Real.norm_eq_abs]; exact hb t
+
+/-- The primitive of a bounded measurable function, read as an integral of a cut-off over the whole
+window. -/
+theorem integral_eq_integral_indicator {a b : ℝ} {g : ℝ → ℝ} (hg : Measurable g) {Cg : ℝ}
+    (hgb : ∀ t, |g t| ≤ Cg) {u : ℝ} (hau : a ≤ u) (hub : u ≤ b) :
+    (∫ t in a..u, g t) = ∫ t in a..b, (if t ≤ u then g t else 0) := by
+  have hind : Measurable fun t : ℝ => if t ≤ u then g t else 0 :=
+    Measurable.ite (measurableSet_le measurable_id measurable_const) hg measurable_const
+  have hindb : ∀ t : ℝ, |if t ≤ u then g t else 0| ≤ |Cg| := by
+    intro t
+    by_cases h : t ≤ u
+    · rw [if_pos h]
+      exact (hgb t).trans (le_abs_self Cg)
+    · rw [if_neg h, abs_zero]
+      exact abs_nonneg Cg
+  have hadj := intervalIntegral.integral_add_adjacent_intervals
+    (a := a) (b := u) (c := b) (intervalIntegrable_of_bound hind hindb a u)
+    (intervalIntegrable_of_bound hind hindb u b)
+  have h1 : (∫ t in a..u, (if t ≤ u then g t else 0)) = ∫ t in a..u, g t := by
+    refine integral_congr_of_Ioo hau fun t ht => ?_
+    rw [if_pos ht.2.le]
+  have h2 : (∫ t in u..b, (if t ≤ u then g t else 0)) = 0 := by
+    have hz : (∫ t in u..b, (if t ≤ u then g t else 0)) = ∫ _ in u..b, (0 : ℝ) :=
+      integral_congr_of_Ioo hub fun t ht => by rw [if_neg (by linarith [ht.1])]
+    rw [hz, intervalIntegral.integral_zero]
+  rw [h1, h2, add_zero] at hadj
+  exact hadj.symm
+
+/-- Integration by parts in which only the smooth factor is differentiated.  The primitive of `g`
+need not be differentiable anywhere: the identity comes from Fubini on the triangle
+`{a ≤ t ≤ u ≤ b}`, so a bounded measurable `g` — in particular a discontinuous periodic sawtooth
+product — is admissible. -/
+theorem integral_deriv_mul_primitive {a b : ℝ} (hab : a ≤ b) {g φ φ' : ℝ → ℝ}
+    (hg : Measurable g) {Cg : ℝ} (hgb : ∀ t, |g t| ≤ Cg)
+    (hφ : ∀ u, HasDerivAt φ (φ' u) u) (hφ'c : Continuous φ') {Cd : ℝ}
+    (hφ'b : ∀ u, |φ' u| ≤ Cd) :
+    (∫ u in a..b, φ' u * (∫ t in a..u, g t))
+      = φ b * (∫ t in a..b, g t) - ∫ t in a..b, φ t * g t := by
+  classical
+  have hCg : (0 : ℝ) ≤ |Cg| := abs_nonneg Cg
+  have hCd : (0 : ℝ) ≤ |Cd| := abs_nonneg Cd
+  have hFmeas : Measurable
+      (Function.uncurry fun u t : ℝ => φ' u * (if t ≤ u then g t else 0)) := by
+    have h1 : Measurable fun p : ℝ × ℝ => φ' p.1 := hφ'c.measurable.comp measurable_fst
+    have h2 : Measurable fun p : ℝ × ℝ => if p.2 ≤ p.1 then g p.2 else 0 :=
+      Measurable.ite (measurableSet_le measurable_snd measurable_fst)
+        (hg.comp measurable_snd) measurable_const
+    exact h1.mul h2
+  have hFb : ∀ p : ℝ × ℝ,
+      ‖Function.uncurry (fun u t : ℝ => φ' u * (if t ≤ u then g t else 0)) p‖
+        ≤ |Cd| * |Cg| := by
+    intro p
+    have h1 : |φ' p.1| ≤ |Cd| := (hφ'b p.1).trans (le_abs_self Cd)
+    have h2 : |if p.2 ≤ p.1 then g p.2 else 0| ≤ |Cg| := by
+      by_cases h : p.2 ≤ p.1
+      · rw [if_pos h]; exact (hgb p.2).trans (le_abs_self Cg)
+      · rw [if_neg h, abs_zero]; exact hCg
+    simp only [Function.uncurry, Real.norm_eq_abs, abs_mul]
+    exact mul_le_mul h1 h2 (abs_nonneg _) hCd
+  -- Fubini on the window
+  set μ : Measure ℝ := volume.restrict (Ioc a b) with hμ
+  haveI hfin : IsFiniteMeasure μ := by
+    refine ⟨?_⟩
+    rw [hμ, Measure.restrict_apply_univ]
+    exact measure_Ioc_lt_top
+  have hFint : Integrable
+      (Function.uncurry fun u t : ℝ => φ' u * (if t ≤ u then g t else 0)) (μ.prod μ) := by
+    have h := MeasureTheory.Measure.integrableOn_of_bounded (s := Set.univ)
+      (μ := μ.prod μ) (f := Function.uncurry fun u t : ℝ => φ' u * (if t ≤ u then g t else 0))
+      (measure_ne_top _ _) hFmeas.aestronglyMeasurable (M := |Cd| * |Cg|)
+      (Filter.Eventually.of_forall hFb)
+    rwa [MeasureTheory.integrableOn_univ] at h
+  have hswap := MeasureTheory.integral_integral_swap hFint
+  -- the left side is the double integral
+  have hleft : (∫ u in a..b, φ' u * (∫ t in a..u, g t))
+      = ∫ u, (∫ t, φ' u * (if t ≤ u then g t else 0) ∂μ) ∂μ := by
+    rw [intervalIntegral.integral_of_le hab, ← hμ]
+    refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioc fun u hu => ?_
+    rw [integral_eq_integral_indicator hg hgb hu.1.le hu.2,
+      intervalIntegral.integral_of_le hab, ← hμ, MeasureTheory.integral_const_mul]
+  -- the inner integral of the swapped side
+  have hinner : ∀ t ∈ Ioc a b,
+      (∫ u in a..b, φ' u * (if t ≤ u then g t else 0)) = g t * (φ b - φ t) := by
+    intro t ht
+    have hat : a ≤ t := ht.1.le
+    have htb : t ≤ b := ht.2
+    have hind : Measurable fun u : ℝ => φ' u * (if t ≤ u then g t else 0) :=
+      hφ'c.measurable.mul
+        (Measurable.ite (measurableSet_le measurable_const measurable_id)
+          measurable_const measurable_const)
+    have hindb : ∀ u : ℝ, |φ' u * (if t ≤ u then g t else 0)| ≤ |Cd| * |Cg| := by
+      intro u
+      have h1 : |φ' u| ≤ |Cd| := (hφ'b u).trans (le_abs_self Cd)
+      have h2 : |if t ≤ u then g t else 0| ≤ |Cg| := by
+        by_cases h : t ≤ u
+        · rw [if_pos h]; exact (hgb t).trans (le_abs_self Cg)
+        · rw [if_neg h, abs_zero]; exact hCg
+      rw [abs_mul]
+      exact mul_le_mul h1 h2 (abs_nonneg _) hCd
+    have hadj := intervalIntegral.integral_add_adjacent_intervals
+      (a := a) (b := t) (c := b) (intervalIntegrable_of_bound hind hindb a t)
+      (intervalIntegrable_of_bound hind hindb t b)
+    have h1 : (∫ u in a..t, φ' u * (if t ≤ u then g t else 0)) = 0 := by
+      have hz : (∫ u in a..t, φ' u * (if t ≤ u then g t else 0)) = ∫ _ in a..t, (0 : ℝ) :=
+        integral_congr_of_Ioo hat fun u hu => by
+          rw [if_neg (by linarith [hu.2]), mul_zero]
+      rw [hz, intervalIntegral.integral_zero]
+    have h2 : (∫ u in t..b, φ' u * (if t ≤ u then g t else 0))
+        = (∫ u in t..b, φ' u) * g t := by
+      have hz : (∫ u in t..b, φ' u * (if t ≤ u then g t else 0))
+          = ∫ u in t..b, φ' u * g t :=
+        integral_congr_of_Ioo htb fun u hu => by rw [if_pos hu.1.le]
+      rw [hz, intervalIntegral.integral_mul_const]
+    have hftc : (∫ u in t..b, φ' u) = φ b - φ t :=
+      intervalIntegral.integral_eq_sub_of_hasDerivAt (fun u _ => hφ u)
+        (hφ'c.intervalIntegrable _ _)
+    rw [h1, h2, hftc, zero_add] at hadj
+    rw [← hadj]
+    ring
+  -- assemble
+  have hright : (∫ t, (∫ u, φ' u * (if t ≤ u then g t else 0) ∂μ) ∂μ)
+      = ∫ t in a..b, g t * (φ b - φ t) := by
+    rw [intervalIntegral.integral_of_le hab, ← hμ]
+    refine MeasureTheory.setIntegral_congr_fun measurableSet_Ioc fun t ht => ?_
+    rw [← hinner t ht, intervalIntegral.integral_of_le hab, ← hμ]
+  have hsplit : (∫ t in a..b, g t * (φ b - φ t))
+      = φ b * (∫ t in a..b, g t) - ∫ t in a..b, φ t * g t := by
+    have hgi : IntervalIntegrable g volume a b := intervalIntegrable_of_bound hg hgb a b
+    obtain ⟨Cφ, hCφ⟩ : ∃ C : ℝ, ∀ t ∈ Icc a b, |φ t| ≤ C :=
+      (isCompact_Icc (a := a) (b := b)).exists_bound_of_continuousOn
+        (fun u _ => (hφ u).continuousAt.continuousWithinAt)
+    have hφc : Continuous φ := by
+      refine continuous_iff_continuousAt.mpr fun u => ?_
+      exact (hφ u).continuousAt
+    have h1 : IntervalIntegrable (fun t => φ b * g t) volume a b := hgi.const_mul _
+    have h2 : IntervalIntegrable (fun t => φ t * g t) volume a b := by
+      obtain ⟨C, hC⟩ := (isCompact_uIcc (a := a) (b := b)).exists_bound_of_continuousOn
+        hφc.continuousOn
+      refine intervalIntegrable_of_bound (hφc.measurable.mul hg) (C := |C| * |Cg| + 1) ?_ a b
+      intro t
+      by_cases hmem : t ∈ uIcc a b
+      · rw [abs_mul]
+        have hb1 : |φ t| ≤ |C| := (hC t hmem).trans (le_abs_self C)
+        have hb2 : |g t| ≤ |Cg| := (hgb t).trans (le_abs_self Cg)
+        nlinarith [abs_nonneg (φ t), abs_nonneg (g t), abs_nonneg C, abs_nonneg Cg]
+      · exact le_trans (le_of_eq rfl) (by nlinarith [abs_nonneg (φ t * g t),
+          abs_nonneg C, abs_nonneg Cg, mul_nonneg hCd hCg])
+    have hpt : ∀ t : ℝ, g t * (φ b - φ t) = φ b * g t - φ t * g t := fun t => by ring
+    calc (∫ t in a..b, g t * (φ b - φ t))
+        = ∫ t in a..b, (φ b * g t - φ t * g t) := by simp_rw [hpt]
+      _ = (∫ t in a..b, φ b * g t) - ∫ t in a..b, φ t * g t :=
+          intervalIntegral.integral_sub h1 h2
+      _ = φ b * (∫ t in a..b, g t) - ∫ t in a..b, φ t * g t := by
+          rw [intervalIntegral.integral_const_mul]
+  rw [hleft, hswap, hright, hsplit]
+
+/-! ## The endpoint profile and the shift identity -/
+
+/-- **Equation (10).**  The normalized leading endpoint profile. -/
+def endpointProfile (L s : ℝ) : ℝ := Real.exp (-s / 2) * sawWave (L * Real.exp s)
+
+/-- **Equation (15).**  A logarithmic shift by `log n` turns the profile correlation into the
+integer-dilated sawtooth product, with the exact Euler weight `n^{-1/2}` and the exponential
+density `e^{-s}`. -/
+theorem endpointProfile_mul_shift {n : ℕ} (hn : 0 < n) (L s : ℝ) :
+    endpointProfile L s * endpointProfile L (s + Real.log n)
+      = (Real.sqrt n)⁻¹ * (Real.exp (-s) *
+          (sawWave (L * Real.exp s) * sawWave ((n : ℝ) * (L * Real.exp s)))) := by
+  have hnpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
+  have hexp : Real.exp (s + Real.log n) = Real.exp s * (n : ℝ) := by
+    rw [Real.exp_add, Real.exp_log hnpos]
+  have hsq : Real.sqrt (n : ℝ) = Real.exp (Real.log n / 2) := by
+    rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos hnpos]
+    congr 1
+    ring
+  have hinv : (Real.sqrt (n : ℝ))⁻¹ = Real.exp (-(Real.log n / 2)) := by
+    rw [hsq, Real.exp_neg]
+  have harg : L * Real.exp (s + Real.log n) = (n : ℝ) * (L * Real.exp s) := by
+    rw [hexp]; ring
+  have hcoef : Real.exp (-s / 2) * Real.exp (-(s + Real.log n) / 2)
+      = Real.exp (-(Real.log n / 2)) * Real.exp (-s) := by
+    rw [← Real.exp_add, ← Real.exp_add]
+    congr 1
+    ring
+  rw [endpointProfile, endpointProfile, harg, hinv,
+    show Real.exp (-s / 2) * sawWave (L * Real.exp s) *
+        (Real.exp (-(s + Real.log n) / 2) * sawWave ((n : ℝ) * (L * Real.exp s)))
+      = (Real.exp (-s / 2) * Real.exp (-(s + Real.log n) / 2)) *
+        (sawWave (L * Real.exp s) * sawWave ((n : ℝ) * (L * Real.exp s))) from by ring,
+    hcoef]
+  ring
+
 /-! ## The arithmetic weight -/
 
 /-- A harmonic bound with no error term: `∑_{2 ≤ n ≤ N} 1/n ≤ log N`, from
@@ -377,6 +587,7 @@ theorem sum_one_div_Icc_le_log : ∀ N : ℕ, 1 ≤ N → ∑ n ∈ Finset.Icc 2
       rw [Real.log_div (ne_of_gt hpos) (ne_of_gt hpos2)] at h1
       have h2 : ((N : ℝ) + 1) / ((N : ℝ) + 2) - 1 = -(1 / ((N : ℝ) + 2)) := by
         field_simp
+        ring
       rw [h2] at h1
       linarith
     have htop := Finset.sum_Icc_succ_top (a := 2) (b := N + 1)
@@ -386,8 +597,6 @@ theorem sum_one_div_Icc_le_log : ∀ N : ℕ, 1 ≤ N → ∑ n ∈ Finset.Icc 2
     have hcast2 : ((N + 1 + 1 : ℕ) : ℝ) = (N : ℝ) + 2 := by push_cast; ring
     rw [hcast2]
     rw [hcast1] at hind
-    have hcast3 : ((N + 2 : ℕ) : ℝ) = (N : ℝ) + 2 := by push_cast; ring
-    rw [hcast3]
     linarith
 
 /-- **Equation (16).**  The visible von Mangoldt weight, divided by the radial index, is bounded by

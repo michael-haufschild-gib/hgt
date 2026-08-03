@@ -3188,3 +3188,75 @@ the mean-square input `(6)` via Markov `(10)`. The sign-count identity is exactl
 be used together, and this lemma performs that combination.
 
 The constant `3/16` is not sharp and the card says so; only its positivity is used downstream.
+
+### Formal layer — counting a shifted congruence
+
+`formal/GaloisForLFunctions/RHTower/Sieve/ShiftedCongruenceCount.lean`.
+
+- `card_filter_dvd_add_shift` — `#{n ∈ (t,t+L] : M ∣ n+s} = #{m ∈ (t+s,t+s+L] : M ∣ m}`.
+- `abs_card_filter_dvd_add_shift_sub_lt` — **the count differs from `L/M` by less than one,
+  uniformly in the shift `s`**.
+
+Both unconditional.
+
+This is the second congruence a shifted correlation requires: `d² ∣ n` together with `e² ∣ n+h`. The
+corpus already owned the unshifted sieve remainder bound (`Sieve/IntervalMultiples`); translating the
+window rather than the modulus reduces the shifted case to it exactly, with no error term of its own.
+
+Translation also avoids truncated subtraction entirely — the shifted window is `(t+s, t+s+L]`, never
+a difference of naturals — which is what makes the reduction exact rather than approximate.
+
+### Formal layer — the two congruences have a common solution
+
+`formal/GaloisForLFunctions/RHTower/Sieve/JointCongruence.lean`.
+
+- `negShift b h := (b − h % b) % b` — the natural representative of `−h` mod `b`.
+- `negShift_add_dvd` — `b ∣ negShift b h + h` (axioms: `[propext]` only).
+- `exists_joint_solution` — **for coprime moduli there is `n₀` with `a ∣ n₀` and `b ∣ n₀ + h`.**
+
+Both unconditional.
+
+A shifted correlation weighted by the squarefree identity `μ²(n) = ∑_{d²∣n} μ(d)` meets the pair of
+conditions `d² ∣ n` and `e² ∣ n+h`. For coprime `d, e` the Chinese remainder theorem makes that pair
+a single residue class, whose count in a window is then governed by the shifted-congruence bound of
+the previous module.
+
+One correctness note worth recording: the natural-number formula `b − h % b` is *not* the right
+representative when `b ∣ h` (it gives `b`, not `0`), which is why `negShift` carries the outer `% b`.
+The proof goes through `Nat.mod_add_mod` rather than assuming the two agree.
+
+### Formal layer — the joint congruence is one residue class
+
+`formal/GaloisForLFunctions/RHTower/Sieve/JointCongruenceClass.lean`.
+
+- `joint_iff_dvd_shift` — for coprime moduli, **`a ∣ n ∧ b ∣ n+h ↔ ab ∣ n + negShift(ab) n₀`**,
+  where `n₀` is any common solution.
+- `abs_card_joint_sub_lt` — **the joint count in a window differs from `L/(ab)` by less than one**.
+
+Both unconditional.
+
+So the pair of conditions produced by expanding `μ²(n) = ∑_{d²∣n} μ(d)` on both `n` and `n+h` is no
+harder to count than a single congruence: for coprime `d, e` the conditions `d² ∣ n` and `e² ∣ n+h`
+cut out one class mod `d²e²`, counted with error below one uniformly in the shift `h` and the start.
+
+Both directions of the equivalence run through `Nat.ModEq`, so no truncated natural subtraction
+occurs anywhere — which is what keeps the statement exact rather than approximate. The positivity
+hypothesis `0 < ab` is genuinely needed: at `a = 0` the modulus degenerates and the residue class
+argument fails.
+
+### Formal layer — the truncated pair sum as a weighted joint count
+
+`formal/GaloisForLFunctions/RHTower/Sieve/TruncatedPairSwap.lean`.
+
+- `sum_truncated_pair_eq` — **`∑_{n ∈ (t,t+L]} (∑_{d≤R, d²∣n} μ(d))(∑_{e≤R, e²∣n+h} μ(e))
+  = ∑_{d,e≤R} μ(d)μ(e)·#{n ∈ (t,t+L] : d²∣n ∧ e²∣n+h}`**.
+
+Unconditional, and exact — the exchange of summation incurs no error of its own.
+
+With the previous module this assembles the two-variable sieve for a shifted correlation: the double
+sum is reduced to joint counts, and each joint count with `gcd(d,e) = 1` equals `L/(d²e²)` to within
+one, uniformly in `h` and `t`.
+
+What is deliberately *not* claimed: the pairs with `gcd(d,e) > 1` are not evaluated here. Their
+modulus is `lcm(d²,e²)` and solvability depends on whether the gcd divides `h`, so they need separate
+treatment. The reduction above is exact regardless; only the evaluation of those terms is outstanding.

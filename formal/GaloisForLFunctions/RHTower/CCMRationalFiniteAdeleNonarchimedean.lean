@@ -37,7 +37,7 @@ theorem nonarchimedeanRing_of_valued
     ext x
     simp [H, Valuation.coe_ltAddSubgroup,
       Valuation.restrict_lt_iff_lt_embedding]
-  have hH : (H : Set R) ∈ 𝒩 (0 : R) := by
+  have hH : (H : Set R) ∈ nhds (0 : R) := by
     apply (Valued.hasBasis_nhds_zero R Γ₀).mem_iff.mpr
     refine ⟨γ, trivial, ?_⟩
     rw [hEq]
@@ -122,7 +122,7 @@ theorem ccmRationalFiniteBruhat_exists_openAddSubgroup_stabilizer
     ∃ V : OpenAddSubgroup CCMRationalFiniteAdele,
       ∀ x (v : V), f.1 (x + v.1) = f.1 x :=
   compactlySupportedLocallyConstant_exists_openAddSubgroup_stabilizer
-    CCMRationalFiniteAdele ℂ f.1 f.2.1 f.2.2
+    CCMRationalFiniteAdele ℂ f.1 f.1.isLocallyConstant f.2
 
 end RHTower
 end GaloisForLFunctions

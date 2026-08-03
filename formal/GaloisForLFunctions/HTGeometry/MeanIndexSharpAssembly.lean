@@ -210,7 +210,26 @@ theorem norm_mul_logDeriv_sub_centralIndex_le_div
     _ = coeffSum a r * |meanIndex a r - (centralIndex a r : ℝ)| + E * maxTerm a r := by
         field_simp
 
-end GaloisForLFunctions.HTGeometry
+/-- **The Wiman--Valiron estimate in profile form.**  Combining the two sharpenings: the weighted
+misalignment enters as the geometric mean of the second moment and the total misalignment, and both
+terms are measured against the value rather than against the maximum term.  Writing `A` for
+`‖f(z)‖ / mu(r)` and `Sigma_0` for `S(r) / mu(r)`, the bound reads
+`(Sigma_0 / A) |Lambda - nu| + sqrt(2 Sigma_2 D) / A`. -/
+theorem norm_mul_logDeriv_sub_centralIndex_le_profile
+    (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hz : ‖z‖ = r)
+    (hfz : maxTerm a r ≤ ‖coeffFun a z‖)
+    (hcrit : (z * deriv (coeffFun a) z / coeffFun a z).im = 0)
+    {u : ℂ} (hu : ‖u‖ = 1)
+    (hWdir : ∑' n : ℕ, normalisedCoeff a r z n
+      = ((‖∑' n : ℕ, normalisedCoeff a r z n‖ : ℝ) : ℂ) * u)
+    {S₂ D : ℝ}
+    (hS₂ : ∑' n : ℕ, ((n : ℝ) - (centralIndex a r : ℝ)) ^ 2 * ‖normalisedCoeff a r z n‖ ≤ S₂)
+    (hD : ∑' n : ℕ, (‖normalisedCoeff a r z n‖
+        - ((starRingEnd ℂ) u * normalisedCoeff a r z n).re) ≤ D) :
+    ‖z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a r : ℂ)‖
+      ≤ (coeffSum a r * |meanIndex a r - (centralIndex a r : ℝ)|
+          + Real.sqrt (2 * S₂ * D) * maxTerm a r) / ‖coeffFun a z‖ :=
+  norm_mul_logDeriv_sub_centralIndex_le_div ha hr hn₀ hz hfz hcrit hu hWdir
+    (tsum_index_weighted_defect_le_sqrt ha hr hn₀ hz hu hS₂ hD)
 
-#print axioms GaloisForLFunctions.HTGeometry.tsum_index_weighted_defect_le_sqrt
-#print axioms GaloisForLFunctions.HTGeometry.norm_mul_logDeriv_sub_centralIndex_le_div
+end GaloisForLFunctions.HTGeometry

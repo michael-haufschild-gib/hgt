@@ -1470,3 +1470,41 @@ conclusion — and in fact at `O(nu^{3/4 + o(1)})`.
 
 All three modules build and are axiom-clean.  Remaining: bricks 2-4 of the previous entry
 (`Sigma_0 <= sqrt(2N+1) ||b||_2 + tail`, `Sigma_2 <= N^2 Sigma_0 + tail`, and the assembly).
+
+### Log — bricks 2 and 3, and the sharp assembly
+
+`HTGeometry/MeanIndexSharpAssembly.lean` (new, axiom-clean):
+
+- `summable_index_deviation_sq`, `summable_norm_normalisedCoeff`,
+  `summable_index_deviation_sq_normalised` — the second-moment summability the corpus lacked.
+- `tsum_index_weighted_defect_le_sqrt` — Cauchy--Schwarz on the weighted misalignment:
+  `sum |n-nu| d_n <= sqrt(2 * Sigma_2 * D)`, replacing the crude product `N * D`.  Each `d_n` is
+  split as `sqrt(d_n) * sqrt(d_n)` and `d_n <= 2 |b_n|` turns the first factor into the second
+  moment of the profile.
+- `norm_mul_logDeriv_sub_centralIndex_le_div` — the estimate with the value in the denominator:
+  `|z f'/f - nu| <= (S(r) |Lambda - nu| + E mu(r)) / |f(z)|`.  The corpus form bounded the
+  denominator `|W| = |f(z)|/mu(r)` below by `1`, discarding exactly the factor that counts how many
+  terms are comparable to the maximum term.
+
+`HTGeometry/MaximumTermWindowMoments.lean` (new, axiom-clean):
+
+- `sum_window_le_sqrt_card_mul_bound` — for any finite index set,
+  `sum_{n in s} |a_n| r^n <= sqrt(card s) * sup_theta |f(r e^{i theta})|`.  Bessel supplies the `l^2`
+  bound and Cauchy--Schwarz against the constant one converts it to `l^1`.  This is the statement no
+  bound on individual terms can give: a window of `k` comparable terms forces the modulus up by
+  `sqrt k`.
+- `sum_window_normalised_le_sqrt_card` — the same for the normalised profile, i.e.
+  `Sigma_0^{window} <= sqrt(card) * A`.
+
+Remaining: instantiate the window at half-width `N` (tails from `MaximumTermGaussianTail`), bound the
+second moment by `N^2` times the window mass, and combine with
+`abs_meanIndex_sub_centralIndex_le_lipschitz` and `exists_good_point_increment_le` to choose the
+radius.
+
+`norm_mul_logDeriv_sub_centralIndex_le_profile` closes the assembly: for a critical point of the
+modulus on the circle where the value is at least the maximum term,
+
+`|z f'/f - nu| <= (S(r) |Lambda - nu| + sqrt(2 Sigma_2 D) mu(r)) / |f(z)|`,
+
+axiom-clean and unconditional.  Both sharpenings are in it, so the only inputs still to be supplied
+are the profile bounds `Sigma_2` and `D` at a window of half-width `N` and the radius choice.

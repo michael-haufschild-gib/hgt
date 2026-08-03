@@ -97,6 +97,19 @@ theorem fiberAmplitude_eq_zero_of_card_ne {omega : ι → ℝ}
   rw [fiberAmplitude]
   exact tsum_empty
 
+/-- The sigma-indexed form: a whole degree block of the wrong length carries nothing. -/
+theorem fiberAmplitude_sigmaTuple_eq_zero_of_card_ne {omega : ι → ℝ}
+    (h : RationallyIndependentSequence omega) {M M' : ℕ} (hne : M' ≠ M) {T : Type*}
+    (B : (Σ _ : T, Fin M' → ι) → ℂ) (i : Fin M → ι) :
+    fiberAmplitude B (fun p : Σ _ : T, Fin M' → ι => tupleFrequency omega p.2)
+      (tupleFrequency omega i) = 0 := by
+  have hempty : IsEmpty {p : Σ _ : T, Fin M' → ι //
+      tupleFrequency omega p.2 = tupleFrequency omega i} := by
+    refine ⟨fun p => ?_⟩
+    exact hne (card_eq_of_frequency_eq h p.2)
+  rw [fiberAmplitude]
+  exact tsum_empty
+
 end
 
 end GaloisForLFunctions.HTGeometry

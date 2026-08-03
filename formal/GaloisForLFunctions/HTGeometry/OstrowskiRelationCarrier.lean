@@ -99,31 +99,21 @@ theorem expSeriesCarrier_sigma_eq_zero {a : ι → ℂ} {omega : ι → ℝ}
 /-! ## The coefficients of a vanishing combination -/
 
 set_option maxHeartbeats 1600000 in
-/-- **At the frequency of an injective tuple, a vanishing combination gives a polynomial
-identity.** -/
-theorem eval_permSum_combination_eq_zero {a : ι → ℂ} {omega : ι → ℝ}
+/-- **A vanishing fibre amplitude is a polynomial identity in the chosen frequencies.** -/
+theorem eval_permSum_combination_eq_zero_of_fiber {a : ι → ℂ} {omega : ι → ℝ}
     (hom : RationallyIndependentSequence omega) (ha : ExpSeriesNormallySummable a omega)
     {M : ℕ} {K : Finset (Fin M → ℕ)} (c : (Fin M → ℕ) → ℂ)
-    (hzero : ∀ t : ℝ,
-      ∑ s ∈ K, c s * ∏ j, iteratedDeriv (s j) (cexpSeriesCarrier a omega) (t : ℂ) = 0)
-    {i : Fin M → ι} (hi : Function.Injective i) (hane : ∀ l, a (i l) ≠ 0) :
+    {i : Fin M → ι} (hi : Function.Injective i) (hane : ∀ l, a (i l) ≠ 0)
+    (hfibzero : fiberAmplitude
+      (fun p : Σ _ : {s // s ∈ K}, Fin M → ι => monomialAmplitude a omega (c p.1.1) p.1.1 p.2)
+      (fun p : Σ _ : {s // s ∈ K}, Fin M → ι => tupleFrequency omega p.2)
+      (tupleFrequency omega i) = 0) :
     MvPolynomial.eval (fun l => Complex.I * (omega (i l) : ℂ)) (∑ s ∈ K, c s • permSum s) = 0 := by
   classical
   have hnorm : ∀ s : {s // s ∈ K},
       Summable fun n : Fin M → ι => ‖monomialAmplitude a omega (c s.1) s.1 n‖ :=
     fun s => summable_norm_monomialAmplitude ha (c s.1) s.1
-  have hvan : ∀ t : ℝ, expSeriesCarrier
-      (fun p : Σ _ : {s // s ∈ K}, Fin M → ι => monomialAmplitude a omega (c p.1.1) p.1.1 p.2)
-      (fun p : Σ _ : {s // s ∈ K}, Fin M → ι => tupleFrequency omega p.2) t = 0 :=
-    fun t => expSeriesCarrier_sigma_eq_zero ha c hzero t
-  have hsum : Summable fun p : Σ _ : {s // s ∈ K}, Fin M → ι =>
-      ‖monomialAmplitude a omega (c p.1.1) p.1.1 p.2‖ :=
-    summable_norm_sigma (J := fun _ : {s // s ∈ K} => (Fin M → ι))
-      (b := fun s n => monomialAmplitude a omega (c s.1) s.1 n) hnorm
-  have hfib := fiberAmplitude_eq_zero_of_expSeriesCarrier_eq_zero
-    (fun p : Σ _ : {s // s ∈ K}, Fin M → ι => monomialAmplitude a omega (c p.1.1) p.1.1 p.2)
-    (fun p : Σ _ : {s // s ∈ K}, Fin M → ι => tupleFrequency omega p.2)
-    hsum hvan (tupleFrequency omega i)
+  have hfib := hfibzero
   rw [fiberAmplitude_sigma (J := fun _ : {s // s ∈ K} => (Fin M → ι))
     (fun s : {s // s ∈ K} => monomialAmplitude a omega (c s.1) s.1)
     (fun _ : {s // s ∈ K} => tupleFrequency omega) hnorm] at hfib
@@ -151,6 +141,30 @@ theorem eval_permSum_combination_eq_zero {a : ι → ℂ} {omega : ι → ℝ}
   rw [hsplit] at hfib
   have hprodne : (∏ l, a (i l)) ≠ 0 := Finset.prod_ne_zero_iff.2 fun l _ => hane l
   exact (mul_eq_zero.mp hfib).resolve_left hprodne
+
+/-- **At the frequency of an injective tuple, a vanishing combination gives a polynomial
+identity.** -/
+theorem eval_permSum_combination_eq_zero {a : ι → ℂ} {omega : ι → ℝ}
+    (hom : RationallyIndependentSequence omega) (ha : ExpSeriesNormallySummable a omega)
+    {M : ℕ} {K : Finset (Fin M → ℕ)} (c : (Fin M → ℕ) → ℂ)
+    (hzero : ∀ t : ℝ,
+      ∑ s ∈ K, c s * ∏ j, iteratedDeriv (s j) (cexpSeriesCarrier a omega) (t : ℂ) = 0)
+    {i : Fin M → ι} (hi : Function.Injective i) (hane : ∀ l, a (i l) ≠ 0) :
+    MvPolynomial.eval (fun l => Complex.I * (omega (i l) : ℂ)) (∑ s ∈ K, c s • permSum s) = 0 := by
+  classical
+  have hnorm : ∀ s : {s // s ∈ K},
+      Summable fun n : Fin M → ι => ‖monomialAmplitude a omega (c s.1) s.1 n‖ :=
+    fun s => summable_norm_monomialAmplitude ha (c s.1) s.1
+  have hvan : ∀ t : ℝ, expSeriesCarrier
+      (fun p : Σ _ : {s // s ∈ K}, Fin M → ι => monomialAmplitude a omega (c p.1.1) p.1.1 p.2)
+      (fun p : Σ _ : {s // s ∈ K}, Fin M → ι => tupleFrequency omega p.2) t = 0 :=
+    fun t => expSeriesCarrier_sigma_eq_zero ha c hzero t
+  have hsum : Summable fun p : Σ _ : {s // s ∈ K}, Fin M → ι =>
+      ‖monomialAmplitude a omega (c p.1.1) p.1.1 p.2‖ :=
+    summable_norm_sigma (J := fun _ : {s // s ∈ K} => (Fin M → ι))
+      (b := fun s n => monomialAmplitude a omega (c s.1) s.1 n) hnorm
+  exact eval_permSum_combination_eq_zero_of_fiber hom ha c hi hane
+    (fiberAmplitude_eq_zero_of_expSeriesCarrier_eq_zero _ _ hsum hvan (tupleFrequency omega i))
 
 /-- **Ostrowski's core: a vanishing monomial combination has vanishing coefficients.**  The
 frequencies being rationally independent and infinitely many amplitudes nonzero, no nonzero finite
@@ -240,6 +254,106 @@ theorem eq_zero_of_polynomialMonomialCombination_vanishing {a : ι → ℂ} {ome
   refine eq_zero_of_monomialCombination_vanishing hom ha hinf hdistinct (c d) ?_ s hs
   intro t
   exact congrFun (hGzero d hd) t
+
+/-- **Vanishing fibre amplitudes at every admissible frequency kill the coefficients.** -/
+theorem eq_zero_of_fiberAmplitudes_vanishing {a : ι → ℂ} {omega : ι → ℝ}
+    (hom : RationallyIndependentSequence omega) (ha : ExpSeriesNormallySummable a omega)
+    (hinf : {i : ι | a i ≠ 0}.Infinite) {M : ℕ} {K : Finset (Fin M → ℕ)}
+    (hdistinct : ∀ s ∈ K, ∀ s' ∈ K, tupleCount s = tupleCount s' → s = s')
+    (c : (Fin M → ℕ) → ℂ)
+    (hfib : ∀ i : Fin M → ι, Function.Injective i → (∀ l, a (i l) ≠ 0) →
+      fiberAmplitude
+        (fun p : Σ _ : {s // s ∈ K}, Fin M → ι => monomialAmplitude a omega (c p.1.1) p.1.1 p.2)
+        (fun p : Σ _ : {s // s ∈ K}, Fin M → ι => tupleFrequency omega p.2)
+        (tupleFrequency omega i) = 0) :
+    ∀ s ∈ K, c s = 0 := by
+  classical
+  have hmapinj : Function.Injective fun i : ι => Complex.I * (omega i : ℂ) := by
+    intro i j hij
+    have hreal : ((omega i : ℝ) : ℂ) = ((omega j : ℝ) : ℂ) :=
+      mul_left_cancel₀ Complex.I_ne_zero hij
+    exact injective_of_rationallyIndependentSequence hom (by exact_mod_cast hreal)
+  have hSinf : ((fun i : ι => Complex.I * (omega i : ℂ)) '' {i : ι | a i ≠ 0}).Infinite :=
+    hinf.image hmapinj.injOn
+  have hQ : (∑ s ∈ K, c s • permSum s) = 0 := by
+    refine mvPolynomial_eq_zero_of_eval_eq_zero_on_infinite_pow_injective hSinf _ ?_
+    intro x hx hxinj
+    have hchoice : ∀ l : Fin M, ∃ i₀ : ι, a i₀ ≠ 0 ∧ Complex.I * (omega i₀ : ℂ) = x l := by
+      intro l
+      obtain ⟨i₀, hi₀, hval⟩ := hx l
+      exact ⟨i₀, hi₀, hval⟩
+    choose i hi0 hival using hchoice
+    have hiinj : Function.Injective i := by
+      intro l l' hll
+      refine hxinj ?_
+      rw [← hival l, ← hival l', hll]
+    have hkey := eval_permSum_combination_eq_zero_of_fiber hom ha c hiinj hi0 (hfib i hiinj hi0)
+    rwa [show (fun l => Complex.I * (omega (i l) : ℂ)) = x from funext hival] at hkey
+  exact eq_zero_of_permSum_combination c hdistinct hQ
+
+/-! ## Relations of mixed total degree -/
+
+/-- **Ostrowski, graded form.**  A vanishing combination of differential monomials of several total
+degrees has vanishing coefficients: different degrees occupy disjoint frequency sets, so each degree
+is tested separately at the frequencies of its own length. -/
+theorem eq_zero_of_gradedMonomialCombination_vanishing {a : ι → ℂ} {omega : ι → ℝ}
+    (hom : RationallyIndependentSequence omega) (ha : ExpSeriesNormallySummable a omega)
+    (hinf : {i : ι | a i ≠ 0}.Infinite) {N : ℕ}
+    (K : ∀ M : Fin (N + 1), Finset (Fin (M : ℕ) → ℕ))
+    (hdistinct : ∀ M : Fin (N + 1), ∀ s ∈ K M, ∀ s' ∈ K M,
+      tupleCount s = tupleCount s' → s = s')
+    (c : ∀ M : Fin (N + 1), (Fin (M : ℕ) → ℕ) → ℂ)
+    (hzero : ∀ t : ℝ, ∑ M : Fin (N + 1), ∑ s ∈ K M,
+      c M s * ∏ j, iteratedDeriv (s j) (cexpSeriesCarrier a omega) (t : ℂ) = 0) :
+    ∀ M : Fin (N + 1), ∀ s ∈ K M, c M s = 0 := by
+  classical
+  have hnorm : ∀ M : Fin (N + 1),
+      Summable fun p : Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι =>
+        ‖monomialAmplitude a omega (c M p.1.1) p.1.1 p.2‖ := by
+    intro M
+    exact summable_norm_sigma (J := fun _ : {s // s ∈ K M} => (Fin (M : ℕ) → ι))
+      (b := fun s n => monomialAmplitude a omega (c M s.1) s.1 n)
+      fun s => summable_norm_monomialAmplitude ha (c M s.1) s.1
+  have hvan : ∀ t : ℝ, expSeriesCarrier
+      (fun q : Σ M : Fin (N + 1), Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι =>
+        monomialAmplitude a omega (c q.1 q.2.1.1) q.2.1.1 q.2.2)
+      (fun q : Σ M : Fin (N + 1), Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι =>
+        tupleFrequency omega q.2.2) t = 0 := by
+    intro t
+    rw [← sum_expSeriesCarrier
+      (J := fun M : Fin (N + 1) => Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι)
+      (fun M p => monomialAmplitude a omega (c M p.1.1) p.1.1 p.2)
+      (fun M p => tupleFrequency omega p.2) hnorm t]
+    have hterm : ∀ M : Fin (N + 1),
+        expSeriesCarrier
+            (fun p : Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι =>
+              monomialAmplitude a omega (c M p.1.1) p.1.1 p.2)
+            (fun p : Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι => tupleFrequency omega p.2) t
+          = ∑ s ∈ K M, c M s * ∏ j, iteratedDeriv (s j) (cexpSeriesCarrier a omega) (t : ℂ) :=
+      fun M => (monomialCombination_eq_expSeriesCarrier ha (c M) t).symm
+    rw [Finset.sum_congr rfl fun M _ => hterm M]
+    exact hzero t
+  have hsumTotal : Summable
+      fun q : Σ M : Fin (N + 1), Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι =>
+        ‖monomialAmplitude a omega (c q.1 q.2.1.1) q.2.1.1 q.2.2‖ :=
+    summable_norm_sigma (J := fun M : Fin (N + 1) => Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι)
+      (b := fun M p => monomialAmplitude a omega (c M p.1.1) p.1.1 p.2) hnorm
+  intro M
+  refine eq_zero_of_fiberAmplitudes_vanishing hom ha hinf (hdistinct M) (c M) ?_
+  intro i hiinj hine
+  have hfibTotal := fiberAmplitude_eq_zero_of_expSeriesCarrier_eq_zero _ _ hsumTotal hvan
+    (tupleFrequency omega i)
+  rw [fiberAmplitude_sigma
+    (J := fun M : Fin (N + 1) => Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι)
+    (fun M p => monomialAmplitude a omega (c M p.1.1) p.1.1 p.2)
+    (fun M p => tupleFrequency omega p.2) hnorm] at hfibTotal
+  rw [Finset.sum_eq_single M] at hfibTotal
+  · exact hfibTotal
+  · intro M' _ hM'
+    refine fiberAmplitude_sigmaTuple_eq_zero_of_card_ne hom (fun hcon => hM' ?_) _ i
+    exact Fin.ext hcon
+  · intro hM
+    exact absurd (Finset.mem_univ M) hM
 
 end
 

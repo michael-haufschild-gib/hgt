@@ -2840,3 +2840,40 @@ So the frequency argument separates the degrees by itself, exactly as it separat
 `z`.  The remaining assembly for (2) is therefore: index the expansion by
 `Sigma (degree, monomial)` rather than by monomials of one degree, and match the corpus's
 `MvPolynomial` relation to that index.
+
+## The wrong degree carries nothing
+
+    fiberAmplitude_eq_zero_of_card_ne :
+      RationallyIndependentSequence omega -> M' /= M ->
+      fiberAmplitude B (tupleFrequency omega) (tupleFrequency omega i) = 0
+
+At the frequency of a length-`M` tuple, a monomial of total degree `M' /= M` contributes nothing:
+its tuples would have to have the same multiset, hence the same length.  The fibre is literally
+empty, so the amplitude is an empty sum.
+
+This is the last structural ingredient of the graded assembly.  With it, the fibre amplitude of a
+full relation at a length-`M` frequency equals that of its degree-`M` part alone
+(`fiberAmplitude_sigma` plus this lemma), so the fixed-degree argument applies degree by degree
+without any inductive removal of top terms.
+
+## The Ostrowski core, refactored for the graded case
+
+The two halves of the argument are now separated at the fibre:
+
+    eval_permSum_combination_eq_zero_of_fiber :
+      (the fibre amplitude at the frequency of an injective tuple vanishes) ->
+      eval (fun l => I omega (i l)) (sum_{s in K} c s . permSum s) = 0
+
+    eq_zero_of_fiberAmplitudes_vanishing :
+      (that holds for every injective tuple with nonvanishing amplitudes) ->
+      forall s in K, c s = 0
+
+The earlier theorems are now corollaries: `eval_permSum_combination_eq_zero` supplies the fibre
+vanishing from a vanishing relation, and `eq_zero_of_monomialCombination_vanishing` from that.
+
+The point of the refactor is the graded case.  For a relation whose monomials have several total
+degrees, the fibre amplitude at a length-`M` frequency is the sum over degrees
+(`fiberAmplitude_sigma`), every term with `M' /= M` vanishes
+(`fiberAmplitude_eq_zero_of_card_ne`), so the degree-`M` hypothesis of
+`eq_zero_of_fiberAmplitudes_vanishing` is available without isolating the degree-`M` part of the
+relation first.
