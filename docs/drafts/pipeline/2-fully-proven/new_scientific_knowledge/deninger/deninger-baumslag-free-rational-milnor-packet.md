@@ -159,7 +159,11 @@
   subgroups),
   `GaloisForLFunctions.RHTower.DeningerRootChain` (the chain of iterated roots),
   `GaloisForLFunctions.RHTower.DeningerBauCyclic` (the rationalization of a cyclic group),
-  `GaloisForLFunctions.RHTower.DeningerBauSubsingleton` (index sets with at most one element)
+  `GaloisForLFunctions.RHTower.DeningerBauSubsingleton` (index sets with at most one element),
+  `GaloisForLFunctions.RHTower.DeningerRetractCohomology` (vanishing of cohomology passes to a
+  retract),
+  `GaloisForLFunctions.RHTower.DeningerBauCohomologyCriterion` (a cohomological criterion),
+  `GaloisForLFunctions.RHTower.DeningerUniquelyDivisibleProd` (unique roots in a product)
 
 ## Statement
 
@@ -2575,3 +2579,28 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   its second homology is the exterior square, which is nonzero — so no argument resting only on
   unique divisibility can prove the vanishing.  Freeness is doing real work, and the retract
   criterion is the route that can carry it.
+- 2026-08-03 — **A distinction that matters and had been left implicit.**  Clause (4) is a statement
+  about *cohomology*, and the corpus's degree one and two results are cohomological, but everything
+  built here through the Bass–Serre tree and the increasing unions is *homological*.  The two are not
+  interchangeable without universal coefficients, which mathlib does not have for group
+  (co)homology; worse, the union argument does not dualize at all, since it rests on a chain having
+  finite support and cohomology does not commute with directed colimits.  So the recent chain of
+  results proves the homological analogue of clause (4) for index sets with at most one element — a
+  real theorem, but not literally the clause.
+  What does dualize is the retract argument, and it is now ported:
+  `deningerIsZero_of_retract_cohomology`.  Combined with the projectivity of the rationalization,
+  this gives the criterion for the actual clause: the cohomology of `Bau(F)` vanishes in any degree
+  in which that of some group with unique roots surjecting onto it vanishes.
+- 2026-08-03 — The criterion and the base case, now in the cohomology the clause is actually stated
+  in: `deningerBauFree_isZero_cohomology_of_surjection` — the packet's cohomology vanishes in any
+  degree in which that of some group with unique roots surjecting onto it vanishes — and
+  `deningerBauFree_isZero_cohomology_of_isEmpty` for the empty index set, where the rationalization
+  is trivial.  The homological results proved earlier are not superseded, but they are a parallel
+  track: the retract argument is the only one of them that dualizes, and it is the one that now
+  carries the actual gate.
+- 2026-08-03 — `deningerUniquelyDivisible_prod`: a product of groups with unique roots has unique
+  roots.  Recorded because the witness the criterion asks for has to be built somehow, and the
+  session's findings have ruled out most of the obvious constructions: free products destroy
+  divisibility, amalgams destroy uniqueness of roots, and unions of root adjunctions destroy it too.
+  Products are one of the few operations that preserve the property, though they do not help by
+  themselves, since the cohomology of a product contains that of each factor.

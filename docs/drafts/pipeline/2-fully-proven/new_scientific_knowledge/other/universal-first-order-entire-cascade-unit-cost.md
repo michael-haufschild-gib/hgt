@@ -451,6 +451,7 @@ formal/GaloisForLFunctions/HTGeometry/ScalarDifferentialOrderUpperBound.lean (ne
 formal/GaloisForLFunctions/HTGeometry/NewtonEdgeNonCancellation.lean (new)
 formal/GaloisForLFunctions/HTGeometry/MaximumTermCentralIndex.lean (new)
 formal/GaloisForLFunctions/HTGeometry/MaximumTermLogarithmicDerivative.lean (new)
+formal/GaloisForLFunctions/HTGeometry/TriangleInequalityDefect.lean (new)
 formal/GaloisForLFunctions/HTGeometry/BorelGrowthLemma.lean (already existed; extended)
 ```
 
@@ -541,6 +542,8 @@ coeffFun_eq_central_term_mul_tsum         -- f(z) = a_nu z^nu times a normalised
 coeffFun_eq_term_mul_tsum                 -- the same at any index with a nonzero coefficient
 normalised_coeff_scale                    -- scaling by zeta multiplies the n-th one by zeta^(n-k)
 coeffFun_scale_eq_tsum                    -- hence the local expansion in the scaling variable
+tsum_alignment_defect                     -- sum of moduli minus modulus of sum = total misalignment
+alignment_defect_le                       -- so a small defect forces every term to be aligned
 ```
 
 With this the three quantities are pinned to each other: `mu(r) <= M(r) <= S(r) <= mu(r)(nu(s)+C)`,
@@ -919,3 +922,17 @@ triangularity package, which is exactly how the paper proof uses them.
   unconditionally in a division ring -- so the factorisation and the scaling law are pure algebra;
   what the analysis has to supply is only the bound `|c_n| <= 1`, which is the defining property of
   the central index and is already proved.
+- 2026-08-03 -- Isolated the mechanism the discarded route was destroying, as a standalone general
+  lemma: `TriangleInequalityDefect.lean`.  For any summable complex family whose sum is `A u` with
+  `u` a unit,
+
+  ```text
+  sum_i ||c_i||  -  A  =  sum_i ( ||c_i|| - Re(conj(u) c_i) ),
+  ```
+
+  every summand on the right being nonnegative.  So the defect in the triangle inequality *is* the
+  total misalignment, and each individual misalignment is bounded by the defect.  This is what
+  converts maximality into cancellation: at a maximum-modulus point the normalised coefficients have
+  the largest possible sum, so their phases must almost all agree, and it is that agreement -- not
+  any bound on `|c_n|` -- that makes the weighted sum `sum (n - nu) c_n` small.  The lemma is stated
+  for an arbitrary index type and has no analytic content, so it is reusable well beyond this card.

@@ -1538,3 +1538,84 @@ argument needs none of it — the periodicity that makes the endpoints cancel is
 
 This is the orthogonality that converts `∫_0^1 |S|²` into `∑_n |a_n|²`, the remaining analytic input
 for Gallagher's route to the sharp constant.
+
+### Formal layer — the squared modulus of a trigonometric polynomial
+
+`formal/GaloisForLFunctions/RHTower/Sieve/TrigExpansion.lean`:
+
+- `expSum_eq_sum` — the trigonometric polynomial as a sum of characters, `S(t) = ∑_n c_n e(nt)`.
+- `normSq_expSum_eq` — **`|S(t)|² = ∑_m ∑_n c_m conj(c_n) e((m−n)t)`**.
+- `integral_cross_term` — **`∫_0^1 e((m−n)t) dt = 1` if `m = n`, else `0`**.
+
+All unconditional. These are the two ingredients of Parseval for trigonometric polynomials; the only
+step left is interchanging the integral with the two finite sums, after which
+`∫_0^1 |S|² = ∑_n |c_n|²` and Gallagher's route to the sharp large sieve constant has all its
+analytic inputs.
+
+### Formal layer — Parseval for trigonometric polynomials
+
+`formal/GaloisForLFunctions/RHTower/Sieve/TrigParseval.lean`:
+
+- `intervalIntegrable_circleFreq_sub` — the cross-term characters are interval-integrable.
+- `integral_normSq_expSum` — **`∫_0^1 |S(t)|² dt = ∑_{n < N} |c_n|²`** for `S(t) = ∑_{n<N} c_n e(nt)`.
+
+Unconditional. The double sum of `TrigExpansion.lean` is interchanged with the integral (finitely
+many integrable terms), orthogonality kills every off-diagonal term, and `c_n conj(c_n) = |c_n|²`
+remains on the diagonal.
+
+With `gallagher_sobolev`, `integral_circleFreq_intCast` and this identity, all three analytic inputs
+of Gallagher's route to the sharp large sieve are now in the corpus. What remains is the assembly:
+the derivative energy `∫_0^1 |S'|² = ∑_n (2πn)² |c_n|²` and the disjointness argument turning local
+averages at `δ`-separated points into a single integral over `[0,1]`.
+
+### Formal layer — the derivative energy
+
+`formal/GaloisForLFunctions/RHTower/Sieve/TrigDerivative.lean`:
+
+- `hasDerivAt_circleFreq_mul` — the derivative of a single character.
+- `derivCoeff`, `hasDerivAt_expSum` — **the derivative of a trigonometric polynomial is again one**,
+  with coefficients multiplied by `2πin`.
+- `integral_normSq_derivCoeff` — **`∫_0^1 |S'|² = ∑_{n<N} (2πn)² |c_n|²`**.
+
+All unconditional. Because the derivative is itself a trigonometric polynomial, its energy needs no
+new analysis: Parseval applies to the new coefficient vector, and the norm computation
+`‖2πin·c_n‖ = 2πn‖c_n‖` finishes it.
+
+Both integrals appearing in Gallagher's Sobolev bound are now expressed in the coefficient energy.
+The only remaining step to the sharp large sieve constant is the disjointness assembly: at
+`δ`-separated points the surrounding intervals of length `δ` do not overlap, so summing the local
+bounds gives one integral over `[0,1]` and the constant `N + δ^{-1}` in place of the logarithmic one.
+
+### Formal layer — the derivative of the squared modulus
+
+`formal/GaloisForLFunctions/RHTower/Sieve/TrigNormSqDeriv.lean`:
+
+- `continuous_expSum` — a trigonometric polynomial is continuous.
+- `hasDerivAt_normSq_expSum` — **`(|S|²)' = ⟪S, S'⟫ + ⟪S', S⟫`**, obtained by writing the squared
+  modulus as the *real* inner product `⟪S, S⟫` on `ℂ` and differentiating the bilinear pairing.
+- `abs_deriv_normSq_le` — **`|(|S|²)'| ≤ 2‖S‖‖S'‖`** by Cauchy–Schwarz.
+
+All unconditional. Viewing `|z|²` as a real inner product rather than `re² + im²` avoids
+differentiating the components separately; mathlib's `HasDerivAt.inner` then gives the product rule
+in one step.
+
+Gallagher's Sobolev bound applied to `f = |S|²` now has both of its integrals expressed in `|S|` and
+`|S'|`, which Parseval and the derivative energy evaluate. The remaining step is the disjointness
+assembly at `δ`-separated points.
+
+### Formal layer — Gallagher's bound at a point
+
+`formal/GaloisForLFunctions/RHTower/Sieve/GallagherPointwise.lean`:
+
+- `gallagher_at_point` — **`|S(a)|² ≤ δ^{-1} ∫_{a−δ/2}^{a+δ/2} |S|² + ∫_{a−δ/2}^{a+δ/2} 2|S||S'|`**
+  for any trigonometric polynomial `S` and any `δ > 0`.
+
+Unconditional, and with no integrability side conditions: every ingredient is continuous, so the
+Sobolev lemma's hypotheses are discharged from `continuous_expSum` alone.
+
+This is the local half of Gallagher's argument, now in a form specialised to trigonometric
+polynomials. The remaining step is global: the windows of length `δ` around `δ`-separated points are
+pairwise disjoint, so summing this bound over such a family replaces the local integrals by a single
+integral over one period, which `TrigParseval.lean` and `TrigDerivative.lean` evaluate as
+`∑_n |c_n|²` and `∑_n (2πn)²|c_n|²`. That yields the constant `N + δ^{-1}` in place of the
+logarithmic one — the sharp shape.

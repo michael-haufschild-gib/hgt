@@ -62,9 +62,7 @@ We formulate the consequence for Hilbertian relation charts, recover the
 sharp two-observer criterion, and apply the mechanism to closed embeddings
 in rigged Hilbert space theory.  In particular, the canonical graph
 classification of Hilbert pre-quasi Gelfand pairs and an explicit
-pre-quasi-but-not-quasi pair are obtained in the same formal framework.
-Every mathematical theorem, lemma, corollary, and model assertion in the
-paper is proved unconditionally in Lean~4.
+pre-quasi-but-not-quasi pair are obtained in the same Hilbertian framework.
 \end{abstract}
 
 \medskip
@@ -73,7 +71,7 @@ Primary 47A06, 46C07; Secondary 47A70, 46A32.
 
 \noindent\textbf{Keywords.}
 Operator range; closed relation; rigged Hilbert space; Gelfand triple;
-annihilator; spaceability; coercivity; Lean.
+annihilator; spaceability; coercivity.
 
 \section{Introduction}
 
@@ -91,7 +89,7 @@ defects.
 
 The one-vector noncoverage component of our Hilbert theorem is not the
 novelty; compare the Baire-category operator-range result
-\cite[Proposition~2.6]{AroraGlueck2023}.  The Lean-certified content here is
+\cite[Proposition~2.6]{AroraGlueck2023}.  The new content here is
 closed infinite-dimensional common avoidance without assuming that the span
 of the ranges is nonclosed, even when their algebraic span is all of \(G\).
 
@@ -131,7 +129,7 @@ two-observer criterion is therefore an instance of the same law.  For rigged
 Hilbert spaces, a compatible negative embedding lies in the graph of the
 inverse adjoint of the positive embedding.  Thus proper compatible partners
 are controlled by closed graph subspaces with dense coordinate images.
-We include the formal graph classification and the explicit Hilbert
+We include the graph classification and the explicit Hilbert
 pre-quasi counterexample to the automatic quasi-compatibility conjecture of
 Skrepek \cite{Skrepek2025}.
 
@@ -392,7 +390,7 @@ containing a countably indexed linearly independent family.
 \begin{proof}
 The finite construction is the same weaving proof with index set
 \(\{0,\ldots,m\}\times\N^2\).  Equivalently, it is the finite-family theorem
-formalized separately from its countable version.
+proved separately from its countable version.
 \end{proof}
 
 \begin{remark}\label{rem:strength}
@@ -444,9 +442,8 @@ Corollary~\ref{cor:hereditary}.
 
 \section{Closed embeddings and pre-quasi Gelfand pairs}\label{sec:gelfand}
 
-We state the Hilbert standard-pivot formulation used in the formal
-development.  A closed linear map may be unbounded and has its specified
-domain as part of its data.
+We use the Hilbert standard-pivot formulation.  A closed linear map may be
+unbounded and has its specified domain as part of its data.
 
 \begin{definition}\label{def:prequasi}
 Let \(H\) be a Hilbert space and let
@@ -552,7 +549,7 @@ Theorem~\ref{thm:observer}.
 
 The same weights define a closed positive embedding and its canonical
 negative partner; restricting the latter along the graph hyperplane
-corresponding to \(v^\perp\) gives the following formal consequence.
+corresponding to \(v^\perp\) gives the following consequence.
 
 \begin{theorem}[pre-quasi does not force quasi]\label{thm:counterexample}
 There exist closed linear maps
@@ -579,63 +576,6 @@ is false.
 Theorem~\ref{thm:counterexample} is a Hilbert counterexample, and Hilbert
 spaces are within the quantified class.
 \end{proof}
-
-\section{Formal verification}\label{sec:lean}
-
-The Lean development uses complex Hilbert spaces from mathlib.  No
-\texttt{sorry}, \texttt{admit}, user axiom, \texttt{opaque}, or
-\texttt{unsafe} declaration occurs in the formal modules.  The exact claim
-surface is:
-\begingroup
-\scriptsize
-\sloppy
-\raggedright
-\begin{description}[leftmargin=2.8em,style=nextline,itemsep=0pt,topsep=0pt,parsep=0pt]
-  \item[Theorem~\ref{thm:observer}]
-  \nolinkurl{dense_images_iff_orthogonal_avoids_adjointRanges}.
-  \item[Corollary~\ref{cor:hereditary}]
-  \nolinkurl{dense_orthogonal_image_of_le_countableWovenNormalSpace} and
-  \nolinkurl{orthogonal_ne_top_of_ne_bot}.
-  \item[Theorem~\ref{thm:coverage}]
-  \nolinkurl{closed_common_dense_image_rigid_iff_adjointRanges_cover}.
-  \item[Lemma~\ref{lem:persistence}]
-  \nolinkurl{hilbertRangeSingular_domRestrict_orthogonal} and
-  \nolinkurl{exists_unit_norm_map_lt_of_hilbertRangeSingular}.
-  \item[Lemma~\ref{lem:array}]
-  \nolinkurl{exists_countable_singular_orthonormalArray}.
-  \item[Theorem~\ref{thm:dichotomy}]
-  \nolinkurl{countable_observer_coercivity_wildness_law}.
-  \item[Corollary~\ref{cor:finite}]
-  \nolinkurl{finite_noncoercive_observer_wild_lattice} and
-  \nolinkurl{finite_coercive_observer_forces_trivial_common_defect}.
-  \item[Theorem~\ref{thm:two}]
-  \nolinkurl{twoSidedSingular_iff_hasProperClosedBiDenseSubspace} and
-  \nolinkurl{twoSidedSingular_has_common_woven_normal_lattice}.
-  \item[Theorem~\ref{thm:classification}]
-  \nolinkurl{preQuasi_graph_le_canonical_graph},
-  \nolinkurl{preQuasi_quasi_iff_eq_canonicalNegative}, and
-  \nolinkurl{preQuasi_of_closed_biDense_canonicalGraphSubspace}.
-  \item[Proposition~\ref{prop:model}]
-  \nolinkurl{pqV_not_mem_range_pqP},
-  \nolinkurl{pqV_not_mem_range_pqQ},
-  \nolinkurl{pqDefectDomain_dense}, and
-  \nolinkurl{pqDefectRange_dense}.
-  \item[Theorem~\ref{thm:counterexample}]
-  \nolinkurl{exists_hilbertPreQuasiPair_not_quasi}.
-  \item[Corollary~\ref{cor:conjectures}]
-  \nolinkurl{not_every_hilbertPreQuasiPair_is_quasi}.
-\end{description}
-\endgroup
-
-The two source files are
-\begin{quote}
-\texttt{PreQuasiGelfandTwoSidedSingularDefect.lean},\\
-\texttt{PythagoreanObserverBlindness.lean}.
-\end{quote}
-Both are imported by the project umbrella
-\texttt{GaloisForLFunctions.RHTower}.  The axiom audit reports only
-\texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}, the
-standard logical quotient basis used by mathlib.
 
 \section{Consequences and open boundaries}
 

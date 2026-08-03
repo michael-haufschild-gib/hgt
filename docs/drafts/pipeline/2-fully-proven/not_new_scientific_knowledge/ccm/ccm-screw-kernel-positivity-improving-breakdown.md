@@ -179,11 +179,55 @@ The calculation is a direct differentiation of Suzuki's explicit kernel followed
 Beurling--Deny criterion. It gives a useful exact classification of the cofinal spectral geometry,
 but it is routine parent theory after the kernel is written and is therefore classified as a bridge.
 
-## Lean decision
+## Lean status
 
-The formal tree has no object for Suzuki's screw function, its distributional second derivative, or
-the restricted Weil form. Formalizing only the abstract disjoint-support criterion would not certify
-the source-specific sign computation. No Lean file is added.
+**Superseded, 2026-08-03.**  The previous "no Lean file is added" decision is retired: Suzuki's
+explicit screw function `(3)` and its classical second derivative off the prime-power atoms are now
+built, and both proved theorems of this card are formalized unconditionally.
+
+`formal/GaloisForLFunctions/RHTower/SuzukiExplicitScrewRegularKernel.lean`
+
+- `screwFn c₁ c₀` — Suzuki's explicit screw function `(3)`, with the two archimedean constants
+  `ψ(1/4) − log π` and `(1/4)Φ(1,2,1/4)` carried as parameters and instantiated at
+  `screwLinearCoeff = (Complex.digamma (1/4)).re − log π`, `screwLerchConst = screwLerchTail 0`.
+- `screwPrimeSum` — the von Mangoldt hinge sum; `exists_locallyAffine_screwPrimeSum` proves it is
+  locally affine off the atoms (the index set `{n : log n ≤ t}` is locally constant), which is the
+  reason the arithmetic part contributes nothing to the regular kernel.
+- `screwLerchTail`, `screwLerchTail₁`, `screwLerchTail₂` and `screwLerchTail₂_eq` — the archimedean
+  Lerch tail `∑_k e^(−λ_k t)/λ_k²`, `λ_k = 2k + 1/2`, differentiated twice termwise on every ray
+  `(δ,∞)` and summed to `e^(−t/2)/(1 − e^(−2t))`.  This is exactly `(8)`--`(9)`.
+- `iteratedDeriv_two_screwFn` / `iteratedDeriv_two_screwFn_suzuki` — **equation `(6)`**:
+  `iteratedDeriv 2 (screwFn c₁ c₀) t = −screwRegularKernel t` for every `t > 0` which is not a
+  prime-power atom.
+- `plasticRoot`, `plasticRoot_cubic`, `cubic_pos_iff_plasticRoot_lt`, `screwSignThreshold` —
+  the unique real root of `ρ³ − ρ − 1` by the intermediate value theorem plus strict monotonicity
+  on `[1,∞)`, and `t_* = log ρ`.
+- `screwRegularKernel_mul_eq_cubic`, `screwRegularKernel_pos_iff_cubic`,
+  `screwRegularKernel_pos_iff`, `screwRegularKernel_neg_of_lt_threshold` — **equation `(7)`**:
+  `0 < K t ↔ 0 < e^(3t) − e^t − 1 ↔ t_* < t`, and strict negativity below the threshold.
+
+`formal/GaloisForLFunctions/RHTower/SuzukiScrewDisjointCrossCoupling.lean`
+
+- `screwAtoms`, `exists_atomFree_mem_Ioo`, `exists_atomFree_radius` — the atoms in a bounded
+  interval form a finite set, so every nonempty open interval contains a non-atom and every
+  non-atom has an atom-free neighbourhood.  This is the discreteness step of `(12)`.
+- `screwRegularForm` — the ordinary double integral `∫∫ K(x − y) f y h x`, which is the restricted
+  Weil form on pairs whose support difference avoids `0` and every atom.
+- `exists_disjoint_positive_screwRegularForm` — **equations `(10)`--`(11)`, `(14)`**: for every
+  aperture `a > t_*/2` two `C^∞` nonnegative bumps with disjoint supports inside `(−a,a)` are
+  constructed (`ContDiffBump` at `±t/2` with radius controlled by the threshold gap, the atom gap,
+  the aperture and the separation) and the resulting pairing is proved strictly positive.
+- `SatisfiesBeurlingDeny`, `screwL2Pairing`, `screwL2Pairing_eq_zero_of_disjoint`,
+  `not_satisfiesBeurlingDeny_screwRegularForm_add_smul` — **equation `(15)`**: the `L²` pairing of
+  disjointly supported vectors vanishes, so *no* scalar shift of the form satisfies the first
+  Beurling--Deny inequality, hence none has a positivity preserving semigroup.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+Remaining formal bridge: the identification of `screwRegularForm f h` with the distributional
+pairing `⟨−g'', c_(f,h)⟩` of the screw function itself, by two integrations by parts on an
+atom-free interval.  This is the only step of `(1)`--`(14)` not yet in Lean.
 
 ## Gates
 
@@ -192,6 +236,9 @@ the source-specific sign computation. No Lean file is added.
 - [x] disjoint positive bump violation proved
 - [x] stability under scalar shifts addressed
 - [x] cofinal sign-indefinite spectral class identified
+- [x] Lean: screw function, its second derivative `(6)` and the threshold `(7)` unconditional
+- [x] Lean: disjoint positive cross coupling and the Beurling--Deny failure unconditional
+- [ ] Lean: integration-by-parts bridge from `−g''` to the regular-kernel double integral
 - [ ] parity-separated/oscillatory cofinal simple-even theorem
 - [ ] projective CCM ground-vector transfer
 - [ ] RH

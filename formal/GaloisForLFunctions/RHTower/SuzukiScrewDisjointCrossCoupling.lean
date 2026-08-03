@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.SuzukiExplicitScrewRegularKernel
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
-import Mathlib.MeasureTheory.Constructions.Prod.Integral
+import Mathlib.MeasureTheory.Measure.Prod
+import Mathlib.MeasureTheory.Integral.Bochner.Set
+import Mathlib.MeasureTheory.Integral.IntegrableOn
 
 /-!
 # Disjointly supported positive cross couplings of the regular screw kernel
@@ -59,7 +61,7 @@ theorem exists_atomFree_mem_Ioo {α β : ℝ} (h : α < β) :
   classical
   set F : Finset ℝ := (Finset.Icc 2 ⌊Real.exp β⌋₊).image fun n : ℕ => Real.log n with hF
   have hinf : (Ioo α β \ (F : Set ℝ)).Infinite :=
-    (Set.Ioo_infinite h).diff F.finite_toSet
+    (Set.Ioo_infinite h).sdiff F.finite_toSet
   obtain ⟨t, htIoo, htF⟩ := hinf.nonempty
   refine ⟨t, htIoo, fun n hn hlog => htF ?_⟩
   have hmem : t ∈ screwAtoms ∩ Iio β := ⟨⟨n, hn, hlog⟩, htIoo.2⟩
@@ -220,7 +222,7 @@ theorem exists_disjoint_positive_screwRegularForm {a : ℝ} (ha : screwSignThres
         exact lt_trans hthr hlt
     exact (hker.mul ((F.continuous.comp continuous_snd).continuousOn)).mul
       ((H.continuous.comp continuous_fst).continuousOn)
-  have hGint : IntegrableOn G R volume := hRcompact.integrableOn_of_nhdsWithin_isCompact hGcont
+  have hGint : IntegrableOn G R volume := hGcont.integrableOn_compact hRcompact
   -- the open rectangle sits inside the support
   have hOsub : Ioo (t / 2 - r) (t / 2 + r) ×ˢ Ioo (-(t / 2) - r) (-(t / 2) + r)
       ⊆ Function.support G ∩ R := by
@@ -234,12 +236,12 @@ theorem exists_disjoint_positive_screwRegularForm {a : ℝ} (ha : screwSignThres
     simpa [hG] using mul_ne_zero (mul_ne_zero h3 h1) h2
   have hvolO : 0 < volume (Function.support G ∩ R) := by
     refine lt_of_lt_of_le ?_ (measure_mono hOsub)
-    rw [MeasureTheory.volume_eq_prod, Measure.prod_prod, Real.volume_Ioo, Real.volume_Ioo]
+    rw [Measure.volume_eq_prod ℝ ℝ, Measure.prod_prod, Real.volume_Ioo, Real.volume_Ioo]
     have h2r : (0 : ℝ) < 2 * r := by linarith
     have e1 : t / 2 + r - (t / 2 - r) = 2 * r := by ring
     have e2 : -(t / 2) + r - (-(t / 2) - r) = 2 * r := by ring
     rw [e1, e2]
-    exact ENNReal.mul_pos (by simpa using h2r.ne') (by simpa using h2r.ne')
+    exact ENNReal.mul_pos (by simpa using hrpos) (by simpa using hrpos)
   have hae : 0 ≤ᵐ[volume.restrict R] G := by
     filter_upwards [ae_restrict_mem hRmeas] with p hp
     exact hGnonneg p hp
@@ -275,7 +277,7 @@ theorem not_satisfiesBeurlingDeny_screwRegularForm_add_smul (c : ℝ) {a : ℝ}
   obtain ⟨f, h, _, _, hfnn, hhnn, _, _, _, _, hdisj, hposform⟩ :=
     exists_disjoint_positive_screwRegularForm ha
   have hle := hBD f h hfnn hhnn hdisj
-  rw [screwL2Pairing_eq_zero_of_disjoint hdisj, mul_zero, add_zero] at hle
+  simp only [screwL2Pairing_eq_zero_of_disjoint hdisj, mul_zero, add_zero] at hle
   linarith
 
 end GaloisForLFunctions.RHTower

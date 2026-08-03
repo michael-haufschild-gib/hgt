@@ -1,6 +1,6 @@
 # Claim trace audit
 
-Status: active strict ledger. Manuscript may not retain a mathematical claim without a compiled unconditional Lean witness below.
+Status: active strict private ledger. Manuscript may not retain a mathematical claim without a compiled unconditional Lean witness below. Lean names, tooling, and audit metadata must not appear in the reader-facing manuscript.
 
 ## Universal observer law
 

@@ -3,8 +3,6 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath,amssymb,amsthm,mathtools}
-\usepackage{booktabs}
-\usepackage{array}
 \usepackage{enumitem}
 \usepackage{microtype}
 \usepackage[margin=2.85cm]{geometry}
@@ -38,8 +36,6 @@
 \newcommand{\lcm}{\operatorname{lcm}}
 \newcommand{\den}{\operatorname{den}}
 \newcommand{\muR}{\boldsymbol\mu}
-\newcommand{\leanname}[1]{{\Urlmuskip=0mu plus 1mu\nolinkurl{#1}}}
-\newcommand{\leansep}{\allowbreak}
 \emergencystretch=1.5em
 
 \begin{document}
@@ -53,9 +49,9 @@ and exact recognition for ramified nonabelian Hodge diagrams}
 
 \date{3 August 2026}
 
-\subjclass[2020]{Primary 34M40, 14D24; Secondary 14H60, 32G34, 57K10, 68V20}
+\subjclass[2020]{Primary 34M40, 14D24; Secondary 14H60, 32G34, 57K10}
 \keywords{irregular nonabelian Hodge theory, Stokes geometry, fission tree, Eggers--Wall tree,
-contact complexity, Puiseux characteristic, ultrametric, Fourier transform, formal verification}
+contact complexity, Puiseux characteristic, ultrametric, Fourier transform}
 
 \begin{abstract}
 We identify a coordinate-covariance law governing loops, edges, Fourier rank drops and information
@@ -92,8 +88,7 @@ factorizations of $r$.  We compute leading-separated cores, exact elementary two
 and finite decorated fibres.  Pair-spectrum membership together with cophenetic consistency is
 then necessary and sufficient for arbitrary finite elementary loopless decorated graphs.  The
 proof constructs one simultaneous family of complex Puiseux polynomials and uses exactly
-$n^2+n^3\le2n^3$ unit-cost recognition queries.  Every theorem, corollary and mathematical example
-stated in the paper is verified unconditionally in Lean~4.
+$n^2+n^3\le2n^3$ unit-cost recognition queries.
 \end{abstract}
 
 \maketitle
@@ -165,14 +160,7 @@ the substitution from $\CC[[t]]$ to $\CC((t))$.  Factoring a nonzero Laurent ser
 monomial and a unit proves valuation invariance, and applying this to $f-g$ proves contact
 invariance.  The Fourier coordinate identities are direct Laurent multiplication and inversion.
 The Weyl identity follows from $X\mapsto D$, $D\mapsto-X$.  Recursive application to the exact
-characteristic tail produces the finite resolution.  These arguments are formalized by
-\leanname{FormalUniformizer.}\leansep\leanname{laurentAlgReparametrization_order},
-\leanname{FormalUniformizer.}\leansep\leanname{laurentAlgReparametrization_contactTop},
-\leanname{FormalUniformizer.}\leansep\leanname{laurentContactHierarchy_reparametrization},
-\leanname{Characteristic.}\leansep\leanname{airyTower_negativeFourier_}\leansep
-\leanname{contact_transport}, and
-\leanname{Characteristic.}\leansep\leanname{airyTower_exact_negativeFourier_}\leansep
-\leanname{resolution}.
+characteristic tail produces the finite resolution.
 \end{proof}
 
 \begin{theorem}[Contact tomography; informal form]\label{thm:intro-tomography}
@@ -307,7 +295,7 @@ theorem.  Section~\ref{sec:sign} proves the sign law.  Section~\ref{sec:classifi
 divisor-chain, enumerative and Fourier consequences.  Sections~\ref{sec:separated}--\ref{sec:finite}
 treat separated cores, pair spectra and finite fibres.  Section~\ref{sec:recognition} proves exact
 elementary recognition.  Section~\ref{sec:examples} records graph twins and obstructions.
-Section~\ref{sec:formal} gives the formal theorem map and scope limits.
+Section~\ref{sec:scope} records scope limits.
 
 \section{Stokes circles, levels and diagrams}\label{sec:background}
 
@@ -831,7 +819,7 @@ partition into $j$ blocks is counted by $j!S(k,j)$.
 \end{proof}
 
 The same equality controls the local Fourier transform at operator, Laurent-coordinate and contact
-levels; no analytic transformation rule is left as an unformalized premise.
+levels.
 
 \begin{theorem}[Negative Fourier branch]\label{thm:fourier}
 Every Airy tower satisfies
@@ -851,9 +839,9 @@ $\beta_i>e_{i-1}$ at every level, then it is an Airy tower.
 \begin{proof}
 For an Airy tower, \eqref{eq:negative-congruence} is the identity
 $\beta_i=e_{i-1}+e_i$.  The exact Weyl, Laurent and contact assertions are the corresponding clauses
-of Theorem~\ref{thm:intro-covariance}; recursive descent is
-\leanname{Characteristic.airyTower_exact_negativeFourier_resolution}.  Loop preservation is the canonical clause
-of Lemma~\ref{lem:first-deviation}.
+of Theorem~\ref{thm:intro-covariance}.  Applying the same step to each successive characteristic
+tail gives the recursive descent.  Loop preservation is the canonical clause of
+Lemma~\ref{lem:first-deviation}.
 
 For the converse, the congruence says $\beta_i\mid e_{i-1}+e_i$.  Since
 $e_i<e_{i-1}<\beta_i$, one has
@@ -1028,8 +1016,7 @@ Two ramification-two simple Airy vertices have possible edge multiplicities
  0,1,2,4,8,12,\ldots,
 \]
 but never $3$.  Since the ultrametric condition is vacuous on two vertices, this obstruction is
-independent of the necessary condition \eqref{eq:known-ultra}.  The exclusion is
-\leanname{ramificationTwo_edge_three_forbidden}.
+independent of the necessary condition \eqref{eq:known-ultra}.
 \end{corollary}
 
 \section{Finite fibres after ramification decoration}\label{sec:finite}
@@ -1073,16 +1060,6 @@ and cancellation by $g>0$ shows that fixed $(C,g)$ determines at most one $s_d$.
 local and pair codes form a finite type.  A labelled fission tree is its complete raw code filtered
 by the fission-tree compatibility predicate; every such subtype is finite.  Taking its universal
 finite list gives the claimed complete enumeration.
-The local bound, pair bounds, uniqueness,
-global finiteness and enumeration are respectively:
-\begin{flushleft}\small
-\leanname{finite_fixedWeightedCharacteristic},
-\leanname{DecoratedDiagram.PairFissionDatum.fixedPart_le},\\
-\leanname{DecoratedDiagram.PairFissionDatum.fissionNumerator_le},
-\leanname{DecoratedDiagram.PairFissionDatum.fissionNumerator_unique},\\
-\leanname{DecoratedDiagram.decorated_fissionTree_fiber_finite},
-\leanname{DecoratedDiagram.mem_enumerateDecoratedFissionTreeFiber}.
-\end{flushleft}
 \end{proof}
 
 \begin{remark}
@@ -1147,18 +1124,10 @@ equivalence relation.  Attach distinct coefficients to its finitely many classes
 recurse inside each class.  The number of distinct values decreases, so the construction
 terminates.  Two leaves first differ at the coefficient attached to their least common ancestor,
 whose height is their prescribed value.
-The formal statements are:
-\begin{flushleft}\small
-\leanname{FiniteContactDendrogram.strictThresholdSetoid},
-\leanname{FiniteContactDendrogram.threshold_mono},\\
-\leanname{FiniteContactDendrogram.exact_highestDifference},
-\leanname{ElementaryDecoratedGraph.finiteDistinctCoefficients_injective}.
-\end{flushleft}
 \end{proof}
 
 Equivalently, for every threshold $t\ge0$, the relation $d(x,y)\le t$ is an equivalence relation,
-and these partitions coarsen with $t$.  This threshold formulation is the one formalized in
-Section~\ref{sec:formal}.
+and these partitions coarsen with $t$.  We use this threshold formulation below.
 
 \subsection{Integral heights}
 
@@ -1230,19 +1199,9 @@ do not: high, mandatory and lower exponent ranges are disjoint except for inacti
 within one range the ramification and numerator identities force equality of the stages.  Thus the
 selected stage is exponent-isolated.  Summing all stages gives actual finite Puiseux polynomials
 $q_i$ whose coefficient at the selected exponent differs and whose coefficients at every larger
-exponent agree.  Hence every pair realizes exactly $B_{ij}$ simultaneously.  This is
-\leanname{ElementaryDecoratedGraph.}\leansep\leanname{fissionEncoding_globalPuiseux_}\leansep
-\leanname{realizes_all_pairs}, and certificate-form sufficiency is
-\leanname{ElementaryDecoratedGraph.}\leansep\leanname{globalPuiseux_realization_of_}\leansep
-\leanname{certificate}.
-
-Finally \leanname{ElementaryDecoratedGraph.}\leansep
-\leanname{all_recognitionQueries_iff_certificate} proves that the complete ordered query
-set is exactly the recognition certificate;
-\leanname{ElementaryDecoratedGraph.}\leansep\leanname{card_recognitionQuery} gives
-$|N|^2+|N|^3$, and
-\leanname{ElementaryDecoratedGraph.}\leansep
-\leanname{recognitionComparisonBudget_le_two_cubes} gives the stated cubic bound.
+exponent agree.  Hence every pair realizes exactly $B_{ij}$ simultaneously.  Certificate-form
+sufficiency follows.  The exhaustive query set consists of all ordered pairs and ordered triples,
+so it has exactly $|N|^2+|N|^3$ elements and at most $2|N|^3$ elements when $N\ne\varnothing$.
 \end{proof}
 
 \begin{corollary}\label{cor:no-further-obstruction}
@@ -1252,10 +1211,9 @@ higher decorated graphs not detected by ultrametricity alone.
 \end{corollary}
 
 \begin{proof}
-Completeness is \leanname{nonempty_elementaryFissionEncoding_iff_certificate}.  For the infinite
-two-vertex family, two ramification-two vertices with edge $4k+3$ fail the exact spectrum for every
-$k\ge0$; this is \leanname{ramificationTwo_four_mul_add_three_forbidden}.  Triangle conditions are
-vacuous on two labels.
+Completeness is Theorem~\ref{thm:recognition}.  For the infinite two-vertex family, two
+ramification-two vertices with edge $4k+3$ fail the exact spectrum for every $k\ge0$.  Triangle
+conditions are vacuous on two labels.
 \end{proof}
 
 \section{Examples and information loss}\label{sec:examples}
@@ -1274,106 +1232,28 @@ Theorem~\ref{thm:separated-core} gives
 \[
  B_{12}=3,\qquad B_{13}=4,\qquad B_{23}=6.
 \]
-The exact calculation is \leanname{allRamified_example_edges}.  It asserts only the displayed
-decorated core data, not an isomorphism of associated analytic moduli spaces.
+This asserts only the displayed decorated core data, not an isomorphism of associated analytic
+moduli spaces.
 \end{example}
 
 \begin{example}[Exponential hidden fibres]
 Fix a separated vertex of ramification $p^k$ and first factor $p^j$.  The graph and first
 ramification drop forget the remaining factorization of $p^{k-j}$, leaving
 $2^{k-j-1}$ possibilities when $k-j\ge1$ and one possibility when $k=j$.  Products of such
-vertices give exponentially large labelled fibres with an unchanged core matrix.  This follows
-from \leanname{OrderedFactorization.airyTowerCount_primePower},
-\leanname{SeparatedFiberDatum.hiddenFiber_card}, and
-\leanname{SeparatedFiberDatum.realizedCoreEdge_independent_of_hidden}.
+vertices give exponentially large labelled fibres with an unchanged core matrix.  Indeed,
+Corollary~\ref{cor:counts} counts the remaining ordered factorizations, while
+Theorem~\ref{thm:separated-core} shows that later factors do not change the separated core.
 \end{example}
 
 The finite-fibre theorem and these examples isolate the role of decoration.  The undecorated Cartan
-shadow can hide arbitrarily large ramification and infinitely many local types
-(\leanname{undecorated_simpleAiry_range_infinite}).  Ramification makes
+shadow can hide arbitrarily large ramification and infinitely many local types, as the simple Airy
+family already shows.  Ramification makes
 the full fibre finite; on the separated locus, the first quotient fixes the matrix and the remaining
 ordered factors describe the exact hidden part.  This complements existing counts in the untwisted
 case \cite{Boalch2025Counting}: the present counts concern one ramified zero-loop stratum rather
 than untwisted trees of fixed slope and leaf number.
 
-\section{Formal verification and scope}\label{sec:formal}
-
-Every mathematical theorem, corollary and worked example in this paper has been formalized in
-Lean~4 against the repository's pinned mathlib toolchain.  The declarations are unconditional: no
-\texttt{sorry}, \texttt{admit}, new axiom, \texttt{opaque}, or \texttt{unsafe} declaration is used.
-Literature citations provide historical and analytic context, not unformalized premises in our
-proofs.  Table~\ref{tab:lean} records the principal map; the complete claim ledger accompanies the
-source.
-
-\begin{table}[ht]
-\centering
-\small
-\begin{tabular}{>{\raggedright\arraybackslash}p{0.34\textwidth}>{\raggedright\arraybackslash}p{0.57\textwidth}}
-\toprule
-Mathematical statement & Lean declaration \\
-\midrule
-Cyclic Galois stabilizers, orbit size and source loop &
-\leanname{cyclicStabilizer_card},
-\leanname{Characteristic.canonical_galoisOrbit_card},
-\leanname{Characteristic.endomorphismIrregularityFromSheets_eq},
-\leanname{Characteristic.diagonalLoopFromSheets_eq} \\
-Two-orbit phase kernel, common-level coarea and edge source formula &
-\leanname{ReducedCommonExponent.phase_eq_iff_modEq},
-\leanname{commonDifferenceKernel_card},
-\leanname{commonPairIrregularityFromSheets_eq_coarea},
-\leanname{commonPairEdgeFromSheets_eq_sourceFormula},
-\leanname{galois_sheet_pair_coarea_master_law} \\
-Gcd gap below $R+E$ & \leanname{Characteristic.le_sub_of_lt_add_gcd} \\
-Gap above $R+E$ & \leanname{Characteristic.add_twice_le_of_add_lt_of_dvd} \\
-Negative/positive first-deviation laws &
-\leanname{Characteristic.diagonalLoop_neg_of_first_lt},
-\leanname{Characteristic.diagonalLoop_pos_of_first_gt} \\
-Zero-loop rigidity & \leanname{Characteristic.diagonalLoop_eq_zero_iff_isAiryTower} \\
-Negative Fourier characterization &
-\leanname{Characteristic.isAiryTower_iff_negativeFourier_and_largeSteps},
-\leanname{Characteristic.airyTower_exact_negativeFourier_resolution} \\
-Weyl and Laurent Fourier source &
-\leanname{WeylFourier.fourier_generalizedAiryOperator},
-\leanname{Characteristic.airyTower_negativeFourier_exact_uniformizer} \\
-Universal tangent-coordinate covariance &
-\leanname{FormalUniformizer.laurentAlgReparametrization_order},
-\leanname{FormalUniformizer.laurentAlgReparametrization_contactTop},
-\leanname{FormalUniformizer.laurentContactHierarchy_reparametrization} \\
-Divisor-chain construction & \leanname{StrictDivisorChain.toCharacteristic} \\
-Ordered factorization construction &
-\leanname{OrderedFactorization.toAiryCharacteristic} \\
-Separated-core arithmetic and ultrametricity &
-\leanname{separatedEdge_eq_right_mul_next_of_le},
-\leanname{separatedRescaledWeight_acuteIsosceles} \\
-Exact elementary pair spectrum &
-\leanname{nonempty_elementaryPairPresentation_iff_spectrum} \\
-Elementary finite recognition &
-\leanname{nonempty_elementaryFissionEncoding_iff_certificate} \\
-Canonical threshold dendrogram & \leanname{RootedContactTree.thresholdSetoid},
-\leanname{ElementaryDecoratedGraph.thresholdSetoid_mono} \\
-Simultaneous global Puiseux realization &
-\leanname{ElementaryDecoratedGraph.globalPuiseux_realization_of_certificate},
-\leanname{ElementaryDecoratedGraph.uncancelledStage_gives_highestDifferenceExponent} \\
-Decorated finite fibres and enumeration &
-\leanname{finite_fixedWeightedCharacteristic},
-\leanname{DecoratedDiagram.decorated_fissionTree_fiber_finite},
-\leanname{DecoratedDiagram.mem_enumerateDecoratedFissionTreeFiber} \\
-Exact recognition query count &
-\leanname{ElementaryDecoratedGraph.card_recognitionQuery},
-\leanname{ElementaryDecoratedGraph.recognitionComparisonBudget_le_two_cubes} \\
-\bottomrule
-\end{tabular}
-\caption{Principal paper-to-Lean theorem map.}
-\label{tab:lean}
-\end{table}
-
-The formal model encodes the exact decreasing gcd characteristic, genuine complex root-of-unity
-action on finite Puiseux polynomials, cyclic stabilizers and ordered sheet differences, signed
-diagonal loop, divisor chains, ordered factorizations, actual Weyl-algebra Fourier and gauge
-automorphisms, Laurent uniformizers, pair contact mechanisms, finite decorated matrices, full
-coefficient collection and compatibility-filtered fission data.  No arbitrary coefficient choice,
-pair-affinity step, Fourier rank transition, finite-fibre step, or complexity estimate used by a
-paper theorem remains outside Lean.
+\section{Scope}\label{sec:scope}
 
 Several stronger statements are intentionally excluded.
 \begin{enumerate}[label=(\roman*)]

@@ -157,7 +157,7 @@ normal mathlib foundational sense.
 
 ## Presentation audit
 
-Eight-page manuscript is concise, mathematically self-contained, and visually
+Seven-page manuscript is concise, mathematically self-contained, and visually
 clean. It now explicitly separates:
 
 - known Baire noncoverage;
@@ -165,7 +165,8 @@ clean. It now explicitly separates:
 - new-looking span-free common closed avoidance;
 - independently unverified priority.
 
-No overclaim remains. Formal declaration list is compact but readable.
+No overclaim remains. Formal declaration list is excluded from manuscript and
+retained only in private audit ledger.
 
 ## Final hostile verdict
 

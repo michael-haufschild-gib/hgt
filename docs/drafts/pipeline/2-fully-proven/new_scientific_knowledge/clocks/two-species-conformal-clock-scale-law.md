@@ -1075,6 +1075,39 @@ Riccati characterisation: `chartRiccati_iff` says that a *globally* nonvanishing
 Riccati form, and the theorem here produces a probe nonvanishing only at the event in question, which
 is all local determination needs.
 
+`ClockConformalTwoDimensional.lean` removes the flatness restriction. In dimension two the conformal
+transformation law degenerates twice over: the gradient correction carries the factor `d - 2`, and
+the *flux* of the rescaled chart is literally the flux of the original one, so
+
+- `SmoothMetricChart.flux_conformalRescale_two` — `flux_{e^{2σ}g} = flux_g`;
+- `SmoothMetricChart.dalembert_conformalRescale_two` — `□_{e^{2σ}g} f = e^{-2σ} □_g f`, **for an
+  arbitrary function `f`**, with no differentiability hypothesis. This matters: the general law
+  `dalembert_conformalRescale` asks for a smooth argument, and the Goursat probes are only twice
+  differentiable, so the general law does not apply to them;
+- `solvesPotentialWaveAt_conformalRescale_two` — a clock equation on a conformally rescaled surface
+  is the clock equation on the flat one with potential `e^{2σ}V`;
+- `exists_clockProbe_conformal_two_dimensional`, `potential_eq_of_probes_conformal_two_dimensional`
+  — existence and determination transport verbatim. Since every Lorentzian metric on a surface is
+  locally conformally flat, this is the two-dimensional inverse problem in its physical form.
+
+`ClockLocalTwoSpecies.lean` then closes the card's own reconstruction in that dimension. The
+reconstruction was stated with a probe family without a common zero — that is, with *global*
+solutions — but determination never needs that much:
+
+- `potential_eq_of_localProbesOn`, `localProbesOn_of_noCommonZero` — a family of purely local probes
+  suffices, and a family without a common zero is one;
+- `scale_reconstruction_of_local_probes` — the two-species scale law with `LocalProbesOn … univ` in
+  place of `NoCommonZero`, on any chart and in any dimension. The massless species still needs
+  nothing;
+- `conformalPotential_weight_zero` — at the two-dimensional conformal weight `(d-2)/2 = 0` the
+  effective potential of a species of squared mass `μ` is exactly `μ e^{2σ}`;
+- `localProbesOn_conformalPotential_two` — hence a two-dimensional clock species has local probes at
+  every event, **unconditionally**;
+- **`twoSpecies_scale_reconstruction_two_dimensional`**, **`twoSpecies_reconstructedScale_two_dimensional`**
+  — *the two-species conformal clock scale law holds unconditionally in two dimensions*:
+  `(V₁ - V₂)/μ = e^{2σ}` with no hypothesis on the probe families beyond smoothness of `σ` and
+  `μ ≠ 0`. The card's open input is discharged in that dimension, not assumed.
+
 What remains open is therefore dimension `≥ 3`, where the characteristic reduction to a Goursat
 problem is unavailable; and the last open input of the whole programme is stated in its physical
 form:

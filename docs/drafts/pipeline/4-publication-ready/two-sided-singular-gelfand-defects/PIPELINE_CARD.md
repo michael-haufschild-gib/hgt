@@ -33,7 +33,7 @@ explicit pre-quasi-not-quasi model.
 
 ## Claim discipline
 
-`CLAIM_TRACE_AUDIT.md` is authoritative. No mathematical theorem, lemma, corollary, or model assertion may remain without a named unconditional Lean declaration.
+`CLAIM_TRACE_AUDIT.md` is authoritative private infrastructure. No mathematical theorem, lemma, corollary, or model assertion may remain without a named unconditional Lean declaration. Reader-facing paper must not mention Lean or formal-verification metadata.
 
 Explicit exclusions:
 
@@ -48,6 +48,7 @@ Explicit exclusions:
 - [x] direct Lean elaboration of modified module
 - [x] umbrella import present
 - [x] manuscript rewritten to Lean-backed claims only
+- [x] Lean and formal-verification metadata excluded from reader-facing manuscript
 - [x] updated novelty audit
 - [x] global formal lint green
 - [x] scratch `#print axioms` audit: only `propext`, `Classical.choice`, `Quot.sound`
