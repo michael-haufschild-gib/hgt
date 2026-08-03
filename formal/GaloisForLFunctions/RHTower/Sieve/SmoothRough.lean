@@ -90,34 +90,38 @@ theorem not_dvd_roughPart {n : ℕ} (hn : n ≠ 0) {z p : ℕ} (hp : p ∈ Nat.p
   rw [primeFactors_roughPart hn z] at hmem
   exact (Finset.mem_filter.1 hmem).2 (Nat.mem_primesLE.1 hp).1
 
+/-- The smooth part has exactly the prime factors of `n` up to `z`. -/
+theorem primeFactors_smoothPart {n : ℕ} (hn : n ≠ 0) (z : ℕ) :
+    (smoothPart z n).primeFactors = {p ∈ n.primeFactors | p ≤ z} := by
+  classical
+  ext q
+  constructor
+  · intro hq
+    have hqprime : q.Prime := Nat.prime_of_mem_primeFactors hq
+    have hqdvd : q ∣ smoothPart z n := Nat.dvd_of_mem_primeFactors hq
+    have hmem : ∃ p ∈ {p ∈ n.primeFactors | p ≤ z}, q ∣ p ^ n.factorization p := by
+      simpa using (Nat.Prime.prime hqprime).dvd_finsetProd_iff _ |>.1 hqdvd
+    obtain ⟨p, hp, hqp⟩ := hmem
+    have hpprime : p.Prime := Nat.prime_of_mem_primeFactors (Finset.mem_filter.1 hp).1
+    have hqp' : q = p := (Nat.prime_dvd_prime_iff_eq hqprime hpprime).1
+      (hqprime.dvd_of_dvd_pow hqp)
+    rwa [hqp']
+  · intro hq
+    have hqprime : q.Prime := Nat.prime_of_mem_primeFactors (Finset.mem_filter.1 hq).1
+    have hfac : q ^ n.factorization q ∣ smoothPart z n :=
+      Finset.dvd_prod_of_mem (fun p => p ^ n.factorization p) hq
+    have hpos : 0 < n.factorization q :=
+      (Nat.Prime.factorization_pos_of_dvd hqprime hn
+        (Nat.dvd_of_mem_primeFactors (Finset.mem_filter.1 hq).1))
+    exact Nat.mem_primeFactors.2
+      ⟨hqprime, dvd_trans (dvd_pow_self q hpos.ne') hfac, (smoothPart_pos z n).ne'⟩
+
 /-- The distinct prime count splits along the smooth–rough factorization. -/
 theorem card_primeFactors_roughPart_add {n : ℕ} (hn : n ≠ 0) (z : ℕ) :
     (smoothPart z n).primeFactors.card + (roughPart z n).primeFactors.card
       = n.primeFactors.card := by
   classical
-  have hsmooth : (smoothPart z n).primeFactors = {p ∈ n.primeFactors | p ≤ z} := by
-    ext q
-    constructor
-    · intro hq
-      have hqprime : q.Prime := Nat.prime_of_mem_primeFactors hq
-      have hqdvd : q ∣ smoothPart z n := Nat.dvd_of_mem_primeFactors hq
-      have hmem : ∃ p ∈ {p ∈ n.primeFactors | p ≤ z}, q ∣ p ^ n.factorization p := by
-        simpa using (Nat.Prime.prime hqprime).dvd_finsetProd_iff _ |>.1 hqdvd
-      obtain ⟨p, hp, hqp⟩ := hmem
-      have hpprime : p.Prime := Nat.prime_of_mem_primeFactors (Finset.mem_filter.1 hp).1
-      have : q = p := (Nat.prime_dvd_prime_iff_eq hqprime hpprime).1
-        (hqprime.dvd_of_dvd_pow hqp)
-      rwa [this]
-    · intro hq
-      have hqprime : q.Prime := Nat.prime_of_mem_primeFactors (Finset.mem_filter.1 hq).1
-      have hfac : q ^ n.factorization q ∣ smoothPart z n :=
-        Finset.dvd_prod_of_mem (fun p => p ^ n.factorization p) hq
-      have hpos : 0 < n.factorization q :=
-        (Nat.Prime.factorization_pos_of_dvd hqprime hn
-          (Nat.dvd_of_mem_primeFactors (Finset.mem_filter.1 hq).1))
-      exact Nat.mem_primeFactors.2
-        ⟨hqprime, dvd_trans (dvd_pow_self q hpos.ne') hfac, (smoothPart_pos z n).ne'⟩
-  rw [hsmooth, primeFactors_roughPart hn z]
+  rw [primeFactors_smoothPart hn z, primeFactors_roughPart hn z]
   exact Finset.card_filter_add_card_filter_not (p := fun p => p ≤ z)
 
 /-- **Size constraint on the rough prime count.**  Each of the `ω (roughPart z n)` distinct prime

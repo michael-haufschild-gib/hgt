@@ -19,6 +19,11 @@ def factors {R : ℕ} : StrictDivisorChain R → List ℕ
   | .terminal .. => [R]
   | .step (R := R) (E := E) _ _ _ tail => (R / E) :: tail.factors
 
+@[simp] theorem factors_cast {R S : ℕ} (h : R = S) (d : StrictDivisorChain R) :
+    (h ▸ d).factors = d.factors := by
+  subst S
+  rfl
+
 @[simp] theorem factors_nonempty {R : ℕ} (d : StrictDivisorChain R) : d.factors ≠ [] := by
   cases d <;> simp [factors]
 
@@ -70,15 +75,13 @@ namespace OrderedFactorization
 
 /-- Recursive inverse: a nonempty list of factors at least two yields a strict divisor chain of
 its product. -/
-def chainOfList (l : List ℕ) (hne : l ≠ []) (hge : ∀ a ∈ l, 2 ≤ a) :
-    StrictDivisorChain l.prod := by
-  match l with
-  | [] => exact False.elim (hne rfl)
-  | [a] =>
-      have ha2 : 2 ≤ a := hge a (by simp)
-      have ha1 : 1 < a := by omega
-      exact StrictDivisorChain.terminal (by simpa using ha1)
-  | a :: b :: rest =>
+def chainOfList : (l : List ℕ) → l ≠ [] → (∀ a ∈ l, 2 ≤ a) → StrictDivisorChain l.prod
+  | [], hne, _ => False.elim (hne rfl)
+  | [a], _, hge =>
+      have ha1 : 1 < a := by have := hge a (by simp); omega
+      have hprod : 1 < [a].prod := by simpa using ha1
+      StrictDivisorChain.terminal (R := [a].prod) hprod
+  | a :: b :: rest, _, hge =>
       let tailList := b :: rest
       have htailNonempty : tailList ≠ [] := by simp [tailList]
       have htailGe : ∀ x ∈ tailList, 2 ≤ x := by
@@ -89,13 +92,44 @@ def chainOfList (l : List ℕ) (hne : l ≠ []) (hge : ∀ a ∈ l, 2 ≤ a) :
       have ha : 1 < a := lt_of_lt_of_le Nat.one_lt_two (hge a (by simp))
       have hdrop : tailList.prod < a * tailList.prod := by nlinarith
       have hdvd : tailList.prod ∣ a * tailList.prod := dvd_mul_left _ _
-      exact StrictDivisorChain.step hdrop htailR hdvd tail
-termination_by l.length
+      StrictDivisorChain.step hdrop htailR hdvd tail
+termination_by l => l.length
+
+/-- The inverse construction recovers the original ordered list exactly. -/
+theorem factors_chainOfList (l : List ℕ) (hne : l ≠ []) (hge : ∀ a ∈ l, 2 ≤ a) :
+    (chainOfList l hne hge).factors = l := by
+  induction l with
+  | nil => exact False.elim (hne rfl)
+  | cons a rest ih =>
+      cases rest with
+      | nil => simp [chainOfList, StrictDivisorChain.factors]
+      | cons b rest =>
+          let tailList := b :: rest
+          have htailNonempty : tailList ≠ [] := by simp [tailList]
+          have htailGe : ∀ x ∈ tailList, 2 ≤ x := by
+            intro x hx
+            exact hge x (by simp [tailList, hx])
+          have htailPos : 0 < tailList.prod := by
+            have htail := (chainOfList tailList htailNonempty htailGe).ramification_gt_one
+            omega
+          simp only [chainOfList]
+          change (a * tailList.prod / tailList.prod) ::
+              (chainOfList tailList htailNonempty htailGe).factors = a :: tailList
+          rw [Nat.mul_div_left a htailPos]
+          congr
+          exact ih htailNonempty htailGe
 
 /-- Ordered factorization converted to a strict divisor chain. -/
 def toStrictDivisorChain {R : ℕ} (f : OrderedFactorization R) : StrictDivisorChain R := by
   rw [← f.prod_eq]
   exact chainOfList f.factors f.nonempty f.factor_ge_two
+
+@[simp] theorem factors_toStrictDivisorChain {R : ℕ} (f : OrderedFactorization R) :
+    f.toStrictDivisorChain.factors = f.factors := by
+  cases f with
+  | mk factors nonempty factor_ge_two prod_eq =>
+      subst R
+      exact factors_chainOfList factors nonempty factor_ge_two
 
 /-- Every ordered factorization therefore generates an unconditional zero-loop Airy
 characteristic. -/

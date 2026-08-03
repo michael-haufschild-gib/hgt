@@ -56,7 +56,12 @@ theorem sum_univ_powChainCoeff (q : ℕ) {n : ℕ} (j : Fin (n + 1)) (c : ℕ �
     ∑ i : Fin (n + 1), (powChainCoeff q (j : ℕ) (i : ℕ)).eval z * c i
       = ∑ i ∈ Finset.range ((j : ℕ) + 1), (powChainCoeff q (j : ℕ) i).eval z * c i := by
   rw [Fin.sum_univ_eq_sum_range (fun i => (powChainCoeff q (j : ℕ) i).eval z * c i) (n + 1)]
-  refine (Finset.sum_subset (Finset.range_subset.mpr (by have := j.isLt; omega)) ?_).symm
+  have hsub : Finset.range ((j : ℕ) + 1) ⊆ Finset.range (n + 1) := by
+    intro i hi
+    have h1 : i < (j : ℕ) + 1 := Finset.mem_range.mp hi
+    have h2 : (j : ℕ) < n + 1 := j.isLt
+    exact Finset.mem_range.mpr (by omega)
+  refine (Finset.sum_subset hsub ?_).symm
   intro i _ hi
   rw [powChainCoeff_eq_zero_of_lt q (by simpa using hi)]
   simp
@@ -214,7 +219,18 @@ theorem differentiallyAlgebraic_of_comp_pow {f : ℂ → ℂ}
         Polynomial (MvPolynomial (Fin (n + 1)) ℂ) :=
       Polynomial.eval₂RingHom inner Polynomial.X with hγ
     have hγD : γ D = 0 := by
-      simp [hγ, hD, hinner]
+      have h1 : γ (Polynomial.X :
+          Polynomial (Polynomial (MvPolynomial (Fin (n + 1)) ℂ))) = Polynomial.X := by
+        simp only [hγ, Polynomial.coe_eval₂RingHom, Polynomial.eval₂_X]
+      have h2 : γ (Polynomial.C
+            (Polynomial.X : Polynomial (MvPolynomial (Fin (n + 1)) ℂ)))
+          = (Polynomial.X : Polynomial (MvPolynomial (Fin (n + 1)) ℂ)) ^ q := by
+        simp only [hγ, Polynomial.coe_eval₂RingHom, Polynomial.eval₂_C, hinner,
+          Polynomial.eval₂_X]
+      rw [hD]
+      rw [map_sub γ (Polynomial.X ^ q)
+        (Polynomial.C (Polynomial.X : Polynomial (MvPolynomial (Fin (n + 1)) ℂ))),
+        map_pow, h1, h2, sub_self]
     have hγφ' : γ φ' = φ := by
       have hcompC : (inner.comp (Polynomial.C : MvPolynomial (Fin (n + 1)) ℂ →+* _))
           = (Polynomial.C : MvPolynomial (Fin (n + 1)) ℂ →+* _) := by
@@ -242,7 +258,16 @@ theorem differentiallyAlgebraic_of_comp_pow {f : ℂ → ℂ}
   have hErel : ∀ z : ℂ, Polynomial.eval₂ (E (z ^ q)) z ρ = 0 := by
     intro z
     have hD0 : Polynomial.eval₂ (E (z ^ q)) z D = 0 := by
-      simp [hD, hE]
+      have h1 : Polynomial.eval₂ (E (z ^ q)) z
+          (Polynomial.X ^ q :
+            Polynomial (Polynomial (MvPolynomial (Fin (n + 1)) ℂ))) = z ^ q := by
+        rw [Polynomial.eval₂_pow, Polynomial.eval₂_X]
+      have h2 : Polynomial.eval₂ (E (z ^ q)) z
+          (Polynomial.C (Polynomial.X : Polynomial (MvPolynomial (Fin (n + 1)) ℂ)))
+          = z ^ q := by
+        rw [Polynomial.eval₂_C]
+        simp only [hE, Polynomial.coe_eval₂RingHom, Polynomial.eval₂_X]
+      rw [hD, Polynomial.eval₂_sub, h1, h2, sub_self]
     have hφ'0 : Polynomial.eval₂ (E (z ^ q)) z φ' = 0 := by
       have hcompC : ((E (z ^ q)).comp (Polynomial.C : MvPolynomial (Fin (n + 1)) ℂ →+* _))
           = ev (z ^ q) := by
@@ -260,8 +285,7 @@ theorem differentiallyAlgebraic_of_comp_pow {f : ℂ → ℂ}
   obtain ⟨ω, hω⟩ : ∃ ω : ℂ, IsPrimitiveRoot ω q :=
     ⟨Complex.exp (2 * Real.pi * Complex.I / q), Complex.isPrimitiveRoot_exp q hq.ne'⟩
   have hqC : (q : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hq.ne'
-  have hcoeff : ρ.coeff ρ.natDegree ≠ 0 := by
-    simpa [Polynomial.leadingCoeff] using Polynomial.leadingCoeff_ne_zero.mpr hρ0
+  have hcoeff : ρ.coeff ρ.natDegree ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hρ0
   have hfilter : ∀ z : ℂ, z ^ ρ.natDegree * (E (z ^ q)) (ρ.coeff ρ.natDegree) = 0 := by
     intro z
     have hexp : ∀ i : ℕ,
@@ -284,19 +308,28 @@ theorem differentiallyAlgebraic_of_comp_pow {f : ℂ → ℂ}
         = ∑ s ∈ Finset.range q,
             (E (z ^ q)) (ρ.coeff s) * z ^ s *
               (if q ∣ (s + (q - ρ.natDegree)) then (q : ℂ) else 0) := by
-      rw [Finset.sum_comm']
-      · refine Finset.sum_congr rfl fun s _ => ?_
-        rw [← sum_primitiveRoot_pow_mul hω (s + (q - ρ.natDegree)), Finset.mul_sum]
-        refine Finset.sum_congr rfl fun i _ => ?_
-        rw [mul_pow, ← pow_mul, mul_add, pow_add, mul_comm i s]
+      have step1 : ∀ i ∈ Finset.range q,
+          ω ^ (i * (q - ρ.natDegree)) *
+              (∑ s ∈ Finset.range q, (E (z ^ q)) (ρ.coeff s) * (ω ^ i * z) ^ s)
+            = ∑ s ∈ Finset.range q,
+                ((E (z ^ q)) (ρ.coeff s) * z ^ s) * ω ^ (i * (s + (q - ρ.natDegree))) := by
+        intro i _
+        rw [Finset.mul_sum]
+        refine Finset.sum_congr rfl fun s _ => ?_
+        have hA : (ω ^ i * z) ^ s = ω ^ (i * s) * z ^ s := by rw [mul_pow, ← pow_mul]
+        have hB : ω ^ (i * (s + (q - ρ.natDegree)))
+            = ω ^ (i * s) * ω ^ (i * (q - ρ.natDegree)) := by rw [mul_add, pow_add]
+        rw [hA, hB]
         ring
-      · intro i s
-        simp
+      rw [Finset.sum_congr rfl step1, Finset.sum_comm]
+      refine Finset.sum_congr rfl fun s _ => ?_
+      rw [← Finset.mul_sum, sum_primitiveRoot_pow_mul hω (s + (q - ρ.natDegree))]
     rw [hswap] at hzero
     have hsingle : ∑ s ∈ Finset.range q,
         (E (z ^ q)) (ρ.coeff s) * z ^ s *
           (if q ∣ (s + (q - ρ.natDegree)) then (q : ℂ) else 0)
-        = (E (z ^ q)) (ρ.coeff ρ.natDegree) * z ^ ρ.natDegree * (q : ℂ) := by
+        = (E (z ^ q)) (ρ.coeff ρ.natDegree) * z ^ ρ.natDegree *
+            (if q ∣ (ρ.natDegree + (q - ρ.natDegree)) then (q : ℂ) else 0) := by
       refine Finset.sum_eq_single ρ.natDegree ?_ ?_
       · intro s hs hsr
         have hslt : s < q := Finset.mem_range.mp hs
@@ -308,8 +341,8 @@ theorem differentiallyAlgebraic_of_comp_pow {f : ℂ → ℂ}
             omega
           have hk2 : k < 2 := by
             by_contra hcon
-            push_neg at hcon
-            have hle : q * 2 ≤ q * k := Nat.mul_le_mul_left q hcon
+            have hcon' : 2 ≤ k := Nat.not_lt.mp hcon
+            have hle : q * 2 ≤ q * k := Nat.mul_le_mul_left q hcon'
             omega
           have hk1 : k = 1 := by omega
           subst hk1
@@ -318,7 +351,8 @@ theorem differentiallyAlgebraic_of_comp_pow {f : ℂ → ℂ}
         rw [if_neg hnot, mul_zero]
       · intro hnm
         exact absurd (Finset.mem_range.mpr hdeg) hnm
-    rw [hsingle] at hzero
+    have hqdvd : q ∣ (ρ.natDegree + (q - ρ.natDegree)) := ⟨1, by omega⟩
+    rw [hsingle, if_pos hqdvd] at hzero
     have := mul_eq_zero.mp hzero
     rcases this with h | h
     · rw [← h]; ring

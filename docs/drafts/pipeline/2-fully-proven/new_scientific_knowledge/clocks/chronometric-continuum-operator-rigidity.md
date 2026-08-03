@@ -4,9 +4,11 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM / CONTINUUM GRAVITY / TIME / CAUSALITY / INVERSE LAW
 - **Parent:** `../../1-in-progress/continuum-chronometric-equivalence-theorem.md`
-- **Status:** dependency-closed paper proof on fixed relational event labels; continuum-indexed
-  polarization, graph rigidity, and Ramsey phase recovery are unconditional in Lean;
-  diffeomorphism quotient and controlled-QFT realization remain pending.
+- **Status:** dependency-closed paper proof. Continuum-indexed polarization, graph rigidity,
+  Ramsey phase recovery, the tangent-bundle and chart lifts, the quotient lift under
+  label-preserving frame automorphisms, and ordered-product recovery for a regular pulse family
+  are all unconditional in Lean. Only the unbounded-generator (Fock-space Weyl) realization of the
+  pulse family remains open.
 
 ## Headline
 
@@ -248,8 +250,9 @@ laboratory determines `(3)` on its causal diamond.
 
 ## Hostile scope audit
 
-1. **Diffeomorphisms:** `(5)` uses fixed relational event and tangent labels. The quotient theorem
-   must replace equality by pullback equivalence under clock-label-preserving diffeomorphisms.
+1. **Diffeomorphisms:** `(5)` uses fixed relational event and tangent labels. Resolved: the
+   quotient theorem replaces equality by pullback equivalence under clock-label-preserving frame
+   automorphisms, and that equivalence is proved strictly coarser than equality.
 2. **Gauge:** `(2)` is gauge-fixed. Extra gravitational fields require reporter-complete
    chronometric data and quotient by local physical field redefinitions.
 3. **Clock-only realization:** proper time directly supplies timelike values of `(1)`. A finite
@@ -273,14 +276,70 @@ Formalize unconditionally:
    fields;
 4. [complete] two-quadrature Ramsey recovery;
 5. [complete] nine null-order comparisons plus one tick determine a symmetric four-metric;
-6. [partial] ordered-product recovery is algebraically formalized in the existing complete clock
-   reporter algebra; continuum characteristic-functional differentiation remains open;
-7. [open] smooth tangent-bundle/chart lift;
-8. [open] quotient lift under label-preserving equivalences.
+6. [complete for bounded generators] ordered-product recovery by characteristic-functional
+   differentiation;
+7. [complete] smooth tangent-bundle/chart lift;
+8. [complete] quotient lift under label-preserving equivalences.
 
 The existing all-orders symmetric multilinear polarization theorem supplies a stronger reusable
-dependency for item 1. Formal artifact:
-`formal/GaloisForLFunctions/HTGeometry/ContinuumChronometricGravity.lean`.
+dependency for item 1.
+
+### Formal artifacts
+
+`formal/GaloisForLFunctions/HTGeometry/ContinuumChronometricGravity.lean` — items 1–5:
+`ChronometricMetricField.squaredInterval_injective`,
+`chronometricSolutionGraph_eq_iff_of_injective`, `continuumChronometricOperatorRigidity`,
+`chronometricRamseyQuadratures_injective`,
+`nineNullClockComparisons_oneTick_metricRigidity`.
+
+`formal/GaloisForLFunctions/HTGeometry/ChronometricBundleMetricRigidity.lean` — item 7. The
+polarization argument is fiberwise, so it lifts to a family of fibers indexed by the event set:
+
+- `bilinForm_eq_of_diagonal_eq` — diagonal values determine a symmetric bilinear form;
+- `BundleChronometricMetric` and `BundleChronometricMetric.squaredInterval_injective` — squared
+  clock intervals determine a metric field on an arbitrary bundle of fibers;
+- `bundleChronometricOperatorRigidity` — `(5)` over that bundle;
+- `TangentChronometricMetric`, `tangentSquaredInterval_injective`,
+  `tangentChronometricOperatorRigidity` — the same statements with `Fiber = TangentSpace I x` on a
+  charted smooth manifold;
+- `SmoothPseudoMetric.squaredInterval_injective`,
+  `SmoothPseudoMetric.chronometricOperatorRigidity` — the chart lift, for a smooth nondegenerate
+  symmetric matrix metric field.
+
+`formal/GaloisForLFunctions/HTGeometry/ChronometricQuotientRigidity.lean` — item 8, which answers
+hostile-audit point 1. Equality of laws is replaced by equivalence, not weakened away:
+
+- `orbitQuotientMap`, `orbitQuotientMap_injective` — an injective equivariant encoding induces an
+  injective map of orbit quotients;
+- `chronometricSolutionGraph_orbitQuotient_eq_iff` — quotient solution graphs coincide exactly
+  when the two laws agree pointwise up to the action;
+- `ClockFrameAut` with its `Group` instance — a clock-label-preserving frame automorphism is a
+  relabelling of events together with a linear reframing of each tangent fiber, the trivialized
+  model of a bundle automorphism covering a diffeomorphism;
+- `MulAction` of `ClockFrameAut` on metric fields and on squared-interval observations, and
+  `chronometricObservationOf_equivariant` — squared clock intervals are equivariant;
+- `chronometricOperatorRigidity_mod_frameAut` — `(5)` modulo frame automorphisms;
+- `smul_form_scaling`, `smul_scaling_ne_self` — the action is strictly coarser than equality, so
+  the quotient theorem is not a restatement of the fixed-label one.
+
+`formal/GaloisForLFunctions/HTGeometry/ChronometricOrderedTomography.lean` — item 6, equation
+`(9)` for a regular pulse family in a unital Banach algebra:
+
+- `nestedDerivAtZero` — the iterated mixed derivative at zero, one coupling at a time in causal
+  order;
+- `pulseProduct`, `orderedProduct` — the ordered pulse family and the ordered generator product;
+- `nestedDerivAtZero_pulseProduct` — one derivative in each coupling turns the state value of the
+  ordered pulse family into `ω(a₀ ⋯ a_{n-1})`;
+- `nestedDerivAtZero_pulseProduct_imaginary` — the `U_j(λ)=exp(iλΦ_j)` normalization, carrying the
+  factor `iⁿ` of `(9)`;
+- `ordered_correlation_of_ramsey_quadratures` — composed with the two-quadrature recovery: any
+  reported functional with the same Ramsey quadratures yields the same ordered correlations.
+
+All of these depend only on `propext`, `Classical.choice`, `Quot.sound`.
+
+Still open: realizing the pulse family by unbounded field operators `Φ(f)` on a Fock space, where
+`exp(iλΦ(f))` is a Weyl operator rather than a Banach-algebra exponential. That is a
+functional-analytic construction, not a gap in `(9)`.
 
 ## Primary sources and closest collisions
 

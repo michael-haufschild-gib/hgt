@@ -1,7 +1,7 @@
 # Two-sided singular defects in pre-quasi Gelfand triples
 
 - **ID:** `pre-quasi-gelfand-two-sided-singular-defect`
-- **Stage:** 2-fully-proven (pending file move)
+- **Stage:** 4-publication-ready
 - **Type:** FALSIFICATION / CLASSIFICATION THEOREM (paper)
 - **External target:** Skrepek, *Quasi Gelfand Triples*, IEOT 97 (2025),
   Conjectures 6.7 and 6.8
@@ -20,10 +20,11 @@
 - `[PAPER-PROVED]` Exact classification, sharp criterion, and explicit counterexample have a
   dependency-closed proof below.
 - `[OPEN CORE]` None in the paper theorem.
-- `[NOVELTY UNVERIFIED]` Exact-phrase and parent-theory searches found no resolution through
-  2026-08-03; citation-descendant and equivalent-formulation audit remains open.
+- `[NOVELTY UNVERIFIED]` Exact-phrase, parent-theory, citation-descendant, and
+  equivalent-formulation searches found no resolution through 2026-08-03. Priority remains
+  provisional pending independent expert and MathSciNet/zbMATH review.
 
-## Candidate explicit counterexample
+## Explicit counterexample
 
 Let all three Hilbert spaces be `ell2(N)` with their standard duality.  On even/odd coordinates set
 
@@ -84,7 +85,7 @@ Such a `v` exists exactly when neither adjoint is surjective, equivalently when 
 not bounded below.  This is the proposed sharp boundary between automatic quasi triples and
 singular defective triples.
 
-## Complete paper-proof candidate
+## Complete paper proof
 
 All Hilbert spaces below are complex and inner products are linear in the first variable.  The real
 case is identical.  `Graph(B)` always carries
@@ -340,23 +341,32 @@ Verdict: `SURVIVES PRELIMINARY ATTACK` and `[PAPER-PROVED]`.
 10. **Theatre check:** mathematical deltas are explicit counterexample, exact graph-subspace
     classification, and sharp iff criterion.  Card motion and terminology are not counted.
 
-## No-go closure if candidate fails
+## No-go closure and positive survivor
 
-- **Exact killing theorem/mechanism:** pending.
-- **Strongest positive survivor:** pending; target is a sharp sufficient condition for automatic
-  quasi-ness, not a weakened example.
-- **New insight:** candidate mechanism predicts failure only from simultaneous ultraviolet and
-  infrared singularity of the canonical graph.
-- **Status:** Stage 1; no paper-proof or Lean claim yet.
+- **Exact killing theorem/mechanism:** the two-channel diagonal hyperplane gives a Hilbert
+  pre-quasi triple which is not quasi, falsifying both published conjectures.
+- **Strongest positive survivor:** automatic quasi compatibility holds exactly when canonical
+  graph is not two-sided singular; equivalently, its inverse-adjoint operator is bounded or
+  bounded below.
+- **New insight:** failure is possible precisely from simultaneous ultraviolet and infrared
+  singularity. Every failure regime already admits graph-codimension-one defect.
+- **Status:** paper-proved, Lean-formalized, manuscript and hostile review publication-ready.
 
 ## Lean gate
 
-Paper gate is closed.  Required exact formal surface is the abstract graph-subspace theorem, sharp
-two-sided-singularity criterion, and explicit unconditional `ell2` counterexample.  No
-finite-dimensional surrogate or hypothesis asserting the missing density conclusions counts.
+Passed exact formal surface: abstract graph-subspace theorem, sharp two-sided-singularity
+criterion, and explicit unconditional infinite-dimensional `ell2` counterexample. Direct
+foreground elaboration and targeted module build pass. Axiom audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`; forbidden-token scan is empty. Module is wired into
+`GaloisForLFunctions.RHTower`. Global lint reaches unrelated pre-existing `HTGeometry` umbrella
+reachability failures; none names this route.
 
 ## Log
 
 - 2026-08-03 — external frontier exposed Skrepek Conjectures 6.7--6.8; froze two-sided singular
   graph-defect candidate and explicit alternating diagonal attack.
 - 2026-08-03 — complete proof closed and survived ten-point hostile audit; promoted to Stage 2.
+- 2026-08-03 — exact theorem surface formalized unconditionally in Lean; direct elaboration,
+  targeted build, and axiom audit passed; promoted through Stage 3.
+- 2026-08-03 — ten-page LaTeX paper compiled and visually audited; collision audit, claim trace,
+  and hostile referee report completed; promoted to Stage 4.

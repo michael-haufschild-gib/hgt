@@ -450,8 +450,24 @@ That is equation (16) of this card in its abstract form: unique ergodicity of an
 flow, which mathlib has only for finite tori.
 
 ### Remaining Lean work on this card
-2. **The holomorphic hull.**  Continuity and injectivity of `λ ↦ A_λ` into the compact-open topology,
-   using normal convergence from (1) and Bohr--Fourier uniqueness.
+2. **The holomorphic hull.**  The Bohr--Fourier half is done.
+   `BohrExponentialSeriesCoefficient.lean` (wired, axiom-clean) proves, for an absolutely convergent
+   exponential series `∑ a_i e^(i ω_i t)` -- the card's carrier `A_λ` restricted to the real line:
+
+   - `summable_expSeries`, `continuous_expSeriesCarrier`, `norm_expSeriesCarrier_sub_partial_le`,
+     `exists_finset_tsum_compl_lt` -- the series is a uniform limit of its partial sums;
+   - **`isBohrAlmostPeriodic_expSeriesCarrier`** -- hence it is Bohr almost periodic, by the corpus's
+     uniform-approximation criterion;
+   - **`bohrCoefficient_expSeriesCarrier`** -- with pairwise distinct frequencies the Bohr
+     coefficient at `ω_k` is exactly `a_k`, because each Bohr coefficient is `1`-Lipschitz for the
+     uniform distance and the coefficients of the partial sums are their own;
+   - **`expSeriesCarrier_phase_injective`** -- Bohr--Fourier uniqueness of the phases: two phase
+     assignments of the same nonvanishing amplitude family which produce the same series are equal.
+     This is exactly the injectivity of the card's hull map `α : T^N → Hol(C)` at the level of
+     boundary values.
+
+   What remains of this step is the holomorphic side: normal convergence of `A_λ` on compacts of the
+   complex plane and continuity of `α` into the compact-open topology.
 3. **Closure and disjointness** of `O_n` and `B_n`, which needs the Stieltjes limit (7) and the
    almost-periodicity argument of (15).
 4. **Imported inputs.**  Ostrowski's hypertranscendence theorem for generalized Dirichlet series and

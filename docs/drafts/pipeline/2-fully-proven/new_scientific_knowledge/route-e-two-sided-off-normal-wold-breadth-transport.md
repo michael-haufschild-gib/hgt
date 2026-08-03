@@ -402,3 +402,40 @@ not weaken the card's theorem**: `(9)` only needs `#E = o(H / log log X)`, and
 `(log X)^{−I(c)}` requires Shiu's own argument (largest-prime-factor induction plus
 Brun–Titchmarsh in progressions), which is recorded here as the remaining sharpening, not as a gap
 in the card's theorem.
+
+### Lower tail assembled (2026-08-03) — `Sieve/SmoothTilt.lean`, `SmoothCount.lean`, `OmegaTail.lean`
+
+**`SmoothTilt.lean`**
+- `prod_one_add_mul_le_exp` : `∏(1 + t·w p) ≤ exp(t ∑ w p)`;
+- `sum_inv_pred_primesLE_le` : `∑_{p ≤ z} 1/(p−1) ≤ mertensS z + 1` — the correction telescopes
+  through `1/(k(k−1)) = 1/(k−1) − 1/k`;
+- **`sum_smoothUpTo_card_le_inv_le`** : `∑_{s z-smooth ≤ Y, ω s ≤ k} 1/s ≤ t^{−k} ∏_{p≤z}(1+t/(p−1))`
+  for `0 < t ≤ 1` — the same exponential tilt again, now truncating from above;
+- **`sum_smoothUpTo_card_le_inv_le_exp`** : the Chernoff shape
+  `t^{−k}·exp(t(log log z + C))` after Mertens II.
+
+**`SmoothCount.lean`** — `primePowerSet z Y` (prime powers `p^e ≤ Y`, `p ≤ z`, so `e ≤ log₂ Y`),
+`card_primePowerSet_le`, and **`card_smoothUpTo_card_primeFactors_le`** :
+`#{s ≤ Y : z-smooth, ω s ≤ k} ≤ ∑_{j≤k} C(π(z)·log₂ Y, j)`, by mapping `s` to its set of maximal
+prime powers (injective, since their product is `s`).
+
+**`OmegaTail.lean`**
+- **`card_omega_le_le_sum`** : fibring `Ioc a b` over the smooth part,
+  `#{n ∈ (a,b] : ω n ≤ k} ≤ ∑_{s z-smooth ≤ b, ω s ≤ k} #{m ∈ (a/s, b/s] : P⁻(m) > z}`;
+- `roughDensityBound`, `smoothTiltBound`, `smoothIndexBound`;
+- **`card_omega_le_le`** — the assembled lower-tail bound:
+
+```text
+#{n ∈ (a,b] : ω n ≤ k}
+  ≤ (b−a)·roughDensityBound z r λ·smoothTiltBound z k t
+    + (roughDensityBound z r λ + #{d ∣ z# : ω d ≤ r})·smoothIndexBound z b k
+```
+for every `a ≤ b`, `2 ≤ z`, even `r`, `λ ≥ 1`, `0 < t ≤ 1`.
+
+All built, wired, axiom-clean.  This is `(7)` in structural form: the first term carries the
+Chernoff rate (choose `t = k/∑_{p≤z}1/p` to make `roughDensityBound·smoothTiltBound` equal
+`(log z)^{−I(c)}` up to constants), the second is the sieve error, controlled because
+`smoothIndexBound` is `X^{o(1)}` when `log z ≍ log X/log log X` and `k ≍ log log X`.
+
+Remaining: the parameter instantiation turning `card_omega_le_le` into `(7)`, the mirror argument
+for the upper tail `(8)`, and `(9)`.

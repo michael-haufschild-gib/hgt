@@ -163,6 +163,12 @@ theorem powerZero_summable {a : ℝ} (ha : 0 < a) :
   push_cast
   ring_nf
 
+/-- The power canonical product is entire. -/
+theorem analyticOnNhd_powerCanonicalProduct {a : ℝ} (ha : 0 < a) :
+    AnalyticOnNhd ℂ (powerCanonicalProduct a) Set.univ :=
+  canonicalProduct_analytic (powerGenus a) (powerZero a) (powerZero_ne_zero a)
+    (powerZero_summable ha)
+
 /-- Pointwise convergence datum for the power canonical product. -/
 theorem hasProd_powerCanonicalProduct {a : ℝ} (ha : 0 < a) (z : ℂ) :
     HasProd (fun n : ℕ => primaryFactor (powerGenus a) (z / powerZero a n))

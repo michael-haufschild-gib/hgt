@@ -1393,6 +1393,9 @@ import GaloisForLFunctions.RHTower.DeningerPushoutMetric
 import GaloisForLFunctions.RHTower.DeningerPushoutOrder
 import GaloisForLFunctions.RHTower.DeningerCycLenEq
 import GaloisForLFunctions.RHTower.DeningerTransversalForm
+import GaloisForLFunctions.RHTower.DeningerWordMerge
+import GaloisForLFunctions.RHTower.DeningerConjWord
+import GaloisForLFunctions.RHTower.DeningerConjNormalize
 import GaloisForLFunctions.RHTower.DeningerUnitaryFlowRieszPurity
 import GaloisForLFunctions.RHTower.DeningerUnitaryHarmonicAction
 import GaloisForLFunctions.RHTower.DeningerWeightOnePolarization
@@ -3002,9 +3005,12 @@ import GaloisForLFunctions.RHTower.Sieve.MainTerm
 import GaloisForLFunctions.RHTower.Sieve.Mertens
 import GaloisForLFunctions.RHTower.Sieve.MertensFirst
 import GaloisForLFunctions.RHTower.Sieve.MertensSecond
+import GaloisForLFunctions.RHTower.Sieve.OmegaTail
 import GaloisForLFunctions.RHTower.Sieve.RoughCount
+import GaloisForLFunctions.RHTower.Sieve.SmoothCount
 import GaloisForLFunctions.RHTower.Sieve.SmoothRough
 import GaloisForLFunctions.RHTower.Sieve.SmoothSum
+import GaloisForLFunctions.RHTower.Sieve.SmoothTilt
 import GaloisForLFunctions.RHTower.Sieve.TruncatedMoebius
 import GaloisForLFunctions.RHTower.Sieve.TruncationDefect
 import GaloisForLFunctions.RHTower.SigmaBlockContraction

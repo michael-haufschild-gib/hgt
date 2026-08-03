@@ -13,6 +13,7 @@ proved in the companion recurrence file.
 -/
 
 open Filter MeasureTheory Set Topology
+open scoped ComplexConjugate
 
 namespace GaloisForLFunctions
 namespace HTGeometry
@@ -236,6 +237,15 @@ theorem modifiedBesselKOrder_neg (s : ℝ) (ν : ℂ) :
   apply integral_congr_ae
   filter_upwards with t
   simp only [besselOrderKernel, neg_mul, Complex.cosh_neg]
+
+/-- Conjugation equivariance of the Schlaefli carrier. -/
+theorem modifiedBesselKOrder_conj (s : ℝ) (ν : ℂ) :
+    modifiedBesselKOrder s (conj ν) = conj (modifiedBesselKOrder s ν) := by
+  rw [modifiedBesselKOrder, modifiedBesselKOrder, ← integral_conj]
+  apply integral_congr_ae
+  filter_upwards with t
+  simp [besselOrderKernel, map_mul, ← Complex.ofReal_cosh,
+    ← Complex.exp_conj, ← Complex.cosh_conj]
 
 end
 

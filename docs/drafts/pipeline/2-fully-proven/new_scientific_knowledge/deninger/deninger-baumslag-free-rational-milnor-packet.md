@@ -73,7 +73,10 @@
   order),
   `GaloisForLFunctions.RHTower.DeningerCycLenEq` (equal powers have cyclic reductions of equal
   length),
-  `GaloisForLFunctions.RHTower.DeningerTransversalForm` (transversal form of a word)
+  `GaloisForLFunctions.RHTower.DeningerTransversalForm` (transversal form of a word),
+  `GaloisForLFunctions.RHTower.DeningerWordMerge` (merging letters at the ends of a word),
+  `GaloisForLFunctions.RHTower.DeningerConjWord` (normal word of a conjugated power),
+  `GaloisForLFunctions.RHTower.DeningerConjNormalize` (normalizing a conjugator)
 
 ## Statement
 
@@ -825,6 +828,44 @@ is that the base group elements can always be pushed to the left.  `DeningerTran
   the next letter, which is then split through the complement, sending a new base group element
   further left.
 
+`DeningerWordMerge.lean` supplies the atomic steps of cyclic reduction at the level of words:
+
+- `deningerLetterProd_snoc`, `deningerMerge_last`, `deningerMerge_first` — multiplying a word by a
+  letter of the factor of its last (or first) letter multiplies that letter, leaving the rest alone;
+- `deningerMerge_last_mem`, `deningerMerge_first_mem` — if the merged letter falls into the base
+  group the word shortens instead;
+- `deningerCycStep` — **one step of cyclic reduction on words**: if the first and last letters lie
+  in the same factor, conjugating by the first letter deletes it and multiplies it into the last,
+  strictly shortening the word.
+
+These are group-theoretically trivial but they are the statements the word-level recursion needs;
+the earlier cyclic reduction was proved with lengths only and does not expose the conjugator.
+
+`DeningerConjWord.lean` assembles the target of that recursion:
+
+- `deningerFlatten_getLast` — the last letter of a concatenation of copies is the last letter of the
+  word;
+- `deningerNormalWord_conj_pow` — **if the junctions do not cancel, the normal word of `C · Lᵏ · D`
+  is the plain concatenation `C ++ Lᵏ ++ D`.**
+
+This is the statement the two-exponent comparison consumes: taking it at `k = n` and `k = 2n` and
+using that normal words are unique turns `xⁿ = yⁿ` into an equality of explicit lists, whose length
+bookkeeping is the argument already proved in `DeningerCycLenEq`.  What is still missing is the
+production of `C`, `L` and `D` with those junction properties from an arbitrary element.
+
+Half of that production is now available.  A conjugator is only determined up to multiplication by
+the base group on the right, and that freedom is exactly what is needed:
+`DeningerConjNormalize.lean` proves
+
+- `deningerExists_inv_transversal` — **every element can be multiplied by an element of the base
+  group on the right so that its inverse becomes a transversal word**;
+- `deningerConj_transversal_form` — hence any conjugate can be written with a transversal
+  conjugator, the absorbed base group element reappearing as a conjugation of the conjugated element
+  by the base group, which changes neither its word length nor its indices.
+
+Without this the right hand conjugator `D` would be the inverse of a transversal word, and inverses
+of transversal letters need not be transversal.
+
 Step 1 still needs Baumslag's inductive step (root adjunction preserves unique roots), which rests
 on the same normal-form machinery.
 
@@ -1290,3 +1331,22 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   transversal one with the same indices, obtained one letter at a time by absorbing the accumulated
   base element into the next letter and splitting it through the complement.  Since only the indices
   matter for alternation and for the junction conditions, the normalization costs nothing.
+- 2026-08-03 — Built the atomic steps of cyclic reduction at the level of words: merging a letter
+  into the first or last letter of a word, the degenerate case where the merged letter falls into
+  the base group and the word shortens, and the resulting one-step cyclic reduction.  These are
+  group-theoretically trivial, but the earlier cyclic reduction theorem was proved with lengths only
+  and does not expose the conjugator, whereas the two-exponent comparison needs the conjugator as a
+  word.  With the transversal form from the previous step these are the two ingredients the
+  word-level recursion runs on.
+- 2026-08-03 — Assembled the target of the word-level recursion: if the junctions do not cancel, the
+  normal word of `C·Lᵏ·D` is the plain concatenation.  This is exactly what the two-exponent
+  comparison consumes — taken at `k = n` and `k = 2n`, with uniqueness of normal words, it turns
+  `xⁿ = yⁿ` into an equality of explicit lists whose length bookkeeping is the argument already
+  proved.  What is still missing is the production of `C`, `L`, `D` with those junction properties
+  from an arbitrary element, which is the recursion the merge lemmas were built for.
+- 2026-08-03 — Used the freedom in the choice of conjugator to fix the transversality mismatch.  A
+  conjugator is determined only up to multiplication by the base group on the right, and that
+  freedom is exactly enough to make its inverse a transversal word — which is what the concatenation
+  statement needs, since inverses of transversal letters need not be transversal.  The absorbed base
+  group element reappears as a conjugation of the cyclically reduced part by the base group, which
+  changes neither its word length nor its indices, so nothing else in the argument is disturbed.

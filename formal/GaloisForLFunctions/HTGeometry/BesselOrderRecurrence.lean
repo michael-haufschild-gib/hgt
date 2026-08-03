@@ -43,7 +43,7 @@ theorem integrableOn_realBesselOrderKernel {s : ℝ} (hs : 0 < s) (x : ℝ) :
       simp [realBesselOrderKernel, besselOrderKernel, ← Complex.ofReal_cosh,
         Complex.ofReal_exp]
       rw [← Complex.ofReal_mul, ← Complex.ofReal_cosh]
-    simpa [← heq, Real.norm_eq_abs]
+    simp [← heq, Real.norm_eq_abs]
 
 theorem modifiedBesselKOrder_ofReal {s : ℝ} (hs : 0 < s) (x : ℝ) :
     modifiedBesselKOrder s (x : ℂ) = (realModifiedBesselKOrder s x : ℂ) := by
@@ -163,7 +163,7 @@ private theorem hasDerivAt_besselOrderRecurrenceBoundary
   have hrealExp : HasDerivAt
       (fun u : ℝ => Real.exp (-s * Real.cosh u))
       (Real.exp (-s * Real.cosh t) * (-s * Real.sinh t)) t := by
-    convert ((Real.hasDerivAt_cosh t).const_mul (-s)).exp using 1 <;> ring
+    simpa only [neg_mul] using ((Real.hasDerivAt_cosh t).const_mul (-s)).exp
   have hsinh : HasDerivAt (fun u : ℝ => Complex.sinh (ν * (u : ℂ)))
       (Complex.cosh (ν * (t : ℂ)) * ν) t := by
     have hlin : HasDerivAt (fun u : ℝ => ν * (u : ℂ)) ν t := by

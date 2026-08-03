@@ -1,0 +1,705 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=29mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,
+  urlcolor=blue!55!black]{hyperref}
+\setlength{\emergencystretch}{2em}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{question}[theorem]{Question}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\N}{\mathbb N_0}
+\newcommand{\dom}{\operatorname{dom}}
+\newcommand{\ran}{\operatorname{ran}}
+\newcommand{\Graph}{\operatorname{Graph}}
+\newcommand{\clos}{\operatorname{cl}}
+\newcommand{\cG}{\mathcal G}
+\newcommand{\cM}{\mathcal M}
+\newcommand{\ip}[2]{\langle #1,#2\rangle}
+
+\title{Two-Sided Singular Defects in Rigged Hilbert Spaces:\\
+Classification and Failure of Automatic Quasi Compatibility}
+\author{Michael Haufschild}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Quasi Gelfand triples replace the continuous embeddings of a rigged Hilbert space by closed,
+densely defined embeddings.  A pre-quasi triple satisfies the pivot pairing identity but not,
+a priori, the maximal adjoint-domain condition.  Two published conjectures assert that the
+latter condition is automatic, first for Hilbert spaces and then for reflexive Banach spaces.
+
+We disprove both conjectures.  More structurally, in the standard Hilbert anti-dual model we
+classify every negative embedding compatible with a fixed positive embedding.  If
+$A$ is the positive embedding and $B=(A^*)^{-1}$, then compatible closed negative embeddings are
+exactly the restrictions of $B$ whose graphs are closed subspaces of $\Graph B$ with both
+coordinate projections dense.  Quasi compatibility holds exactly for the saturated graph
+$\Graph B$.
+
+We then identify the sharp obstruction.  Give $\Graph B$ its graph Hilbert norm and let $P$ and
+$Q$ be its domain and range coordinate maps.  A proper closed subspace with both projections
+dense exists if and only if neither $P$ nor $Q$ is bounded below.  Equivalently, $B$ is both
+unbounded and not bounded below.  Whenever this two-sided singularity occurs, a codimension-one
+orthogonal hyperplane already produces a defect.  Outside this regime every pre-quasi restriction
+is automatically quasi.
+
+An explicit diagonal construction on $\ell^2(\{0,1\}\times\N)$ has alternating ultraviolet and
+infrared singular channels.  A single graph hyperplane has dense domain and dense range but is
+proper, giving a Hilbert pre-quasi Gelfand triple which is not quasi.  The classification, sharp
+criterion, and counterexample have also been formalized unconditionally in Lean~4.
+\end{abstract}
+
+\medskip
+\noindent\textbf{2020 Mathematics Subject Classification.}
+Primary 46C07, 47A06; Secondary 46A20, 47A70.
+
+\noindent\textbf{Keywords.}
+Rigged Hilbert space; Gelfand triple; closed operator; linear relation; graph subspace;
+adjoint domain; two-sided singularity.
+
+\section{Introduction}
+
+A classical Gelfand triple consists of a dense continuous embedding of a test space into a
+Hilbert pivot space and the corresponding anti-dual embedding.  Closed, unbounded embeddings
+arise naturally when the two norms are not globally comparable.  This led Cojuhari and Gheondea
+to closely embedded Hilbert triplets \cite{CojuhariGheondea2015}, and Skrepek to quasi Gelfand
+triples, a Banach-space framework motivated in part by boundary spaces for multidimensional
+differential operators and port-Hamiltonian systems \cite{Skrepek2021,Skrepek2025}.
+
+The definition separates a formal pairing condition from a maximality condition.  A
+\emph{pre-quasi} triple has closed, densely defined, injective embeddings $\iota_+$ and
+$\iota_-$ with dense ranges and satisfies
+\[
+  \ip{\iota_-g}{\iota_+f}_{0}=\ip{g}{f}_{-,+}.
+  \tag{1.1}
+\]
+It is \emph{quasi} when additionally
+\[
+  \ran\iota_-=\dom\iota_+^*.
+  \tag{1.2}
+\]
+The pairing identity always gives inclusion in (1.2); the question is whether a proper closed
+restriction can retain dense domain and dense range.  Skrepek formulated the following two
+conjectures \cite[Conjectures~6.7 and~6.8]{Skrepek2025}:
+\begin{enumerate}[label=(\roman*)]
+  \item every Hilbert pre-quasi Gelfand triple is quasi;
+  \item every pre-quasi Gelfand triple is quasi.
+\end{enumerate}
+The first was described as plausible despite unsuccessful proof attempts.  A positive answer
+would also have supplied an abstract route from weak to strong boundary trace definitions.
+
+The obstacle is not failure of closedness, adjoint existence, or density separately.  It is a
+specific infinite-dimensional geometry: a closed operator graph can contain a proper closed
+hyperplane whose two coordinate projections are both dense.  Such a hyperplane is invisible in
+each ambient Hilbert topology separately, but visible in graph topology.  The phenomenon requires
+singularity in both directions.  If one coordinate controls graph norm, dense projection forces
+the hyperplane to be the whole graph.
+
+This paper has three main results.
+
+First, Theorem~\ref{thm:classification} gives the exact graph-subspace classification.  For a
+closed, densely defined, injective positive embedding $A$ with dense range, its compatible maximal
+negative partner is
+\[
+  B=(A^*)^{-1}.
+  \tag{1.3}
+\]
+Every compatible negative embedding is a restriction of $B$.  Closed pre-quasi partners are
+therefore classified by closed subspaces of $\Graph B$ with dense first and second projections,
+and quasi compatibility is precisely graph saturation.
+
+Second, Theorem~\ref{thm:sharp} solves the resulting graph problem.  If $P,Q$ are the coordinate
+maps on the graph Hilbert space, a proper closed bi-dense subspace exists exactly when both maps
+lack a uniform lower estimate.  One vector outside $\ran P^*\cup\ran Q^*$ produces the required
+hyperplane.  In operator language this says exactly
+\[
+  B\text{ unbounded}\qquad\text{and}\qquad
+  \inf_{0\ne x\in\dom B}\frac{\|Bx\|}{\|x\|}=0.
+  \tag{1.4}
+\]
+Thus simultaneous ultraviolet and infrared singularity is not merely sufficient; it is the
+complete obstruction.  Corollary~\ref{cor:automatic} is the positive survivor: if either side is
+regular, automatic quasi compatibility is true.
+
+Third, Theorem~\ref{thm:counterexample} gives a concrete counterexample.  On two copies of
+$\ell^2(\N)$, the canonical operator multiplies one channel by $k+1$ and the other by $(k+1)^{-1}$.
+The two channels make (1.4) hold.  A graph hyperplane normal to the square-summable vector
+$((k+1)^{-1},(k+1)^{-1})_{k\ge0}$ has dense images under both coordinate maps.  Restricting to it
+gives a pre-quasi triple which is not quasi.  Since all three spaces are Hilbert spaces, this
+refutes both conjectures.
+
+The result does not assert that weak and strong traces differ for any particular PDE.  It shows
+that their equality cannot follow from the abstract pre-quasi axioms alone.  Additional PDE
+structure may rule out two-sided singularity; recent equality results under Lipschitz hypotheses
+are consistent with our criterion \cite{SkrepekPauly2025}.
+
+\subsection*{Relation to prior work}
+
+Closely embedded Hilbert triplets impose the completed compatibility represented here by the full
+graph \cite{CojuhariGheondea2015}.  Skrepek proved that a pre-quasi embedding can always be extended
+to the canonical quasi partner \cite[Lemma~4.5]{Skrepek2025}; our classification determines every
+proper compatible restriction below that extension and decides exactly when one can remain
+bi-dense.  Standard closed-operator theory supplies the graph norm, adjoint, and closed-range
+ingredients \cite{Kato1995,Schmudgen2012}.  The new point is their conjunction as an exact defect
+classification for pre-quasi Gelfand triples, followed by a sharp existence theorem and a
+counterexample to the two explicit conjectures.
+
+\section{Pre-quasi triples and graph relations}
+
+All Hilbert spaces are complex.  Inner products are linear in the first argument.  For an operator
+$T$ we distinguish its domain $\dom T$, range $\ran T$, and graph
+\[
+  \Graph T=\{(x,Tx):x\in\dom T\}.
+\]
+An operator is called densely ranged when $\clos(\ran T)$ is the target space.  A map $T:E\to F$
+between Hilbert spaces is \emph{bounded below in inverse form} if
+\[
+  \|x\|_E\le C\|Tx\|_F\qquad(x\in E)
+  \tag{2.1}
+\]
+for some $C\ge0$.  For injective maps this is the usual uniform lower bound with reciprocal
+constant.
+
+We need only a standard Hilbert anti-dual pair, which is already a subclass of the published weak
+conjecture.
+
+\begin{definition}[standard Hilbert pre-quasi pair]\label{def:prequasi}
+Let $H$ be a Hilbert space.  A pair of linear operators
+\[
+  A:\dom A\subset H\to H,
+  \qquad C:\dom C\subset H\to H
+\]
+is a \emph{standard Hilbert pre-quasi pair} if both operators are closed, densely defined,
+injective, and densely ranged, and
+\[
+  \ip{Cg}{Af}=\ip{g}{f}
+  \qquad(g\in\dom C,\ f\in\dom A).
+  \tag{2.2}
+\]
+It is \emph{quasi compatible} if $\ran C=\dom A^*$.
+\end{definition}
+
+Taking $\mathcal X_+=\mathcal X_0=\mathcal X_-=H$ with its standard complete anti-dual pairing
+turns Definition~\ref{def:prequasi} into a pre-quasi Gelfand triple in the sense of
+\cite[Definition~4.1]{Skrepek2025}.  Thus a counterexample in this standard model is a
+counterexample to the Hilbert conjecture, without any identification or renorming argument.
+
+Suppose from now on that $A$ is closed, densely defined, injective, and densely ranged.  Dense
+range gives $\ker A^*=\{0\}$, so the inverse relation of $A^*$ is single-valued.  We write
+\[
+  B=(A^*)^{-1},\qquad
+  \dom B=\ran A^*,\qquad
+  \ran B=\dom A^*.
+  \tag{2.3}
+\]
+
+\begin{proposition}[canonical partner]\label{prop:canonical}
+The operator $B$ in \emph{(2.3)} is closed, densely defined, injective, and densely ranged.  It
+satisfies
+\[
+  \ip{Bg}{Af}=\ip{g}{f}
+  \qquad(g\in\dom B,\ f\in\dom A).
+  \tag{2.4}
+\]
+If $C$ satisfies the pairing identity \emph{(2.2)}, then $C\subset B$ as operators.
+\end{proposition}
+
+\begin{proof}
+Because $A$ is densely defined and closed, $A^*$ is closed and densely defined.  Since
+$\clos(\ran A)=H$, the identity $(\ran A)^\perp=\ker A^*$ gives $\ker A^*=\{0\}$; hence its inverse
+$B$ is an operator and is closed.  The domain of $B$ is $\ran A^*$, which is dense because
+$(\ran A^*)^\perp=\ker A=\{0\}$.  Its range is $\dom A^*$, which is dense.  The inverse is injective
+because $A^*$ is single-valued.
+
+For $g=A^*y\in\dom B$ one has $Bg=y$, and therefore
+\[
+  \ip{Bg}{Af}=\ip{y}{Af}=\ip{A^*y}{f}=\ip{g}{f}.
+\]
+Now let $g\in\dom C$.  Equation (2.2) says that the functional
+$f\mapsto\ip{Cg}{Af}$ on $\dom A$ is represented by $g$.  By the definition and uniqueness of the
+adjoint, $Cg\in\dom A^*$ and $A^*Cg=g$.  Thus $g\in\ran A^*=\dom B$ and $Bg=Cg$, proving $C\subset B$.
+\end{proof}
+
+The graph of $B$ is a Hilbert space
+\[
+  \cG_B=(\Graph B,\|\cdot\|_B),\qquad
+  \|(x,Bx)\|_B^2=\|x\|^2+\|Bx\|^2.
+  \tag{2.5}
+\]
+Let
+\[
+  P:\cG_B\to H,\quad P(x,Bx)=x,
+  \qquad
+  Q:\cG_B\to H,\quad Q(x,Bx)=Bx.
+  \tag{2.6}
+\]
+Both are bounded, injective, and densely ranged.  Their ranges are respectively $\dom B$ and
+$\ran B$.
+
+\begin{definition}
+A closed subspace $M\subset\cG_B$ is \emph{bi-dense} when $P(M)$ and $Q(M)$ are dense in $H$.
+It is a \emph{graph defect} when in addition $M\ne\cG_B$.
+\end{definition}
+
+This use of ``defect'' concerns a proper subrelation of a single-valued closed operator.  It is
+distinct from the multivalued part of a general linear relation.
+
+\section{Classification by closed bi-dense graph subspaces}
+
+\begin{theorem}[graph-subspace classification]\label{thm:classification}
+Fix $A$ as above and put $B=(A^*)^{-1}$.  The assignments
+\[
+  C\longmapsto \Graph C,
+  \qquad
+  M\longmapsto C_M,\quad
+  \Graph C_M=M,
+  \tag{3.1}
+\]
+give inverse, inclusion-preserving correspondences between
+\begin{enumerate}[label=(\alph*)]
+  \item closed operators $C$ for which $(A,C)$ is a standard Hilbert pre-quasi pair;
+  \item closed bi-dense subspaces $M$ of $\cG_B$.
+\end{enumerate}
+Moreover,
+\[
+  (A,C)\text{ is quasi compatible}
+  \quad\Longleftrightarrow\quad
+  C=B
+  \quad\Longleftrightarrow\quad
+  \Graph C=\cG_B.
+  \tag{3.2}
+\]
+\end{theorem}
+
+\begin{proof}
+Let $(A,C)$ be pre-quasi.  Proposition~\ref{prop:canonical} gives $C\subset B$, hence
+$\Graph C\subset\cG_B$.  Closedness of $C$ makes $\Graph C$ closed in $H\oplus H$ and therefore
+closed in $\cG_B$.  Its first projection is $\dom C$ and its second projection is $\ran C$; both
+are dense.  Thus $\Graph C$ is bi-dense.
+
+Conversely, let $M\subset\cG_B$ be closed and bi-dense.  Since the first coordinate map is
+injective on an operator graph, $M$ is the graph of an operator $C_M$.  It is closed in
+$H\oplus H$.  Its domain and range are $P(M)$ and $Q(M)$, hence dense.  Because $C_M\subset B$ and
+$B$ is injective, $C_M$ is injective.  Restricting (2.4) gives the pairing identity (2.2), so
+$(A,C_M)$ is pre-quasi.  The two constructions in (3.1) are inverse and preserve inclusion.
+
+It remains to identify saturation.  Proposition~\ref{prop:canonical} gives
+$\ran B=\dom A^*$.  Hence $C=B$ implies quasi compatibility.  Conversely, suppose
+$C\subset B$ and $\ran C=\dom A^*=\ran B$.  For $x\in\dom B$, choose $d\in\dom C$ with
+$Cd=Bx$.  Since $C\subset B$ and $B$ is injective, $Bd=Bx$ implies $d=x$.  Thus
+$\dom B\subset\dom C$, so $C=B$.
+\end{proof}
+
+\begin{remark}
+The canonical extension $C\mapsto B$ is known in the pre-quasi framework
+\cite[Lemma~4.5]{Skrepek2025}.  Theorem~\ref{thm:classification} identifies the entire interval
+below that extension: maximality fails exactly through a closed bi-dense subrelation.  The issue
+is therefore not whether a quasi completion exists, but whether density in two weaker coordinate
+topologies forces graph-topology saturation.
+\end{remark}
+
+\section{The sharp two-sided singularity criterion}
+
+We first isolate two Hilbert-space lemmas.  Their combination converts graph defects into a
+precise lower-bound obstruction.
+
+\begin{lemma}[adjoint-surjectivity criterion]\label{lem:adjoint-surj}
+Let $T:G\to H$ be a bounded injective operator between Hilbert spaces with dense range.  Then
+\[
+  T^*\text{ is surjective}
+  \quad\Longleftrightarrow\quad
+  \exists C\ge0\ \forall x\in G:\ \|x\|_G\le C\|Tx\|_H.
+  \tag{4.1}
+\]
+\end{lemma}
+
+\begin{proof}
+Suppose $T^*$ is onto.  By the open mapping theorem, there is $C\ge0$ such that every $z\in G$
+has a preimage $y\in H$ with $T^*y=z$ and $\|y\|\le C\|z\|$.  Then
+\[
+  \|z\|^2=|\ip{z}{T^*y}|=|\ip{Tz}{y}|
+  \le C\|Tz\|\|z\|,
+\]
+and cancellation proves the estimate when $z\ne0$.
+
+Conversely, the estimate makes $\ran T$ closed.  Since it is dense, $T$ is surjective.  Thus $T$
+is a bounded isomorphism and $T^{-1}$ is bounded.  From
+$T^*(T^{-1})^*=I_G$ we obtain surjectivity of $T^*$.
+\end{proof}
+
+\begin{lemma}[dense hyperplane image]\label{lem:hyperplane}
+Let $T:G\to H$ be bounded with dense range, and let $v\in G\setminus\ran T^*$.  Then
+\[
+  T(v^\perp)\text{ is dense in }H.
+  \tag{4.2}
+\]
+\end{lemma}
+
+\begin{proof}
+Take $y\perp T(v^\perp)$.  Then $T^*y\in(v^\perp)^\perp=\C v$, so
+$T^*y=\alpha v$.  If $\alpha\ne0$, then $v\in\ran T^*$, contrary to assumption.  Hence
+$T^*y=0$.  Dense range of $T$ makes $T^*$ injective, so $y=0$.  Therefore
+$T(v^\perp)^\perp=\{0\}$, which is equivalent to (4.2).
+\end{proof}
+
+\begin{definition}[two-sided singularity]\label{def:twosided}
+Let $P:G\to H_1$ and $Q:G\to H_2$ be bounded, injective, densely ranged Hilbert-space operators.
+The pair $(P,Q)$ is \emph{two-sided singular} if neither map satisfies an estimate of the form
+\emph{(2.1)}.
+\end{definition}
+
+\begin{theorem}[sharp defect criterion]\label{thm:sharp}
+Let $P:G\to H_1$ and $Q:G\to H_2$ be bounded, injective, and densely ranged.  The following are
+equivalent.
+\begin{enumerate}[label=(\roman*)]
+  \item $(P,Q)$ is two-sided singular.
+  \item There exists a proper closed subspace $M\subset G$ such that $P(M)$ is dense in $H_1$ and
+        $Q(M)$ is dense in $H_2$.
+  \item Such an $M$ can be chosen as a codimension-one orthogonal hyperplane.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Assume (i).  Lemma~\ref{lem:adjoint-surj} says that $P^*$ and $Q^*$ are not onto.  Choose
+$x\notin\ran P^*$ and $y\notin\ran Q^*$.  There is a vector outside both adjoint ranges.  Indeed,
+if $x\notin\ran Q^*$, take $v=x$; if $y\notin\ran P^*$, take $v=y$; in the remaining case
+$x\in\ran Q^*$ and $y\in\ran P^*$, and $v=x+y$ belongs to neither range.  For example, if
+$x+y\in\ran P^*$ then subtracting $y\in\ran P^*$ would put $x$ in $\ran P^*$, a contradiction;
+the $Q^*$ argument is symmetric.  Such $v$ is nonzero because zero belongs to both ranges.
+
+Set $M=v^\perp$.  It is a proper closed hyperplane.  Applying Lemma~\ref{lem:hyperplane} to $P$
+and $Q$ shows that both $P(M)$ and $Q(M)$ are dense.  This proves (iii), hence (ii).
+
+Conversely, suppose (ii) and assume, for contradiction, that $P$ satisfies
+$\|z\|_G\le C\|Pz\|$.  The restriction $P|_M$ has closed range because $M$ is complete and the
+same lower estimate holds on $M$.  Its range is also dense, hence $P(M)=H_1$.  Given $z\in G$,
+choose $m\in M$ with $Pm=Pz$.  Injectivity of $P$ gives $m=z$, so $M=G$, contrary to properness.
+Thus $P$ is not bounded below in inverse form.  The same argument applies to $Q$, proving (i).
+\end{proof}
+
+Apply Theorem~\ref{thm:sharp} to the coordinate maps (2.6).
+
+\begin{corollary}[operator form]\label{cor:operator}
+Let $B$ be closed, densely defined, injective, and densely ranged.  A graph defect exists if and
+only if
+\[
+  B\text{ is unbounded and }B\text{ is not bounded below}.
+  \tag{4.3}
+\]
+Whenever it exists, a codimension-one graph defect exists.
+\end{corollary}
+
+\begin{proof}
+For $z=(x,Bx)\in\cG_B$, inverse boundedness of $P$ is the estimate
+\[
+  (\|x\|^2+\|Bx\|^2)^{1/2}\le C\|x\|.
+\]
+It holds exactly when $B$ is bounded on its domain.  Since $B$ is closed and densely defined,
+this is equivalent to $\dom B=H$ and $B\in\mathcal B(H)$: a bounded estimate extends $B$ to $H$,
+and closedness identifies the extension with $B$.
+
+Inverse boundedness of $Q$ is
+\[
+  (\|x\|^2+\|Bx\|^2)^{1/2}\le C\|Bx\|,
+\]
+which is equivalent to $\|x\|\le C'\|Bx\|$, namely that $B$ is bounded below.  Theorem
+\ref{thm:sharp} now gives the claim.
+\end{proof}
+
+\begin{corollary}[maximal positive survivor]\label{cor:automatic}
+Fix a standard Hilbert pre-quasi pair $(A,C)$ and let $B=(A^*)^{-1}$.  If $B$ is bounded or bounded
+below, then $(A,C)$ is quasi compatible.  Equivalently, automatic quasi compatibility fails for a
+fixed positive embedding $A$ precisely when its canonical partner $B$ is two-sided singular.
+\end{corollary}
+
+\begin{proof}
+Theorem~\ref{thm:classification} turns a non-quasi pair into a graph defect.  Corollary
+\ref{cor:operator} excludes such a defect if either regularity condition holds.  Conversely, if
+$B$ is two-sided singular, Theorem~\ref{thm:sharp} produces a proper closed bi-dense hyperplane;
+Theorem~\ref{thm:classification} turns it into a non-quasi pre-quasi partner.
+\end{proof}
+
+The corollary is sharp for every canonical graph, not merely for the diagonal example below.
+
+\section{A diagonal counterexample}
+
+We now realize the two singular directions on disjoint channels.  This makes every domain,
+range, and properness assertion explicit.
+
+Let
+\[
+  H=\ell^2(\{0,1\}\times\N),\qquad r_k=k+1.
+\]
+For $m=(m_{0,k},m_{1,k})$ define bounded diagonal contractions $P,Q\in\mathcal B(H)$ by
+\[
+\begin{array}{lll}
+  (Pm)_{0,k}=r_k^{-1}m_{0,k},&& (Pm)_{1,k}=m_{1,k},\\[1mm]
+  (Qm)_{0,k}=m_{0,k},&& (Qm)_{1,k}=r_k^{-1}m_{1,k}.
+\end{array}
+\tag{5.1}
+\]
+They are positive, self-adjoint, injective, and densely ranged.  Define $B$ by
+\[
+  \dom B=\ran P,\qquad B(Pm)=Qm.
+  \tag{5.2}
+\]
+Then $B$ is the maximal diagonal operator
+\[
+  (Bx)_{0,k}=r_kx_{0,k},\qquad
+  (Bx)_{1,k}=r_k^{-1}x_{1,k},
+  \tag{5.3}
+\]
+on the exact maximal domain
+\[
+  \dom B=\left\{x\in H:
+    \sum_{k\ge0}\big(r_k^2|x_{0,k}|^2+r_k^{-2}|x_{1,k}|^2\big)<\infty\right\},
+\]
+and its inverse $A=B^{-1}$ is the maximal diagonal operator
+\[
+  \dom A=\ran Q,\qquad A(Qm)=Pm,
+  \tag{5.4}
+\]
+with the two diagonal weights interchanged and
+\[
+  \dom A=\left\{x\in H:
+    \sum_{k\ge0}\big(r_k^{-2}|x_{0,k}|^2+r_k^2|x_{1,k}|^2\big)<\infty\right\}.
+\]
+Both are positive self-adjoint operators by the maximal real diagonal multiplication theorem.
+
+For completeness, closedness can be seen without invoking spectral theory.  The graph
+parameterization
+\[
+  R:H\to H\oplus H,\qquad Rm=(Pm,Qm)
+  \tag{5.5}
+\]
+has the bounded left inverse
+\[
+  S(x,y)=\big((y_{0,k})_{k\ge0},(x_{1,k})_{k\ge0}\big).
+  \tag{5.6}
+\]
+The range of $R$ is the intersection of the closed coordinate constraints
+$x_{0,k}=r_k^{-1}y_{0,k}$ and $y_{1,k}=r_k^{-1}x_{1,k}$, hence it is closed and equals
+$\Graph B$.  The finite-support vectors show density of all relevant domains and ranges.
+
+Now put
+\[
+  v_{0,k}=v_{1,k}=r_k^{-1},\qquad M=v^\perp\subset H.
+  \tag{5.7}
+\]
+The vector $v$ belongs to $H$, since $\sum_{k\ge0}r_k^{-2}<\infty$.  It belongs to neither
+$\ran P$ nor $\ran Q$: a $P$-preimage would have constant $0$-channel equal to one, while a
+$Q$-preimage would have constant $1$-channel equal to one.  Neither constant channel is in
+$\ell^2$.
+
+Define the restriction
+\[
+  \dom C=P(M),\qquad C(Pm)=Qm\quad(m\in M).
+  \tag{5.8}
+\]
+
+\begin{theorem}[explicit counterexample]\label{thm:counterexample}
+With $A$ and $C$ defined by \emph{(5.4)} and \emph{(5.8)}, the pair $(A,C)$ is a standard Hilbert
+pre-quasi pair but is not quasi compatible.  Consequently Conjectures~6.7 and~6.8 of
+\cite{Skrepek2025} are false.
+\end{theorem}
+
+\begin{proof}
+The graph of $C$ is $R(M)$.  It is closed: if $Rm_n\to z$ in $H\oplus H$, then
+$m_n=S(Rm_n)\to S(z)$; closedness of $M$ gives $S(z)\in M$, and continuity of $R$ yields
+$z=R(S(z))\in R(M)$.  Thus $C$ is closed.  It is injective because $Q$ is injective.
+
+The operators $P$ and $Q$ are self-adjoint.  Since $v\notin\ran P=\ran P^*$ and
+$v\notin\ran Q=\ran Q^*$, Lemma~\ref{lem:hyperplane} gives
+\[
+  \clos(P(M))=H,\qquad \clos(Q(M))=H.
+  \tag{5.9}
+\]
+Hence $C$ has dense domain and dense range.  The operator $A$ is self-adjoint, closed, injective,
+dense-domain, and dense-range by its diagonal description.
+
+For $g=Pm\in\dom C$ with $m\in M$ and $f=Qn\in\dom A$ with $n\in H$, the commuting positive
+diagonals $P,Q$ give
+\[
+  \ip{Cg}{Af}=\ip{Qm}{Pn}=\ip{Pm}{Qn}=\ip{g}{f}.
+  \tag{5.10}
+\]
+Thus $(A,C)$ is pre-quasi.
+
+Because $A=A^*$, one has $\dom A^*=\dom A=\ran Q$.  On the other hand,
+$\ran C=Q(M)$.  The hyperplane $M$ is proper and $Q$ is injective, so $Q(M)$ is a proper subset of
+$\ran Q$.  Therefore $\ran C\ne\dom A^*$ and the pair is not quasi compatible.
+
+Finally, $H$ paired with itself is a complete Hilbert dual pair, so $(H,H,H)$ with embeddings
+$A,C$ satisfies every hypothesis of the weak Hilbert conjecture.  Its failure refutes that
+conjecture.  The strong conjecture includes the Hilbert case and is therefore false as well.
+\end{proof}
+
+\begin{remark}[even--odd form]
+Any bijection $\{0,1\}\times\N\simeq\N$ transports the construction to ordinary
+$\ell^2(\N)$.  Under the even--odd bijection, $B$ has diagonal
+$1,1,2,\frac12,3,\frac13,\ldots$ up to the harmless ordering of the first two entries.  The split
+index makes the two singular channels and the bounded recovery map (5.6) transparent.
+\end{remark}
+
+\section{Consequences and boundaries}
+
+\subsection{Exact logical status of the conjectures}
+
+Theorem~\ref{thm:counterexample} is a counterexample inside the smallest convenient category:
+all three spaces coincide as Hilbert spaces, the duality is the standard Hilbert duality, and the
+canonical positive and negative operators are positive self-adjoint diagonal operators.  Failure
+therefore does not depend on exotic Banach duality, non-reflexivity, a multivalued adjoint, or a
+nonclosable map.
+
+The defect is also minimal in graph codimension.  Deleting a one-dimensional graph-normal
+direction is enough, while each coordinate image stays dense.  Theorem~\ref{thm:sharp} shows that
+this is not an accident of diagonal weights: every two-sided singular canonical graph has a
+codimension-one defect, and no other graph can have any proper closed bi-dense defect.
+
+\subsection{What survives positively}
+
+The failed conjectures contain a sharp true theorem.  If the canonical inverse adjoint is bounded,
+the domain coordinate controls graph norm.  If it is bounded below, the range coordinate controls
+graph norm.  Either estimate upgrades density of a closed compatible restriction to graph
+saturation.  Only simultaneous failure permits nonmaximality.
+
+For ordinary Gelfand triples, one embedding is continuous and one is obtained by completion; this
+places the construction on a one-sided regular branch.  The present theorem explains why the
+classical framework does not display the defect and why merely replacing continuity by closedness
+opens it.
+
+\subsection{Boundary traces}
+
+Skrepek observed that a positive solution of the weak conjecture would imply equality of weak and
+strong boundary trace definitions in the motivating differential-operator setting
+\cite{Skrepek2025}.  The logical converse does not follow.  Our result proves that pre-quasi
+axioms alone cannot establish that equality.  A concrete PDE may carry coercivity, a Poincar\'e
+estimate, closed-range structure, or a regular decomposition that makes one coordinate bounded
+below.  Such an estimate falls exactly under Corollary~\ref{cor:automatic}.  Accordingly,
+PDE-specific weak-equals-strong theorems remain untouched \cite{SkrepekPauly2025}.
+
+\subsection{Relation-theoretic interpretation}
+
+The canonical inverse adjoint $B=(A^*)^{-1}$ is most naturally viewed through its closed graph
+relation.  Pairing compatibility places every admissible negative graph inside this relation.
+The two coordinate topologies see only $P(M)$ and $Q(M)$, whereas closedness sees $M$ in graph
+norm.  Two-sided singularity is exactly non-equivalence of graph norm with either coordinate norm.
+Thus the obstruction is a topology mismatch within a single-valued relation, not a multivalued
+singular part produced by graph closure.
+
+This interpretation suggests a useful diagnostic for applications: identify the canonical graph,
+test its two coordinate lower estimates, and only then ask whether a dense compatible core is
+maximal.  Density in both pivot images is decisive only after one coordinate controls graph norm.
+
+\section{Formal verification}
+
+The complete result has been formalized in Lean~4 against the repository's pinned Mathlib
+toolchain.  The formal development uses closed partially defined linear maps and their adjoints;
+no finite-dimensional surrogate, numerical evaluation, unproved density assumption, or extra
+maximality hypothesis is introduced.
+
+The principal checked declarations are:
+\begin{itemize}\small
+  \item \texttt{preQuasi\_graph\_le\_canonical\_graph}, and\\
+        \texttt{preQuasi\_of\_closed\_biDense\_}\\
+        \texttt{canonicalGraphSubspace}, the two directions of
+        Theorem~\ref{thm:classification};
+  \item \texttt{preQuasi\_quasi\_iff\_}\\
+        \texttt{eq\_canonicalNegative}, the saturation equivalence (3.2);
+  \item \texttt{twoSidedSingular\_iff\_}\\
+        \texttt{hasProperClosedBiDenseSubspace}, the sharp equivalence in
+        Theorem~\ref{thm:sharp};
+  \item \texttt{exists\_hilbertPreQuasiPair\_not\_quasi}, the unconditional counterexample of
+        Theorem~\ref{thm:counterexample}.
+\end{itemize}
+The explicit formal model uses $\ell^2(\mathrm{Bool}\times\N)$, which is the channel notation of
+Section~5.  Axiom inspection of all five headline declarations reports only Lean's standard
+logical axioms \texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}.
+
+\section{Further questions}
+
+The obstruction theorem closes automaticity under the published axioms, but it opens more
+structured questions.
+
+\begin{question}
+Which analytic hypotheses on boundary maps force one coordinate projection of the canonical graph
+to be bounded below?  Corollary~\ref{cor:automatic} reduces any positive PDE theorem of this type
+to a coercive or closed-range estimate.
+\end{question}
+
+\begin{question}
+For two-sided singular canonical graphs, which additional invariances restrict the lattice of
+closed bi-dense subspaces?  The present hyperplane construction is universal, but locality,
+differential order, or symmetry may exclude its use as an admissible operator core.
+\end{question}
+
+\begin{question}
+Can the graph-subspace classification be extended from standard Hilbert anti-duality to reflexive
+Banach dual pairs with an equally sharp geometric criterion?  The Hilbert proof uses orthogonal
+hyperplanes and adjoint ranges at its decisive step, so a Banach analogue should involve norming
+annihilators and closed-range geometry rather than a formal transcription.
+\end{question}
+
+\section*{Acknowledgment of scope}
+
+The paper resolves the automaticity conjectures negatively and classifies the exact Hilbert graph
+mechanism.  It does not claim a counterexample to weak--strong trace equality for a specified
+differential operator, nor a Banach-space classification beyond the Hilbert standard-pair model.
+
+\begin{thebibliography}{99}
+
+\bibitem{CojuhariGheondea2015}
+P.~Cojuhari and A.~Gheondea,
+\emph{Triplets of closely embedded Hilbert spaces},
+Integral Equations Operator Theory \textbf{81} (2015), 1--33.
+\href{https://doi.org/10.1007/s00020-014-2195-0}{doi:10.1007/s00020-014-2195-0}.
+
+\bibitem{Kato1995}
+T.~Kato,
+\emph{Perturbation Theory for Linear Operators},
+Classics in Mathematics, Springer, Berlin, 1995.
+\href{https://doi.org/10.1007/978-3-642-66282-9}{doi:10.1007/978-3-642-66282-9}.
+
+\bibitem{Schmudgen2012}
+K.~Schm\"udgen,
+\emph{Unbounded Self-adjoint Operators on Hilbert Space},
+Graduate Texts in Mathematics 265, Springer, Dordrecht, 2012.
+\href{https://doi.org/10.1007/978-94-007-4753-1}{doi:10.1007/978-94-007-4753-1}.
+
+\bibitem{Skrepek2021}
+N.~Skrepek,
+\emph{Well-posedness of linear first order port-Hamiltonian systems on multidimensional spatial
+domains},
+Evolution Equations and Control Theory \textbf{10} (2021), 965--1006.
+\href{https://doi.org/10.3934/eect.2020098}{doi:10.3934/eect.2020098}.
+
+\bibitem{Skrepek2025}
+N.~Skrepek,
+\emph{Quasi Gelfand triples},
+Integral Equations Operator Theory \textbf{97} (2025), article 1.
+\href{https://doi.org/10.1007/s00020-024-02780-9}{doi:10.1007/s00020-024-02780-9}.
+
+\bibitem{SkrepekPauly2025}
+N.~Skrepek and D.~Pauly,
+\emph{Weak equals strong $L^2$ regularity for partial tangential traces on Lipschitz domains},
+J. Math. Anal. Appl. \textbf{550} (2025), 129548.
+\href{https://doi.org/10.1016/j.jmaa.2025.129548}{doi:10.1016/j.jmaa.2025.129548}.
+
+\end{thebibliography}
+
+\end{document}
