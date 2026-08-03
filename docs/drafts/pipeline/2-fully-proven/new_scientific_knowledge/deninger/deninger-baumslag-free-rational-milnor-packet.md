@@ -67,7 +67,10 @@
   `GaloisForLFunctions.RHTower.DeningerCyclicReduction` (cyclic reduction),
   `GaloisForLFunctions.RHTower.DeningerPushoutTorsion` (amalgams of torsion free groups),
   `GaloisForLFunctions.RHTower.DeningerPushoutNormal` (uniqueness of transversal words),
-  `GaloisForLFunctions.RHTower.DeningerPushoutRoot` (equal powers of cyclically reduced elements)
+  `GaloisForLFunctions.RHTower.DeningerPushoutRoot` (equal powers of cyclically reduced elements),
+  `GaloisForLFunctions.RHTower.DeningerPushoutMetric` (subadditivity of the word length),
+  `GaloisForLFunctions.RHTower.DeningerPushoutOrder` (cyclically reduced elements have infinite
+  order)
 
 ## Statement
 
@@ -772,7 +775,30 @@ That is now carried out.  `DeningerPushoutRoot.lean`:
   equal lengths, and a prefix of a common list of the same length is determined.
 
 What is left for Baumslag's theorem is the elements conjugate into a factor, and the passage from
-cyclically reduced representatives back to arbitrary elements.
+cyclically reduced representatives back to arbitrary elements.  The second of these needs to compare
+an element with a conjugate of it, and the tool for that is the word metric.
+`DeningerPushoutMetric.lean`:
+
+- `deningerLen_letterProd_mul_le` — prepending a word of `ℓ` letters raises the length by at most
+  `ℓ`, with no reducedness hypothesis at all;
+- `deningerLen_mul_le`, `deningerLen_le_mul` — hence the word length is **subadditive**, and
+  satisfies the reverse triangle inequality;
+- `deningerLen_conj_ge`, `deningerLen_conj_le` — **conjugation changes the word length by at most
+  twice the length of the conjugator.**
+
+The subadditive statements need no hypotheses on the word beyond its existence, which is why they
+come out of the decomposition directly.
+
+`DeningerPushoutOrder.lean` then records what the growth gives:
+
+- `deningerPow_ne_one_cycRed` — a positive power of a nonempty cyclically reduced word is
+  nontrivial;
+- `deningerZpow_injective_cycRed` — **all its integer powers are distinct**;
+- `deningerZpow_injective_conj` — the same for any conjugate of such an element.
+
+The last is the shape the endgame needs: once the centralizer of such an element is known to be
+infinite cyclic, `xⁿ = yⁿ` inside it reads `tᵃⁿ = tᵇⁿ`, and distinctness of the powers gives
+`a = b`.
 
 Step 1 still needs Baumslag's inductive step (root adjunction preserves unique roots), which rests
 on the same normal-form machinery.
@@ -1208,3 +1234,17 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   prefix of a common list of a given length is determined.  This is the cyclically reduced half of
   Baumslag's theorem.  What remains is the elements conjugate into a factor, and the passage from
   cyclically reduced representatives back to arbitrary elements.
+- 2026-08-03 — Proved that the word length of a pushout is subadditive, and that conjugation moves
+  it by at most twice the length of the conjugator.  Unlike everything else in this layer these need
+  no reducedness or alternation hypotheses: prepending a word of `ℓ` letters raises the length by at
+  most `ℓ` whatever the letters are, so the decomposition alone gives subadditivity, and inversion
+  invariance turns it into the reverse triangle inequality.  This is the tool for the remaining
+  passage from cyclically reduced representatives back to arbitrary elements, where an element has
+  to be compared with a conjugate of itself.
+- 2026-08-03 — Recorded the consequences of linear length growth: a nonempty cyclically reduced word
+  has nontrivial positive powers and all its integer powers distinct, and the same holds for any
+  conjugate.  The conjugated form is the shape the endgame needs.  The remaining structure of the
+  argument is now visible: for `xⁿ = yⁿ` with the common power nontrivial, both `x` and `y`
+  centralize it, so once the centralizer of an element not conjugate into a factor is known to be
+  infinite cyclic, the equation reads `tᵃⁿ = tᵇⁿ` and distinctness of powers finishes it.  The
+  centralizer theorem is the next target.

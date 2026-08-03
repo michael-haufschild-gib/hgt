@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.DeckClosureStableCore
 import GaloisForLFunctions.HTGeometry.StableCoreFunctoriality
 
 /-!
@@ -90,6 +91,18 @@ theorem map_stableRangeCore_fixedFieldEndomorphism
     change ((fixedFieldEndomorphism phi H hcomm ^ n) yH : L) = x
     rw [fixedFieldEndomorphism_pow_apply]
     exact hy
+
+/-- Holonomy form: once the ambient tail is the closed-deck fixed field, the tail after restricting
+to any commuting fixed field is the fixed field of the jointly generated deck and holonomy groups. -/
+theorem map_stableRangeCore_fixedFieldEndomorphism_eq_fixedField_sup
+    (phi : L →ₐ[K] L)
+    (closedDeck holonomy : Subgroup (L ≃ₐ[K] L))
+    (hcomm : ∀ sigma ∈ holonomy, ∀ x, phi (sigma x) = sigma (phi x))
+    (htail : stableRangeCore phi = IntermediateField.fixedField closedDeck) :
+    IntermediateField.map (IntermediateField.fixedField holonomy).val
+        (stableRangeCore (fixedFieldEndomorphism phi holonomy hcomm)) =
+      IntermediateField.fixedField (closedDeck ⊔ holonomy) := by
+  rw [map_stableRangeCore_fixedFieldEndomorphism, htail, fixedField_sup]
 
 end
 

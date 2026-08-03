@@ -46,7 +46,7 @@ private theorem young_linear_le_quadratic (s R t : ℝ) (hs : 0 < s) :
   field_simp [hs.ne']
   nlinarith [sq_nonneg (s * t - 4 * R)]
 
-private theorem bessel_exponent_bound (s R : ℝ) {t : ℝ} (hs : 0 < s) (ht : 0 ≤ t) :
+theorem bessel_exponent_bound (s R : ℝ) {t : ℝ} (hs : 0 < s) (ht : 0 ≤ t) :
     -s * Real.cosh t + R * t ≤ 2 * R ^ 2 / s - s / 8 * t ^ 2 := by
   have hc := sq_div_four_le_cosh ht
   have hy := young_linear_le_quadratic s R t hs

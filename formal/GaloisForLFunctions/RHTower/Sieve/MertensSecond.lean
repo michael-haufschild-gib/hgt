@@ -51,16 +51,17 @@ theorem abs_mertensA_sub_log_le {N : ℕ} (hN : 1 ≤ N) :
   have h1 : Real.log 4 ≤ mertensFirstConst := le_max_left _ _
   have h2 : 1 + 2 * logSqTailConst ≤ mertensFirstConst := le_max_right _ _
   rw [abs_le]
-  constructor <;> [skip; skip] <;> unfold mertensA <;> unfold mertensA at hup hlow <;> linarith
+  constructor <;> unfold mertensA <;> linarith
 
 /-- **Summation by parts** for the prime reciprocal sum. -/
-theorem mertensS_eq_abel {N : ℕ} (hN : 2 ≤ N) :
+theorem mertensS_eq_abel (N : ℕ) :
     mertensS N = mertensA N / Real.log N
       + ∑ i ∈ Finset.Ico 2 N,
           (1 / Real.log i - 1 / Real.log ((i : ℝ) + 1)) * mertensA i := by
   classical
   have habel := Finset.sum_range_by_parts (fun i : ℕ => 1 / Real.log i) primeLogWeight (N + 1)
   simp only [smul_eq_mul, Nat.add_sub_cancel] at habel
+  push_cast at habel
   have hG : ∀ i : ℕ, ∑ j ∈ Finset.range (i + 1), primeLogWeight j = mertensA i :=
     sum_range_primeLogWeight
   rw [hG N] at habel
@@ -94,16 +95,15 @@ theorem mertensS_eq_abel {N : ℕ} (hN : 2 ≤ N) :
         by_contra hcon
         exact hnot (Finset.mem_Ico.2 ⟨by omega, Finset.mem_range.1 hi⟩)
       interval_cases i
-      · simp [mertensA, Nat.primesLE_eq_filter_range]
-      · simp [mertensA, Nat.primesLE_eq_filter_range]
+      · norm_num [mertensA, Nat.primesLE_eq_filter_range, Finset.sum_filter,
+          Finset.sum_range_succ]
+      · norm_num [mertensA, Nat.primesLE_eq_filter_range, Finset.sum_filter,
+          Finset.sum_range_succ]
   rw [hdrop] at habel
-  have hcast : ∀ i : ℕ, ((i : ℕ) + 1 : ℕ) = ((i : ℕ) + 1 : ℕ) := fun _ => rfl
-  rw [habel, one_div, ← div_eq_inv_mul, ← Finset.sum_neg_distrib]
-  refine congrArg _ ?_
+  rw [habel, one_div, ← div_eq_inv_mul, sub_eq_add_neg, ← Finset.sum_neg_distrib]
+  congr 1
   refine Finset.sum_congr rfl ?_
   intro i _
-  have : ((i + 1 : ℕ) : ℝ) = (i : ℝ) + 1 := by push_cast; ring
-  rw [this]
   ring
 
 /-- The total variation of `1/log` over `Ico 2 N`. -/
@@ -134,7 +134,7 @@ theorem inv_log_variation_nonneg {i : ℕ} (hi : 2 ≤ i) :
   linarith
 
 /-- The `log i` part of the summation-by-parts sum is exactly the telescoping model. -/
-theorem sum_Ico_variation_mul_log {N : ℕ} (hN : 2 ≤ N) :
+theorem sum_Ico_variation_mul_log (N : ℕ) :
     ∑ i ∈ Finset.Ico 2 N, (1 / Real.log i - 1 / Real.log ((i : ℝ) + 1)) * Real.log i
       = logLogIncrementSum N := by
   rw [logLogIncrementSum]
@@ -144,10 +144,7 @@ theorem sum_Ico_variation_mul_log {N : ℕ} (hN : 2 ≤ N) :
   have hlogi : 0 < Real.log i := log_pos_of_two_le hi2
   have hiR : (2 : ℝ) ≤ (i : ℝ) := by exact_mod_cast hi2
   have hlog1 : 0 < Real.log ((i : ℝ) + 1) := Real.log_pos (by linarith)
-  have hc : ((i + 1 : ℕ) : ℝ) = (i : ℝ) + 1 := by push_cast; ring
-  rw [hc]
   field_simp
-  ring
 
 /-- The remainder part of the summation-by-parts sum is uniformly bounded. -/
 theorem abs_sum_Ico_variation_mul_remainder_le {N : ℕ} (hN : 2 ≤ N) :
@@ -172,7 +169,12 @@ theorem abs_sum_Ico_variation_mul_remainder_le {N : ℕ} (hN : 2 ≤ N) :
   have hlogNpos : (0 : ℝ) < Real.log N := lt_of_lt_of_le hlog2 hlogN
   have hnn : (0 : ℝ) ≤ 1 / Real.log N := by positivity
   have hC := mertensFirstConst_nonneg
-  nlinarith [hnn, hC]
+  have hle : (1 / Real.log 2 - 1 / Real.log N) * mertensFirstConst
+      ≤ (1 / Real.log 2) * mertensFirstConst :=
+    mul_le_mul_of_nonneg_right (by linarith) hC
+  have hfin : (1 / Real.log 2) * mertensFirstConst = mertensFirstConst / Real.log 2 := by
+    ring
+  linarith [hle, hfin.le, hfin.ge]
 
 /-- The leading summation-by-parts term is close to `1`. -/
 theorem abs_mertensA_div_log_sub_one_le {N : ℕ} (hN : 2 ≤ N) :
@@ -187,50 +189,55 @@ theorem abs_mertensA_div_log_sub_one_le {N : ℕ} (hN : 2 ≤ N) :
   rw [hrw, abs_div, abs_of_pos hlogNpos]
   have hnum := abs_mertensA_sub_log_le (by omega : 1 ≤ N)
   have hC := mertensFirstConst_nonneg
-  rw [div_le_div_iff₀ hlogNpos hlog2]
-  nlinarith [hnum, hC, hlogN]
+  have step1 : |mertensA N - Real.log N| / Real.log N ≤ mertensFirstConst / Real.log N := by
+    rw [div_eq_mul_inv, div_eq_mul_inv]
+    exact mul_le_mul_of_nonneg_right hnum (inv_nonneg.2 hlogNpos.le)
+  have step2 : mertensFirstConst / Real.log N ≤ mertensFirstConst / Real.log 2 := by
+    rw [div_le_div_iff₀ hlogNpos hlog2]
+    nlinarith [hC, hlogN, hlog2]
+  linarith
 
 /-- **Mertens' second theorem, upper bound.** -/
 theorem mertensSecond_upper {N : ℕ} (hN : 2 ≤ N) :
     mertensS N
-      ≤ Real.log (Real.log N) + (1 + 2 * mertensFirstConst / Real.log 2 - logLog 2) := by
+      ≤ logLog N + (1 + 2 * (mertensFirstConst / Real.log 2) - logLog 2) := by
   have hsplit : ∑ i ∈ Finset.Ico 2 N,
       (1 / Real.log i - 1 / Real.log ((i : ℝ) + 1)) * mertensA i
         = logLogIncrementSum N
           + ∑ i ∈ Finset.Ico 2 N,
               (1 / Real.log i - 1 / Real.log ((i : ℝ) + 1)) * (mertensA i - Real.log i) := by
-    rw [← sum_Ico_variation_mul_log hN, ← Finset.sum_add_distrib]
+    rw [← sum_Ico_variation_mul_log N, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl ?_
     intro i _
     ring
-  have habel := mertensS_eq_abel hN
+  have habel := mertensS_eq_abel N
   rw [hsplit] at habel
   have h1 := (abs_le.1 (abs_mertensA_div_log_sub_one_le hN)).2
   have h2 := (abs_le.1 (abs_sum_Ico_variation_mul_remainder_le hN)).2
   have h3 := logLogIncrementSum_le hN
   rw [habel]
-  simp only [logLog] at h3 ⊢
   linarith
 
 /-- **Mertens' second theorem, lower bound.** -/
 theorem mertensSecond_lower {N : ℕ} (hN : 2 ≤ N) :
-    Real.log (Real.log N) - (2 * mertensFirstConst / Real.log 2 + logLog 3 - 1)
+    logLog N - (2 * (mertensFirstConst / Real.log 2) + logLog 3 - 1)
       ≤ mertensS N := by
   have hsplit : ∑ i ∈ Finset.Ico 2 N,
       (1 / Real.log i - 1 / Real.log ((i : ℝ) + 1)) * mertensA i
         = logLogIncrementSum N
           + ∑ i ∈ Finset.Ico 2 N,
               (1 / Real.log i - 1 / Real.log ((i : ℝ) + 1)) * (mertensA i - Real.log i) := by
-    rw [← sum_Ico_variation_mul_log hN, ← Finset.sum_add_distrib]
+    rw [← sum_Ico_variation_mul_log N, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl ?_
     intro i _
     ring
-  have habel := mertensS_eq_abel hN
+  have habel := mertensS_eq_abel N
   rw [hsplit] at habel
   have h1 := (abs_le.1 (abs_mertensA_div_log_sub_one_le hN)).1
   have h2 := (abs_le.1 (abs_sum_Ico_variation_mul_remainder_le hN)).1
   have h3 := le_logLogIncrementSum hN
   have hmono : logLog N ≤ logLog (N + 1) := by
+    unfold logLog
     have hlogN : 0 < Real.log N := by
       have : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
       exact Real.log_pos (by linarith)
@@ -241,7 +248,22 @@ theorem mertensSecond_lower {N : ℕ} (hN : 2 ≤ N) :
       · exact_mod_cast Nat.le_succ N
     exact Real.log_le_log hlogN hstep
   rw [habel]
-  simp only [logLog] at h3 hmono ⊢
   linarith
+
+/-- The explicit additive constant in the upper half of Mertens' second theorem. -/
+noncomputable def mertensSecondUpperConst : ℝ :=
+  1 + 2 * (mertensFirstConst / Real.log 2) - logLog 2
+
+/-- The explicit additive constant in the lower half of Mertens' second theorem. -/
+noncomputable def mertensSecondLowerConst : ℝ :=
+  2 * (mertensFirstConst / Real.log 2) + logLog 3 - 1
+
+theorem mertensS_le {N : ℕ} (hN : 2 ≤ N) :
+    mertensS N ≤ logLog N + mertensSecondUpperConst :=
+  mertensSecond_upper hN
+
+theorem le_mertensS {N : ℕ} (hN : 2 ≤ N) :
+    logLog N - mertensSecondLowerConst ≤ mertensS N :=
+  mertensSecond_lower hN
 
 end RHTower.Sieve

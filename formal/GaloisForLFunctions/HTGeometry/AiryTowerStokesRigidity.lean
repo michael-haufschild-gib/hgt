@@ -350,38 +350,39 @@ theorem firstExponent_lt_twice {R : ℕ} (d : StrictDivisorChain R) :
 
 /-- Every strict divisor chain generates its canonical Airy characteristic. -/
 def toCharacteristic {R : ℕ} (d : StrictDivisorChain R) :
-    Characteristic R d.firstExponent := by
-  cases d with
-  | terminal hR =>
-      exact Characteristic.terminal hR (by simp [firstExponent]) (by simp [firstExponent])
-  | @step R E hER hE hdvd tail =>
+    Characteristic R d.firstExponent :=
+  match d with
+  | .terminal hR =>
+      Characteristic.terminal hR (by simp [firstExponent]) (by simp [firstExponent])
+  | .step (E := E) hER hE hdvd tail =>
       have hgcd : Nat.gcd R (R + E) = E := by
         rw [Nat.gcd_self_add_right]
         exact Nat.gcd_eq_right_iff_dvd.mpr hdvd
-      exact Characteristic.step hER hE (by simp [firstExponent]) hgcd
-        (by have := tail.firstExponent_lt_twice; simp only [firstExponent]; omega)
-        tail.toCharacteristic
+      have hgamma : tail.firstExponent < R + E := by
+        have htail := tail.firstExponent_lt_twice
+        omega
+      Characteristic.step (E := E) (beta := R + E) (gamma := tail.firstExponent)
+        hER hE (by omega) hgcd hgamma tail.toCharacteristic
 
 @[simp] theorem toCharacteristic_isAiryTower {R : ℕ} (d : StrictDivisorChain R) :
     d.toCharacteristic.IsAiryTower := by
   induction d with
-  | terminal => simp [toCharacteristic, Characteristic.IsAiryTower, firstExponent]
-  | step hER hE hdvd tail ih =>
-      simp [toCharacteristic, Characteristic.IsAiryTower, firstExponent, ih]
+  | terminal => rfl
+  | step hER hE hdvd tail ih => exact ⟨rfl, ih⟩
 
 end StrictDivisorChain
 
 namespace Characteristic
 
 /-- Forget exponents and retain the exact gcd divisor chain. -/
-def toStrictDivisorChain {R beta : ℕ} (c : Characteristic R beta) : StrictDivisorChain R := by
-  cases c with
-  | terminal hR => exact StrictDivisorChain.terminal hR
-  | @step R E beta gamma hER hE hbeta hgcd hgamma tail =>
+def toStrictDivisorChain {R beta : ℕ} (c : Characteristic R beta) : StrictDivisorChain R :=
+  match c with
+  | .terminal hR _ _ => StrictDivisorChain.terminal hR
+  | .step (E := E) hER hE _ hgcd _ tail =>
       have hdvd : E ∣ R := by
         rw [← hgcd]
         exact Nat.gcd_dvd_left R beta
-      exact StrictDivisorChain.step hER hE hdvd tail.toStrictDivisorChain
+      StrictDivisorChain.step hER hE hdvd tail.toStrictDivisorChain
 
 /-- Airy law uniquely fixes the exponent at every node of the extracted divisor chain. -/
 theorem eq_firstExponent_toStrictDivisorChain_of_isAiryTower {R beta : ℕ}
@@ -401,7 +402,8 @@ end Characteristic
   induction d with
   | terminal => rfl
   | step hER hE hdvd tail ih =>
-      simp only [StrictDivisorChain.toCharacteristic, Characteristic.toStrictDivisorChain]
+      change StrictDivisorChain.step _ _ _
+          tail.toCharacteristic.toStrictDivisorChain = StrictDivisorChain.step _ _ _ tail
       rw [ih]
 
 end IrregularStokes

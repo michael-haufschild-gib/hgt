@@ -279,3 +279,75 @@ axiom-clean:
 
 Both Euler products in the sieve capstone are now controlled by the single quantity
 `∑_{p ≤ z} 1/p`.  Next: 5c (Mertens I) and 5d (Mertens II).
+
+### Stage 5c–5d landed (2026-08-03) — Mertens I and II are proved
+
+Three new modules, wired into the umbrella, built, axiom-clean
+(`[propext, Classical.choice, Quot.sound]` on all 17 theorems):
+
+**`Sieve/MertensFirst.lean`** — `∑_{p ≤ n} (log p)/p = log n + O(1)`.
+
+- `div_le_factorization_factorial` : `⌊n/p⌋ ≤ v_p(n!)` (first Legendre term);
+- `log_factorial_eq_sum_primesLE` : `log n! = ∑_{p ≤ n} v_p(n!) log p`;
+- `log_factorial_le` : `log n! ≤ n log n` (from `n! ≤ n^n`);
+- `le_log_factorial` : `n log n − n ≤ log n!` — **no Stirling**: one term of the exponential
+  series gives `n^n/n! ≤ e^n`;
+- `summable_log_div_sq`, `logSqTailConst` : the convergent correction from the higher prime
+  powers, via `log k ≤ 2√k` and the `3/2` p-series;
+- `sum_log_div_prime_mul_pred_le` : `∑_{p ≤ n} (log p)/(p(p−1)) ≤ 2·logSqTailConst`;
+- **`mertensFirst_upper`** : `∑_{p ≤ n} (log p)/p ≤ log n + log 4`;
+- **`mertensFirst_lower`** : `log n − 1 − 2·logSqTailConst ≤ ∑_{p ≤ n} (log p)/p`.
+
+**`Sieve/LogLogTelescope.lean`** — the discrete model of `∫ dt/(t log t)`.
+
+- `log_sub_log_le` / `le_log_sub_log` : `(b−a)/b ≤ log b − log a ≤ (b−a)/a`;
+- `logLogIncrementSum N := ∑_{2 ≤ i < N} (log(i+1) − log i)/log(i+1)`;
+- `logLogIncrementSum_le` / `le_logLogIncrementSum` :
+  `logLog(N+1) − logLog 3 ≤ logLogIncrementSum N ≤ logLog N − logLog 2`.
+
+  **No integral comparison.**  Concavity of `log` sandwiches each term between two consecutive
+  increments of `log ∘ log`, and the sum telescopes.  For the lower bound the shift
+  `log(i+2) − log(i+1) ≤ log(i+1) − log i` moves the increment one step forward.
+
+**`Sieve/MertensSecond.lean`** — `∑_{p ≤ N} 1/p = log log N + O(1)`.
+
+- `mertensS_eq_abel` : discrete summation by parts (`Finset.sum_range_by_parts`) against
+  `1/log`, giving `S N = A N/log N + ∑_{2 ≤ i < N} (1/log i − 1/log(i+1))·A i`;
+- `sum_Ico_inv_log_variation` : the total variation is `1/log 2 − 1/log N`, so the `R i` part is
+  bounded by `mertensFirstConst/log 2`;
+- **`mertensSecond_upper`** : `S N ≤ logLog N + (1 + 2·C/log 2 − logLog 2)`;
+- **`mertensSecond_lower`** : `logLog N − (2·C/log 2 + logLog 3 − 1) ≤ S N`,
+  with `C = mertensFirstConst = max (log 4) (1 + 2·logSqTailConst)`.
+
+The leading constant is exactly `1`, as required: an `A·log log N` bound with `A > 1` would turn
+the Chernoff exponent of `(7)` into `−I(c) + c log A` and destroy the theorem.
+
+Remaining: **5e** — smooth/rough factorization, the sieve applied at the primorial modulus, and
+the assembly into Shiu's `(6)`; then `(7)`–`(9)`.
+
+### Fundamental lemma landed (2026-08-03) — `Sieve/RoughCount.lean`
+
+Mertens II feeds Brun's pure sieve at the primorial modulus and both Euler products become explicit
+powers of `log z`:
+
+- `prod_one_sub_inv_primesLE_le` : `∏_{p ≤ z}(1−1/p) ≤ exp(c₀)/log z`
+  (`c₀ = mertensSecondLowerConst`);
+- `prod_one_add_primesLE_le` : `∏_{p ≤ z}(1+λ/p) ≤ exp(λ c₁)·(log z)^λ`
+  (`c₁ = mertensSecondUpperConst`, `(log z)^λ` an `rpow`);
+- `coprime_primorial_iff` : coprime to `z#` ⟺ no prime factor `≤ z`;
+- **`card_rough_Ioc_le`** — the fundamental lemma:
+
+```text
+#{n ∈ (a,b] : P⁻(n) > z}
+  ≤ (b−a)·exp(c₀)/log z
+    + (b−a)·exp(λ c₁)(log z)^λ / λ^r
+    + #{d ∣ z# : ω d ≤ r},          any even r, any λ ≥ 1.
+```
+
+Built, wired, axiom-clean.  This is the exact input Shiu's argument consumes, and it is also the
+Brun–Titchmarsh source `route-e-reciprocal-marker-mobius-hall-law.md` `(26)` needs.
+
+Remaining for `(6)`: the smooth/rough factorization `n = d·m`, the observation that a `z`-rough
+`m ≤ 2X` with `z = X^{1/L}` has `ω m ≤ L`, the smooth-part sum
+`∑_{d z-smooth} z₀^{ω d}/d ≤ ∏_{p ≤ z}(1 + z₀/p + z₀/p² + …)`, and the parameter choice
+`log z ≍ log X / log log X` with `r ≍ log log z`.

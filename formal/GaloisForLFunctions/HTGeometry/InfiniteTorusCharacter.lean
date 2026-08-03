@@ -42,7 +42,7 @@ instance torusHaar_isProbabilityMeasure (ι : Type*) [Countable ι] :
     IsProbabilityMeasure (torusHaar ι) := by
   refine ⟨?_⟩
   have huniv : (Set.univ : Set (UnitAddTorus ι))
-      = ((⊤ : PositiveCompacts (UnitAddTorus ι)) : Set (UnitAddTorus ι)) := rfl
+      = ((⊤ : TopologicalSpace.PositiveCompacts (UnitAddTorus ι)) : Set (UnitAddTorus ι)) := rfl
   rw [torusHaar, huniv, Measure.addHaarMeasure_self]
 
 /-- The character of a finitely supported integer vector. -/
@@ -84,13 +84,13 @@ theorem torusCharacter_clockPhasePoint (n : ι →₀ ℤ) (omega : ι → ℝ) 
     congr 1
     have hpi : (Real.pi : ℂ) ≠ 0 := by
       exact_mod_cast Real.pi_ne_zero
+    push_cast
     field_simp
-    ring
   rw [Finset.prod_congr rfl hterm, ← Complex.exp_sum]
   congr 1
   rw [characterDetuning]
   push_cast
-  rw [Finset.sum_mul, Finset.sum_mul]
+  rw [Finset.mul_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun i _ => ?_
   ring
 
@@ -115,7 +115,7 @@ theorem exists_torusCharacter_ne_one {n : ι →₀ ℤ} (hn : n ≠ 0) :
       rw [if_neg (Finset.mem_erase.mp hi).1]
       have hzero : ((0 : UnitAddCircle)) = ((0 : ℝ) : UnitAddCircle) := by simp
       rw [hzero, fourier_coe_apply]
-      simp
+      norm_num
     rw [hone, one_mul]
   rw [hsplit, fourier_coe_apply]
   have hn₀ : (n i₀ : ℂ) ≠ 0 := by exact_mod_cast hi₀
@@ -123,14 +123,13 @@ theorem exists_torusCharacter_ne_one {n : ι →₀ ℤ} (hn : n ≠ 0) :
       / ((1 : ℝ) : ℂ) = (Real.pi : ℂ) * Complex.I := by
     push_cast
     field_simp
-    ring
   rw [hval, Complex.exp_pi_mul_I]
   intro hcon
   exact (by norm_num : (-1 : ℂ) ≠ 1) hcon
 
 /-- **Character orthogonality on the product torus.**  A nontrivial character has vanishing Haar
 mean; the trivial one has mean one. -/
-theorem integral_torusCharacter [Countable ι] (n : ι →₀ ℤ) :
+theorem integral_torusCharacter [Countable ι] [DecidableEq ι] (n : ι →₀ ℤ) :
     (∫ x, torusCharacter n x ∂(torusHaar ι)) = if n = 0 then 1 else 0 := by
   classical
   by_cases hn : n = 0

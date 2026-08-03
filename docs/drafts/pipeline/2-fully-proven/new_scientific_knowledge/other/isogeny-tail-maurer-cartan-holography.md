@@ -231,15 +231,41 @@ The exact field-theoretic core is formalized in
 - `stableRangeCore_inf_fixedField_eq_fixedField_iSup_sup`;
 - `mem_stableRangeCore_iff_fixedBy_iteratedDeck`.
 
-The three new declarations formalize the abstract field-theoretic content of Corollary D: adding
-an arbitrary holonomy group to the total iterated deck group intersects the stable core with its
-fixed field. The exact module cache already existed, so verification used only the direct source
-check; the axiom reports contain only Lean's standard `propext`, `Classical.choice`, and
-`Quot.sound`.
+The 2026-08-03 formalization pass added four dependency modules and wired them into the
+`GaloisForLFunctions.HTGeometry` umbrella:
 
-The Zariski-closure step, algebraic-group jet quotient, equivariant descent to `G/F`, and
-Maurer--Cartan generation statement remain paper-level because the required algebraic-group
-prolongation infrastructure is not present in the project.
+- `DifferentialTranscendenceDegree.lean` defines differential transcendence degree as the
+  cardinal rank of the proved differential matroid and proves the exact basis-cardinality formula
+  for a differentially independent differential generating family;
+- `IsogenyKernelClosure.lean` constructs the increasing union of all iterated kernels, proves
+  `alpha^{-1}(Gamma_infinity)=Gamma_infinity`, and proves the corresponding equality after
+  topological closure for every open continuous endomorphism;
+- `FixedFieldStableCoreRestriction.lean` constructs the restriction of a commuting endomorphism
+  to a fixed field and proves, without a finiteness hypothesis, that its stable core maps to the
+  intersection of the ambient stable core with that fixed field.  Its final theorem gives the
+  exact `closedDeck sup holonomy` form of Corollary D;
+- `IsogenyTailMaurerCartanHolography.lean` proves the general topological dense-translation
+  fixed-field theorem, derives the closed-deck stable-core equality from finite deck quotients plus
+  closed stabilizers (rather than assuming the fixed-field closure equality), and constructs the
+  quotient automorphism induced by an open continuous surjective isogeny.
+
+Direct `lake env lean <file>` checks pass for all four files.  This does **not** yet close the
+Stage 2 -> 3 gate.  Exact remaining Lean cores are:
+
+1. finite-etale constant group quotients commute with every jet/prolongation level and yield
+   `alpha^(n*) K = K^(ker(alpha^n)(C))`;
+2. Zariski closedness of every finite-order differential-rational translation stabilizer for the
+   actual algebraic-group jet action (the new topological theorem consumes precisely this fact);
+3. construction of `J^infinity G`, the algebraic-group quotient `G/H`, and the birational
+   Maurer--Cartan jet trivialization proving
+   `K^(H(C)) = C<pi(g), ell_delta(g)>`;
+4. differential genericity/dominance of `ell_delta`, connecting the now-formal cardinal
+   differential transcendence degree to `dim G`;
+5. scheme-level descent from `G` to `G/F`.  The fixed-field/stable-core part after descent is now
+   formal.
+
+These are absent algebraic-geometry/differential-jet foundations, not unresolved field-lattice
+identities.  No conclusion hypothesis or placeholder axiom was introduced to bypass them.
 
 ## RH impact audit
 
@@ -260,3 +286,8 @@ critical line, or positivity is made.
 - 2026-07-15 -- [PROVED HERE] Deck-closure equality, differential quotient, pure-expanding
   transmutation, and finite-holonomy quotient corollary proved; formal fixed-field core added and
   targeted-build verified.
+- 2026-08-03 -- Lean audit and dependency implementation: cardinal differential transcendence
+  degree, iterated-kernel closure invariance, topological deck-density fixed fields, quotient
+  reversibility, and commuting-holonomy stable-core restriction formalized unconditionally.
+  Full card remains Stage 2 pending the five explicit algebraic-group jet foundations listed in
+  Lean status; no conditional restatement was counted as completion.

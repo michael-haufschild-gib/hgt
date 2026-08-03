@@ -384,3 +384,59 @@ outer factorization as one theorem.  Partial formalization would not justify Sta
 - 2026-07-11 -- Re-ran the positive-Cauchy transversality argument after the fixed HT perturbation;
   proved outer invertibility, all-power maximal independence, exact disjoint infinite-torus closure,
   HT of every boundary state, and Haar limiting distribution.
+
+## Lean progress (formalization started)
+
+The Bohr-hull side of the card now has its first two unconditional bricks, both axiom-clean
+(`propext`, `Classical.choice`, `Quot.sound`) and wired into the `HTGeometry` umbrella.
+
+`InfiniteTorusKroneckerDensity.lean`:
+
+- `RationallyIndependentSequence`, the finite-subfamily form of rational independence for an
+  arbitrary index set;
+- `clockPhasePoint`, the phase flow of an arbitrary frequency family into `UnitAddTorus ι`
+  (mathlib's `ι → UnitAddCircle`, which needs no finiteness of `ι`);
+- **`dense_range_clockPhasePoint`** -- the infinite Kronecker theorem: a rationally independent
+  frequency family has dense orbit in the *full* product torus.  A basic open set of a product
+  constrains finitely many coordinates, so the statement reduces to the corpus's finite Kronecker
+  density `dense_range_finiteClockPhasePoint` on that finite coordinate set.
+
+`InfiniteTorusCharacter.lean`:
+
+- `torusHaar`, the Haar probability measure of the compact product torus (`Measure.addHaarMeasure ⊤`
+  on `UnitAddTorus ι` for countable `ι`), with its probability and invariance instances;
+- `torusCharacter`, the character of a finitely supported integer vector, and its multiplicativity;
+- `characterDetuning` and **`torusCharacter_clockPhasePoint`** -- along the phase flow a character is
+  the single phase `exp(i t ⟨n, ω⟩)`;
+- `exists_torusCharacter_ne_one` and **`integral_torusCharacter`** -- character orthogonality:
+  the Haar mean of a character is one for the trivial character and zero otherwise, by the
+  translation argument.
+
+These are exactly the two inputs the card's Bohr-hull and Haar-limit steps rest on, in the infinite
+setting where mathlib's finite multi-torus Fourier theory does not apply.
+
+`InfiniteTorusEquidistribution.lean` adds the time-average side:
+
+- `flowAverage`, the symmetric time average of a continuous torus function along the phase flow;
+- `flowAverage_torusCharacter` -- on a character it is exactly the corpus's elementary phase average
+  `symmetricPhaseAverage` of the character's detuning;
+- **`characterDetuning_eq_zero_iff`** -- under rational independence a character is resonant only if
+  it is trivial;
+- **`tendsto_flowAverage_torusCharacter`** -- hence the time average of every character converges to
+  its Haar mean.  This is the character half of unique ergodicity.
+
+### Remaining Lean work on this card
+
+1. **Unique ergodicity of the flow.**  What is left is the passage from characters to all continuous
+   functions: the character span is a star subalgebra (characters multiply and conjugate to
+   characters) which separates points of the product torus, so Stone--Weierstrass plus linearity and
+   the sup-norm bound of `flowAverage` gives, for every continuous `f`, convergence of the symmetric
+   time average of `f ∘ clockPhasePoint` to `∫ f d(torusHaar)`.  This is equation (16) in abstract
+   form.
+2. **The holomorphic hull.**  Continuity and injectivity of `λ ↦ A_λ` into the compact-open topology,
+   using normal convergence from (1) and Bohr--Fourier uniqueness.
+3. **Closure and disjointness** of `O_n` and `B_n`, which needs the Stieltjes limit (7) and the
+   almost-periodicity argument of (15).
+4. **Imported inputs.**  Ostrowski's hypertranscendence theorem for generalized Dirichlet series and
+   the positive-mass Baire transversality engine (the latter already exists in the corpus as the
+   Herglotz card's machinery) enter as explicit hypotheses, exactly as the card's proof uses them.
