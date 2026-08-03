@@ -260,10 +260,37 @@ finite-prime boundary Hankel inequality `(14)`.
 - M. Suzuki, *Weil's quadratic form via the screw function*, arXiv:2606.09096.
 - A. Connes, C. Consani, H. Moscovici, *Zeta Spectral Triples*, arXiv:2511.22755.
 
-## Lean decision
+## Lean status
 
-The formal tree has no screw distribution, closed restricted Weil form, or prime-power Hankel
-carrier. Formalizing only the algebraic parity split would be a wrapper. No Lean file is added.
+**Superseded, 2026-08-03.**  The "no screw distribution" premise of the previous decision is now
+false.  `ccm-screw-kernel-positivity-improving-breakdown.md` built, unconditionally:
+
+- `RHTower/SuzukiExplicitScrewRegularKernel.lean` — Suzuki's explicit screw function `screwFn`,
+  the hinge sum `screwPrimeSum` with its off-atom local affineness, the archimedean Lerch tail, and
+  `iteratedDeriv 2 (screwFn c₁ c₀) t = -screwRegularKernel t` off the prime-power atoms, plus the
+  plastic-number sign threshold.
+- `RHTower/SuzukiScrewDisjointCrossCoupling.lean` — `screwAtoms` and its discreteness,
+  `screwRegularForm`, and the disjoint-support positive cross coupling.
+- `RHTower/SuzukiScrewDistributionalKernel.lean` — global affineness of the hinge sum on an
+  atom-free interval and the two-fold integration by parts `-∫ g φ'' = ∫ K φ`.
+- `RHTower/SuzukiScrewCorrelationPairing.lean` — `screwCrossCorr`, `screwCorrelationForm`, and the
+  shear identity `∫∫ K(x−y) f y h x = ∫ K u * c_(f,h)(u) du`.
+
+`K_reg` of `(6)` is therefore `screwRegularKernel`, and `(12)`'s right-hand pairing is
+`screwCorrelationForm` specialised to `φ = ψ`.
+
+Formalization plan for this card, in order:
+
+1. `(4)`--`(5)`: the parity lifts `U_±` and the exact decomposition `Q_even = T_a + H_a`,
+   `Q_odd = T_a - H_a`, by splitting both variables of the double integral over `(-a,a)` into their
+   positive and negative halves and using evenness of `K`.  This needs no arithmetic input and no
+   screw-specific hypothesis — only `K` even and locally integrable on the relevant compact set.
+2. `(7)`--`(9)`: split `H_a` for a kernel of the form `K_reg` minus a finite atomic measure, giving
+   the explicit prime-power sum with the standard half-weight convention.
+3. `(10)`: the cutoff — for `log n ≥ 2a` the atom's integration range is empty, so only
+   `n < lambda^2 = e^(2a)` occurs.
+4. `(12)`: the autocorrelation form, from the already-built shear identity.
+5. `(16)`: the coefficient cocycle, immediate from `(9)` once `(12)` is available.
 
 ## Gates
 

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.MaximumTermCentralIndex
+import GaloisForLFunctions.HTGeometry.TriangleInequalityDefect
 
 /-!
 # The entire function of a coefficient sequence, and its logarithmic derivative
@@ -340,6 +341,70 @@ theorem coeffFun_scale_eq_tsum {k : ℕ} (hak : a k ≠ 0)
   rw [coeffFun_eq_term_mul_tsum hak hzζ]
   congr 1
   exact tsum_congr fun n => normalised_coeff_scale a k n hz hζ hak
+
+
+/-! ## The defect of the normalised family
+
+Applying the alignment identity to the normalised coefficients converts the gap between the majorant
+and the actual value of the function into the total misalignment of the phases.  At a
+maximum-modulus point that gap is as small as the circle allows. -/
+
+set_option maxHeartbeats 1000000 in
+/-- **The normalised defect.**  The total misalignment of the normalised coefficients is exactly the
+gap between the majorant and the modulus of the value, measured in units of the maximum term. -/
+theorem exists_unit_tsum_normalised_alignment_defect
+    (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hz : ‖z‖ = r)
+    (hfz : coeffFun a z ≠ 0) :
+    ∃ u : ℂ, ‖u‖ = 1 ∧
+      ∑' n : ℕ,
+          (‖a n * z ^ n / (a (centralIndex a r) * z ^ centralIndex a r)‖
+            - ((starRingEnd ℂ) u
+                * (a n * z ^ n / (a (centralIndex a r) * z ^ centralIndex a r))).re)
+        = (coeffSum a r - ‖coeffFun a z‖) / maxTerm a r := by
+  have hzne : z ≠ 0 := by
+    intro h
+    rw [h, norm_zero] at hz
+    exact absurd hz.symm (ne_of_gt hr)
+  set C : ℂ := a (centralIndex a r) * z ^ centralIndex a r with hC
+  have hCne : C ≠ 0 := central_term_ne_zero ha hr hn₀ hz
+  have hCnorm : ‖C‖ = maxTerm a r := by
+    rw [hC, norm_mul, norm_pow, hz]
+    exact term_centralIndex_eq ha hr hn₀
+  set c : ℕ → ℂ := fun n => a n * z ^ n / C with hc
+  have hcnorm : ∀ n, ‖c n‖ = (‖a n‖ * r ^ n) / maxTerm a r := by
+    intro n
+    rw [hc, norm_div, hCnorm, norm_mul, norm_pow, hz]
+  have hnsum : Summable fun n => ‖c n‖ := by
+    refine ((summable_term ha hr).div_const (maxTerm a r)).congr fun n => ?_
+    rw [hcnorm n]
+  have hcsum : Summable c := Summable.of_norm hnsum
+  have htsum_norm : ∑' n : ℕ, ‖c n‖ = coeffSum a r / maxTerm a r := by
+    rw [coeffSum, ← tsum_div_const]
+    exact tsum_congr fun n => hcnorm n
+  have hfac : coeffFun a z = C * ∑' n : ℕ, c n := coeffFun_eq_term_mul_tsum
+    (coeff_centralIndex_ne_zero ha hr hn₀) hzne
+  set W : ℂ := ∑' n : ℕ, c n with hW
+  have hWne : W ≠ 0 := by
+    intro h
+    rw [h, mul_zero] at hfac
+    exact hfz hfac
+  obtain ⟨-, -, hμpos⟩ := exists_maxTerm_eq ha hr hn₀
+  have hWnorm : ‖W‖ = ‖coeffFun a z‖ / maxTerm a r := by
+    rw [hfac, norm_mul, hCnorm]
+    field_simp [ne_of_gt hμpos]
+  refine ⟨W / (‖W‖ : ℂ), ?_, ?_⟩
+  · rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (norm_nonneg W)]
+    exact div_self (norm_ne_zero_iff.mpr hWne)
+  · have hunit : ‖W / (‖W‖ : ℂ)‖ = 1 := by
+      rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (norm_nonneg W)]
+      exact div_self (norm_ne_zero_iff.mpr hWne)
+    have hWn : ((‖W‖ : ℝ) : ℂ) ≠ 0 := by
+      simpa using norm_ne_zero_iff.mpr hWne
+    have hsplit : W = ((‖W‖ : ℝ) : ℂ) * (W / (‖W‖ : ℂ)) := by
+      rw [mul_comm, div_mul_cancel₀ _ hWn]
+    have hdef := tsum_alignment_defect c hcsum hnsum hunit hsplit
+    rw [hdef, htsum_norm, hWnorm]
+    ring
 
 
 end GaloisForLFunctions.HTGeometry

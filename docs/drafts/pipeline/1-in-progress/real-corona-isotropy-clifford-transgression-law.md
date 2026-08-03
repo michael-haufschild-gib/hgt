@@ -340,3 +340,35 @@ stabilization or a different Dirac parity.
   restricted-product local compactness, install Borel and additive Haar measure, prove the
   rational diagonal product formula for Haar scaling, then define `ε₁`, its trace law, and `ε₁ⁿ`.
   Replacing this with zero, evaluation at zero, or an assumed functional is explicitly forbidden.
+- 2026-08-03 — Frozen `ε₁` infrastructure gap is now closed exactly. Lean constructs local and
+  restricted-product `T2` instances, proves the exact local quotient
+  `ℤ_p / nℤ_p ≃+ ZMod (p^v_p(n))`, assembles the global integral-finite-adele index `n`, and derives
+  normalized Haar mass `μ(nẐ)=n⁻¹`. `CCMRationalFiniteAdeleHaarCharacter.lean` then proves from
+  numerator/denominator arithmetic—not an assumed product formula—that finite-adelic scaling has
+  modulus `|q|_∞⁻¹`. `CCMRationalAdelicEpsilonOne.lean` tensors this Haar integral with Lebesgue
+  integration, proves exact rational-scaling cancellation, constructs the genuine identity-
+  coefficient trace and normalized unitized `ε₁`. `CCMRationalAdelicEpsilonOneCyclic.lean`
+  promotes it to every cyclic degree and instantiates the exact reduced source
+  `ker ε₀ⁿ ∩ ker ε₁ⁿ`. All modules compile without `sorry`, `axiom`, `opaque`, or `unsafe`.
+- 2026-08-03 — Exact CCM Morita restriction infrastructure is no longer a placeholder.
+  `CCMRationalAdelicMoritaMonomial.lean` proves orbit evaluation is multiplicative, inverse adelic
+  scaling is inverse rational-orbit translation, twisted monomial multiplication is weighted-
+  shift composition, and operator trace is supported exactly on the identity scaling sector.
+  `CCMRationalAdelicMoritaRepresentation.lean` extends this to the full finite-support crossed
+  product as a multiplicative linear representation and proves every image trace class.
+  `CCMRationalMoritaTraceClassAlgebra.lean` constructs the actual nonunital trace-class operator
+  algebra, its minimal unitization, normalized trace, unitized source homomorphism, and all-degree
+  fixed-base cyclic trace morphism; the infinite-dimensional identity is never falsely declared
+  trace class. `CCMRationalAdelicMoritaTraceFormula.lean` proves on every full source element that
+  operator trace equals the rational-orbit sum of the identity-scaling coefficient.
+- 2026-08-03 — Higher independent-variable CCM formula is now formal rather than aspirational.
+  Scaling labels were corrected from a transported `Group` to their canonical `CommGroup`,
+  retaining the actual commutativity of `ℚˣ`. `CCMRationalAdelicCyclicRestrictionFormula.lean`
+  defines the primary-source formula
+  `1_{∏k_j=1} Σ_{q∈ℚˣ} ∏_j t_j((∏_{i<j}k_i)⁻¹ q b_j)` on independent nonzero adelic Morita bases
+  and proves absolute convergence using one `ℓ¹` orbit factor and exact uniform bounds on every
+  tail factor. `CCMRationalAdelicCyclicRestrictionLinear.lean` proves multilinearity and uses
+  mathlib's tensor-of-Finsupp equivalence to extend the formula canonically to the full algebraic
+  nonunital cyclic-chain degree. Remaining P2 gate is the normalized unitized mixed-sector
+  extension, proof of all face/degeneracy/rotation naturality identities, strong-Schwartz target
+  completion and closed-range cokernel, then the concrete `κ`/bivariant-Chern/Lefschetz comparison.

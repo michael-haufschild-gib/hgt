@@ -1077,6 +1077,41 @@ theorem globalPuiseuxPolynomial_isElementary {n : ℕ}
 def HasHighestDifferenceExponent (left right : ℚ →₀ ℂ) (e : ℚ) : Prop :=
   left e ≠ right e ∧ ∀ q : ℚ, e < q → left q = right q
 
+/-- Coordinate-free arithmetic meaning of a highest Puiseux difference: its exponent and the two
+ramifications recover the edge by exactly one of the high, mandatory, or lower formulas. -/
+def HighestDifferenceRealizesEdge (r s edge : ℕ) (e : ℚ) : Prop :=
+  (∃ k : ℕ, 0 < k ∧ e = (k + 1 : ℕ) ∧ edge = r * s * k) ∨
+    (∃ q : ℕ, 0 < q ∧ e = 1 + 1 / (q : ℚ) ∧ edge * q = r * s) ∨
+    ∃ q b : ℕ, 0 < q ∧ b < q ∧ r = q ∧ s = q ∧
+      e = (b + 1 : ℕ) / (q : ℚ) ∧ edge = b
+
+theorem stageRealizesEdge_gives_highestDifferenceRelation {n : ℕ}
+    (g : ElementaryDecoratedGraph n) (i j : Fin n) (stage : g.MonomialStage)
+    (hstage : g.StageRealizesEdge i j stage) :
+    HighestDifferenceRealizesEdge (g.ramification i) (g.ramification j)
+      (g.edge i j) stage.exponent := by
+  rcases stage with high | (mandatory | lower)
+  · left
+    refine ⟨high.val + 1, by omega, ?_, ?_⟩
+    · simp only [MonomialStage.exponent]
+    · exact hstage
+  · right
+    left
+    have hq : 0 < mandatory.val := by
+      have hi := g.ramification_pos i
+      have hj := g.ramification_pos j
+      by_contra h
+      have hzero : mandatory.val = 0 := Nat.eq_zero_of_not_pos h
+      have hprod : g.ramification i * g.ramification j ≠ 0 :=
+        Nat.mul_ne_zero (Nat.ne_of_gt hi) (Nat.ne_of_gt hj)
+      apply hprod
+      simpa [hzero] using hstage.symm
+    exact ⟨mandatory.val, hq, rfl, hstage⟩
+  · right
+    right
+    exact ⟨lower.fst.val, lower.snd.val, Nat.zero_lt_of_lt lower.snd.isLt,
+      lower.snd.isLt, hstage.1, hstage.2.1, rfl, hstage.2.2⟩
+
 theorem uncancelledStage_gives_highestDifferenceExponent
     {n : ℕ} (g : ElementaryDecoratedGraph n)
     (hacute : g.HasAcuteIsoscelesRescaling) {i j : Fin n}
@@ -1140,17 +1175,18 @@ all coincident rational exponents are collected. -/
 theorem fissionEncoding_globalPuiseux_realizes_all_pairs
     {n : ℕ} {g : ElementaryDecoratedGraph n}
     (encoding : ElementaryFissionEncoding g) {i j : Fin n} (hij : i ≠ j) :
-    ∃ stage : g.MonomialStage,
+    ∃ e : ℚ,
       HasHighestDifferenceExponent
           (g.globalPuiseuxPolynomial encoding.acuteIsosceles i)
-          (g.globalPuiseuxPolynomial encoding.acuteIsosceles j) stage.exponent ∧
-        g.StageRealizesEdge i j stage := by
+          (g.globalPuiseuxPolynomial encoding.acuteIsosceles j) e ∧
+        HighestDifferenceRealizesEdge (g.ramification i) (g.ramification j)
+          (g.edge i j) e := by
   obtain ⟨stage, hstage, hedge⟩ :=
     g.pairPresentation_hasUncancelledHighestDifferenceStage_indexed
       encoding.acuteIsosceles hij (encoding.pairPresentation i j hij)
-  exact ⟨stage,
+  exact ⟨stage.exponent,
     g.uncancelledStage_gives_highestDifferenceExponent encoding.acuteIsosceles hstage,
-    hedge⟩
+    g.stageRealizesEdge_gives_highestDifferenceRelation i j stage hedge⟩
 
 /-- Certificate form: every recognized graph has a simultaneous coefficient-level realization. -/
 theorem globalPuiseux_realization_of_certificate
@@ -1159,10 +1195,11 @@ theorem globalPuiseux_realization_of_certificate
     ∃ polynomials : Fin n → (ℚ →₀ ℂ),
       (∀ i, IsElementaryPuiseuxPolynomialOfRamification
           (g.ramification i) (polynomials i)) ∧
-        ∀ i j, i ≠ j → ∃ stage : g.MonomialStage,
+        ∀ i j, i ≠ j → ∃ e : ℚ,
           HasHighestDifferenceExponent
-              (polynomials i) (polynomials j) stage.exponent ∧
-            g.StageRealizesEdge i j stage := by
+              (polynomials i) (polynomials j) e ∧
+            HighestDifferenceRealizesEdge (g.ramification i) (g.ramification j)
+              (g.edge i j) e := by
   let encoding := g.fissionEncodingOfCertificate certificate
   exact ⟨g.globalPuiseuxPolynomial encoding.acuteIsosceles,
     fun i => g.globalPuiseuxPolynomial_isElementary encoding.acuteIsosceles i,

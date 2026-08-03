@@ -548,7 +548,14 @@ sq_im_conj_mul_le                         -- transverse component squared <= 2||
 norm_sub_re_mul_eq, norm_sub_re_mul_sq_le -- and the same in geometric form
 sum_weighted_sqrt_sq_le                   -- Cauchy--Schwarz against square roots
 norm_weighted_sum_sub_le                  -- the weighted sum, minus a real multiple of u
+exists_unit_tsum_normalised_alignment_defect -- total misalignment = (S(r) - |f(z)|) / mu(r)
 ```
+
+The bridge is now explicit: the total misalignment of the normalised coefficients equals
+`(S(r) - |f(z)|) / mu(r)`.  Every quantity on the right is already controlled -- `S(r)` by
+`coeffSum_le_maxTerm_mul_centralIndex`, and `|f(z)|` from below by `mu(r)` at a maximum-modulus
+point -- so the defect is bounded by the central index, and the alignment machinery converts that
+into the transverse bound the estimate needs.
 
 The alignment is *quadratic*: a term whose misalignment is `d` sits within `sqrt(2||c|| d)` of a
 nonnegative multiple of the direction of the sum.  That square root is where the gain over the
@@ -961,3 +968,11 @@ triangularity package, which is exactly how the paper proof uses them.
   expansion, now available as three general lemmas with no analytic hypotheses.  With
   `TriangleInequalityDefect.lean` complete, the remaining work on this branch is arithmetic: choose
   the window and the radius so that the total defect at a maximum-modulus point is small enough.
+- 2026-08-03 -- Joined the two toolkits.  Applying the alignment identity to the normalised
+  coefficients `c_n = a_n z^n / (a_nu z^nu)` gives
+  `sum_n ( ||c_n|| - Re(conj(u) c_n) ) = (S(r) - |f(z)|) / mu(r)`, with `u` the unit in the direction
+  of `f(z)`: the total misalignment of the phases is exactly the gap between the majorant and the
+  actual value, in units of the maximum term.  That is the quantity the whole local-expansion branch
+  was built to produce, and both of its ingredients are already bounded -- `S(r) <= mu(r)(nu(s)+C)`
+  from the coefficient side, and `|f(z)| >= mu(r)` at a maximum-modulus point.  The remaining work is
+  to combine this with the weighted aggregation and pick the window.

@@ -1805,3 +1805,77 @@ and no interval of the line can contain both while keeping the family separated.
 
 The route's large-sieve input is therefore complete at the classical strength, in both the
 inner-product, exponential-sum, and arithmetic formulations.
+
+### Formal layer — the sharp sieve indexed by fractions
+
+`formal/GaloisForLFunctions/RHTower/Sieve/FareySharpSet.lean`:
+
+- `properFarey_val_injOn` — distinct proper Farey fractions have distinct values (immediate from the
+  separation, since a zero circle distance would contradict it).
+- `sum_properFareyReals_eq` — the sum over values equals the sum over fractions.
+- `largeSieve_set_properFarey` — **`∑_{1 ≤ a < q ≤ Q, (a,q)=1} |∑_{n ∈ A} e(na/q)|² ≤
+  (Q² + 4πN)|A|`** for `A ⊆ [0,N)`.
+
+Unconditional. `largeSieve_farey_sharp` is indexed by the *values* of the fractions, but a sieve
+application presents them as pairs `(a,q)`; the two indexings agree because the values are distinct.
+Specialising to an indicator gives the sharp bound in exactly the shape `MontgomerySieve.lean`
+consumes.
+
+For a prime denominator `p`, the proper fractions are `a/p` with `1 ≤ a < p` — precisely the nonzero
+residues, which is what `fareySet_fibre_prime` already produces. So Montgomery's sieve inequality can
+be re-derived with the constant `N + Q²` in place of `N + Q²(1 + log(Q²/2+1))` with no change to its
+combinatorial half.
+
+### Formal layer — Montgomery's sieve with the sharp constant
+
+`formal/GaloisForLFunctions/RHTower/Sieve/MontgomerySharp.lean`:
+
+- `properFareySet_fibre_prime` — at a prime denominator the Farey fibre is *already* proper, since a
+  numerator coprime to a prime and at most it is strictly less than it.
+- `montgomery_sieve_sharp` — **`|A| ∑_{p ∈ P} (p − c_p)/c_p ≤ Q² + 4πN`**.
+
+Unconditional. This is the classical `N + Q²` in place of the earlier `N + Q²(1 + log(Q²/2+1))`. The
+combinatorial half of the argument is unchanged: restricting to proper fractions costs nothing at
+prime moduli, which is exactly what `properFareySet_fibre_prime` establishes, so only the analytic
+input was swapped.
+
+Both versions remain in the corpus. `montgomery_sieve` applies to any family of primes with the
+weaker constant and no lower bound on `Q`; `montgomery_sieve_sharp` needs `Q ≥ 2` and `N ≥ 1` and
+gives the classical constant.
+
+### Formal layer — the sieve bound at the classical constant
+
+`formal/GaloisForLFunctions/RHTower/Sieve/SieveBoundSharp.lean`:
+
+- `card_mul_omitted_le_sharp` — **`|A| ∑_{p ∈ P} w_p/(p − w_p) ≤ Q² + 4πN`**.
+- `card_le_of_sieve_sharp` — **`|A| ≤ (Q² + 4πN)/L`**.
+- `card_le_of_half_omitted_sharp` — **`|A| ≤ 3(Q² + 4πN)/|P|`** for a set missing at least half the
+  classes modulo each prime of `P`.
+
+All unconditional. Only the analytic input differs from the logarithmic versions; `deficiency_ge`
+and the `1/3` of `third_le_ratio` are reused unchanged, so the two families of statements share their
+combinatorial content and differ exactly in the large sieve they invoke.
+
+The sieve layer is therefore complete at classical strength in every formulation the route uses:
+inner-product, exponential-sum, arithmetic (Farey), Montgomery's inequality, and the usable
+cardinality bounds.
+
+### Formal layer — Dirichlet polynomials and their derivatives
+
+`formal/GaloisForLFunctions/RHTower/Sieve/DirichletPoly.lean`:
+
+- `dirPoly`, `dirDerivCoeff` — `F(t) = ∑_{n<N} a_n n^{it}` and the coefficients of its derivative.
+- `hasDerivAt_exp_phase`, `continuous_dirPoly`, `hasDerivAt_dirPoly` — **the derivative of a
+  Dirichlet polynomial is again one**, with coefficients multiplied by `i log n`.
+- `hasDerivAt_normSq_dirPoly`, `abs_deriv_normSq_dirPoly_le` — `(|F|²)' = ⟪F,F'⟫ + ⟪F',F⟫` and
+  `|(|F|²)'| ≤ 2‖F‖‖F'‖`.
+
+All unconditional. These are the inputs Gallagher's Sobolev bound needs to control `F` at separated
+points by integrals over an interval, which is the first step of every large-values argument for
+Dirichlet polynomials.
+
+One structural difference from the trigonometric case, recorded so it is not assumed away: there is
+no Parseval for Dirichlet polynomials on a finite interval. `∫_0^T |F|²` is *not* `T ∑_n |a_n|²` — the
+error term is exactly the Montgomery–Vaughan mean value theorem, whose sharp form needs the Hilbert
+inequality this folder does not own. So the reduction to the integrals is what this layer supplies;
+their evaluation is a separate obligation and is not smuggled in.

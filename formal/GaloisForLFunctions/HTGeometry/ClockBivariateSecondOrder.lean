@@ -45,6 +45,24 @@ structure IsC1On (u A B : ℝ → ℝ → ℝ) (Ω : Set (ℝ × ℝ)) : Prop wh
 
 variable {u A B : ℝ → ℝ → ℝ} {Ω : Set (ℝ × ℝ)} {x : Fin (1 + 1) → ℝ}
 
+/-- **A continuously differentiable bivariate function is differentiable as a function on the
+plane.** -/
+theorem hasFDerivAt_uncurry_isC1On (h : IsC1On u A B Ω) {p : ℝ × ℝ} (hp : p ∈ Ω) :
+    HasFDerivAt (Function.uncurry u)
+      ((toCLM (A p.1 p.2)).coprod (toCLM (B p.1 p.2))) p := by
+  have dA' : ∀ᶠ v in nhds p,
+      HasFDerivAt (fun z => u z v.2) (Function.uncurry (fun s t => toCLM (A s t)) v) v.1 :=
+    Filter.eventually_of_mem (h.isOpen.mem_nhds hp) fun v hv => (h.hasDerivFst v hv).hasFDerivAt
+  have dB' : ∀ᶠ v in nhds p,
+      HasFDerivAt (fun z => u v.1 z) (Function.uncurry (fun s t => toCLM (B s t)) v) v.2 :=
+    Filter.eventually_of_mem (h.isOpen.mem_nhds hp) fun v hv => (h.hasDerivSnd v hv).hasFDerivAt
+  have cA' : ContinuousAt (Function.uncurry fun s t => toCLM (A s t)) p :=
+    continuous_toCLM.continuousAt.comp h.contFst.continuousAt
+  have cB' : ContinuousAt (Function.uncurry fun s t => toCLM (B s t)) p :=
+    continuous_toCLM.continuousAt.comp h.contSnd.continuousAt
+  exact (hasStrictFDerivAt_uncurry_coprod (f := u) (f₁ := fun s t => toCLM (A s t))
+    (f₂ := fun s t => toCLM (B s t)) dA' dB' cA' cB').hasFDerivAt
+
 /-- **A continuously differentiable bivariate function is a differentiable chart function.** -/
 theorem hasFDerivAt_chartFun (h : IsC1On u A B Ω) (hx : x ∈ chartBox Ω) :
     HasFDerivAt (chartFun u)

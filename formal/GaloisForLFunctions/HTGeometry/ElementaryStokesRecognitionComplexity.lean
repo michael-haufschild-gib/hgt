@@ -95,10 +95,11 @@ theorem globalPuiseux_reconstruction_of_all_queries {n : ℕ}
     ∃ polynomials : Fin n → (ℚ →₀ ℂ),
       (∀ i, IsElementaryPuiseuxPolynomialOfRamification
           (g.ramification i) (polynomials i)) ∧
-        ∀ i j, i ≠ j → ∃ stage : g.MonomialStage,
+        ∀ i j, i ≠ j → ∃ e : ℚ,
           HasHighestDifferenceExponent
-              (polynomials i) (polynomials j) stage.exponent ∧
-            g.StageRealizesEdge i j stage := by
+              (polynomials i) (polynomials j) e ∧
+            HighestDifferenceRealizesEdge (g.ramification i) (g.ramification j)
+              (g.edge i j) e := by
   exact g.globalPuiseux_realization_of_certificate
     ((g.all_recognitionQueries_iff_certificate).mp hqueries)
 

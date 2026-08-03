@@ -167,7 +167,8 @@
   `GaloisForLFunctions.RHTower.DeningerDualVanishing` (a space vanishes when its dual does),
   `GaloisForLFunctions.RHTower.DeningerFinsuppDual` (the dual of finitely supported functions),
   `GaloisForLFunctions.RHTower.DeningerCochainDual` (the cochain differential is dual to the chain
-  differential)
+  differential),
+  `GaloisForLFunctions.RHTower.DeningerExactDual` (dualizing preserves exactness)
 
 ## Statement
 
@@ -2636,3 +2637,15 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   differential.  What remains for the transfer is the homological algebra step — that over a field
   the homology of the dual complex is the dual of the homology — after which every homological result
   in this folder carries over to the cohomology the packet's clause is stated in.
+- 2026-08-03 — **Dualizing preserves exactness in the middle** (`deningerExact_dualMap`), over a
+  field: a functional killing the image factors through the quotient by the kernel, which is the
+  image of the second map, and extends along a complement of that image.  This is the homological
+  algebra the transfer needed.  All three ingredients of the duality route are now proved — the
+  degreewise identification, the identification of the differentials, and the exactness of the dual —
+  so the passage from the homological results of this session to the cohomology the packet's clause
+  is stated in is a matter of assembling them at the level of the complexes.
+- 2026-08-03 — `deningerCochain_d_dual_map`: the identification of the differentials as a commuting
+  square of linear maps, which is the form the assembly consumes.  The duality route now has all four
+  of its interfaces proved — degreewise identification, commuting square, exactness of the dual, and
+  the vanishing of a space with vanishing dual — and what is left is the bookkeeping of assembling
+  them across the two complexes, whose index conventions run in opposite directions.

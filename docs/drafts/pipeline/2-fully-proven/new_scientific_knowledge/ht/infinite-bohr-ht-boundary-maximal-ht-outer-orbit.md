@@ -2088,3 +2088,47 @@ of the inverse Möbius map, which is what makes the branch inverse defined on a 
 Remaining: steps 4--6 -- the parameter derivative of the discrete mass jets, the instantiation of
 `compactConfigurationAvoidance_dense_of_finiteRegularStratification` with `P` = finitely many masses
 and `H` = the shift tuples, and the descent through `eq_zero_of_relation_of_rigid_jets`.
+
+## Lean progress: joint smoothness in (masses, shifts), and the probe design
+
+`ShiftedMassJetSmoothness.lean` (wired, axiom-clean) gives step 4's analytic half:
+
+    contDiff_shiftedMassJetPacket :
+      ContDiff R top (fun p : (Fin K -> R) x (Fin r -> R) =>
+        discreteJetPacket (combinedNodes z p.2) ord x (perturbedWeight a p.1 w))
+
+Two facts make it work.  `discreteJetPacket_perturbedWeight_sub` splits the packet affinely along
+the mass columns, so the dependence is one fixed analytic term at a translated node plus finitely
+many explicit rational terms; and a *real* translation never moves a node onto the real axis, so the
+smoothness is global in the shift tuple -- no domain restriction is needed.  The analytic half used
+`analyticOnNhd_iteratedDeriv` (already corpus-owned, in `UpperEndPrimeLogJets`).
+
+### The probe: why the parameter must be coordinate-wise, and what supplies it
+
+The engine wants the parameter derivative surjective at **every** parameter point, not just at the
+base point.  Two consequences fix the design:
+
+- The mass parametrization must keep the masses positive for every parameter value, otherwise the
+  zeroth jets can leave the closed upper half plane and the Cayley chart's polar locus is hit, so
+  `F` is not globally smooth.  Exponential (or any positive) rescaling does this.
+- The derivative must have parameter-independent image.  For a coordinate-wise rescaling the
+  derivative is a *positive diagonal* times the mass columns, so its image is the span of the
+  columns at every parameter value.  This is why the probe must be a finite set of **atoms**, not an
+  arbitrary finitely generated subspace of the bounded-parameter space.
+
+The remaining obstacle is that one fixed finite atom set must span at *every* shift in a compact
+patch.  The corpus already owns the abstract solution:
+
+    CompactUniformFiniteProbe.exists_local_finiteProbe_of_continuous_surjectiveControl
+    CompactUniformFiniteProbe.compact_surjectiveControls_have_uniform_finiteProbe
+
+-- a continuous family of surjective controls into a fixed finite-dimensional target admits one
+finitely generated probe that stays surjective over the whole compact patch, by a determinant
+neighbourhood plus a finite subcover.  Instantiated with the domain `Fin m -> R` of finitely many
+atom coefficients, it yields exactly the uniform finite atom set.  This is the same device the
+corpus uses in `CompactNevanlinnaUniformProbe` for the Nevanlinna carrier.
+
+Next: the uniform spanning atom family, then `hparameter`, then the instantiation of
+`compactConfigurationAvoidance_dense_of_finiteRegularStratification` with `P` = the atom
+coefficients, `H` = the shift tuples, `bad` = the rank-defect locus (stratified with real
+codimension `2*(rows - cols - q + 1)`, so `hdim` is arranged by taking enough evaluation rows).

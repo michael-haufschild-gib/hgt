@@ -9,6 +9,7 @@ functions with all functions.  Both are the same alternating sum, one acting on 
 precomposing with them.
 
 * `deningerCochain_d_dual` : the identification of the differentials.
+* `deningerCochain_d_dual_map` : the same, as a commuting square of linear maps.
 -/
 
 namespace RHTower
@@ -34,5 +35,15 @@ theorem deningerCochain_d_dual (k G : Type u) [Field k] [Group G] (n : ℕ)
   rw [show (Finsupp.single (Fin.contractNth j (· * ·) g) ((-1 : k) ^ ((j : ℕ) + 1))) =
       ((-1 : k) ^ ((j : ℕ) + 1)) • Finsupp.single (Fin.contractNth j (· * ·) g) (1 : k) by
     rw [Finsupp.smul_single, smul_eq_mul, mul_one], map_smul, smul_eq_mul]
+
+/-- **The commuting square** identifying the cochain differential with the dual of the chain
+differential. -/
+theorem deningerCochain_d_dual_map (k G : Type u) [Field k] [Group G] (n : ℕ) :
+    (deningerFinsuppDual k (Fin (n + 1) → G)).toLinearMap ∘ₗ
+        (groupHomology.inhomogeneousChains.d (Rep.trivial k G k) n).hom.dualMap =
+      (inhomogeneousCochains.d (Rep.trivial k G k) n).hom ∘ₗ
+        (deningerFinsuppDual k (Fin n → G)).toLinearMap := by
+  refine LinearMap.ext (fun f => funext (fun g => ?_))
+  exact deningerCochain_d_dual k G n f g
 
 end RHTower
