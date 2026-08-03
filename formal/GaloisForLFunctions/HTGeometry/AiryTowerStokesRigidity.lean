@@ -57,6 +57,16 @@ def IsAiryTower {R beta : ℕ} : Characteristic R beta → Prop
   | .terminal .. => beta = R + 1
   | .step (E := E) _ _ _ _ _ tail => beta = R + E ∧ tail.IsAiryTower
 
+/-- Hiroe's negative Fourier congruence at every characteristic step. -/
+def SatisfiesNegativeFourier {R beta : ℕ} : Characteristic R beta → Prop
+  | .terminal .. => beta ∣ R + 1
+  | .step (E := E) _ _ _ _ _ tail => beta ∣ R + E ∧ tail.SatisfiesNegativeFourier
+
+/-- Size branch selecting the all-negative Fourier reduction. -/
+def HasLargeFourierSteps {R beta : ℕ} : Characteristic R beta → Prop
+  | .terminal .. => R < beta
+  | .step _ _ _ _ _ tail => R < beta ∧ tail.HasLargeFourierSteps
+
 @[simp] theorem nextRamification_terminal {R beta : ℕ} (hR : 1 < R) (hbeta : 0 < beta)
     (hgcd : Nat.gcd R beta = 1) :
     (Characteristic.terminal hR hbeta hgcd).nextRamification = 1 := rfl
@@ -317,6 +327,63 @@ theorem weightedIrregularity_eq_diagonal_iff_isAiryTower {R beta : ℕ}
       push_cast [Nat.cast_sub hR2]
       nlinarith
     exact_mod_cast hcast
+
+/-- Every Airy tower lies on Hiroe's negative Fourier branch. -/
+theorem satisfiesNegativeFourier_of_isAiryTower {R beta : ℕ} (c : Characteristic R beta)
+    (hAiry : c.IsAiryTower) : c.SatisfiesNegativeFourier := by
+  induction c with
+  | terminal => simp only [IsAiryTower, SatisfiesNegativeFourier] at hAiry ⊢; simp [hAiry]
+  | step hER hE hbeta hgcd hgamma tail ih =>
+      exact ⟨by simp [hAiry.1], ih hAiry.2⟩
+
+/-- Every Airy tower has first exponent strictly above the current ramification at every step. -/
+theorem hasLargeFourierSteps_of_isAiryTower {R beta : ℕ} (c : Characteristic R beta)
+    (hAiry : c.IsAiryTower) : c.HasLargeFourierSteps := by
+  induction c with
+  | terminal => simp only [IsAiryTower, HasLargeFourierSteps] at hAiry ⊢; omega
+  | step hER hE hbeta hgcd hgamma tail ih =>
+      exact ⟨by rw [hAiry.1]; omega, ih hAiry.2⟩
+
+/-- A positive multiple of `beta` strictly between `beta` and `2 beta` equals `beta`. -/
+private theorem eq_of_dvd_of_lt_twice {beta n : ℕ} (hbeta : 0 < beta)
+    (hdvd : beta ∣ n) (hle : beta ≤ n) (hlt : n < 2 * beta) : n = beta := by
+  obtain ⟨k, rfl⟩ := hdvd
+  have hkpos : 0 < k := by nlinarith
+  have hkle : k < 2 := by nlinarith
+  have hk : k = 1 := by omega
+  simp [hk]
+
+/-- Converse Fourier criterion.  Negative congruence plus the large-step branch forces the exact
+Airy equality at every level. -/
+theorem isAiryTower_of_negativeFourier_of_largeSteps {R beta : ℕ}
+    (c : Characteristic R beta) (hFourier : c.SatisfiesNegativeFourier)
+    (hLarge : c.HasLargeFourierSteps) : c.IsAiryTower := by
+  induction c with
+  | @terminal R beta hR hbeta hgcd =>
+      simp only [SatisfiesNegativeFourier] at hFourier
+      simp only [HasLargeFourierSteps] at hLarge
+      simp only [IsAiryTower]
+      have hle : beta ≤ R + 1 := Nat.le_of_dvd (by omega) hFourier
+      symm
+      apply eq_of_dvd_of_lt_twice hbeta hFourier hle (by omega)
+  | @step R E beta gamma hER hE hbeta hgcd hgamma tail ih =>
+      rcases hFourier with ⟨hdiv, htailFourier⟩
+      rcases hLarge with ⟨hlarge, htailLarge⟩
+      refine ⟨?_, ih htailFourier htailLarge⟩
+      have hle : beta ≤ R + E := Nat.le_of_dvd (by omega) hdiv
+      symm
+      apply eq_of_dvd_of_lt_twice hbeta hdiv hle (by omega)
+
+/-- Exact Fourier characterization of Airy towers. -/
+theorem isAiryTower_iff_negativeFourier_and_largeSteps {R beta : ℕ}
+    (c : Characteristic R beta) :
+    c.IsAiryTower ↔ c.SatisfiesNegativeFourier ∧ c.HasLargeFourierSteps := by
+  constructor
+  · intro h
+    exact ⟨c.satisfiesNegativeFourier_of_isAiryTower h,
+      c.hasLargeFourierSteps_of_isAiryTower h⟩
+  · rintro ⟨hFourier, hLarge⟩
+    exact c.isAiryTower_of_negativeFourier_of_largeSteps hFourier hLarge
 
 end Characteristic
 

@@ -1391,6 +1391,7 @@ import GaloisForLFunctions.RHTower.DeningerPushoutNormal
 import GaloisForLFunctions.RHTower.DeningerPushoutRoot
 import GaloisForLFunctions.RHTower.DeningerPushoutMetric
 import GaloisForLFunctions.RHTower.DeningerPushoutOrder
+import GaloisForLFunctions.RHTower.DeningerCycLenEq
 import GaloisForLFunctions.RHTower.DeningerUnitaryFlowRieszPurity
 import GaloisForLFunctions.RHTower.DeningerUnitaryHarmonicAction
 import GaloisForLFunctions.RHTower.DeningerWeightOnePolarization

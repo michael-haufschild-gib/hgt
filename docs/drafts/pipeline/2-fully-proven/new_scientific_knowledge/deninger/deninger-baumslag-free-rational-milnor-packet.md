@@ -70,7 +70,9 @@
   `GaloisForLFunctions.RHTower.DeningerPushoutRoot` (equal powers of cyclically reduced elements),
   `GaloisForLFunctions.RHTower.DeningerPushoutMetric` (subadditivity of the word length),
   `GaloisForLFunctions.RHTower.DeningerPushoutOrder` (cyclically reduced elements have infinite
-  order)
+  order),
+  `GaloisForLFunctions.RHTower.DeningerCycLenEq` (equal powers have cyclic reductions of equal
+  length)
 
 ## Statement
 
@@ -796,9 +798,19 @@ come out of the decomposition directly.
 - `deningerZpow_injective_cycRed` — **all its integer powers are distinct**;
 - `deningerZpow_injective_conj` — the same for any conjugate of such an element.
 
-The last is the shape the endgame needs: once the centralizer of such an element is known to be
-infinite cyclic, `xⁿ = yⁿ` inside it reads `tᵃⁿ = tᵇⁿ`, and distinctness of the powers gives
-`a = b`.
+**The endgame does not need the centralizer theorem.**  mathlib's own proof that free groups are
+`IsMulTorsionFree` uses a different and entirely elementary device: from `xⁿ = yⁿ` one also has
+`x^{2n} = y^{2n}`, and comparing the reduced words of the two powers pins down both the cyclic
+reductions and the conjugators.  The same device works here, and its first half is now proved.
+
+`DeningerCycLenEq.lean`:
+
+- `deningerConj_zpow` — conjugation commutes with powers;
+- `deningerLen_pow_conj_bounds` — the word length of `xᵐ` differs from `m` times the length of the
+  cyclic reduction by at most twice the length of the conjugator;
+- `deningerCycLen_eq` — **equal `n`-th powers force cyclic reductions of the same length.**  Since
+  `xⁿ = yⁿ` gives `x^{kn} = y^{kn}` for every `k`, a difference in the two lengths would be
+  amplified without bound, while the conjugators only ever contribute a fixed amount.
 
 Step 1 still needs Baumslag's inductive step (root adjunction preserves unique roots), which rests
 on the same normal-form machinery.
@@ -1248,3 +1260,12 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   centralize it, so once the centralizer of an element not conjugate into a factor is known to be
   infinite cyclic, the equation reads `tᵃⁿ = tᵇⁿ` and distinctness of powers finishes it.  The
   centralizer theorem is the next target.
+- 2026-08-03 — Found that the endgame needs no centralizer theorem, which removes what looked like
+  the hardest remaining obstruction.  mathlib's own proof that free groups are `IsMulTorsionFree`
+  uses an elementary device instead: from `xⁿ = yⁿ` one also has `x^{2n} = y^{2n}`, and comparing
+  the reduced words of two different powers pins down the cyclic reductions and the conjugators
+  together.  The first half is now proved here: equal `n`-th powers force cyclic reductions of the
+  same length, because `xⁿ = yⁿ` gives `x^{kn} = y^{kn}` for every `k`, so a difference in lengths
+  would be amplified without bound while the conjugators contribute a fixed amount.  What remains is
+  the word comparison itself, for which the cyclic reduction has to be strengthened to produce the
+  conjugator as a word that does not cancel against the cyclically reduced part.

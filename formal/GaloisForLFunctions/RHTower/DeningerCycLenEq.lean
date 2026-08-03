@@ -18,6 +18,7 @@ variable {ι : Type*} {G : ι → Type*} {H : Type*} [∀ i, Group (G i)] [Group
   {φ : ∀ i, H →* G i} {d : NormalWord.Transversal φ}
   [DecidableEq ι] [∀ i, DecidableEq (G i)]
 
+omit [DecidableEq ι] [∀ i, DecidableEq (G i)] in
 theorem deningerConj_zpow (c g : PushoutI φ) (k : ℕ) :
     c⁻¹ * g ^ k * c = (c⁻¹ * g * c) ^ k := by
   have hmap := map_pow (MulAut.conj c⁻¹) g k
