@@ -76,10 +76,10 @@ theorem deningerConj_letter_word (U : List (Σ i, G i)) (hlen2 : 2 ≤ U.length)
         (rest ++ [(⟨q.1, (x : G q.1)⁻¹⟩ : Σ i, G i)]), ?_, ?_, ?_, ?_, ?_, ?_⟩
       · rw [hU, deningerLetterProd_cons, deningerLetterProd_cons, deningerLetterProd_append,
           deningerLetterProd_cons, deningerLetterProd_nil, mul_one]
-        show PushoutI.of (φ := φ) q.1 (x * q.2) * (deningerLetterProd (φ := φ) rest *
-            PushoutI.of (φ := φ) q.1 (x : G q.1)⁻¹) =
-          PushoutI.of (φ := φ) q.1 x * (PushoutI.of (φ := φ) q.1 q.2 *
-            deningerLetterProd (φ := φ) rest) * (PushoutI.of (φ := φ) q.1 x)⁻¹
+        show PushoutI.of (φ := φ) q.1 x * (PushoutI.of (φ := φ) q.1 q.2 *
+            deningerLetterProd (φ := φ) rest) * (PushoutI.of (φ := φ) q.1 x)⁻¹ =
+          PushoutI.of (φ := φ) q.1 (x * q.2) * (deningerLetterProd (φ := φ) rest *
+            PushoutI.of (φ := φ) q.1 (x : G q.1)⁻¹)
         rw [map_mul, map_inv]
         group
       · intro r hr
@@ -108,9 +108,12 @@ theorem deningerConj_letter_word (U : List (Σ i, G i)) (hlen2 : 2 ≤ U.length)
         subst hr
         rfl
       · intro r hr
-        rw [List.getLast?_cons_of_ne_nil (by simp), List.getLast?_append] at hr
-        simp only [List.getLast?_cons_nil, Option.some_or, Option.mem_def,
-          Option.some.injEq] at hr
+        have hgl : ((⟨q.1, x * q.2⟩ : Σ i, G i) ::
+            (rest ++ [(⟨q.1, (x : G q.1)⁻¹⟩ : Σ i, G i)])).getLast? =
+            some (⟨q.1, (x : G q.1)⁻¹⟩ : Σ i, G i) := by
+          rw [List.getLast?_cons_of_ne_nil (by simp), List.getLast?_append]
+          simp
+        rw [hgl, Option.mem_def, Option.some.injEq] at hr
         subst hr
         rfl
   · by_cases hip : p.1 = i
@@ -133,9 +136,9 @@ theorem deningerConj_letter_word (U : List (Σ i, G i)) (hlen2 : 2 ≤ U.length)
         · rw [hUp, deningerLetterProd_cons, deningerLetterProd_append, deningerLetterProd_snoc,
             deningerLetterProd_cons, deningerLetterProd_nil, mul_one]
           show PushoutI.of (φ := φ) p.1 x * (deningerLetterProd (φ := φ) U₀ *
-              PushoutI.of (φ := φ) p.1 (p.2 * (x : G p.1)⁻¹)) =
+              PushoutI.of (φ := φ) p.1 p.2) * (PushoutI.of (φ := φ) p.1 x)⁻¹ =
             PushoutI.of (φ := φ) p.1 x * (deningerLetterProd (φ := φ) U₀ *
-              PushoutI.of (φ := φ) p.1 p.2) * (PushoutI.of (φ := φ) p.1 x)⁻¹
+              PushoutI.of (φ := φ) p.1 (p.2 * (x : G p.1)⁻¹))
           rw [map_mul, map_inv]
           group
         · intro r hr
@@ -162,17 +165,23 @@ theorem deningerConj_letter_word (U : List (Σ i, G i)) (hlen2 : 2 ≤ U.length)
           subst hr
           rfl
         · intro r hr
-          rw [List.getLast?_cons_of_ne_nil (by simp), List.getLast?_append] at hr
-          simp only [List.getLast?_cons_nil, Option.some_or, Option.mem_def,
-            Option.some.injEq] at hr
+          have hgl : ((⟨p.1, x⟩ : Σ i, G i) ::
+              (U₀ ++ [(⟨p.1, p.2 * (x : G p.1)⁻¹⟩ : Σ i, G i)])).getLast? =
+              some (⟨p.1, p.2 * (x : G p.1)⁻¹⟩ : Σ i, G i) := by
+            rw [List.getLast?_cons_of_ne_nil (by simp), List.getLast?_append]
+            simp
+          rw [hgl, Option.mem_def, Option.some.injEq] at hr
           subst hr
           rfl
     · refine Or.inr ⟨(⟨i, x⟩ : Σ i, G i) :: (U ++ [(⟨i, (x : G i)⁻¹⟩ : Σ i, G i)]),
         ?_, ?_, ?_, ?_, ?_, ?_⟩
       · rw [deningerLetterProd_cons, deningerLetterProd_append, deningerLetterProd_cons,
-          deningerLetterProd_nil, mul_one, ← mul_assoc]
-        show PushoutI.of (φ := φ) i x * _ * PushoutI.of (φ := φ) i (x : G i)⁻¹ = _
-        rw [map_inv]
+          deningerLetterProd_nil, mul_one]
+        show PushoutI.of (φ := φ) i x * deningerLetterProd (φ := φ) U *
+            (PushoutI.of (φ := φ) i x)⁻¹ =
+          PushoutI.of (φ := φ) i x * (deningerLetterProd (φ := φ) U *
+            PushoutI.of (φ := φ) i (x : G i)⁻¹)
+        rw [map_inv, mul_assoc]
       · intro r hr
         rw [List.mem_cons] at hr
         rcases hr with rfl | hr
@@ -200,9 +209,12 @@ theorem deningerConj_letter_word (U : List (Σ i, G i)) (hlen2 : 2 ≤ U.length)
         subst hr
         rfl
       · intro r hr
-        rw [List.getLast?_cons_of_ne_nil (by simp), List.getLast?_append] at hr
-        simp only [List.getLast?_cons_nil, Option.some_or, Option.mem_def,
-          Option.some.injEq] at hr
+        have hgl : ((⟨i, x⟩ : Σ i, G i) ::
+            (U ++ [(⟨i, (x : G i)⁻¹⟩ : Σ i, G i)])).getLast? =
+            some (⟨i, (x : G i)⁻¹⟩ : Σ i, G i) := by
+          rw [List.getLast?_cons_of_ne_nil (by simp), List.getLast?_append]
+          simp
+        rw [hgl, Option.mem_def, Option.some.injEq] at hr
         subst hr
         rfl
 

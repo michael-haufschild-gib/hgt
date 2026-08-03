@@ -104,10 +104,15 @@ theorem universal_contact_package {n : ℕ} (datum : CertifiedFissionDatum n) :
         (datum.core.energy i k + datum.core.energy j l)
         (datum.core.energy i l + datum.core.energy j k)) ∧
     (∀ x : Fin n → ℝ, (∑ i, x i = 0) → x ≠ 0 →
-      (∑ i, ∑ j, x i * x j * datum.core.energy i j) < 0) := by
+      (∑ i, ∑ j, x i * x j * datum.core.energy i j) < 0) ∧
+    (∀ i j,
+      (∑ e, (datum.rooted.tree.canonicalCuts.toPositivePendantCutFamily.feature i e -
+        datum.rooted.tree.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ 2) =
+          datum.core.energy i j) := by
   exact ⟨fun _ _ hij => datum.strict_core_obstruction hij,
     fun _ _ _ _ => datum.core_energy_fourPoint _ _ _ _,
-    fun _ hsum hx => datum.core_energy_strict_negative_type hsum hx⟩
+    fun _ hsum hx => datum.core_energy_strict_negative_type hsum hx,
+    fun i j => datum.core_energy_explicit_sqEmbedding i j⟩
 
 end CertifiedFissionDatum
 

@@ -109,7 +109,9 @@
   `GaloisForLFunctions.RHTower.DeningerConjHead` (incomplete cancellation),
   `GaloisForLFunctions.RHTower.DeningerConjLast` (cancellation at the back),
   `GaloisForLFunctions.RHTower.DeningerConjTrichotomy` (the one letter trichotomy),
-  `GaloisForLFunctions.RHTower.DeningerConjWordLength` (conjugating by a whole word)
+  `GaloisForLFunctions.RHTower.DeningerConjWordLength` (conjugating by a whole word),
+  `GaloisForLFunctions.RHTower.DeningerConjWordForm` (the trichotomy in word form),
+  `GaloisForLFunctions.RHTower.DeningerConjugacyCriterion` (the conjugacy criterion)
 
 ## Statement
 
@@ -1232,7 +1234,30 @@ conjugate is longer than the word.  That last observation is a lemma with no ind
 
 - `deningerLen_conj_word` — **conjugating by a word whose last letter lies in a factor occurring at
   neither end multiplies nothing away**: the length is twice the conjugating word plus the word
-  conjugated.  Conjugation by the
+  conjugated.
+
+For that lemma to apply, the lengthening branches have to hand over the word of the conjugate, not
+just its length:
+
+- `deningerConj_letter_word` — **conjugating by one letter is either a rotation, or produces a
+  strictly longer word whose two extreme letters lie in the factor of that letter.**
+
+The two halves now meet: whichever way the conjugate lengthens, its ends are in the conjugating
+letter's factor, and the next letter of the conjugating word alternates away from it, so the
+non-cancelling hypothesis of `deningerLen_conj_word` is exactly satisfied.
+
+**The criterion is proved.**
+
+- `deningerConj_cycRed_rotate` — **a conjugate of a cyclically reduced word of at least two letters
+  which is no longer than the word is a rotation of it, up to the base group.**
+
+The conjugating word is peeled one letter at a time.  A letter that rotates leaves a shorter
+conjugator and a rotated word, and the leftover base element is absorbed into the conjugator's new
+last letter, which changes neither its length nor its indices, so the recursion continues on a word.
+A letter that lengthens ends the argument outright: the lengthened word carries that letter at both
+ends, the rest of the conjugating word cancels nothing against it, and the conjugate comes out longer
+than the word — contradicting the hypothesis.  Composing the rotations gives a single rotation,
+reduced modulo the length of the word.  Conjugation by the
 base group alone changes no length, which the corpus already owned (`deningerLen_base_conj`), so the
 base element the rotation carries never disturbs the induction.
 
@@ -1936,3 +1961,17 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   conjugating word plus the word conjugated.  This was the missing piece; earlier attempts to run the
   induction stalled on the lengthening branch, which is now closed by inspection rather than by
   recursion.
+- 2026-08-03 — Restated the trichotomy in word form, so that the lengthening branches hand over the
+  word of the conjugate and not only its length: conjugating by one letter is either a rotation, or
+  produces a strictly longer word whose two extreme letters lie in the factor of that letter.  This
+  is what `deningerLen_conj_word` consumes — the next letter of the conjugating word alternates away
+  from that factor, so its non-cancelling hypothesis is exactly satisfied.  The two halves of the
+  induction now meet; what is left is to run it.
+- 2026-08-03 — **The conjugacy criterion is proved**: a conjugate of a cyclically reduced word of at
+  least two letters which is no longer than the word is a rotation of it, up to the base group.  The
+  conjugating word is peeled one letter at a time; a letter that rotates leaves a shorter conjugator
+  and a rotated word, with the leftover base element absorbed into the conjugator's new last letter
+  so the recursion stays inside the class of words, and a letter that lengthens ends the argument
+  outright by the non-cancellation lemma.  Composing the rotations and reducing modulo the length of
+  the word gives the single rotation.  This was the last structural obstacle between the two exponent
+  comparison and Baumslag's theorem.

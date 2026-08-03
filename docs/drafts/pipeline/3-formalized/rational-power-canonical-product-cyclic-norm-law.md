@@ -236,7 +236,7 @@ through finite monodromy completion of its entire divisor.
 
 ## Lean status
 
-Everything in the paper except Bank's integer theorem `(8)` is now formalized unconditionally and
+Everything in the paper, Bank's integer theorem `(8)` included, is formalized unconditionally and
 axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 
 ```text
@@ -255,6 +255,7 @@ formal/GaloisForLFunctions/HTGeometry/OddPowerCanonicalProductGammaRay.lean
 formal/GaloisForLFunctions/HTGeometry/MeromorphicGammaComplexScale.lean
 formal/GaloisForLFunctions/HTGeometry/ReflectionNormPowerCanonicalProduct.lean
 formal/GaloisForLFunctions/HTGeometry/CyclotomicSubsetSumOrbit.lean
+formal/GaloisForLFunctions/HTGeometry/BankOddExponentDichotomy.lean
 ```
 
 Principal declarations:
@@ -294,7 +295,22 @@ digammaScaleShiftMero_param_succ          -- the parameter recurrence
 isRationalMero_alternating_digammaScaleShiftMero -- the difference tower rationalises one scale
 eq_const_mul_cyclotomic_of_aeval_eq_zero  -- degree < p and vanishing at omega forces C(lam)*Phi_p
 coeffs_eq_of_sum_pow_eq_ratCast           -- rationality of sum d_m omega^m forces all d_m equal
-subsetSum_sub_eq_intCast_cases            -- step 4: the Z-shift orbits of the subset sums
+subsetSum_sub_eq_intCast_cases            -- Z-shift orbits of cyclotomic subset sums (prime p)
+addTranslationMeroEquiv_digammaScaleShiftMero_param -- T_h moves the digamma parameter by a h
+digammaScaleShiftMero_one                 -- scale one is the plain digamma element
+rayDigammaMero, logDeriv_gammaRayProductMero  -- the digamma carrier of the ray product
+rayDifference                             -- the omitted-factor operator prod_(k in K)(T_(tau_k)-1)
+rayCommonPart                             -- its surviving scale-one component A
+rayDifference_sub_rayCommonPart_isRational -- every scale j != 0 is rationalised
+differentialAlgebraicOver_rayCommonPart   -- so A inherits differential algebraicity
+pow_im_ne_zero_of_odd, rayStep_im_ne_zero -- for odd p no step of the ray is real
+raySubsetSum_im_lt                        -- Im strictly maximised by the positive-part subset
+rayCommonPart_eq_gammaOrbitDigammaMero    -- A as a finite separated-orbit digamma carrier
+rayOrbitBase_separated                    -- the shift orbits are separated by Im
+hypertranscendentalOver_gammaRayProductMero_odd -- the ray product is HT for odd p
+hypertranscendental_powerCanonicalProduct_odd   -- the odd half of Bank's theorem (8)
+differentiallyAlgebraic_powerCanonicalProduct_natCast_iff -- Bank's dichotomy, W_p DA <-> p even
+hypertranscendental_powerCanonicalProduct_odd_ratio -- (10) for every odd numerator
 hypertranscendental_powerCanonicalProduct_odd_iff_mero -- the open core, in the mero field
 sincProduct, pi_mul_sincProduct, sincProduct_ade,
 differentiallyAlgebraic_sincProduct       -- the Euler sine product and its ADE
@@ -548,11 +564,11 @@ prod_(k<p) (T_(omega^(-k)) - 1) . ( sum_(j<p) digammaScaleShift(omega^j, 1) )   
 This is the exact structural coupling between the `p` scales: they are tied together through the `p`
 translations, in the same shape as the Barnes multiple-gamma constraint tower.
 
-## A complete proof route for the odd gate (2026-08-03)
+## The odd gate is closed (2026-08-03)
 
-The tower does not need the matroid machinery at all.  Applying the operator with **one factor
-omitted** isolates a single scale, and what is left is a *common-scale* digamma combination, which
-the corpus already decides.
+The tower does not need the matroid machinery at all.  Applying the difference operator with **one
+factor omitted** isolates a single scale, and what is left is a *common-scale* digamma combination,
+which the corpus already decides.
 
 Let `tau_k = omega^(-k)`, `K = {1,...,p-1}` (note: `k = 0` omitted), and
 `Phi = sum_(j<p) digammaScaleShift(omega^j, 1)`, so `Phi = -logDeriv G`.
@@ -566,52 +582,63 @@ Let `tau_k = omega^(-k)`, `K = {1,...,p-1}` (note: `k = 0` omitted), and
    part is the pure **scale-one** combination
 
    ```text
-   A = sum_(S subset K) (-1)^(|K|-|S|) * digammaShift(1 + sigma_S),   sigma_S = sum_(k in S) omega^(-k).
+   A = sum_(S subset K) (-1)^(|S|) * digammaShift(1 + sigma_S),   sigma_S = sum_(k in S) omega^(-k).
    ```
 
    Hence `A = D - (rational)` is DA.
-4. Arithmetic of the shifts, for `p` an **odd prime**.  With `1, omega, ..., omega^(p-2)` a `Z`-basis
-   of `Z[omega]` and `omega^(p-1) = -(1 + omega + ... + omega^(p-2))`, one computes
+4. **The separating functional is the imaginary part.**  `Im` is `Z`-linear and annihilates `Z`, and
+   for odd `p` no step is real: `omega^(-k) in R` would force `omega^k = +-1`, hence `p | k` or
+   `p | 2k`, and `p` odd makes both impossible for `1 <= k <= p-1`.  Therefore
+   `Im sigma_S = sum_(k in S) Im tau_k` is **strictly** maximised by
 
    ```text
-   sigma_S - sigma_(S') in Z   <=>   S = S'  or  {S,S'} = {empty, K}.
+   S_max = { k in K : Im tau_k > 0 },
    ```
 
-   So the `Z`-shift orbits are: one orbit `{empty, K}` of charge `1 + (-1)^(p-1) = 2` (as `p` is
-   odd), and singleton orbits of charge `+-1`.  **Every orbit charge is nonzero**, and distinct
-   orbits are separated.
-5. Pick any `S_0` with `empty != S_0 != K` (possible since `p >= 3`).  Its orbit is a singleton with
-   charge `+-1` and is separated from all the others, so the corpus's
+   and by that subset alone: passing from `S` to `S_max` adds only positive terms and removes only
+   negative ones, and `S != S_max` makes at least one of the two changes nonempty.  Consequently
+   `sigma_S - sigma_(S_max) in Z` forces `S = S_max`, i.e. the shift orbit of `1 + sigma_(S_max)` is
+   separated from every other one.
+5. Its charge is `(-1)^(|S_max|) != 0`, so the corpus's
    `hypertranscendentalOver_gammaOrbitDigammaMero` gives `A` hypertranscendental over `C(X)` —
    contradicting step 3.
 
-Therefore `Phi`, hence `G`, hence `W_p`, is hypertranscendental for every odd prime `p`; and by the
-already-formalized transfer `(10)`, `W_(p/q)` is hypertranscendental for every odd prime `p` and
-every `q >= 1`.  This closes the odd branch of Bank's theorem for prime exponents **without any
-Nevanlinna theory**.
+Therefore `Phi`, hence `G`, hence `W_p`, is hypertranscendental for **every odd `p >= 3`**, prime or
+composite; and by the already-formalized transfer `(10)`, `W_(p/q)` is hypertranscendental for every
+odd `p >= 3` and every `q >= 1`.  This closes the odd branch of Bank's theorem, unconditionally and
+**without any Nevanlinna theory and without any cyclotomic arithmetic**.
 
-For odd composite `p` the same route applies verbatim except step 4: `Z[zeta_p]` has rank
-`phi(p) < p-1`, extra relations such as `zeta_9^3 + zeta_9^6 = -1` merge further subsets into the
-integer orbit, and the grouped orbit charges must be recomputed.  That is the only remaining case.
-
-Build order:
+Together with the even half this is the full dichotomy, formalized as
 
 ```text
-B1  cyclotomic subset-sum orbit arithmetic for odd prime p                   [DONE]
-B2  the omitted-factor difference operator and its rationalisation           (steps 1-3)
-B3  presentation of A as gammaOrbitDigammaMero and the contradiction         (step 5)
-B4  odd composite p: recompute the grouped charges in Z[zeta_p]
+differentiallyAlgebraic_powerCanonicalProduct_natCast_iff :
+  0 < p -> (DifferentiallyAlgebraic (powerCanonicalProduct p) <-> Even p)
 ```
+
+in `formal/GaloisForLFunctions/HTGeometry/BankOddExponentDichotomy.lean`, axiom-clean
+(`[propext, Classical.choice, Quot.sound]`).
+
+Route note.  The first version of step 4 used the arithmetic of `Z[zeta_p]` — the classification
+`sigma_S - sigma_(S') in Z <=> S = S' or {S,S'} = {empty, K}`, proved for **prime** `p` in
+`CyclotomicSubsetSumOrbit` (`subsetSum_sub_eq_intCast_cases`).  That works, but only for prime `p`:
+for odd composite `p` the ring `Z[zeta_p]` has rank `phi(p) < p-1` and extra relations such as
+`zeta_9^3 + zeta_9^6 = -1` merge further subsets into the integer orbit.  The imaginary-part
+functional replaces the whole computation and needs only that `p` is odd, so the composite case never
+has to be treated separately.  `CyclotomicSubsetSumOrbit` remains in the corpus as a standalone
+statement about cyclotomic subset sums; it is no longer on the path of this card.
+
+Build order (all done):
 
 ```text
+B1  cyclotomic subset-sum orbit arithmetic for odd prime p                   [DONE, superseded]
+B2  the omitted-factor difference operator and its rationalisation           [DONE]
+B3  presentation of A as gammaOrbitDigammaMero and the contradiction         [DONE]
+B4  odd composite p                                                          [DONE by the Im route]
 ```
 
-`O3` is proved, so the card's headline consequence `(10)` now holds unconditionally in Lean for the
-whole numerator-one subfamily: `W_(1/q)` is hypertranscendental for every `q >= 1`, a set of
-exponents dense in `(0,1]`.  `O2` is proved by removing the Euler-Mascheroni gauge from `W_1`,
-identifying the result with the entire reciprocal Gamma germ `Gamma(z+1)^(-1)`, and contradicting the
-corpus's single-orbit charge theorem `hypertranscendentalOver_gammaOrbitProductMero` in the global
-meromorphic differential field.  Only `O4`/`O5` (odd numerators `p >= 3`) remain.
+`O2`, `O3`, `O4` and `O5` are all proved.  The card's headline consequence `(10)` now holds
+unconditionally in Lean for every rational exponent with odd numerator, and Bank's dichotomy `(8)`
+holds for every positive integer exponent.
 
 ## Gates
 
@@ -631,7 +658,9 @@ meromorphic differential field.  Only `O4`/`O5` (odd numerators `p >= 3`) remain
 - [x] Lean: the even half of Bank's theorem `(8)`, `p` even implies `W_p` DA
 - [x] Lean: `W_1 = exp(-gamma_E z)/Gamma(z+1)` and `W_1` hypertranscendental (Bank at `p = 1`)
 - [x] Lean: `W_(1/q)` hypertranscendental for every `q >= 1` (a dense rational stratum)
-- [ ] Lean: the odd half of Bank's theorem `(8)` for `p >= 3` (multi-scale reciprocal-Gamma HT)
+- [x] Lean: the odd half of Bank's theorem `(8)` for `p >= 3` (multi-scale reciprocal-Gamma HT)
+- [x] Lean: the full dichotomy `(8)`, `DifferentiallyAlgebraic W_p <-> Even p`, unconditional
+- [x] Lean: `W_(p/q)` hypertranscendental for every odd `p >= 3` and every `q >= 1`
 - [x] Lean: the forward half of `(7)`, and hence both branches of `(9)` relative to `(8)`
 
 ## Log
@@ -642,3 +671,10 @@ meromorphic differential field.  Only `O4`/`O5` (odd numerators `p >= 3`) remain
   odd-numerator individual HT theorem `(10)`.
 - 2026-07-27 — Hostile audit isolated even-numerator factors and nonreal infinite monodromy as
   the two genuine open cores.
+- 2026-08-03 — Bank's dichotomy `(8)` closed in Lean for every positive integer exponent.  The odd
+  branch is proved by the omitted-factor difference operator
+  `prod_(k=1)^(p-1) (T_(omega^(-k)) - 1)`, which rationalises every scale except `omega^0 = 1` and
+  leaves a common-scale digamma combination; the shift orbits of that combination are separated by
+  the imaginary part, which for odd `p` vanishes on no step.  New module
+  `HTGeometry/BankOddExponentDichotomy.lean`; the cyclotomic-arithmetic route
+  (`CyclotomicSubsetSumOrbit`) is superseded and no longer on the card's path.

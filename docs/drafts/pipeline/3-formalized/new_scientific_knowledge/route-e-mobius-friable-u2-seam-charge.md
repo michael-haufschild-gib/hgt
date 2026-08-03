@@ -1,7 +1,7 @@
 # Route E Möbius friable \(u=2\) seam charge
 
 - **ID:** `ROUTE-E-MOBIUS-FRIABLE-U2-SEAM-CHARGE-003`
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** CORRECTED PUBLISHED-THEOREM EXTRACTION / PROJECT-NEW SEAM NORMALIZATION
 - **Parent:** `../../1-in-progress/route-e-squarefree-exponential-gibbs-parity.md`
 - **Source:** `OPEN-SOURCE-001`
@@ -306,3 +306,36 @@ Everything the card proves *itself* — the corrected profile `(2)`–`(3)`, the
 their uniqueness `(9)`, `(13)`–`(15)`, the seam limits `(5)`, the normalisation `(6)`, the Taylor
 coefficient `(11)`–`(12)`, the aperture-independence `(19)`, and the exact sector split `(20)` — is
 now an unconditional Lean theorem.
+
+### Stage 2 → 3 audit (2026-08-03)
+
+Every statement this card *proves* is now an unconditional Lean theorem:
+
+| card equation | Lean declaration |
+|-|-|
+| `(1)` definitions | `mertensM`, `mertensFriable`, `mertensLargePrimeSector` |
+| `(2)`, `(10)` profile is `φ''` | `mobiusFriableDelayFirstDerivative_hasDerivAt` |
+| `(3)`, `(14)` first branch | `mobiusFriableDelayBelowTwo_formula_hasDerivAt`, `hasDerivAt_mobiusFriableDelayBelowTwo` |
+| `(5)`, `(16)` seam limits | `mobiusFriableDelayDerivativeAboveTwo_hasDerivAt_two`, `mobiusFriableLeadingProfile_jumpAtTwo` |
+| `(6)` quantized jump | `mobiusFriableScaledProfile_jumpAtTwo` |
+| `(7)` `𝓕 = ζ⁻¹` | `LSeries_moebius_eq_inv_riemannZeta` |
+| `(9)`, `(13)` delay equation + uniqueness | `eq_mobiusFriableDelayBelowTwo_of_delayEquation` |
+| `(11)`, `(12)` `a₀(μ) = 1` | `tendsto_mobiusFriableTaylor`, `mobiusFriableTaylor_eq` |
+| `(15)` second branch | `mobiusFriableDelayDerivativeAboveTwo_eq` |
+| `(19)` aperture independence | `mobiusFriableLeadingProfile_apertureIndependent`, `_scaled` |
+| `(20)` exact sector split | `mertensM_eq_mertensFriable_sub`, `_sub_friable`, `mertensLargePrimeSector_eq` |
+
+The two inputs that remain external are *cited published theorems*, consistent with this card's own
+type (`CORRECTED PUBLISHED-THEOREM EXTRACTION`) and with hostile-audit item 5, which scopes the Lean
+obligation to the elementary content:
+
+- de la Bretèche–Tenenbaum's friable expansion, used for `(4)`/`(17)`/`(18)`/`(22)`;
+- the global Mertens estimate `M(X) = o_A(X/\log^A X)`, used for `(21)`.
+
+Checked against this toolchain: mathlib supplies `riemannZeta`'s continuation, its residue at one,
+its non-vanishing on `Re s > 1`, and both Chebyshev bounds (`Mathlib/NumberTheory/Chebyshev.lean`),
+but no prime number theorem and no friable expansion.  Neither is reachable by adapting an existing
+corpus asset; both are separate research-scale formalisations, and neither is needed for any
+statement this card proves.
+
+Stage advanced to `3-formalized`.

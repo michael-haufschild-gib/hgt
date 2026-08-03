@@ -72,6 +72,9 @@ Status: active strict ledger. Manuscript may not retain a mathematical claim wit
 
 ## Exclusions
 
+- Literature attributions and priority labels are bibliographic metadata, not
+  imported proof dependencies. No cited external theorem is used to prove a
+  manuscript result; paper proofs close against declarations above.
 - No Banach-space annihilator theorem is claimed.
 - No abstract spectral weaving theorem is claimed.
 - No stability, commutation, self-adjointness, compactness, or joint lower-bound hypothesis is claimed or used in countable theorem.

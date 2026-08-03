@@ -116,6 +116,30 @@ theorem airyTowerCount_one : airyTowerCount 1 = 1 := by
   rw [airyTowerCount, Nat.card_eq_one_iff_unique]
   exact ⟨hsubsingleton, ⟨unit⟩⟩
 
+/-- Above ramification one, allowing an empty tail adds nothing. -/
+def equivOrderedFactorization {R : ℕ} (hR : 1 < R) :
+    OrderedFactorizationTail R ≃ OrderedFactorization R where
+  toFun t := t.toOrderedFactorization (by
+    intro hempty
+    have hprod := t.prod_eq
+    rw [hempty] at hprod
+    simp at hprod
+    omega)
+  invFun := ofOrderedFactorization
+  left_inv := by
+    intro t
+    apply OrderedFactorizationTail.ext
+    rfl
+  right_inv := by
+    intro f
+    apply OrderedFactorization.ext
+    rfl
+
+/-- Tail count agrees with ordinary nonempty ordered-factorization count above one. -/
+theorem airyTowerCount_eq_orderedFactorization {R : ℕ} (hR : 1 < R) :
+    airyTowerCount R = Nat.card (OrderedFactorization R) := by
+  rw [airyTowerCount, Nat.card_congr (equivOrderedFactorization hR)]
+
 end OrderedFactorizationTail
 
 /-- Labelled leading-separated data, with `Rᵢ = aᵢ qᵢ`. -/

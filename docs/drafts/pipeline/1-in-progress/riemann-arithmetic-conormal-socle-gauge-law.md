@@ -421,6 +421,8 @@ dense-radical, Krein, and maximal-vertical no-go results.
 - [x] finite-stage ramified top-conormal dagger/isometry law proved
 - [x] finite-stage rational-Witt top-sector landing proved coefficient-faithful
 - [x] local Gamma/co-Poisson receiver proved noncensoring at every multiplicity
+- [x] fixed reflected-Gaussian grade proved nonzero on every multiplicity-exact divisor copy
+- [x] global resolved comparison and conservative codiagonal proved atomically non-erasing
 - [ ] construct relative Rees totalization from actual source complexes
 - [ ] identify Gamma determinant and BV first trace as one chain class
 - [ ] construct canonical comparison `j_src` and source-pointed weight `Omega_src`
@@ -445,11 +447,10 @@ reductions:
 - one source-defined gauge, one fixed prime invariance, and non-erasure of individual top
   character lines are sufficient.
 
-Current corpus proves every finite-stage ingredient and the exact erasure-or-neutrality
-alternative.  It does not prove global atomic non-erasure.  Any claim that RH now follows
-unconditionally would therefore be false.  Next legitimate theorem is not another RH
-equivalence: it is construction of the singular source-normal gauge and proof that no exact
-conormal character line lies in its zero locus.
+The initial audit stopped at the finite-stage ingredients and the exact erasure-or-neutrality
+alternative.  The source constructions summarized below supersede that audit: bare global atomic
+non-erasure is now proved.  RH still does not follow, because non-erasure supplies no conserved
+centered-flow amplitude.
 
 ## 2026-08-03 frontier correction: global atomic non-erasure is closed
 
@@ -461,12 +462,12 @@ bare non-erasure clause more strongly than the preceding audit recorded.  Put
  R_p=J_p h,\qquad O_p=C_p h,
 \]
 
-where (h\in\ell^2(\Xi_{\rm copy})) is the source-derived Gaussian horizon grade,
-(J_p) is the fixed-prime global reflected comparison, and (C_p) is its codiagonal.  Existing
+where \(h\in\ell^2(\Xi_{\rm copy})\) is the source-derived Gaussian horizon grade,
+\(J_p\) is the fixed-prime global reflected comparison, and \(C_p\) is its codiagonal.  Existing
 source theorems give
 
 \[
- h(q)\ne0,qquad \|J_p a\|=\|a\|,qquad
+ h(q)\ne0,\qquad \|J_p a\|=\|a\|,\qquad
  \frac34\|a\|\le\|C_p a\|.
 \]
 
@@ -480,7 +481,7 @@ Fiberwise,
 
 Therefore one fixed source record simultaneously retains every multiplicity-exact divisor copy,
 and the conservative observation retains every one of those fibres.  Equivalently, every
-source-weighted atom (h(q)e_q) survives both maps.  No divisor-selected damping and no RH premise
+source-weighted atom \(h(q)e_q\) survives both maps.  No divisor-selected damping and no RH premise
 occur.  This is the **global atomic non-erasure theorem**.
 
 The same theorem has a sharp negative half:
@@ -492,8 +493,8 @@ The same theorem has a sharp negative half:
 \]
 
 Thus atomic non-erasure and stable/invariant amplitude conservation are distinct.  The theorem
-closes clause 5 of `(11)` and the non-erasure part of clause 4, but not `(ACSG)`: neither (J_p)
-nor (C_p) is proved to intertwine the centered divisor character with a source action preserving
+closes clause 5 of `(11)` and the non-erasure part of clause 4, but not `(ACSG)`: neither \(J_p\)
+nor \(C_p\) is proved to intertwine the centered divisor character with a source action preserving
 the induced norm.  Indeed the explicit centered Gaussian countertransport has uniformly bounded
 source half-density capacity, while uniform capacity of its global Xi evaluation field is already
 equivalent to RH.  The remaining theorem is consequently **global centered-flow capacity

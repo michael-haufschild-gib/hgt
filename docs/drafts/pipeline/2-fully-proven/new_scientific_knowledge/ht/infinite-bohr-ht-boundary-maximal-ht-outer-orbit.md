@@ -861,3 +861,61 @@ Formalizing (9) therefore means building the submersion formulation:
    closed by compactness and has empty interior by (2)+(3).  The shapes are countable.
 
 Steps 1-3 are corpus-adjacent; step 4 is the new assembly.  This is the next target.
+
+### Refinement: step 2 needs no implicit function theorem
+
+The mass parameter enters the Cauchy jets *linearly through the masses*, and the masses are
+`c_k = eps_k exp(u_k)`.  Restricting to a perturbation supported on finitely many atoms,
+
+  `F(s) - F(0) = sum_k eps_k exp(u_k) (exp(s_k) - 1) v_k`,
+
+where `v_k` is the fixed jet vector of the Cauchy kernel at atom `k` and `s` ranges over a small box
+in `R^K`.  Since `exp(s_k) - 1` covers a real interval around `0`, the reachable set is the image of
+a box under the `R`-linear map `r |-> sum_k r_k (eps_k exp(u_k) v_k)`, which is surjective onto the
+jet space by the corpus's `cauchyJetRealLinearCombination_surjective`.  A surjective linear map
+between finite-dimensional real spaces is open, so the reachable jet set contains a neighbourhood of
+the current jets.
+
+No Banach implicit function theorem is needed anywhere: the only analytic input is that `exp` covers
+a neighbourhood of `1`.  This puts step 2 within reach of elementary linear algebra plus the corpus's
+existing controllability surjectivity.
+
+## Lean progress: the transversality skeleton
+
+Two generic modules, both wired and axiom-clean, isolate the two halves of the submersion argument
+for (9) from the Herglotz machinery.
+
+`SmallPerturbationReach.lean` -- step 2, with no implicit function theorem:
+
+- `spanCombination`, `surjective_spanCombination` -- the linear combination map of a finite family
+  is surjective exactly when the family spans;
+- **`spanCombination_smallBox_mem_nhds`** -- the image of any coefficient box is a neighbourhood of
+  the origin, by the open mapping theorem.  Arbitrarily small coefficients already reach everything
+  nearby;
+- **`spanCombination_expBox_mem_nhds`** -- the same for *multiplicative* perturbations
+  `c_k |-> c_k exp(s_k)` with `|s_k|` small, because `exp s - 1` covers an interval around zero.
+  This is the exact form the card's positive-mass parameter takes.
+
+`JetObservationGenericity.lean` -- step 4, the parameter-space half of transversality:
+
+- `LocallySurjectiveObservation` -- an observation of the parameter by finitely many complex
+  coordinates which carries neighbourhoods to neighbourhoods;
+- **`isNowhereDense_setOf_eval_observation_eq_zero`** -- such an observation cannot be trapped in the
+  zero set of a nonzero polynomial: the constraint locus is closed and nowhere dense.  The zero set
+  is nowhere dense in coordinate space (corpus: `mvPolynomial_nonzero_eval_dense`), and a
+  neighbourhood of the observed point escapes it;
+- **`residual_setOf_forall_eval_observation_ne_zero`** and
+  **`dense_setOf_forall_eval_observation_ne_zero`** -- countably many such constraints fail
+  simultaneously on a residual, hence dense, set of parameters.
+
+What remains for (9) is the *bridge*: exhibiting the mass parameter's jet observation
+`u |-> (jets of S_u(. + t_i) at a packet of points)` as a `LocallySurjectiveObservation`, which needs
+
+- the corpus's `cauchyJetRealLinearCombination_surjective` to supply the spanning hypothesis of
+  `spanCombination_expBox_mem_nhds`, and
+- the `chi`-jet map as a local homeomorphism (triangular, diagonal `chi'(m) != 0`) to carry the reach
+  from `m`-jets to `S`-jets,
+
+together with the rank/minor reduction which replaces the uncountable family of coefficient vectors
+of a fixed shape by a single determinant polynomial per choice of nodes (corpus:
+`expandedPolyMatrix`, `exists_injective_nodes_expandedMatrix_mulVec_injective`).

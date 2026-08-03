@@ -85,7 +85,7 @@ theorem sum_inv_sub_primitiveRoot_mul {p : ℕ} (hp : 0 < p) {ω : ℂ} (hω : I
       simp [Polynomial.derivative_X_pow]
     rw [hdRHS] at hd
     have hval := congrArg (Polynomial.eval x) hd
-    simp only [Polynomial.eval_finset_sum, Polynomial.eval_mul, Polynomial.eval_prod,
+    simp only [Polynomial.eval_finsetSum, Polynomial.eval_mul, Polynomial.eval_prod,
       Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C, Polynomial.eval_pow,
       Polynomial.derivative_sub, Polynomial.derivative_X, Polynomial.derivative_C,
       sub_zero, mul_one] at hval

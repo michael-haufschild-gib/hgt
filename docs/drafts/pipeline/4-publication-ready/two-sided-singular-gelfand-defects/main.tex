@@ -89,14 +89,11 @@ the whole Hilbert space.  The goal is a single closed subspace disjoint from
 every range, with enough internal structure to generate a lattice of dense
 defects.
 
-There is an important weaker fact.  A proper Banach operator range is
-meagre, so Baire category prevents a countable union of proper operator
-ranges from covering the ambient Banach space; see
-\cite[Proposition~2.6]{AroraGlueck2023}.  That argument supplies one vector
-outside the union.  The issue here is spaceability without assuming that the
-span of the ranges is nonclosed: one closed infinite-dimensional subspace
-must miss every range simultaneously even when their algebraic span is all
-of \(G\).
+The one-vector noncoverage component of our Hilbert theorem is not the
+novelty; compare the Baire-category operator-range result
+\cite[Proposition~2.6]{AroraGlueck2023}.  The Lean-certified content here is
+closed infinite-dimensional common avoidance without assuming that the span
+of the ranges is nonclosed, even when their algebraic span is all of \(G\).
 
 The motivating ranges are adjoint ranges.  If \(T:G\to H\) has dense range,
 then a closed source restriction \(M\subset G\) remains dense under \(T\)

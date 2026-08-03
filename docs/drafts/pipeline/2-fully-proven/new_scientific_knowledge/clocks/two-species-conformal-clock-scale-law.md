@@ -296,6 +296,38 @@ settles both constant-potential regimes of `u'' + Vu = 0` by explicit solutions:
 - `potential_eq_of_oscillatory`, `potential_eq_of_nonOscillatory` — both regimes determine their
   potential.
 
+Variable potentials need no existence theory either, if the equation is read in the other direction.
+`formal/GaloisForLFunctions/HTGeometry/ClockProbeRiccati.lean` substitutes `u = e^{w}`:
+
+- `expProbe`, `secondDeriv_expProbe` — the substitution turns `u'' + Vu = 0` into the Riccati
+  relation `V = -(w'' + (w')²)`;
+- `riccatiPotential`, `solvesPotentialWave_expProbe`, `noCommonZero_riccatiPotential`,
+  `potential_eq_riccatiPotential` — **for every smooth `w` the potential `-(w'' + (w')²)` carries a
+  globally nonvanishing probe and is determined**;
+- `riccatiPotential_sq`, `noCommonZero_quadraticRiccati` — `w = x²` gives the nonconstant potential
+  `-(2 + 4x²)`, so the class is genuinely variable.
+
+This is the one-dimensional form of the characterization already proved in general: the potentials
+admitting a nowhere-vanishing probe are exactly those of the form `-(□u)/u`.
+
+Finally, the global-solution requirement is itself unnecessary.
+`formal/GaloisForLFunctions/HTGeometry/ClockPotentialLocalDetermination.lean` replaces it by the
+pointwise one, which is what the argument actually reads:
+
+- `SolvesPotentialWaveAt`, `SolvesPotentialWaveOn`, `potential_eq_of_solvesPotentialWaveAt` — the
+  pointwise core: a probe nonvanishing at an event pins the potential there, using the equation only
+  at that event;
+- `LocalProbesOn`, `potential_eqOn_of_localProbes`, `potential_eqOn_of_solvesOn` — **a probe solving
+  only on a region determines the potential on that region**;
+- `potential_eq_of_localProbes_univ`, `localProbes_of_noCommonZero` — the global statements are the
+  special case;
+- `reconstructedScale_eqOn_of_localProbes` — the scale is reconstructed on the common region;
+- `exists_solvesOn_not_solves` — the local notion is strictly weaker, so this is a genuine
+  relaxation.
+
+This is the form an existence theorem plugs into: solutions of wave equations come with a domain,
+and a laboratory works in a worldtube, so both sides now speak about regions.
+
 So the identifiability content of step 1 is settled in full generality, and the reachable potential
 class is characterized. What remains open is the physical selection problem: a laboratory does not
 choose `u` and read off `-(□u)/u`; it prepares sources and must obtain solutions with the required

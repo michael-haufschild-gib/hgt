@@ -12,11 +12,65 @@ family of finite Puiseux polynomials.
 namespace GaloisForLFunctions
 namespace IrregularStokes
 
-/-- Ordered rational slopes of a ramified characteristic. -/
-def Characteristic.slopes {R beta : ℕ} : Characteristic R beta → List ℚ
-  | .terminal .. => [(beta : ℚ) / (R : ℚ)]
-  | .step (E := _) (gamma := _) _ _ _ _ _ tail =>
-      (beta : ℚ) / (R : ℚ) :: tail.slopes
+/-- Ordered level numerators, all expressed over the original ramification denominator. -/
+def Characteristic.levelNumerators {R beta : ℕ} : Characteristic R beta → List ℕ
+  | .terminal .. => [beta]
+  | .step _ _ _ _ _ tail => beta :: tail.levelNumerators
+
+/-- Ordered rational slopes using one common original denominator.  The recursive characteristic
+changes gcd state, not the denominator of later monomials. -/
+def Characteristic.slopes {R beta : ℕ} (c : Characteristic R beta) : List ℚ :=
+  List.map (fun exponent : ℕ => (exponent : ℚ) / (R : ℚ)) c.levelNumerators
+
+/-- Every later level numerator is bounded by the first. -/
+theorem Characteristic.mem_levelNumerators_le_first {R beta : ℕ}
+    (c : Characteristic R beta) {a : ℕ} (ha : a ∈ c.levelNumerators) : a ≤ beta := by
+  induction c with
+  | terminal =>
+      simp [Characteristic.levelNumerators] at ha
+      omega
+  | @step R E beta gamma hER hE hbeta hgcd hgamma tail ih =>
+      simp only [Characteristic.levelNumerators, List.mem_cons] at ha
+      rcases ha with rfl | ha
+      · exact le_rfl
+      · exact (ih ha).trans (Nat.le_of_lt hgamma)
+
+/-- Level numerators are pairwise strictly decreasing. -/
+theorem Characteristic.levelNumerators_pairwise {R beta : ℕ} (c : Characteristic R beta) :
+    c.levelNumerators.Pairwise (· > ·) := by
+  induction c with
+  | terminal => simp [Characteristic.levelNumerators]
+  | @step R E beta gamma hER hE hbeta hgcd hgamma tail ih =>
+      simp only [Characteristic.levelNumerators, List.pairwise_cons]
+      exact ⟨fun a ha => lt_of_le_of_lt (tail.mem_levelNumerators_le_first ha) hgamma, ih⟩
+
+/-- With the common original denominator, the Puiseux slopes remain pairwise strictly
+decreasing. -/
+theorem Characteristic.slopes_pairwise {R beta : ℕ} (c : Characteristic R beta) :
+    c.slopes.Pairwise (· > ·) := by
+  have hRnat : 0 < R := Nat.zero_lt_one.trans c.ramification_gt_one
+  have hR : 0 < (R : ℚ) := by exact_mod_cast hRnat
+  unfold Characteristic.slopes
+  refine List.Pairwise.map (R := fun a b : ℕ => a > b)
+    (S := fun a b : ℚ => a > b) (fun a : ℕ => (a : ℚ) / (R : ℚ)) ?_
+    c.levelNumerators_pairwise
+  intro a b hab
+  have habQ : (b : ℚ) < (a : ℚ) := by exact_mod_cast hab
+  exact div_lt_div_of_pos_right habQ hR
+
+@[simp] theorem Characteristic.slopes_terminal {R beta : ℕ} (hR : 1 < R)
+    (hbeta : 0 < beta) (hgcd : Nat.gcd R beta = 1) :
+    (Characteristic.terminal hR hbeta hgcd).slopes = [(beta : ℚ) / (R : ℚ)] := by
+  simp [Characteristic.slopes, Characteristic.levelNumerators]
+
+@[simp] theorem Characteristic.slopes_step {R E beta gamma : ℕ} (hER : E < R)
+    (hE : 1 < E) (hbeta : 0 < beta) (hgcd : Nat.gcd R beta = E)
+    (hgamma : gamma < beta) (tail : Characteristic E gamma) :
+    (Characteristic.step hER hE hbeta hgcd hgamma tail).slopes =
+      (beta : ℚ) / (R : ℚ) ::
+        List.map (fun exponent : ℕ => (exponent : ℚ) / (R : ℚ))
+          tail.levelNumerators := by
+  rfl
 
 /-- Finite Puiseux polynomial represented by its ordered slope/coefficient monomials. -/
 abbrev PuiseuxPolynomial := List (ℚ × ℂ)

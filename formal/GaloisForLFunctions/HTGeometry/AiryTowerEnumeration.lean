@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.AiryTowerFactorization
+import GaloisForLFunctions.HTGeometry.AiryTowerHiddenFiber
 import Mathlib.Combinatorics.Enumerative.Composition
 import Mathlib.Data.Nat.Factorization.Basic
 
@@ -116,6 +117,14 @@ theorem card_primePower (p k : ℕ) (hp : p.Prime) (hk : 0 < k) :
   rw [Nat.card_congr (primePowerEquivComposition hp hk)]
   rw [Nat.card_eq_fintype_card]
   exact composition_card k
+
+/-- Prime-power count in the paper's convention `A(1)=1`. -/
+theorem airyTowerCount_primePower (p k : ℕ) (hp : p.Prime) (hk : 0 < k) :
+    OrderedFactorizationTail.airyTowerCount (p ^ k) = 2 ^ (k - 1) := by
+  have hpk : 1 < p ^ k := by
+    exact one_lt_pow₀ hp.one_lt hk.ne'
+  rw [OrderedFactorizationTail.airyTowerCount_eq_orderedFactorization hpk]
+  exact card_primePower p k hp hk
 
 end OrderedFactorization
 

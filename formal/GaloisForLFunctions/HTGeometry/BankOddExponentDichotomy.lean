@@ -1,10 +1,9 @@
 import GaloisForLFunctions.HTGeometry.MeromorphicGammaComplexScale
-import GaloisForLFunctions.HTGeometry.CyclotomicSubsetSumOrbit
 import GaloisForLFunctions.HTGeometry.TranslationStableDifferentialAlgebraicity
 import GaloisForLFunctions.HTGeometry.SourceLogarithmicBoundary
 
 /-!
-# The reciprocal-Gamma ray product at an odd prime is hypertranscendental
+# Bank's theorem: the odd-exponent canonical product is hypertranscendental
 
 For a primitive `p`-th root of unity `ω` the ray product `∏_{j<p} Γ(ω^j z + 1)⁻¹` has logarithmic
 derivative `−Φ` with
@@ -23,12 +22,13 @@ of the family is integral for the scale `1`, and what survives is a pure common-
 
 `A = ∑_{S ⊆ {1,…,p−1}} (−1)^{|S|} ψ(z + 1 + σ_S)`,  `σ_S = ∑_{k∈S} ω^{−k}`.
 
-For `p` prime the arithmetic of `ℤ[ζ_p]` says `σ_S − σ_{S'} ∈ ℤ` only when `S = S'` or
-`{S,S'} = {∅, {1,…,p−1}}`; hence the shift orbits of the parameters `1 + σ_S` are separated once a
-subset other than `∅` and `{1,…,p−1}` is singled out, and every charge `(−1)^{|S|}` is nonzero.  The
-separated-orbit Gamma law then makes `A` hypertranscendental, contradicting its differential
-algebraicity.  So `Φ`, hence the ray product, hence the canonical product `W_p` with zeros `−n^p`,
-is hypertranscendental for every odd prime `p`.
+The shift orbits of the parameters `1 + σ_S` are separated by the imaginary part: it is a `ℤ`-linear
+functional annihilating `ℤ`, and for odd `p` no step `ω^{−k}` with `1 ≤ k < p` is real, so among the
+`2^{p−1}` subset sums the imaginary part is strictly maximised by the subset on which the steps have
+positive imaginary part, and by that subset alone.  Every charge `(−1)^{|S|}` is nonzero, so the
+separated-orbit Gamma law makes `A` hypertranscendental, contradicting its differential algebraicity.
+Hence `Φ`, hence the ray product, hence the canonical product `W_p` with zeros `−n^p`, is
+hypertranscendental for every odd `p ≥ 3`; together with the even case this is Bank's dichotomy.
 -/
 
 namespace HTGeometry
@@ -221,65 +221,6 @@ theorem differentialAlgebraicOver_rayCommonPart {p : ℕ} (hp : 0 < p) {ω : ℂ
   rw [hsplit]
   exact differentialAlgebraicOver_sub hd hr
 
-/-! ## The reversal involution and the shift-orbit separation -/
-
-/-- The reversal `k ↦ p − k`, an involution of `{1,…,p−1}`. -/
-def rayReverse (p : ℕ) (S : Finset ℕ) : Finset ℕ := S.image (fun k => p - k)
-
-theorem rayReverse_subset {p : ℕ} {S : Finset ℕ} (hS : S ⊆ Finset.Ico 1 p) :
-    rayReverse p S ⊆ Finset.Ico 1 p := by
-  intro x hx
-  rw [rayReverse, Finset.mem_image] at hx
-  obtain ⟨k, hk, rfl⟩ := hx
-  have := Finset.mem_Ico.mp (hS hk)
-  exact Finset.mem_Ico.mpr ⟨by omega, by omega⟩
-
-theorem rayReverse_rayReverse {p : ℕ} {S : Finset ℕ} (hS : S ⊆ Finset.Ico 1 p) :
-    rayReverse p (rayReverse p S) = S := by
-  ext x
-  simp only [rayReverse, Finset.mem_image]
-  constructor
-  · rintro ⟨y, ⟨k, hk, rfl⟩, rfl⟩
-    have := Finset.mem_Ico.mp (hS hk)
-    rwa [show p - (p - k) = k by omega]
-  · intro hx
-    have := Finset.mem_Ico.mp (hS hx)
-    exact ⟨p - x, ⟨x, hx, rfl⟩, by omega⟩
-
-theorem rayReverse_empty (p : ℕ) : rayReverse p (∅ : Finset ℕ) = ∅ := by
-  simp [rayReverse]
-
-theorem rayReverse_eq_empty_iff {p : ℕ} {S : Finset ℕ} : rayReverse p S = ∅ ↔ S = ∅ := by
-  rw [rayReverse]
-  exact Finset.image_eq_empty
-
-theorem rayReverse_Ico (p : ℕ) : rayReverse p (Finset.Ico 1 p) = Finset.Ico 1 p := by
-  ext x
-  simp only [rayReverse, Finset.mem_image, Finset.mem_Ico]
-  constructor
-  · rintro ⟨k, ⟨hk1, hk2⟩, rfl⟩
-    exact ⟨by omega, by omega⟩
-  · rintro ⟨hx1, hx2⟩
-    exact ⟨p - x, ⟨by omega, by omega⟩, by omega⟩
-
-/-- The subset sum of the steps is a subset sum of powers of `ω` over the reversed index set. -/
-theorem raySubsetSum_eq_sum_pow {p : ℕ} {ω : ℂ} (hω : IsPrimitiveRoot ω p) (hp : 0 < p)
-    {S : Finset ℕ} (hS : S ⊆ Finset.Ico 1 p) :
-    raySubsetSum ω S = ∑ m ∈ rayReverse p S, ω ^ m := by
-  have hne : ω ≠ 0 := hω.ne_zero (by omega)
-  have hinj : Set.InjOn (fun k => p - k) (S : Set ℕ) := by
-    intro a ha b hb hab
-    have h1 := Finset.mem_Ico.mp (hS ha)
-    have h2 := Finset.mem_Ico.mp (hS hb)
-    simp only at hab
-    omega
-  rw [rayReverse, Finset.sum_image hinj, raySubsetSum]
-  refine Finset.sum_congr rfl fun k hk => ?_
-  have hk' := Finset.mem_Ico.mp (hS hk)
-  rw [rayStep]
-  refine (eq_inv_of_mul_eq_one_left ?_).symm
-  rw [← pow_add, show p - k + k = p by omega, hω.pow_eq_one]
-
 /-! ## The orbit presentation -/
 
 /-- The index equivalence from `Fin 2^{p-1}` onto the subsets of `{1,…,p−1}`. -/
@@ -342,54 +283,140 @@ theorem rayCommonPart_eq_gammaOrbitDigammaMero (p : ℕ) (ω : ℂ) :
               Finset ℕ)) from rfl, hcomp, hcoe, rayCommonPart]
   exact Finset.sum_congr rfl fun S _ => by rw [ratfuncToMero_C_neg_one_pow]
 
-/-! ## The separation, and hypertranscendence -/
+/-! ## The imaginary-part functional and the shift-orbit separation -/
 
-/-- A distinguished index: the singleton `{1}`, which is neither empty nor the whole family. -/
-def raySingletonIndex {p : ℕ} (hp : 3 ≤ p) : Fin ((Finset.Ico 1 p).powerset.card) :=
-  (raySubsetEquiv p).symm ⟨{1}, Finset.mem_powerset.mpr (by
-    intro x hx
-    rw [Finset.mem_singleton] at hx
-    subst hx
-    exact Finset.mem_Ico.mpr ⟨le_refl 1, by omega⟩)⟩
+/-- For an odd exponent no scale on the ray is real. -/
+theorem pow_im_ne_zero_of_odd {p : ℕ} (hodd : Odd p) {ω : ℂ} (hω : IsPrimitiveRoot ω p)
+    {k : ℕ} (hk1 : 1 ≤ k) (hk2 : k < p) : (ω ^ k).im ≠ 0 := by
+  intro him
+  have hnorm : ‖ω‖ = 1 := Complex.norm_eq_one_of_pow_eq_one hω.pow_eq_one (by omega)
+  have hnk : ‖ω ^ k‖ = 1 := by rw [norm_pow, hnorm, one_pow]
+  have hreal : ω ^ k = (((ω ^ k).re : ℝ) : ℂ) := by
+    apply Complex.ext <;> simp [him]
+  rw [hreal, Complex.norm_real] at hnk
+  have hcases : (ω ^ k).re = 1 ∨ (ω ^ k).re = -1 :=
+    (abs_eq (by norm_num : (0:ℝ) ≤ 1)).mp hnk
+  have hdvd : p ∣ k := by
+    rcases hcases with h | h
+    · rw [h] at hreal
+      exact (hω.pow_eq_one_iff_dvd k).mp (by exact_mod_cast hreal)
+    · have hm : ω ^ k = -1 := by rw [hreal, h]; norm_num
+      have h2 : ω ^ (2 * k) = 1 := by rw [mul_comm, pow_mul, hm]; norm_num
+      have hd2 := (hω.pow_eq_one_iff_dvd (2 * k)).mp h2
+      have h2p : ¬ (2 ∣ p) := by
+        intro hdd
+        rcases hdd with ⟨m, rfl⟩
+        rcases hodd with ⟨t, ht⟩
+        omega
+      have hcop : Nat.Coprime p 2 :=
+        ((Nat.Prime.coprime_iff_not_dvd Nat.prime_two).mpr h2p).symm
+      exact hcop.dvd_of_dvd_mul_left hd2
+  have := Nat.le_of_dvd (by omega) hdvd
+  omega
 
-theorem raySubsetOf_raySingletonIndex {p : ℕ} (hp : 3 ≤ p) :
-    raySubsetOf p (raySingletonIndex hp) = {1} := by
-  rw [raySubsetOf, raySingletonIndex, Equiv.apply_symm_apply]
+/-- Every translation step of an odd ray has nonzero imaginary part. -/
+theorem rayStep_im_ne_zero {p : ℕ} (hodd : Odd p) {ω : ℂ} (hω : IsPrimitiveRoot ω p)
+    {k : ℕ} (hk : k ∈ Finset.Ico 1 p) : (rayStep ω k).im ≠ 0 := by
+  obtain ⟨hk1, hk2⟩ := Finset.mem_Ico.mp hk
+  have hne : ω ≠ 0 := hω.ne_zero (by omega)
+  have hpow : (ω ^ k) ≠ 0 := pow_ne_zero _ hne
+  rw [rayStep, Complex.inv_im]
+  exact div_ne_zero (neg_ne_zero.mpr (pow_im_ne_zero_of_odd hodd hω hk1 hk2))
+    (Complex.normSq_pos.mpr hpow).ne'
 
-/-- **The orbits are separated.**  For `p` prime the parameters `1 + σ_S` lie in pairwise distinct
-`ℤ`-shift orbits once the singleton `{1}` is taken as the reference. -/
-theorem rayOrbitBase_separated {p : ℕ} [Fact p.Prime] (hp : 3 ≤ p) {ω : ℂ}
-    (hω : IsPrimitiveRoot ω p) :
-    ∀ c, c ≠ raySingletonIndex hp →
-      ∀ n : ℤ, rayOrbitBase p ω c - rayOrbitBase p ω (raySingletonIndex hp) ≠ (n : ℂ) := by
+/-- The subset of indices whose translation step has positive imaginary part. -/
+def rayMaxSubset (p : ℕ) (ω : ℂ) : Finset ℕ :=
+  (Finset.Ico 1 p).filter (fun k => 0 < (rayStep ω k).im)
+
+theorem rayMaxSubset_subset (p : ℕ) (ω : ℂ) : rayMaxSubset p ω ⊆ Finset.Ico 1 p :=
+  Finset.filter_subset _ _
+
+theorem raySubsetSum_im (ω : ℂ) (S : Finset ℕ) :
+    (raySubsetSum ω S).im = ∑ k ∈ S, (rayStep ω k).im := by
+  rw [raySubsetSum]
+  simp [Complex.im_sum]
+
+/-- **Strict maximality of the positive-part subset.**  For an odd exponent the imaginary part of
+the subset sum of translation steps is strictly maximised by `rayMaxSubset`, and by it alone.  This
+is the linear functional that separates the shift orbits: it kills `ℤ` and no step lies in its
+kernel. -/
+theorem raySubsetSum_im_lt {p : ℕ} (hodd : Odd p) {ω : ℂ} (hω : IsPrimitiveRoot ω p)
+    {S : Finset ℕ} (hS : S ⊆ Finset.Ico 1 p) (hne : S ≠ rayMaxSubset p ω) :
+    (raySubsetSum ω S).im < (raySubsetSum ω (rayMaxSubset p ω)).im := by
+  classical
+  set T := rayMaxSubset p ω with hT
+  set f : ℕ → ℝ := fun k => (rayStep ω k).im with hf
+  have hpos : ∀ k ∈ T, 0 < f k := by
+    intro k hk
+    exact (Finset.mem_filter.mp hk).2
+  have hnonpos : ∀ k ∈ S, k ∉ T → f k < 0 := by
+    intro k hk hkT
+    have hmem : k ∈ Finset.Ico 1 p := hS hk
+    have hne0 : f k ≠ 0 := rayStep_im_ne_zero hodd hω hmem
+    rcases lt_trichotomy (f k) 0 with h | h | h
+    · exact h
+    · exact absurd h hne0
+    · exact absurd (Finset.mem_filter.mpr ⟨hmem, h⟩) hkT
+  have hsplitT : ∑ k ∈ T \ S, f k + ∑ k ∈ T ∩ S, f k = ∑ k ∈ T, f k := by
+    have h := Finset.sum_sdiff (s₁ := T ∩ S) (s₂ := T) Finset.inter_subset_left (f := f)
+    rwa [Finset.sdiff_inter_self_left] at h
+  have hsplitS : ∑ k ∈ S \ T, f k + ∑ k ∈ S ∩ T, f k = ∑ k ∈ S, f k := by
+    have h := Finset.sum_sdiff (s₁ := S ∩ T) (s₂ := S) Finset.inter_subset_left (f := f)
+    rwa [Finset.sdiff_inter_self_left] at h
+  have hcomm : ∑ k ∈ S ∩ T, f k = ∑ k ∈ T ∩ S, f k := by rw [Finset.inter_comm]
+  have hTSnn : 0 ≤ ∑ k ∈ T \ S, f k :=
+    Finset.sum_nonneg fun k hk => le_of_lt (hpos k (Finset.mem_sdiff.mp hk).1)
+  have hSTnp : ∑ k ∈ S \ T, f k ≤ 0 :=
+    Finset.sum_nonpos fun k hk =>
+      le_of_lt (hnonpos k (Finset.mem_sdiff.mp hk).1 (Finset.mem_sdiff.mp hk).2)
+  have hstrict : ∑ k ∈ S \ T, f k < ∑ k ∈ T \ S, f k := by
+    by_cases h1 : (T \ S).Nonempty
+    · have : 0 < ∑ k ∈ T \ S, f k :=
+        Finset.sum_pos (fun k hk => hpos k (Finset.mem_sdiff.mp hk).1) h1
+      linarith
+    · have hTS : T \ S = ∅ := Finset.not_nonempty_iff_eq_empty.mp h1
+      have h2 : (S \ T).Nonempty := by
+        by_contra h2
+        exact hne (Finset.Subset.antisymm
+          (Finset.sdiff_eq_empty_iff_subset.mp (Finset.not_nonempty_iff_eq_empty.mp h2))
+          (Finset.sdiff_eq_empty_iff_subset.mp hTS))
+      have : ∑ k ∈ S \ T, f k < 0 :=
+        Finset.sum_neg (fun k hk =>
+          hnonpos k (Finset.mem_sdiff.mp hk).1 (Finset.mem_sdiff.mp hk).2) h2
+      rw [hTS]
+      simpa using this
+  rw [raySubsetSum_im, raySubsetSum_im, ← hsplitS, ← hsplitT, hcomm]
+  linarith
+
+/-- The index of the positive-part subset. -/
+def rayMaxIndex (p : ℕ) (ω : ℂ) : Fin ((Finset.Ico 1 p).powerset.card) :=
+  (raySubsetEquiv p).symm ⟨rayMaxSubset p ω, Finset.mem_powerset.mpr (rayMaxSubset_subset p ω)⟩
+
+theorem raySubsetOf_rayMaxIndex (p : ℕ) (ω : ℂ) :
+    raySubsetOf p (rayMaxIndex p ω) = rayMaxSubset p ω := by
+  rw [raySubsetOf, rayMaxIndex, Equiv.apply_symm_apply]
+
+/-- **The orbits are separated.**  For an odd exponent the parameters `1 + σ_S` lie in `ℤ`-shift
+orbits all distinct from the one carrying the positive-part subset. -/
+theorem rayOrbitBase_separated {p : ℕ} (hodd : Odd p) {ω : ℂ} (hω : IsPrimitiveRoot ω p) :
+    ∀ c, c ≠ rayMaxIndex p ω →
+      ∀ n : ℤ, rayOrbitBase p ω c - rayOrbitBase p ω (rayMaxIndex p ω) ≠ (n : ℂ) := by
   intro c hc n heq
-  set c0 := raySingletonIndex hp with hc0def
   have hS : raySubsetOf p c ⊆ Finset.Ico 1 p := raySubsetOf_subset p c
-  have hS0 : raySubsetOf p c0 ⊆ Finset.Ico 1 p := raySubsetOf_subset p c0
-  have hsum : (∑ m ∈ rayReverse p (raySubsetOf p c), ω ^ m)
-      - (∑ m ∈ rayReverse p (raySubsetOf p c0), ω ^ m) = (n : ℂ) := by
-    rw [← raySubsetSum_eq_sum_pow hω (by omega) hS, ← raySubsetSum_eq_sum_pow hω (by omega) hS0]
-    rw [rayOrbitBase, rayOrbitBase] at heq
-    linear_combination heq
-  have hsing : raySubsetOf p c0 = {1} := raySubsetOf_raySingletonIndex hp
-  rcases subsetSum_sub_eq_intCast_cases hω (rayReverse_subset hS) (rayReverse_subset hS0) hsum with
-    heqS | ⟨hemp, hfull⟩ | ⟨hfull, hemp⟩
-  · exact hc (raySubsetOf_injective p (by
-      rw [← rayReverse_rayReverse hS, ← rayReverse_rayReverse hS0, heqS]))
-  · -- the reference subset would have to be the whole family
-    have : raySubsetOf p c0 = Finset.Ico 1 p := by
-      rw [← rayReverse_rayReverse hS0, hfull, rayReverse_Ico]
-    rw [hsing] at this
-    have h2 : (2 : ℕ) ∈ Finset.Ico 1 p := Finset.mem_Ico.mpr ⟨by omega, by omega⟩
-    rw [← this, Finset.mem_singleton] at h2
-    omega
-  · -- the reference subset would have to be empty
-    have : raySubsetOf p c0 = ∅ := rayReverse_eq_empty_iff.mp hemp
-    rw [hsing] at this
-    exact absurd this (by simp)
+  have hne : raySubsetOf p c ≠ rayMaxSubset p ω := by
+    rw [← raySubsetOf_rayMaxIndex p ω]
+    exact fun h => hc (raySubsetOf_injective p h)
+  have hlt := raySubsetSum_im_lt hodd hω hS hne
+  rw [rayOrbitBase, rayOrbitBase, raySubsetOf_rayMaxIndex] at heq
+  have him := congrArg Complex.im heq
+  simp only [Complex.sub_im, Complex.add_im, Complex.one_im, Complex.intCast_im,
+    zero_add] at him
+  linarith
 
-/-- **The digamma carrier of the ray product is hypertranscendental at an odd prime.** -/
-theorem hypertranscendentalOver_rayDigammaMero {p : ℕ} [Fact p.Prime] (hp : 3 ≤ p) {ω : ℂ}
+/-! ## Bank's theorem for an odd exponent -/
+
+/-- **The digamma carrier of the ray product is hypertranscendental at an odd exponent.** -/
+theorem hypertranscendentalOver_rayDigammaMero {p : ℕ} (hp : 1 < p) (hodd : Odd p) {ω : ℂ}
     (hω : IsPrimitiveRoot ω p) :
     HypertranscendentalOver (RatFunc ℂ) (rayDigammaMero p ω (hω.ne_zero (by omega))) := by
   intro hDA
@@ -397,12 +424,12 @@ theorem hypertranscendentalOver_rayDigammaMero {p : ℕ} [Fact p.Prime] (hp : 3 
     (hω.ne_zero (by omega)) hDA
   rw [rayCommonPart_eq_gammaOrbitDigammaMero] at hA
   refine hypertranscendentalOver_gammaOrbitDigammaMero (rayOrbitBase p ω) (rayOrbitCharge p)
-    (raySingletonIndex hp) ?_ (rayOrbitBase_separated hp hω) hA
+    (rayMaxIndex p ω) ?_ (rayOrbitBase_separated hodd hω) hA
   rw [rayOrbitCharge]
   exact pow_ne_zero _ (by norm_num)
 
-/-- **The reciprocal-Gamma ray product is hypertranscendental at an odd prime.** -/
-theorem hypertranscendentalOver_gammaRayProductMero_prime {p : ℕ} [Fact p.Prime] (hp : 3 ≤ p)
+/-- **The reciprocal-Gamma ray product is hypertranscendental at an odd exponent.** -/
+theorem hypertranscendentalOver_gammaRayProductMero_odd {p : ℕ} (hp : 1 < p) (hodd : Odd p)
     {ω : ℂ} (hω : IsPrimitiveRoot ω p) :
     HypertranscendentalOver (RatFunc ℂ) (gammaRayProductMero p ω (hω.ne_zero (by omega))) := by
   have hne : ω ≠ 0 := hω.ne_zero (by omega)
@@ -410,27 +437,41 @@ theorem hypertranscendentalOver_gammaRayProductMero_prime {p : ℕ} [Fact p.Prim
       (Differential.logDeriv (gammaRayProductMero p ω hne)) := by
     rw [logDeriv_gammaRayProductMero]
     intro hDA
-    exact hypertranscendentalOver_rayDigammaMero hp hω
+    exact hypertranscendentalOver_rayDigammaMero hp hodd hω
       (by simpa using differentialAlgebraicOver_neg hDA)
   exact (hypertranscendentalOver_deriv_div_self_iff _).mp hlog
 
-/-- **Bank's theorem at an odd prime exponent.**  The canonical product with zeros `−n^p` is
-hypertranscendental for every prime `p ≥ 3`. -/
-theorem hypertranscendental_powerCanonicalProduct_prime {p : ℕ} [Fact p.Prime] (hp : 3 ≤ p) :
+/-- **The odd half of Bank's theorem.**  The canonical product with zeros `−n^p` is
+hypertranscendental for every odd integer `p ≥ 3`. -/
+theorem hypertranscendental_powerCanonicalProduct_odd {p : ℕ} (hp : 1 < p) (hodd : Odd p) :
     Hypertranscendental (powerCanonicalProduct (p : ℝ)) := by
   obtain ⟨ω, hω⟩ : ∃ ω : ℂ, IsPrimitiveRoot ω p :=
     ⟨_, Complex.isPrimitiveRoot_exp p (by omega)⟩
-  have hodd : Odd p := (Fact.out : p.Prime).odd_of_ne_two (by omega)
-  rw [hypertranscendental_powerCanonicalProduct_odd_iff_mero (by omega) hodd hω]
-  exact hypertranscendentalOver_gammaRayProductMero_prime hp hω
+  rw [hypertranscendental_powerCanonicalProduct_odd_iff_mero hp hodd hω]
+  exact hypertranscendentalOver_gammaRayProductMero_odd hp hodd hω
 
-/-- **Bank's theorem at an odd-prime numerator.**  For every prime `p ≥ 3` and every positive `q`
-the canonical product with zeros `−n^{p/q}` is hypertranscendental. -/
-theorem hypertranscendental_powerCanonicalProduct_prime_ratio {p q : ℕ} [Fact p.Prime]
-    (hp : 3 ≤ p) (hq : 0 < q) :
+/-- **Bank's theorem.**  For a positive integer exponent, the canonical product with zeros `−n^p`
+is differentially algebraic exactly when `p` is even. -/
+theorem differentiallyAlgebraic_powerCanonicalProduct_natCast_iff {p : ℕ} (hp : 0 < p) :
+    DifferentiallyAlgebraic (powerCanonicalProduct (p : ℝ)) ↔ Even p := by
+  constructor
+  · intro hDA
+    by_contra hev
+    rw [Nat.not_even_iff_odd] at hev
+    rcases Nat.lt_or_ge p 2 with h1 | h2
+    · have hp1 : p = 1 := by omega
+      subst hp1
+      exact hypertranscendental_powerCanonicalProduct_one (by simpa using hDA)
+    · exact hypertranscendental_powerCanonicalProduct_odd (by omega) hev hDA
+  · exact differentiallyAlgebraic_powerCanonicalProduct_of_even hp
+
+/-- **Bank's theorem at a rational exponent with odd numerator.**  For every odd `p ≥ 3` and every
+positive `q` the canonical product with zeros `−n^{p/q}` is hypertranscendental. -/
+theorem hypertranscendental_powerCanonicalProduct_odd_ratio {p q : ℕ} (hp : 1 < p) (hodd : Odd p)
+    (hq : 0 < q) :
     Hypertranscendental (powerCanonicalProduct ((p : ℝ) / (q : ℝ))) :=
   hypertranscendental_powerCanonicalProduct_ratio (by omega) hq
-    (hypertranscendental_powerCanonicalProduct_prime hp)
+    (hypertranscendental_powerCanonicalProduct_odd hp hodd)
 
 end
 

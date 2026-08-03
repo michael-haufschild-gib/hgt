@@ -4,7 +4,9 @@
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE with dependency-closed algebraic bridge
 - **Parent:** `../4-publication-ready/real-corona-quaternionic-cyclic/CARD.md`
-- **Lean target:** `GaloisForLFunctions.RHTower.RealCoronaUniversalTransgression`
+- **Lean targets:** `GaloisForLFunctions.RHTower.RealCoronaUniversalTransgression`,
+  `GaloisForLFunctions.RHTower.RealCoronaLocalDetectabilityFracture`, and
+  `GaloisForLFunctions.RHTower.RealCoronaCompleteDivisorDetectability`
 - **Statement:** exchanged sectors create bounded quaternionic orientation and graded cyclic
   charge, fixed sectors create the complete Tate defect, but a nonzero unbounded odd Dirac
   operator cannot contain its own exchanged projector in the Lipschitz algebra.
@@ -101,9 +103,22 @@ constraint on possible realizations.
 
 ### P1: local index formula
 
-First falsifier: any proposed non-doubled triple with grading `m`, unbounded `D`, and `e` in its
-Lipschitz algebra contradicts `(F)`. A solution must either prove no such local formula exists or
-identify a genuinely different unbounded representative and prove its JLO/local residue formula.
+Every domain-preserving involutive orientation has the exact decomposition
+
+```text
+D_even = (D + mDm)/2,        D_odd = (D - mDm)/2,
+[D,m] = 2 D_odd m.
+```
+
+Hence boundedness of `[D,m]` is equivalent to boundedness of `D_odd`; if `D` is genuinely
+unbounded while `[D,m]` is bounded, every unbounded direction lies in the commuting, locally
+invisible even sector.  On the actual multiplicity-exact Xi divisor, take the unconditional
+self-adjoint maximal diagonal with energy `|rho-1/2|`.  Its spectrum escapes every bound, but the
+canonical functional-equation orientation commutes with it exactly.  Thus `[D,m]=0`, `D_odd=0`,
+and `D_even=D`.  A local cocycle generated only by grading commutators is therefore identically
+blind on this complete-divisor realization.  Remaining P1 obligation is chain-level: construct the
+universal commutator-generated local cyclic/JLO subcomplex and prove its realized pairing with
+`[m]` vanishes in every positive local degree, including the degree-zero normalization boundary.
 
 ### P2: adelic lift
 
@@ -170,7 +185,7 @@ stabilization or a different Dirac parity.
 - [x] dependency-closed proof of bounded-to-local fracture bridge
 - [x] unconditional Lean proof of fracture bridge
 - [ ] exact chain-level P2 lift
-- [ ] P1 local-index theorem or unconditional no-go
+- [ ] P1 chain-level local-index no-go (operator theorem proved)
 - [ ] P3 smoothness classification
 - [ ] P4 family analytic-rank theorem
 - [ ] full universal Chern-character factorization
@@ -210,3 +225,14 @@ stabilization or a different Dirac parity.
   weights. This support--multiplicity fracture is the correct P4 comparison and a new fixed-channel
   shadow of the universal transgression law. All selected theorems pass `#print axioms` with only
   `propext`, `Classical.choice`, and `Quot.sound`.
+- 2026-08-03 — `RealCoronaLocalDetectabilityFracture.lean` proves the exact orientation
+  even/odd decomposition for arbitrary densely defined `LinearPMap`s on invariant domains:
+  `[D,m]=2 D_odd m`, pointwise norm equality, bounded-commutator iff bounded odd part, and forced
+  concentration of all compatible unboundedness in `D_even`.  No self-adjointness or spectral
+  hypothesis is used. `RealCoronaCompleteDivisorDetectability.lean` then constructs the actual
+  maximal self-adjoint diagonal on all multiplicity copies of the Xi divisor with energy
+  `|rho-1/2|`; cofinite escape of Xi spectral norms proves genuine unboundedness.  The canonical
+  functional-equation orientation is a norm-preserving involution preserving the maximal domain,
+  commutes exactly with this operator, and has zero odd part and zero first commutator.  Selected
+  theorems pass `#print axioms` with only `propext`, `Classical.choice`, and `Quot.sound`.  This is
+  an actual complete-divisor P1 obstruction, not an everywhere-defined operator surrogate.

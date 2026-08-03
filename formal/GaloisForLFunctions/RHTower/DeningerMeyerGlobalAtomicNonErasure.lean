@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.DeningerMeyerReflectedGaussianHorizonStability
 import GaloisForLFunctions.RHTower.MobiusThetaAdaptivePrimeNormalGlobalReflectedComparison
+import GaloisForLFunctions.RHTower.XiDivisorDiagonalTraceClass
 
 /-!
 # Global atomic non-erasure and its stability fracture
