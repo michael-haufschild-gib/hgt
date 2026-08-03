@@ -174,6 +174,64 @@ Step 2 is closed. Step 1 is the hard remaining inverse theorem in the coupled ba
 Einstein--scalar setting. Existing potential-recovery theorems treat semilinear waves on a fixed
 Lorentzian geometry and do not by themselves close this coupled bridge.
 
+Its determination question is nevertheless settled exactly. For an arbitrary wave operator, with no
+linearity, smoothness or geometry assumed, a family of probes solving `□u + Vu = 0` determines `V`
+at an event **precisely when some probe of the family is nonvanishing there**; on the common zero
+set of the family `V` can be altered arbitrarily without disturbing a single probe solution. So the
+missing input of step 1 is exactly a probe family without a common zero — which is why wavefront
+data, locating only where solutions are singular, cannot supply it (audit point 5).
+
+`formal/GaloisForLFunctions/HTGeometry/ClockPotentialDetermination.lean`:
+
+- `SolvesPotentialWave`, `potentialDeterminationSet`;
+- `potential_eq_of_solvesPotentialWave`, `potential_eqOn_potentialDeterminationSet` — a
+  nonvanishing probe pins the potential, and the family determines it on the whole determination
+  set;
+- `solvesPotentialWave_update_of_notMem_potentialDeterminationSet`,
+  `exists_ne_potential_with_same_probeSolutions` — off that set the potential is invisible;
+- `potential_determined_iff_mem_potentialDeterminationSet` — the exact **iff** criterion;
+- `exists_notMem_potentialDeterminationSet_of_common_zero`,
+  `potentialDeterminationSet_empty` — the criterion is not vacuous.
+
+`formal/GaloisForLFunctions/HTGeometry/ClockScaleDeterminationLocus.lean` carries this through to
+the scale itself, which is what the bridge actually needs:
+
+- `reconstructedScale`, `reconstructedScale_eqOn_inter` — the reconstructed scale is unambiguous
+  exactly on the **intersection** of the two species' determination loci;
+- `exists_ne_reconstructedScale_of_notMem` — off the determination locus of either species the
+  reconstructed scale is genuinely ambiguous;
+- `reconstructedScale_wellDefined_of_subset_inter` — the bridge condition in usable form;
+- `potentialDeterminationSet_mono`, `potentialDeterminationSet_eq_iUnion`,
+  `isOpen_potentialDeterminationSet`, `isOpen_scaleDeterminationLocus` — the locus is monotone in
+  the probe family and **open** for continuous probes, so securing one nonvanishing probe per
+  species at an event secures a whole neighbourhood.
+
+So the entire remaining content of step 1 is one condition: *the two clock species must have probe
+families with no common zero where the scale is wanted.* Nothing about the geometry, the wave
+operators, or the coupling enters the determination question.
+
+That condition is far weaker than it looks for the family a laboratory actually produces. Repeating
+an intervention at moved events gives a probe family closed under the action that moves them, and
+for such a family the determination locus is a union of orbits — all-or-nothing when the action is
+transitive. `formal/GaloisForLFunctions/HTGeometry/ClockProbeTranslationFamily.lean`:
+
+- `ProbeActionClosed`, `mem_potentialDeterminationSet_of_act` — the determination locus is a union
+  of orbits;
+- `potentialDeterminationSet_eq_univ_of_transitive`,
+  `potentialDeterminationSet_eq_univ_of_exists_ne_zero` — **one nonvanishing observation anywhere
+  determines the potential everywhere**;
+- `potential_eq_of_repeatable` — a repeatable experiment pins the potential globally;
+- `reconstructedScale_eq_of_repeatable` — **one nonvanishing probe per species reconstructs the
+  conformal scale unambiguously at every event**;
+- `constantProbes`, `probeActionClosed_constantProbes`,
+  `potentialDeterminationSet_constantProbes` — the hypothesis class is inhabited.
+
+What remains genuinely open is therefore narrow and concrete: exhibit, for a backreacting
+Einstein--scalar geometry, one action-closed probe family per species together with a single
+nonvanishing observation. The determination half of step 1 is closed.
+
+All depend only on `propext`, `Classical.choice`, `Quot.sound`.
+
 ## Hypertranscendence role
 
 The two species must remain operationally distinguishable after propagation and reporter mixing.
@@ -201,7 +259,11 @@ are distinct.
 5. **Potential recovery:** wavefront locations alone recover conformal geometry, not the
    zeroth-order amplitudes required by `(7)`.
 6. **Species mixing:** a non-diagonal mass matrix must first be reconstructed and diagonalized by
-   physical source/reporter channels.
+   physical source/reporter channels. Proved sharp and quantitative: for a symmetric mass matrix
+   with diagonal entries `a, d` and mixing `b`, the calibrated gap is the spectral gap
+   `√((a-d)² + 4b²)`, which equals the naive channel gap `|a-d|` exactly when `b = 0` and strictly
+   exceeds it otherwise, so dividing by the raw channel labels strictly **overestimates**
+   `e^{2σ}`.
 7. **Clock-dark sector:** a scale mode invisible to both probe species defeats the operational
    bridge and violates detector completeness.
 
@@ -308,6 +370,20 @@ scale, and the two geometric defect channels — and proves both hypotheses of `
   data **iff** the two conjugation weights agree. This is audit point 3;
 - `exists_conformalPotentialData_difference_ne_scale` — an explicit weight mismatch that destroys
   the scale channel.
+
+`formal/GaloisForLFunctions/HTGeometry/ConformalClockSpeciesMixing.lean` closes audit point 6:
+
+- `massMixingGap`, `massEigenvalueHigh`, `massEigenvalueLow`, `massEigenvalueHigh_isRoot`,
+  `massEigenvalueLow_isRoot` — the calibrated masses of a mixed pair are the roots of the
+  characteristic polynomial of the symmetric mass matrix;
+- `massEigenvalue_difference` — the calibrated mass difference is the spectral gap;
+- `massMixingGap_eq_abs_sub_iff` — the spectral gap equals the naive channel gap **iff** the
+  mixing vanishes;
+- `abs_sub_lt_massMixingGap` — mixing strictly widens the gap;
+- `conformalPotentialData_mixed_reconstruction` — after diagonalization `(7)` holds verbatim;
+- `conformalPotentialData_mixed_naive_overestimate`,
+  `conformalPotentialData_mixed_naive_ne` — using un-diagonalized channel labels returns a
+  strictly larger value than the true scale, and never the true scale.
 
 All depend only on `propext`, `Classical.choice`, `Quot.sound`.
 

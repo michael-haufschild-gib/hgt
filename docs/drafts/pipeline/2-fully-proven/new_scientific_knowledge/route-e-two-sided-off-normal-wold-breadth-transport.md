@@ -1110,3 +1110,147 @@ Brun's two constraints force `log z ≍ log X/log log X`, which is the entire so
 Remaining for the sharpening: the divisor-sum bound `∑_{d ≤ D} τ(d)² ≪ D(log D)³` to make the
 error term explicit, then substitute `card_coprime_Ioc_le_log` for `card_rough_Ioc_le` in
 `OmegaTail.lean` and re-run the parameter choice with `log Y ≍ log X`.
+
+### Explicit Brun–Titchmarsh (2026-08-03) — `Sieve/DivisorSquareSum.lean`
+
+The Selberg error is now an elementary function of the parameters.  A squarefree `d` has `2^{ω d}`
+divisors, so `|Λ²_d| ≤ τ(d)² = 4^{ω d}`; weighting each `d ≤ D` by `D/d` turns the level-restricted
+sum into the tilted Euler product already owned by `TruncationDefect.lean`:
+
+- `card_divisors_of_squarefree` : `τ(d) = 2^{ω d}` for squarefree `d`;
+- `abs_lambdaSquared_le_four_pow` : `|Λ²_d| ≤ 4^{ω d}`;
+- `sum_four_pow_le` : `∑_{d ∣ z#, d ≤ D} 4^{ω d} ≤ D ∏_{p≤z}(1+4/p)`;
+- `sum_abs_lambdaSquared_le` : the whole truncated-Selberg error is `≤ Y² ∏_{p≤z}(1+4/p)`;
+- **`card_coprime_Ioc_le_explicit`** :
+  `#{n ∈ (a,b] : (z#, n)=1} ≤ 2(b−a)/log Y + Y² e^{4c₁}(log z)^4`, for `1 ≤ Y ≤ z`, `2 ≤ z`.
+
+Built, wired, axiom-clean.  This is Brun–Titchmarsh with every constant named.
+
+### Selberg form of the lower tail (2026-08-03) — `Sieve/SelbergTail.lean`
+
+- `selbergFibreError z Y = Y² e^{4c₁}(log z)^4`, nonnegative;
+- `card_rough_Ioc_le_selberg` : the rough count of an interval as `(b−a)·(2/log Y) + Y²(log z)^4`;
+- `card_omega_le_le_selberg` : the same smooth/rough fibring as `OmegaTail.lean`, but with the
+  Selberg fibre bound in place of Brun's — the `2^r`-sized truncation divisor count disappears from
+  the error entirely.
+
+### The `(log log)` loss is not a sieve-level defect — corrected diagnosis (2026-08-03)
+
+The earlier entry blamed the loss on Brun's level of distribution.  Traced to the end, that is
+wrong, and the Selberg construction proves it wrong: **no sieve by the primes `≤ z` can give a
+density better than `1/log z`**, because the rough numbers genuinely have density
+`∏_{p≤z}(1−1/p) ≍ 1/log z`.  Formally, the Selberg mass of the interval sieve satisfies
+`S_Y ≤ ∏_{p≤z}(1+1/p) ≍ log z` for every level `Y`, so `2/log Y` can never beat `1/log z`; and the
+hypothesis `Y ≤ z` in `card_coprime_Ioc_le_explicit` is not an artefact — it is what makes the
+sifted set the rough numbers at all.
+
+So the actual source of the `(log log X)^{1−c}` loss is elsewhere: it is the step
+
+`#{n ∈ (a,b] : ω n ≤ k} ≤ t^{−k} ∑_{n ∈ (a,b]} t^{ω(n)}`  followed by  `t^{ω(rough part)} ≤ 1`.
+
+Discarding the rough tilt is exactly a factor `(log X/log z)^{1−t}`.  Keeping it, the accounting is
+
+| factor | value |
+|-|-|
+| smooth weight `∑_{σ z-smooth} t^{ω σ}/σ` | `≍ (log z)^t` |
+| rough tilt `∑_{m rough ≤ M} t^{ω m}` | `≍ M · t · (log z)^{−t} (log X)^{t−1}` |
+| threshold `t^{−k}`, `k = t log log X` | `(log X)^{−t log t}` |
+
+whose product is `(b−a)(log X)^{t − t log t − 1} = (b−a)(log X)^{−I(t)}` — the literal `(7)`, with
+`log z` cancelling out identically.  Note that `(log z)^t` and `(log z)^{−t}` cancel: the sharp bound
+is insensitive to the cut, which is why no choice of `z` in the untilted argument can reach it.
+
+The one missing analytic input is therefore the **tilted rough sum**
+
+`∑_{m ∈ (u,v], P⁻(m) > z} t^{ω(m)} ≪ (v−u) (log z)^{−t} (log v)^{t−1}`,
+
+equivalently the short-interval Hardy–Ramanujan bound for rough numbers with exactly `j` prime
+factors.  This is the technical heart of Shiu's theorem and is the sole remaining item.
+
+### Cut fibring and the divisor window (2026-08-03) — `Sieve/LargeSmoothPart.lean`, `Sieve/ShiuSharp.lean`
+
+Both ingredients that the rough-tilt induction will need are now built and unconditional.
+
+`Sieve/LargeSmoothPart.lean`:
+
+- **`exists_divisor_mem_Ioc_of_smooth`** : a `z`-smooth `σ > M` has a divisor in `(M, Mz]` — take
+  the least divisor above `M`; dividing by any of its primes lands at or below `M` by minimality;
+- `divisorWindow z M k`, `card_divisorWindow_le` — the window set and its counting bound;
+- `exists_window_divisor` — every `n` with `ω n ≤ k` and smooth part `> M` is a multiple of a
+  window divisor of the same prime-count restriction;
+- **`card_large_smoothPart_le`** :
+  `#{n ∈ (a,b] : ω n ≤ k, s_z(n) > M} ≤ ((b−a)/M + 1)·#divisorWindow`.
+
+`Sieve/ShiuSharp.lean`:
+
+- **`card_omega_le_le_sum_restricted`** — the fibring cut at `M`: at most `M` fibres plus the
+  large-smooth-part remainder;
+- `card_smoothUpTo_le` : `#{σ ≤ M : σ z-smooth, ω σ ≤ k} ≤ M`;
+- **`card_omega_le_le_sharp`** :
+  `#{n ∈ (a,b] : ω n ≤ k} ≤ (b−a)(2/log Y)·smoothTilt + M(2/log Y + Y²(log z)^4)
+     + ((b−a)/M + 1)·#{σ ≤ Mz : σ z-smooth, ω σ ≤ k}`,
+  with the fibre error now linear in `M` rather than in the full smooth index.
+
+Built, wired, axiom-clean (nine theorems, `[propext, Classical.choice, Quot.sound]`).
+
+### The route to the literal `(7)`: Hardy–Ramanujan with a cut (2026-08-03)
+
+The tilted rough sum needed above is exactly the level-by-level count `S_j(a,b) = #{n ∈ (a,b] : ω n = j}`,
+and there is an elementary recursion for it that survives short intervals once it is cut.
+
+**The recursion.**  `Sieve/HardyRamanujanRecursion.lean`:
+
+- `omegaLevel a b j` — the level set;
+- `mem_smoothUpTo_self` — every integer of `Ioc a b` is `b`-smooth;
+- `card_primeFactors_ordCompl` — splitting off a maximal prime power drops `ω` by one;
+- **`card_omegaLevel_mul_le`** :
+  `j · S_j(a,b) ≤ ∑_{q ≤ b prime power} S_{j−1}(a/q, b/q)`,
+  proved by counting the pairs `(n, p)` with `p ∣ n` and mapping `(n,p) ↦ (p^{v_p n}, n/p^{v_p n})`,
+  which is injective because the prime power and the complementary factor reconstruct both.
+
+**Why a cut is forced.**  Each inner interval carries a `+1` of remainder, and there are `≍ b/log b`
+prime powers below `b` — vastly more than `b − a`.  So the plain recursion is useless in a short
+interval.
+
+**The cut.**  `Sieve/HardyRamanujanCut.lean`:
+
+- `bigPowSet Q n` — the primes of `n` whose maximal prime power exceeds `Q`;
+- **`pow_card_bigPowSet_le`** : `Q ^ #bigPowSet ≤ n` (those prime powers multiply to a divisor);
+- `card_bigPowSet_le` : if `b < Q^{R+1}` then no `n ≤ b` has more than `R` of them;
+- `smallPowSet Q n`, `card_smallPowSet_ge` : at least `j − R` maximal prime powers are `≤ Q`;
+- **`card_omegaLevel_mul_le_cut`** :
+  `(j − R) · S_j(a,b) ≤ ∑_{q ≤ Q prime power} S_{j−1}(a/q, b/q)`.
+
+**Weights.**  `Sieve/PrimePowerSum.lean`:
+
+- `sum_inv_pow_Icc_le` : `∑_{e ≥ 1} p^{−e} ≤ 1/(p−1)`;
+- `primePow_injOn` : `(p,e) ↦ p^e` is injective, so the reindexing is an equality;
+- **`sum_inv_primePowerSet_le`** : `∑_{q = p^e ≤ b} 1/q ≤ mertensS b + 1` — prime powers cost at
+  most one more than primes.
+
+**Real-valued step.**  `Sieve/HardyRamanujanStep.lean`:
+
+- `two_le_of_mem_primePowerSet`, `card_primePowerSet_cut_le` : the cut set has at most `Q` members;
+- **`card_omegaLevel_step`** : if `S_{j−1}(u,v) ≤ A(v−u) + B` for every subinterval of `[0,b]`, then
+  `(j − R)·S_j(a,b) ≤ A(b−a)·∑_{q ≤ Q}1/q + (A+B)·#{q ≤ Q}`.
+
+Built, wired, axiom-clean (twelve theorems, `[propext, Classical.choice, Quot.sound]`).
+
+**The accounting this makes possible.**  Choose the cut by `log Q = log b / (ε j)`, so `R = ε j` and
+the recursion loses only the factor `(1 − ε)^{−1}` per step; the density constant multiplies by
+`W = log log b + O(1)` and the error by `Q = exp(log b/(ε j))`.  With `j ≍ t log log b` and
+`ε = C/(t log log b) → 0`,
+
+- `Q = exp(log b · (t log log b)/(C t log log b · j/j)) = exp(O(log b / log log b)) = b^{o(1)}`,
+  so every error term is negligible against `b − a ≥ √b`;
+- the per-step loss compounds to `(1 − ε)^{−j} = exp(εj·(1+o(1))) = e^{C/t} = O(1)`, an absolute
+  constant — **not** a power of `log log b`.
+
+So `A_j ≍ A_1 W^{j−1}/j!` with `A_1 = 2/log Y ≍ 1/log b` from the explicit Brun–Titchmarsh of
+`DivisorSquareSum.lean`, and summing over `j ≤ k = t log log b` with the tilt `t^{−k}` gives
+
+`∑_{j ≤ k} S_j(a,b) ≪ (b−a) (log b)^{t − t log t − 1} / log log b = (b−a)(log b)^{−I(t)}/log log b`,
+
+which is the literal `(7)` with a `log log` **gain**.  The remaining work is the induction itself:
+the base case `S_1(a,b) ≤ 2(b−a)/log Y + Y²(log b)^4 + z + √b log₂ b` (Brun–Titchmarsh plus the
+prime powers of exponent ≥ 2), and the numerical closing of the recursion.

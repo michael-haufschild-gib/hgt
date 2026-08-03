@@ -123,7 +123,7 @@ For each self-dual family member, decompose the fixed idempotent into central an
 fibres. Prove
 
 ```text
-rank(e_fixed) = analytic_rank + off_central_real_multiplicity,
+rank(e_fixed) = analytic_rank + 2 * upper_off_central_real_multiplicity,
 ```
 
 and hence equality with analytic rank exactly when no off-central real zero occurs. The theorem
@@ -168,7 +168,7 @@ stabilization or a different Dirac parity.
 - [x] primary-literature parent audit
 - [x] frozen universal conjecture
 - [x] dependency-closed proof of bounded-to-local fracture bridge
-- [ ] unconditional Lean proof of fracture bridge
+- [x] unconditional Lean proof of fracture bridge
 - [ ] exact chain-level P2 lift
 - [ ] P1 local-index theorem or unconditional no-go
 - [ ] P3 smoothness classification
@@ -180,3 +180,14 @@ stabilization or a different Dirac parity.
 
 - 2026-08-03 — created in `1-in-progress`; orbit-only formulation rejected as parent
   Green--Julg/Karoubi/fixed-stratum theory; bounded-to-local fracture isolated as new hard residue.
+- 2026-08-03 — `RealCoronaUniversalTransgression.lean` upgraded bridge from an everywhere-defined
+  endomorphism surrogate to an exact `LinearPMap` on the invariant dense domain. Lean proves
+  `[D,e]=Dm`, `‖[D,e]x‖=‖Dx‖`, `[D,m]=2Dm`, and `‖[D,m]x‖=2‖Dx‖`; both bounded-commutator
+  conditions are equivalent to boundedness of `D`. A self-adjoint intrinsic odd datum therefore
+  has dense closed domain but admits neither first-order local-index regularity for `m` nor
+  first-order smoothness for `e`.
+- 2026-08-03 — P4 sharpened by self-dual reflection. For every finite real-zero multiplicity
+  function invariant under `x ↦ 2c-x`, Lean proves
+  `defectRank = analyticRank + 2 * upperOffCentralMultiplicity` and the parity congruence
+  `defectRank ≡ analyticRank (mod 2)`. Application to analytic families and identification with
+  the actual `K₀` rank remain required before closing P4.

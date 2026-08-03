@@ -1,18 +1,21 @@
 import GaloisForLFunctions.RHTower.PreQuasiGelfandTwoSidedSingularDefect
 
 /-!
-# Pythagorean observer blindness
+# Countable observer blindness and annihilator weaving
 
 This module formalizes the Hilbert-space core of observer--annihilator duality:
 for a dense-range bounded observer `T`, the image of the orthogonal defect
 `Dᗮ` is dense exactly when the closed normal space `D` misses
 `range T.adjoint`.
 
-It also constructs an explicit stable pair of injective dense-range diagonal
-observers.  Their common blind normal space misses both adjoint ranges yet
-contains a countably infinite linearly independent family.  Thus simultaneous
-dense observability is compatible with infinite-codimensional closed defects;
-the earlier codimension-one witness is not the endpoint phenomenon.
+It constructs an explicit diagonal model and proves finite- and countable-family
+laws.  For every countable family of non-coercive injective dense-range
+Hilbert observers, a closed common normal space misses every adjoint range,
+contains a countably infinite linearly independent family, and transfers every
+closed subspace below it to a simultaneous dense-image orthogonal defect.  If
+one observer is coercive, every closed simultaneous dense-image defect is the
+whole source.  No stability, commutation, self-adjointness, or spectral
+hypothesis is used.
 -/
 
 open scoped InnerProductSpace
@@ -78,6 +81,29 @@ theorem dense_image_orthogonal_iff_inf_adjointRange_eq_bot
     rw [Submodule.dense_iff_topologicalClosure_eq_top]
     apply Submodule.orthogonal_eq_bot_iff.mp
     simpa using horth
+
+theorem dense_image_iff_orthogonal_inf_adjointRange_eq_bot
+    (T : G →L[ℂ] H) (hdense : DenseRange T)
+    (M : Submodule ℂ G) (hMclosed : IsClosed (M : Set G)) :
+    Dense (M.map T.toLinearMap : Set H) ↔
+      Mᗮ ⊓ LinearMap.range T.adjoint.toLinearMap = ⊥ := by
+  have h := dense_image_orthogonal_iff_inf_adjointRange_eq_bot
+    T hdense Mᗮ M.isClosed_orthogonal
+  rw [Submodule.orthogonal_orthogonal_eq_closure,
+    hMclosed.submodule_topologicalClosure_eq] at h
+  exact h
+
+theorem dense_images_iff_orthogonal_avoids_adjointRanges
+    {I : Type*} {F : I → Type*}
+    [∀ i, NormedAddCommGroup (F i)] [∀ i, InnerProductSpace ℂ (F i)]
+    [∀ i, CompleteSpace (F i)]
+    (T : ∀ i, G →L[ℂ] F i) (hdense : ∀ i, DenseRange (T i))
+    (M : Submodule ℂ G) (hMclosed : IsClosed (M : Set G)) :
+    (∀ i, Dense (M.map (T i).toLinearMap : Set (F i))) ↔
+      ∀ i, Mᗮ ⊓ LinearMap.range (T i).adjoint.toLinearMap = ⊥ := by
+  exact forall_congr' fun i =>
+    dense_image_iff_orthogonal_inf_adjointRange_eq_bot
+      (T i) (hdense i) M hMclosed
 
 abbrev PQWildIndex := Bool × (ℕ × ℕ)
 abbrev PQWildHilbert := DiagonalL2 PQWildIndex
@@ -1346,5 +1372,449 @@ theorem finite_coercive_or_all_noncoercive
   by_cases h : ∃ i, ∃ K : NNReal, AntilipschitzWith K (T i)
   · exact Or.inl h
   · exact Or.inr fun i hi => h ⟨i, hi⟩
+
+abbrev CountableWildIndex := ℕ × (ℕ × ℕ)
+abbrev CountableWildHilbert := DiagonalL2 CountableWildIndex
+
+def countableWildScheduleEquiv : CountableWildIndex ≃ ℕ :=
+  (Equiv.prodCongr (Equiv.refl ℕ) Nat.pairEquiv).trans Nat.pairEquiv
+
+def countableObserverSmall {H : ℕ → Type*}
+    [∀ i, NormedAddCommGroup (H i)] [∀ i, NormedSpace ℂ (H i)]
+    (T : ∀ i, G →L[ℂ] H i) (q : CountableWildIndex) (x : G) : Prop :=
+  ‖x‖ = 1 ∧ ‖T q.1 x‖ < (pqInv q.1 * pqInv q.2.2) ^ 2
+
+theorem exists_countable_singular_orthonormalArray
+    {H : ℕ → Type*}
+    [∀ i, NormedAddCommGroup (H i)] [∀ i, InnerProductSpace ℂ (H i)]
+    [∀ i, CompleteSpace (H i)]
+    (T : ∀ i, G →L[ℂ] H i) (hT : ∀ i, HilbertRangeSingular (T i)) :
+    ∃ u : CountableWildIndex → G, Orthonormal ℂ u ∧
+      ∀ i k n,
+        ‖T i (u (i, (k, n)))‖ < (pqInv i * pqInv n) ^ 2 := by
+  let rel : G → G → Prop := fun x y => inner ℂ x y = 0
+  letI : Std.Symm rel := ⟨by
+    intro x y hxy
+    exact inner_eq_zero_symm.mp hxy⟩
+  let pred : ℕ → G → Prop := fun n x =>
+    countableObserverSmall T (countableWildScheduleEquiv.symm n) x
+  have hstep : ∀ n (s : Finset G), ∃ y, pred n y ∧ ∀ x ∈ s, rel x y := by
+    intro n s
+    let q := countableWildScheduleEquiv.symm n
+    let F : Submodule ℂ G := Submodule.span ℂ (s : Set G)
+    let Ts : Fᗮ →L[ℂ] H q.1 := (T q.1).domRestrict Fᗮ
+    have hs : HilbertRangeSingular Ts :=
+      hilbertRangeSingular_domRestrict_orthogonal (T q.1) (hT q.1) F
+    have heps : 0 < (pqInv q.1 * pqInv q.2.2) ^ 2 :=
+      sq_pos_of_pos (mul_pos (pqInv_pos _) (pqInv_pos _))
+    obtain ⟨y, hy1, hyT⟩ :=
+      exists_unit_norm_map_lt_of_hilbertRangeSingular Ts hs heps
+    refine ⟨y, ?_, ?_⟩
+    · change countableObserverSmall T q y
+      exact ⟨hy1, hyT⟩
+    · intro x hx
+      exact (Submodule.mem_orthogonal F (y : G)).mp y.2 x
+        (Submodule.subset_span hx)
+  obtain ⟨f, hfPred, hfPair⟩ := exists_seq_dependent_pairwise pred rel hstep
+  let u : CountableWildIndex → G := fun q => f (countableWildScheduleEquiv q)
+  have huPred : ∀ q, countableObserverSmall T q (u q) := by
+    intro q
+    simpa [pred, u] using hfPred (countableWildScheduleEquiv q)
+  have huOrtho : Orthonormal ℂ u := by
+    rw [orthonormal_iff_ite]
+    intro q r
+    by_cases hqr : q = r
+    · subst r
+      rw [if_pos rfl, inner_self_eq_norm_sq_to_K, (huPred q).1]
+      norm_num
+    · rw [if_neg hqr]
+      exact hfPair (fun h => hqr (countableWildScheduleEquiv.injective h))
+  exact ⟨u, huOrtho, fun i k n => (huPred (i, (k, n))).2⟩
+
+def countableWildEval (q : CountableWildIndex) : CountableWildHilbert →L[ℂ] ℂ :=
+  LinearMap.mkContinuous
+    { toFun := fun x => x q
+      map_add' := fun _ _ => rfl
+      map_smul' := fun _ _ => rfl }
+    1 (fun x => by simpa using lp.norm_apply_le_norm (by norm_num) x q)
+
+@[simp] theorem countableWildEval_apply (q : CountableWildIndex)
+    (x : CountableWildHilbert) : countableWildEval q x = x q := rfl
+
+def countableWovenNormalSubspace : Submodule ℂ CountableWildHilbert :=
+  ⨅ i : ℕ, ⨅ k : ℕ, ⨅ n : ℕ,
+    (countableWildEval (i, (k, n)) -
+      (pqInv i * pqInv n : ℂ) • countableWildEval (0, (k, 0))).ker
+
+theorem mem_countableWovenNormalSubspace_iff (x : CountableWildHilbert) :
+    x ∈ countableWovenNormalSubspace ↔
+      ∀ i k n, x (i, (k, n)) =
+        (pqInv i * pqInv n : ℂ) * x (0, (k, 0)) := by
+  rw [countableWovenNormalSubspace]
+  simp only [Submodule.mem_iInf]
+  constructor
+  · intro h i k n
+    have h' := h i k n
+    change (countableWildEval (i, (k, n)) -
+      (pqInv i * pqInv n : ℂ) • countableWildEval (0, (k, 0))) x = 0 at h'
+    simpa [sub_eq_zero] using h'
+  · intro h i k n
+    change (countableWildEval (i, (k, n)) -
+      (pqInv i * pqInv n : ℂ) • countableWildEval (0, (k, 0))) x = 0
+    simpa [sub_eq_zero] using h i k n
+
+theorem countableWovenNormalSubspace_isClosed :
+    IsClosed (countableWovenNormalSubspace : Set CountableWildHilbert) := by
+  have heq : (countableWovenNormalSubspace : Set CountableWildHilbert) =
+      ⋂ i : ℕ, ⋂ k : ℕ, ⋂ n : ℕ,
+        ((countableWildEval (i, (k, n)) -
+          (pqInv i * pqInv n : ℂ) • countableWildEval (0, (k, 0))).ker :
+            Set CountableWildHilbert) := by
+    ext x
+    change x ∈ countableWovenNormalSubspace ↔ x ∈
+      ⋂ i : ℕ, ⋂ k : ℕ, ⋂ n : ℕ,
+        ((countableWildEval (i, (k, n)) -
+          (pqInv i * pqInv n : ℂ) • countableWildEval (0, (k, 0))).ker :
+            Set CountableWildHilbert)
+    rw [mem_countableWovenNormalSubspace_iff]
+    simp only [Set.mem_iInter]
+    constructor
+    · intro h i k n
+      change (countableWildEval (i, (k, n)) -
+        (pqInv i * pqInv n : ℂ) • countableWildEval (0, (k, 0))) x = 0
+      simpa [sub_eq_zero] using h i k n
+    · intro h i k n
+      have h' := h i k n
+      change (countableWildEval (i, (k, n)) -
+        (pqInv i * pqInv n : ℂ) • countableWildEval (0, (k, 0))) x = 0 at h'
+      simpa [sub_eq_zero] using h'
+  rw [heq]
+  exact isClosed_iInter fun i => isClosed_iInter fun k => isClosed_iInter fun n =>
+    (countableWildEval (i, (k, n)) -
+      (pqInv i * pqInv n : ℂ) • countableWildEval (0, (k, 0))).isClosed_ker
+
+def countableWildWeightEquiv : CountableWildIndex ≃ (ℕ × ℕ) × ℕ where
+  toFun q := ((q.1, q.2.2), q.2.1)
+  invFun q := (q.1.1, (q.2, q.1.2))
+  left_inv := by rintro ⟨i, j, n⟩; rfl
+  right_inv := by rintro ⟨⟨i, n⟩, j⟩; rfl
+
+def countableWovenNormalWeight (k : ℕ) : CountableWildIndex → ℂ
+  | (i, (j, n)) =>
+      if j = k then (pqInv i * pqInv n : ℂ) else 0
+
+theorem countableWovenNormalWeight_summable_sq (k : ℕ) :
+    Summable (fun q : CountableWildIndex =>
+      ‖countableWovenNormalWeight k q‖ ^ 2) := by
+  let a : ℕ → ℝ := fun n => ‖(pqInv n : ℂ)‖ ^ 2
+  have ha : Summable a := by
+    have hsplit :=
+      (summable_prod_of_nonneg (fun q : PQIndex => sq_nonneg ‖pqVWeight q‖)).mp
+        pqVWeight_summable_sq
+    exact (hsplit.1 false).congr fun n => by simp [a, pqVWeight]
+  have haNorm : Summable (fun n => ‖a n‖) := by
+    exact ha.congr fun n => by simp [a]
+  have hp : Summable (fun q : ℕ × ℕ => a q.1 * a q.2) :=
+    summable_mul_of_summable_norm haNorm haNorm
+  have hpNorm : Summable (fun q : ℕ × ℕ => ‖a q.1 * a q.2‖) := by
+    exact hp.congr fun q => by simp [a]
+  let s : ℕ → ℝ := fun j => if j = k then 1 else 0
+  have hsNorm : Summable (fun j => ‖s j‖) := by
+    apply summable_of_ne_finset_zero (s := {k})
+    intro j hj
+    have hjk : j ≠ k := by simpa using hj
+    simp [s, hjk]
+  have hfull : Summable (fun q : (ℕ × ℕ) × ℕ =>
+      (a q.1.1 * a q.1.2) * s q.2) :=
+    summable_mul_of_summable_norm hpNorm hsNorm
+  refine (countableWildWeightEquiv.summable_iff.mpr hfull).congr ?_
+  rintro ⟨i, j, n⟩
+  by_cases hj : j = k
+  · subst j
+    simp [countableWovenNormalWeight, countableWildWeightEquiv, a, s,
+      Complex.norm_real, Real.norm_eq_abs,
+      abs_of_pos (pqInv_pos i), abs_of_pos (pqInv_pos n)]
+    ring
+  · simp [countableWovenNormalWeight, countableWildWeightEquiv, a, s, hj]
+
+def countableWovenNormalVector (k : ℕ) : CountableWildHilbert :=
+  ⟨countableWovenNormalWeight k,
+    HilbertSchmidt.memℓp_of_sq (countableWovenNormalWeight_summable_sq k)⟩
+
+theorem countableWovenNormalVector_mem (k : ℕ) :
+    countableWovenNormalVector k ∈ countableWovenNormalSubspace := by
+  rw [mem_countableWovenNormalSubspace_iff]
+  intro i j n
+  by_cases hj : j = k
+  · subst j
+    simp [countableWovenNormalVector, countableWovenNormalWeight, pqInv]
+  · simp [countableWovenNormalVector, countableWovenNormalWeight, hj]
+
+def countableWovenNormalVectorSub (k : ℕ) : countableWovenNormalSubspace :=
+  ⟨countableWovenNormalVector k, countableWovenNormalVector_mem k⟩
+
+def countableWovenNormalCoordinate (k : ℕ) :
+    countableWovenNormalSubspace →ₗ[ℂ] ℂ :=
+  (countableWildEval (0, (k, 0))).toLinearMap.comp
+    countableWovenNormalSubspace.subtype
+
+theorem countableWovenNormalVectorSub_linearIndependent :
+    LinearIndependent ℂ countableWovenNormalVectorSub := by
+  rw [linearIndependent_iff]
+  intro l hl
+  apply Finsupp.ext
+  intro k
+  have hk := congrArg (countableWovenNormalCoordinate k) hl
+  rw [Finsupp.apply_linearCombination] at hk
+  simpa [Finsupp.linearCombination_apply, countableWovenNormalCoordinate,
+    countableWovenNormalVectorSub, countableWovenNormalVector,
+    countableWovenNormalWeight, pqInv, Finsupp.sum] using hk
+
+noncomputable def countableWovenNormalIsometry
+    {u : CountableWildIndex → G} (hu : Orthonormal ℂ u) :
+    countableWovenNormalSubspace →ₗᵢ[ℂ] G :=
+  hu.orthogonalFamily.linearIsometry.comp countableWovenNormalSubspace.subtypeₗᵢ
+
+def countableWovenNormalSpace
+    {u : CountableWildIndex → G} (hu : Orthonormal ℂ u) : Submodule ℂ G :=
+  LinearMap.range (countableWovenNormalIsometry hu).toLinearMap
+
+theorem countableWovenNormalSpace_isClosed
+    {u : CountableWildIndex → G} (hu : Orthonormal ℂ u) :
+    IsClosed (countableWovenNormalSpace hu : Set G) := by
+  letI : CompleteSpace countableWovenNormalSubspace :=
+    countableWovenNormalSubspace_isClosed.completeSpace_coe
+  exact (countableWovenNormalIsometry hu).isometry.isClosedEmbedding.isClosed_range
+
+theorem countableWovenNormalIsometry_inner_left
+    {u : CountableWildIndex → G} (hu : Orthonormal ℂ u)
+    (z : countableWovenNormalSubspace) (q : CountableWildIndex) :
+    inner ℂ (u q) (countableWovenNormalIsometry hu z) =
+      (z : CountableWildHilbert) q := by
+  exact orthonormalSynthesis_inner_left hu (z : CountableWildHilbert) q
+
+theorem countableWovenNormalSpace_inf_adjointRange_eq_bot
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+    (T : G →L[ℂ] H) (i : ℕ)
+    {u : CountableWildIndex → G} (hu : Orthonormal ℂ u)
+    (hsmall : ∀ k n,
+      ‖T (u (i, (k, n)))‖ < (pqInv i * pqInv n) ^ 2) :
+    countableWovenNormalSpace hu ⊓ LinearMap.range T.adjoint.toLinearMap = ⊥ := by
+  rw [Submodule.eq_bot_iff]
+  intro x hx
+  rcases hx.1 with ⟨z, hz⟩
+  rcases hx.2 with ⟨y, hy⟩
+  have hzy : countableWovenNormalIsometry hu z = T.adjoint y := hz.trans hy.symm
+  have hrel :=
+    (mem_countableWovenNormalSubspace_iff (z : CountableWildHilbert)).mp z.2
+  have hcoeff : ∀ k : ℕ, (z : CountableWildHilbert) (0, (k, 0)) = 0 := by
+    intro k
+    by_contra hk
+    have hz0 : z ≠ 0 := by
+      intro hzzero
+      apply hk
+      rw [hzzero]
+      rfl
+    have hy0 : y ≠ 0 := by
+      intro hyzero
+      apply hz0
+      apply (countableWovenNormalIsometry hu).injective
+      rw [hzy, hyzero]
+      simp
+    have hcoord : ∀ n : ℕ,
+        (z : CountableWildHilbert) (i, (k, n)) =
+          inner ℂ (T (u (i, (k, n)))) y := by
+      intro n
+      calc
+        (z : CountableWildHilbert) (i, (k, n)) =
+            inner ℂ (u (i, (k, n))) (countableWovenNormalIsometry hu z) :=
+          (countableWovenNormalIsometry_inner_left hu z (i, (k, n))).symm
+        _ = inner ℂ (u (i, (k, n))) (T.adjoint y) := by rw [hzy]
+        _ = inner ℂ (T (u (i, (k, n)))) y := T.adjoint_inner_right _ _
+    have hbound : ∀ n : ℕ,
+        ‖(z : CountableWildHilbert) (i, (k, n))‖ <
+          (pqInv i * pqInv n) ^ 2 * ‖y‖ := by
+      intro n
+      rw [hcoord n]
+      exact (norm_inner_le_norm _ _).trans_lt
+        (mul_lt_mul_of_pos_right (hsmall k n) (norm_pos_iff.mpr hy0))
+    have hnorm : ∀ n : ℕ,
+        ‖(z : CountableWildHilbert) (i, (k, n))‖ =
+          (pqInv i * pqInv n) *
+            ‖(z : CountableWildHilbert) (0, (k, 0))‖ := by
+      intro n
+      rw [hrel i k n, norm_mul, norm_mul, Complex.norm_real, Complex.norm_real,
+        Real.norm_eq_abs, Real.norm_eq_abs,
+        abs_of_pos (pqInv_pos i), abs_of_pos (pqInv_pos n)]
+    have ht : Filter.Tendsto
+        (fun n : ℕ => pqInv n * (pqInv i * ‖y‖)) Filter.atTop (nhds 0) := by
+      simpa using tendsto_pqInv_zero.mul_const (pqInv i * ‖y‖)
+    have hev : ∀ᶠ n : ℕ in Filter.atTop,
+        pqInv n * (pqInv i * ‖y‖) <
+          ‖(z : CountableWildHilbert) (0, (k, 0))‖ :=
+      ht.eventually (Iio_mem_nhds (norm_pos_iff.mpr hk))
+    rcases Filter.eventually_atTop.mp hev with ⟨n, hn⟩
+    have hsmallAt := hn n le_rfl
+    have hboundAt := hbound n
+    rw [hnorm n] at hboundAt
+    have hfactor : 0 < pqInv i * pqInv n := mul_pos (pqInv_pos i) (pqInv_pos n)
+    have hreverse : (pqInv i * pqInv n) ^ 2 * ‖y‖ <
+        (pqInv i * pqInv n) *
+          ‖(z : CountableWildHilbert) (0, (k, 0))‖ := by
+      calc
+        (pqInv i * pqInv n) ^ 2 * ‖y‖ =
+            (pqInv i * pqInv n) * (pqInv n * (pqInv i * ‖y‖)) := by ring
+        _ < (pqInv i * pqInv n) *
+            ‖(z : CountableWildHilbert) (0, (k, 0))‖ :=
+          mul_lt_mul_of_pos_left hsmallAt hfactor
+    exact (not_lt_of_ge hreverse.le) hboundAt
+  have hzzero : z = 0 := by
+    apply Subtype.ext
+    ext q
+    rcases q with ⟨i', k, n⟩
+    rw [hrel i' k n, hcoeff k, mul_zero]
+    rfl
+  rw [← hz, hzzero]
+  exact (countableWovenNormalIsometry hu).map_zero
+
+theorem countableWovenNormalSpace_has_countable_independent_family
+    {u : CountableWildIndex → G} (hu : Orthonormal ℂ u) :
+    ∃ v : ℕ → G, LinearIndependent ℂ v ∧
+      ∀ k, v k ∈ countableWovenNormalSpace hu := by
+  let V := countableWovenNormalIsometry hu
+  let v : ℕ → G := fun k => V (countableWovenNormalVectorSub k)
+  refine ⟨v, ?_, ?_⟩
+  · have hker : LinearMap.ker V.toLinearMap = ⊥ :=
+      LinearMap.ker_eq_bot.mpr V.injective
+    simpa [v, V, Function.comp_def] using
+      countableWovenNormalVectorSub_linearIndependent.map' V.toLinearMap hker
+  · intro k
+    exact ⟨countableWovenNormalVectorSub k, rfl⟩
+
+theorem dense_orthogonal_image_of_le_countableWovenNormalSpace
+    {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+    (T : G →L[ℂ] H) (hDense : DenseRange T)
+    {u : CountableWildIndex → G} (hu : Orthonormal ℂ u)
+    (hAvoid : countableWovenNormalSpace hu ⊓
+      LinearMap.range T.adjoint.toLinearMap = ⊥)
+    (L : Submodule ℂ G) (hLclosed : IsClosed (L : Set G))
+    (hLD : L ≤ countableWovenNormalSpace hu) :
+    Dense (Lᗮ.map T.toLinearMap : Set H) := by
+  apply (dense_image_orthogonal_iff_inf_adjointRange_eq_bot
+    T hDense L hLclosed).mpr
+  rw [Submodule.eq_bot_iff]
+  intro x hx
+  have hxD : x ∈ countableWovenNormalSpace hu ⊓
+      LinearMap.range T.adjoint.toLinearMap := ⟨hLD hx.1, hx.2⟩
+  rw [hAvoid] at hxD
+  exact hxD
+
+theorem countable_singular_observer_wild_lattice
+    {H : ℕ → Type*}
+    [∀ i, NormedAddCommGroup (H i)] [∀ i, InnerProductSpace ℂ (H i)]
+    [∀ i, CompleteSpace (H i)]
+    (T : ∀ i, G →L[ℂ] H i)
+    (hTsing : ∀ i, HilbertRangeSingular (T i))
+    (hTdense : ∀ i, DenseRange (T i)) :
+    ∃ u : CountableWildIndex → G, ∃ hu : Orthonormal ℂ u,
+      IsClosed (countableWovenNormalSpace hu : Set G) ∧
+      (∀ i, countableWovenNormalSpace hu ⊓
+        LinearMap.range (T i).adjoint.toLinearMap = ⊥) ∧
+      (∃ v : ℕ → G, LinearIndependent ℂ v ∧
+        ∀ k, v k ∈ countableWovenNormalSpace hu) ∧
+      ∀ L : Submodule ℂ G, IsClosed (L : Set G) →
+        L ≤ countableWovenNormalSpace hu →
+          ∀ i, Dense (Lᗮ.map (T i).toLinearMap : Set (H i)) := by
+  obtain ⟨u, hu, hsmall⟩ := exists_countable_singular_orthonormalArray T hTsing
+  have hAvoid : ∀ i, countableWovenNormalSpace hu ⊓
+      LinearMap.range (T i).adjoint.toLinearMap = ⊥ := fun i =>
+    countableWovenNormalSpace_inf_adjointRange_eq_bot (T i) i hu (hsmall i)
+  refine ⟨u, hu, countableWovenNormalSpace_isClosed hu, hAvoid,
+    countableWovenNormalSpace_has_countable_independent_family hu, ?_⟩
+  intro L hLclosed hLD i
+  exact dense_orthogonal_image_of_le_countableWovenNormalSpace
+    (T i) (hTdense i) hu (hAvoid i) L hLclosed hLD
+
+theorem countable_noncoercive_observer_wild_lattice
+    {H : ℕ → Type*}
+    [∀ i, NormedAddCommGroup (H i)] [∀ i, InnerProductSpace ℂ (H i)]
+    [∀ i, CompleteSpace (H i)]
+    (T : ∀ i, G →L[ℂ] H i)
+    (hTinj : ∀ i, Function.Injective (T i))
+    (hTdense : ∀ i, DenseRange (T i))
+    (hnoncoercive : ∀ i, ¬ ∃ K : NNReal, AntilipschitzWith K (T i)) :
+    ∃ u : CountableWildIndex → G, ∃ hu : Orthonormal ℂ u,
+      IsClosed (countableWovenNormalSpace hu : Set G) ∧
+      (∀ i, countableWovenNormalSpace hu ⊓
+        LinearMap.range (T i).adjoint.toLinearMap = ⊥) ∧
+      (∃ v : ℕ → G, LinearIndependent ℂ v ∧
+        ∀ k, v k ∈ countableWovenNormalSpace hu) ∧
+      ∀ L : Submodule ℂ G, IsClosed (L : Set G) →
+        L ≤ countableWovenNormalSpace hu →
+          ∀ i, Dense (Lᗮ.map (T i).toLinearMap : Set (H i)) := by
+  apply countable_singular_observer_wild_lattice T
+  · intro i
+    exact (hilbertRangeSingular_iff_no_antilipschitz (T i) (hTinj i)).mpr
+      (hnoncoercive i)
+  · exact hTdense
+
+theorem countable_coercive_observer_forces_trivial_common_defect
+    {H : ℕ → Type*}
+    [∀ i, NormedAddCommGroup (H i)] [∀ i, InnerProductSpace ℂ (H i)]
+    (T : ∀ i, G →L[ℂ] H i) (hTinj : ∀ i, Function.Injective (T i))
+    (M : Submodule ℂ G) (hMclosed : IsClosed (M : Set G))
+    (hMdense : ∀ i, Dense (M.map (T i).toLinearMap : Set (H i)))
+    (hcoercive : ∃ i, ∃ K : NNReal, AntilipschitzWith K (T i)) :
+    M = ⊤ := by
+  obtain ⟨i, K, hK⟩ := hcoercive
+  exact closed_biDense_eq_top_of_antilipschitz
+    (T i) (hTinj i) M hMclosed (hMdense i) hK
+
+omit [CompleteSpace G] in
+theorem countable_coercive_or_all_noncoercive
+    {H : ℕ → Type*}
+    [∀ i, NormedAddCommGroup (H i)] [∀ i, NormedSpace ℂ (H i)]
+    (T : ∀ i, G →L[ℂ] H i) :
+    (∃ i, ∃ K : NNReal, AntilipschitzWith K (T i)) ∨
+      ∀ i, ¬ ∃ K : NNReal, AntilipschitzWith K (T i) := by
+  by_cases h : ∃ i, ∃ K : NNReal, AntilipschitzWith K (T i)
+  · exact Or.inl h
+  · exact Or.inr fun i hi => h ⟨i, hi⟩
+
+theorem countable_observer_coercivity_wildness_law
+    {H : ℕ → Type*}
+    [∀ i, NormedAddCommGroup (H i)] [∀ i, InnerProductSpace ℂ (H i)]
+    [∀ i, CompleteSpace (H i)]
+    (T : ∀ i, G →L[ℂ] H i)
+    (hTinj : ∀ i, Function.Injective (T i))
+    (hTdense : ∀ i, DenseRange (T i)) :
+    ((∃ i, ∃ K : NNReal, AntilipschitzWith K (T i)) ∧
+      ∀ M : Submodule ℂ G, IsClosed (M : Set G) →
+        (∀ i, Dense (M.map (T i).toLinearMap : Set (H i))) → M = ⊤) ∨
+    ((∀ i, ¬ ∃ K : NNReal, AntilipschitzWith K (T i)) ∧
+      ∃ u : CountableWildIndex → G, ∃ hu : Orthonormal ℂ u,
+        IsClosed (countableWovenNormalSpace hu : Set G) ∧
+        (∀ i, countableWovenNormalSpace hu ⊓
+          LinearMap.range (T i).adjoint.toLinearMap = ⊥) ∧
+        (∃ v : ℕ → G, LinearIndependent ℂ v ∧
+          ∀ k, v k ∈ countableWovenNormalSpace hu) ∧
+        ∀ L : Submodule ℂ G, IsClosed (L : Set G) →
+          L ≤ countableWovenNormalSpace hu →
+            ∀ i, Dense (Lᗮ.map (T i).toLinearMap : Set (H i))) := by
+  rcases countable_coercive_or_all_noncoercive T with hcoercive | hnoncoercive
+  · refine Or.inl ⟨hcoercive, ?_⟩
+    intro M hMclosed hMdense
+    exact countable_coercive_observer_forces_trivial_common_defect
+      T hTinj M hMclosed hMdense hcoercive
+  · exact Or.inr ⟨hnoncoercive,
+      countable_noncoercive_observer_wild_lattice
+        T hTinj hTdense hnoncoercive⟩
+
+theorem not_every_hilbertPreQuasiPair_is_quasi :
+    ¬ ∀ plus minus : PQHilbert →ₗ.[ℂ] PQHilbert,
+      HilbertPreQuasiPair plus minus → HilbertQuasiCompatibility plus minus := by
+  intro h
+  obtain ⟨plus, minus, hpre, hnquasi⟩ := exists_hilbertPreQuasiPair_not_quasi
+  exact hnquasi (h plus minus hpre)
 
 end RHTower

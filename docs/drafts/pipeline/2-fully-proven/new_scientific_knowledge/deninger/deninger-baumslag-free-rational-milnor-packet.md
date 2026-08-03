@@ -99,7 +99,11 @@
   `GaloisForLFunctions.RHTower.DeningerCycReassemble` (reassembling the data after a step),
   `GaloisForLFunctions.RHTower.DeningerCycBase` (the base case),
   `GaloisForLFunctions.RHTower.DeningerCycDecomp` (decomposing a non cyclically reduced word),
-  `GaloisForLFunctions.RHTower.DeningerCycRecursion` (the cyclic reduction recursion)
+  `GaloisForLFunctions.RHTower.DeningerCycRecursion` (the cyclic reduction recursion),
+  `GaloisForLFunctions.RHTower.DeningerWordIndices` (the index sequence is an invariant),
+  `GaloisForLFunctions.RHTower.DeningerHeadOnly` (words transversal except at the front),
+  `GaloisForLFunctions.RHTower.DeningerPowerLength` (the length of a power),
+  `GaloisForLFunctions.RHTower.DeningerTwoExponent` (the two exponent comparison)
 
 ## Statement
 
@@ -1122,6 +1126,58 @@ This is the production of the cyclic reduction data that the two-exponent compar
 it, the shape `C · Vᵏ · R` is available for an arbitrary element, its junction conditions coming
 from the alternation of `C ++ R` and the cyclic reducedness of `V`.
 
+**The remaining obstruction.**  The comparison reads off the normal word of a power, and normal words
+have their letters in the transversal, whereas the words produced by the recursion do not: the
+conjugator inherits the head of the element in its first letter, and each reduction step creates a
+merged letter at the end.  Putting a word into transversal form pushes base group elements leftwards
+through it, which changes every letter, so the transversal form of `C ++ Vᵏ ++ R` is not the
+concatenation of transversal forms.  What survives the normalization is the sequence of indices:
+
+- `deningerNormalWord_base_mul` — the base group on the left does not change the word;
+- `deningerNormalWord_map_fst` — **the normal form of a product of a reduced alternating word has
+  the same indices as the word**, transversal or not.
+
+So the comparison currently yields the index sequences of the two words, which gives the rotation but
+not yet the equality of the letters.  Closing that gap is what remains.
+
+There is however one shape for which the normalization is harmless.  If every letter but the first
+lies in the transversal, the base group element released by that first letter becomes the head and
+never reaches the others, so the word is unchanged from the second letter on:
+
+- `deningerNormalWord_head_only` — **the normal form of a reduced alternating word whose letters are
+  transversal except at the front** is that word with its first letter replaced by its transversal
+  representative, and the released base element as head.
+
+This is the shape the comparison needs, and it is the shape the conjugator and the tail already have,
+being a prefix and a suffix of the word of the element.  The cyclically reduced part is what fails
+it, because each reduction step creates its merged letter at the end.
+
+**Lengths need no transversality at all.**  What the normalization changes is the letters; the number
+of them is fixed, so the length of a power can be read off the decomposition directly:
+
+- `deningerLen_conj_pow` — for an element presented as `C · V · C⁻¹` with `V` cyclically reduced of
+  at least two letters, **the `(k+1)`-st power has length `|C| + k·|V| + |R|`**;
+- `deningerLen_conj_pow_sub` — **each further power adds `|V|`**.
+
+The powers therefore grow linearly, at a rate that is exactly the length of the cyclically reduced
+part.  Comparing `xⁿ = yⁿ` at the two exponents `n` and `2n` cancels the constant term and returns
+`|V_x| = |V_y|`, and then the constant term returns `|C_x| = |C_y|`: the two decompositions have the
+same shape, and the rotation relating them is trivial.  This is the two-exponent trick carried out on
+the one invariant that survives normalization, and it is now proved:
+
+- `deningerLen_eq_of_pow_eq` — **two elements with the same `n`-th power have cyclically reduced
+  parts of the same length, and are themselves of the same length.**
+
+Comparing at a single exponent leaves the constant term of the linear growth undetermined; comparing
+at `n` and `2n` cancels it.  So the two decompositions align position by position, with no rotation.
+
+What remains is the passage from the shape to the letters.  The natural route is the conjugacy
+criterion for cyclically reduced elements — two conjugate cyclically reduced elements of at least two
+letters are cyclic permutations of one another — whose proof is an induction on the length of the
+conjugating element, shortening it by moving a letter across whenever the conjugate fails to be
+longer.  The length bounds this needs are the ones already proved for conjugates, and the case
+analysis is the merge dichotomy.
+
 Step 1 still needs Baumslag's inductive step (root adjunction preserves unique roots), which rests
 on the same normal-form machinery.
 
@@ -1746,3 +1802,36 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   a short wrapper.  This is the production of the data the two-exponent comparison consumes, so the
   shape `C · Vᵏ · R` is now available for an arbitrary element, with its junction conditions coming
   from the alternation of `C ++ R` and cyclic reducedness of `V`.
+- 2026-08-03 — Located the remaining obstruction precisely, and proved what survives it.  The
+  comparison reads off normal words, whose letters lie in the transversal, but the words the
+  recursion produces do not: the conjugator inherits the head of the element in its first letter and
+  each reduction step creates a merged letter at the end.  Normalizing pushes base group elements
+  leftwards through the whole word, so the transversal form of `C ++ Vᵏ ++ R` is not the
+  concatenation of the transversal forms and the letters cannot be compared directly.  What is
+  invariant under the normalization is the sequence of indices, and that is now proved.  The
+  comparison therefore yields the rotation of index sequences; recovering the letters is the
+  remaining gap.
+- 2026-08-03 — Proved the one shape in which normalization is harmless: a reduced alternating word
+  whose letters lie in the transversal except at the front normalizes by replacing that first letter
+  with its transversal representative and releasing a head, leaving the other letters untouched.
+  This is exactly the shape the comparison needs, and the conjugator and the tail already have it,
+  being a prefix and a suffix of the word of the element.  The cyclically reduced part is the one
+  piece that fails it, because each reduction step creates its merged letter at the end.  Next: the
+  length consequence, which needs no letters at all — comparing at two exponents gives the length of
+  the cyclically reduced part and then the length of the conjugator, so the two decompositions align
+  position by position with no rotation.
+- 2026-08-03 — Proved the length of a power, which needs no transversality: normalization changes the
+  letters of a word but not their number, so the length of the `(k+1)`-st power of `C · V · C⁻¹` is
+  `|C| + k·|V| + |R|` and each further power adds `|V|`.  The powers grow linearly at exactly the
+  length of the cyclically reduced part.  This is the two-exponent trick carried out on the one
+  invariant that survives normalization: comparing at `n` and `2n` cancels the constant term and
+  gives `|V_x| = |V_y|`, then the constant term gives `|C_x| = |C_y|`, so the two decompositions have
+  the same shape and the rotation relating them is trivial.
+- 2026-08-03 — Proved the two exponent comparison: two elements with the same `n`-th power have
+  cyclically reduced parts of the same length, and are themselves of the same length.  A single
+  exponent leaves the constant term of the linear growth undetermined; `n` and `2n` cancel it.  The
+  two decompositions therefore align position by position and no rotation machinery is needed in the
+  endgame.  What remains is the passage from the shape to the letters, for which the route is the
+  conjugacy criterion for cyclically reduced elements: the induction shortens the conjugating element
+  by moving a letter across whenever the conjugate fails to be longer, using the conjugate length
+  bounds and the merge dichotomy, both already proved.

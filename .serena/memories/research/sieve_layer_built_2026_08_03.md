@@ -86,3 +86,44 @@ value, both **Bonferroni** inequalities), `BrunPure` (`truncDivisors`, `card_cop
 an extra `(log log X)^{O(1)}` versus the literal statement. Harmless for the card's theorem, which
 uses only `(9)` as `#E = o(H/log log X)`. Recovering the literal `(log X)^{−I(c)}` needs Shiu's own
 largest-prime-factor induction with Brun–Titchmarsh in progressions — the one open sharpening.
+
+## Second batch (same day): Brun–Titchmarsh made explicit, and the Hardy–Ramanujan engine
+
+New modules under `formal/GaloisForLFunctions/RHTower/Sieve/`, all wired into `RHTower.lean`,
+all `[propext, Classical.choice, Quot.sound]`:
+
+| module | key theorem |
+|-|-|
+| `DivisorSquareSum.lean` | `card_coprime_Ioc_le_explicit` : `#{n ∈ (a,b] : (z#,n)=1} ≤ 2(b−a)/log Y + Y² e^{4c₁}(log z)^4` |
+| `SelbergTail.lean` | `card_rough_Ioc_le_selberg`, `card_omega_le_le_selberg` |
+| `LargeSmoothPart.lean` | `exists_divisor_mem_Ioc_of_smooth` (smooth `σ > M` has a divisor in `(M,Mz]`), `card_large_smoothPart_le` |
+| `ShiuSharp.lean` | `card_omega_le_le_sum_restricted` (fibring cut at `M`), `card_omega_le_le_sharp` |
+| `HardyRamanujanRecursion.lean` | `card_omegaLevel_mul_le` : `j·S_j(a,b) ≤ ∑_{q ≤ b} S_{j−1}(a/q,b/q)` |
+| `HardyRamanujanCut.lean` | `card_omegaLevel_mul_le_cut` : same with `q ≤ Q` and `(j−R)` on the left, given `b < Q^{R+1}` |
+| `PrimePowerSum.lean` | `sum_inv_primePowerSet_le` : `∑_{q=p^e ≤ b} 1/q ≤ mertensS b + 1` |
+| `HardyRamanujanStep.lean` | `card_omegaLevel_step` : the recursion in `A·length + B` shape |
+
+### Corrected diagnosis (important, supersedes the earlier note)
+
+The `(log log X)^{1−c}` loss in the Shiu-type tail bound is **not** a level-of-distribution defect
+of Brun's sieve.  No sieve by primes `≤ z` can beat density `1/log z` — the Selberg mass of the
+interval sieve is `≤ ∏_{p≤z}(1+1/p) ≍ log z` for every level `Y`, and `Y ≤ z` is essential.  The
+loss comes from bounding `t^{ω(rough part)} ≤ 1`; keeping that factor makes `log z` cancel exactly
+and gives the literal `(log X)^{−I(t)}`.
+
+### The viable route to the sharp bound
+
+Hardy–Ramanujan recursion **with a cut**: choose `log Q = log b/(εj)` so `R = εj`; then the error
+per step is `≍ Q = b^{o(1)}` (negligible against `b−a ≥ √b`) and the per-step loss `(1−ε)^{−1}`
+compounds to `e^{O(1/t)}`, an absolute constant, when `ε = C/(t log log b)`.  Summing `j ≤ t log log b`
+with the tilt gives `(b−a)(log b)^{−I(t)}/log log b`.  Remaining: base case `S_1` from
+Brun–Titchmarsh + prime powers of exponent ≥ 2, and the numerical closing of the induction.
+
+### Traps hit
+
+- `Σ` is not a legal Lean identifier ("unexpected token").
+- `rintro ⟨n,p⟩` leaves `⟨n,p⟩.fst` in hypotheses — `rw [Finset.mem_sigma]` keeps it, `simp only`
+  reduces it; omega treats the unreduced form as a distinct atom.
+- `set q := p ^ n.factorization p` makes later `have`s use the unfolded form; `rw [← hq]` before omega.
+- `Nat.Ico_succ_right` does not exist on this toolchain; prove `Icc 1 L = Ico 1 (L+1)` by `ext; simp`.
+- `positivity` cannot prove `p ^ e ≠ 0` for `p : ℕ` prime; use `pow_ne_zero _ hprime.pos.ne'`.

@@ -253,6 +253,7 @@ formal/GaloisForLFunctions/HTGeometry/PowerSubstitutionForwardDA.lean
 formal/GaloisForLFunctions/HTGeometry/RationalPowerNormDichotomy.lean
 formal/GaloisForLFunctions/HTGeometry/OddPowerCanonicalProductGammaRay.lean
 formal/GaloisForLFunctions/HTGeometry/MeromorphicGammaComplexScale.lean
+formal/GaloisForLFunctions/HTGeometry/ReflectionNormPowerCanonicalProduct.lean
 ```
 
 Principal declarations:
@@ -273,9 +274,19 @@ differentiallyAlgebraic_comp_const_mul_pow_iff -- (7) in full, as an iff
 differentiallyAlgebraic_cyclicNorm_of_even     -- the even branch of (9)
 hypertranscendental_cyclicNorm_of_hypertranscendental -- the other branch of (9)
 hypertranscendental_powerCanonicalProduct_ratio -- (10) modulo (8)
+powerCanonicalProduct_mul_neg             -- reflection norm  W_p(u) W_p(-u) = W_(2p)(-u^2)
+differentiallyAlgebraic_powerCanonicalProduct_mul_neg -- and it is DA for every p
+pi_mul_reciprocalGamma_pair               -- pi w / (Gamma(w+1) Gamma(1-w)) = sin(pi w)
+sincProduct_eq_reciprocalGamma_pair       -- sinc is the reciprocal-Gamma reflection pair
+reciprocalGamma_scale_pair                -- collapse of the scale pair (lambda, -lambda)
+gammaRayProduct_mul_neg                   -- collapse of the ray product against its reflection
 sum_inv_sub_primitiveRoot_mul             -- root-of-unity partial fractions
 inv_pow_sub_pow_eq_weighted_sum           -- residue decomposition of 1/(m^p - n^p)
 gammaScaleShiftMero, gammaRayProductMero  -- Gamma at arbitrary complex scale
+complexScaleMeroEquiv_ratfuncToMero       -- the dilation restricts to C(X)
+addTranslationMeroEquiv_gammaScaleShiftMero  -- scaled Gamma recurrence, T_(1/a)
+digammaScaleShiftMero,
+addTranslationMeroEquiv_digammaScaleShiftMero -- scaled digamma has a rational increment
 hypertranscendental_powerCanonicalProduct_odd_iff_mero -- the open core, in the mero field
 sincProduct, pi_mul_sincProduct, sincProduct_ade,
 differentiallyAlgebraic_sincProduct       -- the Euler sine product and its ADE
@@ -478,6 +489,13 @@ asymptotic constant is *not* an obstruction, and neither is irrationality of the
 purely local pole-data invariant decides the dichotomy: `W_2` and `W_4` are DA with the same kind of
 Laurent data as `W_3`.
 
+**The reflection mechanism, now formalized.**  `sincProduct c = Gamma(c+1)^(-1) Gamma(1-c)^(-1)`
+identifies the Euler sine product with a reciprocal-Gamma pair at *opposite scales*, and
+`gammaRayProduct_mul_neg` shows the ray product times its reflection always collapses to sine
+factors.  For even `p` the pairing is available *inside* the ray product (`omega^(j+p/2) = -omega^j`)
+and that is exactly the even branch of `(8)`; for odd `p` the scales are never closed under
+negation, so no internal pairing exists.
+
 **Where the parity actually sits.**  It is a property of the *multiset of scales*, not of any single
 pole: `prod_(j<p) Gamma(omega^j z + 1)^(-1)` collapses to elementary sine factors exactly when the
 scales are closed under negation with matching charges, i.e. exactly when `p` is even, via
@@ -491,8 +509,19 @@ Revised milestones:
 ```text
 O4a  the reflection norm law  W_p(u) W_p(-u) = W_(2p)(-u^2)                 [DONE]
 O4b  root-of-unity partial fractions and the residue decomposition          [DONE]
-O4c  the reflection collapse at the level of scales, Gamma(1+x)Gamma(1-x)
+O4c  the reflection collapse at the level of scales, Gamma(1+x)Gamma(1-x)   [DONE]
 O4d  multi-scale Gamma superselection at root-of-unity scales               (the open gate)
+```
+
+The scaled difference layer is now built: `Gamma(a z + b)` satisfies
+`T_(1/a) Gamma(a z + b) = (a z + b) Gamma(a z + b)` in the meromorphic field, so
+`digammaScaleShiftMero a b` has a **rational** increment under its own translation `T_(1/a)`.  This
+makes the obstruction of the negative finding exact and checkable in Lean: for each factor the
+increment is rational under `T_(1/omega^j)` and under no other translation of the group, because
+`omega^(j-k)` is real only for `j = k` when `p` is odd.  A superselection proof therefore cannot be
+assembled from the single-scale recurrences alone; it needs an input that couples different scales.
+
+```text
 ```
 
 `O3` is proved, so the card's headline consequence `(10)` now holds unconditionally in Lean for the

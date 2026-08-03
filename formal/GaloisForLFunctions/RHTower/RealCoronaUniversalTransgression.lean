@@ -26,7 +26,7 @@ variable {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V]
 def cliffordExchangeProjector (m : Module.End ℂ V) : Module.End ℂ V :=
   (2 : ℂ)⁻¹ • (m + LinearMap.id)
 
-def linearCommutator (D e : Module.End ℂ V) : Module.End ℂ V :=
+def coronaCommutator (D e : Module.End ℂ V) : Module.End ℂ V :=
   D * e - e * D
 
 theorem cliffordExchangeProjector_orientation
@@ -48,21 +48,21 @@ theorem cliffordExchangeProjector_isIdempotent
   rw [hmx]
   module
 
-theorem linearCommutator_cliffordExchangeProjector
+theorem coronaCommutator_cliffordExchangeProjector
     {m D : Module.End ℂ V} (hodd : D * m = -(m * D)) :
-    linearCommutator D (cliffordExchangeProjector m) = D * m := by
+    coronaCommutator D (cliffordExchangeProjector m) = D * m := by
   apply LinearMap.ext
   intro x
   have hx := LinearMap.congr_fun hodd x
-  simp [linearCommutator, cliffordExchangeProjector] at hx ⊢
+  simp [coronaCommutator, cliffordExchangeProjector] at hx ⊢
   rw [hx]
   module
 
-theorem norm_linearCommutator_cliffordExchangeProjector
+theorem norm_coronaCommutator_cliffordExchangeProjector
     {m D : Module.End ℂ V} (hodd : D * m = -(m * D))
     (hiso : ∀ x, ‖m x‖ = ‖x‖) (x : V) :
-    ‖linearCommutator D (cliffordExchangeProjector m) x‖ = ‖D x‖ := by
-  rw [linearCommutator_cliffordExchangeProjector hodd]
+    ‖coronaCommutator D (cliffordExchangeProjector m) x‖ = ‖D x‖ := by
+  rw [coronaCommutator_cliffordExchangeProjector hodd]
   change ‖D (m x)‖ = ‖D x‖
   have hx : D (m x) = -m (D x) := LinearMap.congr_fun hodd x
   rw [hx, norm_neg, hiso]
@@ -74,14 +74,14 @@ theorem hasLinearOperatorBound_commutator_iff
     {m D : Module.End ℂ V} (hodd : D * m = -(m * D))
     (hiso : ∀ x, ‖m x‖ = ‖x‖) :
     HasLinearOperatorBound
-        (linearCommutator D (cliffordExchangeProjector m)) ↔
+        (coronaCommutator D (cliffordExchangeProjector m)) ↔
       HasLinearOperatorBound D := by
   constructor <;> rintro ⟨C, hC, hbound⟩
   · refine ⟨C, hC, fun x => ?_⟩
-    rw [← norm_linearCommutator_cliffordExchangeProjector hodd hiso x]
+    rw [← norm_coronaCommutator_cliffordExchangeProjector hodd hiso x]
     exact hbound x
   · refine ⟨C, hC, fun x => ?_⟩
-    rw [norm_linearCommutator_cliffordExchangeProjector hodd hiso x]
+    rw [norm_coronaCommutator_cliffordExchangeProjector hodd hiso x]
     exact hbound x
 
 /-- An algebraic linear operator on a normed space is genuinely unbounded when it has no global
@@ -93,7 +93,7 @@ theorem genuinelyUnbounded_commutator_iff
     {m D : Module.End ℂ V} (hodd : D * m = -(m * D))
     (hiso : ∀ x, ‖m x‖ = ‖x‖) :
     IsGenuinelyUnbounded
-        (linearCommutator D (cliffordExchangeProjector m)) ↔
+        (coronaCommutator D (cliffordExchangeProjector m)) ↔
       IsGenuinelyUnbounded D := by
   exact not_congr (hasLinearOperatorBound_commutator_iff hodd hiso)
 
@@ -114,6 +114,29 @@ def linearPMapExchangeProjectorDomainMap
     D.domain →ₗ[ℂ] D.domain :=
   ((cliffordExchangeProjector m).comp D.domain.subtype).codRestrict
     D.domain (fun x => linearPMapExchangeProjector_mem D m hdomm x)
+
+/-- Restriction of a domain-preserving orientation to the operator domain. -/
+def linearPMapOrientationDomainMap
+    (D : V →ₗ.[ℂ] V) (m : Module.End ℂ V)
+    (hdomm : ∀ x : D.domain, m x ∈ D.domain) :
+    D.domain →ₗ[ℂ] D.domain :=
+  (m.comp D.domain.subtype).codRestrict D.domain hdomm
+
+/-- The commutator with the orientation itself, on the exact operator domain. -/
+def linearPMapOrientationCommutator
+    (D : V →ₗ.[ℂ] V) (m : Module.End ℂ V)
+    (hdomm : ∀ x : D.domain, m x ∈ D.domain) : V →ₗ.[ℂ] V where
+  domain := D.domain
+  toFun := D.toFun.comp (linearPMapOrientationDomainMap D m hdomm) -
+    m.comp D.toFun
+
+@[simp]
+theorem linearPMapOrientationCommutator_apply
+    (D : V →ₗ.[ℂ] V) (m : Module.End ℂ V)
+    (hdomm : ∀ x : D.domain, m x ∈ D.domain) (x : D.domain) :
+    linearPMapOrientationCommutator D m hdomm x =
+      D ⟨m x, hdomm x⟩ - m (D x) := by
+  rfl
 
 /-- The commutator with the exchanged projector on the exact domain of a partially defined
 operator.  It is a `LinearPMap`, not an everywhere-defined surrogate for an unbounded operator. -/
@@ -169,6 +192,25 @@ theorem norm_linearPMapExchangeCommutator
   rw [linearPMapExchangeCommutator_eq D m hdomm hodd x,
     hodd x, norm_neg, hiso]
 
+theorem linearPMapOrientationCommutator_eq_two_smul
+    (D : V →ₗ.[ℂ] V) (m : Module.End ℂ V)
+    (hdomm : ∀ x : D.domain, m x ∈ D.domain)
+    (hodd : ∀ x : D.domain, D ⟨m x, hdomm x⟩ = -m (D x))
+    (x : D.domain) :
+    linearPMapOrientationCommutator D m hdomm x =
+      (2 : ℂ) • D ⟨m x, hdomm x⟩ := by
+  rw [linearPMapOrientationCommutator_apply, hodd x]
+  module
+
+theorem norm_linearPMapOrientationCommutator
+    (D : V →ₗ.[ℂ] V) (m : Module.End ℂ V)
+    (hdomm : ∀ x : D.domain, m x ∈ D.domain)
+    (hodd : ∀ x : D.domain, D ⟨m x, hdomm x⟩ = -m (D x))
+    (hiso : ∀ x : V, ‖m x‖ = ‖x‖) (x : D.domain) :
+    ‖linearPMapOrientationCommutator D m hdomm x‖ = 2 * ‖D x‖ := by
+  rw [linearPMapOrientationCommutator_eq_two_smul D m hdomm hodd x,
+    norm_smul, Complex.norm_ofNat, hodd x, norm_neg, hiso]
+
 /-- A partially defined operator is bounded on its domain when one constant controls its graph
 norm against the ambient norm.  For a dense domain this is exactly the estimate needed for a
 bounded extension. -/
@@ -190,6 +232,24 @@ theorem hasLinearPMapBoundOnDomain_exchangeCommutator_iff
     rw [norm_linearPMapExchangeCommutator D m hdomm hodd hiso x]
     exact hbound x
 
+theorem hasLinearPMapBoundOnDomain_orientationCommutator_iff
+    (D : V →ₗ.[ℂ] V) (m : Module.End ℂ V)
+    (hdomm : ∀ x : D.domain, m x ∈ D.domain)
+    (hodd : ∀ x : D.domain, D ⟨m x, hdomm x⟩ = -m (D x))
+    (hiso : ∀ x : V, ‖m x‖ = ‖x‖) :
+    HasLinearPMapBoundOnDomain (linearPMapOrientationCommutator D m hdomm) ↔
+      HasLinearPMapBoundOnDomain D := by
+  constructor
+  · rintro ⟨C, hC, hbound⟩
+    refine ⟨C, hC, fun x => ?_⟩
+    have h := hbound x
+    rw [norm_linearPMapOrientationCommutator D m hdomm hodd hiso x] at h
+    exact le_trans (by nlinarith [norm_nonneg (D x)]) h
+  · rintro ⟨C, hC, hbound⟩
+    refine ⟨2 * C, mul_nonneg (by norm_num) hC, fun x => ?_⟩
+    rw [norm_linearPMapOrientationCommutator D m hdomm hodd hiso x]
+    nlinarith [hbound x, norm_nonneg (x : V)]
+
 def IsGenuinelyUnboundedLinearPMap (T : V →ₗ.[ℂ] V) : Prop :=
   ¬HasLinearPMapBoundOnDomain T
 
@@ -202,6 +262,16 @@ theorem genuinelyUnboundedLinearPMap_exchangeCommutator_iff
       IsGenuinelyUnboundedLinearPMap D := by
   exact not_congr
     (hasLinearPMapBoundOnDomain_exchangeCommutator_iff D m hdomm hodd hiso)
+
+theorem genuinelyUnboundedLinearPMap_orientationCommutator_iff
+    (D : V →ₗ.[ℂ] V) (m : Module.End ℂ V)
+    (hdomm : ∀ x : D.domain, m x ∈ D.domain)
+    (hodd : ∀ x : D.domain, D ⟨m x, hdomm x⟩ = -m (D x))
+    (hiso : ∀ x : V, ‖m x‖ = ‖x‖) :
+    IsGenuinelyUnboundedLinearPMap (linearPMapOrientationCommutator D m hdomm) ↔
+      IsGenuinelyUnboundedLinearPMap D := by
+  exact not_congr
+    (hasLinearPMapBoundOnDomain_orientationCommutator_iff D m hdomm hodd hiso)
 
 /-! ### Intrinsic odd Real-corona data -/
 
@@ -231,6 +301,10 @@ def IntrinsicRealCoronaOddDatum.projector
 def IntrinsicRealCoronaOddDatum.projectorCommutator
     (F : IntrinsicRealCoronaOddDatum H) : H →ₗ.[ℂ] H :=
   linearPMapExchangeCommutator F.D F.orientation.toLinearMap F.domain_invariant
+
+def IntrinsicRealCoronaOddDatum.orientationCommutator
+    (F : IntrinsicRealCoronaOddDatum H) : H →ₗ.[ℂ] H :=
+  linearPMapOrientationCommutator F.D F.orientation.toLinearMap F.domain_invariant
 
 theorem IntrinsicRealCoronaOddDatum.dense_domain
     (F : IntrinsicRealCoronaOddDatum H) : Dense (F.D.domain : Set H) :=
@@ -265,6 +339,50 @@ theorem IntrinsicRealCoronaOddDatum.projectorCommutator_not_bounded
     (F : IntrinsicRealCoronaOddDatum H) :
     ¬HasLinearPMapBoundOnDomain F.projectorCommutator :=
   F.projectorCommutator_genuinelyUnbounded
+
+theorem IntrinsicRealCoronaOddDatum.orientationCommutator_genuinelyUnbounded
+    (F : IntrinsicRealCoronaOddDatum H) :
+    IsGenuinelyUnboundedLinearPMap F.orientationCommutator := by
+  exact (genuinelyUnboundedLinearPMap_orientationCommutator_iff
+    F.D F.orientation.toLinearMap F.domain_invariant F.odd
+      F.orientation_isometry).mpr F.genuinely_unbounded
+
+theorem IntrinsicRealCoronaOddDatum.orientationCommutator_not_bounded
+    (F : IntrinsicRealCoronaOddDatum H) :
+    ¬HasLinearPMapBoundOnDomain F.orientationCommutator :=
+  F.orientationCommutator_genuinelyUnbounded
+
+/-- First-order local-index prerequisite for representing the Real-corona orientation in the
+Lipschitz algebra of its intrinsic odd Dirac operator. -/
+def IntrinsicRealCoronaOddDatum.HasLocalIndexFirstOrderPrerequisite
+    (F : IntrinsicRealCoronaOddDatum H) : Prop :=
+  HasLinearPMapBoundOnDomain F.orientationCommutator
+
+theorem IntrinsicRealCoronaOddDatum.not_hasLocalIndexFirstOrderPrerequisite
+    (F : IntrinsicRealCoronaOddDatum H) :
+    ¬F.HasLocalIndexFirstOrderPrerequisite :=
+  F.orientationCommutator_not_bounded
+
+/-- First-order smoothness prerequisite for the exchanged Real-corona projector. -/
+def IntrinsicRealCoronaOddDatum.HasSmoothProjectorFirstOrderPrerequisite
+    (F : IntrinsicRealCoronaOddDatum H) : Prop :=
+  HasLinearPMapBoundOnDomain F.projectorCommutator
+
+theorem IntrinsicRealCoronaOddDatum.not_hasSmoothProjectorFirstOrderPrerequisite
+    (F : IntrinsicRealCoronaOddDatum H) :
+    ¬F.HasSmoothProjectorFirstOrderPrerequisite :=
+  F.projectorCommutator_not_bounded
+
+/-- Empty-classification principle for any proposed smooth automorphic subclass whose smoothness
+implies the standard first-order bounded-commutator condition. -/
+theorem intrinsicRealCorona_smoothSubclass_empty
+    (P : IntrinsicRealCoronaOddDatum H → Prop)
+    (hfirst : ∀ F, P F → F.HasSmoothProjectorFirstOrderPrerequisite) :
+    {F | P F} = ∅ := by
+  ext F
+  simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
+  intro hP
+  exact F.not_hasSmoothProjectorFirstOrderPrerequisite (hfirst F hP)
 
 end Fracture
 
@@ -400,6 +518,138 @@ theorem fixedSectorDefectRank_eq_analyticRank_iff
   · intro h
     have hoff := (offCentralRealMultiplicity_eq_zero_iff center q).mpr h
     omega
+
+/-! ### Reflection-exact self-dual real sectors -/
+
+def lowerRealMultiplicitySupport (center : ℝ) (q : ℝ →₀ ℕ) : Finset ℝ :=
+  q.support.filter fun x => x < center
+
+def upperRealMultiplicitySupport (center : ℝ) (q : ℝ →₀ ℕ) : Finset ℝ :=
+  q.support.filter fun x => center < x
+
+def upperRealMultiplicity (center : ℝ) (q : ℝ →₀ ℕ) : ℕ :=
+  ∑ x ∈ upperRealMultiplicitySupport center q, q x
+
+/-- Reflection identifies lower and upper off-central multiplicity exactly. -/
+theorem lowerRealMultiplicity_sum_eq_upper
+    (center : ℝ) (q : ℝ →₀ ℕ)
+    (hsymm : ∀ x, q (2 * center - x) = q x) :
+    (∑ x ∈ lowerRealMultiplicitySupport center q, q x) =
+      ∑ x ∈ upperRealMultiplicitySupport center q, q x := by
+  refine Finset.sum_bij'
+    (fun x _ => 2 * center - x) (fun x _ => 2 * center - x) ?_ ?_ ?_ ?_ ?_
+  · intro x hx
+    simp only [lowerRealMultiplicitySupport, upperRealMultiplicitySupport,
+      Finset.mem_filter] at hx ⊢
+    refine ⟨?_, by linarith [hx.2]⟩
+    rw [Finsupp.mem_support_iff, hsymm]
+    exact Finsupp.mem_support_iff.mp hx.1
+  · intro x hx
+    simp only [lowerRealMultiplicitySupport, upperRealMultiplicitySupport,
+      Finset.mem_filter] at hx ⊢
+    refine ⟨?_, by linarith [hx.2]⟩
+    rw [Finsupp.mem_support_iff, hsymm]
+    exact Finsupp.mem_support_iff.mp hx.1
+  · intro x _
+    ring
+  · intro x _
+    ring
+  · intro x _
+    exact (hsymm x).symm
+
+theorem offCentralRealMultiplicity_eq_lower_add_upper
+    (center : ℝ) (q : ℝ →₀ ℕ) :
+    offCentralRealMultiplicity center q =
+      (∑ x ∈ lowerRealMultiplicitySupport center q, q x) +
+        ∑ x ∈ upperRealMultiplicitySupport center q, q x := by
+  rw [offCentralRealMultiplicity, Finsupp.sum]
+  classical
+  have hsupp : (q.erase center).support = q.support.erase center := by
+    ext x
+    simp [Finsupp.mem_support_iff]
+  rw [hsupp]
+  have hpartition :
+      q.support.erase center =
+        lowerRealMultiplicitySupport center q ∪
+          upperRealMultiplicitySupport center q := by
+    ext x
+    rw [Finset.mem_erase, Finset.mem_union]
+    simp only [lowerRealMultiplicitySupport, upperRealMultiplicitySupport,
+      Finset.mem_filter]
+    constructor
+    · intro hx
+      rcases lt_or_gt_of_ne hx.1 with hlt | hgt
+      · exact Or.inl ⟨hx.2, hlt⟩
+      · exact Or.inr ⟨hx.2, hgt⟩
+    · rintro (hx | hx)
+      · exact ⟨ne_of_lt hx.2, hx.1⟩
+      · exact ⟨ne_of_gt hx.2, hx.1⟩
+  rw [hpartition, Finset.sum_union]
+  · congr 1
+    · apply Finset.sum_congr rfl
+      intro x hx
+      simp [ne_of_lt (Finset.mem_filter.mp hx).2]
+    · apply Finset.sum_congr rfl
+      intro x hx
+      simp [ne_of_gt (Finset.mem_filter.mp hx).2]
+  · apply Finset.disjoint_left.mpr
+    intro x hxLower hxUpper
+    have hlower := (Finset.mem_filter.mp hxLower).2
+    have hupper := (Finset.mem_filter.mp hxUpper).2
+    linarith
+
+/-- Self-dual fixed-sector law: total Real-corona defect is central analytic rank plus twice the
+upper off-central real multiplicity. -/
+theorem fixedSectorDefectRank_eq_analyticRank_add_twice_upper
+    (center : ℝ) (q : ℝ →₀ ℕ)
+    (hsymm : ∀ x, q (2 * center - x) = q x) :
+    fixedSectorDefectRank q =
+      analyticRankAt center q + 2 * upperRealMultiplicity center q := by
+  rw [fixedSectorDefectRank_eq_analyticRank_add_offCentral center q,
+    offCentralRealMultiplicity_eq_lower_add_upper center q,
+    lowerRealMultiplicity_sum_eq_upper center q hsymm]
+  simp [upperRealMultiplicity]
+  omega
+
+theorem fixedSectorDefectRank_modEq_analyticRank
+    (center : ℝ) (q : ℝ →₀ ℕ)
+    (hsymm : ∀ x, q (2 * center - x) = q x) :
+    Nat.ModEq 2 (fixedSectorDefectRank q) (analyticRankAt center q) := by
+  rw [fixedSectorDefectRank_eq_analyticRank_add_twice_upper center q hsymm]
+  rw [add_comm (analyticRankAt center q)]
+  exact Nat.ModEq.modulus_mul_add
+
+/-- A self-dual family whose finite real-zero multiplicities respect reflection about its center. -/
+structure SelfDualRealZeroFamily (T : Type*) where
+  center : ℝ
+  realMultiplicity : T → ℝ →₀ ℕ
+  reflection_multiplicity :
+    ∀ t x, realMultiplicity t (2 * center - x) = realMultiplicity t x
+
+def SelfDualRealZeroFamily.defectRank
+    {T : Type*} (F : SelfDualRealZeroFamily T) (t : T) : ℕ :=
+  fixedSectorDefectRank (F.realMultiplicity t)
+
+def SelfDualRealZeroFamily.analyticRank
+    {T : Type*} (F : SelfDualRealZeroFamily T) (t : T) : ℕ :=
+  analyticRankAt F.center (F.realMultiplicity t)
+
+def SelfDualRealZeroFamily.upperOffCentralMultiplicity
+    {T : Type*} (F : SelfDualRealZeroFamily T) (t : T) : ℕ :=
+  upperRealMultiplicity F.center (F.realMultiplicity t)
+
+theorem SelfDualRealZeroFamily.defectRank_eq_analyticRank_add_twice_upper
+    {T : Type*} (F : SelfDualRealZeroFamily T) (t : T) :
+    F.defectRank t =
+      F.analyticRank t + 2 * F.upperOffCentralMultiplicity t := by
+  exact fixedSectorDefectRank_eq_analyticRank_add_twice_upper
+    F.center (F.realMultiplicity t) (F.reflection_multiplicity t)
+
+theorem SelfDualRealZeroFamily.defectRank_modEq_analyticRank
+    {T : Type*} (F : SelfDualRealZeroFamily T) (t : T) :
+    Nat.ModEq 2 (F.defectRank t) (F.analyticRank t) := by
+  exact fixedSectorDefectRank_modEq_analyticRank
+    F.center (F.realMultiplicity t) (F.reflection_multiplicity t)
 
 /-- A family of multiplicity-exact fixed sectors with a distinguished central spectral label. -/
 structure SelfDualFixedSectorFamily (T ι : Type*) where

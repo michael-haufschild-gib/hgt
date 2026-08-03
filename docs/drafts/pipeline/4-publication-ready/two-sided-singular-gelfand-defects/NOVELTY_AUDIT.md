@@ -1,127 +1,73 @@
-# Novelty and collision audit
+# Novelty audit — countable observer weaving
 
-Search date: 3 August 2026.
+Status: `[PROVED HERE; NOVELTY UNVERIFIED]`
 
-Status: `[NOVELTY UNVERIFIED]` pending independent operator-theory expert and MathSciNet/zbMATH
-priority review. Search absence is evidence, not proof of priority.
+## Exact new theorem surface
 
-## Exact mathematical delta
+Let `T_i : G → H_i`, `i ∈ ℕ`, be bounded injective dense-range Hilbert operators.
 
-Paper proves three results not found together or separately in searched literature:
+- If some `T_i` is coercive, every closed `M ≤ G` whose image under every `T_j` is dense equals `G`.
+- If every `T_i` is noncoercive, there exists one closed `D ≤ G` such that:
+  - `D ∩ ran(T_i*) = {0}` for every `i`;
+  - `D` contains a countably indexed linearly independent family;
+  - every closed `L ≤ D` yields the simultaneous dense-image defect `L⊥`.
 
-1. Compatible closed negative embeddings below a fixed Hilbert positive embedding are exactly
-   closed bi-dense subspaces of canonical inverse-adjoint graph.
-2. Proper closed bi-dense graph subspace exists iff both graph coordinate maps lack uniform lower
-   bound. Equivalently, canonical inverse-adjoint is unbounded and not bounded below. A
-   codimension-one hyperplane always suffices.
-3. Explicit positive self-adjoint diagonal model on `ell2({0,1} x N)` supplies Hilbert pre-quasi
-   Gelfand triple which is not quasi, falsifying published Conjectures 6.7 and 6.8.
+No condition is placed on sums, spans, commutation, self-adjointness, compactness, or joint stability of the family.
 
-New knowledge is theorem/counterexample content above. Pipeline movement, terminology, Lean
-translation, and paper production are not counted as novelty.
+Lean declaration: `countable_observer_coercivity_wildness_law`.
 
-## Primary direct source
+## What was already known
 
-Nathanael Skrepek, *Quasi Gelfand Triples*, Integral Equations and Operator Theory 97, article 1
-(2025), DOI 10.1007/s00020-024-02780-9:
+1. Fillmore–Williams (1971) develops structure theory for one Hilbert operator range and classifies several nonclosed-range geometries.
+2. Classical von Neumann/Dixmier theory, in modern form through ter Elst–Sauter (2016), gives a unitary copy of one suitable nonclosed operator range disjoint from the original range.
+3. Kitson–Timoney (2011) proves spaceability of complements of operator ranges and extensions to unions of countable chains under their stated hypotheses.
+4. Araújo–Barbosa–Baganha Raposo–Ribeiro (2025) gives general criteria for spaceability of complements of unions.
+5. Ribeiro, arXiv:2510.11332v2, proves a Fréchet theorem when the span of the union of the ranges is nonclosed. That hypothesis does not follow from individual nonclosedness. Its remark asserting an arbitrary-family consequence from individual nonclosedness uses the inclusion in the wrong direction; an algebraically dense discontinuous hyperplane is a direct counterexample to that inference.
 
-- Definition 4.1 gives exact pre-quasi hypotheses used by counterexample: complete dual pair;
-  closed, densely defined, injective embeddings with dense range; pivot pairing identity.
-- Quasi condition is `dom iota_+^* = ran iota_-`.
-- Lemma 4.5 constructs maximal compatible extension `(iota_+^*)^{-1}` but does not prove every
-  original embedding saturated.
-- Conjecture 6.7: every Hilbert pre-quasi triple is quasi.
-- Conjecture 6.8: every pre-quasi triple is quasi.
-- Author states attempts to prove weak conjecture failed and notes positive solution would imply a
-  weak/strong boundary-trace equality route.
+## Separation from prior results
 
-Definition and conjecture wording were checked against published Springer version, not only arXiv
-metadata.
+The new theorem does not ask the span of `⋃ ran(T_i*)` to be nonclosed. It can apply when finite or countable algebraic combinations of observer ranges are large, including complementary two-channel situations. It constructs a common closed subspace disjoint from every adjoint range separately, then proves a hereditary closed-subspace law. This is different from finding a closed subspace in the complement of one combined operator range.
 
-## Collision matrix
+The proof is also different: finite-codimensional persistence of nonclosed range produces an orthonormal small-vector array; square-summable observer weights weave all observer blocks into one closed normal space.
 
-| Source/area | Existing result | Why no collision |
-|---|---|---|
-| Cojuhari--Gheondea, *Triplets of Closely Embedded Hilbert Spaces* (2015) | Hilbert triples with full Hamiltonian/adjoint compatibility | Starts on saturated canonical graph; does not classify proper bi-dense restrictions or prove automatic saturation |
-| Skrepek, *Quasi Gelfand Triples* (2025) | Canonical extension, Gram operators, decomposition, Conjectures 6.7--6.8 | Poses exact automaticity question; does not give counterexample or sharp graph criterion |
-| Closed-operator graph theory | Graph norm, coordinate maps, closed-range criteria | Supplies ingredients; searched sources do not state simultaneous dense-projection hyperplane criterion as pre-quasi classification |
-| Linear-relation decomposition theory | Operator/multivalued decomposition after graph closure | Present defect is a proper closed single-valued subrelation; it is not multivalued part or nonclosability |
-| Skrepek--Pauly, weak/strong tangential traces (2025) | PDE-specific equality under Lipschitz hypotheses | Does not prove abstract automaticity; compatible with one-sided lower bound supplied by PDE structure |
-| Port-Hamiltonian descendants | Use quasi Gelfand triples for boundary systems | Begin with completed quasi structure or application-specific estimates; no abstract conjecture resolution found |
+## Priority searches performed
 
-## Searches performed
+Queries covered:
 
-Search families included:
+- exact phrases around finite/countable families of operator ranges;
+- common or simultaneous closed subspaces disjoint from operator ranges;
+- spaceability of complements of unions of operator ranges;
+- nonclosed adjoint ranges and dense images of closed subspaces;
+- classical operator-range structure and quasi-complement literature;
+- the 2025–2026 arXiv/operator-range spaceability literature.
 
-- exact phrases: `"pre-quasi Gelfand triple"`, `"every pre-quasi Gelfand triple"`,
-  `"Conjecture 6.7" "quasi Gelfand"`;
-- title/citation descendants of Skrepek 2025;
-- `closed restriction`, `proper closed restriction`, `dense domain dense range`, `graph
-  hyperplane`, and `inverse adjoint` combined with quasi Gelfand terms;
-- closely embedded Hilbert triplets, singular operator relations, boundary trace equality, and
-  port-Hamiltonian uses;
-- exact proposed phrase `two-sided singular` with operator graphs, to detect terminology or theorem
-  collision.
+No exact collision was found. Search-engine absence is not proof of priority. Independent MathSciNet/zbMATH and expert operator-theory review remain required.
 
-Current web/index results expose Skrepek paper, closely embedded Hilbert predecessors, PDE-specific
-trace work, and applications. No source found with counterexample or iff criterion. Generic search
-results for “two-sided singular” concerned singular stochastic control, not operator graph geometry.
+## Significance assessment
 
-## Hard novelty attacks
+### Positive
 
-### “This is already Lemma 4.5”
+- Removes all spectral and stability assumptions from prior draft.
+- Upgrades two-observer hyperplane existence to countable-family hereditary lattice existence.
+- Gives exact rigidity boundary through coercivity.
+- Applies directly to graph-coordinate problems for closed relations and rigged Hilbert embeddings.
+- Entire theorem, construction, and applications have unconditional Lean certificates.
 
-No. Lemma 4.5 says compatible embedding can be extended to maximal inverse-adjoint partner.
-Present theorem classifies every closed compatible restriction and shows proper bi-dense ones can
-exist. Counterexample is exactly failure of original embedding to equal extension.
+### Limitation
 
-### “This is a trivial core restriction”
+- The theorem is countable, not uncountable.
+- It is Hilbertian, not Banach-general.
+- It does not settle a major long-standing flagship problem.
+- Current realistic venue band is strong general analysis/operator-theory journal or a general journal such as *Advances in Mathematics* only if independent referees agree that the countable law is previously unknown and broadly useful. It is not presently justified as Annals/JAMS/Inventiones scale.
 
-Arbitrary proper restriction loses closedness, dense domain, or dense range. Paper proves exact
-existence boundary and constructs a graph-closed codimension-one restriction invisible under both
-coordinate closures. Simultaneous density is substantive condition that published conjecture
-predicted would force saturation.
+## Door-2 verdict
 
-### “This is merely an example”
+`KEEP, PRIORITY OPEN.` Mathematical content is materially stronger than the original pre-quasi counterexample and survives hostile internal proof audit. Publication-strength claim must remain conditional on external priority confirmation.
 
-No. Explicit example is consequence of classification and universal sharp criterion. Criterion is
-necessary and sufficient for every closed canonical graph in standard Hilbert model.
+## Sources
 
-### “This is standard singular linear-relation decomposition”
-
-No. Canonical relation remains graph of injective single-valued closed operator. Defect is a proper
-closed subgraph with both coordinate projections dense; no multivalued part appears.
-
-### “Counterexample depends on exotic spaces”
-
-No. All three spaces are same separable Hilbert space with standard complete anti-dual pairing.
-Canonical operators are positive self-adjoint diagonals. Defect has graph codimension one.
-
-## Significance audit
-
-Positive factors:
-
-- settles two explicit recent published conjectures;
-- supplies classification explaining all failure modes in natural Hilbert subclass;
-- proves sharp positive replacement theorem;
-- gives minimal codimension-one counterexample with positive self-adjoint diagonal data;
-- identifies exact extra estimate application-specific theories must prove;
-- carries unconditional machine-checked formalization of headline surface.
-
-Limits stated in manuscript:
-
-- no specific PDE weak/strong trace counterexample;
-- no claim of Banach-space defect classification;
-- no claim that graph norms, adjoint closed-range theorem, or diagonal operators are individually
-  new;
-- priority remains provisional until independent database/expert audit.
-
-## Publication assessment
-
-At claim level, result fits renowned general mathematical journal’s concise problem-solving paper
-category: recent explicit conjectures are resolved, mechanism is classified, strongest positive
-replacement is sharp, proof is self-contained, and counterexample is minimal. General-audience
-reach comes from rigged Hilbert spaces, unbounded operators, and boundary-trace implications.
-Likely journal shape is a strong short article rather than long foundational treatise.
-
-Independent specialist priority review remains mandatory before submission.
+- P. A. Fillmore and J. P. Williams, “On operator ranges,” *Adv. Math.* 7 (1971), 254–281. DOI: 10.1016/S0001-8708(71)80006-3.
+- D. Kitson and R. M. Timoney, “Operator ranges and spaceability,” *J. Math. Anal. Appl.* 378 (2011), 680–686. DOI: 10.1016/j.jmaa.2010.12.061.
+- A. F. M. ter Elst and M. Sauter, “Nonseparability and von Neumann's theorem for domains of unbounded operators,” *J. Operator Theory* 75 (2016), 367–386. DOI: 10.7900/jot.2014nov18.2075.
+- G. Araújo et al., “Complements of unions: insights on spaceability and applications,” *Mathematika* 71 (2025), e70006. DOI: 10.1112/mtk.70006.
+- G. Ribeiro, “Operator ranges and spaceability: an extension of the Kitson–Timoney theorem,” arXiv:2510.11332v2.

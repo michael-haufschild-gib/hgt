@@ -1,82 +1,78 @@
 # Claim trace audit
 
-Internal audit; not part of submission.
+Status: active strict ledger. Manuscript may not retain a mathematical claim without a compiled unconditional Lean witness below.
 
-Primary formal module:
+## Universal observer law
 
-`formal/GaloisForLFunctions/RHTower/PreQuasiGelfandTwoSidedSingularDefect.lean`
+| ID | Manuscript claim | Lean declaration |
+|---|---|---|
+| O1 | One-observer dense-image/adjoint-range equivalence | `dense_image_iff_orthogonal_inf_adjointRange_eq_bot` |
+| O2 | Arbitrary-family observer–annihilator law | `dense_images_iff_orthogonal_avoids_adjointRanges` |
+| O3 | Closed subspaces below a common normal yield dense orthogonal defects | `dense_orthogonal_image_of_le_countableWovenNormalSpace` |
+| O4 | Nonzero normal gives a proper orthogonal defect | `orthogonal_ne_top_of_ne_bot` |
 
-Umbrella:
+## Coercivity and weaving
 
-`formal/GaloisForLFunctions/RHTower.lean`
+| ID | Manuscript claim | Lean declaration |
+|---|---|---|
+| W1 | Injective bounded operator has nonclosed range iff it is noncoercive | `hilbertRangeSingular_iff_no_antilipschitz` |
+| W2 | Singularity persists after restriction to orthogonal complement of finite-dimensional subspace | `hilbertRangeSingular_domRestrict_orthogonal` |
+| W3 | Singular operator has arbitrarily small unit vectors | `exists_unit_norm_map_lt_of_hilbertRangeSingular` |
+| W4 | Countable simultaneous orthonormal small-vector array | `exists_countable_singular_orthonormalArray` |
+| W5 | Weight sequence tends to zero | `tendsto_pqInv_zero` |
+| W6 | Countable woven coefficient weights are square-summable | `countableWovenNormalWeight_summable_sq` |
+| W7 | Countable woven coefficient space is closed | `countableWovenNormalSubspace_isClosed` |
+| W8 | Countable woven normal avoids each selected adjoint range | `countableWovenNormalSpace_inf_adjointRange_eq_bot` |
+| W9 | Woven normal contains a countably indexed linearly independent family | `countableWovenNormalSpace_has_countable_independent_family` |
+| W10 | Coercive observer forces every closed common dense-image defect to be full | `countable_coercive_observer_forces_trivial_common_defect` |
+| W11 | Countable coercivity–wildness dichotomy, exact manuscript surface | `countable_observer_coercivity_wildness_law` |
+| W12 | Finite-family wild branch | `finite_noncoercive_observer_wild_lattice` |
+| W13 | Finite-family coercive rigidity branch | `finite_coercive_observer_forces_trivial_common_defect` |
 
-## Abstract classification
+## Two-marginal relations
 
-| Manuscript claim | Lean declaration |
-|---|---|
-| Hilbert pre-quasi pair hypotheses are represented explicitly | `HilbertPreQuasiPair` |
-| Quasi condition is adjoint-domain/range equality | `HilbertQuasiCompatibility` |
-| Canonical negative partner is inverse adjoint | `canonicalNegativeEmbedding` |
-| Dense range of positive embedding kills adjoint kernel | `adjoint_ker_eq_bot_of_denseRange` |
-| Canonical inverse adjoint is injective | `canonicalNegativeEmbedding_injective` |
-| Canonical partner satisfies pivot pairing | `canonicalNegativeEmbedding_pairing` |
-| Every compatible negative embedding lies below canonical inverse adjoint | `compatible_le_canonicalNegativeEmbedding` |
-| Necessity: pre-quasi graph lies in canonical graph | `preQuasi_graph_le_canonical_graph` |
-| Canonical negative range equals positive-adjoint domain | `canonicalNegativeEmbedding_range_eq_adjointDomain` |
-| Quasi compatibility iff canonical saturation | `preQuasi_quasi_iff_eq_canonicalNegative` |
-| Sufficiency: closed bi-dense canonical graph subspace yields pre-quasi pair | `preQuasi_of_closed_biDense_canonicalGraphSubspace` |
+| ID | Manuscript claim | Lean declaration |
+|---|---|---|
+| R1 | Proper closed bi-dense subspace exists iff both observers are noncoercive | `twoSidedSingular_iff_hasProperClosedBiDenseSubspace` |
+| R2 | Hyperplane witness in singular branch | `exists_biDense_hyperplane_of_twoSidedSingular` |
+| R3 | Infinite woven common-normal lattice in singular branch | `twoSidedSingular_has_common_woven_normal_lattice` |
 
-## Sharp criterion
+## Pre-quasi graph classification
 
-| Manuscript claim | Lean declaration |
-|---|---|
-| Adjoint surjective iff bounded inverse estimate | `adjoint_surjective_iff_antilipschitz` |
-| Dense range makes adjoint injective | `adjoint_injective_of_denseRange` |
-| Hyperplane image is dense when normal misses adjoint range | `dense_image_orthogonal_hyperplane` |
-| Two-sided singularity definition | `IsTwoSidedSingular` |
-| Proper closed bi-dense subspace definition | `HasProperClosedBiDenseSubspace` |
-| Two missing lower bounds produce one bi-dense hyperplane | `exists_biDense_hyperplane_of_twoSidedSingular` |
-| One lower bound forces closed bi-dense subspace to be top | `closed_biDense_eq_top_of_antilipschitz` |
-| Sharp iff criterion | `twoSidedSingular_iff_hasProperClosedBiDenseSubspace` |
+| ID | Manuscript claim | Lean declaration |
+|---|---|---|
+| G1 | Compatibility places negative graph inside canonical inverse-adjoint graph | `preQuasi_graph_le_canonical_graph` |
+| G2 | Quasi compatibility iff negative map equals canonical partner | `preQuasi_quasi_iff_eq_canonicalNegative` |
+| G3 | Every closed bi-dense canonical graph subspace produces a pre-quasi pair | `preQuasi_of_closed_biDense_canonicalGraphSubspace` |
 
-## Explicit model
+## Explicit diagonal model
 
-| Manuscript claim | Lean declaration family |
-|---|---|
-| Two-channel Hilbert model and reciprocal weights | `PQIndex`, `PQHilbert`, `pqInv`, `pqPWeight`, `pqQWeight` |
-| Bounded graph coordinate maps | `pqP`, `pqQ` |
-| Coordinate maps injective and densely ranged | `pqP_injective`, `pqQ_injective`, `pqP_denseRange`, `pqQ_denseRange` |
-| Hyperplane normal is square summable | `pqVWeight_summable_sq`, `pqV` |
-| Normal misses both coordinate ranges | `pqV_not_mem_range_pqP`, `pqV_not_mem_range_pqQ` |
-| Hyperplane coordinate images are dense | `pqDefectDomain_dense`, `pqDefectRange_dense` |
-| Defect graph is closed | `pqDefectGraph_eq_kernels`, `pqDefectGraph_isClosed` |
-| Defect graph is single-valued | `pqDefectGraph_vertical_unique` |
-| Closed negative restriction has dense domain/range and is injective | `pqDefectNegativeEmbedding_isClosed`, `pqDefectNegativeEmbedding_dense_domain`, `pqDefectNegativeEmbedding_dense_range`, `pqDefectNegativeEmbedding_injective` |
-| Positive and canonical negative maximal diagonals | `pqPositiveEmbedding`, `pqCanonicalNegativeEmbedding` |
-| Maximal diagonal operators are self-adjoint | `pqPositiveEmbedding_isSelfAdjoint`, `pqCanonicalNegativeEmbedding_isSelfAdjoint` |
-| Pairing identity | `pqDefect_pairing` |
-| Exact pre-quasi hypotheses | `pqDefect_is_preQuasi` |
-| Quasi compatibility fails | `pqDefect_not_quasi` |
-| Existential counterexample | `exists_hilbertPreQuasiPair_not_quasi` |
+| ID | Manuscript claim | Lean declaration |
+|---|---|---|
+| M1 | Diagonal observers injective and densely ranged | `pqP_injective`, `pqQ_injective`, `pqP_denseRange`, `pqQ_denseRange` |
+| M2 | Model normal is square-summable and nonzero | `pqVWeight_summable_sq`, `pqV_ne_zero` |
+| M3 | Model normal misses both observer ranges | `pqV_not_mem_range_pqP`, `pqV_not_mem_range_pqQ` |
+| M4 | Hyperplane images are dense | `pqDefectDomain_dense`, `pqDefectRange_dense` |
+| M5 | Explicit Hilbert pre-quasi pair is not quasi | `exists_hilbertPreQuasiPair_not_quasi` |
+| M6 | Universal Hilbert automaticity statement is false | `not_every_hilbertPreQuasiPair_is_quasi` |
 
-## Verification evidence
+## Formal gates
 
-- Direct foreground elaboration:
-  `lake env lean GaloisForLFunctions/RHTower/PreQuasiGelfandTwoSidedSingularDefect.lean` — pass.
-- Targeted module build:
-  `lake build GaloisForLFunctions.RHTower.PreQuasiGelfandTwoSidedSingularDefect` — pass.
-- Axiom audit for five headline declarations — only `propext`, `Classical.choice`, `Quot.sound`.
-- Forbidden-token scan in module — no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.
-- Umbrella import present in `GaloisForLFunctions.RHTower`.
-- Global `scripts/formal_tools.py lint` reaches unrelated pre-existing `HTGeometry` umbrella
-  reachability errors. None names this module. This repository-wide gate is not falsely reported
-  as green.
+- Source modules:
+  - `formal/GaloisForLFunctions/RHTower/PythagoreanObserverBlindness.lean`
+  - `formal/GaloisForLFunctions/RHTower/PreQuasiGelfandTwoSidedSingularDefect.lean`
+- Required final checks:
+  - direct `lake env lean` on each modified module;
+  - `scripts/formal_tools.py lint`;
+  - scratch-file `#print axioms` on headline declarations;
+  - targeted `lake build GaloisForLFunctions.RHTower.PythagoreanObserverBlindness`;
+  - umbrella import present in `GaloisForLFunctions/RHTower.lean`.
 
-## Claim exclusions
+## Exclusions
 
-- Lean formalizes standard Hilbert same-space model used for counterexample and abstract
-  classification; manuscript does not claim a formal Banach-space theorem.
-- Paper’s operator-language equivalence “coordinate two-sided singular iff canonical operator is
-  unbounded and not bounded below” is proved on paper from graph norm. Formal exact sharp theorem
-  is stated at more primitive coordinate-map level.
-- No numerical or finite-dimensional evidence is used as proof.
+- No Banach-space annihilator theorem is claimed.
+- No abstract spectral weaving theorem is claimed.
+- No stability, commutation, self-adjointness, compactness, or joint lower-bound hypothesis is claimed or used in countable theorem.
+- No uncountable-family theorem is claimed.
+- No PDE trace counterexample is claimed.
+- Bibliographic priority is not a Lean proposition and remains independently uncertified.

@@ -147,6 +147,53 @@ theorem differentiallyAlgebraic_sincProduct : DifferentiallyAlgebraic sincProduc
     rw [sincProduct_ade z]
     ring
 
+/-! ## The reflection collapse of a scale pair -/
+
+@[simp] theorem sincProduct_zero : sincProduct 0 = 1 := by
+  rw [sincProduct, canonicalProduct]
+  simp
+
+/-- **Reflection formula in reciprocal form.**  `π w · Γ(w+1)⁻¹ Γ(1-w)⁻¹ = sin(π w)`, at every
+complex point, including the integers where both sides vanish. -/
+theorem pi_mul_reciprocalGamma_pair (w : ℂ) :
+    (Real.pi : ℂ) * w * ((Complex.Gamma (w + 1))⁻¹ * (Complex.Gamma (1 - w))⁻¹)
+      = Complex.sin ((Real.pi : ℂ) * w) := by
+  have hpi : (Real.pi : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
+  rcases eq_or_ne w 0 with hw | hw
+  · subst hw
+    simp
+  · have hprod : Complex.Gamma (w + 1) * Complex.Gamma (1 - w)
+        = w * ((Real.pi : ℂ) / Complex.sin ((Real.pi : ℂ) * w)) := by
+      rw [Complex.Gamma_add_one w hw, mul_assoc, Complex.Gamma_mul_Gamma_one_sub w]
+    rcases eq_or_ne (Complex.sin ((Real.pi : ℂ) * w)) 0 with hs | hs
+    · rw [hs] at hprod ⊢
+      rw [div_zero, mul_zero] at hprod
+      rw [← mul_inv, hprod, inv_zero, mul_zero]
+    · rw [← mul_inv, hprod]
+      field_simp
+
+/-- **The Euler sine product is the reciprocal-Gamma reflection pair.**  This is the mechanism that
+collapses an even-exponent ray product: two reciprocal Gamma factors at *opposite* scales multiply
+to an elementary sine factor. -/
+theorem sincProduct_eq_reciprocalGamma_pair (c : ℂ) :
+    sincProduct c = (Complex.Gamma (c + 1))⁻¹ * (Complex.Gamma (1 - c))⁻¹ := by
+  have hpi : (Real.pi : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
+  rcases eq_or_ne c 0 with hc | hc
+  · subst hc
+    simp
+  · have hne : (Real.pi : ℂ) * c ≠ 0 := mul_ne_zero hpi hc
+    refine mul_left_cancel₀ hne ?_
+    rw [pi_mul_sincProduct c, ← pi_mul_reciprocalGamma_pair c, mul_assoc]
+
+/-- **Reflection collapse of a scale pair.**  Reciprocal Gamma factors at the opposite scales
+`λ` and `-λ` multiply to the Euler sine product at `λ z`. -/
+theorem reciprocalGamma_scale_pair (lam z : ℂ) :
+    (Complex.Gamma (lam * z + 1))⁻¹ * (Complex.Gamma ((-lam) * z + 1))⁻¹
+      = sincProduct (lam * z) := by
+  rw [sincProduct_eq_reciprocalGamma_pair]
+  congr 2
+  ring
+
 /-! ## The even-exponent factorization -/
 
 /-- Root-of-unity factorisation of `1 - X^m`. -/
@@ -254,4 +301,5 @@ theorem differentiallyAlgebraic_powerCanonicalProduct_of_even {p : ℕ} (hp : 0 
   exact differentiallyAlgebraic_powerCanonicalProduct_even hmpos
 
 end HTGeometry
+
 

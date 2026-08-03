@@ -1418,6 +1418,10 @@ import GaloisForLFunctions.RHTower.DeningerCycReassemble
 import GaloisForLFunctions.RHTower.DeningerCycBase
 import GaloisForLFunctions.RHTower.DeningerCycDecomp
 import GaloisForLFunctions.RHTower.DeningerCycRecursion
+import GaloisForLFunctions.RHTower.DeningerWordIndices
+import GaloisForLFunctions.RHTower.DeningerHeadOnly
+import GaloisForLFunctions.RHTower.DeningerPowerLength
+import GaloisForLFunctions.RHTower.DeningerTwoExponent
 import GaloisForLFunctions.RHTower.DeningerUnitaryFlowRieszPurity
 import GaloisForLFunctions.RHTower.DeningerUnitaryHarmonicAction
 import GaloisForLFunctions.RHTower.DeningerWeightOnePolarization
@@ -3029,6 +3033,12 @@ import GaloisForLFunctions.RHTower.Sieve.BrunPure
 import GaloisForLFunctions.RHTower.Sieve.BrunTitchmarsh
 import GaloisForLFunctions.RHTower.Sieve.DivisorSquareSum
 import GaloisForLFunctions.RHTower.Sieve.SelbergTail
+import GaloisForLFunctions.RHTower.Sieve.LargeSmoothPart
+import GaloisForLFunctions.RHTower.Sieve.ShiuSharp
+import GaloisForLFunctions.RHTower.Sieve.HardyRamanujanRecursion
+import GaloisForLFunctions.RHTower.Sieve.PrimePowerSum
+import GaloisForLFunctions.RHTower.Sieve.HardyRamanujanCut
+import GaloisForLFunctions.RHTower.Sieve.HardyRamanujanStep
 import GaloisForLFunctions.RHTower.Sieve.ChernoffTails
 import GaloisForLFunctions.RHTower.Sieve.GeometricMeanDivisor
 import GaloisForLFunctions.RHTower.Sieve.IntervalMultiples

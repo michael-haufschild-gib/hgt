@@ -7,7 +7,8 @@
 - **Lean:**
   `formal/GaloisForLFunctions/HTGeometry/ClockPropagatorSelfCalibration.lean`,
   `formal/GaloisForLFunctions/HTGeometry/ClockPrincipalSymbolCalibration.lean`,
-  `formal/GaloisForLFunctions/HTGeometry/ClockCalibrationFailureModes.lean`
+  `formal/GaloisForLFunctions/HTGeometry/ClockCalibrationFailureModes.lean`,
+  `formal/GaloisForLFunctions/HTGeometry/ClockCalibrationIdentifiabilityBoundary.lean`
 - **Status:** operator and principal-symbol reconstruction paper-proved and formalized
   unconditionally in Lean; physical recovery of complete dressed Green operators remains open.
 
@@ -211,6 +212,23 @@ leaves this datum unchanged. A second mass provides the zeroth-order difference 
 This is not a claim that one species is insufficient when its amplitude is absolutely calibrated,
 or when other calibration data are available. It is the exact removal of the common unknown-gain
 ambiguity by two mass labels.
+
+Both hypotheses of the identifiability statement are proved necessary in
+`formal/GaloisForLFunctions/HTGeometry/ClockCalibrationIdentifiabilityBoundary.lean`:
+
+- `singleSpeciesSymbol`, `singleSpeciesSymbol_rescaling`, `rescaled_state_ne`,
+  `exists_ne_with_eq_singleSpeciesSymbol` — the one-species datum is exactly invariant under
+  `κ ↦ cκ`, `g⁻¹ ↦ c⁻¹g⁻¹`, so it determines neither factor;
+- `twoMassCalibrationMetricData_eq_of_rescaling_of_eq_mass`,
+  `exists_ne_with_eq_twoMassCalibrationMetricData_of_eq_mass` — with `μ₁ = μ₂` the zeroth-order
+  channel vanishes and the two-mass datum inherits the same degeneracy, so distinct masses are
+  necessary;
+- `twoMassCalibrationMetricData_zero_calibration`,
+  `exists_ne_with_eq_twoMassCalibrationMetricData_of_zero_calibration` — with `κ = 0` both channels
+  vanish for every metric symbol, so nonvanishing calibration is necessary;
+- `exists_real_rescaling_degeneracy` — an explicit real witness.
+
+All depend only on `propext`, `Classical.choice`, `Quot.sound`; two need no choice.
 
 ## Physical and novelty boundary
 

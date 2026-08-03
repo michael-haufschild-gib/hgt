@@ -73,10 +73,13 @@ theorem powerCanonicalProduct_mul_neg {p : ℕ} (hp : 0 < p) (u : ℂ) :
       subst hpe
       have hg : powerGenus ((1 : ℕ) : ℝ) = 1 := by rw [powerGenus_natCast]
       rw [hg, hRHS, powerZero_natCast, primaryFactor_one_apply, primaryFactor_one_apply]
+      simp only [pow_one]
       have hcancel : Complex.exp (u / -((n : ℂ) + 1))
           * Complex.exp ((-u) / -((n : ℂ) + 1)) = 1 := by
         rw [← Complex.exp_add]
-        have hz : u / -((n : ℂ) + 1) + (-u) / -((n : ℂ) + 1) = 0 := by field_simp
+        have hz : u / -((n : ℂ) + 1) + (-u) / -((n : ℂ) + 1) = 0 := by
+          rw [← add_div]
+          simp
         rw [hz, Complex.exp_zero]
       have hexpand : (1 - u / -((n : ℂ) + 1)) * Complex.exp (u / -((n : ℂ) + 1))
             * ((1 - (-u) / -((n : ℂ) + 1)) * Complex.exp ((-u) / -((n : ℂ) + 1)))
@@ -118,4 +121,19 @@ theorem differentiallyAlgebraic_powerCanonicalProduct_mul_neg {p : ℕ} (hp : 0 
     (analyticOnNhd_powerCanonicalProduct h2pR) (by norm_num) (by norm_num)
     (differentiallyAlgebraic_powerCanonicalProduct_of_even (by omega) ⟨p, by ring⟩)
 
+/-- **Reflection collapse of the ray product.**  The reciprocal-Gamma ray product times its
+reflection is a product of Euler sine factors, for every `p` — even or odd.  This is the exact
+statement of what the odd case has to overcome: the reflection pairing is always available *between*
+`G` and `G(-·)`, but for odd `p` it is never available *inside* `G` itself, because the scales
+`ω^j` are then not closed under negation. -/
+theorem gammaRayProduct_mul_neg (p : ℕ) (ω z : ℂ) :
+    (∏ j ∈ Finset.range p, (Complex.Gamma (ω ^ j * z + 1))⁻¹)
+        * ∏ j ∈ Finset.range p, (Complex.Gamma (ω ^ j * (-z) + 1))⁻¹
+      = ∏ j ∈ Finset.range p, sincProduct (ω ^ j * z) := by
+  rw [← Finset.prod_mul_distrib]
+  refine Finset.prod_congr rfl fun j _ => ?_
+  rw [show (ω ^ j * (-z)) = (-(ω ^ j)) * z from by ring]
+  exact reciprocalGamma_scale_pair (ω ^ j) z
+
 end HTGeometry
+

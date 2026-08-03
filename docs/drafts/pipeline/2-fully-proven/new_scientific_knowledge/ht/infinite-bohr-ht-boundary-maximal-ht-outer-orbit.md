@@ -626,3 +626,90 @@ Remaining on this card:
    follow;
 3. the two imported inputs: Ostrowski's hypertranscendence theorem and the positive-mass Baire
    transversality engine, both entering as explicit hypotheses exactly as the paper proof uses them.
+
+## Lean progress: the power gauge and the Haar law
+
+Claim (1)'s missing mechanism is built.  `FamilyPowerGauge.lean` (wired, axiom-clean) formalizes the
+gauge the card's one-line argument "each is algebraic over its `n`-th power" stands for, without any
+differential-Galois theory:
+
+- `powJetScalar` -- the formal Leibniz recursion for the jets of an `N`-th power, with
+  `powJetScalar_zeroth`, `powJetScalar_congr` and **`powJetScalar_succ_sub_diagonal`**: past the
+  diagonal term `N y_0^(N-1) y_k`, the `k`-th formal jet depends only on the jets below `k`;
+- **`exists_powJetScalar_eq`** -- every jet packet with nonvanishing zeroth entry is a packet of
+  formal power jets.  The zeroth equation `y_0^N = w_0` is solved because `ℂ` is algebraically
+  closed, and the rest is the corpus's triangular solver with diagonal `N y_0^(N-1)`;
+- `powJetPoly`, `familyPowJetImage`, `eval_powJetPoly`, `powJetScalar_iteratedDeriv` and
+  `bindPointMap_familyPowJetImage` -- the substitution on `MvPolynomial (FamilyJetIndex m n) ℂ` and
+  the fact that its point map carries the jets of a family to the jets of its componentwise powers;
+- **`familyDifferentiallyAlgebraicOn_of_pow`** and **`not_familyDifferentiallyAlgebraicOn_pow`** --
+  the power gauge: a differential relation among the `N`-th powers of a smooth family pulls back to
+  a relation among the family, so powers preserve differential independence.  This is claim (1)
+  reduced to the card's residual theorem (9), and the form the card uses appears as
+  **`not_familyDifferentiallyAlgebraicOn_translates_pow`**;
+- `singleFamilyJetEquiv`, `familyDifferentiallyAlgebraicOn_one_iff`,
+  **`differentiallyAlgebraicOn_of_pow`** and **`not_differentiallyAlgebraicOn_pow`** -- the
+  one-function form, which is the step "if `b_lambda^n` were DA then `b_lambda` would be DA" of
+  claim (2).
+
+The Haar limiting law (16) is built too.  `BohrOrbitHaarLaw.lean` (wired, axiom-clean):
+
+- **`tendsto_windowAverage_zero_of_tendsto_zero`** -- a continuous function tending to zero has
+  vanishing running average: the initial segment is bounded on a compact interval and divided by the
+  window length, the tail is uniformly small.  The corpus had no Cesaro lemma of this shape;
+- **`tendsto_windowAverage_of_tendsto_sub_zero`** -- hence asymptotically equal paths have the same
+  limiting time average.  This is the card's "replacing one path by the other changes its Cesaro
+  average by a quantity tending to zero";
+- **`tendsto_windowAverage_torusHaar_of_asymptotic`** and its circle-model form
+  **`tendsto_windowAverage_haar_circlePhaseFlow`** -- for a rationally independent frequency family,
+  the running averages of any path asymptotic to the phase flow converge to the Haar mean of the
+  observable.  Composed with one-sided unique ergodicity this is exactly (16), tested against an
+  arbitrary continuous observable of the hull parameter.
+
+Both statements take the asymptotic comparison as their single hypothesis, which is the card's
+Stieltjes decay (7).
+
+## Lean progress: the concrete orbit, with no asymptotic hypothesis left
+
+Both boundary statements are now proved for the card's actual object, with the Stieltjes comparison
+(7) discharged rather than assumed.
+
+`PerturbedOuterOrbitBoundary.lean` (wired, axiom-clean) identifies the translation with the phase
+rotation and assembles the general perturbed orbit:
+
+- `tendsto_uniformity_continuousMap` -- families of continuous maps uniformly close on every compact
+  set converge in the uniformity of compact convergence, the producer the closure theorems consume;
+- `cexpSeriesCarrier_add` and `circlePhaseFlow_coe`, giving **`bohrHullMap_circlePhaseFlow`**:
+  `A (z + t)` *is* the hull point at flow time `t`.  This is the exact identity behind (14);
+- `perturbedBoundary` and **`continuous_perturbedBoundary`** -- `b_lambda = c + eps A_lambda` read on
+  the upper half plane, continuous in the phase;
+- `perturbedOrbit` and `continuous_perturbedOrbit` -- `G_t = S(. + t) + eps A(. + t)`, continuous in
+  the shift by currying;
+- **`tendsto_uniformity_perturbedOrbit`** -- the carrier parts cancel *exactly*, so the orbit differs
+  from the hull point only by `S(z + t) - c`.  A background collapsing to `c` uniformly on compacts
+  of the upper half plane therefore makes the orbit asymptotic to the hull along the phase flow;
+- **`closure_range_perturbedOrbit`** -- equation (12) with no asymptotic hypothesis: only the
+  collapse of the background;
+- **`tendsto_windowAverage_perturbedOrbit`** -- equation (16) for every uniformly continuous
+  observable of the orbit, with the same single hypothesis.
+
+`OuterCauchyOrbitBoundary.lean` (wired, axiom-clean) discharges that hypothesis for the card's
+`S_u = chi(m_u)`:
+
+- `cayleyOuter`, `cayleyOuter_zero`, `add_I_ne_zero_of_im_nonneg`, `continuousAt_cayleyOuter` -- the
+  Cayley exponential `chi(w) = exp((w - i)/(w + i))` and its regularity where `Im w >= 0`;
+- `tendstoUniformlyOn_comp_continuousAt` -- uniform convergence to a point composes with a function
+  continuous there;
+- `outerBackground`, `continuousOn_outerBackground` and
+  **`tendstoUniformlyOn_outerBackground_translate`** -- the Stieltjes decay (7): for *every* finite
+  positive measure the translated outer background converges to `exp (-1)` uniformly on every
+  compact subset of the upper half plane.  The corpus's `tendstoUniformlyOn_cauchyTransform_-`
+  `translate_isCompact` supplies the collapse of the Cauchy transform itself;
+- **`closure_range_outerCauchyOrbit`** -- equation (12) for the card's own orbit, unconditional;
+- **`tendsto_windowAverage_outerCauchyOrbit`** -- equation (16) for the card's own orbit,
+  unconditional.
+
+What remains on the card is exactly its two research inputs: Ostrowski's hypertranscendence theorem
+for generalized Dirichlet series with independent exponents, and the perturbed positive-mass Baire
+transversality argument behind the residual theorem (9).  Everything the card derives *from* those
+two -- claims (1) through (5) and the Haar law (16) -- is now formal.
