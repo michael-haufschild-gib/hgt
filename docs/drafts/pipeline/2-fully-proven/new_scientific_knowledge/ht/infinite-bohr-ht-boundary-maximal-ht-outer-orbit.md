@@ -808,3 +808,56 @@ the statement that the pattern-relation rigidity survives when the coefficient r
 polynomials in `z` to polynomials in `z` and the fixed jets `A^(k)(z + t_i)`.  That enlargement --
 not the perturbation itself -- is what the card's re-run of the transversality argument supplies, and
 it is the next target.
+
+## Lean progress: residual freeness of the unperturbed outer family
+
+`CayleyOuterFamilyGauge.lean` (wired, axiom-clean) closes the `eps = 0` case of the residual theorem
+(9) outright, by composing gauges the corpus already owned:
+
+- **`not_familyDifferentiallyAlgebraicOn_cayleyOuter`** -- the Cayley outer gauge.  `chi(w) =
+  exp((w - i)/(w + i))` is a Mobius map followed by `exp`; the Mobius gauge descends a relation among
+  the images to the family, and the exponential gauge preserves independence.  So an analytic family
+  avoiding `-i` on a connected domain keeps its differential independence after `chi`;
+- `analyticOnNhd_cauchyTransform_translate` and
+  **`not_familyDifferentiallyAlgebraicOn_outerCauchyTranslates`** -- freeness of a translated Cauchy
+  family transfers to the translated bounded invertible outer functions `S_u(. + t_i)`.  The
+  denominator hypothesis is automatic: `Im m_u >= 0` on the upper half plane;
+- **`outerCauchy_fullTranslationFreeness_denseResidual`** -- chaining the corpus's
+  `herglotz_fullTranslationCauchyFamilyFreeness_denseResidual`: for every infinite-support base
+  measure and strictly positive integrable density there is a *dense residual* set of bounded
+  exponential mass parameters for which every finite family of distinct translates of `S_u` is
+  differentially algebraically independent.
+
+This is the card's construction (5)+(6) with `eps = 0`, unconditional.
+
+### The exact remaining gap in (9), and a correction
+
+With the shear gauge, `{S_u(. + t_i) + eps A(. + t_i)}` is free as soon as the *doubled* family
+`{S_u(. + t_i)} ∪ {A(. + t_i)}` is free, and that reduction is now formal
+(`not_familyDifferentiallyAlgebraicOn_shear`).  But the shear route is *not* the card's route and is
+strictly stronger than what the card proves: killing a mixed relation by varying the masses alone
+leaves, for each monomial in the `S`-jets, a coefficient which is a polynomial in `z` and the fixed
+jets `A^(k)(z + t_i)`; forcing those to vanish is exactly joint differential independence of the
+`A`-translates, which the card explicitly does *not* claim (attacks, item 3).
+
+The card's own route avoids this.  It varies the masses to realize arbitrary jets of `S_u` at finitely
+many points; adding the fixed vector `eps A^(k)(z + t_i)` *translates* the realized jet set and so
+preserves its openness.  A relation `P(z, G-jets) = 0` then vanishes on a nonempty open subset of jet
+space at some point `z_0` where `P(z_0, .)` is a nonzero polynomial, which is impossible.  So the
+perturbation is invisible to the argument -- but only in the submersion formulation, not after a
+shear.
+
+Formalizing (9) therefore means building the submersion formulation:
+
+1. continuity of `u |-> ` jets of `S_u(. + t_i)` at a packet of points (corpus:
+   `contDiffOn_weightedCauchyJetSmoothControl`, `HerglotzJetMapSmoothness`);
+2. openness of the reachable jet set under small mass perturbations (corpus:
+   `cauchyJetRealLinearCombination_surjective`, `normalizedCauchyJetRealLinearCombination_surjective`
+   -- these give surjectivity; a local/open form is what is needed);
+3. the `chi`-jet map is a local homeomorphism -- triangular with diagonal `chi'(m) != 0` -- to carry
+   openness from `m`-jets to `S`-jets;
+4. Baire over *shapes* rather than over relations: for a fixed jet depth, monomial support and
+   `z`-degree, normalize the coefficient vector to the unit sphere, so the bad parameter set is
+   closed by compactness and has empty interior by (2)+(3).  The shapes are countable.
+
+Steps 1-3 are corpus-adjacent; step 4 is the new assembly.  This is the next target.

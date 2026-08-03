@@ -281,6 +281,21 @@ The requirement is therefore only that **for each event separately** some soluti
 there — the solutions may differ from event to event, which is exactly what solvability of the
 Cauchy problem with normalized data delivers.
 
+That weakening is not cosmetic. `formal/GaloisForLFunctions/HTGeometry/ClockProbeOneDimensional.lean`
+settles both constant-potential regimes of `u'' + Vu = 0` by explicit solutions:
+
+- `cosProbe`, `solvesPotentialWave_cosProbe`, `cosProbe_self`, `noCommonZero_oscillatory` — in the
+  **oscillatory** regime the probes are cosines centred at each event; each is nonvanishing at its
+  own centre, so the potential is determined;
+- `cosProbe_eq_zero` — every cosine probe has a zero, so **no member of that family is globally
+  nonvanishing**: the oscillatory case is determined only because the pointwise condition allows
+  the probe to vary with the event;
+- `coshProbe`, `solvesPotentialWave_coshProbe`, `coshProbe_ne_zero`,
+  `noCommonZero_nonOscillatory` — in the non-oscillatory regime one hyperbolic cosine suffices
+  globally;
+- `potential_eq_of_oscillatory`, `potential_eq_of_nonOscillatory` — both regimes determine their
+  potential.
+
 So the identifiability content of step 1 is settled in full generality, and the reachable potential
 class is characterized. What remains open is the physical selection problem: a laboratory does not
 choose `u` and read off `-(□u)/u`; it prepares sources and must obtain solutions with the required

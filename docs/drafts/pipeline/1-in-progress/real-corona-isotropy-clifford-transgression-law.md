@@ -200,3 +200,13 @@ stabilization or a different Dirac parity.
   exact defect formula and root-number parity for completed automorphic GL(1) L-functions.
   Remaining P4 gate is identification of this defect rank with the rank map of the paper's concrete
   Real-corona `K₀` idempotent; no abstract declaration is accepted as that identification.
+- 2026-08-03 — Hostile K-theory audit found that literal identification is false for multiple
+  zeros. `RealCoronaKZeroMultiplicityFracture.lean` constructs the finite-coordinate fixed
+  idempotent, its genuine Grothendieck `K₀` class, total rank and evaluation rank. Lean proves
+  `cyclicDefect = KZeroSupportRank + multiplicityExcess`; central `K₀` evaluation equals analytic
+  rank iff central multiplicity is at most one. Thus ordinary `K₀` detects occupied real-zero
+  support, while the cyclic pairing detects analytic multiplicity. For self-dual families both
+  sides obey the same central-plus-twice-upper orbit law with respectively support and multiplicity
+  weights. This support--multiplicity fracture is the correct P4 comparison and a new fixed-channel
+  shadow of the universal transgression law. All selected theorems pass `#print axioms` with only
+  `propext`, `Classical.choice`, and `Quot.sound`.

@@ -28,8 +28,8 @@
 \newcommand{\cN}{\mathcal N}
 \newcommand{\ip}[2]{\langle #1,#2\rangle}
 
-\title{Countable Observer Weaving and the\\
-Coercivity--Defect Law for Hilbertian Relations}
+\title{Coverage, Common Closed Avoidance, and\\
+Dense-Image Rigidity for Hilbert Operator Ranges}
 \author{Michael Haufschild}
 \date{}
 
@@ -88,6 +88,15 @@ each member of a family is nonclosed, but their algebraic span may already be
 the whole Hilbert space.  The goal is a single closed subspace disjoint from
 every range, with enough internal structure to generate a lattice of dense
 defects.
+
+There is an important weaker fact.  A proper Banach operator range is
+meagre, so Baire category prevents a countable union of proper operator
+ranges from covering the ambient Banach space; see
+\cite[Proposition~2.6]{AroraGlueck2023}.  That argument supplies one vector
+outside the union.  The issue here is spaceability without assuming that the
+span of the ranges is nonclosed: one closed infinite-dimensional subspace
+must miss every range simultaneously even when their algebraic span is all
+of \(G\).
 
 The motivating ranges are adjoint ranges.  If \(T:G\to H\) has dense range,
 then a closed source restriction \(M\subset G\) remains dense under \(T\)
@@ -581,10 +590,10 @@ The Lean development uses complex Hilbert spaces from mathlib.  No
 \texttt{unsafe} declaration occurs in the formal modules.  The exact claim
 surface is:
 \begingroup
-\footnotesize
+\scriptsize
 \sloppy
 \raggedright
-\begin{description}[leftmargin=2.8em,style=nextline]
+\begin{description}[leftmargin=2.8em,style=nextline,itemsep=0pt,topsep=0pt,parsep=0pt]
   \item[Theorem~\ref{thm:observer}]
   \nolinkurl{dense_images_iff_orthogonal_avoids_adjointRanges}.
   \item[Corollary~\ref{cor:hereditary}]
@@ -654,7 +663,7 @@ Two problems remain.
 
 \begingroup
 \raggedright
-\footnotesize
+\scriptsize
 \begin{thebibliography}{99}
 \setlength{\itemsep}{0.25em}
 \setlength{\parskip}{0pt}
@@ -663,48 +672,36 @@ Two problems remain.
 G.~Ara\'ujo, A.~Barbosa, A.~Baganha Raposo Jr., and G.~Ribeiro,
 \emph{Complements of unions: insights on spaceability and applications},
 Mathematika \textbf{71} (2025), e70006.
-\href{https://doi.org/10.1112/mtk.70006}{doi:10.1112/mtk.70006}.
 
-\bibitem{CojuhariGheondea2015}
-P.~Cojuhari and A.~Gheondea,
-\emph{Triplets of closely embedded Hilbert spaces},
-Integral Equations Operator Theory \textbf{81} (2015), 1--33.
-\href{https://doi.org/10.1007/s00020-014-2195-0}{doi:10.1007/s00020-014-2195-0}.
+\bibitem{AroraGlueck2023}
+S.~Arora and J.~Gl\"uck,
+\emph{A characterization of the individual maximum and anti-maximum principle},
+Math. Z. \textbf{305} (2023), article 24.
 
 \bibitem{FillmoreWilliams1971}
 P.~A.~Fillmore and J.~P.~Williams,
 \emph{On operator ranges},
 Adv. Math. \textbf{7} (1971), 254--281.
-\href{https://doi.org/10.1016/S0001-8708(71)80006-3}
-{doi:10.1016/S0001-8708(71)80006-3}.
 
 \bibitem{KitsonTimoney2011}
 D.~Kitson and R.~M.~Timoney,
 \emph{Operator ranges and spaceability},
 J. Math. Anal. Appl. \textbf{378} (2011), 680--686.
-\href{https://doi.org/10.1016/j.jmaa.2010.12.061}
-{doi:10.1016/j.jmaa.2010.12.061}.
 
 \bibitem{Skrepek2025}
 N.~Skrepek,
 \emph{Quasi Gelfand triples},
 Integral Equations Operator Theory \textbf{97} (2025), article 1.
-\href{https://doi.org/10.1007/s00020-024-02780-9}
-{doi:10.1007/s00020-024-02780-9}.
 
 \bibitem{SkrepekPauly2025}
 N.~Skrepek and D.~Pauly,
 \emph{Weak equals strong \(L^2\) regularity for partial tangential traces on Lipschitz domains},
 J. Math. Anal. Appl. \textbf{550} (2025), 129548.
-\href{https://doi.org/10.1016/j.jmaa.2025.129548}
-{doi:10.1016/j.jmaa.2025.129548}.
 
 \bibitem{TerElstSauter2016}
 A.~F.~M.~ter Elst and M.~Sauter,
 \emph{Nonseparability and von Neumann's theorem for domains of unbounded operators},
 J. Operator Theory \textbf{75} (2016), 367--386.
-\href{https://doi.org/10.7900/jot.2014nov18.2075}
-{doi:10.7900/jot.2014nov18.2075}.
 
 \end{thebibliography}
 \endgroup

@@ -1,7 +1,7 @@
 # Countable observer weaving and coercivity–defect law
 
 - **Created:** 2026-08-03
-- **Stage:** 3 — formalized; publication package under hostile audit
+- **Stage:** 4 — publication-ready; external priority confirmation open
 - **Type:** THEOREM
 - **Status:** `[PROVED HERE; NOVELTY UNVERIFIED]`
 - **Lean module:** `formal/GaloisForLFunctions/RHTower/PythagoreanObserverBlindness.lean`
@@ -104,13 +104,11 @@ Finite-codimensional persistence and direct orthonormal weaving prove a strictly
 
 ## Promotion gate
 
-Move to stage 4 only after:
-
-- final targeted Lean build passes;
-- formal lint and axiom audit pass;
-- PDF has no layout defects;
-- hostile referee report checks every manuscript claim against Lean ledger;
-- novelty language remains qualified pending independent priority confirmation.
+- Final targeted Lean build: PASS.
+- Formal lint and axiom audit: PASS.
+- PDF layout audit: PASS.
+- Hostile referee claim-ledger audit: PASS.
+- Novelty language remains qualified pending independent priority confirmation: PASS.
 
 ## Log
 

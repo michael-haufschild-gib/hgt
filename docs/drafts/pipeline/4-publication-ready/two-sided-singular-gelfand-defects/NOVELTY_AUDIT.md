@@ -29,10 +29,14 @@ Lean declaration: `countable_observer_coercivity_wildness_law`.
 3. Kitson–Timoney (2011) proves spaceability of complements of operator ranges and extensions to unions of countable chains under their stated hypotheses.
 4. Araújo–Barbosa–Baganha Raposo–Ribeiro (2025) gives general criteria for spaceability of complements of unions.
 5. Ribeiro, arXiv:2510.11332v2, proves a Fréchet theorem when the span of the union of the ranges is nonclosed. That hypothesis does not follow from individual nonclosedness. Its remark asserting an arbitrary-family consequence from individual nonclosedness uses the inclusion in the wrong direction; an algebraically dense discontinuous hyperplane is a direct counterexample to that inference.
+6. Arora–Glück (2023), Proposition 2.6, records the Baire-category fact
+   that a countable union of proper Banach operator ranges cannot cover the
+   ambient space. This gives nonemptiness of the complement, not a closed
+   infinite-dimensional subspace in it.
 
 ## Separation from prior results
 
-The new theorem does not ask the span of `⋃ ran(T_i*)` to be nonclosed. It can apply when finite or countable algebraic combinations of observer ranges are large, including complementary two-channel situations. It constructs a common closed subspace disjoint from every adjoint range separately, then proves a hereditary closed-subspace law. This is different from finding a closed subspace in the complement of one combined operator range.
+The new theorem does not ask the span of `⋃ ran(T_i*)` to be nonclosed. It can apply when finite or countable algebraic combinations of observer ranges are large, including complementary two-channel situations. It upgrades the known Baire noncoverage witness to a common closed infinite-dimensional subspace disjoint from every adjoint range separately, then proves a hereditary closed-subspace law. This is different from finding a closed subspace in the complement of one combined operator range.
 
 The proof is also different: finite-codimensional persistence of nonclosed range produces an orthonormal small-vector array; square-summable observer weights weave all observer blocks into one closed normal space.
 
@@ -78,3 +82,4 @@ No exact collision was found. Search-engine absence is not proof of priority. In
 - A. F. M. ter Elst and M. Sauter, “Nonseparability and von Neumann's theorem for domains of unbounded operators,” *J. Operator Theory* 75 (2016), 367–386. DOI: 10.7900/jot.2014nov18.2075.
 - G. Araújo et al., “Complements of unions: insights on spaceability and applications,” *Mathematika* 71 (2025), e70006. DOI: 10.1112/mtk.70006.
 - G. Ribeiro, “Operator ranges and spaceability: an extension of the Kitson–Timoney theorem,” arXiv:2510.11332v2.
+- S. Arora and J. Glück, “A characterization of the individual maximum and anti-maximum principle,” *Math. Z.* 305 (2023), article 24. DOI: 10.1007/s00209-023-03348-w.

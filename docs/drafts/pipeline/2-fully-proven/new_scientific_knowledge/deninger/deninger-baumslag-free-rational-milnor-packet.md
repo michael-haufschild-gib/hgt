@@ -107,7 +107,9 @@
   `GaloisForLFunctions.RHTower.DeningerRotateCycRed` (rotations of a cyclically reduced word),
   `GaloisForLFunctions.RHTower.DeningerConjLetter` (conjugating by a letter),
   `GaloisForLFunctions.RHTower.DeningerConjHead` (incomplete cancellation),
-  `GaloisForLFunctions.RHTower.DeningerConjLast` (cancellation at the back)
+  `GaloisForLFunctions.RHTower.DeningerConjLast` (cancellation at the back),
+  `GaloisForLFunctions.RHTower.DeningerConjTrichotomy` (the one letter trichotomy),
+  `GaloisForLFunctions.RHTower.DeningerConjWordLength` (conjugating by a whole word)
 
 ## Statement
 
@@ -1212,7 +1214,25 @@ The back of the word behaves as the mirror image:
 
 So a conjugation that does not lengthen must use a letter from an extreme factor, and a conjugation
 that shortens by the full two must cancel completely — which is the rotation, forwards at the front
-and backwards at the back.  Conjugation by the
+and backwards at the back.  The three cases assemble into the statement the induction calls:
+
+- `deningerConj_letter_rotate` — **conjugating a cyclically reduced word of at least two letters by a
+  single letter either lengthens it, or is a rotation up to the base group.**
+
+Every branch that lengthens contradicts the hypothesis that the conjugate is no longer than the word,
+so what is left is a rotation by one at the front or by all but one at the back, carrying the base
+group element that the cancellation released.
+
+**Why the induction closes.**  The step peels the last letter of the conjugating element.  If it
+rotates, the recursion continues with a shorter conjugator and a rotated word.  If instead it
+lengthens, the conjugate acquires that letter at *both* ends — the word becomes `a · U · a⁻¹`, whose
+two extreme letters are now in the same factor — so the next letter of the conjugating word, which
+alternates away from it, cannot cancel either.  Nothing downstream can undo the growth, and the whole
+conjugate is longer than the word.  That last observation is a lemma with no induction in it at all:
+
+- `deningerLen_conj_word` — **conjugating by a word whose last letter lies in a factor occurring at
+  neither end multiplies nothing away**: the length is twice the conjugating word plus the word
+  conjugated.  Conjugation by the
 base group alone changes no length, which the corpus already owned (`deningerLen_base_conj`), so the
 base element the rotation carries never disturbs the induction.
 
@@ -1900,3 +1920,19 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   to the front, and incomplete cancellation at the back lengthens by one.  The trichotomy is now
   complete on both sides — grow by two, grow by one, or rotate forwards or backwards — which is
   everything the induction of the conjugacy criterion consumes at each step.
+- 2026-08-03 — Assembled the one letter trichotomy into the form the induction consumes: conjugating
+  a cyclically reduced word of at least two letters by a single letter either lengthens it, or is a
+  rotation up to the base group.  Each lengthening branch contradicts the hypothesis that the
+  conjugate is no longer than the word, leaving a rotation by one at the front or by all but one at
+  the back, carrying the base group element the cancellation released.  The remaining work is the
+  induction on the length of the conjugating element, peeling one letter at a time.
+- 2026-08-03 — Found why the conjugacy induction closes, and proved the lemma it needs.  The step
+  peels the last letter of the conjugating element; if that letter rotates, the recursion continues
+  with a shorter conjugator and a rotated word, and if it lengthens, the conjugate acquires that
+  letter at both ends, so its two extreme letters are now in the same factor and the next letter of
+  the conjugating word — which alternates away from it — cannot cancel either.  Nothing downstream
+  can undo the growth.  That observation needs no induction: conjugating by a word whose last letter
+  lies in a factor occurring at neither end cancels nothing anywhere, and the length is twice the
+  conjugating word plus the word conjugated.  This was the missing piece; earlier attempts to run the
+  induction stalled on the lengthening branch, which is now closed by inspection rather than by
+  recursion.

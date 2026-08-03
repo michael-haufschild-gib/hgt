@@ -450,3 +450,60 @@ alternative.  It does not prove global atomic non-erasure.  Any claim that RH no
 unconditionally would therefore be false.  Next legitimate theorem is not another RH
 equivalence: it is construction of the singular source-normal gauge and proof that no exact
 conormal character line lies in its zero locus.
+
+## 2026-08-03 frontier correction: global atomic non-erasure is closed
+
+The fixed reflected Meyer Gaussian and the adaptive reflected prime-normal comparison close the
+bare non-erasure clause more strongly than the preceding audit recorded.  Put
+
+\[
+ h(q)=\mathcal M(g_{\rm ref})(q),\qquad
+ R_p=J_p h,\qquad O_p=C_p h,
+\]
+
+where (h\in\ell^2(\Xi_{\rm copy})) is the source-derived Gaussian horizon grade,
+(J_p) is the fixed-prime global reflected comparison, and (C_p) is its codiagonal.  Existing
+source theorems give
+
+\[
+ h(q)\ne0,qquad \|J_p a\|=\|a\|,qquad
+ \frac34\|a\|\le\|C_p a\|.
+\]
+
+Fiberwise,
+
+\[
+ R_p(q)=h(q)u_{p,q},\qquad
+ O_p(q)=h(q)c_{p,q},qquad
+ \|u_{p,q}\|=1,\quad c_{p,q}\ne0.
+\]
+
+Therefore one fixed source record simultaneously retains every multiplicity-exact divisor copy,
+and the conservative observation retains every one of those fibres.  Equivalently, every
+source-weighted atom (h(q)e_q) survives both maps.  No divisor-selected damping and no RH premise
+occur.  This is the **global atomic non-erasure theorem**.
+
+The same theorem has a sharp negative half:
+
+\[
+ h(q)\longrightarrow0\quad(q\to\infty\text{ cofinally}),
+ \qquad
+ \nexists c>0\;\forall q\; c\le |h(q)|.
+\]
+
+Thus atomic non-erasure and stable/invariant amplitude conservation are distinct.  The theorem
+closes clause 5 of `(11)` and the non-erasure part of clause 4, but not `(ACSG)`: neither (J_p)
+nor (C_p) is proved to intertwine the centered divisor character with a source action preserving
+the induced norm.  Indeed the explicit centered Gaussian countertransport has uniformly bounded
+source half-density capacity, while uniform capacity of its global Xi evaluation field is already
+equivalent to RH.  The remaining theorem is consequently **global centered-flow capacity
+conservation** (or an equivalent reflection-invariant factorization), not global atomic
+non-erasure.
+
+Formal target:
+
+- `DeningerMeyerGlobalAtomicNonErasure.lean`;
+- one source record nonzero in every fibre;
+- its conservative codiagonal nonzero in every fibre and bounded below globally by `3/4`;
+- every source-weighted divisor basis atom survives both transports;
+- no positive uniform lower coefficient bound exists.

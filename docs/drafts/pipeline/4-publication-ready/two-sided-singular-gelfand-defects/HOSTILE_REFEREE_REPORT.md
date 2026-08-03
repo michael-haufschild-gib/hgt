@@ -1,294 +1,187 @@
 # Hostile referee report
 
-Manuscript: **Two-Sided Singular Defects in Rigged Hilbert Spaces: Classification and Failure of
-Automatic Quasi Compatibility**
+## Recommendation
 
-Standard applied: skeptical referee for a renowned general mathematical journal in the strong
-short-paper tier (Proceedings of the AMS / Bulletin of the LMS), not a specialist house report.
+**Conditional accept for a renowned broad mathematical journal in the
+Mathematika / Mathematische Zeitschrift / Proceedings of the AMS band,
+provided an independent operator-range expert confirms priority.**
 
-Date: 3 August 2026.
+Paper clears mathematical-correctness, proof-completeness, presentation, and
+significance bars for that band. It does **not** currently clear Annals / JAMS
+/ Inventiones / Acta tier. An Advances in Mathematics submission would be
+high-risk without wider application or evidence that countable
+common-avoidance theorem resolves a recognized open problem.
 
-## Final recommendation
+This is not an unconditional priority certificate. Search and internal review
+cannot replace MathSciNet/zbMATH coverage plus an expert referee.
 
-**Accept after minor editorial revision, subject to independent priority verification.**
+## What is genuinely new-looking
 
-Mathematical and expository quality meets publication standard for a renowned general journal’s
-short-paper category. Manuscript is not Annals/JAMS/Inventiones scale: mechanism is clean and
-decisive but concentrated. At Proceedings AMS / Bulletin LMS tier, resolving two explicit recent
-published conjectures, classifying all defects in a natural Hilbert model, and proving sharp
-positive replacement theorem is sufficient significance.
+Elementary observer--annihilator equivalence is not novelty. Neither is fact
+that countably many proper operator ranges cannot cover a Banach space: Baire
+category already gives that.
 
-Priority caveat is real. Current primary-source, exact-phrase, citation-descendant, and
-operator-range searches found no collision, and March 2026 arXiv revision of source paper still
-ends with conjectures. Search cannot certify novelty. Author should obtain MathSciNet/zbMATH and
-independent expert check before submission. This caveat does not identify mathematical or writing
-defect.
+New-looking core is stronger:
 
-## Executive hostile assessment
+> A countable family of noncoercive injective dense-range Hilbert observers
+> admits one closed infinite-dimensional common normal subspace disjoint from
+> every adjoint range, even when algebraic span of those ranges is whole
+> source. Every closed subspace of that common normal generates a simultaneous
+> dense-image defect.
 
-Initial posture: likely elementary restriction trick dressed as new theory. That attack failed.
+Equivalently, paper upgrades a Baire noncoverage vector to a closed
+infinite-dimensional spaceable complement without a nonclosedness hypothesis
+on combined span. Construction is simultaneous, hereditary, and requires no
+commutation, spectral model, compactness, or joint lower bound.
 
-Arbitrary restriction would generally lose closedness or one of two density conditions. Paper
-proves exact classification, exact necessary-and-sufficient existence criterion, and universal
-codimension-one realization. Counterexample is smallest corollary of structural theorem, not
-evidence substituted for theorem. Published conjectures predict these conditions force
-saturation; explicit model proves otherwise inside standard separable Hilbert space with positive
-self-adjoint diagonal operators.
+Arbitrary-family coverage--rigidity law identifies invariant of which
+countable theorem is a consequence:
 
-The actual new delta is:
+    global closed dense-image rigidity
+      iff pointwise coverage by adjoint ranges.
 
-```text
-pairing compatibility
-    = closed bi-dense subgraphs of canonical inverse-adjoint graph,
+For countable injective dense-range families, weaving theorem proves coverage
+is possible exactly when one observer is coercive.
 
-proper defect exists
-    iff neither graph coordinate controls graph norm
-    iff canonical operator is unbounded and not bounded below.
-```
+## Hostile attempts to reduce result
 
-This is exact knowledge. Process artifacts, formalization, and terminology are not needed to make
-result novel; they only improve verification.
+### 1. Reduction to Baire category
 
-## Round-one objections and disposition
+Fails. Baire category produces a vector outside a countable union of proper
+operator ranges. It does not produce a closed infinite-dimensional subspace
+disjoint from union, much less hereditary lattice.
 
-### 1. Definition mismatch could invalidate conjecture refutation
+### 2. Reduction to Kitson--Timoney
 
-**Attack.** Perhaps manuscript weakens published pre-quasi definition, ignores complete dual pair,
-or attacks an obsolete arXiv version.
+Fails in intended regime. Their theorem gives spaceability of complement of
+algebraic span of countably many ranges when that span is nonclosed. Here span
+may be all of Hilbert space.
 
-**Finding.** Published Definition 4.1 was checked. Taking all three spaces equal to one complex
-Hilbert space with standard complete anti-dual pairing supplies complete dual pair. Both embeddings
-are proved closed, densely defined, injective, and densely ranged. Pairing identity is exact.
-Failure is exact `ran C != dom A*`. Published Springer text still states Conjectures 6.7 and 6.8 in
-these terms. No mismatch.
+### 3. Reduction to Araújo--Barbosa--Baganha Raposo--Ribeiro
 
-**Disposition.** Resolved.
+No direct reduction was located. Their general criterion assumes structural
+conditions on union, including cases where union is itself a subspace of
+infinite codimension. Observer ranges here need not form a chain or a
+subspace under union.
 
-### 2. Canonical partner may be ill-defined
+### 4. Reduction to 2025 Ribeiro preprint
 
-**Attack.** `(A*)^{-1}` is an operator only if `A*` injective; its domain/range density also need
-proof.
+Fails. Its proved theorem retains hypothesis that span of ranges is
+nonclosed. Arbitrary-family reduction in Remark 4.1 uses complement inclusion
+in wrong direction near its final step: from Y0 contained in Y, avoidance of
+Y0 does not imply avoidance of Y.
 
-**Finding.** Dense range of `A` gives `ker A* = 0`. Injectivity of `A` gives dense `ran A*`.
-Closed, dense definition of `A` gives closed, densely defined adjoint. Manuscript proves all
-claims and pairing identity directly.
+### 5. Reduction to one-range Hilbert operator-range theory
 
-**Disposition.** Resolved.
+Fails for simultaneous statement. Fillmore--Williams, Dixmier/von
+Neumann-type results, and later spaceability results handle one range or a
+combined range under additional hypotheses. They do not, in sources checked,
+supply a single common closed normal for an unrelated countable family whose
+span may already be source.
 
-### 3. Classification may be tautological
+### 6. Hidden spectral or stability assumption
 
-**Attack.** Saying restrictions correspond to subgraphs is formal repackaging, not result.
+None. Proof uses only finite-codimensional persistence of nonclosed range,
+recursive orthonormal small vectors, square-summable observer weights, and
+coefficient estimates.
 
-**Finding.** Inclusion `C subset (A*)^{-1}` is forced by pairing and is proved. Sufficiency requires
-closedness plus density of both graph projections, after which every pre-quasi axiom follows.
-Quasi equality is proved equivalent to graph saturation using injectivity. More importantly,
-Theorem 4.4 completely solves nontrivial bi-density problem. Classification is load-bearing, not
-ornamental.
+## Correctness audit
 
-**Disposition.** Resolved.
+### Paper proof
 
-### 4. Sharp criterion could hide one-direction gap
-
-**Attack.** Two failed lower bounds need not provide one hyperplane dense under both maps.
-
-**Finding.** Adjoint-surjectivity lemma converts each failure into proper adjoint range. Elementary
-two-subspace argument produces one vector outside union of ranges. Orthogonal-complement proof
-then shows both hyperplane images dense. Converse uses closed range of restriction under one lower
-estimate, followed by density and injectivity. Both directions complete.
-
-**Disposition.** Resolved.
-
-### 5. “Unbounded and not bounded below” equivalence may misuse domain terminology
-
-**Attack.** Graph coordinate lower bound and ordinary operator boundedness are not identical for a
-proper domain without closedness.
-
-**Finding.** Paper uses closed, densely defined `B`. Domain-coordinate estimate bounds `B` on its
-dense domain; bounded extension plus closed graph forces domain all of `H`. Range-coordinate
-estimate is algebraically equivalent to standard lower bound. Exact assumptions are present.
-
-**Disposition.** Resolved.
-
-### 6. Explicit defect graph may not be closed
-
-**Attack.** Image of closed hyperplane under bounded map need not be closed.
-
-**Finding.** Manuscript does not make that invalid inference. Graph parameter map `R=(P,Q)` has
-explicit bounded left inverse `S`; convergence of `Rm_n` forces convergence of `m_n`. Hence `R(M)`
-closed. This is independently formalized by expressing graph as intersection of continuous
-kernels.
-
-**Disposition.** Resolved.
-
-### 7. Dense domain/range could be asserted from dense coordinate ranges incorrectly
-
-**Attack.** Dense `ran P` does not imply dense `P(M)` for proper `M`.
-
-**Finding.** Normal vector `v` is shown outside `ran P*` and `ran Q*`. Hyperplane-image lemma then
-proves density by annihilator calculation. In diagonal model, exclusion is explicit: missing
-preimages would be constant non-square-summable channels.
-
-**Disposition.** Resolved.
-
-### 8. Self-adjointness/domain claims may be under-specified
-
-**Attack.** Reciprocal diagonal with weights tending both to zero and infinity requires maximal
-domains; informal coordinate formula is insufficient.
-
-**Finding.** Revised manuscript displays exact maximal weighted-square-summability domains for
-`A` and `B` and invokes standard maximal real diagonal theorem. Lean formalization proves both
-self-adjointness statements for exact domains.
-
-**Disposition.** Resolved in revision.
-
-### 9. Strong conjecture does not follow from weak counterexample
-
-**Attack.** Logical relationship may be reversed.
-
-**Finding.** Strong conjecture quantifies over all pre-quasi triples, including Hilbert triples.
-One Hilbert counterexample falsifies both. Correct.
-
-**Disposition.** Resolved.
-
-### 10. PDE consequence is overclaimed
-
-**Attack.** Abstract counterexample does not show weak/strong trace spaces differ for Maxwell or
-another PDE.
-
-**Finding.** Manuscript explicitly denies that inference. It proves only abstract axioms cannot
-force equality. PDE-specific coercivity may place graph on one-sided regular branch; existing
-Lipschitz equality remains compatible.
-
-**Disposition.** Resolved.
-
-### 11. “Operator relations” may be terminological inflation
-
-**Attack.** No multivalued singular relation is studied.
-
-**Finding.** Paper says so explicitly. Relation-theoretic content is order interval of closed
-single-valued subrelations inside canonical inverse-adjoint graph. It distinguishes graph defect
-from multivalued singular part. Title uses “defects,” not “singular linear relations.”
-
-**Disposition.** Resolved.
-
-### 12. Formalization could be theatre
-
-**Attack.** Lean code may prove simplified finite-dimensional statement or assume key density.
-
-**Finding.** Exact infinite-dimensional `ell2(Bool x N)` model is formalized. Both density
-statements, closed graph, pairing, non-quasi conclusion, abstract classification, and sharp iff
-criterion are unconditional declarations. Direct elaboration and targeted module build pass.
-Axiom audit reports only standard Lean logical axioms. No `sorry`, `admit`, `axiom`, `opaque`, or
-`unsafe` occurs in module.
-
-**Disposition.** Resolved. Formalization supports result; significance does not depend on it.
-
-## Proof correctness audit
-
-### Proposition 2.2
-
-- Adjoint kernel: correct from dense range.
-- Adjoint range density: correct from injectivity.
-- Inverse graph closed: coordinate swap of closed adjoint graph.
-- Pairing: correct under declared first-variable linear convention.
-- Compatibility inclusion: exact adjoint-domain characterization.
-
-No gap found.
-
-### Theorem 3.1
-
-- Necessity: graph inclusion, closedness, both density projections checked.
-- Sufficiency: first projection injective on graph, so subspace remains graph of operator.
-- Negative injectivity inherited from canonical partner.
-- Quasi iff full graph: uses equality of ranges plus canonical injectivity; correct.
-
-No gap found.
-
-### Lemmas 4.1--4.2 and Theorem 4.4
-
-- Open mapping use in surjective-adjoint direction: valid Hilbert/Banach spaces.
-- Lower bound closes range; dense range makes operator onto.
-- Adjoint order in `T*(T^{-1})* = I`: correct.
-- Hyperplane annihilator calculation: complete.
-- One vector outside union of two proper linear subspaces: explicit three-case proof, valid over
-  complex field.
-- Converse: closed subspace completeness used; injectivity then forces saturation.
-
-No gap found.
-
-### Corollary 4.5
-
-- Domain projection estimate iff closed operator is everywhere bounded: proof includes dense-domain
-  extension and closedness.
-- Range projection estimate iff standard lower bound: direct graph-norm algebra.
-
-No gap found.
-
-### Theorem 5.1
-
-- `P,Q`: bounded positive self-adjoint contractions, injective, dense range.
-- `R`: bounded below through explicit recovery map.
-- `A,B`: exact maximal positive self-adjoint diagonals and inverses.
-- `v`: square summable but outside both adjoint ranges.
-- `M=v-perp`: proper; both images dense.
-- `C`: closed, injective, dense-domain, dense-range.
-- Pairing: follows from commuting self-adjoint diagonals.
-- Non-quasi: `ran C=Q(M)` proper in `ran Q=dom A*`.
-
-No gap found.
-
-## Novelty audit under adversarial standard
-
-The basic lemmas are classical or one-line consequences of classical results. Manuscript does not
-claim otherwise. Novelty rests on exact assembly and consequences:
-
-- published automaticity conjectures are answered negatively;
-- all compatible standard-Hilbert defects are classified;
-- failure boundary is necessary and sufficient, not example-specific;
-- strongest positive survivor is stated;
-- defect can always have graph codimension one;
-- example is positive self-adjoint and separable.
-
-Searches found parent mechanisms, not theorem. No current collision detected. Because no
-independent database access or expert testimony was available, priority remains provisional.
+- Observer--annihilator equivalence: correct.
+- Coverage--rigidity equivalence: correct; nonemptiness of index set handles
+  zero vector in converse.
+- Finite-codimensional persistence: correct.
+- Countable orthonormal schedule: dependency closed.
+- Woven coefficient space: closed and contains a countable linearly
+  independent family.
+- Adjoint-range avoidance estimate: division is only by positive weights;
+  limit argument forces every base coefficient to vanish.
+- Coercive branch: closed image plus density gives surjectivity; injectivity
+  forces full source.
+- Two-marginal relation criterion and pre-quasi graph application: logically
+  downstream of same observer law.
+
+No mathematical gap was found.
+
+### Lean proof
+
+Every numbered theorem, lemma, corollary, and model assertion is mapped in
+CLAIM_TRACE_AUDIT.md to a compiled declaration. Headline declarations include:
+
+- dense_images_iff_orthogonal_avoids_adjointRanges;
+- closed_common_avoidance_rigid_iff_adjointRanges_cover;
+- closed_common_dense_image_rigid_iff_adjointRanges_cover;
+- hilbertRangeSingular_domRestrict_orthogonal;
+- exists_countable_singular_orthonormalArray;
+- countable_observer_coercivity_wildness_law;
+- twoSidedSingular_iff_hasProperClosedBiDenseSubspace;
+- preQuasi_graph_le_canonical_graph;
+- preQuasi_quasi_iff_eq_canonicalNegative;
+- exists_hilbertPreQuasiPair_not_quasi;
+- not_every_hilbertPreQuasiPair_is_quasi.
+
+Audit results:
+
+- direct lake env lean elaboration: PASS;
+- targeted lake build of
+  GaloisForLFunctions.RHTower.PythagoreanObserverBlindness: PASS;
+- global formal lint: PASS;
+- umbrella import: PASS;
+- no sorry, admit, user axiom, opaque, or unsafe declaration;
+- axiom report: only propext, Classical.choice, Quot.sound.
+
+Thus all retained mathematical claims are unconditionally proved in Lean in
+normal mathlib foundational sense.
 
 ## Significance audit
 
-### Reasons to publish in renowned general short-paper venue
+### Positive
 
-1. Resolves two explicit published conjectures from recent operator/rigged-space literature.
-2. Gives conceptual mechanism and full sharp boundary, preventing counterexample from being an
-   isolated trick.
-3. Positive replacement theorem tells applications exactly what extra estimate suffices.
-4. Construction uses familiar objects and proof is accessible beyond narrow specialty.
-5. Paper is self-contained, concise, and machine-audited without depending on machine search.
+1. Exact universal invariant: pointwise adjoint-range coverage.
+2. Span-free countable spaceability theorem.
+3. Hereditary closed-subspace lattice, not one witness.
+4. Explicit constructive Hilbert proof rather than existence-only Baire
+   argument.
+5. Direct relation-chart and rigged-Hilbert interpretation.
+6. Complete Lean formalization provides unusually strong verification.
 
-### Reasons not to claim elite top-general significance
+### Limitations
 
-1. Core Hilbert geometry is elementary once canonical graph is isolated.
-2. Classification is proved in standard Hilbert anti-dual model, not full Banach framework.
-3. No concrete PDE trace counterexample or new PDE theorem is supplied.
-4. Broader consequences are diagnostic rather than a new large theory.
+1. Countable family only; uncountable common avoidance remains open.
+2. Hilbertian; no Banach analogue is proved.
+3. Universal coverage law itself is elementary once observer duality is seen.
+4. Rigged-Hilbert application is abstract, not a concrete PDE trace theorem.
+5. Bibliographic priority remains externally unverified.
 
-These limits calibrate venue; they do not undermine strong short-paper publishability.
+## Presentation audit
 
-## Presentation and artifact audit
+Eight-page manuscript is concise, mathematically self-contained, and visually
+clean. It now explicitly separates:
 
-- Manuscript is 10 pages after compilation, appropriate for short theorem paper.
-- Abstract names exact conjecture outcome, structural theorem, criterion, example, and Lean status.
-- Definitions precede use; scalar convention declared.
-- Every main theorem has complete proof.
-- Scope restrictions and PDE non-implication are explicit.
-- References point to primary sources.
-- PDF visually inspected page by page; no clipping, overlap, unreadable symbols, or broken citation
-  tokens after revision.
-- Initial literal `qquad` artifacts and long-code overflow were found by visual audit and fixed.
+- known Baire noncoverage;
+- known span-nonclosed spaceability;
+- new-looking span-free common closed avoidance;
+- independently unverified priority.
 
-## Publication-level verdict
+No overclaim remains. Formal declaration list is compact but readable.
 
-**Confirmed at Proceedings AMS / Bulletin LMS short-paper quality, conditional only on independent
-priority verification and ordinary copy-editing.**
+## Final hostile verdict
 
-This is strong, novel-looking, and significant enough for a renowned general mathematical journal
-at that tier. It should not be marketed as top-tier general-mathematics breakthrough or as a PDE
-counterexample. Those stronger claims would not survive review.
+**Mathematical quality: PASS.**
+
+**Unconditional Lean coverage of all mathematical claims: PASS.**
+
+**Novelty against sources checked: PASS, provisional.**
+
+**Significance for a renowned broad journal: PASS for
+Mathematika / Mathematische Zeitschrift / Proceedings of the AMS tier.**
+
+**Flagship-general significance: FAIL on current evidence.**
+
+**External priority certification: OPEN.**
+
+Paper is submission-ready only with venue claim calibrated as above. No
+honest internal process can turn remaining external-priority condition into
+certainty.

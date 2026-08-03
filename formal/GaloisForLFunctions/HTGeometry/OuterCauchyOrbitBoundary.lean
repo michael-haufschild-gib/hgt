@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.PerturbedBoundaryRigidity
 import GaloisForLFunctions.HTGeometry.StieltjesTranslationCollapse
 import GaloisForLFunctions.HTGeometry.ParabolicOrbitCircleClosure
+import GaloisForLFunctions.HTGeometry.CayleyOuterFamilyGauge
 
 /-!
 # The outer background of a finite Stieltjes mass
@@ -33,13 +34,6 @@ def cayleyOuter (w : ℂ) : ℂ := Complex.exp ((w - Complex.I) / (w + Complex.I
 theorem cayleyOuter_zero : cayleyOuter 0 = Complex.exp (-1) := by
   rw [cayleyOuter]
   norm_num
-
-theorem add_I_ne_zero_of_im_nonneg {w : ℂ} (hw : 0 ≤ w.im) : w + Complex.I ≠ 0 := by
-  intro hzero
-  have hw' : w = -Complex.I := by linear_combination hzero
-  rw [hw'] at hw
-  simp at hw
-  linarith
 
 theorem continuousAt_cayleyOuter {w : ℂ} (hw : w + Complex.I ≠ 0) : ContinuousAt cayleyOuter w := by
   refine Complex.continuous_exp.continuousAt.comp ?_

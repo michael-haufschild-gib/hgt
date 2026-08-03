@@ -7,9 +7,12 @@
 - **Source:** `OPEN-SOURCE-001`
 - **RH used:** no
 - **Computation used:** no
-- **Lean status:** elementary delay-profile, aperture-normalization, and jump identities are
-  formalized in `MobiusFriableIntegerSeamProfile.lean`; the analytic friable asymptotic remains
-  the cited published input
+- **Lean status:** delay equation with uniqueness, Taylor coefficient `a_0(mu)=1`, the seam jumps,
+  and the exact largest-prime sector split `(20)` are formalized unconditionally in
+  `MobiusFriableIntegerSeamProfile.lean`, `MobiusFriableDelayEquation.lean`,
+  `MobiusFriableTaylorCoefficient.lean` and `MobiusFriableLargestPrimeDecomposition.lean`;
+  the two cited analytic inputs (the friable expansion and the global Mertens estimate) remain
+  external
 
 ## Result
 
@@ -234,3 +237,72 @@ Route E seam charges.  External priority for that extraction is unverified.
   \(\varphi_{-1}\) for the published leading profile \(\psi_{-1}=\varphi_{-1}''\), reversing its
   sign.  Corrected the expansion, proved exact aperture-independence and the quantized \(u=2\)
   jump, and isolated `QUANTIZED-U2-SEAM-FLUX`.
+
+## Lean completion programme (opened 2026-08-03)
+
+Corpus audit before starting: `MobiusFriableIntegerSeamProfile.lean` held the branch formulas
+`(3)`, the aperture-independence `(19)` and the jumps `(5)`–`(6)`; `FriableAuxiliary.lean` holds
+iterated-derivative machinery for friable Dirichlet exponentials.  Neither the delay equation
+itself, the Taylor coefficient `(11)`–`(12)`, nor the largest-prime identity `(20)` was formalized.
+`Sieve/SmoothSum.lean` already owns the friable index set `smoothUpTo`, so the friable Möbius sums
+are definable on existing corpus objects.
+
+### `(9)`, `(13)`, `(15)` landed — `MobiusFriableDelayEquation.lean`
+
+- `hasDerivAt_mobiusFriableDelayBelowTwo` : on the first branch `φ'(v) = φ(v−1)/v = 1/v`, which is
+  the delay equation because `v−1` lies in the initial range;
+- **`eq_mobiusFriableDelayBelowTwo_of_delayEquation`** : *uniqueness*.  Any function continuous on
+  `[1,2]`, satisfying `φ'(v) = 1/v` from the right on `[1,2)`, with `φ(1) = 1`, equals `1 + log v`
+  throughout `[1,2]`.  This replaces the card's appeal to "right continuity at `v=1`" by a
+  mean-value argument (`constant_of_has_deriv_right_zero` applied to the difference);
+- `mobiusFriableDelayDerivativeAboveTwo_eq` : the delay equation *propagates* — the second-branch
+  derivative recorded in the corpus is exactly `φ(v−1)/v` with `φ` the first branch, which is `(15)`.
+
+### `(7)`, `(11)`, `(12)` landed — `MobiusFriableTaylorCoefficient.lean`
+
+- **`LSeries_moebius_eq_inv_riemannZeta`** : `∑ μ(n) n^{−s} = ζ(s)^{−1}` for `Re s > 1`, which is `(7)`;
+- `tendsto_mul_riemannZeta_add_one` : `s ζ(1+s) → 1` as `s → 0`, `s ≠ 0` — the simple pole of `ζ`
+  transported to the origin (mathlib's `riemannZeta_residue_one` composed with the shift);
+- `mobiusFriableTaylor_eq` : on `Re s > 0` the expanded function of `(11)` equals
+  `((1+s)·(s ζ(1+s)))^{−1}`;
+- **`tendsto_mobiusFriableTaylor`** : that function tends to `1` at the origin — this is `a₀(μ)=1`,
+  equation `(12)`, now a theorem rather than a computation.
+
+### `(20)` landed — `MobiusFriableLargestPrimeDecomposition.lean`
+
+The exact largest-prime decomposition, with no analytic input whatever:
+
+- `mertensM`, `mertensFriable`, `largePrimes`, `mertensLargePrimeSector` — the two sectors;
+- **`eq_of_two_large_primes`** : for `n ≤ X < Y²`, two prime factors above `Y` are impossible,
+  since their product already divides `n`;
+- `mertensM_eq_add_sector` : the two sectors partition `M(X)`, for every cut;
+- **`mertensM_eq_mertensFriable_sub`** :
+  `M(X) = M_fri(X,Y) − ∑_{Y < p ≤ X} M(X/p)` whenever `X < Y²`.
+  The proof is a bijection `(p,m) ↦ pm` between the pairs `{Y < p ≤ X prime} × [1, X/p]` and the
+  non-friable integers of `[1,X]`, together with `μ(pm) = −μ(m)` (which needs `p ∤ m`, again from
+  `X < Y²`);
+- `mertensLargePrimeSector_eq` : the one-large-prime sector is exactly `−∑_p M(X/p)`;
+- `div_lt_of_mem_largePrimes`, `mertensFriable_div_eq` : below the seam `X/p < Y`, so the inner sums
+  carry no friability restriction — this is the step the card states implicitly when it writes
+  `M(X/p)` rather than `M_fri(X/p, Y)`;
+- **`mertensM_eq_mertensFriable_sub_friable`** : the same identity with both sides friable.
+
+Built, wired into `GaloisForLFunctions/RHTower.lean`, axiom-clean (fourteen theorems, every one
+`[propext, Classical.choice, Quot.sound]`).
+
+### What remains
+
+Two inputs stay external, and both are genuine research-scale analytic theorems rather than
+bookkeeping:
+
+1. `(17)`/`(18)` — de la Bretèche–Tenenbaum's friable expansion.  Its proof is a Selberg–Delange
+   development combined with a saddle-point analysis of the friable Dirichlet integral; nothing in
+   mathlib or the corpus is close to it.
+2. `(21)` — the global Mertens estimate `M(X) = o_A(X/\log^A X)`, which is the prime number theorem
+   with the classical zero-free region.  Mathlib has the analytic continuation and the
+   nonvanishing of `ζ` on `Re s = 1`, but not the Mertens/PNT asymptotic.
+
+Everything the card proves *itself* — the corrected profile `(2)`–`(3)`, the branch solutions and
+their uniqueness `(9)`, `(13)`–`(15)`, the seam limits `(5)`, the normalisation `(6)`, the Taylor
+coefficient `(11)`–`(12)`, the aperture-independence `(19)`, and the exact sector split `(20)` — is
+now an unconditional Lean theorem.

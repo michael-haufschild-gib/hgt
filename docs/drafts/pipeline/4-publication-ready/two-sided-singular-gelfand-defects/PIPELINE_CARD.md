@@ -1,6 +1,6 @@
 # Publication card — countable observer weaving
 
-- **Status:** hostile audit in progress
+- **Status:** publication package complete; independent priority gate open
 - **Primary claim:** arbitrary-family coverage–rigidity law plus countable coercivity–defect dichotomy
 - **Novelty:** `[PROVED HERE; NOVELTY UNVERIFIED]`
 - **Paper:** `main.tex`
@@ -52,14 +52,18 @@ Explicit exclusions:
 - [x] global formal lint green
 - [x] scratch `#print axioms` audit: only `propext`, `Classical.choice`, `Quot.sound`
 - [x] final targeted `lake build GaloisForLFunctions.RHTower.PythagoreanObserverBlindness`
-- [ ] LaTeX build without overfull boxes
-- [ ] PDF visual inspection
-- [ ] hostile referee report with claim-ledger audit
-- [ ] revision after hostile report
+- [x] LaTeX build without overfull boxes
+- [x] PDF visual inspection
+- [x] hostile referee report with claim-ledger audit
+- [x] revision after hostile report
 
 ## Venue calibration
 
-Potential level: strong general analysis/operator-theory journal; possible *Advances in Mathematics* only if external priority and significance review are positive. Current evidence does not justify flagship general-journal claims.
+Hostile internal verdict: passes renowned broad-journal bar in the
+*Mathematika* / *Mathematische Zeitschrift* / *Proceedings of the AMS* band,
+conditional on independent priority confirmation. Possible *Advances in
+Mathematics* submission remains high-risk. Current evidence does not justify
+flagship general-journal claims.
 
 ## Log
 
@@ -68,3 +72,6 @@ Potential level: strong general analysis/operator-theory journal; possible *Adva
 - 2026-08-03 — direct finite-family weaving replaced stable spectral route.
 - 2026-08-03 — countable family theorem formalized unconditionally.
 - 2026-08-03 — manuscript and audits rewritten around countable universal law.
+- 2026-08-03 — arbitrary-family coverage–rigidity law formalized and added.
+- 2026-08-03 — Baire noncoverage explicitly separated from new common closed avoidance theorem.
+- 2026-08-03 — hostile review passed broad renowned-journal tier; external priority remains open.
