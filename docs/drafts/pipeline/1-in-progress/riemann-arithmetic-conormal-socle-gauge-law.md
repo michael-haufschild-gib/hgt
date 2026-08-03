@@ -520,7 +520,8 @@ dense-radical, Krein, and maximal-vertical no-go results.
 - [x] actual source-normal preclosure edge `e_1 -> e_2` constructed in Lean
 - [x] finite rank-one/coboundary and fixed separated-frequency `ell1` Gamma shorting excluded in Lean
 - [ ] globalize the essential edge through the preclosure Wold--Gamma/BV relative extension
-- [ ] construct nonseparable beyond-`ell1` anomaly cancellation before frequency separation
+- [x] exclude every unordered scalar beyond-`ell1` Gamma-orbit cancellation in Lean
+- [ ] construct a genuinely nonscalar preclosure or divisor-coupled anomaly cancellation before frequency separation
 - [x] finite-stage ramified top-conormal dagger/isometry law proved
 - [x] finite-stage rational-Witt top-sector landing proved coefficient-faithful
 - [x] local Gamma/co-Poisson receiver proved noncensoring at every multiplicity
@@ -611,3 +612,74 @@ Formal target:
 - its conservative codiagonal nonzero in every fibre and bounded below globally by `3/4`;
 - every source-weighted divisor basis atom survives both transports;
 - no positive uniform lower coefficient bound exists.
+
+## 2026-08-03 three-core closure audit
+
+The requested producer chain now has three mathematically distinct statuses.
+
+### 1. Essential edge through the Wold--Gamma/BV preclosure
+
+The local edge and every ordinary completion escape are closed:
+
+- `tendsto_primeFirstTrace_anisotropicEssentialGraph` constructs the literal source/response edge
+  \((e_1,e_2)\);
+- `primeFirstTraceClock_completeNoEscapeUniversality` proves that ordinary graph closure, every
+  closed linear extension, every closed single-valued relation, every nonlinear closed graph,
+  topology-preserving realization, and every exact-norm complete rigging loses single-valued
+  source coupling;
+- the paper-proved prime-tail co-Poisson preclosure constructs the sharp essential boundary and
+  divisor monodromy before scalar specialization.
+
+What remains is not another completion.  It is the strict comparison morphism from the
+squarefree Wold--Gamma/BV preclosure totalization to the relative determinant/Contou--Carrere--Meyer
+extension, with the essential edge and literal Gamma/co-Poisson/Sonin boundary in one chain class.
+No dependency-closed proof of that landing exists in the corpus or audited literature.
+
+### 2. Beyond-`ell1` cancellation
+
+`GammaSignedUnconditionalOrbitNoShorting.lean` closes the ordinary unordered scalar interpretation.
+For the actual canonical cross-prime/depth orbit, existence of an unordered scalar sum at the one
+real displacement already forces absolute physical-amplitude summability.  The existing Bohr
+coefficient theorem then makes a universal modular-axis cancellation coefficientwise zero.
+
+Thus “nonseparable and beyond `ell1`” cannot mean a scalar `HasSum` hidden in a larger carrier.
+The remaining object must stay relative/distribution-valued before frequency separation, make the
+relevant scalar evaluation discontinuous or undefined at preclosure level, or couple coefficients
+to divisor provenance before Bohr separation.  A conditionally convergent enumeration is not a
+divisor/order-independent source law.
+
+### 3. Atomic positive descent and non-erasure
+
+Bare divisor-independent atomic non-erasure is already unconditional:
+
+- `reflectedGaussian_globalAtomicNonErasure` retains every multiplicity-exact divisor copy and
+  gives a global `3/4` codiagonal lower modulus;
+- `xiCenteredFlowConservedCapacity_eq_multiplicityMass` constructs exact source-derived covariant
+  positive conservation of the complete derivative-order packet.
+
+The remaining static assertion is sharply classified:
+
+\[
+ \texttt{XiCenteredFlowStaticCapacity}
+ \quad\Longleftrightarrow\quad
+ \mathrm{RH},
+\]
+
+and global triviality of the prime-tail modular countercharacter is likewise equivalent to RH.
+The covariant metric uses the actual fibre character
+\(e^{-(2\Re\rho-1)\tau}\); replacing it by one fixed invariant positive metric is exactly the
+unproved source-forced vanishing of that character.  Therefore non-erasure, multiplicity descent,
+Poisson completion, and covariant transport are no longer open cores.  The unique final premise is
+source-first triviality of the horizontal modular cocycle.
+
+### Exact surviving dependency chain
+
+```text
+strict preclosure Wold--Gamma/BV relative-extension landing       OPEN
+  -> nonscalar/divisor-coupled arithmetic anomaly annihilation    OPEN
+  -> atomic non-erasure + covariant multiplicity descent          LEAN-PROVED
+  -> source-forced modular-cocycle triviality                      RH-EQUIVALENT
+```
+
+This audit does not claim RH.  It proves that ordinary closure, scalar unordered beyond-`ell1`
+summation, missing atomic support, and missing covariant capacity are not the remaining problem.

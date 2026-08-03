@@ -253,6 +253,27 @@ def contact (c : RootedCutContact n m) (i j : Fin n) : ℝ :=
 def energy (c : RootedCutContact n m) (i j : Fin n) : ℝ :=
   2 * c.contact i j - c.contact i i - c.contact j j
 
+/-- Complementary contact of a rooted cut system is symmetric. -/
+theorem contact_symm (c : RootedCutContact n m) (i j : Fin n) :
+    c.contact i j = c.contact j i := by
+  simp only [contact]
+  apply congrArg (fun x : ℝ => c.root - x)
+  apply Finset.sum_congr rfl
+  intro e _
+  rw [mul_comm (c.side e i) (c.side e j)]
+
+/-- Polarized Stokes energy vanishes on the diagonal. -/
+@[simp] theorem energy_self (c : RootedCutContact n m) (i : Fin n) :
+    c.energy i i = 0 := by
+  simp only [energy]
+  ring
+
+/-- Polarized Stokes energy is symmetric. -/
+theorem energy_symm (c : RootedCutContact n m) (i j : Fin n) :
+    c.energy i j = c.energy j i := by
+  rw [energy, energy, c.contact_symm i j]
+  ring
+
 /-- Polarization of complementary contact is exactly the additive cut distance. -/
 theorem energy_eq_dist (c : RootedCutContact n m) (i j : Fin n) :
     c.energy i j = c.toPositivePendantCutFamily.dist i j := by
@@ -279,6 +300,43 @@ theorem energy_pos_of_ne (c : RootedCutContact n m) {i j : Fin n} (hij : i ≠ j
     0 < c.energy i j := by
   rw [c.energy_eq_dist]
   exact c.toPositivePendantCutFamily.dist_pos_of_ne hij
+
+/-- Stokes energy is nonnegative. -/
+theorem energy_nonneg (c : RootedCutContact n m) (i j : Fin n) :
+    0 ≤ c.energy i j := by
+  rw [c.energy_eq_dist]
+  exact c.toPositivePendantCutFamily.dist_nonneg i j
+
+/-- Stokes energy detects equality of labelled leaves. -/
+theorem energy_eq_zero_iff (c : RootedCutContact n m) (i j : Fin n) :
+    c.energy i j = 0 ↔ i = j := by
+  constructor
+  · intro hzero
+    by_contra hij
+    exact (ne_of_gt (c.energy_pos_of_ne hij)) hzero
+  · rintro rfl
+    exact c.energy_self i
+
+/-- Cut additivity implies the metric triangle inequality for Stokes energy. -/
+theorem energy_triangle (c : RootedCutContact n m) (i j k : Fin n) :
+    c.energy i k ≤ c.energy i j + c.energy j k := by
+  rw [c.energy_eq_dist, c.energy_eq_dist, c.energy_eq_dist]
+  simp only [PositivePendantCutFamily.dist, CutFamily.dist,
+    ← Finset.sum_add_distrib]
+  apply Finset.sum_le_sum
+  intro e _
+  have hindicator : (c.side e i - c.side e k) ^ 2 ≤
+      (c.side e i - c.side e j) ^ 2 + (c.side e j - c.side e k) ^ 2 := by
+    nlinarith [c.side_idempotent e i, c.side_idempotent e j,
+      c.side_idempotent e k, sq_nonneg (c.side e i - c.side e j),
+      sq_nonneg (c.side e j - c.side e k)]
+  calc
+    c.length e * (c.side e i - c.side e k) ^ 2 ≤
+        c.length e * ((c.side e i - c.side e j) ^ 2 +
+          (c.side e j - c.side e k) ^ 2) :=
+      mul_le_mul_of_nonneg_left hindicator (c.length_pos e).le
+    _ = c.length e * (c.side e i - c.side e j) ^ 2 +
+        c.length e * (c.side e j - c.side e k) ^ 2 := by ring
 
 /-- Explicit squared-Euclidean realization of Stokes energy. -/
 theorem energy_has_explicit_sqEmbedding (c : RootedCutContact n m) (i j : Fin n) :

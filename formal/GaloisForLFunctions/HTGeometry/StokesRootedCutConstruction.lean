@@ -223,6 +223,31 @@ theorem energy_pos_of_ne (t : RootedContactTree n) {i j : Fin n} (hij : i ≠ j)
   rw [← t.canonicalCuts_energy_eq]
   exact t.canonicalCuts.energy_pos_of_ne hij
 
+/-- Rooted contact energy vanishes exactly on the diagonal. -/
+theorem energy_eq_zero_iff (t : RootedContactTree n) (i j : Fin n) :
+    t.energy i j = 0 ↔ i = j := by
+  rw [← t.canonicalCuts_energy_eq]
+  exact t.canonicalCuts.energy_eq_zero_iff i j
+
+/-- Rooted contact energy is nonnegative. -/
+theorem energy_nonneg (t : RootedContactTree n) (i j : Fin n) :
+    0 ≤ t.energy i j := by
+  rw [← t.canonicalCuts_energy_eq]
+  exact t.canonicalCuts.energy_nonneg i j
+
+/-- Rooted contact energy is symmetric. -/
+theorem energy_symm (t : RootedContactTree n) (i j : Fin n) :
+    t.energy i j = t.energy j i := by
+  rw [← t.canonicalCuts_energy_eq, ← t.canonicalCuts_energy_eq]
+  exact t.canonicalCuts.energy_symm i j
+
+/-- Rooted contact energy obeys the metric triangle inequality. -/
+theorem energy_triangle (t : RootedContactTree n) (i j k : Fin n) :
+    t.energy i k ≤ t.energy i j + t.energy j k := by
+  rw [← t.canonicalCuts_energy_eq, ← t.canonicalCuts_energy_eq,
+    ← t.canonicalCuts_energy_eq]
+  exact t.canonicalCuts.energy_triangle i j k
+
 end RootedContactTree
 
 end IrregularStokes

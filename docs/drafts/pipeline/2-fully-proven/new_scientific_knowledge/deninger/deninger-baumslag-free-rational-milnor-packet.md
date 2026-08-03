@@ -113,7 +113,12 @@
   `GaloisForLFunctions.RHTower.DeningerConjWordForm` (the trichotomy in word form),
   `GaloisForLFunctions.RHTower.DeningerConjugacyCriterion` (the conjugacy criterion),
   `GaloisForLFunctions.RHTower.DeningerRootTorsionFree` (a root adjunction preserves torsion
-  freeness)
+  freeness),
+  `GaloisForLFunctions.RHTower.DeningerCosetTransfer` (projection and transfer of permutation
+  representations),
+  `GaloisForLFunctions.RHTower.DeningerLESMono` (vanishing from an injective comparison map),
+  `GaloisForLFunctions.RHTower.DeningerCoinvariantsTranslation` (translation on coinvariants),
+  `GaloisForLFunctions.RHTower.DeningerH1Cyclic` (the first homology of an infinite cyclic group)
 
 ## Statement
 
@@ -1997,3 +2002,42 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   The tower itself: exhibiting `Bau(F)` as an increasing union of stages, each obtained from the
   previous by one root adjunction.  The union lemma is already proved for increasing chains indexed
   by ℕ.
+- 2026-08-03 — Worked out how to reach degree two without building naturality of Shapiro's lemma,
+  which mathlib does not have and which would be a large project on its own.  The degree two
+  obstruction is the injectivity of `H₁(edge) → H₁(vertices)`, and identifying that map is what would
+  need naturality.  It can be avoided: the edge group `⟨tᵐ⟩` sits inside the infinite cyclic vertex
+  group `⟨t⟩` with finite index `m`, so over ℚ the coset projection `ℚ[G/⟨tᵐ⟩] → ℚ[G/⟨t⟩]` is a split
+  epimorphism of representations, with splitting the transfer divided by `m`.  Its kernel is induced
+  from the augmentation-zero part of `ℚ[ℤ/m]`, on which `t − 1` acts invertibly, so that kernel has
+  no homology at all — and a split injection with acyclic complement is injective on homology, with
+  no need to know what the map does.  Only the plain Shapiro isomorphism is used, never its
+  naturality.
+  Proved the first piece: the coset projection and the transfer of permutation representations for a
+  finite index inclusion of subgroups, and that the projection after the transfer is multiplication
+  by the index.  The transfer is built without choosing coset representatives — the fibre is indexed
+  by the quotient itself and well-definedness comes from an explicit shift equivalence.
+- 2026-08-03 — Proved the form of the long exact sequence argument that degree two needs.  The
+  argument used for degrees at least three asks both neighbours of the connecting map to vanish; in
+  degree two the lower neighbour does not vanish, but the comparison map out of it is injective,
+  which is enough: the connecting map is annihilated by an injection, hence zero, and exactness then
+  leaves nothing.  `deningerGroupHomology_isZero_X₃_of_mono` is that criterion.  It is strictly
+  weaker than the old one and supersedes it wherever the sub is acyclic, since an injection out of a
+  zero object is trivially mono.
+- 2026-08-03 — Settled which computation the degree two argument rests on, and started it.  The
+  comparison map to be shown injective goes between two copies of the first homology of an infinite
+  cyclic group, and it is already known to be surjective, since the transfer splits it up to the
+  index.  Over a field a surjection between spaces of the same finite dimension is injective, so what
+  is needed is that the first homology of an infinite cyclic group with trivial coefficients is one
+  dimensional.  That follows from the two term resolution the corpus already owns, once one knows the
+  boundary map dies on coinvariants — and it does, because for an abelian group the boundary is
+  translation by the generator minus the identity.  Proved: translation by an element of an abelian
+  group is a morphism of representations, and it is the identity on coinvariants
+  (`deningerRhoHom`, `deningerCoinvariants_rhoHom`).
+- 2026-08-03 — Proved the computation degree two rests on: **the first homology of an infinite cyclic
+  group is the zeroth homology of its regular representation** (`deningerZ_H1Iso`).  The two term
+  resolution has boundary translation by the generator minus the identity, which dies on coinvariants
+  (`deningerZ_coinvariants_boundary`), so the connecting map of its long exact sequence is surjective;
+  and the middle term of the sequence one degree up is the regular representation, which is acyclic,
+  so the connecting map is also injective.  Mono plus epi in an abelian category is an isomorphism.
+  What remains of this computation is to identify the zeroth homology of the regular representation
+  with the ground ring, which is its coinvariants under the augmentation.

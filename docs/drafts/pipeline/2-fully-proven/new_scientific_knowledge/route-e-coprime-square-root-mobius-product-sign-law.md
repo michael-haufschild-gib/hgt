@@ -7,9 +7,10 @@
 - **Source:** `OPEN-SOURCE-001`
 - **RH used:** no
 - **Computation used:** no
-- **Lean status:** finite sign-extraction and collision-normalization skeleton formalized in
-  `MobiusCoprimeProductSignExtraction.lean`; analytic input is Matomäki--Radziwiłł's published
-  Theorem 2
+- **Lean status:** finite sign-extraction and collision-normalization skeleton in
+  `MobiusCoprimeProductSignExtraction.lean`; the Euler margin `(13)` `A <= 13/36 < 1/2` and the
+  identities `(8)`, `(9)` are formalized unconditionally in `MobiusCoprimeEulerMargin.lean`;
+  the sole remaining input is Matomaki--Radziwill's published Theorem 2
 
 ## Statement
 
@@ -321,3 +322,86 @@ claim is the theorem-and-proof synthesis `(1)`--`(13)`, not any imported ingredi
 
 Route E remains open.  This card closes all-interval coprime row supply and exposes physical
 multiplicity as the next non-circular prime-anchor obstruction.
+
+## Lean completion programme (opened 2026-08-03)
+
+Corpus audit before starting.  `MobiusCoprimeProductSignExtraction.lean` already owns step 1's
+mass algebra — `finiteProductPairTotalMass_eq_positive_add_negative` and
+`finiteProductPairSignedMass_eq_positive_sub_negative` are exactly the "adding and subtracting the
+absolute and signed pair sums" of `(7)` — and the collision-normalization identities `(14)`
+(`sum_uniform_booleanFactorizationCapacity_eq_one`,
+`sum_uniform_booleanFactorization_signedPushforward`).  The `Sieve/` layer owns the interval
+multiple counts, Mertens I and II, and the inverse-square tail.  What was missing is the step this
+card's own hostile audit lists as new content item 4.
+
+### `(13)` landed — `MobiusCoprimeEulerMargin.lean`
+
+The Euler margin, proved structurally with no numerical estimation of `A` or of `ζ(2)`:
+
+- `sum_inv_sq_ge_two_le_one` : any finite set of integers `≥ 2` has inverse-square sum at most one —
+  the telescoping bound of `Sieve/InverseSquareTail.lean` reindexed;
+- `primeSuccInvSq`, `primeSuccInvSq_nonneg`, `summable_primeSuccInvSq` — the shared-prime weight
+  `p ↦ (p+1)^{-2}` and its summability;
+- **`sum_primeSuccInvSq_le`** : *every* partial sum of the shared-prime weights is at most `13/36`.
+  The proof splits off `p = 2` (contributing `1/9`) and halves the remaining `p+1`: for odd primes
+  these are distinct even integers at least `4`, so `p ↦ (p+1)/2` injects the odd primes into the
+  integers `≥ 2` and the odd part is `(1/4)·∑_{k≥2}k^{-2} ≤ 1/4`;
+- `coprimeSharedPrimeDensity := A = ∑_p (p+1)^{-2}`;
+- **`coprimeSharedPrimeDensity_le`** : `A ≤ 13/36`;
+- **`coprimeMargin_pos`** : `0 < 1/2 − A`.  This is `(13)`, the surviving Euler margin.
+
+Also the two algebraic identities the card states inline:
+
+- **`euler_exclusion_factor`** : `(1 − 1/p)/(1 − 1/p²) = p/(p+1)`, which is `(8)`;
+- **`sharedPrimeSector_density`** : the normalisation bookkeeping of `(9)`.
+
+Built, wired into `GaloisForLFunctions/RHTower.lean`, axiom-clean (nine theorems, every one
+`[propext, Classical.choice, Quot.sound]`).
+
+### What remains
+
+`(5)` alone: Matomäki–Radziwiłł's bilinear all-interval theorem (Ann. of Math. 183 (2016),
+Theorem 2).  Everything the card derives *from* it is now formalized — `(7)` by the mass algebra,
+`(8)`/`(9)` by the identities above, `(13)` by the Euler margin, and `(14)` by the collision
+normalization.  The step `(10)`–`(12)` is a union bound over the finitely many small primes plus the
+large-prime tail, whose two counting inputs (multiples of `p` in a range of length `ℓ` number at
+most `ℓ/p + 1`) are `Sieve/IntervalMultiples.abs_card_filter_dvd_Ioc_sub_lt`, and whose convergence
+input is `summable_primeSuccInvSq`.
+
+Checked against this toolchain: mathlib has no Matomäki–Radziwiłł theorem and nothing approaching
+it; the corpus has no substitute, since the required cancellation for a multiplicative function in
+intervals of length `h√x` is precisely that theorem's content.
+
+## Pipeline status (updated 2026-08-03)
+
+- [x] dependency-closed paper proof
+- [x] primary-source novelty audit
+- [x] finite combinatorial skeleton formalized in Lean
+- [x] Euler margin `(13)` formalized in Lean — the card's own new content item 4
+- [ ] analytic theorem `(5)` formalized in Lean
+- [ ] distinct-product local Hall capacity
+- [ ] co-moving sector flux
+
+### `(10)`–`(12)` landed — `Sieve/SharedPrimeTail.lean`
+
+The uniform large-prime tail, with every piece explicit:
+
+- **`card_pair_dvd_le`** : a pair sharing the prime `p` is counted by the product of two interval
+  multiple counts, so it is at most `(ℓ₁/p + 1)(ℓ₂/p + 1)` — this is `(10)`, and it is exactly the
+  two factors the card writes as `√x/p + 1` and `h/p + 1`;
+- `bigPrimeSet_subset_Icc`, `bigPrimeSet_subset_primesLE` — the prime window inside its integer
+  window and inside the initial prime set;
+- `sum_inv_sq_bigPrimeSet_le` : `∑_{P < p ≤ Q} p^{-2} ≤ 1/P`, from the telescoping tail;
+- `sum_inv_bigPrimeSet_le` : `∑_{P < p ≤ Q} p^{-1} ≤ mertensS Q`, Mertens' second theorem;
+- `card_bigPrimeSet_le` : the counting piece;
+- **`sum_pair_tail_le`** :
+  `∑_{P < p ≤ Q} (ℓ₁/p + 1)(ℓ₂/p + 1) ≤ ℓ₁ℓ₂/P + (ℓ₁ + ℓ₂)·mertensS Q + Q`,
+  which is `(11)` with the three error shapes separated.  The first term is the one that survives
+  after division by `ℓ₁ℓ₂` and tends to zero as `P → ∞`, giving `(12)`; the other two are the
+  Mertens and Chebyshev pieces the card sends to zero using `(1)`.
+
+Built, wired, axiom-clean (seven theorems).  The same module supplies the `(10)`/`(11)` step of
+`route-e-growing-reciprocal-marker-low-breadth-transport.md`, which has the identical shape.
+
+With this, every step of this card's proof except the single application of Matomäki–Radziwiłł's
+Theorem 2 at `(5)` is an unconditional Lean theorem.

@@ -365,12 +365,23 @@ The one-dimensional cases above — constant, oscillatory, Riccati — are illus
 `NoCommonZero` condition is realizable and two-sided. They are **not** progress on the bridge, whose
 bottleneck is the four-dimensional coupled Einstein--scalar system.
 
-A further one-dimensional generalization is available and was deliberately not taken: mathlib's
-`ContDiffAt.exists_forall_mem_closedBall_exists_eq_forall_mem_Ioo_hasDerivAt₀` applied to the
-autonomised field `(x,u,v) ↦ (1, v, -(V x)·u)`, with `IsOpen.is_const_of_fderiv_eq_zero` on an open
-interval supplying the affine identification `(α t)₁ = a + t`, would upgrade `NoCommonZero` from the
-Riccati class to every `C¹` potential, locally, in one dimension. That is a real but modest
-extension of an illustrative corner; it does not advance step 1 itself.
+The one-dimensional corner is now closed at its natural limit. `ClockProbeLocalExistence.lean`
+autonomises `u'' + Vu = 0` as the field `(x,u,v) ↦ (1, v, -(V x)·u)` on `ℝ³`, applies Picard--Lindelöf
+(`ContDiffAt.exists_forall_mem_closedBall_exists_eq_forall_mem_Ioo_hasDerivAt₀`) and identifies the
+first component with `a + t` by `IsOpen.is_const_of_fderiv_eq_zero` on an open interval. This gives,
+for **every** `C¹` potential and every event:
+
+- `exists_localProbe` — a solution of `u'' + Vu = 0` on an interval about the event with `u(a) = 1`;
+- `exists_localProbe_ne_zero` — the local form of the nondegeneracy condition, unconditionally;
+- `eq_of_solvesOn_localSolutions` — a competitor solving those local solutions equals `V` everywhere;
+- `reconstructedScale_eq_of_solvesOn_localSolutions` — the two-species conformal scale is thereby
+  reconstructed with no nondegeneracy hypothesis at all.
+
+This is the sharp contrast with the audit of the global condition: `NoCommonZero` can fail for a
+degenerate operator (`ClockProbeConditionAudit.lean`), while for the second-derivative operator with
+a `C¹` potential its local form never fails. The extension does **not** advance step 1 itself, whose
+bottleneck remains the four-dimensional coupled Einstein--scalar system; it removes the last
+hypothesis from the one-dimensional model.
 
 All depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
@@ -486,10 +497,20 @@ The abstract calculus is now realized by a literal smooth metric field. Three ne
 
 All of the above depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
+`formal/GaloisForLFunctions/HTGeometry/ClockProbeLocalExistence.lean` closes the one-dimensional
+model of step 1 with no residual hypothesis:
+
+- `contDiff_waveField` — the autonomised field `(x,u,v) ↦ (1, v, -(V x)·u)` is `C¹` whenever `V` is;
+- `exists_localProbe` — every `C¹` potential carries a local solution normalized at any event;
+- `exists_localProbe_ne_zero` — the local nondegeneracy condition, unconditionally;
+- `eq_of_solvesOn_localSolutions` — local solutions pin the potential on the whole line;
+- `reconstructedScale_eq_of_solvesOn_localSolutions` — hence the two-species scale, hypothesis-free.
+
 Missing:
 
-1. coupled inverse theorem recovering both effective potentials from clock data (open research;
-   step 1 of the continuum-gravity bridge below).
+1. coupled inverse theorem recovering both effective potentials from clock data in the
+   four-dimensional Einstein--scalar system (open research; step 1 of the continuum-gravity bridge
+   below). The one-dimensional analogue is now proved outright.
 
 ## Exact boundary of the reconstruction
 

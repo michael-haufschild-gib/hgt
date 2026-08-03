@@ -402,11 +402,78 @@ It also identifies the mechanism and the sharp wall.  The analytic growth invari
 - [x] 1 -> 2: complete paper proof with no open dependency.
 - [x] Targeted literature and citation-descendant search after proof.
 - [ ] Independent expert priority and proof check.
-- [ ] Lean only after novelty and numerical-precertification instructions can be reconciled.
+- [x] Lean: the terminal-linear Bell row reduction `J_r(X_r) = +- X_r^(r-1) J_(r-1)(A)`
+- [x] Lean: the positive-power Bell reduction for `H = C X^q`
+- [x] Lean: the cascade induction down the flag, and its positive-exponent observability capstone
+- [ ] Lean: Wiman--Valiron asymptotics and the nondegenerate Wiman place (Reduction I)
+- [ ] Lean: Clunie--Steinmetz composition separation and state algebraic independence
+- [x] Lean: the order lower bound `ord_DA >= n` from `n` algebraically independent jets
+- [ ] Lean: the matching upper bound `ord_DA <= n` via the separant, hence `ord_DA(F_n) = n`
 
-### Lean audit
+### Lean status
 
-`scripts/formal_tools.py research` finds the pointwise definitions of differential algebraicity and independence, together with a Gamma-specific Bell-chain formalization, but no reusable theorem for multivariate Jacobian observability, algebraic Puiseux places at infinity, or Wiman--Valiron asymptotics.  Formalizing only the Gamma Bell identities would not certify the candidate.  A faithful Lean route would first require a general algebraic Bell row-reduction/Jacobian lemma and then substantial new analytic infrastructure.  No Lean edit is justified before the scientific-priority gate, and the project rule requiring numerical pre-certification cannot be combined with the active skill's prohibition on computation as discovery.
+Reduction III — the terminal-linear Bell induction, which is the step that closed the card's open
+core — is **formalized unconditionally and axiom-clean**
+(`[propext, Classical.choice, Quot.sound]`).  The earlier audit note claiming that the corpus has no
+reusable multivariate Jacobian observability theorem was stale: the corpus already owned both
+one-step Bell reductions, and the missing piece was only the chain that iterates them down the flag.
+
+```text
+formal/GaloisForLFunctions/HTGeometry/BellCoordinateJacobian.lean
+formal/GaloisForLFunctions/HTGeometry/BellSubstitutionJacobian.lean
+formal/GaloisForLFunctions/HTGeometry/TerminalLinearJacobian.lean
+formal/GaloisForLFunctions/HTGeometry/TerminalScaledJacobian.lean
+formal/GaloisForLFunctions/HTGeometry/TerminalLinearBellJacobian.lean
+formal/GaloisForLFunctions/HTGeometry/DerivationTerminalLinearJacobian.lean
+formal/GaloisForLFunctions/HTGeometry/TerminalPowerCascadeInduction.lean   (new)
+formal/GaloisForLFunctions/HTGeometry/ScalarDifferentialOrderLowerBound.lean (new)
+```
+
+Principal declarations:
+
+```text
+bellCoordinateJacobian_det                -- the Bell coordinate change has determinant one
+derivationBellValueJacobian_det           -- Bell substitution preserves the lower-jet determinant
+derivationIterateOutputJacobian_det       -- J_r(X_r) = +- X_r^(r-1) J_(r-1)(A)
+derivationIterateOutputJacobian_det_terminalScaled -- the delta H = U H reduction
+derivationIterateOutputJacobian_det_terminalPower  -- its C X^q form, terminal factor q C X^(q-1)
+cascadeOutputJacobian                     -- the output-jet Jacobian at depth m
+cascadeOutputJacobian_det_succ            -- one level of the flag, with the exact cofactor sign
+cascadeOutputJacobian_det_ne_zero         -- the induction: triangular flag + nonzero diagonal
+cascadeOutputJacobian_det_ne_zero_of_power -- the diagonal in the pure-power form q_k C_k X_k^(q_k-1)
+algebraicIndependent_cascadeOutput        -- the first m+2 time iterates are independent over C
+algebraicIndependent_cascadeOutput_of_power -- every positive exponent costs exactly one jet
+scalarDifferentialPolynomial_vars_subset_range -- order <= n uses only the first n+1 jets
+differentialPolynomialEvalOver_ne_zero_of_algebraicIndependent_jets -- independent jets forbid a
+                                                                   -- relation of order <= n
+cascadeOutput_no_low_order_relation       -- a depth-(m+2) power cascade has no ADE of order <= m+1
+```
+
+The abstract form makes the mechanism explicit.  Over any field that is a `C`-algebra, with a time
+derivation `delta`, coordinate derivations `P_k`, and outputs `Y_k` linked by
+
+`delta Y_(k+1) = Y_k Y_(k+1)`,
+
+only two hypotheses are used: **triangularity**, `P_k` kills every jet of every lower output, and a
+**nonvanishing diagonal**, `P_k Y_k != 0`.  In the power form `Y_(k+1) = C_k X_k^(q_k)` the diagonal
+entry is exactly `q_k C_k X_k^(q_k-1)`, so `q_k = 0` is the one and only wall — the magnitude of
+`q_k` never enters.  This is the quantization claim of the card, proved in Lean at the algebraic
+level.
+
+### What Lean does not yet carry
+
+The analytic inputs that supply `q_k > 0` and the state independence are not formalized, and none of
+them exists in mathlib either:
+
+- Wiman--Valiron asymptotics and the central index (Reduction I's top-symbol reduction);
+- Goldberg's finite-order theorem and Strelitz's positive-order theorem;
+- Newton--Puiseux places at `U = infinity` for an algebraic function field;
+- Clunie--Steinmetz composition-growth separation (state algebraic independence);
+- Nevanlinna characteristic and the algebraic-function root estimate.
+
+Each of these is a self-contained analytic build.  Until they are in place, Reduction I and the
+Clunie induction enter the Lean layer as the explicit hypotheses `hq : forall k, 0 < q k` and the
+triangularity package, which is exactly how the paper proof uses them.
 
 ## Primary references checked
 
@@ -428,3 +495,19 @@ It also identifies the mechanism and the sharp wall.  The analytic growth invari
 - 2026-07-11 -- Medalist re-audit withdrew the premature proved label: the state derivation is not homogeneous for the naive Puiseux weight, so monomial observability does not yet imply observability of the full lower-term cascade. The exact open core is a flat finite-jet degeneration or a no-matching theorem.
 - 2026-07-11 -- Closed that open core without a generic degeneration: exact Bell-polynomial row reductions remove terminal variables one at a time, and the nested leading determinant acquires a nonzero factor from every `q_i=p_(i+1)+1`. This proves that `q_i=0` is the sharp compression wall and that positive Wiman exponents force full observability.
 - 2026-07-11 -- Independent scope and parent audit after the user correction: reconciled the separate whole-HT translation/divisor work, checked Goldberg--Strelitz in the primary Liao--Yang paper, checked Malmquist--Eremenko, Reinhart's Schanuel-order parent, Wang--Sontag, and the 2023/2025 DA arithmetic papers.  Added a phase-free Newton-weight proof and an explicit Clunie induction for state independence.  No exact or stronger parent theorem was located; scientific priority remains provisional rather than asserted.
+- 2026-08-03 -- Reduction III formalized.  A corpus re-audit showed the earlier "no reusable
+  Jacobian observability theorem" note was stale: both one-step Bell reductions were already built
+  and had no consumer.  Added the missing chain, `TerminalPowerCascadeInduction.lean`, which
+  iterates them down the triangular flag and proves the output-jet Jacobian nonzero from exactly two
+  hypotheses -- triangularity of the coordinate derivations and a nonvanishing diagonal -- with the
+  pure-power corollary exhibiting the diagonal as `q_k C_k X_k^(q_k-1)`.  This is the quantization
+  statement of the card at the algebraic level: `q_k = 0` is the only wall and the magnitude of
+  `q_k` is irrelevant.  The remaining Lean debt is entirely analytic (Wiman--Valiron, Goldberg,
+  Strelitz, Newton--Puiseux at infinity, Clunie--Steinmetz), none of which is in mathlib.
+- 2026-08-03 -- Added the order lower bound, `ScalarDifferentialOrderLowerBound.lean`.  A scalar
+  differential polynomial of order at most `n` is a rename of an honest `n+1`-variable polynomial
+  along `i |-> ((), i)`, so algebraic independence of the first `n+1` jets forbids it outright.
+  Chained with the cascade induction this gives `cascadeOutput_no_low_order_relation`: a triangular
+  power cascade of depth `m+2` satisfies no algebraic differential equation of order at most `m+1`.
+  That is the `ord_DA >= n` half of the unit-cost law, unconditional and axiom-clean; the matching
+  upper bound needs the separant argument and is the next algebraic target.

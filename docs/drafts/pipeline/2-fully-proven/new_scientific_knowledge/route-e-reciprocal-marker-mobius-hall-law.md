@@ -7,9 +7,13 @@
 - **Source:** `OPEN-SOURCE-001`
 - **RH used:** no
 - **Computation used:** no
-- **Lean status:** exact finite prime-anchor, window, sign, and unique-decoding skeleton
-  formalized in `MobiusReciprocalMarkerPrimeCapacity.lean`; direct `lake env lean` validation
-  passes; analytic input is Menon's unconditional 2026 Möbius mean-square theorem
+- **Lean status:** prime-anchor, window, sign and unique-decoding skeleton in
+  `MobiusReciprocalMarkerPrimeCapacity.lean`; the distinct-target count, the Markov step `(10)`,
+  the marker discard, the squarefree count `(7)`/`(11)` with density `6/pi^2`, the averaged tail
+  `(12)`-`(13)`, the dyadic prime supply and the integer-start comparison are formalized
+  unconditionally in `MobiusReciprocalMarkerBlockCount.lean`, `Sieve/SquarefreeCount.lean`,
+  `Sieve/AveragedSquarefreeTail.lean`, `Sieve/PrimeWindow.lean`, `Sieve/StartShift.lean`;
+  the sole remaining input is Menon's unconditional 2026 Moebius mean-square theorem `(6)`
 
 ## Statement
 
@@ -307,3 +311,46 @@ and extraction from Menon's theorem; external priority remains unverified.
 ## Log
 
 - 2026-08-01 — theorem discovered, hostile-audited, and proved on paper.
+
+## Lean completion programme (opened 2026-08-03)
+
+This card shares its arithmetic skeleton with
+`route-e-growing-reciprocal-marker-low-breadth-transport.md`, and the layer built for that card
+covers almost all of it.  Corpus audit before starting, with the matching card equation:
+
+| card equation | Lean declaration |
+|-|-|
+| `(4)` canonical factorization, unique decoding | `MobiusReciprocalMarkerPrimeCapacity.largePrimeMarker_product_injective`, `reciprocalMarker_target_sign_flip` |
+| `(7)` `μ² = ∑_{d²∣n} μ(d)`, `D = 6/π²` | `Sieve/SquarefreeCount.sum_truncated_moebius_eq`, `squarefreeDensity_eq` |
+| `(10)` Markov on the mean square | `MobiusReciprocalMarkerBlockCount.card_large_le_of_sum_sq_le` |
+| `(11)` truncated squarefree count, uniform in `t` | `Sieve/SquarefreeCount.abs_truncated_squarefree_sub_le` |
+| `(12)`–`(13)` averaged omitted tail | `Sieve/AveragedSquarefreeTail.sum_tail_divisor_count_le` |
+| distinct-target count | `MobiusReciprocalMarkerBlockCount.card_markerBlockTargets` |
+| window membership | `markerBlockTargets_mem_window` |
+| target sign | `markerBlockTargets_sign` |
+| marker discard by bad starts | `card_markers_start_mem_le` |
+| prime supply on a dyadic block | `Sieve/PrimeWindow.card_bigPrimeSet_ratio_ge` |
+| `(5)` first-order Gibbs cost | `MobiusWoldBreadthGibbsCost.abs_gibbsEdge_le`, `sum_abs_gibbsEdge_le` |
+
+### The one missing elementary step landed — `Sieve/StartShift.lean`
+
+The card's `(10)` passes from the continuous start of `(6)` to an integer start, "up to two endpoint
+terms".  That comparison is now exact:
+
+- `sum_Ioc_succ_self` : a one-step window is a singleton;
+- **`sum_Ioc_succ_sub`** :
+  `∑_{t+1 < n ≤ t+1+L} f(n) − ∑_{t < n ≤ t+L} f(n) = f(t+1+L) − f(t+1)` — an identity, valid for
+  every `L` including `L = 0`;
+- **`abs_sum_Ioc_succ_sub_le`**, `abs_sum_Ioc_moebius_succ_sub_le` : for a coefficient bounded by
+  one — the Möbius function in particular — consecutive integer starts differ by at most two.
+
+Built, wired, axiom-clean.
+
+### What remains
+
+`(6)` alone: Menon's 2026 mean-square theorem for Möbius in short intervals, the same cited
+published input as the sibling card.  Mathlib has neither it nor the Matomäki–Radziwiłł theorem it
+refines, and the corpus has no substitute — a mean-square bound of size `o(1/log Y)` at
+`L = exp((log Y)^β)` is exactly the content of that theorem, so no weaker unconditional estimate
+can stand in.  Every other step of this card is now an unconditional Lean theorem, and `(8)` is
+pure arithmetic on the exponents once `(6)` is available.

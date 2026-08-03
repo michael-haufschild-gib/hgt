@@ -8471,3 +8471,48 @@ route-r-finite-clock-jet-gauge-no-go.md
 GaloisForLFunctions/RHTower/
 EulerPrimitiveJointDepthFiniteClockJetGaugeNoGo.lean
 ```
+
+## 2026-08-03 Route R frontier update: unordered scalar completion closure
+
+The phrase “singular beyond absolute orbit summability” has one important ambiguity.  It cannot
+mean an ordinary unordered scalar sum whose coefficients were merely not assumed `ell1` in advance.
+
+For every canonical cross-prime/depth edge,
+
+```text
+lambda_E = log(p^(e+1) q^(f+1)) >= log 6,
+sinh(lambda_E) >= 35/12 > 1.
+```
+
+Hence unconditional scalar summability of
+
+```text
+sum_n c_n A_(E_n) sinh(lambda_(E_n))
+```
+
+at the single real modular displacement `1` forces
+`sum_n |c_n A_(E_n)| < infinity`.  The existing Bohr--Cesaro uniqueness theorem then applies:
+if the same unordered orbit vanishes on the full imaginary modular axis, every `c_n=0`.
+
+This closes the whole “non-`ell1` only because absolute convergence was omitted from the statement”
+class.  Lean's `HasSum` is already convergence over all finite subsets, so it cannot encode a
+conditionally convergent preferred enumeration.  Nonseparability of an ambient carrier does not
+change the conclusion after this scalar evaluation exists.
+
+The surviving Route-R producer must therefore do at least one of the following before frequency
+separation:
+
+1. remain relative/distribution-valued so positive-real scalar evaluation is unavailable or
+   discontinuous;
+2. carry an independently justified source ordering/renormalization rather than an unordered sum;
+3. couple coefficients to divisor provenance before the fixed-frequency Bohr decomposition.
+
+Paper/Lean:
+
+```text
+docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/
+gamma-signed-unconditional-orbit-no-shorting.md
+
+GaloisForLFunctions/RHTower/
+GammaSignedUnconditionalOrbitNoShorting.lean
+```

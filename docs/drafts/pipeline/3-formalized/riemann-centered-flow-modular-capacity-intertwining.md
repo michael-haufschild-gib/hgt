@@ -1,8 +1,8 @@
 # Riemann centered-flow modular capacity intertwining
 
 - **ID:** riemann-centered-flow-modular-capacity-intertwining
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** actual Xi residue transport, Cayley order-space conservation, prime-tail entropy
 - **Statement:** Complete derivative-order capacity of every Xi residue is an exact one-dimensional modular cocycle; its source-entropy countercharacter trivializes the cocycle, while a time-independent positive capacity is possible exactly on the critical line.
 
@@ -156,11 +156,13 @@ Gaussian Wronskian, and projective descent defect are representations of this sa
 - [x] 0 → 1: source-pure construction and exact formulas
 - [x] dependency-closed paper proof
 - [x] hostile non-circularity review
-- [ ] 2 → 3: formalize exact theorem
-- [ ] targeted Lean and axiom audit
+- [x] 2 → 3: formalized in `RiemannCenteredFlowCapacityIntertwining.lean`
+- [x] targeted Lean and axiom audit
 - [ ] source-forced cocycle triviality
 - [ ] RH
 
 ## Log
 
 - 2026-08-03 — exact modular capacity/trivialization law isolated and proved on paper.
+- 2026-08-03 — formalized unconditionally; direct Lean and targeted module build pass; axiom
+  audit reports only `propext`, `Classical.choice`, and `Quot.sound`.

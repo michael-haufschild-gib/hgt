@@ -401,3 +401,49 @@ substitute (`Sieve/RateBridge.card_omega_le_le_rate`) that is weaker by `(log lo
 enough here, since `(34)` is used only as `o(H/log log X)` and `(log X)^{−I(c₀)}(log log X)^{I(c₀)+1}`
 tends to zero.  `(35)`/`(36)` are `MobiusWoldBreadthGibbsCost.abs_gibbsEdge_le` and
 `sum_abs_gibbsEdge_le`.
+
+### `(10)`–`(14)`, `(18)`, `(27)`, `(30)` landed — `MobiusReciprocalMarkerBlockCount.lean`, `MobiusReciprocalMarkerSchedule.lean`
+
+The assembly steps, stated on the *hypotheses* a distribution theorem would supply rather than on
+the theorem itself:
+
+- `markerBlockTargets P C` — the target set of a marker family with prescribed cofactor sets;
+- **`card_markerBlockTargets`** : `#targets = ∑_{p ∈ P} #(C p)` — the physical count of `(30)`,
+  proved from the corpus's own `largePrimeMarker_product_injective`;
+- **`markerBlockTargets_mem_window`** : every target lies in `(X, X+H]`, which is `(29)`;
+- **`markerBlockTargets_sign`** : every target carries the reversed nonzero Möbius sign, `(5)`;
+- **`card_markers_start_mem_le`** : the markers lost to a set `S` of bad starts number at most
+  `#S · (X/(A(A+1)) + 1)` — this is `(27)`, the growing-fibre compensation, obtained by fibring the
+  marker set over its reciprocal starts and applying `card_reciprocalFibre_le` to each fibre;
+- **`card_large_le_of_sum_sq_le`** : Markov for a mean-square bound — `#{t : |f t| ≥ δ} ≤ R/δ²`
+  whenever `∑ (f t)² ≤ R`.  This is exactly the step `(15) → (18)`, now available independently of
+  which mean-square theorem supplies `R`.
+
+Schedule bookkeeping:
+
+- **`markerBlock_window_length_ge`** : cutting the block index at `K` with
+  `K + 4 ≤ (log h − w)/log 2` forces `h/2^{k+2} ≥ 4 e^w` for every retained `k`.  This is the `(14)`
+  lower bound on `log L_k`, and it is exactly where the subtraction of `w` in `(10)` earns its keep
+  (hostile-audit item 3);
+- **`markerBlock_start_ge`** : with `X = N²` and `p ≤ 2^{k+1}N`, the start `⌊X/p⌋` is at least
+  `N/2^{k+1}` — the `(13)`/`(14)` lower bound on `A_k`, exact in natural division.
+
+Built, wired, axiom-clean (seven theorems; `markerBlock_start_ge` needs only
+`[propext, Quot.sound]`).
+
+### Status
+
+Everything this card proves is now an unconditional Lean theorem except `(15)`–`(17)`, which are
+Menon's 2026 mean-square theorem for Möbius in short intervals — a cited published analytic result.
+Its consequence `(18)` is formalized as a general lemma, so the moment that estimate is available in
+any form the chain closes with no further work: `card_large_le_of_sum_sq_le` turns it into a
+bad-start count, `card_markers_start_mem_le` charges the discard, `card_bigPrimeSet_ratio_ge` supplies
+the surviving markers, `abs_truncated_squarefree_sub_le` and `sum_tail_divisor_count_le` supply the
+cofactors, and `card_markerBlockTargets` counts the targets.
+
+### `(10)`–`(11)` also landed — `Sieve/SharedPrimeTail.lean`
+
+The large-prime tail of this card has the same shape as the coprime-pair card's, and is now shared:
+`card_pair_dvd_le` gives the two-factor bound `(√x/p + 1)(h/p + 1)`, and `sum_pair_tail_le` sums it
+over a prime window into `ℓ₁ℓ₂/P + (ℓ₁ + ℓ₂)·mertensS Q + Q` — the inverse-square, Mertens and
+Chebyshev pieces separated.

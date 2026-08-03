@@ -52,6 +52,11 @@ theorem hierarchy_laminar {n : ℕ} (datum : CertifiedFissionDatum n)
     A ⊆ B ∨ B ⊆ A ∨ Disjoint A B :=
   datum.rooted.tree.hierarchy_laminar hA hB
 
+/-- Threshold tomography recovers exactly the actual pair-meet descendant hierarchy. -/
+theorem hierarchy_eq_visibleHierarchy {n : ℕ} (datum : CertifiedFissionDatum n) :
+    datum.rooted.tree.hierarchy = datum.rooted.tree.visibleHierarchy :=
+  datum.rooted.tree.hierarchy_eq_visibleHierarchy
+
 /-- Two certified fission data with one decorated core have the same labelled branching
 hierarchy. -/
 theorem hierarchy_unique {n : ℕ} {core : DecoratedStokesCore n}
@@ -67,6 +72,32 @@ theorem core_energy_pos_of_ne {n : ℕ} (datum : CertifiedFissionDatum n)
     {i j : Fin n} (hij : i ≠ j) : 0 < datum.core.energy i j := by
   rw [← datum.rooted_energy_eq_core]
   exact datum.rooted.tree.energy_pos_of_ne hij
+
+/-- Decorated-core energy is nonnegative. -/
+theorem core_energy_nonneg {n : ℕ} (datum : CertifiedFissionDatum n) (i j : Fin n) :
+    0 ≤ datum.core.energy i j := by
+  rw [← datum.rooted_energy_eq_core]
+  exact datum.rooted.tree.energy_nonneg i j
+
+/-- Decorated-core energy is symmetric. -/
+theorem core_energy_symm {n : ℕ} (datum : CertifiedFissionDatum n) (i j : Fin n) :
+    datum.core.energy i j = datum.core.energy j i := by
+  rw [← datum.rooted_energy_eq_core, ← datum.rooted_energy_eq_core]
+  exact datum.rooted.tree.energy_symm i j
+
+/-- Decorated-core energy vanishes exactly on the diagonal. -/
+theorem core_energy_eq_zero_iff {n : ℕ} (datum : CertifiedFissionDatum n) (i j : Fin n) :
+    datum.core.energy i j = 0 ↔ i = j := by
+  rw [← datum.rooted_energy_eq_core]
+  exact datum.rooted.tree.energy_eq_zero_iff i j
+
+/-- Decorated-core energy obeys the metric triangle inequality. -/
+theorem core_energy_triangle {n : ℕ} (datum : CertifiedFissionDatum n)
+    (i j k : Fin n) :
+    datum.core.energy i k ≤ datum.core.energy i j + datum.core.energy j k := by
+  rw [← datum.rooted_energy_eq_core, ← datum.rooted_energy_eq_core,
+    ← datum.rooted_energy_eq_core]
+  exact datum.rooted.tree.energy_triangle i j k
 
 /-- Decorated-core energy satisfies the four-point tree condition. -/
 theorem core_energy_fourPoint {n : ℕ} (datum : CertifiedFissionDatum n)
@@ -111,6 +142,38 @@ theorem universal_contact_package {n : ℕ} (datum : CertifiedFissionDatum n) :
           datum.core.energy i j) := by
   exact ⟨fun _ _ hij => datum.strict_core_obstruction hij,
     fun _ _ _ _ => datum.core_energy_fourPoint _ _ _ _,
+    fun _ hsum hx => datum.core_energy_strict_negative_type hsum hx,
+    fun i j => datum.core_energy_explicit_sqEmbedding i j⟩
+
+/-- **Universal complementary-contact master law.** One rescaled integral core contact matrix
+simultaneously determines the actual labelled meet hierarchy and a strict additive tree metric.
+That metric is four-point, strictly conditionally negative definite, and supplied with canonical
+finite squared-Euclidean coordinates. -/
+theorem universal_contact_master_law {n : ℕ} (datum : CertifiedFissionDatum n) :
+    (∀ i j, i ≠ j →
+      (datum.core.ramification j : ℤ) * (datum.core.B i i - 1) <
+        (datum.core.ramification i : ℤ) * datum.core.B i j) ∧
+    datum.rooted.tree.hierarchy = datum.rooted.tree.visibleHierarchy ∧
+    (∀ i j, datum.core.energy i j = datum.core.energy j i) ∧
+    (∀ i j, datum.core.energy i j = 0 ↔ i = j) ∧
+    (∀ i j k,
+      datum.core.energy i k ≤ datum.core.energy i j + datum.core.energy j k) ∧
+    (∀ i j k l,
+      MaxTwice (datum.core.energy i j + datum.core.energy k l)
+        (datum.core.energy i k + datum.core.energy j l)
+        (datum.core.energy i l + datum.core.energy j k)) ∧
+    (∀ x : Fin n → ℝ, (∑ i, x i = 0) → x ≠ 0 →
+      (∑ i, ∑ j, x i * x j * datum.core.energy i j) < 0) ∧
+    (∀ i j,
+      (∑ e, (datum.rooted.tree.canonicalCuts.toPositivePendantCutFamily.feature i e -
+        datum.rooted.tree.canonicalCuts.toPositivePendantCutFamily.feature j e) ^ 2) =
+          datum.core.energy i j) := by
+  exact ⟨fun _ _ hij => datum.strict_core_obstruction hij,
+    datum.hierarchy_eq_visibleHierarchy,
+    fun i j => datum.core_energy_symm i j,
+    fun i j => datum.core_energy_eq_zero_iff i j,
+    fun i j k => datum.core_energy_triangle i j k,
+    fun i j k l => datum.core_energy_fourPoint i j k l,
     fun _ hsum hx => datum.core_energy_strict_negative_type hsum hx,
     fun i j => datum.core_energy_explicit_sqEmbedding i j⟩
 

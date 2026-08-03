@@ -127,4 +127,33 @@ theorem card_markers_start_mem_le (X A : ℕ) (hA : 1 ≤ A) (S : Finset ℕ) (h
   refine le_trans (Finset.sum_le_sum hstep) ?_
   rw [Finset.sum_const, nsmul_eq_mul]
 
+/-- **Markov's inequality for a mean-square bound.**  If the squares of a quantity sum to at most
+`R` over a finite set of starts, then at most `R/δ²` of those starts exceed `δ` in absolute value.
+This is the step that converts a mean-square distribution theorem into a count of bad starts. -/
+theorem card_large_le_of_sum_sq_le {S : Finset ℕ} {f : ℕ → ℝ} {R δ : ℝ} (hδ : 0 < δ)
+    (h : ∑ t ∈ S, (f t) ^ 2 ≤ R) :
+    ((#{t ∈ S | δ ≤ |f t|} : ℕ) : ℝ) ≤ R / δ ^ 2 := by
+  classical
+  have hδ2 : (0 : ℝ) < δ ^ 2 := by positivity
+  have hterm : ∀ t ∈ {t ∈ S | δ ≤ |f t|}, δ ^ 2 ≤ (f t) ^ 2 := by
+    intro t ht
+    obtain ⟨-, hft⟩ := Finset.mem_filter.1 ht
+    have habs : |δ| ≤ |f t| := by
+      rwa [abs_of_pos hδ]
+    have hsq : |δ| ^ 2 ≤ |f t| ^ 2 := by nlinarith [abs_nonneg δ, abs_nonneg (f t), habs]
+    calc δ ^ 2 = |δ| ^ 2 := by rw [sq_abs]
+      _ ≤ |f t| ^ 2 := hsq
+      _ = (f t) ^ 2 := sq_abs _
+  have hlow : ((#{t ∈ S | δ ≤ |f t|} : ℕ) : ℝ) * δ ^ 2
+      ≤ ∑ t ∈ {t ∈ S | δ ≤ |f t|}, (f t) ^ 2 := by
+    have hconst : ∑ _t ∈ {t ∈ S | δ ≤ |f t|}, δ ^ 2
+        = ((#{t ∈ S | δ ≤ |f t|} : ℕ) : ℝ) * δ ^ 2 := by
+      rw [Finset.sum_const, nsmul_eq_mul]
+    rw [← hconst]
+    exact Finset.sum_le_sum hterm
+  have hsub : ∑ t ∈ {t ∈ S | δ ≤ |f t|}, (f t) ^ 2 ≤ ∑ t ∈ S, (f t) ^ 2 :=
+    Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _) (fun t _ _ => by positivity)
+  rw [le_div_iff₀ hδ2]
+  linarith
+
 end RHTower

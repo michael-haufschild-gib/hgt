@@ -955,3 +955,73 @@ formula or an implicit function theorem:
 The remaining work on this factor is the continuity of the triangular inverse, which gives openness
 of the exponential jet map; then the inversion and affine jet maps; then the assembly with
 `spanCombination_expBox_mem_nhds` and `residual_setOf_forall_eval_observation_ne_zero`.
+
+## Lean progress: the exponential jet map is open
+
+Two more modules, both wired and axiom-clean, complete the exponential factor of the `chi`-jet chart.
+
+`TriangularSolveContinuity.lean` upgrades the corpus's triangular solver from an existence statement
+to a function of its data:
+
+- `triangularSolve_eq` -- the defining recursion, previously buried inside a proof;
+- `triangularSolve_spec` and **`triangularSolve_unique`** -- it solves the system, and is the only
+  solution;
+- **`continuousOn_triangularSolve`** -- and it is continuous in the right-hand side, in the diagonal,
+  and in any parameters the lower part depends on.  This is what turns algebraic solvability of a
+  triangular jet system into the continuity of the inverse jet map.
+
+`ExponentialJetOpenness.lean` then inverts the exponential jet map:
+
+- `expJetExtend`, `expJetLower`, `expJetLower_congr` -- the system in the shape the solver consumes;
+- `logBranch a v = a + log (v / exp a)` with `exp_logBranch` and `logBranch_exp` -- the branch of the
+  logarithm *through the base point*.  It is continuous near the base value with no global cut, which
+  is exactly what a local statement needs;
+- `expJetInv` and **`expJetScalar_expJetInv`** -- every packet with nonzero zeroth entry is the
+  exponential jet packet of its inverse;
+- **`expJetInv_expJetScalar`** -- and at the base point the inverse recovers the original jets, by
+  uniqueness of the triangular solution;
+- `continuousOn_expJetScalar`, `continuousOn_logBranch`, `continuousOn_expJetInv` -- both maps are
+  continuous where they are defined;
+- **`expJetScalar_image_mem_nhds`** -- therefore the exponential jet map carries every neighbourhood
+  of a jet sequence to a neighbourhood of its image.  This is the openness the transversality
+  argument consumes, proved with no implicit function theorem and no Faa di Bruno formula.
+
+Remaining for the `chi`-jet chart: the inversion jet map (an involution, hence a homeomorphism) and
+the affine jet maps (linear isomorphisms); then the bridge which exhibits
+`u |-> (jets of S_u(. + t_i) at a packet)` as a `LocallySurjectiveObservation`.
+
+## Lean progress: the Cayley outer jet chart is open
+
+Two more modules, wired and axiom-clean, finish the chart.
+
+`InversionJetMap.lean` -- the reciprocal factor, obtained from the Leibniz relation for
+`f · (1/f) = 1` rather than from any inversion formula:
+
+- `leibnizJetSum` and **`leibnizJetSum_comm`** -- the Leibniz pairing of two jet sequences, and its
+  symmetry;
+- `invJetScalar` -- the reciprocal jets as the triangular solution of `leibnizJetSum y g = delta`,
+  with `leibnizJetSum_invJetScalar` and `eq_invJetScalar_of_leibnizJetSum` (existence and
+  uniqueness);
+- **`invJetScalar_invJetScalar`** -- the map is an *involution*.  This is immediate from the symmetry
+  of the pairing plus uniqueness, and it is what makes openness free;
+- **`invJetScalar_iteratedDeriv`** -- the recursion computes the derivatives of `1/f` for smooth
+  nonvanishing `f`, because the actual jets satisfy the same pairing;
+- `continuousOn_invJetScalar` and **`invJetScalar_image_mem_nhds`** -- continuous on the packets with
+  nonzero zeroth entry, hence a homeomorphism there, hence open.
+
+`CayleyOuterJetChart.lean` -- the assembly:
+
+- `image_mem_nhds_of_continuousAt_rightInverse` -- the reusable openness criterion: a continuous
+  right inverse through the base point suffices;
+- `affJetScalar`, `affJetScalar_iteratedDeriv`, `continuous_affJetScalar`,
+  **`affJetScalar_image_mem_nhds`** -- affine jet maps and their openness;
+- `chiJetScalar` -- the Cayley outer jet chart, assembled as `exp` after affine after reciprocal
+  after affine, using `(w - i)/(w + i) = 1 - 2i/(w + i)`;
+- **`chiJetScalar_image_mem_nhds`** -- *the chart carries neighbourhoods to neighbourhoods* whenever
+  the zeroth jet avoids `-i`, which on the upper half plane is automatic.
+
+So step 3 of the submersion programme is complete: openness transports from `m`-jets to `S`-jets,
+with no implicit function theorem and no Faa di Bruno formula anywhere.  What is left is the bridge
+itself -- identifying `chiJetScalar` applied to the actual Cauchy jets with the actual jets of `S_u`,
+and feeding `spanCombination_expBox_mem_nhds` and `chiJetScalar_image_mem_nhds` into
+`residual_setOf_forall_eval_observation_ne_zero`.

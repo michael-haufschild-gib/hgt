@@ -159,11 +159,14 @@ Hence boundedness of `[D,m]` is equivalent to boundedness of `D_odd`; if `D` is 
 unbounded while `[D,m]` is bounded, every unbounded direction lies in the commuting, locally
 invisible even sector.  On the actual multiplicity-exact Xi divisor, take the unconditional
 self-adjoint maximal diagonal with energy `|rho-1/2|`.  Its spectrum escapes every bound, but the
-canonical functional-equation orientation commutes with it exactly.  Thus `[D,m]=0`, `D_odd=0`,
-and `D_even=D`.  A local cocycle generated only by grading commutators is therefore identically
-blind on this complete-divisor realization.  Remaining P1 obligation is chain-level: construct the
-universal commutator-generated local cyclic/JLO subcomplex and prove its realized pairing with
-`[m]` vanishes in every positive local degree, including the degree-zero normalization boundary.
+  canonical functional-equation orientation commutes with it exactly.  Thus `[D,m]=0`, `D_odd=0`,
+  and `D_even=D`.  Lean now encodes every finite positive local formula as a linear combination of
+  words in bounded iterated commutator extensions; every such word vanishes.  Its degree-zero
+  completion is any absolutely summable reflection-invariant spectral weight, and its oriented
+  trace cancels orbitwise.  The same cancellation holds exactly on every finite reflection-stable
+  truncation.  Hence no complete-divisor-compatible local formula can reproduce the nonzero graded
+  cyclic charge `2`.  P1 has a negative answer for the canonical non-doubled complete-divisor
+  triple: `[m]` is a nonlocal graded cyclic class, not a local index class.
 
 ### P2: adelic lift
 
@@ -235,7 +238,7 @@ stabilization or a different Dirac parity.
 - [x] dependency-closed proof of bounded-to-local fracture bridge
 - [x] unconditional Lean proof of fracture bridge
 - [ ] exact chain-level P2 lift
-- [ ] P1 chain-level local-index no-go (operator theorem proved)
+- [x] P1 complete-divisor local-index no-go
 - [ ] P3 smoothness classification
 - [ ] P4 family analytic-rank theorem
 - [ ] full universal Chern-character factorization
@@ -298,3 +301,12 @@ stabilization or a different Dirac parity.
   commutator-blind, and reflection conjugates orientation to its negative.  This establishes the
   smoothness--detectability conservation law on the genuine complete divisor. Selected axioms are
   again only `propext`, `Classical.choice`, and `Quot.sound`.
+- 2026-08-03 — `RealCoronaLocalCyclicNoGo.lean` closes P1 rather than stopping at first-order
+  obstruction. An all-orders smooth commutator jet defines local words; every positive word for an
+  exactly commuting orientation is the zero operator. Finite linear combinations evaluated by
+  arbitrary additive residue/trace functionals therefore vanish. In degree zero, every summable
+  reflection-invariant spectral weight has zero oriented `tsum`, and every finite reflection-stable
+  truncation has zero oriented sum without a limit argument. A complete local formula is the sum
+  of these degree-zero and positive pieces. Lean proves its value is always zero and therefore can
+  never equal the graded cyclic charge `2`. Selected theorems are axiom-clean modulo `propext`,
+  `Classical.choice`, and `Quot.sound`.

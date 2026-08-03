@@ -86,7 +86,8 @@ def ramificationTrace {R beta : ℕ} : Characteristic R beta → List ℕ
   induction c with
   | terminal => simp [ramificationTrace]
   | step hER hE hbeta hgcd hgamma tail ih =>
-      cases tail <;> simp [ramificationTrace] at ih ⊢
+      rw [ramificationTrace, List.getLast?_cons, ih]
+      rfl
 
 /-- Every rank in the trace is at most the initial rank. -/
 theorem ramificationTrace_le {R beta : ℕ} (c : Characteristic R beta)

@@ -21,7 +21,7 @@ noncomputable section
 /-- The defining recursion of the triangular solution. -/
 theorem triangularSolve_eq (d : ℂ) (L : ℕ → (ℕ → ℂ) → ℂ) (w : ℕ → ℂ) (k : ℕ) :
     triangularSolve d L w k
-      = (w k - L k fun j => if h : j < k then triangularSolve d L w j else 0) / d := by
+      = (w k - L k fun j => if _ : j < k then triangularSolve d L w j else 0) / d := by
   rw [triangularSolve, Nat.strongRecOn_eq]
   rfl
 
@@ -31,13 +31,30 @@ theorem triangularSolve_spec {d : ℂ} (hd : d ≠ 0) (L : ℕ → (ℕ → ℂ)
     (w : ℕ → ℂ) (k : ℕ) :
     d * triangularSolve d L w k + L k (triangularSolve d L w) = w k := by
   have hval := triangularSolve_eq d L w k
-  have hagree : (L k fun j => if h : j < k then triangularSolve d L w j else 0)
+  have hagree : (L k fun j => if _ : j < k then triangularSolve d L w j else 0)
       = L k (triangularSolve d L w) := by
     refine hL k _ _ ?_
     intro j hj
     rw [dif_pos hj]
   rw [hval, hagree]
   field_simp
+  ring
+
+/-- The triangular solution is the only solution. -/
+theorem triangularSolve_unique {d : ℂ} (hd : d ≠ 0) (L : ℕ → (ℕ → ℂ) → ℂ)
+    (hL : ∀ (k : ℕ) (v v' : ℕ → ℂ), (∀ j, j < k → v j = v' j) → L k v = L k v')
+    (w v : ℕ → ℂ) (hv : ∀ k, d * v k + L k v = w k) (k : ℕ) :
+    v k = triangularSolve d L w k := by
+  induction k using Nat.strong_induction_on with
+  | _ k ih =>
+      have hval := triangularSolve_eq d L w k
+      have hagree : (L k fun j => if _ : j < k then triangularSolve d L w j else 0) = L k v := by
+        refine hL k _ _ ?_
+        intro j hj
+        rw [dif_pos hj, ih j hj]
+      rw [hval, hagree, ← hv k]
+      field_simp
+      ring
 
 /-- **The triangular solution is continuous in its data.** -/
 theorem continuousOn_triangularSolve {X : Type*} [TopologicalSpace X] {V : Set X}
@@ -50,11 +67,11 @@ theorem continuousOn_triangularSolve {X : Type*} [TopologicalSpace X] {V : Set X
   induction k using Nat.strong_induction_on with
   | _ k ih =>
       have heq : ∀ x : X, triangularSolve (d x) (L x) (w x) k
-          = (w x k - L x k fun j => if h : j < k then triangularSolve (d x) (L x) (w x) j else 0)
+          = (w x k - L x k fun j => if _ : j < k then triangularSolve (d x) (L x) (w x) j else 0)
               / d x := fun x => triangularSolve_eq _ _ _ k
       simp only [heq]
       refine ContinuousOn.div ((hw k).sub ?_) hd hdne
-      refine hL k (fun x j => if h : j < k then triangularSolve (d x) (L x) (w x) j else 0) ?_
+      refine hL k (fun x j => if _ : j < k then triangularSolve (d x) (L x) (w x) j else 0) ?_
       intro j
       by_cases hj : j < k
       · simpa [hj] using ih j hj
