@@ -358,7 +358,10 @@ This is an unconditional construction of the evaluation carrier; only its identi
 positive Weil metric uses RH. It does not assert that the full differential pair extends to a
 closable unbounded operator on this completion.
 
-This closes the algebraic divisor side of `(6)`, `(9)`, `(11)`, `(12)`, and `(15)`. The formal tree
+This closes the algebraic divisor side of `(6)`, `(9)`, `(11)`, `(12)`, and `(15)`.  The
+eigenfunction statements `(19)`--`(24)` were subsequently proved unconditionally in
+`XiThetaEigenGramLaw.lean`; the RH-hypothesis versions in `XiWeilPolarization.lean` are their
+specializations. The formal tree
 still lacks the extension of the prime-plus-Gamma equality from the Cauchy/resolvent core to the
 full Guinand--Weil test algebra, and the closability/domain theorem for the full unbounded
 Hedenmalm pair. No source-side or positivity claim is represented by an assumption.
@@ -579,6 +582,87 @@ limit form of the open gate: what is still missing is not the approximation but 
 --- the identification of the limit with a prime sum attached to `F` itself rather than to its
 approximants.  The gate below is therefore split into the part now proved and the part remaining.
 
+## The eigenfunction Gram matrix is antidiagonal, unconditionally
+
+The Lean statements of `(19)`--`(22)` in the tree carried the Riemann hypothesis as a hypothesis,
+because they were derived from the RH form of `(6)` in which every divisor point is real.  That was
+an artefact of the derivation, not of the mathematics: the card's own proof of `(21)` and `(22)`
+uses only whether `alpha` itself is real.  The full unconditional computation is now formalized.
+
+```text
+xiWeilPolarization_thetaEigen
+  : q_W(u_alpha, u_beta) = 0                                      if beta != conj(alpha)
+    q_W(u_alpha, u_beta) = m_alpha (i Xi'(alpha)) conj(i Xi'(beta)) if beta  = conj(alpha),
+    for any two zeros alpha, beta of XiC.  No hypothesis.
+```
+
+The mechanism is the one the card describes at `(20)`: the sharp involution evaluates the second
+quotient at `conj(alpha)`, which is again a zero of `XiC` by the functional equation together with
+Schwarz reflection, and a quotient based at one zero vanishes at every *other* zero.  So the Gram
+matrix of the theta eigenfunctions is carried by the conjugation involution on the divisor and is
+*antidiagonal*, not diagonal.  It becomes diagonal exactly when the involution is trivial, which is
+RH.  Two immediate unconditional corollaries are `(21)` and `(22)`:
+
+```text
+xiWeilPolarization_thetaEigen_diagonal_eq_zero_of_im_ne_zero
+  : Im(alpha) != 0  ->  q_W(u_alpha, u_alpha) = 0.
+xiWeilPolarization_thetaEigen_diagonal_of_im_eq_zero
+  : Im(alpha)  = 0  ->  q_W(u_alpha, u_alpha) = m_alpha ||Xi'(alpha)||^2.
+```
+
+With the finite sesquilinear expansion
+
+```text
+xiWeilPolarization_thetaEigen_finsetSum
+  : q_W(sum_alpha c_alpha u_alpha, sum_beta d_beta u_beta)
+      = sum_alpha sum_beta c_alpha conj(d_beta) Gram(alpha, beta),
+```
+
+this closes `(23)` and `(24)` as an unconditional equivalence with mathlib's `RiemannHypothesis`:
+
+```text
+forall_finsetSum_thetaEigen_re_pos_iff
+  : ( q_W is strictly positive on every nonzero finite combination of theta eigenfunctions )
+      <->  RiemannHypothesis  and  every zero of XiC is simple.
+```
+
+Forward is the single-eigenfunction case: a nonreal zero is null by `(21)` and a multiple real zero
+is null by `(22)`.  Backward is diagonality of the Gram matrix on real zeros, which turns the double
+sum into `sum_alpha |c_alpha|^2 m_alpha ||Xi'(alpha)||^2`.  This is the first statement in the tree
+that ties the Hedenmalm metric to RH *and* simplicity in both directions without assuming either.
+
+## The time-side eigenfunction equation `(17)`
+
+`(17)` is now formalized in the corpus normalization.  The corpus already carried the two
+source-pointed one-sided inverses of the theta source (the causal and anti-causal Volterra
+integrals) and the fact that their difference is the free mode weighted by `XiC(alpha)`.  What was
+missing is that they are *solutions* of the Hedenmalm equation at all:
+
+```text
+hasDerivAt_hedenmalmCausalVolterra
+hasDerivAt_hedenmalmAntiCausalVolterra
+hedenmalmCausalVolterra_thetaEigen_ode
+hedenmalmAntiCausalVolterra_thetaEigen_ode
+  : with D = -i d/dx,  (D + alpha) u = -k   for both one-sided inverses,
+    at every spectral parameter with |Im alpha| < 1.
+```
+
+The proof is the fundamental theorem of calculus for the left half-line profile of the source
+against the free mode, plus the product rule; the anti-causal case follows from the causal one and
+the defect identity, because the free mode is annihilated by `D + alpha`.  Combined with the
+existing coincidence criterion, this is the exact time-side statement behind `(17)`:
+
+```text
+exists_unique_twoSided_thetaEigen_solution_iff
+  : the causal and anti-causal solutions agree everywhere  <->  XiC(alpha) = 0.
+```
+
+So a Xi zero is precisely a spectral parameter at which the inhomogeneous equation has a
+distinguished two-sided solution, and off the divisor the two half-line solutions are genuinely
+different.  The remaining half of the eigenfunction package, `(18)`, is the Fourier transform of
+that solution; the Fourier-side object `-i Xi(z)/(alpha - z)` is already fully formalized and is
+what the Gram law above is stated about.
+
 ## Gates
 
 - [x] completed centered Weil distribution fixed
@@ -602,6 +686,11 @@ approximants.  The gate below is therefore split into the part now proved and th
       to the test function itself, not to its Cauchy approximants)
 - [x] Lean entire eigenfunction quotient and pointwise derivative law
 - [x] Lean multiplicity-summed eigenfunction norm and orthogonality law
+- [x] Lean unconditional theta-eigenfunction Gram law (`(19)`--`(22)` with no RH hypothesis)
+- [x] Lean time-side eigenfunction equation `(17)` for both source-pointed inverses
+- [x] Lean finite sesquilinear expansion on the eigen-span
+- [x] Lean unconditional equivalence `(23)`/`(24)`: positive definiteness on the eigen-span iff
+      RH plus simplicity
 - [x] Lean `ell^2` evaluation carrier, Cauchy completion, and exact Hedenmalm Hilbert norm
 - [x] Lean bridge from finite Cauchy packets to the Hilbert core
 - [x] Lean convergence of the prime-plus-Gamma side along `ell^2`-convergent packet sequences

@@ -12,7 +12,9 @@ source groupoid, and its law has three intrinsic faces:
    kernel refinement; every terminal collision has one first edge.
 2. **Edges:** endpoint gauges change open transport only at endpoints and preserve closed-loop
    readouts. On a connected graph, reversible flat edge transport is exactly an endpoint
-   coboundary. A parameter carried only by vertex ratios can change growth but no curvature.
+   coboundary. Relative holonomy of two parameter slices is a parameter cocycle and vanishes on
+   every loop exactly when the slices are endpoint-gauge equivalent. A parameter carried only by
+   vertex ratios can change growth but cannot move the connection class.
 3. **Equivariance:** signed transpose determines whether the reflection-even or reflection-odd
    incidence sector is symmetric. Negative covariance makes the even sector skew and diagonal-
    blind while leaving the odd sector symmetric.
@@ -42,12 +44,16 @@ beyond every finite cut. The completed Xi aperture kernel has exact negative sig
 covariance, and the imaginary continued prime--Archimedean source trace equals one half of its live
 reflection-odd sector. Hence source, source-to-Xi landing, off-diagonal incidence, infinite
 operator, nonzero cycle curvature, odd polarization, and direct source bridge are all present.
+Regular common-test access is present as well. Continued prime--Gamma Cauchy nodes, even after
+removing any finite subset, approximate every square-summable divisor-evaluation vector. Their
+annihilator is exactly the fibrewise mean-zero multiplicity sector. Thus neither node scarcity nor
+unknown multiplicity is a defensible account of the remaining gap.
 
 New frontier statement is therefore sharper and less circular than “find a source” or “prove
 positivity.” Joint-depth horizontal dependence is flat; physical curvature is not coupled to the
 divisor displacement. Twisting the curved carrier by the joint-depth character is an endpoint
-gauge and leaves every loop invariant. Missing object is a parameter-dependent, genuinely
-nonseparable curvature transgression with a singular common-test extension satisfying a source-
+gauge and makes every relative holonomy equal to one. Missing object is a nontrivial parametric,
+genuinely nonseparable holonomy transgression with a singular common-test extension satisfying a source-
 derived Hodge symmetry or boundedness law. Regular self-dual Gamma envelopes cannot do this:
 they preserve right-half-plane divisor data and admit self-dual moderate functions with prescribed
 off-line zeros.

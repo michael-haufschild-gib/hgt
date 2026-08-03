@@ -353,6 +353,52 @@ Gamma/co-Poisson top-conormal Green boundary before reflection-diagonal sewing. 
 pullback dagger, or using vanishing of already-known Gamma mate curvature to define landing, is
 now falsified/circular route.
 
+### 2026-08-03 correction: one-sided framed twist creates exact nonflat curvature
+
+Updated Hellinger--Hodge--Green descent identifies first nonflat horizontal curvature, rather than
+another scalar source or positive consumer, as missing object. The coherent scalar top-conormal
+transport is itself flat:
+
+\[
+ A_n=\begin{pmatrix}n&n-1\\0&1\end{pmatrix},\qquad A_mA_n=A_{mn}.
+\tag{4g}
+\]
+
+Both coherent monomial sectors are affine coboundaries, with potential zero or one. Hence scalar
+top-conormal shift alone cannot cross updated frontier.
+
+Framed coefficient has two cotangent terms. Let half-density mate gain act on conormal term only:
+
+\[
+ \chi_s(n)=\lVert n^{1/2-s}\rVert^{-2},\qquad
+ T_\chi(n)=\operatorname{diag}(\chi_s(n),1)A_n.
+\tag{4h}
+\]
+
+Its composition curvature is genuinely nonflat:
+
+\[
+ T_\chi(m)T_\chi(n)-T_\chi(mn)
+ =\begin{pmatrix}
+ 0&\chi_s(m)(m-1)(1-\chi_s(n))\\0&0
+ \end{pmatrix}.
+\tag{4i}
+\]
+
+It obeys nonabelian Bianchi. Removing canonical left source factor gives `f_chi(n)=1-chi_s(n)`,
+and source/dual polarization is exactly
+
+\[
+ f_{\chi_s^{-1}}(n)-f_{\chi_s}(n)
+ =\chi_s(n)-\chi_s(n)^{-1}=K_n(s).
+\tag{4j}
+\]
+
+At forced degree six, actual ordered Gamma boundary is the known positive calibration times
+`(4j)`. This constructs parameter-dependent nonflat curvature and identifies its Gamma landing
+without assuming vanishing. It does not prove RH. Remaining theorem is singular Cartier/Stokes
+annihilation of `(4j)` on completed Xi Green provenance from independent arithmetic boundary law.
+
 ## New mathematical predictions
 
 If the law is correct, it predicts more than RH:
@@ -469,6 +515,9 @@ falsifier producing a nontrivial orientation cofiber.
 - [x] construct unique coherent ramified finite-block source/reporter dagger pair
 - [x] construct refinement-natural conormal thickening on actual finite rational-Witt stages
 - [x] land admitted finite-stage sector faithfully in literal algebraic Calderon--Witt packet
+- [x] prove every coherent scalar conormal sector is an affine coboundary and therefore flat
+- [x] construct rank-two one-sided framed nonflat horizontal curvature
+- [x] identify source/dual reduced-curvature polarization with `K_n(s)` and actual Gamma degree six
 - [ ] prove conormal grade is intrinsic to genuine framed rational-Witt coefficient
 - [ ] lift finite-block pair to source/reporter adjunction on actual incidence complex
 - [ ] identify top-conormal dualizing twist with actual Gamma dagger and categorical degree trace
@@ -477,6 +526,7 @@ falsifier producing a nontrivial orientation cofiber.
 - [ ] prove nonannihilating Xi Cartier base change
 - [x] generate the Xi Cartier package algebraically from the source exceptional section
 - [ ] prove internal descent preserves the raw alternating-tail grade
+- [ ] extend framed curvature to completed Xi common-test incidence and prove singular Stokes annihilation
 - [ ] derive unconditional RH
 - [x] formalize dependency-closed finite ramified theorem in Lean
 

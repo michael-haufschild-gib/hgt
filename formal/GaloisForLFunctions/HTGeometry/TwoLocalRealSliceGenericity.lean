@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.TwoLocalEdgeSliceFamily
 import GaloisForLFunctions.HTGeometry.AnalyticEscapeGenericityTransfer
 import GaloisForLFunctions.HTGeometry.SimpleSpectrumAnalyticBranch
 import GaloisForLFunctions.HTGeometry.HypercubeCharacterNonconstancy
+import GaloisForLFunctions.HTGeometry.PolynomialHermitianSpectrumGenericity
 
 /-!
 # Almost every real two-local Hamiltonian has no rational spectral relation
@@ -124,45 +125,45 @@ theorem eval_twoLocalFinCoefficients (p : HypercubeTwoLocalParameter n → ℝ) 
   simp [twoLocalFinCoefficients]
 
 
-/-- **One analytic chart around a two-local diagonal base.**  Around a diagonal base with simple
-spectrum and simple positive edge gaps there is a connected open set of complex coefficients
-carrying analytic eigenvalue branches through every base energy, simple and root-valued
-throughout. -/
-theorem exists_twoLocalAnalyticChart (n : ℕ) :
-    ∃ (p : HypercubeTwoLocalParameter n → ℝ)
-      (V : Set (Fin (Fintype.card (HypercubeTwoLocalParameter n)) → ℂ))
-      (branch : (Fin n → Bool) →
-        (Fin (Fintype.card (HypercubeTwoLocalParameter n)) → ℂ) → ℂ),
+/-- **One analytic chart around a two-local diagonal base.**  For any polynomial matrix family into
+which the two-local coefficients embed, there is a connected open set of complex parameters around
+the image of a diagonal base carrying analytic eigenvalue branches through every base energy, simple
+and root-valued throughout. -/
+theorem exists_embeddedTwoLocalAnalyticChart {m : ℕ}
+    (M : Matrix (Fin n → Bool) (Fin n → Bool) (MvPolynomial (Fin m) ℂ))
+    (embed : (HypercubeTwoLocalParameter n → ℂ) → (Fin m → ℂ))
+    (hembed : ∀ v, M.map (MvPolynomial.eval₂Hom (RingHom.id ℂ) (embed v))
+      = hypercubeTwoLocalMatrix v) :
+    ∃ (p : HypercubeTwoLocalParameter n → ℝ) (V : Set (Fin m → ℂ))
+      (branch : (Fin n → Bool) → (Fin m → ℂ) → ℂ),
       (∀ i : Fin n, p (.transverse i) = 0) ∧
       Function.Injective (hypercubeTwoLocalEnergy p) ∧
       (∀ (i : Fin n) (z : qubitEnvironment n i), 0 < edgeGap i (hypercubeTwoLocalEnergy p) z) ∧
       (∀ i : Fin n, Function.Injective (edgeGap i (hypercubeTwoLocalEnergy p))) ∧
-      IsOpen V ∧ IsPreconnected V ∧ V.Nonempty ∧ twoLocalFinCoefficients p ∈ V ∧
+      IsOpen V ∧ IsPreconnected V ∧ V.Nonempty ∧ (embed fun θ => (p θ : ℂ)) ∈ V ∧
       (∀ x, AnalyticOnNhd ℂ (branch x) V) ∧
-      (∀ x, branch x (twoLocalFinCoefficients p) = ((hypercubeTwoLocalEnergy p x : ℝ) : ℂ)) ∧
+      (∀ x, branch x (embed fun θ => (p θ : ℂ)) = ((hypercubeTwoLocalEnergy p x : ℝ) : ℂ)) ∧
       (∀ z ∈ V, Function.Injective fun x => branch x z) ∧
-      (∀ x, ∀ z ∈ V, matrixCharpolyRelation ((hypercubeTwoLocalFinPolynomialMatrix n).map
-        (MvPolynomial.eval₂Hom (RingHom.id ℂ) z), branch x z) = 0) := by
+      (∀ x, ∀ z ∈ V, matrixCharpolyRelation
+        (M.map (MvPolynomial.eval₂Hom (RingHom.id ℂ) z), branch x z) = 0) := by
   classical
   obtain ⟨p, htr, hinj, hgappos, hgapinj⟩ := exists_twoLocalDiagonalBase_zeroTransverse n
-  set z₀ := twoLocalFinCoefficients p with hz₀def
+  set z₀ : Fin m → ℂ := embed (fun θ => (p θ : ℂ)) with hz₀def
   set energy : (Fin n → Bool) → ℂ := fun x => ((hypercubeTwoLocalEnergy p x : ℝ) : ℂ) with hedef
   have henergyInj : Function.Injective energy := fun a b h =>
     hinj (Complex.ofReal_injective h)
   have hone : (1 : Matrix (Fin n → Bool) (Fin n → Bool) ℂ)⁻¹ = 1 :=
     Matrix.inv_eq_right_inv (by simp)
   have hbase : (1 : Matrix (Fin n → Bool) (Fin n → Bool) ℂ)⁻¹ *
-      ((hypercubeTwoLocalFinPolynomialMatrix n).map
-        (MvPolynomial.eval₂Hom (RingHom.id ℂ) z₀)) * 1
+      (M.map (MvPolynomial.eval₂Hom (RingHom.id ℂ) z₀)) * 1
       = Matrix.diagonal energy := by
-    rw [hone, one_mul, mul_one, hz₀def, eval_twoLocalFinCoefficients,
+    rw [hone, one_mul, mul_one, hz₀def, hembed,
       hypercubeTwoLocalMatrix_diagonal_of_zeroTransverse p htr]
   obtain ⟨U, branch, hUopen, hz₀U, hbranchA, hbranch0, hbranchRoot⟩ :=
-    exists_simultaneous_eigenvalueBranches (analyticAt_hypercubeTwoLocalFinFamily z₀) energy
+    exists_simultaneous_eigenvalueBranches (analyticAt_polynomialMatrixFamily M z₀) energy
       henergyInj (S := 1) (by rw [Matrix.det_one]; exact isUnit_one) hbase
   have hroots : ∀ᶠ z in 𝓝 z₀, ∀ x : Fin n → Bool,
-      matrixCharpolyRelation ((hypercubeTwoLocalFinPolynomialMatrix n).map
-        (MvPolynomial.eval₂Hom (RingHom.id ℂ) z), branch x z) = 0 :=
+      matrixCharpolyRelation (M.map (MvPolynomial.eval₂Hom (RingHom.id ℂ) z), branch x z) = 0 :=
     Filter.eventually_all.2 hbranchRoot
   have hdistinct : ∀ᶠ z in 𝓝 z₀, ∀ x y : Fin n → Bool, x ≠ y → branch x z ≠ branch y z := by
     rw [Filter.eventually_all]
@@ -189,26 +190,28 @@ theorem exists_twoLocalAnalyticChart (n : ℕ) :
   · intro x z hz
     exact (hball hz).2.1 x
 
-
-/-- **Real-slice genericity of the all-qubit two-local family.**  Outside a meagre Lebesgue-null set
-of real two-local coefficients, the `2^n` energies satisfy no nonzero balanced integer relation.
+/-- **Real-slice genericity through a two-local embedding.**  Outside a meagre Lebesgue-null set of
+real parameters of any polynomial matrix family into which the two-local coefficients embed, the
+`2^n` energies satisfy no nonzero balanced integer relation.
 
 Every labelling of every such relation is escaped inside one chart around a diagonal base: a nonzero
 balanced character is nonconstant, so it differs across some hypercube edge, and switching on that
 edge's transverse coupling -- after an arbitrarily small shift of the edge gaps -- moves the
 relation off zero. -/
-theorem twoLocalFinPolynomialMatrix_dense_residual_fullMeasure (n : ℕ) :
-    Dense (polynomialMatrixProjectiveGenericSet (hypercubeTwoLocalFinPolynomialMatrix n)) ∧
-      polynomialMatrixProjectiveGenericSet (hypercubeTwoLocalFinPolynomialMatrix n) ∈
-        residual (Fin (Fintype.card (HypercubeTwoLocalParameter n)) → ℝ) ∧
-      volume (polynomialMatrixProjectiveGenericSet
-        (hypercubeTwoLocalFinPolynomialMatrix n))ᶜ = 0 := by
+theorem polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure_of_twoLocalEmbedding
+    {m : ℕ} (M : Matrix (Fin n → Bool) (Fin n → Bool) (MvPolynomial (Fin m) ℂ))
+    (embed : (HypercubeTwoLocalParameter n → ℂ) → (Fin m → ℂ))
+    (hembedCont : Continuous embed)
+    (hembed : ∀ v, M.map (MvPolynomial.eval₂Hom (RingHom.id ℂ) (embed v))
+      = hypercubeTwoLocalMatrix v) :
+    Dense (polynomialMatrixProjectiveGenericSet M) ∧
+      polynomialMatrixProjectiveGenericSet M ∈ residual (Fin m → ℝ) ∧
+      volume (polynomialMatrixProjectiveGenericSet M)ᶜ = 0 := by
   classical
   obtain ⟨p, V, branch, htr, hinj, hgappos, hgapinj, hVopen, hVconn, hVne, hz₀V,
-    hbranchA, hbranch0, hbranchInj, hbranchRoot⟩ := exists_twoLocalAnalyticChart n
+    hbranchA, hbranch0, hbranchInj, hbranchRoot⟩ := exists_embeddedTwoLocalAnalyticChart M embed hembed
   refine polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure_of_analyticBranchEscape
-    (hypercubeTwoLocalFinPolynomialMatrix n) V hVopen hVconn hVne branch hbranchA hbranchInj
-    hbranchRoot ?_
+    M V hVopen hVconn hVne branch hbranchA hbranchInj hbranchRoot ?_
   intro k hbalanced hk σ
   set c : (Fin n → Bool) → ℂ := fun x => ((k (σ.symm x) : ℤ) : ℂ) with hcdef
   obtain ⟨x₁, y₁, hxy⟩ : ∃ x y : Fin n → Bool, c x ≠ c y := by
@@ -255,24 +258,24 @@ theorem twoLocalFinPolynomialMatrix_dense_residual_fullMeasure (n : ℕ) :
     have h := congrArg (fun r : ℝ => (r : ℂ)) hcon
     rw [hκcast, hκcast, edgeEquiv_zero, edgeEquiv_one] at h
     exact h
-  set slice : ℝ × ℝ → (Fin (Fintype.card (HypercubeTwoLocalParameter n)) → ℂ) :=
-    fun q t => twoLocalEdgeSlice p i q ((twoLocalParameterEquivFin n).symm t) with hslicedef
-  have hslice0 : slice (0, 0) = twoLocalFinCoefficients p := by
-    funext t
-    simp [hslicedef, twoLocalEdgeSlice, twoLocalFinCoefficients]
+  set slice : ℝ × ℝ → (Fin m → ℂ) := fun q => embed (twoLocalEdgeSlice p i q) with hslicedef
+  have hsliceParam0 : twoLocalEdgeSlice p i (0, 0) = fun θ => (p θ : ℂ) := by
+    funext θ
+    simp [twoLocalEdgeSlice]
+  have hslice0 : slice (0, 0) = embed fun θ => (p θ : ℂ) := by
+    show embed (twoLocalEdgeSlice p i (0, 0)) = _
+    rw [hsliceParam0]
   have hsliceCont : Continuous slice := by
-    refine continuous_pi fun t => ?_
-    simp only [hslicedef, twoLocalEdgeSlice, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+    refine hembedCont.comp ?_
+    refine continuous_pi fun θ => ?_
+    simp only [twoLocalEdgeSlice, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
     fun_prop
-  have hHslice : ∀ q : ℝ × ℝ, ((hypercubeTwoLocalFinPolynomialMatrix n).map
+  have hHslice : ∀ q : ℝ × ℝ, (M.map
         (MvPolynomial.eval₂Hom (RingHom.id ℂ) (slice q))).submatrix (edgeEquiv i) (edgeEquiv i)
       = shiftedBlockSplitMatrix (edgeMean i (hypercubeTwoLocalEnergy p))
           (edgeGap i (hypercubeTwoLocalEnergy p)) q := by
     intro q
-    rw [map_eval_hypercubeTwoLocalFinPolynomialMatrix,
-      show (fun θ => slice q (twoLocalParameterEquivFin n θ)) = twoLocalEdgeSlice p i q from by
-        funext θ
-        simp [hslicedef]]
+    rw [hslicedef, hembed]
     exact submatrix_hypercubeTwoLocalMatrix_twoLocalEdgeSlice p i htr q
   have hblockinj : Function.Injective fun q : Fin 2 × qubitEnvironment n i =>
       ((blockEnergy (edgeMean i (hypercubeTwoLocalEnergy p))
@@ -313,5 +316,74 @@ theorem twoLocalFinPolynomialMatrix_dense_residual_fullMeasure (n : ℕ) :
       rfl).symm
   rw [hreindex]
   exact hqne
+
+/-- Numbering the two-local coefficients embeds them into their own polynomial family. -/
+theorem map_eval_embed_twoLocalFin (v : HypercubeTwoLocalParameter n → ℂ) :
+    (hypercubeTwoLocalFinPolynomialMatrix n).map (MvPolynomial.eval₂Hom (RingHom.id ℂ)
+        fun t => v ((twoLocalParameterEquivFin n).symm t))
+      = hypercubeTwoLocalMatrix v := by
+  rw [map_eval_hypercubeTwoLocalFinPolynomialMatrix]
+  congr 1
+  funext θ
+  simp
+
+/-- **Real-slice genericity of the all-qubit two-local family.** -/
+theorem twoLocalFinPolynomialMatrix_dense_residual_fullMeasure (n : ℕ) :
+    Dense (polynomialMatrixProjectiveGenericSet (hypercubeTwoLocalFinPolynomialMatrix n)) ∧
+      polynomialMatrixProjectiveGenericSet (hypercubeTwoLocalFinPolynomialMatrix n) ∈
+        residual (Fin (Fintype.card (HypercubeTwoLocalParameter n)) → ℝ) ∧
+      volume (polynomialMatrixProjectiveGenericSet
+        (hypercubeTwoLocalFinPolynomialMatrix n))ᶜ = 0 :=
+  polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure_of_twoLocalEmbedding
+    (hypercubeTwoLocalFinPolynomialMatrix n)
+    (fun v t => v ((twoLocalParameterEquivFin n).symm t))
+    (continuous_pi fun _ => continuous_apply _) map_eval_embed_twoLocalFin
+
+/-- At real coefficients the numbered two-local family is Hermitian. -/
+theorem isHermitian_twoLocalFinEval
+    (p : Fin (Fintype.card (HypercubeTwoLocalParameter n)) → ℝ) :
+    ((hypercubeTwoLocalFinPolynomialMatrix n).map
+      (MvPolynomial.eval₂Hom (RingHom.id ℂ) fun t => (p t : ℂ))).IsHermitian := by
+  rw [map_eval_hypercubeTwoLocalFinPolynomialMatrix]
+  exact isHermitian_hypercubeTwoLocalMatrix fun θ => p (twoLocalParameterEquivFin n θ)
+
+/-- **The spectral conclusion at a generic real coefficient vector.**  Every balanced integer
+relation among the `2^n` energies is trivial. -/
+theorem maximallyProjectiveEnergy_twoLocalFinEval
+    (p : Fin (Fintype.card (HypercubeTwoLocalParameter n)) → ℝ)
+    (hp : p ∈ polynomialMatrixProjectiveGenericSet (hypercubeTwoLocalFinPolynomialMatrix n)) :
+    MaximallyProjectiveEnergy (isHermitian_twoLocalFinEval p).eigenvalues :=
+  maximallyProjectiveEnergy_eigenvalues_of_mem_polynomialMatrixGenericSet _ p hp _
+
+/-- **Two-local spectral genericity, finite size and unconditional.**  Outside a meagre
+Lebesgue-null set of real two-local coefficients the `2^n` energies are pairwise distinct and admit
+no balanced integer relation other than the trivial one. -/
+theorem twoLocal_simple_and_projectivelyIndependent_generically (n : ℕ) :
+    Dense (polynomialMatrixProjectiveGenericSet (hypercubeTwoLocalFinPolynomialMatrix n)) ∧
+      polynomialMatrixProjectiveGenericSet (hypercubeTwoLocalFinPolynomialMatrix n) ∈
+        residual (Fin (Fintype.card (HypercubeTwoLocalParameter n)) → ℝ) ∧
+      volume (polynomialMatrixProjectiveGenericSet
+        (hypercubeTwoLocalFinPolynomialMatrix n))ᶜ = 0 ∧
+      ∀ p ∈ polynomialMatrixProjectiveGenericSet (hypercubeTwoLocalFinPolynomialMatrix n),
+        Function.Injective (isHermitian_twoLocalFinEval p).eigenvalues ∧
+        MaximallyProjectiveEnergy (isHermitian_twoLocalFinEval p).eigenvalues := by
+  obtain ⟨hdense, hresidual, hvolume⟩ := twoLocalFinPolynomialMatrix_dense_residual_fullMeasure n
+  refine ⟨hdense, hresidual, hvolume, fun p hp => ⟨?_, ?_⟩⟩
+  · exact MaximallyProjectiveEnergy.injective (maximallyProjectiveEnergy_twoLocalFinEval p hp)
+  · exact maximallyProjectiveEnergy_twoLocalFinEval p hp
+
+
+/-- **Almost sure spectral genericity for any absolutely continuous law.**  A probability law on the
+real two-local coefficients with a density gives probability one to the coefficients whose `2^n`
+energies are pairwise distinct and admit no balanced integer relation. -/
+theorem twoLocal_projectivelyIndependent_ae
+    {μ : Measure (Fin (Fintype.card (HypercubeTwoLocalParameter n)) → ℝ)}
+    (hμ : μ ≪ volume) :
+    ∀ᵐ p ∂μ, Function.Injective (isHermitian_twoLocalFinEval p).eigenvalues ∧
+      MaximallyProjectiveEnergy (isHermitian_twoLocalFinEval p).eigenvalues := by
+  obtain ⟨-, -, hvolume, hgeneric⟩ := twoLocal_simple_and_projectivelyIndependent_generically n
+  refine MeasureTheory.measure_mono_null (fun q hq => ?_) (hμ hvolume)
+  by_contra hcon
+  exact hq (hgeneric q (by simpa using hcon))
 
 end GaloisForLFunctions.HTGeometry

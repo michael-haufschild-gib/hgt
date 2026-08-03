@@ -632,3 +632,126 @@ priority.
 - [ ] prove strict multiplicity-faithful Xi Cartier landing
 - [ ] prove source inverse equals analytic adjoint on landed class
 - [ ] RH
+
+## Lean: the dyadic Euler-log identity and the exact confluence order
+
+Sections 1 and 3 are now Lean, unconditionally, on the corpus's own finite Hellinger objects.  Two
+modules, `#print axioms` clean (only `propext`, `Classical.choice`, `Quot.sound`).
+
+### The all-orders dyadic jet law
+
+`HTGeometry/DyadicReflectionJetLaw.lean` formalizes `(14)`--`(15)` for an arbitrary function, in both
+a global and a local (`ContDiffOn` on an open set) form -- the local form is what the prime-Euler
+logarithm needs, since it is smooth only on a half-line:
+
+```text
+dyadicReflectionCombination f s c = f(s-2c) - f(s+2c) - 2 f(s-c) + 2 f(s+c);
+
+iteratedDeriv_dyadicReflectionCombination(_of_contDiffOn) :
+  D^(n)(0) = ((-2)^n - 2^n - 2((-1)^n - 1)) f^(n)(s);
+..._even : even orders vanish;
+..._odd  : odd orders equal -2(2^n - 2) f^(n)(s);
+iteratedDeriv_three_... : D'''(0) = -12 f'''(s);
+dyadicReflectionCombination_coeff_ne_zero : the odd coefficient is nonzero for every odd n <> 1.
+```
+
+The proof is the affine scaling law `iteratedDeriv n (f(s + a . )) 0 = a^n f^(n)(s)`, applied to the
+antisymmetric pair `f(s-ac) - f(s+ac)` whose `n`-th jet is `((-a)^n - a^n) f^(n)(s)`.  The local
+version is an induction on `n` using the chain rule on the open preimage together with locality of
+iterated derivatives.  Mathlib has the scaling law only for globally smooth functions; the local form
+is corpus-owned.
+
+### The finite Euler factorization and the sewing cost
+
+`RHTower/EulerHellingerDyadicLogIdentity.lean` builds `(1)`--`(5)` on the corpus's existing
+`primeValuationSquaredHellingerBelow` and `realPrimeEulerPartitionBelow`:
+
+```text
+primeEulerLogBelow s N            = log Z_N(s)                                   -- P_N
+primeEulerLogBelow_eq_sum         : P_N(s) = sum_(p<N) -log(1 - p^(-s));
+primeValuationSquaredHellingerBelow_eq_partitionRatio :
+  H_N(c) = Z_N(1-c)^2 / (Z_N(1) Z_N(1-2c));                                      -- (4)
+reflectedSewingMultiplierBelow c N = H_N(-c)/H_N(c);                             -- (3)
+logReflectedSewingBelow_eq :
+  log S_N(c) = P_N(1-2c) - P_N(1+2c) - 2 P_N(1-c) + 2 P_N(1+c);                  -- (5)
+logReflectedSewingBelow_eq_dyadic :
+  log S_N = dyadicReflectionCombination P_N 1 -- the sewing cost *is* the dyadic combination;
+logReflectedSewingBelow_neg       : the cost is odd in the drift;
+contDiffOn_primeEulerLogBelow     : P_N is smooth on (0, infty).
+```
+
+Combining the two modules gives section 3 in exact form:
+
+```text
+logReflectedSewing_zero                     : L_N(0) = 0;
+iteratedDeriv_one_logReflectedSewing        : L_N'(0) = 0;
+iteratedDeriv_two_logReflectedSewing        : L_N''(0) = 0;                      -- (12)
+iteratedDeriv_three_logReflectedSewing      : L_N'''(0) = -12 P_N'''(1);         -- (13)
+iteratedDeriv_logReflectedSewing_even/_odd  : the all-orders law (15).
+```
+
+So the cubic confluence order of the essential annulus, and the exact coefficient `-12`, are proved
+statements about the corpus's own finite Hellinger object rather than a computation on the paper side.
+The centre is `s = 1`: the sewing cost is the dyadic reflection combination of the finite Euler
+logarithm about the critical abscissa.
+
+- 2026-08-03 -- Sections 1 and 3 formalized.  Still outside Lean: the positive dyadic-annulus
+  representation `(9)`--`(11)` (the prime-power segment measure, its two-variable Laplace transform
+  and the `cosh` symmetrisation), the per-prime series form of `(5)` with the
+  `sinh(2u) - 2 sinh u = 2 sinh u (cosh u - 1)` sign law `(6)`, and the shrinking-window profile
+  `(17)`, which needs Mertens-type asymptotics.  The five open gates are unchanged: they are
+  construction tasks (Boolean-curvature chain map, Sonin syzygy, Hausdorff totalization, Xi Cartier
+  landing, adjoint identification), not formalization gaps.
+
+### Lean: the prime-power series, the sign, and the dyadic annulus
+
+Sections 1--3 are now complete in Lean, including the positive annulus representation.
+
+`RHTower/EulerHellingerDyadicSignSeries.lean` gives the final line of `(5)` and the sign law `(6)`:
+
+```text
+sinh_two_mul_sub_two_sinh      : sinh(2u) - 2 sinh u = 2 sinh u (cosh u - 1);
+sinh_two_mul_sub_two_sinh_pos  : that step is positive for u > 0;
+localSewingLog p c             : the local contribution at a prime;
+hasSum_localSewingLog :
+  local contribution = 2 sum_k (p^(-k)/k) [sinh(2ck log p) - 2 sinh(ck log p)];
+localSewingLog_pos             : each local contribution is positive for 0 < c < 1/2;
+logReflectedSewingBelow_eq_sum_localSewingLog : the cost is the finite sum of them;
+logReflectedSewingBelow_pos    : positive drift gives strictly positive cost;
+logReflectedSewingBelow_neg_of_neg : negative drift gives strictly negative cost.
+```
+
+The series comes from `-log(1-x) = sum_k x^k/k` applied to the four abscissae, recombined by the same
+dyadic pattern; the per-term identity is closed by `linear_combination` against the two prime-power
+sinh identities, so no estimate enters.  With oddness this is the card's statement that `L_x` has the
+sign of `c`, with no cancellation between primes or between powers.
+
+`RHTower/EulerQuadrantAnnulusPairing.lean` builds the quadrant current of `(7)`--`(8)` as a pairing
+and proves `(9)`--`(11)`:
+
+```text
+eulerQuadrantPairing F N =
+  sum_(p<N) sum_k (1/k) int_0^(k log p) F t (k log p - t) dt;                    -- (8)
+integral_segment_exp   : int_0^L e^(-zt-w(L-t)) dt = (e^(-zL) - e^(-wL))/(w-z);
+integral_segment_cosh  : int_0^L cosh(a(2t-L)) dt = sinh(aL)/a;
+eulerQuadrantLaplace_eq :
+  <e^(-zt-wu)>_N = (P_N(z) - P_N(w))/(w-z);                                      -- (9)
+logReflectedSewingBelow_eq_laplace_annulus :
+  L_N(c) = 4c [ H_N(1-2c,1+2c) - H_N(1-c,1+c) ];                                 -- (10)
+logReflectedSewingBelow_eq_cosh_pairing :
+  L_N(c) = < 4c e^(-(t+u)) ( cosh(2c(t-u)) - cosh(c(t-u)) ) >_N.                 -- (11)
+```
+
+`(11)` is proved without the symmetrisation argument of the paper: on a segment `t + u` is the
+constant `k log p`, so the integrand's segment integral collapses to
+`2 p^(-k) [ sinh(2ck log p) - 2 sinh(ck log p) ]`, which is exactly the `k`-th term of the prime-power
+series above.  The annulus representation and the signed series are therefore literally the same
+object, and the positivity of the annulus for `c > 0` is the positivity already proved term by term.
+
+- 2026-08-03 -- Sections 1, 2 and 3 of this card are fully formalized: the finite Euler factorization,
+  the dyadic Euler-log form of the sewing cost, its all-orders jet tower with the exact cubic
+  coefficient `-12`, the prime-power series with its sign law, the quadrant Laplace transform, and
+  both boxed annulus representations `(10)` and `(11)`.  Everything is unconditional and
+  `#print axioms` clean.  What remains unformalized is the shrinking-window profile `(17)`--`(18)` of
+  section 4, which needs Mertens-type prime asymptotics, and section 5's fixed-displacement
+  accelerated boundary; the five open gates are construction tasks, not formalization gaps.

@@ -51,7 +51,14 @@
   of representations),
   `GaloisForLFunctions.RHTower.DeningerPermutationSum` (permutation representations of disjoint
   unions),
-  `GaloisForLFunctions.RHTower.DeningerHomologyAdditive` (group homology is an additive functor)
+  `GaloisForLFunctions.RHTower.DeningerHomologyAdditive` (group homology is an additive functor),
+  `GaloisForLFunctions.RHTower.DeningerTreeTwoFactor` (the tree of a two factor amalgam),
+  `GaloisForLFunctions.RHTower.DeningerTreeHomology` (the homology of the tree modules),
+  `GaloisForLFunctions.RHTower.DeningerTreeVanishing` (vanishing for an amalgam),
+  `GaloisForLFunctions.RHTower.DeningerCyclicHomology` (the regular representation and the infinite
+  cyclic group),
+  `GaloisForLFunctions.RHTower.DeningerAmalgamCyclic` (the root adjunction step),
+  `GaloisForLFunctions.RHTower.DeningerHomologyUnion` (homology of an increasing union)
 
 ## Statement
 
@@ -543,6 +550,111 @@ The homology half is built too.  `DeningerHomologyAdditive.lean`:
 mathlib's route from additivity to preservation of binary biproducts does not fire by instance
 search on this functor, so the isomorphism is built by hand from `biprod.lift` and `biprod.desc`.
 
+**The two terms of the long exact sequence are now identified.**  `DeningerTreeTwoFactor.lean` gives
+the equivariant decompositions for an amalgam of two factors (indexed by `ULift Bool`, so that the
+index type lies in the same universe as the groups, which the group-homology machinery requires):
+
+- `deningerEdgeEquivSum` — the edges are two copies of the cosets of the base group;
+- `deningerVertexEquivSum` — the vertices are the cosets of the base group together with the cosets
+  of the two factors;
+- `deningerTreeEdgeRepIso`, `deningerTreeVertexRepIso` — the induced isomorphisms of
+  representations onto biproducts.
+
+`DeningerTreeHomology.lean` then reads off, using additivity and the permutation form of Shapiro's
+lemma:
+
+- `deningerTreeEdgeHomologyIso` — `Hₙ(G, k[E]) ≅ Hₙ(C, k) ⊞ Hₙ(C, k)`;
+- `deningerTreeVertexHomologyIso` — `Hₙ(G, k[V]) ≅ Hₙ(C, k) ⊞ (Hₙ(A₀, k) ⊞ Hₙ(A₁, k))`.
+
+What remains for Mayer-Vietoris proper is the diagram chase: the long exact sequence of the tree
+sequence now reads
+
+  `Hₙ(C) ⊞ Hₙ(C) → Hₙ(C) ⊞ Hₙ(A₀) ⊞ Hₙ(A₁) → Hₙ(G) → Hₙ₋₁(C) ⊞ Hₙ₋₁(C) → …`
+
+The extra `Hₙ(C)` on both sides is the price of mathlib's pushout being a star rather than a
+bipartite graph — the tree of the two factor amalgam is the barycentric subdivision of the classical
+one.
+
+**But for the packet the diagram chase is not needed at all**, and this is the observation that
+closes the route.  Identifying the maps of the long exact sequence would require naturality of
+Shapiro's lemma in the subgroup, which is a substantial piece of work.  It is unnecessary: exactness
+at `Hₙ(G)` alone says `Hₙ(G)` is squeezed between `Hₙ(k[V])` and `Hₙ₋₁(k[E])`, so
+
+  `Hₙ(k[V]) = 0` and `Hₙ₋₁(k[E]) = 0`  ⟹  `Hₙ(G) = 0`,
+
+with no knowledge of any map.  For a root adjunction `A *_{⟨g⟩ = ⟨tⁿ⟩} ⟨t⟩` the base group and the
+second factor are infinite cyclic, so in degrees `n ≥ 3` both hypotheses hold as soon as
+`Hₙ(A;ℚ) = 0`: the vertex term is `Hₙ(ℤ) ⊞ Hₙ(A) ⊞ Hₙ(ℤ)` and the edge term is `Hₙ₋₁(ℤ)²` with
+`n - 1 ≥ 2`.  So the tower induction goes through in degrees `≥ 3` with no map identification, and
+degree two is already known: `H²(R_U;ℚ) = 0` is proved above, and over a field cohomology is the
+dual of homology, so `H₂` vanishes with it.
+
+`DeningerTreeVanishing.lean`:
+
+- `deningerIsZero_of_exact` — an exact short complex with zero ends has zero middle;
+- `deningerIsZero_biprod` — a biproduct of zero objects is zero;
+- `deningerGroupHomology_isZero_X₃` — the long exact sequence consequence above;
+- `deningerAmalgam_isZero` — **for a two factor amalgam, the homology vanishes in degree `i` as soon
+  as it vanishes for the base group and both factors in degree `i`, and for the base group in
+  degree `i - 1`.**
+
+To feed that theorem the tower needs the homology of the infinite cyclic group, which mathlib has
+only in the finite cyclic case.  `DeningerCyclicHomology.lean` builds the ingredients:
+
+- `deningerTrivialHomologyIso` — homology with trivial coefficients transfers along an isomorphism
+  of groups, which is what moves statements between `H`, `G i` and their images in the pushout;
+- `deningerIsZero_regular`, `deningerIsZero_leftRegular` — **the regular representation has no
+  homology in positive degrees**: it is the permutation representation on the cosets of the trivial
+  subgroup, so the permutation form of Shapiro's lemma computes its homology as that of the trivial
+  group;
+- `deningerZGen`, `deningerZVal`, `deningerZBoundary`, `deningerZAug` — the standard length one
+  resolution `k[Z] → k[Z] → k` of an infinite cyclic group, given as an abstract group with an
+  isomorphism to `ℤ` rather than as `ℤ` itself, so that it can live in the same universe as the
+  other groups; with `deningerZAug_comp_boundary` and `deningerZAug_surjective`.
+
+Its exactness is now proved:
+
+- `deningerZBoundary_injective` — multiplication by `t - 1` is injective, by taking the element of
+  maximal exponent in the support: the coefficient of `t` times it in the image is exactly the
+  coefficient there, because the next exponent up is outside the support;
+- `deningerZ_exact` — the kernel of the augmentation is the image of `t - 1`.  The basis differences
+  `tⁿ - 1` are boundaries by a telescoping induction over `ℤ`, and arbitrary chains reduce to those
+  by the same splitting `f = (f - ε(f)·1) + ε(f)·1` used for the tree;
+- `deningerZShortComplex_shortExact`, and hence **`deningerZ_isZero` : `Hₙ(Z;k) = 0` for `n ≥ 2`**,
+  by the same long exact sequence lemma, both neighbouring terms being homology of the regular
+  representation.
+
+**The tower step itself is now proved.**  `DeningerAmalgamCyclic.lean`:
+
+- `deningerAmalgam_isZero_of_infiniteCyclic` — for a two factor amalgam whose base group and second
+  factor are infinite cyclic, vanishing of homology in degrees at least three passes from the first
+  factor to the amalgam;
+- `deningerRootFactor`, `deningerRootMap`, `deningerRootMap_injective` — the pushout data of a root
+  adjunction: the two factors are the group and an infinite cyclic group, the generator of the base
+  goes to `a` on one side and to the `m`-th power of the generator on the other, and both maps are
+  injective exactly when `m ≠ 0` and `a` has infinite order;
+- `deningerRootAdjunction_isZero` — **if `Hₙ₊₃(A;k) = 0` then `Hₙ₊₃` of `A` with an `m`-th root of
+  `a` adjoined vanishes too.**
+
+This is the inductive step of the tower.
+
+**The limit stages are handled too.**  The tower can be taken to be an increasing chain indexed by
+`ℕ`, not a transfinite one: `Bau(F)` is generated by `F` under the root operations, so it is the
+union of the subgroups obtained by closing `F` under roots finitely many times.  For an increasing
+union no colimit machinery is needed at all — an inhomogeneous chain has finite support, so it
+involves finitely many group elements and therefore lives in one member of the chain.
+`DeningerHomologyUnion.lean`:
+
+- `deningerSubChains`, `deningerSubChains_f`, `deningerSubChains_injective` — the pushforward of
+  chains along a subgroup inclusion is `mapDomain` along an injection, hence injective;
+- `deningerIsZero_of_iUnion` — **if the homology of each member of an increasing chain of subgroups
+  whose union is the whole group vanishes in a degree, so does the homology of the group.**  A cycle
+  is pulled back to the member containing its support, is a cycle there by injectivity of the
+  pushforward, bounds there, and the bounding chain is pushed forward.
+
+What is left for clause (4) is Baumslag's theorem, which is what identifies each step of that chain
+as a root adjunction in the sense above rather than merely a quotient of one.
+
 Step 1 still needs Baumslag's inductive step (root adjunction preserves unique roots), which rests
 on the same normal-form machinery.
 
@@ -866,3 +978,54 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   `biprod.total` plus additivity.  One tactic note: the `@[simps]`-generated `functor_map` lemma
   unfolds the functor's action and defeats `← Functor.map_comp`; suppressing it with
   `simp [-groupHomology.functor_map]` is what makes the composite identities go through.
+- 2026-08-03 — Identified both homology terms of the tree sequence for a two factor amalgam.  The
+  index type has to be `ULift Bool` rather than `Bool`: the tree's edge and vertex types are built
+  over an index type in the same universe as the groups, which is what the group-homology machinery
+  needs, and `Bool` sits in universe zero.  With the decompositions in place, additivity plus the
+  permutation form of Shapiro's lemma give `Hₙ(G, k[E]) ≅ Hₙ(C) ⊞ Hₙ(C)` and
+  `Hₙ(G, k[V]) ≅ Hₙ(C) ⊞ (Hₙ(A₀) ⊞ Hₙ(A₁))`.  The redundant `Hₙ(C)` on both sides is because
+  mathlib's pushout is a star, i.e. the barycentric subdivision of the classical bipartite tree; for
+  the intended application it cancels directly, since `C → A₁` being a homology isomorphism makes
+  the first map of the long exact sequence injective.
+- 2026-08-03 — Found that the Mayer-Vietoris diagram chase is not needed, and proved the vanishing
+  statement that replaces it.  Identifying the maps in the long exact sequence would require
+  naturality of Shapiro's lemma in the subgroup — a substantial piece of work — but exactness at
+  `Hₙ(G)` by itself already gives `Hₙ(k[V]) = 0` and `Hₙ₋₁(k[E]) = 0` ⟹ `Hₙ(G) = 0`.  For a root
+  adjunction both the base group and the adjoined factor are infinite cyclic, so in degrees `n ≥ 3`
+  both hypotheses reduce to `Hₙ(A;ℚ) = 0`, which is exactly the induction hypothesis of the tower.
+  Degree two needs no separate argument: `H²(R_U;ℚ) = 0` is already proved, and over a field
+  cohomology is the dual of homology.  This removes the last piece of open plumbing between the tree
+  sequence and the tower induction.
+- 2026-08-03 — Built the transfer of homology along group isomorphisms, the vanishing of the
+  homology of the regular representation, and the maps of the length one resolution of an infinite
+  cyclic group.  The regular representation costs nothing now: it is the permutation representation
+  on the cosets of the trivial subgroup, so the permutation Shapiro lemma reduces it to the trivial
+  group.  The resolution is stated for an abstract group with an isomorphism to `ℤ` rather than for
+  `Multiplicative ℤ` itself — the latter sits in universe zero, and the representation-theoretic
+  machinery needs the group in the same universe as the coefficients.  What is left is its two
+  exactness statements, after which the same long exact sequence lemma gives `Hₙ(Z;k) = 0` for
+  `n ≥ 2`, both neighbouring terms being homology of the regular representation.
+- 2026-08-03 — Proved the exactness of the length one resolution of an infinite cyclic group, hence
+  `Hₙ(Z;k) = 0` for `n ≥ 2`.  Injectivity of `t - 1` is the maximal-exponent argument: the
+  coefficient at one step above the top of the support is exactly the top coefficient.  Exactness in
+  the middle is a telescoping induction over `ℤ` for the basis differences `tⁿ - 1`, plus the same
+  splitting `f = (f - ε(f)·1) + ε(f)·1` the tree connectivity used.  With this, every homological
+  input of the tower step exists: the base group and adjoined factor of a root adjunction are
+  infinite cyclic, so `deningerAmalgam_isZero` propagates vanishing in degrees `≥ 3` from a group to
+  the amalgam.  What remains for clause (4) is the tower itself — presenting a root adjunction as a
+  `PushoutI` over `ULift Bool`, the transfinite induction, and filtered colimits of group homology.
+- 2026-08-03 — Proved the inductive step of the tower: if the homology of `A` vanishes in a degree
+  at least three, then so does the homology of `A` with a root adjoined.  The statement is given
+  twice, once for an abstract two factor amalgam whose base group and second factor are infinite
+  cyclic, and once for the explicit root adjunction data, where the injectivity of the two structure
+  maps is exactly `m ≠ 0` and `a` of infinite order.  Nothing about the maps of the long exact
+  sequence is used anywhere in the chain.
+- 2026-08-03 — Handled the limit stages of the tower, and found they need no colimit machinery.  The
+  tower can be indexed by `ℕ`: `Bau(F)` is generated by `F` under the root operations, so it is the
+  increasing union of the subgroups obtained by closing `F` under roots finitely many times.  For an
+  increasing union the argument is elementary — an inhomogeneous chain has finite support, so it
+  involves only finitely many group elements and lives in one member of the chain; pull the cycle
+  back there, bound it there, push the bounding chain forward.  Injectivity of the pushforward, which
+  is `mapDomain` along an injection, is what makes the pulled back chain a cycle.  The only thing
+  still missing for clause (4) is Baumslag's theorem: it is what makes each step of the chain a root
+  adjunction in the amalgam sense, rather than merely a quotient of one.

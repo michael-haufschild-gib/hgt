@@ -3,10 +3,12 @@
 - **ID:** generic-two-local-spectral-monodromy
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM
-- **Status:** `[PARTIALLY FORMALIZED]`; exact full common-base symmetric
-  monodromy, monodromy relation rigidity, and characteristic-polynomial
-  irreducibility over both parameter ring and rational-function field
-  complete; real-slice all-order genericity pending
+- **Status:** `[FORMALIZED for q = 2]`; exact full common-base symmetric
+  monodromy, monodromy relation rigidity, characteristic-polynomial
+  irreducibility over both parameter ring and rational-function field, and the
+  real-slice almost-sure conclusions (1) and (2) for the two-local family are
+  all complete and axiom-clean; only the extension of the almost-sure statement
+  from the two-local family to a general fixed-`q` Pauli ensemble is open
 - **Parent:** `../1-in-progress/static-local-complexity-law.md`, obligation O2
 
 ## Statement
@@ -578,3 +580,144 @@ Remaining, in order:
    `exists_shifted_split_branch_relation_ne_zero` with the qubit supplied by
    `exists_boolToggle_ne_of_ne`, and discharge the `hlabel` hypothesis of the transfer
    capstone.
+
+## Real-slice transfer: COMPLETE for the two-local family
+
+The obligation that stood open on this card since the monodromy layer was proved --
+transporting full symmetric monodromy into the almost-sure statement on the real
+Hermitian slice -- is now formalized, unconditionally and axiom-clean
+(`propext`, `Classical.choice`, `Quot.sound` only).
+
+New modules, in dependency order:
+
+- `FiniteHyperplaneAvoidance.lean` -- `dense_setOf_ne_zero_of_coordinateShift` and
+  **`exists_mem_open_forall_ne_zero`**: a functional affine with nonzero slope along one
+  coordinate is nonzero on a dense open set, so finitely many such conditions still meet
+  any nonempty open set of parameters.
+- `EdgeBlockReindex.lean` -- `edgeState`, `edgeEquiv`, `boolToggle_edgeState`, `edgeMean`,
+  `edgeGap`, `blockEnergy_edge`, `matrixCharpolyRelation_submatrix_equiv` and
+  **`submatrix_edgeEquiv_eq_blockSplitMatrix`**: presenting the cube as the two layers of
+  one qubit turns a diagonal-plus-one-edge Hamiltonian into the block splitting of its
+  energies, and the characteristic relation does not see the reindexing.
+- `TwoLocalDiagonalBaseGenericity.lean` -- `hypercubeTwoLocalEnergy` with its onsite,
+  interaction, constant and edge-direction shift laws, and
+  **`exists_twoLocalDiagonalBase_zeroTransverse`**: a two-local diagonal Hamiltonian whose
+  `2^n` energies are pairwise distinct and whose edge gaps are, for every qubit, positive
+  and pairwise distinct.  Each coincidence is one explicit hyperplane; positivity holds on
+  a nonempty open set.
+- `TwoLocalEdgeSliceFamily.lean` -- `hypercubeTwoLocalMatrix`,
+  `analyticAt_hypercubeTwoLocalMatrix`, `twoLocalEdgeSlice` and
+  **`submatrix_hypercubeTwoLocalMatrix_twoLocalEdgeSlice`**: along the two-parameter slice
+  (gap shift, transverse coupling) the family *is* the shifted block splitting.  The gap
+  shift is `onsite i += 2t`, `constant -= t`, which fixes every block mean.
+- `AnalyticEscapeGenericityTransfer.lean` -- `eq_zero_of_eval_real_eq_zero`,
+  `exists_real_eval_ne_zero_of_complex` and
+  **`polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure_of_analyticBranchEscape`**:
+  the family-independent transfer from one analytic branch escape to real-parameter
+  genericity.
+- `TwoLocalRealSliceGenericity.lean` -- `hypercubeTwoLocalFinPolynomialMatrix`,
+  `isHermitian_hypercubeTwoLocalMatrix`, **`exists_twoLocalAnalyticChart`**,
+  **`twoLocalFinPolynomialMatrix_dense_residual_fullMeasure`**,
+  **`twoLocal_simple_and_projectivelyIndependent_generically`** and
+  **`twoLocal_projectivelyIndependent_ae`**.
+
+The formalized conclusion, for every `n`:  the real two-local coefficients whose energy
+packet admits no nonzero balanced integer relation form a dense residual set whose
+complement is Lebesgue-null; at every such coefficient vector the `2^n` eigenvalues are
+pairwise distinct (`Function.Injective ... .eigenvalues`) and maximally projectively
+independent (`MaximallyProjectiveEnergy`).  Hence any law with a density gives that event
+probability one (`twoLocal_projectivelyIndependent_ae`).  Statements (1) and (2) of the
+card are exactly these two properties.
+
+Two design notes worth keeping:
+
+- The escape needs *no* genericity beyond the base: the gap-shift direction alone moves
+  the reciprocal-gap weight off the finitely many roots of the clearing polynomial, and
+  because the shift may be taken arbitrarily small
+  (`exists_small_reciprocalSum_ne_zero`), every escape point stays inside one chart.
+  Germ uniqueness is therefore applied once, at the base of the two-parameter family --
+  obligation 2b (identity-theorem transport along a path) never arises.
+- Three lemmas of the older genericity layer were generalized in place to accept complex
+  parameters and complex root packets (`eval_matrixCharacteristicElementaryPolynomial`,
+  `eval_complexSpectralCoefficientObstructionPullback`,
+  `matrixCharacteristicElementaryCoefficient_eq_rootPacket`), and both genericity
+  capstones gained `..._of_witness` forms.  Without that the complex escape point could
+  not be fed to the real-parameter machinery.
+
+### What is left on this card
+
+Only the extension sentence of the statement: *"for every full-density fixed-`q` Pauli
+ensemble with `q >= 2`"*.  Formalized here is the case `q = 2`, the card's own family.
+The extension is not a new mechanism -- the escape uses only diagonal and single-qubit
+transverse directions, which are two-local, so the same chart works inside any larger
+fixed-`q` family -- but it does need the `q`-local Pauli family written down as a
+polynomial matrix family together with the embedding of the two-local coefficients into
+it.  That is the next piece of work on this card.
+
+## Scope of the formalized family, and the one remaining bridge
+
+The formalized family throughout this card -- for the monodromy layer as well as for the
+new real-slice layer -- is the *hypercube two-local family*
+`universalHypercubeTwoLocalPolynomialMatrix`: one constant, the diagonal onsite terms,
+the diagonal pair interactions, and one transverse flip per qubit.  In Pauli terms that
+is the span of `I`, `Z_i`, `Z_i Z_j` and `X_i`, a proper subspace of the card's
+`V_(n,2)`, which also contains `Y_i` and the `XX`, `XY`, `YY`, `XZ`, `YZ` strings.
+
+This is not a gap in the mathematics, because genericity transfers *upwards*: the escape
+uses only diagonal and single-qubit transverse directions.  The transfer is now a theorem,
+
+**`polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure_of_twoLocalEmbedding`**:
+for *any* polynomial matrix family `M` on the `2^n` computational states together with a
+continuous coefficient embedding `embed` satisfying
+`M.map (eval at embed v) = hypercubeTwoLocalMatrix v`, the real parameters of `M` with no
+balanced integer spectral relation are dense, residual, and of full measure.
+
+So the card's `V_(n,2)` statement -- and the `q >= 2` statement, and any other ensemble
+containing the two-local Ising-plus-transverse-field directions -- follows from this
+theorem the moment the corresponding coefficient embedding is written down.  The corpus
+already owns the Pauli side of that bridge in `FiniteQubitPauliBasisLaw.lean`
+(`finitePauliMatrix`, entrywise as `∏ s, boolPauliOptionEntry (P s) (x s, y s)`, with
+`Z = diag(1, -1)` and `X` the flip), so what is missing is exactly:
+
+1. the polynomial matrix family of a finite set of Pauli labels (weight `<= q`), and
+2. the coefficient map sending a hypercube two-local vector to its Pauli coefficients --
+   `occ(x_i) = (1 - Z_i)/2` gives identity coefficient
+   `c + ∑_i o_i/2 + ∑_(i≠j) J_ij/4 + ∑_i J_ii/2`, `Z_i` coefficient
+   `-o_i/2 - ∑_(j≠i)(J_ij + J_ji)/4 - J_ii/2`, `Z_i Z_j` coefficient
+   `(J_ij + J_ji)/4`, `X_i` coefficient `t_i`, and zero on every other label --
+   together with the entrywise verification that the resulting Pauli sum is
+   `hypercubeTwoLocalMatrix`.
+
+A cheaper equivalent is to reparameterize the two-local family by its Pauli coefficients
+(`a_0 I + ∑ a_i Z_i + ∑ b_ij Z_i Z_j + ∑ t_i X_i`) from the start; then the embedding into
+any larger label set places coefficients and zeroes, with no algebraic expansion at all.
+
+### Pauli bridge: labels done, expansion next
+
+`PauliTwoLocalLabels.lean` (wired, axiom-clean) evaluates the computational-basis entries
+of every label the bridge needs:
+
+- `zSign`, `pauliWeight`, `pauliIdentityLabel`, `pauliZLabel`, `pauliZZLabel`,
+  `pauliXLabel`, with their weights (`0`, `1`, `<= 2`, `1`);
+- `boolPauliOptionEntry_none / _z / _x` -- the three single-qubit entry patterns;
+- **`finitePauliMatrix_pauliIdentityLabel`** (the identity matrix),
+  **`finitePauliMatrix_pauliZLabel`** (`diagonal (zSign (x i))`),
+  **`finitePauliMatrix_pauliZZLabel`** (`diagonal (zSign (x i) * zSign (x j))`, for `i ≠ j`),
+  **`finitePauliMatrix_pauliXLabel`** (the hypercube-edge adjacency matrix of qubit `i`).
+
+What remains for the `V_(n,2)` and fixed-`q` statements:
+
+1. the polynomial matrix family of `{P // pauliWeight P <= q}` and its evaluation lemma;
+2. `pauliCoefficient v`, a sum of `Pi.single` terms at the identity, `Z_i`, `Z_i Z_j`
+   (`i ≠ j`) and `X_i` labels, so that the family sum collapses by `Finset.sum_eq_single`
+   with no set gymnastics;
+3. the entrywise identity `∑_P pauliCoefficient v P • finitePauliMatrix P
+   = hypercubeTwoLocalMatrix v`.  Off the diagonal it is immediate from
+   `finitePauliMatrix_pauliXLabel`.  On the diagonal it is the occupation-to-sign algebra
+   `occ = (1 - zSign)/2`, `occ_i occ_j = (1 - ζ_i - ζ_j + ζ_i ζ_j)/4` (a four-case Boolean
+   check), followed by regrouping the double sums -- the `i = j` terms of the interaction
+   sum contribute to the identity and `Z_i` coefficients via `occ_i^2 = occ_i`.
+
+Then `polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure_of_twoLocalEmbedding`
+applies verbatim and the card's statement holds for `V_(n,2)` and for every fixed-`q`
+ensemble with `q >= 2`.

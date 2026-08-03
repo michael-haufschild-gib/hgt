@@ -16,6 +16,7 @@ spectrum admits no balanced integer relation are dense, residual, and of full me
 -/
 
 open Set Topology MeasureTheory
+open scoped Matrix.Norms.Elementwise
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -134,6 +135,19 @@ theorem polynomialMatrixProjectiveGenericSet_dense_residual_fullMeasure_of_analy
   rw [eval₂_spectralRelationCoefficientPolynomial_complex_esymm,
     eval₂_spectralRelationOrbitPolynomial_complex]
   exact hp
+
+
+/-- **Polynomial matrix families are entire.**  Evaluating a matrix of multivariate polynomials at
+its parameters is analytic in those parameters. -/
+theorem analyticAt_polynomialMatrixFamily {m : ℕ} {I : Type*} [Fintype I] [DecidableEq I]
+    (M : Matrix I I (MvPolynomial (Fin m) ℂ)) (z₀ : Fin m → ℂ) :
+    AnalyticAt ℂ (fun z => M.map (MvPolynomial.eval₂Hom (RingHom.id ℂ) z)) z₀ := by
+  refine AnalyticAt.pi fun x => AnalyticAt.pi fun y => ?_
+  show AnalyticAt ℂ (fun z => MvPolynomial.eval₂ (RingHom.id ℂ) z (M x y)) z₀
+  have hcoord : ∀ i : Fin m, AnalyticAt ℂ (fun z : Fin m → ℂ => z i) z₀ :=
+    fun i => (ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin m => ℂ) i).analyticAt z₀
+  have h := AnalyticAt.aeval_mvPolynomial (f := fun z : Fin m → ℂ => z) (z := z₀) hcoord (M x y)
+  simpa [MvPolynomial.aeval_def] using h
 
 end
 

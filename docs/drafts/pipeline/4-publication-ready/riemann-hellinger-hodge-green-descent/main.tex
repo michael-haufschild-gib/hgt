@@ -6,7 +6,7 @@
 \usepackage{amsmath,amssymb,amsthm,mathtools}
 \usepackage{microtype}
 \usepackage{enumitem}
-\usepackage{booktabs,array}
+\usepackage{booktabs,array,longtable}
 \usepackage{xcolor}
 \usepackage[colorlinks=true,linkcolor=blue!48!black,
   citecolor=blue!48!black,urlcolor=blue!55!black]{hyperref}
@@ -40,7 +40,7 @@
 \newcommand{\Spec}{\operatorname{Spec}}
 
 \title{\textbf{The resolved-descent conservation law}\\
-\large Observation kernels, gauge curvature, and the Riemann boundary}
+\large Observation kernels, parametric holonomy, and the Riemann boundary}
 \author{Michael Haufschild}
 \date{}
 
@@ -73,7 +73,18 @@ then open transport changes only at its endpoints and every closed-loop
 holonomy is conjugate to the original one; in the scalar case it is equal.
 On a connected source graph, a reversible edge field is an endpoint
 coboundary exactly when all closed holonomies are trivial.  Hence a
-separable source can move open-path growth but cannot create curvature.  An
+separable source can move open-path growth but cannot create curvature.  More
+sharply, for two parameter slices put
+\[
+ \Theta_{a,b}(\gamma)=
+ \operatorname{Hol}_{B_a}(\gamma)
+ \operatorname{Hol}_{B_b}(\gamma)^{-1}.
+\]
+The family \(\Theta\) is a parameter cocycle, and for reversible scalar
+transport on a connected graph it is identically one exactly when the two
+slices differ by endpoint gauge.  Thus a parameter is visible to closed
+source physics precisely when it moves the gauge-equivalence class, not
+merely the edge entries.  An
 involution adds a canonical polarization: if
 \(B_{-u}(i,j)=-B_u(j,i)\), its reflection-even sector is skew and its
 reflection-odd sector is symmetric.  Diagonal restriction annihilates the
@@ -134,15 +145,20 @@ and its live reflection-odd sector is the symmetric real kernel
 odd sector is exactly the imaginary part of the continued prime--Archimedean
 source trace.  Hence off-diagonal incidence, infinite completion, nontrivial
 holonomy, reflection polarization, and a direct source bridge all exist
-unconditionally.
+unconditionally.  Regular common tests are also complete: every
+square-summable divisor-evaluation vector lies in the closed span of Cauchy
+packets whose nodes belong to the continued prime--Gamma domain, even after
+any prescribed finite set of nodes is removed.  Their exact annihilator is
+the fibrewise mean-zero multiplicity sector.
 
 The resolved-descent law now identifies the precise unsolved incidence.
 The joint-depth Xi landing carries horizontal displacement only as a flat
 endpoint gauge, whereas the physical prime curvature is source-defined but
 not coupled to divisor displacement.  Multiplying any curved carrier by
 \(H_a\) leaves every closed holonomy unchanged, so the obvious combination is
-still horizontally blind.  What is absent is one source-derived,
-parameter-dependent curvature transgression---equivalently a genuinely
+still horizontally blind; equivalently its entire relative-holonomy cocycle
+\(\Theta_{a,b}\) is trivial.  What is absent is one source-derived,
+nontrivial parametric holonomy transgression---equivalently a genuinely
 nonseparable prime--depth--divisor incidence---whose singular common-test
 extension obeys the Hodge symmetry or boundedness forced at the Xi divisor.
 Regular self-dual Gamma envelopes cannot supply it: moderate self-dual data
@@ -370,6 +386,7 @@ Consequently, if \(\vartheta(x)\ne\vartheta(y)\), then
                     T^{[k]}x\ne T^{[k]}y
                     \qquad(0\le k\le n).
 \tag{2.C4}\label{eq:distinction-survives}
+\]
 If \(\sigma:X_0\to X_0\),
 \(\vartheta(\sigma x)=-\vartheta(x)\), and \(\vartheta(x)\ne0\), the same
 conclusion holds for the reflected pair \((\sigma x,x)\).
@@ -394,14 +411,14 @@ pair, equality of target values together with oddness would force
 \end{proof}
 
 This is the object-level face of the parent law.  Its edge-level face is
-gauge curvature.  Let (I) be a nonempty source set, let (G) be a group,
-and let (B:I\times I\to G) be a field of directed edge comparisons.  Put
+gauge curvature.  Let \(I\) be a nonempty source set, let \(G\) be a group,
+and let \(B:I\times I\to G\) be a field of directed edge comparisons.  Put
 \[
  \operatorname{Hol}_B(i,j,k)=B(i,j)B(j,k)B(i,k)^{-1}.
 \tag{2.H0}\label{eq:triangle-holonomy}
 \]
-An endpoint story is a field (U:I\to G) for which
-\(B(i,j)=U(i)^{-1}U(j)\).  A change of local standards (g:I\to G) acts by
+An endpoint story is a field \(U:I\to G\) for which
+\(B(i,j)=U(i)^{-1}U(j)\).  A change of local standards \(g:I\to G\) acts by
 \[
                        B^g(i,j)=g(i)^{-1}B(i,j)g(j).
 \tag{2.H1}\label{eq:endpoint-gauge}
@@ -411,19 +428,19 @@ An endpoint story is a field (U:I\to G) for which
 \label{thm:gauge-curvature-conservation}
 The following statements are exact.
 \begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.4em]
-\item (B) has an endpoint story if and only if
-      (B(i,j)B(j,k)=B(i,k)) for all (i,j,k\), equivalently
+\item \(B\) has an endpoint story if and only if
+      \(B(i,j)B(j,k)=B(i,k)\) for all \(i,j,k\), equivalently
       \(\operatorname{Hol}_B(i,j,k)=1\) for every triangle.
 \item Along an arbitrary finite path, endpoint gauge changes transport only
       by the gauges at its endpoints.  Closed holonomy is conjugated by the
       gauge at its base point.  Hence every conjugation-invariant readout of
-      closed holonomy is gauge invariant; for abelian (G), closed holonomy
+      closed holonomy is gauge invariant; for abelian \(G\), closed holonomy
       itself is invariant.
 \item On a connected graph, a reversible edge field is an endpoint story if
       and only if every closed walk has unit holonomy.  One nonunit closed
       holonomy therefore obstructs every scalar endpoint calibration.
 \item In particular, for a scalar edge field and any nonvanishing vertex
-      family (g_a),
+      family \(g_a\),
       \[
         B_a(i,j)=B_0(i,j)g_a(i)^{-1}g_a(j)
         \quad\Longrightarrow\quad
@@ -433,18 +450,40 @@ The following statements are exact.
       \]
       Parameter dependence carried only by endpoints is invisible to every
       closed-loop observable.
+\item For two reversible scalar edge fields \(B_a,B_b\) on a connected graph,
+      define their relative holonomy on a closed walk \(\gamma\) by
+      \[
+        \Theta_{a,b}(\gamma)=
+        \operatorname{Hol}_{B_a}(\gamma)
+        \operatorname{Hol}_{B_b}(\gamma)^{-1}.
+      \tag{2.H2a}\label{eq:parametric-holonomy-transgression}
+      \]
+      Then
+      \[
+        \Theta_{a,c}=\Theta_{a,b}\Theta_{b,c},\qquad
+        \Theta_{a,b}\equiv1
+        \Longleftrightarrow
+        B_a\text{ and }B_b\text{ differ by endpoint gauge}.
+      \tag{2.H2b}\label{eq:parametric-gauge-classification}
+      \]
+      Consequently a nonunit relative holonomy is exactly an obstruction to
+      identifying two parameter slices by recalibration.
 \end{enumerate}
 \end{theorem}
 
 \begin{proof}
-If (B(i,j)=U(i)^{-1}U(j)), adjacent endpoint factors cancel, proving all
-four forward statements.  Conversely, fix a base point (b\).  The triangle
-identity with vertices (b,i,j) gives
-\(B(i,j)=B(b,i)^{-1}B(b,j)\), so (U(i)=B(b,i)) is an endpoint story.
+If \(B(i,j)=U(i)^{-1}U(j)\), adjacent endpoint factors cancel.  Conversely,
+fix a base point \(b\).  The triangle identity with vertices \(b,i,j\) gives
+\(B(i,j)=B(b,i)^{-1}B(b,j)\), so \(U(i)=B(b,i)\) is an endpoint story.
 For a graph, choose one path from a fixed root to every vertex.  Flatness
 makes its transport path independent; reversibility then gives the endpoint
 ratio on each edge.  Formula \eqref{eq:separable-holonomy-blindness} is the
-abelian closed-path gauge law specialized to a triangle.
+abelian closed-path gauge law specialized to a triangle.  Relative holonomy
+is the closed transport of the pointwise quotient \(B_aB_b^{-1}\).  It obeys
+the cocycle identity by cancellation.  Triviality on every closed walk makes
+that relative field flat, hence an endpoint ratio by (iii); conversely an
+endpoint ratio telescopes.  This proves
+\eqref{eq:parametric-gauge-classification}.
 \end{proof}
 
 Reflection supplies the equivariant edge grading.  For a two-point kernel
@@ -1479,8 +1518,8 @@ is zero.  A post-augmentation observer still sends every element of
 leaving \(C(T_{n-1}\cdots T_0)-(T_{n-1}\cdots T_0)C\).
 \end{proof}
 
-Let (O:Z\to W) now be any downstream linear observation and let
-(D:X\to Z^n) be a resolved defect family.  The two quotient stages have
+Let \(O:Z\to W\) now be any downstream linear observation and let
+\(D:X\to Z^n\) be a resolved defect family.  The two quotient stages have
 one exact invisible sector.
 
 \begin{theorem}[Complete resolved-observation conservation law]
@@ -2058,15 +2097,15 @@ Gamma normalization is an inverse-conditioned normal coordinate, not a
 missing arithmetic source.
 
 Its polarized boundary weights are nevertheless source-native.  At finite
-(\sigma>1), retain every prime-power label (n) and cut it by the moving
-horizon (T_\sigma(n)=(\sigma-1)\log n).  Head and tail cells partition the
-normalized von Mangoldt mass exactly.  For every (u\ge0), their aggregate
+\(\sigma>1\), retain every prime-power label \(n\) and cut it by the moving
+horizon \(T_\sigma(n)=(\sigma-1)\log n\).  Head and tail cells partition the
+normalized von Mangoldt mass exactly.  For every \(u\ge0\), their aggregate
 limits are
 \[
        H(u)=e^{-u},\qquad T(u)=1-e^{-u},\qquad H(u)+T(u)=1.
 \tag{3.7z}\label{eq:labeled-occupation-limit}
 \]
-The singular Hodge scale (Q(u)=\sqrt{e^u-1}) is therefore forced by the
+The singular Hodge scale \(Q(u)=\sqrt{e^u-1}\) is therefore forced by the
 literal occupation ratio
 \[
                          Q(u)^2H(u)=T(u).
@@ -2196,15 +2235,15 @@ the wall, retain genuinely off-diagonal label incidence, or introduce an
 additional divisor-coupled differential before diagonal pairing.
 
 Retaining distinct labels closes the next question exactly.  For
-(i=(p,e)), put
+\(i=(p,e)\), put
 \[
                  \lambda_i=(e+1)\log p,\qquad
  H_a(i,j)=e^{a(\lambda_j-\lambda_i)}.
 \tag{3.7zh0}\label{eq:joint-depth-edge-character}
 \]
-Let (P_{\varepsilon,a}(i,j)) be the actual source/co-source coefficient
-with source parameter \(\varepsilon+a\) at (i) and reflected co-source
-parameter \(\varepsilon-\bar a\) at (j).  Then
+Let \(P_{\varepsilon,a}(i,j)\) be the actual source/co-source coefficient
+with source parameter \(\varepsilon+a\) at \(i\) and reflected co-source
+parameter \(\varepsilon-\bar a\) at \(j\).  Then
 \[
  P_{\varepsilon,a}(i,j)
    =P_{\varepsilon,0}(i,j)H_a(i,j),
@@ -2232,17 +2271,17 @@ For every distinct edge,
        \quad\Longleftrightarrow\quad \Rea a=0,
 \tag{3.7zh3}\label{eq:joint-depth-hodge-edge}
 \]
-and (C_a^*=-C_a\) when this condition holds.  Globally,
+and \(C_a^*=-C_a\) when this condition holds.  Globally,
 \[
  \sup_{i,j}|H_a(i,j)|<\infty
        \quad\Longleftrightarrow\quad \Rea a=0;
 \tag{3.7zh4}\label{eq:joint-depth-capacity-wall}
 \]
-depth separation at the single prime (2) proves both escape directions.
+depth separation at the single prime \(2\) proves both escape directions.
 The off-diagonal countertransport therefore exists at every finite depth,
 but its parameter dependence is a flat endpoint gauge.  By
 Theorem~\ref{thm:gauge-curvature-conservation}, every closed cycle is
-independent of (a).  The construction transports open-path modular growth;
+independent of \(a\).  The construction transports open-path modular growth;
 it does not turn horizontal displacement into source curvature.
 
 The complementary curved source is also explicit.  The valuation-resolved
@@ -2251,7 +2290,7 @@ physical endpoint correction produces a symmetric pair response
 self-adjoint Hilbert--Schmidt operator.  Moreover, arbitrarily far beyond
 every finite prime cut there are positive three-prime cycles.  Choosing
 disjoint such cycles with geometric amplitudes gives a self-adjoint
-trace-class operator (N\) such that
+trace-class operator \(N\) such that
 \[
  \langle e_p,Ne_p\rangle=0\quad(p\in\mathbb P),
  \qquad
@@ -2261,9 +2300,17 @@ trace-class operator (N\) such that
 \tag{3.7zh5}\label{eq:cofinal-curved-prime-carrier}
 \]
 on every selected block.  This rules out missing incidence, infinite
-completion, and loop curvature.  But twisting (N) by the divisor character
-(H_a) is precisely an endpoint gauge, so all products in
-\eqref{eq:cofinal-curved-prime-carrier} remain independent of (a).
+completion, and loop curvature.  But twisting \(N\) by the divisor character
+\(H_a\) is precisely an endpoint gauge, so all products in
+\eqref{eq:cofinal-curved-prime-carrier} remain independent of \(a\).  In the
+notation of \eqref{eq:parametric-holonomy-transgression}, every such twisted
+carrier satisfies
+\[
+                    \Theta_{a,b}(\gamma)=1
+\tag{3.7zh5a}\label{eq:twisted-curvature-transgression-trivial}
+\]
+for all parameter pairs and closed source walks.  Static prime curvature and
+flat divisor motion therefore do not combine into a moving curvature class.
 
 Finally, the completed Xi seam already has the required signed-transpose
 polarization.  With
@@ -2277,7 +2324,7 @@ one has
  K_u-K_{-u}=K_u+K_u^{\mathsf T}=2\Rea K_u.
 \tag{3.7zh6}\label{eq:xi-aperture-signed-transpose}
 \]
-For (0<u<\tfrac12) away from a zeta zero, the continued prime--Archimedean
+For \(0<u<\tfrac12\) away from a zeta zero, the continued prime--Archimedean
 source trace obeys
 \[
  \Im\mathfrak S(t+iu)
@@ -2288,6 +2335,44 @@ Thus the reflection-odd Xi sector is not conjectural and does not need to be
 recovered from a squared coordinate.  What remains absent is a single
 source law coupling this (u)-dependence nonseparably to the nonzero prime
 cycle curvature before the singular common-test limit.
+
+The regular common-test problem itself is complete.  Let
+\(\widetilde{\Div}(\Xi)\) denote the Xi divisor with one coordinate for each
+multiplicity copy and put
+\(\mathcal H_\Xi=\ell^2(\widetilde{\Div}(\Xi))\).  For a function \(F\) whose
+divisor evaluations are square summable, write
+\(\mathcal E(F)=(F(\rho_q))_q\), and let \(c_z\) be the corresponding regular
+Cauchy evaluation vector.  Define the continued node domain
+\[
+ \mathcal N_{\rm cont}=\left\{z:
+ 0<\Rea\!\left(\tfrac12+iz\right),\quad
+ \tfrac12+iz\ne1,\quad
+ \zeta\!\left(\tfrac12+iz\right)\ne0\right\}.
+\]
+Then for every finite \(E\subset\C\),
+\[
+ \mathcal E(F)\in
+ \overline{\operatorname{span}}
+ \{c_z:z\in\mathcal N_{\rm cont}\setminus E\}.
+\tag{3.7zh8}\label{eq:continued-cauchy-density}
+\]
+The orthogonal complement of this span is exactly
+\[
+ \left\{u\in\mathcal H_\Xi:
+   \sum_{q:\rho_q=\rho}u_q=0
+   \text{ for every distinct zero }\rho\right\}.
+\tag{3.7zh9}\label{eq:cauchy-multiplicity-annihilator}
+\]
+Consequently the Cauchy span is all of \(\mathcal H_\Xi\) exactly when every
+Xi zero is simple, but it contains every square-summable evaluation vector
+without any simplicity assumption.  Moreover, against every fixed regular
+Cauchy packet, the Weil polarization of \(F\) is approximated to arbitrary
+accuracy by a finite double sum of continued prime--Gamma source traces.
+Thus regular node access, multiplicity-aware evaluation, and common-test
+approximation are not missing.  Approximation alone supplies neither a
+source-derived zero identity nor boundary-stable sign; the unresolved step
+is the singular, transverse extension carrying the nontrivial parametric
+holonomy class to the actual divisor.
 
 Nor can one repair the order-growing Gamma jet by an orthogonal positive
 completion.  At depth one and the central Cauchy point, the first Euler atom
@@ -2480,7 +2565,7 @@ Off axis this repair is exhaustive, not merely split injective:
           \widetilde H/\widetilde C_a\simeq H.
 \tag{3.7cda}\label{eq:resolved-provenance-saturation}
 \]
-The descended provenance projection is the equivalence and (j_a) is its
+The descended provenance projection is the equivalence and \(j_a\) is its
 inverse.  Thus ordinary Hodge channels are completely saturated off axis;
 resolved quotient retains exactly incidence provenance and nothing else.
 This is the sharp positive survivor of the raw quotient no-go and an exact
@@ -2533,7 +2618,7 @@ orientation line.
 
 This construction settles algebraic source existence but simultaneously
 proves why scalarization cannot finish it.  The Haar packet carrier contains
-two independent directions whereas (Q_p) is one-dimensional; consequently
+two independent directions whereas \(Q_p\) is one-dimensional; consequently
 every scalar trace of the mixed Calder\'on--Witt cup is degenerate.  A
 faithful transport must retain the vector-valued degree-two packet, or a
 separating family of traces, until after exact descent.  The remaining issue
@@ -2852,8 +2937,8 @@ countable sum of the corresponding semigroup divided differences and
 \tag{3.16}\label{eq:countable-common-reporter}
 \]
 The same source admits a singular graph-scale collision removal.  With
-(k_n=(n+1)^3) replicas, normal scale
-(\varepsilon_n=(n+1)^{-1}), and replica offset (k_n^{-1}), the physical
+\(k_n=(n+1)^3\) replicas, normal scale
+\(\varepsilon_n=(n+1)^{-1}\), and replica offset \(k_n^{-1}\), the physical
 same-atom codiagonal error divided by \(\varepsilon_n\) and the added clock
 holonomy energy divided by \(\varepsilon_n^2\) converge jointly to zero.
 Thus the source collision can be removed before Gamma normalization without
@@ -2862,8 +2947,8 @@ it has no proved comparison with the Xi countertransport field.
 
 Thus neither nodewise choice nor countable completion is the missing source.
 The unresolved edge is faithful comparison with the escaping Xi field.  In
-particular, fix \(\sigma>1\).  If source contractions (D_c) and one
-constant (K\ge0\) satisfy
+particular, fix \(\sigma>1\).  If source contractions \(D_c\) and one
+constant \(K\ge0\) satisfy
 \[
  \|\mathcal X_c\|_2^2\le
  K\|R_{\sigma,D_c}\|_2^2
@@ -3462,28 +3547,28 @@ polarized when the static source and target admission spectra differ.
 
 \begin{theorem}[Support--escape descent law]
 \label{thm:support-escape}
-Let (p:S\to[0,\infty)), let (E_i:S\to\C) be coordinate evaluations,
-and let (w:I\to\C).  Suppose
+Let \(p:S\to[0,\infty)\), let \(E_i:S\to\C\) be coordinate evaluations,
+and let \(w:I\to\C\).  Suppose
 \[
  \exists C\ge0\ \forall M\in\R\ \exists u\in S:
  p(u)\le C,\quad M<|E_i(u)|.
 \tag{4.17a}\label{eq:capacity-escape}
 \]
-If there is (K\ge0) such that
+If there is \(K\ge0\) such that
 \[
                     |E_j(u)w_j|\le Kp(u)
        \qquad(u\in S,\ j\in I),
 \tag{4.17b}\label{eq:weighted-descent-bound}
 \]
-then (w_i=0).  Hence
+then \(w_i=0\).  Hence
 \[
  \operatorname{supp}w\subseteq
  \{i:E_i\text{ does not escape bounded }p\text{-capacity}\}.
 \tag{4.17c}\label{eq:support-nonescape}
 \]
 If a charge \(\chi_i\ne0\) implies \eqref{eq:capacity-escape}, then every
-pointwise nonzero (w) satisfying \eqref{eq:weighted-descent-bound} forces
-\(\chi_i=0\) for every (i).
+pointwise nonzero \(w\) satisfying \eqref{eq:weighted-descent-bound} forces
+\(\chi_i=0\) for every \(i\).
 \end{theorem}
 
 \begin{proof}
@@ -3507,7 +3592,7 @@ value on every literal source class is
 
 \begin{theorem}[Exact weighted-support classification]
 \label{thm:weighted-support-classification}
-For every (w\in\ell^2(\Div\Xi)),
+For every \(w\in\ell^2(\Div\Xi)\),
 \[
  T_w\text{ is admissible}
  \quad\Longleftrightarrow\quad
@@ -3522,12 +3607,12 @@ Gaussian horizon weight has this property.
 
 \begin{proof}
 On every retained critical-line coordinate, half-density evaluation is
-contractive; multiplication by (w\in\ell^2) gives
+contractive; multiplication by \(w\in\ell^2\) gives
 \(\|T_wu\|_2\le\|w\|_2p_{1/2}(u)\), hence a continuous extension.  Conversely,
-fix (q) with (w_q\ne0).  The reflected-Gaussian countertransport classes
-have source capacity at most two, while their (q)-evaluation is bounded
+fix \(q\) with \(w_q\ne0\).  The reflected-Gaussian countertransport classes
+have source capacity at most two, while their \(q\)-evaluation is bounded
 for all transport depths exactly when \(\Rea\rho_q=1/2\).  Boundedness of
-(T_w), followed by division by the fixed nonzero scalar (w_q), bounds
+\(T_w\), followed by division by the fixed nonzero scalar \(w_q\), bounds
 that orbit and forces \(\Rea\rho_q=1/2\).
 \end{proof}
 
@@ -3586,11 +3671,13 @@ has cardinality
 \]
 and the following are equivalent:
 \[
+ \begin{aligned}
  \#F_a=2
- \quad\Longleftrightarrow\quad
- \text{finite singular-Hodge energy}
- \quad\Longleftrightarrow\quad
+ &\quad\Longleftrightarrow\quad
+ \text{finite singular-Hodge energy}\\
+ &\quad\Longleftrightarrow\quad
  \text{exact Gamma/co-Poisson Green descent}.
+ \end{aligned}
 \tag{4.17I}\label{eq:kms-hodge-green-equivalence}
 \]
 For \(a\ne0\), zero temperature selects one reflected face and the
@@ -4118,14 +4205,21 @@ realization in Theorem~\ref{thm:projective-descent}.
 Theorem~\ref{thm:covariant-selection} supplies its pointed-kernel and
 saturated-column faces.
 
-\begin{center}
+\begingroup
 \scriptsize
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.20\linewidth}
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.20\linewidth}
                 >{\raggedright\arraybackslash}p{0.31\linewidth}
                 >{\raggedright\arraybackslash}p{0.39\linewidth}@{}}
 \toprule
 Observed fate & Source-sector mechanism & Arithmetic realization\\
 \midrule
+\endfirsthead
+\toprule
+Observed fate & Source-sector mechanism & Arithmetic realization\\
+\midrule
+\endhead
 Projective curvature
  & involutive two-source wedge is odd; pair-invariant invertible transport preserves its zero locus; moving frames add exactly relative connection monodromy
  & reflected Gaussian and anti-reflected moment have wedge equal to signed Green fracture times positive gauge; global vanishing is RH\\\addlinespace[2pt]
@@ -4211,8 +4305,8 @@ Higher-rank comparison
  & bounded prefix error preserves normalized Cartan vectors
  & finite differential embeddings with pseudodifferential right inverse preserve HT Cartan spectra\\
 \bottomrule
-\end{tabular}
-\end{center}
+\end{longtable}
+\endgroup
 
 Three further constructions test universality without adding new principles.
 First, the even entire Xi function descends through the square coordinate and
@@ -4309,8 +4403,8 @@ information is conserved under translation until an affine obstruction is
 forced.
 
 This descent is not merely formal at the polynomial level.  Let a derivation
-δ commute with σ, let (K) be a σ-stable differential field, and suppose
-(y_i) are indefinite sums
+\(\delta\) commute with \(\sigma\), let \(K\) be a \(\sigma\)-stable
+differential field, and suppose \(y_i\) are indefinite sums
 
 
 \[
@@ -4318,9 +4412,9 @@ This descent is not merely formal at the polynomial level.  Let a derivation
 \]
 
 
-If the family (y_i) is differentially dependent over (K), then there are
-finitely many coefficients (a_{i,k}\in K), not all zero and fixed by
-σ, and (g\in K), such that
+If the family \(y_i\) is differentially dependent over \(K\), then there are
+finitely many coefficients \(a_{i,k}\in K\), not all zero and fixed by
+\(\sigma\), and \(g\in K\), such that
 
 
 \[
@@ -5655,7 +5749,7 @@ every surrounding ingredient:
       capacity at every transport depth; and
 \item for every source contraction, one literal countable common Hardy
       reporter simultaneously realizes all divided-difference nodes with
-      squared norm bounded by (B(\sigma)\to4);
+      squared norm bounded by \(B(\sigma)\to4\);
 \item the direct full-Euler Fisher carrier has four-unit critical energy,
       while the division-free pre-scalar completed reporter has exact limiting
       energy eight and a retained Xi graph factorization; totality of its
@@ -5789,7 +5883,7 @@ the global Green record, and its conservative codiagonal are all even:
 \]
 Moreover, demanding either actual Green provenance or its codiagonal to be
 reflection-odd is equivalent to RH.  But the independent third odd grade is
-now explicit.  Let (h_{\rm ref}) be the reflected logarithmic Gaussian and
+now explicit.  Let \(h_{\rm ref}\) be the reflected logarithmic Gaussian and
 put
 \[
  A_c=V_ch_{\rm ref}-V_{-c}h_{\rm ref},\qquad
@@ -5797,10 +5891,10 @@ put
  \bigl(e^{\rho_q-1/2}-e^{-(\rho_q-1/2)}\bigr)h_{\rm ref}(q).
 \tag{7.17hb}\label{eq:explicit-odd-grade}
 \]
-The literal source class (A_c) is reflection-anti-fixed and has
-half-density capacity at most two for every (c\in\R).  At unit depth its
-global Xi field is (a_{\rm odd}\in\ell^2(\Div\Xi)), satisfies
-(a_{\rm odd}(\sigma q)=-a_{\rm odd}(q)), and is nonzero at every off-line
+The literal source class \(A_c\) is reflection-anti-fixed and has
+half-density capacity at most two for every \(c\in\R\).  At unit depth its
+global Xi field is \(a_{\rm odd}\in\ell^2(\Div\Xi)\), satisfies
+\(a_{\rm odd}(\sigma q)=-a_{\rm odd}(q)\), and is nonzero at every off-line
 divisor copy.
 
 Consequently the explicit product
@@ -5818,14 +5912,14 @@ is reflection-odd and has exactly the Green zero set:
 Thus source, uniform capacity, global landing, oddness, and support
 faithfulness are no longer missing.  Only one incidence remains.  If there
 are a reflection-invariant arithmetic observation \(\pi_p\) and a function
-(d_p\) such that
+\(d_p\) such that
 \[
        \pi_p(\sigma q)=\pi_p(q),\qquad
        F_p(q)=d_p(\pi_p(q))
        \quad(q\in\Div\Xi),
 \tag{7.17he}\label{eq:missing-odd-factorization}
 \]
-then oddness and invariance force (F_p=0), hence (g_{G,p}=0) and RH.
+then oddness and invariance force \(F_p=0\), hence \(g_{G,p}=0\) and RH.
 This source-derived common-test factorization---not construction of another
 odd multiplier---is the complete parity frontier.
 
