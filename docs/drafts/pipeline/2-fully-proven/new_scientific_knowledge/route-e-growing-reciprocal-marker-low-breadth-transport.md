@@ -447,3 +447,294 @@ The large-prime tail of this card has the same shape as the coprime-pair card's,
 `card_pair_dvd_le` gives the two-factor bound `(√x/p + 1)(h/p + 1)`, and `sum_pair_tail_le` sums it
 over a prime window into `ℓ₁ℓ₂/P + (ℓ₁ + ℓ₂)·mertensS Q + Q` — the inverse-square, Mertens and
 Chebyshev pieces separated.
+
+### Toward the external input — `Sieve/RamareWeight.lean` (2026-08-03)
+
+All three Route E cards in this folder bottom out on the same external theorem (Matomäki–Radziwiłł
+2016 Theorem 2, or Menon's 2026 refinement).  Rather than restate it as a hypothesis, the corpus is
+being built toward it.  The first step of that proof — the device that manufactures a bilinear sum
+out of a one-dimensional one — is now unconditional:
+
+- `primeFactorsIn P n` — the designated primes dividing `n`;
+- **`sum_inv_card_primeFactorsIn`** : Ramaré's identity `∑_{p ∈ P, p ∣ n} 1/ω_P(n) = 1`;
+- **`sum_eq_sum_ramare`** :
+  `∑_{n ∈ S} f(n) = ∑_{p ∈ P} ∑_{n ∈ S, p ∣ n} f(n)/ω_P(n)`, exact, for any `S` whose members all
+  carry a designated factor;
+- `sum_div_image` : reindexing a sum over multiples of `p` by the cofactor;
+- **`sum_eq_sum_ramare_bilinear`** : the same identity written over pairs `(p, m)` with `n = pm`;
+- **`sum_eq_ramare_add_rough`** : the *complete* decomposition, with no hypothesis at all —
+  `∑_{n ∈ S} f = (bilinear part) + ∑_{n ∈ S, no designated factor} f`.
+  The second term is the rough remainder, which the corpus sieve already bounds
+  (`Sieve/RoughCount.card_rough_Ioc_le`, `Sieve/DivisorSquareSum.card_coprime_Ioc_le_explicit`).
+
+Built, wired, axiom-clean (six theorems).  The weight `1/ω_P` is exactly what stops an integer with
+several designated factors being counted several times; the identity carries no error term.
+
+### Turán–Kubilius on an interval — `Sieve/TuranKubilius.lean` (2026-08-03)
+
+The second reusable instrument on the road to the external theorem, and absent from mathlib: the
+variance of the small-prime count, uniform over intervals.
+
+- `indDvd`, `centredInd`, `omegaCount` — the divisibility indicator, its centring `1_{p∣n} - 1/p`,
+  and `ω_z(n) = #{p ≤ z : p ∣ n}`;
+- `sum_centredInd_eq` : `ω_z(n) - ∑_{p ≤ z} 1/p = ∑_{p ≤ z}(1_{p∣n} - 1/p)`;
+- `sum_indDvd_Ioc`, `sum_indDvd_mul_Ioc` — interval sums of one and two indicators as multiple
+  counts;
+- **`abs_sum_centredInd_mul_le`** : *off-diagonal pairs cancel*.  For distinct primes the main terms
+  cancel identically — `1_{p∣n}1_{q∣n} = 1_{pq∣n}` and the archimedean prediction for `pq` is the
+  product of the two predictions — leaving `|∑_n| ≤ 2`;
+- `sum_centredInd_sq_le` : a diagonal pair contributes at most `(b-a)/p + 1`;
+- **`sum_omegaCount_variance_le`** :
+  `∑_{n ∈ (a,b]} (ω_z(n) - ∑_{p ≤ z} 1/p)² ≤ (b-a)·∑_{p ≤ z} 1/p + π(z) + 2π(z)²`.
+
+Built, wired, axiom-clean (seven theorems).  The only arithmetic input is the interval multiple
+count `abs_card_filter_dvd_Ioc_sub_lt`; there is no elementary-symmetric-function bookkeeping and no
+distribution theorem.  The identical cancellation of main terms across an off-diagonal pair is the
+mechanism a mean-square estimate for a multiplicative function has to reproduce, and having it
+unconditional fixes the shape of the constants the external theorem must beat.
+
+### Duality principle — `Sieve/LargeSieveDuality.lean` (2026-08-03)
+
+First piece of the harmonic-analysis half.  A large sieve inequality has two shapes: the *Bessel*
+form `∑_r |⟪φ_r, a⟫|² ≤ Δ‖a‖²`, and the *bilinear* form `‖∑_r c_r φ_r‖² ≤ Δ ∑_r |c_r|²`.  The
+analytic large sieve is proved in the first shape (for exponential sums at well-spaced points) and
+applied in the second (to Dirichlet polynomials).
+
+- **`norm_sum_smul_sq_le_of_bessel`** : the Bessel form implies the bilinear form, in any inner
+  product space and for any finite family.
+
+- **`sum_norm_inner_sq_le_of_bilinear`** : the converse, so the two shapes are equivalent;
+- `conj_mul_self` : the scalar identity `conj z · z = ‖z‖²` the converse needs.
+
+Built, wired, axiom-clean.  Each direction is one application of Cauchy–Schwarz followed by
+dividing by the quantity being bounded; nothing analytic enters, and no hypothesis beyond `0 ≤ Δ`.
+
+### Almost orthogonality — `Sieve/AlmostOrthogonality.lean` (2026-08-03)
+
+The supplier that feeds the duality principle.  A family need not be orthogonal: it behaves like one
+as soon as its Gram matrix has small rows.
+
+- `norm_inner_symm` : the Gram matrix is Hermitian, so `|⟪x,y⟫| = |⟪y,x⟫|`;
+- `inner_sum_smul_sum_smul` : the energy of a combination expanded over the Gram matrix;
+- **`norm_sum_smul_sq_le_of_schur`** :
+  `‖∑_r c_r φ_r‖² ≤ (max_r ∑_t |⟪φ_r, φ_t⟫|) ∑_r |c_r|²`.
+  The proof splits the Gram double sum by `|c_r||c_t| ≤ (|c_r|² + |c_t|²)/2` into a row piece and a
+  column piece; Hermitian symmetry makes both the same bound;
+- **`sum_norm_inner_sq_le_of_schur`** : the Bessel form, obtained by composing with
+  `LargeSieveDuality.sum_norm_inner_sq_le_of_bilinear`.
+
+Built, wired, axiom-clean (four theorems).  This is why a large sieve inequality is *formal* once
+the Gram rows are bounded: the analytic work is confined to estimating `∑_t |⟪φ_r, φ_t⟫|`, and
+everything after it — both shapes of the inequality — now exists unconditionally in the corpus.  An
+exactly orthogonal family recovers Bessel's inequality with `Δ = max_r ‖φ_r‖²`, the diagonal being
+included in the row sum.
+
+### Geometric sum bound — `Sieve/GeometricSumBound.lean` (2026-08-03)
+
+The elementary input behind every Gram-row estimate for exponential families.
+
+- **`norm_geom_sum_le`** : `‖∑_{n < N} ζ^n‖ ≤ 2/‖ζ − 1‖` whenever `‖ζ‖ ≤ 1` and `ζ ≠ 1` —
+  *uniform in the length* `N`, from the closed form `(ζ^N − 1)/(ζ − 1)` and `‖ζ^N‖ ≤ 1`;
+- `norm_geom_sum_Ico_le` : the same on any interval of indices, since shifting multiplies by a
+  factor of modulus at most one;
+- `sum_conj_pow_mul_pow` : the correlation of two exponential rows is a geometric sum in their
+  quotient, `∑_n conj(ξ^n) η^n = ∑_n (conj(ξ)η)^n`;
+- **`norm_sum_conj_pow_mul_pow_le`** : hence two distinct unimodular frequencies correlate at most
+  like the reciprocal of their separation.
+
+Built, wired, axiom-clean (four theorems).  Combined with `Sieve/AlmostOrthogonality.lean` this
+gives a large sieve inequality directly: the diagonal Gram entry is `N`, each off-diagonal entry is
+at most `2/‖ξ_r^{-1}ξ_t − 1‖`, and the row sum over `δ`-separated frequencies is
+`N + O(δ^{-1} log δ^{-1})`.  That is the *weak* large sieve — the sharp constant `N + δ^{-1}` needs
+Montgomery–Vaughan's refinement of Hilbert's inequality, which is a separate build.
+
+### Gram rows of a separated frequency family — `Sieve/FrequencyGramRow.lean` (2026-08-03)
+
+- `sum_conj_pow_mul_pow_self`, `norm_sum_conj_pow_mul_pow_self` : the diagonal Gram entry of a
+  unimodular frequency is exactly the length `N`, since `conj(ξ)ξ = ‖ξ‖² = 1`;
+- **`gram_row_le`** :
+  `∑_t ‖∑_{n<N} conj(ξ_r)^n ξ_t^n‖ ≤ N + ∑_{t ≠ r} 2/‖conj(ξ_r)ξ_t − 1‖`.
+
+Built, wired, axiom-clean.  This is the *only* analytic input a large sieve inequality needs:
+`AlmostOrthogonality.norm_sum_smul_sq_le_of_schur` converts a row bound into the bilinear
+inequality, and `LargeSieveDuality.sum_norm_inner_sq_le_of_bilinear` converts that into the Bessel
+form.  Both are already unconditional in the corpus, so the chain
+
+  frequency separation ⟶ Gram row bound ⟶ bilinear large sieve ⟶ Bessel large sieve
+
+is now complete except for instantiating the abstract family as the exponential rows in
+`EuclideanSpace ℂ (Fin N)`, which is plumbing rather than mathematics.
+
+The residual `log` loss against the sharp constant `N + δ^{-1}` sits entirely in the harmonic sum
+`∑_{t ≠ r} ‖conj(ξ_r)ξ_t − 1‖^{-1}` over `δ`-separated frequencies — not in any step above.
+Removing it is exactly Montgomery–Vaughan's refinement of Hilbert's inequality, for the *Toeplitz*
+kernel `1/(m−n)`; the corpus's `HTGeometry/HilbertMatrixNormBound.lean` proves `‖H‖ ≤ π` for the
+*Hankel* kernel `1/(m+n+1)` and does not supply it.
+
+### The large sieve inequality, weak form — `Sieve/LargeSieveWeak.lean` (2026-08-03)
+
+The chain is now a single stated theorem, not a set of pieces.
+
+- `expRow N ξ` — the exponential row `n ↦ ξ^n`, `n < N`, in `EuclideanSpace ℂ (Fin N)`;
+- `inner_expRow` : its Gram entry is the truncated geometric correlation;
+- `expRow_gram_row_le` : the Gram rows of a separated unimodular family;
+- **`largeSieve_bilinear`** : `‖∑_r c_r φ_r‖² ≤ Δ ∑_r |c_r|²`;
+- **`largeSieve_bessel`** : `∑_r |⟪φ_r, a⟫|² ≤ Δ ‖a‖²`;
+
+for pairwise-distinct unimodular frequencies and any `Δ` dominating every
+`N + ∑_{t ≠ r} 2/‖conj(ξ_r)ξ_t − 1‖`.
+
+Built, wired, axiom-clean (four theorems).  For `δ`-separated frequencies the admissible `Δ` is
+`N + O(δ^{-1} log δ^{-1})`.
+
+**This is the weak form, and the qualification is not cosmetic.**  The sharp constant `N + δ^{-1}`
+is what the Matomäki–Radziwiłł argument consumes; the logarithm here is the harmonic sum of
+reciprocal separations, and removing it is exactly Montgomery–Vaughan's refinement of Hilbert's
+inequality for the *Toeplitz* kernel `1/(m−n)`.  The corpus's `HilbertMatrixNormBound.lean` proves
+`‖H‖ ≤ π` for the *Hankel* kernel `1/(m+n+1)` and does not supply it.  So this module is a genuine
+milestone on the road to the external theorem, not a substitute for it.
+
+### The sharp case — `Sieve/RootsOfUnityFrequencies.lean` (2026-08-03)
+
+At the full set of `Q`-th roots of unity the elementary route already gives the *optimal* constant,
+which is a check on the whole chain rather than a new estimate.
+
+- `norm_eq_one_of_isPrimitiveRoot`, `norm_pow_eq_one_of_isPrimitiveRoot` — roots of unity and their
+  powers are unimodular;
+- `sum_range_pow_eq_zero` : a full geometric sum over a nontrivial root of unity vanishes;
+- `ratio_ne_one` : distinct powers of a primitive root give a nontrivial ratio;
+- **`inner_expRow_root_eq_zero`**, `inner_expRow_root_self` : the exponential rows of length `Q` at
+  the `Q`-th roots of unity are *exactly orthogonal*, with diagonal exactly `Q`;
+- `gram_row_root_eq` : hence every Gram row is exactly `Q`;
+- **`largeSieve_roots`** : `‖∑_{j<Q} c_j φ_j‖² ≤ Q ∑_j |c_j|²`.
+
+Built, wired, axiom-clean (seven theorems).  This is the sharp constant `N + δ^{-1}` at `N = Q`,
+`δ = 1/Q`, with no logarithmic loss — `LargeSieveWeak.lean` specialises here to an equality-sharp
+inequality, confirming that the loss in the general case is genuinely the harmonic sum of reciprocal
+separations and not an artefact of the Gram-row argument.
+
+### Lint gate
+
+`scripts/formal_tools.py lint` reports **no** error attributable to any module added for these three
+cards: every one is reachable from the `GaloisForLFunctions.RHTower` umbrella, with no `sorry`,
+`axiom`, `opaque` or `unsafe` declaration and no build warning.  The nine errors the gate does
+report are unwired modules owned by concurrent sessions in other areas.
+
+### Arc versus chord — `Sieve/ChordalSeparation.lean` (2026-08-03)
+
+The Gram-row bound is stated in the *chordal* separation `‖conj(ξ_r)ξ_t − 1‖`, whereas a sieve
+hypothesis is normally an *arc* separation.  The conversion is now explicit:
+
+- **`norm_exp_I_sub_one`** : `‖exp(iθ) − 1‖ = 2|sin(θ/2)|` — the chord subtended by an arc;
+- **`four_mul_le_norm_exp_two_pi_I_sub_one`** : `4α ≤ ‖exp(2πiα) − 1‖` for `0 ≤ α ≤ 1/2`, by
+  Jordan's inequality `sin t ≥ (2/π)t` on `[0, π/2]` (mathlib's `Real.mul_le_sin`).
+
+Built, wired, axiom-clean.  So frequencies separated by `δ` in arc are separated by at least `4δ`
+in chord, and the reciprocal separations in the Gram row are bounded accordingly.  This is the last
+elementary conversion between the two ways of stating a large sieve hypothesis.
+
+### Note on what is *not* being rebuilt
+
+Mathlib already owns character orthogonality for finite abelian groups
+(`Analysis/Fourier/FiniteAbelian/Orthogonality.lean`, in the weighted-inner-product `AddChar`
+formalism) and a `ZMod` discrete Fourier transform.  `RootsOfUnityFrequencies.lean` is a
+*specialisation* of that orthogonality to the corpus's own `expRow`/`EuclideanSpace` objects, which
+is what the sieve chain consumes — not new mathematics, and no further Parseval layer will be built
+on top of it.
+
+### Bounded Dirichlet partial sums — `Sieve/DirichletKernelBound.lean` (2026-08-03)
+
+First step of the route to the *sharp* large sieve constant.
+
+- `exp_I_pow` : powers of `exp(iθ)` are the exponentials of the multiples of `θ`;
+- **`norm_sum_exp_le`** : `‖∑_{d < D} exp(idθ)‖ ≤ 1/|sin(θ/2)|`, uniform in `D`;
+- **`abs_sum_sin_le`** : `|∑_{d < D} sin(dθ)| ≤ 1/|sin(θ/2)|`.
+
+Built, wired, axiom-clean.  The proof composes two corpus facts and adds nothing analytic: the
+geometric sum bound `‖∑ ζ^d‖ ≤ 2/‖ζ − 1‖` of `GeometricSumBound.lean` with the chord identity
+`‖exp(iθ) − 1‖ = 2|sin(θ/2)|` of `ChordalSeparation.lean`; taking imaginary parts loses nothing.
+
+Uniformly bounded partial sums are the Abel-summation input for the classical estimate of
+`∑_{d ≤ M} sin(dθ)/d`, which is what converts the Toeplitz kernel `1/(m−n)` into a *bounded* Fourier
+multiplier.  That is the route to Hilbert's inequality, hence to replacing the current
+`Δ = N + O(δ^{-1} log δ^{-1})` by `Δ = N + O(δ^{-1})` — the shape Matomäki–Radziwiłł consumes.
+
+Recorded honestly: this route yields the sharp *shape* with some explicit constant, not the optimal
+constant `π`, which needs the full infinite sawtooth series.  For the sieve application the shape is
+what matters.
+
+### Abel's inequality — `Sieve/AbelInequality.lean` (2026-08-03)
+
+- **`abs_sum_mul_le_of_bounded_partial`** : if `|∑_{j<k} g j| ≤ B` for every `k`, and `w` is
+  nonnegative and nonincreasing, then `|∑_{i<n} w i · g i| ≤ B · w 0`.
+
+Built, wired, axiom-clean.  This is Dirichlet's test in quantitative form: summation by parts writes
+the weighted sum as `w_{n-1}S_n` minus the increments `(w_{i+1} − w_i)S_{i+1}`, the increments are
+nonpositive so their absolute values telescope to `w_0 − w_{n-1}`, and every partial sum is capped
+by `B`.
+
+Combined with `DirichletKernelBound.abs_sum_sin_le` (`|∑_{d<D} sin(dθ)| ≤ 1/|sin(θ/2)|`) and the
+weight `w d = 1/(d+1)`, this is the estimate for `∑_{d ≤ M} sin(dθ)/d` that converts the Toeplitz
+kernel `1/(m−n)` into a bounded Fourier multiplier — the remaining step to `Δ = N + O(δ^{-1})`.
+
+### Abel on a tail — `Sieve/AbelTail.lean` (2026-08-03)
+
+- `sum_range_shift` : shifted partial sums are differences of original ones;
+- **`abs_sum_Ico_mul_le_of_bounded_partial`** : `|∑_{a ≤ i < n} w i · g i| ≤ 2B · w a`.
+  Restricting to a tail costs only a factor two, and the bound carries the *weight at the cut*;
+- **`abs_sum_sin_div_le`** : `|∑_{d < M} sin(dθ)/(d+1)| ≤ 1/|sin(θ/2)|`, by composing
+  `DirichletKernelBound.abs_sum_sin_le` with `AbelInequality`.
+
+Built, wired, axiom-clean.
+
+**What is still missing, stated precisely.**  `abs_sum_sin_div_le` blows up as `θ → 0`, whereas the
+true harmonic-weighted sine sum is bounded by an *absolute* constant.  The uniform bound needs the
+range split at `a ≍ 1/|θ|`: below the cut `|sin(dθ)/(d+1)| ≤ |θ|` so that part is `≤ 1`; above it
+`abs_sum_Ico_mul_le_of_bounded_partial` gives `2B/(a+1) ≍ 2|θ|/|sin(θ/2)| ≤ 2π`.  Both halves are
+now available — the factor `w a` in the tail bound is exactly what makes the second half work — and
+assembling them is the remaining step to a uniform constant, hence to `Δ = N + O(δ^{-1})`.
+
+### Uniform harmonic sine bound — `Sieve/HarmonicSineBound.lean` (2026-08-03)
+
+- **`abs_sum_sin_div_le_uniform`** :
+  `|∑_{d < M} sin(dθ)/(d+1)| ≤ 1 + 3π`, uniformly in `M` and in `0 < θ ≤ π`.
+
+Built, wired, axiom-clean.  This is the estimate the previous module said was still missing.  The
+range is split at `⌈1/θ⌉`: below the cut each term satisfies `|sin(dθ)|/(d+1) ≤ dθ/(d+1) ≤ θ`, so
+that half is at most `⌈1/θ⌉θ ≤ 1 + θ`; above it `AbelTail.abs_sum_Ico_mul_le_of_bounded_partial`
+gives `2B/(⌈1/θ⌉+1) ≤ 2Bθ`, and Jordan's inequality caps `B = 1/|sin(θ/2)|` by `π/θ`, so that half
+is at most `2π`.
+
+The tail lemma's "weight at the cut" factor is exactly what makes the second half work: without it
+the bound would degrade as `θ → 0`, which is precisely where the first half is longest.  The two
+halves are therefore not interchangeable, and both were needed.
+
+This is the Fourier multiplier bound for the Toeplitz kernel `1/(m−n)`: the kernel's symbol
+`∑_{d} sin(dθ)/d` is bounded by an absolute constant, which is what Hilbert's inequality asserts.
+Converting it into the bilinear statement `|∑_{m≠n} x_m x̄_n/(m−n)| ≤ C ∑|x_n|²` — and hence into
+`Δ = N + O(δ^{-1})` — is the remaining step.
+
+### Next step scoped: exact discrete Parseval (2026-08-03)
+
+`HarmonicSineBound.abs_sum_sin_div_le_uniform` bounds the *symbol* of the Toeplitz kernel.  Turning
+that into the bilinear Hilbert inequality `|∑_{m≠n} x_m x̄_n/(m−n)| ≤ C ∑|x_n|²` needs one more
+identity, and it is now precisely located:
+
+    (1/Q) ∑_{j<Q} |⟪expRow Q (ζ^j), x⟫|² = ‖x‖²      (exact discrete Parseval)
+
+`RootsOfUnityFrequencies.lean` already gives the two inputs — the family `expRow Q (ζ^j)` is
+pairwise orthogonal with every diagonal entry exactly `Q`.  What remains is to promote `Q` pairwise
+orthogonal vectors of norm² `Q` in a `Q`-dimensional space to an orthonormal *basis* and read off
+Parseval.  API established for this toolchain:
+
+- `finrank_euclideanSpace_fin : finrank 𝕜 (EuclideanSpace 𝕜 (Fin n)) = n`;
+- `basisOfOrthonormalOfCardEqFinrank : Orthonormal 𝕜 v → Fintype.card ι = finrank 𝕜 E → Basis ι 𝕜 E`;
+- `OrthonormalBasis.mk : Orthonormal 𝕜 v → ⊤ ≤ span 𝕜 (range v) → OrthonormalBasis ι 𝕜 E`;
+- Parseval is `OrthonormalBasis.sum_inner_mul_inner` at `y = x`, since
+  `⟪x, b i⟫⟪b i, x⟫ = |⟪b i, x⟫|²`.
+
+Names that do **not** exist here (checked, so they are not retried): `OrthonormalBasis.sum_sq_norm_inner`,
+`OrthonormalBasis.norm_sq_eq_sum`, `OrthonormalBasis.sum_norm_sq_inner`.
+
+Note the scale: the family has norm² `Q`, not `1`, so the orthonormal family is `Q^{-1/2} • expRow`,
+and the `1/Q` in the Parseval statement is that normalisation — not a convention.

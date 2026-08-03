@@ -5,9 +5,14 @@
 - **Type:** THEOREM / CONTINUUM GRAVITY / CLOCKS / CONFORMAL SCALE / INVERSE PROBLEM
 - **Parent:** `../../1-in-progress/continuum-chronometric-equivalence-theorem.md`
 - **Status:** every proved theorem of this card is unconditional in Lean, including the literal
-  smooth pseudo-Riemannian realization of the conformal wave operator and formula `(4)`. The only
-  remaining item is the coupled inverse theorem of step 1 below, which is open research, not a
-  proved statement awaiting formalization.
+  smooth pseudo-Riemannian realization of the conformal wave operator and formula `(4)`. Step 1 of
+  the continuum-gravity bridge is now **closed end to end on any chart admitting a non-null
+  foliation whose invariants are functions of the leaf label**
+  (`twoSpecies_foliation_reconstruction`) — cosmological, static and curved alike — with the probes
+  constructed rather than assumed, and the massless species is free on every chart
+  (`noCommonZero_conformalPotential_zero`), so the remaining content is a probe family for a single
+  massive species. What remains open is exactly that: open research, not a proved statement awaiting
+  formalization.
 
 ## Headline
 
@@ -170,9 +175,13 @@ source-control hypotheses. To upgrade conformal class to metric:
 4. combine full metric response with chronometric graph rigidity to identify the complete metric
    gravity operator.
 
-Step 2 is closed. Step 1 is the hard remaining inverse theorem in the coupled backreacting
-Einstein--scalar setting. Existing potential-recovery theorems treat semilinear waves on a fixed
-Lorentzian geometry and do not by themselves close this coupled bridge.
+Step 2 is closed. Step 1 is closed unconditionally whenever probes can be constructed, which now
+includes every conformal factor constant on the leaves of a non-null foliation whose invariants
+`Γ(φ,φ)` and `□φ` are functions of the leaf label — cosmological, static and curved alike. There
+`twoSpecies_foliation_reconstruction` composes steps 1 and 2 into a pointwise recovery of `e^{2σ}`
+from clock data. Step 1 remains the hard inverse theorem in the general coupled
+backreacting Einstein--scalar setting. Existing potential-recovery theorems treat semilinear waves
+on a fixed Lorentzian geometry and do not by themselves close this coupled bridge.
 
 Its determination question is nevertheless settled exactly. For an arbitrary wave operator, with no
 linearity, smoothness or geometry assumed, a family of probes solving `□u + Vu = 0` determines `V`
@@ -355,9 +364,19 @@ built on it are not vacuous.
 So the identifiability content of step 1 is settled in full generality, and the reachable potential
 class is characterized. What remains open is the physical selection problem: a laboratory does not
 choose `u` and read off `-(□u)/u`; it prepares sources and must obtain solutions with the required
-nonvanishing behaviour for the *given* clock species. Supplying normalized Cauchy data in a
-backreacting Einstein--scalar geometry is a hyperbolic-PDE construction, and is what the bridge
-still lacks.
+nonvanishing behaviour for the *given* clock species. That selection problem is now **solved
+whenever the geometry admits a foliation whose two invariants are functions of the leaf label**: if
+`Γ(φ,φ) = P∘φ` with `P` nowhere zero and `□φ = R∘φ`, then normalized local solutions exist for every
+`C¹` potential in every dimension (`exists_foliation_localProbe`), so the potential is determined
+outright (`chartPotential_eq_of_foliation`). This covers the cosmological slicing, the static
+gravitational field, and charts whose metric varies arbitrarily **along** the leaves. It is also
+solved, on any chart and with no foliation at all, for every potential of the form
+`-(□w + Γ(w,w))` — and that is *exactly* the class carrying a globally nonvanishing smooth probe
+(`chartRiccati_iff`) — and, on flat space, for every constant potential, by plane waves
+(`noCommonZero_const_minkowski`). The last of these lies strictly outside the other two
+(`exists_noCommonZero_not_riccatiPotential`), so lacking a nowhere-vanishing probe is no obstruction
+either. What the bridge still lacks is a potential admitting no probe family without a common zero:
+supplying normalized Cauchy data there is a hyperbolic-PDE construction.
 
 ### Scope of the one-dimensional results
 
@@ -506,11 +525,260 @@ model of step 1 with no residual hypothesis:
 - `eq_of_solvesOn_localSolutions` — local solutions pin the potential on the whole line;
 - `reconstructedScale_eq_of_solvesOn_localSolutions` — hence the two-species scale, hypothesis-free.
 
+### The homogeneous sector in every dimension
+
+The one-dimensional model lifts to a chart of arbitrary dimension whenever the geometry and the
+potential are homogeneous — constant on the level sets of the zeroth coordinate. This is the
+cosmological sector, the sector in which two-species clock comparison is actually performed.
+
+`formal/GaloisForLFunctions/HTGeometry/ClockProbeSturmLiouville.lean` supplies the analytic input,
+local existence for the divergence-form equation the chart produces:
+
+- `first_component_affine` — the unit-speed identification `(α t)₀ = a + t` of any autonomisation;
+- `sturmField`, `contDiff_sturmField` — the field `(x,u,v) ↦ (1, v/A(x), -(B x)u)` in the momentum
+  variable `v = A u'`;
+- `exists_localSturmProbe` — for `C¹` coefficients with `A` nowhere zero, a solution of
+  `(A u')' + B u = 0` about every event, normalized to one there.
+
+`formal/GaloisForLFunctions/HTGeometry/ClockProbeHomogeneousChart.lean` performs the reduction:
+
+- `coordPartial_timeLift_of_ne` — transverse constancy, with **no** differentiability hypothesis
+  (the case where the lift is not differentiable is settled by the junk value of `fderiv`);
+- `coordPartial_timeLift_zero`, `flux_timeLift` — only the zeroth column of `Gⁱʲ` contributes;
+- `dalembert_timeLift` — **the reduction** `□(w ∘ x⁰) = ρ⁻¹ (ρ G⁰⁰ w')'`, proved from the
+  divergence-form definition by an eventual-equality transfer on the open slab `{x⁰ ∈ S}`;
+- `exists_homogeneous_localProbe` — clock probes on every homogeneous chart with `G⁰⁰` non-null;
+- `chartPotential_eq_of_homogeneous` — **determination of the homogeneous potential from clock
+  data**, in every dimension, with no nondegeneracy hypothesis.
+
+`formal/GaloisForLFunctions/HTGeometry/ClockProbeFRWChart.lean` shows the hypothesis class is
+inhabited by a physically live family rather than by flat space alone:
+
+- `frwChart` — the Friedmann--Robertson--Walker chart of an **arbitrary** smooth expansion history
+  `σ`, inverse metric `diag(-1, e^{-2σ}, …, e^{-2σ})` and density `e^{dσ}`, built as a literal
+  `SmoothMetricChart (d+1)`;
+- `exists_frw_localProbe` — clock probes about every time, for every `C¹` potential of time;
+- `frw_potential_eq` — the clock potential of an expanding chart is determined by clock data.
+
+So an arbitrary expansion history is no obstruction: the inverse step is unconditional throughout
+the homogeneous sector.
+
+### Arbitrary non-null slicings, and the static field
+
+Nothing in the reduction uses the zeroth coordinate. What it uses is that the chart data are
+constant on the level sets of a fixed linear phase `⟪n,x⟫` and that `n` is non-null.
+`formal/GaloisForLFunctions/HTGeometry/ClockProbeCovectorSlicing.lean` proves the reduction in that
+generality:
+
+- `covectorPhase`, `covectorCLM`, `covectorLift`, `covectorNorm` — the phase, its continuous linear
+  form, the lifted field, and `G(n,n)`;
+- `coordPartial_covectorLift`, `flux_covectorLift` — each direction contributes its component of `n`,
+  and the inverse metric enters only through its pairing with `n`;
+- `dalembert_covectorLift` — **`□(w ∘ ⟪n,·⟫) = ρ⁻¹ (ρ G(n,n) w')'`**;
+- `exists_covector_localProbe`, `chartPotential_eq_of_covector` — probes and determination;
+- `covectorLift_single_zero` — the homogeneous case is the zeroth basis covector;
+- `covectorPhase_basis`, `covectorNorm_basis` — for a basis covector the norm is the diagonal entry.
+
+Taking `n` **spatial** gives the configuration of the actual clock-comparison experiment: two clocks
+at different heights of a gravitational potential.
+`formal/GaloisForLFunctions/HTGeometry/ClockProbeStaticChart.lean` builds it:
+
+- `staticChart` — the static planar chart `g = diag(-e^{2Φ(z)}, 1, …, 1)` of an arbitrary smooth
+  gravitational potential, as a literal `SmoothMetricChart`;
+- `staticChart_inhomogeneous` — this geometry is **not** homogeneous: where `Φ` differs, so does the
+  metric;
+- `exists_static_localProbe`, `static_potential_eq` — clock probes about every height, and
+  determination of the clock potential from clock data.
+
+So inhomogeneity as such is not the obstruction, and neither is the Lorentzian signature: the
+determination is unconditional whenever the data are constant along some non-null slicing.
+
+### The general foliation reduction, and charts inhomogeneous along their own leaves
+
+All the slicing results specialise one identity, proved in
+`formal/GaloisForLFunctions/HTGeometry/ClockProbeFoliationReduction.lean` for an **arbitrary** smooth
+scalar `φ`:
+
+- `coordPartial_comp`, `differentiableAt_comp` — the coordinate chain rule;
+- `dalembert_comp` — **`□(w∘φ) = Γ(φ,φ)·(w''∘φ) + (□φ)·(w'∘φ)`**, with no condition on `φ` beyond
+  smoothness and on `w` beyond two local derivatives. The `Γ` term is exactly the corpus identity
+  `inv_density_mul_sum_flux`;
+- `linField`, `contDiff_linField`, `exists_localLinearProbe` — local existence for the general
+  linear second-order equation `u'' + p u' + q u = 0`;
+- `exists_foliation_localProbe`, `chartPotential_eq_of_foliation` — probes and determination whenever
+  the two invariants are functions of the leaf label, `Γ(φ,φ) = P∘φ` and `□φ = R∘φ` with `P` nowhere
+  zero.
+
+This is strictly weaker than the slicing hypothesis: the **chart data need not be constant on the
+leaves**, only the two invariants. `formal/GaloisForLFunctions/HTGeometry/ClockProbeInhomogeneousChart.lean`
+shows the gap is real:
+
+- `inhomChart` — the chart of `g = diag(-1, e^{2σ}, …, e^{2σ})` for an arbitrary smooth `σ`;
+- `gradPair_coord_zero` — `Γ(dx⁰,dx⁰) = -1`, independent of `σ`;
+- `dalembert_coord_zero` — `□x⁰ = -d ∂₀σ`;
+- `exists_inhom_localProbe`, `inhom_potential_eq` — probes and determination under the single
+  condition that `∂₀σ` be a function of `x⁰`;
+- `tiltedFactor`, `exists_tilted_localProbe`, `tilted_potential_eq` — the explicit member
+  `σ(x) = α(x⁰) + x¹` for an arbitrary smooth expansion history `α`;
+- `tiltedChart_not_leafConstant` — two points of one leaf carry **different** metrics, so no slicing
+  theorem applies to this chart, and yet its potential is determined.
+
+### Potentials that are not functions of any leaf label
+
+Every result above recovers a potential that is a function of a leaf label. The exponential
+substitution leaves that restriction behind, and
+`formal/GaloisForLFunctions/HTGeometry/ClockProbeChartRiccati.lean` settles the resulting class
+exactly:
+
+- `SmoothMetricChart.dalembert_const_mul` — linearity of the chart d'Alembertian (absent from the
+  corpus until now);
+- `chartExpProbe`, `dalembert_chartExpProbe` — `□e^w = (□w + Γ(w,w))e^w`, from the corpus's
+  `dalembert_expSmul` at `c = 1`;
+- `chartRiccatiPotential`, `solvesPotentialWave_chartExpProbe`,
+  `noCommonZero_chartRiccatiPotential`, `potential_eq_chartRiccatiPotential` — `-(□w + Γ(w,w))`
+  carries a **globally** nonvanishing probe and is determined outright, for every smooth `w` and
+  every chart;
+- `sign_const_of_ne_zero` — a nowhere-vanishing continuous function on a coordinate space has
+  constant sign (the step that legitimises taking the logarithm);
+- `exists_chartRiccati_of_nonvanishing_probe`, `chartRiccati_iff` — **the exact class**: a potential
+  carries a globally nonvanishing smooth probe *if and only if* it is `-(□w + Γ(w,w))`;
+- `ofSignature_gradPair`, `chartRiccatiPotential_ofSignature_sqCoord`,
+  `exists_determined_potential_not_leafConstant` — on Minkowski space the exponent `w = (x¹)²`
+  yields `V = -(2 + 4(x¹)²)`, determined, and **not** constant on the level sets of `x⁰`.
+
+So the determined class is not confined to leaf-constant potentials.
+
+### The determined class is strictly larger than that
+
+Determination never needs one probe nonvanishing everywhere — it needs, at each event, *some* probe
+nonvanishing there. `formal/GaloisForLFunctions/HTGeometry/ClockProbeOscillatorySeparation.lean`
+proves the two conditions differ:
+
+- `oscWronskian`, `hasDerivAt_oscWronskian`, `oscWronskian_const` — the Wronskian of a solution
+  against `sin(kx)` is conserved;
+- `half_period_neg` — hence `u(π/k) = -u(0)` for **every** solution, so every solution changes sign;
+- `not_exists_nonvanishing_oscillatory_probe`, `not_riccatiPotential_oscillatory` — the oscillatory
+  potential therefore carries no nowhere-vanishing probe and is not a Riccati potential;
+- `exists_noCommonZero_without_nonvanishing_probe`, `exists_noCommonZero_not_riccatiPotential` —
+  **strict separation**: `V = 1` is determined (centred cosines) yet lies outside the exact class of
+  the previous section.
+
+The higher-dimensional witnesses are the plane waves.
+`formal/GaloisForLFunctions/HTGeometry/ClockProbePlaneWave.lean`:
+
+- `coordPartial_covectorPhase`, `gradPair_covectorPhase`, `dalembert_covectorPhase` — a linear phase
+  has constant carré du champ `G(n,n)` and vanishing d'Alembertian;
+- `planeWave`, `solvesPotentialWave_planeWave` — hence `cos(⟪n,x⟫ + θ)` solves `□u + G(n,n)u = 0`;
+- `noCommonZero_covectorNormConst` — sliding the offset gives a probe nonvanishing at each event, so
+  every constant potential in the range of `n ↦ G(n,n)` is determined;
+- `exists_covectorNormConst_minkowski`, `noCommonZero_const_minkowski`,
+  `potential_eq_const_minkowski` — on Minkowski space that range is **all of `ℝ`**, so *every*
+  constant potential is determined.
+
+In flat space the clock potential of a species is its squared mass, so this closes the flat case of
+step 1 for both species at once, with no nondegeneracy hypothesis.
+
+### Step 1 closed end to end for the cosmological conformal class
+
+`formal/GaloisForLFunctions/HTGeometry/ClockTwoSpeciesConformalTime.lean` assembles the pieces into
+the card's headline claim for a conformal factor depending only on the zeroth coordinate — the
+Friedmann geometry `e^{2σ}η` written in conformal time.
+
+- `dalembert_timeLift_flat`, `gradPair_timeLift_flat` — the two invariants of a lifted conformal
+  factor on a constant-signature chart, `(ε₀)⁻¹σ''` and `(ε₀)⁻¹(σ')²`;
+- `conformalTimePotential`, `conformalPotential_timeLift`,
+  `twoSpecies_conformalTime_potential_agrees` — hence
+  `V_μ^σ(x) = μe^{2σ(x⁰)} - a(ε₀)⁻¹σ''(x⁰) - a²(ε₀)⁻¹σ'(x⁰)²`, a function of `x⁰` alone;
+- `contDiff_conformalTimePotential`, `flat_leading_ne_zero` — the hypotheses of the homogeneous
+  probe theorem, discharged;
+- `exists_conformalTime_localProbe` — **the probes are constructed**, not assumed;
+- `conformalTimePotential_determined` — each species' effective potential is pinned by its own clock
+  data;
+- `twoSpecies_conformalTime_reconstruction` — **`(V_{μ₁} - V_{μ₂})/(μ₁ - μ₂) = e^{2σ}` pointwise**,
+  for every smooth expansion history and every pair of distinct calibrated masses.
+
+So for the cosmological conformal class step 1 is no longer open: the missing input — a probe family
+without a common zero for each species — is supplied by construction, and steps 1 and 2 compose into
+an unconditional reconstruction of the conformal scale from clock data.
+
+### The same along any non-null basis slicing, including the static case
+
+Nothing in that argument uses the zeroth coordinate beyond its non-nullity.
+`formal/GaloisForLFunctions/HTGeometry/ClockTwoSpeciesBasisSlicing.lean` runs it along an arbitrary
+basis direction `k` of a constant-signature chart:
+
+- `coordPartial_basisLift_self`, `coordPartial_basisLift_ne`, `coordPartial_sq_basisLift_self`,
+  `coordPartial_sq_basisLift_ne` — the partial derivatives of a conformal factor constant on the
+  level sets of `xᵏ`;
+- `dalembert_basisLift_flat`, `gradPair_basisLift_flat` — `(ε_k)⁻¹σ''` and `(ε_k)⁻¹(σ')²`;
+- `conformalPotential_basisLift` — hence
+  `V_μ^σ(x) = μe^{2σ(xᵏ)} - a(ε_k)⁻¹σ''(xᵏ) - a²(ε_k)⁻¹σ'(xᵏ)²`;
+- `exists_basisSlicing_localProbe`, `basisSlicing_potential_determined` — probes constructed, each
+  species' potential pinned;
+- `twoSpecies_basisSlicing_reconstruction` — **`e^{2σ}` recovered pointwise**, for every basis
+  direction;
+- `twoSpecies_staticSlicing_reconstruction` — the case `k = 1` written out on Minkowski space: a
+  conformal factor varying with height, which is the geometry of the clock-comparison experiment.
+
+Taking `k = 0` recovers the cosmological statement above, so the two physically distinct
+configurations — expanding universe and static gravitational field — are one theorem.
+
+### The general form: any chart, any foliation
+
+Neither the constant signature nor the coordinate slicing is needed.
+`formal/GaloisForLFunctions/HTGeometry/ClockTwoSpeciesFoliation.lean` runs the argument on an
+arbitrary chart along an arbitrary foliation whose two invariants are functions of the leaf label:
+
+- `gradPair_comp` — the chain rule for the carré du champ, `Γ(σ₀∘φ, σ₀∘φ) = Γ(φ,φ)·σ₀'(φ)²`;
+- `foliationPotential`, `conformalPotential_foliation`,
+  `conformalPotential_eq_foliationPotential` — with `Γ(φ,φ) = P∘φ` and `□φ = R∘φ`, the card's own
+  effective potential is
+  `V_μ^σ = F∘φ`, `F(t) = μe^{2σ₀(t)} - a(P(t)σ₀''(t) + R(t)σ₀'(t)) - a²P(t)σ₀'(t)²`;
+- `contDiff_foliationPotential`, `exists_foliationConformal_localProbe` — the probes are
+  constructed;
+- `foliationConformal_potential_determined` — each species' potential is pinned by its clock data;
+- `twoSpecies_foliation_reconstruction` — **`e^{2σ}` recovered pointwise**.
+
+This subsumes everything above: cosmological, static, basis and covector slicings are the special
+cases `φ = ⟪n,·⟫` on a constant-signature chart, and the curved and leaf-inhomogeneous charts built
+earlier are covered too. The hypotheses are exactly: `P` nowhere zero (the foliation is non-null),
+`P` and `R` are `C¹` functions of the leaf label, and the conformal factor is constant on the
+leaves.
+
+### The massless species is free: one species carries the whole inverse step
+
+The requirement of **two** species is weaker than it looks.
+`formal/GaloisForLFunctions/HTGeometry/ClockMasslessReference.lean` observes that at `μ = 0` the
+effective potential is minus the defect, and the defect is exactly a Riccati expression:
+
+- `gradPair_const_mul` — scalar multiples in the carré du champ (absent from the corpus until now);
+- `conformalDefect_eq_riccati` — **`D_σ = □(aσ) + Γ(aσ, aσ)`**, so `V_0^σ = -(□(aσ) + Γ(aσ,aσ))`;
+- `conformalPotential_zero_eq_chartRiccati`, `solvesPotentialWave_masslessProbe` — hence `e^{aσ}` is
+  a globally nonvanishing probe of the massless species on **any** chart and for **any** smooth
+  conformal factor. It is the conjugate of the constant solution of the massless wave equation;
+- `noCommonZero_conformalPotential_zero`, `conformalDefect_determined` — the massless potential, and
+  with it the shared geometric defect `D_σ` of `(8)`, is determined **with no hypothesis at all**;
+- `scale_of_one_massive_species` — `e^{2σ} = (V_μ^σ - V_0^σ)/μ` for `μ ≠ 0`;
+- `twoSpecies_reconstruction_massless_reference`,
+  `scale_reconstruction_of_one_massive_probe_family` — the reconstruction carries **one** hypothesis,
+  on the massive species alone.
+
+So the card's two-species requirement reduces: take the massless species as reference and the whole
+remaining content of the inverse step is a probe family for a **single** massive species. Note the
+contrast with `(8)`, which recovers `D_σ` only after the scale is known — the massless species gives
+`D_σ` directly and unconditionally.
+
 Missing:
 
-1. coupled inverse theorem recovering both effective potentials from clock data in the
-   four-dimensional Einstein--scalar system (open research; step 1 of the continuum-gravity bridge
-   below). The one-dimensional analogue is now proved outright.
+1. coupled inverse theorem recovering the effective potential of a **single massive** species from
+   clock data, for a potential admitting **no** probe family without a common zero (the massless
+   species needs nothing) (open research; step 1 of the
+   continuum-gravity bridge below). The one-dimensional, homogeneous, static, leaf-inhomogeneous,
+   globally-nonvanishing-probe, flat constant-potential, and general foliated-conformal cases are
+   now proved outright, the last end to end through the scale reconstruction. Note the boundary
+   is *not* "no nowhere-vanishing probe" — the oscillatory potential has none and is still
+   determined; what is still absent is local solvability of `□u + Vu = 0` for the remaining
+   potentials, which is a hyperbolic Cauchy problem.
 
 ## Exact boundary of the reconstruction
 

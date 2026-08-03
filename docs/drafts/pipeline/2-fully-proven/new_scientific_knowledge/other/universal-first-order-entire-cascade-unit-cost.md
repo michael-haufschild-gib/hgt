@@ -405,10 +405,23 @@ It also identifies the mechanism and the sharp wall.  The analytic growth invari
 - [x] Lean: the terminal-linear Bell row reduction `J_r(X_r) = +- X_r^(r-1) J_(r-1)(A)`
 - [x] Lean: the positive-power Bell reduction for `H = C X^q`
 - [x] Lean: the cascade induction down the flag, and its positive-exponent observability capstone
-- [ ] Lean: Wiman--Valiron asymptotics and the nondegenerate Wiman place (Reduction I)
+- [x] Lean: the no-cancellation step of Reduction I -- a unique maximal weight is impossible
+- [x] Lean: the Newton edge polynomial has a nonzero root
+- [x] Lean: the weight calculus `deg a + c p` on the logarithmic scale
+- [x] Lean: the maximum term and the central index -- existence, attainment, monotonicity
+- [x] Lean: the two-sided growth law, the discrete form of `log mu(s)-log mu(r) = int nu(t) dt/t`
+- [x] Lean: both order-transfer inequalities, `nu(r) <= log mu(e r)` and `log mu(r) <= log mu(1) + nu(r) log r`
+- [x] Lean: the order identity, as mutual eventual power-bound transfer at any larger exponent
+- [x] Lean: the sandwich `mu(r) <= M(r) <= S(r) <= 2 mu(2r)`, incl. Cauchy's estimate
+- [x] Lean: geometric decay of the terms away from the central index, and the upper tail sum
+- [x] Lean: the lower tail sum, and the "central terms dominate" window decomposition
+- [x] Lean: the Borel growth lemma, and the unbounded supply of good radii it yields
+- [ ] Lean: the Wiman--Valiron estimate `f'(z_r)/f(z_r) ~ nu(r)/z_r` outside the exceptional set
+- [ ] Lean: Newton--Puiseux places at `U = infinity`, hence the nondegenerate Wiman place
 - [ ] Lean: Clunie--Steinmetz composition separation and state algebraic independence
 - [x] Lean: the order lower bound `ord_DA >= n` from `n` algebraically independent jets
-- [ ] Lean: the matching upper bound `ord_DA <= n` via the separant, hence `ord_DA(F_n) = n`
+- [x] Lean: the matching upper bound `ord_DA <= n` from a bounded-transcendence state field
+- [x] Lean: `IsLeast`, the exact minimal order, given the two analytic inputs as hypotheses
 
 ### Lean status
 
@@ -427,6 +440,10 @@ formal/GaloisForLFunctions/HTGeometry/TerminalLinearBellJacobian.lean
 formal/GaloisForLFunctions/HTGeometry/DerivationTerminalLinearJacobian.lean
 formal/GaloisForLFunctions/HTGeometry/TerminalPowerCascadeInduction.lean   (new)
 formal/GaloisForLFunctions/HTGeometry/ScalarDifferentialOrderLowerBound.lean (new)
+formal/GaloisForLFunctions/HTGeometry/ScalarDifferentialOrderUpperBound.lean (new)
+formal/GaloisForLFunctions/HTGeometry/NewtonEdgeNonCancellation.lean (new)
+formal/GaloisForLFunctions/HTGeometry/MaximumTermCentralIndex.lean (new)
+formal/GaloisForLFunctions/HTGeometry/BorelGrowthLemma.lean (already existed; extended)
 ```
 
 Principal declarations:
@@ -447,7 +464,68 @@ scalarDifferentialPolynomial_vars_subset_range -- order <= n uses only the first
 differentialPolynomialEvalOver_ne_zero_of_algebraicIndependent_jets -- independent jets forbid a
                                                                    -- relation of order <= n
 cascadeOutput_no_low_order_relation       -- a depth-(m+2) power cascade has no ADE of order <= m+1
+not_algebraicIndependent_of_trdeg_le      -- n+1 elements of a trdeg-n field are dependent
+exists_scalarDifferentialRelation_of_trdeg_le -- a bounded state field supplies an ADE of order <= n
+isLeast_scalarDifferentialOrder           -- the least ADE order is exactly the state count
+HasLogScaleExponent                       -- log ||f|| / log rho -> a, the weight of a term
+isLittleO_of_hasLogScaleExponent_lt       -- a strictly smaller weight is negligible
+not_eventually_sum_eq_zero_of_unique_max  -- a unique maximal weight cannot be cancelled
+HasLogScaleExponent.mul, .pow             -- weights add and scale, giving deg a + c p
+exists_ne_zero_isRoot_of_one_lt_card_support -- the edge polynomial has a nonzero root
+EntireCoeffs, maxTerm, centralIndex       -- the two Wiman--Valiron quantities mu(r), nu(r)
+exists_maxTerm_eq                         -- the maximum term is attained
+centralIndex_mem, le_centralIndex         -- nu(r) is the largest attaining index
+maxTerm_mono, centralIndex_mono           -- both are nondecreasing in the radius
+entireCoeffs_coeff_of_radius_eq_top       -- an entire function satisfies the decay hypothesis
+mul_pow_le_maxTerm, maxTerm_le_mul_pow    -- mu(r)(s/r)^nu(r) <= mu(s) <= mu(r)(s/r)^nu(s)
+centralIndex_le_log_maxTerm               -- nu(r) <= log mu(e r)
+log_maxTerm_le_centralIndex_mul_log       -- log mu(r) <= log mu(1) + nu(r) log r
+summable_term, coeffSum                   -- the majorant S(r) = sum ||a_n|| r^n
+maxTerm_le_coeffSum                       -- mu(r) <= S(r)
+coeffSum_le_two_mul_maxTerm               -- S(r) <= 2 mu(2r)
+taylorCoeff_norm_mul_pow_le               -- Cauchy's estimate in term form
+maxTerm_le_of_forall_mem_sphere_norm_le   -- mu(r) <= M(r)
+tendsto_maxTerm_atTop                     -- a nonconstant coefficient sequence sends mu to infinity
+centralIndex_le_rpow_of_log_maxTerm_le_rpow -- log mu(r) <= r^sigma  ==>  nu(r) <= r^sigma'
+log_maxTerm_le_rpow_of_centralIndex_le_rpow -- nu(r) <= r^sigma  ==>  log mu(r) <= r^sigma'
+term_le_maxTerm_mul_pow_of_centralIndex_le -- above nu(s): term <= mu(r) (r/s)^excess
+term_le_maxTerm_mul_pow_of_le_centralIndex -- below nu(t): term <= mu(r) (t/r)^deficit
+tsum_upper_tail_le                        -- the upper tail sums to mu(r)(r/s)/(1-r/s)
+sum_lower_tail_le                         -- the lower tail sums to mu(r)(t/r)/(1-t/r)
+coeffSum_le_window_add_tails              -- the central window carries everything, up to those two
+borel_growth                              -- the exceptional set has Lebesgue measure at most 2
+exists_ge_lt_two_mul                      -- hence good radii exist beyond every bound
+exists_ge_lt_two_mul_scaled               -- the same with the multiplicative step 1 + 1/T(r)
 ```
+
+`coeffSum_le_window_add_tails` is the quantitative form of "the central terms dominate": for any
+`t < r < s` the whole majorant at radius `r` is the sum over the window `[nu(t), nu(s)]` plus two
+geometric remainders, each a fixed multiple of `mu(r)` determined only by the radius ratios.  The
+coefficients cancel out of both remainders, which is why the window can be narrowed by moving `t` and
+`s` towards `r` -- the mechanism Wiman--Valiron converts into `f'(z)/f(z) ~ nu(r)/z`.
+
+The last two are the order identity `limsup log nu(r)/log r = limsup log log mu(r)/log r` in the form
+that avoids every `limsup` junk value: each eventual power bound on one quantity gives an eventual
+power bound on the other at any strictly larger exponent, so the two infima of dominating exponents
+coincide.  This is exactly what "choose Wiman--Valiron radii on which `log nu(r)/log r -> rho`"
+consumes.
+
+The three inequalities `mu(r) <= M(r) <= S(r) <= 2 mu(2r)` sandwich the maximum modulus between the
+maximum term at `r` and at `2r`.  Since `log(2r)/log r -> 1`, the function, its majorant and its
+maximum term all have the same order of growth, so the order-transfer inequalities above are
+inequalities about `rho(f)` itself.
+
+The pair `mu(r)(s/r)^nu(r) <= mu(s) <= mu(r)(s/r)^nu(s)` is the discrete form of
+`log mu(s) - log mu(r) = int_r^s nu(t) dt/t`, obtained directly from the two maximality inequalities
+with no integration theory.  Specialising to `(r, e r)` and to `(1, r)` gives the two order-transfer
+inequalities, which are exactly the two halves of `limsup log nu(r)/log r = limsup log log mu(r)/log r`
+-- the identity the card uses to select its Wiman--Valiron radii.
+
+The two halves meet in `isLeast_scalarDifferentialOrder`: algebraic independence of the first `m+1`
+jets and a state field of transcendence degree at most `m+1` make `m+1` the **least** order of a
+nonzero algebraic differential equation for the output.  That is the card's `ord_DA(F_n) = n` as an
+identity of natural numbers, with the two analytic inputs (positive Wiman exponents, state
+independence) isolated as hypotheses.
 
 The abstract form makes the mechanism explicit.  Over any field that is a `C`-algebra, with a time
 derivation `delta`, coordinate derivations `P_k`, and outputs `Y_k` linked by
@@ -460,10 +538,30 @@ entry is exactly `q_k C_k X_k^(q_k-1)`, so `q_k = 0` is the one and only wall â€
 `q_k` never enters.  This is the quantization claim of the card, proved in Lean at the algebraic
 level.
 
+### Reduction I: the two algebraic/asymptotic steps are formalized
+
+The audit-closure paragraph of Reduction I has two steps that do not need Wiman--Valiron at all, and
+both are now unconditional in Lean.
+
+*The maximal face is an edge, not a vertex.*  Measure every top-symbol monomial on the logarithmic
+scale set by the radius: `HasLogScaleExponent l rho f a` says `log ||f|| / log rho -> a` along the
+chosen filter, and `HasLogScaleExponent.mul`/`.pow` make the weight of `a_(b,c)(U) T^c` equal
+`deg a_(b,c) + c p` exactly as the card computes it.  The card's argument -- a fixed positive gap
+between the largest weight and the rest cannot be erased by the `r^(o(1))` factors -- is
+`isLittleO_of_hasLogScaleExponent_lt`, whose proof uses only the gap, and
+`not_eventually_sum_eq_zero_of_unique_max` states the conclusion directly: a finite sum of measured
+terms that vanishes along the filter cannot have a strict maximum.  This holds for an arbitrary
+filter, so it applies verbatim to a sequence of Wiman points without any phase-convergence
+assumption.
+
+*The edge polynomial has a nonzero root.*  `exists_ne_zero_isRoot_of_one_lt_card_support`: a complex
+polynomial with at least two nonzero coefficients factors as `X^m q` with `q(0) != 0` and
+`deg q >= 1`, so a root of `q` is a nonzero root of the whole polynomial.
+
 ### What Lean does not yet carry
 
-The analytic inputs that supply `q_k > 0` and the state independence are not formalized, and none of
-them exists in mathlib either:
+The analytic inputs that supply the *measured weights themselves*, and the state independence, are
+not formalized, and none of them exists in mathlib either:
 
 - Wiman--Valiron asymptotics and the central index (Reduction I's top-symbol reduction);
 - Goldberg's finite-order theorem and Strelitz's positive-order theorem;
@@ -511,3 +609,76 @@ triangularity package, which is exactly how the paper proof uses them.
   power cascade of depth `m+2` satisfies no algebraic differential equation of order at most `m+1`.
   That is the `ord_DA >= n` half of the unit-cost law, unconditional and axiom-clean; the matching
   upper bound needs the separant argument and is the next algebraic target.
+- 2026-08-03 -- Added the order upper bound, `ScalarDifferentialOrderUpperBound.lean`.  The separant
+  argument is not needed: `n+1` jets inside an intermediate field of transcendence degree `n` are
+  algebraically dependent outright, and renaming the resulting relation along `i |-> ((), i)` gives a
+  nonzero scalar differential polynomial of order at most `n`.  With the lower bound this yields
+  `isLeast_scalarDifferentialOrder` -- the minimal ADE order of the output is exactly the number of
+  states.  The algebraic skeleton of the unit-cost law is therefore complete in Lean; what remains is
+  entirely the analytic supply of its two hypotheses (positive Wiman exponents from Reduction I, and
+  state algebraic independence from Clunie--Steinmetz).
+- 2026-08-03 -- Started Reduction I.  `NewtonEdgeNonCancellation.lean` formalizes the two steps of the
+  audit-closure paragraph that do not need Wiman--Valiron: the log-scale weight calculus
+  (`HasLogScaleExponent`, with weights adding under products and scaling under powers, so a monomial
+  `a_(b,c)(U) T^c` carries `deg a_(b,c) + c p`), the no-cancellation theorem -- a finite sum of
+  measured terms vanishing along a filter cannot have a strict maximal weight, proved from the gap
+  alone and stated for an arbitrary filter so no phase convergence is assumed -- and the fact that a
+  complex polynomial with two or more nonzero coefficients has a nonzero root.  What remains of
+  Reduction I is the analytic supply of the measured weights (Wiman--Valiron, Goldberg, Strelitz) and
+  the Newton--Puiseux lift.
+- 2026-08-03 -- Started the Wiman--Valiron foundation, `MaximumTermCentralIndex.lean`.  From the
+  decay hypothesis `||a_n|| r^n -> 0` alone: the terms are bounded, the supremum `mu(r)` is attained,
+  the set of attaining indices is finite so the central index `nu(r)` is well defined as the largest
+  of them, and both `mu` and `nu` are nondecreasing in `r`.  The monotonicity of `nu` is the one step
+  with content -- multiplying the two maximality inequalities cancels the coefficients and leaves an
+  impossible comparison of powers of `r/s < 1`.  A power series of infinite radius satisfies the
+  decay hypothesis, so this applies to every entire function.  Next: convexity of `log mu` in
+  `log r`, the integral formula, and the order identity `limsup log nu(r)/log r = rho`.
+- 2026-08-03 -- Added the two-sided growth law to `MaximumTermCentralIndex.lean`:
+  `mu(r)(s/r)^nu(r) <= mu(s) <= mu(r)(s/r)^nu(s)` for `0 < r <= s`, each side falling straight out of
+  one maximality inequality after cancelling `r^m` against `(s/r)^m`.  This is the discrete form of
+  `log mu(s) - log mu(r) = int_r^s nu(t) dt/t` and needs no integration theory at all.  Specialising
+  to the radii `(r, e r)` gives `nu(r) <= log mu(e r)`, and to `(1, r)` gives
+  `log mu(r) <= log mu(1) + nu(r) log r`; these are the two halves of the order identity
+  `limsup log nu(r)/log r = limsup log log mu(r)/log r` that the card uses to choose its radii.  What
+  is left on this branch is the limsup packaging and the comparison of `mu` with the maximum modulus.
+- 2026-08-03 -- Closed the maximum-term/maximum-modulus comparison.  The decay hypothesis already
+  forces absolute convergence at every radius (bound each term against the doubled radius by a
+  geometric weight), so the majorant `S(r) = sum ||a_n|| r^n` exists and satisfies
+  `S(r) <= 2 mu(2r)`; Cauchy's estimate, in the term form `||a_n|| r^n <= C` for any bound `C` on the
+  circle, gives `mu(r) <= M(r)`.  The chain `mu(r) <= M(r) <= S(r) <= 2 mu(2r)` makes the order of
+  the function, of its majorant and of its maximum term the same, so the two order-transfer
+  inequalities are statements about `rho(f)`.  Only the limsup packaging is left on this branch
+  before the Wiman--Valiron estimate itself.
+- 2026-08-03 -- Packaged the order identity without any `limsup` plumbing.  Stating it as mutual
+  transfer of eventual power bounds -- `log mu(r) <= r^sigma` eventually implies `nu(r) <= r^sigma'`
+  eventually for every `sigma' > sigma`, and conversely -- makes both directions two-line
+  consequences of the growth laws, avoids the junk value of an unbounded `limsup`, and is the exact
+  form a radius-selection argument consumes.  The `log r = o(r^eps)` input is mathlib's
+  `isLittleO_log_rpow_atTop`.  The `mu`-side of Wiman--Valiron is now complete: existence,
+  attainment, monotonicity, the two-sided growth law, the sandwich against the maximum modulus, and
+  the order identity.  What remains is the estimate `f'(z_r)/f(z_r) ~ nu(r)/z_r` itself.
+- 2026-08-03 -- Added the geometric-decay mechanism behind "the central terms dominate".  Comparing
+  the term at radius `r` with the maximum term at a larger radius `s` and then applying the upper
+  growth law gives `||a_n|| r^n <= mu(r) (r/s)^(n - nu(s))` for `n >= nu(s)`; the mirror comparison
+  with a smaller radius `t` gives `||a_n|| r^n <= mu(r) (t/r)^(nu(t) - n)` for `n <= nu(t)`.  Both
+  ratios are below one, so the two tails are geometric remainders uniformly in the coefficients; the
+  upper one is summed in `tsum_upper_tail_le`.  This is the last purely coefficient-side ingredient
+  of Wiman--Valiron; what follows needs the Borel growth lemma and its exceptional set.
+- 2026-08-03 -- Closed the coefficient side of Wiman--Valiron with `sum_lower_tail_le` and
+  `coeffSum_le_window_add_tails`.  Reflecting the index range turns the lower tail into the same
+  geometric series as the upper one, and splitting the majorant twice with
+  `Summable.sum_add_tsum_nat_add` gives the window decomposition: for `t < r < s`, the majorant at
+  `r` is the sum over `[nu(t), nu(s)]` plus two remainders, each `mu(r)` times a constant depending
+  only on the radius ratios.  The coefficients cancel out of both remainders, so the window can be
+  narrowed by moving `t` and `s` toward `r`.  Everything that remains on this branch is genuinely
+  function-theoretic: the Borel growth lemma with its exceptional set, and the passage from the
+  window decomposition to `f'(z)/f(z) ~ nu(r)/z`.
+- 2026-08-03 -- The Borel growth lemma turned out to be already in the corpus,
+  `HTGeometry/BorelGrowthLemma.lean` (namespace `GaloisForLFunctions.Nevanlinna`), proved by a dyadic
+  band decomposition: the exceptional set `{r >= a | 2T(r) <= T(r + 1/T(r))}` has Lebesgue measure at
+  most `2`.  I had it listed as an open gate because the earlier corpus searches were run on
+  "Wiman", "centralIndex" and "maximum term", none of which appear in it.  Added the two corollaries
+  that are what actually gets used -- a set of measure `2` cannot contain a ray, so good radii exist
+  beyond every bound (`exists_ge_lt_two_mul`), and the multiplicative form with the step
+  `1 + 1/T(r)` obtained in the logarithmic variable.  The exceptional set never has to be described.

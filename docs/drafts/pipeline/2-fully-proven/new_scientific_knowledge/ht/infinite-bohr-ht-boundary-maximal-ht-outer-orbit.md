@@ -1025,3 +1025,372 @@ with no implicit function theorem and no Faa di Bruno formula anywhere.  What is
 itself -- identifying `chiJetScalar` applied to the actual Cauchy jets with the actual jets of `S_u`,
 and feeding `spanCombination_expBox_mem_nhds` and `chiJetScalar_image_mem_nhds` into
 `residual_setOf_forall_eval_observation_ne_zero`.
+
+## Lean progress: the chart computes the actual jets, and openness transports
+
+`CayleyOuterJetChart.lean` gained the three statements that connect the chart to the objects of the
+card:
+
+- **`chiJetScalar_iteratedDeriv`** -- the chart really computes the derivatives of `chi o f`.  The
+  proof runs the four stages `f |-> f + i |-> 1/(f+i) |-> 1 - 2i/(f+i) |-> exp(...)` through the
+  three jet identities already proved, and identifies the last stage with `(f - i)/(f + i)` on the
+  domain where `f + i` does not vanish;
+- **`chiJetScalar_observation_image_mem_nhds`** -- openness transports through the chart: if a
+  parametrised family of jet packets covers a neighbourhood of its value, so does the family of
+  Cayley outer jet packets;
+- **`restrictFin_image_mem_nhds`** -- truncation from jet *sequences* to jet *packets* of a fixed
+  order is open, because extending a finite packet by the coordinates of the base point is a
+  continuous right inverse.  This is what lets the sequence-level openness feed the finite-variable
+  genericity lemmas.
+
+With these, the chain
+
+  mass perturbation reach  ->  `m`-jet sequences  ->  `S`-jet sequences  ->  finite `S`-jet packets
+
+is complete at the level of openness.  The single remaining link is the *first* arrow: exhibiting the
+map `u |-> (jets of m_u(. + t_i))` as one whose neighbourhood images are neighbourhoods, which is
+`spanCombination_expBox_mem_nhds` fed by the corpus's `cauchyJetRealLinearCombination_surjective`.
+Once that is in place, `residual_setOf_forall_eval_observation_ne_zero` gives the residual set of
+mass parameters directly, and (9) follows for the perturbed family because adding the fixed vector
+`eps A^(k)(z + t_i)` only translates the packet.
+
+## Lean progress: the first arrow, in column form
+
+`SmallPerturbationReach.lean` gained the two lemmas that turn a *spanning* statement into a *finite*
+one:
+
+- `exists_finset_subset_span_eq_top` -- a spanning set of a finite-dimensional space has a finite
+  spanning subset (via a finite generating family and `mem_span_finite_of_mem_span`);
+- **`exists_expBox_reach_of_span_range`** -- hence any spanning family has a *finite* subfamily whose
+  multiplicative perturbations `c_k |-> c_k exp(s_k)`, with `|s_k|` arbitrarily small, already reach
+  a neighbourhood of the origin.
+
+`CauchyJetReach.lean` (wired, axiom-clean) applies this to the corpus's controllability:
+
+- **`span_range_cauchyJetColumn_eq_top`** -- real Cauchy-jet controllability restated as the span
+  statement: the Cauchy-jet columns span the packet space over `R`.  (`Finsupp.range_linearCombination`
+  converts the corpus's surjectivity into a span.)
+- **`exists_cauchyJet_expBox_reach`** -- therefore finitely many atoms, with masses moved only by
+  factors arbitrarily close to one, move the finite Cauchy jet packet through a whole neighbourhood.
+
+This is the card's "real Cauchy-jet spanning lemma" in the exact form the submersion argument needs,
+and it completes the *first* arrow of the chain at the level of columns.  What is left is the
+identification of the actual jets of `m_u(. + t_i)` with the mass-weighted column sums for the
+card's discrete measure `sum_k 2^(-k-1) exp(u_k) delta_(k+1)`, and the transport of the
+`L-infinity` topology to those finitely many coordinates.
+
+## Lean progress: the jets of a discrete Cauchy transform are its mass-weighted columns
+
+`DiscreteCauchyJetColumns.lean` (wired, axiom-clean) supplies the identification the reach lemma was
+missing -- that moving the masses moves the *actual analytic* jet packet linearly:
+
+- **`integral_countableWeightedDirac_vector`** -- Bochner integration against a countable weighted
+  Dirac family, for a Banach-valued integrand.  The corpus had only the real-valued case, and the
+  Cauchy kernel is complex;
+- **`cauchyKernelMoment_countableWeightedDirac`** -- a kernel moment of a discrete measure is the
+  mass-weighted sum of the kernel over the atoms;
+- **`iteratedDeriv_cauchyTransform_countableWeightedDirac`** -- combined with the corpus's factorial
+  dictionary `iteratedDeriv_cauchyTransform`, every derivative order of a discrete Cauchy transform
+  is a factorial multiple of that sum;
+- **`cauchyJetPacket_countableWeightedDirac`** -- in the coordinates of the controllability theorem:
+  the whole finite jet packet at a family of nodes and orders is the mass-weighted sum of the
+  `cauchyJetColumn` vectors, entrywise rescaled by the factorial of the order.
+
+So the mass parameter enters the jet packet *linearly through the masses*, exactly as the reach
+lemma `exists_cauchyJet_expBox_reach` requires.  The two halves now meet in the same coordinates.
+
+What remains is bookkeeping rather than mathematics: the factorial rescaling is a fixed nonzero
+diagonal (so it preserves spanning and openness), the card's masses are `2^(-k-1) exp(u_k)` (so a
+perturbation of `u` on finitely many atoms is exactly the `exp(s_k)` rescaling of the reach lemma),
+and the `l-infinity` topology restricted to finitely many coordinates is the product topology.
+
+## Lean progress: the reach in the coordinates of the actual jets
+
+`SmallPerturbationReach.lean` gained the two rescaling lemmas which absorb the bookkeeping:
+
+- **`span_range_smul_eq_top`** -- rescaling each member of a spanning family by a nonzero scalar
+  preserves spanning (the masses);
+- `diagScaleEquiv` and **`span_range_diagScale_eq_top`** -- coordinatewise rescaling by nonzero
+  scalars is a real-linear equivalence, so it too preserves spanning (the order factorials).
+
+`DiscreteCauchyJetColumns.lean` then states the reach in the coordinates of the *actual* jets:
+
+- `massJetColumn` -- the Cauchy-jet column of one atom, rescaled by the order factorials and by that
+  atom's mass.  This is exactly the vector along which a multiplicative perturbation of the mass
+  moves the jet packet, by `cauchyJetPacket_countableWeightedDirac`;
+- **`span_range_massJetColumn_eq_top`** -- the mass columns still span the packet space;
+- **`exists_discreteCauchyJet_expBox_reach`** -- therefore finitely many atoms, with masses moved
+  only by factors arbitrarily close to one, move the discrete Cauchy jet packet through a whole
+  neighbourhood.
+
+This is the first arrow of the chain in the card's own coordinates.  The only step still separating
+it from `LocallySurjectiveObservation` is the identity
+
+  `packet(perturbed masses) - packet(masses) = sum_k (exp(s_k) - 1) . massJetColumn(a_k)`,
+
+which is the tsum of `cauchyJetPacket_countableWeightedDirac` split over the finitely many perturbed
+atoms, together with the statement that an `l-infinity` perturbation supported on those atoms is
+small in the parameter space.
+
+## Lean progress: rescaling finitely many masses
+
+`DiscreteCauchyJetColumns.lean` gained the identity which turns the reach statement into a statement
+about the *perturbed measure*:
+
+- `perturbedWeight a s w n = w n * exp (sum_k [a k = n] s k)` -- the weights after rescaling finitely
+  many masses.  Writing the exponent as a sum of indicators keeps the definition total and avoids any
+  choice;
+- `perturbedWeight_of_notMem` and `perturbedWeight_apply` -- off the perturbed atoms the weight is
+  unchanged, and at `a k` it is `w (a k) exp (s k)` (this is where injectivity of `a` is used);
+- **`tsum_perturbedWeight_sub`** -- rescaling finitely many masses moves a weighted sum by exactly the
+  corresponding finite combination:
+  `sum'_n (w' n) col n - sum'_n (w n) col n = sum_k (exp(s_k) - 1) (w(a_k) col(a_k))`.
+  The proof splits the tsum over the image of `a` and reindexes by injectivity.
+
+`exists_expBox_reach_of_span_range` and its two consequences were strengthened to also return
+**injectivity of the chosen atom list**, which that reindexing needs.  The atoms come from a finite
+spanning subset, so distinct indices give distinct columns and injectivity is automatic.
+
+The first arrow now needs only the measure-theoretic bookkeeping: finiteness of the perturbed
+measure, summability of the two column series (both immediate from the uniform kernel bound
+`norm_kernelPow_le` and summability of the masses), and the translation of a neighbourhood of zero to
+a neighbourhood of the unperturbed packet.
+
+## Lean progress: the first arrow is closed
+
+`DiscreteCauchyJetObservation.lean` (wired, axiom-clean) supplies the measure-theoretic side
+conditions and assembles them:
+
+- **`isFiniteMeasure_countableWeightedDirac`** -- a summable family of nonnegative weights gives a
+  finite measure (the corpus had the total-mass computation but not the instance);
+- `perturbedWeight_nonneg` and **`summable_perturbedWeight`** -- rescaling finitely many masses
+  changes the weights only on a finite set, so nonnegativity and summability survive;
+- **`summable_weight_kernel`** -- the weighted column series converges, because the kernel powers are
+  uniformly bounded off the real axis (`norm_kernelPow_le`);
+- `discreteJetPacket` -- the finite jet packet of a discrete Cauchy transform at a family of nodes
+  and orders;
+- **`discreteJetPacket_perturbedWeight_sub`** -- *rescaling finitely many masses moves the jet packet
+  by exactly the corresponding finite combination of mass columns*.  This is the analytic content of
+  the card's "real Cauchy-jet spanning lemma";
+- **`exists_discreteJetPacket_reach`** -- therefore the reachable jet packets fill a *neighbourhood
+  of the unperturbed packet*: rescaling finitely many masses by factors arbitrarily close to one
+  already realizes every nearby packet.
+
+That closes the first arrow.  The chain
+
+  small mass perturbation  ->  `m`-jet packet (neighbourhood)
+                           ->  `S`-jet sequence (`chiJetScalar_image_mem_nhds`)
+                           ->  finite `S`-jet packet (`restrictFin_image_mem_nhds`)
+                           ->  residual parameter set (`residual_setOf_forall_eval_observation_ne_zero`)
+
+is now formal at every link.  What remains is to run it: choose the parameter space (the card's
+`l-infinity` masses `2^(-k-1) exp(u_k)`), check that a perturbation supported on finitely many atoms
+is small there, and package the composite as a `LocallySurjectiveObservation`.
+
+## Lean progress: the mass parameter observes jets locally surjectively
+
+`DiscreteJetObservationLocallySurjective.lean` (wired, axiom-clean) runs the first arrow on the
+card's own parameter space:
+
+- `MassParameter := lp (fun _ : ℕ => ℝ) ∞` -- the bounded exponential mass parameters, a Banach
+  space, hence a Baire space;
+- `pertSeq`, `pertSeq_apply`, `abs_pertSeq_le`, `pertParameter` and
+  **`norm_pertParameter_le`** -- a perturbation supported on finitely many coordinates *is* an
+  element of the parameter space, and its norm is bounded by the largest coefficient.  This is the
+  only place the sup norm is used;
+- `perturbedWeight_eq_expParameter` -- rescaling the masses of `eps_n exp(u_n)` by `exp(s_k)` is
+  exactly translating the parameter by that finitely supported perturbation;
+- `summable_expParameter` -- for a summable `eps` the masses stay summable for *every* bounded
+  parameter, because `exp(u_n) <= exp ||u||`;
+- **`locallySurjective_discreteJetObservation`** -- therefore the jet packet
+  `u |-> (jets of the Cauchy transform of sum_n eps_n exp(u_n) delta_(x_n))` is a
+  `LocallySurjectiveObservation` of the mass parameter.
+
+This is the hypothesis of `residual_setOf_forall_eval_observation_ne_zero` and
+`dense_setOf_forall_eval_observation_ne_zero`, so for the *unperturbed* Cauchy family the
+transversality argument now runs end to end inside the corpus: countably many polynomial constraints
+on the jet packet fail on a dense residual set of mass parameters.
+
+What is left to reach (9) is to compose the observation with the Cayley chart -- which is
+`chiJetScalar_observation_image_mem_nhds` followed by `restrictFin_image_mem_nhds`, both already
+proved -- and to translate "no polynomial constraint on the observed packet" into
+"no differential relation among the family", which is the rank/minor reduction from a shape's
+coefficient vectors to a single determinant polynomial.
+
+## Lean progress: the chart is local in the jet order
+
+Three locality lemmas, all built and axiom-clean, needed to pass between jet *sequences* and jet
+*packets* in either direction:
+
+- **`triangularSolve_congr`** -- the triangular solution below a fixed order depends only on the
+  diagonal, the lower part and the right-hand side below that order;
+- **`invJetScalar_congr`** -- hence the reciprocal jets are local in the order;
+- `affJetScalar_congr` and **`chiJetScalar_congr`** -- hence so is the whole Cayley outer chart: its
+  `k`-th entry depends only on the jets up to order `k`.
+
+### Two routes to the last link, and what each still needs
+
+The reach lemma lives in a *finite* jet packet space; the chart lives on jet *sequences*.  Two ways
+to make them meet, both now one step away:
+
+1. **Truncate the chart.**  Define `chiJetPacket n` on `Fin (n+1) -> C` and prove its openness by the
+   right-inverse criterion.  Locality (`chiJetScalar_congr`) makes the truncation well defined; what
+   is still missing is the composite inverse `chiJetInv` -- the three factor inverses
+   (`expJetInv`, `invJetScalar` itself, and the affine inverses) exist, they just have to be
+   composed.
+2. **Work in the product.**  Generalize `mvPolynomial_nonzero_eval_dense` and hence
+   `isNowhereDense_setOf_eval_observation_eq_zero` from a finite variable type to a countable one --
+   a polynomial involves finitely many variables (`MvPolynomial.exists_finset_rename`), so evaluation
+   factors through a finite coordinate projection, which is an open surjection.  Then observations may
+   be sequence-valued and no truncation is needed; what is still missing is the product-level reach,
+   i.e. that a basic neighbourhood of the observed sequence constrains finitely many jet coordinates
+   and is therefore covered by the packet reach for a large enough order.
+
+Route 1 is more elementary; route 2 makes the genericity layer permanently more general.  Either
+closes the last link of (9).
+
+## Lean progress: the chart on packets, and products of observations
+
+Route 1 of the previous entry is now built, and without the composite inverse:
+
+- **`chiJetPacket_image_mem_nhds`** (`CayleyOuterJetChart.lean`) -- the Cayley outer chart on packets
+  of a fixed order carries neighbourhoods to neighbourhoods.  No truncated inverse was needed: the
+  sequence-level openness composes with the openness of truncation
+  (`restrictFin_image_mem_nhds`), and locality in the jet order (`chiJetScalar_congr`) identifies
+  the truncated chart with the truncation of the chart.  Extending a packet by zeros and truncating
+  back is the identity below the order, which is all the chart sees.
+
+- **`pi_image_mem_nhds`** (`JetObservationGenericity.lean`) -- a *finite product* of
+  neighbourhood-preserving maps preserves neighbourhoods.  On a finite index every neighbourhood
+  contains a full box (`isOpen_pi_iff'`), and the product of the images of the box factors is again a
+  neighbourhood (`set_pi_mem_nhds`).  This is what applies one chart per node.
+
+The remaining assembly is now purely structural: curry the sigma-indexed packet space
+`(Σ i, Fin (m i + 1)) → C` as the product `∀ i, Fin (m i + 1) → C`, apply `pi_image_mem_nhds` with
+`chiJetPacket (m i)` in each factor, and transport the resulting local surjectivity back through the
+currying homeomorphism.  Composed with `locallySurjective_discreteJetObservation` that gives the
+`LocallySurjectiveObservation` for the *outer* family, which is the hypothesis of
+`residual_setOf_forall_eval_observation_ne_zero`.
+
+## Lean progress: the outer jet observation is locally surjective
+
+`OuterJetSigmaChart.lean` (wired, axiom-clean) completes the transversality half of (9):
+
+- `sigmaCurryHomeomorph` -- a packet indexed by (node, order) pairs *is* the product over the nodes
+  of the packets at each node, as a homeomorphism;
+- `outerJetSigma` and **`outerJetSigma_image_mem_nhds`** -- applying the Cayley outer chart at every
+  node carries neighbourhoods to neighbourhoods.  It is a finite product of the single-node charts,
+  conjugated by the currying homeomorphism;
+- **`locallySurjective_outerJetObservation`** -- therefore
+
+    `u |-> (jets of chi(m_u) at the nodes)`
+
+  is a `LocallySurjectiveObservation` of the bounded exponential mass parameter.  The hypothesis of
+  the chart is automatic: the zeroth entries are the values of the Cauchy transform, whose imaginary
+  part is nonnegative above the real axis, so they never meet `-i`.
+
+### The transversality argument now runs end to end
+
+Composing with `residual_setOf_forall_eval_observation_ne_zero` and
+`dense_setOf_forall_eval_observation_ne_zero`: for any countable family of nonzero polynomials in the
+jet coordinates of the *outer* functions `S_u = chi(m_u)`, the parameters at which none of them
+vanishes form a dense residual subset of the mass parameter space.  Every ingredient the card's
+submersion argument names -- positive-mass jet controllability, the triangular `chi`-chart with
+nonvanishing diagonal, and Baire -- is now formal and unconditional.
+
+What remains between this and (9) itself is the *combinatorial* reduction: turning "a differential
+relation among the family" into "a polynomial constraint on one jet packet", i.e. replacing a shape's
+uncountable family of coefficient vectors by a single determinant polynomial per choice of nodes
+(corpus: `expandedPolyMatrix`, `exists_injective_nodes_expandedMatrix_mulVec_injective`), and then
+adding the fixed vector `eps A^(k)(z + t_i)`, which only translates the packet and so changes nothing.
+
+## Lean progress: one determinant polynomial per relation shape
+
+`ShapeDeterminantPolynomial.lean` (wired, axiom-clean) removes the uncountability that stood between
+the transversality layer and (9):
+
+- `shapeDeterminant q n exponent z` -- the determinant of the corpus's indeterminate expanded
+  evaluation matrix with the *nodes fixed*: a single polynomial in the jet coordinates alone.  The
+  node variables are substituted away with `bind₁`, and `eval_bind₁_sumElim` computes the result;
+- **`eval_shapeDeterminant`** -- it evaluates to the numeric determinant of the expanded evaluation
+  matrix at that jet packet;
+- **`exists_injective_nodes_shapeDeterminant_ne_zero`** -- every shape has a packet of *pairwise
+  distinct* nodes at which the determinant polynomial is a nonzero polynomial.  This is the corpus's
+  full-column-rank theorem, restated as nonvanishing of one polynomial;
+- **`coeff_eq_zero_of_shapeDeterminant_ne_zero`** -- and where that polynomial does not vanish, the
+  only coefficient vector annihilated by the evaluation matrix is zero.
+
+So a relation of a fixed shape is excluded by the nonvanishing of a *single* polynomial in the
+observed jets.  Shapes are countable, so this is exactly the input
+`residual_setOf_forall_eval_observation_ne_zero` takes, and the uncountable family of coefficient
+vectors never has to be quantified over in the Baire argument.
+
+The two halves of (9) are now both formal:
+
+- **analysis**: `locallySurjective_outerJetObservation` -- the outer jet packet is a locally
+  surjective observation of the mass parameter;
+- **algebra**: `exists_injective_nodes_shapeDeterminant_ne_zero` and
+  `coeff_eq_zero_of_shapeDeterminant_ne_zero` -- one nonzero polynomial per shape excludes every
+  relation of that shape.
+
+What is left is to name the shapes -- to see the corpus's `FiniteDifferentialPattern` index as a
+countable type and match its `expandedDifferentialEvaluationMatrix` rows with the coordinates of the
+outer jet observation -- and then to add the fixed vector `eps A^(k)(z + t_i)`, which only translates
+the packet.
+
+## Lean progress: the shapes are countable
+
+`RelationShapeCountable.lean` (wired, axiom-clean) names the index the Baire argument runs over:
+
+- `RelationShape` -- the discrete data of a differential relation: the degree in the spectral
+  variable, the jet depth, the number of expanded monomials, and their exponent vectors.  The
+  coefficients are *not* part of it -- they are eliminated by the shape determinant;
+- `instCountableFinsuppFin` and **`Countable RelationShape`** -- all of that data is countable
+  (`Fin n →₀ ℕ` is countable because the domain is finite);
+- **`residual_iInter`** -- a countable family of residual sets has residual intersection, so one
+  residual set per shape may be intersected.
+
+This settles the point that made the naive Baire argument impossible: the relations themselves form
+an uncountable family, but their *shapes* do not, and by
+`coeff_eq_zero_of_shapeDeterminant_ne_zero` one polynomial per shape excludes all of that shape's
+relations at once.
+
+The three ingredients of (9) are now individually formal and unconditional:
+
+| ingredient | Lean |
+|---|---|
+| jet controllability of the positive masses | `locallySurjective_outerJetObservation` |
+| coefficient elimination per shape | `exists_injective_nodes_shapeDeterminant_ne_zero`, `coeff_eq_zero_of_shapeDeterminant_ne_zero` |
+| Baire over shapes | `residual_setOf_forall_eval_observation_ne_zero`, `residual_iInter`, `Countable RelationShape` |
+
+The remaining work is the dictionary: matching the rows of
+`expandedDifferentialEvaluationMatrix` with the coordinates of the outer jet observation, so that
+"the observation avoids the shape determinant's zero set" reads as "no relation of that shape holds".
+
+## Lean progress: the coordinate dictionary
+
+`JetPacketReindex.lean` (wired, axiom-clean) matches the two coordinate systems that the two halves
+of (9) speak in:
+
+- `sigmaJetIndexEquiv` -- the jet packet of `r` translates observed at a packet of points is indexed
+  by triples (point, member, order); the expanded evaluation matrix indexes its jet variables by
+  pairs (point, folded order).  Those index sets are equivalent, the fold being `finProdFinEquiv`;
+- `sigmaJetHomeomorph` -- hence the two packet spaces are homeomorphic;
+- **`LocallySurjectiveObservation.congr_homeomorph`** -- a locally surjective observation stays one
+  after any homeomorphic change of coordinates on the target;
+- **`locallySurjectiveObservation_reindex`** -- so the outer jet observation may be read directly in
+  the `row × Fin n` coordinates that `expandedDifferentialEvaluationMatrix` consumes.
+
+With this, every object in (9) is expressed in a single coordinate system:
+
+- the observation `u |-> y` with `y : row × Fin n -> C`, locally surjective;
+- the shape determinant `shapeDeterminant q n exponent z`, a nonzero polynomial in exactly those
+  `y`-variables;
+- the conclusion `coeff_eq_zero_of_shapeDeterminant_ne_zero`, which turns nonvanishing of that
+  polynomial at `y` into the vanishing of every coefficient vector of the shape.
+
+The final statement of (9) is now the composition of pieces that all typecheck against each other:
+intersect, over the countably many shapes, the residual sets produced by
+`residual_setOf_forall_eval_observation_ne_zero` from the shape determinants; on that intersection no
+relation of any shape holds, which is the freeness of the translated outer family.  Adding the fixed
+carrier translates `eps A(. + t_i)` changes nothing, since it only translates the observed packet.

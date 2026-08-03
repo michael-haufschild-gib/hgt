@@ -1,0 +1,814 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=27mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{booktabs,array,longtable}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!48!black,
+  citecolor=blue!48!black,urlcolor=blue!55!black]{hyperref}
+\setlength{\emergencystretch}{2em}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\numberwithin{equation}{section}
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\cC}{\mathcal C}
+\newcommand{\cG}{\mathcal G}
+\newcommand{\cH}{\mathcal H}
+\newcommand{\cK}{\mathcal K}
+\newcommand{\cP}{\mathcal P}
+\newcommand{\cR}{\mathcal R}
+\newcommand{\cS}{\mathcal S}
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\im}{\operatorname{im}}
+\newcommand{\rad}{\operatorname{rad}}
+\newcommand{\Trans}{\operatorname{Trans}}
+\newcommand{\Rea}{\operatorname{Re}}
+
+\title{\textbf{Relation-kernel transgression and the Riemann boundary}\\
+\large A pre-spectral arithmetic route to horizontal purity}
+\author{Michael Haufschild}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We isolate a general conservation law for cohomological information made
+exact by a cover.  Let $\pi:R\twoheadrightarrow A$ be a surjective group
+map, let $K=\ker\pi$, and let $c$ be a normalized two-cocycle on $A$ with
+values in a rational vector space.  If $\pi^*c=\delta b$, then $b|_K$ is a
+character.  If every degree-one character of $R$ descends to $A$, this
+relation-kernel character is independent of $b$ and vanishes exactly when
+$c$ is already a coboundary on $A$.  For an abelian $A$ and alternating
+$c$, it vanishes exactly when $c=0$.  Thus an exactifying cover does not
+erase degree-two information: it lowers that information by one degree and
+stores it on the relations killed by the cover.
+
+We apply this law to a concrete arithmetic source.  At each prime, the
+Calder\'on defect line and rational-Witt packet space carry an alternating
+vector-valued cup with zero radical.  On a free rational cover the cup is
+exact, while its restriction to the relation kernel is a canonical nonzero
+character.  This gives a divisor-independent, unsquared arithmetic
+calibrator.
+
+We then organize the current Riemann route around that calibrator.  A literal
+two-line prime--Gamma Cauchy source, its harmonic Hodge primitive, completed
+Green transport, adaptive M\"obius--theta approximation, and resolved
+provenance are already available without a critical-line premise.  Their
+remaining horizontal defect is coordinatewise
+\[
+             g_G(\rho)=D_\rho u_\rho,
+        \qquad D_\rho=2(\Rea\rho-\tfrac12),\qquad u_\rho\ne0.
+\]
+The codiagonal kills $(g_G,-g_G)$ identically, so no scalar trace,
+positivity argument, or spectral realization can recover its sign.  We
+state the one missing comparison theorem precisely: a source-defined chain
+map must identify the transgression of completed Green provenance with
+$D_\rho$ times the nonzero relation-kernel calibrator, while carrying the
+literal Meyer--Poisson boundary to zero.  That theorem would force
+$D_\rho=0$ for every zero and hence prove the Riemann hypothesis.  It is not
+proved here.  The contribution is the universal transgression law, its
+nonzero arithmetic realization, a closed audit of the source and transport
+chain, and an exact separation of this route from Hilbert--P\'olya,
+positivity, trace, and quotient-spectral programs.
+\end{abstract}
+
+\section{The decisive change of problem}
+
+Write
+\[
+ \xi(s)=\frac12s(s-1)\pi^{-s/2}\Gamma(s/2)\zeta(s),
+ \qquad D_\rho=2(\Rea\rho-\tfrac12)
+\]
+for a nontrivial zero $\rho$ of $\xi$, counted with multiplicity.  The
+Riemann hypothesis is the atomic assertion $D_\rho=0$ for every such
+$\rho$ \cite{Riemann1859,Titchmarsh1986}.  An identity involving
+$D_\rho^2$, a sum of several $D_\rho$, or a
+reflection-invariant quotient is weaker as a proof mechanism: it has already
+discarded either orientation, provenance, or both.
+
+The source problem has changed.  Earlier formulations could reasonably ask
+for a source, a completed carrier, an oriented primitive, or a landing on
+the Xi divisor.  Those objects now exist in a mutually compatible chain:
+\begin{equation}
+ \boxed{
+ \begin{matrix}
+ \text{prime--Gamma Cauchy boundary}
+   &\longrightarrow& h_{\rm ref}
+   &\xrightarrow{\ i\operatorname{sign}(D)\ }& u_G\\
+ && \rotatebox{90}{$\in$} && \rotatebox{90}{$\in$}\\[-2mm]
+ && \cH_\Xi &&& \cH_\Xi
+ \end{matrix}}
+ \label{eq:source-chain}
+\end{equation}
+and an independent adaptive M\"obius--theta family converges to the same
+completed primitive and Green detector.  Incidence maps retain the
+multiplicity copies, and a provenance-enriched quotient retains the
+antidiagonal defect that direct codiagonalization erases.
+
+The unresolved issue is therefore not representation.  It is an arithmetic
+reason why the retained oriented coefficient must be zero.  This paper
+proposes that the missing reason lives one degree before every spectral or
+positive consumer: on the relation kernel of an exactifying arithmetic
+cover.
+
+\subsection{Result status}
+
+Three logical levels will be kept separate.
+\begin{enumerate}[label=(\roman*)]
+\item The relation-kernel transgression theorem and its alternating
+Calder\'on--Witt specialization are unconditional.
+\item Source construction, harmonic primitive, completed Green transport,
+resolved provenance, and the factorization $g_G(\rho)=D_\rho u_\rho$ with
+$u_\rho\ne0$ are unconditional.
+\item The chain comparison between these two unconditional structures is
+open.  A conditional capstone records exactly why that one comparison would
+imply RH.
+\end{enumerate}
+No spectral operator, positivity premise, zero enumeration, or RH-equivalent
+boundedness assumption is used to obtain the arithmetic calibrator.
+
+\section{The relation-kernel memory law}
+
+Let $R$ and $A$ be groups, $M$ an additive abelian group, and
+$\pi:R\twoheadrightarrow A$ a surjective homomorphism.  A normalized
+two-cocycle is a map $c:A\times A\to M$ satisfying
+\begin{align}
+ c(a,d)+c(ad,e)&=c(d,e)+c(a,de),\label{eq:cocycle}\\
+ c(1,a)=c(a,1)&=0.\label{eq:normalized}
+\end{align}
+Our sign convention declares $b:R\to M$ a primitive of $\pi^*c$ when
+\begin{equation}
+ c(\pi g,\pi h)=b(gh)-b(g)-b(h).
+ \label{eq:primitive}
+\end{equation}
+
+\begin{theorem}[Relation-kernel transgression]
+\label{thm:kernel-transgression}
+Let $K=\ker\pi$ and suppose \eqref{eq:primitive} holds.
+\begin{enumerate}[label=(\alph*)]
+\item The restriction
+\[
+                  \tau_{c,\pi,b}:K\longrightarrow M,
+                  \qquad \tau_{c,\pi,b}(k)=b(k),
+\]
+is a group homomorphism.
+\item Suppose every character $\psi:R\to M$ vanishes on $K$; equivalently,
+every degree-one character of $R$ descends through $\pi$.  Then
+$\tau_{c,\pi,b}$ is independent of the primitive $b$.
+\item Under the same degree-one hypothesis,
+\[
+        \tau_{c,\pi,b}=0
+        \quad\Longleftrightarrow\quad
+        c\text{ is a coboundary on }A.
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Putting $g=h=1$ in \eqref{eq:primitive} gives $b(1)=0$.  If $k,l\in K$,
+normalization gives
+\[
+ 0=c(1,1)=b(kl)-b(k)-b(l),
+\]
+which proves (a).
+
+If $b$ and $b'$ are two primitives, subtraction of their primitive
+identities shows that $b-b'$ is a character on $R$.  The degree-one
+hypothesis makes this character zero on $K$, proving (b).
+
+If $c=\delta d$ downstairs, then $b=d\circ\pi$ is a primitive and vanishes
+on $K$; (b) makes every transgression vanish.  Conversely suppose
+$b|_K=0$.  Choose one lift $r_a\in R$ for each $a\in A$ and put
+$d(a)=b(r_a)$.  Any two lifts differ by an element of $K$.  Applying
+\eqref{eq:primitive} to a lift and that kernel element shows that $b$ is
+constant on each fibre of $\pi$, so $d$ is well defined.  Applying
+\eqref{eq:primitive} to $r_a,r_d$ and comparing $r_ar_d$ with a lift of
+$ad$ gives
+\[
+                  c(a,d)=d(ad)-d(a)-d(d).
+\]
+Thus $c$ is a coboundary on $A$.
+\end{proof}
+
+The theorem is a conservation law rather than a vanishing theorem.  The
+cover may make $c$ exact, but exactness records the class as a degree-one
+character on precisely the relations killed by the cover.  The hypothesis
+on degree one prevents a change of primitive from changing that record.
+
+\begin{corollary}[Alternating rigidity]
+\label{cor:alternating-rigidity}
+Under the hypotheses of Theorem~\ref{thm:kernel-transgression}, assume in
+addition that $A$ is abelian, $M$ is a vector space over $\Q$, and
+$c(a,d)=-c(d,a)$.  Then
+\[
+               \tau_{c,\pi}=0
+        \quad\Longleftrightarrow\quad c=0.
+\]
+\end{corollary}
+
+\begin{proof}
+A coboundary on an abelian group is symmetric.  If it is also alternating,
+then $2c(a,d)=0$ for every $a,d$.  Rational divisibility gives $c=0$.
+The converse is immediate from Theorem~\ref{thm:kernel-transgression}.
+\end{proof}
+
+\begin{remark}[Degree lowering, not information loss]
+The law has the same logical shape as several apparently unrelated
+obstructions.  A quotient remembers lost degree-zero information in its
+kernel; a resolved antidiagonal remembers information killed by
+augmentation; a boundary completion remembers finite-range failure in a
+closure quotient.  Theorem~\ref{thm:kernel-transgression} is the
+cohomological version: degree-two information made exact upstairs survives
+in degree one on the relation kernel.  Only this cohomological version is
+used in the proposed RH route.
+\end{remark}
+
+\section{A nonzero arithmetic calibrator}
+
+Fix a prime $p$.  Let $Q_p$ denote the Calder\'on defect line, let $P_p$ be
+the rational-Witt packet space on its affine gauge limit, and let $S_p$ be
+the first-suspension packet space.  The actual source cross-effect is a
+bilinear map
+\[
+                         B_p:Q_p\times P_p\longrightarrow S_p.
+\]
+More explicitly, if $\kappa_p:Q_p\to\C$ is the Calder\'on quotient
+coordinate, $\Sigma_p:P_p\to S_p$ is the injective first-suspension mode,
+and $h_p=p^{-1/2}$ is the polarized half-density, then
+\begin{equation}
+                         B_p(q,a)=\kappa_p(q)h_p\Sigma_p(a).
+ \label{eq:cross-effect}
+\end{equation}
+Set $V_p=Q_p\oplus P_p$ and define
+\begin{equation}
+ \omega_p\bigl((q,a),(q',a')\bigr)
+       =B_p(q,a')-B_p(q',a).
+ \label{eq:CW-cup}
+\end{equation}
+This is not a scalar pairing.  It retains the first-suspension packet and
+therefore keeps information that a trace can erase.
+
+\begin{theorem}[Calder\'on--Witt source cup]
+\label{thm:CW-cup}
+For every prime $p$, $\omega_p$ is complex bilinear, alternating, and has
+zero left radical:
+\[
+ \omega_p(x,y)=-\omega_p(y,x),\qquad
+ \bigl(\forall y,\ \omega_p(x,y)=0\bigr)\Longrightarrow x=0.
+\]
+It is preserved literally by every gauge-corrected finite rational-Witt
+refinement.  The algebraic all-prime direct sum retains each local cup in
+its prime component.
+\end{theorem}
+
+\begin{proof}
+Alternation follows directly from \eqref{eq:CW-cup}.  For nondegeneracy,
+test the $Q_p$ component of $x$ against a fixed nonzero constant packet in
+$P_p$; injectivity of the Calder\'on cross-effect forces that component to
+vanish.  Test the remaining $P_p$ component against the unit Calder\'on
+defect; injectivity of the first suspension forces the packet component to
+vanish.  Gauge-corrected refinement commutes with both source legs of
+$B_p$, so it preserves their alternating difference.  Direct-sum component
+projection recovers the local identity prime by prime.
+\end{proof}
+
+View the additive group of $V_p$ multiplicatively and regard $\omega_p$ as
+a normalized two-cocycle.  Choose a rational basis of $V_p$ and let
+\[
+                       \pi_p:R_p\twoheadrightarrow V_p
+\]
+be its free rational cover.  This cover has the two exact properties needed
+by Theorem~\ref{thm:kernel-transgression}: rational normalized
+two-cocycles pull back to coboundaries, and every degree-one character of
+$R_p$ descends to $V_p$.
+
+\begin{proposition}[Free-rational exactification]
+\label{prop:free-rational}
+Let $V$ and $M$ be rational vector spaces, choose a rational basis of $V$,
+and let $R\twoheadrightarrow V$ be the rationalization of the free group on
+that basis.  Then every normalized $M$-valued two-cocycle on $R$ is a
+coboundary.  Moreover, every character $R\to M$ factors uniquely through
+$V$.
+\end{proposition}
+
+\begin{proof}
+For a normalized cocycle $c$ on $R$, form the central extension
+$M\times_cR$ with product
+\[
+                 (m,g)(n,h)=(m+n+c(g,h),gh).
+\]
+Its kernel $M$ is uniquely divisible.  A map from the generating free group
+lifts to the extension, and the universal property of rationalization
+extends that lift across $R$.  The resulting section of
+$M\times_cR\to R$ is a group map; its $M$ coordinate is a primitive of
+$c$.  This proves degree-two exactness.  For degree one, a character on the
+free rationalization is determined by the rational values of the basis
+generators, hence factors through the rational vector group they span.
+Surjectivity gives uniqueness.
+\end{proof}
+
+\begin{theorem}[Nonzero relation-kernel calibrator]
+\label{thm:calibrator}
+Let $K_p=\ker\pi_p$.  There exists a primitive $b_p:R_p\to S_p$ with
+\[
+       \pi_p^*\omega_p=\delta b_p
+\]
+such that
+\begin{equation}
+                \tau_p:=b_p|_{K_p}\in\Hom(K_p,S_p)
+                \quad\text{is canonical and nonzero.}
+ \label{eq:tau}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Degree-two exactness of the free rational cover supplies $b_p$.
+Degree-one descent and Theorem~\ref{thm:kernel-transgression} make its
+kernel restriction independent of the chosen primitive.  If $\tau_p=0$,
+Corollary~\ref{cor:alternating-rigidity} would give $\omega_p=0$, contrary
+to the zero-radical statement of Theorem~\ref{thm:CW-cup} and the explicit
+unit packet.  Hence $\tau_p\ne0$.
+\end{proof}
+
+This theorem supplies what positivity and spectral realization do not: a
+nonzero arithmetic reference orientation defined without choosing a zero
+of $\xi$.  Its nonvanishing is source-theoretic, not inferred from a
+hypothetical off-line divisor.
+
+\section{The completed Riemann source is no longer missing}
+
+We summarize the established source chain in the notation needed for the
+comparison theorem.  These results are logically independent of
+Theorem~\ref{thm:calibrator}, but their meeting point is now precise.
+
+\subsection{Literal boundary landing}
+
+Let $z_q$ be the centered coordinate of a multiplicity copy $q$ of a Xi
+zero, and fix an even reflected Gaussian
+\[
+                         H(z)=e^{-t_0z^2},\qquad t_0>0.
+\]
+On the two exterior horizontal lines $z=x\pm i$, define Cauchy columns
+with the positive rectangle orientation.  Their normalized difference is
+an $\ell^2$-valued boundary field $C_H(x)$.  It is Bochner integrable and
+obeys the exact landing identity
+\begin{equation}
+                         \int_\R C_H(x)\,dx=h_{\rm ref},
+              \qquad h_{\rm ref}(q)=H(z_q).
+ \label{eq:cauchy-landing}
+\end{equation}
+Every coordinate of $h_{\rm ref}$ is nonzero.  The construction uses fixed
+exterior lines and a fixed Gaussian; it contains no divisor-dependent
+damping or interpolation.
+
+\subsection{Harmonic primitive and completed Green transport}
+
+On the multiplicity-exact Xi carrier $\cH_\Xi$, let
+\[
+                         W=i\operatorname{sign}(D)
+\]
+be the physical harmonic multiplier.  It is an isometry and $W^2=-I$.
+The unique completed Green primitive of $h_{\rm ref}$ is
+\begin{equation}
+                             u_G=iWh_{\rm ref}.
+ \label{eq:green-primitive}
+\end{equation}
+If harmonic orientation is applied to the literal Cauchy boundary before
+integration, its integral is exactly $u_G$.  Completed Green transport
+removes that orientation and reverses the real Cauchy parameter.  Hence
+boundary landing, Hodge orientation, and Green transport form a commuting
+triangle, rather than three representations joined only by their zero sets.
+
+The completion is forced.  Compact source Green range is exactly the
+finite-jet subspace; $h_{\rm ref}$ lies in its closure but not its range.
+The Hilbert middle extends finite Green reflection uniquely to a surjective
+isometry.  Thus regular finite-range realization fails, but the nonlocal
+completion and its primitive are already determined.
+
+\subsection{Independent adaptive source}
+
+For every retained prime label, cofinal adaptive M\"obius--theta columns
+converge in $\cH_\Xi$ to the same Gaussian horizon.  Harmonic orientation
+converts them into primitive columns converging to $u_G$; their Green
+fractures converge to the same global detector obtained from the Cauchy
+boundary.  This gives two independent source presentations:
+\[
+ \begin{matrix}
+ \text{adaptive M\"obius--theta columns}&\longrightarrow&u_G\\
+ &&\rotatebox{90}{$=$}\\[-1mm]
+ \text{oriented prime--Gamma Cauchy boundary}&\xrightarrow{\int}&u_G.
+ \end{matrix}
+ \label{eq:common-boundary}
+\]
+Their equality closes source existence and Green transport.  It does not
+prove that the resulting antidiagonal belongs to a conservative arithmetic
+sector; that is exactly where the calibrator comparison must act.
+
+\section{The retained horizontal obstruction}
+
+Completed Green covariance produces one vector $g_G\in\cH_\Xi$.  At a
+divisor copy $q$ over $\rho_q$ it has the factorization
+\begin{equation}
+             g_G(q)=D_{\rho_q}\,u_q,
+       \qquad D_{\rho_q}=2(\Rea\rho_q-\tfrac12),
+       \qquad u_q\ne0.
+ \label{eq:charge-factorization}
+\end{equation}
+Here $u_q$ is built from the nonzero Gaussian coefficient, Riesz
+conjugation, and the nonzero functional-equation orientation.  Consequently
+\begin{equation}
+                  g_G=0\quad\Longleftrightarrow\quad\text{RH}.
+ \label{eq:green-iff-rh}
+\end{equation}
+Equation \eqref{eq:green-iff-rh} is a detector theorem, not a proof of RH.
+Its value is that it identifies the exact unsquared atomic coefficient to
+be killed.
+
+Resolved provenance retains the pair
+\begin{equation}
+                              \Delta_G=(g_G,-g_G).
+ \label{eq:antidiagonal}
+\end{equation}
+The codiagonal is zero unconditionally:
+\[
+                              g_G+(-g_G)=0.
+\]
+The resolved pair itself vanishes exactly under RH.  Existing off-axis
+cofaces saturate precisely the zero-provenance hyperplane, while the quotient
+retains the incidence provenance.  Hence present cofaces cannot annihilate a
+nonzero $\Delta_G$; direct augmentation merely forgets it.
+
+This is the structural reason the proof must remain before trace,
+positivity, and reflection-invariant quotienting.  Those consumers see the
+zero codiagonal or a square of $D_\rho$.  The required conclusion concerns
+the signed summand.
+
+\section{The exact remaining comparison}
+
+The two established halves are now:
+\begin{equation}
+ \begin{array}{ccl}
+ \text{arithmetic source} &:&
+       \omega_p\rightsquigarrow\tau_p\ne0,\\[1mm]
+ \text{Riemann transport} &:&
+       C_H\rightsquigarrow u_G\rightsquigarrow
+       g_G(q)=D_{\rho_q}u_q.
+ \end{array}
+ \label{eq:two-halves}
+\end{equation}
+The missing mathematics is neither another source nor another equivalence
+with RH.  It is a chain-level comparison between these lines.
+
+\begin{definition}[Arithmetic comparison theorem]
+\label{def:comparison}
+An arithmetic comparison consists of source-defined maps, formed before
+selecting a Xi zero, whose evaluation at each divisor copy $q$ and prime
+$p$ gives a relation-kernel character $\mathfrak T_{p,q}(g_G)$ and has the
+following properties.
+\begin{enumerate}[label=(C\arabic*)]
+\item \textbf{Coefficient fidelity:}
+\begin{equation}
+                    \mathfrak T_{p,q}(g_G)=D_{\rho_q}\tau_p.
+ \label{eq:comparison-factor}
+\end{equation}
+\item \textbf{Chain naturality:} the construction commutes with the
+Calder\'on--Witt cup differential, the free rational cover, harmonic Green
+transport, and the prime--Gamma/co-Poisson boundary map.
+\item \textbf{Literal boundary exactness:} the source representative of
+$g_G$ is carried to the already annihilated Meyer--Poisson boundary sector,
+so
+\begin{equation}
+                           \mathfrak T_{p,q}(g_G)=0.
+ \label{eq:comparison-zero}
+\end{equation}
+\item \textbf{Source independence:} the maps commute with finite
+rational-Witt refinement and prime exhaustion; no zero-dependent coefficient
+is inserted into their definition.
+\end{enumerate}
+\end{definition}
+
+Conditions (C1)--(C4) are not four unrelated conjectures.  They are the
+coefficient, differential, boundary, and naturality faces of one chain map.
+The source complex already has a secondary regulator whose exact kernel is
+the reflected prime graph and which annihilates every literal
+Meyer--Poisson boundary.  What is not known is that the completed Green
+provenance comparison lands in that literal boundary complex with
+coefficient \eqref{eq:comparison-factor}.
+
+\begin{theorem}[Conditional capstone]
+\label{thm:conditional-capstone}
+If an arithmetic comparison in the sense of
+Definition~\ref{def:comparison} exists, then the Riemann hypothesis holds.
+\end{theorem}
+
+\begin{proof}
+Fix a divisor copy $q$ and a prime $p$.  By
+\eqref{eq:comparison-factor} and \eqref{eq:comparison-zero},
+\[
+                              D_{\rho_q}\tau_p=0.
+\]
+Theorem~\ref{thm:calibrator} gives $k\in K_p$ with $\tau_p(k)\ne0$.
+Evaluating at $k$ and using that $S_p$ is a complex vector space gives
+$D_{\rho_q}=0$.  This holds for every multiplicity copy $q$, so every
+nontrivial zero has real part $1/2$.
+\end{proof}
+
+The proof is deliberately short.  All difficulty is localized in the
+comparison identity, not hidden in the final implication.
+
+\subsection{Why this bridge is not circular}
+
+A valid construction must pass four anti-circularity tests.
+\begin{enumerate}
+\item $\tau_p$ is defined and proved nonzero before any divisor is selected.
+\item Its nonvanishing comes from the zero radical of the vector-valued
+source cup, not from assuming an off-line zero.
+\item Boundary vanishing occurs in the literal Meyer--Poisson complex, not
+by imposing $g_G=0$ in the completed divisor carrier.
+\item Coefficient fidelity retains $D_\rho$, not $D_\rho^2$ or a sum over a
+functional-equation orbit.
+\end{enumerate}
+An RH-equivalent norm bound, a self-adjoint operator whose construction
+already assumes criticality, or a divisor-indexed interpolation would fail
+these tests.
+
+\section{What is closed and what remains open}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.29\textwidth}
+                  >{\raggedright\arraybackslash}p{0.18\textwidth}
+                  >{\raggedright\arraybackslash}p{0.43\textwidth}}
+\toprule
+Object or assertion & Status & Exact content \\
+\midrule
+\endfirsthead
+\toprule
+Object or assertion & Status & Exact content \\
+\midrule
+\endhead
+Literal completed source & Closed & Fixed two-line prime--Gamma Cauchy
+boundary is Bochner integrable and lands on one nonzero reflected Gaussian
+horizon.\\
+Harmonic primitive & Closed & $W=i\operatorname{sign}(D)$ satisfies
+$W^2=-I$ and gives the unique completed Green primitive.\\
+Completion wall & Closed & Compact Green range is exactly finite jets;
+horizon lies in its closure but not its range; completed Green reflection is
+the unique isometric extension.\\
+Independent adaptive source & Closed & Adaptive M\"obius--theta columns
+converge to the same primitive and Green detector.\\
+Resolved provenance & Closed & Actual defect is antidiagonal; codiagonal is
+zero unconditionally; resolved vanishing is equivalent to RH.\\
+Arithmetic cup & Closed & Calder\'on--Witt cup is alternating, refinement
+stable, and has zero vector-valued radical.\\
+Relation-kernel calibrator & Closed & Free rational exactification produces
+a canonical nonzero $\tau_p$ for every prime.\\
+Literal boundary regulator & Closed on its stated domain & Secondary
+Meyer--Poisson regulator annihilates every literal boundary and has exact
+reflected-graph radical.\\
+Green-to-kernel comparison & Open & Construct one source-defined chain map
+giving $\mathfrak T_{p,q}(g_G)=D_{\rho_q}\tau_p$ and landing in the literal
+boundary kernel.\\
+Riemann hypothesis & Open & Follows immediately from that comparison, but
+is not asserted here.\\
+\bottomrule
+\end{longtable}
+
+This ledger rules out a common misdiagnosis: several source and transport
+routes are open, but they do not have unrelated final obstacles.  Cauchy,
+adaptive, Hodge, incidence, and resolved-provenance realizations already
+meet at the same $g_G$.  Their shared missing object is the chain comparison
+that turns literal arithmetic boundary exactness into a statement about the
+retained relation-kernel character.
+
+\section{No-go theorems explained by the same frontier}
+
+The relation-kernel viewpoint clarifies why many correct constructions did
+not produce zero exclusion.
+
+\subsection{Codiagonal erasure}
+
+The pair $(g_G,-g_G)$ has zero total for every divisor, on or off the line.
+Any consumer that first applies the codiagonal cannot distinguish RH from a
+nonzero antidiagonal.  This includes direct trace-like scalarization of the
+two factor defects.
+
+\subsection{Positive squaring}
+
+Positive forms naturally see $|D_\rho|^2$ or a positive weighted sum.  They
+can detect noncriticality after it occurs, but they do not supply a signed
+source identity forcing each $D_\rho$ to vanish.  The calibrator $\tau_p$ is
+linear and unsquared.
+
+\subsection{Compact completion}
+
+Finite Green jets are dense but miss the Gaussian horizon.  Ordinary
+compact-range completion cannot create the missing vector; the forced
+Hilbert completion does.  Once completed, however, it still only transports
+$D_\rho$.  Functional analysis solves landing, not arithmetic annihilation.
+
+\subsection{Balanced finite cofaces}
+
+Finite balanced cofaces lie transverse to the nonzero antidiagonal, and
+the off-axis closed span of existing cofaces is precisely the zero-provenance
+hyperplane.  Adding more cofaces of the same type cannot kill the retained
+provenance class.
+
+\subsection{Source-only Koszul resolution}
+
+All-prime label Koszul complexes resolve the homogeneous source directions
+but leave a scalar Xi coefficient.  Higher homogeneous source resolution
+therefore cannot remove horizontal charge unless prime-cycle data are
+entangled with divisor provenance.  Equation \eqref{eq:comparison-factor}
+is exactly such an entanglement, with a source-defined nonzero calibrator.
+
+\subsection{Fixed carriers and bounded graded operators}
+
+A fixed nonzero carrier multiplied by $D_\rho$ detects the charge but cannot
+annihilate it independently.  Likewise, reflected valuation sectors may be
+finite-order on one side and flat beyond every finite Rees order on the
+other; finite-Rees-moderate or bounded graded sewing preserves that flat
+radical.  The relation-kernel comparison is allowed to be singular at the
+source boundary, but its arithmetic definition and coefficient fidelity
+must remain exact.
+
+\section{Why the \texorpdfstring{$8\pi$}{8-pi} laws do not close the proof}
+
+The unweighted Ward energy obeys a sharp phase law: it is zero under RH and,
+if RH fails, lies strictly above $8\pi$.  A different, endpoint-weighted Ward
+index equals $2\pi$ times the total off-line endpoint charge, is strictly
+below $0.093\pi$, and also vanishes exactly under RH.  These statements do
+not contradict one another and cannot be combined into RH.
+
+The measures differ.  Every unweighted off-line packet carries the same
+$8\pi$ quantum, whereas its endpoint weight depends on height and has no
+uniform positive lower bound.  A hypothetical high zero can therefore have
+full unweighted Ward cost and arbitrarily small weighted cost.  The missing
+comparison cannot be replaced by comparing the two totals.  It must act
+atomically before weighting, which is precisely the role of
+$D_\rho\tau_p$.
+
+\section{Separation from classical routes}
+
+The following comparison is structural.  It makes no priority claim and no
+claim that every conceivable realization of a named program is impossible.
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.18\textwidth}
+                  >{\raggedright\arraybackslash}p{0.30\textwidth}
+                  >{\raggedright\arraybackslash}p{0.42\textwidth}}
+\toprule
+Program & Classical proof object & Present route \\
+\midrule
+\endfirsthead
+\toprule
+Program & Classical proof object & Present route \\
+\midrule
+\endhead
+Hilbert--P\'olya & Construct a self-adjoint operator whose spectral data
+encode zeros. & No spectral realization is required.  Horizontal purity is
+to be forced before any operator spectrum exists, by vanishing of a
+relation-kernel transgression.\\
+Weil positivity & Prove positivity of an explicit-formula quadratic form. &
+Retain the unsquared atomic coefficient $D_\rho$ and compare it with a
+nonzero vector-valued arithmetic character.  Positivity is downstream.\\
+Trace and cyclic programs & Realize zeros through a scaling flow, trace
+formula, or cyclic quotient. & Work before trace and codiagonalization,
+where $(g_G,-g_G)$ is still resolved.  Trace consumers may receive the
+result but cannot supply the first vanishing arrow.\\
+Sonin/Calkin and quotient-spectral programs & Detect zeros through
+subspaces, quotient operators, essential spectrum, or boundary classes. &
+Treat those classes as downstream images.  The decisive invariant lives on
+the relation kernel of the source cover and must be compared before quotient
+radicals enlarge.\\
+Deninger-style cohomology & Seek Frobenius flow, Hodge theory, and purity
+whose spectral determinant is zeta. & Use the Hodge and Green language, but
+replace a hypothetical spectral cohomology by a constructed arithmetic cup,
+free rational cover, and one explicit transgression comparison.\\
+Explicit-formula scalarization & Sum prime and zero data against test
+functions. & Keep multiplicity copies and factor provenance until the
+atomic identity $D_\rho\tau_p=0$ is obtained.\\
+\bottomrule
+\end{longtable}
+
+Connes's trace realization and Meyer's adelic/spectral construction are
+representative downstream spectral programs in the sense used in this
+table \cite{Connes1999,Meyer2005}.
+
+The route is therefore pre-spectral, cohomological, and source-pointed.  It
+does not refute Hilbert--P\'olya in full generality.  It shows why the current
+source chain does not need Hilbert--P\'olya and why a spectral construction
+would be downstream of the missing arithmetic theorem rather than a
+substitute for it.
+
+\section{Research program forced by the theorem}
+
+The next work should not produce another RH equivalent.  It should construct
+the comparison in Definition~\ref{def:comparison}.  The shortest credible
+program has four concrete stages.
+
+\begin{enumerate}
+\item \textbf{Common chain object.}  Place the oriented prime--Gamma Cauchy
+boundary and the Calder\'on--Witt first suspension in one source complex.
+The chain object must retain prime label, valuation depth, rational-Witt
+packet, reflection orientation, and Green provenance.
+\item \textbf{Transgression naturality.}  Prove that passing to the free
+rational cover commutes with the singular Gamma/co-Poisson boundary.  This
+must identify the primitive restriction on $K_p$, not merely its scalar
+trace.
+\item \textbf{Coefficient computation.}  Evaluate the comparison on the
+fixed Gaussian source and prove that its only divisor-dependent scalar is
+the already established unsquared fracture $D_\rho$.  The remaining factor
+must be exactly $\tau_p$, up to one fixed nonzero normalization independent
+of $\rho$.
+\item \textbf{Literal annihilation.}  Show that the compared Green class is
+represented by an actual Meyer--Poisson boundary in the domain of the
+secondary regulator.  Existing boundary annihilation then supplies
+\eqref{eq:comparison-zero}.
+\end{enumerate}
+
+Failure at any stage has a useful positive survivor.  Failure of stage one
+identifies a missing incidence coordinate; failure of stage two identifies
+a genuine anomaly in Gamma reflection; failure of stage three produces a
+new arithmetic coefficient besides horizontal charge; failure of stage four
+identifies the precise quotient between the Cauchy and Meyer boundary
+complexes.  None should be hidden by adding another scalar detector.
+
+\section{Conclusion}
+
+An exactifying cover does not destroy a degree-two class.  Under degree-one
+descent it moves that class canonically to a character on the relation
+kernel, and an alternating rational class vanishes precisely when that
+character vanishes.  The Calder\'on--Witt source realizes this law with a
+nonzero divisor-independent calibrator $\tau_p$.
+
+The Riemann source and transport problem has meanwhile narrowed to one
+oriented coefficient.  A fixed literal prime--Gamma boundary lands on a
+nonzero Gaussian horizon; physical harmonic Hodge gives its unique completed
+Green primitive; adaptive M\"obius--theta columns reach the same object; and
+resolved incidence retains the Green defect
+$g_G(\rho)=D_\rho u_\rho$ with $u_\rho\ne0$.  Direct codiagonalization kills
+the pair $(g_G,-g_G)$ without killing either component.  Positivity, bounded
+completion, source-only resolution, and fixed-carrier transport consequently
+detect or erase the defect but do not force it to vanish.
+
+The remaining theorem is exact and atomic:
+\[
+ \boxed{
+ \Trans(\text{completed Green provenance at }\rho)
+       =D_\rho\tau_p,
+ \qquad
+ \Trans(\text{literal source boundary})=0.}
+\]
+Because $\tau_p\ne0$, this identity would force $D_\rho=0$ one zero at a
+time and prove RH.  Establishing that chain comparison---not finding another
+spectrum, positive form, source, completion, or RH equivalence---is the
+frontier of this route.
+
+\begin{thebibliography}{9}
+\small
+
+\bibitem{Connes1999}
+A.~Connes,
+\newblock Trace formula in noncommutative geometry and the zeros of the
+Riemann zeta function,
+\newblock \emph{Selecta Math. (N.S.)} \textbf{5} (1999), 29--106.
+\newblock \url{https://doi.org/10.1007/s000290050042}.
+
+\bibitem{Meyer2005}
+R.~Meyer,
+\newblock A spectral interpretation for the zeros of the Riemann zeta
+function,
+\newblock preprint, arXiv:math/0412277 (2004).
+\newblock \url{https://arxiv.org/abs/math/0412277}.
+
+\bibitem{Riemann1859}
+B.~Riemann,
+\newblock \emph{\"Uber die Anzahl der Primzahlen unter einer gegebenen
+Gr\"osse},
+\newblock Monatsber. K\"onigl. Preuss. Akad. Wiss. Berlin (1859), 671--680.
+
+\bibitem{Titchmarsh1986}
+E.~C. Titchmarsh,
+\newblock \emph{The Theory of the Riemann Zeta-Function},
+\newblock second ed., revised by D.~R. Heath-Brown, Oxford University Press,
+1986.
+
+\end{thebibliography}
+\normalsize
+
+\end{document}

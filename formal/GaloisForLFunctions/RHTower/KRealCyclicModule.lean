@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.KRealKernelCokernel
-import Mathlib.AlgebraicTopology.SimplicialObject.Basic
+import GaloisForLFunctions.RHTower.PresentedSimplicialObject
 import Mathlib.Algebra.Category.ModuleCat.Basic
 import Mathlib.LinearAlgebra.Quotient.Basic
 
@@ -27,8 +27,6 @@ Riemann-hypothesis premise occurs here.
 noncomputable section
 
 open CategoryTheory
-open CategoryTheory.SimplicialObject
-open scoped Simplicial
 
 universe u v
 
@@ -58,8 +56,8 @@ degree.  Face and degeneracy conventions agree with the rotation
 `(a₀,...,aₙ) ↦ (aₙ,a₀,...,aₙ₋₁)`.
 -/
 structure CyclicModule (R : Type u) [CommRing R] where
-  simplicial : SimplicialObject (ModuleCat.{v} R)
-  cyclic : ∀ n : ℕ, simplicial _⦋n⦌ ⟶ simplicial _⦋n⦌
+  simplicial : PresentedSimplicialObject (ModuleCat.{v} R)
+  cyclic : ∀ n : ℕ, simplicial.degree n ⟶ simplicial.degree n
   cyclic_order : ∀ n, categoricalEndIterate (cyclic n) (n + 1) = 𝟙 _
   cyclic_face_zero : ∀ n,
     cyclic (n + 1) ≫ simplicial.δ (0 : Fin (n + 2)) =
@@ -122,20 +120,20 @@ def Hom.comp {X Y Z : CyclicModule R} (f : Hom X Y) (g : Hom Y Z) : Hom X Z wher
 
 /-- A Real or quaternionic structure on every degree of a cyclic module. -/
 structure KReal (odd : Bool) (X : CyclicModule ℂ) where
-  real : ∀ n, KRealStructure odd (X.simplicial _⦋n⦌)
-  face_naturality : ∀ n (i : Fin (n + 2)) (x : X.simplicial _⦋n + 1⦌),
+  real : ∀ n, KRealStructure odd (X.simplicial.degree n)
+  face_naturality : ∀ n (i : Fin (n + 2)) (x : X.simplicial.degree (n + 1)),
     (real n).sigma (X.simplicial.δ i x) =
       X.simplicial.δ i ((real (n + 1)).sigma x)
-  degeneracy_naturality : ∀ n (i : Fin (n + 1)) (x : X.simplicial _⦋n⦌),
+  degeneracy_naturality : ∀ n (i : Fin (n + 1)) (x : X.simplicial.degree n),
     (real (n + 1)).sigma (X.simplicial.σ i x) =
       X.simplicial.σ i ((real n).sigma x)
-  cyclic_naturality : ∀ n (x : X.simplicial _⦋n⦌),
+  cyclic_naturality : ∀ n (x : X.simplicial.degree n),
     (real n).sigma (X.cyclic n x) = X.cyclic n ((real n).sigma x)
 
 /-- A cyclic morphism equivariant for degreewise Real/quaternionic structures. -/
 structure KRealHom {odd : Bool} {X Y : CyclicModule ℂ}
     (KX : KReal odd X) (KY : KReal odd Y) extends Hom X Y where
-  real_naturality : ∀ n (x : X.simplicial _⦋n⦌),
+  real_naturality : ∀ n (x : X.simplicial.degree n),
     (KY.real n).sigma (toHom.simplicial.app (.op (.mk n)) x) =
       toHom.simplicial.app (.op (.mk n)) ((KX.real n).sigma x)
 

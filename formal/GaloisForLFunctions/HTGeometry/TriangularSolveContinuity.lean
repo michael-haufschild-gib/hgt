@@ -56,6 +56,22 @@ theorem triangularSolve_unique {d : ℂ} (hd : d ≠ 0) (L : ℕ → (ℕ → �
       field_simp
       ring
 
+/-- The triangular solution below a fixed order depends only on the data below that order. -/
+theorem triangularSolve_congr {d d' : ℂ} (hd : d = d') {L L' : ℕ → (ℕ → ℂ) → ℂ}
+    {w w' : ℕ → ℂ} {K : ℕ} (hL : ∀ k ≤ K, ∀ v, L k v = L' k v) (hw : ∀ k ≤ K, w k = w' k) :
+    ∀ k ≤ K, triangularSolve d L w k = triangularSolve d' L' w' k := by
+  intro k
+  induction k using Nat.strong_induction_on with
+  | _ k ih =>
+      intro hk
+      have harg : (fun j => if _ : j < k then triangularSolve d L w j else 0)
+          = fun j => if _ : j < k then triangularSolve d' L' w' j else 0 := by
+        funext j
+        by_cases hj : j < k
+        · rw [dif_pos hj, dif_pos hj, ih j hj (by omega)]
+        · rw [dif_neg hj, dif_neg hj]
+      rw [triangularSolve_eq, triangularSolve_eq, harg, hL k hk, hw k hk, hd]
+
 /-- **The triangular solution is continuous in its data.** -/
 theorem continuousOn_triangularSolve {X : Type*} [TopologicalSpace X] {V : Set X}
     {d : X → ℂ} (hd : ContinuousOn d V) (hdne : ∀ x ∈ V, d x ≠ 0)

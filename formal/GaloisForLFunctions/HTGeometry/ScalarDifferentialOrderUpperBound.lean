@@ -25,9 +25,11 @@ theorem not_algebraicIndependent_of_trdeg_le
     ¬ AlgebraicIndependent K y := by
   intro hy
   have hle := AlgebraicIndependent.lift_cardinalMk_le_trdeg hy
-  rw [Cardinal.mk_fin] at hle
-  simp only [Cardinal.lift_id] at hle
-  have hcast : ((n + 1 : ℕ) : Cardinal) ≤ (n : Cardinal) := le_trans hle h
+  rw [Cardinal.mk_fin, Cardinal.lift_natCast] at hle
+  have h2 : Cardinal.lift.{0} (Algebra.trdeg K M) ≤ Cardinal.lift.{0} ((n : ℕ) : Cardinal) :=
+    Cardinal.lift_le.mpr h
+  rw [Cardinal.lift_natCast] at h2
+  have hcast : ((n + 1 : ℕ) : Cardinal) ≤ ((n : ℕ) : Cardinal) := le_trans hle h2
   rw [Nat.cast_le] at hcast
   omega
 
@@ -59,11 +61,8 @@ theorem exists_scalarDifferentialRelation_of_trdeg_le
   rw [algebraicIndependent_iff_injective_aeval] at hdep
   obtain ⟨Q, hQ0, hQ⟩ : ∃ Q : MvPolynomial (Fin (n + 1)) K, Q ≠ 0 ∧
       MvPolynomial.aeval y Q = 0 := by
-    by_contra hcon
-    push_neg at hcon
-    refine hdep fun Q₁ Q₂ h => ?_
-    by_contra hne
-    exact hcon (Q₁ - Q₂) (sub_ne_zero.mpr hne) (by rw [map_sub, h, sub_self])
+    obtain ⟨Q₁, Q₂, hEq, hne⟩ := Function.not_injective_iff.mp hdep
+    exact ⟨Q₁ - Q₂, sub_ne_zero.mpr hne, by rw [map_sub, hEq, sub_self]⟩
   refine ⟨MvPolynomial.rename (fun i : Fin (n + 1) => ((), (i : ℕ))) Q, ?_,
     scalarDifferentialPolynomialOrder_rename_le Q, ?_⟩
   · intro hzero

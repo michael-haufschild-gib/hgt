@@ -60,6 +60,8 @@ nonabelian Hodge diagrams.  For core matrix $B$ and ramification decoration $r_i
  K_{ij}=1+\frac{B_{ij}}{r_ir_j}\ (i\ne j),\qquad
  K_{ii}=1+\frac{B_{ii}-1}{r_i^2}.
 \]
+At source, this is the normalized survival integral of a cyclic Galois sheet-pair filtration:
+irregularity is the coarea of the heights at which pairs of sheets cease to agree.
 On the common-truncation quotient of the twisted fission tree, $K_{ij}$ is the complementary
 Eggers--Wall contact coordinate of the meet of $i$ and $j$: raw exponent length is rescaled by the
 reciprocal ramification index.  This reparametrization is strictly increasing on every branch.
@@ -293,6 +295,45 @@ The sum $S$ is also the Komatsu--Malgrange irregularity of the endomorphism conn
 dual-Puiseux form developed by Hiroe \cite{Hiroe2017}.  Formula \eqref{eq:source-loop} is the only
 input to the arithmetic argument below.
 
+The following source lemma makes the passage from Galois sheets to $S$ explicit.  Its role is to
+close the source chain, not to assert novelty over the conductor calculation implicit in the
+published loop formula.
+
+\begin{proposition}[Cyclic stabilizer coarea law]\label{prop:cyclic-source}
+Let
+\[
+ q_{\rm char}=\sum_{i=1}^{m}z^{\beta_i/r},
+ \qquad \zeta_r=\exp(2\pi\sqrt{-1}/r),
+ \qquad \sigma_a(q_{\rm char})=\sum_i\zeta_r^{a\beta_i}z^{\beta_i/r}
+\]
+for $a\in\ZZ/r\ZZ$.  If $P_i=(\beta_1,\ldots,\beta_i)$ and
+\[
+ H_i=\{a:\sigma_a\text{ fixes every monomial indexed by }P_i\},
+ \qquad H_0=\ZZ/r\ZZ,
+\]
+then $|H_i|=e_i$.  The sheets whose first difference occurs at
+$\beta_i/r$ form $H_{i-1}\setminus H_i$; hence
+\[
+ \sum_{a,b\in\ZZ/r\ZZ}\Slope\bigl(\sigma_a(q_{\rm char})-
+ \sigma_b(q_{\rm char})\bigr)
+ =\sum_i\beta_i(e_{i-1}-e_i)=S(\beta,e).
+\]
+Moreover $e_m=1$ makes the translate map injective, so its Galois orbit has exactly $r$ sheets, and
+the loop reconstructed from these ordered sheet differences is exactly
+$S(\beta,e)-r^2+1$.
+\end{proposition}
+
+\begin{proof}
+Primitivity of $\zeta_r$ gives $\zeta_r^{aj}=1$ precisely when $r\mid aj$.  If $o(a)$ is the
+additive order of $a$, fixing every exponent in $P_i$ is therefore equivalent to
+$o(a)\mid\gcd(r,P_i)=e_i$.  Thus $H_i$ is the kernel of multiplication by $e_i$ on the cyclic group
+of order $r$, and its order is $e_i$.  The first-difference assertion follows by subtracting two
+successive nested stabilizers.  For one base sheet its difference of level $\beta_i/r$ occurs
+$e_{i-1}-e_i$ times; translation gives $r$ copies among ordered pairs, cancelling the denominator
+$r$.  Finally $e_m=1$ makes the stabilizer trivial, so orbit--stabilizer and the stated loop
+normalization give the last assertions.
+\end{proof}
+
 For two distinct circles $I,J$, their common part is the maximal common Galois-orbit truncation,
 and the fission exponent $f_{I,J}$ is the larger slope of the two remaining parts.  The exact edge
 formula \cite[Lemma~2.2]{Doucot2025Graphs} has one contribution from each level of the common part,
@@ -305,6 +346,53 @@ where $r'$ is the ramification of the other circle.  If both circles are unramif
 \begin{equation}\label{eq:unramified-edge}
  B_{I,J}=\deg(q-q')-1.
 \end{equation}
+
+The diagonal Proposition~\ref{prop:cyclic-source} and the edge formula are instances of one finite
+coarea law.  We record its two-orbit form because it is the source of the contact coordinate used
+throughout the paper.
+
+\begin{theorem}[Galois sheet-pair coarea law]\label{thm:sheet-pair-coarea}
+Write the nonzero common exponents in decreasing order as reduced fractions
+$k_i=n_i/d_i$, put
+\[
+ D_{-1}=1,\qquad D_i=\mathop{\rm lcm}(d_0,\ldots,d_i),
+ \qquad m_i=\frac r{d_i}n_i,
+\]
+and suppose the fission exponent is $s_d/r$, with this side having the larger different-part
+slope.  If $E_i$ is the set of ordered sheet pairs in
+$(\ZZ/r\ZZ)\times(\ZZ/r'\ZZ)$ which agree through the first $i$ common exponents, then
+\[
+ |E_i|=\frac{rr'}{D_i},
+ \qquad
+ |E_{i-1}\setminus E_i|
+ =r\left(\frac{r'}{D_{i-1}}-\frac{r'}{D_i}\right).
+\]
+Consequently
+\begin{equation}\label{eq:pair-coarea-source}
+ \Irr\!\operatorname{Hom}(I,J)
+ =\sum_i m_i\left(\frac{r'}{D_{i-1}}-\frac{r'}{D_i}\right)
+   +s_d\frac{r'}{D_t},
+ \qquad
+ B_{I,J}=\Irr\!\operatorname{Hom}(I,J)-rr'.
+\end{equation}
+Together with Proposition~\ref{prop:cyclic-source}, every diagonal and off-diagonal core entry is
+obtained from the same loss-of-sheet-equality coarea.
+\end{theorem}
+
+\begin{proof}
+At the reduced exponent $n/d$, the phases are
+$\exp(2\pi\sqrt{-1}an/d)$ and $\exp(2\pi\sqrt{-1}bn/d)$.  Coprimality of $n,d$ makes them equal
+exactly when $a\equiv b\pmod d$.  Agreement through a prefix is therefore congruence modulo the
+least common denominator $D_i$.  The difference homomorphism
+\[
+ (\ZZ/r\ZZ)\times(\ZZ/r'\ZZ)\longrightarrow\ZZ/D_i\ZZ,
+ \qquad(a,b)\longmapsto a-b,
+\]
+is surjective, so its kernel has order $rr'/D_i$.  Subtracting consecutive kernels gives the layer
+size.  Multiplication by the common slope $m_i/r$ cancels $r$; the surviving kernel separates at
+the fission slope $s_d/r$.  Summing proves the irregularity identity, and the standard
+$-rr'$ normalization gives the edge identity.
+\end{proof}
 
 For a finite irregular class $\Theta=\sum_{i\in N}n_iI_i$, these numbers form the symmetric core
 matrix $B=(B_{ij})$.  The rescaled off-diagonal entries are
@@ -1110,6 +1198,17 @@ main map.
 \toprule
 Mathematical statement & Lean declaration \\
 \midrule
+Cyclic Galois stabilizers, orbit size and source loop &
+\leanname{cyclicStabilizer_card},
+\leanname{canonical_galoisOrbit_card},
+\leanname{endomorphismIrregularityFromSheets_eq},
+\leanname{diagonalLoopFromSheets_eq} \\
+Two-orbit phase kernel, common-level coarea and edge source formula &
+\leanname{phase_eq_iff_modEq},
+\leanname{commonDifferenceKernel_card},
+\leanname{commonPairIrregularityFromSheets_eq_coarea},
+\leanname{commonPairEdgeFromSheets_eq_sourceFormula},
+\leanname{galois_sheet_pair_coarea_master_law} \\
 Gcd gap below $R+E$ & \leanname{le_sub_of_lt_add_gcd} \\
 Gap above $R+E$ & \leanname{add_twice_le_of_add_lt_of_dvd} \\
 Negative/positive first-deviation laws &
@@ -1137,11 +1236,13 @@ Finite local characteristic fibres &
 \label{tab:lean}
 \end{table}
 
-The formal model encodes the exact decreasing gcd characteristic, signed diagonal loop, divisor
-chain, ordered factorization, pair contact mechanisms, finite decorated matrix and cophenetic
-fission data.  The coefficient choices over $\CC$ and the invocation of the published analytic
-fission-tree realization theorem remain in the paper proof; they are not replaced by a claim about
-formal meromorphic connections in Lean.
+The formal model encodes the exact decreasing gcd characteristic, a genuine complex
+root-of-unity action on finite Puiseux polynomials, its cyclic stabilizers and ordered sheet
+differences, signed diagonal loop, divisor chain, ordered factorization, pair contact mechanisms,
+finite decorated matrix and cophenetic fission data.  The arbitrary coefficient choices used in
+global realization and the invocation of the published analytic fission-tree realization theorem
+remain in the paper proof; they are not replaced by a claim about formal meromorphic connections
+in Lean.
 
 Several stronger statements are intentionally excluded.
 \begin{enumerate}[label=(\roman*)]

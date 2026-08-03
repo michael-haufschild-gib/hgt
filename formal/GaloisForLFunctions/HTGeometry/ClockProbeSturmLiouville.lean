@@ -63,6 +63,7 @@ theorem exists_localSturmProbe {A B : ℝ → ℝ} (hA : ContDiff ℝ 1 A) (hB :
     (hA0 : ∀ t, A t ≠ 0) (a : ℝ) :
     ∃ (w dw : ℝ → ℝ) (ε : ℝ), 0 < ε ∧ w a = 1 ∧
       (∀ t ∈ Ioo (a - ε) (a + ε), HasDerivAt w (dw t) t) ∧
+      (∀ t ∈ Ioo (a - ε) (a + ε), DifferentiableAt ℝ dw t) ∧
       (∀ t ∈ Ioo (a - ε) (a + ε), HasDerivAt (fun s => A s * dw s) (-(B t) * w t) t) := by
   obtain ⟨α, hα0, ε, hε, hode⟩ :=
     (contDiff_sturmField hA hB
@@ -86,7 +87,7 @@ theorem exists_localSturmProbe {A B : ℝ → ℝ} (hA : ContDiff ℝ 1 A) (hB :
   have hshift : ∀ y : ℝ, HasDerivAt (fun z : ℝ => z - a) 1 y := by
     intro y
     simpa using (hasDerivAt_id y).sub_const a
-  refine ⟨fun t => (α (t - a)).2.1, fun t => (α (t - a)).2.2 / A t, ε, hε, ?_, ?_, ?_⟩
+  refine ⟨fun t => (α (t - a)).2.1, fun t => (α (t - a)).2.2 / A t, ε, hε, ?_, ?_, ?_, ?_⟩
   · simp [hα0]
   · intro t ht
     have hta : t - a ∈ Ioo (-ε) ε := by
@@ -97,6 +98,13 @@ theorem exists_localSturmProbe {A B : ℝ → ℝ} (hA : ContDiff ℝ 1 A) (hB :
     have hxx : a + (t - a) = t := by ring
     rw [hxx] at hc
     exact hc
+  · intro t ht
+    have hta : t - a ∈ Ioo (-ε) ε := by
+      obtain ⟨h1, h2⟩ := ht
+      constructor <;> linarith
+    have hc := (hcomp3 (t - a) hta).comp t (hshift t)
+    have hnum : DifferentiableAt ℝ (fun s => (α (s - a)).2.2) t := hc.differentiableAt
+    exact hnum.div (hA.differentiable (by simp) t) (hA0 t)
   · intro t ht
     have hta : t - a ∈ Ioo (-ε) ε := by
       obtain ⟨h1, h2⟩ := ht

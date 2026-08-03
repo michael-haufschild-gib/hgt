@@ -144,6 +144,148 @@ theorem chiJetScalar_image_mem_nhds {y : ℕ → ℂ} (hy : y 0 + Complex.I ≠ 
   rw [himg, hval]
   exact h4
 
+/-- **The chart computes the derivatives of the Cayley exponential.** -/
+theorem chiJetScalar_iteratedDeriv {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
+    (hf : ContDiffOn ℂ (⊤ : ℕ∞) f U) (hne : ∀ w ∈ U, f w + Complex.I ≠ 0) {z : ℂ} (hz : z ∈ U)
+    (k : ℕ) :
+    iteratedDeriv k (fun w => Complex.exp ((f w - Complex.I) / (f w + Complex.I))) z
+      = chiJetScalar (fun j => iteratedDeriv j f z) k := by
+  set f₁ : ℂ → ℂ := fun w => 1 * f w + Complex.I with hf₁def
+  set f₂ : ℂ → ℂ := fun w => (f₁ w)⁻¹ with hf₂def
+  set f₃ : ℂ → ℂ := fun w => -(2 * Complex.I) * f₂ w + 1 with hf₃def
+  have hf₁ : ContDiffOn ℂ (⊤ : ℕ∞) f₁ U := (contDiffOn_const.mul hf).add contDiffOn_const
+  have hf₁ne : ∀ w ∈ U, f₁ w ≠ 0 := by
+    intro w hw
+    simpa [hf₁def] using hne w hw
+  have hf₂ : ContDiffOn ℂ (⊤ : ℕ∞) f₂ U := hf₁.inv hf₁ne
+  have hf₃ : ContDiffOn ℂ (⊤ : ℕ∞) f₃ U := (contDiffOn_const.mul hf₂).add contDiffOn_const
+  have j₁ : ∀ j, iteratedDeriv j f₁ z
+      = affJetScalar 1 Complex.I (fun l => iteratedDeriv l f z) j :=
+    fun j => affJetScalar_iteratedDeriv 1 Complex.I (hf.contDiffAt (hU.mem_nhds hz)) j
+  have j₂ : ∀ j, iteratedDeriv j f₂ z = invJetScalar (fun l => iteratedDeriv l f₁ z) j :=
+    fun j => invJetScalar_iteratedDeriv hU hf₁ hf₁ne hz j
+  have j₃ : ∀ j, iteratedDeriv j f₃ z
+      = affJetScalar (-(2 * Complex.I)) 1 (fun l => iteratedDeriv l f₂ z) j :=
+    fun j => affJetScalar_iteratedDeriv _ _ (hf₂.contDiffAt (hU.mem_nhds hz)) j
+  have j₄ : expJetScalar (fun j => iteratedDeriv j f₃ z) k
+      = iteratedDeriv k (fun w => Complex.exp (f₃ w)) z :=
+    expJetScalar_iteratedDeriv hU hf₃ hz k
+  have hgerm : (fun w => Complex.exp (f₃ w))
+      =ᶠ[nhds z] fun w => Complex.exp ((f w - Complex.I) / (f w + Complex.I)) := by
+    filter_upwards [hU.mem_nhds hz] with w hw
+    have hden : f w + Complex.I ≠ 0 := hne w hw
+    congr 1
+    simp only [hf₃def, hf₂def, hf₁def, one_mul]
+    field_simp
+    ring
+  rw [← Filter.EventuallyEq.iteratedDeriv_eq k hgerm, ← j₄, chiJetScalar]
+  congr 1
+  funext j
+  rw [j₃]
+  congr 1
+  funext l
+  rw [j₂]
+  congr 1
+  funext m
+  rw [j₁]
+
+/-- Affine jets below a fixed order depend only on the jets below that order. -/
+theorem affJetScalar_congr (a b : ℂ) {y y' : ℕ → ℂ} {K : ℕ} (h : ∀ j ≤ K, y j = y' j)
+    (k : ℕ) (hk : k ≤ K) : affJetScalar a b y k = affJetScalar a b y' k := by
+  by_cases hk0 : k = 0
+  · subst hk0
+    rw [affJetScalar_apply_zero, affJetScalar_apply_zero, h 0 hk]
+  · rw [affJetScalar_apply_of_ne _ _ _ hk0, affJetScalar_apply_of_ne _ _ _ hk0, h k hk]
+
+/-- **The chart is local in the jet order.**  Its `k`-th entry depends only on the jets up to
+order `k`. -/
+theorem chiJetScalar_congr {y y' : ℕ → ℂ} {K : ℕ} (h : ∀ j ≤ K, y j = y' j) (k : ℕ) (hk : k ≤ K) :
+    chiJetScalar y k = chiJetScalar y' k := by
+  rw [chiJetScalar, chiJetScalar]
+  refine expJetScalar_congr _ _ k fun j hj => ?_
+  refine affJetScalar_congr _ _ (K := K) ?_ j (le_trans hj hk)
+  intro l hl
+  refine invJetScalar_congr (K := K) ?_ l hl
+  intro m hm
+  exact affJetScalar_congr _ _ h m hm
+
+/-! ## Transport of openness -/
+
+/-- **Openness transports through the chart.**  If a parametrised family of jet packets covers a
+neighbourhood of its value, so does the family of Cayley outer jet packets. -/
+theorem chiJetScalar_observation_image_mem_nhds {P : Type*} [TopologicalSpace P]
+    {J : P → ℕ → ℂ} (hne : ∀ p : P, J p 0 + Complex.I ≠ 0) {p : P} {N : Set P}
+    (hJ : J '' N ∈ nhds (J p)) :
+    (fun q : P => fun k => chiJetScalar (J q) k) '' N
+      ∈ nhds (fun k => chiJetScalar (J p) k) := by
+  have h2 := chiJetScalar_image_mem_nhds (hne p) hJ
+  rwa [← Set.image_comp] at h2
+
+/-- **Truncation to a finite packet is open.**  Extending a finite packet by the coordinates of the
+base point is a continuous right inverse. -/
+theorem restrictFin_image_mem_nhds (n : ℕ) (w : ℕ → ℂ) {N : Set (ℕ → ℂ)} (hN : N ∈ nhds w) :
+    (fun v : ℕ → ℂ => fun k : Fin (n + 1) => v (k : ℕ)) '' N
+      ∈ nhds (fun k : Fin (n + 1) => w (k : ℕ)) := by
+  classical
+  refine image_mem_nhds_of_continuousAt_rightInverse
+    (Φ := fun v : ℕ → ℂ => fun k : Fin (n + 1) => v (k : ℕ))
+    (Ψ := fun y : Fin (n + 1) → ℂ => fun j : ℕ => if h : j < n + 1 then y ⟨j, h⟩ else w j)
+    hN ?_ ?_ ?_
+  · refine Continuous.continuousAt (continuous_pi fun j => ?_)
+    by_cases hj : j < n + 1
+    · simp only [dif_pos hj]
+      exact continuous_apply _
+    · simp only [dif_neg hj]
+      exact continuous_const
+  · funext j
+    by_cases hj : j < n + 1
+    · simp [hj]
+    · simp [hj]
+  · intro y
+    funext k
+    simp [k.isLt]
+
+/-! ## The chart on packets of a fixed order -/
+
+/-- The Cayley outer jet chart on packets of a fixed order. -/
+def chiJetPacket (n : ℕ) (y : Fin (n + 1) → ℂ) : Fin (n + 1) → ℂ :=
+  fun k => chiJetScalar (fun j => if h : j < n + 1 then y ⟨j, h⟩ else 0) (k : ℕ)
+
+/-- **The chart on packets carries neighbourhoods to neighbourhoods.**  Locality in the jet order
+lets the sequence-level statement descend to a fixed order: truncation is open, and the chart does
+not see the discarded coordinates. -/
+theorem chiJetPacket_image_mem_nhds {n : ℕ} {y : Fin (n + 1) → ℂ}
+    (hy : y 0 + Complex.I ≠ 0) {N : Set (Fin (n + 1) → ℂ)} (hN : N ∈ nhds y) :
+    chiJetPacket n '' N ∈ nhds (chiJetPacket n y) := by
+  classical
+  set ext : (Fin (n + 1) → ℂ) → (ℕ → ℂ) :=
+    fun v => fun j => if h : j < n + 1 then v ⟨j, h⟩ else 0 with hext
+  set res : (ℕ → ℂ) → (Fin (n + 1) → ℂ) := fun v => fun k => v (k : ℕ) with hres
+  have hrescont : Continuous res := continuous_pi fun k => continuous_apply _
+  have hresext : res (ext y) = y := by
+    funext k
+    show (if h : (k : ℕ) < n + 1 then y ⟨(k : ℕ), h⟩ else 0) = y k
+    rw [dif_pos k.isLt]
+  have hM : res ⁻¹' N ∈ nhds (ext y) := by
+    refine hrescont.continuousAt ?_
+    rw [hresext]
+    exact hN
+  have hy' : (ext y) 0 + Complex.I ≠ 0 := by
+    simpa [hext] using hy
+  have h1 : (fun v : ℕ → ℂ => fun k => chiJetScalar v k) '' (res ⁻¹' N)
+      ∈ nhds (fun k => chiJetScalar (ext y) k) := chiJetScalar_image_mem_nhds hy' hM
+  have h2 := restrictFin_image_mem_nhds n (fun k => chiJetScalar (ext y) k) h1
+  have hbase : (fun k : Fin (n + 1) => chiJetScalar (ext y) (k : ℕ)) = chiJetPacket n y := rfl
+  rw [hbase] at h2
+  refine Filter.mem_of_superset h2 ?_
+  rintro z ⟨w, ⟨v, hv, rfl⟩, rfl⟩
+  refine ⟨res v, hv, ?_⟩
+  funext k
+  refine chiJetScalar_congr (K := n) ?_ (k : ℕ) (Nat.lt_succ_iff.mp k.isLt)
+  intro j hj
+  show (if h : j < n + 1 then (res v) ⟨j, h⟩ else 0) = v j
+  rw [dif_pos (Nat.lt_succ_of_le hj)]
+
 end
 
 end GaloisForLFunctions.HTGeometry

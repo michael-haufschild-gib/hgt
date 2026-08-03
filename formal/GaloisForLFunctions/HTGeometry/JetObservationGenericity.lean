@@ -72,6 +72,31 @@ theorem dense_setOf_forall_eval_observation_ne_zero {P : Type*} [TopologicalSpac
   dense_of_mem_residual
     (residual_setOf_forall_eval_observation_ne_zero hJ hreach Q hQ)
 
+/-! ## Products of observations -/
+
+/-- **A finite product of neighbourhood-preserving maps preserves neighbourhoods.**  On a finite
+index every neighbourhood contains a box, and the product of the images of the box factors is again
+a neighbourhood. -/
+theorem pi_image_mem_nhds {ι : Type*} [Fintype ι] {X Y : ι → Type*}
+    [∀ i, TopologicalSpace (X i)] [∀ i, TopologicalSpace (Y i)] {f : ∀ i, X i → Y i}
+    (x : ∀ i, X i) (hf : ∀ i, ∀ N ∈ nhds (x i), f i '' N ∈ nhds (f i (x i)))
+    {N : Set (∀ i, X i)} (hN : N ∈ nhds x) :
+    (fun v => fun i => f i (v i)) '' N ∈ nhds fun i => f i (x i) := by
+  classical
+  obtain ⟨W, hWN, hWopen, hxW⟩ := mem_nhds_iff.mp hN
+  obtain ⟨U, hU, hUW⟩ := isOpen_pi_iff'.mp hWopen x hxW
+  have hbox : (Set.univ.pi fun i => f i '' U i) ∈ nhds fun i => f i (x i) := by
+    refine set_pi_mem_nhds Set.finite_univ fun i _ => ?_
+    exact hf i (U i) ((hU i).1.mem_nhds (hU i).2)
+  refine Filter.mem_of_superset hbox ?_
+  intro y hy
+  choose g hg hgy using fun i => hy i (Set.mem_univ i)
+  refine ⟨g, hWN (hUW ?_), ?_⟩
+  · intro i _
+    exact hg i
+  · funext i
+    exact hgy i
+
 end
 
 end GaloisForLFunctions.HTGeometry

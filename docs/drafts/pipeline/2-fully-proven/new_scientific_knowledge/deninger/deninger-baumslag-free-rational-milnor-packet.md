@@ -118,7 +118,23 @@
   representations),
   `GaloisForLFunctions.RHTower.DeningerLESMono` (vanishing from an injective comparison map),
   `GaloisForLFunctions.RHTower.DeningerCoinvariantsTranslation` (translation on coinvariants),
-  `GaloisForLFunctions.RHTower.DeningerH1Cyclic` (the first homology of an infinite cyclic group)
+  `GaloisForLFunctions.RHTower.DeningerH1Cyclic` (the first homology of an infinite cyclic group),
+  `GaloisForLFunctions.RHTower.DeningerRegularH0` (the zeroth homology of the regular
+  representation),
+  `GaloisForLFunctions.RHTower.DeningerH1Line` (a line, and surjections between lines),
+  `GaloisForLFunctions.RHTower.DeningerProjSplit` (the projection is split, and injective on first
+  homology),
+  `GaloisForLFunctions.RHTower.DeningerTriangularMono` (a triangular map with injective diagonal),
+  `GaloisForLFunctions.RHTower.DeningerShear` (shearing a biproduct),
+  `GaloisForLFunctions.RHTower.DeningerTreeMatrix` (the boundary of the tree in coordinates),
+  `GaloisForLFunctions.RHTower.DeningerTreeHomologyMono` (the boundary is injective on homology),
+  `GaloisForLFunctions.RHTower.DeningerAmalgamTwo` (degree two for a root adjunction),
+  `GaloisForLFunctions.RHTower.DeningerBaseInFactor` (the base group inside a factor),
+  `GaloisForLFunctions.RHTower.DeningerRootIndex` (the index of a root adjunction),
+  `GaloisForLFunctions.RHTower.DeningerRootTwo` (degree two across a root adjunction),
+  `GaloisForLFunctions.RHTower.DeningerRootElement` (the adjoined root),
+  `GaloisForLFunctions.RHTower.DeningerTower` (a tower of root adjunctions),
+  `GaloisForLFunctions.RHTower.DeningerFlattenPeriodic` (periodicity of a repeated word)
 
 ## Statement
 
@@ -2041,3 +2057,165 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   so the connecting map is also injective.  Mono plus epi in an abelian category is an isomorphism.
   What remains of this computation is to identify the zeroth homology of the regular representation
   with the ground ring, which is its coinvariants under the augmentation.
+- 2026-08-03 — Closed the computation: **the coinvariants of the regular representation are the
+  ground ring** (`deningerRegularCoinvariantsEquiv`), hence so is its zeroth homology
+  (`deningerRegularH0Iso`).  Every basis vector is a translate of the one at the identity and the
+  augmentation is constant on translates, so the augmentation and the inclusion at the identity are
+  mutually inverse.  Composed with the previous cycle's isomorphism this gives that the first
+  homology of an infinite cyclic group with trivial coefficients is one dimensional, which is the
+  input the degree two argument was missing.
+- 2026-08-03 — Assembled the three statements the degree two argument consumes.  The first homology
+  of an infinite cyclic group with trivial coefficients is a line (`deningerZ_H1_isoK`); a surjection
+  between lines over a field is injective (`deningerMono_of_epi_of_line`); and the transfer followed
+  by the projection is multiplication by the index, now as an identity of morphisms of
+  representations rather than pointwise (`deningerTransfer_comp_proj`).  What remains is to push the
+  last of these through the homology functor — giving that the projection is surjective on first
+  homology once the index is invertible — and then feed the resulting injectivity to the long exact
+  sequence criterion.
+- 2026-08-03 — **The comparison map is injective.**  Over a field in which the index is invertible the
+  transfer divided by the index splits the coset projection, so the projection is a split
+  epimorphism of representations (`deningerCosetProj_isSplitEpi`) — and split epimorphisms survive
+  any functor, so no additivity of the homology functor is needed to keep it surjective
+  (`deningerEpi_map_proj`).  When both subgroups are infinite cyclic, both first homologies are
+  lines, and a surjection between lines is injective: `deningerMono_map_proj`.  This is exactly the
+  hypothesis of the long exact sequence criterion, so the degree two obstruction is now discharged at
+  the level of the comparison map.  What is left is to assemble it against the tree sequence of a
+  root adjunction.
+- 2026-08-03 — Identified the shape in which the injectivity has to be fed to the tree, and proved
+  the criterion for it.  The tree used here is the subdivided one, so its edge representation is two
+  copies of the coset representation of the base group and the comparison map is not simply the
+  projection: it is a triangular matrix, with the base group component of the boundary on the
+  diagonal in one corner and the projection to the infinite cyclic vertex in the other.  A triangular
+  map of biproducts with injective diagonal entries is injective — an element of the kernel has its
+  first coordinate killed by the first diagonal entry, hence vanishes, and then its second coordinate
+  is killed by the second.  `deningerMono_of_triangular` is that statement, proved by cancelling
+  against the two diagonal monomorphisms in turn.
+- 2026-08-03 — Corrected the shape of the comparison map, and supplied what the correction needs.
+  The two edge families of the subdivided tree — one for each factor — both meet the base vertices,
+  and both by the identity, so the map is **not** triangular as it stands: the previous cycle's
+  criterion does not apply directly.  It becomes triangular after subtracting one edge family from
+  the other, which is an automorphism of the biproduct, and shearing changes neither injectivity nor
+  anything else.  `deningerShear` is that automorphism and `deningerMono_of_shear_triangular`
+  packages the criterion in the sheared form: a map out of a square biproduct is injective as soon as
+  its first column is injective on the first coordinate, and the difference of its two columns is
+  injective on the second and vanishes on the first.  That is exactly the pattern the tree boundary
+  has, with the difference of the two edge families killing the base component and mapping to the
+  infinite cyclic vertex by the coset projection already proved injective.
+- 2026-08-03 — Set up the boundary of the tree in the coordinates of the two factor decomposition
+  (`deningerTreeMatrix`), and proved the three coordinate identifications the entry computations run
+  through: the two edge families are the two summand inclusions followed by the relabelling
+  isomorphism (`deningerEdgeIso_inl`, `deningerEdgeIso_inr`), and the base vertex component of the
+  vertex decomposition is the relabelling followed by the first summand projection
+  (`deningerVertexIso_fst`).  These reduce each matrix entry to a computation on the basis of a
+  permutation representation, where the boundary is given by an explicit formula.  The entries
+  themselves are next.
+- 2026-08-03 — Computed the first matrix entry: **the first column of the tree boundary meets the
+  base cosets by minus the identity** (`deningerTreeMatrix_inl_fst`).  An edge of the first family
+  over a coset runs from that coset to the corresponding coset of the first factor, so after
+  projecting away the factor vertices only the tail survives, with its sign.  Getting there needed
+  the basis evaluation lemmas for the relabelling isomorphism and the summand inclusions and
+  projections, which are now proved once and reusable: unfolding those isomorphisms inside a
+  biproduct is what defeated the direct simp attempt.
+- 2026-08-03 — Computed the second matrix entry and the consequence the shear was introduced for:
+  the second column of the boundary meets the base cosets by minus the identity as well
+  (`deningerTreeMatrix_inr_fst`), so **the difference of the two columns does not meet them at all**
+  (`deningerTreeMatrix_sub_fst`).  That is the vanishing corner of the sheared triangular criterion.
+  Both diagonal entries are now available too — the first column against the base cosets is minus the
+  identity, hence injective — so only the last entry remains: the difference of the columns against
+  the infinite cyclic vertex, which should be the coset projection already proved injective.
+- 2026-08-03 — **The three matrix entries are complete.**  The last one:
+  `deningerTreeMatrix_sub_snd_fst` — the difference of the two edge families meets the first factor
+  by minus the coset projection.  The second family does not meet that factor at all, and the first
+  meets it by the head map of an edge, which is literally the projection of cosets
+  (`deningerEdgeHead_eq_projMap`) — both are induced by the identity of the group.  With the vanishing
+  corner and the first diagonal entry already proved, all three hypotheses of the sheared triangular
+  criterion are now available at the level of representations.  What remains is to transport them
+  through the homology functor and the biproduct isomorphism, where the entries become the same
+  statements about first homology and the diagonal ones are monomorphisms.
+- 2026-08-03 — **The boundary of the tree is injective on homology** once the coset projection to the
+  first factor is (`deningerTreeBoundary_mono_of_projMono`).  The three matrix entries pass through
+  the homology functor unchanged, because the functor is additive and takes biproducts to biproducts:
+  each entry is the image of the corresponding entry of the boundary matrix, so minus the identity
+  stays minus the identity, zero stays zero, and the coset projection stays the coset projection.
+  The sheared triangular criterion then applies verbatim.  This closes the chain from the transfer
+  splitting to the tree; what remains for degree two is to feed it to the long exact sequence
+  criterion together with the vanishing of the vertex homology.
+- 2026-08-03 — **Vanishing for an amalgam from an injective comparison map**
+  (`deningerAmalgam_isZero_of_mono`): in a degree where the vertex homology vanishes and the boundary
+  is injective one degree down, the homology of the amalgam vanishes.  This is the degree two
+  analogue of the criterion the chain has used since the beginning, and it replaces the requirement
+  that the edge homology vanish — which fails in degree one — by injectivity of the comparison map,
+  which the whole transfer construction was built to supply.  Also `deningerTreeBoundaryHom_mono`:
+  the boundary itself, not just its matrix, is injective on homology, the two differing by
+  isomorphisms.
+- 2026-08-03 — **Correction: the injectivity has to come from the second factor, not the first.**
+  Instantiating the criterion exposed the error.  The mono argument needs both subgroups infinite
+  cyclic, and in a root adjunction that is the base group and the *second* factor `⟨t⟩` — the first
+  factor is the group being enlarged, which is arbitrary.  The entry computed earlier was the one
+  into the first factor, which is useless here.  Recomputed the entry into the second factor:
+  `deningerTreeMatrix_sub_snd_snd` — the difference of the two edge families meets the second factor
+  by the coset projection, with no sign this time, since only the second family meets it at all.  The
+  homology criterion now runs through that component throughout.  The earlier first factor entry is
+  kept: it is the same statement for the other factor and costs nothing.
+- 2026-08-03 — **Degree two is proved for the amalgam** (`deningerAmalgam_isZero_two`): for an
+  amalgam of a group with an infinite cyclic group over an infinite cyclic base of finite index, the
+  second homology vanishes as soon as it vanishes for the group.  The vertex homology vanishes in
+  degree two — the base and the second factor are infinite cyclic, and the first factor is the
+  inductive hypothesis — and the comparison map one degree down is injective because the base sits in
+  the infinite cyclic factor with finite index, which is what the whole transfer construction was
+  for.  This removes the degree restriction that has been on the Bass–Serre chain since it was
+  built: it gave vanishing in degrees at least three, and degree two was the one obstruction the
+  method could not reach.  Both are now available, so all degrees at least two are covered for a root
+  adjunction.
+- 2026-08-03 — Started discharging the finite index hypothesis of the degree two theorem, which for a
+  root adjunction is the statement that the base group sits in the infinite cyclic factor with index
+  the exponent.  The first half is proved and is where the amalgam structure enters: an element of a
+  factor lies in the base group exactly when it lies in the image of that factor's structure map
+  (`deningerMem_baseRange_iff`), so the base group seen inside a factor is precisely that image
+  (`deningerSubgroupOf_map`).  The index is therefore computed inside the factor, with no reference
+  to the amalgam — for a root adjunction, the index of the `m`-th powers in an infinite cyclic group.
+  mathlib has that quotient as `ZMod m.natAbs` via `Int.quotientZMultiplesEquivZMod`, so what remains
+  is transporting through the multiplicative-additive and `ULift` layers.
+- 2026-08-03 — **The index of a root adjunction is `|m|`** (`deningerRootMap_range_index`), together
+  with the index of the base group in a factor being computed inside the factor
+  (`deningerIndex_subgroupOf`).  The `m`-th powers of an infinite cyclic group are the multiples of
+  `m` (`deningerZpowRange`), whose index mathlib already computes.  A Lean note worth keeping: the
+  factor of a root adjunction is definitionally a `ULift` of the multiplicative integers but not
+  syntactically so, and rewriting a subgroup of one into the other fails on the group instance.
+  Stating the computation for an arbitrary hom of the `ULift` type and instantiating it by `rfl`
+  crosses the gap, since `exact` works up to definitional equality where `rw` does not.
+- 2026-08-03 — **The root adjunction step is complete in every degree at least two.**
+  `deningerRootAdjunction_isZero_two`: adjoining a root to a group leaves the second homology zero,
+  over a field of characteristic zero.  The base group has index `|m|` in the infinite cyclic factor,
+  which is finite and invertible, so the comparison map of the tree sequence is injective and the new
+  criterion applies.  Together with the degree at least three step proved long before, and with
+  torsion freeness passing across the step, a tower of root adjunctions now preserves the vanishing
+  of homology in all degrees at least two — which is exactly what clause (4) asks of each stage.
+  What remains for clause (4) is the tower itself: presenting `Bau(F)` as an increasing union of
+  stages, each one root adjunction on from the previous, and applying the union lemma.
+- 2026-08-03 — Started the tower.  The root adjunction really does adjoin a root:
+  `deningerRootElt_zpow` — the generator of the infinite cyclic factor is an `m`-th root of `a` in
+  the amalgam.  Both structure maps send that generator where they should, and the amalgam relation
+  identifies the two images, which is the whole content of the gluing.  This is the step the tower
+  iterates; with the group embedding in the amalgam already available from the corpus, a stage of the
+  tower is now fully described: it contains the previous stage and a root of the chosen element.
+- 2026-08-03 — **The tower is built and both properties pass along it.**  `deningerTower` iterates
+  the root adjunction on any choice of element and exponent at each stage;
+  `deningerTower_torsionFree` and `deningerTower_isZero_two` show that torsion freeness and the
+  vanishing of the second homology hold at every stage, given them at the bottom.  The two inductions
+  are intertwined: the vanishing step needs the chosen element to have infinite order, which comes
+  from torsion freeness of the stage below together with the element being nontrivial.  Stages are
+  bundled as a structure carrying a type and its group instance, so the tower is an ordinary
+  recursion on the naturals rather than a dependent construction.
+- 2026-08-03 — **What the tower still needs, stated honestly.**  Identifying `Bau(F)` with the union
+  of a tower is not a formality: it requires knowing that adjoining a root inside `Bau` does not
+  collapse, which is Baumslag's construction theorem, and the standard proof of that builds `Bau` as
+  the colimit and needs uniqueness of roots to verify the universal property.  So the earlier note
+  that clause (4) does not need uniqueness of roots is right about the *stages* — each stage needs
+  only infinite order — but wrong about the *identification*.  The conjugacy criterion work is on the
+  critical path after all, and this is the honest statement of where the clause stands.
+  Proved the next combinatorial piece of that endgame: a repeated word is periodic, in that rotating
+  the repetition by the length of the word returns it (`deningerFlatten_rotate_length`), together
+  with the repetition built from the right (`deningerFlatten_snoc`).  These are what turn a rotation
+  of a power into a power of a rotation, which is how the two exponent comparison pins the rotation
+  down.

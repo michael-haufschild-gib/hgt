@@ -89,6 +89,16 @@ theorem invJetScalar_invJetScalar {y : ℕ → ℂ} (hy : y 0 ≠ 0) (k : ℕ) :
   rw [leibnizJetSum_comm]
   exact leibnizJetSum_invJetScalar hy m
 
+/-- The reciprocal jets below a fixed order depend only on the jets below that order. -/
+theorem invJetScalar_congr {y y' : ℕ → ℂ} {K : ℕ} (h : ∀ j ≤ K, y j = y' j) :
+    ∀ k ≤ K, invJetScalar y k = invJetScalar y' k := by
+  refine triangularSolve_congr (h 0 (Nat.zero_le K)) ?_ fun k _ => rfl
+  intro k hk v
+  rw [invJetLower, invJetLower]
+  refine Finset.sum_congr rfl fun i hi => ?_
+  rw [Finset.mem_range] at hi
+  rw [h (i + 1) (by omega)]
+
 /-! ## The jet map computes the derivatives of a reciprocal -/
 
 /-- **The recursion computes the derivatives of a reciprocal.** -/
