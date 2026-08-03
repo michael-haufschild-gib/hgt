@@ -2,7 +2,7 @@
 
 ## Metadata
 
-- **Status:** Stage 2 -- dependency-closed paper proof complete; formalization not yet started
+- **Status:** Stage 3 -- exact core, capacity, corona, full-leg, and dimension laws formalized
 - **Area:** irregular Riemann--Hilbert theory; wild nonabelian Hodge diagrams; fission trees;
   ultrametric matrices; Kac--Moody signatures
 - **Created:** 2026-08-03
@@ -170,6 +170,11 @@ necessary.
 - [x] Complete external signature/ultrametric-matrix novelty audit
 - [x] Write dependency-closed paper proof
 - [x] Move to Stage 2 before any Lean implementation
+- [x] Formalize exact one-defect identity and `sigNeg <= 1`
+- [x] Formalize capacity determinant wall and `sigNeg = 1` in the Lorentz phase
+- [x] Formalize arbitrary type-A leg completion and dimension conservation
+- [x] Formalize corona parallel completion and root-extension invariance
+- [x] Wire all new modules into the `HTGeometry` umbrella
 
 ## 7. Dependency-closed paper proof
 
@@ -465,3 +470,19 @@ Hodge graphs.
 - Plane-branch and ultrametric-matrix results are cited as parent theory, not claimed new.
 - The novel theorem surface is the global Stokes--Cartan factorization and its geometric,
   signature, capacity, full-leg, and dimension consequences.
+
+## 9. Formalization record
+
+New unconditional modules:
+
+- `formal/GaloisForLFunctions/HTGeometry/StokesCartanLorentzCapacity.lean`
+- `formal/GaloisForLFunctions/HTGeometry/StokesCartanTypeALegs.lean`
+- `formal/GaloisForLFunctions/HTGeometry/StokesCartanCoronaCapacity.lean`
+
+The formal surface proves the exact entry and quadratic identities, positivity of the Gram part,
+strict positivity on the ramification-zero hyperplane, negative inertia at most one, the capacity
+completion and determinant factorization, the affine null line, an explicit Lorentz negative
+vector, exact negative inertia one below the wall, arbitrary type-A leg completion, full-leg
+hyperplane positivity, wild-dimension conservation, the finite parallel/corona completion law,
+and scalar root-extension invariance.  All principal capstones have only `propext`,
+`Classical.choice`, and `Quot.sound` in `#print axioms`.  The authoritative formal lint passes.

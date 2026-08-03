@@ -46,11 +46,11 @@ private theorem exp_ratio_correction {h : ℝ} (hh : 0 < h) (y : ℝ) :
 window of width `H` on which the central index rises at most linearly, the mean-minus-mode gap is at
 most the spread `2 L h` plus two logarithmic corrections of size `log(nu)/h`. -/
 theorem abs_meanIndex_sub_centralIndex_le_lipschitz
-    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {x H L h : ℝ} (hL : 0 < L)
-    (hh : 0 < h) (hhH : 2 * h ≤ H)
-    (hlipA : ∀ v : ℝ, 0 < v → v ≤ H →
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {x H L h v₀ : ℝ} (hL : 0 < L)
+    (hh : 0 < h) (hhH : 2 * h ≤ H) (hv₀h : v₀ ≤ h)
+    (hlipA : ∀ v : ℝ, v₀ ≤ v → v ≤ H →
       (centralIndex a (Real.exp (x + v)) : ℝ) ≤ (centralIndex a (Real.exp x) : ℝ) + L * v)
-    (hlipB : ∀ v : ℝ, 0 < v → v ≤ H →
+    (hlipB : ∀ v : ℝ, v₀ ≤ v → v ≤ H →
       (centralIndex a (Real.exp x) : ℝ) - L * v ≤ (centralIndex a (Real.exp (x - v)) : ℝ)) :
     |meanIndex a (Real.exp x) - (centralIndex a (Real.exp x) : ℝ)|
       ≤ 2 * L * h
@@ -81,8 +81,8 @@ theorem abs_meanIndex_sub_centralIndex_le_lipschitz
   rw [hlog1, hlog2, hcorr1, hcorr2] at hbase
   refine le_trans hbase ?_
   -- the spread
-  have hup := hlipA h hh hhH1
-  have hdown := hlipB h hh hhH1
+  have hup := hlipA h hv₀h hhH1
+  have hdown := hlipB h hv₀h hhH1
   have hspread : (centralIndex a (Real.exp (x + h)) : ℝ)
       - (centralIndex a (Real.exp (x - h)) : ℝ) ≤ 2 * L * h := by
     linarith

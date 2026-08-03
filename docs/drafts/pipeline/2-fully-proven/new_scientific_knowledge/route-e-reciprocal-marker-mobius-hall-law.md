@@ -9,15 +9,21 @@
 - **Computation used:** no
 - **Lean status:** prime-anchor, window, sign and unique-decoding skeleton in
   `MobiusReciprocalMarkerPrimeCapacity.lean`; the distinct-target count, the Markov step `(10)`,
-  the marker discard, the squarefree count `(7)`/`(11)` with density `6/pi^2`, the averaged tail
+  the marker discard, the *truncated* squarefree count `(11)` with density `6/pi^2`, the averaged tail
   `(12)`-`(13)`, the dyadic prime supply and the integer-start comparison are formalized
   unconditionally in `MobiusReciprocalMarkerBlockCount.lean`, `Sieve/SquarefreeCount.lean`,
   `Sieve/AveragedSquarefreeTail.lean`, `Sieve/PrimeWindow.lean`, `Sieve/StartShift.lean`;
-  the sign-count identity `(14)` and its conclusion are formalized in `Sieve/MoebiusSignCount.lean`
-  and `Sieve/MoebiusSignLower.lean`; the short-interval variance layer
+  the squarefree identity `(7)`, the sign-count identity `(14)` and its conclusion, and the
+  exceptional-set bound `(13)` for the *true* squarefree count are formalized in
+  `Sieve/SquarefreeIndicator*.lean`, `Sieve/MoebiusSignCount.lean`, `Sieve/MoebiusSignLower.lean`,
+  `Sieve/SquarefreeTruncationDefect.lean`, `Sieve/SquarefreeExceptional.lean`; step 1 of the proof is
+  the single theorem `Sieve.card_le_good_add_explicit`, whose only non-elementary hypothesis is the
+  mean-square input; the short-interval variance layer
   (`Sieve/Window*.lean`, `Sieve/RealWindow*.lean`, `Sieve/CorrelationToVariance.lean`) proves `(6)`
   *equivalent* to cancellation in the shifted Moebius correlations at the `L-1` shifts `h < L`, and
-  rules out both non-arithmetic routes to it (the overlap kernel is exact; the trivial variance bound
+  rules out both non-arithmetic routes to it; the two-variable squarefree sieve
+  (`Sieve/ShiftedCongruenceCount.lean`, `Sieve/JointCongruence*.lean`,
+  `Sieve/TruncatedPair*.lean`) evaluates the shifted `mu^2` correlation unconditionally (the overlap kernel is exact; the trivial variance bound
   is attained);
   the sole remaining input is Menon's unconditional 2026 Moebius mean-square theorem `(6)`
 
@@ -3260,3 +3266,404 @@ one, uniformly in `h` and `t`.
 What is deliberately *not* claimed: the pairs with `gcd(d,e) > 1` are not evaluated here. Their
 modulus is `lcm(d²,e²)` and solvability depends on whether the gcd divides `h`, so they need separate
 treatment. The reduction above is exact regardless; only the evaluation of those terms is outstanding.
+
+### Formal layer — the non-coprime pairs
+
+`formal/GaloisForLFunctions/RHTower/Sieve/JointCongruenceEmpty.lean`.
+
+- `gcd_sq_dvd_of_joint` — a common solution forces **`gcd(d,e)² ∣ h`**.
+- `card_joint_eq_zero` — hence pairs with `gcd(d,e)² ∤ h` contribute **nothing**.
+- `coprime_of_joint_of_squarefree` — **for squarefree `h`, every contributing pair is coprime.**
+
+All unconditional.
+
+This closes the gap flagged in the previous section. The non-coprime pairs are not evaluated but
+*eliminated*: if `d² ∣ n` and `e² ∣ n+h` then `g = gcd(d,e)` satisfies `g² ∣ n` and `g² ∣ n+h`, so
+`g² ∣ h`. The shift therefore decides which non-coprime pairs can occur at all, and when `h` is
+squarefree only `g = 1` survives — so the truncated pair sum is entirely coprime and
+`abs_card_joint_sub_lt` applies to every term.
+
+The two-variable sieve for a shifted correlation is complete for squarefree shifts.
+
+### Formal layer — the truncated squarefree pair count
+
+`formal/GaloisForLFunctions/RHTower/Sieve/TruncatedPairCount.lean`.
+
+- `abs_truncated_pair_sub_le` — for **squarefree** `h`,
+  **`|∑_{n ∈ (t,t+L]} Q_R(n)Q_R(n+h) − L·∑_{d,e≤R, (d,e)=1} μ(d)μ(e)/(d²e²)| ≤ R²`**,
+  uniformly in the start `t` and the shift `h`.
+
+Unconditional.
+
+This is the two-variable analogue of the corpus's `abs_truncated_squarefree_sub_le` and completes the
+elementary sieve treatment of a shifted *squarefree* correlation: swap identity, elimination of the
+non-coprime pairs, joint counts each accurate to within one, and `R²` pairs in total.
+
+Scope, stated precisely: this evaluates the correlation of the **squarefree indicator** `μ²`, not of
+`μ` itself. The `μ(d)μ(e)` appearing above are sieve coefficients, not values of the correlated
+function. The genuinely open input remains cancellation in `∑_n μ(n)μ(n+h)`, where the signs of μ at
+`n` and `n+h` must interact — something no counting argument reaches.
+
+### Formal layer — the pair main term is bounded
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PairMainTermBound.lean`.
+
+- `abs_main_pair_le` — **`|∑_{d,e≤R, (d,e)=1} μ(d)μ(e)/(d²e²)| ≤ 4`**, uniformly in `R`.
+
+Unconditional.
+
+With `abs_truncated_pair_sub_le` this makes the truncated pair sum `O(L) + O(R²)` with explicit
+constants, and it does so **without evaluating the density as an Euler product** — the bound is just
+`(∑_{d≤R} 1/d²)² ≤ 4`, using the corpus's `SquarefreeHarmonic.sum_inv_sq_le_two`.
+
+Worth noting for what it avoids: the natural route to the pair density is
+`∏_p(1 − 2/p²)` adjusted at primes with `p² ∣ h`, which needs infinite products and their
+convergence. That is unnecessary for every use these cards make of the pair count, where only an
+upper bound of the correct order is required.
+
+### Formal layer — explicit upper bound for the truncated pair sum
+
+`formal/GaloisForLFunctions/RHTower/Sieve/TruncatedPairUpper.lean`.
+
+- `abs_truncated_pair_le` — for squarefree `h`,
+  **`|∑_{n ∈ (t,t+L]} Q_R(n)Q_R(n+h)| ≤ 4L + R²`**, uniformly in `t`, `h` and `R`.
+
+Unconditional, with both constants explicit.
+
+This is the usable form of the two-variable sieve: a single inequality with no density constant to
+evaluate and no hypothesis beyond squarefreeness of the shift. It follows from the pair count and the
+main-term bound by the triangle inequality.
+
+The seven-module shifted squarefree sieve is now complete and self-contained:
+`ShiftedCongruenceCount` → `JointCongruence` → `JointCongruenceClass` → `TruncatedPairSwap` →
+`JointCongruenceEmpty` → `TruncatedPairCount` → `PairMainTermBound` → this.
+
+### Formal layer — assembling step 1 of the proof
+
+`formal/GaloisForLFunctions/RHTower/Sieve/GoodStartCount.lean`.
+
+- `card_le_good_add_bad` — **`#S ≤ #{good starts} + #Bad₁ + #Bad₂`**, where a start is *good* when
+  both Möbius sign counts on `(t, t+L]` are at least `(3/16)DL`, `Bad₁` is where the Möbius sum
+  exceeds `⅛DL`, and `Bad₂` is where the squarefree count falls below `½DL`.
+
+Unconditional.
+
+This assembles step 1 of the proof — `(10)`, `(13)` and `(14)` combined. The two exceptional sets
+enter from opposite directions: `Bad₁` comes from the mean-square input through Markov, `Bad₂` from
+the elementary squarefree count, and `card_moebius_sign_ge` converts a start outside both into one
+carrying linearly many integers of each sign.
+
+Phrased as a covering inequality in `ℕ` rather than a subtraction, so it composes with the
+exceptional-set bounds without any truncation caveat.
+
+### Formal layer — step 1 with the mean-square input as a hypothesis
+
+`formal/GaloisForLFunctions/RHTower/Sieve/GoodStartMarkov.lean`.
+
+- `card_le_good_add_meanSquare` — **`#S ≤ #{good starts} + V/(DL/8)² + #Bad₂`**, assuming only
+  `∑_{t ∈ S} M(t,L)² ≤ V`.
+
+Unconditional as an implication.
+
+The hypothesis `hms` *is* the published mean-square input; everything else in the statement is
+proved here — Markov via `RHTower.card_large_le_of_sum_sq_le`, the sign-count identity, and the
+covering argument.
+
+This is the form the cards' dependence should be read in: step 1 of the proof is a single theorem
+whose only unproved ingredient is one named hypothesis. Supplying `V` of the size Menon's theorem
+gives makes the exceptional term `o(#S)` and the conclusion is the card's `(14)` for almost every
+start.
+
+### Formal layer — equation (7), squarefree half; and an audit correction
+
+`formal/GaloisForLFunctions/RHTower/Sieve/SquarefreeIndicator.lean`.
+
+- `filter_sq_dvd_eq_singleton` — at squarefree `n`, the only `d` with `d² ∣ n` is `d = 1`.
+- `sum_moebius_sq_dvd_of_squarefree` — hence **`∑_{d² ∣ n} μ(d) = 1 = μ²(n)`** there.
+
+Unconditional.
+
+**Audit correction.** The Lean-status line above claims "the squarefree count `(7)`/`(11)`" is
+formalized. That is accurate for `(11)` but not for `(7)`: `Sieve/SquarefreeCount.lean` works
+throughout with the *truncated* sum `∑_{d ≤ R, d²∣n} μ(d)` and does not mention the predicate
+`Squarefree` at all — the string does not occur in the file. The identity `μ²(n) = ∑_{d²∣n} μ(d)` is
+absent from mathlib as well.
+
+This module supplies the squarefree half. The complementary half — that the sum vanishes at
+non-squarefree `n` — needs `{d : d² ∣ n}` identified with the divisors of the square part of `n`, and
+is **not** proved here. It is recorded as outstanding rather than assumed.
+
+### Formal layer — μ² is the squarefree indicator
+
+Added to `formal/GaloisForLFunctions/RHTower/Sieve/SquarefreeIndicator.lean`.
+
+- `moebius_sq_eq_indicator` — **`μ(n)² = 1` exactly when `n` is squarefree, `0` otherwise.**
+- `sum_moebius_sq_eq_card` — hence `∑_{n ∈ (t,t+L]} μ(n)² = #{n ∈ (t,t+L] : n squarefree}`.
+
+Unconditional.
+
+This supplies the *other* side of equation `(7)`. The identity `μ²(n) = ∑_{d²∣n} μ(d)` has two
+halves, and the position is now exactly:
+
+- `μ²(n) = squarefree indicator` — **proved** (this section);
+- `∑_{d²∣n} μ(d) = 1` at squarefree `n` — **proved** (previous section);
+- `∑_{d²∣n} μ(d) = 0` at non-squarefree `n` — **outstanding**; it needs `{d : d² ∣ n}` identified
+  with the divisors of the square part of `n`.
+
+`sum_moebius_sq_eq_card` is what lets the squarefree *count* `Q(t,L)` appearing in
+`card_moebius_sign_ge` and `GoodStartMarkov` be written as a sum of `μ²`, which is the form the
+sieve estimates produce.
+
+### Formal layer — equation (7) is now complete
+
+`formal/GaloisForLFunctions/RHTower/Sieve/SquarefreeIndicatorZero.lean`.
+
+- `sum_sq_dvd_eq_sum_squarefree` — the square-divisor sum may be restricted to squarefree `d`.
+- `sum_moebius_sq_dvd_of_not_squarefree` — **the sum vanishes at non-squarefree `n`.**
+- `moebius_sq_eq_sum_sq_dvd` — **equation `(7)`: `μ²(n) = ∑_{d²∣n} μ(d)`, for every `n ≥ 1`.**
+
+All unconditional.
+
+The outstanding half flagged in the previous section is closed, so the audit gap on `(7)` is
+resolved and the status line above is now accurate.
+
+The proof avoids factorisation entirely. Fix a prime `p` with `p² ∣ n`; on the squarefree `d` with
+`d² ∣ n` the map `d ↦ d/p` (if `p ∣ d`) or `d ↦ dp` (otherwise) is an involution reversing the sign
+of μ, so the sum cancels in pairs. Well-definedness needs only that `d² ∣ n` and `p² ∣ n` with
+`p ∤ d` give `d²p² ∣ n` by coprimality — the square part of `n` is never constructed, and no
+`Nat.factorization` machinery is used.
+
+Restriction to squarefree `d` is essential rather than cosmetic: on `d` divisible by `p²` the map is
+not an involution, and those terms are discarded first precisely because `μ` vanishes there.
+
+### Formal layer — the truncation defect of the squarefree identity
+
+`formal/GaloisForLFunctions/RHTower/Sieve/SquarefreeTruncationDefect.lean`.
+
+- `le_of_sq_dvd` — `d² ∣ n` with `n ≥ 1` forces `d ≤ n`.
+- `abs_moebius_sq_sub_trunc_le` — **`|μ²(n) − ∑_{d ≤ R, d²∣n} μ(d)| ≤ #{d ∈ (R,M] : d² ∣ n}`**
+  for `n ≤ M`.
+
+Unconditional.
+
+This is the bridge the corpus was missing between its two halves. `Sieve/SquarefreeCount.lean`
+estimates the *truncated* sum `Q_R`, and `(13)` needs the *true* squarefree count `Q`; the defect
+between them is now bounded pointwise by the count of omitted square divisors — which is exactly the
+object `Sieve/AveragedSquarefreeTail.sum_tail_divisor_count_le` bounds on average over starts.
+
+`le_of_sq_dvd` removes what would otherwise be a side condition: since `d² ∣ n` already forces
+`d ≤ n`, the truncated sum is a genuine subsum of the full one for **every** `R`, with no hypothesis
+relating `R` to `n`.
+
+### Formal layer — the window truncation defect
+
+Added to `formal/GaloisForLFunctions/RHTower/Sieve/SquarefreeTruncationDefect.lean`.
+
+- `abs_window_squarefree_sub_trunc_le` — **`|Q(t,L) − Q_R(t,L)| ≤ ∑_{d ∈ (R,M]} #{n ∈ (t,t+L] : d²∣n}`**
+  for `t + L ≤ M`.
+
+Unconditional.
+
+The right-hand side is *exactly* the summand of `AveragedSquarefreeTail.sum_tail_divisor_count_le`,
+so the two results now compose directly: summing over starts bounds the averaged defect by
+`L·((B+L−A)/R + M)`, which is the card's `(12)`.
+
+Chain for `(11)`–`(13)`, now complete and unconditional:
+`(7)` `moebius_sq_eq_sum_sq_dvd` → pointwise defect → window defect (this) → averaged defect
+(`sum_tail_divisor_count_le`) → Markov (`card_large_le_of_sum_sq_le`) → `(13)`. The corpus previously
+had the two ends and neither of the two middle links.
+
+### Formal layer — lower bound for the true squarefree count
+
+Added to `formal/GaloisForLFunctions/RHTower/Sieve/SquarefreeTruncationDefect.lean`.
+
+- `squarefree_count_ge` — **`Q(t,L) ≥ D·L − (R + L/R) − defect(t)`**, where `D = squarefreeDensity`
+  and `defect(t) = ∑_{d ∈ (R,M]} #{n ∈ (t,t+L] : d²∣n}`.
+
+Unconditional.
+
+This is the deterministic core of `(11)`–`(13)` for the **true** squarefree count, as opposed to the
+truncated one: the sieve main term, its error `R + L/R`, and the truncation defect combined in a
+single inequality, valid for every start with no exceptional set.
+
+Only one step now separates it from `(13)`: the defect is `o(L)` for all but few starts, which is
+Markov applied to `AveragedSquarefreeTail.sum_tail_divisor_count_le`. Both of those are already in
+the corpus, so `Bad₂` in `GoodStartMarkov` is discharged by existing results rather than assumed.
+
+### Formal layer — equation (13): the deficient starts are few
+
+`formal/GaloisForLFunctions/RHTower/Sieve/SquarefreeExceptional.lean`.
+
+- `card_large_le_of_sum_le` — **Markov for a nonnegative quantity**: if the values sum to at most `V`,
+  at most `V/θ` of them reach `θ`. (The corpus previously had only the mean-*square* form.)
+- `card_squarefree_deficient_le` — **equation `(13)`**: the starts with
+  `Q(t,L) < ½DL` number at most `V/θ`, where `θ = ½DL − (R + L/R)` and `V` bounds the summed
+  truncation defect.
+
+Both unconditional.
+
+`Bad₂` in `GoodStartMarkov` is now supplied by a proved theorem rather than assumed. The elementary
+half of step 1 is complete: `(7)` → truncation defect → `squarefree_count_ge` → `(13)`, with the
+averaged tail (`AveragedSquarefreeTail`) providing `V`.
+
+What remains hypothetical in step 1 is only `Bad₁`, which is the mean-square input `(6)`/`(15)` — as
+the cards state.
+
+### Formal layer — step 1, fully explicit
+
+Added to `formal/GaloisForLFunctions/RHTower/Sieve/SquarefreeExceptional.lean`.
+
+- `card_le_good_add_explicit` — **`#S ≤ #{good starts} + V/(DL/8)² + W/θ`**, where
+  `θ = ½DL − (R + L/R)`, `V` bounds the mean square of the Möbius sums, and `W` bounds the summed
+  truncation defect.
+
+Unconditional as an implication.
+
+Both exceptional sets are now explicit, and the two hypotheses have different status: `hdef` (the
+`W` bound) is elementary and supplied by `AveragedSquarefreeTail.sum_tail_divisor_count_le`, while
+`hms` (the `V` bound) **is** the published mean-square input.
+
+Step 1 of the Hall-law argument is therefore a single theorem with exactly one non-elementary
+hypothesis, and that hypothesis is `(6)`/`(15)` verbatim. Everything else — the sign-count identity,
+equation `(7)`, the truncated-to-true squarefree bridge, `(13)`, Markov in both the mean-square and
+nonnegative forms, and the covering argument — is proved in the corpus.
+
+### Formal layer — equation (13) with no free parameter
+
+Added to `formal/GaloisForLFunctions/RHTower/Sieve/SquarefreeExceptional.lean`.
+
+- `card_squarefree_deficient_Ico_le` — **`#{t ∈ [A,B) : Q(t,L) < ½DL} ≤ L((B+L−A)/R + M)/θ`**,
+  `θ = ½DL − (R + L/R)`.
+
+Unconditional, with no free parameter: the averaged truncation tail
+(`AveragedSquarefreeTail.sum_tail_divisor_count_le`) supplies the numerator directly.
+
+This is the card's `(13)` in closed form. Combined with `card_le_good_add_explicit`, the *only*
+remaining hypothesis anywhere in step 1 is the mean-square bound on the Möbius sums — the published
+input. Every elementary ingredient is now a proved theorem with explicit constants.
+
+Audit note: the same status-line overstatement found on the Hall-law card (claiming `(7)` proved)
+also affected this card's `(20)`. Both are corrected above, and both statements are now genuinely
+proved. Range citations such as "`(19)`-`(21)`" are what concealed the gap — the endpoints were
+formalized and the middle statement was not.
+
+### Formal layer — the marker block contribution
+
+`formal/GaloisForLFunctions/RHTower/Sieve/MarkerBlockLower.lean`.
+
+- `card_markerBlockTargets_ge` — **`#P · c ≤ #(markerBlockTargets P C)`** whenever every retained
+  marker has at least `c` cofactors.
+
+Unconditional.
+
+This is the step that converts "many good starts" into "many distinct targets", i.e. `(25)`. It rests
+on `card_markerBlockTargets`, which gives the target count as *exactly* `∑_{p∈P} #(C p)` — the
+pair-to-product map being injective — so no multiplicity correction is needed and the bound counts
+physical integers.
+
+In the application `c = (3/16)DL` comes from `card_moebius_sign_ge` at a good start, and `#P` is the
+number of retained markers after the discards of `(10)` and `(13)`.
+
+### Formal layer — matching inside a cell
+
+`formal/GaloisForLFunctions/RHTower/Sieve/CellMatching.lean`.
+
+- `exists_injOn_of_card_le` — **`#s ≤ #t → ∃ f, Set.InjOn f s ∧ ∀ x ∈ s, f x ∈ t`.**
+
+Unconditional.
+
+This is the step that turns the counting statement into the transport map the Hall claim asserts:
+"matching inside disjoint cells yields a literal injection". Without it the theorem would only say
+targets outnumber sources, which is not the same as exhibiting an injection.
+
+Nothing beyond cardinality is used — a subset `t' ⊆ t` of equal size is chosen and the equivalence
+`s ≃ t'` transported — so the matching is available cell by cell, and disjoint cells compose because
+the images stay inside their own cell.
+
+### Formal layer — matching with bounded displacement
+
+Added to `formal/GaloisForLFunctions/RHTower/Sieve/CellMatching.lean`.
+
+- `exists_injOn_displacement_le` — sources and targets in a common window of length `H`, with
+  `#s ≤ #t`, are matched by an injection satisfying **`|f(x) − x| ≤ H`** for every source.
+
+Unconditional.
+
+This is step 4's conclusion as a statement about an actual map: an injection from source primes to
+targets, inside the cell, **with the displacement bound the Gibbs cost estimate `(5)`/`(27)` consumes**.
+Previously the displacement was argued informally from both sets lying in `(X, X+H]`; it is now
+derived, and the bound is stated in `ℤ` so no truncated subtraction hides the negative case.
+
+Combined with `card_markerBlockTargets_ge` (targets are plentiful) and `Sieve/BrunTitchmarsh` (source
+primes are few), this completes the elementary content of step 4.
+
+### Formal layer — the transport cost of the matching
+
+`formal/GaloisForLFunctions/RHTower/Sieve/TransportCostWindow.lean`.
+
+- `finiteDampedLaplaceTransportCost_le` — **`cost ≤ #s · (x · H)`** once every edge moves no further
+  than `H`, since the damping factor `exp(−min(u,v)x)` never exceeds one on nonnegative data.
+
+Unconditional.
+
+With `#s = O(X)` edges across a dyadic shell and `x ≍ X⁻¹` this is `O(H) = X^{1/2+o(1)}`, the cards'
+cost claim `(5)`/`(27)`/`(36)`.
+
+Corpus check: `MobiusBoundaryOppositeSignTransport.lean` already owns the sharp one-edge estimate
+`abs_exp_neg_mul_sub_exp_neg_mul_le_transportCost`, the aggregate definition, and a Hall-based
+injective matching built on mathlib's `Finset.all_card_le_biUnion_card_iff_exists_injective`. Only
+the specialisation of the aggregate to a bounded-displacement window was missing; the one-edge
+estimate was not rebuilt.
+
+### Audit — the formalization does not use the prime number theorem
+
+The prose derives the marker supply `(19)` from "the ordinary PNT on fixed dyadic intervals", and the
+hostile audit above defends that choice against Maier's theorem. The **formalization does not need
+it**: `Sieve/PrimeWindow.card_bigPrimeSet_ge` and `card_bigPrimeSet_ratio_ge` give
+
+`(log Q − 2·mertensFirstConst)·M / log M ≤ #{primes in (M, QM]}`
+
+from **Mertens' first theorem alone** — an elementary Chebyshev-type lower bound, with an explicit
+constant and no PNT anywhere in its dependency cone.
+
+So the formal argument rests on a strictly weaker hypothesis set than the paper argument: the only
+non-elementary input remaining is the mean-square theorem `(6)`/`(15)`. This is worth recording
+because a reader of the prose would reasonably expect two external inputs, and there is only one.
+
+### Formal layer — the kernel is constant on the bulk
+
+`formal/GaloisForLFunctions/RHTower/Sieve/WindowKernelBulk.lean`.
+
+- `windowOverlap_bulk` — at shift `h ≤ L`, **`K(n, n+h) = L − h`** for every start with `L ≤ n` and
+  `n + h ≤ X`.
+- `card_boundary_le` — fewer than `2L + 1` starts lie outside that bulk.
+
+Both unconditional.
+
+This is what makes the reduction usable with the literature's form of a correlation estimate. The
+weighted sum `∑_n K(n,n+h)μ(n)μ(n+h)` appearing in the exact variance identity differs from
+`(L−h)·∑_n μ(n)μ(n+h)` — the **unweighted** correlation that Chowla/Elliott-type results bound — by
+at most `2L·L`, since the kernel is constant except on two boundary strips of fewer than `L` starts
+each, where it never exceeds `L`.
+
+So the hypothesis of `CorrelationToVariance.sum_normSq_window_le_of_correlation`, which is stated in
+weighted form, can be discharged from an unweighted bound with an explicit `O(L²)` boundary loss.
+
+### Formal layer — weighted correlation from unweighted
+
+Added to `formal/GaloisForLFunctions/RHTower/Sieve/WindowKernelBulk.lean`.
+
+- `abs_sum_kernel_sub_bulk_le` — for coefficients bounded by one,
+  **`|∑_n K(n,n+h)c_n − (L−h)·∑_{bulk} c_n| ≤ (2L+1)·L`**.
+
+Unconditional.
+
+The remark of the previous section is now a theorem. The exact variance identity is stated with the
+kernel weights, whereas Chowla/Elliott-type results bound the *unweighted* correlation
+`∑_n μ(n)μ(n+h)`; this converts between them with an explicit `O(L²)` boundary loss, so the
+hypothesis of `CorrelationToVariance.sum_normSq_window_le_of_correlation` can be discharged from a
+literature-form bound.
+
+Recorded because the two objects are genuinely different and the difference was previously
+unexamined — the weighted form is what the identity produces, the unweighted form is what any
+citable estimate would supply.

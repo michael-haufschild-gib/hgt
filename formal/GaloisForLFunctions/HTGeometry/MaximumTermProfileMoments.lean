@@ -59,11 +59,11 @@ set_option maxHeartbeats 400000 in
 /-- **The total mass under Gaussian concentration.**  Outside a window of half-width `N` the terms
 decay geometrically at rate `N/(4L)`, so the majorant is the window sum plus a geometric tail. -/
 theorem coeffSum_le_gaussian
-    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {x H L : ℝ} (hH : 0 < H) (hL : 0 < L)
-    {N : ℕ} (hN0 : 0 < N) (hNK : (N : ℝ) ≤ 2 * L * H)
-    (hlipA : ∀ v : ℝ, 0 < v → v ≤ H →
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {x H L v₀ : ℝ} (hH : 0 < H) (hL : 0 < L)
+    {N : ℕ} (hN0 : 0 < N) (hNK : (N : ℝ) ≤ 2 * L * H) (hNv : 2 * L * v₀ ≤ (N : ℝ))
+    (hlipA : ∀ v : ℝ, v₀ ≤ v → v ≤ H →
       (centralIndex a (Real.exp (x + v)) : ℝ) ≤ (centralIndex a (Real.exp x) : ℝ) + L * v)
-    (hlipB : ∀ v : ℝ, 0 < v → v ≤ H →
+    (hlipB : ∀ v : ℝ, v₀ ≤ v → v ≤ H →
       (centralIndex a (Real.exp x) : ℝ) - L * v ≤ (centralIndex a (Real.exp (x - v)) : ℝ))
     {W : ℝ}
     (hW : ∑ n ∈ Finset.Ico (centralIndex a (Real.exp x) - N)
@@ -103,7 +103,7 @@ theorem coeffSum_le_gaussian
       rw [← hk]
       have : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
       linarith
-    have hterm := term_le_maxTerm_exp_uniform_above (x := x) ha hn₀ hH hL hNpos hNK hlipA
+    have hterm := term_le_maxTerm_exp_uniform_above (x := x) ha hn₀ hH hL hNpos hNK hNv hlipA
       (n := n) (k := (n : ℝ) - (v : ℝ)) rfl hkK
     rw [← hk] at hterm
     calc T n ≤ μ * Real.exp (-(((N : ℝ) + 1 + j) * (N : ℝ) / (4 * L))) := hterm
@@ -124,7 +124,7 @@ theorem coeffSum_le_gaussian
       rw [← hk]
       have : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
       linarith
-    have hterm := term_le_maxTerm_exp_uniform_below (x := x) ha hn₀ hH hL hNpos hNK hlipB
+    have hterm := term_le_maxTerm_exp_uniform_below (x := x) ha hn₀ hH hL hNpos hNK hNv hlipB
       (n := n) (k := (v : ℝ) - (n : ℝ)) rfl hkK
     rw [← hk] at hterm
     calc T n ≤ μ * Real.exp (-(((N : ℝ) + 1 + j) * (N : ℝ) / (4 * L))) := hterm
@@ -160,11 +160,11 @@ set_option maxHeartbeats 400000 in
 /-- **The second moment under Gaussian concentration.**  Inside the window the squared deviation is
 at most `N^2`; outside it the geometric decay dominates the quadratic weight. -/
 theorem tsum_index_sq_le_gaussian
-    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {x H L : ℝ} (hH : 0 < H) (hL : 0 < L)
-    {N : ℕ} (hN0 : 0 < N) (hNK : (N : ℝ) ≤ 2 * L * H)
-    (hlipA : ∀ v : ℝ, 0 < v → v ≤ H →
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {x H L v₀ : ℝ} (hH : 0 < H) (hL : 0 < L)
+    {N : ℕ} (hN0 : 0 < N) (hNK : (N : ℝ) ≤ 2 * L * H) (hNv : 2 * L * v₀ ≤ (N : ℝ))
+    (hlipA : ∀ v : ℝ, v₀ ≤ v → v ≤ H →
       (centralIndex a (Real.exp (x + v)) : ℝ) ≤ (centralIndex a (Real.exp x) : ℝ) + L * v)
-    (hlipB : ∀ v : ℝ, 0 < v → v ≤ H →
+    (hlipB : ∀ v : ℝ, v₀ ≤ v → v ≤ H →
       (centralIndex a (Real.exp x) : ℝ) - L * v ≤ (centralIndex a (Real.exp (x - v)) : ℝ))
     {W : ℝ}
     (hW : ∑ n ∈ Finset.Ico (centralIndex a (Real.exp x) - N)
@@ -208,7 +208,7 @@ theorem tsum_index_sq_le_gaussian
       rw [← hk]
       have : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
       linarith
-    have hterm := term_le_maxTerm_exp_uniform_above (x := x) ha hn₀ hH hL hNpos hNK hlipA
+    have hterm := term_le_maxTerm_exp_uniform_above (x := x) ha hn₀ hH hL hNpos hNK hNv hlipA
       (n := n) (k := (n : ℝ) - (v : ℝ)) rfl hkK
     rw [← hk] at hterm
     calc D n = ((n : ℝ) - (v : ℝ)) ^ 2 * (‖a n‖ * r ^ n) := rfl
@@ -233,7 +233,7 @@ theorem tsum_index_sq_le_gaussian
       rw [← hk]
       have : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
       linarith
-    have hterm := term_le_maxTerm_exp_uniform_below (x := x) ha hn₀ hH hL hNpos hNK hlipB
+    have hterm := term_le_maxTerm_exp_uniform_below (x := x) ha hn₀ hH hL hNpos hNK hNv hlipB
       (n := n) (k := (v : ℝ) - (n : ℝ)) rfl hkK
     rw [← hk] at hterm
     have hsq : ((n : ℝ) - (v : ℝ)) ^ 2 = ((N : ℝ) + 1 + j) ^ 2 := by

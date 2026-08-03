@@ -2877,3 +2877,186 @@ degrees, the fibre amplitude at a length-`M` frequency is the sum over degrees
 (`fiberAmplitude_eq_zero_of_card_ne`), so the degree-`M` hypothesis of
 `eq_zero_of_fiberAmplitudes_vanishing` is available without isolating the degree-`M` part of the
 relation first.
+
+## Ostrowski, graded form
+
+    eq_zero_of_gradedMonomialCombination_vanishing :
+      RationallyIndependentSequence omega -> ExpSeriesNormallySummable a omega ->
+      {i | a i /= 0}.Infinite -> (distinct multisets within each degree) ->
+      (forall t : R, sum_{M <= N} sum_{s in K M}
+          c M s * prod_j iteratedDeriv (s j) (cexpSeriesCarrier a omega) t = 0) ->
+      forall M, forall s in K M, c M s = 0
+
+Monomials of different total degree are handled at once.  The whole relation is one exponential
+series over `Sigma (degree, monomial, tuple)`; at the frequency of a length-`M` injective tuple the
+sum over degrees collapses to the single term `M` (`Finset.sum_eq_single` with
+`fiberAmplitude_sigmaTuple_eq_zero_of_card_ne`), and the refactored
+`eq_zero_of_fiberAmplitudes_vanishing` then kills that degree's coefficients.
+
+So a differential relation of the carrier may now have arbitrary monomials of arbitrary degrees --
+the only shape still to match is the corpus's `MvPolynomial` presentation and the powers of `z`,
+and the latter is `eq_zero_of_polynomialCombination_bohr`, already threaded through in the
+fixed-degree case.
+
+## Ostrowski, full form
+
+    eq_zero_of_gradedPolynomialCombination_vanishing :
+      RationallyIndependentSequence omega -> ExpSeriesNormallySummable a omega ->
+      {i | a i /= 0}.Infinite -> (distinct multisets within each degree) ->
+      (forall t : R, sum_{d <= D} t^d * sum_{M <= N} sum_{s in K M}
+          c d M s * prod_j iteratedDeriv (s j) (cexpSeriesCarrier a omega) t = 0) ->
+      forall d <= D, forall M, forall s in K M, c d M s = 0
+
+Arbitrary monomials, arbitrary total degrees, polynomial coefficients: this is exactly the content
+of a differential relation, and it forces every coefficient to vanish.  The two separations are
+independent -- the powers of `z` come apart by the top-degree argument
+(`eq_zero_of_polynomialCombination_bohr`), the total degrees by the frequency argument
+(`fiberAmplitude_sigmaTuple_eq_zero_of_card_ne`) -- and they compose without interaction, because
+each degree block is itself one exponential series
+(`gradedCombination_eq_expSeriesCarrier`), hence bounded and almost periodic.
+
+Ostrowski's theorem is now formal in the corpus in a shape strong enough for claim (2).  What is
+left is a translation, not a proof: the corpus's `DifferentiallyAlgebraicOn` writes a relation as an
+`MvPolynomial` in the jets, and its monomials must be enumerated as the tuples used here.
+
+## Translating a jet monomial into a tuple of orders
+
+`JetOrderTuple.lean` (wired, axiom-clean) starts the translation to the corpus's
+`DifferentiallyAlgebraicOn`, whose relations are `MvPolynomial (Fin (n+2)) C` -- variable `0` the
+spectral variable, variables `1..n+1` the jets:
+
+    orderTuple mj : Fin (sum_j mj j) -> N        -- one slot per factor, carrying its order
+    prod_orderTuple : prod_l g (orderTuple mj l) = prod_j (g j)^(mj j)
+    tupleCount_orderTuple :
+      tupleCount (orderTuple mj) k = sum_j (if j = k then mj j else 0)
+
+The multiplicity presentation (how many times each jet order occurs) and the tuple presentation (one
+slot per factor) are exchanged by `finSigmaFinEquiv`, and the two lemmas say the exchange preserves
+what the two halves of the argument use: the product is the monomial, and the multiset of the tuple
+is the multiplicity function -- so distinct monomials still give distinct multisets, which is the
+hypothesis of `eq_zero_of_gradedPolynomialCombination_vanishing`.
+
+Remaining: assemble a relation's support into the graded families `K M` and coefficients `c d M s`,
+and read the theorem's conclusion as `P = 0`.
+
+## Distinct jet monomials stay distinct as tuples
+
+    tupleCount_orderTuple_apply : tupleCount (orderTuple mj) k = mj k        (k : Fin n)
+    orderTuple_tupleCount_injective :
+      tupleCount (orderTuple mj) = tupleCount (orderTuple mj') -> mj = mj'
+
+The multiset of the tuple *is* the multiplicity function, read off coordinate by coordinate.  So the
+translation from the corpus's `MvPolynomial` presentation to tuples loses nothing: two different jet
+monomials give tuples with different multisets, which is exactly the hypothesis
+`eq_zero_of_gradedPolynomialCombination_vanishing` requires within each degree.
+
+The remaining work on (2) is now entirely `Finset` bookkeeping: group a relation's support by
+(degree in `z`, total jet degree), read each group's coefficient through this injection, and match
+the two sums.
+
+## From a relation on an open set to a relation on the real line
+
+`JetRelationPropagation.lean` (wired, axiom-clean):
+
+    analyticAt_jetEval :
+      (forall w, AnalyticAt C f w) -> AnalyticAt C (fun w => eval (Fin.cons w (jets f w)) P) z
+
+    jetRelation_eq_zero_of_isOpen :
+      (forall w, AnalyticAt C f w) -> IsOpen U -> U.Nonempty ->
+      (forall z in U, eval (Fin.cons z (jets f z)) P = 0) ->
+      forall z : C, eval (Fin.cons z (jets f z)) P = 0
+
+    analyticAt_cexpSeriesCarrier : the entire carrier is analytic at every point
+
+`DifferentiallyAlgebraicOn` asserts a relation only on `U`, while the Bohr argument needs it on the
+real line.  For an entire function the two are the same: the jet evaluation is analytic (induction on
+the relation, using the corpus's `analyticAt_iteratedDeriv_of_analyticAt`), and a function analytic
+on the connected plane which vanishes on a nonempty open set vanishes identically.  The general
+lemma is new; the corpus previously had this only for `digamma . Gamma`.
+
+All the pieces of claim (2) are now in place; what remains is the single act of assembling them.
+
+## Claim (2) is closed: Ostrowski's theorem is formalized, unconditionally
+
+`PaddedOrderTuple.lean`, `ExponentialCarrierHypertranscendence.lean` (wired, axiom-clean):
+
+    padOrderTuple mj M : the order tuple of a jet monomial, padded by zero to length M
+    prod_padOrderTuple : the product over the padded slots is the monomial
+    padOrderTuple_injOn : in its own degree, padding is faithful
+
+    eq_zero_of_jetMonomialCombination_vanishing :
+      RationallyIndependentSequence omega -> ExpSeriesNormallySummable a omega ->
+      {i | a i != 0}.Infinite ->
+      (forall t : R, sum_{m in S} co m * (t^(m 0) * prod_j D^j(carrier)(t)^(m j.succ)) = 0) ->
+      forall m in S, co m = 0
+
+    not_differentiallyAlgebraicOn_cexpSeriesCarrier :
+      RationallyIndependentSequence omega -> ExpSeriesNormallySummable a omega ->
+      {i | a i != 0}.Infinite -> IsOpen U -> U.Nonempty ->
+      not DifferentiallyAlgebraicOn (cexpSeriesCarrier a omega) U
+
+    not_differentiallyAlgebraicOn_cexpSeriesCarrier_twist : the same for every unimodular twist
+
+This is the card's imported input, now proved in Lean rather than cited.  The assembly is the one
+that was outstanding: a relation is transported to the real line, its support is sorted by the power
+of `z` and by the total degree of the jet part, each group's monomials are listed as padded order
+tuples, and `eq_zero_of_gradedPolynomialCombination_vanishing` returns every coefficient zero -- so
+the relation is the zero polynomial, contradicting `P != 0`.
+
+Three bookkeeping devices carry the sort.  The length index is `min (jet degree) N`, total on all of
+`Fin (n+2) ->0 N` so no dependent-type cast is ever needed.  The cell of a monomial is the single
+fibre of `m |-> (m 0, length index m)`, so both regroupings are one `Finset.sum_fiberwise_of_maps_to`
+over a product index.  Faithfulness of padding makes each cell a singleton, which is what turns
+"the cell's coefficient vanishes" into "the monomial's coefficient vanishes".
+
+## The hypothesis class is inhabited
+
+`LogPrimeExponentialCarrier.lean` (wired, axiom-clean):
+
+    rationallyIndependentSequence_of_linearIndependent_int :
+      LinearIndependent Z omega -> RationallyIndependentSequence omega
+    logPrimeFrequency j = log (j-th prime)
+    logPrimeAmplitude j = (j-th prime)^(-j)
+    rationallyIndependentSequence_logPrimeFrequency
+    expSeriesNormallySummable_logPrime
+    not_differentiallyAlgebraicOn_logPrimeCarrier :
+      forall unimodular lam, not DifferentiallyAlgebraicOn
+        (cexpSeriesCarrier (fun j => logPrimeAmplitude j * lam j) logPrimeFrequency) U
+
+The card proposes `omega_j = sqrt(p_j)`; the corpus already owns the stronger and far cheaper fact
+that the *logarithms* of the primes are `Z`-linearly independent (`logPrime_linearIndependent_int`
+in `Core.lean`), which is unique factorization and nothing more.  Log-primes are positive, strictly
+increasing and unbounded, so they satisfy everything the card asks of its frequencies, and the
+substitution costs nothing.
+
+Damping the `j`-th prime by its own `j`-th power beats every exponential weight: past `ceil R` the
+term `p_j^(R-j)` is below `2^(R-j)`, so the normal-summability hypothesis holds for all `R`
+simultaneously by comparison with a geometric series.  The whole theorem is therefore not vacuous:
+an explicit entire carrier is exhibited to which it applies.
+
+## Claim (2) at the card's own boundary object
+
+`PerturbedBoundaryHypertranscendence.lean` (wired, axiom-clean):
+
+    not_differentiallyAlgebraicOn_bohrHullMap :
+      no point of the Bohr hull of the carrier satisfies an algebraic differential equation
+
+    not_differentiallyAlgebraicOn_perturbedBoundaryFun :
+      eps != 0 -> not DifferentiallyAlgebraicOn (fun z => c + eps * bohrHullMap a omega h lam z) U
+
+The corpus's `bohrHullMap a omega h lam` is exactly the card's `A_lambda`, and the boundary function
+of the perturbed orbit is `c + eps * A_lambda`; the affine change is absorbed by the corpus's
+`not_differentiallyAlgebraicOn_polynomialGauge` with constant polynomials.  So the boundary-HT claim
+now holds for the card's own object with no imported input, on every nonempty open set.
+
+### Status of the numbered claims, revised
+
+| claim | Lean |
+|---|---|
+| (2) boundary HT | `not_differentiallyAlgebraicOn_perturbedBoundaryFun` -- unconditional |
+| Ostrowski | `not_differentiallyAlgebraicOn_cexpSeriesCarrier` -- formalized, no longer imported |
+
+Claim (1) remains a formal reduction only in the sense that it quantifies over the residual set of
+mass parameters; its Lean statement `residual_shiftUniform_perturbedOuterOrbit_pow` is itself
+unconditional.  With (2) proved, the card's two research inputs are down to one: the positive-mass
+Baire construction, which is already in Lean as claim (9).

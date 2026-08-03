@@ -45,11 +45,11 @@ private theorem exp_rate_pow {L : ℝ} (hL : 0 < L) (N k : ℕ) :
 central index contributes at most `N` times the window sum; outside it the terms decay at the rate
 `N / (4L)` per unit of deviation, so both tails are dominated by one shifted geometric series. -/
 theorem tsum_index_deviation_le_gaussian
-    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {x H L : ℝ} (hH : 0 < H) (hL : 0 < L)
-    {N : ℕ} (hN0 : 0 < N) (hNK : (N : ℝ) ≤ 2 * L * H)
-    (hlipA : ∀ v : ℝ, 0 < v → v ≤ H →
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {x H L v₀ : ℝ} (hH : 0 < H) (hL : 0 < L)
+    {N : ℕ} (hN0 : 0 < N) (hNK : (N : ℝ) ≤ 2 * L * H) (hNv : 2 * L * v₀ ≤ (N : ℝ))
+    (hlipA : ∀ v : ℝ, v₀ ≤ v → v ≤ H →
       (centralIndex a (Real.exp (x + v)) : ℝ) ≤ (centralIndex a (Real.exp x) : ℝ) + L * v)
-    (hlipB : ∀ v : ℝ, 0 < v → v ≤ H →
+    (hlipB : ∀ v : ℝ, v₀ ≤ v → v ≤ H →
       (centralIndex a (Real.exp x) : ℝ) - L * v ≤ (centralIndex a (Real.exp (x - v)) : ℝ))
     {W : ℝ}
     (hW : ∑ n ∈ Finset.Ico (centralIndex a (Real.exp x) - N)
@@ -93,7 +93,7 @@ theorem tsum_index_deviation_le_gaussian
       rw [← hk]
       have : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
       linarith
-    have hterm := term_le_maxTerm_exp_uniform_above (x := x) ha hn₀ hH hL hNpos hNK hlipA
+    have hterm := term_le_maxTerm_exp_uniform_above (x := x) ha hn₀ hH hL hNpos hNK hNv hlipA
       (n := n) (k := (n : ℝ) - (v : ℝ)) rfl hkK
     have habs : |(n : ℝ) - (v : ℝ)| = (N : ℝ) + 1 + j := by
       rw [← hk, abs_of_nonneg (by positivity)]
@@ -122,7 +122,7 @@ theorem tsum_index_deviation_le_gaussian
       rw [← hk]
       have : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
       linarith
-    have hterm := term_le_maxTerm_exp_uniform_below (x := x) ha hn₀ hH hL hNpos hNK hlipB
+    have hterm := term_le_maxTerm_exp_uniform_below (x := x) ha hn₀ hH hL hNpos hNK hNv hlipB
       (n := n) (k := (v : ℝ) - (n : ℝ)) rfl hkK
     have habs : |(n : ℝ) - (v : ℝ)| = (N : ℝ) + 1 + j := by
       rw [hk, abs_sub_comm, abs_of_nonneg (by linarith [hkK, hNpos])]

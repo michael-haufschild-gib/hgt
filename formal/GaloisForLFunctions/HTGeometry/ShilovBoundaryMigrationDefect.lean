@@ -17,11 +17,14 @@ The main results are:
 * `escapeDetectionEquiv`: a representation whose kernel is the target Shilov ideal detects the
   escape defect faithfully;
 * `deficitComposition_exact`: the canonical right-exact composition law for deficits;
-* `exists_coherent_representatives`: recursive correction of compatible quotient classes in a
-  countable inverse system.
+* `stageBoundaryDerivedSequence_shortExact`: the literal universal derived inverse-limit law
+  `0 → (lim Aₙ)/(lim Jₙ) → lim(Aₙ/Jₙ) → lim¹ Jₙ → 0`;
+* `localBoundaryComparison_surjective_iff`: exactness of local descent is equivalent to vanishing
+  of the global `lim¹` boundary obstruction;
+* `zero_scalar_bond_global_vanishing`: linkwise cokernel defects need not obstruct global descent.
 
 These statements are the algebraic, non-topological proof obligations in Theorems A, B, and D of
-`docs/drafts/pipeline/1-in-progress/spectral-boundary-migration-shilov-exactness.md`.
+`docs/drafts/pipeline/2-fully-proven/spectral-boundary-migration-shilov-exactness.md`.
 -/
 
 open Function
@@ -396,6 +399,117 @@ abbrev CompatibleClassSpace (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
     (J : ∀ n, Submodule 𝕜 (A n)) : Type v :=
   compatibleModuloSubmodule A bond J ⧸ compatibleProductSubmodule A bond J
 
+/-- Bonding map induced on the stage boundary quotient. -/
+def quotientBond (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n) :
+    ∀ n, (A (n + 1) ⧸ J (n + 1)) →ₗ[𝕜] (A n ⧸ J n) :=
+  fun n => (J (n + 1)).mapQ (J n) (bond n) (by
+    intro x hx
+    exact hstable n x hx)
+
+/-- Literal inverse limit of the stage boundary quotients. -/
+abbrev StageQuotientInverseLimit
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n) : Type v :=
+  LinearMap.ker
+    (inverseDifference (fun n => A n ⧸ J n) (quotientBond A bond J hstable))
+
+/-- The intrinsic compatible-class model maps canonically to the literal inverse limit of stage
+quotients. -/
+def compatibleClassToStageLimit
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n) :
+    CompatibleClassSpace A bond J →ₗ[𝕜]
+      StageQuotientInverseLimit A bond J hstable :=
+  (compatibleProductSubmodule A bond J).liftQ
+    ({
+      toFun := fun b => ⟨fun n => Submodule.Quotient.mk (b.1 n), by
+        funext n
+        change ((Submodule.Quotient.mk (b.1 n)) : A n ⧸ J n) -
+          ((Submodule.Quotient.mk (bond n (b.1 (n + 1)))) : A n ⧸ J n) = 0
+        apply sub_eq_zero.mpr
+        rw [Submodule.Quotient.eq]
+        have hb := b.property
+        change ∀ n, bond n (b.1 (n + 1)) - b.1 n ∈ J n at hb
+        simpa only [neg_sub] using (J n).neg_mem (hb n)⟩
+      map_add' := fun x y => by rfl
+      map_smul' := fun c x => by rfl
+    } : compatibleModuloSubmodule A bond J →ₗ[𝕜]
+      StageQuotientInverseLimit A bond J hstable) (by
+        intro x hx
+        rw [LinearMap.mem_ker]
+        apply Subtype.ext
+        funext n
+        change Submodule.Quotient.mk (x.1 n) = 0
+        rw [Submodule.Quotient.mk_eq_zero]
+        change x.1 ∈ productSubmodule A J at hx
+        rw [Submodule.mem_pi] at hx
+        exact hx n (Set.mem_univ n))
+
+theorem compatibleClassToStageLimit_injective
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n) :
+    Function.Injective (compatibleClassToStageLimit A bond J hstable) := by
+  rw [← LinearMap.ker_eq_bot]
+  apply le_antisymm
+  · intro y hy
+    rw [Submodule.mem_bot]
+    induction y using Submodule.Quotient.induction_on with
+    | _ b =>
+      change (⟨fun n => Submodule.Quotient.mk (b.1 n), _⟩ :
+        StageQuotientInverseLimit A bond J hstable) = 0 at hy
+      rw [Submodule.Quotient.mk_eq_zero]
+      change b.1 ∈ productSubmodule A J
+      rw [Submodule.mem_pi]
+      intro n _
+      have hn := congrArg Subtype.val hy
+      have hn' := congrFun hn n
+      change Submodule.Quotient.mk (b.1 n) = 0 at hn'
+      rwa [Submodule.Quotient.mk_eq_zero] at hn'
+  · exact bot_le
+
+theorem compatibleClassToStageLimit_surjective
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n) :
+    Function.Surjective (compatibleClassToStageLimit A bond J hstable) := by
+  classical
+  intro z
+  choose b hb using fun n => Submodule.Quotient.mk_surjective (J n) (z.1 n)
+  have hmod : ∀ n, bond n (b (n + 1)) - b n ∈ J n := by
+    intro n
+    rw [← Submodule.Quotient.eq]
+    have hn := congrFun z.property n
+    change z.1 n - quotientBond A bond J hstable n (z.1 (n + 1)) = 0 at hn
+    have hn' := sub_eq_zero.mp hn
+    calc
+      Submodule.Quotient.mk (bond n (b (n + 1))) =
+          quotientBond A bond J hstable n (Submodule.Quotient.mk (b (n + 1))) := rfl
+      _ = quotientBond A bond J hstable n (z.1 (n + 1)) := by rw [hb]
+      _ = z.1 n := hn'.symm
+      _ = Submodule.Quotient.mk (b n) := (hb n).symm
+  let br : compatibleModuloSubmodule A bond J := ⟨b, hmod⟩
+  refine ⟨Submodule.Quotient.mk br, ?_⟩
+  apply Subtype.ext
+  funext n
+  exact hb n
+
+/-- Canonical identification of the intrinsic representative model with
+`lim (Aₙ / Jₙ)`. -/
+noncomputable def compatibleClassEquivStageLimit
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n) :
+    CompatibleClassSpace A bond J ≃ₗ[𝕜]
+      StageQuotientInverseLimit A bond J hstable :=
+  LinearEquiv.ofBijective (compatibleClassToStageLimit A bond J hstable)
+    ⟨compatibleClassToStageLimit_injective A bond J hstable,
+      compatibleClassToStageLimit_surjective A bond J hstable⟩
+
 /-- Linear boundary mismatch on the representative space. -/
 def representativeBoundary (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
     (J : ∀ n, Submodule 𝕜 (A n)) :
@@ -494,6 +608,26 @@ def localBoundaryComparison (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
       change x.1 ∈ productSubmodule A J at hx
       change (coherentRepresentative A bond J x).1 ∈ productSubmodule A J
       exact hx)
+
+/-- Canonical local boundary comparison with literal target `lim (Aₙ/Jₙ)`. -/
+noncomputable def stageLocalBoundaryComparison
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n) :
+    LocalBoundaryQuotient A bond J →ₗ[𝕜]
+      StageQuotientInverseLimit A bond J hstable :=
+  (compatibleClassEquivStageLimit A bond J hstable).toLinearMap.comp
+    (localBoundaryComparison A bond J)
+
+/-- Derived boundary connecting map on the literal stage-quotient inverse limit. -/
+noncomputable def stageBoundaryConnectingMap
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n) :
+    StageQuotientInverseLimit A bond J hstable →ₗ[𝕜]
+      DerivedLimitOne (fun n => J n) (restrictedBond A bond J hstable) :=
+  (boundaryConnectingMap A bond J hstable).comp
+    (compatibleClassEquivStageLimit A bond J hstable).symm.toLinearMap
 
 /-- The canonical comparison is always injective. -/
 theorem localBoundaryComparison_injective
@@ -735,6 +869,48 @@ theorem localBoundaryDerivedSequence_shortExact
     localBoundaryDerivedSequence_exact A bond J hstable,
     boundaryConnectingMap_surjective A bond J hstable hsurj⟩
 
+/-- Literal universal exact law
+`0 → (lim Aₙ)/(lim Jₙ) → lim(Aₙ/Jₙ) → lim¹ Jₙ → 0`. -/
+theorem stageBoundaryDerivedSequence_shortExact
+    (bond : ∀ n, A (n + 1) →ₗ[𝕜] A n)
+    (J : ∀ n, Submodule 𝕜 (A n))
+    (hstable : ∀ n (x : A (n + 1)), x ∈ J (n + 1) → bond n x ∈ J n)
+    (hsurj : ∀ n, Function.Surjective (bond n)) :
+    Function.Injective (stageLocalBoundaryComparison A bond J hstable) ∧
+      Function.Exact (stageLocalBoundaryComparison A bond J hstable)
+        (stageBoundaryConnectingMap A bond J hstable) ∧
+      Function.Surjective (stageBoundaryConnectingMap A bond J hstable) := by
+  let e := compatibleClassEquivStageLimit A bond J hstable
+  constructor
+  · intro x y hxy
+    apply localBoundaryComparison_injective A bond J
+    apply e.injective
+    exact hxy
+  constructor
+  · intro z
+    constructor
+    · intro hz
+      have hz' : boundaryConnectingMap A bond J hstable (e.symm z) = 0 := hz
+      rcases (localBoundaryDerivedSequence_exact A bond J hstable (e.symm z)).mp hz' with
+        ⟨x, hx⟩
+      refine ⟨x, ?_⟩
+      change e (localBoundaryComparison A bond J x) = z
+      rw [hx]
+      exact e.apply_symm_apply z
+    · rintro ⟨x, hx⟩
+      have hx' : localBoundaryComparison A bond J x = e.symm z := by
+        apply e.injective
+        change e (localBoundaryComparison A bond J x) = e (e.symm z)
+        rw [e.apply_symm_apply]
+        exact hx
+      exact (localBoundaryDerivedSequence_exact A bond J hstable (e.symm z)).mpr ⟨x, hx'⟩
+  · intro z
+    rcases boundaryConnectingMap_surjective A bond J hstable hsurj z with ⟨y, hy⟩
+    refine ⟨e y, ?_⟩
+    change boundaryConnectingMap A bond J hstable (e.symm (e y)) = z
+    rw [e.symm_apply_apply]
+    exact hy
+
 /-- The local boundary comparison is onto exactly when the global derived boundary obstruction
 vanishes. -/
 theorem localBoundaryComparison_surjective_iff
@@ -794,7 +970,7 @@ theorem zero_scalar_bond_global_vanishing :
       Subsingleton
         (DerivedLimitOne (fun _ : ℕ => 𝕜) (fun _ => (0 : 𝕜 →ₗ[𝕜] 𝕜))) := by
   constructor
-  · intro n hsurj
+  · intro _n hsurj
     rcases hsurj 1 with ⟨x, hx⟩
     simp at hx
   · apply derivedLimitOne_subsingleton_of_zero_bond

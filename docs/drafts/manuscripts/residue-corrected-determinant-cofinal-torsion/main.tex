@@ -107,12 +107,28 @@ primary Wodzicki-type residue, limiting divisor, and determinant-line triviality
 complete real torsion spectrum survives.
 \end{abstract}
 
+\noindent\textbf{2020 Mathematics Subject Classification.}
+Primary 58J52, 47B10; Secondary 11M06, 11R42.
+
+\noindent\textbf{Keywords.}
+Zeta determinant, regularized Fredholm determinant, Wodzicki residue, determinant line,
+relative analytic torsion, Euler--Kronecker constant, Mertens theorem, Schatten ideal.
+
 \paragraph{Logical status.}
 All numbered results are unconditional.  Hartmann--Lesch factorization, prime number theorem,
 Mertens' theorems, continuity of regularized Fredholm determinant, and Hurwitz-zeta determinant
 formula are classical inputs.  No statement assumes Riemann hypothesis.  Section~\ref{sec:boundary}
 separates new cofinal theorem from established fixed-operator determinant, determinant-line,
 Wodzicki-residue, and analytic-torsion theory.
+
+\paragraph{Machine-checked core.}
+Lean~4 companion supplied with source proves, without axioms or admitted goals, finite residue
+algebra and cleared excision, torsion factorization and cocycle, all-order finite-difference
+cancellation, nonsingularity of factorial suspension moment matrix, injective and surjective
+classification of finite jet polynomials, and forward/converse compact-open convergence
+criterion for factorized determinant characters after zero-free local core cancellation.
+Operator-specific Hartmann--Lesch factorization, Schatten determinant continuity, and Mertens
+asymptotics remain cited or paper-proved analytic inputs rather than machine-checked claims.
 
 \section{Introduction and main results}
 \label{sec:intro}
@@ -773,7 +789,7 @@ secondary coordinate required for Hausdorff descent of determinant character.
 We prove Theorem~\ref{thm:full-jet}.  Fix $p\geq2$.  For $1\leq j<p$ define spectral
 suspension on $P$-coprime integers by
 \[
- D_P^{[j]}e_m=m^{1/j}e_m,qquad
+ D_P^{[j]}e_m=m^{1/j}e_m,\qquad
  L_{j,r,P}=\frac1{r+1}D_P^{[j]},\quad 0\leq r\leq j.
 \]
 Its inverse belongs to $\mathcal S_p$ because $p/j>1$, and
@@ -801,10 +817,15 @@ spectral zeta function and normalized determinant character are
      \left(\frac{\det_\zeta(L_{j,r,P_j}-z)}
                   {\det_\zeta L_{j,r,P_j}}\right)^{w_{j,r}}. \notag
 \end{align}
-Negative weights mean inverse determinant sections: $\mathfrak D_{\mathbf P}$ is meromorphic
-character of graded determinant line, not determinant of one positive operator.  Formula (1.0)
-extends additively to its corrected virtual jet $\mathfrak b=(\mathfrak b_1,\ldots,
-\mathfrak b_{p-1})$.
+This virtual notation is an ordinary finite superdeterminant.  Put $|w_{j,r}|$ copies of
+$L_{j,r,P_j}$ in even degree when $w_{j,r}>0$ and in odd degree when $w_{j,r}<0$.  Then
+$\mathfrak Z_{\mathbf P}$ is supertrace spectral zeta function and
+$\mathfrak D_{\mathbf P}$ is normalized section of graded determinant line.  Negative weights
+mean inverse determinant sections; meromorphic character appears only because common even/odd
+divisors have not yet been cancelled.  Thus construction belongs to standard determinant-line
+and analytic-torsion formalism, not formal subtraction of positive operators.  Formula (1.0)
+extends additively to corrected graded jet
+$\mathfrak b=(\mathfrak b_1,\ldots,\mathfrak b_{p-1})$.
 
 At $s=k$, summands with $j>k$ vanish by (7.8), while those with $j<k$ are regular.  At $j=k$,
 \[
@@ -839,8 +860,15 @@ Primary data converge.  Indeed, for each constituent,
  =(r+1)^p\sum_{\substack{m\geq2\\(m,M_P)=1}}m^{-p/j}\longrightarrow0. \tag{7.13}
 \end{equation}
 Only $j=k$ term of (7.9) has pole at integer $k$, with residue
-$kV_k(k)a(P_k)\to0$.  Every constituent divisor converges locally to fixed divisor at
-$z=(r+1)^{-1}$, so graded virtual divisor also converges.
+$kV_k(k)a(P_k)\to0$.  Divisor convergence is locally eventually exact away from surviving
+rank-one zero.  Indeed zeros of constituent determinant are
+\[
+ z=(r+1)^{-1}m^{1/j},\qquad (m,M_P)=1.
+\]
+On a fixed compact set only finitely many such integers $m$ occur.  Every $m>1$ has a prime
+divisor and is therefore eventually removed by any exhaustion, while $m=1$ remains.  Hence
+every constituent divisor converges locally to fixed divisor at $z=(r+1)^{-1}$, and finite
+graded virtual divisor converges as well.
 
 It remains to determine generic secondary spectrum.  Let $\Omega_p$ be Polish space of all
 orderings of colored primes $\{1,\ldots,p-1\}\times\PP$; let $P_{j,n}$ contain primes of color
@@ -864,6 +892,24 @@ sums and differences after common virtual divisor cancellation.  Its character-g
 gives (1.F).  Varying only $k$th scalar cluster coordinate changes torsion by
 $\exp(d_k(c-c')z^k)$ and leaves all other coordinates fixed; hence no $k$th jet coordinate can
 be deleted.  This proves Theorem~\ref{thm:full-jet}.
+
+\begin{corollary}[Sharp no-descent from primary determinant data]
+\label{cor:full-no-descent}
+For every $p\geq2$, no rule continuous at common limiting primary datum can recover virtual
+zeta-determinant character from constituent $\mathcal S_p$ limits, integer zeta residues, and
+local limiting divisors alone.  More sharply, after adjoining any proper subset of corrected
+coordinates, omitted coordinate still carries full one-parameter torsion group
+$\{\exp(vz^k):v\in\R\}$.
+\end{corollary}
+
+\begin{proof}
+Along family of Theorem~\ref{thm:full-jet}, all listed primary data converge independently of
+colored-prime ordering.  A continuous recovery rule would therefore force unique determinant
+limit.  Equation (7.14) and (7.12) instead give determinant cluster set with nonempty interior.
+If only coordinate $k$ is omitted, hold all other scalar cluster coordinates fixed and vary
+$\gamma(P_k)$ over its half-line.  Pairwise differences fill $\R$, since $d_k\neq0$, and
+relative torsions are exactly $\exp(vz^k)$.  Thus no proper sub-jet repairs descent.
+\end{proof}
 
 \section{Number fields and universal residue cancellation}
 \label{sec:numberfields}
@@ -1245,11 +1291,12 @@ fibre.  This paper does not propose adding a Wodzicki residue to determinant lin
 construction; that general principle is established.  New content is universal cofinal
 completeness of corrected jet and sharp arithmetic realization of its secondary spectrum.
 
-\begin{corollary}[Metric and connection defect]
+\begin{corollary}[Gauge defect of determinant trivializations]
 \label{cor:metric-connection}
 Suppose two finite cofinal jet limits $b,c:B\to\R^{p-1}$ vary $C^1$ over parameter manifold $B$
 and have same limiting $\det_p$ core in common local determinant-line trivialization.  At fixed
-spectral parameter $z$, quotient section, Quillen-norm ratio, and connection-form difference are
+spectral parameter $z$, quotient section, ratio of its Quillen norms, and gauge transformation
+of Bismut--Freed connection one-forms are
 \[
  \mathcal T_{b,c}(z)=e^{P_b(z)-P_c(z)},\qquad
  \frac{\|\Phi_A(b)(z)\|_Q}{\|\Phi_A(c)(z)\|_Q}
@@ -1258,8 +1305,10 @@ spectral parameter $z$, quotient section, Quillen-norm ratio, and connection-for
 \[
  \omega_b(z)-\omega_c(z)=d_B(P_b(z)-P_c(z)).             \tag{10.M}
 \]
-Thus triviality and common divisor do not determine Quillen metric or Bismut--Freed-type
-connection data; corrected residue jet determines exact missing gauge character.
+Thus topological triviality and common divisor do not determine normalized determinant section
+or its connection gauge.  Corrected residue jet determines exact transition character.  This
+is a statement about two gauges of same metric and connection, not a claim that underlying
+Quillen metric or Bismut--Freed connection changes.
 \end{corollary}
 
 \begin{proof}

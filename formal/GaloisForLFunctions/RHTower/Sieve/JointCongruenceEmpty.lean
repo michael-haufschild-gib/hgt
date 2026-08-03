@@ -26,8 +26,11 @@ theorem gcd_sq_dvd_of_joint {d e h n : ℕ} (hd : d ^ 2 ∣ n) (he : e ^ 2 ∣ (
   have hge : (Nat.gcd d e) ^ 2 ∣ e ^ 2 := pow_dvd_pow_of_dvd (Nat.gcd_dvd_right d e) 2
   have h1 : (Nat.gcd d e) ^ 2 ∣ n := hgd.trans hd
   have h2 : (Nat.gcd d e) ^ 2 ∣ (n + h) := hge.trans he
-  have h3 : (Nat.gcd d e) ^ 2 ∣ (n + h) - n := Nat.dvd_sub' h2 h1
-  rwa [Nat.add_sub_cancel_left] at h3
+  have h1' : (((Nat.gcd d e) ^ 2 : ℕ) : ℤ) ∣ (n : ℤ) := by exact_mod_cast h1
+  have h2' : (((Nat.gcd d e) ^ 2 : ℕ) : ℤ) ∣ ((n : ℤ) + (h : ℤ)) := by exact_mod_cast h2
+  have hz : (((Nat.gcd d e) ^ 2 : ℕ) : ℤ) ∣ (h : ℤ) := by
+    simpa using dvd_sub h2' h1'
+  exact_mod_cast hz
 
 /-- **Pairs whose squared gcd misses the shift contribute nothing.** -/
 theorem card_joint_eq_zero {d e h : ℕ} (hg : ¬ ((Nat.gcd d e) ^ 2 ∣ h)) (t L : ℕ) :
@@ -39,7 +42,7 @@ theorem card_joint_eq_zero {d e h : ℕ} (hg : ¬ ((Nat.gcd d e) ^ 2 ∣ h)) (t 
   exact hg (gcd_sq_dvd_of_joint hd he)
 
 /-- **For a squarefree shift only coprime pairs survive.** -/
-theorem coprime_of_joint_of_squarefree {d e h n : ℕ} (hh : Squarefree h) (hh0 : h ≠ 0)
+theorem coprime_of_joint_of_squarefree {d e h n : ℕ} (hh : Squarefree h)
     (hd : d ^ 2 ∣ n) (he : e ^ 2 ∣ (n + h)) : Nat.Coprime d e := by
   have hdvd := gcd_sq_dvd_of_joint hd he
   have := hh (Nat.gcd d e) (by simpa [pow_two] using hdvd)

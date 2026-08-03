@@ -131,11 +131,11 @@ linear discount into a square. -/
 index over the window, the exponent may be optimised in the step, giving decay `exp(-k^2 / (4 L))`
 in the excess `k` of the index over the central index. -/
 theorem term_le_maxTerm_exp_gaussian_above
-    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {x H L : ℝ} (_hH : 0 < H) (hL : 0 < L)
-    (hlip : ∀ v : ℝ, 0 < v → v ≤ H →
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {x H L v₀ : ℝ} (_hH : 0 < H) (hL : 0 < L)
+    (hlip : ∀ v : ℝ, v₀ ≤ v → v ≤ H →
       (centralIndex a (Real.exp (x + v)) : ℝ) ≤ (centralIndex a (Real.exp x) : ℝ) + L * v)
     {n : ℕ} {k : ℝ} (hk : k = (n : ℝ) - (centralIndex a (Real.exp x) : ℝ)) (hk0 : 0 < k)
-    (hkH : k ≤ 2 * L * H) :
+    (hkH : k ≤ 2 * L * H) (hkv : 2 * L * v₀ ≤ k) :
     ‖a n‖ * Real.exp x ^ n
       ≤ maxTerm a (Real.exp x) * Real.exp (-(k ^ 2 / (4 * L))) := by
   set u : ℝ := k / (2 * L) with hu
@@ -151,7 +151,10 @@ theorem term_le_maxTerm_exp_gaussian_above
     have hx : (0 : ℝ) < Real.exp x := Real.exp_pos x
     exact le_trans (term_nonneg a hx 0) (term_le_maxTerm ha hx 0)
   refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hμ
-  have hlipu := hlip u hupos huH
+  have hu₀ : v₀ ≤ u := by
+    rw [hu, le_div_iff₀ (by positivity : (0 : ℝ) < 2 * L)]
+    linarith
+  have hlipu := hlip u hu₀ huH
   have hexp : k - L * u ≤ (n : ℝ) - (centralIndex a (Real.exp (x + u)) : ℝ) := by
     rw [hk]; linarith
   have hval : (k - L * u) * u = k ^ 2 / (4 * L) := by
@@ -165,11 +168,11 @@ theorem term_le_maxTerm_exp_gaussian_above
 
 /-- **Gaussian decay below the central index.** -/
 theorem term_le_maxTerm_exp_gaussian_below
-    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {x H L : ℝ} (_hH : 0 < H) (hL : 0 < L)
-    (hlip : ∀ v : ℝ, 0 < v → v ≤ H →
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {x H L v₀ : ℝ} (_hH : 0 < H) (hL : 0 < L)
+    (hlip : ∀ v : ℝ, v₀ ≤ v → v ≤ H →
       (centralIndex a (Real.exp x) : ℝ) - L * v ≤ (centralIndex a (Real.exp (x - v)) : ℝ))
     {n : ℕ} {k : ℝ} (hk : k = (centralIndex a (Real.exp x) : ℝ) - (n : ℝ)) (hk0 : 0 < k)
-    (hkH : k ≤ 2 * L * H) :
+    (hkH : k ≤ 2 * L * H) (hkv : 2 * L * v₀ ≤ k) :
     ‖a n‖ * Real.exp x ^ n
       ≤ maxTerm a (Real.exp x) * Real.exp (-(k ^ 2 / (4 * L))) := by
   set u : ℝ := k / (2 * L) with hu
@@ -185,7 +188,10 @@ theorem term_le_maxTerm_exp_gaussian_below
     have hx : (0 : ℝ) < Real.exp x := Real.exp_pos x
     exact le_trans (term_nonneg a hx 0) (term_le_maxTerm ha hx 0)
   refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hμ
-  have hlipu := hlip u hupos huH
+  have hu₀ : v₀ ≤ u := by
+    rw [hu, le_div_iff₀ (by positivity : (0 : ℝ) < 2 * L)]
+    linarith
+  have hlipu := hlip u hu₀ huH
   have hexp : k - L * u ≤ (centralIndex a (Real.exp (x - u)) : ℝ) - (n : ℝ) := by
     rw [hk]; linarith
   have hval : (k - L * u) * u = k ^ 2 / (4 * L) := by
@@ -207,9 +213,9 @@ single exponential rate `K / (4L)` covers every index outside the window `|n - n
 /-- **Uniform exponential decay above the window.**  For every index whose excess over the central
 index is at least `K`, the term decays at the rate `K / (4L)` per unit of excess. -/
 theorem term_le_maxTerm_exp_uniform_above
-    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {x H L K : ℝ} (hH : 0 < H) (hL : 0 < L)
-    (hK0 : 0 < K) (hK : K ≤ 2 * L * H)
-    (hlip : ∀ v : ℝ, 0 < v → v ≤ H →
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {x H L K v₀ : ℝ} (hH : 0 < H) (hL : 0 < L)
+    (hK0 : 0 < K) (hK : K ≤ 2 * L * H) (hKv : 2 * L * v₀ ≤ K)
+    (hlip : ∀ v : ℝ, v₀ ≤ v → v ≤ H →
       (centralIndex a (Real.exp (x + v)) : ℝ) ≤ (centralIndex a (Real.exp x) : ℝ) + L * v)
     {n : ℕ} {k : ℝ} (hk : k = (n : ℝ) - (centralIndex a (Real.exp x) : ℝ)) (hkK : K ≤ k) :
     ‖a n‖ * Real.exp x ^ n
@@ -219,7 +225,8 @@ theorem term_le_maxTerm_exp_uniform_above
     exact le_trans (term_nonneg a hx 0) (term_le_maxTerm ha hx 0)
   have hk0 : 0 < k := lt_of_lt_of_le hK0 hkK
   rcases le_or_gt k (2 * L * H) with hsmall | hbig
-  · refine le_trans (term_le_maxTerm_exp_gaussian_above ha hn₀ hH hL hlip hk hk0 hsmall) ?_
+  · refine le_trans (term_le_maxTerm_exp_gaussian_above ha hn₀ hH hL hlip hk hk0 hsmall
+      (le_trans hKv hkK)) ?_
     refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hμ
     have : k * K ≤ k * k := mul_le_mul_of_nonneg_left hkK hk0.le
     have hpos : (0 : ℝ) < 4 * L := by linarith
@@ -228,7 +235,10 @@ theorem term_le_maxTerm_exp_uniform_above
   · have hbound := term_le_maxTerm_exp_legendre_above (x := x) (u := H) ha hn₀ hH.le n
     refine le_trans hbound ?_
     refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hμ
-    have hlipH := hlip H hH le_rfl
+    have hv₀H : v₀ ≤ H := by
+      have h2L : (0 : ℝ) < 2 * L := by linarith
+      nlinarith [hKv, hK]
+    have hlipH := hlip H hv₀H le_rfl
     have hexc : k - L * H ≤ (n : ℝ) - (centralIndex a (Real.exp (x + H)) : ℝ) := by
       rw [hk]; linarith
     have hhalf : k / 2 ≤ k - L * H := by linarith
@@ -241,9 +251,9 @@ theorem term_le_maxTerm_exp_uniform_above
 
 /-- **Uniform exponential decay below the window.** -/
 theorem term_le_maxTerm_exp_uniform_below
-    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {x H L K : ℝ} (hH : 0 < H) (hL : 0 < L)
-    (hK0 : 0 < K) (hK : K ≤ 2 * L * H)
-    (hlip : ∀ v : ℝ, 0 < v → v ≤ H →
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {x H L K v₀ : ℝ} (hH : 0 < H) (hL : 0 < L)
+    (hK0 : 0 < K) (hK : K ≤ 2 * L * H) (hKv : 2 * L * v₀ ≤ K)
+    (hlip : ∀ v : ℝ, v₀ ≤ v → v ≤ H →
       (centralIndex a (Real.exp x) : ℝ) - L * v ≤ (centralIndex a (Real.exp (x - v)) : ℝ))
     {n : ℕ} {k : ℝ} (hk : k = (centralIndex a (Real.exp x) : ℝ) - (n : ℝ)) (hkK : K ≤ k) :
     ‖a n‖ * Real.exp x ^ n
@@ -253,7 +263,8 @@ theorem term_le_maxTerm_exp_uniform_below
     exact le_trans (term_nonneg a hx 0) (term_le_maxTerm ha hx 0)
   have hk0 : 0 < k := lt_of_lt_of_le hK0 hkK
   rcases le_or_gt k (2 * L * H) with hsmall | hbig
-  · refine le_trans (term_le_maxTerm_exp_gaussian_below ha hn₀ hH hL hlip hk hk0 hsmall) ?_
+  · refine le_trans (term_le_maxTerm_exp_gaussian_below ha hn₀ hH hL hlip hk hk0 hsmall
+      (le_trans hKv hkK)) ?_
     refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hμ
     have : k * K ≤ k * k := mul_le_mul_of_nonneg_left hkK hk0.le
     have hpos : (0 : ℝ) < 4 * L := by linarith
@@ -262,7 +273,10 @@ theorem term_le_maxTerm_exp_uniform_below
   · have hbound := term_le_maxTerm_exp_legendre_below (x := x) (u := H) ha hn₀ hH.le n
     refine le_trans hbound ?_
     refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hμ
-    have hlipH := hlip H hH le_rfl
+    have hv₀H : v₀ ≤ H := by
+      have h2L : (0 : ℝ) < 2 * L := by linarith
+      nlinarith [hKv, hK]
+    have hlipH := hlip H hv₀H le_rfl
     have hexc : k - L * H ≤ (centralIndex a (Real.exp (x - H)) : ℝ) - (n : ℝ) := by
       rw [hk]; linarith
     have hhalf : k / 2 ≤ k - L * H := by linarith

@@ -1,0 +1,1043 @@
+\documentclass[11pt,a4paper]{amsart}
+
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{etoolbox}
+\usepackage[margin=2.7cm]{geometry}
+\usepackage{xcolor}
+\definecolor{linkcol}{rgb}{0.10,0.20,0.50}
+\usepackage[colorlinks=true,linkcolor=linkcol,citecolor=linkcol,urlcolor=linkcol]{hyperref}
+\makeatletter
+\g@addto@macro\UrlBreaks{\do\_\do\.}
+\makeatother
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+% Keep consecutive theorem/proof blocks visually distinct in the compact amsart layout.
+\AfterEndEnvironment{theorem}{\par\smallskip}
+\AfterEndEnvironment{proposition}{\par\smallskip}
+\AfterEndEnvironment{lemma}{\par\smallskip}
+\AfterEndEnvironment{corollary}{\par\smallskip}
+\AfterEndEnvironment{proof}{\par\smallskip}
+
+\newcommand{\RR}{\mathbb R}
+\newcommand{\CC}{\mathbb C}
+\newcommand{\NN}{\mathbb N}
+\newcommand{\one}{\mathbf 1}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\corank}{\operatorname{corank}}
+\newcommand{\indm}{\operatorname{ind}_{-}}
+\newcommand{\Spec}{\operatorname{Spec}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\spanr}{\operatorname{span}_{\RR}}
+\newcommand{\Res}{\mathcal R}
+\newcommand{\Mcal}{\mathcal M}
+\newcommand{\Hcal}{\mathcal H}
+\newcommand{\Tcal}{\mathcal T}
+\newcommand{\Ecal}{\mathcal E}
+\emergencystretch=1.5em
+
+\begin{document}
+
+\title[The Stokes--Cartan one-defect law]{At most Lorentzian:\
+a universal Stokes--Cartan signature law in genus zero}
+
+\author{M.~Haufschild}
+\address{Independent researcher}
+\email{haufschildmichael@gmail.com}
+\date{3 August 2026}
+
+\subjclass[2020]{Primary 34M40, 14D24; Secondary 15A18, 32G34, 16G20}
+\keywords{irregular Riemann--Hilbert correspondence, wild nonabelian Hodge theory,
+Stokes data, fission tree, generalized Cartan matrix, Lorentzian signature, effective resistance,
+principal conormal, Rees degeneration}
+
+\begin{abstract}
+Genus-zero wild nonabelian Hodge spaces carry symmetric Cartan forms assembled from local Stokes
+contacts and ordinary type-$A$ legs.  We prove that every such form has negative index at most one.
+More precisely, for ramification vector $r$, a rooted fission-contact tree with positive edge
+lengths $\ell_e$, descendant clusters $A_e$, and an auxiliary root height $H>1$, the core Cartan
+matrix admits the canonical factorization
+\[
+ C=I+\sum_e\ell_e u_eu_e^T-(H-1)rr^T,
+ \qquad u_e=(r_i\one_{A_e}(i))_i.
+\]
+Thus every local fission channel is a positive principal-conormal square and total ramified rank is
+the unique possible negative channel.  If
+\[
+ P=I+\sum_e\ell_eu_eu_e^T,\qquad
+ c=r^TP^{-1}r,\qquad \Omega=c^{-1}-(H-1),
+\]
+then $\Omega$ is independent of the artificial root extension and completely determines inertia:
+$C$ is positive definite, affine of corank one, or Lorentzian according as $\Omega$ is positive,
+zero, or negative.  We also prove $\det C=\det(P)c\Omega$.
+
+The reciprocal capacity $c^{-1}$ is the effective resistance of the contact tree.  Series and
+parallel reduction gives an exact corona-pruning recursion, and turns root independence into the
+cancellation of two equal series increments.  Attaching arbitrary finite type-$A$ legs changes
+the positive diagonal from $1$ to $1/(l_i+1)$ and cannot create another defect.  Consequently every
+full type-$A$ genus-zero diagram obeys the same trichotomy.  For an adjacency diagram $B$ this is
+the spectral obstruction $\lambda_2(B)\leq2$; hence higher-signature Kac--Moody diagrams do not
+occur in this class.  Finally, the wild-character-variety dimension becomes one global rank-square
+budget minus explicit positive leg and conormal energies.  The result is a diagram-level law: it
+does not identify the conormal coefficients with characteristic-cycle or vanishing-cycle
+multiplicities.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+Wild nonabelian Hodge theory relates meromorphic connections, irregular Higgs bundles, and Stokes
+local systems on curves \cite{BiquardBoalch2004}.  In genus zero, the formal data determine a finite
+diagram with a symmetric generalized Cartan matrix.  This matrix controls the quadratic dimension
+formula for the associated wild character variety \cite{BoalchYamakawa2020,Doucot2021Diagrams}.
+The diagram is invariant under the symplectic automorphisms of the Weyl algebra, including
+Fourier--Laplace transformation \cite{Doucot2021Diagrams}.  Fission trees record how the formal
+structure group breaks at an irregular pole and classify admissible deformation data
+\cite{Boalch2008Kac,BoalchDoucotRembado2025,Boalch2025Counting}.
+
+The resulting graphs range beyond finite and affine Dynkin diagrams.  Hyperbolic examples are
+known, and the question of which Kac--Moody root systems can arise is part of the current
+classification problem \cite{Boalch2012Simply,Boalch2025Counting}.  Ramification makes that problem
+sharper: core diagrams may have loops or signed entries, while some twisted irregular classes
+nevertheless yield honest graphs that are not fission graphs \cite{Doucot2025Graphs}.  Ultrametric
+inequalities constrain their rescaled edge multiplicities, but those inequalities alone do not
+state the inertia of the Cartan form.
+
+This paper proves a universal one-defect law.  Its shortest form is
+\begin{equation}\label{eq:intro-law}
+ \boxed{\quad C=P-\lambda rr^T,\qquad P>0.\quad}
+\end{equation}
+The positive part $P$ is not an unspecified matrix.  It is the sum of a positive diagonal and one
+rank-one Gram term for every fission cut.  The only subtractive term is the square of total
+ramified rank.  Formula \eqref{eq:intro-law} immediately suggests negative index at most one, but
+its force is greater: a single intrinsic scalar $\Omega$ detects all three possible signatures,
+the affine kernel, the determinant, and the exact transition wall.
+
+For the core matrix $B=(B_{ij})$ and ramification orders $r_i$, introduce the complementary
+contact coordinates
+\begin{equation}\label{eq:intro-K}
+ K_{ij}=1+\frac{B_{ij}}{r_ir_j}\quad(i\ne j),\qquad
+ K_{ii}=1+\frac{B_{ii}-1}{r_i^2}.
+\end{equation}
+The fission-contact hierarchy realizes $K_{ij}$ as the height of the meet of leaves $i$ and $j$.
+Extend the root to any height $H>\max(1,K_{ij})$.  If $A_e$ is the descendant leaf set of an edge,
+$\ell_e>0$ its contact length, and $u_e=(r_i\one_{A_e}(i))_i$, our first main theorem is
+\begin{equation}\label{eq:intro-factor}
+ C=I+\sum_e\ell_eu_eu_e^T-(H-1)rr^T.
+\end{equation}
+The extension to height $H$ is auxiliary.  Adding a root segment of length $t$ adds $t rr^T$ to
+the positive Gram part and simultaneously replaces $H-1$ by $H-1+t$, leaving $C$ unchanged.
+
+Set
+\begin{equation}\label{eq:intro-capacity}
+ P=I+\sum_e\ell_eu_eu_e^T,\qquad
+ c=r^TP^{-1}r,\qquad
+ \Omega=c^{-1}-(H-1).
+\end{equation}
+Then $c>0$, and every $x$ splits uniquely into a vector of zero total ramified rank and a multiple
+of $P^{-1}r$.  In these coordinates,
+\begin{equation}\label{eq:intro-centered}
+ x^TCx=z^TPz+\frac{(r^Tx)^2}{c^2}\,c^2\Omega.
+\end{equation}
+Consequently $C$ is positive definite for $\Omega>0$, positive semidefinite with a one-dimensional
+kernel for $\Omega=0$, and nonsingular with exactly one negative eigenvalue for $\Omega<0$.
+Neither multiple affine directions nor coexistence of affine and Lorentz directions is possible.
+Throughout, ``Lorentzian'' means signature $(N-1,1)$ for a nonsingular real symmetric form on an
+$N$-dimensional space; no stronger condition on all proper principal submatrices is built into the
+term.
+
+There are four reasons the factorization is geometric rather than merely a rank-one perturbation
+observation.
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em]
+\item Each positive summand is the square of the principal conormal
+$\nu_e(x)=\sum_{i\in A_e}r_ix_i$ of a canonical cluster hyperplane.
+\item The reciprocal capacity $c^{-1}$ is the effective resistance of the rooted contact tree,
+with leaf resistance $r_i^{-2}$.  Corona pruning is therefore exact series--parallel reduction.
+\item Ordinary type-$A$ legs admit an exact path completion.  Their Schur complement replaces the
+unit leaf resistance by $((l_i+1)r_i^2)^{-1}$ and preserves the one-defect law.
+\item The global dimension formula becomes an exact conservation law: one total-rank gain minus
+positive leg fluctuations and positive fission-conormal losses.
+\end{enumerate}
+
+For honest graphs the theorem has a concise spectral consequence.  If $B$ is the adjacency matrix
+and its eigenvalues are ordered decreasingly, then
+\[
+                         \lambda_2(B)\le2.
+\]
+If the spectral radius is below two the Cartan form is finite; if it equals two the eigenvalue two
+is simple; if it exceeds two there is exactly one eigenvalue above two and none equal to two.  Thus
+the known hyperbolic examples are the maximal indefinite possibility: higher-signature
+Kac--Moody systems are excluded from type-$A$ genus-zero nonabelian Hodge diagrams.
+
+The matrix-theory ancestors of the argument are the weighted-tree descriptions and inverse
+$M$-matrix properties of ultrametric and generalized ultrametric matrices
+\cite{MartinezMichonSanMartin1994,McDonaldEtAl1995,NabbenVarga1995}.  A recent treatment of shifted
+generalized ultrametric matrices and tree-structured inverses is \cite{Nabben2026Acyclic}.  Those
+works concern matrix recognition and inverses.  The new content here is the exact conversion from
+Stokes contact to the Cartan factorization \eqref{eq:intro-factor}, the intrinsic capacity wall,
+the full-leg and global genus-zero passage, the conormal/dimension law, and the spectral exclusion
+for nonabelian Hodge diagrams.  We state the distinction because a tree Gram decomposition by
+itself is classical and would not constitute the claimed result.
+
+The paper is organized as follows.  Section~\ref{sec:geometry} isolates the precise geometric
+input.  Section~\ref{sec:factor} proves the one-defect factorization.  Section~\ref{sec:capacity}
+proves the capacity trichotomy and root invariance.  Section~\ref{sec:corona} gives the electrical
+corona recursion.  Section~\ref{sec:legs} treats arbitrary type-$A$ legs.  Sections
+\ref{sec:conormal} and \ref{sec:dimension} give conormal/Rees and dimension formulations.
+Section~\ref{sec:global} passes to global genus-zero diagrams, and
+Section~\ref{sec:spectral} derives graph-theoretic consequences and examples.  The final section
+records exact scope and falsifiers.
+
+\section{Stokes contact and rooted fission data}\label{sec:geometry}
+
+We separate the geometric input from the linear algebra.  This prevents a pairwise ultrametric
+inequality from being silently upgraded to a simultaneous tree realization.
+
+\subsection{Decorated cores}
+
+Let $I$ be a nonempty finite set.  A \emph{decorated core} consists of a symmetric matrix
+$B=(B_{ij})_{i,j\in I}$ and positive integers $r_i$.  In the Stokes application, $I$ indexes
+Stokes circles, $r_i$ is the ramification order, and $B$ is the core matrix of the nonabelian
+Hodge diagram.  Put
+\begin{equation}\label{eq:Cartan-def}
+                         C=2I-B.
+\end{equation}
+Diagonal entries of $B$ are retained; thus this notation includes generalized diagrams with
+loops.  Define $K$ by \eqref{eq:intro-K}.  Both cases combine into
+\begin{equation}\label{eq:B-contact}
+            B_{ij}=\delta_{ij}+r_ir_j(K_{ij}-1).
+\end{equation}
+
+\begin{definition}\label{def:rooted-realization}
+A \emph{rooted contact realization} of $K$ is a finite rooted tree $\Tcal$ whose leaves are
+labelled by $I$, together with a real height $\kappa(v)$ at every retained vertex, strictly
+increasing along each edge from a leaf toward the root, such that
+\[
+                         K_{ij}=\kappa(i\wedge j)
+\]
+for all $i,j\in I$.  Here $i\wedge i=i$, so leaf heights encode the diagonal contacts.
+\end{definition}
+
+For irregular classes, the realization is the common-truncation skeleton of the fission tree.
+The edge and loop formulas for a Stokes circle give \eqref{eq:B-contact}; common Puiseux
+truncations give the meet rule.  The following elementary reconstruction records why one common
+tree, not a collection of pairwise witnesses, is present.
+
+\begin{lemma}[Contact dendrogram]\label{lem:dendrogram}
+Suppose a symmetric matrix $K$ satisfies $K_{ii}<K_{ij}$ for $i\ne j$ and, for every three
+distinct indices, the two larger of $K_{ij},K_{ik},K_{jk}$ are equal.  Then $K$ has a rooted
+contact realization, unique after unary vertices are suppressed.  Its clusters are the classes of
+the relations
+\[
+ i\sim_a j\quad\Longleftrightarrow\quad i=j\ \text{or}\ K_{ij}\le a
+\]
+as $a$ ranges over the off-diagonal values of $K$.
+\end{lemma}
+
+\begin{proof}
+Fix $a$.  Symmetry and reflexivity are clear.  If $i\sim_a j$ and $j\sim_a k$, then the stated
+three-point condition forbids $K_{ik}$ from being strictly larger than both $K_{ij}$ and $K_{jk}$;
+hence $K_{ik}\le a$.  Thus $\sim_a$ is an equivalence relation.  Its classes are nested as $a$
+increases.  Make every non-singleton class a vertex, attach it to the least strictly larger class
+that contains it, and attach the labelled singleton leaves at height $K_{ii}$.  Give a class born
+at level $a$ height $a$.  The strict diagonal inequality makes pendant edges positive; deleting
+repeated levels suppresses unary vertices.  The smallest cluster containing $i$ and $j$ is born at
+$K_{ij}$, so its vertex is their meet.  Conversely, any rooted realization has exactly these
+threshold clusters, proving uniqueness.
+\end{proof}
+
+\begin{proposition}[Geometric input]\label{prop:geometric-input}
+The complementary-contact matrix of a finite type-$A$ irregular class has a rooted contact
+realization.  For a genus-zero nonabelian Hodge diagram, any generic one-pole reading supplies such
+a realization of its core, and the remaining vertices form ordinary type-$A$ legs.
+\end{proposition}
+
+\begin{proof}
+At one irregular pole, the common truncations of the exponential factors form the fission tree.
+Choose a level $\eta$ above all retained characteristic exponents.  On a common truncation branch,
+let $R(u)>0$ be the cumulative ramification index at height $u$.  Telescoping the explicit loop and
+edge formulae gives the complementary coarea coordinate
+\begin{equation}\label{eq:contact-coarea}
+ \kappa(v)=\eta-\int_{h(v)}^\eta\frac{du}{R(u)}.
+\end{equation}
+Profiles on two branches agree above their meet, so \eqref{eq:contact-coarea} is independent of
+the leaf used to read a retained common-truncation vertex.  Formula
+\eqref{eq:contact-coarea} is the summation-by-parts form of the rescaled source formula
+\cite[Lemma~4.3]{Doucot2025Graphs}; the diagonal case is its loop analogue.  The diagonal formula reads
+$K_{ii}=\kappa(i)$, and the pair formula reads $K_{ij}=\kappa(i\wedge j)$.  If $v$ is strictly below
+$w$ on one branch, then
+\[
+ \kappa(w)-\kappa(v)=\int_{h(v)}^{h(w)}\frac{du}{R(u)}>0.
+\]
+Thus contact is strictly increasing toward the root.  This gives
+Definition~\ref{def:rooted-realization}; equivalently one may apply Lemma~\ref{lem:dendrogram} to
+the rescaled ultrametric relations proved from the explicit Stokes edge formulae in
+\cite[Theorem~4.2]{Doucot2025Graphs}.
+
+For a general algebraic connection on the affine line, the diagram is invariant under the
+symplectic Weyl-algebra action \cite{Doucot2021Diagrams}.  The generic class reconstructed from the
+enriched tree has all Stokes circles at infinity, while the enriched tree and diagram are invariant
+under the symplectic action \cite[Theorems~1.4--1.6]{Doucot2026Basic}.  This supplies the required
+one-pole reading.  The conjugacy-class data attach the ordinary type-$A$ legs used in the diagram
+construction \cite{BoalchYamakawa2020,Doucot2026Basic}.  Only equality of the diagram is used here;
+no claim that all weak representations have already been proved analytically isomorphic is needed.
+\end{proof}
+
+\begin{remark}
+Proposition~\ref{prop:geometric-input} is the geometric boundary of the paper.  The remaining
+proofs use only a rooted realization and the exact identity \eqref{eq:B-contact}.  Conversely, a
+symmetric matrix satisfying an isolated collection of inequalities is not declared realizable by
+an irregular connection.
+\end{remark}
+
+\subsection{Root extension and cut coordinates}
+
+Choose $H>\max(1,\kappa(v))$ and attach a new root of height $H$.  Orient edges away from that
+root.  For each edge $e$, let $A_e\subseteq I$ be its descendant leaves and let $\ell_e>0$ be the
+drop in height along $e$.  Define
+\begin{equation}\label{eq:cut-vectors}
+ u_e=(r_i\one_{A_e}(i))_{i\in I},\qquad r=(r_i)_{i\in I},
+ \qquad \lambda=H-1.
+\end{equation}
+The root extension is deliberately noncanonical.  Section~\ref{sec:capacity} will show that every
+quantity claimed to be intrinsic is independent of it.
+
+\section{The Stokes--Cartan one-defect factorization}\label{sec:factor}
+
+\begin{lemma}[Root-path Gram identity]\label{lem:root-path}
+For all leaves $i,j$,
+\begin{equation}\label{eq:root-path}
+ H-K_{ij}=\sum_e\ell_e\one_{A_e}(i)\one_{A_e}(j).
+\end{equation}
+Consequently the matrix $(H-K_{ij})$ is positive semidefinite.
+\end{lemma}
+
+\begin{proof}
+An edge belongs to both root-to-leaf paths precisely when both leaves are descendants of that
+edge.  The intersection of the two paths ends at $i\wedge j$.  Telescoping the positive height
+drops along this common path gives $H-\kappa(i\wedge j)=H-K_{ij}$, proving
+\eqref{eq:root-path}.  The right side is the Gram matrix
+$\sum_e\ell_e a_ea_e^T$ with $a_e=(\one_{A_e}(i))_i$.
+\end{proof}
+
+\begin{theorem}[Universal one-defect law]\label{thm:one-defect}
+For every rooted decorated Stokes core,
+\begin{equation}\label{eq:one-defect-matrix}
+ \boxed{\quad C=I+\sum_e\ell_eu_eu_e^T-\lambda rr^T.\quad}
+\end{equation}
+Equivalently, for every $x\in\RR^I$,
+\begin{equation}\label{eq:one-defect-q}
+ \boxed{\quad
+ x^TCx=\sum_i x_i^2+
+ \sum_e\ell_e\left(\sum_{i\in A_e}r_ix_i\right)^2
+ -(H-1)\left(\sum_i r_ix_i\right)^2.\quad}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+By \eqref{eq:B-contact}, \eqref{eq:Cartan-def}, and Lemma~\ref{lem:root-path},
+\begin{align*}
+ C_{ij}
+ &=\delta_{ij}+r_ir_j(1-K_{ij})\\
+ &=\delta_{ij}+r_ir_j(H-K_{ij})-(H-1)r_ir_j\\
+ &=\delta_{ij}+\sum_e\ell_e
+   \bigl(r_i\one_{A_e}(i)\bigr)\bigl(r_j\one_{A_e}(j)\bigr)
+   -\lambda r_ir_j.
+\end{align*}
+This is \eqref{eq:one-defect-matrix} entrywise.  Multiplying by $x_ix_j$ and summing gives
+\eqref{eq:one-defect-q}.
+\end{proof}
+
+For later use, write
+\begin{equation}\label{eq:mass-conormals}
+ M(x)=r^Tx=\sum_i r_ix_i,
+ \qquad \nu_e(x)=u_e^Tx=\sum_{i\in A_e}r_ix_i.
+\end{equation}
+
+\begin{corollary}[Canonical positive hyperplane]\label{cor:hyperplane}
+The Cartan form is positive definite on
+\[
+                         \Hcal_r=\ker M.
+\]
+In particular $\indm(C)\le1$.
+\end{corollary}
+
+\begin{proof}
+On $\Hcal_r$, the final term of \eqref{eq:one-defect-q} vanishes, while
+$\sum_i x_i^2>0$ for $x\ne0$.  A quadratic form positive on a codimension-one subspace cannot have
+a negative subspace of dimension two.
+\end{proof}
+
+The corollary is already the qualitative signature law.  The next section identifies the exact
+wall and rules out a simultaneous zero and negative direction.
+
+\section{Capacity, determinant, and the trichotomy}\label{sec:capacity}
+
+Put
+\begin{equation}\label{eq:P-c-Omega}
+ P=I+\sum_e\ell_eu_eu_e^T,\qquad
+ c=r^TP^{-1}r,\qquad
+ \Omega=c^{-1}-\lambda.
+\end{equation}
+The matrix $P$ is positive definite, so $c>0$.
+
+\begin{theorem}[Capacity normal form]\label{thm:capacity-normal}
+For $x\in\RR^I$, set $m=M(x)$ and
+\begin{equation}\label{eq:centered-z}
+ z=x-\frac{m}{c}P^{-1}r.
+\end{equation}
+Then $r^Tz=0$, the decomposition is unique, and
+\begin{equation}\label{eq:capacity-completion}
+ \boxed{\quad x^TCx=z^TPz+m^2\Omega.\quad}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Since $r^TP^{-1}r=c$, equation \eqref{eq:centered-z} gives $r^Tz=0$.  If
+$x=z+aP^{-1}r$ with $r^Tz=0$, applying $r^T$ gives $a=m/c$, proving uniqueness.  Moreover
+$z^TP(P^{-1}r)=z^Tr=0$.  Hence
+\begin{align*}
+ x^TCx
+ &=x^TPx-\lambda(r^Tx)^2\\
+ &=z^TPz+\frac{m^2}{c^2}r^TP^{-1}r-\lambda m^2\\
+ &=z^TPz+m^2(c^{-1}-\lambda).
+\end{align*}
+\end{proof}
+
+\begin{theorem}[Finite--affine--Lorentz trichotomy]\label{thm:trichotomy}
+Exactly one of the following holds.
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em]
+\item If $\Omega>0$, then $C$ is positive definite.
+\item If $\Omega=0$, then $C$ is positive semidefinite,
+\[
+             \ker C=\spanr(P^{-1}r),\qquad \corank C=1.
+\]
+\item If $\Omega<0$, then $C$ is nonsingular and $\indm(C)=1$.
+\end{enumerate}
+In particular, $C$ has at most one nonpositive eigenvalue.  A negative and a zero eigenvalue can
+never coexist.
+\end{theorem}
+
+\begin{proof}
+In \eqref{eq:capacity-completion}, $z^TPz\ge0$, with equality exactly when $z=0$.
+If $\Omega>0$, equality of the whole expression forces both $z=0$ and $m=0$, hence $x=0$.
+If $\Omega=0$, the zero vectors are exactly those with $z=0$, namely the stated line.
+If $\Omega<0$, the vector $P^{-1}r$ is negative because its centered part is zero and its mass is
+$c>0$.  Corollary~\ref{cor:hyperplane} bounds the negative index by one, so it equals one.  A kernel
+vector would have to be independent from this negative line or lie on it; the first possibility
+would create a nonpositive plane and the second is excluded by strict negativity.  Equivalently,
+the determinant formula below is nonzero.
+\end{proof}
+
+\begin{theorem}[Determinant wall]\label{thm:determinant}
+One has
+\begin{equation}\label{eq:determinant}
+                   \boxed{\quad\det C=\det(P)c\Omega.\quad}
+\end{equation}
+Thus the affine wall is exactly $\Omega=0$, and it is crossed transversely in the scalar defect
+$\lambda$.
+\end{theorem}
+
+\begin{proof}
+The matrix determinant lemma gives
+\[
+ \det(P-\lambda rr^T)=\det(P)(1-\lambda r^TP^{-1}r)
+ =\det(P)(1-\lambda c)=\det(P)c(c^{-1}-\lambda).
+\]
+\end{proof}
+
+\begin{proposition}[Root-extension gauge invariance]\label{prop:root-invariance}
+Extend the auxiliary root by length $t>0$.  Then
+\begin{equation}\label{eq:root-update}
+ P_t=P+t rr^T,\qquad \lambda_t=\lambda+t,\qquad
+ c_t=\frac{c}{1+tc}.
+\end{equation}
+Consequently
+\begin{equation}\label{eq:root-invariants}
+ c_t^{-1}-\lambda_t=\Omega,\qquad
+ \det(P_t)c_t=\det(P)c.
+\end{equation}
+In particular the trichotomy and determinant formula are intrinsic to the decorated diagram.
+\end{proposition}
+
+\begin{proof}
+The new edge has descendant set $I$, so its cut vector is $r$, proving the first two updates.
+Sherman--Morrison gives
+\[
+ P_t^{-1}=P^{-1}-\frac{tP^{-1}rr^TP^{-1}}{1+tc},
+\]
+and contraction with $r$ gives the capacity update.  Therefore
+$c_t^{-1}=c^{-1}+t$, proving the first invariant.  The determinant lemma gives
+$\det(P_t)=\det(P)(1+tc)$, which proves the second.
+\end{proof}
+
+\begin{remark}[Intrinsic formulation]
+Choose any allowed root extension and compute $\Omega$.  Proposition~\ref{prop:root-invariance}
+shows the result is independent of the choice.  Thus $\Omega$ is not a height normalization; it is
+a scalar invariant of the Stokes--Cartan datum.  It is the signed distance between effective
+resistance and global defect, as the next section makes literal.
+\end{remark}
+
+\section{Corona pruning and effective resistance}\label{sec:corona}
+
+The term \emph{corona} will mean the terminal branches adjacent to a chosen internal vertex.  To
+prune a corona is to eliminate all variables inside it while retaining the total current through
+its stem.  The elimination is an exact Schur complement, not an asymptotic approximation.
+
+Change variables from $x_i$ to leaf currents
+\begin{equation}\label{eq:current-change}
+                         m_i=r_ix_i.
+\end{equation}
+Then the positive core energy becomes
+\begin{equation}\label{eq:electrical-energy}
+ x^TPx=\sum_i\frac{m_i^2}{r_i^2}
+       +\sum_e\ell_e\left(\sum_{i\in A_e}m_i\right)^2.
+\end{equation}
+Interpret $r_i^{-2}$ as a terminal resistance and $\ell_e$ as an edge resistance.  The current in
+edge $e$ is the total leaf current below it.
+
+\begin{lemma}[Parallel completion]\label{lem:parallel}
+Let $R_1,\dots,R_s>0$ and $m_1+\cdots+m_s=M$.  Put
+\[
+ S=\sum_{a=1}^sR_a^{-1},\qquad R_{\parallel}=S^{-1}.
+\]
+Then
+\begin{equation}\label{eq:parallel-completion}
+ \sum_{a=1}^sR_am_a^2
+ =\sum_{a=1}^sR_a\left(m_a-\frac{R_a^{-1}}{S}M\right)^2
+  +R_{\parallel}M^2.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Expand the squares.  The cross terms sum to $-2M^2/S$ and the constant terms to $M^2/S$.
+Rearrangement gives \eqref{eq:parallel-completion}.  Positivity also shows that the unique
+energy-minimizing split is proportional to conductance.
+\end{proof}
+
+\begin{definition}[Recursive resistance]\label{def:recursive-R}
+Assign a leaf $i$ the resistance $R_i=r_i^{-2}$.  If an internal vertex $v$ has children $w$, and
+the edge from $v$ to $w$ has length $\ell_{vw}$, define
+\begin{equation}\label{eq:resistance-recursion}
+                  R_v=\left(\sum_{w\prec v}
+                    \frac{1}{\ell_{vw}+R_w}\right)^{-1}.
+\end{equation}
+The value at the chosen root is $R_{\mathrm{eff}}$.
+\end{definition}
+
+\begin{theorem}[Corona-capacity law]\label{thm:corona-capacity}
+Successive pruning by \eqref{eq:resistance-recursion} gives
+\begin{equation}\label{eq:min-energy}
+ \min_{\sum_i m_i=M}x^TPx=R_{\mathrm{eff}}M^2,
+ \qquad R_{\mathrm{eff}}=c^{-1}.
+\end{equation}
+Moreover
+\begin{equation}\label{eq:Omega-resistance}
+                         \Omega=R_{\mathrm{eff}}-\lambda.
+\end{equation}
+A root extension adds the same series resistance $t$ to both terms in
+\eqref{eq:Omega-resistance}.  Thus root invariance is the series-cancellation law
+\[
+ (R_{\mathrm{eff}}+t)-(\lambda+t)=R_{\mathrm{eff}}-\lambda.
+\]
+\end{theorem}
+
+\begin{proof}
+At a terminal corona, the resistance from a child subtree is its effective resistance plus the
+stem resistance $\ell_{vw}$ in series.  Lemma~\ref{lem:parallel} replaces all child branches by
+their parallel resistance and a sum of positive fluctuation squares.  Induction toward the root
+proves the first minimization formula.
+
+On the other hand, Theorem~\ref{thm:capacity-normal} applied to the positive form alone gives
+\[
+ x^TPx=z^TPz+M^2/c
+\]
+under the constraint $r^Tx=M$.  Its unique minimum is $M^2/c$.  Comparing the two minima gives
+$R_{\mathrm{eff}}=c^{-1}$, and \eqref{eq:Omega-resistance} follows from definition.
+The final assertion is ordinary series addition together with
+Proposition~\ref{prop:root-invariance}.
+\end{proof}
+
+\begin{corollary}[Local-to-global computation]\label{cor:message-passing}
+The signature phase of a rooted core is determined by one bottom-up pass through the fission tree:
+compute $R_v$ by \eqref{eq:resistance-recursion} and compare $R_{\mathrm{eff}}$ with $H-1$.
+Every pruned corona contributes only positive fluctuation squares; no local pruning step can create
+a second negative direction.
+\end{corollary}
+
+\begin{remark}[Vanishing-cycle language]
+Formula \eqref{eq:parallel-completion} is an algebraic elimination law for a terminal cluster.  It
+is reasonable to view the discarded positive fluctuation coordinates as quadratic
+``vanishing-cycle channels.''  We do not identify them with sheaf-theoretic vanishing cycles, nor
+do we claim that $\ell_e$ is a characteristic-cycle multiplicity.  Such an identification would
+require an additional microlocal comparison theorem not proved here.
+\end{remark}
+
+\section{Type-A legs preserve the one-defect law}\label{sec:legs}
+
+Attach to core vertex $i$ an ordinary path leg of length $l_i\ge0$.  Write its variables as
+$y_{i,1},\dots,y_{i,l_i}$, and set
+\[
+ y_{i,0}=x_i,\qquad y_{i,l_i+1}=0,\qquad
+ d_{i,k}=y_{i,k}-y_{i,k+1}\quad(0\le k\le l_i).
+\]
+Then $\sum_{k=0}^{l_i}d_{i,k}=x_i$.
+
+\begin{lemma}[Path completion]\label{lem:path-completion}
+For $d_0+\cdots+d_l=x$,
+\begin{equation}\label{eq:path-completion}
+ \sum_{k=0}^l d_k^2
+ =\sum_{k=0}^l\left(d_k-\frac{x}{l+1}\right)^2+\frac{x^2}{l+1}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Expand the right side and use $\sum d_k=x$.
+\end{proof}
+
+Let $\widehat C$ be the full Cartan matrix.  The ordinary type-$A$ edge coupling gives
+\begin{equation}\label{eq:full-before-completion}
+ \widehat q(x,y)=
+ \sum_i\sum_{k=0}^{l_i}d_{i,k}^2
+ +\sum_e\ell_e\nu_e(x)^2-\lambda M(x)^2.
+\end{equation}
+Indeed, the path energy $\sum_kd_{i,k}^2$ equals the leg Cartan energy together with the core
+square $x_i^2$ that occurs in \eqref{eq:one-defect-q}.
+
+\begin{theorem}[Full-leg conservation]\label{thm:full-leg}
+For arbitrary finite type-$A$ legs,
+\begin{align}\label{eq:full-completed}
+ \widehat q(x,y)
+ &=\sum_i\sum_{k=0}^{l_i}
+     \left(d_{i,k}-\frac{x_i}{l_i+1}\right)^2
+   +\sum_i\frac{x_i^2}{l_i+1}\notag\\
+ &\quad+\sum_e\ell_e\nu_e(x)^2-\lambda M(x)^2.
+\end{align}
+Consequently $\widehat C$ is positive definite, positive semidefinite of corank one, or has
+exactly one negative eigenvalue.  In particular
+\begin{equation}\label{eq:full-index}
+                 \indm(\widehat C)\le1,\qquad
+                 \dim\ker\widehat C\le1.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Apply Lemma~\ref{lem:path-completion} to every leg in
+\eqref{eq:full-before-completion}.  The fluctuation squares form a positive definite complement
+to the variables $x$.  The remaining Schur form is
+\begin{equation}\label{eq:leg-Schur}
+ S=D+\sum_e\ell_eu_eu_e^T-\lambda rr^T,\qquad
+ D=\diag\left(\frac1{l_i+1}\right)>0.
+\end{equation}
+Replace $I$ by $D$ in Sections~\ref{sec:factor}--\ref{sec:capacity}.  The positive matrix
+$P_L=D+\sum_e\ell_eu_eu_e^T$ is still positive definite, so the same centered decomposition and
+trichotomy apply.  Completing the legs is a congruence by a positive block and therefore preserves
+the nonpositive inertia of $S$.
+\end{proof}
+
+\begin{corollary}[Leg capacity]\label{cor:leg-capacity}
+For the full diagram, use terminal resistances
+\begin{equation}\label{eq:leg-resistance}
+                         R_i=\frac{1}{(l_i+1)r_i^2}.
+\end{equation}
+The recursion \eqref{eq:resistance-recursion} computes the full capacity wall.  In particular,
+lengthening a leg changes only a positive terminal resistance and never increases the maximal
+negative index.
+\end{corollary}
+
+\begin{proof}
+Under $m_i=r_ix_i$, the diagonal term in \eqref{eq:leg-Schur} is
+$m_i^2/((l_i+1)r_i^2)$.  Apply Theorem~\ref{thm:corona-capacity}.
+\end{proof}
+
+\section{Principal conormals and Rees stability}\label{sec:conormal}
+
+The cut form has a direct microlocal interpretation that is exact at the level of linear
+conormals.  For an edge $e$, define the cluster hyperplane
+\begin{equation}\label{eq:cluster-hyperplane}
+             \Hcal_e=\{x\in\RR^I:\nu_e(x)=0\}.
+\end{equation}
+Its conormal line is generated by the constant covector
+\begin{equation}\label{eq:principal-conormal}
+                         d\nu_e=u_e.
+\end{equation}
+The family $\{A_e\}$ is laminar: two descendant sets are disjoint or one contains the other.
+
+\begin{theorem}[Principal-conormal Hessian law]\label{thm:conormal-Hessian}
+Let $q_+(x)=x^TPx$.  Its Hessian satisfies
+\begin{equation}\label{eq:Hessian-law}
+ \frac12\operatorname{Hess}(q_+)
+ =I+\sum_e\ell_e\,d\nu_e\otimes d\nu_e.
+\end{equation}
+For the full diagram, $I$ is replaced by
+$D=\diag((l_i+1)^{-1})$.  Thus the complete local Stokes contribution is the weighted Gram norm of
+the principal conormals of the laminar fission cuts.  The sole negative Hessian channel is
+$-\lambda\,dM\otimes dM$.
+\end{theorem}
+
+\begin{proof}
+This is the polarization of \eqref{eq:one-defect-q} and
+\eqref{eq:full-completed}; $d\nu_e=u_e$ and $dM=r$.
+\end{proof}
+
+We next record the exact Rees-type stability that follows from this decomposition.  Assign an
+indeterminate $s_e$ to each fission edge and define the multiscale family
+\begin{equation}\label{eq:Rees-family}
+ q_{\boldsymbol s}(x)=x^TDx+
+   \sum_e s_e\ell_e\nu_e(x)^2-\lambda M(x)^2.
+\end{equation}
+At $s_e=1$ this is the reduced full Cartan form.  Setting selected $s_e$ to zero contracts their
+graded conormal channels; scaling $s_e=t^{w_e}$ records a weighted contact filtration.  We call
+\eqref{eq:Rees-family} the \emph{quadratic multi-Rees family} of the fission filtration.  This
+terminology refers only to the explicit filtered quadratic family, not to a claimed equivalence of
+categories of Stokes-filtered sheaves.
+
+\begin{corollary}[Rees one-defect stability]\label{cor:Rees-stability}
+For every specialization $s_e\ge0$, the form $q_{\boldsymbol s}$ has negative index at most one and
+nullity at most one.  It is positive on $\ker M$.  Its phase is determined by
+\begin{equation}\label{eq:Rees-gap}
+ \Omega(\boldsymbol s)=
+ \left[r^T\left(D+\sum_e s_e\ell_eu_eu_e^T\right)^{-1}r\right]^{-1}
+ -\lambda.
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+The specialized positive part remains positive definite because $D>0$ and $s_e\ell_e\ge0$.
+The proofs of Corollary~\ref{cor:hyperplane} and Theorem~\ref{thm:trichotomy} apply verbatim.
+\end{proof}
+
+\begin{remark}
+Equation \eqref{eq:Hessian-law} is a principal-conormal statement in a finite linear model.  It
+does not identify $\ell_e$ with a multiplicity in the characteristic cycle of an irregular
+holonomic $\mathcal D$-module.  Establishing such a statement would require compatibility between
+the irregular Riemann--Hilbert correspondence, microlocal specialization, and the fission-contact
+filtration.  The present theorem supplies a rigid numerical target for that future comparison.
+\end{remark}
+
+\section{The wild dimension conservation law}\label{sec:dimension}
+
+Let $\widehat d=(x,y)$ be a dimension vector for the full diagram, written in the coordinates of
+Section~\ref{sec:legs}.  The diagram dimension formula is
+\begin{equation}\label{eq:dimension-known}
+                \dim\Mcal_B=2-\widehat d^T\widehat C\widehat d
+\end{equation}
+for the corresponding wild character variety, under the usual nonempty/stability hypotheses
+\cite{Doucot2021Diagrams}.
+
+\begin{theorem}[Rank--conormal dimension conservation]\label{thm:dimension-law}
+With $d_{i,k}=y_{i,k}-y_{i,k+1}$ as above,
+\begin{align}\label{eq:dimension-law}
+ \dim\Mcal_B
+ &=2+\lambda M(x)^2
+ -\sum_i\sum_{k=0}^{l_i}
+     \left(d_{i,k}-\frac{x_i}{l_i+1}\right)^2\notag\\
+ &\quad-\sum_i\frac{x_i^2}{l_i+1}
+ -\sum_e\ell_e\nu_e(x)^2.
+\end{align}
+This equality is independent of the auxiliary root extension.  It expresses dimension as one
+global ramified-rank square budget minus positive leg fluctuations, positive terminal costs, and
+positive principal-conormal defects.
+\end{theorem}
+
+\begin{proof}
+Substitute \eqref{eq:full-completed} into \eqref{eq:dimension-known}.  If the root is extended by
+$t$, the new root edge has $A_e=I$ and hence contributes $tM(x)^2$ to the final positive sum, while
+$\lambda M(x)^2$ increases by the same amount.  The two changes cancel.
+\end{proof}
+
+\begin{corollary}[Relaxed dimension obstruction]\label{cor:dimension-obstruction}
+For fixed total ramified rank $M$ and fixed root gauge, the real relaxation of the dimension
+functional is maximized by the unique conductance-proportional current split at every corona and by
+constant increments along every type-$A$ leg.  Every departure from these balances has an explicit
+positive square cost.  An integral dimension vector attains this relaxed bound only when the
+balanced profile is integral.
+\end{corollary}
+
+\begin{proof}
+Apply Lemmas~\ref{lem:parallel} and \ref{lem:path-completion} to
+\eqref{eq:dimension-law}.  Equality in either completion gives the stated unique balance.
+\end{proof}
+
+This corollary is a useful distinction between the universal law and a sign estimate.  The theorem
+does not merely say that certain terms are nonnegative; it locates every loss channel and gives its
+equality condition.
+
+\section{Global genus-zero and irregular Riemann--Hilbert invariance}\label{sec:global}
+
+We now formulate the global result.  A \emph{type-$A$ genus-zero nonabelian Hodge diagram} means a
+diagram arising from algebraic connection data on a Zariski-open subset of $\mathbb P^1$ through
+the standard genus-zero diagram construction, with its ordinary type-$A$ conjugacy-class legs.
+This includes ramified and multi-pole formal types covered by the general diagram construction of
+\cite{Doucot2021Diagrams}.
+
+\begin{theorem}[Global Stokes--Cartan signature law]\label{thm:global}
+Let $\widehat C$ be the symmetric Cartan matrix of a type-$A$ genus-zero nonabelian Hodge diagram.
+Then
+\begin{equation}\label{eq:global-index}
+        \indm(\widehat C)\le1,
+ \qquad \dim\ker\widehat C\le1,
+ \qquad \indm(\widehat C)+\dim\ker\widehat C\le1.
+\end{equation}
+Equivalently, every such Cartan form is finite, affine, or Lorentzian.  Its phase, affine null line,
+determinant wall, and dimension are given by Theorems
+\ref{thm:trichotomy}, \ref{thm:determinant}, and \ref{thm:dimension-law} in any generic one-pole
+reading.
+\end{theorem}
+
+\begin{proof}
+The diagram invariance theorem permits a generic symplectic reading of the same core at infinity
+\cite{Doucot2021Diagrams}.  Proposition~\ref{prop:geometric-input} supplies the rooted fission-contact
+realization.  Theorem~\ref{thm:one-defect} applies to the core and
+Theorem~\ref{thm:full-leg} to all attached type-$A$ legs.  The resulting matrix is the original
+diagram Cartan matrix because the diagram, not an asserted analytic isomorphism between all
+representations, is the invariant being transported.  The remaining statements follow from the
+capacity and dimension theorems.
+\end{proof}
+
+\begin{corollary}[Fourier invariance of the wall]\label{cor:Fourier-wall}
+The sign of $\Omega$ and the finite/affine/Lorentz phase are invariant under Fourier--Laplace and
+the symplectic Weyl-algebra transformations preserving the genus-zero diagram.
+\end{corollary}
+
+\begin{proof}
+The sign is the inertia of the invariant Cartan matrix by Theorem~\ref{thm:trichotomy}.
+\end{proof}
+
+\begin{remark}[Irregular Riemann--Hilbert scope]
+Through the irregular Riemann--Hilbert correspondence, the same wild character variety is described
+by generalized monodromy and Stokes data on the Betti side.  Theorem~\ref{thm:global} therefore
+constrains the Cartan shadow common to these descriptions.  It is not a new proof of the irregular
+Riemann--Hilbert equivalence and does not assert that the full Stokes local system can be recovered
+from the scalar capacity $\Omega$.
+\end{remark}
+
+\section{Graph spectra and Kac--Moody exclusion}\label{sec:spectral}
+
+Suppose the full diagram is an honest graph: $B$ is a real symmetric adjacency matrix with zero
+diagonal and nonnegative off-diagonal entries.  Let
+$\lambda_1(B)\ge\cdots\ge\lambda_n(B)$ be its eigenvalues.
+
+\begin{theorem}[Second-eigenvalue obstruction]\label{thm:lambda2}
+If $n\ge2$ and $B$ is a type-$A$ genus-zero nonabelian Hodge graph, then
+\begin{equation}\label{eq:lambda2}
+                         \boxed{\lambda_2(B)\le2.}
+\end{equation}
+More precisely:
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em]
+\item if $\lambda_1(B)<2$, then $2I-B$ is positive definite;
+\item if $\lambda_1(B)=2$, then $2$ is a simple eigenvalue and $2I-B$ is positive semidefinite;
+\item if $\lambda_1(B)>2$, then exactly one eigenvalue of $B$ exceeds $2$ and $2$ is not an
+eigenvalue.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The eigenvalues of $2I-B$ are $2-\lambda_i(B)$.  Apply
+Theorem~\ref{thm:global}: its negative index is the number of adjacency eigenvalues above two, and
+its nullity is the multiplicity of the eigenvalue two.  Formula \eqref{eq:global-index} gives all
+claims.
+\end{proof}
+
+\begin{corollary}[Kac--Moody signature bound]\label{cor:Kac}
+No symmetric generalized Cartan matrix of negative index at least two can be realized by a
+type-$A$ genus-zero nonabelian Hodge graph.  Hyperbolic/Lorentzian type is the maximal indefinite
+type in this class.
+\end{corollary}
+
+The statement is deliberately restricted to the class in Theorem~\ref{thm:global}.  It does not
+exclude higher-signature generalized Cartan matrices from other quiver varieties, other genera,
+or constructions not admitting the rooted type-$A$ fission reading.
+
+\begin{example}[A sharp twisted graph]\label{ex:twisted-triangle}
+Dou\c cot constructs a nonabelian Hodge graph from a twisted irregular class whose three edge
+multiplicities are $6,3,4$ \cite[Proposition~3.3]{Doucot2025Graphs}.  In a compatible ordering,
+\[
+ B=\begin{pmatrix}0&6&4\\6&0&3\\4&3&0\end{pmatrix},\qquad
+ C=\begin{pmatrix}2&-6&-4\\-6&2&-3\\-4&-3&2\end{pmatrix}.
+\]
+For $\one=(1,1,1)^T$,
+\[
+                         \one^TC\one=6-2(6+4+3)=-20.
+\]
+Also $\det C=-258$ and $\operatorname{tr}C=6$, independently confirming that the inertia is
+$(2,1,0)$.
+Thus the universal theorem cannot be strengthened to positivity.  Its conclusion is sharp:
+$C$ has exactly one negative eigenvalue and no kernel.  This graph is also useful because it is a
+nonabelian Hodge graph that is not an untwisted fission graph, so the phenomenon is not confined to
+complete multipartite cores.
+\end{example}
+
+\begin{example}[Affine wall]
+Whenever a diagram lies on $R_{\mathrm{eff}}=H-1$, its null vector is explicitly
+$P^{-1}r$.  In electrical variables, this is the unique conductance-balanced unit-current profile.
+The simplicity of the affine eigenvalue is therefore not an appeal to a Dynkin classification; it
+is forced directly by strict convexity of the positive Stokes energy.
+\end{example}
+
+\begin{example}[Why a second defect is impossible]
+Assume two independent vectors had nonpositive Cartan energy.  A nontrivial linear combination of
+them has zero total ramified rank.  On that hyperplane the energy is the strictly positive sum of
+terminal and cut squares in \eqref{eq:one-defect-q}, a contradiction.  This two-line argument is
+the geometric core of the exclusion, while capacity supplies its sharp boundary behavior.
+\end{example}
+
+\section{Sharpness, falsifiers, and limits}\label{sec:scope}
+
+We finish by listing what would disprove or extend the theorem.  This is part of the mathematical
+statement: a universal-law claim without explicit falsifiers is not auditable.
+
+\subsection{Statements ruled out}
+
+The stronger conjecture ``all nonabelian Hodge Cartan forms are positive semidefinite'' is false by
+Example~\ref{ex:twisted-triangle}.  The correct boundary is negative index one.  The theorem also
+rules out a weaker but previously plausible phenomenon: a Lorentz direction together with an
+independent affine direction.  Capacity completion shows that this cannot occur.
+
+\subsection{Direct falsifiers}
+
+Any one of the following would invalidate the stated global scope.
+\begin{enumerate}[label=(\arabic*),leftmargin=2.2em]
+\item A realized type-$A$ genus-zero diagram whose Cartan matrix has two negative eigenvalues.
+\item A realized diagram whose complementary contacts fail to admit one simultaneous rooted
+realization, even though its pairwise inequalities hold.
+\item A standard genus-zero diagram containing a leg not obtainable by the ordinary one-ended
+type-$A$ attachment used in Section~\ref{sec:legs}.
+\item Failure of diagram preservation under the generic symplectic reading used in
+Theorem~\ref{thm:global}.
+\end{enumerate}
+No such example appears in the primary diagram and fission-tree sources cited above.  Conversely,
+the theorem is not an analytic existence criterion: a matrix satisfying the one-defect law need
+not come from an irregular connection.
+
+\subsection{Boundaries of interpretation}
+
+The conormals in Theorem~\ref{thm:conormal-Hessian} are conormals of explicit cluster hyperplanes in
+dimension-vector space.  The corona reduction is an exact Schur complement.  The Rees family is a
+filtered deformation of the quadratic form.  None of these statements, alone, computes
+microsupports, Stokes sheaf categories, characteristic-cycle coefficients, or vanishing-cycle
+multiplicities.  Those are natural next questions because the present law predicts that any
+compatible categorification must preserve a single global negative channel while decomposing all
+local fission channels positively.
+
+\subsection{Novelty boundary}
+
+Weighted-tree Gram formulae, ultrametric matrices, inverse $M$-matrices, the Stokes diagram, and its
+dimension formula are prior results.  The claim of this paper is their previously unstated
+intersection: the Stokes normalization \eqref{eq:intro-K} changes $2I-B$ into a positive laminar
+Gram form minus exactly one total-rank square; capacity then propagates this identity through
+corona pruning, type-$A$ legs, global diagram readings, and the Kac--Moody spectrum.  Removing the
+Stokes normalization or the one-pole rooted realization destroys that conclusion.
+
+\section{Conclusion}
+
+The Cartan geometry of a type-$A$ genus-zero wild nonabelian Hodge diagram is at most Lorentzian.
+The reason is structural: local irregularity separates along a laminar fission tree and contributes
+positive principal-conormal squares, whereas compact genus-zero coupling contributes one square of
+total ramified rank with the opposite sign.  Effective resistance compresses the entire tree to a
+single intrinsic wall $\Omega$; type-$A$ legs and corona elimination preserve the defect count.
+
+This law supplies a global restriction on the Kac--Moody systems visible in wild nonabelian Hodge
+theory and a quantitative decomposition of the dimension formula.  It also isolates a concrete
+microlocal problem: construct a categorical irregular Riemann--Hilbert/Rees comparison whose
+associated quadratic shadow is the principal-conormal decomposition
+\eqref{eq:Hessian-law}.  The theorem proved here is the numerical constraint that any such
+comparison must satisfy.
+
+\begin{thebibliography}{99}
+
+\bibitem{BiquardBoalch2004}
+O.~Biquard and P.~Boalch,
+\emph{Wild non-abelian Hodge theory on curves},
+Compos. Math. \textbf{140} (2004), no.~1, 179--204.
+\href{https://doi.org/10.1112/S0010437X03000010}{doi:10.1112/S0010437X03000010}.
+
+\bibitem{Boalch2008Kac}
+P.~Boalch,
+\emph{Irregular connections and Kac--Moody root systems},
+arXiv:0806.1050 (2008).
+\href{https://arxiv.org/abs/0806.1050}{arXiv:0806.1050}.
+
+\bibitem{Boalch2012Simply}
+P.~Boalch,
+\emph{Simply-laced isomonodromy systems},
+Publ. Math. Inst. Hautes \'{E}tudes Sci. \textbf{116} (2012), 1--68.
+\href{https://doi.org/10.1007/s10240-012-0040-2}{doi:10.1007/s10240-012-0040-2}.
+
+\bibitem{Boalch2025Counting}
+P.~Boalch,
+\emph{Counting the fission trees and nonabelian Hodge graphs (untwisted case)},
+J. Geom. Phys. \textbf{214} (2025), 105512.
+\href{https://doi.org/10.1016/j.geomphys.2025.105512}{doi:10.1016/j.geomphys.2025.105512}.
+
+\bibitem{BoalchDoucotRembado2025}
+P.~Boalch, J.~Dou\c cot and G.~Rembado,
+\emph{Twisted local wild mapping class groups: configuration spaces, fission trees and complex
+braids},
+Publ. Res. Inst. Math. Sci. \textbf{61} (2025), no.~3, 391--445.
+\href{https://doi.org/10.4171/PRIMS/61-3-4}{doi:10.4171/PRIMS/61-3-4}.
+
+\bibitem{BoalchYamakawa2020}
+P.~Boalch and D.~Yamakawa,
+\emph{Diagrams for nonabelian Hodge spaces on the affine line},
+C. R. Math. \textbf{358} (2020), no.~1, 59--65.
+\href{https://doi.org/10.5802/crmath.11}{doi:10.5802/crmath.11}.
+
+\bibitem{Doucot2021Diagrams}
+J.~Dou\c cot,
+\emph{Diagrams and irregular connections on the Riemann sphere},
+arXiv:2107.02516 (2021).
+\href{https://arxiv.org/abs/2107.02516}{arXiv:2107.02516}.
+
+\bibitem{Doucot2025Graphs}
+J.~Dou\c cot,
+\emph{New nonabelian Hodge graphs from twisted irregular connections},
+arXiv:2509.24861 (2025), revised 2026.
+\href{https://arxiv.org/abs/2509.24861}{arXiv:2509.24861}.
+
+\bibitem{Doucot2026Basic}
+J.~Dou\c cot,
+\emph{Basic representations of genus zero nonabelian Hodge spaces},
+SIGMA \textbf{22} (2026), 027, 43 pp.
+\href{https://doi.org/10.3842/SIGMA.2026.027}{doi:10.3842/SIGMA.2026.027}.
+
+\bibitem{MartinezMichonSanMartin1994}
+S.~Mart\'{i}nez, G.~Michon and J.~San Mart\'{i}n,
+\emph{Inverse of strictly ultrametric matrices are of Stieltjes type},
+SIAM J. Matrix Anal. Appl. \textbf{15} (1994), no.~1, 98--106.
+\href{https://doi.org/10.1137/S0895479891217011}{doi:10.1137/S0895479891217011}.
+
+\bibitem{McDonaldEtAl1995}
+J.~J.~McDonald, M.~Neumann, H.~Schneider and M.~J.~Tsatsomeros,
+\emph{Inverse $M$-matrix inequalities and generalized ultrametric matrices},
+Linear Algebra Appl. \textbf{220} (1995), 321--341.
+\href{https://doi.org/10.1016/0024-3795(94)00077-Q}{doi:10.1016/0024-3795(94)00077-Q}.
+
+\bibitem{NabbenVarga1995}
+R.~Nabben and R.~S.~Varga,
+\emph{Generalized ultrametric matrices---a class of inverse $M$-matrices},
+Linear Algebra Appl. \textbf{220} (1995), 365--390.
+\href{https://doi.org/10.1016/0024-3795(94)00086-S}{doi:10.1016/0024-3795(94)00086-S}.
+
+\bibitem{Nabben2026Acyclic}
+R.~Nabben,
+\emph{Inverse acyclic $Z$-matrices, matrices of tree structure and shifted generalized
+ultrametric matrices},
+arXiv:2607.27221 (2026).
+\href{https://arxiv.org/abs/2607.27221}{arXiv:2607.27221}.
+
+\end{thebibliography}
+
+\end{document}

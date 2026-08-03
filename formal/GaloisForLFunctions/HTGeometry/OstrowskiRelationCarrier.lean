@@ -293,6 +293,42 @@ theorem eq_zero_of_fiberAmplitudes_vanishing {a : ι → ℂ} {omega : ι → �
 
 /-! ## Relations of mixed total degree -/
 
+omit [DecidableEq ι] in
+/-- The summability of a graded family of monomial amplitudes. -/
+theorem summable_norm_graded {a : ι → ℂ} {omega : ι → ℝ}
+    (ha : ExpSeriesNormallySummable a omega) {N : ℕ}
+    (K : ∀ M : Fin (N + 1), Finset (Fin (M : ℕ) → ℕ))
+    (c : ∀ M : Fin (N + 1), (Fin (M : ℕ) → ℕ) → ℂ) :
+    ∀ M : Fin (N + 1),
+      Summable fun p : Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι =>
+        ‖monomialAmplitude a omega (c M p.1.1) p.1.1 p.2‖ := by
+  intro M
+  exact summable_norm_sigma (J := fun _ : {s // s ∈ K M} => (Fin (M : ℕ) → ι))
+    (b := fun s n => monomialAmplitude a omega (c M s.1) s.1 n)
+    fun s => summable_norm_monomialAmplitude ha (c M s.1) s.1
+
+omit [DecidableEq ι] in
+/-- **A graded combination of monomials is one exponential series.** -/
+theorem gradedCombination_eq_expSeriesCarrier {a : ι → ℂ} {omega : ι → ℝ}
+    (ha : ExpSeriesNormallySummable a omega) {N : ℕ}
+    (K : ∀ M : Fin (N + 1), Finset (Fin (M : ℕ) → ℕ))
+    (c : ∀ M : Fin (N + 1), (Fin (M : ℕ) → ℕ) → ℂ) (t : ℝ) :
+    ∑ M : Fin (N + 1), ∑ s ∈ K M,
+        c M s * ∏ j, iteratedDeriv (s j) (cexpSeriesCarrier a omega) (t : ℂ)
+      = expSeriesCarrier
+        (fun q : Σ M : Fin (N + 1), Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι =>
+          monomialAmplitude a omega (c q.1 q.2.1.1) q.2.1.1 q.2.2)
+        (fun q : Σ M : Fin (N + 1), Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι =>
+          tupleFrequency omega q.2.2) t := by
+  rw [← sum_expSeriesCarrier
+    (J := fun M : Fin (N + 1) => Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι)
+    (fun M p => monomialAmplitude a omega (c M p.1.1) p.1.1 p.2)
+    (fun M p => tupleFrequency omega p.2) (summable_norm_graded ha K c) t]
+  refine Finset.sum_congr rfl fun M _ => ?_
+  exact monomialCombination_eq_expSeriesCarrier ha (c M) t
+
+
+
 /-- **Ostrowski, graded form.**  A vanishing combination of differential monomials of several total
 degrees has vanishing coefficients: different degrees occupy disjoint frequency sets, so each degree
 is tested separately at the frequencies of its own length. -/
@@ -307,31 +343,14 @@ theorem eq_zero_of_gradedMonomialCombination_vanishing {a : ι → ℂ} {omega :
       c M s * ∏ j, iteratedDeriv (s j) (cexpSeriesCarrier a omega) (t : ℂ) = 0) :
     ∀ M : Fin (N + 1), ∀ s ∈ K M, c M s = 0 := by
   classical
-  have hnorm : ∀ M : Fin (N + 1),
-      Summable fun p : Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι =>
-        ‖monomialAmplitude a omega (c M p.1.1) p.1.1 p.2‖ := by
-    intro M
-    exact summable_norm_sigma (J := fun _ : {s // s ∈ K M} => (Fin (M : ℕ) → ι))
-      (b := fun s n => monomialAmplitude a omega (c M s.1) s.1 n)
-      fun s => summable_norm_monomialAmplitude ha (c M s.1) s.1
+  have hnorm := summable_norm_graded ha K c
   have hvan : ∀ t : ℝ, expSeriesCarrier
       (fun q : Σ M : Fin (N + 1), Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι =>
         monomialAmplitude a omega (c q.1 q.2.1.1) q.2.1.1 q.2.2)
       (fun q : Σ M : Fin (N + 1), Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι =>
         tupleFrequency omega q.2.2) t = 0 := by
     intro t
-    rw [← sum_expSeriesCarrier
-      (J := fun M : Fin (N + 1) => Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι)
-      (fun M p => monomialAmplitude a omega (c M p.1.1) p.1.1 p.2)
-      (fun M p => tupleFrequency omega p.2) hnorm t]
-    have hterm : ∀ M : Fin (N + 1),
-        expSeriesCarrier
-            (fun p : Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι =>
-              monomialAmplitude a omega (c M p.1.1) p.1.1 p.2)
-            (fun p : Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι => tupleFrequency omega p.2) t
-          = ∑ s ∈ K M, c M s * ∏ j, iteratedDeriv (s j) (cexpSeriesCarrier a omega) (t : ℂ) :=
-      fun M => (monomialCombination_eq_expSeriesCarrier ha (c M) t).symm
-    rw [Finset.sum_congr rfl fun M _ => hterm M]
+    rw [← gradedCombination_eq_expSeriesCarrier ha K c t]
     exact hzero t
   have hsumTotal : Summable
       fun q : Σ M : Fin (N + 1), Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι =>
@@ -354,6 +373,51 @@ theorem eq_zero_of_gradedMonomialCombination_vanishing {a : ι → ℂ} {omega :
     exact Fin.ext hcon
   · intro hM
     exact absurd (Finset.mem_univ M) hM
+
+/-- **Ostrowski, full form.**  A vanishing combination of differential monomials of several total
+degrees, with polynomial coefficients, has vanishing coefficients. -/
+theorem eq_zero_of_gradedPolynomialCombination_vanishing {a : ι → ℂ} {omega : ι → ℝ}
+    (hom : RationallyIndependentSequence omega) (ha : ExpSeriesNormallySummable a omega)
+    (hinf : {i : ι | a i ≠ 0}.Infinite) {N : ℕ}
+    (K : ∀ M : Fin (N + 1), Finset (Fin (M : ℕ) → ℕ))
+    (hdistinct : ∀ M : Fin (N + 1), ∀ s ∈ K M, ∀ s' ∈ K M,
+      tupleCount s = tupleCount s' → s = s')
+    (D : ℕ) (c : ℕ → ∀ M : Fin (N + 1), (Fin (M : ℕ) → ℕ) → ℂ)
+    (hzero : ∀ t : ℝ, ∑ d ∈ Finset.range (D + 1), (t : ℂ) ^ d *
+      ∑ M : Fin (N + 1), ∑ s ∈ K M,
+        c d M s * ∏ j, iteratedDeriv (s j) (cexpSeriesCarrier a omega) (t : ℂ) = 0) :
+    ∀ d ≤ D, ∀ M : Fin (N + 1), ∀ s ∈ K M, c d M s = 0 := by
+  classical
+  set G : ℕ → ℝ → ℂ := fun d t => ∑ M : Fin (N + 1), ∑ s ∈ K M,
+    c d M s * ∏ j, iteratedDeriv (s j) (cexpSeriesCarrier a omega) (t : ℂ) with hG
+  have hGcarrier : ∀ d : ℕ, G d = expSeriesCarrier
+      (fun q : Σ M : Fin (N + 1), Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι =>
+        monomialAmplitude a omega (c d q.1 q.2.1.1) q.2.1.1 q.2.2)
+      (fun q : Σ M : Fin (N + 1), Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι =>
+        tupleFrequency omega q.2.2) :=
+    fun d => funext fun t => gradedCombination_eq_expSeriesCarrier ha K (c d) t
+  have hnormTotal : ∀ d : ℕ, Summable
+      fun q : Σ M : Fin (N + 1), Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι =>
+        ‖monomialAmplitude a omega (c d q.1 q.2.1.1) q.2.1.1 q.2.2‖ :=
+    fun d => summable_norm_sigma
+      (J := fun M : Fin (N + 1) => Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι)
+      (b := fun M p => monomialAmplitude a omega (c d M p.1.1) p.1.1 p.2)
+      (summable_norm_graded ha K (c d))
+  have hap : ∀ d, HTGeometry.IsBohrAlmostPeriodic (G d) := by
+    intro d
+    rw [hGcarrier d]
+    exact isBohrAlmostPeriodic_expSeriesCarrier (hnormTotal d) _
+  have hbdd : ∀ d, ∃ C : ℝ, ∀ t : ℝ, ‖G d t‖ ≤ C := by
+    intro d
+    refine ⟨∑' q : Σ M : Fin (N + 1), Σ _ : {s // s ∈ K M}, Fin (M : ℕ) → ι,
+      ‖monomialAmplitude a omega (c d q.1 q.2.1.1) q.2.1.1 q.2.2‖, fun t => ?_⟩
+    rw [hGcarrier d]
+    exact norm_expSeriesCarrier_le (hnormTotal d) t
+  have hGzero := eq_zero_of_polynomialCombination_bohr G hap hbdd D hzero
+  intro d hd M s hs
+  refine eq_zero_of_gradedMonomialCombination_vanishing hom ha hinf K hdistinct (c d) ?_ M s hs
+  intro t
+  exact congrFun (hGzero d hd) t
 
 end
 

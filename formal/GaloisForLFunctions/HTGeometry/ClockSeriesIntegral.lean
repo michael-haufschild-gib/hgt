@@ -21,7 +21,8 @@ open scoped Interval
 
 /-- **A uniformly summable series of continuous functions may be integrated term by term.** -/
 theorem tsum_intervalIntegral_of_bound {a b : ℝ} {f : ℕ → ℝ → ℂ} {M : ℕ → ℝ}
-    (hf : ∀ m, Continuous (f m)) (hM : ∀ m t, ‖f m t‖ ≤ M m) (hMs : Summable M) :
+    (hf : ∀ m, Continuous (f m)) (hM : ∀ m, ∀ t ∈ Ι a b, ‖f m t‖ ≤ M m)
+    (hMs : Summable M) :
     (∑' m, ∫ t in a..b, f m t) = ∫ t in a..b, ∑' m, f m t := by
   have hint : ∀ m, Integrable (f m) (volume.restrict (Ι a b)) := fun m =>
     intervalIntegrable_iff.mp ((hf m).intervalIntegrable a b)
@@ -33,7 +34,7 @@ theorem tsum_intervalIntegral_of_bound {a b : ℝ} {f : ℕ → ℝ → ℂ} {M 
   have hle : ∀ m, (∫ t in Ι a b, ‖f m t‖) ≤ M m * volume.real (Ι a b) := by
     intro m
     have hmono : (∫ t in Ι a b, ‖f m t‖) ≤ ∫ _t in Ι a b, M m :=
-      integral_mono (hnorm m) (hconst m) fun t => hM m t
+      setIntegral_mono_on (hnorm m) (hconst m) measurableSet_uIoc fun t ht => hM m t ht
     rw [setIntegral_const] at hmono
     calc (∫ t in Ι a b, ‖f m t‖) ≤ volume.real (Ι a b) • M m := hmono
       _ = M m * volume.real (Ι a b) := by rw [smul_eq_mul]; ring
@@ -57,5 +58,3 @@ theorem tsum_intervalIntegral_of_bound {a b : ℝ} {f : ℕ → ℝ → ℂ} {M 
         (intervalIntegral.intervalIntegral_eq_integral_uIoc _ _ _ _).symm
 
 end GaloisForLFunctions.HTGeometry
-
-#print axioms GaloisForLFunctions.HTGeometry.tsum_intervalIntegral_of_bound

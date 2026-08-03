@@ -81,6 +81,33 @@ theorem nonarchimedeanAddGroup_addSubgroup
     refine ⟨W.comap H.subtype continuous_subtype_val, fun x hx => ?_⟩
     exact hsub (hW hx)
 
+/-- A map into a nonarchimedean additive group has dense range as soon as its
+range meets every coset of every open additive subgroup. -/
+theorem denseRange_of_openAddSubgroup_cosets
+    {G : Type*} [AddCommGroup G] [TopologicalSpace G]
+    [NonarchimedeanAddGroup G]
+    {A : Type*} (f : A → G)
+    (hcoset : ∀ (V : OpenAddSubgroup G) (x : G),
+      ∃ a : A, f a - x ∈ V) :
+    DenseRange f := by
+  rw [denseRange_iff_closure_range]
+  apply Set.eq_univ_of_forall
+  intro x
+  rw [mem_closure_iff]
+  intro O hO hxO
+  let U : Set G := {v | x + v ∈ O}
+  have hU : U ∈ nhds 0 := by
+    apply (hO.preimage (continuous_const.add continuous_id)).mem_nhds
+    simpa [U] using hxO
+  obtain ⟨V, hVU⟩ :=
+    NonarchimedeanAddGroup.is_nonarchimedean U hU
+  obtain ⟨a, ha⟩ := hcoset V x
+  have hfa : f a ∈ O := by
+    have := hVU ha
+    change x + (f a - x) ∈ O at this
+    simpa [sub_eq_add_neg, add_assoc, add_comm, add_left_comm] using this
+  exact ⟨f a, hfa, ⟨a, rfl⟩⟩
+
 /-- The additive topology of the rational finite-adele ring is
 nonarchimedean. -/
 theorem ccmRationalFiniteAdele_nonarchimedeanAddGroup :

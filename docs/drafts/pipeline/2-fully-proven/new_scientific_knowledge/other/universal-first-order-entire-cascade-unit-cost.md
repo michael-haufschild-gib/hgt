@@ -1508,3 +1508,235 @@ modulus on the circle where the value is at least the maximum term,
 
 axiom-clean and unconditional.  Both sharpenings are in it, so the only inputs still to be supplied
 are the profile bounds `Sigma_2` and `D` at a window of half-width `N` and the radius choice.
+
+### Log — the zeroth and second moments
+
+`HTGeometry/MaximumTermProfileMoments.lean` (new, axiom-clean):
+
+- `coeffSum_le_gaussian` — `S(r) <= W + 2 mu(r) sum_j q^{N+1+j}` with `q = exp(-N/(4L))`, `W` any
+  bound for the window sum.
+- `tsum_index_sq_le_gaussian` — `sum (n-nu)^2 |a_n| r^n <= N^2 W + 2 mu(r) sum_j (N+1+j)^2 q^{N+1+j}`.
+
+Together with `tsum_index_deviation_le_gaussian` the profile now has all three moments under one
+window split.  Combined with `sum_window_le_sqrt_card_mul_bound` (which bounds `W` by
+`sqrt(2N+1) |f(z)|` at a maximum-modulus point) this gives, writing `A = |f(z)|/mu(r)`:
+
+- `Sigma_0 <= sqrt(2N+1) A + 2 q^{N+1}/(1-q)`, hence `Sigma_0 / A <= sqrt(2N+1) + o(1)`;
+- `Sigma_2 <= N^2 sqrt(2N+1) A + O(N^2 q^{N+1}/(1-q)^3)`;
+- `D <= Sigma_0 - A`.
+
+Feeding these into `norm_mul_logDeriv_sub_centralIndex_le_profile` leaves only the radius choice:
+pick `N` of order `sqrt(L)` so the tails are negligible, and `L` from
+`exists_good_point_increment_le`.
+
+### Log — the window estimate, central index eliminated
+
+`HTGeometry/WimanValironWindowEstimate.lean` (new, axiom-clean):
+`norm_mul_logDeriv_sub_centralIndex_le_window`.  At a maximum-modulus point of the circle of radius
+`e^x` where the modulus is critical along the circle and the value is at least the maximum term,
+
+`|z f'/f - nu| <= (sqrt(2N+1) + 2 G_0) |Lambda - nu|
+                  + sqrt(2 (N^2 sqrt(2N+1) + 2 G_2) (sqrt(2N+1) + 2 G_0))`,
+
+for every window half-width `N` with `N <= 2 L H`, where `L` is any Lipschitz constant for the
+central index on the window `[x-H, x+H]` and `G_0`, `G_2` bound the shifted geometric tails at rate
+`N/(4L)`.
+
+**The central index has disappeared from the right-hand side.**  Every earlier form of the estimate
+carried a factor `nu(s)` or `nu(r)` somewhere in the remainder; here the only surviving quantities
+are the window half-width, the tail sums, and the signed mean-minus-mode gap.  That is what makes the
+`o(nu)` conclusion reachable: `abs_meanIndex_sub_centralIndex_le_lipschitz` bounds the gap by
+`O(sqrt(L log nu))`, and taking `N` of order `sqrt(L)` makes the tails negligible and the whole
+bound `O(L^{3/4} sqrt(log nu))`.
+
+What remains is arithmetic on the parameters: choose `N`, `H` and `L` together (with `L` supplied by
+`exists_good_point_increment_le`), verify `N <= 2 L H`, and bound `G_0`, `G_2` explicitly by summing
+the two geometric series.
+
+### Log — the tails summed, the estimate fully explicit
+
+`HTGeometry/ShiftedGeometricTails.lean` (new, axiom-clean):
+
+- `tsum_shifted_geom` — `sum_j q^{N+1+j} = q^{N+1}/(1-q)`.
+- `tsum_shifted_sq_weight_le` — `sum_j (N+1+j)^2 q^{N+1+j} <= 2 (N+1)^2 q^{N+1}/(1-q)^3`.
+  The second moment of the geometric distribution is never computed: the comparison
+  `(N+1+j)^2 <= (N+1)^2 (1+j)(2+j)` reduces it to the negative-binomial series
+  `sum_n C(n+2,2) q^n = (1-q)^{-3}`, which mathlib already has as
+  `tsum_choose_mul_geometric_of_norm_lt_one`.  The bridge `2 C(n+2,2) = (n+1)(n+2)` comes from
+  `Nat.add_one_mul_choose_eq`, not from an induction.
+
+`norm_mul_logDeriv_sub_centralIndex_le_explicit_window` (in `WimanValironWindowEstimate.lean`)
+substitutes both closed forms.  With `q = exp(-N/(4L))`, at a maximum-modulus point of the circle
+`|z| = e^x` where the modulus is critical along the circle:
+
+`|z f'/f - nu| <= (sqrt(2N+1) + 2 q^{N+1}/(1-q)) |Lambda - nu|
+                  + sqrt(2 (N^2 sqrt(2N+1) + 4 (N+1)^2 q^{N+1}/(1-q)^3)
+                         (sqrt(2N+1) + 2 q^{N+1}/(1-q)))`
+
+for every `N` with `0 < N <= 2 L H`, `L` any Lipschitz constant for the central index on
+`[x-H, x+H]`.  Unconditional and axiom-clean; the right-hand side mentions only `N` and `L`.
+
+What is left is the parameter choice: given `L` from `exists_good_point_increment_le`, take `N` of
+order `L^{1/2} log L` so that `q^{N+1} = exp(-N^2/(4L))` beats every polynomial factor, and combine
+with `abs_meanIndex_sub_centralIndex_le_lipschitz` for the gap.
+
+### Log — the regularity hypothesis reduced to one number
+
+**Observation that removes the dyadic machinery.**  The Gaussian argument never uses arbitrarily
+small scales: the optimal step is `k/(2L)` and `k` is bounded below by the window half-width, so the
+Lipschitz hypothesis is only ever applied on scales `[v0, H]` with `v0 = N/(2L)`.  On such a range
+monotonicity alone gives it: the increment of `nu` over any scale `v >= v0` is at most its increment
+over the whole window, so `L := spread / v0` works, where
+`spread = nu(e^{x+H}) - nu(e^{x-H})`.
+
+Done accordingly:
+
+- `MaximumTermLegendreBound` — `term_le_maxTerm_exp_gaussian_above/below` and
+  `term_le_maxTerm_exp_uniform_above/below` now take the Lipschitz hypothesis on `[v0, H]` together
+  with `2 L v0 <= k` (resp. `<= K`).  Strictly more general: the old `(0, H]` form implies it.
+- `MaximumTermGaussianTail`, `MaximumTermProfileMoments`, `WimanValironWindowEstimate` — `v0` and
+  the side condition `2 L v0 <= N` threaded through; all rebuild unchanged otherwise.
+- `HTGeometry/CentralIndexWindowLipschitz.lean` (new, axiom-clean): `centralIndexSpread`,
+  `centralIndexSpread_nonneg`, `centralIndex_le_add_spread_div_mul`,
+  `sub_spread_div_mul_le_centralIndex`.
+
+**Consequence for the parameters.**  With `L = spread/v0` the two side conditions become
+`2 * spread <= N <= 2 * spread * H / v0`, a nonempty range for any `v0 < H`, and the decay rate is
+`q = exp(-N v0 / (4 spread))`.  The regularity input is now a single number, and
+`volume_increment_ge_le` bounds exactly that number: the set of `x` in `[c, d]` where the spread
+exceeds `s` has measure at most `2H (nu(e^{d+H}) - nu(e^{c-H})) / s`.  Choosing `H` between
+`nu^{-1/2}` and `nu^{-1/3}` makes `spread ~ H nu` small enough for the `N^{3/2}`-type main term to be
+`o(nu)` while keeping `q^{N+1} = exp(-N^2 v0/(4 spread))` negligible — the dyadic all-scales lemma is
+not needed on this route at all.
+
+### Log — the spread form
+
+`norm_mul_logDeriv_sub_centralIndex_le_spread` (in `WimanValironWindowEstimate.lean`, axiom-clean).
+Instantiating the Lipschitz constant as `L = spread / v0` and discharging the two Lipschitz
+hypotheses by `centralIndex_le_add_spread_div_mul` and `sub_spread_div_mul_le_centralIndex`, the
+estimate now reads: for `0 < v0`, `0 < H`, `0 < spread`, and any `N` with
+
+`2 * spread <= N <= 2 * spread * H / v0`,
+
+at a maximum-modulus point of `|z| = e^x` critical along the circle,
+
+`|z f'/f - nu| <= (sqrt(2N+1) + 2 q^{N+1}/(1-q)) |Lambda - nu|
+                  + sqrt(2 (N^2 sqrt(2N+1) + 4 (N+1)^2 q^{N+1}/(1-q)^3)
+                         (sqrt(2N+1) + 2 q^{N+1}/(1-q)))`,   `q = exp(-N v0/(4 spread))`.
+
+No regularity hypothesis remains — only the numeric window `2 spread <= N <= 2 spread H / v0`, which
+is nonempty whenever `v0 < H`.  The estimate is a statement about the single number
+`spread = nu(e^{x+H}) - nu(e^{x-H})`.
+
+**Note on the statement's shape.**  Writing the conclusion with `spread / v0` substituted inline
+does not parse at this nesting depth; the theorem takes `L` abstract together with
+`hLdef : L = spread / v0`, which keeps the conclusion textually identical to the explicit form and
+is equivalent.
+
+Remaining: pick the radius.  `volume_increment_ge_le` applied to `x -> nu(e^x)` bounds the measure of
+the set where `spread` is large, so a suitable `x` exists off a set of finite measure; combining with
+`abs_meanIndex_sub_centralIndex_le_lipschitz` for `|Lambda - nu|` completes the chain.
+
+### Log — the radius is selected
+
+`HTGeometry/CentralIndexSpreadSelection.lean` (new, axiom-clean):
+
+- `monotone_centralIndex_exp` — `y -> nu(e^y)` is nondecreasing.
+- `exists_small_centralIndexSpread` — if
+  `2H (nu(e^{d+2H}) - nu(e^c)) / s < d - c`, then some `y` in `[c, d]` has
+  `centralIndexSpread a (y+H) H < s`.
+
+The spread is an increment of the nondecreasing function `y -> nu(e^y)` over a step of length `2H`,
+so `volume_increment_ge_le` applies verbatim: a nondecreasing function cannot have large increments
+often, because its total rise is a fixed budget.  No property of the coefficients is used beyond
+monotonicity of the central index.
+
+**The chain is now closed except for arithmetic.**  Given a target `s`, pick the sampling interval
+`[c, d]` long enough that the hypothesis holds; that produces a radius `e^{y+H}` with spread below
+`s`; the spread form of the estimate then applies with any `N` in `[2s, 2 s H / v0]`.  What is left
+is to choose `H`, `v0`, `s`, `N` as functions of `nu` so that the resulting bound is `o(nu)` — pure
+inequality manipulation, with every analytic ingredient already proved.
+
+### Log — the radius carries its Lipschitz data
+
+Added to `CentralIndexSpreadSelection.lean` (axiom-clean):
+
+- `centralIndex_le_add_of_spread_le`, `sub_of_spread_le_le_centralIndex` — any constant above
+  `spread / v0` is a Lipschitz constant on scales `[v0, H]`.  Monotonicity in the constant removes
+  the need for `spread > 0`: a degenerate window is simply the easiest case.
+- `exists_radius_lipschitz_centralIndex` — under the same measure hypothesis as
+  `exists_small_centralIndexSpread`, there is `x` in `[c+H, d+H]` at which the central index is
+  two-sidedly `(s/v0)`-Lipschitz on scales `[v0, H]`.
+
+This is the interface the window estimate consumes: `hlipA` and `hlipB` are exactly the two
+conjuncts, with `L = s/v0`.  Feeding them to
+`norm_mul_logDeriv_sub_centralIndex_le_explicit_window` needs only `0 < L`,
+`2 L v0 <= N <= 2 L H`, i.e. `2 s <= N <= 2 s H / v0`.
+
+### Log — the chain in one theorem
+
+`HTGeometry/WimanValironRadius.lean` (new, axiom-clean):
+`exists_radius_norm_mul_logDeriv_sub_centralIndex_le`.
+
+Hypotheses: `c <= d`, `0 < H`, `0 < v0`, `0 < s`, `0 < L`, `s <= L v0`, the measure condition
+`2H (nu(e^{d+2H}) - nu(e^c))/s < d - c`, and a window half-width `N` with
+`2 L v0 <= N <= 2 L H`.
+
+Conclusion: there is a radius `e^x` with `x` in `[c+H, d+H]` such that at every point `z` of that
+circle which is a maximum of the modulus and critical along the circle, and where the value is at
+least the maximum term,
+
+`|z f'/f - nu| <= (sqrt(2N+1) + 2 q^{N+1}/(1-q)) |Lambda - nu|
+                  + sqrt(2 (N^2 sqrt(2N+1) + 4 (N+1)^2 q^{N+1}/(1-q)^3)
+                         (sqrt(2N+1) + 2 q^{N+1}/(1-q)))`,  `q = exp(-N/(4L))`.
+
+No regularity hypothesis appears anywhere, and the right-hand side involves only `N` and `L`.
+
+**Chain, end to end, all unconditional and axiom-clean:**
+monotone-increment measure bound (`volume_increment_ge_le`) -> radius of small spread
+(`exists_small_centralIndexSpread`) -> Lipschitz data at that radius
+(`exists_radius_lipschitz_centralIndex`) -> Legendre bound and Gaussian decay
+(`term_le_maxTerm_exp_legendre_*`, `..._gaussian_*`, `..._uniform_*`) -> the three profile moments
+(`tsum_index_deviation_le_gaussian`, `coeffSum_le_gaussian`, `tsum_index_sq_le_gaussian`) ->
+Gutzmer/Bessel window bound (`sum_window_le_sqrt_card_mul_bound`) -> sharp mean-index assembly
+(`norm_mul_logDeriv_sub_centralIndex_le_profile`) -> summed tails
+(`tsum_shifted_geom`, `tsum_shifted_sq_weight_le`) -> this theorem.
+
+### Log — the maximum point and the side conditions it carries
+
+`HTGeometry/CircleMaximumExistence.lean` (new, axiom-clean):
+
+- `exists_max_on_circle` — the modulus attains a maximum on every circle (continuity on the compact
+  parameter interval `[0, 2pi]`, extended to all angles by periodicity of `circleMap`).
+- `maxTerm_le_norm_of_max_on_circle` — at such a point the value dominates the maximum term.  The
+  proof is Bessel on a one-element window: `sum_window_le_sqrt_card_mul_bound` at `s = {n}` gives
+  `|a_n| r^n <= M` directly, so no Taylor-coefficient bridge to `iteratedDeriv` is needed.
+- `im_mul_deriv_div_eq_zero_of_max_on_circle` — a global maximum along the circle is in particular a
+  local maximum of the squared modulus in the angular parameter, so
+  `im_mul_deriv_div_eq_zero_of_isLocalMax` applies and the logarithmic derivative is real.
+- `exists_unit_dir` — a nonzero complex number is its modulus times a unit, which is the `hWdir`
+  hypothesis.
+
+All four side conditions of the window estimate are therefore discharged by the existence of the
+maximum point; the only remaining input is `coeffFun a z /= 0`, which holds as soon as the maximum
+term is positive.
+
+### Log — the estimate with no side conditions
+
+`exists_radius_point_norm_mul_logDeriv_sub_centralIndex_le` (in `WimanValironRadius.lean`,
+axiom-clean).  The maximum-modulus point of the selected circle is produced by
+`exists_max_on_circle` and discharges all four side conditions of the window estimate
+(`maxTerm_le_norm_of_max_on_circle`, `im_mul_deriv_div_eq_zero_of_max_on_circle`, `exists_unit_dir`,
+and `coeffFun a z /= 0` from positivity of the maximum term).  The statement is therefore
+
+  hypotheses: `c <= d`, `0 < H`, `0 < v0`, `0 < s`, `0 < L`, `s <= L v0`,
+              `2H (nu(e^{d+2H}) - nu(e^c))/s < d - c`, `0 < N`, `2 L v0 <= N <= 2 L H`;
+
+  conclusion: there are `x` in `[c+H, d+H]` and `z` with `|z| = e^x` such that
+
+  `|z f'/f - nu(e^x)| <= (sqrt(2N+1) + 2 q^{N+1}/(1-q)) |Lambda - nu|
+                          + sqrt(2 (N^2 sqrt(2N+1) + 4 (N+1)^2 q^{N+1}/(1-q)^3)
+                                 (sqrt(2N+1) + 2 q^{N+1}/(1-q)))`,  `q = exp(-N/(4L))`.
+
+Nothing about `z` is assumed and no regularity is assumed; only arithmetic on the parameters
+remains.  Every ingredient is unconditional and axiom-clean.

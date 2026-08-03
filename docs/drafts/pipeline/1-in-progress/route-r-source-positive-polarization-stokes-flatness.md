@@ -7,17 +7,20 @@
 - **Parents:**
   - `../3-formalized/new_scientific_knowledge/route-r-graded-det2-reflection-cartier-hyperbolic-classification.md`;
   - `../5-failed/route-r-source-stokes-cartier-graded-det2-trivialization.md`.
-- **Target:** Construct from literal prime/depth/divisor source data a positive same-fibre
-  polarization not selected from anomaly vanishing, and prove independently that the explicit
-  graded-`det2` reflection transport preserves it on the actual Xi landing.
+- **Target:** Construct a coefficient-faithful nonannihilating singular Cartier comparison from
+  the now-explicit rational-Witt/Koszul pointed section to the actual leading Xi conormal and
+  prove its edge square commutes, so the constructed parallel polarization is the fixed
+  same-fibre Cartier polarization there.
 
 ## Goal
 
 The reflection double has an unconditional determinant-one hyperbolic Stokes trivialization for
-every centered rate.  Its positive diagonal is preserved globally exactly when RH holds.  This lane
-must therefore produce genuinely new source mathematics: both the positive line and its flatness
-law must exist before divisor specialization and may not be defined by diagonal descent, boundary
-vanishing, scalar flatness, critical-line location, Ward positivity, or any equivalent criterion.
+every centered rate.  A positive resolved polarization and its independent Stokes-flatness law are
+now constructed.  Their fixed-source excess is a strict square whose global vanishing is RH.  This
+lane must therefore produce genuinely new source mathematics: a singular comparison preserving
+the distinguished finite source splitting, before divisor specialization and without defining it by
+diagonal descent, boundary vanishing, scalar flatness, critical-line location, Ward positivity, or
+any equivalent criterion.
 
 ## Gates
 
@@ -28,6 +31,11 @@ vanishing, scalar flatness, critical-line location, Ward positivity, or any equi
 - [x] hostile falsity/circularity/rediscovery verdict
 - [x] 1 → 2: dependency-closed paper proof, no open lemma
 - [x] 2 → 3: exact unconditional Lean theorem, targeted build and axiom audit
+- [x] prove associated-grade preservation is nonselective for the full hidden gauge family
+- [x] construct rational-Witt/Koszul pointed section and its scalar reporter before Xi
+- [x] derive exact off-diagonal defect of its Route-R comparison square
+- [ ] construct and prove coefficient-faithful source-pointed comparison through genuine singular
+  Cartier base change
 
 ## Source-purity constraints
 
@@ -71,6 +79,12 @@ cofaces saturate the whole target off criticality and only the diagonal target a
 positive Gamma packets cannot short a nonzero horizontal defect; reflection doubles preserve
 only an indefinite hyperbolic form for arbitrary displacement.  Thus another downstream positive
 completion, quotient, or reflected double cannot be the producer.
+
+The asymptotic escape is now closed as well.  In fixed source coordinates the resolved frame is
+the exact unipotent gauge `N(a m_i/lambda_i)`.  At every fixed prime it tends to the identity with
+depth for every real `a`; normalized transitions tend to identity and all cycle holonomies vanish,
+while finite-cell evaluation remains injective in `a`.  Flatness plus even exact infinite-depth
+source framing therefore cannot select the fixed Cartier metric.
 
 ### External boundary
 
@@ -160,13 +174,20 @@ unproved arithmetic selection step.
 
 - **Exact killing theorem/mechanism:** a positive parallel metric pulled through the resolved
   source frame exists at every displacement; it cannot be treated as a fixed same-fibre Cartier
-  polarization.  Their difference is the displayed strict square.
+  polarization.  Their difference is the displayed strict square.  The whole real gauge family is
+  also asymptotically identity at Wold-depth infinity, so asymptotic Stokes uniqueness is false.
 - **Strongest positive survivor:** resolved positive polarization plus unconditional Stokes
   parallelism and exact fixed-metric excess.
 - **New insight:** Route R does not lack positive polarization or Stokes flatness separately.  It
   lacks rigidity identifying the transported polarization with the source-fixed Cartier
   polarization on the actual vertical Xi conormal.  The mismatch is one explicit nonnegative
-  square, not an unspecified Hodge obstruction.
+  square, and the hidden modulus is invisible to all flat cycle and infinite-depth frame data.
+  The whole shear family fixes the horizontal subobject and vertical quotient, hence acts
+  identically on associated grade.  The modulus appears only as displacement of the distinguished
+  vertical section by `a m_i/lambda_i`.  The rational-Witt/Koszul center and Haar sections now
+  construct that source-pointed splitting unconditionally.  The next theorem must construct the
+  nonannihilating singular Cartier comparison which preserves it; finite grading alone is
+  insufficient.
 - **Status:** active Stage 1.
 
 ## Log
@@ -182,3 +203,19 @@ unproved arithmetic selection step.
   axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.  Repository-wide lint
   remains red on unrelated unwired CCM modules and an existing `sorry` in
   `HTGeometry/MeanIndexSharpAssembly.lean`; this new module is wired and lint-clean locally.
+- 2026-08-03 — Falsified asymptotic Stokes uniqueness.  Formalized the exact unipotent normal
+  form, flat cycle law, geometric depth decay, injective finite-cell modulus, and a nonzero gauge
+  satisfying every infinite-depth normalization in
+  `PrimeDepthBVWoldAsymptoticStokesGaugeModulus.lean`.  A hostile re-entry then proved that every
+  such gauge fixes the horizontal subobject and vertical quotient, so associated-grade
+  preservation is nonselective.  Its exact splitting-torsor displacement is
+  `a m_i/lambda_i`, and preservation of the fixed vertical section at one finite cell is
+  equivalent to `a=0`.
+- 2026-08-03 — Constructed the actual rational-Witt/Koszul pointed section
+  `sigma_p epsilon_p`, source-native reporter `(lambda_p(q), tau_p(d_p(q,w)))`, and its Wold-clock
+  normalization.  Formalized its exact Route-R comparison defect
+  `(-a theta(i,j)c/lambda_j,0)`, coefficient faithfulness, sharp zero-rate commutation, and global
+  actual-Xi/RH equivalence in
+  `PrimeDepthBVWoldCalderonWittPointedSplittingObstruction.lean`.  Exact open core is now the
+  coefficient-faithful nonannihilating singular Cartier comparison proving this already-typed
+  source/Route-R square commutes.

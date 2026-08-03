@@ -1515,8 +1515,108 @@ the transverse variable, term by term. `ClockSeriesDerivative.lean` supplies tha
   the family of first derivatives, which is again holomorphic and carries the summable bound Cauchy's
   estimate supplies, gives *the second derivative of the sum as the sum of the second derivatives*.
 
-What then remains is the exchange of the sum with the double integral, after which the sum solves the
-equation and can be converted to a clock probe.
+`ClockSeriesIntegral.lean` supplies the other exchange:
+
+- **`tsum_intervalIntegral_of_bound`** — *a series of continuous functions with summable uniform
+  bounds may be integrated term by term over an interval.* This is mathlib's
+  `integral_tsum_of_summable_integral_norm` transported to interval integrals, which differ from set
+  integrals by a sign that is the same on both sides.
+
+Both exchanges the equation needs — sum with derivative, sum with integral — are therefore
+available, and `ClockStepSeries.lean` applies the first to the operator itself:
+
+- **`clockStripStep_tsum`** — *the step operator commutes with a series of holomorphic functions
+  carrying summable bounds.* It is linear, so this is the term-by-term differentiation together with
+  the behaviour of a sum under multiplication by a fixed value and division by a constant; the
+  summability of the second derivatives is Cauchy's estimate applied to the bound on the functions.
+
+`ClockStepMajorant.lean` supplies what those exchanges need — a bound on the integrand that is
+uniform over the rectangle and summable in `m`:
+
+- `stepMajorant`, **`norm_clockStripStep_clockIterate_le`**, `summable_stepMajorant` — taking the
+  intermediate radius to be the midpoint `(ρ + ρ₀)/2` makes both gaps equal to `(ρ₀-ρ)/2`, and the
+  majorant is the iterate bound at that radius times the norm of the step operator between the two
+  strips. It is summable exactly when the rectangle is small compared with the half-gap.
+
+`ClockSumIntegral.lean` performs the inner of the two integrations:
+
+- **`tsum_inner_integral`** — the sum passes through `∫₀^η`, since the integrand is continuous in the
+  integration variable for a fixed value of the other and the majorant dominates it uniformly on the
+  interval. (The integral-exchange lemma was correspondingly weakened to ask for the bound only on
+  the interval of integration, which is all the iterate bound provides.)
+
+- **`tsum_outer_integral`** — and through `∫₀^ξ` as well: the inner integral is continuous in the
+  outer variable, and is dominated by the majorant times the length of the inner interval.
+
+- **`clockStripStep_tsum_clockIterate`** — and the step operator commutes with the sum of the
+  iterates, which is the operator exchange instantiated at the family the construction produces. The
+  three radii it needs are taken inside the gap between `ρ` and the midpoint `(ρ+ρ₀)/2`, where the
+  iterate bounds already hold.
+
+All three exchanges are therefore available at the iterates themselves, and combining them gives the
+equation:
+
+- **`clockSolution_integral_equation`** — *for a potential holomorphic, continuous and bounded on the
+  strip of radius `ρ₀`, and a rectangle small compared with the half-gap,*
+
+  `u(ξ,η,z) = 1 + ∫₀^ξ ∫₀^η (u(s,t,·)'' + V·u(s,t,·))(z)/4 ds dt`  for `|Im z| ≤ ρ < ρ₀`.
+
+  Split off the `m = 0` term, rewrite the rest by the recursion, and pull the sum inside the outer
+  integral, the inner integral and the operator in turn.
+
+This is the integral form of the characteristic clock equation. Differentiating it needs its
+right-hand side to be continuous in the null coordinates:
+
+- `boxClamp` and **`continuousAt_clockStripStep_clockSolution`** — the right-hand side is a series of
+  continuous functions, but the majorant holds only on the rectangle, so the arguments are clamped to
+  it before summing; inside the rectangle the clamp is the identity, which gives continuity at every
+  interior point.
+
+Every estimate of the construction was first proved on a quarter-neighbourhood `0 ≤ s, t ≤ T`,
+which is not enough: a clock probe must solve the equation on a genuinely open neighbourhood of the
+event, two-sided in each null coordinate, and moving the base point does not help — wherever the
+normalisation is placed, the event needs room on both sides of it. The estimates are now restated on
+the two-sided rectangle `|s|, |t| ≤ T`. None of the arguments changed; only the interval bookkeeping
+did. The chain is:
+
+- `abs_integral_abs_pow` — `|∫₀ʸ |t|ᵐ dt| = |y|^{m+1}/(m+1)`, whatever the sign of `y`;
+- `norm_integral_le_abs_of_norm_le` — an interval integral dominated in norm on `Ι a b` is bounded by
+  the absolute value of the dominating integral, on an interval of either orientation;
+- **`norm_iterated_integral_le_abs`** — hence the double-integration bound in two-sided form: an
+  integrand dominated by `c |s|ᵐ|t|ᵐ` on the rectangle spanned by the endpoints integrates to at most
+  `c |x|^{m+1}|y|^{m+1}/(m+1)²`, whatever the signs of `x` and `y`;
+- `abs_le_abs_of_mem_uIcc_zero`, `abs_le_abs_of_mem_uIoc_zero` — a point of the interval spanned by
+  `0` and `x` is no further from the origin than `x` is, which is what replaces the interval
+  splittings the one-sided proofs used;
+- and then, unchanged in substance, `clockIterate_norm_le`, `summable_clockIterate`,
+  `norm_clockStripStep_clockIterate_le`, `tsum_inner_integral`, `tsum_outer_integral`,
+  `clockStripStep_tsum_clockIterate` and `clockSolution_integral_equation`, all now on `|ξ|, |η| ≤ T`.
+
+The clamp used for the continuity of the right-hand side is symmetric accordingly:
+`boxClamp T x = max (-T) (min T x)`, with `abs_boxClamp_le` and `boxClamp_eq_self`, and the clamped
+right-hand side `clampedStep` is continuous on the whole plane of null coordinates
+(`continuous_clampedStep`), agreeing with the true one inside the rectangle (`clampedStep_eq`).
+
+The two applications of the fundamental theorem of calculus are then immediate, and give the
+differential form of the equation:
+
+- `clockSolution_eq_clamped` — on the rectangle the solution is `1` plus the double integral of the
+  clamped step, whose integrand is globally continuous;
+- `continuous_clampedInner` — the inner integral is continuous in the outer null coordinate;
+- **`hasDerivAt_clockSolution_fst`**, `deriv_clockSolution_fst` — hence the solution is
+  differentiable in the first null coordinate at every interior point, with derivative
+  `∫₀^η (u(ξ,t,·)'' + V·u(ξ,t,·))(z)/4 dt`. The clamped identity is transported to the solution along
+  an eventual equality on the open rectangle, which is where the two-sidedness is used;
+- **`hasDerivAt_deriv_clockSolution`** — **the characteristic clock equation.** For `|ξ|, |η| < T`
+  and `|Im z| ≤ ρ`,
+
+  `∂η ∂ξ u (ξ, η, z) = (u(ξ,η,·)'' + V·u(ξ,η,·))(z)/4`;
+
+- `clockSolution_zero_zero` — with the normalisation `u(0,0,z) = 1`.
+
+What remains is the conversion of that solution into a clock probe: the transverse regularity of the
+sum, the nonvanishing on a neighbourhood of the event supplied by the normalisation, and the null
+frame that turns the characteristic form back into `□ f + V f = 0`.
 
 The first genuinely coupled target this reaches is dimension three: a potential
 `V(x⁰, x¹, x²)` with arbitrary continuously differentiable dependence on the null coordinates and

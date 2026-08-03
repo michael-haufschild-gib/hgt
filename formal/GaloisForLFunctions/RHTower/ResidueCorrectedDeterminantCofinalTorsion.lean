@@ -132,7 +132,7 @@ theorem residueCorrectedDeterminant_excision
     _ = Complex.exp (-κ * z) * core z := by
       rw [hcore z]
       congr 1
-      ring
+      ring_nf
 
 /-- Limiting residue-corrected determinant germ with finite-part coordinate c. -/
 def residueDeterminantClusterGerm (c z : ℂ) : ℂ :=

@@ -327,7 +327,10 @@ not new scientific knowledge.
 ## Lean status
 
 **Superseded, 2026-08-03.**  Being formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMSawtoothDilationIncidence.lean`.  The previous decision said no
+`formal/GaloisForLFunctions/RHTower/CCMSawtoothDilationMean.lean` (the sawtooth, the mean, the bounded
+primitive and the integration by parts) and
+`formal/GaloisForLFunctions/RHTower/CCMSawtoothDilationIncidence.lean` (the arithmetic weight, the
+coordinate change, the synthesis and the exterior window).  The previous decision said no
 periodic `L²` Fourier interface exists in the tree, so nothing could be certified.  That was the wrong
 frame: `S` is the `2π`-periodic extension of a linear ramp, so taking
 
@@ -369,17 +372,78 @@ Proved so far, all unconditional (`#print axioms` returns only
 - **`lseriesSummable_vonMangoldt_two`**, **`lseries_vonMangoldt_two`** — equation `(17)`, absolute
   summability and the value `-ζ'(2)/ζ(2)`, from mathlib's von Mangoldt L-series identity.
 
-Still to formalize, and each is a genuine analytic step rather than a missing interface:
+- `intervalIntegrable_of_bound`, `integral_eq_integral_indicator`,
+  **`integral_deriv_mul_primitive`** — the missing infrastructure, built here.  The card's `(9)` holds
+  only almost everywhere, because `S` jumps, so the card's integration by parts differentiates a
+  function that is nowhere differentiable in the classical sense.  The Lean route replaces it by a
+  distributional integration by parts proved by Fubini on the triangle `{a ≤ t ≤ u ≤ b}`:
 
-- equations `(5)`--`(6)`: the averaging estimate.  The card integrates by parts using `(9)`, which
-  holds only almost everywhere because `S` jumps.  The Lean route is a distributional integration by
-  parts against a bounded primitive, proved by Fubini on the triangle `{a ≤ t ≤ u ≤ b}`, so that only
-  the smooth factor is ever differentiated.  This is the one piece of missing infrastructure.
-- equations `(12)`--`(14)` and `(18)`--`(19)`: the growing-cutoff synthesis, which is `(5)`--`(6)`
-  summed against the arithmetic weight already proved.
-- equations `(20)`--`(23)`: the full exterior series.  `(21)` is a Stieltjes integration by parts
-  against the bounded variation of `L x^{-2} S(x)` on `[L, ∞)`, and `(23)` is dominated convergence
-  over the weight `Λ(n)/n²` already shown summable.
+  ```text
+  int_a^b phi'(u) int_a^u g = phi(b) int_a^b g - int_a^b phi g,
+  ```
+
+  valid for every bounded measurable `g`.  Only the smooth factor is ever differentiated, so no
+  almost-everywhere derivative and no absolute continuity argument is needed.
+- `continuous_sawDilatePrimitive`, `integral_sawDilateCentered_eq`,
+  **`abs_integral_weight_mul_sawDilateCentered_le`** — equations `(5)`--`(6)`.  Against a `C¹` weight
+  vanishing at both ends of the window, the dilated product agrees with its own mean up to `1/3` times
+  the total variation of the weight, uniformly in the dilation.  The integration by parts is performed
+  in the multiplicative variable, where the relevant primitive is exactly the bounded periodic `A_n`
+  of `(3)`--`(4)`; both boundary conditions are used, which is what keeps the constant at `1/3` rather
+  than `2/3`.
+- **`abs_primeResponse_sub_main_le`** — equations `(12)`--`(13)` and `(19)`: the growing-cutoff
+  synthesis.  The visible weight produces the exact Euler main term `(1/12) ∑_{2 ≤ n ≤ N} Λ(n) n^{-2}`
+  with total error at most `(1/3) log² N` times the total variation of the weight.  The card's `(13)`
+  is exactly the condition that this product tends to zero.
+
+- `image_Ioo_exp_scale`, **`integral_comp_exp_scale`** — the change of variables `x = L e^s`.  Because
+  the sawtooth factor is discontinuous this uses the measurable change of variables
+  `integral_image_eq_integral_abs_deriv_smul`; the continuous substitution rule does not apply.
+- `additiveWeight`, `hasDerivAt_additiveWeight`, `integral_additiveWeight_mul_comp`,
+  `integral_abs_deriv_comp_exp_scale`,
+  **`abs_integral_additiveWeight_mul_sawDilateCentered_le`** — `(5)`--`(6)` in the card's own additive
+  coordinates.  The identity `(L e^s)² G'(L e^s) = V'(s) - V(s)` is what turns the multiplicative total
+  variation into the card's `(1/L) ∫ e^{-s}(|V'| + |V|)`, so the bound is reproduced exactly, with
+  `C₀ = 1/3` in unit normalization.
+- `multiplicativeWeight`, `multiplicativeWeightDeriv`, `additiveWeight_multiplicativeWeight`,
+  `multiplicativeWeight_eq_zero_of_lt`, **`hasDerivAt_multiplicativeWeight`**,
+  **`continuous_multiplicativeWeightDeriv`**, `abs_multiplicativeWeightDeriv_le`,
+  `integral_abs_multiplicativeWeightDeriv_le` — the inverse construction.  The multiplicative weight
+  `V(log(x/L))/x` is singular at the origin for a general `V`, but it is globally `C¹` exactly when `V`
+  has compact support: the weight then vanishes on a whole neighbourhood of `0`.  This is the technical
+  content of the card's `C_c^1` hypothesis.
+- **`abs_integral_weight_mul_dilate_le`** — `(5)`--`(6)` exactly as the card states them, for a `C¹`
+  additive weight vanishing outside the window.
+- **`abs_primeResponse_additive_sub_main_le`** — `(12)`--`(13)` and `(19)` in the card's variables:
+  the error is `log² N / (3L)` times the fixed additive integral `∫ e^{-s}(|V'| + |V|)`, so the card's
+  `log² N = o(L)` is exactly the statement that the bound vanishes.
+
+- **`summable_vonMangoldt_div_sq`**, **`tendsto_sum_vonMangoldt_div_sq`**,
+  **`tendsto_primeResponse_additive`** — equation `(14)`.  The real series `Λ(n) n^{-2}` is absolutely
+  summable, obtained from the complex L-series statement `(17)` through `summable_norm_iff`, and its
+  partial sums converge; combined with the error term of `(12)` this gives the limit along any schedule
+  with `log² N(L) = o(L)`, which is the card's `(13)`.  Nothing else about the schedule is used.
+- `invSqWeight`, `invSqWeightDeriv`, `hasDerivAt_invSqWeight`, `integral_abs_invSqWeightDeriv`,
+  `integral_invSqWeight`, **`abs_integral_invSqWeight_mul_sawDilate_sub_mean_le`**,
+  `additiveWeight_invSqWeight`, `integral_expWeight_eq_invSqWeight`,
+  **`abs_integral_expWeight_sawDilate_sub_mean_le`** — equation `(18)` on every finite window, with the
+  card's `O(1/L)` made explicit as `4/(3L)`, uniformly in the dilation *and* in the outer endpoint.
+  The estimate is the same distributional integration by parts, now against the exterior weight
+  `L x^{-2}`, whose total variation on the window is exactly `1/L - L/T²`.  The card's `A_n(L)/L`
+  boundary term is the `invSqWeight L T · (A_n(T) - A_n(L))` term here.
+
+Still to formalize:
+
+- the passage from the finite window of `(18)` to the improper integral `∫_0^∞`, which is a limit in
+  the outer endpoint of an estimate already uniform in it.
+- equations `(20)`--`(23)`: the full exterior series.  `(21)` is the one place a genuinely finer
+  argument is needed: the bound must be `C₁/n`, uniformly in `L ≥ 1`, which the present `4/(3L)`
+  estimate does not give.  The card obtains it by Stieltjes integration by parts against the bounded
+  variation of `L x^{-2} S(x)`; the elementary route is to split `[L, ∞)` into periods of the sawtooth,
+  on each of which `L x^{-2} S(x)` is smooth, and apply the same distributional integration by parts
+  against the dilated primitive `B_n`, whose sup norm `1/(8n)` is already proved
+  (`integral_sawUnit_comp_mul`, `abs_integral_sawUnit_le`).  Then `(23)` is dominated convergence over
+  the weight `Λ(n)/n²` already shown summable.
 
 ## Gates
 
@@ -395,9 +459,14 @@ Still to formalize, and each is a genuine analytic step rather than a missing in
 - [x] Lean: endpoint profile shift identity `(10)`, `(15)` unconditional
 - [x] Lean: visible arithmetic weight bound `(16)` unconditional, with no error term
 - [x] Lean: Euler logarithmic-derivative moment `(17)` unconditional
-- [ ] Lean: distributional integration by parts against a bounded primitive
-- [ ] Lean: averaging estimate `(5)`--`(6)` unconditional
-- [ ] Lean: growing-cutoff synthesis `(12)`--`(14)`, `(18)`--`(19)` unconditional
+- [x] Lean: distributional integration by parts against a bounded primitive
+- [x] Lean: averaging estimate `(5)`--`(6)` unconditional
+- [x] Lean: growing-cutoff synthesis `(12)`--`(13)`, `(19)` unconditional
+- [x] Lean: additive/multiplicative change of variables unconditional
+- [x] Lean: averaging estimate and synthesis in the card's own coordinates `(5)`--`(6)`, `(12)`--`(13)`
+- [x] Lean: the limit form `(14)` unconditional
+- [x] Lean: exterior finite-window estimate `(18)` unconditional, with an explicit constant
+- [ ] Lean: improper-integral form of `(18)`
 - [ ] Lean: full exterior bound and limit `(20)`--`(23)` unconditional
 - [ ] actual constrained-prolate endpoint amplitude asymptotics
 - [ ] subleading/interior incidence estimate beyond the one-moment leading layer

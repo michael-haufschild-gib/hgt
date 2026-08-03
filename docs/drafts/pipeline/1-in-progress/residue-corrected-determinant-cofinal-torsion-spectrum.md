@@ -5,10 +5,14 @@
 **Opened:** 2026-08-03  
 **Route:** R / Program 4 (`ROUTE_R_ARAKELOV_RESIDUE_DETERMINANT_CHARACTER`)  
 **Primary carrier:** nested prime-sieve Wold operator  
-**Formalization status:** starting; dependency-closed paper proof exists  
-**Novelty status:** no collision found for cofinal classification, Mertens-system universality,
-number-field lift, determinant excision, or Baire-generic maximal spectrum; scalar finite-set law
-is `[REDISCOVERED]`
+**Formalization status:** finite algebra, cleared excision, residue-jet character, torsion cocycle,
+all-order spectral-suspension cancellation, factorial moment-matrix nonsingularity, and exact
+forward/converse compact-open convergence criterion compile unconditionally in Lean; construction
+and continuity of Schatten/Fredholm/zeta determinants and arithmetic Mertens layers remain  
+**Novelty status:** Hartmann--Lesch fixed-operator zeta--Fredholm factorization is
+`[REDISCOVERED]`; no collision found for cofinal residue-jet completeness, all-order graded
+spectral-suspension sharpness, cofinal classification, Mertens-system universality, number-field
+lift, determinant excision, or Baire-generic maximal spectrum
 
 ## Rational special case
 
@@ -67,6 +71,40 @@ Every interval fibre is dense in ordering space, full spectrum is comeagre,
 all proper fibres are dense meagre, and cluster-spectrum map is nowhere
 continuous. Number-field determinant lift uses ideal-norm operator and has
 exact prime-ideal excision.
+
+## Universal residue-jet law
+
+> **[PROVED ON PAPER] Cofinal Schatten law.** For admissible positive operators
+> \(L_n\) with \(L_n^{-1}\to A\) in \(\mathcal S_p\), corrected jet
+> 
+> \[
+> b_j(L_n)=-\frac1j\left(\operatorname*{FP}_{s=j}\zeta_{L_n}(s)
+> +H_{j-1}\operatorname*{Res}_{s=j}\zeta_{L_n}(s)\right)
+> \]
+> is complete invariant of compact-open zeta-determinant clustering. Cluster
+> map is topological embedding
+> 
+> \[
+> b\mapsto e^{\sum_{j=1}^{p-1}b_jz^j}\det_p(I-zA),
+> \]
+> and divisor-cancelled relative torsion is exponential polynomial of jet
+> difference.
+
+Fixed-operator factorization is due to Hartmann--Lesch and is not claimed.
+New statement is converse cofinal completeness and exact transport of cluster
+topology/torsion.
+
+> **[PROVED ON PAPER] Full-jet sharpness.** For every \(p\ge2\), graded spectral
+> suspensions with weights
+> 
+> \[
+> w_{j,r}=(-1)^{j-r}\binom jr
+> \]
+> cancel every lower moment and retain \(V_j(j)=j!\). Along Baire-generic
+> colored-prime orderings, corrected virtual-jet cluster set has nonempty
+> interior in \(\mathbb R^{p-1}\), while constituent \(\mathcal S_p\) limits,
+> integer zeta residues, and virtual divisor converge. Relative torsions
+> generate every character \(\exp(\sum_{j=1}^{p-1}v_jz^j)\).
 
 ## Exact determinant package
 
@@ -346,3 +384,20 @@ and verify every mathlib name in `/tmp` with `lake env lean`.
 - Paper draft compiles and rendered PDF passed full-page visual inspection.
 - Remaining open core: unconditional Lean formalization plus hostile review at
   renowned-general-journal bar.
+- Universal-law pivot: Hartmann--Lesch collision removed fixed-operator
+  factorization from novelty claim. Proved cofinal residue-jet completeness.
+- Proved all-order graded spectral-suspension realization. Finite-difference
+  weights cancel lower residue coordinates exactly and preserve factorial
+  diagonal; Baire-generic joint spectrum is full-dimensional.
+- Added unconditional Lean modules
+  `ResidueCorrectedDeterminantCofinalTorsion.lean` and
+  `ResidueJetSpectralSuspension.lean`; both pass `lake env lean`, and umbrellas
+  import both modules.
+- Formal polynomial coefficient recovery proves full corrected jet is a complete
+  invariant of its counterterm polynomial; affected module passes Lean compilation.
+- Lean proves suspension moment matrix is upper triangular with exact factorial
+  determinant, hence nonsingular in every order; it also proves supported polynomial
+  surjectivity and realization of every jet character as relative torsion.
+- Added wired ResidueJetCompactOpen module.  Lean bundles determinant characters in
+  compact-open continuous-map topology and proves convergence iff full corrected jet
+  converges after eventual zero-free cancellation of convergent common core.

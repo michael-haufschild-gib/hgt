@@ -165,7 +165,7 @@ marked explicitly; all others remain live at their stated open core.
 | O | open | literal cofinal restricted-Weil floor convergence/nonnegativity |
 | P | open | source-built compact completed-seam moment/Markov carrier |
 | Q | open/secondary | source boundary Jensen/jet saturation |
-| R | open; positive resolved Stokes polarization constructed | source rigidity identifying the parallel metric field with the fixed same-fibre Cartier metric on the actual Xi conormal |
+| R | open; positive resolved polarization, asymptotic gauge-modulus no-go, associated-grade blindness, and rational-Witt pointed section constructed | coefficient-faithful source-pointed singular Cartier comparison whose Route-R edge square commutes on the actual Xi conormal |
 | S | upstream/secondary | independent source algebraicity or divisor-preserving dynamics |
 
 ### Corpus-native route space beyond classical templates
@@ -4103,7 +4103,20 @@ and transporting the clock-normalized vertical conormal gives exact excess
 at criticality.  Thus positivity and Stokes flatness separately are no longer missing; their
 same-fibre identification is the RH-bearing law. Constructing another nonseparable differential,
 equal-grade counterboundary, indefinite trivialization, or transported metric is no longer the
-gap.
+gap.  Nor can identity normalization at infinite Wold depth supply the identification.  In fixed
+source coordinates the full relative frame is the exact unipotent gauge
+`N(a m_i/lambda_i)`.  For every real `a` it is flat and cycle-trivial and converges to the identity
+at every fixed prime as depth tends to infinity, while evaluation at any finite source cell is
+injective in `a`.  Every such gauge also fixes the horizontal source subobject and induces the
+identity on the vertical quotient, hence acts identically on associated grade.  Its remaining
+coordinate is exactly the displacement of the fixed vertical section by `a m_i/lambda_i`.  The
+The rational-Witt/Koszul source now supplies that distinguished section explicitly: composing its
+center section with the normalized Haar orientation section and the scalar reporter lands exactly
+at the clock-normalized vertical conormal.  For same-prime cells its Route-R comparison-square
+defect is `(-a theta(i,j)c/lambda_j,0)`.  The source-side section is therefore no longer missing.
+The open law must construct a coefficient-faithful nonannihilating singular Cartier comparison
+and prove this edge square commutes on the actual Xi conormal; asymptotic Stokes uniqueness and
+bare grade preservation are formally excluded.
 
 **Strongest survivor.** Route R contains a complete source-to-Xi Krein producer, a constructed
 pre-scalar nonseparable curved differential, exact reflection covariance, and an independently
@@ -4133,7 +4146,9 @@ rigidity identifying those two already constructed polarizations.
 `PrimeDepthBVWoldResolvedXiLandingAnnihilation.lean`,
 `PrimeDepthBVWoldGradedDet2ScalarDescentBoundary.lean`,
 `PrimeDepthBVWoldGradedDet2StokesCartierTrivialization.lean`,
-`PrimeDepthBVWoldPositiveStokesPolarization.lean`, and
+`PrimeDepthBVWoldPositiveStokesPolarization.lean`,
+`PrimeDepthBVWoldAsymptoticStokesGaugeModulus.lean`,
+`PrimeDepthBVWoldCalderonWittPointedSplittingObstruction.lean`, and
 `GammaSewnMobiusXiWardCofinalBoundaryLift.lean`.
 
 **Essential-edge `det2` / BV classification.** The sharp `ell2`/not-`ell1`
