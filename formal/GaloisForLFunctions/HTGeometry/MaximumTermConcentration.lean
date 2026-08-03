@@ -531,4 +531,153 @@ theorem sum_lower_tail_weighted_le
   exact add_le_add (mul_le_mul_of_nonneg_left hA hcoef) hB
 
 
+/-- Summability of the weighted geometric series. -/
+private theorem summable_one_add_mul_geom {q : ℝ} (hq0 : 0 < q) (hq1 : q < 1) :
+    Summable fun j : ℕ => ((1 : ℝ) + j) * q ^ (j + 1) := by
+  have h1 : Summable fun j : ℕ => (j : ℝ) * q ^ j := by
+    simpa using summable_pow_mul_geometric_of_norm_lt_one (R := ℝ) 1
+      (by rw [Real.norm_eq_abs, abs_of_pos hq0]; exact hq1)
+  have h2 : Summable fun j : ℕ => q ^ j := summable_geometric_of_lt_one hq0.le hq1
+  have h3 : Summable fun j : ℕ => ((1 : ℝ) + j) * q ^ j := by
+    refine (h2.add h1).congr fun j => ?_
+    ring
+  simpa [pow_succ, mul_comm, mul_assoc, mul_left_comm] using h3.mul_right q
+
+set_option maxHeartbeats 400000 in
+/-- **The sharp upper tail.**  Beyond the central index at the larger radius `s` the weight
+`|n - nu(r)|` splits as `(nu(s) - nu(r))` plus the distance past `nu(s)`, so the geometric decay
+absorbs the second piece entirely and only the window half-width survives as a linear factor. -/
+theorem tsum_upper_tail_weighted_le
+    (ha : EntireCoeffs a) (hr : 0 < r) (hrs : r < s) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
+    ∑' j : ℕ, |((j + (centralIndex a s + 1) : ℕ) : ℝ) - (centralIndex a r : ℝ)|
+        * (‖a (j + (centralIndex a s + 1))‖ * r ^ (j + (centralIndex a s + 1)))
+      ≤ maxTerm a r * (((centralIndex a s : ℝ) - (centralIndex a r : ℝ))
+            * ((r / s) / (1 - r / s))
+          + ∑' j : ℕ, ((1 : ℝ) + j) * (r / s) ^ (j + 1)) := by
+  have hs : 0 < s := lt_trans hr hrs
+  set k := centralIndex a s with hk
+  set v := centralIndex a r with hv
+  have hvk : v ≤ k := centralIndex_mono ha hr hrs.le hn₀
+  set q : ℝ := r / s with hq
+  have hq0 : 0 < q := by rw [hq]; positivity
+  have hq1 : q < 1 := by rw [hq, div_lt_one hs]; exact hrs
+  have hgeom : Summable fun j : ℕ => q ^ (j + 1) :=
+    ((summable_geometric_of_lt_one hq0.le hq1).mul_right q).congr fun j => by
+      rw [pow_succ]
+  have hgw : Summable fun j : ℕ => ((1 : ℝ) + j) * q ^ (j + 1) :=
+    summable_one_add_mul_geom hq0 hq1
+  have hgeomval : ∑' j : ℕ, q ^ (j + 1) = q / (1 - q) := by
+    have h : ∑' j : ℕ, q ^ (j + 1) = (∑' j : ℕ, q ^ j) * q := by
+      rw [← tsum_mul_right]
+      exact tsum_congr fun j => by rw [pow_succ]
+    rw [h, tsum_geometric_of_lt_one hq0.le hq1]
+    field_simp
+  have hkv : (0 : ℝ) ≤ (k : ℝ) - (v : ℝ) := by
+    have : (v : ℝ) ≤ (k : ℝ) := by exact_mod_cast hvk
+    linarith
+  have hpt : ∀ j : ℕ, |((j + (k + 1) : ℕ) : ℝ) - (v : ℝ)|
+      * (‖a (j + (k + 1))‖ * r ^ (j + (k + 1)))
+      ≤ maxTerm a r * (((k : ℝ) - (v : ℝ)) * q ^ (j + 1) + ((1 : ℝ) + j) * q ^ (j + 1)) := by
+    intro j
+    have hdecay := term_le_maxTerm_mul_pow_of_centralIndex_le ha hr hrs.le hn₀
+      (n := j + (k + 1)) (by omega)
+    rw [← hk, show j + (k + 1) - k = j + 1 by omega, ← hq] at hdecay
+    have hidx : |((j + (k + 1) : ℕ) : ℝ) - (v : ℝ)| = ((k : ℝ) - (v : ℝ)) + ((1 : ℝ) + j) := by
+      have hcast : ((j + (k + 1) : ℕ) : ℝ) = (j : ℝ) + ((k : ℝ) + 1) := by push_cast; ring
+      rw [hcast, abs_of_nonneg (by have : (0:ℝ) ≤ (j:ℝ) := Nat.cast_nonneg j; linarith)]
+      ring
+    rw [hidx]
+    calc (((k : ℝ) - (v : ℝ)) + ((1 : ℝ) + j)) * (‖a (j + (k + 1))‖ * r ^ (j + (k + 1)))
+        ≤ (((k : ℝ) - (v : ℝ)) + ((1 : ℝ) + j)) * (maxTerm a r * q ^ (j + 1)) := by
+          refine mul_le_mul_of_nonneg_left hdecay ?_
+          have : (0:ℝ) ≤ (j:ℝ) := Nat.cast_nonneg j
+          linarith
+      _ = maxTerm a r * (((k : ℝ) - (v : ℝ)) * q ^ (j + 1) + ((1 : ℝ) + j) * q ^ (j + 1)) := by
+          ring
+  have hsumL : Summable fun j : ℕ => |((j + (k + 1) : ℕ) : ℝ) - (v : ℝ)|
+      * (‖a (j + (k + 1))‖ * r ^ (j + (k + 1))) :=
+    (summable_nat_add_iff (k + 1)).mpr (summable_index_deviation ha hr v)
+  have hsumR : Summable fun j : ℕ =>
+      maxTerm a r * (((k : ℝ) - (v : ℝ)) * q ^ (j + 1) + ((1 : ℝ) + j) * q ^ (j + 1)) :=
+    ((hgeom.mul_left _).add hgw).mul_left _
+  have hle := Summable.tsum_le_tsum hpt hsumL hsumR
+  refine le_trans hle (le_of_eq ?_)
+  rw [tsum_mul_left, Summable.tsum_add (hgeom.mul_left _) hgw, tsum_mul_left, hgeomval]
+
+set_option maxHeartbeats 400000 in
+/-- **The sharp deviation estimate.**  The same three-way split as the coarse bound, but with both
+tails weighted: on each side the factor `nu(r)` is replaced by the corresponding window half-width,
+so the whole remainder is proportional to the spread of the central index across `[t, s]` rather than
+to its size. -/
+theorem tsum_index_deviation_le_sharp
+    (ha : EntireCoeffs a) (ht : 0 < t) (htr : t < r) (hrs : r < s)
+    {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
+    ∑' n : ℕ, |(n : ℝ) - (centralIndex a r : ℝ)| * (‖a n‖ * r ^ n)
+      ≤ maxTerm a r * (((centralIndex a s : ℝ) - (centralIndex a t : ℝ))
+            * ((centralIndex a s + 1 - centralIndex a t : ℕ) : ℝ))
+        + maxTerm a r * (((centralIndex a r : ℝ) - (centralIndex a t : ℝ))
+              * ((t / r) / (1 - t / r))
+            + ∑' j : ℕ, ((1 : ℝ) + j) * (t / r) ^ (j + 1))
+        + maxTerm a r * (((centralIndex a s : ℝ) - (centralIndex a r : ℝ))
+              * ((r / s) / (1 - r / s))
+            + ∑' j : ℕ, ((1 : ℝ) + j) * (r / s) ^ (j + 1)) := by
+  classical
+  have hr : 0 < r := lt_trans ht htr
+  have hs : 0 < s := lt_trans hr hrs
+  set k := centralIndex a s with hk
+  set m := centralIndex a t with hm
+  set v := centralIndex a r with hv
+  have hmv : m ≤ v := centralIndex_mono ha ht htr.le hn₀
+  have hvk : v ≤ k := centralIndex_mono ha hr hrs.le hn₀
+  set D : ℕ → ℝ := fun n => |(n : ℝ) - (v : ℝ)| * (‖a n‖ * r ^ n) with hD
+  have hDsum : Summable D := summable_index_deviation ha hr v
+  have hsplit := Summable.sum_add_tsum_nat_add (f := D) (k + 1) hDsum
+  have hcons : (∑ n ∈ Finset.Ico 0 m, D n) + ∑ n ∈ Finset.Ico m (k + 1), D n
+      = ∑ n ∈ Finset.Ico 0 (k + 1), D n :=
+    Finset.sum_Ico_consecutive _ (Nat.zero_le _) (by omega)
+  have hlow : ∑ n ∈ Finset.Ico 0 m, D n
+      ≤ maxTerm a r * (((v : ℝ) - (m : ℝ)) * ((t / r) / (1 - t / r))
+          + ∑' j : ℕ, ((1 : ℝ) + j) * (t / r) ^ (j + 1)) := by
+    have h := sum_lower_tail_weighted_le ha ht htr hn₀
+    rw [Finset.range_eq_Ico, ← hm, ← hv] at h
+    exact h
+  have hwin : ∑ n ∈ Finset.Ico m (k + 1), D n
+      ≤ maxTerm a r * (((k : ℝ) - (m : ℝ)) * ((k + 1 - m : ℕ) : ℝ)) := by
+    have hstep := sum_window_index_deviation_le ha ht htr hrs hn₀
+    rw [← hk, ← hm, ← hv] at hstep
+    refine le_trans hstep ?_
+    have hcount : ∑ n ∈ Finset.Ico m (k + 1), ‖a n‖ * r ^ n
+        ≤ ((k + 1 - m : ℕ) : ℝ) * maxTerm a r := by
+      have hcard : (Finset.Ico m (k + 1)).card = k + 1 - m := Nat.card_Ico m (k + 1)
+      have hbd : ∀ n ∈ Finset.Ico m (k + 1), ‖a n‖ * r ^ n ≤ maxTerm a r :=
+        fun n _ => term_le_maxTerm ha hr n
+      have h := Finset.sum_le_card_nsmul (Finset.Ico m (k + 1))
+        (fun n => ‖a n‖ * r ^ n) (maxTerm a r) hbd
+      rwa [hcard, nsmul_eq_mul] at h
+    have hkm : (0 : ℝ) ≤ (k : ℝ) - (m : ℝ) := by
+      have : (m : ℝ) ≤ (k : ℝ) := by exact_mod_cast le_trans hmv hvk
+      linarith
+    calc ((k : ℝ) - (m : ℝ)) * ∑ n ∈ Finset.Ico m (k + 1), ‖a n‖ * r ^ n
+        ≤ ((k : ℝ) - (m : ℝ)) * (((k + 1 - m : ℕ) : ℝ) * maxTerm a r) :=
+          mul_le_mul_of_nonneg_left hcount hkm
+      _ = maxTerm a r * (((k : ℝ) - (m : ℝ)) * ((k + 1 - m : ℕ) : ℝ)) := by ring
+  have hup : ∑' j : ℕ, D (j + (k + 1))
+      ≤ maxTerm a r * (((k : ℝ) - (v : ℝ)) * ((r / s) / (1 - r / s))
+          + ∑' j : ℕ, ((1 : ℝ) + j) * (r / s) ^ (j + 1)) := by
+    have h := tsum_upper_tail_weighted_le ha hr hrs hn₀
+    rw [← hk, ← hv] at h
+    exact h
+  calc ∑' n : ℕ, D n
+      = (∑ n ∈ Finset.Ico 0 (k + 1), D n) + ∑' j : ℕ, D (j + (k + 1)) := by
+        rw [← hsplit, Finset.range_eq_Ico]
+    _ = (∑ n ∈ Finset.Ico 0 m, D n) + (∑ n ∈ Finset.Ico m (k + 1), D n)
+        + ∑' j : ℕ, D (j + (k + 1)) := by rw [hcons]
+    _ ≤ maxTerm a r * (((v : ℝ) - (m : ℝ)) * ((t / r) / (1 - t / r))
+          + ∑' j : ℕ, ((1 : ℝ) + j) * (t / r) ^ (j + 1))
+        + maxTerm a r * (((k : ℝ) - (m : ℝ)) * ((k + 1 - m : ℕ) : ℝ))
+        + maxTerm a r * (((k : ℝ) - (v : ℝ)) * ((r / s) / (1 - r / s))
+          + ∑' j : ℕ, ((1 : ℝ) + j) * (r / s) ^ (j + 1)) := by gcongr
+    _ = _ := by ring
+
+
 end GaloisForLFunctions.HTGeometry

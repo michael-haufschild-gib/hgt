@@ -434,3 +434,19 @@ stabilization or a different Dirac parity.
   representation must be proved continuous in the Schatten-1 norm over the literal section, the
   reduced diagonal trace must land in the strong target in all degrees, and only then may the
   closed cokernel action and `kappa`/bivariant-Chern comparison be claimed.
+- 2026-08-03 — Exact Schatten-`1` source continuity and all-degree reduction are now closed.
+  `CCMRationalWeightedShiftTraceNormBound.lean` proves the sharp identities
+  `‖W_{a,k}‖₁=∑_q‖a(q)‖` and `‖W_{a,k}-W_{d,k}‖₁=∑_q‖a(q)-d(q)‖`; the associated
+  linear isometry packages weighted shifts as a genuine `ℓ¹` model. Uniform Schwartz-lattice
+  envelopes, one profinite denominator, and dominated convergence then prove joint class-section
+  continuity for pure tensors, algebraic Bruhat tensors, the full finite-support crossed product,
+  and finally the exact unitized source algebra in
+  `CCMRationalAdelicSourceContinuousTraceNormField.lean`. No operator-norm proxy occurs.
+  `CCMRationalAdelicStrongCyclicDegreeReduction.lean` proves the exact unitized rational-orbit trace
+  formula and the universal reduction law
+  `Trⁿ(ρⁿ(x)) = Tr⁰(ρ⁰(∏ x_j))`; both cyclic endpoint augmentations are likewise the
+  endpoint traces of `∏ x_j`. Hence every cyclic degree of reduced strong landing follows from one
+  and only one analytic theorem: if `ε₀(y)=ε₁(y)=0`, the full finite-adelic degree-zero orbit
+  trace of `y` lies in the locally constant, all-derivative, all-exponential-weight class-space
+  target. Remaining P2 gate is precisely that finite-adelic Poisson theorem, followed by closed
+  strong cokernel descent and concrete `κ`/bivariant-Chern/CCM-Lefschetz comparison.

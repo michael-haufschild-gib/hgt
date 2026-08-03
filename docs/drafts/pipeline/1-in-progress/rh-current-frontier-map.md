@@ -69,10 +69,13 @@ gauge-conjugate to zero displacement and spectrally blind. Route R now escapes t
 the source records `m_(p,e)=(1-p⁻¹)p⁻ᵉ` and `λ_(p,e)=log(p^(e+1))` define the alternating
 connection `θ(i,j)=m_iλ_j-m_jλ_i`. Lean proves exact triangle curvature `-log(2)/8`, no vertex
 potential, and no representation as a function of clock difference. Its divisor-resolved
-covariant square vanishes globally exactly when RH holds. Route R is therefore a constructed,
-corpus-native proof architecture, not merely a requested design. Its exact open core is the
-unconditional arithmetic theorem forcing global curvature annihilation/flatness from the literal
-source, without assuming critical-line divisor location.
+covariant square vanishes globally exactly when RH holds. The crossed graded-`det2` anomaly now
+has an unconditional reflection-doubled Cartier trivialization and preserves a hyperbolic Stokes
+pairing for every centered rate. Lean also proves this structure is nonselective: preservation of
+its positive same-fibre diagonal is equivalent pointwise to the critical line and globally to RH.
+Route R's exact open core is therefore a new source producer of a positive same-fibre polarization
+with independently proved Stokes flatness—not ordinary Cartier exactness, determinant-one
+reflection balance, or indefinite Stokes conservation.
 
 The disproof frontier is exact but empty: one certified off-line Xi zero, or any of several
 equivalent finite negative witnesses, would disprove RH. The most source-explicit current candidate
@@ -93,8 +96,9 @@ frequency separation erases the horizontal source defect.
 
 The shortest current chains are:
 
-- Route R: prove source-derived global curvature annihilation for the constructed sign-indefinite,
-  nonseparable BV--Wold differential; its flatness criterion and four-unit Ward endpoint are exact;
+- Route R: construct from literal source data a positive same-fibre polarization and prove its
+  Stokes flatness for the reflection-doubled BV--Wold anomaly; existing determinant and hyperbolic
+  trivializations hold at every rate and cannot select criticality;
 - Route L: construct strict source-first BV Green--Stokes descent after the ordinary boundary and
   its exact physical radial obstruction;
 - Route E: prove critical low-frequency Möbius cancellation and co-moving central-breadth flux
@@ -161,7 +165,7 @@ marked explicitly; all others remain live at their stated open core.
 | O | open | literal cofinal restricted-Weil floor convergence/nonnegativity |
 | P | open | source-built compact completed-seam moment/Markov carrier |
 | Q | open/secondary | source boundary Jensen/jet saturation |
-| R | open; corrected square constructed | source Stokes/Cartier trivialization of the explicit graded `det2` boundary on the actual Xi conormal |
+| R | open; hyperbolic Cartier trivialization constructed | source positive same-fibre polarization and independent Stokes-flatness law on the actual Xi conormal |
 | S | upstream/secondary | independent source algebraicity or divisor-preserving dynamics |
 
 ### Corpus-native route space beyond classical templates
@@ -173,15 +177,16 @@ zero-fed spectra, or determinant limits:
 | Corpus-forced primitive | Formal evidence | Present status |
 |---|---|---|
 | pre-projection principal-relative current | Route-J energy divergence, diagonal-retention, and endpoint-completeness theorems exclude every advertised post-projection capacity repair | positive survivor of retired J; a new route if constructed |
-| nonseparable prime/depth--divisor arithmetic differential | `θ(i,j)=m_iλ_j-m_jλ_i` has exact curvature `-log(2)/8`, no vertex potential, and no clock-difference representation; crossed BV/clock occupation legs now produce an independent equal-grade graded-`det2` counterboundary | constructed Route R corrected square; source trivialization of its explicit anomaly boundary remains open |
+| nonseparable prime/depth--divisor arithmetic differential | `θ(i,j)=m_iλ_j-m_jλ_i` has exact curvature `-log(2)/8`, no vertex potential, and no clock-difference representation; crossed BV/clock occupation legs produce an independent equal-grade graded-`det2` counterboundary; reflection double is determinant-one and hyperbolic-Stokes flat at every rate | constructed Route R corrected square and nonselective Cartier trivialization; positive same-fibre producer remains open |
 | source-first chain descent rather than post hoc cohomology | the ordinary Wold/BV Hochschild boundary exists, but physical landing reads exactly the nonzero Burnol/Deninger radial defect | live Route L open core |
 | moving, all-order, provenance-preserving carrier | finite Möbius/Wold moments are parity-blind and fixed finite selectors are saturated | live Routes E and P at distinct source laws |
 | source algebraicity or divisor-preserving dynamics | HTGeometry supplies independent rigidity and transversality but no Xi-source handoff | upstream Route S; not yet a proof route |
 
-This table mixes constructed routes with exact design constraints. Route R's differential and
-independent equal-grade corrected square exist unconditionally in Lean and have a complete
-boundary-triviality-to-RH endpoint; what does not exist is the source Stokes/Cartier theorem
-trivializing that explicit boundary on the actual Xi conormal. Route L likewise has an exact tail to RH but not its strict
+This table mixes constructed routes with exact design constraints. Route R's differential,
+independent equal-grade corrected square, and reflection-hyperbolic Cartier trivialization exist
+unconditionally in Lean. Positive diagonal descent has a complete boundary-triviality-to-RH
+endpoint; what does not exist is the source theorem creating that positive same-fibre line and
+proving it Stokes-flat. Route L likewise has an exact tail to RH but not its strict
 descent. The post-J pre-projection current is only a falsifiable successor class until a literal
 source object and unconditional handoff are built. Its construction must be recorded as a new
 route unless it is literally Route R, not used to reopen J. The ambient discrete-connection
@@ -3973,7 +3978,7 @@ existence.
 `α=1` carrier fails at degree one; one-particle infinite divisibility fails by atomic
 support. A two-particle completion survives but has no transform identification.
 
-### Route R — primitive-current singular continuation `[OPEN — CORRECTED SQUARE BUILT; ANOMALY TRIVIALIZATION OPEN]`
+### Route R — primitive-current singular continuation `[OPEN — HYPERBOLIC CARTIER TRIVIALIZATION BUILT; POSITIVE SAME-FIBRE PRODUCER OPEN]`
 
 **Endpoint.** `ContinuedXiWardFourUnitBoundaryLiftLaw ↔ RiemannHypothesis`: the actual augmented
 four-unit Julia/Ward boundary Gram is positive semidefinite on every finite packet. One
@@ -3996,6 +4001,8 @@ Wold activation holonomy ζ(s)/ζ(s+h)
 → divisor-resolved covariant square
 → crossed graded occupation `det2` anomaly and equal-grade counterboundary
 → unconditional corrected square on the actual Xi conormal
+→ reflection-doubled determinant-one and hyperbolic Stokes trivialization
+→ positive same-fibre diagonal descent iff boundary triviality
 → boundary triviality iff RH.
 ```
 
@@ -4050,9 +4057,11 @@ Connes trace-formula, or Deninger cohomology routes.
 The qualification is essential. The Xi specialization inserts
 `a_ρ=2 Re(ρ)-1`; therefore “global flatness iff RH” and “graded-boundary triviality iff RH” are
 exact detectors, not by themselves an independent arithmetic proof. Route R becomes a proof route
-only at its stated open core: trivialize the now-explicit anomaly boundary from literal source
-Stokes/Cartier data without using divisor location. Thus the honest labels are
-`[CORPUS-NEW ARCHITECTURE] [CORRECTED SQUARE BUILT] [SOURCE TRIVIALIZATION OPEN]`, not
+only at its stated open core: construct a positive same-fibre polarization from literal source
+data and prove its Stokes flatness without using divisor location. Ordinary Cartier exactness,
+reflection-determinant triviality, and the preserved hyperbolic Stokes pairing have now been
+constructed and proved nonselective. Thus the honest labels are
+`[CORPUS-NEW ARCHITECTURE] [HYPERBOLIC TRIVIALIZATION BUILT] [POSITIVE PRODUCER OPEN]`, not
 `[RH PROVED]`.
 
 **Closed regular annihilation classes.**
@@ -4082,22 +4091,23 @@ unordered scalar sums, scalar distributions after frequency separation, and boun
 label-blind fusion. The constructed BV--Wold connection proves that their surviving
 sign-indefinite, relation-valued category is nonempty.
 
-**Exact open core.** Prove from literal arithmetic source data that the explicit graded-`det2`
-counterboundary vanishes on the actual leading Xi conormal. Equivalently, construct a source
-Stokes/Cartier trivialization of the crossed occupation anomaly which does not assume divisor
-location or insert the RH-equivalent flatness/Ward sign as a premise. A compatible null-homotopy
-of the *corrected* complex now exists, but does not close RH because its nonzero equal-grade
-boundary is precisely the original scalar curvature defect. A class-complete no-go for source
-trivializations of this explicit class would instead retire Route R negatively. Constructing the
-nonseparable differential or an equal-grade counterboundary is no longer the gap.
+**Exact open core.** Construct from literal arithmetic source data a positive same-fibre
+polarization for the reflection double and prove that this line is Stokes-flat on the actual
+leading Xi conormal without assuming divisor location. Reflection already supplies reciprocal
+anomalies `diag(A,A⁻¹)`, determinant one, and a preserved hyperbolic pairing for every centered
+rate. The positive diagonal is preserved exactly when `A=1`; on the witness this is exactly
+criticality. Thus “source Stokes/Cartier trivialization” without a positivity and same-fibre
+requirement is now closed as nonselective. Constructing the nonseparable differential, an
+equal-grade counterboundary, or an indefinite trivialization is no longer the gap.
 
 **Strongest survivor.** Route R contains a complete source-to-Xi Krein producer, a constructed
 pre-scalar nonseparable curved differential, exact reflection covariance, and an independently
 defined equal-grade graded-`det2` counterboundary whose corrected square vanishes unconditionally
-on the actual Xi conormal. Its boundary vanishes on the exact witness precisely on the critical
-line, and global boundary triviality is equivalent to RH. A successful Route-R theorem must now
-supply the source Stokes/Cartier trivialization of this explicit class. This is a materially
-narrower and more source-faithful target than an abstract Hilbert--Pólya operator.
+on the actual Xi conormal. Its reflection double has determinant one and preserves its hyperbolic
+Stokes form unconditionally. A concrete nonzero-rate witness proves these facts do not preserve
+the positive diagonal. Positive diagonal descent is equivalent to boundary triviality and hence
+globally to RH. A successful Route-R theorem must now create that positive same-fibre polarization
+and its flatness from source structure not already present.
 
 **Formal anchors.** `WoldSieveNormalConeVonMangoldt.lean`,
 `WoldEulerActivationHolonomy.lean`, `EulerActivationSquarefreeDisintegration.lean`,
@@ -4114,7 +4124,8 @@ narrower and more source-faithful target than an abstract Hilbert--Pólya operat
 `PrimeEssentialEdgeOccupationDet2BVRelativeClass.lean`,
 `PrimeDepthBVWoldCurvedSourceDifferential.lean`,
 `PrimeDepthBVWoldResolvedXiLandingAnnihilation.lean`,
-`PrimeDepthBVWoldGradedDet2ScalarDescentBoundary.lean`, and
+`PrimeDepthBVWoldGradedDet2ScalarDescentBoundary.lean`,
+`PrimeDepthBVWoldGradedDet2StokesCartierTrivialization.lean`, and
 `GammaSewnMobiusXiWardCofinalBoundaryLift.lean`.
 
 **Essential-edge `det2` / BV classification.** The sharp `ell2`/not-`ell1`
@@ -4173,9 +4184,11 @@ Boundary_a(f)(i,j,k)
 
 satisfies `D1_a D0_a f+Boundary_a(f)=0` unconditionally, including on the actual nonzero leading
 Xi conormal.  This is not RH: on the exact three-depth witness, `Boundary=0` iff
-`Re(rho)=1/2`, and its global triviality is equivalent to RH.  The frontier has therefore moved
-from constructing an unspecified same-grade annihilator to source Stokes/Cartier trivialization
-of this explicit graded determinant class.
+`Re(rho)=1/2`, and its global triviality is equivalent to RH. Reflection gives the reciprocal
+double `diag(Anom,Anom⁻¹)`. Its determinant and hyperbolic Stokes form trivialize for every rate,
+while its positive diagonal descends exactly at rate zero. The frontier has therefore moved from
+an unspecified Stokes/Cartier trivialization to construction and flatness of a positive
+same-fibre polarization.
 
 ### Non-route coordinate — divisor-fed prime-seam submass
 
@@ -4805,10 +4818,10 @@ equivalent wrapper around one of them does not advance source acquisition.
 
 ### Tier 1 — shortest live chains
 
-1. **Route R arithmetic curvature annihilation.** Prove from literal source data that the
-   constructed sign-indefinite, nonseparable BV--Wold covariant square vanishes globally, without
-   assuming the equivalent critical-line divisor condition; alternatively derive the four-unit
-   Ward sign from an independent compatible null-homotopy.
+1. **Route R positive same-fibre Stokes producer.** Construct from literal source data a positive
+   same-fibre polarization of the reflection-doubled graded-`det2` anomaly and prove its Stokes
+   flatness without assuming the equivalent critical-line divisor condition. Determinant-one and
+   hyperbolic conservation already hold for every rate and are explicitly insufficient.
 2. **Post-J corpus-native successor `[NEW ROUTE IF INSTANTIATED]`.** Construct before good/bad
    projection a literal source-defined principal-relative current whose incidence is not a
    vertex-gauge coboundary, and derive an arithmetic null-homotopy forcing its Burnol/Deninger

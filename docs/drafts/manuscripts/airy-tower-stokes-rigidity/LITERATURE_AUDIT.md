@@ -89,6 +89,37 @@ Does prior literature already contain any of the following exact results?
   elementary graph recognition theorem was located. The manuscript now cites this paper explicitly
   next to its Fourier theorem and distinguishes the claims.
 
+### Hien--Sabbah (2015), local Laplace transform
+
+- URL: https://arxiv.org/abs/1405.5310
+- DOI: 10.4171/RSMUP/134-4
+- Scope: topological local Laplace transform of Stokes-filtered local systems attached to
+  elementary irregular meromorphic connections.
+- Closest overlap: elementary ramified connections and transformation of Stokes filtrations.
+- Boundary: no tangent-uniformizer covariance of contact thresholds, zero-loop Airy
+  classification, arithmetic edge spectrum, or graph recognition theorem was located.
+
+### Mochizuki (2025 revision), Stokes shells and Fourier transform
+
+- URL: https://arxiv.org/abs/1808.01037
+- Version checked: v4, 2025.
+- Scope: analytic Stokes structures of Fourier transforms through Stokes shells, extensions, and
+  enhanced nearby-cycle data.
+- Closest overlap: exact control of Fourier-transformed analytic Stokes structures.
+- Boundary: the manuscript's theorem is not an analytic Fourier transform theorem. No formal
+  tangent-contact covariance package or zero-loop arithmetic classification was located.
+
+### Douçot--Hohl (2025), Fourier transform of Stokes data
+
+- URL: https://arxiv.org/abs/2402.05108
+- DOI: 10.1112/jlms.70253
+- Scope: topological algorithm for transformed Stokes matrices at infinity in a broad family of
+  one-level irregular connections, including Airy examples.
+- Closest overlap: explicit Fourier transformation and Airy-type Stokes data.
+- Boundary: computes analytic Stokes matrices rather than the multilevel formal-contact hierarchy;
+  no zero-loop sign law, divisor-chain classification, pair spectrum, or recognition theorem was
+  located.
+
 ### Exact-phrase and neighboring-concept search
 
 - Searches through arXiv and journal-indexed results for `"contact hierarchy" + local Fourier`,
@@ -102,7 +133,8 @@ Does prior literature already contain any of the following exact results?
 
 ## Novelty verdict
 
-No collision located through 2026-08-03. Valuation invariance under tangent substitution is
+No collision located through 2026-08-03, including the local-Laplace, Stokes-shell, and explicit
+Fourier-transform literature above. Valuation invariance under tangent substitution is
 standard in spirit, so it is not claimed as an isolated novelty. No source located its exact
 negative-Fourier/contact-hierarchy package, the strict core tomography and energy consequences,
 the zero-loop equality/sign classification, arithmetic factorization, pair spectra, decorated

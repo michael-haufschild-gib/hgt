@@ -2775,3 +2775,257 @@ The uniformity in `M` matters: no truncation of the exponent range is assumed, s
 whatever cutoff the reindexing later supplies. The remaining step is the support identification —
 that the non-prime part of `Λ`'s support inside `Icc 1 N` embeds in `primesLE N ×ˢ range M` under
 `(p,j) ↦ p^{j+2}`; `Sieve/PrimePowerSum.primePow_injOn` is the corresponding injectivity fact.
+
+### Formal layer — separating the primes from their powers
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PrimeLogSqLower.lean`.
+
+- `primePowShift_injOn` — `(p,j) ↦ p^{j+2}` is injective on `primesLE N ×ˢ range M`.
+- `mem_image_of_nonprime` — every non-prime `m ≤ N` with `Λ(m) ≠ 0` is such a shifted prime power,
+  with `j < Nat.log 2 N`.
+- `sum_nonprime_vonMangoldt_log_div_le` — **`∑_{m ≤ N, m not prime} Λ(m)log m/m ≤ 24(1 + log N)`**.
+
+All unconditional.
+
+This is the support identification the previous section needed. `Λ(m) ≠ 0 ↔ IsPrimePow m`, and a
+prime power that is not prime has exponent at least 2; the exponent bound `j < log₂N` comes from
+`2^k ≤ p^k = m ≤ N`. With the injectivity, `Finset.sum_image` converts the sum over the image into
+the double sum already bounded by `sum_primePower_weight_le`.
+
+Combined with `RHTower.abs_sum_vonMangoldt_log_div_sub_le`
+(`|∑_{m≤N} Λ(m)log m/m − ½log²N| ≤ 15 log N + 1`), the prime part now satisfies
+`∑_{p≤N}(log p)²/p ≥ ½log²N − 39 log N − 25`: the weight in the frequency-separation bound grows like
+`½log²N`, so the admissible window for `t − u` is `O(δ/log N)`.
+
+### Formal layer — the explicit weight lower bound
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PrimeLogSqLower.lean` (capstone).
+
+- `filter_prime_Icc_eq_primesLE` — `{m ∈ Icc 1 N | m.Prime} = primesLE N`.
+- `sum_prime_log_sq_div_ge` — **`∑_{p ≤ N}(log p)²/p ≥ ½log²N − 39 log N − 25`**.
+
+Unconditional.
+
+This completes the four-part build begun with `PowerWeightBound`: split the `Λ·log/id` summatory at
+`N`, identify the prime part as `∑_{p≤N}(log p)²/p`, bound the proper prime powers by `24(1+log N)`,
+and read the main term off `RHTower.abs_sum_vonMangoldt_log_div_sub_le`.
+
+Its purpose is to make `sq_mul_sum_sq_log_le_of_close` quantitative. That bound reads
+`(t−u)² ∑_{p∈P}(log p)²/p ≤ 2π²δ²`; with the weight now known to grow like `½log²N`, the admissible
+window is `|t−u| = O(δ/log N)` — the classical shape. No prime number theorem is used: the input is
+Mertens-level, and every constant is explicit.
+
+### Formal layer — the frequency window is O(δ / log N)
+
+`formal/GaloisForLFunctions/RHTower/Sieve/HalaszWindow.lean`.
+
+- `logSqWeight N := ½log²N − 39 log N − 25`.
+- `sq_sub_mul_logSqWeight_le` — **`(t−u)² · logSqWeight N ≤ 2π²δ²`**.
+- `sq_sub_le_div` — once the weight is positive, **`(t−u)² ≤ 2π²δ² / logSqWeight N`**.
+
+Both unconditional.
+
+This is the assembled quantitative uniqueness statement: two frequencies both within `δ` of the same
+`f` in the multiplicative distance over the primes below `N` must satisfy `|t−u| = O(δ/log N)`.
+Every constant is explicit, and the only arithmetic input is Mertens-level — no prime number theorem
+and no zero-free region enter anywhere.
+
+The elementary Halász layer for these cards is now complete end to end: distance geometry → disc
+triangle inequality → Euler damping → integer indexing → μ instantiation → cancellation and its
+limit → character separation → quantitative frequency separation → dichotomy → explicit window.
+
+What is untouched, and cannot be reached from this chain, is the analytic half: identifying the
+exceptional frequency and bounding `δ` from below. That is exactly the input these cards name as
+Menon 2026 / Matomäki–Radziwiłł.
+
+### Formal layer — window multiplicity and the trivial variance bound
+
+`formal/GaloisForLFunctions/RHTower/Sieve/WindowMultiplicity.lean`. First step toward the
+mean-square input `(6)`.
+
+- `card_window_starts_le` — **`#{x < X : n ∈ (x, x+L]} ≤ L`**: a point is seen by at most `L` window
+  starts, since `n ∈ (x,x+L] ⟺ n−L ≤ x < n`.
+- `sum_window_sum_le` — exchanging the order of summation, `∑_x ∑_{n ∈ (x,x+L]} w(n) ≤ L ∑_n w(n)`
+  for nonnegative `w`.
+- `sum_normSq_window_le` — **`∑_{x<X} ‖∑_{x<n≤x+L} a_n‖² ≤ L² ∑_n ‖a_n‖²`**.
+
+All unconditional.
+
+This is the trivial variance bound that every short-interval argument improves on. Recording it fixes
+the shape: the `L²` is `L` from Cauchy–Schwarz inside each window times `L` from the multiplicity of
+starts, and it is the *multiplicity* count — not the Cauchy–Schwarz — that any saving must attack.
+Menon's bound `(6)` is exactly the statement that for `a = μ` the true size is smaller by
+`(log log L / log L)²`.
+
+### Formal layer — the exact short-interval variance kernel
+
+`formal/GaloisForLFunctions/RHTower/Sieve/WindowKernel.lean`.
+
+- `windowOverlap X L n m := #{x < X : n, m ∈ (x, x+L]}`.
+- `windowOverlap_eq_zero` — **the kernel vanishes when `|n − m| ≥ L`**.
+- `windowOverlap_le` — `K(n,m) ≤ L`.
+- `sum_window_pair_swap` — the double window sum equals the pair sum against `K`.
+- `sum_normSq_window_eq` — **`∑_{x<X} ‖∑_{x<n≤x+L} a_n‖² = ∑_{n,m} K(n,m)·Re(a_n conj a_m)`**,
+  an exact identity.
+
+All unconditional.
+
+Previous section gave the trivial bound; this replaces it by an equality. The substantive fact is the
+support: both `n` and `m` lie in `(x,x+L]` only if `|n−m| ≤ L−1`, so short-interval variance is a
+*local* problem — only pairs closer than `L` interact. This is the discrete counterpart of the Fejér
+kernel's support, and it is what makes a correlation estimate for `μ(n)μ(m)` over near-diagonal pairs
+the right target for `(6)`.
+
+### Formal layer — the triangular (Fejér) weight
+
+`formal/GaloisForLFunctions/RHTower/Sieve/WindowTriangularWeight.lean`.
+
+- `windowOverlap_comm` — the kernel is symmetric.
+- `windowOverlap_le_sub_dist` — **`K(n,m) ≤ L − |n − m|`**, the discrete triangular weight.
+- `sum_normSq_window_le_triangular` — **`∑_{x<X} ‖∑_{x<n≤x+L} a_n‖² ≤
+  ∑_{n,m} (L − |n−m|)‖a_n‖‖a_m‖`**.
+
+All unconditional.
+
+The kernel is exactly the discrete Fejér weight: `L` on the diagonal, decaying linearly, zero at
+`|n−m| = L`. So the support statement of the previous section is the endpoint of a linear decay
+rather than an isolated fact, and the constant-`L` bound is recovered only on the diagonal.
+
+This completes the elementary framing of the mean-square input `(6)`: exact identity, symmetric
+kernel, triangular bound, and the trivial `L²` estimate it improves. Any proof of `(6)` must exploit
+cancellation in `∑_{n,m} (L−|n−m|) μ(n)μ(m)` over near-diagonal pairs — which is the analytic content
+that remains open.
+
+### Formal layer — the kernel bound is attained
+
+`formal/GaloisForLFunctions/RHTower/Sieve/WindowKernelExact.lean`.
+
+- `windowOverlap_eq_sub_dist` — **`K(n,m) = L − |n − m|`** whenever `|n−m| ≤ L` and the pair sits in
+  the bulk (`L ≤ n, m ≤ X`), the common starts being exactly `[max(n,m) − L, min(n,m))`.
+- `windowOverlap_self` — `K(n,n) = L` on the diagonal.
+
+Both unconditional.
+
+The triangular bound of the previous section is therefore an **equality** in the bulk, not merely a
+valid estimate. This settles the accounting: the kernel side of the short-interval variance is exact,
+so no sharpening is available there, and the whole of any improvement on the trivial `L²` bound must
+come from arithmetic cancellation in the coefficients `μ(n)μ(m)`.
+
+That is a negative result about method, and it is worth having explicitly: it rules out attacking
+`(6)` by refining the geometry of the windows.
+
+### Formal layer — reindexing the pair sum by the shift
+
+`formal/GaloisForLFunctions/RHTower/Sieve/ShiftReindex.lean`.
+
+- `sum_upper_triangle_eq_sum_shift` — **`∑_{n<m<R} F(n,m) = ∑_{1≤h<R} ∑_{n<R−h} F(n, n+h)`**, by the
+  explicit bijection `(n,m) ↦ (m−n, n)` with inverse `(h,n) ↦ (n, n+h)`.
+- `sum_pair_eq_diag_add_two_upper` — for symmetric real `W`,
+  **`∑_{n,m<R} W(n,m) = ∑_n W(n,n) + 2∑_{n<m} W(n,m)`**.
+
+Both unconditional.
+
+Together these convert any symmetric pair sum into a diagonal term plus a sum of *shifted
+correlations*. Applied to the triangular kernel this puts the short-interval variance in the form
+
+`L ∑_n |a_n|² + 2 ∑_{h=1}^{L−1} (L−h) ∑_n Re(a_n conj a_{n+h})`,
+
+which is the shape in which such a variance is actually estimated. For `a = μ` the diagonal term is
+`L` times the squarefree count (density `6/π²`, already formalized in `Sieve/SquarefreeCount.lean`),
+and the entire remaining question is cancellation in the shifted correlations `∑_n μ(n)μ(n+h)` — an
+Elliott/Chowla-type input. This localises `(6)` precisely.
+
+### Formal layer — the variance in autocorrelation form
+
+`formal/GaloisForLFunctions/RHTower/Sieve/WindowAutocorrelation.lean`.
+
+- `sum_pair_triangular_eq_autocorrelation` — **`∑_{n,m<R}(L−|n−m|)‖a_n‖‖a_m‖ =
+  L∑_{n<R}‖a_n‖² + 2∑_{h≥1}(L−h)∑_{n<R−h}‖a_n‖‖a_{n+h}‖`**, an identity.
+- `sum_normSq_window_le_autocorrelation` — the short-interval variance bounded in that form.
+
+Both unconditional.
+
+This is the terminus of the elementary reduction of `(6)`. The variance splits into a diagonal term
+plus shifted correlations weighted by the same triangular factor `L − h`, hence supported on `h < L`.
+
+The accounting is now complete and every piece is either done or identified:
+the diagonal is `L` times the squarefree count (`Sieve/SquarefreeCount.lean`, density `6/π²`);
+the kernel is exact (`WindowKernelExact`), so no saving is available from the geometry;
+and the whole of the remaining problem is cancellation in `∑_n μ(n)μ(n+h)` for `1 ≤ h < L`.
+
+That last item is an Elliott/Chowla-type correlation input — precisely what Menon 2026 /
+Matomäki–Radziwiłł supply, and precisely what no elementary argument in this corpus reaches.
+
+### Formal layer — the variance of μ is carried by the squarefree numbers
+
+`formal/GaloisForLFunctions/RHTower/Sieve/MoebiusWindowVariance.lean`.
+
+- `normSq_moebiusC_eq_indicator` — `‖μ(n)‖²` is the squarefree indicator.
+- `sum_normSq_moebiusC_eq_card` — `∑_{n<R}‖μ(n)‖² = #{n < R : n squarefree}`.
+- `sum_normSq_window_moebius_le` — **`∑_{x<X}‖∑_{x<n≤x+L}μ(n)‖² ≤ L²·#{n < X+L+1 : n squarefree}`**.
+
+All unconditional.
+
+Against the trivial `L²R` this saves the squarefree density `6/π²` (`squarefreeDensity_eq`), because
+the support of μ is the squarefree set and nothing else.
+
+Being precise about how small this gain is: it is a constant factor, not a saving in the `L` or `R`
+dependence, and it is the *entire* unconditional improvement available from this direction. The
+kernel was already shown exact, and the off-diagonal terms here are bounded only by their support.
+Any further progress must come from cancellation in `∑_n μ(n)μ(n+h)` — which is the cited input.
+
+### Formal layer — the variance against squarefree pair counts
+
+`formal/GaloisForLFunctions/RHTower/Sieve/MoebiusPairVariance.lean`.
+
+- `norm_moebiusC_eq_indicator` — `‖μ(n)‖` is the squarefree indicator.
+- `sum_norm_moebiusC_shift_eq_card` — `∑_{n<R}‖μ(n)‖‖μ(n+h)‖ = P_h(R)`, the squarefree pair count.
+- `sum_normSq_window_moebius_le_pairs` — **`∑_{x<X}‖∑_{x<n≤x+L}μ(n)‖² ≤ L·Q(R) + 2∑_{h≥1}(L−h)P_h(R)`**
+  with `R = X+L+1`, `Q` the squarefree count and `P_h` the squarefree pair count at shift `h`.
+
+All unconditional.
+
+This is the sharpest form the elementary theory reaches, and it is worth stating exactly what it does
+not do: **no cancellation between `μ(n)` and `μ(n+h)` is used anywhere.** Each off-diagonal term is
+bounded by the size of its support alone. The triangular weight confines the sum to shifts `h < L`
+and the diagonal is the squarefree count; everything else is the pair counts `P_h`, which are
+*counts*, not cancelling sums.
+
+Supplying that cancellation — a nontrivial bound for `∑_n μ(n)μ(n+h)` — is the single input the whole
+reduction waits on, and it is exactly the published theorem these cards cite.
+
+### Formal layer — a real window is an integer window
+
+`formal/GaloisForLFunctions/RHTower/Sieve/RealWindow.lean`.
+
+- `realWindow x L M` — the integers of `(x, x+L]` for a **real** start `x`.
+- `realWindow_eq_Ioc` — **`realWindow x L M = Ioc ⌊x⌋ (⌊x⌋+L)`** for `x ≥ 0`.
+- `sum_realWindow_eq` — hence the real-start window sum equals the integer-start sum at `⌊x⌋`.
+
+Both unconditional.
+
+This is the bridge between the cited estimates, which average over *real* starts with an integral
+(`(1/Y)∫_Y^{2Y}|…|²dx`), and the discrete variance layer built above, which sums over integer starts.
+The window sum is constant on each `[k, k+1)`, so the two formulations carry the same content and no
+approximation is involved: `n > x ↔ ⌊x⌋ < n` and `n ≤ x+L ↔ n ≤ ⌊x+L⌋ = ⌊x⌋+L`.
+
+Recording it matters because the discrete/continuous mismatch would otherwise be an unstated gap
+between the formal layer and the statement of `(6)`/`(15)` on these cards.
+
+### Formal layer — the integral over real starts is the discrete sum
+
+`formal/GaloisForLFunctions/RHTower/Sieve/RealWindowIntegral.lean`.
+
+- `floor_eq_of_mem_Ico`, `realWindow_const` — on `[k, k+1)` the real window *is* `(k, k+L]`.
+- `integral_unit_window` — **`∫_k^{k+1} ‖∑_{x<n≤x+L} a_n‖² dx = ‖∑_{k<n≤k+L} a_n‖²`**.
+
+Both unconditional.
+
+This completes the bridge started in `RealWindow.lean`. The integrand is a step function: only the
+right endpoint `x = k+1` sees a different window, and a single point is null, so the unit-interval
+integral is exactly the value on the interior. Summing over `k` therefore turns the cited integral
+mean square `(1/Y)∫_Y^{2Y}|…|²dx` into the discrete variance of the modules above, with **no error
+term and no approximation**.
+
+The discrete layer and the cited statement are now formally the same object, so the only remaining
+gap on these cards is the arithmetic one — cancellation in `∑_n μ(n)μ(n+h)`.

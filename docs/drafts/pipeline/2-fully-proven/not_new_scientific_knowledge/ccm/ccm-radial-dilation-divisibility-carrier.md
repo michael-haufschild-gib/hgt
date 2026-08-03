@@ -268,16 +268,46 @@ parent-theory gate after vocabulary erasure. It is classified as a bridge.
 - A. Connes, C. Consani, H. Moscovici, *Zeta Spectral Triples*, arXiv:2511.22755.
 - T. M. Dunster, *Asymptotics of Prolate Spheroidal Wave Functions*, arXiv:1601.00699.
 
-## Lean decision
+## Lean status
 
-The formal tree has no summation map, radial PSWF, closed prime form, or Möbius inversion interface
-for these analytic components. No Lean file is added.
+**Superseded, 2026-08-03.**  Formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/CCMRadialDivisibilityCarrier.lean`.  The Möbius inversion
+interface the previous decision reported missing is mathlib's, and the analytic components are not
+needed: every statement below is an identity in the radial index.
+
+- `radialComponent q lam n s = √(lam·exp s) · q (n·(lam·exp s))` — definition `(1)`.
+- **`radialComponent_add_log`** — equation `(4)`, the dilation identity
+  `H n (s + log m) = √m · H (m·n) s`.  Note it needs only `0 < m`; the hypothesis `0 ≤ lam` is
+  unnecessary, since `√(m·x) = √m·√x` already follows from positivity of `m` alone.
+- **`sum_radialComponent_add_log`** — equation `(5)`: translation by `log m` selects exactly the
+  radial indices divisible by `m`.
+- `divisibleTail`, **`sum_divisors_moebius`**, **`moebius_recovery`** — equations `(6)`--`(7)`, the
+  finite Möbius recovery.  The coefficient bookkeeping `∑_{d ∣ k} μ d = if k = 1 then 1 else 0` is
+  derived from `moebius_mul_coe_zeta` and holds for **every** `k`, including `k = 0`, so the card's
+  nonvanishing side condition is unnecessary.  The reindexing is the bijection `(d, r) ↦ (d·r, d)`.
+- **`eq_zero_of_powerSums_tendsto`** — the algebraic core of the exact finite radial dimension
+  `(8)`--`(11)`.  The card proves independence via a generalized Vandermonde determinant and
+  Schur-polynomial positivity at positive nodes.  The Lean proof replaces that by an elementary
+  dominant-term limit: dividing `∑_{n ≤ K} a n · n^(r i) = 0` by `K^(r i)` sends every lower node to
+  zero because `n/K < 1`, forcing `a K = 0`, and descending induction finishes.  This needs only that
+  the exponents tend to infinity — no determinant identity and no symmetric-function positivity.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+Not formalized, and genuinely analytic: Poisson summation `(3)`; entirety of `q_lambda` with the
+identity-theorem step reducing `(8)` to the power-sum relations `(11)`; the diagonal mass `(14)`,
+which is an improper-integral change of variables; and the Gram/autocorrelation estimates behind
+`(13)` and `(18)`.
 
 ## Gates
 
 - [x] exact dilation/divisibility selection proved
 - [x] finite Möbius recovery proved
 - [x] exact finite radial dimension proved
+- [x] Lean: dilation/divisibility selection `(4)`--`(5)` unconditional
+- [x] Lean: finite Möbius recovery `(6)`--`(7)` unconditional
+- [x] Lean: power-sum independence core of `(8)`--`(11)` unconditional, without Vandermonde
 - [x] radial Gram carrier identified
 - [x] prime autocorrelation vector identified
 - [x] finite archimedean boundary separated

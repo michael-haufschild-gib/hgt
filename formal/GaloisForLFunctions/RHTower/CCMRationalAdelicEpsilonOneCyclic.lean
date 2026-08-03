@@ -30,26 +30,46 @@ theorem ccmRationalAdelicEpsilonOneCyclicHom_app (n : ℕ) :
         (cyclicBarTraceAugmentation ccmRationalAdelicEpsilonOne n) :=
   rfl
 
-/-- Genuine reduced CCM cyclic source `ker ε₀ ∩ ker ε₁`. -/
-abbrev CCMRationalAdelicReducedSourceCyclicModule : CyclicModule ℂ :=
-  ccmRationalAdelicEpsilonZeroCyclicHom.doubleKernel
+/-- First endpoint restricted to the correct nonunital cyclic source. -/
+def ccmRationalAdelicNonunitalEpsilonZeroCyclicHom :
+    CyclicModule.Hom CCMRationalAdelicNonunitalSourceCyclicModule
+      (scalarConstantCyclicModule (R := ℂ)) :=
+  CyclicModule.Hom.comp ccmRationalAdelicNonunitalSourceCyclicInclusion
+    ccmRationalAdelicEpsilonZeroCyclicHom
+
+/-- Haar endpoint restricted to the correct nonunital cyclic source. -/
+def ccmRationalAdelicNonunitalEpsilonOneCyclicHom :
+    CyclicModule.Hom CCMRationalAdelicNonunitalSourceCyclicModule
+      (scalarConstantCyclicModule (R := ℂ)) :=
+  CyclicModule.Hom.comp ccmRationalAdelicNonunitalSourceCyclicInclusion
     ccmRationalAdelicEpsilonOneCyclicHom
+
+/-- Genuine reduced CCM cyclic source: first remove the adjoined scalar unit, then impose
+`ker ε₀ ∩ ker ε₁`. -/
+abbrev CCMRationalAdelicReducedSourceCyclicModule : CyclicModule ℂ :=
+  ccmRationalAdelicNonunitalEpsilonZeroCyclicHom.doubleKernel
+    ccmRationalAdelicNonunitalEpsilonOneCyclicHom
 
 /-- Canonical inclusion of the reduced cyclic source into the full source. -/
 def ccmRationalAdelicReducedSourceCyclicInclusion :
-    CyclicModule.Hom CCMRationalAdelicReducedSourceCyclicModule
+  CyclicModule.Hom CCMRationalAdelicReducedSourceCyclicModule
       CCMRationalAdelicSourceCyclicModule :=
-  ccmRationalAdelicEpsilonZeroCyclicHom.doubleKernelInclusion
-    ccmRationalAdelicEpsilonOneCyclicHom
+  CyclicModule.Hom.comp
+    (ccmRationalAdelicNonunitalEpsilonZeroCyclicHom.doubleKernelInclusion
+      ccmRationalAdelicNonunitalEpsilonOneCyclicHom)
+    ccmRationalAdelicNonunitalSourceCyclicInclusion
 
 /-- Membership in the reduced degree is exactly simultaneous vanishing of both endpoints. -/
 theorem ccmRationalAdelicReducedSourceCyclicModule_mem_iff
     (n : ℕ)
-    (x : CCMRationalAdelicSourceCyclicModule.simplicial.obj (.op (.mk n))) :
-    x ∈ ccmRationalAdelicEpsilonZeroCyclicHom.doubleKernelSubmodule
-        ccmRationalAdelicEpsilonOneCyclicHom (.op (.mk n)) ↔
-      ccmRationalAdelicEpsilonZeroCyclicHom.simplicial.app (.op (.mk n)) x = 0 ∧
-        ccmRationalAdelicEpsilonOneCyclicHom.simplicial.app (.op (.mk n)) x = 0 :=
+    (x : CCMRationalAdelicNonunitalSourceCyclicModule.simplicial.obj
+      (.op (.mk n))) :
+    x ∈ ccmRationalAdelicNonunitalEpsilonZeroCyclicHom.doubleKernelSubmodule
+        ccmRationalAdelicNonunitalEpsilonOneCyclicHom (.op (.mk n)) ↔
+      ccmRationalAdelicNonunitalEpsilonZeroCyclicHom.simplicial.app
+          (.op (.mk n)) x = 0 ∧
+        ccmRationalAdelicNonunitalEpsilonOneCyclicHom.simplicial.app
+          (.op (.mk n)) x = 0 :=
   CyclicModule.Hom.mem_doubleKernelSubmodule_iff _ _ _ _
 
 end RHTower

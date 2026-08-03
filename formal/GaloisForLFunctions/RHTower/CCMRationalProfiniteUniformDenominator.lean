@@ -42,8 +42,34 @@ theorem ccmRationalFiniteBruhat_exists_uniformProfiniteIntegerDenominator
         v.adicCompletionIntegers ℚ := by
     intro v
     have hmul := mul_mem (hxDen v) (b.2.2 v)
-    convert hmul using 1
-    simp [mul_assoc]
+    have hbCancel :
+        (b.1 : CCMRationalFiniteAdele) *
+            ((b.1⁻¹ : CCMRationalFiniteAdeleˣ) : CCMRationalFiniteAdele) = 1 := by
+      change ↑(b.1 * b.1⁻¹) = (1 : CCMRationalFiniteAdele)
+      simp
+    have hglobal :
+        algebraMap ℤ CCMRationalFiniteAdele d *
+            algebraMap ℚ CCMRationalFiniteAdele q =
+          (algebraMap ℤ CCMRationalFiniteAdele d *
+              (algebraMap ℚ CCMRationalFiniteAdele q * b.1)) *
+            ((b.1⁻¹ : CCMRationalFiniteAdeleˣ) :
+              CCMRationalFiniteAdele) := by
+      symm
+      calc
+        (algebraMap ℤ CCMRationalFiniteAdele d *
+              (algebraMap ℚ CCMRationalFiniteAdele q * b.1)) *
+            ((b.1⁻¹ : CCMRationalFiniteAdeleˣ) :
+              CCMRationalFiniteAdele) =
+          (algebraMap ℤ CCMRationalFiniteAdele d *
+              algebraMap ℚ CCMRationalFiniteAdele q) *
+            ((b.1 : CCMRationalFiniteAdele) *
+              ((b.1⁻¹ : CCMRationalFiniteAdeleˣ) :
+                CCMRationalFiniteAdele)) := by ac_rfl
+        _ = algebraMap ℤ CCMRationalFiniteAdele d *
+            algebraMap ℚ CCMRationalFiniteAdele q := by
+          rw [hbCancel, mul_one]
+    rw [hglobal]
+    exact hmul
   apply HeightOneSpectrum.mem_integers_of_valuation_le_one ℚ
   intro v
   have hv := hqDen v

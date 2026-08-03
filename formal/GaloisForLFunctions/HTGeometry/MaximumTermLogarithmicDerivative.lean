@@ -615,5 +615,24 @@ theorem mul_logDeriv_sub_centralIndex_eq_div
   rw [hsplit, hV, hW]
   exact mul_div_mul_left _ _ hC
 
+/-- **The Wiman--Valiron estimate with a spread-controlled remainder.**  Feeding the doubly-weighted
+tail bounds into the logarithmic-derivative estimate replaces every occurrence of `nu(r)` in the
+remainder by a difference of central indices across `[t, s]`.  The bound is therefore governed by how
+far the central index moves over the sampling interval, not by how large it is. -/
+theorem norm_mul_logDeriv_sub_centralIndex_le_sharp
+    (ha : EntireCoeffs a) (ht : 0 < t) (htr : t < r) (hrs : r < s)
+    {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hzr : ‖z‖ = r)
+    (hf : maxTerm a r ≤ ‖coeffFun a z‖) :
+    ‖z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a r : ℂ)‖
+      ≤ ((centralIndex a s : ℝ) - (centralIndex a t : ℝ))
+            * ((centralIndex a s + 1 - centralIndex a t : ℕ) : ℝ)
+        + (((centralIndex a r : ℝ) - (centralIndex a t : ℝ)) * ((t / r) / (1 - t / r))
+            + ∑' j : ℕ, ((1 : ℝ) + j) * (t / r) ^ (j + 1))
+        + (((centralIndex a s : ℝ) - (centralIndex a r : ℝ)) * ((r / s) / (1 - r / s))
+            + ∑' j : ℕ, ((1 : ℝ) + j) * (r / s) ^ (j + 1)) := by
+  have hr : 0 < r := lt_trans ht htr
+  refine norm_mul_logDeriv_sub_le_of_deviation_le ha hr hn₀ hzr hf ?_
+  refine le_trans (tsum_index_deviation_le_sharp ha ht htr hrs hn₀) (le_of_eq ?_)
+  ring
 
 end GaloisForLFunctions.HTGeometry

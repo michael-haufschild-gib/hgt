@@ -30,7 +30,7 @@ theorem iteratedDeriv_two (f : ℂ → ℂ) : iteratedDeriv 2 f = deriv (deriv f
 
 /-- **Cauchy's formula turns a derivative into a parametric integral.** -/
 theorem iteratedDeriv_eq_circleIntegral {R : ℝ} (hR : 0 < R) {z : ℂ} (n : ℕ) {w : ℂ → ℂ}
-    (hwc : Continuous w) (hwd : ∀ ζ ∈ ball z R, DifferentiableAt ℂ w ζ) :
+    (hwc : ContinuousOn w (closedBall z R)) (hwd : ∀ ζ ∈ ball z R, DifferentiableAt ℂ w ζ) :
     iteratedDeriv n w z
       = (2 * Real.pi * Complex.I / (n.factorial : ℂ))⁻¹
         • ∮ ζ in C(z, R), (1 / (ζ - z) ^ (n + 1)) • w ζ := by
@@ -41,7 +41,7 @@ theorem iteratedDeriv_eq_circleIntegral {R : ℝ} (hR : 0 < R) {z : ℂ} (n : �
       exact_mod_cast Nat.factorial_ne_zero n
     simp [h1, h2, Complex.I_ne_zero]
   have h := Complex.circleIntegral_one_div_sub_center_pow_smul_of_differentiable_on_off_countable
-    hR n Set.countable_empty hwc.continuousOn (fun ζ hζ => hwd ζ hζ.1)
+    hR n Set.countable_empty hwc (fun ζ hζ => hwd ζ hζ.1)
   rw [h, smul_smul, inv_mul_cancel₀ hconst, one_smul]
 
 /-- **The derivatives of a holomorphic family are continuous in the parameters.** -/
@@ -82,7 +82,7 @@ theorem continuous_iteratedDeriv_parametric {R : ℝ} (hR : 0 < R) {z : ℂ} (n 
       = fun p : P => (2 * Real.pi * Complex.I / (n.factorial : ℂ))⁻¹
         • ∮ ζ in C(z, R), (1 / (ζ - z) ^ (n + 1)) • W p ζ := by
     funext p
-    exact iteratedDeriv_eq_circleIntegral hR n (hslice p) (hWd p)
+    exact iteratedDeriv_eq_circleIntegral hR n ((hslice p).continuousOn) (hWd p)
   rw [hrw]
   exact hcirc.const_smul ((2 * Real.pi * Complex.I / (n.factorial : ℂ))⁻¹)
 
@@ -177,7 +177,7 @@ theorem continuousAt_deriv_deriv_parametric {ρ ρ' : ℝ} (hρ : ρ < ρ')
       intro ζ hζ
       exact (hWd q'.1).differentiableAt
         ((isOpen_imStrip ρ').mem_nhds (hsub (ball_subset_closedBall hζ)))
-    have h := iteratedDeriv_eq_circleIntegral hRpos 2 (hslice q'.1) hd
+    have h := iteratedDeriv_eq_circleIntegral hRpos 2 ((hslice q'.1).continuousOn) hd
     rw [iteratedDeriv_two] at h
     exact h
   have hcont : ContinuousAt (cauchySecond ((ρ' - ρ) / 2) W) q :=
@@ -185,5 +185,69 @@ theorem continuousAt_deriv_deriv_parametric {ρ ρ' : ℝ} (hρ : ρ < ρ')
   refine hcont.congr ?_
   refine Filter.eventuallyEq_of_mem ?_ fun q' hq' => (hform q' hq').symm
   exact (isOpen_imStrip ρ).preimage continuous_snd |>.mem_nhds hq
+
+/-! ## The version needed when the family is continuous only on a region
+
+The clock iterates are continuous only on a strip, so the joint-continuity hypothesis has to be
+localised. Nothing in the argument uses the family away from the contour, so continuity on any
+region containing the closed disc suffices.
+-/
+
+theorem continuous_iteratedDeriv_parametric_on {R : ℝ} (hR : 0 < R) {z : ℂ} (n : ℕ)
+    {U : Set ℂ} {W : P → ℂ → ℂ}
+    (hWc : ContinuousOn (fun q : P × ℂ => W q.1 q.2) (Set.univ ×ˢ U))
+    (hsub : closedBall z R ⊆ U)
+    (hWd : ∀ p : P, ∀ ζ ∈ ball z R, DifferentiableAt ℂ (W p) ζ) :
+    Continuous fun p : P => iteratedDeriv n (W p) z := by
+  have hcontour : ∀ θ : ℝ, circleMap z R θ ∈ U := fun θ =>
+    hsub (sphere_subset_closedBall (circleMap_mem_sphere z hR.le θ))
+  have hslice : ∀ p : P, ContinuousOn (W p) (closedBall z R) := by
+    intro p
+    exact hWc.comp ((continuous_const.prodMk continuous_id).continuousOn)
+      fun ζ hζ => ⟨Set.mem_univ _, hsub hζ⟩
+  have hRne : R ≠ 0 := hR.ne'
+  have hint : Continuous fun q : P × ℝ =>
+      deriv (circleMap z R) q.2
+        • ((1 / (circleMap z R q.2 - z) ^ (n + 1)) • W q.1 (circleMap z R q.2)) := by
+    have hθ : Continuous fun q : P × ℝ => circleMap z R q.2 :=
+      (continuous_circleMap z R).comp continuous_snd
+    have hderiv : Continuous fun q : P × ℝ => deriv (circleMap z R) q.2 := by
+      have hrw : (fun q : P × ℝ => deriv (circleMap z R) q.2)
+          = fun q : P × ℝ => circleMap 0 R q.2 * Complex.I := by
+        funext q
+        rw [deriv_circleMap]
+      rw [hrw]
+      exact ((continuous_circleMap 0 R).comp continuous_snd).mul continuous_const
+    have hden : Continuous fun q : P × ℝ => 1 / (circleMap z R q.2 - z) ^ (n + 1) := by
+      refine continuous_const.div ((hθ.sub continuous_const).pow (n + 1)) fun q => ?_
+      exact pow_ne_zero _ (sub_ne_zero_of_ne (circleMap_ne_center hRne))
+    have hval : Continuous fun q : P × ℝ => W q.1 (circleMap z R q.2) :=
+      hWc.comp_continuous (continuous_fst.prodMk hθ) fun q => ⟨Set.mem_univ _, hcontour q.2⟩
+    exact hderiv.smul (hden.smul hval)
+  have hcirc : Continuous fun p : P =>
+      ∮ ζ in C(z, R), (1 / (ζ - z) ^ (n + 1)) • W p ζ := by
+    show Continuous fun p : P =>
+      ∫ θ in (0 : ℝ)..(2 * Real.pi), deriv (circleMap z R) θ
+        • ((1 / (circleMap z R θ - z) ^ (n + 1)) • W p (circleMap z R θ))
+    exact continuous_parametric_intervalIntegral_of_continuous' hint 0 (2 * Real.pi)
+  have hrw : (fun p : P => iteratedDeriv n (W p) z)
+      = fun p : P => (2 * Real.pi * Complex.I / (n.factorial : ℂ))⁻¹
+        • ∮ ζ in C(z, R), (1 / (ζ - z) ^ (n + 1)) • W p ζ := by
+    funext p
+    exact iteratedDeriv_eq_circleIntegral hR n (hslice p) (hWd p)
+  rw [hrw]
+  exact hcirc.const_smul ((2 * Real.pi * Complex.I / (n.factorial : ℂ))⁻¹)
+
+theorem continuous_deriv_parametric_on {R : ℝ} (hR : 0 < R) {z : ℂ}
+    {U : Set ℂ} {W : P → ℂ → ℂ}
+    (hWc : ContinuousOn (fun q : P × ℂ => W q.1 q.2) (Set.univ ×ˢ U))
+    (hsub : closedBall z R ⊆ U)
+    (hWd : ∀ p : P, ∀ ζ ∈ ball z R, DifferentiableAt ℂ (W p) ζ) :
+    Continuous fun p : P => deriv (W p) z := by
+  have h := continuous_iteratedDeriv_parametric_on hR 1 hWc hsub hWd
+  have hrw : (fun p : P => iteratedDeriv 1 (W p) z) = fun p : P => deriv (W p) z := by
+    funext p
+    rw [iteratedDeriv_one]
+  rwa [hrw] at h
 
 end GaloisForLFunctions.HTGeometry

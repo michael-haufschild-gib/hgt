@@ -1392,6 +1392,27 @@ an arbitrary topological space — no countability or local compactness is neede
 same statements serve the null-coordinate pair, a single coordinate, or the pair together with the
 transverse point.
 
+The iterates are continuous only on a strip, not on the whole plane, so the joint-continuity
+hypothesis has to be localised. Nothing in the argument ever uses the family away from the contour,
+so continuity on any region containing the closed disc suffices:
+
+- `iteratedDeriv_eq_circleIntegral` now asks only for `ContinuousOn` on the closed disc — which is
+  what Cauchy's formula itself asks for;
+- `continuous_iteratedDeriv_parametric_on`, `continuous_deriv_parametric_on` — the parametric
+  continuity of the derivatives from a `ContinuousOn` hypothesis on `univ ×ˢ U`, for any region `U`
+  containing the disc.
+
+This localisation is what the holomorphy of the iterates needs, since the retraction that repairs
+continuity destroys holomorphy and cannot be used there. With it,
+`ClockParametricIntegralHolomorphy.lean` carries the localised holomorphy statement as well:
+
+- **`hasDerivAt_intervalIntegral_of_holomorphic_on`**,
+  **`differentiableOn_intervalIntegral_of_holomorphic_on`** — *the integral of a family holomorphic
+  on a strip is holomorphic on that same strip, assuming only continuity on the strip.* All three
+  places where global continuity was used — the compact bound, the slices, and the measurability of
+  `t ↦ (F t)'(z)` — are local to the strip, the last one through the localised parametric-derivative
+  continuity.
+
 `ClockParametricIntegralHolomorphy.lean` closes the last purely analytic gap on this route — the
 iterates are holomorphic, so the induction can continue and differentiate twice again:
 
@@ -1420,6 +1441,28 @@ a retraction, which changes nothing inside:
 - `stripRetract`, `continuous_stripRetract`, `stripRetract_im`, `abs_stripRetract_im_le`,
   `stripRetract_eq_self` — the continuous retraction of the plane onto the closed strip of half-width
   `ρ`, which is the identity there.
+
+`ClockStripIteratedContinuity.lean` uses it to give the iterates their continuity:
+
+- `continuous_iteratedIntegral` — for a globally continuous family, the double integral
+  `∫₀^ξ ∫₀^η G s t z` is continuous jointly in `(ξ, η, z)`, by two applications of the
+  parametric-integral continuity theorem, once per direction;
+- **`continuousAt_iteratedIntegral_of_strip`** — *the same for a family continuous only on a strip,
+  at every point of that strip*. The retraction onto a slightly smaller closed strip makes the
+  integrand global without changing any value inside, and the smaller radius is chosen separately
+  for each point, exactly as for holomorphy;
+- **`continuousAt_deriv_deriv_of_strip`** — the joint continuity of the second derivative from a
+  hypothesis of continuity on the strip alone. Here the retraction is legal, because what is being
+  proved is continuity and not holomorphy: anchoring the Cauchy contour at the *retracted* point
+  makes the representation globally continuous, and inside the strip the retraction is the identity.
+
+- `continuousAt_innerIntegral_of_strip` — the same for a single integration, which is the form the
+  holomorphy statement consumes, since it takes the two integrations one at a time.
+
+With these the two properties the iterates need — holomorphy and joint continuity — are both
+available from hypotheses the iterates actually satisfy, at a fixed radius. Nothing shrinks: at each
+point of the strip the intermediate radius is chosen between `|Im z|` and the radius of the strip,
+so every statement holds on the whole strip.
 
 The first genuinely coupled target this reaches is dimension three: a potential
 `V(x⁰, x¹, x²)` with arbitrary continuously differentiable dependence on the null coordinates and

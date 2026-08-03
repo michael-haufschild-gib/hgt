@@ -20,6 +20,7 @@ premise for a paper result.
 | Rescaled ultrametric necessity | Necessity in recognition theorem | Douçot, arXiv:2509.24861, Theorem 4.2 |
 | Fission-tree sharp classification/realization | From constructed sibling data to an irregular class; finite compatibility | Boalch--Douçot--Rembado, *PRIMS* 61 (2025), Lemma 3.21, Theorem 3.27, Corollary 3.28; DOI 10.4171/PRIMS/61-3-4 |
 | Dual Puiseux/Fourier criterion/cabling direction | Fourier corollary and iterated-torus-knot interpretation | Hiroe, *Josai Math. Monogr.* 10 (2017), Theorem 3.10 and Section 4; arXiv:1406.5788 |
+| Analytic local Laplace/Fourier transformation of Stokes data | Comparison and scope boundary only; no analytic transform theorem imported | Hien--Sabbah, *Rend. Semin. Mat. Univ. Padova* 134 (2015), 133--196, DOI 10.4171/RSMUP/134-4; Mochizuki, arXiv:1808.01037v4; Douçot--Hohl, *J. Lond. Math. Soc.* 112 (2025), e70253, DOI 10.1112/jlms.70253 |
 | Diagram loses fission data | Scope warning only | Douçot, *SIGMA* 22 (2026), 027, DOI 10.3842/SIGMA.2026.027 |
 | Existing untwisted counts | Comparison only | Boalch, *J. Geom. Phys.* 214 (2025), 105512, DOI 10.1016/j.geomphys.2025.105512 |
 
@@ -85,10 +86,11 @@ stabilizer coarea, minimal orbit size, ordered sheet-difference irregularity and
 `StokesPairPuiseuxSourceLaw` closes the actual two-orbit complex phase, common-part and fission edge
 source chain.  Direct source checks and targeted builds of the strengthened realization and
 recognition modules passed.  `/tmp/hgt_stokes_final_axioms.lean` reports only `propext`,
-`Classical.choice`, and `Quot.sound`.  The 17-page PDF compiled without warnings and every rendered
-page passed visual inspection.  Repository lint reaches these modules without any Stokes error;
-its global exit remains nonzero only because concurrently added `RHTower` modules are not yet wired
-into their unrelated umbrella.
+`Classical.choice`, and `Quot.sound`.  The 17-page PDF compiled without warnings. A fresh
+page-by-page audit found and corrected two missing backslashes before `qquad`; every page of the
+corrected render then passed visual inspection. Repository lint reaches these modules without any
+Stokes error; its global exit remains nonzero because unrelated `RHTower` modules and
+`HTGeometry.TwoRecordResolvedConnection` are not yet wired into their respective umbrellas.
 
 ## Superseded snapshot evidence
 

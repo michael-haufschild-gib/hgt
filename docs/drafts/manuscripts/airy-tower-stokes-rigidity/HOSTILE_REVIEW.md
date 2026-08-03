@@ -226,10 +226,10 @@ modules were rebuilt after the final semantic changes.
 foundations (`propext`, `Classical.choice`, `Quot.sound`); no project axiom appears. Source lint
 finds no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration in the paper modules.
 
-Repository-wide lint currently exits nonzero solely because unrelated concurrently added
-`RHTower` modules have not yet been imported by their own umbrella. It reports no Stokes module
-error. This shared-repository integration defect is not evidence against the paper, but it must not
-be misreported as a global green gate.
+Repository-wide lint currently exits nonzero because unrelated concurrently added `RHTower`
+modules and `HTGeometry.TwoRecordResolvedConnection` have not yet been imported by their respective
+umbrellas. It reports no Stokes module error. These shared-repository integration defects are not
+evidence against the paper, but they must not be misreported as a global green gate.
 
 The manuscript itself contains no mention of Lean, proof assistants, formal verification,
 toolchains, or internal declaration names. Verification is private quality control only.
@@ -238,7 +238,9 @@ toolchains, or internal declaration names. Verification is private quality contr
 
 Primary sources checked through 2026-08-03 include Biquard--Boalch, Hiroe,
 Boalch--Yamakawa, Boalch--Douçot--Rembado, Boalch’s untwisted counting paper, Douçot’s twisted-graph
-and enriched-tree papers, and Douçot’s 2026 Fourier/Argyres--Douglas paper.
+and enriched-tree papers, Douçot’s 2026 Fourier/Argyres--Douglas paper, Hien--Sabbah’s local
+Laplace transform, Mochizuki’s Stokes-shell treatment, and Douçot--Hohl’s explicit topological
+Fourier algorithm for Stokes data.
 
 Known inputs are separated from new conclusions:
 
@@ -277,3 +279,16 @@ rendered and inspected with no clipping, overlap, broken glyph, orphan page, or 
   varieties with equal diagrams.
 
 These are ordinary publication risks, not unresolved correctness or proof gaps.
+
+## Independent final re-audit
+
+A separate source-and-layout pass found two typographical defects in divisor-chain displays
+(`,qquad`), corrected both, and expanded the comparison with analytic Fourier/Laplace work by
+Hien--Sabbah, Mochizuki, and Douçot--Hohl. These sources sharpen the scope boundary but do not
+collide with the formal-contact, zero-loop arithmetic, pair-spectrum, finite-fibre, or recognition
+theorems. Eight source modules then passed direct `lake env lean` checks; six capstones passed
+targeted `lake build <module>` audits; `/tmp/hgt_stokes_final_axioms.lean` reported only `propext`,
+`Classical.choice`, and `Quot.sound`. Tectonic compiled the corrected 17-page A4 PDF without
+warnings. Every rendered page was inspected, with all affected pages re-rendered after the final
+correction; no clipping, overlap, broken glyph, orphan page, or unreadable display remains. Final
+recommendation is unchanged.

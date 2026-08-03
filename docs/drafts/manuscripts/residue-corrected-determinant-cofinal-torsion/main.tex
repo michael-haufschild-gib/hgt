@@ -1,0 +1,1039 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage[hidelinks,hypertexnames=false]{hyperref}
+\usepackage{microtype}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\N}{\mathbb N}
+\newcommand{\R}{\mathbb R}
+\newcommand{\C}{\mathbb C}
+\newcommand{\PP}{\mathbb P}
+\newcommand{\cT}{\mathcal T}
+\newcommand{\Res}{\operatorname*{Res}}
+\newcommand{\FP}{\operatorname*{FP}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\Div}{\operatorname{Div}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+
+\title{Universal Cofinal Torsion Spectra over Number Fields}
+\author{}
+\date{Draft of August 3, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For a number field $K$ with Dedekind-zeta residue $\rho_K$, and a finite set $P$ of prime ideals,
+let
+\[
+ \kappa_K(P)=\rho_K
+ \prod_{\mathfrak p\in P}\left(1-\frac1{N\mathfrak p}\right)
+ \left(\gamma_K+\sum_{\mathfrak p\in P}
+ \frac{\log N\mathfrak p}{N\mathfrak p-1}\right).
+\]
+Here $\gamma_K$ is Euler--Kronecker constant.  Diamond--Ford treated $K=\mathbb Q$; Kandhil--Lunia
+defined number-field finite-set constants.  We impose missing cofinal constraint.  If $P_n$
+consists of first $n$ prime ideals in an arbitrary ordering of all prime ideals, we prove that
+cluster set of $\kappa_K(P_n)$ is a closed interval in $[e^{-\gamma},\infty]$, and that every
+nonempty closed interval in this extended half-line occurs.  Endpoint is universal: Dedekind
+residue cancels field-dependent Mertens constant.
+
+Classification has a determinant-theoretic lift.  On integral ideals coprime to $P$, let
+$D_{K,P}$ have eigenvalues $N\mathfrak a$.  We prove that relative zeta
+determinant
+\[
+ \Delta_{K,P}(z)=\frac{\det_\zeta(D_{K,P}-z)}{\det_\zeta D_{K,P}}
+ =e^{-\kappa_K(P)z}\det{}_2(I-zD_{K,P}^{-1})
+\]
+is the residue-corrected cutoff product
+\[
+ \lim_{X\to\infty}X^{r_K(P)z}
+ \prod_{\substack{N\mathfrak a\leq X\\(\mathfrak a,P)=1}}
+ \left(1-\frac z{N\mathfrak a}\right),
+ \qquad r_K(P)=\Res_{s=1}\Tr(D_{K,P}^{-s}),
+\]
+and satisfies exact prime-ideal excision.  Along every cofinal ordering Hilbert--Schmidt
+operator, primary spectral residue, and limiting divisor are the same, but the determinant
+cluster germs are
+\[
+ \Delta_c(z)=e^{(1-c)z}(1-z),\qquad c\in C.
+\]
+Consequently their relative determinant torsions are $e^{(d-c)z}$, and the group-completed
+torsion fibre is all of $\R$.  Hilbert--Schmidt convergence, primary residue correction, and
+determinant-line triviality do not determine the cofinal zeta determinant.  Missing datum is the
+finite part at the critical zeta pole.
+\end{abstract}
+
+\paragraph{Logical status.}
+All numbered results are unconditional.  Prime number theorem, Mertens' theorems, standard
+properties of Hilbert--Schmidt determinant, and Hurwitz-zeta determinant formula are used as
+classical inputs.  No statement assumes Riemann hypothesis.  Section~\ref{sec:boundary}
+separates new cofinal theorem from established determinant-line, Wodzicki-residue, and
+analytic-torsion theory.
+
+\section{Introduction and main results}
+\label{sec:intro}
+
+Zeta determinants retain data that an underlying determinant line does not.  Quillen's metric
+and Bismut--Freed connection make this distinction geometric; their local curvature defects are
+governed by residue terms, while relative determinants and analytic torsion retain global finite
+parts and gluing data~\cite{Quillen1985,BismutFreed1986,PaychaRosenberg2000,Scott1999}.
+At the level of pseudodifferential operators, Wodzicki residue produces a local multiplicative
+determinant, whereas zeta determinant is nonlocal and generally nonmultiplicative
+\cite{KontsevichVishik1994,Scott2005}.  Two types of information cannot be interchanged.
+
+Let $p_1<p_2<\cdots$ denote natural ordering of primes and put
+\[
+ E_r=\{p_1,\ldots,p_r\},\qquad E_0=\varnothing.
+\]
+For finite $P\subset\PP$, define
+\begin{equation}
+ a(P)=\prod_{p\in P}\left(1-\frac1p\right),\qquad
+ b(P)=\gamma+\sum_{p\in P}\frac{\log p}{p-1},\qquad
+ \gamma(P)=a(P)b(P).                                      \tag{1.1}
+\end{equation}
+This is Diamond--Ford generalized Euler constant~\cite{DiamondFord2008}.  Rational case will
+serve as a transparent proof model before Section~\ref{sec:numberfields} establishes number-field
+theorem.  Equivalently,
+\begin{equation}
+ \gamma(P)=\lim_{x\to\infty}
+ \left(
+ \sum_{\substack{m\leq x\\(m,M_P)=1}}\frac1m-a(P)\log x
+ \right),\qquad M_P=\prod_{p\in P}p.                     \tag{1.2}
+\end{equation}
+
+Let $\sigma=(q_1,q_2,\ldots)$ be a permutation of $\PP$ and
+$P_n^\sigma=\{q_1,\ldots,q_n\}$.  Cluster sets are taken in order compactification
+$[0,\infty]$.
+
+\begin{theorem}[Cofinal torsion-spectrum classification]
+\label{thm:classification}
+For every permutation $\sigma$ of primes, cluster set
+\[
+ C(\sigma)=\operatorname{Clust}_{n\to\infty}\gamma(P_n^\sigma)
+\]
+is a nonempty closed interval in $[e^{-\gamma},\infty]$.  Conversely, for every
+\[
+ e^{-\gamma}\leq\alpha\leq\beta\leq\infty
+\]
+there is a permutation $\sigma$ with
+\begin{equation}
+ C(\sigma)=[\alpha,\beta].                                \tag{1.3}
+\end{equation}
+Degenerate interval $[\infty,\infty]=\{\infty\}$ is allowed.
+\end{theorem}
+
+Lower endpoint is cofinal, not unrestricted finite-set infimum.  Diamond--Ford proved that all
+finite-set values are dense in $[\Gamma,\infty)$, where
+$\Gamma=\inf_P\gamma(P)$, and that $\Gamma<e^{-\gamma}$ if RH is false.  Theorem
+\ref{thm:classification} shows values below $e^{-\gamma}$, if they exist, cannot persist along
+any nested exhaustion of primes.
+
+On
+\[
+ H_P=\ell^2\{m\geq1:(m,M_P)=1\}
+\]
+let $D_Pe_m=me_m$ and $Q_P=D_P^{-1}$.  Its spectral zeta function is
+\begin{equation}
+ Z_P(s)=\Tr(Q_P^s)=\zeta(s)\prod_{p\in P}(1-p^{-s}).       \tag{1.4}
+\end{equation}
+
+\begin{theorem}[Residue-corrected relative determinant]
+\label{thm:determinant}
+For every finite $P$,
+\begin{equation}
+ \Res_{s=1}Z_P(s)=a(P),\qquad
+ \FP_{s=1}Z_P(s)=\gamma(P).                               \tag{1.5}
+\end{equation}
+Locally uniform limit
+\begin{equation}
+ \Delta_P(z)=\lim_{N\to\infty}N^{a(P)z}
+ \prod_{\substack{1\leq m\leq N\\(m,M_P)=1}}
+ \left(1-\frac zm\right)                                 \tag{1.6}
+\end{equation}
+exists on $\C$ and satisfies
+\begin{align}
+ \Delta_P(z)
+ &=e^{-\gamma(P)z}\det{}_2(I-zQ_P),                       \tag{1.7}\\
+ &=M_P^{a(P)z}
+ \prod_{\substack{1\leq r\leq M_P\\(r,M_P)=1}}
+ \frac{\Gamma(r/M_P)}{\Gamma((r-z)/M_P)},                \tag{1.8}\\
+ &=\frac{\det_\zeta(D_P-z)}{\det_\zeta D_P}.             \tag{1.9}
+\end{align}
+If $p\notin P$, then
+\begin{equation}
+ \boxed{
+ \Delta_{P\cup\{p\}}(z)
+ =p^{-a(P)z/p}\frac{\Delta_P(z)}{\Delta_P(z/p)}.}         \tag{1.10}
+\end{equation}
+\end{theorem}
+
+\begin{theorem}[Determinant clusters and relative torsion]
+\label{thm:clusters}
+Let $\sigma$ be a permutation of primes.  If
+$\gamma(P_{n_j}^\sigma)\to c<\infty$, then, locally uniformly on $\C$,
+\begin{equation}
+ \Delta_{P_{n_j}^\sigma}(z)\longrightarrow
+ \Delta_c(z):=e^{(1-c)z}(1-z).                            \tag{1.11}
+\end{equation}
+Conversely, every locally uniformly convergent subsequence of
+$\Delta_{P_n^\sigma}$ has form \emph{(1.11)} for a finite cluster value $c$.
+Thus finite determinant cluster set is exactly
+\begin{equation}
+ \{e^{(1-c)z}(1-z):c\in C(\sigma)\cap\R\}.                \tag{1.12}
+\end{equation}
+For finite $c,d$ relative determinant torsion is
+\begin{equation}
+ \cT_{c,d}(z)=\frac{\Delta_c(z)}{\Delta_d(z)}
+ =e^{(d-c)z},\qquad
+ \cT_{c,d}\cT_{d,e}=\cT_{c,e}.                           \tag{1.13}
+\end{equation}
+All limiting determinants have same divisor $[1]$, while pairwise torsions realize every real
+logarithmic slope.
+\end{theorem}
+
+\begin{theorem}[Number-field universality]
+\label{thm:numberfield-main}
+Let $K$ be any number field and order its nonzero prime ideals arbitrarily.  For initial sets
+$P_n$ in this ordering, define
+\[
+ \kappa_K(P)=\FP_{s=1}\left[
+ \zeta_K(s)\prod_{\mathfrak p\in P}(1-N\mathfrak p^{-s})\right].
+\]
+Cluster sets of $\kappa_K(P_n)$ are exactly nonempty closed intervals
+$[\alpha,\beta]\subset[e^{-\gamma},\infty]$.  For the ideal-norm operator $D_{K,P}$, all finite
+determinant cluster germs are $e^{(1-c)z}(1-z)$ with $c$ in corresponding interval, and all
+relative torsions are $e^{(d-c)z}$.  Hilbert--Schmidt limit, primary residue, and divisor are
+independent of ordering.
+\end{theorem}
+
+\section{Finite-set identities and extremality}
+\label{sec:finite}
+
+We first isolate exact one-prime dynamics.
+
+\begin{lemma}[One-prime update]
+\label{lem:update}
+If $p\notin P$, then
+\begin{equation}
+ \gamma(P\cup\{p\})-\gamma(P)
+ =\frac{a(P)}p\bigl(\log p-b(P)\bigr).                    \tag{2.1}
+\end{equation}
+In particular, adding $p$ raises $\gamma(P)$ exactly when $\log p>b(P)$.
+\end{lemma}
+
+\begin{proof}
+From (1.1),
+\[
+ a(P\cup\{p\})=a(P)\left(1-\frac1p\right),\qquad
+ b(P\cup\{p\})=b(P)+\frac{\log p}{p-1}.
+\]
+Multiplication and subtraction give (2.1).
+\end{proof}
+
+\begin{lemma}[Relative Diamond--Ford extremality]
+\label{lem:relative-extremal}
+If $E_k\subset P$, then
+\begin{equation}
+ \gamma(P)\geq\inf_{r\geq k}\gamma(E_r).                 \tag{2.2}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+We repeat descent underlying Diamond--Ford extremal theorem and retain relative constraint.
+Suppose finite set $Q$ is not an initial prime segment and let $t$ be its largest prime.  Put
+$Q'=Q\setminus\{t\}$.  If $\gamma(Q')<\gamma(Q)$, replace $Q$ by $Q'$.  Otherwise let $u$ be
+smallest prime not in $Q$ and replace $Q$ by $Q'\cup\{u\}$.
+
+For prime $v\notin Q'$,
+\[
+ \gamma(Q'\cup\{v\})
+ =\gamma(Q')f(v),\qquad
+ f(v)=1-\frac1v+\frac{\log v}{vA},\qquad A=b(Q').
+\]
+Function $f$ increases on $(1,e^{A+1})$, decreases on $(e^{A+1},\infty)$, and tends to $1$ at
+infinity.  In second case $f(t)\leq1$, hence $u<t\leq e^{A+1}$ and $f(u)<f(t)$.  Therefore both
+allowed moves strictly decrease $\gamma$.
+
+Process terminates at an initial segment $E_r$.  If $E_k\subset Q$ at start, every nonterminal
+$Q$ has largest element $t>p_k$; removing $t$ preserves $E_k$, and smallest missing prime $u$ is
+also larger than $p_k$.  Relative constraint is preserved and terminal index satisfies $r\geq k$.
+Thus $\gamma(P)\geq\gamma(E_r)$ for some $r\geq k$, proving (2.2).
+\end{proof}
+
+Mertens' theorems and prime number theorem give
+\begin{equation}
+ a(E_r)\sim\frac{e^{-\gamma}}{\log p_r},\qquad
+ b(E_r)=\log p_r+O(1),\qquad
+ \gamma(E_r)\longrightarrow c_*:=e^{-\gamma}.             \tag{2.3}
+\end{equation}
+
+\begin{corollary}[Cofinal lower bound]
+\label{cor:lower}
+For every increasing exhaustion $P_1\subset P_2\subset\cdots$ of primes,
+\begin{equation}
+ \liminf_{n\to\infty}\gamma(P_n)\geq c_*.                \tag{2.4}
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+For fixed $k$, eventually $E_k\subset P_n$.  Lemma~\ref{lem:relative-extremal} gives
+$\gamma(P_n)\geq\inf_{r\geq k}\gamma(E_r)$.  Let first $n$ and then $k$ tend to infinity, using
+(2.3).
+\end{proof}
+
+This explains why unrestricted lower endpoint $\Gamma$ disappears under cofinality.  It also
+shows result is unconditional: possible RH-dependent dips of $\gamma(E_r)$ below $c_*$ vanish
+in every tail infimum.
+
+\section{Local mesh and prime-block controls}
+\label{sec:controls}
+
+\begin{lemma}[Vanishing mesh on bounded windows]
+\label{lem:mesh}
+Let $P_j$ be finite prime sets and let $q_j\notin P_j$ be primes with $q_j\to\infty$.  If
+$\gamma(P_j)\leq M$, then
+\begin{equation}
+ \left|\gamma(P_j\cup\{q_j\})-\gamma(P_j)\right|
+ \leq\frac{M+\log q_j}{q_j}.                              \tag{3.1}
+\end{equation}
+Consequently one-prime jumps tend to zero whenever initial values stay in a fixed bounded window.
+\end{lemma}
+
+\begin{proof}
+If right side of (2.1) is negative, its absolute value is at most
+$a(P_j)b(P_j)/q_j=\gamma(P_j)/q_j$.  If positive, it is at most
+$a(P_j)\log q_j/q_j\leq\log q_j/q_j$.  Adding bounds proves (3.1).
+\end{proof}
+
+For $u\geq0$ and $y>1$, write
+\begin{equation}
+ B(y,u)=\{p\in\PP:y<p\leq e^u y\}.                        \tag{3.2}
+\end{equation}
+
+\begin{lemma}[Localized upward control]
+\label{lem:up}
+Fix finite $P$ and $u\geq0$.  As $y\to\infty$,
+\begin{align}
+ \prod_{p\in B(y,u)}\left(1-\frac1p\right)&\longrightarrow1,
+                                                                    \tag{3.3}\\
+ \sum_{p\in B(y,u)}\frac{\log p}{p-1}&\longrightarrow u,           \tag{3.4}\\
+ \gamma(P\cup B(y,u))&\longrightarrow\gamma(P)+a(P)u.              \tag{3.5}
+\end{align}
+Moreover, $y$ may be chosen so that, when primes in $B(y,u)$ are inserted in increasing order,
+every step raises $\gamma$ and largest step is arbitrarily small.
+\end{lemma}
+
+\begin{proof}
+Mertens' estimate for prime reciprocals gives
+\[
+ \sum_{y<p\leq e^uy}\frac1p
+ =\log\log(e^uy)-\log\log y+o(1)=o(1).
+\]
+Together with $\sum_{p>y}p^{-2}=o(1)$, this proves (3.3).  Partial summation from prime number
+theorem gives the Mertens asymptotic
+\[
+ \sum_{p\leq x}\frac{\log p}{p}=\log x+C+o(1)
+\]
+for an absolute constant $C$.  Since
+\[
+ \sum_{p>y}\left|\frac{\log p}{p-1}-\frac{\log p}{p}\right|=o(1),
+\]
+(3.4) follows.  Equations (3.3), (3.4), and (1.1) imply (3.5).
+
+During block, $b$-coordinate is at most $b(P)+u+1$ for large $y$.  Choose
+$\log y>b(P)+u+1$.  Lemma~\ref{lem:update} makes every step positive.  Its size is at most
+$\log(e^uy)/y$, which tends to zero.
+\end{proof}
+
+\begin{lemma}[Downward cofinal control]
+\label{lem:down}
+Let $P$ be finite.  Inserting missing primes in natural order eventually produces an initial
+segment $E_r$, and such terminal segments have $\gamma(E_r)\to c_*$.  More precisely, fix
+$\alpha>c_*$.  Once least missing prime is sufficiently large, every least-missing-prime
+insertion made while $\gamma(P)\geq\alpha$ strictly decreases $\gamma(P)$.
+\end{lemma}
+
+\begin{proof}
+If $X\geq\max P$, adjoining all primes at most $X$ yields exactly initial segment
+$\{p:p\leq X\}$, so first assertion follows from (2.3).
+
+Suppose $q=p_k$ is least missing prime.  Then $E_{k-1}\subset P$, hence
+$a(P)\leq a(E_{k-1})$.  By (2.3),
+\[
+ a(E_{k-1})\log p_k\longrightarrow c_*.
+\]
+For all large $k$, $a(P)\log q<\alpha$.  If $\gamma(P)\geq\alpha$, then
+$b(P)=\gamma(P)/a(P)>\log q$, and Lemma~\ref{lem:update} gives strict decrease.
+\end{proof}
+
+For endpoint $\alpha=c_*$, same proof shows least-missing insertions decrease whenever
+$\gamma(P)\geq c_*+\varepsilon$, once least missing prime is large in terms of $\varepsilon$.
+Thus downward sweep may oscillate inside a shrinking neighborhood of $c_*$, but cannot make a
+fixed positive excursion above it.
+
+\section{Necessity: every cofinal cluster set is an interval}
+\label{sec:necessity}
+
+Let $x_n=\gamma(P_n^\sigma)$.  Since $\sigma$ is a permutation, $q_n\to\infty$: below every fixed
+bound there are only finitely many primes, and all occur at finite indices.
+Corollary~\ref{cor:lower} gives
+\begin{equation}
+ \liminf x_n\geq c_*.                                     \tag{4.1}
+\end{equation}
+
+Cluster set is nonempty and closed in compact space $[0,\infty]$.  It remains to prove order
+convexity.  Let $u<v$ be two finite cluster values and choose infinitely many passages of sequence
+from a neighborhood of $u$ to a neighborhood of $v$, or conversely.  Fix $t\in(u,v)$.  At first
+crossing of $t$, both endpoints are eventually bounded: for upward crossing this is immediate,
+while for downward crossing
+\begin{equation}
+ x_{n+1}=x_n\left(1-\frac1{q_{n+1}}\right)
+ +\frac{a(P_n^\sigma)\log q_{n+1}}{q_{n+1}}
+ \geq x_n\left(1-\frac1{q_{n+1}}\right),                  \tag{4.2}
+\end{equation}
+so bounded terminal endpoint forces bounded initial endpoint.  Lemma~\ref{lem:mesh} makes crossing
+mesh tend to zero.  Some crossing terms converge to $t$, and $t$ is a cluster value.
+
+Same crossing argument applies when $v=\infty$ and $u<\infty$: every finite $t>u$ is then a
+cluster value.  If there is no finite cluster value, compactness forces cluster set to be
+$\{\infty\}$.  Combined with (4.1), this proves necessity half of
+Theorem~\ref{thm:classification}.
+
+\section{Sufficiency: realization of every interval}
+\label{sec:realization}
+
+We construct an ordering as concatenation of finite blocks of previously unused primes.  At every
+downward stage we insert least missing primes; therefore least missing prime tends to infinity and
+resulting infinite list exhausts $\PP$.  Upward blocks are always chosen above all primes used so
+far, so blocks are disjoint.
+
+First let
+\[
+ c_*\leq\alpha<\beta<\infty
+\]
+and choose $\varepsilon_j\downarrow0$.  A natural initial segment starts arbitrarily close to
+$c_*$.  If $\alpha>c_*$, one application of Lemma~\ref{lem:up} raises it to an arbitrarily small
+neighborhood of $\alpha$; if $\alpha=c_*$, no raising is needed.  After this finite
+initialization, perform following cycle.
+
+\begin{enumerate}
+\item Starting within $\varepsilon_j$ of $\alpha$, apply Lemma~\ref{lem:up} with target
+$\beta-\varepsilon_j/2$.  Choose block far enough that terminal value is within
+$\varepsilon_j/2$ of target and every step is smaller than $\varepsilon_j$.  This is an
+increasing sweep from lower to upper endpoint.
+\item Insert least missing primes until value first enters
+$\varepsilon_{j+1}$-neighborhood of $\alpha$.  If $\alpha>c_*$,
+Lemma~\ref{lem:down} makes late part of sweep decreasing until first crossing.  If
+$\alpha=c_*$, fill through a sufficiently large natural cutoff; (2.3) reaches desired
+neighborhood, and endpoint version of Lemma~\ref{lem:down} prevents a fixed excursion.
+Lemma~\ref{lem:mesh} makes overshoot smaller than $\varepsilon_{j+1}$.
+\end{enumerate}
+
+Every prime is eventually used.  All sufficiently late terms lie in an arbitrarily small
+neighborhood of $[\alpha,\beta]$.  Conversely, each upward sweep has mesh tending to zero and
+crosses every point of $[\alpha,\beta]$.  Cluster set is exactly that interval.
+
+For singleton $[c,c]$ with $c>c_*$, consume at least one least missing prime and continue until
+value lies just below $c$, then use a far block to raise it to within $\varepsilon_j$ of $c$.
+Lemmas~\ref{lem:down}
+and~\ref{lem:up} show every term in $j$th cycle lies within $O(\varepsilon_j)$ of $c$.  Natural
+ordering realizes $[c_*,c_*]$.
+
+For $[\alpha,\infty]$ with $\alpha<\infty$, use same construction with upper targets
+$\beta_j\to\infty$.  Upward sweeps have vanishing mesh on every fixed bounded interval, so every
+finite $t\geq\alpha$ is a cluster value; downward control excludes finite cluster values below
+$\alpha$, and upper targets supply $\infty$.
+
+Finally, to realize $\{\infty\}$, suppose least missing prime at stage $j$ is $q_j$.  Begin stage
+with a value at least $2j$.  Insert $q_j$.  By (4.2), new value is at least
+$2j(1-1/q_j)$, hence at least $j$ for all sufficiently large $j$.  A far upward block then raises
+value above $2(j+1)$.  All later terms tend to infinity, while one least missing prime is consumed
+at every stage.  This completes proof of Theorem~\ref{thm:classification}.
+
+\section{Residue-corrected determinants}
+\label{sec:determinants}
+
+Expanding finite Euler factor in (1.4) at $s=1$ gives
+\[
+ \prod_{p\in P}(1-p^{-s})
+ =a(P)+a(P)\left(\sum_{p\in P}\frac{\log p}{p-1}\right)(s-1)
+ +O((s-1)^2).
+\]
+Since $\zeta(s)=(s-1)^{-1}+\gamma+O(s-1)$, this proves (1.5).
+
+Let
+\[
+ H_P(N)=\sum_{\substack{m\leq N\\(m,M_P)=1}}\frac1m.
+\]
+Equation (1.2) says
+\begin{equation}
+ H_P(N)=a(P)\log N+\gamma(P)+o(1).                         \tag{6.1}
+\end{equation}
+For cutoff product in (1.6), write
+\begin{align}
+ N^{a(P)z}\prod_{\substack{m\leq N\\(m,M_P)=1}}
+ \left(1-\frac zm\right)
+ &=\exp\{z(a(P)\log N-H_P(N))\}                            \notag\\
+ &\quad\times
+ \prod_{\substack{m\leq N\\(m,M_P)=1}}
+ \left(1-\frac zm\right)e^{z/m}.                          \tag{6.2}
+\end{align}
+First factor tends locally uniformly to $e^{-\gamma(P)z}$ by (6.1).  Second converges locally
+uniformly because $\sum m^{-2}<\infty$; by definition its limit is
+$\det{}_2(I-zQ_P)$.  This proves (1.6) and (1.7).
+
+To obtain (1.8), decompose coprime integers into reduced residue classes modulo $M=M_P$.
+For $K\geq0$,
+\begin{equation}
+ \prod_{k=0}^{K}\left(1-\frac{z}{r+kM}\right)
+ =\frac{\Gamma(K+1+(r-z)/M)}{\Gamma((r-z)/M)}
+  \frac{\Gamma(r/M)}{\Gamma(K+1+r/M)}.                   \tag{6.3}
+\end{equation}
+Uniform Gamma-ratio asymptotic on compact $z$-sets contributes $K^{-z/M}$.  Multiplication over
+$\varphi(M)$ reduced residue classes, followed by $N^{a(P)z}$ correction and
+$a(P)=\varphi(M)/M$, gives (1.8).
+
+Same calculation identifies zeta determinant.  On a reduced residue class,
+\[
+ \sum_{k\geq0}(r+kM-z)^{-s}=M^{-s}\zeta_H\left(s,\frac{r-z}{M}\right),
+\]
+where $\zeta_H$ is Hurwitz zeta function.  Classical values
+\begin{equation}
+ \zeta_H(0,w)=\frac12-w,\qquad
+ \zeta_H'(0,w)=\log\Gamma(w)-\frac12\log(2\pi)            \tag{6.4}
+\end{equation}
+show that
+\[
+ -\frac{d}{ds}\bigg|_{s=0}
+ \left(\Tr((D_P-z)^{-s})-\Tr(D_P^{-s})\right)
+ =\log\Delta_P(z).
+\]
+This is (1.9), initially off positive spectrum and then everywhere by entire extension.
+
+For prime excision, multiples of $p$ inside $P$-coprime integers are in bijection with all
+$P$-coprime integers after division by $p$.  Therefore
+\begin{equation}
+ \det{}_2(I-zQ_{P\cup\{p\}})
+ =\frac{\det{}_2(I-zQ_P)}{\det{}_2(I-(z/p)Q_P)}.           \tag{6.5}
+\end{equation}
+Lemma~\ref{lem:update}, or direct multiplication, also gives
+\begin{equation}
+ \gamma(P\cup\{p\})
+ =\left(1-\frac1p\right)\gamma(P)+\frac{a(P)\log p}{p}.  \tag{6.6}
+\end{equation}
+Substitution of (6.5) and (6.6) into (1.7) proves excision law (1.10), completing proof of
+Theorem~\ref{thm:determinant}.
+
+\section{Cofinal determinant clusters and no descent}
+\label{sec:nodescent}
+
+Embed every $H_P$ in $H=\ell^2(\N_{>0})$ by extending $Q_P$ by zero.  Along an exhaustive
+sequence,
+\begin{equation}
+ \norm{Q_P-|e_1\rangle\langle e_1|}_2^2
+ =\sum_{\substack{m\geq2\\(m,M_P)=1}}\frac1{m^2}
+ \longrightarrow0                                         \tag{7.1}
+\end{equation}
+by dominated convergence: every $m>1$ has a prime divisor eventually inserted.
+Continuity of $\det{}_2$ in Hilbert--Schmidt norm~\cite{Simon2005} yields
+\begin{equation}
+ \det{}_2(I-zQ_P)\longrightarrow(1-z)e^z                \tag{7.2}
+\end{equation}
+locally uniformly.  Combining (7.2) with (1.7) proves forward assertion in
+Theorem~\ref{thm:clusters}.
+
+Conversely,
+\begin{equation}
+ \Delta_P'(0)=-\gamma(P),                                 \tag{7.3}
+\end{equation}
+because first derivative of $2$-regularized determinant is zero.  Local uniform convergence
+preserves derivatives at origin, so a convergent determinant subsequence forces corresponding
+$\gamma(P)$ to converge to a finite value.  Equations (7.2) and (7.3) identify its limit uniquely
+as (1.11).  Formula (1.13) is immediate.
+
+Give triples
+\begin{equation}
+ \mathfrak p(P)=\bigl(Q_P,a(P),\Div\Delta_P\bigr)           \tag{7.4}
+\end{equation}
+product topology of Hilbert--Schmidt norm, Euclidean topology, and local convergence of divisors.
+Along every prime ordering,
+\begin{equation}
+ \mathfrak p(P_n^\sigma)\longrightarrow
+ \bigl(|e_1\rangle\langle e_1|,0,[1]\bigr).               \tag{7.5}
+\end{equation}
+Residue limit follows from $a(P_n^\sigma)\leq a(E_k)\to0$ after $E_k$ has been included.
+Local divisor convergence follows because each bounded set contains only finitely many positive
+integer zeros, and every integer $m>1$ is eventually removed by one of its prime divisors.
+
+\begin{corollary}[No descent from primary determinant data]
+\label{cor:nodescent}
+There is no continuous rule on closure of data \emph{(7.4)} that recovers cofinal
+residue-corrected determinant.  Fibre over single primary limit \emph{(7.5)} contains all germs
+\[
+ e^{(1-c)z}(1-z),\qquad c\in[e^{-\gamma},\infty),
+\]
+and its relative-torsion group completion is
+\begin{equation}
+ \{e^{rz}:r\in\R\}.                                      \tag{7.6}
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+Singleton case of Theorem~\ref{thm:classification} realizes every finite
+$c\geq e^{-\gamma}$ while (7.5) stays fixed.  Theorem~\ref{thm:clusters} gives displayed fibre.
+Pairwise quotients have slope $d-c$; all real slopes occur by choosing and reversing two points
+of half-line.
+\end{proof}
+
+Finite part $\gamma(P)=\FP_{s=1}Z_P(s)$ is therefore not an optional normalization.  It is exact
+secondary coordinate required for Hausdorff descent of determinant character.
+
+\section{Number fields and universal residue cancellation}
+\label{sec:numberfields}
+
+Let $K$ be a number field, let $\mathcal O_K$ be its ring of integers, and let
+$\mathcal P_K$ be set of nonzero prime ideals.  Write
+\begin{equation}
+ \zeta_K(s)=\frac{\rho_K}{s-1}+c_K+O(s-1),\qquad
+ \gamma_K=\frac{c_K}{\rho_K}.                            \tag{8.1}
+\end{equation}
+Fix once and for all a reference ordering
+$\mathfrak p_1\prec\mathfrak p_2\prec\cdots$ which refines nondecreasing norm; ties are resolved
+arbitrarily.  Put $E_r^K=\{\mathfrak p_1,\ldots,\mathfrak p_r\}$.  For finite
+$P\subset\mathcal P_K$, define
+\begin{align}
+ a_K(P)&=\prod_{\mathfrak p\in P}\left(1-\frac1{N\mathfrak p}\right),
+ &r_K(P)&=\rho_Ka_K(P),                                  \tag{8.2}\\
+ b_K(P)&=\gamma_K+\sum_{\mathfrak p\in P}
+                   \frac{\log N\mathfrak p}{N\mathfrak p-1},
+ &\kappa_K(P)&=r_K(P)b_K(P).                             \tag{8.3}
+\end{align}
+Kandhil--Lunia introduced normalized generalized Euler--Kronecker constants; for finite $P$ their
+constant is $a_K(P)b_K(P)$~\cite{KandhilLunia2024}.  Our $\kappa_K(P)$ is unnormalized finite
+part relevant to zeta determinant.
+
+\begin{proposition}[Pole data and universal endpoint]
+\label{prop:K-pole}
+For
+\begin{equation}
+ Z_{K,P}(s)=\zeta_K(s)\prod_{\mathfrak p\in P}
+                    (1-N\mathfrak p^{-s})                \tag{8.4}
+\end{equation}
+one has
+\begin{equation}
+ \Res_{s=1}Z_{K,P}(s)=r_K(P),\qquad
+ \FP_{s=1}Z_{K,P}(s)=\kappa_K(P).                        \tag{8.5}
+\end{equation}
+Moreover,
+\begin{equation}
+ \sum_{\substack{N\mathfrak a\leq X\\(\mathfrak a,P)=1}}
+ \frac1{N\mathfrak a}
+ =r_K(P)\log X+\kappa_K(P)+o(1),                         \tag{8.6}
+\end{equation}
+and
+\begin{equation}
+ r_K(E_r^K)b_K(E_r^K)=\kappa_K(E_r^K)longrightarrow e^{-\gamma}.
+                                                                    \tag{8.7}
+\end{equation}
+In particular, endpoint is independent of $K$.
+\end{proposition}
+
+\begin{proof}
+Expanding each Euler factor at $1$ gives
+\[
+ \prod_{\mathfrak p\in P}(1-N\mathfrak p^{-s})
+ =a_K(P)\left(1+(s-1)\sum_{\mathfrak p\in P}
+ \frac{\log N\mathfrak p}{N\mathfrak p-1}+O((s-1)^2)\right).
+\]
+Together with (8.1), this proves (8.5).  Partial summation from ideal-counting asymptotic, or
+finite-set formula of Kandhil--Lunia, gives (8.6).
+
+Number-field Mertens theorems give, with $E^K(X)=\{\mathfrak p:N\mathfrak p\leq X\}$,
+\begin{equation}
+ a_K(E^K(X))\sim\frac{e^{-\gamma}}{\rho_K\log X},\qquad
+ \sum_{N\mathfrak p\leq X}\frac{\log N\mathfrak p}{N\mathfrak p-1}
+ =\log X+C_K+o_K(1)                                     \tag{8.8}
+\end{equation}
+see Rosen and unconditional explicit form of Garcia--Lee
+\cite{Rosen1999,GarciaLee2022}.  Multiplying (8.8) by $\rho_K$ proves (8.7).  At most
+$[K:\mathbb Q]$ prime ideals have any fixed norm, so passing through a tie changes product by
+$1+O_K(X^{-1})$ and weighted sum by $O_K(\log X/X)$.  Same limit holds for every $E_r^K$.
+\end{proof}
+
+Next lemma is number-field version of relative extremality.  Repeated norms require an explicit
+termination argument.
+
+\begin{lemma}[Prime-ideal relative extremality]
+\label{lem:K-extremal}
+There is $k_0(K)$ such that, for $k\geq k_0(K)$ and every finite $P$ containing $E_k^K$,
+\begin{equation}
+ \kappa_K(P)\geq\inf_{r\geq k}\kappa_K(E_r^K).          \tag{8.9}
+\end{equation}
+Consequently every increasing exhaustion of $\mathcal P_K$ satisfies
+\begin{equation}
+ \liminf_n\kappa_K(P_n)\geq e^{-\gamma}.               \tag{8.10}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Choose $k_0$ so that $b_K(E_{k_0}^K)>0$.  Start with $Q\supset E_k^K$.  If $Q$ is not an
+initial segment, let $\mathfrak t$ be its largest member in reference order, set
+$Q'=Q\setminus\{\mathfrak t\}$, and write $A=b_K(Q')>0$.  If
+$\kappa_K(Q')<\kappa_K(Q)$, replace $Q$ by $Q'$.  Otherwise let $\mathfrak u$ be least missing
+prime ideal and replace $Q$ by $Q'\cup\{\mathfrak u\}$.
+
+For a prime ideal of norm $v$ not in $Q'$,
+\[
+ \kappa_K(Q'\cup\{\mathfrak p\})=\kappa_K(Q')f_A(v),\qquad
+ f_A(v)=1-\frac1v+\frac{\log v}{vA}.
+\]
+Function $f_A$ increases up to $e^{A+1}$ and decreases afterwards.  In replacement case
+$f_A(N\mathfrak t)\leq1$, hence $N\mathfrak t\leq e^A$.  Since
+$\mathfrak u\prec\mathfrak t$, we have $N\mathfrak u\leq N\mathfrak t$ and thus
+$f_A(N\mathfrak u)\leq f_A(N\mathfrak t)$.  Value never increases.
+
+Let $i(\mathfrak p)$ be reference index.  At each deletion or replacement,
+$\sum_{\mathfrak p\in Q}i(\mathfrak p)$ strictly decreases.  Thus process terminates, including
+when $N\mathfrak u=N\mathfrak t$, at an initial segment $E_r^K$.  Every move preserves $E_k^K$,
+so $r\geq k$ and (8.9) follows.  Apply (8.9) after fixed $E_k^K$ enters exhaustion, then let
+$k\to\infty$ and use (8.7) to prove (8.10).
+\end{proof}
+
+Exact local dynamics is
+\begin{equation}
+ \kappa_K(P\cup\{\mathfrak p\})-\kappa_K(P)
+ =\frac{r_K(P)}{N\mathfrak p}
+   \bigl(\log N\mathfrak p-b_K(P)\bigr).                \tag{8.11}
+\end{equation}
+Therefore, if $\kappa_K(P)\leq M$ and $q=N\mathfrak p$, then
+\begin{equation}
+ |\kappa_K(P\cup\{\mathfrak p\})-\kappa_K(P)|
+ \leq\frac{M+\rho_K\log q}{q}.                         \tag{8.12}
+\end{equation}
+This is vanishing mesh because any enumeration of $\mathcal P_K$ has $N\mathfrak p_n\to\infty$.
+
+For $y>1$ and $u\geq0$, put
+\[
+ B_K(y,u)=\{\mathfrak p:y<N\mathfrak p\leq e^uy\}.
+\]
+Prime ideal theorem and (8.8) imply, for fixed finite $P$,
+\begin{align}
+ \prod_{\mathfrak p\in B_K(y,u)}(1-N\mathfrak p^{-1})&\longrightarrow1,
+                                                                    \tag{8.13}\\
+ \sum_{\mathfrak p\in B_K(y,u)}
+       \frac{\log N\mathfrak p}{N\mathfrak p-1}&\longrightarrow u,
+                                                                    \tag{8.14}\\
+ \kappa_K(P\cup B_K(y,u))&\longrightarrow
+             \kappa_K(P)+r_K(P)u.                                 \tag{8.15}
+\end{align}
+Taking $\log y>b_K(P)+u+1$ makes every insertion in block increase value; (8.12) makes its mesh
+arbitrarily small.
+
+Conversely, let $\mathfrak q=\mathfrak p_k$ be least missing prime ideal.  Then
+$a_K(P)\leq a_K(E_{k-1}^K)$ and (8.7) gives
+\begin{equation}
+ \rho_Ka_K(E_{k-1}^K)\log N\mathfrak p_k\longrightarrow e^{-\gamma}.
+                                                                    \tag{8.16}
+\end{equation}
+Hence, for fixed $\alpha>e^{-\gamma}$ and all large $k$, every least-missing insertion made while
+$\kappa_K(P)\geq\alpha$ decreases value.  For $\alpha=e^{-\gamma}$ same holds outside any fixed
+neighborhood of endpoint.
+
+\begin{proof}[Proof of Theorem~\ref{thm:numberfield-main}]
+Let $(\mathfrak q_n)$ be any permutation of $\mathcal P_K$.  Closedness of cluster set is
+automatic in compact space $[0,\infty]$, and (8.10) gives lower bound.  If two finite cluster
+values surround $t$, sequence crosses $t$ infinitely often.  On bounded crossing window,
+(8.12) makes overshoot tend to zero; thus $t$ is also cluster value.  Same argument at an
+unbounded end proves cluster set is interval in $[e^{-\gamma},\infty]$.
+
+Conversely fix $e^{-\gamma}\leq\alpha\leq\beta\leq\infty$.  Alternate two finite operations.
+Use remote block (8.15), with $u$ chosen from affine limit
+$\kappa_K(P)+r_K(P)u$, to cross upward target $\beta$ with prescribed vanishing mesh; if
+$\beta=\infty$, use targets tending to infinity.  Then insert least missing prime ideals until
+crossing $\alpha$ downward; if $\alpha=e^{-\gamma}$, continue to an initial segment close to
+endpoint.  At every downward stage consume at least one new least missing ideal.  Equations
+(8.12), (8.15), and (8.16) give errors tending to zero.  Every prime ideal is eventually
+inserted, all finite cluster values lie in $[\alpha,\beta]$, and vanishing-mesh crossings make
+every point of interval a cluster value.  Same construction with coincident targets gives
+singletons, using consume-then-restore modification of Section~5; targets tending to infinity
+without downward sweeps give $\{\infty\}$.  This proves cluster classification.
+
+For determinant lift, let $H_{K,P}$ have orthonormal basis indexed by nonzero integral ideals
+coprime to $P$ and put
+\[
+ D_{K,P}e_{\mathfrak a}=N\mathfrak a\,e_{\mathfrak a},\qquad
+ Q_{K,P}=D_{K,P}^{-1}.
+\]
+Then $Q_{K,P}$ is Hilbert--Schmidt because $Z_{K,P}(2)<\infty$, and (8.4) is its spectral zeta
+function.  From (8.6), same factorization as (6.2) gives locally uniformly on $\C$
+\begin{align}
+ \Delta_{K,P}(z)
+ &:=\lim_{X\to\infty}X^{r_K(P)z}
+ \prod_{\substack{N\mathfrak a\leq X\\(\mathfrak a,P)=1}}
+       \left(1-\frac z{N\mathfrak a}\right)                       \tag{8.17}\\
+ &=e^{-\kappa_K(P)z}\det{}_2(I-zQ_{K,P}).                         \tag{8.18}
+\end{align}
+
+This is exactly relative zeta determinant, not merely a cutoff analogy.  For $|z|<1$, set
+\[
+ \Xi_{K,P}(s,z)=\Tr\bigl((D_{K,P}-z)^{-s}-D_{K,P}^{-s}\bigr).
+\]
+Binomial expansion gives meromorphic identity near $s=0$
+\begin{equation}
+ \Xi_{K,P}(s,z)=\sum_{m\geq1}\frac{(s)_m}{m!}z^mZ_{K,P}(s+m).
+                                                                    \tag{8.19}
+\end{equation}
+Since $sZ_{K,P}(1+s)=r_K(P)+\kappa_K(P)s+O(s^2)$ and
+$(s)_m'|_{s=0}=(m-1)!$ for $m\geq2$,
+\[
+ -\Xi_{K,P}'(0,z)=-\kappa_K(P)z-
+     \sum_{m\geq2}\frac{Z_{K,P}(m)}m z^m=\log\Delta_{K,P}(z).
+\]
+Thus
+\begin{equation}
+ \Delta_{K,P}(z)=\frac{\det_\zeta(D_{K,P}-z)}{\det_\zeta D_{K,P}},
+                                                                    \tag{8.20}
+\end{equation}
+first for $|z|<1$ and then by entire continuation.  If $\mathfrak p\notin P$ and
+$q=N\mathfrak p$, ideals divisible by $\mathfrak p$ are $\mathfrak p\mathfrak a$ uniquely.
+Using
+\[
+ \kappa_K(P\cup\{\mathfrak p\})=\left(1-\frac1q\right)\kappa_K(P)
+ +\frac{r_K(P)\log q}{q}
+\]
+in (8.18) yields exact prime-ideal excision
+\begin{equation}
+ \boxed{\displaystyle
+ \Delta_{K,P\cup\{\mathfrak p\}}(z)
+ =q^{-r_K(P)z/q}\frac{\Delta_{K,P}(z)}{\Delta_{K,P}(z/q)}.}       \tag{8.21}
+\end{equation}
+
+Embed all operators in $\ell^2$ of nonzero integral ideals.  Along every exhaustion,
+\[
+ Q_{K,P}\longrightarrow|e_{\mathcal O_K}\rangle\langle e_{\mathcal O_K}|
+ \quad\hbox{in Hilbert--Schmidt norm},
+\]
+because every nonunit ideal has a prime-ideal divisor.  Also $r_K(P)\to0$ by (8.8), while
+divisors converge locally to $[1]$.  Continuity of $\det_2$ now gives, whenever
+$\kappa_K(P_{n_j})\to c<\infty$,
+\[
+ \Delta_{K,P_{n_j}}(z)\longrightarrow e^{(1-c)z}(1-z).
+\]
+Derivative at zero equals $-\kappa_K(P)$, proving converse.  Quotients are $e^{(d-c)z}$.
+Ordering-independence of primary data and all remaining claims follow.
+\end{proof}
+
+\section{Quillen metrics, Wodzicki residues, and analytic torsion}
+\label{sec:geometry}
+
+We record precise relation to geometric determinant literature and limit of that analogy.  If
+$A$ is a positive classical pseudodifferential operator of order $-d$ on a closed $d$-manifold,
+then canonical trace of holomorphic family $A^s$ has
+\begin{equation}
+ \Res_{s=1}\Tr(A^s)=\frac1d\operatorname{res}_W(A),        \tag{9.1}
+\end{equation}
+where $\operatorname{res}_W$ is Wodzicki residue~\cite{PaychaScott2007}.  Equation (9.1) is classical
+pseudodifferential counterpart of $\Res_{s=1}Z_P(s)=a(P)$.  We do not claim diagonal arithmetic
+operator $Q_P$ is a classical pseudodifferential operator.  Common structure is a simple critical
+zeta pole and a residue-controlled logarithmic counterterm.
+
+Paycha--Rosenberg prove regularized first Chern form of an infinite-dimensional bundle differs
+from Bismut--Freed curvature by Wodzicki-residue terms~\cite{PaychaRosenberg2000}.  Scott residue
+determinant is local and multiplicative, in sharp contrast with nonlocal zeta determinant
+\cite{Scott2005}.  Corollary~\ref{cor:nodescent} shows complementary arithmetic fact: even after
+primary residue and limiting divisor are fixed, finite part at pole supplies a full real torsion
+fibre.  This paper does not propose adding a Wodzicki residue to a determinant line as a new
+construction; that general principle is established.  New content is complete cofinal spectrum
+of secondary coordinate in this arithmetic spectral model.
+
+For fixed $P$, holomorphic Fredholm family $D_P-z$ has index zero.  Away from spectrum, (1.9) is
+scalar of its relative determinant section against $D_P$ in spectral trivialization.  At
+eigenvalues entire continuation records divisor of that section.  This is elementary diagonal
+analogue of determinant-line/Quillen-metric relation for elliptic families
+\cite{Quillen1985,BismutFreed1986,Scott1999,Bunke2002}.
+
+There is also an exact analytic-torsion interpretation.  For real $z<1$, consider acyclic
+two-term Hilbert complex
+\[
+ 0\longrightarrow H_P\xrightarrow{D_P-z}H_P\longrightarrow0.
+\]
+Its zeta analytic torsion is $\det_\zeta(D_P-z)$ under standard two-term
+convention~\cite{RaySinger1971}.  Hence
+\begin{equation}
+ \Delta_P(z)=\frac{T_{\rm an}(D_P-z)}{T_{\rm an}(D_P)},\qquad z<1.  \tag{9.2}
+\end{equation}
+At two cofinal finite-part values $c,d$, relative analytic torsion ratio is $e^{(d-c)z}$.  For
+complex parameters same scalar is a refined determinant torsion, retaining phase rather than
+only Ray--Singer norm; compare~\cite{DaiFreed1994,BravermanKappeler2007}.  No geometric gluing
+theorem is claimed for this diagonal model.
+
+\section{Novelty boundary and significance}
+\label{sec:boundary}
+
+Following ingredients are established and are not claimed as contributions:
+\begin{itemize}
+\item formula (1.1), finite-set density, extremal reduction to initial prime segments, and RH
+      equivalence for generalized Euler constants~\cite{DiamondFord2008};
+\item finite-set generalized Euler--Kronecker constants over number fields
+      \cite{KandhilLunia2024}, and number-field Mertens asymptotics
+      \cite{Rosen1999,GarciaLee2022};
+\item Quillen and Bismut--Freed determinant lines, metrics, and connections
+      \cite{Quillen1985,BismutFreed1986};
+\item Wodzicki corrections to regularized Chern forms and determinant-bundle curvature
+      \cite{PaychaRosenberg2000};
+\item canonical traces, multiplicative anomalies, and residue determinants
+      \cite{KontsevichVishik1994,Scott2005};
+\item relative zeta determinants, analytic torsion, and determinant-line refinements
+      \cite{Scott1999,Muller1998,DaiFreed1994,BravermanKappeler2007}.
+\end{itemize}
+
+New arithmetic statements are Theorems~\ref{thm:classification} and
+\ref{thm:numberfield-main}: arbitrary finite-set density does not imply, and does not contain,
+classification under nested exhaustive ordering.  Prime-ideal relative extremality creates a
+new universal lower endpoint $e^{-\gamma}$ over every number field.  Cancellation
+$\rho_K\cdot e^{-\gamma}/\rho_K=e^{-\gamma}$ is forced only after finite part and spectral
+residue are combined.  Alternating natural-fill and remote prime-ideal-block controls realize
+every interval above endpoint.  Determinant lift and exact prime-ideal excision turn this
+order-theoretic classification into sharp analytic no-descent theorem.
+
+Distinction is not cosmetic.  Regularized Fredholm determinant converges in Hilbert--Schmidt
+topology, primary residue converges, and divisor converges, but relative zeta determinant need
+not converge.  Its entire failure is measured by one finite-part coordinate, and
+Theorem~\ref{thm:classification} determines every possible cluster geometry of that coordinate.
+Plain determinant-line triviality is insufficient in strongest possible sense for this model: it
+forgets a complete real relative-torsion group.
+
+\section{Conclusion}
+
+Dropping prime-ideal Euler factors creates two analytically different boundary data at $s=1$:
+\[
+ \Res_{s=1}Z_{K,P}(s)=r_K(P),\qquad
+ \FP_{s=1}Z_{K,P}(s)=\kappa_K(P).
+\]
+First supplies logarithmic cutoff correction; second survives as determinant torsion.  Along
+every prime-ideal ordering, first vanishes and Hilbert--Schmidt operator tends to rank one.
+Second has exactly closed-interval cluster spectra in $[e^{-\gamma},\infty]$, with endpoint
+independent of number field.  Limiting divisor is rigid but zeta determinant is a real torsor:
+\[
+ \Delta_c(z)=e^{(1-c)z}(1-z),\qquad
+ \frac{\Delta_c}{\Delta_d}=e^{(d-c)z}.
+\]
+This is missing residue correction at cofinal level: not another trivialization of line, but
+finite-part coordinate needed to compare determinant sections.
+
+\begin{thebibliography}{99}
+
+\bibitem{BismutFreed1986}
+J.-M.~Bismut and D.~S.~Freed,
+\emph{The analysis of elliptic families. II. Dirac operators, eta invariants, and the holonomy
+theorem},
+Communications in Mathematical Physics \textbf{107} (1986), 103--163.
+
+\bibitem{BravermanKappeler2007}
+M.~Braverman and T.~Kappeler,
+\emph{Refined analytic torsion as an element of the determinant line},
+Geometry \& Topology \textbf{11} (2007), 139--213,
+\href{https://doi.org/10.2140/gt.2007.11.139}{doi:10.2140/gt.2007.11.139}.
+
+\bibitem{Bunke2002}
+U.~Bunke,
+\emph{Index theory, eta forms, and Deligne cohomology},
+arXiv:math/0201112,
+\url{https://arxiv.org/abs/math/0201112}.
+
+\bibitem{DaiFreed1994}
+X.~Dai and D.~S.~Freed,
+\emph{Eta-invariants and determinant lines},
+Journal of Mathematical Physics \textbf{35} (1994), 5155--5194,
+\url{https://arxiv.org/abs/hep-th/9405012}.
+
+\bibitem{DiamondFord2008}
+H.~G.~Diamond and K.~Ford,
+\emph{Generalized Euler constants},
+Mathematical Proceedings of the Cambridge Philosophical Society \textbf{145} (2008), 27--41,
+\href{https://doi.org/10.1017/S0305004108001187}{doi:10.1017/S0305004108001187}.
+
+\bibitem{GarciaLee2022}
+S.~R.~Garcia and E.~S.~Lee,
+\emph{Unconditional explicit Mertens' theorems for number fields and Dedekind zeta residue bounds},
+Ramanujan Journal \textbf{57} (2022), 1169--1191,
+\href{https://doi.org/10.1007/s11139-021-00435-6}{doi:10.1007/s11139-021-00435-6}.
+
+\bibitem{KandhilLunia2024}
+N.~Kandhil and R.~Lunia,
+\emph{Transcendence of generalised Euler--Kronecker constants},
+Bulletin of the Australian Mathematical Society \textbf{109} (2024), 464--470,
+\href{https://doi.org/10.1017/S0004972723000631}{doi:10.1017/S0004972723000631}.
+
+\bibitem{KontsevichVishik1994}
+M.~Kontsevich and S.~Vishik,
+\emph{Determinants of elliptic pseudo-differential operators},
+arXiv:hep-th/9404046,
+\url{https://arxiv.org/abs/hep-th/9404046}.
+
+\bibitem{Muller1998}
+W.~Mueller,
+\emph{Relative zeta functions, relative determinants and scattering theory},
+Communications in Mathematical Physics \textbf{192} (1998), 309--347,
+\href{https://doi.org/10.1007/s002200050301}{doi:10.1007/s002200050301}.
+
+\bibitem{PaychaRosenberg2000}
+S.~Paycha and S.~Rosenberg,
+\emph{Curvature on determinant bundles and first Chern forms},
+arXiv:math/0009172,
+\url{https://arxiv.org/abs/math/0009172}.
+
+\bibitem{PaychaScott2007}
+S.~Paycha and S.~Scott,
+\emph{A Laurent expansion for regularized integrals of holomorphic symbols},
+Geometric and Functional Analysis \textbf{17} (2007), 491--536,
+\href{https://doi.org/10.1007/s00039-007-0597-8}{doi:10.1007/s00039-007-0597-8}.
+
+\bibitem{Quillen1985}
+D.~Quillen,
+\emph{Determinants of Cauchy--Riemann operators over a Riemann surface},
+Functional Analysis and Its Applications \textbf{19} (1985), 31--34.
+
+\bibitem{RaySinger1971}
+D.~B.~Ray and I.~M.~Singer,
+\emph{$R$-torsion and the Laplacian on Riemannian manifolds},
+Advances in Mathematics \textbf{7} (1971), 145--210,
+\href{https://doi.org/10.1016/0001-8708(71)90045-4}{doi:10.1016/0001-8708(71)90045-4}.
+
+\bibitem{Rosen1999}
+M.~Rosen,
+\emph{A generalization of Mertens' theorem},
+Journal of the Ramanujan Mathematical Society \textbf{14} (1999), 1--19.
+
+\bibitem{Scott1999}
+S.~Scott,
+\emph{Relative zeta determinants and the Quillen metric},
+arXiv:math/9910148,
+\url{https://arxiv.org/abs/math/9910148}.
+
+\bibitem{Scott2005}
+S.~Scott,
+\emph{The residue determinant},
+Communications in Partial Differential Equations \textbf{30} (2005), 483--507,
+\url{https://arxiv.org/abs/math/0406268}.
+
+\bibitem{Simon2005}
+B.~Simon,
+\emph{Trace Ideals and Their Applications}, second edition,
+Mathematical Surveys and Monographs \textbf{120}, American Mathematical Society, 2005.
+
+\end{thebibliography}
+
+\end{document}

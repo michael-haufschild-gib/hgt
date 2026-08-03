@@ -143,4 +143,83 @@ theorem stripRetract_eq_self {ρ : ℝ} {z : ℂ} (hz : |z.im| ≤ ρ) : stripRe
   rw [stripRetract, h1, h2]
   exact Complex.re_add_im z
 
+/-! ## The localised form
+
+The clock iterates are continuous only on a strip, and the retraction that repairs continuity
+destroys holomorphy, so here the hypothesis must be weakened rather than repaired. Nothing in the
+argument uses the family outside the strip.
+-/
+
+/-- **The integral of a family holomorphic on a strip is holomorphic there**, from a hypothesis of
+continuity on the strip alone. -/
+theorem hasDerivAt_intervalIntegral_of_holomorphic_on {a b ρ ρ' : ℝ} (hρ : ρ < ρ')
+    {F : ℝ → ℂ → ℂ}
+    (hFc : ContinuousOn (fun q : ℝ × ℂ => F q.1 q.2) (univ ×ˢ imStrip ρ'))
+    (hFd : ∀ t : ℝ, DifferentiableOn ℂ (F t) (imStrip ρ'))
+    {z : ℂ} (hz : z ∈ imStrip ρ) :
+    HasDerivAt (fun w => ∫ t in a..b, F t w) (∫ t in a..b, deriv (F t) z) z := by
+  classical
+  have hgap : (0 : ℝ) < ρ' - ρ := by linarith
+  set r : ℝ := (ρ' - ρ) / 4 with hrdef
+  have hrpos : (0 : ℝ) < r := by rw [hrdef]; linarith
+  have hbig : closedBall z ((ρ' - ρ) / 2) ⊆ imStrip ρ' :=
+    closedBall_subset_imStrip hρ (le_of_lt (mem_imStrip.mp hz))
+  have hslice : ∀ t : ℝ, ContinuousOn (F t) (imStrip ρ') := fun t =>
+    hFc.comp ((continuous_const.prodMk continuous_id).continuousOn)
+      fun ζ hζ => ⟨mem_univ _, hζ⟩
+  have hfixed : ∀ w ∈ imStrip ρ', Continuous fun t : ℝ => F t w := fun w hw =>
+    hFc.comp_continuous (continuous_id.prodMk continuous_const) fun t => ⟨mem_univ _, hw⟩
+  obtain ⟨M, hM⟩ := ((isCompact_uIcc (a := a) (b := b)).prod
+    (isCompact_closedBall z ((ρ' - ρ) / 2))).exists_bound_of_continuousOn
+      (hFc.mono fun q hq => ⟨mem_univ _, hbig hq.2⟩)
+  have hnear : ∀ w ∈ ball z r, closedBall w r ⊆ closedBall z ((ρ' - ρ) / 2) := by
+    intro w hw
+    refine closedBall_subset_closedBall' ?_
+    have : dist w z < r := mem_ball.mp hw
+    rw [hrdef] at this ⊢
+    linarith
+  have hdiffAt : ∀ (t : ℝ), ∀ ζ ∈ closedBall z ((ρ' - ρ) / 2), DifferentiableAt ℂ (F t) ζ := by
+    intro t ζ hζ
+    exact (hFd t).differentiableAt ((isOpen_imStrip ρ').mem_nhds (hbig hζ))
+  have hbound : ∀ (t : ℝ), t ∈ uIcc a b → ∀ w ∈ ball z r, ‖deriv (F t) w‖ ≤ M / r := by
+    intro t ht w hw
+    have hsub := hnear w hw
+    have hdc : DiffContOnCl ℂ (F t) (ball w r) := by
+      refine ⟨fun ζ hζ => ((hdiffAt t ζ (hsub (ball_subset_closedBall hζ))).differentiableWithinAt),
+        ?_⟩
+      rw [closure_ball w hrpos.ne']
+      exact (hslice t).mono fun ζ hζ => hbig (hsub hζ)
+    refine Complex.norm_deriv_le_of_forall_mem_sphere_norm_le hrpos hdc fun ζ hζ => ?_
+    exact hM (t, ζ) ⟨ht, hsub (sphere_subset_closedBall hζ)⟩
+  have hderivCont : Continuous fun t : ℝ => deriv (F t) z := by
+    refine continuous_deriv_parametric_on (R := (ρ' - ρ) / 2) (by linarith) hFc hbig
+      fun t ζ hζ => ?_
+    exact hdiffAt t ζ (ball_subset_closedBall hζ)
+  have hzmem : z ∈ imStrip ρ' := imStrip_mono hρ.le hz
+  refine (intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_deriv_le
+    (s := ball z r) (bound := fun _ => M / r) (F := fun w t => F t w)
+    (F' := fun w t => deriv (F t) w) (ball_mem_nhds z hrpos) ?_ ?_ ?_ ?_ ?_ ?_).2
+  · refine Filter.eventually_of_mem (ball_mem_nhds z hrpos) fun w hw => ?_
+    exact (hfixed w (hbig (hnear w hw (mem_closedBall_self hrpos.le)))).aestronglyMeasurable
+  · exact (hfixed z hzmem).intervalIntegrable a b
+  · exact hderivCont.aestronglyMeasurable
+  · refine Filter.Eventually.of_forall fun t ht w hw => ?_
+    exact hbound t (uIoc_subset_uIcc ht) w hw
+  · exact intervalIntegrable_const
+  · refine Filter.Eventually.of_forall fun t _ w hw => ?_
+    exact (hdiffAt t w (hnear w hw (mem_closedBall_self hrpos.le))).hasDerivAt
+
+/-- **Holomorphy of the parametric integral on the whole strip**, from continuity on the strip. -/
+theorem differentiableOn_intervalIntegral_of_holomorphic_on {a b ρ : ℝ}
+    {F : ℝ → ℂ → ℂ}
+    (hFc : ContinuousOn (fun q : ℝ × ℂ => F q.1 q.2) (univ ×ˢ imStrip ρ))
+    (hFd : ∀ t : ℝ, DifferentiableOn ℂ (F t) (imStrip ρ)) :
+    DifferentiableOn ℂ (fun w => ∫ t in a..b, F t w) (imStrip ρ) := by
+  intro z hz
+  have him : |z.im| < ρ := mem_imStrip.mp hz
+  have h1 : |z.im| < (|z.im| + ρ) / 2 := by linarith
+  have h2 : (|z.im| + ρ) / 2 < ρ := by linarith
+  exact (hasDerivAt_intervalIntegral_of_holomorphic_on h2 hFc hFd
+    (mem_imStrip.mpr h1)).differentiableAt.differentiableWithinAt
+
 end GaloisForLFunctions.HTGeometry

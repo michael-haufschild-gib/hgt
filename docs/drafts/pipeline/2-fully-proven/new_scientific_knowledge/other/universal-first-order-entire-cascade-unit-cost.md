@@ -1272,3 +1272,112 @@ triangularity package, which is exactly how the paper proof uses them.
   `Delta/delta + O(1/delta^2)` instead of `nu/delta`, which is exactly the shape the radius choice
   needs.  Recorded because the diagnosis -- substitute the intended radii and look for a term that
   survives -- is what located it; the bound was correct all along, just too weak in one place.
+
+### Log — sharp tails proved, and the reason they are not enough
+
+Built and verified (axiom-clean, `[propext, Classical.choice, Quot.sound]`):
+
+- `MaximumTermConcentration.sum_lower_tail_weighted_le`
+- `MaximumTermConcentration.tsum_upper_tail_weighted_le`
+- `MaximumTermConcentration.tsum_index_deviation_le_sharp`
+- `MaximumTermLogarithmicDerivative.norm_mul_logDeriv_sub_centralIndex_le_sharp`
+
+Both tails now carry the window half-width instead of `nu(r)`.  Writing `Delta` for the spread
+`nu(s) - nu(t)` and `1 + delta` for the radius ratio, the whole remainder is
+
+`Delta * (1 + D) + 2 * Delta / delta + C(delta)`, where `C(delta) = O(1 / delta^2)`.
+
+**Proved obstruction for the one-radius decay.**  This can never be `o(nu)`:
+
+- `C(delta) = O(1/delta^2)` forces `delta >> nu^{-1/2}` for the last term to be `o(nu)`;
+- over a log-window of length `delta >> nu^{-1/2}` the Borel lemma only prevents *doubling*,
+  so `Delta = O(nu)` and the first term is `O(nu)`, not `o(nu)`;
+- subdividing the window by the pigeonhole (`exists_small_centralIndex_increment`) divides
+  `Delta` by `N` but divides `delta` by `N` too, and `C` grows like `N^2` — the product
+  `Delta/delta + C` is bounded below by a constant multiple of `nu` for every `N`.
+
+So the geometric one-radius bound `|a_n| r^n <= mu(r) (t/r)^{nu(t)-n}` is intrinsically too weak.
+The estimate needs the **Legendre form**
+
+`|a_n| r^n <= mu(r) * exp(-(n(y-x) - (S(y)-S(x))))` for every `y >= x`, `S = log mu . exp`,
+
+whose supremum over `y` is quadratic in `n - nu` precisely when `nu` obeys a Lipschitz bound
+`nu(e^{x+u}) <= nu(e^x) + Lambda u` on the window.  With that, the decay is `exp(-k^2/(2 Lambda))`,
+the effective window half-width is `sqrt(Lambda log nu)`, and the remainder is `o(nu)` as soon as
+`Lambda = o(nu^2)`.
+
+**New instrument built for this.**  `HTGeometry/BorelGrowthMonotone.lean`:
+`borel_growth_monotone`, `exists_ge_lt_two_mul_monotone`, `exists_ge_lt_two_mul_scaled_monotone`,
+`exists_ge_log_lt_two_mul_monotone`.  The corpus Borel lemma assumed continuity, which the central
+index — integer valued — never has.  Monotonicity alone makes each level set an up-set; the
+infimum need not be attained, so the band is a closed interval instead of a half-open one and the
+measure bound is unchanged.
+
+**Next brick.**  The Lipschitz control at all scales needs a covering estimate that mathlib lacks:
+for `T` nondecreasing, the set of `x` in `[a, A]` where `T(x + l) - T(x) >= c` has measure at most
+`l (T(A+l) - T(a)) / c`.  Proof: the shift identity
+`int_a^A (T(x+l) - T(x)) dx = int_A^{A+l} T - int_a^{a+l} T <= l (T(A+l) - T(a))`
+combined with Chebyshev on the nonnegative integrand.  Summing over dyadic scales `l_j = 2^{-j} H`
+with tolerances `Lambda (1+j)^2 l_j / 2` gives a convergent total, hence the log-corrected Lipschitz
+bound `nu(e^{x+u}) <= nu(e^x) + Lambda (1 + log(H/u))^2 u` off a set of finite measure.
+
+### Log — the all-scales regularity layer is built
+
+`HTGeometry/MonotoneIncrementMeasure.lean` (new, axiom-clean):
+
+- `integral_increment_eq` — the increment integral telescopes to the two end blocks.
+- `integral_increment_le` — it is at most `l (T(A+l) - T(a))`.
+- `volume_increment_ge_le`, `volume_increment_ge_le'` — Chebyshev: the set of `x` in `[a, A]` with
+  `T(x+l) - T(x) >= c` has measure at most `l (T(A+l) - T(a)) / c`.  Mathlib has no such bound.
+- `volume_dyadic_jump_le` — running that over all dyadic scales `H / 2^j` with tolerances
+  `Lambda w j` times the scale gives one exceptional set of measure at most
+  `(T(A+H) - T(a)) / Lambda` times `sum 1/w j`.
+- `exists_dyadic_index_increment_le` — dyadic to arbitrary scale: if every dyadic scale is good then
+  for any `u <= H` the increment is below twice the tolerance of the first dyadic scale above `u`,
+  and that index obeys `2^j u <= H`.
+- `exists_good_point_of_measure_lt`, `exists_good_point_increment_le` — when the exceptional measure
+  is below the interval length, a point survives every scale.
+
+This is exactly the Lipschitz-at-all-scales input the Legendre form needs.  With `T = nu . exp`
+(nondecreasing, integer valued — `borel_growth_monotone` is what makes it admissible) and
+`w j = (1+j)^2`, the surviving point `x` satisfies
+
+`nu(e^{x+u}) - nu(e^x) < 2 Lambda (1 + log_2(H/u))^2 u` for every `0 < u <= H`,
+
+which converts the Legendre deficit `sup_y [k(y-x) - (S(y) - S(x))]` into a quadratic
+`k^2 / (C Lambda log-corrected)`, hence Gaussian decay of the terms away from the central index.
+
+Remaining chain to the main estimate:
+1. `S(x+u) - S(x) <= nu(e^x) u + int_0^u (nu(e^{x+v}) - nu(e^x)) dv` and the log-corrected
+   Lipschitz bound give `S(x+u) - S(x) - nu u <= C Lambda u^2 (1 + log(H/u))^2`.
+2. Legendre: `|a_n| r^n <= mu(r) exp(-(k u - C Lambda u^2 (1+log(H/u))^2))`, optimise at
+   `u ~ k / (2 C Lambda)`.
+3. Tail sums beyond `k = K := sqrt(C Lambda log nu)` are `o(mu)`; the window `|n - nu| <= K`
+   contributes `K (1 + D)` to the logarithmic-derivative estimate.
+4. Choosing `Lambda` so that `Lambda = o(nu^2)` (available from `borel_growth_monotone` applied to
+   `sqrt(nu)`, which gives `Lambda = O(nu^{3/2})`) makes `K = o(nu)`.
+
+### Log — the Legendre/Gaussian decay layer is built
+
+`HTGeometry/MaximumTermLegendreBound.lean` (new, axiom-clean):
+
+- `term_le_maxTerm_exp_legendre_above` / `..._below` — for every step `u >= 0`,
+  `|a_n| e^{xn} <= mu(e^x) exp(-(n - nu(e^{x+u})) u)` and the mirror at `e^{x-u}`.
+  This is the Legendre transform of `S = log mu . exp`; unlike the one-radius geometric bound it
+  keeps the step free.
+- `term_le_maxTerm_exp_gaussian_above` / `..._below` — under a linear bound
+  `nu(e^{x+v}) <= nu(e^x) + L v` on `0 < v <= H`, optimising the step at `u = k/(2L)` gives
+  `exp(-k^2/(4L))` for `0 < k <= 2 L H`.
+- `term_le_maxTerm_exp_uniform_above` / `..._below` — one exponential rate covering *every* index
+  outside the window: for `k >= K` with `0 < K <= 2 L H`, decay `exp(-k K/(4L))`.  Past `2 L H` the
+  optimal step leaves the window, and there the plain Legendre bound at the full step `H` is
+  stronger than the linearised Gaussian, so the single rate `K/(4L)` is valid throughout.
+
+With `K` of size `sqrt(L log nu)` the tails become negligible and the window half-width is `K`; the
+remainder of the Wiman--Valiron estimate is then `K (1 + D) + O(K/rate)`, which is `o(nu)` as soon
+as `L = o(nu^2)`.  The measure input `exists_good_point_increment_le` supplies exactly such an `L`.
+
+**Next brick.** The tail summation: for a natural window half-width `N`, split
+`sum |n - nu| |a_n| r^n` into `|n - nu| <= N` (bounded by `N` times the window sum) and the two
+tails (bounded by `2 mu sum_j (N+1+j) q^{N+1+j}` with `q = exp(-N/(4L))`), then feed the result to
+`norm_mul_logDeriv_sub_le_of_deviation_le`.

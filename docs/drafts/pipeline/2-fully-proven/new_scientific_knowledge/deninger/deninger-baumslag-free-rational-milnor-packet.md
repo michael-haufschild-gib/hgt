@@ -213,7 +213,16 @@
   starting in another factor),
   `GaloisForLFunctions.RHTower.DeningerShortConjCases` (the conjugacy criterion for short
   elements),
-  `GaloisForLFunctions.RHTower.DeningerFactorCentralizer` (the centralizer of a factor element)
+  `GaloisForLFunctions.RHTower.DeningerFactorCentralizer` (the centralizer of a factor element),
+  `GaloisForLFunctions.RHTower.DeningerBaseCentralizer` (the centralizer of a base element),
+  `GaloisForLFunctions.RHTower.DeningerAmalgamRoots` (uniqueness of roots in an amalgam),
+  `GaloisForLFunctions.RHTower.DeningerBaseCentralizerOne` (the centralizer of a base element with
+  one exceptional factor),
+  `GaloisForLFunctions.RHTower.DeningerAmalgamRootsOne` (uniqueness of roots in an amalgam with one
+  exceptional factor),
+  `GaloisForLFunctions.RHTower.DeningerRootUniqueRoots` (a root adjunction preserves unique roots),
+  `GaloisForLFunctions.RHTower.DeningerCentralizerZpow` (centralizers of powers in a group with
+  unique roots)
 
 ## Statement
 
@@ -3060,3 +3069,98 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   into the base group there.  What is left is the residual case, a common power conjugate into the
   base group, which is where the isolation hypothesis on the group factor of a root adjunction has
   its final use.
+- 2026-08-03 — **Isolation alone is not enough: the base group must also be self-centralizing.**
+  Working out the residual case produced a counterexample.  Take `A = ℤ²`, which is torsion free
+  abelian and so has unique roots, and `a = (1,0)`, whose cyclic subgroup is isolated because
+  `ℤ²/⟨a⟩` is torsion free.  Adjoin a square root: `A *_{a = t²} ⟨t⟩`.  Then for `g = (0,1)` the
+  elements `t` and `g⁻¹ t g` are distinct — one has length one and the other length three — while
+  `(g⁻¹ t g)² = g⁻¹ t² g = g⁻¹ a g = a = t²`, because `A` is abelian.  So the amalgam does not have
+  unique roots.  Isolation of `⟨a⟩` is therefore *not* sufficient for a root adjunction to preserve
+  unique roots; what fails is that `a` has a centralizer in `A` larger than `⟨a⟩`.  In the classical
+  construction the group is free and the element is not a proper power, where the centralizer is
+  exactly `⟨a⟩`, so the hypothesis is invisible there.
+  The corrected hypothesis is that the base group is **self-centralizing in each factor**: a factor
+  element commuting with a nontrivial base element lies in the base group.  `deningerCentralizer_base`
+  proves that under it the centralizer of a nontrivial base element in the amalgam is the base group
+  itself — a conjugator with a nonempty word is impossible, because its first letter either moves the
+  base element out of the base group, making the conjugate a reduced word of odd positive length, or
+  centralizes it, and then the letter lies in the base group, which a reduced word forbids.
+  `deningerPow_eq_of_basePow` reads that off for roots: both roots of a nontrivial base element lie
+  in the base group, and unique roots there identify them.
+  With this the case analysis is complete.  A common power is conjugate to a cyclically reduced word
+  of length at least two, or lies in a factor without conjugating into the base group there, or is
+  conjugate into the base group; the three cases are `deningerPow_eq_of_conj_cycRed`,
+  `deningerPow_eq_of_factorPow` and `deningerPow_eq_of_basePow`.
+- 2026-08-03 — **Uniqueness of roots in an amalgam is proved.**  `deningerAmalgam_pow_inj` assembles
+  the three cases.  Given `x^{n+1} = y^{n+1}`, the common power is examined.  If it has length zero it
+  is a base group element, and either it is trivial, when torsion freeness of the amalgam gives both
+  roots trivial, or `deningerPow_eq_of_basePow` applies.  Otherwise `deningerExists_cycRed_conj`
+  conjugates it to a cyclically reduced word; if that word has at least two letters
+  `deningerPow_eq_of_conj_cycRed` applies, and if it is a single letter the element is in a factor,
+  where the alternative is decided by whether that letter conjugates into the base group inside its
+  factor: if not, `deningerPow_eq_of_factorPow` applies, and if so, conjugating once more by the
+  witness lands the power in the base group and returns to the first case.  Conjugation is injective,
+  so each conclusion transports back.
+  The hypotheses are exactly what the counterexample of the previous entry shows to be necessary and
+  what the three cases consume: the base group is abelian, torsion free, has unique roots, is
+  self-centralizing in each factor and is not moved by conjugation from them; the factors have unique
+  roots; and the amalgam is torsion free.  This is Baumslag's theorem in the generality the
+  construction of the rationalization needs, and it is the theorem the whole word combinatorics of
+  this card was built to prove.
+- 2026-08-03 — **The self-centralizing hypothesis has to allow one exception, and a root adjunction
+  is why.**  The infinite cyclic factor of a root adjunction is abelian, so every element of it
+  centralizes the base group while only the multiples of `m` lie in it: the hypothesis of
+  `deningerCentralizer_base` fails there, and that theorem does not apply to root adjunctions at all.
+  `deningerCentralizer_base_one` is the version that does.  It exempts one factor: if every *other*
+  factor centralizes a nontrivial base element only inside the base group, then the centralizer of
+  that element in the amalgam lies in the exempt factor.  The induction is the same — a letter of a
+  non exempt factor centralizing the base element would lie in the base group, which a reduced word
+  forbids, and a letter that moves it out lengthens the conjugate — but peeling an exempt letter now
+  recurses instead of contradicting, and the recursion's answer is multiplied back into the exempt
+  factor.
+  `deningerPow_eq_of_basePow_one` is the corresponding uniqueness statement: both roots of a
+  nontrivial base element lie in the exempt factor, where unique roots identify them.  For a root
+  adjunction the exempt factor is the infinite cyclic one, whose unique roots are the arithmetic of
+  the integers, and the hypothesis on the other factor is that the centralizer of a nontrivial power
+  of the adjoined element is contained in the cyclic subgroup it generates — the condition the `ℤ²`
+  counterexample violates.
+- 2026-08-03 — **The capstone in the form a root adjunction satisfies.**
+  `deningerAmalgam_pow_inj_one` is the assembly of the three cases with the base group case replaced
+  by its exceptional-factor version, so the hypothesis it carries about centralizers is the one a
+  root adjunction can meet: every factor *other than* the infinite cyclic one centralizes a nontrivial
+  base element only inside the base group.  The remaining hypotheses are unchanged — the base group
+  is abelian, torsion free and not moved by conjugation from the factors, the factors have unique
+  roots, and the amalgam is torsion free — and the proof is the same case analysis, the only change
+  being which base-case theorem is invoked.
+  Instantiating it at `PushoutI (deningerRootMap A a m)` is now bookkeeping against results the corpus
+  already has: injectivity of the structure maps is `deningerRootMap_injective`, the conjugation
+  hypothesis is `deningerRootHcent`, unique roots and torsion freeness of the infinite cyclic factor
+  are the arithmetic of the integers, torsion freeness of the amalgam is
+  `deningerRootAdjunction_torsionFree`, and the centralizer hypothesis on the group factor is the
+  condition the `ℤ²` counterexample isolates.
+- 2026-08-03 — **Baumslag's theorem is proved: a root adjunction preserves unique roots.**
+  `deningerRootAdjunction_uniqueRoots` instantiates the amalgam capstone at
+  `PushoutI (deningerRootMap A a m)`.  Adjoining an `m`-th root to an element `a` of infinite order
+  in a torsion free group `A` with unique roots, whose cyclic subgroup is isolated and
+  self-centralizing, yields a group with unique roots.  Every hypothesis of the general theorem is
+  discharged from the corpus: injectivity of the structure maps by `deningerRootMap_injective`, the
+  conjugation hypothesis by `deningerRootHcent`, commutativity, torsion freeness and unique roots of
+  the base group and of the infinite cyclic factor by the arithmetic of the integers, torsion
+  freeness of the amalgam by `deningerRootAdjunction_torsionFree`, and the centralizer hypothesis on
+  the group factor by the assumption that a nontrivial power of `a` is centralized only inside
+  `⟨a⟩` — the assumption the `ℤ²` counterexample shows cannot be dropped.
+  This closes the theorem the whole word combinatorics of this card was built for, and it is the step
+  the tower of root adjunctions needs.  What remains for clause (4) is the tower itself: iterating
+  the step while preserving isolation and self-centralization at each stage, and identifying the
+  union with `Bau(F)`.
+- 2026-08-03 — **The self-centralizing hypothesis reduces to the element itself.**  In a group with
+  unique roots, conjugation is an automorphism, so an element centralizing `aᶜ` makes `x a x⁻¹` and
+  `a` have the same `c`-th power, and `deningerZpow_eq_of_pow_eq` — unique roots stated for integer
+  exponents rather than natural ones — identifies them.  `deningerCentralizer_zpow_eq` records that,
+  and `deningerCentralizer_zpow_subset` reads it as the reduction the root adjunction theorem wants:
+  the hypothesis "every nontrivial power of `a` is centralized only inside `⟨a⟩`" follows from the
+  same statement for `a` alone.
+  That matters for the tower, where the hypothesis has to be re-established at each stage: it is now
+  a statement about a single element, `C(a) ⊆ ⟨a⟩`, alongside isolation of `⟨a⟩`.  Both are
+  conditions of the kind the structure theory of amalgams computes, and they are what the next stage
+  of the tower has to inherit.

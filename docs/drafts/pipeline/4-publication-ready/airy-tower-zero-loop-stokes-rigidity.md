@@ -107,6 +107,12 @@ Primary sources audited before freezing:
   enriched trees and explicit statement that diagrams alone lose fission data.
 - Douçot, *Fourier transform of irregular connections on P1 and classification of
   Argyres--Douglas theories* (2026).
+- Hien--Sabbah, *The local Laplace transform of an elementary irregular meromorphic connection*
+  (2015): topological local Laplace transform of Stokes-filtered local systems.
+- Mochizuki, *Stokes shells and Fourier transforms* (version 4, 2025): analytic Stokes structures
+  of Fourier transforms via shells and enhanced nearby-cycle data.
+- Douçot--Hohl, *A topological algorithm for the Fourier transform of Stokes data at infinity*
+  (JLMS 2025): explicit transformed Stokes matrices, including Airy examples.
 
 Exact-phrase and concept searches found no collision as of 2026-08-03. This is a provisional
 novelty result, not a publication claim.
@@ -770,16 +776,18 @@ uninterpreted highest exponent. This was not accepted. The missing infrastructur
 
 Direct `lake env lean` checks and targeted builds passed for every affected module. A `/tmp`
 `#print axioms` audit found only `propext`, `Classical.choice`, and `Quot.sound`, with no project
-axiom. Repository lint reports no Stokes error; its current global exit is nonzero only because
-unrelated concurrently added `RHTower` modules are not yet wired into their own umbrella. No full
-build was run, in accordance with this task’s targeted-build rule.
+axiom. Repository lint reports no Stokes error; its current global exit is nonzero because
+unrelated concurrently added `RHTower` modules and `HTGeometry.TwoRecordResolvedConnection` are not
+yet wired into their respective umbrellas. No full build was run, in accordance with this task’s
+targeted-build rule.
 
 The final manuscript is:
 
 `docs/drafts/manuscripts/airy-tower-stokes-rigidity/main.pdf`.
 
 It has 17 A4 pages, compiles without TeX warnings, and passed page-by-page rendering inspection
-after the final mathematical revision. The manuscript contains no mention of Lean, proof
+after two missing `\qquad` backslashes were found, corrected, and re-rendered. The manuscript
+contains no mention of Lean, proof
 assistants, formal verification, toolchains, or internal declaration names. `CLAIM_TRACE.md`
 records private theorem-level proof evidence; `LITERATURE_AUDIT.md` records the current
 primary-source search through 2026-08-03.

@@ -120,12 +120,38 @@ theorem ccmRationalAdelicEpsilonOne_real (x : Source) :
     star (x.fst + ccmRationalAdelicEpsilonOneNonunital x.snd)
   rw [ccmRationalAdelicEpsilonOneNonunital_real, star_add]
 
+theorem ccmRationalAdelicUnitizationAugmentation_real (x : Source) :
+    ccmRationalAdelicUnitizationAugmentation
+        (ccmRationalAdelicSourceRealStructure x) =
+      star (ccmRationalAdelicUnitizationAugmentation x) :=
+  rfl
+
 /-! ## Genuine all-degree Real cyclic morphisms and reduced double kernel -/
 
 /-- Even Real structure on the actual cyclic bar of the rational adelic source. -/
 def ccmRationalAdelicSourceCyclicKReal :
     CyclicModule.KReal false CCMRationalAdelicSourceCyclicModule :=
   cyclicBarKReal ccmRationalAdelicSourceKRealAlgebra
+
+/-- Unitization augmentation is Real-equivariant in every cyclic degree. -/
+def ccmRationalAdelicUnitizationAugmentationCyclicKRealHom :
+    CyclicModule.KRealHom ccmRationalAdelicSourceCyclicKReal
+      scalarConstantCyclicKReal where
+  toHom := ccmRationalAdelicUnitizationAugmentationCyclicHom
+  real_naturality n x :=
+    cyclicBarTraceAugmentation_kReal
+      ccmRationalAdelicSourceKRealAlgebra
+      ccmRationalAdelicUnitizationAugmentation
+      ccmRationalAdelicUnitizationAugmentation_real n x
+
+/-- Correct nonunital cyclic source inherits the ambient Real structure. -/
+def ccmRationalAdelicNonunitalSourceCyclicKReal :
+    CyclicModule.KReal false CCMRationalAdelicNonunitalSourceCyclicModule :=
+  CyclicModule.doubleKernelKReal
+    ccmRationalAdelicSourceCyclicKReal
+    scalarConstantCyclicKReal scalarConstantCyclicKReal
+    ccmRationalAdelicUnitizationAugmentationCyclicKRealHom
+    ccmRationalAdelicUnitizationAugmentationCyclicKRealHom
 
 /-- The genuine all-degree fixed-point endpoint is a Real cyclic morphism. -/
 def ccmRationalAdelicEpsilonZeroCyclicKRealHom :
@@ -149,35 +175,63 @@ def ccmRationalAdelicEpsilonOneCyclicKRealHom :
       ccmRationalAdelicEpsilonOne
       ccmRationalAdelicEpsilonOne_real n x
 
+/-- Fixed-point endpoint restricted to the nonunital Real cyclic source. -/
+def ccmRationalAdelicNonunitalEpsilonZeroCyclicKRealHom :
+    CyclicModule.KRealHom ccmRationalAdelicNonunitalSourceCyclicKReal
+      scalarConstantCyclicKReal where
+  toHom := ccmRationalAdelicNonunitalEpsilonZeroCyclicHom
+  real_naturality n x := by
+    change (scalarConstantCyclicKReal.real n).sigma
+        (ccmRationalAdelicEpsilonZeroCyclicHom.simplicial.app
+          (.op (.mk n)) x.1) =
+      ccmRationalAdelicEpsilonZeroCyclicHom.simplicial.app
+        (.op (.mk n))
+        ((ccmRationalAdelicSourceCyclicKReal.real n).sigma x.1)
+    exact ccmRationalAdelicEpsilonZeroCyclicKRealHom.real_naturality n x.1
+
+/-- Haar endpoint restricted to the nonunital Real cyclic source. -/
+def ccmRationalAdelicNonunitalEpsilonOneCyclicKRealHom :
+    CyclicModule.KRealHom ccmRationalAdelicNonunitalSourceCyclicKReal
+      scalarConstantCyclicKReal where
+  toHom := ccmRationalAdelicNonunitalEpsilonOneCyclicHom
+  real_naturality n x := by
+    change (scalarConstantCyclicKReal.real n).sigma
+        (ccmRationalAdelicEpsilonOneCyclicHom.simplicial.app
+          (.op (.mk n)) x.1) =
+      ccmRationalAdelicEpsilonOneCyclicHom.simplicial.app
+        (.op (.mk n))
+        ((ccmRationalAdelicSourceCyclicKReal.real n).sigma x.1)
+    exact ccmRationalAdelicEpsilonOneCyclicKRealHom.real_naturality n x.1
+
 /-- Exact simultaneous endpoint kernel is stable under the source Real involution in every
 cyclic degree. -/
 theorem ccmRationalAdelicReducedSourceCyclic_real_stable (n : ℕ) :
-    (ccmRationalAdelicSourceCyclicKReal.real n).StableSubmodule
-      (ccmRationalAdelicEpsilonZeroCyclicHom.doubleKernelSubmodule
-        ccmRationalAdelicEpsilonOneCyclicHom (.op (.mk n))) := by
+    (ccmRationalAdelicNonunitalSourceCyclicKReal.real n).StableSubmodule
+      (ccmRationalAdelicNonunitalEpsilonZeroCyclicHom.doubleKernelSubmodule
+        ccmRationalAdelicNonunitalEpsilonOneCyclicHom (.op (.mk n))) := by
   intro x hx
-  rw [ccmRationalAdelicEpsilonZeroCyclicHom.mem_doubleKernelSubmodule_iff] at hx ⊢
+  rw [ccmRationalAdelicNonunitalEpsilonZeroCyclicHom.mem_doubleKernelSubmodule_iff] at hx ⊢
   constructor
   · calc
-      ccmRationalAdelicEpsilonZeroCyclicHom.simplicial.app
+      ccmRationalAdelicNonunitalEpsilonZeroCyclicHom.simplicial.app
           (.op (.mk n))
-          ((ccmRationalAdelicSourceCyclicKReal.real n).sigma x) =
+          ((ccmRationalAdelicNonunitalSourceCyclicKReal.real n).sigma x) =
         (scalarConstantCyclicKReal.real n).sigma
-          (ccmRationalAdelicEpsilonZeroCyclicHom.simplicial.app
+          (ccmRationalAdelicNonunitalEpsilonZeroCyclicHom.simplicial.app
             (.op (.mk n)) x) := by
-              simpa [ccmRationalAdelicEpsilonZeroCyclicKRealHom] using
-                (ccmRationalAdelicEpsilonZeroCyclicKRealHom.real_naturality
+              simpa [ccmRationalAdelicNonunitalEpsilonZeroCyclicKRealHom] using
+                (ccmRationalAdelicNonunitalEpsilonZeroCyclicKRealHom.real_naturality
                   n x).symm
       _ = 0 := by rw [hx.1, map_zero]
   · calc
-      ccmRationalAdelicEpsilonOneCyclicHom.simplicial.app
+      ccmRationalAdelicNonunitalEpsilonOneCyclicHom.simplicial.app
           (.op (.mk n))
-          ((ccmRationalAdelicSourceCyclicKReal.real n).sigma x) =
+          ((ccmRationalAdelicNonunitalSourceCyclicKReal.real n).sigma x) =
         (scalarConstantCyclicKReal.real n).sigma
-          (ccmRationalAdelicEpsilonOneCyclicHom.simplicial.app
+          (ccmRationalAdelicNonunitalEpsilonOneCyclicHom.simplicial.app
             (.op (.mk n)) x) := by
-              simpa [ccmRationalAdelicEpsilonOneCyclicKRealHom] using
-                (ccmRationalAdelicEpsilonOneCyclicKRealHom.real_naturality
+              simpa [ccmRationalAdelicNonunitalEpsilonOneCyclicKRealHom] using
+                (ccmRationalAdelicNonunitalEpsilonOneCyclicKRealHom.real_naturality
                   n x).symm
       _ = 0 := by rw [hx.2, map_zero]
 
@@ -186,16 +240,23 @@ theorem ccmRationalAdelicReducedSourceCyclic_real_stable (n : ℕ) :
 def ccmRationalAdelicReducedSourceCyclicKReal :
     CyclicModule.KReal false CCMRationalAdelicReducedSourceCyclicModule :=
   CyclicModule.doubleKernelKReal
-    ccmRationalAdelicSourceCyclicKReal
+    ccmRationalAdelicNonunitalSourceCyclicKReal
     scalarConstantCyclicKReal scalarConstantCyclicKReal
-    ccmRationalAdelicEpsilonZeroCyclicKRealHom
-    ccmRationalAdelicEpsilonOneCyclicKRealHom
+    ccmRationalAdelicNonunitalEpsilonZeroCyclicKRealHom
+    ccmRationalAdelicNonunitalEpsilonOneCyclicKRealHom
 
 @[simp]
 theorem ccmRationalAdelicReducedSourceCyclicKReal_sigma_coe
     (n : ℕ) (x : CCMRationalAdelicReducedSourceCyclicModule.simplicial.degree n) :
     ((ccmRationalAdelicReducedSourceCyclicKReal.real n).sigma x).1 =
-      (ccmRationalAdelicSourceCyclicKReal.real n).sigma x.1 :=
+      (ccmRationalAdelicNonunitalSourceCyclicKReal.real n).sigma x.1 :=
+  rfl
+
+@[simp]
+theorem ccmRationalAdelicReducedSourceCyclicKReal_sigma_ambient_coe
+    (n : ℕ) (x : CCMRationalAdelicReducedSourceCyclicModule.simplicial.degree n) :
+    ((ccmRationalAdelicReducedSourceCyclicKReal.real n).sigma x).1.1 =
+      (ccmRationalAdelicSourceCyclicKReal.real n).sigma x.1.1 :=
   rfl
 
 end GaloisForLFunctions.RHTower

@@ -2645,3 +2645,113 @@ identity forces every coefficient of the relation to vanish.
 
 All the mathematical content of Ostrowski's theorem is now formal.  What is left is the assembly --
 expanding a relation of the carrier into these pieces and applying them in order.
+
+## Claim (2): the fibre over a frequency is a set of permutations
+
+    tupleCount_apply : tupleCount n x = card {j | n j = x}
+    exists_perm_of_tupleCount_eq :
+      Function.Injective i -> tupleCount n = tupleCount i ->
+      exists sigma : Equiv.Perm (Fin m), n = i . sigma
+
+For an *injective* choice of frequencies, the tuples with the same multiset are exactly the
+permutations of that choice: each value occurs once in `i`, so the equality of counts forces `n` to
+be injective with the same range, and the induced map is a bijection of a finite type.
+
+This is what identifies the fibre sum of a monomial's expansion with an evaluation of `permSum`:
+over the frequency `omega_{i_1} + ... + omega_{i_m}` with distinct `i_l`, the fibre is the
+permutation orbit of `i`, so the fibre sum is `(prod_l a_{i_l})` times `permSum s` evaluated at
+`(i omega_{i_1}, ..., i omega_{i_m})`.
+
+That is the exact bridge between the analytic conclusion (fibre sums vanish) and the algebraic one
+(`eq_zero_of_permSum_combination`).  Remaining: state that bridge, and run the expansion.
+
+## Claim (2): the bridge lemma is proved
+
+`MonomialFiberAmplitude.lean` (wired, axiom-clean):
+
+    fiberPermEquiv : Equiv.Perm (Fin M)
+      ~= {n // tupleFrequency omega n = tupleFrequency omega i}      (i injective)
+
+    fiberAmplitude_monomial :
+      fiberAmplitude (fun n => prod_j a (n j) * (I omega (n j))^(s j)) (tupleFrequency omega)
+          (tupleFrequency omega i)
+        = (prod_l a (i l)) * eval (fun l => I omega (i l)) (permSum s)
+
+The amplitude a monomial carries at the frequency of an injective tuple is the product of the chosen
+amplitudes times the symmetrisation of that monomial, evaluated at the chosen frequencies.  This is
+exactly the object that the analytic half proves to be zero and that the algebraic half
+(`eq_zero_of_permSum_combination`) recognises as forcing the monomial's coefficient to vanish.
+
+Two Lean notes: `have hequiv := fiberPermEquiv ..` makes the equivalence opaque and blocks the
+definitional step -- use the term directly; and the permutation reindexing needs
+`Fintype.sum_equiv (Equiv.inv ..)` with both functions given explicitly.
+
+Every lemma Ostrowski's proof needs now exists in the corpus.  The last step is the expansion
+bookkeeping: writing a relation of the carrier as a polynomial combination of these monomials.
+
+## Claim (2): combining the monomials of a relation
+
+`ExponentialSeriesSigmaSum.lean` (wired, axiom-clean):
+
+    sum_expSeriesCarrier :
+      sum_c expSeriesCarrier (b c) (om c) t
+        = expSeriesCarrier (fun p : Sigma c, J c => b p.1 p.2) (fun p => om p.1 p.2) t
+
+    fiberAmplitude_sigma :
+      fiberAmplitude (disjoint union) nu = sum_c fiberAmplitude (b c) (om c) nu
+
+A differential relation has finitely many monomials, each expanding to an exponential series with
+its own index type; the disjoint union carries their sum, and the amplitude at a frequency is
+additive over the pieces.  Summability of the union comes from `summable_sigma_of_nonneg` applied to
+the norms, whose second condition is free over a finite index.
+
+So the analytic conclusion "every fibre amplitude of the relation vanishes" now reads: for each
+frequency, the *sum over the monomials* of their fibre amplitudes vanishes.  With
+`fiberAmplitude_monomial` that sum is
+`(prod_l a_{i_l}) * sum_s c_s * eval (permSum s)`, and `eq_zero_of_permSum_combination` finishes,
+provided the amplitudes `a_{i_l}` are nonzero -- which is the card's hypothesis that infinitely many
+amplitudes do not vanish.
+
+## Claim (2): the diagonal is not an obstruction
+
+    mvPolynomial_eq_zero_of_eval_eq_zero_on_infinite_pow_injective :
+      S.Infinite -> (forall x, (forall j, x j in S) -> Function.Injective x -> eval x p = 0) ->
+      p = 0
+
+The identities Ostrowski's argument produces hold only at tuples of *distinct* frequencies, since a
+repeated index changes the fibre.  Multiplying by the Vandermonde product
+`prod_{l /= l'} (X_l - X_{l'})` removes the restriction: the product vanishes on every tuple of `S^m`
+-- off the diagonal because `p` does, on the diagonal because the Vandermonde factor does -- so the
+product is zero, and `MvPolynomial (Fin m) C` being a domain with the Vandermonde product nonzero
+(`X_sub_X_ne_zero`, corpus-owned) gives `p = 0`.
+
+This was the last bridge.  The chain for Ostrowski is now complete as a sequence of proved lemmas;
+what remains is to instantiate it -- state the flattened relation, expand it through
+`iteratedDeriv_cexpSeriesCarrier`, `prod_expSeriesCarrier`, `sum_expSeriesCarrier`, kill the fibre
+amplitudes, rewrite them by `fiberAmplitude_monomial`, and apply
+`eq_zero_of_permSum_combination`.
+
+## Claim (2): a relation of the carrier IS one exponential series
+
+`OstrowskiRelationCarrier.lean` (wired, axiom-clean):
+
+    monomial_eq_expSeriesCarrier :
+      c * prod_j (iteratedDeriv (s j) (cexpSeriesCarrier a omega)) t
+        = expSeriesCarrier (monomialAmplitude a omega c s) (tupleFrequency omega) t
+
+    expSeriesCarrier_sigma_eq_zero :
+      (forall t, sum_{s in K} c s * prod_j iteratedDeriv (s j) f t = 0) ->
+      the disjoint-union exponential series vanishes identically
+
+The first is the expansion: each jet is a carrier with amplitudes scaled by `(i omega)^k`
+(`iteratedDeriv_cexpSeriesCarrier`), the product over the jet slots is a carrier over tuples
+(`prod_expSeriesCarrier`), and the coefficient is absorbed into the amplitude.  The second collects
+the finitely many monomials into a single series over `Sigma s in K, (Fin M -> iota)`
+(`sum_expSeriesCarrier`), with the summability supplied at each stage by
+`ExpSeriesNormallySummable.iteratedDeriv` and `summable_norm_prod_expSeries`.
+
+So a vanishing monomial combination is literally a vanishing exponential series, and
+`fiberAmplitude_eq_zero_of_expSeriesCarrier_eq_zero` applies to it.  The remaining step is to
+evaluate that fibre amplitude at the frequency of an injective tuple -- where `fiberAmplitude_sigma`
+splits it over the monomials and `fiberAmplitude_monomial` turns each piece into `permSum` -- and
+then conclude by the two vanishing theorems.

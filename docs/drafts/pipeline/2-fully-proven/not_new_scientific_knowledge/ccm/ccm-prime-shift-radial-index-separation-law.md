@@ -148,11 +148,37 @@ After removing CCM notation, `(5)`--`(9)` are elementary divisor reindexing. The
 correction, not new scientific knowledge. Its significance is operational: it invalidates the
 identification of a prime-shift cutoff with a radial-index cutoff.
 
-## Lean decision
+## Lean status
 
-`ApertureShiftCutoff.lean` already formalizes the prime-shift cutoff. The truncated-divisor
-reindexing would require finite/infinite summation infrastructure but adds no new mathematical
-content. No Lean file is added.
+**Superseded, 2026-08-03.**  Formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/CCMTruncatedDivisorReindex.lean`.  `ApertureShiftCutoff.lean`
+covers the prime-shift cutoff and is untouched; nothing is duplicated.
+
+The previous decision judged the reindexing to "add no new mathematical content".  That is true of the
+mathematics and irrelevant to the gate: the reindexing is the load-bearing step of the card's
+correction, and formalizing it is what certifies that a prime-shift cutoff is *not* a radial-index
+cutoff.
+
+- `truncatedDivisorWeight X k` — definition `(5)`, `a_X k = ∑_{q ∣ k, 2 ≤ q ≤ X} Λ q`.
+- `truncatedDivisorWeight_eq_filter_le` — the lower restriction `2 ≤ q` is vacuous, since the only
+  divisor below `2` is `1` and `Λ 1 = 0`.
+- **`sum_shift_eq_sum_truncatedDivisorWeight`** — equations `(4)`--`(6)`, the exact reindexing.  The
+  bijection `(q, n) ↦ (q * n, q)` matches visible shift/multiplier pairs with index/divisor pairs;
+  this is where the card's `2 ≤ q` restriction earns its keep, since `q = 1` would break injectivity.
+- **`truncatedDivisorWeight_nonneg`** and **`truncatedDivisorWeight_le_log`** — equation `(7)`, using
+  mathlib's divisor identity `∑_{q ∣ k} Λ q = log k`.
+- **`truncatedDivisorWeight_eq_log_of_le`** — equation `(8)`.
+- **`truncatedDivisorWeight_eventually_eq_log`** — equation `(9)`.
+- `truncatedDivisorWeight_mono` — the weight is monotone in the cutoff, which is the precise sense in
+  which raising the prime cutoff only *adds* divisor mass and never removes a radial index.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+Not formalized, and not this card's own proofs: the analytic Gram estimates
+`G_lambda(k,k)/d_1 ≤ C/k²` and `(12)`, the dominated-convergence evaluation `(11)`, and the tail
+bound `(15)`, which the card imports from
+`ccm-exact-high-radial-first-row-bv-bound.md`.
 
 ## Gates
 
@@ -162,3 +188,5 @@ content. No Lean file is added.
 - [x] nonstationary sector preserved
 - [x] high radial first-row tail isolated
 - [x] prove the truncated-divisor weighted tail `(15)`
+- [x] Lean: truncated divisor weight `(5)` and the exact reindexing `(4)`--`(6)` unconditional
+- [x] Lean: weight bounds `(7)`, saturation `(8)`--`(9)`, and cutoff monotonicity
