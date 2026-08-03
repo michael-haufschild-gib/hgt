@@ -55,8 +55,8 @@ def orderShiftIntensityRow (c z : ℂ) : Fin 4 → Fin 3 → ℂ
       orderShiftR c z]
 
 /-- Matrix whose rows are three selected intensity forms. -/
-def orderShiftIntensityMinor (c z : ℂ) (omit : Fin 4) : Matrix (Fin 3) (Fin 3) ℂ :=
-  match omit with
+def orderShiftIntensityMinor (c z : ℂ) (missing : Fin 4) : Matrix (Fin 3) (Fin 3) ℂ :=
+  match missing with
   | 0 => ![orderShiftIntensityRow c z 1,
       orderShiftIntensityRow c z 2,
       orderShiftIntensityRow c z 3]
@@ -85,7 +85,7 @@ theorem orderShiftIntensityCoeff_zero (c z : ℂ) :
 
 theorem orderShiftIntensityCoeff_three (c z : ℂ) :
     orderShiftIntensityCoeff c z 3 =
-      (z - 1) * orderShiftAlpha c z + (z + 1) := by
+      c * ((z - 1) * orderShiftAlpha c z + (z + 1)) := by
   simp [orderShiftIntensityCoeff, orderShiftIntensityMinor, orderShiftIntensityRow,
     Matrix.det_fin_three]
   ring
@@ -97,15 +97,15 @@ theorem orderShiftIntensityCoeff_zero_function_ne_zero {c : ℂ} (hc : c ≠ 0) 
   have h0 := congrFun h 0
   rw [Pi.zero_apply, orderShiftIntensityCoeff_zero] at h0
   simp [orderShiftA, orderShiftAlpha] at h0
-  exact hc (by linear_combination h0 / 2)
+  exact hc h0
 
-/-- The last scalar-annihilator coefficient is never the zero function. -/
-theorem orderShiftIntensityCoeff_three_function_ne_zero (c : ℂ) :
+/-- The last scalar-annihilator coefficient is not the zero function when `c ≠ 0`. -/
+theorem orderShiftIntensityCoeff_three_function_ne_zero {c : ℂ} (hc : c ≠ 0) :
     (fun z => orderShiftIntensityCoeff c z 3) ≠ 0 := by
   intro h
   have h1 := congrFun h 1
   rw [Pi.zero_apply, orderShiftIntensityCoeff_three] at h1
-  norm_num at h1
+  norm_num [hc] at h1
 
 /-- Each of the four shifted intensities is the advertised rational linear form on the
 symmetric-square state. -/
@@ -118,19 +118,18 @@ theorem orderShiftIntensity_add_nat_eq_state
   have h0 := hy z
   have h1 := hy (z + 1)
   have h2 := hy (z + 2)
+  have hm0 : y z = y (z - 2) + c * (z - 1) * y (z - 1) := by
+    convert hm using 1 <;> ring
   have hm' : y (z - 2) = y z - c * (z - 1) * y (z - 1) := by
-    convert sub_eq_iff_eq_add.mpr hm.symm using 1 <;> ring
+    exact (eq_sub_iff_add_eq).2 hm0.symm
   have h0' : y (z + 1) = y (z - 1) + c * z * y z := h0
   have h1' : y (z + 2) = y z + c * (z + 1) * y (z + 1) := by
     convert h1 using 1 <;> ring
   have h2' : y (z + 3) = y (z + 1) + c * (z + 2) * y (z + 2) := by
     convert h2 using 1 <;> ring
   fin_cases j <;>
-    simp only [Fin.isValue, Fin.val_zero, Fin.val_one, Fin.val_two, Fin.val_three,
-      Nat.cast_zero, Nat.cast_one, Nat.cast_ofNat, add_zero,
-      orderShiftIntensity, orderShiftIntensityRow, orderShiftSymmetricState,
-      Fin.sum_univ_three, Matrix.cons_val_zero, Matrix.cons_val_one,
-      Matrix.cons_val_two]
+    simp [orderShiftIntensity, orderShiftIntensityRow, orderShiftSymmetricState,
+      Fin.sum_univ_three]
   · rw [hm']
     ring
   · rw [h0']
@@ -139,6 +138,7 @@ theorem orderShiftIntensity_add_nat_eq_state
     simp only [orderShiftAlpha]
     ring
   · rw [h2', h1', h0']
+    rw [show z + 3 - 2 = z + 1 by ring, h0']
     simp only [orderShiftAlpha, orderShiftA, orderShiftR]
     ring
 
@@ -158,12 +158,22 @@ theorem orderShiftIntensity_scalar_annihilator
     ∑ j : Fin 4,
       orderShiftIntensityCoeff c z j * orderShiftIntensity y (z + (j : ℕ)) = 0 := by
   simp_rw [orderShiftIntensity_add_nat_eq_state hy z]
-  rw [← Finset.sum_mul]
-  simp_rw [Finset.mul_sum]
-  rw [Finset.sum_comm]
-  refine Finset.sum_eq_zero fun k _ => ?_
-  rw [← Finset.sum_mul]
-  simp only [sum_orderShiftIntensityCoeff_mul_row_eq_zero, zero_mul]
+  calc
+    ∑ j : Fin 4, orderShiftIntensityCoeff c z j *
+        ∑ k : Fin 3, orderShiftIntensityRow c z j k * orderShiftSymmetricState y z k =
+        ∑ k : Fin 3, (∑ j : Fin 4,
+          orderShiftIntensityCoeff c z j * orderShiftIntensityRow c z j k) *
+            orderShiftSymmetricState y z k := by
+      simp_rw [Finset.mul_sum]
+      rw [Finset.sum_comm]
+      apply Finset.sum_congr rfl
+      intro k _
+      rw [Finset.sum_mul]
+      apply Finset.sum_congr rfl
+      intro j _
+      ring
+    _ = 0 := by
+      simp [sum_orderShiftIntensityCoeff_mul_row_eq_zero]
 
 /-! Polynomial realization of the annihilator coefficients. -/
 
@@ -185,9 +195,9 @@ def orderShiftIntensityRowPoly (c : ℂ) : Fin 4 → Fin 3 → Polynomial ℂ
       orderShiftAPoly c + Polynomial.C c * Polynomial.X * orderShiftRPoly c,
       orderShiftRPoly c]
 
-def orderShiftIntensityMinorPoly (c : ℂ) (omit : Fin 4) :
+def orderShiftIntensityMinorPoly (c : ℂ) (missing : Fin 4) :
     Matrix (Fin 3) (Fin 3) (Polynomial ℂ) :=
-  match omit with
+  match missing with
   | 0 => ![orderShiftIntensityRowPoly c 1,
       orderShiftIntensityRowPoly c 2,
       orderShiftIntensityRowPoly c 3]
@@ -214,25 +224,26 @@ theorem eval_orderShiftIntensityCoeffPoly (c z : ℂ) (j : Fin 4) :
     simp [orderShiftIntensityCoeffPoly, orderShiftIntensityMinorPoly,
       orderShiftIntensityRowPoly, orderShiftAlphaPoly, orderShiftAPoly, orderShiftRPoly,
       orderShiftIntensityCoeff, orderShiftIntensityMinor, orderShiftIntensityRow,
-      orderShiftAlpha, orderShiftA, orderShiftR, Matrix.det_fin_three] <;>
-    ring
+      orderShiftAlpha, orderShiftA, orderShiftR, Matrix.det_fin_three]
 
 theorem orderShiftIntensityCoeffPoly_zero_ne_zero {c : ℂ} (hc : c ≠ 0) :
     orderShiftIntensityCoeffPoly c 0 ≠ 0 := by
   intro h
   have h0 := congrArg (Polynomial.eval 0) h
-  rw [map_zero, eval_orderShiftIntensityCoeffPoly,
-    orderShiftIntensityCoeff_zero] at h0
-  simp [orderShiftA, orderShiftAlpha] at h0
-  exact hc (by linear_combination h0 / 2)
+  have h0' : (orderShiftIntensityCoeffPoly c 0).eval 0 = 0 := by simpa using h0
+  rw [eval_orderShiftIntensityCoeffPoly,
+    orderShiftIntensityCoeff_zero] at h0'
+  simp [orderShiftA, orderShiftAlpha] at h0'
+  exact hc h0'
 
-theorem orderShiftIntensityCoeffPoly_three_ne_zero (c : ℂ) :
+theorem orderShiftIntensityCoeffPoly_three_ne_zero {c : ℂ} (hc : c ≠ 0) :
     orderShiftIntensityCoeffPoly c 3 ≠ 0 := by
   intro h
   have h1 := congrArg (Polynomial.eval 1) h
-  rw [map_zero, eval_orderShiftIntensityCoeffPoly,
-    orderShiftIntensityCoeff_three] at h1
-  norm_num at h1
+  have h1' : (orderShiftIntensityCoeffPoly c 3).eval 1 = 0 := by simpa using h1
+  rw [eval_orderShiftIntensityCoeffPoly,
+    orderShiftIntensityCoeff_three] at h1'
+  norm_num [hc] at h1'
 
 end
 

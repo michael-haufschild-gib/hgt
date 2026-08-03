@@ -188,3 +188,37 @@ Stages (each unconditional, each wired into the umbrella when it lands):
    `woldBreadthDeviationRate_pos`.
 
 Stage 1 and 2 are elementary and start now.
+
+### Stage 1–4 landed (2026-08-03) — sieve core is built and unconditional
+
+Five new modules under `formal/GaloisForLFunctions/RHTower/Sieve/`, all wired into
+`GaloisForLFunctions/RHTower.lean`, all building, all with
+`#print axioms = [propext, Classical.choice, Quot.sound]`:
+
+| module | content |
+|-|-|
+| `IntervalMultiples.lean` | `card_filter_dvd_Ioc` (exact count of multiples of `d` in `Ioc a b`), `abs_card_filter_dvd_Ioc_sub_lt` (`\|count − (b−a)/d\| < 1`) |
+| `TruncatedMoebius.lean` | `alternating_choose_partialSum`, `sum_divisors_moebius_filter_card_le` (exact truncated value `(−1)^r C(ω m − 1, r)`), and both Bonferroni inequalities |
+| `BrunPure.lean` | `card_coprime_Ioc_le` / `le_card_coprime_Ioc` — Brun's pure sieve on `Ioc a b` with main term `(b−a) ∑_{d ∣ m, ω d ≤ r} μ d/d` and error `#truncDivisors m r`; plus `coprime_prod_primes_iff` |
+| `MainTerm.lean` | `sum_divisors_moebius_div_eq_prod` (`∑_{d ∣ m} μ d/d = ∏_{p ∣ m}(1−1/p)`), `card_truncDivisors` (`= ∑_{j ≤ r} C(ω m, j)`), and the graded description of the discarded divisors |
+| `TruncationDefect.lean` | `abs_sum_truncDivisors_moebius_div_sub_prod_le`, and the capstones `card_coprime_Ioc_le_prod` / `prod_sub_le_card_coprime_Ioc` |
+
+The capstone, for squarefree `m`, `a ≤ b`, even `r`, any tilt `λ ≥ 1`:
+
+```text
+#{n ∈ (a,b] : gcd(n,m)=1}
+  ≤ (b−a) ∏_{p ∣ m}(1−1/p)
+    + (b−a) λ^{−r} ∏_{p ∣ m}(1+λ/p)
+    + #{d ∣ m : ω d ≤ r},
+```
+with the mirror lower bound at odd `r`.
+
+**Method note.**  The classical treatment bounds the truncation tail by the elementary symmetric
+functions and Maclaurin's inequality `j! e_j ≤ S^j`.  That is replaced here by an exponential
+tilt: every discarded divisor has `ω d > r`, so `λ^r/d ≤ λ^{ω d}/d`, and
+`∑_{d ∣ m} λ^{ω d}/d = ∏_{p ∣ m}(1+λ/p)` is a one-line `Finset.prod_add`.  Choosing
+`λ ≍ r / ∑_{p ∣ m} 1/p` recovers the same geometric decay with no factorial and no symmetric
+function theory.  This is why stage 4 landed in one pass.
+
+Remaining: stage 5 (`Shiu.lean`, the `z^{ω(n)}` short-interval bound `(6)`) and stage 6
+(`(7)`–`(9)`).

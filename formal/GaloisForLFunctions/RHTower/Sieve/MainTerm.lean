@@ -26,7 +26,7 @@ theorem card_primeFactors_le_of_dvd {d m : ℕ} (hd : d ∣ m) (hm : m ≠ 0) :
   Finset.card_le_card (Nat.primeFactors_mono hd hm)
 
 /-- At the full truncation level the Brun divisor set is the whole divisor set. -/
-theorem truncDivisors_card_primeFactors {m : ℕ} (hm : m ≠ 0) :
+theorem truncDivisors_card_primeFactors {m : ℕ} :
     truncDivisors m m.primeFactors.card = m.divisors := by
   ext d
   simp only [mem_truncDivisors, Nat.mem_divisors]
@@ -42,7 +42,7 @@ theorem sum_divisors_eq_sum_powerset {m : ℕ} (hm : Squarefree m)
     ∑ d ∈ m.divisors, f d = ∑ t ∈ m.primeFactors.powerset, f (∏ p ∈ t, p) := by
   have hfull := sum_divisors_filter_card_primeFactors_le hm m.primeFactors.card f
   have hleft : {d ∈ m.divisors | d.primeFactors.card ≤ m.primeFactors.card} = m.divisors := by
-    have := truncDivisors_card_primeFactors hm.ne_zero
+    have := truncDivisors_card_primeFactors (m := m)
     simpa [truncDivisors] using this
   have hright :
       {t ∈ m.primeFactors.powerset | t.card ≤ m.primeFactors.card} = m.primeFactors.powerset := by
@@ -132,10 +132,10 @@ theorem sum_divisors_sdiff_truncDivisors {m : ℕ} (hm : Squarefree m) (r : ℕ)
       Finset.mem_powersetCard, not_le]
     constructor
     · rintro ⟨hsub, hcard⟩
+      have hle : t.card ≤ m.primeFactors.card := Finset.card_le_card hsub
       exact ⟨t.card, ⟨hcard, by omega⟩, hsub, rfl⟩
     · rintro ⟨j, ⟨hj1, -⟩, hsub, rfl⟩
       exact ⟨hsub, by omega⟩
-    all_goals skip
   rw [hsplit, Finset.sum_biUnion]
   intro i _ j _ hij
   refine Finset.disjoint_left.2 ?_

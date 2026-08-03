@@ -401,4 +401,20 @@ theorem exists_twoLocalDiagonalBase_zeroTransverse (n : ℕ) :
   · exact hpos
   · exact hgap
 
+
+theorem edgeShiftDirection_constant (i : Fin n) :
+    edgeShiftDirection i HypercubeTwoLocalParameter.constant = 1 := by
+  simp [edgeShiftDirection]
+
+theorem edgeShiftDirection_onsite (i j : Fin n) :
+    edgeShiftDirection i (.onsite j) = if j = i then -2 else 0 := by
+  by_cases hj : j = i
+  · subst hj
+    simp [edgeShiftDirection]
+  · simp [edgeShiftDirection, hj]
+
+theorem edgeShiftDirection_interaction (i j k : Fin n) :
+    edgeShiftDirection i (.interaction j k) = 0 := by
+  simp [edgeShiftDirection]
+
 end GaloisForLFunctions.HTGeometry

@@ -542,3 +542,139 @@ realisation has ramification decoration `(1,3,2)`, whereas this all-ramified Air
 realisation has `(2,3,4)`. Diagram equality alone must not be promoted to an isomorphism of
 the resulting wild character varieties; the proved conclusion is the new Stokes realisation and
 the precise difference in fission data.
+
+## 15. Exact recognition of elementary loopless decorated graphs
+
+The preceding two-circle theorem extends to an if-and-only-if global recognition theorem.
+
+### 15.1 Elementary vertex types
+
+An elementary loopless Stokes circle is either
+
+1. unramified, recorded by `r=1`, or
+2. simple Airy of ramification `r>1`, with the unique level `(r+1)/r`.
+
+For positive integers `r,s` define the elementary pair spectrum `Spec(r,s)` by
+
+```text
+Spec(1,1) = N_(>=0),
+Spec(1,s) = {1} union s*N_(>0)                         (s>1),
+Spec(r,s) = {max(r,s)} union rs*N_(>0)                 (1<r!=s>1),
+Spec(r,r) = {0,1,...,r} union r^2*N_(>0)               (r>1).
+```
+
+For a decorated graph `(B,r)` put
+
+```text
+w_ij=B_ij/(r_i r_j),  i!=j.
+```
+
+### 15.2 Recognition theorem
+
+**Theorem 15.1 (elementary Stokes--Cartan recognition).** Let `N` be a finite labelled set,
+`B` a symmetric nonnegative integer matrix with zero diagonal, and `r_i>=1` a decoration.
+The following are equivalent.
+
+1. `(B,r)` is the decorated core diagram of an irregular class of elementary loopless Stokes
+   circles.
+2. Both finite conditions hold:
+
+   ```text
+   B_ij in Spec(r_i,r_j) for every i!=j,
+   w_ij<=w_ik<=w_jk  =>  w_ik=w_jk
+   ```
+
+   for all pairwise distinct `i,j,k`.
+
+Moreover the proof reconstructs explicit Puiseux polynomials. Recognition takes `O(|N|^3)`
+rational comparisons after pair-spectrum membership checks.
+
+### 15.3 Necessity
+
+The pair-spectrum condition is Theorem 12.1 and its unramified variants. The rescaled
+ultrametric condition is the general necessary theorem for decorated nonabelian Hodge diagrams.
+
+### 15.4 Dendrogram lemma
+
+We use the standard finite-ultrametric construction in a coefficient form.
+
+**Lemma 15.2.** Let `X` be finite and `d:X^2->L` a symmetric function into a finite totally
+ordered set, zero on the diagonal, such that the two largest values on every triangle agree.
+For the maximal value `D`, the relation
+
+```text
+x ~ y  <=>  x=y or d(x,y)<D
+```
+
+is an equivalence relation. Distinct classes may be assigned coefficients in any infinite field
+so that two leaves first differ at the coefficient attached to `D`; recursion on the classes
+realises the entire ultrametric as a highest-difference dendrogram.
+
+**Proof.** Symmetry and reflexivity are immediate. If `d(x,y)<D` and `d(y,z)<D` but
+`d(x,z)=D`, the triangle would have a unique largest side, contradicting the hypothesis.
+Thus the relation is transitive. Assign distinct coefficients to its finitely many classes and
+recurse. `QED`
+
+### 15.5 Sufficiency: high unramified levels
+
+Apply Lemma 15.2 to the largest normalized weights that are positive integers. Pair-spectrum
+membership implies that every such value `n` corresponds to a first difference at the common
+unramified exponent `n+1`. Assign distinct complex coefficients to the child clusters at
+`z^(n+1)` and recurse. Integer exponents are admissible and inconsequential for every vertex
+type. After finitely many steps, all remaining pair weights are `<1`.
+
+### 15.6 Sufficiency: characteristic levels
+
+In a remaining cluster, let `r>1` be the smallest ramification order among its ramified leaves;
+treat unramified leaves as having order `infinity`. Pair-spectrum membership now forces:
+
+1. every pair consisting of an `r`-leaf and a leaf of larger order has weight `1/r`;
+2. every pair of `r`-leaves has weight at most `1/r`;
+3. every pair of leaves of larger order has weight strictly below `1/r`.
+
+Thus the equivalence classes for `w<1/r` consist of some blocks of `r`-leaves, together with
+at most one block containing every larger-order and unramified leaf. Assign to the `r`-blocks
+nonzero coefficients at
+
+```text
+z^(1+1/r)
+```
+
+whose `r`-th powers are pairwise distinct, and assign coefficient zero to the possible remaining
+block. This is exactly fission-tree case 2(b), or case 2(a) when the remaining empty child is
+present: mandatory siblings are separated up to their `mu_r` Galois action, and there is at
+most one empty child. Recurse on the remaining block using the next ramification order.
+
+### 15.7 Sufficiency: lower Airy levels
+
+Inside one `r`-block, every pair weight is `b/r^2` with `0<=b<=r-1`. For the maximal
+numerator `b`, Lemma 15.2 partitions the block by smaller weight. Assign distinct coefficients
+to its child clusters at the inconsequential exponent
+
+```text
+(b+1)/r.
+```
+
+The rescaled edge formula then gives `b/r^2`, equivalently edge multiplicity `b`. Recurse
+until singleton leaves remain. At `b=0`, pairwise distinct coefficients at `z^(1/r)` realise
+edge zero. All these lower exponents are admissible but introduce no new characteristic level,
+because ramification `r` was already reached at `(r+1)/r`.
+
+After all ramified blocks have been removed, any residual unramified block has pair weight zero;
+pairwise distinct coefficients at `z` realise it.
+
+### 15.8 Completion of proof
+
+Combining the high integer, characteristic, and lower recursions gives finite Puiseux polynomials
+`q_i`. Every `r_i>1` polynomial has exactly one mandatory level `(r_i+1)/r_i`, hence is a
+simple Airy circle with zero diagonal by Theorem 9.3; every `r_i=1` polynomial is unramified.
+At each recursive split, the chosen exponent is the highest exponent where leaves in distinct
+children differ. The edge computations in Sections 12 and 15.5--15.7 therefore give exactly
+`B_ij` for every pair. The fission sibling conditions are satisfied at every node, so the
+fission-tree realisation theorem supplies the corresponding irregular class. This proves
+`(2)=>(1)` and completes Theorem 15.1. `QED`
+
+**Corollary 15.3.** Fixed-decoration recognition on the elementary locus is constructive and
+cubic-time. It supplies infinitely many forbidden two-vertex and higher graphs not detected by
+rescaled ultrametricity alone, while proving that no further obstruction exists after the exact
+local spectra are imposed.
