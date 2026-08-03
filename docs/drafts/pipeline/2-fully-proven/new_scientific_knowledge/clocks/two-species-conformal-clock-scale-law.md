@@ -902,9 +902,32 @@ functions of `η`, `∂ξ U(ξ) = A(ξ)U(ξ)` with `(A(ξ)v)(η) = ∫_b^η K(ξ
   bounded continuous functions, with **`‖A(ξ)U‖ ≤ M(b'-b)‖U‖`** and the matching Lipschitz bound.
 
 Those two estimates are exactly the hypotheses `IsPicardLindelof` requires of a vector field, and
-mathlib's Picard–Lindelöf theorem is stated for an arbitrary Banach space. What remains for the
-two-dimensional case is the continuity of `ξ ↦ A(ξ)U`, the assembly into `IsPicardLindelof`, and the
-recovery of the mixed second derivative from the resulting integral equation.
+mathlib's Picard–Lindelöf theorem is stated for an arbitrary Banach space.
+
+`formal/GaloisForLFunctions/HTGeometry/ClockVolterraParameter.lean` supplies the third hypothesis,
+the dependence on the characteristic parameter:
+
+- `exists_kernel_bound` — a continuous kernel is bounded on a compact rectangle;
+- `exists_kernel_delta` — and uniformly continuous there, in `ε`–`δ` form;
+- `abs_clampTo_sub_le` — clamping to an interval is nonexpansive;
+- `abs_volterraFun_kernel_sub_le` — changing the kernel changes the operator by at most the kernel
+  gap;
+- `goursatBCF`, `continuous_goursatBCF` — the vector field of the characteristic ODE, with both
+  variables clamped to the rectangle so the bounds are global, and **its continuity in `ξ` in the
+  norm of the Banach space**.
+
+`formal/GaloisForLFunctions/HTGeometry/ClockGoursatSolution.lean` assembles them:
+
+- `norm_goursatBCF_le`, `dist_goursatBCF_le` — the vector-field bounds in the exact form the
+  structure asks for;
+- `exists_goursat_solution` — **the characteristic ODE has a local solution**: for every continuous
+  kernel and every `ξ₀` there is `h > 0` and `α : ℝ → (ℝ →ᵇ ℝ)` with `α(ξ₀) = 1` and
+  `∂ξ α(ξ) = A(ξ)α(ξ)` on `[ξ₀-h, ξ₀+h]`.
+
+This is the analytic content of Riemann's method, and it is unconditional. What remains for the
+two-dimensional case is to read the mixed second derivative off that solution: evaluating at a
+second null coordinate and differentiating gives `∂ξ∂η u = K u`, after which the equivalence above
+converts it into a clock probe.
 
 So the last open input of the whole programme is now stated in its physical form:
 

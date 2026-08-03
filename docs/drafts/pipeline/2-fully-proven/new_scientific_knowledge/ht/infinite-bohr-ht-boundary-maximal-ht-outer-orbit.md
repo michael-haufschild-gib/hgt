@@ -1758,3 +1758,48 @@ opaque and do the reindexing separately:
 3. only then match the two, using `expandedDifferentialEvaluationMatrix_apply` to expose the entry.
 
 Keeping steps 1 and 2 apart is what avoids the instance mismatch.
+
+## Lean progress: a relation IS a matrix row
+
+The route recorded in the previous entry works.
+
+- **`sum_fin_card_prod_eq`** -- reindexing a rectangle sum: a sum over `Fin s.card × Fin (q+1)` with
+  the first coordinate read through the canonical enumeration of a finite set is the double sum over
+  that set and the range of degrees.  Stated with no structure projections, so the `Fintype`
+  instances on the two sides stay aligned;
+- **`mulVec_relationCoeffVector_eq_eval`** --
+
+    `mulVec (expanded evaluation matrix of relationShapeOf P) (relationCoeffVector P) b
+       = eval (node z_b, jets y_b) P`.
+
+  A differential relation *is* the evaluation matrix applied to its own coefficient vector, row by
+  row.
+
+Combined with `relationCoeffVector_ne_zero` this says: a nonzero relation holding at a packet of
+nodes produces a *nonzero* vector in the kernel of that shape's evaluation matrix at those nodes.
+And `residual_perturbedOuterJet_shape_rigidity` says that kernel is trivial for a residual set of mass
+parameters.  Claim (9) is exactly the collision of those two statements.
+
+The last matching left is notational: the observation `familyOuterObservation` folds the (member,
+order) jet index with `sigmaJetIndexEquiv`, while the relation side folds it with
+`familyJetVariablesEquiv`; both are built from `finProdFinEquiv`, and the composition only needs them
+to be the same identification.
+
+## Lean progress: the algebraic side of (9) is closed
+
+**`eq_zero_of_mulVec_rigid`** -- if a relation holds at a packet of nodes and the only vector
+annihilated by its shape's evaluation matrix there is zero, then the relation itself is zero.
+
+This is the whole algebraic half of the card's transversality argument, in one statement.  Its two
+hypotheses are exactly what the two other halves supply:
+
+- `hrel` -- the differential relation holds at each node, which is what
+  `FamilyDifferentiallyAlgebraicOn` gives on a domain containing them;
+- `hrigid` -- the evaluation matrix has trivial kernel there, which is
+  `residual_perturbedOuterJet_shape_rigidity` for a residual set of mass parameters.
+
+So the card's residual theorem (9) is now the composition of three named theorems.  All that is left
+is to write that composition: instantiate `hrigid` from the rigidity theorem (matching the two folds
+of the jet index, both built from `finProdFinEquiv`), and instantiate `hrel` from the definition of
+`FamilyDifferentiallyAlgebraicOn` at the admissible nodes, which lie in the upper half plane -- the
+common domain of a family of *real* translates.

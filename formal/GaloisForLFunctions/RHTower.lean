@@ -1464,6 +1464,7 @@ import GaloisForLFunctions.RHTower.DeningerRootFactor
 import GaloisForLFunctions.RHTower.DeningerRootNotIsolated
 import GaloisForLFunctions.RHTower.DeningerGaloisPacket
 import GaloisForLFunctions.RHTower.DeningerFreeProductVanishing
+import GaloisForLFunctions.RHTower.DeningerIndSubsingleton
 import GaloisForLFunctions.RHTower.DeningerUnitaryFlowRieszPurity
 import GaloisForLFunctions.RHTower.DeningerUnitaryHarmonicAction
 import GaloisForLFunctions.RHTower.DeningerWeightOnePolarization
@@ -3134,6 +3135,7 @@ import GaloisForLFunctions.RHTower.Sieve.SeparatedPoints
 import GaloisForLFunctions.RHTower.Sieve.SeparatedRowSum
 import GaloisForLFunctions.RHTower.Sieve.CircleSeparation
 import GaloisForLFunctions.RHTower.Sieve.CircleDistance
+import GaloisForLFunctions.RHTower.Sieve.CircleRowSum
 import GaloisForLFunctions.RHTower.Sieve.ChernoffTails
 import GaloisForLFunctions.RHTower.Sieve.GeometricMeanDivisor
 import GaloisForLFunctions.RHTower.Sieve.IntervalMultiples

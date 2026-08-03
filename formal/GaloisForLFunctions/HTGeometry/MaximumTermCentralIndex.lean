@@ -935,11 +935,12 @@ set_option maxHeartbeats 1000000 in
 /-- **The full deviation estimate.**  Splitting at the two central indices bounds the deviation
 series by the window width times the majorant, plus two remainders each proportional to the maximum
 term, with constants fixed by the radius ratios alone. -/
-theorem tsum_index_deviation_le
+theorem tsum_index_deviation_le_of_window_le
     (ha : EntireCoeffs a) (ht : 0 < t) (htr : t < r) (hrs : r < s)
-    {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
+    {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {W : ℝ}
+    (hW : ∑ n ∈ Finset.Ico (centralIndex a t) (centralIndex a s + 1), ‖a n‖ * r ^ n ≤ W) :
     ∑' n : ℕ, |(n : ℝ) - (centralIndex a r : ℝ)| * (‖a n‖ * r ^ n)
-      ≤ ((centralIndex a s : ℝ) - (centralIndex a t : ℝ)) * coeffSum a r
+      ≤ ((centralIndex a s : ℝ) - (centralIndex a t : ℝ)) * W
         + (centralIndex a r : ℝ) * (maxTerm a r * (t / r) / (1 - t / r))
         + maxTerm a r * ((centralIndex a s : ℝ) + 1)
             * ∑' j : ℕ, ((1 : ℝ) + j) * (r / s) ^ (j + 1) := by
@@ -996,13 +997,13 @@ theorem tsum_index_deviation_le
     rwa [Finset.range_eq_Ico] at this
   -- window part
   have hwin : ∑ n ∈ Finset.Ico m (k + 1), D n
-      ≤ ((k : ℝ) - (m : ℝ)) * coeffSum a r := by
+      ≤ ((k : ℝ) - (m : ℝ)) * W := by
     have hstep := sum_window_index_deviation_le ha ht htr hrs hn₀
     rw [← hk, ← hm, ← hv] at hstep
     refine le_trans hstep (mul_le_mul_of_nonneg_left ?_ (by
       have : (m : ℝ) ≤ (k : ℝ) := by exact_mod_cast le_trans hmv hvk
       linarith))
-    exact (summable_term ha hr).sum_le_tsum _ (fun n _ => term_nonneg a hr n)
+    exact hW
   -- upper tail
   have hup : ∑' j : ℕ, D (j + (k + 1))
       ≤ maxTerm a r * ((k : ℝ) + 1) * ∑' j : ℕ, ((1 : ℝ) + j) * q ^ (j + 1) := by
@@ -1038,12 +1039,25 @@ theorem tsum_index_deviation_le
     _ = (∑ n ∈ Finset.Ico 0 m, D n) + (∑ n ∈ Finset.Ico m (k + 1), D n)
         + ∑' j : ℕ, D (j + (k + 1)) := by rw [hcons]
     _ ≤ (v : ℝ) * (maxTerm a r * (t / r) / (1 - t / r))
-        + ((k : ℝ) - (m : ℝ)) * coeffSum a r
+        + ((k : ℝ) - (m : ℝ)) * W
         + maxTerm a r * ((k : ℝ) + 1) * ∑' j : ℕ, ((1 : ℝ) + j) * q ^ (j + 1) := by
         gcongr
-    _ = ((k : ℝ) - (m : ℝ)) * coeffSum a r
+    _ = ((k : ℝ) - (m : ℝ)) * W
         + (v : ℝ) * (maxTerm a r * (t / r) / (1 - t / r))
         + maxTerm a r * ((k : ℝ) + 1) * ∑' j : ℕ, ((1 : ℝ) + j) * q ^ (j + 1) := by ring
+
+/-- The deviation estimate with the window bounded by the whole majorant. -/
+theorem tsum_index_deviation_le
+    (ha : EntireCoeffs a) (ht : 0 < t) (htr : t < r) (hrs : r < s)
+    {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
+    ∑' n : ℕ, |(n : ℝ) - (centralIndex a r : ℝ)| * (‖a n‖ * r ^ n)
+      ≤ ((centralIndex a s : ℝ) - (centralIndex a t : ℝ)) * coeffSum a r
+        + (centralIndex a r : ℝ) * (maxTerm a r * (t / r) / (1 - t / r))
+        + maxTerm a r * ((centralIndex a s : ℝ) + 1)
+            * ∑' j : ℕ, ((1 : ℝ) + j) * (r / s) ^ (j + 1) :=
+  tsum_index_deviation_le_of_window_le ha ht htr hrs hn₀
+    ((summable_term ha (lt_trans ht htr)).sum_le_tsum _
+      (fun n _ => term_nonneg a (lt_trans ht htr) n))
 
 
 /-! ## The entire function of a coefficient sequence
@@ -1215,6 +1229,48 @@ theorem sum_window_le_card_mul_maxTerm (ha : EntireCoeffs a) (hr : 0 < r) (m k :
   have h := Finset.sum_le_card_nsmul _ _ _ hbd
   rw [hcard, nsmul_eq_mul] at h
   exact h
+
+/-- **The deviation estimate as a multiple of the maximum term.**  Bounding the window by its term
+count makes every remainder proportional to `mu(r)`, so the constant depends only on the central
+indices and the radius ratios. -/
+theorem tsum_index_deviation_le_maxTerm
+    (ha : EntireCoeffs a) (ht : 0 < t) (htr : t < r) (hrs : r < s)
+    {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
+    ∑' n : ℕ, |(n : ℝ) - (centralIndex a r : ℝ)| * (‖a n‖ * r ^ n)
+      ≤ maxTerm a r * (((centralIndex a s : ℝ) - (centralIndex a t : ℝ))
+            * ((centralIndex a s + 1 - centralIndex a t : ℕ) : ℝ)
+          + (centralIndex a r : ℝ) * ((t / r) / (1 - t / r))
+          + ((centralIndex a s : ℝ) + 1)
+              * ∑' j : ℕ, ((1 : ℝ) + j) * (r / s) ^ (j + 1)) := by
+  have hr : 0 < r := lt_trans ht htr
+  refine le_trans (tsum_index_deviation_le_of_window_le ha ht htr hrs hn₀
+    (sum_window_le_card_mul_maxTerm ha hr (centralIndex a t) (centralIndex a s))) (le_of_eq ?_)
+  ring
+
+/-- **The Wiman--Valiron estimate with a coefficient-free remainder.**  If the deviation series is at
+most `mu(r)` times `B`, then at any point of the circle where the function is at least the maximum
+term the logarithmic derivative differs from `nu(r)/z` by at most `B`. -/
+theorem norm_mul_logDeriv_sub_le_of_deviation_le
+    (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hzr : ‖z‖ = r)
+    (hf : maxTerm a r ≤ ‖coeffFun a z‖) {B : ℝ}
+    (hB : ∑' n : ℕ, |(n : ℝ) - (centralIndex a r : ℝ)| * (‖a n‖ * r ^ n) ≤ maxTerm a r * B) :
+    ‖z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a r : ℂ)‖ ≤ B := by
+  have hz : 0 < ‖z‖ := by rw [hzr]; exact hr
+  obtain ⟨-, -, hμpos⟩ := exists_maxTerm_eq ha hr hn₀
+  have hfpos : 0 < ‖coeffFun a z‖ := lt_of_lt_of_le hμpos hf
+  have hfne : coeffFun a z ≠ 0 := norm_pos_iff.mp hfpos
+  have hdev := norm_mul_deriv_sub_le ha hz (centralIndex a r)
+  rw [hzr] at hdev
+  have hchain := le_trans hdev hB
+  have hBnn : (0 : ℝ) ≤ maxTerm a r * B := le_trans (norm_nonneg _) hchain
+  have hsplit : z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a r : ℂ)
+      = (z * deriv (coeffFun a) z - (centralIndex a r : ℂ) * coeffFun a z) / coeffFun a z := by
+    field_simp
+  rw [hsplit, norm_div]
+  calc ‖z * deriv (coeffFun a) z - (centralIndex a r : ℂ) * coeffFun a z‖ / ‖coeffFun a z‖
+      ≤ (maxTerm a r * B) / ‖coeffFun a z‖ := div_le_div_of_nonneg_right hchain hfpos.le
+    _ ≤ (maxTerm a r * B) / maxTerm a r := div_le_div_of_nonneg_left hBnn hμpos hf
+    _ = B := by field_simp
 
 set_option maxHeartbeats 1000000 in
 /-- **The Wiman--Valiron logarithmic-derivative estimate.**  At a point of the circle of radius `r`

@@ -332,6 +332,57 @@ theorem mulVec_relationCoeffVector_eq_eval {m' n : ℕ}
   rw [expandedDifferentialEvaluationMatrix_apply]
   rfl
 
+/-- **No relation survives where the evaluation matrix is rigid.**  If a relation holds at a packet
+of nodes and the only vector annihilated by its shape's evaluation matrix there is zero, then the
+relation itself is zero. -/
+theorem eq_zero_of_mulVec_rigid {m' n : ℕ} (P : MvPolynomial (FamilyJetIndex (m' + 1) n) ℂ)
+    {row : Type} [Fintype row] [DecidableEq row] (znodes : row → ℂ)
+    (y : row → FamilyJetVariables (m' + 1) n → ℂ)
+    (hrel : ∀ b, MvPolynomial.eval (Sum.elim (fun _ => znodes b) (y b)) P = 0)
+    (hrigid : ∀ c, (expandedDifferentialEvaluationMatrix (relationShapeOf P).spectralDegree
+        ((relationShapeOf P).depthPred + 1) znodes (relationShapeOf P).exponent
+        (fun p => y p.1 ((familyJetVariablesEquiv m' n).symm p.2))).mulVec c = 0 → c = 0) :
+    P = 0 := by
+  by_contra hP
+  have hzero : (expandedDifferentialEvaluationMatrix (relationShapeOf P).spectralDegree
+      ((relationShapeOf P).depthPred + 1) znodes (relationShapeOf P).exponent
+      (fun p => y p.1 ((familyJetVariablesEquiv m' n).symm p.2))).mulVec
+      (relationCoeffVector P) = 0 := by
+    funext b
+    rw [mulVec_relationCoeffVector_eq_eval]
+    exact hrel b
+  exact relationCoeffVector_ne_zero hP (hrigid _ hzero)
+
+/-! ## From a differential relation to the matrix -/
+
+theorem familyJetVec_eq_sumElim {m n : ℕ} (g : Fin m → ℂ → ℂ) (z : ℂ) :
+    familyJetVec (n := n) g z
+      = Sum.elim (fun _ => z) fun k : FamilyJetVariables m n =>
+        iteratedDeriv (k.2 : ℕ) (g k.1) z := by
+  funext s
+  cases s with
+  | inl a => cases a; rfl
+  | inr k => rfl
+
+/-- **A rigid node packet kills every differential relation of the family.**  If the relation holds
+on a set containing the nodes and the shape's evaluation matrix has trivial kernel there, the
+relation is zero. -/
+theorem eq_zero_of_rigid_of_relation {m' n : ℕ} {g : Fin (m' + 1) → ℂ → ℂ} {U : Set ℂ}
+    {row : Type} [Fintype row] [DecidableEq row] (znodes : row → ℂ) (hznodes : ∀ b, znodes b ∈ U)
+    (P : MvPolynomial (FamilyJetIndex (m' + 1) n) ℂ)
+    (hrel : ∀ z ∈ U, MvPolynomial.eval (familyJetVec (n := n) g z) P = 0)
+    (hrigid : ∀ c, (expandedDifferentialEvaluationMatrix (relationShapeOf P).spectralDegree
+        ((relationShapeOf P).depthPred + 1) znodes (relationShapeOf P).exponent
+        (fun p => iteratedDeriv
+          ((((familyJetVariablesEquiv m' n).symm p.2).2 : Fin (n + 1)) : ℕ)
+          (g (((familyJetVariablesEquiv m' n).symm p.2).1)) (znodes p.1))).mulVec c = 0 →
+        c = 0) :
+    P = 0 := by
+  refine eq_zero_of_mulVec_rigid P znodes
+    (fun b k => iteratedDeriv (k.2 : ℕ) (g k.1) (znodes b)) (fun b => ?_) hrigid
+  rw [← familyJetVec_eq_sumElim]
+  exact hrel (znodes b) (hznodes b)
+
 end
 
 end GaloisForLFunctions.HTGeometry

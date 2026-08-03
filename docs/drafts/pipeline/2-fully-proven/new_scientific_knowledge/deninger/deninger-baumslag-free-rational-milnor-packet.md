@@ -149,7 +149,8 @@
   `GaloisForLFunctions.RHTower.DeningerRootNotIsolated` (a root adjunction is never isolated),
   `GaloisForLFunctions.RHTower.DeningerGaloisPacket` (the packet at a Galois action),
   `GaloisForLFunctions.RHTower.DeningerFreeProductVanishing` (a free product of two infinite cyclic
-  groups)
+  groups),
+  `GaloisForLFunctions.RHTower.DeningerIndSubsingleton` (induction from a trivial subgroup)
 
 ## Statement
 
@@ -2422,3 +2423,10 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   route needs on the source side — the free group's own rational homology — and it reduces that to
   the same statement for an arbitrary index set, where the remaining work is the decomposition of the
   vertex representation into infinitely many summands.
+- 2026-08-03 — `deningerIsZero_ind_of_subsingleton`: a representation induced from a subgroup with
+  one element has no homology in positive degrees, whatever it is induced from.  This is the edge
+  side of the tree of a free product with an arbitrary index set, where the edge stabilizers are
+  trivial — and unlike the vertex side it needs no decomposition into summands, since the whole edge
+  representation is induced from the trivial subgroup at once.  The vertex side remains the obstacle
+  for arbitrary index sets: it is a coproduct over the index set, and the homology functor's
+  preservation of coproducts is not available.
