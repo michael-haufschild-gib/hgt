@@ -507,7 +507,20 @@ entireCoeffs_mul_index                    -- the derivative coefficients n a_n a
 maxTerm_mul_index_le                      -- mu'(r) <= mu(r) (nu(s) + geometric constant)
 summable_index_deviation                  -- the deviation series sum |n - k| ||a_n|| r^n converges
 sum_window_index_deviation_le             -- inside the window the deviation is the window width
+tsum_index_deviation_le                   -- the complete deviation estimate, window plus two tails
 ```
+
+`tsum_index_deviation_le` is the coefficient-side Wiman--Valiron estimate in full:
+
+```text
+sum_n |n - nu(r)| ||a_n|| r^n
+  <= (nu(s) - nu(t)) S(r)  +  nu(r) mu(r) (t/r)/(1-t/r)  +  mu(r) (nu(s)+1) C(r/s)
+```
+
+with `C(q) = sum_j (1+j) q^(j+1)` depending only on the radius ratio.  Every term on the right is
+either the window width or a fixed multiple of the maximum term, so choosing `t` and `s` at a
+Borel-good radius is exactly what makes the whole deviation `o(nu(r))` -- and `z f'(z) - nu(r) f(z)`
+is the sum whose terms this bounds.
 
 The last two open the local analysis: `z f'(z) = sum n a_n z^n`, so everything proved for `a` applies
 verbatim to `n a_n`, and the extra factor `n` costs only the central index plus a constant fixed by
@@ -733,3 +746,10 @@ triangularity package, which is exactly how the paper proof uses them.
   lie in `[nu(t), nu(s)]`, so inside the window the deviation never exceeds the window width
   `nu(s) - nu(t)`.  The two tails are already geometric by the earlier decay bounds, so the remaining
   step is to choose `t` and `s` at a Borel-good radius and see the window width become `o(nu(r))`.
+- 2026-08-03 -- Assembled the complete deviation estimate `tsum_index_deviation_le`.  Splitting the
+  series at `nu(s)+1` and again at `nu(t)` gives three pieces: the window, bounded by the width times
+  the majorant; the part below `nu(t)`, where `|n - nu(r)| <= nu(r)` and the lower tail bound
+  applies; and the part above `nu(s)`, where `|n - nu(r)| <= n <= (nu(s)+1)(1+j)` and the geometric
+  decay leaves a constant `sum_j (1+j) q^(j+1)` fixed by the radius ratio.  Every remainder is a
+  multiple of `mu(r)`, so the estimate reduces the Wiman--Valiron main theorem to making the window
+  width small at a Borel-good radius.

@@ -139,7 +139,9 @@
   `GaloisForLFunctions.RHTower.DeningerConjPowCycRed` (conjugates of powers),
   `GaloisForLFunctions.RHTower.DeningerWordUnique` (two words with the same product),
   `GaloisForLFunctions.RHTower.DeningerConjLetterForm` (the form of a conjugating letter),
-  `GaloisForLFunctions.RHTower.DeningerConjInvariant` (the conjugator invariant)
+  `GaloisForLFunctions.RHTower.DeningerConjInvariant` (the conjugator invariant),
+  `GaloisForLFunctions.RHTower.DeningerConjLetterCases` (which cancellation happened),
+  `GaloisForLFunctions.RHTower.DeningerRotateLen` (the length of a rotation)
 
 ## Statement
 
@@ -2307,3 +2309,19 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   self propagating: the front step consumes a trivial trailing factor and the back step produces one,
   so both cases land in the same form.  With both steps proved, the strengthened criterion is an
   induction over the two of them.
+- 2026-08-03 — **The cancellation data** (`deningerConj_letter_cases`): a conjugation by one letter
+  that does not lengthen the word cancels at one of its two ends, and this reports which end and
+  against which letter.  The existing trichotomy discards that information, which is why the
+  criterion cannot reconstruct its conjugator; this recovers it.  Assuming the conjugate does not
+  lengthen — which is what the criterion's induction always has in hand — makes the statement much
+  smaller than the trichotomy, since the lengthening branches become contradictions with the length
+  lemmas rather than constructions of words.  With this and the two invariant steps, every ingredient
+  of the strengthened criterion is proved; what remains is the induction that runs them.
+- 2026-08-03 — `deningerLen_rotate_baseConj`: a base conjugate of a rotation of a cyclically reduced
+  word has the length of the word.  This is the bridge between the two halves of the strengthened
+  criterion's induction step.  The cancellation data is only available once one knows the single
+  letter does not lengthen the word, and that is not a hypothesis of the induction — what the
+  induction has is that the *whole* conjugate does not lengthen.  The existing trichotomy supplies
+  the missing step: in its rotating branch the conjugate is a base conjugate of a rotation, and this
+  lemma reads off its length, which is exactly the hypothesis the cancellation data needs.  So the
+  step runs: trichotomy, then length, then cancellation data, then the matching invariant step.

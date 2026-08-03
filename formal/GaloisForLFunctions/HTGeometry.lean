@@ -1280,6 +1280,7 @@ import GaloisForLFunctions.HTGeometry.FamilyJetChainRule
 import GaloisForLFunctions.HTGeometry.FamilyJetFlattening
 import GaloisForLFunctions.HTGeometry.FamilyJetReshape
 import GaloisForLFunctions.HTGeometry.FamilyMobiusGauge
+import GaloisForLFunctions.HTGeometry.FamilyOuterObservation
 import GaloisForLFunctions.HTGeometry.FamilyPatternBridge
 import GaloisForLFunctions.HTGeometry.FamilyPatternShape
 import GaloisForLFunctions.HTGeometry.FamilyPolynomialGauge

@@ -931,6 +931,121 @@ theorem sum_window_index_deviation_le
   exact mul_le_mul_of_nonneg_right habs (term_nonneg a hr n)
 
 
+set_option maxHeartbeats 1000000 in
+/-- **The full deviation estimate.**  Splitting at the two central indices bounds the deviation
+series by the window width times the majorant, plus two remainders each proportional to the maximum
+term, with constants fixed by the radius ratios alone. -/
+theorem tsum_index_deviation_le
+    (ha : EntireCoeffs a) (ht : 0 < t) (htr : t < r) (hrs : r < s)
+    {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
+    ∑' n : ℕ, |(n : ℝ) - (centralIndex a r : ℝ)| * (‖a n‖ * r ^ n)
+      ≤ ((centralIndex a s : ℝ) - (centralIndex a t : ℝ)) * coeffSum a r
+        + (centralIndex a r : ℝ) * (maxTerm a r * (t / r) / (1 - t / r))
+        + maxTerm a r * ((centralIndex a s : ℝ) + 1)
+            * ∑' j : ℕ, ((1 : ℝ) + j) * (r / s) ^ (j + 1) := by
+  have hr : 0 < r := lt_trans ht htr
+  have hs : 0 < s := lt_trans hr hrs
+  set q : ℝ := r / s with hq
+  have hq0 : 0 < q := by rw [hq]; positivity
+  have hq1 : q < 1 := by
+    rw [hq, div_lt_one hs]
+    exact hrs
+  set k := centralIndex a s with hk
+  set m := centralIndex a t with hm
+  set v := centralIndex a r with hv
+  have hmv : m ≤ v := centralIndex_mono ha ht htr.le hn₀
+  have hvk : v ≤ k := centralIndex_mono ha hr hrs.le hn₀
+  set D : ℕ → ℝ := fun n => |(n : ℝ) - (v : ℝ)| * (‖a n‖ * r ^ n) with hD
+  have hDnonneg : ∀ n, 0 ≤ D n := fun n =>
+    mul_nonneg (abs_nonneg _) (term_nonneg a hr n)
+  have hDsum : Summable D := summable_index_deviation ha hr v
+  have hμ : (0 : ℝ) ≤ maxTerm a r :=
+    le_trans (term_nonneg a hr 0) (term_le_maxTerm ha hr 0)
+  -- the geometric majorant of the upper tail
+  have hgsum : Summable fun j : ℕ => ((1 : ℝ) + j) * q ^ (j + 1) := by
+    have h1 : Summable fun j : ℕ => (j : ℝ) * q ^ j := by
+      simpa using summable_pow_mul_geometric_of_norm_lt_one (R := ℝ) 1
+        (by rw [Real.norm_eq_abs, abs_of_pos hq0]; exact hq1)
+    have h2 : Summable fun j : ℕ => q ^ j := summable_geometric_of_lt_one hq0.le hq1
+    have h3 : Summable fun j : ℕ => ((1 : ℝ) + j) * q ^ j := by
+      refine (h2.add h1).congr fun j => ?_
+      ring
+    simpa [pow_succ, mul_comm, mul_assoc, mul_left_comm] using h3.mul_right q
+  have hgnonneg : ∀ j : ℕ, (0 : ℝ) ≤ ((1 : ℝ) + j) * q ^ (j + 1) := fun j => by positivity
+  -- the three pieces
+  have hsplit := Summable.sum_add_tsum_nat_add (f := D) (k + 1) hDsum
+  have hcons : (∑ n ∈ Finset.Ico 0 m, D n) + ∑ n ∈ Finset.Ico m (k + 1), D n
+      = ∑ n ∈ Finset.Ico 0 (k + 1), D n :=
+    Finset.sum_Ico_consecutive _ (Nat.zero_le _) (by omega)
+  -- lower part
+  have hlow : ∑ n ∈ Finset.Ico 0 m, D n
+      ≤ (v : ℝ) * (maxTerm a r * (t / r) / (1 - t / r)) := by
+    have hpt : ∀ n ∈ Finset.Ico 0 m, D n ≤ (v : ℝ) * (‖a n‖ * r ^ n) := by
+      intro n hn
+      obtain ⟨-, hn2⟩ := Finset.mem_Ico.mp hn
+      have hnv : (n : ℝ) ≤ (v : ℝ) := by
+        have : n ≤ v := by omega
+        exact_mod_cast this
+      have hn0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+      have habs : |(n : ℝ) - (v : ℝ)| ≤ (v : ℝ) := abs_le.mpr ⟨by linarith, by linarith⟩
+      exact mul_le_mul_of_nonneg_right habs (term_nonneg a hr n)
+    have hstep := Finset.sum_le_sum hpt
+    rw [← Finset.mul_sum] at hstep
+    refine le_trans hstep (mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg v))
+    have := sum_lower_tail_le ha ht htr hn₀
+    rwa [Finset.range_eq_Ico] at this
+  -- window part
+  have hwin : ∑ n ∈ Finset.Ico m (k + 1), D n
+      ≤ ((k : ℝ) - (m : ℝ)) * coeffSum a r := by
+    have hstep := sum_window_index_deviation_le ha ht htr hrs hn₀
+    rw [← hk, ← hm, ← hv] at hstep
+    refine le_trans hstep (mul_le_mul_of_nonneg_left ?_ (by
+      have : (m : ℝ) ≤ (k : ℝ) := by exact_mod_cast le_trans hmv hvk
+      linarith))
+    exact (summable_term ha hr).sum_le_tsum _ (fun n _ => term_nonneg a hr n)
+  -- upper tail
+  have hup : ∑' j : ℕ, D (j + (k + 1))
+      ≤ maxTerm a r * ((k : ℝ) + 1) * ∑' j : ℕ, ((1 : ℝ) + j) * q ^ (j + 1) := by
+    have hpt : ∀ j : ℕ, D (j + (k + 1))
+        ≤ maxTerm a r * ((k : ℝ) + 1) * (((1 : ℝ) + j) * q ^ (j + 1)) := by
+      intro j
+      have hdecay := term_le_maxTerm_mul_pow_of_centralIndex_le ha hr hrs.le hn₀
+        (n := j + (k + 1)) (by omega)
+      rw [← hk, ← hq, show j + (k + 1) - k = j + 1 by omega] at hdecay
+      have hidx : |((j + (k + 1) : ℕ) : ℝ) - (v : ℝ)| ≤ ((k : ℝ) + 1) * ((1 : ℝ) + j) := by
+        have hvle : (v : ℝ) ≤ (k : ℝ) := by exact_mod_cast hvk
+        have hcast : ((j + (k + 1) : ℕ) : ℝ) = (j : ℝ) + ((k : ℝ) + 1) := by push_cast; ring
+        have hj0 : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
+        have hk0 : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
+        have hv0 : (0 : ℝ) ≤ (v : ℝ) := Nat.cast_nonneg v
+        rw [hcast]
+        refine abs_le.mpr ⟨by nlinarith, by nlinarith⟩
+      calc D (j + (k + 1))
+          ≤ (((k : ℝ) + 1) * ((1 : ℝ) + j)) * (‖a (j + (k + 1))‖ * r ^ (j + (k + 1))) :=
+            mul_le_mul_of_nonneg_right hidx (term_nonneg a hr _)
+        _ ≤ (((k : ℝ) + 1) * ((1 : ℝ) + j)) * (maxTerm a r * q ^ (j + 1)) := by
+            refine mul_le_mul_of_nonneg_left hdecay (by positivity)
+        _ = maxTerm a r * ((k : ℝ) + 1) * (((1 : ℝ) + j) * q ^ (j + 1)) := by ring
+    have hsumL : Summable fun j : ℕ => D (j + (k + 1)) :=
+      (summable_nat_add_iff (k + 1)).mpr hDsum
+    have hsumR : Summable fun j : ℕ =>
+        maxTerm a r * ((k : ℝ) + 1) * (((1 : ℝ) + j) * q ^ (j + 1)) := hgsum.mul_left _
+    have := Summable.tsum_le_tsum hpt hsumL hsumR
+    rwa [tsum_mul_left] at this
+  calc ∑' n : ℕ, D n
+      = (∑ n ∈ Finset.Ico 0 (k + 1), D n) + ∑' j : ℕ, D (j + (k + 1)) := by
+        rw [← hsplit, Finset.range_eq_Ico]
+    _ = (∑ n ∈ Finset.Ico 0 m, D n) + (∑ n ∈ Finset.Ico m (k + 1), D n)
+        + ∑' j : ℕ, D (j + (k + 1)) := by rw [hcons]
+    _ ≤ (v : ℝ) * (maxTerm a r * (t / r) / (1 - t / r))
+        + ((k : ℝ) - (m : ℝ)) * coeffSum a r
+        + maxTerm a r * ((k : ℝ) + 1) * ∑' j : ℕ, ((1 : ℝ) + j) * q ^ (j + 1) := by
+        gcongr
+    _ = ((k : ℝ) - (m : ℝ)) * coeffSum a r
+        + (v : ℝ) * (maxTerm a r * (t / r) / (1 - t / r))
+        + maxTerm a r * ((k : ℝ) + 1) * ∑' j : ℕ, ((1 : ℝ) + j) * q ^ (j + 1) := by ring
+
+
 /-! ## Entire functions -/
 
 /-- The coefficients of a power series with infinite radius of convergence satisfy the decay

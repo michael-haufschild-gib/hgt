@@ -1570,3 +1570,28 @@ For a positive summable weight family on an injective atom family:
    `Countable RelationShape`, `residual_iInter`;
 6. hence **`residual_perturbedOuterJet_shape_rigidity`**: a residual set of mass parameters on which
    no relation of any reduced shape survives, *with the fixed carrier included*.
+
+## Lean progress: the translated family in evaluation-matrix coordinates
+
+`FamilyOuterObservation.lean` (wired, axiom-clean) puts the observation into the coordinates a
+relation among *translates* is actually written in:
+
+- `combinedNodes z t (b, j) = z b + t j` -- the node a relation sees at row `b` and member `j`, with
+  `im_combinedNodes` recording that a *real* shift does not move the imaginary part.  This is why the
+  card's translates are harmless: the common domain of the translated family is the whole upper half
+  plane, so the admissible nodes produced by the determinant argument automatically lie in it;
+- `familyOuterObservation` -- the outer jets of the translated family at those combined nodes, folded
+  by `sigmaJetHomeomorph` into the `(point, folded order)` coordinates of the expanded evaluation
+  matrix;
+- **`continuous_familyOuterObservation`** and **`locallySurjective_familyOuterObservation`** -- both
+  properties transport through the fold, so the family observation inherits them from the single
+  function case.
+
+Together with `LocallySurjectiveObservation.add_const` this is precisely the observation the card's
+relation for `G_u = S_u + eps A` lives on: jets of the outer function at the combined nodes, plus a
+fixed vector of carrier jets.
+
+The transversality half of (9) is therefore complete for the card's actual family.  The one
+remaining item is bookkeeping in the corpus's relation vocabulary: expanding a nonzero
+`MvPolynomial (FamilyJetIndex m n)` relation into a reduced shape with a nonzero coefficient vector,
+so that `residual_perturbedOuterJet_shape_rigidity` contradicts its existence.

@@ -918,3 +918,22 @@ consumes it as `∑_j c_j ζ^{jk}`.  The bridge is that conjugation is inversion
 Built, wired, axiom-clean.  `(Q−m)+n` is precisely the index at which
 `ResidueSingleton.kernel_of_symbol_singleton` reads off a coefficient, so the two halves of the
 dictionary now compose without any remaining shape mismatch.
+
+### Kernel of a transform symbol — `Sieve/KernelValue.lean` (2026-08-03)
+
+- **`kernel_value`** : for `n < m < Q`,
+  `∑_j (∑_d K_d ζ^{jd}) conj(ζ^{jm}) ζ^{jn} = Q · K_{m−n}`.
+
+Built, wired, axiom-clean.  This is the two halves of the dictionary composed into one statement:
+`KernelReshape.conj_pow_eq` turns the conjugate pairing into the character `ζ^{j((Q−m)+n)}`, and
+`ResidueSingleton.kernel_of_symbol_singleton` reads off the coefficient at
+`(Q − ((Q−m)+n)) % Q`, which for `n < m < Q` is exactly `m − n`.
+
+Restricting to the strict lower triangle `n < m` is not a loss: a Toeplitz kernel is determined off
+the diagonal by its lower triangle together with its symmetry type.  The bound `m < Q` excludes only
+the degenerate corner `m = Q, n = 0`, where the residue would wrap.
+
+A symbol built from coefficients therefore *has* those coefficients as its kernel, with the factor
+`Q` of the transform.  Together with `BilinearMultiplier.abs_sum_kernel_bilinear_le` — which bounds
+any such bilinear form by the sup-norm of the symbol — the apparatus is complete: prescribing `K_d`
+and bounding the resulting symbol gives a bilinear inequality for that kernel.
