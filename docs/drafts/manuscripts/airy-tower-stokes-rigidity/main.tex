@@ -33,14 +33,15 @@
 \newcommand{\Loop}{\operatorname{Loop}}
 \newcommand{\ord}{\operatorname{ord}}
 \newcommand{\lcm}{\operatorname{lcm}}
+\newcommand{\den}{\operatorname{den}}
 \newcommand{\muR}{\boldsymbol\mu}
 \newcommand{\leanname}[1]{\nolinkurl{#1}}
 \emergencystretch=1.5em
 
 \begin{document}
 
-\title[Zero-loop rigidity in Stokes geometry]{Zero-loop rigidity and exact recognition\
-for ramified nonabelian Hodge graphs}
+\title[Contact tomography in Stokes geometry]{Contact tomography, zero-loop rigidity and exact\
+recognition for ramified nonabelian Hodge diagrams}
 
 \author{M.~Haufschild}
 \address{Independent researcher}
@@ -49,37 +50,36 @@ for ramified nonabelian Hodge graphs}
 \date{3 August 2026}
 
 \subjclass[2020]{Primary 34M40, 14D24; Secondary 14H60, 32G34, 57K10, 68V20}
-\keywords{irregular nonabelian Hodge theory, Stokes geometry, fission tree, Puiseux
-characteristic, ultrametric, Fourier transform, formal verification}
+\keywords{irregular nonabelian Hodge theory, Stokes geometry, fission tree, Eggers--Wall tree,
+contact complexity, Puiseux characteristic, ultrametric, Fourier transform, formal verification}
 
 \begin{abstract}
-The core diagram of a wild nonabelian Hodge space may have twisted vertices, multiple edges and
-loops.  We classify the ramified vertices whose diagonal multiplicity vanishes.  If a Stokes circle
-has characteristic exponents $\beta_1/r>\cdots>\beta_m/r$ and strict cumulative gcd chain
-$r=e_0>e_1>\cdots>e_m=1$, then the sign of its diagonal multiplicity is the sign of the first
-nonzero difference
+We identify a single contact law governing loops, edges and information loss in ramified type-$A$
+nonabelian Hodge diagrams.  For core matrix $B$ and ramification decoration $r_i$, put
 \[
-  \beta_i-(e_{i-1}+e_i).
+ K_{ij}=1+\frac{B_{ij}}{r_ir_j}\ (i\ne j),\qquad
+ K_{ii}=1+\frac{B_{ii}-1}{r_i^2}.
 \]
-Consequently the loop vanishes exactly when $\beta_i=e_{i-1}+e_i$ at every level.  We call these
-characteristics Airy towers.  They are classified by strict divisor chains, equivalently ordered
-multiplicative factorizations of $r$.  They lie on the all-negative branch of Hiroe's local
-Fourier--Euclidean reduction, and include $2^{k-1}$ types at ramification $p^k$.
+On the common-truncation quotient of the twisted fission tree, $K_{ij}$ is the complementary
+Eggers--Wall contact coordinate of the meet of $i$ and $j$: raw exponent length is rescaled by the
+reciprocal ramification index.  This reparametrization is strictly increasing on every branch.
+Consequently the decorated diagram reconstructs the full labelled multi-circle branching
+skeleton, not merely an ultrametric inequality.  Moreover
+\[
+ d_{ij}=2K_{ij}-K_{ii}-K_{jj}
+\]
+is its additive path metric; in particular it satisfies the four-point condition and has strict
+negative type.  We obtain the new strict local obstruction $K_{ii}<K_{ij}$ for all $i\ne j$.
 
-The local rigidity has global consequences.  We compute the core of any leading-separated family,
-determine the exact two-circle edge spectrum on the elementary locus, and prove a finite-fibre
-theorem after ramification decoration.  For simple Airy circles of ramifications $r,s>1$, the edge
-spectrum is
-\[
- \{\max(r,s)\}\cup rs\NN_{>0}\quad(r\ne s),\qquad
- \{0,1,\ldots,r\}\cup r^2\NN_{>0}\quad(r=s).
-\]
-Thus two ramification-two vertices never have edge $3$, an obstruction invisible to the known
-two-vertex ultrametric condition.  Finally, we prove an exact recognition theorem for arbitrary
-finite elementary decorated graphs: pair-spectrum membership together with the rescaled
-ultrametric inequalities is necessary and sufficient.  The proof reconstructs Puiseux polynomials
-from a finite dendrogram.  The arithmetic and finite-cophenetic core, including the strict sign
-law, is verified unconditionally in Lean~4.
+The diagonal critical value $K_{ii}=1-r_i^{-2}$ yields a rigid zero-loop stratum.  If a Stokes
+circle has characteristic exponents $\beta_1/r>\cdots>\beta_m/r$ and cumulative gcd chain
+$r=e_0>\cdots>e_m=1$, the sign of its loop is the sign of the first nonzero
+$\beta_i-(e_{i-1}+e_i)$.  Thus zero loops are exactly the Airy towers
+$\beta_i=e_{i-1}+e_i$, classified by strict divisor chains, equivalently ordered multiplicative
+factorizations of $r$.  We compute leading-separated cores, exact elementary two-circle spectra,
+and finite decorated fibres.  Pair-spectrum membership together with cophenetic consistency is
+then necessary and sufficient for arbitrary finite elementary loopless decorated graphs.  The
+arithmetic, contact-tree and finite-recognition cores are verified unconditionally in Lean~4.
 \end{abstract}
 
 \maketitle
@@ -99,7 +99,52 @@ formal structures \cite{BoalchDoucotRembado2025}.  Second, Dou\c cot wrote the l
 multiplicities directly in terms of Puiseux exponents and proved that, after division by the
 ramification products, all edge matrices satisfy ultrametric inequalities
 \cite{Doucot2025Graphs}.  In the untwisted case those inequalities characterize fission graphs; in
-the twisted case they are only necessary.  The simplest unresolved local question is therefore:
+the twisted case they are only necessary.
+
+The organizing principle of this paper is that the loop and edge formulas are two evaluations of
+one contact coordinate.  For the ramification decoration $r_i=\Ram(I_i)$, define
+\begin{equation}\label{eq:intro-K}
+ K_{ij}=1+\frac{B_{ij}}{r_ir_j}\quad(i\ne j),\qquad
+ K_{ii}=1+\frac{B_{ii}-1}{r_i^2}.
+\end{equation}
+The fission tree is metrized by raw Puiseux exponent.  On a common truncation branch, let $R(u)$
+be the cumulative ramification index at height $u$.  If $\eta$ lies above all relevant exponents,
+the complementary contact coordinate is
+\begin{equation}\label{eq:intro-contact}
+ \kappa(v)=\eta-\int_{h(v)}^\eta\frac{du}{R(u)}.
+\end{equation}
+With the conventional Eggers--Wall orientation, the integral in
+\eqref{eq:intro-contact} is contact complexity and $\kappa$ is its affine complement
+\cite{GarciaBarrosoGonzalezPopescu2019}.  The shift is forced by measuring pole order downwards
+from infinity rather than characteristic exponent upwards from a smooth reference branch.
+
+\begin{theorem}[Contact tomography; informal form]\label{thm:intro-tomography}
+Replace the metrised fission tree by its common-truncation skeleton, gluing branches at their
+fission exponents.  Then
+\[
+                         K_{ij}=\kappa(i\wedge j).
+\]
+The coordinate $\kappa$ is strictly increasing from every leaf to the root.  Hence $(B,r)$
+reconstructs the labelled rooted branching skeleton after unary vertices and vertex types are
+forgotten.  In addition,
+\begin{equation}\label{eq:intro-energy}
+ d_{ij}=\frac{2B_{ij}}{r_ir_j}-\frac{B_{ii}-1}{r_i^2}
+        -\frac{B_{jj}-1}{r_j^2}
+\end{equation}
+is the additive path metric of this skeleton and is of strict negative type.
+\end{theorem}
+
+This theorem sharpens both parts of the known rescaled ultrametric statement.  Strictness along
+leaf edges gives
+\begin{equation}\label{eq:intro-strict-local}
+ \frac{B_{ii}-1}{r_i^2}<\frac{B_{ij}}{r_ir_j}\qquad(i\ne j),
+\end{equation}
+while strictness at nested branch vertices shows that averaging over Galois sheets never collapses
+the multi-circle hierarchy.  Thus the diagram loses characteristic and sibling decorations, but
+not the underlying branching topology.  The path metric \eqref{eq:intro-energy} packages every
+loop and edge into one cut-metric decomposition and supplies four-point and spectral constraints.
+
+Against this universal background, the simplest unresolved local question is:
 \begin{quote}
 Which ramified Stokes circles have zero diagonal multiplicity, and which loopless decorated graphs
 do they realize?
@@ -200,10 +245,11 @@ exactly.
 
 \subsection*{Organization}
 Section~\ref{sec:background} fixes conventions and recalls the source formulas.
-Section~\ref{sec:sign} proves the sign law.  Section~\ref{sec:classification} gives the divisor-chain,
-enumerative and Fourier consequences.  Sections~\ref{sec:separated}--\ref{sec:finite} treat separated
-cores, pair spectra and finite fibres.  Section~\ref{sec:recognition} proves exact elementary
-recognition.  Section~\ref{sec:examples} records graph twins and obstructions.
+Section~\ref{sec:contact} proves the complementary contact law, strict tomography and the energy-tree
+theorem.  Section~\ref{sec:sign} proves the sign law.  Section~\ref{sec:classification} gives the
+divisor-chain, enumerative and Fourier consequences.  Sections~\ref{sec:separated}--\ref{sec:finite}
+treat separated cores, pair spectra and finite fibres.  Section~\ref{sec:recognition} proves exact
+elementary recognition.  Section~\ref{sec:examples} records graph twins and obstructions.
 Section~\ref{sec:formal} gives the formal theorem map and scope limits.
 
 \section{Stokes circles, levels and diagrams}\label{sec:background}
@@ -265,13 +311,212 @@ matrix $B=(B_{ij})$.  The rescaled off-diagonal entries are
 \begin{equation}\label{eq:rescaled}
  \widetilde B_{ij}=\frac{B_{ij}}{r_ir_j}\qquad(i\ne j).
 \end{equation}
+On the diagonal the compatible normalization is
+\begin{equation}\label{eq:rescaled-diagonal}
+ \widetilde B_{ii}=\frac{B_{ii}-1}{r_i^2}.
+\end{equation}
 Every decorated nonabelian Hodge diagram satisfies the ultrametric implication
 \begin{equation}\label{eq:known-ultra}
  \widetilde B_{ij}\le\widetilde B_{ik}\le\widetilde B_{jk}
  \quad\Longrightarrow\quad
  \widetilde B_{ik}=\widetilde B_{jk}
 \end{equation}
-for pairwise distinct $i,j,k$ \cite[Theorem~4.2]{Doucot2025Graphs}.
+for pairwise distinct $i,j,k$, together with
+\begin{equation}\label{eq:known-diagonal}
+ \widetilde B_{ii}\le \widetilde B_{ij}\qquad(i\ne j),
+\end{equation}
+by \cite[Theorem~4.2]{Doucot2025Graphs}.  Section~\ref{sec:contact} proves that
+\eqref{eq:known-diagonal} is always strict and identifies exactly which part of the fission tree is
+retained by the full matrix of rescaled entries.
+
+\section{Complementary contact complexity and strict tomography}\label{sec:contact}
+
+We first rewrite the source formulas in their invariant tree form.  This is a bridge, rather than a
+novelty claim: contact complexity is standard on Eggers--Wall trees, and the finite sum below is
+equivalent to the rescaled formulas of \cite[Lemma~4.3]{Doucot2025Graphs}.  The new content begins
+with the strict comparisons in Lemmas~\ref{lem:strict-diagonal} and
+\ref{lem:strict-nested} and their reconstruction consequences.
+
+Let $I_i,I_j$ be distinct circles.  Write the levels of their common part as
+\[
+ \lambda_0>\lambda_1>\cdots>\lambda_t>f_{ij},
+\]
+where $f_{ij}=f_{I_i,I_j}$ and the level list may be empty.  Put
+\[
+ D_a=\lcm(\den(\lambda_0),\ldots,\den(\lambda_a)),\qquad D_{-1}=1.
+\]
+Here $D_a$ is the ramification index of the corresponding common truncation.  Define
+\begin{equation}\label{eq:contact-pair-sum}
+ K_{ij}=\lambda_0(1-D_0^{-1})+
+ \sum_{a=1}^t\lambda_a(D_{a-1}^{-1}-D_a^{-1})+f_{ij}D_t^{-1};
+\end{equation}
+when the level list is empty, the right side means $f_{ij}$.  For $i=j$, use all levels of $I_i$,
+put $f_{ii}=0$, and take the terminal denominator to be $r_i$.
+
+Choose an integer $\eta$ above all the levels under consideration.  On the common branch let
+$R(u)=1$ for $u\in(\lambda_0,\eta)$ and $R(u)=D_a$ between consecutive levels, with
+$R(u)=D_t$ on $(f_{ij},\lambda_t)$.  Summation by parts gives
+\begin{equation}\label{eq:contact-integral}
+\begin{aligned}
+ \eta-\int_{f_{ij}}^\eta\frac{du}{R(u)}
+ &=\lambda_0-\frac{\lambda_0-\lambda_1}{D_0}-\cdots
+   -\frac{\lambda_t-f_{ij}}{D_t}\\
+ &=K_{ij}.
+\end{aligned}
+\end{equation}
+For the diagonal the same calculation gives
+\begin{equation}\label{eq:contact-diagonal-integral}
+ K_{ii}=\eta-\int_0^\eta\frac{du}{R_i(u)}.
+\end{equation}
+The value is independent of the sufficiently large choice of $\eta$.  With the usual
+Eggers--Wall exponent directed away from its smooth reference branch, the integral is precisely
+the contact-complexity coordinate $c=\int de/R$; our $K=\eta-c$ is its affine complement because
+pole height is oppositely oriented \cite[Definition~3.15 and Theorem~3.25]
+{GarciaBarrosoGonzalezPopescu2019}.
+
+The rescaled source formulas now become one identity.
+
+\begin{proposition}[Complementary contact law]\label{prop:contact-law}
+For every finite irregular class at infinity,
+\begin{equation}\label{eq:contact-B-law}
+ K_{ij}=1+\widetilde B_{ij}
+ =\begin{cases}
+  1+B_{ij}/(r_ir_j),&i\ne j,\\
+  1+(B_{ii}-1)/r_i^2,&i=j.
+ \end{cases}
+\end{equation}
+Equivalently, $K_{ij}$ is the complementary contact coordinate at the meet of the $i$th and
+$j$th branches, with a leaf viewed as its own meet.
+\end{proposition}
+
+\begin{proof}
+Equations \eqref{eq:contact-pair-sum} and \eqref{eq:contact-integral} are exactly the edge formula
+of \cite[Lemma~4.3]{Doucot2025Graphs} after adding $1$ to $\widetilde B_{ij}$.  The diagonal
+formula \eqref{eq:contact-diagonal-integral} is its loop counterpart.  The common-truncation
+interpretation follows because the ramification index at a point of the fission tree is the least
+common multiple of the denominators of its mandatory ancestors
+\cite[Remark~3.19]{BoalchDoucotRembado2025}.
+\end{proof}
+
+The positivity of reciprocal ramification turns the weak inequalities recalled above into strict
+ones whenever the corresponding fission events are distinct.
+
+\begin{lemma}[Strict diagonal separation]\label{lem:strict-diagonal}
+For distinct Stokes circles $I_i,I_j$,
+\begin{equation}\label{eq:strict-diagonal}
+ K_{ii}<K_{ij},\qquad K_{jj}<K_{ij}.
+\end{equation}
+Equivalently,
+\begin{equation}\label{eq:strict-integral-obstruction}
+ r_iB_{ij}>r_j(B_{ii}-1),\qquad r_jB_{ij}>r_i(B_{jj}-1).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Distinct circles have positive fission exponent $f_{ij}>0$.  Above $f_{ij}$, the index profile of
+$I_i$ agrees with the common profile.  Subtracting \eqref{eq:contact-diagonal-integral} from
+\eqref{eq:contact-integral} therefore gives
+\[
+ K_{ij}-K_{ii}=\int_0^{f_{ij}}\frac{du}{R_i(u)}>0.
+\]
+The same argument with $j$ proves the second inequality.  Clearing positive denominators gives
+\eqref{eq:strict-integral-obstruction}.
+\end{proof}
+
+\begin{lemma}[Strict nested separation]\label{lem:strict-nested}
+Let $i,j,k$ be distinct leaves.  If the common-truncation meet of $i,j$ lies strictly below the
+common meet of $i,k$ and $j,k$, then
+\begin{equation}\label{eq:strict-rooted-triple}
+ K_{ij}<K_{ik}=K_{jk}.
+\end{equation}
+If the three pairwise meets coincide, the three off-diagonal $K$-values coincide.
+\end{lemma}
+
+\begin{proof}
+Pairs separated into different children of one branch vertex have the same common levels and the
+same fission exponent, so their values in \eqref{eq:contact-pair-sum} agree.
+
+For strictness, cancel the common prefix ending with denominator $D_t$.  Write $f$ for the higher
+fission exponent.  The lower meet adds possible levels $\lambda_{t+1},\ldots,\lambda_u\le f$ and
+ends at a strictly smaller exponent $g<f$.  Its remaining contribution is
+\[
+ \sum_{a=t+1}^u\lambda_a(D_{a-1}^{-1}-D_a^{-1})+gD_u^{-1}.
+\]
+The nonnegative coefficients sum to $D_t^{-1}$.  Every sampled height is at most $f$, and the
+positive final coefficient $D_u^{-1}$ samples $g<f$.  This strict convex combination is smaller
+than the higher contribution $fD_t^{-1}$.
+\end{proof}
+
+Let $\mathcal S(\Theta)$ denote the labelled rooted \emph{branching skeleton}: retain the hierarchy
+of the fission tree, suppress unary vertices, and forget mandatory, inconsequential and empty
+vertex types.  If $v$ is an internal vertex, choose leaves in two different children and set
+$\kappa(v)=K_{ij}$; put $\kappa(i)=K_{ii}$ at a leaf.  Lemma~\ref{lem:strict-nested} makes the
+first definition independent of the chosen leaves.
+
+\begin{theorem}[Strict contact tomography]\label{thm:contact-tomography}
+The coordinate $\kappa$ is strictly increasing from each leaf towards the root and
+\[
+ K_{ij}=\kappa(i\wedge j).
+\]
+The decorated diagram $(B,r)$ reconstructs $\mathcal S(\Theta)$ uniquely as a labelled rooted
+tree.  Consequently every fission tree in a fixed decorated fibre has the same branching
+skeleton.
+\end{theorem}
+
+\begin{proof}
+Strictness on leaf edges is Lemma~\ref{lem:strict-diagonal}; strictness between nested branch
+vertices is Lemma~\ref{lem:strict-nested}.  For reconstruction, list the distinct off-diagonal
+values of $K$ and, for each such value $a$, set
+\[
+ i\sim_a j\quad\Longleftrightarrow\quad K_{ij}\le a,
+\]
+with reflexivity imposed on the diagonal.  Lemma~\ref{lem:strict-nested} makes $\sim_a$ an
+equivalence relation, and its classes form a nested hierarchy as $a$ increases.  Attach each class
+to the least strictly larger class containing it and attach the labelled singleton leaves at the
+bottom.  Every branching cluster of $\mathcal S(\Theta)$ occurs because $\kappa$ is strict along
+root paths, and every reconstructed class is the descendant set of such a branch vertex.  The
+resulting isomorphism is label preserving.  The final claim follows because $K$ is determined by
+$(B,r)$.
+\end{proof}
+
+The theorem identifies exactly why the fission tree remains finer than the diagram
+\cite{Doucot2026Basic}: rational raw heights, unary vertices, ramification profiles and sibling
+types can vary over a fixed skeleton.  The multi-leaf branching hierarchy cannot.
+
+\begin{theorem}[Stokes energy-tree law]\label{thm:energy-tree}
+Set $d_{ii}=0$ and, for $i\ne j$,
+\begin{equation}\label{eq:energy-metric}
+ d_{ij}=2K_{ij}-K_{ii}-K_{jj}
+ =\frac{2B_{ij}}{r_ir_j}-\frac{B_{ii}-1}{r_i^2}-\frac{B_{jj}-1}{r_j^2}.
+\end{equation}
+Then $d$ is the additive path metric on $\mathcal S(\Theta)$ with contact-coordinate edge lengths.
+In particular:
+\begin{enumerate}[label=(\roman*)]
+\item among $d_{ij}+d_{kl}$, $d_{ik}+d_{jl}$ and $d_{il}+d_{jk}$, the two largest are equal;
+\item $d$ has strict negative type;
+\item there is an explicit Hilbert embedding whose squared distance is $d$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Give the edge from a child $v$ to its parent $p(v)$ length
+$\ell_v=\kappa(p(v))-\kappa(v)>0$.  The path from $i$ to $j$ rises from $K_{ii}$ to $K_{ij}$ and
+descends to $K_{jj}$, proving \eqref{eq:energy-metric}.  The four-point condition is the standard
+edge cancellation for a tree metric.
+
+For the remaining claims, cut the leaf set at every edge $e$, choose one side $A_e$, and write
+$\ell_e>0$ for its length.  Then
+\[
+ d_{ij}=\sum_e\ell_e\left|\mathbf 1_{A_e}(i)-\mathbf 1_{A_e}(j)\right|.
+\]
+If $x\ne0$ and $\sum_i x_i=0$, then
+\[
+ \sum_{i,j}x_ix_jd_{ij}=-2\sum_e\ell_e\left(\sum_{i\in A_e}x_i\right)^2<0.
+\]
+Equality would force the sum on every positive pendant cut $\{i\}$ to vanish.  Finally,
+$\Phi(i)_e=\sqrt{\ell_e}\,\mathbf1_{A_e}(i)$ satisfies
+$\|\Phi(i)-\Phi(j)\|^2=d_{ij}$.
+\end{proof}
 
 \section{The first-deviation sign law}\label{sec:sign}
 
@@ -963,6 +1208,12 @@ J.~Dou\c cot,
 \emph{Basic representations of genus zero nonabelian Hodge spaces},
 SIGMA \textbf{22} (2026), 027, 43 pp.
 \href{https://doi.org/10.3842/SIGMA.2026.027}{doi:10.3842/SIGMA.2026.027}.
+
+\bibitem{GarciaBarrosoGonzalezPopescu2019}
+E.~R.~Garc\'ia Barroso, P.~D.~Gonz\'alez P\'erez and P.~Popescu-Pampu,
+\emph{The valuative tree is the projective limit of Eggers--Wall trees},
+RACSAM \textbf{113} (2019), no.~4, 4051--4105.
+\href{https://doi.org/10.1007/s13398-019-00646-z}{doi:10.1007/s13398-019-00646-z}.
 
 \bibitem{Hiroe2017}
 K.~Hiroe,

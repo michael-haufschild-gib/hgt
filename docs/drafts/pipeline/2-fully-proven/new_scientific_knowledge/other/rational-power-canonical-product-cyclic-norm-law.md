@@ -247,6 +247,10 @@ formal/GaloisForLFunctions/HTGeometry/PowerSubstitutionDifferentialDescent.lean
 formal/GaloisForLFunctions/HTGeometry/RationalPowerHypertranscendenceTransfer.lean
 formal/GaloisForLFunctions/HTGeometry/EvenPowerCanonicalProductDA.lean
 formal/GaloisForLFunctions/HTGeometry/GammaWeierstrassCanonicalProduct.lean
+formal/GaloisForLFunctions/HTGeometry/OnePowerCanonicalProductHypertranscendence.lean
+formal/GaloisForLFunctions/HTGeometry/PowerSubstitutionForwardJet.lean
+formal/GaloisForLFunctions/HTGeometry/PowerSubstitutionForwardDA.lean
+formal/GaloisForLFunctions/HTGeometry/RationalPowerNormDichotomy.lean
 ```
 
 Principal declarations:
@@ -261,7 +265,11 @@ nat_div_div_self                          -- the genus bookkeeping (4)
 powerCanonicalProduct                     -- W_a, on the corpus canonical-product layer
 prod_powerCanonicalProduct_primitiveRoot  -- the exact cyclic norm (5)
 differentiallyAlgebraic_of_comp_pow       -- the hard half of (7), for z |-> z^q
-differentiallyAlgebraic_of_comp_const_mul_pow  -- (7) for z |-> c z^q
+differentiallyAlgebraic_of_comp_const_mul_pow  -- (7), descent, for z |-> c z^q
+differentiallyAlgebraic_comp_pow          -- the forward half of (7)
+differentiallyAlgebraic_comp_const_mul_pow_iff -- (7) in full, as an iff
+differentiallyAlgebraic_cyclicNorm_of_even     -- the even branch of (9)
+hypertranscendental_cyclicNorm_of_hypertranscendental -- the other branch of (9)
 hypertranscendental_powerCanonicalProduct_ratio -- (10) modulo (8)
 sincProduct, pi_mul_sincProduct, sincProduct_ade,
 differentiallyAlgebraic_sincProduct       -- the Euler sine product and its ADE
@@ -286,7 +294,12 @@ right side is DA; the monomial descent `(7)` then makes `W_(2m)` itself DA.
 `q`-th root of unity: the finite root-of-unity packet is grouped inside the locally uniformly
 convergent canonical product through `HasProd`, so no regularization enters.
 
-`(7)` is proved by elimination rather than by branch selection.  The chain rule for `z |-> z^q`
+`(7)` is now proved in **both** directions and is stated as an iff
+(`differentiallyAlgebraic_comp_const_mul_pow_iff`).  The forward half inverts the chain rule
+division-free: differentiating `s(z)^(2j) f^(j)(z^q) = sum_i n_(j,i)(z) g^(i)(z)` and using
+`s f^(j+1)(z^q) = (f^(j)(.^q))'` gives `n_(j+1,i) = (n_(j,i)' + n_(j,i-1)) s - 2j n_(j,i) s'`, and
+homogenising the differential polynomial in the jet variables by the common denominator `s^(2n)`
+clears every division.  The descent half is proved by elimination rather than by branch selection.  The chain rule for `z |-> z^q`
 gives a triangular polynomial-coefficient substitution on jet variables whose matrix has diagonal
 `(q z^(q-1))^j`, hence is invertible at every `z != 0`; solving that system shows the substitution
 is injective on differential polynomials.  Reducing the substituted relation modulo the monic
@@ -321,8 +334,9 @@ The corpus owns Hoelder (`hypertranscendental_gamma`) and a complete common-scal
 Gamma-orbit superselection layer (`MeromorphicGammaOrbit`, `MeromorphicGammaSuperselection`,
 `MeromorphicGammaNatScale`); what is missing is the arbitrary-complex-scale form of that layer.
 
-Also still open on the Lean side: the *forward* half of `(7)` (`f` DA implies `f(c z^q)` DA), which
-`(9)` needs in the even branch.  The hard converse half is proved.
+Statement `(9)` is therefore settled relative to `(8)`: the `q`-fold norm is differentially
+algebraic for every even numerator, and hypertranscendental for every numerator whose integer
+product `W_p` is hypertranscendental.
 
 ### Reduction of the odd branch, and the Lean route
 
@@ -349,14 +363,18 @@ Milestones, in dependency order:
 
 ```text
 O1  W_1(z) = exp(-gamma_E z) * Gamma(z+1)^(-1)        [DONE: powerCanonicalProduct_one_eq]
-O2  W_1 hypertranscendental                            (O1 + Hoelder, in the meromorphic field)
-O3  W_(1/q) hypertranscendental for every q >= 1        (O2 + the proved transfer (10))
+O2  W_1 hypertranscendental              [DONE: hypertranscendental_powerCanonicalProduct_one]
+O3  W_(1/q) HT for every q >= 1     [DONE: hypertranscendental_powerCanonicalProduct_inv_nat]
 O4  multi-scale root-of-unity reciprocal-Gamma product is HT   (open layer)
 O5  W_p hypertranscendental for every odd p             (O4 + the p=q cyclic norm)
 ```
 
-`O3` already gives a dense rational stratum of hypertranscendental exponents `1/q`, which is the
-card's headline consequence for the numerator-one subfamily.
+`O3` is proved, so the card's headline consequence `(10)` now holds unconditionally in Lean for the
+whole numerator-one subfamily: `W_(1/q)` is hypertranscendental for every `q >= 1`, a set of
+exponents dense in `(0,1]`.  `O2` is proved by removing the Euler-Mascheroni gauge from `W_1`,
+identifying the result with the entire reciprocal Gamma germ `Gamma(z+1)^(-1)`, and contradicting the
+corpus's single-orbit charge theorem `hypertranscendentalOver_gammaOrbitProductMero` in the global
+meromorphic differential field.  Only `O4`/`O5` (odd numerators `p >= 3`) remain.
 
 ## Gates
 
@@ -373,7 +391,11 @@ card's headline consequence for the numerator-one subfamily.
 - [x] Lean: primary-factor filter, genus bookkeeping, exact cyclic norm `(5)`
 - [x] Lean: algebraic-change lemma `(7)` for `z |-> c z^q`, unconditional
 - [x] Lean: the odd-numerator transfer `(10)` as an unconditional implication from `(8)`
-- [ ] Lean: Bank's integer-exponent theorem `(8)` (the only remaining gap)
+- [x] Lean: the even half of Bank's theorem `(8)`, `p` even implies `W_p` DA
+- [x] Lean: `W_1 = exp(-gamma_E z)/Gamma(z+1)` and `W_1` hypertranscendental (Bank at `p = 1`)
+- [x] Lean: `W_(1/q)` hypertranscendental for every `q >= 1` (a dense rational stratum)
+- [ ] Lean: the odd half of Bank's theorem `(8)` for `p >= 3` (multi-scale reciprocal-Gamma HT)
+- [x] Lean: the forward half of `(7)`, and hence both branches of `(9)` relative to `(8)`
 
 ## Log
 

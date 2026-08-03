@@ -61,6 +61,43 @@ theorem dense_range_clockPhasePoint {ι : Type*} (omega : ι → ℝ)
   have hmem := hyV ⟨i, hi⟩ (Set.mem_univ _)
   rwa [clockPhasePoint_restrict omega I t ⟨i, hi⟩] at hmem
 
+
+/-- The phase flow is additive in time. -/
+theorem clockPhasePoint_add {ι : Type*} (omega : ι → ℝ) (s t : ℝ) :
+    clockPhasePoint omega (s + t) = clockPhasePoint omega s + clockPhasePoint omega t := by
+  funext i
+  simp only [clockPhasePoint, Pi.add_apply, ← AddCircle.coe_add]
+  congr 1
+  ring
+
+/-- **Density of a forward orbit reduces to its finite projections.**  A basic open set of a product
+constrains finitely many coordinates, so if every finite coordinate projection of the flow has dense
+forward orbit after any time, so does the whole flow. -/
+theorem dense_forwardOrbit_clockPhasePoint {ι : Type*} (omega : ι → ℝ) (T₀ : ℝ)
+    (hfin : ∀ s : Finset ι,
+      Dense {x : UnitAddTorus (s : Set ι) |
+        ∃ t : ℝ, T₀ ≤ t ∧ finiteClockPhasePoint (fun j : (s : Set ι) => omega j) t = x}) :
+    Dense {x : UnitAddTorus ι | ∃ t : ℝ, T₀ ≤ t ∧ clockPhasePoint omega t = x} := by
+  classical
+  rw [dense_iff_inter_open]
+  intro U hUopen hUne
+  obtain ⟨f, hfU⟩ := hUne
+  obtain ⟨I, u, hu, hsub⟩ := isOpen_pi_iff.mp hUopen f hfU
+  set V : Set (UnitAddTorus (I : Set ι)) := Set.univ.pi fun i => u i.1 with hV
+  have hVopen : IsOpen V := by
+    refine isOpen_set_pi Set.finite_univ fun i _ => ?_
+    exact (hu i.1 i.2).1
+  have hVne : V.Nonempty := by
+    refine ⟨fun i => f i.1, ?_⟩
+    intro i _
+    exact (hu i.1 i.2).2
+  obtain ⟨y, hyV, hyorbit⟩ := (dense_iff_inter_open.mp (hfin I)) V hVopen hVne
+  obtain ⟨t, htT, rfl⟩ := hyorbit
+  refine ⟨clockPhasePoint omega t, hsub ?_, ⟨t, htT, rfl⟩⟩
+  intro i hi
+  have hmem := hyV ⟨i, hi⟩ (Set.mem_univ _)
+  rwa [clockPhasePoint_restrict omega I t ⟨i, hi⟩] at hmem
+
 end
 
 end GaloisForLFunctions.HTGeometry

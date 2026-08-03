@@ -553,10 +553,53 @@ makes claim (3) hold *at every power* rather than only at `n = 1`:
   `n`-th powers of two shifted carriers force equal phases.  Composed with the hull embedding this
   is exactly `B_n ≅ T^N` for every `n >= 1`.
 
+`InfiniteTorusKroneckerDensity.lean` also gained the time-translation structure the closure argument
+uses: `clockPhasePoint_add` (the flow is additive in time) and **`dense_forwardOrbit_clockPhasePoint`**
+-- density of a *forward* orbit reduces to its finite coordinate projections, exactly as two-sided
+density did.  This isolates the one classical input still needed for the card's remark that "the tail
+of a dense Kronecker orbit is still dense": forward Kronecker density on a *finite* torus, which the
+corpus currently has only in two-sided form.
+
 Remaining on this card:
 
-1. the closure equality `closure(O_n) = O_n ⊔ B_n`, whose ingredients (the Stieltjes decay (7), the
-   phase-uniform estimate, the disjointness theorem) are in place;
+1. the closure equality `closure(O_n) = O_n ⊔ B_n`.  Its inputs are now all proved:
+   `InfiniteTorusForwardDensity.lean` (wired, axiom-clean) supplies one-sided unique ergodicity and
+   forward density --
+
+   - `forwardFlowAverage`, its linearity and sup-norm bound, and
+     `tendsto_forwardFlowAverage_torusCharacter`: on a character the one-sided average is the
+     corpus's `windowAverage` of a phase, whose limit is `bohrMean_expChar`;
+   - **`hasHaarForwardAverage_of_continuous`** -- one-sided unique ergodicity of the flow;
+   - `integral_pos_of_torusHaar`, **`dense_forwardOrbit_zero`** and **`dense_forwardOrbit`** -- a
+     continuous nonnegative function vanishing on the closure of a forward orbit would have zero
+     Haar mean, contradicting positivity of Haar on nonempty open sets; and every *tail* of the
+     orbit is dense because the flow is additive, so a tail is a translate of the forward orbit.
+
+   This is exactly the card's remark that "every `λ` occurs along an unbounded positive sequence
+   because the tail of a dense Kronecker orbit is still dense".
+
+   `BohrOrbitClosure.lean` (wired, axiom-clean) then assembles the inclusion `B ⊆ closure O`:
+
+   - **`mem_closure_range_of_dense_tails`** -- if a parametrised family is continuous, the flow has
+     dense forward tails, and the orbit is asymptotic to the family along the flow, then every value
+     of the family lies in the closure of the orbit.  One waits until the orbit is uniformly close to
+     the family and then steers the remaining tail near the prescribed parameter;
+   - **`bohrHullMap_mem_closure_range_of_asymptotic`** -- the same statement for the phase hull of an
+     exponential carrier, with the asymptotic comparison as an explicit hypothesis: that hypothesis
+     is precisely the Stieltjes decay (7) on the `S_u` side, which the card imports from the Herglotz
+     engine.
+
+   The reverse inclusion is half done in the same module:
+
+   - `mem_range_of_mem_closure_image_compact` -- the image of a compact time window is closed, so a
+     limit of orbit points coming from bounded times is itself an orbit point;
+   - **`closure_range_subset_union_clusterAtInfinity`** -- hence
+     `closure O ⊆ O ∪ ⋂_M closure (G '' {|t| > M})`: a limit of orbit points is either an orbit point
+     or a cluster point of the orbit at arbitrarily large times.
+
+   What is left of the closure step is the identification of that cluster set with `B`: an
+   ultrafilter along the cocompact filter converges on the compact phase torus, and the asymptotic
+   comparison then identifies its limit with the corresponding boundary state;
 2. all-power differential independence -- claim (1) -- which needs a *power gauge* for the corpus's
    `FamilyDifferentiallyAlgebraicOn`: a relation among `N`-th powers pulls back to a relation among
    the functions, by injectivity of the jet substitution `y_k ↦ (y^N)^(k)`.  The existing gauge

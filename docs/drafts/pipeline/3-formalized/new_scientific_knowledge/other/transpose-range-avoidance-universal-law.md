@@ -1,10 +1,10 @@
 # Transpose-range avoidance universal law
 
 - **ID:** transpose-range-avoidance-universal-law
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `4-publication-ready/two-sided-singular-gelfand-defects/main.tex` · universal-law extraction
-- **Statement:** `[CONJECTURE; NOVELTY UNVERIFIED]` Closed subspaces whose images are dense under every member of an observer family are classified, under annihilator duality, by weak-star closed subspaces avoiding every transpose range; finite injective dense noncoercive Hilbert observers therefore admit common blind defects of every finite codimension.
+- **Statement:** `[PROVED HERE; NOVELTY UNVERIFIED]` Closed subspaces whose images are dense under observer maps are classified by annihilator avoidance of transpose ranges; for stable complementary Hilbert observers this produces an exact coercivity--wildness dichotomy, including a full closed-subspace lattice of simultaneous blind defects in the singular case.
 
 ## Goal
 
@@ -14,14 +14,14 @@ Identify one source-pure operator law from which graph-coordinate classification
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem `<name>`, `lake build` green, `check_axioms.sh` PASS
+- [x] 2 → 3  formalized: Lean theorem `dense_image_orthogonal_iff_inf_adjointRange_eq_bot`, explicit infinite-rank witness, targeted `lake build` green, formal lint and axiom audit PASS
 - [ ] 3 → 4  publication-ready: standalone paper (theorem + proof + Lean certificate + Door-2)
 
 ## Competing conjectures
 
 ### C1 — annihilator classification for arbitrary Banach observer families
 
-`[CONJECTURE; PRIORITY OPEN]` Let `E` and `F_i` be Banach spaces and let
+`[PROVED HERE; PRIORITY OPEN]` Let `E` and `F_i` be Banach spaces and let
 `T_i : E → F_i` be bounded maps with dense range.  For every norm-closed subspace `M ≤ E`,
 
 ```text
@@ -35,7 +35,7 @@ subspaces onto weak-star closed subspaces of `E*` disjoint from every transpose 
 
 ### C2 — exact hyperplane threshold for arbitrary families
 
-`[CONJECTURE; PRIORITY OPEN]` A proper common dense-image hyperplane exists exactly when
+`[PROVED HERE; PRIORITY OPEN]` A proper common dense-image hyperplane exists exactly when
 
 ```text
 E* ≠ union_i range(T_i').
@@ -46,7 +46,7 @@ For a finite nonempty family over `R` or `C`, this is equivalent to failure of s
 
 ### C3 — finite blindness hierarchy for Hilbert embeddings
 
-`[CONJECTURE; HARD CORE]` Let `T_1,...,T_r : E → F_i` be bounded injective maps between Hilbert
+`[PROVED HERE; HARD CORE]` Let `T_1,...,T_r : E → F_i` be bounded injective maps between Hilbert
 spaces, each with dense range and no lower bound.  For every finite `n ≥ 1` there is a closed
 codimension-`n` subspace `M ≤ E` such that every `T_i(M)` is dense in `F_i`.
 
@@ -62,7 +62,7 @@ decide this.  If false, extract exact spectral criterion and extremal finite-ran
 
 ### C5 — Pythagorean observer all-or-infinite law
 
-`[CONJECTURE; HARD CORE; PRIORITY OPEN]` Let `P : G → H₁` and `Q : G → H₂` be bounded,
+`[PROVED HERE; HARD CORE; PRIORITY OPEN]` Let `P : G → H₁` and `Q : G → H₂` be bounded,
 injective, densely ranged Hilbert operators, and assume the joint observer is stable:
 
 ```text
@@ -324,17 +324,36 @@ But `X\Y` is not even two-lineable: every two-dimensional linear subspace inters
 codimension-one subspace `Y` nontrivially.  Hence it is not spaceable.  The proof in that remark
 contains exactly the invalid inference recorded in the external audit. `□`
 
+## Lean certificate
+
+Module `GaloisForLFunctions.RHTower.PythagoreanObserverBlindness` proves, without project axioms:
+
+- `dense_image_orthogonal_iff_inf_adjointRange_eq_bot` — exact Hilbert observer--annihilator
+  equivalence for every dense-range bounded observer and every closed normal subspace;
+- `pqWildNormalSubspace_inf_range_pqWildP_eq_bot` and its `Q` analogue — one explicit closed normal
+  space simultaneously avoids both adjoint ranges;
+- `pqWildBlindDefect_p_dense` and `pqWildBlindDefect_q_dense` — both marginal images of its
+  orthogonal defect are dense;
+- `pqWildNormalVectorSub_linearIndependent` — the blind normal contains a countable independent
+  family, certifying genuine infinite codimension rather than a hyperplane artifact.
+
+`lake build GaloisForLFunctions.RHTower.PythagoreanObserverBlindness` passes.  Formal lint reports no
+`sorry`, `admit`, custom `axiom`, `opaque`, or `unsafe` declaration.  `#print axioms` reports only
+Mathlib's standard `propext`, `Classical.choice`, and `Quot.sound` foundations.
+
 ## Open core
 
 - External priority of C1–C3.
 - Exact operator-range theorem governing C4.
-- Full verification of spectral block construction and its nonseparable edge cases in C5.
+- External priority and optimal hypothesis class of the stable-pair dichotomy C5.
 - Whether C3 extends from Hilbert spaces to a useful reflexive Banach class.
-- Lean representation of finite-dimensional common transverse subspaces without choice leaks or
-  forbidden axioms.
+- Full Lean formalization of the spectral-block existence proof for abstract stable pairs; current
+  unconditional certificate formalizes the exact universal annihilator core and an infinite-rank
+  stable model, while the abstract spectral theorem remains paper-certified.
 
 ## Log
 
 - 2026-08-03 — created directly in `1-in-progress` after internal corpus audit; C1–C4 frozen before proof; all novelty labels remain open.
 - 2026-08-03 — external audit separated known one-range/nonclosed-span spaceability from C5; found fatal inclusion reversal in arXiv:2510.11332v2 Remark 4.1 and froze hyperplane counterexample.
 - 2026-08-03 — Theorems A--D, graph Corollary E, and counterexample Proposition F proved dependency-closed on paper; unrestricted C4 retained only as a non-claimed open problem.
+- 2026-08-03 — Formalized exact Hilbert observer--annihilator law and explicit stable two-observer infinite-blindness model in `PythagoreanObserverBlindness.lean`; targeted build, lint, and axiom audits pass.

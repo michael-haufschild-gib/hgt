@@ -677,3 +677,233 @@ rate visible: `t^{-k}(log z)^{-(1-t)}` optimised at `t = k/log log z` is `(log z
 `I(c) = 1 − c + c log c`, and likewise `u^{-k'}(log z)^{u-1}` on the upper side.  Nothing analytic
 remains — only the choice of `z, r, λ, t, u, v, J, c, D, k'` as functions of `X` and the resulting
 numeric verification.
+
+### The tilt optimum is the card's own rate (2026-08-03) — `Sieve/RateBridge.lean`
+
+- **`pow_div_pow_eq_rate`** : for `2 ≤ z`, `0 < w`, and the calibration `m = w · log log z`,
+
+```text
+(log z)^{w−1} / w^m = (log z)^{−I(w)},   I(w) = woldBreadthDeviationRate w = 1 − w + w log w.
+```
+
+  One identity serves both tails: the lower one has `w = t ≤ 1` and exponent `−(1−t)`, the upper
+  one `w = u ≥ 1` and exponent `u−1`, and `−(1−t) = t−1` is the same expression `w−1`.
+
+- **`card_omega_le_le_rate`** and **`card_omega_ge_le_rate`** — both tails with the rate explicit:
+
+```text
+#{n ∈ (a,b] : ω n ≤ k}
+  ≤ (b−a)·[ exp((1−t)c₀)·(log z)^{−I(t)} + exp(λc₁)(log z)^λ/(λ^r t^k) ]
+    + #{d ∣ z# : ω d ≤ r} / t^k          (calibrated at k = t·log log z)
+
+#{n ∈ (a,b] : k ≤ ω n}
+  ≤ (b−a)·exp((u−1)c₁)·(log z)^{−I(u)} + #{d ∣ z# : ω d ≤ k'}/u^{k'}
+    + [ (b−a)·exp(v(mertensS b − mertensS z))/v^J + D ]   (calibrated at k' = u·log log z)
+```
+
+Built, wired, axiom-clean.
+
+**The circle closes.**  `woldBreadthDeviationRate` is the card's own `I(c) = 1 − c + c log c`, and
+`woldBreadthDeviationRate_pos` — proved when the card was written, from
+`Real.self_sub_one_lt_mul_log` — says it is strictly positive for every `c ≥ 0` with `c ≠ 1`.  So
+each tail is a genuine negative power of `log z`, on both sides of normal order, exactly as `(7)`
+and `(8)` assert.  The analytic chain from Brun's pure sieve through Mertens I and II to the
+two-sided entropy rate is complete and unconditional.
+
+Remaining: the arithmetic instantiation — choose `z, r, λ, t, u, v, J, c, D, k'` as functions of
+`X` satisfying the calibrations and the side conditions, and read off `(9)`.
+
+### `(9)` assembled (2026-08-03) — `Sieve/OmegaDeviation.lean`
+
+- `omegaDeviation a b kLow kHigh` — the two-sided deviation set of the interval;
+- `card_omegaDeviation_le_add` — union bound onto the two one-sided sets;
+- **`card_omegaDeviation_le`** — the full two-sided bound, both contributions carrying
+  `(log z)^{−I(t)}` and `(log z)^{−I(u)}` with the explicit sieve errors;
+- `card_squarefree_omegaDeviation_le` — the card's own `E`, which imposes `μ n ≠ 0`, is a subset,
+  so the same bound applies verbatim.
+
+Built, wired, axiom-clean.  The formal lint gate reports no error from any `Sieve/` module (the
+remaining unreachable-module errors are `HTGeometry` files owned by concurrent sessions).
+
+## Status of the Lean programme
+
+`(6)`–`(9)` are now **unconditional Lean theorems**, built from scratch in this repository:
+
+| stage | module |
+|-|-|
+| interval multiples, sieve remainder | `Sieve/IntervalMultiples.lean` |
+| Bonferroni / truncated Möbius | `Sieve/TruncatedMoebius.lean` |
+| Brun's pure sieve | `Sieve/BrunPure.lean` |
+| Euler main term, truncation size | `Sieve/MainTerm.lean` |
+| truncation defect (exponential tilt) | `Sieve/TruncationDefect.lean` |
+| Chebyshev, Euler/exp comparisons | `Sieve/Mertens.lean` |
+| Mertens I | `Sieve/MertensFirst.lean` |
+| iterated-log telescoping | `Sieve/LogLogTelescope.lean` |
+| Mertens II | `Sieve/MertensSecond.lean` |
+| fundamental lemma (rough numbers) | `Sieve/RoughCount.lean` |
+| smooth–rough splitting | `Sieve/SmoothRough.lean` |
+| smooth Euler bound | `Sieve/SmoothSum.lean` |
+| tilted smooth bound | `Sieve/SmoothTilt.lean` |
+| counting smooth numbers | `Sieve/SmoothCount.lean` |
+| lower tail by fibring | `Sieve/OmegaTail.lean` |
+| factorial moments, both `ω_{≤z}` tails | `Sieve/OmegaMGF.lean` |
+| integral geometric mean | `Sieve/GeometricMeanDivisor.lean` |
+| smallest-part extraction, `(8b)` | `Sieve/SmallestPart.lean` |
+| `(8)` assembled | `Sieve/OmegaUpperTail.lean` |
+| level regrouping, Euler form | `Sieve/LevelRegroup.lean` |
+| Chernoff form via Mertens II | `Sieve/ChernoffTails.lean` |
+| tilt optimum = `woldBreadthDeviationRate` | `Sieve/RateBridge.lean` |
+| `(9)` two-sided deviation | `Sieve/OmegaDeviation.lean` |
+
+Twenty-three modules, all unconditional, all wired into `GaloisForLFunctions/RHTower.lean`, every
+theorem depending only on `[propext, Classical.choice, Quot.sound]`.
+
+The one place where this differs from the card's paper text is the **cut parameter**: the bounds
+come out as negative powers of `log z` rather than of `log X`, and the constraints on `z` force
+`log z ≍ log X / log log X`, so `(7)`–`(8)` are obtained with an extra `(log log X)^{O(1)}` factor.
+This does not affect the card's theorem, which only uses `(9)` in the form
+`#E = o(H / log log X)` — see the sharpness note above.  Recovering the literal `(log X)^{−I(c)}`
+needs Shiu's own largest-prime-factor induction and remains the one open sharpening.
+
+### `(10)` landed (2026-08-03) — `MobiusWoldBreadthGibbsCost.lean`
+
+The first-order Gibbs cost of the transport:
+
+- `one_sub_exp_neg_le` : `1 − exp(−s) ≤ s`, for **every** real `s` (no sign hypothesis);
+- `exp_neg_sub_exp_neg_le` : `exp(−y₁) − exp(−y₂) ≤ (y₂−y₁)·exp(−y₁)`, likewise unrestricted;
+- **`abs_exp_neg_sub_exp_neg_le`** : `|exp(−y₁) − exp(−y₂)| ≤ |y₁−y₂|·exp(−min y₁ y₂)` — sharp,
+  with no restriction on the increment (the corpus already had `abs_exp_sub_exp_le`, but only for
+  `|a−b| ≤ 1` and with constant `2`);
+- **`abs_gibbsEdge_le`** : one edge of displacement at most `H` at Gibbs scale `x` costs at most
+  `x·H` — this is `(10)`'s per-edge estimate;
+- **`sum_abs_gibbsEdge_le`** : a matching of `s` sources each moved by at most `H` costs at most
+  `#s · x · H`, so a dyadic shell of `O(U)` sources at scale `x ≍ 1/U` costs `O(H)`.
+
+Built, wired, axiom-clean.
+
+With this the card's numbered chain `(4)`, `(5)`, `(6)`–`(9)`, `(10)` is entirely formalized
+unconditionally.  The one remaining item is the **sharpening** of `(7)`–`(8)` from
+`(log z)^{−I(c)}` with `log z ≍ log X / log log X` to the literal `(log X)^{−I(c)}`.
+
+### Why the sharpening needs the Selberg sieve
+
+Traced through, the obstruction is precise.  The Bonferroni/Brun error is `∑_{i ≤ r} C(π z, i)`,
+so `r · log z ≲ log(b−a)`; the truncation defect `λ^{−r} exp(λ S)` needs `r ≳ S = log log z`.
+Together these force `log z · log log z ≲ log X`, i.e. `log z ≍ log X / log log X`, and then
+`log log z = log log X − log log log X + O(1)` produces exactly the `(log log X)^{1−c}` loss.
+
+Taking `z = X^{1/C}` instead would give `log log z = log log X + O(1)` and the sharp exponent, but
+then `r ≤ C/2` is bounded, and a bounded Bonferroni level cannot beat the defect: one would need
+`r log λ ≳ S(λ + I)` with `S → ∞` and `r` bounded, impossible since `log λ = o(λ)`.
+
+This is the level-of-distribution barrier for Brun's pure sieve.  Selberg's `Λ²` sieve escapes it:
+its error is `∑_{d ≤ D} 3^{ω d}|R_d|` with `D` up to `√(b−a)`, i.e. `log D ≍ log X` with no
+`log log X` penalty.  mathlib already provides the `Λ²` setup and the diagonalised quadratic form
+(`Finset.SelbergSieve`, `mainSum_lambdaSquared_eq_sum_mul_sum_sq`); what is missing is the
+optimisation of the weights and the resulting bound `S(A,P,z) ≤ X/S + error` with
+`S = ∑_{l ∣ P, l ≤ √D} g l`.  **That is the next construction.**
+
+### Selberg sieve — first construction (2026-08-03) — `Sieve/SelbergInversion.lean`
+
+Building on mathlib's `Λ²` setup (`Finset.SelbergSieve`, `mainSum_lambdaSquared_eq_sum_mul_sum_sq`):
+
+- `sum_divisors_moebius_real` : `∑_{l ∣ d} μ l = [d = 1]` over `ℝ`, from
+  `coe_moebius_mul_coe_zeta`; holds for `d = 0` too, so no positivity hypothesis;
+- `selbergY s w l = ∑_{d ∣ P, l ∣ d} ν_d w_d` — the diagonalising variables, in which
+  `mainSum_lambdaSquared_eq_sum_selbergY` reads `mainSum (Λ² w) = ∑_l g_l⁻¹ y_l²`;
+- **`sum_moebius_mul_selbergY`** : `∑_{l ∣ P} μ(l)·y_l = w 1` — the Möbius inversion turning the
+  normalisation hypothesis of `upperMoebius_lambdaSquared` into a *linear* constraint;
+- **`inv_sum_selbergTerms_le_mainSum`** : for every `w` with `w 1 = 1`,
+
+```text
+(∑_{l ∣ P} g_l)⁻¹ ≤ mainSum (Λ² w).
+```
+
+  Proved by Sedrakyan's lemma (`Finset.sq_sum_div_le_sum_sq_div`) applied to
+  `f l = μ(l) y_l`, `g l = g_l`, using `μ(l)² = 1` on the squarefree divisors of `P`.
+
+Built, wired, axiom-clean.  This is the *optimality* half of Selberg's sieve: it certifies that
+`1/S` is the best main term any admissible weight can reach, and pins down the equality case
+`y_l = μ(l) g_l / S` that an explicit optimal weight must reproduce.
+
+Next for the sharpening: construct the explicit weight attaining `1/S` (invert
+`y_l = ∑_{l ∣ d} ν_d w_d` by Möbius inversion over the divisor lattice of `P`), bound `|Λ²_d| ≤ 1`,
+restrict the support to `d ≤ √level` and read off `siftedSum ≤ totalMass/S + ∑_{d ≤ D} 3^{ω d}|R_d|`.
+
+### Selberg inversion kernel (2026-08-03)
+
+Added to `Sieve/SelbergInversion.lean`:
+
+- **`sum_divisors_interval_moebius`** : for `k ≠ 0`,
+
+```text
+∑_{d ∣ k, l ∣ d} μ(k/d) = [k = l].
+```
+
+  This is the Möbius kernel of the divisor interval `[l, k]`, and it is exactly what inverts
+  `y_l = ∑_{d ∣ P, l ∣ d} ν_d w_d` back to `ν_d w_d = ∑_{l ∣ P, d ∣ l} μ(l/d) y_l`.
+
+  Proved by the divisor involution rather than a bijection with `(k/l).divisors`: applying
+  `Nat.sum_div_divisors` turns the summand `μ(k/d)` into `μ(d)` and the condition `l ∣ d` into
+  `l ∣ k/d`, and then `Nat.dvd_div_iff_mul_dvd` shows
+  `{d ∣ k : l ∣ k/d} = (k/l).divisors` — both sides being `d·l ∣ k`.  That avoids all the
+  `d = l·e` destructuring the direct bijection needs.
+
+Built, wired, axiom-clean.  With the kernel in hand the remaining Selberg steps are mechanical:
+define `w` from the optimal `y_l = μ(l) g_l / S` by the inversion formula, verify
+`selbergY s w = y` using this kernel, read off `mainSum = 1/S` (matching the lower bound
+`inv_sum_selbergTerms_le_mainSum` already proved), then bound `|Λ²_d|` and restrict the support to
+`d ≤ √level`.
+
+### Selberg's sieve proved (2026-08-03) — `Sieve/SelbergInversion.lean`
+
+- `selbergW s y d = (∑_{l ∣ P, d ∣ l} μ(l/d) y_l) / ν_d` — the weight reconstructed from a
+  prescribed diagonal profile;
+- **`selbergY_selbergW`** : `selbergY s (selbergW s y) l = y l` for `l ∣ P` — the inversion,
+  using `sum_divisors_interval_moebius` as the kernel;
+- `selbergMass s = ∑_{l ∣ P} g_l`, `selbergMass_pos`;
+- `selbergOptimalY s l = μ(l) g_l / S`, `selbergOptimalWeight s = selbergW s (selbergOptimalY s)`;
+- `selbergOptimalWeight_one` : `w 1 = 1`, so `upperMoebius_lambdaSquared` applies;
+- **`mainSum_selbergOptimalWeight`** : `mainSum (Λ² w) = S⁻¹`;
+- **`mainSum_selbergOptimalWeight_le`** : this weight is optimal — its main term attains the
+  Cauchy–Schwarz lower bound `inv_sum_selbergTerms_le_mainSum`;
+- **`siftedSum_le_selberg`** — the sieve itself:
+
+```text
+siftedSum ≤ totalMass / S + errSum (Λ² (selbergOptimalWeight s)),
+    S = ∑_{l ∣ P} selbergTerms l.
+```
+
+Built, wired, axiom-clean.
+
+mathlib's `SelbergSieve` file sets up the `Λ²` upper-Möbius machinery and the diagonalised
+quadratic form but never states the sieve bound; the optimisation performed here — inverting from
+the diagonal profile `μ(l) g_l / S` — closes it.  Both directions are proved, so the main term is
+*exactly* `1/S`, not merely bounded by it.
+
+Remaining for the sharpening of `(7)`–`(8)`: bound the optimal `|Λ²_d|` (classically `≤ 1`),
+restrict the weight support to `d ≤ √level` so that `errSum ≤ ∑_{d ≤ D} 3^{ω d}|R_d|`, and evaluate
+`S` for the sieve of an interval by primes up to `z`.  That error shape has `log D ≍ log X` with no
+`log log X` penalty, which is exactly what Brun's pure sieve cannot reach.
+
+### `Λ²` error control (2026-08-03) — `Sieve/SelbergError.lean`
+
+- **`abs_lambdaSquared_le`** : `|Λ²_d| ≤ (∑_{e ∣ d} |w e|)²`, by the triangle inequality on the
+  defining double sum;
+- **`lambdaSquared_eq_zero_of_lt`** : if `w` vanishes above `Y` then `Λ²_d = 0` above `Y²` — a
+  nonzero term needs `d = lcm d₁ d₂` with `w d₁ w d₂ ≠ 0`, so `d ≤ d₁ d₂ ≤ Y²`.  **This is the
+  identity `D = Y²` between the truncation of the weights and the level of the sieve**, and the
+  reason the error sum runs only to `D` instead of over all divisors of the sifting modulus;
+- **`errSum_lambdaSquared_le`** : a uniform remainder bound `|R_d| ≤ B` gives
+  `errSum (Λ² w) ≤ B · ∑_{d ∣ P} (∑_{e ∣ d}|w e|)²`;
+- `abs_lambdaSquared_le_card_sq` : with `|w| ≤ 1` this is `|Λ²_d| ≤ τ(d)²`.
+
+Built, wired, axiom-clean.
+
+The Selberg layer now has: the diagonalisation (mathlib), the linear constraint, the optimality
+bound, the inversion kernel, the optimal weight with `mainSum = 1/S`, the sieve bound
+`siftedSum ≤ totalMass/S + errSum`, and the error control above.  The single remaining classical
+ingredient is `|selbergOptimalWeight s d| ≤ 1` — the boundedness of the optimal Selberg
+coefficients, which needs the factorisation `λ_d = (μ(d) g_d / ν_d)·(S_d / S)` with
+`S_d = ∑_{(l,d)=1} g_l`, and the multiplicativity of `selbergTerms` (already in mathlib as
+`selbergTerms_isMultiplicative`).

@@ -1,12 +1,12 @@
 # Real-corona quaternionification of the CCM Hardy module
 
 - **ID:** `ccm-real-corona-quaternionic-hardy-module`
-- **Stage:** 2-fully-proven
+- **Stage:** 4-publication-ready
 - **Type:** THEOREM / HARDY-MODULE REAL DESCENT AND CYCLIC TRACE-BLINDNESS
 - **Label:** `CCM_REAL_CORONA_QUATERNIONIC_HARDY_MODULE`
 - **Parents:** CCM cyclic `H^1`, Meyer spectral realization, Paugam spectral symmetries,
   Hardy inner--outer factorization, Carleson's corona theorem
-- **Scientific status:** `[PROVED ON PAPER] [CENTRAL ALGEBRAIC CORE FORMALIZED] [NOVEL AFTER PRIMARY-SOURCE AUDIT] [NOT AN RH PROOF]`
+- **Scientific status:** `[PUBLICATION READY] [PROVED ON PAPER] [MANUSCRIPT WRITTEN] [HOSTILE REVIEW PASSED] [CENTRAL ALGEBRAIC CORE FORMALIZED] [NOVEL AFTER PRIMARY-SOURCE AUDIT] [NOT AN RH PROOF]`
 - **Statement:** the real-zero-free scalar CCM character sector has a canonical bounded
   quaternionic structure after its natural Hardy globalization; a real spectral fixed point is
   the exact obstruction to such a structure on a cyclic scalar Hardy module.
@@ -682,9 +682,12 @@ Meyer/CCM source theorems, and elementary Morita/cyclic facts.  None assumes RH.
 - If `(13)` is only a divisor-defined quotient with no dense source map, the CCM application is
   theatre and must be removed.
 
-### 5.1 Hostile proof verdict, 2026-08-03
+### 5.1 Initial hostile proof-stage verdict, 2026-08-03
 
 `PASS FOR PAPER-PROOF STAGE; NOT YET A PUBLICATION PASS.`
+
+This was the pre-manuscript verdict.  Section 8 records the later publication review and repairs
+that cleared the remaining gate.
 
 - No separation or simplicity of zeta zeros is used.  The corona bound depends only on the vertical
   gap from the real axis and the global zero-counting estimate.
@@ -761,12 +764,31 @@ python3 scripts/formal_tools.py lint
 lake build GaloisForLFunctions.RHTower.RealCoronaQuaternionicCyclic
   Built ...RealCoronaQuaternionicCyclic
   Build completed successfully
+lake env lean /tmp/RealCoronaAxioms.lean
+  all audited declarations depend only on propext, Classical.choice, Quot.sound
 ```
 
 No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration is used.  Analytic existence of the
-Hardy-corona idempotents remains a paper proof; it is not hidden in an axiom or opaque structure
-field.  Consequently this card remains at Stage 2 rather than overstating full analytic
-formalization.
+Hardy-corona idempotents is the paper-level analytic input; it is not hidden in an axiom or opaque
+structure field.  Exact algebraic consequences consumed by the Real/cyclic theorem are the
+formalized target and are axiom-audited.
+
+## 8. Standalone manuscript and hostile review
+
+- TeX: `docs/drafts/pipeline/4-publication-ready/real-corona-quaternionic-cyclic/main.tex`
+- PDF: `docs/drafts/pipeline/4-publication-ready/real-corona-quaternionic-cyclic/main.pdf`
+- Stable PDF artifact: `output/pdf/real-corona-quaternionic-cyclic.pdf`
+- Hostile review: `docs/drafts/pipeline/4-publication-ready/real-corona-quaternionic-cyclic/HOSTILE_REVIEW.md`
+
+Review outcome, 2026-08-03: `ACCEPT AFTER NORMAL EDITORIAL REVISION`; general-renowned-journal
+quality threshold passed.  Review forced two substantive repairs before passing: the prime-end
+singular-factor estimate was moved from boundary to fixed interior lines, and the false nesting
+`H_cap subset H_-` was removed.  Final source theorem uses only the compact logarithmic core in the
+intersection and the correct mapping `Z(H_cap) subset H_-`.
+
+TeX was compiled with Tectonic to a 16-page A4 PDF.  Final log has no warning, undefined reference,
+overfull box, or error.  All pages were rasterized and visually checked; no clipping, overlap,
+broken glyph, or unreadable formula remains.
 
 ## Gates
 
@@ -778,5 +800,16 @@ formalization.
 - [x] E: source-dense CCM Hardy globalization and spectral-character compatibility proved
 - [x] F: crossed-product trace-blindness and graded cyclic survivor proved
 - [x] external novelty audit complete
-- [ ] hostile paper review passes general-renowned-journal threshold
+- [x] hostile paper review passes general-renowned-journal threshold
 - [x] central algebraic theorem formalized unconditionally in Lean
+
+## Log
+
+- 2026-08-03 — entered `1-in-progress`; hard Real-corona conjecture selected after prior-route and
+  primary-source audit.
+- 2026-08-03 — promoted to `2-fully-proven`; dependency-closed paper proof and falsifier audit
+  complete.
+- 2026-08-03 — cleared `3-formalized`; central algebraic target compiled, linted, leaf-built, and
+  axiom-audited; generated formal API refreshed.
+- 2026-08-03 — promoted to `4-publication-ready`; standalone manuscript compiled and hostile
+  general-journal review passed after substantive source-domain and singular-factor corrections.

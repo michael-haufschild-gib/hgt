@@ -82,7 +82,14 @@
   `GaloisForLFunctions.RHTower.DeningerPowWord` (the normal word of a power),
   `GaloisForLFunctions.RHTower.DeningerRotate` (rotation is conjugation),
   `GaloisForLFunctions.RHTower.DeningerFlattenRotate` (dropping from a concatenation of copies),
-  `GaloisForLFunctions.RHTower.DeningerFlattenDrop` (dropping whole and partial copies)
+  `GaloisForLFunctions.RHTower.DeningerFlattenDrop` (dropping whole and partial copies),
+  `GaloisForLFunctions.RHTower.DeningerRotateCompare` (comparing two descriptions of a list),
+  `GaloisForLFunctions.RHTower.DeningerLeadLetter` (the leading letter of an uncancelled product),
+  `GaloisForLFunctions.RHTower.DeningerCancelCriterion` (when a product cancels),
+  `GaloisForLFunctions.RHTower.DeningerMergeDichotomy` (the merge dichotomy),
+  `GaloisForLFunctions.RHTower.DeningerLeadSurvives` (the leading letter survives a short factor),
+  `GaloisForLFunctions.RHTower.DeningerPrefixConj` (the conjugator is a prefix),
+  `GaloisForLFunctions.RHTower.DeningerAbsorbRight` (absorbing the base group into the last letter)
 
 ## Statement
 
@@ -941,6 +948,87 @@ So a shift by `t = qℓ + r` removes `q` copies and rotates by `r`, and the rota
 `r`, the remainder of the difference of the conjugator lengths modulo the length of the cyclically
 reduced word.
 
+`DeningerRotateCompare.lean` carries out the comparison itself:
+
+- `deningerFlatten_add` — concatenations of copies add;
+- `deningerRotate_of_flatten_eq` — **if the same list is described twice, as a conjugator followed
+  by copies of a cyclically reduced word followed by a tail, then the two cyclically reduced words
+  are rotations of one another by the difference of the conjugator lengths modulo their common
+  length.**
+
+The hypothesis is that the number of copies exceeds the number consumed by the shift, which is
+guaranteed by taking the exponent large — and taking the exponent large is available for free, since
+`xⁿ = yⁿ` gives `x^{kn} = y^{kn}` for every `k`.
+
+The remaining group-theoretic work is the production of the two descriptions, and it needs to know
+which letters survive a product.  `DeningerLeadLetter.lean` proves the first such statement:
+
+- `deningerFstIdx_mul_of_len` — **if a reduced alternating word is multiplied on the right by an
+  element and the word length is the sum of the two lengths, then the normal form of the product
+  begins in the factor of the first letter.**
+
+The induction is on the word: the length hypothesis is inherited by the tail because the length can
+drop by at most one when a letter is removed, and the alternation then keeps the next letter from
+merging.
+
+`DeningerCancelCriterion.lean` characterizes when that hypothesis holds:
+
+- `deningerLen_mul_lt_of_fstIdx` — if the element begins in the factor of the last letter, the
+  product is strictly shorter than the sum of the lengths;
+- `deningerLen_mul_eq_iff` — **the word length of a product is the sum of the lengths exactly when
+  the element's normal form does not begin in the factor of the last letter.**
+
+So cancellation in an amalgam is detected by a single index comparison, and the leading letter
+lemma applies whenever that comparison fails.
+
+The recursion that produces the cyclic reduction data has to know that peeling a letter makes
+progress, and the obstacle is that a merge need not shorten the word.
+`DeningerMergeDichotomy.lean` resolves it:
+
+- `deningerMerge_dichotomy` — **if the normal form of an element begins in the factor `i`, then
+  multiplying by a letter of `i` either leaves the front in the factor `i`, or strictly shortens
+  the word.**
+
+Either branch is progress: in the first the next junction cannot cancel, because the surrounding
+word alternates, so the prepending lemma applies and the recursion stops; in the second the length
+has dropped, so the recursion continues.
+
+`DeningerLeadSurvives.lean` runs that recursion:
+
+- `deningerFstIdx_letterProd_mul` — **if a reduced alternating word is multiplied on the right by an
+  element strictly shorter than the word, the normal form of the product still begins in the factor
+  of the first letter.**
+
+This is one route to the junction condition the shape `C · Vᵏ · B` needs on its right hand side, but
+it needs the conjugator to be shorter than the cyclically reduced part, which is **not** always the
+case: each cyclic reduction step that drops a letter into the base group shortens the word by two
+while lengthening the conjugator by one, so a word of length six can reduce to one of length two
+with a conjugator of length two.
+
+The correct route uses the structure of the conjugator rather than its size.  The conjugator is
+built by stripping letters off the *front* of the word, so it is literally a prefix of it, and the
+merged letter at each step carries the index of the letter that was stripped.  So the last letter of
+the cyclically reduced part has the index of the last letter of the conjugator, and the junction
+follows from the alternation of the original word.  `DeningerPrefixConj.lean`:
+
+- `deningerLetterProd_prefix_cancel` — cancelling a prefix off a word leaves the suffix;
+- `deningerJunction_of_append` — **if the last letter of the cyclically reduced part carries the
+  index of the last letter of the conjugator, then it differs from the first letter of the tail.**
+
+The recursion should also be run on plain reduced alternating words rather than transversal ones:
+transversality is needed only at the very end, for uniqueness of normal words, and it can be
+restored there by the transversal form, which preserves the indices.  Working with plain words the
+base group elements produced along the way are always absorbed into a neighbouring letter — on the
+left by `deningerAbsorb`, and on the right by `DeningerAbsorbRight.lean`:
+
+- `deningerLetterProd_mul_base_snoc` — an element of the base group multiplying a nonempty word on
+  the right is absorbed into its last letter;
+- `deningerAbsorbRight_reduced`, `deningerAbsorbRight_map_fst` — reducedness and the indices are
+  preserved.
+
+This is what keeps the cyclic reduction step inside the class of reduced alternating words when the
+merged letter falls into the base group and the word shortens by two.
+
 Step 1 still needs Baumslag's inductive step (root adjunction preserves unique roots), which rests
 on the same normal-form machinery.
 
@@ -1463,3 +1551,53 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   rotates by `r` — the rotation that appears in the comparison is the remainder of the difference of
   the conjugator lengths modulo the length of the cyclically reduced word.  All the list ingredients
   of the comparison are now in place.
+- 2026-08-03 — Proved the comparison itself at the level of lists: two descriptions of the same list
+  as conjugator, copies of a cyclically reduced word, and tail force the two cyclically reduced
+  words to be rotations of one another by the difference of the conjugator lengths modulo their
+  common length.  The hypothesis needed is that the number of copies exceeds the number consumed by
+  the shift, and that is free — `xⁿ = yⁿ` gives `x^{kn} = y^{kn}` for every `k`, so the exponent can
+  always be taken past any fixed bound.  This is the whole combinatorial content of the two-exponent
+  argument; what is left is the group-theoretic production of the two descriptions.
+- 2026-08-03 — Proved that the leading letter of a product survives when nothing cancels: if a
+  reduced alternating word is multiplied on the right and the length is additive, the normal form of
+  the product begins in the factor of the first letter.  The induction works because the length
+  hypothesis is inherited by the tail — removing a letter changes the length by at most one, so the
+  additivity is forced all the way down — and alternation then prevents the next letter from
+  merging.  This is the first statement of the cancellation theory that the production of the
+  cyclic reduction data needs.
+- 2026-08-03 — Characterized cancellation by a single index comparison: the word length of a product
+  of a reduced alternating word with an element is the sum of the lengths exactly when the element's
+  normal form does not begin in the factor of the last letter.  One direction is the prepending
+  lemma, the other splits off the last letter and uses that merging cannot lengthen.  This makes the
+  hypothesis of the leading letter lemma checkable, which is what the production of the cyclic
+  reduction data needs.
+- 2026-08-03 — Proved the merge dichotomy: multiplying an element whose normal form begins in the
+  factor `i` by a letter of `i` either leaves the front in `i` or strictly shortens the word.  This
+  is what makes the recursion that produces the cyclic reduction data terminate.  The difficulty it
+  removes is that a merge need not shorten anything — the merged letter can survive as an ordinary
+  letter — so length alone is not a termination measure.  Either branch is progress though: if the
+  front stays in `i` the next junction cannot cancel, since the surrounding word alternates, and the
+  prepending lemma finishes; otherwise the length has dropped.
+- 2026-08-03 — Proved that the leading letter survives multiplication by a strictly shorter factor,
+  running the recursion the merge dichotomy was built for.  This supplies the right hand junction
+  condition of the shape `C · Vᵏ · B`: the tail `B` is the word of `v c⁻¹`, and when the conjugator
+  is shorter than the cyclically reduced part it begins in the same factor as `V`, so
+  `last(V) ≠ first(B)` reduces to cyclic reducedness of `V`.  Both junction conditions of the power
+  word are now available from properties of the cyclic reduction rather than assumed.
+- 2026-08-03 — Corrected the route to the right hand junction condition.  The previous step obtained
+  it from the conjugator being shorter than the cyclically reduced part, but that is not always
+  true: a cyclic reduction step whose merged letter falls into the base group shortens the word by
+  two while lengthening the conjugator by one, so the conjugator can be as long as the reduced part.
+  The structural route works instead — the conjugator is built by stripping letters off the front,
+  so it is a prefix of the word, and the merged letter at each step carries the index of the letter
+  stripped.  Hence the last letter of the cyclically reduced part has the index of the last letter
+  of the conjugator, and the junction follows from the alternation of the original word, with no
+  inequality involved.
+- 2026-08-03 — Settled that the cyclic reduction recursion should run on plain reduced alternating
+  words, not transversal ones.  Transversality is needed only at the end, for uniqueness of normal
+  words, and the transversal form restores it while preserving the indices — whereas insisting on it
+  throughout forces a base group element out of the front of the word at every step, which the
+  conjugation then cannot absorb.  With plain words every base group element produced along the way
+  is absorbed into a neighbouring letter: on the left by the existing absorption, and on the right by
+  the one proved here, which is what keeps the step inside the class when a merged letter falls into
+  the base group and the word shortens by two.

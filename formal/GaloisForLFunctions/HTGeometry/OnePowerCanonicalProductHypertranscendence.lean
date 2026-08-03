@@ -133,3 +133,4 @@ theorem hypertranscendental_powerCanonicalProduct_inv_nat {q : ℕ} (hq : 0 < q)
 end
 
 end HTGeometry
+

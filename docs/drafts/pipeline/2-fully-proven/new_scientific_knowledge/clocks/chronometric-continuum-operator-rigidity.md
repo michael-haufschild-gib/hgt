@@ -36,8 +36,9 @@ For \(g\in\mathcal G\), define its infinitesimal chronometric field
 
 Operationally, negative values are squared proper-time rates of infinitesimal clock trajectories,
 zero is the light-cone boundary, and positive values are obtained by clock-radar/rod calibration.
-The mathematical theorem uses the complete signed squared-interval field `(1)`. A clocks-only
-realization of its spacelike part remains a separate experimental bridge.
+The mathematical theorem uses the complete signed squared-interval field `(1)`, but only its
+negative part is needed: the timelike values alone already determine `\mathsf Q(g)`, so no
+reconstruction of the spacelike part is required. See Lemma 1b.
 
 Let \(\mathcal J\) be the set of independently calibrated physical source labels. A gauge-fixed
 metric gravity law is a map
@@ -89,6 +90,31 @@ Therefore \(g_x(u,v)=h_x(u,v)\) for all \(x,u,v\), hence \(g=h\). \(\square\)
 
 The proof does not use Lorentz signature: diagonal values determine every symmetric bilinear
 field. Lorentz signature supplies the physical clock interpretation.
+
+## Lemma 1b — proper time alone suffices
+
+Let \(B\) be a symmetric bilinear form on a topological real vector space and let \(U\) be any
+nonempty open set with \(B(v,v)=0\) for all \(v\in U\). Then \(B=0\).
+
+### Proof
+
+Fix \(v_0\in U\) and an arbitrary \(w\). The line \(t\mapsto v_0+tw\) is continuous, so it meets
+\(U\) on an interval \(|t|<\varepsilon\). There
+
+\[
+  0=B(v_0+tw,v_0+tw)=B(v_0,v_0)+2t\,B(v_0,w)+t^2B(w,w)
+   =t\bigl(2B(v_0,w)+t\,B(w,w)\bigr),
+\]
+
+using \(B(v_0,v_0)=0\). For \(t\neq0\) this gives \(2B(v_0,w)+t\,B(w,w)=0\); evaluating at
+\(t=\varepsilon/2\) and \(t=\varepsilon/4\) and subtracting gives \(B(w,w)=0\). Since \(w\) was
+arbitrary the diagonal vanishes identically, and Lemma 1's polarization gives \(B=0\).
+\(\square\)
+
+Consequently two chronometric fields agreeing on any fiberwise nonempty open family of directions
+— in particular on their timelike cones, which are open because the squared interval is continuous
+— are equal. Proper time is complete data; the clock-radar reconstruction of spacelike separations
+is an operational convenience, not a mathematical requirement.
 
 ## Theorem 1b — nine before/after boundaries and one tick determine a four-metric
 
@@ -253,16 +279,23 @@ laboratory determines `(3)` on its causal diamond.
 1. **Diffeomorphisms:** `(5)` uses fixed relational event and tangent labels. Resolved: the
    quotient theorem replaces equality by pullback equivalence under clock-label-preserving frame
    automorphisms, and that equivalence is proved strictly coarser than equality.
-2. **Gauge:** `(2)` is gauge-fixed. Extra gravitational fields require reporter-complete
-   chronometric data and quotient by local physical field redefinitions.
-3. **Clock-only realization:** proper time directly supplies timelike values of `(1)`. A finite
-   radar protocol must reconstruct the remaining signed quadratic germ.
+2. **Gauge:** resolved. `(2)` is gauge-fixed, and with an extra gravitational sector the complete
+   encoding is never injective. The correct replacement is *fibre constancy* — a law that is a
+   function of its observation — which a gauge-invariant law satisfies as soon as its extra sector
+   is reported completely up to field redefinition. Rigidity then holds without injectivity; if the
+   sector is unreported, the clock-dark no-go of point 6 applies instead.
+3. **Clock-only realization:** resolved. Proper time supplies the timelike values of `(1)`, and by
+   Lemma 1b those alone determine the whole signed quadratic germ. What remains is the operational
+   question of measuring the timelike values, not a missing reconstruction step.
 4. **Partial laboratories:** data only inside a worldtube do not automatically supply `(3)` in a
    causal diamond. Nonlinear Lorentzian inverse theorems must close that bridge.
-5. **Source calibration:** if source labels are allowed to relabel with the theory, `(5)` can be
-   defeated trivially. Operational source channels must be fixed independently.
-6. **Hidden sectors:** a field absent from both metric response and all reporters remains
-   invisible. Such clock-dark sectors are outside the admissible class, not silently identified.
+5. **Source calibration:** proved sharp. Relabelling the calibrated source set by a bijection
+   changes the operator but only transports its graph, so graph comparison up to a theory-chosen
+   relabelling carries no information. Operational source channels must be fixed independently.
+6. **Hidden sectors:** proved sharp. Rigidity holds *exactly* when the observation encoding is
+   injective, and a factor of the geometry absent from every channel makes it non-injective, so
+   two laws separating that factor have identical graphs. Clock-dark sectors are outside the
+   admissible class, not silently identified.
 7. **Quantum gravity:** `(5)` identifies classical continuum metric operators. It does not by
    itself reconstruct a quantum gravitational state or path integral.
 
@@ -280,7 +313,12 @@ Formalize unconditionally:
    family with unbounded generators;
 7. [complete] smooth tangent-bundle/chart lift;
 8. [complete] quotient lift under label-preserving equivalences;
-9. [complete] the pointwise inverse-law form `(6)` on a region where the law is bijective.
+9. [complete] the pointwise inverse-law form `(6)` on a region where the law is bijective;
+10. [complete] Lemma 1b: proper time alone determines the chronometric field;
+11. [complete] sharpness of `(5)`: injectivity of the encoding is necessary, clock-dark sectors
+    defeat rigidity, and theory-dependent source relabelling only transports the graph;
+12. [complete] extra gravitational sectors: fibre-constant rigidity, reporter completeness up to
+    gauge, and the reported/clock-dark dichotomy.
 
 The existing all-orders symmetric multilinear polarization theorem supplies a stronger reusable
 dependency for item 1.
@@ -309,6 +347,54 @@ polarization argument is fiberwise, so it lifts to a family of fibers indexed by
 - `law_eq_invFun_encode_comp_symm`, `injective_encode_comp_symm` — Corollary 3, equation `(6)`:
   on a region where the law is bijective it equals the inverse of the induced source-to-clock map
   composed with the clock encoding.
+
+`formal/GaloisForLFunctions/HTGeometry/ChronometricGaugeRigidity.lean` — item 12, which answers
+hostile-audit point 2. Injectivity of the complete encoding is the wrong hypothesis once an extra
+sector is present; fibre constancy is the right one:
+
+- `FiberConstant`, `chronometricSolutionGraph_eq_iff_of_fiberConstant` — a law that is a function
+  of its observation is determined by the branch-safe graph, whether or not the encoding separates
+  points; fibre constancy of either law suffices;
+- `fiberConstant_of_injective` — the injective rigidity theorem is the special case;
+- `reporterCompleteEncode`, `GaugeInvariant`, `ReporterComplete`,
+  `fiberConstant_of_gaugeInvariant`, `chronometricGaugeRigidity` — with the clock channel
+  injective on the metric sector and the reporter determining the extra sector up to a field
+  redefinition, gauge-invariant nonlinear laws are rigid;
+- `potentialReporter`, `potentialReporter_gaugeInvariant`, `potentialReporter_complete`,
+  `chronometricGaugeRigidity_potential` — the worked case of a scalar gravitational potential
+  defined up to an additive constant and reported by its differences;
+- `gauge_dichotomy` — with the same geometry space but an unreported sector, rigidity fails.
+
+`formal/GaloisForLFunctions/HTGeometry/ChronometricRigiditySharpness.lean` — item 11, which
+answers hostile-audit points 5 and 6 by proving the two hypotheses of `(5)` load-bearing:
+
+- `exists_ne_law_graph_eq_of_not_injective` — if two geometries share an observation, the two laws
+  separating them have identical branch-safe graphs;
+- `chronometricSolutionGraph_rigid_iff_injective` — **rigidity holds exactly when the encoding is
+  injective**, so the hypothesis of `(5)` is necessary and not merely convenient;
+- `not_injective_hiddenSector`, `exists_ne_law_graph_eq_of_hiddenSector`,
+  `exists_ne_law_graph_eq_of_hiddenSector_chronometric` — a clock-dark factor of the geometry
+  restores the ambiguity, concretely for `ChronometricMetricField × Hidden`;
+- `chronometricSolutionGraph_relabel`, `exists_ne_law_with_transported_graph` — a bijective
+  relabelling of the calibrated source set produces a genuinely different operator whose graph is
+  the transported image of the original, so source labels must be fixed independently of the
+  theory.
+
+`formal/GaloisForLFunctions/HTGeometry/ChronometricTimelikeConeDetermination.lean` — item 10,
+which answers hostile-audit point 3:
+
+- `bilin_diag_eq_zero_of_diag_eqOn_open`, `bilinForm_eq_of_diagonal_eqOn_open` — Lemma 1b in a
+  topological real vector space; no finite dimension, signature or continuity of the form is used;
+- `BundleChronometricMetric.eq_of_squaredInterval_eqOn_open` — squared intervals on any fiberwise
+  nonempty open family of directions determine the bundle metric field;
+- `SmoothPseudoMetric.continuous_squaredInterval`, `timelikeCone`, `isOpen_timelikeCone` — the
+  timelike cone of a chart metric is open;
+- `SmoothPseudoMetric.eq_of_properTime_eq`, `properTimeObservation`,
+  `properTimeObservation_injOn` — proper time alone determines a smooth chart metric field;
+- `SmoothPseudoMetric.chronometricOperatorRigidity_properTime` — `(5)` from proper-time data
+  alone;
+- `SmoothPseudoMetric.minkowski_timelikeCone_nonempty` — Minkowski space has a timelike direction
+  at every event, so the hypothesis is not vacuous.
 
 `formal/GaloisForLFunctions/HTGeometry/ChronometricQuotientRigidity.lean` — item 8, which answers
 hostile-audit point 1. Equality of laws is replaced by equivalence, not weakened away:
