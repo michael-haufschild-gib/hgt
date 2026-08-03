@@ -170,8 +170,7 @@ theorem ccmRationalMoritaWeightedShift_traceNorm_eq_lOne
         (T (ccmRationalMoritaHilbertBasis q))‖ = ‖a (k * q)‖ := by
     intro q
     rw [ccmRationalMoritaHilbert_inner_basis]
-    simp [T, ccmRationalMoritaWeightedShift_basis,
-      ccmRationalMoritaHilbertBasis_apply]
+    simp [T, ccmRationalMoritaHilbertBasis_apply]
   have hlower : (∑' q, ‖a (k * q)‖) ≤ _root_.RHTower.traceNorm H T := by
     apply Real.tsum_le_of_sum_le (fun q => norm_nonneg (a (k * q)))
     intro s

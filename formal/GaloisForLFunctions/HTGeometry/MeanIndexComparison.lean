@@ -484,7 +484,10 @@ theorem norm_mul_logDeriv_sub_centralIndex_le_meanIndex
   have hCnorm : ‖a (centralIndex a r) * z ^ centralIndex a r‖ = maxTerm a r := by
     rw [norm_mul, norm_pow, hz]
     exact term_centralIndex_eq ha hr hn₀
-  have hfac := coeffFun_eq_central_term_mul_tsum ha hr hn₀ hz
+  have hfac : coeffFun a z
+      = (a (centralIndex a r) * z ^ centralIndex a r)
+        * ∑' n : ℕ, normalisedCoeff a r z n :=
+    coeffFun_eq_central_term_mul_tsum ha hr hn₀ hz
   have hWnorm : ‖∑' n : ℕ, normalisedCoeff a r z n‖ = ‖coeffFun a z‖ / maxTerm a r := by
     rw [hfac, norm_mul, hCnorm]
     field_simp
@@ -510,6 +513,125 @@ theorem norm_mul_logDeriv_sub_centralIndex_le_meanIndex
   nlinarith [hS, hratio, hE0, abs_nonneg (meanIndex a r - (centralIndex a r : ℝ))]
 
 
-end GaloisForLFunctions.HTGeometry
+set_option maxHeartbeats 400000 in
+/-- **The weighted misalignment is bounded by twice the coefficient deviation.**  Each misalignment
+is at most twice the modulus of its term, so the weighted misalignment inherits the coefficient-free
+bound proved for the deviation series. -/
+theorem tsum_index_weighted_defect_le
+    (ha : EntireCoeffs a) (ht : 0 < t) (htr : t < r) (hrs : r < s)
+    {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hz : ‖z‖ = r) {u : ℂ} (hu : ‖u‖ = 1) :
+    ∑' n : ℕ, |(n : ℝ) - (centralIndex a r : ℝ)|
+        * (‖normalisedCoeff a r z n‖
+          - ((starRingEnd ℂ) u * normalisedCoeff a r z n).re)
+      ≤ 2 * (((centralIndex a s : ℝ) - (centralIndex a t : ℝ))
+            * ((centralIndex a s + 1 - centralIndex a t : ℕ) : ℝ)
+          + (centralIndex a r : ℝ) * ((t / r) / (1 - t / r))
+          + ((centralIndex a s : ℝ) + 1)
+              * ∑' j : ℕ, ((1 : ℝ) + j) * (r / s) ^ (j + 1)) := by
+  have hr : 0 < r := lt_trans ht htr
+  obtain ⟨-, -, hμpos⟩ := exists_maxTerm_eq ha hr hn₀
+  set k := centralIndex a r with hk
+  set c : ℕ → ℂ := normalisedCoeff a r z with hc
+  set d : ℕ → ℝ := fun n => ‖c n‖ - ((starRingEnd ℂ) u * c n).re with hd
+  have hdnn : ∀ n, 0 ≤ d n := fun n => alignment_defect_nonneg (c n) hu
+  have habs := summable_index_deviation_normalised ha hr hn₀ hz k
+  have hle : ∀ n : ℕ, |(n : ℝ) - (k : ℝ)| * d n ≤ 2 * (|(n : ℝ) - (k : ℝ)| * ‖c n‖) := by
+    intro n
+    have h := re_conj_mul_le_norm (-(c n)) hu
+    simp only [Complex.neg_re, norm_neg, mul_neg] at h
+    have hle2 : d n ≤ 2 * ‖c n‖ := by
+      simp only [hd]
+      linarith
+    nlinarith [abs_nonneg ((n : ℝ) - (k : ℝ)), hdnn n]
+  have hsumL : Summable fun n : ℕ => |(n : ℝ) - (k : ℝ)| * d n :=
+    (habs.mul_left 2).of_nonneg_of_le (fun n => mul_nonneg (abs_nonneg _) (hdnn n)) hle
+  have hcnorm : ∀ n, ‖c n‖ = (‖a n‖ * r ^ n) / maxTerm a r := by
+    intro n
+    have hCnorm : ‖a k * z ^ k‖ = maxTerm a r := by
+      rw [norm_mul, norm_pow, hz]
+      exact term_centralIndex_eq ha hr hn₀
+    rw [hc, normalisedCoeff_def, norm_div, ← hk, hCnorm, norm_mul, norm_pow, hz]
+  have hmoment : ∑' n : ℕ, |(n : ℝ) - (k : ℝ)| * ‖c n‖
+      ≤ ((centralIndex a s : ℝ) - (centralIndex a t : ℝ))
+            * ((centralIndex a s + 1 - centralIndex a t : ℕ) : ℝ)
+          + (centralIndex a r : ℝ) * ((t / r) / (1 - t / r))
+          + ((centralIndex a s : ℝ) + 1)
+              * ∑' j : ℕ, ((1 : ℝ) + j) * (r / s) ^ (j + 1) := by
+    have hrw : ∑' n : ℕ, |(n : ℝ) - (k : ℝ)| * ‖c n‖
+        = (∑' n : ℕ, |(n : ℝ) - (k : ℝ)| * (‖a n‖ * r ^ n)) / maxTerm a r := by
+      rw [← tsum_div_const]
+      refine tsum_congr fun n => ?_
+      rw [hcnorm n]
+      ring
+    rw [hrw, div_le_iff₀ hμpos]
+    have h := tsum_index_deviation_le_maxTerm ha ht htr hrs hn₀
+    rw [← hk] at h
+    calc ∑' n : ℕ, |(n : ℝ) - (k : ℝ)| * (‖a n‖ * r ^ n) ≤ maxTerm a r * _ := h
+      _ = _ * maxTerm a r := by ring
+  calc ∑' n : ℕ, |(n : ℝ) - (k : ℝ)| * d n
+      ≤ ∑' n : ℕ, 2 * (|(n : ℝ) - (k : ℝ)| * ‖c n‖) :=
+        Summable.tsum_le_tsum hle hsumL (habs.mul_left 2)
+    _ = 2 * ∑' n : ℕ, |(n : ℝ) - (k : ℝ)| * ‖c n‖ := tsum_mul_left
+    _ ≤ 2 * _ := by
+        refine mul_le_mul_of_nonneg_left hmoment (by norm_num)
 
-#print axioms GaloisForLFunctions.HTGeometry.norm_mul_logDeriv_sub_centralIndex_le_meanIndex
+
+/-- The total misalignment at a point reaching the maximum term, for the direction of the value. -/
+theorem tsum_normalised_defect_le_centralIndex
+    (ha : EntireCoeffs a) (hr : 0 < r) (hrs : r < s) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
+    {z : ℂ} (hz : ‖z‖ = r) (hfz : maxTerm a r ≤ ‖coeffFun a z‖)
+    {u : ℂ} (hu : ‖u‖ = 1)
+    (hWdir : ∑' n : ℕ, normalisedCoeff a r z n
+      = ((‖∑' n : ℕ, normalisedCoeff a r z n‖ : ℝ) : ℂ) * u) :
+    ∑' n : ℕ, (‖normalisedCoeff a r z n‖
+        - ((starRingEnd ℂ) u * normalisedCoeff a r z n).re)
+      ≤ (centralIndex a s : ℝ) + (r / s) / (1 - r / s) := by
+  obtain ⟨-, -, hμpos⟩ := exists_maxTerm_eq ha hr hn₀
+  have hfac : coeffFun a z
+      = (a (centralIndex a r) * z ^ centralIndex a r)
+        * ∑' n : ℕ, normalisedCoeff a r z n :=
+    coeffFun_eq_central_term_mul_tsum ha hr hn₀ hz
+  have hCnorm : ‖a (centralIndex a r) * z ^ centralIndex a r‖ = maxTerm a r := by
+    rw [norm_mul, norm_pow, hz]
+    exact term_centralIndex_eq ha hr hn₀
+  have hWnorm : ‖∑' n : ℕ, normalisedCoeff a r z n‖ = ‖coeffFun a z‖ / maxTerm a r := by
+    rw [hfac, norm_mul, hCnorm]
+    field_simp
+  have hW1 : (1 : ℝ) ≤ ‖∑' n : ℕ, normalisedCoeff a r z n‖ := by
+    rw [hWnorm, le_div_iff₀ hμpos]
+    linarith
+  have hS := coeffSum_le_maxTerm_mul_centralIndex ha hr hrs hn₀
+  have hSμ : coeffSum a r / maxTerm a r
+      ≤ ((centralIndex a s : ℝ) + 1) + (r / s) / (1 - r / s) := by
+    rw [div_le_iff₀ hμpos]
+    calc coeffSum a r ≤ maxTerm a r * (((centralIndex a s : ℝ) + 1) + (r / s) / (1 - r / s)) := hS
+      _ = (((centralIndex a s : ℝ) + 1) + (r / s) / (1 - r / s)) * maxTerm a r := by ring
+  rw [tsum_normalised_defect_eq ha hr hn₀ hz hu hWdir]
+  linarith
+
+set_option maxHeartbeats 400000 in
+/-- **The Wiman--Valiron estimate with coefficient-free remainders.**  Both misalignment terms are
+replaced by expressions in the central indices and the radius ratios. -/
+theorem norm_mul_logDeriv_sub_centralIndex_le_explicit
+    (ha : EntireCoeffs a) (ht : 0 < t) (htr : t < r) (hrs : r < s)
+    {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hz : ‖z‖ = r)
+    (hfz : maxTerm a r ≤ ‖coeffFun a z‖)
+    (hcrit : (z * deriv (coeffFun a) z / coeffFun a z).im = 0)
+    {u : ℂ} (hu : ‖u‖ = 1)
+    (hWdir : ∑' n : ℕ, normalisedCoeff a r z n
+      = ((‖∑' n : ℕ, normalisedCoeff a r z n‖ : ℝ) : ℂ) * u) :
+    ‖z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a r : ℂ)‖
+      ≤ (1 + ((centralIndex a s : ℝ) + (r / s) / (1 - r / s)))
+          * |meanIndex a r - (centralIndex a r : ℝ)|
+        + 2 * (((centralIndex a s : ℝ) - (centralIndex a t : ℝ))
+            * ((centralIndex a s + 1 - centralIndex a t : ℕ) : ℝ)
+          + (centralIndex a r : ℝ) * ((t / r) / (1 - t / r))
+          + ((centralIndex a s : ℝ) + 1)
+              * ∑' j : ℕ, ((1 : ℝ) + j) * (r / s) ^ (j + 1)) := by
+  have hr : 0 < r := lt_trans ht htr
+  exact norm_mul_logDeriv_sub_centralIndex_le_meanIndex ha hr hn₀ hz hfz hcrit hu hWdir
+    (tsum_normalised_defect_le_centralIndex ha hr hrs hn₀ hz hfz hu hWdir)
+    (tsum_index_weighted_defect_le ha ht htr hrs hn₀ hz hu)
+
+
+end GaloisForLFunctions.HTGeometry

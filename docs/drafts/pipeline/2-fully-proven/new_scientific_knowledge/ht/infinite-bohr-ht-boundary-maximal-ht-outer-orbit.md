@@ -2601,3 +2601,47 @@ with one such identity for every choice of `m` indices with nonvanishing amplitu
 amplitude family has infinitely many nonzero terms and the frequencies are distinct, the classical
 step is: monomial symmetric functions of distinct exponent partitions are linearly independent, and
 a polynomial vanishing at infinitely many points is zero.  That is what is left to formalize.
+
+## Claim (2): from countably many identities to one polynomial identity
+
+`MvPolynomialInfiniteVanishing.lean` (wired, axiom-clean):
+
+    mvPolynomial_eq_zero_of_eval_eq_zero_on_infinite_pow :
+      S.Infinite -> (forall x : Fin m -> C, (forall j, x j in S) -> eval x p = 0) -> p = 0
+
+Mathlib has `MvPolynomial.funext` only for vanishing at *every* point of an infinite domain; here the
+identities are available only at tuples of frequencies, i.e. on `S^m` for the countable set
+`S = {i omega_i}`.  The proof peels one variable at a time through `MvPolynomial.finSuccEquiv`: for a
+fixed tail the remaining one-variable polynomial has infinitely many roots, so each of its
+coefficients vanishes on the smaller power, and induction finishes.
+
+This is the bridge from "one scalar identity for each choice of `m` frequencies" to "an identity of
+polynomials", which is what makes the symmetric-function step meaningful.  What is left of (2) is
+that step -- monomial symmetric polynomials of distinct exponent multisets are linearly independent,
+which is visible on the coefficient of the sorted monomial -- and the bookkeeping that produces the
+identities in the first place.
+
+## Claim (2): the symmetric-function step
+
+`PermutationSumIndependence.lean` (wired, axiom-clean):
+
+    permSum k = sum over sigma in S_m of the monomial with exponents k . sigma
+
+    coeff_permSum : the coefficient of the monomial `e` in `permSum k`
+      is the number of permutations with `k . sigma = e`
+
+    eq_zero_of_permSum_combination :
+      (the exponent tuples in K have pairwise distinct multisets) ->
+      sum_{k in K} c k * permSum k = 0 -> forall k in K, c k = 0
+
+The symmetrisations attached to two monomials in the jets coincide exactly when their exponent
+multisets do, and the coefficient of one tuple's own monomial counts the permutations fixing its
+multiset -- at least the identity, so it is nonzero, while every other tuple in `K` contributes an
+empty count (`tupleCount_comp_perm`: reindexing by a permutation does not change the multiset).
+
+With `mvPolynomial_eq_zero_of_eval_eq_zero_on_infinite_pow` this closes the combinatorial core: the
+identities available at tuples of frequencies force the polynomial identity, and the polynomial
+identity forces every coefficient of the relation to vanish.
+
+All the mathematical content of Ostrowski's theorem is now formal.  What is left is the assembly --
+expanding a relation of the carrier into these pieces and applying them in order.

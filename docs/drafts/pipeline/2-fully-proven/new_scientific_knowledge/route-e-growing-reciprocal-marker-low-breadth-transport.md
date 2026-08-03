@@ -2826,3 +2826,45 @@ any lower bound on `δ`. Those are the analytic content, and no part of the elem
 here supplies them. The formal layer now separates the two cleanly — the combinatorial/metric half is
 complete and unconditional, and the remaining gap is exactly the analytic half named on these cards
 as Menon 2026 / Matomäki–Radziwiłł.
+
+### Formal layer — prime-power tail weights
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PowerWeightBound.lean`. First half of the explicit lower
+bound for `∑_{p ≤ N}(log p)²/p`, which is what turns the frequency separation into a bound of the
+shape `|t − u| ≲ δ/log N`.
+
+- `sum_range_add_two_mul_half_pow` — the exact identity
+  `∑_{j<M}(j+2)(1/2)^j = 6 − 2(M+3)/2^M`.
+- `sum_range_add_two_mul_pow_le`, `sum_range_shift_pow_le` — **`∑_{k≥2} k x^k ≤ 6x²` for
+  `0 ≤ x ≤ 1/2`**, so the proper prime powers of `p` contribute at most `6(log p)²/p²`.
+- `log_sq_le_four_mul` — **`(log x)² ≤ 4x` for `x ≥ 1`**, via `log x ≤ 2√x`.
+
+All unconditional.
+
+The weight `k` (not just `x^k`) is forced by `log(p^k) = k log p`, which is why the ordinary
+geometric series does not suffice. Together these give
+`∑_{p^k ≤ N, k≥2} k(log p)²/p^k ≤ 24 ∑_{p ≤ √N} 1/p`, and with the corpus's
+`HarmonicLogBound.sum_Icc_one_div_le_one_add_log` that is `O(log N)` — small against the main term
+`½log²N` of `RHTower.abs_sum_vonMangoldt_log_div_sub_le`. The remaining step is the reindexing of
+`∑_{m≤N} Λ(m)log m/m` into primes plus proper prime powers.
+
+### Formal layer — the proper prime powers are a lower-order correction
+
+`formal/GaloisForLFunctions/RHTower/Sieve/PrimePowerWeightTail.lean`.
+
+- `sum_range_primePower_weight_le` — at a single prime,
+  `∑_{j<M}(j+2)(log p)²/p^{j+2} ≤ 24/p`.
+- `sum_primePower_weight_le` — **`∑_{p ≤ b} ∑_{j<M}(j+2)(log p)²/p^{j+2} ≤ 24(1 + log b)`**,
+  uniformly in the number `M` of exponents allowed.
+
+Both unconditional.
+
+Combining last section's `∑_{k≥2} k x^k ≤ 6x²` at `x = 1/p` with `(log p)² ≤ 4p` gives `24/p` per
+prime; the corpus's `HarmonicLogBound.sum_Icc_one_div_le_one_add_log` then sums it. Against the
+`½log²N` main term of `abs_sum_vonMangoldt_log_div_sub_le` this `O(log N)` correction is lower order,
+which is exactly what is needed to pass from `∑_{m≤N} Λ(m)log m/m` to `∑_{p≤N}(log p)²/p`.
+
+The uniformity in `M` matters: no truncation of the exponent range is assumed, so the bound applies
+whatever cutoff the reindexing later supplies. The remaining step is the support identification —
+that the non-prime part of `Λ`'s support inside `Icc 1 N` embeds in `primesLE N ×ˢ range M` under
+`(p,j) ↦ p^{j+2}`; `Sieve/PrimePowerSum.primePow_injOn` is the corresponding injectivity fact.

@@ -210,7 +210,10 @@
   `GaloisForLFunctions.RHTower.DeningerFactorConjOfPow` (elements with a short power),
   `GaloisForLFunctions.RHTower.DeningerShortConj` (conjugating a factor element by a letter),
   `GaloisForLFunctions.RHTower.DeningerCrossConjWord` (conjugating a factor element by a word
-  starting in another factor)
+  starting in another factor),
+  `GaloisForLFunctions.RHTower.DeningerShortConjCases` (the conjugacy criterion for short
+  elements),
+  `GaloisForLFunctions.RHTower.DeningerFactorCentralizer` (the centralizer of a factor element)
 
 ## Statement
 
@@ -3015,3 +3018,45 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   elements, and its only escape is the step at which the conjugated element falls into the base
   group — which for the group factor of a root adjunction is exactly what isolation of the adjoined
   element controls.
+- 2026-08-03 — **The conjugacy criterion for short elements is proved.**  `deningerShortConj_cases`
+  runs the induction the last two cycles set up.  A conjugator carrying an element of a factor to an
+  element of length at most one is, by `deningerExists_letterProd`, either a base group element —
+  in which case the conjugation happens inside the factor outright — or a reduced word; that word
+  cannot start outside the factor, since `deningerLen_conj_word_letter` would make the conjugate of
+  length `2|L| + 1`, and it starts inside the factor, so `deningerConj_letter_same` peels its first
+  letter and leaves the same problem for a shorter conjugator and the conjugated letter.  The
+  induction closes with the dichotomy: either the whole conjugation is carried out inside the factor,
+  the conjugate being `of i (x⁻¹ u x)` for a single `x` of that factor, or at some stage the element
+  conjugates into the base group inside its factor.
+  That second alternative is the only escape, and it is a statement purely about the factor: `u` is
+  conjugate in `G i` into the image of the base group.  For the infinite cyclic factor of a root
+  adjunction it is a statement about `⟨t⟩` and `⟨t^m⟩`, and for the group factor it asks whether an
+  element outside `⟨a⟩` conjugates into it.  Deciding it there is what closes the last branch of the
+  dichotomy, and with it Baumslag's theorem.
+- 2026-08-03 — **The criterion is strengthened to the conjugator itself.**  The induction proves more
+  than the shape of the conjugate: at each step the peeled letter belongs to the factor, and a base
+  group element is a letter of every factor, so the conjugator is assembled from letters of the one
+  factor.  `deningerShortConj_cases` now concludes that the conjugator *is* an element of the factor,
+  with `deningerShortConj_conj_eq` recovering the earlier statement about the conjugate.
+  This is what the centralizer argument needs.  An element commuting with a factor element `of i v`
+  conjugates it to itself, which has length at most one, so unless `v` conjugates into the base group
+  inside `G i` the commuting element lies in `G i`.  So for a common power lying in a factor and not
+  conjugate into the base group there, both roots lie in that factor, and the factor case —
+  `deningerPow_eq_of_factors_mix`, and for a root adjunction at an isolated element
+  `deningerRootAdjunction_pow_eq_of_factors` — finishes.  The escape clause is a condition on the
+  factor alone, and for the group factor of a root adjunction isolation of the adjoined element is
+  what governs it.
+- 2026-08-03 — **Uniqueness of roots of a factor element.**  `deningerCentralizer_factor` reads the
+  strengthened criterion as a statement about centralizers: an element commuting with an element of a
+  factor conjugates it to itself, which is short, so the conjugator lies in that factor unless the
+  element it centralizes conjugates into the base group inside it.  `deningerPow_eq_of_factorPow`
+  applies that to roots.  A root of `of i ζ` commutes with it, being a power of itself, so it lies in
+  the factor; both roots do; and uniqueness of roots inside the factor identifies them.
+  The hypothesis is a condition on `ζ` alone — that no conjugate of it inside `G i` lies in the image
+  of the base group — and it is exactly the condition under which the cyclic length of `of i ζ` is
+  one rather than zero.  Combined with the cyclically reduced case, uniqueness of roots in the
+  amalgam is now proved on both sides of the dichotomy: for a common power conjugate to a cyclically
+  reduced word of length at least two, and for a common power lying in a factor and not conjugate
+  into the base group there.  What is left is the residual case, a common power conjugate into the
+  base group, which is where the isolation hypothesis on the group factor of a root adjunction has
+  its final use.

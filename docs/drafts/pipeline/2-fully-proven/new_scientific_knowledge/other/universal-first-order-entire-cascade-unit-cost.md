@@ -424,7 +424,8 @@ It also identifies the mechanism and the sharp wall.  The analytic growth invari
 - [x] Lean: the majorant bounded back by the maximum term times the central index
 - [x] Lean: the local expansion, the alignment mechanism, and criticality at a circle maximum
 - [x] Lean: the mean index is within `(nu(s)-nu(t)) + log(nu+C)/log(s/r)` of the modal index
-- [ ] Lean: choose the radii so that bound is `o(nu)`, and assemble the main estimate
+- [x] Lean: the Wiman--Valiron estimate assembled, with explicit misalignment remainders
+- [ ] Lean: bound `D` and `E` at a Borel-good radius, making the remainder `o(nu)`
 - [ ] Lean: Newton--Puiseux places at `U = infinity`, hence the nondegenerate Wiman place
 - [ ] Lean: Clunie--Steinmetz composition separation and state algebraic independence
 - [x] Lean: the order lower bound `ord_DA >= n` from `n` algebraically independent jets
@@ -580,7 +581,19 @@ div_ofReal_mul_unit                       -- dividing by M u is conjugating by u
 norm_mul_logDeriv_sub_centralIndex_eq     -- |z f'/f - nu| = |weighted projection| / ||W||
 tsum_normalised_defect_eq                 -- total misalignment = S/mu - ||sum c_n||
 abs_tsum_index_weighted_re_le             -- numerator <= (S/mu)|Lambda - nu| + E
+norm_mul_logDeriv_sub_centralIndex_le_meanIndex -- the Wiman--Valiron estimate, assembled
+tsum_index_weighted_defect_le             -- E <= 2 * the coefficient-free deviation bound
+tsum_normalised_defect_le_centralIndex    -- D <= nu(s) + (r/s)/(1-r/s), for the value's direction
+norm_mul_logDeriv_sub_centralIndex_le_explicit -- the estimate with both remainders explicit
+sum_lower_tail_weighted_le                -- the sharp weighted lower tail, window width not nu(r)
 ```
+
+```text
+| z f'(z)/f(z) - nu(r) |  <=  (1 + D) |Lambda(r) - nu(r)|  +  E
+```
+
+at a point of the circle where the function reaches the maximum term and the modulus is critical
+along the circle, `D` bounding the total misalignment and `E` the weighted one.
 
 That is an **identity**, not an estimate: at a maximum of the modulus along the circle the deviation
 from the central index is exactly the weighted sum of the projections of the normalised coefficients,
@@ -1208,3 +1221,54 @@ triangularity package, which is exactly how the paper proof uses them.
   (`tsum_normalised_defect_eq`), which the earlier existence form did not give -- the final assembly
   needs it for the *same* `u` that the identity uses, not for some `u` produced separately.  All that
   remains is to divide by `||sum c_n|| = |f(z)|/mu` and apply `S <= (1+D)|f(z)|`.
+- 2026-08-03 -- **The Wiman--Valiron logarithmic-derivative estimate is assembled**:
+
+  ```text
+  | z f'(z)/f(z) - nu(r) |  <=  (1 + D) |Lambda(r) - nu(r)|  +  E
+  ```
+
+  at a point of the circle where `|f(z)| >= mu(r)` and the modulus is critical along the circle, with
+  `D` bounding the total misalignment of the normalised phases and `E` the index-weighted one.  The
+  proof is the identity `|z f'/f - nu| = |numerator| / ||sum c_n||`, the numerator bound, and the two
+  divisions `||sum c_n|| = |f(z)|/mu` and `S <= (1+D)|f(z)|`.  A trap that cost one cycle: the
+  factorisation lemma is stated with the unfolded quotient rather than with `normalisedCoeff`, so
+  binding it with a bare `have h := ...` keeps the raw form and a later `field_simp` stalls on a
+  syntactic mismatch -- and the recovered proof then carries `sorryAx`, which only the axiom print
+  reveals.  Binding it with an explicit type ascription in the `normalisedCoeff` form fixes it.
+  Checking `#print axioms` on every new theorem is what caught this.
+- 2026-08-03 -- Bounded the weighted misalignment `E` with no new analysis: every misalignment is at
+  most twice the modulus of its term (`Re(conj(u) c_n) >= -||c_n||`), so `E` inherits the
+  coefficient-free bound already proved for the deviation series,
+  `E <= 2[(nu(s)-nu(t))(nu(s)+1-nu(t)) + nu(r)(t/r)/(1-t/r) + (nu(s)+1) C(r/s)]`.  Both remainders of
+  the assembled estimate are now expressed in the central indices and radius ratios alone; `D` was
+  already bounded by `nu(s) + (r/s)/(1-r/s)`.  What is left is the choice of radii.
+- 2026-08-03 -- Substituted both misalignment bounds into the assembled estimate.  The result is
+  entirely coefficient-free: for `t < r < s`, at a point of the circle of radius `r` where the
+  function reaches the maximum term and the modulus is critical along the circle,
+
+  ```text
+  | z f'(z)/f(z) - nu(r) |
+      <= (1 + nu(s) + (r/s)/(1-r/s)) |Lambda(r) - nu(r)|
+         + 2[(nu(s)-nu(t))(nu(s)+1-nu(t)) + nu(r)(t/r)/(1-t/r) + (nu(s)+1) C(r/s)].
+  ```
+
+  The `D` bound had to be re-derived for the direction of the value rather than taken from the
+  existence form, for the same reason as before -- the estimate and the hypotheses must use the same
+  unit `u`.  Everything on the right is a function of the three central indices and the two radius
+  ratios, so the remaining work is the choice of `t` and `s`.
+- 2026-08-03 -- Found and removed the lossy step.  Substituting `t = r/(1+delta)`, `s = r(1+delta)`
+  into the explicit estimate gives a term `nu(r) (t/r)/(1-t/r) = nu(r)/delta`, which already exceeds
+  `nu` -- so the bound as it stood could never be `o(nu)` for any choice of radii.  The culprit is the
+  lower tail, where `|n - nu(r)| <= nu(r)` was used for `n < nu(t)`.  Splitting instead as
+  `|n - nu(r)| = (nu(r) - nu(t)) + (nu(t) - n)` and applying the geometric decay to the second part
+  gives
+
+  ```text
+  sum_{n < nu(t)} |n - nu(r)| ||a_n|| r^n
+      <= mu(r) [ (nu(r) - nu(t)) (t/r)/(1-t/r) + sum_j (1+j)(t/r)^(j+1) ] ,
+  ```
+
+  with the **window half-width** in place of `nu(r)`.  Under the substitution above that is
+  `Delta/delta + O(1/delta^2)` instead of `nu/delta`, which is exactly the shape the radius choice
+  needs.  Recorded because the diagnosis -- substitute the intended radii and look for a term that
+  survives -- is what located it; the bound was correct all along, just too weak in one place.

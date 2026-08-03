@@ -1,4 +1,6 @@
 import Mathlib.Algebra.MvPolynomial.Equiv
+import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 
 /-!

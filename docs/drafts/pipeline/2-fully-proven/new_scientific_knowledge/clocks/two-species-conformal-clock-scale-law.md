@@ -1392,12 +1392,34 @@ an arbitrary topological space — no countability or local compactness is neede
 same statements serve the null-coordinate pair, a single coordinate, or the pair together with the
 transverse point.
 
-The one remaining analytic gap on this route is the holomorphy of the iterates themselves: the
-integral of a family holomorphic in `z` is again holomorphic in `z`. mathlib's
-`intervalIntegral.hasDerivAt_integral_of_dominated_loc_of_deriv_le` is stated over any `RCLike`
-field, so it applies with a *complex* parameter and yields the complex derivative directly; the
-domination it requires is Cauchy's estimate on a disc, with the bound uniform in the integration
-variable by compactness.
+`ClockParametricIntegralHolomorphy.lean` closes the last purely analytic gap on this route — the
+iterates are holomorphic, so the induction can continue and differentiate twice again:
+
+- `continuous_deriv_parametric` — the first derivative of a holomorphic family is continuous in the
+  parameter, which is what makes the derivative measurable in the integration variable;
+- **`hasDerivAt_intervalIntegral_of_holomorphic`**, `differentiableAt_…`,
+  **`differentiableOn_intervalIntegral_of_holomorphic`** — *the integral of a family holomorphic on
+  the strip of radius `ρ'` is holomorphic on the strip of radius `ρ < ρ'`, with the expected
+  derivative* `∫ (F t)'(z) dt`.
+
+The proof is differentiation under the integral sign with a *complex* parameter: mathlib's
+`hasDerivAt_integral_of_dominated_loc_of_deriv_le` is stated over any `RCLike` field, so it produces
+the complex derivative directly and no appeal to Morera's theorem is needed. The domination it
+requires is Cauchy's estimate on a disc of radius `(ρ'-ρ)/4` about each nearby point, with the bound
+uniform in the integration variable by compactness of `[a,b] × closedBall z ((ρ'-ρ)/2)`.
+
+The strip does not in fact shrink: `differentiableOn_intervalIntegral_of_holomorphic_self` applies
+the above at an intermediate radius chosen separately for each point, and so covers the whole strip.
+Holomorphy of the iterates therefore persists at a fixed radius; only the *bounds* shrink, which is
+what the Ovsyannikov recursion is for.
+
+One mismatch remains between the corpus and mathlib's parametric-integral statements: those ask for
+a globally continuous integrand, whereas the iterates are continuous only on a strip. The repair is
+a retraction, which changes nothing inside:
+
+- `stripRetract`, `continuous_stripRetract`, `stripRetract_im`, `abs_stripRetract_im_le`,
+  `stripRetract_eq_self` — the continuous retraction of the plane onto the closed strip of half-width
+  `ρ`, which is the identity there.
 
 The first genuinely coupled target this reaches is dimension three: a potential
 `V(x⁰, x¹, x²)` with arbitrary continuously differentiable dependence on the null coordinates and

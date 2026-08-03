@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.MaximumTermCentralIndex
+import GaloisForLFunctions.HTGeometry.MaximumTermConcentration
 import GaloisForLFunctions.HTGeometry.TriangleInequalityDefect
 
 /-!

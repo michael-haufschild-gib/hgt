@@ -335,6 +335,7 @@ import GaloisForLFunctions.RHTower.BurnolSoninReflectedEvaluation
 import GaloisForLFunctions.RHTower.BurnolSoninRieszVector
 import GaloisForLFunctions.RHTower.C5JensenPerturbation
 import GaloisForLFunctions.RHTower.C5JensenPrimeKernel
+import GaloisForLFunctions.RHTower.CCMApertureMorseCharge
 import GaloisForLFunctions.RHTower.CCMAnalyticOrbitSpectrumRigidity
 import GaloisForLFunctions.RHTower.CCMAnalyticShiftSpectrumRigidity
 import GaloisForLFunctions.RHTower.CCMBlockFockCodiagonalNoGo
@@ -556,6 +557,7 @@ import GaloisForLFunctions.RHTower.CCMSourcePencilRadicalEvans
 import GaloisForLFunctions.RHTower.CCMSourceResponseDeterminantDichotomy
 import GaloisForLFunctions.RHTower.CCMSubsetFidelityReadoutRigidity
 import GaloisForLFunctions.RHTower.CCMTwoEdgeVariableWidthPrincipalization
+import GaloisForLFunctions.RHTower.CCMTruncatedDivisorReindex
 import GaloisForLFunctions.RHTower.CCMTwoPoleSourceCriterion
 import GaloisForLFunctions.RHTower.CCMUnconditionalFoundation
 import GaloisForLFunctions.RHTower.CCMUnitRieszMarkovDensity
@@ -1515,6 +1517,8 @@ import GaloisForLFunctions.RHTower.DeningerConjCycRed
 import GaloisForLFunctions.RHTower.DeningerFactorConjOfPow
 import GaloisForLFunctions.RHTower.DeningerShortConj
 import GaloisForLFunctions.RHTower.DeningerCrossConjWord
+import GaloisForLFunctions.RHTower.DeningerShortConjCases
+import GaloisForLFunctions.RHTower.DeningerFactorCentralizer
 import GaloisForLFunctions.RHTower.DeningerUnitaryFlowRieszPurity
 import GaloisForLFunctions.RHTower.DeningerUnitaryHarmonicAction
 import GaloisForLFunctions.RHTower.DeningerWeightOnePolarization
@@ -3280,6 +3284,9 @@ import GaloisForLFunctions.RHTower.Sieve.MoebiusSmoothLimit
 import GaloisForLFunctions.RHTower.Sieve.CharacterSeparation
 import GaloisForLFunctions.RHTower.Sieve.FrequencySeparation
 import GaloisForLFunctions.RHTower.Sieve.HalaszDichotomy
+import GaloisForLFunctions.RHTower.Sieve.PowerWeightBound
+import GaloisForLFunctions.RHTower.Sieve.PrimePowerWeightTail
+import GaloisForLFunctions.RHTower.Sieve.PrimeLogSqLower
 import GaloisForLFunctions.RHTower.Sieve.ChernoffTails
 import GaloisForLFunctions.RHTower.Sieve.GeometricMeanDivisor
 import GaloisForLFunctions.RHTower.Sieve.IntervalMultiples

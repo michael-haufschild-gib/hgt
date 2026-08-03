@@ -192,12 +192,41 @@ the correct route interface but does not clear the novelty gate.
   1.3 and Section 8.
 - H. Yoshida, localized nondegeneracy criterion for Weil's quadratic form, as cited by Suzuki.
 
-## Lean decision
+## Lean status
 
-The abstract finite-dimensional index-zero facts already exist in
-`RHTower/SeamSpectralFlow.lean`. The analytic content here is zero extension of the closed Weil
-forms, compact resolvent, continuity in aperture, and the screw-operator identity, none of which is
-represented in Lean. An abstract wrapper would not certify the theorem, so no Lean file is added.
+**Superseded, 2026-08-03.**  Formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/CCMApertureMorseCharge.lean`.  `RHTower/SeamSpectralFlow.lean` is
+matrix-level Krein nonnegativity and does **not** overlap: nothing is duplicated.
+
+The previous decision listed "zero extension of the closed Weil forms" as missing analytic content.
+That is a representation artefact: taking the aperture domains as *submodules of one fixed space*
+makes `(4)`--`(5)` literal inclusion `D a ≤ D b`, with no isometry to construct and no form-preservation
+to check.
+
+- `HasNegDefSubspaceOfDim`, `morseCharge` — definition `(1)`, the achievable negative dimensions and
+  their supremum.
+- **`HasNegDefSubspaceOfDim.mono`** and **`morseCharge_mono`** — equations `(3)`--`(5)`: every
+  negative-definite subspace of a smaller aperture is one of the larger aperture, of the same
+  dimension, so the charge is monotone.  The set-level statement carries no hypotheses at all; the
+  `sSup` version needs only `BddAbove`, which is what `(2)` supplies analytically.
+- **`hasNegDefSubspaceOfDim_one`** and **`negDefDims_eq_zero_iff_nonneg`** — equations
+  `(ii) ↔ (iii)`: the charge vanishes exactly when the form is nonnegative.  The nontrivial direction
+  builds an explicit one-dimensional negative subspace from a single negative vector; homogeneity of
+  the form is the only structure used.
+- **`morseCharge_eq_zero_of_nonneg`** — equation `(6)`, the small-aperture anchor.
+- **`exists_crossing_of_pos_of_neg`** — equation `(9)`, the first-crossing step: a continuous
+  aperture-indexed bottom eigenvalue positive at a small aperture and negative at a larger one
+  vanishes in between.  This is the intermediate value theorem, and it is what identifies the first
+  negative spectral birth with a zero mode.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]`.
+
+Not formalized, and genuinely external: the discreteness/boundedness-below of `spec(A_a)` giving
+finiteness `(2)`; Yoshida's localized Weil criterion `(i) ↔ (iii)` and nondegeneracy criterion
+`(i) ↔ (iv)`; Suzuki's identity `(8)` and the completed-space generalized eigenvalue equivalence
+`(iv) ↔ (v)` together with the corona statement `(7a)`; and continuity of `lambda_0` in the aperture,
+which is the hypothesis `exists_crossing_of_pos_of_neg` consumes.
 
 ## Gates
 
@@ -209,4 +238,7 @@ represented in Lean. An abstract wrapper would not certify the theorem, so no Le
 - [x] first-zero-mode crossing isolated
 - [x] cofinal aperture charge identified with the full Hardy off-line model-space index
 - [x] raw-`L2`/completed-space mismatch corrected
+- [x] Lean: charge definition and monotonicity `(3)`--`(5)` unconditional
+- [x] Lean: charge vanishing identified with form nonnegativity `(ii)` ↔ `(iii)`
+- [x] Lean: small-aperture anchor `(6)` and first-crossing zero mode `(9)` unconditional
 - [ ] construct a source-defined proof of `ker(Gtilde_a)=0` for every `a`

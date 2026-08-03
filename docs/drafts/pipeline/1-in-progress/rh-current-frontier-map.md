@@ -161,7 +161,7 @@ marked explicitly; all others remain live at their stated open core.
 | O | open | literal cofinal restricted-Weil floor convergence/nonnegativity |
 | P | open | source-built compact completed-seam moment/Markov carrier |
 | Q | open/secondary | source boundary Jensen/jet saturation |
-| R | open; route architecture constructed | source-derived global annihilation of the constructed BV--Wold curvature |
+| R | open; corrected square constructed | source Stokes/Cartier trivialization of the explicit graded `det2` boundary on the actual Xi conormal |
 | S | upstream/secondary | independent source algebraicity or divisor-preserving dynamics |
 
 ### Corpus-native route space beyond classical templates
@@ -173,14 +173,15 @@ zero-fed spectra, or determinant limits:
 | Corpus-forced primitive | Formal evidence | Present status |
 |---|---|---|
 | pre-projection principal-relative current | Route-J energy divergence, diagonal-retention, and endpoint-completeness theorems exclude every advertised post-projection capacity repair | positive survivor of retired J; a new route if constructed |
-| nonseparable prime/depth--divisor arithmetic differential | `θ(i,j)=m_iλ_j-m_jλ_i` has exact curvature `-log(2)/8`, no vertex potential, and no clock-difference representation; its Xi covariant square retains divisor and endpoint provenance | constructed Route R architecture; source-derived global flatness remains open |
+| nonseparable prime/depth--divisor arithmetic differential | `θ(i,j)=m_iλ_j-m_jλ_i` has exact curvature `-log(2)/8`, no vertex potential, and no clock-difference representation; crossed BV/clock occupation legs now produce an independent equal-grade graded-`det2` counterboundary | constructed Route R corrected square; source trivialization of its explicit anomaly boundary remains open |
 | source-first chain descent rather than post hoc cohomology | the ordinary Wold/BV Hochschild boundary exists, but physical landing reads exactly the nonzero Burnol/Deninger radial defect | live Route L open core |
 | moving, all-order, provenance-preserving carrier | finite Möbius/Wold moments are parity-blind and fixed finite selectors are saturated | live Routes E and P at distinct source laws |
 | source algebraicity or divisor-preserving dynamics | HTGeometry supplies independent rigidity and transversality but no Xi-source handoff | upstream Route S; not yet a proof route |
 
-This table mixes constructed routes with exact design constraints. Route R's differential exists
-unconditionally in Lean and has a complete flatness-to-RH endpoint; what does not exist is the
-source theorem forcing its flatness. Route L likewise has an exact tail to RH but not its strict
+This table mixes constructed routes with exact design constraints. Route R's differential and
+independent equal-grade corrected square exist unconditionally in Lean and have a complete
+boundary-triviality-to-RH endpoint; what does not exist is the source Stokes/Cartier theorem
+trivializing that explicit boundary on the actual Xi conormal. Route L likewise has an exact tail to RH but not its strict
 descent. The post-J pre-projection current is only a falsifiable successor class until a literal
 source object and unconditional handoff are built. Its construction must be recorded as a new
 route unless it is literally Route R, not used to reopen J. The ambient discrete-connection
@@ -3972,7 +3973,7 @@ existence.
 `α=1` carrier fails at degree one; one-particle infinite divisibility fails by atomic
 support. A two-particle completion survives but has no transform identification.
 
-### Route R — primitive-current singular continuation `[OPEN — DIFFERENTIAL BUILT; ANNIHILATION OPEN]`
+### Route R — primitive-current singular continuation `[OPEN — CORRECTED SQUARE BUILT; ANOMALY TRIVIALIZATION OPEN]`
 
 **Endpoint.** `ContinuedXiWardFourUnitBoundaryLiftLaw ↔ RiemannHypothesis`: the actual augmented
 four-unit Julia/Ward boundary Gram is positive semidefinite on every finite packet. One
@@ -3993,7 +3994,9 @@ Wold activation holonomy ζ(s)/ζ(s+h)
 → alternating source connection θ(i,j)=m_iλ_j-m_jλ_i
 → exact nonzero labelled curvature and escape from vertex-gauge/difference-only classes
 → divisor-resolved covariant square
-→ global flatness iff RH.
+→ crossed graded occupation `det2` anomaly and equal-grade counterboundary
+→ unconditional corrected square on the actual Xi conormal
+→ boundary triviality iff RH.
 ```
 
 The primitive promotion is independent of Fisher whitening and grows like `p^(e/2)`. Reflected
@@ -4045,11 +4048,12 @@ covariant square. That is more than a parameter change inside Hilbert--Pólya, W
 Connes trace-formula, or Deninger cohomology routes.
 
 The qualification is essential. The Xi specialization inserts
-`a_ρ=2 Re(ρ)-1`; therefore the theorem “global flatness iff RH” is an exact detector, not by itself
-an independent arithmetic proof advance. Route R becomes a proof route only at its stated open
-core: derive flatness from the literal source without using divisor location. Thus the honest
-labels are `[CORPUS-NEW ARCHITECTURE] [EXACT DETECTOR BUILT] [SOURCE ANNIHILATION OPEN]`, not
-`[RH ADVANCED]` or `[RH PROVED]`.
+`a_ρ=2 Re(ρ)-1`; therefore “global flatness iff RH” and “graded-boundary triviality iff RH” are
+exact detectors, not by themselves an independent arithmetic proof. Route R becomes a proof route
+only at its stated open core: trivialize the now-explicit anomaly boundary from literal source
+Stokes/Cartier data without using divisor location. Thus the honest labels are
+`[CORPUS-NEW ARCHITECTURE] [CORRECTED SQUARE BUILT] [SOURCE TRIVIALIZATION OPEN]`, not
+`[RH PROVED]`.
 
 **Closed regular annihilation classes.**
 
@@ -4078,18 +4082,22 @@ unordered scalar sums, scalar distributions after frequency separation, and boun
 label-blind fusion. The constructed BV--Wold connection proves that their surviving
 sign-indefinite, relation-valued category is nonempty.
 
-**Exact open core.** Prove from literal arithmetic source data that the constructed
-divisor-resolved BV--Wold curvature vanishes globally, or construct a compatible source-derived
-null-homotopy that forces the same conclusion. The theorem must not assume divisor location or
-insert the RH-equivalent flatness/Ward sign as a premise. A class-complete no-go for all such
-source-derived annihilators would instead retire Route R negatively. Constructing a nonseparable
-differential is no longer the gap.
+**Exact open core.** Prove from literal arithmetic source data that the explicit graded-`det2`
+counterboundary vanishes on the actual leading Xi conormal. Equivalently, construct a source
+Stokes/Cartier trivialization of the crossed occupation anomaly which does not assume divisor
+location or insert the RH-equivalent flatness/Ward sign as a premise. A compatible null-homotopy
+of the *corrected* complex now exists, but does not close RH because its nonzero equal-grade
+boundary is precisely the original scalar curvature defect. A class-complete no-go for source
+trivializations of this explicit class would instead retire Route R negatively. Constructing the
+nonseparable differential or an equal-grade counterboundary is no longer the gap.
 
 **Strongest survivor.** Route R contains a complete source-to-Xi Krein producer, a constructed
-pre-scalar nonseparable curved differential, exact reflection covariance, and two exact terminal
-readers: global differential flatness and the four-unit Ward law are each equivalent to RH. A
-successful Route-R theorem must now supply the independent arithmetic annihilation law. This is a
-materially narrower and more source-faithful target than an abstract Hilbert--Pólya operator.
+pre-scalar nonseparable curved differential, exact reflection covariance, and an independently
+defined equal-grade graded-`det2` counterboundary whose corrected square vanishes unconditionally
+on the actual Xi conormal. Its boundary vanishes on the exact witness precisely on the critical
+line, and global boundary triviality is equivalent to RH. A successful Route-R theorem must now
+supply the source Stokes/Cartier trivialization of this explicit class. This is a materially
+narrower and more source-faithful target than an abstract Hilbert--Pólya operator.
 
 **Formal anchors.** `WoldSieveNormalConeVonMangoldt.lean`,
 `WoldEulerActivationHolonomy.lean`, `EulerActivationSquarefreeDisintegration.lean`,
@@ -4104,7 +4112,9 @@ materially narrower and more source-faithful target than an abstract Hilbert--P�
 `GammaSignedDistributionalOrbitNoShorting.lean`,
 `PrimeFirstTraceEssentialEdgeSchattenThreshold.lean`,
 `PrimeEssentialEdgeOccupationDet2BVRelativeClass.lean`,
-`PrimeDepthBVWoldCurvedSourceDifferential.lean`, and
+`PrimeDepthBVWoldCurvedSourceDifferential.lean`,
+`PrimeDepthBVWoldResolvedXiLandingAnnihilation.lean`,
+`PrimeDepthBVWoldGradedDet2ScalarDescentBoundary.lean`, and
 `GammaSewnMobiusXiWardCofinalBoundaryLift.lean`.
 
 **Essential-edge `det2` / BV classification.** The sharp `ell2`/not-`ell1`
@@ -4136,11 +4146,36 @@ continued-source residue. This closes the previously open operator realization a
 regular/singular Wold--Gamma/BV identification in
 `PrimeEssentialEdgeOccupationDet2BVRelativeClass.lean`.
 
-It does **not** close Route R. The formal determinant is an exponential and is proved nowhere zero.
-Hence this diagonal construction cannot annihilate the completed Xi landing. Its paired regular
-clock and singular BV mass instead produce the curved differential above. The exact open core is
-annihilation of that constructed curvature from source data; calling either the zero-free
-determinant or the RH-equivalent flatness endpoint an annihilator would be false.
+The diagonal determinant itself does **not** close Route R: it is an exponential and is proved
+nowhere zero.  Its operator does, however, normalize a new equal-grade construction.  For
+consecutive source increments `dm(i,j)` and `dl(i,j)`, put crossed parity-diagonal occupation legs
+
+```text
+A_a(i,j)=diag((a dm(i,j)/zeta(2))Q, (a dl(i,j)/zeta(2))Q),
+B(j,k)=diag(dl(j,k)Q, dm(j,k)Q).
+```
+
+Their supertrace product is the consecutive-increment symplectic area
+
+```text
+Str(A_a(i,j)B(j,k))
+ =a(dm(i,j)dl(j,k)-dl(i,j)dm(j,k))
+ =a kappa(i,j,k).
+```
+
+Thus the independently defined graded Hilbert--Carleman anomaly
+`Anom=exp(-Str(A B))` is the inverse scalar triangle holonomy.  The equal-grade boundary
+
+```text
+Boundary_a(f)(i,j,k)
+ =U_a(i,j)U_a(j,k)(Anom_a(i,j,k)-1)f(k)
+```
+
+satisfies `D1_a D0_a f+Boundary_a(f)=0` unconditionally, including on the actual nonzero leading
+Xi conormal.  This is not RH: on the exact three-depth witness, `Boundary=0` iff
+`Re(rho)=1/2`, and its global triviality is equivalent to RH.  The frontier has therefore moved
+from constructing an unspecified same-grade annihilator to source Stokes/Cartier trivialization
+of this explicit graded determinant class.
 
 ### Non-route coordinate — divisor-fed prime-seam submass
 
