@@ -1060,268 +1060,6 @@ theorem tsum_index_deviation_le
       (fun n _ => term_nonneg a (lt_trans ht htr) n))
 
 
-/-! ## The entire function of a coefficient sequence
-
-Everything above is about the coefficients.  This section attaches the function: an entire
-coefficient sequence has infinite radius of convergence, so its sum is an entire function whose
-values are dominated by the majorant. -/
-
-/-- An entire coefficient sequence has infinite radius of convergence. -/
-theorem ofScalars_radius_eq_top (ha : EntireCoeffs a) :
-    (FormalMultilinearSeries.ofScalars ℂ a).radius = ⊤ := by
-  refine FormalMultilinearSeries.radius_eq_top_of_summable_norm _ fun r' => ?_
-  rcases eq_or_ne r' 0 with hz | hz
-  · subst hz
-    refine Summable.comp_nat_add (k := 1) ?_
-    simp
-  · have hpos : 0 < r' := pos_iff_ne_zero.mpr hz
-    have hr : (0 : ℝ) < (r' : ℝ) := by exact_mod_cast hpos
-    rw [← summable_nat_add_iff 1]
-    refine Summable.of_nonneg_of_le (fun n => by positivity) (fun n => ?_)
-      ((summable_nat_add_iff 1).mpr (summable_term ha hr))
-    exact mul_le_mul_of_nonneg_right
-      (FormalMultilinearSeries.ofScalars_norm_le ℂ a (n + 1) (Nat.succ_pos n)) (by positivity)
-
-/-- The entire function determined by an entire coefficient sequence. -/
-noncomputable def coeffFun (a : ℕ → ℂ) : ℂ → ℂ := (FormalMultilinearSeries.ofScalars ℂ a).sum
-
-theorem coeffFun_eq_tsum (a : ℕ → ℂ) (z : ℂ) : coeffFun a z = ∑' n : ℕ, a n * z ^ n := by
-  have h : coeffFun a z = FormalMultilinearSeries.ofScalarsSum a z := rfl
-  rw [h, FormalMultilinearSeries.ofScalars_sum_eq]
-  exact tsum_congr fun n => by rw [smul_eq_mul]
-
-/-- **The coefficient sum is entire.** -/
-theorem differentiable_coeffFun (ha : EntireCoeffs a) : Differentiable ℂ (coeffFun a) := by
-  have hrad := ofScalars_radius_eq_top ha
-  have hpos : 0 < (FormalMultilinearSeries.ofScalars ℂ a).radius := by
-    rw [hrad]
-    simp
-  have hball := (FormalMultilinearSeries.ofScalars ℂ a).hasFPowerSeriesOnBall hpos
-  intro z
-  refine (hball.analyticAt_of_mem ?_).differentiableAt
-  rw [hrad]
-  simp
-
-/-- The values of the entire function are dominated by the majorant. -/
-theorem norm_coeffFun_le (ha : EntireCoeffs a) {z : ℂ} (hz : 0 < ‖z‖) :
-    ‖coeffFun a z‖ ≤ coeffSum a ‖z‖ := by
-  rw [coeffFun_eq_tsum, coeffSum]
-  have hsum : Summable fun n : ℕ => ‖a n * z ^ n‖ := by
-    refine (summable_term ha hz).congr fun n => ?_
-    rw [norm_mul, norm_pow]
-  refine le_trans (norm_tsum_le_tsum_norm hsum) (le_of_eq ?_)
-  exact tsum_congr fun n => by rw [norm_mul, norm_pow]
-
-
-set_option maxHeartbeats 1000000 in
-/-- **Termwise differentiation.**  The entire function of a coefficient sequence is differentiated
-term by term.  The partial sums are polynomials, and both they and their derivatives converge
-uniformly on every ball, so the Weierstrass limit theorem applies. -/
-theorem hasDerivAt_coeffFun (ha : EntireCoeffs a) (z : ℂ) :
-    HasDerivAt (coeffFun a) (∑' n : ℕ, (n : ℂ) * a n * z ^ (n - 1)) z := by
-  classical
-  set R : ℝ := ‖z‖ + 1 with hRdef
-  have hR0 : (0 : ℝ) < R := by rw [hRdef]; positivity
-  have hpow : ∀ n : ℕ, (n : ℝ) * R ^ (n - 1) = (1 / R) * ((n : ℝ) * R ^ n) := by
-    intro n
-    cases n with
-    | zero => simp
-    | succ m =>
-        simp only [Nat.add_sub_cancel]
-        field_simp
-        ring
-  have hidx : Summable fun n : ℕ => (n : ℝ) * (‖a n‖ * R ^ n) := by
-    refine (summable_term (entireCoeffs_mul_index ha) hR0).congr fun n => ?_
-    rw [norm_mul, Complex.norm_natCast, mul_assoc]
-  have hu' : Summable fun n : ℕ => (1 / R) * ((n : ℝ) * (‖a n‖ * R ^ n)) := hidx.mul_left _
-  have hu : Summable fun n : ℕ => ‖a n‖ * R ^ n := summable_term ha hR0
-  refine hasDerivAt_of_tendstoLocallyUniformlyOn (l := (atTop : Filter (Finset ℕ)))
-    (f := fun t (w : ℂ) => ∑ n ∈ t, a n * w ^ n)
-    (f' := fun t (w : ℂ) => ∑ n ∈ t, (n : ℂ) * a n * w ^ (n - 1))
-    (g := coeffFun a)
-    (g' := fun w : ℂ => ∑' n : ℕ, (n : ℂ) * a n * w ^ (n - 1))
-    (s := Metric.ball (0 : ℂ) R) Metric.isOpen_ball ?_ ?_ ?_ (by simp [hRdef])
-  · refine TendstoUniformlyOn.tendstoLocallyUniformlyOn ?_
-    refine tendstoUniformlyOn_tsum hu' fun n w hw => ?_
-    have hwR : ‖w‖ ≤ R := le_of_lt (by simpa using hw)
-    calc ‖(n : ℂ) * a n * w ^ (n - 1)‖ = (n : ℝ) * ‖a n‖ * ‖w‖ ^ (n - 1) := by
-          rw [norm_mul, norm_mul, Complex.norm_natCast, norm_pow]
-      _ ≤ (n : ℝ) * ‖a n‖ * R ^ (n - 1) := by gcongr
-      _ = (1 / R) * ((n : ℝ) * (‖a n‖ * R ^ n)) := by
-          rw [show (n : ℝ) * ‖a n‖ * R ^ (n - 1) = ‖a n‖ * ((n : ℝ) * R ^ (n - 1)) by ring,
-            hpow n]
-          ring
-  · refine Filter.Eventually.of_forall fun t w _ => ?_
-    have hterm : ∀ n : ℕ, HasDerivAt (fun u : ℂ => a n * u ^ n)
-        ((n : ℂ) * a n * w ^ (n - 1)) w := by
-      intro n
-      have h := (hasDerivAt_pow n w).const_mul (a n)
-      simpa [mul_comm, mul_left_comm, mul_assoc] using h
-    exact HasDerivAt.fun_sum fun n _ => hterm n
-  · intro w hw
-    have hwR : ‖w‖ ≤ R := le_of_lt (by simpa using hw)
-    have hsummable : Summable fun n : ℕ => a n * w ^ n := by
-      refine Summable.of_norm (Summable.of_nonneg_of_le (fun n => norm_nonneg _) (fun n => ?_) hu)
-      rw [norm_mul, norm_pow]
-      gcongr
-    rw [coeffFun_eq_tsum]
-    exact hsummable.hasSum
-
-/-! ## The logarithmic derivative
-
-`z f'(z) - k f(z)` is exactly the series of index deviations, so the deviation estimate is a bound on
-how far `f'/f` is from `k/z`. -/
-
-private theorem norm_index_sub (n k : ℕ) : ‖(n : ℂ) - (k : ℂ)‖ = |(n : ℝ) - (k : ℝ)| := by
-  rw [show ((n : ℂ) - (k : ℂ)) = (((n : ℝ) - (k : ℝ) : ℝ) : ℂ) by push_cast; ring,
-    Complex.norm_real, Real.norm_eq_abs]
-
-private theorem norm_deviation_term (a : ℕ → ℂ) (z : ℂ) (n k : ℕ) :
-    ‖((n : ℂ) - (k : ℂ)) * a n * z ^ n‖ = |(n : ℝ) - (k : ℝ)| * (‖a n‖ * ‖z‖ ^ n) := by
-  rw [norm_mul, norm_mul, norm_pow, norm_index_sub, mul_assoc]
-
-/-- Multiplying the derivative by the coordinate restores the index weight. -/
-theorem mul_deriv_coeffFun_eq (ha : EntireCoeffs a) (z : ℂ) :
-    z * deriv (coeffFun a) z = ∑' n : ℕ, (n : ℂ) * a n * z ^ n := by
-  rw [(hasDerivAt_coeffFun ha z).deriv, ← tsum_mul_left]
-  refine tsum_congr fun n => ?_
-  cases n with
-  | zero => simp
-  | succ m =>
-      simp only [Nat.add_sub_cancel]
-      rw [pow_succ]
-      ring
-
-/-- **The index-deviation series.**  `z f'(z) - k f(z)` is the series whose terms carry the
-deviation of the index from `k`. -/
-theorem mul_deriv_sub_eq_tsum (ha : EntireCoeffs a) {z : ℂ} (hz : 0 < ‖z‖) (k : ℕ) :
-    z * deriv (coeffFun a) z - (k : ℂ) * coeffFun a z
-      = ∑' n : ℕ, ((n : ℂ) - (k : ℂ)) * a n * z ^ n := by
-  have hidx : Summable fun n : ℕ => (n : ℂ) * a n * z ^ n := by
-    refine Summable.of_norm ((summable_term (entireCoeffs_mul_index ha) hz).congr fun n => ?_)
-    rw [norm_mul ((n : ℂ) * a n) (z ^ n), norm_pow]
-  have hc : Summable fun n : ℕ => a n * z ^ n := by
-    refine Summable.of_norm ((summable_term ha hz).congr fun n => ?_)
-    rw [norm_mul, norm_pow]
-  rw [mul_deriv_coeffFun_eq ha z, coeffFun_eq_tsum, ← tsum_mul_left,
-    ← Summable.tsum_sub hidx (hc.mul_left (k : ℂ))]
-  exact tsum_congr fun n => by ring
-
-/-- **The logarithmic-derivative bound.**  The distance from `z f'(z)` to `k f(z)` is at most the
-deviation series, which the window decomposition bounds. -/
-theorem norm_mul_deriv_sub_le (ha : EntireCoeffs a) {z : ℂ} (hz : 0 < ‖z‖) (k : ℕ) :
-    ‖z * deriv (coeffFun a) z - (k : ℂ) * coeffFun a z‖
-      ≤ ∑' n : ℕ, |(n : ℝ) - (k : ℝ)| * (‖a n‖ * ‖z‖ ^ n) := by
-  rw [mul_deriv_sub_eq_tsum ha hz k]
-  have hsum : Summable fun n : ℕ => ‖((n : ℂ) - (k : ℂ)) * a n * z ^ n‖ :=
-    (summable_index_deviation ha hz k).congr fun n => (norm_deviation_term a z n k).symm
-  refine le_trans (norm_tsum_le_tsum_norm hsum) (le_of_eq (tsum_congr fun n => ?_))
-  exact norm_deviation_term a z n k
-
-
-/-- Each window term is at most the maximum term, so the window sum is at most the window count
-times `mu(r)`. -/
-theorem sum_window_le_card_mul_maxTerm (ha : EntireCoeffs a) (hr : 0 < r) (m k : ℕ) :
-    ∑ n ∈ Finset.Ico m (k + 1), ‖a n‖ * r ^ n ≤ ((k + 1 - m : ℕ) : ℝ) * maxTerm a r := by
-  have hcard : (Finset.Ico m (k + 1)).card = k + 1 - m := Nat.card_Ico m (k + 1)
-  have hbd : ∀ n ∈ Finset.Ico m (k + 1), ‖a n‖ * r ^ n ≤ maxTerm a r :=
-    fun n _ => term_le_maxTerm ha hr n
-  have h := Finset.sum_le_card_nsmul _ _ _ hbd
-  rw [hcard, nsmul_eq_mul] at h
-  exact h
-
-/-- **The deviation estimate as a multiple of the maximum term.**  Bounding the window by its term
-count makes every remainder proportional to `mu(r)`, so the constant depends only on the central
-indices and the radius ratios. -/
-theorem tsum_index_deviation_le_maxTerm
-    (ha : EntireCoeffs a) (ht : 0 < t) (htr : t < r) (hrs : r < s)
-    {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
-    ∑' n : ℕ, |(n : ℝ) - (centralIndex a r : ℝ)| * (‖a n‖ * r ^ n)
-      ≤ maxTerm a r * (((centralIndex a s : ℝ) - (centralIndex a t : ℝ))
-            * ((centralIndex a s + 1 - centralIndex a t : ℕ) : ℝ)
-          + (centralIndex a r : ℝ) * ((t / r) / (1 - t / r))
-          + ((centralIndex a s : ℝ) + 1)
-              * ∑' j : ℕ, ((1 : ℝ) + j) * (r / s) ^ (j + 1)) := by
-  have hr : 0 < r := lt_trans ht htr
-  refine le_trans (tsum_index_deviation_le_of_window_le ha ht htr hrs hn₀
-    (sum_window_le_card_mul_maxTerm ha hr (centralIndex a t) (centralIndex a s))) (le_of_eq ?_)
-  ring
-
-/-- **The Wiman--Valiron estimate with a coefficient-free remainder.**  If the deviation series is at
-most `mu(r)` times `B`, then at any point of the circle where the function is at least the maximum
-term the logarithmic derivative differs from `nu(r)/z` by at most `B`. -/
-theorem norm_mul_logDeriv_sub_le_of_deviation_le
-    (ha : EntireCoeffs a) (hr : 0 < r) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hzr : ‖z‖ = r)
-    (hf : maxTerm a r ≤ ‖coeffFun a z‖) {B : ℝ}
-    (hB : ∑' n : ℕ, |(n : ℝ) - (centralIndex a r : ℝ)| * (‖a n‖ * r ^ n) ≤ maxTerm a r * B) :
-    ‖z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a r : ℂ)‖ ≤ B := by
-  have hz : 0 < ‖z‖ := by rw [hzr]; exact hr
-  obtain ⟨-, -, hμpos⟩ := exists_maxTerm_eq ha hr hn₀
-  have hfpos : 0 < ‖coeffFun a z‖ := lt_of_lt_of_le hμpos hf
-  have hfne : coeffFun a z ≠ 0 := norm_pos_iff.mp hfpos
-  have hdev := norm_mul_deriv_sub_le ha hz (centralIndex a r)
-  rw [hzr] at hdev
-  have hchain := le_trans hdev hB
-  have hBnn : (0 : ℝ) ≤ maxTerm a r * B := le_trans (norm_nonneg _) hchain
-  have hsplit : z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a r : ℂ)
-      = (z * deriv (coeffFun a) z - (centralIndex a r : ℂ) * coeffFun a z) / coeffFun a z := by
-    field_simp
-  rw [hsplit, norm_div]
-  calc ‖z * deriv (coeffFun a) z - (centralIndex a r : ℂ) * coeffFun a z‖ / ‖coeffFun a z‖
-      ≤ (maxTerm a r * B) / ‖coeffFun a z‖ := div_le_div_of_nonneg_right hchain hfpos.le
-    _ ≤ (maxTerm a r * B) / maxTerm a r := div_le_div_of_nonneg_left hBnn hμpos hf
-    _ = B := by field_simp
-
-set_option maxHeartbeats 1000000 in
-/-- **The Wiman--Valiron logarithmic-derivative estimate.**  At a point of the circle of radius `r`
-where the function is at least as large as the maximum term, `z f'(z)/f(z)` differs from the central
-index by at most the deviation bound divided by the maximum term. -/
-theorem norm_mul_logDeriv_sub_centralIndex_le
-    (ha : EntireCoeffs a) (ht : 0 < t) (htr : t < r) (hrs : r < s)
-    {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {z : ℂ} (hzr : ‖z‖ = r)
-    (hf : maxTerm a r ≤ ‖coeffFun a z‖) :
-    ‖z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a r : ℂ)‖
-      ≤ (((centralIndex a s : ℝ) - (centralIndex a t : ℝ)) * coeffSum a r
-          + (centralIndex a r : ℝ) * (maxTerm a r * (t / r) / (1 - t / r))
-          + maxTerm a r * ((centralIndex a s : ℝ) + 1)
-              * ∑' j : ℕ, ((1 : ℝ) + j) * (r / s) ^ (j + 1)) / maxTerm a r := by
-  have hr : 0 < r := lt_trans ht htr
-  have hz : 0 < ‖z‖ := by rw [hzr]; exact hr
-  obtain ⟨-, -, hμpos⟩ := exists_maxTerm_eq ha hr hn₀
-  have hfpos : 0 < ‖coeffFun a z‖ := lt_of_lt_of_le hμpos hf
-  have hfne : coeffFun a z ≠ 0 := norm_pos_iff.mp hfpos
-  -- the deviation series, bounded twice
-  have hdev := norm_mul_deriv_sub_le ha hz (centralIndex a r)
-  rw [hzr] at hdev
-  have hbound := tsum_index_deviation_le ha ht htr hrs hn₀
-  have hchain : ‖z * deriv (coeffFun a) z - (centralIndex a r : ℂ) * coeffFun a z‖
-      ≤ ((centralIndex a s : ℝ) - (centralIndex a t : ℝ)) * coeffSum a r
-        + (centralIndex a r : ℝ) * (maxTerm a r * (t / r) / (1 - t / r))
-        + maxTerm a r * ((centralIndex a s : ℝ) + 1)
-            * ∑' j : ℕ, ((1 : ℝ) + j) * (r / s) ^ (j + 1) := le_trans hdev hbound
-  have hBnonneg : (0 : ℝ) ≤ ((centralIndex a s : ℝ) - (centralIndex a t : ℝ)) * coeffSum a r
-      + (centralIndex a r : ℝ) * (maxTerm a r * (t / r) / (1 - t / r))
-      + maxTerm a r * ((centralIndex a s : ℝ) + 1)
-          * ∑' j : ℕ, ((1 : ℝ) + j) * (r / s) ^ (j + 1) :=
-    le_trans (norm_nonneg _) hchain
-  -- divide
-  have hsplit : z * deriv (coeffFun a) z / coeffFun a z - (centralIndex a r : ℂ)
-      = (z * deriv (coeffFun a) z - (centralIndex a r : ℂ) * coeffFun a z) / coeffFun a z := by
-    field_simp
-  rw [hsplit, norm_div]
-  calc ‖z * deriv (coeffFun a) z - (centralIndex a r : ℂ) * coeffFun a z‖ / ‖coeffFun a z‖
-      ≤ (((centralIndex a s : ℝ) - (centralIndex a t : ℝ)) * coeffSum a r
-          + (centralIndex a r : ℝ) * (maxTerm a r * (t / r) / (1 - t / r))
-          + maxTerm a r * ((centralIndex a s : ℝ) + 1)
-              * ∑' j : ℕ, ((1 : ℝ) + j) * (r / s) ^ (j + 1)) / ‖coeffFun a z‖ := by
-        exact div_le_div_of_nonneg_right hchain hfpos.le
-    _ ≤ (((centralIndex a s : ℝ) - (centralIndex a t : ℝ)) * coeffSum a r
-          + (centralIndex a r : ℝ) * (maxTerm a r * (t / r) / (1 - t / r))
-          + maxTerm a r * ((centralIndex a s : ℝ) + 1)
-              * ∑' j : ℕ, ((1 : ℝ) + j) * (r / s) ^ (j + 1)) / maxTerm a r :=
-        div_le_div_of_nonneg_left hBnonneg hμpos hf
-
-
 /-! ## Log-convexity
 
 `log mu` is a convex function of `log r`, because `mu(e^u) = sup_n ||a_n|| e^(n u)` is a supremum of
@@ -1373,6 +1111,137 @@ theorem convexOn_log_maxTerm_exp (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n
   have hlog := Real.log_le_log hμv hprod
   rw [Real.log_mul (by positivity) (by positivity), Real.log_rpow hμu, Real.log_rpow hμw] at hlog
   exact hlog
+
+
+/-! ## Exponential concentration
+
+The geometric decay bounds, written on the exponential scale, say that a term at distance `j` from
+the central index of the enlarged radius `r(1+delta)` is smaller than the maximum term by a factor
+`exp(-j delta / 2)`.  The narrower the enlargement, the further out the concentration has to reach
+before it bites -- which is the trade-off the Wiman--Valiron radius choice has to balance. -/
+
+/-- `log (1 + x) >= x / 2` on `(0, 1]`. -/
+private theorem half_le_log_one_add {x : ℝ} (hx0 : 0 < x) (hx1 : x ≤ 1) :
+    x / 2 ≤ Real.log (1 + x) := by
+  have hy : (0 : ℝ) < 1 / (1 + x) := by positivity
+  have hle := Real.log_le_sub_one_of_pos hy
+  rw [Real.log_div one_ne_zero (by positivity), Real.log_one, zero_sub] at hle
+  have hrw : (1 : ℝ) / (1 + x) - 1 = -(x / (1 + x)) := by
+    field_simp
+    ring
+  rw [hrw] at hle
+  have hcmp : x / 2 ≤ x / (1 + x) := by
+    apply div_le_div_of_nonneg_left hx0.le (by positivity)
+    linarith
+  linarith
+
+/-- **Exponential decay above the central index.**  Beyond the central index at the enlarged radius
+`r(1+delta)`, the terms fall off exponentially in the excess, at rate `delta / 2`. -/
+theorem term_le_maxTerm_mul_exp_of_centralIndex_le
+    (ha : EntireCoeffs a) (hr : 0 < r) {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1)
+    {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
+    {n : ℕ} (hn : centralIndex a (r * (1 + δ)) ≤ n) :
+    ‖a n‖ * r ^ n
+      ≤ maxTerm a r
+        * Real.exp (-(((n - centralIndex a (r * (1 + δ)) : ℕ) : ℝ) * (δ / 2))) := by
+  have hbase : (0 : ℝ) < 1 + δ := by linarith
+  have hs : r < r * (1 + δ) := by nlinarith
+  have hμ : (0 : ℝ) ≤ maxTerm a r :=
+    le_trans (term_nonneg a hr 0) (term_le_maxTerm ha hr 0)
+  have hdecay := term_le_maxTerm_mul_pow_of_centralIndex_le ha hr hs.le hn₀ hn
+  set k := centralIndex a (r * (1 + δ)) with hk
+  set m : ℕ := n - k with hm
+  have hq : r / (r * (1 + δ)) = (1 + δ)⁻¹ := by
+    field_simp
+  rw [hq] at hdecay
+  have hpow : Real.exp ((m : ℝ) * (δ / 2)) ≤ (1 + δ) ^ m := by
+    have h1 : Real.exp ((m : ℝ) * (δ / 2)) ≤ Real.exp ((m : ℝ) * Real.log (1 + δ)) :=
+      Real.exp_le_exp.mpr
+        (mul_le_mul_of_nonneg_left (half_le_log_one_add hδ0 hδ1) (Nat.cast_nonneg m))
+    have h2 : Real.exp ((m : ℝ) * Real.log (1 + δ)) = (1 + δ) ^ m := by
+      rw [Real.exp_nat_mul, Real.exp_log hbase]
+    rwa [h2] at h1
+  have hkey : ((1 + δ)⁻¹) ^ m ≤ Real.exp (-((m : ℝ) * (δ / 2))) := by
+    rw [Real.exp_neg, inv_pow]
+    exact inv_anti₀ (Real.exp_pos _) hpow
+  exact le_trans hdecay (mul_le_mul_of_nonneg_left hkey hμ)
+
+/-- **Exponential decay below the central index.**  Under the central index at the shrunken radius
+`r/(1+delta)`, the terms fall off exponentially in the deficit, at the same rate. -/
+theorem term_le_maxTerm_mul_exp_of_le_centralIndex
+    (ha : EntireCoeffs a) (hr : 0 < r) {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1)
+    {n₀ : ℕ} (hn₀ : a n₀ ≠ 0)
+    {n : ℕ} (hn : n ≤ centralIndex a (r / (1 + δ))) :
+    ‖a n‖ * r ^ n
+      ≤ maxTerm a r
+        * Real.exp (-(((centralIndex a (r / (1 + δ)) - n : ℕ) : ℝ) * (δ / 2))) := by
+  have hbase : (0 : ℝ) < 1 + δ := by linarith
+  have ht : (0 : ℝ) < r / (1 + δ) := by positivity
+  have htr : r / (1 + δ) ≤ r := by
+    rw [div_le_iff₀ hbase]
+    nlinarith
+  have hμ : (0 : ℝ) ≤ maxTerm a r :=
+    le_trans (term_nonneg a hr 0) (term_le_maxTerm ha hr 0)
+  have hdecay := term_le_maxTerm_mul_pow_of_le_centralIndex ha ht htr hn₀ hn
+  set k := centralIndex a (r / (1 + δ)) with hk
+  set m : ℕ := k - n with hm
+  have hq : (r / (1 + δ)) / r = (1 + δ)⁻¹ := by
+    field_simp
+  rw [hq] at hdecay
+  have hpow : Real.exp ((m : ℝ) * (δ / 2)) ≤ (1 + δ) ^ m := by
+    have h1 : Real.exp ((m : ℝ) * (δ / 2)) ≤ Real.exp ((m : ℝ) * Real.log (1 + δ)) :=
+      Real.exp_le_exp.mpr
+        (mul_le_mul_of_nonneg_left (half_le_log_one_add hδ0 hδ1) (Nat.cast_nonneg m))
+    have h2 : Real.exp ((m : ℝ) * Real.log (1 + δ)) = (1 + δ) ^ m := by
+      rw [Real.exp_nat_mul, Real.exp_log hbase]
+    rwa [h2] at h1
+  have hkey : ((1 + δ)⁻¹) ^ m ≤ Real.exp (-((m : ℝ) * (δ / 2))) := by
+    rw [Real.exp_neg, inv_pow]
+    exact inv_anti₀ (Real.exp_pos _) hpow
+  exact le_trans hdecay (mul_le_mul_of_nonneg_left hkey hμ)
+
+
+/-! ## The growth law in logarithmic coordinates
+
+Writing `L(u) = log mu(e^u)`, the two-sided growth law says the increments of `L` are squeezed
+between the central indices at the two endpoints.  This is the precise sense in which `nu` is the
+derivative of `log mu` with respect to `log r`, and it is the form every Wiman--Valiron estimate
+uses. -/
+
+theorem log_maxTerm_exp_sub_le_centralIndex_mul
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {u v : ℝ} (huv : u ≤ v) :
+    Real.log (maxTerm a (Real.exp v)) - Real.log (maxTerm a (Real.exp u))
+      ≤ (centralIndex a (Real.exp v) : ℝ) * (v - u) := by
+  have hlog : Real.log (Real.exp v / Real.exp u) = v - u := by
+    rw [← Real.exp_sub, Real.log_exp]
+  have h := log_maxTerm_sub_le_centralIndex_mul_log ha (Real.exp_pos u)
+    (Real.exp_le_exp.mpr huv) hn₀
+  rwa [hlog] at h
+
+theorem centralIndex_mul_le_log_maxTerm_exp_sub
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {u v : ℝ} (huv : u ≤ v) :
+    (centralIndex a (Real.exp u) : ℝ) * (v - u)
+      ≤ Real.log (maxTerm a (Real.exp v)) - Real.log (maxTerm a (Real.exp u)) := by
+  have hlog : Real.log (Real.exp v / Real.exp u) = v - u := by
+    rw [← Real.exp_sub, Real.log_exp]
+  have h := centralIndex_mul_log_le_log_maxTerm_sub ha (Real.exp_pos u)
+    (Real.exp_le_exp.mpr huv) hn₀
+  rwa [hlog] at h
+
+/-- **The central index sits between adjacent increments of `log mu`.**  For `u < v < w` the
+increment on the left is at most `nu(e^v)` times its width, and `nu(e^v)` times the right width is at
+most the increment on the right. -/
+theorem centralIndex_between_log_increments
+    (ha : EntireCoeffs a) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) {u v w : ℝ} (huv : u < v) (hvw : v < w) :
+    (Real.log (maxTerm a (Real.exp v)) - Real.log (maxTerm a (Real.exp u))) / (v - u)
+        ≤ (centralIndex a (Real.exp v) : ℝ)
+      ∧ (centralIndex a (Real.exp v) : ℝ)
+        ≤ (Real.log (maxTerm a (Real.exp w)) - Real.log (maxTerm a (Real.exp v))) / (w - v) := by
+  constructor
+  · rw [div_le_iff₀ (by linarith)]
+    exact log_maxTerm_exp_sub_le_centralIndex_mul ha hn₀ huv.le
+  · rw [le_div_iff₀ (by linarith)]
+    exact centralIndex_mul_le_log_maxTerm_exp_sub ha hn₀ hvw.le
 
 
 /-! ## Entire functions -/

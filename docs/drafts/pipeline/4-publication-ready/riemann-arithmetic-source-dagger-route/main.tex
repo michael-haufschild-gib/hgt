@@ -33,7 +33,7 @@
 \newcommand{\Ima}{\operatorname{Im}}
 
 \title{\textbf{Arithmetic source descent toward the Riemann hypothesis}\\
-\large Boundary-defect conservation and the arithmetic quotient frontier}
+\large Boundary-defect conservation and maximal quotient collapse}
 \author{Michael Haufschild}
 \date{}
 
@@ -88,11 +88,20 @@ For the source--dagger target, the degree-one monodromy is
  \delta_n(\rho)=\exp\!\left((2\Rea\rho-1)\log n\right).
 \]
 A retained cyclic boundary class forces \(\delta_n(\rho)=1\), hence
-\(\Rea\rho=1/2\).  The exact remaining arithmetic problem is consequently
-threefold: construct the source boundary, prove the physical source--dagger
-defect is a boundary, and prove the top conormal is not one.  This quotient
-law lies upstream of reflection averaging and positive scalarization and is
-strictly weaker than the now-obstructed strict intertwiner.
+\(\Rea\rho=1/2\).  We then construct the smallest admissible boundary
+\[
+ B_{\min}=\ran D+\ran(TD).
+\]
+It is target-stable, contains every physical defect, and is contained in
+every competing boundary; hence it gives the largest possible quotient.
+For the two-leg landing scaled by the first nonzero M\"obius--theta jet,
+\(B_{\min,\rho}=0\) on the critical line and
+\(B_{\min,\rho}=\C^2\) off it.  The canonical top-conormal class therefore
+survives exactly when \(\Rea\rho=1/2\), and global survival is equivalent to
+RH.  This answers the boundary-choice problem negatively: neither a different
+stable boundary nor singular topology can improve the quotient.  What
+remains is not construction of \(B\), but an independent arithmetic theorem
+forcing survival of this already canonical class.
 \end{abstract}
 
 \medskip
@@ -529,6 +538,96 @@ nonzero modulo the arithmetic boundary required in
 plausible missing construction: Theorem~\ref{thm:defect-conservation}(i)
 annihilates every off-line fibre algebraically, before topology is imposed.
 
+There is no freedom left in choosing the most favourable boundary.  Define
+\[
+ B_{\min}(\tau,T,L)=\ran D+\ran(TD).
+\tag{6.7}\label{eq:min-boundary}
+\]
+
+\begin{theorem}[Maximal quotient law]
+\label{thm:maximal-quotient}
+Assume \(T^2=\delta\,\mathrm{id}\).  Then:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item \(B_{\min}\) is \(T\)-stable and contains \(D(S)\);
+\item every \(T\)-stable subspace containing \(D(S)\) contains
+      \(B_{\min}\);
+\item a landed atom survives in some admissible boundary quotient if and
+      only if it survives in \(V/B_{\min}\);
+\item if \(\tau^2=1\) and \(\delta\neq1\), then
+      \(L(S)\subseteq B_{\min}\); if \(L\) is surjective, then
+      \(B_{\min}=V\).
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The first defect range lies in \(B_{\min}\) by definition.  Target rotation
+sends it to the second range, while
+\[
+ T\bigl(TD(S)\bigr)=\delta D(S)\subseteq\ran D,
+\]
+proving (i).  If \(B\) is stable and contains \(D(S)\), it also contains
+\(TD(S)\), proving (ii).  Part (iii) follows by choosing \(B_{\min}\) in one
+direction and using (ii) in the other.  For (iv), if \(L(x)\notin B_{\min}\),
+Theorem~\ref{thm:defect-conservation}(ii) would give \(\delta=1\).  Thus the
+range is contained in \(B_{\min}\) when \(\delta\neq1\); surjectivity then
+gives equality with \(V\).
+\end{proof}
+
+We now apply this universal law without adding a divisor-dependent gauge.
+Let
+\[
+ c_\rho=\XiC^{(r_\rho)}(w_\rho)\neq0,
+ \qquad
+ L_\rho(z)=c_\rho z\quad(z\in\C^2),
+\tag{6.8}\label{eq:physical-two-leg}
+\]
+and let \(\tau(x,y)=(y,x)\).  The coefficient in
+\eqref{eq:physical-two-leg} is precisely the first nonzero physical
+M\"obius--theta coefficient from \eqref{eq:gamma-landing}; hence the landing
+is surjective and retains the exact multiplicity grade.  Take
+\(T=R_{n,\rho}\) and form \(B_{\min,\rho}\) by
+\eqref{eq:min-boundary}.
+
+\begin{theorem}[Exact physical boundary classification]
+\label{thm:physical-boundary-classification}
+For every divisor point \(\rho\) and every \(n\geq2\),
+\[
+ B_{\min,\rho}=
+ \begin{cases}
+   0,&\Rea\rho=\tfrac12,\\
+   \C^2,&\Rea\rho\neq\tfrac12.
+ \end{cases}
+\tag{6.9}\label{eq:boundary-dichotomy}
+\]
+If \(x_0=(1,0)\), then
+\[
+ [L_\rho(x_0)]\neq0\text{ in }\C^2/B_{\min,\rho}
+ \quad\Longleftrightarrow\quad
+ \Rea\rho=\frac12.
+\tag{6.10}\label{eq:class-iff-line}
+\]
+Consequently, survival of these classes at every divisor point is equivalent
+to RH.
+\end{theorem}
+
+\begin{proof}
+If \(\Rea\rho=1/2\), then \(\delta_n(\rho)=1\), so
+\(R_{n,\rho}=\tau\).  Scalar landing commutes with \(\tau\), hence \(D=0\)
+and \(B_{\min,\rho}=0\).  Off the line, \(\delta_n(\rho)\neq1\); the landing
+is surjective because \(c_\rho\neq0\), so
+Theorem~\ref{thm:maximal-quotient}(iv) gives
+\(B_{\min,\rho}=\C^2\).  Finally \(L_\rho(x_0)=(c_\rho,0)\neq0\), which
+proves \eqref{eq:class-iff-line}; global quantification is exactly RH.
+\end{proof}
+
+Theorem~\ref{thm:physical-boundary-classification} is both construction and
+obstruction.  It constructs the coherent maximal quotient permitted by
+defect exactness, but proves that its desired non-erasure clause is not an
+intermediate lemma: for the physical two-leg landing it is RH itself.  Any
+independent source law must therefore do more than select a clever boundary;
+it must explain why the actual arithmetic source cannot occupy the off-line
+case of \eqref{eq:boundary-dichotomy}.
+
 \section{Why regular completion cannot supply the boundary class}
 
 The existing constructions sharply constrain the missing arrow.
@@ -580,13 +679,13 @@ Theorem~\ref{thm:green-auto}.  Part (v) is
 Theorem~\ref{thm:source-descent}(ii).
 \end{proof}
 
-Theorem~\ref{thm:defect-conservation} strengthens this list.  Topology cannot
-rescue strict equivariance: an off-line strict single-valued landing is zero
-on any domain stable under the source rotation.  A viable successor must
-instead retain information in a quotient by a source-generated boundary.  It
-must be singular enough to retain the nonclosed source boundary, strict
-enough not to become vertically indeterminate, and resolved enough to
-preserve the unsquared full grade and its nonzero quotient class.
+Theorems~\ref{thm:defect-conservation} and
+\ref{thm:maximal-quotient} strengthen this list.  Topology cannot rescue
+strict equivariance, and boundary choice cannot rescue quotient survival.
+The maximal quotient is canonical; off line it is zero for the physical
+two-leg landing.  A viable successor must therefore supply an independent
+source residue proving that the arithmetic class survives this fixed
+quotient.  It cannot enlarge the quotient by changing completion or boundary.
 
 \section{Exact status of the arithmetic route}
 
@@ -610,50 +709,60 @@ unconditional properties.
       nonzero at every divisor copy.
 \item Every ordinary closed, bounded, reflection-averaged, product-topology,
       or positive scalar completion covered by
-      Theorem~\ref{thm:no-go} fails to create the missing odd boundary class.
+      Theorem~\ref{thm:no-go} fails to force survival of the odd boundary
+      class.
+\item The canonical minimal defect boundary exists and gives the largest
+      admissible quotient.  For the physical two-leg landing it is zero on
+      the critical line and the whole target off it.
 \end{enumerate}
 \end{theorem}
 
-\begin{problem}[Arithmetic boundary-class law]
-\label{prob:boundary-class}
-Construct, before selecting a zero, one global source complex, landing \(L\),
-and coherent boundary submodule \(B\) in the Gamma/co-Poisson top-conormal
-target such that, after specialization at every divisor point \(\rho\):
+\begin{problem}[Independent arithmetic survival law]
+\label{prob:arithmetic-survival}
+Construct, before selecting a zero, a comparison from the literal cyclic
+arithmetic source to the physical two-leg landing
+\eqref{eq:physical-two-leg}, together with a source-defined residue or
+homology functional \(\operatorname{Res}_\rho\), such that after
+specialization at every divisor point \(\rho\):
 \begin{enumerate}[label=\textup{(\roman*)}]
-\item \(L_\rho\) uses the same source provenance as
-      \eqref{eq:source-transform}--\eqref{eq:gamma-landing};
-\item \(B_\rho\) is stable under the unsymmetrized target rotation
-      \(R_{n,\rho}\);
-\item the physical equivariance defect
-      \(R_{n,\rho}L_\rho-L_\rho\tau\) takes values in \(B_\rho\);
-\item one canonical top-conormal source atom satisfies
-      \(L_\rho(x_0)\notin B_\rho\);
+\item the comparison has the M\"obius--theta provenance of
+      \eqref{eq:source-transform}--\eqref{eq:gamma-landing}, rather than a
+      divisor-fitted cyclic source;
+\item \(\operatorname{Res}_\rho\) annihilates
+      \(B_{\min,\rho}\), whose stability and defect containment are already
+      proved;
+\item \(\operatorname{Res}_\rho(L_\rho(x_0))\neq0\) follows from one
+      independent ordinary-prime source identity;
 \item multiplicity jets are retained in a separate compatible filtered
       channel, without demanding unitary Jordan action and therefore without
       silently assuming simplicity of zeros.
 \end{enumerate}
 \end{problem}
 
-The word \emph{source} in Problem~\ref{prob:boundary-class} is load-bearing.
+The word \emph{source} in Problem~\ref{prob:arithmetic-survival} is
+load-bearing.
 One may always define a divisor-dependent identification that is unitary on
 the critical line; that merely rewrites RH.  The required identity must be a
 chain or boundary law of the ordinary-prime source before divisor
 specialization.  The word \emph{unsymmetrized} is equally load-bearing:
 functional-equation reflection pairs an off-line zero with another allowed
-zero.  The new theorem does not demand equality of source inverse and
-analytic dagger on vectors.  It demands that their failure be an actual
-arithmetic boundary and that the physical conormal survive its quotient.
+zero.  Boundary choice is no longer part of the freedom: by
+Theorem~\ref{thm:maximal-quotient}, every admissible boundary contains
+\(B_{\min}\).  A residue that kills this minimal boundary and detects the
+physical atom would prove RH, while any residue supplied only after assuming
+\eqref{eq:class-iff-line} is circular.
 
-\begin{corollary}[Boundary-class implication]
-If Problem~\ref{prob:boundary-class} is solved, then the Riemann hypothesis
-follows from Corollary~\ref{cor:boundary-class-rigidity}.
+\begin{corollary}[Arithmetic-survival implication]
+If Problem~\ref{prob:arithmetic-survival} is solved, then the Riemann
+hypothesis follows from Theorem~\ref{thm:physical-boundary-classification}.
 \end{corollary}
 
-This corollary does not assert that Problem~\ref{prob:boundary-class} has
-been solved.  It separates its three unproved arithmetic clauses: construct
-the coherent boundary, prove defect exactness, and prove conormal survival
-modulo that boundary.  Strict source--dagger equality is obstructed and is no
-longer an open gate.
+This corollary does not assert that Problem~\ref{prob:arithmetic-survival}
+has been solved.  The coherent maximal boundary and defect exactness are now
+constructed.  The unproved content is an independent source-derived proof of
+class survival.  Theorem~\ref{thm:physical-boundary-classification} shows
+that this content is exactly as strong as RH; it must not be advertised as a
+smaller technical completion.
 
 \section{Comparison with classical routes}
 
@@ -669,17 +778,17 @@ Table~\ref{tab:routes} compares logical inputs, not historical priority.
 \toprule
 Program & Typical decisive object & What is already available here & Different unresolved gate \\
 \midrule
-Hilbert--P\'olya & A self-adjoint operator whose spectral parameters encode zeros & A complete divisor carrier, reflected Green transport, harmonic Hodge rotation, and exact local non-erasure & No spectral realization or self-adjointness is assumed.  Need an arithmetic boundary class before an operator is formed. \\
+Hilbert--P\'olya & A self-adjoint operator whose spectral parameters encode zeros & Complete divisor carrier, reflected Green transport, and maximal source--dagger quotient & No spectral realization or self-adjointness is assumed.  The quotient is already total off line; need independent arithmetic class survival, not an operator. \\
 \addlinespace
-Weil positivity & Positivity of an explicit-formula quadratic form & Positive Gamma/Green consumers with exact critical-line radical & Positivity squares horizontal orientation.  Need unsquared defect exactness and quotient survival upstream of the quadratic form. \\
+Weil positivity & Positivity of an explicit-formula quadratic form & Positive Gamma/Green consumers with exact critical-line radical and an unsquared defect quotient & Positivity squares horizontal orientation.  Need source-forced nontriviality of the unsquared quotient class. \\
 \addlinespace
 Nyman--Beurling and Hedenmalm density & Closure or cyclicity of a function system & Dense arithmetic common tests, source-to-Xi landing, and divisor-faithful evaluation & Density controls representation.  The normalized Hodge boundary is nonclosable, so closure alone cannot impose same-fibre dagger. \\
 \addlinespace
-Sonin/co-Poisson & Fourier/Mellin duality and invariant subspaces & Exact Gamma/co-Poisson incidence, Green primitive, and reflected source transport & Reflection duality relates mate fibres.  Need the mixed-rotation defect to be a boundary on one retained unsymmetrized grade. \\
+Sonin/co-Poisson & Fourier/Mellin duality and invariant subspaces & Exact Gamma/co-Poisson incidence, Green primitive, reflected transport, and minimal mixed-defect boundary & Reflection duality relates mate fibres.  Need an independent source residue detecting the physical class. \\
 \addlinespace
-CCM/Meyer & Quotient trace, absorption spectrum, or cohomological boundary & Literal arithmetic cross-prime source span and exact relative Green transgression & Continuous extension of the old oriented boundary is zero; the required boundary must be source-generated, singular, horizontal, and quotient-faithful. \\
+CCM/Meyer & Quotient trace, absorption spectrum, or cohomological boundary & Literal cyclic arithmetic source, cross-prime span, and exact relative Green transgression & No comparison maps that cyclic source to the physical M\"obius--theta two-leg landing while detecting its quotient class. \\
 \addlinespace
-Deninger-type cohomology & Frobenius flow with a Hodge star or weight formalism & Half-density character, explicit mate gain, top conormal, and the defect law & The missing cohomology is not postulated.  Its required content is reduced to source-generated boundary exactness plus conormal survival. \\
+Deninger-type cohomology & Frobenius flow with a Hodge star or weight formalism & Half-density character, mate gain, top conormal, and maximal quotient law & Boundary exactness is canonical.  Missing content is a source-derived nonzero homology class, which the classification proves equivalent to critical-line placement. \\
 \bottomrule
 \end{tabularx}
 \caption{Logical comparison of the arithmetic source--dagger route with classical programs.}
@@ -704,13 +813,14 @@ positive consumer as the missing oppositely signed degree-one term.
 
 Finally, the route explains why repeated source reconstructions and density
 theorems did not finish zero exclusion.  Those results solve attainment and
-vector faithfulness.  Problem~\ref{prob:boundary-class} is a homological
-selection law: it must make modular drift exact without making the physical
-top conormal exact, while retaining the filtered multiplicity package.
+vector faithfulness.  Theorem~\ref{thm:maximal-quotient} also solves the
+optimal boundary choice.  Problem~\ref{prob:arithmetic-survival} is the
+remaining homological selection law: it must prove, from the literal source,
+that the physical top conormal is not exact in this fixed quotient.
 
 \section{A falsifiable proof program}
 
-Problem~\ref{prob:boundary-class} is narrower than ``construct a cohomology
+Problem~\ref{prob:arithmetic-survival} is narrower than ``construct a cohomology
 theory for the zeta function.''  A candidate construction must pass all of
 the following tests.
 
@@ -721,15 +831,14 @@ the following tests.
 \item \textbf{Physical comparison.}  Its analytic realization agrees with
       the M\"obius--theta landing \eqref{eq:source-transform} and with the
       coefficient \(c_\rho\) in \eqref{eq:gamma-landing}.
-\item \textbf{Boundary-class base change.}  The reduced Cartier atom
-      survives modulo the proposed arithmetic boundary.  Vector
-      nonvanishing alone is insufficient.  The quotient does not factor
-      through the nonclosed Hodge marginal, a product-topology closed
-      relation, or the continuous extension of the old oriented boundary.
-\item \textbf{Same-grade defect exactness.}  The difference between source
-      inverse and analytic dagger is a source-generated boundary on the
-      unsymmetrized degree-one grade, not merely a pairing across
-      functional-equation mates and not a divisor-dependent correction.
+\item \textbf{Fixed maximal quotient.}  The detector annihilates the
+      canonical \(B_{\min}\), not a smaller fitted subspace.  Vector
+      nonvanishing alone is insufficient, and choosing another admissible
+      boundary cannot enlarge the quotient.
+\item \textbf{Independent class detection.}  Nonzero residue of the physical
+      atom follows from one pre-divisor ordinary-prime identity, not from
+      assuming critical-line placement or from a divisor-dependent
+      correction.
 \item \textbf{Multiplicity separation.}  Nilpotent jets remain in a
       filtered channel, while unitarity is asserted only for the reduced
       continuous character.  A proof that forces diagonalizable multiplicity
@@ -742,12 +851,13 @@ the following tests.
 \end{enumerate}
 
 These tests locate useful future work.  Building another faithful divisor
-carrier, positive form, or reflection-equivariant completion does not attack
-the open theorem.  The strict source-level boundary operator is now
-obstructed: off the critical line it is identically zero.  A useful advance
-must instead construct the arithmetic boundary in which its equivariance
-defect is exact, and prove independently that the existing top conormal is
-not exact.
+carrier, positive form, boundary, or reflection-equivariant completion does
+not attack the open theorem.  Strict equivariance is obstructed, and the
+largest admissible quotient is already constructed.  A useful advance must
+connect the literal cyclic arithmetic source to the physical landing and
+produce a source residue that kills \(B_{\min}\) while detecting its canonical
+atom.  Theorem~\ref{thm:physical-boundary-classification} makes clear that
+this is the RH-bearing theorem itself, not downstream infrastructure.
 
 \section{Conclusion}
 
@@ -768,14 +878,15 @@ positive scalarization squares it; Hilbert closure makes the normalized
 boundary nonclosable; product closure becomes maximally vertical; continuous
 extension of the old boundary is zero.
 
-The two-step defect law changes the frontier.  The ordinary-prime source must
-not strictly identify source inverse with analytic dagger; that requirement
-is algebraically overdetermined off line.  It must make their defect exact in
-one source-generated, target-stable boundary while the physical top conormal
-survives in the quotient.  Quotient cyclicity then forces trivial radial
-monodromy and \(\Rea\rho=1/2\) at every divisor point.  Construction of that
-boundary, defect exactness, and quotient non-erasure are the unproved
-arithmetic content, and no result in this paper assumes them.
+The two-step defect law and maximal quotient classification change the
+frontier.  Strict identification of source inverse with analytic dagger is
+algebraically overdetermined off line.  Their minimal stable defect boundary
+is canonical; for the physical leading-jet landing it is zero on the line and
+all of \(\C^2\) off it.  Thus neither topology nor boundary choice can create
+the desired class.  The only surviving claim is an independent arithmetic
+non-erasure theorem for that fixed quotient, obtained by comparing the
+literal cyclic source with the M\"obius--theta landing.  Its global form is
+equivalent to RH, and no result in this paper assumes it.
 
 \begin{thebibliography}{9}
 

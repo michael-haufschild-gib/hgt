@@ -945,11 +945,27 @@ remaining step needs:
 - `continuousOn_kernel_mul_solution` — the integrand of the second mixed derivative is continuous
   along the characteristic parameter.
 
+`formal/GaloisForLFunctions/HTGeometry/ClockGoursatIntegralForm.lean` recovers the integral equation
+itself:
+
+- `continuous_volterraFun_param` — the Volterra transform of a jointly continuous family is
+  continuous in the characteristic parameter;
+- `exists_goursat_integral_form` — hence, by the fundamental theorem of calculus,
+  **`u(ξ,η) = 1 + ∫_{ξ₀}^{ξ} (∫_b^η K(τ,t)u(τ,t)dt) dτ`** on the open interval.
+
+`formal/GaloisForLFunctions/HTGeometry/ClockGoursatGlobal.lean` prepares the exchange:
+
+- `integrableOn_uncurry_of_continuous`, `intervalIntegral_swap_of_continuous` — **Fubini for
+  interval integrals of a jointly continuous integrand**, with no integrability side condition,
+  since a continuous function is integrable on the compact rectangle containing the region;
+- `exists_goursat_global` — the Goursat solution repackaged so that it is **globally** jointly
+  continuous, by clamping the characteristic parameter. Nothing is lost, because every differential
+  statement is local, and every integrability condition downstream becomes automatic.
+
 What remains for the two-dimensional case is the second mixed derivative, `∂ξ ∂η u`, which the
-chart d'Alembertian also needs. Joint continuity makes the Goursat double integral a continuous
-integrand on a compact rectangle, so the Fubini exchange applies and `∂η u` can be read off by the
-fundamental theorem of calculus; with both mixed derivatives in hand, the equivalence above converts
-the solution into a clock probe.
+chart d'Alembertian also needs: swapping the order of the double integral lets `∂η u` be read off by
+the fundamental theorem of calculus, and one further application gives `∂ξ ∂η u = K u`. With both
+mixed derivatives in hand, the equivalence above converts the solution into a clock probe.
 
 So the last open input of the whole programme is now stated in its physical form:
 

@@ -448,6 +448,7 @@ formal/GaloisForLFunctions/HTGeometry/ScalarDifferentialOrderLowerBound.lean (ne
 formal/GaloisForLFunctions/HTGeometry/ScalarDifferentialOrderUpperBound.lean (new)
 formal/GaloisForLFunctions/HTGeometry/NewtonEdgeNonCancellation.lean (new)
 formal/GaloisForLFunctions/HTGeometry/MaximumTermCentralIndex.lean (new)
+formal/GaloisForLFunctions/HTGeometry/MaximumTermLogarithmicDerivative.lean (new)
 formal/GaloisForLFunctions/HTGeometry/BorelGrowthLemma.lean (already existed; extended)
 ```
 
@@ -524,6 +525,11 @@ tsum_index_deviation_le_of_window_le      -- the estimate with the window bound 
 tsum_index_deviation_le_maxTerm           -- window bounded by its count: everything is mu(r) times
 norm_mul_logDeriv_sub_le_of_deviation_le  -- hence a coefficient-free remainder
 convexOn_log_maxTerm_exp                  -- log mu is convex in log r
+term_le_maxTerm_mul_exp_of_centralIndex_le -- terms fall off like exp(-j delta/2) above nu(r(1+d))
+term_le_maxTerm_mul_exp_of_le_centralIndex -- and below nu(r/(1+d))
+log_maxTerm_exp_sub_le_centralIndex_mul   -- the growth law in logarithmic coordinates
+centralIndex_mul_le_log_maxTerm_exp_sub
+centralIndex_between_log_increments       -- nu(e^v) sits between adjacent increments of log mu
 ```
 
 The final form is coefficient-free.  With the window bounded by its term count, the deviation is
@@ -842,3 +848,22 @@ triangularity package, which is exactly how the paper proof uses them.
   that attains `mu` at the intermediate radius -- `||a_N|| e^(Nv) = (||a_N|| e^(Nu))^p (||a_N||
   e^(Nw))^q <= mu(e^u)^p mu(e^w)^q`.  Convexity makes the difference quotients of `log mu` monotone,
   which is exactly what turns the two-sided growth law into concentration.
+- 2026-08-03 -- Recast the decay bounds on the exponential scale.  With the enlarged radius
+  `r(1+delta)` and the shrunken radius `r/(1+delta)`, the geometric ratio becomes `exp(-delta/2)` per
+  step -- using `log(1+x) >= x/2` on `(0,1]`, which is now a named lemma rather than an inline
+  computation -- so a term at distance `j` from the corresponding central index is below `mu(r)` by
+  `exp(-j delta/2)`.  This is the form the Wiman--Valiron radius choice consumes: the narrower the
+  enlargement, the further out the concentration must reach before it bites, and balancing that
+  against the growth of `nu` across `[r/(1+delta), r(1+delta)]` is what fixes `delta ~ nu^(-1/2)`.
+  Note for the next pass: `MaximumTermCentralIndex.lean` is at 1486 lines and should be split by
+  proof phase (coefficients / growth laws / function side) before it grows further.
+- 2026-08-03 -- Split the Wiman--Valiron file by proof phase, as flagged last time.
+  `MaximumTermCentralIndex.lean` keeps the coefficient theory -- definitions, attainment,
+  monotonicity, growth laws, decay, window, deviation, continuity, the Borel bridge, log-convexity --
+  and the new `MaximumTermLogarithmicDerivative.lean` carries the function side: infinite radius of
+  convergence, differentiability, termwise differentiation, and the logarithmic-derivative estimate.
+  Also recast the two-sided growth law in logarithmic coordinates: with `L(u) = log mu(e^u)`,
+  `L(v) - L(u) <= nu(e^v)(v-u)` and `nu(e^u)(v-u) <= L(v) - L(u)`, so for `u < v < w` the central
+  index `nu(e^v)` sits between the two adjacent difference quotients of `L`.  That is the precise
+  sense in which `nu = d log mu / d log r`, and it is the coordinate every Wiman--Valiron estimate is
+  written in.

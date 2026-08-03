@@ -383,6 +383,30 @@ theorem eq_zero_of_rigid_of_relation {m' n : ℕ} {g : Fin (m' + 1) → ℂ → 
   rw [← familyJetVec_eq_sumElim]
   exact hrel (znodes b) (hznodes b)
 
+/-- **A relation dies against any rigid observation of its jets.**  The observed jets are supplied as
+data together with the identification `hjets` that they are the family's jets at the nodes; this is
+the form in which a transversality argument delivers them. -/
+theorem eq_zero_of_relation_of_rigid_jets {m' n : ℕ} {g : Fin (m' + 1) → ℂ → ℂ} {U : Set ℂ}
+    (P : MvPolynomial (FamilyJetIndex (m' + 1) n) ℂ)
+    (hrel : ∀ z ∈ U, MvPolynomial.eval (familyJetVec (n := n) g z) P = 0)
+    (znodes : Fin (relationShapeOf P).monomialCount ×
+      Fin ((relationShapeOf P).spectralDegree + 1) → ℂ)
+    (hznodes : ∀ b, znodes b ∈ U)
+    (jets : (Fin (relationShapeOf P).monomialCount ×
+        Fin ((relationShapeOf P).spectralDegree + 1)) ×
+      Fin ((relationShapeOf P).depthPred + 1) → ℂ)
+    (hjets : ∀ p, jets p = iteratedDeriv
+      ((((familyJetVariablesEquiv m' n).symm p.2).2 : Fin (n + 1)) : ℕ)
+      (g (((familyJetVariablesEquiv m' n).symm p.2).1)) (znodes p.1))
+    (hrigid : ∀ c, (expandedDifferentialEvaluationMatrix (relationShapeOf P).spectralDegree
+      ((relationShapeOf P).depthPred + 1) znodes (relationShapeOf P).exponent jets).mulVec c = 0 →
+      c = 0) :
+    P = 0 := by
+  refine eq_zero_of_rigid_of_relation znodes hznodes P hrel fun c hc => ?_
+  refine hrigid c ?_
+  rw [funext hjets]
+  exact hc
+
 end
 
 end GaloisForLFunctions.HTGeometry

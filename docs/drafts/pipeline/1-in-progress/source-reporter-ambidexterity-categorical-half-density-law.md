@@ -544,3 +544,22 @@ falsifier producing a nontrivial orientation cofiber.
 - 2026-07-31 — Added the explicit odd Julia/log-clock graph as mandatory source input. Its dense
   ordinary-Hilbert graph forces singular-first functorial transport; the quadratic character
   energy remains a post-divisor detector.
+
+## 2026-08-03 covariant countercharacter no-go and relative correction
+
+`[FALSIFIED]` Canonical centered-flow countercharacter cannot supply conservative singular Stokes
+annihilation of framed mate curvature.  At every integer clock it is inverse mate gain, so
+absolute countertransport has gain one and returns flat affine top-conormal transport for every
+spectral parameter.  On off-critical Xi divisor fibres absolute curvature is zero while actual
+ordered `(2,3)` Gamma coefficient is nonzero.  This normalization erases coefficient provenance.
+
+`[LEAN-PROVED]` Strongest survivor is relative raw-to-flat curvature.  Its source/reflection
+polarization is exactly `K_n(s)`; at degree six it is actual Gamma coefficient up to proved
+positive calibration.  Correct completion site is therefore preclosure relative/mapping-cone
+exact couple retaining raw transport, source countercharacter, and gauge-trivialization morphism.
+Absolute cyclic theory after covariant normalization is excluded.
+
+`[OPEN CORE — RELATIVE_COUNTERCHARACTER_STOKES_ANNIHILATION]` Construct this literal relative
+exact couple, land its Bockstein coefficient-faithfully in completed Xi Green incidence before
+diagonal sewing, and prove independent arithmetic annihilation without assuming raw mate
+vanishing, source-countercharacter triviality, static capacity, or RH.

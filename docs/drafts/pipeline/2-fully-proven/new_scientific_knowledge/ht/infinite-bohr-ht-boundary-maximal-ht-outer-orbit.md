@@ -1867,3 +1867,67 @@ With this every ingredient of (9) is proved, in matching coordinates:
 | the fixed carrier only translates the packet | `LocallySurjectiveObservation.add_const` |
 | admissible nodes lie above the axis | `exists_upper_injective_nodes_shapeDeterminant_ne_zero` |
 | real translates keep the common domain | `im_combinedNodes` |
+
+## Lean progress: residual rigidity for the translated family
+
+`FamilyOuterObservation.lean`:
+
+- `FamilyShape m' n` -- the reduced shapes whose jet depth is that of a family of `m'+1` translates
+  differentiated to order `n`, with `familyShape_mul` supplying the fold identity
+  `(m'+1)(n+1) = depthPred + 1` *as a proof rather than a cast*.  Restricting the index this way is
+  what makes the family observation available for every shape in it; shapes of other depths carry no
+  relation of this family;
+- **`residual_familyOuterJet_rigidity`** -- for a residual set of mass parameters, at the given node
+  packets, the only coefficient vector annihilated by the evaluation matrix of any shape of the
+  family's depth is zero, *with the fixed carrier jets included*.
+
+This is (9) in matrix form for the card's actual family: `m'+1` real translates of the perturbed
+outer function, differentiated to any fixed order.  Its hypotheses are the admissible node packets
+(`exists_upper_injective_nodes_shapeDeterminant_ne_zero`, whose nodes lie above the axis, hence in
+the family's common domain) together with injectivity of the combined nodes.
+
+Composed with `eq_zero_of_rigid_of_relation` this says: on that residual set no nonzero differential
+relation of the family exists.  The remaining step is to quantify over the jet depth `n` -- countably
+many, so `residual_iInter` again -- and to read the conclusion as
+`¬ FamilyDifferentiallyAlgebraicOn`.
+
+## Lean progress: a relation dies against any rigid observation
+
+**`eq_zero_of_relation_of_rigid_jets`** -- a differential relation of the family is zero as soon as
+there is an observation of its jets at a node packet inside the domain which the shape's evaluation
+matrix reads rigidly.  The observed jets enter as *data* together with the identification `hjets`
+saying they are the family's jets at those nodes; that is exactly the form a transversality argument
+delivers them in.
+
+Its three hypotheses are now each a theorem of the corpus:
+
+- `hznodes` -- the nodes lie in the domain: they are above the real axis
+  (`exists_upper_injective_nodes_shapeDeterminant_ne_zero`), and for real translates that is the
+  common domain (`im_combinedNodes`);
+- `hjets` -- the observation is the family's jets: `familyJet_translate` plus the definition of the
+  perturbed family, the carrier contributing the fixed summand;
+- `hrigid` -- rigidity: `residual_familyOuterJet_rigidity`, on a residual set of mass parameters.
+
+(9) is therefore the instantiation of one theorem at data supplied by three others.  Nothing
+mathematical is left; what remains is naming the concrete `G_u = S_u + eps A`, checking `hjets` for
+it, and quantifying over the countably many jet depths.
+
+## Lean progress: the packet chart computes the actual outer jets
+
+**`chiJetPacket_iteratedDeriv`** -- feeding the jets of `f` at a point to the packet chart returns
+the jets of `chi o f` at that point.  Locality in the jet order (`chiJetScalar_congr`) removes the
+zero padding introduced by truncation, and `chiJetScalar_iteratedDeriv` identifies the result with
+the actual derivatives.
+
+This is the last of the three identities behind the `hjets` hypothesis of
+`eq_zero_of_relation_of_rigid_jets`:
+
+1. the observation is the packet chart applied to the Cauchy jets --
+   by definition of `familyOuterObservation`;
+2. the packet chart applied to the jets of `m_u` gives the jets of `S_u = chi(m_u)` --
+   `chiJetPacket_iteratedDeriv`;
+3. the jets of the *translates* at the evaluation points are the jets of `S_u` at the combined
+   nodes -- `familyJet_translate`;
+
+and the carrier `eps A` contributes the fixed summand, which `LocallySurjectiveObservation.add_const`
+already showed is invisible to the argument.

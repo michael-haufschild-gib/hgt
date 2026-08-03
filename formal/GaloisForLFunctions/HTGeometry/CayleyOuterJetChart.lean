@@ -339,6 +339,24 @@ theorem continuousOn_chiJetPacket (n : ℕ) :
   intro k
   exact (continuousOn_chiJetScalar (k : ℕ)).comp hext.continuousOn hmaps
 
+/-- **The packet chart computes the actual outer jets.**  Feeding the jets of `f` at a point to the
+chart returns the jets of `chi o f` at that point. -/
+theorem chiJetPacket_iteratedDeriv {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
+    (hf : ContDiffOn ℂ (⊤ : ℕ∞) f U) (hne : ∀ w ∈ U, f w + Complex.I ≠ 0) {z : ℂ} (hz : z ∈ U)
+    (n : ℕ) (k : Fin (n + 1)) :
+    chiJetPacket n (fun j : Fin (n + 1) => iteratedDeriv (j : ℕ) f z) k
+      = iteratedDeriv (k : ℕ)
+        (fun w => Complex.exp ((f w - Complex.I) / (f w + Complex.I))) z := by
+  have hcongr : ∀ j ≤ n,
+      (if h : j < n + 1 then iteratedDeriv ((⟨j, h⟩ : Fin (n + 1)) : ℕ) f z else 0)
+        = iteratedDeriv j f z := by
+    intro j hj
+    rw [dif_pos (Nat.lt_succ_of_le hj)]
+  rw [chiJetPacket,
+    chiJetScalar_congr (K := n) (y' := fun j => iteratedDeriv j f z) hcongr (k : ℕ)
+      (Nat.lt_succ_iff.mp k.isLt),
+    chiJetScalar_iteratedDeriv hU hf hne hz]
+
 end
 
 end GaloisForLFunctions.HTGeometry

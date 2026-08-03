@@ -150,7 +150,10 @@
   `GaloisForLFunctions.RHTower.DeningerGaloisPacket` (the packet at a Galois action),
   `GaloisForLFunctions.RHTower.DeningerFreeProductVanishing` (a free product of two infinite cyclic
   groups),
-  `GaloisForLFunctions.RHTower.DeningerIndSubsingleton` (induction from a trivial subgroup)
+  `GaloisForLFunctions.RHTower.DeningerIndSubsingleton` (induction from a trivial subgroup),
+  `GaloisForLFunctions.RHTower.DeningerFreeProductRoots` (roots in a free product),
+  `GaloisForLFunctions.RHTower.DeningerRetractVanishing` (vanishing passes to a retract),
+  `GaloisForLFunctions.RHTower.DeningerBauVanishingCriterion` (a criterion for clause (4))
 
 ## Statement
 
@@ -2436,3 +2439,44 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   and none of them are from this work: they are modules of a concurrently running session that are
   not yet wired into their umbrella, plus generated index files that go stale between regeneration
   and the check because that session is adding modules meanwhile.
+- 2026-08-03 — Attempted the reduction that the projectivity of the rationalization invites: since a
+  surjection onto `Bau(F)` from a group with unique roots splits, `Bau(F)` is a retract of that
+  group, so its homology is a retract of the other's and vanishing would pass to it.  The
+  group-theoretic half is already proved; the homological half is the statement that vanishing passes
+  to a retract, and it did **not** go through.  Comparing the two coefficient morphisms — both
+  identities of the trivial representation, but living over different group maps — requires a
+  definitional equality that mathlib's `map_congr` demands at the level of underlying linear maps,
+  and unfolding it exhausts a million heartbeats even with the transparency option mathlib itself
+  uses for these lemmas.  The file was removed rather than committed.  A different route to the same
+  statement, presumably through the chain complexes rather than through `map_congr`, is what this
+  needs.
+- 2026-08-03 — `deningerPow_eq_of_factors_freeProduct`: in a free product of torsion free groups with
+  unique roots, the elements of the factors have unique roots.  Over the trivial base group isolation
+  is exactly torsion freeness — an element with a power in the trivial subgroup is trivial — so the
+  corrected hypothesis becomes a familiar one, and the counterexample cannot arise because the two
+  powers would both have to be trivial.  This is the free product case of the elliptic half of
+  Baumslag's theorem, and it is unconditional.
+- 2026-08-03 — **Vanishing passes to a retract** (`deningerIsZero_of_retract`), after the previous
+  attempt failed.  The obstruction was not the proof but the statement: writing the comparison of
+  coefficients as the identity morphism of the trivial representation asks Lean to identify a
+  restricted representation with a trivial one definitionally, and that unfolding exhausts any
+  heartbeat budget.  Building the comparison instead from the identity of the ground ring
+  (`deningerTrivialRes`) elaborates instantly, and then the whole argument goes through: the two
+  induced maps compose to the identity, so the identity of the smaller homology factors through the
+  larger one, which is zero.
+  Consequence for the card: since a surjection onto `Bau(F)` from a group with unique roots splits,
+  `Bau(F)` is a retract of it, and the vanishing of homology for **any** uniquely divisible group
+  surjecting onto `Bau(F)` now implies clause (4).  That is a genuine reduction of the open gate —
+  the search is no longer for a construction of `Bau(F)` itself but for one acyclic uniquely
+  divisible group mapping onto it.
+- 2026-08-03 — **The open gate now has a criterion** (`deningerBauFree_isZero_of_surjection`): the
+  homology of the rationalization of a free group vanishes in any degree in which the homology of
+  *some* group with unique roots surjecting onto it vanishes.  Clause (4) above degree two is
+  therefore reduced to exhibiting one acyclic group with unique roots mapping onto `Bau(F)` — no
+  construction of `Bau(F)` itself is needed.
+  Recording what such a witness cannot be, from this session's findings.  The union of a tower of
+  root adjunctions is acyclic in degrees at least two but does **not** have unique roots, by the
+  counterexample; a free product of copies of the rationals has unique roots in each factor but is
+  not divisible at all, since a product of generators from different factors has no square root.  The
+  witness has to be uniquely divisible and acyclic at once, and the two conditions pull in opposite
+  directions — which is the real content of the remaining gate.

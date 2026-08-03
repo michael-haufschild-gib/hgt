@@ -38,6 +38,9 @@ theorem exists_goursat_integral_form (K : ℝ → ℝ → ℝ) (b b' c c' M : �
       (∀ ξ, Continuous (u ξ)) ∧
       ContinuousOn (fun p : ℝ × ℝ => u p.1 p.2)
         (Icc (ξ₀ - h) (ξ₀ + h) ×ˢ (univ : Set ℝ)) ∧
+      (∀ ξ ∈ Icc (ξ₀ - h) (ξ₀ + h), ∀ η : ℝ,
+        HasDerivWithinAt (fun z => u z η)
+          (volterraFun (K (clampTo c c' ξ)) b b' (u ξ) η) (Icc (ξ₀ - h) (ξ₀ + h)) ξ) ∧
       (∀ ξ ∈ Ioo (ξ₀ - h) (ξ₀ + h), ∀ η : ℝ,
         u ξ η = 1 + ∫ τ in ξ₀..ξ, volterraFun (K (clampTo c c' τ)) b b' (u τ) η) ∧
       (∀ ξ : ℝ, ∀ η ∈ Ioo b b',
@@ -45,7 +48,7 @@ theorem exists_goursat_integral_form (K : ℝ → ℝ → ℝ) (b b' c c' M : �
           (K (clampTo c c' ξ) η * u ξ η) η) := by
   obtain ⟨h, hh, u, hu0, huc, hujoint, hud, huη⟩ :=
     exists_goursat_jointly_continuous K b b' c c' M hK hbb hcc hM0 hM ξ₀
-  refine ⟨h, hh, u, hu0, huc, hujoint, ?_, huη⟩
+  refine ⟨h, hh, u, hu0, huc, hujoint, hud, ?_, huη⟩
   -- the clamped solution is globally jointly continuous
   have hclampmem : ∀ τ : ℝ, clampTo (ξ₀ - h) (ξ₀ + h) τ ∈ Icc (ξ₀ - h) (ξ₀ + h) :=
     clampTo_mem (by linarith)

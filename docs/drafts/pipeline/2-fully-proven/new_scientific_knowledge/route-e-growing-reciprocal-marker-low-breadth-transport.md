@@ -1199,3 +1199,81 @@ application consumes — obtained by feeding Farey separation (`δ = Q^{-2}`) in
 statement. The classical constant is `N + Q²`; the surplus logarithmic factor is exactly the one
 `sum_inv_abs_dist_le` proves the absolute-value method cannot avoid, so closing the gap to the
 classical constant is Montgomery–Vaughan's theorem and not a rearrangement of these steps.
+
+### Formal layer — the large sieve on the Farey set
+
+`formal/GaloisForLFunctions/RHTower/Sieve/FareyCoprime.lean` discharges the last hypothesis.
+
+- `not_dvd_farey_cross` — distinct reduced fractions in the standard range are automatically
+  distinct modulo one. If `qq' ∣ aq' − a'q` with `(a,q) = (a',q') = 1`, then `q ∣ aq'` forces
+  `q ∣ q'` and symmetrically `q' ∣ q`, so `q = q'`; cancelling gives `q ∣ a − a'`, and `1 ≤ a,a' ≤ q`
+  leaves `a = a'`.
+- `largeSieve_farey_reduced` — **`∑_{(a,q)} |⟪e(a/q), x⟫|² ≤ (N + Q²(1 + log(Q²/2+1))) ‖x‖²`** over
+  any set of pairs with `0 < q ≤ Q`, `1 ≤ a ≤ q`, `gcd(a,q) = 1`, and `Q ≥ 2`.
+
+Both unconditional. The sieve hypothesis is now membership in the Farey set of order `Q` and nothing
+else — the arithmetic input (coprimality) has replaced the analytic one (separation), which is the
+form in which the large sieve is actually invoked.
+
+### Formal layer — the large sieve for exponential sums
+
+`formal/GaloisForLFunctions/RHTower/Sieve/LargeSieveExpSum.lean` puts the chain into the shape the
+sieve is actually invoked in. With `S(θ) = ∑_{n<N} c_n e(nθ)` (`expSum`):
+
+- `norm_inner_expRow_conjVec` — the exponential coefficient `⟪expRow N e(θ), ·⟫` *is* `S(θ)` when
+  read at the conjugated coefficient vector (`conjVec`).
+- `norm_sq_conjVec` — that vector's energy is `∑_n |c_n|²`.
+- `largeSieve_expSum_farey` — **`∑_{(a,q)} |S(a/q)|² ≤ (N + Q²(1 + log(Q²/2+1))) ∑_n |c_n|²`** over
+  the Farey set of order `Q ≥ 2`.
+
+All unconditional. This is the classical statement of the large sieve up to the logarithmic factor,
+now with no inner-product formulation left in the way: coefficients in, exponential-sum bound out.
+
+### Formal layer — the large sieve in textbook form
+
+`formal/GaloisForLFunctions/RHTower/Sieve/FareySet.lean` supplies the canonical instance and the
+familiar shape:
+
+- `fareySet Q`, `mem_fareySet` — the Farey set of order `Q` (reduced `a/q` with `1 ≤ a ≤ q ≤ Q`).
+- `largeSieve_expSum_fareySet` — the large sieve on it, hypothesis-free.
+- `fareySet_eq_biUnion` — the Farey set fibred over its denominators; the fibres are disjoint
+  because the second coordinate determines the denominator.
+- `largeSieve_expSum_double` — **`∑_{q ≤ Q} ∑_{1 ≤ a ≤ q, (a,q)=1} |S(a/q)|² ≤
+  (N + Q²(1 + log(Q²/2+1))) ∑_n |c_n|²`**.
+
+All unconditional. The route's large-sieve input is now available in exactly the form applications
+quote it, with `Q ≥ 2` the only hypothesis.
+
+### Formal layer — the dual large sieve
+
+`formal/GaloisForLFunctions/RHTower/Sieve/LargeSieveDual.lean` supplies the bilinear (dual) half,
+which is the shape a Halász–Montgomery argument consumes.
+
+- `circleFreq_corr_ne_one`, `circleFreq_row_le` — the two ingredients (nontrivial correlations, the
+  Gram row bound) isolated so both the Bessel and bilinear forms rest on the same statements.
+- `largeSieve_separated_bilinear` — `‖∑_r c_r e(λ_r)‖² ≤ (N + δ^{-1}(1 + log((2δ)^{-1}+1))) ∑_r |c_r|²`
+  for frequencies `δ`-separated in `ℝ/ℤ`.
+- `norm_sq_sum_smul_expRow` — the same quantity in coordinates: a mean square over `n < N`.
+- `fareySet_sep` — Farey fractions of order `Q` are `Q^{-2}`-separated (no hypothesis on `Q`; for
+  `Q ≤ 1` the statement is vacuous because no two distinct points exist).
+- `largeSieve_dual_fareySet` — **`∑_{n<N} |∑_{(a,q)} b_{a,q} e(na/q)|² ≤
+  (N + Q²(1 + log(Q²/2+1))) ∑ |b|²`**.
+
+All unconditional. The large sieve is now available in both directions with the same explicit
+constant, so downstream arguments can use whichever pairing they need.
+
+### Formal layer — exponential sums depend only on residues
+
+`formal/GaloisForLFunctions/RHTower/Sieve/ResidueSum.lean` is the entry point that lets a sieve
+hypothesis about residue classes reach the large sieve.
+
+- `circleFreq_add_int` — `e(·)` is invariant under integer translation.
+- `circleFreq_div_eq_rootOfUnity_pow` — `e(m/q)` is the `m`-th power of the standard `q`-th root of
+  unity, linking this layer to the orthogonality already in `RootOrthogonality.lean`.
+- `circleFreq_mod` — `e(na/q) = e((n mod q)a/q)`; the two arguments differ by the integer `(n/q)·a`.
+- `sum_circleFreq_eq_residue` — **`∑_{n ∈ A} e(na/q) = ∑_{h<q} #{n ∈ A : n ≡ h} · e(ha/q)`**, with
+  `residueCount` naming the class counts.
+
+All unconditional. The exponential sum of an arbitrary finite set now collapses to a sum of length
+`q` in the residue counts, which is the form Montgomery's sieve inequality needs before Parseval
+over the residues turns it into a count.

@@ -8516,3 +8516,58 @@ gamma-signed-unconditional-orbit-no-shorting.md
 GaloisForLFunctions/RHTower/
 GammaSignedUnconditionalOrbitNoShorting.lean
 ```
+
+## 2026-08-03 Route L frontier correction: covariant countercharacter erases absolute curvature
+
+The canonical centered-flow source countercharacter is not the missing singular Stokes
+annihilator.  At integer clock `n`, its value is exactly inverse Deninger mate gain:
+
+```text
+c_s(n) = exp((1-2 Re(s)) log n),
+chi_s(n) = exp((2 Re(s)-1) log n),
+c_s(n) chi_s(n) = 1.
+```
+
+Therefore absolute countertransport of one-sided framed source replaces its gain by one, returns
+flat affine top-conormal transport `A_n`, and has zero composition curvature for every complex
+parameter.  On an off-critical actual Xi divisor fibre this absolute curvature is still zero
+while ordered `(2,3)` Gamma boundary coefficient is nonzero.  Covariant conservation has erased
+detector; it has not proved arithmetic annihilation.
+
+Strongest positive survivor is relative.  Let `R_s(n)` be raw reduced curvature minus
+countertransported reduced curvature. Then
+
+```text
+R_s(n) = 1 - chi_s(n),
+R_(1-conj(s))(n) - R_s(n)
+  = chi_s(n) - chi_s(n)^(-1)
+  = K_n(s).
+```
+
+At degree six, actual Gamma coefficient is existing positive calibration times this relative
+polarization.  Route L must therefore work in preclosure relative/mapping-cone exact couple
+retaining raw transport, canonical countercharacter, and gauge-trivialization morphism.  Any
+absolute cyclic/Stokes cocycle on covariantly normalized complex is now excluded.
+
+Exact open core is sharpened to:
+
+```text
+[RELATIVE_COUNTERCHARACTER_STOKES_ANNIHILATION]
+
+construct literal preclosure relative exact couple of raw/countertransported
+framed source; land its relative Bockstein coefficient-faithfully in
+completed Xi Green incidence before diagonal sewing; prove source-derived
+arithmetic boundary law annihilates its source/reflection polarization
+without assuming K_6=0, source-countercharacter triviality, static capacity,
+or RH.
+```
+
+Paper/Lean:
+
+```text
+docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/deninger/
+deninger-centered-flow-countercharacter-relative-curvature-no-go.md
+
+GaloisForLFunctions/RHTower/
+DeningerCenteredFlowCountercharacterRelativeCurvatureNoGo.lean
+```
