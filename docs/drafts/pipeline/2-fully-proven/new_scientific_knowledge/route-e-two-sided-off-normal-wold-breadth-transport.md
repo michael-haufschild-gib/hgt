@@ -366,3 +366,39 @@ Remaining for `(6)`: the smooth/rough factorization `n = d·m`, the observation 
 Built, wired, axiom-clean.  Every structural ingredient of `(6)` is now in the corpus; what remains
 is the smooth-part sum `∑_{d z-smooth} z₀^{ω d}/d ≤ ∏_{p ≤ z}(1 + z₀/p + z₀/p² + …)` and the
 parameter bookkeeping (`log z ≍ log X/log log X`, `r ≍ log log z`, `λ` fixed).
+
+### Smooth Euler bound landed (2026-08-03) — `Sieve/SmoothSum.lean`
+
+- `smoothUpTo P Y` : the integers in `[1,Y]` with all prime factors in `P`;
+- **`sum_smoothUpTo_le`** : for any nonnegative coprimality-multiplicative `g` with `g 1 = 1`,
+  `∑_{s ∈ smoothUpTo P Y} g s ≤ ∏_{p ∈ P} ∑_{i ≤ Y} g(p^i)`.
+  Proved by induction on `P`: splitting off `p` sends `s ↦ (v_p(s), ordCompl[p] s)` injectively
+  into `range (Y+1) × smoothUpTo (P \ {p}) Y`, and `g` splits by coprimality.  Only the injection
+  is used, so no exact counting is needed;
+- `smoothWeight t s = t^{ω s}/s`, with `smoothWeight_one`, `smoothWeight_mul`;
+- `sum_smoothWeight_prime_pow_le` : `∑_{i ≤ Y} smoothWeight t (p^i) ≤ 1 + t/(p−1)` (geometric);
+- **`sum_smoothWeight_le`** : `∑_{s z-smooth, s ≤ Y} t^{ω s}/s ≤ ∏_{p ≤ z}(1 + t/(p−1))`.
+
+Built, wired, axiom-clean.
+
+### Sharpness note recorded before assembly
+
+The route now in place gives, for `0 < c < 1`,
+
+```text
+#{n ∈ (a,b] : ω n ≤ c·log log z}  ≪  (b−a)·(log z)^{−I(c)}  +  errors,
+```
+
+by combining the smooth/rough bijection, `card_rough_Ioc_le`, and the **tilt**
+`∑_{ω s ≤ k} 1/s ≤ t^{−k} ∏_{p ≤ z}(1 + t/(p−1))` at `t = k/∑_{p≤z} 1/p` — the same
+exponential-tilt device used for the truncation defect, again avoiding `j! e_j ≤ S^j`.
+Optimising reproduces the Chernoff rate `I(c) = 1 − c + c log c` exactly.
+
+The constraint is `log z`, not `log X`.  The sieve error forces `z^r ≤ b−a` and the smooth-part
+cutoff forces `log z ≲ log X / log log X`, so this route proves `(7)`–`(8)` with `(log z)^{−I(c)}`,
+i.e. with an extra `(log log X)^{I(c)}` factor compared with the literal statement.  **This does
+not weaken the card's theorem**: `(9)` only needs `#E = o(H / log log X)`, and
+`(log X)^{−δ}(log log X)^{O(1)} = o(1/log log X)` for every fixed `δ > 0`.  Getting the literal
+`(log X)^{−I(c)}` requires Shiu's own argument (largest-prime-factor induction plus
+Brun–Titchmarsh in progressions), which is recorded here as the remaining sharpening, not as a gap
+in the card's theorem.

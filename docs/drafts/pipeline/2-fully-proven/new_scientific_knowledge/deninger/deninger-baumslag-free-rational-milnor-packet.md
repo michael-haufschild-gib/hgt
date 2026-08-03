@@ -72,7 +72,8 @@
   `GaloisForLFunctions.RHTower.DeningerPushoutOrder` (cyclically reduced elements have infinite
   order),
   `GaloisForLFunctions.RHTower.DeningerCycLenEq` (equal powers have cyclic reductions of equal
-  length)
+  length),
+  `GaloisForLFunctions.RHTower.DeningerTransversalForm` (transversal form of a word)
 
 ## Statement
 
@@ -812,6 +813,18 @@ reductions and the conjugators.  The same device works here, and its first half 
   `xⁿ = yⁿ` gives `x^{kn} = y^{kn}` for every `k`, a difference in the two lengths would be
   amplified without bound, while the conjugators only ever contribute a fixed amount.
 
+The word comparison itself has an obstruction that the free group case does not: transversal words
+are the ones determined by their products, but the inverse of a transversal letter need not be a
+transversal letter, so the word of `C · Lᵏ · C⁻¹` is not automatically transversal.  What repairs it
+is that the base group elements can always be pushed to the left.  `DeningerTransversalForm.lean`:
+
+- `deningerIsChain_of_map_fst` — alternation depends only on the sequence of indices;
+- `deningerExists_transversal_form` — **every reduced alternating word is an element of the base
+  group times a reduced alternating word with the same indices whose letters lie in the
+  transversal.**  One letter at a time: the base group element accumulated so far is absorbed into
+  the next letter, which is then split through the complement, sending a new base group element
+  further left.
+
 Step 1 still needs Baumslag's inductive step (root adjunction preserves unique roots), which rests
 on the same normal-form machinery.
 
@@ -1269,3 +1282,11 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   would be amplified without bound while the conjugators contribute a fixed amount.  What remains is
   the word comparison itself, for which the cyclic reduction has to be strengthened to produce the
   conjugator as a word that does not cancel against the cyclically reduced part.
+- 2026-08-03 — Cleared an obstruction the free group case does not have.  Transversal words are the
+  ones determined by their products, but the inverse of a transversal letter need not be a
+  transversal letter, so the word of a conjugate `C·Lᵏ·C⁻¹` is not automatically transversal and the
+  comparison of powers cannot be made directly.  The repair is that base group elements can always
+  be pushed to the left: every reduced alternating word is an element of the base group times a
+  transversal one with the same indices, obtained one letter at a time by absorbing the accumulated
+  base element into the next letter and splitting it through the complement.  Since only the indices
+  matter for alternation and for the junction conditions, the normalization costs nothing.

@@ -156,38 +156,44 @@ private theorem integrableOn_besselOrderCrossKernel
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
     exact norm_besselOrderCrossKernel_le hs ht.le le_rfl
 
-section RecurrenceDerivative
-
-local instance : NormedSpace ℝ ℂ := NormedAlgebra.toNormedSpace
-
 private theorem hasDerivAt_besselOrderRecurrenceBoundary
     (s : ℝ) (ν : ℂ) (t : ℝ) :
     HasDerivAt (besselOrderRecurrenceBoundary s ν)
       (besselOrderRecurrenceBoundaryDeriv s ν t) t := by
-  have hofReal : HasDerivAt (fun u : ℝ => (u : ℂ)) 1 t :=
-    (hasDerivAt_id t).ofReal_comp
-  have hcosh : HasDerivAt (fun u : ℝ => Complex.cosh (u : ℂ))
-      (Complex.sinh (t : ℂ)) t := by
-    simpa [Function.comp_def] using
-      (Complex.hasDerivAt_cosh (t : ℂ)).comp t hofReal
-  have hexp : HasDerivAt
-      (fun u : ℝ => Complex.exp (-(s : ℂ) * Complex.cosh (u : ℂ)))
-      (Complex.exp (-(s : ℂ) * Complex.cosh (t : ℂ)) *
-        (-(s : ℂ) * Complex.sinh (t : ℂ))) t := by
-    convert ((hcosh.const_mul (-(s : ℂ))).cexp) using 1 <;> ring
+  have hrealExp : HasDerivAt
+      (fun u : ℝ => Real.exp (-s * Real.cosh u))
+      (Real.exp (-s * Real.cosh t) * (-s * Real.sinh t)) t := by
+    convert ((Real.hasDerivAt_cosh t).const_mul (-s)).exp using 1 <;> ring
   have hsinh : HasDerivAt (fun u : ℝ => Complex.sinh (ν * (u : ℂ)))
       (Complex.cosh (ν * (t : ℂ)) * ν) t := by
     have hlin : HasDerivAt (fun u : ℝ => ν * (u : ℂ)) ν t := by
-      simpa using hofReal.const_mul ν
+      simpa using Complex.ofRealCLM.hasDerivAt.const_mul ν
     exact (Complex.hasDerivAt_sinh (ν * (t : ℂ))).comp t hlin
-  have hmul : HasDerivAt (besselOrderRecurrenceBoundary s ν)
-      (Complex.exp (-(s : ℂ) * Complex.cosh (t : ℂ)) *
-          (-(s : ℂ) * Complex.sinh (t : ℂ)) * Complex.sinh (ν * (t : ℂ)) +
-        Complex.exp (-(s : ℂ) * Complex.cosh (t : ℂ)) *
-          (Complex.cosh (ν * (t : ℂ)) * ν)) t := by
-    simpa only [besselOrderRecurrenceBoundary, Pi.mul_apply] using hexp.mul hsinh
-  apply hmul.congr_deriv
+  have hsmul := hrealExp.smul hsinh
+  have hfun : ∀ u : ℝ, besselOrderRecurrenceBoundary s ν u =
+      (Real.exp (-s * Real.cosh u)) • Complex.sinh (ν * (u : ℂ)) := by
+    intro u
+    unfold besselOrderRecurrenceBoundary
+    rw [← Complex.ofReal_cosh, ← Complex.ofReal_neg, ← Complex.ofReal_mul,
+      ← Complex.ofReal_exp]
+    simp
+  have hboundary : HasDerivAt (besselOrderRecurrenceBoundary s ν)
+      (Real.exp (-s * Real.cosh t) • (Complex.cosh (ν * (t : ℂ)) * ν) +
+        (Real.exp (-s * Real.cosh t) * (-s * Real.sinh t)) •
+          Complex.sinh (ν * (t : ℂ))) t :=
+    hsmul.congr_of_eventuallyEq (Filter.Eventually.of_forall hfun)
+  apply hboundary.congr_deriv
+  symm
   unfold besselOrderRecurrenceBoundaryDeriv besselOrderCrossKernel besselOrderKernel
+  have he : Complex.exp (-(s : ℂ) * Complex.cosh (t : ℂ)) =
+      (Real.exp (-s * Real.cosh t) : ℂ) := by
+    rw [← Complex.ofReal_cosh, ← Complex.ofReal_neg, ← Complex.ofReal_mul,
+      ← Complex.ofReal_exp]
+  have hsh : Complex.sinh (t : ℂ) = (Real.sinh t : ℂ) := by
+    rw [← Complex.ofReal_sinh]
+  rw [he, hsh]
+  simp only [Complex.real_smul]
+  push_cast
   ring
 
 private theorem integrableOn_besselOrderRecurrenceBoundaryDeriv
@@ -253,8 +259,6 @@ private theorem integral_besselOrderRecurrenceBoundaryDeriv_eq_zero
     (integrableOn_besselOrderRecurrenceBoundaryDeriv hs ν)
     (tendsto_besselOrderRecurrenceBoundary_atTop hs ν)
   simpa [besselOrderRecurrenceBoundary] using h
-
-end RecurrenceDerivative
 
 private theorem integral_besselOrderCrossKernel_eq
     {s : ℝ} (hs : 0 < s) (ν : ℂ) :

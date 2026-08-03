@@ -425,14 +425,31 @@ setting where mathlib's finite multi-torus Fourier theory does not apply.
 - **`tendsto_flowAverage_torusCharacter`** -- hence the time average of every character converges to
   its Haar mean.  This is the character half of unique ergodicity.
 
-### Remaining Lean work on this card
+**Unique ergodicity is now proved.**  `InfiniteTorusCharacter.lean` gained the algebra layer:
 
-1. **Unique ergodicity of the flow.**  What is left is the passage from characters to all continuous
-   functions: the character span is a star subalgebra (characters multiply and conjugate to
-   characters) which separates points of the product torus, so Stone--Weierstrass plus linearity and
-   the sup-norm bound of `flowAverage` gives, for every continuous `f`, convergence of the symmetric
-   time average of `f ∘ clockPhasePoint` to `∫ f d(torusHaar)`.  This is equation (16) in abstract
-   form.
+- `torusCharacter_apply_of_subset`, `torusCharacter_add_index`, `torusCharacter_neg_index` -- the
+  characters form a group under index addition, with conjugation given by negation (the common
+  refinement of the two supports handles the cancellation);
+- `torusCharacterSubalgebra` and `torusCharacterSubalgebra_coe` -- the generated star subalgebra is
+  exactly the linear span of the characters;
+- `torusCharacterSubalgebra_separatesPoints` -- coordinate characters separate points, because
+  `AddCircle.injective_toCircle` makes `fourier 1` injective;
+- **`torusCharacterSubalgebra_closure_eq_top`**, **`span_torusCharacter_closure_eq_top`** --
+  Stone--Weierstrass on the compact product torus.
+
+`InfiniteTorusEquidistribution.lean` gained the analytic layer: `flowAverage_add`,
+`flowAverage_smul`, `flowAverage_sub`, `norm_flowAverage_le` (the time average is linear and bounded
+by the supremum norm), `HasHaarTimeAverage`, its closure under the vector-space operations,
+`hasHaarTimeAverage_of_mem_span`, and finally
+
+- **`hasHaarTimeAverage_of_continuous`** -- for a rationally independent frequency family the
+  symmetric time average of *every* continuous function along the phase flow converges to its Haar
+  mean on the product torus.
+
+That is equation (16) of this card in its abstract form: unique ergodicity of an infinite Kronecker
+flow, which mathlib has only for finite tori.
+
+### Remaining Lean work on this card
 2. **The holomorphic hull.**  Continuity and injectivity of `λ ↦ A_λ` into the compact-open topology,
    using normal convergence from (1) and Bohr--Fourier uniqueness.
 3. **Closure and disjointness** of `O_n` and `B_n`, which needs the Stieltjes limit (7) and the

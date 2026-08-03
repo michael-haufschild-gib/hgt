@@ -112,7 +112,7 @@ a conjugate-linear endomorphism of a complex line squaring to `-1`, which is imp
 the real-zero-free condition is necessary.  Together with A--B it is sufficient whenever the two
 nonreal halves form a corona pair.
 
-### D. CCM Hardy globalization and trace compatibility
+### D. CCM Hardy globalization and spectral-character compatibility
 
 In the trivial compact-character sector over `Q`, Mellin transform gives the CCM/Meyer quotient
 
@@ -129,8 +129,23 @@ M_zeta -> Q_B                                                (9)
 ```
 
 has dense range, is scaling equivariant, and intertwines convolution multipliers.  For every
-Meyer trace-class convolution packet, the trace and multiplicities on `(9)` agree with the CCM
-trace formula.  The projector `e` gives the same upper/lower supertrace as Paugam's pairing.
+finite divisor packet, the induced finite-dimensional multiplier trace is the sum of the Mellin
+symbol over the packet, with zero multiplicity, and therefore agrees with the corresponding finite
+part of Meyer's spectral character.  Passing through the directed family of packets recovers the
+same absolutely convergent spectral distribution for compactly supported smooth convolution
+symbols.  This is distributional character compatibility; it is **not** a claim that every such
+multiplier becomes trace class on the Hilbert completion `Q_B`.
+
+More precisely, if `A_phi` denotes compression of an analytic multiplier to the model-space
+realization of `Q_B`, then the Lopatto--Rochberg criterion gives
+
+```text
+A_phi is trace class  <=>  C_B phi belongs to analytic Besov B_1,       (10)
+```
+
+where `C_B` is the canonical model-space conjugation.  Schwartz decay of `phi` on vertical lines
+does not by itself prove `(10)`, because `C_B` contains the full oscillatory inner factor `B`.
+No Hilbert trace is used unless `(10)` is verified for the individual symbol.
 
 ## 3. Proof plan
 
@@ -143,8 +158,9 @@ trace formula.  The projector `e` gives the same upper/lower supertrace as Pauga
 4. Prove C from the fixed real evaluation quotient, including generalized multiplicity packets.
 5. Construct `(9)` from the actual CCM degree-zero trace quotient, not from a zero-indexed ambient
    space.  Prove the range-closure identity by inner--outer factorization and source density.
-6. Use Meyer's nuclear trace theorem to prove trace compatibility before any spectral sum; only
-   then identify the resulting upper/lower supertrace with Paugam's formula.
+6. Prove finite-packet trace compatibility from the Cauchy-jet filtration, then use Meyer's nuclear
+   trace theorem only on the original nuclear quotient to identify the directed spectral character.
+   Keep Hilbert trace class separate and governed by `(10)`.
 7. Classify choices and equivalent norms; determine whether `J` can be made antiunitary without
    changing the scaling representation.
 
@@ -157,6 +173,8 @@ trace formula.  The projector `e` gives the same upper/lower supertrace as Pauga
 - Spectrum alone is insufficient.  A quasinilpotent radical or failure of the range-closure
   identity in D invalidates the CCM claim.
 - A corona lift is noncanonical.  Only its unique class modulo `B` may enter the theorem.
+- Meyer's nuclear trace class does not automatically survive a Hilbert completion.  Any assertion
+  of a global Hilbert trace without the Besov condition `(10)` invalidates the proof.
 - `J^2=-1` supplies Real/KR parity, not positivity.  Paugam's form `psi(x,Jx)>0` remains
   RH-equivalent and is not claimed.
 - If upper/lower Blaschke factors are not a corona pair, A--B fail even without real zeros.
@@ -170,8 +188,8 @@ trace formula.  The projector `e` gives the same upper/lower supertrace as Pauga
   real zeros are explicitly removed.
 - Standard Hardy theory supplies Blaschke factorization, model spaces, and the corona theorem.
 - The proposed new theorem is the Real Chinese-remainder/corona synthesis: canonical bounded
-  quaternionification, exact real-fixed-point obstruction, and source-dense trace-compatible CCM
-  globalization.
+  quaternionification, exact real-fixed-point obstruction, and source-dense, spectral-character-
+  compatible CCM globalization.
 
 ## 6. Lean target after paper proof
 
@@ -191,7 +209,7 @@ together with the fixed-line obstruction and module/scaling intertwining.  Analy
 - [ ] A: corona separation proved
 - [ ] B: canonical quaternionic multiplier proved
 - [ ] C: fixed-real-zero iff obstruction proved
-- [ ] D: source-dense CCM Hardy globalization and trace compatibility proved
+- [ ] D: source-dense CCM Hardy globalization and spectral-character compatibility proved
 - [ ] external novelty audit complete
 - [ ] hostile paper review passes general-renowned-journal threshold
 - [ ] central algebraic theorem formalized unconditionally in Lean
