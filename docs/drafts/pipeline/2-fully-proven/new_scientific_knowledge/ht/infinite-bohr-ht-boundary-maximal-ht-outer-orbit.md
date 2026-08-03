@@ -2305,3 +2305,33 @@ statement whose absence was recorded above as the open core of (9).
 What remains is the descent: read "full rank at every shift" as "no nonzero differential relation",
 via `eq_zero_of_relation_of_rigid_jets` (already proved, already general in the row type), and
 intersect over the countably many relation shapes with `residual_iInter`.
+
+## Lean: the descent interface, and the data it consumes
+
+Two modules (wired, axiom-clean) turn the shift-uniform avoidance statement into the form a
+differential relation is written in:
+
+- `MassShiftFoldedObservation.lean` -- the fold is the same map in both coordinate systems
+  (`sigmaJetCLE_apply`), so
+
+      fold_massShiftObservation :
+        sigmaJetCLE (massShiftObservation z d x eps carrier (u, t))
+          = familyOuterObservation r d D h z t x eps u + folded carrier
+
+  and `mulVec_injective_of_notMem_outerShiftBad` reads avoidance of the transported rank defect as
+  full column rank of the relation's evaluation matrix.  `eq_zero_of_relation_of_rigid_jets_row`
+  is the row-general form of the relation-killing theorem: the row type is arbitrary, so *more*
+  evaluation points than columns are allowed, which is exactly what the codimension count needs.
+- `ShiftUniformDescentData.lean` -- the explicit data: `gridNodes N`, evaluation points on the
+  imaginary axis at integer heights (injective, above the axis, pairwise distinct heights, so
+  `injective_combinedNodes` applies at every tuple of distinct shifts), and `sigmaCarrierJets`, the
+  carrier's jets in the sigma coordinates, smooth in the shift because the carrier is analytic
+  (`contDiff_carrierJet`, on top of `analyticOnNhd_iteratedDeriv`).
+
+The row count is now forced: with `c0 = card(kappa x Fin(q+1)) + q`, taking `N = c0 + r + 1` makes
+`hrows` hold and gives codimension `2(r+1) > r`, so the shift space is below the codimension exactly
+as the card's `N > m + q + R - 1` requires.
+
+What is left is the final assembly: instantiate at the shape of a given relation, intersect the
+residual sets over the countably many shapes, and read the conclusion as
+`not FamilyDifferentiallyAlgebraicOn` for every tuple of distinct real shifts.

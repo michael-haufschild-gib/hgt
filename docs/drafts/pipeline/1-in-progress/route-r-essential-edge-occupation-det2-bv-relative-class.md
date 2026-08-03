@@ -262,3 +262,25 @@ class.  The RH-bearing mixed boundary remains a separate claim.
 - [ ] source-to-Xi mixed boundary constructed
 - [ ] arithmetic annihilation proved
 - [x] Lean formalization of dependency-closed unconditional claims
+
+## Nonseparable differential successor
+
+The structural successor is now constructed and formalized in
+`route-r-prime-depth-bv-wold-curved-source-differential.md` and
+`PrimeDepthBVWoldCurvedSourceDifferential.lean`.
+
+It transports the singular BV first trace through literal Wold depth cells
+`m_(p,e)=(1-p⁻¹)p⁻ᵉ` and alternates them with the regular log clock:
+
+```text
+theta(i,j)=m_i lambda_j-m_j lambda_i.
+```
+
+This is not an endpoint gauge and, more strongly, is not any function of clock difference: two
+adjacent prime-two edges have the same `lambda` gap but coefficients separated by `log(2)/4`.
+Its exact three-depth curvature is `-log(2)/8`.  The corresponding divisor-profile covariant
+differential is pre-scalar, sign-indefinite, off-diagonal, and provenance preserving.
+
+This closes construction, not annihilation.  The formal curved square vanishes globally exactly
+under RH.  Missing theorem is now a source-derived reason that this already constructed curvature
+vanishes on the actual Xi landing; assuming that flatness would be circular.

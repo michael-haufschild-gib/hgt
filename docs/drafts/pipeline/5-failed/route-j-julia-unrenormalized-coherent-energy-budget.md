@@ -2,11 +2,12 @@
 
 - **ID:** `route-j-julia-unrenormalized-coherent-energy-budget`
 - **Stage:** 5-failed
-- **Type:** RETIRED ROUTE-J SUBROUTE / UNIFORM DIAGONAL-CAPACITY NO-GO
+- **Type:** RETIRED ROUTE J / UNIFORM DIAGONAL-CAPACITY NO-GO
 - **Scientific status:** `[PAPER-PROVED] [FORMALIZED] [NOVELTY UNVERIFIED] [NO COMPUTATION]`
 - **Formalized positive survivor:**
   `../3-formalized/route-j-julia-coherent-energy-diagonal-floor.md`
-- **Live successor:** Route J's source-defined symmetric completed/nonlinear relative current
+- **Positive survivor:** a principal-relative current defined before good/bad projection would be
+  a new route; the existing singular joint-depth/Ward realization is Route R
 - **Endpoint attempted:** Route A's eventual first-clock lower floor
 
 ## Intended chain
@@ -101,10 +102,12 @@ zero aperture  -> full rank-one coherence is restored.
 ```
 
 Julia coherence cannot be both the positive capacity certificate and a removable regularizer for
-the literal first clock. The subsequent principal-relative audit closes several concrete Julia
-implementations, but does not construct or class-completely exclude a source-defined symmetric
-sign-changing completed/nonlinear current. Endpoint equivalence to Route A and overlap with a Ward
-construction do not discharge that researchable survivor. Route J remains open.
+the literal first clock. The subsequent principal-relative audit closes the advertised Julia
+implementations and proves the representation-free residual capacity exactly RH-equivalent. It
+does not class-completely exclude every source-defined symmetric sign-changing completed/nonlinear
+current, but such a pre-projection object changes the primitive and is not Route J. Route J is
+retired; the existing singular Ward construction is Route R, and any different survivor requires
+new route ownership.
 
 ## No-go closure audit
 
@@ -115,4 +118,4 @@ construction do not discharge that researchable survivor. Route J remains open.
 - [x] prior failed mechanisms audited
 - [x] no RH-equivalent premise used
 - [x] no computation used
-- [x] unrenormalized subroute separated from open completed-current Route-J survivor
+- [x] pre-projection positive survivor separated from retired Route J and assigned new-route status

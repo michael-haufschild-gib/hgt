@@ -185,7 +185,10 @@
   `GaloisForLFunctions.RHTower.DeningerBaseHeadPow` (the block form of a power of a cyclically
   reduced element),
   `GaloisForLFunctions.RHTower.DeningerBaseHeadSuffix` (equal powers of cyclically reduced elements
-  have the same word)
+  have the same word),
+  `GaloisForLFunctions.RHTower.DeningerShiftDiff` (two shifts producing the same word),
+  `GaloisForLFunctions.RHTower.DeningerRGroupConjugation` (conjugation of an isolated element in a
+  group with unique roots)
 
 ## Statement
 
@@ -2779,3 +2782,27 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   for a root adjunction it is exactly where isolation of the adjoined element has to be used a second
   time — the same hypothesis that settled the factor case.  Identifying the precise form of that step
   is the next piece of mathematics; every combinatorial ingredient around it is now proved.
+- 2026-08-03 — **The residual head question has an answer, and two of its three inputs are proved.**
+  Writing out the recursion behind the block form, the head of the `s`-th power of `base j · M` is
+  `h_{s+1} = j · σ(h_s)`, where `σ` is the shift produced by pushing a base element through `M`, and
+  the `s`-th block is the word `M'(h_s)` that the same shift produces.  Comparing two such powers
+  gives `M'(h_s) = M'(k_s)` at every stage, and `deningerShift_diff` converts that into
+  `M · base(h_s k_s⁻¹) · M⁻¹ = base(σ(h_s) σ(k_s)⁻¹)`: the difference of the two heads is conjugated
+  by the word into the difference of the next two.  So if conjugation by `M` fixes every base element
+  it carries back into the base group, then `σ(h_s)σ(k_s)⁻¹ = h_s k_s⁻¹` and, the base group being
+  abelian, `h_s k_s⁻¹ = (j k⁻¹)^{s+1}`.  Equality of the heads at stage `n` then reads
+  `(j k⁻¹)^{n+1} = 1`, and torsion freeness of the base group gives `j = k`.  That closes the length
+  `≥ 2` case.
+  The hypothesis it rests on is that conjugating a base element back into the base group is
+  centralizing, and for a root adjunction that is now half proved.  The cyclic factor contributes
+  nothing, being abelian.  For the factor `A`, `deningerConj_zpow_fixes` proves exactly what is
+  needed: if `x a^c x⁻¹` is again a power of `a`, with `c ≠ 0`, `a` of infinite order and `⟨a⟩`
+  isolated in a group with unique roots, then `x a x⁻¹ = a`.  The proof is the isolation argument run
+  twice — `x a x⁻¹` is a power `a^s` because its `c`-th power is one, and `a` is the `s`-th power of
+  `x⁻¹ a x` for the same reason, so `s = ±1` — together with `deningerNoInversion`, the observation
+  that in a group with unique roots no element is conjugate to its inverse, since `x²` would then
+  commute with `a` and `xa` and `x` would have the same square.  That last lemma is what makes the
+  Klein bottle group fail to have unique roots, and it is the reason the sign `s = -1` cannot occur.
+  What remains for this half is the normal form step: that a conjugate of a base element which lies
+  in the base group is obtained by conjugating letter by letter, so that the two factor cases above
+  compose.

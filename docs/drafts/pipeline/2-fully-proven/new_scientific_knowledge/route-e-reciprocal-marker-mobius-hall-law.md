@@ -2271,3 +2271,100 @@ With these the short-interval side of the route is complete as a *toolkit*: pair
 (`integral_dirPoly_mul`), explicit kernel with closed form (`FejerHalf`, `FejerSymmetric`), the two
 kernel properties (`FejerBounds`), the main-term separation (`FejerPairing`), and now the bounds in
 the form a sum over `n` consumes.
+
+### Formal layer — LOCALISATION OF A DIRICHLET POLYNOMIAL
+
+`formal/GaloisForLFunctions/RHTower/Sieve/FejerLocalisation.lean`:
+
+- `fejerWeightAt`, `fejerWeightAt_zero`, `norm_fejerWeightAt_le` — the symmetric Fejér weight at a
+  frequency: exactly `T` at the trivial frequency, at most `4/(TL²)` elsewhere.
+- `log_succ_zero`, `log_succ_ne_zero` — the frequency `log n` vanishes only at `n = 1`.
+- `norm_fejer_dirPoly_sub_main_le` —
+
+  **`‖∑_{n<N} a_n W(T, log n) − a_1 T‖ ≤ ∑_{n ≥ 2} |a_n| · 4/(T (log n)²)`**.
+
+All unconditional. The Fejér average of a Dirichlet polynomial equals its first coefficient times
+`T`, with an error governed entirely by the remaining coefficients against a square-summable kernel
+tail. That is the localisation a short-interval argument performs, and it is now a theorem.
+
+The structural point: the frequency `log n` vanishes at exactly one index, so the main term is
+isolated by an algebraic fact rather than an estimate, and everything else is uniformly small. This
+is what the earlier kernel work was for.
+
+### Formal layer — the Fejér pairing as an integral
+
+`formal/GaloisForLFunctions/RHTower/Sieve/FejerIntegralPair.lean`:
+
+- `integral_dirPoly_neg_mul` — pairing the *reflected* polynomial `F(−t)` against a kernel negates
+  the frequencies.
+- `integral_fejer_pair_eq` — **`∫_0^T F(t)(1 − t/T) dt + ∫_0^T F(−t)(1 − t/T) dt =
+  ∑_{n<N} a_n W(T, log n)`**.
+
+Both unconditional. Reflecting the argument is exactly the second half of the symmetric weight, so
+this needs no change of variables and no absolute value — the `|t|` that a literal symmetric
+triangular weight would introduce never appears.
+
+Composed with `norm_fejer_dirPoly_sub_main_le`, the statement is now about integrals of the
+polynomial itself: **the symmetrised Fejér average of a Dirichlet polynomial over `[0,T]` is `a_1 T`
+up to `∑_{n ≥ 2} |a_n| · 4/(T(log n)²)`.** That is the short-interval localisation in the form an
+argument uses, with both sides expressed in the original objects rather than in kernel weights.
+
+### Formal layer — THE SHORT-INTERVAL LOCALISATION
+
+`formal/GaloisForLFunctions/RHTower/Sieve/FejerShortInterval.lean`:
+
+- `norm_fejer_integral_sub_main_le` —
+
+  **`‖∫_0^T F(t)(1−t/T) dt + ∫_0^T F(−t)(1−t/T) dt − a_1 T‖ ≤ ∑_{n ≥ 2} |a_n| · 4/(T (log n)²)`**
+
+  for `F(t) = ∑_{n<N} a_n n^{it}`.
+
+Unconditional, and not asymptotic: an inequality valid for every `N`, every coefficient vector and
+every `T > 0`. The symmetrised Fejér average of a Dirichlet polynomial over `[0,T]` is its first
+coefficient times `T`, with an error that is `O(T^{-1})` for fixed coefficients.
+
+This completes the short-interval side of the corpus's Matomäki–Radziwiłł programme as a proved
+statement rather than a toolkit. Together with the sharp large sieve, Montgomery's sieve, the
+Dirichlet mean value theorem and the large-values estimate — all built in this corpus — the analytic
+prerequisites of that route are in place. What remains is the multiplicative structure: the
+decomposition by prime factors (for which `RamareWeight.lean` supplies the exact identity) and the
+Halász-type input, neither of which is a consequence of the analytic layer alone.
+
+### Formal layer — Ramaré's weight on a coprime factorisation
+
+`formal/GaloisForLFunctions/RHTower/Sieve/RamarePrimeFactor.lean` opens the multiplicative side.
+
+- `primeFactorsIn_mul_prime` — **`primeFactorsIn P (pm) = insert p (primeFactorsIn P m)`** for a
+  designated prime `p ∤ m`.
+- `card_primeFactorsIn_mul_prime` — hence **`ω_P(pm) = ω_P(m) + 1`**.
+- `map_mul_prime_of_not_dvd` — a multiplicative `f` satisfies `f(pm) = f(p)f(m)` there.
+
+All unconditional. These are what make Ramaré's bilinear decomposition genuinely bilinear on the
+coprime part: the weight `1/ω_P(pm)` becomes `1/(ω_P(m)+1)`, a function of the cofactor alone, and
+the multiplicative function factors.
+
+Stated precisely so the limit is visible: the identities hold only where `p ∤ m`. The part with
+`p ∣ m` is a remainder that a sieve must bound separately — it is not governed by these identities,
+and treating the decomposition as bilinear everywhere would be wrong.
+
+The primality hypothesis on the designated set is necessary, not decorative: `primeFactorsIn` is
+defined for an arbitrary `P`, and `q ∣ pm ↔ q = p ∨ q ∣ m` requires `q` prime.
+
+### Formal layer — the bilinear Ramaré sum for a multiplicative function
+
+`formal/GaloisForLFunctions/RHTower/Sieve/RamareBilinearSplit.lean`:
+
+- `sum_ramare_bilinear_split` —
+
+  **`∑_{m ∈ T} f(pm)/ω_P(pm) = f(p) ∑_{p ∤ m} f(m)/(ω_P(m)+1) + ∑_{p ∣ m} f(pm)/ω_P(pm)`**
+
+  for a multiplicative `f` and a designated prime `p`.
+
+Unconditional. On the first part the function factors and the weight depends on the cofactor alone,
+so the sum is genuinely bilinear in `p` and `m` — which is the structure Matomäki–Radziwiłł's
+argument exploits.
+
+The second part is isolated deliberately rather than absorbed. There `p` occurs to a higher power,
+`f` does **not** factor, and a sieve must bound it separately. Quoting the Ramaré decomposition as
+bilinear throughout would hide exactly the term an argument has to control, so the split is stated
+with the remainder explicit.

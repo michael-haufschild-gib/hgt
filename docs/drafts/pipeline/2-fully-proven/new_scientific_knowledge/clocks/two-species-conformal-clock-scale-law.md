@@ -1264,8 +1264,22 @@ contribute `1/(m+1)²`:
   `Kᵐ m^{2m} T^{2m}/((m!)²(ρ₀-ρ)^{2m})`, is dominated by `(K T² e²/(ρ₀-ρ)²)ᵐ` and hence summable
   whenever `K T² e² < (ρ₀-ρ)²`.
 
-What remains is to run the iteration itself against these estimates and identify its limit with a
-clock probe.
+`ClockAnalyticStepOperator.lean` assembles the operator that the iteration actually applies. In the
+coefficient form the characteristic equation reads, coefficient by coefficient, as an infinite
+system of Goursat problems whose right-hand side is the image of the state under
+`w ↦ (V ⋆ w - k² w)/4`:
+
+- `wienerSummable_of_abs_le_add`, `wienerNorm_le_add`, `wienerSummable_const_mul`,
+  `wienerNorm_const_mul` — the triangle inequality in the form a difference needs, and homogeneity;
+- `clockCoeffStep` — the operator;
+- `wienerSummable_clockCoeffStep`, **`wienerNorm_clockCoeffStep_le`** — *it maps radius `ρ` to
+  radius `ρ'` with norm at most `1/(ρ-ρ')² + ‖V‖_ρ/4`*. The Laplacian part is the derivative loss of
+  the scale, the potential part is the Banach-algebra estimate, and nothing else enters.
+
+That is precisely the hypothesis the step identity consumes, with `K = 1 + ‖V‖_ρ(ρ₀-ρ)²/4`. What
+remains is to run the iteration itself — the doubly-integrated recursion on coefficient-valued
+functions of the null coordinates — and to identify its limit with a clock probe, which needs the
+Fourier synthesis back to functions on the transverse circle.
 
 The first genuinely coupled target this reaches is dimension three: a potential
 `V(x⁰, x¹, x²)` with arbitrary continuously differentiable dependence on the null coordinates and

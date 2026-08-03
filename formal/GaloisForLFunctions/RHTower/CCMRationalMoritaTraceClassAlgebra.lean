@@ -109,6 +109,17 @@ noncomputable instance ccmRationalMoritaTraceClassL1NormedAlgebra :
     NormedAlgebra ℂ CCMRationalMoritaTraceClassL1Unitization :=
   WithLp.instUnitizationNormedAlgebra
 
+/-- The natural `ℓ¹` unitization norm is normalized on the algebra unit. -/
+noncomputable instance ccmRationalMoritaTraceClassL1NormOneClass :
+    NormOneClass CCMRationalMoritaTraceClassL1Unitization where
+  norm_one := by
+    rw [WithLp.unitization_norm_def]
+    change ‖(1 : ℂ)‖ + ‖(0 : CCMRationalMoritaTraceClassOperator)‖ = 1
+    have hz : ‖(0 : CCMRationalMoritaTraceClassOperator)‖ = 0 := by
+      change ‖(0 : MoritaOperator)‖ = 0
+      exact norm_zero
+    rw [norm_one, hz, add_zero]
+
 /-- Normalized trace on the unitization: scalar unit plus trace-class operator trace. -/
 def ccmRationalMoritaUnitizedTrace :
     CCMRationalMoritaTraceClassUnitization →ₗ[ℂ] ℂ where

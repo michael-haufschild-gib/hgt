@@ -4725,7 +4725,8 @@ equivalent wrapper around one of them does not advance source acquisition.
    projection a literal source-defined principal-relative current whose incidence is not a
    vertex-gauge coboundary, and derive an arithmetic null-homotopy forcing its Burnol/Deninger
    reflection discriminant to vanish. If it is not the existing Route-R current, it must receive
-   separate route ownership.
+   separate route ownership. Backlog card:
+   `../0-backlog/post-j-preprojection-principal-relative-current.md`.
 3. **Route L strict BV Green--Stokes descent.** Construct a source-first chain map from completed
    Xi Green source tensored with the Wold/BV Hochschild complex to resolved Calderón--Witt
    incidence, making physical degree-zero landing a strict specialization and the explicit

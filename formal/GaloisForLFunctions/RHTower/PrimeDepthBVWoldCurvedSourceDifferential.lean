@@ -121,7 +121,7 @@ theorem primeDepthBVWoldConnection_witness_pos :
     primeDepthBVWoldWitnessOne,
     xiGammaEulerPrimitivePrimeDepthLogClock_apply]
   norm_num
-  rw [unitExponentialWoldCellMass_log
+  simp_rw [unitExponentialWoldCellMass_log
     (by norm_num : (0 : ℝ) < 2)]
   norm_num
   have hlog : 0 < Real.log 2 :=
@@ -156,7 +156,7 @@ theorem primeDepthBVWoldAdditiveCurvature_witness :
     primeDepthBVWoldWitnessOne, primeDepthBVWoldWitnessTwo,
     xiGammaEulerPrimitivePrimeDepthLogClock_apply]
   norm_num
-  rw [unitExponentialWoldCellMass_log
+  simp_rw [unitExponentialWoldCellMass_log
     (by norm_num : (0 : ℝ) < 2)]
   norm_num
   ring
@@ -217,7 +217,7 @@ theorem primeDepthBVWoldConnection_adjacentDifference :
     primeDepthBVWoldWitnessTwo,
     xiGammaEulerPrimitivePrimeDepthLogClock_apply]
   norm_num
-  rw [unitExponentialWoldCellMass_log
+  simp_rw [unitExponentialWoldCellMass_log
     (by norm_num : (0 : ℝ) < 2)]
   norm_num
   ring

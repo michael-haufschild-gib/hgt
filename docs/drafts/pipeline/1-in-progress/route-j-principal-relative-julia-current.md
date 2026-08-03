@@ -1,18 +1,19 @@
 # Route J principal-relative Julia current
 
 - **ID:** `route-j-principal-relative-julia-current`
-- **Stage:** 1-in-progress
-- **Type:** `[CONJECTURE]` / SOURCE CONSTRUCTION / NO-GO CLASSIFICATION
-- **Scientific status:** `[OPEN] [ROUTE J OWNER] [NO RH INPUT] [NO COMPUTATION]`
+- **Stage:** superseded by the Stage-5 Route-J closure card; retained here to preserve references
+- **Type:** HISTORICAL SOURCE-CONSTRUCTION / NO-GO CLASSIFICATION
+- **Scientific status:** `[RETIRED ROUTE J] [POSITIVE SURVIVOR REQUIRES NEW ROUTE] [NO RH INPUT] [NO COMPUTATION]`
 - **Parent no-go:** `../5-failed/route-j-julia-unrenormalized-coherent-energy-budget.md`
 - **Endpoint:** Route A's literal first-clock source is eventually bounded below
 
 ## Mission
 
-Classify every Julia-coherent implementation of a principal-relative completed first-clock
-capacity and construct one unconditionally or prove a class-complete no-go.  Target equivalence and
-overlap with another route do not discharge this card while a source-defined current remains
-researchable.
+This card records the audit that retired the Julia-coherent principal-relative first-clock
+capacity mechanism. Statements below that say “Route J remains open” are superseded as route
+ownership claims: they identify escape classes for a different pre-projection primitive. The
+existing singular joint-depth/Ward carrier belongs to Route R; any other source-defined current
+must be opened as a new route rather than used to reopen J.
 
 ## 1. Exact endpoint
 
@@ -322,10 +323,10 @@ The existing singular Ward transport is a candidate input to attack, not a reaso
 
 ## 9. Route disposition
 
-Route J remains open.  Concrete natural subclasses are closed and the representation-free
-existential is target-equivalent to Route A, but neither fact eliminates the explicit completed
-current problem above.  As long as that construction or a class-complete no-go remains
-researchable, this card stays in Stage 1.
+Route J is retired. Concrete natural subclasses are closed and the representation-free
+existential is target-equivalent to Route A. The explicit completed-current escape changes the
+primitive: it is Route R when it uses the existing singular joint-depth/Ward source, and otherwise
+requires a separately owned new route.
 
 ## 10. Novelty and theatre audit
 
@@ -358,9 +359,8 @@ researchable, this card stays in Stage 1.
 - [x] existing calibrated Julia--Euler exterior current proved scalar-zero
 - [x] formalize Theorem D and the target-equivalent Route-R endpoint bridge
 - [x] prove that endpoint equivalence alone supplies no source-current construction
-- [ ] construct a completed symmetric/nonlinear current satisfying `(2)`, or prove the surviving
-      class impossible
-- [ ] close Route J only when no researchable unowned survivor remains
+- [x] retire Route J at its exact coherent-energy/capacity quantifier
+- [ ] if pursued, open a separate card for a literal pre-projection symmetric/nonlinear current
 
 ## 12. Source-fusion superselection input
 

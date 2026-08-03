@@ -3,7 +3,7 @@
 - **ID:** `route-r-prime-depth-bv-wold-curved-source-differential`
 - **Stage:** 1 — in progress
 - **Type:** PRE-SCALAR SOURCE CONNECTION / NONSEPARABLE CURVED DIFFERENTIAL
-- **Status:** `[DEPENDENCY-CLOSED CORE] [NONSEPARABILITY PROVED] [LEAN PENDING] [ANNIHILATION OPEN] [NOT RH]`
+- **Status:** `[CORE FORMALIZED] [NONSEPARABILITY PROVED] [ANNIHILATION OPEN] [NOT RH]`
 - **Parent:** `route-r-essential-edge-occupation-det2-bv-relative-class.md`
 
 ## Frontier statement
@@ -160,6 +160,28 @@ specialization.
 - [x] external ambient-formalism audit
 - [x] dependency-closed paper proof
 - [x] exact nonseparability witness
-- [ ] unconditional Lean formalization
+- [x] unconditional Lean formalization
 - [ ] source-derived global curvature annihilation
 - [ ] RH
+
+## Lean realization
+
+`GaloisForLFunctions.RHTower.PrimeDepthBVWoldCurvedSourceDifferential` proves:
+
+- exact Wold depth transport `m_(p,e)=(1-p⁻¹)p⁻ᵉ` and its depth-zero relative spectral-zeta
+  residue provenance;
+- diagonal-zero, antisymmetry, and explicit positive/negative oriented edges;
+- exact curvature `-log(2)/8`;
+- absence of a vertex potential;
+- absence of any clock-difference function, using equal gaps and coefficient separation
+  `log(2)/4`;
+- multiplicative witness flatness iff centered parameter is zero;
+- complex-linear `D0`, `D1` and the labelled curved-square law;
+- reflection inversion and divisor-profile preservation;
+- witness nilpotence iff one divisor coordinate lies on the critical line;
+- global differential flatness iff RH, stated only as an equivalence.
+
+Direct `lake env lean`, targeted module build, and `#print axioms` passed.  Axiom output contains
+only `propext`, `Classical.choice`, and `Quot.sound`.  Repository-wide formal lint remains red on
+unrelated concurrent, umbrella-unreachable CCM/cyclic modules; this module is wired into
+`RHTower.lean` and was not among the failures.

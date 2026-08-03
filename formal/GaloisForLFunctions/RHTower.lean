@@ -435,6 +435,7 @@ import GaloisForLFunctions.RHTower.CCMMultiplicativeScrewCurvature
 import GaloisForLFunctions.RHTower.CCMNestedFloorNoEvacuation
 import GaloisForLFunctions.RHTower.CCMOddResponseQuotientCentralZero
 import GaloisForLFunctions.RHTower.CCMParityCompressionDeterminant
+import GaloisForLFunctions.RHTower.CCMParityInvolutionGrading
 import GaloisForLFunctions.RHTower.CCMPhysicalPrimeApertureCharacterTomography
 import GaloisForLFunctions.RHTower.CCMPolarNegativeHessianLorentzSignatureUniversalityLaw
 import GaloisForLFunctions.RHTower.CCMPolarPrimeSourceSign
@@ -3238,6 +3239,10 @@ import GaloisForLFunctions.RHTower.Sieve.FejerPairing
 import GaloisForLFunctions.RHTower.Sieve.FejerHalfBound
 import GaloisForLFunctions.RHTower.Sieve.FejerSymmBound
 import GaloisForLFunctions.RHTower.Sieve.FejerLocalisation
+import GaloisForLFunctions.RHTower.Sieve.FejerIntegralPair
+import GaloisForLFunctions.RHTower.Sieve.FejerShortInterval
+import GaloisForLFunctions.RHTower.Sieve.RamarePrimeFactor
+import GaloisForLFunctions.RHTower.Sieve.RamareBilinearSplit
 import GaloisForLFunctions.RHTower.Sieve.ChernoffTails
 import GaloisForLFunctions.RHTower.Sieve.GeometricMeanDivisor
 import GaloisForLFunctions.RHTower.Sieve.IntervalMultiples

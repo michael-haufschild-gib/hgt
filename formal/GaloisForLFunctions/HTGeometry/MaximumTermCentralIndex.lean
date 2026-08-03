@@ -1,5 +1,6 @@
 import Mathlib
 import GaloisForLFunctions.HTGeometry.BorelGrowthLemma
+import GaloisForLFunctions.HTGeometry.DiscreteJensenExp
 
 /-!
 # The maximum term and the central index
@@ -1467,6 +1468,72 @@ theorem tsum_index_sub_mul_term (ha : EntireCoeffs a) (hr : 0 < r) (k : ℕ) :
     (summable_term ha hr).mul_left _
   rw [coeffSum, ← tsum_mul_left, ← Summable.tsum_sub hidx hbase]
   exact tsum_congr fun n => by ring
+
+
+/-! ## The mean index
+
+The mean index is the average of `n` against the weights `||a_n|| r^n`; the central index is the mode
+of the same weighting.  Jensen's inequality gives the mean index the same lower growth law that the
+modal index satisfies for the maximum term. -/
+
+/-- The mean index `Lambda(r) = r S'(r) / S(r)`. -/
+noncomputable def meanIndex (a : ℕ → ℂ) (r : ℝ) : ℝ :=
+  (∑' n : ℕ, (n : ℝ) * (‖a n‖ * r ^ n)) / coeffSum a r
+
+set_option maxHeartbeats 1000000 in
+/-- **Growth law for the mean index.**  By Jensen, the majorant grows at least like `(s/r)` to the
+mean index. -/
+theorem meanIndex_mul_log_le_log_coeffSum_sub
+    (ha : EntireCoeffs a) (hr : 0 < r) (hrs : r ≤ s) {n₀ : ℕ} (hn₀ : a n₀ ≠ 0) :
+    meanIndex a r * Real.log (s / r)
+      ≤ Real.log (coeffSum a s) - Real.log (coeffSum a r) := by
+  have hs : 0 < s := lt_of_lt_of_le hr hrs
+  obtain ⟨-, -, hμr⟩ := exists_maxTerm_eq ha hr hn₀
+  obtain ⟨-, -, hμs⟩ := exists_maxTerm_eq ha hs hn₀
+  have hSr : 0 < coeffSum a r := lt_of_lt_of_le hμr (maxTerm_le_coeffSum ha hr hn₀)
+  have hSs : 0 < coeffSum a s := lt_of_lt_of_le hμs (maxTerm_le_coeffSum ha hs hn₀)
+  have hq : (0 : ℝ) < s / r := div_pos hs hr
+  set L : ℝ := Real.log (s / r) with hL
+  set p : ℕ → ℝ := fun n => (‖a n‖ * r ^ n) / coeffSum a r with hp
+  set x : ℕ → ℝ := fun n => (n : ℝ) * L with hx
+  have hpnn : ∀ n, 0 ≤ p n := fun n => div_nonneg (term_nonneg a hr n) hSr.le
+  have hpsum : Summable p := (summable_term ha hr).div_const _
+  have hp1 : ∑' n : ℕ, p n = 1 := by
+    rw [hp, tsum_div_const, ← coeffSum]
+    exact div_self (ne_of_gt hSr)
+  have hidx : Summable fun n : ℕ => (n : ℝ) * (‖a n‖ * r ^ n) := by
+    refine (summable_term (entireCoeffs_mul_index ha) hr).congr fun n => ?_
+    rw [norm_mul, Complex.norm_natCast, mul_assoc]
+  have hpx : Summable fun n : ℕ => p n * x n := by
+    refine (hidx.div_const (coeffSum a r) |>.mul_right L).congr fun n => ?_
+    show (n : ℝ) * (‖a n‖ * r ^ n) / coeffSum a r * L = p n * x n
+    rw [hp, hx]
+    field_simp
+  have hexpx : ∀ n : ℕ, Real.exp (x n) = (s / r) ^ n := by
+    intro n
+    show Real.exp ((n : ℝ) * L) = (s / r) ^ n
+    rw [Real.exp_nat_mul, hL, Real.exp_log hq]
+  have hpe0 : ∀ n : ℕ, p n * Real.exp (x n) = (‖a n‖ * s ^ n) / coeffSum a r := by
+    intro n
+    rw [hexpx n]
+    show ‖a n‖ * r ^ n / coeffSum a r * (s / r) ^ n = ‖a n‖ * s ^ n / coeffSum a r
+    rw [div_pow]
+    field_simp
+  have hpe : Summable fun n : ℕ => p n * Real.exp (x n) := by
+    refine ((summable_term ha hs).div_const (coeffSum a r)).congr fun n => (hpe0 n).symm
+  have hjensen := exp_tsum_mul_le_tsum_mul_exp p x hpnn hpsum hp1 hpx hpe
+  have hmean : ∑' n : ℕ, p n * x n = meanIndex a r * L := by
+    rw [meanIndex, div_mul_eq_mul_div, ← tsum_mul_right, ← tsum_div_const]
+    refine tsum_congr fun n => ?_
+    show p n * x n = (n : ℝ) * (‖a n‖ * r ^ n) * L / coeffSum a r
+    rw [hp, hx]
+    field_simp
+  have hratio : ∑' n : ℕ, p n * Real.exp (x n) = coeffSum a s / coeffSum a r := by
+    rw [tsum_congr hpe0, tsum_div_const, ← coeffSum]
+  rw [hmean, hratio] at hjensen
+  have hlog := Real.log_le_log (Real.exp_pos _) hjensen
+  rw [Real.log_exp, Real.log_div (ne_of_gt hSs) (ne_of_gt hSr)] at hlog
+  exact hlog
 
 
 /-! ## Entire functions -/

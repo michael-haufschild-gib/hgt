@@ -102,8 +102,50 @@ Sonin polarizations.
 ## Scope and classification
 
 Parity decomposition and block-Gram factorization are standard. The theorem is route
-infrastructure, not new scientific knowledge. Its finite-dimensional shadow would be wrapper-only
-Lean work; the substantive analytic maps are not formalized, so no Lean file is added.
+infrastructure, not new scientific knowledge.
+
+## Lean status
+
+**Superseded, 2026-08-03.**  The previous "wrapper-only, no Lean file" decision is retired: the
+whole linear-algebraic content `(1)`--`(6)` is formalized unconditionally in
+`formal/GaloisForLFunctions/RHTower/CCMParityInvolutionGrading.lean`.
+
+- `parityPlus J`, `parityMinus J`, **`isCompl_parity`** — the splitting `F = F^+ ⊕ F^-` for any
+  involution, with the explicit halves `(v ± J v)/2`.
+- **`inner_eq_zero_of_parity`** — the two sectors are orthogonal for a reflection that is an
+  isometry, which is the "reflection-invariant Hermitian metrics" step of the proof.
+- **`map_parityPlus_eq_parityMinus`** and **`finrank_parityPlus_eq_finrank_parityMinus`** — equation
+  `(1)`, the **equal** parity dimensions.  The mechanism isolated here is sharper than the card's
+  basis count: it suffices that *some* automorphism `S` anticommute with the reflection, and then `S`
+  carries one sector isomorphically onto the other.  `finrank_parityPlus_eq_half` turns that into
+  `2 * dim F^+ = dim F`.
+- **`residualParity`, `residualBranch`, `finrank_residualParity_parityPlus`,
+  `finrank_residualParity_parityMinus`** — the concrete residual model `(7)`: the space spanned by
+  `x^j e^x, x^j e^{-x}` for `0 ≤ j < L`, with the reflection acting as `(-1)^j` times the branch
+  swap.  The branch-sign map is the anticommuting automorphism, so both sectors have dimension
+  exactly `L`.  This is `dim F^+ = dim F^- = L_a`.
+- **`map_parityPlus_le`**, **`map_parityMinus_le`** — equations `(2)`--`(3)`: an equivariant map is
+  graded, each sector landing in the corresponding target sector.
+- **`ker_eq_bot_iff_parity`** — equation `(5)`: the map is injective exactly when both graded blocks
+  are.  The proof is the card's: apply the target reflection to `M p + M q = 0` and add.
+- **`det_eq_det_restrict_mul_det_restrict`** — equation `(4)`: a reflection-commuting endomorphism —
+  in particular a Gram operator of an equivariant map — has block-diagonal matrix in a
+  parity-adapted basis, so its determinant is the product of the two sector determinants.  Proved by
+  conjugating with `Submodule.prodEquivOfIsCompl` and `LinearMap.det_prodMap`;
+  `mapsTo_parityPlus_of_commute` / `mapsTo_parityMinus_of_commute` supply the restriction data.
+- **`prodInvolution`, `parityPlus_prodInvolution`, `parityMinus_prodInvolution`,
+  `finrank_evansExcess_parityPlus = 2`, `finrank_evansExcess_parityMinus = 1`** — equation `(6)`:
+  the three-dimensional excess target graded as two even channels (mean and affine constant) and one
+  odd channel (affine slope).
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]` for every theorem above.
+
+Not formalized, and not linear algebra: the analytic inputs that make the concrete `F_a`, `R_(L_a)`
+and `M_a` reflection-equivariant — evenness of the corrected symbol `W_a`, the commutation of the
+normalized Fourier multipliers `b_a, c_a` with reflection, and parity-preservation of the supported
+logarithmic form and its Dirichlet inverse.  Those are the source facts; once each is available the
+statements above apply verbatim.
 
 ## Gates
 
@@ -111,6 +153,11 @@ Lean work; the substantive analytic maps are not formalized, so no Lean file is 
 - [x] Dirichlet reconstruction proved parity-preserving
 - [x] three anchor channels graded as two even plus one odd
 - [x] Evans Gram determinant factored by parity
+- [x] Lean: involution splitting, orthogonality, equal sector dimensions `(1)` unconditional
+- [x] Lean: residual model with both sectors of dimension `L`
+- [x] Lean: graded equivariant map `(2)`--`(3)` and kernel splitting `(5)` unconditional
+- [x] Lean: block determinant factorization `(4)` unconditional
+- [x] Lean: graded excess target `(6)`, even dimension two and odd dimension one
 - [ ] prove injectivity in the even sector for every aperture
 - [ ] prove injectivity in the odd sector for every aperture
 - [ ] RH
