@@ -99,6 +99,38 @@ def lowerStage {n : ℕ} (g : ElementaryDecoratedGraph n) (r b : ℕ)
     (hr : r ≤ g.maxRamification) (hb : b < r) :
     (g.lowerStage r b hr hb).exponent = (b + 1 : ℕ) / (r : ℚ) := rfl
 
+/-- The arithmetic edge encoded by a separating monomial stage.  High stages record an integral
+rescaled edge, mandatory Airy stages record the reciprocal ramification contact, and lower stages
+record the residual numerator at equal ramification. -/
+def StageRealizesEdge {n : ℕ} (g : ElementaryDecoratedGraph n) (i j : Fin n) :
+    g.MonomialStage → Prop
+  | .inl high =>
+      g.edge i j = g.ramification i * g.ramification j * (high.val + 1)
+  | .inr (.inl ramification) =>
+      g.edge i j * ramification.val = g.ramification i * g.ramification j
+  | .inr (.inr ⟨ramification, lower⟩) =>
+      g.ramification i = ramification.val ∧
+        g.ramification j = ramification.val ∧ g.edge i j = lower.val
+
+theorem highStage_realizesEdge_iff {n k : ℕ} (g : ElementaryDecoratedGraph n)
+    (i j : Fin n) (hk : 0 < k) (hkmax : k ≤ g.maxEdge) :
+    g.StageRealizesEdge i j (g.highStage k hk hkmax) ↔
+      g.edge i j = g.ramification i * g.ramification j * k := by
+  simp [StageRealizesEdge, highStage]
+  rw [Nat.sub_add_cancel (Nat.succ_le_iff.mpr hk)]
+
+theorem mandatoryStage_realizesEdge_iff {n r : ℕ} (g : ElementaryDecoratedGraph n)
+    (i j : Fin n) (hrmax : r ≤ g.maxRamification) :
+    g.StageRealizesEdge i j (g.mandatoryStage r hrmax) ↔
+      g.edge i j * r = g.ramification i * g.ramification j := by
+  rfl
+
+theorem lowerStage_realizesEdge_iff {n r b : ℕ} (g : ElementaryDecoratedGraph n)
+    (i j : Fin n) (hrmax : r ≤ g.maxRamification) (hb : b < r) :
+    g.StageRealizesEdge i j (g.lowerStage r b hrmax hb) ↔
+      g.ramification i = r ∧ g.ramification j = r ∧ g.edge i j = b := by
+  rfl
+
 def stageCoefficient {n : ℕ} (g : ElementaryDecoratedGraph n)
     (hacute : g.HasAcuteIsoscelesRescaling) (i : Fin n) :
     g.MonomialStage → ℂ
@@ -731,7 +763,8 @@ theorem pairPresentation_hasUncancelledHighestDifferenceStage
     (hijEdge : g.edge i j = edge₀)
     (p : ElementaryPairPresentation r₀ s₀ edge₀) :
     ∃ stage : g.MonomialStage,
-      g.IsUncancelledHighestDifferenceStage hacute i j stage := by
+      g.IsUncancelledHighestDifferenceStage hacute i j stage ∧
+        g.StageRealizesEdge i j stage := by
   classical
   cases p with
   | unramified _ =>
@@ -739,23 +772,29 @@ theorem pairPresentation_hasUncancelledHighestDifferenceStage
       · subst edge₀
         have hrmax : 1 ≤ g.maxRamification :=
           hir₀ ▸ g.ramification_le_maxRamification i
-        refine ⟨g.lowerStage 1 0 hrmax (by omega), ?_⟩
-        apply g.lowerStage_isUncancelledHighestDifference_sameRamification
-          hacute hij hir₀ hjs₀
-        simp [rescaledEdge, hir₀, hjs₀, hedge]
+        refine ⟨g.lowerStage 1 0 hrmax (by omega), ?_, ?_⟩
+        · apply g.lowerStage_isUncancelledHighestDifference_sameRamification
+            hacute hij hir₀ hjs₀
+          simp [rescaledEdge, hir₀, hjs₀, hedge]
+        · exact (g.lowerStage_realizesEdge_iff i j hrmax (by omega)).2
+            ⟨hir₀, hjs₀, hedge⟩
       · have hk : 0 < edge₀ := Nat.pos_of_ne_zero hedge
         have hkmax : edge₀ ≤ g.maxEdge := hijEdge ▸ g.edge_le_maxEdge i j
-        refine ⟨g.highStage edge₀ hk hkmax, ?_⟩
-        apply g.highStage_isUncancelledHighestDifference hacute hij hk hkmax
-        simp [rescaledEdge, hir₀, hjs₀, hijEdge]
+        refine ⟨g.highStage edge₀ hk hkmax, ?_, ?_⟩
+        · apply g.highStage_isUncancelledHighestDifference hacute hij hk hkmax
+          simp [rescaledEdge, hir₀, hjs₀, hijEdge]
+        · apply (g.highStage_realizesEdge_iff i j hk hkmax).2
+          simp [hir₀, hjs₀, hijEdge]
   | unramifiedAiryBase hr =>
       have hrmax : s₀ ≤ g.maxRamification := hjs₀ ▸ g.ramification_le_maxRamification j
-      refine ⟨g.mandatoryStage s₀ hrmax, ?_⟩
-      apply (g.isUncancelledHighestDifferenceStage_symm hacute).mpr
-      apply g.mandatoryStage_isUncancelledHighestDifference_oriented
-        hacute hjs₀ hir₀ hr (Or.inl rfl) hrmax
-      rw [rescaledEdge, g.edge_symm, hijEdge, hir₀, hjs₀]
-      norm_num
+      refine ⟨g.mandatoryStage s₀ hrmax, ?_, ?_⟩
+      · apply (g.isUncancelledHighestDifferenceStage_symm hacute).mpr
+        apply g.mandatoryStage_isUncancelledHighestDifference_oriented
+          hacute hjs₀ hir₀ hr (Or.inl rfl) hrmax
+        rw [rescaledEdge, g.edge_symm, hijEdge, hir₀, hjs₀]
+        norm_num
+      · apply (g.mandatoryStage_realizesEdge_iff i j hrmax).2
+        simp [hir₀, hjs₀, hijEdge]
   | unramifiedAiryHigh hr hk =>
       rename_i k
       have hkmax : k ≤ g.maxEdge := by
@@ -765,16 +804,20 @@ theorem pairPresentation_hasUncancelledHighestDifferenceStage
           calc
             k = 1 * k := by simp
             _ ≤ s₀ * k := Nat.mul_le_mul_right k (by omega)).trans hedgeMax
-      refine ⟨g.highStage k hk hkmax, ?_⟩
-      apply g.highStage_isUncancelledHighestDifference hacute hij hk hkmax
-      simp [rescaledEdge, hir₀, hjs₀, hijEdge]
-      field_simp
+      refine ⟨g.highStage k hk hkmax, ?_, ?_⟩
+      · apply g.highStage_isUncancelledHighestDifference hacute hij hk hkmax
+        simp [rescaledEdge, hir₀, hjs₀, hijEdge]
+        field_simp
+      · apply (g.highStage_realizesEdge_iff i j hk hkmax).2
+        simp [hir₀, hjs₀, hijEdge]
   | airyUnramifiedBase hr =>
       have hrmax : r₀ ≤ g.maxRamification := hir₀ ▸ g.ramification_le_maxRamification i
-      refine ⟨g.mandatoryStage r₀ hrmax, ?_⟩
-      apply g.mandatoryStage_isUncancelledHighestDifference_oriented
-        hacute hir₀ hjs₀ hr (Or.inl rfl) hrmax
-      simp [rescaledEdge, hir₀, hjs₀, hijEdge]
+      refine ⟨g.mandatoryStage r₀ hrmax, ?_, ?_⟩
+      · apply g.mandatoryStage_isUncancelledHighestDifference_oriented
+          hacute hir₀ hjs₀ hr (Or.inl rfl) hrmax
+        simp [rescaledEdge, hir₀, hjs₀, hijEdge]
+      · apply (g.mandatoryStage_realizesEdge_iff i j hrmax).2
+        simp [hir₀, hjs₀, hijEdge]
   | airyUnramifiedHigh hr hk =>
       rename_i k
       have hkmax : k ≤ g.maxEdge := by
@@ -784,26 +827,32 @@ theorem pairPresentation_hasUncancelledHighestDifferenceStage
           calc
             k = 1 * k := by simp
             _ ≤ r₀ * k := Nat.mul_le_mul_right k (by omega)).trans hedgeMax
-      refine ⟨g.highStage k hk hkmax, ?_⟩
-      apply g.highStage_isUncancelledHighestDifference hacute hij hk hkmax
-      simp [rescaledEdge, hir₀, hjs₀, hijEdge]
-      field_simp
+      refine ⟨g.highStage k hk hkmax, ?_, ?_⟩
+      · apply g.highStage_isUncancelledHighestDifference hacute hij hk hkmax
+        simp [rescaledEdge, hir₀, hjs₀, hijEdge]
+        field_simp
+      · apply (g.highStage_realizesEdge_iff i j hk hkmax).2
+        simp [hir₀, hjs₀, hijEdge]
   | unequalAiryBase hr hs hne =>
       rcases lt_or_gt_of_ne hne with hrs | hsr
       · have hrmax : r₀ ≤ g.maxRamification := hir₀ ▸ g.ramification_le_maxRamification i
-        refine ⟨g.mandatoryStage r₀ hrmax, ?_⟩
-        apply g.mandatoryStage_isUncancelledHighestDifference_oriented
-          hacute hir₀ hjs₀ hr (Or.inr hrs) hrmax
-        simp [rescaledEdge, hir₀, hjs₀, hijEdge, Nat.max_eq_right hrs.le]
-        field_simp
+        refine ⟨g.mandatoryStage r₀ hrmax, ?_, ?_⟩
+        · apply g.mandatoryStage_isUncancelledHighestDifference_oriented
+            hacute hir₀ hjs₀ hr (Or.inr hrs) hrmax
+          simp [rescaledEdge, hir₀, hjs₀, hijEdge, Nat.max_eq_right hrs.le]
+          field_simp
+        · apply (g.mandatoryStage_realizesEdge_iff i j hrmax).2
+          simp [hir₀, hjs₀, hijEdge, Nat.max_eq_right hrs.le, Nat.mul_comm]
       · have hsmax : s₀ ≤ g.maxRamification := hjs₀ ▸ g.ramification_le_maxRamification j
-        refine ⟨g.mandatoryStage s₀ hsmax, ?_⟩
-        apply (g.isUncancelledHighestDifferenceStage_symm hacute).mpr
-        apply g.mandatoryStage_isUncancelledHighestDifference_oriented
-          hacute hjs₀ hir₀ hs (Or.inr hsr) hsmax
-        simp [rescaledEdge, hir₀, hjs₀, hijEdge, Nat.max_eq_left hsr.le,
-          g.edge_symm]
-        field_simp
+        refine ⟨g.mandatoryStage s₀ hsmax, ?_, ?_⟩
+        · apply (g.isUncancelledHighestDifferenceStage_symm hacute).mpr
+          apply g.mandatoryStage_isUncancelledHighestDifference_oriented
+            hacute hjs₀ hir₀ hs (Or.inr hsr) hsmax
+          simp [rescaledEdge, hir₀, hjs₀, hijEdge, Nat.max_eq_left hsr.le,
+            g.edge_symm]
+          field_simp
+        · apply (g.mandatoryStage_realizesEdge_iff i j hsmax).2
+          simp [hir₀, hjs₀, hijEdge, Nat.max_eq_left hsr.le]
   | unequalAiryHigh hr hs hne hk =>
       rename_i k
       have hkmax : k ≤ g.maxEdge := by
@@ -816,25 +865,31 @@ theorem pairPresentation_hasUncancelledHighestDifferenceStage
             k = 1 * k := by simp
             _ ≤ (r₀ * s₀) * k :=
               Nat.mul_le_mul_right k (Nat.succ_le_iff.mpr hproduct)).trans hedgeMax
-      refine ⟨g.highStage k hk hkmax, ?_⟩
-      apply g.highStage_isUncancelledHighestDifference hacute hij hk hkmax
-      simp [rescaledEdge, hir₀, hjs₀, hijEdge]
-      field_simp
+      refine ⟨g.highStage k hk hkmax, ?_, ?_⟩
+      · apply g.highStage_isUncancelledHighestDifference hacute hij hk hkmax
+        simp [rescaledEdge, hir₀, hjs₀, hijEdge]
+        field_simp
+      · apply (g.highStage_realizesEdge_iff i j hk hkmax).2
+        simp [hir₀, hjs₀, hijEdge]
   | equalAiryLow hr hedge =>
       by_cases heq : edge₀ = r₀
       · subst edge₀
         have hrmax : r₀ ≤ g.maxRamification := hir₀ ▸ g.ramification_le_maxRamification i
-        refine ⟨g.mandatoryStage r₀ hrmax, ?_⟩
-        apply g.mandatoryStage_isUncancelledHighestDifference_sameRamification
-          hacute hij hir₀ hjs₀ hr hrmax
-        simp [rescaledEdge, hir₀, hjs₀, heq]
+        refine ⟨g.mandatoryStage r₀ hrmax, ?_, ?_⟩
+        · apply g.mandatoryStage_isUncancelledHighestDifference_sameRamification
+            hacute hij hir₀ hjs₀ hr hrmax
+          simp [rescaledEdge, hir₀, hjs₀, heq]
+        · apply (g.mandatoryStage_realizesEdge_iff i j hrmax).2
+          simp [hir₀, hjs₀, heq]
       · have hlt : edge₀ < r₀ := lt_of_le_of_ne hedge heq
         have hrmax : r₀ ≤ g.maxRamification := hir₀ ▸ g.ramification_le_maxRamification i
-        refine ⟨g.lowerStage r₀ edge₀ hrmax hlt, ?_⟩
-        apply g.lowerStage_isUncancelledHighestDifference_sameRamification
-          hacute hij hir₀ hjs₀ hlt hrmax
-        simp [rescaledEdge, hir₀, hjs₀, hijEdge]
-        ring
+        refine ⟨g.lowerStage r₀ edge₀ hrmax hlt, ?_, ?_⟩
+        · apply g.lowerStage_isUncancelledHighestDifference_sameRamification
+            hacute hij hir₀ hjs₀ hlt hrmax
+          simp [rescaledEdge, hir₀, hjs₀, hijEdge]
+          ring
+        · exact (g.lowerStage_realizesEdge_iff i j hrmax hlt).2
+            ⟨hir₀, hjs₀, hijEdge⟩
   | equalAiryHigh hr hk =>
       rename_i k
       have hkmax : k ≤ g.maxEdge := by
@@ -844,10 +899,12 @@ theorem pairPresentation_hasUncancelledHighestDifferenceStage
           calc
             k = 1 * k := by simp
             _ ≤ (r₀ ^ 2) * k := Nat.mul_le_mul_right k (by nlinarith)).trans hedgeMax
-      refine ⟨g.highStage k hk hkmax, ?_⟩
-      apply g.highStage_isUncancelledHighestDifference hacute hij hk hkmax
-      simp [rescaledEdge, hir₀, hjs₀, hijEdge]
-      field_simp
+      refine ⟨g.highStage k hk hkmax, ?_, ?_⟩
+      · apply g.highStage_isUncancelledHighestDifference hacute hij hk hkmax
+        simp [rescaledEdge, hir₀, hjs₀, hijEdge]
+        field_simp
+      · apply (g.highStage_realizesEdge_iff i j hk hkmax).2
+        simp [hir₀, hjs₀, hijEdge, pow_two]
 
 theorem pairPresentation_hasUncancelledHighestDifferenceStage_indexed
     {n : ℕ} (g : ElementaryDecoratedGraph n)
@@ -855,7 +912,8 @@ theorem pairPresentation_hasUncancelledHighestDifferenceStage_indexed
     (p : ElementaryPairPresentation
       (g.ramification i) (g.ramification j) (g.edge i j)) :
     ∃ stage : g.MonomialStage,
-      g.IsUncancelledHighestDifferenceStage hacute i j stage :=
+      g.IsUncancelledHighestDifferenceStage hacute i j stage ∧
+        g.StageRealizesEdge i j stage :=
   g.pairPresentation_hasUncancelledHighestDifferenceStage
     hacute hij rfl rfl rfl p
 
@@ -873,6 +931,147 @@ theorem globalPuiseuxPolynomial_apply {n : ℕ} (g : ElementaryDecoratedGraph n)
         if stage.exponent = q then g.stageCoefficient hacute i stage else 0 := by
   classical
   simp [globalPuiseuxPolynomial, Finsupp.single_apply]
+
+/-- A mandatory Airy exponent is represented by one unique global monomial stage. -/
+theorem eq_mandatoryStage_of_exponent_eq {n r : ℕ} (g : ElementaryDecoratedGraph n)
+    (hr : 1 < r) (hrmax : r ≤ g.maxRamification) (other : g.MonomialStage)
+    (hexponent : other.exponent = (g.mandatoryStage r hrmax).exponent) :
+    other = g.mandatoryStage r hrmax := by
+  rcases other with high | (mandatory | lower)
+  · exfalso
+    rw [mandatoryStage_exponent] at hexponent
+    simp only [MonomialStage.exponent] at hexponent
+    have hhigh : (2 : ℚ) ≤ (high.val + 2 : ℕ) := by norm_num
+    have hrQ : (0 : ℚ) < r := by exact_mod_cast (Nat.zero_lt_of_lt hr)
+    have hrOneQ : (1 : ℚ) < r := by exact_mod_cast hr
+    have hcand : 1 + 1 / (r : ℚ) < 2 := by
+      have := (div_lt_one hrQ).mpr hrOneQ
+      linarith
+    linarith
+  · apply congrArg Sum.inr
+    apply congrArg Sum.inl
+    apply Fin.ext
+    rw [mandatoryStage_exponent] at hexponent
+    simp only [MonomialStage.exponent] at hexponent
+    have hinv : ((mandatory.val : ℚ)⁻¹) = ((r : ℚ)⁻¹) := by
+      simpa [one_div] using (add_left_cancel hexponent)
+    have hcast : (mandatory.val : ℚ) = (r : ℚ) := inv_injective hinv
+    exact_mod_cast hcast
+  · exfalso
+    have hle := MonomialStage.lower_exponent_le_one lower.fst lower.snd
+    rw [mandatoryStage_exponent] at hexponent
+    have hrQ : (0 : ℚ) < r := by exact_mod_cast (Nat.zero_lt_of_lt hr)
+    have hpos : (0 : ℚ) < 1 / r := div_pos zero_lt_one hrQ
+    linarith
+
+theorem stageCoefficient_mandatoryStage_ne_zero {n : ℕ}
+    (g : ElementaryDecoratedGraph n) (hacute : g.HasAcuteIsoscelesRescaling)
+    (i : Fin n) (hr : 1 < g.ramification i)
+    (hrmax : g.ramification i ≤ g.maxRamification) :
+    g.stageCoefficient hacute i (g.mandatoryStage (g.ramification i) hrmax) ≠ 0 := by
+  simp [stageCoefficient, mandatoryStage, hr, g.thresholdCoefficient_ne_zero]
+
+/-- Collection of equal rational exponents cannot erase the mandatory Airy monomial. -/
+theorem globalPuiseuxPolynomial_mandatory_ne_zero {n : ℕ}
+    (g : ElementaryDecoratedGraph n) (hacute : g.HasAcuteIsoscelesRescaling)
+    (i : Fin n) (hr : 1 < g.ramification i) :
+    g.globalPuiseuxPolynomial hacute i
+        (1 + 1 / (g.ramification i : ℚ)) ≠ 0 := by
+  classical
+  let hrmax : g.ramification i ≤ g.maxRamification :=
+    g.ramification_le_maxRamification i
+  let target := g.mandatoryStage (g.ramification i) hrmax
+  have htargetExponent : target.exponent = 1 + 1 / (g.ramification i : ℚ) := by
+    simp [target]
+  have hcoeff : g.stageCoefficient hacute i target ≠ 0 := by
+    exact g.stageCoefficient_mandatoryStage_ne_zero hacute i hr hrmax
+  rw [g.globalPuiseuxPolynomial_apply]
+  have hsum :
+      (∑ other : g.MonomialStage,
+        if other.exponent = 1 + 1 / (g.ramification i : ℚ) then
+          g.stageCoefficient hacute i other else 0) =
+        g.stageCoefficient hacute i target := by
+    calc
+      _ = if target.exponent = 1 + 1 / (g.ramification i : ℚ) then
+          g.stageCoefficient hacute i target else 0 := by
+        apply Finset.sum_eq_single target
+        · intro other _ hne
+          by_cases hexponent : other.exponent = 1 + 1 / (g.ramification i : ℚ)
+          · have heq : other = target :=
+              g.eq_mandatoryStage_of_exponent_eq hr hrmax other
+                (hexponent.trans htargetExponent.symm)
+            exact (hne heq).elim
+          · rw [if_neg]
+            exact fun h => hexponent (by simpa [one_div] using h)
+        · simp
+      _ = g.stageCoefficient hacute i target := by simp [htargetExponent]
+  rw [hsum]
+  exact hcoeff
+
+/-- Every nonzero exponent of an elementary realization is either an integral high stage, the
+mandatory Airy stage, or a lower fractional stage with the prescribed ramification. -/
+def HasElementaryPuiseuxSupport (r : ℕ) (p : ℚ →₀ ℂ) : Prop :=
+  ∀ q : ℚ, p q ≠ 0 →
+    (∃ k : ℕ, 0 < k ∧ q = k) ∨
+      (1 < r ∧ q = 1 + 1 / (r : ℚ)) ∨
+      ∃ b : ℕ, b < r ∧ q = (b + 1 : ℕ) / (r : ℚ)
+
+/-- Intrinsic certificate that a collected finite Puiseux polynomial is unramified at `r=1`, or
+has exactly the one mandatory simple-Airy gcd drop when `r>1`. -/
+def IsElementaryPuiseuxPolynomialOfRamification (r : ℕ) (p : ℚ →₀ ℂ) : Prop :=
+  HasElementaryPuiseuxSupport r p ∧
+    (r = 1 ∨ (1 < r ∧ p (1 + 1 / (r : ℚ)) ≠ 0))
+
+theorem globalPuiseuxPolynomial_hasElementarySupport {n : ℕ}
+    (g : ElementaryDecoratedGraph n) (hacute : g.HasAcuteIsoscelesRescaling)
+    (i : Fin n) :
+    HasElementaryPuiseuxSupport (g.ramification i)
+      (g.globalPuiseuxPolynomial hacute i) := by
+  classical
+  intro q hq
+  rw [g.globalPuiseuxPolynomial_apply] at hq
+  obtain ⟨stage, _, hterm⟩ := Finset.exists_ne_zero_of_sum_ne_zero hq
+  have hexponent : stage.exponent = q := by
+    by_contra hne
+    exact hterm (by simp [hne])
+  have hcoeff : g.stageCoefficient hacute i stage ≠ 0 := by
+    simpa [hexponent] using hterm
+  rcases stage with high | (mandatory | lower)
+  · left
+    refine ⟨high.val + 2, by omega, ?_⟩
+    simpa [MonomialStage.exponent] using hexponent.symm
+  · have hactive : mandatory.val = g.ramification i ∧ 1 < mandatory.val := by
+      by_contra h
+      apply hcoeff
+      simp [stageCoefficient, h]
+    right
+    left
+    constructor
+    · simpa [hactive.1] using hactive.2
+    · simpa [MonomialStage.exponent, hactive.1] using hexponent.symm
+  · have hactive : lower.fst.val = g.ramification i := by
+      by_contra h
+      apply hcoeff
+      simp [stageCoefficient, h]
+    right
+    right
+    refine ⟨lower.snd.val, ?_, ?_⟩
+    · simpa [hactive] using lower.snd.isLt
+    · simpa [MonomialStage.exponent, hactive] using hexponent.symm
+
+theorem globalPuiseuxPolynomial_isElementary {n : ℕ}
+    (g : ElementaryDecoratedGraph n) (hacute : g.HasAcuteIsoscelesRescaling)
+    (i : Fin n) :
+    IsElementaryPuiseuxPolynomialOfRamification (g.ramification i)
+      (g.globalPuiseuxPolynomial hacute i) := by
+  refine ⟨g.globalPuiseuxPolynomial_hasElementarySupport hacute i, ?_⟩
+  by_cases hr : g.ramification i = 1
+  · exact Or.inl hr
+  · right
+    have hri : 1 < g.ramification i := by
+      have := g.ramification_pos i
+      omega
+    exact ⟨hri, g.globalPuiseuxPolynomial_mandatory_ne_zero hacute i hri⟩
 
 /-- `e` is the largest exponent where two finite Puiseux polynomials differ. -/
 def HasHighestDifferenceExponent (left right : ℚ →₀ ℂ) (e : ℚ) : Prop :=
@@ -941,24 +1140,32 @@ all coincident rational exponents are collected. -/
 theorem fissionEncoding_globalPuiseux_realizes_all_pairs
     {n : ℕ} {g : ElementaryDecoratedGraph n}
     (encoding : ElementaryFissionEncoding g) {i j : Fin n} (hij : i ≠ j) :
-    ∃ e : ℚ, HasHighestDifferenceExponent
-      (g.globalPuiseuxPolynomial encoding.acuteIsosceles i)
-      (g.globalPuiseuxPolynomial encoding.acuteIsosceles j) e := by
-  obtain ⟨stage, hstage⟩ :=
+    ∃ stage : g.MonomialStage,
+      HasHighestDifferenceExponent
+          (g.globalPuiseuxPolynomial encoding.acuteIsosceles i)
+          (g.globalPuiseuxPolynomial encoding.acuteIsosceles j) stage.exponent ∧
+        g.StageRealizesEdge i j stage := by
+  obtain ⟨stage, hstage, hedge⟩ :=
     g.pairPresentation_hasUncancelledHighestDifferenceStage_indexed
       encoding.acuteIsosceles hij (encoding.pairPresentation i j hij)
-  exact ⟨stage.exponent,
-    g.uncancelledStage_gives_highestDifferenceExponent encoding.acuteIsosceles hstage⟩
+  exact ⟨stage,
+    g.uncancelledStage_gives_highestDifferenceExponent encoding.acuteIsosceles hstage,
+    hedge⟩
 
 /-- Certificate form: every recognized graph has a simultaneous coefficient-level realization. -/
 theorem globalPuiseux_realization_of_certificate
     {n : ℕ} (g : ElementaryDecoratedGraph n)
     (certificate : g.HasElementaryRecognitionCertificate) :
     ∃ polynomials : Fin n → (ℚ →₀ ℂ),
-      ∀ i j, i ≠ j → ∃ e : ℚ,
-        HasHighestDifferenceExponent (polynomials i) (polynomials j) e := by
+      (∀ i, IsElementaryPuiseuxPolynomialOfRamification
+          (g.ramification i) (polynomials i)) ∧
+        ∀ i j, i ≠ j → ∃ stage : g.MonomialStage,
+          HasHighestDifferenceExponent
+              (polynomials i) (polynomials j) stage.exponent ∧
+            g.StageRealizesEdge i j stage := by
   let encoding := g.fissionEncodingOfCertificate certificate
   exact ⟨g.globalPuiseuxPolynomial encoding.acuteIsosceles,
+    fun i => g.globalPuiseuxPolynomial_isElementary encoding.acuteIsosceles i,
     fun i j hij => fissionEncoding_globalPuiseux_realizes_all_pairs encoding hij⟩
 
 end ElementaryDecoratedGraph

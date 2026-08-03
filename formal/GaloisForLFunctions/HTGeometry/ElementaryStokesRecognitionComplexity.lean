@@ -93,8 +93,12 @@ theorem globalPuiseux_reconstruction_of_all_queries {n : ℕ}
     (hqueries : (∀ q : PairRecognitionQuery n, g.pairQueryHolds q) ∧
       ∀ q : TriangleRecognitionQuery n, g.triangleQueryHolds q) :
     ∃ polynomials : Fin n → (ℚ →₀ ℂ),
-      ∀ i j, i ≠ j → ∃ e : ℚ,
-        HasHighestDifferenceExponent (polynomials i) (polynomials j) e := by
+      (∀ i, IsElementaryPuiseuxPolynomialOfRamification
+          (g.ramification i) (polynomials i)) ∧
+        ∀ i j, i ≠ j → ∃ stage : g.MonomialStage,
+          HasHighestDifferenceExponent
+              (polynomials i) (polynomials j) stage.exponent ∧
+            g.StageRealizesEdge i j stage := by
   exact g.globalPuiseux_realization_of_certificate
     ((g.all_recognitionQueries_iff_certificate).mp hqueries)
 

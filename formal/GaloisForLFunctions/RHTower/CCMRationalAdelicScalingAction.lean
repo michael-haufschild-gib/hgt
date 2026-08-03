@@ -30,8 +30,8 @@ def ccmRationalAdelicScalingEquiv :
   left_inv _ := rfl
   right_inv _ := rfl
 
-instance : Group CCMRationalAdelicScaling :=
-  ccmRationalAdelicScalingEquiv.group
+instance : CommGroup CCMRationalAdelicScaling :=
+  ccmRationalAdelicScalingEquiv.commGroup
 
 @[simp]
 theorem ccmRationalAdelicScaling_one_val :
@@ -135,8 +135,8 @@ def ccmRationalFiniteAdeleUnitMulHomeomorph
     CCMRationalFiniteAdele ≃ₜ CCMRationalFiniteAdele where
   toFun x := (u : CCMRationalFiniteAdele) * x
   invFun x := (↑(u⁻¹) : CCMRationalFiniteAdele) * x
-  left_inv x := by simp [mul_assoc]
-  right_inv x := by simp [mul_assoc]
+  left_inv x := by simp
+  right_inv x := by simp
   continuous_toFun := continuous_const.mul continuous_id
   continuous_invFun := continuous_const.mul continuous_id
 

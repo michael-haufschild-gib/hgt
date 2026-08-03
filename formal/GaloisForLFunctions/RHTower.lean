@@ -1477,6 +1477,9 @@ import GaloisForLFunctions.RHTower.DeningerBauSubsingleton
 import GaloisForLFunctions.RHTower.DeningerRetractCohomology
 import GaloisForLFunctions.RHTower.DeningerBauCohomologyCriterion
 import GaloisForLFunctions.RHTower.DeningerUniquelyDivisibleProd
+import GaloisForLFunctions.RHTower.DeningerDualVanishing
+import GaloisForLFunctions.RHTower.DeningerFinsuppDual
+import GaloisForLFunctions.RHTower.DeningerCochainDual
 import GaloisForLFunctions.RHTower.DeningerUnitaryFlowRieszPurity
 import GaloisForLFunctions.RHTower.DeningerUnitaryHarmonicAction
 import GaloisForLFunctions.RHTower.DeningerWeightOnePolarization
@@ -3181,6 +3184,14 @@ import GaloisForLFunctions.RHTower.Sieve.TrigParseval
 import GaloisForLFunctions.RHTower.Sieve.TrigDerivative
 import GaloisForLFunctions.RHTower.Sieve.TrigNormSqDeriv
 import GaloisForLFunctions.RHTower.Sieve.GallagherPointwise
+import GaloisForLFunctions.RHTower.Sieve.WindowDisjointness
+import GaloisForLFunctions.RHTower.Sieve.GallagherSum
+import GaloisForLFunctions.RHTower.Sieve.AmGmIntegral
+import GaloisForLFunctions.RHTower.Sieve.LargeSieveGallagher
+import GaloisForLFunctions.RHTower.Sieve.LargeSieveFinite
+import GaloisForLFunctions.RHTower.Sieve.LargeSieveFinset
+import GaloisForLFunctions.RHTower.Sieve.LargeSieveCircleSharp
+import GaloisForLFunctions.RHTower.Sieve.FareySharp
 import GaloisForLFunctions.RHTower.Sieve.ChernoffTails
 import GaloisForLFunctions.RHTower.Sieve.GeometricMeanDivisor
 import GaloisForLFunctions.RHTower.Sieve.IntervalMultiples
@@ -3823,6 +3834,7 @@ import GaloisForLFunctions.RHTower.SuzukiSafeShiftTransverseChargeBudget
 import GaloisForLFunctions.RHTower.SuzukiScrewCesaroCurvatureRecurrence
 import GaloisForLFunctions.RHTower.SuzukiScrewCesaroLandauRecurrence
 import GaloisForLFunctions.RHTower.SuzukiScrewCompactHullParityLaw
+import GaloisForLFunctions.RHTower.SuzukiScrewCorrelationPairing
 import GaloisForLFunctions.RHTower.SuzukiScrewDisjointCrossCoupling
 import GaloisForLFunctions.RHTower.SuzukiScrewDistributionalKernel
 import GaloisForLFunctions.RHTower.SuzukiScrewKernelRegularity

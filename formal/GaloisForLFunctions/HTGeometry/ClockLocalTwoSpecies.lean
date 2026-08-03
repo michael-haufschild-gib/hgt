@@ -70,6 +70,13 @@ theorem scale_reconstruction_of_local_probes {d : ℕ} (M : SmoothMetricChart d)
 noncomputable def flatChartTwo : SmoothMetricChart (1 + 1) :=
   (SmoothPseudoMetric.ofSignature nullEps nullEps_ne_zero).chart
 
+/-- **In dimension two the conformal conjugation weight vanishes**, so the weight `0` used
+throughout this section is the physical one and no conjugation is needed. -/
+theorem conformalDimensionWeight_two :
+    ExponentialSecondOrderClockCalculus.conformalDimensionWeight (1 + 1) = 0 := by
+  rw [ExponentialSecondOrderClockCalculus.conformalDimensionWeight]
+  norm_num
+
 /-- At the two-dimensional conformal weight the effective potential is the bare rescaled mass. -/
 theorem conformalPotential_weight_zero {d : ℕ} (M : SmoothMetricChart d) (massSq : ℝ)
     (σ : (Fin d → ℝ) → ℝ) :
@@ -124,5 +131,113 @@ theorem twoSpecies_reconstructedScale_two_dimensional {σ : (Fin (1 + 1) → ℝ
     reconstructedScale other₁ other₂ massSq 0 x = Real.exp (2 * σ x) := by
   rw [reconstructedScale, sub_zero]
   exact twoSpecies_scale_reconstruction_two_dimensional hσ hmass h₁ h₂ x
+
+/-! ## Probes on open regions
+
+A probe solving the equation at a single event is not a clock: the equation at one point is one
+linear relation between the second derivatives there, and a quadratic polynomial satisfies it. The
+physical notion is a solution on an open region, and the determination hypothesis should quantify
+over those. Everything above transports to that reading, and the two-dimensional construction
+supplies it, because its probe solves on a whole neighbourhood and is nonvanishing throughout.
+-/
+
+section OpenProbes
+
+variable {Y : Type v} [TopologicalSpace Y]
+
+/-- A family of clock probes, one for each event, each solving the equation on an open neighbourhood
+of its event and nonvanishing throughout it. -/
+def OpenProbes (wave : (Y → ℝ) → (Y → ℝ)) (potential : Y → ℝ) : Prop :=
+  ∀ x : Y, ∃ W : Set Y, IsOpen W ∧ x ∈ W ∧ ∃ u : Y → ℝ,
+    SolvesPotentialWaveOn wave potential u W ∧ ∀ y ∈ W, u y ≠ 0
+
+/-- **Probes on open regions determine the potential.** -/
+theorem potential_eq_of_openProbes {wave : (Y → ℝ) → (Y → ℝ)} {potential other : Y → ℝ}
+    (hopen : OpenProbes wave potential)
+    (h : ∀ (u : Y → ℝ) (W : Set Y), IsOpen W →
+      SolvesPotentialWaveOn wave potential u W → SolvesPotentialWaveOn wave other u W) :
+    other = potential := by
+  funext x
+  obtain ⟨W, hWopen, hxW, u, hu, hune⟩ := hopen x
+  exact potential_eqOn_of_solvesOn hu (h u W hWopen hu) hune hxW
+
+/-- A single globally nonvanishing global solution already gives probes on open regions. -/
+theorem openProbes_of_solves {wave : (Y → ℝ) → (Y → ℝ)} {potential u : Y → ℝ}
+    (hu : SolvesPotentialWave wave potential u) (hune : ∀ y, u y ≠ 0) :
+    OpenProbes wave potential :=
+  fun x => ⟨Set.univ, isOpen_univ, Set.mem_univ x, u, fun y _ => hu y, fun y _ => hune y⟩
+
+end OpenProbes
+
+/-- **The two-species scale law from probes on open regions.** -/
+theorem scale_reconstruction_of_openProbes {d : ℕ} (M : SmoothMetricChart d) (a : ℝ)
+    {σ : (Fin d → ℝ) → ℝ} (hσ : ContDiff ℝ ∞ σ) {massSq : ℝ} (hmass : massSq ≠ 0)
+    (hop₁ : OpenProbes M.dalembert (M.conformalPotential a massSq σ))
+    {other₁ other₂ : (Fin d → ℝ) → ℝ}
+    (h₁ : ∀ (u : (Fin d → ℝ) → ℝ) (W : Set (Fin d → ℝ)), IsOpen W →
+      SolvesPotentialWaveOn M.dalembert (M.conformalPotential a massSq σ) u W →
+        SolvesPotentialWaveOn M.dalembert other₁ u W)
+    (h₂ : ∀ (u : (Fin d → ℝ) → ℝ) (W : Set (Fin d → ℝ)), IsOpen W →
+      SolvesPotentialWaveOn M.dalembert (M.conformalPotential a 0 σ) u W →
+        SolvesPotentialWaveOn M.dalembert other₂ u W)
+    (x : Fin d → ℝ) :
+    (other₁ x - other₂ x) / massSq = Real.exp (2 * σ x) := by
+  have e₁ : other₁ = M.conformalPotential a massSq σ := potential_eq_of_openProbes hop₁ h₁
+  have e₂ : other₂ = M.conformalPotential a 0 σ :=
+    potential_eq_of_openProbes
+      (openProbes_of_solves (solvesPotentialWave_masslessProbe M a hσ)
+        (masslessProbe_ne_zero a σ)) h₂
+  rw [e₁, e₂, M.conformalPotential_difference a massSq 0 σ x, sub_zero]
+  field_simp
+
+/-- **A two-dimensional clock species has probes on open regions at every event,
+unconditionally.** -/
+theorem openProbes_conformalPotential_two {σ : (Fin (1 + 1) → ℝ) → ℝ} (hσ : ContDiff ℝ ∞ σ)
+    (massSq : ℝ) :
+    OpenProbes flatChartTwo.dalembert (flatChartTwo.conformalPotential 0 massSq σ) := by
+  have hσ1 : ContDiff ℝ 1 σ := hσ.of_le (by exact_mod_cast le_top)
+  have hV : ContDiff ℝ 1 fun y : Fin (1 + 1) → ℝ => massSq * Real.exp (2 * σ y) :=
+    contDiff_const.mul (Real.contDiff_exp.comp (contDiff_const.mul hσ1))
+  rw [conformalPotential_weight_zero]
+  intro x
+  obtain ⟨W, hWopen, hxW, U, hUon, hUne, _⟩ := exists_clockProbe_on_two_dimensional hV x
+  exact ⟨W, hWopen, hxW, U, hUon, hUne⟩
+
+/-- **The two-species conformal clock scale law in two dimensions, from probes on open regions,
+unconditionally.**
+
+This is the physical form of the reconstruction: the probe families quantified over are genuine
+solutions on open regions, and the massive family required as input is proved to exist rather than
+assumed. -/
+theorem twoSpecies_scale_reconstruction_open_two_dimensional {σ : (Fin (1 + 1) → ℝ) → ℝ}
+    (hσ : ContDiff ℝ ∞ σ) {massSq : ℝ} (hmass : massSq ≠ 0)
+    {other₁ other₂ : (Fin (1 + 1) → ℝ) → ℝ}
+    (h₁ : ∀ (u : (Fin (1 + 1) → ℝ) → ℝ) (W : Set (Fin (1 + 1) → ℝ)), IsOpen W →
+      SolvesPotentialWaveOn flatChartTwo.dalembert
+          (flatChartTwo.conformalPotential 0 massSq σ) u W →
+        SolvesPotentialWaveOn flatChartTwo.dalembert other₁ u W)
+    (h₂ : ∀ (u : (Fin (1 + 1) → ℝ) → ℝ) (W : Set (Fin (1 + 1) → ℝ)), IsOpen W →
+      SolvesPotentialWaveOn flatChartTwo.dalembert (flatChartTwo.conformalPotential 0 0 σ) u W →
+        SolvesPotentialWaveOn flatChartTwo.dalembert other₂ u W)
+    (x : Fin (1 + 1) → ℝ) :
+    (other₁ x - other₂ x) / massSq = Real.exp (2 * σ x) :=
+  scale_reconstruction_of_openProbes flatChartTwo 0 hσ hmass
+    (openProbes_conformalPotential_two hσ massSq) h₁ h₂ x
+
+/-- The packaged form: the reconstructed scale of the two species is the conformal scale. -/
+theorem twoSpecies_reconstructedScale_open_two_dimensional {σ : (Fin (1 + 1) → ℝ) → ℝ}
+    (hσ : ContDiff ℝ ∞ σ) {massSq : ℝ} (hmass : massSq ≠ 0)
+    {other₁ other₂ : (Fin (1 + 1) → ℝ) → ℝ}
+    (h₁ : ∀ (u : (Fin (1 + 1) → ℝ) → ℝ) (W : Set (Fin (1 + 1) → ℝ)), IsOpen W →
+      SolvesPotentialWaveOn flatChartTwo.dalembert
+          (flatChartTwo.conformalPotential 0 massSq σ) u W →
+        SolvesPotentialWaveOn flatChartTwo.dalembert other₁ u W)
+    (h₂ : ∀ (u : (Fin (1 + 1) → ℝ) → ℝ) (W : Set (Fin (1 + 1) → ℝ)), IsOpen W →
+      SolvesPotentialWaveOn flatChartTwo.dalembert (flatChartTwo.conformalPotential 0 0 σ) u W →
+        SolvesPotentialWaveOn flatChartTwo.dalembert other₂ u W)
+    (x : Fin (1 + 1) → ℝ) :
+    reconstructedScale other₁ other₂ massSq 0 x = Real.exp (2 * σ x) := by
+  rw [reconstructedScale, sub_zero]
+  exact twoSpecies_scale_reconstruction_open_two_dimensional hσ hmass h₁ h₂ x
 
 end GaloisForLFunctions.HTGeometry

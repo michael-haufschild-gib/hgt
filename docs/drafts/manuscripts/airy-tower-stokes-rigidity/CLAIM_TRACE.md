@@ -52,7 +52,7 @@ premise for a paper result.
 | Infinite local obstruction family beyond ultrametricity | Corollary 7.3 / Corollary 9.3 | `ramificationTwo_edge_three_forbidden`, `ramificationTwo_four_mul_add_three_forbidden`; direct check and targeted build passed |
 | Decorated finite-fibre theorem and complete enumeration | Theorem 8.1 | `Characteristic.finite`, `finite_fixedWeightedCharacteristic`, `DecoratedDiagram.PairFissionDatum.fixedPart_le`, `DecoratedDiagram.PairFissionDatum.fissionNumerator_le`, `DecoratedDiagram.PairFissionDatum.fissionNumerator_unique`, `DecoratedDiagram.decorated_fissionTree_fiber_finite`, `DecoratedDiagram.mem_enumerateDecoratedFissionTreeFiber`; direct check and targeted build passed |
 | Finite dendrogram and distinct coefficient assignment | Lemma 9.2 | `FiniteContactDendrogram.strictThresholdSetoid`, `FiniteContactDendrogram.threshold_mono`, `FiniteContactDendrogram.exact_highestDifference`, `ElementaryDecoratedGraph.finiteDistinctCoefficients_injective`; direct checks and targeted builds passed |
-| Elementary recognition necessity/sufficiency with collected coefficients | Theorem 1.4 / Theorem 9.1 | `nonempty_elementaryFissionEncoding_iff_certificate`, `pairPresentation_hasUncancelledHighestDifferenceStage_indexed`, `ElementaryDecoratedGraph.uncancelledStage_gives_highestDifferenceExponent`, `ElementaryDecoratedGraph.fissionEncoding_globalPuiseux_realizes_all_pairs`, `ElementaryDecoratedGraph.globalPuiseux_realization_of_certificate`; direct checks and targeted builds passed |
+| Elementary recognition necessity/sufficiency with collected coefficients | Theorem 1.4 / Theorem 9.1 | `nonempty_elementaryFissionEncoding_iff_certificate`; `ElementaryDecoratedGraph.StageRealizesEdge`, `pairPresentation_hasUncancelledHighestDifferenceStage_indexed`, and `ElementaryDecoratedGraph.uncancelledStage_gives_highestDifferenceExponent` tie each of the nine mechanisms to the prescribed edge after coefficient collection; `ElementaryDecoratedGraph.globalPuiseuxPolynomial_mandatory_ne_zero`, `ElementaryDecoratedGraph.globalPuiseuxPolynomial_hasElementarySupport`, and `ElementaryDecoratedGraph.globalPuiseuxPolynomial_isElementary` certify actual elementary polynomials; `ElementaryDecoratedGraph.fissionEncoding_globalPuiseux_realizes_all_pairs`, `ElementaryDecoratedGraph.globalPuiseux_realization_of_certificate`; direct checks and targeted builds passed |
 | Exact recognition query count and cubic bound | Theorem 9.1 | `ElementaryDecoratedGraph.all_recognitionQueries_iff_certificate`, `ElementaryDecoratedGraph.card_recognitionQuery`, `ElementaryDecoratedGraph.recognitionComparisonBudget_le_two_cubes`, `ElementaryDecoratedGraph.globalPuiseux_reconstruction_of_all_queries`; direct check and targeted build passed |
 | All-ramified edge triple worked example | Example 10.1 | `allRamified_example_edges`; direct check and targeted build passed |
 | Exponential hidden fibres | Example 10.2 | `OrderedFactorization.airyTowerCount_primePower`, `SeparatedFiberDatum.hiddenFiber_card`, `SeparatedFiberDatum.realizedCoreEdge_independent_of_hidden`; passed |
@@ -72,9 +72,9 @@ premise for a paper result.
 ## Current audit status
 
 The previously open Fourier-source, global decorated-fibre, coefficient-collection and complexity
-obligations now have declarations listed above.  The whole-paper completion verdict remains
-withheld pending final targeted module builds, lint, axiom audit, PDF render inspection, literature
-refresh, and a new hostile review of this stronger version.
+obligations now have declarations listed above.  In particular, global realization no longer
+returns a semantically empty highest exponent: its witness proves both the exact prescribed-edge
+equation and elementary support of every collected polynomial.
 
 Current additions checked directly with `lake env lean` include the universal contact master law,
 canonical cut construction and metric axioms, genuine interval-integral contact law, simultaneous
@@ -83,8 +83,12 @@ and actual numeric squarefree ordered-Bell count.  Targeted dependency `.olean` 
 needed.  `StokesPuiseuxSourceLaw` additionally verifies the genuine complex Galois action, exact
 stabilizer coarea, minimal orbit size, ordered sheet-difference irregularity and recovered loop.
 `StokesPairPuiseuxSourceLaw` closes the actual two-orbit complex phase, common-part and fission edge
-source chain.
-No full final build has yet been run for this stronger version.
+source chain.  Direct source checks and targeted builds of the strengthened realization and
+recognition modules passed.  `/tmp/hgt_stokes_final_axioms.lean` reports only `propext`,
+`Classical.choice`, and `Quot.sound`.  The 17-page PDF compiled without warnings and every rendered
+page passed visual inspection.  Repository lint reaches these modules without any Stokes error;
+its global exit remains nonzero only because concurrently added `RHTower` modules are not yet wired
+into their unrelated umbrella.
 
 ## Superseded snapshot evidence
 

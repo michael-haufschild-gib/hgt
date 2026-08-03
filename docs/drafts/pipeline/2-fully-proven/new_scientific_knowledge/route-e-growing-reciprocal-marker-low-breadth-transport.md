@@ -1661,3 +1661,147 @@ pairwise disjoint, so summing this bound over such a family replaces the local i
 integral over one period, which `TrigParseval.lean` and `TrigDerivative.lean` evaluate as
 `∑_n |c_n|²` and `∑_n (2πn)²|c_n|²`. That yields the constant `N + δ^{-1}` in place of the
 logarithmic one — the sharp shape.
+
+### Formal layer — disjoint windows
+
+`formal/GaloisForLFunctions/RHTower/Sieve/WindowDisjointness.lean`:
+
+- `sum_window_le` — **`∑_{r ≤ R} ∫_{λ_r−δ/2}^{λ_r+δ/2} g ≤ ∫_A^{λ_R+δ/2} g`** for continuous
+  nonnegative `g` and points with consecutive gaps at least `δ`.
+
+Unconditional. The separation gives `λ_r + δ/2 ≤ λ_{r+1} − δ/2`, so the windows do not overlap and
+the induction step splits the enclosing integral into the part already counted, a gap carrying a
+nonnegative integrand, and the new window. No measure theory beyond additivity over adjacent
+intervals is used — in particular no `Set.PairwiseDisjoint` or `integral_iUnion`, which the ordered
+case makes unnecessary.
+
+This is the global half of Gallagher's argument. Applied to `g = |S|²` and `g = 2|S||S'|` it converts
+the local bounds of `GallagherPointwise.lean` into integrals over a single enclosing interval, which
+`TrigParseval.lean` and `TrigDerivative.lean` evaluate in the coefficient energy.
+
+### Formal layer — Gallagher's bound over a separated family
+
+`formal/GaloisForLFunctions/RHTower/Sieve/GallagherSum.lean`:
+
+- `gallagher_sum` — **`∑_{r ≤ R} |S(λ_r)|² ≤ δ^{-1} ∫_A^{λ_R+δ/2} |S|² + ∫_A^{λ_R+δ/2} 2|S||S'|`**
+  for points with consecutive gaps at least `δ`.
+
+Unconditional. The right-hand side no longer mentions the points at all — only the enclosing
+interval. That is the substance of the method: no sum of reciprocal separations is ever formed, so
+the logarithmic loss `sum_inv_abs_dist_le` proves unavoidable for term-by-term arguments simply does
+not arise here.
+
+What remains to the sharp constant is arithmetic on the right-hand side: Cauchy–Schwarz on
+`∫ |S||S'|`, then `TrigParseval.lean` and `TrigDerivative.lean` to replace the two integrals by
+`∑_n |c_n|²` and `∑_n (2πn)² |c_n|²`, giving `δ^{-1} + 4πN` in place of the current
+`N + O(δ^{-1} log δ^{-1})`.
+
+### Formal layer — splitting the mixed term
+
+`formal/GaloisForLFunctions/RHTower/Sieve/AmGmIntegral.lean`:
+
+- `two_mul_le_amgm` — `2ab ≤ ε a² + ε^{-1} b²` for every `ε > 0`, from `(εa − b)² ≥ 0`.
+- `integral_mixed_le` — **`∫ 2|S||S'| ≤ ε ∫ |S|² + ε^{-1} ∫ |S'|²`**.
+
+Both unconditional. The pointwise inequality is used rather than Cauchy–Schwarz for integrals: it
+keeps the argument elementary, avoids any `L^p` theory, and leaves `ε` free so the two contributions
+can be balanced at the end. Choosing `ε = 2πN` will make both equal, since the derivative energy
+carries the factor `(2πN)²`.
+
+With `gallagher_sum` this reduces the sharp large sieve to the two energies alone. What remains is
+substituting Parseval and the derivative energy over a full period and choosing `ε`.
+
+### Formal layer — the large sieve with the SHARP constant
+
+`formal/GaloisForLFunctions/RHTower/Sieve/LargeSieveGallagher.lean`:
+
+- `gallagher_period` — Gallagher's bound with both integrals over a full period.
+- `largeSieve_gallagher` — **`∑_{r ≤ R} |S(λ_r)|² ≤ (δ^{-1} + 4πN) ∑_{n < N} |c_n|²`** for
+  `S(t) = ∑_{n<N} c_n e(nt)` and points inside one period with consecutive gaps at least `δ`.
+
+Unconditional. **The constant has the sharp shape `N + δ^{-1}` — the logarithm is gone.**
+
+This settles the quantitative question left open by the earlier chain in this folder. The weak form
+(`largeSieve_separated_explicit`) carries `Δ = N + O(δ^{-1} log δ^{-1})`, and `sum_inv_abs_dist_le`
+proves that logarithm is unavoidable for *any* argument that bounds `∑_{t ≠ r} |λ_t − λ_r|^{-1}` term
+by term. Gallagher's route reaches the sharp constant by never forming that sum at all: the local
+Sobolev bounds at the separated points are absorbed into a single integral over the period by
+disjointness of their windows, and the two resulting energies are evaluated by Parseval and the
+derivative energy, with the AM–GM parameter set to `2πN` to balance them.
+
+Both statements now coexist in the corpus, and neither contradicts the other: the no-go applies to
+the method, not to the theorem.
+
+### Formal layer — the sharp large sieve for finitely many points
+
+`formal/GaloisForLFunctions/RHTower/Sieve/LargeSieveFinite.lean`:
+
+- `extendSeq`, `extendSeq_of_le`, `gap_extendSeq` — a finite family of points continued
+  arithmetically past the last one; the continuation keeps the gap at every step and changes nothing
+  below `R`.
+- `largeSieve_gallagher_finite` — **`∑_{r ≤ R} |S(λ_r)|² ≤ (δ^{-1} + 4πN) ∑_{n<N} |c_n|²`**, needing
+  the gap only between consecutive points that are actually used.
+
+All unconditional. `largeSieve_gallagher` asks for a sequence whose *every* consecutive gap is at
+least `δ`, which no application can supply — points come in finite families. The arithmetic
+continuation removes that mismatch without touching the proof.
+
+Note that `gap_extendSeq` needs no positivity hypothesis on `δ`: continuing by arithmetic steps
+preserves the inequality whatever the sign, and the linter caught the unused assumption.
+
+### Formal layer — the sharp large sieve for a separated set
+
+`formal/GaloisForLFunctions/RHTower/Sieve/LargeSieveFinset.lean`:
+
+- `largeSieve_gallagher_finset` — **`∑_{x ∈ s} |S(x)|² ≤ (δ^{-1} + 4πN) ∑_{n<N} |c_n|²`** for any
+  finite `s ⊆ [δ/2, 1−δ/2]` whose distinct elements are `δ` apart.
+
+Unconditional. Applications supply a *set* with pairwise separation, never an increasing sequence;
+listing the set in increasing order (`Finset.orderIsoOfFin`) converts pairwise separation into
+consecutive separation, because for an increasing enumeration the consecutive gap is the smallest
+one. The reindexing of the sum is the order isomorphism.
+
+The sharp constant is now available in the form a sieve argument consumes — the same interface as
+the weak `largeSieve_separated_explicit`, but with `δ^{-1} + 4πN` in place of
+`N + O(δ^{-1} log δ^{-1})`. For the Farey set of order `Q` (`δ = Q^{-2}`, established by
+`fareySet_sep`) this reads `Q² + 4πN`, the classical `N + Q²` up to the constant.
+
+### Formal layer — the sharp bound from circle separation
+
+`formal/GaloisForLFunctions/RHTower/Sieve/LargeSieveCircleSharp.lean`:
+
+- `toIntDist_le_abs` — the circle distance never exceeds the ordinary one (it is the distance to the
+  *nearest* integer, and `0` is one of them).
+- `largeSieve_gallagher_circle` — **the sharp bound `(δ^{-1} + 4πN)` under a `ℝ/ℤ`-separation
+  hypothesis**, which is the form arithmetic families supply.
+
+Unconditional. This is the last interface mismatch: `fareySet_sep` and every other arithmetic
+separation statement in this folder bound `toIntDist`, whereas Gallagher's argument is stated for
+real separation. Circle separation is the stronger hypothesis, so the implication is one lemma.
+
+Caveat recorded for the Farey instantiation: `fareySet Q` as defined here contains the pair `(1,1)`,
+whose value is the endpoint `1`, and the window condition `x + δ/2 ≤ 1` excludes it. The set the
+sharp bound applies to is the *proper* Farey set `1 ≤ a < q ≤ Q`, which lies in
+`[Q^{-1}, 1 − Q^{-1}] ⊆ [δ/2, 1 − δ/2]` for `δ = Q^{-2}`. That restriction is genuine, not an
+artefact — the endpoint and `0` are the same point of `ℝ/ℤ`, so they cannot both sit in an interval
+of the line.
+
+### Formal layer — the SHARP arithmetic large sieve
+
+`formal/GaloisForLFunctions/RHTower/Sieve/FareySharp.lean`:
+
+- `properFareySet`, `properFareyReals`, `mem_properFareySet` — the proper Farey fractions of order
+  `Q` (reduced `a/q` with `1 ≤ a < q ≤ Q`) and their values.
+- `largeSieve_farey_sharp` — **`∑_{a/q} |S(a/q)|² ≤ (Q² + 4πN) ∑_{n<N} |c_n|²`** for `Q ≥ 2`.
+
+Unconditional. This is the classical `N + Q²` up to the absolute constant, with **no logarithm** —
+the arithmetic form of the sharp large sieve, and the endpoint of the Gallagher construction begun
+sixteen modules ago.
+
+Compare `largeSieve_expSum_farey` earlier in this folder, which gives
+`N + Q²(1 + log(Q²/2 + 1))` over the full Farey set. Both are proved; the sharp one restricts to the
+proper fractions, for the reason recorded above: `1/1` has value `1`, the same point of `ℝ/ℤ` as `0`,
+and no interval of the line can contain both while keeping the family separated.
+
+The route's large-sieve input is therefore complete at the classical strength, in both the
+inner-product, exponential-sum, and arithmetic formulations.

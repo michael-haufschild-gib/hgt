@@ -140,8 +140,9 @@ theorem continuousOn_screwRegularKernel : ContinuousOn screwRegularKernel (Ioi 0
 /-! ## The construction -/
 
 /-- **Positive cross coupling at disjoint supports.**  For every aperture `a > t_*/2` there are
-two nonzero nonnegative smooth bumps supported in `(-a, a)` with disjoint supports whose regular
-screw pairing is strictly positive. -/
+two nonzero nonnegative smooth compactly supported bumps inside `(-a, a)` with disjoint supports,
+whose support difference stays strictly beyond the sign threshold and avoids every prime-power
+atom, and whose regular screw pairing is strictly positive. -/
 theorem exists_disjoint_positive_screwRegularForm {a : ℝ} (ha : screwSignThreshold / 2 < a) :
     ∃ f h : ℝ → ℝ,
       ContDiff ℝ (⊤ : ℕ∞) f ∧ ContDiff ℝ (⊤ : ℕ∞) h ∧
@@ -149,6 +150,9 @@ theorem exists_disjoint_positive_screwRegularForm {a : ℝ} (ha : screwSignThres
       (∃ x, f x ≠ 0) ∧ (∃ x, h x ≠ 0) ∧
       Function.support f ⊆ Ioo (-a) a ∧ Function.support h ⊆ Ioo (-a) a ∧
       Disjoint (Function.support f) (Function.support h) ∧
+      HasCompactSupport f ∧ HasCompactSupport h ∧
+      (∀ x ∈ tsupport h, ∀ y ∈ tsupport f,
+        screwSignThreshold < x - y ∧ ∀ n : ℕ, 2 ≤ n → x - y ≠ Real.log n) ∧
       0 < screwRegularForm f h := by
   classical
   have hthr : 0 < screwSignThreshold := screwSignThreshold_pos
@@ -251,7 +255,7 @@ theorem exists_disjoint_positive_screwRegularForm {a : ℝ} (ha : screwSignThres
   have hform : screwRegularForm (F : ℝ → ℝ) (H : ℝ → ℝ) = ∫ p in R, G p := by
     rw [screwRegularForm, ← setIntegral_eq_integral_of_forall_compl_eq_zero hGzero]
   refine ⟨(F : ℝ → ℝ), (H : ℝ → ℝ), F.contDiff, H.contDiff, fun _ => F.nonneg,
-    fun _ => H.nonneg, ⟨-(t / 2), ?_⟩, ⟨t / 2, ?_⟩, ?_, ?_, ?_, ?_⟩
+    fun _ => H.nonneg, ⟨-(t / 2), ?_⟩, ⟨t / 2, ?_⟩, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · exact ne_of_gt (F.pos_of_mem_ball (by simpa [hFout] using hrpos))
   · exact ne_of_gt (H.pos_of_mem_ball (by simpa [hHout] using hrpos))
   · rw [hFsupp]
@@ -265,6 +269,17 @@ theorem exists_disjoint_positive_screwRegularForm {a : ℝ} (ha : screwSignThres
     have := hx.2
     have := hx'.1
     linarith
+  · exact F.hasCompactSupport
+  · exact H.hasCompactSupport
+  · intro x hx y hy
+    rw [H.tsupport_eq, hHout, Real.closedBall_eq_Icc] at hx
+    rw [F.tsupport_eq, hFout, Real.closedBall_eq_Icc] at hy
+    have hpR : ((x, y) : ℝ × ℝ) ∈ R := by
+      refine Set.mem_prod.mpr ⟨?_, ?_⟩
+      · rw [hKx]; exact hx
+      · rw [hKy]; exact hy
+    obtain ⟨hlt, habs⟩ := hgap (x, y) hpR
+    exact ⟨hlt, fun n hn => hεatom (x - y) habs n hn⟩
   · rw [hform]; exact hpos
 
 /-- **No scalar shift of the restricted regular screw form satisfies the first Beurling–Deny
@@ -274,7 +289,7 @@ theorem not_satisfiesBeurlingDeny_screwRegularForm_add_smul (c : ℝ) {a : ℝ}
     (ha : screwSignThreshold / 2 < a) :
     ¬ SatisfiesBeurlingDeny fun f h => screwRegularForm f h + c * screwL2Pairing f h := by
   intro hBD
-  obtain ⟨f, h, _, _, hfnn, hhnn, _, _, _, _, hdisj, hposform⟩ :=
+  obtain ⟨f, h, _, _, hfnn, hhnn, _, _, _, _, hdisj, _, _, _, hposform⟩ :=
     exists_disjoint_positive_screwRegularForm ha
   have hle := hBD f h hfnn hhnn hdisj
   simp only [screwL2Pairing_eq_zero_of_disjoint hdisj, mul_zero, add_zero] at hle

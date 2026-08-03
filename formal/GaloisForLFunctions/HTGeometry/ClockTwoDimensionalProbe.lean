@@ -107,13 +107,14 @@ theorem hasDerivAt_planarSnd (hF : ContDiff ℝ 1 F) (ξ t : ℝ) :
 /-! ## The probe -/
 
 /-- **Every continuously differentiable potential on a two-dimensional clock spacetime admits a
-clock probe normalised to `1` at any prescribed event.** -/
-theorem exists_clockProbe_two_dimensional {V : (Fin (1 + 1) → ℝ) → ℝ} (hV : ContDiff ℝ 1 V)
+clock probe on a neighbourhood of any prescribed event, nonvanishing throughout and normalised to
+`1` at the event.** -/
+theorem exists_clockProbe_on_two_dimensional {V : (Fin (1 + 1) → ℝ) → ℝ} (hV : ContDiff ℝ 1 V)
     (x : Fin (1 + 1) → ℝ) :
-    ∃ U : (Fin (1 + 1) → ℝ) → ℝ,
-      SolvesPotentialWaveAt
-          (SmoothPseudoMetric.ofSignature nullEps nullEps_ne_zero).chart.dalembert V U x ∧
-        U x = 1 := by
+    ∃ W : Set (Fin (1 + 1) → ℝ), IsOpen W ∧ x ∈ W ∧ ∃ U : (Fin (1 + 1) → ℝ) → ℝ,
+      SolvesPotentialWaveOn
+          (SmoothPseudoMetric.ofSignature nullEps nullEps_ne_zero).chart.dalembert V U W ∧
+        (∀ y ∈ W, U y ≠ 0) ∧ U x = 1 := by
   classical
   set F : ℝ × ℝ → ℝ := nullKernel V with hF_def
   have hFC : ContDiff ℝ 1 F := contDiff_nullKernel hV
@@ -133,27 +134,77 @@ theorem exists_clockProbe_two_dimensional {V : (Fin (1 + 1) → ℝ) → ℝ} (h
     intro ξ hξ t ht
     have := hMbound (ξ, t) ⟨hξ, ht⟩
     rwa [Real.norm_eq_abs] at this
-  obtain ⟨h, hh, u, A, B, Aa, Ab, Ba, Bb, hu0, _hujoint, hC1u, hC1A, hC1B, hAbeq, hBaeq⟩ :=
+  obtain ⟨h, hh, u, A, B, Aa, Ab, Ba, Bb, hu0, hujoint, hC1u, hC1A, hC1B, hAbeq, hBaeq⟩ :=
     exists_goursat_C2 (fun ξ η => F (ξ, η)) (planarFst F) (planarSnd F) b b' c c' M
       hFC.continuous (continuous_planarFst hFC) (continuous_planarSnd hFC)
       (hasDerivAt_planarFst hFC) (hasDerivAt_planarSnd hFC) hbb hcc hM0 hM ξ₀
   have hmemΩ : ((ξ₀, η₀) : ℝ × ℝ) ∈ (Ioo (ξ₀ - h) (ξ₀ + h) ∩ Ioo c c') ×ˢ Ioo b b' :=
     ⟨⟨⟨by linarith, by linarith⟩, by rw [hc, hc']; constructor <;> linarith⟩,
       by rw [hb, hb']; constructor <;> linarith⟩
-  have hx : nullFrame x ∈ chartBox ((Ioo (ξ₀ - h) (ξ₀ + h) ∩ Ioo c c') ×ˢ Ioo b b') := hmemΩ
-  have hker : F (ξ₀, η₀) = V x / 4 := by
-    rw [hF_def, hξ₀, hη₀]
-    exact nullKernel_nullFrame V x
-  have hchar : Ab (nullFrame x 0) (nullFrame x 1) + Ba (nullFrame x 0) (nullFrame x 1)
-      = V x * u (nullFrame x 0) (nullFrame x 1) / 2 := by
-    rw [← hξ₀, ← hη₀, hAbeq (ξ₀, η₀) hmemΩ, hBaeq (ξ₀, η₀) hmemΩ]
-    show F (ξ₀, η₀) * u ξ₀ η₀ + F (ξ₀, η₀) * u ξ₀ η₀ = V x * u ξ₀ η₀ / 2
-    rw [hker]
+  have hΩopen : IsOpen ((Ioo (ξ₀ - h) (ξ₀ + h) ∩ Ioo c c') ×ˢ Ioo b b') :=
+    (isOpen_Ioo.inter isOpen_Ioo).prod isOpen_Ioo
+  have hcontNull : Continuous (nullFrame : (Fin (1 + 1) → ℝ) → Fin (1 + 1) → ℝ) :=
+    continuous_frameMap nullCovectors
+  have hpair : Continuous fun y : Fin (1 + 1) → ℝ =>
+      ((nullFrame y 0, nullFrame y 1) : ℝ × ℝ) :=
+    ((continuous_apply 0).comp hcontNull).prodMk ((continuous_apply 1).comp hcontNull)
+  have hUcont : Continuous (nullChartFun u) := hujoint.comp hpair
+  have hker : ∀ x' : Fin (1 + 1) → ℝ, F (nullFrame x' 0, nullFrame x' 1) = V x' / 4 := by
+    intro x'
+    rw [hF_def]
+    exact nullKernel_nullFrame V x'
+  have hchar : ∀ x' : Fin (1 + 1) → ℝ,
+      nullFrame x' ∈ chartBox ((Ioo (ξ₀ - h) (ξ₀ + h) ∩ Ioo c c') ×ˢ Ioo b b') →
+      Ab (nullFrame x' 0) (nullFrame x' 1) + Ba (nullFrame x' 0) (nullFrame x' 1)
+        = V x' * u (nullFrame x' 0) (nullFrame x' 1) / 2 := by
+    intro x' hx'
+    rw [hAbeq (nullFrame x' 0, nullFrame x' 1) hx',
+      hBaeq (nullFrame x' 0, nullFrame x' 1) hx']
+    show F (nullFrame x' 0, nullFrame x' 1) * u (nullFrame x' 0) (nullFrame x' 1)
+        + F (nullFrame x' 0, nullFrame x' 1) * u (nullFrame x' 0) (nullFrame x' 1)
+      = V x' * u (nullFrame x' 0) (nullFrame x' 1) / 2
+    rw [hker x']
     ring
-  refine ⟨nullChartFun u, solvesPotentialWaveAt_nullChartFun hC1u hC1A hC1B hx hchar, ?_⟩
-  show u (nullFrame x 0) (nullFrame x 1) = 1
-  rw [← hξ₀]
-  exact hu0 _
+  have hU1 : nullChartFun u x = 1 := by
+    show u (nullFrame x 0) (nullFrame x 1) = 1
+    rw [← hξ₀]
+    exact hu0 _
+  have hxne : x ∈ {y : Fin (1 + 1) → ℝ | nullChartFun u y ≠ 0} := by
+    show nullChartFun u x ≠ 0
+    rw [hU1]
+    exact one_ne_zero
+  refine ⟨(nullFrame ⁻¹' chartBox ((Ioo (ξ₀ - h) (ξ₀ + h) ∩ Ioo c c') ×ˢ Ioo b b'))
+      ∩ {y | nullChartFun u y ≠ 0},
+    ((isOpen_chartBox hΩopen).preimage hcontNull).inter (isOpen_ne.preimage hUcont),
+    ⟨hmemΩ, hxne⟩, nullChartFun u, ?_, fun y hy => hy.2, hU1⟩
+  intro x' hx'
+  exact solvesPotentialWaveAt_nullChartFun hC1u hC1A hC1B hx'.1 (hchar x' hx'.1)
+
+/-- **Every continuously differentiable potential on a two-dimensional clock spacetime admits a
+clock probe normalised to `1` at any prescribed event.** -/
+theorem exists_clockProbe_two_dimensional {V : (Fin (1 + 1) → ℝ) → ℝ} (hV : ContDiff ℝ 1 V)
+    (x : Fin (1 + 1) → ℝ) :
+    ∃ U : (Fin (1 + 1) → ℝ) → ℝ,
+      SolvesPotentialWaveAt
+          (SmoothPseudoMetric.ofSignature nullEps nullEps_ne_zero).chart.dalembert V U x ∧
+        U x = 1 := by
+  obtain ⟨W, _, hxW, U, hUon, _, hU1⟩ := exists_clockProbe_on_two_dimensional hV x
+  exact ⟨U, hUon x hxW, hU1⟩
+
+/-- **The clock probes on regions determine a two-dimensional potential completely.** This is the
+physical form of the determination: the probes quantified over are genuine solutions on open sets,
+not functions satisfying the equation at a single event. -/
+theorem potential_eqOn_of_probes_on_two_dimensional {V₁ V₂ : (Fin (1 + 1) → ℝ) → ℝ}
+    (hV₁ : ContDiff ℝ 1 V₁)
+    (hprobe : ∀ (U : (Fin (1 + 1) → ℝ) → ℝ) (W : Set (Fin (1 + 1) → ℝ)),
+      SolvesPotentialWaveOn
+          (SmoothPseudoMetric.ofSignature nullEps nullEps_ne_zero).chart.dalembert V₁ U W →
+        SolvesPotentialWaveOn
+          (SmoothPseudoMetric.ofSignature nullEps nullEps_ne_zero).chart.dalembert V₂ U W) :
+    V₂ = V₁ := by
+  funext x
+  obtain ⟨W, _, hxW, U, hUon, hUne, _⟩ := exists_clockProbe_on_two_dimensional hV₁ x
+  exact potential_eqOn_of_solvesOn hUon (hprobe U W hUon) hUne hxW
 
 /-- **A two-dimensional clock spacetime has local probes at every event.** -/
 theorem localProbesOn_univ_two_dimensional {V : (Fin (1 + 1) → ℝ) → ℝ} (hV : ContDiff ℝ 1 V) :

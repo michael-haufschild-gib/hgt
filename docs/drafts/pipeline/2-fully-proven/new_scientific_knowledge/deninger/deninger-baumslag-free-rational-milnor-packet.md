@@ -163,7 +163,11 @@
   `GaloisForLFunctions.RHTower.DeningerRetractCohomology` (vanishing of cohomology passes to a
   retract),
   `GaloisForLFunctions.RHTower.DeningerBauCohomologyCriterion` (a cohomological criterion),
-  `GaloisForLFunctions.RHTower.DeningerUniquelyDivisibleProd` (unique roots in a product)
+  `GaloisForLFunctions.RHTower.DeningerUniquelyDivisibleProd` (unique roots in a product),
+  `GaloisForLFunctions.RHTower.DeningerDualVanishing` (a space vanishes when its dual does),
+  `GaloisForLFunctions.RHTower.DeningerFinsuppDual` (the dual of finitely supported functions),
+  `GaloisForLFunctions.RHTower.DeningerCochainDual` (the cochain differential is dual to the chain
+  differential)
 
 ## Statement
 
@@ -2604,3 +2608,31 @@ degrees one and two, and clause 5's finite-cover consequence — is proved uncon
   divisibility, amalgams destroy uniqueness of roots, and unions of root adjunctions destroy it too.
   Products are one of the few operations that preserve the property, though they do not help by
   themselves, since the cohomology of a product contains that of each factor.
+- 2026-08-03 — `deningerUniquelyDivisible_pi`: an arbitrary product of groups with unique roots has
+  unique roots.
+  The highest value next step, recorded so it is not overlooked: over a field the cochain complex of
+  a group is the linear dual of its chain complex, and duality over a field is exact, so the
+  cohomology is the dual of the homology and vanishing transfers.  Establishing that identification
+  once would carry every homological result proved here — the Bass–Serre degree two theorem, the
+  cyclic case, the subsingleton index sets — across to the cohomology the clause is stated in.  It is
+  a single structural lemma about the two standard complexes, not a new argument about the packet.
+- 2026-08-03 — First step of the duality route: `deningerEq_zero_of_dual_eq_zero` — over a field a
+  vector space whose dual vanishes is itself zero, a nonzero vector carrying a functional that does
+  not kill it.  This is the linear algebra the transfer between homology and cohomology rests on;
+  what remains for that route is the identification of the cochain complex with the dual of the chain
+  complex, where the modules match immediately — functions on tuples against finitely supported
+  functions on tuples — and the differentials are dual by construction.
+- 2026-08-03 — `deningerFinsuppDual`: the dual of the finitely supported functions on a set is the
+  space of all functions on it, with the identification computing a functional's value on a basis
+  vector.  This is the module level of the duality route: the chains of a group in each degree are
+  the finitely supported functions on tuples and the cochains are all functions on tuples, so the two
+  complexes agree degreewise under this identification.  What is left is that the differentials
+  correspond, which is a computation on basis vectors rather than a structural argument.
+- 2026-08-03 — **The cochain differential is dual to the chain differential**
+  (`deningerCochain_d_dual`), for trivial coefficients.  Evaluating both on a basis vector turns the
+  claim into the observation that the two alternating sums are the same, one acting on tuples and one
+  precomposing with them.  With the degreewise identification proved last cycle, the two standard
+  complexes of a group over a field are now known to be dual to each other in every degree and
+  differential.  What remains for the transfer is the homological algebra step — that over a field
+  the homology of the dual complex is the dual of the homology — after which every homological result
+  in this folder carries over to the cohomology the packet's clause is stated in.

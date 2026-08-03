@@ -222,12 +222,38 @@ built, and both proved theorems of this card are formalized unconditionally.
   disjointly supported vectors vanishes, so *no* scalar shift of the form satisfies the first
   Beurling--Deny inequality, hence none has a positivity preserving semigroup.
 
-All statements are unconditional: `#print axioms` returns only
-`[propext, Classical.choice, Quot.sound]`.
+`formal/GaloisForLFunctions/RHTower/SuzukiScrewDistributionalKernel.lean`
 
-Remaining formal bridge: the identification of `screwRegularForm f h` with the distributional
-pairing `⟨−g'', c_(f,h)⟩` of the screw function itself, by two integrations by parts on an
-atom-free interval.  This is the only step of `(1)`--`(14)` not yet in Lean.
+- `exists_affine_screwPrimeSum_Ioo` — on an atom-free open interval the hinge sum is not merely
+  locally but **globally** one affine function, because every atom then lies outside the interval.
+- `screwFnDeriv c₁ A`, `hasDerivAt_screwFn_Ioo`, `hasDerivAt_screwFnDeriv`,
+  `continuousOn_screwFnDeriv` — the first derivative of `g` as an explicit smooth-plus-slope
+  function, and its own derivative `−K` on all of `(0,∞)`.
+- `neg_integral_screwFn_mul_secondDeriv` — **the distributional form of `(6)`**: two integrations
+  by parts give `−∫_a^b g φ'' = ∫_a^b K φ` for every twice differentiable `φ` whose value and
+  derivative vanish at the endpoints of a compact subinterval of an atom-free `(α,β) ⊆ (0,∞)`.
+  This is what licenses reading `(1)` as an ordinary integral against `K` on such supports.
+
+`formal/GaloisForLFunctions/RHTower/SuzukiScrewCorrelationPairing.lean`
+
+- `screwCrossCorr`, `screwCorrelationForm` — the cross-correlation `c_(f,h)(u) = ∫ f y h(u+y) dy`
+  and the one-variable pairing `∫ K u * c_(f,h)(u) du`.
+- `integrable_uncurry_screwFormIntegrand`, `integrable_uncurry_screwShearIntegrand` — both
+  two-variable integrands are continuous on an explicit compact rectangle and vanish outside it;
+  this is where the hypothesis that the support difference stays in `(0,∞)` is consumed, the kernel
+  being unbounded at the origin.
+- `screwRegularForm_eq_screwCorrelationForm` — **the shear identity**
+  `∫∫ K(x−y) f y h x = ∫ K u * c_(f,h)(u) du`, by two Fubini applications separated by one
+  translation of the inner variable.
+- `exists_disjoint_positive_screwCorrelationForm` — the positive cross coupling read in the
+  difference variable, i.e. `(14)` in the coordinate in which `K = −g''` lives.
+
+All statements are unconditional: `#print axioms` returns only
+`[propext, Classical.choice, Quot.sound]` for every theorem above.
+
+The chain `−g'' → K → ∫∫ K(x−y) f y h x → ∫ K c_(f,h)` is therefore complete in Lean, and the two
+proved theorems of this card — the exact regular kernel `(6)`--`(7)` and the sign-indefinite
+cross coupling `(10)`--`(15)` — carry no remaining formal gap.
 
 ## Gates
 
@@ -238,7 +264,8 @@ atom-free interval.  This is the only step of `(1)`--`(14)` not yet in Lean.
 - [x] cofinal sign-indefinite spectral class identified
 - [x] Lean: screw function, its second derivative `(6)` and the threshold `(7)` unconditional
 - [x] Lean: disjoint positive cross coupling and the Beurling--Deny failure unconditional
-- [ ] Lean: integration-by-parts bridge from `−g''` to the regular-kernel double integral
+- [x] Lean: integration-by-parts bridge from `−g''` to the regular kernel on atom-free intervals
+- [x] Lean: Fubini identification of the two-variable and correlation pairings
 - [ ] parity-separated/oscillatory cofinal simple-even theorem
 - [ ] projective CCM ground-vector transfer
 - [ ] RH

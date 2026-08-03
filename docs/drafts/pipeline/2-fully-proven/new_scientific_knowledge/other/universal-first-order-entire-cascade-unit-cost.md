@@ -544,7 +544,16 @@ normalised_coeff_scale                    -- scaling by zeta multiplies the n-th
 coeffFun_scale_eq_tsum                    -- hence the local expansion in the scaling variable
 tsum_alignment_defect                     -- sum of moduli minus modulus of sum = total misalignment
 alignment_defect_le                       -- so a small defect forces every term to be aligned
+sq_im_conj_mul_le                         -- transverse component squared <= 2||c|| times defect
+norm_sub_re_mul_eq, norm_sub_re_mul_sq_le -- and the same in geometric form
+sum_weighted_sqrt_sq_le                   -- Cauchy--Schwarz against square roots
+norm_weighted_sum_sub_le                  -- the weighted sum, minus a real multiple of u
 ```
+
+The alignment is *quadratic*: a term whose misalignment is `d` sits within `sqrt(2||c|| d)` of a
+nonnegative multiple of the direction of the sum.  That square root is where the gain over the
+absolute-value bound comes from -- the transverse parts, which are what the weighted sum
+`sum (n - nu) c_n` sees, are of order `sqrt(d)` rather than of order one.
 
 With this the three quantities are pinned to each other: `mu(r) <= M(r) <= S(r) <= mu(r)(nu(s)+C)`,
 so the maximum modulus exceeds the maximum term by at most a factor linear in the central index.
@@ -936,3 +945,19 @@ triangularity package, which is exactly how the paper proof uses them.
   the largest possible sum, so their phases must almost all agree, and it is that agreement -- not
   any bound on `|c_n|` -- that makes the weighted sum `sum (n - nu) c_n` small.  The lemma is stated
   for an arbitrary index type and has no analytic content, so it is reusable well beyond this card.
+- 2026-08-03 -- Made the alignment quantitative, and quadratic.  Writing `w = conj(u) c`, the
+  identity `||w||^2 = w.re^2 + w.im^2` turns the misalignment `d = ||c|| - w.re` into a bound on the
+  transverse part: `w.im^2 = (||c||-w.re)(||c||+w.re) <= 2 ||c|| d`, and geometrically
+  `|| c - w.re * u || = |w.im|`, so each term lies within `sqrt(2||c|| d)` of a nonnegative multiple
+  of `u`.  The square root is the whole point: the weighted sum `sum (n-nu) c_n` only sees the
+  transverse components, and they are of order `sqrt(d)` rather than of order one, which is exactly
+  the gain the absolute-value route could not produce.
+- 2026-08-03 -- Completed the aggregation step.  A weighted sum of a nearly aligned family differs
+  from a real multiple of the common direction by at most the weighted sum of the transverse parts,
+  and Cauchy--Schwarz against the square roots turns that into
+  `sqrt( sum w_i^2 ) * sqrt( total defect )`.  The weights enter only through their `l^2` norm, so
+  in the Wiman--Valiron application with `w_n = n - nu` over a window of half-width `W` the factor is
+  `W^(3/2)` against `sqrt(D)` rather than `W^2` against `D` -- the whole content of the local
+  expansion, now available as three general lemmas with no analytic hypotheses.  With
+  `TriangleInequalityDefect.lean` complete, the remaining work on this branch is arithmetic: choose
+  the window and the radius so that the total defect at a maximum-modulus point is small enough.

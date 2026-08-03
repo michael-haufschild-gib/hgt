@@ -1108,6 +1108,28 @@ solutions — but determination never needs that much:
   `(V₁ - V₂)/μ = e^{2σ}` with no hypothesis on the probe families beyond smoothness of `σ` and
   `μ ≠ 0`. The card's open input is discharged in that dimension, not assumed.
 
+A word on what "probe" must mean here, because the pointwise reading is too weak to carry the
+statement. `SolvesPotentialWaveAt` is a *single linear relation* between the second derivatives at
+one event; a quadratic polynomial satisfies it for any potential whatever, so pointwise probes exist
+trivially in every dimension and the corresponding determination hypothesis — "every function
+solving at `x` for `V₁` solves at `x` for `V₂`" — is correspondingly strong. The physical notion is
+a solution on an open region. The construction delivers that:
+
+- `exists_clockProbe_on_two_dimensional` — the strengthened existence theorem: an **open**
+  neighbourhood `W` of the event, a probe solving `SolvesPotentialWaveOn … V U W`, nonvanishing
+  throughout `W`, and equal to `1` at the event. `W` is the preimage under the null frame of the
+  Goursat rectangle, intersected with the (open) nonvanishing locus of the probe;
+- `potential_eqOn_of_probes_on_two_dimensional` — determination with the hypothesis quantified over
+  solutions on open regions;
+- `OpenProbes`, `potential_eq_of_openProbes`, `openProbes_of_solves` — the corresponding probe-family
+  notion, its determination principle, and the fact that a single globally nonvanishing global
+  solution supplies it (this is how the massless species enters);
+- `scale_reconstruction_of_openProbes`, `openProbes_conformalPotential_two`, and
+  **`twoSpecies_scale_reconstruction_open_two_dimensional`** /
+  **`twoSpecies_reconstructedScale_open_two_dimensional`** — the scale law again, now with both
+  species' probe families consisting of genuine solutions on open regions, and the massive family
+  proved to exist rather than assumed.
+
 What remains open is therefore dimension `≥ 3`, where the characteristic reduction to a Goursat
 problem is unavailable; and the last open input of the whole programme is stated in its physical
 form:

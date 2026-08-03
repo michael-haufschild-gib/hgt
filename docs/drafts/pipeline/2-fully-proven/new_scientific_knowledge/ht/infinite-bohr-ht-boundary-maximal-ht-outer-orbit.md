@@ -2056,3 +2056,35 @@ jet chart has surjective derivative.  Cheapest unconditional route: an explicit 
 6. Feed the resulting all-shift full-rank witness into `eq_zero_of_relation_of_rigid_jets`, which is
    already proved, to get `not FamilyDifferentiallyAlgebraicOn` for every tuple of distinct shifts at
    one residual set of mass parameters.
+
+## Lean progress: the Cayley jet chart is a submersion
+
+Step 1--3 of the shift-uniform plan are built (four modules, wired, axiom-clean):
+
+- `JetMapSmoothness.lean` -- the exponential, affine and reciprocal jet recursions carry a smooth
+  family of jet packets to a smooth family, by induction on the jet order; hence
+  `contDiffOn_chiJetPacket`, the Cayley outer packet chart is `C^inf` off the polar locus.  The
+  reciprocal case needed the recursion `invJetScalar_eq` extracted from `triangularSolve_eq`.
+- `ExponentialJetInverseSmoothness.lean` -- the inverse exponential jet map is smooth where its
+  branch is: `expJetTail_eq` writes the back-substitution with the diagonal slot already zeroed, so
+  the induction only ever sees strictly earlier unknowns.
+- `CayleyJetChartSubmersion.lean` -- `chiJetInv`, the explicit local inverse (undo the exponential
+  through `expJetInv`, undo the outer affine map, invert, undo the inner affine map), with
+  `chiJetScalar_chiJetInv` proving it is a right inverse.  The corpus's `invJetScalar_invJetScalar`
+  (the reciprocal jet map is an involution) and `affJetScalar_affJetScalar` did the algebra.
+- `CayleyJetPacketSubmersion.lean` -- packet level: `chiJetInvPacket_chiJetPacket` and
+  `chiJetPacket_chiJetInvPacket` are the two inversion identities, and
+
+      surjective_fderiv_chiJetPacket :
+        y 0 + I /= 0 -> Function.Surjective (fderiv R (chiJetPacket n) y)
+
+  because a smooth right inverse forces the derivative onto.
+
+This is exactly the input `StratifiedParametricAvoidance` needs and that openness could not supply:
+an open map may still have degenerate derivative.  The chart's base point is
+`chiJetBase`, the Möbius stage's value, and `chiJetBase_ne_one` records that it never hits the pole
+of the inverse Möbius map, which is what makes the branch inverse defined on a neighbourhood.
+
+Remaining: steps 4--6 -- the parameter derivative of the discrete mass jets, the instantiation of
+`compactConfigurationAvoidance_dense_of_finiteRegularStratification` with `P` = finitely many masses
+and `H` = the shift tuples, and the descent through `eq_zero_of_relation_of_rigid_jets`.

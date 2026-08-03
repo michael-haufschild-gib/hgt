@@ -66,4 +66,97 @@ theorem alignment_defect_le {ι : Type*} (c : ι → ℂ) (hc : Summable c)
   have h := hd.le_tsum i fun j _ => alignment_defect_nonneg (c j) hu
   rwa [tsum_alignment_defect c hc hn hu hsum] at h
 
+/-! ## The transverse component
+
+The per-term misalignment controls the component transverse to the direction of the sum
+quadratically: a term that is nearly aligned is nearly a nonnegative multiple of `u`. -/
+
+/-- The square of the norm splits into real and imaginary parts. -/
+private theorem sq_norm_eq (w : ℂ) : ‖w‖ ^ 2 = w.re ^ 2 + w.im ^ 2 := by
+  rw [Complex.norm_def, Real.sq_sqrt (Complex.normSq_nonneg w), Complex.normSq_apply]
+  ring
+
+/-- **The transverse component is quadratically small.**  The imaginary part of `ū c` is at most the
+geometric mean of `2‖c‖` and the misalignment. -/
+theorem sq_im_conj_mul_le (c : ℂ) {u : ℂ} (hu : ‖u‖ = 1) :
+    ((starRingEnd ℂ) u * c).im ^ 2
+      ≤ 2 * ‖c‖ * (‖c‖ - ((starRingEnd ℂ) u * c).re) := by
+  set w : ℂ := (starRingEnd ℂ) u * c with hw
+  have hnw : ‖w‖ = ‖c‖ := by
+    rw [hw, norm_mul, RCLike.norm_conj, hu, one_mul]
+  have hsq := sq_norm_eq w
+  have hre : w.re ≤ ‖w‖ := Complex.re_le_norm w
+  have hre' : -‖w‖ ≤ w.re := by
+    have := Complex.abs_re_le_norm w
+    have habs := abs_le.mp this
+    exact habs.1
+  nlinarith [hsq, hre, hre', hnw]
+
+/-- The distance from `c` to its projection onto `u` is the transverse component. -/
+theorem norm_sub_re_mul_eq (c : ℂ) {u : ℂ} (hu : ‖u‖ = 1) :
+    ‖c - ((((starRingEnd ℂ) u * c).re : ℝ) : ℂ) * u‖
+      = |((starRingEnd ℂ) u * c).im| := by
+  have hune : u ≠ 0 := by
+    intro h
+    rw [h, norm_zero] at hu
+    exact zero_ne_one hu
+  have huu : u * (starRingEnd ℂ) u = 1 := by
+    have h := Complex.mul_conj' u
+    rw [h, hu]
+    simp
+  have hc : c = u * ((starRingEnd ℂ) u * c) := by
+    rw [← mul_assoc, huu, one_mul]
+  set w : ℂ := (starRingEnd ℂ) u * c with hw
+  have hkey : w - ((w.re : ℝ) : ℂ) = ((w.im : ℝ) : ℂ) * Complex.I := by
+    linear_combination -Complex.re_add_im w
+  have hsplit : c - ((w.re : ℝ) : ℂ) * u = u * (((w.im : ℝ) : ℂ) * Complex.I) := by
+    nth_rewrite 1 [hc]
+    rw [← hkey]
+    ring
+  rw [hsplit, norm_mul, hu, one_mul, norm_mul, Complex.norm_I, mul_one, Complex.norm_real,
+    Real.norm_eq_abs]
+
+/-- **Alignment in geometric form.**  The distance from a term to a nonnegative multiple of the
+direction of the sum is controlled by the square root of its misalignment. -/
+theorem norm_sub_re_mul_sq_le (c : ℂ) {u : ℂ} (hu : ‖u‖ = 1) :
+    ‖c - ((((starRingEnd ℂ) u * c).re : ℝ) : ℂ) * u‖ ^ 2
+      ≤ 2 * ‖c‖ * (‖c‖ - ((starRingEnd ℂ) u * c).re) := by
+  rw [norm_sub_re_mul_eq c hu, sq_abs]
+  exact sq_im_conj_mul_le c hu
+
+
+/-! ## Weighted aggregation
+
+The weighted sum of a nearly aligned family is, up to a real multiple of the common direction,
+controlled by the square root of the total misalignment -- with the weights entering only through
+their `l^2` norm.  This is the step where the square root from the previous section is converted
+into a gain over the trivial bound. -/
+
+/-- **Weighted Cauchy--Schwarz against square roots.** -/
+theorem sum_weighted_sqrt_sq_le {ι : Type*} (s : Finset ι) (w d : ι → ℝ)
+    (hd : ∀ i ∈ s, 0 ≤ d i) :
+    (∑ i ∈ s, w i * Real.sqrt (d i)) ^ 2 ≤ (∑ i ∈ s, w i ^ 2) * ∑ i ∈ s, d i := by
+  have h := Finset.sum_mul_sq_le_sq_mul_sq s w (fun i => Real.sqrt (d i))
+  refine le_trans h (le_of_eq ?_)
+  congr 1
+  exact Finset.sum_congr rfl fun i hi => Real.sq_sqrt (hd i hi)
+
+/-- **The weighted sum is close to a real multiple of the direction.**  Only the transverse parts of
+the terms survive, each of them bounded by the previous section. -/
+theorem norm_weighted_sum_sub_le {ι : Type*} (s : Finset ι) (c : ι → ℂ) (w : ι → ℝ) (u : ℂ) :
+    ‖(∑ i ∈ s, (w i : ℂ) * c i)
+        - ((∑ i ∈ s, w i * ((starRingEnd ℂ) u * c i).re : ℝ) : ℂ) * u‖
+      ≤ ∑ i ∈ s, |w i| * ‖c i - ((((starRingEnd ℂ) u * c i).re : ℝ) : ℂ) * u‖ := by
+  have hsplit : ∑ i ∈ s, (w i : ℂ) * (c i - ((((starRingEnd ℂ) u * c i).re : ℝ) : ℂ) * u)
+      = (∑ i ∈ s, (w i : ℂ) * c i)
+        - ((∑ i ∈ s, w i * ((starRingEnd ℂ) u * c i).re : ℝ) : ℂ) * u := by
+    push_cast
+    rw [Finset.sum_mul, ← Finset.sum_sub_distrib]
+    exact Finset.sum_congr rfl fun i _ => by ring
+  rw [← hsplit]
+  refine le_trans (norm_sum_le _ _) (le_of_eq ?_)
+  exact Finset.sum_congr rfl fun i _ => by
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
+
+
 end GaloisForLFunctions.HTGeometry
