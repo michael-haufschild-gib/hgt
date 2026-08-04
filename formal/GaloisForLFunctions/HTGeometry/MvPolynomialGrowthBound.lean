@@ -73,6 +73,38 @@ theorem norm_eval_le_mvCoeffNormSum (P : MvPolynomial (Fin 2) ℂ) (z w : ℂ) :
     _ = ‖MvPolynomial.coeff m P‖ * (1 + ‖z‖) ^ P.totalDegree * (1 + ‖w‖) ^ P.totalDegree := by
         ring
 
+/-! ## Analyticity of the composite -/
+
+/-- A two-variable polynomial in the coordinate and an analytic function is analytic. -/
+theorem analyticOnNhd_eval_two {U : Set ℂ} {F : ℂ → ℂ} (hF : AnalyticOnNhd ℂ F U)
+    (A : MvPolynomial (Fin 2) ℂ) :
+    AnalyticOnNhd ℂ (fun z => MvPolynomial.eval ![z, F z] A) U := by
+  induction A using MvPolynomial.induction_on with
+  | C a =>
+      have hfun : (fun z : ℂ => MvPolynomial.eval ![z, F z] (MvPolynomial.C a))
+          = fun _ : ℂ => a := by
+        funext z
+        simp
+      rw [hfun]
+      exact analyticOnNhd_const
+  | add p q hp hq =>
+      have hfun : (fun z : ℂ => MvPolynomial.eval ![z, F z] (p + q))
+          = fun z : ℂ => MvPolynomial.eval ![z, F z] p + MvPolynomial.eval ![z, F z] q := by
+        funext z
+        rw [map_add]
+      rw [hfun]
+      exact hp.add hq
+  | mul_X p i hp =>
+      have hfun : (fun z : ℂ => MvPolynomial.eval ![z, F z] (p * MvPolynomial.X i))
+          = fun z : ℂ => MvPolynomial.eval ![z, F z] p * (![z, F z] : Fin 2 → ℂ) i := by
+        funext z
+        rw [map_mul, MvPolynomial.eval_X]
+      rw [hfun]
+      refine hp.mul ?_
+      fin_cases i
+      · exact analyticOnNhd_id
+      · exact hF
+
 /-! ## The logarithmic form -/
 
 open Real in

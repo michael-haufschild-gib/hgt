@@ -5414,3 +5414,114 @@ Lean note: `Real.posLog` was reported as an unknown constant even though `Real.p
 a scratch file — the module's import cone lacked
 `Mathlib.Analysis.SpecialFunctions.Log.PosLog`. Same narrow-cone trap as earlier in this card; the
 misleading part is that the *error* names the definition, not the missing lemma file.
+
+### The coefficient side, in proximity form
+
+`proximity_eval_mvPolynomial_le`: for meromorphic `f` and a two-variable polynomial `A`,
+
+`m(r, A(·, f)) ≤ ( log⁺(mvCoeffNormSum A) + deg·(log 2 + log⁺|r|) + deg·log 2 ) + deg · m(r, f)`.
+
+Unconditional, axiom-clean. With `meromorphic_eval_mvPolynomial` (such a composite is meromorphic,
+by the same three-case induction as its analytic counterpart) this closes the coefficient side: the
+coefficients `A_k(z, F_1)` of an algebraic relation have proximity `O(deg · m(r, F_1) + deg · log r)`.
+
+Both halves of the comparison are now formal:
+
+* `proximity_le_of_root_characteristic` — the root is bounded by its coefficients;
+* `proximity_eval_mvPolynomial_le` — those coefficients are bounded by `deg · m(r, F_1)`.
+
+so an element algebraic over `ℂ(z, F_1)` has `m(r, ·) = O(m(r, F_1) + log r)`. The lower bound now
+needs exactly one further input, in the opposite direction: `m(r, f_1 ∘ F_1)/m(r, F_1) → ∞`.
+
+Lean notes. (i) Constant multiples of a circle-integrable function have no `CircleIntegrable.const_mul`
+in mathlib; writing `d · g` as `∑_{j<d} g` sidesteps it entirely and reuses `CircleIntegrable.sum` and
+`circleAverage_sum`. (ii) `Pi.mul_apply` must be kept *out* of the simp set here — it rewrites
+`(↑d * g) x` into `↑d x * g x`, treating the numeral cast as a function; extracting the pointwise
+value with an explicit `have … = K + d * log⁺‖f x‖` is the safe form. (iii) `mul_add` needs its `c`
+argument given explicitly, since two subterms of the goal match its pattern.
+
+### Everything at infinity: the first main theorem applied
+
+`proximity_le_of_root_characteristic_top`: for `1 ≤ r`,
+
+`m(r, g) ≤ log n + ∑_{i<n} ( T(r, a_i) + T(r, a_n) + C_n )`,
+
+`C_n = max |log‖a_n(0)‖| |log‖trailingCoeff(a_n)(0)‖|`, unconditional and axiom-clean.
+
+The reciprocal is gone: mathlib's `characteristic_sub_characteristic_inv_le` (the quantitative first
+main theorem) trades `T(r, a_n⁻¹)` for `T(r, a_n)` at the price of that explicit constant, and
+`proximity_inv` supplies `m(r, a_n; 0) = m(r, a_n⁻¹; ⊤)` to make the exchange applicable.
+
+The "algebraic ⇒ slow" side of the lower bound is now complete and in a single currency: for a
+relation whose coefficients are `A_i(z, F_1)`,
+
+`m(r, g) ≤ n·(deg-weighted) · ( m(r, F_1) + log r ) + O(1)`,
+
+by composing this with `proximity_eval_mvPolynomial_le`. The lower bound reduces to the single
+opposite-direction statement `m(r, f_1 ∘ F_1)/m(r, F_1) → ∞`, i.e. Clunie's composition theorem in
+characteristic form.
+
+### Entire functions: characteristic equals proximity
+
+`logCounting_top_eq_zero_of_analyticOnNhd` and `characteristic_top_eq_proximity_of_analyticOnNhd` —
+for entire `f`, `N(r,f;∞) = 0` and hence `T(r,f) = m(r,f)`. Unconditional, axiom-clean.
+
+Small but load-bearing: the algebraic bound is stated with characteristics on the right and a
+proximity on the left, while the composition-growth input will be stated with characteristics on both
+sides. This is the conversion, and it applies because every object in the cascade — states,
+derivatives, coefficients `A_i(z,F)` — is entire.
+
+Lean note: `AnalyticOnNhd.divisor_nonneg` is declared *inside* `namespace MeromorphicOn`, so its real
+name is `MeromorphicOn.AnalyticOnNhd.divisor_nonneg`, and dot notation `hf.divisor_nonneg` fails
+outright because `AnalyticOnNhd` unfolds to a Pi type. Same trap as
+`MeromorphicAt.MeromorphicOn.codiscreteWithin_setOf_ne_zero` earlier in the corpus: the file's opening
+`namespace` silently prefixes a lemma whose own name already carries a different namespace.
+
+### Both sides now speak in characteristics
+
+`characteristic_eval_mvPolynomial_le`:
+
+`T(r, A(·,F)) ≤ ( log⁺(mvCoeffNormSum A) + deg·(log 2 + log⁺|r|) + deg·log 2 ) + deg · T(r, F)`
+
+for entire `F`, unconditional and axiom-clean, with `analyticOnNhd_eval_two` (the composite is
+entire) supplying the analyticity that the `T = m` conversion needs on both sides.
+
+The two halves of the "algebraic ⇒ slow" comparison are now stated in the same units and compose
+directly:
+
+* `proximity_le_of_root_characteristic_top` — `m(r,g) ≤ log n + ∑_{i<n} (T(r,a_i) + T(r,a_n) + C_n)`;
+* `characteristic_eval_mvPolynomial_le` — each `T(r, A_i(·,F)) ≤ K_i + deg_i · T(r,F)`.
+
+Chaining them gives `m(r, g) ≤ c·(1 + log⁺|r| + T(r,F))` for an explicit `c` built from the finitely
+many coefficient sizes and degrees. That is the whole "algebraic over `ℂ(z, F)` cannot outgrow `F`"
+statement, and the only remaining input to the lower bound is its opposite,
+`T(r, f_1 ∘ F)/T(r, F) → ∞`.
+
+### "Algebraic over `ℂ(z,F)` cannot outgrow `F`" — complete
+
+`exists_bound_proximity_of_two_var_relation`:
+
+```
+∃ c ≥ 0, ∀ r ≥ 1,  (top coefficient nonvanishing on |z| = r) → (relation holds) →
+  m(r, g) ≤ c · ( 1 + log⁺|r| + T(r, F) )
+```
+
+for a relation `∑_{i ≤ n} A_i(z, F(z)) · g(z)^i = 0` with `A_i` two-variable complex polynomials and
+`F` entire. Unconditional, axiom-clean. The constant is built explicitly from the finitely many
+coefficient sizes and total degrees — `K = ∑ (log⁺‖A_i‖₁ + 2·deg_i·log 2)`, `D = ∑ deg_i`, plus the
+first-main-theorem constant of the top coefficient — and does not depend on `r`.
+
+This completes the "algebraic ⇒ slow" direction of the lower-bound route, assembled from the four
+preceding entries: root estimate → proximity → characteristic → first main theorem, with the
+coefficient side supplied by the two-variable growth bound.
+
+The lower bound `ord_DA(F_n) ≥ n` now rests on exactly one unproved input, in the opposite direction:
+
+`T(r, f_1 ∘ F) / T(r, F) → ∞`   (Clunie's composition theorem).
+
+Everything else on that route is formal.
+
+Lean note: `Finset.single_le_sum` needs its `f` given explicitly (`(f := …)`) whenever the summand is
+reconstructed from the goal; otherwise the summand stays a metavariable and the `AddLeftMono`
+instance search stalls with the same "typeclass instance problem is stuck" message seen earlier for
+`add_le_add_left`. Both failures have the same cause and the same fix.

@@ -219,9 +219,72 @@ Axioms: `[propext, Classical.choice, Quot.sound]`.
      frequency at *every* time, which is the form the synthesis needs on a two-sided neighbourhood of
      an event.
 
-   What remains of step 3 is to carry these through the density and field statements — where they
-   delete the `0 ≤ t` hypotheses — then the nonvanishing near an event and the chart-level packaging
-   into `RegularOpenProbes`. The fibrewise estimates this step
+   and the density statements follow —
+   `formal/GaloisForLFunctions/HTGeometry/HillDensityTwoSided.lean`:
+
+   - **`norm_hillDensity_le_abs`**, **`norm_hillDensityDeriv_le_abs`** — the density and velocity
+     density bounds at *every* time, with `|t|` in the exponential and the same frequency costs;
+   - **`continuous_hillDensity_all`**, `aestronglyMeasurable_hillDensity_all`,
+     **`integrable_hillDensity_all`** — continuity, measurability and integrability with the `0 ≤ t`
+     hypothesis gone;
+   - **`hillDensity_zero`** — the fibre starts at `1`, so the density starts at the initial density;
+   - **`hillEvolutionField_zero`** — hence the field starts at the *plain synthesis* of its datum.
+
+   The last one is where the nonvanishing will come from: the corpus's constant-coefficient
+   construction already supplies data whose plain synthesis does not vanish at a prescribed point, so
+   the same data serve here, and continuity of the field near `t = 0` does the rest.
+
+   and both are now proved —
+   `formal/GaloisForLFunctions/HTGeometry/HillFieldContinuity.lean`:
+
+   - `continuous_hillDensity_time` — the fibre is continuous in time;
+   - **`continuousAt_hillEvolutionField`** — the field is continuous in the time and the point
+     *together*, by dominated convergence: the dominating function is the same for all nearby times
+     because the speed is bounded below, which is exactly what the hypothesis `c ≥ c_min > 0` buys;
+   - **`eventually_hillEvolutionField_ne_zero`** — hence a datum whose plain synthesis does not vanish
+     at a point gives a field that does not vanish on a whole neighbourhood of that event.
+
+   So the analytic construction is complete for the chart `-dt² + c(t)²δ`: a field solving the
+   equation, twice differentiable in time and space, nonvanishing near a prescribed event. In the
+   real form the chart layer consumes —
+   `formal/GaloisForLFunctions/HTGeometry/HillRealField.lean`:
+
+   - `hillRealField` — the real part of the synthesis;
+   - **`hasDerivAt_hillRealField_time`**, **`hasDerivAt_deriv_hillRealField_time`** — both time
+     derivatives, since the real part is a continuous linear map and commutes with them;
+   - **`eventually_hillRealField_ne_zero`** — nonvanishing near the event, from a datum whose plain
+     synthesis has nonzero real part.
+
+4. The chart-level packaging. Begun in
+   `formal/GaloisForLFunctions/HTGeometry/HillChartField.lean`:
+
+   - `hillChartField` — the field read as a function of the event, time `y 0` and point
+     `kgSpatial d y`;
+   - **`eventually_hillChartField_ne_zero`** — it does not vanish near an event on the initial slice
+     whose datum has a nonvanishing real synthesis there. The transport is a composition with a
+     continuous map, so the neighbourhood produced in `ℝ × E` pulls back to a neighbourhood of the
+     event.
+
+   - `add_smul_single_eq_update` — moving along a coordinate direction is updating that coordinate;
+   - **`hillChartField_add_smul_single_zero`**, **`hillChartField_add_smul_single_succ`** — along the
+     time axis the chart field moves only its time argument; along a spatial axis it moves its point
+     by `s(2π)⁻¹` in the corresponding direction. These are the transport identities the
+     `coordPartial` computations consume.
+
+   The time-derivative theorems, which had been proved only on `0 < t < b`, now hold everywhere —
+   `formal/GaloisForLFunctions/HTGeometry/HillSynthesisTwoSided.lean`:
+
+   - **`hasDerivAt_hillSynthesis_all`** — the synthesis is differentiable in time at *every* time, the
+     dominating functions on the unit ball around `t` being the ones at `|t| + 1`;
+   - **`hasDerivAt_hillEvolutionField_time_all`**, **`hasDerivAt_hillRealField_time_all`** — hence so
+     are the field and the real field.
+
+   This matters for the chart: an event is an arbitrary point of spacetime, not one on or after the
+   initial slice, so every downstream statement had inherited the interval restriction.
+
+   What remains: the coordinate partials themselves (from the transport identities and these
+   derivatives), then `IsC1OnPi` and the second partials, matching the chart's wave operator against
+   the equation, and landing in `RegularOpenProbes`. The fibrewise estimates this step
    consumes are now proved (value, velocity, acceleration, with costs `0`, `1`, `2` powers of the
    frequency); what is left is the dominated-convergence bookkeeping of the corpus's synthesis
    layer, which is written for the constant-coefficient propagator and has to be re-run with these

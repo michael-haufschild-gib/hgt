@@ -8241,3 +8241,117 @@ This is the first analytic input of the `(5)` programme.  The remaining stated g
 `HalaszDichotomy`/`HalaszWindow` (no lower bound on the distance `δ`, and no identification of the
 exceptional frequency), `DirichletRow` (the estimate for `∑_{n ≤ N} n^{iu}` at `u ≠ 0`), and
 `BilinearMultiplier` (`HarmonicSineBound`).
+
+### CORRECTION: the Gram row estimate was already proved
+
+The previous section of this card claimed that `RHTower/Sieve/DirichletRowBound.lean` closed the
+gap stated in `DirichletRow.lean`.  **That claim was wrong and the module has been deleted.**
+
+`RHTower/Sieve/ZeroLineSum.lean` already contains the estimate, as `norm_sum_zpow0_le`:
+
+    ‖∑_{n ≤ N} n^{iv}‖  ≤  (N + 2)/‖1 + iv‖ + |v|·(1 + log N),
+
+with the `zpow0` / `Zpow0` Euler–Maclaurin layer in `ZeroLinePower.lean`, and
+`DirichletFarField.lean` already consumes it to bound the Gram entries
+`⟪dirRow N t, dirRow N u⟫`.  `DirichletRow.lean`'s header note ("what remains analytic — and is not
+proved here — is the estimate for `∑_{n ≤ N} n^{iu}`") is therefore **stale**, like the other three.
+
+The duplicate additionally re-declared `abs_le_norm_one_add_mul_I`, which `DirichletFarField.lean`
+already declares in the same namespace; it compiled only because the two modules do not import each
+other, and would have broken the umbrella.  Deleted and unwired.
+
+### The four stated gaps on the `(5)` path: final audit
+
+| module | stated gap | truth |
+|---|---|---|
+| `DirichletDiagonal` | "the entire content still missing is a Hilbert inequality" | **stale** — `OffDiagonalBound.offDiagonal_le`; only the index bridge was open, now built as `DirichletIntegralMeanValue.lean` |
+| `DirichletRow` | "the estimate for `∑ n^{iu}` at `u ≠ 0`" | **stale** — `ZeroLineSum.norm_sum_zpow0_le` |
+| `BilinearMultiplier` | "specialising the symbol … is what remains" | **stale** — `HilbertBilinear.hilbert_bilinear_bound` |
+| `HalaszDichotomy`, `HalaszWindow` | no lower bound on `δ`; the exceptional frequency is not identified | **real** |
+
+Three of the four were already closed elsewhere in the tree.  The single genuine obstruction on the
+path to `MRBilinear` is the Halász analytic half: a lower bound on the Granville–Soundararajan
+distance `δ`, and the identification of the exceptional frequency.  Everything feeding into it —
+the mean value theorem, the Gram rows, the Hilbert bilinear bound, the distance triangle inequality,
+Ramaré, the large sieve — is built.
+
+### First step on the real gap: zeta on a compact box right of the one-line
+
+`RHTower/Sieve/ZetaBoxLowerBound.lean`, unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+- `box_ne_one`, `one_le_re_box`, and **`exists_pos_lower_bound_zeta_box`**:
+
+      ∀ ε > 0, T ≥ ε, η ≥ 0,  ∃ c > 0,  ∀ σ ∈ [1, 1+η], ∀ t ∈ [ε, T],  c ≤ ‖ζ(σ + it)‖.
+
+- **`le_tsum_re_prime_cpow_box`**:
+
+      ∑'_p cos(t log p)/p^σ  ≥  log c − ∑'_p p^{−2σ},
+      uniformly for σ ∈ (1, 1+η], t ∈ [ε, T].
+
+This repairs a mismatch that blocked the two existing pieces from meeting.
+`ZetaOneLineBound.exists_pos_lower_bound_zeta_one_line` bounds `‖ζ‖` below on a compact *segment* of
+the line `re s = 1`; `ZetaLogPrimeSum.abs_log_norm_riemannZeta_sub_tsum_re_le` compares `log‖ζ‖` with
+the prime sum only for `re s > 1`.  The segment carries no `σ > 1`, so the bound could not be fed to
+the comparison.  Thickening the segment to a box fixes it: the box is still compact, `ζ` is still
+continuous there (the pole is excluded by `t ≥ ε > 0`) and still nonvanishing (`re s ≥ 1`).
+
+This is the compact form of what `MoebiusDistance.lean` calls "the zero-free-region input the corpus
+does not have" — and it shows that input is only needed *uniformly in `T`*: on any fixed frequency
+range it is elementary.  The constant `c` degrades as `T` grows, which is precisely the reason a
+genuine zero-free region is still required for the Halász estimate at frequencies growing with `N`.
+
+### The "zero-free-region input" is in the corpus — uniformly in the frequency
+
+`RHTower/Sieve/ZetaStripPrimeSum.lean`, unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+- `le_tsum_re_prime_cpow_of_log_le` — any lower bound `L` for `log‖ζ(σ+it)‖` transfers to the prime
+  sum with the numeric tail `π²/6` (from `ZetaThreeFourOne.tsum_prime_rpow_le`):
+
+      L − π²/6  ≤  ∑'_p cos(t log p)/p^σ.
+
+- **`le_tsum_re_prime_cpow_strip`** — on the corpus's zero-free strip
+  `|σ − 1| ≤ A/log⁹|t|`, `|t| ≥ 9`, `σ > 1`:
+
+      ∑'_p cos(t log p)/p^σ  ≥  −log((20/A)·log⁷|t|) − π²/6,
+
+  **uniformly in `t`**.
+
+`MoebiusDistance.lean`'s note that this is "the zero-free-region input the corpus does not have" is
+**stale** — the corpus proved the zero-free region (`RHTower/ZetaLogDerivBound.norm_inv_riemannZeta_le`,
+used throughout the prime-number-theorem work on this card), and `riemannZeta_ne_zero_strip` supplies
+the nonvanishing that turns `‖1/ζ‖ ≤ B` into `log‖ζ‖ ≥ −log B`.
+
+Only a `log log|t|` is lost, which is what a Halász estimate absorbs.  This supersedes the compact
+box bound of the previous section: the box version is elementary but its constant degrades with the
+frequency range, whereas this one does not.
+
+Five of the corpus's own gap notes on the `(5)` path have now been checked; four were stale.  What
+remains for `MRBilinear` is to run the Halász argument itself on these inputs — the distance lower
+bound for `μ` from this prime sum, then the passage from the damped Dirichlet series to the partial
+sums.
+
+### The abscissa shift is free
+
+`RHTower/Sieve/PrimeSigmaShift.lean`, unconditional,
+`[propext, Classical.choice, Quot.sound]`:
+
+- `one_sub_exp_neg_mem` — `0 ≤ 1 − e^{−u} ≤ u` for `u ≥ 0`.
+- **`inv_sub_rpow_le`** — the pointwise shift, for `p ≥ 2` and `σ ≥ 1`:
+
+      0 ≤ 1/p − p^{−σ} ≤ (σ − 1)·log p / p.
+
+- **`abs_sum_weight_shift_le`** — summed against any weights of modulus at most one, using
+  `MertensFirst.mertensFirst_upper` (`∑_{p ≤ z} log p/p ≤ log z + log 4`):
+
+      | ∑_{p ≤ z} w_p (1/p − p^{−σ}) |  ≤  (σ − 1)·(log z + log 4).
+
+At the standard choice `σ = 1 + 1/log z` the right side is `1 + log 4/log z`: **the shift between
+the `1/p` weighting the distance uses and the `p^{−σ}` weighting the Euler comparison requires costs
+only a bounded constant.**  That is the first of the two comparisons separating
+`ZetaStripPrimeSum.lean` from a lower bound on the Möbius distance.
+
+The second is the tail `∑_{p > z} p^{−σ}` at the same `σ`, which is likewise bounded — that is the
+next target.  With both in hand, `D(μ, χ_t; p ≤ z)² ≥ ∑_{p≤z} 1/p − O(log log|t|)` follows from
+`le_tsum_re_prime_cpow_strip`, and `MoebiusDistance`'s missing lower bound is supplied.

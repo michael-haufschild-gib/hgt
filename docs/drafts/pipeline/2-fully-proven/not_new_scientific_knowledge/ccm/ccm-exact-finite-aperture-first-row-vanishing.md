@@ -724,22 +724,33 @@ The phase is now bracketed by the endpoint logarithm to that accuracy, in the st
   `xi_s(x) = sqrt(1-s) sqrt(x²-1) (1 + O(x²-1))`, which is exactly the accuracy at which the two
   singular terms of the defect cancel.
 
-For the radial prolate equation the normal form is
-`u'' + [(chi - c²x²)/(x²-1) + 1/(x²-1)²] u = 0`, so `Q = ±c²(x²-s)/(x²-1) + 1/(x²-1)²` with
-`s = chi/c²`, and the pole-uniform property is exactly the statement that
-`1/(x²-1)² + P²/4 + P'/2` stays bounded as `x -> 1`: the two singular pieces cancel.  That cancellation
-is the reason the comparison is with `J_0` rather than with a trigonometric function, and it is now a
-computation about explicit elementary functions rather than about PSWFs.
+For the radial prolate equation of order zero,
+`(x²-1) R'' + 2x R' - (chi - c²x²) R = 0`, the substitution `u = sqrt(x²-1) R` gives the normal form
+`u'' + Q u = 0` with `Q = c²(x²-s)/(x²-1) + 1/(x²-1)²` and `s = chi/c²`.  The pole-uniform property is
+therefore a statement about `a = 1/(x²-1)² + P²/4 + P'/2`, and the formalisation settles exactly what that
+statement is.  **The double pole cancels but a simple pole survives.**  Writing `g = sqrt(xi/xi')` one has
+`P²/4 + P'/2 = g''/g` and `g = sqrt(x²-1) A_s(x)`, and `(sqrt(x²-1))''/sqrt(x²-1) = -1/(x²-1)²`
+identically, so the `1/(x²-1)²` cancels *exactly*; what is left is
+`2 (r'/r)(A_s'/A_s) + A_s''/A_s` with `r = sqrt(x²-1)`, which has a simple pole because `A_s(1) = 1` with
+`A_s'` of size `O(1)`.  In closed form
 
-What is still not formalized is the PSWF-specific input: that the actual degree-four radial prolate mode
-solves this comparison equation with a defect of size `O(1)`.  That needs the prolate operator, its
-eigenvalue `chi_4(c)` and the separation law `(2)` — a layer of spectral theory that the card imports
-from Dunster and does not itself prove.  Every structural
-ingredient is now unconditional: both model ODEs, both envelopes, the positive constant Green kernel
-normalisation, the two transport laws in integral form, and the algebraic reconstruction of `U` from the
-two Wronskians.
+```text
+a = [-(x⁴) + (8s-3) x² - 2 s(s+1)] / [4 (x²-s)² (x²-1)]
+      - x Δ/(2(x²-1)) - Δ²/4,        Δ = xi'/xi - x/(x²-1),
+```
 
-What remains of `(14)` after that is the estimate on the deviation integral.
+and at `s = 0`, where `xi_0 = sqrt(x²-1)` and `Δ = 0`, this is exactly
+`a = -(x²+3)/(4 x² (x²-1)) = -1/(x²-1) + 3/(4x²)`.  So the reading "the two singular pieces cancel and `a`
+stays bounded" is too strong: only the second-order pieces cancel.  That is enough, and it is what the
+Volterra estimate needs — the deviation integral carries the Liouville measure `dx/xi'`, which vanishes
+like `sqrt(x²-1)` at the endpoint, so `|a| <= C/(x²-1)` has finite total mass while `1/(x²-1)²` would not.
+That the surviving pole is simple rather than double is precisely the reason the comparison is with `J_0`
+rather than with a trigonometric function.
+
+The PSWF-specific input of `(14)` is now formalized too, and it needs no asymptotics of the eigenvalue:
+the defect is independent of the aperture `c` (it cancels identically) and the separation law `(2)` enters
+only through the range `0 <= s <= 1/2`.  What remains of `(14)` is the estimate on the deviation integral,
+i.e. the total Liouville mass of `a`.
 
 **Why the Bessel comparison cannot be replaced by a harmonic one.**  It is tempting to avoid the second
 Bessel solution by comparing with the harmonic oscillator instead, using the corpus interaction picture
@@ -754,6 +765,59 @@ genuinely needed.
 Note: the same Liouville speed already exists in the tree as
 `RHTower.radialPSWFExteriorSpeed sigma z` with `s = sigma²`, normalised at `z = 2` instead of the
 endpoint; the endpoint normalisation is what the bracket `(4)` needs, so the two coexist.
+
+**The last PSWF-specific input of `(14)` is proved**, in
+`formal/GaloisForLFunctions/RHTower/CCMRadialProlateDefect.lean`.  Nothing about prolate spheroidal
+spectral theory is imported: the theorem is about an arbitrary solution of the radial equation with
+separation constant `chi = s c²` in the range the separation law `(2)` provides.
+
+- `xiSpeed_sq_mul`, `radialProlateQ`, **`radialProlateQ_sub_comparison`** — the normal-form potential and
+  the exact cancellation of the aperture: `Q - c²(xi')² = 1/(x²-1)²`, because `(xi')² = (x²-s)/(x²-1)`.
+  The defect therefore does not depend on `c` at all.
+- **`xiSpeedDeriv_div_xiSpeed_eq`**, **`xiSpeedSecondDeriv_div_xiSpeed_eq`** — the two logarithmic
+  derivatives of the speed, `xi''/xi'` and the third-derivative ratio, in closed rational form.  Both are
+  proved by substituting `x² - s = (x²-1)(xi')²` and clearing: after that substitution the identities are
+  *free* of the square root, hence pure `field_simp`/`ring`.
+- **`lgNormalFormDefect_radialProlate_eq`** — the defect in logarithmic-derivative form,
+  `a = 1/(x²-1)² - (xi'/xi)²/4 + (3/4)(xi''/xi')² - (1/2) xi'''/xi'`.  The `c²` terms cancel identically.
+- `prolateDefectAlg`, `phaseLogDefect`, **`lgNormalFormDefect_radialProlate_eq_alg`** — the defect with
+  its double pole removed: the explicit rational function
+  `(-(x⁴) + (8s-3)x² - 2s(s+1)) / (4 (x²-s)²(x²-1))` plus two terms carrying the bounded phase defect
+  `Δ = xi'/xi - x/(x²-1)`.  The divisibility of the numerator by `x²-1` *is* the cancellation of the
+  double pole, and it is displayed as a polynomial identity.
+- **`abs_prolateDefectAlg_le`** — `|a_alg| <= 6/(x²-1)`, from `(x²-s)² >= x⁴/4`.
+- `xiSpeed_mul_sub_one`, **`phaseLogDefect_eq`** — the phase defect as a single quotient
+  `(sqrt(x²-s) sqrt(x²-1) - x xi)/(xi (x²-1))`.
+- **`xiSpeed_div_xiEndpointPhase_le`**, **`abs_phaseLogDefect_le_far`** — away from the endpoint the
+  defect is bounded by `x/(x²-1)`, because `xi' <= x/sqrt(x²-1)` and `xi >= sqrt(x²-1)/sqrt 2` bound the
+  logarithmic derivative by `sqrt 2 x/(x²-1)` and it is positive.
+- `near_defect_numeric`, **`abs_phaseLogDefect_le_near`** — near the endpoint `|Δ| <= 2`.  The mechanism
+  is that the numerator is a difference of two quantities of the same size `sqrt(1-s) sqrt(x²-1)` whose
+  leading terms cancel: `xi >= sqrt(1-s) L` with `L >= r(1 - r²/6)` bounds it above by
+  `r[(sqrt(x²-s) - x sqrt(1-s)) + x sqrt(1-s) r²/6]`, and `sqrt(x²-s) - x sqrt(1-s)` is itself
+  `O(x²-1)` because its product with `sqrt(x²-s) + x sqrt(1-s)` is exactly `s(x²-1)`; and
+  `xi <= sqrt(x²-s) L` with `L <= r` bounds it below by `-sqrt(x²-s) r (x-1)`.  No sharp expansion of
+  `xi` is needed, only the two brackets already in the tree.
+- **`abs_lgNormalFormDefect_radialProlate_le`** — the pole-uniform bound `|a| <= 40/(x²-1)` for every `c`,
+  every `0 <= s <= 1/2` and every `x > 1`.
+- `nfWeight`, `nfWeightDeriv`, `nfWeightSecondDeriv`, `hasDerivAt_nfWeight`,
+  `hasDerivAt_nfWeightDeriv`, `prolateNormalFormSol`, `prolateNormalFormSolDeriv`,
+  `prolateNormalFormSolSecondDeriv`, `hasDerivAt_prolateNormalFormSol`,
+  `hasDerivAt_prolateNormalFormSolDeriv`, **`prolate_normalForm_ode`** — the Liouville normal form: the
+  whole expression `u'' + Q u` equals the radial equation divided by `sqrt(x²-1)`, so the transformation
+  is an identity, not an approximation.
+- `lgAmplitude`, `lgAmplitudeDeriv`, `lgAmplitudeSecondDeriv`, `lgWeight_pos`, `lgAmplitude_pos`,
+  **`hasDerivAt_lgAmplitude`**, **`hasDerivAt_lgAmplitudeDeriv`** — the comparison amplitude
+  `g = sqrt(xi/xi')` and its two derivatives `g' = gP/2`, `g'' = g(P²/4 + P'/2)`, from the
+  integrating-factor law `m' = mP` already in the tree.
+- `comparisonSol`, `comparisonSolDeriv`, `hasDerivAt_comparisonSol`,
+  **`hasDerivAt_comparisonSolDeriv`** — dividing a solution of the normal form by `g` produces a solution
+  of the comparison equation with defect exactly `lgNormalFormDefect`, in the very form
+  `U'' = -P U' - (c²(xi')² + a) U` that the transport law and the Volterra estimate consume.
+- **`radialProlate_comparison_pole_uniform`** — the gate: for any solution of
+  `(x²-1) R'' + 2x R' - (s c² - c² x²) R = 0` at `x > 1` with `0 <= s <= 1/2`, the function
+  `U = sqrt(x²-1) R / g` satisfies the comparison equation with a defect obeying `|a| <= 40/(x²-1)`,
+  uniformly in `c`.
 
 ## Lean gates
 
@@ -787,8 +851,11 @@ endpoint; the endpoint normalisation is what the bracket `(4)` needs, so the two
 - [x] Lean: variable-coefficient Grönwall (integral form) — new general infrastructure
 - [x] Lean: **the pole-uniform comparison estimate** for an arbitrary perturbation of the comparison
   equation
-- [ ] Lean: the PSWF-specific input of `(14)` — that the actual radial prolate mode solves the comparison
-  equation with an `O(1)` defect (needs the prolate operator and its eigenvalue, which the card imports)
+- [x] Lean: the PSWF-specific input of `(14)` — the actual radial prolate mode solves the comparison
+  equation with a defect that has only a **simple** pole, `|a| <= 40/(x²-1)`, uniformly in the aperture
+  and in `0 <= s <= 1/2`; the eigenvalue enters only through that range, so nothing is imported
+- [ ] Lean: the total Liouville mass `int m |a| E² = O(1/c)` of that defect, which is the exponential
+  factor of the Volterra estimate
 
 ## Gates
 

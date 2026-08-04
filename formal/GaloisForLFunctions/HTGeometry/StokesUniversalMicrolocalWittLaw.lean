@@ -26,6 +26,54 @@ namespace PuiseuxOrbitCoareaDatum
 
 variable {n m K N : ℕ}
 
+/-- Polarized pairing obtained by summing the directed microstalk dimensions of all exponential
+Hom germs with one-dimensional orbit fibers. -/
+def categoricalMicrolocalPairing (d : PuiseuxOrbitCoareaDatum n m K N)
+    (x : Fin n → ℝ) : ℝ :=
+  ∑ i, ∑ j, x i * x j *
+    d.normalizedMicrolocalHomMass (fun _ => 1) i j
+
+/-- One-dimensional coefficient fibers identify normalized directed microstalk mass with mixed
+Hom irregularity. -/
+theorem normalizedMicrolocalHomMass_one
+    (d : PuiseuxOrbitCoareaDatum n m K N) (i j : Fin n) :
+    d.normalizedMicrolocalHomMass (fun _ => 1) i j =
+      d.toOrbitCoareaDatum.homIrregularity i j := by
+  simpa using d.normalizedMicrolocalHomMass_eq (fun _ => 1) i j
+
+/-- The categorical microlocal pairing is exactly the orbit-descended contact pairing. -/
+theorem categoricalMicrolocalPairing_eq_contactPairing
+    (d : PuiseuxOrbitCoareaDatum n m K N) (x : Fin n → ℝ) :
+    d.categoricalMicrolocalPairing x = d.toOrbitCoareaDatum.contactPairing x := by
+  rw [← d.toOrbitCoareaDatum.orbitContactPairing_eq_contactPairing x]
+  simp only [categoricalMicrolocalPairing, OrbitCoareaDatum.orbitContactPairing,
+    d.normalizedMicrolocalHomMass_one]
+
+/-- The coefficient Cartan polarization is terminal energy plus physical rank squared minus the
+categorical directed-microstalk pairing. -/
+theorem cartanQuadratic_eq_categoricalMicrolocalIndex
+    (d : PuiseuxOrbitCoareaDatum n m K N) (x : Fin n → ℝ) :
+    d.toOrbitCoareaDatum.cartanQuadratic x =
+      d.toOrbitCoareaDatum.terminalEnergy x +
+        d.toOrbitCoareaDatum.physicalRank x ^ 2 -
+      d.categoricalMicrolocalPairing x := by
+  rw [d.categoricalMicrolocalPairing_eq_contactPairing]
+  rfl
+
+/-- **Categorical microlocal coarea law.**  The exact microstalk index polarization decomposes
+into positive terminal and threshold channels minus the single physical-rank channel. -/
+theorem categoricalMicrolocalIndex_eq_coarea_onePort
+    (d : PuiseuxOrbitCoareaDatum n m K N) (x : Fin n → ℝ) :
+    d.toOrbitCoareaDatum.terminalEnergy x +
+        d.toOrbitCoareaDatum.physicalRank x ^ 2 -
+      d.categoricalMicrolocalPairing x =
+    d.toOrbitCoareaDatum.terminalEnergy x +
+        d.toOrbitCoareaDatum.blockEnergy x -
+      (d.toOrbitCoareaDatum.cuts.root - 1) *
+        d.toOrbitCoareaDatum.physicalRank x ^ 2 := by
+  rw [← d.cartanQuadratic_eq_categoricalMicrolocalIndex,
+    d.toOrbitCoareaDatum.cartanQuadratic_eq_positive_sub_onePort]
+
 /-- **Finite polarized Stokes--microlocal Witt law.**  Puiseux coefficients alone generate:
 
 1. every normalized directed microlocal Hom index;

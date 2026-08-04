@@ -3653,7 +3653,9 @@ import GaloisForLFunctions.RHTower.Sieve.SharedSectorTail
 import GaloisForLFunctions.RHTower.Sieve.NoncoprimeDensity
 import GaloisForLFunctions.RHTower.Sieve.CoprimeSignDensity
 import GaloisForLFunctions.RHTower.Sieve.DirichletIntegralMeanValue
-import GaloisForLFunctions.RHTower.Sieve.DirichletRowBound
+import GaloisForLFunctions.RHTower.Sieve.ZetaBoxLowerBound
+import GaloisForLFunctions.RHTower.Sieve.ZetaStripPrimeSum
+import GaloisForLFunctions.RHTower.Sieve.PrimeSigmaShift
 import GaloisForLFunctions.RHTower.Sieve.RouteEMain
 import GaloisForLFunctions.RHTower.SigmaBlockContraction
 import GaloisForLFunctions.RHTower.SigmaContractionCorollary
@@ -5485,3 +5487,5 @@ import GaloisForLFunctions.RHTower.DeningerDlogWedge
 import GaloisForLFunctions.RHTower.DeningerDlogTransition
 import GaloisForLFunctions.RHTower.DeningerStageStein
 import GaloisForLFunctions.RHTower.DeningerDlogIndependence
+import GaloisForLFunctions.RHTower.DeningerPuncturedPrimitive
+import GaloisForLFunctions.RHTower.DeningerStageOneCohomology

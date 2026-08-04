@@ -438,6 +438,296 @@ theorem abs_lgNormalFormDefect_radialProlate_le {s c x : ℝ} (hs0 : 0 ≤ s) (h
       nlinarith [mul_le_mul_of_nonneg_left hDx habs0]
     linarith [htrid, hAd, hBd.le, hBd.ge, hCd.le, hCd.ge]
 
+
+/-! ## The radial prolate equation in Liouville normal form
+
+The substitution `u = sqrt(x²-1) R` removes the first-order term of the radial prolate equation.  The
+weight and its two derivatives are elementary, and the resulting potential is exactly `radialProlateQ`:
+the `-1/w³ R` produced by the second derivative of the weight cancels the `1/(x²-1)²` of the potential,
+which is the reason the normal form has a double pole at all. -/
+
+/-- The normal-form weight `sqrt(x²-1)`. -/
+def nfWeight (x : ℝ) : ℝ := Real.sqrt (x ^ 2 - 1)
+
+/-- Its derivative `x/sqrt(x²-1)`. -/
+def nfWeightDeriv (x : ℝ) : ℝ := x / Real.sqrt (x ^ 2 - 1)
+
+/-- Its second derivative `-1/(x²-1)^{3/2}`. -/
+def nfWeightSecondDeriv (x : ℝ) : ℝ := -(1 / ((x ^ 2 - 1) * Real.sqrt (x ^ 2 - 1)))
+
+theorem hasDerivAt_nfWeight {x : ℝ} (hx : 1 < x) :
+    HasDerivAt nfWeight (nfWeightDeriv x) x := by
+  have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
+  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hinner : HasDerivAt (fun t : ℝ => t ^ 2 - 1) (2 * x) x := by
+    simpa using (hasDerivAt_pow 2 x).sub_const 1
+  have h := hinner.sqrt hd.ne'
+  have hval : 2 * x / (2 * Real.sqrt (x ^ 2 - 1)) = nfWeightDeriv x := by
+    rw [nfWeightDeriv]
+    have hr : Real.sqrt (x ^ 2 - 1) ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hd)
+    field_simp
+  have hfun : nfWeight = fun t : ℝ => Real.sqrt (t ^ 2 - 1) := by
+    funext t
+    rw [nfWeight]
+  rw [hfun, ← hval]
+  exact h
+
+theorem hasDerivAt_nfWeightDeriv {x : ℝ} (hx : 1 < x) :
+    HasDerivAt nfWeightDeriv (nfWeightSecondDeriv x) x := by
+  have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
+  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hr : (0 : ℝ) < Real.sqrt (x ^ 2 - 1) := Real.sqrt_pos.mpr hd
+  have hrsq : Real.sqrt (x ^ 2 - 1) * Real.sqrt (x ^ 2 - 1) = x ^ 2 - 1 :=
+    Real.mul_self_sqrt hd.le
+  obtain ⟨W, hW0, hWsq, hWeq⟩ : ∃ W : ℝ, 0 < W ∧ W * W = x ^ 2 - 1
+      ∧ Real.sqrt (x ^ 2 - 1) = W := ⟨Real.sqrt (x ^ 2 - 1), hr, hrsq, rfl⟩
+  have h := (hasDerivAt_id x).fun_div (hasDerivAt_nfWeight hx) (ne_of_gt hr)
+  have hfun : nfWeightDeriv = fun t : ℝ => t / nfWeight t := by
+    funext t
+    rw [nfWeightDeriv, nfWeight]
+  have hval : (1 * nfWeight x - x * nfWeightDeriv x) / nfWeight x ^ 2
+      = nfWeightSecondDeriv x := by
+    have e2 : W * W - x ^ 2 = -1 := by
+      rw [hWsq]
+      ring
+    rw [nfWeight, nfWeightDeriv, nfWeightSecondDeriv, hWeq, ← hWsq]
+    field_simp
+    linear_combination e2
+  rw [hfun, ← hval]
+  exact h
+
+/-- The normal-form solution `u = sqrt(x²-1) R`. -/
+def prolateNormalFormSol (R : ℝ → ℝ) (x : ℝ) : ℝ := nfWeight x * R x
+
+/-- Its derivative. -/
+def prolateNormalFormSolDeriv (R DR : ℝ → ℝ) (x : ℝ) : ℝ :=
+  nfWeightDeriv x * R x + nfWeight x * DR x
+
+/-- Its second derivative. -/
+def prolateNormalFormSolSecondDeriv (R DR DDR : ℝ → ℝ) (x : ℝ) : ℝ :=
+  nfWeightSecondDeriv x * R x + 2 * (nfWeightDeriv x * DR x) + nfWeight x * DDR x
+
+theorem hasDerivAt_prolateNormalFormSol {x : ℝ} {R DR : ℝ → ℝ} (hx : 1 < x)
+    (hR : HasDerivAt R (DR x) x) :
+    HasDerivAt (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR x) x := by
+  have h := (hasDerivAt_nfWeight hx).fun_mul hR
+  have hfun : prolateNormalFormSol R = fun t : ℝ => nfWeight t * R t := by
+    funext t
+    rw [prolateNormalFormSol]
+  rw [hfun, prolateNormalFormSolDeriv]
+  exact h
+
+theorem hasDerivAt_prolateNormalFormSolDeriv {x : ℝ} {R DR DDR : ℝ → ℝ} (hx : 1 < x)
+    (hR : HasDerivAt R (DR x) x) (hDR : HasDerivAt DR (DDR x) x) :
+    HasDerivAt (prolateNormalFormSolDeriv R DR) (prolateNormalFormSolSecondDeriv R DR DDR x) x := by
+  have h1 := (hasDerivAt_nfWeightDeriv hx).fun_mul hR
+  have h2 := (hasDerivAt_nfWeight hx).fun_mul hDR
+  have h := h1.fun_add h2
+  have hfun : prolateNormalFormSolDeriv R DR
+      = fun t : ℝ => nfWeightDeriv t * R t + nfWeight t * DR t := by
+    funext t
+    rw [prolateNormalFormSolDeriv]
+  have hval : nfWeightSecondDeriv x * R x + nfWeightDeriv x * DR x
+      + (nfWeightDeriv x * DR x + nfWeight x * DDR x)
+      = prolateNormalFormSolSecondDeriv R DR DDR x := by
+    rw [prolateNormalFormSolSecondDeriv]
+    ring
+  rw [hfun, ← hval]
+  exact h
+
+/-- **The radial prolate equation in Liouville normal form.**  If `R` solves
+
+```text
+(x² - 1) R'' + 2x R' - (s c² - c² x²) R = 0,
+```
+
+the radial spheroidal equation with separation constant `chi = s c²`, then `u = sqrt(x²-1) R` solves
+`u'' + Q u = 0` with `Q = radialProlateQ s c`.  The identity is exact: the whole expression equals the
+radial equation divided by `sqrt(x²-1)`. -/
+theorem prolate_normalForm_ode {s c x : ℝ} {R DR DDR : ℝ → ℝ} (hx : 1 < x)
+    (hode : (x ^ 2 - 1) * DDR x + 2 * x * DR x - (s * c ^ 2 - c ^ 2 * x ^ 2) * R x = 0) :
+    prolateNormalFormSolSecondDeriv R DR DDR x
+      + radialProlateQ s c x * prolateNormalFormSol R x = 0 := by
+  have hx0 : (0 : ℝ) < x := lt_trans zero_lt_one hx
+  have hd : (0 : ℝ) < x ^ 2 - 1 := by nlinarith
+  have hr : (0 : ℝ) < Real.sqrt (x ^ 2 - 1) := Real.sqrt_pos.mpr hd
+  have hrsq : Real.sqrt (x ^ 2 - 1) * Real.sqrt (x ^ 2 - 1) = x ^ 2 - 1 :=
+    Real.mul_self_sqrt hd.le
+  obtain ⟨W, hW0, hWsq, hWeq⟩ : ∃ W : ℝ, 0 < W ∧ W * W = x ^ 2 - 1
+      ∧ Real.sqrt (x ^ 2 - 1) = W := ⟨Real.sqrt (x ^ 2 - 1), hr, hrsq, rfl⟩
+  have key : prolateNormalFormSolSecondDeriv R DR DDR x
+      + radialProlateQ s c x * prolateNormalFormSol R x
+      = ((x ^ 2 - 1) * DDR x + 2 * x * DR x - (s * c ^ 2 - c ^ 2 * x ^ 2) * R x) / W := by
+    rw [prolateNormalFormSolSecondDeriv, prolateNormalFormSol, radialProlateQ, nfWeight,
+      nfWeightDeriv, nfWeightSecondDeriv, hWeq, ← hWsq]
+    field_simp
+    ring
+  rw [key, hode, zero_div]
+
+
+
+/-! ## From the normal form to the comparison equation
+
+The comparison amplitude is `g = sqrt(m) = sqrt(xi/xi')`, whose logarithmic derivative is `P/2` by the
+integrating-factor law.  Dividing a solution of the normal form by `g` therefore produces a solution of
+the comparison equation, with the defect `Q + P²/4 + P'/2 - c²(xi')²` — which is exactly
+`lgNormalFormDefect`. -/
+
+/-- The comparison amplitude `g = sqrt(xi/xi')`. -/
+def lgAmplitude (s x : ℝ) : ℝ := Real.sqrt (lgWeight s x)
+
+/-- Its derivative `g P/2`. -/
+def lgAmplitudeDeriv (s x : ℝ) : ℝ := lgAmplitude s x * lgFirstOrderCoeff s x / 2
+
+/-- Its second derivative `g (P²/4 + P'/2)`. -/
+def lgAmplitudeSecondDeriv (s x : ℝ) : ℝ :=
+  lgAmplitude s x * (lgFirstOrderCoeff s x ^ 2 / 4 + lgFirstOrderCoeffDeriv s x / 2)
+
+theorem lgWeight_pos {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) : 0 < lgWeight s x := by
+  rw [lgWeight]
+  exact div_pos (xiEndpointPhase_pos hs0 hs1 hx) (xiSpeed_pos hs1 hx)
+
+theorem lgAmplitude_pos {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
+    0 < lgAmplitude s x := by
+  rw [lgAmplitude]
+  exact Real.sqrt_pos.mpr (lgWeight_pos hs0 hs1 hx)
+
+theorem hasDerivAt_lgAmplitude {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
+    HasDerivAt (lgAmplitude s) (lgAmplitudeDeriv s x) x := by
+  have hm : 0 < lgWeight s x := lgWeight_pos hs0 hs1 hx
+  obtain ⟨G, hG0, hGsq, hGeq⟩ : ∃ G : ℝ, 0 < G ∧ G * G = lgWeight s x
+      ∧ Real.sqrt (lgWeight s x) = G :=
+    ⟨Real.sqrt (lgWeight s x), Real.sqrt_pos.mpr hm, Real.mul_self_sqrt hm.le, rfl⟩
+  have h := (hasDerivAt_lgWeight hs0 hs1 hx).sqrt hm.ne'
+  have hval : lgWeight s x * lgFirstOrderCoeff s x / (2 * Real.sqrt (lgWeight s x))
+      = lgAmplitudeDeriv s x := by
+    rw [lgAmplitudeDeriv, lgAmplitude, hGeq, ← hGsq]
+    field_simp
+  have hfun : lgAmplitude s = fun t : ℝ => Real.sqrt (lgWeight s t) := by
+    funext t
+    rw [lgAmplitude]
+  rw [hfun, ← hval]
+  exact h
+
+theorem hasDerivAt_lgAmplitudeDeriv {s x : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x) :
+    HasDerivAt (lgAmplitudeDeriv s) (lgAmplitudeSecondDeriv s x) x := by
+  have hg := hasDerivAt_lgAmplitude hs0 hs1 hx
+  have hP := hasDerivAt_lgFirstOrderCoeff hs0 hs1 hx
+  have h := (hg.fun_mul hP).div_const 2
+  have hfun : lgAmplitudeDeriv s
+      = fun t : ℝ => lgAmplitude s t * lgFirstOrderCoeff s t / 2 := by
+    funext t
+    rw [lgAmplitudeDeriv]
+  have hval : (lgAmplitudeDeriv s x * lgFirstOrderCoeff s x
+        + lgAmplitude s x * lgFirstOrderCoeffDeriv s x) / 2
+      = lgAmplitudeSecondDeriv s x := by
+    rw [lgAmplitudeSecondDeriv, lgAmplitudeDeriv]
+    ring
+  rw [hfun, ← hval]
+  exact h
+
+/-- The comparison solution `U = u/g` attached to a solution `u` of the normal form. -/
+def comparisonSol (u : ℝ → ℝ) (s x : ℝ) : ℝ := u x / lgAmplitude s x
+
+/-- Its derivative. -/
+def comparisonSolDeriv (u Du : ℝ → ℝ) (s x : ℝ) : ℝ :=
+  (Du x * lgAmplitude s x - u x * lgAmplitudeDeriv s x)
+    / (lgAmplitude s x * lgAmplitude s x)
+
+theorem hasDerivAt_comparisonSol {s x : ℝ} {u Du : ℝ → ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2)
+    (hx : 1 < x) (hu : HasDerivAt u (Du x) x) :
+    HasDerivAt (comparisonSol u s) (comparisonSolDeriv u Du s x) x := by
+  have hg := hasDerivAt_lgAmplitude hs0 hs1 hx
+  have hgpos := lgAmplitude_pos hs0 hs1 hx
+  have h := hu.fun_div hg hgpos.ne'
+  have hfun : comparisonSol u s = fun t : ℝ => u t / lgAmplitude s t := by
+    funext t
+    rw [comparisonSol]
+  have hval : (Du x * lgAmplitude s x - u x * lgAmplitudeDeriv s x) / lgAmplitude s x ^ 2
+      = comparisonSolDeriv u Du s x := by
+    rw [comparisonSolDeriv]
+    ring
+  rw [hfun, ← hval]
+  exact h
+
+/-- **A solution of the normal form solves the comparison equation with defect
+`lgNormalFormDefect`.**  If `u'' + Q u = 0` at `x`, then `U = u/g` satisfies
+
+```text
+U'' = -P U' - (c² (xi')² + a) U,       a = Q + P²/4 + P'/2 - c² (xi')²,
+```
+
+which is the exact form the Volterra transport law and the pole-uniform estimate consume.  The proof is
+the quotient rule twice, together with `g'= gP/2` and `g'' = g(P²/4 + P'/2)`. -/
+theorem hasDerivAt_comparisonSolDeriv {s c x : ℝ} {u Du DDu Q : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x)
+    (hu : HasDerivAt u (Du x) x) (hDu : HasDerivAt Du (DDu x) x)
+    (hode : DDu x + Q x * u x = 0) :
+    HasDerivAt (comparisonSolDeriv u Du s)
+      (-(lgFirstOrderCoeff s x) * comparisonSolDeriv u Du s x
+        - (c ^ 2 * xiSpeed s x ^ 2 + lgNormalFormDefect s c Q x) * comparisonSol u s x) x := by
+  have hg := hasDerivAt_lgAmplitude hs0 hs1 hx
+  have hg2 := hasDerivAt_lgAmplitudeDeriv hs0 hs1 hx
+  have hgpos := lgAmplitude_pos hs0 hs1 hx
+  have hne : lgAmplitude s x * lgAmplitude s x ≠ 0 := ne_of_gt (mul_pos hgpos hgpos)
+  have hDDu : DDu x = -(Q x * u x) := by linarith
+  have hfun : comparisonSolDeriv u Du s
+      = fun t : ℝ => (Du t * lgAmplitude s t - u t * lgAmplitudeDeriv s t)
+          / (lgAmplitude s t * lgAmplitude s t) := by
+    funext t
+    rw [comparisonSolDeriv]
+  rw [hfun]
+  refine (((hDu.fun_mul hg).fun_sub (hu.fun_mul hg2)).fun_div (hg.fun_mul hg) hne).congr_deriv ?_
+  simp only [comparisonSol, lgNormalFormDefect, lgAmplitudeSecondDeriv, lgAmplitudeDeriv, hDDu]
+  field_simp
+  ring
+
+
+
+/-! ## The card's gate: the actual radial mode against the comparison equation -/
+
+/-- **The radial prolate mode solves the pole-uniform comparison equation with a defect that has only a
+simple pole.**  Let `R` solve the radial spheroidal equation of order zero,
+
+```text
+(x² - 1) R'' + 2x R' - (chi - c² x²) R = 0,        chi = s c²,   0 <= s <= 1/2,
+```
+
+at a point `x > 1`.  Put `u = sqrt(x²-1) R` and `U = u/g` with `g = sqrt(xi_s/xi_s')`.  Then `U` solves the
+comparison equation of the Bessel model,
+
+```text
+U'' = -P U' - (c² (xi')² + a) U,        P = xi'/xi - xi''/xi',
+```
+
+with a defect obeying `|a| <= 40/(x²-1)` — uniformly in the aperture `c`, which cancels identically, and
+uniformly in the separation constant through `0 <= s <= 1/2` alone.  No asymptotics of the eigenvalue are
+used: the separation law is needed only to know that `s` lies in that range.
+
+This is the exact hypothesis of the pole-uniform Volterra estimate
+`abs_perturbed_le_lgEnvelope_mul_exp`, whose exponential factor is the total mass of `m |a| E²`; the
+Liouville measure `dx/xi'` vanishes like `sqrt(x²-1)` at the endpoint, so a simple pole has finite
+mass. -/
+theorem radialProlate_comparison_pole_uniform {s c x : ℝ} {R DR DDR : ℝ → ℝ}
+    (hs0 : 0 ≤ s) (hs1 : s ≤ 1 / 2) (hx : 1 < x)
+    (hR : HasDerivAt R (DR x) x) (hDR : HasDerivAt DR (DDR x) x)
+    (hode : (x ^ 2 - 1) * DDR x + 2 * x * DR x - (s * c ^ 2 - c ^ 2 * x ^ 2) * R x = 0) :
+    HasDerivAt (comparisonSol (prolateNormalFormSol R) s)
+        (comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s x) x
+      ∧ HasDerivAt (comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s)
+        (-(lgFirstOrderCoeff s x)
+            * comparisonSolDeriv (prolateNormalFormSol R) (prolateNormalFormSolDeriv R DR) s x
+          - (c ^ 2 * xiSpeed s x ^ 2 + lgNormalFormDefect s c (radialProlateQ s c) x)
+            * comparisonSol (prolateNormalFormSol R) s x) x
+      ∧ |lgNormalFormDefect s c (radialProlateQ s c) x| ≤ 40 / (x ^ 2 - 1) := by
+  have hu := hasDerivAt_prolateNormalFormSol hx hR
+  have hDu := hasDerivAt_prolateNormalFormSolDeriv hx hR hDR
+  have hnf := prolate_normalForm_ode (s := s) (c := c) hx hode
+  exact ⟨hasDerivAt_comparisonSol hs0 hs1 hx hu,
+    hasDerivAt_comparisonSolDeriv hs0 hs1 hx hu hDu hnf,
+    abs_lgNormalFormDefect_radialProlate_le hs0 hs1 hx⟩
+
+
 end GaloisForLFunctions.RHTower
 
 end

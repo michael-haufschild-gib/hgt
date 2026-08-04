@@ -239,3 +239,11 @@ unproved arithmetic selection step.
   law: exact open core remains the source-derived, coefficient-faithful comparison carrying that
   resolved boundary to the fixed scalar physical fibre without assuming its RH-equivalent
   vanishing.
+- 2026-08-04 — Falsified one proposed ambient for that comparison.  The literal activation-Fisher
+  endpoint obeys `sum_p F_t(p)^2 < infinity <-> t<1/2`; both reflected endpoints share one `ell2`
+  carrier exactly for `|t|<1/2`, while Xi only gives `|t|<1`.  This is proved unconditionally in
+  `PrimeFirstTraceEssentialEdgeReflectedIdealGrade.lean`.  Hence a fixed Hilbert singular
+  completion cannot close Route R.  Positive survivor is a graded variable-ideal/off-diagonal
+  Cartier comparison preserving the `ell1` subobject.  The new two-sided-singular Gelfand theorem
+  also rules out using noncoercivity alone: countable singular observers retain large common
+  closed defects unless extra source invariance is proved.

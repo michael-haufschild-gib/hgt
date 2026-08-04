@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HTGeometry.AlgebraicRootGrowth
+import GaloisForLFunctions.HTGeometry.MvPolynomialGrowthBound
 import Mathlib.Analysis.Complex.ValueDistribution.Proximity.Basic
+import Mathlib.Analysis.Meromorphic.Divisor
 
 /-!
 # Proximity of an algebraic element
@@ -90,6 +92,117 @@ theorem proximity_le_of_root_coeff {n : ℕ} (hn : 1 ≤ n) {g : ℂ → ℂ} {a
     exact hmul
   linarith [proximity_le_of_root hn hg ha hcirc hrel, hstep]
 
+/-! ## Proximity of a polynomial in a meromorphic function -/
+
+/-- A two-variable polynomial in the coordinate and a meromorphic function is meromorphic. -/
+theorem meromorphic_eval_mvPolynomial {f : ℂ → ℂ} (hf : Meromorphic f)
+    (A : MvPolynomial (Fin 2) ℂ) :
+    Meromorphic (fun z => MvPolynomial.eval ![z, f z] A) := by
+  induction A using MvPolynomial.induction_on with
+  | C a =>
+      have hfun : (fun z : ℂ => MvPolynomial.eval ![z, f z] (MvPolynomial.C a))
+          = fun _ : ℂ => a := by
+        funext z
+        simp
+      rw [hfun]
+      exact Meromorphic.const a
+  | add p q hp hq =>
+      have hfun : (fun z : ℂ => MvPolynomial.eval ![z, f z] (p + q))
+          = fun z : ℂ => MvPolynomial.eval ![z, f z] p + MvPolynomial.eval ![z, f z] q := by
+        funext z
+        rw [map_add]
+      rw [hfun]
+      exact hp.fun_add hq
+  | mul_X p i hp =>
+      have hfun : (fun z : ℂ => MvPolynomial.eval ![z, f z] (p * MvPolynomial.X i))
+          = fun z : ℂ => MvPolynomial.eval ![z, f z] p * (![z, f z] : Fin 2 → ℂ) i := by
+        funext z
+        rw [map_mul, MvPolynomial.eval_X]
+      rw [hfun]
+      refine hp.fun_mul ?_
+      fin_cases i
+      · exact fun x => (analyticAt_id (𝕜 := ℂ) (z := x)).meromorphicAt
+      · exact hf
+
+/-- **The proximity of a polynomial in a meromorphic function.**  Only the total degree and the
+coefficient size enter. -/
+theorem proximity_eval_mvPolynomial_le (A : MvPolynomial (Fin 2) ℂ) {f : ℂ → ℂ}
+    (hf : Meromorphic f) (r : ℝ) :
+    proximity (fun z => MvPolynomial.eval ![z, f z] A) ⊤ r
+      ≤ (Real.posLog (mvCoeffNormSum A)
+          + A.totalDegree * (Real.log 2 + Real.posLog |r|)
+          + A.totalDegree * Real.log 2)
+        + A.totalDegree * proximity f ⊤ r := by
+  classical
+  set d : ℕ := A.totalDegree with hd
+  set K : ℝ := Real.posLog (mvCoeffNormSum A) + d * (Real.log 2 + Real.posLog |r|)
+    + d * Real.log 2 with hK
+  have hAf : Meromorphic (fun z => MvPolynomial.eval ![z, f z] A) :=
+    meromorphic_eval_mvPolynomial hf A
+  have hfint : CircleIntegrable (Real.posLog ‖f ·‖) 0 r :=
+    MeromorphicOn.circleIntegrable_posLog_norm (fun x _ => hf x)
+  have hAint : CircleIntegrable (Real.posLog ‖(fun z => MvPolynomial.eval ![z, f z] A) ·‖) 0 r :=
+    MeromorphicOn.circleIntegrable_posLog_norm (fun x _ => hAf x)
+  have hsumint : ∀ j ∈ Finset.range d, CircleIntegrable (Real.posLog ‖f ·‖) 0 r :=
+    fun _ _ => hfint
+  have hbound : circleAverage (Real.posLog ‖(fun z => MvPolynomial.eval ![z, f z] A) ·‖) 0 r
+      ≤ circleAverage ((fun _ : ℂ => K) + ∑ _j ∈ Finset.range d, (Real.posLog ‖f ·‖)) 0 r := by
+    refine circleAverage_mono hAint
+      ((circleIntegrable_const _ _ _).add (CircleIntegrable.sum (Finset.range d) hsumint)) ?_
+    intro x hx
+    have hxn : ‖x‖ = |r| := mem_sphere_zero_iff_norm.mp hx
+    have hpt := posLog_norm_eval_le A x (f x)
+    rw [hxn] at hpt
+    have hrw : ((fun _ : ℂ => K) + ∑ _j ∈ Finset.range d, (Real.posLog ‖f ·‖)) x
+        = K + (d : ℝ) * Real.posLog ‖f x‖ := by
+      simp [Finset.card_range, nsmul_eq_mul]
+    rw [hrw, hK]
+    rw [mul_add (a := (A.totalDegree : ℝ)) (b := Real.log 2)
+      (c := Real.posLog ‖f x‖)] at hpt
+    rw [hd]
+    linarith [hpt]
+  rw [circleAverage_add (circleIntegrable_const K 0 r)
+    (CircleIntegrable.sum (Finset.range d) hsumint), circleAverage_const,
+    circleAverage_sum hsumint, Finset.sum_const, Finset.card_range, nsmul_eq_mul] at hbound
+  rw [proximity_top, proximity_top]
+  exact hbound
+
+/-! ## Entire functions have no poles to count -/
+
+/-- **An entire function has vanishing pole-counting function.** -/
+theorem logCounting_top_eq_zero_of_analyticOnNhd {f : ℂ → ℂ}
+    (hf : AnalyticOnNhd ℂ f (Set.univ : Set ℂ)) :
+    logCounting f ⊤ = 0 := by
+  rw [logCounting_top, negPart_eq_zero.mpr (MeromorphicOn.AnalyticOnNhd.divisor_nonneg hf)]
+  simp
+
+/-- **For an entire function the characteristic is the proximity.** -/
+theorem characteristic_top_eq_proximity_of_analyticOnNhd {f : ℂ → ℂ}
+    (hf : AnalyticOnNhd ℂ f (Set.univ : Set ℂ)) :
+    characteristic f ⊤ = proximity f ⊤ := by
+  rw [characteristic, logCounting_top_eq_zero_of_analyticOnNhd hf, add_zero]
+
+/-- **The coefficient bound with characteristics on both sides.**  For an entire `F`, the
+characteristic of a polynomial in `(z, F)` is bounded by the total degree times that of `F`. -/
+theorem characteristic_eval_mvPolynomial_le (A : MvPolynomial (Fin 2) ℂ) {F : ℂ → ℂ}
+    (hF : AnalyticOnNhd ℂ F (Set.univ : Set ℂ)) (r : ℝ) :
+    characteristic (fun z => MvPolynomial.eval ![z, F z] A) ⊤ r
+      ≤ (Real.posLog (mvCoeffNormSum A)
+          + A.totalDegree * (Real.log 2 + Real.posLog |r|)
+          + A.totalDegree * Real.log 2)
+        + A.totalDegree * characteristic F ⊤ r := by
+  have hAF : AnalyticOnNhd ℂ (fun z => MvPolynomial.eval ![z, F z] A) (Set.univ : Set ℂ) :=
+    analyticOnNhd_eval_two hF A
+  have hFm : Meromorphic F := fun x => (hF x (Set.mem_univ x)).meromorphicAt
+  have hbase := proximity_eval_mvPolynomial_le A hFm r
+  have hlhs : characteristic (fun z => MvPolynomial.eval ![z, F z] A) ⊤ r
+      = proximity (fun z => MvPolynomial.eval ![z, F z] A) ⊤ r := by
+    rw [characteristic_top_eq_proximity_of_analyticOnNhd hAF]
+  have hrhs : characteristic F ⊤ r = proximity F ⊤ r := by
+    rw [characteristic_top_eq_proximity_of_analyticOnNhd hF]
+  rw [hlhs, hrhs]
+  exact hbase
+
 /-! ## In terms of the characteristic function -/
 
 /-- The proximity function is at most the characteristic function on `[1, ∞)`. -/
@@ -116,5 +229,128 @@ theorem proximity_le_of_root_characteristic {n : ℕ} (hn : 1 ≤ n) {g : ℂ �
     intro i _
     exact add_le_add (proximity_le_characteristic hr) (proximity_le_characteristic hr)
   linarith [proximity_le_of_root_coeff hn hg ha hcirc hrel, hstep]
+
+/-- **The algebraic bound with every characteristic taken at infinity.**  The first main theorem
+replaces the reciprocal's characteristic by that of the top coefficient itself, at the cost of the
+explicit constant it supplies. -/
+theorem proximity_le_of_root_characteristic_top {n : ℕ} (hn : 1 ≤ n) {g : ℂ → ℂ}
+    {a : ℕ → ℂ → ℂ} {r : ℝ} (hr : 1 ≤ r)
+    (hg : Meromorphic g) (ha : ∀ i, Meromorphic (a i))
+    (hcirc : ∀ z ∈ Metric.sphere (0 : ℂ) |r|, a n z ≠ 0)
+    (hrel : ∀ z : ℂ, ∑ i ∈ Finset.range (n + 1), a i z * (g z) ^ i = 0) :
+    proximity g ⊤ r
+      ≤ Real.log n + ∑ i ∈ Finset.range n,
+          (characteristic (a i) ⊤ r + characteristic (a n) ⊤ r
+            + max |Real.log ‖a n 0‖|
+                |Real.log ‖meromorphicTrailingCoeffAt (a n) 0‖|) := by
+  set C : ℝ := max |Real.log ‖a n 0‖|
+    |Real.log ‖meromorphicTrailingCoeffAt (a n) 0‖| with hC
+  have hFMT : characteristic (a n)⁻¹ ⊤ r ≤ characteristic (a n) ⊤ r + C := by
+    have h := characteristic_sub_characteristic_inv_le (f := a n) (R := r) (ha n)
+    rw [← hC] at h
+    have h2 := abs_le.mp h
+    linarith [h2.1]
+  have hstep : ∑ i ∈ Finset.range n, (proximity (a i) ⊤ r + proximity (a n) 0 r)
+      ≤ ∑ i ∈ Finset.range n,
+          (characteristic (a i) ⊤ r + characteristic (a n) ⊤ r + C) := by
+    refine Finset.sum_le_sum ?_
+    intro i _
+    have h1 : proximity (a i) ⊤ r ≤ characteristic (a i) ⊤ r :=
+      proximity_le_characteristic hr
+    have h2 : proximity (a n) 0 r ≤ characteristic (a n)⁻¹ ⊤ r := by
+      rw [← proximity_inv]
+      exact proximity_le_characteristic hr
+    linarith [hFMT]
+  linarith [proximity_le_of_root_coeff hn hg ha hcirc hrel, hstep]
+
+/-! ## The composite: algebraic over `ℂ(z, F)` cannot outgrow `F` -/
+
+/-- **An element algebraic over the field generated by an entire function grows no faster.**  The
+constant depends only on the coefficient polynomials, not on the radius. -/
+theorem exists_bound_proximity_of_two_var_relation {n : ℕ} (hn : 1 ≤ n)
+    {g F : ℂ → ℂ} {A : ℕ → MvPolynomial (Fin 2) ℂ}
+    (hg : Meromorphic g) (hF : AnalyticOnNhd ℂ F (Set.univ : Set ℂ)) :
+    ∃ c : ℝ, 0 ≤ c ∧ ∀ r : ℝ, 1 ≤ r →
+      (∀ z ∈ Metric.sphere (0 : ℂ) |r|, MvPolynomial.eval ![z, F z] (A n) ≠ 0) →
+      (∀ z : ℂ, ∑ i ∈ Finset.range (n + 1),
+        MvPolynomial.eval ![z, F z] (A i) * (g z) ^ i = 0) →
+      proximity g ⊤ r ≤ c * (1 + Real.posLog |r| + characteristic F ⊤ r) := by
+  classical
+  set a : ℕ → ℂ → ℂ := fun i z => MvPolynomial.eval ![z, F z] (A i) with hadef
+  have haA : ∀ i, AnalyticOnNhd ℂ (a i) (Set.univ : Set ℂ) :=
+    fun i => analyticOnNhd_eval_two hF (A i)
+  have ham : ∀ i, Meromorphic (a i) := fun i x => (haA i x (Set.mem_univ x)).meromorphicAt
+  set K : ℝ := ∑ i ∈ Finset.range (n + 1),
+    (Real.posLog (mvCoeffNormSum (A i)) + 2 * (((A i).totalDegree : ℝ) * Real.log 2)) with hK
+  set D : ℝ := ∑ i ∈ Finset.range (n + 1), ((A i).totalDegree : ℝ) with hD
+  set Cn : ℝ := max |Real.log ‖a n 0‖|
+    |Real.log ‖meromorphicTrailingCoeffAt (a n) 0‖| with hCn
+  have hlog2 : (0 : ℝ) ≤ Real.log 2 := Real.log_nonneg (by norm_num)
+  have hD0 : 0 ≤ D := by
+    rw [hD]
+    exact Finset.sum_nonneg fun _ _ => Nat.cast_nonneg _
+  refine ⟨max (Real.log n + 2 * n * K + n * Cn) (2 * n * D), ?_, ?_⟩
+  · refine le_max_of_le_right ?_
+    positivity
+  · intro r hr hcirc hrel
+    have hTF : 0 ≤ characteristic F ⊤ r := characteristic_nonneg hr
+    have hposr : (0 : ℝ) ≤ Real.posLog |r| := Real.posLog_nonneg
+    have hcoef : ∀ i, i ≤ n → characteristic (a i) ⊤ r
+        ≤ K + D * Real.posLog |r| + D * characteristic F ⊤ r := by
+      intro i hi
+      have hmem : i ∈ Finset.range (n + 1) := Finset.mem_range.mpr (by omega)
+      have hbase := characteristic_eval_mvPolynomial_le (A i) hF r
+      rw [mul_add] at hbase
+      have h1 : Real.posLog (mvCoeffNormSum (A i))
+          + 2 * (((A i).totalDegree : ℝ) * Real.log 2) ≤ K := by
+        rw [hK]
+        refine Finset.single_le_sum
+          (f := fun j => Real.posLog (mvCoeffNormSum (A j))
+            + 2 * (((A j).totalDegree : ℝ) * Real.log 2)) (fun j _ => ?_) hmem
+        have hp : (0 : ℝ) ≤ Real.posLog (mvCoeffNormSum (A j)) := Real.posLog_nonneg
+        positivity
+      have h2 : ((A i).totalDegree : ℝ) ≤ D := by
+        rw [hD]
+        exact Finset.single_le_sum (f := fun j => ((A j).totalDegree : ℝ))
+          (fun j _ => Nat.cast_nonneg _) hmem
+      have h3 : ((A i).totalDegree : ℝ) * Real.posLog |r| ≤ D * Real.posLog |r| :=
+        mul_le_mul_of_nonneg_right h2 hposr
+      have h4 : ((A i).totalDegree : ℝ) * characteristic F ⊤ r
+          ≤ D * characteristic F ⊤ r := mul_le_mul_of_nonneg_right h2 hTF
+      linarith [hbase, h1, h3, h4]
+    have hmain := proximity_le_of_root_characteristic_top hn hr hg ham hcirc hrel
+    rw [← hCn] at hmain
+    have hsum : ∑ i ∈ Finset.range n,
+        (characteristic (a i) ⊤ r + characteristic (a n) ⊤ r + Cn)
+        ≤ ∑ _i ∈ Finset.range n,
+            (2 * (K + D * Real.posLog |r| + D * characteristic F ⊤ r) + Cn) := by
+      refine Finset.sum_le_sum ?_
+      intro i hi
+      have hi' : i ≤ n := by
+        have := Finset.mem_range.mp hi
+        omega
+      linarith [hcoef i hi', hcoef n (le_refl n)]
+    rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul] at hsum
+    have hexp2 : (n : ℝ) * (2 * (K + D * Real.posLog |r| + D * characteristic F ⊤ r) + Cn)
+        = 2 * n * K + 2 * n * D * Real.posLog |r|
+          + 2 * n * D * characteristic F ⊤ r + n * Cn := by ring
+    have hc1 : Real.log n + 2 * n * K + n * Cn
+        ≤ max (Real.log n + 2 * n * K + n * Cn) (2 * n * D) := le_max_left _ _
+    have hc2 : 2 * n * D ≤ max (Real.log n + 2 * n * K + n * Cn) (2 * n * D) := le_max_right _ _
+    have hP : 2 * n * D * Real.posLog |r|
+        ≤ max (Real.log n + 2 * n * K + n * Cn) (2 * n * D) * Real.posLog |r| :=
+      mul_le_mul_of_nonneg_right hc2 hposr
+    have hT : 2 * n * D * characteristic F ⊤ r
+        ≤ max (Real.log n + 2 * n * K + n * Cn) (2 * n * D) * characteristic F ⊤ r :=
+      mul_le_mul_of_nonneg_right hc2 hTF
+    have hexp : max (Real.log n + 2 * n * K + n * Cn) (2 * n * D)
+        * (1 + Real.posLog |r| + characteristic F ⊤ r)
+        = max (Real.log n + 2 * n * K + n * Cn) (2 * n * D)
+          + max (Real.log n + 2 * n * K + n * Cn) (2 * n * D) * Real.posLog |r|
+          + max (Real.log n + 2 * n * K + n * Cn) (2 * n * D) * characteristic F ⊤ r := by
+      ring
+    rw [hexp2] at hsum
+    rw [hexp]
+    linarith [hmain, hsum, hc1, hP, hT]
 
 end GaloisForLFunctions.HTGeometry

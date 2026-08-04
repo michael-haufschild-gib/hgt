@@ -100,6 +100,28 @@ defect is necessarily a quadratic trace cocycle.  This narrows the still-open Wo
 landing: it must identify that quadratic strict-preclosure cocycle with the singular BV first
 trace before divisor specialization.
 
+## Reflected modular Fisher threshold
+
+The literal occupancy-Fisher representative
+
+```text
+F_t(p)=p^t * p/(p+1)^2
+```
+
+has a second, topology-selecting wall which was previously absent from the frontier ledger:
+
+```text
+1/4 * p^(t-1) <= F_t(p) <= p^(t-1),
+Summable (p |-> F_t(p)^2) <-> t < 1/2,
+Summable(F_t^2) and Summable(F_(-t)^2) <-> |t| < 1/2.
+```
+
+This falsifies the claim that both reflected twists define classes of one fixed `ell2/ell1`
+completion throughout the Xi strip `|t|<1`.  The positive survivor is exact: the `ell1` phase
+transition at `t=0` remains coefficient-faithful, but the comparison object must be graded over
+variable ideals rather than a fixed Hilbert carrier.  This is an internal frontier correction;
+prime-power summability itself is parent mathematics.
+
 ## Hostile falsifiers
 
 1. Retire `(2)` if coordinate `(4)` is not the literal source deviation coordinate.
@@ -140,6 +162,7 @@ Module:
 ```text
 formal/GaloisForLFunctions/RHTower/
 PrimeFirstTraceEssentialEdgeSchattenThreshold.lean
+PrimeFirstTraceEssentialEdgeReflectedIdealGrade.lean
 ```
 
 Exact unconditional declarations:
@@ -150,7 +173,11 @@ Exact unconditional declarations:
 - `summable_norm_sq_primeFirstTraceEssentialResponseDeviation`;
 - `not_summable_norm_primeFirstTraceEssentialSourceDeviation`;
 - `primeFirstTraceEssentialSourceDeviation_not_memℓp_one`;
-- `primeFirstTraceEssentialEdgeCorrection`.
+- `primeFirstTraceEssentialEdgeCorrection`;
+- `primeActivationOccupancyFisherDensity_bounds`;
+- `primeActivationOccupancyFisherTwist_bounds`;
+- `summable_sq_primeActivationOccupancyFisherTwist_iff`;
+- `summable_sq_reflected_primeActivationOccupancyFisherTwist_iff`.
 
 Verification:
 

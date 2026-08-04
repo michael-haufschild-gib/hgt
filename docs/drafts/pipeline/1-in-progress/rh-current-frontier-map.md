@@ -165,7 +165,7 @@ marked explicitly; all others remain live at their stated open core.
 | O | open | literal cofinal restricted-Weil floor convergence/nonnegativity |
 | P | open | source-built compact completed-seam moment/Markov carrier |
 | Q | open/secondary | source boundary Jensen/jet saturation |
-| R | open; positive resolved polarization, asymptotic gauge-modulus no-go, associated-grade blindness, rational-Witt pointed section, and retained rational-adelic prime-isotropy class with strict resolved-Xi chain map constructed | coefficient-faithful source-pointed singular Cartier comparison carrying resolved boundary flatness to the scalar physical fibre on the actual Xi conormal |
+| R | open; positive resolved polarization, asymptotic/associated-grade blindness, retained rational-adelic prime-isotropy class with strict resolved-Xi chain map, and fixed-Hilbert Fisher-completion no-go constructed | graded variable-ideal, coefficient-faithful source-pointed singular Cartier comparison carrying resolved boundary flatness to the scalar physical fibre on the actual Xi conormal |
 | S | upstream/secondary | independent source algebraicity or divisor-preserving dynamics |
 
 ### Corpus-native route space beyond classical templates

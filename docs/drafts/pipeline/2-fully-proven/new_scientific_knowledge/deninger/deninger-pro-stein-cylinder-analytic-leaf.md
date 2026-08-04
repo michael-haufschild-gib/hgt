@@ -189,6 +189,9 @@ SUSPENSION DESCENT OPEN`.
 
 - 2026-07-26 — Constructed pro-Stein cylinder analytic refinement and
   proved finite-cell global-section comparison.
+- 2026-08-04 — Formalized the first cohomology of a one-dimensional character
+  stage: primitives on the punctured plane through the exponential covering,
+  and `H^1(ℂ^×) = ℂ · d log z`.
 - 2026-08-04 — Formalized the independence of the logarithmic differentials:
   the map `L ⊗ ℂ → H^1` of a character stage is injective.
 - 2026-08-04 — Formalized the Stein property of the finite character stages:
@@ -397,12 +400,34 @@ here.
   coefficient vanishes**, so the classes `d log P(a)` are linearly independent in `H^1` of a stage:
   the injectivity half of `L ⊗ ℂ ≅ H^1` in `(5)`.
 
+### `(5)` in dimension one landed
+
+`formal/GaloisForLFunctions/RHTower/DeningerPuncturedPrimitive.lean` and
+`formal/GaloisForLFunctions/RHTower/DeningerStageOneCohomology.lean`.  Axiom audit:
+`propext, Classical.choice, Quot.sound`.
+
+- `deningerPuncturedPeriod`, `deningerPeriod_eq_increment` — the period of a holomorphic function on
+  `ℂ^×` around the unit circle is the increment, over one period of the exponential, of a primitive
+  of its exponential pullback.
+- `deningerExists_primitive_of_period_zero` — **a vanishing period gives a primitive on `ℂ^×`**: the
+  pullback along the exponential lives on a convex set, where Morera's theorem gives a primitive,
+  and vanishing period is exactly the periodicity that lets it descend.  mathlib has primitives only
+  on a ball or on all of `ℂ`.
+- `deningerPuncturedDecomposition` — every holomorphic function on `ℂ^×` is `c z⁻¹` plus a
+  derivative, with `c` the period over `2πi`.
+- `deningerStageOne_form_apply` — a one-form on the one-dimensional stage is its coefficient times
+  the coordinate differential.
+- `deningerStageOne_cohomology` — **every holomorphic one-form on `ℂ^×` is `c · d log z + d H`**:
+  the surjectivity half of `(5)`.
+- `deningerStageOne_cohomology_unique` — the coefficient is unique.  Together with the independence
+  result this is `H^1(ℂ^×) ≅ ℂ` with generator `d log z`: the case `r = k = 1` of `(5)`, closed.
+
 ### Remaining
 
 1. **`(5)`--`(6)`**, the de Rham cohomology `H^k((ℂ^×)^r, ℂ) ≅ Λ^k(L ⊗ ℂ)` and its colimit; mathlib
    has no de Rham cohomology of a complex manifold.  The generators are built in every degree,
-   proved holomorphic, closed, nowhere zero and equivariant for the transitions, and in degree one
-   the map `L ⊗ ℂ → H^1` is proved injective.  What is left is surjectivity in degree one and the
-   comparison in higher degrees.
+   proved holomorphic, closed, nowhere zero and equivariant for the transitions; the map
+   `L ⊗ ℂ → H^1` is proved injective for every `r`; and the comparison is closed for `r = k = 1`.
+   What is left is surjectivity in degree one for `r ≥ 2` and the comparison in higher degrees.
 2. **`(7)`**, the relative cell statement, whose proof invokes Cartan theorem B — absent from
    mathlib — and the pro-Ind global-section formalism.

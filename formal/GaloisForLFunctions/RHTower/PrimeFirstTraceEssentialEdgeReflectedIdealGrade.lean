@@ -368,6 +368,143 @@ theorem xi_actualEdge_reflected_sub_activationFisher_summable
   apply summable_primeFirstTraceEssentialHarmonicTwist_sub_fisherTwist_of_lt_one
   linarith [(abs_lt.mp (xiCenteredPrimeIdealRate_abs_lt_one rho)).1]
 
+/-! ## Exact common-Hilbert threshold of the source Fisher endpoints -/
+
+/-- The source-selected Fisher density is uniformly comparable to the prime harmonic density.
+The lower constant is deliberately uniform: it is what makes the converse square-summability
+classification coefficient-faithful. -/
+theorem primeActivationOccupancyFisherDensity_bounds (p : Nat.Primes) :
+    1 / (4 * (p.1 : ℝ)) ≤ primeActivationOccupancyFisherDensity p ∧
+      primeActivationOccupancyFisherDensity p ≤ 1 / (p.1 : ℝ) := by
+  let P : ℝ := p.1
+  have hP0 : 0 < P := by dsimp [P]; exact_mod_cast p.2.pos
+  have hP1 : 1 ≤ P := by dsimp [P]; exact_mod_cast p.2.one_lt.le
+  rw [primeActivationOccupancyFisherDensity_eq]
+  change 1 / (4 * P) ≤ P / (P + 1) ^ 2 ∧
+    P / (P + 1) ^ 2 ≤ 1 / P
+  constructor
+  · rw [div_le_div_iff₀ (by positivity : 0 < 4 * P)
+      (sq_pos_of_pos (by linarith : 0 < P + 1))]
+    nlinarith [sq_nonneg (P - 1)]
+  · rw [div_le_div_iff₀ (sq_pos_of_pos (by linarith : 0 < P + 1)) hP0]
+    nlinarith
+
+/-- Every modular Fisher twist remains between two fixed multiples of its prime-power model. -/
+theorem primeActivationOccupancyFisherTwist_bounds (t : ℝ) (p : Nat.Primes) :
+    (1 / 4 : ℝ) * (p.1 : ℝ) ^ (t - 1) ≤
+        primeActivationOccupancyFisherTwist t p ∧
+      primeActivationOccupancyFisherTwist t p ≤
+        (p.1 : ℝ) ^ (t - 1) := by
+  have hP0 : 0 < (p.1 : ℝ) := by exact_mod_cast p.2.pos
+  have hpow : 0 ≤ (p.1 : ℝ) ^ t := Real.rpow_nonneg hP0.le t
+  constructor
+  · calc
+      (1 / 4 : ℝ) * (p.1 : ℝ) ^ (t - 1) =
+          (p.1 : ℝ) ^ t * (1 / (4 * (p.1 : ℝ))) := by
+            rw [show t - 1 = t + (-1) by ring,
+              Real.rpow_add hP0, Real.rpow_neg_one]
+            ring
+      _ ≤ (p.1 : ℝ) ^ t * primeActivationOccupancyFisherDensity p :=
+        mul_le_mul_of_nonneg_left
+          (primeActivationOccupancyFisherDensity_bounds p).1 hpow
+      _ = primeActivationOccupancyFisherTwist t p := rfl
+  · calc
+      primeActivationOccupancyFisherTwist t p ≤
+          (p.1 : ℝ) ^ t * (1 / (p.1 : ℝ)) :=
+        mul_le_mul_of_nonneg_left
+          (primeActivationOccupancyFisherDensity_bounds p).2 hpow
+      _ = (p.1 : ℝ) ^ (t - 1) := by
+        rw [show t - 1 = t + (-1) by ring,
+          Real.rpow_add hP0, Real.rpow_neg_one]
+        ring
+
+private theorem primeActivationOccupancyFisherTwist_nonneg
+    (t : ℝ) (p : Nat.Primes) :
+    0 ≤ primeActivationOccupancyFisherTwist t p := by
+  have hP0 : 0 < (p.1 : ℝ) := by exact_mod_cast p.2.pos
+  have hf : 0 ≤ primeActivationOccupancyFisherDensity p :=
+    (by positivity : 0 ≤ 1 / (4 * (p.1 : ℝ))).trans
+      (primeActivationOccupancyFisherDensity_bounds p).1
+  exact mul_nonneg (Real.rpow_nonneg hP0.le t) hf
+
+private theorem primeActivationOccupancyFisherTwist_sq_upper
+    (t : ℝ) (p : Nat.Primes) :
+    (primeActivationOccupancyFisherTwist t p) ^ 2 ≤
+      (p.1 : ℝ) ^ (2 * (t - 1)) := by
+  have hP0 : 0 < (p.1 : ℝ) := by exact_mod_cast p.2.pos
+  calc
+    (primeActivationOccupancyFisherTwist t p) ^ 2 ≤
+        ((p.1 : ℝ) ^ (t - 1)) ^ 2 :=
+      (sq_le_sq₀ (primeActivationOccupancyFisherTwist_nonneg t p)
+        (Real.rpow_nonneg hP0.le (t - 1))).2
+          (primeActivationOccupancyFisherTwist_bounds t p).2
+    _ = (p.1 : ℝ) ^ (2 * (t - 1)) := by
+      rw [← Real.rpow_natCast ((p.1 : ℝ) ^ (t - 1)) 2,
+        ← Real.rpow_mul hP0.le]
+      congr 1
+      ring
+
+private theorem primeActivationOccupancyFisherTwist_sq_lower
+    (t : ℝ) (p : Nat.Primes) :
+    (1 / 16 : ℝ) * (p.1 : ℝ) ^ (2 * (t - 1)) ≤
+      (primeActivationOccupancyFisherTwist t p) ^ 2 := by
+  have hP0 : 0 < (p.1 : ℝ) := by exact_mod_cast p.2.pos
+  have hsq : ((p.1 : ℝ) ^ (t - 1)) ^ 2 =
+      (p.1 : ℝ) ^ (2 * (t - 1)) := by
+    rw [← Real.rpow_natCast ((p.1 : ℝ) ^ (t - 1)) 2,
+      ← Real.rpow_mul hP0.le]
+    congr 1
+    ring
+  calc
+    (1 / 16 : ℝ) * (p.1 : ℝ) ^ (2 * (t - 1)) =
+        ((1 / 4 : ℝ) * (p.1 : ℝ) ^ (t - 1)) ^ 2 := by
+      rw [mul_pow, hsq]
+      norm_num
+    _ ≤ (primeActivationOccupancyFisherTwist t p) ^ 2 :=
+      (sq_le_sq₀ (mul_nonneg (by positivity)
+          (Real.rpow_nonneg hP0.le (t - 1)))
+        (primeActivationOccupancyFisherTwist_nonneg t p)).2
+          (primeActivationOccupancyFisherTwist_bounds t p).1
+
+/-- Exact Hilbert threshold of the literal source-selected Fisher twist.  In particular, the
+critical-strip condition `t < 1` is not enough to place this class in `ell²`: the sharp wall is
+`t = 1/2`. -/
+theorem summable_sq_primeActivationOccupancyFisherTwist_iff (t : ℝ) :
+    Summable (fun p : Nat.Primes =>
+      (primeActivationOccupancyFisherTwist t p) ^ 2) ↔
+      t < 1 / 2 := by
+  constructor
+  · intro hsum
+    have hscaled : Summable (fun p : Nat.Primes =>
+        (1 / 16 : ℝ) * (p.1 : ℝ) ^ (2 * (t - 1))) :=
+      Summable.of_nonneg_of_le (fun _ => by positivity)
+        (primeActivationOccupancyFisherTwist_sq_lower t) hsum
+    have hpow : Summable (fun p : Nat.Primes =>
+        (p.1 : ℝ) ^ (2 * (t - 1))) :=
+      (summable_mul_left_iff (by norm_num : (1 / 16 : ℝ) ≠ 0)).mp hscaled
+    have hexp := (Nat.Primes.summable_rpow).mp hpow
+    linarith
+  · intro ht
+    have hmajor : Summable (fun p : Nat.Primes =>
+        (p.1 : ℝ) ^ (2 * (t - 1))) :=
+      (Nat.Primes.summable_rpow).2 (by linarith)
+    exact Summable.of_nonneg_of_le (fun _ => sq_nonneg _)
+      (primeActivationOccupancyFisherTwist_sq_upper t) hmajor
+
+/-- The two reflected source Fisher endpoints inhabit one common prime `ell²` carrier exactly in
+the strict central half-strip.  This is the sharp obstruction to treating all Xi-divisor twists
+as classes of one fixed `ell²/ell¹` completion. -/
+theorem summable_sq_reflected_primeActivationOccupancyFisherTwist_iff
+    (t : ℝ) :
+    (Summable (fun p : Nat.Primes =>
+        (primeActivationOccupancyFisherTwist t p) ^ 2) ∧
+      Summable (fun p : Nat.Primes =>
+        (primeActivationOccupancyFisherTwist (-t) p) ^ 2)) ↔
+      |t| < 1 / 2 := by
+  rw [summable_sq_primeActivationOccupancyFisherTwist_iff,
+    summable_sq_primeActivationOccupancyFisherTwist_iff, abs_lt]
+  constructor <;> rintro ⟨h₁, h₂⟩ <;> constructor <;> linarith
+
 end
 
 

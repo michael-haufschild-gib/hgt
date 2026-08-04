@@ -240,17 +240,29 @@ give
 
 Hence, whenever `t<1`, the difference `c_t-F_t` is in `ell^1`.  Every Xi divisor lies in the open
 critical strip, so its centered rate `t_rho=2 Re(rho)-1` satisfies `|t_rho|<1`.  Consequently both
-reflected actual edges have literal source representatives:
+reflected actual edges have literal source representatives modulo `ell1` in the full prime-sequence
+module:
 
 ```text
-[c_(t_rho)]  = [F_(t_rho)]  in ell^2/ell^1,
-[c_(-t_rho)] = [F_(-t_rho)] in ell^2/ell^1.                (F3)
+[c_(t_rho)]  = [F_(t_rho)]  modulo ell^1,
+[c_(-t_rho)] = [F_(-t_rho)] modulo ell^1.                 (F3)
 ```
 
 This closes clauses 1 and 2 of `ORDINARY_PRIME_POLARIZED_IDEAL_PROVENANCE`: the two endpoint
 classes are no longer unrelated analytic decorations.  They are modular transports of one
 ordinary-prime Fisher density already selected by diagonal Wold activation, squarefree occupancy,
 Möbius depth differences, and Gamma valuation damping.
+
+It does **not** place both twists in one fixed `ell2/ell1` quotient.  The exact formalized Fisher
+threshold is
+
+```text
+sum_p F_t(p)^2 < infinity                     <-> t < 1/2,
+sum_p F_t(p)^2, sum_p F_(-t)(p)^2 < infinity <-> |t| < 1/2. (F4)
+```
+
+Thus the whole Xi critical strip `|t|<1` is too large for one common prime `ell2` carrier.  The
+outer half-strips are genuine topology escape, not missing estimates.
 
 ### Sharpened sole open producer
 
@@ -263,11 +275,13 @@ retained `ell^2/ell^1` class.
 
 The exact remaining statement is now:
 
-`[OPEN CORE -- POLARIZED FISHER-IDEAL CONSERVATION]` Construct, before divisor specialization, a
-singular completion of the literal adelic cyclic source which contains the occupancy Fisher class
-`[F]`, and a source-inverse/analytic-Fourier correspondence on that completion such that at every
-Xi divisor its two polarized endpoint maps are `[F_t]` and `[F_-t]` and the correspondence
-preserves membership of `ell^1`.  Then (E3) and (F3) force `t=0`, hence RH.
+`[OPEN CORE -- GRADED POLARIZED FISHER-IDEAL CONSERVATION]` Construct, before divisor
+specialization, a graded/variable-ideal completion of the literal adelic source whose neutral
+fibre contains `[F]`, and a source-inverse/analytic-Fourier correspondence between its reflected
+fibres such that at every Xi divisor its endpoint maps are `[F_t]` and `[F_-t]` and the
+correspondence preserves membership of `ell^1`.  It may not replace these fibres by one fixed
+Hilbert completion: (F4) proves that such a carrier does not exist across the whole strip.  Then
+(E3) and (F3) force `t=0`, hence RH.
 
 This is strictly narrower than “construct a source” or “prove positivity.”  Source, arithmetic
 atom, Gamma ancestry, non-erasure class, both endpoint representatives, critical-strip
@@ -275,6 +289,29 @@ moderateness, and ideal classifier are now explicit.  Missing mathematics is one
 conservation theorem on a singular relative ideal.  Defining that conservation by declaring the
 two endpoint statuses equal is circular; it must follow from a literal Fourier/cyclic operator or
 correspondence on the completed arithmetic source.
+
+## 2026-08-04 fixed-Hilbert Fisher completion falsified
+
+`[FALSIFIED]` The polarized Fisher comparison cannot be defined on one fixed prime `ell2/ell1`
+completion over the full Xi critical strip.  The source-selected density has the exact formula
+
+```text
+F_t(p) = p^t * p/(p+1)^2,
+1/4 * p^(t-1) <= F_t(p) <= p^(t-1).
+```
+
+Euler's prime-power criterion gives the sharp laws (F4), formalized in
+`PrimeFirstTraceEssentialEdgeReflectedIdealGrade.lean`.  Since Xi supplies only `|t|<1`, not
+`|t|<1/2`, some admissible divisor fibres leave every proposed common `ell2` carrier.
+
+**Strongest positive survivor.**  The trace-ideal classifier survives unchanged:
+`F_t in ell1 <-> t<0`.  What changes is the representation.  A viable singular Cartier object
+must be a graded variable-ideal/off-diagonal correspondence carrying reflected fibres, with
+`ell1` as the conserved subobject; it cannot be an ordinary bounded operator, one fixed Hilbert
+completion, or a two-sided-singular relation without additional source invariance.  The new
+`two-sided-singular-gelfand-defects` manuscript reinforces the last point: abstract countable
+noncoercive observers admit large common closed avoidance spaces, so singularity alone supplies no
+selection.
 
 ## 2026-08-04 strict cyclic-provenance audit
 
